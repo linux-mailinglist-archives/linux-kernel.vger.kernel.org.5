@@ -2,176 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 040C87F96CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 01:28:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F9E7F96D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 01:31:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbjK0A05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 19:26:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40892 "EHLO
+        id S229750AbjK0A3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 19:29:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjK0A04 (ORCPT
+        with ESMTP id S229472AbjK0A3e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 19:26:56 -0500
-Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C4410F;
-        Sun, 26 Nov 2023 16:27:02 -0800 (PST)
-Received: by mail-vs1-xe29.google.com with SMTP id ada2fe7eead31-462f139ae8bso216415137.3;
-        Sun, 26 Nov 2023 16:27:02 -0800 (PST)
+        Sun, 26 Nov 2023 19:29:34 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C21F0;
+        Sun, 26 Nov 2023 16:29:40 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40b3e2f8ec5so13275655e9.1;
+        Sun, 26 Nov 2023 16:29:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701044821; x=1701649621; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Hy/ENHor4F15xijuhqLOiJEFPoW/G6S/ww33a/cC+1M=;
-        b=nNkhHwFqGvcUEZ7CNF432afRtwuWQyqEkqfyWnW9WipGGTlVZt1SKtxdsGJW3Mw9Tt
-         qleVBxoLIm0Lm1mYDwFoetAioAMtk6Wnz/4kVpj+9lj9Vp01xCdZXRPSZiktz0Px2Df2
-         jMaymjLXVN2uZjW6lUvsNyREsJSb423/TTMvnO8otmFG+zvirax3T7RvduzrLdigN2y6
-         bc5xLrB7Ab0NdnHKFAXsrRzGpsJexOupo3BwhxK6mRFYn5p/OsHCx3Kh/6LvTddJbetp
-         FvH+ZkLDcs8mpUrwjPrqFcUbvpt6/8r94Yip/6/8az4Wwg9otUZzV2s8IOCdVHtMv0fS
-         sYTQ==
+        d=gmail.com; s=20230601; t=1701044979; x=1701649779; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DcFK3Yx/QJzJGb4Zmy6oTVxw1trZEcqb4ZIR/f9ub9Q=;
+        b=hKQFC30UIayOeZXvEVmqCFwKlHxR6t5H5FgNSDtOlDbIlohCM7ensc4jWJOWvZ5Vh5
+         5z6vr9Mzl6dJL3rT19Hd2BUCKPXyTtg7GjkhvPoh6Zt7XuguPGNJWrZy5vm5nRpf0hS2
+         xs6kY8sj6304tNaAkAwD43+JdLfZvXFWwORvyMQzbJTQepK8kI9Yt7BNyU6u2E6qX352
+         6La0wlzbraFspunXwMS9U1Rz0fZLcOW8PQROPVIz0QjTHJS918VsFY3LlSqHDUi9b+Gc
+         5DGUh7zsBiMF95IFjvtWdv5sTP4AnRT7ISpn4SdtCP+I8DBOunc+EFUtQj6tPbM8ebNs
+         QqgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701044821; x=1701649621;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Hy/ENHor4F15xijuhqLOiJEFPoW/G6S/ww33a/cC+1M=;
-        b=s2PDZtyoiwK0zOdGKNMTZq4sBqzmllyVbVDDHXp/wxzgMnlcyt0txDQRNGmqb9Y8X4
-         bj+5nb4lDveSJ99eMmPOo6SFaiQwloVAiw/K2hh7E6zrAFWrCDEFl97GFr02goHTCkry
-         4o6nHmj2tb23+5DxRa5hYtSgsSaA+JJah8GA3lzUWYqSRE/RRXaO/2lyJNCMJ3zo/6Jg
-         9LEtTgtihqQW8g8VXaMMukhOjuhm8kwsQYFyi6KLDjIvtyZynox0wHye0kQzSDQgsN5l
-         49LrgpxvF3eKL9ZsCZPtA0gLH0lNSvwkVIIanU5h5m/sF4VZEOATZWQXZHvoTJ5iXna1
-         92mA==
-X-Gm-Message-State: AOJu0YwaLBiRWY1yxCcHjQ7FMworhNvcPeKpD23PVEWD+JHWXh7txjB1
-        Vapm6KikEDED3ZE2K7QgfrYITP+UPhXvHDEROow=
-X-Google-Smtp-Source: AGHT+IFk0G48eLp0w2WCnyNsF9N/JMyM6eZ/+Pb0gFe5OD/imxQTwdyb4Hpc+PrmBHn9zbM5NDSKaDg8xWNcAXHWO1c=
-X-Received: by 2002:a05:6102:17d1:b0:45f:a41:b405 with SMTP id
- jf17-20020a05610217d100b0045f0a41b405mr9678005vsb.21.1701044820765; Sun, 26
- Nov 2023 16:27:00 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701044979; x=1701649779;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DcFK3Yx/QJzJGb4Zmy6oTVxw1trZEcqb4ZIR/f9ub9Q=;
+        b=YrZ/E/FGGU9Gs6/sMW60KmpiU171w5kdMsOmdbZXujrptotjrw1ALgKHSLRvac4QLR
+         j8hRX5mXZjTjpDW8W9jlycwIuLDzlWo83wgjchIsRak0UKbqhSdkRxcHhj+cusomeUFe
+         suqGJXgYK0UZN829BnwqxjZJ0MG4e7JUDEV+lFF6zbhfWknk7N3anjEptkWzVv3Q/P4C
+         g/yn8EvNQaaE7jzZYuYJm9OAlzEVd3PWXxTC3TrRtoKHsDllldT+gF/uCM/oqPn/xWsW
+         oirmZWxxNn2+6fzjV1kXkbb9qV1As6mm6RcHtlANW77G0PF5J11Ds/zXHvyRW2UgmlVs
+         1K6g==
+X-Gm-Message-State: AOJu0YzjI++T8Re8iDbAt9XGA+Dxpgurt+wJ9i5MX5hWIgq7MOXEryuT
+        UETQUb3dLHeQjkZb+zLBDbA=
+X-Google-Smtp-Source: AGHT+IH0uBaB84sBRQtoWIfccLD7ghqlg8zpRMgxbcaK9sc6DFlpjLI23tKsMbLa2qjtf4jbMPK3yA==
+X-Received: by 2002:a05:600c:1d24:b0:408:3696:3d51 with SMTP id l36-20020a05600c1d2400b0040836963d51mr7524526wms.4.1701044978625;
+        Sun, 26 Nov 2023 16:29:38 -0800 (PST)
+Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.googlemail.com with ESMTPSA id i12-20020a05600c354c00b004060f0a0fd5sm11738625wmq.13.2023.11.26.16.29.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Nov 2023 16:29:38 -0800 (PST)
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        Robert Marko <robimarko@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kernel test robot <lkp@intel.com>
+Subject: [net-next PATCH v2] net: phy: aquantia: drop wrong endianness conversion for addr and CRC
+Date:   Mon, 27 Nov 2023 01:29:24 +0100
+Message-Id: <20231127002924.22384-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-References: <20231122143603.85297-1-sxwjean@me.com> <7512b350-4317-21a0-fab3-4101bc4d8f7a@suse.cz>
-In-Reply-To: <7512b350-4317-21a0-fab3-4101bc4d8f7a@suse.cz>
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Date:   Mon, 27 Nov 2023 09:26:55 +0900
-Message-ID: <CAB=+i9Rw2Cm1SEYJu8oLBBxy-gaTLty64buma+FHs81pkSQz6w@mail.gmail.com>
-Subject: Re: [PATCH v2] Documentation: kernel-parameters: remove
- slab_max_order and noaliencache
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     sxwjean@me.com, linux-mm@kvack.org, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, roman.gushchin@linux.dev,
-        corbet@lwn.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Xiongwei Song <xiongwei.song@windriver.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 24, 2023 at 8:24=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz> wr=
-ote:
->
-> On 11/22/23 15:36, sxwjean@me.com wrote:
-> > From: Xiongwei Song <xiongwei.song@windriver.com>
-> >
-> > Since slab allocator has already been removed. There is no users about
-> > slab_max_order and noaliencache, so let's remove them.
-> >
-> > Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
-> > ---
-> > v2: Hyeonggon Yoo <42.hyeyoo@gmail.com> suggested that noaliencache sho=
-uld be
-> > removed too. Here adding this change. The patch is based on [1].
-> >
-> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/lo=
-g/?h=3Dslab-remove-slab-v2r1
-> >
-> > v1: https://lore.kernel.org/linux-mm/20231120091214.150502-1-sxwjean@me=
-.com/T/#m55ebb45851bc86d650baf65dfe8296d33c5b1126
-> > ---
-> >  Documentation/admin-guide/kernel-parameters.txt | 10 ----------
-> >  1 file changed, 10 deletions(-)
-> >
-> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Document=
-ation/admin-guide/kernel-parameters.txt
-> > index 65731b060e3f..d56a5beefe24 100644
-> > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > @@ -3740,10 +3740,6 @@
-> >       no5lvl          [X86-64,RISCV] Disable 5-level paging mode. Force=
-s
-> >                       kernel to use 4-level paging instead.
-> >
-> > -     noaliencache    [MM, NUMA, SLAB] Disables the allocation of alien
-> > -                     caches in the slab allocator.  Saves per-node mem=
-ory,
-> > -                     but will impact performance.
->
-> No question about this one, can be deleted.
->
-> > -
-> >       noalign         [KNL,ARM]
-> >
-> >       noaltinstr      [S390] Disables alternative instructions patching
-> > @@ -5887,12 +5883,6 @@
-> >                       own.
-> >                       For more information see Documentation/mm/slub.rs=
-t.
-> >
-> > -     slab_max_order=3D [MM, SLAB]
-> > -                     Determines the maximum allowed order for slabs.
-> > -                     A high setting may cause OOMs due to memory
-> > -                     fragmentation.  Defaults to 1 for systems with
-> > -                     more than 32MB of RAM, 0 otherwise.
->
-> I think here we should consider the long-term plan first. It's a bit
-> unfortunate (in hindsight) SLUB brought its own prefix of parameters, eve=
-n
-> if some became interchangeable aliases later (slab/slub_nomerge), some no=
-t.
+On further testing on BE target with kernel test robot, it was notice
+that the endianness conversion for addr and CRC in fw_load_memory was
+wrong and actually not needed. Values in define doesn't get converted
+and are passed as is and hardcoded values are already in what the PHY
+require, that is LE.
 
-Good point, thank you for pointing them out!
+Use get_unaligned_le32 instead of get_unaligned for FW data word load to
+correctly convert data in the correct order to follow system endian.
 
-> I think it would be best to unify them, and consider the string "slub" an
-> implementation detail of the general "slab allocator" term going forward.
+Also drop the cpu_to_be32 for CRC calculation as it's wrong and use
+get_unaligned_be32 instead. The word is taken from firmware and is
+always LE, the mailbox will emit a BE CRC from BE word hence the
+word needs to be swapped on u8 to u32 cast on LE system.
+This is needed as crc_ccitt_false will recast u32 to u8 and read order
+changes between BE and LE system. By using get_unaligned_be32, word is
+swapped only when needed resulting in the correct CRC calculated.
 
-So slab_{nomerge,min_objects,min_order, ...etc} are common to the
-concept of slab so slab_$param will be appropriate.
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202311210414.sEJZjlcD-lkp@intel.com/
+Fixes: e93984ebc1c8 ("net: phy: aquantia: add firmware load support")
+Tested-by: Robert Marko <robimarko@gmail.com> # ipq8072 LE device
+Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+---
+Changes v2:
+- Add further explaination in commit description
+- Fix wrong CRC conversion and swap only when needed
 
-But if we add something like slub_nocmpxchg later, it would be slub_nocmpxc=
-hg
-as it's an implementation-specific feature.
+ drivers/net/phy/aquantia/aquantia_firmware.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-> So what I'd propose is that we change all parameters to accept a
-> "slab_$param" as a primary and documented name (and the description can
-> contain just [MM] tag, no [SLAB] or [SLUB] needed), with "slub_$param" is
-> also accepted as an alias where it exists today, and there's just a note
-> that the slub_$param name is also accepted in the description of the
-> canonical parameter, not in a separate description.
+diff --git a/drivers/net/phy/aquantia/aquantia_firmware.c b/drivers/net/phy/aquantia/aquantia_firmware.c
+index c5f292b1c4c8..c12e8a3acb77 100644
+--- a/drivers/net/phy/aquantia/aquantia_firmware.c
++++ b/drivers/net/phy/aquantia/aquantia_firmware.c
+@@ -93,9 +93,9 @@ static int aqr_fw_load_memory(struct phy_device *phydev, u32 addr,
+ 	u16 crc = 0, up_crc;
+ 	size_t pos;
+ 
+-	/* PHY expect addr in LE */
+-	addr = (__force u32)cpu_to_le32(addr);
+-
++	/* PHY expect addr in LE. Hardcoded addr in defines are
++	 * already in this format.
++	 */
+ 	phy_write_mmd(phydev, MDIO_MMD_VEND1,
+ 		      VEND1_GLOBAL_MAILBOX_INTERFACE1,
+ 		      VEND1_GLOBAL_MAILBOX_INTERFACE1_CRC_RESET);
+@@ -113,7 +113,7 @@ static int aqr_fw_load_memory(struct phy_device *phydev, u32 addr,
+ 		u32 word;
+ 
+ 		/* FW data is always stored in little-endian */
+-		word = get_unaligned((const u32 *)(data + pos));
++		word = get_unaligned_le32((const u32 *)(data + pos));
+ 
+ 		phy_write_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_MAILBOX_INTERFACE5,
+ 			      VEND1_GLOBAL_MAILBOX_INTERFACE5_MSW_DATA(word));
+@@ -125,10 +125,10 @@ static int aqr_fw_load_memory(struct phy_device *phydev, u32 addr,
+ 			      VEND1_GLOBAL_MAILBOX_INTERFACE1_WRITE);
+ 
+ 		/* calculate CRC as we load data to the mailbox.
+-		 * We convert word to big-endian as PHY is BE and mailbox will
++		 * We read word as big-endian as PHY is BE and mailbox will
+ 		 * return a BE CRC.
+ 		 */
+-		word = (__force u32)cpu_to_be32(word);
++		word = get_unaligned_be32((const u32 *)(data + pos));
+ 		crc = crc_ccitt_false(crc, (u8 *)&word, sizeof(word));
+ 	}
+ 
+-- 
+2.40.1
 
-No reason not to do it.
-
-> Then maybe in a few
-> years we can mark the old names as deprecated and start issuing low-key
-> warnings (while still accepting them), and in 10 years maybe remove them
-> completely. Thoughts?
-
-That might be the safest way to remove a kernel parameter but should
-we remove them?
-Probably 1) allowing both slub_$param and slab_$param for general
-parameters (forever)
-and 2) only using slub_$param for slub-specific params would be enough?
-
-> > -
-> >       slub_debug[=3Doptions[,slabs][;[options[,slabs]]...]      [MM, SL=
-UB]
-> >                       Enabling slub_debug allows one to determine the
-> >                       culprit if slab objects become corrupted. Enablin=
-g
->
