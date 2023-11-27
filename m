@@ -2,132 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FAF97FA7C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:13:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E6767FA7C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343505AbjK0RNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 12:13:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58146 "EHLO
+        id S234756AbjK0RNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 12:13:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234864AbjK0RNT (ORCPT
+        with ESMTP id S1343562AbjK0RNV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 12:13:19 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A8B30C7;
-        Mon, 27 Nov 2023 09:05:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701104703; x=1732640703;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=q0Cs8/Z2gWXTtybRmRR8o0521aCJxHfPoBNVT4y79Tk=;
-  b=JmLF1v+eyK3sPnlZoX7bUa6eSIgALzI9incLDzP8xeTG+RoJEnpdPa1+
-   Hl/JPJ75eSDGCXPY0pxw4ArKftDZrhVplPcU/7C6pcWKXSU9sEN118+fw
-   I7DiRNZvS0qrZjui8t38o2RgHRocVTpq/rqRTnbbirBKa0I9MJJyJZ7Ui
-   Hxbi0n7ZkZxYrJUM8MV343rvht37ASx1MkRD3k+A9grSBksuySio3rkhn
-   tg4xUfNGcbN6IzQCMP24nArp+8TMfxtrxK06TbU8QWagrKltj/IzYTukl
-   rlNcZJ4O367ahRUjLpYr7De0C8V4bYTNRI/LKKhjTjzPCg+a/4LXIu3lT
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="392495108"
-X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
-   d="scan'208";a="392495108"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 09:05:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="771998345"
-X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
-   d="scan'208";a="771998345"
-Received: from thomasob-mobl3.amr.corp.intel.com (HELO [10.255.231.114]) ([10.255.231.114])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 09:05:02 -0800
-Message-ID: <beb0b52d-7136-43b2-a4d0-ce7114c772e4@linux.intel.com>
-Date:   Mon, 27 Nov 2023 09:05:02 -0800
+        Mon, 27 Nov 2023 12:13:21 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 933F52706;
+        Mon, 27 Nov 2023 09:05:26 -0800 (PST)
+Received: from [192.168.4.26] (unknown [47.186.13.91])
+        by linux.microsoft.com (Postfix) with ESMTPSA id D60A120B74C0;
+        Mon, 27 Nov 2023 09:05:23 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D60A120B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1701104726;
+        bh=hQp9k1xmzkhJv53kIi+fGz0Bm7C0uUgSE5lwBZUzRAE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=rJ8cBOmhMjU1LJ0/8Jcu8Zs0D7K0IoJJgYpooleweR4JPTx8RVu3i076OKuSc40H8
+         vQyhttx9sRNbXZhKrbp4uy9amwle/wkhxSgx+XSVVJGrDjkKV6ziAkv22z1oJr2gBV
+         BrN8A1ek3f3VLgDmEE47gJhsasnKPJeYvbYTTmRg=
+Message-ID: <b1dc0963-ab99-4a79-af19-ef5ed981fa60@linux.microsoft.com>
+Date:   Mon, 27 Nov 2023 11:05:23 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Race b/w pciehp and FirmwareFirst DPC->EDR flow - Reg
+Subject: Re: [RFC PATCH v2 18/19] heki: x86: Protect guest kernel memory using
+ the KVM hypervisor
 Content-Language: en-US
-To:     Vidya Sagar <vidyas@nvidia.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Lukas Wunner <lukas@wunner.de>,
-        "kbusch@kernel.org" <kbusch@kernel.org>
-Cc:     Vikram Sethi <vsethi@nvidia.com>,
-        Krishna Thota <kthota@nvidia.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        sagar.tv@gmail.com
-References: <BN8PR12MB290002441CA3C24D1FA742D2B8AEA@BN8PR12MB2900.namprd12.prod.outlook.com>
- <529acc15-1932-4785-9edf-c5327db64ab1@nvidia.com>
- <a73a2156-124b-47f7-b545-6751f6e87d54@nvidia.com>
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <a73a2156-124b-47f7-b545-6751f6e87d54@nvidia.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8?= =?UTF-8?Q?n?= <mic@digikod.net>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Alexander Graf <graf@amazon.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        Forrest Yuan Yu <yuanyu@google.com>,
+        James Gowans <jgowans@amazon.com>,
+        James Morris <jamorris@linux.microsoft.com>,
+        John Andersen <john.s.andersen@intel.com>,
+        Marian Rotariu <marian.c.rotariu@gmail.com>,
+        =?UTF-8?Q?Mihai_Don=C8=9Bu?= <mdontu@bitdefender.com>,
+        =?UTF-8?B?TmljdciZb3IgQ8OuyJt1?= <nicu.citu@icloud.com>,
+        Thara Gopinath <tgopinath@microsoft.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Wei Liu <wei.liu@kernel.org>, Will Deacon <will@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Zahra Tarkhani <ztarkhani@microsoft.com>,
+        =?UTF-8?Q?=C8=98tefan_=C8=98icleru?= <ssicleru@bitdefender.com>,
+        dev@lists.cloudhypervisor.org, kvm@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, qemu-devel@nongnu.org,
+        virtualization@lists.linux-foundation.org, x86@kernel.org,
+        xen-devel@lists.xenproject.org
+References: <20231113022326.24388-1-mic@digikod.net>
+ <20231113022326.24388-19-mic@digikod.net>
+ <20231113085403.GC16138@noisy.programming.kicks-ass.net>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+In-Reply-To: <20231113085403.GC16138@noisy.programming.kicks-ass.net>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Apologies for the late reply. I was on vacation. Please see my response below:
 
-
-On 11/27/2023 6:43 AM, Vidya Sagar wrote:
-> Hi Bjorn and others,
-> Could you please share your thoughts on this?
-> 
-> Thanks,
-> Vidya Sagar
-> 
-> On 11/10/2023 10:31 PM, Vidya Sagar wrote:
->> There was a typo. Corrected it.
+On 11/13/23 02:54, Peter Zijlstra wrote:
+> On Sun, Nov 12, 2023 at 09:23:25PM -0500, Mickaël Salaün wrote:
+>> From: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
 >>
->> s/If DPC->EDR flow checks DPC also/If DPC->EDR flow checks 'PD Change' also
+>> Implement a hypervisor function, kvm_protect_memory() that calls the
+>> KVM_HC_PROTECT_MEMORY hypercall to request the KVM hypervisor to
+>> set specified permissions on a list of guest pages.
 >>
->> On 11/10/2023 6:30 PM, Vidya Sagar wrote:
->>> Hi folks,
->>> Here are the platform details.
->>> - System with a Firmware First approach for both AER and DPC
->>> - CPERs are sent to the OS for the AER events
->>> - DPC is notified to the OS through EDR mechanism
->>> - System doesn't have support for in-band PD and supports only OOB PD where writing to a private register would set the PD state
->>> - System has this design where PD state gets cleared whenever there is a link down (without even writing to the private register)
->>>
+>> Using the protect_memory() function, set proper EPT permissions for all
+>> guest pages.
+>>
+>> Use the MEM_ATTR_IMMUTABLE property to protect the kernel static
+>> sections and the boot-time read-only sections. This enables to make sure
+>> a compromised guest will not be able to change its main physical memory
+>> page permissions. However, this also disable any feature that may change
+>> the kernel's text section (e.g., ftrace, Kprobes), but they can still be
+>> used on kernel modules.
+>>
+>> Module loading/unloading, and eBPF JIT is allowed without restrictions
+>> for now, but we'll need a way to authenticate these code changes to
+>> really improve the guests' security. We plan to use module signatures,
+>> but there is no solution yet to authenticate eBPF programs.
+>>
+>> Being able to use ftrace and Kprobes in a secure way is a challenge not
+>> solved yet. We're looking for ideas to make this work.
+>>
+>> Likewise, the JUMP_LABEL feature cannot work because the kernel's text
+>> section is read-only.
+> 
+> What is the actual problem? As is the kernel text map is already RO and
+> never changed.
 
-Is clearing the PD state when link goes down normal? Is this a bug in the hardware?
+For the JUMP_LABEL optimization, the text needs to be patched at some point.
+That patching requires a writable mapping of the text page at the time of
+patching.
 
->>> In this system, if the root port has to experience a DPC because of any right reasons (say SW trigger of DPC for time being), I'm observing the following flow which is causing a race.
->>> 1. Since DPC brings the link down, there is a DLLSC and an MSI is sent to the OS hence PCIe HP ISR is invoked.
->>> 2. ISR then takes stock of the Slot_Status register to see what all events caused the MSI generation.
->>> 3. It sees both DLLSC and PDC bits getting set.
->>> 4. PDC is set because of the aforementioned hardware design where for every link down, PD state gets cleared and since this is considered as a change in the PD state, PDC also gets set.
->>> 5. PCIe HP ISR flow transitions to the PCIe HP IST (interrupt thread/bottom half) and waits for the DPC_EDR to complete (because DLLSC is one of the events)
->>> 6. Parallel to the PCIe HP ISR/IST, DPC interrupt is raised to the firmware and that would then send an EDR event to the OS. Firmware also sets the PD state to '1' before that, as the endpoint device is still available.
->>> 7. Firmware programming of the private register to set the PD state raises second interrupt and PCIe HP ISR takes stock of the events and this time it is only the PDC and not DLLSC. ISR sends a wake to the IST, but since there is an IST in progress already, nothing much happens at this point.
->>> 8. Once the DPC is completed and link comes back up again, DPC framework asks the endpoint drivers to handle it by calling the 'pci_error_handlers' callabacks registered by the endpoint device drivers.
->>> 9. The PCIe HP IST (of the very first MSI) resumes after receiving the completion from the DPC framework saying that DPC recovery is successful.
->>> 10. Since PDC (Presence Detect Change) bit is also set for the first interrupt, IST attempts to remove the devices (as part of pciehp_handle_presence_or_link_change())
->>>
->>> At this point, there is a race between the device driver that is trying to work with the device (through pci_error_handlers callback) and the IST that is trying to remove the device.
+In this Heki feature, we currently lock down the kernel text at the end of
+kernel boot just before kicking off the init process. The lockdown is
+implemented by setting the permissions of a text page to R_X in the extended
+page table and not allowing write permissions in the EPT after that. So, jump label
+patching during kernel boot is not a problem. But doing it after kernel
+boot is a problem.
 
-IIUC, this step is after DPC recovery, which means the device is up and error_handlers are not used anymore, right? Why do you say there is a race between IST and error handler?
+The lockdown is just for the current Heki implementation. In the future, we plan
+to have a way of authenticating guest requests to change permissions on a text page.
+Once that is in place, permissions on text pages can be changed on the fly to
+support features that depend on text patching - FTrace, KProbes, etc.
 
->>> To be fair to pciehp_handle_presence_or_link_change(), after removing the devices, it checks for the link-up/PD being '1' and scans the devices again if the device is still available. But unfortunately, IST is deadlocked (with the device driver) while removing the devices itself and won't go to the next step.
->>>
->>> The rationale given in the form of a comment in pciehp_handle_presence_or_link_change() for removing the devices first (without checking PD/link-up) and adding them back after checking link-up/PD is that, since there is a change in PD, the new link-up need not be with the same old device rather it could be with a different device. So, it justifies in removing the existing devices and then scanning for new ones. But this is causing deadlock with the already initiated DPC recovery process.
->>>
->>> I see two ways to avoid the deadlock in this scenario.
->>> 1. When PCIe HP IST is looking at both DLLSC and PDC, why should DPC->EDR flow look at only DLLSC and not DPC? If DPC->EDR flow checks 'PD Change' also (along with DLL) and declares that the DPC recovery can't happen (as there could be a change of device) hence returning DPC recovery failure, then, the device driver's pci_error_handlers callbacks won't be called and there won't be any deadlock.
->>> 2. Check for the possibility of a common lock so that PCIe HP IST and device driver's pci_error_handlers callbacks don't race.
->>>
->>> Let me know your comments on this.
->>>
->>> Thanks,
->>> Vidya Sagar
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Madhavan
