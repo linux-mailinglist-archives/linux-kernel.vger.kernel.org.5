@@ -2,154 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C26457FA3BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:55:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA3A7FA3A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:54:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233869AbjK0Oze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 09:55:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54292 "EHLO
+        id S233602AbjK0OyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 09:54:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233813AbjK0OzX (ORCPT
+        with ESMTP id S233485AbjK0OyX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 09:55:23 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B1010CA;
-        Mon, 27 Nov 2023 06:55:24 -0800 (PST)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARDX4C9025349;
-        Mon, 27 Nov 2023 14:55:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=5w8AVM6ZRZcbTx9e/Vp6YkCqKtNMrWDc3V+eTYGPBek=;
- b=IXnyBvPp+Wc9YNNhrklUpuYNKFbE9z71+ObmkzDuEg0IE+AOKgqHzkqbTJ9FRxYrQauD
- A8avsA7j+UdZnF8KIBD4zMeS+dgCgSiSLAFHMnI83Gz+HwY78yfoKLGnicz3iSIO/yYC
- eVpVLrTid9l0+7mCMN2frUTtqOCsPGJoXNLx7JQqfHiBTWY1hY+Z2GDSPcNwy5jvLoKb
- 5p0OC5heWBGBHqsYkBArEpWGxwVnmZbrvs1d7xl1Ja83dwSjwjrdan8/Lmu4eRAoXpPc
- DSN62a6RuMCT29Vroy0uM1yFG4gBQYdotjbL3rctnINC+jo8JCelAW3LLMJAJmuzS4m3 lw== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3umt4qgjfw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 14:55:05 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AREt4sl004534
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 14:55:04 GMT
-Received: from hu-bibekkum-hyd.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 27 Nov 2023 06:54:58 -0800
-From:   Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-To:     <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
-        <dmitry.baryshkov@linaro.org>, <a39.skl@gmail.com>,
-        <konrad.dybcio@linaro.org>, <quic_bjorande@quicinc.com>,
-        <mani@kernel.org>, <quic_eberman@quicinc.com>,
-        <robdclark@chromium.org>, <u.kleine-koenig@pengutronix.de>,
-        <robh@kernel.org>, <vladimir.oltean@nxp.com>,
-        <quic_pkondeti@quicinc.com>, <quic_molvera@quicinc.com>
-CC:     <linux-arm-msm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>, <qipl.kernel.upstream@quicinc.com>,
-        Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-Subject: [PATCH v3 4/4] iommu/arm-smmu: re-enable context caching in smmu reset operation
-Date:   Mon, 27 Nov 2023 20:24:12 +0530
-Message-ID: <20231127145412.3981-5-quic_bibekkum@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231127145412.3981-1-quic_bibekkum@quicinc.com>
-References: <20231127145412.3981-1-quic_bibekkum@quicinc.com>
+        Mon, 27 Nov 2023 09:54:23 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0AD8C99
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:54:30 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5F1AC2F4;
+        Mon, 27 Nov 2023 06:55:17 -0800 (PST)
+Received: from [10.57.73.191] (unknown [10.57.73.191])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B814D3F6C4;
+        Mon, 27 Nov 2023 06:54:26 -0800 (PST)
+Message-ID: <28bc0263-c297-4392-b70a-df8214ca1a67@arm.com>
+Date:   Mon, 27 Nov 2023 14:54:25 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: _Yu8egJUf_Dh3CRpUn-cVfT1UcUWDUfJ
-X-Proofpoint-GUID: _Yu8egJUf_Dh3CRpUn-cVfT1UcUWDUfJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-27_13,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 malwarescore=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- phishscore=0 adultscore=0 spamscore=0 lowpriorityscore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311270102
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH v7 10/10] selftests/mm/cow: Add tests for anonymous
+ small-sized THP
+Content-Language: en-GB
+To:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20231122162950.3854897-1-ryan.roberts@arm.com>
+ <20231122162950.3854897-11-ryan.roberts@arm.com>
+ <8dd0f52c-d261-4541-930f-bd4e5921be5b@arm.com>
+ <13a2ce75-b1c0-4930-8911-36ded0b428a7@redhat.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <13a2ce75-b1c0-4930-8911-36ded0b428a7@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Default MMU-500 reset operation disables context caching in
-prefetch buffer. It is however expected for context banks using
-the ACTLR register to retain their prefetch value during reset
-and runtime suspend.
+On 27/11/2023 14:50, David Hildenbrand wrote:
+> On 27.11.23 15:02, Ryan Roberts wrote:
+>> On 22/11/2023 16:29, Ryan Roberts wrote:
+>>> Add tests similar to the existing PMD-sized THP tests, but which operate
+>>> on memory backed by (PTE-mapped) small-sized THP. This reuses all the
+>>> existing infrastructure. If the test suite detects that small-sized THP
+>>> is not supported by the kernel, the new tests are skipped.
+>>>
+>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>> ---
+>>>   tools/testing/selftests/mm/cow.c | 71 +++++++++++++++++++++++++++++++-
+>>>   1 file changed, 70 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/tools/testing/selftests/mm/cow.c b/tools/testing/selftests/mm/cow.c
+>>> index d03c453cfd5c..3efc395c7077 100644
+>>> --- a/tools/testing/selftests/mm/cow.c
+>>> +++ b/tools/testing/selftests/mm/cow.c
+>>> @@ -29,15 +29,49 @@
+>>>   #include "../../../../mm/gup_test.h"
+>>>   #include "../kselftest.h"
+>>>   #include "vm_util.h"
+>>> +#include "thp_settings.h"
+>>>
+>>>   static size_t pagesize;
+>>>   static int pagemap_fd;
+>>>   static size_t pmdsize;
+>>> +static int nr_thpsmallsizes;
+>>> +static size_t thpsmallsizes[20];
+>>
+>> Off the back of some comments David made againt the previous patch [1], I'm
+>> proposing to rework this a bit so that ALL thp sizes are stored in this array,
+>> not just the non-PMD-sized sizes. This makes the changes overall a bit smaller
+>> and easier to understand, I think...
+>>
+>>>   static int nr_hugetlbsizes;
+>>>   static size_t hugetlbsizes[10];
+>>>   static int gup_fd;
+>>>   static bool has_huge_zeropage;
+>>>
+>>> +static int sz2ord(size_t size)
+>>> +{
+>>> +    return __builtin_ctzll(size / pagesize);
+>>> +}
+>>> +
+>>> +static int detect_smallthp_sizes(size_t sizes[], int max)
+>>
+>> This changes to detect_thp_sizes() and deposits all sizes in sizes[]
+> 
+> Just what I wanted to propose :) Makes it simpler by removing the "small"
+> terminology and just detecting thp sizes.
 
-Replace default MMU-500 reset operation with Qualcomm specific reset
-operation which envelope the default reset operation and re-enables
-context caching in prefetch buffer for Qualcomm SoCs.
-
-Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
----
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 23 +++++++++++++++++++---
- 1 file changed, 20 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-index f0ad09f9a974..2c676a09fa31 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-@@ -512,11 +512,28 @@ static int qcom_smmu_def_domain_type(struct device *dev)
- 	return match ? IOMMU_DOMAIN_IDENTITY : 0;
- }
-
-+static int qcom_smmu500_reset(struct arm_smmu_device *smmu)
-+{
-+	int i;
-+	u32 reg;
-+
-+	arm_mmu500_reset(smmu);
-+
-+	/* Re-enable context caching after reset */
-+	for (i = 0; i < smmu->num_context_banks; ++i) {
-+		reg = arm_smmu_cb_read(smmu, i, ARM_SMMU_CB_ACTLR);
-+		reg |= CPRE;
-+		arm_smmu_cb_write(smmu, i, ARM_SMMU_CB_ACTLR, reg);
-+	}
-+
-+	return 0;
-+}
-+
- static int qcom_sdm845_smmu500_reset(struct arm_smmu_device *smmu)
- {
- 	int ret;
-
--	arm_mmu500_reset(smmu);
-+	qcom_smmu500_reset(smmu);
-
- 	/*
- 	 * To address performance degradation in non-real time clients,
-@@ -543,7 +560,7 @@ static const struct arm_smmu_impl qcom_smmu_500_impl = {
- 	.init_context = qcom_smmu_init_context,
- 	.cfg_probe = qcom_smmu_cfg_probe,
- 	.def_domain_type = qcom_smmu_def_domain_type,
--	.reset = arm_mmu500_reset,
-+	.reset = qcom_smmu500_reset,
- 	.write_s2cr = qcom_smmu_write_s2cr,
- 	.tlb_sync = qcom_smmu_tlb_sync,
- };
-@@ -568,7 +585,7 @@ static const struct arm_smmu_impl qcom_adreno_smmu_v2_impl = {
- static const struct arm_smmu_impl qcom_adreno_smmu_500_impl = {
- 	.init_context = qcom_adreno_smmu_init_context,
- 	.def_domain_type = qcom_smmu_def_domain_type,
--	.reset = arm_mmu500_reset,
-+	.reset = qcom_smmu500_reset,
- 	.alloc_context_bank = qcom_adreno_smmu_alloc_context_bank,
- 	.write_sctlr = qcom_adreno_smmu_write_sctlr,
- 	.tlb_sync = qcom_smmu_tlb_sync,
---
-2.17.1
+Great! All done and queued up for the next version. Just waiting for some
+feedback on the 2 crucial patches in this series (3 & 4) :)
 
