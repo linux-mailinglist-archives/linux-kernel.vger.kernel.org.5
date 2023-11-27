@@ -2,88 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 887ED7FA5C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:11:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E62B7FA5E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:14:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234461AbjK0QK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 11:10:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56944 "EHLO
+        id S234429AbjK0QN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 11:13:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234346AbjK0QKk (ORCPT
+        with ESMTP id S234414AbjK0QNu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 11:10:40 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 914A61A7;
-        Mon, 27 Nov 2023 08:10:45 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-332e40315bdso2764854f8f.1;
-        Mon, 27 Nov 2023 08:10:45 -0800 (PST)
+        Mon, 27 Nov 2023 11:13:50 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DAB2DE;
+        Mon, 27 Nov 2023 08:13:56 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6cb4d366248so3588389b3a.0;
+        Mon, 27 Nov 2023 08:13:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701101444; x=1701706244; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=g+lF3QgCwvWnbjfqhJEMa7OoaEHoxVxVETL2faHDack=;
-        b=SMqhFRWtRXFUUW0aQqRS7CFlvhBuTwPPO4sEscfBdfaUdWRHI8r4Y7RxtfW30D8RuW
-         9Q4V+Or0/TWhBrTHN4KOO2lF3Y7DbYDzZAR4KX2axqgl4B3FxZKEWr8DJIereGJhFi+I
-         Gn8ou6H1IVjTzN/6LO+B8AOmIwK5YQM7f6nDgiHSforpXyLkdekwFjPLrFk2J08Qrjxt
-         LAUAvCjpeuTCNF2YSadPA/kU+u8j5ok3nEwgYo8nxY5zoIERblxVUsWt16Y8lJfrbOJK
-         t98qhQmJ9y1jED3BgYBqunUx5pv2cOMlcmZE4pi1+b6dVLmtcg++UFelhETpAjrbXdf0
-         norw==
+        d=gmail.com; s=20230601; t=1701101636; x=1701706436; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=m8Y+/hfdU1/FxZi+VliIj7cuRUi8YqKczVoB/rQ19O4=;
+        b=OFQtu5kHnEJ5P7uiXi+xBQ0Ny77hMxzYvROCbRDXlflyLzFcLLyzRA9RzWGrxyv6Mj
+         mz/MtnrLEUOh9Oi/b0NoNzAvIxs9mBDoDoafOxUGWS8cXrJo3aKryZFzxfzmkITf/mMN
+         YQZyYGmNrCdeoHTjmd7QLH25vkSHDddhnSCK+bjAeLaEcEDanRGJJxHoViOPwjpX5LuY
+         xul3rUlmV9YA8WHm8TV1SaZAV5J2LwgGV/DNAE94YZnIKwuayQc3GszLJqyfKbAlcuGd
+         +Lh/uy54d86pmRamx27+bKIsMcmo9oUzYT2hRWgoZvD7jzEa9uE1Mlgw0K9kxb9nXrX9
+         o9jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701101444; x=1701706244;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=g+lF3QgCwvWnbjfqhJEMa7OoaEHoxVxVETL2faHDack=;
-        b=LuRcgnfPc+l+D5hf8h/X9EhRyEND4VMSYExi2lkk1UDcAeYgu0jUVhynU8t8CHKEId
-         28IOtb8EAL3eI/gj/y2pI9kEixU2OGzvky0P0g9C8XoUlxSY/nYZihLXZsvGUPofriAp
-         Z8uWiavRwJ06k+utN9GlnjGtD38LnB4+ZybI3/Ur6XuqbmcKG+WVIQrrPsTvOFQ1SRwk
-         UkYJ55mhPdaCrM5UtFo2tBM/ZFFOclw9TxF3ckfbjK4pDIghqeCwGgW2hgS/CDoQtHUn
-         t3h7veZoFkNcktYP4jGzVO7X0uWKMVqPLH5E1pG4RiBm8C9ctzDdoyGGoKBmBO6hbUiE
-         yawQ==
-X-Gm-Message-State: AOJu0Yx6RC54bHD7dovwTn2tPc6phgrHE/7MyT8k34MEDM0RcLfi7Xfu
-        rUf5WvCIRyaGRvyWTBDUmGU=
-X-Google-Smtp-Source: AGHT+IFGREU7mhh8Zy+vus2qLVxZ7UEZYtWvBcxMMrydr3j/3AjBv6ioEJwShSAq6Sb8x3TtsHo1YA==
-X-Received: by 2002:a5d:6a91:0:b0:333:2f2:33c7 with SMTP id s17-20020a5d6a91000000b0033302f233c7mr2471080wru.41.1701101443549;
-        Mon, 27 Nov 2023 08:10:43 -0800 (PST)
-Received: from [172.25.98.130] ([5.2.194.157])
-        by smtp.gmail.com with ESMTPSA id s16-20020a5d69d0000000b00332cddd7468sm12386974wrw.40.2023.11.27.08.10.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Nov 2023 08:10:42 -0800 (PST)
-Message-ID: <0002141e-4605-414d-9baf-84bc794ee66b@gmail.com>
-Date:   Mon, 27 Nov 2023 18:10:40 +0200
+        d=1e100.net; s=20230601; t=1701101636; x=1701706436;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m8Y+/hfdU1/FxZi+VliIj7cuRUi8YqKczVoB/rQ19O4=;
+        b=UiSrzxrjkTqfzUI2LU2idKxobhVXUEit5h1+DOvjkYjDWb+By1RpxX8X6r287BLtoN
+         wZF1p10k7ecAR459bdKmPevxe8/OnHMg+okZGv09KApEo05MIii9AYVqQNcN1bGDMFPh
+         v2nyUH8zbu1k2h2EMVn9qTj1ivItlx/W0ogGL8Agn3/UeCsqKHbGTG2SJTJiIS/NszL6
+         y7D7Sfnhx10/pb9zgxtXOACZiD3CMFuBMpm1Jvhk5281gRLk1Rezs2kqX4SKL6OKBlmB
+         EuZ2UlULyXTW1T2HD3R8XcSIVV1t7BCqNkfzE1A9vIMKNAVkUmxTf5A/b5wDJj7ZNPmM
+         yAQw==
+X-Gm-Message-State: AOJu0YyK3Wx8yoJ2qsANYBew20KcffR5e5N9Pked4zPrhOMvEWo2z+c9
+        fes0LimhdNjYnrusItZMZ8ahLu3Y6dR0NX/x
+X-Google-Smtp-Source: AGHT+IHvuGZIsXw6I2fqnukGj9fiXf1SOYmJVzN0HXKYP/vLOR2dWrVgP03mT4QP79jk/BA//dgPaw==
+X-Received: by 2002:a05:6a20:d704:b0:189:c0e1:4979 with SMTP id iz4-20020a056a20d70400b00189c0e14979mr15074487pzb.29.1701101635605;
+        Mon, 27 Nov 2023 08:13:55 -0800 (PST)
+Received: from localhost.localdomain ([2401:4900:2353:8963:b940:1ac0:2fbc:6b6])
+        by smtp.gmail.com with ESMTPSA id v1-20020a632f01000000b005898df17ea4sm7740194pgv.27.2023.11.27.08.13.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 08:13:55 -0800 (PST)
+From:   Anshul Dalal <anshulusr@gmail.com>
+To:     linux-input@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Anshul Dalal <anshulusr@gmail.com>,
+        "Conor Dooley" <conor+dt@kernel.org>,
+        "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
+        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        linux-kernel@vger.kernel.org,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
+        "Conor Dooley" <conor.dooley@microchip.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        "Jeff LaBundy" <jeff@labundy.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH v11 1/2] dt-bindings: input: bindings for Adafruit Seesaw Gamepad
+Date:   Mon, 27 Nov 2023 21:41:53 +0530
+Message-ID: <20231127161158.1651716-1-anshulusr@gmail.com>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 1/2] dt-bindings: adc: add AD7173
-To:     Conor Dooley <conor@kernel.org>
-Cc:     linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
-        linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        =?UTF-8?Q?Leonard_G=C3=B6hrs?= <l.goehrs@pengutronix.de>,
-        Mike Looijmans <mike.looijmans@topic.nl>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        Ceclan Dumitru <dumitru.ceclan@analog.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231123152331.5751-1-user@HYB-hhAwRlzzMZb>
- <20231123-ninth-joylessly-89e8531cf756@spud>
-Content-Language: en-US
-From:   Ceclan Dumitru <mitrutzceclan@gmail.com>
-In-Reply-To: <20231123-ninth-joylessly-89e8531cf756@spud>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,32 +78,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Adds bindings for the Adafruit Seesaw Gamepad.
 
+The gamepad functions as an i2c device with the default address of 0x50
+and has an IRQ pin that can be enabled in the driver to allow for a rising
+edge trigger on each button press or joystick movement.
 
-On 11/23/23 20:02, Conor Dooley wrote:
-> On Thu, Nov 23, 2023 at 05:23:21PM +0200, mitrutzceclan wrote:
->> +allOf:
->> +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
->> +
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          not:
->> +            contains:
->> +              const: adi,ad7173-8
->> +    then:
->> +      properties:
->> +        refin2-supply: false
->> +      patternProperties:
->> +        "^channel@[0-9a-f]$":
->> +          properties:
->> +            adi,reference-select:
->> +              enum:
->> +                - refin
->> +                - refout-avss
->> +                - avdd
-> 
-> I assume you tested that this restriction works as intended?
-> 
+Product page:
+  https://www.adafruit.com/product/5743
+Arduino driver:
+  https://github.com/adafruit/Adafruit_Seesaw
 
-Yes, for both reference and reference-select
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
+
+---
+
+Changes for v11:
+- no updates
+
+Changes for v10:
+- Added interrupt-controller/irq.h header
+
+Changes for v9:
+- Added interrupt in example
+
+Changes for v8:
+- no updates
+
+Changes for v7:
+- no updates
+
+Changes for v6:
+- no updates
+
+Changes for v5:
+- Added link to the datasheet
+
+Changes for v4:
+- Fixed the URI for the id field
+- Added `interrupts` property
+
+Changes for v3:
+- Updated id field to reflect updated file name from previous version
+- Added `reg` property
+
+Changes for v2:
+- Renamed file to `adafruit,seesaw-gamepad.yaml`
+- Removed quotes for `$id` and `$schema`
+- Removed "Bindings for" from the description
+- Changed node name to the generic name "joystick"
+- Changed compatible to 'adafruit,seesaw-gamepad' instead of
+  'adafruit,seesaw_gamepad'
+
+Previous versions:
+v10: https://lore.kernel.org/lkml/20231121123409.2231115-1-anshulusr@gmail.com/
+v9: https://lore.kernel.org/lkml/20231121101751.2189965-1-anshulusr@gmail.com/
+v8: https://lore.kernel.org/lkml/20231108005337.45069-1-anshulusr@gmail.com/
+v7: https://lore.kernel.org/lkml/20231106164134.114668-1-anshulusr@gmail.com/
+v6: https://lore.kernel.org/lkml/20231027051819.81333-1-anshulusr@gmail.com/
+v5: https://lore.kernel.org/lkml/20231017034356.1436677-1-anshulusr@gmail.com/
+v4: https://lore.kernel.org/lkml/20231010184827.1213507-1-anshulusr@gmail.com/
+v3: https://lore.kernel.org/linux-input/20231008185709.2448423-1-anshulusr@gmail.com/
+v2: https://lore.kernel.org/linux-input/20231008172435.2391009-1-anshulusr@gmail.com/
+v1: https://lore.kernel.org/linux-input/20231007144052.1535417-1-anshulusr@gmail.com/
+
+---
+ .../input/adafruit,seesaw-gamepad.yaml        | 63 +++++++++++++++++++
+ 1 file changed, 63 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/adafruit,seesaw-gamepad.yaml
+
+diff --git a/Documentation/devicetree/bindings/input/adafruit,seesaw-gamepad.yaml b/Documentation/devicetree/bindings/input/adafruit,seesaw-gamepad.yaml
+new file mode 100644
+index 000000000000..5e86f6de6978
+--- /dev/null
++++ b/Documentation/devicetree/bindings/input/adafruit,seesaw-gamepad.yaml
+@@ -0,0 +1,63 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/input/adafruit,seesaw-gamepad.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Adafruit Mini I2C Gamepad with seesaw
++
++maintainers:
++  - Anshul Dalal <anshulusr@gmail.com>
++
++description: |
++  Adafruit Mini I2C Gamepad
++
++    +-----------------------------+
++    |   ___                       |
++    |  /   \               (X)    |
++    | |  S  |  __   __  (Y)   (A) |
++    |  \___/  |ST| |SE|    (B)    |
++    |                             |
++    +-----------------------------+
++
++  S -> 10-bit precision bidirectional analog joystick
++  ST -> Start
++  SE -> Select
++  X, A, B, Y -> Digital action buttons
++
++  Datasheet: https://cdn-learn.adafruit.com/downloads/pdf/gamepad-qt.pdf
++  Product page: https://www.adafruit.com/product/5743
++  Arduino Driver: https://github.com/adafruit/Adafruit_Seesaw
++
++properties:
++  compatible:
++    const: adafruit,seesaw-gamepad
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++    description:
++      The gamepad's IRQ pin triggers a rising edge if interrupts are enabled.
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        joystick@50 {
++            compatible = "adafruit,seesaw-gamepad";
++            interrupts = <18 IRQ_TYPE_EDGE_RISING>;
++            reg = <0x50>;
++        };
++    };
+-- 
+2.42.1
+
