@@ -2,167 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0BB27FA4C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 16:30:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A41F7FA4C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 16:31:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234125AbjK0Pai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 10:30:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51810 "EHLO
+        id S233942AbjK0Pav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 10:30:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234087AbjK0PaR (ORCPT
+        with ESMTP id S234068AbjK0PaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 10:30:17 -0500
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 559501A1;
-        Mon, 27 Nov 2023 07:29:56 -0800 (PST)
-Received: from i53875bf8.versanet.de ([83.135.91.248] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <heiko@sntech.de>)
-        id 1r7dYQ-0003UD-D8; Mon, 27 Nov 2023 16:29:46 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Andy Yan <andyshrk@163.com>
-Cc:     hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
-        kever.yang@rock-chips.com, chris.obbard@collabora.com,
-        s.hauer@pengutronix.de, Andy Yan <andy.yan@rock-chips.com>
-Subject: Re: [PATCH v2 10/12] drm/rockchip: vop2: Add support for rk3588
-Date:   Mon, 27 Nov 2023 16:29:45 +0100
-Message-ID: <4788319.uZKlY2gecq@diego>
-In-Reply-To: <20231122125544.3454918-1-andyshrk@163.com>
-References: <20231122125316.3454268-1-andyshrk@163.com>
- <20231122125544.3454918-1-andyshrk@163.com>
+        Mon, 27 Nov 2023 10:30:20 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B342117;
+        Mon, 27 Nov 2023 07:29:59 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 8CB2A21B58;
+        Mon, 27 Nov 2023 15:29:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1701098997; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ll683VjO5cgdZEXvfYTUzLYylEdUG/UQv49Lu4Sc7rA=;
+        b=OOXAB+DpFUt4iwizIQsg9NdOIv7EkWhpXPvrvm3xSPIkYK01e48JBaP6McNQXVt1W4HMcp
+        FzhsJfz4OLu8cI2pA+kFgSSwrdgoVb/idRWXuLd+Fx/rh355mLKnibOH8SOrq1VdRhoTdr
+        woqZH0y3y+TGG/qALZCHEensDf8Z/lc=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 714C11367B;
+        Mon, 27 Nov 2023 15:29:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id e1MKGvW1ZGVHRQAAD6G6ig
+        (envelope-from <mhocko@suse.com>); Mon, 27 Nov 2023 15:29:57 +0000
+Date:   Mon, 27 Nov 2023 16:29:56 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Gregory Price <gregory.price@memverge.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, arnd@arndb.de, tglx@linutronix.de,
+        luto@kernel.org, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        tj@kernel.org, ying.huang@intel.com
+Subject: Re: [RFC PATCH 00/11] mm/mempolicy: Make task->mempolicy externally
+ modifiable via syscall and procfs
+Message-ID: <ZWS19JFHm_LFSsFd@tiehlicka>
+References: <20231122211200.31620-1-gregory.price@memverge.com>
+ <20231122133348.d27c09a90bce755dc1c0f251@linux-foundation.org>
+ <ZV5/ilfUoqC2PW0D@memverge.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZV5/ilfUoqC2PW0D@memverge.com>
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -1.10
+X-Spamd-Result: default: False [-1.10 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         RCPT_COUNT_TWELVE(0.00)[19];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         FREEMAIL_CC(0.00)[linux-foundation.org,gmail.com,kvack.org,vger.kernel.org,arndb.de,linutronix.de,kernel.org,redhat.com,alien8.de,linux.intel.com,zytor.com,intel.com];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+Sorry, didn't have much time to do a proper review. Couple of points
+here at least.
 
-Am Mittwoch, 22. November 2023, 13:55:44 CET schrieb Andy Yan:
-> From: Andy Yan <andy.yan@rock-chips.com>
+On Wed 22-11-23 17:24:10, Gregory Price wrote:
+> On Wed, Nov 22, 2023 at 01:33:48PM -0800, Andrew Morton wrote:
+> > On Wed, 22 Nov 2023 16:11:49 -0500 Gregory Price <gourry.memverge@gmail.com> wrote:
+> > 
+> > > The patch set changes task->mempolicy to be modifiable by tasks other
+> > > than just current.
+> > > 
+> > > The ultimate goal is to make mempolicy more flexible and extensible,
+> > > such as adding interleave weights (which may need to change at runtime
+> > > due to hotplug events).  Making mempolicy externally modifiable allows
+> > > for userland daemons to make runtime performance adjustments to running
+> > > tasks without that software needing to be made numa-aware.
+> > 
+> > Please add to this [0/N] a full description of the security aspect: who
+> > can modify whose mempolicy, along with a full description of the
+> > reasoning behind this decision.
+> > 
 > 
-> VOP2 on rk3588:
+> Will do. For the sake of v0 for now:
 > 
-> Four video ports:
-> VP0 Max 4096x2160
-> VP1 Max 4096x2160
-> VP2 Max 4096x2160
-> VP3 Max 2048x1080
+> 1) the task itself (task == current)
+>    for obvious reasons: it already can
 > 
-> 4 4K Cluster windows with AFBC/line RGB and AFBC-only YUV support
-> 4 4K Esmart windows with line RGB/YUV support
-> 
-> Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
-> 
-> ---
-> 
-> Changes in v2:
-> - add rk3588_ prefix for functions which are rk3588 only
-> - make some calculation as fixed value and keep calculation formula as
->   comment
-> - check return value for some cru calculation functions.
-> - check return value for syscon_regmap_lookup_by_phandle
-> - add NV20/NV30 for esmart plane
-> 
->  drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 381 ++++++++++++++++++-
->  drivers/gpu/drm/rockchip/rockchip_drm_vop2.h |  66 ++++
->  drivers/gpu/drm/rockchip/rockchip_vop2_reg.c | 221 +++++++++++
->  3 files changed, 660 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-> index 4bcc405bcf11..9eecbe1f71f9 100644
-> --- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
-> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+> 2) from external interfaces: CAP_SYS_NICE
 
-> @@ -271,9 +282,12 @@ static bool vop2_cluster_window(const struct vop2_win *win)
->  static void vop2_cfg_done(struct vop2_video_port *vp)
->  {
->  	struct vop2 *vop2 = vp->vop2;
-> +	u32 val;
-> +
-> +	val = BIT(vp->id) | (BIT(vp->id) << 16) |
-> +		RK3568_REG_CFG_DONE__GLB_CFG_DONE_EN;
->  
-> -	regmap_set_bits(vop2->map, RK3568_REG_CFG_DONE,
-> -			BIT(vp->id) | RK3568_REG_CFG_DONE__GLB_CFG_DONE_EN);
-> +	regmap_set_bits(vop2->map, RK3568_REG_CFG_DONE, val);
-
-I don't fully understand that code:
-(1) the write mask is also present on the rk3568, so should this change
-    be a separate patch with a fixes tag?
-(2) RK3568_REG_CFG_DONE__GLB_CFG_DONE_EN does not contain the part for
-    the write-mask
-
-	#define RK3568_REG_CFG_DONE__GLB_CFG_DONE_EN     BIT(15)
-
-    why is this working then?
-
->  }
->  
->  static void vop2_win_disable(struct vop2_win *win)
+Makes sense.
 
 [...]
+> > > 3. Add external interfaces which allow for a task mempolicy to be
+> > >    modified by another task.  This is implemented in 4 syscalls
+> > >    and a procfs interface:
+> > >         sys_set_task_mempolicy
+> > >         sys_get_task_mempolicy
+> > >         sys_set_task_mempolicy_home_node
+> > >         sys_task_mbind
+> > >         /proc/[pid]/mempolicy
+> > 
+> > Why is the procfs interface needed?  Doesn't it simply duplicate the
+> > syscall interface?  Please update [0/N] with a description of this
+> > decision.
+> > 
+> 
+> Honestly I wrote the procfs interface first, and then came back around
+> to just implement the syscalls.  mbind is not friendly to being procfs'd
+> so if the preference is to have only one, not both, then it should
+> probably be the syscalls.
+> 
+> That said, when I introduce weighted interleave on top of this, having a
+> simple procfs interface to those weights would be valuable, so I
+> imagined something like `proc/mempolicy` to determine if interleave was
+> being used and something like `proc/mpol_interleave_weights` for a clean
+> interface to update weights.
+> 
+> However, in the same breath, I have a prior RFC with set/get_mempolicy2
+> which could probably take all future mempolicy extensions and wrap them
+> up into one pair of syscalls, instead of us ending up with 200 more
+> sys_mempolicy_whatever as memory attached fabrics become more common.
+> 
+> So... yeah... the is one area I think the community very much needs to
+> comment:  set/get_mempolicy2, many new mempolicy syscalls, procfs? All
+> of the above?
 
-> @@ -1298,7 +1346,11 @@ static void vop2_plane_atomic_update(struct drm_plane *plane,
->  			vop2_win_write(win, VOP2_WIN_AFBC_ENABLE, 1);
->  		vop2_win_write(win, VOP2_WIN_AFBC_FORMAT, afbc_format);
->  		vop2_win_write(win, VOP2_WIN_AFBC_UV_SWAP, uv_swap);
-> -		vop2_win_write(win, VOP2_WIN_AFBC_AUTO_GATING_EN, 0);
-> +		if (vop2->data->soc_id == 3566 || vop2->data->soc_id == 3568)
-> +			vop2_win_write(win, VOP2_WIN_AFBC_AUTO_GATING_EN, 0);
-> +		else
-> +			vop2_win_write(win, VOP2_WIN_AFBC_AUTO_GATING_EN, 1);
-> +
-
-I think this at least warrants a comment, what is happening here. Also,
-can you already see how future vop2-users are behaving - aka are all new
-socs in the "else" part of the conditional, or would a switch-case better
-represent future socs?
-
-
->  		vop2_win_write(win, VOP2_WIN_AFBC_BLOCK_SPLIT_EN, 0);
->  		transform_offset = vop2_afbc_transform_offset(pstate, half_block_en);
->  		vop2_win_write(win, VOP2_WIN_AFBC_HDR_PTR, yrgb_mst);
-
-
-> @@ -1627,9 +1937,17 @@ static void vop2_crtc_atomic_enable(struct drm_crtc *crtc,
->  	drm_for_each_encoder_mask(encoder, crtc->dev, crtc_state->encoder_mask) {
->  		struct rockchip_encoder *rkencoder = to_rockchip_encoder(encoder);
->  
-> -		rk3568_set_intf_mux(vp, rkencoder->crtc_endpoint_id, polflags);
-> +		/*
-> +		 * for drive a high resolution(4KP120, 8K), vop on rk3588/rk3576 need
-> +		 * process multi(1/2/4/8) pixels per cycle, so the dclk feed by the
-> +		 * system cru may be the 1/2 or 1/4 of mode->clock.
-> +		 */
-> +		clock = vop2_set_intf_mux(vp, rkencoder->crtc_endpoint_id, polflags);
->  	}
->  
-> +	if (!clock)
-> +		return;
-> +
-
-hmm, shouldn't the check for the validity of a mode happen before
-atomic_enable is run? So this shouldn't error out in the middle of the
-function?
-
-
->  	if (vcstate->output_mode == ROCKCHIP_OUT_MODE_AAAA &&
->  	    !(vp_data->feature & VOP_FEATURE_OUTPUT_10BIT))
->  		out_mode = ROCKCHIP_OUT_MODE_P888;
-
-
-Thanks
-Heiko
-
-
+I think we should actively avoid using proc interface. The most
+reasonable way would be to add get_mempolicy2 interface that would allow
+extensions and then create a pidfd counterpart to allow acting on a
+remote task. The latter would require some changes to make mempolicy
+code less current oriented.
+-- 
+Michal Hocko
+SUSE Labs
