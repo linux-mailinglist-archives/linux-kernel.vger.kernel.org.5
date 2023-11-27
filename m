@@ -2,130 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C85F7F97D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 04:07:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B8E7F97D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 04:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbjK0DHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 22:07:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41894 "EHLO
+        id S229871AbjK0DIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 22:08:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231419AbjK0DHe (ORCPT
+        with ESMTP id S229472AbjK0DIF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 22:07:34 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F2CD123
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 19:07:40 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-50ba75e33f3so2549032e87.2
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 19:07:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701054459; x=1701659259; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VlaRJlvg6SkH3iVCCMUur0uADxqCqngF5eSxepb74eo=;
-        b=nfT7tdICMIesqGQtcjuIgaf0csctl9yePlEA6YHx+rQHLtwbpR0+mOnpP05dHEQjjK
-         L7BVjxF1GtskmgBBB+guCAbgvmqv/h0BN1HJ/j3N/r4DqsqOIU82arQbx6xbunelX1Eq
-         j9dR3/gjI4Vrqx2YuAMgFtMTzv3qGXM6RNntM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701054459; x=1701659259;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VlaRJlvg6SkH3iVCCMUur0uADxqCqngF5eSxepb74eo=;
-        b=sd2HgrMkD/CVSszxMxzFYckzq3x4ku6s/nVTmkK96l9vuZHEczOSqRzwFkDbAl8dnZ
-         hWuI5cIiEt0PIrjYgOLxxYV9WvHwD/1bCoJIk2x62+bONf3xaBcUO4jfjz9yDcHHd/uI
-         pIV10EKugkUhDHAHOB5uQtW/5twxFT+/QuvA3jrS7k4L8EATVKgIOsYuZ+oEtW1/hHH/
-         nOYSXBHc/xpcbMLvxyLb7IZQhyGoFNLQCCp/wYjDhYuoPc/+wypG/fT8buK093u3Khfi
-         5JuWU6hizXYEqnrn677jGV2X0z/hKfy1XRQBlHrMTh+3YNGdfPCfvXEc0gfhlQ1u9YJ1
-         2wCg==
-X-Gm-Message-State: AOJu0Yzx2SYzqr4ol/XSIgfVcPgRLRk9ME9UqdviuFOn75tdS8cREkbe
-        8yfgWmiWLv+jSBfkCs1Net9C0R8Q5t+3YqTV6pUhxQ==
-X-Google-Smtp-Source: AGHT+IF6iA8pXDpSmsO5bEY3xSd26XCL631sAXkpfn6+jD0thwzCwvWTVnjzWxDvI99Qtb6aAqinHNpBcziXbA/wSss=
-X-Received: by 2002:ac2:4c48:0:b0:507:b7db:1deb with SMTP id
- o8-20020ac24c48000000b00507b7db1debmr8091073lfk.38.1701054458668; Sun, 26 Nov
- 2023 19:07:38 -0800 (PST)
+        Sun, 26 Nov 2023 22:08:05 -0500
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18C7BC8
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 19:08:09 -0800 (PST)
+X-UUID: ab177453d9a64d5b996565e266e7b673-20231127
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.33,REQID:202d0179-3c35-4f16-b54c-6fd7f955c23f,IP:5,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:-10
+X-CID-INFO: VERSION:1.1.33,REQID:202d0179-3c35-4f16-b54c-6fd7f955c23f,IP:5,URL
+        :0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:-10
+X-CID-META: VersionHash:364b77b,CLOUDID:92291973-1bd3-4f48-b671-ada88705968c,B
+        ulkID:231127110800C9NNALHY,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
+        02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
+        L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS
+X-UUID: ab177453d9a64d5b996565e266e7b673-20231127
+X-User: chentao@kylinos.cn
+Received: from vt.. [(116.128.244.169)] by mailgw
+        (envelope-from <chentao@kylinos.cn>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 418691976; Mon, 27 Nov 2023 11:07:58 +0800
+From:   Kunwu Chan <chentao@kylinos.cn>
+To:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        benh@kernel.crashing.org, rmclure@linux.ibm.com
+Cc:     kunwu.chan@hotmail.com, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH] powerpc/powernv: Add a null pointer check in opal_event_init
+Date:   Mon, 27 Nov 2023 11:07:55 +0800
+Message-Id: <20231127030755.1546750-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230913084457.1638690-1-wenst@chromium.org>
-In-Reply-To: <20230913084457.1638690-1-wenst@chromium.org>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Mon, 27 Nov 2023 11:07:27 +0800
-Message-ID: <CAGXv+5E5BWzMP981Agn01XVAO=KC5CE04oOi8xWwx=DT=N61dw@mail.gmail.com>
-Subject: Re: [PATCH v3] arm64: dts: mediatek: mt6358: Merge ldo_vcn33_* regulators
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthias, Angelo,
+kasprintf() returns a pointer to dynamically allocated memory
+which can be NULL upon failure.
 
-On Wed, Sep 13, 2023 at 4:45=E2=80=AFPM Chen-Yu Tsai <wenst@chromium.org> w=
-rote:
->
-> The ldo_vcn33_bt and ldo_vcn33_wifi regulators are actually the same
-> regulator, having the same voltage setting and output pin. There are
-> simply two enable bits that are ORed together to enable the regulator.
->
-> Having two regulators representing the same output pin is misleading
-> from a design matching standpoint, and also error-prone in driver
-> implementations.
->
-> Now that the bindings have these two merged, merge them in the device
-> tree as well. Neither vcn33 regulators are referenced in upstream
-> device trees. As far as hardware designs go, none of the Chromebooks
-> using MT8183 w/ MT6358 use this output.
->
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collab=
-ora.com>
+Fixes: 2717a33d6074 ("powerpc/opal-irqchip: Use interrupt names if present")
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+ arch/powerpc/platforms/powernv/opal-irqchip.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Please remember to queue this up. All the driver changes were merged in
-the last cycle.
+diff --git a/arch/powerpc/platforms/powernv/opal-irqchip.c b/arch/powerpc/platforms/powernv/opal-irqchip.c
+index f9a7001dacb7..56a1f7ce78d2 100644
+--- a/arch/powerpc/platforms/powernv/opal-irqchip.c
++++ b/arch/powerpc/platforms/powernv/opal-irqchip.c
+@@ -275,6 +275,8 @@ int __init opal_event_init(void)
+ 		else
+ 			name = kasprintf(GFP_KERNEL, "opal");
+ 
++		if (!name)
++			continue;
+ 		/* Install interrupt handler */
+ 		rc = request_irq(r->start, opal_interrupt, r->flags & IRQD_TRIGGER_MASK,
+ 				 name, NULL);
+-- 
+2.34.1
 
-ChenYu
-
-> ---
-> This was part of the series "regulator: mt6358: Remove bogus regulators
-> and improvements". Since the driver parts related to this patch have all
-> been picked up, so I'm sending this separately.
->
->  arch/arm64/boot/dts/mediatek/mt6358.dtsi | 11 ++---------
->  1 file changed, 2 insertions(+), 9 deletions(-)
->
-> diff --git a/arch/arm64/boot/dts/mediatek/mt6358.dtsi b/arch/arm64/boot/d=
-ts/mediatek/mt6358.dtsi
-> index 96ba8490b629..ad5e4022e06d 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt6358.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt6358.dtsi
-> @@ -292,15 +292,8 @@ mt6358_vrf18_reg: ldo_vrf18 {
->                                 regulator-enable-ramp-delay =3D <120>;
->                         };
->
-> -                       mt6358_vcn33_bt_reg: ldo_vcn33_bt {
-> -                               regulator-name =3D "vcn33_bt";
-> -                               regulator-min-microvolt =3D <3300000>;
-> -                               regulator-max-microvolt =3D <3500000>;
-> -                               regulator-enable-ramp-delay =3D <270>;
-> -                       };
-> -
-> -                       mt6358_vcn33_wifi_reg: ldo_vcn33_wifi {
-> -                               regulator-name =3D "vcn33_wifi";
-> +                       mt6358_vcn33_reg: ldo_vcn33 {
-> +                               regulator-name =3D "vcn33";
->                                 regulator-min-microvolt =3D <3300000>;
->                                 regulator-max-microvolt =3D <3500000>;
->                                 regulator-enable-ramp-delay =3D <270>;
-> --
-> 2.42.0.283.g2d96d420d3-goog
->
