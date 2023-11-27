@@ -2,62 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E49937F9E05
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 11:59:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46BA97F9E07
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 11:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232536AbjK0K7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 05:59:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43214 "EHLO
+        id S232582AbjK0K7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 05:59:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230181AbjK0K7L (ORCPT
+        with ESMTP id S230181AbjK0K7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 05:59:11 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34827111;
-        Mon, 27 Nov 2023 02:59:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701082758; x=1732618758;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=80De8qycEWjfHCnBb/Miiu/rgN7Tlt+pCnZshwbCFUQ=;
-  b=igN3vDDx48vwnEeqbHZlT5GnpgDKPjctTxmaI1UOeVlMnJ75zp+PDZVW
-   3CZjvSQA2NzZIYTF8axokEOlSc2WmESR0TvaZrLs4/2dSy3d0Zvxkst8C
-   DO0ChWf8jBYIoiMUUPAIWdmJaNlwgHtJYx5XdthKHRakXTT/dOKqp1K/H
-   0TNhmXbodwb1kwlQhsWafDyqlgXCKv3hMRYWEyFTUdOK5c6tx8fMamMMX
-   cCkc1CdGSpnGL1DBibbvme+MTsfD0SU+46MGiHXoeu0LX4UlH0ug2WaiW
-   4TwFZV9rT5Rs1TJiYEdC1zTfZ8PLYcic9dsFRJIRAijqTlzoic1ujjLiP
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="5869179"
-X-IronPort-AV: E=Sophos;i="6.04,230,1695711600"; 
-   d="scan'208";a="5869179"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 02:59:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="859010494"
-X-IronPort-AV: E=Sophos;i="6.04,230,1695711600"; 
-   d="scan'208";a="859010494"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by FMSMGA003.fm.intel.com with ESMTP; 27 Nov 2023 02:59:15 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-        id 834A82A2; Mon, 27 Nov 2023 12:59:14 +0200 (EET)
-Date:   Mon, 27 Nov 2023 12:59:14 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Yaxiong Tian <iambestgod@outlook.com>
-Cc:     michael.jamet@intel.com, gregkh@linuxfoundation.org,
-        andreas.noever@gmail.com, YehezkelShB@gmail.com,
-        tianyaxiong@kylinos.cn, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] thunderbolt:debugfs:Fix memory leak with using
- debugfs_lookup()
-Message-ID: <20231127105914.GL1074920@black.fi.intel.com>
-References: <TYZPR01MB478461E6616835634D0718F8D5BAA@TYZPR01MB4784.apcprd01.prod.exchangelabs.com>
+        Mon, 27 Nov 2023 05:59:48 -0500
+Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E80AF111;
+        Mon, 27 Nov 2023 02:59:53 -0800 (PST)
+Received: from [192.168.42.20] (p5b164862.dip0.t-ipconnect.de [91.22.72.98])
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by mail.tuxedocomputers.com (Postfix) with ESMTPSA id 87C812FC0048;
+        Mon, 27 Nov 2023 11:59:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
+        s=default; t=1701082792;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nbU2k/kMmm5ocGXjEMeXuk5Iu3qkqA+oEUDAkRMSimM=;
+        b=OAUKknIa2UDNliD87gXDT6W74PHafjt8zUK/lu6NMT30uriZOF8aVJAWTLI3lyQgt+ec9e
+        rTkrJoVuy0dKiLck4tJAe8COvY9PcSh1pDBI8KPZnuRKrmnmrtsNRbCQiNY8gDqKaqeYbL
+        y0b+TPtX0SDSMpmj7mGgZkE3RuaTunY=
+Authentication-Results: mail.tuxedocomputers.com;
+        auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
+Message-ID: <ac02143c-d417-49e5-9c6e-150cbda71ba7@tuxedocomputers.com>
+Date:   Mon, 27 Nov 2023 11:59:51 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <TYZPR01MB478461E6616835634D0718F8D5BAA@TYZPR01MB4784.apcprd01.prod.exchangelabs.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+User-Agent: Mozilla Thunderbird
+Subject: Re: Implement per-key keyboard backlight as auxdisplay?
+Content-Language: en-US
+To:     Hans de Goede <hdegoede@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Jani Nikula <jani.nikula@linux.intel.com>, jikos@kernel.org,
+        Jelle van der Waa <jelle@vdwaa.nl>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        linux-input@vger.kernel.org, ojeda@kernel.org,
+        linux-leds@vger.kernel.org
+References: <20231011190017.1230898-1-wse@tuxedocomputers.com>
+ <ZSe1GYLplZo5fsAe@duo.ucw.cz>
+ <0440ed38-c53b-4aa1-8899-969e5193cfef@tuxedocomputers.com>
+ <ZSf9QneKO/8IzWhd@duo.ucw.cz>
+ <a244a00d-6be4-44bc-9d41-6f9df14de8ee@tuxedocomputers.com>
+ <ZSk16iTBmZ2fLHZ0@duo.ucw.cz>
+ <aac81702-df1e-43a2-bfe9-28e9cb8d2282@tuxedocomputers.com>
+ <ZSmg4tqXiYiX18K/@duo.ucw.cz>
+ <CANiq72mfP+dOLFR352O0UNVF8m8yTi_VmOY1zzQdTBjPWCRowg@mail.gmail.com>
+ <87sf61bm8t.fsf@intel.com> <ZVvHG/Q+V6kCnfKZ@duo.ucw.cz>
+ <f4137e34-c7fb-4f21-bc93-1496cbf61fdf@tuxedocomputers.com>
+ <8096a042-83bd-4b9f-b633-79e86995c9b8@redhat.com>
+ <f416fbca-589b-4f6a-aad6-323b66398273@tuxedocomputers.com>
+ <4222268b-ff44-4b7d-bf11-e350594bbe24@redhat.com>
+From:   Werner Sembach <wse@tuxedocomputers.com>
+In-Reply-To: <4222268b-ff44-4b7d-bf11-e350594bbe24@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,14 +72,184 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 22, 2023 at 04:02:43PM +0800, Yaxiong Tian wrote:
-> From: Yaxiong Tian <tianyaxiong@kylinos.cn>
-> 
-> As Greg said,When calling debugfs_lookup() the result must have dput()
-> called on it,otherwise the memory will leak over time.
-> So just call debugfs_lookup_and_remove() instead.
-> 
-> Fixes: d0f1e0c2a699 ("thunderbolt: Add support for receiver lane margining")
-> Signed-off-by: Yaxiong Tian <tianyaxiong@kylinos.cn>
+Hi Hans,
 
-Slightly modified the commit log and applied to thunderbolt.git/fixes, thanks!
+Am 22.11.23 um 19:34 schrieb Hans de Goede:
+> Hi Werner,
+[snip]
+>>>> Another idea I want to throw in the mix:
+>>>>
+>>>> Maybe the kernel is not the right place to implement this at all. RGB stuff is not at all standardized and every vendor is doing completely different interfaces, which does not fit the kernel userpsace apis desire to be uniformal and fixed. e.g. Auxdisplay might fit static setting of RGB values, but it does not fit the snake-effect mode, or the raindrops mode, or the 4-different-colors-in-the-edges-breathing-and-color-cycling mode.
+>>>>
+>>>> So my current idea: Implement these keyboards as a single zone RGB kbd_backlight in the leds interface to have something functional out of the box, but make it runtime disable-able if something like https://gitlab.com/CalcProgrammer1/OpenRGB wants to take over more fine granular control from userspace via hidraw.
+>>> That sounds like a good approach to me. We are seeing the same with game controllers where steam and wine/proton also sometimes use hidraw mode to get access to all the crazy^W interesting features.
+>>>
+>>> That would mean that all we need to standardize and the kernel <-> userspace API level is adding a standard way to disable the single zone RGB kbd_backlight support in the kernel.
+>> I would suggest a simple "enable" entry. Default is 1. When set to 0 the kernel driver no longer does anything.
+> I'm not in favor of using "enable" as sysfs attribute for this,
+> I would like to see a more descriptive name, how about:
+>
+> "disable_kernel_kbd_backlight_support"
+>
+> And then maybe also have the driver actually unregister
+> the LED class device ?
+>
+> Or just make the support inactive when writing 1 to
+> this and allow re-enabling it by writing 0?
+
+Unregistering would mean that it can't be reenabled without module reload/reboot?
+
+I would prefer that the userspace driver could easily give back control to the 
+leds interface.
+
+>
+>> Questions:
+>>
+>> - Should the driver try to reset the settings to boot default? Or just leave the device in the current state? With the former I could see issues that they keyboard is flashing when changing from kernelspace control to userspace control. With the later the burden on bringing the device to a know state lies with the userspace driver.
+> My vote would go to leave the state as is. Even if the hw
+> does not support state readback, then the userspace code
+> can readback the state before writing 1 to
+> "disable_kernel_kbd_backlight_support"
+ack
+>
+>> - Should this be a optional entry that only shows up on drivers supporting it, or could this implemented in a generic way affecting all current led entries?
+> IMHO this should be optional. If we go with the variant
+> where writing 1 to "disable_kernel_kbd_backlight_support"
+> just disables support and 0 re-enables it then I guess
+> we could have support for this in the LED-core, enabled
+> by a flag set by the driver.
+>
+> If we go with unregistering the led class device,
+> then this needs to be mostly handled in the driver.
+>
+> Either way the kernel driver should know about this even
+> if it is mostly handled in the LED core so that e.g.
+> it does not try to restore settings on resume from suspend.
+
+So a generic implementation would still require all current led drivers to be 
+touched?
+
+For the sake of simplicity I would then prefer the optional variant.
+
+>
+>> - I guess UPower integration for the userspace driver could be archived with https://www.kernel.org/doc/html/latest/leds/uleds.html however this limited to brightness atm, so when accent colors actually come to UPower this would also need some expansion to be able to pass a preferred color to the userspace driver (regardless of what that driver is then doing with that information).
+> Using uleds is an interesting suggestion, but upower atm
+> does not support LED class kbd_backlight devices getting
+> hot-plugged. It only scans for them once at boot.
+>
+> Jelle van der Waa (a colleague of mine, added to the Cc)
+> has indicated he is interested in maybe working on fixing
+> this upower short-coming as a side project, once his
+> current side-projects are finished.
+Nice to hear.
+>
+>> On a different note: This approach does currently not cover the older EC controlled 3 zone keyboards from clevo. Here only the kernel has access access to the device so the kernel driver has to expose all functionality somehow. Should this be done by an arbitrarily designed platform device?
+> Interesting question, this reminds there was a discussion
+> about how to handle zoned keyboards using plain LED class
+> APIs here:
+>
+> https://lore.kernel.org/linux-leds/544484b9-c0ac-2fd0-1f41-8fa94cb94d4b@redhat.com/
+>
+> Basically the idea discussed there is to create
+> separate multi-color LED sysfs devices for each zone,
+> using :rgb:kbd_zoned_backlight-xxx as postfix, e.g. :
+>
+>   :rgb:kbd_zoned_backlight-left
+>   :rgb:kbd_zoned_backlight-middle
+>   :rgb:kbd_zoned_backlight-right
+>   :rgb:kbd_zoned_backlight-wasd
+>
+> As postfixes for the 4 per zone LED class devices
+> and then teach upower to just treat this as
+> a single kbd-backlight for the existing upower
+> DBUS API and maybe later extend the DBUS API.
+>
+> Would something like this work for the Clevo
+> case you are describing?
+
+Not entirely as some concept for the special modes would still be required.
+
+Also it would be nice to be able to set the whole keyboard with a singular file 
+access so that the keyboard changes at once and not zone by zone.
+
+>
+> Unfortunately this was never implemented but
+> I think that for simple zoned backlighting
+> this still makes sense. Where as for per key
+> controllable backlighting as mention in
+> $subject I do believe that just using hidraw
+> access directly from userspace is best.
+>
+> Regards,
+>
+> Hans
+I also stumbled across a new Problem:
+
+We have an upcoming device that has a per-key keyboard backlight, but does the 
+control completely via a wmi/acpi interface. So no usable hidraw here for a 
+potential userspace driver implementation ...
+
+So a quick summary for the ideas floating in this thread so far:
+
+1. Expand leds interface allowing arbitrary modes with semi arbitrary optional 
+attributes:
+
+     - Pro:
+
+         - Still offers all default attributes for use with UPower
+
+         - Fairly simple to implement from the preexisting codebase
+
+         - Could be implemented for all (to me) known internal keyboard backlights
+
+     - Con:
+
+         - Violates the simplicity paradigm of the leds interface (e.g. with 
+this one leds entry controls possible multiple leds)
+
+2. Implement per-key keyboards as auxdisplay
+
+     - Pro:
+
+         - Already has a concept for led positions
+
+         - Is conceptually closer to "multiple leds forming a singular entity"
+
+     - Con:
+
+         - No preexisting UPower support
+
+         - No concept for special hardware lightning modes
+
+         - No support for arbitrary led outlines yet (e.g. ISO style enter-key)
+
+3. Implement in input subsystem
+
+     - Pro:
+
+         - Preexisting concept for keys and key purpose
+
+     - Con:
+
+         - Not in scope for subsystem
+
+         - No other preexisting light infrastructure
+
+4. Implement a simple leds driver only supporting a small subset of the 
+capabilities and make it disable-able for a userspace driver to take over
+
+     - Pro:
+
+         - Most simple to implement basic support
+
+         - In scope for led subsystem simplicity paradigm
+
+     - Con:
+
+         - Not all built in keyboard backlights can be implemented in a 
+userspace only driver
+
+Kind Regards,
+
+Werner
+
