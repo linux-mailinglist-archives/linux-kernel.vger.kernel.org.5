@@ -2,72 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC1DC7F9CB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 10:34:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F073D7F9CB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 10:34:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232827AbjK0JeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 04:34:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32964 "EHLO
+        id S232814AbjK0Jei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 04:34:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232797AbjK0JeS (ORCPT
+        with ESMTP id S232797AbjK0Jeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 04:34:18 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 624EEF5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 01:34:24 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a02d91ab199so541137366b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 01:34:24 -0800 (PST)
+        Mon, 27 Nov 2023 04:34:36 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B821E12F
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 01:34:42 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-a0029289b1bso544269966b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 01:34:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701077663; x=1701682463; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701077681; x=1701682481; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xxjZg22ov6gQx8JLukqacT0gU0Tul8TKlesYhtgUQmM=;
-        b=uRnFLI3Gf/3DWA6OhALjPc5CUCU0+HiFjvWK/ut47OrInttTGZjde0NZecte5GP+cU
-         gBD7rWD89o1bSNzxwy8SVWAzlrYz9VdyJmsag4q37vESytMcVrCvNKuVoZ3/wxwOVEq3
-         CS2w7GnrSIGlCuy2blrLIjrkMQc7SOADbZu3tmJ8Jf3FlmO1vbhKk3Di4/DYk4Nl45+j
-         rSAEVA7wHM480BkmtW4Yg2Bd+FaefR2dk1qzYbmQZOkYItOYZz7LoPYuWAE7qq66cInR
-         VhCFt2fkKSUQw4/ODHWv2SNEhg/HKzcWIxjgpEdFDzoc2qBZxvZnYjqQxCr9BIYuky4N
-         C4hg==
+        bh=r/cLEfEYsDlJ66whBNkZuZq4CWHWfN+jms36PvtVtn0=;
+        b=idD3yoCrxbb9nntr0AWzXClUrz5UkOzUrGMasZjR9s8T9MByMbF4oxGFL7qEs7/Tj0
+         TivjHTH1Sy7zUtcb91eYCmCGdSDWXsKYAh2n/5g2xFXGfIWbM/EhduokfhR/tq0fzxQv
+         RXRf1TfcXYUxzKC3MllyORN5chx3WOvi3OQ4oDisGTRzc0QjoJ8fTs0XtBYYHhWwmkTX
+         GAC/c8jlce3QkBqJf6PD1mUhQjhYJ8iVCBodI/auin81uYhpzEJxmtLCWWyytJCvD/19
+         XGEEGeKHTrOAgWeIAo/6qnAMsczv83abO2V5VPHfEIrmdYilJh9UtPk9XKe/B8L+exXf
+         On9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701077663; x=1701682463;
+        d=1e100.net; s=20230601; t=1701077681; x=1701682481;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=xxjZg22ov6gQx8JLukqacT0gU0Tul8TKlesYhtgUQmM=;
-        b=X2I2Y4TZJFfnORHOTsc3Ys7sPqnIJkOLn1qhINi9/dfpvms2txSd1dHi4Zq/oGk3s+
-         Y+PhYP/cWv8lTbnWjaOrFbMX/+66Stf5jrXUduJ9CgMw7kTqSaqoV0czAFv3B9c3QhdV
-         XZvT1vR3k+jacLQsGoSdLJ5kd+sXZoITutESDLLi4uBzgSIbBNmgUjr1Uh5pzaymTtGS
-         JvSswDOtocx4WD+0zp5YMx/KZ+4s+SzFsgI3DsykSwZPbe9sivrknpLnjPcVDZfGKwVI
-         1r6fQmBb0ZMy95DMpqyBewywNaM1bBMItoKU+VM6zAN0VUn7WGDUZtGXTxkCupv2SYxT
-         GLwA==
-X-Gm-Message-State: AOJu0YzqMP3uitOEBhICt6mYuS+Mqsblat00njQReNiy2LblHaHUxyvf
-        Pff0mG/fNpSSWhbPwPmD2Ibr+Q==
-X-Google-Smtp-Source: AGHT+IHwjo3iCYneHAx17+3mDf/thozieQyTXj1EWQg79jKTCz1jo/XMchH7SbSIGHpMDbSOO2DORA==
-X-Received: by 2002:a17:906:109b:b0:a0c:fe2f:c445 with SMTP id u27-20020a170906109b00b00a0cfe2fc445mr3149996eju.69.1701077662724;
-        Mon, 27 Nov 2023 01:34:22 -0800 (PST)
+        bh=r/cLEfEYsDlJ66whBNkZuZq4CWHWfN+jms36PvtVtn0=;
+        b=w+LmFTqfa2ZF2B43ub9rtVmbDg7n8n5JGb4gWu86LcVHlsAjnpG44te8PemKfRL4I6
+         h7B9j2WkR81VJdZU75Jp06rksopbEvCW88Qiqux+JK6s2E+L/jg8h3nbaaa8gmRbIZPs
+         Sck+amG3+a6WhxBYnsgjclyRC7fvWYAfXNvLcWVPDaIFY3tinyXGChXTLGbxVJPgTAx3
+         s1c5qT4hWvshDPHFu4xV7RZotouSqZEVGPMwCHP4K4om2ykoozQnXznXQxJuxUWHzV7N
+         A1uywkADJbCL3v8JfTkCwKSTA23BZqxdru/Y5BTXrAuHEDGioq5xWovc7ST3ITcUpd/u
+         pK9w==
+X-Gm-Message-State: AOJu0YwBJT0MQtTscPIE36uEmsakYRo7b8/ga99mDKb+8BvSMR68iTNi
+        t0uh4ISRikbXpSgywYI8dFkVIw==
+X-Google-Smtp-Source: AGHT+IGnhYWsRzafsu4ynClwI2g+4BUzmbE3Md5LZwds9K60AiVBQlMrDOPX5/2ErDeanuSExoJjdw==
+X-Received: by 2002:a17:906:693:b0:9fc:9b28:7ff7 with SMTP id u19-20020a170906069300b009fc9b287ff7mr8766198ejb.60.1701077681201;
+        Mon, 27 Nov 2023 01:34:41 -0800 (PST)
 Received: from krzk-bin.. ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id s20-20020a1709066c9400b009fd585a2155sm5452587ejr.0.2023.11.27.01.34.21
+        by smtp.gmail.com with ESMTPSA id j8-20020a1709062a0800b00a0185ccedcasm5506518eje.223.2023.11.27.01.34.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 01:34:22 -0800 (PST)
+        Mon, 27 Nov 2023 01:34:40 -0800 (PST)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>,
+To:     Patrice Chotard <patrice.chotard@foss.st.com>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v2] ARM: dts: stm32: minor whitespace cleanup around '='
-Date:   Mon, 27 Nov 2023 10:34:20 +0100
-Message-Id: <20231127093420.20473-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v2] ARM: dts: sti: minor whitespace cleanup around '='
+Date:   Mon, 27 Nov 2023 10:34:38 +0100
+Message-Id: <20231127093438.20512-1-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,64 +83,32 @@ Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Changes in v2:
 1. Split previous commit touching entire 'st' directory.
 ---
- arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts | 2 +-
- arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts | 2 +-
- arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts | 2 +-
- arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ arch/arm/boot/dts/st/stih407-pinctrl.dtsi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts b/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts
-index afcd6285890c..69d693ae26dd 100644
---- a/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts
-+++ b/arch/arm/boot/dts/st/stm32mp157a-dk1-scmi.dts
-@@ -59,7 +59,7 @@ &m4_rproc {
- 	/delete-property/ st,syscfg-holdboot;
- 	resets = <&scmi_reset RST_SCMI_MCU>,
- 		 <&scmi_reset RST_SCMI_MCU_HOLD_BOOT>;
--	reset-names =  "mcu_rst", "hold_boot";
-+	reset-names = "mcu_rst", "hold_boot";
- };
- 
- &rcc {
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts b/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts
-index 39358d902000..89bfb4143ba7 100644
---- a/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts
-+++ b/arch/arm/boot/dts/st/stm32mp157c-dk2-scmi.dts
-@@ -65,7 +65,7 @@ &m4_rproc {
- 	/delete-property/ st,syscfg-holdboot;
- 	resets = <&scmi_reset RST_SCMI_MCU>,
- 		 <&scmi_reset RST_SCMI_MCU_HOLD_BOOT>;
--	reset-names =  "mcu_rst", "hold_boot";
-+	reset-names = "mcu_rst", "hold_boot";
- };
- 
- &rcc {
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts b/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts
-index 07ea765a4553..ca7a3a0f16af 100644
---- a/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts
-+++ b/arch/arm/boot/dts/st/stm32mp157c-ed1-scmi.dts
-@@ -64,7 +64,7 @@ &m4_rproc {
- 	/delete-property/ st,syscfg-holdboot;
- 	resets = <&scmi_reset RST_SCMI_MCU>,
- 		 <&scmi_reset RST_SCMI_MCU_HOLD_BOOT>;
--	reset-names =  "mcu_rst", "hold_boot";
-+	reset-names = "mcu_rst", "hold_boot";
- };
- 
- &rcc {
-diff --git a/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts b/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts
-index 813086ec2489..f6510b93f912 100644
---- a/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts
-+++ b/arch/arm/boot/dts/st/stm32mp157c-ev1-scmi.dts
-@@ -70,7 +70,7 @@ &m4_rproc {
- 	/delete-property/ st,syscfg-holdboot;
- 	resets = <&scmi_reset RST_SCMI_MCU>,
- 		 <&scmi_reset RST_SCMI_MCU_HOLD_BOOT>;
--	reset-names =  "mcu_rst", "hold_boot";
-+	reset-names = "mcu_rst", "hold_boot";
- };
- 
- &rcc {
+diff --git a/arch/arm/boot/dts/st/stih407-pinctrl.dtsi b/arch/arm/boot/dts/st/stih407-pinctrl.dtsi
+index 7815669fe813..dcb821f567fa 100644
+--- a/arch/arm/boot/dts/st/stih407-pinctrl.dtsi
++++ b/arch/arm/boot/dts/st/stih407-pinctrl.dtsi
+@@ -462,14 +462,14 @@ pio19: pio@9209000 {
+ 			serial0 {
+ 				pinctrl_serial0: serial0-0 {
+ 					st,pins {
+-						tx =  <&pio17 0 ALT1 OUT>;
+-						rx =  <&pio17 1 ALT1 IN>;
++						tx = <&pio17 0 ALT1 OUT>;
++						rx = <&pio17 1 ALT1 IN>;
+ 					};
+ 				};
+ 				pinctrl_serial0_hw_flowctrl: serial0-0_hw_flowctrl {
+ 					st,pins {
+-						tx =  <&pio17 0 ALT1 OUT>;
+-						rx =  <&pio17 1 ALT1 IN>;
++						tx = <&pio17 0 ALT1 OUT>;
++						rx = <&pio17 1 ALT1 IN>;
+ 						cts = <&pio17 2 ALT1 IN>;
+ 						rts = <&pio17 3 ALT1 OUT>;
+ 					};
 -- 
 2.34.1
 
