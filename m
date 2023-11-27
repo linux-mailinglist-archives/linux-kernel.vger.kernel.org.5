@@ -2,150 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D56307FAE5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 00:28:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FCA17FAE60
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 00:31:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234033AbjK0X1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 18:27:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56708 "EHLO
+        id S233629AbjK0Xbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 18:31:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233956AbjK0X1h (ORCPT
+        with ESMTP id S229821AbjK0Xbe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 18:27:37 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2085.outbound.protection.outlook.com [40.107.93.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48DEF10EB;
-        Mon, 27 Nov 2023 15:27:30 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S614i7DhaAwsWgoeGVCMo8DXBwg/3tpJzYIjFCj1qfMk6zyiDWEIx3IUNb3KJZqYcYEiOtShYUm13c6mD7iq1Em4e5kdeYcMmZWw5eALvCOrnu+ZA8B+UTHxbe7ruTNVX6HPrJaV3g/ZYPOqMStJCZxwZ/dW2mHoTy0Cn0JJlVadPXciUCHfT/Sr/qH96IjF0SmDCCcGxiNsyIPTTOFXCgYgP5V9/1BEqHxV6c06oeUqbeDqkxJnSJiE5l+cCKlZscJN+p2tJiWD53pZbyBTLTURbRPXfWor9m2We/VaM8F790oupCG2oJoY++d9PaQ76+BxrnWWDodWyfJdAQmztQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XG9Y8cNdWT2ucSjtZYg1ryhzHtWqlm6iERwiuLk7UFY=;
- b=fUapzRoltS2mrpsUVPu8vDLdPtrA2ZadkJkghVknuIek9FQQYaB1jx+XZnr7xTGFwWci1ZwAl5PIW9qv+WvRsFoNjPTRleh8Fa56FZVlQnwviDCVgy9H3Zu/VEyv6wLjpvyzaVwBitebJwdU/1zDGTuPU3wK0QlPOGY1nwwW7dwWc3MOMw18kFqeAt6qNZ31DLlE4R3XoCXj3aZFcroFsod5j4uVodhFP4Eokl7QxJ8e4aBeAIq8JnLszuAZEr869h1hAfH9CQloP4lvHPLhgL0gjgrSICDQnQDxBKhIY7rmujF/Pvnw6/qc4P+0dvOFikVoL3r34/+KfntNnaQPmA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XG9Y8cNdWT2ucSjtZYg1ryhzHtWqlm6iERwiuLk7UFY=;
- b=Tau3IyTx8rbGnFsNV1NmMmuPTUkdg5EK5qPacb2wJvqLSPugY3MrQAzht2gQDoPDIY2uK2Uk984J2gVCLelEdZdbWm9sPzOR7dZSz0fpB+m0a1EjuSvbBOU80n8gpdX+VF5GN6kFPSefNsBIRDTUoIvdtSVZC0HgeD8lJz/RqrCNvwlbWe7IqMu/m4xmW5i0TnUlwymYkaqM41kFikCU4vh39Dbg7TGV4fHQbf77JJCQM3OIxYiOf/49YpdCHiYrZ0x94JTiw4sR87pPaEFblqe9WWNy3lZvqJ9VkVC3vokZTEpbOhC9o18TewLTjOaHhLyy/dGeyzzrvhKV8VO7sg==
-Received: from CY8PR11CA0039.namprd11.prod.outlook.com (2603:10b6:930:4a::27)
- by CH0PR12MB5106.namprd12.prod.outlook.com (2603:10b6:610:bd::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Mon, 27 Nov
- 2023 23:27:27 +0000
-Received: from CY4PEPF0000FCC0.namprd03.prod.outlook.com
- (2603:10b6:930:4a:cafe::72) by CY8PR11CA0039.outlook.office365.com
- (2603:10b6:930:4a::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.28 via Frontend
- Transport; Mon, 27 Nov 2023 23:27:27 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- CY4PEPF0000FCC0.mail.protection.outlook.com (10.167.242.102) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7046.17 via Frontend Transport; Mon, 27 Nov 2023 23:27:27 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 27 Nov
- 2023 15:27:19 -0800
-Received: from drhqmail202.nvidia.com (10.126.190.181) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Mon, 27 Nov 2023 15:27:18 -0800
-Received: from jonathanh-vm-01.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.126.190.181) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Mon, 27 Nov 2023 15:27:18 -0800
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
-        <rwarsow@gmx.de>, <conor@kernel.org>, <allen.lkml@gmail.com>,
-        <linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: Re: [PATCH 5.15 000/292] 5.15.140-rc3 review
-In-Reply-To: <20231126154348.824037389@linuxfoundation.org>
-References: <20231126154348.824037389@linuxfoundation.org>
-X-NVConfidentiality: public
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Mon, 27 Nov 2023 18:31:34 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54FA71A5;
+        Mon, 27 Nov 2023 15:31:40 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:280:5e00:7e19::646])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 0AB502D7;
+        Mon, 27 Nov 2023 23:31:39 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 0AB502D7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1701127900; bh=+kymv6NlmVJD365hUtu4hnnqtG6MQtlbOvYps8pKjzc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=lZfLHTJCBU2+2HDvTaU1iTTSzqG5Lm0Q9KXvnRop3GbCXsuT/ZP56pFAydIZ9WsYE
+         QqpwdcuRBN15iiVplSdFGVbLnIYLJHj5kxTKtnWBb9xWp1xRpWhCpSEc0ZcwvZ+MQo
+         7eZeDTI2p9MqrVW4G1WzXJIXBXUqZKfA1lmo/9D7bxR+WMPND6BhX+5r6KySEFw3sY
+         z6PhnANBFG00LScSavTF0W2V6GGRbs0rqLDM7aZ9rB/FsY3xnKtG2a3mNV5TnMD3ml
+         FtlxDiC2Fwe6g2atizFUnBA/i+jM/gYlnoEw5AAiyfY619clAH6PaG1K6AREYKnC/i
+         PJgrvcT/6WHQQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     linux-doc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Akira Yokosawa <akiyks@gmail.com>
+Subject: [PATCH] docs: Raise the minimum Sphinx requirement to 2.4.4
+Date:   Mon, 27 Nov 2023 16:31:39 -0700
+Message-ID: <87sf4qvkmc.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Message-ID: <9b0099cd-37d2-4f19-a6bf-6f1c82338093@drhqmail202.nvidia.com>
-Date:   Mon, 27 Nov 2023 15:27:18 -0800
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000FCC0:EE_|CH0PR12MB5106:EE_
-X-MS-Office365-Filtering-Correlation-Id: 137abb77-ffc9-4b82-8e1e-08dbefa06b5e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +Pwjd8X+2DMqBaeOaPY1iPFqYpvKQlLNvzuMcxTRE19eWy4Pzo/Cbgr4c7RKb9wo3y72nabjH20sPMIysNiugCwk1GwIkun4MR2dsnttUwQ/5nOwebIn1a5puspRq+uTT3To3EiVGzJo+XF/KV8sIbF02AUwLU4uwwdgSt/ueQitRDsxPhfv/7vG+XoQTcBEXUkMPcVYsS3kKNtUWdawKhFwdvXEqRWbuV54j9O9u/bE+vsOkkpeSp1uRwFlO9kF1K6xAMC8BGa94/7UpvydovT0AUH/GfghYF4eRgRXdN1ybnlY5wk54I+xeEKFG5WMV+QrCBVMrDra6XNdhpFlS+MoWUxdMMqe/muT34tl90fGiG5J4Jpyy2hOPt2AQl2bj/LPSZCiRb1ZiR1ZXmsTcg/9iqwIztKuzOCH32CGbVxu5be0xGH87wH6BYZ0F4DfXxYaaMjAk3PtIJrWDIblBebV1C0CTBnOF2cGCFrjw0+j4W+Ab2NgCyxBeJv0mgQBvQtcqHD0wbfXouWbFkLErugiIeOEZR9O3RfLRKNE1saNd6pNJETmR5lQCV0zppz36FguETfSSkwKzxKpNeqh7irEqFlhytQtZZhtgDpja6eiYgqvHFLmbyT4xO4FirXwuhVXyORBumNh/enKuURx8kG4b4IyKc9POT6FrDZBywaDIN35UZK4Ve4DWdaKuBm/konbpk6QW/ZafcTuQJaAhMvilh4m2uILTFIhmbzLxgTaKGt9BNnYWFJDp20Kz52APZm1vp/L514DPXLcAKOdjib6uOMeAc+DZZC1F+QmX5Q=
-X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(346002)(376002)(396003)(136003)(230922051799003)(64100799003)(451199024)(82310400011)(1800799012)(186009)(36840700001)(40470700004)(46966006)(36860700001)(82740400003)(356005)(7636003)(40460700003)(86362001)(31696002)(41300700001)(4326008)(8936002)(8676002)(6916009)(54906003)(316002)(70586007)(70206006)(478600001)(966005)(5660300002)(7416002)(2906002)(31686004)(47076005)(426003)(336012)(40480700001)(26005)(83380400001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2023 23:27:27.7284
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 137abb77-ffc9-4b82-8e1e-08dbefa06b5e
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000FCC0.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5106
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Nov 2023 15:46:45 +0000, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.140 release.
-> There are 292 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Tue, 28 Nov 2023 15:43:06 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.140-rc3.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Commit 31abfdda6527 (docs: Deprecate use of Sphinx < 2.4.x) in 6.2 added a
+warning that support for older versions of Sphinx would be going away.
+There have been no complaints, so the time has come.  Raise the minimum
+Sphinx version to 2.4.4 and clean out some compatibility code that we no
+longer need.
 
-Failures detected for Tegra ...
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Akira Yokosawa <akiyks@gmail.com>
+Signed-off-by: Jonathan Corbet <corbet@lwn.net>
+---
+ Documentation/conf.py              |  2 +-
+ Documentation/doc-guide/sphinx.rst |  2 +-
+ Documentation/process/changes.rst  |  2 +-
+ Documentation/sphinx/automarkup.py |  6 +-----
+ Documentation/sphinx/cdomain.py    |  6 +-----
+ Documentation/sphinx/kfigure.py    |  8 +-------
+ scripts/sphinx-pre-install         | 10 +---------
+ 7 files changed, 7 insertions(+), 29 deletions(-)
 
-Test results for stable-v5.15:
-    10 builds:	10 pass, 0 fail
-    26 boots:	26 pass, 0 fail
-    94 tests:	93 pass, 1 fail
+diff --git a/Documentation/conf.py b/Documentation/conf.py
+index 20bd74edcca9..3a1a804c3a13 100644
+--- a/Documentation/conf.py
++++ b/Documentation/conf.py
+@@ -47,7 +47,7 @@ from load_config import loadConfig
+ # -- General configuration ------------------------------------------------
+ 
+ # If your documentation needs a minimal Sphinx version, state it here.
+-needs_sphinx = '1.7'
++needs_sphinx = '2.4.4'
+ 
+ # Add any Sphinx extension module names here, as strings. They can be
+ # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
+diff --git a/Documentation/doc-guide/sphinx.rst b/Documentation/doc-guide/sphinx.rst
+index bb7971643fcf..3d125fb4139d 100644
+--- a/Documentation/doc-guide/sphinx.rst
++++ b/Documentation/doc-guide/sphinx.rst
+@@ -28,7 +28,7 @@ Sphinx Install
+ ==============
+ 
+ The ReST markups currently used by the Documentation/ files are meant to be
+-built with ``Sphinx`` version 1.7 or higher.
++built with ``Sphinx`` version 2.4.4 or higher.
+ 
+ There's a script that checks for the Sphinx requirements. Please see
+ :ref:`sphinx-pre-install` for further details.
+diff --git a/Documentation/process/changes.rst b/Documentation/process/changes.rst
+index bb96ca0f774b..559587a89974 100644
+--- a/Documentation/process/changes.rst
++++ b/Documentation/process/changes.rst
+@@ -58,7 +58,7 @@ mcelog                 0.6              mcelog --version
+ iptables               1.4.2            iptables -V
+ openssl & libcrypto    1.0.0            openssl version
+ bc                     1.06.95          bc --version
+-Sphinx\ [#f1]_         1.7              sphinx-build --version
++Sphinx\ [#f1]_         2.4.4            sphinx-build --version
+ cpio                   any              cpio --version
+ GNU tar                1.28             tar --version
+ gtags (optional)       6.6.5            gtags --version
+diff --git a/Documentation/sphinx/automarkup.py b/Documentation/sphinx/automarkup.py
+index acc6d55718bd..a413f8dd5115 100644
+--- a/Documentation/sphinx/automarkup.py
++++ b/Documentation/sphinx/automarkup.py
+@@ -7,11 +7,7 @@
+ from docutils import nodes
+ import sphinx
+ from sphinx import addnodes
+-if sphinx.version_info[0] < 2 or \
+-   sphinx.version_info[0] == 2 and sphinx.version_info[1] < 1:
+-    from sphinx.environment import NoUri
+-else:
+-    from sphinx.errors import NoUri
++from sphinx.errors import NoUri
+ import re
+ from itertools import chain
+ 
+diff --git a/Documentation/sphinx/cdomain.py b/Documentation/sphinx/cdomain.py
+index 4eb150bf509c..e6959af25402 100644
+--- a/Documentation/sphinx/cdomain.py
++++ b/Documentation/sphinx/cdomain.py
+@@ -127,11 +127,7 @@ def setup(app):
+ 
+     # Handle easy Sphinx 3.1+ simple new tags: :c:expr and .. c:namespace::
+     app.connect('source-read', c_markups)
+-
+-    if (major == 1 and minor < 8):
+-        app.override_domain(CDomain)
+-    else:
+-        app.add_domain(CDomain, override=True)
++    app.add_domain(CDomain, override=True)
+ 
+     return dict(
+         version = __version__,
+diff --git a/Documentation/sphinx/kfigure.py b/Documentation/sphinx/kfigure.py
+index 13e885bbd499..97166333b727 100644
+--- a/Documentation/sphinx/kfigure.py
++++ b/Documentation/sphinx/kfigure.py
+@@ -61,13 +61,7 @@ import sphinx
+ from sphinx.util.nodes import clean_astext
+ import kernellog
+ 
+-# Get Sphinx version
+-major, minor, patch = sphinx.version_info[:3]
+-if major == 1 and minor > 3:
+-    # patches.Figure only landed in Sphinx 1.4
+-    from sphinx.directives.patches import Figure  # pylint: disable=C0413
+-else:
+-    Figure = images.Figure
++Figure = images.Figure
+ 
+ __version__  = '1.0.0'
+ 
+diff --git a/scripts/sphinx-pre-install b/scripts/sphinx-pre-install
+index 1fb88fdceec3..db75b1b86086 100755
+--- a/scripts/sphinx-pre-install
++++ b/scripts/sphinx-pre-install
+@@ -32,8 +32,7 @@ my $python_cmd = "";
+ my $activate_cmd;
+ my $min_version;
+ my $cur_version;
+-my $rec_version = "1.7.9";	# PDF won't build here
+-my $min_pdf_version = "2.4.4";	# Min version where pdf builds
++my $rec_version = "3.0";
+ my $latest_avail_ver;
+ 
+ #
+@@ -791,9 +790,6 @@ sub recommend_sphinx_version($)
+ 
+ 	# Version is OK. Nothing to do.
+ 	if ($cur_version && ($cur_version ge $rec_version)) {
+-		if ($cur_version lt $min_pdf_version) {
+-			print "note: If you want pdf, you need at least Sphinx $min_pdf_version.\n";
+-		}
+ 		return;
+ 	};
+ 
+@@ -842,10 +838,6 @@ sub recommend_sphinx_version($)
+ 			printf "\t. $activate_cmd\n";
+ 			deactivate_help();
+ 
+-			if ($latest_avail_ver lt $min_pdf_version) {
+-				print "note: If you want pdf, you need at least Sphinx $min_pdf_version.\n";
+-			}
+-
+ 			return;
+ 		}
+ 
+-- 
+2.42.0
 
-Linux version:	5.15.140-rc3-g659e62181100
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
-                tegra20-ventana, tegra210-p2371-2180,
-                tegra210-p3450-0000, tegra30-cardhu-a04
-
-Test failures:	tegra194-p2972-0000: boot.py
-
-
-Jon
