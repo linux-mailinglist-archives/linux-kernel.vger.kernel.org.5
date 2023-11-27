@@ -2,452 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9E77FAA79
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 20:38:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 414B07FAA7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 20:39:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233178AbjK0TiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 14:38:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36294 "EHLO
+        id S232919AbjK0Tiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 14:38:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233038AbjK0Thm (ORCPT
+        with ESMTP id S233038AbjK0Ti3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 14:37:42 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E132B1BF7
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 11:37:25 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40b402c36c4so16679975e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 11:37:25 -0800 (PST)
+        Mon, 27 Nov 2023 14:38:29 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0AC02702;
+        Mon, 27 Nov 2023 11:37:49 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-3316d3d11e1so2662452f8f.0;
+        Mon, 27 Nov 2023 11:37:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701113844; x=1701718644; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FbXS8xhN2Z8/mFL31QOwkSaE5s+nQ2d8sT8MHI9qIzo=;
-        b=nlDZFu4MjsZgCgbnIaA3c8fNAD5rqjyaGItcqGe3G1Ql8aXOvocmJWYraAHUHoRrB3
-         LuzEvQ0C6OL5c/MCVQOdczI/RljFQ584q5Mr1d+BXT6QLenQowkGTInKaKS5vAwt6GoH
-         uu32iuc7SzKxHyd7Lu1WMncA2SKkP/RBpQkx2EkDzGSLy58opDqCoY8wRVEoE+LfXwCL
-         +dko60yhLEZajsBxM7zgOil+XyeKu1+cdhScUzIgjM8nUES/BFvw4V4YUCSXxSPiB/rT
-         mEf57H7fGOrC2B0MuZtI0yzjHphW7lN89HT1OCgoPTzE9909oKFGwhrT0vLjpa3p6NW8
-         Ze/Q==
+        d=gmail.com; s=20230601; t=1701113867; x=1701718667; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=k+U/Z+hb58WPcFvxk4wIR/Eo39sAQ2kwJEM0JKmBdYw=;
+        b=QJnh9F1/EDYsH9CPJEewq5ayW4TsH2D0Na3eZRCG4inZTk4X9MEeJIwRMUdYRhNWm1
+         pMp42y1/a4rnDgiuk/4i1y86JOr25V8cIZ3Yg480wGazcmMIgUI8YjIVfUrfMfO+UIIl
+         pXlLNyROsutUaCRp85JjN9iIy/l1uT3jIJNc/HkQwRlRsHJfOhNrqXPIvLvo1ocoZrIh
+         OERpL0whIOHUJ1xCX2tx3HOlO70nACu1qnIsDwunhsrddzyP/nzuvUHV8mytN8T1movD
+         rGNrBl7jjnQAQCKcdJnYRgjKRzNG47FuW01S/FWb0Joj0d9viXW2QwqKTCSG5NYUsjpz
+         +zPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701113844; x=1701718644;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FbXS8xhN2Z8/mFL31QOwkSaE5s+nQ2d8sT8MHI9qIzo=;
-        b=K9CSU0iyb2FRL4x7dbCvodjltSaxc51NBBBrg2h1tcPe9U0KkxSQuCuSJ/PBgCEUps
-         kM26D/56YvKR/1Gy5ts5TSwGT/kNFINbNVYOrWxRW7CRWTpdntK8SBVnUgW2F7mO/qL+
-         QMY2pwGVbIV61j3GSKAD9dqJlVG6riFedkChjAPAPAt5OhT1zzWMdmxBrfUHjHFMmBAF
-         FeySvTE7GEMrrFb/fFDO294s6/W6zjXTnwI8NU373FHo25+aIG8q7UflA094rN2zWyTt
-         1ApMFAQVzX2sTjhGZDGU+77stG53FcGiW46jeMT3RA8o4oLpkzja6FdVmHQbLN7pucAE
-         hNzQ==
-X-Gm-Message-State: AOJu0Ywg92YYNxwzffgJJhYrLWeiRBdtNzAqlmIq6Vgqt27h6E5TkNUb
-        5BnoHNg7gBDt4txLFdrVxq6f3Q==
-X-Google-Smtp-Source: AGHT+IFLgPHIh5GaozJXydmPU2/M2hEaN5UuMpdlwwN+wEik0XGeZlG6RxrPPIh7UFRniiWtDY7/4g==
-X-Received: by 2002:a05:600c:458a:b0:40b:385f:24b5 with SMTP id r10-20020a05600c458a00b0040b385f24b5mr9196960wmo.15.1701113844006;
-        Mon, 27 Nov 2023 11:37:24 -0800 (PST)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:bf33:77c7:8131:5e64])
-        by smtp.gmail.com with ESMTPSA id l6-20020a05600c4f0600b0040b3632e993sm15016610wmq.46.2023.11.27.11.37.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 11:37:23 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH 2/2] gpio: use a mutex to protect the list of GPIO devices
-Date:   Mon, 27 Nov 2023 20:37:16 +0100
-Message-Id: <20231127193716.63143-2-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231127193716.63143-1-brgl@bgdev.pl>
-References: <20231127193716.63143-1-brgl@bgdev.pl>
+        d=1e100.net; s=20230601; t=1701113867; x=1701718667;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=k+U/Z+hb58WPcFvxk4wIR/Eo39sAQ2kwJEM0JKmBdYw=;
+        b=JbzbRNYRolw31c77t/u36vaL45i09wT2P0fLp7ba8dkorQIxKFR0IeA9I/d6NPWFUi
+         B+FjjQHYtvLa3enOVmP6YMaxAV+sk3Nka4av+DyypSemQSvWPilzB4LAW1xoV9uOgZGW
+         9KDywuHqdS2bXXtfnTkYX69e3sb+ZWYaxUZQ3yO5y70I5RYVfL+c3mn1s0jcG0Nhd0ZZ
+         N42sP1/TnIPmnm9VUuewkaG5cxLvBvVrFRcezQh8Z+tLZ7SWQYb2x+tZapi6WKHXGKEI
+         /dEgcW2UgrDd1c2mbNht6rwmH8IP1PYV5jUJPEUAvJBBQdx9OpplLXqitaH9yfRH6pZ1
+         E1Mg==
+X-Gm-Message-State: AOJu0YwhVcqxH8t1FvrTk68xoZamQYct7ssr40DI7/yoNMU5qO9k34er
+        MdbNtKp325UFRBS7X3ryQTk=
+X-Google-Smtp-Source: AGHT+IE9GgLSy2VbYegCNBxDylmi2Qn+jQz8fC3yjk1z2UoKIRu8VzUpxmYrecZHqAVRyrDpKSqgKQ==
+X-Received: by 2002:a05:6000:10d2:b0:332:c6cf:320d with SMTP id b18-20020a05600010d200b00332c6cf320dmr10156757wrx.15.1701113866667;
+        Mon, 27 Nov 2023 11:37:46 -0800 (PST)
+Received: from ?IPV6:2a01:c23:b815:5700:a463:59a7:865f:2563? (dynamic-2a01-0c23-b815-5700-a463-59a7-865f-2563.c23.pool.telefonica.de. [2a01:c23:b815:5700:a463:59a7:865f:2563])
+        by smtp.googlemail.com with ESMTPSA id v6-20020a5d4a46000000b003330b55b941sm1971wrs.77.2023.11.27.11.37.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Nov 2023 11:37:45 -0800 (PST)
+Message-ID: <980d651a-af69-49de-bc53-a2e325bd4bb0@gmail.com>
+Date:   Mon, 27 Nov 2023 20:37:45 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net 2/2] r8169: fix deadlock in "r8169_phylink_handler"
+Content-Language: en-US
+To:     ChunHao Lin <hau@realtek.com>
+Cc:     nic_swsd@realtek.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, grundler@chromium.org,
+        stable@vger.kernel.org
+References: <20231127175736.5738-1-hau@realtek.com>
+ <20231127175736.5738-3-hau@realtek.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Autocrypt: addr=hkallweit1@gmail.com; keydata=
+ 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
+In-Reply-To: <20231127175736.5738-3-hau@realtek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On 27.11.2023 18:57, ChunHao Lin wrote:
+> In "r8169_phylink_handler", for rtl8125, it will call "rtl_reset_work"->
+> "rtl_hw_start"->"rtl_jumbo_config"->"phy_start_aneg". When call
+> "r8169_phylink_handler", PHY lock is acquired. But "phy_start_aneg"
+> will also try to acquire PHY lock. That will cause deadlock.
+> 
+> In this path, use "_phy_start_aneg", unlocked version "phy_start_aneg",
+> to prevent deadlock in "r8169_phylink_handler".
+> 
+> Fixes: 453a77894efa ("r8169: don't advertise pause in jumbo mode")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: ChunHao Lin <hau@realtek.com>
+> ---
+>  drivers/net/ethernet/realtek/r8169_main.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+> index 473b3245754f..2e3e42a98edd 100644
+> --- a/drivers/net/ethernet/realtek/r8169_main.c
+> +++ b/drivers/net/ethernet/realtek/r8169_main.c
+> @@ -2415,11 +2415,22 @@ static void rtl_jumbo_config(struct rtl8169_private *tp)
+>  
+>  	/* Chip doesn't support pause in jumbo mode */
+>  	if (jumbo) {
+> +		int lock;
+> +
+>  		linkmode_clear_bit(ETHTOOL_LINK_MODE_Pause_BIT,
+>  				   tp->phydev->advertising);
+>  		linkmode_clear_bit(ETHTOOL_LINK_MODE_Asym_Pause_BIT,
+>  				   tp->phydev->advertising);
+> -		phy_start_aneg(tp->phydev);
+> +
+> +		if (!mutex_trylock(&tp->phydev->lock))
+> +			lock = 0;
+> +		else
+> +			lock = 1;
+> +
+> +		_phy_start_aneg(tp->phydev);
+> +
+> +		if (lock)
+> +			mutex_unlock(&tp->phydev->lock);
+>  	}
+>  }
+>  
 
-The global list of GPIO devices is never modified or accessed from
-atomic context so it's fine to protect it using a mutex. Add a new
-global lock dedicated to the gpio_devices list and use it whenever
-accessing or modifying it.
-
-While at it: fold the sysfs registering of existing devices into
-gpiolib.c and make gpio_devices static within its compilation unit.
-
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
----
- drivers/gpio/gpiolib-sysfs.c |  26 +-----
- drivers/gpio/gpiolib-sysfs.h |   6 ++
- drivers/gpio/gpiolib.c       | 158 ++++++++++++++++++-----------------
- drivers/gpio/gpiolib.h       |   1 -
- 4 files changed, 89 insertions(+), 102 deletions(-)
-
-diff --git a/drivers/gpio/gpiolib-sysfs.c b/drivers/gpio/gpiolib-sysfs.c
-index 6f309a3b2d9a..c538568604e8 100644
---- a/drivers/gpio/gpiolib-sysfs.c
-+++ b/drivers/gpio/gpiolib-sysfs.c
-@@ -790,9 +790,7 @@ void gpiochip_sysfs_unregister(struct gpio_device *gdev)
- 
- static int __init gpiolib_sysfs_init(void)
- {
--	int		status;
--	unsigned long	flags;
--	struct gpio_device *gdev;
-+	int status;
- 
- 	status = class_register(&gpio_class);
- 	if (status < 0)
-@@ -804,26 +802,6 @@ static int __init gpiolib_sysfs_init(void)
- 	 * We run before arch_initcall() so chip->dev nodes can have
- 	 * registered, and so arch_initcall() can always gpiod_export().
- 	 */
--	spin_lock_irqsave(&gpio_lock, flags);
--	list_for_each_entry(gdev, &gpio_devices, list) {
--		if (gdev->mockdev)
--			continue;
--
--		/*
--		 * TODO we yield gpio_lock here because
--		 * gpiochip_sysfs_register() acquires a mutex. This is unsafe
--		 * and needs to be fixed.
--		 *
--		 * Also it would be nice to use gpio_device_find() here so we
--		 * can keep gpio_chips local to gpiolib.c, but the yield of
--		 * gpio_lock prevents us from doing this.
--		 */
--		spin_unlock_irqrestore(&gpio_lock, flags);
--		status = gpiochip_sysfs_register(gdev);
--		spin_lock_irqsave(&gpio_lock, flags);
--	}
--	spin_unlock_irqrestore(&gpio_lock, flags);
--
--	return status;
-+	return gpiochip_sysfs_register_all();
- }
- postcore_initcall(gpiolib_sysfs_init);
-diff --git a/drivers/gpio/gpiolib-sysfs.h b/drivers/gpio/gpiolib-sysfs.h
-index b794b396d6a5..ab157cec0b4b 100644
---- a/drivers/gpio/gpiolib-sysfs.h
-+++ b/drivers/gpio/gpiolib-sysfs.h
-@@ -8,6 +8,7 @@ struct gpio_device;
- #ifdef CONFIG_GPIO_SYSFS
- 
- int gpiochip_sysfs_register(struct gpio_device *gdev);
-+int gpiochip_sysfs_register_all(void);
- void gpiochip_sysfs_unregister(struct gpio_device *gdev);
- 
- #else
-@@ -17,6 +18,11 @@ static inline int gpiochip_sysfs_register(struct gpio_device *gdev)
- 	return 0;
- }
- 
-+static inline int gpiochip_sysfs_register_all(void)
-+{
-+	return 0;
-+}
-+
- static inline void gpiochip_sysfs_unregister(struct gpio_device *gdev)
- {
- }
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index a5faaea6915d..f0a51d465df9 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -2,6 +2,7 @@
- 
- #include <linux/acpi.h>
- #include <linux/bitmap.h>
-+#include <linux/cleanup.h>
- #include <linux/compat.h>
- #include <linux/debugfs.h>
- #include <linux/device.h>
-@@ -15,6 +16,7 @@
- #include <linux/kernel.h>
- #include <linux/list.h>
- #include <linux/module.h>
-+#include <linux/mutex.h>
- #include <linux/of.h>
- #include <linux/pinctrl/consumer.h>
- #include <linux/seq_file.h>
-@@ -94,7 +96,9 @@ DEFINE_SPINLOCK(gpio_lock);
- 
- static DEFINE_MUTEX(gpio_lookup_lock);
- static LIST_HEAD(gpio_lookup_list);
--LIST_HEAD(gpio_devices);
-+
-+static LIST_HEAD(gpio_devices);
-+static DEFINE_MUTEX(gpio_devices_lock);
- 
- static DEFINE_MUTEX(gpio_machine_hogs_mutex);
- static LIST_HEAD(gpio_machine_hogs);
-@@ -126,20 +130,15 @@ static inline void desc_set_label(struct gpio_desc *d, const char *label)
- struct gpio_desc *gpio_to_desc(unsigned gpio)
- {
- 	struct gpio_device *gdev;
--	unsigned long flags;
- 
--	spin_lock_irqsave(&gpio_lock, flags);
--
--	list_for_each_entry(gdev, &gpio_devices, list) {
--		if (gdev->base <= gpio &&
--		    gdev->base + gdev->ngpio > gpio) {
--			spin_unlock_irqrestore(&gpio_lock, flags);
--			return &gdev->descs[gpio - gdev->base];
-+	scoped_guard(mutex, &gpio_devices_lock) {
-+		list_for_each_entry(gdev, &gpio_devices, list) {
-+			if (gdev->base <= gpio &&
-+			    gdev->base + gdev->ngpio > gpio)
-+				return &gdev->descs[gpio - gdev->base];
- 		}
- 	}
- 
--	spin_unlock_irqrestore(&gpio_lock, flags);
--
- 	if (!gpio_is_valid(gpio))
- 		pr_warn("invalid GPIO %d\n", gpio);
- 
-@@ -412,26 +411,21 @@ static int gpiodev_add_to_list(struct gpio_device *gdev)
- static struct gpio_desc *gpio_name_to_desc(const char * const name)
- {
- 	struct gpio_device *gdev;
--	unsigned long flags;
- 
- 	if (!name)
- 		return NULL;
- 
--	spin_lock_irqsave(&gpio_lock, flags);
-+	guard(mutex)(&gpio_devices_lock);
- 
- 	list_for_each_entry(gdev, &gpio_devices, list) {
- 		struct gpio_desc *desc;
- 
- 		for_each_gpio_desc(gdev->chip, desc) {
--			if (desc->name && !strcmp(desc->name, name)) {
--				spin_unlock_irqrestore(&gpio_lock, flags);
-+			if (desc->name && !strcmp(desc->name, name))
- 				return desc;
--			}
- 		}
- 	}
- 
--	spin_unlock_irqrestore(&gpio_lock, flags);
--
- 	return NULL;
- }
- 
-@@ -669,11 +663,9 @@ EXPORT_SYMBOL_GPL(gpiochip_line_is_valid);
- static void gpiodev_release(struct device *dev)
- {
- 	struct gpio_device *gdev = to_gpio_device(dev);
--	unsigned long flags;
- 
--	spin_lock_irqsave(&gpio_lock, flags);
--	list_del(&gdev->list);
--	spin_unlock_irqrestore(&gpio_lock, flags);
-+	scoped_guard(mutex, &gpio_devices_lock)
-+		list_del(&gdev->list);
- 
- 	ida_free(&gpio_ida, gdev->id);
- 	kfree_const(gdev->label);
-@@ -726,6 +718,27 @@ static int gpiochip_setup_dev(struct gpio_device *gdev)
- 	return ret;
- }
- 
-+#if IS_ENABLED(CONFIG_GPIO_SYSFS)
-+int gpiochip_sysfs_register_all(void)
-+{
-+	struct gpio_device *gdev;
-+	int ret;
-+
-+	guard(mutex)(&gpio_devices_lock);
-+
-+	list_for_each_entry(gdev, &gpio_devices, list) {
-+		if (gdev->mockdev)
-+			continue;
-+
-+		ret = gpiochip_sysfs_register(gdev);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+#endif /* CONFIG_GPIO_SYSFS */
-+
- static void gpiochip_machine_hog(struct gpio_chip *gc, struct gpiod_hog *hog)
- {
- 	struct gpio_desc *desc;
-@@ -831,7 +844,6 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
- 			       struct lock_class_key *request_key)
- {
- 	struct gpio_device *gdev;
--	unsigned long flags;
- 	unsigned int i;
- 	int base = 0;
- 	int ret = 0;
-@@ -896,48 +908,44 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
- 
- 	gdev->ngpio = gc->ngpio;
- 
--	spin_lock_irqsave(&gpio_lock, flags);
--
--	/*
--	 * TODO: this allocates a Linux GPIO number base in the global
--	 * GPIO numberspace for this chip. In the long run we want to
--	 * get *rid* of this numberspace and use only descriptors, but
--	 * it may be a pipe dream. It will not happen before we get rid
--	 * of the sysfs interface anyways.
--	 */
--	base = gc->base;
--	if (base < 0) {
--		base = gpiochip_find_base(gc->ngpio);
-+	scoped_guard(mutex, &gpio_devices_lock) {
-+		/*
-+		 * TODO: this allocates a Linux GPIO number base in the global
-+		 * GPIO numberspace for this chip. In the long run we want to
-+		 * get *rid* of this numberspace and use only descriptors, but
-+		 * it may be a pipe dream. It will not happen before we get rid
-+		 * of the sysfs interface anyways.
-+		 */
-+		base = gc->base;
- 		if (base < 0) {
--			spin_unlock_irqrestore(&gpio_lock, flags);
--			ret = base;
--			base = 0;
-+			base = gpiochip_find_base(gc->ngpio);
-+			if (base < 0) {
-+				ret = base;
-+				base = 0;
-+				goto err_free_label;
-+			}
-+			/*
-+			 * TODO: it should not be necessary to reflect the assigned
-+			 * base outside of the GPIO subsystem. Go over drivers and
-+			 * see if anyone makes use of this, else drop this and assign
-+			 * a poison instead.
-+			 */
-+			gc->base = base;
-+		} else {
-+			dev_warn(&gdev->dev,
-+				 "Static allocation of GPIO base is deprecated, use dynamic allocation.\n");
-+		}
-+		gdev->base = base;
-+
-+		ret = gpiodev_add_to_list(gdev);
-+		if (ret) {
-+			chip_err(gc, "GPIO integer space overlap, cannot add chip\n");
- 			goto err_free_label;
- 		}
--		/*
--		 * TODO: it should not be necessary to reflect the assigned
--		 * base outside of the GPIO subsystem. Go over drivers and
--		 * see if anyone makes use of this, else drop this and assign
--		 * a poison instead.
--		 */
--		gc->base = base;
--	} else {
--		dev_warn(&gdev->dev,
--			 "Static allocation of GPIO base is deprecated, use dynamic allocation.\n");
-+
-+		for (i = 0; i < gc->ngpio; i++)
-+			gdev->descs[i].gdev = gdev;
- 	}
--	gdev->base = base;
--
--	ret = gpiodev_add_to_list(gdev);
--	if (ret) {
--		spin_unlock_irqrestore(&gpio_lock, flags);
--		chip_err(gc, "GPIO integer space overlap, cannot add chip\n");
--		goto err_free_label;
--	}
--
--	for (i = 0; i < gc->ngpio; i++)
--		gdev->descs[i].gdev = gdev;
--
--	spin_unlock_irqrestore(&gpio_lock, flags);
- 
- 	BLOCKING_INIT_NOTIFIER_HEAD(&gdev->line_state_notifier);
- 	BLOCKING_INIT_NOTIFIER_HEAD(&gdev->device_notifier);
-@@ -1029,9 +1037,8 @@ int gpiochip_add_data_with_key(struct gpio_chip *gc, void *data,
- 		goto err_print_message;
- 	}
- err_remove_from_list:
--	spin_lock_irqsave(&gpio_lock, flags);
--	list_del(&gdev->list);
--	spin_unlock_irqrestore(&gpio_lock, flags);
-+	scoped_guard(mutex, &gpio_devices_lock)
-+		list_del(&gdev->list);
- err_free_label:
- 	kfree_const(gdev->label);
- err_free_descs:
-@@ -4741,35 +4748,32 @@ static void gpiolib_dbg_show(struct seq_file *s, struct gpio_device *gdev)
- 
- static void *gpiolib_seq_start(struct seq_file *s, loff_t *pos)
- {
--	unsigned long flags;
- 	struct gpio_device *gdev = NULL;
- 	loff_t index = *pos;
- 
- 	s->private = "";
- 
--	spin_lock_irqsave(&gpio_lock, flags);
-+	guard(mutex)(&gpio_devices_lock);
-+
- 	list_for_each_entry(gdev, &gpio_devices, list)
--		if (index-- == 0) {
--			spin_unlock_irqrestore(&gpio_lock, flags);
-+		if (index-- == 0)
- 			return gdev;
--		}
--	spin_unlock_irqrestore(&gpio_lock, flags);
- 
- 	return NULL;
- }
- 
- static void *gpiolib_seq_next(struct seq_file *s, void *v, loff_t *pos)
- {
--	unsigned long flags;
- 	struct gpio_device *gdev = v;
- 	void *ret = NULL;
- 
--	spin_lock_irqsave(&gpio_lock, flags);
--	if (list_is_last(&gdev->list, &gpio_devices))
--		ret = NULL;
--	else
--		ret = list_first_entry(&gdev->list, struct gpio_device, list);
--	spin_unlock_irqrestore(&gpio_lock, flags);
-+	scoped_guard(mutex, &gpio_devices_lock) {
-+		if (list_is_last(&gdev->list, &gpio_devices))
-+			ret = NULL;
-+		else
-+			ret = list_first_entry(&gdev->list, struct gpio_device,
-+					       list);
-+	}
- 
- 	s->private = "\n";
- 	++*pos;
-diff --git a/drivers/gpio/gpiolib.h b/drivers/gpio/gpiolib.h
-index 3ccacf3c1288..9278796db079 100644
---- a/drivers/gpio/gpiolib.h
-+++ b/drivers/gpio/gpiolib.h
-@@ -135,7 +135,6 @@ int gpiod_set_array_value_complex(bool raw, bool can_sleep,
- int gpiod_set_transitory(struct gpio_desc *desc, bool transitory);
- 
- extern spinlock_t gpio_lock;
--extern struct list_head gpio_devices;
- 
- void gpiod_line_state_notify(struct gpio_desc *desc, unsigned long action);
- 
--- 
-2.40.1
-
+Hi Hau,
+the deadlock issue has been reported by few users, and I submitted a fix already.
+It's waiting to be applied.
