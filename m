@@ -2,227 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EEB97FA3ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 16:01:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 756357FA3F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 16:01:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233736AbjK0PBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 10:01:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49396 "EHLO
+        id S233764AbjK0PBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 10:01:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233282AbjK0PBI (ORCPT
+        with ESMTP id S233282AbjK0PBc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 10:01:08 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 38867AA;
-        Mon, 27 Nov 2023 07:01:14 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8CEEE2F4;
-        Mon, 27 Nov 2023 07:02:01 -0800 (PST)
-Received: from raptor (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 947493F6C4;
-        Mon, 27 Nov 2023 07:01:08 -0800 (PST)
-Date:   Mon, 27 Nov 2023 15:01:05 +0000
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
-        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
-        rppt@kernel.org, hughd@google.com, pcc@google.com,
-        steven.price@arm.com, anshuman.khandual@arm.com,
-        vincenzo.frascino@arm.com, eugenis@google.com, kcc@google.com,
-        hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC v2 12/27] arm64: mte: Add tag storage pages to the
- MIGRATE_CMA migratetype
-Message-ID: <ZWSvMYMjFLFZ-abv@raptor>
-References: <20231119165721.9849-1-alexandru.elisei@arm.com>
- <20231119165721.9849-13-alexandru.elisei@arm.com>
- <c49cd89d-41cf-495b-9b96-4434ab407967@redhat.com>
+        Mon, 27 Nov 2023 10:01:32 -0500
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47426C6;
+        Mon, 27 Nov 2023 07:01:36 -0800 (PST)
+Received: from i53875bf8.versanet.de ([83.135.91.248] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <heiko@sntech.de>)
+        id 1r7d6y-0003Fi-1u; Mon, 27 Nov 2023 16:01:24 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Andy Yan <andyshrk@163.com>
+Cc:     hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
+        kever.yang@rock-chips.com, chris.obbard@collabora.com,
+        s.hauer@pengutronix.de, Andy Yan <andy.yan@rock-chips.com>
+Subject: Re: [PATCH v2 03/12] drm/rockchip: vop2: set half_block_en bit in all mode
+Date:   Mon, 27 Nov 2023 16:01:22 +0100
+Message-ID: <23093643.0c2gjJ1VT2@diego>
+In-Reply-To: <20231122125413.3454489-1-andyshrk@163.com>
+References: <20231122125316.3454268-1-andyshrk@163.com>
+ <20231122125413.3454489-1-andyshrk@163.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c49cd89d-41cf-495b-9b96-4434ab407967@redhat.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
-
-On Fri, Nov 24, 2023 at 08:40:55PM +0100, David Hildenbrand wrote:
-> On 19.11.23 17:57, Alexandru Elisei wrote:
-> > Add the MTE tag storage pages to the MIGRATE_CMA migratetype, which allows
-> > the page allocator to manage them like regular pages.
-> > 
-> > Ths migratype lends the pages some very desirable properties:
-> > 
-> > * They cannot be longterm pinned, meaning they will always be migratable.
-> > 
-> > * The pages can be allocated explicitely by using their PFN (with
-> >    alloc_contig_range()) when they are needed to store tags.
-> > 
-> > Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
-> > ---
-> >   arch/arm64/Kconfig                  |  1 +
-> >   arch/arm64/kernel/mte_tag_storage.c | 68 +++++++++++++++++++++++++++++
-> >   include/linux/mmzone.h              |  5 +++
-> >   mm/internal.h                       |  3 --
-> >   4 files changed, 74 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> > index fe8276fdc7a8..047487046e8f 100644
-> > --- a/arch/arm64/Kconfig
-> > +++ b/arch/arm64/Kconfig
-> > @@ -2065,6 +2065,7 @@ config ARM64_MTE
-> >   if ARM64_MTE
-> >   config ARM64_MTE_TAG_STORAGE
-> >   	bool "Dynamic MTE tag storage management"
-> > +	select CONFIG_CMA
-> >   	help
-> >   	  Adds support for dynamic management of the memory used by the hardware
-> >   	  for storing MTE tags. This memory, unlike normal memory, cannot be
-> > diff --git a/arch/arm64/kernel/mte_tag_storage.c b/arch/arm64/kernel/mte_tag_storage.c
-> > index fa6267ef8392..427f4f1909f3 100644
-> > --- a/arch/arm64/kernel/mte_tag_storage.c
-> > +++ b/arch/arm64/kernel/mte_tag_storage.c
-> > @@ -5,10 +5,12 @@
-> >    * Copyright (C) 2023 ARM Ltd.
-> >    */
-> > +#include <linux/cma.h>
-> >   #include <linux/memblock.h>
-> >   #include <linux/mm.h>
-> >   #include <linux/of_device.h>
-> >   #include <linux/of_fdt.h>
-> > +#include <linux/pageblock-flags.h>
-> >   #include <linux/range.h>
-> >   #include <linux/string.h>
-> >   #include <linux/xarray.h>
-> > @@ -189,6 +191,14 @@ static int __init fdt_init_tag_storage(unsigned long node, const char *uname,
-> >   		return ret;
-> >   	}
-> > +	/* Pages are managed in pageblock_nr_pages chunks */
-> > +	if (!IS_ALIGNED(tag_range->start | range_len(tag_range), pageblock_nr_pages)) {
-> > +		pr_err("Tag storage region 0x%llx-0x%llx not aligned to pageblock size 0x%llx",
-> > +		       PFN_PHYS(tag_range->start), PFN_PHYS(tag_range->end),
-> > +		       PFN_PHYS(pageblock_nr_pages));
-> > +		return -EINVAL;
-> > +	}
-> > +
-> >   	ret = tag_storage_get_memory_node(node, &mem_node);
-> >   	if (ret)
-> >   		return ret;
-> > @@ -254,3 +264,61 @@ void __init mte_tag_storage_init(void)
-> >   		pr_info("MTE tag storage region management disabled");
-> >   	}
-> >   }
-> > +
-> > +static int __init mte_tag_storage_activate_regions(void)
-> > +{
-> > +	phys_addr_t dram_start, dram_end;
-> > +	struct range *tag_range;
-> > +	unsigned long pfn;
-> > +	int i, ret;
-> > +
-> > +	if (num_tag_regions == 0)
-> > +		return 0;
-> > +
-> > +	dram_start = memblock_start_of_DRAM();
-> > +	dram_end = memblock_end_of_DRAM();
-> > +
-> > +	for (i = 0; i < num_tag_regions; i++) {
-> > +		tag_range = &tag_regions[i].tag_range;
-> > +		/*
-> > +		 * Tag storage region was clipped by arm64_bootmem_init()
-> > +		 * enforcing addressing limits.
-> > +		 */
-> > +		if (PFN_PHYS(tag_range->start) < dram_start ||
-> > +				PFN_PHYS(tag_range->end) >= dram_end) {
-> > +			pr_err("Tag storage region 0x%llx-0x%llx outside addressable memory",
-> > +			       PFN_PHYS(tag_range->start), PFN_PHYS(tag_range->end));
-> > +			ret = -EINVAL;
-> > +			goto out_disabled;
-> > +		}
-> > +	}
-> > +
-> > +	/*
-> > +	 * MTE disabled, tag storage pages can be used like any other pages. The
-> > +	 * only restriction is that the pages cannot be used by kexec because
-> > +	 * the memory remains marked as reserved in the memblock allocator.
-> > +	 */
-> > +	if (!system_supports_mte()) {
-> > +		for (i = 0; i< num_tag_regions; i++) {
-> > +			tag_range = &tag_regions[i].tag_range;
-> > +			for (pfn = tag_range->start; pfn <= tag_range->end; pfn++)
-> > +				free_reserved_page(pfn_to_page(pfn));
-> > +		}
-> > +		ret = 0;
-> > +		goto out_disabled;
-> > +	}
-> > +
-> > +	for (i = 0; i < num_tag_regions; i++) {
-> > +		tag_range = &tag_regions[i].tag_range;
-> > +		for (pfn = tag_range->start; pfn <= tag_range->end; pfn += pageblock_nr_pages)
-> > +			init_cma_reserved_pageblock(pfn_to_page(pfn));
-> > +		totalcma_pages += range_len(tag_range);
-> > +	}
+Am Mittwoch, 22. November 2023, 13:54:13 CET schrieb Andy Yan:
+> From: Andy Yan <andy.yan@rock-chips.com>
 > 
-> You shouldn't be doing that manually in arm code. Likely you want some cma.c
-> helper for something like that.
-
-If you referring to the last loop (the one that does
-ini_cma_reserved_pageblock()), indeed, there's already a function which
-does that, cma_init_reserved_areas() -> cma_activate_area().
-
+> At first we thought the half_block_en bit in AFBCD_CTRL register
+> only work in afbc mode. But the fact is that it control the line
+> buffer in all mode(afbc/tile/line), so we need configure it in
+> all case.
 > 
-> But, can you elaborate on why you took this hacky (sorry) approach as
-> documented in the cover letter:
+> Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
 
-No worries, it is indeed a bit hacky :)
+This looks common to the rk3568 variant, right, so I guess this should
+have a
 
-> 
-> "The arm64 code manages this memory directly instead of using
-> cma_declare_contiguous/cma_alloc for performance reasons."
-> 
-> What is the exact problem?
+Fixes: 604be85547ce ("drm/rockchip: Add VOP2 driver")
 
-I am referring to the performance degredation that is fixed in patch #26,
-"arm64: mte: Fast track reserving tag storage when the block is free" [1].
-The issue is that alloc_contig_range() -> __alloc_contig_migrate_range()
-calls lru_cache_disable(), which IPIs all the CPUs in the system, and that
-leads to a 10-20% performance degradation on Chrome. It has been observed
-that most of the time the tag storage pages are free, and the
-lru_cache_disable() calls are unnecessary.
+perhaps?
 
-The performance degradation is almost entirely eliminated by having the code
-take the tag storage page directly from the free list if it's free, instead
-of calling alloc_contig_range().
 
-Do you believe it would be better to use the cma code, and modify it to use
-this fast path to take the page drectly from the buddy allocator?
+Heiko
 
-I can definitely try to integrate the code with cma_alloc(), but I think
-keeping the fast path for reserving tag storage is extremely desirable,
-since it makes such a huge difference to performance.
 
-[1] https://lore.kernel.org/linux-trace-kernel/20231119165721.9849-27-alexandru.elisei@arm.com/
-
-Thanks,
-Alex
-
-> 
-> -- 
-> Cheers,
-> 
-> David / dhildenb
-> 
-> 
