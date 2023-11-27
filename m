@@ -2,161 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C997F98CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 06:37:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 400047F98DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 06:46:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232527AbjK0FhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 00:37:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42620 "EHLO
+        id S229565AbjK0FpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 00:45:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231849AbjK0Fgj (ORCPT
+        with ESMTP id S229450AbjK0FpA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 00:36:39 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A4BF1733
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 21:36:35 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1cfcc9b3b5cso4477885ad.0
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 21:36:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=darkphysics.net; s=google; t=1701063394; x=1701668194; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zrOmN5h7Hp9zhTp9GrVqL3qhDYZcamqD4piT786f28U=;
-        b=H8TTMSYSjcugVaakFKpf0qqR/bOnLLRsEuSXhQTtdM5Pzk406MiuK3tvU2y0lBBh48
-         EcC+ElQkgnlfBdRHeIUJODzVkrMb+m3PjC/1e8rsX3FAB8jaKrdhXnnFRLZ3bPAj5yeE
-         dbNZ3kEzs4VAquvN5lgPZ9WLsSZqb75hZQ2pKlAUVtBgo3rKAOiaDwYQYbVqCD7YV8V2
-         SpTIc8YTEigB0vnHDYQBMFZDLQj69UzHiqofNGFaObvjcR6k/pMRfU3rL/7cuqc/j6vM
-         Lr1nmU0upEDuXfzrGWjN4qCKkRZmB2thDTwRE7uhhvIIDQxFWSqcO+P6jk+wlhCaz2Sa
-         ZtuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701063394; x=1701668194;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zrOmN5h7Hp9zhTp9GrVqL3qhDYZcamqD4piT786f28U=;
-        b=HTj6cq5k48UljsU4Mu65DQv/PFocl3LZF13ieuyvhsOxOTTI0P7QCwtg7+CRRVgk0d
-         HzKcFZlICILjFAQxVBfCuLD4zbNeynOzBAHHpqM7W0wY6wD9FvoKWG+bWgWxYVT2+ozj
-         JJWlJxpKdqMRYIGNr/J192YH2JHsdL/e6+lbbn1qbyuS4VjDpACMvXsES+hlGmS7O2l9
-         aPjXQJgo32MOruwmH8jStvZ5mD51ALYcTF0z/NqEQyOlcDBXrXtb8WxEmhsrRIFeui9u
-         zSbu4oXD9pBLDEMktQcLFuejuHlxGFt+YtMxPhyNrOTMJwSYwR/3/VMqdAPGon31Oyhk
-         vDYg==
-X-Gm-Message-State: AOJu0YxgIJnIqsMm8cAb+04Cn0cQm15cma55/zLl5ll2vwVcc7BUPwU/
-        Nl6KD/I62uQLY7TWMsD9SEmFEw==
-X-Google-Smtp-Source: AGHT+IHKWM5PNkHMdgW7GOMibQDlx4FTE9/Ju8V8e7vWg7P8uTMRAzIYK0dviMay6bdBd9R6o3ewfw==
-X-Received: by 2002:a17:903:11c8:b0:1cc:511d:eb43 with SMTP id q8-20020a17090311c800b001cc511deb43mr13690297plh.61.1701063394559;
-        Sun, 26 Nov 2023 21:36:34 -0800 (PST)
-Received: from basil.darkphysics (c-76-146-178-2.hsd1.wa.comcast.net. [76.146.178.2])
-        by smtp.gmail.com with ESMTPSA id b6-20020a170902ed0600b001cc3875e658sm7300465pld.303.2023.11.26.21.36.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Nov 2023 21:36:34 -0800 (PST)
-From:   Tree Davies <tdavies@darkphysics.net>
-To:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com,
-        anjan@momi.ca
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Tree Davies <tdavies@darkphysics.net>
-Subject: [PATCH 15/15] Staging: rtl8192e: Rename variable TsCommonInfo
-Date:   Sun, 26 Nov 2023 21:43:05 -0800
-Message-ID: <20231127054305.148276-16-tdavies@darkphysics.net>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231127054305.148276-1-tdavies@darkphysics.net>
-References: <20231127054305.148276-1-tdavies@darkphysics.net>
+        Mon, 27 Nov 2023 00:45:00 -0500
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [IPv6:2001:41d0:1004:224b::ba])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 856A5124;
+        Sun, 26 Nov 2023 21:45:02 -0800 (PST)
+Message-ID: <42f9bf0d-695a-412d-bea5-cb7036fa7418@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1701063899;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jfng7m5CVVUjMjDZCHK2DOYs3dS/poCbHNGMSgQaFl8=;
+        b=pVEFZ9QqEWYcXasAIBDiDF5YwRLy6ERVkY4BiC9RFXTTbMs3XRft0JzgWZasUBK7ec+6Pm
+        Ypdq3RByDDY0EQDJN1OE5N5+v5KQkQjvrVDERSMkKpsyDHYwxabApB7aiNLv8Dk42WWlVn
+        UXreyPsOVnzk7PeSIN7MVXfCCyI0R7E=
+Date:   Sun, 26 Nov 2023 21:44:48 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH ipsec-next v1 6/7] bpf: selftests: test_tunnel: Disable
+ CO-RE relocations
+Content-Language: en-GB
+To:     Eduard Zingerman <eddyz87@gmail.com>, Daniel Xu <dxu@dxuuu.xyz>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        antony.antony@secunet.com, Mykola Lysenko <mykolal@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, devel@linux-ipsec.org,
+        Network Development <netdev@vger.kernel.org>
+References: <cover.1700676682.git.dxu@dxuuu.xyz>
+ <391d524c496acc97a8801d8bea80976f58485810.1700676682.git.dxu@dxuuu.xyz>
+ <0f210cef-c6e9-41c1-9ba8-225f046435e5@linux.dev>
+ <CAADnVQ+sEsUyNYPeZyOf2PcCnxOvOqw4bUuAuMofCU14szTGvg@mail.gmail.com>
+ <3ec6c068-7f95-419a-a0ae-a901f95e4838@linux.dev>
+ <18e43cdf65e7ba0d8f6912364fbc5b08a6928b35.camel@gmail.com>
+ <uc5fv3keghefszuvono7aclgtjtgjnnia3i54ynejmyrs42ser@bwdpq5gmuvub>
+ <0535eb913f1a0c2d3c291478fde07e0aa2b333f1.camel@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <0535eb913f1a0c2d3c291478fde07e0aa2b333f1.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NO_DNS_FOR_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename variable TsCommonInfo to ts_common_info to fix checkpatch
-warning Avoid CamelCase.
 
-Signed-off-by: Tree Davies <tdavies@darkphysics.net>
----
- drivers/staging/rtl8192e/rtl819x_BAProc.c | 6 +++---
- drivers/staging/rtl8192e/rtl819x_TS.h     | 2 +-
- drivers/staging/rtl8192e/rtl819x_TSProc.c | 6 +++---
- 3 files changed, 7 insertions(+), 7 deletions(-)
+On 11/26/23 8:52 PM, Eduard Zingerman wrote:
+> On Sun, 2023-11-26 at 18:04 -0600, Daniel Xu wrote:
+> [...]
+>>> Tbh I'm not sure. This test passes with preserve_static_offset
+>>> because it suppresses preserve_access_index. In general clang
+>>> translates bitfield access to a set of IR statements like:
+>>>
+>>>    C:
+>>>      struct foo {
+>>>        unsigned _;
+>>>        unsigned a:1;
+>>>        ...
+>>>      };
+>>>      ... foo->a ...
+>>>
+>>>    IR:
+>>>      %a = getelementptr inbounds %struct.foo, ptr %0, i32 0, i32 1
+>>>      %bf.load = load i8, ptr %a, align 4
+>>>      %bf.clear = and i8 %bf.load, 1
+>>>      %bf.cast = zext i8 %bf.clear to i32
+>>>
+>>> With preserve_static_offset the getelementptr+load are replaced by a
+>>> single statement which is preserved as-is till code generation,
+>>> thus load with align 4 is preserved.
+>>>
+>>> On the other hand, I'm not sure that clang guarantees that load or
+>>> stores used for bitfield access would be always aligned according to
+>>> verifier expectations.
+>>>
+>>> I think we should check if there are some clang knobs that prevent
+>>> generation of unaligned memory access. I'll take a look.
+>> Is there a reason to prefer fixing in compiler? I'm not opposed to it,
+>> but the downside to compiler fix is it takes years to propagate and
+>> sprinkles ifdefs into the code.
+>>
+>> Would it be possible to have an analogue of BPF_CORE_READ_BITFIELD()?
+> Well, the contraption below passes verification, tunnel selftest
+> appears to work. I might have messed up some shifts in the macro, though.
 
-diff --git a/drivers/staging/rtl8192e/rtl819x_BAProc.c b/drivers/staging/rtl8192e/rtl819x_BAProc.c
-index b00d0f7c7517..58a950ef77ce 100644
---- a/drivers/staging/rtl8192e/rtl819x_BAProc.c
-+++ b/drivers/staging/rtl8192e/rtl819x_BAProc.c
-@@ -474,14 +474,14 @@ void rtllib_ts_init_add_ba(struct rtllib_device *ieee, struct tx_ts_record *ts,
- 	ba->dialog_token++;
- 	ba->ba_param_set.field.amsdu_support = 0;
- 	ba->ba_param_set.field.ba_policy = policy;
--	ba->ba_param_set.field.tid = ts->TsCommonInfo.tspec.ucTSID;
-+	ba->ba_param_set.field.tid = ts->ts_common_info.tspec.ucTSID;
- 	ba->ba_param_set.field.buffer_size = 32;
- 	ba->ba_timeout_value = 0;
- 	ba->ba_start_seq_ctrl.field.seq_num = (ts->tx_cur_seq + 3) % 4096;
- 
- 	activate_ba_entry(ba, BA_SETUP_TIMEOUT);
- 
--	rtllib_send_ADDBAReq(ieee, ts->TsCommonInfo.addr, ba);
-+	rtllib_send_ADDBAReq(ieee, ts->ts_common_info.addr, ba);
- }
- 
- void rtllib_ts_init_del_ba(struct rtllib_device *ieee,
-@@ -525,7 +525,7 @@ void rtllib_tx_ba_inact_timeout(struct timer_list *t)
- 	struct rtllib_device *ieee = container_of(ts, struct rtllib_device,
- 				     TxTsRecord[ts->num]);
- 	tx_ts_delete_ba(ieee, ts);
--	rtllib_send_DELBA(ieee, ts->TsCommonInfo.addr,
-+	rtllib_send_DELBA(ieee, ts->ts_common_info.addr,
- 			  &ts->tx_admitted_ba_record, TX_DIR,
- 			  DELBA_REASON_TIMEOUT);
- }
-diff --git a/drivers/staging/rtl8192e/rtl819x_TS.h b/drivers/staging/rtl8192e/rtl819x_TS.h
-index 8e22c717fb27..31f7cfbb3aa5 100644
---- a/drivers/staging/rtl8192e/rtl819x_TS.h
-+++ b/drivers/staging/rtl8192e/rtl819x_TS.h
-@@ -23,7 +23,7 @@ struct ts_common_info {
- };
- 
- struct tx_ts_record {
--	struct ts_common_info TsCommonInfo;
-+	struct ts_common_info ts_common_info;
- 	u16				tx_cur_seq;
- 	struct ba_record tx_pending_ba_record;
- 	struct ba_record tx_admitted_ba_record;
-diff --git a/drivers/staging/rtl8192e/rtl819x_TSProc.c b/drivers/staging/rtl8192e/rtl819x_TSProc.c
-index f96538f3e4ee..bec73bc53dd0 100644
---- a/drivers/staging/rtl8192e/rtl819x_TSProc.c
-+++ b/drivers/staging/rtl8192e/rtl819x_TSProc.c
-@@ -99,7 +99,7 @@ static void ResetTsCommonInfo(struct ts_common_info *ts_common_info)
- 
- static void ResetTxTsEntry(struct tx_ts_record *ts)
- {
--	ResetTsCommonInfo(&ts->TsCommonInfo);
-+	ResetTsCommonInfo(&ts->ts_common_info);
- 	ts->tx_cur_seq = 0;
- 	ts->add_ba_req_in_progress = false;
- 	ts->add_ba_req_delayed = false;
-@@ -138,7 +138,7 @@ void rtllib_ts_init(struct rtllib_device *ieee)
- 			    rtllib_tx_ba_inact_timeout, 0);
- 
- 		ResetTxTsEntry(pTxTS);
--		list_add_tail(&pTxTS->TsCommonInfo.List,
-+		list_add_tail(&pTxTS->ts_common_info.List,
- 				&ieee->Tx_TS_Unused_List);
- 		pTxTS++;
- 	}
-@@ -292,7 +292,7 @@ bool rtllib_get_ts(struct rtllib_device *ieee, struct ts_common_info **ppTS,
- 			struct tx_ts_record *tmp =
- 				container_of(*ppTS,
- 				struct tx_ts_record,
--				TsCommonInfo);
-+				ts_common_info);
- 			ResetTxTsEntry(tmp);
- 		} else {
- 			struct rx_ts_record *ts =
--- 
-2.39.2
+I didn't test it. But from high level it should work.
 
+>
+> Still, if clang would peek unlucky BYTE_{OFFSET,SIZE} for a particular
+> field access might be unaligned.
+
+clang should pick a sensible BYTE_SIZE/BYTE_OFFSET to meet
+alignment requirement. This is also required for BPF_CORE_READ_BITFIELD.
+
+>
+> ---
+>
+> diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> index 3065a716544d..41cd913ac7ff 100644
+> --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> @@ -9,6 +9,7 @@
+>   #include "vmlinux.h"
+>   #include <bpf/bpf_helpers.h>
+>   #include <bpf/bpf_endian.h>
+> +#include <bpf/bpf_core_read.h>
+>   #include "bpf_kfuncs.h"
+>   #include "bpf_tracing_net.h"
+>   
+> @@ -144,6 +145,38 @@ int ip6gretap_get_tunnel(struct __sk_buff *skb)
+>   	return TC_ACT_OK;
+>   }
+>   
+> +#define BPF_CORE_WRITE_BITFIELD(s, field, new_val) ({			\
+> +	void *p = (void *)s + __CORE_RELO(s, field, BYTE_OFFSET);	\
+> +	unsigned byte_size = __CORE_RELO(s, field, BYTE_SIZE);		\
+> +	unsigned lshift = __CORE_RELO(s, field, LSHIFT_U64);		\
+> +	unsigned rshift = __CORE_RELO(s, field, RSHIFT_U64);		\
+> +	unsigned bit_size = (rshift - lshift);				\
+> +	unsigned long long nval, val, hi, lo;				\
+> +									\
+> +	asm volatile("" : "=r"(p) : "0"(p));				\
+
+Use asm volatile("" : "+r"(p)) ?
+
+> +									\
+> +	switch (byte_size) {						\
+> +	case 1: val = *(unsigned char *)p; break;			\
+> +	case 2: val = *(unsigned short *)p; break;			\
+> +	case 4: val = *(unsigned int *)p; break;			\
+> +	case 8: val = *(unsigned long long *)p; break;			\
+> +	}								\
+> +	hi = val >> (bit_size + rshift);				\
+> +	hi <<= bit_size + rshift;					\
+> +	lo = val << (bit_size + lshift);				\
+> +	lo >>= bit_size + lshift;					\
+> +	nval = new_val;							\
+> +	nval <<= lshift;						\
+> +	nval >>= rshift;						\
+> +	val = hi | nval | lo;						\
+> +	switch (byte_size) {						\
+> +	case 1: *(unsigned char *)p      = val; break;			\
+> +	case 2: *(unsigned short *)p     = val; break;			\
+> +	case 4: *(unsigned int *)p       = val; break;			\
+> +	case 8: *(unsigned long long *)p = val; break;			\
+> +	}								\
+> +})
+
+I think this should be put in libbpf public header files but not sure
+where to put it. bpf_core_read.h although it is core write?
+
+But on the other hand, this is a uapi struct bitfield write,
+strictly speaking, CORE write is really unnecessary here. It
+would be great if we can relieve users from dealing with
+such unnecessary CORE writes. In that sense, for this particular
+case, I would prefer rewriting the code by using byte-level
+stores...
+
+> +
+>   SEC("tc")
+>   int erspan_set_tunnel(struct __sk_buff *skb)
+>   {
+> @@ -173,9 +206,9 @@ int erspan_set_tunnel(struct __sk_buff *skb)
+>   	__u8 hwid = 7;
+>   
+>   	md.version = 2;
+> -	md.u.md2.dir = direction;
+> -	md.u.md2.hwid = hwid & 0xf;
+> -	md.u.md2.hwid_upper = (hwid >> 4) & 0x3;
+> +	BPF_CORE_WRITE_BITFIELD(&md.u.md2, dir, direction);
+> +	BPF_CORE_WRITE_BITFIELD(&md.u.md2, hwid, (hwid & 0xf));
+> +	BPF_CORE_WRITE_BITFIELD(&md.u.md2, hwid_upper, (hwid >> 4) & 0x3);
+>   #endif
+>   
+>   	ret = bpf_skb_set_tunnel_opt(skb, &md, sizeof(md));
+> @@ -214,8 +247,9 @@ int erspan_get_tunnel(struct __sk_buff *skb)
+>   	bpf_printk("\tindex %x\n", index);
+>   #else
+>   	bpf_printk("\tdirection %d hwid %x timestamp %u\n",
+> -		   md.u.md2.dir,
+> -		   (md.u.md2.hwid_upper << 4) + md.u.md2.hwid,
+> +		   BPF_CORE_READ_BITFIELD(&md.u.md2, dir),
+> +		   (BPF_CORE_READ_BITFIELD(&md.u.md2, hwid_upper) << 4) +
+> +		   BPF_CORE_READ_BITFIELD(&md.u.md2, hwid),
+>   		   bpf_ntohl(md.u.md2.timestamp));
+>   #endif
+>   
+> @@ -252,9 +286,9 @@ int ip4ip6erspan_set_tunnel(struct __sk_buff *skb)
+>   	__u8 hwid = 17;
+>   
+>   	md.version = 2;
+> -	md.u.md2.dir = direction;
+> -	md.u.md2.hwid = hwid & 0xf;
+> -	md.u.md2.hwid_upper = (hwid >> 4) & 0x3;
+> +	BPF_CORE_WRITE_BITFIELD(&md.u.md2, dir, direction);
+> +	BPF_CORE_WRITE_BITFIELD(&md.u.md2, hwid, (hwid & 0xf));
+> +	BPF_CORE_WRITE_BITFIELD(&md.u.md2, hwid_upper, (hwid >> 4) & 0x3);
+>   #endif
+>   
+>   	ret = bpf_skb_set_tunnel_opt(skb, &md, sizeof(md));
+> @@ -294,8 +328,9 @@ int ip4ip6erspan_get_tunnel(struct __sk_buff *skb)
+>   	bpf_printk("\tindex %x\n", index);
+>   #else
+>   	bpf_printk("\tdirection %d hwid %x timestamp %u\n",
+> -		   md.u.md2.dir,
+> -		   (md.u.md2.hwid_upper << 4) + md.u.md2.hwid,
+> +		   BPF_CORE_READ_BITFIELD(&md.u.md2, dir),
+> +		   (BPF_CORE_READ_BITFIELD(&md.u.md2, hwid_upper) << 4) +
+> +		   BPF_CORE_READ_BITFIELD(&md.u.md2, hwid),
+>   		   bpf_ntohl(md.u.md2.timestamp));
+>   #endif
+>   
