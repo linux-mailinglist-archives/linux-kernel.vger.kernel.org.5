@@ -2,151 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19DD57F9FFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 13:50:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D817FA005
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 13:51:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233410AbjK0MuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 07:50:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39424 "EHLO
+        id S233421AbjK0Mvr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Nov 2023 07:51:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233376AbjK0MuT (ORCPT
+        with ESMTP id S233387AbjK0Mvp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 07:50:19 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9CA9AA;
-        Mon, 27 Nov 2023 04:50:24 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D68A720329;
-        Mon, 27 Nov 2023 12:50:22 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C9A661367B;
-        Mon, 27 Nov 2023 12:50:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id mmA2MY6QZGWIBgAAD6G6ig
-        (envelope-from <mhocko@suse.com>); Mon, 27 Nov 2023 12:50:22 +0000
-Date:   Mon, 27 Nov 2023 13:50:22 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Dmitry Rokosov <ddrokosov@salutedevices.com>
-Cc:     rostedt@goodmis.org, mhiramat@kernel.org, hannes@cmpxchg.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, akpm@linux-foundation.org,
-        kernel@sberdevices.ru, rockosov@gmail.com, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] mm: memcg: introduce new event to trace
- shrink_memcg
-Message-ID: <ZWSQji7UDSYa1m5M@tiehlicka>
-References: <20231123193937.11628-1-ddrokosov@salutedevices.com>
- <20231123193937.11628-3-ddrokosov@salutedevices.com>
- <ZWRifQgRR0570oDY@tiehlicka>
- <20231127113644.btg2xrcpjhq4cdgu@CAB-WSD-L081021>
+        Mon, 27 Nov 2023 07:51:45 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF232137
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 04:51:51 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1r7b5A-0003Jf-Mc; Mon, 27 Nov 2023 13:51:24 +0100
+Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1r7b55-00Bwme-Ia; Mon, 27 Nov 2023 13:51:19 +0100
+Received: from pza by lupine with local (Exim 4.96)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1r7b55-000C2j-1c;
+        Mon, 27 Nov 2023 13:51:19 +0100
+Message-ID: <23011695aafca595c3c8722fda2a8e194c5318df.camel@pengutronix.de>
+Subject: Re: [PATCH v7][2/4] mmc: Add Synopsys DesignWare mmc cmdq host
+ driver
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Jyan Chou <jyanchou@realtek.com>, ulf.hansson@linaro.org,
+        adrian.hunter@intel.com, jh80.chung@samsung.com,
+        riteshh@codeaurora.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org
+Cc:     conor+dt@kernel.org, asutoshd@codeaurora.org,
+        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, arnd@arndb.de,
+        briannorris@chromium.org, doug@schmorgal.com,
+        tonyhuang.sunplus@gmail.com, abel.vesa@linaro.org,
+        william.qiu@starfivetech.com
+Date:   Mon, 27 Nov 2023 13:51:19 +0100
+In-Reply-To: <20231121091101.5540-3-jyanchou@realtek.com>
+References: <20231121091101.5540-1-jyanchou@realtek.com>
+         <20231121091101.5540-3-jyanchou@realtek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.46.4-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231127113644.btg2xrcpjhq4cdgu@CAB-WSD-L081021>
-X-Spamd-Bar: +++++++++++++++
-X-Spam-Score: 15.72
-X-Rspamd-Server: rspamd1
-Authentication-Results: smtp-out2.suse.de;
-        dkim=none;
-        spf=fail (smtp-out2.suse.de: domain of mhocko@suse.com does not designate 2a07:de40:b281:104:10:150:64:97 as permitted sender) smtp.mailfrom=mhocko@suse.com;
-        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine)
-X-Rspamd-Queue-Id: D68A720329
-X-Spamd-Result: default: False [15.72 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         R_SPF_FAIL(1.00)[-all];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         MID_RHS_NOT_FQDN(0.50)[];
-         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
-         NEURAL_SPAM_SHORT(0.72)[0.239];
-         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-         RCVD_COUNT_THREE(0.00)[3];
-         MX_GOOD(-0.01)[];
-         RCPT_COUNT_TWELVE(0.00)[14];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         R_DKIM_NA(2.20)[];
-         MIME_TRACE(0.00)[0:+];
-         FREEMAIL_CC(0.00)[goodmis.org,kernel.org,cmpxchg.org,linux.dev,google.com,linux-foundation.org,sberdevices.ru,gmail.com,vger.kernel.org,kvack.org];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%];
-         RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:97:from]
-X-Spam: Yes
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 27-11-23 14:36:44, Dmitry Rokosov wrote:
-> On Mon, Nov 27, 2023 at 10:33:49AM +0100, Michal Hocko wrote:
-> > On Thu 23-11-23 22:39:37, Dmitry Rokosov wrote:
-> > > The shrink_memcg flow plays a crucial role in memcg reclamation.
-> > > Currently, it is not possible to trace this point from non-direct
-> > > reclaim paths. However, direct reclaim has its own tracepoint, so there
-> > > is no issue there. In certain cases, when debugging memcg pressure,
-> > > developers may need to identify all potential requests for memcg
-> > > reclamation including kswapd(). The patchset introduces the tracepoints
-> > > mm_vmscan_memcg_shrink_{begin|end}() to address this problem.
-> > > 
-> > > Example of output in the kswapd context (non-direct reclaim):
-> > >     kswapd0-39      [001] .....   240.356378: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> > >     kswapd0-39      [001] .....   240.356396: mm_vmscan_memcg_shrink_end: nr_reclaimed=0 memcg=16
-> > >     kswapd0-39      [001] .....   240.356420: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> > >     kswapd0-39      [001] .....   240.356454: mm_vmscan_memcg_shrink_end: nr_reclaimed=1 memcg=16
-> > >     kswapd0-39      [001] .....   240.356479: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> > >     kswapd0-39      [001] .....   240.356506: mm_vmscan_memcg_shrink_end: nr_reclaimed=4 memcg=16
-> > >     kswapd0-39      [001] .....   240.356525: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> > >     kswapd0-39      [001] .....   240.356593: mm_vmscan_memcg_shrink_end: nr_reclaimed=11 memcg=16
-> > >     kswapd0-39      [001] .....   240.356614: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> > >     kswapd0-39      [001] .....   240.356738: mm_vmscan_memcg_shrink_end: nr_reclaimed=25 memcg=16
-> > >     kswapd0-39      [001] .....   240.356790: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> > >     kswapd0-39      [001] .....   240.357125: mm_vmscan_memcg_shrink_end: nr_reclaimed=53 memcg=16
-> > 
-> > In the previous version I have asked why do we need this specific
-> > tracepoint when we already do have trace_mm_vmscan_lru_shrink_{in}active
-> > which already give you a very good insight. That includes the number of
-> > reclaimed pages but also more. I do see that we do not include memcg id
-> > of the reclaimed LRU, but that shouldn't be a big problem to add, no?
-> 
-> >From my point of view, memcg reclaim includes two points: LRU shrink and
-> slab shrink, as mentioned in the vmscan.c file.
-> 
-> 
-> static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
-> ...
-> 		reclaimed = sc->nr_reclaimed;
-> 		scanned = sc->nr_scanned;
-> 
-> 		shrink_lruvec(lruvec, sc);
-> 
-> 		shrink_slab(sc->gfp_mask, pgdat->node_id, memcg,
-> 			    sc->priority);
-> ...
-> 
-> So, both of these operations are important for understanding whether
-> memcg reclaiming was successful or not, as well as its effectiveness. I
-> believe it would be beneficial to summarize them, which is why I have
-> created new tracepoints.
+Hi,
 
-This sounds like nice to have rather than must. Put it differently. If
-you make existing reclaim trace points memcg aware (print memcg id) then
-what prevents you from making analysis you need?
--- 
-Michal Hocko
-SUSE Labs
+On Di, 2023-11-21 at 17:10 +0800, Jyan Chou wrote:
+> We implemented cmdq feature on Synopsys DesignWare mmc driver.
+> The difference between dw_mmc.c and dw_mmc_cqe.c were distinct
+> register definitions, mmc user flow and the addition of cmdq.
+> 
+> New version of User Guide had modify mmc driver's usage flow,
+> we may need to renew code to precisely follow user guide.
+> 
+> More over, We added a wait status function to satisfy synopsys
+> user guide's description, since this flow might be specific in
+> synopsys host driver only.
+> 
+> Signed-off-by: Jyan Chou <jyanchou@realtek.com>
+> 
+> —--
+[...]
+> diff --git a/drivers/mmc/host/dw_mmc_cqe.c b/drivers/mmc/host/dw_mmc_cqe.c
+> new file mode 100644
+> index 000000000000..eb00d6a474b2
+> --- /dev/null
+> +++ b/drivers/mmc/host/dw_mmc_cqe.c
+> @@ -0,0 +1,1467 @@
+[...]
+> +#ifdef CONFIG_OF
+> +static struct dw_mci_board *dw_mci_cqe_parse_dt(struct dw_mci *host)
+> +{
+> +	struct dw_mci_board *pdata;
+> +	struct device *dev = host->dev;
+> +	const struct dw_mci_drv_data *drv_data = host->drv_data;
+> +	int ret;
+> +
+> +	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
+> +	if (!pdata)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	pdata->rstc = devm_reset_control_get_optional_exclusive(dev, NULL);
+> +	if (IS_ERR(pdata->rstc)) {
+> +		if (PTR_ERR(pdata->rstc) == -EPROBE_DEFER)
+> +			return ERR_PTR(-EPROBE_DEFER);
+
+This should
+
+		return ERR_CAST(pdata->rstc);
+
+instead.
+
+There is no reason to hide device tree parsing errors here, and I'd
+argue pdata should not be returned with rstc set to an error value.
+devm_reset_control_get_optional_exclusive() returns NULL if there are
+no errors and no reset is specified in the device tree.
+
+Then you can just use dev_err_probe() at the call site in
+dw_mci_cqe_probe().
+
+
+[...]
+> +int dw_mci_cqe_probe(struct dw_mci *host)
+> +{
+[...]
+> +	if (!IS_ERR(host->pdata->rstc)) {
+> +		reset_control_assert(host->pdata->rstc);
+> +		usleep_range(10, 50);
+> +		reset_control_deassert(host->pdata->rstc);
+> +	}
+
+This should be changed to
+
+	if (host->pdata->rstc) {
+		reset_control_assert(host->pdata->rstc);
+		usleep_range(10, 50);
+		reset_control_deassert(host->pdata->rstc);
+	}
+
+[...]
+> +	return 0;
+> +
+> +err_dmaunmap:
+> +	if (!IS_ERR(host->pdata->rstc))
+> +		reset_control_assert(host->pdata->rstc);
+
+This should be just
+
+	reset_control_assert(host->pdata->rstc);
+
+as reset_control_assert() is a no-op if host->pdata->rstc == NULL.
+
+[...]
+> +void dw_mci_cqe_remove(struct dw_mci *host)
+> +{
+[...]
+> +	if (!IS_ERR(host->pdata->rstc))
+> +		reset_control_assert(host->pdata->rstc);
+
+	reset_control_assert(host->pdata->rstc);
+
+
+regards
+Philipp
