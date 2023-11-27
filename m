@@ -2,120 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6FA7FACF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 23:05:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 463737FACF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 23:05:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233501AbjK0WFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 17:05:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35146 "EHLO
+        id S233644AbjK0WFd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Nov 2023 17:05:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233348AbjK0WFL (ORCPT
+        with ESMTP id S233569AbjK0WF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 17:05:11 -0500
-Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 503901AE
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:05:18 -0800 (PST)
-Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-1f03d9ad89fso2782347fac.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:05:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1701122717; x=1701727517; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zfeJYmvvAj2atuMBwfCs8cMnsgt/tYWyP8ZyRNbK1QQ=;
-        b=mJiv2LT6JN0NDh/ICNZwSDXURNv3cL1UIGN1PwZ7OfatV3xZiI8FDgN1PYJ1iOuy/H
-         L6PPLqA+e5uI6FxVL8iddt/86kfDkWbjYfXaffQZghHI2kHQ8nzv9pR/taFcysjA6WLw
-         NkhqImP3J4M0eMWpWRUBxz8C+I7B2UV3Mv0AvNiuT+Ru59p9l8oLadSnyFRQA5lCHIS5
-         mAXkj2mGXkZUwIU0uoARjZEEpUCkHGXj8O1G/0B36yYfqAU9TmZvCV0N+fdwdNx3oKI3
-         eedNWjOaTzSYYlKYrkImgsqPw0v0ANo12nJdqL8zTlWJ3wVeF3+xUzML+jidd9t2lXhd
-         Bavg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701122717; x=1701727517;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zfeJYmvvAj2atuMBwfCs8cMnsgt/tYWyP8ZyRNbK1QQ=;
-        b=xVCXuQh/Cds/kwcJDWrghRQAjgvxqps2ewNYwal4gdexDMuwJBoG4cubQOQFxE0QaS
-         XukBJGRsJbHYKq9uUHuT9OcRR/EzaDyXNFUMJvscUzfvx5VYHsbubS3gqjkf7O3RM0Hs
-         7GKFkGqqfU1EIGydBEqsBf14pN0eHsyoXOFc9j2YXvpfUi19jKOZdVngFbyyCvp868yi
-         02I9yzte/Ak+YmKSBkt7I5Z2zXrHjiQE8ym97Q3kZWm3Ex2jdy4Sd55J+VvqiFkiytpa
-         tXnW1AgOy4kNCX8nQhMoxiQX8055YX8wcZpRRhY+V3Tcn6pSBNCBrx316I4WsYkpz+HS
-         m3IA==
-X-Gm-Message-State: AOJu0YyKLEDZK6bU1TLQUE1AYfu3/QW/M5ubzauiQ3gKNeNE4kxP8BHd
-        Nbm1Ltlc35WH3zsH1mzeILqXiw==
-X-Google-Smtp-Source: AGHT+IGlTcZvaCuq9bLaYFKrLM9gzn7wml0OyTvdUNctquyivQSM+6s2M7QMasRuVCMWpyINa3zUCg==
-X-Received: by 2002:a05:6870:1d1:b0:1fa:3b81:5b1f with SMTP id n17-20020a05687001d100b001fa3b815b1fmr8762544oad.30.1701122717675;
-        Mon, 27 Nov 2023 14:05:17 -0800 (PST)
-Received: from charlie.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id x23-20020a056830115700b006d679b53e8asm1458890otq.24.2023.11.27.14.05.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 14:05:17 -0800 (PST)
-From:   Charlie Jenkins <charlie@rivosinc.com>
-Date:   Mon, 27 Nov 2023 14:05:00 -0800
-Subject: [PATCH v4 2/2] riscv: Correct type casting in module loading
-MIME-Version: 1.0
+        Mon, 27 Nov 2023 17:05:27 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83CC210F0;
+        Mon, 27 Nov 2023 14:05:31 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8C3601F388;
+        Mon, 27 Nov 2023 22:05:29 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 020361367B;
+        Mon, 27 Nov 2023 22:05:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id 1znWJ6QSZWU6OwAAD6G6ig
+        (envelope-from <neilb@suse.de>); Mon, 27 Nov 2023 22:05:24 +0000
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231127-module_linking_freeing-v4-2-a2ca1d7027d0@rivosinc.com>
-References: <20231127-module_linking_freeing-v4-0-a2ca1d7027d0@rivosinc.com>
-In-Reply-To: <20231127-module_linking_freeing-v4-0-a2ca1d7027d0@rivosinc.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Ron Economos <re@w6rz.net>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        Andreas Schwab <schwab@linux-m68k.org>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Charlie Jenkins <charlie@rivosinc.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1701122714; l=1122;
- i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
- bh=gKtfd5M4f/12qT968kmTbpH+FPE5A73SSgTlwm9+2vg=;
- b=n0mTJP+LYH0N4DSIuQTOKLB4SExsBvS4/o0PIOTxDPx23GVbSNKIkufpsBdKBOvb6R7paXCcV
- fHMdu6GDl3eAEQWplkrU6P3PL2M0orVhoFEVV10vqJHYN2WN6KTtQAy
-X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
- pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+From:   "NeilBrown" <neilb@suse.de>
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org
+Subject: [PATCH/RFC] core/nfsd: allow kernel threads to use task_work.
+Date:   Tue, 28 Nov 2023 09:05:21 +1100
+Message-id: <170112272125.7109.6245462722883333440@noble.neil.brown.name>
+X-Spamd-Bar: ++
+Authentication-Results: smtp-out2.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.de (policy=none);
+        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of neilb@suse.de) smtp.mailfrom=neilb@suse.de
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [2.81 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-0.98)[-0.979];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(4.60)[~all:c];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         RCPT_COUNT_TWELVE(0.00)[13];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         DMARC_POLICY_SOFTFAIL(0.10)[suse.de : No valid SPF, No valid DKIM,none]
+X-Spam-Score: 2.81
+X-Rspamd-Queue-Id: 8C3601F388
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use __le16 with le16_to_cpu.
 
-Fixes: 8fd6c5142395 ("riscv: Add remaining module relocations")
-Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
-Tested-by: Samuel Holland <samuel.holland@sifive.com>
+I have evidence from a customer site of 256 nfsd threads adding files to
+delayed_fput_lists nearly twice as fast they are retired by a single
+work-queue thread running delayed_fput().  As you might imagine this
+does not end well (20 million files in the queue at the time a snapshot
+was taken for analysis).
+
+While this might point to a problem with the filesystem not handling the
+final close efficiently, such problems should only hurt throughput, not
+lead to memory exhaustion.
+
+For normal threads, the thread that closes the file also calls the
+final fput so there is natural rate limiting preventing excessive growth
+in the list of delayed fputs.  For kernel threads, and particularly for
+nfsd, delayed in the final fput do not impose any throttling to prevent
+the thread from closing more files.
+
+A simple way to fix this is to treat nfsd threads like normal processes
+for task_work.  Thus the pending files are queued for the thread, and
+the same thread finishes the work.
+
+Currently KTHREADs are assumed never to call task_work_run().  With this
+patch that it still the default but it is implemented by storing the
+magic value TASK_WORKS_DISABLED in ->task_works.  If a kthread, such as
+nfsd, will call task_work_run() periodically, it sets ->task_works
+to NULL to indicate this.
+
+Signed-off-by: NeilBrown <neilb@suse.de>
 ---
- arch/riscv/kernel/module.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
-index 53593fe58cd8..aac019ed63b1 100644
---- a/arch/riscv/kernel/module.c
-+++ b/arch/riscv/kernel/module.c
-@@ -55,7 +55,7 @@ static bool riscv_insn_valid_32bit_offset(ptrdiff_t val)
- 
- static int riscv_insn_rmw(void *location, u32 keep, u32 set)
- {
--	u16 *parcel = location;
-+	__le16 *parcel = location;
- 	u32 insn = (u32)le16_to_cpu(parcel[0]) | (u32)le16_to_cpu(parcel[1]) << 16;
- 
- 	insn &= keep;
-@@ -68,7 +68,7 @@ static int riscv_insn_rmw(void *location, u32 keep, u32 set)
- 
- static int riscv_insn_rvc_rmw(void *location, u16 keep, u16 set)
- {
--	u16 *parcel = location;
-+	__le16 *parcel = location;
- 	u16 insn = le16_to_cpu(*parcel);
- 
- 	insn &= keep;
+I wonder which tree this should go through assuming everyone likes it.
+VFS maybe??
 
+Thanks.
+
+ fs/file_table.c           | 2 +-
+ fs/nfsd/nfssvc.c          | 4 ++++
+ include/linux/sched.h     | 1 +
+ include/linux/task_work.h | 4 +++-
+ kernel/fork.c             | 2 +-
+ kernel/task_work.c        | 7 ++++---
+ 6 files changed, 14 insertions(+), 6 deletions(-)
+
+diff --git a/fs/file_table.c b/fs/file_table.c
+index de4a2915bfd4..e79351df22be 100644
+--- a/fs/file_table.c
++++ b/fs/file_table.c
+@@ -445,7 +445,7 @@ void fput(struct file *file)
+ 	if (atomic_long_dec_and_test(&file->f_count)) {
+ 		struct task_struct *task = current;
+ 
+-		if (likely(!in_interrupt() && !(task->flags & PF_KTHREAD))) {
++		if (likely(!in_interrupt())) {
+ 			init_task_work(&file->f_rcuhead, ____fput);
+ 			if (!task_work_add(task, &file->f_rcuhead, TWA_RESUME))
+ 				return;
+diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
+index 66ca50b38b27..c047961262ca 100644
+--- a/fs/nfsd/nfssvc.c
++++ b/fs/nfsd/nfssvc.c
+@@ -13,6 +13,7 @@
+ #include <linux/fs_struct.h>
+ #include <linux/swap.h>
+ #include <linux/siphash.h>
++#include <linux/task_work.h>
+ 
+ #include <linux/sunrpc/stats.h>
+ #include <linux/sunrpc/svcsock.h>
+@@ -941,6 +942,7 @@ nfsd(void *vrqstp)
+ 	}
+ 
+ 	current->fs->umask = 0;
++	current->task_works = NULL; /* Declare that I will call task_work_run() */
+ 
+ 	atomic_inc(&nfsdstats.th_cnt);
+ 
+@@ -955,6 +957,8 @@ nfsd(void *vrqstp)
+ 
+ 		svc_recv(rqstp);
+ 		validate_process_creds();
++		if (task_work_pending(current))
++			task_work_run();
+ 	}
+ 
+ 	atomic_dec(&nfsdstats.th_cnt);
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 292c31697248..c63c2bedbf71 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1117,6 +1117,7 @@ struct task_struct {
+ 	unsigned int			sas_ss_flags;
+ 
+ 	struct callback_head		*task_works;
++#define	TASK_WORKS_DISABLED	((void*)1)
+ 
+ #ifdef CONFIG_AUDIT
+ #ifdef CONFIG_AUDITSYSCALL
+diff --git a/include/linux/task_work.h b/include/linux/task_work.h
+index 795ef5a68429..3c74e3de81ed 100644
+--- a/include/linux/task_work.h
++++ b/include/linux/task_work.h
+@@ -22,7 +22,9 @@ enum task_work_notify_mode {
+ 
+ static inline bool task_work_pending(struct task_struct *task)
+ {
+-	return READ_ONCE(task->task_works);
++	struct callback_head *works = READ_ONCE(task->task_works);
++
++	return works && works != TASK_WORKS_DISABLED;
+ }
+ 
+ int task_work_add(struct task_struct *task, struct callback_head *twork,
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 10917c3e1f03..903b29804fe1 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2577,7 +2577,7 @@ __latent_entropy struct task_struct *copy_process(
+ 	p->dirty_paused_when = 0;
+ 
+ 	p->pdeath_signal = 0;
+-	p->task_works = NULL;
++	p->task_works = args->kthread ? TASK_WORKS_DISABLED : NULL;
+ 	clear_posix_cputimers_work(p);
+ 
+ #ifdef CONFIG_KRETPROBES
+diff --git a/kernel/task_work.c b/kernel/task_work.c
+index 95a7e1b7f1da..ffdf4b0d7a0e 100644
+--- a/kernel/task_work.c
++++ b/kernel/task_work.c
+@@ -49,7 +49,8 @@ int task_work_add(struct task_struct *task, struct callback_head *work,
+ 
+ 	head = READ_ONCE(task->task_works);
+ 	do {
+-		if (unlikely(head == &work_exited))
++		if (unlikely(head == &work_exited ||
++			     head == TASK_WORKS_DISABLED))
+ 			return -ESRCH;
+ 		work->next = head;
+ 	} while (!try_cmpxchg(&task->task_works, &head, work));
+@@ -157,7 +158,7 @@ void task_work_run(void)
+ 		work = READ_ONCE(task->task_works);
+ 		do {
+ 			head = NULL;
+-			if (!work) {
++			if (!work || work == TASK_WORKS_DISABLED) {
+ 				if (task->flags & PF_EXITING)
+ 					head = &work_exited;
+ 				else
+@@ -165,7 +166,7 @@ void task_work_run(void)
+ 			}
+ 		} while (!try_cmpxchg(&task->task_works, &work, head));
+ 
+-		if (!work)
++		if (!work || work == TASK_WORKS_DISABLED)
+ 			break;
+ 		/*
+ 		 * Synchronize with task_work_cancel(). It can not remove
 -- 
-2.42.0
+2.42.1
 
