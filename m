@@ -2,157 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED00C7F98AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 06:30:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FED7F98B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 06:33:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229565AbjK0F2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 00:28:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35032 "EHLO
+        id S229651AbjK0FcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 00:32:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjK0F2V (ORCPT
+        with ESMTP id S229450AbjK0Fb6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 00:28:21 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF2AEE3;
-        Sun, 26 Nov 2023 21:28:27 -0800 (PST)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AR5KIr9017906;
-        Sun, 26 Nov 2023 21:28:20 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=q5szC/F22pcSSZhCOj8XosgUIJngumAH1ob9ajR4/Y4=;
- b=MLSC2TOADqzRuYKiNxVdusfknd20Mvs4WtUVPb5ZKXU4aeCeXwPezkDWSW0LcwzGcDOJ
- FHh9myqC0o4VSBS6rFrx/22TQ5RHSWFFAKY3Y50CD0G//+bDdmC+3zwupA09+pp7xAq6
- NQKknVQ0f0ovvI4P/MuIYx+N/vsO4hAYys2NGyk/q2dVpAtwh0KSkvVxj8v815Hr3SRP
- ndhHW4mF4O7iX9IZD0LVTRqQYQkrNpXgnr78uyrUmT21EVH6ZUCBp9CuRvx8khFMOUFh
- fSkZqZEYQc5X3H7hKfRxU49jk4PL4SolXMTl6BY89xfxs9BH3Fh61YIFXpRNfueYsryQ xg== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3ukhaukg1p-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Sun, 26 Nov 2023 21:28:20 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 26 Nov
- 2023 21:28:18 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Sun, 26 Nov 2023 21:28:18 -0800
-Received: from localhost.localdomain (unknown [10.28.36.166])
-        by maili.marvell.com (Postfix) with ESMTP id 85F2D3F70A2;
-        Sun, 26 Nov 2023 21:28:14 -0800 (PST)
-From:   Suman Ghosh <sumang@marvell.com>
-To:     <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>,
-        <lcherian@marvell.com>, <jerinj@marvell.com>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <horms@kernel.org>,
-        <naveenm@marvell.com>
-Subject: [net PATCH] octeontx2-pf: Fix updation of adaptive interrupt coalescing
-Date:   Mon, 27 Nov 2023 10:58:11 +0530
-Message-ID: <20231127052811.3779132-1-sumang@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 27 Nov 2023 00:31:58 -0500
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2059.outbound.protection.outlook.com [40.107.21.59])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11685E3;
+        Sun, 26 Nov 2023 21:32:05 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ltqPj4WLpDJYdHT+4WInqH0aeLOAU/A9zmy130O2JM8r7rASJoAza+t/WpU66tgyAkFAHKJnAzA/Z2NBeHD/lyWsIL20qz3DdE37S+WcZIZgGfP5Qf89g3e/V99gHhyRFqbwdVHZiGGty1mC3w+46eKpRo9mE1LRS4RW9cvRqPRKttFFsFqpbNNgWoP4lNVsUodj6irVKcqioPFW0lRwclrluBBWJYMxO3zE4aUMlfm9sfh4HEiNbgg7DZZRMI6GcP3kBmT1jVmCDih8XQrBM2haPFO04FZr++pkEru8dAvkzqhroOo83ddFAADgCZ5LK0c1r3bbLdcZM7tUqXtHRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/moDtIKrLaEZ9O+P3MvoWR50Uhy9gWuNEO3gkDsOIqY=;
+ b=WhpsvMht4JMGN8ehxNBmY+Q5X/aWln7p21um1HdNByrAWrqSpR2z9DzU7PbVxxp8/zgVY+wUiWK9dHg6Q6o5y6kWtQnXSisB+oKBgBMmo3l3tDM+ZB2L1QjVXJKu0LAM/W6BkiSyZWFdhIm4Q0gUXZPNVV6fAvW3rwLljI1EH4r++LACOai/ekv3ghm5HehFd9TP3r3u1z63NI3BB72ZwEI+ljShG70DPHGRGEiv6KFTH1v5Tu+4YFxf1UEm7jyVqruGiDciCoCollt6cjpAd/Lo1XOqB48yj9FM3sRvbq0TGJnTn6oLFjknqkGxCAW+2k8KNk95uort1zTY8WTnKg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/moDtIKrLaEZ9O+P3MvoWR50Uhy9gWuNEO3gkDsOIqY=;
+ b=RT4Z3AR5OfO+Stn4eQClr3PA61YcdaTdL6vVZ0OEABNT5K2Ooo0il619JPR+o3vyRhrns2+nzwi3aZoS923eC57li2zQyGrQi6JZhiP0G06I/HOFo16wkujjeWeI6njMRrWxG1+exup24+pG3uvo/+FaJ40OBL9kK3NOUz4NxtE=
+Received: from AM7PR04MB7046.eurprd04.prod.outlook.com (2603:10a6:20b:113::22)
+ by DBAPR04MB7302.eurprd04.prod.outlook.com (2603:10a6:10:1a5::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.19; Mon, 27 Nov
+ 2023 05:32:02 +0000
+Received: from AM7PR04MB7046.eurprd04.prod.outlook.com
+ ([fe80::d99:f43f:65a3:9bf]) by AM7PR04MB7046.eurprd04.prod.outlook.com
+ ([fe80::d99:f43f:65a3:9bf%7]) with mapi id 15.20.7046.015; Mon, 27 Nov 2023
+ 05:32:02 +0000
+From:   Ying Liu <victor.liu@nxp.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+CC:     Linus Walleij <linus.walleij@linaro.org>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: RE: linux-next: build failure after merge of the drm-misc-fixes tree
+Thread-Topic: linux-next: build failure after merge of the drm-misc-fixes tree
+Thread-Index: AQHaILAPih4tujf4ZkeAQQ148k8/RrCNoPhg
+Date:   Mon, 27 Nov 2023 05:32:02 +0000
+Message-ID: <AM7PR04MB704669C9C5471A309F8F72B198BDA@AM7PR04MB7046.eurprd04.prod.outlook.com>
+References: <20231127083205.44b25fa8@canb.auug.org.au>
+In-Reply-To: <20231127083205.44b25fa8@canb.auug.org.au>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AM7PR04MB7046:EE_|DBAPR04MB7302:EE_
+x-ms-office365-filtering-correlation-id: b29317dd-989b-44aa-4442-08dbef0a2f44
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: IFUbNvIN6yE8DzgMWJj3u5uMduP8nsQDWf//NezNkWJgLkeasZejE9uqIIYLfvKb17JW8XgYzG9aOQOdJv+vGbYWmxRFmk8jo6I+wys1rR5DCcjTHmCwdkpow60J9ItVKPCvc/Yix1dilKHFjq666RmPqCyoO8Bqc7N8bbIpzJNIx0l3NB8Vnz5GmQE+/nY0ihypBg1pNS0MWBXiCUdfD9NSYERjdZOJzdOKiZYbRrdsEAklYME69mfP66TLk1xWXzrOPhHXE+ZOYIq9W1xAgXXMwSLHQ6VktOOwI+OLGH5UqkY90QJ/06JyECHBCU3b8s0oY5xDxUaIjoYRlwIineAofZbbdZ0+343zWZnyUehzZ75wIQ8AbcfDZX5ukehczXckZEjh0YG0azBODadGgQcrLxNhl6glBWdlck5iQrzsLJLZaXRpCAM7Q5QYGGYsOWrcghyHIYiQ+52Y/+haVuT782OdZVt+91AbOTJBidwd6cpstHwiLCk83Iwyd8noEL98UvRjM3SLCkkefF0SdQVFYFv6p3w25PxjKpp/Yhz2W8R6oJ3nYjAsCSkzvF0+rqRTuXA5ij9tHwdB2DTV0NTQjD2f78JTtw9b+5UEeTc=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB7046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(366004)(136003)(346002)(39860400002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(6506007)(53546011)(966005)(478600001)(9686003)(7696005)(71200400001)(4744005)(83380400001)(2906002)(5660300002)(41300700001)(66946007)(76116006)(66556008)(66446008)(64756008)(110136005)(54906003)(66476007)(316002)(4326008)(52536014)(8936002)(8676002)(38100700002)(38070700009)(86362001)(122000001)(33656002)(55016003)(26005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Tv4fPJ2YyZqweooepek4ymKf3SPqGxK8kuj6C3f5ZJHTF78z4bNs8Ozcn0AJ?=
+ =?us-ascii?Q?2lSvwFldAsj5sEWZb4o8ovYXQibUR/0XD6ytJMhW/OEdf8/xPRTTYdy+FLKt?=
+ =?us-ascii?Q?YUJjtDyyuoJSG6VguaMBRmk/yKubQUTuCShefLYQUGTePgAT8RyOzu2rVGTD?=
+ =?us-ascii?Q?yZYpR3ObkYUGQ2f+XGOZLGPLCDJRDhjZAym+tfsdzMUlVHpSmv6WH7g6PAq2?=
+ =?us-ascii?Q?HGusCgGCgM8epbeg5Do3IeYvM4VivKSZh0p3JhQjc8l2ev3BpI+2W9axzsTU?=
+ =?us-ascii?Q?OrA2VdYiCV1VTks9YaI8Pgg5BjlZ22OcTnIFowc6U9WFtjPW+A3ZLJrD1ro2?=
+ =?us-ascii?Q?MBgCEIB3C3MYJAnWv9rGU4GJcbdC+ZyJDQ1L5q6yVkZUxrMVBsxU+z+GfehC?=
+ =?us-ascii?Q?Luv6aHUypjzn9JTl1d9E9RtbJyLBdYA8Vr9fjmLx9qe72Jf8RCZZzvkadjRb?=
+ =?us-ascii?Q?TDDnS0nPxlu/b5ixhAY0S5pHADFMb+fKGconHhZ4DMIoYJ58FyFBZY3wij97?=
+ =?us-ascii?Q?0H4336wRo57MV/ojgHfWGnpG9dPNfQB+e0Jd/V03jk39YoMyWVnt/HM1jF6z?=
+ =?us-ascii?Q?IhnvLxcaQv5tt+KaJwrjYsrozOvN55vRWLIdhDki7bqGcUvu5EO47eCUTfAf?=
+ =?us-ascii?Q?LZUDyXFijvXrAXhvrtDi+LauvwDbNobEs/mnXxy0eBYlMSmyCwKABBs8P2Km?=
+ =?us-ascii?Q?m4nm4F1rIrDdh4lzl2y+VC3XpIGC3dT8wbgRobFh64gR7Xwuk6ccg94ryBeR?=
+ =?us-ascii?Q?CItSEZrShGw7gauAMBQ/fIhbRBfCxHvYugGT2LebV5cH40Uv64NAg4+dulPb?=
+ =?us-ascii?Q?/Mcl2qSj6JfS3cJQnFo6MJIO0+apVCeLSoOu03JbIVJaI6wk6E3faPuIGjR3?=
+ =?us-ascii?Q?1QRCtlVjPH5xW+eF5XQjQKgRna9SKFdsWf7BNkyEN17IAy+BYY2fIHnJWNSE?=
+ =?us-ascii?Q?ht2ckujx3nveB9c7uqkMGaoeGx2uFM0O0RxJtZ++ebWVZEjNkoE1n9jT8YD7?=
+ =?us-ascii?Q?uXXcCDcqymqUkgFAgg8icyVM8rtJu2+rY1P8VKh+SNjUac9/AYmzh0Gh3iq9?=
+ =?us-ascii?Q?tdW7cDh/8rebGPcInaMHM9sZKaH2OqEO5FIhes817mzvdsHopzQGRPyOgtYv?=
+ =?us-ascii?Q?vO0QthtjITVwxmJgw7NcFG3uN8fFrhImSMC1C6YBg2oiwnEFORY8OVoxZhzd?=
+ =?us-ascii?Q?Y1s7XiHQLupNGz4Yrf4y2Fof536Xu3u1KRHgESh3dBIS4zlT16aLTd3aja/o?=
+ =?us-ascii?Q?QzRujaSjsQYsF1RCSG887L7VQIzXxMChKfaGb1JYbThXQAVeMWxMkd1HUXTd?=
+ =?us-ascii?Q?C6QDHwvtcp2kPCkhUhtr9pyI0EOBpGlnfFJ0APbUK9wFvrdTyDPVSn2aS5Au?=
+ =?us-ascii?Q?+D8V4D3uXlkh5lQc/aAREkcGbchECShvA15jPgpxWBubYeZQFxoJsSeqvjop?=
+ =?us-ascii?Q?jFnfEtAalyFWZl6nGlZOZ0bOWUupvJaSCKzZ01mIbMi9l3UW6yb5YWzIPTb9?=
+ =?us-ascii?Q?ocAm2/KpDHSIIR3zFU+pfoxshjiZCup9Il9ks4aCJz99RfNrDW3PZGlOD7Mi?=
+ =?us-ascii?Q?s9TXPWmJhgSOGhY0QHM=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: BKANiDfE5NlcWLKmDKIiPfPi7EodFTLX
-X-Proofpoint-GUID: BKANiDfE5NlcWLKmDKIiPfPi7EodFTLX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-27_03,2023-11-22_01,2023-05-22_02
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB7046.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b29317dd-989b-44aa-4442-08dbef0a2f44
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Nov 2023 05:32:02.4330
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9l78jUn8FsP4wc5nZzyOnQavRHunZz3DmH/7DYCZDRjz2i3eduDTp+AKeN/F3N6koQxC3qv7tNRmD48koSQMvw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7302
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Naveen Mamindlapalli <naveenm@marvell.com>
+On Monday, November 27, 2023 5:32 AM, Stephen Rothwell <sfr@canb.auug.org.a=
+u> wrote:
+> Hi all,
+>=20
+> After merging the drm-misc-fixes tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+>=20
+> ERROR: modpost: "device_is_dependent"
+> [drivers/gpu/drm/drm_kms_helper.ko] undefined!
 
-The current adaptive interrupt coalescing code updates only rx
-packet stats for dim algorithm. This patch fixes that and also updates
-tx packet stats which will be useful when there is only tx traffic.
-Also moved configuring hardware adaptive interrupt setting to
-driver dim callback.
+I've sent a new patch series to address the build failure.
+It includes a new patch to export device_is_dependent and then
+adds the offending commit.
+https://lore.kernel.org/all/20231127051414.3783108-1-victor.liu@nxp.com/T/#=
+t
 
-Signed-off-by: Naveen Mamindlapalli <naveenm@marvell.com>
----
- .../ethernet/marvell/octeontx2/nic/otx2_pf.c  |  9 +++++++++
- .../marvell/octeontx2/nic/otx2_txrx.c         | 20 +++++++++----------
- 2 files changed, 19 insertions(+), 10 deletions(-)
+Regards,
+Liu Ying
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-index ba95ac913274..6c0e0e2c235b 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-@@ -1685,6 +1685,14 @@ static void otx2_do_set_rx_mode(struct otx2_nic *pf)
- 	mutex_unlock(&pf->mbox.lock);
- }
- 
-+static void otx2_set_irq_coalesce(struct otx2_nic *pfvf)
-+{
-+	int cint;
-+
-+	for (cint = 0; cint < pfvf->hw.cint_cnt; cint++)
-+		otx2_config_irq_coalescing(pfvf, cint);
-+}
-+
- static void otx2_dim_work(struct work_struct *w)
- {
- 	struct dim_cq_moder cur_moder;
-@@ -1700,6 +1708,7 @@ static void otx2_dim_work(struct work_struct *w)
- 		CQ_TIMER_THRESH_MAX : cur_moder.usec;
- 	pfvf->hw.cq_ecount_wait = (cur_moder.pkts > NAPI_POLL_WEIGHT) ?
- 		NAPI_POLL_WEIGHT : cur_moder.pkts;
-+	otx2_set_irq_coalesce(pfvf);
- 	dim->state = DIM_START_MEASURE;
- }
- 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-index 6ee15f3c25ed..4d519ea833b2 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-@@ -512,11 +512,18 @@ static void otx2_adjust_adaptive_coalese(struct otx2_nic *pfvf, struct otx2_cq_p
- {
- 	struct dim_sample dim_sample;
- 	u64 rx_frames, rx_bytes;
-+	u64 tx_frames, tx_bytes;
- 
- 	rx_frames = OTX2_GET_RX_STATS(RX_BCAST) + OTX2_GET_RX_STATS(RX_MCAST) +
- 		OTX2_GET_RX_STATS(RX_UCAST);
- 	rx_bytes = OTX2_GET_RX_STATS(RX_OCTS);
--	dim_update_sample(pfvf->napi_events, rx_frames, rx_bytes, &dim_sample);
-+	tx_bytes = OTX2_GET_TX_STATS(TX_OCTS);
-+	tx_frames = OTX2_GET_TX_STATS(TX_UCAST);
-+
-+	dim_update_sample(pfvf->napi_events,
-+			  rx_frames + tx_frames,
-+			  rx_bytes + tx_bytes,
-+			  &dim_sample);
- 	net_dim(&cq_poll->dim, dim_sample);
- }
- 
-@@ -558,16 +565,9 @@ int otx2_napi_handler(struct napi_struct *napi, int budget)
- 		if (pfvf->flags & OTX2_FLAG_INTF_DOWN)
- 			return workdone;
- 
--		/* Check for adaptive interrupt coalesce */
--		if (workdone != 0 &&
--		    ((pfvf->flags & OTX2_FLAG_ADPTV_INT_COAL_ENABLED) ==
--		     OTX2_FLAG_ADPTV_INT_COAL_ENABLED)) {
--			/* Adjust irq coalese using net_dim */
-+		/* Adjust irq coalese using net_dim */
-+		if (pfvf->flags & OTX2_FLAG_ADPTV_INT_COAL_ENABLED)
- 			otx2_adjust_adaptive_coalese(pfvf, cq_poll);
--			/* Update irq coalescing */
--			for (i = 0; i < pfvf->hw.cint_cnt; i++)
--				otx2_config_irq_coalescing(pfvf, i);
--		}
- 
- 		if (unlikely(!filled_cnt)) {
- 			struct refill_work *work;
--- 
-2.25.1
-
+>=20
+> Caused by commit
+>=20
+>   39d5b6a64ace ("drm/bridge: panel: Check device dependency before
+> managing device link")
+>=20
+> I have used the drm-misc-fixes tree from next-20231124 for today.
+>=20
+> --
+> Cheers,
+> Stephen Rothwell
