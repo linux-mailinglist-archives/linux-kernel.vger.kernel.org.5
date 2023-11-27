@@ -2,197 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99CAA7F9E89
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:27:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4626A7F9E90
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:27:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233167AbjK0L0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 06:26:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41124 "EHLO
+        id S233217AbjK0L1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 06:27:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231461AbjK0L0w (ORCPT
+        with ESMTP id S233213AbjK0L1g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 06:26:52 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 528A0B8;
-        Mon, 27 Nov 2023 03:26:58 -0800 (PST)
-Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 041DD66057B6;
-        Mon, 27 Nov 2023 11:26:55 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701084416;
-        bh=O3FAS936I5aIcUPU/jsyH/UCCj/iVZb8uQ5S19CyrdI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=EDa3tqBMe4sdymOvzWlTPSZdVAEqyibUtjnBIWZdNz/xy3Kg8n1C3C3Iz69PII+v6
-         KGWSyZd3C5wm4jQgP5qLw68990swAn27qF3aEPF+eiWZDdoTHB2KbsIii4zZu+bm12
-         aAL2O4mLoP8HQuZ62U2rJ3nq56u6TxIbRALr6/R60F27eGTwr94dcfTpk3ClZAQcFw
-         qn8GcrkTfr2jzCKRlXvVLH8KylTfF1pS/mk/s2lx44XKUb5927+Miy3xFUzJ32TFpu
-         7+Qmb7ziPo5bi26qrCIpYtILPmA0zbBEMPVnwv9D5azOxHBP+TCF+tYKRRco2ul2z1
-         U3Eb2oZ/eWXAw==
-Message-ID: <ac36d1e2-36a4-473c-9acf-e0a1fc7d3bfb@collabora.com>
-Date:   Mon, 27 Nov 2023 12:26:52 +0100
+        Mon, 27 Nov 2023 06:27:36 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 909AE10A;
+        Mon, 27 Nov 2023 03:27:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1701084438; x=1701689238; i=rwahl@gmx.de;
+        bh=2amWrJACc8qSaje+/sHjHwmHFxanJF0oJSla/8F+B1M=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=hK+aMpEGKtjwnuyfDAH3rXunntmy8vQ6ugU8UyEP3/xUHM273qidzh79QI4vtTBk
+         zBiF/aBZwvFq9+CL/df11DeDfhyxoy4qT5wde0XU10QXanPkGgIbTQzcQzObnG2TB
+         uSmKLprHI25uK4/tQwCCQuUTZiI6Xr8Jn+fIUP9qI3qCJJGuJX7iCIrHIFRNy1wfY
+         uee/2ICjgRxvWhyClKtfcglUUUIkJKhi54zTqxiqbukWCiWW80nIVi3Pn/t2I3RAE
+         TrrYsChzRNCt5qtX6W0k7VZxqXq+6r6JTlSW/lfUgh33szh+azzG/mR+ioIPQgq2T
+         rlukpqXnbvMVrjfa5Q==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from rohan.localdomain ([84.156.159.24]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M4s4r-1r7IWH1wXf-0023Db; Mon, 27
+ Nov 2023 12:27:18 +0100
+From:   Ronald Wahl <rwahl@gmx.de>
+To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bryan Brattlof <bb@ti.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, Ronald Wahl <ronald.wahl@raritan.com>
+Subject: [PATCH RESEND] arm64: dts: ti: k3-am62-main: Add gpio-ranges properties
+Date:   Mon, 27 Nov 2023 12:26:57 +0100
+Message-ID: <20231127112657.2692103-1-rwahl@gmx.de>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/panfrost: Really power off GPU cores in
- panfrost_gpu_power_off()
-Content-Language: en-US
-To:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Steven Price <steven.price@arm.com>, tzimmermann@suse.de,
-        linux-kernel@vger.kernel.org, mripard@kernel.org,
-        dri-devel@lists.freedesktop.org, wenst@chromium.org,
-        kernel@collabora.com,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>
-References: <20231102141507.73481-1-angelogioacchino.delregno@collabora.com>
- <7928524a-b581-483b-b1a1-6ffd719ce650@arm.com>
- <1c9838fb-7f2d-4752-b86a-95bcf504ac2f@linaro.org>
- <6b7a4669-7aef-41a7-8201-c2cfe401bc43@collabora.com>
- <20231121175531.085809f5@collabora.com>
- <d95259b8-10cf-4ded-866c-47cbd2a44f84@linaro.org>
- <4c73f67e-174c-497e-85a5-cb053ce657cb@collabora.com>
- <CGME20231122092952eucas1p291af9a5570a05c67014f5c871c85e98c@eucas1p2.samsung.com>
- <39e9514b-087c-42eb-8d0e-f75dc620e954@linaro.org>
- <37d373e1-8850-4ab2-8fdb-6b069e2d6976@samsung.com>
- <054f6a93-8911-40bb-b677-ccdfd27d132b@samsung.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <054f6a93-8911-40bb-b677-ccdfd27d132b@samsung.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:QinziaHniGAksgaiTDEcGuOV9M9mixaCm3bbnBulSSGtPvLFtpE
+ oZF1YyX/56c1HRfGgX1/h2RbN6xQrPWcsmmliGqvbq7v/2RzC89Ihk8F7FwjoqYdERelZNW
+ FIArsjAGsOGEwL1AusY8RUDe+Yb+RZWaErWK4TJlJBZHTotIl/BWzqBK5Qr74ONMhJQuQAG
+ fThhNKWjanG+Ur6yLUhSw==
+UI-OutboundReport: notjunk:1;M01:P0:z9rK+5kZQOo=;EUokD9aqwJPbzieYo0Kci1Dy2WQ
+ 3BLJJ8NSd5tVlHYQE1BFeA9jdzkStrDY0rRw4ociZ05mEEM44ULQry7Dv8CXILSzdSDVm4bYQ
+ o7zEH4uVS+yAoTL4tbGGLUIpsfwZpSP3GAJN/zihKnIal2pjWE/f3I4A0qrFBmuz/g5gCJ3jz
+ bYO5tu9dYQeUYucAVR8cywIGa+BQwV3kdDLTuHmaak08WDPkFWRBwJpoD4DNxXYqbxa103mED
+ OqoO70jKPimKn05jFfoKneg7mjRGfsqA7IhNdGbRyQZDkAPOgtjYqPnWlGQGZ58b2N7zXdYJ5
+ BDWOF4u/PKgDDxpYvlUrufvM0nn7B3d9fSwy86PjYZ6EFtQzMewplP+/9aUM7t7Fanv/TExTd
+ ux5AQaKPsvHArgTdgYTXDNV8mxUsKr4sXv/XSwiytwcDS2jCbhmsM219Ftn0avME722IcIebJ
+ WzzHFaKT8rXPp7jASf07FMBRs7ZBEqdc6crWXlc4xfHHl9JcfkLyBuxN7/ilDeciuVQTqUriH
+ X/fOd5puv3C+ES0DgrGshwxd4/EnIVMNAt09RJeXgo11GWCx8t3E9pjlZcUJTsxq2e4Hl2HAd
+ JR2xnq6m7fnSaYlJ7c9EsSyo5wajvRe0JFuPM2ANtg+0EufeCK76jA/6JWyhpKbUNffzJDUnB
+ 3J8YrcHIQ/1NDJMOPGHVEEby9ApqD2yxORim9daXCI0ggi/qu6MzCYoPhG4dOiBbC0p/dsCpS
+ nEg5Ol25ueoiAFCeYj/+qbHEc+oOZnFC1gklOIUeCflNseO0+rWqRKMV25Sc3RXQkOTL08gxc
+ efO6ZmvOWPJ8wECf1SVSQVxmS2od/9O8GcixWN7hR+RdD4MqcMJQkb08OVAG5dnjk88pPw03R
+ HsTtyTy0SAsx+5QBU9dwX2hPSDV7vXSTPGJjtFody4wTaiVQf9IuFjMdi/5xXN25Q041asTCs
+ VGfMMg==
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 27/11/23 12:24, Marek Szyprowski ha scritto:
-> On 24.11.2023 13:45, Marek Szyprowski wrote:
->> On 22.11.2023 10:29, Krzysztof Kozlowski wrote:
->>> On 22/11/2023 10:06, AngeloGioacchino Del Regno wrote:
->>>>>>> Hey Krzysztof,
->>>>>>>
->>>>>>> This is interesting. It might be about the cores that are missing
->>>>>>> from the partial
->>>>>>> core_mask raising interrupts, but an external abort on
->>>>>>> non-linefetch is strange to
->>>>>>> see here.
->>>>>> I've seen such external aborts in the past, and the fault type has
->>>>>> often been misleading. It's unlikely to have anything to do with a
->>>>> Yeah, often accessing device with power or clocks gated.
->>>>>
->>>> Except my commit does *not* gate SoC power, nor SoC clocks 🙂
->>> It could be that something (like clocks or power supplies) was missing
->>> on this board/SoC, which was not critical till your patch came.
->>>
->>>> What the "Really power off ..." commit does is to ask the GPU to
->>>> internally power
->>>> off the shaders, tilers and L2, that's why I say that it is strange
->>>> to see that
->>>> kind of abort.
->>>>
->>>> The GPU_INT_CLEAR GPU_INT_STAT, GPU_FAULT_STATUS and
->>>> GPU_FAULT_ADDRESS_{HI/LO}
->>>> registers should still be accessible even with shaders, tilers and
->>>> cache OFF.
->>>>
->>>> Anyway, yes, synchronizing IRQs before calling the poweroff sequence
->>>> would also
->>>> work, but that'd add up quite a bit of latency on the
->>>> runtime_suspend() call, so
->>>> in this case I'd be more for avoiding to execute any register r/w in
->>>> the handler
->>>> by either checking if the GPU is supposed to be OFF, or clearing
->>>> interrupts, which
->>>> may not work if those are generated after the execution of the
->>>> poweroff function.
->>>> Or we could simply disable the irq after power_off, but that'd be
->>>> hacky (as well).
->>>>
->>>>
->>>> Let's see if asking to poweroff *everything* works:
->>> Worked.
->>
->> Yes, I also got into this issue some time ago, but I didn't report it
->> because I also had some power supply related problems on my test farm
->> and everything was a bit unstable. I wasn't 100% sure that the
->> $subject patch is responsible for the observed issues. Now, after
->> fixing power supply, I confirm that the issue was revealed by the
->> $subject patch and above mentioned change fixes the problem. Feel free
->> to add:
->>
->> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> 
-> 
-> I must revoke my tested-by tag for the above fix alone. Although it
-> fixed the boot issue and system stability issue, it looks that there is
-> still something missing and opening the panfrost dri device causes a
-> system crash:
-> 
-> root@target:~# ./modetest -C
-> trying to open device 'i915'...failed
-> trying to open device 'amdgpu'...failed
-> trying to open device 'radeon'...failed
-> trying to open device 'nouveau'...failed
-> trying to open device 'vmwgfx'...failed
-> trying to open device 'omapdrm'...failed
-> trying to open device 'exynos'...done
-> root@target:~#
-> 
-> 8<--- cut here ---
-> Unhandled fault: external abort on non-linefetch (0x1008) at 0xf0c6803c
-> [f0c6803c] *pgd=42d87811, *pte=11800653, *ppte=11800453
-> Internal error: : 1008 [#1] PREEMPT SMP ARM
-> Modules linked in: exynos_gsc s5p_mfc s5p_jpeg v4l2_mem2mem
-> videobuf2_dma_contig videobuf2_memops videobuf2_v4l2 videobuf2_common
-> videodev mc s5p_cec
-> CPU: 0 PID: 0 Comm: swapper/0 Not tainted
-> 6.7.0-rc2-next-20231127-00055-ge14abcb527d6 #7649
-> Hardware name: Samsung Exynos (Flattened Device Tree)
-> PC is at panfrost_gpu_irq_handler+0x18/0xfc
-> LR is at __handle_irq_event_percpu+0xcc/0x31c
-> ...
-> Process swapper/0 (pid: 0, stack limit = 0x0e2875ff)
-> Stack: (0xc1301e48 to 0xc1302000)
-> ...
->    panfrost_gpu_irq_handler from __handle_irq_event_percpu+0xcc/0x31c
->    __handle_irq_event_percpu from handle_irq_event+0x38/0x80
->    handle_irq_event from handle_fasteoi_irq+0x9c/0x250
->    handle_fasteoi_irq from generic_handle_domain_irq+0x24/0x34
->    generic_handle_domain_irq from gic_handle_irq+0x88/0xa8
->    gic_handle_irq from generic_handle_arch_irq+0x34/0x44
->    generic_handle_arch_irq from __irq_svc+0x8c/0xd0
-> Exception stack(0xc1301f10 to 0xc1301f58)
-> ...
->    __irq_svc from default_idle_call+0x20/0x2c4
->    default_idle_call from do_idle+0x244/0x2b4
->    do_idle from cpu_startup_entry+0x28/0x2c
->    cpu_startup_entry from rest_init+0xec/0x190
->    rest_init from arch_post_acpi_subsys_init+0x0/0x8
-> Code: e591300c e593402c f57ff04f e591300c (e593903c)
-> ---[ end trace 0000000000000000 ]---
-> Kernel panic - not syncing: Fatal exception in interrupt
-> CPU2: stopping
-> 
-> 
-> It looks that the panfrost interrupts must be somehow synchronized with
-> turning power off, what has been already discussed. Let me know if you
-> want me to test any patch.
-> 
+From: Ronald Wahl <ronald.wahl@raritan.com>
 
-The new series containing the whole interrupts sync code is almost ready,
-currently testing it on my machines here.
+On the AM62 platform we have no single 1:1 relation regarding index of
+gpio and pin controller. Actually there are some linear ranges with
+small holes inbetween. These ranges can be represented with the
+gpio-ranges device tree property. They have been extracted manually
+from the AM62x datasheet (Table 6-1. Pin Attributes).
 
-I should be able to send it between today and tomorrow.
+Signed-off-by: Ronald Wahl <ronald.wahl@raritan.com>
+=2D--
+ arch/arm64/boot/dts/ti/k3-am62-main.dtsi | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Cheers,
-Angelo
+diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dt=
+s/ti/k3-am62-main.dtsi
+index 284b90c94da8..587d197e82c4 100644
+=2D-- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
+@@ -492,6 +492,9 @@ main_gpio_intr: interrupt-controller@a00000 {
+ 	main_gpio0: gpio@600000 {
+ 		compatible =3D "ti,am64-gpio", "ti,keystone-gpio";
+ 		reg =3D <0x0 0x00600000 0x0 0x100>;
++		gpio-ranges =3D <&main_pmx0  0  0 32>,
++			      <&main_pmx0 32 33 38>,
++			      <&main_pmx0 70 72 22>;
+ 		gpio-controller;
+ 		#gpio-cells =3D <2>;
+ 		interrupt-parent =3D <&main_gpio_intr>;
+@@ -510,6 +513,10 @@ main_gpio1: gpio@601000 {
+ 		compatible =3D "ti,am64-gpio", "ti,keystone-gpio";
+ 		reg =3D <0x0 0x00601000 0x0 0x100>;
+ 		gpio-controller;
++		gpio-ranges =3D <&main_pmx0  0  94 41>,
++			      <&main_pmx0 41 136  6>,
++			      <&main_pmx0 47 143  3>,
++			      <&main_pmx0 50 149  2>;
+ 		#gpio-cells =3D <2>;
+ 		interrupt-parent =3D <&main_gpio_intr>;
+ 		interrupts =3D <180>, <181>, <182>,
+=2D-
+2.41.0
 
