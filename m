@@ -2,89 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D03287F9FC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 13:40:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A10EA7F9FC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 13:41:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233339AbjK0MkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 07:40:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55728 "EHLO
+        id S233346AbjK0Mk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 07:40:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233184AbjK0MkB (ORCPT
+        with ESMTP id S233337AbjK0Mkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 07:40:01 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34281137
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 04:40:07 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C1E6C433C7;
-        Mon, 27 Nov 2023 12:40:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1701088806;
-        bh=uTJ91VZ9bOH63Qr5KyfXaGtqhL/xUMXc4lb5CtuYGQQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DQSeWzdPGYG2T/Kkz3sP6B8l0KR5+6IwD5z4+sHV9Vvm4pxRqiA9BJjx5IvLGAThH
-         vlJ8HFPD2CSu+gGnJhX5ZFPnJSsxEhhhPvOvUbyxwIxbgEJyIArqFrm6ST29OHG6qr
-         plss7VLFUC7PSuCejuziiQdR2sVDet0/JW+Obamk=
-Date:   Mon, 27 Nov 2023 12:40:04 +0000
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     djakov@kernel.org
-Cc:     linux@roeck-us.net, sam@gentoo.org, akpm@linux-foundation.org,
-        allen.lkml@gmail.com, conor@kernel.org, f.fainelli@gmail.com,
-        jonathanh@nvidia.com, linux-kernel@vger.kernel.org,
-        lkft-triage@lists.linaro.org, patches@kernelci.org,
-        patches@lists.linux.dev, pavel@denx.de, rwarsow@gmx.de,
-        shuah@kernel.org, srw@sladewatkins.net, stable@vger.kernel.org,
-        sudipm.mukherjee@gmail.com, torvalds@linux-foundation.org
-Subject: Re: [PATCH 5.10] interconnect: qcom: Add support for mask-based BCMs
-Message-ID: <2023112753-detector-silent-18bd@gregkh>
-References: <05678c48-bac1-4f17-99f8-21b566c17a6e@roeck-us.net>
- <20231127114551.1043891-1-djakov@kernel.org>
+        Mon, 27 Nov 2023 07:40:41 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59644135;
+        Mon, 27 Nov 2023 04:40:47 -0800 (PST)
+Received: from Monstersaurus.tail69b4.ts.net (aztw-30-b2-v4wan-166917-cust845.vm26.cable.virginm.net [82.37.23.78])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id CCF5E512;
+        Mon, 27 Nov 2023 13:40:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1701088809;
+        bh=QUtBMdPlaSkAZ3NJBmC6cLmtMUhs14o2DySLPBMR408=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mF/mwgpwXxAGcco1PY37ys6Rvt8V6EQvs95CJh00EWFsKXVM3TxwJ4Zdx9hERUDkZ
+         MCFVfLVp+iDkj5bIwvlLiZVg+jkrj2muNqZ42Zx0YY+3S0TeSfA2qijqcLLP5YR5CQ
+         2rNZR4rSLP5yRqWLW7jv8kh98MDhaBs442uJaj30=
+From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
+To:     devicetree@vger.kernel.org
+Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM/FREESCALE IMX
+        / MXC ARM ARCHITECTURE), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v3] arm64: dts: freescale: debix-som-a-bmb-08: Add CSI Power Regulators
+Date:   Mon, 27 Nov 2023 12:40:34 +0000
+Message-Id: <20231127124037.888597-1-kieran.bingham@ideasonboard.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231127114551.1043891-1-djakov@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 01:45:51PM +0200, djakov@kernel.org wrote:
-> From: Georgi Djakov <djakov@kernel.org>
-> 
-> From: Mike Tipton <mdtipton@codeaurora.org>
-> 
-> [ Upstream commit d8630f050d3fd2079f8617dd6c00c6509109c755 ]
-> 
-> Some BCMs aren't directly associated with the data path (i.e. ACV) and
-> therefore don't communicate using BW. Instead, they are simply
-> enabled/disabled with a simple bit mask. Add support for these.
-> 
-> Origin commit retrieved from:
-> https://git.codelinaro.org/clo/la/kernel/msm-5.15/-/commit/2d1573e0206998151b342e6b52a4c0f7234d7e36
-> 
-> Signed-off-by: Mike Tipton <mdtipton@codeaurora.org>
-> [narmstrong: removed copyright change from original commit]
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> Link: https://lore.kernel.org/r/20230619-topic-sm8550-upstream-interconnect-mask-vote-v2-1-709474b151cc@linaro.org
-> Fixes: fafc114a468e ("interconnect: qcom: Add SM8450 interconnect provider driver")
-> Fixes: 2d1f95ab9feb ("interconnect: qcom: Add SC7180 interconnect provider driver")
-> Signed-off-by: Georgi Djakov <djakov@kernel.org>
-> ---
-> 
-> There is a build error reported in the 5.10.201 stable tree (arm64 allmodconfig),
-> which is caused by a patch that has a dependency we missed to backport. This is
-> the missing patch that we need to get into 5.10.202 to fix the build failure.
-> Thanks to Guenter and Sam for reporting that!
-> 
->  drivers/interconnect/qcom/bcm-voter.c | 5 +++++
->  drivers/interconnect/qcom/icc-rpmh.h  | 2 ++
->  2 files changed, 7 insertions(+)
+Provide the 1.8 and 3.3 volt regulators that are utilised on the Debix
+SOM BMB-08 base board.
 
-Now queued up, thanks.
+Facilitate this by also supplying the pin control used to enable the
+regulators on the second MIPI CSI port.
 
-greg ik-h
+Reviewed-by: Marco Felsch <m.felsch@pengutronix.de>
+Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+
+---
+v3:
+ - Fix line ordering within reg_csi1_1v8
+
+v2:
+ - Remove _SW post fixes from regulators.
+
+ .../freescale/imx8mp-debix-som-a-bmb-08.dts   | 56 +++++++++++++++++++
+ 1 file changed, 56 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-debix-som-a-bmb-08.dts b/arch/arm64/boot/dts/freescale/imx8mp-debix-som-a-bmb-08.dts
+index ee43d0fa6675..08202c364a25 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-debix-som-a-bmb-08.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mp-debix-som-a-bmb-08.dts
+@@ -77,6 +77,50 @@ regulator-som-vdd3v3 {
+ 		regulator-always-on;
+ 	};
+ 
++	reg_csi1_1v8: regulator-csi1-vdd1v8 {
++		compatible = "regulator-fixed";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		regulator-name = "CSI1_VDD1V8";
++		gpio = <&expander0 13 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++		vin-supply = <&reg_baseboard_vdd3v3>;
++	};
++
++	reg_csi1_3v3: regulator-csi1-vdd3v3 {
++		compatible = "regulator-fixed";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-name = "CSI1_VDD3V3";
++		gpio = <&expander0 14 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++		vin-supply = <&reg_vdd5v0>;
++	};
++
++	reg_csi2_1v8: regulator-csi2-vdd1v8 {
++		compatible = "regulator-fixed";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_reg_csi2_1v8>;
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		regulator-name = "CSI2_VDD1V8";
++		gpio = <&gpio3 21 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++		vin-supply = <&reg_baseboard_vdd3v3>;
++	};
++
++	reg_csi2_3v3: regulator-csi2-vdd3v3 {
++		compatible = "regulator-fixed";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_reg_csi2_3v3>;
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-name = "CSI2_VDD3V3";
++		gpio = <&gpio4 25 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++		vin-supply = <&reg_vdd5v0>;
++	};
++
+ 	regulator-vbus-usb20 {
+ 		compatible = "regulator-fixed";
+ 		regulator-min-microvolt = <5000000>;
+@@ -454,6 +498,18 @@ MX8MP_IOMUXC_GPIO1_IO03__GPIO1_IO03		0x41
+ 		>;
+ 	};
+ 
++	pinctrl_reg_csi2_1v8: regcsi21v8grp {
++		fsl,pins = <
++			MX8MP_IOMUXC_SAI5_RXD0__GPIO3_IO21		0x19
++		>;
++	};
++
++	pinctrl_reg_csi2_3v3: regcsi23v3grp {
++		fsl,pins = <
++			MX8MP_IOMUXC_SAI2_TXC__GPIO4_IO25		0x19
++		>;
++	};
++
+ 	pinctrl_uart2: uart2grp {
+ 		fsl,pins = <
+ 			MX8MP_IOMUXC_UART2_RXD__UART2_DCE_RX		0x14f
+-- 
+2.34.1
+
