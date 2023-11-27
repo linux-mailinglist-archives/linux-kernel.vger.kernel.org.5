@@ -2,106 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F27B7F9D49
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 11:16:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB69D7F9D4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 11:18:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232862AbjK0KQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 05:16:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45724 "EHLO
+        id S232875AbjK0KSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 05:18:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232738AbjK0KQq (ORCPT
+        with ESMTP id S232738AbjK0KSE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 05:16:46 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B2668C0;
-        Mon, 27 Nov 2023 02:16:52 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DD4422F4;
-        Mon, 27 Nov 2023 02:17:39 -0800 (PST)
-Received: from [10.57.4.90] (unknown [10.57.4.90])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B068D3F73F;
-        Mon, 27 Nov 2023 02:16:50 -0800 (PST)
-Message-ID: <573ec775-c1f0-4a09-afe4-83793fb11f3c@arm.com>
-Date:   Mon, 27 Nov 2023 10:17:51 +0000
+        Mon, 27 Nov 2023 05:18:04 -0500
+Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 745DBC0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 02:18:11 -0800 (PST)
+Received: from 8bytes.org (p4ffe1e67.dip0.t-ipconnect.de [79.254.30.103])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.8bytes.org (Postfix) with ESMTPSA id 69D241A6E90;
+        Mon, 27 Nov 2023 11:18:10 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
+        s=default; t=1701080290;
+        bh=+9XZsv2MkSw2ep1fiHnmE+Po3/h00hYAxkvBiSQeloM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=4YRrXkYsLXB/rmy11VvYsY25P6pCK+6+3Ojbhgxhg6yTy/v6TkybXY0SdX6BCgdRh
+         8rrpUJL6ZIB/CqY1o+pRDED2bhBhRHRJBP23HHKhg558PYeKkEr10gqtbPn+zyqMZM
+         mJL8Bukn/4rgHn/qhAxi57iov5BKqBJ1rLW5sqoaN0psxHPl/gSsdKWIHlAVuCQ0CD
+         4bzApBKojQ0a58dFXER37NOtMLculE+C9Wkzg6DBnE0uJ4HWmIyz2UMJV0Aiii/vnL
+         NFRcD9u1dqhy9SOYz/bIHesVLkxNwvqha3JgvF5GTwb5QTygTnAJM2SNRNLggNfsAz
+         PZ+amGWVqZQaQ==
+Date:   Mon, 27 Nov 2023 11:18:08 +0100
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Hector Martin <marcan@marcan.st>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iommu: dart: Use readl instead of readl_relaxed for
+ consistency
+Message-ID: <ZWRs4Cq_X8Bm3btp@8bytes.org>
+References: <20231126162009.17934-1-sven@svenpeter.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: rockchip: Add dynamic-power-coefficient to
- rk3399 GPU
-Content-Language: en-US
-To:     Chen-Yu Tsai <wenst@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        heiko@sntech.de, conor+dt@kernel.org, daniel.lezcano@linaro.org
-References: <20231127081511.1911706-1-lukasz.luba@arm.com>
- <CAGXv+5EgDk2B_FYo9hNiLVogq+mww1j140W4hsDhywExzgpf2g@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <CAGXv+5EgDk2B_FYo9hNiLVogq+mww1j140W4hsDhywExzgpf2g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231126162009.17934-1-sven@svenpeter.dev>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/27/23 10:02, Chen-Yu Tsai wrote:
-> On Mon, Nov 27, 2023 at 4:14 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
->> Add dynamic-power-coefficient to the GPU node. That will create Energy
->> Model for the GPU based on the coefficient and OPP table information.
->> It will enable mechanism such as DTMP or IPA to work with the GPU DVFS.
->> In similar way the Energy Model for CPUs in rk3399 is created, so both
->> are aligned in power scale. The maximum power used from this coefficient
->> is 1.5W at 600MHz.
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   arch/arm64/boot/dts/rockchip/rk3399.dtsi | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
->> index 9da0b6d77c8d..87cfdf570b19 100644
->> --- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
->> +++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
->> @@ -2113,6 +2113,7 @@ gpu: gpu@ff9a0000 {
->>                  interrupt-names = "job", "mmu", "gpu";
->>                  clocks = <&cru ACLK_GPU>;
->>                  #cooling-cells = <2>;
->> +               dynamic-power-coefficient = <2640>;
+On Sun, Nov 26, 2023 at 05:20:09PM +0100, Sven Peter wrote:
+> While the readl_relaxed in apple_dart_suspend is correct the rest of the
+> driver uses the non-relaxed variants everywhere and the single
+> readl_relaxed is inconsistent and possibly confusing.
 > 
-> For reference, in the ChromeOS downstrean v5.10 kernel we have:
-> 
-> gpu_power_model: power_model {
->          compatible = "arm,mali-simple-power-model";
->          static-coefficient = <411522>;
->          dynamic-coefficient = <977>;
->          ts = <32000 4700 (-80) 2>;
->          thermal-zone = "gpu";
-> };
-> 
-> This is for the Mali kbase.
+> Signed-off-by: Sven Peter <sven@svenpeter.dev>
+> ---
+>  drivers/iommu/apple-dart.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-That's downstream driver for downstream IPA thermal governor, which is
-different. As you can see there, there is a split of the total power
-to 'static power' and 'dynamic power' and thus those 2 coefficients:
-'static-coefficient' and 'dynamic-coefficient'. There is also
-polynomial for the exponential curve approximating temperature impact
-to the increasing leakage (static power).
+Applied, thanks.
 
-This is totally not upstream code and quite complex to derive thus
-fly upstream. Therefore, in upstream we have very simple power
-model right now, but it will be possible to update it at runtime
-when the leakage is increased. I hope the new v5 version that
-I'm going to send, will get into mainline soon [1].
+In the future, can you please use "iommu/apple-dart:" as the prefix for
+you patch subject-lines? That fits better into the overall convention in
+the iommu-tree, thanks.
 
 Regards,
-Lukasz
 
-[1] 
-https://lore.kernel.org/lkml/20230925081139.1305766-1-lukasz.luba@arm.com/
+	Joerg
