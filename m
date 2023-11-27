@@ -2,87 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A387FAB41
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 21:21:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 620017FAB47
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 21:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233287AbjK0UV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 15:21:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57276 "EHLO
+        id S232947AbjK0UYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 15:24:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233196AbjK0UVE (ORCPT
+        with ESMTP id S229527AbjK0UYG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 15:21:04 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3C8610E4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 12:21:10 -0800 (PST)
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARKAl5D001494;
-        Mon, 27 Nov 2023 20:20:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=ROsI72neNiMsrbDjpDAbOmRQTD42BFapmOHkosJ6S28=;
- b=s62PHsIDGV/1pFHXVtgSalIU+nDmEDRR9XERvpOLopQPCVhW11tdWq+3a7Pg501zObLG
- LBnzlsP2CDQWo+ygMT3SH/qBuYmhPzqXZ36uLo+rIDvglzC2C8XTOD5tOc7YF8B6ZFp4
- Xr0UhTTgyz5dK1j8zDOqdXPvBF8q/yLoTuHAADsECFo2hGWQscXIayYlwb9ZZ/jf9o8I
- jkNH9QKty9D0U/zelt7RD8bI1PmicW7wxKUxpnQz58caj/5EMyuD5gDhO3sjg21xNHzB
- Ha6NM1DbVQPjlSv7SWDSYxGC0owfXnOJ2USOQSHBZ7VaxWsXSvttQpMDetAreei5w7YB mQ== 
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3un0mdjdbj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 20:20:56 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARJchIK018544;
-        Mon, 27 Nov 2023 20:20:55 GMT
-Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ukwfjtrc3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 20:20:55 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-        by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ARKKsw821168714
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 Nov 2023 20:20:54 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6026958057;
-        Mon, 27 Nov 2023 20:20:54 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4DB9758058;
-        Mon, 27 Nov 2023 20:20:54 +0000 (GMT)
-Received: from localhost (unknown [9.41.178.242])
-        by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 27 Nov 2023 20:20:54 +0000 (GMT)
-From:   Nathan Lynch <nathanl@linux.ibm.com>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        lkft-triage@lists.linaro.org,
-        clang-built-linux <llvm@lists.linux.dev>,
-        regressions@lists.linux.dev,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     Benjamin Gray <bgray@linux.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Subject: Re: Powerpc: maple_defconfig: kernel/rtas_pci.c:46:5: error: no
- previous prototype for function 'rtas_read_config'
- [-Werror,-Wmissing-prototypes]
-In-Reply-To: <CA+G9fYt0LLXtjSz+Hkf3Fhm-kf0ZQanrhUS+zVZGa3O+Wt2+vg@mail.gmail.com>
-References: <CA+G9fYt0LLXtjSz+Hkf3Fhm-kf0ZQanrhUS+zVZGa3O+Wt2+vg@mail.gmail.com>
-Date:   Mon, 27 Nov 2023 14:20:54 -0600
-Message-ID: <875y1n2bix.fsf@li-e15d104c-2135-11b2-a85c-d7ef17e56be6.ibm.com>
+        Mon, 27 Nov 2023 15:24:06 -0500
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a02:c205:3004:2154::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D581BD;
+        Mon, 27 Nov 2023 12:24:12 -0800 (PST)
+Received: from p200301077700a9001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:107:7700:a900:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <andreas@kemnade.info>)
+        id 1r7i9I-006mnO-M7; Mon, 27 Nov 2023 21:24:08 +0100
+Received: from andi by aktux with local (Exim 4.96)
+        (envelope-from <andreas@kemnade.info>)
+        id 1r7i9I-000bvU-1J;
+        Mon, 27 Nov 2023 21:24:08 +0100
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        andreas@kemnade.info, kristo@kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org
+Subject: [PATCH] dt-bindings: clock: ti: Convert interface.txt to json-schema
+Date:   Mon, 27 Nov 2023 21:23:59 +0100
+Message-Id: <20231127202359.145778-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: tX3c5ral_rPt_9wQ1R492hQBUM4oY95E
-X-Proofpoint-GUID: tX3c5ral_rPt_9wQ1R492hQBUM4oY95E
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-27_19,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- bulkscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0 mlxlogscore=999
- phishscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311270141
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,58 +45,178 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Naresh Kamboju <naresh.kamboju@linaro.org> writes:
-> Following Powerpc maple_defconfig and other builds failed with gcc-13 / 8
-> and clang toolchains on Linux next-20231127 tag.
->
->   build:
->     * gcc-8-cell_defconfig
->     * gcc-8-maple_defconfig
->     * gcc-8-tinyconfig
->     * gcc-13-tinyconfig
->     * gcc-13-cell_defconfig
->     * gcc-13-maple_defconfig
->     * clang-17-cell_defconfig
->     * clang-17-tinyconfig
->     * clang-17-maple_defconfig
->     * clang-nightly-cell_defconfig
->     * clang-nightly-maple_defconfig
->     * clang-nightly-tinyconfig
->
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->
-> Build logs:
-> -----------
-> arch/powerpc/kernel/rtas_pci.c:46:5: error: no previous prototype for
-> function 'rtas_read_config' [-Werror,-Wmissing-prototypes]
->    46 | int rtas_read_config(struct pci_dn *pdn, int where, int size, u32 *val)
->       |     ^
-> arch/powerpc/kernel/rtas_pci.c:46:1: note: declare 'static' if the
-> function is not intended to be used outside of this translation unit
->    46 | int rtas_read_config(struct pci_dn *pdn, int where, int size, u32 *val)
->       | ^
->       | static
-> arch/powerpc/kernel/rtas_pci.c:98:5: error: no previous prototype for
-> function 'rtas_write_config' [-Werror,-Wmissing-prototypes]
->    98 | int rtas_write_config(struct pci_dn *pdn, int where, int size, u32 val)
->       |     ^
-> arch/powerpc/kernel/rtas_pci.c:98:1: note: declare 'static' if the
-> function is not intended to be used outside of this translation unit
->    98 | int rtas_write_config(struct pci_dn *pdn, int where, int size, u32 val)
->       | ^
->       | static
-> 2 errors generated.
-> make[5]: *** [scripts/Makefile.build:243:
-> arch/powerpc/kernel/rtas_pci.o] Error 1
+Convert the OMAP interface clock device tree binding to json-schema
+and fix up reg property which is optional and taken from parent if
+not specified.
+Specify the creator of the original binding as a maintainer.
 
-This appears to be a latent issue in this code... the prototypes for
-rtas_read_config() and rtas_write_config() in asm/ppc-pci.h are guarded
-by #ifdef CONFIG_EEH for some reason. So I would expect this to happen
-whenever it is built with CONFIG_EEH disabled and -Wmissing-prototypes.
+Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+---
+ .../bindings/clock/ti/interface.txt           | 57 ------------
+ .../bindings/clock/ti/ti,interface-clock.yaml | 90 +++++++++++++++++++
+ 2 files changed, 90 insertions(+), 57 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/clock/ti/interface.txt
+ create mode 100644 Documentation/devicetree/bindings/clock/ti/ti,interface-clock.yaml
 
-So I guess it's fallout from commit c6345dfa6e3e ("Makefile.extrawarn:
-turn on missing-prototypes globally").
+diff --git a/Documentation/devicetree/bindings/clock/ti/interface.txt b/Documentation/devicetree/bindings/clock/ti/interface.txt
+deleted file mode 100644
+index d3eb5ca92a7fe..0000000000000
+--- a/Documentation/devicetree/bindings/clock/ti/interface.txt
++++ /dev/null
+@@ -1,57 +0,0 @@
+-Binding for Texas Instruments interface clock.
+-
+-Binding status: Unstable - ABI compatibility may be broken in the future
+-
+-This binding uses the common clock binding[1]. This clock is
+-quite much similar to the basic gate-clock [2], however,
+-it supports a number of additional features, including
+-companion clock finding (match corresponding functional gate
+-clock) and hardware autoidle enable / disable.
+-
+-[1] Documentation/devicetree/bindings/clock/clock-bindings.txt
+-[2] Documentation/devicetree/bindings/clock/gpio-gate-clock.yaml
+-
+-Required properties:
+-- compatible : shall be one of:
+-  "ti,omap3-interface-clock" - basic OMAP3 interface clock
+-  "ti,omap3-no-wait-interface-clock" - interface clock which has no hardware
+-				       capability for waiting clock to be ready
+-  "ti,omap3-hsotgusb-interface-clock" - interface clock with USB specific HW
+-					handling
+-  "ti,omap3-dss-interface-clock" - interface clock with DSS specific HW handling
+-  "ti,omap3-ssi-interface-clock" - interface clock with SSI specific HW handling
+-  "ti,am35xx-interface-clock" - interface clock with AM35xx specific HW handling
+-  "ti,omap2430-interface-clock" - interface clock with OMAP2430 specific HW
+-				  handling
+-- #clock-cells : from common clock binding; shall be set to 0
+-- clocks : link to phandle of parent clock
+-- reg : base address for the control register
+-
+-Optional properties:
+-- clock-output-names : from common clock binding.
+-- ti,bit-shift : bit shift for the bit enabling/disabling the clock (default 0)
+-
+-Examples:
+-	aes1_ick: aes1_ick@48004a14 {
+-		#clock-cells = <0>;
+-		compatible = "ti,omap3-interface-clock";
+-		clocks = <&security_l4_ick2>;
+-		reg = <0x48004a14 0x4>;
+-		ti,bit-shift = <3>;
+-	};
+-
+-	cam_ick: cam_ick@48004f10 {
+-		#clock-cells = <0>;
+-		compatible = "ti,omap3-no-wait-interface-clock";
+-		clocks = <&l4_ick>;
+-		reg = <0x48004f10 0x4>;
+-		ti,bit-shift = <0>;
+-	};
+-
+-	ssi_ick_3430es2: ssi_ick_3430es2@48004a10 {
+-		#clock-cells = <0>;
+-		compatible = "ti,omap3-ssi-interface-clock";
+-		clocks = <&ssi_l4_ick>;
+-		reg = <0x48004a10 0x4>;
+-		ti,bit-shift = <0>;
+-	};
+diff --git a/Documentation/devicetree/bindings/clock/ti/ti,interface-clock.yaml b/Documentation/devicetree/bindings/clock/ti/ti,interface-clock.yaml
+new file mode 100644
+index 0000000000000..48a54caeb3857
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/ti/ti,interface-clock.yaml
+@@ -0,0 +1,90 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/ti/ti,interface-clock.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Texas Instruments interface clock.
++
++maintainers:
++  - Tero Kristo <kristo@kernel.org>
++
++description: |
++  This binding uses the common clock binding[1]. This clock is
++  quite much similar to the basic gate-clock[2], however,
++  it supports a number of additional features, including
++  companion clock finding (match corresponding functional gate
++  clock) and hardware autoidle enable / disable.
++
++  [1] Documentation/devicetree/bindings/clock/clock-bindings.txt
++  [2] Documentation/devicetree/bindings/clock/gpio-gate-clock.yaml
++
++
++properties:
++  compatible:
++    enum:
++      - ti,omap3-interface-clock           # basic OMAP3 interface clock
++      - ti,omap3-no-wait-interface-clock   # interface clock which has no hardware
++                                           # capability for waiting clock to be ready
++      - ti,omap3-hsotgusb-interface-clock  # interface clock with USB specific HW handling
++      - ti,omap3-dss-interface-clock       # interface clock with DSS specific HW handling
++      - ti,omap3-ssi-interface-clock       # interface clock with SSI specific HW handling
++      - ti,am35xx-interface-clock          # interface clock with AM35xx specific HW handling
++      - ti,omap2430-interface-clock        # interface clock with OMAP2430 specific HW handling
++  "#clock-cells":
++    const: 0
++
++  clocks:
++    maxItems: 1
++
++  clock-output-names:
++    maxItems: 1
++
++  reg:
++    description:
++      if not specified, value from parent is used
++    maxItems: 1
++
++  ti,bit-shift:
++    description:
++      bit shift for the bit enabling/disabling the clock
++    $ref: /schemas/types.yaml#/definitions/uint32
++    default: 0
++
++required:
++  - compatible
++  - clocks
++  - '#clock-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    bus {
++      #address-cells = <1>;
++      #size-cells = <1>;
++
++      aes1_ick: aes1-ick@48004a14 {
++        #clock-cells = <0>;
++        compatible = "ti,omap3-interface-clock";
++        clocks = <&security_l4_ick2>;
++        reg = <0x48004a14 0x4>;
++        ti,bit-shift = <3>;
++      };
++
++      cam_ick: cam-ick@48004f10 {
++        #clock-cells = <0>;
++        compatible = "ti,omap3-no-wait-interface-clock";
++        clocks = <&l4_ick>;
++        reg = <0x48004f10 0x4>;
++        ti,bit-shift = <0>;
++      };
++
++      ssi_ick_3430es2: ssi-ick-3430es2@48004a10 {
++        #clock-cells = <0>;
++        compatible = "ti,omap3-ssi-interface-clock";
++        clocks = <&ssi_l4_ick>;
++        reg = <0x48004a10 0x4>;
++        ti,bit-shift = <0>;
++      };
++    };
+-- 
+2.39.2
 
-Unfortunately the resolution isn't as simple as moving the prototypes
-out of the CONFIG_EEH-guarded region, but I think I'll have a fix for
-this later today.
