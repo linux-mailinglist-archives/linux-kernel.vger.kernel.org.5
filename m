@@ -2,142 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42CD37FADA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 23:43:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C43E7FADB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 23:47:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233629AbjK0Wnn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Nov 2023 17:43:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38548 "EHLO
+        id S233674AbjK0Wqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 17:46:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231648AbjK0Wnl (ORCPT
+        with ESMTP id S233360AbjK0Wqw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 17:43:41 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5540137;
-        Mon, 27 Nov 2023 14:43:43 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 2996021923;
-        Mon, 27 Nov 2023 22:43:42 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A69051379A;
-        Mon, 27 Nov 2023 22:43:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id NT+lFZkbZWXsRAAAD6G6ig
-        (envelope-from <neilb@suse.de>); Mon, 27 Nov 2023 22:43:37 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+        Mon, 27 Nov 2023 17:46:52 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0841E136
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:46:58 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50aabfa1b75so6834209e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:46:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf.com; s=google; t=1701125216; x=1701730016; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=I6h9xJ1VXHv+qvv2KV0aJYsRErzcVo7sfauMJWo2Gqg=;
+        b=ISMjksLtODNUpoBIB4lu0wYzBwciHOhp7Yxcr+YgscVmxNrtY6kUrFrRpzNQ3Q19U1
+         HYwEMVCc8pAqiusxgj4e6RzQ9Ki8dX68aOlNA4Is6uLQtb7LpduOXrPm3ieaglURSsiG
+         tyA/Gk0jGjDniwNPmEOPvxXsERknd5VB7h3fcy6YPBmSwMcCSMlaR54n/UrSqQVh5WFt
+         hcy50Lj1elLnWNGRhOXu3dj0vdCDb7ODmFgUqK8F/n1GCosEkrGPjXRdBSSiYgi71t6T
+         WylB3euWGiLumOcxB4IwwLSjEs1D3ZHUGeyyq9h7MYiNQ5fIhWhr4dvlrdQ6TiN6nKE8
+         Cvzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701125216; x=1701730016;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=I6h9xJ1VXHv+qvv2KV0aJYsRErzcVo7sfauMJWo2Gqg=;
+        b=od1CoFzI4yUL0axSir2sLzVAY0cAWX90yMq/2TdM8QF6R/i4EOWNumYW2H+YSoAuRH
+         mzmwEOLEOOLs0MXDDw7UpbLI3mDcjyng2koC570IDYGQyDDBthBhFHZpGpKskMRDkJkf
+         1fJLQpvciewTNWVZ3XLs6yXI9sAHJACGUczWY2tkCd/ssKQhtywR4t8qrLkO4U/CQWeH
+         gO1g77H702hAn3Np0NWn67AQ2LSNAOw5SnqQNOdI5v+8i5byleHV8tl1NgEMgAdhrN8e
+         exRThmajaEWo5m5X3pK6WEYq/+AqeHeko67PQWuHBYvnsX90p2dLPnOZrxjf8vM32g0b
+         WvFA==
+X-Gm-Message-State: AOJu0YzbiQc/UD2oRj3uzIopKlkpEGwbYMFwMa4PenzYWkQ/G/Jd9gsP
+        T1XGJHJKgjJuFWmOpeBSDSptWb5Ya7sJvz/HOXOHyjZBcviFwvg=
+X-Google-Smtp-Source: AGHT+IEHlofYKiVFRD+a0QshyTP4Axy7hN3IFZ8/uWujZWXRGn5gtaru88msHJ7/6QtORF8Eyb/iKgPyv/srktguhiI=
+X-Received: by 2002:a05:6512:3b0a:b0:509:4b78:69b5 with SMTP id
+ f10-20020a0565123b0a00b005094b7869b5mr7567693lfv.36.1701125216093; Mon, 27
+ Nov 2023 14:46:56 -0800 (PST)
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Al Viro" <viro@zeniv.linux.org.uk>
-Cc:     "Christian Brauner" <brauner@kernel.org>,
-        "Jens Axboe" <axboe@kernel.dk>, "Oleg Nesterov" <oleg@redhat.com>,
-        "Chuck Lever" <chuck.lever@oracle.com>,
-        "Jeff Layton" <jlayton@kernel.org>,
-        "Ingo Molnar" <mingo@redhat.com>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        "Juri Lelli" <juri.lelli@redhat.com>,
-        "Vincent Guittot" <vincent.guittot@linaro.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org
-Subject: Re: [PATCH/RFC] core/nfsd: allow kernel threads to use task_work.
-In-reply-to: <20231127223054.GL38156@ZenIV>
-References: <170112272125.7109.6245462722883333440@noble.neil.brown.name>,
- <20231127223054.GL38156@ZenIV>
-Date:   Tue, 28 Nov 2023 09:43:30 +1100
-Message-id: <170112501017.7109.11367576354770728388@noble.neil.brown.name>
-X-Spamd-Bar: ++++++
-Authentication-Results: smtp-out1.suse.de;
-        dkim=none;
-        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.de (policy=none);
-        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of neilb@suse.de) smtp.mailfrom=neilb@suse.de
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [6.66 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-         TO_DN_SOME(0.00)[];
-         R_SPF_SOFTFAIL(4.60)[~all:c];
-         RCVD_COUNT_THREE(0.00)[3];
-         MX_GOOD(-0.01)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         R_DKIM_NA(2.20)[];
-         MIME_TRACE(0.00)[0:+];
-         BAYES_HAM(-0.00)[16.34%];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-0.13)[-0.134];
-         MIME_GOOD(-0.10)[text/plain];
-         RCPT_COUNT_TWELVE(0.00)[13];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         RCVD_TLS_ALL(0.00)[];
-         DMARC_POLICY_SOFTFAIL(0.10)[suse.de : No valid SPF, No valid DKIM,none]
-X-Spam-Score: 6.66
-X-Rspamd-Queue-Id: 2996021923
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231103131011.1316396-1-lb@semihalf.com> <20231103131011.1316396-8-lb@semihalf.com>
+ <CAJfuBxzWSyw-Xp3k5WzOexbRZFydCUp_nX4A_BZs8Gq0OE2U7Q@mail.gmail.com>
+ <CAK8ByeL=A6xC=q8Ah4im4JQGUcN_NZNg10pSezBPCeKW9J_DeQ@mail.gmail.com>
+ <CAJfuBxzH=G++Qs86OGUFTC2WuBZh8JZ4y7a7KcVi+7R8L3N7Fw@mail.gmail.com>
+ <CAK8Bye+uX38zDyGdd4GbsYWfPACNiaiBW92vZuRjuM1VDQqe0A@mail.gmail.com>
+ <CAK8ByeK8mVQbmYsbCdZGf4F=RHPbGguDcKfhtbWF3-MpVDNkbg@mail.gmail.com> <CAJfuBxyVDy6e-M+g7-aydfHov_KGuF5Ze7Gx_bEGuU5mzzjbcg@mail.gmail.com>
+In-Reply-To: <CAJfuBxyVDy6e-M+g7-aydfHov_KGuF5Ze7Gx_bEGuU5mzzjbcg@mail.gmail.com>
+From:   =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
+Date:   Mon, 27 Nov 2023 23:46:44 +0100
+Message-ID: <CAK8ByeKXh2JWW8vsokx4wJo_S7GZvg=McJBJ7sucp5Lf6Ccbvw@mail.gmail.com>
+Subject: Re: [PATCH v1 07/12] dyndbg: repack struct _ddebug
+To:     jim.cromie@gmail.com
+Cc:     Jason Baron <jbaron@akamai.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@google.com>,
+        Yaniv Tzoreff <yanivt@google.com>,
+        Benson Leung <bleung@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        upstream@semihalf.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Nov 2023, Al Viro wrote:
-> On Tue, Nov 28, 2023 at 09:05:21AM +1100, NeilBrown wrote:
-> 
-> > A simple way to fix this is to treat nfsd threads like normal processes
-> > for task_work.  Thus the pending files are queued for the thread, and
-> > the same thread finishes the work.
-> > 
-> > Currently KTHREADs are assumed never to call task_work_run().  With this
-> > patch that it still the default but it is implemented by storing the
-> > magic value TASK_WORKS_DISABLED in ->task_works.  If a kthread, such as
-> > nfsd, will call task_work_run() periodically, it sets ->task_works
-> > to NULL to indicate this.
-> 
-> >  		svc_recv(rqstp);
-> >  		validate_process_creds();
-> > +		if (task_work_pending(current))
-> > +			task_work_run();
-> 
-> What locking environment and call chain do you have here?  And what happens if
-> you get something stuck in ->release()?
+niedz., 26 lis 2023 o 07:00 <jim.cromie@gmail.com> napisa=C5=82(a):
+>
+> On Fri, Nov 24, 2023 at 7:39=E2=80=AFAM =C5=81ukasz Bartosik <lb@semihalf=
+.com> wrote:
+> >
+> > niedz., 12 lis 2023 o 17:28 =C5=81ukasz Bartosik <lb@semihalf.com> napi=
+sa=C5=82(a):
+> > >
+> > > pt., 10 lis 2023 o 22:01 <jim.cromie@gmail.com> napisa=C5=82(a):
+> > > >
+> > > > On Fri, Nov 10, 2023 at 7:51=E2=80=AFAM =C5=81ukasz Bartosik <lb@se=
+mihalf.com> wrote:
+> > > > >
+> > > > > sob., 4 lis 2023 o 02:49 <jim.cromie@gmail.com> napisa=C5=82(a):
+> > > > > >
+> > > > > > On Fri, Nov 3, 2023 at 7:10=E2=80=AFAM =C5=81ukasz Bartosik <lb=
+@semihalf.com> wrote:
+> > > > > > >
+> > > > > > > From: Jim Cromie <jim.cromie@gmail.com>
+> > > > > > >
+> > > > > > > Move the JUMP_LABEL to the top of the struct, since theyre bo=
+th
+> > > > > > > align(8) and this closes a pahole (unfortunately trading for =
+padding,
+> > > > > > > but still).
+> > > > > > >
+> > > > > > > Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+> > > > > >
+> > > > > > let me add, I havent really tested this, nevermind thorough.
+> > > > > > specifically, I didnt look for any offset dependence on the sta=
+tic-key
+> > > > > > inside their container.
+> > > > > > Conversely, maybe theres a free default or something in there.
+> > > > > >
+> > > > >
+> > > > > Any idea how to properly test the relocation of the key ?
+> > > >
+> > > > I was hoping Jason knew it from memory.
+> > > >
+> > > > I have booted dd-kitchen-sink, which includes it, and it didnt melt=
+ the box.
+> > > >
+> > > > I just checked `pahole vmlinux` output for the existence of 0-offse=
+t keys.
+> > > > Its not conclusive, cuz im only looking at x86.
+> > > >
+> > > > it does occur, but only for "sub-types".
+> > > >
+> > > > struct static_key_true {
+> > > >         struct static_key          key;                  /*     0  =
+  16 */
+> > > >
+> > > >         /* size: 16, cachelines: 1, members: 1 */
+> > > >         /* last cacheline: 16 bytes */
+> > > > };
+> > > > struct static_key_false {
+> > > >         struct static_key          key;                  /*     0  =
+  16 */
+> > > >
+> > > >         /* size: 16, cachelines: 1, members: 1 */
+> > > >         /* last cacheline: 16 bytes */
+> > > > };
+> > > > struct static_key_false_deferred {
+> > > >         struct static_key_false    key;                  /*     0  =
+  16 */
+> > > > ...};
+> > > > struct static_key_mod {
+> > > >         struct static_key_mod *    next;                 /*     0  =
+   8 */
+> > > > ...};
+> > > > struct static_key_deferred {
+> > > >         struct static_key          key;                  /*     0  =
+  16 */
+> > >
+> > > I will test it on arm64.
+> >
+> > Hi Jim,
+> >
+> > I verified that relocation of JUMP_LABEL to the top of the _ddebug
+> > struct does not brak dynamic debug functionality on arm64.
+> > I double checked I had CONFIG_JUMP_LABEL enabled in the kernel config f=
+or arm64.
+> > I was able to enable/disable callsites and see debug logs being written=
+.
+> >
+> > But if you're concerned there might be issue related to that
+> > relocation on other architectures then let's drop this patch
+> > and I will use pahole instead of padding for location of flags and
+> > trace destination fields.
+> > What do you think ?
+> >
+>
+>
+> On balance, I think it should go in.
+> 0 - my bias was towards abundance of paranoia
+> 1 - youve done real work to evaluate the actual risk
+> 2 - Jason is on thread, hasnt said WHOA
+> 3 - actual patches have seen some testing (lkp-robot included)
+> 4 - static-keys/jump-labels have been around a long time
+>
+> One new topic:
+>
+> Do you have any thoughts or plans wrt self-testing ?
+>
 
-No locking. This is in the top level function of the kthread.
-A ->release function that waits for an NFS filesystem to flush out data
-through a filesystem exported by this nfsd might hit problems.
-But that really requires us nfs-exporting and nfs filesystem which is
-loop-back mounted.  While we do support nfs-reexport and nfs-loop-back
-mounts, I don't think we make any pretence of supporting a combination.
-
-Is that the sort of thing you were think of?
-
-> 
-> >  
-> >  	p->pdeath_signal = 0;
-> > -	p->task_works = NULL;
-> > +	p->task_works = args->kthread ? TASK_WORKS_DISABLED : NULL;
-> 
-> Umm... why not have them set (by helper in kernel/task_work.c) to
-> &work_exited?  Then the task_work_run parts wouldn't be needed at all...
-> 
-
-I hadn't tried to understand what work_exited was for - but now I see
-that its purpose is precisely to block further work from being queued -
-exactly what I need.
-Thanks - I make that change for a v2.
-
-I've realised that I'll also need to change the flush_delayed_fput() in
-fsd_file_close_inode_sync() to task_work_run().
+Actually I didn't think about it at all ;). It is not so common
+practice to write tests among kernel developers. Addition of trace
+instances & events to the dynamic debug is a major change so I see the
+value in having it thoroughly tested. That said I'm not saying no to
+writing test harness for that purpose but I wonder if there is any
+test framework in the kernel that could be reused or is everyone on
+their own when it comes to the testing area ?
 
 Thanks,
-NeilBrown
+Lukasz
 
-
+> the addition of private instances,
+> that can be opened & closed, and written to by +T:private_1
+>
+> would benefit greatly from a test harness to validate it.
+> so far all Ive done is demo scripts
+>
+> :-) thanks
+>
+> > Thanks,
+> > Lukasz
