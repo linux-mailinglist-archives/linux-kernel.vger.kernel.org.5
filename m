@@ -2,45 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B3D7FA137
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 14:41:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C4A7FA13B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 14:41:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233099AbjK0Nkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 08:40:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35220 "EHLO
+        id S233121AbjK0Nlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 08:41:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232913AbjK0Nkj (ORCPT
+        with ESMTP id S232913AbjK0Nlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 08:40:39 -0500
+        Mon, 27 Nov 2023 08:41:35 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6717C3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 05:40:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C412DC433C7;
-        Mon, 27 Nov 2023 13:40:43 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA2A199
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 05:41:41 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B674C433C8;
+        Mon, 27 Nov 2023 13:41:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701092445;
-        bh=A1OsFnb1tNwUij5pGE/EqLpd5k0JhCJWhw9mIA0cyIo=;
-        h=From:To:In-Reply-To:References:Subject:Date:From;
-        b=EJ2qteMFm/FESMLFKtlGryxNadHIKnXMtpVjE49PbKfsKv6hfBXDpa8ZzckerQr7O
-         C+qQTNGuE0s6fQx5ZhxBpwFFzDOY6CfPjL2O0Busbgd8irV06O4FSocP7phdRAziXF
-         B1tZVt+3zMvc4gRgvAckG9AwSUQJXjEeioC2g6ILcasLgJ2olwuXjaqFvZMgktoG9q
-         KsSo546XHM7i0EJzTL/1bggmb9ClonbEso8FpUABmDlkp5ofb9WeCJrAkw8BMsk54S
-         DaT4Ug+ZKmXzHF8xQczUQ0HgUSZYeQO1qA5dQgLVZNvbadQ1g9kB1TNgApA3/tiea4
-         fsP0OKC3GwBXw==
+        s=k20201202; t=1701092501;
+        bh=f3BQHuMYi7jlc3CvTz+C/tQdYT/Mcv85re4DWN0keTU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PpqEIMdln6ZmmiZtmAWKq/siGwB3UxlsVq7rZTD+fWjb7rC97XFbYgpQrjb2krMIq
+         8Sy00hO4zsqDYcRRTVkw01jSdozpS2oSA2o/FPwRrEC4sBJH7FE1rqZnEqziJgFgVm
+         T99Gl31xIRII/AwJFUIWTZbRHnVWkuqgKyVF5mpeBGB/iQ2jgnHfIqsmbezzQz6E5c
+         lUrAMVx8nwxXypNLP0/hrW5VAvXKMXknPgH2eGsA7aj6pIuN7sEM3Rw4tVvOw2VoL1
+         Ib6v8nnM6Iuy2mguXAcMElJgwomBPccDetFEVnxxT490vHUfSaaCvPsXnuLseio6S3
+         W//aHq0/6gJYQ==
+Date:   Mon, 27 Nov 2023 13:41:36 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chancel Liu <chancel.liu@nxp.com>
-In-Reply-To: <20231125065300.6385-1-chancel.liu@nxp.com>
-References: <20231125065300.6385-1-chancel.liu@nxp.com>
-Subject: Re: [PATCH] ASoC: imx-rpmsg: SND_SOC_IMX_RPMSG should depend on OF
- and I2C
-Message-Id: <170109244263.2677006.2483367496601425667.b4-ty@kernel.org>
-Date:   Mon, 27 Nov 2023 13:40:42 +0000
+To:     Malcolm Hart <malcolm@5harts.com>
+Cc:     Sven Frotscher <sven.frotscher@gmail.com>, git@augustwikerfors.se,
+        alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+        linux-kernel@vger.kernel.org, mario.limonciello@amd.com,
+        regressions@lists.linux.dev, stable@vger.kernel.org
+Subject: Re: ASoC: amd: yc: Fix non-functional mic on ASUS E1504FA
+Message-ID: <ZWSckMPyqJl4Ebib@finisterre.sirena.org.uk>
+References: <b9dd23931ee8709a63d884e4bd012723c9563f39.camel@5harts.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="g8U18o2ouH88KqKG"
+Content-Disposition: inline
+In-Reply-To: <b9dd23931ee8709a63d884e4bd012723c9563f39.camel@5harts.com>
+X-Cookie: Slow day.  Practice crawling.
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -51,41 +53,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 25 Nov 2023 14:53:00 +0800, Chancel Liu wrote:
-> SND_SOC_IMX_RPMSG should depend on OF and I2C. It fixes the following
-> error reported by kernel test robot:
-> 
-> ld: sound/soc/fsl/imx-rpmsg.o: in function `imx_rpmsg_late_probe':
-> imx-rpmsg.c:(.text+0x4f): undefined reference to `i2c_find_device_by_fwnode'
-> 
-> 
-> [...]
 
-Applied to
+--g8U18o2ouH88KqKG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Mon, Nov 27, 2023 at 12:24:59PM +0000, Malcolm Hart wrote:
+> Like other ASUS models the Asus Vivobook E1504FA requires an entry in
+> the quirk list to enable the internal microphone.
+>=20
+> Showing
+> with 7 additions and 0 deletions.
+> 7 changes: 7 additions & 0 deletions 7
+> sound/soc/amd/yc/acp6x-mach.c
+> @@ -283,6 +283,13 @@ static const struct dmi_system_id
+> yc_acp_quirk_table[] =3D {
 
-Thanks!
+The patch appears to have been unusably corrupted by your e-mail
+software and is also missing a Signed-off-by.  See email-cleints.rst for
+some suggestions on configuring things, or it might be worth looking
+into b4 and it's web submission endpoint:
 
-[1/1] ASoC: imx-rpmsg: SND_SOC_IMX_RPMSG should depend on OF and I2C
-      commit: f83d38def6b1b00c9bb17173837045b41df7e7d7
+   https://b4.docs.kernel.org/en/latest/
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+--g8U18o2ouH88KqKG
+Content-Type: application/pgp-signature; name="signature.asc"
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+-----BEGIN PGP SIGNATURE-----
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVknI8ACgkQJNaLcl1U
+h9DEbQf/VOKtiPwxU5ySd49oW4bpnDNSU118nM6uQupgCYR/yaVImX1SSm0oLZjg
+BKYm5jaj1zChar2emI33Jev2ffjqGLOn2XHM9eyn2APjiQtB8stIHZIi1qj5Pkeu
+iApaUpc1g4Esia9606uptwLk/YDydl1P5qWs/0guseaJISnU76hIxQ4E96R4uB7z
+HCMDac9KRvihvI9eD7GoJ4fNiOhAJZe+9BJfx3JBsR8ctnjHdeq8sjwOWeeg3lNZ
+VxSzoyf8IjQLlJZ1wC0lB3MAUsmPEqvSD4t2yFGEuMULbaGeOtn2gcemHxLm9uKd
+K9XEZ4NPqhBzUi8+qn9V1I0UxTDsqw==
+=DBJx
+-----END PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+--g8U18o2ouH88KqKG--
