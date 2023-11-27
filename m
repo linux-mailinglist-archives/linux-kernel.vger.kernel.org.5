@@ -2,178 +2,596 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 595987F9823
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 05:06:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB77C7F982B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 05:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232262AbjK0EGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 23:06:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39784 "EHLO
+        id S231978AbjK0EOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 23:14:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232072AbjK0EGa (ORCPT
+        with ESMTP id S229379AbjK0EOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 23:06:30 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5265318A;
-        Sun, 26 Nov 2023 20:06:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701057996; x=1732593996;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=zLVwSIHOj4u0Tshm+Ry/kQJ+YurZ1b4eoSnDsZTd2/M=;
-  b=mLKTkkFEY+/4K12qkdA6+dmJwG53GpxLZOY8fjqBTa2bZerT8OZjc5gO
-   VW6pBd+CVjlUVtxcIOMFWevQa4A5YRAv3Ke5giMHqRjWvp+OAEwhn0FF1
-   epwjvt7L1Te8fkjZIQT/0miBoMkM5B/i6wNtkumM2r5ONZr9h6Ua+ZEHS
-   HPKuVkJCbR7yQFViWdRAL+LpCpvl9xE93ngcPe/FLfJwPlH4Aq+Wbrqmn
-   djFWQhvmZRob6v+xn/5x1AQvWbMh8Jzrt77SLwb+R+/Bv3nuYg1WLHyD0
-   U6tbX5ptql3T2XAMuojOkXPx/9somM4ZaFG8PfTC9AGjCoB4zoFC0KQkn
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="389778028"
-X-IronPort-AV: E=Sophos;i="6.04,229,1695711600"; 
-   d="scan'208";a="389778028"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2023 20:06:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="911984096"
-X-IronPort-AV: E=Sophos;i="6.04,229,1695711600"; 
-   d="scan'208";a="911984096"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Nov 2023 20:06:33 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Sun, 26 Nov 2023 20:06:33 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Sun, 26 Nov 2023 20:06:33 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Sun, 26 Nov 2023 20:06:32 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Bcx+2+xKAYxv7OMvAdrzFeILJnBGDMopMFK9ylQAe4XYbXet8xRZZdOo6PqtRQ/7S4bnpUuINrNzPSqpyL3qadecALDEJMQXggncZKwb2xH+Bm967Fc5MpHqfegtufJ/3b89qqZJBMmMDk2PqU/U0Oi6r58/99Kox2lobDCaT4GCIH9n3C7g9e4epmVV542yKOo411JrtnhvWN+S0CZowE3DyOWFVsO5z4qhp12MHmnIKXaP73n35VMB+jLnkEpgWWwxRbL5Rm6AxJqf1IB6XeCRYM4RwGee9O5eYG6ojiB+eWIhF/ZaDfPaCZt7Jjcx/xw9e+B34QtG2x13heIsuw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zLVwSIHOj4u0Tshm+Ry/kQJ+YurZ1b4eoSnDsZTd2/M=;
- b=dvDHQdM5Ko46d1a0G1A/UPFIzVmeefxuLaO9AsciCo40gqITM04OuOdxN84Y0Gq99Zy3ULxLRaqTpWmvSUmCRm8u4dfssofmHsQ6wcmhAgRTtLxcykoCSWytdsGrVycj9ziikNl35ci60fnNZoh10qmalyXS95jilTKMLIjgGTyLxlkDWN6hn6vaUKUeixu+l+w8a/rA0v3zCwkJ9FlcJmodE15OWfQVIwuI6YfPFs1iUbPhT1dX/LH1ZDmlQ8pXlHFMA3YZ504d7+M07CNtnOOTcKPfkZPEVTNICUpU8c9Yk0JhcChNcTOx4yl/+4qRSnpXVoFgSlKPWfqipmBczw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
- by SN7PR11MB7602.namprd11.prod.outlook.com (2603:10b6:806:348::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Mon, 27 Nov
- 2023 04:06:31 +0000
-Received: from PH0PR11MB4965.namprd11.prod.outlook.com
- ([fe80::ea04:122f:f20c:94e8]) by PH0PR11MB4965.namprd11.prod.outlook.com
- ([fe80::ea04:122f:f20c:94e8%2]) with mapi id 15.20.7025.022; Mon, 27 Nov 2023
- 04:06:31 +0000
-Message-ID: <c6a62843-efd7-46f5-9b25-6ec7eb70f613@intel.com>
-Date:   Mon, 27 Nov 2023 12:06:21 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 03/26] x86/fpu/xstate: Add CET supervisor mode state
- support
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     <seanjc@google.com>, <pbonzini@redhat.com>,
-        <dave.hansen@intel.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <chao.gao@intel.com>,
-        <rick.p.edgecombe@intel.com>, <mlevitsk@redhat.com>,
-        <john.allen@amd.com>
-References: <20231124055330.138870-1-weijiang.yang@intel.com>
- <20231124055330.138870-4-weijiang.yang@intel.com>
- <20231124094502.GL3818@noisy.programming.kicks-ass.net>
-From:   "Yang, Weijiang" <weijiang.yang@intel.com>
-In-Reply-To: <20231124094502.GL3818@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR04CA0154.apcprd04.prod.outlook.com (2603:1096:4::16)
- To PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
+        Sun, 26 Nov 2023 23:14:01 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6E710F
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 20:14:06 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c72e275d96so49763231fa.2
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 20:14:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1701058444; x=1701663244; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RzQZ284vAULDdWuNNryNGfeCLiqZkRUQeGO/HDxqGwM=;
+        b=iK4+h/yRreTrZpifC1jVkUlarpzkwFi2AzbVlIQXBAqAC62vlgPcmkCRN2Pspz4hAL
+         DnniezXRc7zj027Idv3DNBBKi9dbgLhzF9/Fty2qyLJi9wbLdRYx818x4WEkQ5klVwMk
+         jjFhs8df66u9cw123ngNTVk9H9u5qDsTl7Aho=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701058444; x=1701663244;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RzQZ284vAULDdWuNNryNGfeCLiqZkRUQeGO/HDxqGwM=;
+        b=T5JLiaR3dYbeWZHWFXIUaLN11dOirN585D3XOKUmJpVKN8HYHV11iJekPjE8Lje3Ef
+         Nza6CplZXbXAZ8vrtc2aGor2z8zDHTRVrdfFsNMTY/B8QpwV7GK6CKikwJcdQQOgIIyY
+         AEslWIkwWk5TMqKnZPtJQjpHHKkFe9BG5nTqG+G2auRQQd4sAxXXjtIvjuSaOdqX5IE5
+         lzGjeBrDhtxb55MWE97Zzg1wrrsyV3P5OXkU61QeRcbrgtAanAVLyFdBo30fqdG13NqY
+         3CpMEHBjVO1CeQBFokbiSshHQxjiNC60PmnpPBamIcJy9BgrLg1oOkx67ynvRwHNgZf0
+         h6kQ==
+X-Gm-Message-State: AOJu0Yxx6GjBhoTD5A9VLDy6ReqvHE4LHRcjtB3biyQXJ9AG3SrygsRb
+        KD6wkzhmmiZBvYzbSfUjHtUqL1b8y9vPZ629KhZWYmUG
+X-Google-Smtp-Source: AGHT+IHsSCHSzmwb0507lNGL4kSFnqQuhIUacnn09BDXF0tdPzh93GEqx9WlLHWOQ1ejTgm2RIp9oQ==
+X-Received: by 2002:a2e:8884:0:b0:2c8:8189:911 with SMTP id k4-20020a2e8884000000b002c881890911mr7240485lji.3.1701058444168;
+        Sun, 26 Nov 2023 20:14:04 -0800 (PST)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
+        by smtp.gmail.com with ESMTPSA id j2-20020a2e3c02000000b002c17fc97071sm1204098lja.87.2023.11.26.20.14.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 26 Nov 2023 20:14:03 -0800 (PST)
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2c997447ff9so17208051fa.0
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 20:14:03 -0800 (PST)
+X-Received: by 2002:a05:651c:98e:b0:2c9:9242:b155 with SMTP id
+ b14-20020a05651c098e00b002c99242b155mr4391475ljq.40.1701058443009; Sun, 26
+ Nov 2023 20:14:03 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR11MB4965:EE_|SN7PR11MB7602:EE_
-X-MS-Office365-Filtering-Correlation-Id: cc1aad9e-1699-4af5-76fb-08dbeefe3c47
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PNwKuAjhc40m6WFdlRWI9n00CYA1IkhfoWCwN44fI93dd8t7TDPPfq6j/cCUteY+FFk3Xo7eV4IbtTk6edM3i90essgeq3xoF3gfthky4V6dw0W7zWu9os3wr/zSaJ0naAOxZlMv74teEMeps0O4XvS052GakwWIOWzMFvv2XLEt++nKMCD5DdAqWoJx3yEVNzuTLq4zhrpmBDcxZ7u0MIYLSs155K9EVZi6lCAT9IjL1Sbdv4b4tozwFM35l9Y1uC+RY45vyYFlNlp+2UR+eDSUzFmDb2BGj4NMf+nxVDNI9LEE/t7tdSYXV2Glj3XeWCZVI6IECasOFycMAZGEyG75KAg91BCksI0TzPAk4vRf8BkbbSqf48kKivl9ZlQcvABrlDbYE1TOpzg+hLGr9onvUDl22jEo1LYt41eqX5NqGmn9kgwvyuPyKymVvl9uujQiJZGeEZG5VLBy3vyfxfXM8wp34x6crTRtS01ExSXezAGWbrLuoA0XoiaEDdLkJuLAd+ma2E1bn4j+peRlcoR5WyuCq2d6VHPfhxxkJCv8TIsyMH+TWUkdaZ3Lwq3psZh4n1RrLN287fU8wbD87pZ43QvW1ToPt72ecLoJvnp2kvPkI8nZNm2AQX9dNlzQ7RWBNHU5GuiGJ0kl0K0QAw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4965.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(136003)(396003)(39860400002)(346002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(31686004)(26005)(83380400001)(53546011)(6512007)(6506007)(2616005)(41300700001)(82960400001)(38100700002)(31696002)(86362001)(36756003)(8936002)(4326008)(6486002)(2906002)(4744005)(5660300002)(316002)(8676002)(478600001)(6666004)(66556008)(66946007)(6916009)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?N0F2cmppbnJGR09OSk9kcTNRYWMzd1BDRWloZUxaSnpldHpETmVlQk9UV2FY?=
- =?utf-8?B?V2lqaDl1WHZ3SksweVRhOTA4TTVicCtuOGk5L3FPOEVhMUVBSFFaa28vZnB0?=
- =?utf-8?B?Wk9ZYXhvbVNPOVo0MDlnd3NhdGNZNU1QNzdvU2psa0V0c3Y4Y0RJcTF4UDls?=
- =?utf-8?B?cE9xYXh5U21ibHp2TzU3NGdVbkkyNWhSWDUwNEowakRKeXFnMTJFdytTMVNR?=
- =?utf-8?B?YW9LT2ZVZU9VTHQyMGd2S1cwQ3ZyRy9YeXdpcHhFZm5xNXpVa085dTlxc2NN?=
- =?utf-8?B?SExoNHQ0Mmpkd0ZuczBDS2U4VDJ1OEF3cVJnVDNiaVdOQXhwUXBNaWlQVDFO?=
- =?utf-8?B?b1FIVHVFR1hoc1J0clU0THMvRDNsOXNYeTRUVEhEUXBjdFYvVXgxQmNsRXIr?=
- =?utf-8?B?b1hMcWsxQWFzNjNGYWdScklHc2trTzBCUVRtOVFHRGo3bXR1Z09BelhYREFt?=
- =?utf-8?B?T3ZTcjVvcHgrbE8ycmhiZEI3RWlhdmpCM0dvSVZmTTdIaXhjUFZJNnJERnEy?=
- =?utf-8?B?aUlzdEdzVGkvbnBzU3YvZk40UVZTUndZWWtQRmJPL1BLRWJra0tlNG9keXNQ?=
- =?utf-8?B?dHZORk9OOG1STlVoRm9neVRZYloxWllLWVRmYktOTnJ3Sk9rNTdnaTJORmlU?=
- =?utf-8?B?dnQyeFZPSXQva1ZOby92RmcwSVZrUmt3QlAvR2M3NFRSM3d5VU5ybEVJcUs3?=
- =?utf-8?B?UDdrTnFZUTI1NFlXbnVBNVM5aGVkdGRhdTZPcjd5OHppUDQvVmhWTkVKcE9k?=
- =?utf-8?B?eFRWVTlFWWFQNFVMR3NydkhwRHRreUxiOEhRMTBLc0plaXZkVHY2dGtUTHFx?=
- =?utf-8?B?MzgySVlnQm9qTGtJdkhHUDBkemd1WUErbDhMcnJqTmVLWHloNFpzR3RydVFY?=
- =?utf-8?B?eGRqd1diRmJFdStaUUVCVG41UThwSnM4aXNNRjhHZzcveFhhcTdmTHhNa0pM?=
- =?utf-8?B?NjNnKzNHeE1lN0lmcm9Ec3U5emlwdDBWNURQeWFZZThYTTBlWVNIcDJTVUIz?=
- =?utf-8?B?T2ZoK1l2N2l2VmdoeTdMT1ovZ3NzMG50dnJyWTg2OFZxTDdxc1ZBUFhTM3E0?=
- =?utf-8?B?ZGsrYU1SR0lWa0ljeUl3TVU4YmxzQnUrcjJ2TE5qRitaWVkzK3QrL2JZRnR4?=
- =?utf-8?B?c3pJRlVxcnlEcEVOY1N5RFVnSUhQMTB2bFdrcW0wbjNVUFgxbmkzMnRNTFJC?=
- =?utf-8?B?WHFBR1ZXa0laUkI5TS9Pc0NZRnRld2xFOGFKMUZiN2hBTjBtMTVpVE0wVVNt?=
- =?utf-8?B?RndNY2szcm5GRkNZd1dzM05pL25OOFc2VkxSSTZla1JnRWtia3pTVTFiajlh?=
- =?utf-8?B?SGNXR3pWYmJNNTlOY3U1YTVwOStOOWt5WitmSUhYRW5SNUJveDVtODdjVUJn?=
- =?utf-8?B?bUY5bW94WTllZERwRnpyck1ISnFGWVpCMlVRampCNkJHcldUWXF4QXJMOVJi?=
- =?utf-8?B?UXl2MWp1TlBoT3EvL2J0RDdObDZ3bjhYVm1GQXd1bEthRTRoeVdXMm5GRVpO?=
- =?utf-8?B?T0VBaFVlREVKNlBmM2dRUWFibWNtNC9odFVVSUZIRy9WSWJFY2d5RFdOVnNa?=
- =?utf-8?B?NlhPUVhCcTRjSVZSdlVpc3JuLzdNN2pZcnlJNWwxU2pRUnc4azZCYzJab0dO?=
- =?utf-8?B?Qk9idFJmUU5tQW4wVW1lMGtBakRHSWZZTk1vQWZPM3FDQzIzUkZWeXdGTkRR?=
- =?utf-8?B?WDA1VEhBNVFseEFHT2JLZVM4eWY5d1p4OGp5RW4vcjVGdFhKWk44L2VqTHFO?=
- =?utf-8?B?czRlaW5GV0p0VU9Sa1Bwdmg2Z3pkdVVnYnJrUCtKY1NHcklvQzNyODEwUWJ6?=
- =?utf-8?B?TjUyZTljOHpkN1RrMG5FNWpuTHVTdVFxNXZnR0RuTnpsVGhOTEpZR2FUL2I3?=
- =?utf-8?B?ZUFLdmliRy94ZmFraUprUDhzS2E5Yys1MmU4MDN2cDQxd1c4RUtJY3VPSUpZ?=
- =?utf-8?B?NS9DdHg1YVR2QjJ2ZU1FWUdZeWd5TTA3L0lNMFA5RUxBQjYyaUtyOUhMRE55?=
- =?utf-8?B?SHFUa3UzWTJocGJGWGRISW1rQUdNZzRvdUlKSlFlOWIyQys2MStSOVZic0M0?=
- =?utf-8?B?RFVGMmRKWlRwZE1nRUt2bmtZRlNjb0Y2MjQ4eWNSRHM5amNIMm5EZnBRR21V?=
- =?utf-8?B?Mm11cm5YUkFZNTNhS2NZMis1SUFpTVFlWlFLWEpNcGpYSE5lRStNdkNiMnhZ?=
- =?utf-8?B?Z0E9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: cc1aad9e-1699-4af5-76fb-08dbeefe3c47
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4965.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2023 04:06:31.1426
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8slxuZ3uOyvoABhSCc0QhcHco5k4vcXUAEESwZmyhrMn0J2QrLCNlIumER05no6Rb4YDcmPE5hEcNXikK5O/QA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7602
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 26 Nov 2023 20:13:46 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wj1q-Ek=VTzcKT42q8QJqYfmEzDvu-wpCc_oSERq+naWg@mail.gmail.com>
+Message-ID: <CAHk-=wj1q-Ek=VTzcKT42q8QJqYfmEzDvu-wpCc_oSERq+naWg@mail.gmail.com>
+Subject: Linux 6.7-rc3
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/24/2023 5:45 PM, Peter Zijlstra wrote:
-> On Fri, Nov 24, 2023 at 12:53:07AM -0500, Yang Weijiang wrote:
->
->> Note, in KVM case, guest CET supervisor state i.e., IA32_PL{0,1,2}_MSRs,
->> are preserved after VM-Exit until host/guest fpstates are swapped, but
->> since host supervisor shadow stack is disabled, the preserved MSRs won't
->> hurt host.
-> Just to be clear, with FRED all this changes, right? Then we get more
-> VMCS fields for SSS state.
+The diffstat here is dominated by a couple of reverts of some Realtek
+phy code (accounting for almost a third of the diff).
 
-Yes, I think so, KVM needs to properly handle guest SSS state and host FRED states.
+But ignoring that, it's mostly fairly small, and all over the place.
+Ethernet drivers, smb client fixes, bpf selftests stand out as bigger
+areas, but we have random small driver updates (block, gpu, nvme, hid,
+usb) and some arch fixes (x86, parisc, loongarch, arm64) too. Some
+misc filesystem fixes.
 
-Thanks!
+Shortlog appended, and gives some flavor of what was going on last week.
 
+               Linus
 
+---
+
+Abel Vesa (1):
+      drm/msm/dp: don't touch DP subconnector property in eDP case
+
+Alex Elder (1):
+      net: ipa: fix one GSI register field width
+
+Alexander Stein (1):
+      usb: dwc3: Fix default mode initialization
+
+Andrzej Hajda (1):
+      drm/i915: do not clean GT table on error path
+
+Andy Shevchenko (1):
+      platform/x86: intel_telemetry: Fix kernel doc descriptions
+
+Ani Sinha (1):
+      hv/hv_kvp_daemon: Some small fixes for handling NM keyfiles
+
+Aoba K (1):
+      HID: multitouch: Add quirk for HONOR GLO-GXXX touchpad
+
+Arnd Bergmann (3):
+      nvme: target: fix nvme_keyring_id() references
+      nvme: target: fix Kconfig select statements
+      nvme: tcp: fix compile-time checks for TLS mode
+
+Arseniy Krasnov (1):
+      vsock/test: fix SEQPACKET message bounds test
+
+Asuna Yang (1):
+      USB: serial: option: add Luat Air72*U series products
+
+Badhri Jagan Sridharan (2):
+      usb: typec: tcpm: Skip hard reset when in error recovery
+      usb: typec: tcpm: Fix sink caps op current check
+
+Bibo Mao (1):
+      LoongArch: Implement constant timer shutdown interface
+
+Bjorn Andersson (1):
+      drm/msm/dpu: Add missing safe_lut_tbl in sc8280xp catalog
+
+Borislav Petkov (AMD) (2):
+      x86/microcode: Remove the driver announcement and version
+      x86/microcode: Rework early revisions reporting
+
+Brett Raye (1):
+      HID: glorious: fix Glorious Model I HID report
+
+Charles Mirabile (1):
+      io_uring/fs: consider link->flags when getting path for LINKAT
+
+Charles Yi (1):
+      HID: fix HID device resource race between HID core and debugging supp=
+ort
+
+Chen Ni (1):
+      ata: pata_isapnp: Add missing error check for devm_ioport_map()
+
+Chengming Zhou (1):
+      block/null_blk: Fix double blk_mq_start_request() warning
+
+Christoph Hellwig (5):
+      filemap: add a per-mapping stable writes flag
+      block: update the stable_writes flag in bdev_add
+      xfs: clean up FS_XFLAG_REALTIME handling in xfs_ioctl_setattr_xflags
+      xfs: respect the stable writes flag on the RT device
+      nvmet: nul-terminate the NQNs passed in the connect command
+
+Christophe JAILLET (1):
+      USB: typec: tps6598x: Fix a memory leak in an error handling path
+
+Chuck Lever (1):
+      libfs: getdents() should return 0 after reaching EOD
+
+Chunfeng Yun (1):
+      usb: xhci-mtk: fix in-ep's start-split check failure
+
+Colin Ian King (1):
+      bcache: remove redundant assignment to variable cur_idx
+
+Coly Li (5):
+      bcache: avoid oversize memory allocation by small stripe_size
+      bcache: check return value from btree_node_alloc_replacement()
+      bcache: replace a mistaken IS_ERR() by IS_ERR_OR_NULL() in
+btree_gc_coalesce()
+      bcache: add code comments for bch_btree_node_get() and
+__bch_btree_node_alloc()
+      bcache: avoid NULL checking to c->root in run_cache_set()
+
+Cong Yang (1):
+      drm/panel: boe-tv101wum-nl6: Fine tune Himax83102-j02 panel HFP and H=
+BP
+
+D. Wythe (1):
+      net/smc: avoid data corruption caused by decline
+
+Damien Le Moal (1):
+      block: Remove blk_set_runtime_active()
+
+Dan Carpenter (1):
+      drm/msm: remove unnecessary NULL check
+
+Daniel Borkmann (6):
+      net, vrf: Move dstats structure to core
+      net: Move {l,t,d}stats allocation to core and convert veth & vrf
+      netkit: Add tstats per-CPU traffic counters
+      bpf, netkit: Add indirect call wrapper for fetching peer dev
+      selftests/bpf: De-veth-ize the tc_redirect test case
+      selftests/bpf: Add netkit to tc_redirect selftest
+
+Dapeng Mi (1):
+      perf/x86/intel: Correct incorrect 'or' operation for PMU capabilities
+
+Darrick J. Wong (2):
+      xfs: clean up dqblk extraction
+      xfs: dquot recovery does not validate the recovered dquot
+
+Dave Airlie (1):
+      nouveau/gsp: allocate enough space for all channel ids.
+
+David Howells (8):
+      rxrpc: Fix some minor issues with bundle tracing
+      rxrpc: Fix RTT determination to use any ACK as a source
+      rxrpc: Defer the response to a PING ACK until we've parsed it
+      afs: Fix afs_server_list to be cleaned up with RCU
+      afs: Make error on cell lookup failure consistent with OpenAFS
+      afs: Return ENOENT if no cell DNS record can be found
+      afs: Fix file locking on R/O volumes to operate in local mode
+      afs: Mark a superblock for an R/O or Backup volume as SB_RDONLY
+
+David Woodhouse (2):
+      ACPI: processor_idle: use raw_safe_halt() in acpi_idle_play_dead()
+      PM: tools: Fix sleepgraph syntax error
+
+Denis Benato (2):
+      HID: hid-asus: add const to read-only outgoing usb buffer
+      HID: hid-asus: reset the backlight brightness level on resume
+
+Dmitry Baryshkov (2):
+      drm/msm: remove exra drm_kms_helper_poll_init() call
+      drm/msm/dp: attach the DP subconnector property
+
+Eduard Zingerman (11):
+      selftests/bpf: track tcp payload offset as scalar in xdp_synproxy
+      selftests/bpf: track string payload offset as scalar in strobemeta
+      selftests/bpf: fix bpf_loop_bench for new callback verification schem=
+e
+      bpf: extract __check_reg_arg() utility function
+      bpf: extract setup_func_entry() utility function
+      bpf: verify callbacks as if they are called unknown number of times
+      selftests/bpf: tests for iterating callbacks
+      bpf: widening for callback iterators
+      selftests/bpf: test widening for iterating callbacks
+      bpf: keep track of max number of bpf_loop callback iterations
+      selftests/bpf: check if max number of bpf_loop iterations is tracked
+
+Eric Dumazet (1):
+      wireguard: use DEV_STATS_INC()
+
+Ferry Meng (1):
+      erofs: simplify erofs_read_inode()
+
+Gao Xiang (1):
+      MAINTAINERS: erofs: add EROFS webpage
+
+Gerd Bayer (1):
+      s390/ism: ism driver implies smc protocol
+
+Gil Fine (1):
+      thunderbolt: Set lane bonding bit only for downstream port
+
+Gustavo A. R. Silva (1):
+      xen: privcmd: Replace zero-length array with flex-array member
+and use __counted_by
+
+Haiyang Zhang (2):
+      hv_netvsc: fix race of netvsc and VF register_netdevice
+      hv_netvsc: Fix race of register_netdevice_notifier and VF register
+
+Hamish Martin (2):
+      HID: mcp2221: Set driver data before I2C adapter add
+      HID: mcp2221: Allow IO to start during probe
+
+Hannes Reinecke (5):
+      nvme-tcp: only evaluate 'tls' option if TLS is selected
+      nvme: catch errors from nvme_configure_metadata()
+      nvme: blank out authentication fabrics options if not configured
+      nvmet-tcp: always initialize tls_handshake_tmo_work
+      nvme: move nvme_stop_keep_alive() back to original position
+
+Hans de Goede (5):
+      ACPI: PM: Add acpi_device_fix_up_power_children() function
+      ACPI: video: Use acpi_device_fix_up_power_children()
+      ACPI: resource: Skip IRQ override on ASUS ExpertBook B1402CVA
+      MAINTAINERS: Drop Mark Gross as maintainer for x86 platform drivers
+      usb: misc: ljca: Fix enumeration error on Dell Latitude 9420
+
+Hao Ge (1):
+      dpll: Fix potential msg memleak when genlmsg_put_reply failed
+
+Harshit Mogalapalli (4):
+      platform/x86: hp-bioscfg: Simplify return check in
+hp_add_other_attributes()
+      platform/x86: hp-bioscfg: move mutex_lock() down in
+hp_add_other_attributes()
+      platform/x86: hp-bioscfg: Fix error handling in hp_add_other_attribut=
+es()
+      platform/x86: hp-bioscfg: Remove unused obj in hp_add_other_attribute=
+s()
+
+Heikki Krogerus (1):
+      usb: typec: tipd: Supply also I2C driver data
+
+Heiko Carstens (2):
+      s390: remove odd comment
+      scripts/checkstack.pl: match all stack sizes for s390
+
+Heiner Kallweit (1):
+      Revert "net: r8169: Disable multicast filter for RTL8168H and RTL8107=
+E"
+
+Helge Deller (9):
+      parisc: Mark ex_table entries 32-bit aligned in assembly.h
+      parisc: Mark ex_table entries 32-bit aligned in uaccess.h
+      parisc: Mark altinstructions read-only and 32-bit aligned
+      parisc: Mark jump_table naturally aligned
+      parisc: Mark lock_aligned variables 16-byte aligned on SMP
+      parisc: Ensure 32-bit alignment on parisc unwind section
+      parisc: Use natural CPU alignment for bug_table
+      parisc: Drop the HP-UX ENOSYM and EREMOTERELEASE error codes
+      parisc: Reduce size of the bug_table on 64-bit kernel by half
+
+Huacai Chen (3):
+      LoongArch: Add __percpu annotation for __percpu_read()/__percpu_write=
+()
+      LoongArch: Silence the boot warning about 'nokaslr'
+      LoongArch: Mark {dmw,tlb}_virt_to_page() exports as non-GPL
+
+Ian Kent (1):
+      autofs: add: new_inode check in autofs_fill_super()
+
+Imre Deak (1):
+      drm/i915/dp_mst: Fix race between connector registration and setup
+
+Ivan Vecera (1):
+      i40e: Fix adding unsupported cloud filters
+
+Jacek Lawrynowicz (1):
+      accel/ivpu/37xx: Fix hangs related to MMIO reset
+
+Jacob Keller (3):
+      ice: remove ptp_tx ring parameter flag
+      ice: unify logic for programming PFINT_TSYN_MSK
+      ice: restore timestamp configuration after device reset
+
+Jakub Kicinski (4):
+      net: fill in MODULE_DESCRIPTION()s for SOCK_DIAG modules
+      docs: netdev: try to guide people on dealing with silence
+      tools: ynl: fix header path for nfsd
+      tools: ynl: fix duplicate op name in devlink
+
+Jan H=C3=B6ppner (1):
+      s390/dasd: protect device queue against concurrent access
+
+Jann Horn (1):
+      tls: fix NULL deref on tls_sw_splice_eof() with empty record
+
+Jean Delvare (1):
+      stmmac: dwmac-loongson: Add architecture dependency
+
+Jiawen Wu (1):
+      net: wangxun: fix kernel panic due to null pointer
+
+Jingbo Xu (1):
+      erofs: fix NULL dereference of dif->bdev_handle in fscache mode
+
+Jiri Kosina (1):
+      Revert "HID: logitech-dj: Add support for a new lightspeed
+receiver iteration"
+
+Jithu Joseph (1):
+      MAINTAINERS: Remove stale entry for SBL platform driver
+
+Johan Hovold (11):
+      Revert "phy: realtek: usb: Add driver for the Realtek SoC USB 3.0 PHY=
+"
+      Revert "phy: realtek: usb: Add driver for the Realtek SoC USB 2.0 PHY=
+"
+      Revert "usb: phy: add usb phy notify port status API"
+      dt-bindings: usb: hcd: add missing phy name to example
+      USB: xhci-plat: fix legacy PHY double init
+      dt-bindings: usb: qcom,dwc3: fix example wakeup interrupt types
+      USB: dwc3: qcom: fix wakeup after probe deferral
+      USB: dwc3: qcom: simplify wakeup interrupt setup
+      USB: dwc3: qcom: fix resource leaks on probe deferral
+      USB: dwc3: qcom: fix software node leak on probe errors
+      USB: dwc3: qcom: fix ACPI platform device leak
+
+Jonas Karlman (1):
+      drm/rockchip: vop: Fix color for RGB888/BGR888 format on VOP full
+
+Jonathan Marek (1):
+      drm/msm/dsi: use the correct VREG_CTRL_1 value for 4nm cphy
+
+Jose Ignacio Tornos Martinez (1):
+      net: usb: ax88179_178a: fix failed operations during ax88179_reset
+
+Kees Cook (1):
+      MAINTAINERS: Add netdev subsystem profile link
+
+Keith Busch (2):
+      swiotlb-xen: provide the "max_mapping_size" method
+      io_uring: fix off-by one bvec index
+
+Kunwu Chan (1):
+      ipv4: Correct/silence an endian warning in __ip_do_redirect
+
+Lech Perczak (2):
+      USB: serial: option: don't claim interface 4 for ZTE MF290
+      net: usb: qmi_wwan: claim interface 4 for ZTE MF290
+
+Li Nan (4):
+      nbd: fold nbd config initialization into nbd_alloc_config()
+      nbd: factor out a helper to get nbd_config without holding 'config_lo=
+ck'
+      nbd: fix null-ptr-dereference while accessing 'nbd->config'
+      nbd: pass nbd_sock to nbd_read_reply() instead of index
+
+Linus Torvalds (2):
+      asm-generic: qspinlock: fix queued_spin_value_unlocked() implementati=
+on
+      Linux 6.7-rc3
+
+Long Li (1):
+      hv_netvsc: Mark VF as slave before exposing it to user-mode
+
+Lorenzo Bianconi (1):
+      net: veth: fix ethtool stats reporting
+
+Marek Vasut (2):
+      drm/panel: simple: Fix Innolux G101ICE-L01 bus flags
+      drm/panel: simple: Fix Innolux G101ICE-L01 timings
+
+Mark Brown (1):
+      kselftest/arm64: Fix output formatting for za-fork
+
+Mark O'Donovan (2):
+      nvme-auth: unlock mutex in one place only
+      nvme-auth: set explanation code for failure2 msgs
+
+Masahiro Yamada (2):
+      LoongArch: Add dependency between vmlinuz.efi and vmlinux.efi
+      arm64: add dependency between vmlinuz.efi and Image
+
+Mathieu Desnoyers (1):
+      MAINTAINERS: TRACING: Add Mathieu Desnoyers as Reviewer
+
+Mika Westerberg (2):
+      thunderbolt: Send uevent after asymmetric/symmetric switch
+      thunderbolt: Only add device router DP IN to the head of the DP
+resource list
+
+Mikhail Zaslonko (1):
+      s390/ipl: add missing IPL_TYPE_ECKD_DUMP case to ipl_init()
+
+Ming Lei (3):
+      blk-throttle: fix lockdep warning of "cgroup_mutex or RCU read
+lock required!"
+      blk-cgroup: avoid to warn !rcu_read_lock_held() in blkg_lookup()
+      blk-cgroup: bypass blkcg_deactivate_policy after destroying
+
+Mingzhe Zou (3):
+      bcache: fixup init dirty data errors
+      bcache: fixup lock c->root error
+      bcache: fixup multi-threaded bch_sectors_dirty_init() wake-up race
+
+Muhammad Muzammil (1):
+      s390/dasd: resolve spelling mistake
+
+Nguyen Dinh Phi (1):
+      nfc: virtual_ncidev: Add variable to check if ndev is running
+
+Niklas Neronin (1):
+      usb: config: fix iteration issue in 'usb_get_bos_descriptor()'
+
+Oliver Neukum (3):
+      usb: aqc111: check packet for fixup for true limit
+      HID: add ALWAYS_POLL quirk for Apple kb
+      USB: dwc2: write HCINT with INTMASK applied
+
+Omar Sandoval (1):
+      iov_iter: fix copy_page_to_iter_nofault()
+
+Paolo Abeni (1):
+      kselftest: rtnetlink: fix ip route command typo
+
+Paulo Alcantara (4):
+      smb: client: implement ->query_reparse_point() for SMB1
+      smb: client: introduce ->parse_reparse_point()
+      smb: client: set correct file type from NFS reparse points
+      smb: client: introduce cifs_sfu_make_node()
+
+Pawel Laszczak (1):
+      usb: cdnsp: Fix deadlock issue during using NCM gadget
+
+Peilin Ye (2):
+      veth: Use tstats per-CPU traffic counters
+      bpf: Fix dev's rx stats for bpf_redirect_peer traffic
+
+Peter Zijlstra (1):
+      lockdep: Fix block chain corruption
+
+Puliang Lu (1):
+      USB: serial: option: fix FM101R-GL defines
+
+Raju Rangoju (3):
+      amd-xgbe: handle corner-case during sfp hotplug
+      amd-xgbe: handle the corner-case during tx completion
+      amd-xgbe: propagate the correct speed and duplex status
+
+Rand Deeb (1):
+      bcache: prevent potential division by zero error
+
+Ricardo Ribalda (1):
+      usb: dwc3: set the dma max_seg_size
+
+Ritvik Budhiraja (1):
+      cifs: fix use after free for iface while disabling secondary channels
+
+Samuel Holland (1):
+      net: axienet: Fix check for partial TX checksum
+
+Saurabh Sengar (1):
+      x86/hyperv: Fix the detection of E820_TYPE_PRAM in a Gen2 VM
+
+Shyam Sundar S K (1):
+      platform/x86/amd/pmc: adjust getting DRAM size behavior
+
+Simon Horman (1):
+      MAINTAINERS: Add indirect_call_wrapper.h to NETWORKING [GENERAL]
+
+Song Liu (1):
+      md: fix bi_status reporting in md_end_clone_io
+
+Stanley Chang (1):
+      usb: dwc3: add missing of_node_put and platform_device_put
+
+Stefan Berger (1):
+      fs: Pass AT_GETATTR_NOSEC flag to getattr interface function
+
+Stefan Eichenberger (2):
+      dt-bindings: usb: microchip,usb5744: Add second supply
+      usb: misc: onboard-hub: add support for Microchip USB5744
+
+Stefano Stabellini (1):
+      arm/xen: fix xen_vcpu_info allocation alignment
+
+Steven Rostedt (Google) (6):
+      eventfs: Remove expectation that ei->is_freed means ei->dentry =3D=3D=
+ NULL
+      eventfs: Do not invalidate dentry in create_file/dir_dentry()
+      eventfs: Use GFP_NOFS for allocation when eventfs_mutex is held
+      eventfs: Move taking of inode_lock into dcache_dir_open_wrapper()
+      eventfs: Do not allow NULL parent to eventfs_start_creating()
+      eventfs: Make sure that parent->d_inode is locked in creating files/d=
+irs
+
+Stuart Hayhurst (1):
+      platform/x86: ideapad-laptop: Set max_brightness before using it
+
+Suman Ghosh (2):
+      octeontx2-pf: Fix memory leak during interface down
+      octeontx2-pf: Fix ntuple rule creation to direct packet to VF
+with higher Rx queue than its PF
+
+Thomas Richter (1):
+      s390/pai: cleanup event initialization
+
+Thomas Zimmermann (1):
+      drm/ast: Disconnect BMC if physical connector is connected
+
+Uros Bizjak (1):
+      x86/hyperv: Use atomic_try_cmpxchg() to micro-optimize hv_nmi_unknown=
+()
+
+Victor Fragoso (1):
+      USB: serial: option: add Fibocom L7xx modules
+
+WANG Rui (2):
+      LoongArch: Explicitly set -fdirect-access-external-data for vmlinux
+      LoongArch: Record pc instead of offset in la_abs relocation
+
+Wentong Wu (1):
+      usb: misc: ljca: Drop _ADR support to get ljca children devices
+
+Will Deacon (1):
+      arm64: mm: Fix "rodata=3Don" when CONFIG_RODATA_FULL_DEFAULT_ENABLED=
+=3Dy
+
+Xuxin Xiong (1):
+      drm/panel: auo,b101uan08.3: Fine tune the panel power sequence
+
+Yanteng Si (2):
+      Docs/LoongArch: Update links in LoongArch introduction.rst
+      Docs/zh_CN/LoongArch: Update links in LoongArch introduction.rst
+
+Yihong Cao (1):
+      HID: apple: add Jamesdonkey and A3R to non-apple keyboards list
