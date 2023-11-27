@@ -2,321 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C315F7FAA4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 20:28:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E78867FAA4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 20:28:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232875AbjK0T1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 14:27:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54040 "EHLO
+        id S231741AbjK0T2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 14:28:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233038AbjK0T1a (ORCPT
+        with ESMTP id S229947AbjK0T2c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 14:27:30 -0500
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C963B1739
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 11:27:24 -0800 (PST)
-Received: by mail-ua1-x92d.google.com with SMTP id a1e0cc1a2514c-7c450055f7aso1182445241.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 11:27:24 -0800 (PST)
+        Mon, 27 Nov 2023 14:28:32 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31DB1D5A
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 11:28:38 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50babb66dedso5367e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 11:28:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701113244; x=1701718044; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ix962m0e2ECI/JFAX0rtGgMeWo1FWQ2exAEjP9Vo4U4=;
-        b=fNoHa8flkb+NZPzZ6z2XNIdCYaxo+gEWxbkSEHB7m60qkX5ZoRsbB/hUb2pr0Mb1wz
-         meflqqZlKdWswEgqhbFXvriB0WICFuN/sZq1smUZiEwLIbPIS4RDvR+Q1Otc+vRzomd2
-         x1nBgBCmQ2+yIITTJ3GXlcxb5w4ZW+5+OBRllpUBhS3PfRpEXTQEoA1xui4OjQ0h/BXf
-         G18eU2xlNOmpEBC6S9Tu3lTvJAi7jX8lHAqa4y0R58YMtDVgyN2zobuL6hY+iL/qqcMo
-         lFh+Cy3eHI+dUe0l/AHbeKnvLmL15hI/aGi244disw//c5ft4mpgcmU4fYKK+qs93/F4
-         JEjA==
+        d=google.com; s=20230601; t=1701113316; x=1701718116; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=emsUw2/bJXpid3wTNhP0ePyetslR3hOrktzFF6VS7Tk=;
+        b=t9mKuVfRYSi11h4hMOeCOUqEwtrsSrLieu0r+Iw880q0KBobBe8KEzYRcTBKlf9RI3
+         DekwH/ccmNl/UqUaBmFXIEsd01cbAsm75bNqGV5SmQbZgMvOr2RwQ6sGCbPwoUjZYha2
+         VTQSfnqFw9gXGcUUS9iGQLNbksr+BEap9jBmNZaF5aA2xdgRp3/7QHmSgQC3EQ9owuz7
+         DPHqWSrZ7aJ/1PgU+AQWfkPDhzRecUROp6gPJOLk9XrvdkdAo6HJ8kzS6juYs1Gwdpc2
+         Lm4/P0WQHB0j+WNPYyEoq2Dzrxzahr1gpaldntzzmuMcWVP4pWg9Z7wHtvU4XMekpR7x
+         9pgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701113244; x=1701718044;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ix962m0e2ECI/JFAX0rtGgMeWo1FWQ2exAEjP9Vo4U4=;
-        b=w7JGCeQWfpu7BnXnJ58v25GZ704jwT6I+gI5kVJeOeZ14XYKBs0fbA0R90NXXORZTQ
-         aVVRW88B622hJgo1tDkTSou3M/QkGyl1js1XZxYaeymSdeBjB1Vd76kcT3upJqMeVyjh
-         fniJTY9KYbhGqaR2/Orj+TKMKx+VhdzQBL7A0wx+Tdwg4z0JhLwb9J3k5QfzRdwgpwS/
-         YDd1ENNHAmO9x7no7vIUg0MKH5ggGGhToBQB8pdyVsgfyLJTXxMx+GpeNaOSjwwIzacA
-         vIkmIhtboFHXMMtNrpKZ5JYFj4d0Y/bMAevt4cGRAfyqD45v3M4PcXJz+uH3LTtzZbZy
-         YpAw==
-X-Gm-Message-State: AOJu0YyVfbWUwYCcRLacYL5XLIfl3sbwyQ+rM6pcs1ba+kl0K1Yeu9aj
-        ztkevmNxlpWVwKYzeE8tvUmfEEnaV8FxRjfkdq5Rzw==
-X-Google-Smtp-Source: AGHT+IHzRq8KZIuJyR03BGekvuV7bhOeMdsJa4Ee9r0MmRoSgwfmTlc3lh+3lluT0hWBxxXGL1fP2HHz4cBrvKhOgZs=
-X-Received: by 2002:a67:c589:0:b0:462:e6d1:20 with SMTP id h9-20020a67c589000000b00462e6d10020mr4520510vsk.23.1701113243728;
- Mon, 27 Nov 2023 11:27:23 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701113316; x=1701718116;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=emsUw2/bJXpid3wTNhP0ePyetslR3hOrktzFF6VS7Tk=;
+        b=Mycl7WmlFwlM60El9HfzG4BVyf9YKFP66V4hB9V5Ti0NmkzhRbR1qQwW4evTyhYyqI
+         1UR7bCxKz1ZlbYFvZ/cV4/V4bPccndJGgzLHR4fvRwV8xrBGzL4mWM9I5+sS+8O2uw1P
+         LVVOKTdNVY3dcAmBK+ceZJDKWHBtxthEZUvVf2IPZ9isQGf4q9IID1RVuhHjyxBY43eY
+         DgWzWHr2HxLf24G3HOFNTVlBoBJORYUYdEs25TkB6ZVo8NLnj8EOc8ESsI+AcbbipJFE
+         83e3GixMtmFxMVeekcfJrBA5e8zrpuPDwNmZEbinbRwTjfeHewxQOipZmj5M15TvZdaf
+         oQiA==
+X-Gm-Message-State: AOJu0Yw4Jntu0YV5IJDCWdrrIwd35eiSmqq2lQtufmf6VrHHEBfYXN/I
+        myPBPMxU6NxuokUIK61GmcnRtQwW+ohx3RuU91PbAg==
+X-Google-Smtp-Source: AGHT+IGqz5YV8saJWdO+etbO+UPSAP/D4OHFvMdJV3aIAzcmDHsaTLH1laau0c92fGE4K+1K5IgG18qww6GSfojHddI=
+X-Received: by 2002:ac2:4c8e:0:b0:50a:a790:30b9 with SMTP id
+ d14-20020ac24c8e000000b0050aa79030b9mr324468lfl.0.1701113315882; Mon, 27 Nov
+ 2023 11:28:35 -0800 (PST)
 MIME-Version: 1.0
-References: <20231126154413.975493975@linuxfoundation.org> <CA+G9fYsUXnx4HWyBOGMi3Ko_jT6Y_ejp5ZhcsU+8+_8NUsd=vA@mail.gmail.com>
-In-Reply-To: <CA+G9fYsUXnx4HWyBOGMi3Ko_jT6Y_ejp5ZhcsU+8+_8NUsd=vA@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 28 Nov 2023 00:57:12 +0530
-Message-ID: <CA+G9fYtThAeNsbmRa1VtHYsR+0psvL5UMQFqcpsuziYTu9GC-A@mail.gmail.com>
-Subject: Re: [PATCH 6.5 000/483] 6.5.13-rc4 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com
+References: <20231102175735.2272696-1-irogers@google.com> <20231102175735.2272696-4-irogers@google.com>
+ <ZUSwOlsOyJdDT1ls@gentoo.org> <CAP-5=fVm5rmOTvXi1LZzSEc3wHv68HszOfZmBb-RG=eUj2UVHg@mail.gmail.com>
+ <CAM9d7ciqPsR1DNnngZApwkyNd+6AQPtqxBvy=m_jsMnchHvr9w@mail.gmail.com>
+In-Reply-To: <CAM9d7ciqPsR1DNnngZApwkyNd+6AQPtqxBvy=m_jsMnchHvr9w@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 27 Nov 2023 11:28:24 -0800
+Message-ID: <CAP-5=fXFPnpOvYJeKTeDGDjDw4FD1KS22U+D0Aeffx3qaNW7MQ@mail.gmail.com>
+Subject: Re: [PATCH v4 03/53] libperf: Lazily allocate mmap event copy
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Guilherme Amadio <amadio@gentoo.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Dmitrii Dolgov <9erthalion6@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        James Clark <james.clark@arm.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        German Gomez <german.gomez@arm.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Nov 2023 at 20:37, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+On Sun, Nov 5, 2023 at 10:12=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> =
+wrote:
 >
-> On Sun, 26 Nov 2023 at 21:17, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
+> On Fri, Nov 3, 2023 at 8:49=E2=80=AFAM Ian Rogers <irogers@google.com> wr=
+ote:
 > >
-> > This is the start of the stable review cycle for the 6.5.13 release.
-> > There are 483 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
+> > On Fri, Nov 3, 2023 at 1:33=E2=80=AFAM Guilherme Amadio <amadio@gentoo.=
+org> wrote:
+> > >
+> > > Hi,
+> > >
+> > > On Thu, Nov 02, 2023 at 10:56:45AM -0700, Ian Rogers wrote:
+> > > > The event copy in the mmap is used to have storage to a read
+> > > > event. Not all users of mmaps read the events, such as perf record,=
+ so
+> > > > switch the allocation to being on first read rather than being
+> > > > embedded within the perf_mmap.
+> > > >
+> > > > Signed-off-by: Ian Rogers <irogers@google.com>
+> > > > ---
+> > > >  tools/lib/perf/include/internal/mmap.h | 2 +-
+> > > >  tools/lib/perf/mmap.c                  | 9 +++++++++
+> > > >  2 files changed, 10 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/tools/lib/perf/include/internal/mmap.h b/tools/lib/per=
+f/include/internal/mmap.h
+> > > > index 5a062af8e9d8..b11aaf5ed645 100644
+> > > > --- a/tools/lib/perf/include/internal/mmap.h
+> > > > +++ b/tools/lib/perf/include/internal/mmap.h
+> > > > @@ -33,7 +33,7 @@ struct perf_mmap {
+> > > >       bool                     overwrite;
+> > > >       u64                      flush;
+> > > >       libperf_unmap_cb_t       unmap_cb;
+> > > > -     char                     event_copy[PERF_SAMPLE_MAX_SIZE] __a=
+ligned(8);
+> > > > +     void                    *event_copy;
+> > > >       struct perf_mmap        *next;
+> > > >  };
+> > > >
+> > > > diff --git a/tools/lib/perf/mmap.c b/tools/lib/perf/mmap.c
+> > > > index 2184814b37dd..91ae46aac378 100644
+> > > > --- a/tools/lib/perf/mmap.c
+> > > > +++ b/tools/lib/perf/mmap.c
+> > > > @@ -51,6 +51,8 @@ int perf_mmap__mmap(struct perf_mmap *map, struct=
+ perf_mmap_param *mp,
+> > > >
+> > > >  void perf_mmap__munmap(struct perf_mmap *map)
+> > > >  {
+> > > > +     free(map->event_copy);
+> > > > +     map->event_copy =3D NULL;
+> > > >       if (map && map->base !=3D NULL) {
+> > >
+> > > If map can be NULL as the if statement above suggests, then there is =
+a
+> > > potential a null pointer dereference bug here. Suggestion:
+> > >
+> > >     if (!map)
+> > >         return;
+> > >
+> > >     free(map->event_copy);
+> > >     map->event_copy =3D NULL;
+> > >     if (map->base !=3D NULL) {
+> > >
+> > >     ...
 > >
-> > Responses should be made by Tue, 28 Nov 2023 15:43:06 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.13-rc4.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
+> > Makes sense, will fix in v5. Waiting to get additional feedback to
+> > avoid too much email.
+>
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
 >
 >
-> Results from Linaro's test farm.
-> The following regressions found on all arm64 devices.
-> Both the regressions are also seen on stable-rc linux-6.1.y.
+> But I have another concern (not related to this change).
+>
+> > >
+> > > >               munmap(map->base, perf_mmap__mmap_len(map));
+> > > >               map->base =3D NULL;
+> > > > @@ -226,6 +228,13 @@ static union perf_event *perf_mmap__read(struc=
+t perf_mmap *map,
+> > > >                       unsigned int len =3D min(sizeof(*event), size=
+), cpy;
+>
+> I'm not sure if it's ok to read less than the actual size, IOW
+> it seems to assume 'size' is smaller than sizeof(*event).
+> I guess it's true for most cases as union perf_event has
+> perf_record_mmap2 (among others) which contains a
+> filename array of size PATH_MAX.
+>
+> But the SAMPLE record can be larger than that when it has
+> PERF_SAMPLE_AUX IIRC.  It'd happen only if it crossed the mmap
+> boundary and I'm afraid it'd corrupt the data.
 
-Not a regression on kernel but latest test cases are not supported
-on older stable-rc kernel branches.
+Thanks, I was thinking this would just be a drop in change but I think
+given this feedback it would be better to switch from allocating once
+a PERF_SAMPLE_MAX_SIZE buffer to allocating or reallocating one based
+on size. This potentially saves memory when size is less than
+PERF_SAMPLE_MAX_SIZE and by removing the min calculation for the
+amount copied (len) we can potentially exceed it and fix a potential
+bug. I'll add this in v5.
 
-NOTE:
-Latest kselftests and perf from latest stable-rc testing on the older
-stable-rc branches are reasons for these failures.
+Thanks,
+Ian
 
-> 1) selftests: seccomp: seccomp_bpf - fails on all arm64 devices.
-> 2) Perf: PMU_events_subtest_1 / 2  - fails on all qemu-armv7 and TI x15.
->
-> Test log:
-> --------
-> 1)
-> # selftests: seccomp: seccomp_bpf
-> <>
-> # #  RUN           global.user_notification_sync ...
-> # # seccomp_bpf.c:4294:user_notification_sync:Expected
->
-> ioctl(listener, SECCOMP_IOCTL_NOTIF_SET_FLAGS,
->                SECCOMP_USER_NOTIF_FD_SYNC_WAKE_UP, 0) (-1) == 0 (0)
->
-> # # user_notification_sync: Test terminated by assertion
-> # #          FAIL  global.user_notification_sync
-> # not ok 51 global.user_notification_sync
-> <>
-> # # FAILED: 95 / 96 tests passed.
-> # # Totals: pass:95 fail:1 xfail:0 xpass:0 skip:0 error:0
-> not ok 1 selftests: seccomp: seccomp_bpf # exit=1
->
-> Links:
->  - https://lkft.validation.linaro.org/scheduler/job/7056513#L2725
->  - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.5.y/build/v6.5.12-484-gecc37a3a8d33/testrun/21318788/suite/kselftest-seccomp/test/seccomp_seccomp_bpf/details/
->  - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.5.y/build/v6.5.12-484-gecc37a3a8d33/testrun/21318263/suite/kselftest-seccomp/test/seccomp_seccomp_bpf/history/
+> Thanks,
+> Namhyung
 >
 >
-> 2)
-> perf
->   - PMU_events_subtest_1
->   - PMU_events_subtest_2
->
->  10.1: PMU event table sanity                           :
-> --- start ---
-> test child forked, pid 339
-> perf: Segmentation fault
-> Obtained 1 stack frames.
-> perf(+0xdfcd9) [0x571cd9]
-> test child interrupted
-> ---- end ----
-> PMU events subtest 1: FAILED!
->  10.2: PMU event map aliases                            :
-> --- start ---
-> test child forked, pid 340
-> perf: Segmentation fault
-> Obtained 1 stack frames.
-> perf(+0xdfcd9) [0x571cd9]
-> test child interrupted
-> ---- end ----
-> PMU events subtest 2: FAILED!
->
-> Links:
->  - https://lkft.validation.linaro.org/scheduler/job/7059997#L2905
->  - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.5.y/build/v6.5.12-486-g1c613200bbe4/testrun/21344368/suite/perf/test/PMU_events_subtest_1/details/
->
-> ## Build
-> * kernel: 6.5.13-rc4
-> * git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-> * git branch: linux-6.5.y
-> * git commit: ecc37a3a8d335716260debdf063a278ea74379a4
-> * git describe: v6.5.12-484-gecc37a3a8d33
-> * test details:
-> https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.5.y/build/v6.5.12-484-gecc37a3a8d33
->
-> ## Test Regressions (compared to v6.5.12)
->
-> * bcm2711-rpi-4-b, kselftest-seccomp
->   - seccomp_seccomp_bpf
->
-> * juno-r2, kselftest-seccomp
->   - seccomp_seccomp_bpf
->
-> * dragonboard-410c, kselftest-seccomp
->   - seccomp_seccomp_bpf
->
-> * qemu-armv7, perf
->   - PMU_events_subtest_1
->   - PMU_events_subtest_2
->
-> * x15, perf
->   - PMU_events_subtest_1
->   - PMU_events_subtest_2
->
-> ## Metric Regressions (compared to v6.5.12)
->
-> ## Test Fixes (compared to v6.5.12)
->
-> ## Metric Fixes (compared to v6.5.12)
->
-> ## Test result summary
-> total: 150231, pass: 128862, fail: 2428, skip: 18810, xfail: 131
->
-> ## Build Summary
-> * arc: 5 total, 5 passed, 0 failed
-> * arm: 146 total, 146 passed, 0 failed
-> * arm64: 53 total, 51 passed, 2 failed
-> * i386: 42 total, 42 passed, 0 failed
-> * mips: 26 total, 26 passed, 0 failed
-> * parisc: 4 total, 4 passed, 0 failed
-> * powerpc: 36 total, 36 passed, 0 failed
-> * riscv: 25 total, 25 passed, 0 failed
-> * s390: 13 total, 13 passed, 0 failed
-> * sh: 10 total, 10 passed, 0 failed
-> * sparc: 8 total, 8 passed, 0 failed
-> * x86_64: 47 total, 47 passed, 0 failed
->
-> ## Test suites summary
-> * boot
-> * kselftest-android
-> * kselftest-arm64
-> * kselftest-breakpoints
-> * kselftest-capabilities
-> * kselftest-cgroup
-> * kselftest-clone3
-> * kselftest-core
-> * kselftest-cpu-hotplug
-> * kselftest-cpufreq
-> * kselftest-drivers-dma-buf
-> * kselftest-efivarfs
-> * kselftest-exec
-> * kselftest-filesystems
-> * kselftest-filesystems-binderfs
-> * kselftest-filesystems-epoll
-> * kselftest-firmware
-> * kselftest-fpu
-> * kselftest-ftrace
-> * kselftest-futex
-> * kselftest-gpio
-> * kselftest-intel_pstate
-> * kselftest-ipc
-> * kselftest-ir
-> * kselftest-kcmp
-> * kselftest-kexec
-> * kselftest-kvm
-> * kselftest-lib
-> * kselftest-livepatch
-> * kselftest-membarrier
-> * kselftest-memfd
-> * kselftest-memory-hotplug
-> * kselftest-mincore
-> * kselftest-mount
-> * kselftest-mqueue
-> * kselftest-net
-> * kselftest-net-forwarding
-> * kselftest-net-mptcp
-> * kselftest-netfilter
-> * kselftest-nsfs
-> * kselftest-openat2
-> * kselftest-pid_namespace
-> * kselftest-pidfd
-> * kselftest-proc
-> * kselftest-pstore
-> * kselftest-ptrace
-> * kselftest-rseq
-> * kselftest-rtc
-> * kselftest-seccomp
-> * kselftest-sigaltstack
-> * kselftest-size
-> * kselftest-splice
-> * kselftest-static_keys
-> * kselftest-sync
-> * kselftest-sysctl
-> * kselftest-tc-testing
-> * kselftest-timens
-> * kselftest-timers
-> * kselftest-tmpfs
-> * kselftest-tpm2
-> * kselftest-user
-> * kselftest-user_events
-> * kselftest-vDSO
-> * kselftest-vm
-> * kselftest-watchdog
-> * kselftest-x86
-> * kselftest-zram
-> * kunit
-> * libgpiod
-> * libhugetlbfs
-> * log-parser-boot
-> * log-parser-test
-> * ltp-cap_bounds
-> * ltp-commands
-> * ltp-containers
-> * ltp-controllers
-> * ltp-cpuhotplug
-> * ltp-crypto
-> * ltp-cve
-> * ltp-dio
-> * ltp-fcntl-locktests
-> * ltp-filecaps
-> * ltp-fs
-> * ltp-fs_bind
-> * ltp-fs_perms_simple
-> * ltp-fsx
-> * ltp-hugetlb
-> * ltp-io
-> * ltp-ipc
-> * ltp-math
-> * ltp-mm
-> * ltp-nptl
-> * ltp-pty
-> * ltp-sched
-> * ltp-securebits
-> * ltp-smoke
-> * ltp-syscalls
-> * ltp-tracing
-> * network-basic-tests
-> * perf
-> * rcutorture
-> * v4l2-compliance
->
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
+> > > >                       void *dst =3D map->event_copy;
+> > > >
+> > > > +                     if (!dst) {
+> > > > +                             dst =3D malloc(PERF_SAMPLE_MAX_SIZE);
+> > > > +                             if (!dst)
+> > > > +                                     return NULL;
+> > > > +                             map->event_copy =3D dst;
+> > > > +                     }
+> > > > +
+> > > >                       do {
+> > > >                               cpy =3D min(map->mask + 1 - (offset &=
+ map->mask), len);
+> > > >                               memcpy(dst, &data[offset & map->mask]=
+, cpy);
+> > > > --
+> > > > 2.42.0.869.gea05f2083d-goog
+> > > >
+> > > >
