@@ -2,218 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 273D97F9C53
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 10:05:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 507697F9C57
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 10:05:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232758AbjK0JFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 04:05:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49190 "EHLO
+        id S232830AbjK0JFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 04:05:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232698AbjK0JEt (ORCPT
+        with ESMTP id S232721AbjK0JFL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 04:04:49 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C5709E
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 01:04:51 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-54afdbdb7d2so3422162a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 01:04:51 -0800 (PST)
+        Mon, 27 Nov 2023 04:05:11 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8EDC10F0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 01:05:01 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-a00a9c6f283so527832566b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 01:05:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1701075890; x=1701680690; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AFPzyYcg2nUUJpJ3l3C/kpW+QQW8M0KLB90b9p9tNMM=;
-        b=aBN5G60RGOPaDQLtt8UsvGBjnXb3POhSF2ghUsdTfzN2oXHfPrmoNJltef434ClBBO
-         slK79P+pSwgj3DbfC8MAnMzoSNSm5kQqhB2Sucdk2xin8VM6DmkyXmpkOcP/JMtljC+S
-         rmj8beatuLWIZU1Rmhk25ht5R1OpW1JR5wI31s2wx3UYguaz2dFzsqnvq9/3Cp9zWYaZ
-         akhcNadPZOx86mqInbdYP9I942UpBG5hXpsYXsh0t+NNaIMa5LRrUtZGV/+ZDUruXlzt
-         m7YVObIX0lhe2FAV0ETx95B1txsNYBPYfdkY0h5qStGrBs+RBHdnP9teTM7rbMer6O//
-         vRfg==
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1701075900; x=1701680700; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HI0TOtQb9c447DbOQLQ1/RG9mFnY5yOZxPwrai0TcrQ=;
+        b=sNcgMdc+JCKXIKSMPFi6NUk/N15L2yczsAzRIJsgqu0S5aOv1m8G6qIpAFiX8tMjVC
+         4Wy8HhQDJ879kYAUKR+zPMNels22XSb3JzaUFxs2ZfCKcxEbvsivLWPY1ihbVXI2nw0q
+         fa+YldVKngt8Ze08ZAkTmoU5Q3wIfQren2nY0/aTfEZNoBntbpRr/BmKKK+11CBiq+Ou
+         3GwmEOMRz42Fc10SLihyW3D4wbdBrpKWt1b9PPDPgWbw3hgCT/LQpmi9vwoBwsXLHQZ9
+         S3VA4peeeURBmD9DdudAEHZM/aJQ9ZnLTRQziZhiu5+R5h6j3xB67KKcl503gFv10SAX
+         Mkow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701075890; x=1701680690;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AFPzyYcg2nUUJpJ3l3C/kpW+QQW8M0KLB90b9p9tNMM=;
-        b=OEKOW4MsZbgIL0JC5VZy6Mi1nix5OM+UMdy7+b04PPJOArZM/snwcRjfcOOlySmnDf
-         VqWnLJVffzjH/7/s7sRF97N393DUjDWeTNiAInk5bMvYrEjmhHYpajUjOyMwG/m1WL6q
-         VxAYuUpSdyKo7C6EKBT/4ZMi1hsrx3EjDsGdo9QwTooXjh0xkTfTqvou7WMIe973yGjJ
-         Zuo7SetVlwIBWVFaTR7Qf0h/HKZRPeyNwwscAP56TdR+xiDfVzUWlWEnGwleMYAKXD3b
-         uZkcgv//ZeCjtgaP0L4dyHXGZurwD9E/gEQTryGvjizeZ+ASZy1MZK+60P/Hlk4FVBQ1
-         OuDA==
-X-Gm-Message-State: AOJu0YwWwtmAiTAINVJZxdnZzEz5QCScpWm7DZJFSUdM0Q0S7f9QR9ez
-        VAtkypCoewcWdYqo4CSOCtnQkg==
-X-Google-Smtp-Source: AGHT+IG75ahxVbdOpMa6yVtBJCLfLwgBcjelwbDYnqzwJwKosGZ3obiYPvVpMGx+sQuqdwUax2Sqow==
-X-Received: by 2002:a17:906:8916:b0:9e6:1dc9:9807 with SMTP id fr22-20020a170906891600b009e61dc99807mr5225024ejc.77.1701075889980;
-        Mon, 27 Nov 2023 01:04:49 -0800 (PST)
-Received: from claudiu-X670E-Pro-RS.. ([82.78.167.125])
-        by smtp.gmail.com with ESMTPSA id ay14-20020a170906d28e00b009fad1dfe472sm5456539ejb.153.2023.11.27.01.04.48
+        d=1e100.net; s=20230601; t=1701075900; x=1701680700;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HI0TOtQb9c447DbOQLQ1/RG9mFnY5yOZxPwrai0TcrQ=;
+        b=eZYdRvycHH8o1ptMnr7WjIsM1ORZbFcFkFKALFROAEQv8NvKvt3JDW2scXPqVv6unk
+         d0VNBj0qTOSJcKkGCN3wQDpTlI0TnaoP+DciYG7WCAaF49esN/tX54FQGtDzfhvK9byI
+         SuenudtZYVC1vSE6XGoUqFl/LUCQgBcc+WXCrPRO4s6ltvRUCzUvLy/YXBBenEb3qXXk
+         qju1cGp++tAiKOchxesaYskwnkAvqBMI3vKTqsQ7egOjYl/3hMR73x4eN0OP7b8NBgjR
+         jNGEpx8Dsx8Rk2CtYjPIdIFSTqoe9cqqZoVfUoy9o+L6tritnzOZUHh+QPnEV1MTN89R
+         lkdg==
+X-Gm-Message-State: AOJu0YxwTNsTWkbVBOODBBFn6XG54XXk1XcygNqmThE4O5VggtkFiCm3
+        8jO9vOLNbK30Sr7lH43svWLY3g==
+X-Google-Smtp-Source: AGHT+IGMN9QxP+tvYaW8enwn4HK0hNu5SbKLzvuHC5a2fj6GapL9xeT02R6kafwcgd/VY4ZU0ooFsg==
+X-Received: by 2002:a17:906:9d05:b0:9ff:6257:1b4c with SMTP id fn5-20020a1709069d0500b009ff62571b4cmr6439371ejc.37.1701075900268;
+        Mon, 27 Nov 2023 01:05:00 -0800 (PST)
+Received: from localhost ([86.61.181.4])
+        by smtp.gmail.com with ESMTPSA id j10-20020a170906050a00b009fc54390966sm5508751eja.145.2023.11.27.01.04.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 01:04:49 -0800 (PST)
-From:   Claudiu <claudiu.beznea@tuxon.dev>
-X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
-To:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, richardcochran@gmail.com,
-        p.zabel@pengutronix.de, yoshihiro.shimoda.uh@renesas.com,
-        geert+renesas@glider.be, wsa+renesas@sang-engineering.com,
-        robh@kernel.org, biju.das.jz@bp.renesas.com,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        mitsuhiro.kimura.kc@renesas.com, masaru.nagai.vx@renesas.com
-Cc:     netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH 6/6] net: ravb: Keep reverse order of operations in ravb_remove()
-Date:   Mon, 27 Nov 2023 11:04:26 +0200
-Message-Id: <20231127090426.3761729-7-claudiu.beznea.uj@bp.renesas.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231127090426.3761729-1-claudiu.beznea.uj@bp.renesas.com>
-References: <20231127090426.3761729-1-claudiu.beznea.uj@bp.renesas.com>
+        Mon, 27 Nov 2023 01:04:59 -0800 (PST)
+Date:   Mon, 27 Nov 2023 10:04:58 +0100
+From:   Jiri Pirko <jiri@resnulli.us>
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Michal Kubiak <michal.kubiak@intel.com>,
+        Larysa Zaremba <larysa.zaremba@intel.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        David Christensen <drc@linux.vnet.ibm.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Paul Menzel <pmenzel@molgen.mpg.de>, netdev@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v5 00/14] net: intel: start The Great Code Dedup
+ + Page Pool for iavf
+Message-ID: <ZWRbusSZ4v0SuWmF@nanopsycho>
+References: <20231124154732.1623518-1-aleksander.lobakin@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231124154732.1623518-1-aleksander.lobakin@intel.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Fri, Nov 24, 2023 at 04:47:18PM CET, aleksander.lobakin@intel.com wrote:
+>Here's a two-shot: introduce Intel Ethernet common library (libie) and
+>switch iavf to Page Pool. Details are in the commit messages; here's
+>a summary:
+>
+>Not a secret there's a ton of code duplication between two and more Intel
+>ethernet modules. Before introducing new changes, which would need to be
+>copied over again, start decoupling the already existing duplicate
+>functionality into a new module, which will be shared between several
+>Intel Ethernet drivers. The first name that came to my mind was
+>"libie" -- "Intel Ethernet common library". Also this sounds like
+>"lovelie" (-> one word, no "lib I E" pls) and can be expanded as
+>"lib Internet Explorer" :P
+>The series is only the beginning. From now on, adding every new feature
+>or doing any good driver refactoring will remove much more lines than add
+>for quite some time. There's a basic roadmap with some deduplications
+>planned already, not speaking of that touching every line now asks:
+>"can I share this?". The final destination is very ambitious: have only
+>one unified driver for at least i40e, ice, iavf, and idpf with a struct
+>ops for each generation. That's never gonna happen, right? But you still
+>can at least try.
+>PP conversion for iavf lands within the same series as these two are tied
+>closely. libie will support Page Pool model only, so that a driver can't
+>use much of the lib until it's converted. iavf is only the example, the
+>rest will eventually be converted soon on a per-driver basis. That is
+>when it gets really interesting. Stay tech.
 
-On RZ/G3S SMARC Carrier II board having RGMII connections b/w Ethernet
-MACs and PHYs it has been discovered that doing unbind/bind for ravb
-driver in a loop leads to wrong speed and duplex for Ethernet links and
-broken connectivity (the connectivity cannot be restored even with
-bringing interface down/up). Before doing unbind/bind the Ethernet
-interfaces were configured though systemd. The sh instructions used to
-do unbind/bind were:
+The world would not be the same without intel driver duplicates :/
 
-$ cd /sys/bus/platform/drivers/ravb/
-$ while :; do echo 11c30000.ethernet > unbind ; \
-  echo 11c30000.ethernet > bind; done
-
-It has been discovered that there is a race b/w IOCTLs initialized by
-systemd at the response of success binding and the
-"ravb_write(ndev, CCC_OPC_RESET, CCC)" instruction in ravb_remove() as
-follows:
-
-1/ as a result of bind success the user space open/configures the
-   interfaces tough an IOCTL; the following stack trace has been
-   identified on RZ/G3S:
-
-Call trace:
-dump_backtrace+0x9c/0x100
-show_stack+0x20/0x38
-dump_stack_lvl+0x48/0x60
-dump_stack+0x18/0x28
-ravb_open+0x70/0xa58
-__dev_open+0xf4/0x1e8
-__dev_change_flags+0x198/0x218
-dev_change_flags+0x2c/0x80
-devinet_ioctl+0x640/0x708
-inet_ioctl+0x1e4/0x200
-sock_do_ioctl+0x50/0x108
-sock_ioctl+0x240/0x358
-__arm64_sys_ioctl+0xb0/0x100
-invoke_syscall+0x50/0x128
-el0_svc_common.constprop.0+0xc8/0xf0
-do_el0_svc+0x24/0x38
-el0_svc+0x34/0xb8
-el0t_64_sync_handler+0xc0/0xc8
-el0t_64_sync+0x190/0x198
-
-2/ this call may execute concurrently with ravb_remove() as the
-   unbind/bind operation was executed in a loop
-3/ if the operation mode is changed to RESET (though
-   ravb_write(ndev, CCC_OPC_RESET, CCC) instruction in ravb_remove())
-   while the above ravb_open() is in progress it may lead to MAC
-   (or PHY, or MAC-PHY connection, the right point hasn't been identified
-   at the moment) to be broken, thus the Ethernet connectivity fails to
-   restore.
-
-The simple fix for this is to move ravb_write(ndev, CCC_OPC_RESET, CCC))
-after unregister_netdev() to avoid resetting the controller while the
-netdev interface is still registered.
-
-To avoid future issues in ravb_remove(), the patch follows the proper order
-of operations in ravb_remove(): reverse order compared with ravb_probe().
-This avoids described races as the IOCTLs as well as unregister_netdev()
-(called now at the beginning of ravb_remove()) calls rtnl_lock() before
-continuing and IOCTLs check (though devinet_ioctl()) if device is still
-registered just after taking the lock:
-
-int devinet_ioctl(struct net *net, unsigned int cmd, struct ifreq *ifr)
-{
-	// ...
-
-        rtnl_lock();
-
-        ret = -ENODEV;
-        dev = __dev_get_by_name(net, ifr->ifr_name);
-        if (!dev)
-                goto done;
-
-	// ...
-done:
-        rtnl_unlock();
-out:
-        return ret;
-}
-
-Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
-Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
----
-
-Changes since [1]:
-- none; this patch is new
-
-[1] https://lore.kernel.org/all/20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com/
-
- drivers/net/ethernet/renesas/ravb_main.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-index 805720166ef3..9cad10db59b7 100644
---- a/drivers/net/ethernet/renesas/ravb_main.c
-+++ b/drivers/net/ethernet/renesas/ravb_main.c
-@@ -2894,22 +2894,26 @@ static void ravb_remove(struct platform_device *pdev)
- 	struct ravb_private *priv = netdev_priv(ndev);
- 	const struct ravb_hw_info *info = priv->info;
- 
--	/* Stop PTP Clock driver */
--	if (info->ccc_gac)
--		ravb_ptp_stop(ndev);
--
--	clk_disable_unprepare(priv->gptp_clk);
--	clk_disable_unprepare(priv->refclk);
--
--	/* Set reset mode */
--	ravb_write(ndev, CCC_OPC_RESET, CCC);
- 	unregister_netdev(ndev);
- 	if (info->nc_queues)
- 		netif_napi_del(&priv->napi[RAVB_NC]);
- 	netif_napi_del(&priv->napi[RAVB_BE]);
-+
- 	ravb_mdio_release(priv);
-+
-+	/* Stop PTP Clock driver */
-+	if (info->ccc_gac)
-+		ravb_ptp_stop(ndev);
-+
- 	dma_free_coherent(ndev->dev.parent, priv->desc_bat_size, priv->desc_bat,
- 			  priv->desc_bat_dma);
-+
-+	/* Set reset mode */
-+	ravb_write(ndev, CCC_OPC_RESET, CCC);
-+
-+	clk_disable_unprepare(priv->gptp_clk);
-+	clk_disable_unprepare(priv->refclk);
-+
- 	pm_runtime_put_sync(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 	reset_control_assert(priv->rstc);
--- 
-2.39.2
-
+Out of curiosity, what changed? I always thought this is
+done for sake of easier out of tree driver development and old device
+support dropping.
