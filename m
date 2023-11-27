@@ -2,300 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 960807F98E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 06:46:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D61677F98E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 06:47:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229583AbjK0Fpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 00:45:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44712 "EHLO
+        id S229660AbjK0FrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 00:47:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjK0Fpt (ORCPT
+        with ESMTP id S229509AbjK0FrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 00:45:49 -0500
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2139.outbound.protection.outlook.com [40.107.255.139])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95970124;
-        Sun, 26 Nov 2023 21:45:53 -0800 (PST)
+        Mon, 27 Nov 2023 00:47:21 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA646E4;
+        Sun, 26 Nov 2023 21:47:27 -0800 (PST)
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AR5KmjO014234;
+        Mon, 27 Nov 2023 05:46:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=gRQcFKASFHYWszdGDPw1ycI+9LnbsEpxKHyONkfZZRo=;
+ b=AOE1i8V5oirDJcxdJHAZyixjOMeQFWaQJEec1HYpgE2u0YfqbY6T5BMA8HYZbqsZ8eSq
+ bYO2rw95Y3AQeYa7b5oRBi8uSt30MWyaQOPFLjrMZlGoVjzOXNTBnYca+0zF2XWmDvqh
+ DZTICgbZh6T8GzaO52chjVeBkRwyK7iOdZkQL67yW4ia2HMMHwDwrbgxQVp6n4XuI+zY
+ RpfqV0iv2cjbCEt/AOxqnfC8d7U40Vb5t9OD+Xff8EoCnN/vG0iuwgEXHy8DO9xjmCyj
+ eQLvk6ciN0L1rT5c+SysFcTOHM/gNcrmGWw12ixtvUT2kN8kiHPyRpI6pt8nA4S7Eylr vA== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uk7ucj4ev-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Nov 2023 05:46:43 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3AR4uG2w012662;
+        Mon, 27 Nov 2023 05:46:42 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2100.outbound.protection.outlook.com [104.47.55.100])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3uk7c5398m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Nov 2023 05:46:42 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VzkADlpYwBdxIQZkKvGEsXNleWvVYZdrWMn+2LtgbS5D5q3vtzGbq63LLzjToOTHvKZmXF+dPSvE6E5qHDMtxPQOZBuUQWlyMWWKOjzPTIob+KTIhJdirUgeyFCfKRx52tSqSiCnE0io0wkVRfF8O4KxsZFyvkADDmpZmeav/nb2/d20cOLHpC+/AUjFZ+q51NuDdWjPVFYVx6sdxdaFiQ+5VYgAlJr+Tp4owimGn3RoML9Z04Vd18Mag6gr4vcJPdWfmP19vV3EwvQs4KQ1rumezZIbLGHQICOMLEmsJ/N2a65tR7o8ugJ676HjdRnMZpx02qegTOCxHGEhlKbPUQ==
+ b=G5QEi+eCpMwvXLmNGIn5TkFc7eJy48P3imnt7Qx7TYeKbH53sf2WTG/tjavoVNqRyWxEepsuaBlyysAun18/4sjtvnQMk149SUZoehsUV67hnU34SqM+VbYKc/Kz0sglSLswO9GAJeO//R4TaDSCYDjs4hgMM7PE1kYKV7XsaCR+lmsbvdrm+UrIEwno1G4MTNbK+G8ebfUlCQLpIwYE/okfmedJafQE8UfoczPN0Int3aMsbReZM9oGE1IQ400J+yhOwweYfEZS8yIxt2P0/OOyodyBDUr0xRJxwDWIZuqKH5BluNES8V5lPIiDd8zgHiIskvrGJ62/DYXyhOC1Fg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1He1AIe8gVwfcHdPJ1xuf6rTQn/3S/Q7MBx3NAb/4ok=;
- b=SopVUE0l6FcvkefrotdsGF0AmfcZInhkadcNFdOBlWFbkH2eWtqgtt/s82Gq1dgd4p9MbzKgvS9Hx3ZcVkWpTC6PP9jb0svorAualSzLa09guyRllxkSnHNUv/t5dSTGo4NMuq6cUm895kesyQG2jW3XLZlOXyljzzRZxtZImNZi018Zqv+TiSZYROD9zDFL8dG2rYynD69LF5GRbVS81V5msyJb2QYEYNMMq++YMO2UtSqR3NVzVSU/GZXsT06VvHN6k62iBBl9149u9H6uy4ry4uIzgSquKYH5cuoMU8CEc4aW/IAIcDBdKcqBgGg09WhB+DEpxp/uEnhpGQr2Jw==
+ bh=gRQcFKASFHYWszdGDPw1ycI+9LnbsEpxKHyONkfZZRo=;
+ b=lT/4WLgEQyzH0tjOD1Qjk5z3wU5+Y1ELdY/lNT5RATg+Q3R1v0UzratqfXLN5w7kjggML7A3tJNyduiY++B6O0MHzoW8bP7ljUfAQtZ2AB9syX2UpOga5buTjsCEfpXYk+sMAf4hHCsYpk9a4HAmY0L4zKTw0R9XwPnOL3zqqmQDpRrJxThl1RhPXf+NbjIOYKMlbZBBAPERUveOyN1GHc0YTlJkrFXbJgQ1tkJmWYgJjw8h5kOEukbDIigrOEATgVTM9DboNsZGM8cNKK2xc3YqJLA1C2LJ1mz/6zWO0mkjmWqXcp6Q4QTdZDXsElKIAIfgd4ar0kdtiUiV/GYqqw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
- s=selector2;
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1He1AIe8gVwfcHdPJ1xuf6rTQn/3S/Q7MBx3NAb/4ok=;
- b=BIF2DD/uBI6NIJ78yYI5bUu4EQT02WlR+0qlBm90HemvEmX26IN/F4ne5BMWJCLGmiS4DUl4F8LZ88WXwHtfHWfPMSg1P/zHij/Gs3O7qIs/3UGwaRSNtPoJ1G4brmp1i7P1Q7x2/Lj9feg4V57nm4xNC4cbcTQUsySSnCmNfaLTx+iou/OuENqxTh0ECveygOUjE5AbOEibmbAdrqCnw1mrqBOvVyLTfhGkWEuUdLbABw4ByMZXXA6AYSDzmPgoNyiZ7lLkjM2x6mWlV/XHx8h8QiI5cdxRHkfUo5hV1zEb3VKb/84IgFfx/fnYMr2HEqRI74cbM7oU9f7iFmkI5g==
-Received: from SG2PR06MB3365.apcprd06.prod.outlook.com (2603:1096:4:69::12) by
- SEYPR06MB6062.apcprd06.prod.outlook.com (2603:1096:101:d4::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7025.27; Mon, 27 Nov 2023 05:45:49 +0000
-Received: from SG2PR06MB3365.apcprd06.prod.outlook.com
- ([fe80::55c4:990b:3f5c:b5a1]) by SG2PR06MB3365.apcprd06.prod.outlook.com
- ([fe80::55c4:990b:3f5c:b5a1%4]) with mapi id 15.20.7025.022; Mon, 27 Nov 2023
- 05:45:49 +0000
-From:   Billy Tsai <billy_tsai@aspeedtech.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "naresh.solanki@9elements.com" <naresh.solanki@9elements.com>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>,
-        "patrick@stwcx.xyz" <patrick@stwcx.xyz>
-Subject: Re: [PATCH RESEND v10 2/3] dt-bindings: hwmon: Support Aspeed g6 PWM
- TACH Control
-Thread-Topic: [PATCH RESEND v10 2/3] dt-bindings: hwmon: Support Aspeed g6 PWM
- TACH Control
-Thread-Index: AQHaEWg/mi95vh4kakyU/BlPzwqmf7Bwvf+AgAhoGLuADcExAIAAWWVx
-Date:   Mon, 27 Nov 2023 05:45:48 +0000
-Message-ID: <SG2PR06MB3365CAEE9CE3F691DA1CA1E28BB9A@SG2PR06MB3365.apcprd06.prod.outlook.com>
-References: <20231107105025.1480561-1-billy_tsai@aspeedtech.com>
- <20231107105025.1480561-3-billy_tsai@aspeedtech.com>
- <20231108182135.GA2698015-robh@kernel.org>
- <SG2PR06MB33655734700697E8F6FD0D1B8BB2A@SG2PR06MB3365.apcprd06.prod.outlook.com>
- <CAL_JsqL=2-dD5yFWWDDHu1svcCF-EMZqcYz92Pr7L5ntppNQVA@mail.gmail.com>
-In-Reply-To: <CAL_JsqL=2-dD5yFWWDDHu1svcCF-EMZqcYz92Pr7L5ntppNQVA@mail.gmail.com>
-Accept-Language: en-US, zh-TW
+ bh=gRQcFKASFHYWszdGDPw1ycI+9LnbsEpxKHyONkfZZRo=;
+ b=W059uSNjo2J8h7I1FKtlGVAkOft51jwQyW8pwPE/24sEnQU72S3jJSG4RD7xq9DR5g2IcobnUERRlgaXDG5azN718FgZz9pa0AlcPq13/xuLW5j8r22yj/LugyOuqk7bm7x0e09oOPLKd9uAUdBB8qUsR3Cgz7G72PztBhv/JGc=
+Received: from SN7PR10MB6287.namprd10.prod.outlook.com (2603:10b6:806:26d::14)
+ by IA1PR10MB5948.namprd10.prod.outlook.com (2603:10b6:208:3d4::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Mon, 27 Nov
+ 2023 05:46:38 +0000
+Received: from SN7PR10MB6287.namprd10.prod.outlook.com
+ ([fe80::7295:59ac:ffbc:e40a]) by SN7PR10MB6287.namprd10.prod.outlook.com
+ ([fe80::7295:59ac:ffbc:e40a%7]) with mapi id 15.20.7025.022; Mon, 27 Nov 2023
+ 05:46:38 +0000
+Message-ID: <13daea3a-d64a-42fb-b4f6-95a5fcfed72d@oracle.com>
+Date:   Mon, 27 Nov 2023 11:16:27 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.4 000/152] 5.4.262-rc4 review
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=aspeedtech.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SG2PR06MB3365:EE_|SEYPR06MB6062:EE_
-x-ms-office365-filtering-correlation-id: 75a7f0a6-49ab-4a71-4a74-08dbef0c1bb0
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2yuYAnquRS+OsUBKEGhxrBpuHtyptqnvSZ5jV1B2OveHC5ub984Oec5vNhyHhRQ7nV3DAiNV4NXQcc9ZUORX4xu3+YAYA0wlX6KVl3Ka/1W31DYOSMrGnT1uFf/5UHUfccei8IVhI9Kz/+Y+hnmXMRPnwYbVPEehuUHjLvahq8bBZH1erm9QWjyO0dRLCt2cvSvUCqrQqSnSIMOfbeJLvO6fzfeV87JE3wNNyfv45/S6BaKNvon9nHKrjsKKqY0Z9iiLDSKRGYMDo0X6TMN7w2ClrSwiFygARKcEUaFfMtuxJ7KenHgokKaHNHQGm28NiKeUS91x1gXqfdIJbRTlwg0tO+V9QYFIUN2L0cKK1KarPMpZS2vZPCIKWSCGhX3/NeZtjjvP83S+c14nDMvqoUI7HQZQV3TM19VQYJPyT4QFcYCYy4P76Ds697DUI7fUFysr76zEmdvBEc3LPtnE7RyohbFud8K+ox+JlDDndN5WvwMADHuf5ac2PBuHnLZvVki9y8zt3ydj+gbUNK1Wn9IMBqGcSd3uAKzbEjs1g9ygf5P9Slby6sr+o5lpH5shbiK7DMcoenVgOZmAUsgtSU9ed75e0GkC+7JpELZTa48=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3365.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39840400004)(396003)(136003)(366004)(376002)(346002)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(86362001)(38100700002)(122000001)(38070700009)(33656002)(478600001)(966005)(66556008)(66476007)(66446008)(6916009)(316002)(54906003)(64756008)(76116006)(66946007)(91956017)(26005)(55016003)(7696005)(6506007)(71200400001)(55236004)(9686003)(5660300002)(2906002)(7416002)(4326008)(41300700001)(8936002)(8676002)(52536014)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?plNvgKRUVn92ViCKiO6Ig4/GvkqKZVX6J9I802BehG7GfEV/ClKORlx+7u?=
- =?iso-8859-1?Q?1r6yuH+RKylhsO7EvKCSP06rqdNNIjd5W8+sJR1wgsNhACp97SSxH/Qqzb?=
- =?iso-8859-1?Q?ZSTqYo7akUjLCu3z0yBc+a9KQyMxNW9WOBjkZ6Mednflx2cVNDvhMF2w+S?=
- =?iso-8859-1?Q?oVjpe6nNbR4qejMO+okXIaDsEIUIPyJKaLykzhpKB92V44VQMjdwi63c4P?=
- =?iso-8859-1?Q?8fWUNrX88GBiLpPw+I6mZGcKR9vDY9rIKD2ZMUJTMq/yvgQSrZJgyCmsMV?=
- =?iso-8859-1?Q?jl/UhvpR0A8Sd7r2SY/XzY+55hlAcqP1fXu2WcsMkFAeUjsw0zlQzKAMTH?=
- =?iso-8859-1?Q?GMr9r32nuFmsqGn7eaXTicpaI0H/5i+rEBpUuAY7M5ZyrdidM2s28pDBdJ?=
- =?iso-8859-1?Q?gTWU2/tpe6RsXvbfmCMG0/srb0TTebN18+zIuAbeEE/JVsta2qfty2Ejzm?=
- =?iso-8859-1?Q?7EFyTkC5qxr4CuY1JTmv1+3ATWB0gG+GkGafpcYZng0kecKd/hAxj+zrxQ?=
- =?iso-8859-1?Q?mwYDKCYCGiQ5uyVUUpoXtIk5D9rygVq2xZ6Qj14s8JBjgj1nPpBqYXaBum?=
- =?iso-8859-1?Q?+z/JadAMdVK0smyFqgDL90D6objuVMZ08tg+etGoqoaqtp44oPwF7gD9cC?=
- =?iso-8859-1?Q?l2HBPmohJNwbujfqzwOG+vMxlhPACseAGOOlbSy4E+g6pmlfCLykmf4xBi?=
- =?iso-8859-1?Q?5+AZfo9PfwDoWYsNyCLXpK9uuXKrmGbI0oMGiS6yCLdaJjtvpW1SsF9ofE?=
- =?iso-8859-1?Q?floZeQpwFCykAABBcb4gQC4D1ctdA58xqXoNO0sDiH2+BK+FTzYyRblnAU?=
- =?iso-8859-1?Q?e5BBY+a9ZT/KqgbMITyKIlmWcwHGSGZphJ4MO96cIKfn/LAe4qr4VStezi?=
- =?iso-8859-1?Q?l71BTuwjE0eT1ZzNl1WKO2QrmT6eoR6kVUU28F/LqtwQ+xHjZ21sfTUnpk?=
- =?iso-8859-1?Q?IwpblTWYbIpiRAPjNRzFE0Kj9/6iPWG36naDjlefh9J5xEWTG7Fogr93R9?=
- =?iso-8859-1?Q?xJntXIS8CLsJAGjpPU9KkdoUyEtDWFCuImcEqJeJ1rxAlsqZC12RvxU04R?=
- =?iso-8859-1?Q?Ez3LYUCdFbO4rOvxvzE5nP0my0aj2P3hC2Ny2AHiGVqAPVpzs98ADfts9o?=
- =?iso-8859-1?Q?wbFkfT7UfMcy7nJfofo8HTbfu9JqpdRzs8Y7HOzRQsg3FppqJgaGqUoXwW?=
- =?iso-8859-1?Q?J9qjDLLw1opfESolxfRcFwTzXNWx0yh2CYKggL+hxhuwYc/kepNaIaJ/8w?=
- =?iso-8859-1?Q?bL9XBVsOkFJUGpSb5xCAlumRhqc9ig51XmCMFu2/mGpfLfGlVZyztTrD7U?=
- =?iso-8859-1?Q?aq0aKD1rUfSO/Un4GadsK1VIW61n9HdUeO75X8nB8WpfjSuV00mRQtCakJ?=
- =?iso-8859-1?Q?E5vMgC+fNrKWBcLI0NjHpmIugfbbYeynnK6U4khN2X+8fb1E5r7/HiMPqv?=
- =?iso-8859-1?Q?07xXqQsoMHJlte8zb/iy+9h97edxddcRtdu7hEozdSATQtiARd/dBSXMou?=
- =?iso-8859-1?Q?iWdCzxkAgf7/QoZU5aw561nSzhyL8oe4rIsc4d/WIHLRrvoUzPGaad6o5S?=
- =?iso-8859-1?Q?hcW9ajTSj/R7BcYJrAoDb8+JWpz6My5V+Pt0FZ3hC/xsvE6qaqHSJTdyui?=
- =?iso-8859-1?Q?Z5n3dKVV6MoBLpr9CGwtoRWvQ93bBwkqvi?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        allen.lkml@gmail.com, Vegard Nossum <vegard.nossum@oracle.com>,
+        Darren Kenny <darren.kenny@oracle.com>
+References: <20231126154329.848261327@linuxfoundation.org>
+From:   Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+In-Reply-To: <20231126154329.848261327@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TYAPR01CA0154.jpnprd01.prod.outlook.com
+ (2603:1096:404:7e::22) To SN7PR10MB6287.namprd10.prod.outlook.com
+ (2603:10b6:806:26d::14)
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN7PR10MB6287:EE_|IA1PR10MB5948:EE_
+X-MS-Office365-Filtering-Correlation-Id: a25297d5-69e7-4553-b8e5-08dbef0c38f1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SoYj6ZaJ5nDX7mVxa02dLOXqK4OI6bKQZc7/yi8h9opYSA3LVkhjINvyIFHLhd091climguYrpbpyY64C7sG+NMDeimaHviNAEFa7adhXiFZpgbtBUbV2gzPXVR6iHGNfTJUKjj6pfRFRH3Ugl0elQD3LCIzx7BXRqfCZxL6C9F7ddN65h5niYcXiZs00N6w+XShPnXVC5Gfi+BcwzbEuBphMzke0VQMHyWxRSsyx/F68K3Z5Qpz1fFOBS2NEim+TRyjuAiB/vMeVDeomWw4QkBPMussBrBvjey1c3A+3T5loylPT/ECwhHWd5lg26pT0RgAUdCZQWD7KO9afAXVN9MNJaXMM+FB8dnw3ErGRt4qEUJK4CHeppRoorazlaH71Q24n+wGrslUMtZCHFOidrLsvBt86AKDhEC3+KyCbN8Apue7lrt2A2bgIAAa2LM9bXOoiijQ5QCJXMCE/oARmgr6nDeRBi37GRoOhPDLtia2QFaj6Jfb40MXs3RG9ietlhaf376T6LnowEhYnDdqu4fxjb7GDF/zp0kOzTNEo/yWZXp3j2aXxfOMPvh31XQeCTXfqryb34dac1CQ8QV4vPKN4hpzFsMWmStQQZN9U0RLT/XHFnq5gh32A4qQIjWLr33zWVyIhx7Yf2H4tavtwQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR10MB6287.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(39860400002)(346002)(366004)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(31686004)(2906002)(7416002)(4744005)(5660300002)(6666004)(6512007)(41300700001)(478600001)(36756003)(4326008)(8676002)(8936002)(966005)(6486002)(38100700002)(2616005)(53546011)(6506007)(86362001)(31696002)(66476007)(66556008)(54906003)(316002)(66946007)(107886003)(26005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MXlBZURCMmVyN3hUMnRLcTRyYTZXWHp5OXhzMGs4RnNYcTk4V09FMkJYS0pi?=
+ =?utf-8?B?bWp2NzdhTVJueXJxK2NHZkRITS9WQ202SVphc214UjdQQUZ5aG5ZYXFvdXF0?=
+ =?utf-8?B?czR5bEVTRnJLMDNpUWJOZDBEQ1dIVWpkL09NOVJOOXo0V1FaZWphSnNSZkQ0?=
+ =?utf-8?B?ZWNvUE95UjBKLzZtMUhpU0FVZGZTUTVjOVY2NE5FQ2dKVi82TlE1UHo3QXp5?=
+ =?utf-8?B?QzVWU2Y0cHpFVmNQZHVUeUlLUkN6cVI5VjR6Ni9qOTJ3TjdoUjJMemdlK1k2?=
+ =?utf-8?B?Z1ZFUWU3a3paNVBEaW4xcytjSnhieURtRlNRUWNRZEVoemcxckhpeXRWajJw?=
+ =?utf-8?B?MlllU0t6VnI1MGpYL3pvb3BrNndhTVpBVmVsSEVDdWkyYmtCVVMwS1hEUENP?=
+ =?utf-8?B?a0VrUGpobUFrYmlZWW8wZ1FiM002SThzQm1WTi9VUDgxTXZHTWNqK1hpZWFi?=
+ =?utf-8?B?Q0VrK3FnTjY2MUZ4aGFwbnRvY3k0dzg5YWFIa3k5Y2lDbS9SbnZ2WU43MjNP?=
+ =?utf-8?B?SHQxc2l5d0UyckVrRXBRS0ZMejVYLzk4ZEtlR0RBQXM2eUlmTyt0UXU4c3ln?=
+ =?utf-8?B?RTM5eTFTQi9ydk5EZTYxZ2IrM3JpcTNISVUzdG5pNENxOXJTcytOdDZPbEFP?=
+ =?utf-8?B?TmU4TDJ5VUhHVENpVEdkZjNyUGRvYnpUYXI3YStTUzNHQWVlN3JMV1kvTjVW?=
+ =?utf-8?B?aEc3am9waUlvL0VIVzBaRmRCb0JGZzUyQ3VtSUdzdG1qZGhMMzJpbzF0a0R1?=
+ =?utf-8?B?TUUwcjlQV0FQZk42T1dXNnVuNHJ1Z2liZFJHblVSTjFiNm4zaVdsRUtISGZu?=
+ =?utf-8?B?RllQbjlqUFBDVjlwKzM0VU01MVQ3RXIrS1VPU2JwWlIyMGsrV2hDc2JKSE9R?=
+ =?utf-8?B?UzRldmJiMmRCMW5ycnUxUEVaWkRIQ1llY1Bqa2JMMVV2VDBOUFdkeTRJNGxa?=
+ =?utf-8?B?VjFoS2ZmSjByamdMeFVBa3U0Q0VzTkJWdC8yZ2wyaFJFb251TUxXNjJhZDlM?=
+ =?utf-8?B?cDFYS1pGZWJESXUyQW1vMXdCeHRuWDZKcjdJc2dOaHhvYzg5ZlVLRXRTN2dJ?=
+ =?utf-8?B?TXFadTJmY0Y2d2NweGVhWmF3anNnSEZsRDRBUHRXQzlnM005YVZwOTIwVGI1?=
+ =?utf-8?B?VFU0UDFlYU4vYlp4OUFQdlZEb0JYdHFsUkQ4dGJVRUtBSG14WXFYeWJWUXd2?=
+ =?utf-8?B?OWJvakxOeFoxSjBBUVJEa0ZvS3gzalZodWdxQVFHRWd2ZEZJYWhuS08rYXNH?=
+ =?utf-8?B?R2NLUFpqT0k1TE5NNVc4ck0xbkZDM0gvU2U3eWlsU0dKRXRaVzFxbmgvY0V1?=
+ =?utf-8?B?VEk5TWNHc1lBN3R4VEtxb3V2Z2FVUkd6Y2NzZE5FZVVQNnh6VTVhcUwwekww?=
+ =?utf-8?B?VjRoRTVNSFY5WjVvY2JZWFRmbnJYNGVsZlZCOUJWWW5wM3ZicERYY29JaUNa?=
+ =?utf-8?B?REgwcCsrSHdMSWg5citZMEtlODVqTm50RUJLWnRuM0piMmxBODFkUTIvbGsw?=
+ =?utf-8?B?bVNTVG13c2x2OFJwVTJ0bTlPdkFveHpHaE5LRG5VaHZ2ak8wQ0d6T1ZrZEcv?=
+ =?utf-8?B?WS9SSlFpRWU1Y21TMGp5UUpTamdFc1RNdGd4WGV6RUVjb3h3OUd0REFVSjFp?=
+ =?utf-8?B?NEtFQ0FhNjVGelRNbXI5cFF5bHdyaXpicVV0TDJBYjhPMjBHN1ZhSFhtV2s4?=
+ =?utf-8?B?VG4zQ1lUaUxuQ2FVNFV5cDMzZk9YTkFuYXI1V2JzMTltMDZpUzk0NDc0YW9m?=
+ =?utf-8?B?WmQrWEUvVzdiMUtaendaR1Vlc0lDVHREdUdBS2hsMHFjWHhWZkltZ3dMV2Qr?=
+ =?utf-8?B?UjZCb041NmsrOTE5eDVhMDRWbTBGMmdmK256V3k1WHdrZEN4dkRYbDA3V0Vp?=
+ =?utf-8?B?ZGI1OUwxQlhPYkdhSHVqN0JIeDZnU1FXcDdZQXB1QmRQeFhxaS93anI5UlFH?=
+ =?utf-8?B?SnVaZitLVllrbis1ekhDTkV6K2NYdVNYL1ZaZVlwVXpNdFdCdUJPY0p1VFFq?=
+ =?utf-8?B?ckthUk9kUElJdlY5akIzV2xlMFlFN0FxK2lpdGc1V1FhY0p5Q0pDaEE4WTVZ?=
+ =?utf-8?B?SXFUeFZObGl0MlZWdHFZTXEwblFFd05LM3pvK3llU09aRittUXl4Y0dDUUNN?=
+ =?utf-8?B?UkdFd0tUOGlmV281RGt0MDR6cHhRQU5ITDVEZ2k5ckk1YlU4R1NJbk1TYTY5?=
+ =?utf-8?Q?v/8yqudYIorso7/QUAWBDAE=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?WkdLZHZ3bTFRcDhMTUJTcGNSOWMvWWFxR3V1MEYxY3g1RktDNHRpWEhHT0Nq?=
+ =?utf-8?B?Tzg1WnI2cmdRcVVxY1hlcmRoSWxqRU5ONHJvU1lHdnl0UzEyRVZ4eTJqSytw?=
+ =?utf-8?B?eHcvakZmQzdrUEo2RFhtdmdGRkJHb3QvSzFTTnEwdXdYYnVvV3p1bit2dURH?=
+ =?utf-8?B?NDFyQUw0TkhISklvcXNBM2NGRkpjb0pua0l5YlByTCs5R29CT3ZhdnhsQmxT?=
+ =?utf-8?B?WEVNdHhIaVR3a0NXMHE3a0ltSnloazJ2eGkxbmpjWWZ4aHFIeG41UWxpRThP?=
+ =?utf-8?B?dXlNbURvL2VpL0VTTU1YZDlucTgwVFptMHZJb3FhNE8zNjhQQ3gxWm9OT0Rt?=
+ =?utf-8?B?aWtwenUwMGpKT2FqRVJMQnRuK0VkM3QyWjFjakhEM0hmSzJub20xZmJBSkpu?=
+ =?utf-8?B?dTFhK05yUTJMam5ybTFEcVdBcmVMU1NlOGlZK0ZCY2xPSk9na0hqNGwyNTE5?=
+ =?utf-8?B?OE9WUDRPRW5TUk81bUZhT1BNRWhUUlR2Kyt3NzZyZGxKNkpLY2FWN0ZZWWVV?=
+ =?utf-8?B?Z0FjanM1Vnlwc3ZrcnJUc2MvMFp6V3dNcVpFb2FFNTc4T1BPQUJFZHNlTzIv?=
+ =?utf-8?B?U3lZU0k2VGZ5ODJuQzZiZ0dQcmNpL2l2UkN6Nlk5UC8wMHlqcUticGlLKzhJ?=
+ =?utf-8?B?Y3dhdGdZdlpEamVSMFA3bytKWmdrbFdXanJiTDRPZVVpS3BLbk1UUmRrN3NN?=
+ =?utf-8?B?VllLQ3pnMjdidlp1MlJ5TytJZDJSM2hHajRwOFYxcG5tZm5SZThoeUZCUmFp?=
+ =?utf-8?B?QjB4c1VsTWNpSXlIVTJ6WDlNa0g1MWpYMWVQRWF2N0F6NVdpU09mK0NHQjM1?=
+ =?utf-8?B?SE5BTnJ1OTJzbHBzeWRyRzdzMCtydS9oUDduNkxlTmVQUmVLN0V5dmx4ZVA1?=
+ =?utf-8?B?KzRBWUZOa3hrT1Z5Q2tNWWxlWTgycS8xWTdLYXBIbzFYSnFXb1BpRE1oYU5t?=
+ =?utf-8?B?cWhsMzU4d1ZkeVlKSC8xYk9MQ1dwMWdQTmRXWkM0dnp5V3ZQZzZDbjZRYU93?=
+ =?utf-8?B?bVFVWURtRG05MG9uQ2R4RkhsL09pUlJ6T2p1bEZMVEdJOExtdEEyZXdlNCt1?=
+ =?utf-8?B?dFhrRzBKd0NBTGZMcXJYdWdEa2pqS2F1S05QQjdMS0lyaGxCbVdLZ2lSQlZi?=
+ =?utf-8?B?aXZER0JzdldQSEo4ODNmTk9LOC9FWmNwM2FvcW1sQ1VDaTZvNktTbEU3TGhR?=
+ =?utf-8?B?dEpqb2ZWMTN0QTVCTnh1MVVSSlJuZnhJVHBiYUk1aTBvdzd6RmU4RWFpVDNO?=
+ =?utf-8?B?RlordTBmWjk5VXB2TmhYTjIwZ1pySUkzSSsrdXBGdU4rN1NmMUErWHkyWXBm?=
+ =?utf-8?B?cFV0dmVJdkdSVStkYUt5N1dGUnZiMmdmMmt2anVjazk5S0x1S0M1VHd5Unhp?=
+ =?utf-8?B?bk5jaDNPSmMvQ1d1Wm1QUlljOEd0S0MxK1lPQmFiTWpBbk9EakptMGdYVG04?=
+ =?utf-8?B?TjV2Mi9FeXIxUzhFWjE4RDhLNFhWdDlHZHkxeWx0YmVRbkg1dTVVK2JSeXNN?=
+ =?utf-8?B?K1pyd0FQdkdMeFNIeDlNRk51N0NwSFlxRjkyN3ZxM3dRcVduYjlld1BzWkJp?=
+ =?utf-8?Q?Qw1ouZsVYvZBIRYo7ptYt0QlJV64DcA5rCAuxrjSMfVzJX?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a25297d5-69e7-4553-b8e5-08dbef0c38f1
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR10MB6287.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3365.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 75a7f0a6-49ab-4a71-4a74-08dbef0c1bb0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Nov 2023 05:45:48.5969
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2023 05:46:37.9907
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vzdsqUIkQu2XfkFtPswWaxUG3WB0yIm4vu4aV3q9cfqw0C68ekyE2C30nUhZnehrLQO+XCBwtEQuuKl7FpcmcST6y6TlsrZjS4bqFlnDcI0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR06MB6062
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IVG8zLuqEaarIXouSl+nqV9BYclQFDGKxAM9BReWybmZw2XeXWUKk2PAOvm4u6EQMW4FoyWQeRM9DQhEG8mczdImvF1+KAs9mfwaOSbp+l/av2L0bT7/bZSiRRq8+OYe
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR10MB5948
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-27_03,2023-11-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
+ suspectscore=0 mlxscore=0 spamscore=0 adultscore=0 mlxlogscore=999
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311270038
+X-Proofpoint-GUID: BxRm_2H4mAMVzkDndYYUJT2Nk5vooyGg
+X-Proofpoint-ORIG-GUID: BxRm_2H4mAMVzkDndYYUJT2Nk5vooyGg
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > > Document the compatible for aspeed,ast2600-pwm-tach device, which c=
-an=0A=
-> > > > support up to 16 PWM outputs and 16 fan tach input.=0A=
-> > > >=0A=
-> > > > Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>=0A=
-> > > > ---=0A=
-> > > >  .../bindings/hwmon/aspeed,g6-pwm-tach.yaml    | 69 +++++++++++++++=
-++++=0A=
-> > > >  1 file changed, 69 insertions(+)=0A=
-> > > >  create mode 100644 Documentation/devicetree/bindings/hwmon/aspeed,=
-g6-pwm-tach.yaml=0A=
-> > > >=0A=
-> > > > diff --git a/Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-=
-tach.yaml b/Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.yaml=
-=0A=
-> > > > new file mode 100644=0A=
-> > > > index 000000000000..c615fb10705c=0A=
-> > > > --- /dev/null=0A=
-> > > > +++ b/Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.ya=
-ml=0A=
-> > > > @@ -0,0 +1,69 @@=0A=
-> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)=0A=
-> > > > +# Copyright (C) 2023 Aspeed, Inc.=0A=
-> > > > +%YAML 1.2=0A=
-> > > > +---=0A=
-> > > > +$id: http://devicetree.org/schemas/hwmon/aspeed,g6-pwm-tach.yaml#=
-=0A=
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#=0A=
-> > > > +=0A=
-> > > > +title: ASPEED G6 PWM and Fan Tach controller=0A=
-> > > > +=0A=
-> > > > +maintainers:=0A=
-> > > > +  - Billy Tsai <billy_tsai@aspeedtech.com>=0A=
-> > > > +=0A=
-> > > > +description: |=0A=
-> > > > +  The ASPEED PWM controller can support up to 16 PWM outputs.=0A=
-> > > > +  The ASPEED Fan Tacho controller can support up to 16 fan tach in=
-put.=0A=
-> > > > +  They are independent hardware blocks, which are different from t=
-he=0A=
-> > > > +  previous version of the ASPEED chip.=0A=
-> > > > +=0A=
-> > > > +properties:=0A=
-> > > > +  compatible:=0A=
-> > > > +    enum:=0A=
-> > > > +      - aspeed,ast2600-pwm-tach=0A=
-> > > > +=0A=
-> > > > +  reg:=0A=
-> > > > +    maxItems: 1=0A=
-> > > > +=0A=
-> > > > +  clocks:=0A=
-> > > > +    maxItems: 1=0A=
-> > > > +=0A=
-> > > > +  resets:=0A=
-> > > > +    maxItems: 1=0A=
-> > > > +=0A=
-> > > > +  "#pwm-cells":=0A=
-> > > > +    const: 3=0A=
-> > > > +=0A=
-> > > > +patternProperties:=0A=
-> > > > +  "^fan-[0-9]+$":=0A=
-> > > > +    $ref: fan-common.yaml#=0A=
-> > > > +    unevaluatedProperties: false=0A=
-> > > > +    required:=0A=
-> > > > +      - tach-ch=0A=
-> > > > +=0A=
-> > > > +required:=0A=
-> > > > +  - reg=0A=
-> > > > +  - clocks=0A=
-> > > > +  - resets=0A=
-> > > > +  - "#pwm-cells"=0A=
-> > > > +  - compatible=0A=
-> > > > +=0A=
-> > > > +additionalProperties: false=0A=
-> > > > +=0A=
-> > > > +examples:=0A=
-> > > > +  - |=0A=
-> > > > +    #include <dt-bindings/clock/aspeed-clock.h>=0A=
-> > > > +    pwm_tach: pwm-tach-controller@1e610000 {=0A=
-> > > > +      compatible =3D "aspeed,ast2600-pwm-tach";=0A=
-> > > > +      reg =3D <0x1e610000 0x100>;=0A=
-> > > > +      clocks =3D <&syscon ASPEED_CLK_AHB>;=0A=
-> > > > +      resets =3D <&syscon ASPEED_RESET_PWM>;=0A=
-> > > > +      #pwm-cells =3D <3>;=0A=
-> > > > +=0A=
-> > > > +      fan-0 {=0A=
-> >=0A=
-> > > I assume there's a PWM connection here? How do you know which PWM? Yo=
-u=0A=
-> > > said the tach channel is independent, so it is not that.=0A=
-> >=0A=
-> > > It should not be 0 from 'fan-0' because that's just a meaningless ind=
-ex.=0A=
-> >=0A=
-> > > You either need 'pwms' here or you can use 'reg' and the reg value is=
-=0A=
-> > > the PWM channel.=0A=
-> >=0A=
-> > Hi Rob, this binding is used to export the PWM provider and the Fan mon=
-itor (i.e., Tach).=0A=
-> > If the user wants to add the PWM connection for the fan, it can be done=
- as follows:=0A=
-> >=0A=
-> > fan0: pwm-fan0 {=0A=
-> >         compatible =3D "pwm-fan";=0A=
-> >         pwms =3D <&pwm_tach 0 40000 0>;=0A=
-> >         cooling-min-state =3D <0>;=0A=
-> >         cooling-max-state =3D <3>;=0A=
-> >         #cooling-cells =3D <2>;=0A=
-> >         cooling-levels =3D <0 15 128 255>;=0A=
-> > };=0A=
-> >=0A=
-> > This will reuse the existing PWM fan driver (e.g., pwm-fan.c).=0A=
-=0A=
-> I'm confused now. So what are the child nodes you have? You are=0A=
-> defining the fan in 2 places? The "pwm-fan" driver supports a tach via=0A=
-> an interrupt, so how would this work in your case?=0A=
-=0A=
-Hi Rob,=0A=
-=0A=
-The tach interrupt for the pwm-fan is option. In our case, the dts just reu=
-se the pwm control function=0A=
-of the pwm-fan, and the part of the tach monitor will be created by our fan=
- child nodes.=0A=
-So the dts will like followings:=0A=
-=0A=
-// Use to declare the tach monitor for fan.=0A=
-&pwm_tach {=0A=
-        fan-0 {=0A=
-		tach-ch =3D /bits/ 8 <0x0>;=0A=
-	};=0A=
-	fan-1 {=0A=
-		tach-ch =3D /bits/ 8 <0x1>;=0A=
-	};=0A=
-        ...=0A=
-}=0A=
-=0A=
-// Reuse the pwm-fan.c to control the behavior of the PWM for fan.=0A=
-fan0: pwm-fan0 {=0A=
-        compatible =3D "pwm-fan";=0A=
-        pwms =3D <&pwm_tach 0 40000 0>;   /* Target freq:25 kHz */=0A=
-        cooling-min-state =3D <0>;=0A=
-        cooling-max-state =3D <3>;=0A=
-        #cooling-cells =3D <2>;=0A=
-        cooling-levels =3D <0 15 128 255>;=0A=
-};=0A=
-=0A=
-fan1: pwm-fan1 {=0A=
-        compatible =3D "pwm-fan";=0A=
-        pwms =3D <&pwm_tach 1 40000 0>;   /* Target freq:25 kHz */=0A=
-        cooling-min-state =3D <0>;=0A=
-        cooling-max-state =3D <3>;=0A=
-        #cooling-cells =3D <2>;=0A=
-        cooling-levels =3D <0 15 128 255>;=0A=
-};=0A=
-=0A=
-Thanks=
+Hi Greg,
+
+On 26/11/23 9:16 pm, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.262 release.
+> There are 152 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Tue, 28 Nov 2023 15:43:06 +0000.
+> Anything received after that time might be too late.
+> 
+
+No problems seen on x86_64 and aarch64 with our testing.
+
+Tested-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+
+Thanks,
+Harshit
+
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.262-rc4.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
