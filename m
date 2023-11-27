@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B727F9C20
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:53:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D0A7F9C21
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:53:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232552AbjK0Ixb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 03:53:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55988 "EHLO
+        id S232537AbjK0Ixe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 03:53:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232620AbjK0Ix1 (ORCPT
+        with ESMTP id S232619AbjK0Ix1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 27 Nov 2023 03:53:27 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46BFC1AD;
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB561A7;
         Mon, 27 Nov 2023 00:53:32 -0800 (PST)
-Date:   Mon, 27 Nov 2023 08:53:28 -0000
+Date:   Mon, 27 Nov 2023 08:53:29 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701075209;
+        s=2020; t=1701075210;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CHN5isM16XvAh/O16p6UY2UrydXWXhGG5EHOuvXB+54=;
-        b=MtQMJ1H6a2LdOMsJJNFDx+X0wIfob1Wf3M7UNk37OZ1V6GNWb4MqgkGRgM2elBC8cNqMNe
-        7O6qhes0/CoMu1SuFsvnVMzLlLxDxlqlGM5prwNBo64gdueolhQBvLJcVhFD5+qFdwqUfx
-        VbyVIX/Au3kjhmDFcsvsL6IHlGBkoCOVa0AmrzIa1vO65Y8O3pHKelUwp/U7EnFiDJNPTL
-        pvtCf9zCcFjO/j0vcqMZV6Hyl28jU9NAP7x6lUc1poQfJe2kGAbKwWsuPueQ98tQTFSRYK
-        MAAk/gkcStajqEiuRTzgW2jHGbhGXQTGId559LfJB0c8Ple8u6HvYNXgJhxa8g==
+        bh=mC17ffGRZAv3FROAjiSLZkjAg0UmydGQvIVapRt//5I=;
+        b=DPTPLvV73YILa8FIASMFWkuTS5NMdNOj6YbfvUa6G+PQfn2Msan5/00iP3nDYfXRxMm9f8
+        WEtxedeEF00Cy8lCME8nAYfPir8Te7ODJn60/sX4SudCCSY1ZocOaVZXq7RrsFHmjfAj1G
+        up2Zt1fm5NE+8k14H48y6X2vEemoQw8GehK2vUEmfEtwL2tily3iZasETAEDH/5CjE7DZS
+        LLZ17MUumX/OORfkWI5yoJHevXGiwoYr8gYml7+BLRS2mCyt6/3vXqWxw+FagyZO3SJqj2
+        yzTvY9/Y7j+jMMk/oZG3KfDstIqCpISu6uZsvnaJ2erU1d7UjzJHIIKmxNgX+A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701075209;
+        s=2020e; t=1701075210;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CHN5isM16XvAh/O16p6UY2UrydXWXhGG5EHOuvXB+54=;
-        b=dwht2BZCsIGKQxzbLxnVHi6/b6j2Xc3MyKMnyEcI0dK3UUIhZM6h08q8+bDMmKQcYe1R1s
-        GvttdcmQDxFmcFBg==
+        bh=mC17ffGRZAv3FROAjiSLZkjAg0UmydGQvIVapRt//5I=;
+        b=YoFFwAY5sYUokCB2ORS2KeC8LEKW4VSuv5cHHJvrH1jn8xmjK9Gzz8Td+Vuak8MDOTlfSj
+        tW/UZYv50/e67bBw==
 From:   "tip-bot2 for Christophe JAILLET" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/lockdep: Slightly reorder 'struct
- lock_class' to save some memory
+Subject: [tip: locking/core] MAINTAINERS: Add include/linux/lockdep*.h
 Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
         Ingo Molnar <mingo@kernel.org>,
         Waiman Long <longman@redhat.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: =?utf-8?q?=3C801258371fc4101f96495a5aaecef638d6cbd8d3=2E17009?=
- =?utf-8?q?88869=2Egit=2Echristophe=2Ejaillet=40wanadoo=2Efr=3E?=
-References: =?utf-8?q?=3C801258371fc4101f96495a5aaecef638d6cbd8d3=2E170098?=
- =?utf-8?q?8869=2Egit=2Echristophe=2Ejaillet=40wanadoo=2Efr=3E?=
+In-Reply-To: =?utf-8?q?=3Ce722abd043e5de64d2acd28d581e4a952994a94e=2E17009?=
+ =?utf-8?q?89248=2Egit=2Echristophe=2Ejaillet=40wanadoo=2Efr=3E?=
+References: =?utf-8?q?=3Ce722abd043e5de64d2acd28d581e4a952994a94e=2E170098?=
+ =?utf-8?q?9248=2Egit=2Echristophe=2Ejaillet=40wanadoo=2Efr=3E?=
 MIME-Version: 1.0
-Message-ID: <170107520853.398.5812171619911841670.tip-bot2@tip-bot2>
+Message-ID: <170107520938.398.1207018848412197131.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -71,85 +70,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     18caaedaf4c3712ab6821f292598a8f86e6d7972
-Gitweb:        https://git.kernel.org/tip/18caaedaf4c3712ab6821f292598a8f86e6d7972
+Commit-ID:     28a9466d75a861c26ba57b64a0a9a436a7c61e77
+Gitweb:        https://git.kernel.org/tip/28a9466d75a861c26ba57b64a0a9a436a7c61e77
 Author:        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-AuthorDate:    Sun, 26 Nov 2023 09:56:29 +01:00
+AuthorDate:    Sun, 26 Nov 2023 10:00:59 +01:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Mon, 27 Nov 2023 09:46:52 +01:00
+CommitterDate: Mon, 27 Nov 2023 09:46:39 +01:00
 
-locking/lockdep: Slightly reorder 'struct lock_class' to save some memory
+MAINTAINERS: Add include/linux/lockdep*.h
 
-Based on pahole, 2 holes can be combined in the 'struct lock_class'. This
-saves 8 bytes in the structure on my x86_64.
-
-On a x86_64 configured with allmodconfig, this saves ~64kb of memory in
-'kernel/locking/lockdep.o':
-
-                text         data           bss           dec     filename
-  Before:    102,501    1,912,490    11,531,636    13,546,627     kernel/locking/lockdep.o
-  After:     102,181    1,912,490    11,466,100    13,480,771     kernel/locking/lockdep.o
-
-because of:
-
-  struct lock_class lock_classes[MAX_LOCKDEP_KEYS];
-
-After the reorder, pahole gives:
-
-  struct lock_class {
-          struct hlist_node          hash_entry;           /*     0    16 */
-          struct list_head           lock_entry;           /*    16    16 */
-          struct list_head           locks_after;          /*    32    16 */
-          struct list_head           locks_before;         /*    48    16 */
-          /* --- cacheline 1 boundary (64 bytes) --- */
-          const struct lockdep_subclass_key  * key;        /*    64     8 */
-          lock_cmp_fn                cmp_fn;               /*    72     8 */
-          lock_print_fn              print_fn;             /*    80     8 */
-          unsigned int               subclass;             /*    88     4 */
-          unsigned int               dep_gen_id;           /*    92     4 */
-          long unsigned int          usage_mask;           /*    96     8 */
-          const struct lock_trace  * usage_traces[10];     /*   104    80 */
-          /* --- cacheline 2 boundary (128 bytes) was 56 bytes ago --- */
-          const char  *              name;                 /*   184     8 */
-          /* --- cacheline 3 boundary (192 bytes) --- */
-          int                        name_version;         /*   192     4 */
-          u8                         wait_type_inner;      /*   196     1 */
-          u8                         wait_type_outer;      /*   197     1 */
-          u8                         lock_type;            /*   198     1 */
-
-          /* XXX 1 byte hole, try to pack */
-
-          long unsigned int          contention_point[4];  /*   200    32 */
-          long unsigned int          contending_point[4];  /*   232    32 */
-
-          /* size: 264, cachelines: 5, members: 18 */
-          /* sum members: 263, holes: 1, sum holes: 1 */
-          /* last cacheline: 8 bytes */
-  };
+Have lockdep_api.h and lockdep_types.h match as well.
 
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Acked-by: Waiman Long <longman@redhat.com>
-Link: https://lore.kernel.org/r/801258371fc4101f96495a5aaecef638d6cbd8d3.1700988869.git.christophe.jaillet@wanadoo.fr
+Link: https://lore.kernel.org/r/e722abd043e5de64d2acd28d581e4a952994a94e.1700989248.git.christophe.jaillet@wanadoo.fr
 ---
- include/linux/lockdep_types.h | 2 +-
+ MAINTAINERS | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/lockdep_types.h b/include/linux/lockdep_types.h
-index 2ebc323..857d785 100644
---- a/include/linux/lockdep_types.h
-+++ b/include/linux/lockdep_types.h
-@@ -127,12 +127,12 @@ struct lock_class {
- 	unsigned long			usage_mask;
- 	const struct lock_trace		*usage_traces[LOCK_TRACE_STATES];
- 
-+	const char			*name;
- 	/*
- 	 * Generation counter, when doing certain classes of graph walking,
- 	 * to ensure that we check one node only once:
- 	 */
- 	int				name_version;
--	const char			*name;
- 
- 	u8				wait_type_inner;
- 	u8				wait_type_outer;
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 97f51d5..9834adc 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -12458,7 +12458,7 @@ S:	Maintained
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/core
+ F:	Documentation/locking/
+ F:	arch/*/include/asm/spinlock*.h
+-F:	include/linux/lockdep.h
++F:	include/linux/lockdep*.h
+ F:	include/linux/mutex*.h
+ F:	include/linux/rwlock*.h
+ F:	include/linux/rwsem*.h
