@@ -2,76 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C40817F9D8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 11:29:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B1F7F9D8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 11:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232993AbjK0K3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 05:29:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38024 "EHLO
+        id S232946AbjK0KbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 05:31:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232991AbjK0K3B (ORCPT
+        with ESMTP id S232932AbjK0KbB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 05:29:01 -0500
-Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F4A10E6
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 02:29:02 -0800 (PST)
-Received: by mail-ua1-x933.google.com with SMTP id a1e0cc1a2514c-7c46d224b45so926014241.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 02:29:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701080941; x=1701685741; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=shZQ+S7x4tTu8+8gjD68J2xWVVR//+1g56EcTBBB4d0=;
-        b=YPCMJx6KLFo/b+EPZZ0EBCTEwk+FgBCtQnf9j1eJhqXDVISNYrk/e6a88c3flwz2E2
-         HPXEg6Fjk/1kuYKWeU+gMs20xMGrMJrXzyCHZouHO+IrplXaZBVLV0+QZ7pmFbJSe0zk
-         yQCiiDmmcOVktOLziArhvAEqdFczrvBzmAZ3PaqD7ddUgcPMGVuvtYgNzF0DKenSrHHD
-         1j7Ss/JIRHLsb8B91MrwehyFEIttOZKgLR+uL9xsZpZJg7oqGSoZI/xSdwv+2sztXXGn
-         rQB2f9CE+HcMjmrmZWa/ETcHw/rYQn3lNUVNYPcZnG4oW+BT8OUZ17OzNGpRuKr7kXyp
-         9l/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701080941; x=1701685741;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=shZQ+S7x4tTu8+8gjD68J2xWVVR//+1g56EcTBBB4d0=;
-        b=PecKbONihrj8Ci5/mRHvXOrPbMabFjbnNSx/2dmPlYub+RH3ljl4/hgrafGdGhFuL5
-         YeOasD68xmWyuu028PDmIdOHmqzMIpu69b1x/W8py5Y5gNT49IxEE8np0YjButQBmEB6
-         XmA2wvCLfXscH0LMpHp8MZxMpBQjfozk8gAdo7OP1o584rCXby8CqunEq2sUBHqU4zY4
-         /yBNHZVdFtgWurhcPrZzZDHKWoYu4ewHVeRZ6iimHUfu8aB8SpG9p9TiqqehY5eScNaF
-         wWKu/ueqntEGKLnI/TgtpNY3wTl6K77N12XWxWBizIz3p0bxvz/Jc/DoQkd16+/Aed5A
-         gvGw==
-X-Gm-Message-State: AOJu0YyRRHT9wkV6fZqphRBKt4TPLvDd7NHw8s3Hwwgwi7OwIFKKBvWP
-        jWUK8QsYGruUiCAhFWhrmQdHONhioB7QJUz0zXo=
-X-Google-Smtp-Source: AGHT+IFBDA6vCKUQacA5Dijs0r8dEmG6MgJxt9NqpRTxprHkakZ7PCzpRZI60+9ydCphoOz/Uk+sV8qY9FDo8OuiZ0I=
-X-Received: by 2002:a67:bd1a:0:b0:462:71ee:5ef6 with SMTP id
- y26-20020a67bd1a000000b0046271ee5ef6mr5438891vsq.17.1701080941077; Mon, 27
- Nov 2023 02:29:01 -0800 (PST)
+        Mon, 27 Nov 2023 05:31:01 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EB4F7EA
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 02:31:06 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CF9692F4;
+        Mon, 27 Nov 2023 02:31:53 -0800 (PST)
+Received: from [10.57.73.191] (unknown [10.57.73.191])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6E6A23F73F;
+        Mon, 27 Nov 2023 02:31:03 -0800 (PST)
+Message-ID: <51e6c9f1-e863-464b-b5f3-d7f60a7ebed6@arm.com>
+Date:   Mon, 27 Nov 2023 10:31:02 +0000
 MIME-Version: 1.0
-References: <271f1e98-6217-4b40-bae0-0ac9fe5851cb@redhat.com>
- <20231127084217.13110-1-v-songbaohua@oppo.com> <bfebd80b-b60d-48e2-b350-7c0ac0299cda@arm.com>
- <CAGsJ_4zMwxNw76bweq-23x5ibpWnERCCwg_kz3zn1pjzeY0qXw@mail.gmail.com> <c359a8a6-8221-4d83-a945-580039042056@arm.com>
-In-Reply-To: <c359a8a6-8221-4d83-a945-580039042056@arm.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Mon, 27 Nov 2023 23:28:49 +1300
-Message-ID: <CAGsJ_4zbB5QHu=x9U2-QNFi7SPJkw0hTE+jQoLPcq2rCMC9ArA@mail.gmail.com>
-Subject: Re: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     david@redhat.com, akpm@linux-foundation.org, andreyknvl@gmail.com,
-        anshuman.khandual@arm.com, ardb@kernel.org,
-        catalin.marinas@arm.com, dvyukov@google.com, glider@google.com,
-        james.morse@arm.com, jhubbard@nvidia.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mark.rutland@arm.com, maz@kernel.org,
-        oliver.upton@linux.dev, ryabinin.a.a@gmail.com,
-        suzuki.poulose@arm.com, vincenzo.frascino@arm.com,
-        wangkefeng.wang@huawei.com, will@kernel.org, willy@infradead.org,
-        yuzenghui@huawei.com, yuzhao@google.com, ziy@nvidia.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH v7 00/10] Small-sized THP for anonymous memory
+Content-Language: en-GB
+To:     Alistair Popple <apopple@nvidia.com>,
+        David Hildenbrand <david@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231122162950.3854897-1-ryan.roberts@arm.com>
+ <ZV9267tQEhoPzCru@casper.infradead.org>
+ <f8e518f2-fb15-4295-a335-bea5a8010ab2@arm.com>
+ <ZWC9lwDAjMZsNzoG@casper.infradead.org>
+ <9c8f6d2a-7ed8-45d2-9684-d77489bd99b8@redhat.com>
+ <ZWDG6BYqmZVpyTLL@casper.infradead.org>
+ <26c361bc-6d87-4a57-9fae-ef635c9039c7@redhat.com>
+ <87sf4rppuc.fsf@nvdebian.thelocal>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <87sf4rppuc.fsf@nvdebian.thelocal>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,210 +67,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 11:11=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.com=
-> wrote:
->
-> On 27/11/2023 09:59, Barry Song wrote:
-> > On Mon, Nov 27, 2023 at 10:35=E2=80=AFPM Ryan Roberts <ryan.roberts@arm=
-.com> wrote:
-> >>
-> >> On 27/11/2023 08:42, Barry Song wrote:
-> >>>>> +           for (i =3D 0; i < nr; i++, page++) {
-> >>>>> +                   if (anon) {
-> >>>>> +                           /*
-> >>>>> +                            * If this page may have been pinned by=
- the
-> >>>>> +                            * parent process, copy the page immedi=
-ately for
-> >>>>> +                            * the child so that we'll always guara=
-ntee the
-> >>>>> +                            * pinned page won't be randomly replac=
-ed in the
-> >>>>> +                            * future.
-> >>>>> +                            */
-> >>>>> +                           if (unlikely(page_try_dup_anon_rmap(
-> >>>>> +                                           page, false, src_vma)))=
- {
-> >>>>> +                                   if (i !=3D 0)
-> >>>>> +                                           break;
-> >>>>> +                                   /* Page may be pinned, we have =
-to copy. */
-> >>>>> +                                   return copy_present_page(
-> >>>>> +                                           dst_vma, src_vma, dst_p=
-te,
-> >>>>> +                                           src_pte, addr, rss, pre=
-alloc,
-> >>>>> +                                           page);
-> >>>>> +                           }
-> >>>>> +                           rss[MM_ANONPAGES]++;
-> >>>>> +                           VM_BUG_ON(PageAnonExclusive(page));
-> >>>>> +                   } else {
-> >>>>> +                           page_dup_file_rmap(page, false);
-> >>>>> +                           rss[mm_counter_file(page)]++;
-> >>>>> +                   }
-> >>>>>             }
-> >>>>> -           rss[MM_ANONPAGES]++;
-> >>>>> -   } else if (page) {
-> >>>>> -           folio_get(folio);
-> >>>>> -           page_dup_file_rmap(page, false);
-> >>>>> -           rss[mm_counter_file(page)]++;
-> >>>>> +
-> >>>>> +           nr =3D i;
-> >>>>> +           folio_ref_add(folio, nr);
-> >>>>
-> >>>> You're changing the order of mapcount vs. refcount increment. Don't.
-> >>>> Make sure your refcount >=3D mapcount.
-> >>>>
-> >>>> You can do that easily by doing the folio_ref_add(folio, nr) first a=
-nd
-> >>>> then decrementing in case of error accordingly. Errors due to pinned
-> >>>> pages are the corner case.
-> >>>>
-> >>>> I'll note that it will make a lot of sense to have batch variants of
-> >>>> page_try_dup_anon_rmap() and page_dup_file_rmap().
-> >>>>
-> >>>
-> >>> i still don't understand why it is not a entire map+1, but an increme=
-nt
-> >>> in each basepage.
-> >>
-> >> Because we are PTE-mapping the folio, we have to account each individu=
-al page.
-> >> If we accounted the entire folio, where would we unaccount it? Each pa=
-ge can be
-> >> unmapped individually (e.g. munmap() part of the folio) so need to acc=
-ount each
-> >> page. When PMD mapping, the whole thing is either mapped or unmapped, =
-and its
-> >> atomic, so we can account the entire thing.
-> >
-> > Hi Ryan,
-> >
-> > There is no problem. for example, a large folio is entirely mapped in
-> > process A with CONPTE,
-> > and only page2 is mapped in process B.
-> > then we will have
-> >
-> > entire_map =3D 0
-> > page0.map =3D -1
-> > page1.map =3D -1
-> > page2.map =3D 0
-> > page3.map =3D -1
-> > ....
-> >
-> >>
-> >>>
-> >>> as long as it is a CONTPTE large folio, there is no much difference w=
-ith
-> >>> PMD-mapped large folio. it has all the chance to be DoubleMap and nee=
-d
-> >>> split.
-> >>>
-> >>> When A and B share a CONTPTE large folio, we do madvise(DONTNEED) or =
-any
-> >>> similar things on a part of the large folio in process A,
-> >>>
-> >>> this large folio will have partially mapped subpage in A (all CONTPE =
-bits
-> >>> in all subpages need to be removed though we only unmap a part of the
-> >>> large folioas HW requires consistent CONTPTEs); and it has entire map=
- in
-> >>> process B(all PTEs are still CONPTES in process B).
-> >>>
-> >>> isn't it more sensible for this large folios to have entire_map =3D 0=
-(for
-> >>> process B), and subpages which are still mapped in process A has map_=
-count
-> >>> =3D0? (start from -1).
-> >>>
-> >>>> Especially, the batch variant of page_try_dup_anon_rmap() would only
-> >>>> check once if the folio maybe pinned, and in that case, you can simp=
-ly
-> >>>> drop all references again. So you either have all or no ptes to proc=
-ess,
-> >>>> which makes that code easier.
-> >>
-> >> I'm afraid this doesn't make sense to me. Perhaps I've misunderstood. =
-But
-> >> fundamentally you can only use entire_mapcount if its only possible to=
- map and
-> >> unmap the whole folio atomically.
-> >
-> >
-> >
-> > My point is that CONTPEs should either all-set in all 16 PTEs or all ar=
-e dropped
-> > in 16 PTEs. if all PTEs have CONT, it is entirely mapped; otherwise,
-> > it is partially
-> > mapped. if a large folio is mapped in one processes with all CONTPTEs
-> > and meanwhile in another process with partial mapping(w/o CONTPTE), it =
-is
-> > DoubleMapped.
->
-> There are 2 problems with your proposal, as I see it;
->
-> 1) the core-mm is not enlightened for CONTPTE mappings. As far as it is
-> concerned, its just mapping a bunch of PTEs. So it has no hook to inc/dec
-> entire_mapcount. The arch code is opportunistically and *transparently* m=
-anaging
-> the CONT_PTE bit.
->
-> 2) There is nothing to say a folio isn't *bigger* than the contpte block;=
- it may
-> be 128K and be mapped with 2 contpte blocks. Or even a PTE-mapped THP (2M=
-) and
-> be mapped with 32 contpte blocks. So you can't say it is entirely mapped
-> unless/until ALL of those blocks are set up. And then of course each bloc=
-k could
-> be unmapped unatomically.
->
-> For the PMD case there are actually 2 properties that allow using the
-> entire_mapcount optimization; It's atomically mapped/unmapped through the=
- PMD
-> and we know that the folio is exactly PMD sized (since it must be at leas=
-t PMD
-> sized to be able to map it with the PMD, and we don't allocate THPs any b=
-igger
-> than PMD size). So one PMD map or unmap operation corresponds to exactly =
-one
-> *entire* map or unmap. That is not true when we are PTE mapping.
+On 27/11/2023 08:20, Alistair Popple wrote:
+> 
+> David Hildenbrand <david@redhat.com> writes:
+> 
+>> On 24.11.23 16:53, Matthew Wilcox wrote:
+>>> On Fri, Nov 24, 2023 at 04:25:38PM +0100, David Hildenbrand wrote:
+>>>> On 24.11.23 16:13, Matthew Wilcox wrote:
+>>>>> On Fri, Nov 24, 2023 at 09:56:37AM +0000, Ryan Roberts wrote:
+>>>>>> On 23/11/2023 15:59, Matthew Wilcox wrote:
+>>>>>>> On Wed, Nov 22, 2023 at 04:29:40PM +0000, Ryan Roberts wrote:
+>>>>>>>> This is v7 of a series to implement small-sized THP for anonymous memory
+>>>>>>>> (previously called "large anonymous folios"). The objective of this is to
+>>>>>>>
+>>>>>>> I'm still against small-sized THP.  We've now got people asking whether
+>>>>>>> the THP counters should be updated when dealing with large folios that
+>>>>>>> are smaller than PMD sized.  It's sowing confusion, and we should go
+>>>>>>> back to large anon folios as a name.
+>>>>>>
+>>>>>> I suspect I'm labouring the point here, but I'd like to drill into exactly what
+>>>>>> you are objecting to. Is it:
+>>>>>>
+>>>>>> A) Using the name "small-sized THP" (which is currently only used in the commit
+>>>>>> logs and a couple of times in the documentation).
+>>>>>
+>>>>> Yes, this is what I'm objecting to.
+>>>>
+>>>> I'll just repeat that "large anon folio" is misleading, because
+>>>> * we already have "large anon folios" in hugetlb
+>>> We do?  Where?
+>>
+>> MAP_PRIVATE of hugetlb. hugepage_add_anon_rmap() instantiates them.
+>>
+>> Hugetlb is likely one of the oldest user of compund pages aka large folios.
+> 
+> I don't like "large anon folios" because it seems to confuse collegaues
+> when explaining that large anon folios are actually smaller than the
+> existing Hugetlb/THP size. I suspect this is because they already assume
+> large folios are used for THP. I guess this wouldn't be an issue if
+> everyone assumed THP was implemented with huge folios, but that doesn't
+> seem to be the case for me at least. Likely because the default THP size
+> is often 2MB, which is hardly huge.
+> 
+>>>
+>>>> * we already have PMD-sized "large anon folios" in THP
+>>> Right, those are already accounted as THP, and that's what users
+>>> expect.
+>>> If we're allocating 1024 x 64kB chunks of memory, the user won't be able
+>>> to distinguish that from 32 x 2MB chunks of memory, and yet the
+>>> performance profile for some applications will be very different.
+>>
+>> Very right, and because there will be a difference between 1024 x
+>> 64kB, 2048 x 32 kB and so forth, we need new memory stats either way.
+>>
+>> Ryan had some ideas on that, but currently, that's considered future
+>> work, just like it likely is for the pagecache as well and needs much
+>> more thoughts.
+>>
+>> Initially, the admin will have to enable all that for anon either
+>> way. It all boils down to one memory statistic for anon memory
+>> (AnonHugePages) that's messed-up already.
+>>
+>>>
+>>>> But inn the end, I don't care how we will call this in a commit message.
+>>>>
+>>>> Just sticking to what we have right now makes most sense to me.
+>>>>
+>>>> I know, as the creator of the term "folio" you have to object :P Sorry ;)
+>>> I don't care if it's called something to do with folios or not.  I
+>>
+>> Good!
+>>
+>>> am objecting to the use of the term "small THP" on the grounds of
+>>> confusion and linguistic nonsense.
+>>
+>> Maybe that's the reason why FreeBSD calls them "medium-sized
+>> superpages", because "Medium-sized" seems to be more appropriate to
+>> express something "in between".
+> 
+> Transparent Medium Pages?
 
-well. Thanks for clarification. based on the above description, i agree the
-current code might make more sense by always using mapcount in subpage.
+I don't think this is future proof; If we are going to invent a new term, it
+needs to be indpendent of size to include all sizes including PMD-size and
+perhaps in future, bigger-than-PMD-size. I think generalizing the meaning of
+"huge" in THP to mean "bigger than the base page" is the best way to do this.
+Then as David says, over time people will qualify it with a specific size when
+appropriate.
 
-I gave my proposals as  I thought we were always CONTPTE size for small-THP
-then we could drop the loop to iterate 16 times rmap. if we do it
-entirely, we only
-need to do dup rmap once for all 16 PTEs by increasing entire_map.
+> 
+>> So far I thought the reason was because they focused on 64k only.
+>>
+>> Never trust a German guy on naming suggestions. John has so far been
+>> my naming expert, so I'm hoping he can help.
+> 
+> Likewise :-)
+> 
+>> "Sub-pmd-sized THP" is just mouthful. But then, again, this is would
+>> just be a temporary name, and in the future THP will just naturally
+>> come in multiple sizes (and others here seem to agree on that).
 
-BTW, I have concerns that a variable small-THP size will really work
-as userspace
-is probably friendly to only one fixed size. for example, userspace
-heap management
-might be optimized to a size for freeing memory to the kernel. it is
-very difficult
-for the heap to adapt to various sizes at the same time. frequent unmap/fre=
-e
-size not equal with, and particularly smaller than small-THP size will
-defeat all
-efforts to use small-THP.
+I actually don't mind "sub-pmd-sized THP" given the few locations its actually
+going to live.
 
->
-> >
-> > Since we always hold ptl to set or drop CONTPTE bits, set/drop is
-> > still atomic in a
-> > spinlock area.
-> >
-> >>
-> >>>>
-> >>>> But that can be added on top, and I'll happily do that.
-> >>>>
-> >>>> --
-> >>>> Cheers,
-> >>>>
-> >>>> David / dhildenb
-> >>>
-> >
+>>
+>>
+>> But just to repeat: I don't think there is need to come up with new
+>> terminology and that there will be mass-confusion. So far I've not
+>> heard a compelling argument besides "one memory counter could confuse
+>> an admin that explicitly enables that new behavior.".
+>>
+>> Side note: I'm, happy that we've reached a stage where we're
+>> nitpicking on names :)
+> 
 
-Thanks
-Barry
+Agreed. We are bikeshedding here. But if we really can't swallow "small-sized
+THP" then perhaps the most efficient way to move this forwards is to review the
+documentation (where "small-sized THP" appears twice in order to differentiate
+from PMD-sized THP) - its in patch 3. Perhaps it will be easier to come up with
+a good description in the context of those prose? Then once we have that,
+hopefully a term will fall out that I'll update the commit logs with.
+
