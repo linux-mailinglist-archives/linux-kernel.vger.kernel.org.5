@@ -2,128 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8507F97F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 04:29:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47A587F97F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 04:29:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbjK0D3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 22:29:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57666 "EHLO
+        id S231956AbjK0D3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 22:29:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjK0D3N (ORCPT
+        with ESMTP id S229480AbjK0D3h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 22:29:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F5D4E1
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 19:29:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701055758;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PnTrWVmf8fnOo5Xt1U1MdbL+1iOZnlvT18JnDKebNVY=;
-        b=EXp33dBEsG04CjJUFMi20gRz8P9INblYyrb4lemhmoZDno6b/lyTQI0E+TzkEjhMXIAUib
-        FH+UXXqqLuZnOO3jdRSTfoqqHOlxbLB1tQjVxTZ/xHfkKhQCI9URZwBlhrw1zcCt7sYp43
-        amVp7dLrARODQ+Ntaj5NVD3z0Ykz41Y=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-665-l4JqyT8yPdyOLUMGAlVFQg-1; Sun, 26 Nov 2023 22:29:14 -0500
-X-MC-Unique: l4JqyT8yPdyOLUMGAlVFQg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2977A185A780;
-        Mon, 27 Nov 2023 03:29:14 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C8BD336E2;
-        Mon, 27 Nov 2023 03:29:07 +0000 (UTC)
-Date:   Mon, 27 Nov 2023 11:29:04 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Eric DeVolder <eric_devolder@yahoo.com>
-Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        akpm@linux-foundation.org, ignat@cloudflare.com
-Subject: Re: [PATCH 0/3] kernel/Kconfig.kexec: drop select of KEXEC for
- CRASH_DUMP
-Message-ID: <ZWQNACdS12xDXL7A@MiWiFi-R3L-srv>
-References: <20231123073652.507034-1-bhe@redhat.com>
- <5ab45f48-9ec2-4611-81a2-4dc2f1854c4f@yahoo.com>
+        Sun, 26 Nov 2023 22:29:37 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E6E126
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 19:29:43 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2c997467747so16904431fa.1
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 19:29:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701055781; x=1701660581; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sV1CXf/5vgCh5mOFnUCAA7ihYHRFt1CuTIjPFpsOHiU=;
+        b=Zyd21S7UkMxmG+5u5MatnqKT84rAeTpNvinObDpWoZzz+J5SoGtFI8WdhtIarsYv/S
+         SBNSFGgvH9XsiY24lnkt4ArumrMrwfBeL/KdkryGpXN+M4xa6AEWnhQPi8LjgU7HKANZ
+         O3TWLmvLReR2sIXEwHxbbHaSB+PopnAYQQorS9EKJQgko9E5GMTqfv5FFbkColqwOqtl
+         9FXC2PYx6mbVjxUc4Sz0cMSRof55aRBHqcEF6jJZIZnKB3r2yakFGqgDJ6Y8YMu6+6Io
+         kxOaT1lqVqSq5OrLZIlF6v7Z8JbHUP9vzrvM74lKSf35XXZRU2+3ao7nf/7oPtqfs+47
+         QFLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701055781; x=1701660581;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sV1CXf/5vgCh5mOFnUCAA7ihYHRFt1CuTIjPFpsOHiU=;
+        b=RsQYNiT1X8/gETPj3OrKl207aWheZNl/l1/ulNsM0xeoD04Il6dhE35dGnDr0rJAQD
+         484/A/6XYbhYbWrP9ly19pTFoHssCgLfumybFto+2ZV7lQRlbNT/syt4UHMMRHiDQdVG
+         a1sE1TbJCmvWjVOceBPKJPYQM9DQacE0UzOBc8/yQ+VPatZ7jw13sZPGtGY/bHIYV08+
+         HqEpSPR92KlRVPcB/flXRgjiVivsT9D84qaGsgFfibCju/ZgYERnANy+dYjvqvZn7l8F
+         ezHp9+VCvYyP603gBjIjr2S0kcOqbASBr0UnCNbYkaIRoJUsFbO5QcYR99tWl6T9XqkF
+         IuCg==
+X-Gm-Message-State: AOJu0Ywnu0zwPv+N5yQ4WhlNyEp1jj1rs5LtEpTspvzOWiQQa1OUeHlv
+        s3vAHL+gUQFr9FIX+WF9QQ2tNuswyD2KlSUSCeE=
+X-Google-Smtp-Source: AGHT+IGOf4mC0tblJt+CsMkIa+mju8Wanx4dOjJ4UGZAvNfOvuBltgSZ2ncd12yqTeq8/VhiG5zFlfwlz54C/8ofkhQ=
+X-Received: by 2002:a2e:3c15:0:b0:2bc:b9c7:7ba8 with SMTP id
+ j21-20020a2e3c15000000b002bcb9c77ba8mr3854903lja.43.1701055781092; Sun, 26
+ Nov 2023 19:29:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5ab45f48-9ec2-4611-81a2-4dc2f1854c4f@yahoo.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20231127030930.1074374-1-zhaoyang.huang@unisoc.com>
+In-Reply-To: <20231127030930.1074374-1-zhaoyang.huang@unisoc.com>
+From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date:   Mon, 27 Nov 2023 11:29:29 +0800
+Message-ID: <CAGWkznGz-Q_gC6EnuTgO3boZY9mSMpMWPRHt-ajo=VDUTHMMEw@mail.gmail.com>
+Subject: Re: [PATCH] kernel: dma: let dma use vmalloc area
+To:     "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, steve.kang@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/25/23 at 06:07pm, Eric DeVolder wrote:
-> 
-> On 11/23/23 01:36, Baoquan He wrote:
-> > Ignat reported a potential config regression was introduced by
-> > commit 89cde455915f ("kexec: consolidate kexec and crash options
-> > into kernel/Kconfig.kexec"). Please click below link for more details:
-> > 
-> > https://lore.kernel.org/all/CALrw=nHpRQQaQTP_jZfREgrQEMpS8jBF8JQCv4ygqXycE-StaA@mail.gmail.com/T/#u
-> > 
-> > The patch 1 fix the regression by removing incorrect CONFIG_KEXEC
-> > ifdeffery scope adding in arm's <asm/kexec.h>, then dropping the
-> > select of KEXEC for CRASH_DUMP. This is tested and passed a cross
-> > comiping of arm.
-> > 
-> > Patch 2 is to fix a build failure when I tested patch 1 on x86_64, the
-> > wrong CONFIG_KEXEC iddeffery is replaced with CONFIG_KEXEC_CORE. Test
-> > passed on x86_64.
-> > 
-> > Patch 3 is to fix an unnecessary 'select KEXEC' in s390 ARCH. Removing
-> > the select won't impact anything. Test passed on a ibm-z system.
-> 
-> I apologize for my delay in responding, I did not have a computer with me
-> during my holiday travel.
-> 
-> I was able to re-run my Kconfig test script with this patch series (now that
-> I'm running this on private resources, it takes half a day 8( ). The script
-> only performs comparisons of the .config before (LHSB) and after (RHSB) the
-> patch series; it does NOT do any building. At any rate, what that revealed
-> was only differences in s390. That means that all other arches do not have
-> any unintended side effects. The differences with patch3 applied look like:
-> 
-> FAIL: allnoconfig arch/s390/configs/kasan.config
-> LHSB {'CONFIG_CRASH_CORE': 'y', 'CONFIG_KEXEC_CORE': 'y', 'CONFIG_KEXEC':
-> 'y'}
-> RHSB {'CONFIG_KEXEC': 'n'}
-> 
-> The 'allnoconfig' and 'olddefconfig' targets failed for all s390 defconfigs.
-> The LHSB is the pre-patch values, and the RHSB is the post-patch values. So
-> this states that CRASH_CORE and KEXEC_CORE were set previously, but now they
-> are not. KEXEC obviously is being turned off intentionally.
-> 
-> Hope this helps some.
+This patch arose from a real problem where the driver failed to use
+dma_map_single(dev, ptr). The ptr is a vmalloc va which is mapped over
+the reserve memory by dma_init_coherent_memory.
 
-Thanks, Eric. Alexander has pointed out this in patch 3 reviewing
-comment. I misunderstood the select KEXEC in s390 arch where they
-intend to do. As I replied to Alexander, I will drop patch 3. 
-
-> 
-> 
-> > Baoquan He (3):
-> >    kernel/Kconfig.kexec: drop select of KEXEC for CRASH_DUMP
-> >    drivers/base/cpu: crash data showing should depends on KEXEC_CORE
-> >    s390/Kconfig: drop select of KEXEC
-> > 
-> >   arch/arm/include/asm/kexec.h | 4 ----
-> >   arch/s390/Kconfig            | 1 -
-> >   drivers/base/cpu.c           | 6 +++---
-> >   kernel/Kconfig.kexec         | 1 -
-> >   4 files changed, 3 insertions(+), 9 deletions(-)
-> > 
-> 
-
+On Mon, Nov 27, 2023 at 11:09=E2=80=AFAM zhaoyang.huang
+<zhaoyang.huang@unisoc.com> wrote:
+>
+> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+>
+> memremap within dma_init_coherent_memory will map the given phys_addr
+> into vmalloc area if the pa is not found during iterating iomem_resources=
+,
+> which conflict the rejection of vmalloc area in dma_map_single_attrs.
+> IMO, it is find to let all valid virtual address be valid for DMA as the
+> user will keep corresponding RAM safe for transfer.
+>
+> Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> ---
+>  include/linux/dma-mapping.h | 12 +++++++-----
+>  kernel/dma/debug.c          |  4 ----
+>  2 files changed, 7 insertions(+), 9 deletions(-)
+>
+> diff --git a/include/linux/dma-mapping.h b/include/linux/dma-mapping.h
+> index f0ccca16a0ac..7a7b87289d55 100644
+> --- a/include/linux/dma-mapping.h
+> +++ b/include/linux/dma-mapping.h
+> @@ -328,12 +328,14 @@ static inline void dma_free_noncoherent(struct devi=
+ce *dev, size_t size,
+>  static inline dma_addr_t dma_map_single_attrs(struct device *dev, void *=
+ptr,
+>                 size_t size, enum dma_data_direction dir, unsigned long a=
+ttrs)
+>  {
+> -       /* DMA must never operate on areas that might be remapped. */
+> -       if (dev_WARN_ONCE(dev, is_vmalloc_addr(ptr),
+> -                         "rejecting DMA map of vmalloc memory\n"))
+> -               return DMA_MAPPING_ERROR;
+> +       struct page *page;
+> +
+>         debug_dma_map_single(dev, ptr, size);
+> -       return dma_map_page_attrs(dev, virt_to_page(ptr), offset_in_page(=
+ptr),
+> +       if (is_vmalloc_addr(ptr))
+> +               page =3D vmalloc_to_page(ptr);
+> +       else
+> +               page =3D virt_to_page(ptr);
+> +       return dma_map_page_attrs(dev, page, offset_in_page(ptr),
+>                         size, dir, attrs);
+>  }
+>
+> diff --git a/kernel/dma/debug.c b/kernel/dma/debug.c
+> index 06366acd27b0..51e1fe9a70aa 100644
+> --- a/kernel/dma/debug.c
+> +++ b/kernel/dma/debug.c
+> @@ -1198,10 +1198,6 @@ void debug_dma_map_single(struct device *dev, cons=
+t void *addr,
+>         if (!virt_addr_valid(addr))
+>                 err_printk(dev, NULL, "device driver maps memory from inv=
+alid area [addr=3D%p] [len=3D%lu]\n",
+>                            addr, len);
+> -
+> -       if (is_vmalloc_addr(addr))
+> -               err_printk(dev, NULL, "device driver maps memory from vma=
+lloc area [addr=3D%p] [len=3D%lu]\n",
+> -                          addr, len);
+>  }
+>  EXPORT_SYMBOL(debug_dma_map_single);
+>
+> --
+> 2.25.1
+>
