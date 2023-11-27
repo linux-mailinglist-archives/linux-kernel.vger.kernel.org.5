@@ -2,211 +2,650 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0527FAC9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:33:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 053887FAC8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:28:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233389AbjK0Vcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 16:32:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47636 "EHLO
+        id S232144AbjK0V2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 16:28:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231437AbjK0Vcv (ORCPT
+        with ESMTP id S229527AbjK0V2W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 16:32:51 -0500
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C98D59;
-        Mon, 27 Nov 2023 13:32:57 -0800 (PST)
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARKo4vZ029574;
-        Mon, 27 Nov 2023 21:26:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=tpT2AzhppQJSCHnaqaGnpGnCY/GocgGr3oHohGUvph0=;
- b=npuW0CKcVmI+hfc6fkWadNoBBd8wPvjKlYS3tVmEX0c8vsm9/j0rcFi1rjma/Mcic+b3
- BqUM7prI7YGsQoX8AFT7RI8OwrYeCp2EJhcvjN7JjsD45VRFz99kmSQAulB9wYEasUJl
- MMO0nVk6gTGl3suo0l8+EsjeWQ72/82WCL15k3zPGHPTrEFh3yS7hnZm3qc6yvuBVL7F
- ppOWNy+pl+vsZsEjQrqI4Qh/vaLjGHokzwo02HW7Hu7k3LqAQZlx3Jock7hadsZmdKBi
- ruBnnNRq/WBdl9K71Y/ZOzb+UboSQiSrEkNc2PbxlOUckYckmv+goYSa0nZoCwZAwGS/ 8w== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uk9fum1d0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 Nov 2023 21:26:44 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARKMxiW012667;
-        Mon, 27 Nov 2023 21:26:42 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uk7cbp66f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 Nov 2023 21:26:42 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gSiL9CGfTaAzpl4uss2fBlcjcnKpkvlsiRbZ6Hfx4Od9BKgBLIb1UD1yEgpMoJ62jQM2HLWsa4aFTTiJA1px6u5Dw/xKCf3UqBzzLH2b5I2Ue18Z17UqEPeU2rbj/wN0UMT/kXGAhdlYpwF07A2XYPXDL8vk25SP64yw4SNnglHZb2OLgRjJXvJQKLu/yR0x8VKDR06P8+89EhpiXO+QiwS4vIudaYMVbCy2YXU260COy+DcmN/aqrNJn55Uc4dm3V8Un9MkZDWnXqbaAg+Z/B9BGFtmQEgQ+Eci4FmdMs7s63haan18gE/SwhsybfpIFMWpPcn6jvk41WkNCgRuYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tpT2AzhppQJSCHnaqaGnpGnCY/GocgGr3oHohGUvph0=;
- b=BmyPpMzesBA0Nm2DXEvlOPT3EWLi5wgMtIk+e8vkvRpO1wXpJ4MwD6NL01dEnAfyLOPC1zutO5uLqeEiq+UojgJk4jpdPgRfqlYhy7+tLQv2WATIWaY+3967Y4g/btk76w4Dad4MteQO3pdwziCDfq2A3t7qC/cIg2777P1RDRGfPPBHs6xZQDXPak8sUHlqrnDHMzXMgWWJaw8MDSspDl3jXu9q8xF4w02EQWdZB1k/5U5KoA1paJF8OK2fDUH2IZgjwVie5ifKCd+3qHcyCzgZC9x46IuTryIy/C3Cf84nLiS0UWEfXNutNYYwbfauBBNncVRT+tjHINUnZ+1OYg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tpT2AzhppQJSCHnaqaGnpGnCY/GocgGr3oHohGUvph0=;
- b=W+iUO8UQyYjqj1tIB/7Jfh1lOS25nJgJyoH0Amqi+YU/f1jwGBF5zSrr/AjJQBeV9PXevO0uY7jH+SoKfIbe8RMmS5c7Ada9uebyMNHhz5IIUQ/VKPl/GG+YVP8bFSgD0o+k+hlqdJ6tdVVGrgGyRJjd18HFtWuZCnH9Bsl7ZTs=
-Received: from CY8PR10MB7243.namprd10.prod.outlook.com (2603:10b6:930:7c::10)
- by BLAPR10MB5074.namprd10.prod.outlook.com (2603:10b6:208:30d::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Mon, 27 Nov
- 2023 21:26:40 +0000
-Received: from CY8PR10MB7243.namprd10.prod.outlook.com
- ([fe80::449f:4fd9:2d3e]) by CY8PR10MB7243.namprd10.prod.outlook.com
- ([fe80::449f:4fd9:2d3e%4]) with mapi id 15.20.7025.022; Mon, 27 Nov 2023
- 21:26:40 +0000
-Message-ID: <b760bf11-c8a7-4f9f-b2c5-2e35e84e46d2@oracle.com>
-Date:   Mon, 27 Nov 2023 15:26:38 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] scsi: be2iscsi: fix a memleak in beiscsi_init_wrb_handle
-Content-Language: en-US
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     Ketan Mukadam <ketan.mukadam@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        John Soni Jose <sony.john-n@emulex.com>,
-        Jayamohan Kallickal <jayamohank@gmail.com>,
-        James Bottomley <JBottomley@Parallels.com>,
-        Mike Christie <michaelc@cs.wisc.edu>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231123081941.24854-1-dinghao.liu@zju.edu.cn>
-From:   Mike Christie <michael.christie@oracle.com>
-In-Reply-To: <20231123081941.24854-1-dinghao.liu@zju.edu.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DS7PR03CA0161.namprd03.prod.outlook.com
- (2603:10b6:5:3b2::16) To CY8PR10MB7243.namprd10.prod.outlook.com
- (2603:10b6:930:7c::10)
+        Mon, 27 Nov 2023 16:28:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A020101
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 13:28:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701120506;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/5OYuYCt67wzJ+/8qqlhau3Gp1gL5G3obHLUv10gK1M=;
+        b=PrkPoC1aQG/JqxBYUUAXGd2EHtD/IJwe91XyiDyIfbcEPBBauN0WvJWwpN3Ms5MKPN0Bh6
+        y6X1Awi4UaYt9j3kQ7FRYZ6yy6FaHFlkrui1KdofzSrdzeCe8bmGRCDYv9T0H74UCc5n9O
+        ew+qBQUPNJSk9MM+UMrkzRI895DSd9k=
+Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com
+ [209.85.160.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-582-NwEZNgVyOeqKrgbFnrvzDQ-1; Mon, 27 Nov 2023 16:28:25 -0500
+X-MC-Unique: NwEZNgVyOeqKrgbFnrvzDQ-1
+Received: by mail-oa1-f71.google.com with SMTP id 586e51a60fabf-1f9fdbb8521so4312441fac.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 13:28:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701120504; x=1701725304;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/5OYuYCt67wzJ+/8qqlhau3Gp1gL5G3obHLUv10gK1M=;
+        b=qjgu6qHnzCfT0DwatsvrHmIJthPuuXkWs9Lb1mTzBspMgNDRCZ6dm+2r56HuWT5BVF
+         87++0ZIsflG8B9i/XTPNv7VupT71cZWjvz8NGU8PlH3i5f/lvy5Pb4UgFmg+PidWjCr3
+         cVXLMeJVD0hy7yDJKj/2ZUHClzi2n2+hbkxSKspEML9YVIqc/HfgyLX9fCwwpczHsbo9
+         wrs9R3UYrFgCBzY129/gFhIXGJHppZwkGIeXzAA0EcLMQc3TXeBvZCTetkW3ciR688bR
+         X/og87hNhol0XMeBg2RTEohrATGrn+BoA5K8cID+ktVTZXNTXa/BGETFQgmldYl7W6Ew
+         skHw==
+X-Gm-Message-State: AOJu0YxFc9uIOzbHmvo7uKYoBSSTNR+ShHLO0iVw+yfyFUDr/sOorq5Z
+        L0Mqukj1FDDb5gFzB4c2qAnMzIIcMwaTdbfVRv0Ah7rWzufGNsHwBC5oOgVqo1vKiqXfRrY+8fU
+        ZSKRwyDNorLgOjyP55frczn6t
+X-Received: by 2002:a05:6870:9f87:b0:1f5:994:9853 with SMTP id xm7-20020a0568709f8700b001f509949853mr18861545oab.22.1701120504507;
+        Mon, 27 Nov 2023 13:28:24 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFPG4DiKquHjo8rjyosbxukSwyh/uk1y7gO5uXk0jcvQoC13Mot6fHceSEth56OkegsFzQWAA==
+X-Received: by 2002:a05:6870:9f87:b0:1f5:994:9853 with SMTP id xm7-20020a0568709f8700b001f509949853mr18861528oab.22.1701120504117;
+        Mon, 27 Nov 2023 13:28:24 -0800 (PST)
+Received: from redhat.com ([38.15.60.12])
+        by smtp.gmail.com with ESMTPSA id wx20-20020a0568707e1400b001fa38903b92sm1104172oab.15.2023.11.27.13.28.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 13:28:23 -0800 (PST)
+Date:   Mon, 27 Nov 2023 14:28:22 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     <ankita@nvidia.com>
+Cc:     <jgg@nvidia.com>, <yishaih@nvidia.com>,
+        <shameerali.kolothum.thodi@huawei.com>, <kevin.tian@intel.com>,
+        <aniketa@nvidia.com>, <cjia@nvidia.com>, <kwankhede@nvidia.com>,
+        <targupta@nvidia.com>, <vsethi@nvidia.com>, <acurrid@nvidia.com>,
+        <apopple@nvidia.com>, <jhubbard@nvidia.com>, <danw@nvidia.com>,
+        <anuaggarwal@nvidia.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, benh@kernel.crashing.org
+Subject: Re: [PATCH v1 1/1] vfio/nvgrace-gpu: carve out non cached reserved
+ region from device memory
+Message-ID: <20231127142822.41d70196.alex.williamson@redhat.com>
+In-Reply-To: <20231115080751.4558-1-ankita@nvidia.com>
+References: <20231115080751.4558-1-ankita@nvidia.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY8PR10MB7243:EE_|BLAPR10MB5074:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3fe88fc8-7b63-49b7-def3-08dbef8f8b89
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4XvBGS/untgXtpKpSWqArS5YENs3YdQwEMTCOemZkTacm0GUQJkVZGrw5IdU2fYAFSTSVT0LN49J6odCg4icDn0SS+Ld0oy6XefMmNxNvRYp1c5u5Je1mQb2fzoiEyoxF7uARLcfig8P+sxerBJ1WxbdDCFU1saG5wGmrbf/pSZK/OBLwqd6AhUizLYiSxcDiszJpyw0VSwWBjiC5JkOTDn37jGmXTF3XCynVRkxP1W5m68eGSrTCf+x4IwpNzeKBk6Tdm17daevG5FhW/taK5eiUsW1QJXIcasMXLCiN3SaBuIam+B8r95lusegrXaFDscCdoiPYfSloMwWekwQUMdnFUExgr+YRN3dKBoApn6/Ai62kAVUxsRGPAcBAGaxmHlzswDNobqde4/J4LbSKUCz3Ck03yxOtXhwg1uTclbCHj7M34s4bOjBgA4d806JB6I5Yd/oviWcBS8QsYfgbWzqjapXS27ODMbp7zpeWeqzouTElJ44OIVyLK4p2Xq5ipMRuauIbRD+Kyikatlw6K2NZLi43VTGTrwCLFhJGQUws3T84PtAKzq1PBihNMZAPHQtChGGFEHRAdyYRSgivtVNoxVJN33Ry/3BPtJdT9QCwBpkReMizCmO2eX8hdWbpjn50CTuxdH29ks2ioLiKA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY8PR10MB7243.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(39860400002)(346002)(136003)(366004)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(38100700002)(36756003)(86362001)(31696002)(41300700001)(4326008)(8936002)(8676002)(54906003)(316002)(6916009)(66476007)(66946007)(6512007)(66556008)(53546011)(6506007)(478600001)(6486002)(5660300002)(2906002)(4744005)(31686004)(26005)(2616005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QS9iMDJrRlZkZnVwelRHUGs5RjcvRlFzMnRTTWhORHNhT0VTSVB4UDU5SmE4?=
- =?utf-8?B?R0VkMk5yclY5M1pQbVQyclMyWkxGOUREa01PbDZLOFE5MU1rM2ttV244QkU3?=
- =?utf-8?B?eGUzOFJLNnhJN21KMU9JdG80WDN4MjNNMXRCSUVwQnVRdE42VmQzQWNQWndB?=
- =?utf-8?B?aUN3WmR4WnVFU0pIbDk3ZEc4VGdlUVkyUjJkZy9PRncrN3g0a0VHM1MzcU5H?=
- =?utf-8?B?V0t4bnhWcjNNd1lBZzBmM0dCcFUxaXR6UG5VNmhsQnZRRFBiS3JqdC9VY2lv?=
- =?utf-8?B?eVl3aHR2RndkR1B5ejVudXpNT2ZlVi9VWWxERmlKbExqYUtBOEhjTGhJMTl4?=
- =?utf-8?B?bUQzT2szY2JiMk93TkVMY2VPNktoeU9vQ0R5K21MZE5GcDZ2Wi9TaE00SXNH?=
- =?utf-8?B?NTJ4cWZ6ZXJSc0ZUYVRMMjM2ZnZaWEhDUmdQMEVDck5NL2dDVVJGQU96M3VR?=
- =?utf-8?B?d0pvOUgwTGo4Tlc1Rm1EZDFVRFFUWE5meXJYdkdZRG5WWDJTVlFJa05SK01a?=
- =?utf-8?B?VUlYYjJYL2RFenJwVkRXOVRhMVh4TnZyZmplZ2NaN2o3eDAyQkZwUXpaMTFz?=
- =?utf-8?B?N3BuSUlYTXl5TXZVWXdHcm1ZdlQ1WkZsbWtIV0xsV2xoS3VLM0tzM1h6N0Rv?=
- =?utf-8?B?RStvNFJ5Z1RLd1dNKzc3dDhVUEo5ZVFNSXJaUFQ2cm5GZytYYW5lRTVuQjF4?=
- =?utf-8?B?R3VqS3NhbTJKeDlza0NhUFhzMHVrclNkWVRXaWhqdUtieHY0ZjZoU3JaYklS?=
- =?utf-8?B?cWdORGUxNzRHbVpFekxYZENWd0IxTGFGR1V1K21FRzJnZE50VldiZDgvaXlT?=
- =?utf-8?B?RTJmQWxmaVA3ZmdJSUJqekpSY2lsbnpGMSszRjl4OEhvUlhyRUt0bEpYSkF5?=
- =?utf-8?B?WDlueEVHODZUWFpPcFczZDRaQUMrUk9USkNPQTIySG5KWk43SlcxbGFGcDZx?=
- =?utf-8?B?eWFMT0FQM0VpMTZLOEhKUGJsb1JjNm5FUjN3OCtyZHkzOWFnblQveFFaTVRk?=
- =?utf-8?B?ajRQSXFJT0Nua2h2VGtTeEdyR3Nod1ZEUWs1L0pqaU05TS8zd1RIclR3emRL?=
- =?utf-8?B?MHRra0NkenBpTXlDUkR2N1R6a2VEUXkxS3p4UjJ4Q1hIeEd2TXBWZG90WTBH?=
- =?utf-8?B?QlhMUmU5TlhyM2swNThDZWRoWmp1VFFIWmFPOXlSWGNUMUJQM2xKM2N1Qzla?=
- =?utf-8?B?T3VDZ1YvenlETXJ1TWM2WWJUREJTM0psNnNuUTd4WXpWTGVCRS9QVWJmNnYy?=
- =?utf-8?B?bDB2MTg0K3hxN3FFM1hYZVpjV1l2UGZPOWRtWTdXeVV1WitJa2wrU3pzdUVz?=
- =?utf-8?B?eXlhN1FmTHRISjVpMlhOU2VzNGNuMDN3SzZHVFp5NVNSOFUzUHFxWi9GWnZ2?=
- =?utf-8?B?blFYTkNiQ0ZXaUUvZlZZVStIM1RLUW5hWmsxb3E4aEs1WU96b0R5RmtSNHhv?=
- =?utf-8?B?TnpHZDFwUXhlQkFmUGltdzZzQXZyc2Zzb09lOTJSeXU2VjdZSFFYSTA1SG1O?=
- =?utf-8?B?bDNlVG5ndVBIUDhDeUM0R0VPUTFCWWdzUEs3TkZKTm1BR2IzRkFvY1M5WGJ0?=
- =?utf-8?B?aDF1VlcyMHZUTGdaT0l2USs2QUJHSXlPOXJVRjdGeWc5VC9GTkhKQks4L01P?=
- =?utf-8?B?aWxsZVM2Zy9ETXdZbGIrbFRlMUxDcnJPcDNQeEpOSm5scGZwR2pUMFFLNHRC?=
- =?utf-8?B?TmxlRWIxalBLejc4ZkJqam5iQ3dyRlRFVVAwNldXUXV0NnlFb3NtdFR2S0pK?=
- =?utf-8?B?NjZSVlZGZG95cFhaanpTb3RaUkh6UCt0ZDBIRUwyeGZmSDFGV2tDVW9sa21t?=
- =?utf-8?B?cksyb21yRFhudjN3aEFpYUQrd0FOaXVpWmg5R2FTL2JBdlpLbHhwbm90ZjZs?=
- =?utf-8?B?clFOU2FxUEM1NlRSajREM3liYUtWSmg2MUFJUXBBTGxXOUg0MlVZaXoxZGg1?=
- =?utf-8?B?WVdsc1BZYjd3Vk0wV3JNRjNCRzdrMXZXT2RMU1E2cDJQVVdjREFia1NFUGI2?=
- =?utf-8?B?TFF0TE1kbGNLTkM2U2dhN1pTckd3UERXbGpNRzczN2gyT2RESm9YVmp0OUhn?=
- =?utf-8?B?dHU3THJPU3ptcWtnbVpDUllVcWVEem0xZGorMU5oQ21aV0ZEdkZpdEhTNW5O?=
- =?utf-8?B?dnFla0t0R1JJL3lQendlKzJob09jUWxYbUhSbm00K2FteVN2eHh1Vm5GdWti?=
- =?utf-8?B?RXc9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?NzJSN3VGQ0I1bnQ4VFZDaFJodTFtbnl5WG1xNVkzeHhvcGc0OEhQTjEyNlNk?=
- =?utf-8?B?bHhqaTRVRlBRVVF0SEJqQm9vbVNMZU03aktDdEp4bGtsckxiRW9TdzhTREN6?=
- =?utf-8?B?eG9mRmc4K1NBYnM4RVBhMFE0bXh2V1BZWTFtTHRFbGdzN0NldFdnSHdkc1VZ?=
- =?utf-8?B?TnlGbU5LTzFndkJSUnVDc0RaS0hock44ZkJSSnpFdWpKNFZZZkRlZ2t1Qy9H?=
- =?utf-8?B?Y09BVG02L3RlWW55T3J3WmJycjQwNk5EY2MzU3YxRzFPVFd5b2N5M2NwTHhF?=
- =?utf-8?B?MklCVzlBeSthaTdiTEZ3SGlqVGNLQnNIZ0hXM2FwNGZYdm5OYmIyQlhzV1cv?=
- =?utf-8?B?UVFUS0JHTHNxR3J5M3NXRHh2Vi9tendCREhaamIzcFYvekQydWI2RHVZTUE0?=
- =?utf-8?B?QXIwZnF4ZlhPOWhHOTgrSWQyM2FhUGxKclF6VU9HaS92RmprUFhLeG5DNE5C?=
- =?utf-8?B?MVliQi9nQVIyb1hGQXNSUGtSb2d0aEhpUTIrdlVTc0grc3RjSThwTm8vaVVX?=
- =?utf-8?B?YnpUaFlsRlR4SFBSMlZuSzNZRHZLVFJ6bUtybXdSUHUxajNsTFBRb3lEL2ZH?=
- =?utf-8?B?Rnp2M013czdnZG5aeWJXL0kyNGgySGlpOWxxZGtVOHNuMjFSbjZ5eFU4blVk?=
- =?utf-8?B?bEZWVkgyVFZvb3VwSDN1Y2lhb3FHWXNpOEtNTEZTZDFQbnI4K3hiSUI2Wm1s?=
- =?utf-8?B?N3lsbmc5a0p0RHBDa0w3NDBTNTVqTzJVVlE2VFZndUlhSVJFejRDTTZmdFhx?=
- =?utf-8?B?a1BjaWtFbWNFNFhhZkphTDNqRDVtZFJodFd3T2FCSlhIMFcySkxhVDBURk1L?=
- =?utf-8?B?bUU0NFUzYXMrdWF2UzZQamJ5U25nQUt6Q1kwUzJ0YWJ2UC8rZjdlcjg4Z0hB?=
- =?utf-8?B?RmhEdjZQME9xQVROTmZtMlhMVmFNNk55WlhyNnU2NktuOG5CdHZEMlVHUDR1?=
- =?utf-8?B?Mkltd3piNkhRT0dvZlg4bXlHYzR4TGg0L2psM1N0Sk1seGpFeUtEUzR0NW1J?=
- =?utf-8?B?NnU0azJnRlRFeEMwWXlrbTBwWktaYjZMQlJsQUlIWU1nVE5yUWN4ZEtRbnZ6?=
- =?utf-8?B?MjZDYVcvNE9aaTBOS3FvQWVUamxHWTgvWE9JNWFvcVp1TlpYZXFGTCtEOGxk?=
- =?utf-8?B?U1VhdWtVazdsUjZlMXlyRDluVjIrZThtWDJwMzVtWlo0VTh6V3pRVjlYOXgw?=
- =?utf-8?B?eWwzUXVvM1ZKZWlZVURJakZ2N0tHMFdURkRWMmZpV2Q0OHdUMkw3MmkxVGlx?=
- =?utf-8?B?QXd4ZWNTbFVmRDVrNVJHQ05FV0ZBK08vTG5XMU4rRkEwV1NtdGNueW5XbWlu?=
- =?utf-8?Q?KfoLUjUQePhoU=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3fe88fc8-7b63-49b7-def3-08dbef8f8b89
-X-MS-Exchange-CrossTenant-AuthSource: CY8PR10MB7243.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2023 21:26:40.5497
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pua/l0VgC8qMnTe9rb5oGjmjmkoLuSxe3jY/i9t74KJNyuq8wHfhfIFAgNpkGCJFbKqXauhqqpNXFs8DywVtBzgoHUOQ1uJ459O+QVe1aig=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5074
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-27_19,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 mlxscore=0
- malwarescore=0 adultscore=0 suspectscore=0 spamscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311270149
-X-Proofpoint-ORIG-GUID: LyHbRZmStpwrO6zn2TvSzH1gVWrSDRjL
-X-Proofpoint-GUID: LyHbRZmStpwrO6zn2TvSzH1gVWrSDRjL
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLACK autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/23/23 2:19 AM, Dinghao Liu wrote:
-> When an error occurs in the for loop of beiscsi_init_wrb_handle(),
-> we should free phwi_ctxt->be_wrbq before returning an error code
-> to prevent potential memleak.
+[Cc +benh]
+
+On Wed, 15 Nov 2023 13:37:51 +0530
+<ankita@nvidia.com> wrote:
+
+> From: Ankit Agrawal <ankita@nvidia.com>
 > 
-> Fixes: a7909b396ba7 ("[SCSI] be2iscsi: Fix dynamic CID allocation Mechanism in driver")
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> The NVIDIA's upcoming Grace Hopper Superchip GPU device driver has a
+> requirement of a reserved 1G uncached RAM-like region to support the
+> Multi-Instance GPU (MIG) feature [1]. Carve out the region from the device
+> memory.
+> 
+> Based on [2], the requisite properties (uncached, unaligned access) can be
+> achieved through a VM mapping (S1) of NORMAL_NC and host (S2) mapping
+> with MemAttr[2:0]=0b101. Currently there is no provision in KVM for a S2
+> mapping with MemAttr[2:0]=0b101, but there is an ongoing effort to provide
+> the same [3].
+> 
+> This patch change goes on top of the VFIO PCI variant driver proposed for
+> the Grace Hopper devices in [4], which facilitates the entire device memory
+> to be mapped as NORMAL in S2. To provide a different non-cached property to
+> the reserved 1G region, it needs to be carved out from the device memory and
+> mapped as a separate region in Qemu VMA with pgprot_writecombine().
+> pgprot_writecombine() sets the Qemu VMA page properties (pgprot) as
+> NORMAL_NC. Using the proposed changes in [5] and [3], KVM marks the region
+> with MemAttr[2:0]=0b101 in S2.
+> 
+> The new region (represented as resmem in the patch) is carved out from
+> the tail end of the device memory host physical address range and exposed
+> as a 64b BAR (comprising of region 2 and 3) to the VM.
+> 
+> The remaining device memory (termed as usable memory and represented
+> using usemem) continues to be NORMAL cacheable and is exposed as 64b BAR
+> with region 4 and 5. This memory is added by the VM Nvidia device driver [6]
+> to the VM kernel as memblocks. Hence make the usable memory size memblock
+> aligned.
+
+Couldn't we make use of the sparse memory capability to force userspace
+to create separate mappings? ie. abutting mmap'able ranges within a
+single BAR.
+
+I'd also suggest that this seems like a fundamental feature of the
+nvgrace-gpu variant driver, this should be rolled in or minimally sent
+as a series together.
+
+> 
+> The memory layout on the host looks like the following:
+>                devmem (memlength)
+> |--------------------------------------------------|
+> |-------------cached------------------------|--NC--|
+> |                                           |
+> usemem.phys/memphys                         resmem.phys
+> 
+> [1] https://www.nvidia.com/en-in/technologies/multi-instance-gpu/
+> [2] section D8.5.5 of DDI0487_I_a_a-profile_architecture_reference_manual.pdf
+
+This is not a link (obviously) and I only come up with a
+DDI0487J_a_a-profile_architecture_reference_manual.pdf when searching.
+
+> [3] https://lore.kernel.org/all/20230907181459.18145-3-ankita@nvidia.com/
+> [4] https://lore.kernel.org/all/20231114081611.30550-1-ankita@nvidia.com/
+> [5] https://lore.kernel.org/all/20230907181459.18145-2-ankita@nvidia.com/
+> [6] https://github.com/NVIDIA/open-gpu-kernel-modules
+> 
+> Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
 > ---
->  drivers/scsi/be2iscsi/be_main.c | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/vfio/pci/nvgrace-gpu/main.c | 236 +++++++++++++++++++++-------
+>  1 file changed, 178 insertions(+), 58 deletions(-)
 > 
-> diff --git a/drivers/scsi/be2iscsi/be_main.c b/drivers/scsi/be2iscsi/be_main.c
-> index e48f14ad6dfd..06acb5ff609e 100644
-> --- a/drivers/scsi/be2iscsi/be_main.c
-> +++ b/drivers/scsi/be2iscsi/be_main.c
-> @@ -2710,6 +2710,7 @@ static int beiscsi_init_wrb_handle(struct beiscsi_hba *phba)
->  		kfree(pwrb_context->pwrb_handle_base);
->  		kfree(pwrb_context->pwrb_handle_basestd);
+> diff --git a/drivers/vfio/pci/nvgrace-gpu/main.c b/drivers/vfio/pci/nvgrace-gpu/main.c
+> index a3dbee6b87de..87afbda39939 100644
+> --- a/drivers/vfio/pci/nvgrace-gpu/main.c
+> +++ b/drivers/vfio/pci/nvgrace-gpu/main.c
+> @@ -7,24 +7,62 @@
+>  #include <linux/vfio_pci_core.h>
+>  #include <linux/vfio.h>
+>  
+> +/* Memory size expected as non cached and reserved by the VM driver */
+> +#define RESMEM_SIZE 0x40000000
+> +#define MEMBLK_SIZE 0x20000000
+> +
+> +struct mem_region {
+> +	phys_addr_t memphys; /* Base address of the region */
+> +	size_t memlength;    /* Region size */
+> +	u32 bar_regs[2];     /* Emulated BAR offset registers */
+> +	void *memmap;        /* Memremap pointer to the region */
+
+Don't we need an __iomem pointer to the non-cached region as well as
+calls to ioremap() and iounmap() here somewhere?
+
+> +};
+> +
+>  struct nvgrace_gpu_vfio_pci_core_device {
+>  	struct vfio_pci_core_device core_device;
+> -	phys_addr_t memphys;
+> -	size_t memlength;
+> -	u32 bar_regs[2];
+> -	void *memmap;
+> +	/* Cached and usable memory for the VM. */
+> +	struct mem_region usemem;
+> +	/* Non cached memory carved out from the end of device memory */
+> +	struct mem_region resmem;
+>  	struct mutex memmap_lock;
+>  };
+>  
+> +/* Choose the structure corresponding to the BAR under question. */
+> +static int nvgrace_gpu_vfio_pci_get_mem_region(int index,
+> +		struct nvgrace_gpu_vfio_pci_core_device *nvdev,
+> +		struct mem_region *region)
+> +{
+> +	if (index == VFIO_PCI_BAR4_REGION_INDEX)
+> +		*region = nvdev->usemem;
+> +	else if (index == VFIO_PCI_BAR2_REGION_INDEX)
+> +		*region = nvdev->resmem;
+> +	else
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +
+> +static bool nvgrace_gpu_vfio_pci_is_fake_bar(int index)
+> +{
+> +	if (index == VFIO_PCI_BAR2_REGION_INDEX ||
+> +	    index == VFIO_PCI_BAR4_REGION_INDEX)
+> +		return true;
+> +
+> +	return false;
+> +}
+> +
+>  static void init_fake_bar_emu_regs(struct vfio_device *core_vdev)
+>  {
+>  	struct nvgrace_gpu_vfio_pci_core_device *nvdev = container_of(
+>  		core_vdev, struct nvgrace_gpu_vfio_pci_core_device,
+>  		core_device.vdev);
+>  
+> -	nvdev->bar_regs[0] = PCI_BASE_ADDRESS_MEM_TYPE_64 |
+> -			     PCI_BASE_ADDRESS_MEM_PREFETCH;
+> -	nvdev->bar_regs[1] = 0;
+> +	nvdev->resmem.bar_regs[0] = PCI_BASE_ADDRESS_MEM_TYPE_64 |
+> +				    PCI_BASE_ADDRESS_MEM_PREFETCH;
+> +	nvdev->resmem.bar_regs[1] = 0;
+> +	nvdev->usemem.bar_regs[0] = PCI_BASE_ADDRESS_MEM_TYPE_64 |
+> +				    PCI_BASE_ADDRESS_MEM_PREFETCH;
+> +	nvdev->usemem.bar_regs[1] = 0;
+>  }
+>  
+>  static bool is_fake_bar_pcicfg_emu_reg_access(loff_t pos)
+> @@ -33,7 +71,7 @@ static bool is_fake_bar_pcicfg_emu_reg_access(loff_t pos)
+>  	u64 offset = pos & VFIO_PCI_OFFSET_MASK;
+>  
+>  	if ((index == VFIO_PCI_CONFIG_REGION_INDEX) &&
+> -	    (offset == PCI_BASE_ADDRESS_2 || offset == PCI_BASE_ADDRESS_3))
+> +	    (offset >= PCI_BASE_ADDRESS_2 && offset <= PCI_BASE_ADDRESS_5))
+>  		return true;
+>  
+>  	return false;
+> @@ -67,9 +105,9 @@ static void nvgrace_gpu_vfio_pci_close_device(struct vfio_device *core_vdev)
+>  		core_vdev, struct nvgrace_gpu_vfio_pci_core_device,
+>  		core_device.vdev);
+>  
+> -	if (nvdev->memmap) {
+> -		memunmap(nvdev->memmap);
+> -		nvdev->memmap = NULL;
+> +	if (nvdev->usemem.memmap) {
+> +		memunmap(nvdev->usemem.memmap);
+> +		nvdev->usemem.memmap = NULL;
 >  	}
-> +	kfree(phwi_ctxt->be_wrbq);
->  	return -ENOMEM;
+>  
+>  	mutex_destroy(&nvdev->memmap_lock);
+> @@ -78,7 +116,7 @@ static void nvgrace_gpu_vfio_pci_close_device(struct vfio_device *core_vdev)
+>  }
+>  
+>  static int nvgrace_gpu_vfio_pci_mmap(struct vfio_device *core_vdev,
+> -				      struct vm_area_struct *vma)
+> +				     struct vm_area_struct *vma)
+
+spurious
+
+>  {
+>  	struct nvgrace_gpu_vfio_pci_core_device *nvdev = container_of(
+>  		core_vdev, struct nvgrace_gpu_vfio_pci_core_device, core_device.vdev);
+> @@ -87,11 +125,17 @@ static int nvgrace_gpu_vfio_pci_mmap(struct vfio_device *core_vdev,
+>  	unsigned int index;
+>  	u64 req_len, pgoff, end;
+>  	int ret = 0;
+> +	struct mem_region memregion;
+>  
+>  	index = vma->vm_pgoff >> (VFIO_PCI_OFFSET_SHIFT - PAGE_SHIFT);
+> -	if (index != VFIO_PCI_BAR2_REGION_INDEX)
+> +
+> +	if (!nvgrace_gpu_vfio_pci_is_fake_bar(index))
+>  		return vfio_pci_core_mmap(core_vdev, vma);
+>  
+> +	ret = nvgrace_gpu_vfio_pci_get_mem_region(index, nvdev, &memregion);
+> +	if (ret)
+> +		return ret;
+> +
+>  	/*
+>  	 * Request to mmap the BAR. Map to the CPU accessible memory on the
+>  	 * GPU using the memory information gathered from the system ACPI
+> @@ -101,7 +145,7 @@ static int nvgrace_gpu_vfio_pci_mmap(struct vfio_device *core_vdev,
+>  		((1U << (VFIO_PCI_OFFSET_SHIFT - PAGE_SHIFT)) - 1);
+>  
+>  	if (check_sub_overflow(vma->vm_end, vma->vm_start, &req_len) ||
+> -		check_add_overflow(PHYS_PFN(nvdev->memphys), pgoff, &start_pfn) ||
+> +		check_add_overflow(PHYS_PFN(memregion.memphys), pgoff, &start_pfn) ||
+>  		check_add_overflow(PFN_PHYS(pgoff), req_len, &end))
+>  		return -EOVERFLOW;
+>  
+> @@ -109,9 +153,16 @@ static int nvgrace_gpu_vfio_pci_mmap(struct vfio_device *core_vdev,
+>  	 * Check that the mapping request does not go beyond available device
+>  	 * memory size
+>  	 */
+> -	if (end > nvdev->memlength)
+> +	if (end > memregion.memlength)
+>  		return -EINVAL;
+>  
+> +	/*
+> +	 * The carved out region of the device memory needs the NORMAL_NC
+> +	 * property. Communicate as such to the hypervisor.
+> +	 */
+> +	if (index == VFIO_PCI_BAR2_REGION_INDEX)
+> +		vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
+> +
+>  	/*
+>  	 * Perform a PFN map to the memory and back the device BAR by the
+>  	 * GPU memory.
+> @@ -142,7 +193,12 @@ nvgrace_gpu_vfio_pci_ioctl_get_region_info(struct vfio_device *core_vdev,
+>  	unsigned long minsz = offsetofend(struct vfio_region_info, offset);
+>  	struct nvgrace_gpu_vfio_pci_core_device *nvdev = container_of(
+>  		core_vdev, struct nvgrace_gpu_vfio_pci_core_device, core_device.vdev);
+> +	struct vfio_region_info_cap_sparse_mmap *sparse;
+> +	struct vfio_info_cap caps = { .buf = NULL, .size = 0 };
+>  	struct vfio_region_info info;
+> +	struct mem_region memregion;
+> +	uint32_t size;
+> +	int ret;
+>  
+>  	if (copy_from_user(&info, (void __user *)arg, minsz))
+>  		return -EFAULT;
+> @@ -150,16 +206,14 @@ nvgrace_gpu_vfio_pci_ioctl_get_region_info(struct vfio_device *core_vdev,
+>  	if (info.argsz < minsz)
+>  		return -EINVAL;
+>  
+> -	if (info.index == VFIO_PCI_BAR2_REGION_INDEX) {
+> +	if (nvgrace_gpu_vfio_pci_is_fake_bar(info.index)) {
+> +		ret = nvgrace_gpu_vfio_pci_get_mem_region(info.index, nvdev, &memregion);
+> +		if (ret)
+> +			return ret;
+>  		/*
+>  		 * Request to determine the BAR region information. Send the
+>  		 * GPU memory information.
+>  		 */
+> -		uint32_t size;
+> -		int ret;
+> -		struct vfio_region_info_cap_sparse_mmap *sparse;
+> -		struct vfio_info_cap caps = { .buf = NULL, .size = 0 };
+> -
+>  		size = struct_size(sparse, areas, 1);
+>  
+>  		/*
+> @@ -173,7 +227,7 @@ nvgrace_gpu_vfio_pci_ioctl_get_region_info(struct vfio_device *core_vdev,
+>  
+>  		sparse->nr_areas = 1;
+>  		sparse->areas[0].offset = 0;
+> -		sparse->areas[0].size = nvdev->memlength;
+> +		sparse->areas[0].size = memregion.memlength;
+>  		sparse->header.id = VFIO_REGION_INFO_CAP_SPARSE_MMAP;
+>  		sparse->header.version = 1;
+>  
+> @@ -188,7 +242,7 @@ nvgrace_gpu_vfio_pci_ioctl_get_region_info(struct vfio_device *core_vdev,
+>  		 * Given that the memory is exposed as a BAR and may not be
+>  		 * aligned, roundup to the next power-of-2.
+>  		 */
+> -		info.size = roundup_pow_of_two(nvdev->memlength);
+> +		info.size = roundup_pow_of_two(memregion.memlength);
+>  		info.flags = VFIO_REGION_INFO_FLAG_READ |
+>  			VFIO_REGION_INFO_FLAG_WRITE |
+>  			VFIO_REGION_INFO_FLAG_MMAP;
+> @@ -201,8 +255,8 @@ nvgrace_gpu_vfio_pci_ioctl_get_region_info(struct vfio_device *core_vdev,
+>  			} else {
+>  				vfio_info_cap_shift(&caps, sizeof(info));
+>  				if (copy_to_user((void __user *)arg +
+> -								sizeof(info), caps.buf,
+> -								caps.size)) {
+> +						 sizeof(info), caps.buf,
+> +						 caps.size)) {
+>  					kfree(caps.buf);
+>  					return -EFAULT;
+>  				}
+> @@ -211,7 +265,7 @@ nvgrace_gpu_vfio_pci_ioctl_get_region_info(struct vfio_device *core_vdev,
+>  			kfree(caps.buf);
+>  		}
+>  		return copy_to_user((void __user *)arg, &info, minsz) ?
+> -			       -EFAULT : 0;
+> +				    -EFAULT : 0;
+>  	}
+>  	return vfio_pci_core_ioctl(core_vdev, VFIO_DEVICE_GET_REGION_INFO, arg);
+>  }
+> @@ -228,12 +282,13 @@ static long nvgrace_gpu_vfio_pci_ioctl(struct vfio_device *core_vdev,
+>  	return vfio_pci_core_ioctl(core_vdev, cmd, arg);
+>  }
+>  
+> -static int nvgrace_gpu_memmap(struct nvgrace_gpu_vfio_pci_core_device *nvdev)
+> +static int nvgrace_gpu_memmap(struct nvgrace_gpu_vfio_pci_core_device *nvdev,
+> +			      struct mem_region *memregion)
+>  {
+>  	mutex_lock(&nvdev->memmap_lock);
+> -	if (!nvdev->memmap) {
+> -		nvdev->memmap = memremap(nvdev->memphys, nvdev->memlength, MEMREMAP_WB);
+> -		if (!nvdev->memmap) {
+> +	if (!memregion->memmap) {
+> +		memregion->memmap = memremap(memregion->memphys, memregion->memlength, MEMREMAP_WB);
+> +		if (!memregion->memmap) {
+>  			mutex_unlock(&nvdev->memmap_lock);
+>  			return -ENOMEM;
+>  		}
+> @@ -256,10 +311,10 @@ static int nvgrace_gpu_memmap(struct nvgrace_gpu_vfio_pci_core_device *nvdev)
+>   */
+>  static ssize_t
+>  nvgrace_gpu_read_mem(void __user *buf, size_t count, loff_t *ppos,
+> -		     struct nvgrace_gpu_vfio_pci_core_device *nvdev)
+> +		     struct mem_region memregion)
+>  {
+>  	u64 offset = *ppos & VFIO_PCI_OFFSET_MASK;
+> -	size_t mem_count, i, bar_size = roundup_pow_of_two(nvdev->memlength);
+> +	size_t mem_count, i, bar_size = roundup_pow_of_two(memregion.memlength);
+>  	u8 val = 0xFF;
+>  
+>  	if (offset >= bar_size)
+> @@ -273,16 +328,16 @@ nvgrace_gpu_read_mem(void __user *buf, size_t count, loff_t *ppos,
+>  	 * Read request beyond the actual device memory size is filled with ~0,
+>  	 * while those beyond the actual reported size is skipped.
+>  	 */
+> -	if (offset >= nvdev->memlength)
+> +	if (offset >= memregion.memlength)
+>  		mem_count = 0;
+>  	else
+> -		mem_count = min(count, nvdev->memlength - (size_t)offset);
+> +		mem_count = min(count, memregion.memlength - (size_t)offset);
+>  
+>  	/*
+>  	 * Handle read on the BAR2 region. Map to the target device memory
+>  	 * physical address and copy to the request read buffer.
+>  	 */
+> -	if (copy_to_user(buf, (u8 *)nvdev->memmap + offset, mem_count))
+> +	if (copy_to_user(buf, (u8 *)memregion.memmap + offset, mem_count))
+>  		return -EFAULT;
+>  
+>  	/*
+> @@ -308,10 +363,16 @@ static ssize_t pcibar_read_emu(struct nvgrace_gpu_vfio_pci_core_device *nvdev,
+>  
+>  	switch (pos) {
+>  	case PCI_BASE_ADDRESS_2:
+> -		val = nvdev->bar_regs[0];
+> +		val = nvdev->resmem.bar_regs[0];
+>  		break;
+>  	case PCI_BASE_ADDRESS_3:
+> -		val = nvdev->bar_regs[1];
+> +		val = nvdev->resmem.bar_regs[1];
+> +		break;
+> +	case PCI_BASE_ADDRESS_4:
+> +		val = nvdev->usemem.bar_regs[0];
+> +		break;
+> +	case PCI_BASE_ADDRESS_5:
+> +		val = nvdev->usemem.bar_regs[1];
+>  		break;
+>  	}
+>  
+> @@ -329,14 +390,19 @@ static ssize_t nvgrace_gpu_vfio_pci_read(struct vfio_device *core_vdev,
+>  	struct nvgrace_gpu_vfio_pci_core_device *nvdev = container_of(
+>  		core_vdev, struct nvgrace_gpu_vfio_pci_core_device,
+>  		core_device.vdev);
+> +	struct mem_region memregion;
+>  	int ret;
+>  
+> -	if (index == VFIO_PCI_BAR2_REGION_INDEX) {
+> -		ret = nvgrace_gpu_memmap(nvdev);
+> +	if (nvgrace_gpu_vfio_pci_is_fake_bar(index)) {
+> +		ret = nvgrace_gpu_vfio_pci_get_mem_region(index, nvdev, &memregion);
+> +		if (ret)
+> +			return ret;
+> +
+> +		ret = nvgrace_gpu_memmap(nvdev, &memregion);
+>  		if (ret)
+>  			return ret;
+>  
+> -		return nvgrace_gpu_read_mem(buf, count, ppos, nvdev);
+> +		return nvgrace_gpu_read_mem(buf, count, ppos, memregion);
+>  	}
+>  
+>  	if (is_fake_bar_pcicfg_emu_reg_access(*ppos))
+> @@ -358,10 +424,10 @@ static ssize_t nvgrace_gpu_vfio_pci_read(struct vfio_device *core_vdev,
+>   */
+>  static ssize_t
+>  nvgrace_gpu_write_mem(size_t count, loff_t *ppos, const void __user *buf,
+> -		      struct nvgrace_gpu_vfio_pci_core_device *nvdev)
+> +		      struct mem_region memregion)
+>  {
+>  	u64 offset = *ppos & VFIO_PCI_OFFSET_MASK;
+> -	size_t mem_count, bar_size = roundup_pow_of_two(nvdev->memlength);
+> +	size_t mem_count, bar_size = roundup_pow_of_two(memregion.memlength);
+>  
+>  	if (offset >= bar_size)
+>  		return -EINVAL;
+> @@ -373,10 +439,10 @@ nvgrace_gpu_write_mem(size_t count, loff_t *ppos, const void __user *buf,
+>  	 * Determine how many bytes to be actually written to the device memory.
+>  	 * Do not write to the offset beyond available size.
+>  	 */
+> -	if (offset >= nvdev->memlength)
+> +	if (offset >= memregion.memlength)
+>  		goto exitfn;
+>  
+> -	mem_count = min(count, nvdev->memlength - (size_t)offset);
+> +	mem_count = min(count, memregion.memlength - (size_t)offset);
+>  
+>  	/*
+>  	 * Only the device memory present on the hardware is mapped, which may
+> @@ -384,7 +450,7 @@ nvgrace_gpu_write_mem(size_t count, loff_t *ppos, const void __user *buf,
+>  	 * access outside the available device memory on the hardware. Drop
+>  	 * those write requests.
+>  	 */
+> -	if (copy_from_user((u8 *)nvdev->memmap + offset, buf, mem_count))
+> +	if (copy_from_user((u8 *)memregion.memmap + offset, buf, mem_count))
+>  		return -EFAULT;
+>  
+>  exitfn:
+> @@ -405,25 +471,40 @@ static ssize_t pcibar_write_emu(struct nvgrace_gpu_vfio_pci_core_device *nvdev,
+>  	if (copy_from_user(&val, buf, count))
+>  		return -EFAULT;
+>  
+> -	size = ~(roundup_pow_of_two(nvdev->memlength) - 1);
+> -
+>  	if (val == 0xffffffff) {
+>  		switch (pos) {
+>  		case PCI_BASE_ADDRESS_2:
+> -			nvdev->bar_regs[0] = (size & GENMASK(31, 4)) |
+> -				(nvdev->bar_regs[0] & GENMASK(3, 0));
+> +			size = ~(roundup_pow_of_two(nvdev->resmem.memlength) - 1);
+> +			nvdev->resmem.bar_regs[0] = (size & GENMASK(31, 4)) |
+> +				(nvdev->resmem.bar_regs[0] & GENMASK(3, 0));
+>  			break;
+>  		case PCI_BASE_ADDRESS_3:
+> -			nvdev->bar_regs[1] = size >> 32;
+> +			size = ~(roundup_pow_of_two(nvdev->resmem.memlength) - 1);
+> +			nvdev->resmem.bar_regs[1] = size >> 32;
+> +			break;
+> +		case PCI_BASE_ADDRESS_4:
+> +			size = ~(roundup_pow_of_two(nvdev->usemem.memlength) - 1);
+> +			nvdev->usemem.bar_regs[0] = (size & GENMASK(31, 4)) |
+> +				(nvdev->usemem.bar_regs[0] & GENMASK(3, 0));
+> +			break;
+> +		case PCI_BASE_ADDRESS_5:
+> +			size = ~(roundup_pow_of_two(nvdev->usemem.memlength) - 1);
+> +			nvdev->usemem.bar_regs[1] = size >> 32;
+>  			break;
+>  		}
+>  	} else {
+>  		switch (pos) {
+>  		case PCI_BASE_ADDRESS_2:
+> -			nvdev->bar_regs[0] = val;
+> +			nvdev->resmem.bar_regs[0] = val;
+>  			break;
+>  		case PCI_BASE_ADDRESS_3:
+> -			nvdev->bar_regs[1] = val;
+> +			nvdev->resmem.bar_regs[1] = val;
+> +			break;
+> +		case PCI_BASE_ADDRESS_4:
+> +			nvdev->usemem.bar_regs[0] = val;
+> +			break;
+> +		case PCI_BASE_ADDRESS_5:
+> +			nvdev->usemem.bar_regs[1] = val;
+>  			break;
+>  		}
+>  	}
+> @@ -438,14 +519,19 @@ static ssize_t nvgrace_gpu_vfio_pci_write(struct vfio_device *core_vdev,
+>  	unsigned int index = VFIO_PCI_OFFSET_TO_INDEX(*ppos);
+>  	struct nvgrace_gpu_vfio_pci_core_device *nvdev = container_of(
+>  		core_vdev, struct nvgrace_gpu_vfio_pci_core_device, core_device.vdev);
+> +	struct mem_region memregion;
+>  	int ret;
+>  
+> -	if (index == VFIO_PCI_BAR2_REGION_INDEX) {
+> -		ret = nvgrace_gpu_memmap(nvdev);
+> +	if (nvgrace_gpu_vfio_pci_is_fake_bar(index)) {
+> +		ret = nvgrace_gpu_vfio_pci_get_mem_region(index, nvdev, &memregion);
+>  		if (ret)
+>  			return ret;
+>  
+> -		return nvgrace_gpu_write_mem(count, ppos, buf, nvdev);
+> +		ret = nvgrace_gpu_memmap(nvdev, &memregion);
+> +		if (ret)
+> +			return ret;
+> +
+> +		return nvgrace_gpu_write_mem(count, ppos, buf, memregion);
+>  	}
+>  
+>  	if (is_fake_bar_pcicfg_emu_reg_access(*ppos))
+> @@ -499,8 +585,6 @@ nvgrace_gpu_vfio_pci_fetch_memory_property(struct pci_dev *pdev,
+>  	if (memphys > type_max(phys_addr_t))
+>  		return -EOVERFLOW;
+>  
+> -	nvdev->memphys = memphys;
+> -
+>  	ret = device_property_read_u64(&pdev->dev, "nvidia,gpu-mem-size",
+>  				       &(memlength));
+>  	if (ret)
+> @@ -516,8 +600,44 @@ nvgrace_gpu_vfio_pci_fetch_memory_property(struct pci_dev *pdev,
+>  	if (memlength == 0)
+>  		return -ENOMEM;
+>  
+> -	nvdev->memlength = memlength;
+> +	/*
+> +	 * The VM GPU device driver needs a non-cacheable region to support
+> +	 * the MIG feature. Since the device memory is mapped as NORMAL cached,
+> +	 * carve out a region from the end with a different NORMAL_NC
+> +	 * property (called as reserved memory and represented as resmem). This
+> +	 * region then is exposed as a 64b BAR (region 2 and 3) to the VM, while
+> +	 * exposing the rest (termed as usable memory and represented using usemem)
+> +	 * as cacheable 64b BAR (region 4 and 5).
+> +	 *
+> +	 *               devmem (memlength)
+> +	 * |-------------------------------------------------|
+> +	 * |                                           |
+> +	 * usemem.phys/memphys                         resmem.phys
+> +	 */
+> +	nvdev->usemem.memphys = memphys;
+> +
+> +	/*
+> +	 * The device memory exposed to the VM is added to the kernel by the
+> +	 * VM driver module in chunks of memory block size. Only the usable
+> +	 * memory (usemem) is added to the kernel for usage by the VM
+> +	 * workloads. Make the usable memory size memblock aligned.
+> +	 */
+> +	if (check_sub_overflow(memlength, RESMEM_SIZE,
+> +			       &nvdev->usemem.memlength)) {
+> +		ret = -EOVERFLOW;
+> +		goto done;
+> +	}
+> +	nvdev->usemem.memlength = round_down(nvdev->usemem.memlength,
+> +					     MEMBLK_SIZE);
+> +	if ((check_add_overflow(nvdev->usemem.memphys,
+> +	     nvdev->usemem.memlength, &nvdev->resmem.memphys)) ||
+> +	    (check_sub_overflow(memlength, nvdev->usemem.memlength,
+> +	     &nvdev->resmem.memlength))) {
+> +		ret = -EOVERFLOW;
+> +		goto done;
+> +	}
+>  
+> +done:
+>  	return ret;
 >  }
 >  
 
-Reviewed-by: Mike Christie <michael.christie@oracle.com>
+The second emulated BAR only exemplifies the issues with the BAR
+handling noted in the v13 nvgrace-gpu driver and it doesn't seem like
+the semantics of the non-cached read/write accesses have really been
+considered since we're still creating a write-back memremap() access
+through that path.  Thanks,
+
+Alex
+
