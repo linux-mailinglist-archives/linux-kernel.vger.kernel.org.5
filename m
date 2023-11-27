@@ -2,130 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4BFD7F972E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 02:34:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2585F7F9730
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 02:35:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229514AbjK0BeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 20:34:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54922 "EHLO
+        id S231196AbjK0Bfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 20:35:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjK0BeE (ORCPT
+        with ESMTP id S229480AbjK0Bfa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 20:34:04 -0500
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81ACE10F;
-        Sun, 26 Nov 2023 17:34:10 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0Vx7cD-F_1701048846;
-Received: from 30.240.112.131(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vx7cD-F_1701048846)
-          by smtp.aliyun-inc.com;
-          Mon, 27 Nov 2023 09:34:08 +0800
-Message-ID: <71fa699f-5130-401a-bf4a-3271579a8dda@linux.alibaba.com>
-Date:   Mon, 27 Nov 2023 09:34:05 +0800
+        Sun, 26 Nov 2023 20:35:30 -0500
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 3B783119;
+        Sun, 26 Nov 2023 17:35:36 -0800 (PST)
+Received: from localhost.localdomain (unknown [180.167.10.98])
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPSA id 514B96018CCDB;
+        Mon, 27 Nov 2023 09:35:33 +0800 (CST)
+X-MD-Sfrom: suhui@nfschina.com
+X-MD-SrcIP: 180.167.10.98
+From:   Su Hui <suhui@nfschina.com>
+To:     pkshih@realtek.com, kvalo@kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, trix@redhat.com
+Cc:     Su Hui <suhui@nfschina.com>, lizetao1@huawei.com,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, kernel-janitors@vger.kernel.org
+Subject: [PATCH wireless-next v3 1/2] wifi: rtlwifi: rtl8821ae: phy: remove some useless code
+Date:   Mon, 27 Nov 2023 09:35:11 +0800
+Message-Id: <20231127013511.26694-1-suhui@nfschina.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 3/5] PCI: Move pci_clear_and_set_dword() helper to PCI
- header
-Content-Language: en-US
-To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     ilkka@os.amperecomputing.com, kaishen@linux.alibaba.com,
-        yangyicong@huawei.com, will@kernel.org,
-        Jonathan.Cameron@huawei.com, baolin.wang@linux.alibaba.com,
-        robin.murphy@arm.com, chengyou@linux.alibaba.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        rdunlap@infradead.org, mark.rutland@arm.com,
-        zhuo.song@linux.alibaba.com, renyu.zj@linux.alibaba.com
-References: <20231121013400.18367-1-xueshuai@linux.alibaba.com>
- <20231121013400.18367-4-xueshuai@linux.alibaba.com>
- <f2a31d7f-3acc-fbe8-2684-c61f355f1036@linux.intel.com>
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <f2a31d7f-3acc-fbe8-2684-c61f355f1036@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Bjorn for PCI.
+Clang static checker warning:
+Value stored to 'v1' is never read [deadcode.DeadStores]
+Value stored to 'channel' is never read [deadcode.DeadStores]
 
-On 2023/11/22 21:14, Ilpo Järvinen wrote:
+Remove them to save some place.
 
-Hi, Ilpo,
+Signed-off-by: Su Hui <suhui@nfschina.com>
+Acked-by: Ping-Ke Shih <pkshih@realtek.com>
+---
+v3: 
+ - same as v2.
+v2:
+ - fix the subject prefix problem
 
-Thank you for your reply. Please see my comments inline.
+ drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
 
+diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c b/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c
+index 5323ead30db0..6df270e29e66 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c
++++ b/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c
+@@ -2038,15 +2038,9 @@ static bool _rtl8821ae_phy_config_bb_with_pgheaderfile(struct ieee80211_hw *hw,
+ 			 /*don't need the hw_body*/
+ 			if (!_rtl8821ae_check_condition(hw, v1)) {
+ 				i += 2; /* skip the pair of expression*/
+-				v1 = array[i];
+ 				v2 = array[i+1];
+-				v3 = array[i+2];
+-				while (v2 != 0xDEAD) {
++				while (v2 != 0xDEAD)
+ 					i += 3;
+-					v1 = array[i];
+-					v2 = array[i+1];
+-					v3 = array[i+2];
+-				}
+ 			}
+ 		}
+ 	}
+@@ -3543,7 +3537,6 @@ u8 rtl8821ae_phy_sw_chnl(struct ieee80211_hw *hw)
+ 	struct rtl_phy *rtlphy = &rtlpriv->phy;
+ 	struct rtl_hal *rtlhal = rtl_hal(rtl_priv(hw));
+ 	u32 timeout = 1000, timecount = 0;
+-	u8 channel = rtlphy->current_channel;
+ 
+ 	if (rtlphy->sw_chnl_inprogress)
+ 		return 0;
+@@ -3566,8 +3559,6 @@ u8 rtl8821ae_phy_sw_chnl(struct ieee80211_hw *hw)
+ 		rtl8821ae_phy_switch_wirelessband(hw, BAND_ON_2_4G);
+ 
+ 	rtlphy->sw_chnl_inprogress = true;
+-	if (channel == 0)
+-		channel = 1;
+ 
+ 	rtl_dbg(rtlpriv, COMP_SCAN, DBG_TRACE,
+ 		"switch to channel%d, band type is %d\n",
+-- 
+2.30.2
 
-> On Tue, 21 Nov 2023, Shuai Xue wrote:
-> 
->> The clear and set pattern is commonly used for accessing PCI config,
->> move the helper pci_clear_and_set_dword() from aspm.c into PCI header.
->> In addition, rename to pci_clear_and_set_config_dword() to retain the
->> "config" information and match the other accessors.
->>
->> No functional change intended.
->>
->> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
->> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
->> Tested-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
->> ---
->>  drivers/pci/access.c    | 12 ++++++++
->>  drivers/pci/pcie/aspm.c | 65 +++++++++++++++++++----------------------
->>  include/linux/pci.h     |  2 ++
->>  3 files changed, 44 insertions(+), 35 deletions(-)
->>
->> diff --git a/drivers/pci/access.c b/drivers/pci/access.c
->> index 6554a2e89d36..6449056b57dd 100644
->> --- a/drivers/pci/access.c
->> +++ b/drivers/pci/access.c
->> @@ -598,3 +598,15 @@ int pci_write_config_dword(const struct pci_dev *dev, int where,
->>  	return pci_bus_write_config_dword(dev->bus, dev->devfn, where, val);
->>  }
->>  EXPORT_SYMBOL(pci_write_config_dword);
->> +
->> +void pci_clear_and_set_config_dword(const struct pci_dev *dev, int pos,
->> +				    u32 clear, u32 set)
-> 
-> Just noting that annoyingly the ordering within the name is inconsistent 
-> between:
->   pci_clear_and_set_config_dword()
-> and
->   pcie_capability_clear_and_set_dword()
-> 
-> And if changed, it would be again annoyingly inconsistent with 
-> pci_read/write_config_*(), oh well... And renaming pci_read/write_config_* 
-> into the hierarchical pci_config_read/write_*() form for would touch only 
-> ~6k lines... ;-D
-
-I think it is a good question, but I don't have a clear answer. I don't
-know much about the name history.  As you mentioned, the above two
-accessors are the foundation operation, may it comes to @Bjorn decision.
-
-The pci_clear_and_set_config_dword() is a variant of bellow pci accessors:
-
-    pci_read_config_dword()
-    pci_write_config_dword()
-
-At last, they are consistend :)
-
-> 
->> +		pci_clear_and_set_config_dword(child,
->> +					       child->l1ss + PCI_L1SS_CTL1, 0,
->> +					       cl1_2_enables);
-> 
-> Adding clear and set only variants into the header like there are for 
-> pcie_capability_*() would remove the need to add those 0 parameters.
-> IMO, it improves code readability considerably.
-> 
-
-Agreed.
-
-
-Best Regards,
-Shuai
