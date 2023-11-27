@@ -2,596 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB77C7F982B
+	by mail.lfdr.de (Postfix) with ESMTP id 956187F982A
 	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 05:14:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231978AbjK0EOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 23:14:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53754 "EHLO
+        id S232045AbjK0EOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 23:14:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjK0EOB (ORCPT
+        with ESMTP id S229480AbjK0EOl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 23:14:01 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6E710F
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 20:14:06 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c72e275d96so49763231fa.2
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 20:14:06 -0800 (PST)
+        Sun, 26 Nov 2023 23:14:41 -0500
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8629D12D;
+        Sun, 26 Nov 2023 20:14:48 -0800 (PST)
+Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-67a3fabcee3so5099786d6.0;
+        Sun, 26 Nov 2023 20:14:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1701058444; x=1701663244; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=RzQZ284vAULDdWuNNryNGfeCLiqZkRUQeGO/HDxqGwM=;
-        b=iK4+h/yRreTrZpifC1jVkUlarpzkwFi2AzbVlIQXBAqAC62vlgPcmkCRN2Pspz4hAL
-         DnniezXRc7zj027Idv3DNBBKi9dbgLhzF9/Fty2qyLJi9wbLdRYx818x4WEkQ5klVwMk
-         jjFhs8df66u9cw123ngNTVk9H9u5qDsTl7Aho=
+        d=gmail.com; s=20230601; t=1701058487; x=1701663287; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Pq7exkIWqES+bBcxSTGkyZ/TiECpp1F1V7mXXSZiDkM=;
+        b=hz/A3hQ6KqnwO7DSu5u7AeuZ6yJErOjb5MxTri8esDNEIgpv9QlXwGbq7XQR2afUni
+         wB2+ZX1Th7BUBusehDzTiUrojm5tM1Bh9HjrMNDziyfNxFhiTnVfHE+VXSG0Ev0F4JHI
+         4v2yU/Rqcoy0zEgu401LY/S5+kfLaTzPeaHCRuyv4hVhjDvXDzrGtOXWut0597NaPSbg
+         m7by008+LY2jVOGeglbv7MkCm5/tzQMBBfMD8aVY+ygUGL2gPsjVBMSwufP/VF7IwEte
+         nABjwTxA4hwwTDrqvT+03f0MWNdW1hKCPfsPIHufY5VbeenvS4GlAyDN0lThu7nXJ2fe
+         ORBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701058444; x=1701663244;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RzQZ284vAULDdWuNNryNGfeCLiqZkRUQeGO/HDxqGwM=;
-        b=T5JLiaR3dYbeWZHWFXIUaLN11dOirN585D3XOKUmJpVKN8HYHV11iJekPjE8Lje3Ef
-         Nza6CplZXbXAZ8vrtc2aGor2z8zDHTRVrdfFsNMTY/B8QpwV7GK6CKikwJcdQQOgIIyY
-         AEslWIkwWk5TMqKnZPtJQjpHHKkFe9BG5nTqG+G2auRQQd4sAxXXjtIvjuSaOdqX5IE5
-         lzGjeBrDhtxb55MWE97Zzg1wrrsyV3P5OXkU61QeRcbrgtAanAVLyFdBo30fqdG13NqY
-         3CpMEHBjVO1CeQBFokbiSshHQxjiNC60PmnpPBamIcJy9BgrLg1oOkx67ynvRwHNgZf0
-         h6kQ==
-X-Gm-Message-State: AOJu0Yxx6GjBhoTD5A9VLDy6ReqvHE4LHRcjtB3biyQXJ9AG3SrygsRb
-        KD6wkzhmmiZBvYzbSfUjHtUqL1b8y9vPZ629KhZWYmUG
-X-Google-Smtp-Source: AGHT+IHsSCHSzmwb0507lNGL4kSFnqQuhIUacnn09BDXF0tdPzh93GEqx9WlLHWOQ1ejTgm2RIp9oQ==
-X-Received: by 2002:a2e:8884:0:b0:2c8:8189:911 with SMTP id k4-20020a2e8884000000b002c881890911mr7240485lji.3.1701058444168;
-        Sun, 26 Nov 2023 20:14:04 -0800 (PST)
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
-        by smtp.gmail.com with ESMTPSA id j2-20020a2e3c02000000b002c17fc97071sm1204098lja.87.2023.11.26.20.14.03
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20230601; t=1701058487; x=1701663287;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Pq7exkIWqES+bBcxSTGkyZ/TiECpp1F1V7mXXSZiDkM=;
+        b=eP0h3+GW/e0tCxZrJf/ReK0LIZu7v8LaAwSs7judQmYOEAcKL2C20CHD41aY03iKy/
+         UYDri1on6U4s+pt3OtbvoYIYHuoz7AWSrPvSyCfcCFUrtNUNlBlNWsuoNQmDrakdiDp5
+         zDOTMtUXlYd35bKQiB6nCnsjFo0fWyeuRnzC4qwPlEF5gl+REiQSmrqcXlJHUn2fZBNz
+         MvUJ1LchSGxfm8TBkJbP16S87NdAfmnN9Prh22bmOb1QJM+DiS+Pq1lVpyAkWRDowSmh
+         Hg+0FypcA9L1fmnHHXWRtHS6UwTCdlZh5/TxPESuaQ9ZZg4CStxJstBXz+/HPWeiK5dz
+         ACxw==
+X-Gm-Message-State: AOJu0YyJzHigUkngHsqc4bWjbP5EC4zsgQONh4Ys8VcFhVrD+uGIw1O5
+        NSNnD6CNhKW6XQ2CefUyd30=
+X-Google-Smtp-Source: AGHT+IHW80QhZJSvgowicliA75pYaALTf22wo3tY17LrVzJ8X29FF5u1oecsFtvrd7cc0gWnTtXrSQ==
+X-Received: by 2002:a05:6214:e46:b0:67a:49aa:dc45 with SMTP id o6-20020a0562140e4600b0067a49aadc45mr1724842qvc.1.1701058487581;
+        Sun, 26 Nov 2023 20:14:47 -0800 (PST)
+Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
+        by smtp.gmail.com with ESMTPSA id u21-20020ae9c015000000b0076efaec147csm3377721qkk.45.2023.11.26.20.14.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 26 Nov 2023 20:14:03 -0800 (PST)
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2c997447ff9so17208051fa.0
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 20:14:03 -0800 (PST)
-X-Received: by 2002:a05:651c:98e:b0:2c9:9242:b155 with SMTP id
- b14-20020a05651c098e00b002c99242b155mr4391475ljq.40.1701058443009; Sun, 26
- Nov 2023 20:14:03 -0800 (PST)
+        Sun, 26 Nov 2023 20:14:47 -0800 (PST)
+Message-ID: <b761b049-3832-4fe1-9327-fb35ac51ef7b@gmail.com>
+Date:   Sun, 26 Nov 2023 20:14:44 -0800
 MIME-Version: 1.0
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 26 Nov 2023 20:13:46 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wj1q-Ek=VTzcKT42q8QJqYfmEzDvu-wpCc_oSERq+naWg@mail.gmail.com>
-Message-ID: <CAHk-=wj1q-Ek=VTzcKT42q8QJqYfmEzDvu-wpCc_oSERq+naWg@mail.gmail.com>
-Subject: Linux 6.7-rc3
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.1 000/366] 6.1.64-rc4 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, allen.lkml@gmail.com
+References: <20231126154359.953633996@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; keydata=
+ xsDiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
+ xGlkaOSDuu09rxuW+69Y2f1TzjFuGpBk4ysWOR85O2Nx8AJ6fYGCoeTbovrNlGT1M9obSFGQ
+ X3IzRnWoqlfudjTO5TKoqkbOgpYqIo5n1QbEjCCwCwCg3DOH/4ug2AUUlcIT9/l3pGvoRJ0E
+ AICDzi3l7pmC5IWn2n1mvP5247urtHFs/uusE827DDj3K8Upn2vYiOFMBhGsxAk6YKV6IP0d
+ ZdWX6fqkJJlu9cSDvWtO1hXeHIfQIE/xcqvlRH783KrihLcsmnBqOiS6rJDO2x1eAgC8meAX
+ SAgsrBhcgGl2Rl5gh/jkeA5ykwbxA/9u1eEuL70Qzt5APJmqVXR+kWvrqdBVPoUNy/tQ8mYc
+ nzJJ63ng3tHhnwHXZOu8hL4nqwlYHRa9eeglXYhBqja4ZvIvCEqSmEukfivk+DlIgVoOAJbh
+ qIWgvr3SIEuR6ayY3f5j0f2ejUMYlYYnKdiHXFlF9uXm1ELrb0YX4GMHz80nRmxvcmlhbiBG
+ YWluZWxsaSA8Zi5mYWluZWxsaUBnbWFpbC5jb20+wmYEExECACYCGyMGCwkIBwMCBBUCCAME
+ FgIDAQIeAQIXgAUCVF/S8QUJHlwd3wAKCRBhV5kVtWN2DvCVAJ4u4/bPF4P3jxb4qEY8I2gS
+ 6hG0gACffNWlqJ2T4wSSn+3o7CCZNd7SLSDOw00ESM+4EhAQAL/o09boR9D3Vk1Tt7+gpYr3
+ WQ6hgYVON905q2ndEoA2J0dQxJNRw3snabHDDzQBAcqOvdi7YidfBVdKi0wxHhSuRBfuOppu
+ pdXkb7zxuPQuSveCLqqZWRQ+Cc2QgF7SBqgznbe6Ngout5qXY5Dcagk9LqFNGhJQzUGHAsIs
+ hap1f0B1PoUyUNeEInV98D8Xd/edM3mhO9nRpUXRK9Bvt4iEZUXGuVtZLT52nK6Wv2EZ1TiT
+ OiqZlf1P+vxYLBx9eKmabPdm3yjalhY8yr1S1vL0gSA/C6W1o/TowdieF1rWN/MYHlkpyj9c
+ Rpc281gAO0AP3V1G00YzBEdYyi0gaJbCEQnq8Vz1vDXFxHzyhgGz7umBsVKmYwZgA8DrrB0M
+ oaP35wuGR3RJcaG30AnJpEDkBYHznI2apxdcuTPOHZyEilIRrBGzDwGtAhldzlBoBwE3Z3MY
+ 31TOpACu1ZpNOMysZ6xiE35pWkwc0KYm4hJA5GFfmWSN6DniimW3pmdDIiw4Ifcx8b3mFrRO
+ BbDIW13E51j9RjbO/nAaK9ndZ5LRO1B/8Fwat7bLzmsCiEXOJY7NNpIEpkoNoEUfCcZwmLrU
+ +eOTPzaF6drw6ayewEi5yzPg3TAT6FV3oBsNg3xlwU0gPK3v6gYPX5w9+ovPZ1/qqNfOrbsE
+ FRuiSVsZQ5s3AAMFD/9XjlnnVDh9GX/r/6hjmr4U9tEsM+VQXaVXqZuHKaSmojOLUCP/YVQo
+ 7IiYaNssCS4FCPe4yrL4FJJfJAsbeyDykMN7wAnBcOkbZ9BPJPNCbqU6dowLOiy8AuTYQ48m
+ vIyQ4Ijnb6GTrtxIUDQeOBNuQC/gyyx3nbL/lVlHbxr4tb6YkhkO6shjXhQh7nQb33FjGO4P
+ WU11Nr9i/qoV8QCo12MQEo244RRA6VMud06y/E449rWZFSTwGqb0FS0seTcYNvxt8PB2izX+
+ HZA8SL54j479ubxhfuoTu5nXdtFYFj5Lj5x34LKPx7MpgAmj0H7SDhpFWF2FzcC1bjiW9mjW
+ HaKaX23Awt97AqQZXegbfkJwX2Y53ufq8Np3e1542lh3/mpiGSilCsaTahEGrHK+lIusl6mz
+ Joil+u3k01ofvJMK0ZdzGUZ/aPMZ16LofjFA+MNxWrZFrkYmiGdv+LG45zSlZyIvzSiG2lKy
+ kuVag+IijCIom78P9jRtB1q1Q5lwZp2TLAJlz92DmFwBg1hyFzwDADjZ2nrDxKUiybXIgZp9
+ aU2d++ptEGCVJOfEW4qpWCCLPbOT7XBr+g/4H3qWbs3j/cDDq7LuVYIe+wchy/iXEJaQVeTC
+ y5arMQorqTFWlEOgRA8OP47L9knl9i4xuR0euV6DChDrguup2aJVU8JPBBgRAgAPAhsMBQJU
+ X9LxBQkeXB3fAAoJEGFXmRW1Y3YOj4UAn3nrFLPZekMeqX5aD/aq/dsbXSfyAKC45Go0YyxV
+ HGuUuzv+GKZ6nsysJw==
+In-Reply-To: <20231126154359.953633996@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The diffstat here is dominated by a couple of reverts of some Realtek
-phy code (accounting for almost a third of the diff).
 
-But ignoring that, it's mostly fairly small, and all over the place.
-Ethernet drivers, smb client fixes, bpf selftests stand out as bigger
-areas, but we have random small driver updates (block, gpu, nvme, hid,
-usb) and some arch fixes (x86, parisc, loongarch, arm64) too. Some
-misc filesystem fixes.
 
-Shortlog appended, and gives some flavor of what was going on last week.
-
-               Linus
-
----
-
-Abel Vesa (1):
-      drm/msm/dp: don't touch DP subconnector property in eDP case
-
-Alex Elder (1):
-      net: ipa: fix one GSI register field width
-
-Alexander Stein (1):
-      usb: dwc3: Fix default mode initialization
-
-Andrzej Hajda (1):
-      drm/i915: do not clean GT table on error path
-
-Andy Shevchenko (1):
-      platform/x86: intel_telemetry: Fix kernel doc descriptions
-
-Ani Sinha (1):
-      hv/hv_kvp_daemon: Some small fixes for handling NM keyfiles
-
-Aoba K (1):
-      HID: multitouch: Add quirk for HONOR GLO-GXXX touchpad
-
-Arnd Bergmann (3):
-      nvme: target: fix nvme_keyring_id() references
-      nvme: target: fix Kconfig select statements
-      nvme: tcp: fix compile-time checks for TLS mode
-
-Arseniy Krasnov (1):
-      vsock/test: fix SEQPACKET message bounds test
-
-Asuna Yang (1):
-      USB: serial: option: add Luat Air72*U series products
-
-Badhri Jagan Sridharan (2):
-      usb: typec: tcpm: Skip hard reset when in error recovery
-      usb: typec: tcpm: Fix sink caps op current check
-
-Bibo Mao (1):
-      LoongArch: Implement constant timer shutdown interface
-
-Bjorn Andersson (1):
-      drm/msm/dpu: Add missing safe_lut_tbl in sc8280xp catalog
-
-Borislav Petkov (AMD) (2):
-      x86/microcode: Remove the driver announcement and version
-      x86/microcode: Rework early revisions reporting
-
-Brett Raye (1):
-      HID: glorious: fix Glorious Model I HID report
-
-Charles Mirabile (1):
-      io_uring/fs: consider link->flags when getting path for LINKAT
-
-Charles Yi (1):
-      HID: fix HID device resource race between HID core and debugging supp=
-ort
-
-Chen Ni (1):
-      ata: pata_isapnp: Add missing error check for devm_ioport_map()
-
-Chengming Zhou (1):
-      block/null_blk: Fix double blk_mq_start_request() warning
-
-Christoph Hellwig (5):
-      filemap: add a per-mapping stable writes flag
-      block: update the stable_writes flag in bdev_add
-      xfs: clean up FS_XFLAG_REALTIME handling in xfs_ioctl_setattr_xflags
-      xfs: respect the stable writes flag on the RT device
-      nvmet: nul-terminate the NQNs passed in the connect command
-
-Christophe JAILLET (1):
-      USB: typec: tps6598x: Fix a memory leak in an error handling path
-
-Chuck Lever (1):
-      libfs: getdents() should return 0 after reaching EOD
-
-Chunfeng Yun (1):
-      usb: xhci-mtk: fix in-ep's start-split check failure
-
-Colin Ian King (1):
-      bcache: remove redundant assignment to variable cur_idx
-
-Coly Li (5):
-      bcache: avoid oversize memory allocation by small stripe_size
-      bcache: check return value from btree_node_alloc_replacement()
-      bcache: replace a mistaken IS_ERR() by IS_ERR_OR_NULL() in
-btree_gc_coalesce()
-      bcache: add code comments for bch_btree_node_get() and
-__bch_btree_node_alloc()
-      bcache: avoid NULL checking to c->root in run_cache_set()
-
-Cong Yang (1):
-      drm/panel: boe-tv101wum-nl6: Fine tune Himax83102-j02 panel HFP and H=
-BP
-
-D. Wythe (1):
-      net/smc: avoid data corruption caused by decline
-
-Damien Le Moal (1):
-      block: Remove blk_set_runtime_active()
-
-Dan Carpenter (1):
-      drm/msm: remove unnecessary NULL check
-
-Daniel Borkmann (6):
-      net, vrf: Move dstats structure to core
-      net: Move {l,t,d}stats allocation to core and convert veth & vrf
-      netkit: Add tstats per-CPU traffic counters
-      bpf, netkit: Add indirect call wrapper for fetching peer dev
-      selftests/bpf: De-veth-ize the tc_redirect test case
-      selftests/bpf: Add netkit to tc_redirect selftest
-
-Dapeng Mi (1):
-      perf/x86/intel: Correct incorrect 'or' operation for PMU capabilities
-
-Darrick J. Wong (2):
-      xfs: clean up dqblk extraction
-      xfs: dquot recovery does not validate the recovered dquot
-
-Dave Airlie (1):
-      nouveau/gsp: allocate enough space for all channel ids.
-
-David Howells (8):
-      rxrpc: Fix some minor issues with bundle tracing
-      rxrpc: Fix RTT determination to use any ACK as a source
-      rxrpc: Defer the response to a PING ACK until we've parsed it
-      afs: Fix afs_server_list to be cleaned up with RCU
-      afs: Make error on cell lookup failure consistent with OpenAFS
-      afs: Return ENOENT if no cell DNS record can be found
-      afs: Fix file locking on R/O volumes to operate in local mode
-      afs: Mark a superblock for an R/O or Backup volume as SB_RDONLY
-
-David Woodhouse (2):
-      ACPI: processor_idle: use raw_safe_halt() in acpi_idle_play_dead()
-      PM: tools: Fix sleepgraph syntax error
-
-Denis Benato (2):
-      HID: hid-asus: add const to read-only outgoing usb buffer
-      HID: hid-asus: reset the backlight brightness level on resume
-
-Dmitry Baryshkov (2):
-      drm/msm: remove exra drm_kms_helper_poll_init() call
-      drm/msm/dp: attach the DP subconnector property
-
-Eduard Zingerman (11):
-      selftests/bpf: track tcp payload offset as scalar in xdp_synproxy
-      selftests/bpf: track string payload offset as scalar in strobemeta
-      selftests/bpf: fix bpf_loop_bench for new callback verification schem=
-e
-      bpf: extract __check_reg_arg() utility function
-      bpf: extract setup_func_entry() utility function
-      bpf: verify callbacks as if they are called unknown number of times
-      selftests/bpf: tests for iterating callbacks
-      bpf: widening for callback iterators
-      selftests/bpf: test widening for iterating callbacks
-      bpf: keep track of max number of bpf_loop callback iterations
-      selftests/bpf: check if max number of bpf_loop iterations is tracked
-
-Eric Dumazet (1):
-      wireguard: use DEV_STATS_INC()
-
-Ferry Meng (1):
-      erofs: simplify erofs_read_inode()
-
-Gao Xiang (1):
-      MAINTAINERS: erofs: add EROFS webpage
-
-Gerd Bayer (1):
-      s390/ism: ism driver implies smc protocol
-
-Gil Fine (1):
-      thunderbolt: Set lane bonding bit only for downstream port
-
-Gustavo A. R. Silva (1):
-      xen: privcmd: Replace zero-length array with flex-array member
-and use __counted_by
-
-Haiyang Zhang (2):
-      hv_netvsc: fix race of netvsc and VF register_netdevice
-      hv_netvsc: Fix race of register_netdevice_notifier and VF register
-
-Hamish Martin (2):
-      HID: mcp2221: Set driver data before I2C adapter add
-      HID: mcp2221: Allow IO to start during probe
-
-Hannes Reinecke (5):
-      nvme-tcp: only evaluate 'tls' option if TLS is selected
-      nvme: catch errors from nvme_configure_metadata()
-      nvme: blank out authentication fabrics options if not configured
-      nvmet-tcp: always initialize tls_handshake_tmo_work
-      nvme: move nvme_stop_keep_alive() back to original position
-
-Hans de Goede (5):
-      ACPI: PM: Add acpi_device_fix_up_power_children() function
-      ACPI: video: Use acpi_device_fix_up_power_children()
-      ACPI: resource: Skip IRQ override on ASUS ExpertBook B1402CVA
-      MAINTAINERS: Drop Mark Gross as maintainer for x86 platform drivers
-      usb: misc: ljca: Fix enumeration error on Dell Latitude 9420
-
-Hao Ge (1):
-      dpll: Fix potential msg memleak when genlmsg_put_reply failed
-
-Harshit Mogalapalli (4):
-      platform/x86: hp-bioscfg: Simplify return check in
-hp_add_other_attributes()
-      platform/x86: hp-bioscfg: move mutex_lock() down in
-hp_add_other_attributes()
-      platform/x86: hp-bioscfg: Fix error handling in hp_add_other_attribut=
-es()
-      platform/x86: hp-bioscfg: Remove unused obj in hp_add_other_attribute=
-s()
-
-Heikki Krogerus (1):
-      usb: typec: tipd: Supply also I2C driver data
-
-Heiko Carstens (2):
-      s390: remove odd comment
-      scripts/checkstack.pl: match all stack sizes for s390
-
-Heiner Kallweit (1):
-      Revert "net: r8169: Disable multicast filter for RTL8168H and RTL8107=
-E"
-
-Helge Deller (9):
-      parisc: Mark ex_table entries 32-bit aligned in assembly.h
-      parisc: Mark ex_table entries 32-bit aligned in uaccess.h
-      parisc: Mark altinstructions read-only and 32-bit aligned
-      parisc: Mark jump_table naturally aligned
-      parisc: Mark lock_aligned variables 16-byte aligned on SMP
-      parisc: Ensure 32-bit alignment on parisc unwind section
-      parisc: Use natural CPU alignment for bug_table
-      parisc: Drop the HP-UX ENOSYM and EREMOTERELEASE error codes
-      parisc: Reduce size of the bug_table on 64-bit kernel by half
-
-Huacai Chen (3):
-      LoongArch: Add __percpu annotation for __percpu_read()/__percpu_write=
-()
-      LoongArch: Silence the boot warning about 'nokaslr'
-      LoongArch: Mark {dmw,tlb}_virt_to_page() exports as non-GPL
-
-Ian Kent (1):
-      autofs: add: new_inode check in autofs_fill_super()
-
-Imre Deak (1):
-      drm/i915/dp_mst: Fix race between connector registration and setup
-
-Ivan Vecera (1):
-      i40e: Fix adding unsupported cloud filters
-
-Jacek Lawrynowicz (1):
-      accel/ivpu/37xx: Fix hangs related to MMIO reset
-
-Jacob Keller (3):
-      ice: remove ptp_tx ring parameter flag
-      ice: unify logic for programming PFINT_TSYN_MSK
-      ice: restore timestamp configuration after device reset
-
-Jakub Kicinski (4):
-      net: fill in MODULE_DESCRIPTION()s for SOCK_DIAG modules
-      docs: netdev: try to guide people on dealing with silence
-      tools: ynl: fix header path for nfsd
-      tools: ynl: fix duplicate op name in devlink
-
-Jan H=C3=B6ppner (1):
-      s390/dasd: protect device queue against concurrent access
-
-Jann Horn (1):
-      tls: fix NULL deref on tls_sw_splice_eof() with empty record
-
-Jean Delvare (1):
-      stmmac: dwmac-loongson: Add architecture dependency
-
-Jiawen Wu (1):
-      net: wangxun: fix kernel panic due to null pointer
-
-Jingbo Xu (1):
-      erofs: fix NULL dereference of dif->bdev_handle in fscache mode
-
-Jiri Kosina (1):
-      Revert "HID: logitech-dj: Add support for a new lightspeed
-receiver iteration"
-
-Jithu Joseph (1):
-      MAINTAINERS: Remove stale entry for SBL platform driver
-
-Johan Hovold (11):
-      Revert "phy: realtek: usb: Add driver for the Realtek SoC USB 3.0 PHY=
-"
-      Revert "phy: realtek: usb: Add driver for the Realtek SoC USB 2.0 PHY=
-"
-      Revert "usb: phy: add usb phy notify port status API"
-      dt-bindings: usb: hcd: add missing phy name to example
-      USB: xhci-plat: fix legacy PHY double init
-      dt-bindings: usb: qcom,dwc3: fix example wakeup interrupt types
-      USB: dwc3: qcom: fix wakeup after probe deferral
-      USB: dwc3: qcom: simplify wakeup interrupt setup
-      USB: dwc3: qcom: fix resource leaks on probe deferral
-      USB: dwc3: qcom: fix software node leak on probe errors
-      USB: dwc3: qcom: fix ACPI platform device leak
-
-Jonas Karlman (1):
-      drm/rockchip: vop: Fix color for RGB888/BGR888 format on VOP full
-
-Jonathan Marek (1):
-      drm/msm/dsi: use the correct VREG_CTRL_1 value for 4nm cphy
-
-Jose Ignacio Tornos Martinez (1):
-      net: usb: ax88179_178a: fix failed operations during ax88179_reset
-
-Kees Cook (1):
-      MAINTAINERS: Add netdev subsystem profile link
-
-Keith Busch (2):
-      swiotlb-xen: provide the "max_mapping_size" method
-      io_uring: fix off-by one bvec index
-
-Kunwu Chan (1):
-      ipv4: Correct/silence an endian warning in __ip_do_redirect
-
-Lech Perczak (2):
-      USB: serial: option: don't claim interface 4 for ZTE MF290
-      net: usb: qmi_wwan: claim interface 4 for ZTE MF290
-
-Li Nan (4):
-      nbd: fold nbd config initialization into nbd_alloc_config()
-      nbd: factor out a helper to get nbd_config without holding 'config_lo=
-ck'
-      nbd: fix null-ptr-dereference while accessing 'nbd->config'
-      nbd: pass nbd_sock to nbd_read_reply() instead of index
-
-Linus Torvalds (2):
-      asm-generic: qspinlock: fix queued_spin_value_unlocked() implementati=
-on
-      Linux 6.7-rc3
-
-Long Li (1):
-      hv_netvsc: Mark VF as slave before exposing it to user-mode
-
-Lorenzo Bianconi (1):
-      net: veth: fix ethtool stats reporting
-
-Marek Vasut (2):
-      drm/panel: simple: Fix Innolux G101ICE-L01 bus flags
-      drm/panel: simple: Fix Innolux G101ICE-L01 timings
-
-Mark Brown (1):
-      kselftest/arm64: Fix output formatting for za-fork
-
-Mark O'Donovan (2):
-      nvme-auth: unlock mutex in one place only
-      nvme-auth: set explanation code for failure2 msgs
-
-Masahiro Yamada (2):
-      LoongArch: Add dependency between vmlinuz.efi and vmlinux.efi
-      arm64: add dependency between vmlinuz.efi and Image
-
-Mathieu Desnoyers (1):
-      MAINTAINERS: TRACING: Add Mathieu Desnoyers as Reviewer
-
-Mika Westerberg (2):
-      thunderbolt: Send uevent after asymmetric/symmetric switch
-      thunderbolt: Only add device router DP IN to the head of the DP
-resource list
-
-Mikhail Zaslonko (1):
-      s390/ipl: add missing IPL_TYPE_ECKD_DUMP case to ipl_init()
-
-Ming Lei (3):
-      blk-throttle: fix lockdep warning of "cgroup_mutex or RCU read
-lock required!"
-      blk-cgroup: avoid to warn !rcu_read_lock_held() in blkg_lookup()
-      blk-cgroup: bypass blkcg_deactivate_policy after destroying
-
-Mingzhe Zou (3):
-      bcache: fixup init dirty data errors
-      bcache: fixup lock c->root error
-      bcache: fixup multi-threaded bch_sectors_dirty_init() wake-up race
-
-Muhammad Muzammil (1):
-      s390/dasd: resolve spelling mistake
-
-Nguyen Dinh Phi (1):
-      nfc: virtual_ncidev: Add variable to check if ndev is running
-
-Niklas Neronin (1):
-      usb: config: fix iteration issue in 'usb_get_bos_descriptor()'
-
-Oliver Neukum (3):
-      usb: aqc111: check packet for fixup for true limit
-      HID: add ALWAYS_POLL quirk for Apple kb
-      USB: dwc2: write HCINT with INTMASK applied
-
-Omar Sandoval (1):
-      iov_iter: fix copy_page_to_iter_nofault()
-
-Paolo Abeni (1):
-      kselftest: rtnetlink: fix ip route command typo
-
-Paulo Alcantara (4):
-      smb: client: implement ->query_reparse_point() for SMB1
-      smb: client: introduce ->parse_reparse_point()
-      smb: client: set correct file type from NFS reparse points
-      smb: client: introduce cifs_sfu_make_node()
-
-Pawel Laszczak (1):
-      usb: cdnsp: Fix deadlock issue during using NCM gadget
-
-Peilin Ye (2):
-      veth: Use tstats per-CPU traffic counters
-      bpf: Fix dev's rx stats for bpf_redirect_peer traffic
-
-Peter Zijlstra (1):
-      lockdep: Fix block chain corruption
-
-Puliang Lu (1):
-      USB: serial: option: fix FM101R-GL defines
-
-Raju Rangoju (3):
-      amd-xgbe: handle corner-case during sfp hotplug
-      amd-xgbe: handle the corner-case during tx completion
-      amd-xgbe: propagate the correct speed and duplex status
-
-Rand Deeb (1):
-      bcache: prevent potential division by zero error
-
-Ricardo Ribalda (1):
-      usb: dwc3: set the dma max_seg_size
-
-Ritvik Budhiraja (1):
-      cifs: fix use after free for iface while disabling secondary channels
-
-Samuel Holland (1):
-      net: axienet: Fix check for partial TX checksum
-
-Saurabh Sengar (1):
-      x86/hyperv: Fix the detection of E820_TYPE_PRAM in a Gen2 VM
-
-Shyam Sundar S K (1):
-      platform/x86/amd/pmc: adjust getting DRAM size behavior
-
-Simon Horman (1):
-      MAINTAINERS: Add indirect_call_wrapper.h to NETWORKING [GENERAL]
-
-Song Liu (1):
-      md: fix bi_status reporting in md_end_clone_io
-
-Stanley Chang (1):
-      usb: dwc3: add missing of_node_put and platform_device_put
-
-Stefan Berger (1):
-      fs: Pass AT_GETATTR_NOSEC flag to getattr interface function
-
-Stefan Eichenberger (2):
-      dt-bindings: usb: microchip,usb5744: Add second supply
-      usb: misc: onboard-hub: add support for Microchip USB5744
-
-Stefano Stabellini (1):
-      arm/xen: fix xen_vcpu_info allocation alignment
-
-Steven Rostedt (Google) (6):
-      eventfs: Remove expectation that ei->is_freed means ei->dentry =3D=3D=
- NULL
-      eventfs: Do not invalidate dentry in create_file/dir_dentry()
-      eventfs: Use GFP_NOFS for allocation when eventfs_mutex is held
-      eventfs: Move taking of inode_lock into dcache_dir_open_wrapper()
-      eventfs: Do not allow NULL parent to eventfs_start_creating()
-      eventfs: Make sure that parent->d_inode is locked in creating files/d=
-irs
-
-Stuart Hayhurst (1):
-      platform/x86: ideapad-laptop: Set max_brightness before using it
-
-Suman Ghosh (2):
-      octeontx2-pf: Fix memory leak during interface down
-      octeontx2-pf: Fix ntuple rule creation to direct packet to VF
-with higher Rx queue than its PF
-
-Thomas Richter (1):
-      s390/pai: cleanup event initialization
-
-Thomas Zimmermann (1):
-      drm/ast: Disconnect BMC if physical connector is connected
-
-Uros Bizjak (1):
-      x86/hyperv: Use atomic_try_cmpxchg() to micro-optimize hv_nmi_unknown=
-()
-
-Victor Fragoso (1):
-      USB: serial: option: add Fibocom L7xx modules
-
-WANG Rui (2):
-      LoongArch: Explicitly set -fdirect-access-external-data for vmlinux
-      LoongArch: Record pc instead of offset in la_abs relocation
-
-Wentong Wu (1):
-      usb: misc: ljca: Drop _ADR support to get ljca children devices
-
-Will Deacon (1):
-      arm64: mm: Fix "rodata=3Don" when CONFIG_RODATA_FULL_DEFAULT_ENABLED=
-=3Dy
-
-Xuxin Xiong (1):
-      drm/panel: auo,b101uan08.3: Fine tune the panel power sequence
-
-Yanteng Si (2):
-      Docs/LoongArch: Update links in LoongArch introduction.rst
-      Docs/zh_CN/LoongArch: Update links in LoongArch introduction.rst
-
-Yihong Cao (1):
-      HID: apple: add Jamesdonkey and A3R to non-apple keyboards list
+On 11/26/2023 7:46 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.64 release.
+> There are 366 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Tue, 28 Nov 2023 15:43:06 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.64-rc4.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
+
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
