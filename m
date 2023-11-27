@@ -2,100 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7DA7FA0BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 14:18:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1754B7FA0C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 14:20:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233448AbjK0NSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 08:18:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59284 "EHLO
+        id S233490AbjK0NUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 08:20:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233358AbjK0NR7 (ORCPT
+        with ESMTP id S233358AbjK0NUb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 08:17:59 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4CDC10F
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 05:18:05 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64A01C433C7;
-        Mon, 27 Nov 2023 13:18:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701091085;
-        bh=McrNEpfZZaZARie6QYahkn6MCqkCCeXaKU1VOHtga9E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Pl2TTh2kcriaU1EUjLRa4gu4jUprUbnia5vCe+KAgNDrKYJX8dgFzPsUswbNMNL/I
-         8AzdlrFXpL0pmzcWbUg/qcZ+jxFrX0j2mt/N2pK1sK/H9ai0OwbCMitdmd78IOBau8
-         WEIlCVyKm/SshMKPi1akWI8CKHsAHvGD3s0JhCGOLXcKG3JfuaPwTfPsD7fGPJ+J6L
-         LJNqcBVbuzfjcBWWEnG7HXcSSDr1X7n8P0NJysuBIGkCoppp8OK4G2HgrbVokqEQNT
-         yZMqHSCrSs6eRn0BvSuiGmB8qSnAecgrJdOuZ9/ZbDCR0UlsjY1S4O2yZi2ivp4Wr7
-         d2I18wWFr/h7Q==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1920B40094; Mon, 27 Nov 2023 10:18:03 -0300 (-03)
-Date:   Mon, 27 Nov 2023 10:18:03 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        zhaimingbing <zhaimingbing@cmss.chinamobile.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Li Dong <lidong@vivo.com>, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf lock: Fix a memory leak on an error path
-Message-ID: <ZWSXCwrx5BUpYGi/@kernel.org>
-References: <20231124092657.10392-1-zhaimingbing@cmss.chinamobile.com>
- <20231124095319.GN3818@noisy.programming.kicks-ass.net>
- <ZWCdg5gcizJitxVw@gmail.com>
+        Mon, 27 Nov 2023 08:20:31 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5DD3AA;
+        Mon, 27 Nov 2023 05:20:37 -0800 (PST)
+Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A30DB6605835;
+        Mon, 27 Nov 2023 13:20:35 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701091236;
+        bh=U01xvbnT/mSsl9CGN0alnznWYP0QePGrsCETHRIiTB4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DRB86tVsQiup4pC8UN6u1wD8FXSHJ//4EtVEPAwxTpM22gF7N3A1WCZ+Z57IBi2O0
+         THwGKGvoPlzoQZfkdA/T12FKzYzyt4COlrN1vXp5XysOIcfCZtqQjGJvELWCRo/tzM
+         9b/lLu+jrKDEK3zDIa5ZJmFnoi5B8nSP4XguLRaHB4iaRMAgDjsAkl7HdrSL93vnY/
+         v+aLaFJ3VVeIYCIGduNIGaLp3B5RrBHkzFtJluoB5yLgwZwESxGIvP2yfTzit2sTNc
+         Ym0hgd7va6OZhKdtHD19UcPfTssfc6GZ5+bpUoOKgUokORYvNA8MC8A/wNMWIgRar5
+         glZwXeWUSjluQ==
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+To:     matthias.bgg@gmail.com
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, wenst@chromium.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, kernel@collabora.com
+Subject: [PATCH] arm64: dts: mediatek: cherry: Fix interrupt cells for MT6360 on I2C7
+Date:   Mon, 27 Nov 2023 14:20:26 +0100
+Message-ID: <20231127132026.165027-1-angelogioacchino.delregno@collabora.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWCdg5gcizJitxVw@gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Nov 24, 2023 at 01:56:35PM +0100, Ingo Molnar escreveu:
-> 
-> * Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> > On Fri, Nov 24, 2023 at 05:26:57PM +0800, zhaimingbing wrote:
-> > > if a strdup-ed string is NULL,the allocated memory needs freeing.
-> > > 
-> > > Signed-off-by: zhaimingbing <zhaimingbing@cmss.chinamobile.com>
-> > > ---
-> > >  tools/perf/builtin-lock.c | 4 +++-
-> > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/tools/perf/builtin-lock.c b/tools/perf/builtin-lock.c
-> > > index b141f2134..086041bcb 100644
-> > > --- a/tools/perf/builtin-lock.c
-> > > +++ b/tools/perf/builtin-lock.c
-> > > @@ -2228,8 +2228,10 @@ static int __cmd_record(int argc, const char **argv)
-> > >  		else
-> > >  			ev_name = strdup(contention_tracepoints[j].name);
-> > >  
-> > > -		if (!ev_name)
-> > > +		if (!ev_name) {
-> > > +			free(rec_argv);
-> > >  			return -ENOMEM;
-> > > +		}
-> > 
-> > Isn't this an error path straight into exit?
-> 
-> It increases the quality of implementation if resources are free()d 
-> consistently regardless of whether the task is going to exit() immediately, 
-> for example it makes it easier to validate perf for the lack of memory 
-> leaks with Valgrind.
+Change interrupt cells to 2 to suppress interrupts_property warning.
 
-I'm taking this positive comment about the patch as an Acked-by, ok?
+Fixes: 0de0fe950f1b ("arm64: dts: mediatek: cherry: Enable MT6360 sub-pmic on I2C7")
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+---
+ arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-- Arnaldo
+diff --git a/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi b/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
+index 9d0f3d25cb07..ecc7a96ae358 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8195-cherry.dtsi
+@@ -466,7 +466,7 @@ &i2c7 {
+ 	pinctrl-0 = <&i2c7_pins>;
+ 
+ 	pmic@34 {
+-		#interrupt-cells = <1>;
++		#interrupt-cells = <2>;
+ 		compatible = "mediatek,mt6360";
+ 		reg = <0x34>;
+ 		interrupt-controller;
+-- 
+2.42.0
+
