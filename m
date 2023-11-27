@@ -2,92 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B6F77FAC06
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 21:51:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B797FAC08
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 21:52:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233426AbjK0UvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 15:51:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59162 "EHLO
+        id S233433AbjK0Uvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 15:51:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231757AbjK0UvH (ORCPT
+        with ESMTP id S231757AbjK0Uvv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 15:51:07 -0500
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a02:c205:3004:2154::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA23F187;
-        Mon, 27 Nov 2023 12:51:13 -0800 (PST)
-Received: from p200301077700a9001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:107:7700:a900:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <andreas@kemnade.info>)
-        id 1r7iZR-006mqW-Ju; Mon, 27 Nov 2023 21:51:09 +0100
-Date:   Mon, 27 Nov 2023 21:51:08 +0100
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        johan@kernel.org, arnd@arndb.de, gregkh@linuxfoundation.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tomi.valkeinen@ideasonboard.com,
-        =?UTF-8?B?UMOpdGVy?= Ujfalusi <peter.ujfalusi@gmail.com>,
-        robh@kernel.org
-Subject: Re: [RFC PATCH 0/3] bluetooth/gnss: GNSS support for TiWi chips
-Message-ID: <20231127215108.6e985819@aktux>
-In-Reply-To: <20231127135424.GO5169@atomide.com>
-References: <20231126191840.110564-1-andreas@kemnade.info>
-        <20231127135424.GO5169@atomide.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Mon, 27 Nov 2023 15:51:51 -0500
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A719E187;
+        Mon, 27 Nov 2023 12:51:56 -0800 (PST)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id F2F241C006B; Mon, 27 Nov 2023 21:51:53 +0100 (CET)
+Date:   Mon, 27 Nov 2023 21:51:53 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, allen.lkml@gmail.com, alexander.deucher@amd.com,
+        mario.limonciello@amd.com, zhujun2@cmss.chinamobile.com,
+        sashal@kernel.org, ilpo.jarvinen@linux.intel.com,
+        skhan@linuxfoundation.org, bhelgaas@google.com
+Subject: Re: [PATCH 4.14 00/53] 4.14.331-rc2 review
+Message-ID: <ZWUBaYipygLMkfjz@duo.ucw.cz>
+References: <20231125163059.878143365@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="aS+HeFcddLzqPNO3"
+Content-Disposition: inline
+In-Reply-To: <20231125163059.878143365@linuxfoundation.org>
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NEUTRAL,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Mon, 27 Nov 2023 15:54:24 +0200
-Tony Lindgren <tony@atomide.com> wrote:
+--aS+HeFcddLzqPNO3
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[...]
-> > - Output at /dev/gnssX:
-> >   AI2 vs. NMEA
-> >   The chip can be configured into sending AI2-encapsulated NMEA,
-> >   or proving data in a binary format.
-> >   Some research has to be done yet for the details.
-> >   A pile of logs is waiting for further analysis...
-> > 
-> >   Arguments for/against NMEA:
-> >   + Userspace is prepared to handle it
-> >   + Power management can be easily done by the kernel
-> >   - Less functionality can be used.  
-> 
-> I'd go with NMEA format as the default setting :)
-> 
-yes, that would also be my preference.
+Hi!
 
-> >   Arguments for/against AI2:
-> >   + Full functionality can be accessed from userspace (incl. A-GPS,
-> >     maybe raw satellite data)
-> >   - Userspace has to behave to have proper power management
-> >   - No freely (not even as in beer) tool available to fully use AI2,
-> >     so there will be only a real advantage after long "French Cafe"
-> >     sessions.  
-> 
-> Seems AI2 could be optionally enabled as needed with some writes
-> to /dev/gnss0 to change the mode?
+> This is the start of the stable review cycle for the 4.14.331 release.
+> There are 53 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-Hmm, we have
-/sys/class/gnss/gnss0/type to get the mode, maybe we add some file
-to change the mode? Or having it hidden behing a module parameter
-and implement something better accessible if any need arrives?
+> Mario Limonciello <mario.limonciello@amd.com>
+>     drm/amd: Fix UBSAN array-index-out-of-bounds for Polaris and Tonga
+> Mario Limonciello <mario.limonciello@amd.com>
+>     drm/amd: Fix UBSAN array-index-out-of-bounds for SMU7
 
-If we want NMEA output, probably some init commands will be sent at
-open(), but userspace doing something with AI2 probably does not want
-the device touched, so it should probably be already be set before open().
+I believed that the agreement with maintarner was that these are not
+suitable for stable? There's no actual bug, but UBSAN warns anyway...
 
-Regards,
-Andreas
+> zhujun2 <zhujun2@cmss.chinamobile.com>
+>     selftests/efivarfs: create-read: fix a resource leak
+
+This is wrong. It is patching userland code, there's no memory leak,
+kernel closes file descriptors upon task exit.
+
+> Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
+>     RDMA/hfi1: Use FIELD_GET() to extract Link Width
+
+This is a good cleanup, but not a bugfix.
+
+> Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
+>     atm: iphase: Do PCI error checks on own line
+
+Just a cleanup, not sure why it was picked for stable.
+
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--aS+HeFcddLzqPNO3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZWUBaQAKCRAw5/Bqldv6
+8vVIAJoC6MEZhGVojWBDPnGrhj3/RVltlACglWuJJascQwpTP3+74/MnPTWwmGw=
+=LkKs
+-----END PGP SIGNATURE-----
+
+--aS+HeFcddLzqPNO3--
