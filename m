@@ -2,76 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C8F7F9DE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 11:44:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1CB7F9DE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 11:44:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233084AbjK0KoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 05:44:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55506 "EHLO
+        id S233072AbjK0KoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 05:44:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233059AbjK0KoJ (ORCPT
+        with ESMTP id S233018AbjK0KoI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 05:44:09 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83A4110F
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 02:44:15 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9fa2714e828so550085566b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 02:44:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701081854; x=1701686654; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=maLf/n0rO7h34/VWW+Uh1BDkewzdC3UBO2BBtmtClZI=;
-        b=AElOBEjNOs7XSaGPbGm7Y0upuOKv4fxmHsVQ1Dn6cypa7CmCZY1ob3UpB84sPGQRBu
-         RGqfYlFRADPwP3LxUafS/WisHm5FSZzFIXqtUKUrHKRbptnbo0q+CL+KQC+TU2YO/TPa
-         ebwI/b4wI2g+1FM4VabdrmZIXUwkug9g+UpUSw3TATUs42U2RQBPL7randU9zpVYQQgI
-         SL0apQyNiDv6sARpJixoAZmHJAWSXq1w2RB+dQFMtzgaAkLBUCN+jfcLm13A4zofFvzs
-         C9EHKOreNOmmAi3fr9XYVd1BX332OZGh7BcbkX8W7LZ9lI32sYIoTSa5Ab4PxXZ3pPsL
-         L+Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701081854; x=1701686654;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=maLf/n0rO7h34/VWW+Uh1BDkewzdC3UBO2BBtmtClZI=;
-        b=obeflA7a0BTT5M+xsNHxKAxrF+YdYCNyaczfjwj31MdnKL6pqVcVwJqKH33p4LIzZO
-         ixaTthdMEbb0qBN1gaTVCSoKi3xmCLNk8g9kgdia9FULPIe7vO6pPv34ROizEbvpAcMt
-         rjmSgHnB2uZtL5cJfByhM55YPtIvgFzaJylGQ0EI/pH5DcQ3FauxQS2lEn8um1/MAof8
-         2iHS45Ba12Z9l3igXi9R/sOW+G94+LRN9A0nFcwwyd/iYpHIdjRpwkZH7e8llBg3kYGf
-         7kSYldoMnWuIxlPKTRij+Jaz1a8XP1uze4Yw2t4cF+31WuIaXkX/vss3tzxyXtTE3GSM
-         dF5g==
-X-Gm-Message-State: AOJu0YzlV9VpRuCkUuRwUrheBy+W5OHbJgaxDAUYWCc356OgJvZdPAq2
-        4mEEQdT2yJsbdmtskDci/5E=
-X-Google-Smtp-Source: AGHT+IEdM+j0ztp6LCnNavmN9Ryh5bNIc0a0EN/Uu7itFKT3TCiooW66kHo1LBhqCdiFDC+eG4WAGA==
-X-Received: by 2002:a17:906:74cd:b0:a10:dc00:c6d7 with SMTP id z13-20020a17090674cd00b00a10dc00c6d7mr924975ejl.0.1701081853656;
-        Mon, 27 Nov 2023 02:44:13 -0800 (PST)
-Received: from andrea ([31.189.63.178])
-        by smtp.gmail.com with ESMTPSA id n20-20020a170906119400b009fbdacf9363sm5509749eja.21.2023.11.27.02.44.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 02:44:13 -0800 (PST)
-Date:   Mon, 27 Nov 2023 11:44:07 +0100
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Charlie Jenkins <charlie@rivosinc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>, rehn@rivosinc.com,
-        paulmck@kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, mmaas@google.com, hboehm@google.com,
-        striker@us.ibm.com
-Subject: Re: [RFC PATCH] membarrier: riscv: Provide core serializing command
-Message-ID: <ZWRy9/MD4nTAqEW5@andrea>
-References: <mhng-b720eb90-633f-498b-a487-0cfdc9f00ddd@palmer-ri-x1c9>
- <65e98129-0617-49ca-9802-8e3a46d58d29@efficios.com>
- <ZU0sliwUQJyNAH1y@andrea>
- <ZV6lxsRmuN7bYFnD@ghost>
- <790b8b57-43ac-447a-96b9-150e5b3a4237@efficios.com>
+        Mon, 27 Nov 2023 05:44:08 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11CD2135
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 02:44:14 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47DACC433C9;
+        Mon, 27 Nov 2023 10:44:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701081853;
+        bh=BM0cucoJgxfeP1gzwakogjRSOFzNW7OJuGhJzO+AwkU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NI16mUAXXRUJtUvwYyXOroh0N2ft1jiQaRcczcB6RhO4ZvmnLcGGw5xn9e9s8qZ/E
+         4UtGTLQbcZU6MQEelp/SzIZQbKaZN81mvujDqRsT8+/E/mb8xqHfdLorKxLnPpY/83
+         QJnjhmu4Ctj50+2mguMeihYYlaoqSTccpPZwk56KRIZqq0iThWX/jAte8nS3z68HHn
+         W0piVO6Df6MYWYq8GeYO5moxBV2ritL3K3AcXx0mpYlL8/jDGShBmq7Srz+NU7vaJJ
+         6Vkhd2HT2KsUzaJrrhdfvoHlMgwVHVUH/c3aSxXyu5I6FVoOkZ4I62SQap+sVsUz4I
+         nAdevmLpocSCA==
+Date:   Mon, 27 Nov 2023 03:44:11 -0700
+From:   Keith Busch <kbusch@kernel.org>
+To:     Daniel Wagner <dwagner@suse.de>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Hannes Reinecke <hare@suse.de>
+Subject: Re: [RFC v1] nvme: add cse, ds, ms, nsze and nuse to sysfs
+Message-ID: <ZWRy-4Bhqw0Gxo4c@kbusch-mbp.dhcp.thefacebook.com>
+References: <20231127103208.25748-1-dwagner@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <790b8b57-43ac-447a-96b9-150e5b3a4237@efficios.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <20231127103208.25748-1-dwagner@suse.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,22 +51,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > This looks good to me, can you send out a non-RFC? I just sent out
-> > patches to support userspace fence.i:
-> > https://lore.kernel.org/linux-riscv/20231122-fencei-v1-0-bec0811cb212@rivosinc.com/T/#t.
-> >
-> > - Charlie
-> >
+On Mon, Nov 27, 2023 at 11:32:08AM +0100, Daniel Wagner wrote:
+> libnvme is using the sysfs for enumarating the nvme resources. Though
+> there are few missing attritbutes in the sysfs. For these libnvme issues
+> commands during discovering.
 > 
-> Hi Andrea,
-> 
-> Yes, please send those as non-RFC patches. They align well with my
-> intentions.
-> 
-> Thanks!
+> As the kernel already knows all these attributes and we would like to
+> avoid libnvme to issue commands all the time, expose these missing
+> attributes.
 
-I've just sent them (after some editing to address the 0day report):
-
-  https://lore.kernel.org/lkml/20231127103235.28442-1-parri.andrea@gmail.com/
-
-  Andrea
+The id namespace 'nuse' field can be quite volatile: it can change on
+any write or discard command, so caching it may quickly get out of sync
+with the actual value.
