@@ -2,213 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9839D7FA642
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:22:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2577FA643
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:22:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234141AbjK0QWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 11:22:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39658 "EHLO
+        id S234201AbjK0QWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 11:22:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234028AbjK0QWI (ORCPT
+        with ESMTP id S234155AbjK0QWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 11:22:08 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F475CE;
-        Mon, 27 Nov 2023 08:22:14 -0800 (PST)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AR9KK9Q019284;
-        Mon, 27 Nov 2023 08:22:07 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=pfpt0220;
- bh=JAUDcv4VDo0xvJS6AezwUUOpI6SIUT4nFGCzu3rflmA=;
- b=SZE0xwCrV2SPruFvXl5ID4WnE83XBhXoxyaRZpBtJOKZE2OLB0qdyYv0Go6T3MN3t4TO
- aq3APWBY/L05BRf/BGEYMCSBt/H4tt0cTj+mZXa+GBkMDSILd/A2T08NVv+gCJzKMao0
- +bBOVhUXd/+gDGm2lvN4koE3S93vdWIXaSOlXG9ilH0TbjhwAOcumFSWZeqMGGnTPNAb
- MUtHV0fOOR+IFx28696h/PFpK1+SJk4LeoXXt+QrBmXvY3vlAZPzpACBp91PG2Ie38qr
- cDUll7KpcLLe8VmIK+c8b4Wbskk2SFE7A1iBQCZsTs8LatZr/TeSG0/juGxeplUyvzRs eQ== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3umrcu99s3-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 08:21:51 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 27 Nov
- 2023 08:21:44 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Mon, 27 Nov 2023 08:21:44 -0800
-Received: from ubuntu-PowerEdge-T110-II.sclab.marvell.com (unknown [10.106.27.86])
-        by maili.marvell.com (Postfix) with ESMTP id AD6D73F7057;
-        Mon, 27 Nov 2023 08:21:44 -0800 (PST)
-From:   Shinas Rasheed <srasheed@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <hgani@marvell.com>, <vimleshk@marvell.com>, <egallen@redhat.com>,
-        <mschmidt@redhat.com>, <pabeni@redhat.com>, <horms@kernel.org>,
-        <kuba@kernel.org>, <davem@davemloft.net>, <wizhao@redhat.com>,
-        <konguyen@redhat.com>, Shinas Rasheed <srasheed@marvell.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Veerasenareddy Burru <vburru@marvell.com>,
-        Sathesh Edara <sedara@marvell.com>
-Subject: [PATCH net-next v1 2/2] octeon_ep: support OCTEON CN98 devices
-Date:   Mon, 27 Nov 2023 08:21:35 -0800
-Message-ID: <20231127162135.2529363-3-srasheed@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231127162135.2529363-1-srasheed@marvell.com>
-References: <20231127162135.2529363-1-srasheed@marvell.com>
+        Mon, 27 Nov 2023 11:22:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D91021BC
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:22:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701102139;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=9x4yEF+SMk5bxbv+mMp97aSs0GOdQASEORhGUUMfvqQ=;
+        b=gpc7cja8/L/EAz/iBlUV0+g/lqOxC+VI2pBI612IpRNNxlAT+6MwV4zXzMncianWu+6obg
+        Z/flZAyN310S82gzDy9iaDZ3XyF5H5G0Z7shrJ9FihbI9CVIpCzTOuKkpo9bJZRSbtSt2H
+        ZJs0ndknqHYdBIjnDNaZHUCjjNjT8ts=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-316-_Ik2EdpsMg6rWW1IKtG4mw-1; Mon, 27 Nov 2023 11:22:18 -0500
+X-MC-Unique: _Ik2EdpsMg6rWW1IKtG4mw-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2c53ea92642so40162411fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:22:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701102136; x=1701706936;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9x4yEF+SMk5bxbv+mMp97aSs0GOdQASEORhGUUMfvqQ=;
+        b=v1tUkLecK96a9UJePi3xe3rbAjsK9+5t3OaFCIJ/rummsre/VjuSsJdKqARXlE6YiK
+         cHWM1xDQFIbGhQLCWIiYuV+9Smbtq4BrE4UkcXFfqk47IuunskaPaF3priRZvKdjWEpA
+         LsfAjL8FQYMYKA9J/NEh34DgSIP9CGIn7d+joOxHEUfS3TFfKVCRabJFmDgepMkUpb17
+         nKTjIc2OXgjYvWIG8KpOsQnxCUTzjNLzE0sBnFAa7lAV2YXBVegcAuGFIJadEkiJm2kn
+         7Uz9/I0PKrasXlhCbhPEN6N/vXZys992auB5RMUKGonE+5S0B9LWGxZqoSX8rk6HEIx5
+         3MiQ==
+X-Gm-Message-State: AOJu0YytWr2HHCC98X28iEumga+jJ2lcfeVw+E9iDViBGe8H2VGwDLTz
+        69vat9QI4l0aPaS2KAajID8TS0DtsA/Ioi3U+YKx8xaik86YzR309dHWTgLoQc/995VZWQNb88C
+        2zIATIzU5tU12bZc/O07V9iip
+X-Received: by 2002:a2e:3c1a:0:b0:2c0:2ab7:9ab1 with SMTP id j26-20020a2e3c1a000000b002c02ab79ab1mr7775540lja.35.1701102136580;
+        Mon, 27 Nov 2023 08:22:16 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGbho917u+8ouFnHlkw/5IcyJ0OX8vzWDII0l8SWP9GShaFaH60YLu96uIxzj5vMniW6Hk/Ug==
+X-Received: by 2002:a2e:3c1a:0:b0:2c0:2ab7:9ab1 with SMTP id j26-20020a2e3c1a000000b002c02ab79ab1mr7775519lja.35.1701102136180;
+        Mon, 27 Nov 2023 08:22:16 -0800 (PST)
+Received: from ?IPV6:2003:cb:c745:2a00:d74a:a8c5:20b6:3ec3? (p200300cbc7452a00d74aa8c520b63ec3.dip0.t-ipconnect.de. [2003:cb:c745:2a00:d74a:a8c5:20b6:3ec3])
+        by smtp.gmail.com with ESMTPSA id j25-20020a05600c1c1900b004076f522058sm15112542wms.0.2023.11.27.08.22.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Nov 2023 08:22:15 -0800 (PST)
+Message-ID: <90c1b3c7-cdf7-40fa-ae06-5565c1d760ee@redhat.com>
+Date:   Mon, 27 Nov 2023 17:22:14 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 3RmG_6v_C-bj018YO_8XiWH3winv3Ovu
-X-Proofpoint-ORIG-GUID: 3RmG_6v_C-bj018YO_8XiWH3winv3Ovu
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-27_14,2023-11-27_01,2023-05-22_02
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm/gup: Fix follow_devmap_p[mu]d() on page==NULL handling
+Content-Language: en-US
+To:     Peter Xu <peterx@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Christoph Hellwig <hch@lst.de>
+References: <20231123180222.1048297-1-peterx@redhat.com>
+ <20231124112059.3519d6fdfe71f846f8bf726f@linux-foundation.org>
+ <ZWO-x_ElKe6qtsIq@x1n>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <ZWO-x_ElKe6qtsIq@x1n>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add PCI Endpoint NIC support for Octeon CN98 devices.
-CN98 devices are part of Octeon 9 family products with
-similar PCI NIC characteristics to CN93, already supported
-driver.
+On 26.11.23 22:55, Peter Xu wrote:
+> On Fri, Nov 24, 2023 at 11:20:59AM -0800, Andrew Morton wrote:
+>> On Thu, 23 Nov 2023 13:02:22 -0500 Peter Xu <peterx@redhat.com> wrote:
+>>
+>>> This is a bug found not by any report but only by code observations.
+>>>
+>>> When GUP sees a devpmd/devpud and if page==NULL is returned, it means a
+>>> fault is probably required.  Here falling through when page==NULL can cause
+>>> unexpected behavior.
+>>>
+>>
+>> Well this is worrisome.  We aren't able to construct a test case to
+>> demonstrate this bug?  Why is that?  Is it perhaps just dead code?
+> 
+> IIUC it's not dead code. Take the example of follow_devmap_pmd(), it can
+> return page==NULL at least when seeing write bit missing:
+> 
+> 	if (flags & FOLL_WRITE && !pmd_write(*pmd))
+> 		return NULL;
+> 
+> AFAICT it can happen if someone does "echo 4 > /proc/$PID/clear_refs" when
+> the mm contains the devmap pmd.  Same to pud.
+> 
+> It'll be nice if someone that works with dax would like to verify it.  In
+> my series (refactor hugetlb gup, part 2) IIUC some hugetlb selftest can
+> start to trigger this path, but I'll need to check.  So far it's dax-only.
 
-Add CN98 card to the device id table, as well
-as support differences in the register fields and
-certain usage scenarios such as unload.
+It certainly looks weird to continue there. Triggering it by mmaping 
+some devdax device might be possible (e.g., using devdax emulation).
 
-Signed-off-by: Shinas Rasheed <srasheed@marvell.com>
----
- .../ethernet/marvell/octeon_ep.rst            |  1 +
- .../marvell/octeon_ep/octep_cn9k_pf.c         | 24 +++++++++++++++----
- .../ethernet/marvell/octeon_ep/octep_main.c   |  4 ++++
- .../ethernet/marvell/octeon_ep/octep_main.h   |  1 +
- .../marvell/octeon_ep/octep_regs_cn9k_pf.h    |  4 ++++
- 5 files changed, 30 insertions(+), 4 deletions(-)
+We know the PMD is present and the PMD is devmap. We take the pmd lock, 
+and in follow_devmap_pmd() we recheck both.
 
-diff --git a/Documentation/networking/device_drivers/ethernet/marvell/octeon_ep.rst b/Documentation/networking/device_drivers/ethernet/marvell/octeon_ep.rst
-index 613a818d5db6..c96d262b30be 100644
---- a/Documentation/networking/device_drivers/ethernet/marvell/octeon_ep.rst
-+++ b/Documentation/networking/device_drivers/ethernet/marvell/octeon_ep.rst
-@@ -22,6 +22,7 @@ EndPoint NIC.
- Supported Devices
- =================
- Currently, this driver support following devices:
-+ * Network controller: Cavium, Inc. Device b100
-  * Network controller: Cavium, Inc. Device b200
-  * Network controller: Cavium, Inc. Device b400
-  * Network controller: Cavium, Inc. Device b900
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_cn9k_pf.c b/drivers/net/ethernet/marvell/octeon_ep/octep_cn9k_pf.c
-index d4ee2454675b..8baabd07e91f 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_cn9k_pf.c
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_cn9k_pf.c
-@@ -216,9 +216,15 @@ static void octep_init_config_cn93_pf(struct octep_device *oct)
- 	conf->sriov_cfg.vf_srn = CN93_SDP_EPF_RINFO_SRN(val);
- 
- 	val = octep_read_csr64(oct, CN93_SDP_MAC_PF_RING_CTL(oct->pcie_port));
--	conf->pf_ring_cfg.srn =  CN93_SDP_MAC_PF_RING_CTL_SRN(val);
--	conf->pf_ring_cfg.max_io_rings = CN93_SDP_MAC_PF_RING_CTL_RPPF(val);
--	conf->pf_ring_cfg.active_io_rings = conf->pf_ring_cfg.max_io_rings;
-+	if (oct->chip_id == OCTEP_PCI_DEVICE_ID_CN98_PF) {
-+		conf->pf_ring_cfg.srn =  CN98_SDP_MAC_PF_RING_CTL_SRN(val);
-+		conf->pf_ring_cfg.max_io_rings = CN98_SDP_MAC_PF_RING_CTL_RPPF(val);
-+		conf->pf_ring_cfg.active_io_rings = conf->pf_ring_cfg.max_io_rings;
-+	} else {
-+		conf->pf_ring_cfg.srn =  CN93_SDP_MAC_PF_RING_CTL_SRN(val);
-+		conf->pf_ring_cfg.max_io_rings = CN93_SDP_MAC_PF_RING_CTL_RPPF(val);
-+		conf->pf_ring_cfg.active_io_rings = conf->pf_ring_cfg.max_io_rings;
-+	}
- 	dev_info(&pdev->dev, "pf_srn=%u rpvf=%u nvfs=%u rppf=%u\n",
- 		 conf->pf_ring_cfg.srn, conf->sriov_cfg.active_rings_per_vf,
- 		 conf->sriov_cfg.active_vfs, conf->pf_ring_cfg.active_io_rings);
-@@ -578,6 +584,13 @@ static irqreturn_t octep_ioq_intr_handler_cn93_pf(void *data)
- 	return IRQ_HANDLED;
- }
- 
-+/* soft reset of 98xx */
-+static int octep_soft_reset_cn98_pf(struct octep_device *oct)
-+{
-+	dev_info(&oct->pdev->dev, "CN98XX: skip soft reset\n");
-+	return 0;
-+}
-+
- /* soft reset of 93xx */
- static int octep_soft_reset_cn93_pf(struct octep_device *oct)
- {
-@@ -806,7 +819,10 @@ void octep_device_setup_cn93_pf(struct octep_device *oct)
- 	oct->hw_ops.misc_intr_handler = octep_misc_intr_handler_cn93_pf;
- 	oct->hw_ops.rsvd_intr_handler = octep_rsvd_intr_handler_cn93_pf;
- 	oct->hw_ops.ioq_intr_handler = octep_ioq_intr_handler_cn93_pf;
--	oct->hw_ops.soft_reset = octep_soft_reset_cn93_pf;
-+	if (oct->chip_id == OCTEP_PCI_DEVICE_ID_CN98_PF)
-+		oct->hw_ops.soft_reset = octep_soft_reset_cn98_pf;
-+	else
-+		oct->hw_ops.soft_reset = octep_soft_reset_cn93_pf;
- 	oct->hw_ops.reinit_regs = octep_reinit_regs_cn93_pf;
- 
- 	oct->hw_ops.enable_interrupts = octep_enable_interrupts_cn93_pf;
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
-index 423eec5ff3ad..1a24b3d3cce6 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_main.c
-@@ -22,6 +22,7 @@ struct workqueue_struct *octep_wq;
- 
- /* Supported Devices */
- static const struct pci_device_id octep_pci_id_tbl[] = {
-+	{PCI_DEVICE(PCI_VENDOR_ID_CAVIUM, OCTEP_PCI_DEVICE_ID_CN98_PF)},
- 	{PCI_DEVICE(PCI_VENDOR_ID_CAVIUM, OCTEP_PCI_DEVICE_ID_CN93_PF)},
- 	{PCI_DEVICE(PCI_VENDOR_ID_CAVIUM, OCTEP_PCI_DEVICE_ID_CNF95N_PF)},
- 	{PCI_DEVICE(PCI_VENDOR_ID_CAVIUM, OCTEP_PCI_DEVICE_ID_CN10KA_PF)},
-@@ -1147,6 +1148,8 @@ static void octep_ctrl_mbox_task(struct work_struct *work)
- static const char *octep_devid_to_str(struct octep_device *oct)
- {
- 	switch (oct->chip_id) {
-+	case OCTEP_PCI_DEVICE_ID_CN98_PF:
-+		return "CN98XX";
- 	case OCTEP_PCI_DEVICE_ID_CN93_PF:
- 		return "CN93XX";
- 	case OCTEP_PCI_DEVICE_ID_CNF95N_PF:
-@@ -1197,6 +1200,7 @@ int octep_device_setup(struct octep_device *oct)
- 	dev_info(&pdev->dev, "chip_id = 0x%x\n", pdev->device);
- 
- 	switch (oct->chip_id) {
-+	case OCTEP_PCI_DEVICE_ID_CN98_PF:
- 	case OCTEP_PCI_DEVICE_ID_CN93_PF:
- 	case OCTEP_PCI_DEVICE_ID_CNF95N_PF:
- 		dev_info(&pdev->dev, "Setting up OCTEON %s PF PASS%d.%d\n",
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_main.h b/drivers/net/ethernet/marvell/octeon_ep/octep_main.h
-index e2fe8b28eb0e..e1b4b2af618e 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_main.h
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_main.h
-@@ -18,6 +18,7 @@
- #define  OCTEP_PCIID_CN93_PF  0xB200177d
- #define  OCTEP_PCIID_CN93_VF  0xB203177d
- 
-+#define  OCTEP_PCI_DEVICE_ID_CN98_PF 0xB100
- #define  OCTEP_PCI_DEVICE_ID_CN93_PF 0xB200
- #define  OCTEP_PCI_DEVICE_ID_CN93_VF 0xB203
- 
-diff --git a/drivers/net/ethernet/marvell/octeon_ep/octep_regs_cn9k_pf.h b/drivers/net/ethernet/marvell/octeon_ep/octep_regs_cn9k_pf.h
-index 0a43983e9101..2e20a39d89af 100644
---- a/drivers/net/ethernet/marvell/octeon_ep/octep_regs_cn9k_pf.h
-+++ b/drivers/net/ethernet/marvell/octeon_ep/octep_regs_cn9k_pf.h
-@@ -362,6 +362,10 @@
- #define    CN93_SDP_MAC_PF_RING_CTL_SRN(val)   (((val) >> 8) & 0xFF)
- #define    CN93_SDP_MAC_PF_RING_CTL_RPPF(val)  (((val) >> 16) & 0x3F)
- 
-+#define    CN98_SDP_MAC_PF_RING_CTL_NPFS(val)  (((val) >> 48) & 0xF)
-+#define    CN98_SDP_MAC_PF_RING_CTL_SRN(val)   ((val) & 0xFF)
-+#define    CN98_SDP_MAC_PF_RING_CTL_RPPF(val)  (((val) >> 32) & 0x3F)
-+
- /* Number of non-queue interrupts in CN93xx */
- #define    CN93_NUM_NON_IOQ_INTR    16
- 
+I suspect the original idea was: if it's suddenly no longer present or 
+no longer devmap, it was replaced by a PTE table. So we know a deeper 
+level is there and can simply continue instead of triggering a fault.
+
+But that does not seem to be the case, because I suspect the PMD could 
+have been zapped (MADV_DONTNEED?) in the meantime, and the "writability" 
+check is similarly weird.
+
+So I assume the patch from Peter is ok: even if the PMD got replaced by 
+a PTE table, we'd trigger a fault and simply retry.
+
+Acked-by: David Hildenbrand <david@redhat.com>
+
 -- 
-2.25.1
+Cheers,
+
+David / dhildenb
 
