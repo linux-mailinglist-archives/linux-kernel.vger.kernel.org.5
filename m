@@ -2,163 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2AF57F9BF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:42:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3B47F9BF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:43:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232531AbjK0Img (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 03:42:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55594 "EHLO
+        id S232536AbjK0In3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 03:43:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232397AbjK0Ime (ORCPT
+        with ESMTP id S232397AbjK0In1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 03:42:34 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87A85B8
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:42:40 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1cfafe3d46bso16997625ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:42:40 -0800 (PST)
+        Mon, 27 Nov 2023 03:43:27 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 976FEE1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:43:33 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-32f737deedfso2395718f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:43:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701074560; x=1701679360; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v7ud2f7/LRWS8b7jsTlmNHZSCAPClBeQfNhzDqsVBoE=;
-        b=BjI9HlXSXYW68RCUj8t97pWOIQT4m5Vwfm97/oy4jzUMWoJ5UlccYkKuwbaMaBWDYs
-         1/TwMbjXe/CBTox7i8MPtFE8a22y7Gh6Ocwuh1+EFXHnINk3uFfcvEhGhj976w5JMXhp
-         owiccDhIBEFJYdpEUOTMxrlkFONkNcN+aXk2Zse67HRNr3ktMM7Fd2/NohcxPefzcHyC
-         VhlgS3trRWyEKCden6r2PA57lnY6P36QmCcz4h36WAPYwFf+4FrwVKiVVTdsl+43w1Rs
-         uI1fposNt1XST00KZwbmPS7gJ9eDcTkOM9tiCl8MNcsQTdIm7lAQHXVl01S8M4FcMU1/
-         yyHA==
+        d=linaro.org; s=google; t=1701074612; x=1701679412; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2xnOF1CxvID+dtjKdZtlw3NSe8y8zSJxuj2ZIPYY3uU=;
+        b=g4Wbg/OtayEgRhrO/Daxjnxmw074IbzCWAAjMvb1N5dxQS/UwJoJjDgiF1ZddZG0Wq
+         Kah/SOH5vHMdoks5mNica5BvV4cJDXq3OunWuQa6psVzKfPPDo5xR/t/3+cME0l+Bix/
+         wr3SgQkuXMVvN8F9xZe5LnR4YqZL0zG0raaKS/C203yvCVYrkGW824gD/dsu7/cdlH8M
+         B7QRns+W3lPwY8v1TokEoj21EHg8rnWc6THz+m0GFas/iZnTNqajItKX58O14P3U8P5z
+         8mdZep3wpqfUMUHuquYehO5YqhpQzmJkSn5pJzBqIoKBgLKUqxYGzYvwBUM2H7qpK/6F
+         Ybgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701074560; x=1701679360;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=v7ud2f7/LRWS8b7jsTlmNHZSCAPClBeQfNhzDqsVBoE=;
-        b=HH0/V7wB+oeiw18rUVI0HeAPeJRo7UdqlSy0N+48km7xrKm5NlfxSdSINcmC4PCjEs
-         AoQxS+LLq/E7VqiKawYXWKBpqirGlojCHsjQtebEwHMIVGQeh10Mfk+hIA/pNxF8yLao
-         CRUg+M6EixrZPoheHPPQZU50uIfmmWUCQxiUjFowvIWUBxqN2qJu7AD3NcHP5rOrx2Dk
-         ouYBoSC+MuaZjGi9biM3sV4g7OSqLvS6zxW08fDOEsEDAHH1JI+48hsaAhe82ZEHntp5
-         AygvFFrVBClEAQqr8KhinAI1/YhrlJPvEHXioF+oQ1DsKhEBrMbCBCnEAI0NA3wlrfzp
-         5PTg==
-X-Gm-Message-State: AOJu0YwFR8afzdQwO+htmo2rqHBFjiE0l5ynkgwG5Fm34WpsZt3qxUJU
-        ciMHUDF6GjQxjxOyzX0IOeA=
-X-Google-Smtp-Source: AGHT+IGrwraFKHVCYi3flUo0orxhlZuJgUKXarA9T/+/eeDuqCOql6b/utXko+5LzdDUaLcbfwdK8g==
-X-Received: by 2002:a17:90a:195e:b0:285:2d62:84c4 with SMTP id 30-20020a17090a195e00b002852d6284c4mr12413569pjh.29.1701074559970;
-        Mon, 27 Nov 2023 00:42:39 -0800 (PST)
-Received: from barry-desktop.hub ([2407:7000:8942:5500:19a0:3eee:b37f:15f2])
-        by smtp.gmail.com with ESMTPSA id mp21-20020a17090b191500b002801ca4fad2sm7276883pjb.10.2023.11.27.00.42.28
+        d=1e100.net; s=20230601; t=1701074612; x=1701679412;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2xnOF1CxvID+dtjKdZtlw3NSe8y8zSJxuj2ZIPYY3uU=;
+        b=rT/Mz7loBntFO/CdFui6PYE8jaQfWt0VeKp8CJjdFfzTDJeFkZ0FInFjKFr1SHhOMk
+         75Hwu1efDZDCfbk/9Xe139/71Wl+sMSs07ShtTwIh4Iuv9OG+6iWiBQIZ7CP5xXIhEJ4
+         KaebZUZoO9lnckRe+flLDs0/xK0/gt6Hdwn1v5IZs9Abp1utim9g3KRe52REVeZX810z
+         ZduSQXikuioIryHm/TL/oYJ5IhDqZlEBU0dq25zERFBESaQ83PKcvemtujX0RPM5S+Ye
+         Ngtl1sCY6TcrJYI6pRMCCpqBuyYYfHrcsZCWLnAmtiNkDTDt8hRNnweTXMxcEJZDIWmE
+         AmDw==
+X-Gm-Message-State: AOJu0Yya1WdHXh16mVAJIRa77ctx350yJox1SBRlhfvN1Kr2PA31ij0P
+        Hp1isGBFU3NQcoGcPt5o2e4Oeg==
+X-Google-Smtp-Source: AGHT+IEk54NjVWopu9izapGPvppfJzH7fiDJYjBKBIuzRtGaobPqV2lbJB4Y3jcA3sJh2RPzNIxL/A==
+X-Received: by 2002:a5d:4f8c:0:b0:332:ca1a:c3a0 with SMTP id d12-20020a5d4f8c000000b00332ca1ac3a0mr7700858wru.52.1701074612004;
+        Mon, 27 Nov 2023 00:43:32 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id e15-20020a5d594f000000b00332fda15055sm3362220wri.111.2023.11.27.00.43.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 00:42:39 -0800 (PST)
-From:   Barry Song <21cnbao@gmail.com>
-X-Google-Original-From: Barry Song <v-songbaohua@oppo.com>
-To:     david@redhat.com
-Cc:     akpm@linux-foundation.org, andreyknvl@gmail.com,
-        anshuman.khandual@arm.com, ardb@kernel.org,
-        catalin.marinas@arm.com, dvyukov@google.com, glider@google.com,
-        james.morse@arm.com, jhubbard@nvidia.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mark.rutland@arm.com, maz@kernel.org,
-        oliver.upton@linux.dev, ryabinin.a.a@gmail.com,
-        ryan.roberts@arm.com, suzuki.poulose@arm.com,
-        vincenzo.frascino@arm.com, wangkefeng.wang@huawei.com,
-        will@kernel.org, willy@infradead.org, yuzenghui@huawei.com,
-        yuzhao@google.com, ziy@nvidia.com
-Subject: Re: Re: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
-Date:   Mon, 27 Nov 2023 21:42:17 +1300
-Message-Id: <20231127084217.13110-1-v-songbaohua@oppo.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <271f1e98-6217-4b40-bae0-0ac9fe5851cb@redhat.com>
-References: <271f1e98-6217-4b40-bae0-0ac9fe5851cb@redhat.com>
+        Mon, 27 Nov 2023 00:43:31 -0800 (PST)
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+X-Google-Original-From: Dan Carpenter <dan.carpenter@oracle.com>
+Date:   Mon, 27 Nov 2023 11:43:29 +0300
+To:     oe-kbuild@lists.linux.dev, Ivan Vecera <ivecera@redhat.com>,
+        intel-wired-lan@lists.osuosl.org
+Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Wojciech Drewek <wojciech.drewek@intel.com>,
+        Simon Horman <horms@kernel.org>, mschmidt@redhat.com,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH v5 4/5] i40e: Fix broken support for floating VEBs
+Message-ID: <25111205-a895-46a2-b53f-49e29ba41b16@suswa.mountain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231124150343.81520-5-ivecera@redhat.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> +		for (i = 0; i < nr; i++, page++) {
->> +			if (anon) {
->> +				/*
->> +				 * If this page may have been pinned by the
->> +				 * parent process, copy the page immediately for
->> +				 * the child so that we'll always guarantee the
->> +				 * pinned page won't be randomly replaced in the
->> +				 * future.
->> +				 */
->> +				if (unlikely(page_try_dup_anon_rmap(
->> +						page, false, src_vma))) {
->> +					if (i != 0)
->> +						break;
->> +					/* Page may be pinned, we have to copy. */
->> +					return copy_present_page(
->> +						dst_vma, src_vma, dst_pte,
->> +						src_pte, addr, rss, prealloc,
->> +						page);
->> +				}
->> +				rss[MM_ANONPAGES]++;
->> +				VM_BUG_ON(PageAnonExclusive(page));
->> +			} else {
->> +				page_dup_file_rmap(page, false);
->> +				rss[mm_counter_file(page)]++;
->> +			}
->>   		}
->> -		rss[MM_ANONPAGES]++;
->> -	} else if (page) {
->> -		folio_get(folio);
->> -		page_dup_file_rmap(page, false);
->> -		rss[mm_counter_file(page)]++;
->> +
->> +		nr = i;
->> +		folio_ref_add(folio, nr);
-> 
-> You're changing the order of mapcount vs. refcount increment. Don't. 
-> Make sure your refcount >= mapcount.
-> 
-> You can do that easily by doing the folio_ref_add(folio, nr) first and 
-> then decrementing in case of error accordingly. Errors due to pinned 
-> pages are the corner case.
-> 
-> I'll note that it will make a lot of sense to have batch variants of 
-> page_try_dup_anon_rmap() and page_dup_file_rmap().
-> 
+Hi Ivan,
 
-i still don't understand why it is not a entire map+1, but an increment
-in each basepage.
+kernel test robot noticed the following build warnings:
 
-as long as it is a CONTPTE large folio, there is no much difference with
-PMD-mapped large folio. it has all the chance to be DoubleMap and need
-split.
+url:    https://github.com/intel-lab-lkp/linux/commits/Ivan-Vecera/i40e-Use-existing-helper-to-find-flow-director-VSI/20231124-230616
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tnguy/next-queue.git dev-queue
+patch link:    https://lore.kernel.org/r/20231124150343.81520-5-ivecera%40redhat.com
+patch subject: [PATCH v5 4/5] i40e: Fix broken support for floating VEBs
+config: x86_64-randconfig-161-20231127 (https://download.01.org/0day-ci/archive/20231127/202311270851.Ie6aegcS-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20231127/202311270851.Ie6aegcS-lkp@intel.com/reproduce)
 
-When A and B share a CONTPTE large folio, we do madvise(DONTNEED) or any
-similar things on a part of the large folio in process A,
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <error27@gmail.com>
+| Closes: https://lore.kernel.org/r/202311270851.Ie6aegcS-lkp@intel.com/
 
-this large folio will have partially mapped subpage in A (all CONTPE bits
-in all subpages need to be removed though we only unmap a part of the
-large folioas HW requires consistent CONTPTEs); and it has entire map in
-process B(all PTEs are still CONPTES in process B).
+New smatch warnings:
+drivers/net/ethernet/intel/i40e/i40e_main.c:14743 i40e_veb_release() error: potentially dereferencing uninitialized 'vsi'.
 
-isn't it more sensible for this large folios to have entire_map = 0(for
-process B), and subpages which are still mapped in process A has map_count
-=0? (start from -1).
+Old smatch warnings:
+[ low confidence ]
+drivers/net/ethernet/intel/i40e/i40e_main.c:5966 i40e_set_bw_limit() warn: error code type promoted to positive: 'speed'
+drivers/net/ethernet/intel/i40e/i40e_main.c:13476 i40e_queue_pair_toggle_rings() warn: missing error code? 'ret'
+drivers/net/ethernet/intel/i40e/i40e_main.c:14272 i40e_vsi_setup_vectors() warn: missing error code? 'ret'
+drivers/net/ethernet/intel/i40e/i40e_main.c:15566 i40e_init_recovery_mode() warn: 'vsi->netdev' from register_netdev() not released on lines: 15566.
 
-> Especially, the batch variant of page_try_dup_anon_rmap() would only 
-> check once if the folio maybe pinned, and in that case, you can simply 
-> drop all references again. So you either have all or no ptes to process, 
-> which makes that code easier.
-> 
-> But that can be added on top, and I'll happily do that.
-> 
-> -- 
-> Cheers,
-> 
-> David / dhildenb
+vim +/vsi +14743 drivers/net/ethernet/intel/i40e/i40e_main.c
 
-Thanks
-Barry
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14715  void i40e_veb_release(struct i40e_veb *veb)
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14716  {
+0aab77d67d37d09 Ivan Vecera      2023-11-24  14717  	struct i40e_vsi *vsi, *vsi_it;
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14718  	struct i40e_pf *pf;
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14719  	int i, n = 0;
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14720  
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14721  	pf = veb->pf;
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14722  
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14723  	/* find the remaining VSI and check for extras */
+0aab77d67d37d09 Ivan Vecera      2023-11-24  14724  	i40e_pf_for_each_vsi(pf, i, vsi_it)
+0aab77d67d37d09 Ivan Vecera      2023-11-24  14725  		if (vsi_it->uplink_seid == veb->seid) {
+93a1bc91a1ccc5a Ivan Vecera      2023-11-24  14726  			if (vsi_it->flags & I40E_VSI_FLAG_VEB_OWNER)
+0aab77d67d37d09 Ivan Vecera      2023-11-24  14727  				vsi = vsi_it;
+
+Do we always find a vsi?  Presumably, yes, but it's not obvious just
+from reading this function.
+
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14728  			n++;
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14729  		}
+0aab77d67d37d09 Ivan Vecera      2023-11-24  14730  
+93a1bc91a1ccc5a Ivan Vecera      2023-11-24  14731  	/* Floating VEB has to be empty and regular one must have
+93a1bc91a1ccc5a Ivan Vecera      2023-11-24  14732  	 * single owner VSI.
+93a1bc91a1ccc5a Ivan Vecera      2023-11-24  14733  	 */
+93a1bc91a1ccc5a Ivan Vecera      2023-11-24  14734  	if ((veb->uplink_seid && n != 1) || (!veb->uplink_seid && n != 0)) {
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14735  		dev_info(&pf->pdev->dev,
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14736  			 "can't remove VEB %d with %d VSIs left\n",
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14737  			 veb->seid, n);
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14738  		return;
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14739  	}
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14740  
+93a1bc91a1ccc5a Ivan Vecera      2023-11-24  14741  	/* For regular VEB move the owner VSI to uplink VEB */
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14742  	if (veb->uplink_seid) {
+93a1bc91a1ccc5a Ivan Vecera      2023-11-24 @14743  		vsi->flags &= ~I40E_VSI_FLAG_VEB_OWNER;
+                                                                ^^^^^^^^^^
+
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14744  		vsi->uplink_seid = veb->uplink_seid;
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14745  		if (veb->uplink_seid == pf->mac_seid)
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14746  			vsi->veb_idx = I40E_NO_VEB;
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14747  		else
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14748  			vsi->veb_idx = veb->veb_idx;
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14749  	}
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14750  
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14751  	i40e_aq_delete_element(&pf->hw, veb->seid, NULL);
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14752  	i40e_veb_clear(veb);
+41c445ff0f482bb Jesse Brandeburg 2013-09-11  14753  }
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
