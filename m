@@ -2,210 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4D67F9EE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:44:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 590027F9EE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:46:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233313AbjK0Lol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 06:44:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50298 "EHLO
+        id S233311AbjK0Lpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 06:45:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233302AbjK0Loj (ORCPT
+        with ESMTP id S233304AbjK0Lpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 06:44:39 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20EA4B8
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 03:44:44 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 779451FD85;
-        Mon, 27 Nov 2023 11:44:41 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 552381379A;
-        Mon, 27 Nov 2023 11:44:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id aQluFCmBZGX2bwAAD6G6ig
-        (envelope-from <vbabka@suse.cz>); Mon, 27 Nov 2023 11:44:41 +0000
-Message-ID: <1f2f5a9f-61aa-094d-f9ed-be97e3671fb1@suse.cz>
-Date:   Mon, 27 Nov 2023 12:44:41 +0100
+        Mon, 27 Nov 2023 06:45:53 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A8A1B8
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 03:45:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22067C433C8;
+        Mon, 27 Nov 2023 11:45:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701085558;
+        bh=/SPiK+nM81I2NeYQHSsmaqOtUX9qlKShEsdKW1Xgo54=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=UeV3OYeyFIr9Ll7fbpmmGpyz3uKF6e8h1RE9Ih3UtcFmzDu0xe7stOLB1kFa45cHP
+         7W8ETpegQt1J09gK3AsGsrDpQkD7B+S6Ay/ql3oI3xwDpgkq4ytSAZ097Hf2mPStFA
+         O/r00GFVG3GFyOip9cnRuvAVkRI2s8sazdq8BN7xqAE4zcRQ6JGxm7rcG/MmyB+/B3
+         galFOVHPSFyvL5PB+8HKkS3gc9Knb59lyOum3+FCZRrTu30n97RVYwvMKZvLP9u2YR
+         QTsrz80hpMJwNYudGnXE1aYUctgC4m7yEFwRhJN3wmx2sfTPMWnsuKTaLy0U+TKwwH
+         71Bmx6gOs7bNw==
+From:   djakov@kernel.org
+To:     linux@roeck-us.net, sam@gentoo.org, gregkh@linuxfoundation.org
+Cc:     akpm@linux-foundation.org, allen.lkml@gmail.com, conor@kernel.org,
+        f.fainelli@gmail.com, jonathanh@nvidia.com,
+        linux-kernel@vger.kernel.org, lkft-triage@lists.linaro.org,
+        patches@kernelci.org, patches@lists.linux.dev, pavel@denx.de,
+        rwarsow@gmx.de, shuah@kernel.org, srw@sladewatkins.net,
+        stable@vger.kernel.org, sudipm.mukherjee@gmail.com,
+        torvalds@linux-foundation.org, djakov@kernel.org
+Subject: [PATCH 5.10] interconnect: qcom: Add support for mask-based BCMs
+Date:   Mon, 27 Nov 2023 13:45:51 +0200
+Message-Id: <20231127114551.1043891-1-djakov@kernel.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <05678c48-bac1-4f17-99f8-21b566c17a6e@roeck-us.net>
+References: <05678c48-bac1-4f17-99f8-21b566c17a6e@roeck-us.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH mm] slub, kasan: improve interaction of KASAN and
- slub_debug poisoning
-Content-Language: en-US
-To:     andrey.konovalov@linux.dev,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        Evgenii Stepanov <eugenis@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Feng Tang <feng.tang@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-References: <20231122231202.121277-1-andrey.konovalov@linux.dev>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20231122231202.121277-1-andrey.konovalov@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spamd-Bar: ++++++++++++++
-X-Spam-Score: 14.28
-X-Rspamd-Server: rspamd1
-Authentication-Results: smtp-out2.suse.de;
-        dkim=none;
-        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of vbabka@suse.cz) smtp.mailfrom=vbabka@suse.cz;
-        dmarc=none
-X-Rspamd-Queue-Id: 779451FD85
-X-Spamd-Result: default: False [14.28 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         BAYES_SPAM(5.09)[99.96%];
-         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-         TO_DN_SOME(0.00)[];
-         R_SPF_SOFTFAIL(4.60)[~all];
-         RCVD_COUNT_THREE(0.00)[3];
-         MX_GOOD(-0.01)[];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         FROM_EQ_ENVFROM(0.00)[];
-         R_DKIM_NA(2.20)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_MATCH_FROM(0.00)[];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(1.20)[suse.cz];
-         RCPT_COUNT_TWELVE(0.00)[14];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,linux.dev:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FREEMAIL_CC(0.00)[gmail.com,google.com,googlegroups.com,suse.de,intel.com,kvack.org,vger.kernel.org];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/23/23 00:12, andrey.konovalov@linux.dev wrote:
-> From: Andrey Konovalov <andreyknvl@google.com>
-> 
-> When both KASAN and slub_debug are enabled, when a free object is being
-> prepared in setup_object, slub_debug poisons the object data before KASAN
-> initializes its per-object metadata.
-> 
-> Right now, in setup_object, KASAN only initializes the alloc metadata,
-> which is always stored outside of the object. slub_debug is aware of
-> this and it skips poisoning and checking that memory area.
-> 
-> However, with the following patch in this series, KASAN also starts
-> initializing its free medata in setup_object. As this metadata might be
-> stored within the object, this initialization might overwrite the
-> slub_debug poisoning. This leads to slub_debug reports.
-> 
-> Thus, skip checking slub_debug poisoning of the object data area that
-> overlaps with the in-object KASAN free metadata.
-> 
-> Also make slub_debug poisoning of tail kmalloc redzones more precise when
-> KASAN is enabled: slub_debug can still poison and check the tail kmalloc
-> allocation area that comes after the KASAN free metadata.
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+From: Georgi Djakov <djakov@kernel.org>
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+From: Mike Tipton <mdtipton@codeaurora.org>
 
-Thanks.
+[ Upstream commit d8630f050d3fd2079f8617dd6c00c6509109c755 ]
 
-> ---
-> 
-> Andrew, please put this patch right before "kasan: use stack_depot_put
-> for Generic mode".
-> ---
->  mm/slub.c | 41 ++++++++++++++++++++++++++---------------
->  1 file changed, 26 insertions(+), 15 deletions(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 63d281dfacdb..782bd8a6bd34 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -870,20 +870,20 @@ static inline void set_orig_size(struct kmem_cache *s,
->  				void *object, unsigned int orig_size)
->  {
->  	void *p = kasan_reset_tag(object);
-> +	unsigned int kasan_meta_size;
->  
->  	if (!slub_debug_orig_size(s))
->  		return;
->  
-> -#ifdef CONFIG_KASAN_GENERIC
->  	/*
-> -	 * KASAN could save its free meta data in object's data area at
-> -	 * offset 0, if the size is larger than 'orig_size', it will
-> -	 * overlap the data redzone in [orig_size+1, object_size], and
-> -	 * the check should be skipped.
-> +	 * KASAN can save its free meta data inside of the object at offset 0.
-> +	 * If this meta data size is larger than 'orig_size', it will overlap
-> +	 * the data redzone in [orig_size+1, object_size]. Thus, we adjust
-> +	 * 'orig_size' to be as at least as big as KASAN's meta data.
->  	 */
-> -	if (kasan_metadata_size(s, true) > orig_size)
-> -		orig_size = s->object_size;
-> -#endif
-> +	kasan_meta_size = kasan_metadata_size(s, true);
-> +	if (kasan_meta_size > orig_size)
-> +		orig_size = kasan_meta_size;
->  
->  	p += get_info_end(s);
->  	p += sizeof(struct track) * 2;
-> @@ -1192,7 +1192,7 @@ static int check_object(struct kmem_cache *s, struct slab *slab,
->  {
->  	u8 *p = object;
->  	u8 *endobject = object + s->object_size;
-> -	unsigned int orig_size;
-> +	unsigned int orig_size, kasan_meta_size;
->  
->  	if (s->flags & SLAB_RED_ZONE) {
->  		if (!check_bytes_and_report(s, slab, object, "Left Redzone",
-> @@ -1222,12 +1222,23 @@ static int check_object(struct kmem_cache *s, struct slab *slab,
->  	}
->  
->  	if (s->flags & SLAB_POISON) {
-> -		if (val != SLUB_RED_ACTIVE && (s->flags & __OBJECT_POISON) &&
-> -			(!check_bytes_and_report(s, slab, p, "Poison", p,
-> -					POISON_FREE, s->object_size - 1) ||
-> -			 !check_bytes_and_report(s, slab, p, "End Poison",
-> -				p + s->object_size - 1, POISON_END, 1)))
-> -			return 0;
-> +		if (val != SLUB_RED_ACTIVE && (s->flags & __OBJECT_POISON)) {
-> +			/*
-> +			 * KASAN can save its free meta data inside of the
-> +			 * object at offset 0. Thus, skip checking the part of
-> +			 * the redzone that overlaps with the meta data.
-> +			 */
-> +			kasan_meta_size = kasan_metadata_size(s, true);
-> +			if (kasan_meta_size < s->object_size - 1 &&
-> +			    !check_bytes_and_report(s, slab, p, "Poison",
-> +					p + kasan_meta_size, POISON_FREE,
-> +					s->object_size - kasan_meta_size - 1))
-> +				return 0;
-> +			if (kasan_meta_size < s->object_size &&
-> +			    !check_bytes_and_report(s, slab, p, "End Poison",
-> +					p + s->object_size - 1, POISON_END, 1))
-> +				return 0;
-> +		}
->  		/*
->  		 * check_pad_bytes cleans up on its own.
->  		 */
+Some BCMs aren't directly associated with the data path (i.e. ACV) and
+therefore don't communicate using BW. Instead, they are simply
+enabled/disabled with a simple bit mask. Add support for these.
 
+Origin commit retrieved from:
+https://git.codelinaro.org/clo/la/kernel/msm-5.15/-/commit/2d1573e0206998151b342e6b52a4c0f7234d7e36
+
+Signed-off-by: Mike Tipton <mdtipton@codeaurora.org>
+[narmstrong: removed copyright change from original commit]
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Link: https://lore.kernel.org/r/20230619-topic-sm8550-upstream-interconnect-mask-vote-v2-1-709474b151cc@linaro.org
+Fixes: fafc114a468e ("interconnect: qcom: Add SM8450 interconnect provider driver")
+Fixes: 2d1f95ab9feb ("interconnect: qcom: Add SC7180 interconnect provider driver")
+Signed-off-by: Georgi Djakov <djakov@kernel.org>
+---
+
+There is a build error reported in the 5.10.201 stable tree (arm64 allmodconfig),
+which is caused by a patch that has a dependency we missed to backport. This is
+the missing patch that we need to get into 5.10.202 to fix the build failure.
+Thanks to Guenter and Sam for reporting that!
+
+ drivers/interconnect/qcom/bcm-voter.c | 5 +++++
+ drivers/interconnect/qcom/icc-rpmh.h  | 2 ++
+ 2 files changed, 7 insertions(+)
+
+diff --git a/drivers/interconnect/qcom/bcm-voter.c b/drivers/interconnect/qcom/bcm-voter.c
+index 3c0809095a31..320e418cf753 100644
+--- a/drivers/interconnect/qcom/bcm-voter.c
++++ b/drivers/interconnect/qcom/bcm-voter.c
+@@ -90,6 +90,11 @@ static void bcm_aggregate(struct qcom_icc_bcm *bcm)
+ 
+ 		temp = agg_peak[bucket] * bcm->vote_scale;
+ 		bcm->vote_y[bucket] = bcm_div(temp, bcm->aux_data.unit);
++
++		if (bcm->enable_mask && (bcm->vote_x[bucket] || bcm->vote_y[bucket])) {
++			bcm->vote_x[bucket] = 0;
++			bcm->vote_y[bucket] = bcm->enable_mask;
++		}
+ 	}
+ 
+ 	if (bcm->keepalive && bcm->vote_x[QCOM_ICC_BUCKET_AMC] == 0 &&
+diff --git a/drivers/interconnect/qcom/icc-rpmh.h b/drivers/interconnect/qcom/icc-rpmh.h
+index e5f61ab989e7..029a350c2884 100644
+--- a/drivers/interconnect/qcom/icc-rpmh.h
++++ b/drivers/interconnect/qcom/icc-rpmh.h
+@@ -81,6 +81,7 @@ struct qcom_icc_node {
+  * @vote_x: aggregated threshold values, represents sum_bw when @type is bw bcm
+  * @vote_y: aggregated threshold values, represents peak_bw when @type is bw bcm
+  * @vote_scale: scaling factor for vote_x and vote_y
++ * @enable_mask: optional mask to send as vote instead of vote_x/vote_y
+  * @dirty: flag used to indicate whether the bcm needs to be committed
+  * @keepalive: flag used to indicate whether a keepalive is required
+  * @aux_data: auxiliary data used when calculating threshold values and
+@@ -97,6 +98,7 @@ struct qcom_icc_bcm {
+ 	u64 vote_x[QCOM_ICC_NUM_BUCKETS];
+ 	u64 vote_y[QCOM_ICC_NUM_BUCKETS];
+ 	u64 vote_scale;
++	u32 enable_mask;
+ 	bool dirty;
+ 	bool keepalive;
+ 	struct bcm_db aux_data;
