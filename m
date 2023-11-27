@@ -2,376 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D36AE7F9B36
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 08:55:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCED27F9B3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:03:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231658AbjK0Hzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 02:55:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57458 "EHLO
+        id S230120AbjK0IC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 03:02:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230020AbjK0Hzg (ORCPT
+        with ESMTP id S229450AbjK0IC5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 02:55:36 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F15CE;
-        Sun, 26 Nov 2023 23:55:41 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-544455a4b56so5125215a12.1;
-        Sun, 26 Nov 2023 23:55:41 -0800 (PST)
+        Mon, 27 Nov 2023 03:02:57 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B5710F
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:03:03 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c59a4dd14cso43070871fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:03:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701071740; x=1701676540; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NKFhQZzTRAdLfUmZy1AosIZUEfwSZzLxXA7XkXOLKRs=;
-        b=OuApuTvcymLZoxe18N4f5hW/viHCdk8ZIYGZCKJuiviOmJ3x4Dx1sL4TPX8qsQa/Xn
-         7wH/U8iMplxaP30qAGFBAqHTWGIPinMZxgerojNEavlrftQLgtkZqJ/hO5UErmVNbfOk
-         MYtlxDJeygl+APizqK2nIXMsDcDOAQqqcDJ5IuyuN7/0dDLDIWW+OxHH7WpS13N9PdIJ
-         2g0eStvcB1dk5hHbGHmSAYKGIt3zclrltactkZ2fkNMpXr+p4QRHFzFWVA7YV9WkbeyZ
-         XqI9fk7jNZvbVWh2vV+m4b6YJNjgMFGjwMKT8BhCnHztLdZ6P6LQ2z0k02YrM4sUWBbJ
-         /lXA==
+        d=linaro.org; s=google; t=1701072181; x=1701676981; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wcPPFmhl3jLXPrx+GR4n91er0md/NE3IurXgub64qsI=;
+        b=pfZ4uhHCcYqkMIC35LXnNsmFKj966hFSU8TKgzdDC4zu7WVPXIhwD6yGDJ21O+DEPz
+         Bhn/7yDraNmRJ5+8hNg1HRTxdu73D6NgED/bn0dxNqxEfmA98mBpNVqgaEf2Gewsucek
+         WIJ/OOORSys6yyp/b7XZMnlSslRQNL8eFTtQyvGRkDhhGECBDXM+LPj0xFmCk+BRbYXB
+         O01Y9svelNI6EX5lLGqcd0jvm1iYwW4H806S1IsHGWhP5DrBp/fvWNg+w3KlnZub304i
+         DNahoOpOaE/lcmtQTpZjCKkv14XmOEnN4ESxMVmg52YkaOtaJ/V/69TPlh8/pwn5vSFp
+         +P2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701071740; x=1701676540;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NKFhQZzTRAdLfUmZy1AosIZUEfwSZzLxXA7XkXOLKRs=;
-        b=aCayitqSSi7KRsGZ7zUvfDM0pu+telaTrRrSfsNpnfIJO+UTaFRAzfkB3d0HtZUxe2
-         DQ02tmWzRzmuG+P0DDiagyR5rEN7zayS7LCUt+wWZOsRLLwIvqYCPJil45YbajK+oNnR
-         XKTR7WcQWQdIKzNfUQRqOClKCqD5WUKYG/LwSCnyAnb4GTnNhgEDiybwGx9cZDIKERf8
-         XGiRddhq+XtsWEOK9i5nN10q9X9o6tXVC55IjeFzxFHTh/KfTstEx27WIocZUD5ERD79
-         zc2HPMxZ9ePtjQ/U8IXhfKpVwOsK5pkY78H2HICLLNfntSYPhRN8YJZ/WP29bfvpR0fs
-         79Ww==
-X-Gm-Message-State: AOJu0Yybo0ebqwPIbqyS6fFF8zRBGXGbjx767e51x51T4C7le3GoXLlq
-        es6nYl0hnNC/0xAZhcolEcY=
-X-Google-Smtp-Source: AGHT+IGek8HCBd/k9DEQ1g6pLBK87DNH2XDxGI/lW5Mt03fKMrmd5jWoU+wc1c3cn4CR13XIeye1iQ==
-X-Received: by 2002:a17:907:2992:b0:9ff:2374:1571 with SMTP id eu18-20020a170907299200b009ff23741571mr5685820ejc.69.1701071739736;
-        Sun, 26 Nov 2023 23:55:39 -0800 (PST)
-Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation (net-2-39-143-167.cust.vodafonedsl.it. [2.39.143.167])
-        by smtp.gmail.com with ESMTPSA id hg12-20020a170906f34c00b00a10f3030e11sm261234ejb.1.2023.11.26.23.55.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Nov 2023 23:55:39 -0800 (PST)
-Date:   Mon, 27 Nov 2023 08:55:37 +0100
-From:   Tommaso Merciai <tomm.merciai@gmail.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linuxfancy@googlegroups.com,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: ov5640: use subdev active state
-Message-ID: <ZWRLeTTxNDB7YpBS@tom-HP-ZBook-Fury-15-G7-Mobile-Workstation>
-References: <20231126103401.2617585-1-tomm.merciai@gmail.com>
- <20231126144828.GA12891@pendragon.ideasonboard.com>
+        d=1e100.net; s=20230601; t=1701072181; x=1701676981;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=wcPPFmhl3jLXPrx+GR4n91er0md/NE3IurXgub64qsI=;
+        b=smq4B92g8tznDezJL02yl+Ssm2QEqRVGv06gK+L+x2vFOdd10AwvmJslnwteWUm+/m
+         rhAgni0U9MnxDM2aYyg4B0cRgYAeh2Q3ItXWF26gGxvE4t2ldbWI1ayEtdDe8gB1fmRP
+         CaDbyzZ05/T/J9fqE+JP+WYu6TmNYzgjLD5Zq3KpVoEcoSj0N+BrhWbUgt3eTOz51qhG
+         78D3YKnfoNcjtrjt/XJKS23LdRWEf49QS9PelbUEZeTkkwgLDx05xXp811/IYCzD5H9F
+         q71+di0RfzUmKDBOaQUcE2NfoTysH/krB/hUtUQC+ehqUvNe/QjtJ7N3yIdbDM8tPPKL
+         c23g==
+X-Gm-Message-State: AOJu0YxNKOR6UKoLDTbAqp5LXSwUO5HbFUI85+2En6j0ymnM/JTEeIXe
+        /pIOjQMg4ysMYAGglUZxEyeFpw==
+X-Google-Smtp-Source: AGHT+IF+USKIUWRcJDJ+jO+C+fC+kGlWnuPFwuHOKDZ85Dt7rLgLUw3KjaqCg+qy1KSghN13oED0cw==
+X-Received: by 2002:a05:651c:3d1:b0:2c9:a274:a511 with SMTP id f17-20020a05651c03d100b002c9a274a511mr1554431ljp.43.1701072181565;
+        Mon, 27 Nov 2023 00:03:01 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:5a15:ac68:b4a4:85ff? ([2a01:e0a:982:cbb0:5a15:ac68:b4a4:85ff])
+        by smtp.gmail.com with ESMTPSA id o36-20020a05600c512400b0040596352951sm13703473wms.5.2023.11.27.00.02.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Nov 2023 00:03:01 -0800 (PST)
+Message-ID: <7166d20c-5092-4d7c-af0a-140854fa8e07@linaro.org>
+Date:   Mon, 27 Nov 2023 09:02:59 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231126144828.GA12891@pendragon.ideasonboard.com>
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v1 0/2] firmware: meson_sm: cleanup error paths inside
+ probe()
+Content-Language: en-US, fr
+To:     Evgeny Bachinin <EABachinin@salutedevices.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Dmitry Rokosov <ddrokosov@sberdevices.ru>,
+        Miles Chen <miles.chen@mediatek.com>,
+        Alexey Romanov <avromanov@salutedevices.com>
+Cc:     kernel@sberdevices.ru, evgen89bachinin@gmail.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231108125604.162383-1-EABachinin@salutedevices.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20231108125604.162383-1-EABachinin@salutedevices.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
-Thanks for reviewing this.
+On 08/11/2023 13:56, Evgeny Bachinin wrote:
+> At first, patches series refactors sysfs node creation to avoid extra code
+> paths. After that, the resource leak in probe error path is fixed.
+> 
+> Evgeny Bachinin (2):
+>    firmware: meson_sm: refactor serial sysfs entry via dev_groups attrs
+>    firmware: meson-sm: unmap out_base shmem in error path
+> 
+>   drivers/firmware/meson/meson_sm.c | 19 ++++++++-----------
+>   1 file changed, 8 insertions(+), 11 deletions(-)
+> 
 
-On Sun, Nov 26, 2023 at 04:48:28PM +0200, Laurent Pinchart wrote:
-> Hi Tommaso,
-> 
-> Thank you for the patch.
-> 
-> On Sun, Nov 26, 2023 at 11:34:01AM +0100, Tommaso Merciai wrote:
-> > Port the ov5640 sensor driver to use the subdev active state.
-> > 
-> > After the ov5640 configurations steps call v4l2_subdev_init_finalize
-> > that finalizes the initialization of the subdevice.
-> > From now we use subdevice active state to simplify format handling and
-> > locking
-> > 
-> > References:
-> >  - https://patchwork.kernel.org/project/linux-media/patch/20230710155203.92366-6-jacopo.mondi@ideasonboard.com/
-> >  - https://linuxtv.org/downloads/v4l-dvb-apis/driver-api/v4l2-subdev.html#c.v4l2_subdev_cleanup
-> > 
-> > Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
-> > ---
-> >  drivers/media/i2c/ov5640.c | 89 ++++++++++----------------------------
-> >  1 file changed, 24 insertions(+), 65 deletions(-)
-> > 
-> > diff --git a/drivers/media/i2c/ov5640.c b/drivers/media/i2c/ov5640.c
-> > index 3f79a3b77044..44a073d3df64 100644
-> > --- a/drivers/media/i2c/ov5640.c
-> > +++ b/drivers/media/i2c/ov5640.c
-> > @@ -446,9 +446,6 @@ struct ov5640_dev {
-> >  	struct gpio_desc *pwdn_gpio;
-> >  	bool   upside_down;
-> >  
-> > -	/* lock to protect all members below */
-> > -	struct mutex lock;
-> > -
-> >  	struct v4l2_mbus_framefmt fmt;
-> 
-> This field should go too. The point of using the subdev active state is
-> to move state information from the device-specific structure to the
-> subdev state.
-
-Thanks for the clarification.
-
-> 
-> Ideally the pending_fmt_change, current_mode, last_mode, current_fr,
-> frame_interval and pending_mode_change fields should go too. That's more
-> work and it's probably OK if we keep some of those fields for the time
-> being.
-> 
-> One low(er) hanging fruit is current_fr and frame_interval, which would
-> be nice to address soon. Removing them completely will require the "[RFC
-> PATCH v1 0/4] media: v4l2-subdev: Improve frame interval handling" patch
-> series ([1]), for which I plan to send a v2 soon. You can submit a v2 of
-> this patch, dropping the fmt field, without waiting for the improved
-> frame interval handling. It should however be fairly to merge the
-> current_fr and frame_interval fields (dropping the ov5640_frame_rate
-> enum as a result), it would be nice to see that as a patch already.
-> 
-> [1] https://lore.kernel.org/linux-media/20231024005130.28026-1-laurent.pinchart@ideasonboard.com
-
-No problem I can wait. And work on top of your work later.
-Please let me know if you need some test, I have a working imx8mp-evk +
-ov5640 env on my side on top of sailus/media_tree/master (Actually I'm
-using this for alvium driver upstream)
-
-Hope this can help :)
-
-Regards,
-Tommaso
-
-> 
-> >  	bool pending_fmt_change;
-> >  
-> > @@ -2784,30 +2781,6 @@ static int ov5640_try_frame_interval(struct ov5640_dev *sensor,
-> >  	return mode ? rate : -EINVAL;
-> >  }
-> >  
-> > -static int ov5640_get_fmt(struct v4l2_subdev *sd,
-> > -			  struct v4l2_subdev_state *sd_state,
-> > -			  struct v4l2_subdev_format *format)
-> > -{
-> > -	struct ov5640_dev *sensor = to_ov5640_dev(sd);
-> > -	struct v4l2_mbus_framefmt *fmt;
-> > -
-> > -	if (format->pad != 0)
-> > -		return -EINVAL;
-> > -
-> > -	mutex_lock(&sensor->lock);
-> > -
-> > -	if (format->which == V4L2_SUBDEV_FORMAT_TRY)
-> > -		fmt = v4l2_subdev_state_get_format(sd_state, format->pad);
-> > -	else
-> > -		fmt = &sensor->fmt;
-> > -
-> > -	format->format = *fmt;
-> > -
-> > -	mutex_unlock(&sensor->lock);
-> > -
-> > -	return 0;
-> > -}
-> > -
-> >  static int ov5640_try_fmt_internal(struct v4l2_subdev *sd,
-> >  				   struct v4l2_mbus_framefmt *fmt,
-> >  				   const struct ov5640_mode_info **new_mode)
-> > @@ -2958,21 +2931,14 @@ static int ov5640_set_fmt(struct v4l2_subdev *sd,
-> >  	if (format->pad != 0)
-> >  		return -EINVAL;
-> >  
-> > -	mutex_lock(&sensor->lock);
-> > -
-> > -	if (sensor->streaming) {
-> > -		ret = -EBUSY;
-> > -		goto out;
-> > -	}
-> > +	if (sensor->streaming)
-> > +		return -EBUSY;
-> >  
-> >  	ret = ov5640_try_fmt_internal(sd, mbus_fmt, &new_mode);
-> >  	if (ret)
-> > -		goto out;
-> > +		return ret;
-> >  
-> > -	if (format->which == V4L2_SUBDEV_FORMAT_TRY) {
-> > -		*v4l2_subdev_state_get_format(sd_state, 0) = *mbus_fmt;
-> > -		goto out;
-> > -	}
-> > +	*v4l2_subdev_state_get_format(sd_state, 0) = *mbus_fmt;
-> >  
-> >  	if (new_mode != sensor->current_mode) {
-> >  		sensor->current_fr = new_mode->def_fps;
-> > @@ -2987,26 +2953,16 @@ static int ov5640_set_fmt(struct v4l2_subdev *sd,
-> >  
-> >  	ov5640_update_pixel_rate(sensor);
-> >  
-> > -out:
-> > -	mutex_unlock(&sensor->lock);
-> > -	return ret;
-> > +	return 0;
-> >  }
-> >  
-> >  static int ov5640_get_selection(struct v4l2_subdev *sd,
-> >  				struct v4l2_subdev_state *sd_state,
-> >  				struct v4l2_subdev_selection *sel)
-> >  {
-> > -	struct ov5640_dev *sensor = to_ov5640_dev(sd);
-> > -	const struct ov5640_mode_info *mode = sensor->current_mode;
-> > -	const struct ov5640_timings *timings;
-> > -
-> >  	switch (sel->target) {
-> >  	case V4L2_SEL_TGT_CROP: {
-> > -		mutex_lock(&sensor->lock);
-> > -		timings = ov5640_timings(sensor, mode);
-> > -		sel->r = timings->analog_crop;
-> > -		mutex_unlock(&sensor->lock);
-> > -
-> > +		sel->r = *v4l2_subdev_state_get_crop(sd_state, 0);
-> >  		return 0;
-> >  	}
-> >  
-> > @@ -3441,9 +3397,6 @@ static int ov5640_init_controls(struct ov5640_dev *sensor)
-> >  
-> >  	v4l2_ctrl_handler_init(hdl, 32);
-> >  
-> > -	/* we can use our own mutex for the ctrl lock */
-> > -	hdl->lock = &sensor->lock;
-> > -
-> >  	/* Clock related controls */
-> >  	ctrls->pixel_rate = v4l2_ctrl_new_std(hdl, ops, V4L2_CID_PIXEL_RATE,
-> >  			      ov5640_pixel_rates[OV5640_NUM_PIXEL_RATES - 1],
-> > @@ -3609,9 +3562,7 @@ static int ov5640_g_frame_interval(struct v4l2_subdev *sd,
-> >  {
-> >  	struct ov5640_dev *sensor = to_ov5640_dev(sd);
-> >  
-> > -	mutex_lock(&sensor->lock);
-> >  	fi->interval = sensor->frame_interval;
-> > -	mutex_unlock(&sensor->lock);
-> >  
-> >  	return 0;
-> >  }
-> > @@ -3620,13 +3571,14 @@ static int ov5640_s_frame_interval(struct v4l2_subdev *sd,
-> >  				   struct v4l2_subdev_frame_interval *fi)
-> >  {
-> >  	struct ov5640_dev *sensor = to_ov5640_dev(sd);
-> > +	struct v4l2_subdev_state *state;
-> >  	const struct ov5640_mode_info *mode;
-> >  	int frame_rate, ret = 0;
-> >  
-> >  	if (fi->pad != 0)
-> >  		return -EINVAL;
-> >  
-> > -	mutex_lock(&sensor->lock);
-> > +	state = v4l2_subdev_lock_and_get_active_state(sd);
-> >  
-> >  	if (sensor->streaming) {
-> >  		ret = -EBUSY;
-> > @@ -3663,7 +3615,7 @@ static int ov5640_s_frame_interval(struct v4l2_subdev *sd,
-> >  		ov5640_update_pixel_rate(sensor);
-> >  	}
-> >  out:
-> > -	mutex_unlock(&sensor->lock);
-> > +	v4l2_subdev_unlock_state(state);
-> >  	return ret;
-> >  }
-> >  
-> > @@ -3694,6 +3646,7 @@ static int ov5640_enum_mbus_code(struct v4l2_subdev *sd,
-> >  static int ov5640_s_stream(struct v4l2_subdev *sd, int enable)
-> >  {
-> >  	struct ov5640_dev *sensor = to_ov5640_dev(sd);
-> > +	struct v4l2_subdev_state *state;
-> >  	int ret = 0;
-> >  
-> >  	if (enable) {
-> > @@ -3708,7 +3661,7 @@ static int ov5640_s_stream(struct v4l2_subdev *sd, int enable)
-> >  		}
-> >  	}
-> >  
-> > -	mutex_lock(&sensor->lock);
-> > +	state = v4l2_subdev_lock_and_get_active_state(sd);
-> >  
-> >  	if (sensor->streaming == !enable) {
-> >  		if (enable && sensor->pending_mode_change) {
-> > @@ -3734,7 +3687,7 @@ static int ov5640_s_stream(struct v4l2_subdev *sd, int enable)
-> >  	}
-> >  
-> >  out:
-> > -	mutex_unlock(&sensor->lock);
-> > +	v4l2_subdev_unlock_state(state);
-> >  
-> >  	if (!enable || ret) {
-> >  		pm_runtime_mark_last_busy(&sensor->i2c_client->dev);
-> > @@ -3778,7 +3731,7 @@ static const struct v4l2_subdev_video_ops ov5640_video_ops = {
-> >  static const struct v4l2_subdev_pad_ops ov5640_pad_ops = {
-> >  	.init_cfg = ov5640_init_cfg,
-> >  	.enum_mbus_code = ov5640_enum_mbus_code,
-> > -	.get_fmt = ov5640_get_fmt,
-> > +	.get_fmt = v4l2_subdev_get_fmt,
-> >  	.set_fmt = ov5640_set_fmt,
-> >  	.get_selection = ov5640_get_selection,
-> >  	.enum_frame_size = ov5640_enum_frame_size,
-> > @@ -3918,8 +3871,6 @@ static int ov5640_probe(struct i2c_client *client)
-> >  	if (ret)
-> >  		goto entity_cleanup;
-> >  
-> > -	mutex_init(&sensor->lock);
-> > -
-> >  	ret = ov5640_init_controls(sensor);
-> >  	if (ret)
-> >  		goto entity_cleanup;
-> > @@ -3938,9 +3889,16 @@ static int ov5640_probe(struct i2c_client *client)
-> >  	if (ret)
-> >  		goto err_pm_runtime;
-> >  
-> > +	sensor->sd.state_lock = sensor->ctrls.handler.lock;
-> > +	ret = v4l2_subdev_init_finalize(&sensor->sd);
-> > +	if (ret < 0) {
-> > +		dev_err(dev, "subdev init error: %d\n", ret);
-> > +		goto err_pm_runtime;
-> > +	}
-> > +
-> >  	ret = v4l2_async_register_subdev_sensor(&sensor->sd);
-> >  	if (ret)
-> > -		goto err_pm_runtime;
-> > +		goto subdev_cleanup;
-> >  
-> >  	pm_runtime_set_autosuspend_delay(dev, 1000);
-> >  	pm_runtime_use_autosuspend(dev);
-> > @@ -3949,6 +3907,8 @@ static int ov5640_probe(struct i2c_client *client)
-> >  
-> >  	return 0;
-> >  
-> > +subdev_cleanup:
-> > +	v4l2_subdev_cleanup(&sensor->sd);
-> >  err_pm_runtime:
-> >  	pm_runtime_put_noidle(dev);
-> >  	pm_runtime_disable(dev);
-> > @@ -3957,7 +3917,6 @@ static int ov5640_probe(struct i2c_client *client)
-> >  	v4l2_ctrl_handler_free(&sensor->ctrls.handler);
-> >  entity_cleanup:
-> >  	media_entity_cleanup(&sensor->sd.entity);
-> > -	mutex_destroy(&sensor->lock);
-> >  	return ret;
-> >  }
-> >  
-> > @@ -3973,9 +3932,9 @@ static void ov5640_remove(struct i2c_client *client)
-> >  	pm_runtime_set_suspended(dev);
-> >  
-> >  	v4l2_async_unregister_subdev(&sensor->sd);
-> > +	v4l2_subdev_cleanup(sd);
-> >  	media_entity_cleanup(&sensor->sd.entity);
-> >  	v4l2_ctrl_handler_free(&sensor->ctrls.handler);
-> > -	mutex_destroy(&sensor->lock);
-> >  }
-> >  
-> >  static const struct dev_pm_ops ov5640_pm_ops = {
-> 
-> -- 
-> Regards,
-> 
-> Laurent Pinchart
+Acked-by: Neil Armstrong <neil.armstrong@linaro.org>
