@@ -2,195 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2397FA7D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:16:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 201F67FA7D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:18:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231690AbjK0RQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 12:16:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41502 "EHLO
+        id S230127AbjK0RSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 12:18:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229975AbjK0RQG (ORCPT
+        with ESMTP id S229450AbjK0RSl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 12:16:06 -0500
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867DBAF;
-        Mon, 27 Nov 2023 09:16:12 -0800 (PST)
-Received: from [192.168.1.103] (178.176.78.85) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Mon, 27 Nov
- 2023 20:16:03 +0300
-Subject: Re: [PATCH 6/6] net: ravb: Keep reverse order of operations in
- ravb_remove()
-To:     Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
-        <yoshihiro.shimoda.uh@renesas.com>, <geert+renesas@glider.be>,
-        <wsa+renesas@sang-engineering.com>, <robh@kernel.org>,
-        <biju.das.jz@bp.renesas.com>,
-        <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        <mitsuhiro.kimura.kc@renesas.com>, <masaru.nagai.vx@renesas.com>
-CC:     <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20231127090426.3761729-1-claudiu.beznea.uj@bp.renesas.com>
- <20231127090426.3761729-7-claudiu.beznea.uj@bp.renesas.com>
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <716b433e-5e0c-4353-ea39-12cb4f3d50c4@omp.ru>
-Date:   Mon, 27 Nov 2023 20:16:03 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Mon, 27 Nov 2023 12:18:41 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B69B8
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 09:18:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701105526; x=1732641526;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=IeWgMNYJbeQkrdFCwUKq5pjzWu7XROofYR8g0Wh0qeQ=;
+  b=Y15kz/Q+lFiQox3cmzFUsYrXQ5hX8hQUgo7pMWIQd324XS3X0Cu0DUIS
+   2qUQESi9ZyIj1L0n7vx1ix0wHv082YyWw/rrG6SEyq/B1wcZy4jgQCF22
+   ZwNRhJ66Ftl3ge3wWYi6aNXQkJobxascSNHkfzJgN0uu0QGQazyW6jNwU
+   SpKQMeE9O52ebqs/o48h5jmM7GkgUHTO/Xm0uUELgZmuB7XITCrMAZxyf
+   0SMJReqckt46qclZphm+WymBLc0kaKBwQivjZBIjz1e1oyq11T4dBV09s
+   yyDi9vb29LalYaEfogI7JcFyl/xuux7UpPkD+12/qavFIWjDbf1dFb3C/
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="383136134"
+X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
+   d="scan'208";a="383136134"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 09:18:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="718096243"
+X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
+   d="scan'208";a="718096243"
+Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 27 Nov 2023 09:18:44 -0800
+Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r7fFq-0006Us-0V;
+        Mon, 27 Nov 2023 17:18:42 +0000
+Date:   Tue, 28 Nov 2023 01:18:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Peng Liu <pngliu@hotmail.com>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        frederic@kernel.org, tglx@linutronix.de, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, liupeng17@lenovo.com
+Subject: Re: [PATCH 1/2] tick/nohz: Remove duplicate between
+ tick_nohz_switch_to_nohz() and tick_setup_sched_timer()
+Message-ID: <202311272337.qYKX6cSh-lkp@intel.com>
+References: <TYCP286MB21464B3653B956AF71806931C6BDA@TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-In-Reply-To: <20231127090426.3761729-7-claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [178.176.78.85]
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 11/27/2023 17:01:00
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 181625 [Nov 27 2023]
-X-KSE-AntiSpam-Info: Version: 6.0.0.2
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 5 0.3.5 98d108ddd984cca1d7e65e595eac546a62b0144b
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.78.85 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;omp.ru:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.78.85
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 11/27/2023 17:06:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 11/27/2023 3:21:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <TYCP286MB21464B3653B956AF71806931C6BDA@TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/23 12:04 PM, Claudiu wrote:
+Hi Peng,
 
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> 
-> On RZ/G3S SMARC Carrier II board having RGMII connections b/w Ethernet
-> MACs and PHYs it has been discovered that doing unbind/bind for ravb
-> driver in a loop leads to wrong speed and duplex for Ethernet links and
-> broken connectivity (the connectivity cannot be restored even with
-> bringing interface down/up). Before doing unbind/bind the Ethernet
-> interfaces were configured though systemd. The sh instructions used to
-> do unbind/bind were:
-> 
-> $ cd /sys/bus/platform/drivers/ravb/
-> $ while :; do echo 11c30000.ethernet > unbind ; \
->   echo 11c30000.ethernet > bind; done
-> 
-> It has been discovered that there is a race b/w IOCTLs initialized by
-> systemd at the response of success binding and the
-> "ravb_write(ndev, CCC_OPC_RESET, CCC)" instruction in ravb_remove() as
+kernel test robot noticed the following build errors:
 
-   s/instruction/call/, perhaps?
+[auto build test ERROR on tip/timers/core]
+[also build test ERROR on linus/master v6.7-rc3 next-20231127]
+[cannot apply to tip/timers/nohz]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> follows:
-> 
-> 1/ as a result of bind success the user space open/configures the
->    interfaces tough an IOCTL; the following stack trace has been
->    identified on RZ/G3S:
-> 
-> Call trace:
-> dump_backtrace+0x9c/0x100
-> show_stack+0x20/0x38
-> dump_stack_lvl+0x48/0x60
-> dump_stack+0x18/0x28
-> ravb_open+0x70/0xa58
-> __dev_open+0xf4/0x1e8
-> __dev_change_flags+0x198/0x218
-> dev_change_flags+0x2c/0x80
-> devinet_ioctl+0x640/0x708
-> inet_ioctl+0x1e4/0x200
-> sock_do_ioctl+0x50/0x108
-> sock_ioctl+0x240/0x358
-> __arm64_sys_ioctl+0xb0/0x100
-> invoke_syscall+0x50/0x128
-> el0_svc_common.constprop.0+0xc8/0xf0
-> do_el0_svc+0x24/0x38
-> el0_svc+0x34/0xb8
-> el0t_64_sync_handler+0xc0/0xc8
-> el0t_64_sync+0x190/0x198
-> 
-> 2/ this call may execute concurrently with ravb_remove() as the
->    unbind/bind operation was executed in a loop
-> 3/ if the operation mode is changed to RESET (though
+url:    https://github.com/intel-lab-lkp/linux/commits/Peng-Liu/tick-nohz-Remove-duplicate-between-tick_nohz_lowres_handler-and-tick_nohz_highres_handler/20231127-163637
+base:   tip/timers/core
+patch link:    https://lore.kernel.org/r/TYCP286MB21464B3653B956AF71806931C6BDA%40TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM
+patch subject: [PATCH 1/2] tick/nohz: Remove duplicate between tick_nohz_switch_to_nohz() and tick_setup_sched_timer()
+config: x86_64-randconfig-004-20231127 (https://download.01.org/0day-ci/archive/20231127/202311272337.qYKX6cSh-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231127/202311272337.qYKX6cSh-lkp@intel.com/reproduce)
 
-   Through?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311272337.qYKX6cSh-lkp@intel.com/
 
->    ravb_write(ndev, CCC_OPC_RESET, CCC) instruction in ravb_remove())
+All errors (new ones prefixed by >>):
 
-   s/instruction/call/, perhaps?
+   kernel/time/tick-sched.c:1546:30: error: use of undeclared identifier 'tick_nohz_highres_handler'; did you mean 'tick_nohz_lowres_handler'?
+                   ts->sched_timer.function = tick_nohz_highres_handler;
+                                              ^~~~~~~~~~~~~~~~~~~~~~~~~
+                                              tick_nohz_lowres_handler
+   kernel/time/tick-sched.c:1395:13: note: 'tick_nohz_lowres_handler' declared here
+   static void tick_nohz_lowres_handler(struct clock_event_device *dev)
+               ^
+>> kernel/time/tick-sched.c:1552:6: error: use of undeclared identifier 'sched_skew_tick'; did you mean 'scheduler_tick'?
+           if (sched_skew_tick) {
+               ^~~~~~~~~~~~~~~
+               scheduler_tick
+   include/linux/sched.h:294:13: note: 'scheduler_tick' declared here
+   extern void scheduler_tick(void);
+               ^
+   2 errors generated.
 
->    while the above ravb_open() is in progress it may lead to MAC
->    (or PHY, or MAC-PHY connection, the right point hasn't been identified
->    at the moment) to be broken, thus the Ethernet connectivity fails to
->    restore.
-> 
-> The simple fix for this is to move ravb_write(ndev, CCC_OPC_RESET, CCC))
-> after unregister_netdev() to avoid resetting the controller while the
-> netdev interface is still registered.
-> 
-> To avoid future issues in ravb_remove(), the patch follows the proper order
-> of operations in ravb_remove(): reverse order compared with ravb_probe().
-> This avoids described races as the IOCTLs as well as unregister_netdev()
-> (called now at the beginning of ravb_remove()) calls rtnl_lock() before
-> continuing and IOCTLs check (though devinet_ioctl()) if device is still
-> registered just after taking the lock:
-> 
-> int devinet_ioctl(struct net *net, unsigned int cmd, struct ifreq *ifr)
-> {
-> 	// ...
-> 
->         rtnl_lock();
-> 
->         ret = -ENODEV;
->         dev = __dev_get_by_name(net, ifr->ifr_name);
->         if (!dev)
->                 goto done;
-> 
-> 	// ...
-> done:
->         rtnl_unlock();
-> out:
->         return ret;
-> }
-> 
-> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+vim +1552 kernel/time/tick-sched.c
 
-[...]
+62cf20b32aee4a Thomas Gleixner           2012-05-25  1533  
+de667c3b095eed Peng Liu                  2023-11-27  1534  #if defined CONFIG_NO_HZ_COMMON || defined CONFIG_HIGH_RES_TIMERS
+79bf2bb335b85d Thomas Gleixner           2007-02-16  1535  /**
+79bf2bb335b85d Thomas Gleixner           2007-02-16  1536   * tick_setup_sched_timer - setup the tick emulation timer
+79bf2bb335b85d Thomas Gleixner           2007-02-16  1537   */
+de667c3b095eed Peng Liu                  2023-11-27  1538  void tick_setup_sched_timer(int mode)
+79bf2bb335b85d Thomas Gleixner           2007-02-16  1539  {
+22127e93c587af Christoph Lameter         2014-08-17  1540  	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
+79bf2bb335b85d Thomas Gleixner           2007-02-16  1541  	ktime_t now = ktime_get();
+79bf2bb335b85d Thomas Gleixner           2007-02-16  1542  
+6c774377359923 Ingo Molnar               2023-09-28  1543  	/* Emulate tick processing via per-CPU hrtimers: */
+902a9f9c509053 Sebastian Andrzej Siewior 2019-07-26  1544  	hrtimer_init(&ts->sched_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_HARD);
+de667c3b095eed Peng Liu                  2023-11-27  1545  	if (mode == NOHZ_MODE_HIGHRES)
+dba428a678c726 Frederic Weisbecker       2023-09-12  1546  		ts->sched_timer.function = tick_nohz_highres_handler;
+79bf2bb335b85d Thomas Gleixner           2007-02-16  1547  
+0de7611a1031f2 Ingo Molnar               2016-07-01  1548  	/* Get the next period (per-CPU) */
+cc584b213f252b Arjan van de Ven          2008-09-01  1549  	hrtimer_set_expires(&ts->sched_timer, tick_init_jiffy_update());
+79bf2bb335b85d Thomas Gleixner           2007-02-16  1550  
+6c774377359923 Ingo Molnar               2023-09-28  1551  	/* Offset the tick to avert 'jiffies_lock' contention. */
+5307c9556bc17e Mike Galbraith            2012-05-08 @1552  	if (sched_skew_tick) {
+b9965449164299 Thomas Gleixner           2020-11-17  1553  		u64 offset = TICK_NSEC >> 1;
+5307c9556bc17e Mike Galbraith            2012-05-08  1554  		do_div(offset, num_possible_cpus());
+5307c9556bc17e Mike Galbraith            2012-05-08  1555  		offset *= smp_processor_id();
+5307c9556bc17e Mike Galbraith            2012-05-08  1556  		hrtimer_add_expires_ns(&ts->sched_timer, offset);
+5307c9556bc17e Mike Galbraith            2012-05-08  1557  	}
+5307c9556bc17e Mike Galbraith            2012-05-08  1558  
+b9965449164299 Thomas Gleixner           2020-11-17  1559  	hrtimer_forward(&ts->sched_timer, now, TICK_NSEC);
+de667c3b095eed Peng Liu                  2023-11-27  1560  	if (mode == NOHZ_MODE_HIGHRES)
+902a9f9c509053 Sebastian Andrzej Siewior 2019-07-26  1561  		hrtimer_start_expires(&ts->sched_timer, HRTIMER_MODE_ABS_PINNED_HARD);
+de667c3b095eed Peng Liu                  2023-11-27  1562  	else
+de667c3b095eed Peng Liu                  2023-11-27  1563  		tick_program_event(hrtimer_get_expires(&ts->sched_timer), 1);
+de667c3b095eed Peng Liu                  2023-11-27  1564  	tick_nohz_activate(ts, mode);
+79bf2bb335b85d Thomas Gleixner           2007-02-16  1565  }
+3c4fbe5e01d7e5 Miao Xie                  2008-08-20  1566  #endif /* HIGH_RES_TIMERS */
+79bf2bb335b85d Thomas Gleixner           2007-02-16  1567  
 
-   Sorry for overlooking this race (and other bugs) when prepping
-the driver for upstream!
-
-MBR, Sergey
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
