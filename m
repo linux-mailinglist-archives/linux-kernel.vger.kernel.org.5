@@ -2,203 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EDB57FA83B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:41:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 662A97FA83A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:41:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231741AbjK0Rlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 12:41:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37320 "EHLO
+        id S232243AbjK0RlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 12:41:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231239AbjK0Rlj (ORCPT
+        with ESMTP id S231239AbjK0RlG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 12:41:39 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09C20BF
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 09:41:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701106906; x=1732642906;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=IOdRKu/3USkrR1SdI68gXGGhR5HVAqkW4C93uwg7w64=;
-  b=kd5m1iOQSDePjkxP20k+Bwdd93sBAsGSRWAaxhJhSl4Ix1GNrxzHfXjg
-   Ce3EXsc8Tl9Z9m9ZY3U3ZSvgNfKoWbtJ0nYIcKpME6j5Apu7zQWsKMJiC
-   RWYBgrhFRpKNA0sBWxWIhPPZ3nD6vpiiW3+bXbIUWD5UznFQULCfUBIID
-   WVZsqmplyPx/CkpZXStLcFLTnRg7iOJDXPr2BqZVcRhRBDoP1GwLv3WMW
-   B120XBQ95EHxAB98rOBxy34bgBRIXR5ymP2Mjaar/waAvaF+Q26TvKmuc
-   KgskzhWw25mc3tmCjmef0PBnpj9NKfPE6lJJhjpcebYwdl+QRn/8DBl3d
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="372130728"
-X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
-   d="scan'208";a="372130728"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 09:41:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="744632676"
-X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
-   d="scan'208";a="744632676"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Nov 2023 09:41:33 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 27 Nov 2023 09:41:32 -0800
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 27 Nov 2023 09:41:31 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Mon, 27 Nov 2023 09:41:31 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Mon, 27 Nov 2023 09:41:18 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RqEFrAY6I/z0q0pYnw6BTQJ1X3skvHQzmNEEVCk7+usd8o5KC5kwSnwDZKkQasFxg54y3SdWE0/DMZLcZLXIuEU90/mUmWDcQnNwhrNenMjyV/2f6XdAjzc5GMGGi0puM9ZM4i3E4GiaWtc2Bq9qRML4ylXa/KDZpfOkGloGv0TJilkrHT0e3d51GNPa8JEZtkRt3UQdFci0MACu/uUlboDPgvyAf7DctUVUK7wMhS7zxJQsPOALhXJ+0OzXRdiV8AixWIGJ5KE/rtEQYUWOln+LIwcPKOAcbfohXEONbEFS9vcttWryv6XLzGkkdiOOqqk4gl8JHLqnWakhIbk9Pw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IOdRKu/3USkrR1SdI68gXGGhR5HVAqkW4C93uwg7w64=;
- b=YJUEssn7U+BHAnvi6LFTQZSl7TwmvPiPI5gUTrNcf1DQ1zbweQdF1aMyrwDs8D+DZuRApM/kUzlc29w4q3ffOS/hpaJrncv19DbtbnwPzmD1P3AI6oIvsSilqr1qcLlQoY+wLt+noqGNlABPHkM30gsPS3joqI74M260OtkijtFWl33vH6jkd0g+F9ovM/uktRK/QrRaSseUPMiOlqEscyE1yJGrkfhlxIF11gHUxtuPka2XdRQP25XHJCV6td9hvE3iJd0OQPqaDN2+bOnRZzMDfTyT3wB7VqKXNCtz/C2nNnbW2cZ0+empjXk+UPeuVfEU+ZT3MnkGItOVGr6zsA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
- by LV8PR11MB8679.namprd11.prod.outlook.com (2603:10b6:408:1f9::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Mon, 27 Nov
- 2023 17:41:16 +0000
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::5260:13db:a6e:35e9]) by MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::5260:13db:a6e:35e9%6]) with mapi id 15.20.7025.022; Mon, 27 Nov 2023
- 17:41:16 +0000
-From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To:     "keescook@chromium.org" <keescook@chromium.org>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "szabolcs.nagy@arm.com" <szabolcs.nagy@arm.com>,
-        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-        "debug@rivosinc.com" <debug@rivosinc.com>,
-        "kito.cheng@sifive.com" <kito.cheng@sifive.com>
-CC:     "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: Shadow stack enabling from dynamic loader v/s kernel on exec
-Thread-Topic: Shadow stack enabling from dynamic loader v/s kernel on exec
-Thread-Index: AQHaHaLVAy4ouJt4Q0WQalPzbfPTrrCOdpGA
-Date:   Mon, 27 Nov 2023 17:41:16 +0000
-Message-ID: <d36b02fc0da364ea0d660e5e5ecac9df7e327f79.camel@intel.com>
-References: <CAKC1njRkpaqbAFWrZpz75u4M-T8mniY2QHVZEENameqnHOOGPg@mail.gmail.com>
-In-Reply-To: <CAKC1njRkpaqbAFWrZpz75u4M-T8mniY2QHVZEENameqnHOOGPg@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|LV8PR11MB8679:EE_
-x-ms-office365-filtering-correlation-id: 0bb07c22-e8fe-45d7-b141-08dbef700e6c
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 33/4RHAOTtQtAFthKq3QhTXgEHcnMbeN+P7vLDGzvu5gz0dDGJd9c/cfqpQxAaktucZiT5JqXOX7Awh9yjJ5c/cwWmDBNHv93G4/BHuG5CMMfWMR2laZ5mjUu8FuUTDT1l1pA1VsTqBF9HvxrqMs38n2lsnHzdDb2lHUBQEVrMNCXRig5AxwyInAic3TsJIfyBNTm9Kfn6o8GnR6pjgO4rXWazbb3Swo2MQhHNm3xteJw/XVrhqdTQFFFQgCGtUolyhzGm4VHyp2HdJissOuz8NQRx8fcPUcACht51WP4zjarXWfjhF4u/RG5dXiGHh/XH5nFHcT8emmaQ1XUGtOcpa2Z1VTXNuCUe7oEkUAmRVch5LQs+Xdx5Z4MhvNuI6Co3CtECzv64XUxMAQZ6Fldcs0uG3lMLLxkDFKygHo0bw2dylnFN5IGN9QvB47YyLL2IyoqQsdl+ab7ZyLDi7gNKvLzGeIoAe0Jc4mAQ0iOvQwk9BwsYboy6swg5AClabganmDY9ziJMiIWqhdQ+lmrJ6axMvRIlZtOwMm9veQ/h2qjszHt2MGIITgHJ9B5IKSbrmq2Ae6vZGSF6nwZpklbIgu+dhn5GiX7cNB01H4Qiod326ansoJTnJvIaTbDX6M
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(39860400002)(346002)(136003)(366004)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(38100700002)(41300700001)(36756003)(86362001)(4001150100001)(38070700009)(122000001)(83380400001)(5660300002)(82960400001)(26005)(2616005)(2906002)(6512007)(6506007)(71200400001)(8676002)(4326008)(8936002)(478600001)(6486002)(66899024)(66446008)(64756008)(54906003)(66946007)(76116006)(110136005)(91956017)(66476007)(66556008)(316002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MTJoWXVXUXRsVFBsVURvUThaQndnQ3JGRnc0UFRITktvemtwV1VqcVkzUWRv?=
- =?utf-8?B?djZyVW9xbUZKYWxoMUIwQmpENndzR1Z2ZERKY21kaWJwbFZPeW5mVlNpY3Na?=
- =?utf-8?B?Vk9CRXBlOFRWTFBXS0ZCaUxscGNnMURWSGhFSmdaSHBla2tKTWFaRm9oQXdu?=
- =?utf-8?B?ejlzTWhobENqcWQzTGQ5c3JWVmo5aWN2bTgwWlp6ZmhRbEl2VUhkbEZmZEs4?=
- =?utf-8?B?S2ltMXFUUjBjeDZUVWdjQkJvZ2Q5ajNJNTZ2Z3hmYy94R3BrQnF1TTZjb1pp?=
- =?utf-8?B?bWNtVUpMK21lcDlJOFVpUFpTbjRDQ1EwZklKK0VXSGlHclcrOFEzR1JwaUpN?=
- =?utf-8?B?M3AyWE5xTEVxd0JGQVc1VHdvQmhTZEZBb0dXSjJyeWh0ckk3OHdIaVpKVDRq?=
- =?utf-8?B?MDYwUjZ2aU1hbms0dWRDZno5SUNjUmdDVzRac0lsSmhkMm1ib1VuM2dHR1FF?=
- =?utf-8?B?MzI3ZXZ5SjVuS0hBOGd6bXdEdVRkWkxqVGlINytNSTBhUElZaXpGUDBkaXZL?=
- =?utf-8?B?R1pzRUIyd3Y5VlpaTUk1WGt5UnVaOWRBdHNLM0lvRnQ1cTY5aFZ2QVJNNmNt?=
- =?utf-8?B?RWlpZWFiT0FMZ1BqZ1pkNXFGK2xpYWo1ejFSU29sYTdXRDgya0tJaGp5ekd4?=
- =?utf-8?B?cXR6TkhNL0pDa1BGNjk0TlVHalZvMGlnc2ZQeXMyTlhSemZjYmgwektXQXNH?=
- =?utf-8?B?MXNkcUpRMlFZS1ZZQUd2YXVQK2s4OWtGcTlVS1pLWUdLb2FUdXRlb3FQRTlU?=
- =?utf-8?B?YVJGWG9BSjJjVkJMeWMrV3ZwTThDbFdJL3Zlc3dWU0tsczdWOWtmN1cxbWxY?=
- =?utf-8?B?YW43cWhKam1HeW44cmJUS2hBT1VLZ0hVMnN3QWNnelBvL1RPMllTVFp0aGZl?=
- =?utf-8?B?ME1vYisrblF0TG93eGFsdzJCN2FiNDdaQUllcXAvcTVDd1V4eHRiTTVGNDFT?=
- =?utf-8?B?MDV5SVZFWFNIN0k1V1dodlQzNnhIVVg2SHNYYUZjK1N6WlpyRElNdXBVdk5X?=
- =?utf-8?B?OVh4NVlFTDlOc0FjMk1SYWl6dFNubmRjVnVYODRGTnhlUlJBYlNrcWRmWU5N?=
- =?utf-8?B?NGhwbzM1ZFhNcXM3SnlIZDVSNjV6eU9GUHZPSmN6VG1mWjc4dEZ6dW5ZcVQw?=
- =?utf-8?B?NE15dER6VzNmeEg4UnF2ZVZtRytZT0cyV2ZlMnk0WHppZU1zWDRlSm1pdUEy?=
- =?utf-8?B?S0RveWVKOFgzaHE2TVcrVG1OYjg1aEVGall2Y1ZGa0NzWUJzaC9HOVYwd1RI?=
- =?utf-8?B?NzNrT0k2K1R4WWtCaVdDelorUmQ4b0dFTmV4MWcvcHZvbG1IYUhSRkU5Vy9V?=
- =?utf-8?B?V1NYbTdtWFU2NzJybXMrWTg1WjRaY1RYbnY0c1Y0T09wSWVKeUsvQWVEZVdB?=
- =?utf-8?B?ZC9wcXgybDFGUUpnbGVJNFJuZWRycTNEK1labWhhUmpmdWZscEttSnZzVlh2?=
- =?utf-8?B?OTVGNkN6OVIvWnNRNEw0YjZPWkVoVUYxbE5WUzM0QklZSHVSYTB0RC95YXVj?=
- =?utf-8?B?N2M4c1dCOXQvUTg1TmFrSk5jazloeHZMbkJxZysxak02UW42ckpnaUFBeXRn?=
- =?utf-8?B?OVNhVWRRaGFwQ1NWUjZUend1eERGWXl1MzlLOVNXTjlQTTZMM2crOFhJcThB?=
- =?utf-8?B?RnlyaCt3QXlyRjNkdGFqUGc5VzdHb280MjhNMlFzZFJkN2VmQloxbGNQaDFa?=
- =?utf-8?B?U1FiQjJIU05RUzZXeUorWm1lTFNmK0F0Mk5WZ2piajhBazdVWDh5dHFIWlJH?=
- =?utf-8?B?cm40YStBY2NZODlrYkJGS0NWSHNYZzRvSHcrSjYvRzREQjYwSFdQb2ppa3RL?=
- =?utf-8?B?MFphZXNHMUFCMkRQc3dkOEhLNUc0ZllOR05CUHVJMW8rRHdTZ2h6c3BGN1ZG?=
- =?utf-8?B?NFBnd1RxcWVudGhkd0NidVlzN0pacXFBM1E2N2dNU3h1TGFnai9EQjZZc3BE?=
- =?utf-8?B?MWgwKzFtT2xTbUpEZFlKQzJLY3Baa2FiRkNLVHVxbCtZM2dBODdxUEZ3UHFw?=
- =?utf-8?B?VWlVa2I4RnpWVDA2bnJHSU5SOW5KMlh5V3l4ZTRIdWpZaDd2TVJNdGxnRjJL?=
- =?utf-8?B?RWp2aE1QSWR3K2czalBidjZyemFNM1RaRHVsdU5ENmw1ZUdrUi9VRzlkbGFD?=
- =?utf-8?B?MWd3N2NlRGk4L1pzcGp1Mkp2Q3VTVzRhUnZJc2lYaTFhTzlDT1Z0ZGUrR1oz?=
- =?utf-8?B?SHc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <0E0BDC81E5876E4D9E3B9D0E36BA5BBA@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Mon, 27 Nov 2023 12:41:06 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B015219B
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 09:41:11 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A50D0C433C9;
+        Mon, 27 Nov 2023 17:41:10 +0000 (UTC)
+Date:   Mon, 27 Nov 2023 12:41:30 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Petr Pavlu <petr.pavlu@suse.com>
+Cc:     mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
+        zhengyejian1@huawei.com, linux-trace-kernel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] tracing: Simplify and fix "buffered event"
+ synchronization
+Message-ID: <20231127124130.1041ffd4@gandalf.local.home>
+In-Reply-To: <20231127151248.7232-2-petr.pavlu@suse.com>
+References: <20231127151248.7232-1-petr.pavlu@suse.com>
+        <20231127151248.7232-2-petr.pavlu@suse.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0bb07c22-e8fe-45d7-b141-08dbef700e6c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Nov 2023 17:41:16.0329
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ayFTDRuM3SDiSQikXemKcKt3ibQP0qCGzGi/lmMU0zOdxeqyB7ttpNVenCOW8YG9qh9P7c1hx6jTW/zYCn67lAm+D0rhx3iKasW3tRXRjnU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR11MB8679
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIzLTExLTIyIGF0IDE2OjE5IC0wODAwLCBEZWVwYWsgR3VwdGEgd3JvdGU6DQo+
-IEkgZG9uJ3Qgd2FudCB0byBkaXZlcnQgZm9jdXMgZnJvbSBwYXRjaCBzcGVjaWZpYyBjb21tZW50
-cyBvbiBzaGFkb3cNCj4gc3RhY2sgcGF0Y2hlcyB0aGF0J3JlIGJlaW5nDQo+IGRpc2N1c3NlZCBp
-biB0aGUgbWFpbGluZyBsaXN0LiBBbmQgdGhhdCdzIHN0YXJ0aW5nIHRoaXMgc2VwYXJhdGUNCj4g
-dGhyZWFkIGFib3V0IGVuYWJsaW5nIHRoZSBzaGFkb3cNCj4gc3RhY2sgaW4gdGhlIGR5bmFtaWMg
-bG9hZGVyIHYvcyBrZXJuZWwuIEkndmUgcHV0IHJlbGV2YW50IGZvbGtzIGluDQo+ICJUbyIgYW5k
-ICJrZXJuZWwiIGFuZCAibGliYyIgaW4gQ0MuDQoNClRoYW5rcy4gQXMgd2UgbG9vayBhdCBhZGRp
-bmcgc29tZSBmaW5hbCBnbGliYyBzdXBwb3J0LCBJJ3ZlIHdvbmRlcmVkIGlmDQp0aGVyZSBtaWdo
-dCBiZSBlbm91Z2ggdG9waWNzIHRvIHdhcnJhbnQgYW4gb2NjYXNpb25hbCBtZWV0aW5nIHRvDQpk
-aXNjdXNzIHN0dWZmIGxpa2UgdGhpcy4gSSdkIGFsc28gbGlrZSB0byBkaXNjdXNzIHRoZSBzaGFk
-b3cgc3RhY2sgbGlmZQ0KY3ljbGUgaXNzdWVzICh1bmNvbnRleHQsIGV0YyksIGFsdCBzaGFkb3cg
-c3RhY2tzIGFuZCBhbGwgb2YgdGhlDQpjb21wYXRpYmlsaXR5IGxhc3QgbWlsZSBwcm9ibGVtcy4g
-VG93YXJkcyB0aGUgZ29hbCBvZiBhdm9pZGluZw0KdW5uZWNlc3NhcnkgZGl2ZXJnZW5jZSBvbiBh
-cHAgZGV2ZWxvcGVyIGV4cGVjdGF0aW9ucy4NCg0KPiBUaGlzIGhhcyBtYW55IGFkdmFudGFnZXMN
-Cj4gLSBkeW5hbWljIGxvYWRlcnMgKGFuZCBzdGF0aWMgYmluYXJ5KSBhcmUgcHJvdGVjdGVkIGZy
-b20gbG9hZGVyDQo+IHNwZWNpZmljIFJPUCBhdHRhY2sgaW4gYSBzbWFsbCB3aW5kb3cNCg0KTG9h
-ZGVycyBjYW4gY2FsbCB0aGUgcHJjdGwoKSBhcyB0aGUgZmlyc3Qgc3RlcCwgc28gdGhlIGxvYWRl
-ciBpcw0KcHJvdGVjdGVkLiBUaGUgeDg2IGdsaWJjIHBhdGNoZXMgZGlkIHRoaXMgYXQgb25lIHBv
-aW50LiBTbyB0aGUgcHJjdGwNCnN1cHBvcnRzIGVuYWJsaW5nIGF0IHByZXR0eSBjbG9zZSB0byBl
-aXRoZXIgcG9pbnQsICJleGVjIHRpbWUiIG9yIGxhdGVyDQppbiB0aGUgbG9hZGVyIHByb2Nlc3Mu
-IEVuYWJsaW5nIGJlZm9yZSB0aGUgZmlyc3QgQ0FMTCAob3IgdW53b3VuZCB0bw0KdGhhdCBwb2lu
-dCkgbGVhdmVzIHRoZSBzaGFkb3cgc3RhY2sncyBiYWxhbmNlZC4NCg0KSSB0aGluayB0aGUgbWFp
-biBkaXNhZHZhbnRhZ2UgYXJlOg0KIC0gKk1heWJlKiBpdCByZXF1aXJlcyBkdXBsaWNhdGlvbiBm
-b3IgdGhlIHNlY2NvbXAgdXNlIGNhc2UNCiAtIFJlcXVpcmVzIG1hcHBpbmcsIHRoZW4gdW5tYXBw
-aW5nIHNoYWRvdyBzdGFjayBmb3IgY2FzZXMgb2YNCmluY29tcGF0aWJsZSBEU08gb3IgZGlzYWJs
-ZSB2aWEgVFVOQUJMRQ0KDQpJdCBpcyBwcm9iYWJseSB3b3J0aCBub3RpbmcsIHRoZSBvbGQgZWxm
-IGJpdCBiYXNlZCBlbmFibGluZyB3b3VsZA0KZW5hYmxlIHNoYWRvdyBzdGFjayBpZiB0aGUgKmxv
-YWRlciogRFNPIGhhZCB0aGUgZWxmIGJpdCBzZXQuIFRoZW4gdGhlDQpsb2FkZXIgd291bGQgY2hl
-Y2sgdGhlIGVsZiBiaXQgb2YgdGhlIGV4ZWNpbmcgYmluYXJ5LCBhbmQgZGlzYWJsZQ0Kc2hhZG93
-IHN0YWNrIGlmIG5vdCBzdXBwb3J0ZWQuIFRoaXMgbWVhbnMgd2l0aCBzaGFkb3cgc3RhY2sgZW5h
-YmxlZA0Ka2VybmVsIGFuZCBnbGliYywgYWxsIGxlZ2FjeSBhcHBzIHdvdWxkIGJlIHN1YmplY3Rl
-ZCB0byBhIG1hcCBhbmQgdW5tYXANCm9mIHRoZSBzaGFkb3cgc3RhY2suIEl0IHByb2JhYmx5IGlz
-bid0IHRoZSBiaWdnZXN0IGRlYWwsIGJ1dCBpdCdzIG5pY2UNCnRvIGF2b2lkLg0K
+On Mon, 27 Nov 2023 16:12:47 +0100
+Petr Pavlu <petr.pavlu@suse.com> wrote:
+
+> The following warning appears when using buffered events:
+> [  203.556451] WARNING: CPU: 53 PID: 10220 at kernel/trace/ring_buffer.c:3912 ring_buffer_discard_commit+0x2eb/0x420
+
+Hmm, I don't have a waring on line 3912, do you have extra code (debugging)
+in your version?
+
+> [...]
+> [  203.670690] CPU: 53 PID: 10220 Comm: stress-ng-sysin Tainted: G            E      6.7.0-rc2-default #4 56e6d0fcf5581e6e51eaaecbdaec2a2338c80f3a
+> [  203.670704] Hardware name: Intel Corp. GROVEPORT/GROVEPORT, BIOS GVPRCRB1.86B.0016.D04.1705030402 05/03/2017
+> [  203.670709] RIP: 0010:ring_buffer_discard_commit+0x2eb/0x420
+> [  203.735721] Code: 4c 8b 4a 50 48 8b 42 48 49 39 c1 0f 84 b3 00 00 00 49 83 e8 01 75 b1 48 8b 42 10 f0 ff 40 08 0f 0b e9 fc fe ff ff f0 ff 47 08 <0f> 0b e9 77 fd ff ff 48 8b 42 10 f0 ff 40 08 0f 0b e9 f5 fe ff ff
+> [  203.735734] RSP: 0018:ffffb4ae4f7b7d80 EFLAGS: 00010202
+> [  203.735745] RAX: 0000000000000000 RBX: ffffb4ae4f7b7de0 RCX: ffff8ac10662c000
+> [  203.735754] RDX: ffff8ac0c750be00 RSI: ffff8ac10662c000 RDI: ffff8ac0c004d400
+> [  203.781832] RBP: ffff8ac0c039cea0 R08: 0000000000000000 R09: 0000000000000000
+> [  203.781839] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+> [  203.781842] R13: ffff8ac10662c000 R14: ffff8ac0c004d400 R15: ffff8ac10662c008
+> [  203.781846] FS:  00007f4cd8a67740(0000) GS:ffff8ad798880000(0000) knlGS:0000000000000000
+> [  203.781851] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  203.781855] CR2: 0000559766a74028 CR3: 00000001804c4000 CR4: 00000000001506f0
+> [  203.781862] Call Trace:
+> [  203.781870]  <TASK>
+> [  203.851949]  trace_event_buffer_commit+0x1ea/0x250
+> [  203.851967]  trace_event_raw_event_sys_enter+0x83/0xe0
+> [  203.851983]  syscall_trace_enter.isra.0+0x182/0x1a0
+> [  203.851990]  do_syscall_64+0x3a/0xe0
+> [  203.852075]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> [  203.852090] RIP: 0033:0x7f4cd870fa77
+> [  203.982920] Code: 00 b8 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 66 90 b8 89 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e9 43 0e 00 f7 d8 64 89 01 48
+> [  203.982932] RSP: 002b:00007fff99717dd8 EFLAGS: 00000246 ORIG_RAX: 0000000000000089
+> [  203.982942] RAX: ffffffffffffffda RBX: 0000558ea1d7b6f0 RCX: 00007f4cd870fa77
+> [  203.982948] RDX: 0000000000000000 RSI: 00007fff99717de0 RDI: 0000558ea1d7b6f0
+> [  203.982957] RBP: 00007fff99717de0 R08: 00007fff997180e0 R09: 00007fff997180e0
+> [  203.982962] R10: 00007fff997180e0 R11: 0000000000000246 R12: 00007fff99717f40
+> [  204.049239] R13: 00007fff99718590 R14: 0000558e9f2127a8 R15: 00007fff997180b0
+> [  204.049256]  </TASK>
+> 
+> For instance, it can be triggered by running these two commands in
+> parallel:
+> $ while true; do
+>     echo hist:key=id.syscall:val=hitcount > \
+>       /sys/kernel/debug/tracing/events/raw_syscalls/sys_enter/trigger;
+>   done
+> $ stress-ng --sysinfo $(nproc)
+> 
+> The warning indicates that the current ring_buffer_per_cpu is not in the
+> committing state. It happens because the active ring_buffer_event
+> doesn't actually come from the ring_buffer_per_cpu but is allocated from
+> trace_buffered_event.
+> 
+> The bug is in function trace_buffered_event_disable() where the
+> following normally happens:
+> * The code invokes disable_trace_buffered_event() via
+>   smp_call_function_many() and follows it by synchronize_rcu(). This
+>   increments the per-CPU variable trace_buffered_event_cnt on each
+>   target CPU and grants trace_buffered_event_disable() the exclusive
+>   access to the per-CPU variable trace_buffered_event.
+> * Maintenance is performed on trace_buffered_event, all per-CPU event
+>   buffers get freed.
+> * The code invokes enable_trace_buffered_event() via
+>   smp_call_function_many(). This decrements trace_buffered_event_cnt and
+>   releases the access to trace_buffered_event.
+> 
+> A problem is that smp_call_function_many() runs a given function on all
+> target CPUs except on the current one. The following can then occur:
+> * Task X executing trace_buffered_event_disable() runs on CPU A.
+> * The control reaches synchronize_rcu() and the task gets rescheduled on
+>   another CPU B.
+> * The RCU synchronization finishes. At this point,
+>   trace_buffered_event_disable() has the exclusive access to all
+>   trace_buffered_event variables except trace_buffered_event[A] because
+>   trace_buffered_event_cnt[A] is never incremented and if the buffer is
+>   currently unused, remains set to 0.
+> * A different task Y is scheduled on CPU A and hits a trace event. The
+>   code in trace_event_buffer_lock_reserve() sees that
+>   trace_buffered_event_cnt[A] is set to 0 and decides the use the buffer
+>   provided by trace_buffered_event[A].
+> * Task X continues its execution in trace_buffered_event_disable(). The
+>   code incorrectly frees the event buffer pointed by
+>   trace_buffered_event[A] and resets the variable to NULL.
+> * Task Y writes event data to the now freed buffer and later detects the
+>   created inconsistency.
+> 
+> The issue is observable since commit dea499781a11 ("tracing: Fix warning
+> in trace_buffered_event_disable()") which moved the call of
+> trace_buffered_event_disable() in __ftrace_event_enable_disable()
+> earlier, prior to invoking call->class->reg(.. TRACE_REG_UNREGISTER ..).
+> The underlying problem in trace_buffered_event_disable() is however
+> present since the original implementation in commit 0fc1b09ff1ff
+> ("tracing: Use temp buffer when filtering events").
+> 
+> The bug is simply fixable by replacing smp_call_function_many() by
+> on_each_cpu_mask(), but the code has other issues as well:
+
+Or by simply calling the update for the local CPU as well as the many:
+
+	preempt_disable();
+	/* For each CPU, set the buffer as used. */
+	disable_trace_buffered_event(NULL);
+	smp_call_function_many(tracing_buffer_mask,
+			       disable_trace_buffered_event, NULL, 1);
+	preempt_enable();
+
+> * Function trace_event_buffer_lock_reserve() reads trace_buffered_event
+>   and trace_buffered_event_cnt in reverse order than they are written in
+>   trace_buffered_event_disable() and without any memory barrier. It
+>   could happen that trace_event_buffer_lock_reserve() still finds
+>   a valid pointer in trace_buffered_event which is being freed by
+>   trace_buffered_event_disable() but later already sees the decremented
+>   value of trace_buffered_event_cnt back to 0 and incorrectly decides to
+>   use the provided buffer.
+
+Not an issue (see below)
+
+> * Function trace_buffered_event_enable() initializes memory of each
+>   allocated trace_buffered_event to zero but no memory barrier is
+>   present to ensure this operation is completed before publishing its
+>   pointer for use in trace_event_buffer_lock_reserve().
+
+Yes, a wmb() may be helpful, but as the reader will see either the
+allocated page or NULL, and can handle both cases. I decided not to add it
+because it really doesn't matter if we do.
+
+> * Calling function trace_buffered_event_enable() normally requires
+>   pairing it with trace_buffered_event_disable(). However, the function
+>   has no error return code and in case of a failure decrements back
+>   trace_buffered_event_ref. This results in underflow of the counter
+>   when trace_buffered_event_disable() gets called later.
+
+Not an issue.
+
+Even on failure the ref count will be greater than zero, where 
+trace_buffered_event_disable() handles it properly, and the freeing can
+handle no pages being allocated.
+
+That is:
+
+	free_page((unsigned long)per_cpu(trace_buffered_event, cpu));
+
+would be the same as: free_page((unsigned long)NULL);
+
+Which is perfectly fine to do.
+
+> 
+> Instead of using the per-CPU variable trace_buffered_event_cnt for the
+> exclusive access during the disable operation, introduce a new variable
+> trace_buffered_event_enabled to reflect the current state and
+> appropriately adjust the code. The variable indicates whether buffered
+> events are currently enabled and trace_buffered_event together with
+> trace_buffered_event_cnt are ok to use.
+
+The current logic is perfectly fine. The only bug here (which you found)
+was the missing update to the counter of the current CPU.
+
+> 
+> The updated synchronization mechanism fixes the mentioned problems and
+> avoids also sending IPIs across the system.
+> 
+> Fixes: 0fc1b09ff1ff ("tracing: Use temp buffer when filtering events")
+> Fixes: dea499781a11 ("tracing: Fix warning in trace_buffered_event_disable()")
+> Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
+> ---
+
+Let me explain why it works.
+
+In trace_event_buffer_lock_reserve():
+
+		preempt_disable_notrace();
+		if ((entry = __this_cpu_read(trace_buffered_event))) {
+			int max_len = PAGE_SIZE - struct_size(entry, array, 1);
+
+			val = this_cpu_inc_return(trace_buffered_event_cnt);
+
+			if (val == 1 && likely(len <= max_len)) {
+
+If val == 1 and len <= max_len, then this is going to use the "buffered event".
+
+Notice that preemption is disabled.
+
+				trace_event_setup(entry, type, trace_ctx);
+				entry->array[0] = len;
+				/* Return with preemption disabled */
+				return entry;
+
+And we return with preemption disabled!
+
+Everything after this does not use the "buffered event" and is not part of
+this code.
+
+			}
+			this_cpu_dec(trace_buffered_event_cnt);
+		}
+		/* __trace_buffer_lock_reserve() disables preemption */
+		preempt_enable_notrace();
+
+
+Now, on commit (when we are done with the "buffered event"):
+
+__buffer_unlock_commit(struct trace_buffer *buffer, struct ring_buffer_event *event)
+{
+	__this_cpu_write(trace_taskinfo_save, true);
+
+	/* If this is the temp buffer, we need to commit fully */
+	if (this_cpu_read(trace_buffered_event) == event) {
+		/* Length is in event->array[0] */
+		ring_buffer_write(buffer, event->array[0], &event->array[1]);
+		/* Release the temp buffer */
+		this_cpu_dec(trace_buffered_event_cnt);
+		/* ring_buffer_unlock_commit() enables preemption */
+		preempt_enable_notrace();
+
+Preemption is finally enabled here. That is, this could not preempt from
+the time we found the "buffered event" to the time we released it.
+
+	} else
+		ring_buffer_unlock_commit(buffer);
+}
+
+
+Now lets look at the trace_buffered_event_disable():
+
+void trace_buffered_event_disable(void)
+{
+	int cpu;
+
+	WARN_ON_ONCE(!mutex_is_locked(&event_mutex));
+
+	if (WARN_ON_ONCE(!trace_buffered_event_ref))
+		return;
+
+	if (--trace_buffered_event_ref)
+		return;
+
+	preempt_disable();
+	/* For each CPU, set the buffer as used. */
+	smp_call_function_many(tracing_buffer_mask,
+			       disable_trace_buffered_event, NULL, 1);
+	preempt_enable();
+
+The above will up the counter of all the buffers (after the bug you found
+is fixed ;-)
+
+That means, we just need to wait till all the currently running users of
+the buffer are done with it.
+
+	/* Wait for all current users to finish */
+	synchronize_rcu();
+
+The synchronize_rcu() also synchronizes preempt disabled sections. That is,
+after the synchronize_rcu() completes, all users of the "buffered event"
+are done with it, and because we upped the count, there will be no more
+users.
+
+That is *there is no race here*!
+
+At this point, there are no users of the "buffered event" and we can do
+whatever we want without locks or memory barriers. This is RCU 101.
+
+	for_each_tracing_cpu(cpu) {
+		free_page((unsigned long)per_cpu(trace_buffered_event, cpu));
+		per_cpu(trace_buffered_event, cpu) = NULL;
+	}
+	/*
+	 * Make sure trace_buffered_event is NULL before clearing
+	 * trace_buffered_event_cnt.
+	 */
+	smp_wmb();
+
+	preempt_disable();
+	/* Do the work on each cpu */
+	smp_call_function_many(tracing_buffer_mask,
+			       enable_trace_buffered_event, NULL, 1);
+	preempt_enable();
+}
+
+
+
+Now, the reason you found the crash was from the first issue you mentioned.
+That is, we didn't disable the current CPU and if we migrated, things would
+get really messed up. The only fix here is to make sure all CPUs have their
+trace_buffered_event_cnt get incremented.
+
+Thanks,
+
+-- Steve
