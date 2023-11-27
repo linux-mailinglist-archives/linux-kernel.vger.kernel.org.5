@@ -2,990 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2423D7F9F78
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 13:22:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D22A7F9F7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 13:23:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233316AbjK0MWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 07:22:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40172 "EHLO
+        id S233237AbjK0MXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 07:23:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233196AbjK0MWj (ORCPT
+        with ESMTP id S233210AbjK0MXm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 07:22:39 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1FED7183
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 04:22:44 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3DE6E2F4;
-        Mon, 27 Nov 2023 04:23:31 -0800 (PST)
-Received: from [10.57.73.191] (unknown [10.57.73.191])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ACCAA3F73F;
-        Mon, 27 Nov 2023 04:22:40 -0800 (PST)
-Message-ID: <2eeae472-3c01-4646-9eca-bfb9733692c7@arm.com>
-Date:   Mon, 27 Nov 2023 12:22:39 +0000
+        Mon, 27 Nov 2023 07:23:42 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6898B111
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 04:23:48 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9fa45e75ed9so572572966b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 04:23:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701087827; x=1701692627; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=M7CygS/PO90G4qc/2mRV1YYszBcCYh2ZWUTNhxvwvtc=;
+        b=GRHW8G5Nmt9YyGl+OA9yv28X9Sbc2KZSLSuL7sxWngkzThYwQNVVU5PO+YC6dvquMK
+         wpVEU68o9J8US8yTQQtsLXZwTgclyELe7s0w2XDI7TfMOKYVBf+whXe0lTpuyd6KsY3x
+         HM3mox8lDIT25sUKA/NrTV/8jUV5Jv6FOwaX+hgq3V2xK+TwWOWFiNTmpIS+WCgt8CbM
+         VKs/U/QBCckxjsYVCGvt4yTb2dmYn7XBLOtxPCKA/GzAk6+7OpnTp/350uVnS5feHHID
+         N6l2eD2A4ZHo142EJYuxV4YtZfjTGuyis0TrYH5rcezGQXhrykpjL7bv5A+eW/LMLfsr
+         Aptg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701087827; x=1701692627;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=M7CygS/PO90G4qc/2mRV1YYszBcCYh2ZWUTNhxvwvtc=;
+        b=YsTY8jWrmWKP3uqcFaanTOeGunKrlRgFYjtEhGbWc9Dkeo58HysV6KgCwLdMJ7W7nB
+         S/mnM4TOd0vScu9UogIafXYWxxjjSzYjFKxHUB/IayWy3K1Wa23KtoeO/7p3auoc+PST
+         cEbqgIwZiWYjBtVr6RwekS0UrdQuheSpxR3l7FeP8mn0XVvbbRARsFK1IwVxaN83DbXX
+         UhAeU1bHvzByutg9FjnZQkUgeEoMX+elMcjpeclE7mNoM6t1dRlHbyRRC1VOfjz/ciF/
+         rimRfhq9WmWHqQaQQrbkKQvFt7D6wTJwtsuCOsIXYBARrwImYAugYt+8i0fxXbFMzUJT
+         uBTw==
+X-Gm-Message-State: AOJu0Yx6GNCJtlIDU4zCZbzF9l+9wP7VrsbvURr0931Av9eoTnpMhu0C
+        SfmSymGdVv4t5VXbfQv13/LrNg==
+X-Google-Smtp-Source: AGHT+IFbTET+o7uLkv685HeoQk9Gn2PXTnWD7L7z89QwhnGciSV+re+d+ZcJ8XhQAbxJZs8QalRXNQ==
+X-Received: by 2002:a17:906:194f:b0:a01:3df:a93a with SMTP id b15-20020a170906194f00b00a0103dfa93amr9299948eje.23.1701087826795;
+        Mon, 27 Nov 2023 04:23:46 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.109])
+        by smtp.gmail.com with ESMTPSA id x24-20020a170906135800b009fc8233fb66sm5625190ejb.36.2023.11.27.04.23.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Nov 2023 04:23:46 -0800 (PST)
+Message-ID: <7bba5723-97c2-4301-9864-353d8bfda752@linaro.org>
+Date:   Mon, 27 Nov 2023 13:23:43 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v7 06/10] selftests/mm: Factor out thp settings
- management
-Content-Language: en-GB
-To:     Alistair Popple <apopple@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231122162950.3854897-1-ryan.roberts@arm.com>
- <20231122162950.3854897-7-ryan.roberts@arm.com>
- <877cm9xap1.fsf@nvdebian.thelocal>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <877cm9xap1.fsf@nvdebian.thelocal>
+Subject: Re: [PATCH v1 1/2] dt-bindings: display: bridge: cdns: Add properties
+ to support StarFive JH7110 SoC
+Content-Language: en-US
+To:     Shengyang Chen <shengyang.chen@starfivetech.com>,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc:     andrzej.hajda@intel.com, neil.armstrong@linaro.org,
+        rfoss@kernel.org, Laurent.pinchart@ideasonboard.com,
+        jonas@kwiboo.se, jernej.skrabec@gmail.com,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, p.zabel@pengutronix.de,
+        tomi.valkeinen@ideasonboard.com, r-ravikumar@ti.com,
+        rdunlap@infradead.org, u.kleine-koenig@pengutronix.de,
+        bbrezillon@kernel.org, changhuang.liang@starfivetech.com,
+        keith.zhao@starfivetech.com, jack.zhu@starfivetech.com,
+        linux-kernel@vger.kernel.org
+References: <20231127113436.57361-1-shengyang.chen@starfivetech.com>
+ <20231127113436.57361-2-shengyang.chen@starfivetech.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231127113436.57361-2-shengyang.chen@starfivetech.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/11/2023 06:07, Alistair Popple wrote:
+On 27/11/2023 12:34, Shengyang Chen wrote:
+> From: Keith Zhao <keith.zhao@starfivetech.com>
 > 
-> Ryan Roberts <ryan.roberts@arm.com> writes:
+> Add properties in CDNS DSI yaml file to match with
+> CDNS DSI module in StarFive JH7110 SoC.
 > 
->> The khugepaged test has a useful framework for save/restore/pop/push of
->> all thp settings via the sysfs interface. This will be useful to
->> explicitly control small-sized THP settings in other tests, so let's
->> move it out of khugepaged and into its own thp_settings.[c|h] utility.
->>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> Signed-off-by: Keith Zhao <keith.zhao@starfivetech.com>
+> ---
+>  .../bindings/display/bridge/cdns,dsi.yaml     | 38 ++++++++++++++++++-
+>  1 file changed, 36 insertions(+), 2 deletions(-)
 > 
-> I've only glanced at the code as I assume it is a straight forward
-> cut-and-paste with no behavioural change. At least I didn't observe any
-> change running the khugepage test on my x86_64 development machine so
-> feel free to add:
-> 
-> Tested-by: Alistair Popple <apopple@nvidia.com>
+> diff --git a/Documentation/devicetree/bindings/display/bridge/cdns,dsi.yaml b/Documentation/devicetree/bindings/display/bridge/cdns,dsi.yaml
+> index 23060324d16e..3f02ee383aad 100644
+> --- a/Documentation/devicetree/bindings/display/bridge/cdns,dsi.yaml
+> +++ b/Documentation/devicetree/bindings/display/bridge/cdns,dsi.yaml
+> @@ -17,6 +17,7 @@ properties:
+>      enum:
+>        - cdns,dsi
+>        - ti,j721e-dsi
+> +      - starfive,cdns-dsi
 
-Thanks! Its pretty much just a cut-and-paste; I did prefix the function names
-with "thp_" since they are now in global namespace. And I moved some khugepaged
-test-specific logging out of them and into the higher level test code. And I
-added thp_set_read_ahead_path() to decouple from the test code. But intended to
-all be equivalent.
+BTW, one more thing, I really doubt that starfive created "cdns" block.
+"cdns" is vendor prefix. Use SoCs-specific compatibles.
 
-> 
->> ---
->>  tools/testing/selftests/mm/Makefile       |   4 +-
->>  tools/testing/selftests/mm/khugepaged.c   | 346 ++--------------------
->>  tools/testing/selftests/mm/thp_settings.c | 296 ++++++++++++++++++
->>  tools/testing/selftests/mm/thp_settings.h |  71 +++++
->>  4 files changed, 391 insertions(+), 326 deletions(-)
->>  create mode 100644 tools/testing/selftests/mm/thp_settings.c
->>  create mode 100644 tools/testing/selftests/mm/thp_settings.h
->>
->> diff --git a/tools/testing/selftests/mm/Makefile b/tools/testing/selftests/mm/Makefile
->> index 78dfec8bc676..a3eb20c186e7 100644
->> --- a/tools/testing/selftests/mm/Makefile
->> +++ b/tools/testing/selftests/mm/Makefile
->> @@ -117,8 +117,8 @@ TEST_FILES += va_high_addr_switch.sh
->>
->>  include ../lib.mk
->>
->> -$(TEST_GEN_PROGS): vm_util.c
->> -$(TEST_GEN_FILES): vm_util.c
->> +$(TEST_GEN_PROGS): vm_util.c thp_settings.c
->> +$(TEST_GEN_FILES): vm_util.c thp_settings.c
->>
->>  $(OUTPUT)/uffd-stress: uffd-common.c
->>  $(OUTPUT)/uffd-unit-tests: uffd-common.c
->> diff --git a/tools/testing/selftests/mm/khugepaged.c b/tools/testing/selftests/mm/khugepaged.c
->> index fc47a1c4944c..b15e7fd70176 100644
->> --- a/tools/testing/selftests/mm/khugepaged.c
->> +++ b/tools/testing/selftests/mm/khugepaged.c
->> @@ -22,13 +22,13 @@
->>  #include "linux/magic.h"
->>
->>  #include "vm_util.h"
->> +#include "thp_settings.h"
->>
->>  #define BASE_ADDR ((void *)(1UL << 30))
->>  static unsigned long hpage_pmd_size;
->>  static unsigned long page_size;
->>  static int hpage_pmd_nr;
->>
->> -#define THP_SYSFS "/sys/kernel/mm/transparent_hugepage/"
->>  #define PID_SMAPS "/proc/self/smaps"
->>  #define TEST_FILE "collapse_test_file"
->>
->> @@ -71,78 +71,7 @@ struct file_info {
->>  };
->>
->>  static struct file_info finfo;
->> -
->> -enum thp_enabled {
->> -	THP_ALWAYS,
->> -	THP_MADVISE,
->> -	THP_NEVER,
->> -};
->> -
->> -static const char *thp_enabled_strings[] = {
->> -	"always",
->> -	"madvise",
->> -	"never",
->> -	NULL
->> -};
->> -
->> -enum thp_defrag {
->> -	THP_DEFRAG_ALWAYS,
->> -	THP_DEFRAG_DEFER,
->> -	THP_DEFRAG_DEFER_MADVISE,
->> -	THP_DEFRAG_MADVISE,
->> -	THP_DEFRAG_NEVER,
->> -};
->> -
->> -static const char *thp_defrag_strings[] = {
->> -	"always",
->> -	"defer",
->> -	"defer+madvise",
->> -	"madvise",
->> -	"never",
->> -	NULL
->> -};
->> -
->> -enum shmem_enabled {
->> -	SHMEM_ALWAYS,
->> -	SHMEM_WITHIN_SIZE,
->> -	SHMEM_ADVISE,
->> -	SHMEM_NEVER,
->> -	SHMEM_DENY,
->> -	SHMEM_FORCE,
->> -};
->> -
->> -static const char *shmem_enabled_strings[] = {
->> -	"always",
->> -	"within_size",
->> -	"advise",
->> -	"never",
->> -	"deny",
->> -	"force",
->> -	NULL
->> -};
->> -
->> -struct khugepaged_settings {
->> -	bool defrag;
->> -	unsigned int alloc_sleep_millisecs;
->> -	unsigned int scan_sleep_millisecs;
->> -	unsigned int max_ptes_none;
->> -	unsigned int max_ptes_swap;
->> -	unsigned int max_ptes_shared;
->> -	unsigned long pages_to_scan;
->> -};
->> -
->> -struct settings {
->> -	enum thp_enabled thp_enabled;
->> -	enum thp_defrag thp_defrag;
->> -	enum shmem_enabled shmem_enabled;
->> -	bool use_zero_page;
->> -	struct khugepaged_settings khugepaged;
->> -	unsigned long read_ahead_kb;
->> -};
->> -
->> -static struct settings saved_settings;
->>  static bool skip_settings_restore;
->> -
->>  static int exit_status;
->>
->>  static void success(const char *msg)
->> @@ -161,226 +90,13 @@ static void skip(const char *msg)
->>  	printf(" \e[33m%s\e[0m\n", msg);
->>  }
->>
->> -static int read_file(const char *path, char *buf, size_t buflen)
->> -{
->> -	int fd;
->> -	ssize_t numread;
->> -
->> -	fd = open(path, O_RDONLY);
->> -	if (fd == -1)
->> -		return 0;
->> -
->> -	numread = read(fd, buf, buflen - 1);
->> -	if (numread < 1) {
->> -		close(fd);
->> -		return 0;
->> -	}
->> -
->> -	buf[numread] = '\0';
->> -	close(fd);
->> -
->> -	return (unsigned int) numread;
->> -}
->> -
->> -static int write_file(const char *path, const char *buf, size_t buflen)
->> -{
->> -	int fd;
->> -	ssize_t numwritten;
->> -
->> -	fd = open(path, O_WRONLY);
->> -	if (fd == -1) {
->> -		printf("open(%s)\n", path);
->> -		exit(EXIT_FAILURE);
->> -		return 0;
->> -	}
->> -
->> -	numwritten = write(fd, buf, buflen - 1);
->> -	close(fd);
->> -	if (numwritten < 1) {
->> -		printf("write(%s)\n", buf);
->> -		exit(EXIT_FAILURE);
->> -		return 0;
->> -	}
->> -
->> -	return (unsigned int) numwritten;
->> -}
->> -
->> -static int read_string(const char *name, const char *strings[])
->> -{
->> -	char path[PATH_MAX];
->> -	char buf[256];
->> -	char *c;
->> -	int ret;
->> -
->> -	ret = snprintf(path, PATH_MAX, THP_SYSFS "%s", name);
->> -	if (ret >= PATH_MAX) {
->> -		printf("%s: Pathname is too long\n", __func__);
->> -		exit(EXIT_FAILURE);
->> -	}
->> -
->> -	if (!read_file(path, buf, sizeof(buf))) {
->> -		perror(path);
->> -		exit(EXIT_FAILURE);
->> -	}
->> -
->> -	c = strchr(buf, '[');
->> -	if (!c) {
->> -		printf("%s: Parse failure\n", __func__);
->> -		exit(EXIT_FAILURE);
->> -	}
->> -
->> -	c++;
->> -	memmove(buf, c, sizeof(buf) - (c - buf));
->> -
->> -	c = strchr(buf, ']');
->> -	if (!c) {
->> -		printf("%s: Parse failure\n", __func__);
->> -		exit(EXIT_FAILURE);
->> -	}
->> -	*c = '\0';
->> -
->> -	ret = 0;
->> -	while (strings[ret]) {
->> -		if (!strcmp(strings[ret], buf))
->> -			return ret;
->> -		ret++;
->> -	}
->> -
->> -	printf("Failed to parse %s\n", name);
->> -	exit(EXIT_FAILURE);
->> -}
->> -
->> -static void write_string(const char *name, const char *val)
->> -{
->> -	char path[PATH_MAX];
->> -	int ret;
->> -
->> -	ret = snprintf(path, PATH_MAX, THP_SYSFS "%s", name);
->> -	if (ret >= PATH_MAX) {
->> -		printf("%s: Pathname is too long\n", __func__);
->> -		exit(EXIT_FAILURE);
->> -	}
->> -
->> -	if (!write_file(path, val, strlen(val) + 1)) {
->> -		perror(path);
->> -		exit(EXIT_FAILURE);
->> -	}
->> -}
->> -
->> -static const unsigned long _read_num(const char *path)
->> -{
->> -	char buf[21];
->> -
->> -	if (read_file(path, buf, sizeof(buf)) < 0) {
->> -		perror("read_file(read_num)");
->> -		exit(EXIT_FAILURE);
->> -	}
->> -
->> -	return strtoul(buf, NULL, 10);
->> -}
->> -
->> -static const unsigned long read_num(const char *name)
->> -{
->> -	char path[PATH_MAX];
->> -	int ret;
->> -
->> -	ret = snprintf(path, PATH_MAX, THP_SYSFS "%s", name);
->> -	if (ret >= PATH_MAX) {
->> -		printf("%s: Pathname is too long\n", __func__);
->> -		exit(EXIT_FAILURE);
->> -	}
->> -	return _read_num(path);
->> -}
->> -
->> -static void _write_num(const char *path, unsigned long num)
->> -{
->> -	char buf[21];
->> -
->> -	sprintf(buf, "%ld", num);
->> -	if (!write_file(path, buf, strlen(buf) + 1)) {
->> -		perror(path);
->> -		exit(EXIT_FAILURE);
->> -	}
->> -}
->> -
->> -static void write_num(const char *name, unsigned long num)
->> -{
->> -	char path[PATH_MAX];
->> -	int ret;
->> -
->> -	ret = snprintf(path, PATH_MAX, THP_SYSFS "%s", name);
->> -	if (ret >= PATH_MAX) {
->> -		printf("%s: Pathname is too long\n", __func__);
->> -		exit(EXIT_FAILURE);
->> -	}
->> -	_write_num(path, num);
->> -}
->> -
->> -static void write_settings(struct settings *settings)
->> -{
->> -	struct khugepaged_settings *khugepaged = &settings->khugepaged;
->> -
->> -	write_string("enabled", thp_enabled_strings[settings->thp_enabled]);
->> -	write_string("defrag", thp_defrag_strings[settings->thp_defrag]);
->> -	write_string("shmem_enabled",
->> -			shmem_enabled_strings[settings->shmem_enabled]);
->> -	write_num("use_zero_page", settings->use_zero_page);
->> -
->> -	write_num("khugepaged/defrag", khugepaged->defrag);
->> -	write_num("khugepaged/alloc_sleep_millisecs",
->> -			khugepaged->alloc_sleep_millisecs);
->> -	write_num("khugepaged/scan_sleep_millisecs",
->> -			khugepaged->scan_sleep_millisecs);
->> -	write_num("khugepaged/max_ptes_none", khugepaged->max_ptes_none);
->> -	write_num("khugepaged/max_ptes_swap", khugepaged->max_ptes_swap);
->> -	write_num("khugepaged/max_ptes_shared", khugepaged->max_ptes_shared);
->> -	write_num("khugepaged/pages_to_scan", khugepaged->pages_to_scan);
->> -
->> -	if (file_ops && finfo.type == VMA_FILE)
->> -		_write_num(finfo.dev_queue_read_ahead_path,
->> -			   settings->read_ahead_kb);
->> -}
->> -
->> -#define MAX_SETTINGS_DEPTH 4
->> -static struct settings settings_stack[MAX_SETTINGS_DEPTH];
->> -static int settings_index;
->> -
->> -static struct settings *current_settings(void)
->> -{
->> -	if (!settings_index) {
->> -		printf("Fail: No settings set");
->> -		exit(EXIT_FAILURE);
->> -	}
->> -	return settings_stack + settings_index - 1;
->> -}
->> -
->> -static void push_settings(struct settings *settings)
->> -{
->> -	if (settings_index >= MAX_SETTINGS_DEPTH) {
->> -		printf("Fail: Settings stack exceeded");
->> -		exit(EXIT_FAILURE);
->> -	}
->> -	settings_stack[settings_index++] = *settings;
->> -	write_settings(current_settings());
->> -}
->> -
->> -static void pop_settings(void)
->> -{
->> -	if (settings_index <= 0) {
->> -		printf("Fail: Settings stack empty");
->> -		exit(EXIT_FAILURE);
->> -	}
->> -	--settings_index;
->> -	write_settings(current_settings());
->> -}
->> -
->>  static void restore_settings_atexit(void)
->>  {
->>  	if (skip_settings_restore)
->>  		return;
->>
->>  	printf("Restore THP and khugepaged settings...");
->> -	write_settings(&saved_settings);
->> +	thp_restore_settings();
->>  	success("OK");
->>
->>  	skip_settings_restore = true;
->> @@ -395,27 +111,9 @@ static void restore_settings(int sig)
->>  static void save_settings(void)
->>  {
->>  	printf("Save THP and khugepaged settings...");
->> -	saved_settings = (struct settings) {
->> -		.thp_enabled = read_string("enabled", thp_enabled_strings),
->> -		.thp_defrag = read_string("defrag", thp_defrag_strings),
->> -		.shmem_enabled =
->> -			read_string("shmem_enabled", shmem_enabled_strings),
->> -		.use_zero_page = read_num("use_zero_page"),
->> -	};
->> -	saved_settings.khugepaged = (struct khugepaged_settings) {
->> -		.defrag = read_num("khugepaged/defrag"),
->> -		.alloc_sleep_millisecs =
->> -			read_num("khugepaged/alloc_sleep_millisecs"),
->> -		.scan_sleep_millisecs =
->> -			read_num("khugepaged/scan_sleep_millisecs"),
->> -		.max_ptes_none = read_num("khugepaged/max_ptes_none"),
->> -		.max_ptes_swap = read_num("khugepaged/max_ptes_swap"),
->> -		.max_ptes_shared = read_num("khugepaged/max_ptes_shared"),
->> -		.pages_to_scan = read_num("khugepaged/pages_to_scan"),
->> -	};
->>  	if (file_ops && finfo.type == VMA_FILE)
->> -		saved_settings.read_ahead_kb =
->> -				_read_num(finfo.dev_queue_read_ahead_path);
->> +		thp_set_read_ahead_path(finfo.dev_queue_read_ahead_path);
->> +	thp_save_settings();
->>
->>  	success("OK");
->>
->> @@ -798,7 +496,7 @@ static void __madvise_collapse(const char *msg, char *p, int nr_hpages,
->>  			       struct mem_ops *ops, bool expect)
->>  {
->>  	int ret;
->> -	struct settings settings = *current_settings();
->> +	struct thp_settings settings = *thp_current_settings();
->>
->>  	printf("%s...", msg);
->>
->> @@ -808,7 +506,7 @@ static void __madvise_collapse(const char *msg, char *p, int nr_hpages,
->>  	 */
->>  	settings.thp_enabled = THP_NEVER;
->>  	settings.shmem_enabled = SHMEM_NEVER;
->> -	push_settings(&settings);
->> +	thp_push_settings(&settings);
->>
->>  	/* Clear VM_NOHUGEPAGE */
->>  	madvise(p, nr_hpages * hpage_pmd_size, MADV_HUGEPAGE);
->> @@ -820,7 +518,7 @@ static void __madvise_collapse(const char *msg, char *p, int nr_hpages,
->>  	else
->>  		success("OK");
->>
->> -	pop_settings();
->> +	thp_pop_settings();
->>  }
->>
->>  static void madvise_collapse(const char *msg, char *p, int nr_hpages,
->> @@ -850,13 +548,13 @@ static bool wait_for_scan(const char *msg, char *p, int nr_hpages,
->>  	madvise(p, nr_hpages * hpage_pmd_size, MADV_HUGEPAGE);
->>
->>  	/* Wait until the second full_scan completed */
->> -	full_scans = read_num("khugepaged/full_scans") + 2;
->> +	full_scans = thp_read_num("khugepaged/full_scans") + 2;
->>
->>  	printf("%s...", msg);
->>  	while (timeout--) {
->>  		if (ops->check_huge(p, nr_hpages))
->>  			break;
->> -		if (read_num("khugepaged/full_scans") >= full_scans)
->> +		if (thp_read_num("khugepaged/full_scans") >= full_scans)
->>  			break;
->>  		printf(".");
->>  		usleep(TICK);
->> @@ -911,11 +609,11 @@ static bool is_tmpfs(struct mem_ops *ops)
->>
->>  static void alloc_at_fault(void)
->>  {
->> -	struct settings settings = *current_settings();
->> +	struct thp_settings settings = *thp_current_settings();
->>  	char *p;
->>
->>  	settings.thp_enabled = THP_ALWAYS;
->> -	push_settings(&settings);
->> +	thp_push_settings(&settings);
->>
->>  	p = alloc_mapping(1);
->>  	*p = 1;
->> @@ -925,7 +623,7 @@ static void alloc_at_fault(void)
->>  	else
->>  		fail("Fail");
->>
->> -	pop_settings();
->> +	thp_pop_settings();
->>
->>  	madvise(p, page_size, MADV_DONTNEED);
->>  	printf("Split huge PMD on MADV_DONTNEED...");
->> @@ -973,11 +671,11 @@ static void collapse_single_pte_entry(struct collapse_context *c, struct mem_ops
->>  static void collapse_max_ptes_none(struct collapse_context *c, struct mem_ops *ops)
->>  {
->>  	int max_ptes_none = hpage_pmd_nr / 2;
->> -	struct settings settings = *current_settings();
->> +	struct thp_settings settings = *thp_current_settings();
->>  	void *p;
->>
->>  	settings.khugepaged.max_ptes_none = max_ptes_none;
->> -	push_settings(&settings);
->> +	thp_push_settings(&settings);
->>
->>  	p = ops->setup_area(1);
->>
->> @@ -1002,7 +700,7 @@ static void collapse_max_ptes_none(struct collapse_context *c, struct mem_ops *o
->>  	}
->>  skip:
->>  	ops->cleanup_area(p, hpage_pmd_size);
->> -	pop_settings();
->> +	thp_pop_settings();
->>  }
->>
->>  static void collapse_swapin_single_pte(struct collapse_context *c, struct mem_ops *ops)
->> @@ -1033,7 +731,7 @@ static void collapse_swapin_single_pte(struct collapse_context *c, struct mem_op
->>
->>  static void collapse_max_ptes_swap(struct collapse_context *c, struct mem_ops *ops)
->>  {
->> -	int max_ptes_swap = read_num("khugepaged/max_ptes_swap");
->> +	int max_ptes_swap = thp_read_num("khugepaged/max_ptes_swap");
->>  	void *p;
->>
->>  	p = ops->setup_area(1);
->> @@ -1250,11 +948,11 @@ static void collapse_fork_compound(struct collapse_context *c, struct mem_ops *o
->>  			fail("Fail");
->>  		ops->fault(p, 0, page_size);
->>
->> -		write_num("khugepaged/max_ptes_shared", hpage_pmd_nr - 1);
->> +		thp_write_num("khugepaged/max_ptes_shared", hpage_pmd_nr - 1);
->>  		c->collapse("Collapse PTE table full of compound pages in child",
->>  			    p, 1, ops, true);
->> -		write_num("khugepaged/max_ptes_shared",
->> -			  current_settings()->khugepaged.max_ptes_shared);
->> +		thp_write_num("khugepaged/max_ptes_shared",
->> +			  thp_current_settings()->khugepaged.max_ptes_shared);
->>
->>  		validate_memory(p, 0, hpage_pmd_size);
->>  		ops->cleanup_area(p, hpage_pmd_size);
->> @@ -1275,7 +973,7 @@ static void collapse_fork_compound(struct collapse_context *c, struct mem_ops *o
->>
->>  static void collapse_max_ptes_shared(struct collapse_context *c, struct mem_ops *ops)
->>  {
->> -	int max_ptes_shared = read_num("khugepaged/max_ptes_shared");
->> +	int max_ptes_shared = thp_read_num("khugepaged/max_ptes_shared");
->>  	int wstatus;
->>  	void *p;
->>
->> @@ -1443,7 +1141,7 @@ static void parse_test_type(int argc, const char **argv)
->>
->>  int main(int argc, const char **argv)
->>  {
->> -	struct settings default_settings = {
->> +	struct thp_settings default_settings = {
->>  		.thp_enabled = THP_MADVISE,
->>  		.thp_defrag = THP_DEFRAG_ALWAYS,
->>  		.shmem_enabled = SHMEM_ADVISE,
->> @@ -1484,7 +1182,7 @@ int main(int argc, const char **argv)
->>  	default_settings.khugepaged.pages_to_scan = hpage_pmd_nr * 8;
->>
->>  	save_settings();
->> -	push_settings(&default_settings);
->> +	thp_push_settings(&default_settings);
->>
->>  	alloc_at_fault();
->>
->> diff --git a/tools/testing/selftests/mm/thp_settings.c b/tools/testing/selftests/mm/thp_settings.c
->> new file mode 100644
->> index 000000000000..5e8ec792cac7
->> --- /dev/null
->> +++ b/tools/testing/selftests/mm/thp_settings.c
->> @@ -0,0 +1,296 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +#include <fcntl.h>
->> +#include <limits.h>
->> +#include <stdio.h>
->> +#include <stdlib.h>
->> +#include <string.h>
->> +#include <unistd.h>
->> +
->> +#include "thp_settings.h"
->> +
->> +#define THP_SYSFS "/sys/kernel/mm/transparent_hugepage/"
->> +#define MAX_SETTINGS_DEPTH 4
->> +static struct thp_settings settings_stack[MAX_SETTINGS_DEPTH];
->> +static int settings_index;
->> +static struct thp_settings saved_settings;
->> +static char dev_queue_read_ahead_path[PATH_MAX];
->> +
->> +static const char * const thp_enabled_strings[] = {
->> +	"always",
->> +	"madvise",
->> +	"never",
->> +	NULL
->> +};
->> +
->> +static const char * const thp_defrag_strings[] = {
->> +	"always",
->> +	"defer",
->> +	"defer+madvise",
->> +	"madvise",
->> +	"never",
->> +	NULL
->> +};
->> +
->> +static const char * const shmem_enabled_strings[] = {
->> +	"always",
->> +	"within_size",
->> +	"advise",
->> +	"never",
->> +	"deny",
->> +	"force",
->> +	NULL
->> +};
->> +
->> +int read_file(const char *path, char *buf, size_t buflen)
->> +{
->> +	int fd;
->> +	ssize_t numread;
->> +
->> +	fd = open(path, O_RDONLY);
->> +	if (fd == -1)
->> +		return 0;
->> +
->> +	numread = read(fd, buf, buflen - 1);
->> +	if (numread < 1) {
->> +		close(fd);
->> +		return 0;
->> +	}
->> +
->> +	buf[numread] = '\0';
->> +	close(fd);
->> +
->> +	return (unsigned int) numread;
->> +}
->> +
->> +int write_file(const char *path, const char *buf, size_t buflen)
->> +{
->> +	int fd;
->> +	ssize_t numwritten;
->> +
->> +	fd = open(path, O_WRONLY);
->> +	if (fd == -1) {
->> +		printf("open(%s)\n", path);
->> +		exit(EXIT_FAILURE);
->> +		return 0;
->> +	}
->> +
->> +	numwritten = write(fd, buf, buflen - 1);
->> +	close(fd);
->> +	if (numwritten < 1) {
->> +		printf("write(%s)\n", buf);
->> +		exit(EXIT_FAILURE);
->> +		return 0;
->> +	}
->> +
->> +	return (unsigned int) numwritten;
->> +}
->> +
->> +const unsigned long read_num(const char *path)
->> +{
->> +	char buf[21];
->> +
->> +	if (read_file(path, buf, sizeof(buf)) < 0) {
->> +		perror("read_file()");
->> +		exit(EXIT_FAILURE);
->> +	}
->> +
->> +	return strtoul(buf, NULL, 10);
->> +}
->> +
->> +void write_num(const char *path, unsigned long num)
->> +{
->> +	char buf[21];
->> +
->> +	sprintf(buf, "%ld", num);
->> +	if (!write_file(path, buf, strlen(buf) + 1)) {
->> +		perror(path);
->> +		exit(EXIT_FAILURE);
->> +	}
->> +}
->> +
->> +int thp_read_string(const char *name, const char * const strings[])
->> +{
->> +	char path[PATH_MAX];
->> +	char buf[256];
->> +	char *c;
->> +	int ret;
->> +
->> +	ret = snprintf(path, PATH_MAX, THP_SYSFS "%s", name);
->> +	if (ret >= PATH_MAX) {
->> +		printf("%s: Pathname is too long\n", __func__);
->> +		exit(EXIT_FAILURE);
->> +	}
->> +
->> +	if (!read_file(path, buf, sizeof(buf))) {
->> +		perror(path);
->> +		exit(EXIT_FAILURE);
->> +	}
->> +
->> +	c = strchr(buf, '[');
->> +	if (!c) {
->> +		printf("%s: Parse failure\n", __func__);
->> +		exit(EXIT_FAILURE);
->> +	}
->> +
->> +	c++;
->> +	memmove(buf, c, sizeof(buf) - (c - buf));
->> +
->> +	c = strchr(buf, ']');
->> +	if (!c) {
->> +		printf("%s: Parse failure\n", __func__);
->> +		exit(EXIT_FAILURE);
->> +	}
->> +	*c = '\0';
->> +
->> +	ret = 0;
->> +	while (strings[ret]) {
->> +		if (!strcmp(strings[ret], buf))
->> +			return ret;
->> +		ret++;
->> +	}
->> +
->> +	printf("Failed to parse %s\n", name);
->> +	exit(EXIT_FAILURE);
->> +}
->> +
->> +void thp_write_string(const char *name, const char *val)
->> +{
->> +	char path[PATH_MAX];
->> +	int ret;
->> +
->> +	ret = snprintf(path, PATH_MAX, THP_SYSFS "%s", name);
->> +	if (ret >= PATH_MAX) {
->> +		printf("%s: Pathname is too long\n", __func__);
->> +		exit(EXIT_FAILURE);
->> +	}
->> +
->> +	if (!write_file(path, val, strlen(val) + 1)) {
->> +		perror(path);
->> +		exit(EXIT_FAILURE);
->> +	}
->> +}
->> +
->> +const unsigned long thp_read_num(const char *name)
->> +{
->> +	char path[PATH_MAX];
->> +	int ret;
->> +
->> +	ret = snprintf(path, PATH_MAX, THP_SYSFS "%s", name);
->> +	if (ret >= PATH_MAX) {
->> +		printf("%s: Pathname is too long\n", __func__);
->> +		exit(EXIT_FAILURE);
->> +	}
->> +	return read_num(path);
->> +}
->> +
->> +void thp_write_num(const char *name, unsigned long num)
->> +{
->> +	char path[PATH_MAX];
->> +	int ret;
->> +
->> +	ret = snprintf(path, PATH_MAX, THP_SYSFS "%s", name);
->> +	if (ret >= PATH_MAX) {
->> +		printf("%s: Pathname is too long\n", __func__);
->> +		exit(EXIT_FAILURE);
->> +	}
->> +	write_num(path, num);
->> +}
->> +
->> +void thp_read_settings(struct thp_settings *settings)
->> +{
->> +	*settings = (struct thp_settings) {
->> +		.thp_enabled = thp_read_string("enabled", thp_enabled_strings),
->> +		.thp_defrag = thp_read_string("defrag", thp_defrag_strings),
->> +		.shmem_enabled =
->> +			thp_read_string("shmem_enabled", shmem_enabled_strings),
->> +		.use_zero_page = thp_read_num("use_zero_page"),
->> +	};
->> +	settings->khugepaged = (struct khugepaged_settings) {
->> +		.defrag = thp_read_num("khugepaged/defrag"),
->> +		.alloc_sleep_millisecs =
->> +			thp_read_num("khugepaged/alloc_sleep_millisecs"),
->> +		.scan_sleep_millisecs =
->> +			thp_read_num("khugepaged/scan_sleep_millisecs"),
->> +		.max_ptes_none = thp_read_num("khugepaged/max_ptes_none"),
->> +		.max_ptes_swap = thp_read_num("khugepaged/max_ptes_swap"),
->> +		.max_ptes_shared = thp_read_num("khugepaged/max_ptes_shared"),
->> +		.pages_to_scan = thp_read_num("khugepaged/pages_to_scan"),
->> +	};
->> +	if (dev_queue_read_ahead_path[0])
->> +		settings->read_ahead_kb = read_num(dev_queue_read_ahead_path);
->> +}
->> +
->> +void thp_write_settings(struct thp_settings *settings)
->> +{
->> +	struct khugepaged_settings *khugepaged = &settings->khugepaged;
->> +
->> +	thp_write_string("enabled", thp_enabled_strings[settings->thp_enabled]);
->> +	thp_write_string("defrag", thp_defrag_strings[settings->thp_defrag]);
->> +	thp_write_string("shmem_enabled",
->> +			shmem_enabled_strings[settings->shmem_enabled]);
->> +	thp_write_num("use_zero_page", settings->use_zero_page);
->> +
->> +	thp_write_num("khugepaged/defrag", khugepaged->defrag);
->> +	thp_write_num("khugepaged/alloc_sleep_millisecs",
->> +			khugepaged->alloc_sleep_millisecs);
->> +	thp_write_num("khugepaged/scan_sleep_millisecs",
->> +			khugepaged->scan_sleep_millisecs);
->> +	thp_write_num("khugepaged/max_ptes_none", khugepaged->max_ptes_none);
->> +	thp_write_num("khugepaged/max_ptes_swap", khugepaged->max_ptes_swap);
->> +	thp_write_num("khugepaged/max_ptes_shared", khugepaged->max_ptes_shared);
->> +	thp_write_num("khugepaged/pages_to_scan", khugepaged->pages_to_scan);
->> +
->> +	if (dev_queue_read_ahead_path[0])
->> +		write_num(dev_queue_read_ahead_path, settings->read_ahead_kb);
->> +}
->> +
->> +struct thp_settings *thp_current_settings(void)
->> +{
->> +	if (!settings_index) {
->> +		printf("Fail: No settings set");
->> +		exit(EXIT_FAILURE);
->> +	}
->> +	return settings_stack + settings_index - 1;
->> +}
->> +
->> +void thp_push_settings(struct thp_settings *settings)
->> +{
->> +	if (settings_index >= MAX_SETTINGS_DEPTH) {
->> +		printf("Fail: Settings stack exceeded");
->> +		exit(EXIT_FAILURE);
->> +	}
->> +	settings_stack[settings_index++] = *settings;
->> +	thp_write_settings(thp_current_settings());
->> +}
->> +
->> +void thp_pop_settings(void)
->> +{
->> +	if (settings_index <= 0) {
->> +		printf("Fail: Settings stack empty");
->> +		exit(EXIT_FAILURE);
->> +	}
->> +	--settings_index;
->> +	thp_write_settings(thp_current_settings());
->> +}
->> +
->> +void thp_restore_settings(void)
->> +{
->> +	thp_write_settings(&saved_settings);
->> +}
->> +
->> +void thp_save_settings(void)
->> +{
->> +	thp_read_settings(&saved_settings);
->> +}
->> +
->> +void thp_set_read_ahead_path(char *path)
->> +{
->> +	if (!path) {
->> +		dev_queue_read_ahead_path[0] = '\0';
->> +		return;
->> +	}
->> +
->> +	strncpy(dev_queue_read_ahead_path, path,
->> +		sizeof(dev_queue_read_ahead_path));
->> +	dev_queue_read_ahead_path[sizeof(dev_queue_read_ahead_path) - 1] = '\0';
->> +}
->> diff --git a/tools/testing/selftests/mm/thp_settings.h b/tools/testing/selftests/mm/thp_settings.h
->> new file mode 100644
->> index 000000000000..ff3d98c30617
->> --- /dev/null
->> +++ b/tools/testing/selftests/mm/thp_settings.h
->> @@ -0,0 +1,71 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +#ifndef __THP_SETTINGS_H__
->> +#define __THP_SETTINGS_H__
->> +
->> +#include <stdbool.h>
->> +#include <stddef.h>
->> +#include <stdint.h>
->> +
->> +enum thp_enabled {
->> +	THP_ALWAYS,
->> +	THP_MADVISE,
->> +	THP_NEVER,
->> +};
->> +
->> +enum thp_defrag {
->> +	THP_DEFRAG_ALWAYS,
->> +	THP_DEFRAG_DEFER,
->> +	THP_DEFRAG_DEFER_MADVISE,
->> +	THP_DEFRAG_MADVISE,
->> +	THP_DEFRAG_NEVER,
->> +};
->> +
->> +enum shmem_enabled {
->> +	SHMEM_ALWAYS,
->> +	SHMEM_WITHIN_SIZE,
->> +	SHMEM_ADVISE,
->> +	SHMEM_NEVER,
->> +	SHMEM_DENY,
->> +	SHMEM_FORCE,
->> +};
->> +
->> +struct khugepaged_settings {
->> +	bool defrag;
->> +	unsigned int alloc_sleep_millisecs;
->> +	unsigned int scan_sleep_millisecs;
->> +	unsigned int max_ptes_none;
->> +	unsigned int max_ptes_swap;
->> +	unsigned int max_ptes_shared;
->> +	unsigned long pages_to_scan;
->> +};
->> +
->> +struct thp_settings {
->> +	enum thp_enabled thp_enabled;
->> +	enum thp_defrag thp_defrag;
->> +	enum shmem_enabled shmem_enabled;
->> +	bool use_zero_page;
->> +	struct khugepaged_settings khugepaged;
->> +	unsigned long read_ahead_kb;
->> +};
->> +
->> +int read_file(const char *path, char *buf, size_t buflen);
->> +int write_file(const char *path, const char *buf, size_t buflen);
->> +const unsigned long read_num(const char *path);
->> +void write_num(const char *path, unsigned long num);
->> +
->> +int thp_read_string(const char *name, const char * const strings[]);
->> +void thp_write_string(const char *name, const char *val);
->> +const unsigned long thp_read_num(const char *name);
->> +void thp_write_num(const char *name, unsigned long num);
->> +
->> +void thp_write_settings(struct thp_settings *settings);
->> +void thp_read_settings(struct thp_settings *settings);
->> +struct thp_settings *thp_current_settings(void);
->> +void thp_push_settings(struct thp_settings *settings);
->> +void thp_pop_settings(void);
->> +void thp_restore_settings(void);
->> +void thp_save_settings(void);
->> +
->> +void thp_set_read_ahead_path(char *path);
->> +
->> +#endif /* __THP_SETTINGS_H__ */
-> 
+Best regards,
+Krzysztof
 
