@@ -2,104 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FB337FA253
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:18:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D05E7FA255
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:18:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233526AbjK0ORv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 09:17:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56812 "EHLO
+        id S233606AbjK0OSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 09:18:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233635AbjK0OR1 (ORCPT
+        with ESMTP id S233555AbjK0ORb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 09:17:27 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58BC131
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:09:36 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4281C433CC;
-        Mon, 27 Nov 2023 14:09:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701094176;
-        bh=Rzm1pffWSXspIZnYman5Fq3ZA6DmRbWYR/wrDSYJOAw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B48zSKFvCfDTu1F6pwsZ2SDK5DH8Cd9q7yYg1pMzuqVQ9ycLZ/kL5GunnlGuWLvZg
-         LkLwo6oEmtk8t+hImaDCKhVzLLttkkQjD5tYCGJsAxSu2Gtk1DXlKrioF09SdTc+Jx
-         rlcRGYrBPtFa8M4iRVu1223CXUj4Qd7vj6mckhQSuRiKjpt+hDD6FLEanWigKEPA2H
-         p9YSSW6pe471F28DrI1iYQhrOYdvAlpRsqJKmJxCKc/JMhFgKnWItIf8KPYjmqVYe/
-         Cocqlv3gx+14BMCGx2b/pSPAY+piCErvLWUd7haF/kgPP8FLc/dUdEmCjf6aS/EjrN
-         S94trnx9DxVog==
-Date:   Mon, 27 Nov 2023 14:09:33 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Ferry Toth <fntoth@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-pm@vger.kernel.org,
-        =?iso-8859-1?Q?S=F8ren?= Andersen <san@skov.dk>
-Subject: Re: [PATCH v1 0/3] introduce priority-based shutdown support
-Message-ID: <ZWSjHdupI4KT/w4A@finisterre.sirena.org.uk>
-References: <20231124185725.GA872366@pengutronix.de>
- <2023112520-paper-image-ef5d@gregkh>
- <20231125085038.GA877872@pengutronix.de>
- <2023112506-unselfish-unkind-adcb@gregkh>
- <ZWHM0lRPOp/efyD5@finisterre.sirena.org.uk>
- <2023112541-uptown-tripping-05f3@gregkh>
- <ZWIWBhBN8AmK7tAJ@finisterre.sirena.org.uk>
- <2023112504-cathedral-pulmonary-83ce@gregkh>
- <ZWMaMIGUo9DeyEH+@finisterre.sirena.org.uk>
- <56823ff4-69fa-4c92-8912-51fbfd71403a@gmail.com>
+        Mon, 27 Nov 2023 09:17:31 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF711FE5;
+        Mon, 27 Nov 2023 06:11:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=yMC1fr9zFr/aFbPIXFs2B98BYpQenlWqGbcREQeOEDM=; b=JAg3NTCQBfivlXVjbi5yc6w5nN
+        OH9xE0Xb0p4xAYGVUKhJE+55+hIn3EVOPzrV992PsVxVFj25vj5Vdq5xJIT9R1ME1eTAp0Pp3B5mq
+        lPjV9EtqsCnAs8Y2MmAR9gX+gA4wdAU8Yz+0navJ9BmK2oOHC00NdBrOGUjWi53MvQC8sG81Lldbd
+        qwD0TXLNj+SmvUibAPXGVXdvDlAOd9X3PdfN08KYy6ZYrHIMTIedINIn3rfV1JOYvCuHWo0J8RUEG
+        txzJg7gAr7Bs1FQl/xxc2q2U5DTGz7Y89PAVu/6DjQ03ruIyHy2NklKrQjZcFyzgcmCQ0c4x3CUo8
+        M4AD6glw==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1r7cK7-000ABW-7v; Mon, 27 Nov 2023 15:10:55 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1r7cK5-0001fA-I6; Mon, 27 Nov 2023 15:10:53 +0100
+Subject: Re: [PATCH net] bpf: test_run: fix WARNING in format_decode
+To:     Yonghong Song <yonghong.song@linux.dev>,
+        Edward Adam Davis <eadavis@qq.com>,
+        syzbot+e2c932aec5c8a6e1d31c@syzkaller.appspotmail.com
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        davem@davemloft.net, edumazet@google.com, haoluo@google.com,
+        hawk@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org,
+        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, martin.lau@kernel.org,
+        martin.lau@linux.dev, mhiramat@kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, rostedt@goodmis.org, sdf@google.com,
+        song@kernel.org, syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <0000000000004b6de5060ab1545b@google.com>
+ <tencent_884D1773977426D9D3600371696883B6A405@qq.com>
+ <4f832b6f-97b1-45b1-a210-b497ee6e55d5@linux.dev>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <8821dd97-3aed-1d3d-6c12-f5bc4fb88d5a@iogearbox.net>
+Date:   Mon, 27 Nov 2023 15:10:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="WNnJnhr0Ry+xKVz2"
-Content-Disposition: inline
-In-Reply-To: <56823ff4-69fa-4c92-8912-51fbfd71403a@gmail.com>
-X-Cookie: Slow day.  Practice crawling.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <4f832b6f-97b1-45b1-a210-b497ee6e55d5@linux.dev>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27106/Mon Nov 27 09:39:12 2023)
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/22/23 6:28 AM, Yonghong Song wrote:
+> On 11/21/23 7:50 PM, Edward Adam Davis wrote:
+>> Confirm that skb->len is not 0 to ensure that skb length is valid.
+>>
+>> Fixes: 114039b34201 ("bpf: Move skb->len == 0 checks into __bpf_redirect")
+>> Reported-by: syzbot+e2c932aec5c8a6e1d31c@syzkaller.appspotmail.com
+>> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> 
+> Stan, Could you take a look at this patch?
 
---WNnJnhr0Ry+xKVz2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I think this only papers over the bug.. also BPF selftests seem to break
+with this change.
 
-On Sun, Nov 26, 2023 at 08:42:02PM +0100, Ferry Toth wrote:
+Looking again at the syzkaller trace :
 
-> Funny discussion. As a hardware engineer (with no experience in automotive,
-> but actual experience in industrial applications and debugging issues
-> arising from bad shutdowns) let me add my 5ct at the end.
+   [...]
+   Please remove unsupported %\0 in format string
+   WARNING: CPU: 0 PID: 5068 at lib/vsprintf.c:2675 format_decode+0xa03/0xba0 lib/vsprintf.c:2675
+   [...]
 
-I suspect there's also a space here beyond systems that were designed
-with these failure modes in mind where people run into issues once they
-have the hardware and are trying to improve what they can after the fact.
+We need to fix bpf_bprintf_prepare() instead to reject invalid fmts such
+as %0 and similar.
 
-> Now, we do need to keep in mind that storing J in a supercap, executing a
-> CPU at GHz, storing GB data do not come free. So, after making sure things
-> shutdown in time, it often pays off to shorten that deadline, and indeed
-> make it faster.
+>>   net/bpf/test_run.c | 3 +++
+>>   1 file changed, 3 insertions(+)
+>>
+>> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+>> index c9fdcc5cdce1..78258a822a5c 100644
+>> --- a/net/bpf/test_run.c
+>> +++ b/net/bpf/test_run.c
+>> @@ -845,6 +845,9 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
+>>   {
+>>       struct qdisc_skb_cb *cb = (struct qdisc_skb_cb *)skb->cb;
+>> +    if (!skb->len)
+>> +        return -EINVAL;
+>> +
+>>       if (!__skb)
+>>           return 0;
 
-Indeed.
-
---WNnJnhr0Ry+xKVz2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVkoxwACgkQJNaLcl1U
-h9Bcygf+L5hzSTavWgidr0hhi4465zqbw6YHoR2jz/DNlD7AC58rPR5FEWs0ruwB
-dYLUl6i9VzuNAc9R7DXPwA1hlzqOMJSVLZdNKR8FN6oqaCQfkGAb2WEp8B+CVVhh
-SUq1PlZIbWA47Rgj42qjHd7etTeUrNiLH90R1mnon4PiJCQbbba0trpOO1Mf/IbP
-uQY0PMswnm+Vdq2FuNrDHjAmMYPn+5fpsfk60E9OZxONpxX8ElNZQ9bnluWbA0a2
-rDafPPNO2BBrIiJqRNrsmsZjQ7nCwUpcqih7JLsmAG/RKoDG9b0GmgD+vOsRBCus
-z2mNJo7Q5npN3R0aK/oDnOl/g/ymCw==
-=1hbz
------END PGP SIGNATURE-----
-
---WNnJnhr0Ry+xKVz2--
