@@ -2,143 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7277F9802
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 04:48:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4CB87F9807
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 04:51:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231909AbjK0Dsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 22:48:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41128 "EHLO
+        id S229620AbjK0DvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 22:51:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjK0Dss (ORCPT
+        with ESMTP id S229379AbjK0DvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 22:48:48 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 012F1127;
-        Sun, 26 Nov 2023 19:48:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1701056933;
-        bh=xDZKSlzh1/UCfSWZwMAP6iEXsWt5FFryCFfldIgRDvM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tq93Kuo33izvLI6GbhYWWx5Ia6NAAoD3hBp9dEPcUCYATgIfb9agy/7CueloQpLu3
-         gHrLDRCrAebicnW4a+sFrH9U0rjM9jOgirIPng00QJD7JlfXMPC8LVt2KGV4rtZziu
-         /MyP/uaZy2XREwjPURXMecVh/lIETFw4KrVpknXPLoPVRZyDrzv3eAsQ2PucYbX8WS
-         lHbLA9tiG6FMRAOBm0zmpYMUPAc1itaGiR4A7aoRVg1h0pBU9lLA1bI1uVTslL5RQh
-         MFVzulnEAitK6bDbE3vNqo8lfVd2Z4/V/kAF2XcqsmSu6XHG4BBcN+PlIu3ZAV+LRA
-         7D7yIe3iAv17Q==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Sds5K2g9nz4wbr;
-        Mon, 27 Nov 2023 14:48:53 +1100 (AEDT)
-Date:   Mon, 27 Nov 2023 14:48:52 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: linux-next: build failure after merge of the mm tree
-Message-ID: <20231127144852.069b2e7e@canb.auug.org.au>
-In-Reply-To: <20231127132809.45c2b398@canb.auug.org.au>
-References: <20231127132809.45c2b398@canb.auug.org.au>
+        Sun, 26 Nov 2023 22:51:21 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B37B127;
+        Sun, 26 Nov 2023 19:51:28 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6b709048f32so3102659b3a.0;
+        Sun, 26 Nov 2023 19:51:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701057087; x=1701661887; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uo8Ko/vla2T+p4A+YllsV7VNEWXXgEznOOjCsDLXCcE=;
+        b=eIhFRB2wGxXItzvcsC8mVQxdKGQUJ1Eg1kK8xwznrJsuJxNOVDpMseLdKd1J5AssHt
+         s57sn1XjjoPWQni7CAicUWMXTLRdqPGxyHaXZAaw1JinuQxPZDJM4VMpCy2TK2yO/Dj4
+         8vQNKCdzNpDClkX30MSjZ3NAk9KcUUvPg9I0ymZWKYznManC3ukAMj66PStqmKKw+HNq
+         VSmYvGNk0K3/22UxEGwVPkc/3XnJBDID3RVF0YTel1FwwSmz3QqXjQwETaCQak7KTlMC
+         cbZ75H+F2ZYsmOf8TZtT6rwYHxids9IEea/i7rhPMnYaOuvthAY8BuFmp5S+gsq+146o
+         oEKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701057087; x=1701661887;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uo8Ko/vla2T+p4A+YllsV7VNEWXXgEznOOjCsDLXCcE=;
+        b=SSjU2RQ1LgvlSu6pvAdww7itWGGWkpXQmaP64PAZ/bHKKjpZiYTompsgoL+LfwxZzA
+         9wAOgCwYGQGP+l+072ODuSxMbcgdr6s4Nt8hVbwDS6Q6sgLF4uclUHjediTC52m1sbwO
+         TC4TRuNLzNtb/CsCKYj6Vv2I235Smcn0U57ElyVNY6HMg9rz80BfunD798KgAb52foCZ
+         SGsFqobk/tYrX3c+CgRmsMpg34ynaxIcdPd5/4Bj73O0UeyfGVx7qw7LKThc/RpnBrsh
+         AJXEokEH9gvX/t4eY6mO3TpjARUZ+3PnOZ7r2N+/NdIHjX3Z4ZnSsDfNB/QGXlWs5FlS
+         TpcA==
+X-Gm-Message-State: AOJu0Yzp+dJRqHUBTOnMGGBrVSDUOhXOOEIqmc5xjXcOLbfKZF4SZj3L
+        PlAlmI2iDNxzwkz5oh89cn8=
+X-Google-Smtp-Source: AGHT+IHnfD2uQByZbeR+pZ1rrVvtQBezSJAO2p+QRMn/MU6fFpXnfFj8HuZaq1h2VMtpPhfVxOavSg==
+X-Received: by 2002:a05:6a20:158b:b0:18b:985e:8035 with SMTP id h11-20020a056a20158b00b0018b985e8035mr11136085pzj.12.1701057087099;
+        Sun, 26 Nov 2023 19:51:27 -0800 (PST)
+Received: from [192.168.1.3] (ip72-194-116-95.oc.oc.cox.net. [72.194.116.95])
+        by smtp.gmail.com with ESMTPSA id n6-20020a170902d2c600b001cfcf3dd317sm701206plc.61.2023.11.26.19.51.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 26 Nov 2023 19:51:26 -0800 (PST)
+Message-ID: <a4c5bef2-4d27-4e49-9b12-ae8806f6477c@gmail.com>
+Date:   Sun, 26 Nov 2023 19:51:24 -0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/1OxpgZpOL2DDzmvOW3C.v.M";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.10 000/187] 5.10.202-rc3 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, allen.lkml@gmail.com
+References: <20231126154335.643804657@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; keydata=
+ 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
+ HGuUuzv+GKZ6nsysJw==
+In-Reply-To: <20231126154335.643804657@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/1OxpgZpOL2DDzmvOW3C.v.M
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-Just cc'ing the PowerPC guys to see if my fix is sensible.
+On 11/26/2023 7:46 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.202 release.
+> There are 187 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Tue, 28 Nov 2023 15:43:06 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.202-rc3.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-On Mon, 27 Nov 2023 13:28:09 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> After merging the mm tree, today's linux-next build (powerpc64
-> allnoconfig) failed like this:
->=20
-> arch/powerpc/mm/book3s64/pgtable.c:557:5: error: no previous prototype fo=
-r 'pmd_move_must_withdraw' [-Werror=3Dmissing-prototypes]
->   557 | int pmd_move_must_withdraw(struct spinlock *new_pmd_ptl,
->       |     ^~~~~~~~~~~~~~~~~~~~~~
-> cc1: all warnings being treated as errors
->=20
-> Caused by commit
->=20
->   c6345dfa6e3e ("Makefile.extrawarn: turn on missing-prototypes globally")
->=20
-> I have added the following patch for today (which could be applied to
-> the mm or powerpc trees):
->=20
-> From 194805b44c11b4c0aa28bdcdc0bb0d82acef394c Mon Sep 17 00:00:00 2001
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Mon, 27 Nov 2023 13:08:57 +1100
-> Subject: [PATCH] powerpc: pmd_move_must_withdraw() is only needed for
->  CONFIG_TRANSPARENT_HUGEPAGE
->=20
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  arch/powerpc/mm/book3s64/pgtable.c | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/arch/powerpc/mm/book3s64/pgtable.c b/arch/powerpc/mm/book3s6=
-4/pgtable.c
-> index be229290a6a7..3438ab72c346 100644
-> --- a/arch/powerpc/mm/book3s64/pgtable.c
-> +++ b/arch/powerpc/mm/book3s64/pgtable.c
-> @@ -542,6 +542,7 @@ void ptep_modify_prot_commit(struct vm_area_struct *v=
-ma, unsigned long addr,
->  	set_pte_at(vma->vm_mm, addr, ptep, pte);
->  }
-> =20
-> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
->  /*
->   * For hash translation mode, we use the deposited table to store hash s=
-lot
->   * information and they are stored at PTRS_PER_PMD offset from related p=
-md
-> @@ -563,6 +564,7 @@ int pmd_move_must_withdraw(struct spinlock *new_pmd_p=
-tl,
-> =20
->  	return true;
->  }
-> +#endif
-> =20
->  /*
->   * Does the CPU support tlbie?
-> --=20
-> 2.40.1
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/1OxpgZpOL2DDzmvOW3C.v.M
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVkEaQACgkQAVBC80lX
-0Gx3Uwf/eggLiBT0CMRtGTvKcImnVpzRYOstDC8af1O5yiQc2pfZeP1h5aG+DXTw
-eT/PR/kTiL3zK9pywiKe3a2wJu0UN/QZinW/7Mk/xJf3L8JHGUu+fyAaVjBKqjm9
-Ze+PH6AACdmi84DkTzOKmkLZR7AauuyKyuDbltPMrga6zsex0/shCRHRxjs3aGQu
-x+4eeWsjx2Pf24kUHrQ8f44+5cJZ+A9Vjzh99cJvycepd3GJEoTohBEPoda0NFCD
-xIGHUDC1B/dNuxzaGYkYy6jqYWtk/cjJOI/I3KvzYubPQwr3m7OVhe4EI11IyvSR
-kpoHYFK6c3LJ3LNWRf5SWFs3mS6+gA==
-=N35d
------END PGP SIGNATURE-----
-
---Sig_/1OxpgZpOL2DDzmvOW3C.v.M--
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
