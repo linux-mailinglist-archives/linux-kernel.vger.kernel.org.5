@@ -2,343 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B857FAB38
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 21:19:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 482957FAB33
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 21:19:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233272AbjK0UTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 15:19:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54334 "EHLO
+        id S233167AbjK0UTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 15:19:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233205AbjK0UTQ (ORCPT
+        with ESMTP id S233155AbjK0UTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 15:19:16 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55126D59
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 12:19:21 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-4079ed65582so32894595e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 12:19:21 -0800 (PST)
+        Mon, 27 Nov 2023 15:19:05 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 963341BD;
+        Mon, 27 Nov 2023 12:19:12 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6cba45eeaf6so1280244b3a.1;
+        Mon, 27 Nov 2023 12:19:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701116360; x=1701721160; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DzCWC63D/h6//8PScKXUzeHvcD/O+lCbOIGXiWj5l+M=;
-        b=aA+6yKKLV6JViMKlqG1+5KMtnVqVpM+sfmVtRYGoweRuXPIjDq17GA0D6NtnwmDrQd
-         DW09M0mIrghL04OwvUQKxibrEDcLfaAXTF+PmdD3gSdZkI/olwmmjpO0+bBv2voY0D8m
-         dumggEwMzq40bseVL+k1OOFqpH+rAsoywA/0wLpqS8Neu6xjAiqXKk6YnQz8cqB32ggN
-         /OqJsb8/DMTwfGUS/1GVnfwvzO3YXnIlQBmaZBAF2v768DFrZHIZQPLdVL9QOXq0JFub
-         bEl/lL2RUBxdgTOrSo3g/JbwElDaBzYqu3nGmWv9MtRShWNJgR1kfkDgmkqk7HU4eZPU
-         FjcA==
+        d=gmail.com; s=20230601; t=1701116352; x=1701721152; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2MJbv7/yM8IoZp5rE2NxjWnnGMEZpgKADKLpNiN2nLo=;
+        b=hG2Zu5Xsa3LsAV5fEr6PDrEwSaXvQLPcDG3O+anLTeCLStbO9+igKgu0LHdwFbEyzB
+         VMnOQwtgEKretAKvYrfCNdUchi5VP2s51Hxx/sgLmBfPYb0XFO2MMQMnTZLO0QIC+g2p
+         iEMDK0xKylWsIQIbdZ9eGE02/zlo2yywdL5FbKJn51TY2GSCBktqjnX6uVc5IzyygbNP
+         +Ht0UNp05J8MiIAhsN0oJxf9quBf892VwszD5Z+G60Mw/UR2KutdRSBRh0vMlwbPl6Kk
+         K7lotIoNsC+SLzY9gx/KJ61xolIgThTeUamF3SWAjiBycAON5WOw7J/LMSNp7IdEN05y
+         EDIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701116360; x=1701721160;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DzCWC63D/h6//8PScKXUzeHvcD/O+lCbOIGXiWj5l+M=;
-        b=NPI0OUzY844nsP1BX6Dbw+v6f0MoXTCf+i62j5b6O1nT/iJavJy0WI/K/vaas5sXmJ
-         YnoKEXsrW2qudwZ0U8imm1FUzEv7NsUfl8VdK4MMMBXSvZU0SWijraaHtwVHPp+Mivgp
-         C+1actwVBYGA5PA5gwt9qNFIF4W6jo83LER8GjWxZIfqcciiUJgG6VtKuHIyxcEeKYUl
-         M9ixiHzO9RhF78FDuFLUUwMumexwGRJ12LOBxx2QbmKdz7Nj2BZ2t6Mi4z0E38ntKkpQ
-         XKBmb5etbFLxQFxDAVV9Ptj3IXSEqmSbYIZx66VKZKbjdavthNO0zSkhVN59k++TPaHC
-         3XtA==
-X-Gm-Message-State: AOJu0YwQ8tfuOc2Z2U3AU3J7dFrQMyhshwrKNtJE5bDIIRBme8wevUHw
-        pQ61Zvk4cR6HGGCNTv3fhKY=
-X-Google-Smtp-Source: AGHT+IExYIfQFMjj5mHpsakuzc9XntzBbiWNCXueW6pyDw1hg6C6tgmu2SnSKJmj8WarbCN05r/GFQ==
-X-Received: by 2002:a05:600c:4f8a:b0:40b:4520:45a6 with SMTP id n10-20020a05600c4f8a00b0040b452045a6mr3590184wmq.8.1701116359790;
-        Mon, 27 Nov 2023 12:19:19 -0800 (PST)
-Received: from mfe-desktop.Sonatest.net (ipagstaticip-d73c7528-4de5-0861-800b-03d8b15e3869.sdsl.bell.ca. [174.94.156.236])
-        by smtp.googlemail.com with ESMTPSA id k32-20020a05600c1ca000b0040839fcb217sm15224619wms.8.2023.11.27.12.19.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 12:19:19 -0800 (PST)
-From:   marc.ferland@gmail.com
-X-Google-Original-From: marc.ferland@sonatest.com
-To:     krzysztof.kozlowski@linaro.org
-Cc:     gregkh@linuxfoundation.org, marc.ferland@sonatest.com,
-        jeff.dagenais@gmail.com, rdunlap@infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] w1: ds2433: add support for ds28ec20 eeprom
-Date:   Mon, 27 Nov 2023 15:18:56 -0500
-Message-Id: <20231127201856.3836178-6-marc.ferland@sonatest.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231127201856.3836178-1-marc.ferland@sonatest.com>
-References: <20231117192909.98944-1-marc.ferland@sonatest.com>
- <20231127201856.3836178-1-marc.ferland@sonatest.com>
+        d=1e100.net; s=20230601; t=1701116352; x=1701721152;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2MJbv7/yM8IoZp5rE2NxjWnnGMEZpgKADKLpNiN2nLo=;
+        b=LPnqfJH6TyWNsl/2Nx8mR/tFj5cN1l3sLvnjHpk7bU8Nan7Fa0Hhqg75nsIYJDtQB6
+         BsawsG9NmCgufwVCfMnn1PgNwkZo62/+7oOu35++AdiQ6hRezqv417peI4ePmXWG6Tci
+         RuzCQCN0cjLbSpL/q7SGu/AP5jZTKhbP3ZdYHK8ag9y0+thvqiUrfn6TtQqcJ9a+Zp0E
+         Wnwu/6z/cti/nLr8sw5eZ6ZuoBDsA65jBH/XJ5iOH2I95s0g8Pup4KVYTO17cQSG0yYv
+         OiU9OaV2TSNtJAUY3kGkRjxluM8bb/WENaucr5RDNw3xvVrXfQl+Jrlpe09scKUwcXdD
+         rhJw==
+X-Gm-Message-State: AOJu0Yxog/MbTCakqSJQzbYUyoZB4i5no0eULfnHPXDP6D2AjGBH56Vr
+        Ma+ppnaH0mXG3LRBQdSRx5k=
+X-Google-Smtp-Source: AGHT+IGgAthcmJdLcAxnPF1mKTsZQwYQTddihmO/oR2hXQckOBKxsik/6r22n6oSt6f1b7tAAhta1g==
+X-Received: by 2002:a05:6a00:3a19:b0:6cb:8347:c8b1 with SMTP id fj25-20020a056a003a1900b006cb8347c8b1mr16610584pfb.1.1701116352000;
+        Mon, 27 Nov 2023 12:19:12 -0800 (PST)
+Received: from [192.168.0.152] ([103.75.161.211])
+        by smtp.gmail.com with ESMTPSA id c8-20020a62e808000000b006c341cf08f9sm7780689pfi.140.2023.11.27.12.19.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Nov 2023 12:19:10 -0800 (PST)
+Message-ID: <af489962-705f-4a72-943d-ba3b46d64597@gmail.com>
+Date:   Tue, 28 Nov 2023 01:49:06 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] driver : edac : Fix warning using plain integer as NULL
+Content-Language: en-US
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     tony.luck@intel.com, qiuxu.zhuo@intel.com, james.morse@arm.com,
+        mchehab@kernel.org, rric@kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20231109212157.1454726-1-singhabhinav9051571833@gmail.com>
+ <20231127171435.GCZWTOe+DQSy4kkuKO@fat_crate.local>
+ <dfb5b4cd-935c-445b-aaa7-bcce962a143d@gmail.com>
+ <20231127183941.GGZWTibScFM4lgbqkG@fat_crate.local>
+ <95fc95c8-dac6-4137-a9cd-29f27da64e41@gmail.com>
+ <20231127200519.GHZWT2f2x76hMLR91V@fat_crate.local>
+From:   Abhinav Singh <singhabhinav9051571833@gmail.com>
+In-Reply-To: <20231127200519.GHZWT2f2x76hMLR91V@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Ferland <marc.ferland@sonatest.com>
+On 11/28/23 01:35, Borislav Petkov wrote:
+> On Tue, Nov 28, 2023 at 12:23:54AM +0530, Abhinav Singh wrote:
+>> Just to be correct this time, I need to put a reason why this needs to
+>> be fixed, in the patch itself, right?
+> 
+> No, the commit message is perfectly fine for that.
+> 
 
-The ds28ec20 eeprom is (almost) backward compatible with the
-ds2433. The only differences are:
+Okay, so I guess as of now there is no change needed, so I need not send 
+a v2 patch, right?
 
-- the eeprom size is now 2560 bytes instead of 512;
-- the number of pages is now 80 (same page size as the ds2433: 256 bits);
-- the programming time has increased from 5ms to 10ms;
-
-This patch adds support for the ds28ec20 to the ds2433 driver. From
-the datasheet: The DS28EC20 provides a high degree of backward
-compatibility with the DS2433. Besides the different family codes, the
-only protocol change that is required on an existing DS2433
-implementation is a lengthening of the programming duration (tPROG)
-from 5ms to 10ms.
-
-dmesg now returns:
-
-    w1_master_driver w1_bus_master1: Attaching one wire slave 43.000000478756 crc e0
-
-instead of:
-
-    w1_master_driver w1_bus_master1: Attaching one wire slave 43.000000478756 crc e0
-    w1_master_driver w1_bus_master1: Family 43 for 43.000000478756.e0 is not registered.
-
-Test script writing/reading random data (CONFIG_W1_SLAVE_DS2433_CRC is
-not set):
-
-    #!/bin/sh
-
-    EEPROM=/sys/bus/w1/devices/43-000000478756/eeprom
-    BINFILE1=/home/root/file1.bin
-    BINFILE2=/home/root/file2.bin
-
-    for BS in 1 2 3 4 8 16 32 64 128 256 512 1024 2560; do
-        dd if=/dev/random of=${BINFILE1} bs=${BS} count=1 status=none
-        dd if=${BINFILE1} of=${EEPROM} status=none
-        dd if=${EEPROM} of=${BINFILE2} bs=${BS} count=1 status=none
-        if ! cmp --silent ${BINFILE1} ${BINFILE2}; then
-    	    echo file1
-    	    hexdump ${BINFILE1}
-    	    echo file2
-    	    hexdump ${BINFILE2}
-    	    echo FAIL
-    	    exit 1
-        fi
-        echo "${BS} OK!"
-    done
-
-Results:
-
-    # ./test.sh
-    1 OK!
-    2 OK!
-    3 OK!
-    4 OK!
-    8 OK!
-    16 OK!
-    32 OK!
-    64 OK!
-    128 OK!
-    256 OK!
-    512 OK!
-    1024 OK!
-    2560 OK!
-
-Tests with CONFIG_W1_SLAVE_DS2433_CRC=y:
-
-    $ cat /proc/config.gz | gunzip | grep CONFIG_W1_SLAVE_DS2433
-    CONFIG_W1_SLAVE_DS2433=m
-    CONFIG_W1_SLAVE_DS2433_CRC=y
-
-    # create a 32 bytes block with a crc, i.e.:
-    00000000  31 32 33 34 35 36 37 38  39 3a 3b 3c 3d 3e 3f 40  |123456789:;<=>?@|
-    00000010  41 42 43 44 45 46 47 48  49 4a 4b 4c 4d 4e ba 63  |ABCDEFGHIJKLMN.c|
-
-    # fill all 80 blocks
-    $ dd if=test.bin of=/sys/bus/w1/devices/43-000000478756/eeprom bs=32 count=80
-
-    # read back all blocks, i.e.:
-    $ hexdump -C /sys/bus/w1/devices/43-000000478756/eeprom
-    00000000  31 32 33 34 35 36 37 38  39 3a 3b 3c 3d 3e 3f 40  |123456789:;<=>?@|
-    00000010  41 42 43 44 45 46 47 48  49 4a 4b 4c 4d 4e ba 63  |ABCDEFGHIJKLMN.c|
-    00000020  31 32 33 34 35 36 37 38  39 3a 3b 3c 3d 3e 3f 40  |123456789:;<=>?@|
-    00000030  41 42 43 44 45 46 47 48  49 4a 4b 4c 4d 4e ba 63  |ABCDEFGHIJKLMN.c|
-    ...
-    000009e0  31 32 33 34 35 36 37 38  39 3a 3b 3c 3d 3e 3f 40  |123456789:;<=>?@|
-    000009f0  41 42 43 44 45 46 47 48  49 4a 4b 4c 4d 4e ba 63  |ABCDEFGHIJKLMN.c|
-    00000a00
-
-Note: both memories (ds2433 and ds28ec20) have been tested with the
-new driver.
-
-Signed-off-by: Marc Ferland <marc.ferland@sonatest.com>
-Co-developed-by: Jean-Francois Dagenais <jeff.dagenais@gmail.com>
-Signed-off-by: Jean-Francois Dagenais <jeff.dagenais@gmail.com>
----
- drivers/w1/slaves/w1_ds2433.c | 98 ++++++++++++++++++++++++++++++++---
- 1 file changed, 90 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/w1/slaves/w1_ds2433.c b/drivers/w1/slaves/w1_ds2433.c
-index 63ed03191137..ab1491a7854a 100644
---- a/drivers/w1/slaves/w1_ds2433.c
-+++ b/drivers/w1/slaves/w1_ds2433.c
-@@ -1,8 +1,9 @@
- // SPDX-License-Identifier: GPL-2.0-only
- /*
-- *	w1_ds2433.c - w1 family 23 (DS2433) driver
-+ *	w1_ds2433.c - w1 family 23 (DS2433) & 43 (DS28EC20) eeprom driver
-  *
-  * Copyright (c) 2005 Ben Gardner <bgardner@wabtec.com>
-+ * Copyright (c) 2023 Marc Ferland <marc.ferland@sonatest.com>
-  */
- 
- #include <linux/kernel.h>
-@@ -23,8 +24,10 @@
- #include <linux/w1.h>
- 
- #define W1_EEPROM_DS2433	0x23
-+#define W1_EEPROM_DS28EC20	0x43
- 
--#define W1_EEPROM_SIZE		512
-+#define W1_EEPROM_DS2433_SIZE	512
-+#define W1_EEPROM_DS28EC20_SIZE 2560
- 
- #define W1_PAGE_SIZE		32
- #define W1_PAGE_BITS		5
-@@ -42,11 +45,17 @@ struct ds2433_config {
- };
- 
- static const struct ds2433_config config_f23 = {
--	.eeprom_size = W1_EEPROM_SIZE,
-+	.eeprom_size = W1_EEPROM_DS2433_SIZE,
- 	.page_count = 16,
- 	.tprog = 5,
- };
- 
-+static const struct ds2433_config config_f43 = {
-+	.eeprom_size = W1_EEPROM_DS28EC20_SIZE,
-+	.page_count = 80,
-+	.tprog = 10,
-+};
-+
- struct w1_f23_data {
- #ifdef CONFIG_W1_SLAVE_DS2433_CRC
- 	u8		*memory;
-@@ -264,10 +273,22 @@ static ssize_t eeprom_write(struct file *filp, struct kobject *kobj,
- 	return count;
- }
- 
--static BIN_ATTR_RW(eeprom, W1_EEPROM_SIZE);
-+static struct bin_attribute bin_attr_f23_eeprom = {
-+	.attr = { .name = "eeprom", .mode = 0644 },
-+	.read = eeprom_read,
-+	.write = eeprom_write,
-+	.size = W1_EEPROM_DS2433_SIZE,
-+};
-+
-+static struct bin_attribute bin_attr_f43_eeprom = {
-+	.attr = { .name = "eeprom", .mode = 0644 },
-+	.read = eeprom_read,
-+	.write = eeprom_write,
-+	.size = W1_EEPROM_DS28EC20_SIZE,
-+};
- 
- static struct bin_attribute *w1_f23_bin_attributes[] = {
--	&bin_attr_eeprom,
-+	&bin_attr_f23_eeprom,
- 	NULL,
- };
- 
-@@ -280,6 +301,20 @@ static const struct attribute_group *w1_f23_groups[] = {
- 	NULL,
- };
- 
-+static struct bin_attribute *w1_f43_bin_attributes[] = {
-+	&bin_attr_f43_eeprom,
-+	NULL,
-+};
-+
-+static const struct attribute_group w1_f43_group = {
-+	.bin_attrs = w1_f43_bin_attributes,
-+};
-+
-+static const struct attribute_group *w1_f43_groups[] = {
-+	&w1_f43_group,
-+	NULL,
-+};
-+
- static int w1_f23_add_slave(struct w1_slave *sl)
- {
- 	struct w1_f23_data *data;
-@@ -288,7 +323,14 @@ static int w1_f23_add_slave(struct w1_slave *sl)
- 	if (!data)
- 		return -ENOMEM;
- 
--	data->cfg = &config_f23;
-+	switch (sl->family->fid) {
-+	case W1_EEPROM_DS2433:
-+		data->cfg = &config_f23;
-+		break;
-+	case W1_EEPROM_DS28EC20:
-+		data->cfg = &config_f43;
-+		break;
-+	}
- 
- #ifdef CONFIG_W1_SLAVE_DS2433_CRC
- 	data->memory = kzalloc(data->cfg->eeprom_size, GFP_KERNEL);
-@@ -326,13 +368,53 @@ static const struct w1_family_ops w1_f23_fops = {
- 	.groups		= w1_f23_groups,
- };
- 
-+static const struct w1_family_ops w1_f43_fops = {
-+	.add_slave      = w1_f23_add_slave,
-+	.remove_slave   = w1_f23_remove_slave,
-+	.groups         = w1_f43_groups,
-+};
-+
- static struct w1_family w1_family_23 = {
- 	.fid = W1_EEPROM_DS2433,
- 	.fops = &w1_f23_fops,
- };
--module_w1_family(w1_family_23);
-+
-+static struct w1_family w1_family_43 = {
-+	.fid = W1_EEPROM_DS28EC20,
-+	.fops = &w1_f43_fops,
-+};
-+
-+static int __init w1_ds2433_init(void)
-+{
-+	int err;
-+
-+	err = w1_register_family(&w1_family_23);
-+	if (err)
-+		return err;
-+
-+	err = w1_register_family(&w1_family_43);
-+	if (err)
-+		goto err_43;
-+
-+	return 0;
-+
-+err_43:
-+	w1_unregister_family(&w1_family_23);
-+	return err;
-+}
-+
-+static void __exit w1_ds2433_exit(void)
-+{
-+	w1_unregister_family(&w1_family_23);
-+	w1_unregister_family(&w1_family_43);
-+}
-+
-+module_init(w1_ds2433_init);
-+module_exit(w1_ds2433_exit);
- 
- MODULE_AUTHOR("Ben Gardner <bgardner@wabtec.com>");
--MODULE_DESCRIPTION("w1 family 23 driver for DS2433, 4kb EEPROM");
-+MODULE_AUTHOR("Marc Ferland <marc.ferland@sonatest.com>");
-+MODULE_DESCRIPTION("w1 family 23/43 driver for DS2433 (4kb) and DS28EC20 (20kb)");
- MODULE_LICENSE("GPL");
- MODULE_ALIAS("w1-family-" __stringify(W1_EEPROM_DS2433));
-+MODULE_ALIAS("w1-family-" __stringify(W1_EEPROM_DS28EC20));
--- 
-2.34.1
-
+Thank You,
+Abhinav Singh
