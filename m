@@ -2,124 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6157FAA80
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 20:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6FA17FAA59
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 20:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232922AbjK0Tj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 14:39:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40240 "EHLO
+        id S232897AbjK0TgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 14:36:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232986AbjK0TjH (ORCPT
+        with ESMTP id S232785AbjK0TgO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 14:39:07 -0500
-Received: from smtp-fw-9102.amazon.com (smtp-fw-9102.amazon.com [207.171.184.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F809170B;
-        Mon, 27 Nov 2023 11:38:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1701113917; x=1732649917;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=4O/H8hZxUEAevN+ZrA3EKQUKcMfxg0sA4Wnf7tueTHI=;
-  b=IfG2fEZS7hmGsN1mC6yRkdAx1Zu5GQenr779HrV1eb+CivUtEua+dBSK
-   Fgvv2WmIqLnAsSdDbRyHklASpQPW9s2CS+YeM+gw9Hw1kTrE0r6qtImnn
-   BcMrrhxb1Q70rOSDOXapsfADgLRNYlZU8iMIHD3RtzEQNrIPgKGXQrQ7Z
-   k=;
-X-IronPort-AV: E=Sophos;i="6.04,231,1695686400"; 
-   d="scan'208";a="379093772"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-32fb4f1a.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 19:38:32 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
-        by email-inbound-relay-pdx-2b-m6i4x-32fb4f1a.us-west-2.amazon.com (Postfix) with ESMTPS id 40C7BC1808;
-        Mon, 27 Nov 2023 19:38:31 +0000 (UTC)
-Received: from EX19MTAEUC001.ant.amazon.com [10.0.10.100:18477]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.47.241:2525] with esmtp (Farcaster)
- id 34c62af7-a95a-44cd-a237-865a88738a8d; Mon, 27 Nov 2023 19:38:30 +0000 (UTC)
-X-Farcaster-Flow-ID: 34c62af7-a95a-44cd-a237-865a88738a8d
-Received: from EX19D043EUC001.ant.amazon.com (10.252.61.155) by
- EX19MTAEUC001.ant.amazon.com (10.252.51.155) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Mon, 27 Nov 2023 19:38:29 +0000
-Received: from EX19MTAUWC001.ant.amazon.com (10.250.64.145) by
- EX19D043EUC001.ant.amazon.com (10.252.61.155) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Mon, 27 Nov 2023 19:38:29 +0000
-Received: from dev-dsk-hagarhem-1b-81bb22e5.eu-west-1.amazon.com
- (172.19.65.226) by mail-relay.amazon.com (10.250.64.145) with Microsoft SMTP
- Server id 15.2.1118.39 via Frontend Transport; Mon, 27 Nov 2023 19:38:29
- +0000
-Received: by dev-dsk-hagarhem-1b-81bb22e5.eu-west-1.amazon.com (Postfix, from userid 23002382)
-        id 8FB3B88FB; Mon, 27 Nov 2023 19:38:28 +0000 (UTC)
-From:   Hagar Gamal Halim Hemdan <hagarhem@amazon.com>
-CC:     <stable@vger.kernel.org>,
-        Hagar Gamal Halim Hemdan <hagarhem@amazon.com>,
-        Bryan Tan <bryantan@vmware.com>,
-        Vishnu Dasa <vdasa@vmware.com>,
-        "VMware PV-Drivers Reviewers" <pv-drivers@vmware.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dtor@vmware.com>,
-        George Zhang <georgezhang@vmware.com>,
-        Andy king <acking@vmware.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] vmci: prevent speculation leaks by sanitizing event in event_deliver()
-Date:   Mon, 27 Nov 2023 19:35:33 +0000
-Message-ID: <20231127193533.46174-1-hagarhem@amazon.com>
-X-Mailer: git-send-email 2.40.1
+        Mon, 27 Nov 2023 14:36:14 -0500
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D09A8D5A;
+        Mon, 27 Nov 2023 11:36:19 -0800 (PST)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3ARJa4cU101037;
+        Mon, 27 Nov 2023 13:36:04 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1701113764;
+        bh=iI7ZvtM2UEW3p1rnWnJJvLA76dVEiHpqzz31MDh7+4E=;
+        h=From:To:CC:Subject:Date;
+        b=dR8IECDwChavWD2mjflDtcmgLKzmw8YssZn/8qjC1V67oHtahP1m2vKyYZ/6O7mKT
+         4Xubwks+cgv1eBG6JJO9KZb3CT/d8bBZO2DUx+PvWzXJIYQq2Oupduzto0Tb0fXP6X
+         9EjyctEF/DxOhK+3bYCMfeG81dGLIVmUgX5O0tos=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3ARJa4OM027994
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 27 Nov 2023 13:36:04 -0600
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 27
+ Nov 2023 13:36:03 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 27 Nov 2023 13:36:03 -0600
+Received: from lelv0327.itg.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3ARJa3c1060644;
+        Mon, 27 Nov 2023 13:36:03 -0600
+From:   Andrew Davis <afd@ti.com>
+To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Andrew Davis <afd@ti.com>
+Subject: [PATCH v2] arm64: dts: ti: k3-am625-beagleplay: Use UART name in pinmux name
+Date:   Mon, 27 Nov 2023 13:36:02 -0600
+Message-ID: <20231127193602.151499-1-afd@ti.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Coverity spotted that event_msg is controlled by user-space,
-event_msg->event_data.event is passed to event_deliver() and used
-as an index without sanitization.
+The main_uart0 may not always be the console, but it will always be
+the UART0 in MAIN domain. Name the pinmux node to match. This makes
+it consistent with all other TI SoC based boards.
 
-This change ensures that the event index is sanitized to mitigate any
-possibility of speculative information leaks.
-
-Fixes: 1d990201f9bb ("VMCI: event handling implementation.")
-
-Signed-off-by: Hagar Gamal Halim Hemdan <hagarhem@amazon.com>
+Signed-off-by: Andrew Davis <afd@ti.com>
 ---
- drivers/misc/vmw_vmci/vmci_event.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/misc/vmw_vmci/vmci_event.c b/drivers/misc/vmw_vmci/vmci_event.c
-index 5d7ac07623c2..9a41ab65378d 100644
---- a/drivers/misc/vmw_vmci/vmci_event.c
-+++ b/drivers/misc/vmw_vmci/vmci_event.c
-@@ -9,6 +9,7 @@
- #include <linux/vmw_vmci_api.h>
- #include <linux/list.h>
- #include <linux/module.h>
-+#include <linux/nospec.h>
- #include <linux/sched.h>
- #include <linux/slab.h>
- #include <linux/rculist.h>
-@@ -86,9 +87,12 @@ static void event_deliver(struct vmci_event_msg *event_msg)
- {
- 	struct vmci_subscription *cur;
- 	struct list_head *subscriber_list;
-+	u32 sanitized_event, max_vmci_event;
+Changes for v2:
+ - Update node name to -pins postfix
+ - Rebase on v6.7-rc1
+
+ arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+index 9a6bd0a3c94f7..eadbdd9ffe377 100644
+--- a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
++++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+@@ -443,7 +443,7 @@ AM62X_IOPAD(0x01a8, PIN_INPUT, 7) /* (D20) MCASP0_AFSX.GPIO1_12 */
+ 		>;
+ 	};
  
- 	rcu_read_lock();
--	subscriber_list = &subscriber_array[event_msg->event_data.event];
-+	max_vmci_event = ARRAY_SIZE(subscriber_array);
-+	sanitized_event = array_index_nospec(event_msg->event_data.event, max_vmci_event);
-+	subscriber_list = &subscriber_array[sanitized_event];
- 	list_for_each_entry_rcu(cur, subscriber_list, node) {
- 		cur->callback(cur->id, &event_msg->event_data,
- 			      cur->callback_data);
+-	console_pins_default: console-default-pins {
++	main_uart0_pins_default: main-uart0-default-pins {
+ 		bootph-all;
+ 		pinctrl-single,pins = <
+ 			AM62X_IOPAD(0x01c8, PIN_INPUT, 0) /* (D14) UART0_RXD */
+@@ -877,7 +877,7 @@ wlcore: wlcore@2 {
+ &main_uart0 {
+ 	bootph-all;
+ 	pinctrl-names = "default";
+-	pinctrl-0 = <&console_pins_default>;
++	pinctrl-0 = <&main_uart0_pins_default>;
+ 	status = "okay";
+ };
+ 
 -- 
-2.40.1
+2.39.2
 
