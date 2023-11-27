@@ -2,113 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4157F9E10
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:00:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DBBB7F9E13
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:01:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232624AbjK0LAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 06:00:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57300 "EHLO
+        id S232660AbjK0LBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 06:01:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230181AbjK0LAc (ORCPT
+        with ESMTP id S232531AbjK0LBB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 06:00:32 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53CCD12F
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 03:00:38 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-285afc7d53aso1013070a91.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 03:00:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=futuring-girl-com.20230601.gappssmtp.com; s=20230601; t=1701082838; x=1701687638; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zmt2hlpJeJU9hnh5GTsTezQO+y0eDA0IJjENIi6FxVw=;
-        b=NR9+Ky7qGj/ZUHbaiblM2wYGtYrKVSpf0XFX+hPQayV3/QC2er3CW0/zK4Br1u0Dzb
-         WU+e2n5WOJBG+NbWHtZI0gMecgcyep6fR91RqSN4KMZlnYLgNaTrug1c/q8eCQDmybmW
-         S55BPtIPfB3leRilQ6ZPjex85M0qxkFVQ1g8SYYE2n56XmUufNbsuWakWOWRJD9HVoRx
-         1vG/yrJl6AnHafbWk/2aHsevTF4kSZtMKyflWExFK4slNe+9VV8orUmVZO9H132p12FQ
-         jeu6au/l3tnnkmhQUgdKN2l93LOOL5HUtA5hXABfYsHnGvL2Aiy5V1csipnddm3BM6On
-         nW0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701082838; x=1701687638;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zmt2hlpJeJU9hnh5GTsTezQO+y0eDA0IJjENIi6FxVw=;
-        b=gbHR9gO4MpHAA20jOn00Yc9vvqldG04S4x8RKCeSuc8qxUiUIbip9NhU2OmCk0A+eN
-         ZXs5yauQAz07i40J8sq/SyKTfJKVC4ZssNYkueZGgKe6LCmGrCa3ZX+KIBcO9QV4pWRG
-         tVvJd/vOSllbiAP2txyyJEPSJCI7vmKeigNSrlSCcbzZSPLci9MeVy4r3BSK7ajdLFK8
-         3tAJ4hZvhvM2DwebzB4Xpvk0TApxsdHmbKF+z+AfXKPG2eigfOw17EqooRuz5VigfEHv
-         L4UmpAllcYrLuQfDxSrAYOC5hNJ/giOnt1gLLHsqmbxVFTgsz9LOSGXqEe7P6CXRC7bJ
-         BN/A==
-X-Gm-Message-State: AOJu0YzKZdLWCW8dp5NRyeRCFV/tBjo9v+dvR+Cpi45Oq3ZGEfOgv5hR
-        sIbMExVCtrAfG8TbVBsLX9DJcK3NOfCcTY76Ue+uqg==
-X-Google-Smtp-Source: AGHT+IHsdtBGvlYv4OiZ3uPa02d1XAJd97bFDgH/OzG+X8+tTIgs9DaNMw/VYEXl8nRn0KWY/ueQrTyUkogFrTpuTbI=
-X-Received: by 2002:a17:90a:e7cf:b0:280:cc2b:d5be with SMTP id
- kb15-20020a17090ae7cf00b00280cc2bd5bemr9756711pjb.15.1701082837063; Mon, 27
- Nov 2023 03:00:37 -0800 (PST)
+        Mon, 27 Nov 2023 06:01:01 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445FE111;
+        Mon, 27 Nov 2023 03:01:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1701082862;
+        bh=EpDIq0TRM3BRRgVZPPMTRFEoR5Q/FkolWUXiEN2dtlk=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=QkIUe72qFjWBb4ulKtgfKRQnxT3Tey0HpxiczAVjNXpPGqJJFaTAEeJn4rvf++2x1
+         VRqUd76cLw2f5MSiaVJXhHfUHjTi9KkEo88DF0oo1zJt0nNYVfGOBJkpEPMuPOB7aR
+         3Quif89NCJOC440f8nwbsoO3Xem5s+NxIOlq0okj6JKYwn/UPMyObVgvl0m6NlZG+P
+         /WoX0ZvIw8jMS7uqbA4/wrP/TtG2eNdibbHd5+WZWsBRFscJakr0mmewcVB1du4piz
+         vx7lcG4MT6IiXJG8rs6iMEYTV2tkF/QENdTOPbvReVjY+Nir/TsP4GdhcSAOa03HmR
+         om9Cs9V0kD3eQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Sf2gx6D9rz4xFR;
+        Mon, 27 Nov 2023 22:01:01 +1100 (AEDT)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>, Greg KH <greg@kroah.com>
+Cc:     PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Subject: Re: linux-next: manual merge of the tty tree with the powerpc tree
+In-Reply-To: <20231127114904.77f7efb6@canb.auug.org.au>
+References: <20231127114904.77f7efb6@canb.auug.org.au>
+Date:   Mon, 27 Nov 2023 22:00:58 +1100
+Message-ID: <877cm34g0l.fsf@mail.lhotse>
 MIME-Version: 1.0
-References: <20231126154418.032283745@linuxfoundation.org>
-In-Reply-To: <20231126154418.032283745@linuxfoundation.org>
-From:   Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
-Date:   Mon, 27 Nov 2023 20:00:26 +0900
-Message-ID: <CAKL4bV71Bc_2zfi=WSrgse-S_M7qvb0M9pV=U7CofNu4-WjiZg@mail.gmail.com>
-Subject: Re: [PATCH 6.6 000/525] 6.6.3-rc4 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg
-
-On Mon, Nov 27, 2023 at 12:46=E2=80=AFAM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+Stephen Rothwell <sfr@canb.auug.org.au> writes:
+> Hi all,
 >
-> This is the start of the stable review cycle for the 6.6.3 release.
-> There are 525 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> Today's linux-next merge of the tty tree got a conflict in:
 >
-> Responses should be made by Tue, 28 Nov 2023 15:43:06 +0000.
-> Anything received after that time might be too late.
+>   drivers/tty/hvc/hvc_console.h
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.6.3-rc4.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.6.y
-> and the diffstat can be found below.
+> between commit:
 >
-> thanks,
+>   c9e38dc90e1c ("tty: hvc: Make hvc_remove() return no value")
 >
-> greg k-h
+> from the powerpc tree and commit:
 >
+>   7f30c19caf94 ("tty: hvc: Make hvc_remove() return no value")
+>
+> from the tty tree.
+>
+> These are slightly different versions of the same patch.
 
-6.6.3-rc4 tested.
+I'll drop it from my tree.
 
-Build successfully completed.
-Boot successfully completed.
-No dmesg regressions.
-Video output normal.
-Sound output normal.
-
-Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
-
-Thanks
-
-Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
+cheers
