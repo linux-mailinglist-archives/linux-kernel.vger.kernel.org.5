@@ -2,170 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 931C97FAAAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 20:55:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF79A7FAAAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 20:55:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232633AbjK0Tyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 14:54:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38656 "EHLO
+        id S232797AbjK0Tzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 14:55:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbjK0Tyw (ORCPT
+        with ESMTP id S232084AbjK0Tzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 14:54:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C1AF4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 11:54:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701114895;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+viejdGrXzmIzPjCsTE2dERIUwjgFpRXidRJ+El7Zb0=;
-        b=BknhSvk1bgLbumk0hFUIZx6/dCZScvUq0ppNkgOP8+Kjoa4UndPU5ibEyDauHailES6FqK
-        zJchlVl8npR7LM1NoLOr4AQzEmi8kZbyWDg17xMlGfToc82Xz5J9nkE543bFXSFVNLGvdk
-        7IHLQnNLpU3z4TdjLAzZUiiPuV7qc1k=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-45-SkC_i8I7M36HXo6H47guFw-1; Mon, 27 Nov 2023 14:54:54 -0500
-X-MC-Unique: SkC_i8I7M36HXo6H47guFw-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a02cc56af16so354601766b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 11:54:54 -0800 (PST)
+        Mon, 27 Nov 2023 14:55:35 -0500
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 731D6194
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 11:55:41 -0800 (PST)
+Received: by mail-vs1-xe29.google.com with SMTP id ada2fe7eead31-462ed02a7ceso736822137.3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 11:55:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701114940; x=1701719740; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/TMOaAh1xttulN4HpcJfcDREcNIucjhookb0crER2fo=;
+        b=bctYYrULkwIGuGGOhefgCRTJieRsmaWF5hPkUm3+B7MT0lkGIjZaJyQ7JZXHcSy+HU
+         810s9QFvec057/58mxiqa3ml7TQNktfdQ/AAitSRb58V5X4UamrWJW1s2R6Kwax/zfBs
+         ysaSaP8EagmcZl4m0T9drpHNksHBzc+jls3/CwUicZxYflf6XoN5SORjH3Q/XPzUvClp
+         o/FRpyBpgpJ4dgYiO6Y5QtAU5bOrBbeQJ15vF8z2oGMKW9UsG8LdT8rs+q23OThHEX8t
+         jsEVw5nDOT9O4aYfq/OWT38hfymrDYnETNr+dMed4D4n/NkfxK7dQD096BobzNB9ds5P
+         5wYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701114893; x=1701719693;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+viejdGrXzmIzPjCsTE2dERIUwjgFpRXidRJ+El7Zb0=;
-        b=NiJVP9ToeaDzK88wkkYXPmGu6sHM1zluHrnPCM3JpgcYInNNkvnRRySf9rr96PNX8L
-         JXQNQyGtCZ6DDD3pp4a4nf3v/6N7UEhNW7a6LPFK2MWfg9eDzR/KOqVlzSf3fXcitkPz
-         Bt1N0ENebl0HC7uhs/GXybLjF1TDBDWgmaaBUJp2i5RV8Umo0iEK0kyVLdhX1iignaaX
-         H71/ma0d7ZQL0t0JrZY6Rm+3X65stz47Z/5Lgu7y0FajYDE5mF196oKe+FGn3X8LbQ2/
-         N11DqKzmOdi1frRzCUfDxKtdvOD1f3m9LaYzYXtVn+XSiwf+XjkFS4Xnh/emx+Z5lkPT
-         RUuw==
-X-Gm-Message-State: AOJu0YyDZgcRUyHrcLx3Eq7v7gxOMzeF/t9l3Gch55C/1IaHHP4qsFV3
-        X9q51M1jvkBwU8gkcXaIxcGCfbLXxkAHzVbYVsOIcy5R1AD2+u7vhm3R69Iw286cZo7anO3g3Jq
-        u3abvToRHvg0ulx0j/bNf1zZI
-X-Received: by 2002:a17:907:c708:b0:9b2:d78c:afe9 with SMTP id ty8-20020a170907c70800b009b2d78cafe9mr12510214ejc.49.1701114893229;
-        Mon, 27 Nov 2023 11:54:53 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEqsjQCsAPoPOd6g0Qn1BKTS65cz8ECHJlGNLkABKEDrEEApBu5Jji0dCbisefe04GfKIqPgw==
-X-Received: by 2002:a17:907:c708:b0:9b2:d78c:afe9 with SMTP id ty8-20020a170907c70800b009b2d78cafe9mr12510207ejc.49.1701114892974;
-        Mon, 27 Nov 2023 11:54:52 -0800 (PST)
-Received: from ?IPV6:2a02:810d:4b3f:de9c:abf:b8ff:feee:998b? ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
-        by smtp.gmail.com with ESMTPSA id e27-20020a1709062c1b00b009fda627abd9sm5988845ejh.79.2023.11.27.11.54.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Nov 2023 11:54:52 -0800 (PST)
-Message-ID: <6a30b834-fa29-41aa-bf91-4ab887dc2a56@redhat.com>
-Date:   Mon, 27 Nov 2023 20:54:51 +0100
+        d=1e100.net; s=20230601; t=1701114940; x=1701719740;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/TMOaAh1xttulN4HpcJfcDREcNIucjhookb0crER2fo=;
+        b=Cq5aD4JuGTB+ynISV2Kn8G7P9WTv9BqGFjJmbI9WWVtt00RF8qV3aB5aGnY3CfDuQO
+         Plcx1zuKTM1UXejn4QV+RZNobqrphBXEYkP+azMIC+NkGOoz9b7kngW5BUSroeFAslDw
+         25fpHITUafbtlMlGgBu2yGmvScacrPZ+zxc7P1Eq0rX81ZZKqWEk+/xeb2/DTG+tXX2+
+         Nt0i3Y+esxBagapoakERBpFL+Nq9H88REd8ODB7mqR8lAYgomC9yW4+ay1tcuvLiyRuC
+         Xmv3BL45kYc1bdKNScWQJp8N0R553QcxJ+M6yJ2SEwQN4m6ASeH72D2ApVF5Caoq1NAb
+         afmg==
+X-Gm-Message-State: AOJu0Yw9slvqV050T0tAtUAG4JYRbU+61XJKmVgHo1ePzDY8viHkH7Pc
+        F1mV1YNZjo9XWYiWBOEhbzl9Dienmnw0f9qSk12GkQ==
+X-Google-Smtp-Source: AGHT+IF1mAFvOGAvsDg4pZ0R8M8hiRKSHtJN0pBMxbewTkFnpMlzKn4GXJ7+GoqmrN8fTu0r7ShP9hBxdVV81qBlWn8=
+X-Received: by 2002:a67:fb03:0:b0:462:d592:b078 with SMTP id
+ d3-20020a67fb03000000b00462d592b078mr12137866vsr.32.1701114940428; Mon, 27
+ Nov 2023 11:55:40 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5] Documentation/gpu: VM_BIND locking document
-Content-Language: en-US
-To:     =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     intel-xe@lists.freedesktop.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Oak Zeng <oak.zeng@intel.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Francois Dugast <francois.dugast@intel.com>,
-        dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231121104046.3201-1-thomas.hellstrom@linux.intel.com>
- <20231121145619.7e7cb541@collabora.com>
- <574ec6bd-22ff-ec66-0bfe-35b51b7142f6@linux.intel.com>
-From:   Danilo Krummrich <dakr@redhat.com>
-Organization: RedHat
-In-Reply-To: <574ec6bd-22ff-ec66-0bfe-35b51b7142f6@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231126154329.848261327@linuxfoundation.org>
+In-Reply-To: <20231126154329.848261327@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 28 Nov 2023 01:25:29 +0530
+Message-ID: <CA+G9fYudTmZ+t84YLfe2wTXxORpTFBp8p9S=NYVOMretu-VSyg@mail.gmail.com>
+Subject: Re: [PATCH 5.4 000/152] 5.4.262-rc4 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, allen.lkml@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/22/23 08:49, Thomas Hellström wrote:
-> 
-> On 11/21/23 14:56, Boris Brezillon wrote:
->> On Tue, 21 Nov 2023 11:40:46 +0100
->> Thomas Hellström <thomas.hellstrom@linux.intel.com> wrote:
->>
->>> Add the first version of the VM_BIND locking document which is
->>> intended to be part of the xe driver upstreaming agreement.
->>>
->>> The document describes and discuss the locking used during exec-
->>> functions, evicton and for userptr gpu-vmas. Intention is to be using the
->>> same nomenclature as the drm-vm-bind-async.rst.
->>>
->>> v2:
->>> - s/gvm/gpu_vm/g (Rodrigo Vivi)
->>> - Clarify the userptr seqlock with a pointer to mm/mmu_notifier.c
->>>    (Rodrigo Vivi)
->>> - Adjust commit message accordingly.
->>> - Add SPDX license header.
->>>
->>> v3:
->>> - Large update to align with the drm_gpuvm manager locking
->>> - Add "Efficient userptr gpu_vma exec function iteration" section
->>> - Add "Locking at bind- and unbind time" section.
->>>
->>> v4:
->>> - Fix tabs vs space errors by untabifying (Rodrigo Vivi)
->>> - Minor style fixes and typos (Rodrigo Vivi)
->>> - Clarify situations where stale GPU mappings are occurring and how
->>>    access through these mappings are blocked. (Rodrigo Vivi)
->>> - Insert into the toctree in implementation_guidelines.rst
->>>
->>> v5:
->>> - Add a section about recoverable page-faults.
->>> - Use local references to other documentation where possible
->>>    (Bagas Sanjaya)
->>> - General documentation fixes and typos (Danilo Krummrich and
->>>    Boris Brezillon)
->>> - Improve the documentation around locks that need to be grabbed from the
->>>    dm-fence critical section (Boris Brezillon)
->>> - Add more references to the DRM GPUVM helpers (Danilo Krummrich and
->>>    Boriz Brezillon)
->>> - Update the rfc/xe.rst document.
->>>
->>> Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
->>> Signed-off-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
->> Still have a few comments (see below), and in general, I find some
->> sentences very long, which has the tendency of confusing me (always
->> trying to figure out what was the main point, what the pronouns are
->> referring to, etc). Anyway, I think it's better to have something
->> imperfect than nothing at all, so here is my
->>
->> Reviewed-by: Boris Brezillon <boris.brezillon@collabora>
->>
->> Feel free to add it even if you decide to ignore my comments.
-> 
-> Thanks for reviewing, Boris!
-> 
-> I'll make a final version incorporating much of the comments and suggestions, much appreciated.
-> 
-> I still think, though, that in principle the referral between gpuvm and this document should be the other way around, or it should all sit in gpuvm. In any case this is an initial version and as more comments and suggestions land, we can certainly update.
+On Sun, 26 Nov 2023 at 21:16, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.262 release.
+> There are 152 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Tue, 28 Nov 2023 15:43:06 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.262-rc4.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-I think if we agree that GPUVM should be the common component that we recommend
-drivers to use, we should reference to GPUVM whenever possible. However, I'm not
-sure whether we'd want to dedicate *all* documentation to GPUVM. Since the topic
-is rather complex, I can see that it might be beneficial to do both, discuss it
-from a more abstract point of view and document the corresponding common component.
+[my two cents]
+[May not be a great idea to test latest clang on older kernels]
 
-Reviewed-by: Danilo Krummrich <dakr@redhat.com>
+Following kernel warning noticed on stable-rc linux-5.4.y with
+clang-17 for arm64 defconfig.
 
-> 
-> Thanks,
-> 
-> Thomas
-> 
+> Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+>     PCI: keystone: Don't discard .probe() callback
+>
+> Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+>     PCI: keystone: Don't discard .remove() callback
 
+WARNING: vmlinux.o(.text+0x4e2a80): Section mismatch in reference from the
+ function ks_pcie_probe() to the function .init.text:ks_pcie_add_pcie_port(=
+)
+The function ks_pcie_probe() references
+the function __init ks_pcie_add_pcie_port().
+This is often because ks_pcie_probe lacks a __init
+annotation or the annotation of ks_pcie_add_pcie_port is wrong.
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Link:
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2YlCuygCpZ8wNd4DS=
+0txeyTovV4/
+
+--
+Linaro LKFT
+https://lkft.linaro.org
