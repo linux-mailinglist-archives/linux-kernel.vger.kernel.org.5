@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C70087F98C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 06:36:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6917F98C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 06:37:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232235AbjK0Fgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 00:36:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36774 "EHLO
+        id S229583AbjK0Fgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 00:36:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231658AbjK0FgX (ORCPT
+        with ESMTP id S231237AbjK0FgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 00:36:23 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30358131
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 21:36:27 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1cfd04a6e49so2948175ad.0
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 21:36:27 -0800 (PST)
+        Mon, 27 Nov 2023 00:36:24 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BCDA1B6
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 21:36:29 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-5c2ad6a5515so1007149a12.2
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 21:36:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=darkphysics.net; s=google; t=1701063386; x=1701668186; darn=vger.kernel.org;
+        d=darkphysics.net; s=google; t=1701063388; x=1701668188; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dnWmbSD77bZFfBCr2C5cF8GBPNk3SBRZbqkEH4Q4DFY=;
-        b=C5DC+bbwR+oBVZg2XtK/24utG0D3Cw9mSC3FuZg0+4LqhZtDWtzdb5JMEbS4VXbz6M
-         HxOVFZOPe/aHwzavDvd1+BdUb6sO7mJamDGqi3zY4O4RVtmjQLZShnTpQADKp/Knk87S
-         BRxwx+HMul8M9qEcb4TAZi8IoYkfV9FxRwXy1+NU+6sgJmdPDBbVakwKxPC4A9QfOsdm
-         mx/rB8BNfvlp9gUpKA4oowDdWqJsiCITnfsXLK/ROCJk8LuBzzwBA0mtu64ozh/BXncW
-         yr2oEnAuqEJx3p1NDEXn925MuDcaSOL+nFvhQqCq+qiIjNf2noSRXpjs1qOBbatcklRT
-         Bm+A==
+        bh=Wn+SPjvCPtSLlzTnlY099QE9bYM53ql+/mB40G+ws6Y=;
+        b=KQAyij6wDBvQ5Jd4JPkBcuB0Zy5KonjrGspYmlwW0RYrEjNFbgS2q/Igd0oL5mMlFP
+         ezrpApv+Uq1wU7+GF5cVa9mLV1Yc7u+4ZsdgolkcGhCcQb0sEYMlxVxYgjTFTmRPO71X
+         8XL77tamJYop09ltTwip+PaKt4MjlRQPTxl8hyel0P8iJA/yRLme6lqbziDyxEqblnoG
+         X2IKMTcls1EWhwf5ZAEbpySrTSSpj06vw6ZfItjul1HO1eo6qMflbW8uBMTOj1LhK5GM
+         E92KLUDQ3XX16H/QKBBehuxcWT3WXh+jzyaiT6BAc6W2jM6juuteIq+mrSMGls+iWgmV
+         Y71A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701063386; x=1701668186;
+        d=1e100.net; s=20230601; t=1701063388; x=1701668188;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dnWmbSD77bZFfBCr2C5cF8GBPNk3SBRZbqkEH4Q4DFY=;
-        b=jLCcO4dVGTBJN9EdhacaYXskUwI+Uq9RPMtk9c2agxm8VBbdd8Vn1HCtD5F3YF8WTr
-         5ia1OPGHuJUuXzudN1J62xOnZaNHtsvPdhmVB/LKqsXHswQt70tnxxTrAsr7WlsedIaq
-         nu6BzOaYahvg7t+UnD1VoL3L0MbWl/qa5OeOCSCVbVJnDX49tz3tI4gbzgPsAt7mBxBf
-         r5SZaCaqFzsBO0DTGR/3p9BieLY8K8yTuVFOxyVWHhqvPVwxMC+J/LuEqxaOjVDm97gm
-         J++qphHTuG0zOm55WK+yzZc3ycbuSurc8kTiN1YGBR3El+M+tepsrKdnT2E/iNqQ3wzP
-         5I8g==
-X-Gm-Message-State: AOJu0Yy905C1LU8Ajwtcaljk4GUc1FeY6FhZogA55ZfpPQ/dPe5Txa2G
-        VEJD7T02nfVrUH5FGaJMYDE1ig==
-X-Google-Smtp-Source: AGHT+IEhKJ19eBREPey/YsreiDKMqly62ClQzzPUbIbQxPlO5yC8nHUg9ET24Ff1ZstcsMmqXStOVg==
-X-Received: by 2002:a17:903:1245:b0:1cf:6675:b313 with SMTP id u5-20020a170903124500b001cf6675b313mr15105151plh.22.1701063386692;
-        Sun, 26 Nov 2023 21:36:26 -0800 (PST)
+        bh=Wn+SPjvCPtSLlzTnlY099QE9bYM53ql+/mB40G+ws6Y=;
+        b=J4kWPM70ER7i5q01XkbrARkKewayp+z35DkKFm2qnNXCrjwb7HWJWjm+F/6EIfA1dr
+         jGt5j0d0ytbl+MEmVwCyl4P+mbz6VGF4lwK+Zn2zQHgirfKa5k8ZZLgtVdnRRNLR67QW
+         JetGATwKpwmtDiAStd3dHYBRNzFA3j57PUbERMyxz1CjBWAu3gJlFqhKKVWHQAyWtUjH
+         oU8UIyCGb71ztcuInF8QN3eMYBHiIMh3aPHsMqR4Gpm4l1jxsFv9JOOhn87/Fadhr0KL
+         0Tzn2yESZqDgDRaFkPGqHsyeklhKoCghRyV01oWD+IEosVYfMBVdAU8wOpLg4vc/tCMd
+         CDYA==
+X-Gm-Message-State: AOJu0YztzQS/T7boLdoE0xUqRpqCwfV0ubfOmpv3EbkazdNABdqlOaQc
+        ecA7kgh+lP8NDG6oq0mvNAUE8w==
+X-Google-Smtp-Source: AGHT+IG0xQP2toGzHlRIhECM2hmUB67kjEwko7EwyI04YY4RSvtctedIYN/3QUnzDAUPFlegfWeQvA==
+X-Received: by 2002:a05:6a20:1587:b0:185:a3d6:7bda with SMTP id h7-20020a056a20158700b00185a3d67bdamr10611887pzj.39.1701063388371;
+        Sun, 26 Nov 2023 21:36:28 -0800 (PST)
 Received: from basil.darkphysics (c-76-146-178-2.hsd1.wa.comcast.net. [76.146.178.2])
-        by smtp.gmail.com with ESMTPSA id b6-20020a170902ed0600b001cc3875e658sm7300465pld.303.2023.11.26.21.36.26
+        by smtp.gmail.com with ESMTPSA id b6-20020a170902ed0600b001cc3875e658sm7300465pld.303.2023.11.26.21.36.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Nov 2023 21:36:26 -0800 (PST)
+        Sun, 26 Nov 2023 21:36:28 -0800 (PST)
 From:   Tree Davies <tdavies@darkphysics.net>
 To:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com,
         anjan@momi.ca
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Tree Davies <tdavies@darkphysics.net>
-Subject: [PATCH 09/15] Staging: rtl8192e: Rename variable TxCurSeq
-Date:   Sun, 26 Nov 2023 21:42:59 -0800
-Message-ID: <20231127054305.148276-10-tdavies@darkphysics.net>
+Subject: [PATCH 10/15] Staging: rtl8192e: Rename variable TsAddBaTimer
+Date:   Sun, 26 Nov 2023 21:43:00 -0800
+Message-ID: <20231127054305.148276-11-tdavies@darkphysics.net>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231127054305.148276-1-tdavies@darkphysics.net>
 References: <20231127054305.148276-1-tdavies@darkphysics.net>
@@ -73,80 +73,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename variable TxCurSeq to tx_cur_seq to fix checkpatch
+Rename variable TsAddBaTimer to ts_add_ba_timer to fix checkpatch
 warning Avoid CamelCase.
 
 Signed-off-by: Tree Davies <tdavies@darkphysics.net>
 ---
- drivers/staging/rtl8192e/rtl819x_BAProc.c | 2 +-
- drivers/staging/rtl8192e/rtl819x_TS.h     | 2 +-
- drivers/staging/rtl8192e/rtl819x_TSProc.c | 2 +-
- drivers/staging/rtl8192e/rtllib_tx.c      | 6 +++---
- 4 files changed, 6 insertions(+), 6 deletions(-)
+ drivers/staging/rtl8192e/rtl819x_BAProc.c |  2 +-
+ drivers/staging/rtl8192e/rtl819x_TS.h     |  2 +-
+ drivers/staging/rtl8192e/rtl819x_TSProc.c | 10 +++++-----
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/rtl819x_BAProc.c b/drivers/staging/rtl8192e/rtl819x_BAProc.c
-index d11cbe3bbb31..328947fc058c 100644
+index 328947fc058c..2053feb51f61 100644
 --- a/drivers/staging/rtl8192e/rtl819x_BAProc.c
 +++ b/drivers/staging/rtl8192e/rtl819x_BAProc.c
-@@ -477,7 +477,7 @@ void rtllib_ts_init_add_ba(struct rtllib_device *ieee, struct tx_ts_record *ts,
- 	ba->ba_param_set.field.tid = ts->TsCommonInfo.tspec.ucTSID;
- 	ba->ba_param_set.field.buffer_size = 32;
- 	ba->ba_timeout_value = 0;
--	ba->ba_start_seq_ctrl.field.seq_num = (ts->TxCurSeq + 3) % 4096;
-+	ba->ba_start_seq_ctrl.field.seq_num = (ts->tx_cur_seq + 3) % 4096;
- 
- 	activate_ba_entry(ba, BA_SETUP_TIMEOUT);
- 
-diff --git a/drivers/staging/rtl8192e/rtl819x_TS.h b/drivers/staging/rtl8192e/rtl819x_TS.h
-index fdd5f1a2e835..4ab712634b4b 100644
---- a/drivers/staging/rtl8192e/rtl819x_TS.h
-+++ b/drivers/staging/rtl8192e/rtl819x_TS.h
-@@ -24,7 +24,7 @@ struct ts_common_info {
- 
- struct tx_ts_record {
- 	struct ts_common_info TsCommonInfo;
--	u16				TxCurSeq;
-+	u16				tx_cur_seq;
- 	struct ba_record tx_pending_ba_record;
- 	struct ba_record tx_admitted_ba_record;
- 	u8				add_ba_req_in_progress;
-diff --git a/drivers/staging/rtl8192e/rtl819x_TSProc.c b/drivers/staging/rtl8192e/rtl819x_TSProc.c
-index 2e6b705437d9..e06e563ae718 100644
---- a/drivers/staging/rtl8192e/rtl819x_TSProc.c
-+++ b/drivers/staging/rtl8192e/rtl819x_TSProc.c
-@@ -100,7 +100,7 @@ static void ResetTsCommonInfo(struct ts_common_info *ts_common_info)
- static void ResetTxTsEntry(struct tx_ts_record *ts)
- {
- 	ResetTsCommonInfo(&ts->TsCommonInfo);
--	ts->TxCurSeq = 0;
-+	ts->tx_cur_seq = 0;
- 	ts->add_ba_req_in_progress = false;
- 	ts->add_ba_req_delayed = false;
- 	ts->using_ba = false;
-diff --git a/drivers/staging/rtl8192e/rtllib_tx.c b/drivers/staging/rtl8192e/rtllib_tx.c
-index 51a8286abd18..92e5be85148e 100644
---- a/drivers/staging/rtl8192e/rtllib_tx.c
-+++ b/drivers/staging/rtl8192e/rtllib_tx.c
-@@ -306,7 +306,7 @@ static void rtllib_tx_query_agg_cap(struct rtllib_device *ieee,
- 			goto FORCED_AGG_SETTING;
- 		} else if (!ts->using_ba) {
- 			if (SN_LESS(ts->tx_admitted_ba_record.ba_start_seq_ctrl.field.seq_num,
--				    (ts->TxCurSeq + 1) % 4096))
-+				    (ts->tx_cur_seq + 1) % 4096))
- 				ts->using_ba = true;
- 			else
- 				goto FORCED_AGG_SETTING;
-@@ -500,8 +500,8 @@ static u16 rtllib_query_seqnum(struct rtllib_device *ieee, struct sk_buff *skb,
- 		if (!rtllib_get_ts(ieee, (struct ts_common_info **)(&ts), dst,
- 			   skb->priority, TX_DIR, true))
- 			return 0;
--		seqnum = ts->TxCurSeq;
--		ts->TxCurSeq = (ts->TxCurSeq + 1) % 4096;
-+		seqnum = ts->tx_cur_seq;
-+		ts->tx_cur_seq = (ts->tx_cur_seq + 1) % 4096;
- 		return seqnum;
+@@ -455,7 +455,7 @@ int rtllib_rx_DELBA(struct rtllib_device *ieee, struct sk_buff *skb)
+ 		ts->using_ba = false;
+ 		ts->add_ba_req_in_progress = false;
+ 		ts->add_ba_req_delayed = false;
+-		del_timer_sync(&ts->TsAddBaTimer);
++		del_timer_sync(&ts->ts_add_ba_timer);
+ 		tx_ts_delete_ba(ieee, ts);
  	}
  	return 0;
+diff --git a/drivers/staging/rtl8192e/rtl819x_TS.h b/drivers/staging/rtl8192e/rtl819x_TS.h
+index 4ab712634b4b..8e22c717fb27 100644
+--- a/drivers/staging/rtl8192e/rtl819x_TS.h
++++ b/drivers/staging/rtl8192e/rtl819x_TS.h
+@@ -31,7 +31,7 @@ struct tx_ts_record {
+ 	u8				add_ba_req_delayed;
+ 	u8				using_ba;
+ 	u8				disable_add_ba;
+-	struct timer_list		TsAddBaTimer;
++	struct timer_list		ts_add_ba_timer;
+ 	u8				num;
+ };
+ 
+diff --git a/drivers/staging/rtl8192e/rtl819x_TSProc.c b/drivers/staging/rtl8192e/rtl819x_TSProc.c
+index e06e563ae718..f96538f3e4ee 100644
+--- a/drivers/staging/rtl8192e/rtl819x_TSProc.c
++++ b/drivers/staging/rtl8192e/rtl819x_TSProc.c
+@@ -82,7 +82,7 @@ static void RxPktPendingTimeout(struct timer_list *t)
+ 
+ static void TsAddBaProcess(struct timer_list *t)
+ {
+-	struct tx_ts_record *ts = from_timer(ts, t, TsAddBaTimer);
++	struct tx_ts_record *ts = from_timer(ts, t, ts_add_ba_timer);
+ 	u8 num = ts->num;
+ 	struct rtllib_device *ieee = container_of(ts, struct rtllib_device,
+ 				     TxTsRecord[num]);
+@@ -130,7 +130,7 @@ void rtllib_ts_init(struct rtllib_device *ieee)
+ 
+ 	for (count = 0; count < TOTAL_TS_NUM; count++) {
+ 		pTxTS->num = count;
+-		timer_setup(&pTxTS->TsAddBaTimer, TsAddBaProcess, 0);
++		timer_setup(&pTxTS->ts_add_ba_timer, TsAddBaProcess, 0);
+ 
+ 		timer_setup(&pTxTS->tx_pending_ba_record.timer, rtllib_ba_setup_timeout,
+ 			    0);
+@@ -356,7 +356,7 @@ static void RemoveTsEntry(struct rtllib_device *ieee,
+ 	} else {
+ 		struct tx_ts_record *pTxTS = (struct tx_ts_record *)pTs;
+ 
+-		del_timer_sync(&pTxTS->TsAddBaTimer);
++		del_timer_sync(&pTxTS->ts_add_ba_timer);
+ 	}
+ }
+ 
+@@ -438,11 +438,11 @@ void TsStartAddBaProcess(struct rtllib_device *ieee, struct tx_ts_record *pTxTS)
+ 
+ 		if (pTxTS->add_ba_req_delayed) {
+ 			netdev_dbg(ieee->dev, "Start ADDBA after 60 sec!!\n");
+-			mod_timer(&pTxTS->TsAddBaTimer, jiffies +
++			mod_timer(&pTxTS->ts_add_ba_timer, jiffies +
+ 				  msecs_to_jiffies(TS_ADDBA_DELAY));
+ 		} else {
+ 			netdev_dbg(ieee->dev, "Immediately Start ADDBA\n");
+-			mod_timer(&pTxTS->TsAddBaTimer, jiffies + 10);
++			mod_timer(&pTxTS->ts_add_ba_timer, jiffies + 10);
+ 		}
+ 	} else {
+ 		netdev_dbg(ieee->dev, "BA timer is already added\n");
 -- 
 2.39.2
 
