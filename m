@@ -2,127 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 456D27FAC4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:10:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 956DB7FAC50
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:10:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231950AbjK0VJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 16:09:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38874 "EHLO
+        id S233218AbjK0VKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 16:10:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233054AbjK0VJ4 (ORCPT
+        with ESMTP id S233054AbjK0VKL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 16:09:56 -0500
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9329D1B1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 13:10:02 -0800 (PST)
-Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-285899772e4so4835558a91.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 13:10:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701119402; x=1701724202; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=j+yJv8WNVxeThvq7VuGjifqnPyOkZQynfe++nihOK2k=;
-        b=u+ICXVq2nfWmteOjrHZGwqAJvJCZNLmPvru78yjLnqkQkJne0WjziE0bkcC3n5Nmy/
-         F5sUY6bSWBK28XGMN7KMdPG5B/XS5hI/qZLxovKQjKPqpPWl/Jf78BpzIyHS5N1KxBkB
-         qmnZmeYrOEyf57IANNew6BVdBue+YxNGnAZnTykPHoJY3xa25F18ceWRawzKIAirpZGo
-         HHi3qaYWe3p9EsjhkY5liU7W2DyN4oRnq8rE7xaF0elutQbVZpwnid3+WEBT5fboZwvB
-         MXRurLUp7zCXmo69nN1jPY2jY8+FPgGDDHHmYqBr5ZNDKTaUUBtsOnyfOpScRtCozVx/
-         Pphw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701119402; x=1701724202;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=j+yJv8WNVxeThvq7VuGjifqnPyOkZQynfe++nihOK2k=;
-        b=BgT2+kh0Lxks1SwlJvPSLn9TACTlJxgmAcbwyxdSydYdHbkMasdF7V6gEad1MK4hjy
-         09ZGi4xMEFWrLvE7+QSC9aSFTQIuFluyhb9x9FsOrOsQ4KAvARYF/Ogr6QBA9vfQJ5vP
-         iVVN3XZp/JemDoA0Dttd7Y6o5dDbZGa64nyfv7ikToAhpxwMByaVOVPLMPrM5wiXsnJu
-         EIH1M9nPms57d41VO5XNwG1PJzatRhqK/hJinLNVST1HxCA5yUt0288CIEUmaxEOtC4/
-         hf4QW+yHaKbl4AwA3QmM6NvrgBHDl4s57tyZP8K68/1rO+f26x/uJ5ElAGE9BElP5HFO
-         +g0g==
-X-Gm-Message-State: AOJu0YwOd0NLihW0R9+EhjZHl1SupNPLWvWk+hyqjuVwVl3zBZUZN2Bt
-        5TB2g4riGPnSzHGxkQQaXtItHPjXjpk1mmE=
-X-Google-Smtp-Source: AGHT+IG4T87l6Jc1umPGTjJlvGyrlAAmvN/HToKfT0rHEPT+9djMhR2lev2oAFVL5FFYTChdXLfYbTFQvqmYZTk=
-X-Received: from rdbabiera.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:18a8])
- (user=rdbabiera job=sendgmr) by 2002:a17:90a:6f61:b0:27d:2233:d646 with SMTP
- id d88-20020a17090a6f6100b0027d2233d646mr2655299pjk.2.1701119402043; Mon, 27
- Nov 2023 13:10:02 -0800 (PST)
-Date:   Mon, 27 Nov 2023 21:09:52 +0000
-Mime-Version: 1.0
-X-Developer-Key: i=rdbabiera@google.com; a=openpgp; fpr=639A331F1A21D691815CE090416E17CA2BBBD5C8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1848; i=rdbabiera@google.com;
- h=from:subject; bh=HBsms+m+5r11Rra0u8wAjL7hztHH/IWB33DELSmjFkI=;
- b=owGbwMvMwCFW0bfok0KS4TbG02pJDKmprPO3LohTqXTV2CvjsXlZi8FrRfW95hOaRBpThCbkP
- mK+onm8o5SFQYyDQVZMkUXXP8/gxpXULXM4a4xh5rAygQxh4OIUgInoXGRk6JqYYL36ltnajTaC
- 61UfLdVomP/KWCPk9afrHLsqD05vC2H4H8U45Wvr9jdKDT68RW5qDz0D5dKOHqv9EC+Q/Cf0/rU FDAA=
-X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-Message-ID: <20231127210951.730114-2-rdbabiera@google.com>
-Subject: [PATCH v2] usb: typec: class: fix typec_altmode_put_partner to put plugs
-From:   RD Babiera <rdbabiera@google.com>
-To:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        badhri@google.com, RD Babiera <rdbabiera@google.com>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 27 Nov 2023 16:10:11 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1651D6D;
+        Mon, 27 Nov 2023 13:10:17 -0800 (PST)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARKdWH8023197;
+        Mon, 27 Nov 2023 21:10:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=IH45mWrzzCdZ3sMW0VImP3i2zCTpmv82AlXf7OreOjw=;
+ b=Zk+EzHs981PmcaRjB9044iK66efvB/uxTmZ5Or3Xu5ALtPZsw2KiBOXT59p1GIfSfJMw
+ QMe59aK9GIiB3YvrvwCqedNdu3SbEsihMH8T4li7JKEsrXMU+g1Hjb2V5wOLLfs3HaDH
+ kT7MHF7gyZuZeOKK4wppU/xydfe6Cp79rZPokbcULgPGGF1JbZCBjOdsOMSVFl+jMi7J
+ x/NaegUuxBBBpV+6Tw++XN1Kg8k+d6L5nWqGNM8iXYIfpqb8mcVPfG/wxaqnGoM0Dvt4
+ wOr6pUYhL6LezRABiCX7A2ohIx14CGpOaF7yHhzWVvxAJyg5IJFzY0RC22Vsxixl2lAe TA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3umytg5aam-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 21:10:13 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ARKJTSO021559;
+        Mon, 27 Nov 2023 21:10:12 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3umytg5aa1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 21:10:12 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARJOPX3001742;
+        Mon, 27 Nov 2023 21:10:11 GMT
+Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ukwy1jvfc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 21:10:11 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+        by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ARLAAge29425922
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Nov 2023 21:10:11 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A34685805D;
+        Mon, 27 Nov 2023 21:10:10 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DD4F058056;
+        Mon, 27 Nov 2023 21:10:09 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Mon, 27 Nov 2023 21:10:09 +0000 (GMT)
+Message-ID: <22032156-bd61-4c72-ad47-fe5932cd832a@linux.ibm.com>
+Date:   Mon, 27 Nov 2023 16:10:09 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 7/8] tpm: Add tpm_buf_read_{u8,u16,u32}
+Content-Language: en-US
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        linux-integrity@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        William Roberts <bill.c.roberts@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>
+References: <20231124020237.27116-1-jarkko@kernel.org>
+ <20231124020237.27116-8-jarkko@kernel.org>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <20231124020237.27116-8-jarkko@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 9weWJHXXl_oURyW7Z4KBN3jXqp0BTMT2
+X-Proofpoint-ORIG-GUID: zeHZ-mPguzqroTmFqZ81zvvIcc3zZJzQ
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-27_19,2023-11-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
+ suspectscore=0 mlxscore=0 phishscore=0 malwarescore=0 lowpriorityscore=0
+ bulkscore=0 mlxlogscore=670 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2311270147
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When typec_altmode_put_partner is called by a plug altmode upon release,
-the port altmode the plug belongs to will not remove its reference to the
-plug. The check to see if the altmode being released evaluates against the
-released altmode's partner instead of the calling altmode itself, so change
-adev in typec_altmode_put_partner to properly refer to the altmode being
-released.
 
-typec_altmode_set_partner is not run for port altmodes, so also add a check
-in typec_altmode_release to prevent typec_altmode_put_partner() calls on
-port altmode release.
 
----
-Changes since v1:
-* Changed commit message for clarity
-* Added check to typec_altmode_release to only call put_partner if altmode
-belongs to port partner or plug
----
+On 11/23/23 21:02, Jarkko Sakkinen wrote:
+> Declare reader functions for the instances of struct tpm_buf. If the read
+> goes out of boundary, TPM_BUF_BOUNDARY_ERROR is set, and subsequent read
+> will do nothing.
+> 
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 
-Fixes: 8a37d87d72f0 ("usb: typec: Bus type for alternate modes")
-Cc: stable@vger.kernel.org
-Signed-off-by: RD Babiera <rdbabiera@google.com>
----
- drivers/usb/typec/class.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-index 2e0451bd336e..16a670828dde 100644
---- a/drivers/usb/typec/class.c
-+++ b/drivers/usb/typec/class.c
-@@ -267,7 +267,7 @@ static void typec_altmode_put_partner(struct altmode *altmode)
- 	if (!partner)
- 		return;
- 
--	adev = &partner->adev;
-+	adev = &altmode->adev;
- 
- 	if (is_typec_plug(adev->dev.parent)) {
- 		struct typec_plug *plug = to_typec_plug(adev->dev.parent);
-@@ -497,7 +497,8 @@ static void typec_altmode_release(struct device *dev)
- {
- 	struct altmode *alt = to_altmode(to_typec_altmode(dev));
- 
--	typec_altmode_put_partner(alt);
-+	if (!is_typec_port(dev->parent))
-+		typec_altmode_put_partner(alt);
- 
- 	altmode_id_remove(alt->adev.dev.parent, alt->id);
- 	kfree(alt);
-
-base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
--- 
-2.43.0.rc1.413.gea7ed67945-goog
-
+> ---
+> v5 [2023-11-24]: Fixed off-by-one error in the boundary check.
+> v4 [2023-11-21]: Address James Bottomley's feedback for v2 of this
+> patch, i.e. offset pointer was not correctly dereferenced.
+> v3 [2023-11-21]: Add possibility to check for boundary error to the
+> as response to the feedback from Mario Limenciello:
+> https://lore.kernel.org/linux-integrity/3f9086f6-935f-48a7-889b-c71398422fa1@amd.com/
+> ---
+>   drivers/char/tpm/tpm-buf.c | 79 +++++++++++++++++++++++++++++++++++++-
+>   include/linux/tpm.h        |  5 +++
+>   2 files changed, 83 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/char/tpm/tpm-buf.c b/drivers/char/tpm/tpm-buf.c
+> index 099b4a56c5d5..32619e9ab4fa 100644
+> --- a/drivers/char/tpm/tpm-buf.c
+> +++ b/drivers/char/tpm/tpm-buf.c
+> @@ -107,7 +107,7 @@ void tpm_buf_append(struct tpm_buf *buf, const u8 *new_data, u16 new_length)
+>   		return;
+>   
+>   	if ((buf->length + new_length) > PAGE_SIZE) {
+> -		WARN(1, "tpm_buf: overflow\n");
+> +		WARN(1, "tpm_buf: write overflow\n");
+>   		buf->flags |= TPM_BUF_OVERFLOW;
+>   		return;
+>   	}
+> @@ -143,3 +143,80 @@ void tpm_buf_append_u32(struct tpm_buf *buf, const u32 value)
+>   	tpm_buf_append(buf, (u8 *)&value2, 4);
+>   }
+>   EXPORT_SYMBOL_GPL(tpm_buf_append_u32);
+> +
+> +/**
+> + * tpm_buf_read() - Read from a TPM buffer
+> + * @buf:	&tpm_buf instance
+> + * @offset:	offset within the buffer
+> + * @count:	the number of bytes to read
+> + * @output:	the output buffer
+> + */
+> +static void tpm_buf_read(struct tpm_buf *buf, off_t *offset, size_t count, void *output)
+> +{
+> +	off_t next_offset;
+> +
+> +	/* Return silently if overflow has already happened. */
+> +	if (buf->flags & TPM_BUF_BOUNDARY_ERROR)
+> +		return;
+> +
+> +	next_offset = *offset + count;
+> +	if (next_offset > buf->length) {
+> +		WARN(1, "tpm_buf: read out of boundary\n");
+> +		buf->flags |= TPM_BUF_BOUNDARY_ERROR;
+> +		return;
+> +	}
+> +
+> +	memcpy(output, &buf->data[*offset], count);
+> +	*offset = next_offset;
+> +}
+> +
+> +/**
+> + * tpm_buf_read_u8() - Read 8-bit word from a TPM buffer
+> + * @buf:	&tpm_buf instance
+> + * @offset:	offset within the buffer
+> + *
+> + * Return: next 8-bit word
+> + */
+> +u8 tpm_buf_read_u8(struct tpm_buf *buf, off_t *offset)
+> +{
+> +	u8 value;
+> +
+> +	tpm_buf_read(buf, offset, sizeof(value), &value);
+> +
+> +	return value;
+> +}
+> +EXPORT_SYMBOL_GPL(tpm_buf_read_u8);
+> +
+> +/**
+> + * tpm_buf_read_u16() - Read 16-bit word from a TPM buffer
+> + * @buf:	&tpm_buf instance
+> + * @offset:	offset within the buffer
+> + *
+> + * Return: next 16-bit word
+> + */
+> +u16 tpm_buf_read_u16(struct tpm_buf *buf, off_t *offset)
+> +{
+> +	u16 value;
+> +
+> +	tpm_buf_read(buf, offset, sizeof(value), &value);
+> +
+> +	return be16_to_cpu(value);
+> +}
+> +EXPORT_SYMBOL_GPL(tpm_buf_read_u16);
+> +
+> +/**
+> + * tpm_buf_read_u32() - Read 32-bit word from a TPM buffer
+> + * @buf:	&tpm_buf instance
+> + * @offset:	offset within the buffer
+> + *
+> + * Return: next 32-bit word
+> + */
+> +u32 tpm_buf_read_u32(struct tpm_buf *buf, off_t *offset)
+> +{
+> +	u32 value;
+> +
+> +	tpm_buf_read(buf, offset, sizeof(value), &value);
+> +
+> +	return be32_to_cpu(value);
+> +}
+> +EXPORT_SYMBOL_GPL(tpm_buf_read_u32);
+> diff --git a/include/linux/tpm.h b/include/linux/tpm.h
+> index 715db4a91c1f..e8172f81c562 100644
+> --- a/include/linux/tpm.h
+> +++ b/include/linux/tpm.h
+> @@ -302,6 +302,8 @@ enum tpm_buf_flags {
+>   	TPM_BUF_OVERFLOW	= BIT(0),
+>   	/* TPM2B format: */
+>   	TPM_BUF_TPM2B		= BIT(1),
+> +	/* read out of boundary: */
+> +	TPM_BUF_BOUNDARY_ERROR	= BIT(2),
+>   };
+>   
+>   /*
+> @@ -338,6 +340,9 @@ void tpm_buf_append(struct tpm_buf *buf, const u8 *new_data, u16 new_length);
+>   void tpm_buf_append_u8(struct tpm_buf *buf, const u8 value);
+>   void tpm_buf_append_u16(struct tpm_buf *buf, const u16 value);
+>   void tpm_buf_append_u32(struct tpm_buf *buf, const u32 value);
+> +u8 tpm_buf_read_u8(struct tpm_buf *buf, off_t *offset);
+> +u16 tpm_buf_read_u16(struct tpm_buf *buf, off_t *offset);
+> +u32 tpm_buf_read_u32(struct tpm_buf *buf, off_t *offset);
+>   
+>   /*
+>    * Check if TPM device is in the firmware upgrade mode.
