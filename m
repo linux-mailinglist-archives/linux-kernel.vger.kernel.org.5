@@ -2,98 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 502727FA85C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:53:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73EB87FA860
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:53:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232429AbjK0RxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 12:53:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41376 "EHLO
+        id S232390AbjK0Rxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 12:53:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbjK0RxG (ORCPT
+        with ESMTP id S230370AbjK0Rxk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 12:53:06 -0500
-Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C550B6;
-        Mon, 27 Nov 2023 09:53:13 -0800 (PST)
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-58d54612d9cso1220577eaf.1;
-        Mon, 27 Nov 2023 09:53:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701107592; x=1701712392;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gXEZGcv8bSxQjKfcCrALAvNXAs+CKpToCxY7DnKjWaE=;
-        b=XFZa7zWqCi5ksV2SE5Cp9rR38xDuJHr5hEJyxeREMN0RjAajWVNX4H08C44+VNOj0T
-         2Oh8jL98JlWy5TN+xVKKtW0wBtlZSEa2kIxiqsoKUMDGJ4gFbJtg5jKTULy0qB7pPjDs
-         Ms377jNZ5oYyCc9kULSsewWaUL0tZZLsF6bl4FJK+hOG//rHFs/cEYJRAqtdxOCjXybq
-         P0jnXK9DtbROMrpc7Zm7YVN2WMglVwwZFFQX0H9U6frUtVto8Nxw1YMHZP7xIjvQpAsS
-         ohCh+cKRMDCvZFBB6s1DP8aEhZm3bYJdyZ9tR16cDgc0ANN8c4t1Y3/AxX068nzqJOIW
-         Cbyg==
-X-Gm-Message-State: AOJu0YyJO32OVe5U4d8i+11LaVBH1927/O1t4chxX/EhPowl+BCIWhg9
-        +kyU1OwB8t5RKWXLpUEUhw==
-X-Google-Smtp-Source: AGHT+IHqCcFjtcM7hpVFdO1GU5tjNNQyP+pOeAzsBXWkues29+89h8GwQNH+gICSaOfRfB6G2/lWGA==
-X-Received: by 2002:a05:6820:514:b0:58d:9d79:abc with SMTP id m20-20020a056820051400b0058d9d790abcmr2490913ooj.1.1701107592638;
-        Mon, 27 Nov 2023 09:53:12 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id i14-20020a4aab0e000000b0057327cecdd8sm1545477oon.10.2023.11.27.09.53.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 09:53:11 -0800 (PST)
-Received: (nullmailer pid 1865094 invoked by uid 1000);
-        Mon, 27 Nov 2023 17:53:10 -0000
-Date:   Mon, 27 Nov 2023 11:53:10 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Michael Walle <mwalle@kernel.org>
-Cc:     Conor Dooley <conor+dt@kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        dri-devel@lists.freedesktop.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-kernel@lists.infradead.org,
-        Jitao Shi <jitao.shi@mediatek.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH] dt-bindings: display: mediatek: dsi: remove Xinlei's mail
-Message-ID: <170110758909.1864817.4462999891137574457.robh@kernel.org>
-References: <20231123134927.2034024-1-mwalle@kernel.org>
+        Mon, 27 Nov 2023 12:53:40 -0500
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0258C198;
+        Mon, 27 Nov 2023 09:53:47 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:280:5e00:7e19::646])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id A6E9D2CD;
+        Mon, 27 Nov 2023 17:53:46 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net A6E9D2CD
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1701107626; bh=qIBmWZ2NAcGRd8k1fpSJnW9hjUQR4JzEufs73gSctq0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=EKV8h6LY2DOL3SW1tgMRtiHHSGbycZVzm+OrtYnjYWU994YSOakW84UR9t04dYJ6r
+         sEks6/j/HziypKCpxbKe1nP3yYqqcHKo+pMP0eSoqvIVd4gByhWJHHeXoShiiqt5F4
+         upnmCZ4SXjJ2gA/uSwbcGPt4MoZIFIrqUrEQk071h1cWJTPgnsY5njtLjhIVV2ZL0i
+         WPU30Ea01BjITug+d8XJJ4ojEtTPLO+tuSUXyDgfonabBszPnj7oA5PQ3zDz4OCser
+         HSIY/VE7q1Dsfj+L2FkPMeOUHCS28YcjWiTGJb11FuNcvdz0IaXIu7ZREt315bKPh4
+         UrjtPtNLo+OaQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] docs: submitting-patches: improve the base commit
+ explanation
+In-Reply-To: <20231115170330.16626-1-bp@alien8.de>
+References: <20231115170330.16626-1-bp@alien8.de>
+Date:   Mon, 27 Nov 2023 10:53:45 -0700
+Message-ID: <87cyvvytee.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231123134927.2034024-1-mwalle@kernel.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Borislav Petkov <bp@alien8.de> writes:
 
-On Thu, 23 Nov 2023 14:49:27 +0100, Michael Walle wrote:
-> Xinlei Lee's mail is bouncing:
-> 
-> <xinlei.lee@mediatek.com>: host mailgw02.mediatek.com[216.200.240.185] said:
->     550 Relaying mail to xinlei.lee@mediatek.com is not allowed (in reply to
->     RCPT TO command)
-> 
-> Remove it.
-> 
-> Signed-off-by: Michael Walle <mwalle@kernel.org>
+> From: "Borislav Petkov (AMD)" <bp@alien8.de>
+>
+> After receiving a second patchset this week without knowing which tree
+> it applies on and trying to apply it on the obvious ones and failing,
+> make sure the base tree information which needs to be supplied in the
+> 0th message of the patchset is spelled out more explicitly.
+>
+> Also, make the formulations stronger as this really is a requirement and
+> not only a useful thing anymore.
+>
+> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
 > ---
->  .../devicetree/bindings/display/mediatek/mediatek,dsi.yaml       | 1 -
->  1 file changed, 1 deletion(-)
-> 
+>  Documentation/process/submitting-patches.rst | 15 +++++++++++----
+>  1 file changed, 11 insertions(+), 4 deletions(-)
 
-Applied, thanks!
+Applied, thanks.
 
+jon
