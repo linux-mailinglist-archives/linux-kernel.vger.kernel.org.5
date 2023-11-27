@@ -2,244 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF8A7FAB7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 21:28:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6250A7FAB79
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 21:28:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233348AbjK0U2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 15:28:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58966 "EHLO
+        id S233501AbjK0U2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 15:28:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233484AbjK0U15 (ORCPT
+        with ESMTP id S233362AbjK0U1i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 15:27:57 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D821BE7;
-        Mon, 27 Nov 2023 12:27:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701116862; x=1732652862;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=TK9VRQxhG3Ny0okkrMLHhbwPwo5SeI8SZGAn1uUjrJo=;
-  b=mX6t8oq3OGueMOOiRCjSE3aGLh00/tsPzR8fI/vZGNYZaJzJvxvy/xbC
-   t5gS39al3scujzFOj9kuAgt4cbtZBtyRdr9NyTEbo9Oq7jybZ86+h6mFR
-   PR3+M1PNVUZ5KeuPy6iotlVIRkgTm7azqFChcG9/xTKKIj4g0k94SnKnp
-   d/LPQRIOk7d33jYh+Uoq2PBTEB0J4A5LY6c2k7zwwNe9Z1IuiHBvXV7cS
-   rMfGQa+jwdBgdL4x5LzicTPNnaJjQG+xhKQ/HjmPbyLzIF50xEE436e/b
-   7CgQ+uz4Ycuz6bzEdEUKykIhE6oAhSE+3euIb2E3QndrTN/XkxbD6lD3U
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="457115656"
-X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
-   d="scan'208";a="457115656"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 12:27:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
-   d="scan'208";a="16394586"
-Received: from rpkulapa-mobl.amr.corp.intel.com (HELO tzanussi-mobl1.hsd1.il.comcast.net) ([10.213.183.92])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 12:27:41 -0800
-From:   Tom Zanussi <tom.zanussi@linux.intel.com>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        fenghua.yu@intel.com, vkoul@kernel.org
-Cc:     dave.jiang@intel.com, tony.luck@intel.com,
-        wajdi.k.feghali@intel.com, james.guilford@intel.com,
-        kanchana.p.sridhar@intel.com, vinodh.gopal@intel.com,
-        giovanni.cabiddu@intel.com, pavel@ucw.cz,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        dmaengine@vger.kernel.org
-Subject: [PATCH v10 14/14] dmaengine: idxd: Add support for device/wq defaults
-Date:   Mon, 27 Nov 2023 14:27:04 -0600
-Message-Id: <20231127202704.1263376-15-tom.zanussi@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231127202704.1263376-1-tom.zanussi@linux.intel.com>
-References: <20231127202704.1263376-1-tom.zanussi@linux.intel.com>
+        Mon, 27 Nov 2023 15:27:38 -0500
+Received: from mail.z3ntu.xyz (mail.z3ntu.xyz [128.199.32.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2987E19A6;
+        Mon, 27 Nov 2023 12:27:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=z3ntu;
+        t=1701116852; bh=wjGIuleQ8kD0z2aVCMJjHMNPVmJYR139BLY4d6XpI1Q=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=CITmsuf4OwScTPbofNMOSgAtZ0drI/A4I02RxAI8Q9XCGQdfw8Gjn+WBillie3caD
+         E5iR5ev6U/j/hvZOmRcTns+y0IavwYPaRysGzBKB6OUZwCyRkp36FWeFNF1qhkWbRg
+         GE9GZ06SNeLT41ez/Go5UlAPQVoL/XsYOlZYg24s=
+From:   Luca Weiss <luca@z3ntu.xyz>
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     Loic Poulain <loic.poulain@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kalle Valo <kvalo@kernel.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wcn36xx@lists.infradead.org, linux-wireless@vger.kernel.org
+Subject: Re: [PATCH 1/4] dt-bindings: remoteproc: qcom: wcnss: Add WCN3680B compatible
+Date:   Mon, 27 Nov 2023 21:27:30 +0100
+Message-ID: <5919350.DvuYhMxLoT@z3ntu.xyz>
+In-Reply-To: <ZWT3APJlNQaKVyJU@gerhold.net>
+References: <20231015-fp3-wcnss-v1-0-1b311335e931@z3ntu.xyz>
+ <1868698.tdWV9SEqCh@z3ntu.xyz> <ZWT3APJlNQaKVyJU@gerhold.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a load_device_defaults() function pointer to struct
-idxd_driver_data, which if defined, will be called when an idxd device
-is probed and will allow the idxd device to be configured with default
-values.
+On Montag, 27. November 2023 21:07:28 CET Stephan Gerhold wrote:
+> On Sat, Nov 25, 2023 at 01:25:22PM +0100, Luca Weiss wrote:
+> > On Montag, 16. Oktober 2023 16:44:28 CET Stephan Gerhold wrote:
+> > > On Mon, Oct 16, 2023 at 03:16:14PM +0200, Loic Poulain wrote:
+> > > > On Mon, 16 Oct 2023 at 07:35, Krzysztof Kozlowski
+> > > > 
+> > > > <krzysztof.kozlowski@linaro.org> wrote:
+> > > > > On 15/10/2023 22:03, Luca Weiss wrote:
+> > > > > > Add a compatible for the iris subnode in the WCNSS PIL.
+> > > > > > 
+> > > > > > Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> > > > > > ---
+> > > > > > 
+> > > > > >  Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yaml
+> > > > > >  | 1
+> > > > > >  +
+> > > > > >  1 file changed, 1 insertion(+)
+> > > > > > 
+> > > > > > diff --git
+> > > > > > a/Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yaml
+> > > > > > b/Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yaml
+> > > > > > index 45eb42bd3c2c..0e5e0b7a0610 100644
+> > > > > > ---
+> > > > > > a/Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yam
+> > > > > > l
+> > > > > > +++
+> > > > > > b/Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yam
+> > > > > > l
+> > > > > > 
+> > > > > > @@ -111,6 +111,7 @@ properties:
+> > > > > >            - qcom,wcn3660
+> > > > > >            - qcom,wcn3660b
+> > > > > >            - qcom,wcn3680
+> > > > > > 
+> > > > > > +          - qcom,wcn3680b
+> > > > > 
+> > > > > Looks like this should be made as compatible with qcom,wcn3680 (so
+> > > > > with
+> > > > > fallback).
+> > > > 
+> > > > Yes, agree, let's do a regular fallback as there is nothing 'b'
+> > > > specific in the driver:
+> > > > `compatible = "qcom,wcn3680b", "qcom,wcn3680";`
+> > > > 
+> > > > And yes, we should also have done that for qcom,wcn3660b...
+> > > 
+> > > I don't think this would have worked properly for qcom,wcn3660b:
+> > >  - It's not compatible with "qcom,wcn3660", because they have different
+> > >  
+> > >    regulator voltage requirements. wcn3660(a?) needs vddpa with
+> > >    2.9-3.0V, but wcn3660b needs 3.3V. That's why wcn3660b uses the
+> > >    wcn3680_data in qcom_wcnss.iris.c. Otherwise if you would run an
+> > >    older kernel that knows "qcom,wcn3660" but not "qcom,wcn3660b" it
+> > >    would apply the wrong voltage.
+> > >  
+> > >  - It's not compatible with "qcom,wcn3680" either because that is used
+> > >  
+> > >    as indication if 802.11ac is supported (wcn3660b doesn't).
+> > > 
+> > > The main question here is: What does the current "qcom,wcn3680"
+> > > compatible actually represent? It's defined with vddpa = 3.3V in the
+> > > 
+> > > driver, which would suggest that:
+> > >  1. It's actually meant to represent WCN3680B, which needs 3.3V vddpa
+> > >  
+> > >     like WCN3660B, or
+> > >  
+> > >  2. WCN3680(A?) has different requirements than WCN3660(A?) and also
+> > >  
+> > >     needs 3.3V vddpa. But then what is the difference between
+> > >     WCN3680(A?) and WCN3680B? Is there even a variant without ...B?
+> > > 
+> > > There is public documentation for WCN3660B and WCN3680B but the non-B
+> > > variants are shrouded in mystery.
+> > 
+> > Hi Stephan (and everyone),
+> > 
+> > Do you have a suggestion how to move this patchset forward? Is the
+> > fallback
+> > compatible that was suggested okay for the wcn3680b situation?
+> > 
+> >   compatible = "qcom,wcn3680b", "qcom,wcn3680";
+> > 
+> > If so, I'll make v2 with that implemented.
+> 
+> Personally, I would just go with what exists already and use the
+> existing "qcom,wcn3680" compatible as-is. No one has provided evidence
+> that there is actually something like a WCN3680(A), without a 'B' at the
+> end. Also, all existing users of the "qcom,wcn3680" compatible upstream
+> actually seem to refer to WCN3680B (I'm quite sure apq8039-t2 has
+> WCN3680B, MSM8974 isn't entirely clear but iirc you mentioned there was
+> some schematic of a MSM8974 device which says WCN3680B as well).
+> 
+> It would be nice to have the compatible perfectly correct and complete,
+> but I see no point to extend it with additional information that we
+> can't properly verify.
+> 
+> Or do you actually need a different compatible to customize something in
+> the driver?
 
-The load_device_defaults() function is passed an idxd device to work
-with to set specific device attributes.
+No it should be fine with qcom,wcn3680.
 
-Also add a load_device_defaults() implementation IAA devices; future
-patches would add default functions for other device types such as
-DSA.
+I'll send v2 in the coming days then, thanks for your input!
 
-The way idxd device probing works, if the device configuration is
-valid at that point e.g. at least one workqueue and engine is properly
-configured then the device will be enabled and ready to go.
+Regards
+Luca
 
-The IAA implementation, idxd_load_iaa_device_defaults(), configures a
-single workqueue (wq0) for each device with the following default
-values:
+> 
+> Thanks,
+> Stephan
 
-      mode     	        "dedicated"
-      threshold		0
-      size		16
-      priority		10
-      type		IDXD_WQT_KERNEL
-      group		0
-      name              "iaa_crypto"
-      driver_name       "crypto"
 
-Note that this now adds another configuration step for any users that
-want to configure their own devices/workqueus with something different
-in that they'll first need to disable (in the case of IAA) wq0 and the
-device itself before they can set their own attributes and re-enable,
-since they've been already been auto-enabled.  Note also that in order
-for the new configuration to be applied to the deflate-iaa crypto
-algorithm the iaa_crypto module needs to unregister the old version,
-which is accomplished by removing the iaa_crypto module, and
-re-registering it with the new configuration by reinserting the
-iaa_crypto module.
 
-Signed-off-by: Tom Zanussi <tom.zanussi@linux.intel.com>
----
- drivers/dma/idxd/Makefile   |  2 +-
- drivers/dma/idxd/defaults.c | 53 +++++++++++++++++++++++++++++++++++++
- drivers/dma/idxd/idxd.h     |  4 +++
- drivers/dma/idxd/init.c     |  7 +++++
- 4 files changed, 65 insertions(+), 1 deletion(-)
- create mode 100644 drivers/dma/idxd/defaults.c
-
-diff --git a/drivers/dma/idxd/Makefile b/drivers/dma/idxd/Makefile
-index c5e679070e46..2b4a0d406e1e 100644
---- a/drivers/dma/idxd/Makefile
-+++ b/drivers/dma/idxd/Makefile
-@@ -4,7 +4,7 @@ obj-$(CONFIG_INTEL_IDXD_BUS) += idxd_bus.o
- idxd_bus-y := bus.o
- 
- obj-$(CONFIG_INTEL_IDXD) += idxd.o
--idxd-y := init.o irq.o device.o sysfs.o submit.o dma.o cdev.o debugfs.o
-+idxd-y := init.o irq.o device.o sysfs.o submit.o dma.o cdev.o debugfs.o defaults.o
- 
- idxd-$(CONFIG_INTEL_IDXD_PERFMON) += perfmon.o
- 
-diff --git a/drivers/dma/idxd/defaults.c b/drivers/dma/idxd/defaults.c
-new file mode 100644
-index 000000000000..a0c9faad8efe
---- /dev/null
-+++ b/drivers/dma/idxd/defaults.c
-@@ -0,0 +1,53 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright(c) 2023 Intel Corporation. All rights rsvd. */
-+#include <linux/kernel.h>
-+#include "idxd.h"
-+
-+int idxd_load_iaa_device_defaults(struct idxd_device *idxd)
-+{
-+	struct idxd_engine *engine;
-+	struct idxd_group *group;
-+	struct idxd_wq *wq;
-+
-+	if (!test_bit(IDXD_FLAG_CONFIGURABLE, &idxd->flags))
-+		return 0;
-+
-+	wq = idxd->wqs[0];
-+
-+	if (wq->state != IDXD_WQ_DISABLED)
-+		return -EPERM;
-+
-+	/* set mode to "dedicated" */
-+	set_bit(WQ_FLAG_DEDICATED, &wq->flags);
-+	wq->threshold = 0;
-+
-+	/* set size to 16 */
-+	wq->size = 16;
-+
-+	/* set priority to 10 */
-+	wq->priority = 10;
-+
-+	/* set type to "kernel" */
-+	wq->type = IDXD_WQT_KERNEL;
-+
-+	/* set wq group to 0 */
-+	group = idxd->groups[0];
-+	wq->group = group;
-+	group->num_wqs++;
-+
-+	/* set name to "iaa_crypto" */
-+	memset(wq->name, 0, WQ_NAME_SIZE + 1);
-+	strscpy(wq->name, "iaa_crypto", WQ_NAME_SIZE + 1);
-+
-+	/* set driver_name to "crypto" */
-+	memset(wq->driver_name, 0, DRIVER_NAME_SIZE + 1);
-+	strscpy(wq->driver_name, "crypto", DRIVER_NAME_SIZE + 1);
-+
-+	engine = idxd->engines[0];
-+
-+	/* set engine group to 0 */
-+	engine->group = idxd->groups[0];
-+	engine->group->num_engines++;
-+
-+	return 0;
-+}
-diff --git a/drivers/dma/idxd/idxd.h b/drivers/dma/idxd/idxd.h
-index 62ea21b25906..47de3f93ff1e 100644
---- a/drivers/dma/idxd/idxd.h
-+++ b/drivers/dma/idxd/idxd.h
-@@ -277,6 +277,8 @@ struct idxd_dma_dev {
- 	struct dma_device dma;
- };
- 
-+typedef int (*load_device_defaults_fn_t) (struct idxd_device *idxd);
-+
- struct idxd_driver_data {
- 	const char *name_prefix;
- 	enum idxd_type type;
-@@ -286,6 +288,7 @@ struct idxd_driver_data {
- 	int evl_cr_off;
- 	int cr_status_off;
- 	int cr_result_off;
-+	load_device_defaults_fn_t load_device_defaults;
- };
- 
- struct idxd_evl {
-@@ -730,6 +733,7 @@ void idxd_unregister_devices(struct idxd_device *idxd);
- void idxd_wqs_quiesce(struct idxd_device *idxd);
- bool idxd_queue_int_handle_resubmit(struct idxd_desc *desc);
- void multi_u64_to_bmap(unsigned long *bmap, u64 *val, int count);
-+int idxd_load_iaa_device_defaults(struct idxd_device *idxd);
- 
- /* device interrupt control */
- irqreturn_t idxd_misc_thread(int vec, void *data);
-diff --git a/drivers/dma/idxd/init.c b/drivers/dma/idxd/init.c
-index 0eb1c827a215..14df1f1347a8 100644
---- a/drivers/dma/idxd/init.c
-+++ b/drivers/dma/idxd/init.c
-@@ -59,6 +59,7 @@ static struct idxd_driver_data idxd_driver_data[] = {
- 		.evl_cr_off = offsetof(struct iax_evl_entry, cr),
- 		.cr_status_off = offsetof(struct iax_completion_record, status),
- 		.cr_result_off = offsetof(struct iax_completion_record, error_code),
-+		.load_device_defaults = idxd_load_iaa_device_defaults,
- 	},
- };
- 
-@@ -745,6 +746,12 @@ static int idxd_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 		goto err;
- 	}
- 
-+	if (data->load_device_defaults) {
-+		rc = data->load_device_defaults(idxd);
-+		if (rc)
-+			dev_warn(dev, "IDXD loading device defaults failed\n");
-+	}
-+
- 	rc = idxd_register_devices(idxd);
- 	if (rc) {
- 		dev_err(dev, "IDXD sysfs setup failed\n");
--- 
-2.34.1
 
