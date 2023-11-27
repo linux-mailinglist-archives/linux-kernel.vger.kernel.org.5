@@ -2,90 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B220E7FAD57
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 23:19:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51DA57FAD44
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 23:18:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbjK0WTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 17:19:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60906 "EHLO
+        id S234239AbjK0WSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 17:18:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234232AbjK0WT1 (ORCPT
+        with ESMTP id S234191AbjK0WRz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 17:19:27 -0500
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B1A555AC
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:12:58 -0800 (PST)
-Received: by mail-il1-x131.google.com with SMTP id e9e14a558f8ab-35b0b36716fso4267705ab.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:12:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1701123178; x=1701727978; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=puE78O4RI+u15yYno75dce4/a2n9AH0YF0ve/Gmlb5Q=;
-        b=NHBb0IP0C6hPiBRNBhwtOPT9jec5xHAa1htnTrdTrk9c23Gol3cM/mRY62hgvdV7yS
-         WsXqFVP0Z8G0hlDyxQIag4yRrRXMMnvf/NzwbvuNSwRGpj5Z2kxMBIJKhpsSSN9r4b8+
-         LN8bJKb/RsP+OBNqIrXdK/bMQi69MKWVxkxV0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701123178; x=1701727978;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=puE78O4RI+u15yYno75dce4/a2n9AH0YF0ve/Gmlb5Q=;
-        b=jgi9gesaBU1WDeaSIK0UrDi/FXGpSnsCOxdaJqYv65h2ualm6kIbGmiOuWQ8nzgT60
-         he1JXAoVSdAaP8CuEWvq5zwYQbOsglnhhF8e2FjbPdQK9u96fOvp+zoEcESSyoRdDTdv
-         HrIPLNksVfeq1bzvg/s2/U2NOyXVflIgVmd8ehoL+G9WcJAsFqYlK5tOtcQXEaR8HNUk
-         JeLhhPLHxyycMCPcNe/lfzi90b8rA8/4y6LVXEp3oAOy983XD/TCetExsnJdhTuekUxD
-         jWqFa1rUnU9ihevO5O3dQiXbKOWvPYsF/YnP5fTJEIMDMPMmjldughFpu6m0fl8SNRAE
-         DEzA==
-X-Gm-Message-State: AOJu0Yx4FPy7U8nkfc9xNBlhf7F1+sFFbUrjplRP0GNVP25ZbtFZvSie
-        vS6TBim9AXZ6Gahyh3ViTkYKSw==
-X-Google-Smtp-Source: AGHT+IE6AGzwlGF+z7GOguSo74p0/n5g/TMMxCkC6xGkkoe96+I+4m4tenPVLxlT9SvVCDVTMTD2fA==
-X-Received: by 2002:a05:6602:2245:b0:7b3:5be5:fa55 with SMTP id o5-20020a056602224500b007b35be5fa55mr13412624ioo.2.1701123178133;
-        Mon, 27 Nov 2023 14:12:58 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id az9-20020a056638418900b004665ad49d39sm2541973jab.74.2023.11.27.14.12.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Nov 2023 14:12:57 -0800 (PST)
-Message-ID: <94429ea4-c6a1-4437-8642-3a24930c7ad7@linuxfoundation.org>
-Date:   Mon, 27 Nov 2023 15:12:57 -0700
+        Mon, 27 Nov 2023 17:17:55 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 693765B90;
+        Mon, 27 Nov 2023 14:13:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+        In-Reply-To:References; bh=yDu+MajZuBvUhdZmOy4hMJkganlhJhePznPuY1gI23Y=; b=gs
+        DzjxePHjdVKJlgXRGgZGJrSqQvAztvadV//7Kwavyu7mC8jDZRraIblFWgCRviC5aSUp4clO/0B2J
+        VCXnTU3N7Ds12FzAGaP2hGZZMZvh/9mKYh1QZbQ1xtRVN426ne2ta2oQ9gdWUWpB8SH6njEkf0BKT
+        +K6Q6w60aoYuKa8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r7jqp-001OKV-8l; Mon, 27 Nov 2023 23:13:11 +0100
+Date:   Mon, 27 Nov 2023 23:13:11 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Elad Nachman <enachman@marvell.com>,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com,
+        pali@kernel.org, mrkiko.rs@gmail.com,
+        chris.packham@alliedtelesis.co.nz, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        cyuval@marvell.com
+Subject: Re: [PATCH v6 1/3] MAINTAINERS: add ac5 to list of maintained
+ Marvell dts files
+Message-ID: <69eeb7e1-92b3-45e9-8bdc-275dfd387fc6@lunn.ch>
+References: <20231127190857.1977974-1-enachman@marvell.com>
+ <20231127190857.1977974-2-enachman@marvell.com>
+ <CAL_JsqJ90mOMUS040SBtjnuELcyM1qnOyHzuga6xPNbMct2PvA@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] tools cpupower bench: Override CFLAGS assignments
-Content-Language: en-US
-To:     Stanley Chan <schan@cloudflare.com>, linux-pm@vger.kernel.org
-Cc:     kernel-team <kernel-team@cloudflare.com>,
-        Thomas Renninger <trenn@suse.com>,
-        Shuah Khan <shuah@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20231127212049.455008-1-schan@cloudflare.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20231127212049.455008-1-schan@cloudflare.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL_JsqJ90mOMUS040SBtjnuELcyM1qnOyHzuga6xPNbMct2PvA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/23 14:20, Stanley Chan wrote:
-> Allow user to specify outside CFLAGS values as make argument
+On Mon, Nov 27, 2023 at 01:49:31PM -0600, Rob Herring wrote:
+> On Mon, Nov 27, 2023 at 1:09 PM Elad Nachman <enachman@marvell.com> wrote:
+> >
+> > From: Elad Nachman <enachman@marvell.com>
+> >
+> > Add ac5 dts files to the list of maintained Marvell Armada dts files
+> >
+> > Signed-off-by: Elad Nachman <enachman@marvell.com>
+> > ---
+> >  MAINTAINERS | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index b81da7a36a36..6f863a0c3248 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -2339,6 +2339,7 @@ F:        arch/arm/boot/dts/marvell/armada*
+> >  F:     arch/arm/boot/dts/marvell/kirkwood*
+> >  F:     arch/arm/configs/mvebu_*_defconfig
+> >  F:     arch/arm/mach-mvebu/
+> > +F:     arch/arm64/boot/dts/marvell/ac5*
+> >  F:     arch/arm64/boot/dts/marvell/armada*
+
+> >  F:     arch/arm64/boot/dts/marvell/cn913*
+> Looks to me like a single entry will do:
 > 
-> Corrects an issue where CFLAGS is passed as a make argument for
-> cpupower, but bench's makefile does not inherit and append to them.
-> 
-> Fixes: dbc4ca339c8d ("tools cpupower: Override CFLAGS assignments")
+> F: arch/arm64/boot/dts/marvell/
 
-There is no need for this Fixes tag since this patch doesn't
-fix the problem introduced by dbc4ca339c8d
+Agreed. I guess this is a left over from moving all the files into
+vendor sub directories. Probably all the MAINTAINER entries need
+updating.
 
-This patch fixes the problem in bench/Makefile like dbc4ca339c8d
-did in cpupower/Makefile.
+Elad, please update the Marvell entry as suggested.
 
-In this case Fixes tag is incorrect. I removed the Fixes tag
-and applied it to
-
-https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux.git/log/?h=cpupower
-
-thanks,
--- Shuah
+      Andrew
