@@ -2,107 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4925C7F96AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 00:56:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBDA7F96C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 01:19:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230497AbjKZX4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 18:56:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44020 "EHLO
+        id S230497AbjK0AFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 19:05:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229514AbjKZX4n (ORCPT
+        with ESMTP id S229514AbjK0AE7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 18:56:43 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED2CFB;
-        Sun, 26 Nov 2023 15:56:50 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-285741e9a9aso2113662a91.3;
-        Sun, 26 Nov 2023 15:56:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701043010; x=1701647810; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aMjUOMBsNx98bSTGJ5OT6pqeZWF3+KxX6/PMEtjSuY8=;
-        b=EUdtwVosBaGw+we1I7/f4LYOZ5kn0owCMsQsyv4tMisf4fwTuSsf2HipeIuLJS+a2Y
-         qGgqs0LRPxdYVQeLp8rTbUYoYDeqO/nhLJqwNkpssZ0KOmLPTUTRzu2iEo+bnu3rnvHF
-         1f942ytOQe9k0n09KrNt8oWMh9w50T/0/AfqOmF5xx95xS+CCZ1M62tsKZdJbBXjXmT8
-         gy50ZBFFE/USRJzdbjCQSJiRzmHc7vec5sqJwyvGe0fG4Y29nZbu1N3cLkv5EGTOPh8T
-         zEigXXcwEs7U7xKeBI3xRabBhP6+MtdhzybPNPP+WUgPSeblJOH04CMym8Vn2jb3K9aU
-         N/8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701043010; x=1701647810;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=aMjUOMBsNx98bSTGJ5OT6pqeZWF3+KxX6/PMEtjSuY8=;
-        b=iS1iaw0j3R8tX1/hxpBH6vWsiSnogDA4ZnzgtpFKSI5j3xrUVdX6JhmR3oaaKgmCWz
-         Rs78kl56eQeNAni6fBxJSiEJVWCrGCmGchH2erb+XdL1OJ4/408XlbY6U6KXBhHCOGUg
-         lyqN3N0WNgZHA6z2rtsCE0NT/RCXWuqNQ+C90RckUJDU61NaHjrnWOSAF9j5pA8EBQQD
-         IR6YRN15b7tUt/SNn10nExNTALNuqnEU5KfYV6tu5zPtkE1ZlItfjEWi7xVpMJxs7apK
-         GdCJyK7c/OKbOC/V5i6f0TH3qCnTsFD7uv7VenmYFuSVCA/LMhyOKjhSOPdTXZ53gmi3
-         rlYA==
-X-Gm-Message-State: AOJu0YzWdYQbtCVMytYajYtYUgNXwPNiNOaewfz+tkLcTivyQXF9bXXV
-        TCl/j40xrNu6CjDsDOhxZ9s=
-X-Google-Smtp-Source: AGHT+IHVKkJpPd9T6rPx07fJdW8zAr7hZv2NELPnILenSSfcjSGDNDPwUELFAjvztmo8ShoOTQoLKw==
-X-Received: by 2002:a17:90b:4c41:b0:285:9a34:5b40 with SMTP id np1-20020a17090b4c4100b002859a345b40mr5740305pjb.40.1701043009832;
-        Sun, 26 Nov 2023 15:56:49 -0800 (PST)
-Received: from localhost ([98.97.116.126])
-        by smtp.gmail.com with ESMTPSA id ij30-20020a170902ab5e00b001cc3a6813f8sm7082451plb.154.2023.11.26.15.56.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Nov 2023 15:56:48 -0800 (PST)
-Date:   Sun, 26 Nov 2023 15:56:46 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Jann Horn <jannh@google.com>, Boris Pismenny <borisp@nvidia.com>,
+        Sun, 26 Nov 2023 19:04:59 -0500
+Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com [66.111.4.229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99351FB;
+        Sun, 26 Nov 2023 16:04:57 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 8E18F5807BE;
+        Sun, 26 Nov 2023 19:04:53 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Sun, 26 Nov 2023 19:04:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1701043493; x=1701050693; bh=UG
+        Nk44U4jmXOJ/AcIH3TlGvpqXW3QFjzprbde8gLJZU=; b=NaulhuTwyiNqIMbSl8
+        cyVa+7RWp/OPWxg3O6P76LZYVLpu1kn9SSue+Gawi6CCJnxzv/34X+Dje+wkdcH1
+        f8LbXnkQwglIhjYZ5xLYDHHiXJejykMtIaKkvynrpBp806WZFNj1LAlKuObSyZhx
+        yBXlqxjT6mkV+9AlVfDMXlXc+3pvahR790j3p7HWy4LXsLquJbbGhI0IBPPtvwkk
+        m06RNfkcOqs46d46Op1KamrJp9AFX8G2XRjcSUZ6whvllI9SdGkV45OEdy7KStJb
+        l7/BlGCzViVsjjzLmFhXKj5mc6sx1w8CCxCV1VAFj8d64QeWkPOwH/TUNcUN+cj4
+        Z4Fw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1701043493; x=1701050693; bh=UGNk44U4jmXOJ
+        /AcIH3TlGvpqXW3QFjzprbde8gLJZU=; b=IddQoC+7h+piTRX4O77oxs63wgeJ/
+        qQnXeFocUrafGEluooWeaacpsCbDVfmdZuE4tsjVFdeVqbb5pBhzuOIjeP8npVRu
+        rIveoi2kbsn9DsEuo98IuOaOda6yDqAHriusUOrL/l0e72i6Nn9UkmlHN6DPGKZZ
+        lpopZKJC7so4PuhVBw0ANM3hoH3xpte6LkxKztaZTx+dPA496kw//3jrzxW8F6ZF
+        mna5ObqhhpOf88uguLewL6PNO15mHOs8bpMYXVB6LfWRmRbKxnXzrRwau+yIvQ3W
+        SAHtD0C6guqpxbuH+2NfaKPBFSUxLropKwdtGyEDIDPvaOgNbjzwy8XHA==
+X-ME-Sender: <xms:JN1jZYB8lkRG4HvbGfVVyl63D6gCGn9Vy6pqBUHi1bZaXcEVSOdFGA>
+    <xme:JN1jZage5HU5HK2QOTcsYn1zmUjds4J1h2TBFXRg0qHFZvInr-sJ3n0iUzhka-3rx
+    QbjlCDDn-m1u86J_Q>
+X-ME-Received: <xmr:JN1jZblV7A9gPrV_VYyDnqvA5U1eL2YjD67We8yizuvZfUeJJKItobc6vEA0YDfmfB-48OZoRIU96Vb5x8T6iNb-KD-kbfdmqv717jjKQfjxsHmEj1YDFtJIiTQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeitddgudelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddt
+    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnhepvdefkeetuddufeeigedtheefffekuedukeehudffudfffffg
+    geeitdetgfdvhfdvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:JN1jZewhFNYrH3CWZo3e6cDOkL-r3TE0Y62hP4FPt5KiaEMaV6VPhg>
+    <xmx:JN1jZdQ94GZwV7HD3rNVtmbhQWKh6EvZgaR4qqWYMnrJSZSSakv0Aw>
+    <xmx:JN1jZZZnXZ1yJmMlvYfD_FqJhTP2Fpd4oOmFJLWNmdMHC0IjITNloA>
+    <xmx:Jd1jZeSaCF8iY51kKfXZA8wE1Q39ayvlE32l--qTjttdD6eITauZIA>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 26 Nov 2023 19:04:50 -0500 (EST)
+Date:   Sun, 26 Nov 2023 18:04:49 -0600
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Eduard Zingerman <eddyz87@gmail.com>
+Cc:     Yonghong Song <yonghong.song@linux.dev>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        antony.antony@secunet.com, Mykola Lysenko <mykolal@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     David Howells <dhowells@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Message-ID: <6563db3e1d1ef_68d9b208cf@john.notmuch>
-In-Reply-To: <CAG48ez3dn7CAfTmfziBUd_aFfcM1LOYsUuYrKykZAvTv=AAodg@mail.gmail.com>
-References: <20231122214447.675768-1-jannh@google.com>
- <CAG48ez3dn7CAfTmfziBUd_aFfcM1LOYsUuYrKykZAvTv=AAodg@mail.gmail.com>
-Subject: Re: [PATCH net] tls: fix NULL deref on tls_sw_splice_eof() with empty
- record
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, devel@linux-ipsec.org,
+        Network Development <netdev@vger.kernel.org>
+Subject: Re: [PATCH ipsec-next v1 6/7] bpf: selftests: test_tunnel: Disable
+ CO-RE relocations
+Message-ID: <uc5fv3keghefszuvono7aclgtjtgjnnia3i54ynejmyrs42ser@bwdpq5gmuvub>
+References: <cover.1700676682.git.dxu@dxuuu.xyz>
+ <391d524c496acc97a8801d8bea80976f58485810.1700676682.git.dxu@dxuuu.xyz>
+ <0f210cef-c6e9-41c1-9ba8-225f046435e5@linux.dev>
+ <CAADnVQ+sEsUyNYPeZyOf2PcCnxOvOqw4bUuAuMofCU14szTGvg@mail.gmail.com>
+ <3ec6c068-7f95-419a-a0ae-a901f95e4838@linux.dev>
+ <18e43cdf65e7ba0d8f6912364fbc5b08a6928b35.camel@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <18e43cdf65e7ba0d8f6912364fbc5b08a6928b35.camel@gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jann Horn wrote:
-> On Wed, Nov 22, 2023 at 10:44=E2=80=AFPM Jann Horn <jannh@google.com> w=
-rote:
-> > syzkaller discovered that if tls_sw_splice_eof() is executed as part =
-of
-> > sendfile() when the plaintext/ciphertext sk_msg are empty, the send p=
-ath
-> > gets confused because the empty ciphertext buffer does not have enoug=
-h
-> > space for the encryption overhead. This causes tls_push_record() to g=
-o on
-> > the `split =3D true` path (which is only supposed to be used when int=
-eracting
-> > with an attached BPF program), and then get further confused and hit =
-the
-> > tls_merge_open_record() path, which then assumes that there must be a=
-t
-> > least one populated buffer element, leading to a NULL deref.
-> =
+Hi,
 
-> Ah, and in case you're looking for the corresponding syzkaller report,
-> you can find that at
-> <https://lore.kernel.org/all/000000000000347a250608e8a4d1@google.com/T/=
->.
+On Sun, Nov 26, 2023 at 10:14:21PM +0200, Eduard Zingerman wrote:
+> On Sat, 2023-11-25 at 20:22 -0800, Yonghong Song wrote:
+> [...]
+> > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > @@ -6,7 +6,10 @@
+> >    * modify it under the terms of version 2 of the GNU General Public
+> >    * License as published by the Free Software Foundation.
+> >    */
+> > -#define BPF_NO_PRESERVE_ACCESS_INDEX
+> > +#if __has_attribute(preserve_static_offset)
+> > +struct __attribute__((preserve_static_offset)) erspan_md2;
+> > +struct __attribute__((preserve_static_offset)) erspan_metadata;
+> > +#endif
+> >   #include "vmlinux.h"
+> [...]
+> >   int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
+> > @@ -174,9 +177,13 @@ int erspan_set_tunnel(struct __sk_buff *skb)
+> >          __u8 hwid = 7;
+> >   
+> >          md.version = 2;
+> > +#if __has_attribute(preserve_static_offset)
+> >          md.u.md2.dir = direction;
+> >          md.u.md2.hwid = hwid & 0xf;
+> >          md.u.md2.hwid_upper = (hwid >> 4) & 0x3;
+> > +#else
+> > +       /* Change bit-field store to byte(s)-level stores. */
+> > +#endif
+> >   #endif
+> >   
+> >          ret = bpf_skb_set_tunnel_opt(skb, &md, sizeof(md));
+> > 
+> > ====
+> > 
+> > Eduard, could you double check whether this is a valid use case
+> > to solve this kind of issue with preserve_static_offset attribute?
+> 
+> Tbh I'm not sure. This test passes with preserve_static_offset
+> because it suppresses preserve_access_index. In general clang
+> translates bitfield access to a set of IR statements like:
+> 
+>   C:
+>     struct foo {
+>       unsigned _;
+>       unsigned a:1;
+>       ...
+>     };
+>     ... foo->a ...
+> 
+>   IR:
+>     %a = getelementptr inbounds %struct.foo, ptr %0, i32 0, i32 1
+>     %bf.load = load i8, ptr %a, align 4
+>     %bf.clear = and i8 %bf.load, 1
+>     %bf.cast = zext i8 %bf.clear to i32
+> 
+> With preserve_static_offset the getelementptr+load are replaced by a
+> single statement which is preserved as-is till code generation,
+> thus load with align 4 is preserved.
+> 
+> On the other hand, I'm not sure that clang guarantees that load or
+> stores used for bitfield access would be always aligned according to
+> verifier expectations.
+> 
+> I think we should check if there are some clang knobs that prevent
+> generation of unaligned memory access. I'll take a look.
 
-I'm a bit slow, but looks good to me as well. Thanks a lot.
+Is there a reason to prefer fixing in compiler? I'm not opposed to it,
+but the downside to compiler fix is it takes years to propagate and
+sprinkles ifdefs into the code.
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>=
+Would it be possible to have an analogue of BPF_CORE_READ_BITFIELD()?
+
+Thanks,
+Daniel
