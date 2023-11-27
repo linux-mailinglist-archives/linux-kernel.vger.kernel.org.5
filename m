@@ -2,171 +2,401 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8ADC7FA649
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:24:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 580717FA6AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:41:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234106AbjK0QYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 11:24:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33746 "EHLO
+        id S233918AbjK0Qlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 11:41:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234009AbjK0QYG (ORCPT
+        with ESMTP id S230504AbjK0Qlj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 11:24:06 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983CCCE;
-        Mon, 27 Nov 2023 08:24:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701102253; x=1732638253;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=pC7ItqT/Jt4iS7s9ERZY/cmKPTThT+AoQzduxjDNxRI=;
-  b=DpmHL43uEC5iig03TbDmR9SeUeB3yF2KADIf+VN9w+dAovg7paDf0Bz5
-   8/jHtoHxGcCoEZcgfbYtmMZiVx1Z/hoyc9+Kt0Y+2vohDH+jKphJbYdS1
-   kiNKdQLAZJIoJOD5UAQiwHDAullM/genLLE3C8+/GIo5PTxRd8Ta+H7/T
-   DoNwwvoiz89prewYvHo31i+UgBI8FXlDABgvzq2xPSaAehmXF3R5nIWcT
-   wD0fACm58twjP3cgqCfTSrgXWcYJ+2HPDqA42t2RyWy3Y63UJTorNAy9W
-   z17rmgcPtQXE5C8sbA0ypUse2Q/s6Zg2xw+hnpDz5JjUFmjQ5gKaEubSF
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="478930176"
-X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
-   d="scan'208";a="478930176"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 08:23:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="912137668"
-X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
-   d="scan'208";a="912137668"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Nov 2023 08:23:58 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 27 Nov 2023 08:23:57 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Mon, 27 Nov 2023 08:23:57 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Mon, 27 Nov 2023 08:23:57 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eadu8yfhWVWF8DFQrm4Tebrztzdtty3XXFeJWNTwojTx+vk38BBcBEFS1aaec3ITANNW4ljFQenTCiWMetFZSDUdWtaGAGBnB9keT0TJAB2MnoWHJodp0EEPa24kB/QE1ueDSAHJsxdWyf+PyomUeNc4iJFbMvzQJ6sOwJ1aEr6TsmslgGtgsq9uAmx3DpBTi4HFbW389igAxk0IlywfOekD69CGJYTlGpKbWOPdUbodBpZN65XrOGlBBUGDPI8BRikw2u2HHlwIORE8UpKrV2mOp1Y0rRnCy5uNNTB2usEaYduRtY5sEvM+BHKAB8yyLRMjLjINRKv/Q7JYcxztlg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3w3v5hRA4nb6NnML8ycBRVtuaT1zcFyz8OjR12ATRmc=;
- b=G5dv84T1SgOnYlHpJk0DFajSPE3SmqNmwSGJaZ0k/f+1wVLqoR09y9GdfyOVMr107nxogJvbr6pLbauxTFfUwQqjXFeYtvZk+wPTMsPn3wmayzJxKJu0thj+UFBZJjvPy6Y+gwCk6poGEG/hUNcAqUl1+7hY92Z7UnE0Og0Rod5JRtbTdsWr+lglqjbcZDJ3hR1F3z3yXb7cDZHfwjAKKFwv9nRr/Ox255aRfq/KEmJJS1R0TV3L3af+CYZJUSeoDSHmYodFALF67Ky9zbSQqVZfP4W2iHekUKhERH48bMRKsroYJ+Dl/iq6hneF/LltEyKcKgXxDwdHOQitsCFVFQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BY5PR11MB4257.namprd11.prod.outlook.com (2603:10b6:a03:1ca::32)
- by PH0PR11MB7564.namprd11.prod.outlook.com (2603:10b6:510:288::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Mon, 27 Nov
- 2023 16:23:55 +0000
-Received: from BY5PR11MB4257.namprd11.prod.outlook.com
- ([fe80::dc55:8434:8e81:bcb5]) by BY5PR11MB4257.namprd11.prod.outlook.com
- ([fe80::dc55:8434:8e81:bcb5%4]) with mapi id 15.20.7025.022; Mon, 27 Nov 2023
- 16:23:55 +0000
-From:   "Bahadur, Sachin" <sachin.bahadur@intel.com>
-To:     Jiri Pirko <jiri@resnulli.us>
-CC:     "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH iwl-net v4] ice: Block PF reinit if attached to bond
-Thread-Topic: [PATCH iwl-net v4] ice: Block PF reinit if attached to bond
-Thread-Index: AQHaIPe/QZ4HasPNt0KtTZtgr5dQa7CN6caAgABvukA=
-Date:   Mon, 27 Nov 2023 16:23:55 +0000
-Message-ID: <BY5PR11MB42574D2A64F2C4E42400213A96BDA@BY5PR11MB4257.namprd11.prod.outlook.com>
-References: <20231127060512.1283336-1-sachin.bahadur@intel.com>
- <ZWRkN12fhENyN4PY@nanopsycho>
-In-Reply-To: <ZWRkN12fhENyN4PY@nanopsycho>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BY5PR11MB4257:EE_|PH0PR11MB7564:EE_
-x-ms-office365-filtering-correlation-id: 5f26fd20-b81a-4355-57d3-08dbef654047
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: xHAKS8AicNtX3DF1214ZOLy7Y9DafZTWvTXcN/PzArG92+j/rFt+ZTJGFVSzmkJx1UBY6vTbH5xUIsefvb2+wwyHtlf9OVWkd0N0cE03ZRLDo0Tbf1EypYOTBRhZGpNESYTJeOlHm2Y6HIDU9WR3tS5Gpt51zYxyqjF6yiDuMZb6a/kiCQ56MlcHiqjN1CeiYL4rjwSLSZvwqj360BMvQQZ0+bKjnyQxGkHpcpvhLF4ydyBIAvu3JulhJnyjiMSC05gWIRA0b3nqWoqbx7YjTnH99q16gnrc8TqSZIRSacHfCpH/RY2kjWwQjj2tRipqRmcqe2EcUjU05wE2rNDeIVvFCHzdn0hG9RP4p7F9rHS5H88heWd6fgoci7lLersma0V0Xi4HmTuYyK8n+ENQAsRyyUTlBOgcy3yvushQh8giNDIuCWgSuDnJtTTMQ2POV31Y97Gg306cyef67tHy4NiOPU2h50SYKeuktrklv6Xco5Zrup6M4Ib9CUKc6PvtbilCddgECt1YwLRrd7uvI2AQ/SFz+hime2ULr4vlTdHnRyWWjTw+ht93cyzJyPm2QKuPz8a0SruO93PwiKZLmbZNEDqPzR7inw5xBuFhq9lMPPafsyxkD3dJgYHrnkQR
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4257.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(136003)(39860400002)(366004)(396003)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(71200400001)(4326008)(8676002)(8936002)(52536014)(7696005)(9686003)(6506007)(66476007)(66556008)(66946007)(66446008)(76116006)(54906003)(6916009)(316002)(478600001)(2906002)(122000001)(55016003)(4744005)(33656002)(38100700002)(41300700001)(38070700009)(86362001)(26005)(82960400001)(83380400001)(5660300002)(64756008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?M6LccqGjd8+StQSegge3vgeVMtJb7NS28YEF3rwCdofYZKV/j7TxBNfZB/R0?=
- =?us-ascii?Q?cUigj1bJbRO75AXJwxJUTsxm+JIS1oN/tycOGSemXbM2SpCuetNT+BgWLCAj?=
- =?us-ascii?Q?n36bYdJGIJwvfHfKAJjyhJ0z5ffPUlBf4SH240uEU7zNViOXnWhs2lLet/P3?=
- =?us-ascii?Q?QwaMd8wyF49L3rQndxhYfGTXwp/2gwa+oAIQfpmYeyGdrF4K8UJCp+WGtqOo?=
- =?us-ascii?Q?DJ6Jc3ElZRlA7sMPbVJ9kQ/438iNduDn3x7WFU9h+MZ8pcQxx7Dwl/Zn1yMd?=
- =?us-ascii?Q?mMKyVDm1vafkM3foA/oBnzJCuUVQ/lRgwq1h690P/ZVcJ6NHuNqlA3NL4TI1?=
- =?us-ascii?Q?hVGV4AiE3Uc8iDDTH6oIWKUZNVM0Nurx2eaPt54ChPOF/WrzC/WjVLOcDJJU?=
- =?us-ascii?Q?bwxsJREwf2sdn+ZCNxeNX1x/AeMfNBqRogCPVQpwiePh1QCwnNtsaIeGcnXQ?=
- =?us-ascii?Q?z3sfTV4CB3BFGbh2jdxtNqZXgI4HJCnMJHZzKDIIzd6Q1dyW5S/YkwPS1Bm1?=
- =?us-ascii?Q?DD5Q2BKiZ/Y5gy8gcVpoKimfwjdoZJATCuEhmdEl8Bq4Oa72LF7TA1yGE4/Q?=
- =?us-ascii?Q?D/ncDoJajKfM4dsaYqdJVyeJxLm/G2s5UJI9zEhQxEp/DUEw/I1etOdLLUA7?=
- =?us-ascii?Q?6SxoAT5GUywf/L157TWauYNYM4UUMaw2ccIVoIXWJ3rTZzPBZ/gFsyKNnsnC?=
- =?us-ascii?Q?HxKk6XJRzxlntOSHxM7bdlKL+9pqMK9fBQzCqf5YLnS7MwH9IzKaWBgjvQ1o?=
- =?us-ascii?Q?Krpa0mnoeq62Sf6bwen0BEr1xUrY8RZm8MaWZfS5migg+C0PPUXrrGY6GE/D?=
- =?us-ascii?Q?jfOyed3yZS34lVyS5/5hF9l2LvPWFnd99do/mDwpB5GC1zLQdNFyalq4Vyvt?=
- =?us-ascii?Q?+bCLh8q0Rhkm9WttwE9bG/yCV0IAxUwRC0OkI+cfe29u4XUCnazCIgshoYsO?=
- =?us-ascii?Q?EdeZJAbBN/PDEapmosjeH15pRnyzqkGWdnvJcfKUEdC23Fbs5aS2S3ROGrW1?=
- =?us-ascii?Q?H0/kuUL22b+zrHM74YNjEWbbm9ADFewpSmMHwbKeFwRTXp5AN/DZTGzgXU3r?=
- =?us-ascii?Q?mia0WEauZx96xwVtCH+u1PuM7te1Ui4sDRlxO0PtryXwdtBRDfoLdbyFIk4m?=
- =?us-ascii?Q?Ey8SrifGY1FIk/8GrdIMCNt3YA2/VgoXNtcGyY4RIXMer+EEoXhvG8n6l2bW?=
- =?us-ascii?Q?xvw/Qb2A3gf8cssbpM7zuvnwH2wH2fwv1XcuYxwIv/MIHftKhoWnJ9FOK1Ed?=
- =?us-ascii?Q?L0bIRP0ZLCW8C7ahHYF3Q9JCGDnVt/pbzPAvV75eAH/pU2rGzG7SMlI8ADHi?=
- =?us-ascii?Q?ksFEdPQ6KfaKYCEcdILP5uDC1PIkl+M3zGBEgB+p4OCaoEsSNuJw7bMnbALB?=
- =?us-ascii?Q?XbT3znbMnOpAVY+zgEnzkbuGOFlTn3RrYA49kDJvLlWUmrV765Cr6Q4TlBpF?=
- =?us-ascii?Q?EP481qsFoV8Pcp9NN/7rYMtCl62vaLKVOW2AuTyzdmjH7hNFEqR8y3GdPkh0?=
- =?us-ascii?Q?jkyzFrxqUvg6mu/cHIbIablczdZNvNs6nBCxWOiK1riF2sEK3zohQYC7XyvT?=
- =?us-ascii?Q?2M8cuaPvwuahVllAu2ohsuJN9nRoKjuWh6zm9VZf?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 27 Nov 2023 11:41:39 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40CD9D2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:41:44 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40b27726369so31139195e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:41:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1701103302; x=1701708102; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=/Icj54IjZp5B4hkXeCz67YIlN6i5tKQ8M88cBBrEKK4=;
+        b=wwuA9No9YaegRxG0DK4kIdjjnIvATJlZaGmDcCLpkc6nY7jF7evUlCp7B7ytJR65eY
+         n7vLeeIy8ZT+X/LRMUxxUeHTEXauXKbw2gGzO9Delibb26hhfL2ZL9mo7NTWtmgoq7KS
+         AMizAWRhcpUTPRvvkPshtCfRbJdM313vHYcbssZPtIOiid5TR647RWADWUbVl4dqJ602
+         aMUtwEzLFWINKY7lqygcPtCWVlqlwtddIuBVqHTSQp77QF/pxr77xrwZGcbTz/Rha8s3
+         0ySSSsr9QQrzxJulkWpFsRZdgyRKrDVJoVkzmeyfLl44T4Yd0PEDSEllgHvaimJJN+3c
+         4LCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701103302; x=1701708102;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/Icj54IjZp5B4hkXeCz67YIlN6i5tKQ8M88cBBrEKK4=;
+        b=K3UKY8EJ4KrPkHkxuW+180RQep+naSnVGLFNegExcjXXcJmogDl05kPWGSO+VzDYra
+         Ml03GMcovzE157JGqt0UNLie/z9qd4kAfxQEb6DJujFbVD9bvEURhWG5EzYUQdU9N6L1
+         2To69lnXu13IKatppMgazEBzU3EcrnWLxnYa4T0Wztv35qbA7NRS77c20cYaqrB9TsAE
+         kozfPD3ypjjYnG+HUOw/m7UZL1m5AMj/4yihxbUIDwn628JBl4WA7DiNZ31VXtKoujqt
+         3avSCOlJ2g66O2GVvZIqJx5+jOwoy84tOXvGTZywMAKfwV4DoQOJD93yl8G7bAVUVWPA
+         Bi3g==
+X-Gm-Message-State: AOJu0YxBA6kmjoN6bJ0bL9wmsL+whv+3mZIg7rWrGbBDM/AL/0j5UZQh
+        bjWBV/9KA0LPI3CdQclFB+mEhw==
+X-Google-Smtp-Source: AGHT+IHFJl3YREfNRJgTH6qJi9k1kF+E8TGrqHCGdE2czDiGzqH3Az0cJk7/KmShVK5MIed8bqNenw==
+X-Received: by 2002:a5d:52ca:0:b0:332:fa1b:9f66 with SMTP id r10-20020a5d52ca000000b00332fa1b9f66mr3648641wrv.59.1701103302575;
+        Mon, 27 Nov 2023 08:41:42 -0800 (PST)
+Received: from localhost ([2a01:e0a:3c5:5fb1:3675:e2e8:2f93:3d3b])
+        by smtp.gmail.com with ESMTPSA id c14-20020a056000104e00b00332f95ab44esm5864136wrx.57.2023.11.27.08.41.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 08:41:42 -0800 (PST)
+References: <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-0-95256ed139e6@linaro.org>
+ <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-7-95256ed139e6@linaro.org>
+ <1j7cm7dx1b.fsf@starbuckisacylon.baylibre.com>
+ <4e5e33c1-45d5-4c83-b647-bfb603347156@linaro.org>
+User-agent: mu4e 1.10.8; emacs 29.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     neil.armstrong@linaro.org
+Cc:     Jerome Brunet <jbrunet@baylibre.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Nicolas Belin <nbelin@baylibre.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Remi Pommarel <repk@triplefau.lt>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-phy@lists.infradead.org,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v9 07/12] clk: meson: add vclk driver
+Date:   Mon, 27 Nov 2023 17:24:03 +0100
+In-reply-to: <4e5e33c1-45d5-4c83-b647-bfb603347156@linaro.org>
+Message-ID: <1jfs0rywqi.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4257.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5f26fd20-b81a-4355-57d3-08dbef654047
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Nov 2023 16:23:55.1779
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vBpw8b9/2EJoPlCzZIroC9fTj1xZiJUgIxQ5bGmD6LmLh4c8Hzr9zNsY80oY7kuVtzwJsaLe3YnbdQw2h/M99olmNhv2P++TguIIqE271cY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB7564
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=20
-> Nack. Remove the netdev during re-init, that would solve your issue.
-> Looks like some checks are needed to be added in devlink code to make sur=
-e
-> drivers behave properly. I'm on in.
 
-Sure. This fix should apply to all drivers. Adding it in devlink makes more
-sense. I am not a devlink expert, so I hope you or someone else can
-help with it.
+On Mon 27 Nov 2023 at 17:14, Neil Armstrong <neil.armstrong@linaro.org> wrote:
 
->=20
->=20
-> >+			return -EBUSY;
-> >+		}
-> > 		ice_unload(pf);
-> > 		return 0;
-> > 	case DEVLINK_RELOAD_ACTION_FW_ACTIVATE:
-> >--
-> >2.25.1
-> >
-> >
+> On 24/11/2023 15:41, Jerome Brunet wrote:
+>> On Fri 24 Nov 2023 at 09:41, Neil Armstrong <neil.armstrong@linaro.org>
+>> wrote:
+>> 
+>>> The VCLK and VCLK_DIV clocks have supplementary bits.
+>>>
+>>> The VCLK has a "SOFT RESET" bit to toggle after the whole
+>>> VCLK sub-tree rate has been set, this is implemented in
+>>> the gate enable callback.
+>>>
+>>> The VCLK_DIV clocks as enable and reset bits used to disable
+>>> and reset the divider, associated with CLK_SET_RATE_GATE it ensures
+>>> the rate is set while the divider is disabled and in reset mode.
+>>>
+>>> The VCLK_DIV enable bit isn't implemented as a gate since it's part
+>>> of the divider logic and vendor does this exact sequence to ensure
+>>> the divider is correctly set.
+>>>
+>>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+>>> ---
+>>>   drivers/clk/meson/Kconfig  |   5 ++
+>>>   drivers/clk/meson/Makefile |   1 +
+>>>   drivers/clk/meson/vclk.c   | 141 +++++++++++++++++++++++++++++++++++++++++++++
+>>>   drivers/clk/meson/vclk.h   |  51 ++++++++++++++++
+>>>   4 files changed, 198 insertions(+)
+>>>
+>>> diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
+>>> index 29ffd14d267b..59a40a49f8e1 100644
+>>> --- a/drivers/clk/meson/Kconfig
+>>> +++ b/drivers/clk/meson/Kconfig
+>>> @@ -30,6 +30,10 @@ config COMMON_CLK_MESON_VID_PLL_DIV
+>>>   	tristate
+>>>   	select COMMON_CLK_MESON_REGMAP
+>>>   +config COMMON_CLK_MESON_VCLK
+>>> +	tristate
+>>> +	select COMMON_CLK_MESON_REGMAP
+>>> +
+>>>   config COMMON_CLK_MESON_CLKC_UTILS
+>>>   	tristate
+>>>   @@ -140,6 +144,7 @@ config COMMON_CLK_G12A
+>>>   	select COMMON_CLK_MESON_EE_CLKC
+>>>   	select COMMON_CLK_MESON_CPU_DYNDIV
+>>>   	select COMMON_CLK_MESON_VID_PLL_DIV
+>>> +	select COMMON_CLK_MESON_VCLK
+>> This particular line belong in the next patch
+>> 
+>>>   	select MFD_SYSCON
+>>>   	help
+>>>   	  Support for the clock controller on Amlogic S905D2, S905X2 and S905Y2
+>>> diff --git a/drivers/clk/meson/Makefile b/drivers/clk/meson/Makefile
+>>> index 9ee4b954c896..9ba43fe7a07a 100644
+>>> --- a/drivers/clk/meson/Makefile
+>>> +++ b/drivers/clk/meson/Makefile
+>>> @@ -12,6 +12,7 @@ obj-$(CONFIG_COMMON_CLK_MESON_PLL) += clk-pll.o
+>>>   obj-$(CONFIG_COMMON_CLK_MESON_REGMAP) += clk-regmap.o
+>>>   obj-$(CONFIG_COMMON_CLK_MESON_SCLK_DIV) += sclk-div.o
+>>>   obj-$(CONFIG_COMMON_CLK_MESON_VID_PLL_DIV) += vid-pll-div.o
+>>> +obj-$(CONFIG_COMMON_CLK_MESON_VCLK) += vclk.o
+>>>     # Amlogic Clock controllers
+>>>   diff --git a/drivers/clk/meson/vclk.c b/drivers/clk/meson/vclk.c
+>>> new file mode 100644
+>>> index 000000000000..47f08a52b49f
+>>> --- /dev/null
+>>> +++ b/drivers/clk/meson/vclk.c
+>>> @@ -0,0 +1,141 @@
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +/*
+>>> + * Copyright (c) 2023 Neil Armstrong <neil.armstrong@linaro.org>
+>>> + */
+>>> +
+>>> +#include <linux/module.h>
+>>> +#include "vclk.h"
+>>> +
+>>> +/* The VCLK gate has a supplementary reset bit to pulse after ungating */
+>>> +
+>>> +static inline struct clk_regmap_vclk_data *
+>>> +clk_get_regmap_vclk_data(struct clk_regmap *clk)
+>>> +{
+>>> +	return (struct clk_regmap_vclk_data *)clk->data;
+>>> +}
+>>> +
+>>> +static int clk_regmap_vclk_enable(struct clk_hw *hw)
+>>> +{
+>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>> +	struct clk_regmap_vclk_data *vclk = clk_get_regmap_vclk_data(clk);
+>>> +
+>>> +	meson_parm_write(clk->map, &vclk->enable, 1);
+>>> +
+>>> +	/* Do a reset pulse */
+>>> +	meson_parm_write(clk->map, &vclk->reset, 1);
+>>> +	meson_parm_write(clk->map, &vclk->reset, 0);
+>>> +
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +static void clk_regmap_vclk_disable(struct clk_hw *hw)
+>>> +{
+>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>> +	struct clk_regmap_vclk_data *vclk = clk_get_regmap_vclk_data(clk);
+>>> +
+>>> +	meson_parm_write(clk->map, &vclk->enable, 0);
+>>> +}
+>>> +
+>>> +static int clk_regmap_vclk_is_enabled(struct clk_hw *hw)
+>>> +{
+>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>> +	struct clk_regmap_vclk_data *vclk = clk_get_regmap_vclk_data(clk);
+>>> +
+>>> +	return meson_parm_read(clk->map, &vclk->enable);
+>>> +}
+>>> +
+>>> +const struct clk_ops clk_regmap_vclk_ops = {
+>>> +	.enable = clk_regmap_vclk_enable,
+>>> +	.disable = clk_regmap_vclk_disable,
+>>> +	.is_enabled = clk_regmap_vclk_is_enabled,
+>>> +};
+>>> +EXPORT_SYMBOL_GPL(clk_regmap_vclk_ops);
+>> s/clk_regmap_vclk/meson_vclk at least for what is exported, ideally most
+>> all the code.
+>> I get clk_regmap_ comes from code copied from clk_regmap.c.
+>> The reason the this part is different (and not using parm) if that when
+>> I converted amlogic to regmap, I hope we could make this generic,
+>> possibly converging between aml and qcom (which was the only other
+>> platform using regmap for clock at the time). This is why clk_regmap.c
+>> is a bit different from the other driver.
+>> For the aml specific drivers, best to look at the mpll or cpu-dyndiv one.
+>> 
+>>> +
+>>> +/* The VCLK Divider has supplementary reset & enable bits */
+>>> +
+>>> +static inline struct clk_regmap_vclk_div_data *
+>>> +clk_get_regmap_vclk_div_data(struct clk_regmap *clk)
+>>> +{
+>>> +	return (struct clk_regmap_vclk_div_data *)clk->data;
+>>> +}
+>>> +
+>>> +static unsigned long clk_regmap_vclk_div_recalc_rate(struct clk_hw *hw,
+>>> +						     unsigned long prate)
+>>> +{
+>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
+>>> +
+>>> +	return divider_recalc_rate(hw, prate, meson_parm_read(clk->map, &vclk->div),
+>>> +				   vclk->table, vclk->flags, vclk->div.width);
+>>> +}
+>>> +
+>>> +static int clk_regmap_vclk_div_determine_rate(struct clk_hw *hw,
+>>> +					      struct clk_rate_request *req)
+>>> +{
+>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
+>>> +
+>>> +	return divider_determine_rate(hw, req, vclk->table, vclk->div.width,
+>>> +				      vclk->flags);
+>>> +}
+>>> +
+>>> +static int clk_regmap_vclk_div_set_rate(struct clk_hw *hw, unsigned long rate,
+>>> +					unsigned long parent_rate)
+>>> +{
+>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
+>>> +	int ret;
+>>> +
+>>> +	ret = divider_get_val(rate, parent_rate, vclk->table, vclk->div.width,
+>>> +			      vclk->flags);
+>>> +	if (ret < 0)
+>>> +		return ret;
+>>> +
+>>> +	meson_parm_write(clk->map, &vclk->div, ret);
+>>> +
+>>> +	return 0;
+>>> +};
+>>> +
+>>> +static int clk_regmap_vclk_div_enable(struct clk_hw *hw)
+>>> +{
+>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
+>>> +
+>>> +	/* Unreset the divider when ungating */
+>>> +	meson_parm_write(clk->map, &vclk->reset, 0);
+>>> +	meson_parm_write(clk->map, &vclk->enable, 1);
+>>> +
+>>> +	return 0;
+>>> +}
+>>> +
+>>> +static void clk_regmap_vclk_div_disable(struct clk_hw *hw)
+>>> +{
+>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
+>>> +
+>>> +	/* Reset the divider when gating */
+>>> +	meson_parm_write(clk->map, &vclk->enable, 0);
+>>> +	meson_parm_write(clk->map, &vclk->reset, 1);
+>>> +}
+>>> +
+>>> +static int clk_regmap_vclk_div_is_enabled(struct clk_hw *hw)
+>>> +{
+>>> +	struct clk_regmap *clk = to_clk_regmap(hw);
+>>> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
+>>> +
+>>> +	return meson_parm_read(clk->map, &vclk->enable);
+>>> +}
+>>> +
+>>> +const struct clk_ops clk_regmap_vclk_div_ops = {
+>>> +	.recalc_rate = clk_regmap_vclk_div_recalc_rate,
+>>> +	.determine_rate = clk_regmap_vclk_div_determine_rate,
+>>> +	.set_rate = clk_regmap_vclk_div_set_rate,
+>>> +	.enable = clk_regmap_vclk_div_enable,
+>>> +	.disable = clk_regmap_vclk_div_disable,
+>>> +	.is_enabled = clk_regmap_vclk_div_is_enabled,
+>>> +};
+>>> +EXPORT_SYMBOL_GPL(clk_regmap_vclk_div_ops);
+>>> +
+>>> +MODULE_DESCRIPTION("Amlogic vclk clock driver");
+>>> +MODULE_AUTHOR("Neil Armstrong <neil.armstrong@linaro.org>");
+>>> +MODULE_LICENSE("GPL v2");
+>>> diff --git a/drivers/clk/meson/vclk.h b/drivers/clk/meson/vclk.h
+>>> new file mode 100644
+>>> index 000000000000..4f25d7ad2717
+>>> --- /dev/null
+>>> +++ b/drivers/clk/meson/vclk.h
+>
+> Is vclk.c/h ok ? clk-vclk doesn't look pretty, but I can switch to it to
+> keep files organized.
+
+I don't have a strong opinion about it.
+I would have suggested vclk-div.c/h - like sclk ... but you do have gate
+ops in there, so ... :/
+
+This made me realize that one does not really go without the other.
+It is more a coherent block, isn't it ?
+Would it make more sense to have these 2 merged in a single clk_ops ?
+
+It's bit late to point this out, sorry about that.
+
+I let you decide whether to merge the ops or not and which name to pick.
+
+If you keep them separated, meson_vclk_gate_ops instead of just
+meson_vclk_ops, to make things clear.
+
+>
+> Neil
+>
+>>> @@ -0,0 +1,51 @@
+>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>> +/*
+>>> + * Copyright (c) 2023 Neil Armstrong <neil.armstrong@linaro.org>
+>>> + */
+>>> +
+>>> +#ifndef __VCLK_H
+>>> +#define __VCLK_H
+>> This is too generic.
+>> Please add the MESON prefix like the other clock driver please.
+>> 
+>>> +
+>>> +#include "clk-regmap.h"
+>>> +#include "parm.h"
+>>> +
+>>> +/**
+>>> + * struct clk_regmap_vclk_data - vclk regmap backed specific data
+>>> + *
+>>> + * @enable:	vclk enable field
+>>> + * @reset:	vclk reset field
+>>> + * @flags:	hardware-specific flags
+>>> + *
+>>> + * Flags:
+>>> + * Same as clk_gate except CLK_GATE_HIWORD_MASK which is ignored
+>>> + */
+>>> +struct clk_regmap_vclk_data {
+>>> +	struct parm enable;
+>>> +	struct parm reset;
+>>> +	u8 flags;
+>>> +};
+>>> +
+>>> +extern const struct clk_ops clk_regmap_vclk_ops;
+>>> +
+>>> +/**
+>>> + * struct clk_regmap_vclk_div_data - vclk_div regmap back specific data
+>>> + *
+>>> + * @div:	divider field
+>>> + * @enable:	vclk divider enable field
+>>> + * @reset:	vclk divider reset field
+>>> + * @table:	array of value/divider pairs, last entry should have div = 0
+>>> + *
+>>> + * Flags:
+>>> + * Same as clk_divider except CLK_DIVIDER_HIWORD_MASK which is ignored
+>>> + */
+>>> +struct clk_regmap_vclk_div_data {
+>>> +	struct parm div;
+>>> +	struct parm enable;
+>>> +	struct parm reset;
+>>> +	const struct clk_div_table *table;
+>>> +	u8 flags;
+>>> +};
+>>> +
+>>> +extern const struct clk_ops clk_regmap_vclk_div_ops;
+>>> +
+>>> +#endif /* __VCLK_H */
+>> 
+
+
+-- 
+Jerome
