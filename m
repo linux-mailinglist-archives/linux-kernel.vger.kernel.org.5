@@ -2,114 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BE747F9D2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 11:12:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 568887F9D2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 11:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232763AbjK0KMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 05:12:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43066 "EHLO
+        id S232767AbjK0KNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 05:13:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229631AbjK0KMX (ORCPT
+        with ESMTP id S232679AbjK0KNA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 05:12:23 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB87B10F;
-        Mon, 27 Nov 2023 02:12:28 -0800 (PST)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AR6sK8N000814;
-        Mon, 27 Nov 2023 10:12:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=sx6V64zmvOt7YMqP3pfR0ES/+ZW/aQszbllSAmtYhVg=;
- b=WwgbasqpBrqzIsNKN1xiTK568rPs2KAZXfYpTE1IUc09GDd5bSL2tM1S35Vc4XpXz8/p
- VxRrIXHu5abP0JZs/PPTcUln5GpXWj/tYWWAh7LvW43/2qrwzDYciApo6KMR5w8GReJC
- fauGB1Yj+4iFVRL55gF8hWSxNV2zG3vjtSNhc6U7T4ta6LWXomXk3Yj3rD3QKERyUlar
- z5wuyIQqbGhPEGRJYu+30APYgrjmogU2NNKmU0rYbosEN+lGlxd+mP8UQgTzXOn9vFpV
- m4WcSjEWPMz02he4Z9jyB7rmY1kz/V2Lk3irF6cX/FkwTT2UC1ftKHwJVOYC4+y/LNCW +w== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uk9adktwe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 10:12:24 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ARACN1d007248
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 10:12:23 GMT
-Received: from [10.50.63.158] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 27 Nov
- 2023 02:12:20 -0800
-Message-ID: <8ac05276-eec1-fb42-166a-5739822ecdd0@quicinc.com>
-Date:   Mon, 27 Nov 2023 15:42:12 +0530
+        Mon, 27 Nov 2023 05:13:00 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBB0131
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 02:13:07 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8059AC433C7;
+        Mon, 27 Nov 2023 10:13:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701079987;
+        bh=fGgNP5lLqq06gIKE/Ay6zDb25xpoQWkuhpClm6E4Od8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gua2LBTgox+kA/7qWhP6aBawjywyAf4plI5DEpsh3Ijh1TglJVJalcbdoLVzj+4dc
+         QSMDDVQUYBZq1RQQekKvMiY6PsTT6dCQ73qwrTxCOVqua3ItxtNNh1CT5mMK1rwkOo
+         pNmaaaZz8ibyvGn9pVWA4lfTSRxkUENw1NZF/9NxE7CpRhALbo9b8kxwPL+7e+tpwW
+         hsJPsy3p5qFhBnTvSRETrsFsNAloxWs+4rOiSkqNw7cPppUIDXmoc2h/jD710Ik/tG
+         IqbNDJzviU6gnDPxieDGBRlc5nKcmAT2tWnTWaAy3wiDb1nqr1v6ODL4SEN8gHX01N
+         FGTK2menaKnbw==
+Date:   Mon, 27 Nov 2023 11:13:00 +0100
+From:   Christian Brauner <brauner@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
+        lkp@intel.com, linux-kernel@vger.kernel.org,
+        Jann Horn <jannh@google.com>, linux-doc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, intel-gfx@lists.freedesktop.org,
+        linux-fsdevel@vger.kernel.org, gfs2@lists.linux.dev,
+        bpf@vger.kernel.org, ying.huang@intel.com, feng.tang@intel.com,
+        fengwei.yin@intel.com
+Subject: Re: [linus:master] [file] 0ede61d858: will-it-scale.per_thread_ops
+ -2.9% regression
+Message-ID: <20231127-protokollieren-ermuntern-748cc3855fe8@brauner>
+References: <202311201406.2022ca3f-oliver.sang@intel.com>
+ <CAHk-=wjMKONPsXAJ=yJuPBEAx6HdYRkYE8TdYVBvpm3=x_EnCw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v6 2/3] clk: qcom: clk-rcg2: add support for rcg2 freq
- multi ops
-Content-Language: en-US
-To:     Christian Marangi <ansuelsmth@gmail.com>
-CC:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230916140046.7878-1-ansuelsmth@gmail.com>
- <20230916140046.7878-3-ansuelsmth@gmail.com>
- <419b0e85-5479-30b0-d6a9-b2697d057c55@quicinc.com>
- <655bca09.050a0220.bac1.aa06@mx.google.com>
- <5540adcd-4ba6-53e7-c7fe-b7116e6403ca@quicinc.com>
- <655cb6e6.050a0220.35346.e9a2@mx.google.com>
-From:   Devi Priya <quic_devipriy@quicinc.com>
-In-Reply-To: <655cb6e6.050a0220.35346.e9a2@mx.google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: K-vT28wy7eyiIAz1l-2CUQ1fUyE6_SC3
-X-Proofpoint-GUID: K-vT28wy7eyiIAz1l-2CUQ1fUyE6_SC3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-27_08,2023-11-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
- clxscore=1015 priorityscore=1501 malwarescore=0 lowpriorityscore=0
- phishscore=0 bulkscore=0 mlxlogscore=490 adultscore=0 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311270070
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjMKONPsXAJ=yJuPBEAx6HdYRkYE8TdYVBvpm3=x_EnCw@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> I took a look at the code generation, and honestly, I think we're
+> better off just making __fget_files_rcu() have special logic for this
+> all, and not use __get_file_rcu().
 
+My initial massaging of the patch did that btw. Then I sat there
+wondering whether it would matter if we just made it possible to reuse
+that code and I went through a bunch of iterations. Oh well, it seems to
+matter.
 
-On 11/21/2023 7:25 PM, Christian Marangi wrote:
->> Hi Christian,
->>
->> WARN does not get printed with the attached patchset.
->> Thanks much!
->>
-> Can you also confirm that the code correctly works with your div
-> scenario?
+> Comments? I also looked at that odd OPTIMIZER_HIDE_VAR() that
+
+Concept looks sane to me.
+
+> __get_file_rcu() does, and I don't get it. Both things come from
+> volatile accesses, I don't see the point of those games, but I also
+> didn't care, since it's no longer in a critical code path.
 > 
-> Would love to have some Tested-by tag to move this further!
-> 
-> (since it seems newer SoC after ipq807x will use this implementation
-> even more)
+> Christian?
 
-Sorry was not available for a couple of days.
-Sure, will validate and add tested-by tag.
+Puts his completely imagined "I understand RCU head on".
+SLAB_TYPESAFE_BY_RCU makes the RCU consume memory ordering that the
+compiler doesn't officialy support (afaik) a bit wonky.
 
-Thanks,
-Devi Priya
-> 
-> -- 
+So the thinking was that we could have code patterns where you could
+free the object and reallocate it while legitimatly passing the pointer
+recheck. In that case there is no memory ordering between the allocation
+and the pointer recheck because the last (re)allocation could have been
+after the rcu_dereference().
+
+To combat that all future loads were made to have a dependency on the
+first load using the hidevar trick.
+
+I guess that might only be theoretically possible but not in practice?
+But then I liked that we explicitly commented on it as a reminder.
