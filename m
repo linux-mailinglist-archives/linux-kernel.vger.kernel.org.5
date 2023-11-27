@@ -2,67 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6AE7FA444
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 16:19:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9CE87FA44E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 16:22:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233912AbjK0PTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 10:19:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50224 "EHLO
+        id S233854AbjK0PWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 10:22:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233904AbjK0PTj (ORCPT
+        with ESMTP id S230239AbjK0PWW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 10:19:39 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D8C2D0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 07:19:45 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-5079f3f3d7aso6213266e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 07:19:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701098383; x=1701703183; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=CQ41arVcAuG43JZqYRRYkpgAWKlZs6YO605nhsMazRg=;
-        b=v677vaar2lyjPuA8ZSFU5/CskWsfVobXQA6tXFK9nk3Xes/HIpCGD7Xrjk2Kmtk1JL
-         N+E5Sp+FhDdEP5QkUyDizRuYql4kexFpZC3pHKod0+Q+DKYbkrmjXbWJ+Hi2+DdYzbFu
-         s7iJmDbVW7XxfeC0bKQ4NRAD94S5tsHSFBek8qv5FRHH64XtNXvgxSWCJ9VjUvNR/JWG
-         06GlBblij2zAhT4Poq1RENOCuXdfUvQq6C7H4t1rcdkQd7Qo+kDmEWjKoXPuMevwMKZd
-         SKsTo+bQte8Q062iNb9hyhkaZCGoiZdq+Q2Yg9BpcCMuP5zzCgB4RlKaZeG9QoFVyXVE
-         sf4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701098383; x=1701703183;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CQ41arVcAuG43JZqYRRYkpgAWKlZs6YO605nhsMazRg=;
-        b=Q34hOprPjsAoZwe84EEcxdY37nCPaO/Exm+Hzb6GgxfoAyREYPkC+2tAuT7L2Jpmha
-         VtkpZlE+Ko1i4A3sWEtoaOQ6RtdmXde2/kpsa5cfe2aj8FHVo+5JKZt+LPg0NXskyuU+
-         foJix+iOArw8EzOU6T8rlPnFpvCTClaMjOvPRfZPRYBX2BYtrkaF9tXQskRVhpaEpTSe
-         SlQdwBQ6bIgaGkMkK4PN6zYOc/ZJuLFY3MDesFnhFjlRiKXYa0ehfEqtDsGD35hIm06Z
-         Iqn05gtSRZe6+InawOQr1qqVgwKBbWkk22l26MHE7VH8FhuXLBaKTTvzqhsvEPgTZnTE
-         0Ybw==
-X-Gm-Message-State: AOJu0YwZ3si/HuboBT46a//FnwZ5Z3uqFChn5rOGtUJnS0xEnYJC3m/O
-        Al38sfJm7tbFKokBGJwm40Xo0Q==
-X-Google-Smtp-Source: AGHT+IGzphxorONaJExp0yvzdHT7XzIgSeo6DYR811cKr73UStSCVUYTy9QQ+4aEmW2vjMUL46D7SA==
-X-Received: by 2002:a2e:8196:0:b0:2bc:c004:cc22 with SMTP id e22-20020a2e8196000000b002bcc004cc22mr8315420ljg.33.1701098383440;
-        Mon, 27 Nov 2023 07:19:43 -0800 (PST)
-Received: from uffe-tuxpro14.. (h-178-174-189-39.A498.priv.bahnhof.se. [178.174.189.39])
-        by smtp.gmail.com with ESMTPSA id j17-20020a2e8011000000b002b6c61bac2esm1371363ljg.92.2023.11.27.07.19.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 07:19:42 -0800 (PST)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     "Rafael J . Wysocki" <rafael@kernel.org>, linux-pm@vger.kernel.org
-Cc:     Kevin Hilman <khilman@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] PM: domains: Drop the unused pm_genpd_opp_to_performance_state()
-Date:   Mon, 27 Nov 2023 16:19:31 +0100
-Message-Id: <20231127151931.47055-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Mon, 27 Nov 2023 10:22:22 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 468BBAA
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 07:22:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701098549; x=1732634549;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=CuTVVhsh8sVWgDt5WBU9oDZYO1UpgEHuJmGYdX/m78Y=;
+  b=hSPHKxSYbKlmTRZC4JXlJ2unE2YMvzcWeUxp6dRa8N1lnDMMWgLSL0Om
+   QaY2hgYeraDECVsy1eJBD4ZR8gfhGLCi2hiW8Zgysc+EIJi3O9AbvjASD
+   WyDYVFXxh41itijFeoPXld6fNozz29X3ml0/0qV9VR24/cEFtrSL0bx9B
+   94MrLXVPnvTmo5S4AkVtrHUUBgMPQPBxCSs10GuQTzqV0sYOWmJMpN4SV
+   xNXCrPvHwW2uMcvmndQi2eiK6UQqSdJ0l4LSN3+jHddDxO+tChjyAaFTx
+   GIAexGwqOWlZl0imTnS3zi4+m+4zkEGUCwfgbUc5y5YOqBCwR23qYlvoC
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="395546808"
+X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
+   d="scan'208";a="395546808"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 07:22:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
+   d="scan'208";a="9809398"
+Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 27 Nov 2023 07:22:26 -0800
+Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r7dRH-0006MK-1t;
+        Mon, 27 Nov 2023 15:22:23 +0000
+Date:   Mon, 27 Nov 2023 23:21:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Peng Liu <pngliu@hotmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, frederic@kernel.org,
+        tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        liupeng17@lenovo.com
+Subject: Re: [PATCH 1/2] tick/nohz: Remove duplicate between
+ tick_nohz_switch_to_nohz() and tick_setup_sched_timer()
+Message-ID: <202311272057.gNWmIyix-lkp@intel.com>
+References: <TYCP286MB21464B3653B956AF71806931C6BDA@TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <TYCP286MB21464B3653B956AF71806931C6BDA@TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,105 +67,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 7c41cdcd3bbe ("OPP: Simplify the over-designed pstate <->
-level dance"), there is no longer any users of the
-pm_genpd_opp_to_performance_state() API. Let's therefore drop it and its
-corresponding ->opp_to_performance_state() callback, which also no longer
-has any users.
+Hi Peng,
 
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
----
- drivers/base/power/domain.c | 32 --------------------------------
- include/linux/pm_domain.h   | 12 ------------
- 2 files changed, 44 deletions(-)
+kernel test robot noticed the following build warnings:
 
-diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-index da1777e39eaa..cf65b5a9783c 100644
---- a/drivers/base/power/domain.c
-+++ b/drivers/base/power/domain.c
-@@ -3042,38 +3042,6 @@ int of_genpd_parse_idle_states(struct device_node *dn,
- }
- EXPORT_SYMBOL_GPL(of_genpd_parse_idle_states);
- 
--/**
-- * pm_genpd_opp_to_performance_state - Gets performance state of the genpd from its OPP node.
-- *
-- * @genpd_dev: Genpd's device for which the performance-state needs to be found.
-- * @opp: struct dev_pm_opp of the OPP for which we need to find performance
-- *	state.
-- *
-- * Returns performance state encoded in the OPP of the genpd. This calls
-- * platform specific genpd->opp_to_performance_state() callback to translate
-- * power domain OPP to performance state.
-- *
-- * Returns performance state on success and 0 on failure.
-- */
--unsigned int pm_genpd_opp_to_performance_state(struct device *genpd_dev,
--					       struct dev_pm_opp *opp)
--{
--	struct generic_pm_domain *genpd = NULL;
--	int state;
--
--	genpd = container_of(genpd_dev, struct generic_pm_domain, dev);
--
--	if (unlikely(!genpd->opp_to_performance_state))
--		return 0;
--
--	genpd_lock(genpd);
--	state = genpd->opp_to_performance_state(genpd, opp);
--	genpd_unlock(genpd);
--
--	return state;
--}
--EXPORT_SYMBOL_GPL(pm_genpd_opp_to_performance_state);
--
- static int __init genpd_bus_init(void)
- {
- 	return bus_register(&genpd_bus_type);
-diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
-index 34663d0d5c55..b97c5e9820f9 100644
---- a/include/linux/pm_domain.h
-+++ b/include/linux/pm_domain.h
-@@ -118,7 +118,6 @@ struct genpd_power_state {
- };
- 
- struct genpd_lock_ops;
--struct dev_pm_opp;
- struct opp_table;
- 
- struct generic_pm_domain {
-@@ -146,8 +145,6 @@ struct generic_pm_domain {
- 	int (*power_on)(struct generic_pm_domain *domain);
- 	struct raw_notifier_head power_notifiers; /* Power on/off notifiers */
- 	struct opp_table *opp_table;	/* OPP table of the genpd */
--	unsigned int (*opp_to_performance_state)(struct generic_pm_domain *genpd,
--						 struct dev_pm_opp *opp);
- 	int (*set_performance_state)(struct generic_pm_domain *genpd,
- 				     unsigned int state);
- 	struct gpd_dev_ops dev_ops;
-@@ -348,8 +345,6 @@ int of_genpd_remove_subdomain(struct of_phandle_args *parent_spec,
- struct generic_pm_domain *of_genpd_remove_last(struct device_node *np);
- int of_genpd_parse_idle_states(struct device_node *dn,
- 			       struct genpd_power_state **states, int *n);
--unsigned int pm_genpd_opp_to_performance_state(struct device *genpd_dev,
--					       struct dev_pm_opp *opp);
- 
- int genpd_dev_pm_attach(struct device *dev);
- struct device *genpd_dev_pm_attach_by_id(struct device *dev,
-@@ -395,13 +390,6 @@ static inline int of_genpd_parse_idle_states(struct device_node *dn,
- 	return -ENODEV;
- }
- 
--static inline unsigned int
--pm_genpd_opp_to_performance_state(struct device *genpd_dev,
--				  struct dev_pm_opp *opp)
--{
--	return 0;
--}
--
- static inline int genpd_dev_pm_attach(struct device *dev)
- {
- 	return 0;
+[auto build test WARNING on tip/timers/core]
+[also build test WARNING on linus/master v6.7-rc3 next-20231127]
+[cannot apply to tip/timers/nohz]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Peng-Liu/tick-nohz-Remove-duplicate-between-tick_nohz_lowres_handler-and-tick_nohz_highres_handler/20231127-163637
+base:   tip/timers/core
+patch link:    https://lore.kernel.org/r/TYCP286MB21464B3653B956AF71806931C6BDA%40TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM
+patch subject: [PATCH 1/2] tick/nohz: Remove duplicate between tick_nohz_switch_to_nohz() and tick_setup_sched_timer()
+config: arc-defconfig (https://download.01.org/0day-ci/archive/20231127/202311272057.gNWmIyix-lkp@intel.com/config)
+compiler: arc-elf-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231127/202311272057.gNWmIyix-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311272057.gNWmIyix-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   kernel/time/tick-sched.c:650: warning: Function parameter or member 'now' not described in 'tick_nohz_update_jiffies'
+   kernel/time/tick-sched.c:1282: warning: Function parameter or member 'cpu' not described in 'tick_nohz_get_idle_calls_cpu'
+>> kernel/time/tick-sched.c:1539: warning: Function parameter or member 'mode' not described in 'tick_setup_sched_timer'
+
+
+vim +1539 kernel/time/tick-sched.c
+
+62cf20b32aee4a Thomas Gleixner           2012-05-25  1533  
+de667c3b095eed Peng Liu                  2023-11-27  1534  #if defined CONFIG_NO_HZ_COMMON || defined CONFIG_HIGH_RES_TIMERS
+79bf2bb335b85d Thomas Gleixner           2007-02-16  1535  /**
+79bf2bb335b85d Thomas Gleixner           2007-02-16  1536   * tick_setup_sched_timer - setup the tick emulation timer
+79bf2bb335b85d Thomas Gleixner           2007-02-16  1537   */
+de667c3b095eed Peng Liu                  2023-11-27  1538  void tick_setup_sched_timer(int mode)
+79bf2bb335b85d Thomas Gleixner           2007-02-16 @1539  {
+22127e93c587af Christoph Lameter         2014-08-17  1540  	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
+79bf2bb335b85d Thomas Gleixner           2007-02-16  1541  	ktime_t now = ktime_get();
+79bf2bb335b85d Thomas Gleixner           2007-02-16  1542  
+6c774377359923 Ingo Molnar               2023-09-28  1543  	/* Emulate tick processing via per-CPU hrtimers: */
+902a9f9c509053 Sebastian Andrzej Siewior 2019-07-26  1544  	hrtimer_init(&ts->sched_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_HARD);
+de667c3b095eed Peng Liu                  2023-11-27  1545  	if (mode == NOHZ_MODE_HIGHRES)
+dba428a678c726 Frederic Weisbecker       2023-09-12  1546  		ts->sched_timer.function = tick_nohz_highres_handler;
+79bf2bb335b85d Thomas Gleixner           2007-02-16  1547  
+0de7611a1031f2 Ingo Molnar               2016-07-01  1548  	/* Get the next period (per-CPU) */
+cc584b213f252b Arjan van de Ven          2008-09-01  1549  	hrtimer_set_expires(&ts->sched_timer, tick_init_jiffy_update());
+79bf2bb335b85d Thomas Gleixner           2007-02-16  1550  
+6c774377359923 Ingo Molnar               2023-09-28  1551  	/* Offset the tick to avert 'jiffies_lock' contention. */
+5307c9556bc17e Mike Galbraith            2012-05-08  1552  	if (sched_skew_tick) {
+b9965449164299 Thomas Gleixner           2020-11-17  1553  		u64 offset = TICK_NSEC >> 1;
+5307c9556bc17e Mike Galbraith            2012-05-08  1554  		do_div(offset, num_possible_cpus());
+5307c9556bc17e Mike Galbraith            2012-05-08  1555  		offset *= smp_processor_id();
+5307c9556bc17e Mike Galbraith            2012-05-08  1556  		hrtimer_add_expires_ns(&ts->sched_timer, offset);
+5307c9556bc17e Mike Galbraith            2012-05-08  1557  	}
+5307c9556bc17e Mike Galbraith            2012-05-08  1558  
+b9965449164299 Thomas Gleixner           2020-11-17  1559  	hrtimer_forward(&ts->sched_timer, now, TICK_NSEC);
+de667c3b095eed Peng Liu                  2023-11-27  1560  	if (mode == NOHZ_MODE_HIGHRES)
+902a9f9c509053 Sebastian Andrzej Siewior 2019-07-26  1561  		hrtimer_start_expires(&ts->sched_timer, HRTIMER_MODE_ABS_PINNED_HARD);
+de667c3b095eed Peng Liu                  2023-11-27  1562  	else
+de667c3b095eed Peng Liu                  2023-11-27  1563  		tick_program_event(hrtimer_get_expires(&ts->sched_timer), 1);
+de667c3b095eed Peng Liu                  2023-11-27  1564  	tick_nohz_activate(ts, mode);
+79bf2bb335b85d Thomas Gleixner           2007-02-16  1565  }
+3c4fbe5e01d7e5 Miao Xie                  2008-08-20  1566  #endif /* HIGH_RES_TIMERS */
+79bf2bb335b85d Thomas Gleixner           2007-02-16  1567  
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
