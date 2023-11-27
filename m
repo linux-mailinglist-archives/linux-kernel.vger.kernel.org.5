@@ -2,223 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1CDF7F9EDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:44:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4D67F9EE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:44:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233312AbjK0LoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 06:44:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50588 "EHLO
+        id S233313AbjK0Lol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 06:44:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233297AbjK0LoP (ORCPT
+        with ESMTP id S233302AbjK0Loj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 06:44:15 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73F2118A
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 03:44:21 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1r7a27-0003bW-A7; Mon, 27 Nov 2023 12:44:11 +0100
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ore@pengutronix.de>)
-        id 1r7a26-00Bvlk-Fb; Mon, 27 Nov 2023 12:44:10 +0100
-Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1r7a26-0045Qh-Cp; Mon, 27 Nov 2023 12:44:10 +0100
-Date:   Mon, 27 Nov 2023 12:44:10 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Christian Loehle <christian.loehle@arm.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pm@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
-        =?utf-8?B?U8O4cmVu?= Andersen <san@skov.dk>
-Subject: Re: [PATCH v1 0/3] introduce priority-based shutdown support
-Message-ID: <20231127114410.GE877872@pengutronix.de>
-References: <2023112520-paper-image-ef5d@gregkh>
- <20231125085038.GA877872@pengutronix.de>
- <2023112506-unselfish-unkind-adcb@gregkh>
- <ZWHM0lRPOp/efyD5@finisterre.sirena.org.uk>
- <2023112541-uptown-tripping-05f3@gregkh>
- <ZWIWBhBN8AmK7tAJ@finisterre.sirena.org.uk>
- <2023112504-cathedral-pulmonary-83ce@gregkh>
- <ZWMaMIGUo9DeyEH+@finisterre.sirena.org.uk>
- <20231126193125.GB877872@pengutronix.de>
- <8ffb32c8-907c-4266-b8be-c7309418b9f0@arm.com>
+        Mon, 27 Nov 2023 06:44:39 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20EA4B8
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 03:44:44 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 779451FD85;
+        Mon, 27 Nov 2023 11:44:41 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 552381379A;
+        Mon, 27 Nov 2023 11:44:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id aQluFCmBZGX2bwAAD6G6ig
+        (envelope-from <vbabka@suse.cz>); Mon, 27 Nov 2023 11:44:41 +0000
+Message-ID: <1f2f5a9f-61aa-094d-f9ed-be97e3671fb1@suse.cz>
+Date:   Mon, 27 Nov 2023 12:44:41 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8ffb32c8-907c-4266-b8be-c7309418b9f0@arm.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH mm] slub, kasan: improve interaction of KASAN and
+ slub_debug poisoning
+Content-Language: en-US
+To:     andrey.konovalov@linux.dev,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        Evgenii Stepanov <eugenis@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Feng Tang <feng.tang@intel.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+References: <20231122231202.121277-1-andrey.konovalov@linux.dev>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20231122231202.121277-1-andrey.konovalov@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spamd-Bar: ++++++++++++++
+X-Spam-Score: 14.28
+X-Rspamd-Server: rspamd1
+Authentication-Results: smtp-out2.suse.de;
+        dkim=none;
+        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of vbabka@suse.cz) smtp.mailfrom=vbabka@suse.cz;
+        dmarc=none
+X-Rspamd-Queue-Id: 779451FD85
+X-Spamd-Result: default: False [14.28 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_SPAM(5.09)[99.96%];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+         TO_DN_SOME(0.00)[];
+         R_SPF_SOFTFAIL(4.60)[~all];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_MATCH_FROM(0.00)[];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(1.20)[suse.cz];
+         RCPT_COUNT_TWELVE(0.00)[14];
+         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,linux.dev:email];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FREEMAIL_CC(0.00)[gmail.com,google.com,googlegroups.com,suse.de,intel.com,kvack.org,vger.kernel.org];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 11:27:31AM +0000, Christian Loehle wrote:
-> On 26/11/2023 19:31, Oleksij Rempel wrote:
-> > On Sun, Nov 26, 2023 at 10:14:45AM +0000, Mark Brown wrote:
-> >> On Sat, Nov 25, 2023 at 07:58:12PM +0000, Greg Kroah-Hartman wrote:
-> >>> On Sat, Nov 25, 2023 at 03:43:02PM +0000, Mark Brown wrote:
-> >>>> On Sat, Nov 25, 2023 at 02:35:41PM +0000, Greg Kroah-Hartman wrote:
-> >>
-> >>>>> That would be great, but I don't see that here, do you?  All I see is
-> >>>>> the shutdown sequence changing because someone wants it to go "faster"
-> >>>>> with the threat of hardware breaking if we don't meet that "faster"
-> >>>>> number, yet no knowledge or guarantee that this number can ever be known
-> >>>>> or happen.
-> >>
-> >>>> The idea was to have somewhere to send notifications when the hardware
-> >>>> starts reporting things like power supplies starting to fail.  We do
-> >>>> have those from hardware, we just don't do anything terribly useful
-> >>>> with them yet.
-> >>
-> >>> Ok, but that's not what I recall this patchset doing, or did I missing
-> >>> something?  All I saw was a "reorder the shutdown sequence" set of
-> >>> changes.  Or at least that's all I remember at this point in time,
-> >>> sorry, it's been a few days, but at least that lines up with what the
-> >>> Subject line says above :)
-> >>
-> >> That's not in the series, a bunch of it is merged in some form (eg, see
-> >> hw_protection_shutdown()) and more of it would need to be built on top
-> >> if this were merged.
-> > 
-> > The current kernel has enough infrastructure to manage essential functions
-> > related to hardware protection:
-> > - The Device Tree specifies the source of interrupts for detecting
-> >   under-voltage events. It also details critical system regulators and some
-> >   of specification of backup power supplied by the board.
-> > - Various frameworks within the kernel can identify critical hardware
-> >   conditions like over-temperature and under-voltage. Upon detection, these
-> >   frameworks invoke the hw_protection_shutdown() function.
-> > 
-> >>>>> Agreed, but I don't think this patch is going to actually work properly
-> >>>>> over time as there is no time values involved :)
-> > 
-> > If we're to implement a deadline for each shutdown call (as the requirement for
-> > "time values" suggests?), then prioritization becomes essential. Without
-> > establishing a shutdown order, the inclusion of time values might not be
-> > effectively utilized.  Am I overlooking anything in this regard?
-> > 
-> >>>> This seems to be more into the area of mitigation than firm solution, I
-> >>>> suspect users will be pleased if they can make a noticable dent in the
-> >>>> number of failures they're seeing.
-> >>
-> >>> Mitigation is good, but this patch series is just a hack by doing "throw
-> >>> this device type at the front of the shutdown list because we have
-> >>> hardware that crashes a lot" :)
-> > 
-> > The root of the issue seems to be the choice of primary storage device.
-> > 
-> > All storage technologies - HDD, SSD, eMMC, NAND - are vulnerable to power
-> > loss. The only foolproof safeguard is a backup power source, but this
-> > introduces its own set of challenges:
+On 11/23/23 00:12, andrey.konovalov@linux.dev wrote:
+> From: Andrey Konovalov <andreyknvl@google.com>
 > 
-> I disagree and would say that any storage device sold as "industrial" should
-> guarantee power-fail safety. Plus, you mentioned data loss isn't even your concern,
-> but the storage device fails/bricks.
-> > 
-> > 1. Batteries: While they provide a backup, they come with limitations like a
-> > finite number of charge cycles, sensitivity to temperature (a significant
-> > concern in industrial and automotive environments), higher costs, and
-> > increased device size. For most embedded applications, a UPS isn't a viable
-> > solution.
-> > 
-> > 2. Capacitors: A potential alternative, but they cannot offer prolonged
-> > backup time. Increasing the number of capacitors to extend backup time leads
-> > to additional issues:
-> >    - Increased costs and space requirements on the PCB.
-> >    - The need to manage partially charged capacitors during power failures.
-> >    - The requirement for a power supply capable of rapid charging.
-> >    - The risk of not reaching a safe state before the backup energy
-> >      depletes.
-> >    - In specific environments, like explosive atmospheres, storing large
-> >      amounts of energy can be hazardous.
+> When both KASAN and slub_debug are enabled, when a free object is being
+> prepared in setup_object, slub_debug poisons the object data before KASAN
+> initializes its per-object metadata.
 > 
-> And also just practically, ensuring a safe power down could be in the order
-> of a second, so it would be quite a capacitor.
+> Right now, in setup_object, KASAN only initializes the alloc metadata,
+> which is always stored outside of the object. slub_debug is aware of
+> this and it skips poisoning and checking that memory area.
 > 
-> > 
-> > Given these considerations, it's crucial to understand that such design choices
-> > aren't merely "hacks". They represent a balance between different types of
-> > trade-offs.
-> > 
-> >>>> It feels like if we're concerned about mitigating physical damage during
-> >>>> the process of power failure that's a very limited set of devices - the
-> >>>> storage case where we're in the middle of writing to flash or whatever
-> >>>> is the most obvious case.
-> >>
-> >>> Then why isn't userspace handling this?  This is a policy decision that
-> >>> it needs to take to properly know what hardware needs to be shut down,
-> >>> and what needs to happen in order to do that (i.e. flush, unmount,
-> >>> etc.?)  And userspace today should be able to say, "power down this
-> >>> device now!" for any device in the system based on the sysfs device
-> >>> tree, or at the very least, force it to a specific power state.  So why
-> >>> not handle this policy there?
-> >>
-> >> Given the tight timelines it does seem reasonable to have some of this
-> >> in the kernel - the specific decisions about how to handle these events
-> >> can always be controlled from userspace (eg, with a sysfs file like we
-> >> do for autosuspend delay times which seem to be in a similar ballpark).
-> > 
-> > Upon investigating the feasibility of a user space solution for eMMC
-> > power control, I've concluded that it's likely not possible. The primary
-> > issue is that most board designs don't include reset signaling for
-> > eMMCs. Additionally, the eMMC power rail is usually linked to the
-> > system's main power controller. While powering off is doable, cleanly
-> > powering it back on isn’t feasible. This is especially problematic when
-> > the rootfs is located on the eMMC, as power cycling the storage device
-> > could lead to system instability.
-> > 
-> > Therefore, any user space method to power off eMMC wouldn't be reliable
-> > or safe, as there's no way to ensure it can be turned back on without
-> > risking the integrity of the system. The design rationale is clear:
-> > avoiding the risks associated with powering off the primary storage
-> > device.
-> > 
-> > Considering these constraints, the only practical implementation I see
-> > is integrating this functionality into the system's shutdown sequence.
-> > This approach ensures a controlled environment for powering off the
-> > eMMC, avoiding potential issues.
+> However, with the following patch in this series, KASAN also starts
+> initializing its free medata in setup_object. As this metadata might be
+> stored within the object, this initialization might overwrite the
+> slub_debug poisoning. This leads to slub_debug reports.
 > 
-> You don't need the RST signal, in fact even if you had it it would be
-> the wrong thing to do. (Implementation is vendor-specific but RST
-> assumes that eMMCs' VCC and VCCQ are left untouched.)
+> Thus, skip checking slub_debug poisoning of the object data area that
+> overlaps with the in-object KASAN free metadata.
+> 
+> Also make slub_debug poisoning of tail kmalloc redzones more precise when
+> KASAN is enabled: slub_debug can still poison and check the tail kmalloc
+> allocation area that comes after the KASAN free metadata.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-It means, if VCC and VCCQ are off on reboot or watchdog reset, there is
-potentially bigger problem?
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-> You can try turning off eMMC cache completely and/or sending power down
-> notification on 'emergency shutdown', but since power-loss/fail behavior
-> is vendor-specific asking the storage device vendor how to ensure a safe
-> power-down.
-> Anyway the proper eMMC power-down methods are up to a second in timeouts,
-> so infeasible for your requirements from what I can see.
+Thanks.
 
-Ok. So, increasing capacity at least to one second should be main goal
-for now? But even if capacity is increased, emergency shutdown should
-notify eMMCs as early as possible? 
+> ---
+> 
+> Andrew, please put this patch right before "kasan: use stack_depot_put
+> for Generic mode".
+> ---
+>  mm/slub.c | 41 ++++++++++++++++++++++++++---------------
+>  1 file changed, 26 insertions(+), 15 deletions(-)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 63d281dfacdb..782bd8a6bd34 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -870,20 +870,20 @@ static inline void set_orig_size(struct kmem_cache *s,
+>  				void *object, unsigned int orig_size)
+>  {
+>  	void *p = kasan_reset_tag(object);
+> +	unsigned int kasan_meta_size;
+>  
+>  	if (!slub_debug_orig_size(s))
+>  		return;
+>  
+> -#ifdef CONFIG_KASAN_GENERIC
+>  	/*
+> -	 * KASAN could save its free meta data in object's data area at
+> -	 * offset 0, if the size is larger than 'orig_size', it will
+> -	 * overlap the data redzone in [orig_size+1, object_size], and
+> -	 * the check should be skipped.
+> +	 * KASAN can save its free meta data inside of the object at offset 0.
+> +	 * If this meta data size is larger than 'orig_size', it will overlap
+> +	 * the data redzone in [orig_size+1, object_size]. Thus, we adjust
+> +	 * 'orig_size' to be as at least as big as KASAN's meta data.
+>  	 */
+> -	if (kasan_metadata_size(s, true) > orig_size)
+> -		orig_size = s->object_size;
+> -#endif
+> +	kasan_meta_size = kasan_metadata_size(s, true);
+> +	if (kasan_meta_size > orig_size)
+> +		orig_size = kasan_meta_size;
+>  
+>  	p += get_info_end(s);
+>  	p += sizeof(struct track) * 2;
+> @@ -1192,7 +1192,7 @@ static int check_object(struct kmem_cache *s, struct slab *slab,
+>  {
+>  	u8 *p = object;
+>  	u8 *endobject = object + s->object_size;
+> -	unsigned int orig_size;
+> +	unsigned int orig_size, kasan_meta_size;
+>  
+>  	if (s->flags & SLAB_RED_ZONE) {
+>  		if (!check_bytes_and_report(s, slab, object, "Left Redzone",
+> @@ -1222,12 +1222,23 @@ static int check_object(struct kmem_cache *s, struct slab *slab,
+>  	}
+>  
+>  	if (s->flags & SLAB_POISON) {
+> -		if (val != SLUB_RED_ACTIVE && (s->flags & __OBJECT_POISON) &&
+> -			(!check_bytes_and_report(s, slab, p, "Poison", p,
+> -					POISON_FREE, s->object_size - 1) ||
+> -			 !check_bytes_and_report(s, slab, p, "End Poison",
+> -				p + s->object_size - 1, POISON_END, 1)))
+> -			return 0;
+> +		if (val != SLUB_RED_ACTIVE && (s->flags & __OBJECT_POISON)) {
+> +			/*
+> +			 * KASAN can save its free meta data inside of the
+> +			 * object at offset 0. Thus, skip checking the part of
+> +			 * the redzone that overlaps with the meta data.
+> +			 */
+> +			kasan_meta_size = kasan_metadata_size(s, true);
+> +			if (kasan_meta_size < s->object_size - 1 &&
+> +			    !check_bytes_and_report(s, slab, p, "Poison",
+> +					p + kasan_meta_size, POISON_FREE,
+> +					s->object_size - kasan_meta_size - 1))
+> +				return 0;
+> +			if (kasan_meta_size < s->object_size &&
+> +			    !check_bytes_and_report(s, slab, p, "End Poison",
+> +					p + s->object_size - 1, POISON_END, 1))
+> +				return 0;
+> +		}
+>  		/*
+>  		 * check_pad_bytes cleans up on its own.
+>  		 */
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
