@@ -2,61 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37DC67FA1FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:07:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 200297FA257
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:18:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233625AbjK0OHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 09:07:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58206 "EHLO
+        id S233713AbjK0OSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 09:18:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233604AbjK0OF3 (ORCPT
+        with ESMTP id S233699AbjK0ORm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 09:05:29 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0893E3845
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 05:59:37 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F1FBC433A9;
-        Mon, 27 Nov 2023 13:59:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701093576;
-        bh=AhqKrJz5NqAxQZJTxzvS35/o9mTQRDXLSjKOCvX5P6o=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NEtBN7EHFofY5t1c/VbOBEmRjCpFOPoi3qQWSrZHG/R1MtKrdAd0i2iC9y2AIyLjR
-         90RV2dFfJgTjA6x7DjV1UVkrxD2f/li+GIVqCSI4dltc2gTriyxyErKV17dlNi9FOh
-         dPkRqizNUZcBH9LNkBsIuZoFl7OU6fYLQmqusU2aLpH+c9KRPqwu04uLSNUx6khJuw
-         360nuMSO4nUpOhdh+4PfMoQGWfWjfzjbhUHz+h0KHNYigCnwUV6IO9OMXtGQvZ146C
-         Ui9oBh/hxf6iEcq2kxWrnNr9SAiCgm3EqMX7JwIrVe+bktTm4WkTaEB5SGncx8Fcz3
-         /jHuyfLEtiE4w==
-From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>
-Cc:     linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Guo Ren <guoren@kernel.org>
-Subject: [PATCH v3 32/33] selftests: ftrace: Remove obsolate maxactive syntax check
-Date:   Mon, 27 Nov 2023 22:59:30 +0900
-Message-Id: <170109356964.343914.18101084627375981760.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <170109317214.343914.4784420430328654397.stgit@devnote2>
-References: <170109317214.343914.4784420430328654397.stgit@devnote2>
-User-Agent: StGit/0.19
+        Mon, 27 Nov 2023 09:17:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B9033849
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 05:59:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701093581;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=F6iHAQJhJSgIR9+9PmD4GxCuxLQWQlMZEVby058fSFs=;
+        b=ITUnIAA019ED9B1EWFXJVyk0QU6RN4I9G3wO4lX135mmd85SuzS2a9sCQ+wnuTSG+IoZBW
+        3Heu6qGPxCWZZkQxQv/TVCpqePM9vQCx1vBX8bRE2Q07ZOjvRZaFSOVmuYdi+4U2hWJANE
+        uH4okD4ZAf0qdLj/V3toP1wWV9E5Xms=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-661-qXUUuAf5NeSR_958pi43rA-1; Mon, 27 Nov 2023 08:59:39 -0500
+X-MC-Unique: qXUUuAf5NeSR_958pi43rA-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-332ed7c0955so2115186f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 05:59:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701093579; x=1701698379;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F6iHAQJhJSgIR9+9PmD4GxCuxLQWQlMZEVby058fSFs=;
+        b=cnSFk9jeYTuJ/vuRCEZK8XQuWwQlcV2XGwmouZuxGBot/+ObuVceA+JkHGo2kd53SQ
+         zK5RgvDF2WmbFtHOJi3uGX8qV7tl8rylOLQWmgSa8piZZPBpfv8nK6S3SE6cry7d472P
+         c5dRXrTtNYj2+ActFZ18YjzowVYgUvZJw/DGV34/N4+xm2I9y8nTXfBmdQ2f7aU4LxZs
+         btAnbOkeyFQUwhJIq2TwEaGp0E4/JiqxA4tO506kSPEn7+r4hHWiaeNnfZgKqecgC9qK
+         JUbJrXMZod4aP4jA+7K7ius9un2O8r+3YnDDvQLyrT8GlBDT9Dj5uiXC8d3umZNXIJK6
+         PYgQ==
+X-Gm-Message-State: AOJu0YxaDeUzBq/mYX9zO9Y4b7veKcMAk5UCYFYuxY4CIFJxH+Dn14iH
+        9bvxVUfFbcOrBzmtj11obpW7YNegmZJMFroMaMbsK/0enEIb/IyU1RIawx8ii2j8kWXsyxRsSSP
+        S5MVrH3SK4R0N2MwD0wCkhK37
+X-Received: by 2002:a05:6000:8a:b0:333:11c:3bfb with SMTP id m10-20020a056000008a00b00333011c3bfbmr1732139wrx.6.1701093578826;
+        Mon, 27 Nov 2023 05:59:38 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFlmgU+jFcrR/STk61bMTXs2kG3jybNUVhFmo5dvEGgFWUlZB9Yk4K5ba/n/BHcVMk455t0Zg==
+X-Received: by 2002:a05:6000:8a:b0:333:11c:3bfb with SMTP id m10-20020a056000008a00b00333011c3bfbmr1732116wrx.6.1701093578472;
+        Mon, 27 Nov 2023 05:59:38 -0800 (PST)
+Received: from ?IPV6:2003:cb:c745:2a00:d74a:a8c5:20b6:3ec3? (p200300cbc7452a00d74aa8c520b63ec3.dip0.t-ipconnect.de. [2003:cb:c745:2a00:d74a:a8c5:20b6:3ec3])
+        by smtp.gmail.com with ESMTPSA id t4-20020a0560001a4400b0032d9337e7d1sm12076944wry.11.2023.11.27.05.59.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Nov 2023 05:59:38 -0800 (PST)
+Message-ID: <1ebb9a53-63ee-430c-ba65-8e48eff6d25c@redhat.com>
+Date:   Mon, 27 Nov 2023 14:59:36 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH v7 09/10] selftests/mm/cow: Generalize
+ do_run_with_thp() helper
+Content-Language: en-US
+To:     Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20231122162950.3854897-1-ryan.roberts@arm.com>
+ <20231122162950.3854897-10-ryan.roberts@arm.com>
+ <ead82cbe-19c9-43ce-9f28-7ced118b130a@redhat.com>
+ <15c288aa-feab-4d3a-af33-b87481eaffe3@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <15c288aa-feab-4d3a-af33-b87481eaffe3@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,29 +147,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>>
+>>> +    pmdsize = read_pmd_pagesize();
+>>> +    if (pmdsize)
+>>> +        ksft_print_msg("[INFO] detected PMD-mapped THP size: %zu KiB\n",
+>>
+>> Maybe simply: "detected PMD size". Zes, we read it via the THP interface, but
+>> that shouldn't matter much.
+> 
+> Err, just want to clarify what you are suggesting. With the current patch you
+> will see something like:
 
-Since the fprobe event does not support maxactive anymore, stop
-testing the maxactive syntax error checking.
+Not with this patch, but with the other ones, yes :)
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> [INFO] detected PMD-mapped THP size: 2048 KiB
+> [INFO] detected small-sized THP size: 64 KiB
+> [INFO] detected small-sized THP size: 128 KiB
+> ...
+> [INFO] detected small-sized THP size: 1024 KiB
+> 
+> 
+> Are you suggesting something like this:
+> 
+> [INFO] detected PMD size: 2048 KiB
+> [INFO] detected THP size: 64 KiB
+> [INFO] detected THP size: 128 KiB
+> ...
+> [INFO] detected THP size: 2048 KiB
+> 
 
-diff --git a/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
-index 20e42c030095..66516073ff27 100644
---- a/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
-+++ b/tools/testing/selftests/ftrace/test.d/dynevent/fprobe_syntax_errors.tc
-@@ -16,9 +16,7 @@ aarch64)
-   REG=%r0 ;;
- esac
- 
--check_error 'f^100 vfs_read'		# MAXACT_NO_KPROBE
--check_error 'f^1a111 vfs_read'		# BAD_MAXACT
--check_error 'f^100000 vfs_read'		# MAXACT_TOO_BIG
-+check_error 'f^100 vfs_read'		# BAD_MAXACT
- 
- check_error 'f ^non_exist_func'		# BAD_PROBE_ADDR (enoent)
- check_error 'f ^vfs_read+10'		# BAD_PROBE_ADDR
+Yes. If you'd detect that 2M is actually disabled, you could still log 
+the PMD size only.
+
+So for this patch only as a preparation
+
+[INFO] detected PMD size: 2048 KiB
+[INFO] detected THP size: 2048 KiB
+
+Just a thought.
+
+-- 
+Cheers,
+
+David / dhildenb
 
