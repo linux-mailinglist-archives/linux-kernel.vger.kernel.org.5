@@ -2,144 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A917FAA94
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 20:49:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA627FAA97
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 20:49:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232913AbjK0Tta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 14:49:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48066 "EHLO
+        id S232967AbjK0Ttq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 14:49:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232903AbjK0Tt2 (ORCPT
+        with ESMTP id S232986AbjK0Ttn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 14:49:28 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDCC1D64
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 11:49:34 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40b2e763b83so6055885e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 11:49:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701114573; x=1701719373; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/7y5gQC5hvIBvBFDJ+KIWxjtV9gEjJrCiDgYolpeuvA=;
-        b=cUQAPE3v2pm5QYdkJUoYmOFDT/92XTYAvo1JMFTp2ZuW1ZvJGN1degqKzYDJDTuCxO
-         +SuBpTYWmkalLlV3Q47EAJ32x0Cmkjk/fTcJHxaB+CfFPmWqlJ/MYWVcu+MbnnkdIIxR
-         GFoGIfXJK5GJOgY0KiRdGX8wqwImB8N7GRoeTse9cnEAgPgYV1yq4cotbT8mYT8peAAz
-         mLtmfOLmt3bavQCFEmT4TRxkaqIwIS08uRC0Ie7GbZp826FzwMC5kVXRBFu7fB7L+6Xj
-         J5rUF7XnNv6nj9yKz+Q7QLcJmdPkjuPNM5o/cCT8vCgwS2x5+MZYC32ujWP58Uof3KeQ
-         35+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701114573; x=1701719373;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/7y5gQC5hvIBvBFDJ+KIWxjtV9gEjJrCiDgYolpeuvA=;
-        b=qznLhAdbZGCVrIBq+2g+my+e2X1pwYaqteN0weVj4qP8gWuxmKXkZtmSKfw3GTTVBq
-         nNvr69I1ojXU6+cheWbyYR68Dx2iFfJcsM+cUidwVPoAx+dtRvjpUONdNfgZLsBF0Bk/
-         dKqWQlMwZ1OPJpSaVBc89GC1ETg5JK7nI0AXsZ1/lWZnD38KRoJcVSMrhmXBBfKx495i
-         3fHWotMQF+SOABSR0vln3sivKPtp6vKUW6YIlGj8ROxKA95aizpqdUxU6lggWxylfaVj
-         wO6F8z9Ihm3AklmnZrJzhzkMX33whnjSmotuVLO0x/UdtdVx9YNMxzcYIAvC+SPTEwSa
-         D1ag==
-X-Gm-Message-State: AOJu0YxoXIBQ5Dp93cwFJqsBitL8xjUBHwA1jjlsgvOd8M7XbSWBSFN1
-        7XkH1Bc2C5qYQsA/xFduWqQFQ+rOxpE=
-X-Google-Smtp-Source: AGHT+IHFbu2EXNV30J7b0sqEBX6koH+mWUJRXjpUY+IfCwIsBE+KsG69ZPnEC5xWDO9coIa3UHLxcw==
-X-Received: by 2002:a05:600c:257:b0:408:3836:525f with SMTP id 23-20020a05600c025700b004083836525fmr9048648wmj.1.1701114573090;
-        Mon, 27 Nov 2023 11:49:33 -0800 (PST)
-Received: from [192.168.0.104] (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
-        by smtp.gmail.com with ESMTPSA id n17-20020a05600c4f9100b004090798d29csm14819478wmq.15.2023.11.27.11.49.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Nov 2023 11:49:32 -0800 (PST)
-Message-ID: <91d11256-d855-4a80-9a8c-0c987b22aed9@gmail.com>
-Date:   Mon, 27 Nov 2023 20:49:31 +0100
+        Mon, 27 Nov 2023 14:49:43 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C13210C3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 11:49:46 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF345C433CC;
+        Mon, 27 Nov 2023 19:49:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701114586;
+        bh=kLT4h06WD18nH9XJUOYId4CY/OMjL8Pp0wVPy8Dmo5k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZQmRGurtQ/ymuqgkPK0S1auQK1jsqKsXA7ocVJ8YHFYFckwUYrdWasFs0vthwPFG6
+         cBGuFNJI0ddO7kW1QKc6Yu76RJ6F+jdK1uA9IFXFukRKB/QZpSDPByMLL+x9iXczaF
+         ihxrobCdRdEws2xjOf2N8p6R5ZH9Lkmwuro/zv+59tyIcoavkt/6B53khFbQBn2J6D
+         KrptU5Ez5t2g0e7dEbsTHGk+xOWdSOG2F2nl6IZMey806jXeFaGvmKCwbRJwUXpWQr
+         e+FnZbMo8h9N1MdTFLHkYW6r7skfAckBzAQTR6El+QFn+3FN2MIfP1BPfb5UWRVkkS
+         nepgkAVRhzUrw==
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-507ad511315so6519543e87.0;
+        Mon, 27 Nov 2023 11:49:45 -0800 (PST)
+X-Gm-Message-State: AOJu0YwNX8RGa74I6oIsKbUZjRZfChBcxApGLLDNMkNFB4Ig/7N64cMr
+        biYjrUWfoG3RT9260QyrO7sCGlSGHIl/rlMRTg==
+X-Google-Smtp-Source: AGHT+IGNdZ3nXKFdr7ac3lMqcvw4UBbPABOb47aX7ue0+l6bJSzouGDgMxTJptlpiC2GKZuLcdUzV8D/ndIVyh6M4AY=
+X-Received: by 2002:a05:6512:b97:b0:502:ff3b:766f with SMTP id
+ b23-20020a0565120b9700b00502ff3b766fmr11352186lfv.6.1701114584115; Mon, 27
+ Nov 2023 11:49:44 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/15] Staging: rtl8192e: Rename CamelCase vars
-To:     Tree Davies <tdavies@darkphysics.net>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        anjan@momi.ca, gregkh@linuxfoundation.org,
-        Gary Rookard <garyrookard@fastmail.org>
-References: <20231127054305.148276-1-tdavies@darkphysics.net>
-Content-Language: en-US
-From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
-In-Reply-To: <20231127054305.148276-1-tdavies@darkphysics.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231127190857.1977974-1-enachman@marvell.com> <20231127190857.1977974-2-enachman@marvell.com>
+In-Reply-To: <20231127190857.1977974-2-enachman@marvell.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 27 Nov 2023 13:49:31 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJ90mOMUS040SBtjnuELcyM1qnOyHzuga6xPNbMct2PvA@mail.gmail.com>
+Message-ID: <CAL_JsqJ90mOMUS040SBtjnuELcyM1qnOyHzuga6xPNbMct2PvA@mail.gmail.com>
+Subject: Re: [PATCH v6 1/3] MAINTAINERS: add ac5 to list of maintained Marvell
+ dts files
+To:     Elad Nachman <enachman@marvell.com>
+Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        andrew@lunn.ch, gregory.clement@bootlin.com,
+        sebastian.hesselbarth@gmail.com, pali@kernel.org,
+        mrkiko.rs@gmail.com, chris.packham@alliedtelesis.co.nz,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, cyuval@marvell.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/23 06:42, Tree Davies wrote:
-> This Series renames 15 variables to fix checkpatch warnings.
-> 
-> Thank you in advance to reviewers
-> ~Tree
-> 
-> Tree Davies (15):
->    Staging: rtl8192e: Rename variable pTxTs
->    Staging: rtl8192e: Rename variable BAReq
->    Staging: rtl8192e: Rename variable Delba
->    Staging: rtl8192e: Rename variable TSpec
->    Staging: rtl8192e: Rename variable TxAdmittedBARecord
->    Staging: rtl8192e: Rename variable TxPendingBARecord
->    Staging: rtl8192e: Rename variable pDialogToken
->    Staging: rtl8192e: Rename variable pTsCommonInfo
->    Staging: rtl8192e: Rename variable TxCurSeq
->    Staging: rtl8192e: Rename variable TsAddBaTimer
->    Staging: rtl8192e: Rename variable DelbaParamSet
->    Staging: rtl8192e: Rename variable pBaParamSet
->    Staging: rtl8192e: Rename variable pBaTimeoutVal
->    Staging: rtl8192e: Rename variable pAdmittedBA
->    Staging: rtl8192e: Rename variable TsCommonInfo
-> 
->   drivers/staging/rtl8192e/rtl819x_BAProc.c | 178 +++++++++++-----------
->   drivers/staging/rtl8192e/rtl819x_TS.h     |  12 +-
->   drivers/staging/rtl8192e/rtl819x_TSProc.c |  56 +++----
->   drivers/staging/rtl8192e/rtllib.h         |   2 +-
->   drivers/staging/rtl8192e/rtllib_tx.c      |  22 +--
->   5 files changed, 135 insertions(+), 135 deletions(-)
-> 
+On Mon, Nov 27, 2023 at 1:09=E2=80=AFPM Elad Nachman <enachman@marvell.com>=
+ wrote:
+>
+> From: Elad Nachman <enachman@marvell.com>
+>
+> Add ac5 dts files to the list of maintained Marvell Armada dts files
+>
+> Signed-off-by: Elad Nachman <enachman@marvell.com>
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index b81da7a36a36..6f863a0c3248 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2339,6 +2339,7 @@ F:        arch/arm/boot/dts/marvell/armada*
+>  F:     arch/arm/boot/dts/marvell/kirkwood*
+>  F:     arch/arm/configs/mvebu_*_defconfig
+>  F:     arch/arm/mach-mvebu/
+> +F:     arch/arm64/boot/dts/marvell/ac5*
+>  F:     arch/arm64/boot/dts/marvell/armada*
+>  F:     arch/arm64/boot/dts/marvell/cn913*
 
-Hi Tree,
+$ ls arch/arm64/boot/dts/marvell/
+ac5-98dx25xx.dtsi                    armada-7040.dtsi
+armada-ap810-ap0.dtsi
+ac5-98dx35xx.dtsi                    armada-7040-mochabin.dts
+armada-ap810-ap0-octa-core.dtsi
+ac5-98dx35xx-rd.dts                  armada-70x0.dtsi
+armada-common.dtsi
+armada-371x.dtsi                     armada-8020.dtsi
+armada-cp110.dtsi
+armada-3720-db.dts                   armada-8040-clearfog-gt-8k.dts
+armada-cp115.dtsi
+armada-3720-eDPU.dts                 armada-8040-db.dts
+armada-cp11x.dtsi
+armada-3720-espressobin.dts          armada-8040.dtsi
+cn9130-crb-A.dts
+armada-3720-espressobin.dtsi         armada-8040-mcbin.dts
+cn9130-crb-B.dts
+armada-3720-espressobin-emmc.dts     armada-8040-mcbin.dtsi
+cn9130-crb.dtsi
+armada-3720-espressobin-ultra.dts    armada-8040-mcbin-singleshot.dts
+cn9130-db-B.dts
+armada-3720-espressobin-v7.dts       armada-8040-puzzle-m801.dts
+cn9130-db.dts
+armada-3720-espressobin-v7-emmc.dts  armada-8080-db.dts
+cn9130-db.dtsi
+armada-3720-gl-mv1000.dts            armada-8080.dtsi
+cn9130.dtsi
+armada-3720-turris-mox.dts           armada-80x0.dtsi
+cn9131-db-B.dts
+armada-3720-uDPU.dts                 armada-ap806.dtsi
+cn9131-db.dts
+armada-3720-uDPU.dtsi                armada-ap806-dual.dtsi
+cn9131-db.dtsi
+armada-372x.dtsi                     armada-ap806-quad.dtsi
+cn9132-db-B.dts
+armada-37xx.dtsi                     armada-ap807.dtsi
+cn9132-db.dts
+armada-7020.dtsi                     armada-ap807-quad.dtsi
+cn9132-db.dtsi
+armada-7040-db.dts                   armada-ap80x.dtsi                 Make=
+file
 
-thanks for your patches, those work on hardware well.
+Looks to me like a single entry will do:
 
-I am about to delete the block acknowledgment (ba) from the driver. 
-Reason is that ba is not properly working. The AP seems to try around 
-before it gives up. This is slowing down the connection build up.
+F: arch/arm64/boot/dts/marvell/
 
-My issue is that I need to remove the following parts:
-
-Function rtllib_process_action() that reacts when the AP sends packets 
-with ba.
-
-The following three timers are also part of this functionality
-timer_setup(&pTxTS->ts_add_ba_timer, TsAddBaProcess, 0);
-timer_setup(&pTxTS->tx_pending_ba_record.timer, rtllib_ba_setup_timeout, 0);
-timer_setup(&pTxTS->tx_admitted_ba_record.timer, 
-rtllib_tx_ba_inact_timeout, 0);
-
-And I cannot really remove the ones without the others. So some kind of 
-encirclement is happening.
-
-Just wanted to inform you about what I plan to do.
-
-Have a good day.
-
-Bye Philipp
-
-
-
-
-
-
-
-
-
-
+Rob
