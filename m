@@ -2,208 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC297FA4FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 16:42:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F937FA4FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 16:43:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233946AbjK0Pm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 10:42:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43032 "EHLO
+        id S233512AbjK0PnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 10:43:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231749AbjK0PmZ (ORCPT
+        with ESMTP id S231749AbjK0PnJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 10:42:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CEDA138
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 07:42:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701099750;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=OVf8K+prFpGafX82AZowc/KDxLm5HF1BmxSsG5DRVSQ=;
-        b=anH1NPYL7U7TycdP/KctXLNy5yRcDC19StVoMx8TgDlsUGbpBsUeDxtT+TDBrASmy+fSDE
-        +6bCK+9lsAWL7Z1EsVojhgBdf6uiZqA9V931C8slYUbz/RJtovVlDolJ5IfflPEERr8KtA
-        DNukDsyeKVNkFC3jzGUFW2omjuuP954=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-378-7cN76Lm-PbOYRJZFmmhuSg-1; Mon, 27 Nov 2023 10:42:28 -0500
-X-MC-Unique: 7cN76Lm-PbOYRJZFmmhuSg-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2c89230b1fdso50038851fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 07:42:28 -0800 (PST)
+        Mon, 27 Nov 2023 10:43:09 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B892919A
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 07:43:14 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50aab20e828so6243208e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 07:43:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701099793; x=1701704593; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6eKSI20Q0D7jXzWoo9HzJDMIqRNEtaSE30aXGr8DziA=;
+        b=ZhMJYwXqbKpOvey+XEjM/xgkpO74KdI1XsxanSfnmDMlddavsNGS5UV0NLUV22Qzbz
+         ZwkliyuE0WWS7uWCDK5lu/gp8//0k2PWu2/dYev9CC1TIttFkvjYHVmyzVfP8ezHSHpk
+         ZVM6h/5BUfBCozWFuA8qYXxITNsComji7LSWXCD/ys9cX+XPHlyCA2yHCjVc3ePXMMSZ
+         OWGc0lxCw3dfjtfLaqIGJ8ty12V5L4T4gF2Kmm1T8AvCt+Nrg5bb+UTjPJ0SSw7H37xl
+         j1Y01GAD2cD0g7jLDfU5tMODyELbNTviTqvXu/jzJPWBw2fLA5sBhJQdaWEI/U+Na7qF
+         9clQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701099747; x=1701704547;
-        h=content-transfer-encoding:organization:autocrypt:in-reply-to
-         :content-language:references:cc:to:subject:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=OVf8K+prFpGafX82AZowc/KDxLm5HF1BmxSsG5DRVSQ=;
-        b=ShRZYyHWmNQ6twDLqw6fKoCXKCnMpPEaZA1pzJ+fWop32PDNvMisPSksa6tYP7AkE9
-         AUKvHiI30QPvUeLTrdmyQl+/6VHnS+sR/KmD0aS8eLGhq2HuANRhuWHKkwR65Z9TMPX6
-         9I9a0Gjso+ZyhnRfqN3F/STkgHPjYtSwjxJCRuKNiWQAT+FXBQDoDtofjU8Jalv+1fL5
-         eaaznPMMLGfk8DRU+h0OZfNX8h6IaIsdN1Fwq7/nnFqkuZe1ik88fKJvqXhTT5eOXo3N
-         mpkt0WP811ptKUwP6QY3mIwnhV00zCpYNjTxtLWfRnUPVPRCSinBf76nMvT7fKJf5jM4
-         ZL4w==
-X-Gm-Message-State: AOJu0YwaYP9Au2PL0A/AhhLVGOwLmW6N3dagpdCfDFEuAJZzRE1sv+st
-        BzOR93YEtLAjZ1TmRX/NIfiRXvywnqs8neLOoh3lhovhzniin/ZHITH35R5PdfG06FP6zxrpYYm
-        818tmWVLYywfrYTmxACNKVxj0NHGsCgYz
-X-Received: by 2002:a2e:b54d:0:b0:2c9:9982:69ed with SMTP id a13-20020a2eb54d000000b002c9998269edmr4414733ljn.22.1701099747413;
-        Mon, 27 Nov 2023 07:42:27 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEX1sUPzTB9UIhFtamzt74jbXxZum++CuA+wVkI9DJYiHjAuRNNTiqdmsikyHpS0dTS11u73Q==
-X-Received: by 2002:a2e:b54d:0:b0:2c9:9982:69ed with SMTP id a13-20020a2eb54d000000b002c9998269edmr4414707ljn.22.1701099747001;
-        Mon, 27 Nov 2023 07:42:27 -0800 (PST)
-Received: from ?IPV6:2003:cb:c745:2a00:d74a:a8c5:20b6:3ec3? (p200300cbc7452a00d74aa8c520b63ec3.dip0.t-ipconnect.de. [2003:cb:c745:2a00:d74a:a8c5:20b6:3ec3])
-        by smtp.gmail.com with ESMTPSA id f9-20020a0560001b0900b003143867d2ebsm12380949wrz.63.2023.11.27.07.42.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Nov 2023 07:42:26 -0800 (PST)
-Message-ID: <4ca4a5af-accb-4424-a5fb-e1e561900348@redhat.com>
-Date:   Mon, 27 Nov 2023 16:42:25 +0100
+        d=1e100.net; s=20230601; t=1701099793; x=1701704593;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6eKSI20Q0D7jXzWoo9HzJDMIqRNEtaSE30aXGr8DziA=;
+        b=Pr/Dn7k1PiBZunLHszaGb52DE+TutkhxjTzXFV+c2WuQ5O+UH2o8nTz9wCe4qP7R/5
+         QkepJXYfcOi4l+6yTbvYDZ0F4TOWeb7tr4BOVebyCOBcx2xME9OSq7JhCsipA3PnKbS+
+         GlS9yR8b3wSCfBGu3VFUQIs7ziYRK9ARS6bjYhbrCfVsft8e04baInvXL+WdkdEosV7r
+         7n6ak74ccDUnlaitgpemt1xNBAaPDgPhPf/Kbf6AJ4EXx2hWDQ4+x9Tioej66j/+gS/q
+         LHtHFKpVf9v+hY9cKvMG8KoDYzI7Y4Yqr4qKlOCY2T9btv6N5cJ59Jm7ioBsRtGkMrrJ
+         WqUw==
+X-Gm-Message-State: AOJu0Ywlu5LwWlncMeBFO9iDCA4Uuwny7760kkCO5cT6Fp+G9RXGiWxF
+        pKTM+IgqXxGls5H80Rpappc9iQ==
+X-Google-Smtp-Source: AGHT+IGy3Wqhh/1y9K43w7Cyu6fyQ5q8zbBpGEJRrqy0jjJp9msb/yS9xwFFWICWk19kmr7GKnf8dw==
+X-Received: by 2002:a05:6512:15aa:b0:50b:a823:6213 with SMTP id bp42-20020a05651215aa00b0050ba8236213mr6962935lfb.52.1701099792426;
+        Mon, 27 Nov 2023 07:43:12 -0800 (PST)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id v28-20020ac2559c000000b0050ab86037d8sm1505049lfg.205.2023.11.27.07.43.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 07:43:11 -0800 (PST)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH net-next v9 0/5] Create a binding for the Marvell MV88E6xxx
+ DSA switches
+Date:   Mon, 27 Nov 2023 16:43:03 +0100
+Message-Id: <20231127-marvell-88e6152-wan-led-v9-0-272934e04681@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   David Hildenbrand <david@redhat.com>
-Subject: Re: [RFC V3 PATCH] arm64: mm: swap: save and restore mte tags for
- large folios
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Barry Song <21cnbao@gmail.com>,
-        Steven Price <steven.price@arm.com>
-Cc:     akpm@linux-foundation.org, catalin.marinas@arm.com,
-        will@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mhocko@suse.com, shy828301@gmail.com, v-songbaohua@oppo.com,
-        wangkefeng.wang@huawei.com, willy@infradead.org, xiang@kernel.org,
-        ying.huang@intel.com, yuzhao@google.com
-References: <20231114014313.67232-1-v-songbaohua@oppo.com>
- <864489b3-5d85-4145-b5bb-5d8a74b9b92d@redhat.com>
- <CAGsJ_4wsWzhosZJWegOb8ggoON3KdiH1mO-8mFZd7kWcn6diuw@mail.gmail.com>
- <CAGsJ_4w4VgpO02YUVEn4pbKThg+SszD_bDpBGbKC9d2G90MpGA@mail.gmail.com>
- <8c7f1a2f-57d2-4f20-abb2-394c7980008e@redhat.com>
- <CAGsJ_4zqAehJSY9aAQEKkp9+JvuxtJuF1c7OBCxmaG8ZeEze_Q@mail.gmail.com>
- <e1e6dba5-8702-457e-b149-30b2e43156cf@redhat.com>
- <fb34d312-1049-4932-8f2b-d7f33cfc297c@arm.com>
- <CAGsJ_4zNOCa-bLkBdGXmOAGSZkJQZ0dTe-YWBubkdHmOyOimWg@mail.gmail.com>
- <5de66ff5-b6c8-4ffc-acd9-59aec4604ca4@redhat.com>
- <bab848b8-edd3-4c57-9a96-f17a33e030d0@arm.com>
- <71c4b8b2-512a-4e50-9160-6ee77a5ec0a4@arm.com>
- <CAGsJ_4yoYowJLm+cC8i-HujLcNJKGut+G-NnjRhg2eGkYvXz8Q@mail.gmail.com>
- <679a144a-db47-4d05-bbf7-b6a0514f5ed0@arm.com>
- <c5c82611-3153-4d56-b799-a1df3c953efe@redhat.com>
- <8aa8f095-1840-4a2e-ad06-3f375282ab6a@arm.com>
- <7065bbd3-64b3-4cd6-a2cd-146c556aac66@redhat.com>
- <74596ea2-e7e5-4161-9600-ad1a69b6a6fe@arm.com>
-Content-Language: en-US
-In-Reply-To: <74596ea2-e7e5-4161-9600-ad1a69b6a6fe@arm.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAe5ZGUC/43RTWrDMBAF4KsErauif4266j1KF5I1TgSuHWSjp
+ gTfvYq7qIux6fIxzDfw5k5GzAlH8nK6k4wljWnoa3BPJ9JcfH9GmmLNRDAhOWNAP3wu2HUUAA3
+ Xgn76nnYYa26UDLaNoo2kbl8ztum2yG+kx4n2eJvIe51c0jgN+Ws5Wfgy/9G53NULp4wyy0Xwz
+ oG2zWuXep+H5yGfF7SINaT2IVEh2zaeQTAAym0guYbMPiQrJKGJSrnYBq43kFpD+8UV9YAQWWO
+ sBBlwA+kVJA460o+OEITTgnHt7QYya+igI1Mh56QPzCknldpA9p+QrZAAUw1rnI18A8EvxI++B
+ hXSrD7MKm4cD3+geZ6/Ae/ZyjHIAgAA
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        =?utf-8?q?Marek_Beh=C3=BAn?= <kabel@kernel.org>
+Cc:     Christian Marangi <ansuelsmth@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+X-Mailer: b4 0.12.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The Marvell switches are lacking DT bindings.
 
->>> Are you referring to Steven's suggestion of reading the tag to see if it's
->>> zeros? I think that demonstrates my point that this has to be done per-page and
->>
->> Yes.
-> 
-> OK I'm obviously being thick, because checking a page's tag to see if its zero
-> seems logically equivalent to checking the existing per-page flag, just more
-> expensive. Yes we could make that change but I don't see how it helps solve the
-> real problem at hand. Unless you are also deliberately trying to remove the
-> per-page flag at the same time, as per Matthew's master plan?
+I need proper schema checking to add LED support to the
+Marvell switch. Just how it is, it can't go on like this.
 
-I think a per-folio interface is cleaner and more future-proof, and 
-removing the per-page flag might be a nice side product of that.
+Some Device Tree fixes are included in the series, these
+remove the major and most annoying warnings fallout noise:
+some warnings remain, and these are of more serious nature,
+such as missing phy-mode. They can be applied individually,
+or to the networking tree with the rest of the patches.
 
-Anyhow, just some thoughts from my side if it could be easily/cleanly done.
+Thanks to Andrew Lunn, Vladimir Oltean and Russell King
+for excellent review and feedback!
 
-At least the "easy" part does not seem to be the case, so I'm fine with 
-deferring anything like that for now.
+This latest version employs special compatibles in the
+odd ABI device trees.
 
-[...]
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+Changes in v9:
+- Drop all the per-platform device tree fixes, instead send these
+  separately for Marvell and NXP platform trees to be applied through
+  the SoC tree.
+- This means the bindings will yield robotized warnings. Ignore these,
+  and rely on platform maintainers to deal with the fallout.
+  Patches exists for the majority of the problems, see v8.
+- Link to v8: https://lore.kernel.org/r/20231114-marvell-88e6152-wan-led-v8-0-50688741691b@linaro.org
 
->>
->> We can identify in 1) the subpages by reading the tag from HW,
-> 
-> I don't think this actually works; I'm pretty sure the optimization to clear the
-> tag at the same time as the page clearing only happens for small pages. I don't
-> think this will be done when allocating a THP today. Obviously that could change.
-> 
+Changes in v8:
+- Restore ALL original switch node names in the Turris Mox, not just
+  the top one. Put a comment above each not to change the node name.
+- Add a special compatible for the Turris Mox switches, so that we
+  can apply special rules for these ABI nodes.
+- Add quirks to the bindings to deal with the special node names
+  so we don't get unsolicited warnings about them from the checks.
+  This is done so that people will not come and "fix the DTS files"
+  so they break. We only have serious warnings after this.
+- Add the quirks and updates to the nodes into separate patches
+  for review.
+- Link to v7: https://lore.kernel.org/r/20231024-marvell-88e6152-wan-led-v7-0-2869347697d1@linaro.org
 
-Could be, absolutely no expert. I was primarily on the "It would be 
-possible to reverse this scheme - we could drop the page
-flag and just look at the actual tag storage. If it's all zeros then
-obviously there's no point in storing it." comment from Steven.
+Changes in v7:
+- Fix the elaborate spacing to satisfy yamllint in the
+  ports/ethernet-ports requirement.
+- Link to v6: https://lore.kernel.org/r/20231024-marvell-88e6152-wan-led-v6-0-993ab0949344@linaro.org
 
->> and on 2) by
->> checking the datastructure. For 3), there is nothing to check.
->>
->> On swapout of a large folio:
->>
->> * For 3) we don't do anything
->> * For 2) we don't do anything
->> * For 1) we store all tags that are non-zero (reading all tags) and
->>    transition to 2).
-> 
-> Given a tag architecturally exists for every page even when unused, and we think
-> a folio being partially mte-tagged is the corner case, could you simplify this
-> further and just write out all the tags for the folio and not care if some are
-> not in use?
+Changes in v6:
+- Fix ports/ethernet-ports requirement with proper indenting
+  (hopefully).
+- Link to v5: https://lore.kernel.org/r/20231023-marvell-88e6152-wan-led-v5-0-0e82952015a7@linaro.org
 
-Likely this could be simplified, yes.
+Changes in v5:
+- Consistently rename switch@n to ethernet-switch@n in all cleanup patches
+- Consistently rename ports to ethernet-ports in all cleanup patches
+- Consistently rename all port@n to ethernet-port@n in all cleanup patches
+- Consistently rename all phy@n to ethernet-phy@n in all cleanup patches
+- Restore the nodename on the Turris MOX which has a U-Boot binary using the
+  nodename as ABI, put in a blurb warning about this so no-one else tries
+  to change it in the future.
+- Drop dsa.yaml direct references where we reference dsa.yaml#/$defs/ethernet-ports
+- Replace the conjured MV88E6xxx example by a better one based on imx6qdl
+  plus strictly named nodes and added reset-gpios for a more complete example,
+  and another example using the interrupt controller based on
+  armada-381-netgear-gs110emx.dts
+- Bump lineage to 2008 as Vladimir says the code was developed starting 2008.
+- Link to v4: https://lore.kernel.org/r/20231018-marvell-88e6152-wan-led-v4-0-3ee0c67383be@linaro.org
 
+Changes in v4:
+- Rebase the series on top of Rob's series
+  "dt-bindings: net: Child node schema cleanups" (or the hex numbered
+  ports will not work)
+- Fix up a whitespacing error corrupting v3...
+- Add a new patch making the generic DSA binding require ports or
+  ethernet-ports in the switch node.
+- Drop any corrections of port@a in the patches.
+- Drop oneOf in the compatible enum for mv88e6xxx
+- Use ethernet-switch, ethernet-ports and ethernet-phy in the examples
+- Transclude the dsa.yaml#/$defs/ethernet-ports define for ports
+- Move the DTS and binding fixes first, before the actual bindings,
+  so they apply without (too many) warnings as fallout.
+- Drop stray colon in text.
+- Drop example port in the mveusb binding.
+- Link to v3: https://lore.kernel.org/r/20231016-marvell-88e6152-wan-led-v3-0-38cd449dfb15@linaro.org
+
+Changes in v3:
+- Fix up a related mvusb example in a different binding that
+  the scripts were complaining about.
+- Fix up the wording on internal vs external MDIO buses in the
+  mv88e6xxx binding document.
+- Remove pointless label and put the right rev-mii into the
+  MV88E6060 schema.
+- Link to v2: https://lore.kernel.org/r/20231014-marvell-88e6152-wan-led-v2-0-7fca08b68849@linaro.org
+
+Changes in v2:
+- Break out a separate Marvell MV88E6060 binding file. I stand corrected.
+- Drop the idea to rely on nodename mdio-external for the external
+  MDIO bus, keep the compatible, drop patch for the driver.
+- Fix more Marvell DT mistakes.
+- Fix NXP DT mistakes in a separate patch.
+- Fix Marvell ARM64 mistakes in a separate patch.
+- Link to v1: https://lore.kernel.org/r/20231013-marvell-88e6152-wan-led-v1-0-0712ba99857c@linaro.org
+
+---
+Linus Walleij (5):
+      dt-bindings: net: dsa: Require ports or ethernet-ports
+      dt-bindings: net: mvusb: Fix up DSA example
+      dt-bindings: net: ethernet-switch: Accept special variants
+      dt-bindings: marvell: Rewrite MV88E6xxx in schema
+      dt-bindings: marvell: Add Marvell MV88E6060 DSA schema
+
+ Documentation/devicetree/bindings/net/dsa/dsa.yaml |   6 +
+ .../bindings/net/dsa/marvell,mv88e6060.yaml        |  88 ++++++
+ .../bindings/net/dsa/marvell,mv88e6xxx.yaml        | 337 +++++++++++++++++++++
+ .../devicetree/bindings/net/dsa/marvell.txt        | 109 -------
+ .../devicetree/bindings/net/ethernet-switch.yaml   |  23 +-
+ .../devicetree/bindings/net/marvell,mvusb.yaml     |   7 +-
+ MAINTAINERS                                        |   3 +-
+ 7 files changed, 458 insertions(+), 115 deletions(-)
+---
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+change-id: 20231008-marvell-88e6152-wan-led-88c43b7fd2fd
+
+Best regards,
 -- 
-Cheers,
-
-David / dhildenb
-
+Linus Walleij <linus.walleij@linaro.org>
 
