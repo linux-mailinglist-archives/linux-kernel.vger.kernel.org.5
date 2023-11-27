@@ -2,320 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C8637FADA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 23:42:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42CD37FADA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 23:43:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233582AbjK0WmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 17:42:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36124 "EHLO
+        id S233629AbjK0Wnn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Nov 2023 17:43:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231648AbjK0WmL (ORCPT
+        with ESMTP id S231648AbjK0Wnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 17:42:11 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD63191;
-        Mon, 27 Nov 2023 14:42:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701124937; x=1732660937;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=EL9OSVyrYjPUdtMrgwZBR2eyGtrdMhnTa9tZlQ/698A=;
-  b=DcvTiRIkXWCancvhmcecopMGyrJjQnc8NLeVugiqgjNy6UV+QmcuP1/F
-   TvSBC1rpAqt+PSGflEBhXuc+NQpFpd9TzmXQ7c+lsJeaP+zyOkJKFLXH1
-   7NgdCw2upbFs2bNuIbSwz99K0Sdla0QYBP0Qe2THYDBgVNWd2spoTds6f
-   Gk62ez1Gks2usmcB7ToQ6Ru+ikPvwB6xWD8Cc3tcosh9IzwUNP7tJL/Km
-   GQS36HWyyG8t52BhIjaGpeGKTFfWob/bODPKrteDk/Kz/LmYUsEapdLPI
-   pwjqZzbgBSBONE9it9ey8l+LSsNKYm0Mml5mfPtRo+6Z0loGqin1oiSyr
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="395621007"
-X-IronPort-AV: E=Sophos;i="6.04,232,1695711600"; 
-   d="scan'208";a="395621007"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 14:42:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="891884484"
-X-IronPort-AV: E=Sophos;i="6.04,232,1695711600"; 
-   d="scan'208";a="891884484"
-Received: from avenkat1-mobl.amr.corp.intel.com ([10.213.174.38])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 14:42:15 -0800
-Message-ID: <24ea5fa0d43bcd67f98f9c236e64bddbaec06b07.camel@linux.intel.com>
-Subject: Re: [PATCH v10 14/14] dmaengine: idxd: Add support for device/wq
- defaults
-From:   Tom Zanussi <tom.zanussi@linux.intel.com>
-To:     Dave Jiang <dave.jiang@intel.com>, herbert@gondor.apana.org.au,
-        davem@davemloft.net, fenghua.yu@intel.com, vkoul@kernel.org
-Cc:     tony.luck@intel.com, wajdi.k.feghali@intel.com,
-        james.guilford@intel.com, kanchana.p.sridhar@intel.com,
-        vinodh.gopal@intel.com, giovanni.cabiddu@intel.com, pavel@ucw.cz,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        dmaengine@vger.kernel.org
-Date:   Mon, 27 Nov 2023 16:42:13 -0600
-In-Reply-To: <6d68774a-1f2d-4a9a-b96c-0e9c93655021@intel.com>
-References: <20231127202704.1263376-1-tom.zanussi@linux.intel.com>
-         <20231127202704.1263376-15-tom.zanussi@linux.intel.com>
-         <6d68774a-1f2d-4a9a-b96c-0e9c93655021@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Mon, 27 Nov 2023 17:43:41 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5540137;
+        Mon, 27 Nov 2023 14:43:43 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 2996021923;
+        Mon, 27 Nov 2023 22:43:42 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A69051379A;
+        Mon, 27 Nov 2023 22:43:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id NT+lFZkbZWXsRAAAD6G6ig
+        (envelope-from <neilb@suse.de>); Mon, 27 Nov 2023 22:43:37 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Al Viro" <viro@zeniv.linux.org.uk>
+Cc:     "Christian Brauner" <brauner@kernel.org>,
+        "Jens Axboe" <axboe@kernel.dk>, "Oleg Nesterov" <oleg@redhat.com>,
+        "Chuck Lever" <chuck.lever@oracle.com>,
+        "Jeff Layton" <jlayton@kernel.org>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        "Juri Lelli" <juri.lelli@redhat.com>,
+        "Vincent Guittot" <vincent.guittot@linaro.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH/RFC] core/nfsd: allow kernel threads to use task_work.
+In-reply-to: <20231127223054.GL38156@ZenIV>
+References: <170112272125.7109.6245462722883333440@noble.neil.brown.name>,
+ <20231127223054.GL38156@ZenIV>
+Date:   Tue, 28 Nov 2023 09:43:30 +1100
+Message-id: <170112501017.7109.11367576354770728388@noble.neil.brown.name>
+X-Spamd-Bar: ++++++
+Authentication-Results: smtp-out1.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.de (policy=none);
+        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of neilb@suse.de) smtp.mailfrom=neilb@suse.de
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [6.66 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+         TO_DN_SOME(0.00)[];
+         R_SPF_SOFTFAIL(4.60)[~all:c];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         BAYES_HAM(-0.00)[16.34%];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-0.13)[-0.134];
+         MIME_GOOD(-0.10)[text/plain];
+         RCPT_COUNT_TWELVE(0.00)[13];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         RCVD_TLS_ALL(0.00)[];
+         DMARC_POLICY_SOFTFAIL(0.10)[suse.de : No valid SPF, No valid DKIM,none]
+X-Spam-Score: 6.66
+X-Rspamd-Queue-Id: 2996021923
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-11-27 at 15:14 -0700, Dave Jiang wrote:
->=20
->=20
-> On 11/27/23 13:27, Tom Zanussi wrote:
-> > Add a load_device_defaults() function pointer to struct
-> > idxd_driver_data, which if defined, will be called when an idxd
-> > device
-> > is probed and will allow the idxd device to be configured with
-> > default
-> > values.
-> >=20
-> > The load_device_defaults() function is passed an idxd device to
-> > work
-> > with to set specific device attributes.
-> >=20
-> > Also add a load_device_defaults() implementation IAA devices;
-> > future
-> > patches would add default functions for other device types such as
-> > DSA.
-> >=20
-> > The way idxd device probing works, if the device configuration is
-> > valid at that point e.g. at least one workqueue and engine is
-> > properly
-> > configured then the device will be enabled and ready to go.
-> >=20
-> > The IAA implementation, idxd_load_iaa_device_defaults(), configures
-> > a
-> > single workqueue (wq0) for each device with the following default
-> > values:
-> >=20
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mode=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "dedicated"
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 threshold=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A00
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 size=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A016
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 priority=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A010
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 type=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0IDXD_WQT_KERNEL
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 group=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A00
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 name=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 "iaa_crypto"
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 driver_name=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 "crypto"
-> >=20
-> > Note that this now adds another configuration step for any users
-> > that
-> > want to configure their own devices/workqueus with something
-> > different
-> > in that they'll first need to disable (in the case of IAA) wq0 and
-> > the
-> > device itself before they can set their own attributes and re-
-> > enable,
-> > since they've been already been auto-enabled.=C2=A0 Note also that in
-> > order
-> > for the new configuration to be applied to the deflate-iaa crypto
-> > algorithm the iaa_crypto module needs to unregister the old
-> > version,
-> > which is accomplished by removing the iaa_crypto module, and
-> > re-registering it with the new configuration by reinserting the
-> > iaa_crypto module.
-> >=20
-> > Signed-off-by: Tom Zanussi <tom.zanussi@linux.intel.com>
->=20
-> Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+On Tue, 28 Nov 2023, Al Viro wrote:
+> On Tue, Nov 28, 2023 at 09:05:21AM +1100, NeilBrown wrote:
+> 
+> > A simple way to fix this is to treat nfsd threads like normal processes
+> > for task_work.  Thus the pending files are queued for the thread, and
+> > the same thread finishes the work.
+> > 
+> > Currently KTHREADs are assumed never to call task_work_run().  With this
+> > patch that it still the default but it is implemented by storing the
+> > magic value TASK_WORKS_DISABLED in ->task_works.  If a kthread, such as
+> > nfsd, will call task_work_run() periodically, it sets ->task_works
+> > to NULL to indicate this.
+> 
+> >  		svc_recv(rqstp);
+> >  		validate_process_creds();
+> > +		if (task_work_pending(current))
+> > +			task_work_run();
+> 
+> What locking environment and call chain do you have here?  And what happens if
+> you get something stuck in ->release()?
 
-Thanks, Dave!
+No locking. This is in the top level function of the kthread.
+A ->release function that waits for an NFS filesystem to flush out data
+through a filesystem exported by this nfsd might hit problems.
+But that really requires us nfs-exporting and nfs filesystem which is
+loop-back mounted.  While we do support nfs-reexport and nfs-loop-back
+mounts, I don't think we make any pretence of supporting a combination.
 
-Tom
+Is that the sort of thing you were think of?
 
->=20
-> > ---
-> > =C2=A0drivers/dma/idxd/Makefile=C2=A0=C2=A0 |=C2=A0 2 +-
-> > =C2=A0drivers/dma/idxd/defaults.c | 53
-> > +++++++++++++++++++++++++++++++++++++
-> > =C2=A0drivers/dma/idxd/idxd.h=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 4 +++
-> > =C2=A0drivers/dma/idxd/init.c=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 7 +++++
-> > =C2=A04 files changed, 65 insertions(+), 1 deletion(-)
-> > =C2=A0create mode 100644 drivers/dma/idxd/defaults.c
-> >=20
-> > diff --git a/drivers/dma/idxd/Makefile b/drivers/dma/idxd/Makefile
-> > index c5e679070e46..2b4a0d406e1e 100644
-> > --- a/drivers/dma/idxd/Makefile
-> > +++ b/drivers/dma/idxd/Makefile
-> > @@ -4,7 +4,7 @@ obj-$(CONFIG_INTEL_IDXD_BUS) +=3D idxd_bus.o
-> > =C2=A0idxd_bus-y :=3D bus.o
-> > =C2=A0
-> > =C2=A0obj-$(CONFIG_INTEL_IDXD) +=3D idxd.o
-> > -idxd-y :=3D init.o irq.o device.o sysfs.o submit.o dma.o cdev.o
-> > debugfs.o
-> > +idxd-y :=3D init.o irq.o device.o sysfs.o submit.o dma.o cdev.o
-> > debugfs.o defaults.o
-> > =C2=A0
-> > =C2=A0idxd-$(CONFIG_INTEL_IDXD_PERFMON) +=3D perfmon.o
-> > =C2=A0
-> > diff --git a/drivers/dma/idxd/defaults.c
-> > b/drivers/dma/idxd/defaults.c
-> > new file mode 100644
-> > index 000000000000..a0c9faad8efe
-> > --- /dev/null
-> > +++ b/drivers/dma/idxd/defaults.c
-> > @@ -0,0 +1,53 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/* Copyright(c) 2023 Intel Corporation. All rights rsvd. */
-> > +#include <linux/kernel.h>
-> > +#include "idxd.h"
-> > +
-> > +int idxd_load_iaa_device_defaults(struct idxd_device *idxd)
-> > +{
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct idxd_engine *engine;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct idxd_group *group;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct idxd_wq *wq;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (!test_bit(IDXD_FLAG_CONF=
-IGURABLE, &idxd->flags))
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0return 0;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0wq =3D idxd->wqs[0];
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (wq->state !=3D IDXD_WQ_D=
-ISABLED)
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0return -EPERM;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* set mode to "dedicated" *=
-/
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0set_bit(WQ_FLAG_DEDICATED, &=
-wq->flags);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0wq->threshold =3D 0;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* set size to 16 */
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0wq->size =3D 16;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* set priority to 10 */
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0wq->priority =3D 10;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* set type to "kernel" */
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0wq->type =3D IDXD_WQT_KERNEL=
-;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* set wq group to 0 */
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0group =3D idxd->groups[0];
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0wq->group =3D group;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0group->num_wqs++;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* set name to "iaa_crypto" =
-*/
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0memset(wq->name, 0, WQ_NAME_=
-SIZE + 1);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0strscpy(wq->name, "iaa_crypt=
-o", WQ_NAME_SIZE + 1);
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* set driver_name to "crypt=
-o" */
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0memset(wq->driver_name, 0, D=
-RIVER_NAME_SIZE + 1);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0strscpy(wq->driver_name, "cr=
-ypto", DRIVER_NAME_SIZE + 1);
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0engine =3D idxd->engines[0];
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* set engine group to 0 */
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0engine->group =3D idxd->grou=
-ps[0];
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0engine->group->num_engines++=
-;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return 0;
-> > +}
-> > diff --git a/drivers/dma/idxd/idxd.h b/drivers/dma/idxd/idxd.h
-> > index 62ea21b25906..47de3f93ff1e 100644
-> > --- a/drivers/dma/idxd/idxd.h
-> > +++ b/drivers/dma/idxd/idxd.h
-> > @@ -277,6 +277,8 @@ struct idxd_dma_dev {
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct dma_device dma;
-> > =C2=A0};
-> > =C2=A0
-> > +typedef int (*load_device_defaults_fn_t) (struct idxd_device
-> > *idxd);
-> > +
-> > =C2=A0struct idxd_driver_data {
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0const char *name_prefix=
-;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0enum idxd_type type;
-> > @@ -286,6 +288,7 @@ struct idxd_driver_data {
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int evl_cr_off;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int cr_status_off;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int cr_result_off;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0load_device_defaults_fn_t lo=
-ad_device_defaults;
-> > =C2=A0};
-> > =C2=A0
-> > =C2=A0struct idxd_evl {
-> > @@ -730,6 +733,7 @@ void idxd_unregister_devices(struct idxd_device
-> > *idxd);
-> > =C2=A0void idxd_wqs_quiesce(struct idxd_device *idxd);
-> > =C2=A0bool idxd_queue_int_handle_resubmit(struct idxd_desc *desc);
-> > =C2=A0void multi_u64_to_bmap(unsigned long *bmap, u64 *val, int count);
-> > +int idxd_load_iaa_device_defaults(struct idxd_device *idxd);
-> > =C2=A0
-> > =C2=A0/* device interrupt control */
-> > =C2=A0irqreturn_t idxd_misc_thread(int vec, void *data);
-> > diff --git a/drivers/dma/idxd/init.c b/drivers/dma/idxd/init.c
-> > index 0eb1c827a215..14df1f1347a8 100644
-> > --- a/drivers/dma/idxd/init.c
-> > +++ b/drivers/dma/idxd/init.c
-> > @@ -59,6 +59,7 @@ static struct idxd_driver_data idxd_driver_data[]
-> > =3D {
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0.evl_cr_off =3D offsetof(struct iax_evl_entry, c=
-r),
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0.cr_status_off =3D offsetof(struct
-> > iax_completion_record, status),
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0.cr_result_off =3D offsetof(struct
-> > iax_completion_record, error_code),
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0.load_device_defaults =3D
-> > idxd_load_iaa_device_defaults,
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0},
-> > =C2=A0};
-> > =C2=A0
-> > @@ -745,6 +746,12 @@ static int idxd_pci_probe(struct pci_dev
-> > *pdev, const struct pci_device_id *id)
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0goto err;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> > =C2=A0
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (data->load_device_defaul=
-ts) {
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0rc =3D data->load_device_defaults(idxd);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0if (rc)
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0dev_wa=
-rn(dev, "IDXD loading device defaults
-> > failed\n");
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> > +
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0rc =3D idxd_register_de=
-vices(idxd);
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (rc) {
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0dev_err(dev, "IDXD sysfs setup failed\n");
+> 
+> >  
+> >  	p->pdeath_signal = 0;
+> > -	p->task_works = NULL;
+> > +	p->task_works = args->kthread ? TASK_WORKS_DISABLED : NULL;
+> 
+> Umm... why not have them set (by helper in kernel/task_work.c) to
+> &work_exited?  Then the task_work_run parts wouldn't be needed at all...
+> 
+
+I hadn't tried to understand what work_exited was for - but now I see
+that its purpose is precisely to block further work from being queued -
+exactly what I need.
+Thanks - I make that change for a v2.
+
+I've realised that I'll also need to change the flush_delayed_fput() in
+fsd_file_close_inode_sync() to task_work_run().
+
+Thanks,
+NeilBrown
+
 
