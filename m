@@ -2,103 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 933C97F9CAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 10:32:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3DE57F9CAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 10:33:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232818AbjK0JcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 04:32:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58602 "EHLO
+        id S232819AbjK0Jdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 04:33:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbjK0JcV (ORCPT
+        with ESMTP id S232797AbjK0Jdp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 04:32:21 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B844010F;
-        Mon, 27 Nov 2023 01:32:25 -0800 (PST)
-Received: from [192.168.88.20] (91-158-149-209.elisa-laajakaista.fi [91.158.149.209])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A7B1E512;
-        Mon, 27 Nov 2023 10:31:48 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1701077509;
-        bh=jhf4KXoptT0XH2cqzSg3CMZgZ/yFJmm/cEK7xdgCBKU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=pCCYnJpgFm2rvGOiyntRLLaeiKi2t+G5R5+aw/zI9DOe4TjSLrAXBuqWH9s7nzm9i
-         qCvUBaeZvrZM8SK6tqt3eqB/1MQ0V/bt5SMD7GTJkbHuvUOXyw9WT/3CALx3bilW+H
-         9uM8gETJXJkOyEYa07PIGR8tNB6nF29Hc1QC0qqY=
-Message-ID: <fea7e8a9-385a-4a51-8f66-4e92e14684ea@ideasonboard.com>
-Date:   Mon, 27 Nov 2023 11:32:19 +0200
+        Mon, 27 Nov 2023 04:33:45 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643E110F;
+        Mon, 27 Nov 2023 01:33:51 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0652B21B08;
+        Mon, 27 Nov 2023 09:33:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1701077630; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wT+MufMGEB0ufjSt00Zd8HTGo5TcuBRHX37P346pxcM=;
+        b=ZnzujSEbax23GqstRnJMfugfRQIVcnioLid6dLybj07wx9hjP/41wInCr4eFCaA0ysgQ2u
+        2+m4YnrwfxksKjvo8a/WrfxC+BfgIIHHf8qZ00cON1a9Wr9jnRxDYseMou3Vy+3CjQhEoS
+        J7kFa8LNWBSIXVkHPqSh0ulE+SrFXak=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E7ED51379A;
+        Mon, 27 Nov 2023 09:33:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id 7kaON31iZGX6QgAAD6G6ig
+        (envelope-from <mhocko@suse.com>); Mon, 27 Nov 2023 09:33:49 +0000
+Date:   Mon, 27 Nov 2023 10:33:49 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc:     rostedt@goodmis.org, mhiramat@kernel.org, hannes@cmpxchg.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, akpm@linux-foundation.org,
+        kernel@sberdevices.ru, rockosov@gmail.com, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] mm: memcg: introduce new event to trace
+ shrink_memcg
+Message-ID: <ZWRifQgRR0570oDY@tiehlicka>
+References: <20231123193937.11628-1-ddrokosov@salutedevices.com>
+ <20231123193937.11628-3-ddrokosov@salutedevices.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/2] Add DSS support for TI AM62A7 SoC
-To:     Aradhya Bhatia <a-bhatia1@ti.com>, Jyri Sarha <jyri.sarha@iki.fi>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     DRI Development List <dri-devel@lists.freedesktop.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Devarsh Thakkar <devarsht@ti.com>,
-        Jayesh Choudhary <j-choudhary@ti.com>,
-        Jai Luthra <j-luthra@ti.com>
-References: <20231108171619.978438-1-a-bhatia1@ti.com>
-Content-Language: en-US
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20231108171619.978438-1-a-bhatia1@ti.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231123193937.11628-3-ddrokosov@salutedevices.com>
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Score: 4.32
+X-Spamd-Result: default: False [4.32 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_SPAM(5.10)[100.00%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         RCVD_COUNT_THREE(0.00)[3];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         NEURAL_HAM_SHORT(-0.18)[-0.925];
+         RCPT_COUNT_TWELVE(0.00)[14];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         FREEMAIL_CC(0.00)[goodmis.org,kernel.org,cmpxchg.org,linux.dev,google.com,linux-foundation.org,sberdevices.ru,gmail.com,vger.kernel.org,kvack.org];
+         RCVD_TLS_ALL(0.00)[]
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -106,59 +90,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu 23-11-23 22:39:37, Dmitry Rokosov wrote:
+> The shrink_memcg flow plays a crucial role in memcg reclamation.
+> Currently, it is not possible to trace this point from non-direct
+> reclaim paths. However, direct reclaim has its own tracepoint, so there
+> is no issue there. In certain cases, when debugging memcg pressure,
+> developers may need to identify all potential requests for memcg
+> reclamation including kswapd(). The patchset introduces the tracepoints
+> mm_vmscan_memcg_shrink_{begin|end}() to address this problem.
+> 
+> Example of output in the kswapd context (non-direct reclaim):
+>     kswapd0-39      [001] .....   240.356378: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+>     kswapd0-39      [001] .....   240.356396: mm_vmscan_memcg_shrink_end: nr_reclaimed=0 memcg=16
+>     kswapd0-39      [001] .....   240.356420: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+>     kswapd0-39      [001] .....   240.356454: mm_vmscan_memcg_shrink_end: nr_reclaimed=1 memcg=16
+>     kswapd0-39      [001] .....   240.356479: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+>     kswapd0-39      [001] .....   240.356506: mm_vmscan_memcg_shrink_end: nr_reclaimed=4 memcg=16
+>     kswapd0-39      [001] .....   240.356525: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+>     kswapd0-39      [001] .....   240.356593: mm_vmscan_memcg_shrink_end: nr_reclaimed=11 memcg=16
+>     kswapd0-39      [001] .....   240.356614: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+>     kswapd0-39      [001] .....   240.356738: mm_vmscan_memcg_shrink_end: nr_reclaimed=25 memcg=16
+>     kswapd0-39      [001] .....   240.356790: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+>     kswapd0-39      [001] .....   240.357125: mm_vmscan_memcg_shrink_end: nr_reclaimed=53 memcg=16
 
-On 08/11/2023 19:16, Aradhya Bhatia wrote:
-> This patch series adds a new compatible for the Display SubSystem (DSS)
-> controller on TI's AM62A7 SoC. It further adds the required support, for
-> the same, in the tidss driver.
-> 
-> The DSS controller is similar to the recently added AM625 DSS, with the
-> key difference being the absence of VP1 output on the SoC. The VP1 in
-> AM62A7 DSS is tied off and cannot be used, unlike in AM625, where the
-> VP1 was connected to 2 OLDI TXes. The video pipeline that corresponds to
-> VP1 still exists and can be used to overlay planes on the VP2's primary
-> plane. This can be done using the overlay managers inside the SoC.
-> Moreover, DSS VP2 can output Full-HD RGB888 DPI video signals.
-> 
-> I have tested these patches on AM62A7 SK-EVM, which converts DPI signals
-> to HDMI on the platform using the Sil9022A HDMI transmitter. All the
-> patches, required to enable display on AM62A7-SK, can be found on my
-> github fork[0] in the branch "next_am62a-v3".
-> 
-> Regards
-> Aradhya
-> 
-> [0]: https://github.com/aradhya07/linux-ab/tree/next_am62a-v3
-> 
-> Change Log:
-> V2 -> V3:
->    - Add Krzysztof Kozlowski's R-b in patch 1/2.
->    - Add new DISPC_VP_TIED_OFF for tied-off video-ports in patch 2/2.
-> 
-> V1 -> V2:
->    - Correctly sort DISPC_AM62A7 macro after DISPC_AM625 in patch 2/2.
-> 
-> Previous Versions:
-> V1: https://lore.kernel.org/all/20230818131750.4779-1-a-bhatia1@ti.com/
-> V2: https://lore.kernel.org/all/20230818142124.8561-1-a-bhatia1@ti.com/
-> 
-> Aradhya Bhatia (2):
->    dt-bindings: display: ti: Add support for am62a7 dss
->    drivers/tidss: Add support for AM62A7 DSS
-> 
->   .../bindings/display/ti/ti,am65x-dss.yaml     | 14 +++++
->   drivers/gpu/drm/tidss/tidss_dispc.c           | 59 +++++++++++++++++++
->   drivers/gpu/drm/tidss/tidss_dispc.h           |  3 +
->   drivers/gpu/drm/tidss/tidss_drv.c             |  1 +
->   4 files changed, 77 insertions(+)
-> 
-> 
-> base-commit: 2220f68f4504aa1ccce0fac721ccdb301e9da32f
+In the previous version I have asked why do we need this specific
+tracepoint when we already do have trace_mm_vmscan_lru_shrink_{in}active
+which already give you a very good insight. That includes the number of
+reclaimed pages but also more. I do see that we do not include memcg id
+of the reclaimed LRU, but that shouldn't be a big problem to add, no?
 
-For the series:
-
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-
-  Tomi
-
+-- 
+Michal Hocko
+SUSE Labs
