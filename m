@@ -2,152 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 393AD7FA115
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 14:28:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A907FA118
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 14:29:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233294AbjK0N2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 08:28:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59298 "EHLO
+        id S233218AbjK0N24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 08:28:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233247AbjK0N14 (ORCPT
+        with ESMTP id S233190AbjK0N2x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 08:27:56 -0500
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5561CD4C
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 05:28:01 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:8c77:3b3e:e51f:98d2])
-        by michel.telenet-ops.be with bizsmtp
-        id FRTx2B00v1wWQKr06RTyq0; Mon, 27 Nov 2023 14:27:58 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1r7beI-00ACfK-BU
-        for linux-kernel@vger.kernel.org;
-        Mon, 27 Nov 2023 14:27:57 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1r7beX-008Mqg-PF
-        for linux-kernel@vger.kernel.org;
-        Mon, 27 Nov 2023 14:27:57 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-kernel@vger.kernel.org
-Subject: Build regressions/improvements in v6.7-rc3
-Date:   Mon, 27 Nov 2023 14:27:57 +0100
-Message-Id: <20231127132757.1994447-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <CAHk-=wj1q-Ek=VTzcKT42q8QJqYfmEzDvu-wpCc_oSERq+naWg@mail.gmail.com>
-References: <CAHk-=wj1q-Ek=VTzcKT42q8QJqYfmEzDvu-wpCc_oSERq+naWg@mail.gmail.com>
+        Mon, 27 Nov 2023 08:28:53 -0500
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF24CAA
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 05:28:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1701091738;
+        bh=eA/Ebz+NfzTlrh+9vkBwg8LcxLGPp/UbUBh8p02oCwU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=YsJiiOuzAJRQsxju0pHZ+mnHUHZ4BwE2N1WyS3xLcuAAusgZzlGo8p/1rwJx8A4Ea
+         4eJTVAtuMUREMyv59zAEegOMWQWg0yLbNaySDKIXqBpf1L6BMcmlwfdqCWe6nymeb4
+         J3r/jkDzWa9qggLNrQs73W8xpotSRulMP+IDOUVhmzbIkUf6idZkVexDaypYDUXmrY
+         uyhMx/4eCREw9f2vkVtlVZOh8W6bgljQYrLG7opnUYJhnWUV6zcQ47U6v88FUd8oFx
+         QRWQBYB6XvuWE1AA08PlIUPyIqeM4HhzEfy5w4VdF+aNIPgb/1ZILu7po0jPxC13ne
+         o8slyvWf88+0A==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4Sf5yf322qz1dXq;
+        Mon, 27 Nov 2023 08:28:58 -0500 (EST)
+Message-ID: <91ab0210-07f9-42c4-af7f-a98799250cf7@efficios.com>
+Date:   Mon, 27 Nov 2023 08:28:59 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] membarrier: riscv: Provide core serializing command
+Content-Language: en-US
+To:     Andrea Parri <parri.andrea@gmail.com>, paulmck@kernel.org,
+        palmer@dabbelt.com, paul.walmsley@sifive.com, aou@eecs.berkeley.edu
+Cc:     mmaas@google.com, hboehm@google.com, striker@us.ibm.com,
+        charlie@rivosinc.com, rehn@rivosinc.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231127103235.28442-1-parri.andrea@gmail.com>
+ <20231127103235.28442-3-parri.andrea@gmail.com>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20231127103235.28442-3-parri.andrea@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Below is the list of build error/warning regressions/improvements in
-v6.7-rc3[1] compared to v6.6[2].
+On 2023-11-27 05:32, Andrea Parri wrote:
+> RISC-V uses xRET instructions on return from interrupt and to go back
+> to user-space; the xRET instruction is not core serializing.
+> 
+> Use FENCE.I for providing core serialization as follows:
+> 
+>   - by calling sync_core_before_usermode() on return from interrupt (cf.
+>     ipi_sync_core()),
+> 
+>   - via switch_mm() and sync_core_before_usermode() (respectively, for
+>     uthread->uthread and kthread->uthread transitions) to go back to
+>     user-space.
+> 
+> On RISC-V, the serialization in switch_mm() is activated by resetting
+> the icache_stale_mask of the mm at prepare_sync_core_cmd().
+> 
+> Signed-off-by: Andrea Parri <parri.andrea@gmail.com>
+> Suggested-by: Palmer Dabbelt <palmer@dabbelt.com>
+> ---
 
-Summarized:
-  - build errors: +16/-10
-  - build warnings: +24/-10
+[...]
 
-JFYI, when comparing v6.7-rc3[1] to v6.7-rc2[3], the summaries are:
-  - build errors: +0/-15
-  - build warnings: +0/-2
+> +
+> +#ifdef CONFIG_SMP
+> +/*
+> + * Ensure the next switch_mm() on every CPU issues a core serializing
+> + * instruction for the given @mm.
+> + */
+> +static inline void prepare_sync_core_cmd(struct mm_struct *mm)
+> +{
+> +	cpumask_setall(&mm->context.icache_stale_mask);
 
-Happy fixing! ;-)
+I am concerned about the possibility that this change lacks two barriers in the
+following scenario:
 
-Thanks to the linux-next team for providing the build service.
+On a transition from uthread -> uthread on [CPU 0], from a thread belonging to
+another mm to a thread belonging to the mm [!mm -> mm] for which a concurrent
+membarrier sync-core is done on [CPU 1]:
 
-[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/2cc14f52aeb78ce3f29677c2de1f06c0e91471ab/ (all 239 configs)
-[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/ffc253263a1375a65fa6c9f62a893e9767fbebfa/ (all 239 configs)
-[3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/98b1cc82c4affc16f5598d4fa14b1858671b2263/ (all 239 configs)
+- [CPU 1] sets all bits in the mm icache_stale_mask [A]. There are no barriers
+   associated with these stores.
 
+- [CPU 0] store to rq->curr [B] (by the scheduler) vs [CPU 1] loads rq->curr [C]
+   within membarrier to decide if the IPI should be skipped. Let's say CPU 1 observes
+   cpu_rq(0)->curr->mm != mm, so it skips the IPI.
 
-*** ERRORS ***
+- This means membarrier relies on switch_mm() to issue the sync-core.
 
-16 error regressions:
-  + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_654' declared with attribute error: FIELD_PREP: value too large for the field:  => 435:38
-  + {standard input}: Error: displacement to undefined symbol .L100 overflows 8-bit field :  => 588
-  + {standard input}: Error: displacement to undefined symbol .L104 overflows 8-bit field :  => 588
-  + {standard input}: Error: displacement to undefined symbol .L134 overflows 8-bit field :  => 598
-  + {standard input}: Error: displacement to undefined symbol .L72 overflows 12-bit field:  => 589
-  + {standard input}: Error: displacement to undefined symbol .L73 overflows 8-bit field :  => 580
-  + {standard input}: Error: displacement to undefined symbol .L75 overflows 12-bit field:  => 589, 586, 606
-  + {standard input}: Error: displacement to undefined symbol .L76 overflows 8-bit field :  => 580, 577
-  + {standard input}: Error: displacement to undefined symbol .L78 overflows 8-bit field :  => 610
-  + {standard input}: Error: displacement to undefined symbol .L80 overflows 8-bit field :  => 607, 601
-  + {standard input}: Error: displacement to undefined symbol .L81 overflows 8-bit field : 606 => 610, 604
-  + {standard input}: Error: displacement to undefined symbol .L96 overflows 12-bit field:  => 602
-  + {standard input}: Error: displacement to undefined symbol .L98 overflows 12-bit field:  => 602
-  + {standard input}: Error: invalid operands for opcode:  => 612
-  + {standard input}: Error: missing operand:  => 612
-  + {standard input}: Error: pcrel too far: 574, 577, 595, 601, 598, 604 => 593, 590, 596, 610, 572, 569, 599
+- [CPU 0] switch_mm() loads [D] the icache_stale_mask. If the bit is zero, switch_mm()
+   may incorrectly skip the sync-core.
 
-10 error improvements:
-  - error: modpost: ".L872" [drivers/mtd/nand/raw/nand.ko] undefined!: N/A => 
-  - {standard input}: Error: displacement to undefined symbol .L101 overflows 12-bit field: 607 => 
-  - {standard input}: Error: displacement to undefined symbol .L103 overflows 8-bit field : 593 => 
-  - {standard input}: Error: displacement to undefined symbol .L107 overflows 8-bit field : 590 => 
-  - {standard input}: Error: displacement to undefined symbol .L140 overflows 8-bit field : 603 => 
-  - {standard input}: Error: displacement to undefined symbol .L149 overflows 8-bit field : 606 => 
-  - {standard input}: Error: displacement to undefined symbol .L73 overflows 12-bit field: 594 => 
-  - {standard input}: Error: displacement to undefined symbol .L74 overflows 8-bit field : 585 => 
-  - {standard input}: Error: displacement to undefined symbol .L76 overflows 12-bit field: 591 => 
-  - {standard input}: Error: unknown pseudo-op: `.': 609 => 
+AFAIU, [C] can be reordered before [A] because there is no barrier between those
+operations within membarrier. I suspect it can cause the switch_mm() code to skip
+a needed sync-core.
 
+AFAIU, [D] can be reordered before [B] because there is no documented barrier
+between those operations within the scheduler, which can also cause switch_mm()
+to skip a needed sync-core.
 
-*** WARNINGS ***
+We possibly have a similar scenario for uthread->uthread when the scheduler
+switches between mm -> !mm.
 
-24 warning regressions:
-  + modpost: WARNING: modpost: "__ashldi3" [fs/bcachefs/bcachefs.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__lshrdi3" [fs/bcachefs/bcachefs.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__ndelay" [drivers/iio/resolver/ad2s1210.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/char/hw_random/meson-rng.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/clk/sifive/sifive-prci.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/extcon/extcon-rtk-type-c.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/iio/adc/mcp3564.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/media/i2c/mt9m114.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/media/platform/nuvoton/npcm-video.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/rtc/rtc-imxdi.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/rtc/rtc-ssd202d.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/usb/typec/tipd/tps6598x.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "empty_zero_page" [fs/bcachefs/bcachefs.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0x110 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0x14 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0x30 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0x4c (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0x68 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0x84 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0xa0 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0xbc (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0xd8 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
-  + modpost: WARNING: modpost: drivers/net/ethernet/intel/ice/ice: section mismatch in reference: ice_adv_lnk_speed_maps+0xf4 (section: .data) -> ice_adv_lnk_speed_200000 (section: .init.rodata):  => N/A
-  + modpost: WARNING: modpost: vmlinux: section mismatch in reference: __trace_event_discard_commit+0xe4 (section: .text.unlikely) -> initcall_level_names (section: .init.data):  => N/A
+One way to fix this would be to add the following barriers:
 
-10 warning improvements:
-  - modpost: WARNING: modpost: "__ashldi3" [drivers/net/ethernet/mellanox/mlxsw/mlxsw_core.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__lshrdi3" [drivers/net/ethernet/mellanox/mlxsw/mlxsw_core.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__lshrdi3" [drivers/thunderbolt/thunderbolt.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__udelay" [drivers/media/platform/cadence/cdns-csi2rx.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__udelay" [drivers/phy/realtek/phy-rtk-usb2.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__udelay" [drivers/phy/realtek/phy-rtk-usb3.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__udelay" [drivers/staging/iio/resolver/ad2s1210.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__udelay" [drivers/staging/qlge/qlge.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__udelay" [drivers/staging/rtl8192u/r8192u_usb.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: vmlinux: section mismatch in reference: __trace_event_discard_commit+0xe0 (section: .text.unlikely) -> initcall_level_names (section: .init.data): N/A => 
+- A smp_mb() between [A] and [C], possibly just after cpumask_setall() in
+   prepare_sync_core_cmd(), with comments detailing the ordering it guarantees,
+- A smp_mb() between [B] and [D], possibly just before cpumask_test_cpu() in
+   flush_icache_deferred(), with appropriate comments.
 
-Gr{oetje,eeting}s,
+Am I missing something ?
 
-						Geert
+Thanks,
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Mathieu
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+> +}
+> +#else
+> +static inline void prepare_sync_core_cmd(struct mm_struct *mm)
+> +{
+> +}
+> +#endif /* CONFIG_SMP */
+> +
+> +#endif /* _ASM_RISCV_SYNC_CORE_H */
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
