@@ -2,81 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 781467FA79A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:09:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F208A7FA7B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:11:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343495AbjK0RJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 12:09:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56594 "EHLO
+        id S234063AbjK0RK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 12:10:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234700AbjK0RJ0 (ORCPT
+        with ESMTP id S234684AbjK0RKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 12:09:26 -0500
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E981010F6
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 09:09:31 -0800 (PST)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96.2)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1r7f6n-000892-22;
-        Mon, 27 Nov 2023 17:09:22 +0000
-Date:   Mon, 27 Nov 2023 17:09:14 +0000
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     John Crispin <john@phrozen.org>
-Subject: [PATCH] ubi: don't decrease ubi->ref_count on detach error
-Message-ID: <9857609999c5b7196417474938a7a09892cd1612.1701104870.git.daniel@makrotopia.org>
+        Mon, 27 Nov 2023 12:10:31 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C4B26A2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 09:10:19 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D66DAC433C7;
+        Mon, 27 Nov 2023 17:10:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701105019;
+        bh=4pNVkXsiUaBtYFLdxjUUYPf4B8uYbv15Pz+1txLQMn4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=EbLnZsQE2pr2I9TdOPXxdV/+Tzcz4G3Y8yrmEiUyuSMyM3OH2HnOETakq8wXyxR2K
+         mt32ZuiJWhHqnqhNpwFPEju9ePfsHb8Gbf+COIyK9vzRkw60ZVorsf8L7Jtn307weO
+         G6oDahmMQidYS0UL3CJHWdfvIW3lJqDE6ajDVejyYNBXiKcLd2rBCD99bzmPPSOkKD
+         Vos2bk/3BpJVARfWj/ftsE8lm8DvsAI74xYlu3geIugdRPSEd7PS4dr/hMDatITxoW
+         3oC3smZZExjhnmRknEJx+xA3MG1Vy78F6GT1iHxp5BBE26P42v3MO3yPOc7UaC/Ob2
+         31EB9Xz7TUWaA==
+Date:   Mon, 27 Nov 2023 18:10:13 +0100
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL for v6.7-rc3] media fixes
+Message-ID: <20231127181013.7fdc3484@coco.lan>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If attempting to detach a UBI device while it is still busy, detaching
-is refused. However, the reference counter is still being decreased
-despite the error. Rework detach function to only decrease the refcnt
-once all conditions for detachment are met.
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
 
-Fixes: cdfa788acd13 ("UBI: prepare attach and detach functions")
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
- drivers/mtd/ubi/build.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 7d4ff1193db6f..f47987ee9a31b 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -1099,16 +1099,16 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
- 
- 	spin_lock(&ubi_devices_lock);
- 	put_device(&ubi->dev);
--	ubi->ref_count -= 1;
--	if (ubi->ref_count) {
-+	if (ubi->ref_count > 1) {
- 		if (!anyway) {
- 			spin_unlock(&ubi_devices_lock);
- 			return -EBUSY;
- 		}
- 		/* This may only happen if there is a bug */
- 		ubi_err(ubi, "%s reference count %d, destroy anyway",
--			ubi->ubi_name, ubi->ref_count);
-+			ubi->ubi_name, ubi->ref_count - 1);
- 	}
-+	ubi->ref_count -= 1;
- 	ubi_devices[ubi_num] = NULL;
- 	spin_unlock(&ubi_devices_lock);
- 
--- 
-2.43.0
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/me=
+dia/v6.7-2
+
+for you to fetch changes up to 32138be394e5d32c095a413949e6ab4875b2aec0:
+
+  Merge tag 'media-renesas-fixes-20231113' of git://git.kernel.org/pub/scm/=
+linux/kernel/git/pinchartl/linux.git (2023-11-16 14:28:44 +0100)
+
+----------------------------------------------------------------
+media fixes for v6.7-rc3
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      media: pci: mgb4: add COMMON_CLK dependency
+
+Dan Carpenter (1):
+      media: v4l2-subdev: Fix a 64bit bug
+
+Hans Verkuil (1):
+      Merge tag 'media-renesas-fixes-20231113' of git://git.kernel.org/pub/=
+scm/linux/kernel/git/pinchartl/linux.git
+
+Laurent Pinchart (1):
+      media: vsp1: Remove unbalanced .s_stream(0) calls
+
+Martin T=C5=AFma (1):
+      media: mgb4: Added support for T200 card variant
+
+ drivers/media/pci/mgb4/Kconfig                  |  1 +
+ drivers/media/pci/mgb4/mgb4_core.c              | 20 ++++++++++++-----
+ drivers/media/platform/renesas/vsp1/vsp1_pipe.c |  2 +-
+ drivers/media/platform/renesas/vsp1/vsp1_rpf.c  | 10 +--------
+ drivers/media/platform/renesas/vsp1/vsp1_rwpf.c |  8 +++++--
+ drivers/media/platform/renesas/vsp1/vsp1_rwpf.h |  4 +++-
+ drivers/media/platform/renesas/vsp1/vsp1_wpf.c  | 29 +++------------------=
+----
+ include/uapi/linux/v4l2-subdev.h                |  2 +-
+ 8 files changed, 31 insertions(+), 45 deletions(-)
+
