@@ -2,128 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 098837FAAF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 21:06:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C07C37FAAFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 21:08:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232860AbjK0UF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 15:05:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47752 "EHLO
+        id S232902AbjK0UHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 15:07:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232553AbjK0UFv (ORCPT
+        with ESMTP id S229527AbjK0UHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 15:05:51 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2447D60;
-        Mon, 27 Nov 2023 12:05:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701115553; x=1732651553;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=sLfmFDfnARUkdYgWbja6UI634BRfOfcrqLDCDQVh0CY=;
-  b=emmHap0EActmNdPVR5ghUGPtJj/FAz5K9eLsMxbu5AeQ1vxWpNuxis6E
-   FtzcOYj0E1sBV6MV1pO27uRuwCzuZdY5pCXns1Cz3t5tM/elFKviEDvU7
-   OX0cHqNSB0vp5k0Q6A50AH1seVSda6jumRwhDl3FtSl2/dLEpj7c1WdAC
-   Zqhdz/H/v/gOa7FJTp4ZltIorYOHUDnhw1ldhf3kTd6M0M5fnmj5N0HLw
-   4sXANJdZDOiafXhndqbKJlaJffr3Pdtys2MFDPLPt9o5hzS4NpWrHN1Dc
-   T2uDgiktUFaA2bLnun+JzjQVMvYpYJR1lKmp+Ke6Kv+IQcxPm/PafizC4
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="383165225"
-X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
-   d="scan'208";a="383165225"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 12:05:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
-   d="scan'208";a="16707389"
-Received: from jdmart2-mobl1.amr.corp.intel.com (HELO [10.212.214.63]) ([10.212.214.63])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 12:05:51 -0800
-Message-ID: <4ca2f6c1-97a7-4992-b01f-60341f6749ff@intel.com>
-Date:   Mon, 27 Nov 2023 12:05:51 -0800
+        Mon, 27 Nov 2023 15:07:52 -0500
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [81.169.146.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52AA5C2;
+        Mon, 27 Nov 2023 12:07:56 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1701115655; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=j9Dnl2feQikME50AveMe2VIAx+6WIxyk5Llq+7xwrjbq9aMuX3z7kdJAXfMxwW1KtC
+    CAVylr5ngDTnNNO2xjhpt79kSn6boZ/0dUHzRMWC31behifoXmSJyjGgoLtyQ0gCyvcs
+    Vv+5Bn2ealkVw+E9A121ocxqwwsOYPI0at8y+S26ookxj5w1WHW3wCQv+iKgdi/I7rF4
+    fNH2loc48rcDq2gM9wv7TDO/GqGCsQcZqBCzTztGZC+mPPHg/NbD8oM/slg6hTGGd9Pe
+    QXuaLTsjdAFi2jxtd/+gRAjcIKYBB7tfTl8X1hkNFVjVK6FLLCtUw9BTxOJHUqruwyhd
+    j91w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1701115655;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=v/YEJb75BXKWSsirkyffSVuJJ2grcB36hXol/hZ9KLk=;
+    b=ZUgtJtWVyz1PjQtKX6lm0GUT9hBwESh1E5gah98jsmbEc7ehf0xhPVP1G19nLczlBF
+    3jPVGJYJJF1NDEizh8WNKW06potRqC4tw1XH4UzPs28c709Ed9DO8RBdlypTtWP+e4yP
+    X8oeacDrZoiZ0hZWRpJIG54WuKI7/M3wUirPstf4s1m5K9j3R7E5gRRjjUd/QfXzoSMO
+    At7X/39SC+s9mVikv39qV7LmILmvqpZRi46brLanKwlc0BYh25SszAjD8pD5ma1MYI67
+    2BbnTl0m1TfTEn4HTXn2LT18a9rwqvFU3KyH3X7CWWZCmPRAD6oeA9s14roqpOU0quJQ
+    IR2A==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1701115655;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=v/YEJb75BXKWSsirkyffSVuJJ2grcB36hXol/hZ9KLk=;
+    b=dRxXjHWOUI2KreqKJg9Mf2I/iqUZv7koheEFKJpWNrOs7lAldQgkxmEXgXLSJBlJbL
+    cYsWaSoPlQpU4yQl0adBeOr7TcaKFL3qUjJ7LTw7LX80tr4o0ak3HBUtJIr/JDKpTAM2
+    a0oCh563ChFQHR+f/yV8iUrYBen9q/2DPbIUwtRUrT0j8aQT6WLjsJINGtOr35Y4NwtR
+    0843PRDOC9GGb4brb4XmP0NkbNAGgXqBP6j8fWh/clczSOhNLGxdioh4tu44NSRCI4Bv
+    h7+YHuHM73gsEt+HToEejFcWMx7a1hpBNxYhxDiCaxJWxKSj3oAGzz79TjFZ8aU2HV55
+    8Xqg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1701115655;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=v/YEJb75BXKWSsirkyffSVuJJ2grcB36hXol/hZ9KLk=;
+    b=wMD+7x0VImS6FeN3bgL/Mo5n0Z4sHlIqS2YxbdSBRy6fgGL2ul2mfpAM10fSiQvVGr
+    6mQoRDwJA0e0TXX+TgDw==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA8paF1A=="
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 49.9.1 DYNA|AUTH)
+    with ESMTPSA id t3efe7zARK7XjVD
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Mon, 27 Nov 2023 21:07:33 +0100 (CET)
+Date:   Mon, 27 Nov 2023 21:07:28 +0100
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Luca Weiss <luca@z3ntu.xyz>
+Cc:     Loic Poulain <loic.poulain@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kalle Valo <kvalo@kernel.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wcn36xx@lists.infradead.org, linux-wireless@vger.kernel.org
+Subject: Re: [PATCH 1/4] dt-bindings: remoteproc: qcom: wcnss: Add WCN3680B
+ compatible
+Message-ID: <ZWT3APJlNQaKVyJU@gerhold.net>
+References: <20231015-fp3-wcnss-v1-0-1b311335e931@z3ntu.xyz>
+ <CAMZdPi-S2_UQO-rD38-thwta-YgH3W78Ecd1Du7Q_US=J7k0ew@mail.gmail.com>
+ <ZS1MTAHq6GLW6RAK@gerhold.net>
+ <1868698.tdWV9SEqCh@z3ntu.xyz>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v15 17/23] x86/kexec: Flush cache of TDX private memory
-Content-Language: en-US
-To:     "Huang, Kai" <kai.huang@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "bagasdotme@gmail.com" <bagasdotme@gmail.com>,
-        "ak@linux.intel.com" <ak@linux.intel.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "nik.borisov@suse.com" <nik.borisov@suse.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "sagis@google.com" <sagis@google.com>,
-        "imammedo@redhat.com" <imammedo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "Gao, Chao" <chao.gao@intel.com>,
-        "Brown, Len" <len.brown@intel.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>
-References: <cover.1699527082.git.kai.huang@intel.com>
- <2151c68079c1cb837d07bd8015e4ff1f662e1a6e.1699527082.git.kai.huang@intel.com>
- <cfea7192-4b29-46f9-a500-149121f493c8@intel.com>
- <e8fd4bff8244e9e709c997da309e73a932567959.camel@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <e8fd4bff8244e9e709c997da309e73a932567959.camel@intel.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1868698.tdWV9SEqCh@z3ntu.xyz>
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -131,72 +104,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/23 11:33, Huang, Kai wrote:
-> On Mon, 2023-11-27 at 10:13 -0800, Hansen, Dave wrote:
->> On 11/9/23 03:55, Kai Huang wrote:
->> ...
->>> --- a/arch/x86/kernel/reboot.c
->>> +++ b/arch/x86/kernel/reboot.c
->>> @@ -31,6 +31,7 @@
->>>  #include <asm/realmode.h>
->>>  #include <asm/x86_init.h>
->>>  #include <asm/efi.h>
->>> +#include <asm/tdx.h>
->>>
->>>  /*
->>>   * Power off function, if any
->>> @@ -741,6 +742,20 @@ void native_machine_shutdown(void)
->>>     local_irq_disable();
->>>     stop_other_cpus();
->>>  #endif
->>> +   /*
->>> +    * stop_other_cpus() has flushed all dirty cachelines of TDX
->>> +    * private memory on remote cpus.  Unlike SME, which does the
->>> +    * cache flush on _this_ cpu in the relocate_kernel(), flush
->>> +    * the cache for _this_ cpu here.  This is because on the
->>> +    * platforms with "partial write machine check" erratum the
->>> +    * kernel needs to convert all TDX private pages back to normal
->>> +    * before booting to the new kernel in kexec(), and the cache
->>> +    * flush must be done before that.  If the kernel took SME's way,
->>> +    * it would have to muck with the relocate_kernel() assembly to
->>> +    * do memory conversion.
->>> +    */
->>> +   if (platform_tdx_enabled())
->>> +           native_wbinvd();
->>
->> Why can't the TDX host code just set host_mem_enc_active=1?
->>
->> Sure, you'll end up *using* the SME WBINVD support, but then you don't
->> have two different WBINVD call sites.  You also don't have to mess with
->> a single line of assembly.
+On Sat, Nov 25, 2023 at 01:25:22PM +0100, Luca Weiss wrote:
+> On Montag, 16. Oktober 2023 16:44:28 CET Stephan Gerhold wrote:
+> > On Mon, Oct 16, 2023 at 03:16:14PM +0200, Loic Poulain wrote:
+> > > On Mon, 16 Oct 2023 at 07:35, Krzysztof Kozlowski
+> > > 
+> > > <krzysztof.kozlowski@linaro.org> wrote:
+> > > > On 15/10/2023 22:03, Luca Weiss wrote:
+> > > > > Add a compatible for the iris subnode in the WCNSS PIL.
+> > > > > 
+> > > > > Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> > > > > ---
+> > > > > 
+> > > > >  Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yaml | 1
+> > > > >  +
+> > > > >  1 file changed, 1 insertion(+)
+> > > > > 
+> > > > > diff --git
+> > > > > a/Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yaml
+> > > > > b/Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yaml
+> > > > > index 45eb42bd3c2c..0e5e0b7a0610 100644
+> > > > > --- a/Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yaml
+> > > > > +++ b/Documentation/devicetree/bindings/remoteproc/qcom,wcnss-pil.yaml
+> > > > > 
+> > > > > @@ -111,6 +111,7 @@ properties:
+> > > > >            - qcom,wcn3660
+> > > > >            - qcom,wcn3660b
+> > > > >            - qcom,wcn3680
+> > > > > 
+> > > > > +          - qcom,wcn3680b
+> > > > 
+> > > > Looks like this should be made as compatible with qcom,wcn3680 (so with
+> > > > fallback).
+> > > 
+> > > Yes, agree, let's do a regular fallback as there is nothing 'b'
+> > > specific in the driver:
+> > > `compatible = "qcom,wcn3680b", "qcom,wcn3680";`
+> > > 
+> > > And yes, we should also have done that for qcom,wcn3660b...
+> > 
+> > I don't think this would have worked properly for qcom,wcn3660b:
+> > 
+> >  - It's not compatible with "qcom,wcn3660", because they have different
+> >    regulator voltage requirements. wcn3660(a?) needs vddpa with
+> >    2.9-3.0V, but wcn3660b needs 3.3V. That's why wcn3660b uses the
+> >    wcn3680_data in qcom_wcnss.iris.c. Otherwise if you would run an
+> >    older kernel that knows "qcom,wcn3660" but not "qcom,wcn3660b" it
+> >    would apply the wrong voltage.
+> > 
+> >  - It's not compatible with "qcom,wcn3680" either because that is used
+> >    as indication if 802.11ac is supported (wcn3660b doesn't).
+> > 
+> > The main question here is: What does the current "qcom,wcn3680"
+> > compatible actually represent? It's defined with vddpa = 3.3V in the
+> > driver, which would suggest that:
+> > 
+> >  1. It's actually meant to represent WCN3680B, which needs 3.3V vddpa
+> >     like WCN3660B, or
+> > 
+> >  2. WCN3680(A?) has different requirements than WCN3660(A?) and also
+> >     needs 3.3V vddpa. But then what is the difference between
+> >     WCN3680(A?) and WCN3680B? Is there even a variant without ...B?
+> > 
+> > There is public documentation for WCN3660B and WCN3680B but the non-B
+> > variants are shrouded in mystery.
 > 
-> I wanted to avoid changing the assembly.
+> Hi Stephan (and everyone),
 > 
-> Perhaps the comment isn't very clear.  Flushing cache (on the CPU running kexec)
-> when the host_mem_enc_active=1 is handled in the relocate_kernel() assembly,
-> which happens at very late stage right before jumping to the new kernel.
-> However for TDX when the platform has erratum we need to convert TDX private
-> pages back to normal, which must be done after flushing cache.  If we reuse
-> host_mem_enc_active=1, then we will need to change the assembly code to do that.
+> Do you have a suggestion how to move this patchset forward? Is the fallback 
+> compatible that was suggested okay for the wcn3680b situation?
+> 
+>   compatible = "qcom,wcn3680b", "qcom,wcn3680";
+> 
+> If so, I'll make v2 with that implemented.
+> 
 
-I honestly think you need to stop thinking about the partial write issue
-at this point in the series.  It's really causing a horrible amount of
-unnecessary confusion.
+Personally, I would just go with what exists already and use the
+existing "qcom,wcn3680" compatible as-is. No one has provided evidence
+that there is actually something like a WCN3680(A), without a 'B' at the
+end. Also, all existing users of the "qcom,wcn3680" compatible upstream
+actually seem to refer to WCN3680B (I'm quite sure apq8039-t2 has
+WCN3680B, MSM8974 isn't entirely clear but iirc you mentioned there was
+some schematic of a MSM8974 device which says WCN3680B as well).
 
-Here's the golden rule:
+It would be nice to have the compatible perfectly correct and complete,
+but I see no point to extend it with additional information that we
+can't properly verify.
 
-	The boot CPU needs to run WBINVD sometime after it stops writing
-	to private memory but before it starts treating the memory as
-	shared.
+Or do you actually need a different compatible to customize something in
+the driver?
 
-On SME kernels, that key point evidently in early boot when it's
-enabling SME.  I _think_ that point is also a valid place to do WBINVD
-on no-TDX-erratum systems.
-
-On TDX systems with the erratum, there's a *second* point before the
-private=>shared conversion occurs.  I think what you're trying to do
-here is prematurely optimize the erratum-affected affected systems so
-that they don't do two WBINVDs.  Please stop trying to do that.
-
-This WBINVD is only _needed_ for the erratum.  It should be closer to
-the actual erratum handing.
+Thanks,
+Stephan
