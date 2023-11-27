@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91EFF7F9C10
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:48:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C4597F9C11
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:48:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232823AbjK0IsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 03:48:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51170 "EHLO
+        id S232695AbjK0Isq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 03:48:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232796AbjK0IsH (ORCPT
+        with ESMTP id S232775AbjK0Isf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 03:48:07 -0500
+        Mon, 27 Nov 2023 03:48:35 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD7031BC5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:48:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C21DC433C7;
-        Mon, 27 Nov 2023 08:48:06 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E9410E2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:48:41 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D642C433C8;
+        Mon, 27 Nov 2023 08:48:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701074889;
-        bh=IDbhwTEPGpAkCBipZ5/TAz0ibRxg6yKUZ7ACowID9dA=;
+        s=k20201202; t=1701074921;
+        bh=XJxLFbtAZ9fE3Q2uHuatuh4Aadouvj1jWL8C26hHK+k=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=XKytrvTOUtfSonEryqT7rhaInSDlwuopPEhsMP7JZ8ao8jVLhpCNhfri+bxUsTgoe
-         FRiqZMnpTkbRFlqRHr3/GKYM+I5UMmsGWfnSuxLCTG33TnIOc+Hf47blrAOSDNXuwx
-         jJeAWiVs1Z66kts15SdGAQZ4rkQ01H1ypWiKPCFC5dXWHsB2gQe5p5RjoO5NdFWQsK
-         Syn5bbroHIJlx0pS1xmFHp+ohGYs20+gQ5RGk6BBj5DadwnmZYN2CZoxZQzlJ8DDPC
-         8GvpylpdyVO9jozD5NQQDk9pl4rY4ubOCQViNloSrpdd+CIZGfruxpVduscXe05ebw
-         FadwptiZFqgTQ==
-Message-ID: <83d5074a-183b-45dd-bc07-5596d565c3b9@kernel.org>
-Date:   Mon, 27 Nov 2023 09:48:06 +0100
+        b=tGcBmBdxneSFzhr9Q6G2+rwMvGAYvXWTQZjxBX6OEDaMR3bSNv/DL/fK5Fta319YS
+         Z+577W0BxjKo5b40bCFUeWKvYWMCJUB01ZOEvy8PZMOymAaRaOhQ4FKS/9fIuquOu6
+         GD+Rih36K/FqZRy6Gl/stDd2hCP2cfU565XU2DISZR8zvqitRrpu3iCUvNNdLj33TQ
+         QBUUSPy2iLWxRC0C0/xa40Dz5g96bbt3dqjWtN5wquDX3zXz4rVRb/JEt2/32Qgr19
+         7yhpoogp6FsyblbMKEQDg23Q6lxD7D14esLv/v87bRPeYBI06QysdidYo0n9bmP3sw
+         dZTk38Ohg3pUA==
+Message-ID: <22cb035d-10b8-41f7-b7c6-5c8ae6627c59@kernel.org>
+Date:   Mon, 27 Nov 2023 09:48:37 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/7] dt-bindings: interrupt-controller: Add StarFive
- JH8100 plic
+Subject: Re: [PATCH 5/7] dt-bindings: xilinx: Add StarFive compatible string
 Content-Language: en-US
 To:     Sia Jee Heng <jeeheng.sia@starfivetech.com>,
         paul.walmsley@sifive.com, palmer@dabbelt.com,
@@ -41,7 +40,7 @@ To:     Sia Jee Heng <jeeheng.sia@starfivetech.com>,
 Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         leyfoon.tan@starfivetech.com
 References: <20231127013602.253835-1-jeeheng.sia@starfivetech.com>
- <20231127013602.253835-5-jeeheng.sia@starfivetech.com>
+ <20231127013602.253835-6-jeeheng.sia@starfivetech.com>
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -86,7 +85,7 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20231127013602.253835-5-jeeheng.sia@starfivetech.com>
+In-Reply-To: <20231127013602.253835-6-jeeheng.sia@starfivetech.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -99,8 +98,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/11/2023 02:35, Sia Jee Heng wrote:
-> Add compatible string for StarFive JH8100 plic
+On 27/11/2023 02:36, Sia Jee Heng wrote:
+> Add starfive,jh8100-uart compatible string
+
+Describe the hardware. Why is it in xilinx?
+
+Also, missing full stop in each commit msg.
+
 > 
 > Signed-off-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
 > Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
