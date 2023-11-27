@@ -2,241 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 956DB7FAC50
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:10:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60FDA7FAC5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:11:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233218AbjK0VKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 16:10:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42624 "EHLO
+        id S233172AbjK0VLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 16:11:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233054AbjK0VKL (ORCPT
+        with ESMTP id S229527AbjK0VLl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 16:10:11 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1651D6D;
-        Mon, 27 Nov 2023 13:10:17 -0800 (PST)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARKdWH8023197;
-        Mon, 27 Nov 2023 21:10:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=IH45mWrzzCdZ3sMW0VImP3i2zCTpmv82AlXf7OreOjw=;
- b=Zk+EzHs981PmcaRjB9044iK66efvB/uxTmZ5Or3Xu5ALtPZsw2KiBOXT59p1GIfSfJMw
- QMe59aK9GIiB3YvrvwCqedNdu3SbEsihMH8T4li7JKEsrXMU+g1Hjb2V5wOLLfs3HaDH
- kT7MHF7gyZuZeOKK4wppU/xydfe6Cp79rZPokbcULgPGGF1JbZCBjOdsOMSVFl+jMi7J
- x/NaegUuxBBBpV+6Tw++XN1Kg8k+d6L5nWqGNM8iXYIfpqb8mcVPfG/wxaqnGoM0Dvt4
- wOr6pUYhL6LezRABiCX7A2ohIx14CGpOaF7yHhzWVvxAJyg5IJFzY0RC22Vsxixl2lAe TA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3umytg5aam-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 21:10:13 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ARKJTSO021559;
-        Mon, 27 Nov 2023 21:10:12 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3umytg5aa1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 21:10:12 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARJOPX3001742;
-        Mon, 27 Nov 2023 21:10:11 GMT
-Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ukwy1jvfc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 21:10:11 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-        by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ARLAAge29425922
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 Nov 2023 21:10:11 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A34685805D;
-        Mon, 27 Nov 2023 21:10:10 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DD4F058056;
-        Mon, 27 Nov 2023 21:10:09 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 27 Nov 2023 21:10:09 +0000 (GMT)
-Message-ID: <22032156-bd61-4c72-ad47-fe5932cd832a@linux.ibm.com>
-Date:   Mon, 27 Nov 2023 16:10:09 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 7/8] tpm: Add tpm_buf_read_{u8,u16,u32}
-Content-Language: en-US
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        linux-integrity@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        William Roberts <bill.c.roberts@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>
-References: <20231124020237.27116-1-jarkko@kernel.org>
- <20231124020237.27116-8-jarkko@kernel.org>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <20231124020237.27116-8-jarkko@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 9weWJHXXl_oURyW7Z4KBN3jXqp0BTMT2
-X-Proofpoint-ORIG-GUID: zeHZ-mPguzqroTmFqZ81zvvIcc3zZJzQ
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Mon, 27 Nov 2023 16:11:41 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18133D59
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 13:11:47 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <auto@pengutronix.de>)
+        id 1r7itI-0004lF-8W; Mon, 27 Nov 2023 22:11:40 +0100
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <auto@pengutronix.de>)
+        id 1r7itH-00C1px-FB; Mon, 27 Nov 2023 22:11:39 +0100
+Received: from rhi by dude04.red.stw.pengutronix.de with local (Exim 4.96)
+        (envelope-from <auto@pengutronix.de>)
+        id 1r7itH-00FAHf-1H;
+        Mon, 27 Nov 2023 22:11:39 +0100
+From:   Roland Hieber <rhi@pengutronix.de>
+Subject: [PATCH 0/5] ARM: dts: add support for Gossen Metrawatt Profitest
+Date:   Mon, 27 Nov 2023 22:11:01 +0100
+Message-Id: <20231127-b4-imx7-var-som-gome-v1-0-f26f88f2d0bc@pengutronix.de>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-27_19,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
- suspectscore=0 mlxscore=0 phishscore=0 malwarescore=0 lowpriorityscore=0
- bulkscore=0 mlxlogscore=670 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311060000 definitions=main-2311270147
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOUFZWUC/x2N0QqDMAwAf0XyvMDaiZX9ythDWzMN2HYkKIL47
+ wt7vIPjTlASJoVnd4LQzsqtGrhbB3mJdSbkyRj83T+c8wFTj1yOgHsU1FZwboXQhTAOrqdhnDJ
+ YmqISJok1LxbXbV1NfoU+fPxfr/d1/QAZK/gMewAAAA==
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>
+Cc:     linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Roland Hieber <rhi@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Michael Tretter <m.tretter@pengutronix.de>
+X-Mailer: b4 0.12.0
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: auto@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series aims to add initial support for the Gossen Metrawatt
+Profitest MF board (internally known as e143_01), as well as the
+Variscite VAR-SOM-MX7 System on Module that it is based on.
 
+The resulting device tree has been dt-schema-validated, and the
+necessary fixes have been submitted in the following patch series:
 
-On 11/23/23 21:02, Jarkko Sakkinen wrote:
-> Declare reader functions for the instances of struct tpm_buf. If the read
-> goes out of boundary, TPM_BUF_BOUNDARY_ERROR is set, and subsequent read
-> will do nothing.
-> 
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+http://lore.kernel.org/r/20231127-b4-dt-bindings-serial-v1-1-422a198fd91a@pengutronix.de
+http://lore.kernel.org/r/20231127-b4-dt-bindings-mxsfb-v1-1-922e4e71c838@pengutronix.de
+http://lore.kernel.org/r/20231127-b4-dt-bindings-timer-v1-1-e06bd6b2370b@pengutronix.de
+http://lore.kernel.org/r/20231127-b4-imx7-dt-v1-1-6ecbd0471cc4@pengutronix.de
 
-> ---
-> v5 [2023-11-24]: Fixed off-by-one error in the boundary check.
-> v4 [2023-11-21]: Address James Bottomley's feedback for v2 of this
-> patch, i.e. offset pointer was not correctly dereferenced.
-> v3 [2023-11-21]: Add possibility to check for boundary error to the
-> as response to the feedback from Mario Limenciello:
-> https://lore.kernel.org/linux-integrity/3f9086f6-935f-48a7-889b-c71398422fa1@amd.com/
-> ---
->   drivers/char/tpm/tpm-buf.c | 79 +++++++++++++++++++++++++++++++++++++-
->   include/linux/tpm.h        |  5 +++
->   2 files changed, 83 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/char/tpm/tpm-buf.c b/drivers/char/tpm/tpm-buf.c
-> index 099b4a56c5d5..32619e9ab4fa 100644
-> --- a/drivers/char/tpm/tpm-buf.c
-> +++ b/drivers/char/tpm/tpm-buf.c
-> @@ -107,7 +107,7 @@ void tpm_buf_append(struct tpm_buf *buf, const u8 *new_data, u16 new_length)
->   		return;
->   
->   	if ((buf->length + new_length) > PAGE_SIZE) {
-> -		WARN(1, "tpm_buf: overflow\n");
-> +		WARN(1, "tpm_buf: write overflow\n");
->   		buf->flags |= TPM_BUF_OVERFLOW;
->   		return;
->   	}
-> @@ -143,3 +143,80 @@ void tpm_buf_append_u32(struct tpm_buf *buf, const u32 value)
->   	tpm_buf_append(buf, (u8 *)&value2, 4);
->   }
->   EXPORT_SYMBOL_GPL(tpm_buf_append_u32);
-> +
-> +/**
-> + * tpm_buf_read() - Read from a TPM buffer
-> + * @buf:	&tpm_buf instance
-> + * @offset:	offset within the buffer
-> + * @count:	the number of bytes to read
-> + * @output:	the output buffer
-> + */
-> +static void tpm_buf_read(struct tpm_buf *buf, off_t *offset, size_t count, void *output)
-> +{
-> +	off_t next_offset;
-> +
-> +	/* Return silently if overflow has already happened. */
-> +	if (buf->flags & TPM_BUF_BOUNDARY_ERROR)
-> +		return;
-> +
-> +	next_offset = *offset + count;
-> +	if (next_offset > buf->length) {
-> +		WARN(1, "tpm_buf: read out of boundary\n");
-> +		buf->flags |= TPM_BUF_BOUNDARY_ERROR;
-> +		return;
-> +	}
-> +
-> +	memcpy(output, &buf->data[*offset], count);
-> +	*offset = next_offset;
-> +}
-> +
-> +/**
-> + * tpm_buf_read_u8() - Read 8-bit word from a TPM buffer
-> + * @buf:	&tpm_buf instance
-> + * @offset:	offset within the buffer
-> + *
-> + * Return: next 8-bit word
-> + */
-> +u8 tpm_buf_read_u8(struct tpm_buf *buf, off_t *offset)
-> +{
-> +	u8 value;
-> +
-> +	tpm_buf_read(buf, offset, sizeof(value), &value);
-> +
-> +	return value;
-> +}
-> +EXPORT_SYMBOL_GPL(tpm_buf_read_u8);
-> +
-> +/**
-> + * tpm_buf_read_u16() - Read 16-bit word from a TPM buffer
-> + * @buf:	&tpm_buf instance
-> + * @offset:	offset within the buffer
-> + *
-> + * Return: next 16-bit word
-> + */
-> +u16 tpm_buf_read_u16(struct tpm_buf *buf, off_t *offset)
-> +{
-> +	u16 value;
-> +
-> +	tpm_buf_read(buf, offset, sizeof(value), &value);
-> +
-> +	return be16_to_cpu(value);
-> +}
-> +EXPORT_SYMBOL_GPL(tpm_buf_read_u16);
-> +
-> +/**
-> + * tpm_buf_read_u32() - Read 32-bit word from a TPM buffer
-> + * @buf:	&tpm_buf instance
-> + * @offset:	offset within the buffer
-> + *
-> + * Return: next 32-bit word
-> + */
-> +u32 tpm_buf_read_u32(struct tpm_buf *buf, off_t *offset)
-> +{
-> +	u32 value;
-> +
-> +	tpm_buf_read(buf, offset, sizeof(value), &value);
-> +
-> +	return be32_to_cpu(value);
-> +}
-> +EXPORT_SYMBOL_GPL(tpm_buf_read_u32);
-> diff --git a/include/linux/tpm.h b/include/linux/tpm.h
-> index 715db4a91c1f..e8172f81c562 100644
-> --- a/include/linux/tpm.h
-> +++ b/include/linux/tpm.h
-> @@ -302,6 +302,8 @@ enum tpm_buf_flags {
->   	TPM_BUF_OVERFLOW	= BIT(0),
->   	/* TPM2B format: */
->   	TPM_BUF_TPM2B		= BIT(1),
-> +	/* read out of boundary: */
-> +	TPM_BUF_BOUNDARY_ERROR	= BIT(2),
->   };
->   
->   /*
-> @@ -338,6 +340,9 @@ void tpm_buf_append(struct tpm_buf *buf, const u8 *new_data, u16 new_length);
->   void tpm_buf_append_u8(struct tpm_buf *buf, const u8 value);
->   void tpm_buf_append_u16(struct tpm_buf *buf, const u16 value);
->   void tpm_buf_append_u32(struct tpm_buf *buf, const u32 value);
-> +u8 tpm_buf_read_u8(struct tpm_buf *buf, off_t *offset);
-> +u16 tpm_buf_read_u16(struct tpm_buf *buf, off_t *offset);
-> +u32 tpm_buf_read_u32(struct tpm_buf *buf, off_t *offset);
->   
->   /*
->    * Check if TPM device is in the firmware upgrade mode.
+It builds on top of this series adding MIPI-DSI support to i.MX7:
+
+http://lore.kernel.org/r/20231127-b4-imx7-mipi-dsi-v1-0-7d22eee70c67@pengutronix.de
+
+Signed-off-by: Roland Hieber <rhi@pengutronix.de>
+---
+Marco Felsch (2):
+      ARM: dts: add Variscite VAR-SOM-MX7 System on Module
+      ARM: dts: add support for Gossen Metrawatt Profitest
+
+Philipp Zabel (3):
+      dt-bindings: at24: add ROHM BR24G04
+      dt-bindings: vendor-prefixes: add Gossen Metrawatt
+      ARM: dts: imx7d-pinfunc: add mux for OSC32K_32K_OUT via GPIO1_IO03
+
+ Documentation/devicetree/bindings/arm/fsl.yaml     |   7 +
+ Documentation/devicetree/bindings/eeprom/at24.yaml |   1 +
+ .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
+ arch/arm/boot/dts/nxp/imx/Makefile                 |   1 +
+ arch/arm/boot/dts/nxp/imx/imx7d-gome-e143_01.dts   | 559 +++++++++++++++++++
+ arch/arm/boot/dts/nxp/imx/imx7d-pinfunc.h          |   1 +
+ arch/arm/boot/dts/nxp/imx/imx7d-var-som-mx7.dtsi   | 607 +++++++++++++++++++++
+ 7 files changed, 1178 insertions(+)
+---
+base-commit: 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab
+change-id: 20231127-b4-imx7-var-som-gome-1778614e68dc
+
+Best regards,
+-- 
+Roland Hieber, Pengutronix e.K.          | rhi@pengutronix.de          |
+Steuerwalder Str. 21                     | https://www.pengutronix.de/ |
+31137 Hildesheim, Germany                | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686         | Fax:   +49-5121-206917-5555 |
+
