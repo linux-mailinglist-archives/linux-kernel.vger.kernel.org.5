@@ -2,207 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C1D7FACA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:39:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BCF27FACAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:41:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231880AbjK0VjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 16:39:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33520 "EHLO
+        id S232269AbjK0Vlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 16:41:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjK0VjJ (ORCPT
+        with ESMTP id S230225AbjK0Vl3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 16:39:09 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918A0C1;
-        Mon, 27 Nov 2023 13:39:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701121155; x=1732657155;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=9MlOmnJ8k6w9JhmAtXosQNcmlln7Dmj8e6I7afUU+9o=;
-  b=ANT2YeXOFigbyIEABNWthcu/J6mE7Qhk+0brUEg0IF5ipCvpGL1c/nyB
-   O2j4n+9+QlJIMgHfeK9bhu1JdhbAYt92McVnoJagrTOXkuiDpLvnDPn22
-   mE0JXq4RpBfGnKegHqYUXsMnijRdhiaauw9aNMGdRqhEnQH8nlb+ALQAd
-   oSqouTYC6RmUnkUnJxy7JRAyG5d/FlLMaZE2y0lDc0ZMo9hj99p/hO23d
-   1E1h3p9hkgkgdIPYyMnobJPNRO+wyYkeMz6mHAe53FQWuI7X5QxbhQ54H
-   5PMrwZjA9gRZf4dmxHwacBtIcFwZZqRYww+5dHIeKK4hLjq2dmk58RbTr
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="383178280"
-X-IronPort-AV: E=Sophos;i="6.04,232,1695711600"; 
-   d="scan'208";a="383178280"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 13:39:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="834449687"
-X-IronPort-AV: E=Sophos;i="6.04,232,1695711600"; 
-   d="scan'208";a="834449687"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Nov 2023 13:39:13 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 27 Nov 2023 13:39:14 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Mon, 27 Nov 2023 13:39:14 -0800
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.168)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Mon, 27 Nov 2023 13:39:10 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NeTaW5o44gQMXApeUTCTFgXfkvn46lHxa3ih4aPAUBjXzpwqwnsCnUl8kS7CNQXA6y3X2RlA66K1gQrQ8yl4sZfXbhKv8bKCGDrmu6AQLlmTouu59mKTtoPfoDjTL/8CPzYriap15cZFDDKgvtCF4OqGHyzDpzfA6lpluz7QqFEVquVZ5w2+JV7Pdp6rCuBwvvK0ZXV25/hsnf/j1Ocn4N8P4HysTHdxpmZTr0DDJ8JQwKzVzHo+5k+pTg/Y4/OUcIDM7QNirZjetqWfZV8iZuoO3jdqrHf2LgwznNXg+CW1RDDcRpk2IEK3z9rK5NFEqKiJETjBEMGjFj7RGayUkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9MlOmnJ8k6w9JhmAtXosQNcmlln7Dmj8e6I7afUU+9o=;
- b=UGPBaf5mgPVyGXhy6LSApeZPknC52WSkoyXXyYoWWHTWEAzXkiOKLTeqmfrM7UxsXpMdvyNOC5FzvfEOlwxgkdwSU/xwvvZv13t4lPc4BRpTCnJV+zJwL7LEX0oa8O0lRvzpGkvLjAzqmwj2DysyfBdPvGyk4+aIQc3UE93/8MoDYFZuCuHBFvpnYy/cyrU1D8ZATbF2ey6M+ZxT8pgSPvILKfOZXjpZXuYAE0q/4N+9GYDG5TeTsphPjCVKyFIH1Sf21HMoEUspy+dnh6u160g3QZ0DuBtfJuVrJsdwWA4+I7Mx81uZMeiEEWnWXIWeD701Qaf4p3TrNUhYvldHkQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
- by CY8PR11MB6889.namprd11.prod.outlook.com (2603:10b6:930:5e::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.27; Mon, 27 Nov
- 2023 21:38:58 +0000
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::5260:13db:a6e:35e9]) by MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::5260:13db:a6e:35e9%6]) with mapi id 15.20.7025.022; Mon, 27 Nov 2023
- 21:38:58 +0000
-From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "mhklinux@outlook.com" <mhklinux@outlook.com>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "Cui, Dexuan" <decui@microsoft.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "urezki@gmail.com" <urezki@gmail.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>, "Rodel, Jorg" <jroedel@suse.de>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "lstoakes@gmail.com" <lstoakes@gmail.com>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCH v2 4/8] x86/sev: Enable PVALIDATE for PFNs without a valid
- virtual address
-Thread-Topic: [PATCH v2 4/8] x86/sev: Enable PVALIDATE for PFNs without a
- valid virtual address
-Thread-Index: AQHaHMCWxDaQ2OOq0UaKl0u/qG7/4LCOur0A
-Date:   Mon, 27 Nov 2023 21:38:57 +0000
-Message-ID: <3ddcad72637dece4bd3ecb7c49b8ad0e5bd233c0.camel@intel.com>
-References: <20231121212016.1154303-1-mhklinux@outlook.com>
-         <20231121212016.1154303-5-mhklinux@outlook.com>
-In-Reply-To: <20231121212016.1154303-5-mhklinux@outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|CY8PR11MB6889:EE_
-x-ms-office365-filtering-correlation-id: b19fb055-cfce-41c5-66a9-08dbef9142ea
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: FDLX/gTBCx6ovsqvPDnePNIfau7aEovwWOMPsXKlLtSOdw2WRd+7uAFxDRPOOD41OBsXGWvs5lJHnCdfcsCtgfJyN4lYmAFdBIZvOWOhWD6vJMxVEqGp5SXK6zfnH+PugocJ6d1cfc1NJpSwnekaHEfQAt7ih2KEKPB4T5Lx5Z8v6lg2tXdHtyDlNrqxYC1g33DwI8aEkxTaMvuZrYI06G59dzKWcMM7A58VM3g4a2jTOGiWYUlft/7GSXwEq6VOFZwyEeSN8a2Y4e1i9bQ2Y/c9C6C3GI4ieGdE6BdqQ9PNCHygoLJAu6QvDPAiu8NHzG0zSFhc20aCzlkO/NvV+fW3bC/NyrPOs91W0iUqD45342OZXiQAhp5ehvI1epeuGq0rTS4XIl5zJ7Bx3NGFI6e9l7VFenEI431oHZLEunSc3zTHWa+Zl3L3yTjApVnCBHGUWkgZ4nv6CtSxA1Ox7qWHXTVoxBPmnVD8cEn7h/neSS8E+HSsKU1gSvVp7Xzq+cum4b2qnJnT8wr+D/3ioOqswOxkaOx1wertpipB5EXVtzTbH3nBi0s61H3DaEhpQCl2CZEwutLNrEu5aekm/0cR7Gm02DOf2XS+mlTMUCFe6kXJy0y7jw5n4WNSDvSV00TGWx1B7TX8UpukGxRI4Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39860400002)(346002)(376002)(366004)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(5660300002)(4744005)(38070700009)(7416002)(4001150100001)(2906002)(8676002)(41300700001)(8936002)(6486002)(76116006)(91956017)(110136005)(64756008)(66476007)(316002)(66556008)(66446008)(36756003)(86362001)(66946007)(38100700002)(26005)(478600001)(6506007)(6512007)(2616005)(71200400001)(921008)(83380400001)(122000001)(82960400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?cU1weEEvMXJKOFBtL0NqUkhoNGVjVkU2bUppVFhnWjNTS09qbjJhYWs1Q2dq?=
- =?utf-8?B?ZFI1dE1YWCsrc1o5dEZFdkxJdnFJTmZBSEdjbThUQ09RRmZaVlBXU3NSbGpL?=
- =?utf-8?B?MFVUMnFySG9KSHIzTTRhbVptTEtRc3NJWENBSG5tRUlyNFJKS2tIejdFMjJ3?=
- =?utf-8?B?c2FSQmN0b2JKd1JpcGlSS1dnWWJ5QWhxRXhmMmRjMkxyRFVueWxjRlJrVnhh?=
- =?utf-8?B?alBzRWsvZVpnQ0NmSnhiOTB6WkcrNC9RRm81akZmckhMOHIvZCtGUkp5ajNl?=
- =?utf-8?B?QkUwTmM3bkJiWjdud1o4WkZucE5zYlJ1eXdRWU5GVHd4MFRjdFBzc3dod0l2?=
- =?utf-8?B?ZDBBd05zTlBPdG5PaUs5YTc3cW82NjRuZENPdWx1QVl1ZUxrcER4N1lSMzkv?=
- =?utf-8?B?VWZtUS9lWEViMS8rWDNFc1E2dVhMUkNhbXltYjBCamRDRGZWY0ZYdTFoV1NK?=
- =?utf-8?B?dTJWd2VTNGtYK0JSWUR0QVB4blNCb3A3anNWc3FjVEZNelFhbFZJbDVOb0pY?=
- =?utf-8?B?YWc4KzJLYmJpelMvb2pNaUoxTDFCYnJlOFpweE1NVDJEWU1GWEVaVHNkeVpQ?=
- =?utf-8?B?Q0E5bHRRa1dxK3dDeDc5Y1FFck9mTGxGZzJOdHFyUVUxcDY1OTVndGhFQUx6?=
- =?utf-8?B?Z0s0TnlOKzl3ZnJ4dE5oUzVLOG5vQ0ZtUEU4a3hUZHlJVnlySFhFclNvUVRM?=
- =?utf-8?B?U3FKbmNHTXB2OVBXWTZ6MjBldEs4TzRDVkE1Y1dyaFU0RWNVTlJndk9KaURm?=
- =?utf-8?B?M2Voa3AyY3paN0JRaGZFanhIcmxNR2l2aWNQRkVRLzNYM3VXNnZtVHdobmM3?=
- =?utf-8?B?K3YwaTJnbXliYTcvK0FTV0xQY093NVlsYUU3STBpZlg5SnR5eVJPdkF4UjNY?=
- =?utf-8?B?OW1ZajJaRjN4azNYWUg3L01FMURqaTUzRVAyNDAvUUFRRXFDVWYrOW9lbkZF?=
- =?utf-8?B?bjlKeTF1THpBTW40VHpHalZYOUVtdFVQSEdGZkNiT3ZrZkZiRFRLUCtraitk?=
- =?utf-8?B?eVRvTUhCUitvZEd0ZTJpbWdlalhoYVNGazJsNCtKVUdZa1c1dndHWHcxWWJw?=
- =?utf-8?B?M0hLbWJqVi9xT0lVY01YUGFSdE81UU1LdVRMYm5kY281NVJMSmRQY29GeWVZ?=
- =?utf-8?B?L2YwOEtGR3hxbkZrT1FqZTFzcWFLZFZpYWRhUW9MSFN1ZDd0ZDRudHB6UlMz?=
- =?utf-8?B?WHJLelZiMHN1aGZCU0tEK2FUdEM3amFxRWRGUGRoNUpFQWFjSGFlSFRaRE1Q?=
- =?utf-8?B?azg5SUlDa3VUMlZ0Z3kwUERVQTcwZkg0SSszYzN3L2V6TEluTTcyOFg5UkVT?=
- =?utf-8?B?a3AyOXYraVU4YUZYbUhaaDZmdEtCOGUrbWIvcFY2N3BDUG54dm1QQWVjVkRE?=
- =?utf-8?B?RDkzSnlDZW5Vb1VoSHZtWFZrdTRXOUNtUXdOOFBkdXIrR0tlT3VJdyswdFhx?=
- =?utf-8?B?VzdEbTU3eEZtL1RNbDdmOTJEUmFMSGJZb2o4UkxtdEZmbVZJbTVLbHhTY0xB?=
- =?utf-8?B?WEVPNG11cDFCaW1pa0dadFVJZERsVlcrNVQvb0hhZy9PcTYreE1pamZSdXpF?=
- =?utf-8?B?cVo2dGNsYkRiUnltVUhwYkl1a08wQm5DZm52NFNURDFwU0cybXpLc043a3JU?=
- =?utf-8?B?dEhrbmlnMzJNMnFuRW1qTmUycEJaUUlmd1RwMzdtSGJwcU9sb1JVbTdxb2Y0?=
- =?utf-8?B?VWJQNENwWkVPT2RmSjAybk1OK3BzbDlvaXRGTG13Y3p5VnN2Wk9YTGdqKzlU?=
- =?utf-8?B?NW9id2JndEozUUdaZmNpeVdwb29QdG1oMTErcWVmRXpUSE1xNm53N2t4ZTND?=
- =?utf-8?B?RTU5a2hyUnZUQzM1aDB5UDZDVFJDRHJBcDM3NlV1MnFFRjkwcWozLzk0Z1RW?=
- =?utf-8?B?WHQza1JWLzluZStneUFwQWo2a1R1MDFReWFORzJvQ3duU3g2REJ0cmxsQ2NP?=
- =?utf-8?B?Zi9OekIyK3IyWUxWdlJpVUxCcHd6OFdIaTRocnZuMTdBUmZIRjZmdFVZZTMv?=
- =?utf-8?B?QVorQlBmTUprSkJKaUIwd3piZk0waEEvRjFnZ3BNRzUvTHNHMVV0UFhraWJU?=
- =?utf-8?B?SnZZcjZIMHo1MTE2TXVXNFJkdzJCQzFISFNOUUdvQ2xqaTRwUExGU0VFUG0v?=
- =?utf-8?B?NHIzNndtS3dBMjdTT0RKb0FudEV4aEwyVmxxUW8rNEJweVEvc0ZBV2ppUHV1?=
- =?utf-8?B?Ymc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B67AC38D22872C49B7CE656B6C8A73CF@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Mon, 27 Nov 2023 16:41:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC17F1B8
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 13:41:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701121294;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ugEp/hLecd5KQ5c4t4XeynNt6sPelGpeH0b4Y4oF5aY=;
+        b=iXVDmnsuIWCqrUOkDuSQWDY5kGgFtqsokp3VnDpytgar1N/oXiO4UVKK783zqfna/wRaeF
+        JsI6s2kws1WDjxV+BOvzH+SMGDQRNdngoOpjZhzZKRa4UMZSB9QwT0+lxvmr8vkkQaHN56
+        C8l4VyBynk5FSqHWCT067LbxOmzvA2E=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-68-iH--zgQmPE-JCzEMO7Puqw-1; Mon, 27 Nov 2023 16:41:33 -0500
+X-MC-Unique: iH--zgQmPE-JCzEMO7Puqw-1
+Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-421acfe16f6so54020931cf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 13:41:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701121292; x=1701726092;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ugEp/hLecd5KQ5c4t4XeynNt6sPelGpeH0b4Y4oF5aY=;
+        b=h6C4ukRhCJV+4/0JaAKZA4UxkxefpTXNMeQ7e3ORIhxf8NMDXXtBpXh3AA62RW2fLO
+         vrPcdLZHLpEGbSg44Rawkz41r3AHMT3hLAInUeRlGpA17K43MI2hhhd9JJpweOhA2MAd
+         Nke7rPFCxrZkNJ1hEjJWFmZnTsrU7GikZfLdvatt0NaRG1FBWj1dxLMl+oo3xN29ASAw
+         XMCp3FGQ4GKEIAJY8liSk6I/bC8Zn+pXhBKLRDE4hBW3zYcLTuZJqQcR+UVZE+WHo5uv
+         njjZmRX+XWnXuy/0XyJm7gvqSDl48m7FNyeQ06HGMdIaLDyLOUFbn+TCJdBsikYK0OLy
+         Q9HQ==
+X-Gm-Message-State: AOJu0YzhOUGwmfz3BG3whffatTziV2Gxfb+G9LY1lfE37q8SFF81QZ32
+        sGp/pzgX2pjJ+KQF6vsHLphcA5ShAtrCOAkWHiRoGtKBfCuKC1xrNeiZo6o0AHpA56uVjHQ4HSN
+        JVNpCkJt8d/rHF2Ru/+xmZdrAOKSMPbbm
+X-Received: by 2002:ac8:5f4a:0:b0:423:708a:778c with SMTP id y10-20020ac85f4a000000b00423708a778cmr16196901qta.64.1701121291872;
+        Mon, 27 Nov 2023 13:41:31 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFslalZ3Mm+d5FKflLZmRPLPS2RzI4BH08Nj76UeXPXcTvFLHPJ3GE721G5hx2gALP2UW2rYQ==
+X-Received: by 2002:ac8:5f4a:0:b0:423:708a:778c with SMTP id y10-20020ac85f4a000000b00423708a778cmr16196890qta.64.1701121291626;
+        Mon, 27 Nov 2023 13:41:31 -0800 (PST)
+Received: from [192.168.1.165] ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id z15-20020ac8454f000000b00419732075b4sm4032574qtn.84.2023.11.27.13.41.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 13:41:31 -0800 (PST)
+From:   Andrew Halaney <ahalaney@redhat.com>
+Date:   Mon, 27 Nov 2023 15:41:10 -0600
+Subject: [PATCH net-next v2] net: phy: mdio_device: Reset device only when
+ necessary
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b19fb055-cfce-41c5-66a9-08dbef9142ea
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Nov 2023 21:38:57.4884
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: am+o9dPuWNbmrQJ95Llw7R50uOWMY77CiAGnd0MffNqoSdzZwE9h69rbcrt/YggWMg9KW3UZEpTAqk4KfD8Xlvs0rJEK11OLQjAQpmLsR4U=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB6889
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231127-net-phy-reset-once-v2-1-448e8658779e@redhat.com>
+X-B4-Tracking: v=1; b=H4sIAPUMZWUC/32NwQ7CIBBEf6XZs2vYJanWk/9heqh0FQ5CA4S0a
+ frvIh/gbSYz82aHJNFJglu3Q5Tikgu+Gj51YOzk34Jurh5YsSZiQi8ZF7thlFRV8EaQhDXr4cq
+ TKKjDJcrLrQ36gF/fy5phrIl1KYe4tbdCLf8HLoSE+mKGXj17rXtzjzLbKZ9N+MB4HMcXHbWAI
+ 78AAAA=
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sagar Cheluvegowda <quic_scheluve@quicinc.com>,
+        Andrew Halaney <ahalaney@redhat.com>
+X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIzLTExLTIxIGF0IDEzOjIwIC0wODAwLCBtaGtlbGxleTU4QGdtYWlsLmNvbSB3
-cm90ZToKPiArc3RhdGljIGludCBwdmFsaWRhdGVfcGZuKHVuc2lnbmVkIGxvbmcgdmFkZHIsIHVu
-c2lnbmVkIGludCBzaXplLAo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIHVuc2lnbmVkIGxvbmcgcGZuLCBib29sIHZhbGlkYXRlLCBpbnQgKnJjMikKPiAr
-ewo+ICvCoMKgwqDCoMKgwqDCoGludCByYzsKPiArwqDCoMKgwqDCoMKgwqBzdHJ1Y3QgcGFnZSAq
-cGFnZSA9IHBmbl90b19wYWdlKHBmbik7Cj4gKwo+ICvCoMKgwqDCoMKgwqDCoCpyYzIgPSB2bWFw
-X3BhZ2VzX3JhbmdlKHZhZGRyLCB2YWRkciArIFBBR0VfU0laRSwKPiArwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoFBBR0VfS0VSTkVMLCAmcGFnZSwgUEFHRV9T
-SElGVCk7CgpDYW4ndCB0aGlzIGZhaWwgYW5kIHRoZW4gdGhlIHB2YWxpZGF0ZSBiZWxvdyB3b3Vs
-ZCBlbmNvdW50ZXIgdHJvdWJsZT8KClNvcnQgb2Ygc2VwYXJhdGVseSwgaWYgdGhvc2Ugdm1hbGxv
-YyBvYmplY3Rpb25zIGNhbid0IGJlIHdvcmtlZAp0aHJvdWdoLCBkaWQgeW91IGNvbnNpZGVyIGRv
-aW5nIHNvbWV0aGluZyBsaWtlIHRleHRfcG9rZSgpIGRvZXMgKGNyZWF0ZQp0aGUgdGVtcG9yYXJ5
-IG1hcHBpbmcgaW4gYSB0ZW1wb3JhcnkgTU0pIGZvciBwdmFsaWRhdGUgcHVycG9zZXM/IEkKZG9u
-J3Qga25vdyBlbm91Z2ggYWJvdXQgd2hhdCBraW5kIG9mIHNwZWNpYWwgZXhjZXB0aW9ucyBtaWdo
-dCBwb3B1cApkdXJpbmcgdGhhdCBvcGVyYXRpb24gdGhvdWdoLCBtaWdodCBiZSBwbGF5aW5nIHdp
-dGggZmlyZS4uLgoKPiArwqDCoMKgwqDCoMKgwqByYyA9IHB2YWxpZGF0ZSh2YWRkciwgc2l6ZSwg
-dmFsaWRhdGUpOwo+ICvCoMKgwqDCoMKgwqDCoHZ1bm1hcF9yYW5nZSh2YWRkciwgdmFkZHIgKyBQ
-QUdFX1NJWkUpOwo+ICsKPiArwqDCoMKgwqDCoMKgwqByZXR1cm4gcmM7Cj4gK30KCg==
+Currently the phy reset sequence is as shown below for a
+devicetree described mdio phy on boot:
+
+1. Assert the phy_device's reset as part of registering
+2. Deassert the phy_device's reset as part of registering
+3. Deassert the phy_device's reset as part of phy_probe
+4. Deassert the phy_device's reset as part of phy_hw_init
+
+The extra two deasserts include waiting the deassert delay afterwards,
+which is adding unnecessary delay.
+
+This applies to both possible types of resets (reset controller
+reference and a reset gpio) that can be used.
+
+Here's some snipped tracing output using the following command line
+params "trace_event=gpio:* trace_options=stacktrace" illustrating
+the reset handling and where its coming from:
+
+    /* Assert */
+       systemd-udevd-283     [002] .....     6.780434: gpio_value: 544 set 0
+       systemd-udevd-283     [002] .....     6.783849: <stack trace>
+     => gpiod_set_raw_value_commit
+     => gpiod_set_value_nocheck
+     => gpiod_set_value_cansleep
+     => mdio_device_reset
+     => mdiobus_register_device
+     => phy_device_register
+     => fwnode_mdiobus_phy_device_register
+     => fwnode_mdiobus_register_phy
+     => __of_mdiobus_register
+     => stmmac_mdio_register
+     => stmmac_dvr_probe
+     => stmmac_pltfr_probe
+     => devm_stmmac_pltfr_probe
+     => qcom_ethqos_probe
+     => platform_probe
+
+    /* Deassert */
+       systemd-udevd-283     [002] .....     6.802480: gpio_value: 544 set 1
+       systemd-udevd-283     [002] .....     6.805886: <stack trace>
+     => gpiod_set_raw_value_commit
+     => gpiod_set_value_nocheck
+     => gpiod_set_value_cansleep
+     => mdio_device_reset
+     => phy_device_register
+     => fwnode_mdiobus_phy_device_register
+     => fwnode_mdiobus_register_phy
+     => __of_mdiobus_register
+     => stmmac_mdio_register
+     => stmmac_dvr_probe
+     => stmmac_pltfr_probe
+     => devm_stmmac_pltfr_probe
+     => qcom_ethqos_probe
+     => platform_probe
+
+    /* Deassert */
+       systemd-udevd-283     [002] .....     6.882601: gpio_value: 544 set 1
+       systemd-udevd-283     [002] .....     6.886014: <stack trace>
+     => gpiod_set_raw_value_commit
+     => gpiod_set_value_nocheck
+     => gpiod_set_value_cansleep
+     => mdio_device_reset
+     => phy_probe
+     => really_probe
+     => __driver_probe_device
+     => driver_probe_device
+     => __device_attach_driver
+     => bus_for_each_drv
+     => __device_attach
+     => device_initial_probe
+     => bus_probe_device
+     => device_add
+     => phy_device_register
+     => fwnode_mdiobus_phy_device_register
+     => fwnode_mdiobus_register_phy
+     => __of_mdiobus_register
+     => stmmac_mdio_register
+     => stmmac_dvr_probe
+     => stmmac_pltfr_probe
+     => devm_stmmac_pltfr_probe
+     => qcom_ethqos_probe
+     => platform_probe
+
+    /* Deassert */
+      NetworkManager-477     [000] .....     7.023144: gpio_value: 544 set 1
+      NetworkManager-477     [000] .....     7.026596: <stack trace>
+     => gpiod_set_raw_value_commit
+     => gpiod_set_value_nocheck
+     => gpiod_set_value_cansleep
+     => mdio_device_reset
+     => phy_init_hw
+     => phy_attach_direct
+     => phylink_fwnode_phy_connect
+     => __stmmac_open
+     => stmmac_open
+
+There's a lot of paths where the device is getting its reset
+asserted and deasserted. Let's track the state and only actually
+do the assert/deassert when it changes.
+
+Reported-by: Sagar Cheluvegowda <quic_scheluve@quicinc.com>
+Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
+---
+Changes in v2:
+- Mention the reset controller in the commit message (Andrew Lunn)
+- Make the initial reset_state unknown (so we always ensure the reset
+  gpio and controller end up in the same state) instead of
+  assuming they're both out of reset after acquiring them (Andrew Lunn)
+- Link to v1: https://lore.kernel.org/r/20231121-net-phy-reset-once-v1-1-37c960b6336c@redhat.com
+---
+ drivers/net/phy/mdio_device.c | 6 ++++++
+ drivers/net/phy/phy_device.c  | 1 +
+ include/linux/mdio.h          | 1 +
+ 3 files changed, 8 insertions(+)
+
+diff --git a/drivers/net/phy/mdio_device.c b/drivers/net/phy/mdio_device.c
+index 044828d081d2..73f6539b9e50 100644
+--- a/drivers/net/phy/mdio_device.c
++++ b/drivers/net/phy/mdio_device.c
+@@ -62,6 +62,7 @@ struct mdio_device *mdio_device_create(struct mii_bus *bus, int addr)
+ 	mdiodev->device_remove = mdio_device_remove;
+ 	mdiodev->bus = bus;
+ 	mdiodev->addr = addr;
++	mdiodev->reset_state = -1;
+ 
+ 	dev_set_name(&mdiodev->dev, PHY_ID_FMT, bus->id, addr);
+ 
+@@ -122,6 +123,9 @@ void mdio_device_reset(struct mdio_device *mdiodev, int value)
+ 	if (!mdiodev->reset_gpio && !mdiodev->reset_ctrl)
+ 		return;
+ 
++	if (mdiodev->reset_state == value)
++		return;
++
+ 	if (mdiodev->reset_gpio)
+ 		gpiod_set_value_cansleep(mdiodev->reset_gpio, value);
+ 
+@@ -135,6 +139,8 @@ void mdio_device_reset(struct mdio_device *mdiodev, int value)
+ 	d = value ? mdiodev->reset_assert_delay : mdiodev->reset_deassert_delay;
+ 	if (d)
+ 		fsleep(d);
++
++	mdiodev->reset_state = value;
+ }
+ EXPORT_SYMBOL(mdio_device_reset);
+ 
+diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+index 478126f6b5bc..843ce2479736 100644
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -654,6 +654,7 @@ struct phy_device *phy_device_create(struct mii_bus *bus, int addr, u32 phy_id,
+ 	mdiodev->flags = MDIO_DEVICE_FLAG_PHY;
+ 	mdiodev->device_free = phy_mdio_device_free;
+ 	mdiodev->device_remove = phy_mdio_device_remove;
++	mdiodev->reset_state = -1;
+ 
+ 	dev->speed = SPEED_UNKNOWN;
+ 	dev->duplex = DUPLEX_UNKNOWN;
+diff --git a/include/linux/mdio.h b/include/linux/mdio.h
+index 007fd9c3e4b6..79ceee3c8673 100644
+--- a/include/linux/mdio.h
++++ b/include/linux/mdio.h
+@@ -38,6 +38,7 @@ struct mdio_device {
+ 	/* Bus address of the MDIO device (0-31) */
+ 	int addr;
+ 	int flags;
++	int reset_state;
+ 	struct gpio_desc *reset_gpio;
+ 	struct reset_control *reset_ctrl;
+ 	unsigned int reset_assert_delay;
+
+---
+base-commit: 48bbaf8b793e0770798519f8ee1ea2908ff0943a
+change-id: 20231121-net-phy-reset-once-1e2323982ae0
+
+Best regards,
+-- 
+Andrew Halaney <ahalaney@redhat.com>
+
