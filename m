@@ -2,332 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A502B7F9E1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DCE77F9EEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:48:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232913AbjK0LDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 06:03:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60770 "EHLO
+        id S232788AbjK0Lss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 06:48:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232665AbjK0LDV (ORCPT
+        with ESMTP id S233038AbjK0Kks (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 06:03:21 -0500
-Received: from mxout70.expurgate.net (mxout70.expurgate.net [194.37.255.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B7F136;
-        Mon, 27 Nov 2023 03:03:25 -0800 (PST)
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.92)
-        (envelope-from <prvs=1709d64187=fe@dev.tdt.de>)
-        id 1r7ZOa-002deE-CO; Mon, 27 Nov 2023 12:03:20 +0100
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <fe@dev.tdt.de>)
-        id 1r7ZOZ-000aHz-Ie; Mon, 27 Nov 2023 12:03:19 +0100
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id 1F502240040;
-        Mon, 27 Nov 2023 12:03:19 +0100 (CET)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 7F7A8240049;
-        Mon, 27 Nov 2023 12:03:18 +0100 (CET)
-Received: from localhost.localdomain (unknown [10.2.3.40])
-        by mail.dev.tdt.de (Postfix) with ESMTPSA id CD3AC33D90;
-        Mon, 27 Nov 2023 12:03:17 +0100 (CET)
-From:   Florian Eckert <fe@dev.tdt.de>
-To:     Eckert.Florian@googlemail.com, pavel@ucw.cz, lee@kernel.org,
-        kabel@kernel.org, gregkh@linuxfoundation.org,
-        u.kleine-koenig@pengutronix.de
-Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maarten Brock <m.brock@vanmierlo.com>
-Subject: [Patch v9 4/4] leds: ledtrig-tty: add additional line state evaluation
-Date:   Mon, 27 Nov 2023 12:03:11 +0100
-Message-ID: <20231127110311.3583957-5-fe@dev.tdt.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231127110311.3583957-1-fe@dev.tdt.de>
-References: <20231127110311.3583957-1-fe@dev.tdt.de>
+        Mon, 27 Nov 2023 05:40:48 -0500
+Received: from mx08-00376f01.pphosted.com (mx08-00376f01.pphosted.com [91.207.212.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2998DE1;
+        Mon, 27 Nov 2023 02:40:53 -0800 (PST)
+Received: from pps.filterd (m0168888.ppops.net [127.0.0.1])
+        by mx08-00376f01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3AR7ObwZ026095;
+        Mon, 27 Nov 2023 10:40:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=imgtec.com; h=
+        from:to:cc:subject:date:message-id:references:in-reply-to
+        :content-type:content-id:content-transfer-encoding:mime-version;
+         s=dk201812; bh=Mb0KNZfkrZIu1LiVxU5AyD9kEeXUjrKv9waPCR+9VFI=; b=
+        b24K4ET3rLIsyA6fphGLY37QbJMNYRF+HfBlabkbSeDwJpVkFtvzQzvZgEF53/8n
+        4lFoQgu2/1ezIuHSnkZTzFfkaoDH1YkjJvucOah7S/jfq36Dj5nnGxeuNjz2yj39
+        4K0Qko5SkddLUgQLuhyMmYP5DIf+lAFN1Yghx/QkB7v7Ef0OUE7RQVX9zwAqd4IY
+        BZb1FERJoEL6R5e/iM4Rj+q62D4hPQ+J+G5Wk+ck33xbA/We0QSp7BbZcyYgVyi0
+        M+0Bcd1GHjgMlIpGXPKPXlk896h/I9f8GUkFgPUgT3/Ws9RKGukzkqXoxsvclgL9
+        EI2iCA3omFCaR2sTFwNPMA==
+Received: from hhmail05.hh.imgtec.org ([217.156.249.195])
+        by mx08-00376f01.pphosted.com (PPS) with ESMTPS id 3uk82sha5k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 27 Nov 2023 10:40:24 +0000 (GMT)
+Received: from HHMAIL04.hh.imgtec.org (10.100.10.119) by
+ HHMAIL05.hh.imgtec.org (10.100.10.120) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 27 Nov 2023 10:40:23 +0000
+Received: from GBR01-CWX-obe.outbound.protection.outlook.com (104.47.85.41) by
+ email.imgtec.com (10.100.10.121) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34 via Frontend
+ Transport; Mon, 27 Nov 2023 10:40:23 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PYpAHtnqAYFLb2QgE5CQ4vQGTCGNrOkV2kre6EwDF0nll1dhLu7fpRV+4UsFGUo3wKlLnKNM3JNlRjeJtAwFqAPWWTfgCE391U2mcK9fXLKe3HAaID3rNGOYNFcpm5+6HBjOq+JbpvR8m4BadYK2GXvv8HAMaYN9K10Ndo790cOLgPYfNwlAjgt54EWM9WlpatdUqfzR5EMY2tB40bZmn2SP88bMeuRb0ZFnihFv0xFPjS1G58Q5eBeig69jYSsGia+bxXCjzj9DIqGczdPmLH4DKX/joOevypnIimJHPvIlZXSBeY6lfINJXRdkf+OoT8uQRg7Dr5iewZetHJ8zDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Mb0KNZfkrZIu1LiVxU5AyD9kEeXUjrKv9waPCR+9VFI=;
+ b=epAcsjuT6bgFDleHifLkYCkuPMYQDQrH1NS6NyYHoVRC3WfhRxAJO19C4Vqezb4ewqs+NXWjCXpHKtRZ2R/X3KcO1RwIN5KFjynN953ylu+UGIBK0JqNTwvVLNjyKEA/jaLWSCKG2m7G9ea6/tlk3KkpBNZaBujD3izaIF82sX169M9ai0WkuwphzFeAI4CDhmqX4TkQ6VaHrmskSTHv5FuaP+8FQNxPNPw0lHHUEIpPepht4NZf4X7gzHuK6r1fBwLutruebcrhDKdyjN2p5h+8pmPMjh5HMAq8U5MlJvSMRCHxx1DFqWqEVOn4smCbx4zx+v35JCO9MhX4W9OCSw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=imgtec.com; dmarc=pass action=none header.from=imgtec.com;
+ dkim=pass header.d=imgtec.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=IMGTecCRM.onmicrosoft.com; s=selector2-IMGTecCRM-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Mb0KNZfkrZIu1LiVxU5AyD9kEeXUjrKv9waPCR+9VFI=;
+ b=Qc0nwLIrYBepD1bAAGvY/llxKeR85o+rj1ytlxUTAMtGZWZGOdzzQtbCzAbuTClxo/aV8GrtFlFrogqT1JN+d+Hn0PGBLwGE3SfPefuEO7EILJ0X70KRJy6tAkhR0w84dqWVwPOstCJibuy3KMdVuD5HJP6R6uichiow85nr094=
+Received: from LO6P265MB6032.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:2a5::14)
+ by LOYP265MB1838.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:f0::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.21; Mon, 27 Nov
+ 2023 10:40:23 +0000
+Received: from LO6P265MB6032.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::3ca3:d6ce:efeb:31ba]) by LO6P265MB6032.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::3ca3:d6ce:efeb:31ba%3]) with mapi id 15.20.7025.022; Mon, 27 Nov 2023
+ 10:40:22 +0000
+From:   Frank Binns <Frank.Binns@imgtec.com>
+To:     "tzimmermann@suse.de" <tzimmermann@suse.de>,
+        Donald Robson <Donald.Robson@imgtec.com>,
+        Matt Coster <Matt.Coster@imgtec.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "colin.i.king@gmail.com" <colin.i.king@gmail.com>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "maarten.lankhorst@linux.intel.com" 
+        <maarten.lankhorst@linux.intel.com>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "mripard@kernel.org" <mripard@kernel.org>
+CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH][next] drm/imagination: Fix a couple of spelling mistakes
+ in literal strings
+Thread-Topic: [PATCH][next] drm/imagination: Fix a couple of spelling mistakes
+ in literal strings
+Thread-Index: AQHaIR4fozIACA5n80yTD+74aC97IA==
+Date:   Mon, 27 Nov 2023 10:40:22 +0000
+Message-ID: <e0575791d72a69fec7100d17a9232641f7a4c836.camel@imgtec.com>
+References: <20231124163917.300685-1-colin.i.king@gmail.com>
+In-Reply-To: <20231124163917.300685-1-colin.i.king@gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.36.5-0ubuntu1 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: LO6P265MB6032:EE_|LOYP265MB1838:EE_
+x-ms-office365-filtering-correlation-id: 45fc0f91-a1b9-4df0-9f18-08dbef354251
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /lJ756Tt/BjDXT51Xwg1fjvb92mVluYIUHaAUssV2MqGZabN6HYSL6TGsV2YX4aWSw9yrrZ2mGWLl4hDXlWLmtWQfwo5MEcMAUuKGcdeHTqNdaWOfofroIX+AYz0CcZkKH9qeq+bZLm82vBvAzuH56oDh0Ts24VK5yip+HD+wnaa6qPDs2vQu9pihwWwwcWYPwEOHqf1/3v1aAXxtoQx9yQbi8CGD+HlwL+/XXzDft+96eUU9f/3jdIJcFmD6l6oj3hB4H3cBdsBXQL/L3s0I/Wl/56jBQAcSwxZDif8qyCDECRav/XuUs/UvopYLTkFWVkZ1/6RNDe2AMuNh3eSdHnZqkRiORfq064PMEfz7wuWmOXxmZfMbTmYu6gJmAwr6Yntdgqh2TVj6Yi7OFrbNawELql90tAakU/eETpK3YdiREnjD5SaMn7+PhW6jqQnHpcmp1ifxJImi6GlcoFbOv4t02+hpb7M0/g89ya1KfSNBv9BJyKMxA1FmeSvSqeRlCjFGK6s1LHsqP9034DcK8tJmWenXPlBzGXlHoNyRKUSyZDfBRjFyn2vjfSxQoNKicSWlaT/kCdXU9Aozel22QnZXBUVeKPlRzQI3RTW284j7d0FLjBSPPND7+bR5gnh
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO6P265MB6032.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(346002)(39840400004)(136003)(366004)(376002)(396003)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(4001150100001)(41300700001)(5660300002)(2906002)(8676002)(8936002)(4326008)(66446008)(66946007)(54906003)(316002)(6512007)(66556008)(66476007)(76116006)(110136005)(6486002)(478600001)(64756008)(71200400001)(36756003)(2616005)(6506007)(38070700009)(26005)(83380400001)(38100700002)(86362001)(122000001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?T0VKb2RmaGlzczkwWUptQlFtODFIRVFjUCt2OEJGUi8wYzZ5TlNKMTlNVlY1?=
+ =?utf-8?B?U3h6M1pKb3hCc0dOMTJWOE1DdmdTWUR1a3ZvMDVnaTN2b2UrdDVkaUdkVkVS?=
+ =?utf-8?B?bENZYVkxdjAyY3pxY25HeVJNRUFlWUI1ZklXWVlhdDV6SERGVTMzdWtWZFpG?=
+ =?utf-8?B?aGhTbW1ZdmVwOUxpQmhpVVR6ZXN1aDdYdHdKejhrYWVZdGNhbVRNOGdhTnJt?=
+ =?utf-8?B?NTdpZ2hETk1PcXVrZVd5cU56ejRzb0k2MU41ZTBETE5ic0crdUFLdmxsR01W?=
+ =?utf-8?B?YkRaMnh3TCtqbjVGMW9YbFM1UFZkblBrYit1OGxkVlRLWXdyQjJzWkVJUEli?=
+ =?utf-8?B?VVl0TFgxMnBJZ0hWc1Jpa0t3ZnFoeE5tcFhrNVJ0MnJ6b1hsVjEwRjZHZnZm?=
+ =?utf-8?B?dE9mZ2RCaWlNK3VMaHRNOUkvSGVQMlN3OGJSd3RzeVViUnBOcXhUM3FXMWV3?=
+ =?utf-8?B?NVdzb1gxOW8wNU1odWFDeUx2eUZzY2RwMGF6Tkdwa3NabVF4MEcydyt3dnFj?=
+ =?utf-8?B?eGRtRVVldkNRclZjcXpLU2xqSG5CTkFmK0R5dVBWeXlmY3I0aGNvTzR0MTJz?=
+ =?utf-8?B?UVlmcWxUUkNJclkrSjZ1TmpGM1J0aVBzZlJsOWpUV2FPdThYRDlnWWxkd1Ja?=
+ =?utf-8?B?Q3RUZnhWZGREZi9pejdFRlptdTVSajM2bmZBWS9aakI0ZUN3UXZqWkoyd3ZK?=
+ =?utf-8?B?QnhLUkhicHEvV2R6U2pqTmRHb05oVm1XempYSDJlT1dFTDczdVZCZENoS2FE?=
+ =?utf-8?B?eTUxV3dLbUFvdGRZY0RNVFJOZFVrSjFVNCtJdVVBeVZRTHU5N3Y4ZUZQTVJr?=
+ =?utf-8?B?ajdtcElNOWd6cEdwdHJvak1VeXhxOVhCZS91WFl5M1JpQzNOVStHRDQwTFJk?=
+ =?utf-8?B?TUdSdG5xc1R2QTZBRlh1aXNjTFJsM2pxOWdzSGNJNjFYUCs1OEVLaDh6UGhJ?=
+ =?utf-8?B?SS96RVVrdkw2UjE2eTRCd0NOM1dhOHBXcm85WWFZRUduanNuUEFrOFBWVSs4?=
+ =?utf-8?B?cVV2TExSUmxYVlovNGkwOThUNGI4UkFBQW1zVkdBWDd6KzdNVEFtQXY0T1Q3?=
+ =?utf-8?B?QXRhT0NmSy8vMy9rNU5yNSt1M014dEw5dkpud2psWHYrbjdrUW0xZVlVZFBw?=
+ =?utf-8?B?dGdwV1BJWFIzMTdZY1BNejRsTTJSSUMwZWlGMkVmU2xJV0xSK1dLNTFHN2Na?=
+ =?utf-8?B?RG1EaXg5R3UxM3ZNVWpGUEVzTmVyTWZmbVBaTzNVRlZ0cVI2eU5mN0pUdXo3?=
+ =?utf-8?B?ZmpvNzZ2T0FXckRMVXZ2VG1ZQjFEcTIwUlhBMzh6Wk9laEtUdmRrZXg1ZVV1?=
+ =?utf-8?B?VFRGWVM4R0F5V3JKRDh4WTBjTE9aeWlhNE1tdlRLWjl3TWEzWWt1aFM5dGhN?=
+ =?utf-8?B?TkpEYVE5aEdMaVhIYjVDZVdYSVpSMU9LbjZjMW9TWWd0N2lVWGZCZithQUUx?=
+ =?utf-8?B?MDNVbnN0UHBBdGtIM2VWV3Q4cVZjTUJDRzROTk5XV0VCeFhvOFFJR1NxK3ZO?=
+ =?utf-8?B?OFFTdUlvSTI4anNkNk9mMUJvUzNuMEtxejJhQ0R6R2hobTJOeXRwbmdaUnQ1?=
+ =?utf-8?B?VUNTbjRGZlVwakJzbE9xUS84MG10ck1TeHdjMWowOVlta0dOSGZMam1DUW1V?=
+ =?utf-8?B?UkVGdDJ2WkFSaXdIbXc3NkZTV1dzREZoVjlWWjhvNkt1TEVXT2hLTTR1MTR0?=
+ =?utf-8?B?U0JRRGx6dkFlUDhqaXZwY0tic2huSTIvK3kza3FOY1RFdnVtVEJuOFlsZEFC?=
+ =?utf-8?B?dVRoVVlvOGkyNmlwRkNzTm5oWmN3UncrMm1FaUxXdnMwTVdYZUNHUmw2VE14?=
+ =?utf-8?B?VFNkK3BNczR6UWU2QTlMa08vcTdMVFRYNks1WDNRVEZkT1JKeVVsbDIrWm1R?=
+ =?utf-8?B?N2VidTJxWWVVMlEvUDNkZWJIUk1DUDZiVEdTMXg3S1ZTcXRDcGxjdTVRQm0y?=
+ =?utf-8?B?MnMvS3hYZG1ZczYwUkhjeVVGVEUzOXZPYWpOZyt2TDlqeDVucFdFU0pvZENR?=
+ =?utf-8?B?MUVQSnJzZS9Xc2Q1TVkvbUNTck1XTnNPa0FsbFQ1WTl5aHhzMFBFdXdYck5W?=
+ =?utf-8?B?TDNiOXdpYzZhQm04RjFLdHJMbUltQ3UybGVhRU1GYWF2WjlKK2hzNkhHK1hD?=
+ =?utf-8?B?bWxIMEljSXN0emdhK1ZKYWsyc1pDdTR4QzA0TWp6c3owbG5DMWlSUGdiWDVS?=
+ =?utf-8?B?TFE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <39EB98C3C99ED440AF6DAF83E24DEBA4@GBRP265.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_FILL_THIS_FORM_SHORT,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: LO6P265MB6032.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 45fc0f91-a1b9-4df0-9f18-08dbef354251
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Nov 2023 10:40:22.7440
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0d5fd8bb-e8c2-4e0a-8dd5-2c264f7140fe
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: xMOuIA1ueFkuHkT5pojNgBOd6Hz37EZCoQLn2g4SoBID9p85c1nk7MPb/VuHNgVAefg60oH+t+m7z/uslnDVjA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LOYP265MB1838
+X-OriginatorOrg: imgtec.com
+X-EXCLAIMER-MD-CONFIG: 15a78312-3e47-46eb-9010-2e54d84a9631
+X-Proofpoint-ORIG-GUID: QGkkkpkmA6mq39Hs3UBhyJuvbV_Rgkwz
+X-Proofpoint-GUID: QGkkkpkmA6mq39Hs3UBhyJuvbV_Rgkwz
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-Content-Transfer-Encoding: quoted-printable
-X-purgate: clean
-X-purgate-ID: 151534::1701083000-57E4C018-8A688704/0/0
-X-purgate-type: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The serial tty interface also supports additional input signals, that
-can also be evaluated within this trigger. This change is adding the
-following additional input sources, which could be controlled
-via the '/sys/class/<leds>/' sysfs interface.
-
-Explanation:
-DCE =3D Data Communication Equipment (Modem)
-DTE =3D Data Terminal Equipment (Computer)
-
-- cts:
-  DCE is ready to accept data from the DTE (CTS =3D Clear To Send). If
-  the line state is detected, the LED is switched on.
-  If set to 0 (default), the LED will not evaluate CTS.
-  If set to 1, the LED will evaluate CTS.
-
-- dsr:
-  DCE is ready to receive and send data (DSR =3D Data Set Ready). If the
-  line state is detected, the LED is switched on.
-  If set to 0 (default), the LED will not evaluate DSR.
-  If set to 1, the LED will evaluate DSR.
-
-- dcd:
-  DTE is receiving a carrier from the DCE (DCD =3D Data Carrier Detect).
-  If the line state is detected, the LED is switched on.
-  If set to 0 (default), the LED will not evaluate DCD.
-  If set to 1, the LED will evaluate DCD.
-
-- rng:
-  DCE has detected an incoming ring signal on the telephone line
-  (RNG =3D Ring Indicator). If the line state is detected, the LED is
-  switched on.
-  If set to 0 (default), the LED will not evaluate RNG.
-  If set to 1, the LED will evaluate RNG.
-
-Also add an invert flag on LED blink, so that the LED blinks in the
-correct order.
-
-* If one off the new enabled input signals are evaluatet as 'enabled',
-  and data are transmitted, then the LED should first blink 'off' and
-  then 'on' (invert).
-* If all the new enabled input signals are evaluatet as 'disabled',
-  and data are transmitted, then the LED should first blink 'on' and
-  then 'off'.
-
-Signed-off-by: Florian Eckert <fe@dev.tdt.de>
-Reviewed-by: Maarten Brock <m.brock@vanmierlo.com>
----
- .../ABI/testing/sysfs-class-led-trigger-tty   | 40 ++++++++++
- drivers/leds/trigger/ledtrig-tty.c            | 78 ++++++++++++++++++-
- 2 files changed, 117 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/ABI/testing/sysfs-class-led-trigger-tty b/Docu=
-mentation/ABI/testing/sysfs-class-led-trigger-tty
-index 504dece151b8..30cef9ac0f49 100644
---- a/Documentation/ABI/testing/sysfs-class-led-trigger-tty
-+++ b/Documentation/ABI/testing/sysfs-class-led-trigger-tty
-@@ -20,3 +20,43 @@ Description:
- 		Signal transmission (tx) of data on the named tty device.
- 		If set to 0, the LED will not blink on transmission.
- 		If set to 1 (default), the LED will blink on transmission.
-+
-+What:		/sys/class/leds/<led>/cts
-+Date:		February 2024
-+KernelVersion:	6.8
-+Description:
-+		CTS =3D Clear To Send
-+		DCE is ready to accept data from the DTE.
-+		If the line state is detected, the LED is switched on.
-+		If set to 0 (default), the LED will not evaluate CTS.
-+		If set to 1, the LED will evaluate CTS.
-+
-+What:		/sys/class/leds/<led>/dsr
-+Date:		February 2024
-+KernelVersion:	6.8
-+Description:
-+		DSR =3D Data Set Ready
-+		DCE is ready to receive and send data.
-+		If the line state is detected, the LED is switched on.
-+		If set to 0 (default), the LED will not evaluate DSR.
-+		If set to 1, the LED will evaluate DSR.
-+
-+What:		/sys/class/leds/<led>/dcd
-+Date:		February 2024
-+KernelVersion:	6.8
-+Description:
-+		DCD =3D Data Carrier Detect
-+		DTE is receiving a carrier from the DCE.
-+		If the line state is detected, the LED is switched on.
-+		If set to 0 (default), the LED will not evaluate CAR (DCD).
-+		If set to 1, the LED will evaluate CAR (DCD).
-+
-+What:		/sys/class/leds/<led>/rng
-+Date:		February 2024
-+KernelVersion:	6.8
-+Description:
-+		RNG =3D Ring Indicator
-+		DCE has detected an incoming ring signal on the telephone
-+		line. If the line state is detected, the LED is switched on.
-+		If set to 0 (default), the LED will not evaluate RNG.
-+		If set to 1, the LED will evaluate RNG.
-diff --git a/drivers/leds/trigger/ledtrig-tty.c b/drivers/leds/trigger/le=
-dtrig-tty.c
-index ee6d01ecb309..e30926424c48 100644
---- a/drivers/leds/trigger/ledtrig-tty.c
-+++ b/drivers/leds/trigger/ledtrig-tty.c
-@@ -19,17 +19,26 @@ struct ledtrig_tty_data {
- 	int rx, tx;
- 	bool mode_rx;
- 	bool mode_tx;
-+	bool mode_cts;
-+	bool mode_dsr;
-+	bool mode_dcd;
-+	bool mode_rng;
- };
-=20
- /* Indicates which state the LED should now display */
- enum led_trigger_tty_state {
- 	TTY_LED_BLINK,
-+	TTY_LED_ENABLE,
- 	TTY_LED_DISABLE,
- };
-=20
- enum led_trigger_tty_modes {
- 	TRIGGER_TTY_RX =3D 0,
- 	TRIGGER_TTY_TX,
-+	TRIGGER_TTY_CTS,
-+	TRIGGER_TTY_DSR,
-+	TRIGGER_TTY_DCD,
-+	TRIGGER_TTY_RNG,
- };
-=20
- static int ledtrig_tty_wait_for_completion(struct device *dev)
-@@ -111,6 +120,18 @@ static ssize_t ledtrig_tty_attr_show(struct device *=
-dev, char *buf,
- 	case TRIGGER_TTY_TX:
- 		state =3D trigger_data->mode_tx;
- 		break;
-+	case TRIGGER_TTY_CTS:
-+		state =3D trigger_data->mode_cts;
-+		break;
-+	case TRIGGER_TTY_DSR:
-+		state =3D trigger_data->mode_dsr;
-+		break;
-+	case TRIGGER_TTY_DCD:
-+		state =3D trigger_data->mode_dcd;
-+		break;
-+	case TRIGGER_TTY_RNG:
-+		state =3D trigger_data->mode_rng;
-+		break;
- 	}
-=20
- 	return sysfs_emit(buf, "%u\n", state);
-@@ -134,6 +155,18 @@ static ssize_t ledtrig_tty_attr_store(struct device =
-*dev, const char *buf,
- 	case TRIGGER_TTY_TX:
- 		trigger_data->mode_tx =3D state;
- 		break;
-+	case TRIGGER_TTY_CTS:
-+		trigger_data->mode_cts =3D state;
-+		break;
-+	case TRIGGER_TTY_DSR:
-+		trigger_data->mode_dsr =3D state;
-+		break;
-+	case TRIGGER_TTY_DCD:
-+		trigger_data->mode_dcd =3D state;
-+		break;
-+	case TRIGGER_TTY_RNG:
-+		trigger_data->mode_rng =3D state;
-+		break;
- 	}
-=20
- 	return size;
-@@ -154,6 +187,10 @@ static ssize_t ledtrig_tty_attr_store(struct device =
-*dev, const char *buf,
-=20
- DEFINE_TTY_TRIGGER(rx, TRIGGER_TTY_RX);
- DEFINE_TTY_TRIGGER(tx, TRIGGER_TTY_TX);
-+DEFINE_TTY_TRIGGER(cts, TRIGGER_TTY_CTS);
-+DEFINE_TTY_TRIGGER(dsr, TRIGGER_TTY_DSR);
-+DEFINE_TTY_TRIGGER(dcd, TRIGGER_TTY_DCD);
-+DEFINE_TTY_TRIGGER(rng, TRIGGER_TTY_RNG);
-=20
- static void ledtrig_tty_work(struct work_struct *work)
- {
-@@ -161,6 +198,8 @@ static void ledtrig_tty_work(struct work_struct *work=
-)
- 		container_of(work, struct ledtrig_tty_data, dwork.work);
- 	enum led_trigger_tty_state state =3D TTY_LED_DISABLE;
- 	unsigned long interval =3D LEDTRIG_TTY_INTERVAL;
-+	bool invert =3D false;
-+	int status;
- 	int ret;
-=20
- 	if (!trigger_data->ttyname)
-@@ -188,6 +227,33 @@ static void ledtrig_tty_work(struct work_struct *wor=
-k)
- 		trigger_data->tty =3D tty;
- 	}
-=20
-+	status =3D tty_get_tiocm(trigger_data->tty);
-+	if (status > 0) {
-+		if (trigger_data->mode_cts) {
-+			if (status & TIOCM_CTS)
-+				state =3D TTY_LED_ENABLE;
-+		}
-+
-+		if (trigger_data->mode_dsr) {
-+			if (status & TIOCM_DSR)
-+				state =3D TTY_LED_ENABLE;
-+		}
-+
-+		if (trigger_data->mode_dcd) {
-+			if (status & TIOCM_CAR)
-+				state =3D TTY_LED_ENABLE;
-+		}
-+
-+		if (trigger_data->mode_rng) {
-+			if (status & TIOCM_RNG)
-+				state =3D TTY_LED_ENABLE;
-+		}
-+	}
-+
-+	/*
-+	 * The evaluation of rx/tx must be done after the evaluation
-+	 * of TIOCM_*, because rx/tx has priority.
-+	 */
- 	if (trigger_data->mode_rx || trigger_data->mode_tx) {
- 		struct serial_icounter_struct icount;
-=20
-@@ -197,11 +263,13 @@ static void ledtrig_tty_work(struct work_struct *wo=
-rk)
-=20
- 		if (trigger_data->mode_tx && (icount.tx !=3D trigger_data->tx)) {
- 			trigger_data->tx =3D icount.tx;
-+			invert =3D state =3D=3D TTY_LED_ENABLE;
- 			state =3D TTY_LED_BLINK;
- 		}
-=20
- 		if (trigger_data->mode_rx && (icount.rx !=3D trigger_data->rx)) {
- 			trigger_data->rx =3D icount.rx;
-+			invert =3D state =3D=3D TTY_LED_ENABLE;
- 			state =3D TTY_LED_BLINK;
- 		}
- 	}
-@@ -210,7 +278,11 @@ static void ledtrig_tty_work(struct work_struct *wor=
-k)
- 	switch (state) {
- 	case TTY_LED_BLINK:
- 		led_blink_set_oneshot(trigger_data->led_cdev, &interval,
--				&interval, 0);
-+				&interval, invert);
-+		break;
-+	case TTY_LED_ENABLE:
-+		led_set_brightness(trigger_data->led_cdev,
-+				trigger_data->led_cdev->blink_brightness);
- 		break;
- 	case TTY_LED_DISABLE:
- 		fallthrough;
-@@ -228,6 +300,10 @@ static struct attribute *ledtrig_tty_attrs[] =3D {
- 	&dev_attr_ttyname.attr,
- 	&dev_attr_rx.attr,
- 	&dev_attr_tx.attr,
-+	&dev_attr_cts.attr,
-+	&dev_attr_dsr.attr,
-+	&dev_attr_dcd.attr,
-+	&dev_attr_rng.attr,
- 	NULL
- };
- ATTRIBUTE_GROUPS(ledtrig_tty);
---=20
-2.30.2
-
+SGkgQ29saW4sDQoNClRoYW5rIHlvdSBmb3IgdGhlIHBhdGNoLg0KDQpPbiBGcmksIDIwMjMtMTEt
+MjQgYXQgMTY6MzkgKzAwMDAsIENvbGluIElhbiBLaW5nIHdyb3RlOg0KPiBUaGVyZSBhcmUgYSBj
+b3VwbGUgb2Ygc3BlbGxpbmcgbWlzdGFrZXMgaW4gbGl0ZXJhbCBzdHJpbmdzIGluIHRoZQ0KPiBz
+dGlkX2ZtdHMgYXJyYXkuIEZpeCB0aGVzZS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IENvbGluIElh
+biBLaW5nIDxjb2xpbi5pLmtpbmdAZ21haWwuY29tPg0KDQpSZXZpZXdlZC1ieTogRnJhbmsgQmlu
+bnMgPGZyYW5rLmJpbm5zQGltZ3RlYy5jb20+DQoNCj4gLS0tDQo+ICBkcml2ZXJzL2dwdS9kcm0v
+aW1hZ2luYXRpb24vcHZyX3JvZ3VlX2Z3aWZfc2YuaCB8IDQgKystLQ0KPiAgMSBmaWxlIGNoYW5n
+ZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9k
+cml2ZXJzL2dwdS9kcm0vaW1hZ2luYXRpb24vcHZyX3JvZ3VlX2Z3aWZfc2YuaCBiL2RyaXZlcnMv
+Z3B1L2RybS9pbWFnaW5hdGlvbi9wdnJfcm9ndWVfZndpZl9zZi5oDQo+IGluZGV4IDU3MTk1NDE4
+MmYzMy4uNTZlMTEwMDllMTIzIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vaW1hZ2lu
+YXRpb24vcHZyX3JvZ3VlX2Z3aWZfc2YuaA0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vaW1hZ2lu
+YXRpb24vcHZyX3JvZ3VlX2Z3aWZfc2YuaA0KPiBAQCAtNDk3LDcgKzQ5Nyw3IEBAIHN0YXRpYyBj
+b25zdCBzdHJ1Y3Qgcm9ndWVfa21fc3RpZF9mbXQgc3RpZF9mbXRzW10gPSB7DQo+ICAJeyBST0dV
+RV9GV19MT0dfQ1JFQVRFU0ZJRCgyMTMsIFJPR1VFX0ZXX0dST1VQX01BSU4sIDEpLA0KPiAgCSAg
+IlNhZmV0eSBXYXRjaGRvZyB0aHJlc2hvbGQgcGVyaW9kIHNldCB0byAweCV4IGNsb2NrIGN5Y2xl
+cyIgfSwNCj4gIAl7IFJPR1VFX0ZXX0xPR19DUkVBVEVTRklEKDIxNCwgUk9HVUVfRldfR1JPVVBf
+TUFJTiwgMCksDQo+IC0JICAiTVRTIFNhZmV0eSBFdmVudCB0cmlnZ2VkIGJ5IHRoZSBzYWZldHkg
+d2F0Y2hkb2cuIiB9LA0KPiArCSAgIk1UUyBTYWZldHkgRXZlbnQgdHJpZ2dlcmVkIGJ5IHRoZSBz
+YWZldHkgd2F0Y2hkb2cuIiB9LA0KPiAgCXsgUk9HVUVfRldfTE9HX0NSRUFURVNGSUQoMjE1LCBS
+T0dVRV9GV19HUk9VUF9NQUlOLCAzKSwNCj4gIAkgICJETSVkIFVTQyB0YXNrcyByYW5nZSBsaW1p
+dCAwIC0gJWQsIHN0cmlkZSAlZCIgfSwNCj4gIAl7IFJPR1VFX0ZXX0xPR19DUkVBVEVTRklEKDIx
+NiwgUk9HVUVfRldfR1JPVVBfTUFJTiwgMSksDQo+IEBAIC0xMTE0LDcgKzExMTQsNyBAQCBzdGF0
+aWMgY29uc3Qgc3RydWN0IHJvZ3VlX2ttX3N0aWRfZm10IHN0aWRfZm10c1tdID0gew0KPiAgCXsg
+Uk9HVUVfRldfTE9HX0NSRUFURVNGSUQoMzksIFJPR1VFX0ZXX0dST1VQX1NQTSwgMiksDQo+ICAJ
+ICAiM0RNZW1GcmVlIG1hdGNoZXMgZnJlZWxpc3QgMHglMDh4IChGTCB0eXBlID0gJXUpIiB9LA0K
+PiAgCXsgUk9HVUVfRldfTE9HX0NSRUFURVNGSUQoNDAsIFJPR1VFX0ZXX0dST1VQX1NQTSwgMCks
+DQo+IC0JICAiUmFpc2UgdGhlIDNETWVtRnJlZURlZGVjdGVkIGZsYWciIH0sDQo+ICsJICAiUmFp
+c2UgdGhlIDNETWVtRnJlZURldGVjdGVkIGZsYWciIH0sDQo+ICAJeyBST0dVRV9GV19MT0dfQ1JF
+QVRFU0ZJRCg0MSwgUk9HVUVfRldfR1JPVVBfU1BNLCAxKSwNCj4gIAkgICJXYWl0IGZvciBwZW5k
+aW5nIGdyb3cgb24gRnJlZWxpc3QgMHglMDh4IiB9LA0KPiAgCXsgUk9HVUVfRldfTE9HX0NSRUFU
+RVNGSUQoNDIsIFJPR1VFX0ZXX0dST1VQX1NQTSwgMSksDQo=
