@@ -2,116 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96FED7F98B5
+	by mail.lfdr.de (Postfix) with ESMTP id EC48F7F98B6
 	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 06:33:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbjK0FcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 00:32:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44496 "EHLO
+        id S229583AbjK0FdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 00:33:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjK0Fb6 (ORCPT
+        with ESMTP id S229450AbjK0FdA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 00:31:58 -0500
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2059.outbound.protection.outlook.com [40.107.21.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11685E3;
-        Sun, 26 Nov 2023 21:32:05 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ltqPj4WLpDJYdHT+4WInqH0aeLOAU/A9zmy130O2JM8r7rASJoAza+t/WpU66tgyAkFAHKJnAzA/Z2NBeHD/lyWsIL20qz3DdE37S+WcZIZgGfP5Qf89g3e/V99gHhyRFqbwdVHZiGGty1mC3w+46eKpRo9mE1LRS4RW9cvRqPRKttFFsFqpbNNgWoP4lNVsUodj6irVKcqioPFW0lRwclrluBBWJYMxO3zE4aUMlfm9sfh4HEiNbgg7DZZRMI6GcP3kBmT1jVmCDih8XQrBM2haPFO04FZr++pkEru8dAvkzqhroOo83ddFAADgCZ5LK0c1r3bbLdcZM7tUqXtHRw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/moDtIKrLaEZ9O+P3MvoWR50Uhy9gWuNEO3gkDsOIqY=;
- b=WhpsvMht4JMGN8ehxNBmY+Q5X/aWln7p21um1HdNByrAWrqSpR2z9DzU7PbVxxp8/zgVY+wUiWK9dHg6Q6o5y6kWtQnXSisB+oKBgBMmo3l3tDM+ZB2L1QjVXJKu0LAM/W6BkiSyZWFdhIm4Q0gUXZPNVV6fAvW3rwLljI1EH4r++LACOai/ekv3ghm5HehFd9TP3r3u1z63NI3BB72ZwEI+ljShG70DPHGRGEiv6KFTH1v5Tu+4YFxf1UEm7jyVqruGiDciCoCollt6cjpAd/Lo1XOqB48yj9FM3sRvbq0TGJnTn6oLFjknqkGxCAW+2k8KNk95uort1zTY8WTnKg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/moDtIKrLaEZ9O+P3MvoWR50Uhy9gWuNEO3gkDsOIqY=;
- b=RT4Z3AR5OfO+Stn4eQClr3PA61YcdaTdL6vVZ0OEABNT5K2Ooo0il619JPR+o3vyRhrns2+nzwi3aZoS923eC57li2zQyGrQi6JZhiP0G06I/HOFo16wkujjeWeI6njMRrWxG1+exup24+pG3uvo/+FaJ40OBL9kK3NOUz4NxtE=
-Received: from AM7PR04MB7046.eurprd04.prod.outlook.com (2603:10a6:20b:113::22)
- by DBAPR04MB7302.eurprd04.prod.outlook.com (2603:10a6:10:1a5::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.19; Mon, 27 Nov
- 2023 05:32:02 +0000
-Received: from AM7PR04MB7046.eurprd04.prod.outlook.com
- ([fe80::d99:f43f:65a3:9bf]) by AM7PR04MB7046.eurprd04.prod.outlook.com
- ([fe80::d99:f43f:65a3:9bf%7]) with mapi id 15.20.7046.015; Mon, 27 Nov 2023
- 05:32:02 +0000
-From:   Ying Liu <victor.liu@nxp.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-CC:     Linus Walleij <linus.walleij@linaro.org>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: RE: linux-next: build failure after merge of the drm-misc-fixes tree
-Thread-Topic: linux-next: build failure after merge of the drm-misc-fixes tree
-Thread-Index: AQHaILAPih4tujf4ZkeAQQ148k8/RrCNoPhg
-Date:   Mon, 27 Nov 2023 05:32:02 +0000
-Message-ID: <AM7PR04MB704669C9C5471A309F8F72B198BDA@AM7PR04MB7046.eurprd04.prod.outlook.com>
-References: <20231127083205.44b25fa8@canb.auug.org.au>
-In-Reply-To: <20231127083205.44b25fa8@canb.auug.org.au>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AM7PR04MB7046:EE_|DBAPR04MB7302:EE_
-x-ms-office365-filtering-correlation-id: b29317dd-989b-44aa-4442-08dbef0a2f44
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: IFUbNvIN6yE8DzgMWJj3u5uMduP8nsQDWf//NezNkWJgLkeasZejE9uqIIYLfvKb17JW8XgYzG9aOQOdJv+vGbYWmxRFmk8jo6I+wys1rR5DCcjTHmCwdkpow60J9ItVKPCvc/Yix1dilKHFjq666RmPqCyoO8Bqc7N8bbIpzJNIx0l3NB8Vnz5GmQE+/nY0ihypBg1pNS0MWBXiCUdfD9NSYERjdZOJzdOKiZYbRrdsEAklYME69mfP66TLk1xWXzrOPhHXE+ZOYIq9W1xAgXXMwSLHQ6VktOOwI+OLGH5UqkY90QJ/06JyECHBCU3b8s0oY5xDxUaIjoYRlwIineAofZbbdZ0+343zWZnyUehzZ75wIQ8AbcfDZX5ukehczXckZEjh0YG0azBODadGgQcrLxNhl6glBWdlck5iQrzsLJLZaXRpCAM7Q5QYGGYsOWrcghyHIYiQ+52Y/+haVuT782OdZVt+91AbOTJBidwd6cpstHwiLCk83Iwyd8noEL98UvRjM3SLCkkefF0SdQVFYFv6p3w25PxjKpp/Yhz2W8R6oJ3nYjAsCSkzvF0+rqRTuXA5ij9tHwdB2DTV0NTQjD2f78JTtw9b+5UEeTc=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB7046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(366004)(136003)(346002)(39860400002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(6506007)(53546011)(966005)(478600001)(9686003)(7696005)(71200400001)(4744005)(83380400001)(2906002)(5660300002)(41300700001)(66946007)(76116006)(66556008)(66446008)(64756008)(110136005)(54906003)(66476007)(316002)(4326008)(52536014)(8936002)(8676002)(38100700002)(38070700009)(86362001)(122000001)(33656002)(55016003)(26005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Tv4fPJ2YyZqweooepek4ymKf3SPqGxK8kuj6C3f5ZJHTF78z4bNs8Ozcn0AJ?=
- =?us-ascii?Q?2lSvwFldAsj5sEWZb4o8ovYXQibUR/0XD6ytJMhW/OEdf8/xPRTTYdy+FLKt?=
- =?us-ascii?Q?YUJjtDyyuoJSG6VguaMBRmk/yKubQUTuCShefLYQUGTePgAT8RyOzu2rVGTD?=
- =?us-ascii?Q?yZYpR3ObkYUGQ2f+XGOZLGPLCDJRDhjZAym+tfsdzMUlVHpSmv6WH7g6PAq2?=
- =?us-ascii?Q?HGusCgGCgM8epbeg5Do3IeYvM4VivKSZh0p3JhQjc8l2ev3BpI+2W9axzsTU?=
- =?us-ascii?Q?OrA2VdYiCV1VTks9YaI8Pgg5BjlZ22OcTnIFowc6U9WFtjPW+A3ZLJrD1ro2?=
- =?us-ascii?Q?MBgCEIB3C3MYJAnWv9rGU4GJcbdC+ZyJDQ1L5q6yVkZUxrMVBsxU+z+GfehC?=
- =?us-ascii?Q?Luv6aHUypjzn9JTl1d9E9RtbJyLBdYA8Vr9fjmLx9qe72Jf8RCZZzvkadjRb?=
- =?us-ascii?Q?TDDnS0nPxlu/b5ixhAY0S5pHADFMb+fKGconHhZ4DMIoYJ58FyFBZY3wij97?=
- =?us-ascii?Q?0H4336wRo57MV/ojgHfWGnpG9dPNfQB+e0Jd/V03jk39YoMyWVnt/HM1jF6z?=
- =?us-ascii?Q?IhnvLxcaQv5tt+KaJwrjYsrozOvN55vRWLIdhDki7bqGcUvu5EO47eCUTfAf?=
- =?us-ascii?Q?LZUDyXFijvXrAXhvrtDi+LauvwDbNobEs/mnXxy0eBYlMSmyCwKABBs8P2Km?=
- =?us-ascii?Q?m4nm4F1rIrDdh4lzl2y+VC3XpIGC3dT8wbgRobFh64gR7Xwuk6ccg94ryBeR?=
- =?us-ascii?Q?CItSEZrShGw7gauAMBQ/fIhbRBfCxHvYugGT2LebV5cH40Uv64NAg4+dulPb?=
- =?us-ascii?Q?/Mcl2qSj6JfS3cJQnFo6MJIO0+apVCeLSoOu03JbIVJaI6wk6E3faPuIGjR3?=
- =?us-ascii?Q?1QRCtlVjPH5xW+eF5XQjQKgRna9SKFdsWf7BNkyEN17IAy+BYY2fIHnJWNSE?=
- =?us-ascii?Q?ht2ckujx3nveB9c7uqkMGaoeGx2uFM0O0RxJtZ++ebWVZEjNkoE1n9jT8YD7?=
- =?us-ascii?Q?uXXcCDcqymqUkgFAgg8icyVM8rtJu2+rY1P8VKh+SNjUac9/AYmzh0Gh3iq9?=
- =?us-ascii?Q?tdW7cDh/8rebGPcInaMHM9sZKaH2OqEO5FIhes817mzvdsHopzQGRPyOgtYv?=
- =?us-ascii?Q?vO0QthtjITVwxmJgw7NcFG3uN8fFrhImSMC1C6YBg2oiwnEFORY8OVoxZhzd?=
- =?us-ascii?Q?Y1s7XiHQLupNGz4Yrf4y2Fof536Xu3u1KRHgESh3dBIS4zlT16aLTd3aja/o?=
- =?us-ascii?Q?QzRujaSjsQYsF1RCSG887L7VQIzXxMChKfaGb1JYbThXQAVeMWxMkd1HUXTd?=
- =?us-ascii?Q?C6QDHwvtcp2kPCkhUhtr9pyI0EOBpGlnfFJ0APbUK9wFvrdTyDPVSn2aS5Au?=
- =?us-ascii?Q?+D8V4D3uXlkh5lQc/aAREkcGbchECShvA15jPgpxWBubYeZQFxoJsSeqvjop?=
- =?us-ascii?Q?jFnfEtAalyFWZl6nGlZOZ0bOWUupvJaSCKzZ01mIbMi9l3UW6yb5YWzIPTb9?=
- =?us-ascii?Q?ocAm2/KpDHSIIR3zFU+pfoxshjiZCup9Il9ks4aCJz99RfNrDW3PZGlOD7Mi?=
- =?us-ascii?Q?s9TXPWmJhgSOGhY0QHM=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 27 Nov 2023 00:33:00 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 84ABEE3;
+        Sun, 26 Nov 2023 21:33:06 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C65412F4;
+        Sun, 26 Nov 2023 21:33:52 -0800 (PST)
+Received: from [10.162.41.8] (a077893.blr.arm.com [10.162.41.8])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E861F3F73F;
+        Sun, 26 Nov 2023 21:33:01 -0800 (PST)
+Message-ID: <2988dbfe-1384-4b2f-9450-29212c835d6d@arm.com>
+Date:   Mon, 27 Nov 2023 11:02:58 +0530
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB7046.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b29317dd-989b-44aa-4442-08dbef0a2f44
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Nov 2023 05:32:02.4330
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 9l78jUn8FsP4wc5nZzyOnQavRHunZz3DmH/7DYCZDRjz2i3eduDTp+AKeN/F3N6koQxC3qv7tNRmD48koSQMvw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR04MB7302
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 2/3] arm64: perf: Add support for event counting
+ threshold
+Content-Language: en-US
+To:     James Clark <james.clark@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, suzuki.poulose@arm.com,
+        will@kernel.org, mark.rutland@arm.com, namhyung@gmail.com
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231124102857.1106453-1-james.clark@arm.com>
+ <20231124102857.1106453-3-james.clark@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <20231124102857.1106453-3-james.clark@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -119,33 +50,227 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, November 27, 2023 5:32 AM, Stephen Rothwell <sfr@canb.auug.org.a=
-u> wrote:
-> Hi all,
->=20
-> After merging the drm-misc-fixes tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
->=20
-> ERROR: modpost: "device_is_dependent"
-> [drivers/gpu/drm/drm_kms_helper.ko] undefined!
 
-I've sent a new patch series to address the build failure.
-It includes a new patch to export device_is_dependent and then
-adds the offending commit.
-https://lore.kernel.org/all/20231127051414.3783108-1-victor.liu@nxp.com/T/#=
-t
 
-Regards,
-Liu Ying
+On 11/24/23 15:58, James Clark wrote:
+> FEAT_PMUv3_TH (Armv8.8) permits a PMU counter to increment only on
+> events whose count meets a specified threshold condition. For example if
+> PMEVTYPERn.TC (Threshold Control) is set to 0b101 (Greater than or
+> equal, count), and the threshold is set to 2, then the PMU counter will
+> now only increment by 1 when an event would have previously incremented
+> the PMU counter by 2 or more on a single processor cycle.
+> 
+> Three new Perf event config fields, 'threshold', 'threshold_compare' and
+> 'threshold_count' have been added to control the feature.
+> threshold_compare maps to the upper two bits of PMEVTYPERn.TC and
+> threshold_count maps to the first bit of TC. These separate attributes
+> have been picked rather than enumerating all the possible combinations
+> of the TC field as in the Arm ARM. The attributes would be used on a
+> Perf command line like this:
+> 
+>   $ perf stat -e stall_slot/threshold=2,threshold_compare=2/
+> 
+> A new capability for reading out the maximum supported threshold value
+> has also been added:
+> 
+>   $ cat /sys/bus/event_source/devices/armv8_pmuv3/caps/threshold_max
+> 
+>   0x000000ff
+> 
+> If a threshold higher than threshold_max is provided, then no error is
+> generated but the threshold is clamped to the max value. If
+> FEAT_PMUv3_TH isn't implemented or a 32 bit kernel is running, then
+> threshold_max reads zero, and neither the 'threshold' nor
+> 'threshold_control' parameters will be used.
+> 
+> The threshold is per PMU counter, and there are potentially different
+> threshold_max values per PMU type on heterogeneous systems.
+> 
+> Bits higher than 32 now need to be written into PMEVTYPER, so
+> armv8pmu_write_evtype() has to be updated to take an unsigned long value
+> rather than u32 which gives the correct behavior on both aarch32 and 64.
+> 
+> Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Signed-off-by: James Clark <james.clark@arm.com>
+> ---
+>  drivers/perf/arm_pmuv3.c       | 84 +++++++++++++++++++++++++++++++++-
+>  include/linux/perf/arm_pmuv3.h |  1 +
+>  2 files changed, 84 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/perf/arm_pmuv3.c b/drivers/perf/arm_pmuv3.c
+> index 1d40d794f5e4..eb1ef84e1dbb 100644
+> --- a/drivers/perf/arm_pmuv3.c
+> +++ b/drivers/perf/arm_pmuv3.c
+> @@ -15,6 +15,7 @@
+>  #include <clocksource/arm_arch_timer.h>
+>  
+>  #include <linux/acpi.h>
+> +#include <linux/bitfield.h>
+>  #include <linux/clocksource.h>
+>  #include <linux/of.h>
+>  #include <linux/perf/arm_pmu.h>
+> @@ -294,9 +295,20 @@ static const struct attribute_group armv8_pmuv3_events_attr_group = {
+>  	.is_visible = armv8pmu_event_attr_is_visible,
+>  };
+>  
+> +#define THRESHOLD_LOW		2
+> +#define THRESHOLD_HIGH		13
+> +#define THRESHOLD_CNT		14
+> +#define THRESHOLD_CMP_LO	15
+> +#define THRESHOLD_CMP_HI	16
+> +
+>  PMU_FORMAT_ATTR(event, "config:0-15");
+>  PMU_FORMAT_ATTR(long, "config1:0");
+>  PMU_FORMAT_ATTR(rdpmc, "config1:1");
+> +PMU_FORMAT_ATTR(threshold, "config1:" __stringify(THRESHOLD_LOW) "-"
+> +				      __stringify(THRESHOLD_HIGH));
+> +PMU_FORMAT_ATTR(threshold_compare, "config1:" __stringify(THRESHOLD_CMP_LO) "-"
+> +					      __stringify(THRESHOLD_CMP_HI));
+> +PMU_FORMAT_ATTR(threshold_count, "config1:" __stringify(THRESHOLD_CNT));
 
->=20
-> Caused by commit
->=20
->   39d5b6a64ace ("drm/bridge: panel: Check device dependency before
-> managing device link")
->=20
-> I have used the drm-misc-fixes tree from next-20231124 for today.
->=20
-> --
-> Cheers,
-> Stephen Rothwell
+Small nit - could this be formatted better ? Is not that the column could go
+upto 100 without setting off checkpatch.pl warning these days ?
+
+>  
+>  static int sysctl_perf_user_access __read_mostly;
+>  
+> @@ -310,10 +322,33 @@ static inline bool armv8pmu_event_want_user_access(struct perf_event *event)
+>  	return event->attr.config1 & 0x2;
+>  }
+>  
+> +static inline u32 armv8pmu_event_threshold(struct perf_event_attr *attr)
+> +{
+> +	return FIELD_GET(GENMASK(THRESHOLD_HIGH, THRESHOLD_LOW), attr->config1);
+> +}
+> +
+> +static inline u8 armv8pmu_event_threshold_control(struct perf_event_attr *attr)
+> +{
+> +	u8 th_compare = FIELD_GET(GENMASK(THRESHOLD_CMP_HI, THRESHOLD_CMP_LO),
+> +				  attr->config1);
+
+Ditto
+
+> +	u8 th_count = FIELD_GET(BIT(THRESHOLD_CNT), attr->config1);
+> +
+> +	/*
+> +	 * The count bit is always the bottom bit of the full control field, and
+> +	 * the comparison is the upper two bits, but it's not explicitly
+> +	 * labelled in the Arm ARM. For the Perf interface we split it into two
+> +	 * fields, so reconstruct it here.
+> +	 */
+> +	return (th_compare << 1) | th_count;
+> +}
+> +
+>  static struct attribute *armv8_pmuv3_format_attrs[] = {
+>  	&format_attr_event.attr,
+>  	&format_attr_long.attr,
+>  	&format_attr_rdpmc.attr,
+> +	&format_attr_threshold.attr,
+> +	&format_attr_threshold_compare.attr,
+> +	&format_attr_threshold_count.attr,
+>  	NULL,
+>  };
+>  
+> @@ -365,10 +400,38 @@ static ssize_t bus_width_show(struct device *dev, struct device_attribute *attr,
+>  
+>  static DEVICE_ATTR_RO(bus_width);
+>  
+> +static u32 threshold_max(struct arm_pmu *cpu_pmu)
+> +{
+> +	/*
+> +	 * PMMIR.THWIDTH is readable and non-zero on aarch32, but it would be
+> +	 * impossible to write the threshold in the upper 32 bits of PMEVTYPER.
+> +	 */
+> +	if (IS_ENABLED(CONFIG_ARM))
+> +		return 0;
+> +
+> +	/*
+> +	 * The largest value that can be written to PMEVTYPER<n>_EL0.TH is
+> +	 * (2 ^ PMMIR.THWIDTH) - 1.
+> +	 */
+> +	return (1 << FIELD_GET(ARMV8_PMU_THWIDTH, cpu_pmu->reg_pmmir)) - 1;
+> +}
+> +
+> +static ssize_t threshold_max_show(struct device *dev,
+> +				  struct device_attribute *attr, char *page)
+> +{
+> +	struct pmu *pmu = dev_get_drvdata(dev);
+> +	struct arm_pmu *cpu_pmu = container_of(pmu, struct arm_pmu, pmu);
+> +
+> +	return sysfs_emit(page, "0x%08x\n", threshold_max(cpu_pmu));
+> +}
+> +
+> +static DEVICE_ATTR_RO(threshold_max);
+> +
+>  static struct attribute *armv8_pmuv3_caps_attrs[] = {
+>  	&dev_attr_slots.attr,
+>  	&dev_attr_bus_slots.attr,
+>  	&dev_attr_bus_width.attr,
+> +	&dev_attr_threshold_max.attr,
+>  	NULL,
+>  };
+>  
+> @@ -552,7 +615,7 @@ static void armv8pmu_write_counter(struct perf_event *event, u64 value)
+>  		armv8pmu_write_hw_counter(event, value);
+>  }
+>  
+> -static inline void armv8pmu_write_evtype(int idx, u32 val)
+> +static inline void armv8pmu_write_evtype(int idx, unsigned long val)
+>  {
+>  	u32 counter = ARMV8_IDX_TO_COUNTER(idx);
+>  	unsigned long mask = ARMV8_PMU_EVTYPE_EVENT |
+> @@ -921,6 +984,10 @@ static int armv8pmu_set_event_filter(struct hw_perf_event *event,
+>  				     struct perf_event_attr *attr)
+>  {
+>  	unsigned long config_base = 0;
+> +	struct perf_event *perf_event = container_of(attr, struct perf_event,
+> +						     attr);
+
+Ditto
+
+> +	struct arm_pmu *cpu_pmu = to_arm_pmu(perf_event->pmu);
+> +	u32 th, th_max;
+>  
+>  	if (attr->exclude_idle)
+>  		return -EPERM;
+> @@ -952,6 +1019,21 @@ static int armv8pmu_set_event_filter(struct hw_perf_event *event,
+>  	if (attr->exclude_user)
+>  		config_base |= ARMV8_PMU_EXCLUDE_EL0;
+>  
+> +	/*
+> +	 * Insert event counting threshold (FEAT_PMUv3_TH) values. If
+> +	 * FEAT_PMUv3_TH isn't implemented, then THWIDTH (threshold_max) will be
+> +	 * 0 and no values will be written.
+> +	 */
+> +	th_max = threshold_max(cpu_pmu);
+> +	if (IS_ENABLED(CONFIG_ARM64) && th_max) {
+> +		th = min(armv8pmu_event_threshold(attr), th_max);
+> +		if (th) {
+> +			config_base |= FIELD_PREP(ARMV8_PMU_EVTYPE_TH, th);
+> +			config_base |= FIELD_PREP(ARMV8_PMU_EVTYPE_TC,
+> +						  armv8pmu_event_threshold_control(attr));
+
+Ditto. As mentioned earlier this could have been avoided using a local variable.
+
+> +		}
+> +	}
+> +
+>  	/*
+>  	 * Install the filter into config_base as this is used to
+>  	 * construct the event type.
+> diff --git a/include/linux/perf/arm_pmuv3.h b/include/linux/perf/arm_pmuv3.h
+> index ddd1fec86739..ccbc0f9a74d8 100644
+> --- a/include/linux/perf/arm_pmuv3.h
+> +++ b/include/linux/perf/arm_pmuv3.h
+> @@ -258,6 +258,7 @@
+>  #define ARMV8_PMU_BUS_SLOTS_MASK 0xff
+>  #define ARMV8_PMU_BUS_WIDTH_SHIFT 16
+>  #define ARMV8_PMU_BUS_WIDTH_MASK 0xf
+> +#define ARMV8_PMU_THWIDTH GENMASK(23, 20)
+>  
+>  /*
+>   * This code is really good
+
+Otherwise LGTM
+
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
