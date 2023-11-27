@@ -2,340 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C2517FA1AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 14:56:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5297FA1C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 14:59:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233523AbjK0N42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 08:56:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46060 "EHLO
+        id S233464AbjK0N6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 08:58:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233469AbjK0N4H (ORCPT
+        with ESMTP id S233522AbjK0N4p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 08:56:07 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 970E52723
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 05:55:04 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 500FCC32775;
-        Mon, 27 Nov 2023 13:55:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701093304;
-        bh=LSs+IZL/FtnEeVrTh2ICOQTvjZCkIBYpTmM3ej8JbXc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WqPILvhTObw/CKuZ8Yay92yNuc9S2MBh/GIk6QKLPFqz/qq2F1+tPDo7k19OGXszF
-         9d+EkngUzTRApKaHuCqGIaLXt+slZaHBLf0jpzZFcNt4ZiCOex20r9jIQVSjkJBTxJ
-         Q6M84e37RXWAlpL65KFazvehTKRzinY2LDcHk8ApkVQAqyqkFQq7XX5Z4PB4xxM/oR
-         1VZVDUcWbToLJWCVA0MuPI32AhL2n14dPJzpAKfvlmgQPgdgFJ/ghl0fA9ieiySzx4
-         Gi0vBb1aowN8qRyq2pr3JOC4IlnqoHJO9OIwtqikDi+LFv9MtUPCsYSxpBbhAoiByM
-         UxGYC/Y6fuq4Q==
-From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>
-Cc:     linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Guo Ren <guoren@kernel.org>
-Subject: [PATCH v3 10/33] ftrace: Allow function_graph tracer to be enabled in instances
-Date:   Mon, 27 Nov 2023 22:54:57 +0900
-Message-Id: <170109329728.343914.5492808588885335966.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <170109317214.343914.4784420430328654397.stgit@devnote2>
-References: <170109317214.343914.4784420430328654397.stgit@devnote2>
-User-Agent: StGit/0.19
+        Mon, 27 Nov 2023 08:56:45 -0500
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11701BFD;
+        Mon, 27 Nov 2023 05:55:33 -0800 (PST)
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AR8W491020325;
+        Mon, 27 Nov 2023 14:55:09 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=selector1; bh=c7sVCLbdbIsSSVXrD1aEo
+        LgXUO8xa7qqmhRYF03VJgc=; b=1XjDfyKOELRTgDd6RM601zZBHKa4C6eUWK7Tj
+        Ml4RnWHCCSMR8PjBTOkvJqqUvJ4/3XZycnRSif74GQKGsp5JsyyT7sOCLRGl7Bud
+        +JkYOozYc2E81/a81bSylEIkSoM6A4qe+wgrsfhyCWxaXCTroo3+8E06iowGGTdx
+        OouPXrukmWxNgndazEobvaFEbF5jjPvJ14E1GuWAZMgKF6OTNM3SIeHaHUfrBq/A
+        lX6jbm7BxMmA3YQCBdqe650rbxtN73bdvs9SssGs/5AfdE4i/7hP120VxQIhd/fM
+        gs6ka3dMgkBzhNNbg28xc0JwqNrijwS63dHQA4YbT7QUzWVEA==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uk8pjqq1k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 14:55:09 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id DAF7610002A;
+        Mon, 27 Nov 2023 14:55:08 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D189A2291C4;
+        Mon, 27 Nov 2023 14:55:08 +0100 (CET)
+Received: from gnbcxd0016.gnb.st.com (10.129.178.213) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 27 Nov
+ 2023 14:55:08 +0100
+Date:   Mon, 27 Nov 2023 14:55:03 +0100
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     Philipp Zabel <p.zabel@pengutronix.de>
+CC:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Dan Scally <dan.scally@ideasonboard.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v8 3/5] media: stm32-dcmipp: STM32 DCMIPP camera
+ interface driver
+Message-ID: <20231127135503.GA1423796@gnbcxd0016.gnb.st.com>
+Mail-Followup-To: Philipp Zabel <p.zabel@pengutronix.de>,
+        Hugues Fruchet <hugues.fruchet@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Dan Scally <dan.scally@ideasonboard.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231122073927.788810-1-alain.volmat@foss.st.com>
+ <20231122073927.788810-4-alain.volmat@foss.st.com>
+ <ba856a09de62a6ddbf1c19d5fd502de1cbc3e273.camel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ba856a09de62a6ddbf1c19d5fd502de1cbc3e273.camel@pengutronix.de>
+X-Disclaimer: ce message est personnel / this message is private
+X-Originating-IP: [10.129.178.213]
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-27_11,2023-11-27_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Hi Philipp,
 
-Now that function graph tracing can handle more than one user, allow it to
-be enabled in the ftrace instances. Note, the filtering of the functions is
-still joined by the top level set_ftrace_filter and friends, as well as the
-graph and nograph files.
+On Mon, Nov 27, 2023 at 12:38:21PM +0100, Philipp Zabel wrote:
+> On Mi, 2023-11-22 at 08:39 +0100, Alain Volmat wrote:
+> > From: Hugues Fruchet <hugues.fruchet@foss.st.com>
+> > 
+> > This V4L2 subdev driver enables Digital Camera Memory Interface
+> > Pixel Processor(DCMIPP) of STMicroelectronics STM32 SoC series.
+> > 
+> > Signed-off-by: Hugues Fruchet <hugues.fruchet@foss.st.com>
+> > Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+> > ---
+> [...]
+> > diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+> > new file mode 100644
+> > index 000000000000..28ddb26314c3
+> > --- /dev/null
+> > +++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-core.c
+> > @@ -0,0 +1,604 @@
+> [...]
+> > +struct dcmipp_device {
+> > +	/* The platform device */
+> > +	struct platform_device		pdev;
+> > +	struct device			*dev;
+> > +
+> > +	/* Hardware resources */
+> > +	struct reset_control		*rstc;
+> 
+> As long as rstc is only used in dcmipp_probe(), there is no need to
+> carry it around in struct dcmipp_device.
 
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- Changes in v2:
-  - Fix to remove set_graph_array() completely.
----
- include/linux/ftrace.h               |    1 +
- kernel/trace/ftrace.c                |    1 +
- kernel/trace/trace.h                 |   13 ++++++-
- kernel/trace/trace_functions.c       |    8 ++++
- kernel/trace/trace_functions_graph.c |   65 +++++++++++++++++++++-------------
- kernel/trace/trace_selftest.c        |    4 +-
- 6 files changed, 64 insertions(+), 28 deletions(-)
+Oups, thanks.  Indeed, in first series reset was being used in another
+place but this is no longer necessary now.  Thanks.
 
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index bc216cdc742d..0955baccbb87 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -1070,6 +1070,7 @@ extern int ftrace_graph_entry_stub(struct ftrace_graph_ent *trace, struct fgraph
- struct fgraph_ops {
- 	trace_func_graph_ent_t		entryfunc;
- 	trace_func_graph_ret_t		retfunc;
-+	void				*private;
- };
- 
- /*
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 7ff5c454622a..83fbfb7b48f8 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -7319,6 +7319,7 @@ __init void ftrace_init_global_array_ops(struct trace_array *tr)
- 	tr->ops = &global_ops;
- 	tr->ops->private = tr;
- 	ftrace_init_trace_array(tr);
-+	init_array_fgraph_ops(tr);
- }
- 
- void ftrace_init_array_ops(struct trace_array *tr, ftrace_func_t func)
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index ada49bf1fbc8..febb9c6d01c7 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -395,6 +395,9 @@ struct trace_array {
- 	struct ftrace_ops	*ops;
- 	struct trace_pid_list	__rcu *function_pids;
- 	struct trace_pid_list	__rcu *function_no_pids;
-+#ifdef CONFIG_FUNCTION_GRAPH_TRACER
-+	struct fgraph_ops	*gops;
-+#endif
- #ifdef CONFIG_DYNAMIC_FTRACE
- 	/* All of these are protected by the ftrace_lock */
- 	struct list_head	func_probes;
-@@ -672,7 +675,6 @@ void print_trace_header(struct seq_file *m, struct trace_iterator *iter);
- 
- void trace_graph_return(struct ftrace_graph_ret *trace, struct fgraph_ops *gops);
- int trace_graph_entry(struct ftrace_graph_ent *trace, struct fgraph_ops *gops);
--void set_graph_array(struct trace_array *tr);
- 
- void tracing_start_cmdline_record(void);
- void tracing_stop_cmdline_record(void);
-@@ -883,6 +885,9 @@ extern int __trace_graph_entry(struct trace_array *tr,
- extern void __trace_graph_return(struct trace_array *tr,
- 				 struct ftrace_graph_ret *trace,
- 				 unsigned int trace_ctx);
-+extern void init_array_fgraph_ops(struct trace_array *tr);
-+extern int allocate_fgraph_ops(struct trace_array *tr);
-+extern void free_fgraph_ops(struct trace_array *tr);
- 
- #ifdef CONFIG_DYNAMIC_FTRACE
- extern struct ftrace_hash __rcu *ftrace_graph_hash;
-@@ -995,6 +1000,12 @@ print_graph_function_flags(struct trace_iterator *iter, u32 flags)
- {
- 	return TRACE_TYPE_UNHANDLED;
- }
-+static inline void init_array_fgraph_ops(struct trace_array *tr) { }
-+static inline int allocate_fgraph_ops(struct trace_array *tr)
-+{
-+	return 0;
-+}
-+static inline void free_fgraph_ops(struct trace_array *tr) { }
- #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
- 
- extern struct list_head ftrace_pids;
-diff --git a/kernel/trace/trace_functions.c b/kernel/trace/trace_functions.c
-index 9f1bfbe105e8..8e8da0d0ee52 100644
---- a/kernel/trace/trace_functions.c
-+++ b/kernel/trace/trace_functions.c
-@@ -80,6 +80,7 @@ void ftrace_free_ftrace_ops(struct trace_array *tr)
- int ftrace_create_function_files(struct trace_array *tr,
- 				 struct dentry *parent)
- {
-+	int ret;
- 	/*
- 	 * The top level array uses the "global_ops", and the files are
- 	 * created on boot up.
-@@ -90,6 +91,12 @@ int ftrace_create_function_files(struct trace_array *tr,
- 	if (!tr->ops)
- 		return -EINVAL;
- 
-+	ret = allocate_fgraph_ops(tr);
-+	if (ret) {
-+		kfree(tr->ops);
-+		return ret;
-+	}
-+
- 	ftrace_create_filter_files(tr->ops, parent);
- 
- 	return 0;
-@@ -99,6 +106,7 @@ void ftrace_destroy_function_files(struct trace_array *tr)
- {
- 	ftrace_destroy_filter_files(tr->ops);
- 	ftrace_free_ftrace_ops(tr);
-+	free_fgraph_ops(tr);
- }
- 
- static ftrace_func_t select_trace_function(u32 flags_val)
-diff --git a/kernel/trace/trace_functions_graph.c b/kernel/trace/trace_functions_graph.c
-index b7b142b65299..9ccc904a7703 100644
---- a/kernel/trace/trace_functions_graph.c
-+++ b/kernel/trace/trace_functions_graph.c
-@@ -83,8 +83,6 @@ static struct tracer_flags tracer_flags = {
- 	.opts = trace_opts
- };
- 
--static struct trace_array *graph_array;
--
- /*
-  * DURATION column is being also used to display IRQ signs,
-  * following values are used by print_graph_irq and others
-@@ -132,7 +130,7 @@ static inline int ftrace_graph_ignore_irqs(void)
- int trace_graph_entry(struct ftrace_graph_ent *trace,
- 		      struct fgraph_ops *gops)
- {
--	struct trace_array *tr = graph_array;
-+	struct trace_array *tr = gops->private;
- 	struct trace_array_cpu *data;
- 	unsigned long flags;
- 	unsigned int trace_ctx;
-@@ -242,7 +240,7 @@ void __trace_graph_return(struct trace_array *tr,
- void trace_graph_return(struct ftrace_graph_ret *trace,
- 			struct fgraph_ops *gops)
- {
--	struct trace_array *tr = graph_array;
-+	struct trace_array *tr = gops->private;
- 	struct trace_array_cpu *data;
- 	unsigned long flags;
- 	unsigned int trace_ctx;
-@@ -268,15 +266,6 @@ void trace_graph_return(struct ftrace_graph_ret *trace,
- 	local_irq_restore(flags);
- }
- 
--void set_graph_array(struct trace_array *tr)
--{
--	graph_array = tr;
--
--	/* Make graph_array visible before we start tracing */
--
--	smp_mb();
--}
--
- static void trace_graph_thresh_return(struct ftrace_graph_ret *trace,
- 				      struct fgraph_ops *gops)
- {
-@@ -294,25 +283,53 @@ static void trace_graph_thresh_return(struct ftrace_graph_ret *trace,
- 		trace_graph_return(trace, gops);
- }
- 
--static struct fgraph_ops funcgraph_thresh_ops = {
--	.entryfunc = &trace_graph_entry,
--	.retfunc = &trace_graph_thresh_return,
--};
--
- static struct fgraph_ops funcgraph_ops = {
- 	.entryfunc = &trace_graph_entry,
- 	.retfunc = &trace_graph_return,
- };
- 
-+int allocate_fgraph_ops(struct trace_array *tr)
-+{
-+	struct fgraph_ops *gops;
-+
-+	gops = kzalloc(sizeof(*gops), GFP_KERNEL);
-+	if (!gops)
-+		return -ENOMEM;
-+
-+	gops->entryfunc = &trace_graph_entry;
-+	gops->retfunc = &trace_graph_return;
-+
-+	tr->gops = gops;
-+	gops->private = tr;
-+	return 0;
-+}
-+
-+void free_fgraph_ops(struct trace_array *tr)
-+{
-+	kfree(tr->gops);
-+}
-+
-+__init void init_array_fgraph_ops(struct trace_array *tr)
-+{
-+	tr->gops = &funcgraph_ops;
-+	funcgraph_ops.private = tr;
-+}
-+
- static int graph_trace_init(struct trace_array *tr)
- {
- 	int ret;
- 
--	set_graph_array(tr);
-+	tr->gops->entryfunc = trace_graph_entry;
-+
- 	if (tracing_thresh)
--		ret = register_ftrace_graph(&funcgraph_thresh_ops);
-+		tr->gops->retfunc = trace_graph_thresh_return;
- 	else
--		ret = register_ftrace_graph(&funcgraph_ops);
-+		tr->gops->retfunc = trace_graph_return;
-+
-+	/* Make gops functions are visible before we start tracing */
-+	smp_mb();
-+
-+	ret = register_ftrace_graph(tr->gops);
- 	if (ret)
- 		return ret;
- 	tracing_start_cmdline_record();
-@@ -323,10 +340,7 @@ static int graph_trace_init(struct trace_array *tr)
- static void graph_trace_reset(struct trace_array *tr)
- {
- 	tracing_stop_cmdline_record();
--	if (tracing_thresh)
--		unregister_ftrace_graph(&funcgraph_thresh_ops);
--	else
--		unregister_ftrace_graph(&funcgraph_ops);
-+	unregister_ftrace_graph(tr->gops);
- }
- 
- static int graph_trace_update_thresh(struct trace_array *tr)
-@@ -1365,6 +1379,7 @@ static struct tracer graph_trace __tracer_data = {
- 	.print_header	= print_graph_headers,
- 	.flags		= &tracer_flags,
- 	.set_flag	= func_graph_set_flag,
-+	.allow_instances = true,
- #ifdef CONFIG_FTRACE_SELFTEST
- 	.selftest	= trace_selftest_startup_function_graph,
- #endif
-diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
-index 914331d8242c..f0758afa2f7d 100644
---- a/kernel/trace/trace_selftest.c
-+++ b/kernel/trace/trace_selftest.c
-@@ -813,7 +813,7 @@ trace_selftest_startup_function_graph(struct tracer *trace,
- 	 * to detect and recover from possible hangs
- 	 */
- 	tracing_reset_online_cpus(&tr->array_buffer);
--	set_graph_array(tr);
-+	fgraph_ops.private = tr;
- 	ret = register_ftrace_graph(&fgraph_ops);
- 	if (ret) {
- 		warn_failed_init_tracer(trace, ret);
-@@ -856,7 +856,7 @@ trace_selftest_startup_function_graph(struct tracer *trace,
- 	cond_resched();
- 
- 	tracing_reset_online_cpus(&tr->array_buffer);
--	set_graph_array(tr);
-+	fgraph_ops.private = tr;
- 
- 	/*
- 	 * Some archs *cough*PowerPC*cough* add characters to the
+I fixed this and will push it into the v9.
 
+Regards,
+Alain
+> 
+> [...]
+> > +static int dcmipp_probe(struct platform_device *pdev)
+> > +{
+> > +	struct dcmipp_device *dcmipp;
+> > +	struct clk *kclk;
+> 
+> rstc could be a local variable here.
+> 
+> [...]
+> 
+> > +	/* Get hardware resources from devicetree */
+> > +	dcmipp->rstc = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+> > +	if (IS_ERR(dcmipp->rstc))
+> > +		return dev_err_probe(&pdev->dev, PTR_ERR(dcmipp->rstc),
+> > +				     "Could not get reset control\n");
+> [...]
+> > +	/* Reset device */
+> > +	ret = reset_control_assert(dcmipp->rstc);
+> > +	if (ret) {
+> > +		dev_err(&pdev->dev, "Failed to assert the reset line\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	usleep_range(3000, 5000);
+> > +
+> > +	ret = reset_control_deassert(dcmipp->rstc);
+> > +	if (ret) {
+> > +		dev_err(&pdev->dev, "Failed to deassert the reset line\n");
+> > +		return ret;
+> > +	}
+> 
+> regards
+> Philipp
