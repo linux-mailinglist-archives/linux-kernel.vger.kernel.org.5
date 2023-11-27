@@ -2,81 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E80777F9D8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 11:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11EAC7F9D91
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 11:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232944AbjK0KaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 05:30:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43490 "EHLO
+        id S232960AbjK0KcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 05:32:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232919AbjK0K36 (ORCPT
+        with ESMTP id S232931AbjK0KcJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 05:29:58 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C54A3EA
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 02:30:04 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 20A1F202AC;
-        Mon, 27 Nov 2023 10:30:03 +0000 (UTC)
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 0CB66132A6;
-        Mon, 27 Nov 2023 10:30:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id N8CeAatvZGXgfwAAn2gu4w
-        (envelope-from <dwagner@suse.de>); Mon, 27 Nov 2023 10:30:03 +0000
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Hannes Reinecke <hare@suse.de>, Daniel Wagner <dwagner@suse.de>
-Subject: [RFC v1] nvme: add cse, ds, ms, nsze and nuse to sysfs
-Date:   Mon, 27 Nov 2023 11:32:08 +0100
-Message-ID: <20231127103208.25748-1-dwagner@suse.de>
-X-Mailer: git-send-email 2.43.0
+        Mon, 27 Nov 2023 05:32:09 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2951BE1;
+        Mon, 27 Nov 2023 02:32:15 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-5094727fa67so5764256e87.3;
+        Mon, 27 Nov 2023 02:32:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701081133; x=1701685933; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6EkO/+jvJxUqXrykI1sSA6OiaE4jGEfZVrMxpcuLqiw=;
+        b=gJTg5lcNRAiqs8jB4UvZOC3yjOZkOKEXnV3HXuvAnY65VgfXev0x9/KH5QNFIhJ3SE
+         Fp834eeQfgl+96UomKXnABD/i7fId8vII7Gyt6Gi+LiT7lkpO8IEfxAZ7vJFU3HOitzK
+         667j1hYtNi8WAIAHrmlWlMX7MQ/wrjCsl8IP8PZIFTsfu+g9aXkR/rdtuJkQPcRHrwmv
+         xzUDpGnxi532Fr6paKteeXAHmUsmRL+w5lwFmGeLy8LGQ+JY1QwoGMVcs3prIrxwt+e/
+         CKPmwM6KczLoAM2JGweDA4meoZjy7/S++m5bb9jyCMtrtZ4vpScYU2mYztPwzjau2/xo
+         LEgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701081133; x=1701685933;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6EkO/+jvJxUqXrykI1sSA6OiaE4jGEfZVrMxpcuLqiw=;
+        b=AtpUFy1VsDNj07uwNLQ6hTAGK6dCr2tOfZBCZMbJvAC6/CuJ7Cy5dxi5PPXbmtNK3Q
+         K4wLCwM8OjDOhvvcYxarCmxUmzo/8wgs5/ffoII82jezB4vbX7lydHJaXji9URXLZyFt
+         D8k/oJerMAQhNp4lwGJvEwgDFd5IXwlfghAUEoYBZaD02pbbtPGH77nPSnAi+gV7AO4C
+         El0vCyz176IPQZ+cJ/ssTbz8imKnfrnRw9K1VOCOGjiOnBEjH/4NYzghDZFdzeMi0yKj
+         udU++L9V36jP9N+x3q6+vxyuckwpFaaHxfA024K0WIuIGuGOf0J+4hwoU4Fa4wca/PfJ
+         CGbA==
+X-Gm-Message-State: AOJu0YwN3+qn0shQZQRFwl2QFMTBy37lj3O5NTdOVknHFbgaKjJHjBM6
+        7VEHVs+nQd8GHnk+5o7CjJRYII7T3n6Tmw==
+X-Google-Smtp-Source: AGHT+IE3b9c6E7V+MSu9Q2L64S7DO8nOwRZHa34LOV/mGICVyRrnTHJnOY2V9EscGgi3JRfPWtGEdw==
+X-Received: by 2002:a05:6512:2343:b0:509:455c:9e3d with SMTP id p3-20020a056512234300b00509455c9e3dmr5108404lfu.18.1701081133118;
+        Mon, 27 Nov 2023 02:32:13 -0800 (PST)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id z20-20020a056512309400b0050aa9cfc238sm1438739lfd.89.2023.11.27.02.32.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 02:32:12 -0800 (PST)
+Date:   Mon, 27 Nov 2023 13:32:10 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Furong Xu <0x1207@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Joao Pinto <jpinto@synopsys.com>,
+        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        xfr@outlook.com, rock.xu@nio.com,
+        Larysa Zaremba <larysa.zaremba@intel.com>
+Subject: Re: [PATCH net v3] net: stmmac: xgmac: Disable FPE MMC interrupts
+Message-ID: <4zucnqqunr6rb6k2g4737ksma4r6q5eizopvmvnmeyrhd4pio2@cism5prdsxmq>
+References: <20231125060126.2328690-1-0x1207@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: ++++++++
-X-Spam-Score: 8.27
-X-Rspamd-Server: rspamd1
-X-Rspamd-Queue-Id: 20A1F202AC
-Authentication-Results: smtp-out2.suse.de;
-        dkim=none;
-        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.de (policy=none);
-        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of dwagner@suse.de) smtp.mailfrom=dwagner@suse.de
-X-Spamd-Result: default: False [8.27 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         R_SPF_SOFTFAIL(4.60)[~all:c];
-         NEURAL_HAM_LONG(-0.32)[-0.317];
-         RCVD_COUNT_THREE(0.00)[3];
-         MX_GOOD(-0.01)[];
-         NEURAL_HAM_SHORT(-0.20)[-0.998];
-         RCPT_COUNT_SEVEN(0.00)[7];
-         MID_CONTAINS_FROM(1.00)[];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         R_DKIM_NA(2.20)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%];
-         DMARC_POLICY_SOFTFAIL(0.10)[suse.de : No valid SPF, No valid DKIM,none]
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231125060126.2328690-1-0x1207@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -85,154 +82,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-libnvme is using the sysfs for enumarating the nvme resources. Though
-there are few missing attritbutes in the sysfs. For these libnvme issues
-commands during discovering.
+On Sat, Nov 25, 2023 at 02:01:26PM +0800, Furong Xu wrote:
+> Commit aeb18dd07692 ("net: stmmac: xgmac: Disable MMC interrupts
+> by default") tries to disable MMC interrupts to avoid a storm of
+> unhandled interrupts, but leaves the FPE(Frame Preemption) MMC
+> interrupts enabled, FPE MMC interrupts can cause the same problem.
+> Now we mask FPE TX and RX interrupts to disable all MMC interrupts.
+> 
+> Fixes: aeb18dd07692 ("net: stmmac: xgmac: Disable MMC interrupts by default")
+> Reviewed-by: Larysa Zaremba <larysa.zaremba@intel.com>
+> Signed-off-by: Furong Xu <0x1207@gmail.com>
+> ---
+> Changes in v3:
+>   - Update commit message, thanks Larysa.
+>   - Rename register defines, thanks Serge.
 
-As the kernel already knows all these attributes and we would like to
-avoid libnvme to issue commands all the time, expose these missing
-attributes.
+The fix looking good now. Thanks!
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
 
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
----
+-Serge(y)
 
-As discussed during ALPPS, these here are the missing attribures which libnvme
-is still looking up via commands. I've tested this with a modified libnvme and
-didn't observe any ioctls anymore.
-
-I'm pretty sure the naming is a bit off for the variables. Not really sure if we
-want to stick to the spec naming sceme or have our own one, e.g. 'nsze' vs
-'capacity'.
-
-Also getting a pointer to the nvme_ns data structure is a bit strange
-(dev_to_nvme_ns). This stip is necessary as many of the ns attributes are in
-nvme_ns. Shouldn't these per path values not all be the same and thus couldn't
-these be in nvme_ns_head? Anyway, just not sure who to deal with this. So any
-pointers highly welcomed!
-
-Cheers,
-Daniel
-
- drivers/nvme/host/core.c  |  2 ++
- drivers/nvme/host/nvme.h  |  2 ++
- drivers/nvme/host/sysfs.c | 72 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 76 insertions(+)
-
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 80673ea63fea..f100ee241bd7 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -2029,6 +2029,8 @@ static int nvme_update_ns_info_block(struct nvme_ns *ns,
- 	blk_mq_freeze_queue(ns->disk->queue);
- 	lbaf = nvme_lbaf_index(id->flbas);
- 	ns->lba_shift = id->lbaf[lbaf].ds;
-+	ns->nsze = le64_to_cpu(id->nsze);
-+	ns->nuse = le64_to_cpu(id->nuse);
- 	nvme_set_queue_limits(ns->ctrl, ns->queue);
- 
- 	nvme_configure_metadata(ns, id);
-diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
-index f35647c470af..97652bf2c787 100644
---- a/drivers/nvme/host/nvme.h
-+++ b/drivers/nvme/host/nvme.h
-@@ -487,6 +487,8 @@ struct nvme_ns {
- 	struct nvme_ns_head *head;
- 
- 	int lba_shift;
-+	u64 nsze;
-+	u64 nuse;
- 	u16 ms;
- 	u16 pi_size;
- 	u16 sgs;
-diff --git a/drivers/nvme/host/sysfs.c b/drivers/nvme/host/sysfs.c
-index 212e1b05d298..b46faee50361 100644
---- a/drivers/nvme/host/sysfs.c
-+++ b/drivers/nvme/host/sysfs.c
-@@ -114,12 +114,84 @@ static ssize_t nsid_show(struct device *dev, struct device_attribute *attr,
- }
- static DEVICE_ATTR_RO(nsid);
- 
-+static struct nvme_ns *dev_to_nvme_ns(struct device *dev)
-+{
-+	struct gendisk *disk = dev_to_disk(dev);
-+
-+	if (disk->fops == &nvme_bdev_ops)
-+		return nvme_get_ns_from_dev(dev);
-+	else {
-+		struct nvme_ns_head *head = disk->private_data;
-+		struct nvme_subsystem *subsys = head->subsys;
-+		struct nvme_ctrl *ctrl;
-+		struct nvme_ns *ns, *ret = NULL;
-+
-+		list_for_each_entry(ctrl, &subsys->ctrls, subsys_entry) {
-+			down_read(&ctrl->namespaces_rwsem);
-+			list_for_each_entry(ns, &ctrl->namespaces, list) {
-+				ret = ns;
-+				break;
-+			}
-+			up_read(&ctrl->namespaces_rwsem);
-+		}
-+		return ret;
-+	}
-+}
-+
-+static ssize_t csi_show(struct device *dev, struct device_attribute *attr,
-+		char *buf)
-+{
-+	return sysfs_emit(buf, "%d\n", dev_to_ns_head(dev)->ids.csi);
-+}
-+static DEVICE_ATTR_RO(csi);
-+
-+static ssize_t lba_ds_show(struct device *dev, struct device_attribute *attr,
-+		char *buf)
-+{
-+	struct nvme_ns *ns = dev_to_nvme_ns(dev);
-+
-+	return sysfs_emit(buf, "%d\n", ns->lba_shift);
-+}
-+static DEVICE_ATTR_RO(lba_ds);
-+
-+static ssize_t lba_ms_show(struct device *dev, struct device_attribute *attr,
-+		char *buf)
-+{
-+	struct nvme_ns *ns = dev_to_nvme_ns(dev);
-+
-+	return sysfs_emit(buf, "%d\n", ns->ms);
-+}
-+static DEVICE_ATTR_RO(lba_ms);
-+
-+static ssize_t nsze_show(struct device *dev, struct device_attribute *attr,
-+		char *buf)
-+{
-+	struct nvme_ns *ns = dev_to_nvme_ns(dev);
-+
-+	return sysfs_emit(buf, "%llu\n", ns->nsze);
-+}
-+static DEVICE_ATTR_RO(nsze);
-+
-+static ssize_t nuse_show(struct device *dev, struct device_attribute *attr,
-+		char *buf)
-+{
-+	struct nvme_ns *ns = dev_to_nvme_ns(dev);
-+
-+	return sysfs_emit(buf, "%llu\n", ns->nuse);
-+}
-+static DEVICE_ATTR_RO(nuse);
-+
- static struct attribute *nvme_ns_id_attrs[] = {
- 	&dev_attr_wwid.attr,
- 	&dev_attr_uuid.attr,
- 	&dev_attr_nguid.attr,
- 	&dev_attr_eui.attr,
-+	&dev_attr_csi.attr,
- 	&dev_attr_nsid.attr,
-+	&dev_attr_lba_ds.attr,
-+	&dev_attr_lba_ms.attr,
-+	&dev_attr_nsze.attr,
-+	&dev_attr_nuse.attr,
- #ifdef CONFIG_NVME_MULTIPATH
- 	&dev_attr_ana_grpid.attr,
- 	&dev_attr_ana_state.attr,
--- 
-2.43.0
-
+> 
+> Changes in v2:
+>   - Update commit message, thanks Wojciech and Andrew.
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/mmc_core.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
+> index ea4910ae0921..6a7c1d325c46 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
+> @@ -177,8 +177,10 @@
+>  #define MMC_XGMAC_RX_DISCARD_OCT_GB	0x1b4
+>  #define MMC_XGMAC_RX_ALIGN_ERR_PKT	0x1bc
+>  
+> +#define MMC_XGMAC_TX_FPE_INTR_MASK	0x204
+>  #define MMC_XGMAC_TX_FPE_FRAG		0x208
+>  #define MMC_XGMAC_TX_HOLD_REQ		0x20c
+> +#define MMC_XGMAC_RX_FPE_INTR_MASK	0x224
+>  #define MMC_XGMAC_RX_PKT_ASSEMBLY_ERR	0x228
+>  #define MMC_XGMAC_RX_PKT_SMD_ERR	0x22c
+>  #define MMC_XGMAC_RX_PKT_ASSEMBLY_OK	0x230
+> @@ -352,6 +354,8 @@ static void dwxgmac_mmc_intr_all_mask(void __iomem *mmcaddr)
+>  {
+>  	writel(0x0, mmcaddr + MMC_RX_INTR_MASK);
+>  	writel(0x0, mmcaddr + MMC_TX_INTR_MASK);
+> +	writel(MMC_DEFAULT_MASK, mmcaddr + MMC_XGMAC_TX_FPE_INTR_MASK);
+> +	writel(MMC_DEFAULT_MASK, mmcaddr + MMC_XGMAC_RX_FPE_INTR_MASK);
+>  	writel(MMC_DEFAULT_MASK, mmcaddr + MMC_XGMAC_RX_IPC_INTR_MASK);
+>  }
+>  
+> -- 
+> 2.34.1
+> 
+> 
