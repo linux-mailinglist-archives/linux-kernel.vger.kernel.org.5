@@ -2,105 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C60C17FA8B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 19:15:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 987237FA8B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 19:16:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232593AbjK0SPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 13:15:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49588 "EHLO
+        id S230302AbjK0SQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 13:16:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230020AbjK0SPC (ORCPT
+        with ESMTP id S230020AbjK0SP6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 13:15:02 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752161BB;
-        Mon, 27 Nov 2023 10:15:08 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-a00b01955acso654826466b.1;
-        Mon, 27 Nov 2023 10:15:08 -0800 (PST)
+        Mon, 27 Nov 2023 13:15:58 -0500
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F182198
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 10:16:03 -0800 (PST)
+Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-58cdc801f69so2748912eaf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 10:16:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701108907; x=1701713707; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x6EbGi5KYgfVG1CdJuzlcMAvljT6psfhah5arWG3Clc=;
-        b=HxiD+wEmUMJ3X8IEqrcg7JnnbnQ9GS17iOVFO2IGGHuF2qGjgzyGEULtyv7GGda6NC
-         wAPYXnscFPt8I0fFjACIVeX+Fr0aGJ8LTz/Y+2NtFudqkAuhcDThangxygJa+rYpDGuJ
-         TL+Yl1gDpbSrd+6ac5Md8GFADYrjjblPRo5rpzOw8o1uTKVb0I/J8+jvgm5sC8fdxgnl
-         asT4M8dlfKprmygbD7L9eEq4kh9p0NSN2THXCIRMmjlf2J79F+EAFksyxGvhqPTFoa8Y
-         TXPcq1P7bxk24qhjLcuVGR5w6RbtdTdYyiTRdVyvcMSQU8cAkcNXSNTjZ7LYjvbiJXkT
-         levg==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1701108962; x=1701713762; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FxoxtfZyYEABjHZ6RtVtSj3aKhK7A/US0jtAU3g5OGk=;
+        b=BA//TnZGQIcE9zbe35i7lFPkNDKCQV27j+1h/F8ePFjQyxsl4hGSl9jaymPMCYIMej
+         8JzcJQsXp3XPHdb3Bgi9ZZG/RPuTr2aJ6jCvNdK/B19YU4qLeY5IhW4wSnoMt49qW9bI
+         Pfl+nWyqFPQi4b8sT0rJGHoez0l4jLvX2SMunRI6AmuIRQKrexBBRkAF2cYqrtdsjoJL
+         yR97/L5hr6aH7fB+NC1e2JHWyQZGU+tZ/TkbAzitdfSISHOpAqf77RQVyIYzoDisIfEb
+         ST1bjWnjRbkZJrKDm/O8ccQRRu0A+bMoBtIQXmgTJVVfweRTkCUfUPOFMvB+AVyAcV1t
+         JsYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701108907; x=1701713707;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x6EbGi5KYgfVG1CdJuzlcMAvljT6psfhah5arWG3Clc=;
-        b=fgv/XuGvFTWwPD4GotaKCYOn4LBSQB7nVjBc+l4PovzTYerB5y+SH5mpxtm1uS/KMS
-         oQtFWuyJ9S22zUcMKRx3KAdw5XMylt9Ddltkwqa10UIr11gEEF8s4qbE3amu1AyglsDv
-         MHlnbNabKYJsUISf8PVKguyUs2tsm7f6/m9p0fNuo8yqWH9dQ+2UThhcFLivDIZHkKbx
-         W2imFyy6yTE2n3m76l9QPfwjbikWC80ZO0ytEagw/D+hv8+eUTjGxMjZ0A0vgaWB61fb
-         FsQzV+UPMc3o6kUCGAUpCzkOXvRAMVrK1qacLUCdbq2n/L6gf5XO4RRO7rXcSaUhRVz6
-         oAtA==
-X-Gm-Message-State: AOJu0YxDpcHMaIV/MWj2zD/KrUoZeg480d395LB0gxUt1ejFeb4x2vPq
-        VjcYsRyCihR0PjkCVFz/PQ==
-X-Google-Smtp-Source: AGHT+IFDKpCYOvpyu5bhY+/rib0MinbIHsR2HWXwLD7BBCXHji0tHHN2u1zt2jvfC/UPg9cKtem6Bg==
-X-Received: by 2002:a17:906:d28e:b0:9e5:cef:6ff with SMTP id ay14-20020a170906d28e00b009e50cef06ffmr10355980ejb.33.1701108906794;
-        Mon, 27 Nov 2023 10:15:06 -0800 (PST)
-Received: from U4.lan ([2a02:810b:f40:4300:370c:d8f:2dce:7367])
-        by smtp.gmail.com with ESMTPSA id dv19-20020a170906b81300b009a9fbeb15f2sm5952271ejb.62.2023.11.27.10.15.06
+        d=1e100.net; s=20230601; t=1701108962; x=1701713762;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FxoxtfZyYEABjHZ6RtVtSj3aKhK7A/US0jtAU3g5OGk=;
+        b=MYAeC9F63hd99IRbE7NprTTmsRe7CGBR/u0ucloLgMWTXAprWgIrR7+8yBj2CihuTh
+         jgB+SKM/O/dpYyzlJd9yV/TRYWEagecI9Y1ksjcPZvyI+7ELa8ZiC7M/yf/YF5KsfaNQ
+         vi9PFnOMlBikcyIGA0OThPlD9I9VPRVs9C6pB+Efax0Ka+zFZCH52Ymf9z+528gOPywu
+         jeNCBWhHPrU6pAIS0ohua6GyChYJy9lk3x2jvvlGLlipj96ORUuxtyltJ7fJrZUQUPiJ
+         vUSDgtwlM5lXUq6A1zN7ZixLzS5pIegBxu+6D9q2m1/SPfZ0i0Fy+q6Jaxx0/qNZ2Psr
+         AJ/A==
+X-Gm-Message-State: AOJu0Yw0gqo5iYmQn0OsXwck4RMNGzr0+G7GFgE/XtT/CRgAnG87weCi
+        mawWG5Cg4tNPDbijrtE6zXh1zw==
+X-Google-Smtp-Source: AGHT+IE+v6fFB7xdHxMtYP8G0Nfw9Tf/7BYotEm3H1gVkhmuH+mh9vYsMGoDKYeeMoWzyCVVgNRotw==
+X-Received: by 2002:a05:6820:809:b0:58d:a6ed:5601 with SMTP id bg9-20020a056820080900b0058da6ed5601mr1113420oob.1.1701108962609;
+        Mon, 27 Nov 2023 10:16:02 -0800 (PST)
+Received: from ghost ([2601:647:5700:6860:a896:28e0:13ca:92d8])
+        by smtp.gmail.com with ESMTPSA id b18-20020a4ac292000000b00581daa5c5fdsm1572457ooq.29.2023.11.27.10.16.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 10:15:06 -0800 (PST)
-From:   Alex Bee <knaerzche@gmail.com>
-To:     Heiko Stuebner <heiko@sntech.de>, Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     Elaine Zhang <zhangqing@rock-chips.com>, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH v3 2/2] clk: rockchip: rk3128: Fix SCLK_SDMMC's clock name
-Date:   Mon, 27 Nov 2023 19:14:18 +0100
-Message-ID: <20231127181415.11735-6-knaerzche@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231127181415.11735-2-knaerzche@gmail.com>
-References: <20231127181415.11735-2-knaerzche@gmail.com>
+        Mon, 27 Nov 2023 10:16:01 -0800 (PST)
+Date:   Mon, 27 Nov 2023 10:15:59 -0800
+From:   Charlie Jenkins <charlie@rivosinc.com>
+To:     Conor Dooley <conor.dooley@microchip.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH 1/2] riscv: Include riscv_set_icache_flush_ctx prctl
+Message-ID: <ZWTc3/FeBbXHs7aM@ghost>
+References: <20231122-fencei-v1-0-bec0811cb212@rivosinc.com>
+ <20231122-fencei-v1-1-bec0811cb212@rivosinc.com>
+ <20231127-epilogue-frying-4d5ba926617c@wendy>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231127-epilogue-frying-4d5ba926617c@wendy>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SCLK_SDMMC is the parent for SCLK_SDMMC_DRV and SCLK_SDMMC_SAMPLE, but
-used with the (more) correct name sclk_sdmmc. SD card tuning does currently
-fail as the parent can't be found under that name.
-There is no need to suffix the name with '0' since RK312x SoCs do have a
-single sdmmc controller - so rename it to the name which is already used
-by it's children.
+On Mon, Nov 27, 2023 at 10:44:54AM +0000, Conor Dooley wrote:
+> On Wed, Nov 22, 2023 at 05:03:20PM -0800, Charlie Jenkins wrote:
+> > +
+> > +/**
+> > + * Enable userspace to emit icache flushing instructions.
+> > + *
+> > + * When in per-process context, there may be multiple threads using the same mm.
+> > + * Therefore, the icache can never be assumed clean when. Multiple threads in
+> > + * the process may modify instructions in the mm concurrently.
+> > + *
+> > + * In per-thread context, it can be assumed that all modifications to
+> > + * instructions in memory will be performed by this thread. When the thread is
+> > + * migrated the icache will be flushed.
+> > + *
+> > + * @arg arg: Sets the type of context
+> > + *  - PR_RISCV_CTX_SW_FENCEI: Allow fence.i in userspace. Another fence.i will
+> > + *			      emitted on thread/process migration.
+> > + * @arg per_thread: When set to 0, will use the default behavior of setting the
+> > + *  icache flush context per process. When set to 1, will use a per thread
+> > + *  context.
+> > + */
+> 
+> FYI, this is not valid kerneldoc and breaks allmodconfig builds:
+>  arch/riscv/mm/cacheflush.c:159: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+> 
+> > +int riscv_set_icache_flush_ctx(unsigned long ctx, unsigned long per_thread)
+> 
+> 
+> Cheers,
+> Conor.
 
-Fixes: f6022e88faca ("clk: rockchip: add clock controller for rk3128")
-Signed-off-by: Alex Bee <knaerzche@gmail.com>
----
- drivers/clk/rockchip/clk-rk3128.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thank you, I will fix that in the next version.
 
-diff --git a/drivers/clk/rockchip/clk-rk3128.c b/drivers/clk/rockchip/clk-rk3128.c
-index fcacfe758829..22e752236030 100644
---- a/drivers/clk/rockchip/clk-rk3128.c
-+++ b/drivers/clk/rockchip/clk-rk3128.c
-@@ -310,7 +310,7 @@ static struct rockchip_clk_branch common_clk_branches[] __initdata = {
- 	GATE(SCLK_MIPI_24M, "clk_mipi_24m", "xin24m", CLK_IGNORE_UNUSED,
- 			RK2928_CLKGATE_CON(2), 15, GFLAGS),
- 
--	COMPOSITE(SCLK_SDMMC, "sclk_sdmmc0", mux_mmc_src_p, 0,
-+	COMPOSITE(SCLK_SDMMC, "sclk_sdmmc", mux_mmc_src_p, 0,
- 			RK2928_CLKSEL_CON(11), 6, 2, MFLAGS, 0, 6, DFLAGS,
- 			RK2928_CLKGATE_CON(2), 11, GFLAGS),
- 
--- 
-2.43.0
+- Charlie
 
