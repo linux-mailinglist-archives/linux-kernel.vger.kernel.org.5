@@ -2,171 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8695B7FA6E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:51:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 763487FA6E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:55:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233929AbjK0Qvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 11:51:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43600 "EHLO
+        id S234122AbjK0QzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 11:55:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233612AbjK0Qve (ORCPT
+        with ESMTP id S232335AbjK0QzB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 11:51:34 -0500
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2041.outbound.protection.outlook.com [40.107.102.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B94183;
-        Mon, 27 Nov 2023 08:51:40 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d+p295EUDl2Y9HwIz9+JkQfchBu5tBCtVG15Us6fhFMO8Y7ba9yx9FZ6jD4umAyWraS8sXIR3S+O3wNiXh5g/Ms1oCDTXaMIZ7c+JY5/hBc4jzizwYsB9F3+5KIMoXVVUMch2dzKL0lYPrMEBNHwWo893SjnQilzj1SNRcuapqiTJxhq/ZAFW08HwoqXVU7Ko+s6rPTH/qctQ60VQxHBqBvk1Z1fgITEdTc6DJWj+TVvGfNUTmvjAU0XYo53eUrHFlmx5uWtPO7zvbg4rX4zYeJLj/hXeq/LhTzv05Tm5czZmEEp1/gE5LPcKCVQ4aNFBDgAiJyOq+x++m0ueb8JqA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AZbIeGCJ0HXzo6fjF6E6MPMNyp3YBGP8Gsp+RJTEz0o=;
- b=VcrHEs4u4Z1AtIuDSUAT1qbRGpz5fziz2J10p0yuSWp2cZ+/ZlGSrgrEPyAtuMX/qBV/hFQQsg8+CBpOkajhYsJ1rPDgBLZEjkYZrsVfCNr8WYndl1bjW9wiMmPrt1e3MQN8klbhZGSVVTljvyHchc6g0QQAt18FVGhGD0lgxJhHJCnh55WwUArSjbAD8hbwugaw2+90VDGr1yF3B7RXXvJYx0EGzCnvKtjPtfdyJQKLkXJWGm/QM/paKXn8ByFyqETJ907mky148e2tqpuM2EjpcLyS2hPECULW9FpFJpnq8x57UeVDSd+hIjQuFtOYSiOuAp1hpWL+6LliFIabnA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=alatek.krakow.pl smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AZbIeGCJ0HXzo6fjF6E6MPMNyp3YBGP8Gsp+RJTEz0o=;
- b=J7cM+xutt9M01JLmWOJyqV3uTWLdPUq/Q2T/woQDp0eMZej0abV0PwmsrCO35wStLRe8df9OwRgKinJ+RzJPUg0ACqCKeY0/0N+k/drdasAHqPKetFTkDTISZLuSaWnbRQIEC0vYSPzy1dw96RyVldECzbN6AYBM3DNQpv56A+Y=
-Received: from SJ0PR13CA0111.namprd13.prod.outlook.com (2603:10b6:a03:2c5::26)
- by MN2PR12MB4143.namprd12.prod.outlook.com (2603:10b6:208:1d0::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Mon, 27 Nov
- 2023 16:51:36 +0000
-Received: from CO1PEPF000042AC.namprd03.prod.outlook.com
- (2603:10b6:a03:2c5:cafe::72) by SJ0PR13CA0111.outlook.office365.com
- (2603:10b6:a03:2c5::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.19 via Frontend
- Transport; Mon, 27 Nov 2023 16:51:36 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- CO1PEPF000042AC.mail.protection.outlook.com (10.167.243.41) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7046.17 via Frontend Transport; Mon, 27 Nov 2023 16:51:36 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Mon, 27 Nov
- 2023 10:51:35 -0600
-Received: from [172.19.74.144] (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
- Transport; Mon, 27 Nov 2023 10:51:34 -0600
-Message-ID: <f4ab7b8e-0b4f-ccbc-fe74-296688b606ee@amd.com>
-Date:   Mon, 27 Nov 2023 08:51:34 -0800
+        Mon, 27 Nov 2023 11:55:01 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28773198;
+        Mon, 27 Nov 2023 08:55:07 -0800 (PST)
+Received: from benjamin-XPS-13-9310.. (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id C629866022D3;
+        Mon, 27 Nov 2023 16:55:04 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701104105;
+        bh=rawetfLv3yml/uOqktsA6Qgft44fu5ZD8CPwijNnuHg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BKqP/9i7IEToJQk/VKzgc0QkRmPkiB+gHtNYrx/yxFbj8LT6M7IsW7MIoDAkoXYhR
+         JP3XhklEoqpWtmulOwo05HfeTyY/EcABj+lj92hHwMp8TR95vUTvNpU+xmNmZNFPvo
+         wN//ek/AsihWgRjFZHKsxwRdD1+7OvWq8oflG94W5PNzfp6qA2pHmpCtrO9QxEHtwN
+         O/U7fpmlW8m93tVUUSd5xfVll+LIhkZxPVB+m5c9tML9aGt+3UrxMrOupFreyDZgCr
+         h7XTnZQKYm9mRAle2ysQZyPL7pQWqIw2qqjhH3Bbp3jRgIxSSPTP3lp9+2LMw+mmIt
+         6k+EZfKcyW7tg==
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+To:     hverkuil@xs4all.nl, mchehab@kernel.org, tfiga@chromium.org,
+        m.szyprowski@samsung.com, matt.ranostay@konsulko.com
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, kernel@collabora.com,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH 00/55] Clean up queue_setup()/min_buffers_needed (ab)use
+Date:   Mon, 27 Nov 2023 17:53:59 +0100
+Message-Id: <20231127165454.166373-1-benjamin.gaignard@collabora.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH v3 5/5] dmaengine: xilinx: xdma: Ease dma_pool alignment
- requirements
-Content-Language: en-US
-From:   Lizhi Hou <lizhi.hou@amd.com>
-To:     Jan Kuliga <jankul@alatek.krakow.pl>, <brian.xu@amd.com>,
-        <raj.kumar.rampelli@amd.com>, <vkoul@kernel.org>,
-        <michal.simek@amd.com>, <dmaengine@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <runtimeca39d@amd.com>
-References: <20231124192524.134989-1-jankul@alatek.krakow.pl>
- <20231124192558.135004-6-jankul@alatek.krakow.pl>
- <401bc91f-f558-8185-8f14-dd1ef41aef17@amd.com>
-In-Reply-To: <401bc91f-f558-8185-8f14-dd1ef41aef17@amd.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000042AC:EE_|MN2PR12MB4143:EE_
-X-MS-Office365-Filtering-Correlation-Id: b8e5534a-af33-4b45-5e75-08dbef691e50
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QwntImEPaDFrrNvTNHfpAV2XALwprX5rlITR9t0+BI+ctWtcTrH5OD7lOZ9nIU8mqQQd1zuhXMh9NI4DE1ytAnSk8SLfHdDwWX/Lda56kYoHXfoSYS2P9Uq6VTF10vqJC8kkohTSl/sItSOm/oGp0JgFeBKjbniPOuxSPqqbZCanWQYU8tc1dMo6FwU4m12bVOpyoGOU3GU4dgejOavOPbHCAOizJOQp7RZEA94Dt7Yq7Lcg6scwkOh903lpg7JK06XB0s1UZzAqTFa5gLpI4PtbHersnhPUXdW59TYkxzR+YbDffTB7aZc1zGx01GPI2O+vB+le7wdF6J4rYNpREz9NeaLsjEnfS7jZ5SL/aXUwWes4VC5SSyeI77sxPp6bhenNAn5M7lRjaQJpb29G3GBwNIN1yG/vgo8zUXt0RSjM1Fjky4I1WL9Vz/Ni3X9ThQPGeqk8Wjm3/j7HmD99fC6/w87/5mW/O1UDvg/bMpv4me5SFd5D4Qp21fN3CbWNGEX64F8uuDAexu5axCjBoWO/RZ7LeIp/xVkwYBjTVTaJnXzhClfo/NwBn2fUJb5Tu/rz2qIuSrmeY14vrhwLjh1vqUyUCYXDGWs5m6kjw+lJuPYAxmnbqXh4q7k3uB1vvR9LUM2ZtgjOto7e8bZL2yBsC6C5L7pCoAYvHDDhsfSir176AWgzk3aWZ0Ub/Fpbq0Z5Axdv+g+lZY/rC8Q51sbdv3E2oBHhsRNGurkk8PO9zmm3neGiZyUTdxOx/90VHvhYy8BT6m73WVUneJ45XL+UI7qDVAgn137POL8H6M6c9Mjh5oe0YNxZt4banOm4
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(396003)(136003)(39860400002)(346002)(230922051799003)(1800799012)(82310400011)(186009)(451199024)(64100799003)(46966006)(40470700004)(36840700001)(44832011)(2906002)(31686004)(36860700001)(8936002)(8676002)(41300700001)(26005)(70206006)(316002)(6636002)(16576012)(110136005)(70586007)(53546011)(5660300002)(336012)(426003)(2616005)(40480700001)(83380400001)(47076005)(356005)(81166007)(86362001)(31696002)(82740400003)(478600001)(36756003)(40460700003)(36900700001)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2023 16:51:36.0682
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b8e5534a-af33-4b45-5e75-08dbef691e50
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000042AC.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4143
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series implement Hans's RFC: https://www.spinics.net/lists/linux-media/msg244455.html
 
-On 11/27/23 08:43, Lizhi Hou wrote:
->
-> On 11/24/23 11:25, Jan Kuliga wrote:
->> According to the XDMA datasheet (PG195), the address of any descriptor
->> must be 32 byte aligned. The datasheet also states that a contiguous
->> block of descriptors must not cross a 4k address boundary. Therefore,
->> it is possible to ease the pressure put on the dma_pool allocator
->> just by requiring sufficient alignment and boundary values. Add proper
->> macro definition and change the values passed into the
->> dma_pool_create().
->>
->> Signed-off-by: Jan Kuliga <jankul@alatek.krakow.pl>
->> ---
->>   drivers/dma/xilinx/xdma-regs.h | 7 ++++---
->>   drivers/dma/xilinx/xdma.c      | 6 +++---
->>   2 files changed, 7 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/dma/xilinx/xdma-regs.h 
->> b/drivers/dma/xilinx/xdma-regs.h
->> index 6bf7ae84e452..d5cb12e6b8d4 100644
->> --- a/drivers/dma/xilinx/xdma-regs.h
->> +++ b/drivers/dma/xilinx/xdma-regs.h
->> @@ -64,9 +64,10 @@ struct xdma_hw_desc {
->>       __le64        next_desc;
->>   };
->>   -#define XDMA_DESC_SIZE        sizeof(struct xdma_hw_desc)
->> -#define XDMA_DESC_BLOCK_SIZE    (XDMA_DESC_SIZE * XDMA_DESC_ADJACENT)
->> -#define XDMA_DESC_BLOCK_ALIGN    4096
->> +#define XDMA_DESC_SIZE            sizeof(struct xdma_hw_desc)
->> +#define XDMA_DESC_BLOCK_SIZE        (XDMA_DESC_SIZE * 
->> XDMA_DESC_ADJACENT)
->> +#define XDMA_DESC_BLOCK_ALIGN        32
->> +#define XDMA_DESC_BLOCK_BOUNDARY    4096
->>     /*
->>    * Channel registers
->> diff --git a/drivers/dma/xilinx/xdma.c b/drivers/dma/xilinx/xdma.c
->> index de4615bd4ee5..d32ae93e18b6 100644
->> --- a/drivers/dma/xilinx/xdma.c
->> +++ b/drivers/dma/xilinx/xdma.c
->> @@ -735,9 +735,9 @@ static int xdma_alloc_chan_resources(struct 
->> dma_chan *chan)
->>           return -EINVAL;
->>       }
->>   -    xdma_chan->desc_pool = dma_pool_create(dma_chan_name(chan),
->> -                           dev, XDMA_DESC_BLOCK_SIZE,
->> -                           XDMA_DESC_BLOCK_ALIGN, 0);
->> +    xdma_chan->desc_pool = dma_pool_create(dma_chan_name(chan), dev,
->> +                XDMA_DESC_BLOCK_SIZE, XDMA_DESC_BLOCK_ALIGN,
->> +                        XDMA_DESC_BLOCK_BOUNDARY);
->>       if (!xdma_chan->desc_pool) {
->>           xdma_err(xdev, "unable to allocate descriptor pool");
->>           return -ENOMEM;
->
-> This is probably not needed. The 32 adjacent descriptors here is 1024 
-> bytes. Defining 4k alignment should be good enough.
-Oh, Just noticed the you have changed the alignment to 32. Sorry, I just 
-hit send too quick.
->
-> Thanks,
->
-> Lizhi
->
->
+To summarize Hans's proposal it is needed to distinguish two cases:
+- the minimal number of buffers to be allocated when calling
+  VIDIOC_REQBUFS.
+- the minimale number of buffers to be present before start streaming
+  (mostly for DMA engine purpose).
+Until now drivers use vb2_queue min_buffers_needed field in the both
+cases but before introduce delete buffers we need to clarify for which
+usage each of them use min_buffers_needed field.
+
+I have done this in 3 steps:
+- add min_reqbufs_allocation field and convert all the drivers that I
+  believe use min_buffers_needed field for VIDIOC_REQBUF purpose.
+- add min_dma_buffers_needed field and convert all the drivers with DMA
+  engine needs.
+- remove min_buffers_needed from videobuf2 core.
+
+The branch with all patches is here:
+https://gitlab.collabora.com/benjamin.gaignard/for-upstream/-/commits/clean_min_need_buffers_v1
+
+I have tested with this command line, I haven't notice issues:
+./test-media -kmemleak mc
+
+Regards,
+Benjamin
+
+Benjamin Gaignard (55):
+  videobuf2: Add min_reqbufs_allocation field to vb2_queue structure
+  media: test-drivers: Stop abusing of min_buffers_needed field
+  media: usb: cx231xx: Stop abusing of min_buffers_needed field
+  media: usb: dvb-usb: cxusb-analog: Stop abusing of min_buffers_needed
+    field
+  media: usb: gspca: Stop abusing of min_buffers_needed field
+  media: atmel: Stop abusing of min_buffers_needed field
+  media: imx8-isi: Stop abusing of min_buffers_needed field
+  media: imx7-media-csi: Stop abusing of min_buffers_needed field
+  media: chips-media: coda: Stop abusing of min_buffers_needed field
+  media: nuvoton: Stop abusing of min_buffers_needed field
+  media: sti: hva: Stop abusing of min_buffers_needed field
+  media: rockchip: rkisp1: Stop abusing of min_buffers_needed field
+  media: aspeed: Stop abusing of min_buffers_needed field
+  media: microchip: Stop abusing of min_buffers_needed field
+  media: amphion: Stop abusing of min_buffers_needed field
+  media: qcom: venus: Stop abusing of min_buffers_needed field
+  media: sun4i-csi: Stop abusing of min_buffers_needed field
+  media: sunxi: sun8i-di: Stop abusing of min_buffers_needed field
+  media: sun8i-rotate: Stop abusing of min_buffers_needed field
+  media: sunxi: sun6i-csi: Stop abusing of min_buffers_needed field
+  media: i2c: video-i2c: Stop abusing of min_buffers_needed field
+  media: dvb-core: Stop abusing of min_buffers_needed field
+  media: imx: Stop abusing of min_buffers_needed field
+  media: atmel: Stop abusing of min_buffers_needed field
+  media: ipu3: Stop abusing of min_buffers_needed field
+  media: starfive: Stop abusing of min_buffers_needed field
+  media: sun6i-isp: Stop abusing of min_buffers_needed field
+  media: tegra-video: Stop abusing of min_buffers_needed field
+  media: ti: am437x: Stop abusing of min_buffers_needed field
+  media: ti: cal: Stop abusing of min_buffers_needed field
+  media: ti: davinci: Stop abusing of min_buffers_needed field
+  media: saa7146: Stop abusing of min_buffers_needed field
+  input: touchscreen: atmel: Stop abusing of min_buffers_needed field
+  input: touchscreen: sur40: Stop abusing of min_buffers_needed field
+  videobuf2: core: Add min_dma_buffers_needed field to vb2_queue
+  media: stm32: stm32-dcmi: Use min_dma_buffers_needed field
+  media: renesas: Use min_dma_buffers_needed field
+  media: ti: j721e-csi2rx: Use min_dma_buffers_needed field
+  media: ti: omap: Use min_dma_buffers_needed field
+  samples: v4l2: pci: Use min_dma_buffers_needed field
+  media: pci: intel: ipu3: Use min_dma_buffers_needed field
+  media: pci: dt3155: Use min_dma_buffers_needed field
+  media: pci: bt8xx: Use min_dma_buffers_needed field
+  media: pci: cx18: Use min_dma_buffers_needed field
+  media: pci: mgb4: Use min_dma_buffers_needed field
+  media: pci: tw68: Use min_dma_buffers_needed field
+  media: pci: cx25821: Use min_dma_buffers_needed field
+  media: pci: tw5864: Use min_dma_buffers_needed field
+  media: pci: tw686x: Use min_dma_buffers_needed field
+  media: pci: cx88: Use min_dma_buffers_needed field
+  media: pci: cx23885: Use min_dma_buffers_needed field
+  media: pci: zoran: Use min_dma_buffers_needed field
+  media: pci: cobalt: Use min_dma_buffers_needed field
+  media: meson: vdec: Use min_dma_buffers_needed field
+  media: videobuf2: core: Remove 'min_buffers_needed' field
+
+ drivers/input/touchscreen/atmel_mxt_ts.c      |  2 +-
+ drivers/input/touchscreen/sur40.c             |  2 +-
+ drivers/media/common/saa7146/saa7146_fops.c   |  2 +-
+ .../media/common/videobuf2/videobuf2-core.c   | 26 +++++++++++--------
+ drivers/media/dvb-core/dvb_vb2.c              |  2 +-
+ drivers/media/i2c/video-i2c.c                 |  2 +-
+ drivers/media/pci/bt8xx/bttv-driver.c         |  2 +-
+ drivers/media/pci/cobalt/cobalt-v4l2.c        |  2 +-
+ drivers/media/pci/cx18/cx18-streams.c         |  2 +-
+ drivers/media/pci/cx23885/cx23885-417.c       |  2 +-
+ drivers/media/pci/cx23885/cx23885-dvb.c       |  2 +-
+ drivers/media/pci/cx23885/cx23885-video.c     |  4 +--
+ drivers/media/pci/cx25821/cx25821-video.c     |  2 +-
+ drivers/media/pci/cx88/cx88-blackbird.c       |  2 +-
+ drivers/media/pci/cx88/cx88-dvb.c             |  2 +-
+ drivers/media/pci/cx88/cx88-video.c           |  4 +--
+ drivers/media/pci/dt3155/dt3155.c             |  2 +-
+ drivers/media/pci/intel/ipu3/ipu3-cio2.c      |  2 +-
+ drivers/media/pci/mgb4/mgb4_vin.c             |  2 +-
+ drivers/media/pci/mgb4/mgb4_vout.c            |  2 +-
+ drivers/media/pci/tw5864/tw5864-video.c       |  2 +-
+ drivers/media/pci/tw68/tw68-video.c           |  2 +-
+ drivers/media/pci/tw686x/tw686x-video.c       |  2 +-
+ drivers/media/pci/zoran/zoran_driver.c        |  5 +---
+ drivers/media/platform/amphion/vpu_v4l2.c     |  4 +--
+ drivers/media/platform/aspeed/aspeed-video.c  |  2 +-
+ drivers/media/platform/atmel/atmel-isi.c      |  2 +-
+ .../platform/chips-media/coda/coda-common.c   |  2 +-
+ .../platform/microchip/microchip-isc-base.c   |  2 +-
+ drivers/media/platform/nuvoton/npcm-video.c   |  2 +-
+ drivers/media/platform/nxp/imx7-media-csi.c   |  2 +-
+ .../platform/nxp/imx8-isi/imx8-isi-video.c    |  2 +-
+ drivers/media/platform/qcom/venus/vdec.c      |  4 +--
+ drivers/media/platform/qcom/venus/venc.c      |  4 +--
+ .../platform/renesas/rcar-vin/rcar-dma.c      |  2 +-
+ drivers/media/platform/renesas/renesas-ceu.c  |  2 +-
+ .../platform/renesas/rzg2l-cru/rzg2l-video.c  |  2 +-
+ drivers/media/platform/renesas/sh_vou.c       |  2 +-
+ .../platform/rockchip/rkisp1/rkisp1-capture.c |  2 +-
+ drivers/media/platform/st/sti/hva/hva-v4l2.c  |  4 +--
+ drivers/media/platform/st/stm32/stm32-dcmi.c  |  2 +-
+ .../platform/sunxi/sun4i-csi/sun4i_dma.c      |  2 +-
+ .../sunxi/sun6i-csi/sun6i_csi_capture.c       |  2 +-
+ .../media/platform/sunxi/sun8i-di/sun8i-di.c  |  4 +--
+ .../sunxi/sun8i-rotate/sun8i_rotate.c         |  4 +--
+ .../media/platform/ti/am437x/am437x-vpfe.c    |  2 +-
+ drivers/media/platform/ti/cal/cal-video.c     |  2 +-
+ .../media/platform/ti/davinci/vpif_capture.c  |  2 +-
+ .../media/platform/ti/davinci/vpif_display.c  |  2 +-
+ .../platform/ti/j721e-csi2rx/j721e-csi2rx.c   |  2 +-
+ drivers/media/platform/ti/omap/omap_vout.c    |  2 +-
+ .../media/test-drivers/vimc/vimc-capture.c    |  2 +-
+ drivers/media/test-drivers/vivid/vivid-core.c |  4 +--
+ drivers/media/usb/cx231xx/cx231xx-417.c       |  2 +-
+ drivers/media/usb/cx231xx/cx231xx-video.c     |  4 +--
+ drivers/media/usb/dvb-usb/cxusb-analog.c      |  2 +-
+ drivers/media/usb/gspca/gspca.c               |  6 ++---
+ .../media/deprecated/atmel/atmel-isc-base.c   |  2 +-
+ drivers/staging/media/imx/imx-media-capture.c |  2 +-
+ drivers/staging/media/ipu3/ipu3-v4l2.c        |  2 +-
+ drivers/staging/media/meson/vdec/vdec.c       |  6 ++---
+ .../staging/media/starfive/camss/stf-video.c  |  2 +-
+ .../media/sunxi/sun6i-isp/sun6i_isp_capture.c |  2 +-
+ .../media/sunxi/sun6i-isp/sun6i_isp_params.c  |  2 +-
+ drivers/staging/media/tegra-video/vi.c        |  2 +-
+ include/media/videobuf2-core.h                | 10 +++++--
+ samples/v4l/v4l2-pci-skeleton.c               |  2 +-
+ 67 files changed, 102 insertions(+), 95 deletions(-)
+
+-- 
+2.39.2
+
