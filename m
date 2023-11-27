@@ -2,54 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E353A7F9D72
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 11:27:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E83957F9D74
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 11:27:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232936AbjK0K1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 05:27:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46912 "EHLO
+        id S232940AbjK0K1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 05:27:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232909AbjK0K1o (ORCPT
+        with ESMTP id S232918AbjK0K1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 05:27:44 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31C2E1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 02:27:50 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F719C433C7;
-        Mon, 27 Nov 2023 10:27:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701080870;
-        bh=mqtFeeqGki//5Nb3R143+AqRimwbXXJttWageC3NiuU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OFFL9zxnJAnhIv2QZsihLuUq6mKSrEU3HutEewWqBmC8wj4Ey9kZH08HHHrY0s6OK
-         zJZxiyeDHaSXmt6RujDPBPT7LJnhuRH9OJliQMqLiUJp4RCXcxAYeyVDXQO0JCd49W
-         1/eL8pYNWxbPBunN/ikK7aPYUr/nI0d2EHTOaXGxw2yoz6PMFwt1FvDvVsUmkD09L5
-         u2TWtfr0bZ6oFm5a37f1YH5il4ot9Gs6cja1OS1Y66a9X9mqmQfbz9s3dTyGaD1cz1
-         MOYYUotox20liwe8wOlhOdEtPTGsk7EHvqPuaSiHrypK3q+f/CrUaOAa1Ia9Vk/I6a
-         nuBmvgv0yHIYQ==
-Date:   Mon, 27 Nov 2023 11:27:43 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
-        lkp@intel.com, linux-kernel@vger.kernel.org,
-        Jann Horn <jannh@google.com>, linux-doc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, intel-gfx@lists.freedesktop.org,
-        linux-fsdevel@vger.kernel.org, gfs2@lists.linux.dev,
-        bpf@vger.kernel.org, ying.huang@intel.com, feng.tang@intel.com,
-        fengwei.yin@intel.com
-Subject: Re: [linus:master] [file] 0ede61d858: will-it-scale.per_thread_ops
- -2.9% regression
-Message-ID: <20231127-kirschen-dissens-b511900fa85a@brauner>
-References: <202311201406.2022ca3f-oliver.sang@intel.com>
- <CAHk-=wjMKONPsXAJ=yJuPBEAx6HdYRkYE8TdYVBvpm3=x_EnCw@mail.gmail.com>
- <CAHk-=wiCJtLbFWNURB34b9a_R_unaH3CiMRXfkR0-iihB_z68A@mail.gmail.com>
+        Mon, 27 Nov 2023 05:27:45 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EE7AEA;
+        Mon, 27 Nov 2023 02:27:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=3juK1mRN9IHZs49VX2tDFfNWRrH8ez7Xl+6AFxH3QDc=; b=QTQALexXzmeIletbhOMnhISn5s
+        umwuXSRQhFnKzuHs/VC1UFKGna71cN9+j55XOnv/8Ndy+0B9BVsPssK3vNjoHveJMfeaTtrhQ4j2N
+        fHd20O9ZbQdyf7LlI1xg5A1iEJpJQX64/GCVETR7Y2/rDaqdbkukPhK6VVIx6gqYfjNULPuRzGztX
+        njJELWoKBCuONZh6O4/yelYYazEFbmt1b0iG4kFU9tllVUHiiWBetp7Nm8cY0eEbn/QLHksiyMOY+
+        TXOVD5+tsGzaz3r7A3j013eyH037j0fKb0lfWqYUpC6kUsTJRftY3DMXdNHQOirITtP+dHGny4P8U
+        3Uzjtqxw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33832)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1r7Yq6-0005ed-0c;
+        Mon, 27 Nov 2023 10:27:42 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1r7Yq7-0001pZ-C5; Mon, 27 Nov 2023 10:27:43 +0000
+Date:   Mon, 27 Nov 2023 10:27:43 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Gan Yi Fang <yi.fang.gan@intel.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Looi Hong Aun <hong.aun.looi@intel.com>,
+        Voon Weifeng <weifeng.voon@intel.com>,
+        Song Yoong Siang <yoong.siang.song@intel.com>,
+        Lai Peter Jun Ann <jun.ann.lai@intel.com>
+Subject: Re: [PATCH net 1/1] net: phylink: Add module_exit()
+Message-ID: <ZWRvHw13l41HkciJ@shell.armlinux.org.uk>
+References: <20231127101603.807593-1-yi.fang.gan@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wiCJtLbFWNURB34b9a_R_unaH3CiMRXfkR0-iihB_z68A@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20231127101603.807593-1-yi.fang.gan@intel.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,23 +69,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> So that nobody else would waste any time on this, attached is a new
-> attempt. This time actually tested *after* the changes.
+On Mon, Nov 27, 2023 at 06:16:03PM +0800, Gan Yi Fang wrote:
+> diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
+> index 25c19496a336..7121503c9259 100644
+> --- a/drivers/net/phy/phylink.c
+> +++ b/drivers/net/phy/phylink.c
+> @@ -3724,7 +3724,10 @@ static int __init phylink_init(void)
+>  	return 0;
+>  }
+>  
+> +static void __exit phylink_exit(void){}
 
-So I've picked up your patch (vfs.misc). It's clever alright so thanks
-for the comments in there otherwise I would've stared at this for far
-too long.
+Please format that as:
 
-It's a little unpleasant because of the cast-orama going on before we
-check the file pointer but I don't see that it's in any way wrong. And
-given how focussed people are with __fget_* performance I think it might
-even be the right thing to do.
+static void __exit phylink_exit(void)
+{
+}
 
-But the cleverness means we have the same logic slightly differently
-twice. Not too bad ofc but not too nice either especially because that
-rcu lookup is pretty complicated already.
+and move it _after_ module_init().
 
-A few days ago I did just write a long explanatory off-list email to
-someone who had questions about this and who is fairly experienced so
-we're not making it easy on people. But performance or simplicity; one
-can't necessarily always have both.
+Thanks.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
