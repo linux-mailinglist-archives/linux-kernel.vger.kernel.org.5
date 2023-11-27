@@ -2,418 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7FA7FA5E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B3A87FA5F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:15:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234418AbjK0QOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 11:14:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36864 "EHLO
+        id S234444AbjK0QPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 11:15:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234266AbjK0QOh (ORCPT
+        with ESMTP id S234467AbjK0QPE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 11:14:37 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4BE3DD
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:14:41 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c88b7e69dfso53791321fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:14:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701101680; x=1701706480; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=o2vOa7sAsTt4vB8DyrW+ksy/yD+xOGvGom1YweA1IhM=;
-        b=xWGQFs4cnNP1G5Hy9TXJ0bmde/hQIlWztwlu8CQVIZI0SU2ZS7PG7/dhX/bJkTc6jU
-         XQX71aUsnW5VambcAxCCQ0Q+EN6Db/XtAulG1kfGJatAA9gx1/UcAY94OTKgdN62PSc1
-         kS1gw59Inwm/ZKBoX3j+n4oQJ91MYEwX2R4oYDemgp2NTUuimR3Mf1DaNs4prniiPT5R
-         HTJS0xCmfw4wpaXDaCOA6fTTJAO1QkXSSbo2Mr/rfp2iB9Aq/aNGXysrq2EoOyK75XFk
-         yX9flQ3/q60ymOD9VsLoK14uPDJ2VDDw95LlK1XsFiR+brUBFv8GEfBU32CAUO56x6yq
-         wQEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701101680; x=1701706480;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=o2vOa7sAsTt4vB8DyrW+ksy/yD+xOGvGom1YweA1IhM=;
-        b=iGpKDrx7/GmuQWIo6Q6xKXCt7enz7RZmBK4f81YEmswCI0CzUCYoD9fEF7Rc1fS85B
-         dub8mq4knNyajF9Zot3Pjvh49gX07ccAmmNXG5EfTrJQ1Zz5fP9nxxDrod654nJ3TnhB
-         Buu1JKOOhCQZd5N9yyhlKS173LL1JalEq/MHIkBuedV5Sbb6uTKzgZ066Xn/7KOLlCyC
-         tpZYkSdM2mfvt2UT6AXask+6FPoxt0tVdkCzutpehuwmKwD7LwOZDiFxNkzH9qRyZ+rN
-         RYms4UQd4vb0WS9LGH+maBDYDHB7JjpFgwVjYj4yS9lTpb4sBGgx4FwrX5Rr1jXrWyh9
-         f4BA==
-X-Gm-Message-State: AOJu0YyQRNxvmuinVxvjNNMmrZBizgYrtWXp9/v83NGIo3A6RTDCyWL7
-        MUq9JRpkVtBBhPzECgAS3BD64Q==
-X-Google-Smtp-Source: AGHT+IHyo6ztHgNX18sTH2cNNi7/anQssZJBWMkVbCoSK0zP1VlwyicHcNrshfD2A0J0UMJDV9tbeg==
-X-Received: by 2002:a05:6512:3b10:b0:505:7113:1d0f with SMTP id f16-20020a0565123b1000b0050571131d0fmr11220409lfv.13.1701101680043;
-        Mon, 27 Nov 2023 08:14:40 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:5a15:ac68:b4a4:85ff? ([2a01:e0a:982:cbb0:5a15:ac68:b4a4:85ff])
-        by smtp.gmail.com with ESMTPSA id d5-20020a05600c34c500b0040b349c91acsm15086215wmq.16.2023.11.27.08.14.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Nov 2023 08:14:39 -0800 (PST)
-Message-ID: <4e5e33c1-45d5-4c83-b647-bfb603347156@linaro.org>
-Date:   Mon, 27 Nov 2023 17:14:37 +0100
+        Mon, 27 Nov 2023 11:15:04 -0500
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2065.outbound.protection.outlook.com [40.107.223.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 438211B4;
+        Mon, 27 Nov 2023 08:15:04 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=R7quJ0/JhwPoe+pjjBa+dIpSHhAZfAqMR40VItdl9NPp4i/GdC4a4fG/r6qeWApLWnbnfOmHKtW63CZJvLkrfeQjdbm9AYiWNqndySDjXMZBb9cLzBc4Fe6YGsuRNNi5BgYhsf36GaqPYKs68+2sVJwxQFLNk7Evbw5MmrQPW1aYOG9uLa7ZlcIAfhGGE+Un2StoA1mNPSCGTMrDoi4/ZBaPJW1o6O9e7+Q5WXaJur4EgsY+jzDy+r72hbjgG7wGDGPpkqlfPkLtYR2QpdSvLU7uQA2W0RL3NIq7I3AutshSZeYU0R/tBwlbBlA6Xr3GDzpu1pume3mNI74TGsZjqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=D1Aw9pyMUxxgXTGggCIAPDiOg8gt/pGqW9ZRsYPBCHs=;
+ b=kcmm0DCs4Zex+vMBVnh9RM5nRRmao4GICkhzVtYwCCYuCdsZ9u8e2l8S6mkFpCbaQN9zpQLceZDGCcZwen9KmqkM/JUfKZIHDxFKKRDQoKz5jEyWXvI/qSp7uUTsnfv7DQVDbodrf5BGou7kWbUzvH7ZsCrz2FnLJpJ6/j1rAuZHbDk0jXpDnM5uOkW9ntj0sRt0hanPueuvmrDZMfuQqZImj638qlzASUQ7M+KCGfihtJqZmpYjC3XwzcDRjc2z2b/xA7L/RkimtvUPRSs2NHmwD8CvWgrkB0vhEPX6XgTOpaQcxHzD48+lqgqE34QgtcCLyXjwupgIfjrtQjlBmw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
+ dkim=pass header.d=memverge.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D1Aw9pyMUxxgXTGggCIAPDiOg8gt/pGqW9ZRsYPBCHs=;
+ b=BBykjkBhmXAEcUZsNoYM+diuwyg0QPKWathNjmg1p8vsYOKpJPVfYpS3sZvu+Xed2eWpbR/W/YFuMh7r7mOsUWb2rp8l9HppRurUFjdimya5LPswf2FeKtnPtj+zLdmNmmiXL/hZBc8mn/ipnNP47frLqZNQ7KR5zhRradSJ6dw=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=memverge.com;
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
+ by SJ0PR17MB4837.namprd17.prod.outlook.com (2603:10b6:a03:37a::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.19; Mon, 27 Nov
+ 2023 16:15:00 +0000
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::381c:7f11:1028:15f4]) by SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::381c:7f11:1028:15f4%5]) with mapi id 15.20.7046.015; Mon, 27 Nov 2023
+ 16:15:00 +0000
+Date:   Mon, 27 Nov 2023 11:14:44 -0500
+From:   Gregory Price <gregory.price@memverge.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, arnd@arndb.de, tglx@linutronix.de,
+        luto@kernel.org, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        tj@kernel.org, ying.huang@intel.com
+Subject: Re: [RFC PATCH 00/11] mm/mempolicy: Make task->mempolicy externally
+ modifiable via syscall and procfs
+Message-ID: <ZWTAdKnBVO0+5bbR@memverge.com>
+References: <20231122211200.31620-1-gregory.price@memverge.com>
+ <20231122133348.d27c09a90bce755dc1c0f251@linux-foundation.org>
+ <ZV5/ilfUoqC2PW0D@memverge.com>
+ <ZWS19JFHm_LFSsFd@tiehlicka>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWS19JFHm_LFSsFd@tiehlicka>
+X-ClientProxiedBy: SJ0PR05CA0085.namprd05.prod.outlook.com
+ (2603:10b6:a03:332::30) To SJ0PR17MB5512.namprd17.prod.outlook.com
+ (2603:10b6:a03:394::19)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v9 07/12] clk: meson: add vclk driver
-Content-Language: en-US, fr
-To:     Jerome Brunet <jbrunet@baylibre.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Nicolas Belin <nbelin@baylibre.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Remi Pommarel <repk@triplefau.lt>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-phy@lists.infradead.org,
-        Rob Herring <robh@kernel.org>
-References: <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-0-95256ed139e6@linaro.org>
- <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-7-95256ed139e6@linaro.org>
- <1j7cm7dx1b.fsf@starbuckisacylon.baylibre.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <1j7cm7dx1b.fsf@starbuckisacylon.baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|SJ0PR17MB4837:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0f5061f7-f429-4a1f-5661-08dbef640102
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: co4+9BfenST1vonnfpsWoyrrP3v8a7qTUHqj+gPRE8HpnpUMDV1Ceuh/u47M+Pq3/fYjZiHfOXDiBi1mWy1ktrsyoUrydEyZl+Un36+CYYhC0Lla/nWvnWvMZras3cWtYdq+FTNGvzpcdZRehTEQ44Y5yAFP15EB+AT9mxhJKdP4EjAHM0ZPx72jVIi41l363xj9m/kg6kXNIUdzgj4E35CXJesybRa6Q4Y0GWE/9OhFXzrLYSdF4PFRd6SDuJQculZIeWYzpXuqJ3qnB8k5sTZzcYKWKZ99o8DpYT+31pJTr+YMrP7PnW+3Ntj+6QC+hCBpKiUQQeen2Tb1QZM1PcBfYAswHdGl2ejNgEOiJBKkVAJdIZWrlkIG0MZsJb1WunXx9DCYz2t0JrsdkC8rQTN9zuRKipQQnnVAIDMA4HR4zTkvdkySbIN5Pr6m81qvcSdOkKbzP6Vvn1umnocX6nZLm1oOBZo4lzK0f1GDkc49RkaavyQQTDnRWdY99iSqYf2qs4OrX3jQQN+UybvDyZOA+U9kzKwVRuhl3XQufXh2BmmZq6/UZO33aQxjoqhGegwAu/2GZbIuTInUunH/SsDCHp+So7+SzE6QtJ1RQc0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(366004)(346002)(39840400004)(396003)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(26005)(6486002)(2616005)(6506007)(6666004)(478600001)(6512007)(38100700002)(36756003)(86362001)(5660300002)(44832011)(2906002)(7416002)(66946007)(83380400001)(41300700001)(66476007)(54906003)(66556008)(4326008)(8936002)(316002)(6916009)(8676002)(67856001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9gI5u5UaE+LGl1pKWYmuVOx0Ppzy9Kf0xMqJk/wODCjJ25bngK7y4aEx5uWT?=
+ =?us-ascii?Q?bsQshGTLqnNVg2UX9Zq95qHvP5aV2aK2YaYsEiRG+5tlEKmeACkf/38wvUt3?=
+ =?us-ascii?Q?lTOUl9j1X/TzgO+Rh1s5/NrXyaeLDL+z3JZJiuVl8rpVKaBUl+4vWX03b2Zb?=
+ =?us-ascii?Q?btiJDb3V5zWPMsZkjDii7OOSQoSUUMSseaWj4YUuaGTOQer3REQvUrZ+Syaq?=
+ =?us-ascii?Q?gQ+36nCKaWLHnnf+WaQvKqswyxxzJUr3w8jmHD5GnULVYGn49NHttYyYxCcD?=
+ =?us-ascii?Q?+COLAaV5OaNh14coREDz1MQrhdHcpkw1+FKGM69I7HAy6C29ZnlStO0FvwV5?=
+ =?us-ascii?Q?AaH/1azxyEmsvqWnH34h7hhg7THGRVpFcIjq2s2rytLZvsM3Ni34JQO492T2?=
+ =?us-ascii?Q?MupfxMTW0ACLZRsB47YMWD+sQkFjlCdE/rac6N4K5TFN6dsp8bdjM6mS/bKW?=
+ =?us-ascii?Q?9QBhgnbX+YRyKdurgHipQ3+8LFYwu5WcBLeRvPJfHfiYP6gBrhxJfv2htmEX?=
+ =?us-ascii?Q?nz2Ltq+NNHf/8cCYoJPvqkESSZpRk+ZBhIUs1gaHEzQ45NIipbpYcHUPzsG0?=
+ =?us-ascii?Q?nTS4z1sy0ZG+adGrdigl3ErbJbV9lfkC8tZI0u7V2FEQLZmM8mz3g+ai5DQO?=
+ =?us-ascii?Q?Mai2DlQXO0MW8cT1wx4EiSC42/XH/FE5Hfua7l+X1is/L4GAGbHRh1sXiZhH?=
+ =?us-ascii?Q?9nnvdTUkt7sGKPmgi9ma193hZnV2aD+rUhU8idLLpFMn81hvBYpQZXabc3V4?=
+ =?us-ascii?Q?P9l2nEr4IMJKb7M6vPAOtcVADNlUFWpeETo/laWtyzoRcUuFSP7Eck4JkTNr?=
+ =?us-ascii?Q?zXTBzZeohNW8tGR/kZMcwjk5vdGhsOLhQS2JGOez+41cDNaoKPabnxUhC6uL?=
+ =?us-ascii?Q?f9+yuGEmeLEUvcsu2zIIDBkjnLGWRo/t4dLSTyzaFYScOwm3QJiNHAZDD6Fm?=
+ =?us-ascii?Q?rG4Uj5QvIuhysekBrUTTh8L9kxxO+0praaj97j1yBKMC/UkjikujTDl1L99R?=
+ =?us-ascii?Q?yfG24+O6nMHo9fxnA5ZrprI7CrfA4UbM+/NUPU6pOM4p80dnwtToH1JyJvnZ?=
+ =?us-ascii?Q?gs/1uOIWRW74dYX+lQszGG/DHKT64eFjSj7xP6E9eZPLwsUj6FlkjZd2vrTP?=
+ =?us-ascii?Q?gnUpZse8uHSonlzmfIYp/IM1TR3M6keTw1joVGjW6WJiDVBDemUkI7luHRmx?=
+ =?us-ascii?Q?GlYlR2dgOEKURiKjXKzTrX7IHpzKvsmVe6DOj7mL12t0+S/yflNw2wbe4ayR?=
+ =?us-ascii?Q?LxGfq2LJF1KjDhM0hgKhEdOI3BaIA7RamK88qlzdTw70dCOAHd80h+aIB1wQ?=
+ =?us-ascii?Q?qfSqvCG+YzgU7r2rZCnlpTV3Qtd/VIkQxnSKg8yzw5TUdmSeZVA4t7bjm0Qw?=
+ =?us-ascii?Q?nFUzQtcGNR3lut7WDrS2IRp+5LUWxYcrvX2aUavoj4+PO/Z9bLOqBL4VmOAh?=
+ =?us-ascii?Q?4PRGRk/GspeGwvURAPiYrcrW3otGRso7u/5di3ukpM1LPI8+a1oF3/FjabfX?=
+ =?us-ascii?Q?BHHYdcE8VE0sVXTHu37OkKao4Wi8zF7h4pGNKi4KPD9bIP70jlvZHpNfGz/a?=
+ =?us-ascii?Q?mhjcZAEDG7pUQ4yRk9pCFB3Yx3UyQ4S3oA2MINGPz0vmkT6raTwpxjpbgKO5?=
+ =?us-ascii?Q?3A=3D=3D?=
+X-OriginatorOrg: memverge.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0f5061f7-f429-4a1f-5661-08dbef640102
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2023 16:15:00.2107
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ChMJJSg0PJsS3DAKA22nMf8nmlg7MiEnWkm4s5pZ7tDEN4wE9yLeB3LUT4u+p9jdv1jtDa3ISpxHUZae18WKSK3By/xgIdtYeIClLTGaaYI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR17MB4837
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/11/2023 15:41, Jerome Brunet wrote:
+On Mon, Nov 27, 2023 at 04:29:56PM +0100, Michal Hocko wrote:
+> Sorry, didn't have much time to do a proper review. Couple of points
+> here at least.
 > 
-> On Fri 24 Nov 2023 at 09:41, Neil Armstrong <neil.armstrong@linaro.org> wrote:
+> > 
+> > So... yeah... the is one area I think the community very much needs to
+> > comment:  set/get_mempolicy2, many new mempolicy syscalls, procfs? All
+> > of the above?
 > 
->> The VCLK and VCLK_DIV clocks have supplementary bits.
->>
->> The VCLK has a "SOFT RESET" bit to toggle after the whole
->> VCLK sub-tree rate has been set, this is implemented in
->> the gate enable callback.
->>
->> The VCLK_DIV clocks as enable and reset bits used to disable
->> and reset the divider, associated with CLK_SET_RATE_GATE it ensures
->> the rate is set while the divider is disabled and in reset mode.
->>
->> The VCLK_DIV enable bit isn't implemented as a gate since it's part
->> of the divider logic and vendor does this exact sequence to ensure
->> the divider is correctly set.
->>
->> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
->> ---
->>   drivers/clk/meson/Kconfig  |   5 ++
->>   drivers/clk/meson/Makefile |   1 +
->>   drivers/clk/meson/vclk.c   | 141 +++++++++++++++++++++++++++++++++++++++++++++
->>   drivers/clk/meson/vclk.h   |  51 ++++++++++++++++
->>   4 files changed, 198 insertions(+)
->>
->> diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
->> index 29ffd14d267b..59a40a49f8e1 100644
->> --- a/drivers/clk/meson/Kconfig
->> +++ b/drivers/clk/meson/Kconfig
->> @@ -30,6 +30,10 @@ config COMMON_CLK_MESON_VID_PLL_DIV
->>   	tristate
->>   	select COMMON_CLK_MESON_REGMAP
->>   
->> +config COMMON_CLK_MESON_VCLK
->> +	tristate
->> +	select COMMON_CLK_MESON_REGMAP
->> +
->>   config COMMON_CLK_MESON_CLKC_UTILS
->>   	tristate
->>   
->> @@ -140,6 +144,7 @@ config COMMON_CLK_G12A
->>   	select COMMON_CLK_MESON_EE_CLKC
->>   	select COMMON_CLK_MESON_CPU_DYNDIV
->>   	select COMMON_CLK_MESON_VID_PLL_DIV
->> +	select COMMON_CLK_MESON_VCLK
-> 
-> This particular line belong in the next patch
-> 
->>   	select MFD_SYSCON
->>   	help
->>   	  Support for the clock controller on Amlogic S905D2, S905X2 and S905Y2
->> diff --git a/drivers/clk/meson/Makefile b/drivers/clk/meson/Makefile
->> index 9ee4b954c896..9ba43fe7a07a 100644
->> --- a/drivers/clk/meson/Makefile
->> +++ b/drivers/clk/meson/Makefile
->> @@ -12,6 +12,7 @@ obj-$(CONFIG_COMMON_CLK_MESON_PLL) += clk-pll.o
->>   obj-$(CONFIG_COMMON_CLK_MESON_REGMAP) += clk-regmap.o
->>   obj-$(CONFIG_COMMON_CLK_MESON_SCLK_DIV) += sclk-div.o
->>   obj-$(CONFIG_COMMON_CLK_MESON_VID_PLL_DIV) += vid-pll-div.o
->> +obj-$(CONFIG_COMMON_CLK_MESON_VCLK) += vclk.o
->>   
->>   # Amlogic Clock controllers
->>   
->> diff --git a/drivers/clk/meson/vclk.c b/drivers/clk/meson/vclk.c
->> new file mode 100644
->> index 000000000000..47f08a52b49f
->> --- /dev/null
->> +++ b/drivers/clk/meson/vclk.c
->> @@ -0,0 +1,141 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Copyright (c) 2023 Neil Armstrong <neil.armstrong@linaro.org>
->> + */
->> +
->> +#include <linux/module.h>
->> +#include "vclk.h"
->> +
->> +/* The VCLK gate has a supplementary reset bit to pulse after ungating */
->> +
->> +static inline struct clk_regmap_vclk_data *
->> +clk_get_regmap_vclk_data(struct clk_regmap *clk)
->> +{
->> +	return (struct clk_regmap_vclk_data *)clk->data;
->> +}
->> +
->> +static int clk_regmap_vclk_enable(struct clk_hw *hw)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct clk_regmap_vclk_data *vclk = clk_get_regmap_vclk_data(clk);
->> +
->> +	meson_parm_write(clk->map, &vclk->enable, 1);
->> +
->> +	/* Do a reset pulse */
->> +	meson_parm_write(clk->map, &vclk->reset, 1);
->> +	meson_parm_write(clk->map, &vclk->reset, 0);
->> +
->> +	return 0;
->> +}
->> +
->> +static void clk_regmap_vclk_disable(struct clk_hw *hw)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct clk_regmap_vclk_data *vclk = clk_get_regmap_vclk_data(clk);
->> +
->> +	meson_parm_write(clk->map, &vclk->enable, 0);
->> +}
->> +
->> +static int clk_regmap_vclk_is_enabled(struct clk_hw *hw)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct clk_regmap_vclk_data *vclk = clk_get_regmap_vclk_data(clk);
->> +
->> +	return meson_parm_read(clk->map, &vclk->enable);
->> +}
->> +
->> +const struct clk_ops clk_regmap_vclk_ops = {
->> +	.enable = clk_regmap_vclk_enable,
->> +	.disable = clk_regmap_vclk_disable,
->> +	.is_enabled = clk_regmap_vclk_is_enabled,
->> +};
->> +EXPORT_SYMBOL_GPL(clk_regmap_vclk_ops);
-> 
-> s/clk_regmap_vclk/meson_vclk at least for what is exported, ideally most
-> all the code.
-> 
-> I get clk_regmap_ comes from code copied from clk_regmap.c.
-> The reason the this part is different (and not using parm) if that when
-> I converted amlogic to regmap, I hope we could make this generic,
-> possibly converging between aml and qcom (which was the only other
-> platform using regmap for clock at the time). This is why clk_regmap.c
-> is a bit different from the other driver.
-> 
-> For the aml specific drivers, best to look at the mpll or cpu-dyndiv one.
-> 
->> +
->> +/* The VCLK Divider has supplementary reset & enable bits */
->> +
->> +static inline struct clk_regmap_vclk_div_data *
->> +clk_get_regmap_vclk_div_data(struct clk_regmap *clk)
->> +{
->> +	return (struct clk_regmap_vclk_div_data *)clk->data;
->> +}
->> +
->> +static unsigned long clk_regmap_vclk_div_recalc_rate(struct clk_hw *hw,
->> +						     unsigned long prate)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
->> +
->> +	return divider_recalc_rate(hw, prate, meson_parm_read(clk->map, &vclk->div),
->> +				   vclk->table, vclk->flags, vclk->div.width);
->> +}
->> +
->> +static int clk_regmap_vclk_div_determine_rate(struct clk_hw *hw,
->> +					      struct clk_rate_request *req)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
->> +
->> +	return divider_determine_rate(hw, req, vclk->table, vclk->div.width,
->> +				      vclk->flags);
->> +}
->> +
->> +static int clk_regmap_vclk_div_set_rate(struct clk_hw *hw, unsigned long rate,
->> +					unsigned long parent_rate)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
->> +	int ret;
->> +
->> +	ret = divider_get_val(rate, parent_rate, vclk->table, vclk->div.width,
->> +			      vclk->flags);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	meson_parm_write(clk->map, &vclk->div, ret);
->> +
->> +	return 0;
->> +};
->> +
->> +static int clk_regmap_vclk_div_enable(struct clk_hw *hw)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
->> +
->> +	/* Unreset the divider when ungating */
->> +	meson_parm_write(clk->map, &vclk->reset, 0);
->> +	meson_parm_write(clk->map, &vclk->enable, 1);
->> +
->> +	return 0;
->> +}
->> +
->> +static void clk_regmap_vclk_div_disable(struct clk_hw *hw)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
->> +
->> +	/* Reset the divider when gating */
->> +	meson_parm_write(clk->map, &vclk->enable, 0);
->> +	meson_parm_write(clk->map, &vclk->reset, 1);
->> +}
->> +
->> +static int clk_regmap_vclk_div_is_enabled(struct clk_hw *hw)
->> +{
->> +	struct clk_regmap *clk = to_clk_regmap(hw);
->> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
->> +
->> +	return meson_parm_read(clk->map, &vclk->enable);
->> +}
->> +
->> +const struct clk_ops clk_regmap_vclk_div_ops = {
->> +	.recalc_rate = clk_regmap_vclk_div_recalc_rate,
->> +	.determine_rate = clk_regmap_vclk_div_determine_rate,
->> +	.set_rate = clk_regmap_vclk_div_set_rate,
->> +	.enable = clk_regmap_vclk_div_enable,
->> +	.disable = clk_regmap_vclk_div_disable,
->> +	.is_enabled = clk_regmap_vclk_div_is_enabled,
->> +};
->> +EXPORT_SYMBOL_GPL(clk_regmap_vclk_div_ops);
->> +
->> +MODULE_DESCRIPTION("Amlogic vclk clock driver");
->> +MODULE_AUTHOR("Neil Armstrong <neil.armstrong@linaro.org>");
->> +MODULE_LICENSE("GPL v2");
->> diff --git a/drivers/clk/meson/vclk.h b/drivers/clk/meson/vclk.h
->> new file mode 100644
->> index 000000000000..4f25d7ad2717
->> --- /dev/null
->> +++ b/drivers/clk/meson/vclk.h
+> I think we should actively avoid using proc interface. The most
+> reasonable way would be to add get_mempolicy2 interface that would allow
+> extensions and then create a pidfd counterpart to allow acting on a
+> remote task. The latter would require some changes to make mempolicy
+> code less current oriented.
 
-Is vclk.c/h ok ? clk-vclk doesn't look pretty, but I can switch to it to
-keep files organized.
+Sounds good, I'll pull my get/set_mempolicy2 RFC on top of this.
 
-Neil
+Just context: patches 1-6 refactor mempolicy to allow remote task
+twiddling (fixing the current-oriented issues), and patch 7 adds the pidfd
+interfaces you describe above.
 
->> @@ -0,0 +1,51 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +/*
->> + * Copyright (c) 2023 Neil Armstrong <neil.armstrong@linaro.org>
->> + */
->> +
->> +#ifndef __VCLK_H
->> +#define __VCLK_H
-> 
-> This is too generic.
-> Please add the MESON prefix like the other clock driver please.
-> 
->> +
->> +#include "clk-regmap.h"
->> +#include "parm.h"
->> +
->> +/**
->> + * struct clk_regmap_vclk_data - vclk regmap backed specific data
->> + *
->> + * @enable:	vclk enable field
->> + * @reset:	vclk reset field
->> + * @flags:	hardware-specific flags
->> + *
->> + * Flags:
->> + * Same as clk_gate except CLK_GATE_HIWORD_MASK which is ignored
->> + */
->> +struct clk_regmap_vclk_data {
->> +	struct parm enable;
->> +	struct parm reset;
->> +	u8 flags;
->> +};
->> +
->> +extern const struct clk_ops clk_regmap_vclk_ops;
->> +
->> +/**
->> + * struct clk_regmap_vclk_div_data - vclk_div regmap back specific data
->> + *
->> + * @div:	divider field
->> + * @enable:	vclk divider enable field
->> + * @reset:	vclk divider reset field
->> + * @table:	array of value/divider pairs, last entry should have div = 0
->> + *
->> + * Flags:
->> + * Same as clk_divider except CLK_DIVIDER_HIWORD_MASK which is ignored
->> + */
->> +struct clk_regmap_vclk_div_data {
->> +	struct parm div;
->> +	struct parm enable;
->> +	struct parm reset;
->> +	const struct clk_div_table *table;
->> +	u8 flags;
->> +};
->> +
->> +extern const struct clk_ops clk_regmap_vclk_div_ops;
->> +
->> +#endif /* __VCLK_H */
-> 
 
+Couple Questions
+
+1) Should we consider simply adding a pidfd arg to set/get_mempolicy2,
+   where if (pidfd == 0), then it operates on current, otherwise it
+   operates on the target task?  That would mitigate the need for what
+   amounts to the exact same interface.
+
+2) Should we combine all the existing operations into set_mempolicy2 and
+   add an operation arg.
+
+   set_mempolicy2(pidfd, arg_struct, len)
+
+   struct {
+     int pidfd; /* optional */
+     int operation; /* describe which op_args to use */
+     union {
+       struct {
+       } set_mempolicy;
+       struct {
+       } set_vma_home_node;
+       struct {
+       } mbind;
+       ...
+     } op_args;
+   } args;
+
+   capturing:
+     sys_set_mempolicy
+     sys_set_mempolicy_home_node
+     sys_mbind
+
+   or should we just make a separate interface for mbind/home_node to
+   limit complexity of the single syscall?
+
+Personally I like the dispatch for the extensibility nature of the arg
+struct, but I can understand wanting to limit complexity of a syscall
+interface for a variety of reasons.
+
+~Gregory
