@@ -2,87 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD727F98FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 06:59:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 035747F9910
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 07:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbjK0F7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 00:59:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34720 "EHLO
+        id S229800AbjK0GFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 01:05:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjK0F7D (ORCPT
+        with ESMTP id S229554AbjK0GEx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 00:59:03 -0500
-Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED9F136
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 21:59:08 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id ADADA42499;
-        Mon, 27 Nov 2023 05:59:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=marcan.st; s=default;
-        t=1701064745; bh=QB9rqf5vjtZTxj6YrVQMoEPk5hNZoTD60Drtq1SmnS0=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=cmEfvlc8StbrONgt6ZkpgMd8fHTKxdbaux+xpi5Q2UuFi8l1eO9m8MbS4dYRYBPp2
-         YlIbzLqrM2ZBNvqM4WbPx9vuaMlrJjUY6huSfIjUcCa8yIFbBOMw4oTdgkRb80NbUd
-         De/+I7hx8twtw4klptYNOUX57Qfyi8VM4D4blIJutdk1GHTnMsWQsUcThWdTvo3Mon
-         PUjYlcZJhZSzv4HO/3neOHEfD1yZndALyjTrPiMMgStsq5mbMEdcS45/1t2AGicxlq
-         aTQKq46eWu3bDX9FXFniFT7g7zGFHUp7glIgjmKMeeVN8ZwceveLqgHxNlALupPtOF
-         yCL1r1zzsqZ3Q==
-Message-ID: <94634407-9bbd-4f2d-9d0f-4f02cdfadfa5@marcan.st>
-Date:   Mon, 27 Nov 2023 14:59:00 +0900
+        Mon, 27 Nov 2023 01:04:53 -0500
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD657134
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 22:04:45 -0800 (PST)
+X-UUID: 50653da09a4049dabfe9bd44e81faa93-20231127
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.33,REQID:a18912e7-1bc6-4131-9ae6-0bcf38ce7786,IP:5,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:-10
+X-CID-INFO: VERSION:1.1.33,REQID:a18912e7-1bc6-4131-9ae6-0bcf38ce7786,IP:5,URL
+        :0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:-10
+X-CID-META: VersionHash:364b77b,CLOUDID:7390d895-10ce-4e4b-85c2-c9b5229ff92b,B
+        ulkID:231124231739FMC8SLUD,BulkQuantity:3,Recheck:0,SF:19|44|64|66|38|24|1
+        7|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:1,File:nil,Bulk:40,QS:nil,BEC:nil,
+        COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_ULS,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,
+        TF_CID_SPAM_FSD
+X-UUID: 50653da09a4049dabfe9bd44e81faa93-20231127
+X-User: chentao@kylinos.cn
+Received: from [172.20.15.254] [(116.128.244.169)] by mailgw
+        (envelope-from <chentao@kylinos.cn>)
+        (Generic MTA)
+        with ESMTP id 1917675565; Mon, 27 Nov 2023 14:04:31 +0800
+Message-ID: <9d871364-7baa-4daf-8b0c-3fbfbede6fdb@kylinos.cn>
+Date:   Mon, 27 Nov 2023 14:04:24 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] iommu: dart: Use readl instead of readl_relaxed for
- consistency
+Subject: Re: [PATCH] powerpc/mm: Fix null-pointer dereference in
+ pgtable_cache_add
 Content-Language: en-US
-To:     Sven Peter <sven@svenpeter.dev>, Joerg Roedel <joro@8bytes.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>
-Cc:     Alyssa Rosenzweig <alyssa@rosenzweig.io>, asahi@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20231126162009.17934-1-sven@svenpeter.dev>
-From:   Hector Martin <marcan@marcan.st>
-In-Reply-To: <20231126162009.17934-1-sven@svenpeter.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "npiggin@gmail.com" <npiggin@gmail.com>
+Cc:     "kunwu.chan@hotmail.com" <kunwu.chan@hotmail.com>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20231122090026.11728-1-chentao@kylinos.cn>
+ <32077b74-7335-4f4d-8858-c53c820150d0@csgroup.eu>
+From:   Kunwu Chan <chentao@kylinos.cn>
+In-Reply-To: <32077b74-7335-4f4d-8858-c53c820150d0@csgroup.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/27 1:20, Sven Peter wrote:
-> While the readl_relaxed in apple_dart_suspend is correct the rest of the
-> driver uses the non-relaxed variants everywhere and the single
-> readl_relaxed is inconsistent and possibly confusing.
-> 
-> Signed-off-by: Sven Peter <sven@svenpeter.dev>
-> ---
->  drivers/iommu/apple-dart.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iommu/apple-dart.c b/drivers/iommu/apple-dart.c
-> index 59cf256bf40f..c7f047ce0a7a 100644
-> --- a/drivers/iommu/apple-dart.c
-> +++ b/drivers/iommu/apple-dart.c
-> @@ -1272,7 +1272,7 @@ static __maybe_unused int apple_dart_suspend(struct device *dev)
->  	unsigned int sid, idx;
->  
->  	for (sid = 0; sid < dart->num_streams; sid++) {
-> -		dart->save_tcr[sid] = readl_relaxed(dart->regs + DART_TCR(dart, sid));
-> +		dart->save_tcr[sid] = readl(dart->regs + DART_TCR(dart, sid));
->  		for (idx = 0; idx < dart->hw->ttbr_count; idx++)
->  			dart->save_ttbr[sid][idx] =
->  				readl(dart->regs + DART_TTBR(dart, sid, idx));
+Hi Christophe,
 
-Acked-by: Hector Martin <marcan@marcan.st>
+Thanks for your reply.
+It's my bad. According your reply, i read the code in 
+sysfs_do_create_link_sd.There is a null pointer check indeed.
 
-- Hector
+My intention was to check null pointer after memory allocation.
+Whether we can add a comment here for someone like me, the null pointer 
+check is no need here?
+
+Thanks,
+Kunwu
+
+On 2023/11/24 23:17, Christophe Leroy wrote:
+> 
+> 
+> Le 22/11/2023 à 10:00, Kunwu Chan a écrit :
+>> [Vous ne recevez pas souvent de courriers de chentao@kylinos.cn. Découvrez pourquoi ceci est important à https://aka.ms/LearnAboutSenderIdentification ]
+>>
+>> kasprintf() returns a pointer to dynamically allocated memory
+>> which can be NULL upon failure. Ensure the allocation was successful
+>> by checking the pointer validity.
+> 
+> Are you sure this is needed ? Did you check what happens what name is NULL ?
+> 
+> If I followed stuff correctly, I end up in function
+> sysfs_do_create_link_sd() which already handles the NULL name case which
+> a big hammer warning.
+> 
+>>
+>> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+>> ---
+>>    arch/powerpc/mm/init-common.c | 2 ++
+>>    1 file changed, 2 insertions(+)
+>>
+>> diff --git a/arch/powerpc/mm/init-common.c b/arch/powerpc/mm/init-common.c
+>> index 119ef491f797..0884fc601c46 100644
+>> --- a/arch/powerpc/mm/init-common.c
+>> +++ b/arch/powerpc/mm/init-common.c
+>> @@ -139,6 +139,8 @@ void pgtable_cache_add(unsigned int shift)
+>>
+>>           align = max_t(unsigned long, align, minalign);
+>>           name = kasprintf(GFP_KERNEL, "pgtable-2^%d", shift);
+>> +       if (!name)
+>> +               return;
+>>           new = kmem_cache_create(name, table_size, align, 0, ctor(shift));
+>>           if (!new)
+>>                   panic("Could not allocate pgtable cache for order %d", shift);
+>> --
+>> 2.34.1
+>>
