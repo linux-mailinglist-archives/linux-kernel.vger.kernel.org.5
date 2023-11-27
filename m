@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A21017FACF1
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6FA7FACF0
 	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 23:05:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233455AbjK0WFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 17:05:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35142 "EHLO
+        id S233501AbjK0WFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 17:05:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231437AbjK0WFL (ORCPT
+        with ESMTP id S233348AbjK0WFL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 27 Nov 2023 17:05:11 -0500
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B5CC1AD
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:05:17 -0800 (PST)
-Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6d7fa93afe9so2829603a34.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:05:17 -0800 (PST)
+Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 503901AE
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:05:18 -0800 (PST)
+Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-1f03d9ad89fso2782347fac.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:05:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1701122716; x=1701727516; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1701122717; x=1701727517; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=YvIAmFcw54BmQHj1+eMPXZ5lcgdN4IW5nDHalxa3vjw=;
-        b=NZ+Y9pbwFjtILupUaf/B14UeNIyLrDxYjPOicEBDMIUPVvXh7pHFxNbz7wRsp37x8f
-         EO65kSSOhy55htbGU1t8mGWmD2+I1xX3/0ZqY79MUTMvYoRKHq3+WbJFUru4KKKlH6bj
-         C0/wGG41s/JBg3oMajl6flCEHvS0a3qQrSzGdU7AIbndiFPq6Zk4eLh7KwUBedwjDW1V
-         Mrb1Lwne+k3el2dUrAdKtYF3cZGWwCyh6LjQnRTxUE3Jb6rpE+8clBzZR5OpISv71FA6
-         akFYdosTYkjpKHzA93hlmb9S25/ntyJUnOjWTVI9pB2CgCRLtC1tyhU0ESQDNwQHFEaD
-         AH4Q==
+        bh=zfeJYmvvAj2atuMBwfCs8cMnsgt/tYWyP8ZyRNbK1QQ=;
+        b=mJiv2LT6JN0NDh/ICNZwSDXURNv3cL1UIGN1PwZ7OfatV3xZiI8FDgN1PYJ1iOuy/H
+         L6PPLqA+e5uI6FxVL8iddt/86kfDkWbjYfXaffQZghHI2kHQ8nzv9pR/taFcysjA6WLw
+         NkhqImP3J4M0eMWpWRUBxz8C+I7B2UV3Mv0AvNiuT+Ru59p9l8oLadSnyFRQA5lCHIS5
+         mAXkj2mGXkZUwIU0uoARjZEEpUCkHGXj8O1G/0B36yYfqAU9TmZvCV0N+fdwdNx3oKI3
+         eedNWjOaTzSYYlKYrkImgsqPw0v0ANo12nJdqL8zTlWJ3wVeF3+xUzML+jidd9t2lXhd
+         Bavg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701122716; x=1701727516;
+        d=1e100.net; s=20230601; t=1701122717; x=1701727517;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YvIAmFcw54BmQHj1+eMPXZ5lcgdN4IW5nDHalxa3vjw=;
-        b=RjXfhV0E3sv6E9SjTbnG73/B/4+KWei+LDdec36dNFL5QjNR9lKDCnMnsLVy1n34BC
-         /SclmvyNoOu2QR2hHfHRmXGxolwMXybA7aHiOEDHhhFTGAH4VJYx2uw1HIzR8OCzAcv/
-         l7x2knAAheEV2M9SoOht8CPxIT2osbGG80tFqYxNOw7GFRwJP8Yvq3yE25zvmFJFotfO
-         Iyhx/qM2oqFOgV2R9hr3A2e+z4J/zS5B6BGVpu+/XZ+yqqtBAtw92q5B4N7A1waAZvgX
-         fIabpAcDvpG5JCbAiC4/T2wudEjQud8gQlJFkdYdvfVpaQSiNqz+e/WvYRryDVHMbosH
-         0SvA==
-X-Gm-Message-State: AOJu0Yw3kFxB9m5CHywxkKEu/yOFYuDpNUaq0XBprdUQiwWZah3DJJOs
-        FLiT8LuGxMzy5Yzf0vLJqaORWw==
-X-Google-Smtp-Source: AGHT+IFmkvCuwcOw1xy7dTJFWWmToF7QUcjaDSuGwTEsalpnCblJK80onm7AEdmQGhsJIMI/FXTsrA==
-X-Received: by 2002:a05:6870:524c:b0:1fa:3014:ada9 with SMTP id o12-20020a056870524c00b001fa3014ada9mr10561965oai.54.1701122716534;
-        Mon, 27 Nov 2023 14:05:16 -0800 (PST)
+        bh=zfeJYmvvAj2atuMBwfCs8cMnsgt/tYWyP8ZyRNbK1QQ=;
+        b=xVCXuQh/Cds/kwcJDWrghRQAjgvxqps2ewNYwal4gdexDMuwJBoG4cubQOQFxE0QaS
+         XukBJGRsJbHYKq9uUHuT9OcRR/EzaDyXNFUMJvscUzfvx5VYHsbubS3gqjkf7O3RM0Hs
+         7GKFkGqqfU1EIGydBEqsBf14pN0eHsyoXOFc9j2YXvpfUi19jKOZdVngFbyyCvp868yi
+         02I9yzte/Ak+YmKSBkt7I5Z2zXrHjiQE8ym97Q3kZWm3Ex2jdy4Sd55J+VvqiFkiytpa
+         tXnW1AgOy4kNCX8nQhMoxiQX8055YX8wcZpRRhY+V3Tcn6pSBNCBrx316I4WsYkpz+HS
+         m3IA==
+X-Gm-Message-State: AOJu0YyKLEDZK6bU1TLQUE1AYfu3/QW/M5ubzauiQ3gKNeNE4kxP8BHd
+        Nbm1Ltlc35WH3zsH1mzeILqXiw==
+X-Google-Smtp-Source: AGHT+IGlTcZvaCuq9bLaYFKrLM9gzn7wml0OyTvdUNctquyivQSM+6s2M7QMasRuVCMWpyINa3zUCg==
+X-Received: by 2002:a05:6870:1d1:b0:1fa:3b81:5b1f with SMTP id n17-20020a05687001d100b001fa3b815b1fmr8762544oad.30.1701122717675;
+        Mon, 27 Nov 2023 14:05:17 -0800 (PST)
 Received: from charlie.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id x23-20020a056830115700b006d679b53e8asm1458890otq.24.2023.11.27.14.05.15
+        by smtp.gmail.com with ESMTPSA id x23-20020a056830115700b006d679b53e8asm1458890otq.24.2023.11.27.14.05.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 14:05:16 -0800 (PST)
+        Mon, 27 Nov 2023 14:05:17 -0800 (PST)
 From:   Charlie Jenkins <charlie@rivosinc.com>
-Date:   Mon, 27 Nov 2023 14:04:59 -0800
-Subject: [PATCH v4 1/2] riscv: Safely remove entries from relocation list
+Date:   Mon, 27 Nov 2023 14:05:00 -0800
+Subject: [PATCH v4 2/2] riscv: Correct type casting in module loading
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231127-module_linking_freeing-v4-1-a2ca1d7027d0@rivosinc.com>
+Message-Id: <20231127-module_linking_freeing-v4-2-a2ca1d7027d0@rivosinc.com>
 References: <20231127-module_linking_freeing-v4-0-a2ca1d7027d0@rivosinc.com>
 In-Reply-To: <20231127-module_linking_freeing-v4-0-a2ca1d7027d0@rivosinc.com>
 To:     Paul Walmsley <paul.walmsley@sifive.com>,
@@ -67,11 +67,11 @@ To:     Paul Walmsley <paul.walmsley@sifive.com>,
 Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         Charlie Jenkins <charlie@rivosinc.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1701122714; l=7889;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1701122714; l=1122;
  i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
- bh=oWHW0TwoEipPebbTedSb6UcR9/YptErZBNQ3JSBym2M=;
- b=J5XMWA4G1aZEqzAa6mZIwB3AtKNSf780SvwoUHh01Oa9Q5isHKUpK6W2FqqHwdQoqVDzg7SH4
- N7r+wwuHq2TA6ly2xMZb23IDdNT8rKFQ9sZX+tbiCNwdqUw6gwDZ6QI
+ bh=gKtfd5M4f/12qT968kmTbpH+FPE5A73SSgTlwm9+2vg=;
+ b=n0mTJP+LYH0N4DSIuQTOKLB4SExsBvS4/o0PIOTxDPx23GVbSNKIkufpsBdKBOvb6R7paXCcV
+ fHMdu6GDl3eAEQWplkrU6P3PL2M0orVhoFEVV10vqJHYN2WN6KTtQAy
 X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
  pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -83,239 +83,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the safe versions of list and hlist iteration to safely remove
-entries from the module relocation lists. To allow mutliple threads to
-load modules concurrently, move relocation list pointers onto the stack
-rather than using global variables.
+Use __le16 with le16_to_cpu.
 
 Fixes: 8fd6c5142395 ("riscv: Add remaining module relocations")
-Reported-by: Ron Economos <re@w6rz.net>
-Closes: https://lore.kernel.org/linux-riscv/444de86a-7e7c-4de7-5d1d-c1c40eefa4ba@w6rz.net
 Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
+Tested-by: Samuel Holland <samuel.holland@sifive.com>
 ---
- arch/riscv/kernel/module.c | 110 +++++++++++++++++++++++++++++++++------------
- 1 file changed, 82 insertions(+), 28 deletions(-)
+ arch/riscv/kernel/module.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/riscv/kernel/module.c b/arch/riscv/kernel/module.c
-index 56a8c78e9e21..53593fe58cd8 100644
+index 53593fe58cd8..aac019ed63b1 100644
 --- a/arch/riscv/kernel/module.c
 +++ b/arch/riscv/kernel/module.c
-@@ -40,15 +40,6 @@ struct relocation_handlers {
- 				  long buffer);
- };
+@@ -55,7 +55,7 @@ static bool riscv_insn_valid_32bit_offset(ptrdiff_t val)
  
--unsigned int initialize_relocation_hashtable(unsigned int num_relocations);
--void process_accumulated_relocations(struct module *me);
--int add_relocation_to_accumulate(struct module *me, int type, void *location,
--				 unsigned int hashtable_bits, Elf_Addr v);
--
--struct hlist_head *relocation_hashtable;
--
--struct list_head used_buckets_list;
--
- /*
-  * The auipc+jalr instruction pair can reach any PC-relative offset
-  * in the range [-2^31 - 2^11, 2^31 - 2^11)
-@@ -604,7 +595,10 @@ static const struct relocation_handlers reloc_handlers[] = {
- 	/* 192-255 nonstandard ABI extensions  */
- };
- 
--void process_accumulated_relocations(struct module *me)
-+static void
-+process_accumulated_relocations(struct module *me,
-+				struct hlist_head **relocation_hashtable,
-+				struct list_head *used_buckets_list)
+ static int riscv_insn_rmw(void *location, u32 keep, u32 set)
  {
- 	/*
- 	 * Only ADD/SUB/SET/ULEB128 should end up here.
-@@ -624,18 +618,25 @@ void process_accumulated_relocations(struct module *me)
- 	 *	- Each relocation entry for a location address
- 	 */
- 	struct used_bucket *bucket_iter;
-+	struct used_bucket *bucket_iter_tmp;
- 	struct relocation_head *rel_head_iter;
-+	struct hlist_node *rel_head_iter_tmp;
- 	struct relocation_entry *rel_entry_iter;
-+	struct relocation_entry *rel_entry_iter_tmp;
- 	int curr_type;
- 	void *location;
- 	long buffer;
+-	u16 *parcel = location;
++	__le16 *parcel = location;
+ 	u32 insn = (u32)le16_to_cpu(parcel[0]) | (u32)le16_to_cpu(parcel[1]) << 16;
  
--	list_for_each_entry(bucket_iter, &used_buckets_list, head) {
--		hlist_for_each_entry(rel_head_iter, bucket_iter->bucket, node) {
-+	list_for_each_entry_safe(bucket_iter, bucket_iter_tmp,
-+				 used_buckets_list, head) {
-+		hlist_for_each_entry_safe(rel_head_iter, rel_head_iter_tmp,
-+					  bucket_iter->bucket, node) {
- 			buffer = 0;
- 			location = rel_head_iter->location;
--			list_for_each_entry(rel_entry_iter,
--					    rel_head_iter->rel_entry, head) {
-+			list_for_each_entry_safe(rel_entry_iter,
-+						 rel_entry_iter_tmp,
-+						 rel_head_iter->rel_entry,
-+						 head) {
- 				curr_type = rel_entry_iter->type;
- 				reloc_handlers[curr_type].reloc_handler(
- 					me, &buffer, rel_entry_iter->value);
-@@ -648,11 +649,14 @@ void process_accumulated_relocations(struct module *me)
- 		kfree(bucket_iter);
- 	}
+ 	insn &= keep;
+@@ -68,7 +68,7 @@ static int riscv_insn_rmw(void *location, u32 keep, u32 set)
  
--	kfree(relocation_hashtable);
-+	kfree(*relocation_hashtable);
- }
- 
--int add_relocation_to_accumulate(struct module *me, int type, void *location,
--				 unsigned int hashtable_bits, Elf_Addr v)
-+static int add_relocation_to_accumulate(struct module *me, int type,
-+					void *location,
-+					unsigned int hashtable_bits, Elf_Addr v,
-+					struct hlist_head *relocation_hashtable,
-+					struct list_head *used_buckets_list)
+ static int riscv_insn_rvc_rmw(void *location, u16 keep, u16 set)
  {
- 	struct relocation_entry *entry;
- 	struct relocation_head *rel_head;
-@@ -661,6 +665,10 @@ int add_relocation_to_accumulate(struct module *me, int type, void *location,
- 	unsigned long hash;
+-	u16 *parcel = location;
++	__le16 *parcel = location;
+ 	u16 insn = le16_to_cpu(*parcel);
  
- 	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
-+
-+	if (!entry)
-+		return -ENOMEM;
-+
- 	INIT_LIST_HEAD(&entry->head);
- 	entry->type = type;
- 	entry->value = v;
-@@ -669,7 +677,10 @@ int add_relocation_to_accumulate(struct module *me, int type, void *location,
- 
- 	current_head = &relocation_hashtable[hash];
- 
--	/* Find matching location (if any) */
-+	/*
-+	 * Search for the relocation_head for the relocations that happen at the
-+	 * provided location
-+	 */
- 	bool found = false;
- 	struct relocation_head *rel_head_iter;
- 
-@@ -681,19 +692,45 @@ int add_relocation_to_accumulate(struct module *me, int type, void *location,
- 		}
- 	}
- 
-+	/*
-+	 * If there has not yet been any relocations at the provided location,
-+	 * create a relocation_head for that location and populate it with this
-+	 * relocation_entry.
-+	 */
- 	if (!found) {
- 		rel_head = kmalloc(sizeof(*rel_head), GFP_KERNEL);
-+
-+		if (!rel_head) {
-+			kfree(entry);
-+			return -ENOMEM;
-+		}
-+
- 		rel_head->rel_entry =
- 			kmalloc(sizeof(struct list_head), GFP_KERNEL);
-+
-+		if (!rel_head->rel_entry) {
-+			kfree(entry);
-+			kfree(rel_head);
-+			return -ENOMEM;
-+		}
-+
- 		INIT_LIST_HEAD(rel_head->rel_entry);
- 		rel_head->location = location;
- 		INIT_HLIST_NODE(&rel_head->node);
- 		if (!current_head->first) {
- 			bucket =
- 				kmalloc(sizeof(struct used_bucket), GFP_KERNEL);
-+
-+			if (!bucket) {
-+				kfree(entry);
-+				kfree(rel_head);
-+				kfree(rel_head->rel_entry);
-+				return -ENOMEM;
-+			}
-+
- 			INIT_LIST_HEAD(&bucket->head);
- 			bucket->bucket = current_head;
--			list_add(&bucket->head, &used_buckets_list);
-+			list_add(&bucket->head, used_buckets_list);
- 		}
- 		hlist_add_head(&rel_head->node, current_head);
- 	}
-@@ -704,7 +741,9 @@ int add_relocation_to_accumulate(struct module *me, int type, void *location,
- 	return 0;
- }
- 
--unsigned int initialize_relocation_hashtable(unsigned int num_relocations)
-+static unsigned int
-+initialize_relocation_hashtable(unsigned int num_relocations,
-+				struct hlist_head **relocation_hashtable)
- {
- 	/* Can safely assume that bits is not greater than sizeof(long) */
- 	unsigned long hashtable_size = roundup_pow_of_two(num_relocations);
-@@ -720,12 +759,13 @@ unsigned int initialize_relocation_hashtable(unsigned int num_relocations)
- 
- 	hashtable_size <<= should_double_size;
- 
--	relocation_hashtable = kmalloc_array(hashtable_size,
--					     sizeof(*relocation_hashtable),
--					     GFP_KERNEL);
--	__hash_init(relocation_hashtable, hashtable_size);
-+	*relocation_hashtable = kmalloc_array(hashtable_size,
-+					      sizeof(*relocation_hashtable),
-+					      GFP_KERNEL);
-+	if (!*relocation_hashtable)
-+		return -ENOMEM;
- 
--	INIT_LIST_HEAD(&used_buckets_list);
-+	__hash_init(*relocation_hashtable, hashtable_size);
- 
- 	return hashtable_bits;
- }
-@@ -742,7 +782,17 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
- 	Elf_Addr v;
- 	int res;
- 	unsigned int num_relocations = sechdrs[relsec].sh_size / sizeof(*rel);
--	unsigned int hashtable_bits = initialize_relocation_hashtable(num_relocations);
-+	struct hlist_head *relocation_hashtable;
-+	struct list_head used_buckets_list;
-+	unsigned int hashtable_bits;
-+
-+	hashtable_bits = initialize_relocation_hashtable(num_relocations,
-+							 &relocation_hashtable);
-+
-+	if (hashtable_bits < 0)
-+		return hashtable_bits;
-+
-+	INIT_LIST_HEAD(&used_buckets_list);
- 
- 	pr_debug("Applying relocate section %u to %u\n", relsec,
- 	       sechdrs[relsec].sh_info);
-@@ -823,14 +873,18 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
- 		}
- 
- 		if (reloc_handlers[type].accumulate_handler)
--			res = add_relocation_to_accumulate(me, type, location, hashtable_bits, v);
-+			res = add_relocation_to_accumulate(me, type, location,
-+							   hashtable_bits, v,
-+							   relocation_hashtable,
-+							   &used_buckets_list);
- 		else
- 			res = handler(me, location, v);
- 		if (res)
- 			return res;
- 	}
- 
--	process_accumulated_relocations(me);
-+	process_accumulated_relocations(me, &relocation_hashtable,
-+					&used_buckets_list);
- 
- 	return 0;
- }
+ 	insn &= keep;
 
 -- 
 2.42.0
