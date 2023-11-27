@@ -2,91 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 941777FA0D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 14:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0411B7FA0E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 14:22:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233126AbjK0NWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 08:22:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
+        id S233444AbjK0NWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 08:22:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230517AbjK0NWU (ORCPT
+        with ESMTP id S233276AbjK0NWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 08:22:20 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889C81AB
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 05:22:27 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 756C5C433C8;
-        Mon, 27 Nov 2023 13:22:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701091347;
-        bh=2JKjpQ+5QKANLP+xGmPCkybvq6kf6sMCsdtq+PhVm3o=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=bCbLnI25DgO/3NhVtGI6COesZn76ioTqblgX0vP1w6UCsafKA1UsKw7/uB3q5Si7E
-         p3Kwxii8gLbZ2pI48nGZ95j7tCxkjRhPDeDT7MIb1pu3byNgX7F9a4EJOuREIhO0KE
-         omLxzqv8kaY+/4fjVKkhTbtcao3YOMTD+yEee7TTDbDD0gN9sSx0tOisOzv+002ZU9
-         NSNR9SnqbE5j0LVkbDbzY9ZBG53CmO/nLruMScsiR115l2tUbzLKTvIGkd4MoZGRKI
-         eyfyZQWOIpSFd+X71z4OeyFouedfd4sC93e34la6eVNuzs3w8/gDNq1j5lW7DL4YbT
-         QcrR/GgjDKUdg==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Lee Jones <lee@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Alex Bee <knaerzche@gmail.com>
-Cc:     Elaine Zhang <zhangqing@rock-chips.com>,
-        Johan Jonker <jbx6244@gmail.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org,
-        linux-clk@vger.kernel.org, linux-phy@lists.infradead.org
-In-Reply-To: <20230829171647.187787-1-knaerzche@gmail.com>
-References: <20230829171647.187787-1-knaerzche@gmail.com>
-Subject: Re: (subset) [PATCH 00/31] Fix and improve Rockchip RK3128 support
-Message-Id: <170109134007.42627.12929766893521974712.b4-ty@kernel.org>
-Date:   Mon, 27 Nov 2023 18:52:20 +0530
+        Mon, 27 Nov 2023 08:22:30 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 320CFD5B;
+        Mon, 27 Nov 2023 05:22:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=czNXjKBE5YCosfT9d3RwTB4c1szf3nqsIBvuFOt820Q=; b=cVxuJfOIsAlvcd2dxILBDwNiDO
+        aR+cVzzhcIVXGgC2Ncj1rTIcY8yiK61dUAQFJ4BM9myTRy9Knzel936lpaxGamFriHTMhdc3H2J0w
+        TwO8tkpZvJDRVxw1s1r6E09iKYD0ARynBDWzgS9KPKxoQlwq8zbcIi05S46A8lDHocJQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r7bZ9-001LLX-GV; Mon, 27 Nov 2023 14:22:23 +0100
+Date:   Mon, 27 Nov 2023 14:22:23 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Jie Luo <quic_luoj@quicinc.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        hkallweit1@gmail.com, linux@armlinux.org.uk, corbet@lwn.net,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v6 3/6] net: phy: at803x: add QCA8084 ethernet phy support
+Message-ID: <8e4046dd-813c-4766-83fb-c54a700caf31@lunn.ch>
+References: <20231126060732.31764-1-quic_luoj@quicinc.com>
+ <20231126060732.31764-4-quic_luoj@quicinc.com>
+ <0b22dd51-417c-436d-87ce-7ebc41185860@lunn.ch>
+ <f0604c25-87a7-497a-8884-7a779ee7a2f5@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f0604c25-87a7-497a-8884-7a779ee7a2f5@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Tue, 29 Aug 2023 19:16:16 +0200, Alex Bee wrote:
-> this series fixes some issues I found when testing my "new" RK3128 board
-> with the mainline kernel and adds some core functionality like SMP bringup,
-> usb and networking.
+On Mon, Nov 27, 2023 at 02:21:46PM +0800, Jie Luo wrote:
 > 
-> The propably most distinctive change is the split up of the DTs for the
-> different SoCs of this platform: RK3126 and RK3128. Even if I'm not adding
-> a RK3126 board in this series: I think this change should be done as early
-> as possible in order to avoid issues in future.
-> Actually it should have been done like that in the first place.
 > 
-> [...]
+> On 11/27/2023 1:31 AM, Andrew Lunn wrote:
+> > > +		/* There are two PCSs available for QCA8084, which support the
+> > > +		 * following interface modes.
+> > > +		 *
+> > > +		 * 1. PHY_INTERFACE_MODE_10G_QXGMII utilizes PCS1 for all
+> > > +		 * available 4 ports, which is for all link speeds.
+> > > +		 *
+> > > +		 * 2. PHY_INTERFACE_MODE_2500BASEX utilizes PCS0 for the
+> > > +		 * fourth port, which is only for the link speed 2500M same
+> > > +		 * as QCA8081.
+> > > +		 *
+> > > +		 * 3. PHY_INTERFACE_MODE_SGMII utilizes PCS0 for the fourth
+> > > +		 * port, which is for the link speed 10M, 100M and 1000M same
+> > > +		 * as QCA8081.
+> > > +		 */
+> > 
+> > How are these 3 modes configured? I don't see any software
+> > configuration of this in these drivers. Can it only by configured by
+> > strapping?
+> 
+> The interface mode is passed in the .config_init, which is configured
+> by the PCS driver, the hardware register is located in the PCS, this
+> driver will be pushed later.
 
-Applied, thanks!
+Is this the same as how the syqca807x works? Can the PCS driver be
+shared by these two drivers?
 
-[08/31] phy: rockchip-inno-usb2: Split ID interrupt phy registers
-        commit: 2fda59099462ee700e424ba3ac928d13ad6389a8
-[09/31] phy: phy-rockchip-inno-usb2: Add RK3128 support
-        commit: 62ff41017e147472b07de6125c3be82ce02a8dd7
+What i don't like at the moment is that we have two driver
+developments going on at once for hardware which seems very similar,
+but no apparent cooperation?
 
-Best regards,
--- 
-~Vinod
-
-
+	Andrew
