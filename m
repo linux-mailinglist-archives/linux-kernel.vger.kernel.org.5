@@ -2,130 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FAA47F9C1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:50:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C347F9C1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:53:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232743AbjK0Iur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 03:50:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51718 "EHLO
+        id S232543AbjK0IxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 03:53:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232763AbjK0Iun (ORCPT
+        with ESMTP id S230038AbjK0IxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 03:50:43 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FD47188
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:50:48 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 9283D2027A;
-        Mon, 27 Nov 2023 08:50:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1701075046; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LRi9ngSxggQud/fxmQYL6ll8RoVr5MrBgBUE8mAhwc8=;
-        b=bC/rzYW0p69DtNQ9EhPXDxwhoOXYLaA0FIwA1DhE1yPE06UiXrAd26ZocYd/ZozXD9cDxM
-        MYO9z66qvyp1McAmidq2m3TuEXiAOvUo+HnI68oVbm4HHA7K1ZHflxi5YMV9/xCHt1Z9cF
-        tQ9YnC+5k2KPUEJZHIazYl8qZjuvUMU=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8958D1367B;
-        Mon, 27 Nov 2023 08:50:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id doDqHGZYZGWVMQAAD6G6ig
-        (envelope-from <mhocko@suse.com>); Mon, 27 Nov 2023 08:50:46 +0000
-Date:   Mon, 27 Nov 2023 09:50:46 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Dmytro Maluka <dmaluka@chromium.org>
-Cc:     Liu Shixin <liushixin2@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        huang ying <huang.ying.caritas@gmail.com>,
-        Aaron Lu <aaron.lu@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Kemi Wang <kemi.wang@intel.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH -next v2] mm, proc: collect percpu free pages into the
- free pages
-Message-ID: <ZWRYZmulV0B-Jv3k@tiehlicka>
-References: <20220822023311.909316-1-liushixin2@huawei.com>
- <20220822033354.952849-1-liushixin2@huawei.com>
- <20220822141207.24ff7252913a62f80ea55e90@linux-foundation.org>
- <YwSGqtEICW5AlhWr@dhcp22.suse.cz>
- <6b2977fc-1e4a-f3d4-db24-7c4699e0773f@huawei.com>
- <YwTYMGtcS4/F/xQO@dhcp22.suse.cz>
- <ZWDjbrHx6XNzAtl_@google.com>
+        Mon, 27 Nov 2023 03:53:09 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 84612111
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:53:15 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9DA072F4;
+        Mon, 27 Nov 2023 00:54:02 -0800 (PST)
+Received: from [10.57.73.191] (unknown [10.57.73.191])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 964D83F6C4;
+        Mon, 27 Nov 2023 00:53:11 -0800 (PST)
+Message-ID: <26c78fee-4b7a-4d73-9f8b-2e25bbae20e8@arm.com>
+Date:   Mon, 27 Nov 2023 08:53:10 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWDjbrHx6XNzAtl_@google.com>
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Score: 0.70
-X-Spam-Level: 
-X-Spamd-Result: default: False [0.70 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         TO_DN_SOME(0.00)[];
-         RCVD_COUNT_THREE(0.00)[3];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         BAYES_HAM(-0.00)[35.72%];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         RCPT_COUNT_TWELVE(0.00)[13];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         MID_RHS_NOT_FQDN(0.50)[];
-         FREEMAIL_CC(0.00)[huawei.com,linux-foundation.org,linuxfoundation.org,gmail.com,intel.com,redhat.com,suse.cz,vger.kernel.org,kvack.org];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 14/14] arm64/mm: Add ptep_get_and_clear_full() to
+ optimize process teardown
+Content-Language: en-GB
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20231115163018.1303287-1-ryan.roberts@arm.com>
+ <20231115163018.1303287-15-ryan.roberts@arm.com>
+ <87fs0xxd5g.fsf@nvdebian.thelocal>
+ <3b4f6bff-6322-4394-9efb-9c3b9ef52010@arm.com>
+ <87y1eovsn5.fsf@nvdebian.thelocal>
+ <8fca9ed7-f916-4abe-8284-6e3c9fa33a8c@arm.com>
+ <87wmu3pro8.fsf@nvdebian.thelocal>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <87wmu3pro8.fsf@nvdebian.thelocal>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 24-11-23 18:54:54, Dmytro Maluka wrote:
-[...]
-> But looking at the code in __alloc_pages() and around, I see you are
-> right: we don't try draining other CPUs' PCP lists *before* resorting to
-> direct reclaim, compaction etc.
+On 27/11/2023 07:34, Alistair Popple wrote:
 > 
-> BTW, why not? Shouldn't draining PCP lists be cheaper than pageout() in
-> any case?
+> Ryan Roberts <ryan.roberts@arm.com> writes:
+> 
+>> On 24/11/2023 01:35, Alistair Popple wrote:
+>>>
+>>> Ryan Roberts <ryan.roberts@arm.com> writes:
+>>>
+>>>> On 23/11/2023 05:13, Alistair Popple wrote:
+>>>>>
+>>>>> Ryan Roberts <ryan.roberts@arm.com> writes:
+>>>>>
+>>>>>> ptep_get_and_clear_full() adds a 'full' parameter which is not present
+>>>>>> for the fallback ptep_get_and_clear() function. 'full' is set to 1 when
+>>>>>> a full address space teardown is in progress. We use this information to
+>>>>>> optimize arm64_sys_exit_group() by avoiding unfolding (and therefore
+>>>>>> tlbi) contiguous ranges. Instead we just clear the PTE but allow all the
+>>>>>> contiguous neighbours to keep their contig bit set, because we know we
+>>>>>> are about to clear the rest too.
+>>>>>>
+>>>>>> Before this optimization, the cost of arm64_sys_exit_group() exploded to
+>>>>>> 32x what it was before PTE_CONT support was wired up, when compiling the
+>>>>>> kernel. With this optimization in place, we are back down to the
+>>>>>> original cost.
+>>>>>>
+>>>>>> This approach is not perfect though, as for the duration between
+>>>>>> returning from the first call to ptep_get_and_clear_full() and making
+>>>>>> the final call, the contpte block in an intermediate state, where some
+>>>>>> ptes are cleared and others are still set with the PTE_CONT bit. If any
+>>>>>> other APIs are called for the ptes in the contpte block during that
+>>>>>> time, we have to be very careful. The core code currently interleaves
+>>>>>> calls to ptep_get_and_clear_full() with ptep_get() and so ptep_get()
+>>>>>> must be careful to ignore the cleared entries when accumulating the
+>>>>>> access and dirty bits - the same goes for ptep_get_lockless(). The only
+>>>>>> other calls we might resonably expect are to set markers in the
+>>>>>> previously cleared ptes. (We shouldn't see valid entries being set until
+>>>>>> after the tlbi, at which point we are no longer in the intermediate
+>>>>>> state). Since markers are not valid, this is safe; set_ptes() will see
+>>>>>> the old, invalid entry and will not attempt to unfold. And the new pte
+>>>>>> is also invalid so it won't attempt to fold. We shouldn't see this for
+>>>>>> the 'full' case anyway.
+>>>>>>
+>>>>>> The last remaining issue is returning the access/dirty bits. That info
+>>>>>> could be present in any of the ptes in the contpte block. ptep_get()
+>>>>>> will gather those bits from across the contpte block. We don't bother
+>>>>>> doing that here, because we know that the information is used by the
+>>>>>> core-mm to mark the underlying folio as accessed/dirty. And since the
+>>>>>> same folio must be underpinning the whole block (that was a requirement
+>>>>>> for folding in the first place), that information will make it to the
+>>>>>> folio eventually once all the ptes have been cleared. This approach
+>>>>>> means we don't have to play games with accumulating and storing the
+>>>>>> bits. It does mean that any interleaved calls to ptep_get() may lack
+>>>>>> correct access/dirty information if we have already cleared the pte that
+>>>>>> happened to store it. The core code does not rely on this though.
+>>>>>
+>>>>> Does not *currently* rely on this. I can't help but think it is
+>>>>> potentially something that could change in the future though which would
+>>>>> lead to some subtle bugs.
+>>>>
+>>>> Yes, there is a risk, although IMHO, its very small.
+>>>>
+>>>>>
+>>>>> Would there be any may of avoiding this? Half baked thought but could
+>>>>> you for example copy the access/dirty information to the last (or
+>>>>> perhaps first, most likely invalid) PTE?
+>>>>
+>>>> I spent a long time thinking about this and came up with a number of
+>>>> possibilities, none of them ideal. In the end, I went for the simplest one
+>>>> (which works but suffers from the problem that it depends on the way it is
+>>>> called not changing).
+>>>
+>>> Ok, that answers my underlying question of "has someone thought about
+>>> this and are there any easy solutions". I suspected that was the case
+>>> given the excellent write up though!
+>>>
+>>>> 1) copy the access/dirty flags into all the remaining uncleared ptes within the
+>>>> contpte block. This is how I did it in v1; although it was racy. I think this
+>>>> could be implemented correctly but its extremely complex.
+>>>>
+>>>> 2) batch calls from the core-mm (like I did for pte_set_wrprotects()) so that we
+>>>> can clear 1 or more full contpte blocks in a single call - the ptes are never in
+>>>> an intermediate state. This is difficult because ptep_get_and_clear_full()
+>>>> returns the pte that was cleared so its difficult to scale that up to multiple ptes.
+>>>>
+>>>> 3) add ptep_get_no_access_dirty() and redefine the interface to only allow that
+>>>> to be called while ptep_get_and_clear_full() calls are on-going. Then assert in
+>>>> the other functions that ptep_get_and_clear_full() is not on-going when they are
+>>>> called. So we would get a clear sign that usage patterns have changed. But there
+>>>> is no easy place to store that state (other than scanning a contpte block
+>>>> looking for pte_none() amongst pte_valid_cont() entries) and it all felt ugly.
+>>>>
+>>>> 4) The simple approach I ended up taking; I thought it would be best to keep it
+>>>> simple and see if anyone was concerned before doing something more drastic.
+>>>>
+>>>> What do you think? If we really need to solve this, then option 1 is my
+>>>> preferred route, but it would take some time to figure out and reason about a
+>>>> race-free scheme.
+>>>
+>>> Well I like simple, and I agree the risk is small. But I can't help feel
+>>> the current situation is too subtle, mainly because it is architecture
+>>> specific and the assumptions are not communicated in core-mm code
+>>> anywhere. But also none of the aternatives seem much better.
+>>>
+>>> However there are only three callers of ptep_get_and_clear_full(), and
+>>> all of these hold the PTL. So if I'm not mistaken that should exclude
+>>> just about all users of ptep_get*() which will take the ptl before hand.
+>>
+>> The problem isn't racing threads because as you say, the PTL is already
+>> serializing all calls except ptep_get_lockless(). And although there are 3
+>> callers to ptep_get_and_clear_full(), only the caller in zap_pte_range() ever
+>> calls it with full=1, as I recall.
+>>
+>> The problem is that the caller in zap_pte_range() does this:
+>>
+>> ptl = lock_page_table()
+>> for each pte {
+>> 	ptent = ptep_get(pte);
+>> 	if (pte_present(ptent) {
+>> 		ptent = ptep_get_and_clear_full(ptent);
+>> 		if (pte_dirty(ptent))
+>> 			...
+>> 		if (pte_young(ptent))
+>> 			...
+>> 	}
+>> }
+>> unlock_page_table(ptl)
+>>
+>> It deliberately interleves calls to ptep_get() and ptep_get_and_clear_full()
+>> under the ptl. So if the loop is iterating over a contpte block and the HW
+>> happens to be storing the access/dirty info in the first pte entry, then the
+>> first time through the loop, ptep_get() will return the correct access/dirty
+>> info, as will ptep_get_and_clear_full(). The next time through the loop though,
+>> the access/dirty info which was in the previous pte is now cleared so ptep_get()
+>> and ptep_get_and_clear_full() will return old/clean. It all works, but is fragile.
+> 
+> So if ptep_get_lockless() isn't a concern what made the option posted in
+> v1 racy (your option 1 above)? Is there something else reading PTEs or
+> clearing PTE bits without holding the PTL that I'm missing?
 
-My guess would be that draining remote pcp caches is quite expensive on
-its own. This requires IPIs, preempting whatever is running there and
-wait for the all the cpus with pcp caches to be done. On the other hand
-reclaiming a mostly clean page cache could be much less expensive. 
+The HW could be racing to set access and dirty bits. Well actually, I'm not
+completely sure if that's the case here; if full=1 then presumably no other
+threads in the process should be running at this point, so perhaps it can be
+guarranteed that nothing is causing a concurrent memory access and the HW is
+therefore definitely not going to try to write the access/dirty bits
+concurrently. But I didn't manage to convince myself that's definitely the case.
 
-Also consider that refilling those pcp caches is not free either (you
-might hit zone lock contetion and who knows what else).
+So if we do need to deal with racing HW, I'm pretty sure my v1 implementation is
+buggy because it iterated through the PTEs, getting and accumulating. Then
+iterated again, writing that final set of bits to all the PTEs. And the HW could
+have modified the bits during those loops. I think it would be possible to fix
+the race, but intuition says it would be expensive.
 
-Last but not least also consider that many systems could be just on the
-edge of low/min watermark with a lot of cached data. If we drained all
-pcp caches whenever we reclaim this could just make the cache pointless.
+> 
+>>>
+>>> So really that only leaves ptep_get_lockless() that could/should
+>>> interleave right? 
+>>
+>> Yes, but ptep_get_lockless() is special. Since it is called without the PTL, it
+>> is very careful to ensure that the contpte block is in a consistent state and it
+>> keeps trying until it is. So this will always return the correct consistent
+>> information.
+>>
+>>> From a quick glance of those users none look at the
+>>> young/dirty information anyway, so I wonder if we can just assert in the
+>>> core-mm that ptep_get_lockless() does not return young/dirty information
+>>> and clear it in the helpers? That would make things explicit and
+>>> consistent which would address my concern (although I haven't looked too
+>>> closely at the details there).
+>>
+>> As per explanation above, its not ptep_get_lockless() that is the problem so I
+>> don't think this helps.
+>>
+>> Thanks,
+>> Ryan
+>>
+>>>
+>>>> Thanks,
+>>>> Ryan
+>>>
+> 
 
-All that being said, I do not remember any actual numbers or research
-about this.
--- 
-Michal Hocko
-SUSE Labs
