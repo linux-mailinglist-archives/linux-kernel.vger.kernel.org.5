@@ -2,153 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 201F67FA7D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:18:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B9AE7FA7DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:24:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbjK0RSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 12:18:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52498 "EHLO
+        id S230062AbjK0RYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 12:24:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbjK0RSl (ORCPT
+        with ESMTP id S229761AbjK0RYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 12:18:41 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B69B8
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 09:18:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701105526; x=1732641526;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=IeWgMNYJbeQkrdFCwUKq5pjzWu7XROofYR8g0Wh0qeQ=;
-  b=Y15kz/Q+lFiQox3cmzFUsYrXQ5hX8hQUgo7pMWIQd324XS3X0Cu0DUIS
-   2qUQESi9ZyIj1L0n7vx1ix0wHv082YyWw/rrG6SEyq/B1wcZy4jgQCF22
-   ZwNRhJ66Ftl3ge3wWYi6aNXQkJobxascSNHkfzJgN0uu0QGQazyW6jNwU
-   SpKQMeE9O52ebqs/o48h5jmM7GkgUHTO/Xm0uUELgZmuB7XITCrMAZxyf
-   0SMJReqckt46qclZphm+WymBLc0kaKBwQivjZBIjz1e1oyq11T4dBV09s
-   yyDi9vb29LalYaEfogI7JcFyl/xuux7UpPkD+12/qavFIWjDbf1dFb3C/
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="383136134"
-X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
-   d="scan'208";a="383136134"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 09:18:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="718096243"
-X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
-   d="scan'208";a="718096243"
-Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 27 Nov 2023 09:18:44 -0800
-Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r7fFq-0006Us-0V;
-        Mon, 27 Nov 2023 17:18:42 +0000
-Date:   Tue, 28 Nov 2023 01:18:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Peng Liu <pngliu@hotmail.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        frederic@kernel.org, tglx@linutronix.de, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, liupeng17@lenovo.com
-Subject: Re: [PATCH 1/2] tick/nohz: Remove duplicate between
- tick_nohz_switch_to_nohz() and tick_setup_sched_timer()
-Message-ID: <202311272337.qYKX6cSh-lkp@intel.com>
-References: <TYCP286MB21464B3653B956AF71806931C6BDA@TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <TYCP286MB21464B3653B956AF71806931C6BDA@TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Mon, 27 Nov 2023 12:24:05 -0500
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF3EBA5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 09:24:11 -0800 (PST)
+Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-285d0ef1056so1649830a91.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 09:24:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701105851; x=1701710651; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rL9LfDvcE9DBnUyEpS1p+L6oMlIKUpS9e4ZuAaaj8xo=;
+        b=dDeDJeVQHlQ994p98Okkt8Fi8rO1ymAvpvZY+lNMB0xLQP3k3YRPwn9ZU9FM10XfYP
+         MpWA0na4iyrnNjsT1acdT0xPP8jDcuoea7DyqVPE2BudYQTvoI4nvsdOXtnIxvyqE9m1
+         fqNWvqdHvZVzjONjkZAQVCua/7BOXMe1xSrmLKgk9Ac2Vs5kx8zUcTeWZoqNhqVerl1K
+         dpBkNjWJrHd8C8c+ubG39GQute/aj+q7GVgozK+sqjlEpTI17g3cIPVDJbYny4+OwWI5
+         7P464B7FJqQt+9EbtT/IrxqNel4bMvdakiNUUYr6hzJ69vYfrNJu+6r1HE2cXoZGrqjJ
+         VqKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701105851; x=1701710651;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rL9LfDvcE9DBnUyEpS1p+L6oMlIKUpS9e4ZuAaaj8xo=;
+        b=cmmx7/H37I3dGCGqRSk9j92g4ou/BzyvNxiiG/EUVr/5xtJ93tzHaLNAp7G8a4c4aW
+         yxzTqpRd9QvN9O3u3D7PMf5TJUh3giLhz6GeW0gi53DnpbQH7IEBu+DubBJFmng8Q0fM
+         tghMag65ET9G9Xc0FxUwDp9sfbOixPbaAFcXpHVt3c7Pf5pnYh+7fBwaQQv6RofjJ9k4
+         NkzAEZYgBkRIqOoPOEAuHOmprA/DOZ4TRoWUVvgX3L9OSrx9XJVz5IPbHHNxBLFmj0w5
+         X7ohs8+Dp1mUMg0jx9s/pLE/sPu0DFvYCCJXnMbodPuYzI97R6S0U0Q9S06jTCUitbwW
+         ihkA==
+X-Gm-Message-State: AOJu0YzcBYQC4r8BAfuYt3QRqCXI0dYKGTM1pRUHmSUGVTxEvcMn0RjL
+        BnBLHtkQTfZT5nBcaHFRjgncVBTyQvM=
+X-Google-Smtp-Source: AGHT+IECzk14EwMjjFb3/1urDD+Q4mbeNYdw2g1/0ksrRD/AQy7nqH1ycmu7b6tnBPlSMiaoFaFQgGrTeFU=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90b:e8e:b0:285:b86b:6412 with SMTP id
+ fv14-20020a17090b0e8e00b00285b86b6412mr1194032pjb.4.1701105850944; Mon, 27
+ Nov 2023 09:24:10 -0800 (PST)
+Date:   Mon, 27 Nov 2023 09:24:09 -0800
+In-Reply-To: <c858817d3e3be246a1a2278e3b42d06284e615e5.1700766316.git.maciej.szmigiero@oracle.com>
+Mime-Version: 1.0
+References: <c858817d3e3be246a1a2278e3b42d06284e615e5.1700766316.git.maciej.szmigiero@oracle.com>
+Message-ID: <ZWTQuRpwPkutHY-D@google.com>
+Subject: Re: [PATCH] KVM: x86: Allow XSAVES on CPUs where host doesn't use it
+ due to an errata
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peng,
+On Thu, Nov 23, 2023, Maciej S. Szmigiero wrote:
+> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
+> 
+> Since commit b0563468eeac ("x86/CPU/AMD: Disable XSAVES on AMD family 0x17")
+> kernel unconditionally clears the XSAVES CPU feature bit on Zen1/2 CPUs.
+> 
+> Since KVM CPU caps are initialized from the kernel boot CPU features this
+> makes the XSAVES feature also unavailable for KVM guests in this case, even
+> though they might want to decide on their own whether they are affected by
+> this errata.
+> 
+> Allow KVM guests to make such decision by setting the XSAVES KVM CPU
+> capability bit based on the actual CPU capability
 
-kernel test robot noticed the following build errors:
+This is not generally safe, as the guest can make such a decision if and only if
+the Family/Model/Stepping information is reasonably accurate.
 
-[auto build test ERROR on tip/timers/core]
-[also build test ERROR on linus/master v6.7-rc3 next-20231127]
-[cannot apply to tip/timers/nohz]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> This fixes booting Hyper-V enabled Windows Server 2016 VMs with more than
+> one vCPU on Zen1/2 CPUs.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Peng-Liu/tick-nohz-Remove-duplicate-between-tick_nohz_lowres_handler-and-tick_nohz_highres_handler/20231127-163637
-base:   tip/timers/core
-patch link:    https://lore.kernel.org/r/TYCP286MB21464B3653B956AF71806931C6BDA%40TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM
-patch subject: [PATCH 1/2] tick/nohz: Remove duplicate between tick_nohz_switch_to_nohz() and tick_setup_sched_timer()
-config: x86_64-randconfig-004-20231127 (https://download.01.org/0day-ci/archive/20231127/202311272337.qYKX6cSh-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231127/202311272337.qYKX6cSh-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311272337.qYKX6cSh-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   kernel/time/tick-sched.c:1546:30: error: use of undeclared identifier 'tick_nohz_highres_handler'; did you mean 'tick_nohz_lowres_handler'?
-                   ts->sched_timer.function = tick_nohz_highres_handler;
-                                              ^~~~~~~~~~~~~~~~~~~~~~~~~
-                                              tick_nohz_lowres_handler
-   kernel/time/tick-sched.c:1395:13: note: 'tick_nohz_lowres_handler' declared here
-   static void tick_nohz_lowres_handler(struct clock_event_device *dev)
-               ^
->> kernel/time/tick-sched.c:1552:6: error: use of undeclared identifier 'sched_skew_tick'; did you mean 'scheduler_tick'?
-           if (sched_skew_tick) {
-               ^~~~~~~~~~~~~~~
-               scheduler_tick
-   include/linux/sched.h:294:13: note: 'scheduler_tick' declared here
-   extern void scheduler_tick(void);
-               ^
-   2 errors generated.
-
-
-vim +1552 kernel/time/tick-sched.c
-
-62cf20b32aee4a Thomas Gleixner           2012-05-25  1533  
-de667c3b095eed Peng Liu                  2023-11-27  1534  #if defined CONFIG_NO_HZ_COMMON || defined CONFIG_HIGH_RES_TIMERS
-79bf2bb335b85d Thomas Gleixner           2007-02-16  1535  /**
-79bf2bb335b85d Thomas Gleixner           2007-02-16  1536   * tick_setup_sched_timer - setup the tick emulation timer
-79bf2bb335b85d Thomas Gleixner           2007-02-16  1537   */
-de667c3b095eed Peng Liu                  2023-11-27  1538  void tick_setup_sched_timer(int mode)
-79bf2bb335b85d Thomas Gleixner           2007-02-16  1539  {
-22127e93c587af Christoph Lameter         2014-08-17  1540  	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
-79bf2bb335b85d Thomas Gleixner           2007-02-16  1541  	ktime_t now = ktime_get();
-79bf2bb335b85d Thomas Gleixner           2007-02-16  1542  
-6c774377359923 Ingo Molnar               2023-09-28  1543  	/* Emulate tick processing via per-CPU hrtimers: */
-902a9f9c509053 Sebastian Andrzej Siewior 2019-07-26  1544  	hrtimer_init(&ts->sched_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_HARD);
-de667c3b095eed Peng Liu                  2023-11-27  1545  	if (mode == NOHZ_MODE_HIGHRES)
-dba428a678c726 Frederic Weisbecker       2023-09-12  1546  		ts->sched_timer.function = tick_nohz_highres_handler;
-79bf2bb335b85d Thomas Gleixner           2007-02-16  1547  
-0de7611a1031f2 Ingo Molnar               2016-07-01  1548  	/* Get the next period (per-CPU) */
-cc584b213f252b Arjan van de Ven          2008-09-01  1549  	hrtimer_set_expires(&ts->sched_timer, tick_init_jiffy_update());
-79bf2bb335b85d Thomas Gleixner           2007-02-16  1550  
-6c774377359923 Ingo Molnar               2023-09-28  1551  	/* Offset the tick to avert 'jiffies_lock' contention. */
-5307c9556bc17e Mike Galbraith            2012-05-08 @1552  	if (sched_skew_tick) {
-b9965449164299 Thomas Gleixner           2020-11-17  1553  		u64 offset = TICK_NSEC >> 1;
-5307c9556bc17e Mike Galbraith            2012-05-08  1554  		do_div(offset, num_possible_cpus());
-5307c9556bc17e Mike Galbraith            2012-05-08  1555  		offset *= smp_processor_id();
-5307c9556bc17e Mike Galbraith            2012-05-08  1556  		hrtimer_add_expires_ns(&ts->sched_timer, offset);
-5307c9556bc17e Mike Galbraith            2012-05-08  1557  	}
-5307c9556bc17e Mike Galbraith            2012-05-08  1558  
-b9965449164299 Thomas Gleixner           2020-11-17  1559  	hrtimer_forward(&ts->sched_timer, now, TICK_NSEC);
-de667c3b095eed Peng Liu                  2023-11-27  1560  	if (mode == NOHZ_MODE_HIGHRES)
-902a9f9c509053 Sebastian Andrzej Siewior 2019-07-26  1561  		hrtimer_start_expires(&ts->sched_timer, HRTIMER_MODE_ABS_PINNED_HARD);
-de667c3b095eed Peng Liu                  2023-11-27  1562  	else
-de667c3b095eed Peng Liu                  2023-11-27  1563  		tick_program_event(hrtimer_get_expires(&ts->sched_timer), 1);
-de667c3b095eed Peng Liu                  2023-11-27  1564  	tick_nohz_activate(ts, mode);
-79bf2bb335b85d Thomas Gleixner           2007-02-16  1565  }
-3c4fbe5e01d7e5 Miao Xie                  2008-08-20  1566  #endif /* HIGH_RES_TIMERS */
-79bf2bb335b85d Thomas Gleixner           2007-02-16  1567  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+How/why does lack of XSAVES break a multi-vCPU setup?  Is Windows blindly doing
+XSAVES based on FMS?
