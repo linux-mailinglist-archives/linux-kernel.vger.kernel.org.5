@@ -2,92 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 580717FA6AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:41:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E4C7FA64D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:24:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233918AbjK0Qlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 11:41:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45688 "EHLO
+        id S234153AbjK0QYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 11:24:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230504AbjK0Qlj (ORCPT
+        with ESMTP id S234139AbjK0QYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 11:41:39 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40CD9D2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:41:44 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40b27726369so31139195e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:41:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1701103302; x=1701708102; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=/Icj54IjZp5B4hkXeCz67YIlN6i5tKQ8M88cBBrEKK4=;
-        b=wwuA9No9YaegRxG0DK4kIdjjnIvATJlZaGmDcCLpkc6nY7jF7evUlCp7B7ytJR65eY
-         n7vLeeIy8ZT+X/LRMUxxUeHTEXauXKbw2gGzO9Delibb26hhfL2ZL9mo7NTWtmgoq7KS
-         AMizAWRhcpUTPRvvkPshtCfRbJdM313vHYcbssZPtIOiid5TR647RWADWUbVl4dqJ602
-         aMUtwEzLFWINKY7lqygcPtCWVlqlwtddIuBVqHTSQp77QF/pxr77xrwZGcbTz/Rha8s3
-         0ySSSsr9QQrzxJulkWpFsRZdgyRKrDVJoVkzmeyfLl44T4Yd0PEDSEllgHvaimJJN+3c
-         4LCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701103302; x=1701708102;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/Icj54IjZp5B4hkXeCz67YIlN6i5tKQ8M88cBBrEKK4=;
-        b=K3UKY8EJ4KrPkHkxuW+180RQep+naSnVGLFNegExcjXXcJmogDl05kPWGSO+VzDYra
-         Ml03GMcovzE157JGqt0UNLie/z9qd4kAfxQEb6DJujFbVD9bvEURhWG5EzYUQdU9N6L1
-         2To69lnXu13IKatppMgazEBzU3EcrnWLxnYa4T0Wztv35qbA7NRS77c20cYaqrB9TsAE
-         kozfPD3ypjjYnG+HUOw/m7UZL1m5AMj/4yihxbUIDwn628JBl4WA7DiNZ31VXtKoujqt
-         3avSCOlJ2g66O2GVvZIqJx5+jOwoy84tOXvGTZywMAKfwV4DoQOJD93yl8G7bAVUVWPA
-         Bi3g==
-X-Gm-Message-State: AOJu0YxBA6kmjoN6bJ0bL9wmsL+whv+3mZIg7rWrGbBDM/AL/0j5UZQh
-        bjWBV/9KA0LPI3CdQclFB+mEhw==
-X-Google-Smtp-Source: AGHT+IHFJl3YREfNRJgTH6qJi9k1kF+E8TGrqHCGdE2czDiGzqH3Az0cJk7/KmShVK5MIed8bqNenw==
-X-Received: by 2002:a5d:52ca:0:b0:332:fa1b:9f66 with SMTP id r10-20020a5d52ca000000b00332fa1b9f66mr3648641wrv.59.1701103302575;
-        Mon, 27 Nov 2023 08:41:42 -0800 (PST)
-Received: from localhost ([2a01:e0a:3c5:5fb1:3675:e2e8:2f93:3d3b])
-        by smtp.gmail.com with ESMTPSA id c14-20020a056000104e00b00332f95ab44esm5864136wrx.57.2023.11.27.08.41.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 08:41:42 -0800 (PST)
-References: <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-0-95256ed139e6@linaro.org>
- <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-7-95256ed139e6@linaro.org>
- <1j7cm7dx1b.fsf@starbuckisacylon.baylibre.com>
- <4e5e33c1-45d5-4c83-b647-bfb603347156@linaro.org>
-User-agent: mu4e 1.10.8; emacs 29.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     neil.armstrong@linaro.org
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Nicolas Belin <nbelin@baylibre.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Remi Pommarel <repk@triplefau.lt>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-phy@lists.infradead.org,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v9 07/12] clk: meson: add vclk driver
-Date:   Mon, 27 Nov 2023 17:24:03 +0100
-In-reply-to: <4e5e33c1-45d5-4c83-b647-bfb603347156@linaro.org>
-Message-ID: <1jfs0rywqi.fsf@starbuckisacylon.baylibre.com>
+        Mon, 27 Nov 2023 11:24:15 -0500
+Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00EC012C
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:24:20 -0800 (PST)
+Received: from eig-obgw-5008a.ext.cloudfilter.net ([10.0.29.246])
+        by cmsmtp with ESMTPS
+        id 7XTIrxI9h8Hte7ePErEwSb; Mon, 27 Nov 2023 16:24:20 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id 7ePDrxGd4kUbt7ePDry2WP; Mon, 27 Nov 2023 16:24:19 +0000
+X-Authority-Analysis: v=2.4 cv=WpU4jPTv c=1 sm=1 tr=0 ts=6564c2b3
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=yGeM7+xMb5a5VK1DGQx1ew==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=BNY50KLci1gA:10 a=wYkD_t78qR0A:10 a=COk6AnOGAAAA:8
+ a=VwQbUJbxAAAA:8 a=cZ1y5YrqKnYO-lcvaXwA:9 a=QEXdDO2ut3YA:10
+ a=TjNXssC_j7lpFel5tvFf:22 a=AjGcO6oz07-iQ99wixmX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ajao1Jnn7rZAIQCXWTuZsvkXWk7j/Z+TfVN0RYSP0wU=; b=pcYsISPEpb1XsR9h0DjQubZKyp
+        o7tiByOzumhzWSjaNc/69UOljmCQD1wJa5Go6tX9aWp9twlNfAIFdtsKNKEhS2aJZG7NfZ6qTlkOW
+        Rknzcs6/QYUrTIWs7VTw+QG6XSR86qZy0LZPW6KUFDyUlFCB+jnRTzuW9X2c5EG4pCPtXg6c0dmuN
+        D/Yq/DIdbUZO+eQgllqVRKuM2iJBDoEPv+F01qkZ4fWbX2fE1i6LAr5Ff6gt6dzMF8TRk2eAAWB0L
+        FeLPAsZzUWF0ouV2jS6IuoBJVaiHyz85ucq7KGpQUNr6w2ujnsPK1UXHxu9+h1CQ3B9GIyym2QXVs
+        STGGsM4A==;
+Received: from 187.184.157.122.cable.dyn.cableonline.com.mx ([187.184.157.122]:35864 helo=[192.168.0.9])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1r7ePC-003aet-1f;
+        Mon, 27 Nov 2023 10:24:18 -0600
+Message-ID: <99b98f17-3cb2-4658-b183-a0c9d6709d6f@embeddedor.com>
+Date:   Mon, 27 Nov 2023 10:24:16 -0600
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] wifi: ath10k: Use DECLARE_FLEX_ARRAY() for
+ ath10k_htc_record
+Content-Language: en-US
+To:     Jeff Johnson <quic_jjohnson@quicinc.com>,
+        Kalle Valo <kvalo@kernel.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>, ath10k@lists.infradead.org,
+        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231127-flexarray-htc_record-v1-0-6be1f36126fd@quicinc.com>
+ <20231127-flexarray-htc_record-v1-2-6be1f36126fd@quicinc.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20231127-flexarray-htc_record-v1-2-6be1f36126fd@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.184.157.122
+X-Source-L: No
+X-Exim-ID: 1r7ePC-003aet-1f
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187.184.157.122.cable.dyn.cableonline.com.mx ([192.168.0.9]) [187.184.157.122]:35864
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 9
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfF4CGBvFPUu/0C3fGHRdszfXKOyyDbsER9lg3FLXXi9fnuQb9DXPnF58TcGKoWgMLpnllpdS9OoM7EG8vPWdeT3FTy+NVT7Zr3Iiv9ZiwRJ1GLlOejXU
+ 53QW0zfeUwlDvuK3T9HbWxEL6+7v24kj5YlHIVwN9fEMKkLc11k3WWi6H9UIlD+QBrMh/DuQ/fSwMcPjNjuB4bLBHnSlUoSrdQEoStMjTVwoDcdatseE/jcR
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -95,308 +96,39 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Mon 27 Nov 2023 at 17:14, Neil Armstrong <neil.armstrong@linaro.org> wrote:
 
-> On 24/11/2023 15:41, Jerome Brunet wrote:
->> On Fri 24 Nov 2023 at 09:41, Neil Armstrong <neil.armstrong@linaro.org>
->> wrote:
->> 
->>> The VCLK and VCLK_DIV clocks have supplementary bits.
->>>
->>> The VCLK has a "SOFT RESET" bit to toggle after the whole
->>> VCLK sub-tree rate has been set, this is implemented in
->>> the gate enable callback.
->>>
->>> The VCLK_DIV clocks as enable and reset bits used to disable
->>> and reset the divider, associated with CLK_SET_RATE_GATE it ensures
->>> the rate is set while the divider is disabled and in reset mode.
->>>
->>> The VCLK_DIV enable bit isn't implemented as a gate since it's part
->>> of the divider logic and vendor does this exact sequence to ensure
->>> the divider is correctly set.
->>>
->>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
->>> ---
->>>   drivers/clk/meson/Kconfig  |   5 ++
->>>   drivers/clk/meson/Makefile |   1 +
->>>   drivers/clk/meson/vclk.c   | 141 +++++++++++++++++++++++++++++++++++++++++++++
->>>   drivers/clk/meson/vclk.h   |  51 ++++++++++++++++
->>>   4 files changed, 198 insertions(+)
->>>
->>> diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
->>> index 29ffd14d267b..59a40a49f8e1 100644
->>> --- a/drivers/clk/meson/Kconfig
->>> +++ b/drivers/clk/meson/Kconfig
->>> @@ -30,6 +30,10 @@ config COMMON_CLK_MESON_VID_PLL_DIV
->>>   	tristate
->>>   	select COMMON_CLK_MESON_REGMAP
->>>   +config COMMON_CLK_MESON_VCLK
->>> +	tristate
->>> +	select COMMON_CLK_MESON_REGMAP
->>> +
->>>   config COMMON_CLK_MESON_CLKC_UTILS
->>>   	tristate
->>>   @@ -140,6 +144,7 @@ config COMMON_CLK_G12A
->>>   	select COMMON_CLK_MESON_EE_CLKC
->>>   	select COMMON_CLK_MESON_CPU_DYNDIV
->>>   	select COMMON_CLK_MESON_VID_PLL_DIV
->>> +	select COMMON_CLK_MESON_VCLK
->> This particular line belong in the next patch
->> 
->>>   	select MFD_SYSCON
->>>   	help
->>>   	  Support for the clock controller on Amlogic S905D2, S905X2 and S905Y2
->>> diff --git a/drivers/clk/meson/Makefile b/drivers/clk/meson/Makefile
->>> index 9ee4b954c896..9ba43fe7a07a 100644
->>> --- a/drivers/clk/meson/Makefile
->>> +++ b/drivers/clk/meson/Makefile
->>> @@ -12,6 +12,7 @@ obj-$(CONFIG_COMMON_CLK_MESON_PLL) += clk-pll.o
->>>   obj-$(CONFIG_COMMON_CLK_MESON_REGMAP) += clk-regmap.o
->>>   obj-$(CONFIG_COMMON_CLK_MESON_SCLK_DIV) += sclk-div.o
->>>   obj-$(CONFIG_COMMON_CLK_MESON_VID_PLL_DIV) += vid-pll-div.o
->>> +obj-$(CONFIG_COMMON_CLK_MESON_VCLK) += vclk.o
->>>     # Amlogic Clock controllers
->>>   diff --git a/drivers/clk/meson/vclk.c b/drivers/clk/meson/vclk.c
->>> new file mode 100644
->>> index 000000000000..47f08a52b49f
->>> --- /dev/null
->>> +++ b/drivers/clk/meson/vclk.c
->>> @@ -0,0 +1,141 @@
->>> +// SPDX-License-Identifier: GPL-2.0
->>> +/*
->>> + * Copyright (c) 2023 Neil Armstrong <neil.armstrong@linaro.org>
->>> + */
->>> +
->>> +#include <linux/module.h>
->>> +#include "vclk.h"
->>> +
->>> +/* The VCLK gate has a supplementary reset bit to pulse after ungating */
->>> +
->>> +static inline struct clk_regmap_vclk_data *
->>> +clk_get_regmap_vclk_data(struct clk_regmap *clk)
->>> +{
->>> +	return (struct clk_regmap_vclk_data *)clk->data;
->>> +}
->>> +
->>> +static int clk_regmap_vclk_enable(struct clk_hw *hw)
->>> +{
->>> +	struct clk_regmap *clk = to_clk_regmap(hw);
->>> +	struct clk_regmap_vclk_data *vclk = clk_get_regmap_vclk_data(clk);
->>> +
->>> +	meson_parm_write(clk->map, &vclk->enable, 1);
->>> +
->>> +	/* Do a reset pulse */
->>> +	meson_parm_write(clk->map, &vclk->reset, 1);
->>> +	meson_parm_write(clk->map, &vclk->reset, 0);
->>> +
->>> +	return 0;
->>> +}
->>> +
->>> +static void clk_regmap_vclk_disable(struct clk_hw *hw)
->>> +{
->>> +	struct clk_regmap *clk = to_clk_regmap(hw);
->>> +	struct clk_regmap_vclk_data *vclk = clk_get_regmap_vclk_data(clk);
->>> +
->>> +	meson_parm_write(clk->map, &vclk->enable, 0);
->>> +}
->>> +
->>> +static int clk_regmap_vclk_is_enabled(struct clk_hw *hw)
->>> +{
->>> +	struct clk_regmap *clk = to_clk_regmap(hw);
->>> +	struct clk_regmap_vclk_data *vclk = clk_get_regmap_vclk_data(clk);
->>> +
->>> +	return meson_parm_read(clk->map, &vclk->enable);
->>> +}
->>> +
->>> +const struct clk_ops clk_regmap_vclk_ops = {
->>> +	.enable = clk_regmap_vclk_enable,
->>> +	.disable = clk_regmap_vclk_disable,
->>> +	.is_enabled = clk_regmap_vclk_is_enabled,
->>> +};
->>> +EXPORT_SYMBOL_GPL(clk_regmap_vclk_ops);
->> s/clk_regmap_vclk/meson_vclk at least for what is exported, ideally most
->> all the code.
->> I get clk_regmap_ comes from code copied from clk_regmap.c.
->> The reason the this part is different (and not using parm) if that when
->> I converted amlogic to regmap, I hope we could make this generic,
->> possibly converging between aml and qcom (which was the only other
->> platform using regmap for clock at the time). This is why clk_regmap.c
->> is a bit different from the other driver.
->> For the aml specific drivers, best to look at the mpll or cpu-dyndiv one.
->> 
->>> +
->>> +/* The VCLK Divider has supplementary reset & enable bits */
->>> +
->>> +static inline struct clk_regmap_vclk_div_data *
->>> +clk_get_regmap_vclk_div_data(struct clk_regmap *clk)
->>> +{
->>> +	return (struct clk_regmap_vclk_div_data *)clk->data;
->>> +}
->>> +
->>> +static unsigned long clk_regmap_vclk_div_recalc_rate(struct clk_hw *hw,
->>> +						     unsigned long prate)
->>> +{
->>> +	struct clk_regmap *clk = to_clk_regmap(hw);
->>> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
->>> +
->>> +	return divider_recalc_rate(hw, prate, meson_parm_read(clk->map, &vclk->div),
->>> +				   vclk->table, vclk->flags, vclk->div.width);
->>> +}
->>> +
->>> +static int clk_regmap_vclk_div_determine_rate(struct clk_hw *hw,
->>> +					      struct clk_rate_request *req)
->>> +{
->>> +	struct clk_regmap *clk = to_clk_regmap(hw);
->>> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
->>> +
->>> +	return divider_determine_rate(hw, req, vclk->table, vclk->div.width,
->>> +				      vclk->flags);
->>> +}
->>> +
->>> +static int clk_regmap_vclk_div_set_rate(struct clk_hw *hw, unsigned long rate,
->>> +					unsigned long parent_rate)
->>> +{
->>> +	struct clk_regmap *clk = to_clk_regmap(hw);
->>> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
->>> +	int ret;
->>> +
->>> +	ret = divider_get_val(rate, parent_rate, vclk->table, vclk->div.width,
->>> +			      vclk->flags);
->>> +	if (ret < 0)
->>> +		return ret;
->>> +
->>> +	meson_parm_write(clk->map, &vclk->div, ret);
->>> +
->>> +	return 0;
->>> +};
->>> +
->>> +static int clk_regmap_vclk_div_enable(struct clk_hw *hw)
->>> +{
->>> +	struct clk_regmap *clk = to_clk_regmap(hw);
->>> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
->>> +
->>> +	/* Unreset the divider when ungating */
->>> +	meson_parm_write(clk->map, &vclk->reset, 0);
->>> +	meson_parm_write(clk->map, &vclk->enable, 1);
->>> +
->>> +	return 0;
->>> +}
->>> +
->>> +static void clk_regmap_vclk_div_disable(struct clk_hw *hw)
->>> +{
->>> +	struct clk_regmap *clk = to_clk_regmap(hw);
->>> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
->>> +
->>> +	/* Reset the divider when gating */
->>> +	meson_parm_write(clk->map, &vclk->enable, 0);
->>> +	meson_parm_write(clk->map, &vclk->reset, 1);
->>> +}
->>> +
->>> +static int clk_regmap_vclk_div_is_enabled(struct clk_hw *hw)
->>> +{
->>> +	struct clk_regmap *clk = to_clk_regmap(hw);
->>> +	struct clk_regmap_vclk_div_data *vclk = clk_get_regmap_vclk_div_data(clk);
->>> +
->>> +	return meson_parm_read(clk->map, &vclk->enable);
->>> +}
->>> +
->>> +const struct clk_ops clk_regmap_vclk_div_ops = {
->>> +	.recalc_rate = clk_regmap_vclk_div_recalc_rate,
->>> +	.determine_rate = clk_regmap_vclk_div_determine_rate,
->>> +	.set_rate = clk_regmap_vclk_div_set_rate,
->>> +	.enable = clk_regmap_vclk_div_enable,
->>> +	.disable = clk_regmap_vclk_div_disable,
->>> +	.is_enabled = clk_regmap_vclk_div_is_enabled,
->>> +};
->>> +EXPORT_SYMBOL_GPL(clk_regmap_vclk_div_ops);
->>> +
->>> +MODULE_DESCRIPTION("Amlogic vclk clock driver");
->>> +MODULE_AUTHOR("Neil Armstrong <neil.armstrong@linaro.org>");
->>> +MODULE_LICENSE("GPL v2");
->>> diff --git a/drivers/clk/meson/vclk.h b/drivers/clk/meson/vclk.h
->>> new file mode 100644
->>> index 000000000000..4f25d7ad2717
->>> --- /dev/null
->>> +++ b/drivers/clk/meson/vclk.h
->
-> Is vclk.c/h ok ? clk-vclk doesn't look pretty, but I can switch to it to
-> keep files organized.
+On 11/27/23 10:14, Jeff Johnson wrote:
+> Transform the zero-length arrays in ath10k_htc_record into proper
+> flexible arrays via the DECLARE_FLEX_ARRAY() macro. This helps with
+> ongoing efforts to globally enable -Warray-bounds.
+> 
+> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 
-I don't have a strong opinion about it.
-I would have suggested vclk-div.c/h - like sclk ... but you do have gate
-ops in there, so ... :/
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-This made me realize that one does not really go without the other.
-It is more a coherent block, isn't it ?
-Would it make more sense to have these 2 merged in a single clk_ops ?
+Thanks
+--
+Gustavo
 
-It's bit late to point this out, sorry about that.
-
-I let you decide whether to merge the ops or not and which name to pick.
-
-If you keep them separated, meson_vclk_gate_ops instead of just
-meson_vclk_ops, to make things clear.
-
->
-> Neil
->
->>> @@ -0,0 +1,51 @@
->>> +/* SPDX-License-Identifier: GPL-2.0 */
->>> +/*
->>> + * Copyright (c) 2023 Neil Armstrong <neil.armstrong@linaro.org>
->>> + */
->>> +
->>> +#ifndef __VCLK_H
->>> +#define __VCLK_H
->> This is too generic.
->> Please add the MESON prefix like the other clock driver please.
->> 
->>> +
->>> +#include "clk-regmap.h"
->>> +#include "parm.h"
->>> +
->>> +/**
->>> + * struct clk_regmap_vclk_data - vclk regmap backed specific data
->>> + *
->>> + * @enable:	vclk enable field
->>> + * @reset:	vclk reset field
->>> + * @flags:	hardware-specific flags
->>> + *
->>> + * Flags:
->>> + * Same as clk_gate except CLK_GATE_HIWORD_MASK which is ignored
->>> + */
->>> +struct clk_regmap_vclk_data {
->>> +	struct parm enable;
->>> +	struct parm reset;
->>> +	u8 flags;
->>> +};
->>> +
->>> +extern const struct clk_ops clk_regmap_vclk_ops;
->>> +
->>> +/**
->>> + * struct clk_regmap_vclk_div_data - vclk_div regmap back specific data
->>> + *
->>> + * @div:	divider field
->>> + * @enable:	vclk divider enable field
->>> + * @reset:	vclk divider reset field
->>> + * @table:	array of value/divider pairs, last entry should have div = 0
->>> + *
->>> + * Flags:
->>> + * Same as clk_divider except CLK_DIVIDER_HIWORD_MASK which is ignored
->>> + */
->>> +struct clk_regmap_vclk_div_data {
->>> +	struct parm div;
->>> +	struct parm enable;
->>> +	struct parm reset;
->>> +	const struct clk_div_table *table;
->>> +	u8 flags;
->>> +};
->>> +
->>> +extern const struct clk_ops clk_regmap_vclk_div_ops;
->>> +
->>> +#endif /* __VCLK_H */
->> 
-
-
--- 
-Jerome
+> ---
+>   drivers/net/wireless/ath/ath10k/htc.h | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
+> index 9cbb901d35e5..c6c392f8630c 100644
+> --- a/drivers/net/wireless/ath/ath10k/htc.h
+> +++ b/drivers/net/wireless/ath/ath10k/htc.h
+> @@ -246,9 +246,9 @@ struct ath10k_htc_lookahead_bundle {
+>   struct ath10k_htc_record {
+>   	struct ath10k_ath10k_htc_record_hdr hdr;
+>   	union {
+> -		struct ath10k_htc_credit_report credit_report[0];
+> -		struct ath10k_htc_lookahead_report lookahead_report[0];
+> -		struct ath10k_htc_lookahead_bundle lookahead_bundle[0];
+> +		DECLARE_FLEX_ARRAY(struct ath10k_htc_credit_report, credit_report);
+> +		DECLARE_FLEX_ARRAY(struct ath10k_htc_lookahead_report, lookahead_report);
+> +		DECLARE_FLEX_ARRAY(struct ath10k_htc_lookahead_bundle, lookahead_bundle);
+>   	};
+>   } __packed __aligned(4);
+>   
+> 
