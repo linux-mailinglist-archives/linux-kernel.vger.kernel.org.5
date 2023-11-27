@@ -2,72 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A35207F9C93
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 10:27:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9157F9C96
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 10:27:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232754AbjK0J1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 04:27:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55422 "EHLO
+        id S232763AbjK0J1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 04:27:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231339AbjK0J1g (ORCPT
+        with ESMTP id S232790AbjK0J1o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 04:27:36 -0500
-Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 859B7DE;
-        Mon, 27 Nov 2023 01:27:42 -0800 (PST)
-Received: from 8bytes.org (p4ffe1e67.dip0.t-ipconnect.de [79.254.30.103])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.8bytes.org (Postfix) with ESMTPSA id 673DD1A6646;
-        Mon, 27 Nov 2023 10:27:41 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
-        s=default; t=1701077261;
-        bh=vQpNvz4tXNOtI3SlzAQTo7xVyAAZoeAnZPoiW7Qf4yI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=wK6npJ2bcjwrxH2HlnrnFuv3U6BXMzV9ySKpHZ/ytEtanu18iYp44zYiEtdrNqnKg
-         n6OxL3FoUAxP+sa6K3aj8GpIgusAMtDAPARHcgyCpX6CCy3IrC9aGQnsfaWnzxxw0Z
-         aGQcSKI0Tx18jy3ac7oS7YIDUTmkIlcbgn6Lz7d0Zcll7Zrb/KWjFmn6KYovkJu9+I
-         6fO9BOzaPPK/CllYtcYn2occgUdM4L3iuVAkZiCON1QpvmrlbC0zN7Sps8zLkwWgkG
-         sACRHpl+ORx50VUR4T5Co7YdINguOj7wXtHbtI+/tyNahHL3+YgzLNdeMsiJT0NICT
-         gsgPimnep7BUw==
-Date:   Mon, 27 Nov 2023 10:27:40 +0100
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Dario Binacchi <dario.binacchi@amarulasolutions.com>
-Cc:     linux-kernel@vger.kernel.org, Baolu Lu <baolu.lu@linux.intel.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Will Deacon <will@kernel.org>, iommu@lists.linux.dev,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v2] iommu/tegra-smmu: drop error checking for
- debugfs_create_dir()
-Message-ID: <ZWRhDMgPCjP_hlZW@8bytes.org>
-References: <20231025152609.2042815-1-dario.binacchi@amarulasolutions.com>
+        Mon, 27 Nov 2023 04:27:44 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 892EC1A5;
+        Mon, 27 Nov 2023 01:27:50 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC9AE2F4;
+        Mon, 27 Nov 2023 01:28:37 -0800 (PST)
+Received: from e129166.arm.com (unknown [10.57.4.90])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0A7E63F6C4;
+        Mon, 27 Nov 2023 01:27:48 -0800 (PST)
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        daniel.lezcano@linaro.org
+Cc:     lukasz.luba@arm.com, rafael@kernel.org, stable@vger.kernel.org
+Subject: [PATCH] powercap: DTPM: Fix unneeded conversion to micro-Watts
+Date:   Mon, 27 Nov 2023 09:28:19 +0000
+Message-Id: <20231127092819.2019744-1-lukasz.luba@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231025152609.2042815-1-dario.binacchi@amarulasolutions.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 25, 2023 at 05:25:58PM +0200, Dario Binacchi wrote:
-> The return value of debugfs_create_dir() should be checked using the
-> IS_ERR() function. The patch, however, drops the check statement without
-> fixing it because the subsequent functions (i. e. debugfs_create_file())
-> can handle the case where `@parent` is an error pointer.
+The Power values coming from the Energy Model are already in uW.
+The PowerCap and DTPM framework operate on uW, thus all places should
+just use the values from EM. Fix the code which left and still does
+the unneeded conversion.
 
-This deserves a comment in the code explaining why no error checking is
-needed.
+Fixes: ae6ccaa65038 (PM: EM: convert power field to micro-Watts precision and align drivers)
+Cc: <stable@vger.kernel.org> # v5.19+
+Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+---
+Hi Daniel,
+
+I have found an issue due to the uW in the EM. My apologies for that.
+I have check those with the Rockpi dev board with your DTPM module there.
+BTW, if you like to check the DTPM_devfreq there, you can apply that
+patch. It should create EM for your GPU there and setup DTPM GPU:
+https://lore.kernel.org/all/20231127081511.1911706-1-lukasz.luba@arm.com/
 
 Regards,
+Lukasz
 
-	Joerg
+
+ drivers/powercap/dtpm_cpu.c     |  6 +-----
+ drivers/powercap/dtpm_devfreq.c | 11 +++--------
+ 2 files changed, 4 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
+index 2ff7717530bf..8a2f18fa3faf 100644
+--- a/drivers/powercap/dtpm_cpu.c
++++ b/drivers/powercap/dtpm_cpu.c
+@@ -24,7 +24,6 @@
+ #include <linux/of.h>
+ #include <linux/pm_qos.h>
+ #include <linux/slab.h>
+-#include <linux/units.h>
+ 
+ struct dtpm_cpu {
+ 	struct dtpm dtpm;
+@@ -104,8 +103,7 @@ static u64 get_pd_power_uw(struct dtpm *dtpm)
+ 		if (pd->table[i].frequency < freq)
+ 			continue;
+ 
+-		return scale_pd_power_uw(pd_mask, pd->table[i].power *
+-					 MICROWATT_PER_MILLIWATT);
++		return scale_pd_power_uw(pd_mask, pd->table[i].power);
+ 	}
+ 
+ 	return 0;
+@@ -122,11 +120,9 @@ static int update_pd_power_uw(struct dtpm *dtpm)
+ 	nr_cpus = cpumask_weight(&cpus);
+ 
+ 	dtpm->power_min = em->table[0].power;
+-	dtpm->power_min *= MICROWATT_PER_MILLIWATT;
+ 	dtpm->power_min *= nr_cpus;
+ 
+ 	dtpm->power_max = em->table[em->nr_perf_states - 1].power;
+-	dtpm->power_max *= MICROWATT_PER_MILLIWATT;
+ 	dtpm->power_max *= nr_cpus;
+ 
+ 	return 0;
+diff --git a/drivers/powercap/dtpm_devfreq.c b/drivers/powercap/dtpm_devfreq.c
+index 91276761a31d..612c3b59dd5b 100644
+--- a/drivers/powercap/dtpm_devfreq.c
++++ b/drivers/powercap/dtpm_devfreq.c
+@@ -39,10 +39,8 @@ static int update_pd_power_uw(struct dtpm *dtpm)
+ 	struct em_perf_domain *pd = em_pd_get(dev);
+ 
+ 	dtpm->power_min = pd->table[0].power;
+-	dtpm->power_min *= MICROWATT_PER_MILLIWATT;
+ 
+ 	dtpm->power_max = pd->table[pd->nr_perf_states - 1].power;
+-	dtpm->power_max *= MICROWATT_PER_MILLIWATT;
+ 
+ 	return 0;
+ }
+@@ -54,13 +52,10 @@ static u64 set_pd_power_limit(struct dtpm *dtpm, u64 power_limit)
+ 	struct device *dev = devfreq->dev.parent;
+ 	struct em_perf_domain *pd = em_pd_get(dev);
+ 	unsigned long freq;
+-	u64 power;
+ 	int i;
+ 
+ 	for (i = 0; i < pd->nr_perf_states; i++) {
+-
+-		power = pd->table[i].power * MICROWATT_PER_MILLIWATT;
+-		if (power > power_limit)
++		if (pd->table[i].power > power_limit)
+ 			break;
+ 	}
+ 
+@@ -68,7 +63,7 @@ static u64 set_pd_power_limit(struct dtpm *dtpm, u64 power_limit)
+ 
+ 	dev_pm_qos_update_request(&dtpm_devfreq->qos_req, freq);
+ 
+-	power_limit = pd->table[i - 1].power * MICROWATT_PER_MILLIWATT;
++	power_limit = pd->table[i - 1].power;
+ 
+ 	return power_limit;
+ }
+@@ -110,7 +105,7 @@ static u64 get_pd_power_uw(struct dtpm *dtpm)
+ 		if (pd->table[i].frequency < freq)
+ 			continue;
+ 
+-		power = pd->table[i].power * MICROWATT_PER_MILLIWATT;
++		power = pd->table[i].power;
+ 		power *= status.busy_time;
+ 		power >>= 10;
+ 
+-- 
+2.25.1
 
