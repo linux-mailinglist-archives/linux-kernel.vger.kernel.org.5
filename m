@@ -2,69 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4626A7F9E90
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:27:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 144197F9E8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:27:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233217AbjK0L1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 06:27:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37134 "EHLO
+        id S233195AbjK0L1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 06:27:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233213AbjK0L1g (ORCPT
+        with ESMTP id S233171AbjK0L1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 06:27:36 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 909AE10A;
-        Mon, 27 Nov 2023 03:27:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1701084438; x=1701689238; i=rwahl@gmx.de;
-        bh=2amWrJACc8qSaje+/sHjHwmHFxanJF0oJSla/8F+B1M=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=hK+aMpEGKtjwnuyfDAH3rXunntmy8vQ6ugU8UyEP3/xUHM273qidzh79QI4vtTBk
-         zBiF/aBZwvFq9+CL/df11DeDfhyxoy4qT5wde0XU10QXanPkGgIbTQzcQzObnG2TB
-         uSmKLprHI25uK4/tQwCCQuUTZiI6Xr8Jn+fIUP9qI3qCJJGuJX7iCIrHIFRNy1wfY
-         uee/2ICjgRxvWhyClKtfcglUUUIkJKhi54zTqxiqbukWCiWW80nIVi3Pn/t2I3RAE
-         TrrYsChzRNCt5qtX6W0k7VZxqXq+6r6JTlSW/lfUgh33szh+azzG/mR+ioIPQgq2T
-         rlukpqXnbvMVrjfa5Q==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from rohan.localdomain ([84.156.159.24]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M4s4r-1r7IWH1wXf-0023Db; Mon, 27
- Nov 2023 12:27:18 +0100
-From:   Ronald Wahl <rwahl@gmx.de>
-To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bryan Brattlof <bb@ti.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, Ronald Wahl <ronald.wahl@raritan.com>
-Subject: [PATCH RESEND] arm64: dts: ti: k3-am62-main: Add gpio-ranges properties
-Date:   Mon, 27 Nov 2023 12:26:57 +0100
-Message-ID: <20231127112657.2692103-1-rwahl@gmx.de>
-X-Mailer: git-send-email 2.43.0
+        Mon, 27 Nov 2023 06:27:31 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5DB9A186;
+        Mon, 27 Nov 2023 03:27:36 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AE4B22F4;
+        Mon, 27 Nov 2023 03:28:23 -0800 (PST)
+Received: from [10.57.71.110] (unknown [10.57.71.110])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CDAFC3F73F;
+        Mon, 27 Nov 2023 03:27:33 -0800 (PST)
+Message-ID: <8ffb32c8-907c-4266-b8be-c7309418b9f0@arm.com>
+Date:   Mon, 27 Nov 2023 11:27:31 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:QinziaHniGAksgaiTDEcGuOV9M9mixaCm3bbnBulSSGtPvLFtpE
- oZF1YyX/56c1HRfGgX1/h2RbN6xQrPWcsmmliGqvbq7v/2RzC89Ihk8F7FwjoqYdERelZNW
- FIArsjAGsOGEwL1AusY8RUDe+Yb+RZWaErWK4TJlJBZHTotIl/BWzqBK5Qr74ONMhJQuQAG
- fThhNKWjanG+Ur6yLUhSw==
-UI-OutboundReport: notjunk:1;M01:P0:z9rK+5kZQOo=;EUokD9aqwJPbzieYo0Kci1Dy2WQ
- 3BLJJ8NSd5tVlHYQE1BFeA9jdzkStrDY0rRw4ociZ05mEEM44ULQry7Dv8CXILSzdSDVm4bYQ
- o7zEH4uVS+yAoTL4tbGGLUIpsfwZpSP3GAJN/zihKnIal2pjWE/f3I4A0qrFBmuz/g5gCJ3jz
- bYO5tu9dYQeUYucAVR8cywIGa+BQwV3kdDLTuHmaak08WDPkFWRBwJpoD4DNxXYqbxa103mED
- OqoO70jKPimKn05jFfoKneg7mjRGfsqA7IhNdGbRyQZDkAPOgtjYqPnWlGQGZ58b2N7zXdYJ5
- BDWOF4u/PKgDDxpYvlUrufvM0nn7B3d9fSwy86PjYZ6EFtQzMewplP+/9aUM7t7Fanv/TExTd
- ux5AQaKPsvHArgTdgYTXDNV8mxUsKr4sXv/XSwiytwcDS2jCbhmsM219Ftn0avME722IcIebJ
- WzzHFaKT8rXPp7jASf07FMBRs7ZBEqdc6crWXlc4xfHHl9JcfkLyBuxN7/ilDeciuVQTqUriH
- X/fOd5puv3C+ES0DgrGshwxd4/EnIVMNAt09RJeXgo11GWCx8t3E9pjlZcUJTsxq2e4Hl2HAd
- JR2xnq6m7fnSaYlJ7c9EsSyo5wajvRe0JFuPM2ANtg+0EufeCK76jA/6JWyhpKbUNffzJDUnB
- 3J8YrcHIQ/1NDJMOPGHVEEby9ApqD2yxORim9daXCI0ggi/qu6MzCYoPhG4dOiBbC0p/dsCpS
- nEg5Ol25ueoiAFCeYj/+qbHEc+oOZnFC1gklOIUeCflNseO0+rWqRKMV25Sc3RXQkOTL08gxc
- efO6ZmvOWPJ8wECf1SVSQVxmS2od/9O8GcixWN7hR+RdD4MqcMJQkb08OVAG5dnjk88pPw03R
- HsTtyTy0SAsx+5QBU9dwX2hPSDV7vXSTPGJjtFody4wTaiVQf9IuFjMdi/5xXN25Q041asTCs
- VGfMMg==
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 0/3] introduce priority-based shutdown support
+Content-Language: en-US
+To:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-pm@vger.kernel.org,
+        =?UTF-8?Q?S=C3=B8ren_Andersen?= <san@skov.dk>
+References: <2023112453-flagstick-bullring-8511@gregkh>
+ <20231124185725.GA872366@pengutronix.de> <2023112520-paper-image-ef5d@gregkh>
+ <20231125085038.GA877872@pengutronix.de>
+ <2023112506-unselfish-unkind-adcb@gregkh>
+ <ZWHM0lRPOp/efyD5@finisterre.sirena.org.uk>
+ <2023112541-uptown-tripping-05f3@gregkh>
+ <ZWIWBhBN8AmK7tAJ@finisterre.sirena.org.uk>
+ <2023112504-cathedral-pulmonary-83ce@gregkh>
+ <ZWMaMIGUo9DeyEH+@finisterre.sirena.org.uk>
+ <20231126193125.GB877872@pengutronix.de>
+From:   Christian Loehle <christian.loehle@arm.com>
+In-Reply-To: <20231126193125.GB877872@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,45 +58,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ronald Wahl <ronald.wahl@raritan.com>
+On 26/11/2023 19:31, Oleksij Rempel wrote:
+> On Sun, Nov 26, 2023 at 10:14:45AM +0000, Mark Brown wrote:
+>> On Sat, Nov 25, 2023 at 07:58:12PM +0000, Greg Kroah-Hartman wrote:
+>>> On Sat, Nov 25, 2023 at 03:43:02PM +0000, Mark Brown wrote:
+>>>> On Sat, Nov 25, 2023 at 02:35:41PM +0000, Greg Kroah-Hartman wrote:
+>>
+>>>>> That would be great, but I don't see that here, do you?  All I see is
+>>>>> the shutdown sequence changing because someone wants it to go "faster"
+>>>>> with the threat of hardware breaking if we don't meet that "faster"
+>>>>> number, yet no knowledge or guarantee that this number can ever be known
+>>>>> or happen.
+>>
+>>>> The idea was to have somewhere to send notifications when the hardware
+>>>> starts reporting things like power supplies starting to fail.  We do
+>>>> have those from hardware, we just don't do anything terribly useful
+>>>> with them yet.
+>>
+>>> Ok, but that's not what I recall this patchset doing, or did I missing
+>>> something?  All I saw was a "reorder the shutdown sequence" set of
+>>> changes.  Or at least that's all I remember at this point in time,
+>>> sorry, it's been a few days, but at least that lines up with what the
+>>> Subject line says above :)
+>>
+>> That's not in the series, a bunch of it is merged in some form (eg, see
+>> hw_protection_shutdown()) and more of it would need to be built on top
+>> if this were merged.
+> 
+> The current kernel has enough infrastructure to manage essential functions
+> related to hardware protection:
+> - The Device Tree specifies the source of interrupts for detecting
+>   under-voltage events. It also details critical system regulators and some
+>   of specification of backup power supplied by the board.
+> - Various frameworks within the kernel can identify critical hardware
+>   conditions like over-temperature and under-voltage. Upon detection, these
+>   frameworks invoke the hw_protection_shutdown() function.
+> 
+>>>>> Agreed, but I don't think this patch is going to actually work properly
+>>>>> over time as there is no time values involved :)
+> 
+> If we're to implement a deadline for each shutdown call (as the requirement for
+> "time values" suggests?), then prioritization becomes essential. Without
+> establishing a shutdown order, the inclusion of time values might not be
+> effectively utilized.  Am I overlooking anything in this regard?
+> 
+>>>> This seems to be more into the area of mitigation than firm solution, I
+>>>> suspect users will be pleased if they can make a noticable dent in the
+>>>> number of failures they're seeing.
+>>
+>>> Mitigation is good, but this patch series is just a hack by doing "throw
+>>> this device type at the front of the shutdown list because we have
+>>> hardware that crashes a lot" :)
+> 
+> The root of the issue seems to be the choice of primary storage device.
+> 
+> All storage technologies - HDD, SSD, eMMC, NAND - are vulnerable to power
+> loss. The only foolproof safeguard is a backup power source, but this
+> introduces its own set of challenges:
 
-On the AM62 platform we have no single 1:1 relation regarding index of
-gpio and pin controller. Actually there are some linear ranges with
-small holes inbetween. These ranges can be represented with the
-gpio-ranges device tree property. They have been extracted manually
-from the AM62x datasheet (Table 6-1. Pin Attributes).
+I disagree and would say that any storage device sold as "industrial" should
+guarantee power-fail safety. Plus, you mentioned data loss isn't even your concern,
+but the storage device fails/bricks.
+> 
+> 1. Batteries: While they provide a backup, they come with limitations like a
+> finite number of charge cycles, sensitivity to temperature (a significant
+> concern in industrial and automotive environments), higher costs, and
+> increased device size. For most embedded applications, a UPS isn't a viable
+> solution.
+> 
+> 2. Capacitors: A potential alternative, but they cannot offer prolonged
+> backup time. Increasing the number of capacitors to extend backup time leads
+> to additional issues:
+>    - Increased costs and space requirements on the PCB.
+>    - The need to manage partially charged capacitors during power failures.
+>    - The requirement for a power supply capable of rapid charging.
+>    - The risk of not reaching a safe state before the backup energy
+>      depletes.
+>    - In specific environments, like explosive atmospheres, storing large
+>      amounts of energy can be hazardous.
 
-Signed-off-by: Ronald Wahl <ronald.wahl@raritan.com>
-=2D--
- arch/arm64/boot/dts/ti/k3-am62-main.dtsi | 7 +++++++
- 1 file changed, 7 insertions(+)
+And also just practically, ensuring a safe power down could be in the order
+of a second, so it would be quite a capacitor.
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dt=
-s/ti/k3-am62-main.dtsi
-index 284b90c94da8..587d197e82c4 100644
-=2D-- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-@@ -492,6 +492,9 @@ main_gpio_intr: interrupt-controller@a00000 {
- 	main_gpio0: gpio@600000 {
- 		compatible =3D "ti,am64-gpio", "ti,keystone-gpio";
- 		reg =3D <0x0 0x00600000 0x0 0x100>;
-+		gpio-ranges =3D <&main_pmx0  0  0 32>,
-+			      <&main_pmx0 32 33 38>,
-+			      <&main_pmx0 70 72 22>;
- 		gpio-controller;
- 		#gpio-cells =3D <2>;
- 		interrupt-parent =3D <&main_gpio_intr>;
-@@ -510,6 +513,10 @@ main_gpio1: gpio@601000 {
- 		compatible =3D "ti,am64-gpio", "ti,keystone-gpio";
- 		reg =3D <0x0 0x00601000 0x0 0x100>;
- 		gpio-controller;
-+		gpio-ranges =3D <&main_pmx0  0  94 41>,
-+			      <&main_pmx0 41 136  6>,
-+			      <&main_pmx0 47 143  3>,
-+			      <&main_pmx0 50 149  2>;
- 		#gpio-cells =3D <2>;
- 		interrupt-parent =3D <&main_gpio_intr>;
- 		interrupts =3D <180>, <181>, <182>,
-=2D-
-2.41.0
+> 
+> Given these considerations, it's crucial to understand that such design choices
+> aren't merely "hacks". They represent a balance between different types of
+> trade-offs.
+> 
+>>>> It feels like if we're concerned about mitigating physical damage during
+>>>> the process of power failure that's a very limited set of devices - the
+>>>> storage case where we're in the middle of writing to flash or whatever
+>>>> is the most obvious case.
+>>
+>>> Then why isn't userspace handling this?  This is a policy decision that
+>>> it needs to take to properly know what hardware needs to be shut down,
+>>> and what needs to happen in order to do that (i.e. flush, unmount,
+>>> etc.?)  And userspace today should be able to say, "power down this
+>>> device now!" for any device in the system based on the sysfs device
+>>> tree, or at the very least, force it to a specific power state.  So why
+>>> not handle this policy there?
+>>
+>> Given the tight timelines it does seem reasonable to have some of this
+>> in the kernel - the specific decisions about how to handle these events
+>> can always be controlled from userspace (eg, with a sysfs file like we
+>> do for autosuspend delay times which seem to be in a similar ballpark).
+> 
+> Upon investigating the feasibility of a user space solution for eMMC
+> power control, I've concluded that it's likely not possible. The primary
+> issue is that most board designs don't include reset signaling for
+> eMMCs. Additionally, the eMMC power rail is usually linked to the
+> system's main power controller. While powering off is doable, cleanly
+> powering it back on isn’t feasible. This is especially problematic when
+> the rootfs is located on the eMMC, as power cycling the storage device
+> could lead to system instability.
+> 
+> Therefore, any user space method to power off eMMC wouldn't be reliable
+> or safe, as there's no way to ensure it can be turned back on without
+> risking the integrity of the system. The design rationale is clear:
+> avoiding the risks associated with powering off the primary storage
+> device.
+> 
+> Considering these constraints, the only practical implementation I see
+> is integrating this functionality into the system's shutdown sequence.
+> This approach ensures a controlled environment for powering off the
+> eMMC, avoiding potential issues.
 
+You don't need the RST signal, in fact even if you had it it would be
+the wrong thing to do. (Implementation is vendor-specific but RST
+assumes that eMMCs' VCC and VCCQ are left untouched.)
+You can try turning off eMMC cache completely and/or sending power down
+notification on 'emergency shutdown', but since power-loss/fail behavior
+is vendor-specific asking the storage device vendor how to ensure a safe
+power-down.
+Anyway the proper eMMC power-down methods are up to a second in timeouts,
+so infeasible for your requirements from what I can see.
+
+BR,
+Christian
