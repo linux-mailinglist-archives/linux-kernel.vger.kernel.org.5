@@ -2,276 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD2B7FAD9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 23:39:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2607FADA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 23:40:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233380AbjK0WjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 17:39:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41622 "EHLO
+        id S233637AbjK0Wkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 17:40:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbjK0WjJ (ORCPT
+        with ESMTP id S233647AbjK0Wko (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 17:39:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE73BA5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:39:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701124754;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3kKUg/fXvYS5tkHqvXRuy+VfqnqaztEk7AoiO6in+nk=;
-        b=fBLtTm53UrzH2/m1e+VnBWaDR1b1sIKhsnj1tMrmQ/ElZ0QhyDI9/qORVb5Udgr9gY894Y
-        TqeCUgqA0gEoqBQKrAGwSrORJ+ObN6JTmPLVw/DRun3URHj6w7hRNcVvHBC7yTlMnmQJkV
-        sjnSYHMo5ddJ6u762v/M+2t2kxS/Kgk=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-80-2n7Nl62RO5mJ-mbi_0zIww-1; Mon, 27 Nov 2023 17:39:13 -0500
-X-MC-Unique: 2n7Nl62RO5mJ-mbi_0zIww-1
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-54b17cf3dcfso1574155a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:39:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701124751; x=1701729551;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3kKUg/fXvYS5tkHqvXRuy+VfqnqaztEk7AoiO6in+nk=;
-        b=L8H+bLaH8rChXhKzw7ihTsY9+9QGJfRgtfcSHbdAVLUmeJXhlh8itAXz0OBcXz/rU2
-         jYdWsAT5vbW3Z5H1O7A60c9c56Q1ah/BvuDDX20Gd3f6Hv5Idu/1vCmrIUga6BooJQ5d
-         PNBcNI72025NxZl16N4kN9acEKTWVMh27ap0HLk2wtBU9qaI2zITeAH2p6TukRnZgJ/P
-         8L/SQR6lcOvRSqfsCAZdnlYwkM0ZOwTX8yr3y4aw6BqW4hp5qN51uFHeCFiH17Bf0pNR
-         dnHIez4REiBcvYkfnAltt9T2AXo1XyjPa6hwpyDCMR5frB7DvsED6iczMx6Gf8vKLzuP
-         7Ugg==
-X-Gm-Message-State: AOJu0YxlU/blA3L3Miu4DXqlid0NeOxrJBffjIVH4WkEv7sDQN/AW0Fl
-        +LNyDdykxQTZLz25UwlvzSIeKvTmpzPikZl7G3uBy62tXE8KCajoVM7lXMlssAKSBBGvdiNAsjF
-        wvmAwNmaOE8UCTPDifyfGh1hCT0k7sfm/
-X-Received: by 2002:a50:d55e:0:b0:542:eb1f:c70a with SMTP id f30-20020a50d55e000000b00542eb1fc70amr9828693edj.29.1701124751304;
-        Mon, 27 Nov 2023 14:39:11 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFaMz4xpYJ1zfVf9EBzF/oR82WnnTyfsu2cVqgWjvDHpeFVDXzwZwXszLhG2SmCp4g9Gh50bw==
-X-Received: by 2002:a50:d55e:0:b0:542:eb1f:c70a with SMTP id f30-20020a50d55e000000b00542eb1fc70amr9828680edj.29.1701124750978;
-        Mon, 27 Nov 2023 14:39:10 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id s14-20020aa7cb0e000000b005401a4184ddsm5621599edt.27.2023.11.27.14.39.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Nov 2023 14:39:10 -0800 (PST)
-Message-ID: <a62eb1df-2cf9-41cd-a64c-303f73549ce5@redhat.com>
-Date:   Mon, 27 Nov 2023 23:39:09 +0100
+        Mon, 27 Nov 2023 17:40:44 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A51A5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:40:49 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7346FC433C8;
+        Mon, 27 Nov 2023 22:40:48 +0000 (UTC)
+Date:   Mon, 27 Nov 2023 17:41:08 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        dmaluka@google.com, Sean Paul <seanpaul@chromium.org>,
+        Arun Easi <aeasi@marvell.com>, Daniel Wagner <dwagner@suse.de>
+Subject: [RFC][PATCH] tracing: Allow creating instances with specified
+ system events
+Message-ID: <20231127174108.3c331c9c@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/1] platform/x86: asus-wmi: disable USB0 hub on ROG
- Ally before suspend
-Content-Language: en-US, nl
-To:     Luke Jones <luke@ljones.dev>
-Cc:     ilpo.jarvinen@linux.intel.com, corentin.chary@gmail.com,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231126230521.125708-1-luke@ljones.dev>
- <20231126230521.125708-2-luke@ljones.dev>
- <1c5f3bd2-9f10-4e5d-8c6d-76441b2da850@redhat.com>
- <ZOTS4S.OUOP1DLTNVXP3@ljones.dev>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <ZOTS4S.OUOP1DLTNVXP3@ljones.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-On 11/27/23 21:17, Luke Jones wrote:
-> 
-> 
-> On Mon, Nov 27 2023 at 09:53:13 AM +01:00:00, Hans de Goede <hdegoede@redhat.com> wrote:
->> Hi,
->>
->> On 11/27/23 00:05, Luke D. Jones wrote:
->>>  ASUS have worked around an issue in XInput where it doesn't support USB
->>>  selective suspend, which causes suspend issues in Windows. They worked
->>>  around this by adjusting the MCU firmware to disable the USB0 hub when
->>>  the screen is switched off during the Microsoft DSM suspend path in ACPI.
->>>
->>>  The issue we have with this however is one of timing - the call the tells
->>>  the MCU to this isn't able to complete before suspend is done so we call
->>>  this in a prepare() and add a small msleep() to ensure it is done. This
->>>  must be done before the screen is switched off to prevent a variety of
->>>  possible races.
->>>
->>>  Further to this the MCU powersave option must also be disabled as it can
->>>  cause a number of issues such as:
->>>  - unreliable resume connection of N-Key
->>>  - complete loss of N-Key if the power is plugged in while suspended
->>>  Disabling the powersave option prevents this.
->>>
->>>  Without this the MCU is unable to initialise itself correctly on resume.
->>>
->>>  Signed-off-by: Luke D. Jones <luke@ljones.dev>
->>
->> Thanks, patch looks good to me, except that all the new lines
->> seem to use 4 spaces rather then a tab char as indent.
-> 
-> Apologies for the previous HTML email.
-> I must be going mad... are you sure? I've checked the patch file I submitted. Run checkpatch on it. Checked my email copy, and checked in lore... I can't see where space chars are?
+A trace instance may only need to enable specific events. As the eventfs
+directory of an instance currently creates all events which adds overhead,
+allow internal instances to be created with just the events in systems
+that they care about. This currently only deals with systems and not
+individual events, but this should bring down the overhead of creating
+instances for specific use cases quite bit.
 
-So I just checked the copy in patchwork:
+The qla2xxx instance could just enable the systems it cares about, but that
+should be a separate patch.
 
-https://patchwork.kernel.org/project/platform-driver-x86/patch/20231126230521.125708-2-luke@ljones.dev/
+Note that kprobes and synthetic events created after the creation of these
+instances, will be added to these instances, but those that are created
+before the creation of the instance will not be included.
 
-and you are rights, no 4 spaces there.
+Note, this may also be useful for creating instances in the eventfs, but
+I'm not sure how to do this there. I could add a deliminator:
 
-Where as if you look further down in this reply, where the original
-patch is quoted the 4 spaces are right there, so now I'm wondering
-if maybe my mail client introduced the problem when I was replying ?
+  mkdir /sys/kernel/tracing/instances/foo::sched,timer
 
-(replies to other patches preserve the tabs just fine).
+But if a tool already uses "::" as a deliminator, then this will break it.
+I could just have it work if all the events after the deliminator exist.
 
-So this is weird, but lets just forget about it, just some weird
-glitch ...
+  Thoughts?
 
-Regards,
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ drivers/scsi/qla2xxx/qla_os.c       |  2 +-
+ include/linux/trace.h               |  4 ++--
+ kernel/trace/trace.c                | 22 ++++++++++++--------
+ kernel/trace/trace.h                |  3 ++-
+ kernel/trace/trace_boot.c           |  2 +-
+ kernel/trace/trace_events.c         | 31 ++++++++++++++++++++++++++---
+ samples/ftrace/sample-trace-array.c |  2 +-
+ 7 files changed, 49 insertions(+), 17 deletions(-)
 
-Hans
-
-
-
-
-> 
->>
->> With that fixed you can add my:
->>
->> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
->>
->> to the next version.
->>
->> Regards,
->>
->> Hans
->>
->>
->>>  ---
->>>   drivers/platform/x86/asus-wmi.c            | 50 ++++++++++++++++++++++
->>>   include/linux/platform_data/x86/asus-wmi.h |  3 ++
->>>   2 files changed, 53 insertions(+)
->>>
->>>  diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
->>>  index 6a79f16233ab..4ba33dfebfd4 100644
->>>  --- a/drivers/platform/x86/asus-wmi.c
->>>  +++ b/drivers/platform/x86/asus-wmi.c
->>>  @@ -16,6 +16,7 @@
->>>   #include <linux/acpi.h>
->>>   #include <linux/backlight.h>
->>>   #include <linux/debugfs.h>
->>>  +#include <linux/delay.h>
->>>   #include <linux/dmi.h>
->>>   #include <linux/fb.h>
->>>   #include <linux/hwmon.h>
->>>  @@ -132,6 +133,11 @@ module_param(fnlock_default, bool, 0444);
->>>   #define ASUS_SCREENPAD_BRIGHT_MAX 255
->>>   #define ASUS_SCREENPAD_BRIGHT_DEFAULT 60
->>>
->>>  +/* Controls the power state of the USB0 hub on ROG Ally which input is on */
->>>  +#define ASUS_USB0_PWR_EC0_CSEE "\\_SB.PCI0.SBRG.EC0.CSEE"
->>>  +/* 300ms so far seems to produce a reliable result on AC and battery */
->>>  +#define ASUS_USB0_PWR_EC0_CSEE_WAIT 300
->>>  +
->>>   static const char * const ashs_ids[] = { "ATK4001", "ATK4002", NULL };
->>>
->>>   static int throttle_thermal_policy_write(struct asus_wmi *);
->>>  @@ -300,6 +306,9 @@ struct asus_wmi {
->>>
->>>       bool fnlock_locked;
->>>
->>>  +    /* The ROG Ally device requires the MCU USB device be disconnected before suspend */
->>>  +    bool ally_mcu_usb_switch;
->>>  +
->>>       struct asus_wmi_debug debug;
->>>
->>>       struct asus_wmi_driver *driver;
->>>  @@ -4488,6 +4497,8 @@ static int asus_wmi_add(struct platform_device *pdev)
->>>       asus->nv_temp_tgt_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_NV_THERM_TARGET);
->>>       asus->panel_overdrive_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_PANEL_OD);
->>>       asus->mini_led_mode_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_MINI_LED_MODE);
->>>  +    asus->ally_mcu_usb_switch = acpi_has_method(NULL, ASUS_USB0_PWR_EC0_CSEE)
->>>  +                        && dmi_match(DMI_BOARD_NAME, "RC71L");
->>>
->>>       err = fan_boost_mode_check_present(asus);
->>>       if (err)
->>>  @@ -4654,6 +4665,43 @@ static int asus_hotk_resume(struct device *device)
->>>           asus_wmi_fnlock_update(asus);
->>>
->>>       asus_wmi_tablet_mode_get_state(asus);
->>>  +
->>>  +    return 0;
->>>  +}
->>>  +
->>>  +static int asus_hotk_resume_early(struct device *device)
->>>  +{
->>>  +    struct asus_wmi *asus = dev_get_drvdata(device);
->>>  +
->>>  +    if (asus->ally_mcu_usb_switch) {
->>>  +        if (ACPI_FAILURE(acpi_execute_simple_method(NULL, ASUS_USB0_PWR_EC0_CSEE, 0xB8)))
->>>  +            dev_err(device, "ROG Ally MCU failed to connect USB dev\n");
->>>  +        else
->>>  +            msleep(ASUS_USB0_PWR_EC0_CSEE_WAIT);
->>>  +    }
->>>  +    return 0;
->>>  +}
->>>  +
->>>  +static int asus_hotk_prepare(struct device *device)
->>>  +{
->>>  +    struct asus_wmi *asus = dev_get_drvdata(device);
->>>  +    int result, err;
->>>  +
->>>  +    if (asus->ally_mcu_usb_switch) {
->>>  +        /* When powersave is enabled it causes many issues with resume of USB hub */
->>>  +        result = asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_MCU_POWERSAVE);
->>>  +        if (result == 1) {
->>>  +            dev_warn(device, "MCU powersave enabled, disabling to prevent resume issues");
->>>  +            err = asus_wmi_set_devstate(ASUS_WMI_DEVID_MCU_POWERSAVE, 0, &result);
->>>  +            if (err || result != 1)
->>>  +                dev_err(device, "Failed to set MCU powersave mode: %d\n", err);
->>>  +        }
->>>  +        /* sleep required to ensure USB0 is disabled before sleep continues */
->>>  +        if (ACPI_FAILURE(acpi_execute_simple_method(NULL, ASUS_USB0_PWR_EC0_CSEE, 0xB7)))
->>>  +            dev_err(device, "ROG Ally MCU failed to disconnect USB dev\n");
->>>  +        else
->>>  +            msleep(ASUS_USB0_PWR_EC0_CSEE_WAIT);
->>>  +    }
->>>       return 0;
->>>   }
->>>
->>>  @@ -4701,6 +4749,8 @@ static const struct dev_pm_ops asus_pm_ops = {
->>>       .thaw = asus_hotk_thaw,
->>>       .restore = asus_hotk_restore,
->>>       .resume = asus_hotk_resume,
->>>  +    .resume_early = asus_hotk_resume_early,
->>>  +    .prepare = asus_hotk_prepare,
->>>   };
->>>
->>>   /* Registration ***************************************************************/
->>>  diff --git a/include/linux/platform_data/x86/asus-wmi.h b/include/linux/platform_data/x86/asus-wmi.h
->>>  index 63e630276499..ab1c7deff118 100644
->>>  --- a/include/linux/platform_data/x86/asus-wmi.h
->>>  +++ b/include/linux/platform_data/x86/asus-wmi.h
->>>  @@ -114,6 +114,9 @@
->>>   /* Charging mode - 1=Barrel, 2=USB */
->>>   #define ASUS_WMI_DEVID_CHARGE_MODE    0x0012006C
->>>
->>>  +/* MCU powersave mode */
->>>  +#define ASUS_WMI_DEVID_MCU_POWERSAVE   0x001200E2
->>>  +
->>>   /* epu is connected? 1 == true */
->>>   #define ASUS_WMI_DEVID_EGPU_CONNECTED    0x00090018
->>>   /* egpu on/off */
->>
-> 
-> 
+diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
+index 03348f605c2e..dd674378f2f3 100644
+--- a/drivers/scsi/qla2xxx/qla_os.c
++++ b/drivers/scsi/qla2xxx/qla_os.c
+@@ -2889,7 +2889,7 @@ static void qla2x00_iocb_work_fn(struct work_struct *work)
+ static void
+ qla_trace_init(void)
+ {
+-	qla_trc_array = trace_array_get_by_name("qla2xxx");
++	qla_trc_array = trace_array_get_by_name("qla2xxx", NULL);
+ 	if (!qla_trc_array) {
+ 		ql_log(ql_log_fatal, NULL, 0x0001,
+ 		       "Unable to create qla2xxx trace instance, instance logging will be disabled.\n");
+diff --git a/include/linux/trace.h b/include/linux/trace.h
+index 2a70a447184c..fdcd76b7be83 100644
+--- a/include/linux/trace.h
++++ b/include/linux/trace.h
+@@ -51,7 +51,7 @@ int trace_array_printk(struct trace_array *tr, unsigned long ip,
+ 		       const char *fmt, ...);
+ int trace_array_init_printk(struct trace_array *tr);
+ void trace_array_put(struct trace_array *tr);
+-struct trace_array *trace_array_get_by_name(const char *name);
++struct trace_array *trace_array_get_by_name(const char *name, const char *systems);
+ int trace_array_destroy(struct trace_array *tr);
+ 
+ /* For osnoise tracer */
+@@ -84,7 +84,7 @@ static inline int trace_array_init_printk(struct trace_array *tr)
+ static inline void trace_array_put(struct trace_array *tr)
+ {
+ }
+-static inline struct trace_array *trace_array_get_by_name(const char *name)
++static inline struct trace_array *trace_array_get_by_name(const char *name, const char *systems)
+ {
+ 	return NULL;
+ }
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 9aebf904ff97..3a5637ccabfd 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -9500,7 +9500,7 @@ struct trace_array *trace_array_find_get(const char *instance)
+ 	return tr;
+ }
+ 
+-static int trace_array_create_dir(struct trace_array *tr)
++static int trace_array_create_dir(struct trace_array *tr, const char *systems)
+ {
+ 	int ret;
+ 
+@@ -9508,7 +9508,7 @@ static int trace_array_create_dir(struct trace_array *tr)
+ 	if (!tr->dir)
+ 		return -EINVAL;
+ 
+-	ret = event_trace_add_tracer(tr->dir, tr);
++	ret = event_trace_add_tracer(tr->dir, tr, systems);
+ 	if (ret) {
+ 		tracefs_remove(tr->dir);
+ 		return ret;
+@@ -9520,7 +9520,8 @@ static int trace_array_create_dir(struct trace_array *tr)
+ 	return ret;
+ }
+ 
+-static struct trace_array *trace_array_create(const char *name)
++static struct trace_array *
++trace_array_create_systems(const char *name, const char *systems)
+ {
+ 	struct trace_array *tr;
+ 	int ret;
+@@ -9569,7 +9570,7 @@ static struct trace_array *trace_array_create(const char *name)
+ 	init_trace_flags_index(tr);
+ 
+ 	if (trace_instance_dir) {
+-		ret = trace_array_create_dir(tr);
++		ret = trace_array_create_dir(tr, systems);
+ 		if (ret)
+ 			goto out_free_tr;
+ 	} else
+@@ -9592,6 +9593,11 @@ static struct trace_array *trace_array_create(const char *name)
+ 	return ERR_PTR(ret);
+ }
+ 
++static struct trace_array *trace_array_create(const char *name)
++{
++	return trace_array_create_systems(name, NULL);
++}
++
+ static int instance_mkdir(const char *name)
+ {
+ 	struct trace_array *tr;
+@@ -9630,7 +9636,7 @@ static int instance_mkdir(const char *name)
+  * trace_array_put() is called, user space can not delete it.
+  *
+  */
+-struct trace_array *trace_array_get_by_name(const char *name)
++struct trace_array *trace_array_get_by_name(const char *name, const char *systems)
+ {
+ 	struct trace_array *tr;
+ 
+@@ -9642,7 +9648,7 @@ struct trace_array *trace_array_get_by_name(const char *name)
+ 			goto out_unlock;
+ 	}
+ 
+-	tr = trace_array_create(name);
++	tr = trace_array_create_systems(name, systems);
+ 
+ 	if (IS_ERR(tr))
+ 		tr = NULL;
+@@ -9758,7 +9764,7 @@ static __init void create_trace_instances(struct dentry *d_tracer)
+ 	list_for_each_entry(tr, &ftrace_trace_arrays, list) {
+ 		if (!tr->name)
+ 			continue;
+-		if (MEM_FAIL(trace_array_create_dir(tr) < 0,
++		if (MEM_FAIL(trace_array_create_dir(tr, NULL) < 0,
+ 			     "Failed to create instance directory\n"))
+ 			break;
+ 	}
+@@ -10407,7 +10413,7 @@ __init static void enable_instances(void)
+ 		if (IS_ENABLED(CONFIG_TRACER_MAX_TRACE))
+ 			do_allocate_snapshot(tok);
+ 
+-		tr = trace_array_get_by_name(tok);
++		tr = trace_array_get_by_name(tok, NULL);
+ 		if (!tr) {
+ 			pr_warn("Failed to create instance buffer %s\n", curr_str);
+ 			continue;
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index b7f4ea25a194..eb1bc1c572c3 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -1540,7 +1540,8 @@ extern void trace_event_enable_tgid_record(bool enable);
+ 
+ extern int event_trace_init(void);
+ extern int init_events(void);
+-extern int event_trace_add_tracer(struct dentry *parent, struct trace_array *tr);
++extern int event_trace_add_tracer(struct dentry *parent, struct trace_array *tr,
++				  const char *system);
+ extern int event_trace_del_tracer(struct trace_array *tr);
+ extern void __trace_early_add_events(struct trace_array *tr);
+ 
+diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
+index 7ccc7a8e155b..dbe29b4c6a7a 100644
+--- a/kernel/trace/trace_boot.c
++++ b/kernel/trace/trace_boot.c
+@@ -633,7 +633,7 @@ trace_boot_init_instances(struct xbc_node *node)
+ 		if (!p || *p == '\0')
+ 			continue;
+ 
+-		tr = trace_array_get_by_name(p);
++		tr = trace_array_get_by_name(p, NULL);
+ 		if (!tr) {
+ 			pr_err("Failed to get trace instance %s\n", p);
+ 			continue;
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index f29e815ca5b2..9a1d91a7edf2 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -3205,14 +3205,37 @@ static struct notifier_block trace_module_nb = {
+ };
+ #endif /* CONFIG_MODULES */
+ 
++static bool event_in_systems(struct trace_event_call *call,
++			     const char *systems)
++{
++	const char *system;
++	const char *p;
++
++	if (!systems)
++		return true;
++
++	system = call->class->system;
++	p = strstr(systems, system);
++	if (!p)
++		return false;
++
++	if (p != systems && !isspace(*(p - 1)) && *(p - 1) != ',')
++		return false;
++
++	p += strlen(system);
++	return !*p || isspace(*p) || *p == ',';
++}
++
+ /* Create a new event directory structure for a trace directory. */
+ static void
+-__trace_add_event_dirs(struct trace_array *tr)
++__trace_add_event_dirs(struct trace_array *tr, const char *systems)
+ {
+ 	struct trace_event_call *call;
+ 	int ret;
+ 
+ 	list_for_each_entry(call, &ftrace_events, list) {
++		if (!event_in_systems(call, systems))
++			continue;
+ 		ret = __trace_add_new_event(call, tr);
+ 		if (ret < 0)
+ 			pr_warn("Could not create directory for event %s\n",
+@@ -3820,6 +3843,7 @@ create_event_toplevel_files(struct dentry *parent, struct trace_array *tr)
+  * event_trace_add_tracer - add a instance of a trace_array to events
+  * @parent: The parent dentry to place the files/directories for events in
+  * @tr: The trace array associated with these events
++ * @systems: comma separated list of event systems to create (NULL for all)
+  *
+  * When a new instance is created, it needs to set up its events
+  * directory, as well as other files associated with events. It also
+@@ -3829,7 +3853,8 @@ create_event_toplevel_files(struct dentry *parent, struct trace_array *tr)
+  *
+  * Must be called with event_mutex held.
+  */
+-int event_trace_add_tracer(struct dentry *parent, struct trace_array *tr)
++int event_trace_add_tracer(struct dentry *parent, struct trace_array *tr,
++			   const char *systems)
+ {
+ 	int ret;
+ 
+@@ -3844,7 +3869,7 @@ int event_trace_add_tracer(struct dentry *parent, struct trace_array *tr)
+ 	if (unlikely(!list_empty(&tr->events)))
+ 		__trace_early_add_event_dirs(tr);
+ 	else
+-		__trace_add_event_dirs(tr);
++		__trace_add_event_dirs(tr, systems);
+ 	up_write(&trace_event_sem);
+ 
+  out:
+diff --git a/samples/ftrace/sample-trace-array.c b/samples/ftrace/sample-trace-array.c
+index 6aba02a31c96..89b72957e687 100644
+--- a/samples/ftrace/sample-trace-array.c
++++ b/samples/ftrace/sample-trace-array.c
+@@ -105,7 +105,7 @@ static int __init sample_trace_array_init(void)
+ 	 * NOTE: This function increments the reference counter
+ 	 * associated with the trace array - "tr".
+ 	 */
+-	tr = trace_array_get_by_name("sample-instance");
++	tr = trace_array_get_by_name("sample-instance", "sched,timer");
+ 
+ 	if (!tr)
+ 		return -1;
+-- 
+2.42.0
 
