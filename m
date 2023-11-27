@@ -2,113 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D05E7FA255
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:18:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7F8F7FA254
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:18:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233606AbjK0OSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 09:18:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46670 "EHLO
+        id S233635AbjK0ORz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 09:17:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233555AbjK0ORb (ORCPT
+        with ESMTP id S233568AbjK0ORa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 09:17:31 -0500
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF711FE5;
-        Mon, 27 Nov 2023 06:11:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=yMC1fr9zFr/aFbPIXFs2B98BYpQenlWqGbcREQeOEDM=; b=JAg3NTCQBfivlXVjbi5yc6w5nN
-        OH9xE0Xb0p4xAYGVUKhJE+55+hIn3EVOPzrV992PsVxVFj25vj5Vdq5xJIT9R1ME1eTAp0Pp3B5mq
-        lPjV9EtqsCnAs8Y2MmAR9gX+gA4wdAU8Yz+0navJ9BmK2oOHC00NdBrOGUjWi53MvQC8sG81Lldbd
-        qwD0TXLNj+SmvUibAPXGVXdvDlAOd9X3PdfN08KYy6ZYrHIMTIedINIn3rfV1JOYvCuHWo0J8RUEG
-        txzJg7gAr7Bs1FQl/xxc2q2U5DTGz7Y89PAVu/6DjQ03ruIyHy2NklKrQjZcFyzgcmCQ0c4x3CUo8
-        M4AD6glw==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1r7cK7-000ABW-7v; Mon, 27 Nov 2023 15:10:55 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1r7cK5-0001fA-I6; Mon, 27 Nov 2023 15:10:53 +0100
-Subject: Re: [PATCH net] bpf: test_run: fix WARNING in format_decode
-To:     Yonghong Song <yonghong.song@linux.dev>,
-        Edward Adam Davis <eadavis@qq.com>,
-        syzbot+e2c932aec5c8a6e1d31c@syzkaller.appspotmail.com
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        davem@davemloft.net, edumazet@google.com, haoluo@google.com,
-        hawk@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, martin.lau@kernel.org,
-        martin.lau@linux.dev, mhiramat@kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, rostedt@goodmis.org, sdf@google.com,
-        song@kernel.org, syzkaller-bugs@googlegroups.com, yhs@fb.com
-References: <0000000000004b6de5060ab1545b@google.com>
- <tencent_884D1773977426D9D3600371696883B6A405@qq.com>
- <4f832b6f-97b1-45b1-a210-b497ee6e55d5@linux.dev>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <8821dd97-3aed-1d3d-6c12-f5bc4fb88d5a@iogearbox.net>
-Date:   Mon, 27 Nov 2023 15:10:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Mon, 27 Nov 2023 09:17:30 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 94D272112
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:11:57 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D0B182F4;
+        Mon, 27 Nov 2023 06:12:44 -0800 (PST)
+Received: from [10.57.73.191] (unknown [10.57.73.191])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D4BD3F6C4;
+        Mon, 27 Nov 2023 06:11:54 -0800 (PST)
+Message-ID: <f3008ba2-82c2-47e3-9153-139a9442123b@arm.com>
+Date:   Mon, 27 Nov 2023 14:11:52 +0000
 MIME-Version: 1.0
-In-Reply-To: <4f832b6f-97b1-45b1-a210-b497ee6e55d5@linux.dev>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH v7 09/10] selftests/mm/cow: Generalize
+ do_run_with_thp() helper
+Content-Language: en-GB
+To:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20231122162950.3854897-1-ryan.roberts@arm.com>
+ <20231122162950.3854897-10-ryan.roberts@arm.com>
+ <ead82cbe-19c9-43ce-9f28-7ced118b130a@redhat.com>
+ <15c288aa-feab-4d3a-af33-b87481eaffe3@arm.com>
+ <1ebb9a53-63ee-430c-ba65-8e48eff6d25c@redhat.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <1ebb9a53-63ee-430c-ba65-8e48eff6d25c@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27106/Mon Nov 27 09:39:12 2023)
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/22/23 6:28 AM, Yonghong Song wrote:
-> On 11/21/23 7:50 PM, Edward Adam Davis wrote:
->> Confirm that skb->len is not 0 to ensure that skb length is valid.
+On 27/11/2023 13:59, David Hildenbrand wrote:
+>>>
+>>>> +    pmdsize = read_pmd_pagesize();
+>>>> +    if (pmdsize)
+>>>> +        ksft_print_msg("[INFO] detected PMD-mapped THP size: %zu KiB\n",
+>>>
+>>> Maybe simply: "detected PMD size". Zes, we read it via the THP interface, but
+>>> that shouldn't matter much.
 >>
->> Fixes: 114039b34201 ("bpf: Move skb->len == 0 checks into __bpf_redirect")
->> Reported-by: syzbot+e2c932aec5c8a6e1d31c@syzkaller.appspotmail.com
->> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+>> Err, just want to clarify what you are suggesting. With the current patch you
+>> will see something like:
 > 
-> Stan, Could you take a look at this patch?
+> Not with this patch, but with the other ones, yes :)
 
-I think this only papers over the bug.. also BPF selftests seem to break
-with this change.
+Yep, we are on the same page (folio)...
 
-Looking again at the syzkaller trace :
-
-   [...]
-   Please remove unsupported %\0 in format string
-   WARNING: CPU: 0 PID: 5068 at lib/vsprintf.c:2675 format_decode+0xa03/0xba0 lib/vsprintf.c:2675
-   [...]
-
-We need to fix bpf_bprintf_prepare() instead to reject invalid fmts such
-as %0 and similar.
-
->>   net/bpf/test_run.c | 3 +++
->>   1 file changed, 3 insertions(+)
+> 
 >>
->> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
->> index c9fdcc5cdce1..78258a822a5c 100644
->> --- a/net/bpf/test_run.c
->> +++ b/net/bpf/test_run.c
->> @@ -845,6 +845,9 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
->>   {
->>       struct qdisc_skb_cb *cb = (struct qdisc_skb_cb *)skb->cb;
->> +    if (!skb->len)
->> +        return -EINVAL;
->> +
->>       if (!__skb)
->>           return 0;
+>> [INFO] detected PMD-mapped THP size: 2048 KiB
+>> [INFO] detected small-sized THP size: 64 KiB
+>> [INFO] detected small-sized THP size: 128 KiB
+>> ...
+>> [INFO] detected small-sized THP size: 1024 KiB
+>>
+>>
+>> Are you suggesting something like this:
+>>
+>> [INFO] detected PMD size: 2048 KiB
+>> [INFO] detected THP size: 64 KiB
+>> [INFO] detected THP size: 128 KiB
+>> ...
+>> [INFO] detected THP size: 2048 KiB
+>>
+> 
+> Yes. If you'd detect that 2M is actually disabled, you could still log the PMD
+> size only.
+
+Note that in the final patch, where I test the other THP sizes, I'm not
+detecting which sizes the sysadmin has enabled, I'm detecting the set of sizes
+that can be enabled, then explicitly enabling the size (exclusively) when I test
+it. So there is no chance of reading PMD size but not having 2M THP. Minor point
+though.
+
+> 
+> So for this patch only as a preparation
+> 
+> [INFO] detected PMD size: 2048 KiB
+> [INFO] detected THP size: 2048 KiB
+> 
+> Just a thought.
+
+Yep this is exactly how I've just reworked it.
 
