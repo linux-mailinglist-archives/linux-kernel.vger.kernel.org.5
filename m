@@ -2,97 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8056F7FA8E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 19:23:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C274A7FA8E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 19:24:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231653AbjK0SXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 13:23:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49798 "EHLO
+        id S231754AbjK0SYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 13:24:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjK0SXC (ORCPT
+        with ESMTP id S229480AbjK0SYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 13:23:02 -0500
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 256A5198;
-        Mon, 27 Nov 2023 10:23:09 -0800 (PST)
-Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-35cb8fe4666so760335ab.1;
-        Mon, 27 Nov 2023 10:23:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701109388; x=1701714188; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HRI7cWlvOkyNkuDPrfXGivTVffcdI2V+Vot+f9MkWGg=;
-        b=bs/8rJOXj01g00QbejC60avn/iUjsYjCtQhtXbHpyfQ7ZHrYAiAbjc9DBYnYZrMXT9
-         CUUuBsgOfnJOO/24mx2iEtkvoR16YLjnf5V8OZGhmvTUa5R0SpfMeytD6h6ZBo+xOJTk
-         JIUfuNlAq06JFKYmGGXqopBbVFWgjUXIfCoAl1TQqDh8Tvx+cTkw7SOMxBYnNtYplYE1
-         Rh8nhYpsB2754mAuKKVF/KRZBgjJL8CFgEkLia44CC7Uz9Rt8WANJ2uiex+MmVUn72HQ
-         PjSNVRfbmxjp8OTYFWGOKEFnvwv4Onvkx+t72EAszDThDxubAZV5VAXCalUyI+i1ou+H
-         Dabw==
+        Mon, 27 Nov 2023 13:24:04 -0500
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC045198;
+        Mon, 27 Nov 2023 10:24:10 -0800 (PST)
+Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6d8147d3072so1376329a34.1;
+        Mon, 27 Nov 2023 10:24:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701109388; x=1701714188;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HRI7cWlvOkyNkuDPrfXGivTVffcdI2V+Vot+f9MkWGg=;
-        b=LjFc9mO9cfipKADJrztI3C/BnWfuRt2aYPMx263+gsrWQf+VTGfbDDZqC5Faqux3qD
-         I0eNSodmsHrGLkERcOBST/79rIrTHXQLjKZixuHuAv6HVTJSJtRSrY0jzddry3Vn/ATd
-         n3x5IC9eMXhi/XSKPahXqbSY+dw8nRdf3T/ZZS6YjdTdGKWULlHBJKggnGRJIZIXRzeu
-         E1+qtOjquqpeJEdPNGk9vs67KCPab4X8j+Cqsbmsb2S1i+Flsu86Pg98dLn6yUyEmmtb
-         Q/yKoFf0g54QBf+C2QT8B4vHNkBDXQmxIqoYmOUUjJj6c/V5A9gSClH+wgCEW6gJ60tv
-         L0wA==
-X-Gm-Message-State: AOJu0YyDSfd3uc+8Bq380Ma9uPqE3DYMvPttsmdSSoQE0dk1STAGtKbF
-        XyP/o95IsorjfUBe3sYkVO1Ptjg9iCo=
-X-Google-Smtp-Source: AGHT+IFw2AHP+33vEEsm3DpKrdLapr09lmZwO4DhjBB6CLzAkroRuckY0uVMI7Ec4ltxP/lFPFc8uQ==
-X-Received: by 2002:a05:6e02:12b2:b0:35c:963b:a018 with SMTP id f18-20020a056e0212b200b0035c963ba018mr6289252ilr.0.1701109388238;
-        Mon, 27 Nov 2023 10:23:08 -0800 (PST)
-Received: from [192.168.0.152] ([103.75.161.210])
-        by smtp.gmail.com with ESMTPSA id v1-20020a632f01000000b005898df17ea4sm7863665pgv.27.2023.11.27.10.23.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Nov 2023 10:23:07 -0800 (PST)
-Message-ID: <dfb5b4cd-935c-445b-aaa7-bcce962a143d@gmail.com>
-Date:   Mon, 27 Nov 2023 23:53:02 +0530
+        d=1e100.net; s=20230601; t=1701109450; x=1701714250;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wF7BpdESHg7ukGeVphyj0w+Q03SJQZ4KYg2HXNSbNFU=;
+        b=aMaIxoGX/lOdIMeQMPD3C7BqtrAKhiYwhg7wkGJ0QjVwzaC/6r3aMtYxn+kUZxOqe9
+         zPnxaDds+DZUZZApZvqBz642RsbnsIuH6KpADMsAuylKQsrWyaFXZBMM5FyDjuYYfGlh
+         lE4zgav0snGYvi1N6rI61yBtxfB0y6+F1+FraVqUQ0FO8T39rLbIRXD7PwGi4kKqKH8N
+         75gU4x4ugB8P1Ywnd94el8W64Fjy2zQ/Ppeyer9yGmcyiGGCReej2pTHC2SVtBBgMk7Y
+         Wujkj9VG/z9h4uiI3xvjtDEYhrwXF5QcR8364gQ7KTHbbJrFOA/kvfbBIywEC1Kr9wQO
+         bImw==
+X-Gm-Message-State: AOJu0YyHjtWOO9Tu9ZdUtxlnU15irOpFq0xig4E1eegzFP9YPiQmb72e
+        XZ1cRG7nGPeBlLUASRJ98w==
+X-Google-Smtp-Source: AGHT+IGZ1FUvDOFdx14sqdb4Qh4hz/OmI5KEpI0XR0i001qZqV3VfcIpq4j9OGYlfjltBcQdBbZFUA==
+X-Received: by 2002:a05:6830:1e39:b0:6d3:a8b:b34 with SMTP id t25-20020a0568301e3900b006d30a8b0b34mr14340070otr.5.1701109450110;
+        Mon, 27 Nov 2023 10:24:10 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id v10-20020a056830140a00b006d834fd3399sm128109otp.59.2023.11.27.10.24.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 10:24:09 -0800 (PST)
+Received: (nullmailer pid 2141620 invoked by uid 1000);
+        Mon, 27 Nov 2023 18:24:08 -0000
+Date:   Mon, 27 Nov 2023 12:24:08 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Chao Wei <chao.wei@sophgo.com>,
+        Chen Wang <unicorn_wang@outlook.com>
+Subject: Re: [PATCH 1/2] dt-bindings: nvmem: Add sophgo,efuses
+Message-ID: <20231127182408.GA2131525-robh@kernel.org>
+References: <20231119131332.999-1-jszhang@kernel.org>
+ <20231119131332.999-2-jszhang@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] driver : edac : Fix warning using plain integer as NULL
-Content-Language: en-US
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     tony.luck@intel.com, qiuxu.zhuo@intel.com, james.morse@arm.com,
-        mchehab@kernel.org, rric@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20231109212157.1454726-1-singhabhinav9051571833@gmail.com>
- <20231127171435.GCZWTOe+DQSy4kkuKO@fat_crate.local>
-From:   Abhinav Singh <singhabhinav9051571833@gmail.com>
-In-Reply-To: <20231127171435.GCZWTOe+DQSy4kkuKO@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231119131332.999-2-jszhang@kernel.org>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/23 22:44, Borislav Petkov wrote:
-> On Fri, Nov 10, 2023 at 02:51:57AM +0530, Abhinav Singh wrote:
->> Sparse static analysis tools generate a warning with this message
->> "Using plain integer as NULL pointer". In this case this warning is
->> being shown because we are trying to initialize  pointer to NULL using
->> integer value 0.
+On Sun, Nov 19, 2023 at 09:13:31PM +0800, Jisheng Zhang wrote:
+> Sophgo SoCs such as CV1800B come with eFuses used to store
+> factory-programmed data such as calibration settings for the built-in
+> ethernet PHY.
 > 
-> And that is a problem because?
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> ---
+>  .../bindings/nvmem/sophgo,efuse.yaml          | 54 +++++++++++++++++++
+>  1 file changed, 54 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/nvmem/sophgo,efuse.yaml
 > 
+> diff --git a/Documentation/devicetree/bindings/nvmem/sophgo,efuse.yaml b/Documentation/devicetree/bindings/nvmem/sophgo,efuse.yaml
+> new file mode 100644
+> index 000000000000..e4ae81a1742a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/nvmem/sophgo,efuse.yaml
+> @@ -0,0 +1,54 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/nvmem/sophgo,efuse.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Sophgo SoC eFuse-based NVMEM
+> +
+> +description: |
+> +  Sophgo SoCs such as the CV1800B contain factory-programmed eFuses used to e.g. store
+> +  calibration data for the built-in ethernet PHY.
+> +maintainers:
+> +  - Jisheng Zhang <jszhang@kernel.org>
+> +
+> +allOf:
+> +  - $ref: nvmem.yaml#
+> +  - $ref: nvmem-deprecated-cells.yaml#
 
-Hello, thanks for reviewing this. As of now this is only a warning issue 
-in kernel. I saw this post by linus 
-https://www.spinics.net/lists/linux-sparse/msg10066.html and thought of 
-submitting a patch. Also a similar patch of mine got accepted 
-https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2560740.html, 
-so thought about opening this one as well.
+Why does a new binding need to use the deprecated form?
 
-Thank You,
-Abhinav Singh
+Rob
