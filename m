@@ -2,169 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 414B07FAA7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 20:39:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED9C7FAA8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 20:46:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232919AbjK0Tiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 14:38:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53360 "EHLO
+        id S232855AbjK0Tpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 14:45:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233038AbjK0Ti3 (ORCPT
+        with ESMTP id S229527AbjK0Tpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 14:38:29 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0AC02702;
-        Mon, 27 Nov 2023 11:37:49 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-3316d3d11e1so2662452f8f.0;
-        Mon, 27 Nov 2023 11:37:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701113867; x=1701718667; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=k+U/Z+hb58WPcFvxk4wIR/Eo39sAQ2kwJEM0JKmBdYw=;
-        b=QJnh9F1/EDYsH9CPJEewq5ayW4TsH2D0Na3eZRCG4inZTk4X9MEeJIwRMUdYRhNWm1
-         pMp42y1/a4rnDgiuk/4i1y86JOr25V8cIZ3Yg480wGazcmMIgUI8YjIVfUrfMfO+UIIl
-         pXlLNyROsutUaCRp85JjN9iIy/l1uT3jIJNc/HkQwRlRsHJfOhNrqXPIvLvo1ocoZrIh
-         OERpL0whIOHUJ1xCX2tx3HOlO70nACu1qnIsDwunhsrddzyP/nzuvUHV8mytN8T1movD
-         rGNrBl7jjnQAQCKcdJnYRgjKRzNG47FuW01S/FWb0Joj0d9viXW2QwqKTCSG5NYUsjpz
-         +zPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701113867; x=1701718667;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k+U/Z+hb58WPcFvxk4wIR/Eo39sAQ2kwJEM0JKmBdYw=;
-        b=JbzbRNYRolw31c77t/u36vaL45i09wT2P0fLp7ba8dkorQIxKFR0IeA9I/d6NPWFUi
-         B+FjjQHYtvLa3enOVmP6YMaxAV+sk3Nka4av+DyypSemQSvWPilzB4LAW1xoV9uOgZGW
-         9KDywuHqdS2bXXtfnTkYX69e3sb+ZWYaxUZQ3yO5y70I5RYVfL+c3mn1s0jcG0Nhd0ZZ
-         N42sP1/TnIPmnm9VUuewkaG5cxLvBvVrFRcezQh8Z+tLZ7SWQYb2x+tZapi6WKHXGKEI
-         /dEgcW2UgrDd1c2mbNht6rwmH8IP1PYV5jUJPEUAvJBBQdx9OpplLXqitaH9yfRH6pZ1
-         E1Mg==
-X-Gm-Message-State: AOJu0YwhVcqxH8t1FvrTk68xoZamQYct7ssr40DI7/yoNMU5qO9k34er
-        MdbNtKp325UFRBS7X3ryQTk=
-X-Google-Smtp-Source: AGHT+IE9GgLSy2VbYegCNBxDylmi2Qn+jQz8fC3yjk1z2UoKIRu8VzUpxmYrecZHqAVRyrDpKSqgKQ==
-X-Received: by 2002:a05:6000:10d2:b0:332:c6cf:320d with SMTP id b18-20020a05600010d200b00332c6cf320dmr10156757wrx.15.1701113866667;
-        Mon, 27 Nov 2023 11:37:46 -0800 (PST)
-Received: from ?IPV6:2a01:c23:b815:5700:a463:59a7:865f:2563? (dynamic-2a01-0c23-b815-5700-a463-59a7-865f-2563.c23.pool.telefonica.de. [2a01:c23:b815:5700:a463:59a7:865f:2563])
-        by smtp.googlemail.com with ESMTPSA id v6-20020a5d4a46000000b003330b55b941sm1971wrs.77.2023.11.27.11.37.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Nov 2023 11:37:45 -0800 (PST)
-Message-ID: <980d651a-af69-49de-bc53-a2e325bd4bb0@gmail.com>
-Date:   Mon, 27 Nov 2023 20:37:45 +0100
+        Mon, 27 Nov 2023 14:45:51 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E01B8;
+        Mon, 27 Nov 2023 11:45:57 -0800 (PST)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARGbiZS003734;
+        Mon, 27 Nov 2023 19:41:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=EaIoIEqK046xrMwErk4Ckbwbd3NmBlrraNfZlHWUlAA=;
+ b=X7+3syImP2B2I6CIg+VZtncwrhMS/C36LuUy/eyEshE0FUScJcy6IRvkwzZ8dVwpDCqL
+ vHA7cK/NxuecXdfFQai65ejXCsyK2li7FUVT/UnEQuTc8bpAv9CDn9x7IYUNFZfqvJ3P
+ TcvN/YzHnAFqulwTM4P1qdBEibsiPc5ORbHpEFZPR86M+eai1vtjo9qVuqlY0BLmkqNj
+ n6S4BQjzKXlSk7xIdinU9FWEcdYn7+t+V0HDe2WzpRR3T6O2hi/SgNqHepLgMqRzQK9p
+ j5R/lJvvBQQxjrU7N1n9ONVos1pUlVuxHrTLgc2TSf/h3XBvlM9lQXjBl6LX7ZlpfI+3 Kg== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3umrqq1kbr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 19:41:05 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ARJf4c1026517
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 19:41:04 GMT
+Received: from [10.239.155.136] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 27 Nov
+ 2023 11:41:00 -0800
+Message-ID: <c6a72c38-aa63-79b8-c784-d753749f7272@quicinc.com>
+Date:   Tue, 28 Nov 2023 03:40:57 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 2/2] r8169: fix deadlock in "r8169_phylink_handler"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] scsi: ufs: qcom: move ufs_qcom_host_reset() to
+ ufs_qcom_device_reset()
 Content-Language: en-US
-To:     ChunHao Lin <hau@realtek.com>
-Cc:     nic_swsd@realtek.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, grundler@chromium.org,
-        stable@vger.kernel.org
-References: <20231127175736.5738-1-hau@realtek.com>
- <20231127175736.5738-3-hau@realtek.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Autocrypt: addr=hkallweit1@gmail.com; keydata=
- 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
-In-Reply-To: <20231127175736.5738-3-hau@realtek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+To:     Can Guo <quic_cang@quicinc.com>,
+        Manivannan Sadhasivam <mani@kernel.org>
+CC:     <quic_asutoshd@quicinc.com>, <bvanassche@acm.org>,
+        <beanhuo@micron.com>, <avri.altman@wdc.com>,
+        <junwoo80.lee@samsung.com>, <martin.petersen@oracle.com>,
+        <quic_nguyenb@quicinc.com>, <quic_nitirawa@quicinc.com>,
+        <quic_rampraka@quicinc.com>, <linux-scsi@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1698145815-17396-1-git-send-email-quic_ziqichen@quicinc.com>
+ <20231025074128.GA3648@thinkpad>
+ <85d7a1ef-92c4-49ae-afe0-727c1b446f55@quicinc.com>
+From:   Ziqi Chen <quic_ziqichen@quicinc.com>
+In-Reply-To: <85d7a1ef-92c4-49ae-afe0-727c1b446f55@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: kXOZ0pAZNqg7YjH4R0nJZIrZROTf-Uiy
+X-Proofpoint-GUID: kXOZ0pAZNqg7YjH4R0nJZIrZROTf-Uiy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-27_18,2023-11-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 mlxscore=0 adultscore=0 phishscore=0 bulkscore=0
+ suspectscore=0 mlxlogscore=999 spamscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311270136
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.11.2023 18:57, ChunHao Lin wrote:
-> In "r8169_phylink_handler", for rtl8125, it will call "rtl_reset_work"->
-> "rtl_hw_start"->"rtl_jumbo_config"->"phy_start_aneg". When call
-> "r8169_phylink_handler", PHY lock is acquired. But "phy_start_aneg"
-> will also try to acquire PHY lock. That will cause deadlock.
-> 
-> In this path, use "_phy_start_aneg", unlocked version "phy_start_aneg",
-> to prevent deadlock in "r8169_phylink_handler".
-> 
-> Fixes: 453a77894efa ("r8169: don't advertise pause in jumbo mode")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: ChunHao Lin <hau@realtek.com>
-> ---
->  drivers/net/ethernet/realtek/r8169_main.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-> index 473b3245754f..2e3e42a98edd 100644
-> --- a/drivers/net/ethernet/realtek/r8169_main.c
-> +++ b/drivers/net/ethernet/realtek/r8169_main.c
-> @@ -2415,11 +2415,22 @@ static void rtl_jumbo_config(struct rtl8169_private *tp)
->  
->  	/* Chip doesn't support pause in jumbo mode */
->  	if (jumbo) {
-> +		int lock;
-> +
->  		linkmode_clear_bit(ETHTOOL_LINK_MODE_Pause_BIT,
->  				   tp->phydev->advertising);
->  		linkmode_clear_bit(ETHTOOL_LINK_MODE_Asym_Pause_BIT,
->  				   tp->phydev->advertising);
-> -		phy_start_aneg(tp->phydev);
-> +
-> +		if (!mutex_trylock(&tp->phydev->lock))
-> +			lock = 0;
-> +		else
-> +			lock = 1;
-> +
-> +		_phy_start_aneg(tp->phydev);
-> +
-> +		if (lock)
-> +			mutex_unlock(&tp->phydev->lock);
->  	}
->  }
->  
 
-Hi Hau,
-the deadlock issue has been reported by few users, and I submitted a fix already.
-It's waiting to be applied.
+
+On 11/22/2023 2:14 PM, Can Guo wrote:
+> 
+> 
+> On 10/25/2023 3:41 PM, Manivannan Sadhasivam wrote:
+>> On Tue, Oct 24, 2023 at 07:10:15PM +0800, Ziqi Chen wrote:
+>>> During PISI test, we found the issue that host Tx still bursting after
+>>
+>> What is PISI test?
+
+SI measurement.
+
+>>
+>>> H/W reset. Move ufs_qcom_host_reset() to ufs_qcom_device_reset() and
+>>> reset host before device reset to stop tx burst.
+>>>
+>>
+>> device_reset() callback is supposed to reset only the device and not 
+>> the host.
+>> So NACK for this patch.
+> 
+> Agree, the change should come in a more reasonable way.
+> 
+> Actually, similar code is already there in ufs_mtk_device_reset() in 
+> ufs-mediatek.c, I guess here is trying to mimic that fashion.
+> 
+> This change, from its functionality point of view, we do need it, 
+> because I occasionally (2 out of 10) hit PHY error on lane 0 during 
+> reboot test (in my case, I tried SM8350, SM8450 and SM8550， all same).
+> 
+> [    1.911188] [DEBUG]ufshcd_update_uic_error: UECPA:0x80000002
+> [    1.922843] [DEBUG]ufshcd_update_uic_error: UECDL:0x80004000
+> [    1.934473] [DEBUG]ufshcd_update_uic_error: UECN:0x0
+> [    1.944688] [DEBUG]ufshcd_update_uic_error: UECT:0x0
+> [    1.954901] [DEBUG]ufshcd_update_uic_error: UECDME:0x0
+> 
+> I found out that the PHY error pops out right after UFS device gets 
+> reset in the 2nd init. After having this change in place, the PA/DL 
+> errors are gone.
+
+Hi Mani,
+
+There is another way that adding a new vops that call XXX_host_reset() 
+from soc vendor driver. in this way, we can call this vops in core layer 
+without the dependency of device reset.
+due to we already observed such error and received many same reports 
+from different OEMs, we need to fix it in some way.
+if you think above way is available, I will update new patch in soon. Or 
+could you give us other suggestion?
+
+-Ziqi
+
+> 
+> Thanks,
+> Can Guo.
+>>
+>> - Mani
+>>
+>>> Signed-off-by: Ziqi Chen <quic_ziqichen@quicinc.com>
+>>> ---
+>>>   drivers/ufs/host/ufs-qcom.c | 13 +++++++------
+>>>   1 file changed, 7 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+>>> index 96cb8b5..43163d3 100644
+>>> --- a/drivers/ufs/host/ufs-qcom.c
+>>> +++ b/drivers/ufs/host/ufs-qcom.c
+>>> @@ -445,12 +445,6 @@ static int ufs_qcom_power_up_sequence(struct 
+>>> ufs_hba *hba)
+>>>       struct phy *phy = host->generic_phy;
+>>>       int ret;
+>>> -    /* Reset UFS Host Controller and PHY */
+>>> -    ret = ufs_qcom_host_reset(hba);
+>>> -    if (ret)
+>>> -        dev_warn(hba->dev, "%s: host reset returned %d\n",
+>>> -                  __func__, ret);
+>>> -
+>>>       /* phy initialization - calibrate the phy */
+>>>       ret = phy_init(phy);
+>>>       if (ret) {
+>>> @@ -1709,6 +1703,13 @@ static void ufs_qcom_dump_dbg_regs(struct 
+>>> ufs_hba *hba)
+>>>   static int ufs_qcom_device_reset(struct ufs_hba *hba)
+>>>   {
+>>>       struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+>>> +    int ret = 0;
+>>> +
+>>> +    /* Reset UFS Host Controller and PHY */
+>>> +    ret = ufs_qcom_host_reset(hba);
+>>> +    if (ret)
+>>> +        dev_warn(hba->dev, "%s: host reset returned %d\n",
+>>> +                  __func__, ret);
+>>>       /* reset gpio is optional */
+>>>       if (!host->device_reset)
+>>> -- 
+>>> 2.7.4
+>>>
+>>
