@@ -2,113 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0277FA28F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:23:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5849F7FA290
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:24:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233717AbjK0OXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 09:23:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56600 "EHLO
+        id S233806AbjK0OYS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Nov 2023 09:24:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233691AbjK0OXV (ORCPT
+        with ESMTP id S233739AbjK0OX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 09:23:21 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1271135B7
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:20:54 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d9caf5cc948so3815203276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:20:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701094853; x=1701699653; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sVX1ZdZzljfmPCYv1WhnlNhNZCpdUFWAqA4zgj/34kc=;
-        b=bjcb1Q47mnhyYQZsMO6BA4J6qIEzhtXDoLXcgbFZhFFU+jK/cilyru07Wxtx/rozkE
-         +3XDLLMZTyPZOH0xnP6sCaFRFJ07X9dWm/pofKVUq4b10oRcKE3ibSz1i1nT0G9B0udk
-         tMOHsEEBnlUxk6wAQrCAboub8iZHviJ9tnuFcrjz4Jb2UOxLsLdHCBvr2MPY58d3B1vk
-         udqzk12Gp2CQ8d14l6rlIhBjknDXKV/UU/ui4lMtozOV2Ftjc2l2tE2/6IBYzY2Uu+jK
-         D9Ey/T4yFMvCmIBUDSj8UchSQqiFiLwaIR5Wxj0Wkh+fJELbXR/GeCqiRa2iUa2a6gDX
-         gdeA==
+        Mon, 27 Nov 2023 09:23:59 -0500
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F46198;
+        Mon, 27 Nov 2023 06:22:03 -0800 (PST)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5cca68f6e01so42530557b3.2;
+        Mon, 27 Nov 2023 06:22:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701094853; x=1701699653;
+        d=1e100.net; s=20230601; t=1701094922; x=1701699722;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sVX1ZdZzljfmPCYv1WhnlNhNZCpdUFWAqA4zgj/34kc=;
-        b=ukfT58wAT65JEwkrTWp9NxXhxlqAC8viZRRveiLL+EtLxq5o6MR+SQdXRXTzcptajK
-         8uickosTW9Hw6EVz4xHwezN/IRMjDp7vy2CDxZSD1S7lxSJ1tTK8r3k+z7OvFSSaAqRn
-         T0H7tNlHy5wY07dJgU/RSjgG/dIugwEyncWC9B7QiwGdABzYyV3n8uuUP0HEBOBqZKmn
-         2MWVvCVC1GRz8ConECHc08nZwBw6WnSDqne5JyzTA3uhb7LhjIgLcKZwTAI4K48S1ODY
-         sskRNBcqsILxsR3pCcjxTKfuw4NRxsttEl3fdpy/4Sbm0FqI0mAk1VhUC7h+lO+IP37I
-         jkCw==
-X-Gm-Message-State: AOJu0YzQpdwgi/pjPdW+2EyBSdAX0XIDiB02CD0wGlz3Yfvu6H/KsxPF
-        +51adD1o4jE+JkLg+oRbrZ5KczQ9o3AeQKdvOtA5Cg==
-X-Google-Smtp-Source: AGHT+IHPLnftzFinUokqEwBA0munIRtTDqhYJlD301948Ll5EDt+4sZPM19h7PS/NqDz2lnMSdp/6dzJPxFKf2QKxp8=
-X-Received: by 2002:a25:4c81:0:b0:d9a:bddd:f714 with SMTP id
- z123-20020a254c81000000b00d9abdddf714mr9648302yba.9.1701094852552; Mon, 27
- Nov 2023 06:20:52 -0800 (PST)
+        bh=834pVqsGyG/ThloFCq4Fg8uGigDw1US55aPZgUr69AE=;
+        b=hZgxPAobZDD2wyA6PCv3abu3HYrdfeTdF3Y+Kjwkzx1BfAUIq0SXTU3FPSQoS5+G+s
+         lPF8r9g3h07Rk9sret3Zs3/qhcPzZH8q0Swm2Ruves73yq0jxjWHiGBHmtzCXU4ySWS6
+         hbBWIJAAKAqCAj66cq5Fs329tAxx9F1DCcdqg/qiHayf2LGenx5Yd2KG/H5oa2OXoJvK
+         fWu9OdhBut4NGzU7RLwWQCNTFTzZHw1nY60O+xNn4NltRFP1rYZDjczI7+hlrL0sXv17
+         9ao6uBHyxeeOFrFbRCl0oUudlihSIhgjlXcxuW5+CLC3Mmo9v4+R1YMLgsdjrrQ+i35w
+         iNRQ==
+X-Gm-Message-State: AOJu0YwT8soz50xGXB4jQ3HTJ0zUI8D9VpIWFvPZOHao3bFXqDbX3raY
+        V5wdiTIyX+l5QfmeCwOjgy9DSnIk5Y8Fag==
+X-Google-Smtp-Source: AGHT+IHIry33GnwZYxjABz1zje1OAyuJ5yzdqY1RHUsCssQtdGrmsmjetxCAOQFmRXv717eoprhxog==
+X-Received: by 2002:a81:a507:0:b0:5cb:d645:8cdf with SMTP id u7-20020a81a507000000b005cbd6458cdfmr11688215ywg.48.1701094922153;
+        Mon, 27 Nov 2023 06:22:02 -0800 (PST)
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
+        by smtp.gmail.com with ESMTPSA id y66-20020a81a145000000b005b4501cb71csm3231244ywg.29.2023.11.27.06.22.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Nov 2023 06:22:01 -0800 (PST)
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-daf26d84100so3819090276.3;
+        Mon, 27 Nov 2023 06:22:01 -0800 (PST)
+X-Received: by 2002:a25:6cc5:0:b0:d9a:6b1e:ef51 with SMTP id
+ h188-20020a256cc5000000b00d9a6b1eef51mr10902367ybc.2.1701094921451; Mon, 27
+ Nov 2023 06:22:01 -0800 (PST)
 MIME-Version: 1.0
-References: <20231114-marvell-88e6152-wan-led-v8-0-50688741691b@linaro.org>
- <0bd7809b-7b99-4f88-9b06-266d566b5c36@lunn.ch> <CACRpkdZQj57CjArhcNKVDQ5fC+dsuYWsc6YXjQDC80QiASPB7A@mail.gmail.com>
- <CACRpkdZvMRXHKktM-HPZZRCrV0JgErqDOHmkyKAcB36ObwOX7A@mail.gmail.com> <9c1a2484-6631-42e1-a576-10e9d600e8c5@lunn.ch>
-In-Reply-To: <9c1a2484-6631-42e1-a576-10e9d600e8c5@lunn.ch>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 27 Nov 2023 15:20:40 +0100
-Message-ID: <CACRpkdZ4Eqv4TtojQDVDOo8eP=gdeoBsH3_wvJcAbf_z5u6Q5A@mail.gmail.com>
-Subject: Re: [PATCH net-next v8 0/9] Create a binding for the Marvell
- MV88E6xxx DSA switches
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
+References: <20231124092121.16866-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20231124092121.16866-1-krzysztof.kozlowski@linaro.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 27 Nov 2023 15:21:50 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdU7cs_DCwkbD4FGy=OgxsfLe4poU0916dM1xUB62ahqqg@mail.gmail.com>
+Message-ID: <CAMuHMdU7cs_DCwkbD4FGy=OgxsfLe4poU0916dM1xUB62ahqqg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: correct white-spaces in examples
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Rob Herring <robh@kernel.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
+        netdev@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 26, 2023 at 10:06=E2=80=AFPM Andrew Lunn <andrew@lunn.ch> wrote=
-:
-> > Shawn is busy I guess, but looking at the activity in arch/arm/boot/dts=
-/nxp
-> > iIt seems pretty risk-free to apply.
-> >
-> > An alternative is to simply apply all but patch 4/9 (the NXP patch), be=
-cause
-> > the rest is Andrew territory.
+On Fri, Nov 24, 2023 at 10:21 AM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+> Use only one and exactly one space around '=' in DTS example.
 >
-> Could you split it into two patchsets? Gregory and I can deal with all
-> the Marvell patches.
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-OK good idea. Actually three:
+>  .../bindings/pinctrl/renesas,rzg2l-pinctrl.yaml           | 6 +++---
 
-1. Bindings only (for netdev/dsa)
-2. Marvell cleanups (for DTS files/SoCs)
-3. The NXP cleanup patch
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Yours,
-Linus Walleij
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
