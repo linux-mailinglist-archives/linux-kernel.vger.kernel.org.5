@@ -2,218 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6017FA20E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:12:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 583BF7FA294
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:24:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233597AbjK0OMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 09:12:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56836 "EHLO
+        id S233752AbjK0OYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 09:24:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233582AbjK0OLW (ORCPT
+        with ESMTP id S233749AbjK0OYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 09:11:22 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6812526B3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:02:08 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B0D572F4;
-        Mon, 27 Nov 2023 06:02:55 -0800 (PST)
-Received: from [10.57.73.191] (unknown [10.57.73.191])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 626723F6C4;
-        Mon, 27 Nov 2023 06:02:05 -0800 (PST)
-Message-ID: <8dd0f52c-d261-4541-930f-bd4e5921be5b@arm.com>
-Date:   Mon, 27 Nov 2023 14:02:04 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v7 10/10] selftests/mm/cow: Add tests for anonymous
- small-sized THP
-Content-Language: en-GB
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        Mon, 27 Nov 2023 09:24:18 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D564230
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:02:43 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-507ad511315so5892921e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:02:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ferroamp-se.20230601.gappssmtp.com; s=20230601; t=1701093762; x=1701698562; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Uh8MG/fcScS4zGx1w1Y666LV3WqtJtCJW99b8yZPGeU=;
+        b=lvw+6FxYVAJcVDXhAwCe/s9ZxNHS8sF1SM/r+F8nmyCxt6kggKelzzoVhdrYZypeGh
+         ZUrPlACn2bhGk/rchjr6SSV5u5KgvbkMR5AVxEk2vG8YmK6qc460vKxl5jxXdZRQg2yq
+         VzOO+lmVMmU7F2py/GETYiesAsPCKaXiA2FdQoPr3Mp2zJKOtGx4dLxDaC4ZPV7R2X9y
+         x3zy0X+wPtx9H7N986+Ie20LJDu3lX2AVrxtBi4l2xOHeG9M/nKyEvsU5BDT2Nl223J+
+         HT2YcZ5m1KC6818QSROQFoDBaBgTy+BRGInPT0bEDNXR9/YBiC6/0yUD84abdeDn2nrK
+         L5bQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701093762; x=1701698562;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Uh8MG/fcScS4zGx1w1Y666LV3WqtJtCJW99b8yZPGeU=;
+        b=oggHzDtfq2O2yVlM+wRHkSjFleaVnd26wkqIQWFVlEItJ8rezO2uihFhjkvaxEMwQ6
+         GjpDNc1bwv3u/MYZTyAA3VDP1qEldxOF3kVNOzb5DCvEkdDxUI5cUG4RI5bimlykvKmp
+         LX2l0vWIMyy6v6u36WRJgipsv3/oh0zJ5QWCdWkG7Pmvt0J6CeE3/VGlDHCejdwvlo5N
+         hV04tYVhn53WSua7dbTolFonMFM+YlAEZ1dmmT32ErQH22tsITGPTUw3ju2CfmAofDyz
+         XSVsxuwShVGY/aEJwdO9P/Fk+VIqEc0zqUhLOqzuKoLr9WW9w0j7Cv5iif8XUuu2feW4
+         ta4w==
+X-Gm-Message-State: AOJu0Yz5ktf2p1GroLW+PSf6RaQHzuIGw4khfE7iKoH/EuRGxyYNsxZW
+        HZnmBdjHDSIlXLY8XbDZVani5A==
+X-Google-Smtp-Source: AGHT+IFj52P0DIEx0c9vj7QT0YARpPDlM/qFv1+NoeWnzCQ9HCNWjkCgkmNnLJMpwF9gtUU6vrpmNA==
+X-Received: by 2002:a05:6512:2389:b0:506:899d:1994 with SMTP id c9-20020a056512238900b00506899d1994mr7071586lfv.52.1701093761408;
+        Mon, 27 Nov 2023 06:02:41 -0800 (PST)
+Received: from debian ([185.117.107.42])
+        by smtp.gmail.com with ESMTPSA id u4-20020a056512128400b0050ab696bfaasm1486122lfs.3.2023.11.27.06.02.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 06:02:40 -0800 (PST)
+Date:   Mon, 27 Nov 2023 15:02:39 +0100
+From:   =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez 
+        <ramon.nordin.rodriguez@ferroamp.se>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20231122162950.3854897-1-ryan.roberts@arm.com>
- <20231122162950.3854897-11-ryan.roberts@arm.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20231122162950.3854897-11-ryan.roberts@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 2/3] net: microchip_t1s: add support for LAN867x Rev.C1
+Message-ID: <ZWShfwyqO-JkqVgI@debian>
+References: <20231127104045.96722-1-ramon.nordin.rodriguez@ferroamp.se>
+ <20231127104045.96722-3-ramon.nordin.rodriguez@ferroamp.se>
+ <f25ed798-e116-4f6f-ad3c-5060c7d540d0@lunn.ch>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f25ed798-e116-4f6f-ad3c-5060c7d540d0@lunn.ch>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
+        T_SPF_PERMERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/11/2023 16:29, Ryan Roberts wrote:
-> Add tests similar to the existing PMD-sized THP tests, but which operate
-> on memory backed by (PTE-mapped) small-sized THP. This reuses all the
-> existing infrastructure. If the test suite detects that small-sized THP
-> is not supported by the kernel, the new tests are skipped.
+On Mon, Nov 27, 2023 at 02:37:41PM +0100, Andrew Lunn wrote:
+> >  #define PHY_ID_LAN867X_REVB1 0x0007C162
+> > +#define PHY_ID_LAN867X_REVC1 0x0007C164
 > 
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> ---
->  tools/testing/selftests/mm/cow.c | 71 +++++++++++++++++++++++++++++++-
->  1 file changed, 70 insertions(+), 1 deletion(-)
+> So there is a gap in the revisions. Maybe a B2 exists?
+
+The datasheet lists A0, B1 and C1, seems like Microchip removes the
+application notes for old revisions, so no way that I can see to add the
+init-fixup for A0.
+
+I'm guessing there is a rev.c0 that was never released to the public.
+
+> > +	const u16 magic_or = 0xE0;
+> > +	const u16 magic_reg_mask = 0x1F;
+> > +	const u16 magic_check_mask = 0x10;
 > 
-> diff --git a/tools/testing/selftests/mm/cow.c b/tools/testing/selftests/mm/cow.c
-> index d03c453cfd5c..3efc395c7077 100644
-> --- a/tools/testing/selftests/mm/cow.c
-> +++ b/tools/testing/selftests/mm/cow.c
-> @@ -29,15 +29,49 @@
->  #include "../../../../mm/gup_test.h"
->  #include "../kselftest.h"
->  #include "vm_util.h"
-> +#include "thp_settings.h"
+> Reverse christmass tree please. Longest first, shorted last.
+
+My bad, I was just thinking 'christmas tree' forgot about the reverse.
+I'll fix that.
+
+> > +	int err;
+> > +	int regval;
+> > +	u16 override0;
+> > +	u16 override1;
+> > +	const u16 override_addr0 = 0x4;
+> > +	const u16 override_addr1 = 0x8;
+> > +	const u8 index_to_override0 = 2;
+> > +	const u8 index_to_override1 = 3;
 > 
->  static size_t pagesize;
->  static int pagemap_fd;
->  static size_t pmdsize;
-> +static int nr_thpsmallsizes;
-> +static size_t thpsmallsizes[20];
+> Same here.
+I'll fix this.
 
-Off the back of some comments David made againt the previous patch [1], I'm
-proposing to rework this a bit so that ALL thp sizes are stored in this array,
-not just the non-PMD-sized sizes. This makes the changes overall a bit smaller
-and easier to understand, I think...
-
->  static int nr_hugetlbsizes;
->  static size_t hugetlbsizes[10];
->  static int gup_fd;
->  static bool has_huge_zeropage;
 > 
-> +static int sz2ord(size_t size)
-> +{
-> +	return __builtin_ctzll(size / pagesize);
-> +}
-> +
-> +static int detect_smallthp_sizes(size_t sizes[], int max)
-
-This changes to detect_thp_sizes() and deposits all sizes in sizes[]
-
-> +{
-> +	int count = 0;
-> +	unsigned long orders;
-> +	size_t kb;
-> +	int i;
-> +
-> +	/* thp not supported at all. */
-> +	if (!pmdsize)
-> +		return 0;
-> +
-> +	orders = thp_supported_orders();
-> +
-> +	/* Only interested in small-sized THP (less than PMD-size). */
-> +	for (i = 0; i < sz2ord(pmdsize); i++) {
-> +		if (!(orders & (1UL << i)))
-> +			continue;
-> +		kb = (pagesize >> 10) << i;
-> +		sizes[count++] = kb * 1024;
-> +		ksft_print_msg("[INFO] detected small-sized THP size: %zu KiB\n",
-> +			       kb);
-
-This just prints "[INFO] detected THP size: %zu KiB"
-
-> +	}
-> +
-> +	return count;
-> +}
-> +
->  static void detect_huge_zeropage(void)
->  {
->  	int fd = open("/sys/kernel/mm/transparent_hugepage/use_zero_page",
-> @@ -1113,6 +1147,23 @@ static void run_anon_test_case(struct test_case const *test_case)
->  		run_with_partial_mremap_thp(test_case->fn, test_case->desc, pmdsize);
->  		run_with_partial_shared_thp(test_case->fn, test_case->desc, pmdsize);
->  	}
-> +	for (i = 0; i < nr_thpsmallsizes; i++) {
-> +		size_t size = thpsmallsizes[i];
-> +		struct thp_settings settings = *thp_current_settings();
-> +
-> +		settings.hugepages[sz2ord(pmdsize)].enabled = THP_NEVER;
-> +		settings.hugepages[sz2ord(size)].enabled = THP_ALWAYS;
-> +		thp_push_settings(&settings);
-> +
-> +		run_with_pte_mapped_thp(test_case->fn, test_case->desc, size);
-> +		run_with_pte_mapped_thp_swap(test_case->fn, test_case->desc, size);
-> +		run_with_single_pte_of_thp(test_case->fn, test_case->desc, size);
-> +		run_with_single_pte_of_thp_swap(test_case->fn, test_case->desc, size);
-> +		run_with_partial_mremap_thp(test_case->fn, test_case->desc, size);
-> +		run_with_partial_shared_thp(test_case->fn, test_case->desc, size);
-> +
-> +		thp_pop_settings();
-> +	}
-
-This same loop covers the pmdsize tests too, and I've just added a conditional
-that runs the 2 extra tests that are pmdsize only.
-
->  	for (i = 0; i < nr_hugetlbsizes; i++)
->  		run_with_hugetlb(test_case->fn, test_case->desc,
->  				 hugetlbsizes[i]);
-> @@ -1134,6 +1185,7 @@ static int tests_per_anon_test_case(void)
+> > +
+> > +	err = lan867x_wait_for_reset_complete(phydev);
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	/* The application note specifies a super convenient process
+> > +	 * where 2 of the fixup regs needs a write with a value that is
+> > +	 * a modified result of another reg read.
+> > +	 * Enjoy the magic show.
+> > +	 */
 > 
->  	if (pmdsize)
->  		tests += 8;
-> +	tests += 6 * nr_thpsmallsizes;
->  	return tests;
->  }
+> I really do hope that by revision D1 they get the firmware sorted out
+> so none of this undocumented magic is needed.
 > 
-> @@ -1691,12 +1743,24 @@ static int tests_per_non_anon_test_case(void)
->  int main(int argc, char **argv)
->  {
->  	int err;
-> +	struct thp_settings default_settings;
-> 
->  	pagesize = getpagesize();
->  	pmdsize = read_pmd_pagesize();
-> -	if (pmdsize)
-> +	if (pmdsize) {
-> +		/* Only if THP is supported. */
-> +		thp_read_settings(&default_settings);
-> +		default_settings.hugepages[sz2ord(pmdsize)].enabled = THP_GLOBAL;
-> +		thp_save_settings();
-> +		thp_push_settings(&default_settings);
-> +
->  		ksft_print_msg("[INFO] detected PMD-mapped THP size: %zu KiB\n",
->  			       pmdsize / 1024);
-> +
-> +		nr_thpsmallsizes = detect_smallthp_sizes(thpsmallsizes,
-> +						    ARRAY_SIZE(thpsmallsizes));
-> +	}
-> +
->  	nr_hugetlbsizes = detect_hugetlb_page_sizes(hugetlbsizes,
->  						    ARRAY_SIZE(hugetlbsizes));
->  	detect_huge_zeropage();
-> @@ -1715,6 +1779,11 @@ int main(int argc, char **argv)
->  	run_anon_thp_test_cases();
->  	run_non_anon_test_cases();
-> 
-> +	if (pmdsize) {
-> +		/* Only if THP is supported. */
-> +		thp_restore_settings();
-> +	}
-> +
->  	err = ksft_get_fail_cnt();
->  	if (err)
->  		ksft_exit_fail_msg("%d out of %d tests failed\n",
-> --
-> 2.25.1
-> 
+> 	Andrew
 
+Really do hope so.. 
