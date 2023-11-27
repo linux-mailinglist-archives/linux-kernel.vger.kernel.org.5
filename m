@@ -2,150 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 609F07FA5AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:07:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB0E7FA5AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:08:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234313AbjK0QHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 11:07:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39468 "EHLO
+        id S234317AbjK0QH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 11:07:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234293AbjK0QHo (ORCPT
+        with ESMTP id S234297AbjK0QH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 11:07:44 -0500
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2080.outbound.protection.outlook.com [40.107.104.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAF2B19B;
-        Mon, 27 Nov 2023 08:07:50 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=W52d38ywteurVfRRqTZZiA2gKFLD1Gp8IsCvyzgqXiAVA+1Zm7AeWplsizSVmVDcBSqYlkOfv05EyJom3HexMhWiWl/lxKKYApOoVnJHal4f94cgn1hN06YWN26Q40tly5JIvjkQyPWCSia2poeyBihVJAltuMNiIWf1Jr1vqG9Fqjkj3GdQX1JwGYrk13BY08494IoPD1uweGqQrDOZ/FxvpAz+1mfPfgFiEDQI80vfCn2c/A2KnfpMuXxdah5C4mpDDiPjyMBJN0m2NrIrJnbzUDycSYzN/DuuYscvl2zHobDmnBURFwpgiKcypus4hrVK++5JbF4FlMuNNGoxAg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YB7mUddm3kygYJxzPjCTeVBdpadubMTNCzpPZZN+q8A=;
- b=jJNvwxeSVoe8RE1H6FRM8GKwQfbFM9vDaoa3Mdxoz+0+qhAGEl/1nqg5atMAR32y4caOh5DPF2/K8Ag8znHUvUxOlh3sciuN3bwwtGO89bSJ2DAX7eWR1VqonqNR3Sz8ggukdHJ1jxlI/3TxQX+pqGzTfgIQ1h1WDI+DHDbwZpcP8z9/1q6Hb9IMiMocyB2u8xEoyRbtf0CHsU0bHk/FXEHzO6oalZhBGiaV4/41xHFT3GlCTr/eg8Ynak9mGd2DfXcj1PR+rbEhQk6sZ46cEzrxJVcnywIgKYmr8gqDyiZ0RNQHMMTVoDLjpvcG6LwpHbc/TPWM7t1U8yFieNvdnw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YB7mUddm3kygYJxzPjCTeVBdpadubMTNCzpPZZN+q8A=;
- b=cqxYeGgdZIHynsNOzM7n/QDBDmtqrLAlWmgpL89MI+shC0f7ptKSjbU0JRo3arkAqtgTdcuJi6NQ7fCxATBvggCrxFbOO/pWaLXYMrELnk2euBU9xB/oVdMWiaHmTSJ0BQZHmjsAMnZsaTOXnNxC0VdBtUYbV2aqvT3gooST1iY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB4845.eurprd04.prod.outlook.com (2603:10a6:803:51::30)
- by DBBPR04MB7628.eurprd04.prod.outlook.com (2603:10a6:10:204::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.19; Mon, 27 Nov
- 2023 16:07:48 +0000
-Received: from VI1PR04MB4845.eurprd04.prod.outlook.com
- ([fe80::6410:9a52:b833:5bc1]) by VI1PR04MB4845.eurprd04.prod.outlook.com
- ([fe80::6410:9a52:b833:5bc1%4]) with mapi id 15.20.7046.015; Mon, 27 Nov 2023
- 16:07:48 +0000
-Date:   Mon, 27 Nov 2023 11:07:40 -0500
-From:   Frank Li <Frank.li@nxp.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Peter Chen <peter.chen@kernel.org>, imx@lists.linux.dev,
-        Pawel Laszczak <pawell@cadence.com>,
-        Roger Quadros <rogerq@kernel.org>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        "open list:CADENCE USB3 DRD IP DRIVER" <linux-usb@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] usb: cdns3: skip set TRB_IOC when usb_request:
- no_interrupt is true
-Message-ID: <ZWS+zLhtleUXuBOH@lizhi-Precision-Tower-5810>
-References: <20231027183919.664271-1-Frank.Li@nxp.com>
- <20231031084521.GA1948529@nchen-desktop>
- <ZWS1ucR7dXs153R1@lizhi-Precision-Tower-5810>
- <2023112748-coveted-enunciate-cf13@gregkh>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023112748-coveted-enunciate-cf13@gregkh>
-X-ClientProxiedBy: SJ0PR03CA0177.namprd03.prod.outlook.com
- (2603:10b6:a03:338::32) To VI1PR04MB4845.eurprd04.prod.outlook.com
- (2603:10a6:803:51::30)
+        Mon, 27 Nov 2023 11:07:56 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB9F7EA
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:08:02 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-dae7cc31151so3869288276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:08:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701101282; x=1701706082; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=V2B/eeR2omq2Oonazkh8hRWn17MEqCUCyRtBnkSNEEs=;
+        b=gZ14Ax1LcfVWsBlCtV5hN9iR/tdEYQuD6v8GvDweHaHb3M/mf2jMvs5SXdtuW84Xrv
+         rrIiIqoBSXPK5At5vcrBhXfPkeNsKtPJWQPYcMwGltRe+UoOnfrLBsuMlmmmAygHYsuH
+         +nYF48qBsLelvb6AqPut5oIRXsUltVWlyEN1bWt8lDFtKPECe+OdtKfRLKs7x1Cpj187
+         B4/zJwS5p0/tdiKYFrGn1ngVpcRhfoF1mu4BaorC1uFEEq7epvuihuQzXt/irxPqdmPo
+         IfgaO1Zzl7xDUvEkv6kpeDNZJK8xI7qRH8+qjIhOUGxYrM+frNtET/JPoSUoP3VlGzVV
+         8K8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701101282; x=1701706082;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=V2B/eeR2omq2Oonazkh8hRWn17MEqCUCyRtBnkSNEEs=;
+        b=gEYY+4kVoD6Wwsk0Mcim3vapomf86Y0r7fFnxvmZV+h2m7MMJlIvkmIvbSQNfeGYLf
+         fTeqmzpgFEj6qz4RjVSoOpVCWIWqlf2Ai/sCm1lMgj3ir1XzqqgCduJ1FCiwUon7X5sq
+         Y6wE8pnFv1DZojO5lNAwjDOlpUynesSldSQbh3NT2Pa3BdXsEXcZdD6Q6G6ppxPj4u2r
+         s8HG40OfhIKp1dNvHD1BjJ0BClV/kb4EQ6+Yd8f4auHLnKofUhDAr6A2tCJ8/8DrLQS9
+         yXzvDPzySVf+CTgjj1cUE2svqyb17RnYF26DWgZdVK5nlslwi5Ze22hT7wFFAPVNqsaO
+         pyfA==
+X-Gm-Message-State: AOJu0Yy9AjnCNyrNePWSLrk9mc0o2fbiKXO5FIvS50J41gHLJOKBnoz/
+        D92n6JLD9dKfRG93vBsk/v8wYjBZ5uBBKK0NtS8yLQ==
+X-Google-Smtp-Source: AGHT+IGB1S3Io3GL4luzxkgeoTDjEYrCNbh9B2CePzxtkIZjMueGC2yHbjQI0fQyKGFdQLgdQG9StT4yf2BPtsSHzDY=
+X-Received: by 2002:a25:d609:0:b0:daf:6b6e:e328 with SMTP id
+ n9-20020a25d609000000b00daf6b6ee328mr11260931ybg.39.1701101281837; Mon, 27
+ Nov 2023 08:08:01 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1PR04MB4845:EE_|DBBPR04MB7628:EE_
-X-MS-Office365-Filtering-Correlation-Id: fd433e34-606c-4896-9385-08dbef62ff79
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OlhaSyLOf+jzfkWhym9YiUIMlhWNvadk/mBnD3PR8SejvupxIgdNHATK6O/y3Th10xW7Rt9VQ9oahnJ1y+vh6vZetDKSVrGcOZ8wRmMafrSdJPNBj0xpHY3VYI/5SudDP38yRYtI1yJ+JU+vCS9Z4EQ7aQmAtPwSp5/JnHwls4DYwIywLsfqt331ZnA8HHnSZg+eup10CNto3lVmEFLilkBy4Nlf9CpqfFSYP98PzIBG7ygU7+fbVN9hc5SPM/bFwqa3BkxqOTgG3aAfNDXnUwWIVMl3Mz0K+h1/PYt6ZqkxfRpd/RY9kdvvSWSnA2DqjEU2D95B4OHkgn8a9246TSb5C+9hVZFUX6YNV1k0XXNA/NLn7gqlS5MEocTtv0WYSMrCkA7kG1WcjcJszhHrgBik0+TCBwKvFD4a8oqDWbEBMpHLK18DIGW3Sf8jXUOUH78dMFpwoFRo4DlYjm0Y+w/KpXLbtUmjPCZuLBHDRhwlhzv4JYNb3zkU2YFch/hIYZ9o+hLtV7nQIqECDhL9hysIWxXW1jRxEi0YbiO3snMIIJUiegAhyaS7zGQDJZVm3mJYfMItMny0ljqd3eoWRLtglEa2J8/0d+VzHuvYx1ct1euhapeDTGYBgAH8RzGYZoPC6b5J2Chy/zfS7tThdw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4845.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(39860400002)(376002)(346002)(136003)(396003)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(83380400001)(38100700002)(8936002)(4326008)(6506007)(8676002)(53546011)(9686003)(6512007)(6666004)(52116002)(66946007)(66556008)(66476007)(6916009)(54906003)(316002)(5660300002)(6486002)(86362001)(478600001)(4744005)(2906002)(41300700001)(38350700005)(33716001)(26005)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?utXPmC5gNCDP5NBa7/pgu9Xw2Vxgy1asLs6BvMtcB4Dh3wd17/LT4SENGk3H?=
- =?us-ascii?Q?xSgl+EIIlkqW1pTrwQiJqJHYScHaRSHbYITwLFkNBVIj1yuwgblaZRrbN06H?=
- =?us-ascii?Q?V1Xi2O+27jveKFc0WSc/ruqiJiQF2LLVqYgmRnOit14e8LS6UDMaMmz5XyMw?=
- =?us-ascii?Q?tPXoUgWmYVTmueQmWJbY8LrYOuQrAU8LB9/5QavQ58eT41RCpC3p75Y1qmA/?=
- =?us-ascii?Q?ypl7KgTLSp/gHzKRlLLrFmRJl/sK2tRwXDQIhyWh99EfYH4S0uxrS33vuxOv?=
- =?us-ascii?Q?kgjTXwA62I0PWhMGOzH9Eg10/9Bo+t2mZCLWCpe6Tii3ikhVp77IvDRZiBmG?=
- =?us-ascii?Q?r0K4AtFUpafTWENKCutgt7nblKwlrMMx3i/UAmz3VltaidZOMELnxATXtwwN?=
- =?us-ascii?Q?ncJh2fR9JUGBQkbDp4iGRtgANGR23Xf8D3XqgfwoQl3TXWW+fgXPC45VRuwT?=
- =?us-ascii?Q?i52AVeSGYQpl4WsSAdKGzpaMzLP/XpTIzTI1tCipaibXPA2OSBqvBXAqknTi?=
- =?us-ascii?Q?cxmt9Z1EgS1wQyZlPGUHzq/JioLbsUSeUPcsuiuwpD3RoLCgK777ulXGDaoc?=
- =?us-ascii?Q?XMfY0a49Ulo2yWMTVmckoGZHYAtUGq7nchGwPAN+DWrKh+VoIkmdQ9cZij2+?=
- =?us-ascii?Q?Z3marGZLfIOxsiac77l9Ju/0WikKuNhY06auR8NfFFt708dxwOyuBEYfOUV9?=
- =?us-ascii?Q?2L0RNdPnlDGThPfbO5G7ZH6wB6MKTJ+D6aWzyTZMbKn3zx09g4Hglj5m5JhU?=
- =?us-ascii?Q?3HRxfAgB9QUagLB88pRGM1FiVjx89Cud3D4LtoslPDBth8G0v1P6wE/sDKrH?=
- =?us-ascii?Q?KJqvGohQrnG3dQuyv/CZH6O5aEdTQbI5b4FFV1DDFvbCRtNI2+v/a25sPegr?=
- =?us-ascii?Q?OLHWsJwYVgmmvteFH0sSmYux+g4A81a4AHH8Ml/jLCzeHsIerReq9xU2YjGX?=
- =?us-ascii?Q?BtVlg+nGy+svSkDSohOZzTcRLw/GMexmBi4ZU4yqe4LhK280yFdFzUa0ftMU?=
- =?us-ascii?Q?//b6m3fpD4cGJYCB+DKm32ddRa1oW1htEjSjssCgPOfec2UGVmd0+UjvDfMP?=
- =?us-ascii?Q?VY2rQ5ik47bZssixDZkEDmMn/PbF203rOMO0ZkdaQ/yxS4xq8afFCeQzaXm+?=
- =?us-ascii?Q?KcFtygQ3wbA1xTdO5O7MWhaDZMuk61qxy2Xuxnq9xRDCKBy5b2/dSTJKuDmK?=
- =?us-ascii?Q?FVdsZAm51zTBjZNJs5BvXBRVLAlsiLPZk4diJuAVVLjtI1hOHbEN3W4hGN9M?=
- =?us-ascii?Q?CNSq77E0qaal3nXQ+wsyb2TUt9f/IJi+vcITgGyVahWVax0xmm5fZYSeCATB?=
- =?us-ascii?Q?ZT78d+nGSZwJYgl9XWaqtu3r4Ven7b/0foXJRDoMLJhutQ+MPaplH1iPSGaP?=
- =?us-ascii?Q?T+M6kvc+9N0dYnfzb1wuqCm5cC0+fURFDGHcQ0/iyJ1ISVSs35g3yW7/UAaK?=
- =?us-ascii?Q?b2p62XmcDDo7gJ7cEoqjlREQaEhtajEtjGzRQTnIVe7gxDDxF+ZoYAIseNJm?=
- =?us-ascii?Q?HeIWJFr1QJRkkb8s4+yL2cRGoNu+9zGbyrm8+PW5UwTIdh92J5E7kYrnv22O?=
- =?us-ascii?Q?KAE3D3OsG+zn0s1/vnA=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fd433e34-606c-4896-9385-08dbef62ff79
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4845.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2023 16:07:48.1440
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1plBgQo16GXtiF7FBFBO3z/8Bs9ZMO0IE8eNU84qZ0DDKGPk4YdWjCfA5tAV2ok53fWQetf3bK2aawpEJ27uEA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7628
+References: <20231127145412.3981-1-quic_bibekkum@quicinc.com> <20231127145412.3981-2-quic_bibekkum@quicinc.com>
+In-Reply-To: <20231127145412.3981-2-quic_bibekkum@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Mon, 27 Nov 2023 18:07:50 +0200
+Message-ID: <CAA8EJppKp0nVX-w4OmPKq0BSb_eWs6XpeuFbMobWT3tC2RNG7A@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] iommu/arm-smmu: introduction of ACTLR for custom
+ prefetcher settings
+To:     Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+Cc:     will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
+        a39.skl@gmail.com, konrad.dybcio@linaro.org,
+        quic_bjorande@quicinc.com, mani@kernel.org,
+        quic_eberman@quicinc.com, robdclark@chromium.org,
+        u.kleine-koenig@pengutronix.de, robh@kernel.org,
+        vladimir.oltean@nxp.com, quic_pkondeti@quicinc.com,
+        quic_molvera@quicinc.com, linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, qipl.kernel.upstream@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 03:52:13PM +0000, Greg KH wrote:
-> On Mon, Nov 27, 2023 at 10:28:57AM -0500, Frank Li wrote:
-> > On Tue, Oct 31, 2023 at 04:45:21PM +0800, Peter Chen wrote:
-> > > On 23-10-27 14:39:19, Frank Li wrote:
-> > > > No completion irq is needed if no_interrupt is true. Needn't set TRB_IOC
-> > > > at this case.
-> > > > 
-> > > > Check usb_request: no_interrupt and set/skip TRB_IOC in
-> > > > cdns3_ep_run_transfer().
-> > > > 
-> > > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > 
-> > > Acked-by: Peter Chen <peter.chen@kernel.org>
-> > 
-> > @Greg:
-> > 	ping
-> 
-> What are you needing from me here?  Blind pings do not provide any
-> context :(
+On Mon, 27 Nov 2023 at 16:54, Bibek Kumar Patro
+<quic_bibekkum@quicinc.com> wrote:
+>
+> Currently in Qualcomm  SoCs the default prefetch is set to 1 which allows
+> the TLB to fetch just the next page table. MMU-500 features ACTLR
+> register which is implementation defined and is used for Qualcomm SoCs
+> to have a prefetch setting of 1/3/7/15 enabling TLB to prefetch
+> the next set of page tables accordingly allowing for faster translations.
+>
+> ACTLR value is unique for each SMR (Stream matching register) and stored
+> in a pre-populated table. This value is set to the register during
+> context bank initialisation.
+>
+> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+>
+> ---
+>  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 56 +++++++++++++++++++++-
+>  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h |  6 ++-
+>  drivers/iommu/arm/arm-smmu/arm-smmu.c      |  5 +-
+>  drivers/iommu/arm/arm-smmu/arm-smmu.h      |  5 ++
+>  4 files changed, 68 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> index 7f52ac67495f..4a38cae29be2 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> @@ -14,6 +14,12 @@
+>
+>  #define QCOM_DUMMY_VAL -1
+>
+> +struct actlr_config {
+> +       u16 sid;
+> +       u16 mask;
+> +       u32 actlr;
+> +};
+> +
+>  static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
+>  {
+>         return container_of(smmu, struct qcom_smmu, smmu);
+> @@ -205,10 +211,40 @@ static bool qcom_adreno_can_do_ttbr1(struct arm_smmu_device *smmu)
+>         return true;
+>  }
+>
+> +static void arm_smmu_set_actlr(struct device *dev, struct arm_smmu_device *smmu, int cbndx,
+> +               const struct actlr_config *actlrcfg, size_t actlrcfg_size)
+> +{
+> +       struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+> +       struct arm_smmu_master_cfg *cfg = dev_iommu_priv_get(dev);
+> +       struct arm_smmu_smr *smr;
+> +       int i;
+> +       int j;
+> +       u16 id;
+> +       u16 mask;
+> +       int idx;
+> +
+> +       for (i = 0; i < actlrcfg_size; ++i) {
+> +               id = (actlrcfg + i)->sid;
+> +               mask = (actlrcfg + i)->mask;
+> +
+> +               for_each_cfg_sme(cfg, fwspec, j, idx) {
+> +                       smr = &smmu->smrs[idx];
+> +                       if (smr_is_subset(*smr, id, mask))
+> +                               arm_smmu_cb_write(smmu, cbndx, ARM_SMMU_CB_ACTLR,
+> +                                               (actlrcfg + i)->actlr);
+> +               }
+> +       }
+> +}
+> +
+>  static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+>                 struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
+>  {
+>         struct adreno_smmu_priv *priv;
+> +       struct arm_smmu_device *smmu = smmu_domain->smmu;
+> +       struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
+> +       const struct actlr_config *actlrcfg;
+> +       size_t actlrcfg_size;
+> +       int cbndx = smmu_domain->cfg.cbndx;
+>
+>         smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
+>
+> @@ -238,6 +274,12 @@ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+>         priv->set_stall = qcom_adreno_smmu_set_stall;
+>         priv->resume_translation = qcom_adreno_smmu_resume_translation;
+>
+> +       if (qsmmu->data->actlrcfg_gfx) {
+> +               actlrcfg = qsmmu->data->actlrcfg_gfx;
+> +               actlrcfg_size = qsmmu->data->actlrcfg_gfx_size;
+> +               arm_smmu_set_actlr(dev, smmu, cbndx, actlrcfg, actlrcfg_size);
+> +       }
+> +
+>         return 0;
+>  }
+>
+> @@ -263,6 +305,18 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
+>  static int qcom_smmu_init_context(struct arm_smmu_domain *smmu_domain,
+>                 struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
+>  {
+> +       struct arm_smmu_device *smmu = smmu_domain->smmu;
+> +       struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
+> +       const struct actlr_config *actlrcfg;
+> +       size_t actlrcfg_size;
+> +       int cbndx = smmu_domain->cfg.cbndx;
+> +
+> +       if (qsmmu->data->actlrcfg) {
+> +               actlrcfg = qsmmu->data->actlrcfg;
+> +               actlrcfg_size = qsmmu->data->actlrcfg_size;
+> +               arm_smmu_set_actlr(dev, smmu, cbndx, actlrcfg, actlrcfg_size);
+> +       }
+> +
+>         smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
+>
+>         return 0;
+> @@ -464,7 +518,7 @@ static struct arm_smmu_device *qcom_smmu_create(struct arm_smmu_device *smmu,
+>                 return ERR_PTR(-ENOMEM);
+>
+>         qsmmu->smmu.impl = impl;
+> -       qsmmu->cfg = data->cfg;
+> +       qsmmu->data = data;
 
-Sorry, I just saw it is already in linux-next tree. Generally, I received a
-"applied"'s email. So I have not check linux-next tree before send it.
+This should go to a separate commit. It is not related to ACTLR support
 
-Frank
+>
+>         return &qsmmu->smmu;
+>  }
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
+> index 593910567b88..138fc57f7b0d 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
+> @@ -8,7 +8,7 @@
+>
+>  struct qcom_smmu {
+>         struct arm_smmu_device smmu;
+> -       const struct qcom_smmu_config *cfg;
+> +       const struct qcom_smmu_match_data *data;
+>         bool bypass_quirk;
+>         u8 bypass_cbndx;
+>         u32 stall_enabled;
+> @@ -25,6 +25,10 @@ struct qcom_smmu_config {
+>  };
+>
+>  struct qcom_smmu_match_data {
+> +       const struct actlr_config *actlrcfg;
+> +       size_t actlrcfg_size;
+> +       const struct actlr_config *actlrcfg_gfx;
+> +       size_t actlrcfg_gfx_size;
+>         const struct qcom_smmu_config *cfg;
+>         const struct arm_smmu_impl *impl;
+>         const struct arm_smmu_impl *adreno_impl;
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> index d6d1a2a55cc0..8e4faf015286 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
+> @@ -990,9 +990,10 @@ static int arm_smmu_find_sme(struct arm_smmu_device *smmu, u16 id, u16 mask)
+>                  * expect simply identical entries for this case, but there's
+>                  * no harm in accommodating the generalisation.
+>                  */
+> -               if ((mask & smrs[i].mask) == mask &&
+> -                   !((id ^ smrs[i].id) & ~smrs[i].mask))
+> +
+> +               if (smr_is_subset(smrs[i], id, mask))
+>                         return i;
+> +
+>                 /*
+>                  * If the new entry has any other overlap with an existing one,
+>                  * though, then there always exists at least one stream ID
+> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+> index 703fd5817ec1..b1638bbc41d4 100644
+> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
+> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
+> @@ -501,6 +501,11 @@ static inline void arm_smmu_writeq(struct arm_smmu_device *smmu, int page,
+>                 writeq_relaxed(val, arm_smmu_page(smmu, page) + offset);
+>  }
+>
+> +static inline bool smr_is_subset(struct arm_smmu_smr smrs, u16 id, u16 mask)
 
-> 
-> thanks,
-> 
-> greg k-h
+A pointer to the struct, please
+
+> +{
+> +       return (mask & smrs.mask) == mask && !((id ^ smrs.id) & ~smrs.mask);
+> +}
+> +
+>  #define ARM_SMMU_GR0           0
+>  #define ARM_SMMU_GR1           1
+>  #define ARM_SMMU_CB(s, n)      ((s)->numpage + (n))
+> --
+> 2.17.1
+>
+
+
+-- 
+With best wishes
+Dmitry
