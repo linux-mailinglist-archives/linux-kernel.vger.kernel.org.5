@@ -2,143 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6975E7F9760
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 03:07:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E438A7F9762
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 03:07:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231287AbjK0CHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 21:07:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56056 "EHLO
+        id S231387AbjK0CHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 21:07:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjK0CG6 (ORCPT
+        with ESMTP id S229514AbjK0CHW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 21:06:58 -0500
-Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DA6611B;
-        Sun, 26 Nov 2023 18:07:05 -0800 (PST)
-Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-1f9e6a8b00aso1767214fac.3;
-        Sun, 26 Nov 2023 18:07:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701050824; x=1701655624; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=asGQFlJbseALxVoUAFeWJFbzNriZ6/364BUepF32tlM=;
-        b=lNoji0S4rwNe9DRxZ4ItMsTg6Ml/Qv1OKI7geFXk26/fkU8Rw2Mb37B6qHxaTQQEYC
-         vbeMCnMOQCfTwh9D7JBDvMoAWNisW4BZO3M40rm7/XudCp/6juIjJMaXBT8YspQ+4/Tj
-         /OOnWLhTK0ER32dVpSbnVfQkHmLViK7WdLc9KtSTylSwBLjovb+B/ad8PhcRqkrwYvYd
-         2HR1ISNVZjdPiduqnuWVM6UoscefGuTCv6JPtXmGe0UN1QZ0ZQo+hd2FxnVdh8wqN3ao
-         X0SO22miSjxTm6y1LP4F+jDHWv3a5THZCHqqCay7lK4ajjwUqSJpLynQH81FxR8az1b8
-         sCVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701050824; x=1701655624;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=asGQFlJbseALxVoUAFeWJFbzNriZ6/364BUepF32tlM=;
-        b=aNWXpnLxf+xc/XOkZyCo0fhBMR23Iu8T9aJfrKH01haQ1fgeBhzI3oc7TV3JlmncXZ
-         PDG2E1Tpghu9cSxmvcMzMsYMOGJEg8xDBs+/20cj5yzH2ukX7IO1PM1xWpHAd+mXdmgw
-         2ADdQjFuX8cRIqsUdXRRLwmHP0teUp2ezwV82U4cLw/M8AhAI8WnVBLP7QEe47zalYbG
-         y4NwSPr+Jy+7dQq2erJS5lxsmVLY2DZ/hA9B5dMjzx1Jd64UddmTO7Yz+yLg8mkw1e3s
-         gAKEY3kfSw0GpnVpUyXL36pQkhD0CQKgGNJtS9Ebv8ABAcA5e5S1RGNVrcNgBWMiNsAJ
-         OUsQ==
-X-Gm-Message-State: AOJu0YzjI2ZepFQoH8rvnXZ+sUInWwnTuRvV2hU0FSTduzJtkuH9jIjF
-        o/9JrdASY2WpVkN79LJoN1Cg1vQyB4fIZGIazOU=
-X-Google-Smtp-Source: AGHT+IEz1/FpIU1hEmciAxvSiSkJb68dGD3xv9+tvEeMRcIlKNgGSZzlMhUVvU28GhIFsDnGpWrZRn2xSrrvcuu6KPA=
-X-Received: by 2002:a05:6870:5d93:b0:1f0:656b:5b99 with SMTP id
- fu19-20020a0568705d9300b001f0656b5b99mr16069972oab.11.1701050824197; Sun, 26
- Nov 2023 18:07:04 -0800 (PST)
+        Sun, 26 Nov 2023 21:07:22 -0500
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C687211B
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 18:07:27 -0800 (PST)
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 56D6C2C063F;
+        Mon, 27 Nov 2023 15:07:25 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1701050845;
+        bh=LhxxACd8dghdQZn1oHq+gSzpl7xTf6ckLAsgiTT5KiQ=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=mAXP8eL7PWUMnlM0iqCVAkApCs2yjRfISchkleGv2DCsrs1jPXXoXGNM0hdl5Z5f7
+         FFqxX5SX4VYpfn+K8A4kGBp2zp0DT4ZOuc9/O9qfSAYeQ3mAUBikZy2xHOiKkuKh2W
+         nVu4UvqLGVQrCrLvDBgHcJsjMO/EqFZH3rOT5I71UCzaq4mV5LosyvfqxevLjImA2y
+         tXlHjrsmyBMDxkBSs9USzQe+J0t7JBuitN0Mnyz+Y45jrjUiyo8N46utEhqpu67U1i
+         AJJXmYdQcw/RAO6CsRtSWDRTyQjziQvMfWA1WQKUr0wnIFSwNG6RCRRTHTglbrWlzd
+         TxLz7WRfJ1k+g==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B6563f9dd0001>; Mon, 27 Nov 2023 15:07:25 +1300
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.1118.40; Mon, 27 Nov 2023 15:07:25 +1300
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with Microsoft
+ SMTP Server (TLS) id 15.0.1497.48; Mon, 27 Nov 2023 15:07:24 +1300
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1118.040; Mon, 27 Nov 2023 15:07:24 +1300
+From:   Angga <Hermin.Anggawijaya@alliedtelesis.co.nz>
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        "peterhuewe@gmx.de" <peterhuewe@gmx.de>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] tpm: Start the tpm2 before running a self test.
+Thread-Topic: [PATCH] tpm: Start the tpm2 before running a self test.
+Thread-Index: AQHaHREnjIixcvoKIE+Z7DUtybpc5rCH2ueAgAS99oA=
+Date:   Mon, 27 Nov 2023 02:07:24 +0000
+Message-ID: <22f6605c-7e24-423b-b4f3-df096b340674@alliedtelesis.co.nz>
+References: <20231122065528.1049819-1-hermin.anggawijaya@alliedtelesis.co.nz>
+ <CX6NSGFJVYKC.3KFEPA92N0V53@kernel.org>
+In-Reply-To: <CX6NSGFJVYKC.3KFEPA92N0V53@kernel.org>
+Accept-Language: en-NZ, en-US
+Content-Language: en-NZ
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.32.1.11]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <0BB615F929DAE4439BDCCA891933D9B8@atlnz.lc>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20231124122258.1050-1-xuewen.yan@unisoc.com> <87il5o32w9.fsf@jogness.linutronix.de>
-In-Reply-To: <87il5o32w9.fsf@jogness.linutronix.de>
-From:   Xuewen Yan <xuewen.yan94@gmail.com>
-Date:   Mon, 27 Nov 2023 10:06:53 +0800
-Message-ID: <CAB8ipk8==8PTZPsY_VjQFgcJ0sOfQomgybkPB1sWPiGNWGB=Jw@mail.gmail.com>
-Subject: Re: [RFC PATCH] serial: core: Use pm_runtime_get_sync() in uart_start()
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Xuewen Yan <xuewen.yan@unisoc.com>, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, ilpo.jarvinen@linux.intel.com,
-        tony@atomide.com, tglx@linutronix.de,
-        andriy.shevchenko@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, ke.wang@unisoc.com,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=AZXP4EfG c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=BNY50KLci1gA:10 a=e6lE4nR9YQSnTHqkly4A:9 a=QEXdDO2ut3YA:10 a=ZXulRonScM0A:10 a=zZCYzV9kfG8A:10
+X-SEG-SpamProfiler-Score: 0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John
-
-On Mon, Nov 27, 2023 at 12:17=E2=80=AFAM John Ogness <john.ogness@linutroni=
-x.de> wrote:
->
-> [Added printk maintainers CC.]
->
-> On 2023-11-24, Xuewen Yan <xuewen.yan@unisoc.com> wrote:
-> > The commit 84a9582fd203("serial: core: Start managing serial
-> > controllers to enable runtime PM") use the pm_runtime_get() after
-> > uart_port_lock() which would close the irq and disable preement.  At
-> > this time, pm_runtime_get may cause the following two problems:
-> >
-> > (1) deadlock in try_to_wake_up:
-> >
-> > uart_write()
-> > uart_port_lock() <<< get lock
-> > __uart_start
-> > __pm_runtime_resume
-> > rpm_resume
-> > queue_work_on
-> > try_to_wake_up
-> > _printk
-> > uart_console_write
-> > ...
-> > uart_port_lock() <<< wait forever
->
-> I suppose you got this because of the lockdep message generated by
-> #2. It probably would make sense to call __printk_safe_enter() inside
-> uart_port_lock(). This would allow printk() to automatically defer the
-> printing for that CPU until the port lock is released.
-
-Thanks for the suggestion, I would use printk_deferred in our tree to
-retest the case.
-
-And I also notice the warning was reported by syzbot:
-https://lore.kernel.org/all/0000000000006f01f00608a16cea@google.com/
-https://lore.kernel.org/all/000000000000e7765006072e9591@google.com/
-
->
-> > (2) scheduling while atomic:
-> > uart_write()
-> > uart_port_lock() <<< get lock
-> > __uart_start
-> > __pm_runtime_resume
-> > rpm_resume
-> > schedule() << sleep
->
-> rpm_resume() is a fascinating function. It requires the caller to hold a
-> spin_lock (dev->power.lock) with interrupts disabled. But it seems to
-> believe that this is the *only* spin_lock held so that it can
-> temporarily spin_unlock and call might_sleep() functions. In the case of
-> uart_write(), it certainly is not the only spin_lock held.
->
-> I do not know enough about the internals of RPM to suggest a proper
-> solution. But it looks like rpm_resume() cannot assume dev->power.lock
-> is the only spin_lock held by the caller.
-
-I would also be very grateful if could give us more suggestions.
-
-Thanks!
-
-BR
----
-xuewen
->
-> John Ogness
+T24gMjQvMTEvMjAyMyAyOjQyIHBtLCBKYXJra28gU2Fra2luZW4gd3JvdGU6DQo+IE9uIFdlZCBO
+b3YgMjIsIDIwMjMgYXQgODo1NSBBTSBFRVQsIEhlcm1pbiBBbmdnYXdpamF5YSB3cm90ZToNCj4+
+IEJlZm9yZSBzZW5kaW5nIGEgY29tbWFuZCB0byBhdHRlbXB0IHRoZSBzZWxmIHRlc3QsIHRoZSBU
+UE0NCj4+IG1heSBuZWVkIHRvIGJlIHN0YXJ0ZWQsIG90aGVyd2lzZSB0aGUgc2VsZiB0ZXN0IHJl
+dHVybnMNCj4+IFRQTTJfUkNfSU5JVElBTElaRSB2YWx1ZSBjYXVzaW5nIGEgbG9nIGFzIGZvbGxv
+d3M6DQo+PiAidHBtIHRwbTA6IEEgVFBNIGVycm9yICgyNTYpIG9jY3VycmVkIGF0dGVtcHRpbmcg
+dGhlIHNlbGYgdGVzdCIuDQo+Pg0KPj4gU2lnbmVkLW9mZi1ieTogSGVybWluIEFuZ2dhd2lqYXlh
+IDxoZXJtaW4uYW5nZ2F3aWpheWFAYWxsaWVkdGVsZXNpcy5jby5uej4NCj4gRmlybXdhcmUgZG9l
+cyBUUE0gcG93ZXIgb24uDQo+DQo+IEJSLCBKYXJra28NCg0KSGVsbG8gSmFya2tvDQoNClRoYW5r
+IHlvdSBmb3IgeW91ciBjb21tZW50IG9uIHRoZSBwYXRjaC4gQXMgaW5kaWNhdGVkIGluIG15IHBy
+ZXZpb3VzIA0KcmVwbHkgdG8gU3RlZmFuJ3MgY29tbWVudCwNCkkgaGF2ZSB2MiB2ZXJzaW9uIG9m
+IHRoZSBwYXRjaCB3aGljaCBhbHNvIGRlYWxzIHdpdGggbXVsdGlwbGUgYXR0ZW1wdHMgDQp0byBz
+dGFydCB1cCB0aGUgVFBNIGdyYWNlZnVsbHksDQpmb3IgZXhhbXBsZSwgb25jZSBieSB0aGUgZmly
+bXdhcmUgYW5kIGFub3RoZXIgYnkgdGhlIGtlcm5lbCBkdXJpbmcgdHBtMiANCmF1dG8tc3RhcnR1
+cC4NCg0KSWYgeW91IHRoaW5rIHRoZSBpZGVhIGlzIE9LLCBJIGNhbiBzZW5kIHRoZSB2MiBvZiB0
+aGUgcGF0Y2guDQoNCg0KS2luZCByZWdhcmRzDQoNCkhlcm1pbg0KDQoNCg==
