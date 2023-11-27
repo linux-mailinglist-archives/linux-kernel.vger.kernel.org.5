@@ -2,120 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DDAA7FACDE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:56:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49DA37FACE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233368AbjK0V4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 16:56:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59198 "EHLO
+        id S233427AbjK0V47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 16:56:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233172AbjK0V4M (ORCPT
+        with ESMTP id S233421AbjK0V45 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 16:56:12 -0500
-Received: from mail.z3ntu.xyz (mail.z3ntu.xyz [128.199.32.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC87BD;
-        Mon, 27 Nov 2023 13:56:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=z3ntu;
-        t=1701122146; bh=aZFnOe6ebFNkRtbhg0CAmUQplZKhqM8Szl6+FvW/pp0=;
-        h=From:Date:Subject:To:Cc;
-        b=CamcQrz2yOEXroTzvmlYjgHtN6DjszA87lK8wLaMTZo1ba22Wk2xO6A9xe1UDTQpJ
-         n3a/IfMMxP3WJdAamwhMiH70S1Ek3vdlb00nYnSDzJ90Gc7HoGlNpdeaLCWhh5XzS7
-         D9hY3EO9knqI+cgjC1RNUdIXLCM8g9eNjPkotrco=
-From:   Luca Weiss <luca@z3ntu.xyz>
-Date:   Mon, 27 Nov 2023 22:55:38 +0100
-Subject: [PATCH v2] arm64: dts: qcom: sdm632-fairphone-fp3: Enable
- WiFi/Bluetooth
+        Mon, 27 Nov 2023 16:56:57 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA846BD
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 13:57:03 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-54b18c9b21bso3250450a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 13:57:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701122222; x=1701727022; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m0MzoXczE2pvdHgF1zgI5abaXqlolYZSijKABG1fsdo=;
+        b=rsDPBhCajJDoYdYzuuGIjoQnbm3K2sFJ6429HQPVu3l0rGpEJY8MsLwn2B7+y31s6z
+         opz2jt2Yw0gKuF6N5ncaSEOB6m+Dbn2f2LJK2eYPK/I/3NePkjqlYO46qd4fr5A8KNEh
+         MxFaSi1X0FUx3GJkLd1VD5CVwaggO0qYOERVy9EvCav8g3ApKGi41XjIPK+1LPot3KbC
+         DApz+LYWbD6T6ihqqsF3yfXuuMl+yQKHezracRlHXupSZCpA3JcRLWpCnGdXDJ6B6c8E
+         TjRJFEjqHgsFNvN0kmenHL+y+BkYCmt28EsddtUWxBG/plTjb7kZ22tk4LnfrdVDCfvc
+         ca6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701122222; x=1701727022;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=m0MzoXczE2pvdHgF1zgI5abaXqlolYZSijKABG1fsdo=;
+        b=bilEu9rLXVvANVVGz/5ZYP0ljzFXgkZXOBpWh766hLktUPEDAXhODr85i0qlmnYPZ4
+         uc1EwOZ09YIVzb3cJGgelOjV7IWRw1mHG6nUnJ2qXCVLycLH9mjpDpfO/77p/avcIH0H
+         AmnxrcbJtDSADyp7dZr7NQIvhPdGgX3u6V90A9spLGwMZTff66lGXmytataaUTUEuQr4
+         m41qjHoSdDQWK3BJqaDhHlBvPVpM2bMaejUZ4b3pZJ2sP9VMUQJXZKI/s2UkuTDLU32N
+         8FxQJ3mM7zs2NpmpUlfCWyX8kuXfd81H7ud9YF1zRkskNIDhAVf4+zO924BvJj/kNi50
+         dQxw==
+X-Gm-Message-State: AOJu0YzwfVo9mLvTzZFth3ioAYt0WKUUscZiYUldRX0WVrNBEjDnDehg
+        umW/5sxfRWJsWbQnjhcDZCIJKgXO0zcE0CNsMSp4kg==
+X-Google-Smtp-Source: AGHT+IFT8GxbfU4ZjoWoqPk91lBLeABCByto7q81DYaCAPE6XdtZ49BCKB7mSrmDLBE/kVkErqEaO1yWce9SgUqIchQ=
+X-Received: by 2002:a17:906:1083:b0:a09:e7bf:127a with SMTP id
+ u3-20020a170906108300b00a09e7bf127amr7840196eju.67.1701122222013; Mon, 27 Nov
+ 2023 13:57:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231127-fp3-wcnss-v2-1-a5154fae4768@z3ntu.xyz>
-X-B4-Tracking: v=1; b=H4sIAFkQZWUC/23Muw7CMAyF4VepPGNUx4pUmHgP1IEWh3pJq6SEX
- pR3J3Rm/I+Ovh2iBJUI12qHIEmjjr6EOVXQDw//EtRnaTC1YarJopsYP72PEQ1Lw11j2DoL5T8
- Fcboc1r0tPWicx7AedKLf+k9JhDVSx0TMVi5Mt439/D4v6wZtzvkLnieeUqIAAAA=
-To:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Kalle Valo <kvalo@kernel.org>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wcn36xx@lists.infradead.org, linux-wireless@vger.kernel.org,
-        Luca Weiss <luca@z3ntu.xyz>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1208; i=luca@z3ntu.xyz;
- h=from:subject:message-id; bh=aZFnOe6ebFNkRtbhg0CAmUQplZKhqM8Szl6+FvW/pp0=;
- b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBlZRBahsQcRnXMktfZ7tsnduxK14pwkjCxeT1OR
- 3jwjSJb+B+JAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZWUQWgAKCRBy2EO4nU3X
- VnB5D/9es1bYCSMq40ZW5SBjfWuZN1YqbQfld+RE/83WpM8TD/n+bWrFhFQJUZq3mwYmeWrzY3u
- V6M8VZv5neVCyJcMlpPdMPY+PpP+WEA0LK99VOQWKOjT4BJ+WKORWKsktW+opePuqspGP5Gicfe
- stGsn3CnElUk4o6K4dYfyvYcODsVjCa6A0IxksuwyFYkfz3C0zqXeCrTCJSa8M2qtG2DWPpARlP
- HoqTUw5IucV3t+WhsxNUHd/nojeKKkmQUnZe4MED3qIAt/lowsBDC8WE8vFWAUpVI+HDEtWNt/B
- 1h/DY+no1PqBB99QdxIlKNQgzCRvAoY1XQTe2UTOTmb+opnXDpIFtlBsDBulT0CPVA8XPbq8OSB
- 2vikKmsRrlFLLQdwemqDNUNs9A947zKDVdV6fcJgq8ao2//WgVLtIWqgntjH0yaFmIjB7EZi6M4
- 3Mq1gvi6Rt68v+1lGjQMxSQAye7KyeNIzoZQpnUl2qXwvqyAsiv3Bf3FOmtMpNlGVO4pffiaN/E
- UuTorY6GHFedMKD8bJpTup5BMN/rjKOJcLs5JWrw+9NrI9vq6rQGFehk+KiMrHny9Sr/1m2l/Ms
- k74Udtdhmmh6imE8nBMOFfIabNcwkSBqrWhE/2gkOq8+jnXjb6mjy0XLkGF6sbm3QUBP9nD7ZPv
- hFLuTFaRK0XXzcQ==
-X-Developer-Key: i=luca@z3ntu.xyz; a=openpgp;
- fpr=BD04DA24C971B8D587B2B8D7FAF69CF6CD2D02CD
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <ZV3BWZ4ZaD5Rj_HS@tiehlicka> <ZV3TQCElHpcp0h0V@tiehlicka>
+ <CAJD7tka0=JR1s0OzQ0+H8ksFhvB2aBHXx_2-hVc97Enah9DqGQ@mail.gmail.com>
+ <ZV3_6UH28KMt0ZDb@tiehlicka> <87msv58068.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <ZWDPuR5Ssx07nBHb@tiehlicka> <87h6l77wl5.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <CAF8kJuOcMDpqZV+9+QjK-hsoJLGhoBzBOczAc7+UMypVJresSw@mail.gmail.com>
+ <87bkbf7gz6.fsf@yhuang6-desk2.ccr.corp.intel.com> <CAF8kJuNKH_vcF-=6nw3zP5cMaZHLudHZfxNDtHm0K2BXJ+EAgA@mail.gmail.com>
+ <ZWUKziMl6cFV2uWN@google.com>
+In-Reply-To: <ZWUKziMl6cFV2uWN@google.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 27 Nov 2023 13:56:26 -0800
+Message-ID: <CAJD7tkZNa_3mWYeix_Xc-BFRNVMkBF3uzL0JCkZOYw5ubAaj9w@mail.gmail.com>
+Subject: Re: [PATCH v10] mm: vmscan: try to reclaim swapcache pages if no swap space
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Chris Li <chriscli@google.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sachin Sant <sachinp@linux.ibm.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Configure and enable the WCNSS which provides WiFi and Bluetooth on this
-device using the WCN3680B chip.
+On Mon, Nov 27, 2023 at 1:32=E2=80=AFPM Minchan Kim <minchan@kernel.org> wr=
+ote:
+>
+> On Mon, Nov 27, 2023 at 12:22:59AM -0800, Chris Li wrote:
+> > On Mon, Nov 27, 2023 at 12:14=E2=80=AFAM Huang, Ying <ying.huang@intel.=
+com> wrote:
+> > > >  I agree with Ying that anonymous pages typically have different pa=
+ge
+> > > > access patterns than file pages, so we might want to treat them
+> > > > differently to reclaim them effectively.
+> > > > One random idea:
+> > > > How about we put the anonymous page in a swap cache in a different =
+LRU
+> > > > than the rest of the anonymous pages. Then shrinking against those
+> > > > pages in the swap cache would be more effective.Instead of having
+> > > > [anon, file] LRU, now we have [anon not in swap cache, anon in swap
+> > > > cache, file] LRU
+> > >
+> > > I don't think that it is necessary.  The patch is only for a special =
+use
+> > > case.  Where the swap device is used up while some pages are in swap
+> > > cache.  The patch will kill performance, but it is used to avoid OOM
+> > > only, not to improve performance.  Per my understanding, we will not =
+use
+> > > up swap device space in most cases.  This may be true for ZRAM, but w=
+ill
+> > > we keep pages in swap cache for long when we use ZRAM?
+> >
+> > I ask the question regarding how many pages can be freed by this patch
+> > in this email thread as well, but haven't got the answer from the
+> > author yet. That is one important aspect to evaluate how valuable is
+> > that patch.
+>
+> Exactly. Since swap cache has different life time with page cache, they
+> would be usually dropped when pages are unmapped(unless they are shared
+> with others but anon is usually exclusive private) so I wonder how much
+> memory we can save.
 
-Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
----
-Changes in v2:
-- Drop patches for "wcn3680b" compatible, just use "wcn3680"
-- Link to v1: https://lore.kernel.org/r/20231015-fp3-wcnss-v1-0-1b311335e931@z3ntu.xyz
----
- arch/arm64/boot/dts/qcom/sdm632-fairphone-fp3.dts | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+I think the point of this patch is not saving memory, but rather
+avoiding an OOM condition that will happen if we have no swap space
+left, but some pages left in the swap cache. Of course, the OOM
+avoidance will come at the cost of extra work in reclaim to swap those
+pages out.
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm632-fairphone-fp3.dts b/arch/arm64/boot/dts/qcom/sdm632-fairphone-fp3.dts
-index 301eca9a4f31..476d0d40aaf9 100644
---- a/arch/arm64/boot/dts/qcom/sdm632-fairphone-fp3.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm632-fairphone-fp3.dts
-@@ -239,3 +239,18 @@ &usb3 {
- &usb3_dwc3 {
- 	dr_mode = "peripheral";
- };
-+
-+&wcnss {
-+	status = "okay";
-+
-+	vddpx-supply = <&pm8953_l5>;
-+};
-+
-+&wcnss_iris {
-+	compatible = "qcom,wcn3680";
-+
-+	vddxo-supply = <&pm8953_l7>;
-+	vddrfa-supply = <&pm8953_l19>;
-+	vddpa-supply = <&pm8953_l9>;
-+	vdddig-supply = <&pm8953_l5>;
-+};
+The only case where I think this might be harmful is if there's plenty
+of pages to reclaim on the file LRU, and instead we opt to chase down
+the few swap cache pages. So perhaps we can add a check to only set
+sc->swapcache_only if the number of pages in the swap cache is more
+than the number of pages on the file LRU or similar? Just make sure we
+don't chase the swapcache pages down if there's plenty to scan on the
+file LRU?
 
----
-base-commit: 5dca35cc02999418b12ad3a86f1798d0999ce6bf
-change-id: 20231015-fp3-wcnss-23e83b8235f5
-
-Best regards,
--- 
-Luca Weiss <luca@z3ntu.xyz>
-
+>
+> > Regarding running out of swap space. That is a good point, in server
+> > workload we don't typically run out of swap device space anyway.
+> >
+> > Android uses ZRAM, the story might be different. Adding Minchan here.
+>
+> Swap is usually almost full in Android since it compacts(i.e., swapout)
+> background apps aggressively.
