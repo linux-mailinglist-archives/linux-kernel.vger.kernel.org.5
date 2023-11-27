@@ -2,97 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 263A37F9BCA
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:35:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1AB57F9BD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:36:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232634AbjK0Ifg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Nov 2023 03:35:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52970 "EHLO
+        id S232662AbjK0IgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 03:36:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232558AbjK0Ifd (ORCPT
+        with ESMTP id S232558AbjK0IgR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 03:35:33 -0500
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E81FA8;
-        Mon, 27 Nov 2023 00:35:40 -0800 (PST)
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5c08c47c055so38139137b3.1;
-        Mon, 27 Nov 2023 00:35:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701074139; x=1701678939;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JMBx9bPC6Ke/5JjfdfW+n5UaM35YuZKS2Z2vb1jjpAI=;
-        b=siKbYVDKDezZPC3ocGA3Yz2cG8QfHsvmcgPv3vjkpH4BG+L6dctRnjSUo2te/yKwJQ
-         kPmwQ+cFvBh22YtEBWx9SB4lPk8CPCdCkyelpOocNqw/fCd0y7WPy4XHgbZspkhDQG5i
-         u/FKgFa5Jgqfi1bBZm31ElEy17l/bYdmCNbCVpdxwwp7LWhNMunvFvInqUPSxxhZvFBz
-         6wR7da0Hj35MsKVFrDxWh4ViAfCjqacBF/YhGyw+3XJMt2dtVi2sWw7VeE3lFO7FxscZ
-         wg1I0XkJP9AJotlDsrn/26+YOB6LcT3T5nobxNvPNlKcMqbEJOGFXnjjRzZucTjYg2zQ
-         yhiA==
-X-Gm-Message-State: AOJu0Yxu+yVYAJJ91MUfUARC2XbfZ4dkgjXTC6JTs8bZ8Y9vr/cmFhVZ
-        jzcti63aEsCc7siDgVXDn+TD+YawrvIIPg==
-X-Google-Smtp-Source: AGHT+IGxLiksfLp1RVbKZiIWjPxJXOm3TqnyBV+BDOACFIcjh0fCsaSgi+xFx8CgjDjRbzfrzTkNdA==
-X-Received: by 2002:a81:4322:0:b0:5d0:b284:6140 with SMTP id q34-20020a814322000000b005d0b2846140mr917630ywa.51.1701074139300;
-        Mon, 27 Nov 2023 00:35:39 -0800 (PST)
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
-        by smtp.gmail.com with ESMTPSA id m1-20020a81d241000000b005add997ae53sm3058220ywl.81.2023.11.27.00.35.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Nov 2023 00:35:38 -0800 (PST)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-5cd2f1a198cso36551627b3.0;
-        Mon, 27 Nov 2023 00:35:38 -0800 (PST)
-X-Received: by 2002:a0d:e501:0:b0:5c8:940d:276c with SMTP id
- o1-20020a0de501000000b005c8940d276cmr12293451ywe.43.1701074138550; Mon, 27
- Nov 2023 00:35:38 -0800 (PST)
+        Mon, 27 Nov 2023 03:36:17 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A67DA181
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:36:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701074183; x=1732610183;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=OMiaSPz2lvh6rMJ9002RnlhoTiuoF3QujEVFdhr1e2Y=;
+  b=db++Bv4s22sRIpsvO4hzsoQ77e4dTY5i0CBrKvt98tu6q0T/TC7EOYQo
+   nROG3RT3kJOK6NnCd3iYJdCv0KmM8zjoDAmjSklEptcQ6lFgSpdaEEGFI
+   1UHDSWBZTT8gQf9a2MAi0Io4c43MC9HWlPmFkkYN2kNLGbkA5kfq/Z9yx
+   PPO5PYhRDlYBHQytDFdY42aWzSWK0N4KdMeUXQbvzEZcKq6tQkV2N1jfx
+   b8zsM6tSw7/ni2wEVGzyDjsDk67xnT5qo36gOAn/wrhwuTGAt1CaO+zQZ
+   nHdwHll/AgRsDiJwfQGaBc2ZucN1Z6MY6sua6wcrVpz3EMcRrBioCKred
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="396568148"
+X-IronPort-AV: E=Sophos;i="6.04,230,1695711600"; 
+   d="scan'208";a="396568148"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 00:36:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,230,1695711600"; 
+   d="scan'208";a="9564110"
+Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 27 Nov 2023 00:36:21 -0800
+Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r7X6H-00063z-2s;
+        Mon, 27 Nov 2023 08:36:17 +0000
+Date:   Mon, 27 Nov 2023 16:35:26 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jisheng Zhang <jszhang@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] riscv: mm: still create swiotlb buffer for kmalloc()
+ bouncing if required
+Message-ID: <202311271323.n71NKhJ5-lkp@intel.com>
+References: <20231126162528.2411-1-jszhang@kernel.org>
 MIME-Version: 1.0
-References: <d6773b9bd88dbbbea06bc6d5cd59aa117b1ee2ee.1700416841.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <d6773b9bd88dbbbea06bc6d5cd59aa117b1ee2ee.1700416841.git.christophe.jaillet@wanadoo.fr>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 27 Nov 2023 09:35:26 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWog5mtxP3y78H8QOT0C+zRihLDDsB+13ZZAyMPiKcNDA@mail.gmail.com>
-Message-ID: <CAMuHMdWog5mtxP3y78H8QOT0C+zRihLDDsB+13ZZAyMPiKcNDA@mail.gmail.com>
-Subject: Re: [PATCH] serial: sh-sci: convert not to use dma_request_slave_channel()
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231126162528.2411-1-jszhang@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
+Hi Jisheng,
 
-On Sun, Nov 19, 2023 at 7:01 PM Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
-> dma_request_slave_channel() is deprecated. dma_request_chan() should
-> be used directly instead.
->
-> Switch to the preferred function and update the error handling accordingly.
->
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+kernel test robot noticed the following build errors:
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+[auto build test ERROR on linus/master]
+[also build test ERROR on v6.7-rc3 next-20231127]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> This patch is NOT compile tested. I've not been able to find a correct
-> setting so that CONFIG_SERIAL_SH_SCI_DMA is set.
+url:    https://github.com/intel-lab-lkp/linux/commits/Jisheng-Zhang/riscv-mm-still-create-swiotlb-buffer-for-kmalloc-bouncing-if-required/20231127-014531
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20231126162528.2411-1-jszhang%40kernel.org
+patch subject: [PATCH] riscv: mm: still create swiotlb buffer for kmalloc() bouncing if required
+config: riscv-randconfig-002-20231127 (https://download.01.org/0day-ci/archive/20231127/202311271323.n71NKhJ5-lkp@intel.com/config)
+compiler: riscv64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231127/202311271323.n71NKhJ5-lkp@intel.com/reproduce)
 
-Like arm/multi_v7_defconfig, arm/shmobile_defconfig, or arm64/defconfig?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311271323.n71NKhJ5-lkp@intel.com/
 
-Gr{oetje,eeting}s,
+All errors (new ones prefixed by >>):
 
-                        Geert
+   arch/riscv/mm/init.c: In function 'mem_init':
+>> arch/riscv/mm/init.c:171:13: error: 'dma_cache_alignment' undeclared (first use in this function); did you mean 'dma_get_cache_alignment'?
+     171 |             dma_cache_alignment != 1) {
+         |             ^~~~~~~~~~~~~~~~~~~
+         |             dma_get_cache_alignment
+   arch/riscv/mm/init.c:171:13: note: each undeclared identifier is reported only once for each function it appears in
+
+
+vim +171 arch/riscv/mm/init.c
+
+   169	
+   170		if (IS_ENABLED(CONFIG_DMA_BOUNCE_UNALIGNED_KMALLOC) && !swiotlb &&
+ > 171		    dma_cache_alignment != 1) {
+   172			/*
+   173			 * If no bouncing needed for ZONE_DMA, allocate 1MB swiotlb
+   174			 * buffer per 1GB of RAM for kmalloc() bouncing on
+   175			 * non-coherent platforms.
+   176			 */
+   177			unsigned long size =
+   178				DIV_ROUND_UP(memblock_phys_mem_size(), 1024);
+   179			swiotlb_adjust_size(min(swiotlb_size_or_default(), size));
+   180			swiotlb = true;
+   181		}
+   182	
+   183		swiotlb_init(swiotlb, SWIOTLB_VERBOSE);
+   184		memblock_free_all();
+   185	
+   186		print_vm_layout();
+   187	}
+   188	
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
