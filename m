@@ -2,99 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0877FAC44
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:08:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 223667FAC46
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:09:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232902AbjK0VIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 16:08:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45642 "EHLO
+        id S232971AbjK0VIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 16:08:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjK0VIJ (ORCPT
+        with ESMTP id S229527AbjK0VIs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 16:08:09 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29FDE191;
-        Mon, 27 Nov 2023 13:08:16 -0800 (PST)
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARKAmpx001569;
-        Mon, 27 Nov 2023 21:08:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=4LopCIk+VbSRPrGHln6ohxeSl7MfENo2tZiIppXReWQ=;
- b=cbR2bmBgmZTnms5y3cdrfMs2wWuK2efgBrf3dZN/JSn08sEjrK9bzdoVmuQ1g6ksgkf6
- mxl/ifeSOPqfZe7LOO152c7A0wVHNiwKBG/YPZrozyxHwrTf9IAtCI0h2TvKnxoAcg0a
- i8zLvKMZ0DZGHEKIITmUHcPBXlr2UrvfGNDssx4FbSbYVlvz+8eq3lPPdYDt2nLv45wV
- OGLMmWmcZ8yZ9x6azZiC97YnjI7cRIWLsJdjM5Wpvs3ej37DYpnRaB5cUdWAnUwI/NAw
- QTWOnsUQNQzxNO98hetfK5b7tPqAd8HTjqwbgqseAuDt4qCVkc+G2t0tf43XQpR1g314 qw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3un0mdkgm8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 21:08:11 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ARKBNTe004677;
-        Mon, 27 Nov 2023 21:08:11 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3un0mdkgke-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 21:08:11 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARJWQiN009176;
-        Mon, 27 Nov 2023 21:08:09 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ukumybjd3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 21:08:09 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ARL89qI17892090
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 Nov 2023 21:08:09 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E7A1F5805D;
-        Mon, 27 Nov 2023 21:08:08 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2413058052;
-        Mon, 27 Nov 2023 21:08:08 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 27 Nov 2023 21:08:08 +0000 (GMT)
-Message-ID: <a9d5b31d-2d89-4787-959e-2df2c059db9b@linux.ibm.com>
-Date:   Mon, 27 Nov 2023 16:08:07 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 6/8] tpm: TPM2B formatted buffers
-Content-Language: en-US
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        linux-integrity@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        William Roberts <bill.c.roberts@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>
-References: <20231124020237.27116-1-jarkko@kernel.org>
- <20231124020237.27116-7-jarkko@kernel.org>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <20231124020237.27116-7-jarkko@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: xOHUTHP6x6ahT23qLkSvmsjkl4sx1t1n
-X-Proofpoint-GUID: XU5Okn9GBCsD6m9LPskvoqo-KqBsw7_M
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Mon, 27 Nov 2023 16:08:48 -0500
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0677219D;
+        Mon, 27 Nov 2023 13:08:55 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 6F5F35C004E;
+        Mon, 27 Nov 2023 16:08:54 -0500 (EST)
+Received: from imap44 ([10.202.2.94])
+  by compute3.internal (MEProxy); Mon, 27 Nov 2023 16:08:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1701119334; x=1701205734; bh=O7eAZBa/VWWZ/OXR3VR79aB+uaJ9c4U23L/
+        jIs+R/4I=; b=OqM1IvhywGfmb7/kGPg8aPxMlu17gR4i5CH9/cqoelecohlYpCR
+        /c1Og9aPbItY0RcGuLHayz3h1Mmo51jLTPjledQBGtv7CLQBdtOywUqY3ebesdjh
+        w/KgFo9dTiMaWYN65I0ofo05JauvgXGn59f0x6BjzkONfKGyBzpoP6Owy4rButba
+        YVA2NRJuSEI+ePvSTkdk4V3idMP6d5l57axFknSG3n+MRxRmc87fsZGMrocrGevy
+        /MeOyX413+ioZH7CnQns3dUBQU3yBOoOltb1i1Bs48iNWsKwZ5C/U8Hijrfe7CMb
+        C4yY9q8rs0vcpj0rd2e2wARn3LeaEBpgmgA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1701119334; x=1701205734; bh=O7eAZBa/VWWZ/OXR3VR79aB+uaJ9c4U23L/
+        jIs+R/4I=; b=oMtl2vfZKze5RZUv5gkgqJtSL34cqE0nGLzcTGh1dlkFMyNcSYs
+        Bps/C/1fM/uMFwg+7atKxp9YinmkIQnzIQ5L29wxAxcacsEwETBDMiC+7amaMbXT
+        PceJaJx609MSuf4COEB7azsvh2zagVy0aAxxbTd5fEDm+SsxdCnuiukTrLAIc5Hn
+        jnQBi7Pnnqoc6nOi1St+ZKNFQ5wg0gZ3nvuguKV/5wG25Vy5TtwQEmhCCO3Zz+Pl
+        J/0YHmxFPThmKOyyza8A75mNqp2TMRHiaRXfmdOKg6SydW+V9YjkKHvYmaEsR516
+        lZMKyhcGMuVTBXXq6C7CIE+DsQiVzHXmL7w==
+X-ME-Sender: <xms:ZQVlZUlkX5naVSJjUG7a5LlzcDZJbVDTVFLUDiRTQzRwOh8zZmCl8w>
+    <xme:ZQVlZT1l-Qo5NEm1acyCQ5WNAgEYgQUNyvojv0R5DW-zh-a0ZgHuuGFQi13uhgHQw
+    AZvRlfHcAPUJGxA138>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeiuddgudegjecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
+    lfhirgiguhhnucgjrghnghdfuceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtg
+    homheqnecuggftrfgrthhtvghrnhepudefgeeftedugeehffdtheefgfevffelfefghefh
+    jeeugeevtefhudduvdeihefgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:ZQVlZSpBwe7Fy4oIQ2uXsQhMR5CRgwHNgR54NHNaXbDK9orhjPgNyg>
+    <xmx:ZQVlZQnnbwzhN-1wZLF_yUzVW9q5knGrwaXAd-cJJ9OiR9ANyTdk7A>
+    <xmx:ZQVlZS05x9tCsC-yoi2q9V77LnxkssFNeWR1RtT6Yw9mPHuSgl2kdg>
+    <xmx:ZgVlZd3C112C-1ZDvi2fs0EzyPbh9HLTILc8Uw5-MetAtKrB_0ao3w>
+Feedback-ID: ifd894703:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 14CA836A0075; Mon, 27 Nov 2023 16:08:53 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1234-gac66594aae-fm-20231122.001-gac66594a
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-27_19,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- bulkscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0 mlxlogscore=999
- phishscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311270147
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Message-Id: <c73d9dbf-b637-47ff-ae2d-6f8987345410@app.fastmail.com>
+In-Reply-To: <ysij22pivneyg7tk3bv3hti3tsgbzglb6pin3my7r3bokzxjj6@jrjmu45gbupr>
+References: <20231122182419.30633-2-fancer.lancer@gmail.com>
+ <b996b542-4cd3-4f9d-b221-00b2d5ef224e@app.fastmail.com>
+ <c7cuvhuu6py5vxhhvkhekv6ned5sro4a3wzzn7v45oahfw42ud@gyqmucagt5e2>
+ <8ca730b9-fa8c-46ea-bdc5-158da0f29c3a@app.fastmail.com>
+ <ZV9Fq1ihUm1Rn6yO@alpha.franken.de>
+ <d6d7e27a-b1a1-48af-be6c-aa9097c48992@app.fastmail.com>
+ <ZV94rifAIF2p9Nej@alpha.franken.de>
+ <245d3985-9085-4be0-8c74-d95d06334584@app.fastmail.com>
+ <3iksuovvsln3cw3xpmjd7f7xixfvwaneu4ok56fnookvyolpco@wrxxew3thgnq>
+ <dfda70b6-3291-462f-bc87-06dcc87bd068@app.fastmail.com>
+ <ysij22pivneyg7tk3bv3hti3tsgbzglb6pin3my7r3bokzxjj6@jrjmu45gbupr>
+Date:   Mon, 27 Nov 2023 21:08:11 +0000
+From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To:     "Serge Semin" <fancer.lancer@gmail.com>
+Cc:     "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "Arnd Bergmann" <arnd@arndb.de>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Mike Rapoport" <rppt@kernel.org>,
+        "Matthew Wilcox" <willy@infradead.org>,
+        "Tiezhu Yang" <yangtiezhu@loongson.cn>,
+        "Huacai Chen" <chenhuacai@kernel.org>,
+        "Yinglu Yang" <yangyinglu@loongson.cn>,
+        "Alexey Malahov" <Alexey.Malahov@baikalelectronics.ru>,
+        "Aleksandar Rikalo" <aleksandar.rikalo@syrmia.com>,
+        "Aleksandar Rikalo" <arikalo@gmail.com>,
+        "Dragan Mladjenovic" <dragan.mladjenovic@syrmia.com>,
+        "Chao-ying Fu" <cfu@wavecomp.com>, "Marc Zyngier" <maz@kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/7] mips: dmi: Fix early remap on MIPS32
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -103,105 +111,82 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 11/23/23 21:02, Jarkko Sakkinen wrote:
-> Declare tpm_buf_init_sized() and tpm_buf_reset_sized() for creating TPM2B
-> formatted buffers. These buffers are also known as sized buffers in the
-> specifications and literature.
-> 
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+=E5=9C=A82023=E5=B9=B411=E6=9C=8827=E6=97=A5=E5=8D=81=E4=B8=80=E6=9C=88 =
+=E4=B8=8B=E5=8D=884:23=EF=BC=8CSerge Semin=E5=86=99=E9=81=93=EF=BC=9A
+[...]
+>> I just made a quick grep in tree, and it seems like we don't have much
+>> user of ioremap_cache (as well as ioremap_uc/wc) here so I think it is
+>> a safe assumption.
+>
+> I wouldn't say there aren't much users. ioremap_wc() and it's
+> devm-version is widely utilized in the GPU and network and some other
+> subsystems. ioremap_cache() isn't widespread indeed. In anyway even a
+> single user must be supported in safely calling the method if it's
+> provided by the arch-code, otherwise the method could be considered as
+> just a bogus stub to have the kernel successfully built. I bet you'll
+> agree with that. But that's not the point in this case,
+>
+> A bit later you also noted:
+>
+> On Fri, Nov 24, 2023 at 10:34:49PM +0000, Jiaxun Yang wrote:
+>> A nip, _page_cachable_default is set in cpu_cache_init() as well. We'd
+>> better move it to cpu-probe.c, or give it a reasonable default value.
+>
+> Right. Thanks. To be honest I haven't noticed that before your
+> message. _page_cachable_default is indeed initialized in the
+> cpu_cache_init() method, several steps after it would be used in the
+> framework of dmi_remap_early(). On the other hand ioremap_cache() is
+> defined as ioremap_prot() with the _page_cachable_default variable
+> passed. So my code will still correctly work unless
+> _page_cachable_default is pre-initialized with something other than
+> zero. On the other hand we can't easily change its default value
+> because it will affect and likely break the r3k (CPU_R3000) and Octeon
+> based platforms, because it's utilized to initialize the
+> protection-map table. Of course we can fix the r3k_cache_init() and
+> octeon_cache_init() methods too so they would get the
+> _page_cachable_default variable back to zero, but it will also make
+> things around it more complicated.
+>
+> Also note, moving the _page_cachable_default initialization to the
+> earlier stages like cpu_probe() won't work better because the field
+> value may get change for instance in the framework of the smp_setup()
+> function (see cps_smp_setup()).
+>
+> So after all the considerations above this solution now looks even
+> clumsier than before.( Any idea how to make it better?
 
-Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+I think the best solution maybe just use CKSEG0 to setup map here.
 
-> ---
-> v2: [2021-11-21] Refine the API according to the comments for
->      https://lore.kernel.org/linux-integrity/20231024011531.442587-5-jarkko@kernel.org/
-> ---
->   drivers/char/tpm/tpm-buf.c | 38 +++++++++++++++++++++++++++++++++++---
->   include/linux/tpm.h        |  4 ++++
->   2 files changed, 39 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/char/tpm/tpm-buf.c b/drivers/char/tpm/tpm-buf.c
-> index 3f39893f3bb1..099b4a56c5d5 100644
-> --- a/drivers/char/tpm/tpm-buf.c
-> +++ b/drivers/char/tpm/tpm-buf.c
-> @@ -47,6 +47,36 @@ void tpm_buf_reset(struct tpm_buf *buf, u16 tag, u32 ordinal)
->   }
->   EXPORT_SYMBOL_GPL(tpm_buf_reset);
->   
-> +/**
-> + * tpm_buf_init_sized() - Allocate and initialize a sized (TPM2B) buffer
-> + * @buf:	A @tpm_buf
-> + *
-> + * Return: 0 or -ENOMEM
-> + */
-> +int tpm_buf_init_sized(struct tpm_buf *buf)
-> +{
-> +	buf->data = (u8 *)__get_free_page(GFP_KERNEL);
-> +	if (!buf->data)
-> +		return -ENOMEM;
-> +
-> +	tpm_buf_reset_sized(buf);
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(tpm_buf_init_sized);
-> +
-> +/**
-> + * tpm_buf_reset_sized() - Initialize a sized buffer
-> + * @buf:	A &tpm_buf
-> + */
-> +void tpm_buf_reset_sized(struct tpm_buf *buf)
-> +{
-> +	buf->flags = TPM_BUF_TPM2B;
-> +	buf->length = 2;
-> +	buf->data[0] = 0;
-> +	buf->data[1] = 0;
-> +}
-> +EXPORT_SYMBOL_GPL(tpm_buf_reset_sized);
-> +
->   void tpm_buf_destroy(struct tpm_buf *buf)
->   {
->   	free_page((unsigned long)buf->data);
-> @@ -72,8 +102,6 @@ EXPORT_SYMBOL_GPL(tpm_buf_length);
->    */
->   void tpm_buf_append(struct tpm_buf *buf, const u8 *new_data, u16 new_length)
->   {
-> -	struct tpm_header *head = (struct tpm_header *)buf->data;
-> -
->   	/* Return silently if overflow has already happened. */
->   	if (buf->flags & TPM_BUF_OVERFLOW)
->   		return;
-> @@ -86,7 +114,11 @@ void tpm_buf_append(struct tpm_buf *buf, const u8 *new_data, u16 new_length)
->   
->   	memcpy(&buf->data[buf->length], new_data, new_length);
->   	buf->length += new_length;
-> -	head->length = cpu_to_be32(buf->length);
-> +
-> +	if (buf->flags & TPM_BUF_TPM2B)
-> +		((__be16 *)buf->data)[0] = cpu_to_be16(buf->length - 2);
-> +	else
-> +		((struct tpm_header *)buf->data)->length = cpu_to_be32(buf->length);
->   }
->   EXPORT_SYMBOL_GPL(tpm_buf_append);
->   
-> diff --git a/include/linux/tpm.h b/include/linux/tpm.h
-> index 1d7b39b5c383..715db4a91c1f 100644
-> --- a/include/linux/tpm.h
-> +++ b/include/linux/tpm.h
-> @@ -300,6 +300,8 @@ struct tpm_header {
->   enum tpm_buf_flags {
->   	/* the capacity exceeded: */
->   	TPM_BUF_OVERFLOW	= BIT(0),
-> +	/* TPM2B format: */
-> +	TPM_BUF_TPM2B		= BIT(1),
->   };
->   
->   /*
-> @@ -328,6 +330,8 @@ struct tpm2_hash {
->   
->   int tpm_buf_init(struct tpm_buf *buf, u16 tag, u32 ordinal);
->   void tpm_buf_reset(struct tpm_buf *buf, u16 tag, u32 ordinal);
-> +int tpm_buf_init_sized(struct tpm_buf *buf);
-> +void tpm_buf_reset_sized(struct tpm_buf *buf);
->   void tpm_buf_destroy(struct tpm_buf *buf);
->   u32 tpm_buf_length(struct tpm_buf *buf);
->   void tpm_buf_append(struct tpm_buf *buf, const u8 *new_data, u16 new_length);
+Btw I was thinking about 64 bit here, I thought for 64bit we would
+just embedded prot into XKPHYS, however I quickly figure out
+ioremap_cache was never implemented properly on 64-bit system,
+so does ioremap_wc.
+
+> u64 base =3D (flags =3D=3D _CACHE_UNCACHED ? IO_BASE : UNCAC_BASE);
+
+Which is always uncached mapping.
+
+>>=20
+[...]
+>
+> Note the memory might be clobbered even before dmi_setup() for
+> instance by means of the early_memtest() method. In anyway it would be
+> better if the system booloader would have already reserved the DMI
+> memory (in DTB) or it would have been done by the platform-specific
+> plat_mem_setup() method.
+
+Unfortunately, too many machines are shipped with those badly designed
+firmware. We rely on dmi_setup code to scan and preserve dmi table from
+random location in memory.
+
+>
+>> The second is we may have some early quirks depends on DMI
+>> information.
+>
+> Which quirks do you mean to be dependent in between the current
+> dmi_setup() call place and the cpu_cache_init() method invocation?
+
+I think we don't have any for now.
+
+--=20
+- Jiaxun
