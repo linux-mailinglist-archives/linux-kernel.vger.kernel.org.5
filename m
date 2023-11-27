@@ -2,112 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1901A7FA200
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:08:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E6017FA20E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:12:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233705AbjK0OHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 09:07:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50614 "EHLO
+        id S233597AbjK0OMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 09:12:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233468AbjK0OFu (ORCPT
+        with ESMTP id S233582AbjK0OLW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 09:05:50 -0500
-Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB85819A4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:01:14 -0800 (PST)
-Received: by mail-oo1-xc36.google.com with SMTP id 006d021491bc7-58d564b98c9so1179161eaf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:01:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701093674; x=1701698474; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IOw7FonKD9MbC43k524zBSSsF7xxQpwUCU29NYnvaYc=;
-        b=OJl3mNILmZTiqrlV73fwESfHGqesPKULezY5YoR/hoWDnaKMpNhk3Tf34HBwaROh53
-         GcRQNkavgyhK9b3+098L8JGZ5gk1VGIVoceM2ya11oDvjHs8ML99oIHHvKZV6zt4ZE87
-         mHKGWuejAx+slrIJKQcrayqNUpy2NMQIt6kLohbEvCUTQuHf4YbKiVel/cKEHLM4N4YJ
-         y1g5zPBP+mzfFDGIVseumrYEZLUHl47waAS3tAlCtFGN57KnOnjfH5j8TjY4If4PBpKN
-         WbAqpr9D41bcpP+VC5rcojcdR4IGZIoMA4QaSqv3JY87R70OWeeb1cJPvOYXlnZXgp2F
-         DUSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701093674; x=1701698474;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IOw7FonKD9MbC43k524zBSSsF7xxQpwUCU29NYnvaYc=;
-        b=Q0Diayw7MYZ2JhdV8GLdHtrwAdC2dILps1DqoIQ8ZrrzG7i2UnfQkHEk12b5obElfh
-         g6xreUYD6nqKWotb1hH6vO6iHgTMx/VHEkkMWxzi/tKckWiMt+7w4I+Ellz6BL6yzfet
-         LmfHp/HA9pBs4wst/zyuisX3XvLTci9x7zpcXz8ZiX5uV/SmkNwXH4PSvL0tFoUQTp4z
-         8LEGoFct/fczb+/83+MezZPLqwrJWJnQdr89db2aIZtVJfpeQDujK9/WmYXEFwF4p1us
-         y3S09zTBjk5N26DSDEKCqC+nKbJD8V9HakBPbFcyRSS/WTpk4K0TDCTfbV92pFHItU9f
-         aqbw==
-X-Gm-Message-State: AOJu0Yyh9UF7HrNH/E7BNrsUFPjC26kDnAvzzU4qPMcgeCUdnFWoSZxI
-        M6S+XpLMpPmDaW+ZmusD3JtZzVkyCjRziVogceS5Iw==
-X-Google-Smtp-Source: AGHT+IHW3yEZWLUXwXW7lR4kIYc6dC4HAOI3WjIsnCEwT9kCuUBav8/wXNjJwUSjpBcw7tbU4EpOfyuvEFAszzuQaQ4=
-X-Received: by 2002:a05:6358:4407:b0:16d:abc7:bfab with SMTP id
- z7-20020a056358440700b0016dabc7bfabmr13836740rwc.15.1701093674044; Mon, 27
- Nov 2023 06:01:14 -0800 (PST)
+        Mon, 27 Nov 2023 09:11:22 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6812526B3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:02:08 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B0D572F4;
+        Mon, 27 Nov 2023 06:02:55 -0800 (PST)
+Received: from [10.57.73.191] (unknown [10.57.73.191])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 626723F6C4;
+        Mon, 27 Nov 2023 06:02:05 -0800 (PST)
+Message-ID: <8dd0f52c-d261-4541-930f-bd4e5921be5b@arm.com>
+Date:   Mon, 27 Nov 2023 14:02:04 +0000
 MIME-Version: 1.0
-References: <20231118013959.37384-1-tmgross@umich.edu>
-In-Reply-To: <20231118013959.37384-1-tmgross@umich.edu>
-From:   Alice Ryhl <aliceryhl@google.com>
-Date:   Mon, 27 Nov 2023 15:01:03 +0100
-Message-ID: <CAH5fLghnpHCXg8c3wkpBrsxNLZjZvNZ6QDqu5rBJ8xPNkHSCAw@mail.gmail.com>
-Subject: Re: [PATCH v2] rust: macros: update 'paste!' macro to accept string literals
-To:     Trevor Gross <tmgross@umich.edu>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        FUJITA Tomonori <fujita.tomonori@gmail.com>,
-        Vincenzo Palazzo <vincenzopalazzodev@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH v7 10/10] selftests/mm/cow: Add tests for anonymous
+ small-sized THP
+Content-Language: en-GB
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20231122162950.3854897-1-ryan.roberts@arm.com>
+ <20231122162950.3854897-11-ryan.roberts@arm.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20231122162950.3854897-11-ryan.roberts@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 18, 2023 at 2:41=E2=80=AFAM Trevor Gross <tmgross@umich.edu> wr=
-ote:
->
-> Enable combining identifiers with literals in the 'paste!' macro. This
-> allows combining user-specified strings with affixes to create
-> namespaced identifiers.
->
-> This sample code:
->
->     macro_rules! m {
->         ($name:lit) =3D> {
->             paste!(struct [<_some_ $name _struct_>] {})
->         }
->     }
->
->     m!("foo_bar");
->
-> Would previously cause a compilation error. It will now generate:
->
->     struct _some_foo_bar_struct_ {}
->
-> Signed-off-by: Trevor Gross <tmgross@umich.edu>
-> Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-> Reviewed-by: Vincenzo Palazzo <vincenzopalazzodev@gmail.com>
-> Reviewed-by: Alice Ryhl <aliceryhl@google.com>
-> Reviewed-by: Benno Lossin <benno.lossin@proton.me>
-> Reviewed-by: Gary Guo <gary@garyguo.net>
+On 22/11/2023 16:29, Ryan Roberts wrote:
+> Add tests similar to the existing PMD-sized THP tests, but which operate
+> on memory backed by (PTE-mapped) small-sized THP. This reuses all the
+> existing infrastructure. If the test suite detects that small-sized THP
+> is not supported by the kernel, the new tests are skipped.
+> 
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> ---
+>  tools/testing/selftests/mm/cow.c | 71 +++++++++++++++++++++++++++++++-
+>  1 file changed, 70 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/mm/cow.c b/tools/testing/selftests/mm/cow.c
+> index d03c453cfd5c..3efc395c7077 100644
+> --- a/tools/testing/selftests/mm/cow.c
+> +++ b/tools/testing/selftests/mm/cow.c
+> @@ -29,15 +29,49 @@
+>  #include "../../../../mm/gup_test.h"
+>  #include "../kselftest.h"
+>  #include "vm_util.h"
+> +#include "thp_settings.h"
+> 
+>  static size_t pagesize;
+>  static int pagemap_fd;
+>  static size_t pmdsize;
+> +static int nr_thpsmallsizes;
+> +static size_t thpsmallsizes[20];
 
-Since there are no other replies to this version, I'll confirm that
-this still looks good to me.
+Off the back of some comments David made againt the previous patch [1], I'm
+proposing to rework this a bit so that ALL thp sizes are stored in this array,
+not just the non-PMD-sized sizes. This makes the changes overall a bit smaller
+and easier to understand, I think...
 
-Alice
+>  static int nr_hugetlbsizes;
+>  static size_t hugetlbsizes[10];
+>  static int gup_fd;
+>  static bool has_huge_zeropage;
+> 
+> +static int sz2ord(size_t size)
+> +{
+> +	return __builtin_ctzll(size / pagesize);
+> +}
+> +
+> +static int detect_smallthp_sizes(size_t sizes[], int max)
+
+This changes to detect_thp_sizes() and deposits all sizes in sizes[]
+
+> +{
+> +	int count = 0;
+> +	unsigned long orders;
+> +	size_t kb;
+> +	int i;
+> +
+> +	/* thp not supported at all. */
+> +	if (!pmdsize)
+> +		return 0;
+> +
+> +	orders = thp_supported_orders();
+> +
+> +	/* Only interested in small-sized THP (less than PMD-size). */
+> +	for (i = 0; i < sz2ord(pmdsize); i++) {
+> +		if (!(orders & (1UL << i)))
+> +			continue;
+> +		kb = (pagesize >> 10) << i;
+> +		sizes[count++] = kb * 1024;
+> +		ksft_print_msg("[INFO] detected small-sized THP size: %zu KiB\n",
+> +			       kb);
+
+This just prints "[INFO] detected THP size: %zu KiB"
+
+> +	}
+> +
+> +	return count;
+> +}
+> +
+>  static void detect_huge_zeropage(void)
+>  {
+>  	int fd = open("/sys/kernel/mm/transparent_hugepage/use_zero_page",
+> @@ -1113,6 +1147,23 @@ static void run_anon_test_case(struct test_case const *test_case)
+>  		run_with_partial_mremap_thp(test_case->fn, test_case->desc, pmdsize);
+>  		run_with_partial_shared_thp(test_case->fn, test_case->desc, pmdsize);
+>  	}
+> +	for (i = 0; i < nr_thpsmallsizes; i++) {
+> +		size_t size = thpsmallsizes[i];
+> +		struct thp_settings settings = *thp_current_settings();
+> +
+> +		settings.hugepages[sz2ord(pmdsize)].enabled = THP_NEVER;
+> +		settings.hugepages[sz2ord(size)].enabled = THP_ALWAYS;
+> +		thp_push_settings(&settings);
+> +
+> +		run_with_pte_mapped_thp(test_case->fn, test_case->desc, size);
+> +		run_with_pte_mapped_thp_swap(test_case->fn, test_case->desc, size);
+> +		run_with_single_pte_of_thp(test_case->fn, test_case->desc, size);
+> +		run_with_single_pte_of_thp_swap(test_case->fn, test_case->desc, size);
+> +		run_with_partial_mremap_thp(test_case->fn, test_case->desc, size);
+> +		run_with_partial_shared_thp(test_case->fn, test_case->desc, size);
+> +
+> +		thp_pop_settings();
+> +	}
+
+This same loop covers the pmdsize tests too, and I've just added a conditional
+that runs the 2 extra tests that are pmdsize only.
+
+>  	for (i = 0; i < nr_hugetlbsizes; i++)
+>  		run_with_hugetlb(test_case->fn, test_case->desc,
+>  				 hugetlbsizes[i]);
+> @@ -1134,6 +1185,7 @@ static int tests_per_anon_test_case(void)
+> 
+>  	if (pmdsize)
+>  		tests += 8;
+> +	tests += 6 * nr_thpsmallsizes;
+>  	return tests;
+>  }
+> 
+> @@ -1691,12 +1743,24 @@ static int tests_per_non_anon_test_case(void)
+>  int main(int argc, char **argv)
+>  {
+>  	int err;
+> +	struct thp_settings default_settings;
+> 
+>  	pagesize = getpagesize();
+>  	pmdsize = read_pmd_pagesize();
+> -	if (pmdsize)
+> +	if (pmdsize) {
+> +		/* Only if THP is supported. */
+> +		thp_read_settings(&default_settings);
+> +		default_settings.hugepages[sz2ord(pmdsize)].enabled = THP_GLOBAL;
+> +		thp_save_settings();
+> +		thp_push_settings(&default_settings);
+> +
+>  		ksft_print_msg("[INFO] detected PMD-mapped THP size: %zu KiB\n",
+>  			       pmdsize / 1024);
+> +
+> +		nr_thpsmallsizes = detect_smallthp_sizes(thpsmallsizes,
+> +						    ARRAY_SIZE(thpsmallsizes));
+> +	}
+> +
+>  	nr_hugetlbsizes = detect_hugetlb_page_sizes(hugetlbsizes,
+>  						    ARRAY_SIZE(hugetlbsizes));
+>  	detect_huge_zeropage();
+> @@ -1715,6 +1779,11 @@ int main(int argc, char **argv)
+>  	run_anon_thp_test_cases();
+>  	run_non_anon_test_cases();
+> 
+> +	if (pmdsize) {
+> +		/* Only if THP is supported. */
+> +		thp_restore_settings();
+> +	}
+> +
+>  	err = ksft_get_fail_cnt();
+>  	if (err)
+>  		ksft_exit_fail_msg("%d out of %d tests failed\n",
+> --
+> 2.25.1
+> 
+
