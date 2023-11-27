@@ -2,105 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A034B7FA26B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:20:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 522B37FA26D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:20:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233849AbjK0OT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 09:19:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46656 "EHLO
+        id S233244AbjK0OUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 09:20:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233381AbjK0OSv (ORCPT
+        with ESMTP id S233774AbjK0OTA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 09:18:51 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 105803C10
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:16:29 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 359FDC433C9;
-        Mon, 27 Nov 2023 14:16:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701094588;
-        bh=hLHjKJzz8IdTK+ucHC/mbOa5ERIt+OH27L69qBoQ2xk=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Zd0+u8SNJtgR+IDLZNKBjj8S5xHR+n/l92lz/sdgcAgyPBHN3gYUhpJvDL5syOXe9
-         /1kdSNfj3KZQjzOzyVFXFScgPgMMYnhNac6QT+vHr4FK5lvepEXOo0EhXZvfUlJT0r
-         CYIlyorzvdpZsmRlnyjZnCBXXuopc1R9YG/yhFiTXpkEXa6UPH3imZqFpmU4CXyiZo
-         BRyUyywllkDN+C/4r5sil2gSKXp5yg3ZkzylY24/gX2FvdyyvFOMzyrZ3g6E7Necg2
-         +jNRq53AMyRDLQb0FxU/nvcVq1qUtZ57AQOqZhWoLn0XcvPSjNEXTh8kvWOUcywJwf
-         Shk6Nw48jv4Qg==
-Message-ID: <1356b1fc-fcdb-42af-a8df-0f7c2e2be9f3@kernel.org>
-Date:   Mon, 27 Nov 2023 16:16:22 +0200
+        Mon, 27 Nov 2023 09:19:00 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77BC1420C
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:16:41 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1r7cPZ-0008A9-Er; Mon, 27 Nov 2023 15:16:33 +0100
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <sha@pengutronix.de>)
+        id 1r7cPY-00Bxqo-6E; Mon, 27 Nov 2023 15:16:32 +0100
+Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1r7cPY-00471C-3F; Mon, 27 Nov 2023 15:16:32 +0100
+Date:   Mon, 27 Nov 2023 15:16:32 +0100
+From:   Sascha Hauer <s.hauer@pengutronix.de>
+To:     Andy Yan <andyshrk@163.com>
+Cc:     heiko@sntech.de, hjc@rock-chips.com,
+        dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
+        kever.yang@rock-chips.com, chris.obbard@collabora.com,
+        Andy Yan <andy.yan@rock-chips.com>
+Subject: Re: [PATCH v2 05/12] drm/rockchip: vop2: Set YUV/RGB overlay mode
+Message-ID: <20231127141632.GF977968@pengutronix.de>
+References: <20231122125316.3454268-1-andyshrk@163.com>
+ <20231122125438.3454608-1-andyshrk@163.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V3 0/2] interconnect: qcom: Introduce interconnect drivers
- for X1E80100
-Content-Language: en-US
-To:     Sibi Sankar <quic_sibis@quicinc.com>, andersson@kernel.org
-Cc:     agross@kernel.org, conor+dt@kernel.org, quic_rjendra@quicinc.com,
-        abel.vesa@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_tsoni@quicinc.com,
-        neil.armstrong@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org
-References: <20231123135028.29433-1-quic_sibis@quicinc.com>
-From:   Georgi Djakov <djakov@kernel.org>
-In-Reply-To: <20231123135028.29433-1-quic_sibis@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231122125438.3454608-1-andyshrk@163.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.11.23 15:50, Sibi Sankar wrote:
-> This series adds interconnect support for the Qualcomm X1E80100 platform,
-> aka Snapdragon X Elite.
+On Wed, Nov 22, 2023 at 08:54:38PM +0800, Andy Yan wrote:
+> From: Andy Yan <andy.yan@rock-chips.com>
 > 
-> Our v1 post of the patchsets adding support for Snapdragon X Elite SoC had
-> the part number sc8380xp which is now updated to the new part number x1e80100
-> based on the new branding scheme and refers to the exact same SoC.
+> Set overlay mode register according to the
+> output mode is yuv or rgb.
 > 
-> V3:
-> * Fix the index numbers of pcie_center_anoc nodes. [Georgi]
+> Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+> ---
+> 
+> (no changes since v1)
+> 
+>  drivers/gpu/drm/rockchip/rockchip_drm_drv.h  |  1 +
+>  drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 19 ++++++++++++++++---
+>  2 files changed, 17 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_drv.h b/drivers/gpu/drm/rockchip/rockchip_drm_drv.h
+> index 3d8ab2defa1b..7a58c5c9d4ec 100644
+> --- a/drivers/gpu/drm/rockchip/rockchip_drm_drv.h
+> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_drv.h
+> @@ -51,6 +51,7 @@ struct rockchip_crtc_state {
+>  	u32 bus_format;
+>  	u32 bus_flags;
+>  	int color_space;
+> +	bool yuv_overlay;
 
-Thanks for updating the patches, Sibi! Now LGTM.
+This struct already contains a bool type variable. Please add this one
+next to it to keep the struct size smaller.
 
-Hi Bjorn,
+>  };
+>  #define to_rockchip_crtc_state(s) \
+>  		container_of(s, struct rockchip_crtc_state, base)
+> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+> index a019cc9bbd54..b32a291c5caa 100644
+> --- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+> @@ -1612,6 +1612,8 @@ static void vop2_crtc_atomic_enable(struct drm_crtc *crtc,
+>  
+>  	vop2->enable_count++;
+>  
+> +	vcstate->yuv_overlay = is_yuv_output(vcstate->bus_format);
+> +
+>  	vop2_crtc_enable_irq(vp, VP_INT_POST_BUF_EMPTY);
+>  
+>  	polflags = 0;
+> @@ -1639,7 +1641,7 @@ static void vop2_crtc_atomic_enable(struct drm_crtc *crtc,
+>  	if (vop2_output_uv_swap(vcstate->bus_format, vcstate->output_mode))
+>  		dsp_ctrl |= RK3568_VP_DSP_CTRL__DSP_RB_SWAP;
+>  
+> -	if (is_yuv_output(vcstate->bus_format))
+> +	if (vcstate->yuv_overlay)
+>  		dsp_ctrl |= RK3568_VP_DSP_CTRL__POST_DSP_OUT_R2Y;
+>  
+>  	vop2_dither_setup(crtc, &dsp_ctrl);
+> @@ -1948,10 +1950,12 @@ static void vop2_setup_layer_mixer(struct vop2_video_port *vp)
+>  	u16 hdisplay;
+>  	u32 bg_dly;
+>  	u32 pre_scan_dly;
+> +	u32 ovl_ctrl;
+>  	int i;
+>  	struct vop2_video_port *vp0 = &vop2->vps[0];
+>  	struct vop2_video_port *vp1 = &vop2->vps[1];
+>  	struct vop2_video_port *vp2 = &vop2->vps[2];
+> +	struct rockchip_crtc_state *vcstate = to_rockchip_crtc_state(vp->crtc.state);
+>  
+>  	adjusted_mode = &vp->crtc.state->adjusted_mode;
+>  	hsync_len = adjusted_mode->crtc_hsync_end - adjusted_mode->crtc_hsync_start;
+> @@ -1964,7 +1968,14 @@ static void vop2_setup_layer_mixer(struct vop2_video_port *vp)
+>  	pre_scan_dly = ((bg_dly + (hdisplay >> 1) - 1) << 16) | hsync_len;
+>  	vop2_vp_write(vp, RK3568_VP_PRE_SCAN_HTIMING, pre_scan_dly);
+>  
+> -	vop2_writel(vop2, RK3568_OVL_CTRL, 0);
+> +	ovl_ctrl = vop2_readl(vop2, RK3568_OVL_CTRL);
+> +	if (vcstate->yuv_overlay)
+> +		ovl_ctrl |= BIT(vp->id);
+> +	else
+> +		ovl_ctrl &= ~BIT(vp->id);
 
-Here is a stable branch with the DT header in case you need it:
-https://git.kernel.org/pub/scm/linux/kernel/git/djakov/icc.git/log/?h=icc-x1e80100
+Some
 
-Thanks,
-Georgi
+#define RK3568_OVL_CTRL__YUV_MODE(vp)	BIT(vp)
 
-> 
-> v2:
-> * Update the part number from sc8380xp to x1e80100.
-> * Fixup required property ordering [Krzysztof]
-> * Pickup Rbs.
-> 
-> Dependencies: None
-> Release Link: https://www.qualcomm.com/news/releases/2023/10/qualcomm-unleashes-snapdragon-x-elite--the-ai-super-charged-plat
-> 
-> 
-> Rajendra Nayak (2):
->    dt-bindings: interconnect: Add Qualcomm X1E80100 SoC
->    interconnect: qcom: Add X1E80100 interconnect provider driver
-> 
->   .../interconnect/qcom,x1e80100-rpmh.yaml      |   83 +
->   drivers/interconnect/qcom/Kconfig             |    9 +
->   drivers/interconnect/qcom/Makefile            |    2 +
->   drivers/interconnect/qcom/x1e80100.c          | 2328 +++++++++++++++++
->   drivers/interconnect/qcom/x1e80100.h          |  192 ++
->   .../interconnect/qcom,x1e80100-rpmh.h         |  207 ++
->   6 files changed, 2821 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,x1e80100-rpmh.yaml
->   create mode 100644 drivers/interconnect/qcom/x1e80100.c
->   create mode 100644 drivers/interconnect/qcom/x1e80100.h
->   create mode 100644 include/dt-bindings/interconnect/qcom,x1e80100-rpmh.h
-> 
+Would be nice.
 
+> +
+> +	vop2_writel(vop2, RK3568_OVL_CTRL, ovl_ctrl);
+
+Is it necessary to write this register twice?
+
+> +
+>  	port_sel = vop2_readl(vop2, RK3568_OVL_PORT_SEL);
+>  	port_sel &= RK3568_OVL_PORT_SEL__SEL_PORT;
+>  
+> @@ -2036,9 +2047,11 @@ static void vop2_setup_layer_mixer(struct vop2_video_port *vp)
+>  		layer_sel |= RK3568_OVL_LAYER_SEL__LAYER(nlayer + ofs, 5);
+>  	}
+>  
+> +	ovl_ctrl |= RK3568_OVL_CTRL__LAYERSEL_REGDONE_IMD;
+> +
+>  	vop2_writel(vop2, RK3568_OVL_LAYER_SEL, layer_sel);
+>  	vop2_writel(vop2, RK3568_OVL_PORT_SEL, port_sel);
+> -	vop2_writel(vop2, RK3568_OVL_CTRL, RK3568_OVL_CTRL__LAYERSEL_REGDONE_IMD);
+> +	vop2_writel(vop2, RK3568_OVL_CTRL, ovl_ctrl);
+
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
