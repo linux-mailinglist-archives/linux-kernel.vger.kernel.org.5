@@ -2,111 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3607FA82C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:36:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42B747FA82D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:36:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230062AbjK0RgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 12:36:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36052 "EHLO
+        id S231448AbjK0RgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 12:36:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230384AbjK0RgE (ORCPT
+        with ESMTP id S230404AbjK0RgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 12:36:04 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C8090
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 09:36:11 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27BE6C433C7;
-        Mon, 27 Nov 2023 17:36:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701106570;
-        bh=T9aHRJVjeoKb38nUJtTSE5Hb5iAydevh3MV0AnOO2os=;
+        Mon, 27 Nov 2023 12:36:22 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A101E198;
+        Mon, 27 Nov 2023 09:36:28 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id CE00340E024E;
+        Mon, 27 Nov 2023 17:36:26 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id UVu3Syl5LlkR; Mon, 27 Nov 2023 17:36:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1701106584; bh=fXeNq8uj+nYXQQwj1hJlpkSJlDEw/i6llRh8605Z9QE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hHInnaUbk8vPpP53zjdtj8Uzs9Nj2hN9z9T4PL+6pq/auYsgwB4tIt8jrFjnH7/e6
-         yGT4VMvW0ZvVplmn8pTjhXkZQC5zyGqNvCAEAn3mHHedVD4bX4vTtNz9OoztTQBZTd
-         l0N6XynSXKhibqrR8mNyTJjATa+j7oUNS3VI4bltfnO2h1AYZYW2xW5Gk5bWPzMciq
-         zKH8qpySZHFB1F0+3YhcXwwqwlD98Mli5wgEyN0a06VDyRE5DOXrf0c1x/68bG7hHK
-         AsA7xIDb+DHfO4E1+oHTv+HCJjIq5664X4tjpNAEPuxMLQE6tPKokppCvyPrIM+mJ8
-         MfgUH1PFK8wig==
-Date:   Mon, 27 Nov 2023 17:36:03 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Xu Yang <xu.yang_2@nxp.com>
-Cc:     Frank.li@nxp.com, will@kernel.org, mark.rutland@arm.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, irogers@google.com,
-        namhyung@kernel.org, acme@kernel.org, john.g.garry@oracle.com,
-        james.clark@arm.com, mike.leach@linaro.org, leo.yan@linaro.org,
-        peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: perf: fsl-imx-ddr: Add i.MX95 compatible
-Message-ID: <20231127-whoever-magical-5a7cf2b142e1@spud>
-References: <20231127073208.1055466-1-xu.yang_2@nxp.com>
+        b=jSVuDUXnx15IPUzU1CHgYrL2rbzydK5udJF5wy4RepcKg55kRqtGMh+3GXTKw4XDR
+         I96/ngHpf1cDvsaoDSbp4Dv+VBoSQMjdIxh6z4wJzuMnAmD2tniFsR1iDDG2Y41H8P
+         DgVQxRKDEevJ9dRREdXzXhM7i2+P9ReVusEI5S+MIVFHNdRO97m7BugZfWnIgL4CCG
+         iIOl/JmXhlOJ5BkhRIYInKPm2y+W1JN6V8dXiAkGjUH4Elo+xqUodo7rQmoXxt+eo7
+         6i3873rWhXG/nKYQKdwFWkmw9HOe/LQtkg+E0+amMeapYlYbTnKtnHjMTvZgs0py2z
+         sHyAHchMjYbDZPhROWanqtVrQzciWFsJf4jbDgvJOrDz0g32MlsYpzgGtC4cvg1Cer
+         /OI2efemu8pq8jqrGlUNJ1iI4aFvt0D4D5XJmLYJahZQc+/OrUNbrXkK2DU+ZELdXE
+         X1SsiJeDPhkRiRn6ZJUBvrjEQnQuXbfdJbIBFErOkS2yfgwY7MY786PJuOsMHsmtfb
+         NBATAOzVirxmLu5rnMDv3Pu6fzZWitqNM8D75QU8/WwUzZl3IcZjmRoqODDaIoTt2G
+         WfUkbB6zjj3y+Ym8tMBcnQyIniEozTL/UiiHuP7o6YHf3tOuJTzLT4BT2vI+adx3Z2
+         /aLV0ydJ88B1UY3FEwOP+Y+A=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9406840E01B1;
+        Mon, 27 Nov 2023 17:36:16 +0000 (UTC)
+Date:   Mon, 27 Nov 2023 18:36:10 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Jan Luebbe <jlu@pengutronix.de>, Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Richter <rric@kernel.org>, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] EDAC: armada_xp: Explicitly include correct DT includes
+Message-ID: <20231127173610.GDZWTTigD7tzi3jVJk@fat_crate.local>
+References: <20231013190342.246973-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="bqCvTtn/vn49SB7T"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231127073208.1055466-1-xu.yang_2@nxp.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231013190342.246973-1-robh@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---bqCvTtn/vn49SB7T
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Nov 27, 2023 at 03:32:06PM +0800, Xu Yang wrote:
-> i.MX95 has a more precise counting capability than i.MX93. This will add
-> a compatible for it.
-
-It is hard to tell from this comment, but I figure this "more precise
-capability" is not an option you can enable, but instead makes the
-programming model of this device different to that of the imx93?
-
-Thanks,
-Conor.
-
->=20
-> Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
+On Fri, Oct 13, 2023 at 02:03:42PM -0500, Rob Herring wrote:
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it was merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
->  Documentation/devicetree/bindings/perf/fsl-imx-ddr.yaml | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/perf/fsl-imx-ddr.yaml b/Do=
-cumentation/devicetree/bindings/perf/fsl-imx-ddr.yaml
-> index e9fad4b3de68..1bc7bf1c8368 100644
-> --- a/Documentation/devicetree/bindings/perf/fsl-imx-ddr.yaml
-> +++ b/Documentation/devicetree/bindings/perf/fsl-imx-ddr.yaml
-> @@ -20,6 +20,7 @@ properties:
->            - fsl,imx8mn-ddr-pmu
->            - fsl,imx8mp-ddr-pmu
->            - fsl,imx93-ddr-pmu
-> +          - fsl,imx95-ddr-pmu
->        - items:
->            - enum:
->                - fsl,imx8mm-ddr-pmu
-> --=20
-> 2.34.1
->=20
+>  drivers/edac/armada_xp_edac.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 
---bqCvTtn/vn49SB7T
-Content-Type: application/pgp-signature; name="signature.asc"
+Applied, thanks.
 
------BEGIN PGP SIGNATURE-----
+-- 
+Regards/Gruss,
+    Boris.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWTTgwAKCRB4tDGHoIJi
-0ikLAP9tu0wxGmk25cjdbqeGdZvGn4NbjVTL5qsfZz4bjeAA/wEAvvoBXvC9fdQH
-KSTCMB62c3ddeFfzxxsMDT4xgMAv8AI=
-=dSz3
------END PGP SIGNATURE-----
-
---bqCvTtn/vn49SB7T--
+https://people.kernel.org/tglx/notes-about-netiquette
