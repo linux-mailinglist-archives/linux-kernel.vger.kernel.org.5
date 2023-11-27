@@ -2,117 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7B37F9C24
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:57:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB76A7F9C25
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:57:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231388AbjK0I4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 03:56:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34536 "EHLO
+        id S232555AbjK0I5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 03:57:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230149AbjK0I4x (ORCPT
+        with ESMTP id S230149AbjK0I5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 03:56:53 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73DFD111
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:56:59 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c87acba73bso52093261fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:56:59 -0800 (PST)
+        Mon, 27 Nov 2023 03:57:46 -0500
+Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B468E125
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:57:52 -0800 (PST)
+Received: by mail-vk1-xa2d.google.com with SMTP id 71dfb90a1353d-4ac05ca3935so1137846e0c.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:57:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701075418; x=1701680218; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S4j+WUhsI6HLaQhNpMAvxRSBO5fBvP0PmC3kAAmj31Q=;
-        b=dl4wWGOn6kykg48ZcRUMkhyRM5QYvpXh3/nidOx03B674JnRlGNCBOnLuLU4Pyx5rt
-         QY+Ki3zae0/U8VuKfjYDh80WrTxWby2sWapoxRkWuC2zk4iY5YYPsY3ABCfRcymyGtX7
-         CJt8HXopWnxweOO34BjtaWfrm9q9YcnAZhMOWPOKPfew2EBTNkiwVTknK8Z2AWiZICqz
-         MflOgPcpTWZeBrYtY2c4NdzKDasQsjY4uyJWOFnqj8YWDUe12yPiRIz5IMHHEU1FazR5
-         rXCMC9iDjcKaF2QmUeDLOLGxbfz3//3Yv0sWilNZnt27ebR8YITxzJkFLP0cWjEvHxfs
-         BNIg==
+        d=linaro.org; s=google; t=1701075471; x=1701680271; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Q3a/gp0k8Xr24VWAVkFjnZAQbXQVNc8sm8eV5Fej3d0=;
+        b=yufLAChDj9RN7rEs7pvz37PwOkjlxXw2veCZBn/kT8ZeGDOsQdKerKh5evKH8dvbXM
+         gqS0SBq4QiEyHlkbQHswNW1sOvl0n1yaj6qdh5yTsb5tMVnNZ3X4Re2Q4o4BL9P+S3sj
+         jDtjUtswG4m7sodXvxUL74b827RytT5IlFTL7Rsi+mAE6abTnzqxB85xpQM5SKufD7I/
+         VcTva3Ats9RaonsQyK1EKcu2+eYpwL90EaGt/eu54yd5yQADh5jt1u4VLC6EyFjpea6/
+         WeE4Sm2+HMUUujjORkDWIJwN1Tdc9oVkZz8393bodcB7KetcwJa2OZzxKvN29P7zyGm+
+         gtJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701075418; x=1701680218;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=S4j+WUhsI6HLaQhNpMAvxRSBO5fBvP0PmC3kAAmj31Q=;
-        b=Ih6g2eOpIuXr1F1BLtF53t2z99eM8E0NEH49GrDv3iXVvC4OJvTKqWEmciR4/MSEWc
-         sYaO/CxXwxKfPcLUbQiL+QwpdAXf0MmismsAHGdx4UOo9Zejoj02/84VSU2p7ToOmDKJ
-         0f72MKc6TYox1eLo0Kp4F7ov/FP9+mRpTwiYhTxasc0r4Aukz7nPEchiSiWDegxZ4lEw
-         vQ7APkP8ox2gJgzW0kz7jcfWYySVOgVrC+6ee3U5b2ZYLE8y5r8XEyz3GbXLtEhuvY4E
-         43V83CEAErplNoCnkdPT7coXVJPYAMZaDKuIC5T1iHy5bI9+Frtntk73H3zvp4UDP7V8
-         euFg==
-X-Gm-Message-State: AOJu0YxyenfN9Rc5O4hVScc1PWtkmM11AQrYcvl+FDKEPky2XDIpyN8y
-        4t/idIXMOtLd1QIojNSscg9prdWpBfkI7sPQtLY=
-X-Google-Smtp-Source: AGHT+IF4Kbz8DWKARcdVUBkG6k/D9a5BYFVuw/h+Mioxpz8AW7vu4HyqBiXrNT5efzM4LMrKaN1/67x8vXH2BKAHuto=
-X-Received: by 2002:a05:651c:317:b0:2c9:9ce3:dfd3 with SMTP id
- a23-20020a05651c031700b002c99ce3dfd3mr2179971ljp.0.1701075417464; Mon, 27 Nov
- 2023 00:56:57 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701075471; x=1701680271;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Q3a/gp0k8Xr24VWAVkFjnZAQbXQVNc8sm8eV5Fej3d0=;
+        b=IyEwi/7cdvVa/4Ai43ODRxgxC8NE23rkdRv8f+EoQCJ2avlOGd5JppvW6a5VFgQvqf
+         PIjYEzX8MRxWv9XYf7g8jxgDgy4x4fZ8tnBsGic5qnf1nZiTVmfePGwn9FikIg1UQ37a
+         2gB++ybZ2Iu4s7B1v5zFAgpuag4SLWxYN5Yin+HzHuwf45dh1KPqkIEQ4QbjY0XGK9uH
+         pSaaCoOh/Js88wYYBOdlZjPOZ2ObeU4cmcz55QemkMzRCxLk3Saeq0RY8Yqie/p3T17i
+         HqIPyr//sjYZq1d5MI47I9SjMKP1cvtGWaABhaU1mW1b/6GrWNwGnJlN4Z5FUtEoV0ta
+         2a8Q==
+X-Gm-Message-State: AOJu0YwyyN2LKsnh1/hBVzdZGSYQ6qtcZsI+2FFXQo/4IzaAeInkZ62G
+        a9EpdmyuNLDWRQzYjtdSmM7ynj3zoIXR4pF8k/rPGx9xdp0oep8l77o=
+X-Google-Smtp-Source: AGHT+IFv95af33s1Ivrbna3UuLQx1RVxE1lA8CxAKNGR1f+9OlWM5+Mw0oXtBMJb+qYB4sJZRWgnDMtvK5EbVnJyJ9Q=
+X-Received: by 2002:a05:6122:3106:b0:496:2e22:29e3 with SMTP id
+ cg6-20020a056122310600b004962e2229e3mr11176649vkb.1.1701075471346; Mon, 27
+ Nov 2023 00:57:51 -0800 (PST)
 MIME-Version: 1.0
-References: <20231127030930.1074374-1-zhaoyang.huang@unisoc.com> <20231127071430.GA28214@lst.de>
-In-Reply-To: <20231127071430.GA28214@lst.de>
-From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date:   Mon, 27 Nov 2023 16:56:45 +0800
-Message-ID: <CAGWkznFf5hdFRomLXDzoxEKVgiKY--DFbHjRLAMvgvodA01EFw@mail.gmail.com>
-Subject: Re: [PATCH] kernel: dma: let dma use vmalloc area
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, steve.kang@unisoc.com
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 27 Nov 2023 14:27:40 +0530
+Message-ID: <CA+G9fYsM4Aa1smp2Xahf=z2WOGpXsAC3GzUW06HJN9pucm837Q@mail.gmail.com>
+Subject: parisc: bug.h:71:17: error: invalid 'asm': operand number out of range
+To:     open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        linux-parisc <linux-parisc@vger.kernel.org>,
+        regressions@lists.linux.dev
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Helge Deller <deller@gmx.de>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 3:14=E2=80=AFPM Christoph Hellwig <hch@lst.de> wrot=
-e:
->
-> On Mon, Nov 27, 2023 at 11:09:30AM +0800, zhaoyang.huang wrote:
-> > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> >
-> > memremap within dma_init_coherent_memory will map the given phys_addr
-> > into vmalloc area if the pa is not found during iterating iomem_resourc=
-es,
-> > which conflict the rejection of vmalloc area in dma_map_single_attrs.
->
-> I can't parse this sentence.
-Sorry for the confusion, please find below codes for more information.
-dma_init_coherent_memory
-    memremap
-        addr =3D ioremap_wt(offset, size);
-What I mean is addr is a vmalloc address, which is implicitly mapped
-by dma's framework and not be aware of to the driver.
->
-> > IMO, it is find to let all valid virtual address be valid for DMA as th=
-e
-> > user will keep corresponding RAM safe for transfer.
->
-> No, vmalloc address can't be passed to map_single.  You need to pass
-> the page to dma_map_page, and explicitly mange cache consistency
-> using the invalidate_kernel_vmap_range and flush_kernel_vmap_range
-> helpers.
-Please correct me if I am wrong. According to my understanding, cache
-consistency could be solved inside dma_map_page via either
-dma_direct_map_page(swio/arch_sync_dma_for_device) or ops->map_page.
-The original thought of rejecting vmalloc is that this pa is not safe
-as this mapping could go in any time. What I am suggesting is to let
-this kind of va be enrolled.
+The parisc tinyconfig built with gcc-11 failed on mainline v6.7-rc3.
 
- static inline dma_addr_t dma_map_single_attrs(struct device *dev, void *pt=
-r,
-                size_t size, enum dma_data_direction dir, unsigned long att=
-rs)
- {
-       /* DMA must never operate on areas that might be remapped. */
-       if (dev_WARN_ONCE(dev, is_vmalloc_addr(ptr),
-                         "rejecting DMA map of vmalloc memory\n"))
-               return DMA_MAPPING_ERROR;
+git_describe: v6.7-rc3
+git_repo: https://gitlab.com/Linaro/lkft/mirrors/torvalds/linux-mainline
 
->
+parisc:
+  build:
+    * gcc-11-tinyconfig
+
+In file included from lib/math/int_log.c:14:
+lib/math/int_log.c: In function 'intlog2':
+arch/parisc/include/asm/bug.h:71:17: error: invalid 'asm': operand
+number out of range
+   71 |                 asm volatile("\n"
+         \
+      |                 ^~~
+
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Links:
+ - https://qa-reports.linaro.org/lkft/linux-mainline-master/build/v6.7-rc3/testrun/21323529/suite/build/test/gcc-11-tinyconfig/log
+ - https://qa-reports.linaro.org/lkft/linux-mainline-master/build/v6.7-rc3/testrun/21323529/suite/build/test/gcc-11-tinyconfig/history/
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2Yk9c7RsS6V5pdDdOYzHSrlpZQk/
+
+--
+Linaro LKFT
+https://lkft.linaro.org
