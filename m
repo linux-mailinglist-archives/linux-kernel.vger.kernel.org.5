@@ -2,137 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F06117F9AB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 08:19:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA647F9AAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 08:19:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232419AbjK0HNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 02:13:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59644 "EHLO
+        id S232447AbjK0HOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 02:14:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232434AbjK0HNQ (ORCPT
+        with ESMTP id S232375AbjK0HOJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 02:13:16 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D17D139
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 23:13:22 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a02d91ab199so523244066b.0
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 23:13:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701069201; x=1701674001; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tbVe3tMYTyb/FdyH9uKkvXaSbuVFLhVdV8vu0G4f77c=;
-        b=zDQYEfcl/ejXT8+t8DgNE3w4f1ww5HbY0j/1WdCq64QcElpF9jXwPU4bXNrs9GaHPi
-         kUvYaZIlGN1XCAVMZB4aRIFk9n8jR2KfGHiJRrN81weZsov5l0GANCKBD+0fVGMRUSpI
-         r1MpPMlSljsc6y+X60TTfYqq8I+PePkvmMWWADohqLRuDpW6TBIBTj2KLC1TzhQEftYc
-         EKSxtrU3mNE41Tk0ZKXgRUNqRr7uje92McwnEu9o56u1v8pB1YEJ9O+Hpe6tuaIERQtd
-         zdiZ54KmfGSfQOU9kT2YIUDseI3fu4wB/bFF7I+yPMTe8/aRGAvYuZFLIPWGTo0qtcus
-         gBkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701069201; x=1701674001;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tbVe3tMYTyb/FdyH9uKkvXaSbuVFLhVdV8vu0G4f77c=;
-        b=WyhrXOhyLV10FlM04NK86yIgeKT6QbPFAWtMDorgN/75pLAR11g0Kvm3ekE8pHdtmP
-         9agxVixMe3CeODVdKVndNHk7SLsalABZR/wkYitWua83Rnm+QM815Yk70k/RW9C7zcMU
-         HxkLYO1I+6XDeuTTVdBi02WyiM8WvD+qxjOkT0hOYhVebipr5a+L80SshJQyAGjQ7fAp
-         WYU2M0muYVY/UyCBFjrTR6nLbySTg8w3jMG/6QX44/51EVP4XHeDyV9UxDHyvDLT2pUU
-         UaJtj+qyO8JOlLH6KfgMleQRYXZ8NTeNr6ZtvYw5wZQczaRrXFmmUP+6hIjIQJ4p4cYA
-         9uLA==
-X-Gm-Message-State: AOJu0Yy76pjeQxwqJlZ378lOHCMVVRjJhGqEYtHrYjPn2IMnSiFeJ1Bz
-        T5DNv8z6HSQUDeVKJdMf0LEosw==
-X-Google-Smtp-Source: AGHT+IFMWMOURpwMpS2lIps1zBs+bISU7TKXOjGiHwV+YM/N16bzmWCwCmoAHjVdg4aUdQfxVq4JlA==
-X-Received: by 2002:a17:906:20d7:b0:a10:172b:4cfe with SMTP id c23-20020a17090620d700b00a10172b4cfemr967159ejc.11.1701069200994;
-        Sun, 26 Nov 2023 23:13:20 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id mm21-20020a170906cc5500b009fd490c4cb6sm5366758ejb.39.2023.11.26.23.13.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 26 Nov 2023 23:13:20 -0800 (PST)
-Message-ID: <c4cdfe7f-fd83-47ba-a377-54d0934e8d76@linaro.org>
-Date:   Mon, 27 Nov 2023 08:13:19 +0100
+        Mon, 27 Nov 2023 02:14:09 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6706FC3;
+        Sun, 26 Nov 2023 23:14:15 -0800 (PST)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AR6wq3L002122;
+        Mon, 27 Nov 2023 07:14:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=yWRDbKWjbkyTrtsBTWPleY96jb2ymjXC2VRjwvDOW7w=;
+ b=e4IpqhlnxoWrjGaf2peVS5k1F0aPBRI3MwQalI8QZQYFF0VkfvlljdPWyz6rAYsHDBwq
+ TS7x6wyrF2/3Mj+fX21sbgi2zs+SpVBBcwvhbAi4aSbT5+4zycO+mU1Gu5I0bHC4wbIB
+ p+kzNaMTmyZC6L+pjvff/uf8pjaY7GWBehxoJczUzPNf1lFz3FfrN8vATu37hiGMqilt
+ 6tP1hQ4xgMf5mLgWcUsbnt3n3JL5SYQjdADMblY6vbowS6xSP2coPiFlfDi0BFkQsYax
+ 0O4Zyxk4osK60wV+M55OC55NVh548NSF+HSDyWEZao3On7zEq2eDfEhhUPF/Mw0xhH9z fw== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uk8h8kfjg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 07:14:03 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AR7DwxR016426
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 07:13:58 GMT
+Received: from [10.253.15.56] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 26 Nov
+ 2023 23:13:55 -0800
+Message-ID: <639d6008-bdfa-4b6e-b622-e916003ec908@quicinc.com>
+Date:   Mon, 27 Nov 2023 15:13:55 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] dt-bindings: input: convert gpio-mouse to json-schema
+Subject: Re: [PATCH v4 2/4] bus: mhi: host: Drop chan lock before queuing
+ buffers
 Content-Language: en-US
-To:     Anshul Dalal <anshulusr@gmail.com>, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20231126103029.851742-1-anshulusr@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231126103029.851742-1-anshulusr@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To:     Manivannan Sadhasivam <mani@kernel.org>
+CC:     <quic_jhugo@quicinc.com>, <mhi@lists.linux.dev>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_cang@quicinc.com>, <quic_mrana@quicinc.com>
+References: <1699939661-7385-1-git-send-email-quic_qianyu@quicinc.com>
+ <1699939661-7385-3-git-send-email-quic_qianyu@quicinc.com>
+ <20231124100403.GA4536@thinkpad>
+From:   Qiang Yu <quic_qianyu@quicinc.com>
+In-Reply-To: <20231124100403.GA4536@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: -UL4--dwQ8TrXlyhpAiwRjC-fuIDLUGS
+X-Proofpoint-GUID: -UL4--dwQ8TrXlyhpAiwRjC-fuIDLUGS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-27_05,2023-11-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 mlxlogscore=754 impostorscore=0 bulkscore=0
+ phishscore=0 malwarescore=0 mlxscore=0 adultscore=0 clxscore=1015
+ spamscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311270049
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/11/2023 11:30, Anshul Dalal wrote:
-> Convert device tree binding documentation for GPIO attached mouse to
-> json-schema.
-> 
-> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
-> ---
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+On 11/24/2023 6:04 PM, Manivannan Sadhasivam wrote:
+> On Tue, Nov 14, 2023 at 01:27:39PM +0800, Qiang Yu wrote:
+>> Ensure read and write locks for the channel are not taken in succession by
+>> dropping the read lock from parse_xfer_event() such that a callback given
+>> to client can potentially queue buffers and acquire the write lock in that
+>> process. Any queueing of buffers should be done without channel read lock
+>> acquired as it can result in multiple locks and a soft lockup.
+>>
+> Is this patch trying to fix an existing issue in client drivers or a potential
+> issue in the future drivers?
+>
+> Even if you take care of disabled channels, "mhi_event->lock" acquired during
+> mhi_mark_stale_events() can cause deadlock, since event lock is already held by
+> mhi_ev_task().
+>
+> I'd prefer not to open the window unless this patch is fixing a real issue.
+>
+> - Mani
+In [PATCH v4 1/4] bus: mhi: host: Add spinlock to protect WP access when 
+queueing
+TREs,  we add 
+write_lock_bh(&mhi_chan->lock)/write_unlock_bh(&mhi_chan->lock)
+in mhi_gen_tre, which may be invoked as part of mhi_queue in client xfer 
+callback,
+so we have to use read_unlock_bh(&mhi_chan->lock) here to avoid 
+acquiring mhi_chan->lock
+twice.
 
-Best regards,
-Krzysztof
-
+Sorry for confusing you. Do you think we need to sqush this two patch 
+into one?
+>> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
+>> ---
+>>   drivers/bus/mhi/host/main.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+>> index 6c6d253..c4215b0 100644
+>> --- a/drivers/bus/mhi/host/main.c
+>> +++ b/drivers/bus/mhi/host/main.c
+>> @@ -642,6 +642,8 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
+>>   			mhi_del_ring_element(mhi_cntrl, tre_ring);
+>>   			local_rp = tre_ring->rp;
+>>   
+>> +			read_unlock_bh(&mhi_chan->lock);
+>> +
+>>   			/* notify client */
+>>   			mhi_chan->xfer_cb(mhi_chan->mhi_dev, &result);
+>>   
+>> @@ -667,6 +669,8 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
+>>   					kfree(buf_info->cb_buf);
+>>   				}
+>>   			}
+>> +
+>> +			read_lock_bh(&mhi_chan->lock);
+>>   		}
+>>   		break;
+>>   	} /* CC_EOT */
+>> -- 
+>> 2.7.4
+>>
+>>
