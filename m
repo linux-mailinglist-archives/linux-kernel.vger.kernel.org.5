@@ -2,117 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2B657FA87E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:59:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 674BC7FA88A
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 19:05:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbjK0R7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 12:59:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43734 "EHLO
+        id S229947AbjK0SFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 13:05:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229947AbjK0R7h (ORCPT
+        with ESMTP id S230020AbjK0SE6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 12:59:37 -0500
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4BEADD;
-        Mon, 27 Nov 2023 09:59:42 -0800 (PST)
-Received: from fpc.intra.ispras.ru (unknown [10.10.165.13])
-        by mail.ispras.ru (Postfix) with ESMTPSA id AF28940F1DC4;
-        Mon, 27 Nov 2023 17:59:39 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru AF28940F1DC4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-        s=default; t=1701107979;
-        bh=VEjuqMt0uxDZ/rlzw+yfIoeYXkpeJuWf+25lURwZBP0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=SnZkSNnealGn+5XHUqVUlJmqKHhGsMTE58h+5pub1imhyr8jFY+B/zjT9fSErnUZm
-         bLYSIkojyst3QAX8cbRO1PvdaPeXBv/ce0kWWKTxL1O+Jd/X0IkAfsMHlEEUTeN1vw
-         XY31yctrPR/4/MhujsIjChH20JmC7kVbwDn0GGzk=
-From:   Fedor Pchelkin <pchelkin@ispras.ru>
-To:     John Johansen <john.johansen@canonical.com>
-Cc:     Fedor Pchelkin <pchelkin@ispras.ru>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Georgia Garcia <georgia.garcia@canonical.com>,
-        apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        lvc-project@linuxtesting.org
-Subject: [PATCH] apparmor: free the allocated pdb objects
-Date:   Mon, 27 Nov 2023 20:59:04 +0300
-Message-Id: <20231127175904.156583-1-pchelkin@ispras.ru>
-X-Mailer: git-send-email 2.34.1
+        Mon, 27 Nov 2023 13:04:58 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC39191;
+        Mon, 27 Nov 2023 10:05:03 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40b40423df8so14757895e9.0;
+        Mon, 27 Nov 2023 10:05:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701108302; x=1701713102; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1934cSuFEZa/QpxYtbFsxsS+BH3mxuJt8bzAlPuOtYQ=;
+        b=KHW0q2IX1EXM1WAGXUxB4FkXqAoY3C/cBZmSZGmFt98KA5hFH/UmzKEYV1E7O5O2lV
+         7zyGWA4gO/YnwOyx/93EHlThZFglERFoOrdFOYblHEdquHQ9SVq20gRpXzqIjECHbykU
+         xGnsXZDPhP560FIRxkw83LC3krL5rhf7/yHZZdbBXbW+P4mJG6diq5f8YE1Ds8X+BfCl
+         ujA8FHj2eYq0Bke3vFb7sDgxM3Qz1vvrnEO8e6sQZMheWLeK6Cg9YQRoMWNrAondMg7Z
+         RGieMWaUVJs/DADgtqYuEpOf7SLQKpt1o2xdG2En71ydOi5zzrvEtzCDU3IQYP/QVu18
+         30/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701108302; x=1701713102;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1934cSuFEZa/QpxYtbFsxsS+BH3mxuJt8bzAlPuOtYQ=;
+        b=E+tn9IlxuYGE8ae0mnRDepNfOP3iYtyluyfo91hiecsIItsTNqrPyT7BYV81GGWFD1
+         SoJ9kpw58ac3iHvNXRwBedDs1t/qRCSlho1G89aBtyohjvBAgG6kbLaUkp4Tj7ifrEeE
+         JlFzvg8vMg0LFvWRxAd+23NBroqLRj2J6F4Uuv3kzxQJql1QuziH/XklZd25EJt/mCzM
+         eyGql0nyT6GCp737U4sVjtNyzRRN92ceh1ITYmSUn3UpVXoNyc//N75nCwDNgENxn5W1
+         vMAHGpQyG3ngWZQz7NoRCHd83mbeEWWWE2Nr98a1110AGf/wXjFrHuZ/pfVtoQvToYyM
+         aEQw==
+X-Gm-Message-State: AOJu0Yzp1TB04hYl8RvtGaty43iS7kzC003m+usyucuYs0RW+VzuKITo
+        ajSkptVXwtuccZac/sNHeTE=
+X-Google-Smtp-Source: AGHT+IEvv0dVpgrozPUZbamw2BQh+QESpgEaEgRdXpXqsUJqmal9Gi29fQ0TBhjj6b+DKbx0lz/zdQ==
+X-Received: by 2002:a5d:5442:0:b0:332:f01b:32f3 with SMTP id w2-20020a5d5442000000b00332f01b32f3mr6179969wrv.68.1701108301847;
+        Mon, 27 Nov 2023 10:05:01 -0800 (PST)
+Received: from syracuse.iliad.local (freebox.vlq16.iliad.fr. [213.36.7.13])
+        by smtp.gmail.com with ESMTPSA id v19-20020adfd053000000b0032f9688ea48sm12469369wrh.10.2023.11.27.10.05.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 10:05:01 -0800 (PST)
+From:   Nicolas Escande <nico.escande@gmail.com>
+To:     Kalle Valo <kvalo@kernel.org>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nicolas Escande <nico.escande@gmail.com>
+Subject: [PATCH] wifi: ath12k: fix layout of scan_flags in struct ath12k_wmi_scan_req_arg
+Date:   Mon, 27 Nov 2023 19:04:25 +0100
+Message-ID: <20231127180425.1695427-1-nico.escande@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-policy_db objects are allocated with kzalloc() inside aa_alloc_pdb() and
-are not cleared in the corresponding aa_free_pdb() function causing leak:
+There is a layout mismatch between the bitfield representing scan_flags in
+struct ath12k_wmi_scan_req_arg & the bits as defined in the WMI_SCAN_XXX
+macros. Fix it by making the biefield match de #define values.
 
-unreferenced object 0xffff88801f0a1400 (size 192):
-  comm "apparmor_parser", pid 1247, jiffies 4295122827 (age 2306.399s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81ddc612>] __kmem_cache_alloc_node+0x1e2/0x2d0
-    [<ffffffff81c47c55>] kmalloc_trace+0x25/0xc0
-    [<ffffffff83eb9a12>] aa_alloc_pdb+0x82/0x140
-    [<ffffffff83ec4077>] unpack_pdb+0xc7/0x2700
-    [<ffffffff83ec6b10>] unpack_profile+0x450/0x4960
-    [<ffffffff83ecc129>] aa_unpack+0x309/0x15e0
-    [<ffffffff83ebdb23>] aa_replace_profiles+0x213/0x33c0
-    [<ffffffff83e8d341>] policy_update+0x261/0x370
-    [<ffffffff83e8d66e>] profile_replace+0x20e/0x2a0
-    [<ffffffff81eadfaf>] vfs_write+0x2af/0xe00
-    [<ffffffff81eaf4c6>] ksys_write+0x126/0x250
-    [<ffffffff890fa0b6>] do_syscall_64+0x46/0xf0
-    [<ffffffff892000ea>] entry_SYSCALL_64_after_hwframe+0x6e/0x76
+I especialy checked by adding WMI_SCAN_FLAG_FORCE_ACTIVE_ON_DFS to
+scan_flags and the firmware started to unconditionnaly send probe request
+on DFS channels during scan.
 
-Free the pdbs inside aa_free_pdb(). While at it, rename the variable
-representing an aa_policydb object to make the function more unified with
-aa_pdb_free_kref() and aa_alloc_pdb().
+Tested-on: QCN9274 hw2.0 PCI CI_WLAN.WBE.1.2.1-00148.1-QCAHKSWPL_SILICONZ-7
 
-Found by Linux Verification Center (linuxtesting.org).
-
-Fixes: 98b824ff8984 ("apparmor: refcount the pdb")
-Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+Signed-off-by: Nicolas Escande <nico.escande@gmail.com>
 ---
- security/apparmor/policy.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ drivers/net/wireless/ath/ath12k/wmi.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/security/apparmor/policy.c b/security/apparmor/policy.c
-index ed4c9803c8fa..957654d253dd 100644
---- a/security/apparmor/policy.c
-+++ b/security/apparmor/policy.c
-@@ -99,13 +99,14 @@ const char *const aa_profile_mode_names[] = {
- };
- 
- 
--static void aa_free_pdb(struct aa_policydb *policy)
-+static void aa_free_pdb(struct aa_policydb *pdb)
- {
--	if (policy) {
--		aa_put_dfa(policy->dfa);
--		if (policy->perms)
--			kvfree(policy->perms);
--		aa_free_str_table(&policy->trans);
-+	if (pdb) {
-+		aa_put_dfa(pdb->dfa);
-+		if (pdb->perms)
-+			kvfree(pdb->perms);
-+		aa_free_str_table(&pdb->trans);
-+		kfree(pdb);
- 	}
- }
- 
+diff --git a/drivers/net/wireless/ath/ath12k/wmi.h b/drivers/net/wireless/ath/ath12k/wmi.h
+index 629373d67421..2b5b46f8898e 100644
+--- a/drivers/net/wireless/ath/ath12k/wmi.h
++++ b/drivers/net/wireless/ath/ath12k/wmi.h
+@@ -3307,17 +3307,17 @@ struct ath12k_wmi_scan_req_arg {
+ 			    scan_f_filter_prb_req:1,
+ 			    scan_f_bypass_dfs_chn:1,
+ 			    scan_f_continue_on_err:1,
++			    scan_f_promisc_mode:1,
++			    scan_f_force_active_dfs_chn:1,
++			    scan_f_add_tpc_ie_in_probe:1,
++			    scan_f_add_ds_ie_in_probe:1,
++			    scan_f_add_spoofed_mac_in_probe:1,
+ 			    scan_f_offchan_mgmt_tx:1,
+ 			    scan_f_offchan_data_tx:1,
+-			    scan_f_promisc_mode:1,
+ 			    scan_f_capture_phy_err:1,
+ 			    scan_f_strict_passive_pch:1,
+ 			    scan_f_half_rate:1,
+ 			    scan_f_quarter_rate:1,
+-			    scan_f_force_active_dfs_chn:1,
+-			    scan_f_add_tpc_ie_in_probe:1,
+-			    scan_f_add_ds_ie_in_probe:1,
+-			    scan_f_add_spoofed_mac_in_probe:1,
+ 			    scan_f_add_rand_seq_in_probe:1,
+ 			    scan_f_en_ie_whitelist_in_probe:1,
+ 			    scan_f_forced:1,
 -- 
-2.34.1
+2.43.0
 
