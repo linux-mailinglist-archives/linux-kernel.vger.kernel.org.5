@@ -2,249 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E1A7F9E81
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:24:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07EE87F9E83
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:25:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233172AbjK0LYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 06:24:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34126 "EHLO
+        id S233216AbjK0LYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 06:24:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233140AbjK0LYp (ORCPT
+        with ESMTP id S233182AbjK0LYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 06:24:45 -0500
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1275D10DA
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 03:24:33 -0800 (PST)
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20231127112432euoutp02151540272c4d4c73537402e656699cf8~bdyIGClcX1433014330euoutp02T
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 11:24:32 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20231127112432euoutp02151540272c4d4c73537402e656699cf8~bdyIGClcX1433014330euoutp02T
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1701084272;
-        bh=RGhhL7XXl0hEOVf83TtpufSve7Y/eXk4j3SDGa7Vcog=;
-        h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-        b=R+v8Fd1oFcKwPDC6zHd3t0YiokGd4hy/ymteKgdtsCalerrfV0XA6i7qUBQ/eLPO1
-         NqaKeYHINqeVdAuBD/h/Jk4sIkWpeGML4d6n+WlJFwD0FBxOXw9iNBlQAs76qHubft
-         WDE3pEth906QGZ4ATNVY5BLGOliv1X1r4ypVSJys=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20231127112431eucas1p2302dc6bfd4747a11a64a603149d12b27~bdyHpDUWL2065920659eucas1p2b;
-        Mon, 27 Nov 2023 11:24:31 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 51.06.09814.F6C74656; Mon, 27
-        Nov 2023 11:24:31 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20231127112431eucas1p2e5cfc376fc3d771cb23c50adc424ab1f~bdyHLuxpv2062420624eucas1p2b;
-        Mon, 27 Nov 2023 11:24:31 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231127112431eusmtrp2ea6b0ee7f72daa68de80cab944f51163~bdyHKO_tX0076800768eusmtrp2t;
-        Mon, 27 Nov 2023 11:24:31 +0000 (GMT)
-X-AuditID: cbfec7f4-727ff70000002656-fe-65647c6f63ea
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 04.8D.09146.F6C74656; Mon, 27
-        Nov 2023 11:24:31 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20231127112430eusmtip25fcfd6652bdfe64de8db7bf2832183e1~bdyGN4nft1493714937eusmtip2H;
-        Mon, 27 Nov 2023 11:24:30 +0000 (GMT)
-Message-ID: <054f6a93-8911-40bb-b677-ccdfd27d132b@samsung.com>
-Date:   Mon, 27 Nov 2023 12:24:29 +0100
+        Mon, 27 Nov 2023 06:24:46 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BB69E18A
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 03:24:37 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D8C672F4;
+        Mon, 27 Nov 2023 03:25:24 -0800 (PST)
+Received: from [10.57.73.142] (unknown [10.57.73.142])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 21BC93F73F;
+        Mon, 27 Nov 2023 03:24:35 -0800 (PST)
+Message-ID: <6415df67-8d5f-44e5-8ca6-57007adf9aae@arm.com>
+Date:   Mon, 27 Nov 2023 11:24:33 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/panfrost: Really power off GPU cores in
- panfrost_gpu_power_off()
-Content-Language: en-US
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Steven Price <steven.price@arm.com>, tzimmermann@suse.de,
-        linux-kernel@vger.kernel.org, mripard@kernel.org,
-        dri-devel@lists.freedesktop.org, wenst@chromium.org,
-        kernel@collabora.com,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>
-In-Reply-To: <37d373e1-8850-4ab2-8fdb-6b069e2d6976@samsung.com>
+Subject: Re: [PATCH] kernel: dma: let dma use vmalloc area
+Content-Language: en-GB
+To:     Zhaoyang Huang <huangzhaoyang@gmail.com>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+        steve.kang@unisoc.com
+References: <20231127030930.1074374-1-zhaoyang.huang@unisoc.com>
+ <20231127071430.GA28214@lst.de>
+ <CAGWkznFf5hdFRomLXDzoxEKVgiKY--DFbHjRLAMvgvodA01EFw@mail.gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <CAGWkznFf5hdFRomLXDzoxEKVgiKY--DFbHjRLAMvgvodA01EFw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrHKsWRmVeSWpSXmKPExsWy7djPc7r5NSmpBht2a1lcWilhcfrMKSaL
-        K1/fs1lsPtfDarH39VZ2i8u75rBZzDi/j8mirXMZq0XjEaDsljcTWS1mtF1mdeD2WDNvDaPH
-        7IaLLB477i5h9Ni0qpPN4861PWwe97uPM3lsPl3t8XmTXABHFJdNSmpOZllqkb5dAlfGtnkN
-        rAULVCse7FzG2sD4TK6LkZNDQsBEYt+evexdjFwcQgIrGCU2P1/FDOF8YZTY/eMHVOYzo8SM
-        FUcZuxg5wFru3nWGiC9nlGhsnMAG4XxklHg/YzMTSBGvgJ1E8+lakBUsAqoSN85uZAGxeQUE
-        JU7OfAJmiwrIS9y/NYMdxBYWiJY4PuMaE4jNLCAucevJfDCbTcBQouttF9h8EYHNjBIzb21i
-        AXGYBTqYJDb9WsYMsoxTwF7idHM9RLO8RPPW2cwQv03mlDjwOBbCdpGYce0NI4QtLPHq+BZ2
-        CFtG4v9OkGVcQHY7o8SC3/ehnAmMEg3Pb0F1WEvcOfeLDWQZs4CmxPpd+hBhR4nuxi52SKjw
-        Sdx4KwhxA5/EpG3TmSHCvBIdbUIQ1WoSs46vg1t78MIl5gmMSrOQgmUWkvdnIflmFsLeBYws
-        qxjFU0uLc9NTi43yUsv1ihNzi0vz0vWS83M3MQKT2Ol/x7/sYFz+6qPeIUYmDsZDjBIczEoi
-        vHofk1OFeFMSK6tSi/Lji0pzUosPMUpzsCiJ86qmyKcKCaQnlqRmp6YWpBbBZJk4OKUamDjY
-        y57Ye6uznroUu3Kde3fvE5m5G5bHrP36VvGEtGfznR7P7RGZjxI5r639aRiwaHES541mPrbP
-        i2/mRWgqitnPs/p+R4KVZ41m6tLSzXkSmuJNxVcUHxffc7rX11zE6KdT7Sa5xkF4+kVhtbiL
-        J0/U6q7/aOsq6Njcvn/J+W2iD7bEflpV/fnY9rd2N+fyhr3N03v+wsbi92nXar3+gLbpIrOj
-        53t0Zkuwn9UVF4+ZXmVSzRe+qP2s29rkDLWcq0ezNkW8vPG7aKPlpdrrvKEPunMS1Z7VPVjh
-        cGnmeo7Zm7zDrf5ubGa6vXbL+rs/7+tUeyikdc1/zHV7ynH2ZSvfHVO8H76qun7WutXpEUos
-        xRmJhlrMRcWJAOkOwPDRAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrPIsWRmVeSWpSXmKPExsVy+t/xe7r5NSmpBq9aeS0urZSwOH3mFJPF
-        la/v2Sw2n+thtdj7eiu7xeVdc9gsZpzfx2TR1rmM1aLxCFB2y5uJrBYz2i6zOnB7rJm3htFj
-        dsNFFo8dd5cwemxa1cnmcefaHjaP+93HmTw2n672+LxJLoAjSs+mKL+0JFUhI7+4xFYp2tDC
-        SM/Q0kLPyMRSz9DYPNbKyFRJ384mJTUnsyy1SN8uQS9j27wG1oIFqhUPdi5jbWB8JtfFyMEh
-        IWAicfeucxcjF4eQwFJGiXv/HjF2MXICxWUkTk5rYIWwhSX+XOtiA7GFBN4zSjR/MQbp5RWw
-        k2g+XQsSZhFQlbhxdiMLiM0rIChxcuYTMFtUQF7i/q0Z7CC2sEC0xPEZ15hAbGYBcYlbT+aD
-        2WwChhJdb0HGc3GICGxmlDj38BMTiMMs0MEkcfbzZGaIxbtYJL58KARZzClgL3G6uR5ikJlE
-        19YuRghbXqJ562zmCYxCs5DcMQvJvllIWmYhaVnAyLKKUSS1tDg3PbfYUK84Mbe4NC9dLzk/
-        dxMjMGa3Hfu5eQfjvFcf9Q4xMnEwHmKU4GBWEuHV+5icKsSbklhZlVqUH19UmpNafIjRFBgY
-        E5mlRJPzgUkjryTe0MzA1NDEzNLA1NLMWEmc17OgI1FIID2xJDU7NbUgtQimj4mDU6qBSU9g
-        iX6bhL/KW88td4w6uRQWsp8punlnwUlxsyuX1169IF9WoWXMuONREOc7pW/qPJsN0n4Iz/t8
-        6unro5dfznV1fip+x6Fv3fopFyMmpaV9fi73MORAxb+Mhetn356cYMvANMv73uP1IpM1zM8Z
-        8J+1cFnhXGoZwuX2+5KhPDN3+d//3EqvHC5809R3me6Q0ia55JTJ9SJV439+6WG1K9Y8iGGo
-        k2bhrEj9ZS6gfkKiy27fkrUhoY2CCdJHjvRt91xlcaUlpPF1Zvfp1GvCmRd2Vb4+rqDiEtRk
-        7Ch/laFZ36+oxKZvu3B62AuJU3Jpj593HAtNrFgcqG19zVr8wrRcm0ebS7wOfLxzYmG3Ektx
-        RqKhFnNRcSIAfcZa12IDAAA=
-X-CMS-MailID: 20231127112431eucas1p2e5cfc376fc3d771cb23c50adc424ab1f
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20231122092952eucas1p291af9a5570a05c67014f5c871c85e98c
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20231122092952eucas1p291af9a5570a05c67014f5c871c85e98c
-References: <20231102141507.73481-1-angelogioacchino.delregno@collabora.com>
-        <7928524a-b581-483b-b1a1-6ffd719ce650@arm.com>
-        <1c9838fb-7f2d-4752-b86a-95bcf504ac2f@linaro.org>
-        <6b7a4669-7aef-41a7-8201-c2cfe401bc43@collabora.com>
-        <20231121175531.085809f5@collabora.com>
-        <d95259b8-10cf-4ded-866c-47cbd2a44f84@linaro.org>
-        <4c73f67e-174c-497e-85a5-cb053ce657cb@collabora.com>
-        <CGME20231122092952eucas1p291af9a5570a05c67014f5c871c85e98c@eucas1p2.samsung.com>
-        <39e9514b-087c-42eb-8d0e-f75dc620e954@linaro.org>
-        <37d373e1-8850-4ab2-8fdb-6b069e2d6976@samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24.11.2023 13:45, Marek Szyprowski wrote:
-> On 22.11.2023 10:29, Krzysztof Kozlowski wrote:
->> On 22/11/2023 10:06, AngeloGioacchino Del Regno wrote:
->>>>>> Hey Krzysztof,
->>>>>>
->>>>>> This is interesting. It might be about the cores that are missing 
->>>>>> from the partial
->>>>>> core_mask raising interrupts, but an external abort on 
->>>>>> non-linefetch is strange to
->>>>>> see here.
->>>>> I've seen such external aborts in the past, and the fault type has
->>>>> often been misleading. It's unlikely to have anything to do with a
->>>> Yeah, often accessing device with power or clocks gated.
->>>>
->>> Except my commit does *not* gate SoC power, nor SoC clocks 🙂
->> It could be that something (like clocks or power supplies) was missing
->> on this board/SoC, which was not critical till your patch came.
+On 2023-11-27 8:56 am, Zhaoyang Huang wrote:
+> On Mon, Nov 27, 2023 at 3:14 PM Christoph Hellwig <hch@lst.de> wrote:
 >>
->>> What the "Really power off ..." commit does is to ask the GPU to 
->>> internally power
->>> off the shaders, tilers and L2, that's why I say that it is strange 
->>> to see that
->>> kind of abort.
+>> On Mon, Nov 27, 2023 at 11:09:30AM +0800, zhaoyang.huang wrote:
+>>> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 >>>
->>> The GPU_INT_CLEAR GPU_INT_STAT, GPU_FAULT_STATUS and 
->>> GPU_FAULT_ADDRESS_{HI/LO}
->>> registers should still be accessible even with shaders, tilers and 
->>> cache OFF.
->>>
->>> Anyway, yes, synchronizing IRQs before calling the poweroff sequence 
->>> would also
->>> work, but that'd add up quite a bit of latency on the 
->>> runtime_suspend() call, so
->>> in this case I'd be more for avoiding to execute any register r/w in 
->>> the handler
->>> by either checking if the GPU is supposed to be OFF, or clearing 
->>> interrupts, which
->>> may not work if those are generated after the execution of the 
->>> poweroff function.
->>> Or we could simply disable the irq after power_off, but that'd be 
->>> hacky (as well).
->>>
->>>
->>> Let's see if asking to poweroff *everything* works:
->> Worked.
->
-> Yes, I also got into this issue some time ago, but I didn't report it 
-> because I also had some power supply related problems on my test farm 
-> and everything was a bit unstable. I wasn't 100% sure that the 
-> $subject patch is responsible for the observed issues. Now, after 
-> fixing power supply, I confirm that the issue was revealed by the 
-> $subject patch and above mentioned change fixes the problem. Feel free 
-> to add:
->
-> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+>>> memremap within dma_init_coherent_memory will map the given phys_addr
+>>> into vmalloc area if the pa is not found during iterating iomem_resources,
+>>> which conflict the rejection of vmalloc area in dma_map_single_attrs.
+>>
+>> I can't parse this sentence.
+> Sorry for the confusion, please find below codes for more information.
+> dma_init_coherent_memory
+>      memremap
+>          addr = ioremap_wt(offset, size);
+> What I mean is addr is a vmalloc address, which is implicitly mapped
+> by dma's framework and not be aware of to the driver.
+>>
+>>> IMO, it is find to let all valid virtual address be valid for DMA as the
+>>> user will keep corresponding RAM safe for transfer.
+>>
+>> No, vmalloc address can't be passed to map_single.  You need to pass
+>> the page to dma_map_page, and explicitly mange cache consistency
+>> using the invalidate_kernel_vmap_range and flush_kernel_vmap_range
+>> helpers.
+> Please correct me if I am wrong. According to my understanding, cache
+> consistency could be solved inside dma_map_page via either
+> dma_direct_map_page(swio/arch_sync_dma_for_device) or ops->map_page.
+> The original thought of rejecting vmalloc is that this pa is not safe
+> as this mapping could go in any time. What I am suggesting is to let
+> this kind of va be enrolled.
 
+No, the point is that dma_map_single() uses virt_to_page(), and 
+virt_to_page() is definitely not valid for vmalloc addresses. At worst 
+it may blow up in itself with an out-of-bounds dereference; at best it's 
+going to return a completely bogus page pointer which may then make 
+dma_map_page() fall over.
 
-I must revoke my tested-by tag for the above fix alone. Although it 
-fixed the boot issue and system stability issue, it looks that there is 
-still something missing and opening the panfrost dri device causes a 
-system crash:
+Thanks,
+Robin.
 
-root@target:~# ./modetest -C
-trying to open device 'i915'...failed
-trying to open device 'amdgpu'...failed
-trying to open device 'radeon'...failed
-trying to open device 'nouveau'...failed
-trying to open device 'vmwgfx'...failed
-trying to open device 'omapdrm'...failed
-trying to open device 'exynos'...done
-root@target:~#
-
-8<--- cut here ---
-Unhandled fault: external abort on non-linefetch (0x1008) at 0xf0c6803c
-[f0c6803c] *pgd=42d87811, *pte=11800653, *ppte=11800453
-Internal error: : 1008 [#1] PREEMPT SMP ARM
-Modules linked in: exynos_gsc s5p_mfc s5p_jpeg v4l2_mem2mem 
-videobuf2_dma_contig videobuf2_memops videobuf2_v4l2 videobuf2_common 
-videodev mc s5p_cec
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 
-6.7.0-rc2-next-20231127-00055-ge14abcb527d6 #7649
-Hardware name: Samsung Exynos (Flattened Device Tree)
-PC is at panfrost_gpu_irq_handler+0x18/0xfc
-LR is at __handle_irq_event_percpu+0xcc/0x31c
-...
-Process swapper/0 (pid: 0, stack limit = 0x0e2875ff)
-Stack: (0xc1301e48 to 0xc1302000)
-...
-  panfrost_gpu_irq_handler from __handle_irq_event_percpu+0xcc/0x31c
-  __handle_irq_event_percpu from handle_irq_event+0x38/0x80
-  handle_irq_event from handle_fasteoi_irq+0x9c/0x250
-  handle_fasteoi_irq from generic_handle_domain_irq+0x24/0x34
-  generic_handle_domain_irq from gic_handle_irq+0x88/0xa8
-  gic_handle_irq from generic_handle_arch_irq+0x34/0x44
-  generic_handle_arch_irq from __irq_svc+0x8c/0xd0
-Exception stack(0xc1301f10 to 0xc1301f58)
-...
-  __irq_svc from default_idle_call+0x20/0x2c4
-  default_idle_call from do_idle+0x244/0x2b4
-  do_idle from cpu_startup_entry+0x28/0x2c
-  cpu_startup_entry from rest_init+0xec/0x190
-  rest_init from arch_post_acpi_subsys_init+0x0/0x8
-Code: e591300c e593402c f57ff04f e591300c (e593903c)
----[ end trace 0000000000000000 ]---
-Kernel panic - not syncing: Fatal exception in interrupt
-CPU2: stopping
-
-
-It looks that the panfrost interrupts must be somehow synchronized with 
-turning power off, what has been already discussed. Let me know if you 
-want me to test any patch.
-
-
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+> 
+>   static inline dma_addr_t dma_map_single_attrs(struct device *dev, void *ptr,
+>                  size_t size, enum dma_data_direction dir, unsigned long attrs)
+>   {
+>         /* DMA must never operate on areas that might be remapped. */
+>         if (dev_WARN_ONCE(dev, is_vmalloc_addr(ptr),
+>                           "rejecting DMA map of vmalloc memory\n"))
+>                 return DMA_MAPPING_ERROR;
+> 
+>>
+> 
