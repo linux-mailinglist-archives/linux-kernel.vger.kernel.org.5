@@ -2,129 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A92B7FA671
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:32:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A567FA685
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:33:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231358AbjK0Qcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 11:32:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45220 "EHLO
+        id S234208AbjK0Qdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 11:33:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230404AbjK0Qck (ORCPT
+        with ESMTP id S234147AbjK0QdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 11:32:40 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40709CE
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:32:46 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2c5071165d5so12188061fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:32:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ferroamp-se.20230601.gappssmtp.com; s=20230601; t=1701102764; x=1701707564; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mVpHuQFa6WA4nsRZaYZzAE/wCMgENUIng7Mv/kONotE=;
-        b=bzDJlciMb7/X1AONc7uSVRYVAb7PpFTeKpHsxzw59F5rtsDoDGzNRg3xiEMTA1106f
-         USYIXg5st+0G6jgMIZ3m414Bsd1oDZtvGHYe9J8mNQKOsrink+sJSu18LrT7/P1jBNCE
-         gWBI6JRz+0ncrW6G3u1k5LVZQzhOHsymfOB3i5DVfnFdyRTbbnfrp5EYKGY+EFpoodil
-         ANzFUpBd+L9aufndPcY1uRB9xcWzt/s7sLf+2BdfKeiob+NchDzMwBVmgoCcZRjt53di
-         y7XiRUAmAtqE7C8q8eC+z3JNDW/21EpQwnhG6iuVpET/nrFgTJkILfqRXsFqYPU4+342
-         1Blw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701102764; x=1701707564;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mVpHuQFa6WA4nsRZaYZzAE/wCMgENUIng7Mv/kONotE=;
-        b=wW1xRvntxR3mSGZ3L3upFMC2vk5gPdh2tMoPqMJeWVxez/+CMCIsk+C3TejSf/PPLP
-         0LFyXFz/xnO5qSftsrD/h2gwTzS8Ehq3hOu3ll63v2KlTea2VLlmkq+WQqX1/M+HtJ0r
-         740K025kST8MMoxMV5KofVPxLqxAC4lR8AgAExXFQm8Kp7Blq9Ffprre0qWEi/+JmInC
-         eCkn800OtyuENh5/ntfgN2YMXTgSv54kJ35cb62Hl3E8/D0I94V3WKSthSVDWBLmqUvA
-         YBgiMQmLcsdI6kKjUkxisEJXt6ttEgamdEE6Zo6OHrb+TS6Cn6I8MR0npG7QTpqp7z+j
-         0kTg==
-X-Gm-Message-State: AOJu0YwPJIcESmvXNTJVSGC+dy2VL7HN4dzIU+je0ryl8NaYf1dzlXJ7
-        +gHC0bnzjw1THMrnz51X0ih25w==
-X-Google-Smtp-Source: AGHT+IEfQlT78CJBw9qwf+qcFU5klRZs0b6yTOMcHN0VTodZ9E3tmzfKxloBy38dMuEPz5S6nTS55g==
-X-Received: by 2002:a05:651c:38d:b0:2c9:99bf:36c7 with SMTP id e13-20020a05651c038d00b002c999bf36c7mr3659649ljp.5.1701102764465;
-        Mon, 27 Nov 2023 08:32:44 -0800 (PST)
-Received: from debian ([185.117.107.42])
-        by smtp.gmail.com with ESMTPSA id bz14-20020a05651c0c8e00b002c12b823669sm1438121ljb.32.2023.11.27.08.32.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 08:32:43 -0800 (PST)
-Date:   Mon, 27 Nov 2023 17:32:41 +0100
-From:   =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez 
-        <ramon.nordin.rodriguez@ferroamp.se>
-To:     Parthiban.Veerasooran@microchip.com
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] net: microchip_t1s: conditional collision detection
-Message-ID: <ZWTEqXAwxIK1pSHo@debian>
-References: <20231127104045.96722-1-ramon.nordin.rodriguez@ferroamp.se>
- <20231127104045.96722-4-ramon.nordin.rodriguez@ferroamp.se>
- <142ce54c-108c-45b4-b886-ce3ca45df9fe@microchip.com>
+        Mon, 27 Nov 2023 11:33:18 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80128D4B;
+        Mon, 27 Nov 2023 08:33:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=N2zDXv8N842SdWeP1QfvmzEvIcEsyQplx8msSV1RBzc=; b=3w8bJekjauD14xkhiSXsSeP1yp
+        9N3b2DKZZPdBt27xj1DIEE7RXLXZrvHxDKR2sRYD21pNAAIJ3vl1ZCKZ4NFvv5G6xjzqey6N1n0KK
+        ZrI0nakNUBsMEbW2Q4e4j1NRh5OeO1tyxIFUhlV8EaqwcQbah9MgH17+QPadh0DqL/pm4sqZ5f/vV
+        IH1EMWIP6up9ybGx4dw0MvcLdLRClPIEOMfWizJpOcO8WEMAVnlOuY5kgUVe2HK2Xt75AhDq2qkmf
+        jzAFQBFfr3qP/5tAASIdgOPBH9JmPj2A8s0x9fJ50RYVccYl2K4OsZZ71u82sMqjEZ1B5f5BIa6y8
+        Lia9qiAg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1r7eXO-0030D4-22;
+        Mon, 27 Nov 2023 16:32:46 +0000
+Date:   Mon, 27 Nov 2023 08:32:46 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, ming.lei@redhat.com,
+        axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+        kent.overstreet@gmail.com, joern@lazybastard.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+        nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
+        konishi.ryusuke@gmail.com, dchinner@redhat.com,
+        linux@weissschuh.net, min15.li@samsung.com, dlemoal@kernel.org,
+        willy@infradead.org, akpm@linux-foundation.org, hare@suse.de,
+        p.raghav@samsung.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
+        linux-nilfs@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+Subject: Re: [PATCH block/for-next v2 01/16] block: add a new helper to get
+ inode from block_device
+Message-ID: <ZWTErvnMf7HiO1Wj@infradead.org>
+References: <20231127062116.2355129-1-yukuai1@huaweicloud.com>
+ <20231127062116.2355129-2-yukuai1@huaweicloud.com>
+ <ZWRDeQ4K8BiYnV+X@infradead.org>
+ <6acdeece-7163-3219-95e2-827e54eadd0c@huaweicloud.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <142ce54c-108c-45b4-b886-ce3ca45df9fe@microchip.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
-        T_SPF_PERMERROR autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <6acdeece-7163-3219-95e2-827e54eadd0c@huaweicloud.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 04:00:18PM +0000, Parthiban.Veerasooran@microchip.com wrote:
-> Hi,
+On Mon, Nov 27, 2023 at 09:07:22PM +0800, Yu Kuai wrote:
+> 1) Is't okay to add a new helper to pass in bdev for following apis?
+
+
+For some we already have them (e.g. bdev_nr_bytes to read the bdev)
+size, for some we need to add them.  The big thing that seems to
+stick out is page cache API, and I think that is where we need to
+define maintainable APIs for file systems and others to use the
+block device page cache.  Probably only in folio versions and not
+pages once if we're touching the code anyay
+
+> 2) For the file fs/buffer.c, there are some special usage like
+> following that I don't think it's good to add a helper:
 > 
-> This implementation was introduced in the below patch itself.
+> spin_lock(&bd_inode->i_mapping->private_lock);
 > 
-> https://lore.kernel.org/netdev/20230426205049.xlfqluzwcvlm6ihh@soft-dev3-1/T/#m9a52b6c03b7fa637f70aed306b50b442590e24a3
+> Is't okay to move following apis from fs/buffer.c directly to
+> block/bdev.c?
 > 
+> __find_get_block
+> bdev_getblk
 
-But the change was dropped in that patchset right? It's not present in
-netdev-next.
+I'm not sure moving is a good idea, but we might end up the
+some kind of low-level access from buffer.c, be that special
+helpers, a separate header or something else.  Let's sort out
+the rest of the kernel first.
 
-> As it is recommended to do it in a separate patch and also the 
-> datasheets of LAN867X Rev.B1 and LAN865X Rev.B0 internal PHY have these 
-> register is reserved, we were working for a feasible solution to 
-> describe this for customer and mainline. By the time many other things 
-> messed up and couldn't reach the mainline on time.
-> 
-
-Far as I can tell 'collision detect' is described in the following
-sections of respective datasheet:
-
-* 11.5.51 - LAN8650
-* 5.4.48  - LAN8670
-
-The rest of the bits are reserved though. The change I propose only
-manipulate the documented (bit 15) collision bit.
-
-Is your point that the lan8670 datasheet is only valid for rev.c and not
-rev.b?
-
-Andrew suggested on the cover letter that it be interesting to look at
-completly disabling collision detect, any strings you can pull at
-Microchip to investigate that?
-Also any input on my suggested testing methodology is more than welcome.
-
-> We also implemented LAN867X Rev.C1 support already in the driver and 
-> published in our product site and in the process of preparing mainline 
-> patches. But unfortunately it took little more time to make it.
-> 
-> https://ww1.microchip.com/downloads/aemDocuments/documents/AIS/ProductDocuments/CodeExamples/EVB-LAN8670-USB_Linux_Driver_1v0.zip
-
-I'm aware, we've been using a derivative of that work at ferroamp for
-development. But it's been driving me nuts, being the 't1s guy' at work,
-and maintaining out of tree drivers for weird dev boxes.
-
-It's not my intention to beat you to the punch, I just want a mainlined
-driver so that I can spend less of my time on plumbing.
-
-> 
-> Anyway, thank you for the support. Good luck!
-
-Likewise!
-R
