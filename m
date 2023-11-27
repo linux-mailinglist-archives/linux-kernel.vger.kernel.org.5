@@ -2,55 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 200C77F9A00
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 07:36:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 893DD7F9A07
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 07:39:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231464AbjK0GgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 01:36:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60818 "EHLO
+        id S229963AbjK0GjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 01:39:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231658AbjK0GgF (ORCPT
+        with ESMTP id S229527AbjK0GjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 01:36:05 -0500
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F571A3;
-        Sun, 26 Nov 2023 22:36:01 -0800 (PST)
-X-UUID: f5e64f129679413891f4ef926f41a2d5-20231127
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.33,REQID:87602af9-271c-4a35-b31d-9ad5ad5bf2f6,IP:15,
-        URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
-        ION:release,TS:-5
-X-CID-INFO: VERSION:1.1.33,REQID:87602af9-271c-4a35-b31d-9ad5ad5bf2f6,IP:15,UR
-        L:0,TC:0,Content:-5,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-        N:release,TS:-5
-X-CID-META: VersionHash:364b77b,CLOUDID:f47afcfc-4a48-46e2-b946-12f04f20af8c,B
-        ulkID:231127143550DH1I147D,BulkQuantity:0,Recheck:0,SF:44|66|38|24|17|19|1
-        02,TC:nil,Content:0,EDM:-3,IP:-2,URL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil
-        ,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_ULN,TF_CID_SPAM_SNR,
-        TF_CID_SPAM_FAS
-X-UUID: f5e64f129679413891f4ef926f41a2d5-20231127
-X-User: chentao@kylinos.cn
-Received: from vt.. [(116.128.244.169)] by mailgw
-        (envelope-from <chentao@kylinos.cn>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 2006990806; Mon, 27 Nov 2023 14:35:47 +0800
-From:   Kunwu Chan <chentao@kylinos.cn>
-To:     hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com,
-        vadimp@nvidia.com, jiri@resnulli.us, shravankr@nvidia.com
-Cc:     kunwu.chan@hotmail.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH] platform/mellanox: Add a null pointer check in mlxbf_pmc_create_groups
-Date:   Mon, 27 Nov 2023 14:34:33 +0800
-Message-Id: <20231127063433.1549064-1-chentao@kylinos.cn>
+        Mon, 27 Nov 2023 01:39:04 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E9D113;
+        Sun, 26 Nov 2023 22:39:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701067151; x=1732603151;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=wWLfgYUjzP+gqB9GkQe3X8Oga+Po8HH51kWXVclMi80=;
+  b=fdJDnIfRyiI6heaeHpfEkygUnhDOBKJqaIxs7K8UYdybgBaBXdIHGk5Z
+   hVfc+dlbYOjPaSJuWRFEI2x/mWkWogwNAB3XlxDQqmd/hfCAyT4Uhn8lV
+   FG+brZXhBrMciibLA6+sIjpoUnLZnsTjyNbJkU2Stx+LJJ/nsmxApis14
+   OR210OooaRt/u2WgQa/OnmVbm5ktDeXoy97ErUxnw9nHtyePrcHUry3D8
+   OmVK+G3ElFutiKMcbzNIKbkbZGZ4bQ2rAcpuZF1oHrP8U3+82vEy3Yd6W
+   fMmLLT3F8wCD9c99OnEwl8TUIBMFhQDlpfWtlITT/XRfVK7vv4eWmMxbT
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="392397722"
+X-IronPort-AV: E=Sophos;i="6.04,230,1695711600"; 
+   d="scan'208";a="392397722"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2023 22:39:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="717940800"
+X-IronPort-AV: E=Sophos;i="6.04,230,1695711600"; 
+   d="scan'208";a="717940800"
+Received: from 984fee00a4c6.jf.intel.com ([10.165.58.231])
+  by orsmga003.jf.intel.com with ESMTP; 26 Nov 2023 22:39:10 -0800
+From:   Yi Liu <yi.l.liu@intel.com>
+To:     joro@8bytes.org, alex.williamson@redhat.com, jgg@nvidia.com,
+        kevin.tian@intel.com, robin.murphy@arm.com,
+        baolu.lu@linux.intel.com
+Cc:     cohuck@redhat.com, eric.auger@redhat.com, nicolinc@nvidia.com,
+        kvm@vger.kernel.org, mjrosato@linux.ibm.com,
+        chao.p.peng@linux.intel.com, yi.l.liu@intel.com,
+        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        zhenzhong.duan@intel.com, joao.m.martins@oracle.com,
+        xin.zeng@intel.com, yan.y.zhao@intel.com
+Subject: [PATCH 0/3] vfio-pci support pasid attach/detach
+Date:   Sun, 26 Nov 2023 22:39:06 -0800
+Message-Id: <20231127063909.129153-1-yi.l.liu@intel.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,28 +68,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-devm_kasprintf() returns a pointer to dynamically allocated memory
-which can be NULL upon failure.
+This adds the pasid attach/detach uAPIs for userspace to attach/detach
+a PASID of a device to/from a given ioas/hwpt. Only vfio-pci driver is
+enabled in this series. After this series, PASID-capable devices bound
+with vfio-pci can report PASID capability to userspace and VM to enable
+PASID usages like Shared Virtual Addressing (SVA).
 
-Fixes: 1a218d312e65 ("platform/mellanox: mlxbf-pmc: Add Mellanox BlueField PMC driver")
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- drivers/platform/mellanox/mlxbf-pmc.c | 2 ++
- 1 file changed, 2 insertions(+)
+This series first adds the helpers for pasid attach in vfio core and then
+add the device cdev ioctls for pasid attach/detach, finally exposes the
+device PASID capability to user. It depends on iommufd pasid attach/detach
+series [1].
 
-diff --git a/drivers/platform/mellanox/mlxbf-pmc.c b/drivers/platform/mellanox/mlxbf-pmc.c
-index 0b427fc24a96..59bbe5e13f6b 100644
---- a/drivers/platform/mellanox/mlxbf-pmc.c
-+++ b/drivers/platform/mellanox/mlxbf-pmc.c
-@@ -1882,6 +1882,8 @@ static int mlxbf_pmc_create_groups(struct device *dev, int blk_num)
- 	pmc->block[blk_num].block_attr_grp.attrs = pmc->block[blk_num].block_attr;
- 	pmc->block[blk_num].block_attr_grp.name = devm_kasprintf(
- 		dev, GFP_KERNEL, pmc->block_name[blk_num]);
-+	if (!pmc->block[blk_num].block_attr_grp.name)
-+		return -ENOMEM;
- 	pmc->groups[pmc->group_num] = &pmc->block[blk_num].block_attr_grp;
- 	pmc->group_num++;
- 
+Complete code can be found at [2], tested with a draft Qemu branch[3]
+
+[1] https://lore.kernel.org/linux-iommu/20231127063428.127436-1-yi.l.liu@intel.com/
+[2] https://github.com/yiliu1765/iommufd/tree/iommufd_pasid
+[3] https://github.com/yiliu1765/qemu/tree/zhenzhong/wip/iommufd_nesting_rfcv1%2Bpasid
+
+Change log:
+
+v1:
+ - Report PASID capability via VFIO_DEVICE_FEATURE (Alex)
+
+rfc: https://lore.kernel.org/linux-iommu/20230926093121.18676-1-yi.l.liu@intel.com/
+
+Regards,
+	Yi Liu
+
+Kevin Tian (1):
+  vfio-iommufd: Support pasid [at|de]tach for physical VFIO devices
+
+Yi Liu (2):
+  vfio: Add VFIO_DEVICE_PASID_[AT|DE]TACH_IOMMUFD_PT
+  vfio: Report PASID capability via VFIO_DEVICE_FEATURE ioctl
+
+ drivers/vfio/device_cdev.c       | 45 +++++++++++++++++++++
+ drivers/vfio/iommufd.c           | 48 ++++++++++++++++++++++
+ drivers/vfio/pci/vfio_pci.c      |  2 +
+ drivers/vfio/pci/vfio_pci_core.c | 47 ++++++++++++++++++++++
+ drivers/vfio/vfio.h              |  4 ++
+ drivers/vfio/vfio_main.c         |  8 ++++
+ include/linux/vfio.h             | 11 ++++++
+ include/uapi/linux/vfio.h        | 68 ++++++++++++++++++++++++++++++++
+ 8 files changed, 233 insertions(+)
+
 -- 
 2.34.1
 
