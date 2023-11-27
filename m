@@ -2,192 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB547FA553
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 16:55:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B8E7FA554
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 16:55:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234115AbjK0Pyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 10:54:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48600 "EHLO
+        id S234128AbjK0Py6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 10:54:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234079AbjK0Pyy (ORCPT
+        with ESMTP id S234120AbjK0Py4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 10:54:54 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F160E8E
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 07:55:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701100501; x=1732636501;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Jbqrcaws7niX0yRLQXZmoxSJqKNkjetK5HxGGMrB6Bk=;
-  b=PT/TYdHNLSLuxC8p5GHswFYItX2c71bm/DXhe0ybgA+YhwLJ7TcsHWyv
-   obB7z9PwiKBzOfmvNhPTtqLTIXr/Nm/AMMVsz+ph2pLel00OanXCZ9R4F
-   rqzIic/xUqcLpffSgtQL7R2Ue84luIZ6RNSSI3c5aM3g00sD33TjrQTbw
-   fS+YHu3zuDW3J6dRJHbgB3eOIu1LXG164irs5CoJF3DIfu9F6nYx5sWEf
-   q/CV/NhH/9XzIXL3sddzxm3rzoVeK5xZ9TzvxcX5W6tghtYu+uQev3s7r
-   +GRx+lIGNrdHWONKPOuScnd8DcfK/Cj2UkHOXzCG7bGYtwfyn63ycZC/R
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="5922059"
-X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
-   d="scan'208";a="5922059"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 07:55:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="802688045"
-X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
-   d="scan'208";a="802688045"
-Received: from fdefranc-mobl3.ger.corp.intel.com (HELO fdefranc-mobl3.Hitronhub.home) ([10.213.15.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 07:54:57 -0800
-From:   "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>,
-        Ira Weiny <ira.weiny@intel.com>
-Subject: [PATCH] mm/swapfile: Replace kmap_atomic() with kmap_local_page()
-Date:   Mon, 27 Nov 2023 16:54:37 +0100
-Message-ID: <20231127155452.586387-1-fabio.maria.de.francesco@linux.intel.com>
-X-Mailer: git-send-email 2.42.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.5 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        Mon, 27 Nov 2023 10:54:56 -0500
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB80A92;
+        Mon, 27 Nov 2023 07:55:02 -0800 (PST)
+Received: by mail-oi1-x229.google.com with SMTP id 5614622812f47-3b861a3be3eso1181966b6e.0;
+        Mon, 27 Nov 2023 07:55:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701100502; x=1701705302; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+99aoCcs4VcRRjnd4ABIm3+igMsBj2nosPKDWuod+R8=;
+        b=IkA3SKIVW4Hsa1eRfeI9QDNPojKONP3L/sOGYrMjDuTR2L7Rh8ihNriu69lJHnQQUK
+         4ZqqL39E37+YAQZ7NGvd+G5HKBHZ3NLvSO4fK04dvfyRCWZbRDMWPfrchqtvW+gPQ5nt
+         iwvkNtMeynjdwiA9yA5P0c+vX1iDXppdhqSV4FwYUh1tCsksEeV7UuUbZggylMwoCNy9
+         +k8bwwGQVBix3y9jLfaZze1OFWEdnAAsjkVppXR+oLJjSS6sSM2xpAgBmOjJE+yHrzGv
+         5QSmYAgh3J8btaJCExdZGPgR8P/7iYoE2O3wO9EcfGJLYyUqpv2rDkxE8P7j0zrFl+Us
+         SHdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701100502; x=1701705302;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=+99aoCcs4VcRRjnd4ABIm3+igMsBj2nosPKDWuod+R8=;
+        b=oPeIx5A2FUMiK9QJZ3AQ8CouW/efabC7wqIYlOqmJkn4ers6NlInN7n4GjzMT5MepM
+         bsnlNwr5noRNZJj3kifvYrNwRFMHbIHaDQnhFsLFzsJonvRaoMntbmdm0mVZbu/dMSLZ
+         3X+Kf/E4EjdyYp7SCY45qQt14tC8gO2d14Aq8WZZqODwwQ8167RLw31YOsTES5yZ3cSJ
+         IPzwYRTesIOk+l7XWtV9BJsxeN71K7G8A4ju0t02iytDPoRruystFvQQToucwD19dBrZ
+         SuLWP+sCE+0El8t5HJmGJd2QFpDd/Y8pZF8TmryAertPh2kKB5t1ygMfy9OdOiumaLiF
+         u2Qw==
+X-Gm-Message-State: AOJu0Yy/F49m3MUyaNNxtn1r2jhpQEPlCfZCKjDoZ+UUdmzwxSziga5T
+        HOKhR9gmtzlZ4lnKIeDlITk=
+X-Google-Smtp-Source: AGHT+IGpJjATOQuoZq9OiDhL4fJxgNVSZh3aegQLNrGHTmQ3rNYq18czjkieYGRC2vNFrGRE0IOlYQ==
+X-Received: by 2002:a05:6808:3c9:b0:3b8:6380:e9ec with SMTP id o9-20020a05680803c900b003b86380e9ecmr6593757oie.55.1701100501957;
+        Mon, 27 Nov 2023 07:55:01 -0800 (PST)
+Received: from localhost (240.157.150.34.bc.googleusercontent.com. [34.150.157.240])
+        by smtp.gmail.com with ESMTPSA id du3-20020a05621409a300b0067a2bda64a3sm2369426qvb.2.2023.11.27.07.55.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 07:55:01 -0800 (PST)
+Date:   Mon, 27 Nov 2023 10:55:01 -0500
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To:     Shigeru Yoshida <syoshida@redhat.com>, davem@davemloft.net,
+        dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shigeru Yoshida <syoshida@redhat.com>
+Message-ID: <6564bbd5580de_8a1ac29481@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20231126151652.372783-1-syoshida@redhat.com>
+References: <20231126151652.372783-1-syoshida@redhat.com>
+Subject: Re: [PATCH net] ipv4: ip_gre: Handle skb_pull() failure in
+ ipgre_xmit()
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kmap_atomic() has been deprecated in favor of kmap_local_page().
+Shigeru Yoshida wrote:
+> In ipgre_xmit(), skb_pull() may fail even if pskb_inet_may_pull() returns
+> true. For example, applications can create a malformed packet that causes
+> this problem with PF_PACKET.
 
-Therefore, replace kmap_atomic() with kmap_local_page() in
-swapfile.c.
+It may fail because because pskb_inet_may_pull does not account for
+tunnel->hlen.
 
-kmap_atomic() is implemented like a kmap_local_page() which also
-disables page-faults and preemption (the latter only in !PREEMPT_RT
-kernels). The kernel virtual addresses returned by these two API are
-only valid in the context of the callers (i.e., they cannot be handed to
-other threads).
+Is that what you are referring to with malformed packet? Can you
+eloborate a bit on in which way the packet has to be malformed to
+reach this?
 
-With kmap_local_page() the mappings are per thread and CPU local like
-in kmap_atomic(); however, they can handle page-faults and can be called
-from any context (including interrupts). The tasks that call
-kmap_local_page() can be preempted and, when they are scheduled to run
-again, the kernel virtual addresses are restored and are still valid.
+FYI: I had a quick look at the IPv6 equivalent code.
+ip6gre_tunnel_xmit is sufficiently different. It makes sense that this
+is an IPv4 only patch.
 
-In mm/swapfile.c, the blocks of code between the mappings and un-mappings
-do not depend on the above-mentioned side effects of kmap_atomic(), so
-that the mere replacements of the old API with the new one is all that is
-required (i.e., there is no need to explicitly call pagefault_disable()
-and/or preempt_disable()).
+> This patch fixes the problem by dropping skb and returning from the
+> function if skb_pull() fails.
+> 
+> Fixes: c54419321455 ("GRE: Refactor GRE tunneling code.")
+> Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
+> ---
+>  net/ipv4/ip_gre.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/ipv4/ip_gre.c b/net/ipv4/ip_gre.c
+> index 22a26d1d29a0..95efa97cb84b 100644
+> --- a/net/ipv4/ip_gre.c
+> +++ b/net/ipv4/ip_gre.c
+> @@ -643,7 +643,8 @@ static netdev_tx_t ipgre_xmit(struct sk_buff *skb,
+>  		/* Pull skb since ip_tunnel_xmit() needs skb->data pointing
+>  		 * to gre header.
+>  		 */
+> -		skb_pull(skb, tunnel->hlen + sizeof(struct iphdr));
+> +		if (!skb_pull(skb, tunnel->hlen + sizeof(struct iphdr)))
+> +			goto free_skb;
+>  		skb_reset_mac_header(skb);
+>  
+>  		if (skb->ip_summed == CHECKSUM_PARTIAL &&
+> -- 
+> 2.41.0
+> 
 
-Cc: Ira Weiny <ira.weiny@intel.com>
-Signed-off-by: Fabio M. De Francesco <fabio.maria.de.francesco@linux.intel.com>
----
- mm/swapfile.c | 34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
-
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 4bc70f459164..8be70912e298 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -1495,9 +1495,9 @@ int swp_swapcount(swp_entry_t entry)
- 
- 	do {
- 		page = list_next_entry(page, lru);
--		map = kmap_atomic(page);
-+		map = kmap_local_page(page);
- 		tmp_count = map[offset];
--		kunmap_atomic(map);
-+		kunmap_local(map);
- 
- 		count += (tmp_count & ~COUNT_CONTINUED) * n;
- 		n *= (SWAP_CONT_MAX + 1);
-@@ -3477,9 +3477,9 @@ int add_swap_count_continuation(swp_entry_t entry, gfp_t gfp_mask)
- 		if (!(count & COUNT_CONTINUED))
- 			goto out_unlock_cont;
- 
--		map = kmap_atomic(list_page) + offset;
-+		map = kmap_local_page(list_page) + offset;
- 		count = *map;
--		kunmap_atomic(map);
-+		kunmap_local(map);
- 
- 		/*
- 		 * If this continuation count now has some space in it,
-@@ -3529,7 +3529,7 @@ static bool swap_count_continued(struct swap_info_struct *si,
- 	spin_lock(&si->cont_lock);
- 	offset &= ~PAGE_MASK;
- 	page = list_next_entry(head, lru);
--	map = kmap_atomic(page) + offset;
-+	map = kmap_local_page(page) + offset;
- 
- 	if (count == SWAP_MAP_MAX)	/* initial increment from swap_map */
- 		goto init_map;		/* jump over SWAP_CONT_MAX checks */
-@@ -3539,27 +3539,27 @@ static bool swap_count_continued(struct swap_info_struct *si,
- 		 * Think of how you add 1 to 999
- 		 */
- 		while (*map == (SWAP_CONT_MAX | COUNT_CONTINUED)) {
--			kunmap_atomic(map);
-+			kunmap_local(map);
- 			page = list_next_entry(page, lru);
- 			BUG_ON(page == head);
--			map = kmap_atomic(page) + offset;
-+			map = kmap_local_page(page) + offset;
- 		}
- 		if (*map == SWAP_CONT_MAX) {
--			kunmap_atomic(map);
-+			kunmap_local(map);
- 			page = list_next_entry(page, lru);
- 			if (page == head) {
- 				ret = false;	/* add count continuation */
- 				goto out;
- 			}
--			map = kmap_atomic(page) + offset;
-+			map = kmap_local_page(page) + offset;
- init_map:		*map = 0;		/* we didn't zero the page */
- 		}
- 		*map += 1;
--		kunmap_atomic(map);
-+		kunmap_local(map);
- 		while ((page = list_prev_entry(page, lru)) != head) {
--			map = kmap_atomic(page) + offset;
-+			map = kmap_local_page(page) + offset;
- 			*map = COUNT_CONTINUED;
--			kunmap_atomic(map);
-+			kunmap_local(map);
- 		}
- 		ret = true;			/* incremented */
- 
-@@ -3569,21 +3569,21 @@ init_map:		*map = 0;		/* we didn't zero the page */
- 		 */
- 		BUG_ON(count != COUNT_CONTINUED);
- 		while (*map == COUNT_CONTINUED) {
--			kunmap_atomic(map);
-+			kunmap_local(map);
- 			page = list_next_entry(page, lru);
- 			BUG_ON(page == head);
--			map = kmap_atomic(page) + offset;
-+			map = kmap_local_page(page) + offset;
- 		}
- 		BUG_ON(*map == 0);
- 		*map -= 1;
- 		if (*map == 0)
- 			count = 0;
--		kunmap_atomic(map);
-+		kunmap_local(map);
- 		while ((page = list_prev_entry(page, lru)) != head) {
--			map = kmap_atomic(page) + offset;
-+			map = kmap_local_page(page) + offset;
- 			*map = SWAP_CONT_MAX | count;
- 			count = COUNT_CONTINUED;
--			kunmap_atomic(map);
-+			kunmap_local(map);
- 		}
- 		ret = count == COUNT_CONTINUED;
- 	}
--- 
-2.42.0
 
