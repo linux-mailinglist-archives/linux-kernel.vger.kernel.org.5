@@ -2,214 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 232AA7F9DEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 11:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ECA97F9DF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 11:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233082AbjK0KsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 05:48:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56052 "EHLO
+        id S233086AbjK0Kxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 05:53:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233059AbjK0KsM (ORCPT
+        with ESMTP id S233059AbjK0Kxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 05:48:12 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2C8A210F
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 02:48:18 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 630E3C15;
-        Mon, 27 Nov 2023 02:49:05 -0800 (PST)
-Received: from [10.57.73.191] (unknown [10.57.73.191])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 240883F73F;
-        Mon, 27 Nov 2023 02:48:15 -0800 (PST)
-Message-ID: <15c288aa-feab-4d3a-af33-b87481eaffe3@arm.com>
-Date:   Mon, 27 Nov 2023 10:48:13 +0000
+        Mon, 27 Nov 2023 05:53:31 -0500
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98878AA
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 02:53:36 -0800 (PST)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mtapsc-7-m_tqE__5NZGwoxcnVdDhBA-1; Mon, 27 Nov 2023 10:52:29 +0000
+X-MC-Unique: m_tqE__5NZGwoxcnVdDhBA-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 27 Nov
+ 2023 10:51:16 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Mon, 27 Nov 2023 10:51:16 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     =?utf-8?B?J0Nsw6ltZW50IEzDqWdlcic=?= <cleger@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Christoph Hellwig <hch@infradead.org>,
+        Ben Dooks <ben.dooks@codethink.co.uk>,
+        kernel test robot <lkp@intel.com>
+Subject: RE: [PATCH v2] riscv: fix incorrect use of __user pointer
+Thread-Topic: [PATCH v2] riscv: fix incorrect use of __user pointer
+Thread-Index: AQHaHsrcAiRrTVkzkEi8HCpEAmrYerCLK9CggALOZICAAAHAIIAAAeUAgAABpPA=
+Date:   Mon, 27 Nov 2023 10:51:16 +0000
+Message-ID: <40a577e9f0b54e8eab0a1f78114dffa8@AcuMS.aculab.com>
+References: <20231124113803.165431-1-cleger@rivosinc.com>
+ <bf7dfadfc8a94e3f810a8ba238f77543@AcuMS.aculab.com>
+ <9cb1fadf-bb83-4e9f-9c29-bff53e30b0c6@rivosinc.com>
+ <72fb7d8085a644e4a3e2e540a9ed6847@AcuMS.aculab.com>
+ <603c39d4-2764-4f85-b173-069ced2a3a13@rivosinc.com>
+In-Reply-To: <603c39d4-2764-4f85-b173-069ced2a3a13@rivosinc.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v7 09/10] selftests/mm/cow: Generalize
- do_run_with_thp() helper
-Content-Language: en-GB
-To:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20231122162950.3854897-1-ryan.roberts@arm.com>
- <20231122162950.3854897-10-ryan.roberts@arm.com>
- <ead82cbe-19c9-43ce-9f28-7ced118b130a@redhat.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <ead82cbe-19c9-43ce-9f28-7ced118b130a@redhat.com>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/11/2023 17:48, David Hildenbrand wrote:
-> On 22.11.23 17:29, Ryan Roberts wrote:
->> do_run_with_thp() prepares (PMD-sized) THP memory into different states
->> before running tests. With the introduction of small-sized THP, we would
->> like to reuse this logic to also test those smaller THP sizes. So let's
->> add a size parameter which tells the function what size THP it should
->> operate on.
->>
->> A separate commit will utilize this change to add new tests for
->> small-sized THP, where available.
->>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->> ---
->>   tools/testing/selftests/mm/cow.c | 146 +++++++++++++++++--------------
->>   1 file changed, 79 insertions(+), 67 deletions(-)
->>
->> diff --git a/tools/testing/selftests/mm/cow.c b/tools/testing/selftests/mm/cow.c
->> index 7324ce5363c0..d03c453cfd5c 100644
->> --- a/tools/testing/selftests/mm/cow.c
->> +++ b/tools/testing/selftests/mm/cow.c
->> @@ -32,7 +32,7 @@
->>
->>   static size_t pagesize;
->>   static int pagemap_fd;
->> -static size_t thpsize;
->> +static size_t pmdsize;
->>   static int nr_hugetlbsizes;
->>   static size_t hugetlbsizes[10];
->>   static int gup_fd;
->> @@ -734,14 +734,14 @@ enum thp_run {
->>       THP_RUN_PARTIAL_SHARED,
->>   };
->>
->> -static void do_run_with_thp(test_fn fn, enum thp_run thp_run)
->> +static void do_run_with_thp(test_fn fn, enum thp_run thp_run, size_t size)
-> 
-> Nit: can we still call it "thpsize" in this function? That makes it clearer IMHO
-> and avoids most renaming.
-
-Yep no problem. Will fix in next version.
-
-> 
->>   {
->>       char *mem, *mmap_mem, *tmp, *mremap_mem = MAP_FAILED;
->> -    size_t size, mmap_size, mremap_size;
->> +    size_t mmap_size, mremap_size;
->>       int ret;
->>
->> -    /* For alignment purposes, we need twice the thp size. */
->> -    mmap_size = 2 * thpsize;
->> +    /* For alignment purposes, we need twice the requested size. */
->> +    mmap_size = 2 * size;
->>       mmap_mem = mmap(NULL, mmap_size, PROT_READ | PROT_WRITE,
->>               MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
->>       if (mmap_mem == MAP_FAILED) {
->> @@ -749,36 +749,40 @@ static void do_run_with_thp(test_fn fn, enum thp_run
->> thp_run)
->>           return;
->>       }
->>
->> -    /* We need a THP-aligned memory area. */
->> -    mem = (char *)(((uintptr_t)mmap_mem + thpsize) & ~(thpsize - 1));
->> +    /* We need to naturally align the memory area. */
->> +    mem = (char *)(((uintptr_t)mmap_mem + size) & ~(size - 1));
->>
->> -    ret = madvise(mem, thpsize, MADV_HUGEPAGE);
->> +    ret = madvise(mem, size, MADV_HUGEPAGE);
->>       if (ret) {
->>           ksft_test_result_fail("MADV_HUGEPAGE failed\n");
->>           goto munmap;
->>       }
->>
->>       /*
->> -     * Try to populate a THP. Touch the first sub-page and test if we get
->> -     * another sub-page populated automatically.
->> +     * Try to populate a THP. Touch the first sub-page and test if
->> +     * we get the last sub-page populated automatically.
->>        */
->>       mem[0] = 0;
->> -    if (!pagemap_is_populated(pagemap_fd, mem + pagesize)) {
->> +    if (!pagemap_is_populated(pagemap_fd, mem + size - pagesize)) {
->>           ksft_test_result_skip("Did not get a THP populated\n");
->>           goto munmap;
->>       }
-> 
-> Yes! I have a patch lying around here that does that same. :)
-> 
-> I guess there is no need to set MADV_NOHUGEPAGE on the remainder of the mmap'ed
-> are:
-> 
-> Assume we want a 64KiB thp. We mmap'ed 128KiB. If we get a reasonably aligned
-> area, we might populate a 128KiB THP.
-> 
-> But I assume the MADV_HUGEPAGE will in all configurations properly create a
-> separate 64KiB VMA and we'll never get 128 KiB populated. So this should work
-> reliably.
-
-Yes agreed. And also, we explicitly only enable a single THP size at a time so
-should only allocate a THP of the expected size. Perhaps we should mark the
-whole mmap area with MADV_HUGEPAGE since that will serve as a test that we only
-get the smaller size we configured?
-
-> 
->> -    memset(mem, 0, thpsize);
->> +    memset(mem, 0, size);
->>
->> -    size = thpsize;
->>       switch (thp_run) {
->>       case THP_RUN_PMD:
->>       case THP_RUN_PMD_SWAPOUT:
->> +        if (size != pmdsize) {
->> +            ksft_test_result_fail("test bug: can't PMD-map size\n");
->> +            goto munmap;
->> +        }
-> 
-> Maybe rather "assert()" because that's a real BUG in the test?
-
-Yep will do.
-
-> 
-> [...]
-> 
->> +    pmdsize = read_pmd_pagesize();
->> +    if (pmdsize)
->> +        ksft_print_msg("[INFO] detected PMD-mapped THP size: %zu KiB\n",
-> 
-> Maybe simply: "detected PMD size". Zes, we read it via the THP interface, but
-> that shouldn't matter much.
-
-Err, just want to clarify what you are suggesting. With the current patch you
-will see something like:
-
-[INFO] detected PMD-mapped THP size: 2048 KiB
-[INFO] detected small-sized THP size: 64 KiB
-[INFO] detected small-sized THP size: 128 KiB
-...
-[INFO] detected small-sized THP size: 1024 KiB
-
-
-Are you suggesting something like this:
-
-[INFO] detected PMD size: 2048 KiB
-[INFO] detected THP size: 64 KiB
-[INFO] detected THP size: 128 KiB
-...
-[INFO] detected THP size: 2048 KiB
-
-
-> 
+RnJvbTogQ2zDqW1lbnQgTMOpZ2VyDQo+IFNlbnQ6IDI3IE5vdmVtYmVyIDIwMjMgMTA6MzcNCj4g
+DQo+IE9uIDI3LzExLzIwMjMgMTE6MzUsIERhdmlkIExhaWdodCB3cm90ZToNCj4gPiBGcm9tOiBD
+bMOpbWVudCBMw6lnZXINCj4gPj4gU2VudDogMjcgTm92ZW1iZXIgMjAyMyAxMDoyNA0KPiA+Pg0K
+PiA+PiBPbiAyNS8xMS8yMDIzIDE2OjM3LCBEYXZpZCBMYWlnaHQgd3JvdGU6DQo+ID4+PiAuLi4N
+Cj4gPj4+PiBAQCAtNDkxLDcgKzQ4Niw3IEBAIGludCBoYW5kbGVfbWlzYWxpZ25lZF9sb2FkKHN0
+cnVjdCBwdF9yZWdzICpyZWdzKQ0KPiA+Pj4+DQo+ID4+Pj4gIAl2YWwuZGF0YV91NjQgPSAwOw0K
+PiA+Pj4+ICAJZm9yIChpID0gMDsgaSA8IGxlbjsgaSsrKSB7DQo+ID4+Pj4gLQkJaWYgKGxvYWRf
+dTgocmVncywgKHZvaWQgKikoYWRkciArIGkpLCAmdmFsLmRhdGFfYnl0ZXNbaV0pKQ0KPiA+Pj4+
+ICsJCWlmIChsb2FkX3U4KHJlZ3MsIGFkZHIgKyBpLCAmdmFsLmRhdGFfYnl0ZXNbaV0pKQ0KPiA+
+Pj4+ICAJCQlyZXR1cm4gLTE7DQo+ID4+Pj4gIAl9DQo+ID4+Pg0KPiA+Pj4gSSdkIHJlYWxseSBo
+YXZlIHRob3VnaHQgdGhhdCB5b3UnZCB3YW50IHRvIHB1bGwgdGhlIGtlcm5lbC91c2VyDQo+ID4+
+PiBjaGVjayB3YXkgb3V0c2lkZSB0aGUgbG9vcD8NCj4gPj4NCj4gPj4gSGkgRGF2aWQsDQo+ID4+
+DQo+ID4+IEkgaG9wZSB0aGUgY29tcGlsZXIgaXMgYWJsZSB0byBleHRyYWN0IHRoYXQgJ2lmJyBv
+dXQgb2YgdGhlIGxvb3Agc2luY2UNCj4gPj4gcmVncyBpc24ndCBtb2RpZmllZCBpbiB0aGUgbG9v
+cC4gTmV2ZXJ0aGVsZXNzLCB0aGF0IGNvdWxkIGJlIG1vcmUNCj4gPj4gImNsZWFyIiBpZiBwdXQg
+b3V0c2lkZSBpbmRlZWQuDQo+ID4NCj4gPiBJZiBoYXMgYWNjZXNzIHJlZ3MtPnh4eCB0aGVuIHRo
+ZSBjb21waWxlciBjYW4ndCBkbyBzbyBiZWNhdXNlIGl0DQo+ID4gd2lsbCBtdXN0IGFzc3VtZSB0
+aGF0IHRoZSBhc3NpZ25tZW50IG1pZ2h0IGFsaWFzIGludG8gJ3JlZ3MnLg0KPiA+IFRoYXQgaXMg
+ZXZlbiB0cnVlIGZvciBieXRlIHdyaXRlcyBpZiAnc3RyaWN0LWFsaWFzaW5nJyBpcyBlbmFibGVk
+DQo+ID4gLSB3aGljaCBpdCBpc24ndCBmb3IgbGludXgga2VybmVsIGJ1aWxkcy4NCj4gPg0KPiA+
+IEl0IG1pZ2h0IGRvIHNvIGlmICdyZWdzJyB3ZXJlICdjb25zdCc7IGl0IHRlbmRzIHRvIGFzc3Vt
+ZSB0aGF0IGlmDQo+ID4gaXQgY2FuJ3QgY2hhbmdlICBzb21ldGhpbmcgbm90aGluZyBjYW4gLSBh
+bHRob3VnaCB0aGF0IGlzbid0IHRydWUuDQo+IA0KPiBPaywgZ29vZCB0byBrbm93ICEgQXMgSSBz
+YWlkLCBJJ2xsIG1vZGlmeSB0aGF0IGluIGEgc3Vic2VxdWVudCBwYXRjaC4NCg0KQWN0dWFsbHkg
+dGhlIGZvbGxvd2luZyBsb29wcyB3aWxsIChwcm9iYWJseSkgZ2VuZXJhdGUgbXVjaCBiZXR0ZXIg
+Y29kZToNCgkvLyBSZWFkIGtlcm5lbA0KCXZhbCA9IDA7DQoJZm9yIChpID0gMDsgaSA8IGxlbjsg
+aSsrKQ0KCQl2YWwgfD0gYWRkcltpXSA8PCAoaSAqIDgpOw0KCS8vIHdyaXRlIGtlcm5lbA0KCWZv
+ciAoaSA9IDA7IGkgPCBsZW47IGkrKywgdmFsID4+PSA4KQ0KCQlhZGRyW2ldID0gdmFsOw0KRm9y
+IHVzZXIgdXNpbmcgX19nZXQvcHV0X3VzZXIoKSBhcyBhcHByb3ByaWF0ZS4NCkkgdGhpbmsgdGhl
+cmUgaXMgYSAnZ290bycgdmFyaWFudCBvZiB0aGUgdXNlciBhY2Nlc3MgZnVuY3Rpb25zDQp0aGF0
+IHByb2JhYmx5IG1ha2UgdGhlIGNvZGUgY2xlYXJlci4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVy
+ZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5
+bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
