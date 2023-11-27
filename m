@@ -2,107 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9BD07FA6A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF2217FA6A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:39:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234186AbjK0QjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 11:39:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59668 "EHLO
+        id S234192AbjK0Qj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 11:39:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233918AbjK0QjD (ORCPT
+        with ESMTP id S233918AbjK0Qj1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 11:39:03 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB5FC6
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:39:10 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-507be298d2aso6044835e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:39:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701103148; x=1701707948; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mbaBvVs4jJomuZqndjy6yrs8VhBzsYpU6MK+yNn7wYo=;
-        b=iP02GF5eKWdrEOLl75L3zMir44AgVKPu0jJSymY7S8h/X3xWdYWBxC3Ruxe8kReObY
-         M1IpKQY5RmJ6RFVWA+tLJ9D87irdYaxGvBB0xBuAMQz4ctwDHMR3d3+Ts00OnXdzvwiV
-         M7zdfOh5EK50IQ9ExTsD25xwxwssHKUOPcNT8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701103148; x=1701707948;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mbaBvVs4jJomuZqndjy6yrs8VhBzsYpU6MK+yNn7wYo=;
-        b=L+R2hc2crJQ34miLVCB/WxjT7iRtB+8rubLoo2LDMsbnVzUdj2dw+VrrFnn2tj69Ta
-         +hRlcFCUnwiygocGSfZMFgtwGFA8R03lpW5NYMapW6tu+wJTOGJd3Wdwxy9fKhnVZAW8
-         ztZpZSGJxhl9zabYxkA1oqIhJfTHyAzxNausI3ZBsegE0CD2uWxpIB3nl8s/6yVKtl/W
-         O3aWoXkTlgcFyS5SeD/PmKWZ5mP9pUJJz77lXxJk3weDbAHQWsZ+/u26O6zah+g/uHfp
-         Qo/6HwEcR1/O8KsQkJHDiCzaDFG4YUdnhSSwjRlWxB/xBCPfBILu6kocS7dKSzIC31v0
-         BciQ==
-X-Gm-Message-State: AOJu0Yy69L3Gdtchb6qJxV70QlJMgPnTLgLwdDwXzWwUIvzs+Zay1V5H
-        +WweQvPVa5wsxXBcl5hXlOXi8pPvKBwR3nvh0xN9Zg==
-X-Google-Smtp-Source: AGHT+IG1KaGzzgqkd/bVl0htNdKZU5Bn8cbei0/SCcALuzYLvd3G7A/NDsEbwNme3869KE8Y7hH9x4OGUsfYwhzFnkY=
-X-Received: by 2002:a05:6512:3190:b0:50a:68f4:6361 with SMTP id
- i16-20020a056512319000b0050a68f46361mr9952921lfe.17.1701103148299; Mon, 27
- Nov 2023 08:39:08 -0800 (PST)
+        Mon, 27 Nov 2023 11:39:27 -0500
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D634D2;
+        Mon, 27 Nov 2023 08:39:33 -0800 (PST)
+Received: from [192.168.1.103] (178.176.78.85) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Mon, 27 Nov
+ 2023 19:39:25 +0300
+Subject: Re: [PATCH 1/6] net: ravb: Check return value of
+ reset_control_deassert()
+To:     Claudiu <claudiu.beznea@tuxon.dev>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <richardcochran@gmail.com>, <p.zabel@pengutronix.de>,
+        <yoshihiro.shimoda.uh@renesas.com>, <geert+renesas@glider.be>,
+        <wsa+renesas@sang-engineering.com>, <robh@kernel.org>,
+        <biju.das.jz@bp.renesas.com>,
+        <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        <mitsuhiro.kimura.kc@renesas.com>, <masaru.nagai.vx@renesas.com>
+CC:     <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20231127090426.3761729-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231127090426.3761729-2-claudiu.beznea.uj@bp.renesas.com>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <b23a5e0c-cc55-b7b2-a6dc-1eac0a674814@omp.ru>
+Date:   Mon, 27 Nov 2023 19:39:24 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20230925163313.1.I55bfb5880d6755094a995d3ae44c13810ae98be4@changeid>
- <ZWF76ALANQwP_9b1@google.com>
-In-Reply-To: <ZWF76ALANQwP_9b1@google.com>
-From:   Jonathan Denose <jdenose@chromium.org>
-Date:   Mon, 27 Nov 2023 10:38:57 -0600
-Message-ID: <CALNJtpUHHaq6g0wSuyaNBxtOE9kt6vDzdAGGu6j=JJdJmerDWQ@mail.gmail.com>
-Subject: Re: [PATCH] Input: i8042 - add quirk for Lenovo ThinkPad T14 Gen 1
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-input@vger.kernel.org, Jonathan Denose <jdenose@google.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
-        Takashi Iwai <tiwai@suse.de>,
-        Werner Sembach <wse@tuxedocomputers.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+In-Reply-To: <20231127090426.3761729-2-claudiu.beznea.uj@bp.renesas.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [178.176.78.85]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 11/27/2023 16:22:08
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 181625 [Nov 27 2023]
+X-KSE-AntiSpam-Info: Version: 6.0.0.2
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 5 0.3.5 98d108ddd984cca1d7e65e595eac546a62b0144b
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.78.85 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: omp.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.78.85
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 11/27/2023 16:25:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 11/27/2023 3:21:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry
+On 11/27/23 12:04 PM, Claudiu wrote:
 
-On Fri, Nov 24, 2023 at 10:45=E2=80=AFPM Dmitry Torokhov
-<dmitry.torokhov@gmail.com> wrote:
->
-> Hi Jonathan,
->
-> On Mon, Sep 25, 2023 at 04:33:20PM -0500, Jonathan Denose wrote:
-> > The ThinkPad T14 Gen 1 touchpad works fine except that clicking
-> > and dragging by tapping the touchpad or depressing the touchpad
-> > do not work. Disabling PNP for controller setting discovery enables
-> > click and drag without negatively impacting other touchpad features.
->
-> I would like to understand more on how enabling PnP discovery for i8042
-> affects the touchpad. Do you see it using different interrupt or IO
-> ports? What protocol does the touchpad use with/without PnP? If the
-> protocol is the same, do you see difference in the ranges (pressure,
-> etc) reported by the device?
->
-> Thanks.
->
-> --
-> Dmitry
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> reset_control_deassert() could return an error. Some devices cannot work
+> if reset signal de-assert operation fails.
 
-Without PnP discovery the touchpad is using the SynPS/2 protocol, with
-PnP discovery, the touchpad is using the rmi4 protocol. Since the
-protocols are different, so are the ranges but let me know if you
-still want to see them.
+   Well, I think all devices can't work if the reset line is connected at all. :-)
 
-Can you tell me how to check the interrupt/IO ports? I'm not sure how
-to do that.
+> To avoid this check the return
+> code of reset_control_deassert() in ravb_probe() and take proper action.
 
-Thanks,
-Jonathan
+   I'd also mention moving of the free_nedev() call...
+
+> Fixes: 0d13a1a464a0 ("ravb: Add reset support")
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+
+Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+
+[...]
+
+MBR, Sergey
