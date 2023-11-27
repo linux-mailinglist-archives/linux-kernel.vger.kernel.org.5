@@ -2,42 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A397FA0D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 14:22:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 941777FA0D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 14:22:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233074AbjK0NWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 08:22:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50314 "EHLO
+        id S233126AbjK0NWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 08:22:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230517AbjK0NWD (ORCPT
+        with ESMTP id S230517AbjK0NWU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 08:22:03 -0500
+        Mon, 27 Nov 2023 08:22:20 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 618EDAA
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 05:22:10 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BEC7C433C7;
-        Mon, 27 Nov 2023 13:22:07 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889C81AB
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 05:22:27 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 756C5C433C8;
+        Mon, 27 Nov 2023 13:22:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701091330;
-        bh=VMQtEdCOVaS38Wu6iEj4lCJRQZ4TyTyCmYz+FNCaYOs=;
+        s=k20201202; t=1701091347;
+        bh=2JKjpQ+5QKANLP+xGmPCkybvq6kf6sMCsdtq+PhVm3o=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=YC2PyYm4dkKVLgr7iY+QbR57yyY3WkKWh05Vumr0W2xzgOAPDikIYQys0hoceviqD
-         V0PhTMls3rZLnalsDFEvc1EGbtwf5HKhf9lXXdei/NdCNV5IgZFfXwLBqmG6V3YsRG
-         MCXEOPht9SodhovpMQqve5pJHcTis1f/Jtz/qPF8chRQaMZIwLebhj0bBD5RHFqqKI
-         XDNRylIZvGV9XbfhpywsssvCGyPyAJY8F60aHK3eaL0FTeT8sS41WVUPnt7zOPTpN8
-         n0sam5Q1P6Sss6B00aa9gKFBOgc1r7zp7PJtK3URzHyETTk7fHQC60DKpPNzIG09Lf
-         8KC63klPATSbw==
+        b=bCbLnI25DgO/3NhVtGI6COesZn76ioTqblgX0vP1w6UCsafKA1UsKw7/uB3q5Si7E
+         p3Kwxii8gLbZ2pI48nGZ95j7tCxkjRhPDeDT7MIb1pu3byNgX7F9a4EJOuREIhO0KE
+         omLxzqv8kaY+/4fjVKkhTbtcao3YOMTD+yEee7TTDbDD0gN9sSx0tOisOzv+002ZU9
+         NSNR9SnqbE5j0LVkbDbzY9ZBG53CmO/nLruMScsiR115l2tUbzLKTvIGkd4MoZGRKI
+         eyfyZQWOIpSFd+X71z4OeyFouedfd4sC93e34la6eVNuzs3w8/gDNq1j5lW7DL4YbT
+         QcrR/GgjDKUdg==
 From:   Vinod Koul <vkoul@kernel.org>
-To:     vincent.sunplus@gmail.com, kishon@kernel.org,
-        Su Hui <suhui@nfschina.com>
-Cc:     linux-usb@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-In-Reply-To: <20231120091046.163781-1-suhui@nfschina.com>
-References: <20231120091046.163781-1-suhui@nfschina.com>
-Subject: Re: [PATCH] phy: sunplus: return negative error code in
- sp_usb_phy_probe
-Message-Id: <170109132717.42536.11844523525705275991.b4-ty@kernel.org>
-Date:   Mon, 27 Nov 2023 18:52:07 +0530
+To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Lee Jones <lee@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Alex Bee <knaerzche@gmail.com>
+Cc:     Elaine Zhang <zhangqing@rock-chips.com>,
+        Johan Jonker <jbx6244@gmail.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org,
+        linux-clk@vger.kernel.org, linux-phy@lists.infradead.org
+In-Reply-To: <20230829171647.187787-1-knaerzche@gmail.com>
+References: <20230829171647.187787-1-knaerzche@gmail.com>
+Subject: Re: (subset) [PATCH 00/31] Fix and improve Rockchip RK3128 support
+Message-Id: <170109134007.42627.12929766893521974712.b4-ty@kernel.org>
+Date:   Mon, 27 Nov 2023 18:52:20 +0530
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -53,16 +65,25 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Mon, 20 Nov 2023 17:10:47 +0800, Su Hui wrote:
-> devm_phy_create() return negative error code, 'ret' should be
-> 'PTR_ERR(phy)' rather than '-PTR_ERR(phy)'.
+On Tue, 29 Aug 2023 19:16:16 +0200, Alex Bee wrote:
+> this series fixes some issues I found when testing my "new" RK3128 board
+> with the mainline kernel and adds some core functionality like SMP bringup,
+> usb and networking.
 > 
+> The propably most distinctive change is the split up of the DTs for the
+> different SoCs of this platform: RK3126 and RK3128. Even if I'm not adding
+> a RK3126 board in this series: I think this change should be done as early
+> as possible in order to avoid issues in future.
+> Actually it should have been done like that in the first place.
 > 
+> [...]
 
 Applied, thanks!
 
-[1/1] phy: sunplus: return negative error code in sp_usb_phy_probe
-      commit: 2a9c713825b3127ece11984abf973672c9779518
+[08/31] phy: rockchip-inno-usb2: Split ID interrupt phy registers
+        commit: 2fda59099462ee700e424ba3ac928d13ad6389a8
+[09/31] phy: phy-rockchip-inno-usb2: Add RK3128 support
+        commit: 62ff41017e147472b07de6125c3be82ce02a8dd7
 
 Best regards,
 -- 
