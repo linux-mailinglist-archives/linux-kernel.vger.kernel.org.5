@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA3B7FA261
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:19:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3947FA262
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:19:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233720AbjK0OTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 09:19:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59244 "EHLO
+        id S233811AbjK0OT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 09:19:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233674AbjK0OSp (ORCPT
+        with ESMTP id S233682AbjK0OSq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 09:18:45 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF3A53AAC
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:16:16 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40b40423df8so12739975e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:16:16 -0800 (PST)
+        Mon, 27 Nov 2023 09:18:46 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE4D3ABB
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:16:18 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40b34563987so24247425e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:16:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701094575; x=1701699375; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701094577; x=1701699377; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=L3T+Nz29XwJpeLbYrWkBbO8epnldil1IzN2t5jt5R90=;
-        b=GvBE9SKqUcPnuGOdQZlkYAC1ZAUn/tpT7F7OJLemQS4JUGDrbIn/v1N7mkqRAEdYjE
-         h7/uyVjBol8Fk0376m82n7QcMR8rQG+IW0G49LFHSJGh7/KUNQAjC4ZLqqVXarZe3UZ9
-         00u9+MqQN0OfU+EjioHi88pS/d+j/7A4BjR+zvRGQ9tKO3WJMexfzpIJyqbtdfc5aAvB
-         OsKCGidBeTU3x039YyE8Ah/xS05KNuxtrqK3r57xuay1ynO7QfrLlCD88TjWEPSm1R8F
-         v8gV9F+iGxXbDfumLZxWiy2TIg+mgcmieO5byzbVEAGA3VeDAmifIUBggSwZHlV3EJdt
-         GlDQ==
+        bh=Xqz1VK0mYS8f9CyDoxvSzBDgulCTNu27LF81cKbiT0w=;
+        b=y4xuImJpJ6PaKSjRu3VTEEe9+KH8llXFw7JPaHkmzS1VbhGuj6yuPERbeD1owNcQ+m
+         Fv68haC3A0zjQMPfVGLLJeZ5NIBuUyXf6CYlIG7QymD1O9wQ6ckvtA9L43kUr92/Ts8K
+         jHgKmxaD5Lz54T1L0MfkKbocMc42BFuD6uUf7h4u8FnKP60twsDovOIuSK+XnT+NfrU0
+         Qxuux97N19k4C6JiJi8OTBWGUIT+KoJrsypORvXWYMcBQ9v54KvAG3h6XXhN6Ip300kk
+         Ng3SNKCffTLEQXlAU8AEEkBFnciA0Cw3t1fIg4uo8+6E5qrbdu8Uu/2/yKbBb32pgV7H
+         GU4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701094575; x=1701699375;
+        d=1e100.net; s=20230601; t=1701094577; x=1701699377;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=L3T+Nz29XwJpeLbYrWkBbO8epnldil1IzN2t5jt5R90=;
-        b=vsfilITcl6AHpMNgKYPhMVDDvbhxQiCCG8REUz5KwiD4zitCBX4qrgHw1NPrggnDaZ
-         1QAbZEzq2w6Na9RdgouLjEws2Ze5JNsFenQ3wMab1dmtAIm+oKZjhymOkJDw96Lu9rA5
-         s1cIarXn1AtL5YrAHBtm2fLxDroLM+cPnxZ1oBbk6FmSJyAynorVYJZgD4xnN3pTatNt
-         Lv3CKO/ikZPyFaAJ8VTxo+2JRktcw+rxByvs0FJrAEUGSeDu8CL5J8JZmW7s8no9mkBj
-         9YrgqjRAiNosFrTUZz7X0pYjAD8BzZ/Eih60ieBScddaCwbKmLeciiCCbsbwnHIqy8bH
-         5WpA==
-X-Gm-Message-State: AOJu0YxrjfUL6/mhkqxiVWZc+83DoPX/bRlnuax+ccG/IG6UxVHxFytB
-        EppQ7De/4U0o3uksapiT79kYdg==
-X-Google-Smtp-Source: AGHT+IGDbrSZacz5XAoXrWr2jrhzucPFPAPaLJC8jMRi9edx8SFcwpAsw3B/h6vSvvbTmocJf+BWjw==
-X-Received: by 2002:a05:600c:696:b0:405:1c14:9227 with SMTP id a22-20020a05600c069600b004051c149227mr8513070wmn.33.1701094575234;
-        Mon, 27 Nov 2023 06:16:15 -0800 (PST)
+        bh=Xqz1VK0mYS8f9CyDoxvSzBDgulCTNu27LF81cKbiT0w=;
+        b=N5A3OLv2sC9tIzuH+ikFkuTLI2ivCKi/ayFV3hfZWxObe7URS4v7mqt15Fm5nFX2YC
+         n3UZad3z/OBak6vSDb2gl2bqI0CtPrYsAr1cYZez0M8p5K9IPBXWdPMT9XPGJgDqjd80
+         hmo6QUUYuJ5lrxPnf2MBqdd4o/XncZZMEWWJFmn6OBjJZoqBPh3ZGhdKL5B/HVMz8wC8
+         5JSXzYXUMalHjEW2Wg6n+4Ydg24HpttkC7sA5x8OgPfTUI0Y+FTGDRZLMjPwZJ9Ro0rh
+         DsqJR/P4R2WUxIiAkPL63Kxll20rN4WXdhALZ4YZ1BRdKvZKzvTw+2Cx6E+GHeeAlp2K
+         fZsg==
+X-Gm-Message-State: AOJu0YwHyKftD2CEe67VTGSNR8HlXiglWC6j+FC+y28W1t/gWkFhZKtC
+        DnnrIyDBzfJrWCDKaq0hWjK4KQ==
+X-Google-Smtp-Source: AGHT+IHMn0wWKy0PNcRLMmHMGiQMxo3AwVXygRjIyzuZuJGMIUuaMDA6AO6HM2buOAcnfZO9zniPxg==
+X-Received: by 2002:a05:600c:4f12:b0:409:6e0e:e95a with SMTP id l18-20020a05600c4f1200b004096e0ee95amr9379119wmq.19.1701094576249;
+        Mon, 27 Nov 2023 06:16:16 -0800 (PST)
 Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:bf33:77c7:8131:5e64])
-        by smtp.gmail.com with ESMTPSA id be7-20020a05600c1e8700b00405442edc69sm14658830wmb.14.2023.11.27.06.16.14
+        by smtp.gmail.com with ESMTPSA id be7-20020a05600c1e8700b00405442edc69sm14658830wmb.14.2023.11.27.06.16.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 06:16:14 -0800 (PST)
+        Mon, 27 Nov 2023 06:16:15 -0800 (PST)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -64,9 +64,9 @@ To:     Andy Gross <agross@kernel.org>,
 Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, kernel@quicinc.com,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v6 05/13] firmware: qcom: scm: make qcom_scm_assign_mem() use the TZ allocator
-Date:   Mon, 27 Nov 2023 15:15:52 +0100
-Message-Id: <20231127141600.20929-6-brgl@bgdev.pl>
+Subject: [PATCH v6 06/13] firmware: qcom: scm: make qcom_scm_ice_set_key() use the TZ allocator
+Date:   Mon, 27 Nov 2023 15:15:53 +0100
+Message-Id: <20231127141600.20929-7-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231127141600.20929-1-brgl@bgdev.pl>
 References: <20231127141600.20929-1-brgl@bgdev.pl>
@@ -90,60 +90,51 @@ Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
 Tested-by: Andrew Halaney <ahalaney@redhat.com> # sc8280xp-lenovo-thinkpad-x13s
 ---
- drivers/firmware/qcom/qcom_scm.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/firmware/qcom/qcom_scm.c | 21 +++++----------------
+ 1 file changed, 5 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-index 71e98b666391..754f6056b99f 100644
+index 754f6056b99f..31071a714cf1 100644
 --- a/drivers/firmware/qcom/qcom_scm.c
 +++ b/drivers/firmware/qcom/qcom_scm.c
-@@ -4,6 +4,7 @@
-  */
- 
- #include <linux/arm-smccc.h>
-+#include <linux/cleanup.h>
- #include <linux/clk.h>
- #include <linux/completion.h>
- #include <linux/cpumask.h>
-@@ -998,14 +999,13 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
- 	struct qcom_scm_mem_map_info *mem_to_map;
- 	phys_addr_t mem_to_map_phys;
- 	phys_addr_t dest_phys;
--	dma_addr_t ptr_phys;
-+	phys_addr_t ptr_phys;
- 	size_t mem_to_map_sz;
- 	size_t dest_sz;
- 	size_t src_sz;
- 	size_t ptr_sz;
- 	int next_vm;
- 	__le32 *src;
--	void *ptr;
- 	int ret, i, b;
- 	u64 srcvm_bits = *srcvm;
- 
-@@ -1015,10 +1015,13 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
- 	ptr_sz = ALIGN(src_sz, SZ_64) + ALIGN(mem_to_map_sz, SZ_64) +
- 			ALIGN(dest_sz, SZ_64);
- 
--	ptr = dma_alloc_coherent(__scm->dev, ptr_sz, &ptr_phys, GFP_KERNEL);
-+	void *ptr __free(qcom_tzmem) = qcom_tzmem_alloc(__scm->mempool,
-+							ptr_sz, GFP_KERNEL);
- 	if (!ptr)
- 		return -ENOMEM;
- 
-+	ptr_phys = qcom_tzmem_to_phys(ptr);
+@@ -1197,32 +1197,21 @@ int qcom_scm_ice_set_key(u32 index, const u8 *key, u32 key_size,
+ 		.args[4] = data_unit_size,
+ 		.owner = ARM_SMCCC_OWNER_SIP,
+ 	};
+-	void *keybuf;
+-	dma_addr_t key_phys;
 +
- 	/* Fill source vmid detail */
- 	src = ptr;
- 	i = 0;
-@@ -1047,7 +1050,6 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
+ 	int ret;
  
- 	ret = __qcom_scm_assign_mem(__scm->dev, mem_to_map_phys, mem_to_map_sz,
- 				    ptr_phys, src_sz, dest_phys, dest_sz);
--	dma_free_coherent(__scm->dev, ptr_sz, ptr, ptr_phys);
- 	if (ret) {
- 		dev_err(__scm->dev,
- 			"Assign memory protection call failed %d\n", ret);
+-	/*
+-	 * 'key' may point to vmalloc()'ed memory, but we need to pass a
+-	 * physical address that's been properly flushed.  The sanctioned way to
+-	 * do this is by using the DMA API.  But as is best practice for crypto
+-	 * keys, we also must wipe the key after use.  This makes kmemdup() +
+-	 * dma_map_single() not clearly correct, since the DMA API can use
+-	 * bounce buffers.  Instead, just use dma_alloc_coherent().  Programming
+-	 * keys is normally rare and thus not performance-critical.
+-	 */
+-
+-	keybuf = dma_alloc_coherent(__scm->dev, key_size, &key_phys,
+-				    GFP_KERNEL);
++	void *keybuf __free(qcom_tzmem) = qcom_tzmem_alloc(__scm->mempool,
++							   key_size,
++							   GFP_KERNEL);
+ 	if (!keybuf)
+ 		return -ENOMEM;
+ 	memcpy(keybuf, key, key_size);
+-	desc.args[1] = key_phys;
++	desc.args[1] = qcom_tzmem_to_phys(keybuf);
+ 
+ 	ret = qcom_scm_call(__scm->dev, &desc, NULL);
+ 
+ 	memzero_explicit(keybuf, key_size);
+ 
+-	dma_free_coherent(__scm->dev, key_size, keybuf, key_phys);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(qcom_scm_ice_set_key);
 -- 
 2.40.1
 
