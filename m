@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1E27F998C
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 07:24:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 420427F9990
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 07:24:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231464AbjK0GYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 01:24:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45970 "EHLO
+        id S232397AbjK0GYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 01:24:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232443AbjK0GXo (ORCPT
+        with ESMTP id S232449AbjK0GXp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 01:23:44 -0500
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0457219B;
-        Sun, 26 Nov 2023 22:23:32 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SdwWd0PRcz4f3m7Z;
-        Mon, 27 Nov 2023 14:23:25 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-        by mail.maildlp.com (Postfix) with ESMTP id 6B4161A0A5F;
+        Mon, 27 Nov 2023 01:23:45 -0500
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D23E136;
+        Sun, 26 Nov 2023 22:23:34 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SdwWj58Zpz4f3kFw;
         Mon, 27 Nov 2023 14:23:29 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+        by mail.maildlp.com (Postfix) with ESMTP id 7F7DB1A072F;
+        Mon, 27 Nov 2023 14:23:31 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP1 (Coremail) with SMTP id cCh0CgBXWhDeNWRlxeA8CA--.60190S4;
-        Mon, 27 Nov 2023 14:23:28 +0800 (CST)
+        by APP1 (Coremail) with SMTP id cCh0CgBXWhDeNWRlxeA8CA--.60190S5;
+        Mon, 27 Nov 2023 14:23:30 +0800 (CST)
 From:   Yu Kuai <yukuai1@huaweicloud.com>
 To:     hch@infradead.org, ming.lei@redhat.com, axboe@kernel.dk,
         roger.pau@citrix.com, colyli@suse.de, kent.overstreet@gmail.com,
@@ -46,33 +46,36 @@ Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
         gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
         yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: [PATCH block/for-next v2 10/16] erofs: use new helper to get inode from block_device
-Date:   Mon, 27 Nov 2023 14:22:46 +0800
-Message-Id: <20231127062252.2367645-1-yukuai1@huaweicloud.com>
+Subject: [PATCH block/for-next v2 11/16] ext4: use new helper to get inode from block_device
+Date:   Mon, 27 Nov 2023 14:22:47 +0800
+Message-Id: <20231127062252.2367645-2-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231127062252.2367645-1-yukuai1@huaweicloud.com>
+References: <20231127062252.2367645-1-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgBXWhDeNWRlxeA8CA--.60190S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrKw1rtr4DGw4UtFy3tr4DCFg_yoW3XFg_ZF
-        yxArW8W3y3J34fta95C3WrZr1vga1F9F409FWUJrZ8WFyUJrZ5ZrZrJ3WxJrs7WwsrKFZ8
-        AFsxWF47tryrXjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbxkFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr1j
-        6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
-        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
-        n2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
-        AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1l
-        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxV
-        AFwI0_Cr1j6rxdMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_
-        Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVWxJr0_GcJvcSsGvfC2KfnxnUUI43ZEXa7VU1
-        VOJ5UUUUU==
+X-CM-TRANSID: cCh0CgBXWhDeNWRlxeA8CA--.60190S5
+X-Coremail-Antispam: 1UD129KBjvJXoWxZr1xKFy7JrWUXF18AF47Jwb_yoW5ZF4xpF
+        y3AFyrAr4UZFyj9a92krZFq3W29w1IkFWxWryfuw1a9rWaqw1SqFykKF12yFyFvrW8Jry2
+        qF1jkrW8Cr4rKrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUPj14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+        x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr1j6rxdM2
+        8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
+        xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
+        vE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
+        r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04
+        v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_
+        Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1lIxkGc2
+        Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_
+        Cr1j6rxdMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJw
+        CI42IY6I8E87Iv6xkF7I0E14v26F4UJVW0obIYCTnIWIevJa73UjIFyTuYvjfUFT5lUUUU
+        U
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        MAY_BE_FORGED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -86,22 +89,77 @@ Which is more efficiency, and also prepare to remove the field
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- fs/erofs/data.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ext4/dir.c       | 2 +-
+ fs/ext4/ext4_jbd2.c | 2 +-
+ fs/ext4/super.c     | 8 ++++----
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/fs/erofs/data.c b/fs/erofs/data.c
-index 029c761670bf..85d490b3b53d 100644
---- a/fs/erofs/data.c
-+++ b/fs/erofs/data.c
-@@ -70,7 +70,7 @@ void erofs_init_metabuf(struct erofs_buf *buf, struct super_block *sb)
- 	if (erofs_is_fscache_mode(sb))
- 		buf->inode = EROFS_SB(sb)->s_fscache->inode;
- 	else
--		buf->inode = sb->s_bdev->bd_inode;
-+		buf->inode = bdev_inode(sb->s_bdev);
- }
+diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
+index 3985f8c33f95..6e9fe408642b 100644
+--- a/fs/ext4/dir.c
++++ b/fs/ext4/dir.c
+@@ -192,7 +192,7 @@ static int ext4_readdir(struct file *file, struct dir_context *ctx)
+ 					(PAGE_SHIFT - inode->i_blkbits);
+ 			if (!ra_has_index(&file->f_ra, index))
+ 				page_cache_sync_readahead(
+-					sb->s_bdev->bd_inode->i_mapping,
++					bdev_inode(sb->s_bdev)->i_mapping,
+ 					&file->f_ra, file,
+ 					index, 1);
+ 			file->f_ra.prev_pos = (loff_t)index << PAGE_SHIFT;
+diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
+index d1a2e6624401..e0e7f71d022d 100644
+--- a/fs/ext4/ext4_jbd2.c
++++ b/fs/ext4/ext4_jbd2.c
+@@ -206,7 +206,7 @@ static void ext4_journal_abort_handle(const char *caller, unsigned int line,
  
- void *erofs_read_metabuf(struct erofs_buf *buf, struct super_block *sb,
+ static void ext4_check_bdev_write_error(struct super_block *sb)
+ {
+-	struct address_space *mapping = sb->s_bdev->bd_inode->i_mapping;
++	struct address_space *mapping = bdev_inode(sb->s_bdev)->i_mapping;
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
+ 	int err;
+ 
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index c5fcf377ab1f..da6af2205e55 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -244,7 +244,7 @@ static struct buffer_head *__ext4_sb_bread_gfp(struct super_block *sb,
+ struct buffer_head *ext4_sb_bread(struct super_block *sb, sector_t block,
+ 				   blk_opf_t op_flags)
+ {
+-	gfp_t gfp = mapping_gfp_constraint(sb->s_bdev->bd_inode->i_mapping,
++	gfp_t gfp = mapping_gfp_constraint(bdev_inode(sb->s_bdev)->i_mapping,
+ 			~__GFP_FS) | __GFP_MOVABLE;
+ 
+ 	return __ext4_sb_bread_gfp(sb, block, op_flags, gfp);
+@@ -253,7 +253,7 @@ struct buffer_head *ext4_sb_bread(struct super_block *sb, sector_t block,
+ struct buffer_head *ext4_sb_bread_unmovable(struct super_block *sb,
+ 					    sector_t block)
+ {
+-	gfp_t gfp = mapping_gfp_constraint(sb->s_bdev->bd_inode->i_mapping,
++	gfp_t gfp = mapping_gfp_constraint(bdev_inode(sb->s_bdev)->i_mapping,
+ 			~__GFP_FS);
+ 
+ 	return __ext4_sb_bread_gfp(sb, block, 0, gfp);
+@@ -502,7 +502,7 @@ static void ext4_maybe_update_superblock(struct super_block *sb)
+  */
+ static int block_device_ejected(struct super_block *sb)
+ {
+-	struct inode *bd_inode = sb->s_bdev->bd_inode;
++	struct inode *bd_inode = bdev_inode(sb->s_bdev);
+ 	struct backing_dev_info *bdi = inode_to_bdi(bd_inode);
+ 
+ 	return bdi->dev == NULL;
+@@ -5585,7 +5585,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ 	 * used to detect the metadata async write error.
+ 	 */
+ 	spin_lock_init(&sbi->s_bdev_wb_lock);
+-	errseq_check_and_advance(&sb->s_bdev->bd_inode->i_mapping->wb_err,
++	errseq_check_and_advance(&bdev_inode(sb->s_bdev)->i_mapping->wb_err,
+ 				 &sbi->s_bdev_wb_err);
+ 	EXT4_SB(sb)->s_mount_state |= EXT4_ORPHAN_FS;
+ 	ext4_orphan_cleanup(sb, es);
 -- 
 2.39.2
 
