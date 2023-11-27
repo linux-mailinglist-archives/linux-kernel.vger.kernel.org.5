@@ -2,62 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 195FB7FA295
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:25:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97B7A7FA2B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:31:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233697AbjK0OZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 09:25:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39706 "EHLO
+        id S233809AbjK0ObY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 09:31:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233743AbjK0OYq (ORCPT
+        with ESMTP id S233817AbjK0ObD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 09:24:46 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D62A213D
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:24:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18C7AC433C7;
-        Mon, 27 Nov 2023 14:24:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701095078;
-        bh=6o6WiiW5vMWoso1wugzB6W7zAENqZGxNfsw46EhA5Gc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P8p8fU0xHZI1AT78w1hQe0jjlSkJjrwNVQq/L+MQE5tLmPq6aTL1T3u5P3vHRRPfG
-         voyE9HYuCFj/fKyx9mjB9AzO38gX1ljTnl+gKfDWhl8DR1/Ff8iQLUld4uY5Ly+Zpf
-         WCtIeYRwYPG6hFDHfFj3sO95UNcEsOJJoabPkX82UxPOMEJDEETv4EOi4vl0CH9HnE
-         r74t01i88hlV1GQZNN8BwZHHNDfNp2HK9jN7pGqzp9f15y+g+me9cWIgqeP9R46gaO
-         DfjyvkZP/fOpsc3tXsFOXQCah/1Etg9+FZ7FvRN6IUw0boP56OxnBHm0ng4KHkY/qj
-         vXdFx3fmVWTKQ==
-Date:   Mon, 27 Nov 2023 14:24:21 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-pm@vger.kernel.org,
-        =?iso-8859-1?Q?S=F8ren?= Andersen <san@skov.dk>
-Subject: Re: [PATCH v1 0/3] introduce priority-based shutdown support
-Message-ID: <ZWSmlfWYSbQHVvOk@finisterre.sirena.org.uk>
-References: <20231124145338.3112416-1-o.rempel@pengutronix.de>
- <2023112403-laxative-lustiness-6a7f@gregkh>
- <ZWC/hKav0JANhWKM@finisterre.sirena.org.uk>
- <2023112458-stature-commuting-c66f@gregkh>
- <ZWDGGqsCq9iSnHtO@finisterre.sirena.org.uk>
- <2023112435-dazzler-crisped-04a6@gregkh>
- <20231124163234.GC819414@pengutronix.de>
- <2023112453-flagstick-bullring-8511@gregkh>
- <CANhJrGPop=tL8y+chvPwMpSZYF1pkeWeRp3xL+7JsuY=U0fyag@mail.gmail.com>
- <2023112722-headdress-kissing-8c9f@gregkh>
+        Mon, 27 Nov 2023 09:31:03 -0500
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6EE5D4D
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:30:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1701095407; x=1732631407;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=yhykNXyZvalLGEmacnGcRuQpSVBCd7cLRjOG9XbiXxQ=;
+  b=UDRdS5qW3ej+V/cFmSyUPMvVdcQWc+yumNmCMDIxd34JaV9qtXmwH8yf
+   XkwOWNld1In2TBvVAPaNA1sEACINbpHRACeWwNmvJBkmVh9YRz/GgSSR7
+   NQXs+7HucndWX7RWWn+4esca+YRgW0FQZesmFeTQ78LjfFijBIVnTgzEY
+   3udZhv/KtIk63YaDSb2daaC+Y8Slee2T/T5ItrUBvW0qc8m/hQEBDFKuW
+   L5hFcyaKGyzPjB6sfIXnAPZeEvZ6Imjh+BXSVcygyAjasCBL2/YwuLKX6
+   tIHZPXE5aWqkfX02OR0DBtJbzIx8Pqg3CxPczAW6baPL/97UyLzqtwSrZ
+   A==;
+X-CSE-ConnectionGUID: aW6Vx/uASBWsmmLGNLaICw==
+X-CSE-MsgGUID: o7HKsLUXSMGfafdsAdFZ/g==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
+   d="asc'?scan'208";a="12260096"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 27 Nov 2023 07:30:01 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 27 Nov 2023 07:29:51 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Mon, 27 Nov 2023 07:29:49 -0700
+Date:   Mon, 27 Nov 2023 14:29:21 +0000
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Conor Dooley <conor@kernel.org>
+CC:     Woody Zhang <woodylab@foxmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <alexghiti@rivosinc.com>
+Subject: Re: [PATCH] riscv: reserve DTB before possible memblock allocation
+Message-ID: <20231127-trifle-film-2d8c940bab4f@wendy>
+References: <tencent_B15C0F1F3105597D0DCE7DADC96C5EB5CF0A@qq.com>
+ <20230607-jogging-grudging-70dede86bc53@spud>
+ <tencent_79F42B5A66F98A65266F989EC9C86A69F005@qq.com>
+ <20230607-unruly-encore-e00661704b71@spud>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="GnVq4IS3znoTYk/l"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="tXbrPhgYMyqKwY6U"
 Content-Disposition: inline
-In-Reply-To: <2023112722-headdress-kissing-8c9f@gregkh>
-X-Cookie: Slow day.  Practice crawling.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20230607-unruly-encore-e00661704b71@spud>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,43 +76,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---GnVq4IS3znoTYk/l
+--tXbrPhgYMyqKwY6U
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 27, 2023 at 01:08:24PM +0000, Greg Kroah-Hartman wrote:
+On Wed, Jun 07, 2023 at 11:23:31PM +0100, Conor Dooley wrote:
+> On Thu, Jun 08, 2023 at 06:17:22AM +0800, Woody Zhang wrote:
+> > Hi, Conor
+> >=20
+> > On Wed, Jun 07, 2023 at 07:17:28PM +0100, Conor Dooley wrote:
+> > >+CC Alex, you should take a look at this patch.
+> > >
+> > >On Wed, Jun 07, 2023 at 09:35:19PM +0800, Woody Zhang wrote:
+> > >> It's possible that early_init_fdt_scan_reserved_mem() allocates memo=
+ry
+> > >> from memblock for dynamic reserved memory in `/reserved-memory` node.
+> > >> Any fixed reservation must be done before that to avoid potential
+> > >> conflicts.
+> > >>=20
+> > >> Reserve the DTB in memblock just after early scanning it.
+> > >
+> > >The rationale makes sense to me, I am just wondering what compelling
+> > >reason there is to move it away from the memblock_reserve()s for the
+> > >initd and vmlinux? Moving it above early_init_fdt_scan_reserved_mem()
+> > >should be the sufficient minimum & would keep things together.
+> >=20
+> > IMO, moving it to parse_dtb() is more reasonable as early scanning and
+> > reservation are both subject to DTB. It can also lower the risk to
+> > mess up the sequence in the future. BTW, it's also invoked in
+> > setup_machine_fdt() in arm64.
+>=20
+> I'm fine with the change either way, so:
+> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> Mostly wanted to know whether you'd considered the minimal change.
 
-> Yes, using device tree would be good, but now you have created something
-> that is device-tree-specific and not all the world is device tree :(
+What ever happened to this patch?
 
-AFAICT the idiomatic thing for ACPI would be platform quirks based on
-DMI information.  Yay ACPI.  If the system is more Linux targetted then
-you can use _DSD properties to store DT properties, these can then be
-parsed out in a firmware interface neutral way via the fwnode API.  I'm
-not sure there's any avoiding dealing with firmware interface specifics
-at some point if we need platform description.
-
-> Also, many devices are finally moving out to non-device-tree busses,
-> like PCI and USB, so how would you handle them in this type of scheme?
-
-DT does have bindings for devices on discoverable buses like PCI - I
-think the original thing was for vendors cheaping out on EEPROMs though
-it's also useful when things are soldered down in embedded systems.
-
---GnVq4IS3znoTYk/l
+--tXbrPhgYMyqKwY6U
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVkppQACgkQJNaLcl1U
-h9DzJgf/XZUIgoFfylrAspVzy9yXRhGFCwnuYJ3iQcB6u9nrbRn4Q23KaWhqcE0D
-jOJpQrRYwe5aO4uKTjd0aVhVrG1CxKduAiFumXEv4cklRha0Q+wL8KNakiP4RCJQ
-q48wd503qPV3zXpNrzTQiJfoP2um+AhLoy3b+xRAwkc+GH4r6m21KEfPQ55LVo1j
-34LrG9W97d/PsfdRyejjSbEl2iXD6Axs1z7/kCixJ4+6mckRgpgnpokNEav3RBoN
-DNkDOMZG88u8wtjnMiqupqw4SoWrK0LD+OjxITxu5O9PajfAlmzW2OHGsVmw5dBw
-7FynB37oyWMtsKfu+RUQz9rtt2McZg==
-=W9Ia
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWSnwQAKCRB4tDGHoIJi
+0m/KAQDEuZxT5JfailGBMUXOcjT5I61ojfuXfoRX4qyhLfCZagEA48qNAd6QNeRx
+30HhIlbePUXhEb/osu5NNXdRus1JQwY=
+=r2nN
 -----END PGP SIGNATURE-----
 
---GnVq4IS3znoTYk/l--
+--tXbrPhgYMyqKwY6U--
