@@ -2,231 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 517267F9F36
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 13:02:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E080B7F9F34
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 13:02:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233099AbjK0MCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 07:02:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54742 "EHLO
+        id S233074AbjK0MCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 07:02:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233040AbjK0MCb (ORCPT
+        with ESMTP id S233038AbjK0MCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 07:02:31 -0500
-Received: from imap5.colo.codethink.co.uk (imap5.colo.codethink.co.uk [78.40.148.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF48B136
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 04:02:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=codethink.co.uk; s=imap5-20230908; h=Sender:Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=oiUGDw2y++Y7rWGXL3QA8/CPDFWAWAcUNYH71lKYLeg=; b=Tm1nbDltBr80zIQ/vPbDSSVNbd
-        1U3HWKPCGkYluv40bsDdUcP55ja1tlFgFbtQarha5EbMJ4UqUbBx2NYWRXCLxhYw86tXvvwgFnfxE
-        oMVieG+RgUFpiQ9KZFWkexrujK0l+C8+qs1hO7eAIbwsF6sDBwiEYjDDKNguHyEnuZu0szoIV5Y+n
-        FVA2wD40i9FtxxSWrLq5Uz3Eyw+BJqndiSqD39rEE3orDiEylxWRT8vz7aZEXbZKEzMpo8oEtEIcq
-        ESdkSUQWzAm88zbK8lPw72GL7Z86MVbQ2zWCamD94UHTikzjJJLpnmFJkB63O2reZlFho6wJd3Ifn
-        yOmu5Unw==;
-Received: from [167.98.27.226] (helo=[10.35.4.236])
-        by imap5.colo.codethink.co.uk with esmtpsa  (Exim 4.94.2 #2 (Debian))
-        id 1r7aJo-007UWj-1R; Mon, 27 Nov 2023 12:02:28 +0000
-Message-ID: <b4ee0ab3-9772-439c-bc9c-474f6f2862ba@codethink.co.uk>
-Date:   Mon, 27 Nov 2023 12:02:27 +0000
+        Mon, 27 Nov 2023 07:02:30 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C13F8F;
+        Mon, 27 Nov 2023 04:02:33 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B496F20363;
+        Mon, 27 Nov 2023 12:02:31 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 949D41379A;
+        Mon, 27 Nov 2023 12:02:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id 6RnMI1eFZGVudgAAD6G6ig
+        (envelope-from <vbabka@suse.cz>); Mon, 27 Nov 2023 12:02:31 +0000
+Message-ID: <2f8e8e28-28d4-b0a4-11a8-639f78c319c3@suse.cz>
+Date:   Mon, 27 Nov 2023 13:02:31 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] riscv: fix incorrect use of __user pointer
-To:     =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        kernel test robot <lkp@intel.com>
-References: <20231124113803.165431-1-cleger@rivosinc.com>
-Content-Language: en-GB
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-Organization: Codethink Limited.
-In-Reply-To: <20231124113803.165431-1-cleger@rivosinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Sender: ben.dooks@codethink.co.uk
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2] Documentation: kernel-parameters: remove
+ slab_max_order and noaliencache
+Content-Language: en-US
+To:     "Song, Xiongwei" <Xiongwei.Song@windriver.com>,
+        "sxwjean@me.com" <sxwjean@me.com>,
+        "42.hyeyoo@gmail.com" <42.hyeyoo@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Cc:     "cl@linux.com" <cl@linux.com>,
+        "penberg@kernel.org" <penberg@kernel.org>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20231122143603.85297-1-sxwjean@me.com>
+ <7512b350-4317-21a0-fab3-4101bc4d8f7a@suse.cz>
+ <PH0PR11MB51929193317D75141C28059BECBEA@PH0PR11MB5192.namprd11.prod.outlook.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <PH0PR11MB51929193317D75141C28059BECBEA@PH0PR11MB5192.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spamd-Bar: ++++++
+X-Spam-Score: 6.19
+X-Rspamd-Server: rspamd1
+Authentication-Results: smtp-out2.suse.de;
+        dkim=none;
+        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of vbabka@suse.cz) smtp.mailfrom=vbabka@suse.cz;
+        dmarc=none
+X-Rspamd-Queue-Id: B496F20363
+X-Spamd-Result: default: False [6.19 / 50.00];
+         ARC_NA(0.00)[];
+         TO_DN_EQ_ADDR_SOME(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com,me.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(1.20)[suse.cz];
+         R_SPF_SOFTFAIL(4.60)[~all:c];
+         MID_RHS_MATCH_FROM(0.00)[];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         BAYES_HAM(-3.00)[100.00%];
+         RCPT_COUNT_TWELVE(0.00)[13];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         FREEMAIL_TO(0.00)[windriver.com,me.com,gmail.com,kvack.org];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/11/2023 11:38, Clément Léger wrote:
-> These warnings were reported by sparse and were due to lack of __user
-> annotation as well as dereferencing such pointer:
+On 11/26/23 08:25, Song, Xiongwei wrote:
+> Hi Vlastimil,
 > 
-> arch/riscv/kernel/traps_misaligned.c:361:21: warning: dereference of noderef expression
-> arch/riscv/kernel/traps_misaligned.c:373:21: warning: dereference of noderef expression
-> arch/riscv/kernel/traps_misaligned.c:381:21: warning: dereference of noderef expression
-> arch/riscv/kernel/traps_misaligned.c:322:24: warning: incorrect type in initializer (different address spaces)
-> arch/riscv/kernel/traps_misaligned.c:322:24:    expected unsigned char const [noderef] __user *__gu_ptr
-> arch/riscv/kernel/traps_misaligned.c:322:24:    got unsigned char const [usertype] *addr
-> arch/riscv/kernel/traps_misaligned.c:361:21: warning: dereference of noderef expression
-> arch/riscv/kernel/traps_misaligned.c:373:21: warning: dereference of noderef expression
-> arch/riscv/kernel/traps_misaligned.c:381:21: warning: dereference of noderef expression
-> arch/riscv/kernel/traps_misaligned.c:332:24: warning: incorrect type in initializer (different address spaces)
-> arch/riscv/kernel/traps_misaligned.c:332:24:    expected unsigned char [noderef] __user *__gu_ptr
-> arch/riscv/kernel/traps_misaligned.c:332:24:    got unsigned char [usertype] *addr
+>> -----Original Message-----
+>> From: Vlastimil Babka <vbabka@suse.cz>
+>> Sent: Friday, November 24, 2023 7:24 PM
+>> To: sxwjean@me.com; 42.hyeyoo@gmail.com; linux-mm@kvack.org
+>> Cc: cl@linux.com; penberg@kernel.org; rientjes@google.com; iamjoonsoo.kim@lge.com;
+>> akpm@linux-foundation.org; roman.gushchin@linux.dev; corbet@lwn.net; linux-
+>> doc@vger.kernel.org; linux-kernel@vger.kernel.org; Song, Xiongwei
+>> <Xiongwei.Song@windriver.com>
+>> Subject: Re: [PATCH v2] Documentation: kernel-parameters: remove slab_max_order and
+>> noaliencache
+>> 
+>> 
+>> On 11/22/23 15:36, sxwjean@me.com wrote:
+>> > From: Xiongwei Song <xiongwei.song@windriver.com>
+>> >
+>> > Since slab allocator has already been removed. There is no users about
+>> > slab_max_order and noaliencache, so let's remove them.
+>> >
+>> > Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
+>> > ---
+>> > v2: Hyeonggon Yoo <42.hyeyoo@gmail.com> suggested that noaliencache should be
+>> > removed too. Here adding this change. The patch is based on [1].
+>> >
+>> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/vbabka/linux.git/log/?h=slab-remove-
+>> slab-v2r1
+>> >
+>> > v1: https://lore.kernel.org/linux-mm/20231120091214.150502-1-
+>> sxwjean@me.com/T/#m55ebb45851bc86d650baf65dfe8296d33c5b1126
+>> > ---
+>> >  Documentation/admin-guide/kernel-parameters.txt | 10 ----------
+>> >  1 file changed, 10 deletions(-)
+>> >
+>> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-
+>> guide/kernel-parameters.txt
+>> > index 65731b060e3f..d56a5beefe24 100644
+>> > --- a/Documentation/admin-guide/kernel-parameters.txt
+>> > +++ b/Documentation/admin-guide/kernel-parameters.txt
+>> > @@ -3740,10 +3740,6 @@
+>> >       no5lvl          [X86-64,RISCV] Disable 5-level paging mode. Forces
+>> >                       kernel to use 4-level paging instead.
+>> >
+>> > -     noaliencache    [MM, NUMA, SLAB] Disables the allocation of alien
+>> > -                     caches in the slab allocator.  Saves per-node memory,
+>> > -                     but will impact performance.
+>> 
+>> No question about this one, can be deleted.
+>> 
+>> > -
+>> >       noalign         [KNL,ARM]
+>> >
+>> >       noaltinstr      [S390] Disables alternative instructions patching
+>> > @@ -5887,12 +5883,6 @@
+>> >                       own.
+>> >                       For more information see Documentation/mm/slub.rst.
+>> >
+>> > -     slab_max_order= [MM, SLAB]
+>> > -                     Determines the maximum allowed order for slabs.
+>> > -                     A high setting may cause OOMs due to memory
+>> > -                     fragmentation.  Defaults to 1 for systems with
+>> > -                     more than 32MB of RAM, 0 otherwise.
+>> 
+>> I think here we should consider the long-term plan first. It's a bit
+>> unfortunate (in hindsight) SLUB brought its own prefix of parameters, even
+>> if some became interchangeable aliases later (slab/slub_nomerge), some not.
+>> I think it would be best to unify them, and consider the string "slub" an
+>> implementation detail of the general "slab allocator" term going forward.
+>> 
+>> So what I'd propose is that we change all parameters to accept a
+>> "slab_$param" as a primary and documented name (and the description can
+>> contain just [MM] tag, no [SLAB] or [SLUB] needed), with "slub_$param" is
+>> also accepted as an alias where it exists today, and there's just a note
+>> that the slub_$param name is also accepted in the description of the
+>> canonical parameter, not in a separate description. Then maybe in a few
+>> years we can mark the old names as deprecated and start issuing low-key
+>> warnings (while still accepting them), and in 10 years maybe remove them
+>> completely. Thoughts?
 > 
-> As suggested by Christoph Hellwig, casting pointers from an address
-> space to another is not a good idea and we should rather cast the
-> untyped unsigned long to their final address space. Fix the ones in
-> load_u8()/store_u8()/__read_insn() by passing a unsigned long and then
-> casting it to the appropriate type (__user of not) depending if used in
-> kernel/ user mode. Also remove unneeded else construct in store_u8()/
-> load_u8().
+> Sorry, I didn't know the SLUB history, thanks for the comments and proposal. 
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202311160606.obGOOwB3-lkp@intel.com/
-> Signed-off-by: Clément Léger <cleger@rivosinc.com>
-> ---
->   arch/riscv/kernel/traps_misaligned.c | 55 +++++++++++++---------------
->   1 file changed, 25 insertions(+), 30 deletions(-)
+> Did you mean the rough diff below?
 > 
-> diff --git a/arch/riscv/kernel/traps_misaligned.c b/arch/riscv/kernel/traps_misaligned.c
-> index 5eba37147caa..a92b88af855a 100644
-> --- a/arch/riscv/kernel/traps_misaligned.c
-> +++ b/arch/riscv/kernel/traps_misaligned.c
-> @@ -265,19 +265,19 @@ static unsigned long get_f32_rs(unsigned long insn, u8 fp_reg_offset,
->   #define GET_F32_RS2S(insn, regs) (get_f32_rs(RVC_RS2S(insn), 0, regs))
->   
->   #ifdef CONFIG_RISCV_M_MODE
-> -static inline int load_u8(struct pt_regs *regs, const u8 *addr, u8 *r_val)
-> +static inline int load_u8(struct pt_regs *regs, const unsigned long addr, u8 *r_val)
->   {
->   	u8 val;
->   
-> -	asm volatile("lbu %0, %1" : "=&r" (val) : "m" (*addr));
-> +	asm volatile("lbu %0, %1" : "=&r" (val) : "m" (*(const u8 *)addr));
->   	*r_val = val;
->   
->   	return 0;
->   }
->   
-> -static inline int store_u8(struct pt_regs *regs, u8 *addr, u8 val)
-> +static inline int store_u8(struct pt_regs *regs, unsigned long addr, u8 val)
->   {
-> -	asm volatile ("sb %0, %1\n" : : "r" (val), "m" (*addr));
-> +	asm volatile ("sb %0, %1\n" : : "r" (val), "m" (*(u8 *)addr));
->   
->   	return 0;
->   }
-> @@ -316,34 +316,32 @@ static inline int get_insn(struct pt_regs *regs, ulong mepc, ulong *r_insn)
->   	return 0;
->   }
->   #else
-> -static inline int load_u8(struct pt_regs *regs, const u8 *addr, u8 *r_val)
-> +static inline int load_u8(struct pt_regs *regs, const unsigned long addr, u8 *r_val)
->   {
-> -	if (user_mode(regs)) {
-> -		return __get_user(*r_val, addr);
-> -	} else {
-> -		*r_val = *addr;
-> -		return 0;
-> -	}
-> +	if (user_mode(regs))
-> +		return __get_user(*r_val, (u8 __user *)addr);
-> +
-> +	*r_val = *(const u8 *)addr;
-> +	return 0;
->   }
->   
-> -static inline int store_u8(struct pt_regs *regs, u8 *addr, u8 val)
-> +static inline int store_u8(struct pt_regs *regs, unsigned long addr, u8 val)
->   {
-> -	if (user_mode(regs)) {
-> -		return __put_user(val, addr);
-> -	} else {
-> -		*addr = val;
-> -		return 0;
-> -	}
-> +	if (user_mode(regs))
-> +		return __put_user(val, (u8 __user *)addr);
-> +
-> +	*(u8 *)addr = val;
-> +	return 0;
->   }
->   
-> -#define __read_insn(regs, insn, insn_addr)		\
-> +#define __read_insn(regs, insn, insn_addr, type)	\
->   ({							\
->   	int __ret;					\
->   							\
->   	if (user_mode(regs)) {				\
-> -		__ret = __get_user(insn, insn_addr);	\
-> +		__ret = __get_user(insn, (type __user *) insn_addr); \
->   	} else {					\
-> -		insn = *insn_addr;			\
-> +		insn = *(type *)insn_addr;		\
->   		__ret = 0;				\
->   	}						\
->   							\
-> @@ -356,9 +354,8 @@ static inline int get_insn(struct pt_regs *regs, ulong epc, ulong *r_insn)
->   
->   	if (epc & 0x2) {
->   		ulong tmp = 0;
-> -		u16 __user *insn_addr = (u16 __user *)epc;
->   
-> -		if (__read_insn(regs, insn, insn_addr))
-> +		if (__read_insn(regs, insn, epc, u16))
->   			return -EFAULT;
->   		/* __get_user() uses regular "lw" which sign extend the loaded
->   		 * value make sure to clear higher order bits in case we "or" it
-> @@ -369,16 +366,14 @@ static inline int get_insn(struct pt_regs *regs, ulong epc, ulong *r_insn)
->   			*r_insn = insn;
->   			return 0;
->   		}
-> -		insn_addr++;
-> -		if (__read_insn(regs, tmp, insn_addr))
-> +		epc += sizeof(u16);
-> +		if (__read_insn(regs, tmp, epc, u16))
->   			return -EFAULT;
->   		*r_insn = (tmp << 16) | insn;
->   
->   		return 0;
->   	} else {
-> -		u32 __user *insn_addr = (u32 __user *)epc;
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 65731b060e3f..db6d2ebe7c7d 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -5871,10 +5871,12 @@
+>          slram=          [HW,MTD]
+> 
+>          slab_merge      [MM]
+> +       slub_merge      [MM]
+>                          Enable merging of slabs with similar size when the
+>                          kernel is built without CONFIG_SLAB_MERGE_DEFAULT.
+
+I'd hope the result look more like this, so the duplicate names are not
+so prominent.
+
+        slab_merge      [MM]
+                        Enable merging of slabs with similar size when the
+                        kernel is built without CONFIG_SLAB_MERGE_DEFAULT.
+                        (slub_merge also accepted as an alias)
+
+Note that it's not just a Documentation change anymore, as many of the
+parameters don't have the slab_ variants yet wired up.
+
+> 
+>          slab_nomerge    [MM]
+> +       slub_nomerge    [MM]
+>                          Disable merging of slabs with similar size. May be
+>                          necessary if there is some reason to distinguish
+>                          allocs to different slabs, especially in hardened
+> @@ -5887,12 +5889,6 @@
+>                          own.
+>                          For more information see Documentation/mm/slub.rst.
+> 
+> -       slab_max_order= [MM, SLAB]
+> -                       Determines the maximum allowed order for slabs.
+> -                       A high setting may cause OOMs due to memory
+> -                       fragmentation.  Defaults to 1 for systems with
+> -                       more than 32MB of RAM, 0 otherwise.
 > -
-> -		if (__read_insn(regs, insn, insn_addr))
-> +		if (__read_insn(regs, insn, epc, u32))
->   			return -EFAULT;
->   		if ((insn & __INSN_LENGTH_MASK) == __INSN_LENGTH_32) {
->   			*r_insn = insn;
-> @@ -491,7 +486,7 @@ int handle_misaligned_load(struct pt_regs *regs)
->   
->   	val.data_u64 = 0;
->   	for (i = 0; i < len; i++) {
-> -		if (load_u8(regs, (void *)(addr + i), &val.data_bytes[i]))
-> +		if (load_u8(regs, addr + i, &val.data_bytes[i]))
->   			return -1;
->   	}
->   
-> @@ -589,7 +584,7 @@ int handle_misaligned_store(struct pt_regs *regs)
->   		return -EOPNOTSUPP;
->   
->   	for (i = 0; i < len; i++) {
-> -		if (store_u8(regs, (void *)(addr + i), val.data_bytes[i]))
-> +		if (store_u8(regs, addr + i, val.data_bytes[i]))
->
-
-Would it not be easier to have a switch here for memcpy or copy_to_user?
-
-    			return -1;
->   	}
->   
-
--- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
-
-https://www.codethink.co.uk/privacy.html
+>          slub_debug[=options[,slabs][;[options[,slabs]]...]      [MM, SLUB]
+>                          Enabling slub_debug allows one to determine the
+>                          culprit if slab objects become corrupted. Enabling
+> @@ -5901,13 +5897,15 @@
+>                          last alloc / free. For more information see
+>                          Documentation/mm/slub.rst.
+> 
+> -       slub_max_order= [MM, SLUB]
+> +       slab_max_order= [MM]
+> +       slub_max_order= [MM]
+>                          Determines the maximum allowed order for slabs.
+>                          A high setting may cause OOMs due to memory
+>                          fragmentation. For more information see
+>                          Documentation/mm/slub.rst.
+> 
+> -       slub_min_objects=       [MM, SLUB]
+> +       slab_min_objects=       [MM]
+> +       slub_min_objects=       [MM]
+>                          The minimum number of objects per slab. SLUB will
+>                          increase the slab order up to slub_max_order to
+>                          generate a sufficiently large slab able to contain
+> @@ -5916,18 +5914,12 @@
+>                          and the less frequently locks need to be acquired.
+>                          For more information see Documentation/mm/slub.rst.
+> 
+> -       slub_min_order= [MM, SLUB]
+> +       slub_min_order= [MM]
+> +       slab_min_order= [MM]
+>                          Determines the minimum page order for slabs.
+> Must be
+>                          lower than slub_max_order.
+>                          For more information see Documentation/mm/slub.rst.
+> 
+> -       slub_merge      [MM, SLUB]
+> -                       Same with slab_merge.
+> -
+> -       slub_nomerge    [MM, SLUB]
+> -                       Same with slab_nomerge. This is supported for
+> legacy.
+> -                       See slab_nomerge for more information.
+> -
+>          smart2=         [HW]
+>                          Format: <io1>[,<io2>[,...,<io8>]]
+> 
+> If so I think we should use slab_&param in mm/slub.c. When hitting "slub_$param"
+> we need to assign the value to "slab_&param" like "slab_nomerge", right?
+> 
+> Regards,
+> Xiongwei
 
