@@ -2,68 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 374747F9CD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 10:41:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 372177F9CD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 10:41:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232884AbjK0JlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 04:41:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44736 "EHLO
+        id S232875AbjK0Jk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 04:40:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232881AbjK0JlM (ORCPT
+        with ESMTP id S232841AbjK0Jky (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 04:41:12 -0500
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FEF712D;
-        Mon, 27 Nov 2023 01:41:18 -0800 (PST)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AR9eoS7115669;
-        Mon, 27 Nov 2023 03:40:50 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701078050;
-        bh=pCY7DFG3/xlRNRpTV4E9IgPYvQLv9m8bh6SdbTCVMzU=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=qrJijozY4EaHxw4gRYDAWMHEkjPhU8ia4QDFiM2IAAS49+geRBHnsJ1ualldgIjf2
-         4pLSLCuyYW6oCFRlii1SJme8GRLTIR2MKk2ndlrgeH/WZjG9QaKg/GH2Pk69ZttS5+
-         /JP7r8nJmmp72r6CHA8P37zF8JRNU1Rrm0aREDeo=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AR9eofU035872
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 27 Nov 2023 03:40:50 -0600
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 27
- Nov 2023 03:40:49 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 27 Nov 2023 03:40:49 -0600
-Received: from [172.24.227.133] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AR9ek0v123777;
-        Mon, 27 Nov 2023 03:40:46 -0600
-Message-ID: <53edd2e5-ffc3-4406-baac-3582edcdbf93@ti.com>
-Date:   Mon, 27 Nov 2023 15:10:45 +0530
+        Mon, 27 Nov 2023 04:40:54 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC4A5DE
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 01:41:00 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31DAAC433C9;
+        Mon, 27 Nov 2023 09:41:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701078060;
+        bh=VAe16eg7y6ayTkfAT9VTCj+Q3FFIy+QqJ0XsEAFzdqo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ie6DAQKQwth6/jsj75eLcKctEZhUSo3DB0NwQ2dpsFGO1StB90BsXbeaHN0mAAp5r
+         eBTOZ0KH8MvrhVT6ZSAnGs89nyE+jIjaFTVBfoRB5NI1Lx2Cch6ycLeW5aA1RB8nR1
+         5Mrnhw6eBJEzPlKSL6d++7ZRL0QcMchZ30C/YoEic6QG3a+aEdIAWmzFtJFP3sLZAb
+         4O2z7iEkjaCO8KpJx9qFQH2UviDu92Ydl/azM+Wc7SAkwxNbnb1cRGkcCrU4TRNM+b
+         hmM91Th0AzdPz8u7IuiA4GPFBr4oJJ9Do4FmdDr4hCfNvLT4Y2j38vpWSBxUO0i+CW
+         9jqQWwJk6rFyA==
+Date:   Mon, 27 Nov 2023 10:40:57 +0100
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Johan Jonker <jbx6244@yandex.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sandy Huang <hjc@rock-chips.com>,
+        Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH RFC v3 22/37] drm/rockchip: inno_hdmi: Remove useless
+ output format
+Message-ID: <pxj5yv3f5ukobsqfokd5ojh2is5za5wdv3imfqrlcu3smoib76@5lw5bwl77uvg>
+References: <20231031-kms-hdmi-connector-state-v3-0-328b0fae43a7@kernel.org>
+ <20231031-kms-hdmi-connector-state-v3-22-328b0fae43a7@kernel.org>
+ <52b232e4-7ffa-1d01-efa6-a0af84729483@yandex.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] iio: adc: ti_am335x_adc: Fix return value check of
- tiadc_request_dma()
-Content-Language: en-US
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Wadim Egorov <w.egorov@phytec.de>
-CC:     <lars@metafoo.de>, <robh@kernel.org>, <heiko@sntech.de>,
-        <peter.ujfalusi@ti.com>, <mugunthanvnm@ti.com>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <nm@ti.com>, <upstream@lists.phytec.de>
-References: <20230925134427.214556-1-w.egorov@phytec.de>
- <20231005150917.2d0c833e@jic23-huawei>
-From:   Bhavya Kapoor <b-kapoor@ti.com>
-In-Reply-To: <20231005150917.2d0c833e@jic23-huawei>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fgomrsf3hj7iwzkr"
+Content-Disposition: inline
+In-Reply-To: <52b232e4-7ffa-1d01-efa6-a0af84729483@yandex.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -71,55 +67,36 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 05/10/23 7:39 pm, Jonathan Cameron wrote:
-> On Mon, 25 Sep 2023 15:44:27 +0200
-> Wadim Egorov <w.egorov@phytec.de> wrote:
->
->> Fix wrong handling of a DMA request where the probing only failed
->> if -EPROPE_DEFER was returned. Instead, let us fail if a non -ENODEV
->> value is returned. This makes DMAs explicitly optional. Even if the
->> DMA request is unsuccessfully, the ADC can still work properly.
->> We do also handle the defer probe case by making use of dev_err_probe().
->>
->> Fixes: f438b9da75eb ("drivers: iio: ti_am335x_adc: add dma support")
->> Signed-off-by: Wadim Egorov <w.egorov@phytec.de>
-> +CC Bhavya,
->
-> Could you take a look at this given you had comments on v1.
->
-> Thanks,
->
-> Jonathan
+--fgomrsf3hj7iwzkr
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hi Jonathan, Patch Looks Good To Me and Should now work fine for every case.
+Hi,
 
-Regards
+On Sat, Nov 25, 2023 at 11:00:52AM +0100, Johan Jonker wrote:
+> In stead of further cripplingRockchip HDMI drivers one could also make
+> it functional based=A0 on EDID info.
 
-~B-Kapoor
+I'm not crippling it, it was dead code. This has no functional impact
+whatsoever.
 
->
->> ---
->> v2:
->>    - Update description
->>    - Drop line break after Fixes tag
->>    - Move decision about optional DMA into probe/caller
->> ---
->>   drivers/iio/adc/ti_am335x_adc.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/iio/adc/ti_am335x_adc.c b/drivers/iio/adc/ti_am335x_adc.c
->> index 8db7a01cb5fb..5f8795986995 100644
->> --- a/drivers/iio/adc/ti_am335x_adc.c
->> +++ b/drivers/iio/adc/ti_am335x_adc.c
->> @@ -670,8 +670,10 @@ static int tiadc_probe(struct platform_device *pdev)
->>   	platform_set_drvdata(pdev, indio_dev);
->>   
->>   	err = tiadc_request_dma(pdev, adc_dev);
->> -	if (err && err == -EPROBE_DEFER)
->> +	if (err && err != -ENODEV) {
->> +		dev_err_probe(&pdev->dev, err, "DMA request failed\n");
->>   		goto err_dma;
->> +	}
->>   
->>   	return 0;
->>   
+> To start with the output could you turn RGB888 input and switch between
+> RGB444, YCBCR444 and YCBCR422 output.
+
+I don't have any hardware to test that out
+
+Maxime
+
+--fgomrsf3hj7iwzkr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZWRkKQAKCRDj7w1vZxhR
+xRUcAP9CI1PcttTNikiIZjxjYzvcKVQK/UCxKc5meY4XBGQ5OgD+LSZ4/nwHLH0l
+7NofWH+K9NjPixshRfY99cdGrd+x+wc=
+=/lNp
+-----END PGP SIGNATURE-----
+
+--fgomrsf3hj7iwzkr--
