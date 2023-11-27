@@ -2,121 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7524B7F995B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 07:23:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1E27F998C
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 07:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232158AbjK0GWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 01:22:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44838 "EHLO
+        id S231464AbjK0GYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 01:24:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232470AbjK0GWi (ORCPT
+        with ESMTP id S232443AbjK0GXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 01:22:38 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 347A319AD;
-        Sun, 26 Nov 2023 22:22:23 -0800 (PST)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AR4pbgE019742;
-        Mon, 27 Nov 2023 06:22:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=5KdBbiFwLFtOZF7WLrJ3EbuoE7Dvt1DnypGwC+JKB+c=;
- b=avhEA42UDDVejMQhK4VftiQcVBl6J6CUZa9h23X7mvVI0vmVKTFxTTrN9bHQqVnUy5d6
- Eu4UkjnQ2053RZoHo8GwdNj+C9faAaAdsujVE3nPa25Q5y8wa+qsewUoXRWLnM4Wsszp
- ePzaDOxpNQRYXdm4OM67BtXhs24ANKGJpcEJP0nf2Mf7kINrMPOUKWlVlUu0DP0c4QVB
- YMl7HgLaGPUFiX7tkaZO78Fk9F+S96StfcsaXsP4ErRYDjOp6JIuUNNNuBNEDW350yLt
- ppcP7oLuQUO2AeWLSiw3f+y/CHKQfPp4n+WDC5eNPqYEqU9tl7HWfNBRqhRmdAcC/H05 9Q== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uk9ppkabw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 06:22:03 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AR6M2Qe028669
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 06:22:02 GMT
-Received: from [10.253.33.46] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 26 Nov
- 2023 22:21:59 -0800
-Message-ID: <f0604c25-87a7-497a-8884-7a779ee7a2f5@quicinc.com>
-Date:   Mon, 27 Nov 2023 14:21:46 +0800
+        Mon, 27 Nov 2023 01:23:44 -0500
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0457219B;
+        Sun, 26 Nov 2023 22:23:32 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SdwWd0PRcz4f3m7Z;
+        Mon, 27 Nov 2023 14:23:25 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+        by mail.maildlp.com (Postfix) with ESMTP id 6B4161A0A5F;
+        Mon, 27 Nov 2023 14:23:29 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP1 (Coremail) with SMTP id cCh0CgBXWhDeNWRlxeA8CA--.60190S4;
+        Mon, 27 Nov 2023 14:23:28 +0800 (CST)
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+To:     hch@infradead.org, ming.lei@redhat.com, axboe@kernel.dk,
+        roger.pau@citrix.com, colyli@suse.de, kent.overstreet@gmail.com,
+        joern@lazybastard.org, miquel.raynal@bootlin.com, richard@nod.at,
+        vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
+        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, nico@fluxnic.net, xiang@kernel.org,
+        chao@kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+        agruenba@redhat.com, jack@suse.com, konishi.ryusuke@gmail.com,
+        dchinner@redhat.com, linux@weissschuh.net, min15.li@samsung.com,
+        yukuai3@huawei.com, dlemoal@kernel.org, willy@infradead.org,
+        akpm@linux-foundation.org, hare@suse.de, p.raghav@samsung.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
+        yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: [PATCH block/for-next v2 10/16] erofs: use new helper to get inode from block_device
+Date:   Mon, 27 Nov 2023 14:22:46 +0800
+Message-Id: <20231127062252.2367645-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 3/6] net: phy: at803x: add QCA8084 ethernet phy support
-Content-Language: en-US
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <hkallweit1@gmail.com>, <linux@armlinux.org.uk>, <corbet@lwn.net>,
-        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>
-References: <20231126060732.31764-1-quic_luoj@quicinc.com>
- <20231126060732.31764-4-quic_luoj@quicinc.com>
- <0b22dd51-417c-436d-87ce-7ebc41185860@lunn.ch>
-From:   Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <0b22dd51-417c-436d-87ce-7ebc41185860@lunn.ch>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: WSi6TPtH7lrRBeDVgEeBVZJoh0jjbKug
-X-Proofpoint-GUID: WSi6TPtH7lrRBeDVgEeBVZJoh0jjbKug
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-27_03,2023-11-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 mlxlogscore=907 suspectscore=0 lowpriorityscore=0
- clxscore=1015 mlxscore=0 bulkscore=0 spamscore=0 adultscore=0
- malwarescore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311060000 definitions=main-2311270043
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgBXWhDeNWRlxeA8CA--.60190S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrKw1rtr4DGw4UtFy3tr4DCFg_yoW3XFg_ZF
+        yxArW8W3y3J34fta95C3WrZr1vga1F9F409FWUJrZ8WFyUJrZ5ZrZrJ3WxJrs7WwsrKFZ8
+        AFsxWF47tryrXjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbxkFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr1j
+        6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
+        n2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
+        AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1l
+        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxV
+        AFwI0_Cr1j6rxdMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_
+        Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVWxJr0_GcJvcSsGvfC2KfnxnUUI43ZEXa7VU1
+        VOJ5UUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Yu Kuai <yukuai3@huawei.com>
 
+Which is more efficiency, and also prepare to remove the field
+'bd_inode' from block_device.
 
-On 11/27/2023 1:31 AM, Andrew Lunn wrote:
->> +		/* There are two PCSs available for QCA8084, which support the
->> +		 * following interface modes.
->> +		 *
->> +		 * 1. PHY_INTERFACE_MODE_10G_QXGMII utilizes PCS1 for all
->> +		 * available 4 ports, which is for all link speeds.
->> +		 *
->> +		 * 2. PHY_INTERFACE_MODE_2500BASEX utilizes PCS0 for the
->> +		 * fourth port, which is only for the link speed 2500M same
->> +		 * as QCA8081.
->> +		 *
->> +		 * 3. PHY_INTERFACE_MODE_SGMII utilizes PCS0 for the fourth
->> +		 * port, which is for the link speed 10M, 100M and 1000M same
->> +		 * as QCA8081.
->> +		 */
-> 
-> How are these 3 modes configured? I don't see any software
-> configuration of this in these drivers. Can it only by configured by
-> strapping?
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ fs/erofs/data.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The interface mode is passed in the .config_init, which is configured
-by the PCS driver, the hardware register is located in the PCS, this
-driver will be pushed later.
+diff --git a/fs/erofs/data.c b/fs/erofs/data.c
+index 029c761670bf..85d490b3b53d 100644
+--- a/fs/erofs/data.c
++++ b/fs/erofs/data.c
+@@ -70,7 +70,7 @@ void erofs_init_metabuf(struct erofs_buf *buf, struct super_block *sb)
+ 	if (erofs_is_fscache_mode(sb))
+ 		buf->inode = EROFS_SB(sb)->s_fscache->inode;
+ 	else
+-		buf->inode = sb->s_bdev->bd_inode;
++		buf->inode = bdev_inode(sb->s_bdev);
+ }
+ 
+ void *erofs_read_metabuf(struct erofs_buf *buf, struct super_block *sb,
+-- 
+2.39.2
 
-> 
-> I think there should be some validation of the phydev->interface
-> mode. Are ports 1-3 set to PHY_INTERFACE_MODE_10G_QXGMII? Is port 4
-> interface mode consistent with the strapping?
-> 
-> 	  Andrew
-
-All ports(1-4) can be PHY_INTERFACE_MODE_10G_QXGMII, if port4 is
-connected with PCS0, which will works on sgmii/2500basex mode,
-these configuration is controlled by register instead of boot strapping.
