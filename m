@@ -2,106 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F7DC7F9F44
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 13:10:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A08587F9F43
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 13:10:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233052AbjK0MKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 07:10:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47044 "EHLO
+        id S233105AbjK0MJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 07:09:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233109AbjK0MKB (ORCPT
+        with ESMTP id S233052AbjK0MJz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 07:10:01 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7AF2BEA;
-        Mon, 27 Nov 2023 04:10:07 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BA2DA2F4;
-        Mon, 27 Nov 2023 04:10:54 -0800 (PST)
-Received: from raptor (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 39E373F73F;
-        Mon, 27 Nov 2023 04:10:02 -0800 (PST)
-Date:   Mon, 27 Nov 2023 12:09:59 +0000
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
-        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
-        rppt@kernel.org, hughd@google.com, pcc@google.com,
-        steven.price@arm.com, anshuman.khandual@arm.com,
-        vincenzo.frascino@arm.com, eugenis@google.com, kcc@google.com,
-        hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC v2 05/27] mm: page_alloc: Add an arch hook to allow
- prep_new_page() to fail
-Message-ID: <ZWSHF2hVOPTBIQLY@raptor>
-References: <20231119165721.9849-1-alexandru.elisei@arm.com>
- <20231119165721.9849-6-alexandru.elisei@arm.com>
- <dadc9d17-f311-47f1-a264-28b42bed0ab0@redhat.com>
+        Mon, 27 Nov 2023 07:09:55 -0500
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BCFBC3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 04:10:02 -0800 (PST)
+Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5c17cff57f9so4032642a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 04:10:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701087001; x=1701691801;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1P4PRUi9Xdta33xqdQzdIrLH/q/bDppjD9WobOhqYa0=;
+        b=GnG22Va2y5abLWSrMOWd6zAmhW1IKa10ohcPsxE15A8mh827DiWb+06zIxpcAw0Q/e
+         0kuK/ngdNIgyWWLTzQ03jpvkAQhRrQ74ATWPgG/cptJIR62SPrrGAslL3aJLlNhd2V7R
+         Ne5rY3OBjLhwZRHOziznuF+DMHH5Su4yXQmVkmsSyQ5AO4/8Lmd5EtOp5MmOMJjAxhxw
+         6ja9TnDHjx/6a6STn+19UvGw9/pvgZw08WxoQGu9p9r7z6NnaGh6xTTeotWd9O9698d3
+         2dN01E+oeqxJCBYTwJ5LPlnBxMulmTHd8A+Ox8f+jHylIiWakvQMGY+ktCpLerDtTt0E
+         iqwg==
+X-Gm-Message-State: AOJu0YycyfDj5P9pgj85iLxoEFP68edCxUXdN5Xx5AdXxMg8F/WUixKx
+        9Nyw9RlxRMswSPQvf14s7S3bF0X5VeBBJ16hFnUtLdBbjYshrJM=
+X-Google-Smtp-Source: AGHT+IGKY2LVJDt7eef1Z2ctBXK60gaNxOtvZgwaL2MRd74GTITxloGEpiGtmt1nw+k8fmc6fnokqeBVDL8Tv2BCi7/Ejrv1HwTD
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dadc9d17-f311-47f1-a264-28b42bed0ab0@redhat.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a63:d12:0:b0:5b8:eaa4:c6d8 with SMTP id
+ c18-20020a630d12000000b005b8eaa4c6d8mr1854981pgl.1.1701087001018; Mon, 27 Nov
+ 2023 04:10:01 -0800 (PST)
+Date:   Mon, 27 Nov 2023 04:10:00 -0800
+In-Reply-To: <000000000000f2771905a46374fe@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006d859a060b212e83@google.com>
+Subject: Re: [syzbot] [net?] possible deadlock in sch_direct_xmit
+From:   syzbot <syzbot+e18ac85757292b7baf96@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-Thank you so much for your comments, there are genuinely useful.
+***
 
-On Fri, Nov 24, 2023 at 08:35:47PM +0100, David Hildenbrand wrote:
-> On 19.11.23 17:56, Alexandru Elisei wrote:
-> > Introduce arch_prep_new_page(), which will be used by arm64 to reserve tag
-> > storage for an allocated page. Reserving tag storage can fail, for example,
-> > if the tag storage page has a short pin on it, so allow prep_new_page() ->
-> > arch_prep_new_page() to similarly fail.
-> 
-> But what are the side-effects of this? How does the calling code recover?
-> 
-> E.g., what if we need to populate a page into user space, but that
-> particular page we allocated fails to be prepared? So we inject a signal
-> into that poor process?
+Subject: [net?] possible deadlock in sch_direct_xmit
+Author: eadavis@qq.com
 
-When the page fails to be prepared, it is put back to the tail of the
-freelist with __free_one_page(.., FPI_TO_TAIL). If all the allocation paths
-are exhausted and no page has been found for which tag storage has been
-reserved, then that's treated like an OOM situation.
+please test deadlock in sch_direct_xmit
 
-I have been thinking about this, and I think I can simplify the code by
-making tag reservation a best effort approach. The page can be allocated
-even if reserving tag storage fails, but the page is marked as invalid in
-set_pte_at() (PAGE_NONE + an extra bit to tell arm64 that it needs tag
-storage) and next time it is accessed, arm64 will reserve tag storage in
-the fault handling code (the mechanism for that is implemented in patch #19
-of the series, "mm: mprotect: Introduce PAGE_FAULT_ON_ACCESS for
-mprotect(PROT_MTE)").
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
-With this new approach, prep_new_page() stays the way it is, and no further
-changes are required for the page allocator, as there are already arch
-callbacks that can be used for that, for example tag_clear_highpage() and
-arch_alloc_page(). The downside is extra page faults, which might impact
-performance.
+diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+index 4195a4bc26ca..9e418f94757d 100644
+--- a/net/sched/sch_generic.c
++++ b/net/sched/sch_generic.c
+@@ -337,13 +337,16 @@ bool sch_direct_xmit(struct sk_buff *skb, struct Qdisc *q,
+ #endif
+ 
+ 	if (likely(skb)) {
+-		HARD_TX_LOCK(dev, txq, smp_processor_id());
+-		if (!netif_xmit_frozen_or_stopped(txq))
+-			skb = dev_hard_start_xmit(skb, dev, txq, &ret);
+-		else
+-			qdisc_maybe_clear_missed(q, txq);
++		int cpu = smp_processor_id();
++		if (READ_ONCE(txq->xmit_lock_owner) != cpu) {
++			HARD_TX_LOCK(dev, txq, cpu);
++			if (!netif_xmit_frozen_or_stopped(txq))
++				skb = dev_hard_start_xmit(skb, dev, txq, &ret);
++			else
++				qdisc_maybe_clear_missed(q, txq);
+ 
+-		HARD_TX_UNLOCK(dev, txq);
++			HARD_TX_UNLOCK(dev, txq);
++		}
+ 	} else {
+ 		if (root_lock)
+ 			spin_lock(root_lock);
 
-What do you think?
-
-Thanks,
-Alex
-
-> 
-> -- 
-> Cheers,
-> 
-> David / dhildenb
-> 
