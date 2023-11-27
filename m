@@ -2,97 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9307FAEB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 00:52:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF9E7FAEB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 00:54:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233687AbjK0Xwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 18:52:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52628 "EHLO
+        id S233785AbjK0Xyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 18:54:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbjK0Xwd (ORCPT
+        with ESMTP id S229821AbjK0Xyc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 18:52:33 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9781BE4
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 15:52:39 -0800 (PST)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2212FBEB;
-        Tue, 28 Nov 2023 00:52:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1701129123;
-        bh=C9lSmPriSk8Tc76cOcwMIOxTOOqylhc2gUk3ucAQ1V4=;
+        Mon, 27 Nov 2023 18:54:32 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30B4182
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 15:54:38 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32217C433C8;
+        Mon, 27 Nov 2023 23:54:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701129278;
+        bh=a4P4BVbYULK6L0Qcy9l2Nr9bwz51FMIOg7cjJS/nXYc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FD3b28vcSL8lSle4SioXsQNDO1puHVgNTsJSvh2CBllaDucwh/EdrVLjzbWgnHxan
-         IbFEd6Ph5h9FqGiFahdXCOuDohY8kV8FvsSQKKQZCeWiMEhtY6YmJ72Y5fmSTvrlDK
-         sXNILFju6nh5WtQ9jCg7n29JWh1Tpe3SPZwBJ3ps=
-Date:   Tue, 28 Nov 2023 01:52:44 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Liu Ying <victor.liu@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 0/3] Revert panel fixes and original buggy patch
-Message-ID: <20231127235244.GD31314@pendragon.ideasonboard.com>
-References: <20231128-revert-panel-fix-v1-0-69bb05048dae@linaro.org>
- <20231127232542.GB25590@pendragon.ideasonboard.com>
- <CACRpkdYWjHbgWQc46hGM3bg+5nf4NiveEZJmHrnx0X-=XsUDLA@mail.gmail.com>
+        b=bslYKD5tUGWZ5VSkxmL+cLa+gMT+XtEYLO9BWapWvLceaa88PssY9/4CTV+dXRCvd
+         6IhiiX/Q1brdnbjkBXsNvfclpuDKcKLrQqWFwFysyOsGdJvgD9nNsWXS88+anMvXVx
+         F5MUM6tfr9M206FhKnogoEANUBjVlokkcCVzQJja+aky1jjL+tZB+SeQmcglrLPKsh
+         dtTityQ7Ek4LW3WNsgx2UsghXr488n4T2gc7M0bNTNy7++qqucyG+MivIGAAz7ZbnB
+         wIt0MurNIjj4i48Vk3piofcL3x+LfTZZD7fDkYMWB6X035SsUTqgEErQZMh6clNjmB
+         yF+F9SwCzWz8g==
+Date:   Tue, 28 Nov 2023 00:54:34 +0100
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Mario Limonciello <mario.limonciello@amd.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jan Dabros <jsd@semihalf.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [PATCH v4 07/24] i2c: designware: Add missing 'c' into PCI IDs
+ variable name
+Message-ID: <20231127235434.p6c6lxcjbxkerhoj@zenone.zhora.eu>
+References: <20231120144641.1660574-1-andriy.shevchenko@linux.intel.com>
+ <20231120144641.1660574-8-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdYWjHbgWQc46hGM3bg+5nf4NiveEZJmHrnx0X-=XsUDLA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231120144641.1660574-8-andriy.shevchenko@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 12:36:15AM +0100, Linus Walleij wrote:
-> On Tue, Nov 28, 2023 at 12:25 AM Laurent Pinchart wrote:
-> > On Tue, Nov 28, 2023 at 12:10:18AM +0100, Linus Walleij wrote:
-> > > This series reverts the attempts to fix the bug that went
-> > > into v6.7-rc1 in commit 199cf07ebd2b
-> > > "drm/bridge: panel: Add a device link between drm device and panel device"
-> > > and then it reverts that patch as well.
-> > >
-> > > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> > > ---
-> > > Linus Walleij (3):
-> > >       Revert "driver core: Export device_is_dependent() to modules"
-> > >       Revert "drm/bridge: panel: Check device dependency before managing device link"
-> > >       Revert "drm/bridge: panel: Add a device link between drm device and panel device"
-> >
-> > To preserve bisectability, you should revert in the opposite order.
-> 
-> You mean apply patch 2, then 1, then 3 so the kernel builds after each
-> revert?
-> 
-> Yeah that's a good idea, I don't know if I should apply these though, better
-> someone else do it since I screwed up too much.
-> 
-> Another option is to just squash the reverts into one, that bisects too :/
+Hi Andy,
 
-I thought the commits have been applied to drm-misc in a bisectable
-order in the first place, but that doesn't seem to be the case :-(
-Reverting "driver core: Export device_is_dependent() to modules" last
-seems to be the best option in this case. I wouldn't squash them.
+On Mon, Nov 20, 2023 at 04:41:49PM +0200, Andy Shevchenko wrote:
+> Add missing 'c' into i2c_designware_pci_ids variable name.
+> 
+> Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/i2c/busses/i2c-designware-pcidrv.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-designware-pcidrv.c b/drivers/i2c/busses/i2c-designware-pcidrv.c
+> index e67956845c19..ed2f9e7ba5d3 100644
+> --- a/drivers/i2c/busses/i2c-designware-pcidrv.c
+> +++ b/drivers/i2c/busses/i2c-designware-pcidrv.c
+> @@ -355,7 +355,7 @@ static void i2c_dw_pci_remove(struct pci_dev *pdev)
+>  	i2c_del_adapter(&dev->adapter);
+>  }
+>  
+> -static const struct pci_device_id i2_designware_pci_ids[] = {
+> +static const struct pci_device_id i2c_designware_pci_ids[] = {
+>  	/* Medfield */
+>  	{ PCI_VDEVICE(INTEL, 0x0817), medfield },
+>  	{ PCI_VDEVICE(INTEL, 0x0818), medfield },
+> @@ -403,16 +403,16 @@ static const struct pci_device_id i2_designware_pci_ids[] = {
+>  	{ PCI_VDEVICE(ATI,  0x7464), navi_amd },
+>  	{ 0,}
+>  };
+> -MODULE_DEVICE_TABLE(pci, i2_designware_pci_ids);
+> +MODULE_DEVICE_TABLE(pci, i2c_designware_pci_ids);
+>  
+>  static struct pci_driver dw_i2c_driver = {
+>  	.name		= DRIVER_NAME,
+> -	.id_table	= i2_designware_pci_ids,
+>  	.probe		= i2c_dw_pci_probe,
+>  	.remove		= i2c_dw_pci_remove,
+>  	.driver         = {
+>  		.pm     = &i2c_dw_pm_ops,
+>  	},
+> +	.id_table	= i2c_designware_pci_ids,
 
--- 
-Regards,
+why this change?
 
-Laurent Pinchart
+Thanks,
+Andi
+
+>  };
+>  module_pci_driver(dw_i2c_driver);
+>  
+> -- 
+> 2.43.0.rc1.1.gbec44491f096
+> 
