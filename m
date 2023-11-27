@@ -2,134 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D58E7FA5A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:07:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C18B27FA5A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234307AbjK0QHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 11:07:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59372 "EHLO
+        id S234302AbjK0QHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 11:07:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234293AbjK0QHd (ORCPT
+        with ESMTP id S234282AbjK0QHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 11:07:33 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA8FBCE
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:07:39 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <auto@pengutronix.de>)
-        id 1r7e6u-00009E-Dr; Mon, 27 Nov 2023 17:05:24 +0100
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <auto@pengutronix.de>)
-        id 1r7e6t-00Bz08-Ny; Mon, 27 Nov 2023 17:05:23 +0100
-Received: from rhi by dude04.red.stw.pengutronix.de with local (Exim 4.96)
-        (envelope-from <auto@pengutronix.de>)
-        id 1r7e6t-00D6SA-2B;
-        Mon, 27 Nov 2023 17:05:23 +0100
-From:   Roland Hieber <rhi@pengutronix.de>
-Date:   Mon, 27 Nov 2023 17:05:01 +0100
-Subject: [PATCH] ARM: dts: imx7: Declare timers compatible with
- fsl,imx6dl-gpt
+        Mon, 27 Nov 2023 11:07:10 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF11BBF
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:07:16 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 071E7C433C8;
+        Mon, 27 Nov 2023 16:07:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701101236;
+        bh=CAVT3JTOqdhtMpmyz9hZHgwDT59aK+uHYtnwfXlCXjI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=neC+N+L85KemwluYfyC3P9D8ihbrOkVoCvJ1GV+ZCiqo+YeGQ+HY4hTVBV3Lgst1c
+         9cRWM9QUolfeC7sLFu6CjfnGHEDCD91cdhkG28ea4OXjfhYrvhX5ZHfsYnRlg6ZUiA
+         k5CiTAic0qf0jfdGSnB0j/vVsSAOKia85mq/DgzEfOhmXZMDihTqw1oFDrM9Z5aHch
+         ky2TtMRPtTg3TjuAT89xXCSoa61vxHGKzsrk1bl/q17DIUsoctaErgIcTVn0Dsc2IP
+         dh+C+nnHqZTChSA4mHWgVcFt7UPRn6r2KKG0p0K8s/8KfvDTrB8/EIIjr5+uu8DELK
+         fnKjh5PjHfbmw==
+From:   Michael Walle <mwalle@kernel.org>
+To:     dmitry.baryshkov@linaro.org
+Cc:     Laurent.pinchart@ideasonboard.com, andrzej.hajda@intel.com,
+        dave.stevenson@raspberrypi.com, dianders@chromium.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        jernej.skrabec@gmail.com, jonas@kwiboo.se,
+        konrad.dybcio@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, marex@denx.de,
+        marijn.suijten@somainline.org, mripard@kernel.org,
+        neil.armstrong@linaro.org, quic_abhinavk@quicinc.com,
+        quic_jesszhan@quicinc.com, rfoss@kernel.org, sean@poorly.run,
+        tzimmermann@suse.de, tony@atomide.com,
+        alexander.stein@ew.tq-group.com, Michael Walle <mwalle@kernel.org>
+Subject: Re: [RFC PATCH 03/10] drm/mipi-dsi: add API for manual control over the DSI link power state
+Date:   Mon, 27 Nov 2023 17:06:58 +0100
+Message-Id: <20231127160658.2164612-1-mwalle@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <CAA8EJpozZkEswnioKjRCqBg4fcjVHFwGivoFNTNHVwyocKprQw@mail.gmail.com>
+References: <CAA8EJpozZkEswnioKjRCqBg4fcjVHFwGivoFNTNHVwyocKprQw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231127-b4-imx7-dt-v1-1-6ecbd0471cc4@pengutronix.de>
-X-B4-Tracking: v=1; b=H4sIACy+ZGUC/x2NywqDMBAAf0X27IKbRgL+ivSQx7YuaCyJloD47
- 116nIFhLqhchCtM3QWFv1JlzwrUdxAXn9+MkpTBDOZBZBwGi7I1h+lAl2h0bDlSMqBB8JUxFJ/
- jokk+11Xlp/BL2v8wP+/7Bwty/vFxAAAA
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Frank Li <Frank.Li@freescale.com>,
-        Anson Huang <b20788@freescale.com>
-Cc:     Shawn Guo <shawn.guo@linaro.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Roland Hieber <rhi@pengutronix.de>
-X-Mailer: b4 0.12.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: auto@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Philipp Zabel <p.zabel@pengutronix.de>
+Hi,
 
-The timer nodes declare compatibility with "fsl,imx6sx-gpt", which
-itself is compatible with "fsl,imx6dl-gpt". Switch the fallback
-compatible from "fsl,imx6sx-gpt" to "fsl,imx6dl-gpt".
+> DSI device lifetime has three different stages:
+> 1. before the DSI link being powered up and clocking,
+> 2. when the DSI link is in LP state (for the purpose of this question,
+> this is the time between the DSI link being powered up and the video
+> stream start)
+> 3. when the DSI link is in HS state (while streaming the video).
 
-Fixes: 949673450291 ("ARM: dts: add imx7d soc dtsi file")
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
-Signed-off-by: Roland Hieber <rhi@pengutronix.de>
----
- arch/arm/boot/dts/nxp/imx/imx7s.dtsi | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+It's not clear to me what (2) is. What is the state of the clock and
+data lanes?
 
-diff --git a/arch/arm/boot/dts/nxp/imx/imx7s.dtsi b/arch/arm/boot/dts/nxp/imx/imx7s.dtsi
-index 29b8fd03567a..5387da8a2a0a 100644
---- a/arch/arm/boot/dts/nxp/imx/imx7s.dtsi
-+++ b/arch/arm/boot/dts/nxp/imx/imx7s.dtsi
-@@ -454,7 +454,7 @@ iomuxc_lpsr: pinctrl@302c0000 {
- 			};
- 
- 			gpt1: timer@302d0000 {
--				compatible = "fsl,imx7d-gpt", "fsl,imx6sx-gpt";
-+				compatible = "fsl,imx7d-gpt", "fsl,imx6dl-gpt";
- 				reg = <0x302d0000 0x10000>;
- 				interrupts = <GIC_SPI 55 IRQ_TYPE_LEVEL_HIGH>;
- 				clocks = <&clks IMX7D_GPT1_ROOT_CLK>,
-@@ -463,7 +463,7 @@ gpt1: timer@302d0000 {
- 			};
- 
- 			gpt2: timer@302e0000 {
--				compatible = "fsl,imx7d-gpt", "fsl,imx6sx-gpt";
-+				compatible = "fsl,imx7d-gpt", "fsl,imx6dl-gpt";
- 				reg = <0x302e0000 0x10000>;
- 				interrupts = <GIC_SPI 54 IRQ_TYPE_LEVEL_HIGH>;
- 				clocks = <&clks IMX7D_GPT2_ROOT_CLK>,
-@@ -473,7 +473,7 @@ gpt2: timer@302e0000 {
- 			};
- 
- 			gpt3: timer@302f0000 {
--				compatible = "fsl,imx7d-gpt", "fsl,imx6sx-gpt";
-+				compatible = "fsl,imx7d-gpt", "fsl,imx6dl-gpt";
- 				reg = <0x302f0000 0x10000>;
- 				interrupts = <GIC_SPI 53 IRQ_TYPE_LEVEL_HIGH>;
- 				clocks = <&clks IMX7D_GPT3_ROOT_CLK>,
-@@ -483,7 +483,7 @@ gpt3: timer@302f0000 {
- 			};
- 
- 			gpt4: timer@30300000 {
--				compatible = "fsl,imx7d-gpt", "fsl,imx6sx-gpt";
-+				compatible = "fsl,imx7d-gpt", "fsl,imx6dl-gpt";
- 				reg = <0x30300000 0x10000>;
- 				interrupts = <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>;
- 				clocks = <&clks IMX7D_GPT4_ROOT_CLK>,
+I'm facing similar issues with the tc358775 bridge. This bridge needs
+to release its reset while both clock and data lanes are in LP-11 mode.
+But then it needs to be configured (via I2C) while the clock lane is
+in enabled (HS mode), but the data lanes are still in LP-11 mode.
 
----
-base-commit: 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab
-change-id: 20231127-b4-imx7-dt-7d157e4ec1d2
+To me it looks like there is a fouth case then:
+1. unpowered
+2. DSI clock and data are in LP-11
+3. DSI clock is in HS and data are in LP-11
+4. DSI clock is in HS and data is in HS
 
-Best regards,
--- 
-Roland Hieber, Pengutronix e.K.          | rhi@pengutronix.de          |
-Steuerwalder Str. 21                     | https://www.pengutronix.de/ |
-31137 Hildesheim, Germany                | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686         | Fax:   +49-5121-206917-5555 |
+(And of course the bridge needs continuous clock mode).
 
+> Different DSI bridges have different requirements with respect to the
+> code being executed at stages 1 and 2. For example several DSI-to-eDP
+> bridges (ps8640, tc358767 require for the link to be quiet during
+> reset time.
+> The DSI-controlled bridges and DSI panels need to send some commands
+> in stage 2, before starting up video
+> 
+> In the DRM subsystem stage 3 naturally maps to the
+> drm_bridge_funcs::enable, stage 1 also naturally maps to the
+> drm_bridge_funcs::pre_enable. Stage 2 doesn't have its own place in
+> the DRM call chain.
+> Earlier we attempted to solve that using the pre_enable_prev_first,
+> which remapped pre-enable callback execution order. However it has led
+> us to the two issues. First, at the DSI host driver we do not know
+> whether the panel / bridge were updated to use pre_enable_prev_first
+> or not. Second, if the bridge has to perform steps during both stages
+> 1 and 2, it can not do that.
+> 
+> I'm trying to find a way to express the difference between stages 1
+> and 2 in the generic code, so that we do not to worry about particular
+> DSI host and DSI bridge / panel peculiarities when implementing the
+> DSI host and/or DSI panel driver.
+
+For now, I have a rather hacky ".dsi_lp11_notify" callback in
+drm_bridge_funcs which is supposed to be called by the DSI host while the
+clock and data lanes are in LP-11 mode. But that is rather an RFC and me
+needing something to get the driver for this bridge working. Because it's
+badly broken. FWIW, you can find my work-in-progress patches at
+https://github.com/mwalle/linux/tree/feature-tc358775-fixes
+
+-michael
