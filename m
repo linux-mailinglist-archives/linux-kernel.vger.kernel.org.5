@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 650DB7FA2C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:31:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2388E7FA2C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:32:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233845AbjK0Obs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 09:31:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41944 "EHLO
+        id S233892AbjK0Oby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 09:31:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233766AbjK0ObT (ORCPT
+        with ESMTP id S233770AbjK0ObT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 27 Nov 2023 09:31:19 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C151A1707;
-        Mon, 27 Nov 2023 06:30:52 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1ce627400f6so32881405ad.2;
-        Mon, 27 Nov 2023 06:30:52 -0800 (PST)
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDCAC1727;
+        Mon, 27 Nov 2023 06:30:54 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1cfb3ee8bc7so16408785ad.1;
+        Mon, 27 Nov 2023 06:30:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701095452; x=1701700252; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701095454; x=1701700254; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DCM3sUYAk/tlBLIzo2SaDQBBpHgsnzA0anQsHtnDawg=;
-        b=ExiDDPRoA0/zQHstCPV5m9COgyMsE1YPuklgiFPgFWE6RT4+cOV8WmkswESSFX/Jce
-         7loF4QvMA8TxX/hqbjkLzvhXwtTSgMTefammgk9nkEC2Ylbtfk6te6J7VkU1AM8MTFWN
-         1TT4v/c2jtEgd3ZTA9AApwx3MQhm4nKyCRIbesLDGvYKJvmhPvV8GGMQx3+ly66WHhHs
-         AivmTasjb/efSxd5PMdU0JdqQAbt9BdHC6RCAnUsgT7ONtoGGvL8W6X4Cn6oWlq36QIh
-         bDSQm2nLZqJN0nB8B5ASWYYKA/j+OPEc7IhSil13V6W/x3TNGNvN8Klt82DMTEX5eHl7
-         TbdA==
+        bh=tAEplWTuwzV3S4Z2ct3K3DPtCcwmnpKgJHolez0b9mo=;
+        b=AkbRcCdpMnJz6h1t2matzBF5QSpTK3pmu9wyG7yHu4ncsw2vz/XBy7pWyXm/b9LjUu
+         /TEImCkSFQ07sSQgQcB1SGGsBX6sD1YK1/ayNuhDTTpYQoVPV2ygz5wYf3ShvHLPrWO7
+         P2BKcKjGVSBM4Noqaxe26jK9E0iP+LSsTNCAxgoxEbddjCURvvAoVkfVfqYzeQmSH8sW
+         NI9B5m5gv5UK5GI4sCMdl+pGxQQxex3BuCViltDAMl1/wODHoAWwsnWqlI+gk9zhLJIJ
+         3iqpSAhAFr5QyLNo0NxIps3PkI921YzegJ8FHqOHYMPvSWFuWDu6I+Hu0fewNBX1DiDU
+         JUKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701095452; x=1701700252;
+        d=1e100.net; s=20230601; t=1701095454; x=1701700254;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DCM3sUYAk/tlBLIzo2SaDQBBpHgsnzA0anQsHtnDawg=;
-        b=TBY9/dwEE94xkf3atuZOjEVJIl583gIpXrDTOmSIgWvBytA5ZVRF5delUsQtHSkM61
-         kQRkixZVv3K4JQQCkB3beGPCZz/CLnVbfpHJZQuXsjfuLnwgWYgXljCxeJHzU8eTHAPi
-         EQ9DdyrjLeQ4xIID9P0GPwJAR3al+XwD+ewc/3cOSo7DDKgdmz9YM0pLslQTzYFDOe19
-         oLEX1KS5wJkYhsvpE56B5ddY5FeCMKRvuzyNZM3lqcmtp3qdIBvF0JhNy7XsOo/zesgv
-         Xhvl7Cn7aDU8y5TtwDbs2Pnd/gQOV0aha3nE65eZgpdFGnWJtpIVUs6JHieefwk8LsEH
-         PFOA==
-X-Gm-Message-State: AOJu0Yyy6fOllCkc91//ALWad7qGspfWPUO1iD59uxMzuUMA3Gk5ZBjK
-        ZTrsWWJMGX+uuBOCI1+kOGNGYQW8Ryg=
-X-Google-Smtp-Source: AGHT+IGqs2p9AUmWg40Aa1szxvE9St37rUQlPzhh9gXKXTySpFbUaY+bo4T4WR14yruHNtlzdD7hHw==
-X-Received: by 2002:a17:902:a589:b0:1cf:e880:cb8f with SMTP id az9-20020a170902a58900b001cfe880cb8fmr487203plb.55.1701095451896;
-        Mon, 27 Nov 2023 06:30:51 -0800 (PST)
+        bh=tAEplWTuwzV3S4Z2ct3K3DPtCcwmnpKgJHolez0b9mo=;
+        b=vSocXQ96ePbLad3ztrbMe8du0CfNVCOeYfR+zGXcqCyfYX2nVJs6q6xv9bNPXYFl4s
+         EYS3ccHjEULPYXxLneFjU+R9D+cPN0J/uelTOdekF7VSFWXcBKJEyfKjHcI7swsuH6dZ
+         M+8Ulih3lZCWTh6Wh5Wfih1OGBmpUFhiWK9rKcb9L5SzFGfICob9f7zc7YPh1Skt/Ymc
+         n95o9KvZ1iPr6J48kepQ4XESpuqysFFxYQ46FLaScaQitPMfANx0AmBrBC4it9Vc+kPa
+         sRfIVu18TyXvcmTbUWJZ5DJGDEFYEKcrXKU6lQ8ZfFvgG//1gS57yFlvVMCww6csZrm0
+         TQuQ==
+X-Gm-Message-State: AOJu0YwTeAJ+RmzGL5HBbB1bMWWWtOqVtE6p5RVl7Trs5x2y814tT3gu
+        5H5yKeUZ3YRACP9/UxWXvUQ=
+X-Google-Smtp-Source: AGHT+IGkuxW60EYL+gq1SIyBsyBmh6Q7OwG2p/ZfHDeGRvdPHXj7OfN95Big1qkF0cBkoYJ49tfBrg==
+X-Received: by 2002:a17:902:dac8:b0:1cd:fce2:d702 with SMTP id q8-20020a170902dac800b001cdfce2d702mr15945223plx.15.1701095454348;
+        Mon, 27 Nov 2023 06:30:54 -0800 (PST)
 Received: from carrot.. (i60-34-119-11.s42.a014.ap.plala.or.jp. [60.34.119.11])
-        by smtp.gmail.com with ESMTPSA id a5-20020a170902ee8500b001cf51972586sm8302784pld.292.2023.11.27.06.30.48
+        by smtp.gmail.com with ESMTPSA id a5-20020a170902ee8500b001cf51972586sm8302784pld.292.2023.11.27.06.30.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 06:30:51 -0800 (PST)
+        Mon, 27 Nov 2023 06:30:53 -0800 (PST)
 From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     linux-nilfs@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 03/17] nilfs2: Remove page_address() from nilfs_set_link
-Date:   Mon, 27 Nov 2023 23:30:22 +0900
-Message-Id: <20231127143036.2425-4-konishi.ryusuke@gmail.com>
+Subject: [PATCH 04/17] nilfs2: Remove page_address() from nilfs_add_link
+Date:   Mon, 27 Nov 2023 23:30:23 +0900
+Message-Id: <20231127143036.2425-5-konishi.ryusuke@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231127143036.2425-1-konishi.ryusuke@gmail.com>
 References: <20231127143036.2425-1-konishi.ryusuke@gmail.com>
@@ -84,18 +84,18 @@ Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/fs/nilfs2/dir.c b/fs/nilfs2/dir.c
-index b9f13bdf8fba..9c0513245a3b 100644
+index 9c0513245a3b..73f135290288 100644
 --- a/fs/nilfs2/dir.c
 +++ b/fs/nilfs2/dir.c
-@@ -410,7 +410,7 @@ ino_t nilfs_inode_by_name(struct inode *dir, const struct qstr *qstr)
- void nilfs_set_link(struct inode *dir, struct nilfs_dir_entry *de,
- 		    struct page *page, struct inode *inode)
- {
--	unsigned int from = (char *)de - (char *)page_address(page);
-+	unsigned int from = offset_in_page(de);
- 	unsigned int to = from + nilfs_rec_len_from_disk(de->rec_len);
- 	struct address_space *mapping = page->mapping;
- 	int err;
+@@ -493,7 +493,7 @@ int nilfs_add_link(struct dentry *dentry, struct inode *inode)
+ 	return -EINVAL;
+ 
+ got_it:
+-	from = (char *)de - (char *)page_address(page);
++	from = offset_in_page(de);
+ 	to = from + rec_len;
+ 	err = nilfs_prepare_chunk(page, from, to);
+ 	if (err)
 -- 
 2.34.1
 
