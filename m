@@ -2,192 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A497F9820
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 05:06:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 595987F9823
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 05:06:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232310AbjK0EG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 23:06:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39946 "EHLO
+        id S232262AbjK0EGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 23:06:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232300AbjK0EGV (ORCPT
+        with ESMTP id S232072AbjK0EGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 23:06:21 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B7318F;
-        Sun, 26 Nov 2023 20:06:25 -0800 (PST)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AR2vIa7019476;
-        Mon, 27 Nov 2023 04:06:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=qihjlYJ9Zk58q2u/A2EOlARfuTPFniwvFgt/hGDu1KI=;
- b=O3cnkcSEWkRiwYHkTb++i5wQWN2bLVinivz3FWM4c/xgsAHvsp1dkWBrvqM8yPkE2bUI
- bNvWyrWxNiFjn/41jik/y4UnKDG99Zmpk11/IBcfpkHvS3eurr9x9LQuq8GeftXZWqJu
- tg7m4RQrfw2trozboOaospe7UPm+p7irLJ0e+YsifvDU+aCjx/CcokA0vwWa5YFQWV9R
- sXAdvBN4myPOiiv7M1WBJuFAqq/xNJqT0vNVHj1eJw55Te1T60LkD3pB0Ebj3mPNwmD/
- Xh8UaZlf0Wlxn0UKoHFSl65bI0TtrUugMLsu4vtGSHACNmxvW64ZTRyTdmvYADuKXAa+ qg== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uk8h8k5b7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 04:06:22 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AR46K7m010637
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 04:06:20 GMT
-Received: from [10.239.133.49] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 26 Nov
- 2023 20:06:17 -0800
-Message-ID: <a64ded1e-af5d-481c-b66c-8019b3d1ad5a@quicinc.com>
-Date:   Mon, 27 Nov 2023 12:06:07 +0800
-MIME-Version: 1.0
+        Sun, 26 Nov 2023 23:06:30 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5265318A;
+        Sun, 26 Nov 2023 20:06:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701057996; x=1732593996;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=zLVwSIHOj4u0Tshm+Ry/kQJ+YurZ1b4eoSnDsZTd2/M=;
+  b=mLKTkkFEY+/4K12qkdA6+dmJwG53GpxLZOY8fjqBTa2bZerT8OZjc5gO
+   VW6pBd+CVjlUVtxcIOMFWevQa4A5YRAv3Ke5giMHqRjWvp+OAEwhn0FF1
+   epwjvt7L1Te8fkjZIQT/0miBoMkM5B/i6wNtkumM2r5ONZr9h6Ua+ZEHS
+   HPKuVkJCbR7yQFViWdRAL+LpCpvl9xE93ngcPe/FLfJwPlH4Aq+Wbrqmn
+   djFWQhvmZRob6v+xn/5x1AQvWbMh8Jzrt77SLwb+R+/Bv3nuYg1WLHyD0
+   U6tbX5ptql3T2XAMuojOkXPx/9somM4ZaFG8PfTC9AGjCoB4zoFC0KQkn
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="389778028"
+X-IronPort-AV: E=Sophos;i="6.04,229,1695711600"; 
+   d="scan'208";a="389778028"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Nov 2023 20:06:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="911984096"
+X-IronPort-AV: E=Sophos;i="6.04,229,1695711600"; 
+   d="scan'208";a="911984096"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Nov 2023 20:06:33 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Sun, 26 Nov 2023 20:06:33 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Sun, 26 Nov 2023 20:06:33 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Sun, 26 Nov 2023 20:06:32 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Bcx+2+xKAYxv7OMvAdrzFeILJnBGDMopMFK9ylQAe4XYbXet8xRZZdOo6PqtRQ/7S4bnpUuINrNzPSqpyL3qadecALDEJMQXggncZKwb2xH+Bm967Fc5MpHqfegtufJ/3b89qqZJBMmMDk2PqU/U0Oi6r58/99Kox2lobDCaT4GCIH9n3C7g9e4epmVV542yKOo411JrtnhvWN+S0CZowE3DyOWFVsO5z4qhp12MHmnIKXaP73n35VMB+jLnkEpgWWwxRbL5Rm6AxJqf1IB6XeCRYM4RwGee9O5eYG6ojiB+eWIhF/ZaDfPaCZt7Jjcx/xw9e+B34QtG2x13heIsuw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zLVwSIHOj4u0Tshm+Ry/kQJ+YurZ1b4eoSnDsZTd2/M=;
+ b=dvDHQdM5Ko46d1a0G1A/UPFIzVmeefxuLaO9AsciCo40gqITM04OuOdxN84Y0Gq99Zy3ULxLRaqTpWmvSUmCRm8u4dfssofmHsQ6wcmhAgRTtLxcykoCSWytdsGrVycj9ziikNl35ci60fnNZoh10qmalyXS95jilTKMLIjgGTyLxlkDWN6hn6vaUKUeixu+l+w8a/rA0v3zCwkJ9FlcJmodE15OWfQVIwuI6YfPFs1iUbPhT1dX/LH1ZDmlQ8pXlHFMA3YZ504d7+M07CNtnOOTcKPfkZPEVTNICUpU8c9Yk0JhcChNcTOx4yl/+4qRSnpXVoFgSlKPWfqipmBczw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
+ by SN7PR11MB7602.namprd11.prod.outlook.com (2603:10b6:806:348::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Mon, 27 Nov
+ 2023 04:06:31 +0000
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::ea04:122f:f20c:94e8]) by PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::ea04:122f:f20c:94e8%2]) with mapi id 15.20.7025.022; Mon, 27 Nov 2023
+ 04:06:31 +0000
+Message-ID: <c6a62843-efd7-46f5-9b25-6ec7eb70f613@intel.com>
+Date:   Mon, 27 Nov 2023 12:06:21 +0800
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: Fix the warnings from coresight
- bindings
+Subject: Re: [PATCH v7 03/26] x86/fpu/xstate: Add CET supervisor mode state
+ support
 Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Tao Zhang <quic_taozha@quicinc.com>
-References: <20231124061739.2816-1-quic_jinlmao@quicinc.com>
- <47406b19-811f-47ab-8c08-dd8c4cc5d8bd@linaro.org>
-From:   Jinlong Mao <quic_jinlmao@quicinc.com>
-In-Reply-To: <47406b19-811f-47ab-8c08-dd8c4cc5d8bd@linaro.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     <seanjc@google.com>, <pbonzini@redhat.com>,
+        <dave.hansen@intel.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <chao.gao@intel.com>,
+        <rick.p.edgecombe@intel.com>, <mlevitsk@redhat.com>,
+        <john.allen@amd.com>
+References: <20231124055330.138870-1-weijiang.yang@intel.com>
+ <20231124055330.138870-4-weijiang.yang@intel.com>
+ <20231124094502.GL3818@noisy.programming.kicks-ass.net>
+From:   "Yang, Weijiang" <weijiang.yang@intel.com>
+In-Reply-To: <20231124094502.GL3818@noisy.programming.kicks-ass.net>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: GY5WYH6PdDb_ygZhnmyOvwpkx-9-jj36
-X-Proofpoint-GUID: GY5WYH6PdDb_ygZhnmyOvwpkx-9-jj36
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-26_25,2023-11-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 mlxlogscore=455 impostorscore=0 bulkscore=0
- phishscore=0 malwarescore=0 mlxscore=0 adultscore=0 clxscore=1015
- spamscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311270029
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-ClientProxiedBy: SG2PR04CA0154.apcprd04.prod.outlook.com (2603:1096:4::16)
+ To PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB4965:EE_|SN7PR11MB7602:EE_
+X-MS-Office365-Filtering-Correlation-Id: cc1aad9e-1699-4af5-76fb-08dbeefe3c47
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PNwKuAjhc40m6WFdlRWI9n00CYA1IkhfoWCwN44fI93dd8t7TDPPfq6j/cCUteY+FFk3Xo7eV4IbtTk6edM3i90essgeq3xoF3gfthky4V6dw0W7zWu9os3wr/zSaJ0naAOxZlMv74teEMeps0O4XvS052GakwWIOWzMFvv2XLEt++nKMCD5DdAqWoJx3yEVNzuTLq4zhrpmBDcxZ7u0MIYLSs155K9EVZi6lCAT9IjL1Sbdv4b4tozwFM35l9Y1uC+RY45vyYFlNlp+2UR+eDSUzFmDb2BGj4NMf+nxVDNI9LEE/t7tdSYXV2Glj3XeWCZVI6IECasOFycMAZGEyG75KAg91BCksI0TzPAk4vRf8BkbbSqf48kKivl9ZlQcvABrlDbYE1TOpzg+hLGr9onvUDl22jEo1LYt41eqX5NqGmn9kgwvyuPyKymVvl9uujQiJZGeEZG5VLBy3vyfxfXM8wp34x6crTRtS01ExSXezAGWbrLuoA0XoiaEDdLkJuLAd+ma2E1bn4j+peRlcoR5WyuCq2d6VHPfhxxkJCv8TIsyMH+TWUkdaZ3Lwq3psZh4n1RrLN287fU8wbD87pZ43QvW1ToPt72ecLoJvnp2kvPkI8nZNm2AQX9dNlzQ7RWBNHU5GuiGJ0kl0K0QAw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4965.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(376002)(136003)(396003)(39860400002)(346002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(31686004)(26005)(83380400001)(53546011)(6512007)(6506007)(2616005)(41300700001)(82960400001)(38100700002)(31696002)(86362001)(36756003)(8936002)(4326008)(6486002)(2906002)(4744005)(5660300002)(316002)(8676002)(478600001)(6666004)(66556008)(66946007)(6916009)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?N0F2cmppbnJGR09OSk9kcTNRYWMzd1BDRWloZUxaSnpldHpETmVlQk9UV2FY?=
+ =?utf-8?B?V2lqaDl1WHZ3SksweVRhOTA4TTVicCtuOGk5L3FPOEVhMUVBSFFaa28vZnB0?=
+ =?utf-8?B?Wk9ZYXhvbVNPOVo0MDlnd3NhdGNZNU1QNzdvU2psa0V0c3Y4Y0RJcTF4UDls?=
+ =?utf-8?B?cE9xYXh5U21ibHp2TzU3NGdVbkkyNWhSWDUwNEowakRKeXFnMTJFdytTMVNR?=
+ =?utf-8?B?YW9LT2ZVZU9VTHQyMGd2S1cwQ3ZyRy9YeXdpcHhFZm5xNXpVa085dTlxc2NN?=
+ =?utf-8?B?SExoNHQ0Mmpkd0ZuczBDS2U4VDJ1OEF3cVJnVDNiaVdOQXhwUXBNaWlQVDFO?=
+ =?utf-8?B?b1FIVHVFR1hoc1J0clU0THMvRDNsOXNYeTRUVEhEUXBjdFYvVXgxQmNsRXIr?=
+ =?utf-8?B?b1hMcWsxQWFzNjNGYWdScklHc2trTzBCUVRtOVFHRGo3bXR1Z09BelhYREFt?=
+ =?utf-8?B?T3ZTcjVvcHgrbE8ycmhiZEI3RWlhdmpCM0dvSVZmTTdIaXhjUFZJNnJERnEy?=
+ =?utf-8?B?aUlzdEdzVGkvbnBzU3YvZk40UVZTUndZWWtQRmJPL1BLRWJra0tlNG9keXNQ?=
+ =?utf-8?B?dHZORk9OOG1STlVoRm9neVRZYloxWllLWVRmYktOTnJ3Sk9rNTdnaTJORmlU?=
+ =?utf-8?B?dnQyeFZPSXQva1ZOby92RmcwSVZrUmt3QlAvR2M3NFRSM3d5VU5ybEVJcUs3?=
+ =?utf-8?B?UDdrTnFZUTI1NFlXbnVBNVM5aGVkdGRhdTZPcjd5OHppUDQvVmhWTkVKcE9k?=
+ =?utf-8?B?eFRWVTlFWWFQNFVMR3NydkhwRHRreUxiOEhRMTBLc0plaXZkVHY2dGtUTHFx?=
+ =?utf-8?B?MzgySVlnQm9qTGtJdkhHUDBkemd1WUErbDhMcnJqTmVLWHloNFpzR3RydVFY?=
+ =?utf-8?B?eGRqd1diRmJFdStaUUVCVG41UThwSnM4aXNNRjhHZzcveFhhcTdmTHhNa0pM?=
+ =?utf-8?B?NjNnKzNHeE1lN0lmcm9Ec3U5emlwdDBWNURQeWFZZThYTTBlWVNIcDJTVUIz?=
+ =?utf-8?B?T2ZoK1l2N2l2VmdoeTdMT1ovZ3NzMG50dnJyWTg2OFZxTDdxc1ZBUFhTM3E0?=
+ =?utf-8?B?ZGsrYU1SR0lWa0ljeUl3TVU4YmxzQnUrcjJ2TE5qRitaWVkzK3QrL2JZRnR4?=
+ =?utf-8?B?c3pJRlVxcnlEcEVOY1N5RFVnSUhQMTB2bFdrcW0wbjNVUFgxbmkzMnRNTFJC?=
+ =?utf-8?B?WHFBR1ZXa0laUkI5TS9Pc0NZRnRld2xFOGFKMUZiN2hBTjBtMTVpVE0wVVNt?=
+ =?utf-8?B?RndNY2szcm5GRkNZd1dzM05pL25OOFc2VkxSSTZla1JnRWtia3pTVTFiajlh?=
+ =?utf-8?B?SGNXR3pWYmJNNTlOY3U1YTVwOStOOWt5WitmSUhYRW5SNUJveDVtODdjVUJn?=
+ =?utf-8?B?bUY5bW94WTllZERwRnpyck1ISnFGWVpCMlVRampCNkJHcldUWXF4QXJMOVJi?=
+ =?utf-8?B?UXl2MWp1TlBoT3EvL2J0RDdObDZ3bjhYVm1GQXd1bEthRTRoeVdXMm5GRVpO?=
+ =?utf-8?B?T0VBaFVlREVKNlBmM2dRUWFibWNtNC9odFVVSUZIRy9WSWJFY2d5RFdOVnNa?=
+ =?utf-8?B?NlhPUVhCcTRjSVZSdlVpc3JuLzdNN2pZcnlJNWwxU2pRUnc4azZCYzJab0dO?=
+ =?utf-8?B?Qk9idFJmUU5tQW4wVW1lMGtBakRHSWZZTk1vQWZPM3FDQzIzUkZWeXdGTkRR?=
+ =?utf-8?B?WDA1VEhBNVFseEFHT2JLZVM4eWY5d1p4OGp5RW4vcjVGdFhKWk44L2VqTHFO?=
+ =?utf-8?B?czRlaW5GV0p0VU9Sa1Bwdmg2Z3pkdVVnYnJrUCtKY1NHcklvQzNyODEwUWJ6?=
+ =?utf-8?B?TjUyZTljOHpkN1RrMG5FNWpuTHVTdVFxNXZnR0RuTnpsVGhOTEpZR2FUL2I3?=
+ =?utf-8?B?ZUFLdmliRy94ZmFraUprUDhzS2E5Yys1MmU4MDN2cDQxd1c4RUtJY3VPSUpZ?=
+ =?utf-8?B?NS9DdHg1YVR2QjJ2ZU1FWUdZeWd5TTA3L0lNMFA5RUxBQjYyaUtyOUhMRE55?=
+ =?utf-8?B?SHFUa3UzWTJocGJGWGRISW1rQUdNZzRvdUlKSlFlOWIyQys2MStSOVZic0M0?=
+ =?utf-8?B?RFVGMmRKWlRwZE1nRUt2bmtZRlNjb0Y2MjQ4eWNSRHM5amNIMm5EZnBRR21V?=
+ =?utf-8?B?Mm11cm5YUkFZNTNhS2NZMis1SUFpTVFlWlFLWEpNcGpYSE5lRStNdkNiMnhZ?=
+ =?utf-8?B?Z0E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: cc1aad9e-1699-4af5-76fb-08dbeefe3c47
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4965.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2023 04:06:31.1426
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8slxuZ3uOyvoABhSCc0QhcHco5k4vcXUAEESwZmyhrMn0J2QrLCNlIumER05no6Rb4YDcmPE5hEcNXikK5O/QA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7602
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/24/2023 5:45 PM, Peter Zijlstra wrote:
+> On Fri, Nov 24, 2023 at 12:53:07AM -0500, Yang Weijiang wrote:
+>
+>> Note, in KVM case, guest CET supervisor state i.e., IA32_PL{0,1,2}_MSRs,
+>> are preserved after VM-Exit until host/guest fpstates are swapped, but
+>> since host supervisor shadow stack is disabled, the preserved MSRs won't
+>> hurt host.
+> Just to be clear, with FRED all this changes, right? Then we get more
+> VMCS fields for SSS state.
+
+Yes, I think so, KVM needs to properly handle guest SSS state and host FRED states.
+
+Thanks!
 
 
-On 11/24/2023 3:50 PM, Krzysztof Kozlowski wrote:
-> On 24/11/2023 07:17, Mao Jinlong wrote:
->> Fix all warnings in Qualcomm boards coming from Coresight bindings.
-> 
-> One logical thing, one patch. That applies not only to Linux kernel, but
-> to all software projects.
-> 
->>
->> Signed-off-by: Mao Jinlong <quic_jinlmao@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/msm8996.dtsi | 26 ----------------------
->>   arch/arm64/boot/dts/qcom/msm8998.dtsi | 32 +++++++++++++++++----------
->>   arch/arm64/boot/dts/qcom/sdm845.dtsi  |  5 +----
->>   arch/arm64/boot/dts/qcom/sm8150.dtsi  |  5 +----
->>   arch/arm64/boot/dts/qcom/sm8250.dtsi  | 24 ++++----------------
->>   5 files changed, 26 insertions(+), 66 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
->> index 6ba9da9e6a8b..e42c22b26adc 100644
->> --- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
->> @@ -2637,24 +2637,6 @@ funnel1_out: endpoint {
->>   			};
->>   		};
->>   
->> -		funnel@3023000 {
->> -			compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
->> -			reg = <0x3023000 0x1000>;
->> -
->> -			clocks = <&rpmcc RPM_QDSS_CLK>, <&rpmcc RPM_QDSS_A_CLK>;
->> -			clock-names = "apb_pclk", "atclk";
->> -
->> -
->> -			out-ports {
->> -				port {
->> -					funnel2_out: endpoint {
->> -						remote-endpoint =
->> -						  <&merge_funnel_in2>;
->> -					};
->> -				};
->> -			};
->> -		};
-> 
-> Why do you remove nodes? How is this anyhow related to commit msg?
-> Nothing here is explained.
-> 
->> -
->>   		funnel@3025000 {
->>   			compatible = "arm,coresight-dynamic-funnel", "arm,primecell";
->>   			reg = <0x3025000 0x1000>;
->> @@ -2681,14 +2663,6 @@ merge_funnel_in1: endpoint {
->>   						  <&funnel1_out>;
->>   					};
->>   				};
->> -
->> -				port@2 {
->> -					reg = <2>;
->> -					merge_funnel_in2: endpoint {
->> -						remote-endpoint =
->> -						  <&funnel2_out>;
->> -					};
-> 
-> Why?
-> 
->> -				};
->>   			};
->>   
->>   			out-ports {
->> diff --git a/arch/arm64/boot/dts/qcom/msm8998.dtsi b/arch/arm64/boot/dts/qcom/msm8998.dtsi
->> index b485bf925ce6..ebc5ba1b369e 100644
->> --- a/arch/arm64/boot/dts/qcom/msm8998.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/msm8998.dtsi
->> @@ -2031,9 +2031,11 @@ etm5: etm@7c40000 {
->>   
->>   			cpu = <&CPU4>;
->>   
->> -			port {
->> -				etm4_out: endpoint {
->> -					remote-endpoint = <&apss_funnel_in4>;
->> +			out-ports {
->> +				port {
-> 
-> So you want to say out-ports is missing? Commit msg is really not
-> explaining anything.
-> 
->> +					etm4_out: endpoint {
->> +						remote-endpoint = <&apss_funnel_in4>;
->> +					};
->>   				};
-> 
-> 
-> Best regards,
-> Krzysztof
-Thanks for the review. I will separate the patches and update the commit 
-message.
-
-Thanks
-Jinlong Mao
-
-> 
