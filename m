@@ -2,203 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05EBB7FAC37
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:06:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE927FAC3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:07:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232732AbjK0VGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 16:06:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59164 "EHLO
+        id S232022AbjK0VHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 16:07:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjK0VGJ (ORCPT
+        with ESMTP id S229527AbjK0VHB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 16:06:09 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4386191;
-        Mon, 27 Nov 2023 13:06:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701119175; x=1732655175;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to;
-  bh=4n1yDLJtP711vsPZEFcMsExwQVwTZZH0PXUUX5LbydM=;
-  b=bDxuXEUjGndciDnDQ3zd9uvuQSH9aVlLz9/lGF9eIyr9hWtc3QLr6HQu
-   GcyaNc5nJr+3HWEXPfDwD4DBJ7KZvlQMYP1gmXcGXYLqg3PSXvrq5TWDK
-   tqBTpGDY21OxggC/T7v+j2Lbr5ueJdlu69ctHGHuCy7MpIDnc0NwFsx0z
-   utqltQTIsB7OY4qo67d2UVKgZPWksFW0Ys120ynAbj5H9mXufga6zFAwc
-   6XML/WdM7LhcfNd1PRmxM3I/fY+F/asMDqJnk5uwbmtKAo1VTnBDOMcNq
-   wjF5KHHm8P76vJ0KPo45MkXRwN2wCAgDe2jsLUoJFIpPkZm1US35OvwMw
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="377821109"
-X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
-   d="scan'208";a="377821109"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 13:06:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
-   d="scan'208";a="9903684"
-Received: from jdmart2-mobl1.amr.corp.intel.com (HELO [10.212.214.63]) ([10.212.214.63])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 13:06:13 -0800
-Content-Type: multipart/mixed; boundary="------------5f0unhrBacraNETDx1LSn9t4"
-Message-ID: <20266111-2f25-49c1-8cda-69eac40ad9f0@intel.com>
-Date:   Mon, 27 Nov 2023 13:06:12 -0800
+        Mon, 27 Nov 2023 16:07:01 -0500
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51AB519D
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 13:07:07 -0800 (PST)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5ce8eff71e1so29263387b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 13:07:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701119226; x=1701724026; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HUU3+89wZrgDbzq+c00gpiQNcqaCPhQOfgZ74RHd2SY=;
+        b=q5FdhAj3PI3P2/F7hAOXnatnGewHgwFkCOjipwJzTXtv3CPlKQ/MCjL7i2XkBtbkme
+         4cIK36OMYRFg3Wq2UqFvg9Dy06h2xjfx9S5yJulKL1sXqN9DG+2A3geaND8iEVFEBKvL
+         o0uwHeRcY0gmrxlgGFWw0O0N8vS8X8izx07hor6H4mJLokFawAYB67lL4IuxBj8hRc++
+         Jf07Fpp93vFxf3MUepugMkxjulcCYp8L3hRkHR/50zHSU7fR9sKrGzpIOXEKdVBA3CnI
+         SolGORjJ2tqmFx0BfGQz3s07f0Z7MKHkYazGV+svCz+lUHbSFW68kaKuI1wpATqHunRW
+         S/9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701119226; x=1701724026;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HUU3+89wZrgDbzq+c00gpiQNcqaCPhQOfgZ74RHd2SY=;
+        b=ucPU+1Qd+ZpNPMjfnysKIOZT6xnOCKEIrHpy1ZTX8yqCjJ/sYDCzPKkKhSPVgQZ+Q1
+         0zqgXcXO1qxJFNYsWIqBvKy3wejQ1vHbCrEQpKogJZqBHUQl7ll8VmVg4Q2YT403umS3
+         1J/wy+itqGYMVSqQUdiUMluSNLlmOaQAH9zPppKYTYn3HjeB+c8It6y6jFGkdB05Nl3a
+         3Clhfmr8frpSkuA9mZUGUog1ApmeSZZSJAlVKKRV1NPMSUqwJmnmQIcyWH9c7073XmHA
+         8JY5fTFLY/vH7m+C5KF+cOU9AQcjq0Hc8WqzEIEDiTPrq1bkBwISC6FBCMPnIlbo1GZN
+         AHOw==
+X-Gm-Message-State: AOJu0YzMTCR4RNNlCLNUNWmF8hPEWk/WqLr0VigFIX514supSNejBFiX
+        hbXRF9lG87Vz2dMDdh7Y6CVG2voAX9AH9o5iydGcNA==
+X-Google-Smtp-Source: AGHT+IF+k1LKe2Ufl37lo2dRXkW3bDFo2hDN+DJaSNvvCtX+/g+2Hd5wjHLMUZMnlAdWEBan4IGHhabadU7daPRnizw=
+X-Received: by 2002:a81:6006:0:b0:5c9:af70:8e99 with SMTP id
+ u6-20020a816006000000b005c9af708e99mr13101599ywb.41.1701119226420; Mon, 27
+ Nov 2023 13:07:06 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v15 17/23] x86/kexec: Flush cache of TDX private memory
-Content-Language: en-US
-To:     "Huang, Kai" <kai.huang@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "Williams, Dan J" <dan.j.williams@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "bagasdotme@gmail.com" <bagasdotme@gmail.com>,
-        "ak@linux.intel.com" <ak@linux.intel.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "nik.borisov@suse.com" <nik.borisov@suse.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "sagis@google.com" <sagis@google.com>,
-        "imammedo@redhat.com" <imammedo@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "bp@alien8.de" <bp@alien8.de>, "Brown, Len" <len.brown@intel.com>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "Gao, Chao" <chao.gao@intel.com>
-References: <cover.1699527082.git.kai.huang@intel.com>
- <2151c68079c1cb837d07bd8015e4ff1f662e1a6e.1699527082.git.kai.huang@intel.com>
- <cfea7192-4b29-46f9-a500-149121f493c8@intel.com>
- <e8fd4bff8244e9e709c997da309e73a932567959.camel@intel.com>
- <4ca2f6c1-97a7-4992-b01f-60341f6749ff@intel.com>
- <f74375b44d86f11843901a909e60bed228809677.camel@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <f74375b44d86f11843901a909e60bed228809677.camel@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231115141928.429688-1-dipamt1729@gmail.com> <CAA8EJprqnUGQxmj4Y=qttVuj0zJxdD9B6neHa6sPseLLETpk5A@mail.gmail.com>
+ <CALHmwsoC5h7_w9OzpUS_-xM6x5WF5V-vFExLEf4y99b2eCcqGQ@mail.gmail.com>
+ <CAA8EJpoyC=paF1ZuznXgJAkT1fne0RwYfqJh-cdz0WLt02i+bw@mail.gmail.com>
+ <CAF6AEGtdKD6-xA+AeZDXuKc+k4MnP8Ba4-12hHxt00bXLhJ7Eg@mail.gmail.com>
+ <CAA8EJprj7F_K1zxnGdz1ReLNMR2CiYfRxWHUmudTZC+qjKA+kA@mail.gmail.com> <CAF6AEGtW5XZS+S0xQViE8RwmdsxXsSg3yz8-1=oGO5+HTzw52g@mail.gmail.com>
+In-Reply-To: <CAF6AEGtW5XZS+S0xQViE8RwmdsxXsSg3yz8-1=oGO5+HTzw52g@mail.gmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Mon, 27 Nov 2023 23:06:55 +0200
+Message-ID: <CAA8EJpr6QerE_VhfQksgSUFHY=-gg3xWAqY9cfAHzfMtyBnNKA@mail.gmail.com>
+Subject: Re: [PATCH v2] Remove custom dumb_map_offset implementation in msm driver
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Dipam Turkar <dipamt1729@gmail.com>, quic_abhinavk@quicinc.com,
+        sean@poorly.run, marijn.suijten@somainline.org, airlied@gmail.com,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------5f0unhrBacraNETDx1LSn9t4
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+On Mon, 27 Nov 2023 at 22:52, Rob Clark <robdclark@gmail.com> wrote:
+>
+> On Tue, Nov 21, 2023 at 5:14=E2=80=AFAM Dmitry Baryshkov
+> <dmitry.baryshkov@linaro.org> wrote:
+> >
+> > On Tue, 21 Nov 2023 at 04:26, Rob Clark <robdclark@gmail.com> wrote:
+> > >
+> > > On Wed, Nov 15, 2023 at 11:33=E2=80=AFAM Dmitry Baryshkov
+> > > <dmitry.baryshkov@linaro.org> wrote:
+> > > >
+> > > > On Wed, 15 Nov 2023 at 20:46, Dipam Turkar <dipamt1729@gmail.com> w=
+rote:
+> > > > >
+> > > > > They are not outdated, my bad. I went through the locks' code and=
+ saw that they have been updated. But they are probably not necessary here =
+as most of the drivers do not use any form of locking in their implementati=
+ons. The generic implementations drm_gem_dumb_map_offset() and drm_gem_ttm_=
+dumb_map_offset() do not have any locking mechanisms either.
+> > > >
+> > > > Excuse me, but this doesn't sound right to me. There are different
+> > > > drivers with different implementations. So either we'd need a good
+> > > > explanation of why it is not necessary, or this patch is NAKed.
+> > >
+> > > Digging a bit thru history, it looks like commit 0de23977cfeb
+> > > ("drm/gem: convert to new unified vma manager") made external locking
+> > > unnecessary, since the vma mgr already had it's own internal locking.
+> >
+> > So, should we drop our own locking system?
+>
+> specifically for _just_ vma_offset_manager/vma_node, we could.  But I
+> think that only amounts to mmap_offset().
 
-On 11/27/23 12:52, Huang, Kai wrote:
-> --- a/arch/x86/kernel/machine_kexec_64.c
-> +++ b/arch/x86/kernel/machine_kexec_64.c
-> @@ -377,7 +377,8 @@ void machine_kexec(struct kimage *image)
->                                        (unsigned long)page_list,
->                                        image->start,
->                                        image->preserve_context,
-> -
-> cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT));
-> +                                      cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT)
-> ||
-> +                                      platform_tdx_enabled());
+I see. I'll try digging into the mentioned commit. In the meantime,
+this looks like an R-B from you, doesn't it?
 
-Well, something more like the attached would be preferable, but you've
-got the right idea logically.
---------------5f0unhrBacraNETDx1LSn9t4
-Content-Type: text/x-patch; charset=UTF-8; name="cc-host-mem-incoherent.patch"
-Content-Disposition: attachment; filename="cc-host-mem-incoherent.patch"
-Content-Transfer-Encoding: base64
+>
+> BR,
+> -R
+>
+> > >
+> > > BR,
+> > > -R
+> > >
+> > > > >
+> > > > > Thanks and regards
+> > > > > Dipam Turkar
+> > > > >
+> > > > > On Wed, Nov 15, 2023 at 8:37=E2=80=AFPM Dmitry Baryshkov <dmitry.=
+baryshkov@linaro.org> wrote:
+> > > > >>
+> > > > >> On Wed, 15 Nov 2023 at 16:30, Dipam Turkar <dipamt1729@gmail.com=
+> wrote:
+> > > > >> >
+> > > > >> > Make msm use drm_gem_create_map_offset() instead of its custom
+> > > > >> > implementation for associating GEM object with a fake offset. =
+Since,
+> > > > >> > we already have this generic implementation, we don't need the=
+ custom
+> > > > >> > implementation and it is better to standardize the code for GE=
+M based
+> > > > >> > drivers. This also removes the outdated locking leftovers.
+> > > > >>
+> > > > >> Why are they outdated?
+> > > > >>
+> > > > >> >
+> > > > >> > Signed-off-by: Dipam Turkar <dipamt1729@gmail.com>
+> > > > >> > ---
+> > > > >> >  drivers/gpu/drm/msm/msm_drv.c |  2 +-
+> > > > >> >  drivers/gpu/drm/msm/msm_gem.c | 21 ---------------------
+> > > > >> >  drivers/gpu/drm/msm/msm_gem.h |  2 --
+> > > > >> >  3 files changed, 1 insertion(+), 24 deletions(-)
+> > > > >> >
+> > > > >> > Changes in v2:
+> > > > >> > Modify commit message to include the absence of internal locki=
+ng leftovers
+> > > > >> > around allocating a fake offset in msm_gem_mmap_offset() in th=
+e generic
+> > > > >> > implementation drm_gem_create_map_offset().
+> > > > >> >
+> > > > >> > diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/m=
+sm/msm_drv.c
+> > > > >> > index a428951ee539..86a15992c717 100644
+> > > > >> > --- a/drivers/gpu/drm/msm/msm_drv.c
+> > > > >> > +++ b/drivers/gpu/drm/msm/msm_drv.c
+> > > > >> > @@ -1085,7 +1085,7 @@ static const struct drm_driver msm_drive=
+r =3D {
+> > > > >> >         .open               =3D msm_open,
+> > > > >> >         .postclose          =3D msm_postclose,
+> > > > >> >         .dumb_create        =3D msm_gem_dumb_create,
+> > > > >> > -       .dumb_map_offset    =3D msm_gem_dumb_map_offset,
+> > > > >> > +       .dumb_map_offset    =3D drm_gem_dumb_map_offset,
+> > > > >> >         .gem_prime_import_sg_table =3D msm_gem_prime_import_sg=
+_table,
+> > > > >> >  #ifdef CONFIG_DEBUG_FS
+> > > > >> >         .debugfs_init       =3D msm_debugfs_init,
+> > > > >> > diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/m=
+sm/msm_gem.c
+> > > > >> > index db1e748daa75..489694ef79cb 100644
+> > > > >> > --- a/drivers/gpu/drm/msm/msm_gem.c
+> > > > >> > +++ b/drivers/gpu/drm/msm/msm_gem.c
+> > > > >> > @@ -671,27 +671,6 @@ int msm_gem_dumb_create(struct drm_file *=
+file, struct drm_device *dev,
+> > > > >> >                         MSM_BO_SCANOUT | MSM_BO_WC, &args->han=
+dle, "dumb");
+> > > > >> >  }
+> > > > >> >
+> > > > >> > -int msm_gem_dumb_map_offset(struct drm_file *file, struct drm=
+_device *dev,
+> > > > >> > -               uint32_t handle, uint64_t *offset)
+> > > > >> > -{
+> > > > >> > -       struct drm_gem_object *obj;
+> > > > >> > -       int ret =3D 0;
+> > > > >> > -
+> > > > >> > -       /* GEM does all our handle to object mapping */
+> > > > >> > -       obj =3D drm_gem_object_lookup(file, handle);
+> > > > >> > -       if (obj =3D=3D NULL) {
+> > > > >> > -               ret =3D -ENOENT;
+> > > > >> > -               goto fail;
+> > > > >> > -       }
+> > > > >> > -
+> > > > >> > -       *offset =3D msm_gem_mmap_offset(obj);
+> > > > >> > -
+> > > > >> > -       drm_gem_object_put(obj);
+> > > > >> > -
+> > > > >> > -fail:
+> > > > >> > -       return ret;
+> > > > >> > -}
+> > > > >> > -
+> > > > >> >  static void *get_vaddr(struct drm_gem_object *obj, unsigned m=
+adv)
+> > > > >> >  {
+> > > > >> >         struct msm_gem_object *msm_obj =3D to_msm_bo(obj);
+> > > > >> > diff --git a/drivers/gpu/drm/msm/msm_gem.h b/drivers/gpu/drm/m=
+sm/msm_gem.h
+> > > > >> > index 8ddef5443140..dc74a0ef865d 100644
+> > > > >> > --- a/drivers/gpu/drm/msm/msm_gem.h
+> > > > >> > +++ b/drivers/gpu/drm/msm/msm_gem.h
+> > > > >> > @@ -139,8 +139,6 @@ struct page **msm_gem_pin_pages(struct drm=
+_gem_object *obj);
+> > > > >> >  void msm_gem_unpin_pages(struct drm_gem_object *obj);
+> > > > >> >  int msm_gem_dumb_create(struct drm_file *file, struct drm_dev=
+ice *dev,
+> > > > >> >                 struct drm_mode_create_dumb *args);
+> > > > >> > -int msm_gem_dumb_map_offset(struct drm_file *file, struct drm=
+_device *dev,
+> > > > >> > -               uint32_t handle, uint64_t *offset);
+> > > > >> >  void *msm_gem_get_vaddr_locked(struct drm_gem_object *obj);
+> > > > >> >  void *msm_gem_get_vaddr(struct drm_gem_object *obj);
+> > > > >> >  void *msm_gem_get_vaddr_active(struct drm_gem_object *obj);
+> > > > >> > --
+> > > > >> > 2.34.1
+> > > > >> >
+> > > > >>
+> > > > >>
+> > > > >> --
+> > > > >> With best wishes
+> > > > >> Dmitry
+> > > >
+> > > >
+> > > >
+> > > > --
+> > > > With best wishes
+> > > > Dmitry
+> >
+> >
+> >
+> > --
+> > With best wishes
+> > Dmitry
 
-CgotLS0KCiBiL2FyY2gveDg2L2NvY28vY29yZS5jICAgICAgICAgICAgICAgfCAgICAxICsK
-IGIvYXJjaC94ODYva2VybmVsL21hY2hpbmVfa2V4ZWNfNjQuYyB8ICAgIDIgKy0KIGIvaW5j
-bHVkZS9saW51eC9jY19wbGF0Zm9ybS5oICAgICAgICB8ICAgMTYgKysrKysrKysrKysrKysr
-KwogMyBmaWxlcyBjaGFuZ2VkLCAxOCBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCgpk
-aWZmIC1wdU4gaW5jbHVkZS9saW51eC9jY19wbGF0Zm9ybS5ofmNjLWhvc3QtbWVtLWluY29o
-ZXJlbnQgaW5jbHVkZS9saW51eC9jY19wbGF0Zm9ybS5oCi0tLSBhL2luY2x1ZGUvbGludXgv
-Y2NfcGxhdGZvcm0uaH5jYy1ob3N0LW1lbS1pbmNvaGVyZW50CTIwMjMtMTEtMjcgMTI6MjA6
-NDQuMjE3MzgxMDA4IC0wODAwCisrKyBiL2luY2x1ZGUvbGludXgvY2NfcGxhdGZvcm0uaAky
-MDIzLTExLTI3IDEyOjI1OjA1Ljc3MTA3MzE5MyAtMDgwMApAQCAtNDMsNiArNDMsMjIgQEAg
-ZW51bSBjY19hdHRyIHsKIAlDQ19BVFRSX0hPU1RfTUVNX0VOQ1JZUFQsCiAKIAkvKioKKwkg
-KiBAQ0NfQVRUUl9IT1NUX01FTV9JTkNPSEVSRU5UOiBIb3N0IG1lbW9yeSBlbmNyeXB0aW9u
-IGNhbiBiZQorCSAqIGluY29oZXJlbnQKKwkgKgorCSAqIFRoZSBwbGF0Zm9ybS9PUyBpcyBy
-dW5uaW5nIGFzIGEgYmFyZS1tZXRhbCBzeXN0ZW0gb3IgYSBoeXBlcnZpc29yLgorCSAqIFRo
-ZSBtZW1vcnkgZW5jcnlwdGlvbiBlbmdpbmUgbWlnaHQgaGF2ZSBsZWZ0IG5vbi1jYWNoZS1j
-b2hlcmVudAorCSAqIGRhdGEgaW4gdGhlIGNhY2hlcyB0aGF0IG5lZWRzIHRvIGJlIGZsdXNo
-ZWQuCisJICoKKwkgKiBVc2UgdGhpcyBpbiBwbGFjZXMgd2hlcmUgdGhlIGNhY2hlIGNvaGVy
-ZW5jeSBvZiB0aGUgbWVtb3J5IG1hdHRlcnMKKwkgKiBidXQgdGhlIGVuY3J5cHRpb24gc3Rh
-dHVzIGRvZXMgbm90LgorCSAqCisJICogSW5jbHVkZXMgYWxsIHN5c3RlbXMgdGhhdCBzZXQg
-Q0NfQVRUUl9IT1NUX01FTV9FTkNSWVBULCBidXQKKwkgKiBhZGl0aW9uYWxseSBhZGRzIFRE
-WCBob3N0cy4KKwkgKi8KKwlDQ19BVFRSX0hPU1RfTUVNX0lOQ09IRVJFTlQsCisKKwkvKioK
-IAkgKiBAQ0NfQVRUUl9HVUVTVF9NRU1fRU5DUllQVDogR3Vlc3QgbWVtb3J5IGVuY3J5cHRp
-b24gaXMgYWN0aXZlCiAJICoKIAkgKiBUaGUgcGxhdGZvcm0vT1MgaXMgcnVubmluZyBhcyBh
-IGd1ZXN0L3ZpcnR1YWwgbWFjaGluZSBhbmQgYWN0aXZlbHkKZGlmZiAtcHVOIGFyY2gveDg2
-L2tlcm5lbC9tYWNoaW5lX2tleGVjXzY0LmN+Y2MtaG9zdC1tZW0taW5jb2hlcmVudCBhcmNo
-L3g4Ni9rZXJuZWwvbWFjaGluZV9rZXhlY182NC5jCi0tLSBhL2FyY2gveDg2L2tlcm5lbC9t
-YWNoaW5lX2tleGVjXzY0LmN+Y2MtaG9zdC1tZW0taW5jb2hlcmVudAkyMDIzLTExLTI3IDEy
-OjI1OjEzLjUyNzExNTI2MCAtMDgwMAorKysgYi9hcmNoL3g4Ni9rZXJuZWwvbWFjaGluZV9r
-ZXhlY182NC5jCTIwMjMtMTEtMjcgMTM6MDQ6MTkuNzMyOTU5MDAxIC0wODAwCkBAIC0zNjEs
-NyArMzYxLDcgQEAgdm9pZCBtYWNoaW5lX2tleGVjKHN0cnVjdCBraW1hZ2UgKmltYWdlKQog
-CQkJCSAgICAgICAodW5zaWduZWQgbG9uZylwYWdlX2xpc3QsCiAJCQkJICAgICAgIGltYWdl
-LT5zdGFydCwKIAkJCQkgICAgICAgaW1hZ2UtPnByZXNlcnZlX2NvbnRleHQsCi0JCQkJICAg
-ICAgIGNjX3BsYXRmb3JtX2hhcyhDQ19BVFRSX0hPU1RfTUVNX0VOQ1JZUFQpKTsKKwkJCQkg
-ICAgICAgY2NfcGxhdGZvcm1faGFzKENDX0FUVFJfSE9TVF9NRU1fSU5DT0hFUkVOVCkpOwog
-CiAjaWZkZWYgQ09ORklHX0tFWEVDX0pVTVAKIAlpZiAoaW1hZ2UtPnByZXNlcnZlX2NvbnRl
-eHQpCmRpZmYgLXB1TiBhcmNoL3g4Ni9jb2NvL2NvcmUuY35jYy1ob3N0LW1lbS1pbmNvaGVy
-ZW50IGFyY2gveDg2L2NvY28vY29yZS5jCi0tLSBhL2FyY2gveDg2L2NvY28vY29yZS5jfmNj
-LWhvc3QtbWVtLWluY29oZXJlbnQJMjAyMy0xMS0yNyAxMjoyNjowMi41MzUzNzIzNzcgLTA4
-MDAKKysrIGIvYXJjaC94ODYvY29jby9jb3JlLmMJMjAyMy0xMS0yNyAxMjoyNjoxMi4zNzE0
-MjIyNDEgLTA4MDAKQEAgLTcwLDYgKzcwLDcgQEAgc3RhdGljIGJvb2wgbm9pbnN0ciBhbWRf
-Y2NfcGxhdGZvcm1faGFzKAogCQlyZXR1cm4gc21lX21lX21hc2s7CiAKIAljYXNlIENDX0FU
-VFJfSE9TVF9NRU1fRU5DUllQVDoKKwljYXNlIENDX0FUVFJfSE9TVF9NRU1fSU5DT0hFUkVO
-VDoKIAkJcmV0dXJuIHNtZV9tZV9tYXNrICYmICEoc2V2X3N0YXR1cyAmIE1TUl9BTUQ2NF9T
-RVZfRU5BQkxFRCk7CiAKIAljYXNlIENDX0FUVFJfR1VFU1RfTUVNX0VOQ1JZUFQ6Cl8K
 
---------------5f0unhrBacraNETDx1LSn9t4--
+
+--=20
+With best wishes
+Dmitry
