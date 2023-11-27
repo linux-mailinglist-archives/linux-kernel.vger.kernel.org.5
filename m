@@ -2,207 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3582C7FAD58
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 23:20:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1297FAD5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 23:21:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233809AbjK0WUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 17:20:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35842 "EHLO
+        id S234278AbjK0WUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 17:20:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233482AbjK0WUU (ORCPT
+        with ESMTP id S234125AbjK0WUX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 17:20:20 -0500
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAF181BCE;
-        Mon, 27 Nov 2023 14:16:14 -0800 (PST)
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6d30d9f4549so2993687a34.0;
-        Mon, 27 Nov 2023 14:16:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701123374; x=1701728174;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ni+QM1NQCcgkAj/8RAaEXHLHTHpEmfsdhBRgD9S0obg=;
-        b=aAUdhvHMzesr6eK1rypc9HjL2RinBf+ZsMRoGI3MKGEvFjbmbVqSNGQIw6khZIFe0F
-         6IoxYf6U58WGTwRAchrZYAv1LRwYQWZvRUZCrfE9tbeY/VHNqEnvPyGKi8JGozCLnbD/
-         /HfBCiDVO3oLu4TPenZQdG55WKymnX8fKYOxQwSv+PUwZpnxY/4PQEhqhD3k4Ja1ds7g
-         GqYsAsrpXiz7f4ldNfnQbpuFbNsY10VJTyjiNLh+clamSGeuJGKpFgciBbp1PtKjpxT2
-         ySrtVjMMxT3kv7zDiRICFe9rMNS4gWI+xakgm0BNcf/4rBVB+N9Kja9W4UnPdTHGVf0w
-         fi7A==
-X-Gm-Message-State: AOJu0YwSOQbn1CBvjJGrnIO3xf8gxWtEzbVi/d7n41fmgAcLZ7wuQa6B
-        ix+qlie+mwEUOB1mgsZRMg==
-X-Google-Smtp-Source: AGHT+IGUTejt/8I/FkmEAVJmTD9AFB5fYEWb//1MrwvjzlCkYslMTEoW/bdzPOLIYsPc065LFT0e5A==
-X-Received: by 2002:a05:6830:1e39:b0:6d3:a8b:b34 with SMTP id t25-20020a0568301e3900b006d30a8b0b34mr15059347otr.5.1701123373505;
-        Mon, 27 Nov 2023 14:16:13 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id s12-20020a056830438c00b006ce2f0818d3sm1497262otv.22.2023.11.27.14.16.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 14:16:12 -0800 (PST)
-Received: (nullmailer pid 4135204 invoked by uid 1000);
-        Mon, 27 Nov 2023 22:16:11 -0000
-Date:   Mon, 27 Nov 2023 16:16:11 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [net-next PATCH RFC v3 1/8] dt-bindings: net: document ethernet
- PHY package nodes
-Message-ID: <20231127221611.GA4023452-robh@kernel.org>
-References: <20231126015346.25208-1-ansuelsmth@gmail.com>
- <20231126015346.25208-2-ansuelsmth@gmail.com>
+        Mon, 27 Nov 2023 17:20:23 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD7153AB5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:16:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 617FEC433CA;
+        Mon, 27 Nov 2023 22:16:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701123390;
+        bh=GZZZizaQ2JGBGghW8BdCWRMnKc60BblYbZVXriQsgfM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DSkfdMLQ8pmpDVfd5IQRuWjLD47xG1hlaqdwCX1t136Gng0x2WShn54MVzcADy4ye
+         DdC8h6Rdgw1PtLZUgrDwGc0hvrVUdhZ2nETg72k5Z58Y8eaGUAnD4z9TeNY7eRu6Im
+         Ia1raqOhsloE/zZ+837ejdU83iSGs5c+uX77UW06H12jt+s4Wap1gDrk5nLlSJ7K2u
+         Qjag8wjGzRYr4KMpQN43Hf8fwL7DItP1VIAwXQF8BSEsqd7j+srS3ce0RqFREoxQ20
+         ashRKjfy0yRBiQf2Rr17DCOqSc2K61X8wIDyM6cdyRW+JQiCgfLMWpsx5MAHUZQr8F
+         zd5sdfNW8RPNw==
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5079f3f3d7aso6869215e87.1;
+        Mon, 27 Nov 2023 14:16:30 -0800 (PST)
+X-Gm-Message-State: AOJu0YwmQL8F7iaQ2MiX1l7jmfnSFq1gHyN7DlpWp7HiyjNlYyTH/LVf
+        /7td7k7JjOypTbJdZ+8jKRfaFO1GLpKfSLHixlA=
+X-Google-Smtp-Source: AGHT+IFfm+9VZJPViMMma0yHMioJXnOhPbRgYu2jVjKJLyBsPv8CY57k8dFJhatnrQzy5PYA1T+wfbYDR9xrM9flXcg=
+X-Received: by 2002:a19:7507:0:b0:50a:778b:590 with SMTP id
+ y7-20020a197507000000b0050a778b0590mr7617033lfe.68.1701123388506; Mon, 27 Nov
+ 2023 14:16:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231126015346.25208-2-ansuelsmth@gmail.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20231125065419.3518254-1-yukuai1@huaweicloud.com>
+In-Reply-To: <20231125065419.3518254-1-yukuai1@huaweicloud.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 27 Nov 2023 14:16:16 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW4YsDXdpHMuscQrW4NdXZxhg8-k4J0Xt_47twA8sG_Fmg@mail.gmail.com>
+Message-ID: <CAPhsuW4YsDXdpHMuscQrW4NdXZxhg8-k4J0Xt_47twA8sG_Fmg@mail.gmail.com>
+Subject: Re: [PATCH -next v2] md: synchronize flush io with array reconfiguration
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     maan@systemlinux.org, neilb@suse.de, linux-raid@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yukuai3@huawei.com,
+        yi.zhang@huawei.com, yangerkun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 26, 2023 at 02:53:39AM +0100, Christian Marangi wrote:
-> Document ethernet PHY package nodes used to describe PHY shipped in
-> bundle of 4-5 PHY. The special node describe a container of PHY that
-> share common properties. This is a generic schema and PHY package
-> should create specialized version with the required additional shared
-> properties.
-> 
-> Example are PHY package that have some regs only in one PHY of the
-> package and will affect every other PHY in the package, for example
-> related to PHY interface mode calibration or global PHY mode selection.
-> 
-> The PHY package node MUST declare the base address used by the PHY driver
-> for global configuration by calculating the offsets of the global PHY
-> based on the base address of the PHY package and declare the
-> "ethrnet-phy-package" compatible.
-> 
-> Each reg of the PHY defined in the PHY package node is absolute and will
-> reference the real address of the PHY on the bus.
-> 
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+On Fri, Nov 24, 2023 at 10:54=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> =
+wrote:
+>
+> From: Yu Kuai <yukuai3@huawei.com>
+>
+> Currently rcu is used to protect iterating rdev from submit_flushes():
+>
+> submit_flushes                  remove_and_add_spares
+>                                 synchronize_rcu
+>                                 pers->hot_remove_disk()
+>  rcu_read_lock()
+>  rdev_for_each_rcu
+>   if (rdev->raid_disk >=3D 0)
+>                                 rdev->radi_disk =3D -1;
+>    atomic_inc(&rdev->nr_pending)
+>    rcu_read_unlock()
+>    bi =3D bio_alloc_bioset()
+>    bi->bi_end_io =3D md_end_flush
+>    bi->private =3D rdev
+>    submit_bio
+>    // issue io for removed rdev
+>
+> Fix this problem by grabbing 'acive_io' before iterating rdev, make sure
+> that remove_and_add_spares() won't concurrent with submit_flushes().
+>
+> Fixes: a2826aa92e2e ("md: support barrier requests on all personalities."=
+)
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 > ---
->  .../bindings/net/ethernet-phy-package.yaml    | 75 +++++++++++++++++++
->  1 file changed, 75 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/ethernet-phy-package.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/net/ethernet-phy-package.yaml b/Documentation/devicetree/bindings/net/ethernet-phy-package.yaml
-> new file mode 100644
-> index 000000000000..244d4bc29164
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/ethernet-phy-package.yaml
-> @@ -0,0 +1,75 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/ethernet-phy-package.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> Changes v2:
+>  - Add WARN_ON in case md_flush_request() is not called from
+>  md_handle_request() in future.
+>
+>  drivers/md/md.c | 22 ++++++++++++++++------
+>  1 file changed, 16 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index 86efc9c2ae56..2ffedc39edd6 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -538,6 +538,9 @@ static void md_end_flush(struct bio *bio)
+>         rdev_dec_pending(rdev, mddev);
+>
+>         if (atomic_dec_and_test(&mddev->flush_pending)) {
+> +               /* The pair is percpu_ref_tryget() from md_flush_request(=
+) */
+> +               percpu_ref_put(&mddev->active_io);
 > +
-> +title: Ethernet PHY Package Common Properties
+>                 /* The pre-request flush has finished */
+>                 queue_work(md_wq, &mddev->flush_work);
+>         }
+> @@ -557,12 +560,8 @@ static void submit_flushes(struct work_struct *ws)
+>         rdev_for_each_rcu(rdev, mddev)
+>                 if (rdev->raid_disk >=3D 0 &&
+>                     !test_bit(Faulty, &rdev->flags)) {
+> -                       /* Take two references, one is dropped
+> -                        * when request finishes, one after
+> -                        * we reclaim rcu_read_lock
+> -                        */
+>                         struct bio *bi;
+> -                       atomic_inc(&rdev->nr_pending);
 > +
-> +maintainers:
-> +  - Christian Marangi <ansuelsmth@gmail.com>
-> +
-> +description:
-> +  This schema describe PHY package as simple container for
-> +  a bundle of PHYs that share the same properties and
-> +  contains the PHYs of the package themself.
-> +
-> +  Each reg of the PHYs defined in the PHY package node is
-> +  absolute and describe the real address of the PHY on the bus.
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "^ethernet-phy-package(@[a-f0-9]+)?$"
-> +
-> +  compatible:
-> +    const: ethernet-phy-package
+>                         atomic_inc(&rdev->nr_pending);
+>                         rcu_read_unlock();
+>                         bi =3D bio_alloc_bioset(rdev->bdev, 0,
+> @@ -573,7 +572,6 @@ static void submit_flushes(struct work_struct *ws)
+>                         atomic_inc(&mddev->flush_pending);
+>                         submit_bio(bi);
+>                         rcu_read_lock();
+> -                       rdev_dec_pending(rdev, mddev);
+>                 }
+>         rcu_read_unlock();
+>         if (atomic_dec_and_test(&mddev->flush_pending))
+> @@ -626,6 +624,18 @@ bool md_flush_request(struct mddev *mddev, struct bi=
+o *bio)
+>         /* new request after previous flush is completed */
+>         if (ktime_after(req_start, mddev->prev_flush_start)) {
+>                 WARN_ON(mddev->flush_bio);
+> +               /*
+> +                * Grab a reference to make sure mddev_suspend() will wai=
+t for
+> +                * this flush to be done.
+> +                *
+> +                * md_flush_reqeust() is called under md_handle_request()=
+ and
+> +                * 'active_io' is already grabbed, hence percpu_ref_tryge=
+t()
+> +                * won't fail, percpu_ref_tryget_live() can't be used bec=
+ause
+> +                * percpu_ref_kill() can be called by mddev_suspend()
+> +                * concurrently.
+> +                */
+> +               if (WARN_ON(percpu_ref_tryget(&mddev->active_io)))
 
-In case I wasn't clear, but that compatible is a NAK.
+This should be "if (!WARN_ON(..))", right?
 
-> +
-> +  reg:
-> +    minimum: 0
-> +    maximum: 31
+Song
 
-Pretty sure the bus binding already provides these constraints.
-
-> +    description:
-> +      The base ID number for the PHY package.
-> +      Commonly the ID of the first PHY in the PHY package.
-> +
-> +      Some PHY in the PHY package might be not defined but
-> +      still exist on the device (just not attached to anything).
-> +      The reg defined in the PHY package node might differ and
-> +      the related PHY might be not defined.
-> +
-> +  '#address-cells':
-> +    const: 1
-> +
-> +  '#size-cells':
-> +    const: 0
-
-You are implementing a secondary MDIO bus within this node. It needs a 
-$ref to mdio.yaml instead of defining the bus again implicitly.
-
-> +
-> +patternProperties:
-> +  ^ethernet-phy(@[a-f0-9]+)?$:
-> +    $ref: ethernet-phy.yaml#
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: true
-> +
-> +examples:
-> +  - |
-> +    mdio {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        ethernet-phy-package@16 {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +            compatible = "ethernet-phy-package";
-> +            reg = <0x16>;
-> +
-> +            ethernet-phy@16 {
-> +              reg = <0x16>;
-> +            };
-> +
-> +            phy4: ethernet-phy@1a {
-> +              reg = <0x1a>;
-> +            };
-
-This example on its own doesn't make sense. It can't be fully validated 
-because you allow any additional properties. Drop it.
-
-> +        };
-> +    };
-> -- 
-> 2.40.1
-> 
+> +                       percpu_ref_get(&mddev->active_io);
+>                 mddev->flush_bio =3D bio;
+>                 bio =3D NULL;
+>         }
+> --
+> 2.39.2
+>
+>
