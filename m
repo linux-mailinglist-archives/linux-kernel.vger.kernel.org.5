@@ -2,52 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A54977F9E37
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:11:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E11807F9E4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:14:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232819AbjK0LLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 06:11:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52366 "EHLO
+        id S233024AbjK0LOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 06:14:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232966AbjK0LL3 (ORCPT
+        with ESMTP id S232624AbjK0LOk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 06:11:29 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 35526D4B
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 03:11:30 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5B7222F4;
-        Mon, 27 Nov 2023 03:12:17 -0800 (PST)
-Received: from [10.57.73.191] (unknown [10.57.73.191])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6B8023F73F;
-        Mon, 27 Nov 2023 03:11:26 -0800 (PST)
-Message-ID: <d11d713c-9c4e-4d26-9888-8cc843861785@arm.com>
-Date:   Mon, 27 Nov 2023 11:11:25 +0000
+        Mon, 27 Nov 2023 06:14:40 -0500
+Received: from mail.fris.de (unknown [IPv6:2a01:4f8:c2c:390b::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C5DB8;
+        Mon, 27 Nov 2023 03:14:45 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 82235BFC75;
+        Mon, 27 Nov 2023 12:14:38 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fris.de; s=dkim;
+        t=1701083681; h=from:subject:date:message-id:to:cc:mime-version:
+         content-transfer-encoding; bh=lIwxznIaQ/Q1UMhEJA7Uobh5avUf1uO3muzdBhAnjx8=;
+        b=qa+lUfhGMubLGaou1/eMPZmlh3vVzmAHWKAXTggKTkoF0hCuFsSCXibUdO5L7U6zJneAjX
+        hySObMmc3XVsDdC0qKJhfLx60Kq1A7Q5FdrZWHRpbeOEa6b6ZOzN1lWtNP+DXroo/qaSje
+        xIv/YOruSKYOMTaUK4HY4pb0V5AFlN2JF/9NWp+RgtwGqXy90OfkILyQQm4lNqKpH83ypu
+        6EVj9tchg43WPFkojxiG1Irwc53Tf2u9631wwLoyRWEsCTJJmN2ZaKoDkaj9plWLlY7obS
+        wwyMtEuiQveZOH+Rs+qfebNhJXlUVy848MfL9nv4zedCRPNlu1g8BWIRCyARyQ==
+From:   Frieder Schrempf <frieder@fris.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        Matthias Kaehlcke <mka@chromium.org>
+Cc:     Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Alexander Stein <alexander.stein@ew.tq-group.com>,
+        Anand Moon <linux.amoon@gmail.com>,
+        Benjamin Bara <benjamin.bara@skidata.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Subject: [PATCH 1/3] usb: misc: onboard_usb_hub: Print symbolic error names
+Date:   Mon, 27 Nov 2023 12:13:22 +0100
+Message-ID: <20231127111332.107640-1-frieder@fris.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 00/14] Transparent Contiguous PTEs for User Mappings
-Content-Language: en-GB
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     akpm@linux-foundation.org, andreyknvl@gmail.com,
-        anshuman.khandual@arm.com, ardb@kernel.org,
-        catalin.marinas@arm.com, david@redhat.com, dvyukov@google.com,
-        glider@google.com, james.morse@arm.com, jhubbard@nvidia.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mark.rutland@arm.com, maz@kernel.org,
-        oliver.upton@linux.dev, ryabinin.a.a@gmail.com,
-        suzuki.poulose@arm.com, vincenzo.frascino@arm.com,
-        wangkefeng.wang@huawei.com, will@kernel.org, willy@infradead.org,
-        yuzenghui@huawei.com, yuzhao@google.com, ziy@nvidia.com
-References: <20231115163018.1303287-1-ryan.roberts@arm.com>
- <20231127031813.5576-1-v-songbaohua@oppo.com>
- <234021ba-73c2-474a-82f9-91e1604d5bb5@arm.com>
- <CAGsJ_4w3nGSO+CF-PQaHOVtzpb-RkZiWTqkg51ibT6dDo_EeJA@mail.gmail.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAGsJ_4w3nGSO+CF-PQaHOVtzpb-RkZiWTqkg51ibT6dDo_EeJA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+X-Last-TLS-Session-Version: TLSv1.3
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NEUTRAL,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,126 +52,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/11/2023 10:35, Barry Song wrote:
-> On Mon, Nov 27, 2023 at 10:15 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> On 27/11/2023 03:18, Barry Song wrote:
->>>> Ryan Roberts (14):
->>>>   mm: Batch-copy PTE ranges during fork()
->>>>   arm64/mm: set_pte(): New layer to manage contig bit
->>>>   arm64/mm: set_ptes()/set_pte_at(): New layer to manage contig bit
->>>>   arm64/mm: pte_clear(): New layer to manage contig bit
->>>>   arm64/mm: ptep_get_and_clear(): New layer to manage contig bit
->>>>   arm64/mm: ptep_test_and_clear_young(): New layer to manage contig bit
->>>>   arm64/mm: ptep_clear_flush_young(): New layer to manage contig bit
->>>>   arm64/mm: ptep_set_wrprotect(): New layer to manage contig bit
->>>>   arm64/mm: ptep_set_access_flags(): New layer to manage contig bit
->>>>   arm64/mm: ptep_get(): New layer to manage contig bit
->>>>   arm64/mm: Split __flush_tlb_range() to elide trailing DSB
->>>>   arm64/mm: Wire up PTE_CONT for user mappings
->>>>   arm64/mm: Implement ptep_set_wrprotects() to optimize fork()
->>>>   arm64/mm: Add ptep_get_and_clear_full() to optimize process teardown
->>>
->>> Hi Ryan,
->>> Not quite sure if I missed something, are we splitting/unfolding CONTPTES
->>> in the below cases
->>
->> The general idea is that the core-mm sets the individual ptes (one at a time if
->> it likes with set_pte_at(), or in a block with set_ptes()), modifies its
->> permissions (ptep_set_wrprotect(), ptep_set_access_flags()) and clears them
->> (ptep_clear(), etc); This is exactly the same interface as previously.
->>
->> BUT, the arm64 implementation of those interfaces will now detect when a set of
->> adjacent PTEs (a contpte block - so 16 naturally aligned entries when using 4K
->> base pages) are all appropriate for having the CONT_PTE bit set; in this case
->> the block is "folded". And it will detect when the first PTE in the block
->> changes such that the CONT_PTE bit must now be unset ("unfolded"). One of the
->> requirements for folding a contpte block is that all the pages must belong to
->> the *same* folio (that means its safe to only track access/dirty for thecontpte
->> block as a whole rather than for each individual pte).
->>
->> (there are a couple of optimizations that make the reality slightly more
->> complicated than what I've just explained, but you get the idea).
->>
->> On that basis, I believe all the specific cases you describe below are all
->> covered and safe - please let me know if you think there is a hole here!
->>
->>>
->>> 1. madvise(MADV_DONTNEED) on a part of basepages on a CONTPTE large folio
->>
->> The page will first be unmapped (e.g. ptep_clear() or ptep_get_and_clear(), or
->> whatever). The implementation of that will cause an unfold and the CONT_PTE bit
->> is removed from the whole contpte block. If there is then a subsequent
->> set_pte_at() to set a swap entry, the implementation will see that its not
->> appropriate to re-fold, so the range will remain unfolded.
->>
->>>
->>> 2. vma split in a large folio due to various reasons such as mprotect,
->>> munmap, mlock etc.
->>
->> I'm not sure if PTEs are explicitly unmapped/remapped when splitting a VMA? I
->> suspect not, so if the VMA is split in the middle of a currently folded contpte
->> block, it will remain folded. But this is safe and continues to work correctly.
->> The VMA arrangement is not important; it is just important that a single folio
->> is mapped contiguously across the whole block.
-> 
-> I don't think it is safe to keep CONTPTE folded in a split_vma case. as
-> otherwise, copy_ptes in your other patch might only copy a part
-> of CONTPES.
-> For example,  if page0-page4 and page5-page15 are splitted in split_vma,
-> in fork, while copying pte for the first VMA, we are copying page0-page4,
-> this will immediately cause inconsistent CONTPTE. as we have to
-> make sure all CONTPTEs are atomically mapped in a PTL.
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-No that's not how it works. The CONT_PTE bit is not blindly copied from parent
-to child. It is explicitly managed by the arch code and set when appropriate. In
-the case above, we will end up calling set_ptes() for page0-page4 in the child.
-set_ptes() will notice that there are only 5 contiguous pages so it will map
-without the CONT_PTE bit.
+Instead of printing the decimal error codes, let's use the more
+human-readable symbolic error names provided by the %pe printk
+format specifier.
 
-> 
->>
->>>
->>> 3. try_to_unmap_one() to reclaim a folio, ptes are scanned one by one
->>> rather than being as a whole.
->>
->> Yes, as per 1; the arm64 implementation will notice when the first entry is
->> cleared and unfold the contpte block.
->>
->>>
->>> In hardware, we need to make sure CONTPTE follow the rule - always 16
->>> contiguous physical address with CONTPTE set. if one of them run away
->>> from the 16 ptes group and PTEs become unconsistent, some terrible
->>> errors/faults can happen in HW. for example
->>
->> Yes, the implementation obeys all these rules; see contpte_try_fold() and
->> contpte_try_unfold(). the fold/unfold operation is only done when all
->> requirements are met, and we perform it in a manner that is conformant to the
->> architecture requirements (see contpte_fold() - being renamed to
->> contpte_convert() in the next version).
->>
->> Thanks for the review!
->>
->> Thanks,
->> Ryan
->>
->>>
->>> case0:
->>> addr0 PTE - has no CONTPE
->>> addr0+4kb PTE - has CONTPTE
->>> ....
->>> addr0+60kb PTE - has CONTPTE
->>>
->>> case 1:
->>> addr0 PTE - has no CONTPE
->>> addr0+4kb PTE - has CONTPTE
->>> ....
->>> addr0+60kb PTE - has swap
->>>
->>> Unconsistent 16 PTEs will lead to crash even in the firmware based on
->>> our observation.
->>>
-> 
-> Thanks
->  Barry
+Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+---
+Changes in v2:
+* new patch
+---
+ drivers/usb/misc/onboard_usb_hub.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/usb/misc/onboard_usb_hub.c b/drivers/usb/misc/onboard_usb_hub.c
+index a341b2fbb7b44..077824beffa01 100644
+--- a/drivers/usb/misc/onboard_usb_hub.c
++++ b/drivers/usb/misc/onboard_usb_hub.c
+@@ -7,6 +7,7 @@
+ 
+ #include <linux/device.h>
+ #include <linux/export.h>
++#include <linux/err.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+@@ -68,7 +69,7 @@ static int onboard_hub_power_on(struct onboard_hub *hub)
+ 
+ 	err = regulator_bulk_enable(hub->pdata->num_supplies, hub->supplies);
+ 	if (err) {
+-		dev_err(hub->dev, "failed to enable supplies: %d\n", err);
++		dev_err(hub->dev, "failed to enable supplies: %pe\n", ERR_PTR(err));
+ 		return err;
+ 	}
+ 
+@@ -88,7 +89,7 @@ static int onboard_hub_power_off(struct onboard_hub *hub)
+ 
+ 	err = regulator_bulk_disable(hub->pdata->num_supplies, hub->supplies);
+ 	if (err) {
+-		dev_err(hub->dev, "failed to disable supplies: %d\n", err);
++		dev_err(hub->dev, "failed to disable supplies: %pe\n", ERR_PTR(err));
+ 		return err;
+ 	}
+ 
+@@ -235,7 +236,7 @@ static void onboard_hub_attach_usb_driver(struct work_struct *work)
+ 
+ 	err = driver_attach(&onboard_hub_usbdev_driver.drvwrap.driver);
+ 	if (err)
+-		pr_err("Failed to attach USB driver: %d\n", err);
++		pr_err("Failed to attach USB driver: %pe\n", ERR_PTR(err));
+ }
+ 
+ static int onboard_hub_probe(struct platform_device *pdev)
+@@ -262,7 +263,7 @@ static int onboard_hub_probe(struct platform_device *pdev)
+ 
+ 	err = devm_regulator_bulk_get(dev, hub->pdata->num_supplies, hub->supplies);
+ 	if (err) {
+-		dev_err(dev, "Failed to get regulator supplies: %d\n", err);
++		dev_err(dev, "Failed to get regulator supplies: %pe\n", ERR_PTR(err));
+ 		return err;
+ 	}
+ 
+-- 
+2.42.1
 
