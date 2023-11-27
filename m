@@ -2,94 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 585597FAD46
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 23:19:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C8AD7FAD45
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 23:18:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233553AbjK0WSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 17:18:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55560 "EHLO
+        id S234199AbjK0WSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 17:18:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233816AbjK0WSg (ORCPT
+        with ESMTP id S233804AbjK0WS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 17:18:36 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E4241FD0;
-        Mon, 27 Nov 2023 14:13:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1701123233;
-        bh=tGnYwQcptrSZBJuctW7ZXlb98GcAKMT1kKOsCwBNdF0=;
+        Mon, 27 Nov 2023 17:18:27 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF73C61B2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:13:59 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F28E5C433C8;
+        Mon, 27 Nov 2023 22:13:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701123239;
+        bh=WF3ITnRdxZ1JdO0IF1blZnQ+4lx1xVrjjRVhYkXkzak=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kUyuZ8iPo4wMk4ZQONkXIKfnLpiJSdY5Sz30klGBELHgD6w//Cp9yhy5aZMhYhJwY
-         8atQFqWCc+U/QZVnqCHtvAujP3E2a6gzXd5uvjfxbK908lXjYIsJjaR4qnuY/BObxs
-         0kuRggBVGb8dgptRLaVFBWy/tAoqVvW5jDTTzxAthrX7g/mcQXgHb4AHuChLGb8jf3
-         YtX0/x8T6TnloNBPfb6rSWm5d+KMlrE1ZbBoSeSXOUF2Um41hihGLyg1hRS5bZ33GI
-         SdHPimo1bDxNXEVFXhWLzn2nUzNT0LuiRKGgejHHiuJtxohvThv9uahK6tM+4mWFAw
-         VI2uHtEq+xNQg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SfKcJ4GFxz4x1p;
-        Tue, 28 Nov 2023 09:13:52 +1100 (AEDT)
-Date:   Tue, 28 Nov 2023 09:13:51 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     "Aithal, Srikanth" <sraithal@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warnings after merge of the kspp-gustavo tree
-Message-ID: <20231128091351.2bfb38dd@canb.auug.org.au>
-In-Reply-To: <813f3aa2-3449-7264-fa54-eaafd9981add@amd.com>
-References: <20231122144814.649823ac@canb.auug.org.au>
-        <813f3aa2-3449-7264-fa54-eaafd9981add@amd.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/TMd+Hj.aWPsUW8cxUbz38/0";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        b=MnUQn1J+TRZK4ykCnr4fHhXG5iAgndex0EG4yIj8lE6zDDyZEgE7wwMxwWR6Pv0Sd
+         pIpCPSaVIvX4neY/0+Vdbz+nkvy4cVLDONkETExt31vS1NgQfa5lkLsNiHyV9mQCgh
+         5zkYWwGJb/SEIq4Vt8rPFK+2RjYrvy/2HGNlc2mtqwBd60O+ZsT1RE1I4SaJ/kYoWX
+         kSN/ZruvrSeb2ZrM2LeQXv+30gX3OMAYYmoBWnUR/CxbOhgdLCFwfR5raxLnPxoKcm
+         kHtqEGN8L7h8YIUdbGg5dPgF/TlKKL49RR5+B8kohfahyDgPDNE7mOC0zsv7hqnUlM
+         qZ2KAm2j3bj6w==
+Date:   Tue, 28 Nov 2023 07:13:55 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Petr Malat <oss@malat.biz>
+Cc:     linux-kernel@vger.kernel.org, paulmck@kernel.org,
+        rostedt@goodmis.org
+Subject: Re: [PATCH 2/2] bootconfig: Apply early options from embedded
+ config
+Message-Id: <20231128071355.1fd8b2857f4622bd111d8647@kernel.org>
+In-Reply-To: <ZWSvfgFFu+ILKN4H@ntb.petris.klfree.czf>
+References: <20231121231342.193646-1-oss@malat.biz>
+        <20231121231342.193646-3-oss@malat.biz>
+        <20231123194106.08f5832f558fe806b1fd8098@kernel.org>
+        <ZWADKWURCDZXyJTQ@ntb.petris.klfree.czf>
+        <20231127074630.993db80be06f03067d8a1aef@kernel.org>
+        <ZWSvfgFFu+ILKN4H@ntb.petris.klfree.czf>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/TMd+Hj.aWPsUW8cxUbz38/0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, 27 Nov 2023 16:02:22 +0100
+Petr Malat <oss@malat.biz> wrote:
 
-Hi Gustavo,
+> Hi Masami,
+> On Mon, Nov 27, 2023 at 07:46:30AM +0900, Masami Hiramatsu wrote:
+> 
+> Shortened the mail as this seems to be the last open point
+> 
+> > > > And as I pointed, we can remove CONFIG_BOOT_CONFIG_EMBED_APPEND_INITRD so this case
+> > > > should be removed.
+> > > 
+> > > I have added BOOT_CONFIG_EMBED_APPEND_INITRD, because it's not backward
+> > > compatible change and I didn't want to risk breaking current use cases.
+> > > My change tries to get early options working without affecting how
+> > > other options are handled, but I think appending the config is more
+> > > reasonable behavior and if you do not see it as a problem to not be
+> > > backward compatible here, I will delete the "replace" behavior.
+> > 
+> > That's a good point. OK if disabling CONFIG_BOOT_CONFIG_EMBED_APPEND_INITRD,
+> > it must skip setting early_params to avoid "hidden setting" from the
+> > embedded bootconfig.
+>  
+> That's not a good idea because then disabling BOOT_CONFIG_EMBED_APPEND_INITRD
+> would disable early options handling even if the user doesn't use initrd at
+> all, which we do not want.
 
-On Wed, 22 Nov 2023 10:21:27 +0530 "Aithal, Srikanth" <sraithal@amd.com> wr=
-ote:
->
-> @Gustavo I see you have mentioned it as gcc issue. I was not hitting this=
- until yesterdays linux-next build. I am on latest gcc which RHEL 9.x provi=
-des,
-> gcc --version
-> gcc (GCC) 11.4.1 20230605 (Red Hat 11.4.1-2)
+Yes, so the config name and comment needs to be updated. The problematic point
+is that we can not know where there is an initrd (and bootconfig on initrd)
+until parsing/applying the early params. And we have to avoid setting "hidden"
+parameter.
 
-Given that gcc 11 is a provided compiler on RHEL 9, can you not add
--Wstringop-overflow for that compiler, please.
+> 
+> I suggest logging a KERN_NOTICE message if any early option was applied and
+> at the same time embedded bootconfig was replaced.
 
---=20
-Cheers,
-Stephen Rothwell
+No, that's no good because kernel log can be cleared.
+Usually user will check /proc/cmdline to check what parameters are set, so at
+least it needs to be updated, but also, we need to keep the original cmdline
+for make sure the user can reuse it for kexec. To solve this issue without
+contradiction, we need to ask user to set BOOT_CONFIG_EMBED_APPEND_INITRD=y
+to support early params in bootconfig. (Thus it will be something like
+"BOOT_CONFIG_EMBED_EARLY_PARAM")
 
---Sig_/TMd+Hj.aWPsUW8cxUbz38/0
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Thank you,
 
------BEGIN PGP SIGNATURE-----
+>   Petr
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVlFJ8ACgkQAVBC80lX
-0GyAuwf/Z2vFUg77JRB4zuHgYjAOcnIpPcivXNVwtM9u18+pRUVpQCFyW1K5dL5Y
-xsASgAnbwyT7CqNwOd8unCHaPQIgknaYsJC2OrvW8vWEujlRg2rLymqEJPFop2F9
-Xpal2y9xj1/tQJcwuYUGdbz/hsBKRXOzIMsDDSVf9IwI7mv3UXVIn+XjOTmnB046
-+SSgAiw06DYIH8HUSXJNhZVoxiAh4PgWRHn8UHa0VFRQTfhqOiAHEEDLnZfk6/Zz
-eLfzSAuxJLr8WvJKfTQb4db0BaQ4MdbVYMpXbh0L3YhWtgOz9fczYw3KTn/3SbFt
-TadE2e8oq4zCPsIp5X2GWSrYyvVQhw==
-=OAdW
------END PGP SIGNATURE-----
 
---Sig_/TMd+Hj.aWPsUW8cxUbz38/0--
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
