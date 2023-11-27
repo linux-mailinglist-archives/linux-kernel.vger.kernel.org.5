@@ -2,122 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1372B7FA100
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 14:26:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D00C57FA107
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 14:27:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232941AbjK0NZk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Nov 2023 08:25:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33382 "EHLO
+        id S232925AbjK0N1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 08:27:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232665AbjK0NZi (ORCPT
+        with ESMTP id S233276AbjK0NZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 08:25:38 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7344685
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 05:25:45 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1r7bbw-0001DE-Lv; Mon, 27 Nov 2023 14:25:16 +0100
-Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1r7bbt-00BxGz-0Y; Mon, 27 Nov 2023 14:25:13 +0100
-Received: from pza by lupine with local (Exim 4.96)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1r7bbs-000D9T-2y;
-        Mon, 27 Nov 2023 14:25:12 +0100
-Message-ID: <117dc1503ecd07448cc2e0b036b34a49f5e8c38e.camel@pengutronix.de>
-Subject: Re: [RFC PATCH 6/8] net: pcs: add driver for MediaTek USXGMII PCS
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Daniel Golle <daniel@makrotopia.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexander Couzens <lynxis@fe80.eu>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org
-Date:   Mon, 27 Nov 2023 14:25:12 +0100
-In-Reply-To: <b9f787f3e4aa36e148d7595495af60db53f74417.1699565880.git.daniel@makrotopia.org>
-References: <cover.1699565880.git.daniel@makrotopia.org>
-         <b9f787f3e4aa36e148d7595495af60db53f74417.1699565880.git.daniel@makrotopia.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.46.4-2 
-MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Mon, 27 Nov 2023 08:25:56 -0500
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E65485;
+        Mon, 27 Nov 2023 05:26:01 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 608B7C000D;
+        Mon, 27 Nov 2023 13:25:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1701091560;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A2YChlyfbMPmIhM4ZAtNvRzQpOjcTZdxdAoI6XnzuAM=;
+        b=eY5eglF9GmoTKCK3yOrebScc9pb2iRDEQFN2aINDLK4+baN8wZ41yC4OrCcEpBqUHqG2qJ
+        CMIPi8PMAIl5AsfSZiEKZC7Je3gUH+B6tak719ivTd3DCtml+YoMscAw7XPAK5wHJCnu4o
+        uo0a9lPsRwfdFzR5kg1hmTTF/M1+NALjQjcY1KzX2uBxJgyxnx7GqmZt8FjLlv2e6Ytr4F
+        PPeq95Qb69Jb33tuyNXQ7qJ1DPFXjuQeDxlaS+a42yaHxVGVtTRIpMuOI1tFkhT8qY/I+B
+        SGavC6PPR1ICEe7NgXliY+GHENhMQWXlhkvAPJQ/8oNgY+Kt76754c780+9bqg==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 27 Nov 2023 14:25:58 +0100
+Message-Id: <CX9MMPFL7HAY.NGULD1FN5WPN@tleb-bootlin-xps13-01>
+To:     "Kevin Hilman" <khilman@kernel.org>,
+        "Roger Quadros" <rogerq@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        "Conor Dooley" <conor+dt@kernel.org>,
+        "Peter Chen" <peter.chen@kernel.org>,
+        "Pawel Laszczak" <pawell@cadence.com>,
+        "Nishanth Menon" <nm@ti.com>,
+        "Vignesh Raghavendra" <vigneshr@ti.com>,
+        "Tero Kristo" <kristo@kernel.org>,
+        "Vardhan, Vibhore" <vibhore@ti.com>
+From:   =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH 3/6] usb: cdns3-ti: add suspend/resume procedures for
+ J7200
+Cc:     <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        =?utf-8?q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>,
+        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>
+X-Mailer: aerc 0.15.2
+References: <20231113-j7200-usb-suspend-v1-0-ad1ee714835c@bootlin.com>
+ <20231113-j7200-usb-suspend-v1-3-ad1ee714835c@bootlin.com>
+ <5080372b-1f48-4cbc-a6c4-8689c28983cb@kernel.org>
+ <CWZH66HQZNYM.T623ZOEEE0BK@tleb-bootlin-xps13-01>
+ <dad980f3-e032-41e4-a1e4-a16a7f45ff95@kernel.org>
+ <CX0GOP07I40N.198G7LJ0HYDBG@tleb-bootlin-xps13-01>
+ <bdea68ad-7523-4738-8fa1-b670d81a6b93@kernel.org>
+ <CX10D9YX1O1C.30PF317AG065N@tleb-bootlin-xps13-01>
+ <3e00b2ad-b58f-4b09-9230-683c58d3bb92@kernel.org>
+ <CX15J7B8F8HH.1WZ10OOW31X1H@tleb-bootlin-xps13-01>
+ <7h34wxfmwn.fsf@baylibre.com>
+ <CX63KP2UPL1N.J9Q344Q06IGP@tleb-bootlin-xps13-01>
+ <7hil5odtwl.fsf@baylibre.com>
+In-Reply-To: <7hil5odtwl.fsf@baylibre.com>
+X-GND-Sasl: theo.lebrun@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Do, 2023-11-09 at 21:51 +0000, Daniel Golle wrote:
-> Add driver for USXGMII PCS found in the MediaTek MT7988 SoC and supporting
-> USXGMII, 10GBase-R and 5GBase-R interface modes. In order to support
-> Cisco SGMII, 1000Base-X and 2500Base-X via the also present LynxI PCS
-> create a wrapped PCS taking care of the components shared between the
-> new USXGMII PCS and the legacy LynxI PCS.
-> 
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> ---
-[...]
-> diff --git a/drivers/net/pcs/pcs-mtk-usxgmii.c b/drivers/net/pcs/pcs-mtk-usxgmii.c
-> new file mode 100644
-> index 0000000000000..b3ca66c9df2a9
-> --- /dev/null
-> +++ b/drivers/net/pcs/pcs-mtk-usxgmii.c
-> @@ -0,0 +1,688 @@
-[...]
-> +static int mtk_sgmii_wrapper_init(struct mtk_usxgmii_pcs *mpcs)
-> +{
-> +	struct device_node *r = mpcs->dev->of_node, *np;
-[...]
-> +	rstc = of_reset_control_get_shared(r, "sgmii");
-> +
+Hello,
 
-Superfluous whitespace.
+On Sun Nov 26, 2023 at 11:36 PM CET, Kevin Hilman wrote:
+> Th=C3=A9o Lebrun <theo.lebrun@bootlin.com> writes:
+> > On Wed Nov 22, 2023 at 11:23 PM CET, Kevin Hilman wrote:
+> >> Th=C3=A9o Lebrun <theo.lebrun@bootlin.com> writes:
+> >> The point is to signal to the power domain the device is in that it ca=
+n
+> >> power on/off.  These IP blocks are (re)used on many different SoCs, so
+> >> the driver should not make any assumptions about what power domain it =
+is
+> >> in (if any.)
+> >
+> > On my platform, when the device is attached to the PD it gets turned on=
+.
+> > That feels logical to me: if a driver is not RPM aware it "just works".
+>
+> It "just works"... until the domain gets turned off.
+>
+> > Are there platforms where RPM must get enabled for the attached
+> > power-domains to be turned on?
+>
+> Yes, but but more importantly, there are platforms where RPM must get
+> enabled for the power domain to *stay* on.  For example, the power
+> domain might get turned on due to devices probing etc, but as soon as
+> all the RPM-enabled drivers drop their refcount, the domain will turn
+> off.  If there is a device in that domain with a non-RPM enabled driver,
+> that device will be powered off anc cause a crash.
 
-> +	if (IS_ERR(rstc))
-> +		return PTR_ERR(rstc);
+OK, that makes sense, thanks for taking the time to explain. This topic
+makes me see two things that I feel are close to being bugs. I'd be
+curious to get your view on both.
 
-Here you correctly check rstc for errors ...
+ - If a device does not use RPM but its children do, it might get its
+   associated power-domain turned off. That forces every single driver
+   that want to stay alive to enable & increment RPM.
 
-[...]
-> +	wp->reset = rstc;
-[...]
-> +
-> +	if (IS_ERR(wp->reset))
-> +		return PTR_ERR(wp->reset);
+   What I naively expect: a genpd with a device attached to it that is
+   not using RPM should mean that it should not be powered off at
+   runtime_suspend. Benefit: no RPM calls in drivers that do not use
+   it, and the behavior is that the genpd associated stays alive "as
+   expected".
 
-And here you check it again. The second check can be dropped.
+ - If a device uses RPM & has a refcount strictly positive, its
+   associated power-domain gets turned off either way at suspend_noirq.
+   That feels non-intuitive as well.
 
+   What I naively expect: check for RPM refcounts of attached devices
+   when doing suspend_noirq of power-domains. Benefit: control of what
+   power-domains do from attached devices is done through the RPM API.
 
-regards
-Philipp
+Regards,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
