@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF297FACFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 23:09:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D36437FACFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 23:09:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233519AbjK0WJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 17:09:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
+        id S229821AbjK0WJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 17:09:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbjK0WJP (ORCPT
+        with ESMTP id S233490AbjK0WJR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 17:09:15 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D672EA
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:09:21 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5c5daf2baccso61209587b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:09:21 -0800 (PST)
+        Mon, 27 Nov 2023 17:09:17 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4803EA
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:09:23 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5cdde93973aso57444107b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:09:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701122960; x=1701727760; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=DIx2YAbhRWvfF0uVbat4fO9l1J+RpFswwODA4FlfBWM=;
-        b=im05EOTQzs4bsAhYN8zkIcBB0OIJVQart+5jozK2B8y2WqhPvzH/rHdTQelaqwmKmR
-         7Rgqi0RdRqtHxAjg3gnivqGwyKUXOSCBthDA4VbxSJ1ey8GIL4E+gcXpQm94FGu3OBnp
-         uv0uGCAPOvJrTbXKa8XvyHdhxzfof+x1/n+3PN5hevUusBqU6IQTPYT1yVrEdZmUKCrk
-         xguIFYjUGo1Cw+jCSiOi9V/nIVVormQ/9Wj2aO4BwwnbDVwJRkEef3M4oDcnOMYM8x1u
-         flpPQEb52t2R7+dbpi3838MXlUjkkxUxB2+uE//869ZojYBwR14ppYyYA8YoRGB8P6yz
-         X5VQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701122960; x=1701727760;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+        d=google.com; s=20230601; t=1701122963; x=1701727763; darn=vger.kernel.org;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=DIx2YAbhRWvfF0uVbat4fO9l1J+RpFswwODA4FlfBWM=;
-        b=ZZYCscFbe4q39ZUB80Q0xLnWwUn+Qh0wE3hJo0DS36Xxez07GsVRpezvEAqA3GYitd
-         7GNPKBKtd6ItYgnVE7UdR0CmiOEW8Lk4BqfRVN0m926LUkUo1DzvPARmMmuEoW6kFHG4
-         HWSCVDCvM9VXouis7oPgDKIjfOaVC9yKclwqNOF4bLK01/f77pVf/Ek1esPIMppn2Qn9
-         maoOnb32g+oRcWuyp/lBWjZVXYlG64HVA42gnt04tu1p+VCE41vqXYSqdrCVIP4u5A7i
-         o9cu/tXdVqLfTmq2Lg64GxHES9YVtaqizmDhsAUZO5b7CQT+r2c4YaSc7/5JN0OcARzT
-         hikA==
-X-Gm-Message-State: AOJu0Yw0gq2TYASCr01bS0UUXe3i3LcNCDySgtsVxYf71GGeq7ALUOqw
-        lvBHu1PTc5FsB5GEhiBl2yJGKJQmFKJA
-X-Google-Smtp-Source: AGHT+IEsyOWZTCi0DqzzPNySicz64cyWYqtrhHRVE7YFiOu68KdNOVbV08sH1zs50vh/DlcSM/22tK6MY4UT
+        bh=qbPv4PyEdmBWH7WUrzt8/XaXbmHzexj4Rz5EFZB1OQM=;
+        b=Km0rF0ZHW0TaTKx+npA8OJvPAtKyQKPO0A8M2mJ/DBBM41qhFvDyHLcEZxTP3w4vaS
+         NwknOG+NnF1RF1aat0v7kfg2YfEpZn+q9ULMB4TONRjsECUCb8RdWk1SvrJjGGC2h3t7
+         jNmmImB82KKjBgexV9sN64hmZU85VFmA8SO5GNZnXKxbfsPcmnLVdZb79Y4U7X07Cyii
+         R7R8wv9Pw/BsiSbhDOc/CmjIe/9diA7ZDgl/UMgusk9oDsMg4f0bEDNDf0wbhQfVLMY0
+         3uB5/YY3q1N5VdPdRG8gkqZV9iYZISz2aC1K7m9MJ0dNfvGx3N/4CqwWyc3ocgAzmdG/
+         pACA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701122963; x=1701727763;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qbPv4PyEdmBWH7WUrzt8/XaXbmHzexj4Rz5EFZB1OQM=;
+        b=mKkISyRUplI6hENVjh9oDr3NTZkMhn6KSfQqUtu716Stu6qGcBDqTHptAQ+6LxYFyj
+         MkIO0NPIYU7jTpEfsgwC1fOxZRSri2obp2i0ee8PkORKe2X866tsRTy7x5Op6TORZP1z
+         mYTPwfE6E5rlzRzEvsV4KGyuHwxuEx/0KvDNSebyk3PLgxwWB7OUAW2xcUXef3R/yV7y
+         YPsj7RrdT/ySlUzfpNvsgCP+hrXGS66qOOVhqghk1YpP/NyA8BPZpCkQmuIGhah6G/ua
+         ug2UEhBl50Krh9ewTL33N2YIRuwCCDZR3GWxy0UYnnS3sUegCAnau2QAi0oBK19Oyai/
+         Dvuw==
+X-Gm-Message-State: AOJu0Ywn9kk4G8iqDGL4Kwz7QDQTlE1/QsrThJ/PYy7kYYW6fJCe2yUn
+        BHwX8PFPot5kifgIBP2NzA00/XpbMXLG
+X-Google-Smtp-Source: AGHT+IExUtMtiR+ptGG23+Vabnoaqo7AIZnyIS3yKYDbfx4Y1r3PAu2qXUtV6Z+us//6QncipclrfVxBHfi9
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:829:6e77:9093:f39b])
- (user=irogers job=sendgmr) by 2002:a25:cf8e:0:b0:d9a:f3dc:7d19 with SMTP id
- f136-20020a25cf8e000000b00d9af3dc7d19mr376714ybg.11.1701122960619; Mon, 27
- Nov 2023 14:09:20 -0800 (PST)
-Date:   Mon, 27 Nov 2023 14:08:12 -0800
-Message-Id: <20231127220902.1315692-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a25:d081:0:b0:d9a:c946:c18c with SMTP id
+ h123-20020a25d081000000b00d9ac946c18cmr452645ybg.6.1701122962825; Mon, 27 Nov
+ 2023 14:09:22 -0800 (PST)
+Date:   Mon, 27 Nov 2023 14:08:13 -0800
+In-Reply-To: <20231127220902.1315692-1-irogers@google.com>
+Message-Id: <20231127220902.1315692-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20231127220902.1315692-1-irogers@google.com>
 X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-Subject: [PATCH v5 00/50] Improvements to memory use
+Subject: [PATCH v5 01/50] perf comm: Use regular mutex
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -99,235 +101,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix memory leaks detected by address/leak sanitizer affecting LBR
-call-graphs, perf mem and BPF offcpu.
+The rwsem is only after used for writing so switch to a mutex that has
+better error checking.
 
-Make branch_type_stat in callchain_list optional as it is large and
-not always necessary - in particular it isn't used by perf top.
+Fixes: 7a8f349e9d14 ("perf rwsem: Add debug mode that uses a mutex")
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/comm.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Make the allocations of zstd streams, kernel symbols and event copies
-lazier in order to save memory in cases like perf record.
-
-Handle the thread exit event and have it remove the thread from the
-threads set in machine. Don't do this for perf report as it causes a
-regression for task lists, which assume threads are never removed from
-the machine's set, and offcpu events, that may sythensize samples for
-threads that have exited.
-
-Avoid using 8kb buffers for filename__read_str which is excessive for
-reading CPU maps. Add io_dir as an allocation free readdir
-replacement, opendir allocating 32kb by default and the code uses it
-recursively.
-
-Shrink perf map using a two value byte to replace two function
-pointers. Modify the implementation of maps to not use an rbtree as
-the container for maps, instead use a sorted array. Improve locking
-and reference counting issues.
-
-Similar to maps separate out and reimplement threads to use a hashmap
-for lower memory consumption and faster look up. The fixes a
-regression in memory usage where reference count checking switched to
-using non-invasive tree nodes.  Reduce its default size by 32 times
-and improve locking discipline. Also, fix regressions where tids had
-become unordered to make `perf report --tasks` and
-`perf trace --summary` output easier to read.
-
-Better encapsulate the dsos abstraction. Remove the linked list and
-rbtree used for faster iteration and log(n) lookup to a sorted array
-for similar performance but half the memory usage per dso. Improve
-reference counting and locking discipline, adding reference count
-checking to dso. Experimented with, but abandoned, a hashmap
-implementation due to the need for extra storage and the keys not
-being stable.
-
-The overall effect is to reduce memory consumption significantly for
-perf top - with call graphs enabled running longer before 1GB of
-memory is consumed. For a perf record of 'true', the memory
-consumption goes from 39912kb max resident to 20096kb max resident -
-nearly halved. perf inject with -b of a system wide perf record of
-'true' reduces the max resident by roughly 4.5% (3.4% in v4 due to
-branch_type_stat changes being merged). This is while improving
-correctness with locking discipline and reference count checking.
-
-Patch organization (v5):
- - 50 patches is a lot, the patches aren't divided as they merge conflict and
-   later patches, for example in dsos, rely on the changes and fixes to maps.
- - the dso reference count checking patch is larger due to switch use of dso to
-   be by accessors, to encapsulate the reference count checker macros. The
-   reference count checking changes within this largely mechanical change amount
-   to a few lines and so weren't separated.
- - the first patch contains a build fix if the rwsem error checking is
-   enabled missed from v3.
- - the next patches are an assortment of memory size fixes.
- - the next patches are the refactoring of maps.
- - the next patches are the refactoring of threads.
- - the next patches are the refactoring of dsos.
- - finally reference count checking is added to dso and some lock/reference
-   count issues are resolved. This is done after changing the data structures,
-   for example, as the single pointer on an array is easier to add reference
-   count checking to compared to the 5 previous pointers.
-
-v5: 3 patches were merged. 2nd patch addressed feedback from
-    namhyung@kernel.org and Guilherme Amadio <amadio@gentoo.org>. 4th
-    patch rename function to getdelim as suggested by
-    namhyung@kernel.org. 5 patch adds the missing sysfs mountpoint as
-    suggested by namhyung@kernel.org. 49th patch fix a missed put in
-    the dso_data tests.
-v4: Rebased as 11 changes moved to perf-tools-next. Address comments
-    from v3 such as error checking on zstd streams. Improve the
-    dsos/dso in ways similar to threads and maps, with the addition of
-    reference count checking on dso.
-v3: Additional memory/speed improvements, in particular for maps and
-    threads. Address review comments from namhyung@kernel.org and
-    adrian.hunter@intel.com.
-v2: Add additional memory fixes on top of initial LBR and rc check
-    fixes.
-
-Ian Rogers (50):
-  perf comm: Use regular mutex
-  libperf: Lazily allocate/size mmap event copy
-  perf mmap: Lazily initialize zstd streams
-  tools api fs: Switch filename__read_str to use io.h
-  tools api fs: Avoid reading whole file for a 1 byte bool
-  tools lib api: Add io_dir an allocation free readdir alternative
-  perf maps: Switch modules tree walk to io_dir__readdir
-  perf record: Be lazier in allocating lost samples buffer
-  perf pmu: Switch to io_dir__readdir
-  perf header: Switch mem topology to io_dir__readdir
-  perf events: Remove scandir in thread synthesis
-  perf map: Simplify map_ip/unmap_ip and make map size smaller
-  perf maps: Move symbol maps functions to maps.c
-  perf thread: Add missing RC_CHK_EQUAL
-  perf maps: Add maps__for_each_map to call a function on each entry
-  perf maps: Add remove maps function to remove a map based on callback
-  perf debug: Expose debug file
-  perf maps: Refactor maps__fixup_overlappings
-  perf maps: Do simple merge if given map doesn't overlap
-  perf maps: Rename clone to copy from
-  perf maps: Add maps__load_first
-  perf maps: Add find next entry to give entry after the given map
-  perf maps: Reduce scope of map_rb_node and maps internals
-  perf maps: Fix up overlaps during fixup_end
-  perf maps: Switch from rbtree to lazily sorted array for addresses
-  perf maps: Get map before returning in maps__find
-  perf maps: Get map before returning in maps__find_by_name
-  perf maps: Get map before returning in maps__find_next_entry
-  perf maps: Hide maps internals
-  perf maps: Locking tidy up of nr_maps
-  perf dso: Reorder variables to save space in struct dso
-  perf report: Sort child tasks by tid
-  perf trace: Ignore thread hashing in summary
-  perf machine: Move fprintf to for_each loop and a callback
-  perf threads: Move threads to its own files
-  perf threads: Switch from rbtree to hashmap
-  perf threads: Reduce table size from 256 to 8
-  perf dsos: Attempt to better abstract dsos internals
-  perf dsos: Tidy reference counting and locking
-  perf dsos: Add dsos__for_each_dso
-  perf dso: Move dso functions out of dsos
-  perf dsos: Switch more loops to dsos__for_each_dso
-  perf dsos: Switch backing storage to array from rbtree/list
-  perf dsos: Remove __dsos__addnew
-  perf dsos: Remove __dsos__findnew_link_by_longname_id
-  perf dsos: Switch hand code to bsearch
-  perf dso: Add reference count checking and accessor functions
-  perf dso: Reference counting related fixes
-  perf dso: Use container_of to avoid a pointer in dso_data
-  perf env: Avoid recursively taking env->bpf_progs.lock
-
- tools/lib/api/Makefile                        |    2 +-
- tools/lib/api/fs/fs.c                         |   80 +-
- tools/lib/api/io.h                            |   11 +-
- tools/lib/api/io_dir.h                        |   75 +
- tools/lib/perf/include/internal/mmap.h        |    3 +-
- tools/lib/perf/mmap.c                         |   21 +-
- tools/perf/arch/x86/tests/dwarf-unwind.c      |    1 +
- tools/perf/arch/x86/util/event.c              |  103 +-
- tools/perf/builtin-annotate.c                 |    6 +-
- tools/perf/builtin-buildid-cache.c            |    2 +-
- tools/perf/builtin-buildid-list.c             |   18 +-
- tools/perf/builtin-inject.c                   |   96 +-
- tools/perf/builtin-kallsyms.c                 |    2 +-
- tools/perf/builtin-mem.c                      |    4 +-
- tools/perf/builtin-record.c                   |   57 +-
- tools/perf/builtin-report.c                   |  243 ++--
- tools/perf/builtin-script.c                   |    8 +-
- tools/perf/builtin-top.c                      |    4 +-
- tools/perf/builtin-trace.c                    |   41 +-
- tools/perf/tests/code-reading.c               |    8 +-
- tools/perf/tests/dso-data.c                   |   67 +-
- tools/perf/tests/hists_common.c               |    6 +-
- tools/perf/tests/hists_cumulate.c             |    4 +-
- tools/perf/tests/hists_output.c               |    2 +-
- tools/perf/tests/maps.c                       |   64 +-
- tools/perf/tests/symbols.c                    |    2 +-
- tools/perf/tests/thread-maps-share.c          |    8 +-
- tools/perf/tests/vmlinux-kallsyms.c           |  181 +--
- tools/perf/ui/browsers/annotate.c             |    6 +-
- tools/perf/ui/browsers/hists.c                |    8 +-
- tools/perf/ui/browsers/map.c                  |    4 +-
- tools/perf/util/Build                         |    1 +
- tools/perf/util/annotate.c                    |   44 +-
- tools/perf/util/auxtrace.c                    |    2 +-
- tools/perf/util/block-info.c                  |    2 +-
- tools/perf/util/bpf-event.c                   |   17 +-
- tools/perf/util/bpf-event.h                   |   12 +-
- tools/perf/util/bpf_lock_contention.c         |   10 +-
- tools/perf/util/build-id.c                    |  136 +-
- tools/perf/util/build-id.h                    |    2 -
- tools/perf/util/callchain.c                   |    4 +-
- tools/perf/util/comm.c                        |   10 +-
- tools/perf/util/compress.h                    |    6 +-
- tools/perf/util/data-convert-json.c           |    2 +-
- tools/perf/util/db-export.c                   |    6 +-
- tools/perf/util/debug.c                       |   22 +-
- tools/perf/util/debug.h                       |    1 +
- tools/perf/util/dlfilter.c                    |   12 +-
- tools/perf/util/dso.c                         |  468 ++++---
- tools/perf/util/dso.h                         |  544 ++++++--
- tools/perf/util/dsos.c                        |  529 ++++---
- tools/perf/util/dsos.h                        |   40 +-
- tools/perf/util/env.c                         |   53 +-
- tools/perf/util/env.h                         |    4 +
- tools/perf/util/event.c                       |   12 +-
- tools/perf/util/header.c                      |   47 +-
- tools/perf/util/hist.c                        |    4 +-
- tools/perf/util/intel-pt.c                    |   22 +-
- tools/perf/util/machine.c                     |  652 +++------
- tools/perf/util/machine.h                     |   32 +-
- tools/perf/util/map.c                         |   93 +-
- tools/perf/util/map.h                         |   83 +-
- tools/perf/util/maps.c                        | 1239 +++++++++++++----
- tools/perf/util/maps.h                        |   95 +-
- tools/perf/util/mmap.c                        |    5 +-
- tools/perf/util/mmap.h                        |    1 -
- tools/perf/util/pmu.c                         |   48 +-
- tools/perf/util/pmus.c                        |   30 +-
- tools/perf/util/probe-event.c                 |   62 +-
- tools/perf/util/rb_resort.h                   |    5 -
- .../scripting-engines/trace-event-python.c    |   21 +-
- tools/perf/util/session.c                     |   21 +
- tools/perf/util/session.h                     |    2 +
- tools/perf/util/sort.c                        |   19 +-
- tools/perf/util/srcline.c                     |   65 +-
- tools/perf/util/symbol-elf.c                  |  138 +-
- tools/perf/util/symbol.c                      |  521 ++-----
- tools/perf/util/symbol.h                      |    1 -
- tools/perf/util/symbol_fprintf.c              |    4 +-
- tools/perf/util/synthetic-events.c            |  156 ++-
- tools/perf/util/thread.c                      |   48 +-
- tools/perf/util/thread.h                      |    6 -
- tools/perf/util/threads.c                     |  186 +++
- tools/perf/util/threads.h                     |   35 +
- tools/perf/util/unwind-libunwind-local.c      |   50 +-
- tools/perf/util/unwind-libunwind.c            |    9 +-
- tools/perf/util/vdso.c                        |   89 +-
- tools/perf/util/zstd.c                        |   63 +-
- 88 files changed, 4101 insertions(+), 2827 deletions(-)
- create mode 100644 tools/lib/api/io_dir.h
- create mode 100644 tools/perf/util/threads.c
- create mode 100644 tools/perf/util/threads.h
-
+diff --git a/tools/perf/util/comm.c b/tools/perf/util/comm.c
+index afb8d4fd2644..4ae7bc2aa9a6 100644
+--- a/tools/perf/util/comm.c
++++ b/tools/perf/util/comm.c
+@@ -17,7 +17,7 @@ struct comm_str {
+ 
+ /* Should perhaps be moved to struct machine */
+ static struct rb_root comm_str_root;
+-static struct rw_semaphore comm_str_lock = {.lock = PTHREAD_RWLOCK_INITIALIZER,};
++static struct mutex comm_str_lock = {.lock = PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP,};
+ 
+ static struct comm_str *comm_str__get(struct comm_str *cs)
+ {
+@@ -30,9 +30,9 @@ static struct comm_str *comm_str__get(struct comm_str *cs)
+ static void comm_str__put(struct comm_str *cs)
+ {
+ 	if (cs && refcount_dec_and_test(&cs->refcnt)) {
+-		down_write(&comm_str_lock);
++		mutex_lock(&comm_str_lock);
+ 		rb_erase(&cs->rb_node, &comm_str_root);
+-		up_write(&comm_str_lock);
++		mutex_unlock(&comm_str_lock);
+ 		zfree(&cs->str);
+ 		free(cs);
+ 	}
+@@ -98,9 +98,9 @@ static struct comm_str *comm_str__findnew(const char *str, struct rb_root *root)
+ {
+ 	struct comm_str *cs;
+ 
+-	down_write(&comm_str_lock);
++	mutex_lock(&comm_str_lock);
+ 	cs = __comm_str__findnew(str, root);
+-	up_write(&comm_str_lock);
++	mutex_unlock(&comm_str_lock);
+ 
+ 	return cs;
+ }
 -- 
 2.43.0.rc1.413.gea7ed67945-goog
 
