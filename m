@@ -2,80 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C5907FA334
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:42:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D08EA7FA339
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:43:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233658AbjK0Ome (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 09:42:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59418 "EHLO
+        id S233565AbjK0OnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 09:43:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232125AbjK0Omc (ORCPT
+        with ESMTP id S233680AbjK0OnA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 09:42:32 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 772B4C6
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:42:37 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40b3e7f2fd9so17616555e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:42:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1701096156; x=1701700956; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TxfzDc/FOlQJPW+eMBIMnqmN4E4YBo99inVtzp0qQYU=;
-        b=CBJREwQvlpTYtm0oC9GJAe2XPhaVpmIq4EgbbZR/DimAkvLzKhdmYOBP+dnuFjbzAt
-         o214ENzW3f9pQ6OeAqJM+Cw2Hrqw5UgoJrEk6WH9zCUNlFwIFCB+tY5OuzVG67LzawSO
-         qOzVk1TUa3gRbQ+jURIOnBmyaxQwDxntChAdaljIuJ9eQQf9iFxlmc2uLN27uWI28Ts5
-         GPH2GbRLsKVu0SAY4G6oSlnJoYJKYc1bvtDFzFntJIhPhiVPxAb4qy1PqaWjP6yb3cDS
-         YwR3B3cy5X8LfaTzmA7JfAdJXI9W8QB/dWwTuW8zF0iLDHY8hIS+VQHOOFW1SaZ3HcSP
-         irPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701096156; x=1701700956;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TxfzDc/FOlQJPW+eMBIMnqmN4E4YBo99inVtzp0qQYU=;
-        b=JpebCfCZEtYxp4Bty/iG5Il8RheO1zbcYPsHq+R/ASOtfVe/3EjUF7BefOhFNVtU7+
-         ZHH8frrb4iJ6UjSEfTMWO6WJFDic/d6qH14ZL5ApajM6m739qBiMEVtiVYvaA5PXLCbn
-         NYKJRW72SHquz43Cv2OdcNLGVmCDhQXhAR0q8B5DF30VT7JxAC72PqWf2OHP8UYsqnrQ
-         DQx55gUPA4xkBlnPXQifCAT7aFBhTea20q9GuUiXo2EjM12pmT3uyXZqsHVkMOfCNnxD
-         y/ZrGUunboS1AIVo3FK5D5zcQqN38ESl3E+l8O3gExO9HxqPNaooxSCpXysGSm54NHzR
-         lEwg==
-X-Gm-Message-State: AOJu0Yxuy6MEAJpLiXFtzUnc/nozHhHw6nI+ng7YiZStMi212FnMnIVr
-        ve2r+VtmMC8r8oTdwCm7QAt41g==
-X-Google-Smtp-Source: AGHT+IEZEaiZdNVOcsnqhzfse9tv8bugsQZEwEYD5l2LSBcbYvAslZmo1pKLJ9451CzB7ZyxhzNXSQ==
-X-Received: by 2002:a05:600c:4ecf:b0:40b:47dc:9bb3 with SMTP id g15-20020a05600c4ecf00b0040b47dc9bb3mr1419154wmq.14.1701096155885;
-        Mon, 27 Nov 2023 06:42:35 -0800 (PST)
-Received: from [10.83.37.178] ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id k10-20020a05600c1c8a00b004042dbb8925sm14810305wms.38.2023.11.27.06.42.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Nov 2023 06:42:35 -0800 (PST)
-Message-ID: <90de4882-7683-4c7b-95bc-a5eb363912a2@arista.com>
-Date:   Mon, 27 Nov 2023 14:42:35 +0000
+        Mon, 27 Nov 2023 09:43:00 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61AC1135
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:43:06 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D00C3C433C9;
+        Mon, 27 Nov 2023 14:43:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701096186;
+        bh=Mpooaxd6qlzBPGhMTWc6TBoY3fAhwP8179zOVmhHZc4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C0VNXQBwfae+zomFI11MW8jQNo54Ite29pj5VueZhibOsECkW6sXOwK6tXfRNQP39
+         +IANnpFjvNm7rfjHrm5isjxt0alRAe6nU/iHbwgglaLhKcvRfsc0+SG/ZiQlfwrC4k
+         uFJ93bmvs3WS7htUoE6m0HcGEJ++rLv62oBk9t5FENgZX4ynbmk2ALPVALcsQzL4KY
+         IydyWZQQ0ULedy1YINLzCUgNShE96xrcq7pjdmJFBqGtqCOEk134V4yq3V7rIFZ4HR
+         XWN03DeJB7jFFCfE/lXbBs13/O9H67frXJCL6GhMO1QQnFIFKPYhp3xupFRFTwEIyP
+         4ZZYC5W77KIcg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 8094940094; Mon, 27 Nov 2023 11:43:03 -0300 (-03)
+Date:   Mon, 27 Nov 2023 11:43:03 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Nick Forrington <nick.forrington@arm.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: [PATCH 2/2] perf lock info: Enforce exactly one of --map and
+ --thread
+Message-ID: <ZWSq96mWUpLuGh0L@kernel.org>
+References: <20231031120526.11502-1-nick.forrington@arm.com>
+ <20231031120526.11502-3-nick.forrington@arm.com>
+ <ZUEfXU34ZijKe8aA@kernel.org>
+ <3ae2cf90-b0a1-5f54-56aa-ed4a04dca8b0@arm.com>
+ <CAM9d7cjQs0BrFAMa4=PGxxPBoGOAVzermH=0HrA1rhegmAA8zg@mail.gmail.com>
+ <ZUvvXhkY+NcSxaJU@kernel.org>
+ <df428c93-e3b8-c60c-001f-2228845983cf@arm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 6/7] net/tcp: Add sne_lock to access SNEs
-Content-Language: en-US
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Francesco Ruggeri <fruggeri05@gmail.com>,
-        Salam Noureddine <noureddine@arista.com>,
-        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-References: <20231124002720.102537-1-dima@arista.com>
- <20231124002720.102537-7-dima@arista.com>
- <1c769b1a72c5a7f6e19010dfccc78b2502484cf3.camel@redhat.com>
-From:   Dmitry Safonov <dima@arista.com>
-In-Reply-To: <1c769b1a72c5a7f6e19010dfccc78b2502484cf3.camel@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <df428c93-e3b8-c60c-001f-2228845983cf@arm.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,71 +65,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/23 11:41, Paolo Abeni wrote:
-> On Fri, 2023-11-24 at 00:27 +0000, Dmitry Safonov wrote:
->> RFC 5925 (6.2):
->>> TCP-AO emulates a 64-bit sequence number space by inferring when to
->>> increment the high-order 32-bit portion (the SNE) based on
->>> transitions in the low-order portion (the TCP sequence number).
->>
->> snd_sne and rcv_sne are the upper 4 bytes of extended SEQ number.
->> Unfortunately, reading two 4-bytes pointers can't be performed
->> atomically (without synchronization).
->>
->> Let's keep it KISS and add an rwlock - that shouldn't create much
->> contention as SNE are updated every 4Gb of traffic and the atomic region
->> is quite small.
->>
->> Fixes: 64382c71a557 ("net/tcp: Add TCP-AO SNE support")
->> Signed-off-by: Dmitry Safonov <dima@arista.com>
->> ---
->>  include/net/tcp_ao.h |  2 +-
->>  net/ipv4/tcp_ao.c    | 34 +++++++++++++++++++++-------------
->>  net/ipv4/tcp_input.c | 16 ++++++++++++++--
->>  3 files changed, 36 insertions(+), 16 deletions(-)
->>
->> diff --git a/include/net/tcp_ao.h b/include/net/tcp_ao.h
->> index 647781080613..beea3e6b39e2 100644
->> --- a/include/net/tcp_ao.h
->> +++ b/include/net/tcp_ao.h
->> @@ -123,6 +123,7 @@ struct tcp_ao_info {
->>  	 */
->>  	u32			snd_sne;
->>  	u32			rcv_sne;
->> +	rwlock_t		sne_lock;
-> 
-> RW lock are problematic in the networking code, see commit
-> dbca1596bbb08318f5e3b3b99f8ca0a0d3830a65.
+Em Mon, Nov 13, 2023 at 11:50:16AM +0000, Nick Forrington escreveu:
+> On 08/11/2023 20:28, Arnaldo Carvalho de Melo wrote:
+> > Em Wed, Nov 01, 2023 at 11:00:42PM -0700, Namhyung Kim escreveu:
+> > > On Wed, Nov 1, 2023 at 7:35 AM Nick Forrington <nick.forrington@arm.com> wrote:
+> > > > On 31/10/2023 15:38, Arnaldo Carvalho de Melo wrote:
+> > > > > Em Tue, Oct 31, 2023 at 12:05:25PM +0000, Nick Forrington escreveu:
+> > > > > > Improve error reporting for command line arguments.
+> > > > > > Display error/usage if neither --map or --thread are specified (rather
+> > > > > > than a non user-friendly error "Unknown type of information").
+> > > > > > Display error/usage if both --map and --thread are specified (rather
+> > > > > > than ignoring "--map" and displaying only thread information).
+> > > > > Shouldn't one of them be the default so that we type less for the most
+> > > > > common usage?
+> > > > There isn't an obvious choice (to me) for which would be the default.
+> > > > Both options display completely different data/outputs, so I think it
+> > > > makes sense to be explicit about which data is requested.
+> > > Maybe we can default to display both. :)
+> > Yeah, that would be a better approach, I think.
+ 
+> I'll submit an updated series for this, with the next update to patch 1/2
+ 
+Thanks, tried using b4 but it din't find a v2, will wait then.
 
-Thanks, was not aware of this pitfall.
-
-> I think you can use a plain spinlock here, as both read and write
-> appears to be in the fastpath (?!?)
-
-Yeah, I wanted to avoid to RX concurrency here as writing happens only
-once in 4Gb. I'll take another attempt to prevent that in v3.
-
->> @@ -781,8 +780,10 @@ int tcp_ao_prepare_reset(const struct sock *sk, struct sk_buff *skb,
->>  		*traffic_key = snd_other_key(*key);
->>  		rnext_key = READ_ONCE(ao_info->rnext_key);
->>  		*keyid = rnext_key->rcvid;
->> -		*sne = tcp_ao_compute_sne(READ_ONCE(ao_info->snd_sne),
->> -					  snd_basis, seq);
->> +		read_lock_irqsave(&ao_info->sne_lock, flags);
->> +		*sne = tcp_ao_compute_sne(ao_info->snd_sne,
->> +					  READ_ONCE(*snd_basis), seq);
->> +		read_unlock_irqrestore(&ao_info->sne_lock, flags);
-> 
-> Why are you using the irqsave variant? bh should suffice.
-
-It should, yes :)
-
-> 
-> Cheers,
-> 
-> Paolo
-> 
-
-Thanks,
-             Dmitry
-
+- Arnaldo
