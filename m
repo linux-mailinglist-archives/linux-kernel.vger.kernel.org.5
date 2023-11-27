@@ -2,83 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 463737FACF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 23:05:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0937FACF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 23:06:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233644AbjK0WFd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Nov 2023 17:05:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58602 "EHLO
+        id S231437AbjK0WGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 17:06:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233569AbjK0WF1 (ORCPT
+        with ESMTP id S233672AbjK0WGJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 17:05:27 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83CC210F0;
-        Mon, 27 Nov 2023 14:05:31 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 8C3601F388;
-        Mon, 27 Nov 2023 22:05:29 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 020361367B;
-        Mon, 27 Nov 2023 22:05:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id 1znWJ6QSZWU6OwAAD6G6ig
-        (envelope-from <neilb@suse.de>); Mon, 27 Nov 2023 22:05:24 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+        Mon, 27 Nov 2023 17:06:09 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C28CFD4B
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:06:15 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3117BC433C8;
+        Mon, 27 Nov 2023 22:06:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701122775;
+        bh=hT50ThkIvKWMJVrWm5ccSiYE90oywa4kHmvXT/ms/N0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S3qqa5GY3lSoS0P3DeGmJvvogkW10LRRbZt+Pli9oQHWDti5bqKe8S9eYPQXCribx
+         I1gE25n/Q6Gh7dmSbIjfn2U0ID9mZIsBXj051FsBebrvTHEDDYymA0Cf2Fqzh83xp7
+         2BNEW0BtttYDbolnD9F3kEj9kWYp2nbEUVt65tz2iwDn+wgbEarwKRiYOc1cpO46N9
+         ZE/JxRT1zio6t1CkrO/9KvPjSPJYZFx5NMusCeYG+KiZrCwMCYgQyUwcg4xbVMwfXZ
+         O/3I9BAibMe6xUub7hnWsywvMO1ps0HM+ARzk5maBynKTFU9OHi/MhTixt8Ty2dxUr
+         agAYtI9sY5WsQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 0984940094; Mon, 27 Nov 2023 19:06:12 -0300 (-03)
+Date:   Mon, 27 Nov 2023 19:06:12 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Yang Jihong <yangjihong1@huawei.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, peterz@infradead.org,
+        mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
+        irogers@google.com, adrian.hunter@intel.com,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf tools: Add --debug-file option to redirect debug
+ output
+Message-ID: <ZWUS1M0HM7WZXwML@kernel.org>
+References: <20231031105523.1472558-1-yangjihong1@huawei.com>
+ <ZUEhJrXUWHyv959i@kernel.org>
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org
-Subject: [PATCH/RFC] core/nfsd: allow kernel threads to use task_work.
-Date:   Tue, 28 Nov 2023 09:05:21 +1100
-Message-id: <170112272125.7109.6245462722883333440@noble.neil.brown.name>
-X-Spamd-Bar: ++
-Authentication-Results: smtp-out2.suse.de;
-        dkim=none;
-        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.de (policy=none);
-        spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of neilb@suse.de) smtp.mailfrom=neilb@suse.de
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [2.81 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-0.98)[-0.979];
-         MIME_GOOD(-0.10)[text/plain];
-         R_SPF_SOFTFAIL(4.60)[~all:c];
-         RCVD_COUNT_THREE(0.00)[3];
-         MX_GOOD(-0.01)[];
-         RCPT_COUNT_TWELVE(0.00)[13];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         R_DKIM_NA(2.20)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%];
-         DMARC_POLICY_SOFTFAIL(0.10)[suse.de : No valid SPF, No valid DKIM,none]
-X-Spam-Score: 2.81
-X-Rspamd-Queue-Id: 8C3601F388
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZUEhJrXUWHyv959i@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -87,163 +57,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Tue, Oct 31, 2023 at 12:45:42PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Tue, Oct 31, 2023 at 10:55:23AM +0000, Yang Jihong escreveu:
+> > Currently, debug messages is output to stderr, add --debug-file option to
+> > support redirection to a specified file.
+>  
+> >   # perf --debug-file /tmp/perf.log record -v true
+> >   [ perf record: Woken up 1 times to write data ]
+> >   [ perf record: Captured and wrote 0.013 MB perf.data (26 samples) ]
+> >   # cat /tmp/perf.log
+> >   DEBUGINFOD_URLS=
+> >   Using CPUID GenuineIntel-6-3E-4
+> 
+> Ok, reusing debug_set_file() that was introduced to be used in the
+> 'perf daemon' subcommand.
+> 
+> Acked-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-I have evidence from a customer site of 256 nfsd threads adding files to
-delayed_fput_lists nearly twice as fast they are retired by a single
-work-queue thread running delayed_fput().  As you might imagine this
-does not end well (20 million files in the queue at the time a snapshot
-was taken for analysis).
+Thanks, applied to perf-tools-next.
 
-While this might point to a problem with the filesystem not handling the
-final close efficiently, such problems should only hurt throughput, not
-lead to memory exhaustion.
-
-For normal threads, the thread that closes the file also calls the
-final fput so there is natural rate limiting preventing excessive growth
-in the list of delayed fputs.  For kernel threads, and particularly for
-nfsd, delayed in the final fput do not impose any throttling to prevent
-the thread from closing more files.
-
-A simple way to fix this is to treat nfsd threads like normal processes
-for task_work.  Thus the pending files are queued for the thread, and
-the same thread finishes the work.
-
-Currently KTHREADs are assumed never to call task_work_run().  With this
-patch that it still the default but it is implemented by storing the
-magic value TASK_WORKS_DISABLED in ->task_works.  If a kthread, such as
-nfsd, will call task_work_run() periodically, it sets ->task_works
-to NULL to indicate this.
-
-Signed-off-by: NeilBrown <neilb@suse.de>
----
-
-I wonder which tree this should go through assuming everyone likes it.
-VFS maybe??
-
-Thanks.
-
- fs/file_table.c           | 2 +-
- fs/nfsd/nfssvc.c          | 4 ++++
- include/linux/sched.h     | 1 +
- include/linux/task_work.h | 4 +++-
- kernel/fork.c             | 2 +-
- kernel/task_work.c        | 7 ++++---
- 6 files changed, 14 insertions(+), 6 deletions(-)
-
-diff --git a/fs/file_table.c b/fs/file_table.c
-index de4a2915bfd4..e79351df22be 100644
---- a/fs/file_table.c
-+++ b/fs/file_table.c
-@@ -445,7 +445,7 @@ void fput(struct file *file)
- 	if (atomic_long_dec_and_test(&file->f_count)) {
- 		struct task_struct *task = current;
- 
--		if (likely(!in_interrupt() && !(task->flags & PF_KTHREAD))) {
-+		if (likely(!in_interrupt())) {
- 			init_task_work(&file->f_rcuhead, ____fput);
- 			if (!task_work_add(task, &file->f_rcuhead, TWA_RESUME))
- 				return;
-diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
-index 66ca50b38b27..c047961262ca 100644
---- a/fs/nfsd/nfssvc.c
-+++ b/fs/nfsd/nfssvc.c
-@@ -13,6 +13,7 @@
- #include <linux/fs_struct.h>
- #include <linux/swap.h>
- #include <linux/siphash.h>
-+#include <linux/task_work.h>
- 
- #include <linux/sunrpc/stats.h>
- #include <linux/sunrpc/svcsock.h>
-@@ -941,6 +942,7 @@ nfsd(void *vrqstp)
- 	}
- 
- 	current->fs->umask = 0;
-+	current->task_works = NULL; /* Declare that I will call task_work_run() */
- 
- 	atomic_inc(&nfsdstats.th_cnt);
- 
-@@ -955,6 +957,8 @@ nfsd(void *vrqstp)
- 
- 		svc_recv(rqstp);
- 		validate_process_creds();
-+		if (task_work_pending(current))
-+			task_work_run();
- 	}
- 
- 	atomic_dec(&nfsdstats.th_cnt);
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 292c31697248..c63c2bedbf71 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1117,6 +1117,7 @@ struct task_struct {
- 	unsigned int			sas_ss_flags;
- 
- 	struct callback_head		*task_works;
-+#define	TASK_WORKS_DISABLED	((void*)1)
- 
- #ifdef CONFIG_AUDIT
- #ifdef CONFIG_AUDITSYSCALL
-diff --git a/include/linux/task_work.h b/include/linux/task_work.h
-index 795ef5a68429..3c74e3de81ed 100644
---- a/include/linux/task_work.h
-+++ b/include/linux/task_work.h
-@@ -22,7 +22,9 @@ enum task_work_notify_mode {
- 
- static inline bool task_work_pending(struct task_struct *task)
- {
--	return READ_ONCE(task->task_works);
-+	struct callback_head *works = READ_ONCE(task->task_works);
-+
-+	return works && works != TASK_WORKS_DISABLED;
- }
- 
- int task_work_add(struct task_struct *task, struct callback_head *twork,
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 10917c3e1f03..903b29804fe1 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2577,7 +2577,7 @@ __latent_entropy struct task_struct *copy_process(
- 	p->dirty_paused_when = 0;
- 
- 	p->pdeath_signal = 0;
--	p->task_works = NULL;
-+	p->task_works = args->kthread ? TASK_WORKS_DISABLED : NULL;
- 	clear_posix_cputimers_work(p);
- 
- #ifdef CONFIG_KRETPROBES
-diff --git a/kernel/task_work.c b/kernel/task_work.c
-index 95a7e1b7f1da..ffdf4b0d7a0e 100644
---- a/kernel/task_work.c
-+++ b/kernel/task_work.c
-@@ -49,7 +49,8 @@ int task_work_add(struct task_struct *task, struct callback_head *work,
- 
- 	head = READ_ONCE(task->task_works);
- 	do {
--		if (unlikely(head == &work_exited))
-+		if (unlikely(head == &work_exited ||
-+			     head == TASK_WORKS_DISABLED))
- 			return -ESRCH;
- 		work->next = head;
- 	} while (!try_cmpxchg(&task->task_works, &head, work));
-@@ -157,7 +158,7 @@ void task_work_run(void)
- 		work = READ_ONCE(task->task_works);
- 		do {
- 			head = NULL;
--			if (!work) {
-+			if (!work || work == TASK_WORKS_DISABLED) {
- 				if (task->flags & PF_EXITING)
- 					head = &work_exited;
- 				else
-@@ -165,7 +166,7 @@ void task_work_run(void)
- 			}
- 		} while (!try_cmpxchg(&task->task_works, &work, head));
- 
--		if (!work)
-+		if (!work || work == TASK_WORKS_DISABLED)
- 			break;
- 		/*
- 		 * Synchronize with task_work_cancel(). It can not remove
--- 
-2.42.1
+- Arnaldo
 
