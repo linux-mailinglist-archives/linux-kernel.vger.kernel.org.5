@@ -2,113 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 414B87FA403
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 16:04:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7367FA406
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 16:05:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233691AbjK0PEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 10:04:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36320 "EHLO
+        id S233569AbjK0PF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 10:05:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233381AbjK0PEg (ORCPT
+        with ESMTP id S233381AbjK0PFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 10:04:36 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2B5B1AA;
-        Mon, 27 Nov 2023 07:04:42 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7E60E2F4;
-        Mon, 27 Nov 2023 07:05:29 -0800 (PST)
-Received: from raptor (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CD9413F6C4;
-        Mon, 27 Nov 2023 07:04:36 -0800 (PST)
-Date:   Mon, 27 Nov 2023 15:04:34 +0000
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
-        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
-        rppt@kernel.org, hughd@google.com, pcc@google.com,
-        steven.price@arm.com, anshuman.khandual@arm.com,
-        vincenzo.frascino@arm.com, eugenis@google.com, kcc@google.com,
-        hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC v2 13/27] arm64: mte: Make tag storage depend on
- ARCH_KEEP_MEMBLOCK
-Message-ID: <ZWSwArYMN1LuyGfO@raptor>
-References: <20231119165721.9849-1-alexandru.elisei@arm.com>
- <20231119165721.9849-14-alexandru.elisei@arm.com>
- <91c5d2e2-57b1-4172-88e0-cd07a8d85af4@redhat.com>
+        Mon, 27 Nov 2023 10:05:25 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E42A6AA;
+        Mon, 27 Nov 2023 07:05:31 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-da819902678so4007564276.1;
+        Mon, 27 Nov 2023 07:05:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701097531; x=1701702331; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A14//g2UoXkLcdPQSx/k3Kefdj+ue5KGp8TIARcBONU=;
+        b=I8LJpZ51Rmd3GLFTKtuVTrpb/fOvwIcetGBllIJx13uJcV4gkZ6j4cfiJ2djUtf1ld
+         l+iaBWUM4K52tU99JjAhC+vVVfBQrtg7mAGVJta1alH3cf7IG72dE4yupewETfH12P8d
+         QZZsOoyd0VVlqC07cgGh1sJhPnOzIzC/Ff44jatsHXEsU4ixJdJs7BtbVWEkgDXYa4xN
+         W0IEB5oqXG9wMnqYr26jo5zhhOga2GMSXsggOuAhMkdP4kTsgge5LszoWJeaaAcjuxMJ
+         uhH37eMgR+RzVYOWwcsIe/zdg0eGhOKrnwUQrFDNhLYinSt0Q1c81ebZvkvfuUm5kHxU
+         e8Fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701097531; x=1701702331;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=A14//g2UoXkLcdPQSx/k3Kefdj+ue5KGp8TIARcBONU=;
+        b=PG8BOIohJf+FW7qVL0Us8Km4tzlbPFQwuutre7kYvqfSnDNo2cCLovwVMzJvyCE4vd
+         JUxNGOGQ6R0wFX4B7ZaYY9re3t/e2EBgr6KsiIraav++Jf1OyyfxFFl/8Z0VPnIS+T+u
+         u6w3/yGo+x9vfFdRIKyobUF6Y13hnTJhw2HRZRJFaygc7+CRewc1nv5L1mSwX7huWmS5
+         GUFkPy0mKBJRGRHPLQgMsugiciZBz8f3w9CMjVy0kVuZIRR7y6N95a9L+m23FTuiIrxf
+         KHsx5uMHdV1KleNixzH197pPuUXszT1Yon0HP0QsMbit8MMcUDJA/5Y37O7tOA5/h5lb
+         8UNg==
+X-Gm-Message-State: AOJu0YyVoodxCEJglDmac5IVNJPulKFKP7AUHRQPmQPzGXUz3Ag5917r
+        DDYomaJK+7HJZZaP3/upQxeZLFoblO0DEZNxWw0=
+X-Google-Smtp-Source: AGHT+IFD5Yhlfu1wvzt/S0Z6RQjPCozzczGVg6VzXL32NvqafhWv5m2ewDPmpfJRhWrDAzc1Y5Sk8oPfeca2QTWxtBk=
+X-Received: by 2002:a5b:201:0:b0:d9a:3bee:2eeb with SMTP id
+ z1-20020a5b0201000000b00d9a3bee2eebmr12061112ybl.60.1701097530941; Mon, 27
+ Nov 2023 07:05:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <91c5d2e2-57b1-4172-88e0-cd07a8d85af4@redhat.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231120194802.1675239-1-andriy.shevchenko@linux.intel.com>
+ <ZVzy227f3cIiTmtE@smile.fi.intel.com> <CACRpkdZi5uW7saBFFA=VWDYpj_MCw3he2k-CLh__zJzUOOEkyw@mail.gmail.com>
+ <ZWCJP48WopQdCp6h@smile.fi.intel.com>
+In-Reply-To: <ZWCJP48WopQdCp6h@smile.fi.intel.com>
+From:   Tomer Maimon <tmaimon77@gmail.com>
+Date:   Mon, 27 Nov 2023 17:05:19 +0200
+Message-ID: <CAP6Zq1jrX+Mg70mWA3hEQDBYBU5PmDPdLPPEOZ5o+fSKw053rA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] pinctrl: nuvoton: Convert to use struct pingroup
+ and PINCTRL_PINGROUP()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>, openbmc@lists.ozlabs.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Linus,
 
-On Fri, Nov 24, 2023 at 08:51:38PM +0100, David Hildenbrand wrote:
-> On 19.11.23 17:57, Alexandru Elisei wrote:
-> > Tag storage memory requires that the tag storage pages used for data are
-> > always migratable when they need to be repurposed to store tags.
-> > 
-> > If ARCH_KEEP_MEMBLOCK is enabled, kexec will scan all non-reserved
-> > memblocks to find a suitable location for copying the kernel image. The
-> > kernel image, once loaded, cannot be moved to another location in physical
-> > memory. The initialization code for the tag storage reserves the memblocks
-> > for the tag storage pages, which means kexec will not use them, and the tag
-> > storage pages can be migrated at any time, which is the desired behaviour.
-> > 
-> > However, if ARCH_KEEP_MEMBLOCK is not selected, kexec will not skip a
-> > region unless the memory resource has the IORESOURCE_SYSRAM_DRIVER_MANAGED
-> > flag, which isn't currently set by the tag storage initialization code.
-> > 
-> > Make ARM64_MTE_TAG_STORAGE depend on ARCH_KEEP_MEMBLOCK to make it explicit
-> > that that the Kconfig option required for it to work correctly.
-> > 
-> > Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
-> > ---
-> >   arch/arm64/Kconfig | 1 +
-> >   1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> > index 047487046e8f..efa5b7958169 100644
-> > --- a/arch/arm64/Kconfig
-> > +++ b/arch/arm64/Kconfig
-> > @@ -2065,6 +2065,7 @@ config ARM64_MTE
-> >   if ARM64_MTE
-> >   config ARM64_MTE_TAG_STORAGE
-> >   	bool "Dynamic MTE tag storage management"
-> > +	depends on ARCH_KEEP_MEMBLOCK
-> >   	select CONFIG_CMA
-> >   	help
-> >   	  Adds support for dynamic management of the memory used by the hardware
-> 
-> Doesn't arm64 select that unconditionally? Why is this required then?
+On Fri, 24 Nov 2023 at 13:30, Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Fri, Nov 24, 2023 at 11:09:07AM +0100, Linus Walleij wrote:
+> > On Tue, Nov 21, 2023 at 7:11=E2=80=AFPM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > > On Mon, Nov 20, 2023 at 09:48:02PM +0200, Andy Shevchenko wrote:
+> >
+> > > > The pin control header provides struct pingroup and PINCTRL_PINGROU=
+P() macro.
+> > > > Utilize them instead of open coded variants in the driver.
+> > >
+> > > Linus, I dunno if you are going to apply this sooner (assuming Jonath=
+an is okay
+> > > with the change), but I have a bigger pending series where this will =
+be a
+> > > prerequisite. So, when I will be ready and if it's not being applied =
+(yet),
+> > > I'll include it into the bigger series as well.
+> >
+> > No answer from Jonathan but I just applied another Nuvoton patch from
+> > Tomer, so maybe Tomer can look at/test this patch?
+Sorry, but I do not have wpcm450 board to test this patch.
+In general, the patch looks fine.
+>
+> Jonathan acked it  in the reincarnation in the series (see my big one).
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
 
-I've added this patch to make the dependancy explicit. If, in the future, arm64
-stops selecting ARCH_KEEP_MEMBLOCK, I thinkg it would be very easy to miss the
-fact that tag storage depends on it. So this patch is not required per-se, it's
-there to document the dependancy.
+Sorry I couldn't help.
 
-Thanks,
-Alex
+Best regards,
 
-> 
-> -- 
-> Cheers,
-> 
-> David / dhildenb
-> 
+Tomer
