@@ -2,271 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7FDD7FA16A
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 14:53:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74DEE7FA168
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 14:53:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233244AbjK0NxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 08:53:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36228 "EHLO
+        id S233172AbjK0Nw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 08:52:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233147AbjK0Nwz (ORCPT
+        with ESMTP id S233132AbjK0Nwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 08:52:55 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2058.outbound.protection.outlook.com [40.107.94.58])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AFD1138
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 05:53:01 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l5aDj8nD5rG3DWBnBVkPsHKkzJSTn8+Ji5n8Ir/A/es5jMs19hJ8hgsRhPTV5RrQeXxCpO5kks5/y7Tu5UO3YZoqHt06sUzuXyYaEykLhoSRXjOTEwOV0hSxEOAYIhHrpkbhWHWPragg6cZ9xFt+ZcgsyyLkgpNaVUN8/nwgFuLOMHjHltLAFyUFJ4Qk0UShjPn2GrdIL8/Nxp+M4dlT5rq56sgwKIdR9X7hHnKBoM0VvbYMYae+morQxYznCgmljN5hVYsa/AHlVP9jYyiimfGvtEcoy8imBFWyrJADKLat5fGNZWIoB51H2vesAOfjqLSsVncbZ9lqEhBSgYiP1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bD3ddLFmXpoAuHUmcYxbnmU2hJRIUZGxn3Sk/7JLWlY=;
- b=Qk8hLjp/pJe26qZC7tp+1Rxfh2ljPBVxdl8+2BB2j6jqYhmLvQtmV+4UkWK4j/lYFG5IYrcx8VEObHrqO9+hBSD8WATV0PvnmXA4Uc9j886kABwkWy+vrl8zNMeShC+D4UVyaPqllrHR0Cx8fU4dcSnmyHs1sLoTsANyIOxdxhZS8MWCCjaSd7q1kgzPMUtF4Fxmp4zTdlQ8lCb5PyJ7llYdpDXTw5pjFGC/WpUDIG8pO68qsgRJbn/TOR856/svC5Tg9AxCRuU4KMSBNdU9L1r9Yn8Fpus/995PlkmDLqgp/FwyaUFQ4I83c6ZpUNxtVdE/WsKkFP2QjhioiyFBNg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bD3ddLFmXpoAuHUmcYxbnmU2hJRIUZGxn3Sk/7JLWlY=;
- b=ZMqaUUwRPz+Qwt74Pz/BY1NXktsjJ/4ev/mndxZGFfk1+2eCcAZ6KwZe7qG72vYUnJ4uRqejovQ086KkkX6M/N6tT9fv+hNth8hcrZQfZTopSxoBTOTdYPIJ8TPqktU3gjg1cqGe9OaUS1O/SGq/fMDU4pPdPvLO4BTo2qXsgK0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
- by MN2PR12MB4390.namprd12.prod.outlook.com (2603:10b6:208:26e::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Mon, 27 Nov
- 2023 13:52:56 +0000
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::ca80:8f1c:c11:ded3]) by BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::ca80:8f1c:c11:ded3%7]) with mapi id 15.20.7025.022; Mon, 27 Nov 2023
- 13:52:56 +0000
-Message-ID: <762bb5f4-f9f5-4ebc-84d3-5465df3ffbf6@amd.com>
-Date:   Mon, 27 Nov 2023 14:52:51 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH drm-misc-next 4/5] drm/gpuvm: fall back to
- drm_exec_lock_obj()
-Content-Language: en-US
-To:     Danilo Krummrich <dakr@redhat.com>
-Cc:     mripard@kernel.org, airlied@gmail.com, daniel@ffwll.ch,
-        frank.binns@imgtec.com, donald.robson@imgtec.com,
-        matt.coster@imgtec.com, sarah.walker@imgtec.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20231124233650.152653-1-dakr@redhat.com>
- <20231124233650.152653-5-dakr@redhat.com>
- <3c7b7683-da36-4ffe-a250-91eef019499f@redhat.com>
-From:   =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <3c7b7683-da36-4ffe-a250-91eef019499f@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR4P281CA0291.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:e7::17) To BN8PR12MB3587.namprd12.prod.outlook.com
- (2603:10b6:408:43::13)
+        Mon, 27 Nov 2023 08:52:54 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545CF136
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 05:53:00 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2709CC433C8;
+        Mon, 27 Nov 2023 13:52:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701093180;
+        bh=OVwwiJTTd2Vhegtvu9G08BBqbESo8kMbb5BInRIZLrU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=IoMIIc363L97sThq31BHkdscisxQbYiN5XGi4PQS3uVNzebSC5UCaaSvU30x2pP8w
+         9wNTG0C9vcYGu+VNL7zYVjKdGCRRFQLW+jCHkjFNqjXC4TRrhlG9EdpdGPfqQ1WmQR
+         nkQNoM0z9yauRNMo+FgctvNsgHiVujGH1faCdaF20072cP7PVeytxmn/0X+3Zw5iVB
+         o6zpHSmRIZItGLt/6yGfE5VX0vK/S3Ribv34Fgedy1tYRKglCZF43tPScvJ83aUUAZ
+         qOTJxhPoPiPmOZL8V8oDSPNCIiYsi12JSgsyPQoTJhw/8M+sJ2OwdR9LOQLcaAq404
+         Kdxpehpzx1jPQ==
+From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Florent Revest <revest@chromium.org>
+Cc:     linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Guo Ren <guoren@kernel.org>
+Subject: [PATCH v3 00/33] tracing: fprobe: function_graph: Multi-function graph and fprobe on fgraph
+Date:   Mon, 27 Nov 2023 22:52:53 +0900
+Message-Id: <170109317214.343914.4784420430328654397.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|MN2PR12MB4390:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5175c31b-ccca-4586-585e-08dbef5028ad
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NSGwF48MJ9o733LEOGcjVman7SdHewQu+BSog1MGUblS/H2Q4jpfytTn6uYo95RlXQ5uFqEljHRiLNMH7AuapKOWBY4qQWMVO22xLFrPSGHIhSSkpLCy4ckzehfbmGpR07lEiVxWppvylOyiVKSrbFzczmBwzK468Pe+Lf3+XdLd6P8b0ynZhesIjv+etAULKxCxSqVNb6w1WKkf5Rba23cWH3kytOMzjbXfJcXYkwiSWaHFV2Fw6UbkDo4xk088XRtchzakCttQZwpkH7W5TMb18RBbQPYeXT8uebOtm9eRGZRqs+JBEJspXdY/2ESTjreC6B0/1CyzHfRB+5Lx9jhyq10ThPjY4eWEZRlJufFVGlEZq0cNpBrvI5KAPwrI04QHh62dD2bBPdjY4y6xPYwPILtncQoFZrcYydiCN2748NzfQMUd/JxCJZ/rGDObT28TbV4aMA7VWS7dVh2gQeE8exaLztkmDNNseAriQ9w/FNx3hN+NGa2hMrpA/yehhdSgrO0T3UuleD8ji/iwkv2skbgS+K1pqO78LcNnQVIPLz3KEq4iUZMiUj4guzNU6IiSYxRlsUQWl8wx+cjNtNSVaMJxd5beII8oSFpvAjI1uGKV4OFi7wivf0Lijf4d7QYP5mcz9ORNtC84Rov5htokpK4C42x/+kxWyyPvK/nq21zNbOjOftQieE1DyJrM
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(136003)(366004)(376002)(396003)(230173577357003)(230922051799003)(230273577357003)(451199024)(64100799003)(1800799012)(186009)(31686004)(26005)(6486002)(2616005)(6506007)(53546011)(6666004)(478600001)(6512007)(38100700002)(86362001)(31696002)(36756003)(5660300002)(41300700001)(7416002)(2906002)(66946007)(66574015)(83380400001)(66556008)(316002)(6916009)(66476007)(4326008)(8936002)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VHlHSmVGemdRaGljWkwxTTBudjQvaTJjNUlDK0JmZkVIbDk4R3JRNkwzMStY?=
- =?utf-8?B?N1ZjWEVJYzdLWndSRTF5K1dHTlZyc1NLQ1NxMngzcGx6MjV4VktZQ3djKzR5?=
- =?utf-8?B?YjlWWWFQTEhpRllxOURObjIxR08xdjNDOTEzN0FzWE9QUjVpOEZIV2NMZDgr?=
- =?utf-8?B?UmdyWXk5Q1dUMno4SUR4S25IcVdsbU9jWkRqNjhlWGhRRGlkcGxTOGJGNGhL?=
- =?utf-8?B?cjlhZk9WZWQ5UUgrVWFiNTNBcStCSEI1NS9DS24rblNnWGFOQUlvTzJrT0dl?=
- =?utf-8?B?WWRiVy9QTXE2ZzhKUFVMU2w2Wkc0L0kvMnViZlVkcFk1aGI4bUJVanBRaUNU?=
- =?utf-8?B?NlFmWVVSaHNDVlZ3REplTTdUd2Zvd1c2WTU4OE5XbVRlSFNZTE5YUmVoNWF4?=
- =?utf-8?B?Z0JHdWlOMTFYNU1oTlhVYUt5YnVzakQvTDF0cjYwMHY0WFgySy9jcTljaTht?=
- =?utf-8?B?VUZpdGZBMitUODN6dXZwWVNObytRT1FlTUl5dXJ1bHFJWDdubFdDdlZpY01a?=
- =?utf-8?B?SUxsakc4RzArMGtYSWtHSkFqQUx4VGdpamJLOHZRWlFZMWF0ckpxNVhiSTQw?=
- =?utf-8?B?RWdHZkUreE91S1JWdk1FVjVGY0RxZVhBZStHakJYSTBNWXRMT1lLaWtROGRO?=
- =?utf-8?B?TzR0WnU5ZTZlUWorNEhJK3djMmNQeEtzRTRua251cXQvYWc1ZFVUWVl1b0c2?=
- =?utf-8?B?S2xwMzh6V0pRL0R6ODZ3TzBaaEt4eWpucW00bytPRG50aGc4RTRtMG0xMEdT?=
- =?utf-8?B?WHRWQXNoOTdmZnVPb0lma3ZDOXVBWmNDTzBVblQvNzZ4ZXlFV1ZvbjRONk90?=
- =?utf-8?B?N2NVUXJIUWJ1TjB0WTNadWtIeS94dmVaM3VrVFp2cFlkZFdhQWtUbmhTRjBO?=
- =?utf-8?B?bGwwZTBVaFV3ZU1CaFJ5d281blBJVmFZUjhqRHJ6ajNMU09STEdibGxIcDBO?=
- =?utf-8?B?VVRuQTM4ejVjUFJ2d3RUQlIvS2phTHNwcXk5TFJNdTN3TUFFMXlaY1FKcG1m?=
- =?utf-8?B?ZWp3NnUwVk1McUJLL0d3SjhUN0FHRk92R0RQMkxMeGR0S2RKSktKVDBWYVVV?=
- =?utf-8?B?eFpFbmlVVUhHZklnemtmbDlPS0YxSjBxMEpNeTcyRCs2aFYyZVF6Mk9PL05O?=
- =?utf-8?B?bnVETlJPWGFnd0t5V2RUTUtJVkdoZ09CekE1QWFCZ280M05KbXV0QUZHblBR?=
- =?utf-8?B?eVNWTEUwbGdTT29LUHRLWTNtYi9mNmxuUnkxbjZ0YWxyenJHWThyM0xBSjdZ?=
- =?utf-8?B?SHVnL2U5YzJDbHh5VkxsbXEwazN1anhIRFY5Tlhwb1FaSWpxb3BLc3UyeXNJ?=
- =?utf-8?B?eU1hb3RSNkFDcUJGUkFVR3ZwQkhKVmwvSmIyMXU5VVNGWG1FZkFSMkM5eEhJ?=
- =?utf-8?B?Mmg1K0NmWWJHSXhRV3ZSbUtFNmY4Z2plUUhpbWVPUVU3bVNQWjlSeVFNakpw?=
- =?utf-8?B?UEg2OG4vbWtVdGhLRWtWSHhVbyt3elkwRVMzK3ltYzdGbEtGZ3RkL1dJOS9q?=
- =?utf-8?B?ZXhZZWxjRUIyTE43cjF4SWZndWRRbTltWHlPSTRHMVEwM2FKRDduYk5LRHVj?=
- =?utf-8?B?dHBDVGgxd1B5cmZDUmZsemVJZjArbW1xTVcra1hNTm9lMlNVU0VOOHNJSFBw?=
- =?utf-8?B?bGlOSVExZE1oVFVoRWdGcXUzcWtkNGdKNm5jWVVXdVdVOWtnNWxYUDlkcmNs?=
- =?utf-8?B?bkdOVFlQelVyZXJVdkxGZ2l2dTNxWTVEd040RDh3TGlMWVREa1NHaTFkL3NR?=
- =?utf-8?B?RGg3dVJhV2dPV3lQWGt1UXR4U2RFTlZoV0xQVHlxaXUveUgxUWVmcitzWEVl?=
- =?utf-8?B?UjJJMjByaXFiejhMMDZFdVFvMmJqaXJTY0tMQWJOeDhpdWIzeTFHaGpXcExw?=
- =?utf-8?B?ZVBOa1BqMlJqazJEQ0wvS3NCY0c5OTZUM3RoYXNVOWtSbG5wZnJ0OW43SHBt?=
- =?utf-8?B?VVJuQUNoQ3J3U1dvTDVvY0NpRkdTVjFyQnQyZnVXRGVoV2FDbloybG1WcHVq?=
- =?utf-8?B?akdhQ2p1WUlYMWRMZ01aYXJUelNRU2hHelU1dElaMjlpSWltRmJVVHZPRWpD?=
- =?utf-8?B?N0ZWazczN2NDZVViOHgrbGtXVktCUjU1U01ISHJCaExvSXlyd0VJZ29HeHZl?=
- =?utf-8?Q?S/NdWurMLR6K5pH4PTY0UA911?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5175c31b-ccca-4586-585e-08dbef5028ad
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2023 13:52:56.4132
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nYG2vBXgQYqOz4EWQEyARcvWE0byHc1js4il6Bc9TMDGdePcg5Otms5GGA4qKxtp
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4390
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 25.11.23 um 00:40 schrieb Danilo Krummrich:
-> Hi Christian,
->
-> do you think it makes sense to handle this in drm_exec_prepare_obj() or
-> even dma_resv_reserve_fences() even?
+Hi,
 
-IIRC for drm_exec the discussion has gone a bit back and forth between 
-handling 0 and having a separate function which doesn't allocate fences.
+Here is the 3rd version of the series to re-implement the fprobe on
+function-graph tracer. The previous version is;
 
-We ended up with the solution using separate calls since you either know 
-that you don't need fences (because you for example only need to look 
-something up) or you need fences and eventually calculate the number you 
-need dynamically and if you then end up with 0 it's a bug.
+https://lore.kernel.org/all/169945345785.55307.5003201137843449313.stgit@devnote2/
 
-So to sum it up the conclusion was that it's more defensive to complain 
-about 0 fences to reserve (which reminds me that 
-dma_resv_reserve_fences() still needs to get a warning for 0 fences as 
-well).
+In this version, I fixed the implementation issue in the multiple
+function-graph tracer[12/33]. The previous version calls the handlers
+of the function graph tracers multiple times if function tracer is
+used for function entry callback. Instead, the function graph tracer
+handler will be called once per each function-tracer callback. To
+avoid "push" on the shadow ret-stack, the "push" operation checks
+if the previous one can be reused and returns it.
+Currently, x86-64 and arm64 support this new feature.
+This also fixes reserve_data/retrieve_data functions[17/33] to allocate
+data with correct size with corresponding index number. And fixes fprobe
+patch to handle it correctly[28/33].
 
-Regards,
-Christian.
+I added some arm64 supports[22/33][23/33], but this still seems to
+cause some backtrace issue (maybe wrong fp saved?).
 
->
-> - Danilo
->
-> On 11/25/23 00:36, Danilo Krummrich wrote:
->> Fall back to drm_exec_lock_obj() if num_fences is zero for the
->> drm_gpuvm_prepare_* function family.
->>
->> Otherwise dma_resv_reserve_fences() would actually allocate slots even
->> though num_fences is zero.
->>
->> Cc: Christian König <christian.koenig@amd.com>
->> Signed-off-by: Danilo Krummrich <dakr@redhat.com>
->> ---
->>   drivers/gpu/drm/drm_gpuvm.c | 36 +++++++++++++++++++++++++++++++++---
->>   include/drm/drm_gpuvm.h     | 23 +++--------------------
->>   2 files changed, 36 insertions(+), 23 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/drm_gpuvm.c b/drivers/gpu/drm/drm_gpuvm.c
->> index 54f5e8851de5..d1d1c2379e44 100644
->> --- a/drivers/gpu/drm/drm_gpuvm.c
->> +++ b/drivers/gpu/drm/drm_gpuvm.c
->> @@ -1085,6 +1085,36 @@ drm_gpuvm_put(struct drm_gpuvm *gpuvm)
->>   }
->>   EXPORT_SYMBOL_GPL(drm_gpuvm_put);
->>   +static int
->> +exec_prepare_obj(struct drm_exec *exec, struct drm_gem_object *obj,
->> +         unsigned int num_fences)
->> +{
->> +    return num_fences ? drm_exec_prepare_obj(exec, obj, num_fences) :
->> +                drm_exec_lock_obj(exec, obj);
->> +}
->> +
->> +/**
->> + * drm_gpuvm_prepare_vm() - prepare the GPUVMs common dma-resv
->> + * @gpuvm: the &drm_gpuvm
->> + * @exec: the &drm_exec context
->> + * @num_fences: the amount of &dma_fences to reserve
->> + *
->> + * Calls drm_exec_prepare_obj() for the GPUVMs dummy &drm_gem_object.
->> + *
->> + * Using this function directly, it is the drivers responsibility to 
->> call
->> + * drm_exec_init() and drm_exec_fini() accordingly.
->> + *
->> + * Returns: 0 on success, negative error code on failure.
->> + */
->> +int
->> +drm_gpuvm_prepare_vm(struct drm_gpuvm *gpuvm,
->> +             struct drm_exec *exec,
->> +             unsigned int num_fences)
->> +{
->> +    return exec_prepare_obj(exec, gpuvm->r_obj, num_fences);
->> +}
->> +EXPORT_SYMBOL_GPL(drm_gpuvm_prepare_vm);
->> +
->>   static int
->>   __drm_gpuvm_prepare_objects(struct drm_gpuvm *gpuvm,
->>                   struct drm_exec *exec,
->> @@ -1095,7 +1125,7 @@ __drm_gpuvm_prepare_objects(struct drm_gpuvm 
->> *gpuvm,
->>       int ret = 0;
->>         for_each_vm_bo_in_list(gpuvm, extobj, &extobjs, vm_bo) {
->> -        ret = drm_exec_prepare_obj(exec, vm_bo->obj, num_fences);
->> +        ret = exec_prepare_obj(exec, vm_bo->obj, num_fences);
->>           if (ret)
->>               break;
->>       }
->> @@ -1116,7 +1146,7 @@ drm_gpuvm_prepare_objects_locked(struct 
->> drm_gpuvm *gpuvm,
->>         drm_gpuvm_resv_assert_held(gpuvm);
->>       list_for_each_entry(vm_bo, &gpuvm->extobj.list, 
->> list.entry.extobj) {
->> -        ret = drm_exec_prepare_obj(exec, vm_bo->obj, num_fences);
->> +        ret = exec_prepare_obj(exec, vm_bo->obj, num_fences);
->>           if (ret)
->>               break;
->>   @@ -1186,7 +1216,7 @@ drm_gpuvm_prepare_range(struct drm_gpuvm 
->> *gpuvm, struct drm_exec *exec,
->>       drm_gpuvm_for_each_va_range(va, gpuvm, addr, end) {
->>           struct drm_gem_object *obj = va->gem.obj;
->>   -        ret = drm_exec_prepare_obj(exec, obj, num_fences);
->> +        ret = exec_prepare_obj(exec, obj, num_fences);
->>           if (ret)
->>               return ret;
->>       }
->> diff --git a/include/drm/drm_gpuvm.h b/include/drm/drm_gpuvm.h
->> index f94fec9a8517..b3f82ec7fb17 100644
->> --- a/include/drm/drm_gpuvm.h
->> +++ b/include/drm/drm_gpuvm.h
->> @@ -544,26 +544,9 @@ struct drm_gpuvm_exec {
->>       } extra;
->>   };
->>   -/**
->> - * drm_gpuvm_prepare_vm() - prepare the GPUVMs common dma-resv
->> - * @gpuvm: the &drm_gpuvm
->> - * @exec: the &drm_exec context
->> - * @num_fences: the amount of &dma_fences to reserve
->> - *
->> - * Calls drm_exec_prepare_obj() for the GPUVMs dummy &drm_gem_object.
->> - *
->> - * Using this function directly, it is the drivers responsibility to 
->> call
->> - * drm_exec_init() and drm_exec_fini() accordingly.
->> - *
->> - * Returns: 0 on success, negative error code on failure.
->> - */
->> -static inline int
->> -drm_gpuvm_prepare_vm(struct drm_gpuvm *gpuvm,
->> -             struct drm_exec *exec,
->> -             unsigned int num_fences)
->> -{
->> -    return drm_exec_prepare_obj(exec, gpuvm->r_obj, num_fences);
->> -}
->> +int drm_gpuvm_prepare_vm(struct drm_gpuvm *gpuvm,
->> +             struct drm_exec *exec,
->> +             unsigned int num_fences);
->>     int drm_gpuvm_prepare_objects(struct drm_gpuvm *gpuvm,
->>                     struct drm_exec *exec,
->
+Overview
+--------
+This series does major 2 changes, enable multiple function-graphs on
+the ftrace (e.g. allow function-graph on sub instances) and rewrite the
+fprobe on this function-graph.
 
+The former changes had been sent from Steven Rostedt 4 years ago (*),
+which allows users to set different setting function-graph tracer (and
+other tracers based on function-graph) in each trace-instances at the
+same time.
+
+(*) https://lore.kernel.org/all/20190525031633.811342628@goodmis.org/
+
+The purpose of latter change are;
+
+ 1) Remove dependency of the rethook from fprobe so that we can reduce
+   the return hook code and shadow stack.
+
+ 2) Make 'ftrace_regs' the common trace interface for the function
+   boundary.
+
+1) Currently we have 2(or 3) different function return hook codes,
+ the function-graph tracer and rethook (and legacy kretprobe).
+ But since this  is redundant and needs double maintenance cost,
+ I would like to unify those. From the user's viewpoint, function-
+ graph tracer is very useful to grasp the execution path. For this
+ purpose, it is hard to use the rethook in the function-graph
+ tracer, but the opposite is possible. (Strictly speaking, kretprobe
+ can not use it because it requires 'pt_regs' for historical reasons.)
+
+2) Now the fprobe provides the 'pt_regs' for its handler, but that is
+ wrong for the function entry and exit. Moreover, depending on the
+ architecture, there is no way to accurately reproduce 'pt_regs'
+ outside of interrupt or exception handlers. This means fprobe should
+ not use 'pt_regs' because it does not use such exceptions.
+ (Conversely, kprobe should use 'pt_regs' because it is an abstract
+  interface of the software breakpoint exception.)
+
+This series changes fprobe to use function-graph tracer for tracing
+function entry and exit, instead of mixture of ftrace and rethook.
+Unlike the rethook which is a per-task list of system-wide allocated
+nodes, the function graph's ret_stack is a per-task shadow stack.
+Thus it does not need to set 'nr_maxactive' (which is the number of
+pre-allocated nodes).
+Also the handlers will get the 'ftrace_regs' instead of 'pt_regs'.
+Since eBPF mulit_kprobe/multi_kretprobe events still use 'pt_regs' as
+their register interface, this changes it to convert 'ftrace_regs' to
+'pt_regs'. Of course this conversion makes an incomplete 'pt_regs',
+so users must access only registers for function parameters or
+return value. 
+
+Design
+------
+Instead of using ftrace's function entry hook directly, the new fprobe
+is built on top of the function-graph's entry and return callbacks
+with 'ftrace_regs'.
+
+Since the fprobe requires access to 'ftrace_regs', the architecture
+must support CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS, which enables to
+call function-graph entry callback with 'ftrace_regs', and also
+CONFIG_HAVE_FUNCTION_GRAPH_FREGS, which passes the ftrace_regs to
+return_to_handler.
+
+All fprobes share a single function-graph ops (means shares a common
+ftrace filter) similar to the kprobe-on-ftrace. This needs another
+layer to find corresponding fprobe in the common function-graph
+callbacks, but has much better scalability, since the number of
+registered function-graph ops is limited.
+
+In the entry callback, the fprobe runs its entry_handler and saves the
+address of 'fprobe' on the function-graph's shadow stack as data. The
+return callback decodes the data to get the 'fprobe' address, and runs
+the exit_handler.
+
+The fprobe introduces two hash-tables, one is for entry callback which
+searches fprobes related to the given function address passed by entry
+callback. The other is for a return callback which checks if the given
+'fprobe' data structure pointer is still valid. Note that it is
+possible to unregister fprobe before the return callback runs. Thus
+the address validation must be done before using it in the return
+callback.
+
+Series
+------
+- Patch [1/33] and [2/33] are adding a comment for ftrace_regs.
+- Patch [3/33] to [18/33] are the multiple function-graph support.
+- Patch [19/33] and [20/33] adds new function-graph callbacks with
+  ftrace_regs and x86-64 implementation.
+- Patch [21/33] to [27/33] are preparation (adding util functions) of
+  the new fprobe and its user.
+- Patch [28/33] to [32/33] rewrites fprobes and updates its users.
+- Patch [33/33] is a documentation update.
+
+This series can be applied against the probes-fixes-v6.6-rc7 on linux-trace tree.
+
+This series can also be found below branch.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git/log/?h=topic/fprobe-on-fgraph
+
+Thank you,
+
+---
+
+Christophe JAILLET (1):
+      seq_buf: Export seq_buf_puts()
+
+Masami Hiramatsu (Google) (17):
+      tracing: Add a comment about ftrace_regs definition
+      x86: tracing: Add ftrace_regs definition in the header
+      function_graph: Add a new entry handler with parent_ip and ftrace_regs
+      function_graph: Add a new exit handler with parent_ip and ftrace_regs
+      x86/ftrace: Enable HAVE_FUNCTION_GRAPH_FREGS
+      tracing: Rename ftrace_regs_return_value to ftrace_regs_get_return_value
+      arm64: ftrace: Enable HAVE_FUNCTION_GRAPH_FREGS
+      fprobe: Use ftrace_regs in fprobe entry handler
+      fprobe: Use ftrace_regs in fprobe exit handler
+      tracing: Add ftrace_partial_regs() for converting ftrace_regs to pt_regs
+      tracing: Add ftrace_fill_perf_regs() for perf event
+      fprobe: Rewrite fprobe on function-graph tracer
+      tracing/fprobe: Remove nr_maxactive from fprobe
+      tracing/fprobe: Enable fprobe events with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+      bpf: Enable kprobe_multi feature if CONFIG_FPROBE is enabled
+      selftests: ftrace: Remove obsolate maxactive syntax check
+      Documentation: probes: Update fprobe on function-graph tracer
+
+Steven Rostedt (VMware) (15):
+      function_graph: Convert ret_stack to a series of longs
+      fgraph: Use BUILD_BUG_ON() to make sure we have structures divisible by long
+      function_graph: Add an array structure that will allow multiple callbacks
+      function_graph: Allow multiple users to attach to function graph
+      function_graph: Remove logic around ftrace_graph_entry and return
+      ftrace/function_graph: Pass fgraph_ops to function graph callbacks
+      ftrace: Allow function_graph tracer to be enabled in instances
+      ftrace: Allow ftrace startup flags exist without dynamic ftrace
+      function_graph: Have the instances use their own ftrace_ops for filtering
+      function_graph: Add "task variables" per task for fgraph_ops
+      function_graph: Move set_graph_function tests to shadow stack global var
+      function_graph: Move graph depth stored data to shadow stack global var
+      function_graph: Move graph notrace bit to shadow stack global var
+      function_graph: Implement fgraph_reserve_data() and fgraph_retrieve_data()
+      function_graph: Add selftest for passing local variables
+
+
+ Documentation/trace/fprobe.rst                     |   42 +
+ arch/arm64/Kconfig                                 |    2 
+ arch/arm64/include/asm/ftrace.h                    |   24 
+ arch/arm64/kernel/entry-ftrace.S                   |   28 +
+ arch/arm64/kernel/ftrace.c                         |   19 
+ arch/loongarch/Kconfig                             |    1 
+ arch/loongarch/include/asm/ftrace.h                |    2 
+ arch/loongarch/kernel/ftrace_dyn.c                 |    6 
+ arch/powerpc/include/asm/ftrace.h                  |    9 
+ arch/powerpc/kernel/trace/ftrace.c                 |    2 
+ arch/powerpc/kernel/trace/ftrace_64_pg.c           |   10 
+ arch/s390/Kconfig                                  |    1 
+ arch/s390/include/asm/ftrace.h                     |    7 
+ arch/x86/Kconfig                                   |    4 
+ arch/x86/include/asm/ftrace.h                      |   17 
+ arch/x86/kernel/ftrace.c                           |   51 +
+ arch/x86/kernel/ftrace_64.S                        |   37 +
+ include/linux/fprobe.h                             |   58 +
+ include/linux/ftrace.h                             |  167 +++
+ include/linux/sched.h                              |    2 
+ include/linux/trace_recursion.h                    |   39 -
+ kernel/trace/Kconfig                               |   19 
+ kernel/trace/bpf_trace.c                           |   14 
+ kernel/trace/fgraph.c                              |  981 ++++++++++++++++----
+ kernel/trace/fprobe.c                              |  637 +++++++++----
+ kernel/trace/ftrace.c                              |   13 
+ kernel/trace/ftrace_internal.h                     |    2 
+ kernel/trace/trace.h                               |   94 ++
+ kernel/trace/trace_fprobe.c                        |  114 +-
+ kernel/trace/trace_functions.c                     |    8 
+ kernel/trace/trace_functions_graph.c               |   96 +-
+ kernel/trace/trace_irqsoff.c                       |   10 
+ kernel/trace/trace_probe_tmpl.h                    |    2 
+ kernel/trace/trace_sched_wakeup.c                  |   10 
+ kernel/trace/trace_selftest.c                      |  178 ++++
+ lib/seq_buf.c                                      |    1 
+ lib/test_fprobe.c                                  |   51 -
+ samples/fprobe/fprobe_example.c                    |    4 
+ .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    4 
+ 39 files changed, 2060 insertions(+), 706 deletions(-)
+
+--
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
