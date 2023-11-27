@@ -2,137 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22DC07F9BE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:39:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 558AA7F9BE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232414AbjK0Ii6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 03:38:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59146 "EHLO
+        id S232408AbjK0Ija convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Nov 2023 03:39:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232410AbjK0Iit (ORCPT
+        with ESMTP id S232624AbjK0IjV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 03:38:49 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145C2135
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:38:55 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50aabfa1b75so5554648e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:38:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701074333; x=1701679133; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9+3L96NjIz2RWvf2gmLIvMPT1EB5fPTxOYm9b8qLDp0=;
-        b=ROj2g7cr+ig1bhz2bPAYmpPabdcUTbbEDL05KOYIPsw15AxYjY1iJ4DxkiACE65Lqn
-         B2XIq7abF55/FsMoz1T2FuPBOVDQgEDX5wAxaX+/Dk6uW0o7LDS4jCugrpb9GgakurjO
-         jNx2wL9zt23iLOqqmYhH8cppLkCPZKbbf94wngrmVugk1r4fh5Z6FpZrFHyhTmE4x3kF
-         3GtS4i0xpsrXFJSBFkhInGF3f7aTvHBSXVXpOI+z2BC8PwyivE6JLPbqUxzVcJ6CfRAz
-         rDN3eVhxkFpzMOeyGKwZHhRCFsF9knxLVlB6eRACRd1aW5EBsksED+eVfoiX+Svjwkeg
-         7HuA==
+        Mon, 27 Nov 2023 03:39:21 -0500
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B436189;
+        Mon, 27 Nov 2023 00:39:27 -0800 (PST)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-5cc55b82ee5so36481257b3.2;
+        Mon, 27 Nov 2023 00:39:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701074333; x=1701679133;
-        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9+3L96NjIz2RWvf2gmLIvMPT1EB5fPTxOYm9b8qLDp0=;
-        b=EUVgfHVUiECnOo0DsQDrL6vF9m6y/I2t62CQTEPE1psjosM1BksG0pCw+8OTLVUWC/
-         jX81Aw8Msf2BUMAvBFnWLezFD6hMlT++eNHo61zNhJN6a+v7H9AcojFvcnutP6R9AOod
-         MJqD9bXsHmfA8e7m9anCi1DiFE+T8OyJ7l6Vgz9nCAhBy1DWKiQLu0qG6KV1L1qh5FVM
-         qQmyV/lYddTRhSaIRbiOj9ShvydQjI9CwtrHGgjIYoiGOB+639arA2tkuFDukjWV2mzP
-         nVoD/YN/1sGILitRPDCNntDpwtoU+lr5876xBQoVYYuEoqPBB7sJXt7/E0bNkn4hPUon
-         1/Fg==
-X-Gm-Message-State: AOJu0YwzHNMYJRadbURE12ZLjhR0ZPYSNGpeX0xZk6/5ryCINOg+JY1+
-        vugiWYnFRkhjBT5b2PizfOELNg==
-X-Google-Smtp-Source: AGHT+IH1lV7fJUCBtxnjaOz/DUnKc8vizm037rCEh5sYL2qpZN9rN2jJ82wkap3SnCOBneVERtKuAA==
-X-Received: by 2002:a05:6512:2350:b0:507:9fc1:ca7a with SMTP id p16-20020a056512235000b005079fc1ca7amr5307062lfu.9.1701074333070;
-        Mon, 27 Nov 2023 00:38:53 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id i2-20020adffc02000000b00327de0173f6sm11370105wrr.115.2023.11.27.00.38.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 00:38:52 -0800 (PST)
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-X-Google-Original-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date:   Mon, 27 Nov 2023 11:38:49 +0300
-To:     oe-kbuild@lists.linux.dev, Qi Hu <huqi@loongson.cn>
-Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>
-Subject: arch/loongarch/kernel/traps.c:407 die() warn: variable dereferenced
- before check 'regs' (see line 401)
-Message-ID: <90f50994-3cc7-4f35-9fab-a62ac129a93d@suswa.mountain>
+        d=1e100.net; s=20230601; t=1701074366; x=1701679166;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qGuTrQtJmC2L2mzLaPy/bZacJMxGnwxM8Kv0t6QXz2o=;
+        b=pnBhezs5g79m9E1xx+zKCYm6ZamZBmZi/4hD5VJpMiHZ2Z1AzJsYuZrdqQuONhXMHr
+         RP2FXC9n/+2KZybH2d++zSsC4QSJx0JGDBc/qN3eBbBhWNLX8ck9UChjNtDijdXP3C48
+         7WQLe2Vh++uLZqRmiRzvD/ANRjFgpgU4ltghHddG3/1TmfMtlB4i74bJH45M/c7vZh4s
+         As0P65C+7ZDJ30mGBVA2jO9ChaJxY34QFKW+C64EAsQT8FbywMYm+wuZfScbKj+4/2hz
+         20X0qJbg/hGZW3AbRHlNQY40TRiPPAptzIg69vo9hUWMTFuAF/g2MLV60ACpkd+BiqQ9
+         l3cQ==
+X-Gm-Message-State: AOJu0Yz0kf3zm9cyByOoC8crRhgz7pkUhnLgTfx9kKTOl0LNbixJ1HXt
+        h65o2YamMUuUDoXOuujlORnVQnJo9Mrdrw==
+X-Google-Smtp-Source: AGHT+IGVpGvKnIuymN3eWsRySACsSnSBEz6HqHrwBOaCFz7bW+zIlO6lFaWoJlknsUy5fq9A8Qw7JA==
+X-Received: by 2002:a81:8491:0:b0:5c9:be:57c0 with SMTP id u139-20020a818491000000b005c900be57c0mr10661493ywf.24.1701074366673;
+        Mon, 27 Nov 2023 00:39:26 -0800 (PST)
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com. [209.85.128.180])
+        by smtp.gmail.com with ESMTPSA id l17-20020a0de211000000b005a8d713a91esm3122305ywe.15.2023.11.27.00.39.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Nov 2023 00:39:25 -0800 (PST)
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5cfc3a48ab2so8754947b3.0;
+        Mon, 27 Nov 2023 00:39:25 -0800 (PST)
+X-Received: by 2002:a0d:eb07:0:b0:5ad:716b:ead3 with SMTP id
+ u7-20020a0deb07000000b005ad716bead3mr6535204ywe.28.1701074365164; Mon, 27 Nov
+ 2023 00:39:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <cover.1700668843.git.donald.robson@imgtec.com> <deb0a4659423a3b8a74addee7178b6df7679575d.1700668843.git.donald.robson@imgtec.com>
+In-Reply-To: <deb0a4659423a3b8a74addee7178b6df7679575d.1700668843.git.donald.robson@imgtec.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 27 Nov 2023 09:39:07 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWkQeJzmJhHcOsXRUGQjFmJJvSd_6=tvmPp1edh8oXdpw@mail.gmail.com>
+Message-ID: <CAMuHMdWkQeJzmJhHcOsXRUGQjFmJJvSd_6=tvmPp1edh8oXdpw@mail.gmail.com>
+Subject: Re: [PATCH v9 03/20] dt-bindings: gpu: Add Imagination Technologies
+ PowerVR/IMG GPU
+To:     Donald Robson <donald.robson@imgtec.com>
+Cc:     dri-devel@lists.freedesktop.org, frank.binns@imgtec.com,
+        matt.coster@imgtec.com, boris.brezillon@collabora.com,
+        faith.ekstrand@collabora.com, airlied@gmail.com, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, afd@ti.com, hns@goldelico.com,
+        matthew.brost@intel.com, christian.koenig@amd.com,
+        luben.tuikov@amd.com, dakr@redhat.com,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, corbet@lwn.net,
+        linux-doc@vger.kernel.org, Sarah Walker <sarah.walker@imgtec.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Conor Dooley <conor.dooley@microchip.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qi,
+Hi Donald,
 
-First bad commit (maybe != root cause):
+On Wed, Nov 22, 2023 at 5:36 PM Donald Robson <donald.robson@imgtec.com> wrote:
+> From: Sarah Walker <sarah.walker@imgtec.com>
+>
+> Add the device tree binding documentation for the IMG AXE GPU used in
+> TI AM62 SoCs.
+>
+> Co-developed-by: Frank Binns <frank.binns@imgtec.com>
+> Signed-off-by: Frank Binns <frank.binns@imgtec.com>
+> Signed-off-by: Sarah Walker <sarah.walker@imgtec.com>
+> Signed-off-by: Donald Robson <donald.robson@imgtec.com>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   d2da77f431ac49b5763b88751a75f70daa46296c
-commit: 346dc929623cef70ff7832a4fa0ffd1b696e312a LoongArch: Fix the write_fcsr() macro
-config: loongarch-randconfig-r071-20231126 (https://download.01.org/0day-ci/archive/20231127/202311270400.2cHw6Jsv-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231127/202311270400.2cHw6Jsv-lkp@intel.com/reproduce)
+Thanks for your patch, which is now commit 6a85c3b14728f0d5
+("dt-bindings: gpu: Add Imagination Technologies PowerVR/IMG GPU") in
+drm-misc/for-linux-next.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <error27@gmail.com>
-| Closes: https://lore.kernel.org/r/202311270400.2cHw6Jsv-lkp@intel.com/
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/gpu/img,powervr.yaml
 
-New smatch warnings:
-arch/loongarch/kernel/traps.c:407 die() warn: variable dereferenced before check 'regs' (see line 401)
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - ti,am62-gpu
+> +      - const: img,img-axe # IMG AXE GPU model/revision is fully discoverable
 
-vim +/regs +407 arch/loongarch/kernel/traps.c
+Why the double "img", and not just "img,axe"?
 
-0603839b18f4fb Huacai Chen  2022-05-31  385  void __noreturn die(const char *str, struct pt_regs *regs)
-0603839b18f4fb Huacai Chen  2022-05-31  386  {
-0603839b18f4fb Huacai Chen  2022-05-31  387  	static int die_counter;
-0603839b18f4fb Huacai Chen  2022-05-31  388  	int sig = SIGSEGV;
-0603839b18f4fb Huacai Chen  2022-05-31  389  
-0603839b18f4fb Huacai Chen  2022-05-31  390  	oops_enter();
-0603839b18f4fb Huacai Chen  2022-05-31  391  
-0603839b18f4fb Huacai Chen  2022-05-31  392  	if (notify_die(DIE_OOPS, str, regs, 0, current->thread.trap_nr,
-0603839b18f4fb Huacai Chen  2022-05-31  393  		       SIGSEGV) == NOTIFY_STOP)
-0603839b18f4fb Huacai Chen  2022-05-31  394  		sig = 0;
-0603839b18f4fb Huacai Chen  2022-05-31  395  
-0603839b18f4fb Huacai Chen  2022-05-31  396  	console_verbose();
-0603839b18f4fb Huacai Chen  2022-05-31  397  	raw_spin_lock_irq(&die_lock);
-0603839b18f4fb Huacai Chen  2022-05-31  398  	bust_spinlocks(1);
-0603839b18f4fb Huacai Chen  2022-05-31  399  
-0603839b18f4fb Huacai Chen  2022-05-31  400  	printk("%s[#%d]:\n", str, ++die_counter);
-0603839b18f4fb Huacai Chen  2022-05-31 @401  	show_registers(regs);
-                                                               ^^^^
-Dereferenced
+Gr{oetje,eeting}s,
 
-0603839b18f4fb Huacai Chen  2022-05-31  402  	add_taint(TAINT_DIE, LOCKDEP_NOW_UNRELIABLE);
-0603839b18f4fb Huacai Chen  2022-05-31  403  	raw_spin_unlock_irq(&die_lock);
-0603839b18f4fb Huacai Chen  2022-05-31  404  
-0603839b18f4fb Huacai Chen  2022-05-31  405  	oops_exit();
-0603839b18f4fb Huacai Chen  2022-05-31  406  
-4e62d1d86585e1 Youling Tang 2022-10-12 @407  	if (regs && kexec_should_crash(current))
-                                                    ^^^^
-Checked too late
-
-4e62d1d86585e1 Youling Tang 2022-10-12  408  		crash_kexec(regs);
-4e62d1d86585e1 Youling Tang 2022-10-12  409  
-0603839b18f4fb Huacai Chen  2022-05-31  410  	if (in_interrupt())
-0603839b18f4fb Huacai Chen  2022-05-31  411  		panic("Fatal exception in interrupt");
-0603839b18f4fb Huacai Chen  2022-05-31  412  
-0603839b18f4fb Huacai Chen  2022-05-31  413  	if (panic_on_oops)
-0603839b18f4fb Huacai Chen  2022-05-31  414  		panic("Fatal exception");
-0603839b18f4fb Huacai Chen  2022-05-31  415  
-0603839b18f4fb Huacai Chen  2022-05-31  416  	make_task_dead(sig);
-0603839b18f4fb Huacai Chen  2022-05-31  417  }
+                        Geert
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
