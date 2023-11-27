@@ -2,221 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 620017FAB47
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 21:24:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A157FAB4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 21:26:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232947AbjK0UYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 15:24:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53622 "EHLO
+        id S231771AbjK0U0B convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Nov 2023 15:26:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjK0UYG (ORCPT
+        with ESMTP id S229527AbjK0UZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 15:24:06 -0500
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a02:c205:3004:2154::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D581BD;
-        Mon, 27 Nov 2023 12:24:12 -0800 (PST)
-Received: from p200301077700a9001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:107:7700:a900:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <andreas@kemnade.info>)
-        id 1r7i9I-006mnO-M7; Mon, 27 Nov 2023 21:24:08 +0100
-Received: from andi by aktux with local (Exim 4.96)
-        (envelope-from <andreas@kemnade.info>)
-        id 1r7i9I-000bvU-1J;
-        Mon, 27 Nov 2023 21:24:08 +0100
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        andreas@kemnade.info, kristo@kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org
-Subject: [PATCH] dt-bindings: clock: ti: Convert interface.txt to json-schema
-Date:   Mon, 27 Nov 2023 21:23:59 +0100
-Message-Id: <20231127202359.145778-1-andreas@kemnade.info>
-X-Mailer: git-send-email 2.39.2
+        Mon, 27 Nov 2023 15:25:59 -0500
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2EBD59
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 12:26:02 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 016D96413F60;
+        Mon, 27 Nov 2023 21:26:00 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id uLRVYHk-f5Lg; Mon, 27 Nov 2023 21:25:59 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 3013E6340E00;
+        Mon, 27 Nov 2023 21:25:59 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id K3yrBMph3TqV; Mon, 27 Nov 2023 21:25:59 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 0CF816413F60;
+        Mon, 27 Nov 2023 21:25:59 +0100 (CET)
+Date:   Mon, 27 Nov 2023 21:25:58 +0100 (CET)
+From:   Richard Weinberger <richard@nod.at>
+To:     Daniel Golle <daniel@makrotopia.org>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        John Crispin <john@phrozen.org>
+Message-ID: <771902199.32600.1701116758852.JavaMail.zimbra@nod.at>
+In-Reply-To: <9857609999c5b7196417474938a7a09892cd1612.1701104870.git.daniel@makrotopia.org>
+References: <9857609999c5b7196417474938a7a09892cd1612.1701104870.git.daniel@makrotopia.org>
+Subject: Re: [PATCH] ubi: don't decrease ubi->ref_count on detach error
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
+Thread-Topic: don't decrease ubi->ref_count on detach error
+Thread-Index: chpmDIpsyDGT4mmuCnlwjJ5qLzrYdQ==
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
+        T_SPF_PERMERROR autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the OMAP interface clock device tree binding to json-schema
-and fix up reg property which is optional and taken from parent if
-not specified.
-Specify the creator of the original binding as a maintainer.
+----- Ursprüngliche Mail -----
+> Von: "Daniel Golle" <daniel@makrotopia.org>
+> An: "richard" <richard@nod.at>, "Miquel Raynal" <miquel.raynal@bootlin.com>, "Vignesh Raghavendra" <vigneshr@ti.com>,
+> "Artem Bityutskiy" <Artem.Bityutskiy@nokia.com>, "linux-mtd" <linux-mtd@lists.infradead.org>, "linux-kernel"
+> <linux-kernel@vger.kernel.org>
+> CC: "John Crispin" <john@phrozen.org>
+> Gesendet: Montag, 27. November 2023 18:09:14
+> Betreff: [PATCH] ubi: don't decrease ubi->ref_count on detach error
 
-Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
----
- .../bindings/clock/ti/interface.txt           | 57 ------------
- .../bindings/clock/ti/ti,interface-clock.yaml | 90 +++++++++++++++++++
- 2 files changed, 90 insertions(+), 57 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/clock/ti/interface.txt
- create mode 100644 Documentation/devicetree/bindings/clock/ti/ti,interface-clock.yaml
+> If attempting to detach a UBI device while it is still busy, detaching
+> is refused. However, the reference counter is still being decreased
+> despite the error. Rework detach function to only decrease the refcnt
+> once all conditions for detachment are met.
+> 
+> Fixes: cdfa788acd13 ("UBI: prepare attach and detach functions")
+> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 
-diff --git a/Documentation/devicetree/bindings/clock/ti/interface.txt b/Documentation/devicetree/bindings/clock/ti/interface.txt
-deleted file mode 100644
-index d3eb5ca92a7fe..0000000000000
---- a/Documentation/devicetree/bindings/clock/ti/interface.txt
-+++ /dev/null
-@@ -1,57 +0,0 @@
--Binding for Texas Instruments interface clock.
--
--Binding status: Unstable - ABI compatibility may be broken in the future
--
--This binding uses the common clock binding[1]. This clock is
--quite much similar to the basic gate-clock [2], however,
--it supports a number of additional features, including
--companion clock finding (match corresponding functional gate
--clock) and hardware autoidle enable / disable.
--
--[1] Documentation/devicetree/bindings/clock/clock-bindings.txt
--[2] Documentation/devicetree/bindings/clock/gpio-gate-clock.yaml
--
--Required properties:
--- compatible : shall be one of:
--  "ti,omap3-interface-clock" - basic OMAP3 interface clock
--  "ti,omap3-no-wait-interface-clock" - interface clock which has no hardware
--				       capability for waiting clock to be ready
--  "ti,omap3-hsotgusb-interface-clock" - interface clock with USB specific HW
--					handling
--  "ti,omap3-dss-interface-clock" - interface clock with DSS specific HW handling
--  "ti,omap3-ssi-interface-clock" - interface clock with SSI specific HW handling
--  "ti,am35xx-interface-clock" - interface clock with AM35xx specific HW handling
--  "ti,omap2430-interface-clock" - interface clock with OMAP2430 specific HW
--				  handling
--- #clock-cells : from common clock binding; shall be set to 0
--- clocks : link to phandle of parent clock
--- reg : base address for the control register
--
--Optional properties:
--- clock-output-names : from common clock binding.
--- ti,bit-shift : bit shift for the bit enabling/disabling the clock (default 0)
--
--Examples:
--	aes1_ick: aes1_ick@48004a14 {
--		#clock-cells = <0>;
--		compatible = "ti,omap3-interface-clock";
--		clocks = <&security_l4_ick2>;
--		reg = <0x48004a14 0x4>;
--		ti,bit-shift = <3>;
--	};
--
--	cam_ick: cam_ick@48004f10 {
--		#clock-cells = <0>;
--		compatible = "ti,omap3-no-wait-interface-clock";
--		clocks = <&l4_ick>;
--		reg = <0x48004f10 0x4>;
--		ti,bit-shift = <0>;
--	};
--
--	ssi_ick_3430es2: ssi_ick_3430es2@48004a10 {
--		#clock-cells = <0>;
--		compatible = "ti,omap3-ssi-interface-clock";
--		clocks = <&ssi_l4_ick>;
--		reg = <0x48004a10 0x4>;
--		ti,bit-shift = <0>;
--	};
-diff --git a/Documentation/devicetree/bindings/clock/ti/ti,interface-clock.yaml b/Documentation/devicetree/bindings/clock/ti/ti,interface-clock.yaml
-new file mode 100644
-index 0000000000000..48a54caeb3857
---- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/ti/ti,interface-clock.yaml
-@@ -0,0 +1,90 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/clock/ti/ti,interface-clock.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Texas Instruments interface clock.
-+
-+maintainers:
-+  - Tero Kristo <kristo@kernel.org>
-+
-+description: |
-+  This binding uses the common clock binding[1]. This clock is
-+  quite much similar to the basic gate-clock[2], however,
-+  it supports a number of additional features, including
-+  companion clock finding (match corresponding functional gate
-+  clock) and hardware autoidle enable / disable.
-+
-+  [1] Documentation/devicetree/bindings/clock/clock-bindings.txt
-+  [2] Documentation/devicetree/bindings/clock/gpio-gate-clock.yaml
-+
-+
-+properties:
-+  compatible:
-+    enum:
-+      - ti,omap3-interface-clock           # basic OMAP3 interface clock
-+      - ti,omap3-no-wait-interface-clock   # interface clock which has no hardware
-+                                           # capability for waiting clock to be ready
-+      - ti,omap3-hsotgusb-interface-clock  # interface clock with USB specific HW handling
-+      - ti,omap3-dss-interface-clock       # interface clock with DSS specific HW handling
-+      - ti,omap3-ssi-interface-clock       # interface clock with SSI specific HW handling
-+      - ti,am35xx-interface-clock          # interface clock with AM35xx specific HW handling
-+      - ti,omap2430-interface-clock        # interface clock with OMAP2430 specific HW handling
-+  "#clock-cells":
-+    const: 0
-+
-+  clocks:
-+    maxItems: 1
-+
-+  clock-output-names:
-+    maxItems: 1
-+
-+  reg:
-+    description:
-+      if not specified, value from parent is used
-+    maxItems: 1
-+
-+  ti,bit-shift:
-+    description:
-+      bit shift for the bit enabling/disabling the clock
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    default: 0
-+
-+required:
-+  - compatible
-+  - clocks
-+  - '#clock-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    bus {
-+      #address-cells = <1>;
-+      #size-cells = <1>;
-+
-+      aes1_ick: aes1-ick@48004a14 {
-+        #clock-cells = <0>;
-+        compatible = "ti,omap3-interface-clock";
-+        clocks = <&security_l4_ick2>;
-+        reg = <0x48004a14 0x4>;
-+        ti,bit-shift = <3>;
-+      };
-+
-+      cam_ick: cam-ick@48004f10 {
-+        #clock-cells = <0>;
-+        compatible = "ti,omap3-no-wait-interface-clock";
-+        clocks = <&l4_ick>;
-+        reg = <0x48004f10 0x4>;
-+        ti,bit-shift = <0>;
-+      };
-+
-+      ssi_ick_3430es2: ssi-ick-3430es2@48004a10 {
-+        #clock-cells = <0>;
-+        compatible = "ti,omap3-ssi-interface-clock";
-+        clocks = <&ssi_l4_ick>;
-+        reg = <0x48004a10 0x4>;
-+        ti,bit-shift = <0>;
-+      };
-+    };
--- 
-2.39.2
+Good catch! Did you find this by review or while testing?
 
+> ---
+> drivers/mtd/ubi/build.c | 6 +++---
+> 1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+> index 7d4ff1193db6f..f47987ee9a31b 100644
+> --- a/drivers/mtd/ubi/build.c
+> +++ b/drivers/mtd/ubi/build.c
+> @@ -1099,16 +1099,16 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
+> 
+> 	spin_lock(&ubi_devices_lock);
+> 	put_device(&ubi->dev);
+> -	ubi->ref_count -= 1;
+> -	if (ubi->ref_count) {
+> +	if (ubi->ref_count > 1) {
+
+Is there a specific reason why you have modified the check to test only
+for ref_count being positive?
+If rec_counts turns negative, due to a bug, we could still stop it here.
+
+> 		if (!anyway) {
+> 			spin_unlock(&ubi_devices_lock);
+> 			return -EBUSY;
+> 		}
+> 		/* This may only happen if there is a bug */
+> 		ubi_err(ubi, "%s reference count %d, destroy anyway",
+> -			ubi->ubi_name, ubi->ref_count);
+> +			ubi->ubi_name, ubi->ref_count - 1);
+> 	}
+> +	ubi->ref_count -= 1;
+
+Please add there an ubi_asert() which tests whether ref_count is really zero.
+...just to be more bullet proof.
+
+Thanks,
+//richard
