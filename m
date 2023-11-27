@@ -2,102 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C20617FA783
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:07:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B02D7FA78D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234567AbjK0RHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 12:07:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56708 "EHLO
+        id S234649AbjK0RJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 12:09:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234384AbjK0RG5 (ORCPT
+        with ESMTP id S234801AbjK0RI7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 12:06:57 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 728E226AC;
-        Mon, 27 Nov 2023 09:06:56 -0800 (PST)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 48070276;
-        Mon, 27 Nov 2023 18:06:19 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1701104779;
-        bh=8JQxveM7AqrID1mnHERVbGhkvvjfoD9aqWGG1HUbsJc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eoBqBtbPt6mEzMuIjmu5aJv3YoBKQ+WueFgiIB82NG0aItHgq3GAUSyeTfwai8TIJ
-         jhu3g02VqBiIBmoAIS7+jJ6qUbqewXmgHPzM4TvXkOCwnzAQxPdKd02jEhN0bSi/Jh
-         IQ8cGXxZw+BWkzxSTu9SmcYSGAhfFD6/F0iM8Yao=
-Date:   Mon, 27 Nov 2023 19:07:00 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Cc:     hverkuil@xs4all.nl, mchehab@kernel.org, tfiga@chromium.org,
-        m.szyprowski@samsung.com, matt.ranostay@konsulko.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, kernel@collabora.com,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Subject: Re: [PATCH 07/55] media: imx8-isi: Stop abusing of
- min_buffers_needed field
-Message-ID: <20231127170700.GC31314@pendragon.ideasonboard.com>
-References: <20231127165454.166373-1-benjamin.gaignard@collabora.com>
- <20231127165454.166373-8-benjamin.gaignard@collabora.com>
+        Mon, 27 Nov 2023 12:08:59 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C9FD4B;
+        Mon, 27 Nov 2023 09:08:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Z3F6jPflKA7CV9g/z0Zysna6Er1+ye9+ehS/jCO/u4o=; b=fEADOI60am2EtmgBMr4NHsf+CQ
+        D6KT4KK0fLG/Jd21lGQdivwm6oKcmRDEBg6RE2iezvel/kA1Z6nOuxlPPIo24z85kaJNpPr8G2xBf
+        Ci7FiLFFafGhSadep+fLJUwuEN0CSb28b7DjZ0lNiITKWWlM+2uoJ7VRkbm34pgfSGdFCKva/idGn
+        g6EA+LIvvbBpTiyda3n/vu93lUzg2mvkUnzKl2FOoxs6DKm8RCehzQdso3Ce6nkjUk2GyUooobm9R
+        FH7Gfih40SyUZ+W1SaMzndW3kcynMVC8yU7A9PnXJ3PLQ/PE5F2ZAjAN+DXg1CRNAA1Zrf6+r+Afc
+        YcJzLnMw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r7f5i-00BZzD-3Q; Mon, 27 Nov 2023 17:08:14 +0000
+Date:   Mon, 27 Nov 2023 17:08:14 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-nilfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/17] nilfs2: move page release outside of
+ nilfs_delete_entry and nilfs_set_link
+Message-ID: <ZWTM/tns2JTd1YrQ@casper.infradead.org>
+References: <20231127143036.2425-1-konishi.ryusuke@gmail.com>
+ <20231127143036.2425-2-konishi.ryusuke@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231127165454.166373-8-benjamin.gaignard@collabora.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231127143036.2425-2-konishi.ryusuke@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Benjamin,
-
-Thank you for the patch.
-
-On Mon, Nov 27, 2023 at 05:54:06PM +0100, Benjamin Gaignard wrote:
-> 'min_buffers_needed' is suppose to be used to indicate the number
-> of buffers needed by DMA engine to start streaming.
-> imx8-isi driver doesn't use DMA engine and just want to specify
-
-What do you mean, "doesn't use DMA engine" ? The ISI surely has DMA
-engines :-)
-
-> the minimum number of buffers to allocate when calling VIDIOC_REQBUFS.
-> That 'min_reqbufs_allocation' field purpose so use it.
+On Mon, Nov 27, 2023 at 11:30:20PM +0900, Ryusuke Konishi wrote:
+> In a few directory operations, the call to nilfs_put_page() for a page
+> obtained using nilfs_find_entry() or nilfs_dotdot() is hidden in
+> nilfs_set_link() and nilfs_delete_entry(), making it difficult to track
+> page release and preventing change of its call position.
 > 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> CC: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> CC: Mauro Carvalho Chehab <mchehab@kernel.org>
-> CC: Shawn Guo <shawnguo@kernel.org>
-> CC: Sascha Hauer <s.hauer@pengutronix.de>
-> CC: Pengutronix Kernel Team <kernel@pengutronix.de>
-> CC: Fabio Estevam <festevam@gmail.com>
-> CC: NXP Linux Team <linux-imx@nxp.com>
-> ---
->  drivers/media/platform/nxp/imx8-isi/imx8-isi-video.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> By moving nilfs_put_page() out of these functions, this makes the page
+> get/put correspondence clearer and makes it easier to swap
+> nilfs_put_page() calls (and kunmap calls within them) when modifying
+> multiple directory entries simultaneously in nilfs_rename().
 > 
-> diff --git a/drivers/media/platform/nxp/imx8-isi/imx8-isi-video.c b/drivers/media/platform/nxp/imx8-isi/imx8-isi-video.c
-> index 49bca2b01cc6..81673ff9084b 100644
-> --- a/drivers/media/platform/nxp/imx8-isi/imx8-isi-video.c
-> +++ b/drivers/media/platform/nxp/imx8-isi/imx8-isi-video.c
-> @@ -1453,7 +1453,7 @@ int mxc_isi_video_register(struct mxc_isi_pipe *pipe,
->  	q->mem_ops = &vb2_dma_contig_memops;
->  	q->buf_struct_size = sizeof(struct mxc_isi_buffer);
->  	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
-> -	q->min_buffers_needed = 2;
-> +	q->min_reqbufs_allocation = 2;
->  	q->lock = &video->lock;
->  	q->dev = pipe->isi->dev;
->  
+> Also, update comments for nilfs_set_link() and nilfs_delete_entry() to
+> reflect changes in their behavior.
+> 
+> To make nilfs_put_page() visible from namei.c, this moves its definition
+> to nilfs.h and replaces existing equivalents to use it, but the exposure
+> of that definition is temporary and will be removed on a later
+> kmap -> kmap_local conversion.
+> 
+> Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+> Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
 
--- 
-Regards,
+Ah; I see.  This makes it more like ext2, so I approve!
 
-Laurent Pinchart
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
