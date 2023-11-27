@@ -2,136 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B65A7F97A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 03:50:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D136E7F97A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 03:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231542AbjK0CuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 21:50:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47332 "EHLO
+        id S231546AbjK0Cvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 21:51:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229871AbjK0CuC (ORCPT
+        with ESMTP id S231387AbjK0Cvk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 21:50:02 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89108111
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 18:50:09 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1cfd04a6e49so2181985ad.0
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 18:50:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1701053409; x=1701658209; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZJDYU9ePuMyONSdH/Hmp5teasBzIstryZsSquW0uRgs=;
-        b=fiyXQpLWb1q+LhqAIJFioDrxi+3PIXBtbT3u7D8fFGO0jYwGpTCiG18LVjxnP6xN7+
-         +clcWX5Q1mzkGQ2YTq2zhUBZziQe1B0GMhH/KFnYZ1xhwZUi6ts/YdO+RQCdn06/MM/T
-         LfUSNYm9BuWuWHQQgnCXaRI0klR9z6nmOtSojS841q+CSJ+eFvwComBPBDCA+oBU7BAX
-         wlxAF9S+unJoux/3VuOgYJSsAZnuT2QBF/zQgJ4acO+UosIHUDVvxbqJajjaaxyRhd+4
-         E82KFtEPdMc5yX2nfIQjoKSKIQcMOi6xhKVn3y+43r8rgxl0an7ID/5n/7eHSx1zPC3S
-         cHaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701053409; x=1701658209;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZJDYU9ePuMyONSdH/Hmp5teasBzIstryZsSquW0uRgs=;
-        b=iZ48yN6I1NQuNNEE6jr8RdDKEOBIcuuQN051+1TpuKqJwHs4iqk30A2AXPlBcU+5SX
-         miHYONRE0FVealNX3qBUv0Laixp3xkbuf7kurmcUg8AZp/WykHTXPYYGV0/r8PFhU9j6
-         tvTUI4c1KLRP9YUiIpCygkquPMRCihjcW5FGZLtPEhkjXAQoPSC8lIek2+SvbYGZJrDo
-         Qy4eSIvYPOg6KKOLSUWkVJJjKlzui5dAAVM5gN4g9/BJ03BSQ+mTAoWnMwljBD9eQ6mU
-         de8QINKf9E7NTutO376NJvmXaZnbJ2jcj05lb4+rl0e86Y0BO4toZyJ5ZYMGPMxsu/+D
-         to0A==
-X-Gm-Message-State: AOJu0YxDcvKAMQkCvWa7NTzZptEJsfmIdlY13YTxDDpcXoyWDXX9E0iJ
-        n/GsyrpW4LffdwZYddWsYEEyRQ==
-X-Google-Smtp-Source: AGHT+IE6Byv2GXYDkP+I0VNXSKjtXLqAjEy3RG6g235VNudLgF/NCLhIFFJiZRP/ESQyACaudebM8g==
-X-Received: by 2002:a17:903:2585:b0:1cf:68c8:7a18 with SMTP id jb5-20020a170903258500b001cf68c87a18mr12143435plb.14.1701053408996;
-        Sun, 26 Nov 2023 18:50:08 -0800 (PST)
-Received: from ?IPv6:2402:7500:4ce:95c7:2856:b238:775:b338? ([2402:7500:4ce:95c7:2856:b238:775:b338])
-        by smtp.gmail.com with ESMTPSA id o4-20020a1709026b0400b001b898595be7sm7028182plk.291.2023.11.26.18.50.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 26 Nov 2023 18:50:08 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
-Subject: Re: [PATCH 09/12] RISC-V: crypto: add Zvknhb accelerated SHA384/512
- implementations
-From:   Jerry Shih <jerry.shih@sifive.com>
-In-Reply-To: <20231122013210.GH2172@sol.localdomain>
-Date:   Mon, 27 Nov 2023 10:50:04 +0800
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>, palmer@dabbelt.com,
-        Albert Ou <aou@eecs.berkeley.edu>, herbert@gondor.apana.org.au,
-        davem@davemloft.net, andy.chiu@sifive.com, greentime.hu@sifive.com,
-        conor.dooley@microchip.com, guoren@kernel.org, bjorn@rivosinc.com,
-        heiko@sntech.de, ardb@kernel.org, phoebe.chen@sifive.com,
-        hongrong.hsu@sifive.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <9BB2B250-8A35-4116-A43B-55FC477A5B06@sifive.com>
-References: <20231025183644.8735-1-jerry.shih@sifive.com>
- <20231025183644.8735-10-jerry.shih@sifive.com>
- <20231122013210.GH2172@sol.localdomain>
-To:     Eric Biggers <ebiggers@kernel.org>
-X-Mailer: Apple Mail (2.3445.9.7)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sun, 26 Nov 2023 21:51:40 -0500
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F5310F;
+        Sun, 26 Nov 2023 18:51:44 -0800 (PST)
+X-UUID: fd0efa77564d405599e0cadfb6d7a94b-20231127
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.33,REQID:3717ac65-0896-4eaa-b5b9-085e5572100f,IP:5,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:-10
+X-CID-INFO: VERSION:1.1.33,REQID:3717ac65-0896-4eaa-b5b9-085e5572100f,IP:5,URL
+        :0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:-10
+X-CID-META: VersionHash:364b77b,CLOUDID:a9718160-c89d-4129-91cb-8ebfae4653fc,B
+        ulkID:231127105132JY97HUR8,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
+        02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,CO
+        L:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: fd0efa77564d405599e0cadfb6d7a94b-20231127
+X-User: chentao@kylinos.cn
+Received: from vt.. [(116.128.244.169)] by mailgw
+        (envelope-from <chentao@kylinos.cn>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1705106248; Mon, 27 Nov 2023 10:51:31 +0800
+From:   Kunwu Chan <chentao@kylinos.cn>
+To:     manoj@linux.ibm.com, mrochs@linux.ibm.com, ukrishn@linux.ibm.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com
+Cc:     kunwu.chan@hotmail.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH] scsi: cxlflash: Fix null pointer dereference in ocxlflash_get_fd
+Date:   Mon, 27 Nov 2023 10:51:27 +0800
+Message-Id: <20231127025127.1545877-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Nov 22, 2023, at 09:32, Eric Biggers <ebiggers@kernel.org> wrote:
-> On Thu, Oct 26, 2023 at 02:36:41AM +0800, Jerry Shih wrote:
->> +static int riscv64_sha512_update(struct shash_desc *desc, const u8 *data,
->> +				 unsigned int len)
->> +{
->> +	int ret = 0;
->> +
->> +	/*
->> +	 * Make sure struct sha256_state begins directly with the SHA256
->> +	 * 256-bit internal state, as this is what the asm function expect.
->> +	 */
->> +	BUILD_BUG_ON(offsetof(struct sha512_state, state) != 0);
-> 
-> There's a copy-paste error here; all the 256 above should be 512.
+kasprintf() returns a pointer to dynamically allocated memory
+which can be NULL upon failure.
 
-Fixed.
+Fixes: 926a62f9bd53 ("scsi: cxlflash: Support adapter file descriptors for OCXL")
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+ drivers/scsi/cxlflash/ocxl_hw.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
->> +static struct shash_alg sha512_alg[] = {
->> +	{
->> +		.digestsize = SHA512_DIGEST_SIZE,
->> +		.init = sha512_base_init,
->> +		.update = riscv64_sha512_update,
->> +		.final = riscv64_sha512_final,
->> +		.finup = riscv64_sha512_finup,
->> +		.descsize = sizeof(struct sha512_state),
->> +		.base.cra_name = "sha512",
->> +		.base.cra_driver_name = "sha512-riscv64-zvkb-zvknhb",
->> +		.base.cra_priority = 150,
->> +		.base.cra_blocksize = SHA512_BLOCK_SIZE,
->> +		.base.cra_module = THIS_MODULE,
->> +	},
->> +	{
->> +		.digestsize = SHA384_DIGEST_SIZE,
->> +		.init = sha384_base_init,
->> +		.update = riscv64_sha512_update,
->> +		.final = riscv64_sha512_final,
->> +		.finup = riscv64_sha512_finup,
->> +		.descsize = sizeof(struct sha512_state),
->> +		.base.cra_name = "sha384",
->> +		.base.cra_driver_name = "sha384-riscv64-zvkb-zvknhb",
->> +		.base.cra_priority = 150,
->> +		.base.cra_blocksize = SHA384_BLOCK_SIZE,
->> +		.base.cra_module = THIS_MODULE,
->> +	}
->> +};
-> 
-> *_algs instead of *_alg when there's more than one, please.
-> I.e., sha512_alg => sha512_algs here.
-
-Fixed.
-
-> - Eric
+diff --git a/drivers/scsi/cxlflash/ocxl_hw.c b/drivers/scsi/cxlflash/ocxl_hw.c
+index 6542818e595a..aa5703a69bc0 100644
+--- a/drivers/scsi/cxlflash/ocxl_hw.c
++++ b/drivers/scsi/cxlflash/ocxl_hw.c
+@@ -1231,6 +1231,11 @@ static struct file *ocxlflash_get_fd(void *ctx_cookie,
+ 		fops = (struct file_operations *)&ocxl_afu_fops;
+ 
+ 	name = kasprintf(GFP_KERNEL, "ocxlflash:%d", ctx->pe);
++	if (!name) {
++		rc = -ENOMEM;
++		dev_err(dev, "%s: kasprintf allocation failed\n", __func__);
++		goto err2;
++	}
+ 	file = ocxlflash_getfile(dev, name, fops, ctx, flags);
+ 	kfree(name);
+ 	if (IS_ERR(file)) {
+-- 
+2.34.1
 
