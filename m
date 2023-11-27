@@ -2,114 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25EE57FAA98
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 20:50:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D0B7FAA9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 20:51:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232646AbjK0TuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 14:50:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34400 "EHLO
+        id S232748AbjK0TvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 14:51:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231246AbjK0TuX (ORCPT
+        with ESMTP id S231174AbjK0TvL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 14:50:23 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE7371B4;
-        Mon, 27 Nov 2023 11:50:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701114628; x=1732650628;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=FOWlBJuI1QWETMszMwBkYk25m1g8XF0ebe/+lRpK/Yg=;
-  b=gCObUKfTaJZdrOdFp7nSPUlKYVaHXKwxM4Ib2kwUkf/AyO8UOxcrYknA
-   uZnA47b8xdfi8hPOez76FhBEHIygWJDkNgmBs4lUZnLm1me/JUoG/UsAU
-   10j89ErBIwrikmgmoF29llZP1QjTnWKsaU37s6uir64TLsArK/yNwhEVA
-   5oXXzJhDg5tmRTW1vid8kuG9mRRTrq8fYA2KEcWMJcruDVVvk0Rzhe1eq
-   k7n9Fyf3uAM+VidsAC9KaHiS5dEvSrkKxGAR78tmKOSv8023GrpNcJ9rR
-   gjZfGiMkDUckR1Sgf6btmUk1GDAhOfRHybL0AgsicTcU0DBxM+2f6jmwh
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="389930690"
-X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
-   d="scan'208";a="389930690"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 11:50:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="744669420"
-X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
-   d="scan'208";a="744669420"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 11:50:28 -0800
-Date:   Mon, 27 Nov 2023 11:50:26 -0800
-From:   Tony Luck <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Yazen Ghannam <yazen.ghannam@amd.com>,
-        Smita.KoralahalliChannabasappa@amd.com,
-        dave.hansen@linux.intel.com, x86@kernel.org,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev
-Subject: Re: [PATCH v9 2/3] x86/mce: Add per-bank CMCI storm mitigation
-Message-ID: <ZWTzAujHdrJ950F3@agluck-desk3>
-References: <20230929181626.210782-1-tony.luck@intel.com>
- <20231004183623.17067-1-tony.luck@intel.com>
- <20231004183623.17067-3-tony.luck@intel.com>
- <20231019151211.GHZTFHS3osBIL1IJbF@fat_crate.local>
- <ZTa37L2nlnbok8dz@agluck-desk3>
- <20231114192324.GAZVPJLGZmfJBS181/@fat_crate.local>
- <ZVPu/hX9b7lUkrBY@agluck-desk3>
- <20231121115448.GCZVyaiNkNvb4t2NxB@fat_crate.local>
+        Mon, 27 Nov 2023 14:51:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67460DC
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 11:51:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701114676;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=yetQtQw07rU4YZ4FG3ra/SKREh1x+pvvLVJIVKSvN98=;
+        b=D1LmlbiF+W4pKuMqgZWssNHBqCkXS+C44ljypm/wlpIF4dDmDrYopCtv6sm9miRO6VtGNn
+        0L+oYplAmGU+QUCFwmUggZNs9vsmf0KvET7s/Vx88fsUWS71oyHFTgpkQAUgId93QDUO7L
+        OPbZMtWkFrILn/ggmkHjW8CCnlVSoR0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-68-8QI2V3YVMdKdlmPH0cmaFA-1; Mon, 27 Nov 2023 14:51:13 -0500
+X-MC-Unique: 8QI2V3YVMdKdlmPH0cmaFA-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A75F6185A780;
+        Mon, 27 Nov 2023 19:51:12 +0000 (UTC)
+Received: from llong.com (unknown [10.22.8.93])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0D435492BE9;
+        Mon, 27 Nov 2023 19:51:12 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH] cgroup/cpuset: Expose cpuset.cpus.isolated
+Date:   Mon, 27 Nov 2023 14:51:05 -0500
+Message-Id: <20231127195105.290402-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231121115448.GCZVyaiNkNvb4t2NxB@fat_crate.local>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 12:54:48PM +0100, Borislav Petkov wrote:
-> On Tue, Nov 14, 2023 at 02:04:46PM -0800, Tony Luck wrote:
-> > Whichever of the timer and the CMCI happens first will run. Second to
-> > arrive will pend the interrupt and be handled when interrupts are
-> > enabled as the first completes.
-> 
-> So I still don't like the timer calling machine_check_poll() and
-> cmci_mc_poll_banks() doing the same without any proper synchronization
-> between the two.
+The root-only cpuset.cpus.isolated control file shows the current set
+of isolated CPUs in isolated partitions. This control file is currently
+exposed only with the cgroup_debug boot command line option which also
+adds the ".__DEBUG__." prefix. This is actually a useful control file if
+users want to find out which CPUs are currently in an isolated state by
+the cpuset controller. Remove CFTYPE_DEBUG flag for this control file and
+make it available by default without any prefix.
 
-But it isn't doing the same thing.  The timer calls:
+The test_cpuset_prs.sh test script and the cgroup-v2.rst documentation
+file are also updated accordingly. Minor code change is also made in
+test_cpuset_prs.sh to avoid false test failure when running on debug
+kernel.
 
-	machine_check_poll(0, this_cpu_ptr(&mce_poll_banks));
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ Documentation/admin-guide/cgroup-v2.rst       |  7 ++++
+ kernel/cgroup/cpuset.c                        |  2 +-
+ .../selftests/cgroup/test_cpuset_prs.sh       | 32 +++++++++++--------
+ 3 files changed, 26 insertions(+), 15 deletions(-)
 
-and cmci_mc_poll_banks() calls:
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index cf5651a11df8..30f6ff2eba47 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -2316,6 +2316,13 @@ Cpuset Interface Files
+ 	treated to have an implicit value of "cpuset.cpus" in the
+ 	formation of local partition.
+ 
++  cpuset.cpus.isolated
++	A read-only and root cgroup only multiple values file.
++
++	This file shows the set of all isolated CPUs used in existing
++	isolated partitions. It will be empty if no isolated partition
++	is created.
++
+   cpuset.cpus.partition
+ 	A read-write single value file which exists on non-root
+ 	cpuset-enabled cgroups.  This flag is owned by the parent cgroup
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 1bad4007ff4b..2a16df86c55c 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -3974,7 +3974,7 @@ static struct cftype dfl_files[] = {
+ 		.name = "cpus.isolated",
+ 		.seq_show = cpuset_common_seq_show,
+ 		.private = FILE_ISOLATED_CPULIST,
+-		.flags = CFTYPE_ONLY_ON_ROOT | CFTYPE_DEBUG,
++		.flags = CFTYPE_ONLY_ON_ROOT,
+ 	},
+ 
+ 	{ }	/* terminate */
+diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+index 7b7c4c2b6d85..b5eb1be2248c 100755
+--- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
++++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+@@ -508,7 +508,7 @@ dump_states()
+ 		XECPUS=$DIR/cpuset.cpus.exclusive.effective
+ 		PRS=$DIR/cpuset.cpus.partition
+ 		PCPUS=$DIR/.__DEBUG__.cpuset.cpus.subpartitions
+-		ISCPUS=$DIR/.__DEBUG__.cpuset.cpus.isolated
++		ISCPUS=$DIR/cpuset.cpus.isolated
+ 		[[ -e $CPUS   ]] && echo "$CPUS: $(cat $CPUS)"
+ 		[[ -e $XCPUS  ]] && echo "$XCPUS: $(cat $XCPUS)"
+ 		[[ -e $ECPUS  ]] && echo "$ECPUS: $(cat $ECPUS)"
+@@ -593,17 +593,17 @@ check_cgroup_states()
+ 
+ #
+ # Get isolated (including offline) CPUs by looking at
+-# /sys/kernel/debug/sched/domains and *cpuset.cpus.isolated control file,
++# /sys/kernel/debug/sched/domains and cpuset.cpus.isolated control file,
+ # if available, and compare that with the expected value.
+ #
+ # Note that isolated CPUs from the sched/domains context include offline
+ # CPUs as well as CPUs in non-isolated 1-CPU partition. Those CPUs may
+-# not be included in the *cpuset.cpus.isolated control file which contains
++# not be included in the cpuset.cpus.isolated control file which contains
+ # only CPUs in isolated partitions.
+ #
+ # $1 - expected isolated cpu list(s) <isolcpus1>{,<isolcpus2>}
+ # <isolcpus1> - expected sched/domains value
+-# <isolcpus2> - *cpuset.cpus.isolated value = <isolcpus1> if not defined
++# <isolcpus2> - cpuset.cpus.isolated value = <isolcpus1> if not defined
+ #
+ check_isolcpus()
+ {
+@@ -611,7 +611,7 @@ check_isolcpus()
+ 	ISOLCPUS=
+ 	LASTISOLCPU=
+ 	SCHED_DOMAINS=/sys/kernel/debug/sched/domains
+-	ISCPUS=${CGROUP2}/.__DEBUG__.cpuset.cpus.isolated
++	ISCPUS=${CGROUP2}/cpuset.cpus.isolated
+ 	if [[ $EXPECT_VAL = . ]]
+ 	then
+ 		EXPECT_VAL=
+@@ -692,14 +692,18 @@ test_fail()
+ null_isolcpus_check()
+ {
+ 	[[ $VERBOSE -gt 0 ]] || return 0
+-	pause 0.02
+-	check_isolcpus "."
+-	if [[ $? -ne 0 ]]
+-	then
+-		echo "Unexpected isolated CPUs: $ISOLCPUS"
+-		dump_states
+-		exit 1
+-	fi
++	# Retry a few times before printing error
++	RETRY=0
++	while [[ $RETRY -lt 5 ]]
++	do
++		pause 0.01
++		check_isolcpus "."
++		[[ $? -eq 0 ]] && return 0
++		((RETRY++))
++	done
++	echo "Unexpected isolated CPUs: $ISOLCPUS"
++	dump_states
++	exit 1
+ }
+ 
+ #
+@@ -776,7 +780,7 @@ run_state_test()
+ 		#
+ 		NEWLIST=$(cat cpuset.cpus.effective)
+ 		RETRY=0
+-		while [[ $NEWLIST != $CPULIST && $RETRY -lt 5 ]]
++		while [[ $NEWLIST != $CPULIST && $RETRY -lt 8 ]]
+ 		do
+ 			# Wait a bit longer & recheck a few times
+ 			pause 0.01
+-- 
+2.39.3
 
-	machine_check_poll(0, this_cpu_ptr(&mce_poll_banks));
-
-A bank is either in the bitmap of banks to poll from the timer,
-or in one of the per-cpu bitmaps of banks "owned" by that CPU to
-be checked when a CMCI occurs. But it can't be in both.
-
-> Yes, when you get a CMCI interrupt, you poll and do the call the storm
-> code. Now what happens if the polling runs from softirq context and you
-> get a CMCI interrupt at exactly the same time. I.e., is
-> machine_check_poll() reentrant and audited properly?
-
-So nothing bad happens. If Linux was polling some set of banks from
-the timer and is interrupted by CMCI, the interrupt will check some
-disjoint set of banks. All the history tracking code is done per-bank,
-so there is no overlap.
-
-> I hope I'm making more sense.
-
-Yes. Totally making sense. I was under the mistaken impression that
-the mce timers used TIMER_IRQSAFE and the nested CMCI while processing
-a timed poll couldn't happen. So I learned something here too.
-
-I'll think of some comment to add to the history tracking code
-to summarize this thread.
-
--Tony
