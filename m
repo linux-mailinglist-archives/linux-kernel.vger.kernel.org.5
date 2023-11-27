@@ -2,89 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACE797F9E28
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:09:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E097F9E2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232749AbjK0LJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 06:09:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58454 "EHLO
+        id S232764AbjK0LLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 06:11:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232651AbjK0LJa (ORCPT
+        with ESMTP id S230168AbjK0LLD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 06:09:30 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD21D93;
-        Mon, 27 Nov 2023 03:09:35 -0800 (PST)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AR8svw0023879;
-        Mon, 27 Nov 2023 11:09:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
- subject : mime-version : content-type : content-transfer-encoding :
- message-id : to : cc; s=qcppdkim1;
- bh=6sZRNWx/QRFK0yvAB+my3UFm2i0wT82/M5HZPw2JLTQ=;
- b=iuBOzggdKhwwn4eChbNr9cr4bejD9yWICkZsLz1XVPGa69P2/dZRWUmVPdUNBLKrnUyo
- iRvixo//kvd5SIZkEjVrOEd8IFg3t8VLZb5nfIZ5PXcL5T3AaNf8pJCEeEas6XQgMBaJ
- rJjz1qgalhaPSzQKlo/EnSouBfZ1+JsR+WDW4eOW6UOtVlq+ZdpuBjFdanK93+nZLLE2
- uF9zXtUqQ9d/HQ6Bw7jwRYmEpiGvu8UX2TXFBX4SBuhhe+owZ58T7cz6+rEeZLBrjTYG
- 7X4GtIBwDMrg0F270vWSui5zL5c3ako7DX8RVaEP3A85nKDq0mHrZWmYflh/yP3NtYTO 3Q== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uk88rm0wj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 11:09:27 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ARB9PNb021190
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 11:09:25 GMT
-Received: from hu-krichai-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 27 Nov 2023 03:09:21 -0800
-From:   Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Date:   Mon, 27 Nov 2023 16:39:12 +0530
-Subject: [PATCH v5] bus: mhi: host: Add tracing support
+        Mon, 27 Nov 2023 06:11:03 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A80BB8
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 03:11:06 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-54b0073d50fso3552085a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 03:11:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701083464; x=1701688264; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aWIIj+kvMy4kZX5d0cpQ2c41mKIu3M1tMd1Zqq8If4M=;
+        b=P0qPLrQChRjPwk0jDlfWWHntaedfqnRP44hGX0tzwQ2YYpX0ElcdpMjQHP9/Q+9CqE
+         8dd5DTnepnlMb12tR5NN14pa6WUIF6xtDD9StblwWq0TZc/vui/bB96gZ/poKXmT1nTu
+         tYQsQCUAyu5FayqROS4/lV1OroonVLR57GHaDPeFjuEbQpuNreXMBmNuvreJgXipYaCl
+         Rjtj+cwG2Phl0EoxipfL8nhVzNmHV/+XBYzfbyHFyFXyhdyZArjnEJWRhLcWasoJkVta
+         gHHUyUrjXfLhxTh1MMtCBZNf/jel80mFUnDkZ66oHvXlFx9kesZ9+2sUD7xDl3wF73eV
+         k9vQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701083464; x=1701688264;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aWIIj+kvMy4kZX5d0cpQ2c41mKIu3M1tMd1Zqq8If4M=;
+        b=J4vj45KEzgxFNqJXsQf5I4O/hyGQCTe4gnuh7P5GlFOBsZ1CesUo1CQtF9QDdqvNtt
+         7tDMEkilgkG/JPv2iYcdIm16CenTaNpre4gCIcI60ZjW5sGnEKbA+38q1QLXIPyeBdST
+         UVm1VX+KwrQl4k5j+rCh9Eiqzadi8YO9wNn3l8Gj3Po16w1EF2wr/slK6XZAQd3HMcPA
+         BkHc5iAbIYaOkeq5RC69P3YHYO6h7Z2IePmyyGhyUUXYAkWrI9jTrDR/A5qydyQz/lXJ
+         F9+jDIcuYsdwYEs3iQshkABk9fGdh9XVyPH0qU7/Cc6X/8eegjYvQA6O3v9vR3FK9Z3E
+         y/yw==
+X-Gm-Message-State: AOJu0Yw3axyCeaNp92DNSJ2TJA0v9cw5Chl7l8prIwzvIlmiYoMEEAsN
+        GuLEsowA/Y6Utcz+RoHSUTKF8A==
+X-Google-Smtp-Source: AGHT+IG3CEZbOjnyg3S3/SHsocbkM+WWXlxkYAiY7U4XFuHw4QdaJTyPvJ1fajsn0I7iYexaJtwE2A==
+X-Received: by 2002:a17:906:209e:b0:a0a:f9af:c159 with SMTP id 30-20020a170906209e00b00a0af9afc159mr6033015ejq.25.1701083464551;
+        Mon, 27 Nov 2023 03:11:04 -0800 (PST)
+Received: from [10.167.154.1] (178235187180.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.180])
+        by smtp.gmail.com with ESMTPSA id n27-20020a170906089b00b009fe0902961bsm5537329eje.23.2023.11.27.03.11.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 03:11:04 -0800 (PST)
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH v2 0/2] SM6115 interconnect
+Date:   Mon, 27 Nov 2023 12:10:58 +0100
+Message-Id: <20231125-topic-6115icc-v2-0-69d05d90871b@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20231127-ftrace_support-v5-1-eb67daead4f1@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIANl4ZGUC/33MwQ7CIAyA4VcxnMVQCjg8+R7GGGSgHNwmzEVj9
- u5WL2oW7e1v0+/OSsgpFLaa3VkOQyqpbSj0fMb80TWHwFNNzaSQCEJoHvvsfNiVS9e1ueemMrZ
- WoA2gZfTU5RDT9QVuttTHVPo2317+AM/tT2oADlyikxGtik7Z9fmSfGr8wrcn9sQG+QEATgBJg
- AmVRR8EiL2eAvgGaCYAEhBRV7W0AG6ppoD6DygCfIWG7tYqA9/AOI4PPBGQaHEBAAA=
-To:     Manivannan Sadhasivam <mani@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <mhi@lists.linux.dev>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
-        <quic_ramkri@quicinc.com>, <quic_nitegupt@quicinc.com>,
-        <quic_skananth@quicinc.com>, <quic_parass@quicinc.com>,
-        "Krishna chaitanya chundru" <quic_krichai@quicinc.com>
-X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1701083361; l=12663;
- i=quic_krichai@quicinc.com; s=20230907; h=from:subject:message-id;
- bh=xcslEcLKXWC7SjCw7Oevn90eI6gnnqUdDjghDwqxzOQ=;
- b=iK9hYIsbFPyBJ3e+q62T1VOaDuiVueX6UGTArfPrmyfxP8w6Ex69xI1xu8JnONf2jNrxJ4gjt
- sXA7aqIan+SDR/6G/PZp48D0WEE5ThX6QOfql8qXY9I1qv2rEPmOV/z
-X-Developer-Key: i=quic_krichai@quicinc.com; a=ed25519;
- pk=10CL2pdAKFyzyOHbfSWHCD0X0my7CXxj8gJScmn1FAg=
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: sD2KfbxEHo9nmceMvcPb_BUVgnDyX4yM
-X-Proofpoint-ORIG-GUID: sD2KfbxEHo9nmceMvcPb_BUVgnDyX4yM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-27_09,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
- lowpriorityscore=0 bulkscore=0 priorityscore=1501 adultscore=0
- impostorscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0 clxscore=1015
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311270076
+X-B4-Tracking: v=1; b=H4sIAEJ5ZGUC/3WNywqDMBBFf0Vm3SlOSnx05X8UF3Ga6IAkklhpE
+ f+9qfsuz4F7zw7JRrEJ7sUO0W6SJPgM6lIAT8aPFuWZGVSpbkRK4xoWYayItDCjoaZ2um1a42r
+ Im8Eki0M0nqe88q95znKJ1sn7jDz6zJOkNcTP2dzoZ//db4QlOqOJy0HrittuFm9iuIY4Qn8cx
+ xfdFCiMwAAAAA==
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Georgi Djakov <djakov@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        Konrad Dybcio <konradybcio@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1701083462; l=1377;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=KDSOgOJZ9OKDivLFVaAgoa4LgcSMlJhCVgjjK2+bl7s=;
+ b=8kGfGfFvWPhFWeVdYOYNJHM+n5qjYW3NtvraF/dOYqRWNPyV/6xu+2xjJmt4MAytbgsKuA43W
+ zQbCVYwqlC1DDp9vBTCbw7l30rV7oMdjVcQcvOT0iNW1d9TcX5KXKnh
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -93,402 +89,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change adds ftrace support for following functions which
-helps in debugging the issues when there is Channel state & MHI
-state change and also when we receive data and control events:
-1. mhi_intvec_mhi_states
-2. mhi_process_data_event_ring
-3. mhi_process_ctrl_ev_ring
-4. mhi_gen_tre
-5. mhi_update_channel_state
-6. mhi_tryset_pm_state
-7. mhi_pm_st_worker
+As it says on the can.
 
-Where ever the trace events are added, debug messages are removed.
+Georgi, Bjorn, can we please set up an immutable branch with the bindings?
 
-Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
-Changes in v5:
-- Use DECLARE_EVENT_CLASS for multiple events as suggested by steve.
-- Instead of converting to u64 to print address, use %px to print the address to avoid
-- warnings in some platforms.
-- Link to v4: https://lore.kernel.org/r/20231111-ftrace_support-v4-1-c83602399461@quicinc.com
-
-Changes in v4:
-- Fix compilation issues in previous patch which happended due to rebasing.
-- In the defconfig FTRACE config is not enabled due to that the compilation issue is not
-- seen in my workspace.
-- Link to v3: https://lore.kernel.org/r/20231111-ftrace_support-v3-1-f358d2911a74@quicinc.com
-
-Changes in v3:
-- move trace header file from include/trace/events to drivers/bus/mhi/host/ so that
-- we can include driver header files.
-- Use macros directly in the trace events as suggested Jeffrey Hugo.
-- Reorder the structure in the events as suggested by steve to avoid holes in the buffer.
-- removed the mhi_to_physical function as this can give security issues.
-- removed macros to define strings as we can get those from driver headers.
-- Link to v2: https://lore.kernel.org/r/20231013-ftrace_support-v2-1-6e893ce010b5@quicinc.com
-
 Changes in v2:
-- Passing the raw state into the trace event and using  __print_symbolic() as suggested by bjorn.
-- Change mhi_pm_st_worker to mhi_pm_st_transition as suggested by bjorn.
-- Fixed the kernel test rebot issues.
-- Link to v1: https://lore.kernel.org/r/20231005-ftrace_support-v1-1-23a2f394fa49@quicinc.com
----
- drivers/bus/mhi/host/init.c     |   3 +
- drivers/bus/mhi/host/internal.h |   1 +
- drivers/bus/mhi/host/main.c     |  23 +++--
- drivers/bus/mhi/host/pm.c       |   6 +-
- drivers/bus/mhi/host/trace.h    | 208 ++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 228 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/bus/mhi/host/init.c b/drivers/bus/mhi/host/init.c
-index f78aefd2d7a3..6acb85f4c5f8 100644
---- a/drivers/bus/mhi/host/init.c
-+++ b/drivers/bus/mhi/host/init.c
-@@ -20,6 +20,9 @@
- #include <linux/wait.h>
- #include "internal.h"
- 
-+#define CREATE_TRACE_POINTS
-+#include "trace.h"
-+
- static DEFINE_IDA(mhi_controller_ida);
- 
- const char * const mhi_ee_str[MHI_EE_MAX] = {
-diff --git a/drivers/bus/mhi/host/internal.h b/drivers/bus/mhi/host/internal.h
-index 2e139e76de4c..a02a71605907 100644
---- a/drivers/bus/mhi/host/internal.h
-+++ b/drivers/bus/mhi/host/internal.h
-@@ -7,6 +7,7 @@
- #ifndef _MHI_INT_H
- #define _MHI_INT_H
- 
-+#include "trace.h"
- #include "../common.h"
- 
- extern struct bus_type mhi_bus_type;
-diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
-index dcf627b36e82..0d7e068e713a 100644
---- a/drivers/bus/mhi/host/main.c
-+++ b/drivers/bus/mhi/host/main.c
-@@ -491,11 +491,9 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
- 
- 	state = mhi_get_mhi_state(mhi_cntrl);
- 	ee = mhi_get_exec_env(mhi_cntrl);
--	dev_dbg(dev, "local ee: %s state: %s device ee: %s state: %s\n",
--		TO_MHI_EXEC_STR(mhi_cntrl->ee),
--		mhi_state_str(mhi_cntrl->dev_state),
--		TO_MHI_EXEC_STR(ee), mhi_state_str(state));
- 
-+	trace_mhi_intvec_states(mhi_cntrl->mhi_dev->name, mhi_cntrl->ee,
-+				mhi_cntrl->dev_state, ee, state);
- 	if (state == MHI_STATE_SYS_ERR) {
- 		dev_dbg(dev, "System error detected\n");
- 		pm_state = mhi_tryset_pm_state(mhi_cntrl,
-@@ -832,6 +830,10 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
- 	while (dev_rp != local_rp) {
- 		enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
- 
-+		trace_mhi_ctrl_event(mhi_cntrl->mhi_dev->name, local_rp,
-+				     local_rp->ptr, local_rp->dword[0],
-+				     local_rp->dword[1]);
-+
- 		switch (type) {
- 		case MHI_PKT_TYPE_BW_REQ_EVENT:
- 		{
-@@ -997,6 +999,9 @@ int mhi_process_data_event_ring(struct mhi_controller *mhi_cntrl,
- 	while (dev_rp != local_rp && event_quota > 0) {
- 		enum mhi_pkt_type type = MHI_TRE_GET_EV_TYPE(local_rp);
- 
-+		trace_mhi_data_event(mhi_cntrl->mhi_dev->name, local_rp, local_rp->ptr,
-+				     local_rp->dword[0], local_rp->dword[1]);
-+
- 		chan = MHI_TRE_GET_EV_CHID(local_rp);
- 
- 		WARN_ON(chan >= mhi_cntrl->max_chan);
-@@ -1235,6 +1240,8 @@ int mhi_gen_tre(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan,
- 	mhi_tre->dword[0] = MHI_TRE_DATA_DWORD0(info->len);
- 	mhi_tre->dword[1] = MHI_TRE_DATA_DWORD1(bei, eot, eob, chain);
- 
-+	trace_mhi_gen_tre(mhi_cntrl->mhi_dev->name, mhi_chan->chan, mhi_tre,
-+			  mhi_tre->ptr, mhi_tre->dword[0], mhi_tre->dword[1]);
- 	/* increment WP */
- 	mhi_add_ring_element(mhi_cntrl, tre_ring);
- 	mhi_add_ring_element(mhi_cntrl, buf_ring);
-@@ -1327,9 +1334,7 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
- 	enum mhi_cmd_type cmd = MHI_CMD_NOP;
- 	int ret;
- 
--	dev_dbg(dev, "%d: Updating channel state to: %s\n", mhi_chan->chan,
--		TO_CH_STATE_TYPE_STR(to_state));
--
-+	trace_mhi_channel_command_start(mhi_cntrl->mhi_dev->name, mhi_chan->chan, to_state);
- 	switch (to_state) {
- 	case MHI_CH_STATE_TYPE_RESET:
- 		write_lock_irq(&mhi_chan->lock);
-@@ -1396,9 +1401,7 @@ static int mhi_update_channel_state(struct mhi_controller *mhi_cntrl,
- 		write_unlock_irq(&mhi_chan->lock);
- 	}
- 
--	dev_dbg(dev, "%d: Channel state change to %s successful\n",
--		mhi_chan->chan, TO_CH_STATE_TYPE_STR(to_state));
--
-+	trace_mhi_channel_command_end(mhi_cntrl->mhi_dev->name, mhi_chan->chan, to_state);
- exit_channel_update:
- 	mhi_cntrl->runtime_put(mhi_cntrl);
- 	mhi_device_put(mhi_cntrl->mhi_dev);
-diff --git a/drivers/bus/mhi/host/pm.c b/drivers/bus/mhi/host/pm.c
-index 8a4362d75fc4..e32afdc92fde 100644
---- a/drivers/bus/mhi/host/pm.c
-+++ b/drivers/bus/mhi/host/pm.c
-@@ -123,6 +123,7 @@ enum mhi_pm_state __must_check mhi_tryset_pm_state(struct mhi_controller *mhi_cn
- 	if (unlikely(!(dev_state_transitions[index].to_states & state)))
- 		return cur_state;
- 
-+	trace_mhi_tryset_pm_state(mhi_cntrl->mhi_dev->name, state);
- 	mhi_cntrl->pm_state = state;
- 	return mhi_cntrl->pm_state;
- }
-@@ -753,7 +754,6 @@ void mhi_pm_st_worker(struct work_struct *work)
- 	struct mhi_controller *mhi_cntrl = container_of(work,
- 							struct mhi_controller,
- 							st_worker);
--	struct device *dev = &mhi_cntrl->mhi_dev->dev;
- 
- 	spin_lock_irq(&mhi_cntrl->transition_lock);
- 	list_splice_tail_init(&mhi_cntrl->transition_list, &head);
-@@ -761,8 +761,8 @@ void mhi_pm_st_worker(struct work_struct *work)
- 
- 	list_for_each_entry_safe(itr, tmp, &head, node) {
- 		list_del(&itr->node);
--		dev_dbg(dev, "Handling state transition: %s\n",
--			TO_DEV_STATE_TRANS_STR(itr->state));
-+
-+		trace_mhi_pm_st_transition(mhi_cntrl->mhi_dev->name, itr->state);
- 
- 		switch (itr->state) {
- 		case DEV_ST_TRANSITION_PBL:
-diff --git a/drivers/bus/mhi/host/trace.h b/drivers/bus/mhi/host/trace.h
-new file mode 100644
-index 000000000000..3bfac529c6b7
---- /dev/null
-+++ b/drivers/bus/mhi/host/trace.h
-@@ -0,0 +1,208 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM mhi_host
-+
-+#if !defined(_TRACE_EVENT_MHI_HOST_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define _TRACE_EVENT_MHI_HOST_H
-+
-+#include <linux/tracepoint.h>
-+#include <linux/trace_seq.h>
-+#include "../common.h"
-+#include "internal.h"
-+
-+TRACE_EVENT(mhi_gen_tre,
-+
-+	TP_PROTO(const char *name, int ch_num, void *wp, __le64 tre_ptr,
-+		 __le32 dword0, __le32 dword1),
-+
-+	TP_ARGS(name, ch_num, wp, tre_ptr, dword0, dword1),
-+
-+	TP_STRUCT__entry(
-+		__string(name, name)
-+		__field(int, ch_num)
-+		__field(void *, wp)
-+		__field(__le64, tre_ptr)
-+		__field(__le32, dword0)
-+		__field(__le32, dword1)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(name, name);
-+		__entry->ch_num = ch_num;
-+		__entry->wp = wp;
-+		__entry->tre_ptr = tre_ptr;
-+		__entry->dword0 = dword0;
-+		__entry->dword1 = dword1;
-+	),
-+
-+	TP_printk("%s: Chan: %d WP: 0x%p TRE: 0x%llx 0x%08x 0x%08x\n",
-+		  __get_str(name), __entry->ch_num, __entry->wp, __entry->tre_ptr,
-+		  __entry->dword0, __entry->dword1)
-+);
-+
-+TRACE_EVENT(mhi_intvec_states,
-+
-+	TP_PROTO(const char *name, int local_ee, int state, int dev_ee, int dev_state),
-+
-+	TP_ARGS(name, local_ee, state, dev_ee, dev_state),
-+
-+	TP_STRUCT__entry(
-+		__string(name, name)
-+		__field(int, local_ee)
-+		__field(int, state)
-+		__field(int, dev_ee)
-+		__field(int, dev_state)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(name, name);
-+		__entry->local_ee = local_ee;
-+		__entry->state = state;
-+		__entry->dev_ee = dev_ee;
-+		__entry->dev_state = dev_state;
-+	),
-+
-+	TP_printk("%s: local ee: %s state: %s device ee: %s state: %s\n",
-+		  __get_str(name),
-+		  TO_MHI_EXEC_STR(__entry->local_ee),
-+		  mhi_state_str(__entry->state),
-+		  TO_MHI_EXEC_STR(__entry->dev_ee),
-+		  mhi_state_str(__entry->dev_state))
-+);
-+
-+TRACE_EVENT(mhi_tryset_pm_state,
-+
-+	TP_PROTO(const char *name, int pm_state),
-+
-+	TP_ARGS(name, pm_state),
-+
-+	TP_STRUCT__entry(
-+		__string(name, name)
-+		__field(int, pm_state)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(name, name);
-+		if (pm_state)
-+			pm_state = __fls(pm_state);
-+		__entry->pm_state = pm_state;
-+	),
-+
-+	TP_printk("%s: PM state: %s\n", __get_str(name),
-+		  to_mhi_pm_state_str(__entry->pm_state))
-+);
-+
-+DECLARE_EVENT_CLASS(mhi_process_event_ring,
-+
-+	TP_PROTO(const char *name, void *rp, __le64 ptr,
-+		 __le32 dword0, __le32 dword1),
-+
-+	TP_ARGS(name, rp, ptr, dword0, dword1),
-+
-+	TP_STRUCT__entry(
-+		__string(name, name)
-+		__field(__le32, dword0)
-+		__field(__le32, dword1)
-+		__field(int, state)
-+		__field(__le64, ptr)
-+		__field(void *, rp)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(name, name);
-+		__entry->rp = rp;
-+		__entry->ptr = ptr;
-+		__entry->dword0 = dword0;
-+		__entry->dword1 = dword1;
-+		__entry->state = MHI_TRE_GET_EV_STATE((struct mhi_ring_element *)entry->rp);
-+	),
-+
-+	TP_printk("%s: RP:0x%p Processing Event:0x%llx 0x%08x 0x%08x state:%s\n",
-+		  __get_str(name), __entry->rp, __entry->ptr, __entry->dword0,
-+		  __entry->dword1, mhi_state_str(__entry->state))
-+);
-+
-+DEFINE_EVENT(mhi_process_event_ring, mhi_data_event,
-+
-+	TP_PROTO(const char *name, void *rp, __le64 ptr,
-+		 __le32 dword0, __le32 dword1),
-+
-+	TP_ARGS(name, rp, ptr, dword0, dword1)
-+);
-+
-+DEFINE_EVENT(mhi_process_event_ring, mhi_ctrl_event,
-+
-+	TP_PROTO(const char *name, void *rp, __le64 ptr,
-+		 __le32 dword0, __le32 dword1),
-+
-+	TP_ARGS(name, rp, ptr, dword0, dword1)
-+);
-+
-+DECLARE_EVENT_CLASS(mhi_update_channel_state,
-+
-+	TP_PROTO(const char *name, int ch_num, int state),
-+
-+	TP_ARGS(name, ch_num, state),
-+
-+	TP_STRUCT__entry(
-+		__string(name, name)
-+		__field(int, ch_num)
-+		__field(int, state)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(name, name);
-+		__entry->ch_num = ch_num;
-+		__entry->state = state;
-+	),
-+
-+	TP_printk("%s: ch%d: Updating state to: %s\n",
-+		  __get_str(name), __entry->ch_num,
-+		  TO_CH_STATE_TYPE_STR(__entry->state))
-+);
-+
-+DEFINE_EVENT(mhi_update_channel_state, mhi_channel_command_start,
-+
-+	TP_PROTO(const char *name, int ch_num, int state),
-+
-+	TP_ARGS(name, ch_num, state)
-+);
-+
-+DEFINE_EVENT(mhi_update_channel_state, mhi_channel_command_end,
-+
-+	TP_PROTO(const char *name, int ch_num, int state),
-+
-+	TP_ARGS(name, ch_num, state)
-+);
-+
-+TRACE_EVENT(mhi_pm_st_transition,
-+
-+	TP_PROTO(const char *name, int state),
-+
-+	TP_ARGS(name, state),
-+
-+	TP_STRUCT__entry(
-+		__string(name, name)
-+		__field(int, state)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(name, name);
-+		__entry->state = state;
-+	),
-+
-+	TP_printk("%s: Handling state transition: %s\n", __get_str(name),
-+		  TO_DEV_STATE_TRANS_STR(__entry->state))
-+);
-+
-+#endif
-+#undef TRACE_INCLUDE_PATH
-+#define TRACE_INCLUDE_PATH .
-+#undef TRACE_INCLUDE_FILE
-+#define TRACE_INCLUDE_FILE trace
-+
-+#include <trace/define_trace.h>
+bindings:
+- Remove unnecessary '|' after description:
+- sort property definitions in a manner that resembles their proper ordering
+- define clock{s/-names} before using them in conditional blocks
+- drop unnecessary allOf:
+- move unevaluatedProperties after the conditional blocks
+- disallow clock{s,-names} when unnecessary
+- fix up the example
+C:
+- Apply my own fixup (ebi channel configuration)
+- Link to v1: https://lore.kernel.org/r/20231125-topic-6115icc-v1-0-fa51c0b556c9@linaro.org
 
 ---
-base-commit: 3006adf3be79cde4d14b1800b963b82b6e5572e0
-change-id: 20231005-ftrace_support-6869d4156139
+Konrad Dybcio (2):
+      dt-bindings: interconnect: Add Qualcomm SM6115 NoC
+      interconnect: qcom: Add SM6115 interconnect provider driver
+
+ .../bindings/interconnect/qcom,sm6115.yaml         |  148 ++
+ drivers/interconnect/qcom/Kconfig                  |    9 +
+ drivers/interconnect/qcom/Makefile                 |    2 +
+ drivers/interconnect/qcom/sm6115.c                 | 1427 ++++++++++++++++++++
+ include/dt-bindings/interconnect/qcom,sm6115.h     |  111 ++
+ 5 files changed, 1697 insertions(+)
+---
+base-commit: 48bbaf8b793e0770798519f8ee1ea2908ff0943a
+change-id: 20231125-topic-6115icc-a187f5989af7
 
 Best regards,
 -- 
-Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Konrad Dybcio <konrad.dybcio@linaro.org>
 
