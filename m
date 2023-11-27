@@ -2,125 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7ED47FAA32
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 20:26:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD7A7FAA49
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 20:27:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232667AbjK0T0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 14:26:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53560 "EHLO
+        id S232543AbjK0T1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 14:27:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230403AbjK0T0C (ORCPT
+        with ESMTP id S232932AbjK0T1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 14:26:02 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2033FD60
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 11:26:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84B55C433C7;
-        Mon, 27 Nov 2023 19:26:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701113168;
-        bh=gZKfaF2aYd71Rx0IiDPFKiGIoAGGkjTyziP8BWTgjZE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=As1AsuEkjH5B2Ue0e+KowLmulndf3k2RJyFnwaP3aeTuICzi+ufdiVjJTOCz5k1Ky
-         7oVQpKNFb+9HvolH1p/7kyZGJjm8N/t3T1S1owpX6mOgwEVNtwhTGn7pz28c1MTfsU
-         Eo90D/nDfK5kwEnGCJfrvJekHl3WqThpmKhQTu95rCwvm5bQJ4FkW4GdByN42lnAiM
-         pYXmBbywEtffsnfYDNHNMFZ+HBZ8R30Vj/5EkG3Dah6ZBo0L6MLJZJDQNStSgGwsxx
-         llrVsG0EY2hgZX5oN8u8k19paWLCYZhqZ066yszBKkNwzmj0r4QhWrUpYKIe2/Ji2P
-         a2yDKQDo8myiw==
-Date:   Mon, 27 Nov 2023 11:26:06 -0800
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, Arnd Bergmann <arnd@arndb.de>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>,
-        Itay Avraham <itayavr@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH V3 2/5] misc: mlx5ctl: Add mlx5ctl misc driver
-Message-ID: <ZWTtTjgBrNxpd9IO@x130>
-References: <20231121070619.9836-1-saeed@kernel.org>
- <20231121070619.9836-3-saeed@kernel.org>
- <2023112702-postal-rumbling-003f@gregkh>
- <20231127144017.GK436702@nvidia.com>
- <2023112752-pastel-unholy-c63d@gregkh>
- <20231127161732.GL436702@nvidia.com>
- <2023112707-feline-unselect-692f@gregkh>
+        Mon, 27 Nov 2023 14:27:19 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEBE019BA;
+        Mon, 27 Nov 2023 11:27:05 -0800 (PST)
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARIqqDq004021;
+        Mon, 27 Nov 2023 19:26:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=croI6yxCqr3QxoRfDc306jqTkJc9QscPj1bSin8cZQc=;
+ b=ttArYMbnjRHfHDTfJLNPi+5suBkXCQf3Uf4u6bmljZwTHN+iB5obTAiFcnmVxPWN4CK6
+ xBhtBmN8KwhfnuQi4rHeURWTXKjOwIOLGOKwq1wuL4echoU3ZQCthmDkfMdRsCVJzacy
+ vU2zkJvQjG/L+Uyh0pYwfYCU0K8yE7XxY0mbFB3WIoRIEmOagipBDP38nHwHvJDsVuFJ
+ 8BDqZ4SMNsl1DrOmIi6fRshCZB+usBJ0Ya5GHK/vClBUb+396i6aMAMtVNuugi6eN+Dp
+ V8zoWw8pQwDyD41Y/GK3ea6Sig8GVLo8PJyEHHJumlvLu01Ooa4zfWAn8oJl53N4syHL Jg== 
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3un0s1rtqq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 19:26:38 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARGobmr018622;
+        Mon, 27 Nov 2023 19:26:35 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ukwfjtfug-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 19:26:35 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+        by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ARJQYG88782352
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Nov 2023 19:26:34 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5DBF558067;
+        Mon, 27 Nov 2023 19:26:34 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1587E58052;
+        Mon, 27 Nov 2023 19:26:34 +0000 (GMT)
+Received: from [9.61.156.220] (unknown [9.61.156.220])
+        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Mon, 27 Nov 2023 19:26:34 +0000 (GMT)
+Message-ID: <986edf2e-10ac-211b-417c-cb2818a7fbe0@linux.ibm.com>
+Date:   Mon, 27 Nov 2023 13:26:33 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <2023112707-feline-unselect-692f@gregkh>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 13/55] media: aspeed: Stop abusing of min_buffers_needed
+ field
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        hverkuil@xs4all.nl, mchehab@kernel.org, tfiga@chromium.org,
+        m.szyprowski@samsung.com, matt.ranostay@konsulko.com
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, kernel@collabora.com,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@codeconstruct.com.au>,
+        openbmc@lists.ozlabs.org, linux-aspeed@lists.ozlabs.org
+References: <20231127165454.166373-1-benjamin.gaignard@collabora.com>
+ <20231127165454.166373-14-benjamin.gaignard@collabora.com>
+Content-Language: en-US
+From:   Eddie James <eajames@linux.ibm.com>
+In-Reply-To: <20231127165454.166373-14-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 1n5XkrcHejoRSO-ioWKsUYlYff7dUNl3
+X-Proofpoint-GUID: 1n5XkrcHejoRSO-ioWKsUYlYff7dUNl3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-27_17,2023-11-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
+ bulkscore=0 lowpriorityscore=0 spamscore=0 adultscore=0 malwarescore=0
+ suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311270135
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27 Nov 18:27, Greg Kroah-Hartman wrote:
->On Mon, Nov 27, 2023 at 12:17:32PM -0400, Jason Gunthorpe wrote:
->> On Mon, Nov 27, 2023 at 03:51:10PM +0000, Greg Kroah-Hartman wrote:
->>
->> > Ok, best of luck with this mess, I'll stop harping on it now and just
->> > point out all of the other issues here.  First off, you all need to get
->> > the network maintainers to agree that this driver is ok to do this way,
->> > and I don't think that has happened yet, so I'll wait on reviewing the
->> > series until that is resolved.
->>
->> As I said already, I strongly disagree with the idea that the netdev
->> maintainers get a global veto on what happens with mlx5 devices just
->> because they sometimes have an ethernet port on the back of the card.
+
+On 11/27/23 10:54, Benjamin Gaignard wrote:
+> 'min_buffers_needed' is suppose to be used to indicate the number
+> of buffers needed by DMA engine to start streaming.
+> aspeed doesn't use DMA engine and just want to specify
+> the minimum number of buffers to allocate when calling VIDIOC_REQBUFS.
+> That 'min_reqbufs_allocation' field purpose so use it.
+
+
+Reviewed-by: Eddie James <eajames@linux.ibm.com>
+
+
 >
->I understand you might disagree, however I hold their opinion in high
->regard and want to ensure that they agree that exposing device-specific
->debugging information for a device that deals with networking is ok to
->do so in a device-specific misc device node and not through some other
->way that other networking devices normally do (i.e. netlink or
->some-other-such-thing.)
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> CC: Eddie James <eajames@linux.ibm.com> (maintainer:ASPEED VIDEO ENGINE DRIVER)
+> CC: Joel Stanley <joel@jms.id.au> (supporter:ARM/ASPEED MACHINE SUPPORT)
+> CC: Andrew Jeffery <andrew@codeconstruct.com.au> (reviewer:ARM/ASPEED MACHINE SUPPORT)
+> CC: openbmc@lists.ozlabs.org (moderated list:ASPEED VIDEO ENGINE DRIVER)
+> CC: linux-aspeed@lists.ozlabs.org (moderated list:ARM/ASPEED MACHINE SUPPORT)
+> ---
+>   drivers/media/platform/aspeed/aspeed-video.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 >
->Note, device-specific character devices have almost always proven to be
->a bad idea in the long run, I understand your immediate need to do
->something like this, but remember that keeping it alive for the next 20+
->years is going to be tough.
->
-
-This driver is different as it doesn't replace existing mlx5 drivers,
-mlx5 functionality drivers are still there to expose the device features
-through the standard stacks, this is just a companion driver to access
-debug information, by driver and FW design mlx5ctl is not meant to
-manage or pilot the device like other device specific char drivers.
-
-To be clear this debug driver (or at least an older version of it) 
-has been already in use for over than 15 years, since the beginning
-of mlx5, we used to only provide it as external package called mft 
-debug tools [1] which has the kernel parts as well. Now it's time to
-upstream it.
-
-mlx5ctl will keep serving existing and future HW for the next few decades,
-I am pretty sure of that. as the cover-letter explains  mlx5 architecture
-is set in stone and written in ink, the same mlx5 drivers work on any
-ConnectX chip since 2012, and the will keep working on the next generations
-of chips, mlx5ctl will be no different.
-
-[1] https://network.nvidia.com/products/adapter-software/firmware-tools/
-
->> This module is primarily (but not exclusively) for rdma related
->> functionality, not netdev, and the RDMA maintainers Ack it.
->
-
-For Infiniband/virtio/vfio/vdpa/nvme/fpga ConnectX devices mlx5 netdev
-doesn't even exist, so it is not reasonable to ask that the debug
-interface should go via the netdev stack, mlx5ctl is needed to serve
-all users of mlx5 devices, not only netdev (networking).
-
-So I really find this odd, that one stack maintainer gets a veto over all
-others.
-
->In my mind, RDMA implies networking, as it's over a network connection,
->but hey, I might be wrong :)
->
->thanks,
->
->greg k-h
+> diff --git a/drivers/media/platform/aspeed/aspeed-video.c b/drivers/media/platform/aspeed/aspeed-video.c
+> index d08aa7f73d4f..c28b10808cda 100644
+> --- a/drivers/media/platform/aspeed/aspeed-video.c
+> +++ b/drivers/media/platform/aspeed/aspeed-video.c
+> @@ -2034,7 +2034,7 @@ static int aspeed_video_setup_video(struct aspeed_video *video)
+>   	vbq->drv_priv = video;
+>   	vbq->buf_struct_size = sizeof(struct aspeed_video_buffer);
+>   	vbq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+> -	vbq->min_buffers_needed = ASPEED_VIDEO_V4L2_MIN_BUF_REQ;
+> +	vbq->min_reqbufs_allocation = ASPEED_VIDEO_V4L2_MIN_BUF_REQ;
+>   
+>   	rc = vb2_queue_init(vbq);
+>   	if (rc) {
