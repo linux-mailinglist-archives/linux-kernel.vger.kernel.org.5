@@ -2,327 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FA67FABBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 21:41:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37EF77FABC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 21:41:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232902AbjK0Ukw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 15:40:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60308 "EHLO
+        id S233050AbjK0Ull (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 15:41:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbjK0Ukt (ORCPT
+        with ESMTP id S231601AbjK0Ulj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 15:40:49 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A2D91;
-        Mon, 27 Nov 2023 12:40:55 -0800 (PST)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARKB2Gk026433;
-        Mon, 27 Nov 2023 20:40:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=4Q2jkPGtatYEjKI9PBL30yWtK7X+NIEHn95uM8k59QE=;
- b=nuSSbuEi++cG+qzyPKn7vWIK6XWexb/MMX3tEWrCOFNuvcSEnPgVVeVT34IJr7Br8pBq
- YUVG1wNJYVJl3P+Ein1uiZm5i5Rv9z4o2eAS6qM8FAwUqjfcsrxpWgzaYuIBDwDRL/oF
- ujlXr+8P236iI4BREcDEPpAQPYzFFMUmHMFM7Fz0q5eQca6KLCBu448XfNhVF9VxKUTY
- 1rTHDLm+C1OcEtDpgJ4FqDRrhqqyIDb8H83PedbwO2YXcdVTfK8G/KKvFZp06jS+H+2A
- D0Ld64XQO2VNZ3rFwu5lcfGl5hfFfWUc4c8LDrpeiFfHLSvSPpFbt68Vd8I/G1CzQ3xg Ow== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3un1wv8wsc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 20:40:49 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ARKRekW019177;
-        Mon, 27 Nov 2023 20:40:49 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3un1wv8wrv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 20:40:49 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARJcpL7001736;
-        Mon, 27 Nov 2023 20:40:48 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ukwy1jqmt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 20:40:48 +0000
-Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
-        by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ARKelwx16712262
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 Nov 2023 20:40:47 GMT
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 76A115805E;
-        Mon, 27 Nov 2023 20:40:47 +0000 (GMT)
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 758EE58045;
-        Mon, 27 Nov 2023 20:40:46 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 27 Nov 2023 20:40:46 +0000 (GMT)
-Message-ID: <00191640-5103-4370-bb6f-ba2f7657a678@linux.ibm.com>
-Date:   Mon, 27 Nov 2023 15:40:45 -0500
+        Mon, 27 Nov 2023 15:41:39 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70EE2191
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 12:41:45 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40b35199f94so262325e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 12:41:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701117704; x=1701722504; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l4K6Lj4z8jII9KHfI86VtnivPUcuSuyrPVeih1ksGS0=;
+        b=SX+NmCAqfhLqt6MrlqNhoZj9BkD1J7uX25aX7M9g+L1YFeO1764xAdt0gaKHTFSaqR
+         EyWOBrjebu/lIT/Njk3RaTn7vWp5G45qemiCXXgnYNWHAlrG52Du77Yuklf7TbEDn2uj
+         4gXGpbq1MXk3/RnV6YtxJ45kGKWYN4o7lgbON9gTZhKoVOvCGDSqnfcUNrNKrBj4S/Wt
+         npPztinlDxKpENfyy5zh0pYj4oNpUghHz1n4yIEE/NwezSFYkpJHuIufsi/CwhSpdhmd
+         Xuic1ZyU7p3MV+Iz0Ds8PukfJzUK9Yt2Xk6XOzQ8O8YR6+PMEb7sHtTCHyDnwuPScP8T
+         sHzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701117704; x=1701722504;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l4K6Lj4z8jII9KHfI86VtnivPUcuSuyrPVeih1ksGS0=;
+        b=lQqCs3rdHckx/jXPLnOTkbQpWDWjPnhwl8PZc5/bfIGmjTcxE9jCjgmcUbbwmPUSqJ
+         eKiz1Z0Fic9jTSobBONy1laAx+gb77eG7R78UT/HGcIWdfEpu4zNNq4724dDUhbOQxju
+         MosKud7244uFrcYNFM7DUK0EQu9FzQE080IKZg2DlMIE6m4M0HFQn2GTLZ0DHWyC2xqN
+         aAaT2ThS6MeMgdVjSygkDTtzCXmtBf6sDjGWILbwHiK3mmCTiTnxyR2AlsrZBvNOwl14
+         2TW6jBNQTIfiL8hkjPb4kALEOvnaqpkiKWyLbTklsYIG7LvyO/eTEupzgy6MCRQfCeJb
+         genA==
+X-Gm-Message-State: AOJu0Yzy9xF2wDBIoEcVQ/YodNe9PwFx19E/5PzyGuUb5TGMfppimh7H
+        ZzK2qlXBrcuxdn+OwekvH4sUIqomTrZty3DIx5bwlA==
+X-Google-Smtp-Source: AGHT+IHKRetPWPd1P+93r7+brysZhebjHGGesRrPYg31OtmoLNt2ABSI2w8nDut3kTN2NopSvxANGWpLRHDZi+OQTDU=
+X-Received: by 2002:a05:600c:206:b0:40b:443d:9b78 with SMTP id
+ 6-20020a05600c020600b0040b443d9b78mr202972wmi.0.1701117703673; Mon, 27 Nov
+ 2023 12:41:43 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 3/8] tpm: Move buffer handling from static inlines to
- real functions
-Content-Language: en-US
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        linux-integrity@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        William Roberts <bill.c.roberts@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>
-References: <20231124020237.27116-1-jarkko@kernel.org>
- <20231124020237.27116-4-jarkko@kernel.org>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <20231124020237.27116-4-jarkko@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: zWqJlT0aUL2fhPaEnIsATFH4i75hO-3K
-X-Proofpoint-ORIG-GUID: DKVMytZuc_hIY3vvUD7jUdIZ-Gr9PD4M
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-27_19,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- impostorscore=0 spamscore=0 mlxlogscore=955 lowpriorityscore=0
- adultscore=0 phishscore=0 suspectscore=0 malwarescore=0 clxscore=1011
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311270143
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231102175735.2272696-1-irogers@google.com> <20231102175735.2272696-8-irogers@google.com>
+ <CAM9d7chKHASNE2BbL-6G7KJ-SwKMGXW+wujLsqiB+pFUPxJ2kA@mail.gmail.com>
+In-Reply-To: <CAM9d7chKHASNE2BbL-6G7KJ-SwKMGXW+wujLsqiB+pFUPxJ2kA@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 27 Nov 2023 12:41:32 -0800
+Message-ID: <CAP-5=fWvUOiMBeDzJboihg+vPrSEBYkAju1X-JpnwTadG1XBiQ@mail.gmail.com>
+Subject: Re: [PATCH v4 07/53] tools api fs: Avoid reading whole file for a 1
+ byte bool
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Dmitrii Dolgov <9erthalion6@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        James Clark <james.clark@arm.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        German Gomez <german.gomez@arm.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Nov 5, 2023 at 7:56=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
+rote:
+>
+> On Thu, Nov 2, 2023 at 10:58=E2=80=AFAM Ian Rogers <irogers@google.com> w=
+rote:
+> >
+> > sysfs__read_bool used the first byte from a fully read file into a
+> > string. It then looked at the first byte's value. Avoid doing this and
+> > just read the first byte.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/lib/api/fs/fs.c | 18 +++++++++---------
+> >  1 file changed, 9 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/tools/lib/api/fs/fs.c b/tools/lib/api/fs/fs.c
+> > index 496812b5f1d2..4c35a689d1fc 100644
+> > --- a/tools/lib/api/fs/fs.c
+> > +++ b/tools/lib/api/fs/fs.c
+> > @@ -447,15 +447,16 @@ int sysfs__read_str(const char *entry, char **buf=
+, size_t *sizep)
+> >
+> >  int sysfs__read_bool(const char *entry, bool *value)
+> >  {
+> > -       char *buf;
+> > -       size_t size;
+> > -       int ret;
+> > +       struct io io;
+> > +       char bf[16];
+> > +       int ret =3D 0;
+> >
+> > -       ret =3D sysfs__read_str(entry, &buf, &size);
+> > -       if (ret < 0)
+> > -               return ret;
+> > +       io.fd =3D open(entry, O_RDONLY);
+>
+> The entry is a name in sysfs, so you need to get the full name.
+>
+> Thanks,
+> Namhyung
 
+Thanks, added in v5.
 
-On 11/23/23 21:02, Jarkko Sakkinen wrote:
-> From: James Bottomley <James.Bottomley@HansenPartnership.com>
-> 
-> separate out the tpm_buf_... handling functions from static inlines in
-> tpm.h and move them to their own tpm-buf.c file.  This is a precursor
-> to adding new functions for other TPM type handling because the amount
-> of code will grow from the current 70 lines in tpm.h to about 200
-> lines when the additions are done.  200 lines of inline functions is a
-> bit too much to keep in a header file.
-> 
-> Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+Ian
 
-Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-
-> ---
-> v3: make tpm_buf_tag static
-> v4: remove space after spdx tag
-> v5: fix checkpatch.pl --strict issues
-> ---
->   drivers/char/tpm/Makefile  |  1 +
->   drivers/char/tpm/tpm-buf.c | 87 ++++++++++++++++++++++++++++++++++++++
->   include/linux/tpm.h        | 80 ++++-------------------------------
->   3 files changed, 97 insertions(+), 71 deletions(-)
->   create mode 100644 drivers/char/tpm/tpm-buf.c
-> 
-> diff --git a/drivers/char/tpm/Makefile b/drivers/char/tpm/Makefile
-> index 0222b1ddb310..ad3594e383e1 100644
-> --- a/drivers/char/tpm/Makefile
-> +++ b/drivers/char/tpm/Makefile
-> @@ -15,6 +15,7 @@ tpm-y += tpm-sysfs.o
->   tpm-y += eventlog/common.o
->   tpm-y += eventlog/tpm1.o
->   tpm-y += eventlog/tpm2.o
-> +tpm-y += tpm-buf.o
->   
->   tpm-$(CONFIG_ACPI) += tpm_ppi.o eventlog/acpi.o
->   tpm-$(CONFIG_EFI) += eventlog/efi.o
-> diff --git a/drivers/char/tpm/tpm-buf.c b/drivers/char/tpm/tpm-buf.c
-> new file mode 100644
-> index 000000000000..96cee41d5b9c
-> --- /dev/null
-> +++ b/drivers/char/tpm/tpm-buf.c
-> @@ -0,0 +1,87 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Handling of TPM command and other buffers.
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/tpm.h>
-> +
-> +int tpm_buf_init(struct tpm_buf *buf, u16 tag, u32 ordinal)
-> +{
-> +	buf->data = (u8 *)__get_free_page(GFP_KERNEL);
-> +	if (!buf->data)
-> +		return -ENOMEM;
-> +
-> +	buf->flags = 0;
-> +	tpm_buf_reset(buf, tag, ordinal);
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(tpm_buf_init);
-> +
-> +void tpm_buf_reset(struct tpm_buf *buf, u16 tag, u32 ordinal)
-> +{
-> +	struct tpm_header *head = (struct tpm_header *)buf->data;
-> +
-> +	head->tag = cpu_to_be16(tag);
-> +	head->length = cpu_to_be32(sizeof(*head));
-> +	head->ordinal = cpu_to_be32(ordinal);
-> +}
-> +EXPORT_SYMBOL_GPL(tpm_buf_reset);
-> +
-> +void tpm_buf_destroy(struct tpm_buf *buf)
-> +{
-> +	free_page((unsigned long)buf->data);
-> +}
-> +EXPORT_SYMBOL_GPL(tpm_buf_destroy);
-> +
-> +u32 tpm_buf_length(struct tpm_buf *buf)
-> +{
-> +	struct tpm_header *head = (struct tpm_header *)buf->data;
-> +
-> +	return be32_to_cpu(head->length);
-> +}
-> +EXPORT_SYMBOL_GPL(tpm_buf_length);
-> +
-> +void tpm_buf_append(struct tpm_buf *buf,
-> +		    const unsigned char *new_data,
-> +		    unsigned int new_len)
-> +{
-> +	struct tpm_header *head = (struct tpm_header *)buf->data;
-> +	u32 len = tpm_buf_length(buf);
-> +
-> +	/* Return silently if overflow has already happened. */
-> +	if (buf->flags & TPM_BUF_OVERFLOW)
-> +		return;
-> +
-> +	if ((len + new_len) > PAGE_SIZE) {
-> +		WARN(1, "tpm_buf: overflow\n");
-> +		buf->flags |= TPM_BUF_OVERFLOW;
-> +		return;
-> +	}
-> +
-> +	memcpy(&buf->data[len], new_data, new_len);
-> +	head->length = cpu_to_be32(len + new_len);
-> +}
-> +EXPORT_SYMBOL_GPL(tpm_buf_append);
-> +
-> +void tpm_buf_append_u8(struct tpm_buf *buf, const u8 value)
-> +{
-> +	tpm_buf_append(buf, &value, 1);
-> +}
-> +EXPORT_SYMBOL_GPL(tpm_buf_append_u8);
-> +
-> +void tpm_buf_append_u16(struct tpm_buf *buf, const u16 value)
-> +{
-> +	__be16 value2 = cpu_to_be16(value);
-> +
-> +	tpm_buf_append(buf, (u8 *)&value2, 2);
-> +}
-> +EXPORT_SYMBOL_GPL(tpm_buf_append_u16);
-> +
-> +void tpm_buf_append_u32(struct tpm_buf *buf, const u32 value)
-> +{
-> +	__be32 value2 = cpu_to_be32(value);
-> +
-> +	tpm_buf_append(buf, (u8 *)&value2, 4);
-> +}
-> +EXPORT_SYMBOL_GPL(tpm_buf_append_u32);
-> diff --git a/include/linux/tpm.h b/include/linux/tpm.h
-> index d9d645e9c52c..bb0e8718a432 100644
-> --- a/include/linux/tpm.h
-> +++ b/include/linux/tpm.h
-> @@ -326,77 +326,15 @@ struct tpm2_hash {
->   	unsigned int tpm_id;
->   };
->   
-> -static inline void tpm_buf_reset(struct tpm_buf *buf, u16 tag, u32 ordinal)
-> -{
-> -	struct tpm_header *head = (struct tpm_header *)buf->data;
-> -
-> -	head->tag = cpu_to_be16(tag);
-> -	head->length = cpu_to_be32(sizeof(*head));
-> -	head->ordinal = cpu_to_be32(ordinal);
-> -}
-> -
-> -static inline int tpm_buf_init(struct tpm_buf *buf, u16 tag, u32 ordinal)
-> -{
-> -	buf->data = (u8 *)__get_free_page(GFP_KERNEL);
-> -	if (!buf->data)
-> -		return -ENOMEM;
-> -
-> -	buf->flags = 0;
-> -	tpm_buf_reset(buf, tag, ordinal);
-> -	return 0;
-> -}
-> -
-> -static inline void tpm_buf_destroy(struct tpm_buf *buf)
-> -{
-> -	free_page((unsigned long)buf->data);
-> -}
-> -
-> -static inline u32 tpm_buf_length(struct tpm_buf *buf)
-> -{
-> -	struct tpm_header *head = (struct tpm_header *)buf->data;
-> -
-> -	return be32_to_cpu(head->length);
-> -}
-> -
-> -static inline void tpm_buf_append(struct tpm_buf *buf,
-> -				  const unsigned char *new_data,
-> -				  unsigned int new_len)
-> -{
-> -	struct tpm_header *head = (struct tpm_header *)buf->data;
-> -	u32 len = tpm_buf_length(buf);
-> -
-> -	/* Return silently if overflow has already happened. */
-> -	if (buf->flags & TPM_BUF_OVERFLOW)
-> -		return;
-> -
-> -	if ((len + new_len) > PAGE_SIZE) {
-> -		WARN(1, "tpm_buf: overflow\n");
-> -		buf->flags |= TPM_BUF_OVERFLOW;
-> -		return;
-> -	}
-> -
-> -	memcpy(&buf->data[len], new_data, new_len);
-> -	head->length = cpu_to_be32(len + new_len);
-> -}
-> -
-> -static inline void tpm_buf_append_u8(struct tpm_buf *buf, const u8 value)
-> -{
-> -	tpm_buf_append(buf, &value, 1);
-> -}
-> -
-> -static inline void tpm_buf_append_u16(struct tpm_buf *buf, const u16 value)
-> -{
-> -	__be16 value2 = cpu_to_be16(value);
-> -
-> -	tpm_buf_append(buf, (u8 *) &value2, 2);
-> -}
-> -
-> -static inline void tpm_buf_append_u32(struct tpm_buf *buf, const u32 value)
-> -{
-> -	__be32 value2 = cpu_to_be32(value);
-> -
-> -	tpm_buf_append(buf, (u8 *) &value2, 4);
-> -}
-> +int tpm_buf_init(struct tpm_buf *buf, u16 tag, u32 ordinal);
-> +void tpm_buf_reset(struct tpm_buf *buf, u16 tag, u32 ordinal);
-> +void tpm_buf_destroy(struct tpm_buf *buf);
-> +u32 tpm_buf_length(struct tpm_buf *buf);
-> +void tpm_buf_append(struct tpm_buf *buf, const unsigned char *new_data,
-> +		    unsigned int new_len);
-> +void tpm_buf_append_u8(struct tpm_buf *buf, const u8 value);
-> +void tpm_buf_append_u16(struct tpm_buf *buf, const u16 value);
-> +void tpm_buf_append_u32(struct tpm_buf *buf, const u32 value);
->   
->   /*
->    * Check if TPM device is in the firmware upgrade mode.
+>
+> > +       if (io.fd < 0)
+> > +               return -errno;
+> >
+> > -       switch (buf[0]) {
+> > +       io__init(&io, io.fd, bf, sizeof(bf));
+> > +       switch (io__get_char(&io)) {
+> >         case '1':
+> >         case 'y':
+> >         case 'Y':
+> > @@ -469,8 +470,7 @@ int sysfs__read_bool(const char *entry, bool *value=
+)
+> >         default:
+> >                 ret =3D -1;
+> >         }
+> > -
+> > -       free(buf);
+> > +       close(io.fd);
+> >
+> >         return ret;
+> >  }
+> > --
+> > 2.42.0.869.gea05f2083d-goog
+> >
