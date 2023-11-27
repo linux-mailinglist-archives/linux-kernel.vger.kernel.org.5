@@ -2,99 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7DAB7FA2A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:29:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0277FA28F
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:23:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233747AbjK0O33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 09:29:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59754 "EHLO
+        id S233717AbjK0OXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 09:23:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233810AbjK0O3F (ORCPT
+        with ESMTP id S233691AbjK0OXV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 09:29:05 -0500
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 706CA191;
-        Mon, 27 Nov 2023 06:20:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=vYJiZnZcNUBYGYtSR2ZD0f7WcY21+xweimfWC3eYkvM=; b=DM3W8Idf5ng0oAfNazlB2osNZr
-        GwbiDbEze9kGbszuzYAlmV9YOGueadSfStJQb8bc65hAWpQN/2NqRyJxFqajygiYDW2v/vnzlYZYK
-        k2v/khuoNbSk8YqXPVf7/K/kHCXdlmM9Bumi3xNqcGL9lfk4BUu0eAKKPDBlqnmdXEQ5Z5FZMp8It
-        32e3vHPJy7e5/QDwpVt1c45tjv6z709Kev1/42r59QrfIwQs+X6bQy+mDolr24M7Rqvi3EvExww8S
-        l0PYKGYbr5H/sNTbcC1oi77ThruJGAkj+o/9DeXOpatG2gcKNWbLgAE7niZ5WFgNQVdPJlNrVi459
-        Ae6MFZjQ==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1r7cTR-000CGz-E6; Mon, 27 Nov 2023 15:20:33 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1r7cTQ-000I1q-SK; Mon, 27 Nov 2023 15:20:32 +0100
-Subject: Re: [PATCH] bpf: declare bpf_sk_storage_get_cg_sock_proto
-To:     Ben Dooks <ben.dooks@codethink.co.uk>, netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        sdf@google.com
-References: <20231122081317.145355-1-ben.dooks@codethink.co.uk>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <c9628533-52c8-b497-23ec-e373768a6243@iogearbox.net>
-Date:   Mon, 27 Nov 2023 15:20:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Mon, 27 Nov 2023 09:23:21 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1271135B7
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:20:54 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d9caf5cc948so3815203276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:20:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701094853; x=1701699653; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sVX1ZdZzljfmPCYv1WhnlNhNZCpdUFWAqA4zgj/34kc=;
+        b=bjcb1Q47mnhyYQZsMO6BA4J6qIEzhtXDoLXcgbFZhFFU+jK/cilyru07Wxtx/rozkE
+         +3XDLLMZTyPZOH0xnP6sCaFRFJ07X9dWm/pofKVUq4b10oRcKE3ibSz1i1nT0G9B0udk
+         tMOHsEEBnlUxk6wAQrCAboub8iZHviJ9tnuFcrjz4Jb2UOxLsLdHCBvr2MPY58d3B1vk
+         udqzk12Gp2CQ8d14l6rlIhBjknDXKV/UU/ui4lMtozOV2Ftjc2l2tE2/6IBYzY2Uu+jK
+         D9Ey/T4yFMvCmIBUDSj8UchSQqiFiLwaIR5Wxj0Wkh+fJELbXR/GeCqiRa2iUa2a6gDX
+         gdeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701094853; x=1701699653;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sVX1ZdZzljfmPCYv1WhnlNhNZCpdUFWAqA4zgj/34kc=;
+        b=ukfT58wAT65JEwkrTWp9NxXhxlqAC8viZRRveiLL+EtLxq5o6MR+SQdXRXTzcptajK
+         8uickosTW9Hw6EVz4xHwezN/IRMjDp7vy2CDxZSD1S7lxSJ1tTK8r3k+z7OvFSSaAqRn
+         T0H7tNlHy5wY07dJgU/RSjgG/dIugwEyncWC9B7QiwGdABzYyV3n8uuUP0HEBOBqZKmn
+         2MWVvCVC1GRz8ConECHc08nZwBw6WnSDqne5JyzTA3uhb7LhjIgLcKZwTAI4K48S1ODY
+         sskRNBcqsILxsR3pCcjxTKfuw4NRxsttEl3fdpy/4Sbm0FqI0mAk1VhUC7h+lO+IP37I
+         jkCw==
+X-Gm-Message-State: AOJu0YzQpdwgi/pjPdW+2EyBSdAX0XIDiB02CD0wGlz3Yfvu6H/KsxPF
+        +51adD1o4jE+JkLg+oRbrZ5KczQ9o3AeQKdvOtA5Cg==
+X-Google-Smtp-Source: AGHT+IHPLnftzFinUokqEwBA0munIRtTDqhYJlD301948Ll5EDt+4sZPM19h7PS/NqDz2lnMSdp/6dzJPxFKf2QKxp8=
+X-Received: by 2002:a25:4c81:0:b0:d9a:bddd:f714 with SMTP id
+ z123-20020a254c81000000b00d9abdddf714mr9648302yba.9.1701094852552; Mon, 27
+ Nov 2023 06:20:52 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20231122081317.145355-1-ben.dooks@codethink.co.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27106/Mon Nov 27 09:39:12 2023)
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231114-marvell-88e6152-wan-led-v8-0-50688741691b@linaro.org>
+ <0bd7809b-7b99-4f88-9b06-266d566b5c36@lunn.ch> <CACRpkdZQj57CjArhcNKVDQ5fC+dsuYWsc6YXjQDC80QiASPB7A@mail.gmail.com>
+ <CACRpkdZvMRXHKktM-HPZZRCrV0JgErqDOHmkyKAcB36ObwOX7A@mail.gmail.com> <9c1a2484-6631-42e1-a576-10e9d600e8c5@lunn.ch>
+In-Reply-To: <9c1a2484-6631-42e1-a576-10e9d600e8c5@lunn.ch>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 27 Nov 2023 15:20:40 +0100
+Message-ID: <CACRpkdZ4Eqv4TtojQDVDOo8eP=gdeoBsH3_wvJcAbf_z5u6Q5A@mail.gmail.com>
+Subject: Re: [PATCH net-next v8 0/9] Create a binding for the Marvell
+ MV88E6xxx DSA switches
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Rob Herring <robh@kernel.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/22/23 9:13 AM, Ben Dooks wrote:
-> The bpf_sk_storage_get_cg_sock_proto struct is exported from
-> net/core/bpf_sk_storage.c but is not decalred in any header
+On Sun, Nov 26, 2023 at 10:06=E2=80=AFPM Andrew Lunn <andrew@lunn.ch> wrote=
+:
+> > Shawn is busy I guess, but looking at the activity in arch/arm/boot/dts=
+/nxp
+> > iIt seems pretty risk-free to apply.
+> >
+> > An alternative is to simply apply all but patch 4/9 (the NXP patch), be=
+cause
+> > the rest is Andrew territory.
+>
+> Could you split it into two patchsets? Gregory and I can deal with all
+> the Marvell patches.
 
-nit: typo
+OK good idea. Actually three:
 
-> file. Fix the following sparse warning by adding it to the
-> include/net/bpf_sk_storage.h header:
-> 
-> net/core/bpf_sk_storage.c:334:29: warning: symbol 'bpf_sk_storage_get_cg_sock_proto' was not declared. Should it be static
+1. Bindings only (for netdev/dsa)
+2. Marvell cleanups (for DTS files/SoCs)
+3. The NXP cleanup patch
 
-Please add Fixes tag and Cc author (sdf@google.com) as well as bpf@vger.kernel.org:
-
-Fixes: f7c6cb1d9728 ("bpf: Expose socket storage to BPF_PROG_TYPE_CGROUP_SOCK")
-
-> Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
-> ---
->   include/net/bpf_sk_storage.h | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/include/net/bpf_sk_storage.h b/include/net/bpf_sk_storage.h
-> index 2926f1f00d65..043155810822 100644
-> --- a/include/net/bpf_sk_storage.h
-> +++ b/include/net/bpf_sk_storage.h
-> @@ -22,6 +22,7 @@ extern const struct bpf_func_proto bpf_sk_storage_get_proto;
->   extern const struct bpf_func_proto bpf_sk_storage_delete_proto;
->   extern const struct bpf_func_proto bpf_sk_storage_get_tracing_proto;
->   extern const struct bpf_func_proto bpf_sk_storage_delete_tracing_proto;
-> +extern const struct bpf_func_proto bpf_sk_storage_get_cg_sock_proto;
->   
->   struct bpf_local_storage_elem;
->   struct bpf_sk_storage_diag;
-> 
-
+Yours,
+Linus Walleij
