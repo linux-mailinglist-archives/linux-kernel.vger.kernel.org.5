@@ -2,49 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BBBE7F9E60
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:17:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD1D7F9E67
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:19:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233121AbjK0LRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 06:17:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40196 "EHLO
+        id S233122AbjK0LTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 06:19:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233100AbjK0LRq (ORCPT
+        with ESMTP id S233095AbjK0LTp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 06:17:46 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF21C18F;
-        Mon, 27 Nov 2023 03:17:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1701083870;
-        bh=GnVT0hiyn7TRSDmZz7FBYTKjVoHrPlsa0H3dZCecCEo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=KxiLisXTDDkTUgkB74pMzkUlMMDLgbdJGDw/XcZNf8xCXCLuTBKYa67cdJO+ny2gH
-         kZLXVhrOz4bR5NahPmu3IDjZgYB/GgBs3SRqe8b18g+YPX6xgY4yvkfc1A5z4A4uNK
-         e2fzf7FMV/c37pGWbYjNpAqxIuHEXBKll+IdEVdoJ93gJ1zqrTIH06Y+Ruy9XdUUje
-         xG8m1oVL650hAqYh0Zq/uj9WjtUva3Y4kMfPrH7Od/iU+N4vqEczldwJuu6drr2A1k
-         HgjxXucbct4JovVvW6sAwoGLOkDzIotaF+H0Y+4JcIv5Bz8DYGl4hLhih4ySXcjWio
-         WbGWoXeTgv7sw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Sf33L3JxHz4wd2;
-        Mon, 27 Nov 2023 22:17:50 +1100 (AEDT)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     brking@us.ibm.com
-Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] scsi: ipr: Remove obsolete check for old CPUs
-Date:   Mon, 27 Nov 2023 22:17:40 +1100
-Message-ID: <20231127111740.1288463-1-mpe@ellerman.id.au>
-X-Mailer: git-send-email 2.41.0
+        Mon, 27 Nov 2023 06:19:45 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6AD135
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 03:19:51 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1r7ZeO-0000ed-Kg; Mon, 27 Nov 2023 12:19:40 +0100
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <sha@pengutronix.de>)
+        id 1r7ZeL-00BvgR-89; Mon, 27 Nov 2023 12:19:37 +0100
+Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1r7ZeL-00459o-52; Mon, 27 Nov 2023 12:19:37 +0100
+Date:   Mon, 27 Nov 2023 12:19:37 +0100
+From:   Sascha Hauer <s.hauer@pengutronix.de>
+To:     Andy Yan <andyshrk@163.com>
+Cc:     heiko@sntech.de, hjc@rock-chips.com,
+        dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
+        kever.yang@rock-chips.com, chris.obbard@collabora.com,
+        Andy Yan <andy.yan@rock-chips.com>
+Subject: Re: [PATCH v2 10/12] drm/rockchip: vop2: Add support for rk3588
+Message-ID: <20231127111937.GW3359458@pengutronix.de>
+References: <20231122125316.3454268-1-andyshrk@163.com>
+ <20231122125544.3454918-1-andyshrk@163.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231122125544.3454918-1-andyshrk@163.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,109 +64,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The IPR driver has a routine to check whether it's running on certain
-CPU versions and if so whether the adapter is supported on that CPU.
+Hi Andy,
 
-But none of the CPUs it checks for are supported by Linux anymore.
+Looks good overall, two small things inside.
 
-The most recent CPU it checks for is Power4+ which was removed in commit
-471d7ff8b51b ("powerpc/64s: Remove POWER4 support").
+On Wed, Nov 22, 2023 at 08:55:44PM +0800, Andy Yan wrote:
+>  
+> +#define vop2_output_if_is_hdmi(x)	(x == ROCKCHIP_VOP2_EP_HDMI0 || x == ROCKCHIP_VOP2_EP_HDMI1)
+> +#define vop2_output_if_is_dp(x)		(x == ROCKCHIP_VOP2_EP_DP0 || x == ROCKCHIP_VOP2_EP_DP1)
+> +#define vop2_output_if_is_edp(x)	(x == ROCKCHIP_VOP2_EP_EDP0 || x == ROCKCHIP_VOP2_EP_EDP1)
+> +#define vop2_output_if_is_mipi(x)	(x == ROCKCHIP_VOP2_EP_MIPI0 || x == ROCKCHIP_VOP2_EP_MIPI1)
+> +#define vop2_output_if_is_lvds(x)	(x == ROCKCHIP_VOP2_EP_LVDS0 || x == ROCKCHIP_VOP2_EP_LVDS1)
+> +#define vop2_output_if_is_dpi(x)	(x == ROCKCHIP_VOP2_EP_RGB0)
 
-So drop the check. That makes the "testmode" module paramter unused, so
-remove it as well.
+Not that it matters in practice here, but you should add braces around
+the x argument in the macros usage, i.e. ((x) == ROCKCHIP_VOP2_EP_RGB0)
 
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
----
- drivers/scsi/ipr.c | 55 ----------------------------------------------
- 1 file changed, 55 deletions(-)
+> +static unsigned long rk3588_set_intf_mux(struct vop2_video_port *vp, int id, u32 polflags)
+> +{
+> +	struct vop2 *vop2 = vp->vop2;
+> +	int dclk_core_div, dclk_out_div, if_pixclk_div, if_dclk_div;
+> +	unsigned long clock;
+> +	u32 die, dip, div, vp_clk_div, val;
+> +
+> +	clock = rk3588_calc_cru_cfg(vp, id, &dclk_core_div, &dclk_out_div,
+> +				    &if_pixclk_div, &if_dclk_div);
+> +	if (!clock)
+> +		return 0;
+> +
+> +	vp_clk_div = FIELD_PREP(RK3588_VP_CLK_CTRL__DCLK_CORE_DIV, dclk_core_div);
+> +	vp_clk_div |= FIELD_PREP(RK3588_VP_CLK_CTRL__DCLK_OUT_DIV, dclk_out_div);
+> +
+> +	die = vop2_readl(vop2, RK3568_DSP_IF_EN);
+> +	dip = vop2_readl(vop2, RK3568_DSP_IF_POL);
+> +	div = vop2_readl(vop2, RK3568_DSP_IF_CTRL);
+> +
+> +	switch (id) {
+> +	case ROCKCHIP_VOP2_EP_HDMI0:
+> +		div |= FIELD_PREP(RK3588_DSP_IF_EDP_HDMI0_DCLK_DIV, if_dclk_div);
 
-diff --git a/drivers/scsi/ipr.c b/drivers/scsi/ipr.c
-index 81e3d464d1f6..3819f7c42788 100644
---- a/drivers/scsi/ipr.c
-+++ b/drivers/scsi/ipr.c
-@@ -77,7 +77,6 @@
- static LIST_HEAD(ipr_ioa_head);
- static unsigned int ipr_log_level = IPR_DEFAULT_LOG_LEVEL;
- static unsigned int ipr_max_speed = 1;
--static int ipr_testmode = 0;
- static unsigned int ipr_fastfail = 0;
- static unsigned int ipr_transop_timeout = 0;
- static unsigned int ipr_debug = 0;
-@@ -193,8 +192,6 @@ module_param_named(max_speed, ipr_max_speed, uint, 0);
- MODULE_PARM_DESC(max_speed, "Maximum bus speed (0-2). Default: 1=U160. Speeds: 0=80 MB/s, 1=U160, 2=U320");
- module_param_named(log_level, ipr_log_level, uint, 0);
- MODULE_PARM_DESC(log_level, "Set to 0 - 4 for increasing verbosity of device driver");
--module_param_named(testmode, ipr_testmode, int, 0);
--MODULE_PARM_DESC(testmode, "DANGEROUS!!! Allows unsupported configurations");
- module_param_named(fastfail, ipr_fastfail, int, S_IRUGO | S_IWUSR);
- MODULE_PARM_DESC(fastfail, "Reduce timeouts and retries");
- module_param_named(transop_timeout, ipr_transop_timeout, int, 0);
-@@ -6416,45 +6413,6 @@ static const struct scsi_host_template driver_template = {
- 	.proc_name = IPR_NAME,
- };
- 
--#ifdef CONFIG_PPC_PSERIES
--static const u16 ipr_blocked_processors[] = {
--	PVR_NORTHSTAR,
--	PVR_PULSAR,
--	PVR_POWER4,
--	PVR_ICESTAR,
--	PVR_SSTAR,
--	PVR_POWER4p,
--	PVR_630,
--	PVR_630p
--};
--
--/**
-- * ipr_invalid_adapter - Determine if this adapter is supported on this hardware
-- * @ioa_cfg:	ioa cfg struct
-- *
-- * Adapters that use Gemstone revision < 3.1 do not work reliably on
-- * certain pSeries hardware. This function determines if the given
-- * adapter is in one of these confgurations or not.
-- *
-- * Return value:
-- * 	1 if adapter is not supported / 0 if adapter is supported
-- **/
--static int ipr_invalid_adapter(struct ipr_ioa_cfg *ioa_cfg)
--{
--	int i;
--
--	if ((ioa_cfg->type == 0x5702) && (ioa_cfg->pdev->revision < 4)) {
--		for (i = 0; i < ARRAY_SIZE(ipr_blocked_processors); i++) {
--			if (pvr_version_is(ipr_blocked_processors[i]))
--				return 1;
--		}
--	}
--	return 0;
--}
--#else
--#define ipr_invalid_adapter(ioa_cfg) 0
--#endif
--
- /**
-  * ipr_ioa_bringdown_done - IOA bring down completion.
-  * @ipr_cmd:	ipr command struct
-@@ -7385,19 +7343,6 @@ static int ipr_ioafp_page0_inquiry(struct ipr_cmnd *ipr_cmd)
- 	type[4] = '\0';
- 	ioa_cfg->type = simple_strtoul((char *)type, NULL, 16);
- 
--	if (ipr_invalid_adapter(ioa_cfg)) {
--		dev_err(&ioa_cfg->pdev->dev,
--			"Adapter not supported in this hardware configuration.\n");
--
--		if (!ipr_testmode) {
--			ioa_cfg->reset_retries += IPR_NUM_RESET_RELOAD_RETRIES;
--			ipr_initiate_ioa_reset(ioa_cfg, IPR_SHUTDOWN_NONE);
--			list_add_tail(&ipr_cmd->queue,
--					&ioa_cfg->hrrq->hrrq_free_q);
--			return IPR_RC_JOB_RETURN;
--		}
--	}
--
- 	ipr_cmd->job_step = ipr_ioafp_page3_inquiry;
- 
- 	ipr_ioafp_inquiry(ipr_cmd, 1, 0,
+you should clear the bits of a mask before setting them again. The same
+goes for several other bits modified in this switch/case.
+
+> +		div |= FIELD_PREP(RK3588_DSP_IF_EDP_HDMI0_PCLK_DIV, if_pixclk_div);
+> +		die &= ~RK3588_SYS_DSP_INFACE_EN_EDP_HDMI0_MUX;
+> +		die |= RK3588_SYS_DSP_INFACE_EN_HDMI0 |
+> +			    FIELD_PREP(RK3588_SYS_DSP_INFACE_EN_EDP_HDMI0_MUX, vp->id);
+> +		val = rk3588_get_hdmi_pol(polflags);
+> +		regmap_write(vop2->vop_grf, RK3588_GRF_VOP_CON2, HIWORD_UPDATE(1, 1, 1));
+> +		regmap_write(vop2->vo1_grf, RK3588_GRF_VO1_CON0, HIWORD_UPDATE(val, 6, 5));
+> +		break;
+
+Sascha
+
 -- 
-2.41.0
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
