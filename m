@@ -2,120 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5255D7FACAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:42:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0CC37FACB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233054AbjK0VmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 16:42:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47772 "EHLO
+        id S232608AbjK0VmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 16:42:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbjK0VmB (ORCPT
+        with ESMTP id S233050AbjK0VmD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 16:42:01 -0500
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF401A1;
-        Mon, 27 Nov 2023 13:42:06 -0800 (PST)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3ARLfv2O083467;
-        Mon, 27 Nov 2023 15:41:57 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701121317;
-        bh=446ESLgZYmmg8jBKicvqQhbXXl4nU4Lj3K6FhApWxkE=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=EcVTTNJglJ0Re/Rgnl8Y9QF0RX3jygrDdr/zaYuvBKUqgoro69KCKOp2+LtrDSX1p
-         tGTgE1UhDgSwsnsKTyX1B6oLk9U9nB9f8DycNnCfxv5VPX4DYbwUKLGjN61x4a1fHP
-         eT0YHHbSms/tsYR8ebJddmfGoJzMzDx4mgh2+WY8=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3ARLfvYq012050
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 27 Nov 2023 15:41:57 -0600
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 27
- Nov 2023 15:41:56 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 27 Nov 2023 15:41:56 -0600
-Received: from [128.247.81.105] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3ARLfuNR045357;
-        Mon, 27 Nov 2023 15:41:56 -0600
-Message-ID: <4953b4e5-0f9c-4a3a-ae69-40716750cb40@ti.com>
-Date:   Mon, 27 Nov 2023 15:41:56 -0600
+        Mon, 27 Nov 2023 16:42:03 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D12791B8;
+        Mon, 27 Nov 2023 13:42:09 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6cbccd8e35eso1198013b3a.1;
+        Mon, 27 Nov 2023 13:42:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701121329; x=1701726129; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=myrpZavS/ZIQlzexaWPRFCPa0NXMX6v/A+LHtFffEwM=;
+        b=EmvdYx8y0hHTeDeyk78Cu0LzdJRXscp9G+5QD1xkk0mluMR0iEg9j6YoU7yGhyzCwZ
+         dDo6W4CSFy6aQRJgeRNFLGSRFWqXfonCQUU/JEb38rQBaZcqYfAPcfE2wdkde7fdqqO2
+         /+hW3RSXhhFujQH2WdXtdBkJ0pLT3gvEZgQDNq4cJth9ke0NrWUltaoSPFkt/OCRLWwI
+         PMcyPWaoOWBmy684TC0aJ3KSIwxjqiAK+7i1sEf8ZUl+DaQLLkXganc77vR0BU82mPhd
+         5EyZc5nYsyJB0NmW1DcOC2+YeQ8kdzPMPQUpGbn1gV/VMgh4JMfX5B3NGK1kKzsepNkt
+         7Kgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701121329; x=1701726129;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=myrpZavS/ZIQlzexaWPRFCPa0NXMX6v/A+LHtFffEwM=;
+        b=ErfDw6Cr8BXf98Wp+dQ/YwF3gP1LzTTGrXq/YHIYdSV9r8CbbsDxoXfjOx5e3MtOdN
+         9dloVTPI5aPpucITRYGkCg1rVsJQjJ0ffBmtpAIJFAxugahsYlivb+lel2AkVgoLaNO0
+         sNlUhTCHdZxf6+khekUOxtUpOzVBWfaLAnG9zUMoXySY+bJKmBVmlTyJzKXJ2mmUaVbw
+         hHjK0ynX43BfE2DxKD3RyJMvBk1J4hFgpJq//h9Wgi1CoTQHIzq/wxPAoYni2qM0xFvi
+         bU3wxyhoARL/K/ceGRAtDwZxZ9n/iOyRPFm1OqGiuhjZ7N2IHAYJtpTw8q28hJRYedPE
+         X8fA==
+X-Gm-Message-State: AOJu0YxH0OUHY220LJHrKmKoBcYP3+MOSf1ekSc2QgvRfuAVzfD9Lb2S
+        zhXTHKl0zrrq4OiLkJKAX6s=
+X-Google-Smtp-Source: AGHT+IG4FcBRubObIdbxx1j8SLDN83CYW50zmjGMM8K5Ac2bHqz0ogsU0YmmRfKNIZ6pC3ltIDmdMw==
+X-Received: by 2002:a05:6a00:3a04:b0:6bc:67ca:671d with SMTP id fj4-20020a056a003a0400b006bc67ca671dmr16117092pfb.1.1701121329177;
+        Mon, 27 Nov 2023 13:42:09 -0800 (PST)
+Received: from abhinav.. ([103.75.161.210])
+        by smtp.gmail.com with ESMTPSA id x8-20020aa79188000000b00686b649cdd0sm7680206pfa.86.2023.11.27.13.42.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 13:42:08 -0800 (PST)
+From:   Abhinav Singh <singhabhinav9051571833@gmail.com>
+To:     mchehab@kernel.org, bp@alien8.de, tony.luck@intel.com,
+        james.morse@arm.com, rric@kernel.org, qiuxu.zhuo@intel.com
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Abhinav Singh <singhabhinav9051571833@gmail.com>
+Subject: [PATCH v2] driver : edac : Fix warning using plain integer as NULL
+Date:   Tue, 28 Nov 2023 03:11:56 +0530
+Message-Id: <20231127214156.432669-1-singhabhinav9051571833@gmail.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20231127202906.GIZWT8EgKxGzLQTRtw@fat_crate.local>
+References: <20231127202906.GIZWT8EgKxGzLQTRtw@fat_crate.local>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] arm64: dts: ti: k3-am62a-main: Add sdhci0 instance
-To:     Nitin Yadav <n-yadav@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
-        <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20231030063108.1242981-1-n-yadav@ti.com>
- <20231030063108.1242981-2-n-yadav@ti.com>
-Content-Language: en-US
-From:   Judith Mendez <jm@ti.com>
-In-Reply-To: <20231030063108.1242981-2-n-yadav@ti.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/30/23 1:31 AM, Nitin Yadav wrote:
-> Add sdhci0 DT node in k3-am62a-main for eMMC support. Droping
-> ITAP values as they are NA in datasheet[0] for lower speed modes.
-> 
-> [0]https://www.ti.com/lit/gpn/am62a3 Table: 7-79 (Page No. 179)
-> 
+Sparse static analysis tools generate a warning with this message
+"Using plain integer as NULL pointer". In this case this warning is
+being shown because we are trying to initialize  pointer to NULL using
+integer value 0.
 
-Minor comment below. All else looks good to me.
+The reason for this change is that use of numeric 0 for a null pointer is 
+unacceptable. See this link for the long description why:
+Link: https://www.spinics.net/lists/linux-sparse/msg10066.html
 
-Reviewed by: Judith Mendez <jm@ti.com>
+Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
+---
+v1 -> v2: 1. Fixed the comment section descrbing the current code.
+	  2. Added a reason for why this change is required.
 
-> Signed-off-by: Nitin Yadav <n-yadav@ti.com>
-> ---
->   arch/arm64/boot/dts/ti/k3-am62a-main.dtsi | 19 +++++++++++++++++++
->   1 file changed, 19 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-> index de36abb243f1..89b8b7d302cd 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-> @@ -488,6 +488,25 @@ main_gpio1: gpio@601000 {
->   		status = "disabled";
->   	};
->   
-> +	sdhci0: mmc@fa10000 {
-> +		compatible = "ti,am62-sdhci";
-> +		reg = <0x00 0xfa10000 0x00 0x260>, <0x00 0xfa18000 0x00 0x134>;
-> +		interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
-> +		power-domains = <&k3_pds 57 TI_SCI_PD_EXCLUSIVE>;
-> +		clocks = <&k3_clks 57 5>, <&k3_clks 57 6>;
-> +		clock-names = "clk_ahb", "clk_xin";
-> +		assigned-clocks = <&k3_clks 57 6>;
-> +		assigned-clock-parents = <&k3_clks 57 8>;
-> +		mmc-hs200-1_8v;
-> +		ti,trm-icp = <0x2>;
-> +		ti,otap-del-sel-legacy = <0x0>;
-> +		ti,otap-del-sel-mmc-hs = <0x0>;
-> +		ti,otap-del-sel-hs200 = <0x6>;
+ drivers/edac/i7core_edac.c | 4 ++--
+ drivers/edac/sb_edac.c     | 6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-I am wondering why DDR52 speed mode was not added?
+diff --git a/drivers/edac/i7core_edac.c b/drivers/edac/i7core_edac.c
+index 08bf20c60111..4c76d0f180ec 100644
+--- a/drivers/edac/i7core_edac.c
++++ b/drivers/edac/i7core_edac.c
+@@ -376,7 +376,7 @@ static const struct pci_id_table pci_dev_table[] = {
+ 	PCI_ID_TABLE_ENTRY(pci_dev_descr_i7core_nehalem),
+ 	PCI_ID_TABLE_ENTRY(pci_dev_descr_lynnfield),
+ 	PCI_ID_TABLE_ENTRY(pci_dev_descr_i7core_westmere),
+-	{NULL,}			/* 0 terminated list. */
++	{NULL,}			/* NULL terminated list. */
+ };
+ 
+ /*
+@@ -385,7 +385,7 @@ static const struct pci_id_table pci_dev_table[] = {
+ static const struct pci_device_id i7core_pci_tbl[] = {
+ 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_X58_HUB_MGMT)},
+ 	{PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_LYNNFIELD_QPI_LINK0)},
+-	{0,}			/* 0 terminated list. */
++	{0,}			/* NULL terminated list. */
+ };
+ 
+ /****************************************************************************
+diff --git a/drivers/edac/sb_edac.c b/drivers/edac/sb_edac.c
+index a3f50a66de33..5d9a2963dc54 100644
+--- a/drivers/edac/sb_edac.c
++++ b/drivers/edac/sb_edac.c
+@@ -439,7 +439,7 @@ static const struct pci_id_descr pci_dev_descr_sbridge[] = {
+ 
+ static const struct pci_id_table pci_dev_descr_sbridge_table[] = {
+ 	PCI_ID_TABLE_ENTRY(pci_dev_descr_sbridge, ARRAY_SIZE(pci_dev_descr_sbridge), 1, SANDY_BRIDGE),
+-	{NULL,}			/* 0 terminated list. */
++	{NULL,}			/* NULL terminated list. */
+ };
+ 
+ /* This changes depending if 1HA or 2HA:
+@@ -576,7 +576,7 @@ static const struct pci_id_descr pci_dev_descr_haswell[] = {
+ 
+ static const struct pci_id_table pci_dev_descr_haswell_table[] = {
+ 	PCI_ID_TABLE_ENTRY(pci_dev_descr_haswell, 13, 2, HASWELL),
+-	{NULL,}			/* 0 terminated list. */
++	{NULL,}			/* NULL terminated list. */
+ };
+ 
+ /* Knight's Landing Support */
+@@ -686,7 +686,7 @@ static const struct pci_id_descr pci_dev_descr_broadwell[] = {
+ 
+ static const struct pci_id_table pci_dev_descr_broadwell_table[] = {
+ 	PCI_ID_TABLE_ENTRY(pci_dev_descr_broadwell, 10, 2, BROADWELL),
+-	{NULL,}			/* 0 terminated list. */
++	{NULL,}			/* NULL terminated list. */
+ };
+ 
+ 
+-- 
+2.39.2
 
-> +		bus-width = <8>;
-> +		ti,clkbuf-sel = <0x7>;
-> +		status = "disabled";
-> +	};
-> +
->   	sdhci1: mmc@fa00000 {
->   		compatible = "ti,am62-sdhci";
->   		reg = <0x00 0xfa00000 0x00 0x260>, <0x00 0xfa08000 0x00 0x134>;
-
-~ Judith
