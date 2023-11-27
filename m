@@ -2,121 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4207F991B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 07:12:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2269B7F9927
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 07:22:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbjK0GMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 01:12:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45662 "EHLO
+        id S230123AbjK0GV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 01:21:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjK0GMo (ORCPT
+        with ESMTP id S229509AbjK0GVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 01:12:44 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A33AE1;
-        Sun, 26 Nov 2023 22:12:50 -0800 (PST)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AR263eq015676;
-        Mon, 27 Nov 2023 06:12:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Nw//Q0T2ItPW3xNVWkuPhtnEwG+agGNfwZ8OqqbER20=;
- b=mrDBRmM4W5BJJ/RSJMrSSZWtX2600J7lqT6+tPcBO04E4iZJYGBnHPJ+Ghf3EJ2gMSc+
- vG5zwZit2gtQRyVmK2SRKtxo0eYfSYIyFNQpjU1AD6D3ZYfDuLJZCOtFrNHmcBi28EsE
- yUC/3+4l1xmfqEdkTpstxa9ZrOH4SuRohg/Obv8z2QdUuERkvrrLuk3kMHiIEx4zeCRw
- xhy5W4RBjkxJ1QLN8tuU/+MZJ1fAWkq8Kg5as/pmiRPh2QcZ9ZUe2ARnI5FbygdaGlxH
- zpczCysdzm1io+zxnBB7fD7vfLWQM0/qqOEjUyROIfNBLYOgKYHqsF/gQ7rJubx7VryO Ew== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uk7xmbew3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 06:12:31 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AR6CUCX020583
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 06:12:30 GMT
-Received: from [10.253.33.46] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 26 Nov
- 2023 22:12:27 -0800
-Message-ID: <826700de-ed89-4ed9-b225-e0453ecbfd3f@quicinc.com>
-Date:   Mon, 27 Nov 2023 14:12:12 +0800
+        Mon, 27 Nov 2023 01:21:55 -0500
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 557B1E4;
+        Sun, 26 Nov 2023 22:21:58 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SdwTp0cTZz4f3m7D;
+        Mon, 27 Nov 2023 14:21:50 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+        by mail.maildlp.com (Postfix) with ESMTP id 71ECC1A092C;
+        Mon, 27 Nov 2023 14:21:54 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP1 (Coremail) with SMTP id cCh0CgDX2hB+NWRlrcU8CA--.57866S4;
+        Mon, 27 Nov 2023 14:21:53 +0800 (CST)
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+To:     hch@infradead.org, ming.lei@redhat.com, axboe@kernel.dk,
+        roger.pau@citrix.com, colyli@suse.de, kent.overstreet@gmail.com,
+        joern@lazybastard.org, miquel.raynal@bootlin.com, richard@nod.at,
+        vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
+        hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, nico@fluxnic.net, xiang@kernel.org,
+        chao@kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+        agruenba@redhat.com, jack@suse.com, konishi.ryusuke@gmail.com,
+        dchinner@redhat.com, linux@weissschuh.net, min15.li@samsung.com,
+        yukuai3@huawei.com, dlemoal@kernel.org, willy@infradead.org,
+        akpm@linux-foundation.org, hare@suse.de, p.raghav@samsung.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
+        yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: [PATCH block/for-next v2 00/16] block: remove field 'bd_inode' from block_device
+Date:   Mon, 27 Nov 2023 14:21:00 +0800
+Message-Id: <20231127062116.2355129-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 1/6] net: phy: introduce core support for phy-mode =
- "10g-qxgmii"
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <hkallweit1@gmail.com>, <linux@armlinux.org.uk>, <corbet@lwn.net>,
-        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>
-References: <20231126060732.31764-1-quic_luoj@quicinc.com>
- <20231126060732.31764-2-quic_luoj@quicinc.com>
- <f97fd2f0-3e39-4de0-8b1c-f333a0f56a7f@lunn.ch>
-Content-Language: en-US
-From:   Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <f97fd2f0-3e39-4de0-8b1c-f333a0f56a7f@lunn.ch>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: LpBQzuSRG-iAGm7WdZcBygis0OlOfSLD
-X-Proofpoint-GUID: LpBQzuSRG-iAGm7WdZcBygis0OlOfSLD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-27_03,2023-11-22_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- mlxlogscore=800 clxscore=1015 suspectscore=0 priorityscore=1501
- lowpriorityscore=0 spamscore=0 phishscore=0 impostorscore=0 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311270041
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgDX2hB+NWRlrcU8CA--.57866S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ar4fKw15Jr18CF1kZr1rtFb_yoW8urWfpr
+        9xKFWrJ3yjkryrua1Iqw45X345Ja1kKayxuF97Aw4ruFW8G34furWktrsxGrW0qrZrJrWj
+        gF13t34DJF4xXaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4U
+        JwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+        0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x0JUd8n5UUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Yu Kuai <yukuai3@huawei.com>
 
+Changes in v2:
+ - split different portions into different patches, as greg k-h
+ suggested.
+ - use container_of() instead of "bdev + 1" to get the address of
+ bd_inode in the new helper, as grep k-h suggested.
 
-On 11/27/2023 1:20 AM, Andrew Lunn wrote:
-> On Sun, Nov 26, 2023 at 02:07:27PM +0800, Luo Jie wrote:
->> From: Vladimir Oltean <vladimir.oltean@nxp.com>
->>
->> 10G-QXGMII is a MAC-to-PHY interface defined by the USXGMII multiport
->> specification. It uses the same signaling as USXGMII, but it multiplexes
->> 4 ports over the link, resulting in a maximum speed of 2.5G per port.
->>
->> Some in-tree SoCs like the NXP LS1028A use "usxgmii" when they mean
->> either the single-port USXGMII or the quad-port 10G-QXGMII variant, and
->> they could get away just fine with that thus far. But there is a need to
->> distinguish between the 2 as far as SerDes drivers are concerned.
-> 
-> Can this is split into two patches?
+Yu Kuai (16):
+  block: add a new helper to get inode from block_device
+  xen/blkback: use new helper to get inode from block_device
+  bcache: use new helper to get inode from block_device
+  mtd: block2mtd: use new helper to get inode from block_device
+  s390/dasd: use new helper to get inode from block_device
+  scsicam: use new helper to get inode from block_device
+  bcachefs: use new helper to get inode from block_device
+  btrfs: use new helper to get inode from block_device
+  cramfs: use new helper to get inode from block_device
+  erofs: use new helper to get inode from block_device
+  ext4: use new helper to get inode from block_device
+  gfs2: use new helper to get inode from block_device
+  jbd2: use new helper to get inode from block_device
+  nilfs2: use new helper to get inode from block_device
+  buffer: use new helper to get inode from block_device
+  block: use new helper to get inode from block_device
 
-This patch is a single logical for introducing the mode 10g-qxgmii,
-looks it's better to keep it within a single patch.
+ block/bdev.c                       | 44 +++++++++++++++---------------
+ block/blk-zoned.c                  |  4 +--
+ block/fops.c                       |  4 +--
+ block/genhd.c                      |  8 +++---
+ block/ioctl.c                      |  8 +++---
+ block/partitions/core.c            |  9 +++---
+ drivers/block/xen-blkback/xenbus.c |  2 +-
+ drivers/md/bcache/super.c          |  2 +-
+ drivers/mtd/devices/block2mtd.c    | 12 ++++----
+ drivers/s390/block/dasd_ioctl.c    |  2 +-
+ drivers/scsi/scsicam.c             |  2 +-
+ fs/bcachefs/util.h                 |  2 +-
+ fs/btrfs/disk-io.c                 |  6 ++--
+ fs/btrfs/volumes.c                 |  4 +--
+ fs/btrfs/zoned.c                   |  2 +-
+ fs/buffer.c                        |  8 +++---
+ fs/cramfs/inode.c                  |  2 +-
+ fs/erofs/data.c                    |  2 +-
+ fs/ext4/dir.c                      |  2 +-
+ fs/ext4/ext4_jbd2.c                |  2 +-
+ fs/ext4/super.c                    |  8 +++---
+ fs/gfs2/glock.c                    |  2 +-
+ fs/gfs2/ops_fstype.c               |  2 +-
+ fs/jbd2/journal.c                  |  3 +-
+ fs/jbd2/recovery.c                 |  2 +-
+ fs/nilfs2/segment.c                |  2 +-
+ include/linux/blk_types.h          | 15 ++++++++--
+ include/linux/blkdev.h             |  4 +--
+ include/linux/buffer_head.h        |  4 +--
+ 29 files changed, 91 insertions(+), 78 deletions(-)
 
-> 
->>   	switch (interface) {
->>   	case PHY_INTERFACE_MODE_USXGMII:
->> -		caps |= MAC_10000FD | MAC_5000FD | MAC_2500FD;
->> +		caps |= MAC_10000FD | MAC_5000FD;
->> +		fallthrough;
-> 
-> This change seems to refer to the second paragraph, where as the rest
-> of the code is about the first. Or does splitting this cause a bisect
-> problem?
-> 
-> 	Andrew
-
-Since the caps change is related to the new added interface mode
-10g-qxgmii, it is reasonable to keep the changes integrated here.
+-- 
+2.39.2
 
