@@ -2,495 +2,1008 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75FF87F9BAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CABF7F9BB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 09:29:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232559AbjK0I2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 03:28:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36904 "EHLO
+        id S232571AbjK0I3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 03:29:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231348AbjK0I2I (ORCPT
+        with ESMTP id S232452AbjK0I3a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 03:28:08 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B34124
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:28:12 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c50305c5c4so50739651fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:28:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701073691; x=1701678491; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eNor6MhI2r19lHXmK9Cl2a3n8UllkpTKoe82vmPJ1qM=;
-        b=lZDdLyYyjHFpGRTKrDeiVLrejU0WCn+ahZi5KsNWtkZXhXCc8UYPdTohiwmtM82S6n
-         DHMvgqojRflNnXF3z/MgUQwdtFOmPtvApu7vlGCEE1XUWeF1ozK2pYWDSFrM0Nnhh0Rt
-         Abr2CSOoslcixovLPDLZppYwKZF9PB5llJ45+YOdg+fx9EE1tWeLXM4bLzCdM9SZYnw2
-         VyTSZBX7Ah09JpD+qzou22k6BpjXGuFMg+1K/+6Y0quqgOWskh3YaGcQ/zLRCNGPidFF
-         9Rar5igYaV3X/Wmx6ox8R2BN3IJFwh0JI/8eL549i3sOPFRK14iTBdqenJ1YBsPvCHTQ
-         In2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701073691; x=1701678491;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=eNor6MhI2r19lHXmK9Cl2a3n8UllkpTKoe82vmPJ1qM=;
-        b=HFAq8bdXmTbpklmLtJg6hS+cl6jBpxfy0VHbmRRVWuiWe7GecggHtuOY6zYwnzoiDh
-         W299d0yH4/ltSHu5b78eVp/VQpO84UoNyWQ1eBD+zI6iLWYzKDSco/Ntve1BvEYfxZuG
-         cAzhUXGXh7ufB9vF24ov8sAaOKKNxoe64zuYFKYX1OOFWFIJ8FQNm+7khn34A776xxV8
-         oHdqrTrWOO1+dZjZXF6URwO6PLjmIE8E9Oz6zFAU654gNqUEeQPAQfALeIl1eBq4WuBl
-         hF1Y+TGtEj4QbCFEAKrUmLmnHs4LrXwc9yHRtMP4toGYvl50b0A0Q3DDwZjD/sSkCBht
-         hqNA==
-X-Gm-Message-State: AOJu0Yxl0Jem6eyUy1rVvy0pXD7y4MQH2mancwxFL8lMTLbVIcD9DFsQ
-        QPa5XvwgwXQsgIr5iBdYVYUccw==
-X-Google-Smtp-Source: AGHT+IG6EbK/MN8HNqrYs2yFa5FCFSvRzgJm60fItddzlsWBGSlDfDY3GslYg/l8xy3DABG43nnzpg==
-X-Received: by 2002:a2e:934f:0:b0:2c5:1e70:7d30 with SMTP id m15-20020a2e934f000000b002c51e707d30mr7229826ljh.30.1701073690709;
-        Mon, 27 Nov 2023 00:28:10 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:5a15:ac68:b4a4:85ff? ([2a01:e0a:982:cbb0:5a15:ac68:b4a4:85ff])
-        by smtp.gmail.com with ESMTPSA id fl8-20020a05600c0b8800b004030e8ff964sm13760772wmb.34.2023.11.27.00.28.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Nov 2023 00:28:10 -0800 (PST)
-Message-ID: <41a1246e-c885-460a-8208-16844e95e1ae@linaro.org>
-Date:   Mon, 27 Nov 2023 09:28:08 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v9 08/12] clk: meson: g12a: make VCLK2 and ENCL clock path
- configurable by CCF
-Content-Language: en-US, fr
-To:     Jerome Brunet <jbrunet@baylibre.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Nicolas Belin <nbelin@baylibre.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Remi Pommarel <repk@triplefau.lt>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-phy@lists.infradead.org,
-        Rob Herring <robh@kernel.org>
-References: <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-0-95256ed139e6@linaro.org>
- <20231124-amlogic-v6-4-upstream-dsi-ccf-vim3-v9-8-95256ed139e6@linaro.org>
- <1jbkbjdxk8.fsf@starbuckisacylon.baylibre.com>
- <b23ddc3b-d995-4cd6-91f2-3efa59d345a5@linaro.org>
- <1j34wvdtux.fsf@starbuckisacylon.baylibre.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <1j34wvdtux.fsf@starbuckisacylon.baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Mon, 27 Nov 2023 03:29:30 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B18C3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 00:29:34 -0800 (PST)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AR7jvLM004066;
+        Mon, 27 Nov 2023 08:28:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=Qkjjg6Yaj0jfDQEhjwqZzvhm7z80a5tKAEo2L1xtOnk=;
+ b=tNT3luEBmVvPfK0V8CMddtDT48jNiXtT89xGn35xM908LTVdwdu5fwiFXTp1X/uO200q
+ M5sWvB4AXOjU/zVtn2NkBoDOSXcmB4P6juStANS3XqcZ4qys+epEq4vazaqCK1jMr4X8
+ YGlwyvN+2SV9Tzx6dFFg6eHGNPpBVbAm+8Z9q+i87XoxVpL9xIlA5K7dUn8UISYr06m0
+ Wy4jlShG8swXM9W22sRZTq33Kngrg/qcz+HAv52aKOaM+P+Q8N5fqrgyLZNommK4WqzL
+ letuvsZ4Ky9HTg7YfkIqTuMvyEk+opTsXikoQU9n3Vy5IrOLyhJqUt9qHjp6S+1XAhZs NQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3umm074kap-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 08:28:48 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AR8Jxmn016913;
+        Mon, 27 Nov 2023 08:28:47 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3umm074k9h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 08:28:47 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AR8JCtu016762;
+        Mon, 27 Nov 2023 08:28:46 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ukv8n7aab-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 08:28:46 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+        by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AR8SjLk53018886
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Nov 2023 08:28:45 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5A31058056;
+        Mon, 27 Nov 2023 08:28:45 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6F46658065;
+        Mon, 27 Nov 2023 08:28:36 +0000 (GMT)
+Received: from li-34d1fccc-27cd-11b2-a85c-c167793e56f7.ibm.com (unknown [9.171.24.214])
+        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Mon, 27 Nov 2023 08:28:36 +0000 (GMT)
+Message-ID: <fd7370aeef50c50228b817e817872921b33fc5fe.camel@linux.vnet.ibm.com>
+Subject: Re: [PATCH v3 0/7] sched: Implement shared runqueue in CFS
+From:   Aboorva Devarajan <aboorvad@linux.vnet.ibm.com>
+To:     David Vernet <void@manifault.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, tj@kernel.org,
+        roman.gushchin@linux.dev, gautham.shenoy@amd.com,
+        kprateek.nayak@amd.com, aaron.lu@intel.com,
+        wuyun.abel@bytedance.com, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 27 Nov 2023 13:58:34 +0530
+In-Reply-To: <20230809221218.163894-1-void@manifault.com>
+References: <20230809221218.163894-1-void@manifault.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: tZmx107Ie1ZOTWHhH4ZCkdnQONRyPdSH
+X-Proofpoint-GUID: 7pCdekz4vc5X-FCCr9MPFKs8drBUAqbN
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-27_06,2023-11-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ clxscore=1011 malwarescore=0 adultscore=0 suspectscore=0 mlxlogscore=999
+ impostorscore=0 phishscore=0 lowpriorityscore=0 priorityscore=1501
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311270059
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, 2023-08-09 at 17:12 -0500, David Vernet wrote:
 
-On 24/11/2023 16:32, Jerome Brunet wrote:
+Hi David,
+
+I have been benchmarking the patch-set on POWER9 machine to understand
+its impact. However, I've run into a recurring hard-lockups in
+newidle_balance, specifically when SHARED_RUNQ feature is enabled. It
+doesn't happen all the time, but it's something worth noting. I wanted
+to inform you about this, and I can provide more details if needed.
+
+-----------------------------------------
+
+Some inital information regarding the hard-lockup:
+
+Base Kernel:
+-----------
+
+Base kernel is upto commit 88c56cfeaec4 ("sched/fair: Block nohz
+tick_stop when cfs bandwidth in use").
+
+Patched Kernel:
+-------------
+
+Base Kernel + v3 (shared runqueue patch-set)(
+https://lore.kernel.org/all/20230809221218.163894-1-void@manifault.com/
+)
+
+The hard-lockup moslty occurs when running the Apache2 benchmarks with
+ab (Apache HTTP benchmarking tool) on the patched kernel. However, this
+problem is not exclusive to the mentioned benchmark and only occurs
+while the SHARED_RUNQ feature is enabled. Disabling SHARED_RUNQ feature
+prevents the occurrence of the lockup.
+
+ab (Apache HTTP benchmarking tool): 
+https://httpd.apache.org/docs/2.4/programs/ab.html
+
+Hardlockup with Patched Kernel:
+------------------------------
+
+[ 3289.727912][  C123] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
+[ 3289.727943][  C123] rcu: 	124-...0: (1 GPs behind) idle=f174/1/0x4000000000000000 softirq=12283/12289 fqs=732
+[ 3289.727976][  C123] rcu: 	(detected by 123, t=2103 jiffies, g=127061, q=5517 ncpus=128)
+[ 3289.728008][  C123] Sending NMI from CPU 123 to CPUs 124:
+[ 3295.182378][  C123] CPU 124 didn't respond to backtrace IPI, inspecting paca.
+[ 3295.182403][  C123] irq_soft_mask: 0x01 in_mce: 0 in_nmi: 0 current: 15 (ksoftirqd/124)
+[ 3295.182421][  C123] Back trace of paca->saved_r1 (0xc000000de13e79b0) (possibly stale):
+[ 3295.182437][  C123] Call Trace:
+[ 3295.182456][  C123] [c000000de13e79b0] [c000000de13e7a70] 0xc000000de13e7a70 (unreliable)
+[ 3295.182477][  C123] [c000000de13e7ac0] [0000000000000008] 0x8
+[ 3295.182500][  C123] [c000000de13e7b70] [c000000de13e7c98] 0xc000000de13e7c98
+[ 3295.182519][  C123] [c000000de13e7ba0] [c0000000001da8bc] move_queued_task+0x14c/0x280
+[ 3295.182557][  C123] [c000000de13e7c30] [c0000000001f22d8] newidle_balance+0x648/0x940
+[ 3295.182602][  C123] [c000000de13e7d30] [c0000000001f26ac] pick_next_task_fair+0x7c/0x680
+[ 3295.182647][  C123] [c000000de13e7dd0] [c0000000010f175c] __schedule+0x15c/0x1040
+[ 3295.182675][  C123] [c000000de13e7ec0] [c0000000010f26b4] schedule+0x74/0x140
+[ 3295.182694][  C123] [c000000de13e7f30] [c0000000001c4994] smpboot_thread_fn+0x244/0x250
+[ 3295.182731][  C123] [c000000de13e7f90] [c0000000001bc6e8] kthread+0x138/0x140
+[ 3295.182769][  C123] [c000000de13e7fe0] [c00000000000ded8] start_kernel_thread+0x14/0x18
+[ 3295.182806][  C123] rcu: rcu_sched kthread starved for 544 jiffies! g127061 f0x0 RCU_GP_DOING_FQS(6) ->state=0x0 ->cpu=66
+[ 3295.182845][  C123] rcu: 	Unless rcu_sched kthread gets sufficient CPU time, OOM is now expected behavior.
+[ 3295.182878][  C123] rcu: RCU grace-period kthread stack dump:
+
+-----------------------------------------
+
+[ 3943.438625][  C112] watchdog: CPU 112 self-detected hard LOCKUP @ _raw_spin_lock_irqsave+0x4c/0xc0
+[ 3943.438631][  C112] watchdog: CPU 112 TB:115060212303626, last heartbeat TB:115054309631589 (11528ms ago)
+[ 3943.438673][  C112] CPU: 112 PID: 2090 Comm: kworker/112:2 Tainted: G        W    L     6.5.0-rc2-00028-g7475adccd76b #51
+[ 3943.438676][  C112] Hardware name: 8335-GTW POWER9 (raw) 0x4e1203 opal:skiboot-v6.5.3-35-g1851b2a06 PowerNV
+[ 3943.438678][  C112] Workqueue:  0x0 (events)
+[ 3943.438682][  C112] NIP:  c0000000010ff01c LR: c0000000001d1064 CTR: c0000000001e8580
+[ 3943.438684][  C112] REGS: c000007fffb6bd60 TRAP: 0900   Tainted: G        W    L      (6.5.0-rc2-00028-g7475adccd76b)
+[ 3943.438686][  C112] MSR:  9000000000009033 <SF,HV,EE,ME,IR,DR,RI,LE>  CR: 24082222  XER: 00000000
+[ 3943.438693][  C112] CFAR: 0000000000000000 IRQMASK: 1 
+[ 3943.438693][  C112] GPR00: c0000000001d1064 c000000e16d1fb20 c0000000014e8200 c000000e092fed3c 
+[ 3943.438693][  C112] GPR04: c000000e16d1fc58 c000000e092fe3c8 00000000000000e1 fffffffffffe0000 
+[ 3943.438693][  C112] GPR08: 0000000000000000 00000000000000e1 0000000000000000 c00000000299ccd8 
+[ 3943.438693][  C112] GPR12: 0000000024088222 c000007ffffb8300 c0000000001bc5b8 c000000deb46f740 
+[ 3943.438693][  C112] GPR16: 0000000000000008 c000000e092fe280 0000000000000001 c000007ffedd7b00 
+[ 3943.438693][  C112] GPR20: 0000000000000001 c0000000029a1280 0000000000000000 0000000000000001 
+[ 3943.438693][  C112] GPR24: 0000000000000000 c000000e092fed3c c000000e16d1fdf0 c00000000299ccd8 
+[ 3943.438693][  C112] GPR28: c000000e16d1fc58 c0000000021fbf00 c000007ffee6bf00 0000000000000001 
+[ 3943.438722][  C112] NIP [c0000000010ff01c] _raw_spin_lock_irqsave+0x4c/0xc0
+[ 3943.438725][  C112] LR [c0000000001d1064] task_rq_lock+0x64/0x1b0
+[ 3943.438727][  C112] Call Trace:
+[ 3943.438728][  C112] [c000000e16d1fb20] [c000000e16d1fb60] 0xc000000e16d1fb60 (unreliable)
+[ 3943.438731][  C112] [c000000e16d1fb50] [c000000e16d1fbf0] 0xc000000e16d1fbf0
+[ 3943.438733][  C112] [c000000e16d1fbf0] [c0000000001f214c] newidle_balance+0x4bc/0x940
+[ 3943.438737][  C112] [c000000e16d1fcf0] [c0000000001f26ac] pick_next_task_fair+0x7c/0x680
+[ 3943.438739][  C112] [c000000e16d1fd90] [c0000000010f175c] __schedule+0x15c/0x1040
+[ 3943.438743][  C112] [c000000e16d1fe80] [c0000000010f26b4] schedule+0x74/0x140
+[ 3943.438747][  C112] [c000000e16d1fef0] [c0000000001afd44] worker_thread+0x134/0x580
+[ 3943.438749][  C112] [c000000e16d1ff90] [c0000000001bc6e8] kthread+0x138/0x140
+[ 3943.438753][  C112] [c000000e16d1ffe0] [c00000000000ded8] start_kernel_thread+0x14/0x18
+[ 3943.438756][  C112] Code: 63e90001 992d0932 a12d0008 3ce0fffe 5529083c 61290001 7d001
+
+-----------------------------------------
+
+System configuration:
+--------------------
+
+# lscpu
+Architecture:                    ppc64le
+Byte Order:                      Little Endian
+CPU(s):                          128
+On-line CPU(s) list:             0-127
+Thread(s) per core:              4
+Core(s) per socket:              16
+Socket(s):                       2
+NUMA node(s):                    8
+Model:                           2.3 (pvr 004e 1203)
+Model name:                      POWER9 (raw), altivec supported
+Frequency boost:                 enabled
+CPU max MHz:                     3800.0000
+CPU min MHz:                     2300.0000
+L1d cache:                       1 MiB
+L1i cache:                       1 MiB
+NUMA node0 CPU(s):               64-127
+NUMA node8 CPU(s):               0-63
+NUMA node250 CPU(s):             
+NUMA node251 CPU(s):             
+NUMA node252 CPU(s):             
+NUMA node253 CPU(s):             
+NUMA node254 CPU(s):             
+NUMA node255 CPU(s):             
+
+# uname -r
+6.5.0-rc2-00028-g7475adccd76b
+
+# cat /sys/kernel/debug/sched/features
+GENTLE_FAIR_SLEEPERS START_DEBIT NO_NEXT_BUDDY LAST_BUDDY
+CACHE_HOT_BUDDY WAKEUP_PREEMPTION NO_HRTICK NO_HRTICK_DL NO_DOUBLE_TICK
+NONTASK_CAPACITY TTWU_QUEUE NO_SIS_PROP SIS_UTIL NO_WARN_DOUBLE_CLOCK
+RT_PUSH_IPI NO_RT_RUNTIME_SHARE NO_LB_MIN ATTACH_AGE_LOAD WA_IDLE
+WA_WEIGHT WA_BIAS UTIL_EST UTIL_EST_FASTUP NO_LATENCY_WARN ALT_PERIOD
+BASE_SLICE HZ_BW SHARED_RUNQ
+
+-----------------------------------------
+
+Please let me know if I've missed anything here. I'll continue
+investigating and share any additional information I find.
+
+Thanks and Regards,
+Aboorva
+
+
+> Changes
+> -------
 > 
-> On Fri 24 Nov 2023 at 16:15, Neil Armstrong <neil.armstrong@linaro.org> wrote:
+> This is v3 of the shared runqueue patchset. This patch set is based
+> off
+> of commit 88c56cfeaec4 ("sched/fair: Block nohz tick_stop when cfs
+> bandwidth in use") on the sched/core branch of tip.git.
 > 
->> On 24/11/2023 15:12, Jerome Brunet wrote:
->>> On Fri 24 Nov 2023 at 09:41, Neil Armstrong <neil.armstrong@linaro.org>
->>> wrote:
->>>
->>>> In order to setup the DSI clock, let's make the unused VCLK2 clock path
->>>> configuration via CCF.
->>>>
->>>> The nocache option is removed from following clocks:
->>>> - vclk2_sel
->>>> - vclk2_input
->>>> - vclk2_div
->>>> - vclk2
->>>> - vclk_div1
->>>> - vclk2_div2_en
->>>> - vclk2_div4_en
->>>> - vclk2_div6_en
->>>> - vclk2_div12_en
->>>> - vclk2_div2
->>>> - vclk2_div4
->>>> - vclk2_div6
->>>> - vclk2_div12
->>>> - cts_encl_sel
->>>>
->>>> vclk2 and vclk2_div uses the newly introduced vclk regmap driver
->>>> to handle the enable and reset bits.
->>>>
->>>> In order to set a rate on cts_encl via the vclk2 clock path,
->>>> the NO_REPARENT flag is set on cts_encl_sel & vclk2_sel in order
->>>> to keep CCF from selection a parent.
->>>> The parents of cts_encl_sel & vclk2_sel are expected to be defined
->>>> in DT.
->>>>
->>>> The following clock scheme is to be used for DSI:
->>>>
->>>> xtal
->>>> \_ gp0_pll_dco
->>>>      \_ gp0_pll
->>>>         |- vclk2_sel
->>>>         |  \_ vclk2_input
->>>>         |     \_ vclk2_div
->>>>         |        \_ vclk2
->>>>         |           \_ vclk2_div1
->>>>         |              \_ cts_encl_sel
->>>>         |                 \_ cts_encl	-> to VPU LCD Encoder
->>>>         |- mipi_dsi_pxclk_sel
->>>>         \_ mipi_dsi_pxclk_div
->>>>            \_ mipi_dsi_pxclk		-> to DSI controller
->>>>
->>>> The mipi_dsi_pxclk_div is set as RO in order to use the same GP0
->>>> for mipi_dsi_pxclk and vclk2_input.
->>> Could you explain a bit more this part of about the RO ops ?
->>> Maybe I'm missing something.
->>> You would be relying on the reset being always the way it. It is
->>> probable but not safe.
->>> A way to deal with the shared GP0 would be to:
->>> * cut rate propagation at mipi_dsi_pxclk_sel (already done) and
->>>     (vclk2_sel - TBD) ...
->>> * Set GP0 base rate through assigned-clock-rate (which you already in
->>>     patch 11)
->>> With this, I'm not sure anything needs to be RO for the rates to be set
->>> properly for each subtree.
->>> Also, with the subtree above and your example in patch 11, it looks odd
->>> that
->>> PXCLK is manually set through DT while ENCL is not. Both are input of
->>> dsi driver.
->>
->> So the deal is about dynamic setup of clocks for DSI bridges, not really
->> for panels where we can probably know in advance the clock setup.
->>
->> In this particular case, we need to keep a ratio between the vclk and the
->> DSI bitclk, the DSI bitclk is taken from mipi_dsi_pxclk and vclk is derived
->> from gp0 via vclk2.
->>
->> If we set the bitclk rate via mipi_dsi_pxclk, CCF will try to use mipi_dsi_pxclk_div
->> to achieve the rate,
+> v1 (RFC): 
+> https://lore.kernel.org/lkml/20230613052004.2836135-1-void@manifault.com/
+> v2: 
+> https://lore.kernel.org/lkml/20230710200342.358255-1-void@manifault.com/
 > 
-> If you have CLK_RATE_PARENT on mipi_dsi_pxclk_sel, I'm not surprised it
-> does that, but you don't :/ I'm quite surprised it would do that, or
-> even could.
-
-Hmm, I need to recheck the clock tree again... seems I got lost in the
-different revisions...
-
+> v2 -> v3 changes:
+> - Don't leave stale tasks in the lists when the SHARED_RUNQ feature
+> is
+>   disabled (Abel Wu)
 > 
->  From your example setting 96Mhz on both gp0 and mipi_dsi_pxclk, since
-> you've proposed RO-OPS, I suppose the divider is assumed to be 1 and
-> stay like that forever.
+> - Use raw spin lock instead of spinlock_t (Peter)
 > 
-> With rate propagation disabled mipi_dsi_pxclk_sel and GP0 is 96Mhz,
-> CCF would have no choice but picking 1 as divider, so I don't understand
-> how CCF would pick anything else and how RO-OPS help
+> - Fix return value from shared_runq_pick_next_task() to match the
+>   semantics expected by newidle_balance() (Gautham, Abel)
 > 
->> and it does it everytime I tried, breaking the vclk/bitclk ratio,
->> and we have no way to know the gp0 rate in this case.
+> - Fold patch __enqueue_entity() / __dequeue_entity() into previous
+> patch
+>   (Peter)
 > 
-> If you really want to ensure the divider value is always 1, why not use a
-> divider table allowing only 1 ? Adding a comment in the g12 clock driver
-> would nice because this not obvious. It would be safer than relying on
-> the reset value.
-
-Indeed, will switch to that
-
+> - Skip <= LLC domains in newidle_balance() if SHARED_RUNQ is enabled
+>   (Peter)
 > 
->>
->> I suspect mipi_dsi_pxclk_div was added to achieve fractional vclk/bitclk ratios,
->> since it doesn't exist on AXG. Not sure we would ever need it... and none
->> of the other upstream DSI drivers supports such setups.
->>
->> The main reasons I set only mipi_dsi_pxclk in DT is because :
->> 1) the DSI controller requires a bitclk to respond, pclk is not enough
->> 2) GP0 is disabled with an invalid config at cold boot, thus we cannot
->> rely on a default/safe rate on an initial prepare_enable().
->> This permits setting initial valid state for the DSI controller, while
->> the actual bitclk and vclk are calculated dynamically with panel/bridge
->> runtime parameters.
+> - Properly support hotplug and recreating sched domains (Peter)
 > 
-> Nothing against setting rate in DT when it is static. Setting it then
-> overriding it is not easy to follow.
-
-Yup, would be simpler to only have parenting set in DT, since it must
-stay static, I'm fine trying to move rate setup to code.
-
+> - Avoid unnecessary task_rq_unlock() + raw_spin_rq_lock() when src_rq
+> ==
+>   target_rq in shared_runq_pick_next_task() (Abel)
 > 
-> To work around GP0 not being set, assuming you want to keep rate
-> propagation as it is, you could call clk_set_rate() on cts_encl (possibly w/o
-> enabling it) to force a setup on gp0 then clk_prepare_enable() on
-> pxclk. You'd get a your safe rate on GP0 and the clock you need on pxclk.
+> - Only issue list_del_init() in shared_runq_dequeue_task() if the
+> task
+>   is still in the list after acquiring the lock (Aaron Lu)
 > 
-> It is a bit hackish. Might be better to claim gp0 in your driver to
-> manage it directly, cutting rate propagation above it to control each
-> branch of the subtree as you need. It seems you need to have control over
-> that anyway and it would be clear GP0 is expected to belong to DSI.
-
-Controlling the PLL from the DSI controller seems violating too much layers,
-DSI controller driver is not feed directly by the PLL so it's a non-sense
-regarding DT properties.
-
-Setting a safe clock from the DSI controller probe is an idea, but again I
-don't know which value I should use...
-
-I'll review the clk parenting flags and try to hack something.
-
-Thanks,
-Neil
-
-
+> - Slightly change shared_runq_shard_idx() to make it more likely to
+> keep
+>   SMT siblings on the same bucket (Peter)
 > 
->>
->> For the record, the samsung-dsim used fixed rate set from DT, and they moved
->> from that in order to support more panel and bridges.
->>
->> But they're quite lucky because usually the DSI PLL is included in the PHY,
->> this makes the Amlogic design quite unusual (like most multimedia stuf...).
->>
->> Neil
->>
->>>
->>>>
->>>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
->>>> ---
->>>>    drivers/clk/meson/g12a.c | 68 +++++++++++++++++++++++++++++++++---------------
->>>>    1 file changed, 47 insertions(+), 21 deletions(-)
->>>>
->>>> diff --git a/drivers/clk/meson/g12a.c b/drivers/clk/meson/g12a.c
->>>> index cadd824336ad..fb3d9196a1fd 100644
->>>> --- a/drivers/clk/meson/g12a.c
->>>> +++ b/drivers/clk/meson/g12a.c
->>>> @@ -22,6 +22,7 @@
->>>>    #include "clk-regmap.h"
->>>>    #include "clk-cpu-dyndiv.h"
->>>>    #include "vid-pll-div.h"
->>>> +#include "vclk.h"
->>>>    #include "meson-eeclk.h"
->>>>    #include "g12a.h"
->>>>    @@ -3165,7 +3166,7 @@ static struct clk_regmap g12a_vclk2_sel = {
->>>>    		.ops = &clk_regmap_mux_ops,
->>>>    		.parent_hws = g12a_vclk_parent_hws,
->>>>    		.num_parents = ARRAY_SIZE(g12a_vclk_parent_hws),
->>>> -		.flags = CLK_SET_RATE_NO_REPARENT | CLK_GET_RATE_NOCACHE,
->>>> +		.flags = CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
->>> No sure CLK_SET_RATE_PARENT is wise here.
->>> What you manually set in DT for the GP0, is likely to change because of
->>> this, isn't it ?
->>>
->>>>    	},
->>>>    };
->>>>    @@ -3193,7 +3194,7 @@ static struct clk_regmap g12a_vclk2_input = {
->>>>    		.ops = &clk_regmap_gate_ops,
->>>>    		.parent_hws = (const struct clk_hw *[]) { &g12a_vclk2_sel.hw },
->>>>    		.num_parents = 1,
->>>> -		.flags = CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED,
->>>> +		.flags = CLK_SET_RATE_PARENT,
->>>>    	},
->>>>    };
->>>>    @@ -3215,19 +3216,32 @@ static struct clk_regmap g12a_vclk_div = {
->>>>    };
->>>>      static struct clk_regmap g12a_vclk2_div = {
->>>> -	.data = &(struct clk_regmap_div_data){
->>>> -		.offset = HHI_VIID_CLK_DIV,
->>>> -		.shift = 0,
->>>> -		.width = 8,
->>>> +	.data = &(struct clk_regmap_vclk_div_data){
->>>> +		.div = {
->>>> +			.reg_off = HHI_VIID_CLK_DIV,
->>>> +			.shift   = 0,
->>>> +			.width   = 8,
->>>> +		},
->>>> +		.enable = {
->>>> +			.reg_off = HHI_VIID_CLK_DIV,
->>>> +			.shift   = 16,
->>>> +			.width   = 1,
->>>> +		},
->>>> +		.reset = {
->>>> +			.reg_off = HHI_VIID_CLK_DIV,
->>>> +			.shift   = 17,
->>>> +			.width   = 1,
->>>> +		},
->>>> +		.flags = CLK_DIVIDER_ROUND_CLOSEST,
->>>>    	},
->>>>    	.hw.init = &(struct clk_init_data){
->>>>    		.name = "vclk2_div",
->>>> -		.ops = &clk_regmap_divider_ops,
->>>> +		.ops = &clk_regmap_vclk_div_ops,
->>>>    		.parent_hws = (const struct clk_hw *[]) {
->>>>    			&g12a_vclk2_input.hw
->>>>    		},
->>>>    		.num_parents = 1,
->>>> -		.flags = CLK_GET_RATE_NOCACHE,
->>>> +		.flags = CLK_SET_RATE_PARENT | CLK_SET_RATE_GATE,
->>>>    	},
->>>>    };
->>>>    @@ -3246,16 +3260,24 @@ static struct clk_regmap g12a_vclk = {
->>>>    };
->>>>      static struct clk_regmap g12a_vclk2 = {
->>>> -	.data = &(struct clk_regmap_gate_data){
->>>> -		.offset = HHI_VIID_CLK_CNTL,
->>>> -		.bit_idx = 19,
->>>> +	.data = &(struct clk_regmap_vclk_data){
->>>> +		.enable = {
->>>> +			.reg_off = HHI_VIID_CLK_CNTL,
->>>> +			.shift   = 19,
->>>> +			.width   = 1,
->>>> +		},
->>>> +		.reset = {
->>>> +			.reg_off = HHI_VIID_CLK_CNTL,
->>>> +			.shift   = 15,
->>>> +			.width   = 1,
->>>> +		},
->>>>    	},
->>>>    	.hw.init = &(struct clk_init_data) {
->>>>    		.name = "vclk2",
->>>> -		.ops = &clk_regmap_gate_ops,
->>>> +		.ops = &clk_regmap_vclk_ops,
->>>>    		.parent_hws = (const struct clk_hw *[]) { &g12a_vclk2_div.hw },
->>>>    		.num_parents = 1,
->>>> -		.flags = CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED,
->>>> +		.flags = CLK_SET_RATE_PARENT | CLK_SET_RATE_GATE,
->>>>    	},
->>>>    };
->>>>    @@ -3339,7 +3361,7 @@ static struct clk_regmap g12a_vclk2_div1 = {
->>>>    		.ops = &clk_regmap_gate_ops,
->>>>    		.parent_hws = (const struct clk_hw *[]) { &g12a_vclk2.hw },
->>>>    		.num_parents = 1,
->>>> -		.flags = CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED,
->>>> +		.flags = CLK_SET_RATE_PARENT,
->>>>    	},
->>>>    };
->>>>    @@ -3353,7 +3375,7 @@ static struct clk_regmap g12a_vclk2_div2_en = {
->>>>    		.ops = &clk_regmap_gate_ops,
->>>>    		.parent_hws = (const struct clk_hw *[]) { &g12a_vclk2.hw },
->>>>    		.num_parents = 1,
->>>> -		.flags = CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED,
->>>> +		.flags = CLK_SET_RATE_PARENT,
->>>>    	},
->>>>    };
->>>>    @@ -3367,7 +3389,7 @@ static struct clk_regmap g12a_vclk2_div4_en = {
->>>>    		.ops = &clk_regmap_gate_ops,
->>>>    		.parent_hws = (const struct clk_hw *[]) { &g12a_vclk2.hw },
->>>>    		.num_parents = 1,
->>>> -		.flags = CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED,
->>>> +		.flags = CLK_SET_RATE_PARENT,
->>>>    	},
->>>>    };
->>>>    @@ -3381,7 +3403,7 @@ static struct clk_regmap g12a_vclk2_div6_en = {
->>>>    		.ops = &clk_regmap_gate_ops,
->>>>    		.parent_hws = (const struct clk_hw *[]) { &g12a_vclk2.hw },
->>>>    		.num_parents = 1,
->>>> -		.flags = CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED,
->>>> +		.flags = CLK_SET_RATE_PARENT,
->>>>    	},
->>>>    };
->>>>    @@ -3395,7 +3417,7 @@ static struct clk_regmap g12a_vclk2_div12_en = {
->>>>    		.ops = &clk_regmap_gate_ops,
->>>>    		.parent_hws = (const struct clk_hw *[]) { &g12a_vclk2.hw },
->>>>    		.num_parents = 1,
->>>> -		.flags = CLK_SET_RATE_PARENT | CLK_IGNORE_UNUSED,
->>>> +		.flags = CLK_SET_RATE_PARENT,
->>>>    	},
->>>>    };
->>>>    @@ -3461,6 +3483,7 @@ static struct clk_fixed_factor g12a_vclk2_div2 =
->>>> {
->>>>    			&g12a_vclk2_div2_en.hw
->>>>    		},
->>>>    		.num_parents = 1,
->>>> +		.flags = CLK_SET_RATE_PARENT,
->>>>    	},
->>>>    };
->>>>    @@ -3474,6 +3497,7 @@ static struct clk_fixed_factor g12a_vclk2_div4 =
->>>> {
->>>>    			&g12a_vclk2_div4_en.hw
->>>>    		},
->>>>    		.num_parents = 1,
->>>> +		.flags = CLK_SET_RATE_PARENT,
->>>>    	},
->>>>    };
->>>>    @@ -3487,6 +3511,7 @@ static struct clk_fixed_factor g12a_vclk2_div6 =
->>>> {
->>>>    			&g12a_vclk2_div6_en.hw
->>>>    		},
->>>>    		.num_parents = 1,
->>>> +		.flags = CLK_SET_RATE_PARENT,
->>>>    	},
->>>>    };
->>>>    @@ -3500,6 +3525,7 @@ static struct clk_fixed_factor g12a_vclk2_div12
->>>> = {
->>>>    			&g12a_vclk2_div12_en.hw
->>>>    		},
->>>>    		.num_parents = 1,
->>>> +		.flags = CLK_SET_RATE_PARENT,
->>>>    	},
->>>>    };
->>>>    @@ -3561,7 +3587,7 @@ static struct clk_regmap g12a_cts_encl_sel = {
->>>>    		.ops = &clk_regmap_mux_ops,
->>>>    		.parent_hws = g12a_cts_parent_hws,
->>>>    		.num_parents = ARRAY_SIZE(g12a_cts_parent_hws),
->>>> -		.flags = CLK_SET_RATE_NO_REPARENT | CLK_GET_RATE_NOCACHE,
->>>> +		.flags = CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
->>>>    	},
->>>>    };
->>>>    @@ -3717,7 +3743,7 @@ static struct clk_regmap g12a_mipi_dsi_pxclk_sel
->>>> = {
->>>>    		.ops = &clk_regmap_mux_ops,
->>>>    		.parent_hws = g12a_mipi_dsi_pxclk_parent_hws,
->>>>    		.num_parents = ARRAY_SIZE(g12a_mipi_dsi_pxclk_parent_hws),
->>>> -		.flags = CLK_SET_RATE_NO_REPARENT,
->>>> +		.flags = CLK_SET_RATE_PARENT | CLK_SET_RATE_NO_REPARENT,
->>>>    	},
->>>>    };
->>>>    @@ -3729,7 +3755,7 @@ static struct clk_regmap g12a_mipi_dsi_pxclk_div
->>>> = {
->>>>    	},
->>>>    	.hw.init = &(struct clk_init_data){
->>>>    		.name = "mipi_dsi_pxclk_div",
->>>> -		.ops = &clk_regmap_divider_ops,
->>>> +		.ops = &clk_regmap_divider_ro_ops,
->>>>    		.parent_hws = (const struct clk_hw *[]) {
->>>>    			&g12a_mipi_dsi_pxclk_sel.hw
->>>>    		},
->>>
+> v1 -> v2 changes:
+> - Change name from swqueue to shared_runq (Peter)
+> 
+> - Shard per-LLC shared runqueues to avoid contention on scheduler-
+> heavy
+>   workloads (Peter)
+> 
+> - Pull tasks from the shared_runq in newidle_balance() rather than in
+>   pick_next_task_fair() (Peter and Vincent)
+> 
+> - Rename a few functions to reflect their actual purpose. For
+> example,
+>   shared_runq_dequeue_task() instead of swqueue_remove_task() (Peter)
+> 
+> - Expose move_queued_task() from core.c rather than migrate_task_to()
+>   (Peter)
+> 
+> - Properly check is_cpu_allowed() when pulling a task from a
+> shared_runq
+>   to ensure it can actually be migrated (Peter and Gautham)
+> 
+> - Dropped RFC tag
+> 
+> Overview
+> ========
+> 
+> The scheduler must constantly strike a balance between work
+> conservation, and avoiding costly migrations which harm performance
+> due
+> to e.g. decreased cache locality. The matter is further complicated
+> by
+> the topology of the system. Migrating a task between cores on the
+> same
+> LLC may be more optimal than keeping a task local to the CPU, whereas
+> migrating a task between LLCs or NUMA nodes may tip the balance in
+> the
+> other direction.
+> 
+> With that in mind, while CFS is by and large mostly a work conserving
+> scheduler, there are certain instances where the scheduler will
+> choose
+> to keep a task local to a CPU, when it would have been more optimal
+> to
+> migrate it to an idle core.
+> 
+> An example of such a workload is the HHVM / web workload at Meta.
+> HHVM
+> is a VM that JITs Hack and PHP code in service of web requests. Like
+> other JIT / compilation workloads, it tends to be heavily CPU bound,
+> and
+> exhibit generally poor cache locality. To try and address this, we
+> set
+> several debugfs (/sys/kernel/debug/sched) knobs on our HHVM
+> workloads:
+> 
+> - migration_cost_ns -> 0
+> - latency_ns -> 20000000
+> - min_granularity_ns -> 10000000
+> - wakeup_granularity_ns -> 12000000
+> 
+> These knobs are intended both to encourage the scheduler to be as
+> work
+> conserving as possible (migration_cost_ns -> 0), and also to keep
+> tasks
+> running for relatively long time slices so as to avoid the overhead
+> of
+> context switching (the other knobs). Collectively, these knobs
+> provide a
+> substantial performance win; resulting in roughly a 20% improvement
+> in
+> throughput. Worth noting, however, is that this improvement is _not_
+> at
+> full machine saturation.
+> 
+> That said, even with these knobs, we noticed that CPUs were still
+> going
+> idle even when the host was overcommitted. In response, we wrote the
+> "shared runqueue" (SHARED_RUNQ) feature proposed in this patch set.
+> The
+> idea behind SHARED_RUNQ is simple: it enables the scheduler to be
+> more
+> aggressively work conserving by placing a waking task into a sharded
+> per-LLC FIFO queue that can be pulled from by another core in the LLC
+> FIFO queue which can then be pulled from before it goes idle.
+> 
+> With this simple change, we were able to achieve a 1 - 1.6%
+> improvement
+> in throughput, as well as a small, consistent improvement in p95 and
+> p99
+> latencies, in HHVM. These performance improvements were in addition
+> to
+> the wins from the debugfs knobs mentioned above, and to other
+> benchmarks
+> outlined below in the Results section.
+> 
+> Design
+> ======
+> 
+> Note that the design described here reflects sharding, which is the
+> implementation added in the final patch of the series (following the
+> initial unsharded implementation added in patch 6/7). The design is
+> described that way in this commit summary as the benchmarks described
+> in
+> the results section below all reflect a sharded SHARED_RUNQ.
+> 
+> The design of SHARED_RUNQ is quite simple. A shared_runq is simply a
+> list of struct shared_runq_shard objects, which itself is simply a
+> struct list_head of tasks, and a spinlock:
+> 
+> struct shared_runq_shard {
+> 	struct list_head list;
+> 	raw_spinlock_t lock;
+> } ____cacheline_aligned;
+> 
+> struct shared_runq {
+> 	u32 num_shards;
+> 	struct shared_runq_shard shards[];
+> } ____cacheline_aligned;
+> 
+> We create a struct shared_runq per LLC, ensuring they're in their own
+> cachelines to avoid false sharing between CPUs on different LLCs, and
+> we
+> create a number of struct shared_runq_shard objects that are housed
+> there.
+> 
+> When a task first wakes up, it enqueues itself in the
+> shared_runq_shard
+> of its current LLC at the end of enqueue_task_fair(). Enqueues only
+> happen if the task was not manually migrated to the current core by
+> select_task_rq(), and is not pinned to a specific CPU.
+> 
+> A core will pull a task from the shards in its LLC's shared_runq at
+> the
+> beginning of newidle_balance().
+> 
+> Difference between SHARED_RUNQ and SIS_NODE
+> ===========================================
+> 
+> In [0] Peter proposed a patch that addresses Tejun's observations
+> that
+> when workqueues are targeted towards a specific LLC on his Zen2
+> machine
+> with small CCXs, that there would be significant idle time due to
+> select_idle_sibling() not considering anything outside of the current
+> LLC.
+> 
+> This patch (SIS_NODE) is essentially the complement to the proposal
+> here. SID_NODE causes waking tasks to look for idle cores in
+> neighboring
+> LLCs on the same die, whereas SHARED_RUNQ causes cores about to go
+> idle
+> to look for enqueued tasks. That said, in its current form, the two
+> features at are a different scope as SIS_NODE searches for idle cores
+> between LLCs, while SHARED_RUNQ enqueues tasks within a single LLC.
+> 
+> The patch was since removed in [1], and we compared the results to
+> SHARED_RUNQ (previously called "swqueue") in [2]. SIS_NODE did not
+> outperform SHARED_RUNQ on any of the benchmarks, so we elect to not
+> compare against it again for this v2 patch set.
+> 
+> [0]: 
+> https://lore.kernel.org/all/20230530113249.GA156198@hirez.programming.kicks-ass.net/
+> [1]: 
+> https://lore.kernel.org/all/20230605175636.GA4253@hirez.programming.kicks-ass.net/
+> [2]: 
+> https://lore.kernel.org/lkml/20230613052004.2836135-1-void@manifault.com/
+> 
+> Worth noting as well is that pointed out in [3] that the logic behind
+> including SIS_NODE in the first place should apply to SHARED_RUNQ
+> (meaning that e.g. very small Zen2 CPUs with only 3/4 cores per LLC
+> should benefit from having a single shared_runq stretch across
+> multiple
+> LLCs). I drafted a patch that implements this by having a minimum LLC
+> size for creating a shard, and stretches a shared_runq across
+> multiple
+> LLCs if they're smaller than that size, and sent it to Tejun to test
+> on
+> his Zen2. Tejun reported back that SIS_NODE did not seem to make a
+> difference:
+> 
+> [3]: 
+> https://lore.kernel.org/lkml/20230711114207.GK3062772@hirez.programming.kicks-ass.net/
+> 
+> 			    o____________o__________o
+> 			    |    mean    | Variance |
+> 			    o------------o----------o
+> Vanilla:		    | 108.84s    | 0.0057   |
+> NO_SHARED_RUNQ:		    | 108.82s    | 0.119s   |
+> SHARED_RUNQ:		    | 108.17s    | 0.038s   |
+> SHARED_RUNQ w/ SIS_NODE:    | 108.87s    | 0.111s   |
+> 			    o------------o----------o
+> 
+> I similarly tried running kcompile on SHARED_RUNQ with SIS_NODE on my
+> 7950X Zen3, but didn't see any gain relative to plain SHARED_RUNQ
+> (though
+> a gain was observed relative to NO_SHARED_RUNQ, as described below).
+> 
+> Results
+> =======
+> 
+> Note that the motivation for the shared runqueue feature was
+> originally
+> arrived at using experiments in the sched_ext framework that's
+> currently
+> being proposed upstream. The ~1 - 1.6% improvement in HHVM throughput
+> is similarly visible using work-conserving sched_ext schedulers (even
+> very simple ones like global FIFO).
+> 
+> In both single and multi socket / CCX hosts, this can measurably
+> improve
+> performance. In addition to the performance gains observed on our
+> internal web workloads, we also observed an improvement in common
+> workloads such as kernel compile and hackbench, when running shared
+> runqueue.
+> 
+> On the other hand, some workloads suffer from SHARED_RUNQ. Workloads
+> that hammer the runqueue hard, such as netperf UDP_RR, or schbench -L
+> -m 52 -p 512 -r 10 -t 1. This can be mitigated somewhat by sharding
+> the
+> shared datastructures within a CCX, but it doesn't seem to eliminate
+> all
+> contention in every scenario. On the positive side, it seems that
+> sharding does not materially harm the benchmarks run for this patch
+> series; and in fact seems to improve some workloads such as kernel
+> compile.
+> 
+> Note that for the kernel compile workloads below, the compilation was
+> done by running make -j$(nproc) built-in.a on several different types
+> of
+> hosts configured with make allyesconfig on commit a27648c74210 ("afs:
+> Fix setting of mtime when creating a file/dir/symlink") on Linus'
+> tree
+> (boost and turbo were disabled on all of these hosts when the
+> experiments were performed).
+> 
+> Finally, note that these results were from the patch set built off of
+> commit ebb83d84e49b ("sched/core: Avoid multiple calling
+> update_rq_clock() in __cfsb_csd_unthrottle()") on the sched/core
+> branch
+> of tip.git for easy comparison with the v2 patch set results. The
+> patches in their final form from this set were rebased onto commit
+> 88c56cfeaec4 ("sched/fair: Block nohz tick_stop when cfs bandwidth in
+> use") on the sched/core branch of tip.git.
+> 
+> === Single-socket | 16 core / 32 thread | 2-CCX | AMD 7950X Zen4 ===
+> 
+> CPU max MHz: 5879.8818
+> CPU min MHz: 3000.0000
+> 
+> Command: make -j$(nproc) built-in.a
+> 			    o____________o__________o
+> 			    |    mean    | Variance |
+> 			    o------------o----------o
+> NO_SHARED_RUNQ:		    | 581.95s    | 2.639s   |
+> SHARED_RUNQ:		    | 577.02s    | 0.084s   |
+> 			    o------------o----------o
+> 
+> Takeaway: SHARED_RUNQ results in a statistically significant ~.85%
+> improvement over NO_SHARED_RUNQ. This suggests that enqueuing tasks
+> in
+> the shared runqueue on every enqueue improves work conservation, and
+> thanks to sharding, does not result in contention.
+> 
+> Command: hackbench --loops 10000
+>                             o____________o__________o
+>                             |    mean    | Variance |
+>                             o------------o----------o
+> NO_SHARED_RUNQ:             | 2.2492s    | .00001s  |
+> SHARED_RUNQ:		    | 2.0217s    | .00065s  |
+>                             o------------o----------o
+> 
+> Takeaway: SHARED_RUNQ in both forms performs exceptionally well
+> compared
+> to NO_SHARED_RUNQ here, beating it by over 10%. This was a surprising
+> result given that it seems advantageous to err on the side of
+> avoiding
+> migration in hackbench given that tasks are short lived in sending
+> only
+> 10k bytes worth of messages, but the results of the benchmark would
+> seem
+> to suggest that minimizing runqueue delays is preferable.
+> 
+> Command:
+> for i in `seq 128`; do
+>     netperf -6 -t UDP_RR -c -C -l $runtime &
+> done
+>                             o_______________________o
+>                             | Throughput | Variance |
+>                             o-----------------------o
+> NO_SHARED_RUNQ:             | 25037.45   | 2243.44  |
+> SHARED_RUNQ:                | 24952.50   | 1268.06  |
+>                             o-----------------------o
+> 
+> Takeaway: No statistical significance, though it is worth noting that
+> there is no regression for shared runqueue on the 7950X, while there
+> is
+> a small regression on the Skylake and Milan hosts for SHARED_RUNQ as
+> described below.
+> 
+> === Single-socket | 18 core / 36 thread | 1-CCX | Intel Skylake ===
+> 
+> CPU max MHz: 1601.0000
+> CPU min MHz: 800.0000
+> 
+> Command: make -j$(nproc) built-in.a
+> 			    o____________o__________o
+> 			    |    mean    | Variance |
+> 			    o------------o----------o
+> NO_SHARED_RUNQ:		    | 1517.44s   | 2.8322s  |
+> SHARED_RUNQ:		    | 1516.51s   | 2.9450s  |
+> 			    o------------o----------o
+> 
+> Takeaway: There's on statistically significant gain here. I observed
+> what I claimed was a .23% win in v2, but it appears that this is not
+> actually statistically significant.
+> 
+> Command: hackbench --loops 10000
+>                             o____________o__________o
+>                             |    mean    | Variance |
+>                             o------------o----------o
+> NO_SHARED_RUNQ:             | 5.3370s    | .0012s   |
+> SHARED_RUNQ:		    | 5.2668s    | .0033s   |
+>                             o------------o----------o
+> 
+> Takeaway: SHARED_RUNQ results in a ~1.3% improvement over
+> NO_SHARED_RUNQ. Also statistically significant, but smaller than the
+> 10+% improvement observed on the 7950X.
+> 
+> Command: netperf -n $(nproc) -l 60 -t TCP_RR
+> for i in `seq 128`; do
+>         netperf -6 -t UDP_RR -c -C -l $runtime &
+> done
+>                             o_______________________o
+>                             | Throughput | Variance |
+>                             o-----------------------o
+> NO_SHARED_RUNQ:             | 15699.32   | 377.01   |
+> SHARED_RUNQ:                | 14966.42   | 714.13   |
+>                             o-----------------------o
+> 
+> Takeaway: NO_SHARED_RUNQ beats SHARED_RUNQ by ~4.6%. This result
+> makes
+> sense -- the workload is very heavy on the runqueue, so enqueuing
+> tasks
+> in the shared runqueue in __enqueue_entity() would intuitively result
+> in
+> increased contention on the shard lock.
+> 
+> === Single-socket | 72-core | 6-CCX | AMD Milan Zen3 ===
+> 
+> CPU max MHz: 700.0000
+> CPU min MHz: 700.0000
+> 
+> Command: make -j$(nproc) built-in.a
+> 			    o____________o__________o
+> 			    |    mean    | Variance |
+> 			    o------------o----------o
+> NO_SHARED_RUNQ:		    | 1568.55s   | 0.1568s  |
+> SHARED_RUNQ:		    | 1568.26s   | 1.2168s  |
+> 			    o------------o----------o
+> 
+> Takeaway: No statistically significant difference here. It might be
+> worth experimenting with work stealing in a follow-on patch set.
+> 
+> Command: hackbench --loops 10000
+>                             o____________o__________o
+>                             |    mean    | Variance |
+>                             o------------o----------o
+> NO_SHARED_RUNQ:             | 5.2716s    | .00143s  |
+> SHARED_RUNQ:		    | 5.1716s    | .00289s  |
+>                             o------------o----------o
+> 
+> Takeaway: SHARED_RUNQ again wins, by about 2%.
+> 
+> Command: netperf -n $(nproc) -l 60 -t TCP_RR
+> for i in `seq 128`; do
+>         netperf -6 -t UDP_RR -c -C -l $runtime &
+> done
+>                             o_______________________o
+>                             | Throughput | Variance |
+>                             o-----------------------o
+> NO_SHARED_RUNQ:             | 17482.03   | 4675.99  |
+> SHARED_RUNQ:                | 16697.25   | 9812.23  |
+>                             o-----------------------o
+> 
+> Takeaway: Similar to the Skylake runs, NO_SHARED_RUNQ still beats
+> SHARED_RUNQ, this time by ~4.5%. It's worth noting that in v2, the
+> NO_SHARED_RUNQ was only ~1.8% faster. The variance is very high here,
+> so
+> the results of this benchmark should be taken with a large grain of
+> salt (noting that we do consistently see NO_SHARED_RUNQ on top due to
+> not contending on the shard lock).
+> 
+> Finally, let's look at how sharding affects the following schbench
+> incantation suggested by Chris in [4]:
+> 
+> schbench -L -m 52 -p 512 -r 10 -t 1
+> 
+> [4]: 
+> https://lore.kernel.org/lkml/c8419d9b-2b31-2190-3058-3625bdbcb13d@meta.com/
+> 
+> The TL;DR is that sharding improves things a lot, but doesn't
+> completely
+> fix the problem. Here are the results from running the schbench
+> command
+> on the 18 core / 36 thread single CCX, single-socket Skylake:
+> 
+> -------------------------------------------------------------------
+> -------------------------------------------------------------------
+> -----------------------------------------------------------------
+> class name         con-bounces    contentions       waittime-
+> min   waittime-max waittime-total   waittime-avg    acq-
+> bounces   acquisitions   holdtime-min   holdtime-max holdtime-
+> total   holdtime-avg
+> -------------------------------------------------------------------
+> -------------------------------------------------------------------
+> -----------------------------------------------------------------
+> 
+> &shard-
+> >lock:      31510503       31510711           0.08          19.98    
+>     168932319.64     5.36            31700383      31843851       0.0
+> 3           17.50        10273968.33      0.32
+> ------------
+> &shard->lock       15731657          [<0000000068c0fd75>]
+> pick_next_task_fair+0x4dd/0x510
+> &shard->lock       15756516          [<000000001faf84f9>]
+> enqueue_task_fair+0x459/0x530
+> &shard->lock          21766          [<00000000126ec6ab>]
+> newidle_balance+0x45a/0x650
+> &shard->lock            772          [<000000002886c365>]
+> dequeue_task_fair+0x4c9/0x540
+> ------------
+> &shard->lock          23458          [<00000000126ec6ab>]
+> newidle_balance+0x45a/0x650
+> &shard->lock       16505108          [<000000001faf84f9>]
+> enqueue_task_fair+0x459/0x530
+> &shard->lock       14981310          [<0000000068c0fd75>]
+> pick_next_task_fair+0x4dd/0x510
+> &shard->lock            835          [<000000002886c365>]
+> dequeue_task_fair+0x4c9/0x540
+> 
+> These results are when we create only 3 shards (16 logical cores per
+> shard), so the contention may be a result of overly-coarse sharding.
+> If
+> we run the schbench incantation with no sharding whatsoever, we see
+> the
+> following significantly worse lock stats contention:
+> 
+> -------------------------------------------------------------------
+> -------------------------------------------------------------------
+> -------------------------------------------------------------------
+> ----
+> class name        con-bounces    contentions         waittime-
+> min   waittime-max waittime-total         waittime-avg    acq-
+> bounces   acquisitions   holdtime-min  holdtime-max holdtime-
+> total   holdtime-avg
+> -------------------------------------------------------------------
+> -------------------------------------------------------------------
+> -------------------------------------------------------------------
+> ----
+> 
+> &shard-
+> >lock:     117868635      118361486           0.09           393.01  
+>      1250954097.25          10.57           119345882     119780601  
+>     0.05          343.35       38313419.51      0.32
+> ------------
+> &shard->lock       59169196          [<0000000060507011>]
+> __enqueue_entity+0xdc/0x110
+> &shard->lock       59084239          [<00000000f1c67316>]
+> __dequeue_entity+0x78/0xa0
+> &shard->lock         108051          [<00000000084a6193>]
+> newidle_balance+0x45a/0x650
+> ------------
+> &shard->lock       60028355          [<0000000060507011>]
+> __enqueue_entity+0xdc/0x110
+> &shard->lock         119882          [<00000000084a6193>]
+> newidle_balance+0x45a/0x650
+> &shard->lock       58213249          [<00000000f1c67316>]
+> __dequeue_entity+0x78/0xa0
+> 
+> The contention is ~3-4x worse if we don't shard at all. This roughly
+> matches the fact that we had 3 shards on the first workload run
+> above.
+> If we make the shards even smaller, the contention is comparably much
+> lower:
+> 
+> -------------------------------------------------------------------
+> -------------------------------------------------------------------
+> ----------------------------------------------------------
+> class name         con-bounces    contentions   waittime-
+> min  waittime-max waittime-total   waittime-avg   acq-
+> bounces   acquisitions   holdtime-min  holdtime-max holdtime-
+> total   holdtime-avg
+> -------------------------------------------------------------------
+> -------------------------------------------------------------------
+> ----------------------------------------------------------
+> 
+> &shard-
+> >lock:      13839849       13877596      0.08          13.23        5
+> 389564.95       0.39           46910241      48069307       0.06     
+>      16.40        16534469.35      0.34
+> ------------
+> &shard->lock           3559          [<00000000ea455dcc>]
+> newidle_balance+0x45a/0x650
+> &shard->lock        6992418          [<000000002266f400>]
+> __dequeue_entity+0x78/0xa0
+> &shard->lock        6881619          [<000000002a62f2e0>]
+> __enqueue_entity+0xdc/0x110
+> ------------
+> &shard->lock        6640140          [<000000002266f400>]
+> __dequeue_entity+0x78/0xa0
+> &shard->lock           3523          [<00000000ea455dcc>]
+> newidle_balance+0x45a/0x650
+> &shard->lock        7233933          [<000000002a62f2e0>]
+> __enqueue_entity+0xdc/0x110
+> 
+> Interestingly, SHARED_RUNQ performs worse than NO_SHARED_RUNQ on the
+> schbench
+> benchmark on Milan as well, but we contend more on the rq lock than
+> the
+> shard lock:
+> 
+> -------------------------------------------------------------------
+> -------------------------------------------------------------------
+> -----------------------------------------------------------
+> class name         con-bounces    contentions   waittime-
+> min  waittime-max waittime-total   waittime-avg   acq-
+> bounces   acquisitions   holdtime-min   holdtime-max holdtime-
+> total   holdtime-avg
+> -------------------------------------------------------------------
+> -------------------------------------------------------------------
+> -----------------------------------------------------------
+> 
+> &rq-
+> >__lock:       9617614        9656091       0.10          79.64      
+>   69665812.00      7.21           18092700      67652829       0.11  
+>          82.38        344524858.87     5.09
+> -----------
+> &rq->__lock        6301611          [<000000003e63bf26>]
+> task_rq_lock+0x43/0xe0
+> &rq->__lock        2530807          [<00000000516703f0>]
+> __schedule+0x72/0xaa0
+> &rq->__lock         109360          [<0000000011be1562>]
+> raw_spin_rq_lock_nested+0xa/0x10
+> &rq->__lock         178218          [<00000000c38a30f9>]
+> sched_ttwu_pending+0x3d/0x170
+> -----------
+> &rq->__lock        3245506          [<00000000516703f0>]
+> __schedule+0x72/0xaa0
+> &rq->__lock        1294355          [<00000000c38a30f9>]
+> sched_ttwu_pending+0x3d/0x170
+> &rq->__lock        2837804          [<000000003e63bf26>]
+> task_rq_lock+0x43/0xe0
+> &rq->__lock        1627866          [<0000000011be1562>]
+> raw_spin_rq_lock_nested+0xa/0x10
+> 
+> .....................................................................
+> .....................................................................
+> ........................................................
+> 
+> &shard-
+> >lock:       7338558       7343244       0.10          35.97        7
+> 173949.14       0.98           30200858      32679623       0.08     
+>       35.59        16270584.52      0.50
+> ------------
+> &shard->lock        2004142          [<00000000f8aa2c91>]
+> __dequeue_entity+0x78/0xa0
+> &shard->lock        2611264          [<00000000473978cc>]
+> newidle_balance+0x45a/0x650
+> &shard->lock        2727838          [<0000000028f55bb5>]
+> __enqueue_entity+0xdc/0x110
+> ------------
+> &shard->lock        2737232          [<00000000473978cc>]
+> newidle_balance+0x45a/0x650
+> &shard->lock        1693341          [<00000000f8aa2c91>]
+> __dequeue_entity+0x78/0xa0
+> &shard->lock        2912671          [<0000000028f55bb5>]
+> __enqueue_entity+0xdc/0x110
+> 
+> .....................................................................
+> .....................................................................
+> .........................................................
+> 
+> If we look at the lock stats with SHARED_RUNQ disabled, the rq lock
+> still
+> contends the most, but it's significantly less than with it enabled:
+> 
+> -------------------------------------------------------------------
+> -------------------------------------------------------------------
+> --------------------------------------------------------------
+> class name          con-bounces    contentions   waittime-
+> min   waittime-max waittime-total   waittime-avg    acq-
+> bounces   acquisitions   holdtime-min   holdtime-max holdtime-
+> total   holdtime-avg
+> -------------------------------------------------------------------
+> -------------------------------------------------------------------
+> --------------------------------------------------------------
+> 
+> &rq-
+> >__lock:        791277         791690        0.12           110.54   
+>     4889787.63       6.18            1575996       62390275       0.1
+> 3           112.66       316262440.56     5.07
+> -----------
+> &rq->__lock         263343          [<00000000516703f0>]
+> __schedule+0x72/0xaa0
+> &rq->__lock          19394          [<0000000011be1562>]
+> raw_spin_rq_lock_nested+0xa/0x10
+> &rq->__lock           4143          [<000000003b542e83>]
+> __task_rq_lock+0x51/0xf0
+> &rq->__lock          51094          [<00000000c38a30f9>]
+> sched_ttwu_pending+0x3d/0x170
+> -----------
+> &rq->__lock          23756          [<0000000011be1562>]
+> raw_spin_rq_lock_nested+0xa/0x10
+> &rq->__lock         379048          [<00000000516703f0>]
+> __schedule+0x72/0xaa0
+> &rq->__lock            677          [<000000003b542e83>]
+> __task_rq_lock+0x51/0xf0
+> 
+> Worth noting is that increasing the granularity of the shards in
+> general
+> improves very runqueue-heavy workloads such as netperf UDP_RR and
+> this
+> schbench command, but it doesn't necessarily make a big difference
+> for
+> every workload, or for sufficiently small CCXs such as the 7950X. It
+> may
+> make sense to eventually allow users to control this with a debugfs
+> knob, but for now we'll elect to choose a default that resulted in
+> good
+> performance for the benchmarks run for this patch series.
+> 
+> Conclusion
+> ==========
+> 
+> SHARED_RUNQ in this form provides statistically significant wins for
+> several types of workloads, and various CPU topologies. The reason
+> for
+> this is roughly the same for all workloads: SHARED_RUNQ encourages
+> work
+> conservation inside of a CCX by having a CPU do an O(# per-LLC
+> shards)
+> iteration over the shared_runq shards in an LLC. We could similarly
+> do
+> an O(n) iteration over all of the runqueues in the current LLC when a
+> core is going idle, but that's quite costly (especially for larger
+> LLCs), and sharded SHARED_RUNQ seems to provide a performant middle
+> ground between doing an O(n) walk, and doing an O(1) pull from a
+> single
+> per-LLC shared runq.
+> 
+> For the workloads above, kernel compile and hackbench were clear
+> winners
+> for SHARED_RUNQ (especially in __enqueue_entity()). The reason for
+> the
+> improvement in kernel compile is of course that we have a heavily
+> CPU-bound workload where cache locality doesn't mean much; getting a
+> CPU
+> is the #1 goal. As mentioned above, while I didn't expect to see an
+> improvement in hackbench, the results of the benchmark suggest that
+> minimizing runqueue delays is preferable to optimizing for L1/L2
+> locality.
+> 
+> Not all workloads benefit from SHARED_RUNQ, however. Workloads that
+> hammer the runqueue hard, such as netperf UDP_RR, or schbench -L -m
+> 52
+> -p 512 -r 10 -t 1, tend to run into contention on the shard locks;
+> especially when enqueuing tasks in __enqueue_entity(). This can be
+> mitigated significantly by sharding the shared datastructures within
+> a
+> CCX, but it doesn't eliminate all contention, as described above.
+> 
+> Worth noting as well is that Gautham Shenoy ran some interesting
+> experiments on a few more ideas in [5], such as walking the
+> shared_runq
+> on the pop path until a task is found that can be migrated to the
+> calling CPU. I didn't run those experiments in this patch set, but it
+> might be worth doing so.
+> 
+> [5]: 
+> https://lore.kernel.org/lkml/ZJkqeXkPJMTl49GB@BLR-5CG11610CF.amd.com/
+> 
+> Gautham also ran some other benchmarks in [6], which we may want to
+> again try on this v3, but with boost disabled.
+> 
+> [6]: 
+> https://lore.kernel.org/lkml/ZLpMGVPDXqWEu+gm@BLR-5CG11610CF.amd.com/
+> 
+> Finally, while SHARED_RUNQ in this form encourages work conservation,
+> it
+> of course does not guarantee it given that we don't implement any
+> kind
+> of work stealing between shared_runq's. In the future, we could
+> potentially push CPU utilization even higher by enabling work
+> stealing
+> between shared_runq's, likely between CCXs on the same NUMA node.
+> 
+> Originally-by: Roman Gushchin <roman.gushchin@linux.dev>
+> Signed-off-by: David Vernet <void@manifault.com>
+> 
+> David Vernet (7):
+>   sched: Expose move_queued_task() from core.c
+>   sched: Move is_cpu_allowed() into sched.h
+>   sched: Check cpu_active() earlier in newidle_balance()
+>   sched: Enable sched_feat callbacks on enable/disable
+>   sched/fair: Add SHARED_RUNQ sched feature and skeleton calls
+>   sched: Implement shared runqueue in CFS
+>   sched: Shard per-LLC shared runqueues
+> 
+>  include/linux/sched.h   |   2 +
+>  kernel/sched/core.c     |  52 ++----
+>  kernel/sched/debug.c    |  18 ++-
+>  kernel/sched/fair.c     | 340
+> +++++++++++++++++++++++++++++++++++++++-
+>  kernel/sched/features.h |   1 +
+>  kernel/sched/sched.h    |  56 ++++++-
+>  kernel/sched/topology.c |   4 +-
+>  7 files changed, 420 insertions(+), 53 deletions(-)
 > 
 
