@@ -2,68 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B997FA2FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:36:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE28E7FA307
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 15:38:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233597AbjK0Og2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 09:36:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45114 "EHLO
+        id S233481AbjK0OiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 09:38:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233860AbjK0Of5 (ORCPT
+        with ESMTP id S233770AbjK0Ohr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 09:35:57 -0500
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7C41FEE
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:33:41 -0800 (PST)
-Received: by mail-oo1-xc34.google.com with SMTP id 006d021491bc7-586ae6edf77so1988947eaf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:33:41 -0800 (PST)
+        Mon, 27 Nov 2023 09:37:47 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A34D4C
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:37:09 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1cfb3ee8bc7so16483325ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 06:37:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701095621; x=1701700421; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=9Mkf9QcG9pXv0Qdie0/NQ3M3Nqa2uonDOOeKyBty/vA=;
-        b=xczyG6CXSKr/7rkNK+RW8PuaPK8cCXsivfRuhEZSHi8NNwQJ2hzHYkkxKqmmGrpFam
-         LzmfdJLCKK4NyuFEn+T0FknRkuN8CU4uhK7KNW+66vtYuHKF9DkK6lgeIKx36XGpdC0d
-         oDBgeMNRc9Py9ROh+x3Ch/1+1se+7Oo6wKd9Le8tyhE0+PERnNV/3APer5pk7oDjsDrd
-         E4/IDpOm4kwtyDeeoi0jEbxPXTEtxIrIUTfamefKiXIEE07iETki1dmMq+yLzjFjf05L
-         JN+7dECiyOW0GLAnPCk35c/CyeuPS279mI85EstvRU033Cs5Lq30iZTa6mSPy6tjlDOl
-         /WwQ==
+        d=vrull.eu; s=google; t=1701095829; x=1701700629; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sTOVcypQtVTFXZLfWHCe+N3Q12yUhXgQHc0UVNtkCoA=;
+        b=JC4miItvz+NNVDj+y3lT1yhmxlqFLhlRLgpxdSIpZq/XysiB9qs8kFDJqLnWKKEdvA
+         zTvAixW8G1yrdu/1zfm3ED6XUuHXwts5h9rGRNpJ/CHg7UQ2DEILf9VMJ2VCaDCPxngA
+         Xgev0L4WZg3F59EWaXc4iVfrmyRrTXhVT3Hhv3su9y6EKaH7GTQEDjq0UnqlU50YrS8z
+         v3fYwnkEgYfRiqmO+9SwlyVvApjfNTvdnBUuLife6k24ENvxJHIl7TVGArrzHOaD0dsm
+         NDkj3oK53dtUvsHi3aAHAwUuQs1qz1WJl8FfVBgRLnLa+e1NHGz9lLnIB0GguYYkpG1M
+         Kopg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701095621; x=1701700421;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9Mkf9QcG9pXv0Qdie0/NQ3M3Nqa2uonDOOeKyBty/vA=;
-        b=KiiVK9lzUOqAmdui6dB/DK0Bd7Ksns62bYf7T/1e7JJYvvVSXOxaZW3qRIV/jRu25T
-         +oOmZc3QSBAqCAVs800NAu6uigAUNaB0C9WtCGYjXVirvA1Y+OMF+AGt5VIf/IvJqQEX
-         lgvA8P/6FZolrftzxNbRfUEUOSYfh2ivWZ86prJd9m4ivi7n5DuerpkrVXfEZkzEqgFZ
-         TOPgRa3e8wbS7o0IjbEIv8PLBK/1/WCefx4Q7YTzMXvo8/Q3OlaOVD4VIXN+UjQJj0oW
-         Y84fr7tR4ehadUaCZiosIjKypbZrIWeve2yNGSMO6vZMFbSNDfPOhsQqMEzb2FPsCpn7
-         lrVA==
-X-Gm-Message-State: AOJu0YysjKvZK8f95OGxYYvRElbOZVZeDsfc06xG7TmA/crV/TsR3BtJ
-        N2zhVnGJSiEQkf40Bodj73PK+HikTYPBUPchAVlVMQ==
-X-Google-Smtp-Source: AGHT+IFL0Daxg/eseyWSM5ZIm84vrvKN7f+QFiyVVolXNZQwTeRn7X5tk1ApVycvVSZVAYVR2565sXctWyEw7Dbd7Mc=
-X-Received: by 2002:a05:6358:2249:b0:16b:f69d:c8e7 with SMTP id
- i9-20020a056358224900b0016bf69dc8e7mr6752393rwc.0.1701095620791; Mon, 27 Nov
- 2023 06:33:40 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701095829; x=1701700629;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sTOVcypQtVTFXZLfWHCe+N3Q12yUhXgQHc0UVNtkCoA=;
+        b=oCx1u5Y4Yqm4G5XJUuAtJcqtYIjG7aghjQDtvKRIvxTQc13FQaTRXXJlYELTCHzATy
+         rBhWNmFghIlRstDBDgBX0oVDj/s+d5DH9Y95sVPuqUX5wV5d+dP/ZjKokVAImlm60sHX
+         /yYA8VHvNsBtHzixDHExxZ1KcUlP7AlnOJomvU+VebIVAMQPnMoCOtt4jxm+cjJZ0HqH
+         4I9jjAGgmI1amPpSZDQLaTGECp6ZjvdlLsa6G3NG1Ug8usDCZanM/X/yqkvgTwBvagtw
+         Lto3ARBgsEqSpWTBuhnC2tbJd1V0QLRIACsmdGIaZHktFquSiCvKUFZo4lm5bX4PTzfb
+         J0gA==
+X-Gm-Message-State: AOJu0YyWXNcQhh6RWoYLaFi7YKaJxIbdHKXoa/QKO7PbJ8aOc4r+V7FE
+        10GgS+OOVsYvNTD7We3xjJYb9dfr/TtHd2xLiNR/3w==
+X-Google-Smtp-Source: AGHT+IEqiGw8cZsLsTuXV7V9RWHgcqAqIuGMwaeWQRzgkPyJ/z9ud9P0jKpwYm+TXJaPLPaE+VQDYAAo3ye99gZjpCI=
+X-Received: by 2002:a17:90b:1b07:b0:285:9d0d:7e3 with SMTP id
+ nu7-20020a17090b1b0700b002859d0d07e3mr10951786pjb.38.1701095828964; Mon, 27
+ Nov 2023 06:37:08 -0800 (PST)
 MIME-Version: 1.0
-References: <20231125163059.878143365@linuxfoundation.org>
-In-Reply-To: <20231125163059.878143365@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 27 Nov 2023 20:03:29 +0530
-Message-ID: <CA+G9fYt5W8CX_2B-6piLu5YytSx+ZoSKcOOo-ppO+u9jGzeWmQ@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/53] 4.14.331-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com
+References: <20231124072142.2786653-1-christoph.muellner@vrull.eu>
+ <20231124072142.2786653-3-christoph.muellner@vrull.eu> <2de6d526-918b-44f6-b26a-a0f30c42c5b3@sifive.com>
+In-Reply-To: <2de6d526-918b-44f6-b26a-a0f30c42c5b3@sifive.com>
+From:   =?UTF-8?Q?Christoph_M=C3=BCllner?= <christoph.muellner@vrull.eu>
+Date:   Mon, 27 Nov 2023 15:36:57 +0100
+Message-ID: <CAEg0e7hPvpCcqn4VLsmuUkyoZSZ_oTBLJraR653yUcFPKsq3vw@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/5] RISC-V: Expose Ssdtso via hwprobe API
+To:     Samuel Holland <samuel.holland@sifive.com>
+Cc:     linux-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Philipp Tomsich <philipp.tomsich@vrull.eu>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Guo Ren <guoren@kernel.org>,
+        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Daniel Lustig <dlustig@nvidia.com>,
+        Peter Zijlstra <peterz@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -72,157 +88,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 25 Nov 2023 at 22:02, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Mon, Nov 27, 2023 at 3:32=E2=80=AFPM Samuel Holland
+<samuel.holland@sifive.com> wrote:
 >
-> This is the start of the stable review cycle for the 4.14.331 release.
-> There are 53 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> Hi Christoph,
 >
-> Responses should be made by Mon, 27 Nov 2023 16:30:48 +0000.
-> Anything received after that time might be too late.
+> On 2023-11-24 1:21 AM, Christoph Muellner wrote:
+> > From: Christoph M=C3=BCllner <christoph.muellner@vrull.eu>
+> >
+> > This patch adds Ssdtso to the list of extensions which
+> > are announced to user-space using te hwprobe API.
+> >
+> > Signed-off-by: Christoph M=C3=BCllner <christoph.muellner@vrull.eu>
+> > ---
+> >  Documentation/arch/riscv/hwprobe.rst  | 3 +++
+> >  arch/riscv/include/uapi/asm/hwprobe.h | 1 +
+> >  arch/riscv/kernel/sys_riscv.c         | 1 +
+> >  3 files changed, 5 insertions(+)
+> >
+> > diff --git a/Documentation/arch/riscv/hwprobe.rst b/Documentation/arch/=
+riscv/hwprobe.rst
+> > index 7b2384de471f..8de3349e0ca2 100644
+> > --- a/Documentation/arch/riscv/hwprobe.rst
+> > +++ b/Documentation/arch/riscv/hwprobe.rst
+> > @@ -80,6 +80,9 @@ The following keys are defined:
+> >    * :c:macro:`RISCV_HWPROBE_EXT_ZICBOZ`: The Zicboz extension is suppo=
+rted, as
+> >         ratified in commit 3dd606f ("Create cmobase-v1.0.pdf") of riscv=
+-CMOs.
+> >
+> > +  * :c:macro:`RISCV_HWPROBE_EXT_ZICBOZ`: The Ssdtso extension is suppo=
+rted, as
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.331-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-> and the diffstat can be found below.
+> Should be RISCV_HWPROBE_EXT_SSDTSO.
+
+Thanks for reporting!
+I've fixed this now as well in the github branch:
+  https://github.com/cmuellner/linux/tree/ssdtso
+
+BR
+Christoph
+
 >
-> thanks,
+> Regards,
+> Samuel
 >
-> greg k-h
-
-Results from Linaro's test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 4.14.331-rc2
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-4.14.y
-* git commit: 39ca2c4cec46e5ef545815f62be91cba998b8927
-* git describe: v4.14.330-54-g39ca2c4cec46
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14.330-54-g39ca2c4cec46
-
-## Test Regressions (compared to v4.14.330)
-
-## Metric Regressions (compared to v4.14.330)
-
-## Test Fixes (compared to v4.14.330)
-
-## Metric Fixes (compared to v4.14.330)
-
-## Test result summary
-total: 54577, pass: 45662, fail: 1547, skip: 7326, xfail: 42
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 108 total, 103 passed, 5 failed
-* arm64: 35 total, 31 passed, 4 failed
-* i386: 21 total, 18 passed, 3 failed
-* mips: 19 total, 19 passed, 0 failed
-* parisc: 3 total, 0 passed, 3 failed
-* powerpc: 8 total, 7 passed, 1 failed
-* s390: 6 total, 5 passed, 1 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 6 total, 6 passed, 0 failed
-* x86_64: 27 total, 23 passed, 4 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-watchdog
-* kselftest-zram
-* kunit
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-crypto
-* ltp-cve
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* rcutorture
-
---
-Linaro LKFT
-https://lkft.linaro.org
+> > +       in version v1.0-draft2 of the corresponding extension.
+> > +
+> >  * :c:macro:`RISCV_HWPROBE_KEY_CPUPERF_0`: A bitmask that contains perf=
+ormance
+> >    information about the selected set of processors.
+> >
+> > diff --git a/arch/riscv/include/uapi/asm/hwprobe.h b/arch/riscv/include=
+/uapi/asm/hwprobe.h
+> > index b659ffcfcdb4..ed450c64e6b2 100644
+> > --- a/arch/riscv/include/uapi/asm/hwprobe.h
+> > +++ b/arch/riscv/include/uapi/asm/hwprobe.h
+> > @@ -30,6 +30,7 @@ struct riscv_hwprobe {
+> >  #define              RISCV_HWPROBE_EXT_ZBB           (1 << 4)
+> >  #define              RISCV_HWPROBE_EXT_ZBS           (1 << 5)
+> >  #define              RISCV_HWPROBE_EXT_ZICBOZ        (1 << 6)
+> > +#define              RISCV_HWPROBE_EXT_SSDTSO        (1 << 7)
+> >  #define RISCV_HWPROBE_KEY_CPUPERF_0  5
+> >  #define              RISCV_HWPROBE_MISALIGNED_UNKNOWN        (0 << 0)
+> >  #define              RISCV_HWPROBE_MISALIGNED_EMULATED       (1 << 0)
+> > diff --git a/arch/riscv/kernel/sys_riscv.c b/arch/riscv/kernel/sys_risc=
+v.c
+> > index c712037dbe10..c654f43b9699 100644
+> > --- a/arch/riscv/kernel/sys_riscv.c
+> > +++ b/arch/riscv/kernel/sys_riscv.c
+> > @@ -162,6 +162,7 @@ static void hwprobe_isa_ext0(struct riscv_hwprobe *=
+pair,
+> >               EXT_KEY(ZBB);
+> >               EXT_KEY(ZBS);
+> >               EXT_KEY(ZICBOZ);
+> > +             EXT_KEY(SSDTSO);
+> >  #undef EXT_KEY
+> >       }
+> >
+>
