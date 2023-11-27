@@ -2,146 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 630737FA0E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 14:22:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4293D7FA0E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 14:22:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233239AbjK0NWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 08:22:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51618 "EHLO
+        id S233411AbjK0NWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 08:22:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233286AbjK0NW2 (ORCPT
+        with ESMTP id S233309AbjK0NWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 08:22:28 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 155C81BD
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 05:22:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701091353; x=1732627353;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=kzVK6/8jtEngesohNvB3UsJNfu2VDm6OVryNzNnZYz0=;
-  b=ZEThBOnS4HC5iuGwnx4Q+lq77M/bTdFkOPunC7l0xFLjobqBoBBf/74k
-   6z82vcpXtbnAh8IjVphpK9KOpO62W86C2BD6diTkGujFYDAyLhXNlpgUG
-   lfv3GzkF8I4cRl4TTaGL3p/4Kla2qRHa4yWeIbw4QtdDSwMoe2gZsTdzQ
-   wZHJdKu2ZhFlvTE18wo7Kwaj61Yp3KCc23xl3fFLNXcELooTg4mlKd+o7
-   YIEJMW+BCQoDPoutUt3zeBLzgEUsXsQSUDS/EkBNmiI671kSqoFWfGA3R
-   knRfEZ6+gVPY/PQ6EwFmR1TlboFUc6AUpiqM4Gm3su3tO/SqjagfZRrA8
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="392448044"
-X-IronPort-AV: E=Sophos;i="6.04,230,1695711600"; 
-   d="scan'208";a="392448044"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 05:22:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="761600159"
-X-IronPort-AV: E=Sophos;i="6.04,230,1695711600"; 
-   d="scan'208";a="761600159"
-Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
-  by orsmga007.jf.intel.com with SMTP; 27 Nov 2023 05:22:29 -0800
-Received: by stinkbox (sSMTP sendmail emulation); Mon, 27 Nov 2023 15:22:29 +0200
-Date:   Mon, 27 Nov 2023 15:22:29 +0200
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     "Winkler, Tomas" <tomas.winkler@intel.com>
-Cc:     "Teres Alexis, Alan Previn" <alan.previn.teres.alexis@intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "Usyskin, Alexander" <alexander.usyskin@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Lubart, Vitaly" <vitaly.lubart@intel.com>
-Subject: Re: [Intel-gfx] [char-misc-next 3/4] mei: pxp: re-enable client on
- errors
-Message-ID: <ZWSYFc-ltqthibb9@intel.com>
-References: <20231011110157.247552-1-tomas.winkler@intel.com>
- <20231011110157.247552-4-tomas.winkler@intel.com>
- <ZVN9e3BczixJy_1H@intel.com>
- <ade96d9edd8bce1bc63dba4e2f1a92517180d774.camel@intel.com>
- <MN2PR11MB4093E7F5490A51DED7672145E5B2A@MN2PR11MB4093.namprd11.prod.outlook.com>
- <ZVUrhGsqJ9jKNM5x@intel.com>
+        Mon, 27 Nov 2023 08:22:30 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA261A1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 05:22:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78255C433CD;
+        Mon, 27 Nov 2023 13:22:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701091356;
+        bh=35mSssdQ32iia6B41JAGWk9Z95xz7+xMRF65KM9/eUM=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=u0kxVcFL1u3Tut+idFGtQrKOgeBXK0Q9kX+gNESLPwytck9pOdMAca5r40EtdASty
+         CbcOWKmsPxbKTUbfCulvFSxoUul56xoqpvpopxl0oDfDglqR/v4xSVleH0dWh2NWST
+         b0llnAQ7g0CSlov87WUFzoSYZqj39oRfuSZH+PVUjprQeAs2aKMgZR6FbP/nbriYXw
+         e56EiPxa6C6qhNr4SeJxixN2MPPxMt3JSdkr1jmGrfxA29VgIkGrucdMDQynZG3LE/
+         qhRPct7jH048cWmt4ZsU1fQsJqnhF6tOjK/FF/MPwAWWp5tiUzsA4om8xI+1q2iPCR
+         RCoEcx0JZ3u4Q==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        kishon@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        gregkh@linuxfoundation.org, abel.vesa@linaro.org,
+        quic_wcheng@quicinc.com, dmitry.baryshkov@linaro.org,
+        Rohit Agarwal <quic_rohiagar@quicinc.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, kernel@quicinc.com
+In-Reply-To: <1695359525-4548-1-git-send-email-quic_rohiagar@quicinc.com>
+References: <1695359525-4548-1-git-send-email-quic_rohiagar@quicinc.com>
+Subject: Re: (subset) [PATCH v4 0/5] Add USB Support on Qualcomm's SDX75
+ Platform
+Message-Id: <170109135110.42627.7639304783931136606.b4-ty@kernel.org>
+Date:   Mon, 27 Nov 2023 18:52:31 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZVUrhGsqJ9jKNM5x@intel.com>
-X-Patchwork-Hint: comment
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 10:35:16PM +0200, Ville Syrjälä wrote:
-> On Tue, Nov 14, 2023 at 06:40:26PM +0000, Winkler, Tomas wrote:
-> > 
-> > 
-> > > -----Original Message-----
-> > > From: Teres Alexis, Alan Previn <alan.previn.teres.alexis@intel.com>
-> > > Sent: Tuesday, November 14, 2023 5:32 PM
-> > > To: ville.syrjala@linux.intel.com; Winkler, Tomas <tomas.winkler@intel.com>
-> > > Cc: gregkh@linuxfoundation.org; Usyskin, Alexander
-> > > <alexander.usyskin@intel.com>; linux-kernel@vger.kernel.org; intel-
-> > > gfx@lists.freedesktop.org; Lubart, Vitaly <vitaly.lubart@intel.com>
-> > > Subject: Re: [char-misc-next 3/4] mei: pxp: re-enable client on errors
-> > > 
-> > > On Tue, 2023-11-14 at 16:00 +0200, Ville Syrjälä wrote:
-> > > > On Wed, Oct 11, 2023 at 02:01:56PM +0300, Tomas Winkler wrote:
-> > > > > From: Alexander Usyskin <alexander.usyskin@intel.com>
-> > > > >
-> > > > > Disable and enable mei-pxp client on errors to clean the internal state.
-> > > >
-> > > > This broke i915 on my Alderlake-P laptop.
-> > 
-> > This fix was already posted, just missed the merging window
-> > https://lkml.org/lkml/2023/10/31/636
-> 
-> Gave this a spin and it fixes the issue for me. Thanks.
-> 
-> > 
-> > Greg can you please take this fix into v6.7-rc2 run, or I can repost it with the correct subject.
 
-We're at -rc3 already and this fix is still not in!
-
-> > Thanks
-> > Tomas
-> > 
-> > 
-> > > >
-> > > 
-> > > 
-> > > Hi Alex, i just relooked at the series that got merged, and i noticed that in patch
-> > > #3 of the series, you had changed mei_pxp_send_message to return bytes sent
-> > > instead of zero on success. IIRC, we had agreed to not effect the behavior of
-> > > this component interface (other than adding the timeout) - this was the
-> > > intention of Patch #4 that i was pushing for in order to spec the interface
-> > > (which continues to say zero on success). We should fix this to stay with the
-> > > original behavior - where mei-pxp should NOT send partial packets and will
-> > > only return zero in success case where success is sending of the complete
-> > > packets - so we don't need to get back the "bytes sent"
-> > > from mei_pxp_send_message. So i think this might be causing the problem.
-> > > 
-> > > 
-> > > Side note  to Ville:, are you enabling PXP kernel config by default in all MESA
-> > > contexts? I recall that MESA folks were running some CI testing with enable
-> > > pxp contexts, but didn't realize this is being enabled by default in all contexts.
-> > > Please be aware that enabling pxp-contexts would temporarily disabled
-> > > runtime-pm during that contexts lifetime.
-> > > Also pxp contexts will be forced to be irrecoverable if it ever hangs.
-> > > The former is a hardware architecture requirement but doesn't do anything if
-> > > you're enabling display (which I beleive also blocks in ADL). The latter was a
-> > > requirement to comply with Vulkan.
-> > > 
-> > > ...alan
-> > > 
-> > 
+On Fri, 22 Sep 2023 10:42:00 +0530, Rohit Agarwal wrote:
+> Changes in v4:
+>  - Replaced the v5 offsets with v6 offsets as per Dmitry's suggestion in patch 5/5.
 > 
-> -- 
-> Ville Syrjälä
-> Intel
+> Changes in v3:
+>  - Removed the unnecessary change introduced in v2 of patch 2/5
+>  - Added Fixes tag in patch 3/5
+>  - Rebased patch 5/5 on Dmitry's cleanup patches.
+>    https://lore.kernel.org/all/20230911203842.778411-1-dmitry.baryshkov@linaro.org/
+>    https://lore.kernel.org/linux-phy/20230824211952.1397699-1-dmitry.baryshkov@linaro.org/
+> 
+> [...]
 
+Applied, thanks!
+
+[1/5] dt-bindings: phy: qcom,snps-eusb2-phy: Add compatible for SDX75
+      (no commit info)
+[2/5] dt-bindings: phy: qcom,qmp-usb: Add SDX75 USB3 PHY
+      (no commit info)
+[5/5] phy: qcom-qmp-usb: Add Qualcomm SDX75 USB3 PHY support
+      commit: 7f6f9e0def00cfaeb1d034fd13dbd84470aeccbd
+
+Best regards,
 -- 
-Ville Syrjälä
-Intel
+~Vinod
+
+
