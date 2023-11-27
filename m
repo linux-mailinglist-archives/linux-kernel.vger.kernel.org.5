@@ -2,123 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF317F9E5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:17:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCB7A7F9E5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:17:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233057AbjK0LRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 06:17:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42214 "EHLO
+        id S233120AbjK0LRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 06:17:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232996AbjK0LRQ (ORCPT
+        with ESMTP id S233043AbjK0LRV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 06:17:16 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 515AB136;
-        Mon, 27 Nov 2023 03:17:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=cAMYRwVtTk4t4CFVybTFSaosFfl7UAZUdZLXZwoFExo=; b=ATqUzkBAXvyJcu5VDkL3MVJVfz
-        M/w2F2dpijW6LxyJLlqXBnQ0lCixTGvRKNlSoSiX09wPSklZT/HtWrEsqMUIdkq93s+4dAO9uWxTV
-        zMJVEfgI4+fLLB/BspixOggT0/648mr9X8rGlX6pT0ysMRuueX9ZH2SJCHA6yABLLJ3WdeVUQ9nkx
-        7hkUh0jav76aCSftSKzOTTuPr4TusyFps7ll+zKj+RPzbY6WUbwHRxY8UE9/5HR6OBjEBqv0sRGhO
-        1hHs7A0mYGz4bDCYmyPGoVMW2Gwqq/97kzONjxkB6w/6NX7lo3vhxYcv3rFdjOgVRN8vrcTve873R
-        d3HFyzHg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r7ZbZ-00G258-25;
-        Mon, 27 Nov 2023 11:16:46 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 17B3A3002F1; Mon, 27 Nov 2023 12:16:44 +0100 (CET)
-Date:   Mon, 27 Nov 2023 12:16:43 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Christoph Muellner <christoph.muellner@vrull.eu>,
-        linux-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Philipp Tomsich <philipp.tomsich@vrull.eu>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Daniel Lustig <dlustig@nvidia.com>
-Subject: Re: [RFC PATCH 0/5] RISC-V: Add dynamic TSO support
-Message-ID: <20231127111643.GV3818@noisy.programming.kicks-ass.net>
-References: <20231124072142.2786653-1-christoph.muellner@vrull.eu>
- <20231124101519.GP3818@noisy.programming.kicks-ass.net>
- <ZWFhSYalMCgTo+SG@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+        Mon, 27 Nov 2023 06:17:21 -0500
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2137.outbound.protection.outlook.com [40.107.7.137])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A15135;
+        Mon, 27 Nov 2023 03:17:25 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BzFbK6/h85GiraBs2K9JrTZAR2DXtvLEUmluXuVrbBqYeRhfLuv5VgAU9BVhs+JuJark+tALdrCt871i1oCsppO3fqeq6xlji68QCDvtTqw08kgeJW28mK7u6SpEjur+yL5knbbcJQ60UAkWkNAKkWVb9BbyeI6FwGQun6vQHD8t1P33txwcCLL34SIQSA3rrpOYWOLz/97I5GO/nvpPZETs5Gz+Vmid1wpC+Oasws8LY1wbCdeqCDxVZ/MdzqmBWQrIQyhN55+Y3GDrHWWugsZNax4L0Thb0jngDy6m10CtFR8PCpY86LdyPtqCnp/CEv/K73thK68+CG1HomoQWQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6TwUHk4aYq26hKKTWHjMkouJNcgQyt/8798Kwubhq98=;
+ b=IfStxzy4HF62BF0DS4SBbUQF015Y2OYDyyAABDxd8D8+YxzGINapj5eygK4m+QKZk38OKWHGXcV2QwfhlHYbKVbGXz5dVMCuJSKnT/UL1MA9YUL7mPMuZZ2n8iNzQwWXwLAxGwapXikCttKAt7jPOFC8gj0jxjQvRldNNt5ayX8gizDI8SBU0dJAOtFfmNj6mdByAtBfOYRAb6FNrQ0aVn0JuJeX5HEDB0ZlmTTJYCYNn1xEWOwcVPEqE92Oqd6z4MzkVqINZYES7J4++2Lsgb4nshjPDmJ7VpJgNd8IsbcaMmZGh12yPxMdNS4CdRnwJiWh+dE5FFRAvPYbzNdL6g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6TwUHk4aYq26hKKTWHjMkouJNcgQyt/8798Kwubhq98=;
+ b=GGB2/ujolbREn5XmIDhFm8P0xLwiDM2jSi/dazaKJ7i9YURSg1oiY2QjDH9XmG3viea2lcjtztKgBaTkm76OKkA80k9DM+gu8lbGd1Altm551FnTi5nGbLK5IekP/JWOs413n3GDfcrgdPb+hCqojUNlCewdrMTmrYvd8oAdEjk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=kontron.de;
+Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:263::10)
+ by AS2PR10MB7712.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:62d::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Mon, 27 Nov
+ 2023 11:17:22 +0000
+Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::27ba:9922:8d12:7b3d]) by PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::27ba:9922:8d12:7b3d%5]) with mapi id 15.20.7025.022; Mon, 27 Nov 2023
+ 11:17:22 +0000
+Message-ID: <158cf11e-53fa-4af8-a8a5-db18d43d0abb@kontron.de>
+Date:   Mon, 27 Nov 2023 12:17:19 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] usb: misc: onboard_usb_hub: Add support for clock
+ input
+Content-Language: en-US, de-DE
+To:     =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Frieder Schrempf <frieder@fris.de>, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>,
+        Anand Moon <linux.amoon@gmail.com>,
+        Benjamin Bara <benjamin.bara@skidata.com>,
+        Icenowy Zheng <uwu@icenowy.me>, Rob Herring <robh@kernel.org>
+References: <20231123134728.709533-1-frieder@fris.de>
+ <2023112329-augmented-ecology-0753@gregkh>
+ <20231123173610.d6ytwlpbpcqng5pv@pengutronix.de>
+From:   Frieder Schrempf <frieder.schrempf@kontron.de>
+In-Reply-To: <20231123173610.d6ytwlpbpcqng5pv@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZWFhSYalMCgTo+SG@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-ClientProxiedBy: FR3P281CA0120.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a3::18) To PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:102:263::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PA4PR10MB5681:EE_|AS2PR10MB7712:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5ea211e2-aa9b-4513-9ccc-08dbef3a6d07
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Clu/SwmGpwRH9HQf6BXgEGmYPzfj6x/iuUtwpy5Z5A52q1uDor1GLLmrEMyNZvpO+OI4LqGMYd12k+kxwZOr8LdJbgUJ2vAyjPVWJLofBS86DPbv2hayGcr0zRgX0NPyKzwTq1nbEZiJG4JrUp1JGPilgw5HmUYJvG8/RuQDfgxbTbP0PT1y6noLuJCO3oSb/QSPh6ZsSeoHbuVOG2QPQc5bc5rPt0hgVCWqnmj7apCOOcHVI6bay3XrpYmxB+mH4pueYk7L0Nqo4NNwsGEOQ3adPamWQyGVHIpyRxs7NGvCBDrq8aU1o/lsj/KANdA0MR8mNj64+kh2NVbEpYdsrSeOCWNodhB1FkaEj3+wKErgTr00TqdtkEbmeYzrc+iJaKvo5NzKYCo/WIEzyRYDJUc2MB7nYcpXX4uOfc1MjmshFkDBhdt/Pv+JpKvfnwEzM+PPMWh1+6e1AnhcOGmoNA+NtYvgCS3/Kp+rqbTIiSZE1tWvsH6j64sp1myCbpzyzug3DyX7C6tMdj1nWtxQjr/7qYOb95NdCo4b+6EeLFaPwGU3giitZ5P7PVx5r67UhDauEyz1mFQBq203G8+koaZn27O2X1f8dFNZ4IzPmgEFP9exxzg3gm3YHwBVmSD0r/6iEmpKVHqph8wHBzEpPw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(136003)(39850400004)(366004)(396003)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(83380400001)(38100700002)(31686004)(53546011)(6512007)(6666004)(6506007)(8936002)(4326008)(110136005)(316002)(66556008)(66946007)(54906003)(66476007)(6486002)(5660300002)(31696002)(44832011)(8676002)(7416002)(478600001)(86362001)(41300700001)(4744005)(2906002)(36756003)(26005)(2616005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cXZSWWRTL2xpNFMyRzlkVmxNdHdSall6TzJLY3JEc3NIMTVIbUdiTTBMUlda?=
+ =?utf-8?B?Q21OOHpQSmJLclAwcktRbTlYMEp4MVZYV0E0eGtNdjRHM1QzUnBvUGJhU2lH?=
+ =?utf-8?B?dklLenhBRnVGaFR0eVlFSm4zUFZzTGhLMWFMUHRFeWNKL2JaTkkwRGx6bHdP?=
+ =?utf-8?B?bE5WN1pkSElhZGRtY1dZYWNQM3ZYUEluNDNzUlFJNVljRUpWZ3B4OEpVOFdJ?=
+ =?utf-8?B?VXl5NEYvTDFZejdSbHNyM1dFcUVKODk5RXJuV0xBWTVONzFnTEdCblFhQkE1?=
+ =?utf-8?B?bzE2QktnSVVXU09MT2xjK0pmQyt6NW8zUjJuaEpJeGxrVWZBMXcrYnVNb0Zp?=
+ =?utf-8?B?V1JCNHVQRGFDaTgzWFBDdjJSVExaOTh3NFJqU2lJc3k2LzNIZE80bmZqS3dH?=
+ =?utf-8?B?ZGl2UlIwWlVmUlo2Y1p0Mk54SGRJdzcwY2tmdm9zY0R4SE15OWxaTUYwSmVB?=
+ =?utf-8?B?WjEyaUhER0NldXdwN045dW00a0dNV082clMrck1rM1poMWNuUGRucGFTT2sz?=
+ =?utf-8?B?TDQ2RmhCMU9CYm5sOEVEQU1oWG5pdWErc1RJQTJzNzI1WEYxOWMwTWF2YzRj?=
+ =?utf-8?B?WlJyU3VhdmtvWVdwUVlBZTRaTEo3Z1FXU0J5N1U3RUthb1lFTVE1eWYxREw3?=
+ =?utf-8?B?WHRWcWtmVGhFVW1vUmp2V0dIbkR4czVnSVNiOHJvdHpNOGxZdjZsZk96ODFB?=
+ =?utf-8?B?RTl4L2JzdW9haFE4U3JPbkcrUWpRRG1sWnVFZkxMK0hCWVdJSkZRUHdTMG1K?=
+ =?utf-8?B?SHFiUWlMdzFZOHNrc2R3eGN5dkl3d3FLN2w3dE80V1pBODVsOUNRYW90OFpS?=
+ =?utf-8?B?ZVR1Mlg5R25LbUVucXh4UWpRM0NxQzdkUWl4bElUQm0vTGpLMHJTaW83NFJM?=
+ =?utf-8?B?cDVsUHc0Z2prbUg0SlgvbzJ4KzVjZzZ0SlBLUEEyVUwyTktZa3hoMHBQblha?=
+ =?utf-8?B?ZUV5QUc3SlU4UWFVNkZSVHhGWDhWYjBKRFdiYlVnSFJveHdlZ0JlUEhnSnk0?=
+ =?utf-8?B?ZGVWNklyMVQzd2ppaVBXUmJ3RDFMRXNyMlhWc0I4M3VyY3Q2bE1KeU1VUCt3?=
+ =?utf-8?B?ZGp2QXhwL0N5VTREd1EydW1pb04wWmtHNHhFY0VBOWYwSmt3emlhL3JtZVEr?=
+ =?utf-8?B?YmNkUldLc1pHbitaMEZ3WDl0ckJYeFJPcW9aZ29sUVArd1NZQTZROW9kSzIz?=
+ =?utf-8?B?bDZKMDkxTzlPTHBZV1hqQzRXejZ5SmlZb1ljczBqV2xjSFRrTXByS2ZlR254?=
+ =?utf-8?B?aGR6VlhUSEpUbHVkYUVkZWtHQUlOUTlxSDJkZW1qRzdYUFd2NWUwZ0k2K0FJ?=
+ =?utf-8?B?UE8xYW01b1JUQUN5MUNSeCtUSDd2TG1SYnY5NkxzWS8rVm5TdHVQb2JUallu?=
+ =?utf-8?B?UXJQZUpvR1VuMExsbjNpZ25yK0Z1VEl5dEx0ZkpXRGUrVWhMNEU0OWYxRWgz?=
+ =?utf-8?B?Ui9zUzZ6b1lYb3dYeS9NRkt4eWRHOHFDeVRtbG9YeXRrVUN6THdET01KVGQ0?=
+ =?utf-8?B?U1JRLzhPN0xMeUZ0K0R4YmJPWUt0UGJoZEc5Tm1FNWJOQlk2UWlsakRiQTB2?=
+ =?utf-8?B?VHdFQlVWSnRaQnRNRDlxSDBEdTZFVUZlSkI0VUdtZ3VoYnJIS3h1NjVHMkIz?=
+ =?utf-8?B?cXI5NUhFNVA4a3NobElwSnhiZHZ0NmQzWi9sQzFYaHlEelNkemU5MGVLZ1Zq?=
+ =?utf-8?B?SWFJZndFeHNFNVFzUGJWb3J6Nk5weDBmYVdpY3ZTQStpdXdsZFdXaC9xWGt2?=
+ =?utf-8?B?QUFMVUhRQkRoZFg4SFl4WFArR0htbmdjMTFnOHhPTG5FdVFxRXF5NjhVZ3Ix?=
+ =?utf-8?B?T0xLVW1WMlhaZ1JOQ1QxMGhEMWwweDRrdjVBZ0FZcG5Vcm5nNTZMc3BERHlP?=
+ =?utf-8?B?R0lucUIwUnVoRW01VUcrWWg2Q0owbTdRUERqVlVuVDJHdVZFa2phdG8ydUR6?=
+ =?utf-8?B?YWZ1VEZTVXRFbm05TWN1OENibXRRemFkdnBiMDZJam1VMVRGRGtaSnk4aEIy?=
+ =?utf-8?B?ODhsVWxuWWhUbE53V21PVDNpbXV5NDB1czU2WlBha1k0emhuSHBtSWkreXJI?=
+ =?utf-8?B?ZXdhMjF1TVhNN3NSUzU0QU9HRUxncG9PZ2R5Rm5sbS94NnN5dFVoTHJFM2ty?=
+ =?utf-8?B?Rmt2UWh3eC84S1NqZkxFTmVBRDJOMUZhb29SdUVjS0gzVmdiN1F4azlFQVVj?=
+ =?utf-8?B?aVE9PQ==?=
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5ea211e2-aa9b-4513-9ccc-08dbef3a6d07
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2023 11:17:22.1159
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: duNzEMeITbffotHsEEaTqI5Ux1e/jq3+sEjAIm4az96fZz2q3yNZtgt9rNdRVmVKwOv6QPRgjimwivK+4wyybHiUftyXodizqWXbHAT+t0A=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR10MB7712
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 24, 2023 at 09:51:53PM -0500, Guo Ren wrote:
-> On Fri, Nov 24, 2023 at 11:15:19AM +0100, Peter Zijlstra wrote:
-> > On Fri, Nov 24, 2023 at 08:21:37AM +0100, Christoph Muellner wrote:
-> > > From: Christoph Müllner <christoph.muellner@vrull.eu>
-> > > 
-> > > The upcoming RISC-V Ssdtso specification introduces a bit in the senvcfg
-> > > CSR to switch the memory consistency model at run-time from RVWMO to TSO
-> > > (and back). The active consistency model can therefore be switched on a
-> > > per-hart base and managed by the kernel on a per-process/thread base.
-> > 
-> > You guys, computers are hartless, nobody told ya?
-> > 
-> > > This patch implements basic Ssdtso support and adds a prctl API on top
-> > > so that user-space processes can switch to a stronger memory consistency
-> > > model (than the kernel was written for) at run-time.
-> > > 
-> > > I am not sure if other architectures support switching the memory
-> > > consistency model at run-time, but designing the prctl API in an
-> > > arch-independent way allows reusing it in the future.
-> > 
-> > IIRC some Sparc chips could do this, but I don't think anybody ever
-> > exposed this to userspace (or used it much).
-> > 
-> > IA64 had planned to do this, except they messed it up and did it the
-> > wrong way around (strong first and then relax it later), which lead to
-> > the discovery that all existing software broke (d'uh).
-> > 
-> > I think ARM64 approached this problem by adding the
-> > load-acquire/store-release instructions and for TSO based code,
-> > translate into those (eg. x86 -> arm64 transpilers).
+Hi Greg, hi Uwe,
 
-> Keeping global TSO order is easier and faster than mixing
-> acquire/release and regular load/store. That means when ssdtso is
-> enabled, the transpiler's load-acquire/store-release becomes regular
-> load/store. Some micro-arch hardwares could speed up the performance.
+thanks for reviewing!
 
-Why is it faster? Because the release+acquire thing becomes RcSC instead
-of RcTSO? Surely that can be fixed with a weaker store-release variant
-ot something?
+On 23.11.23 18:36, Uwe Kleine-KÃ¶nig wrote:
+> Hello,
+> 
+> On Thu, Nov 23, 2023 at 01:55:57PM +0000, Greg Kroah-Hartman wrote:
+>> On Thu, Nov 23, 2023 at 02:47:20PM +0100, Frieder Schrempf wrote:
+>>> +	err = clk_prepare_enable(hub->clk);
+>>> +	if (err) {
+>>> +		dev_err(hub->dev, "failed to enable clock: %d\n", err);
+>>> +		return err;
+> 
+> I suggest to use %pe (and ERR_PTR(err)) here.
 
-The problem I have with all of this is that you need to context switch
-this state and that you need to deal with exceptions, which must be
-written for the weak model but then end up running in the tso model --
-possibly slower than desired.
+Ok, I added this in v2. I also added a patch to convert the other error
+logs to be consistent within the driver.
 
-If OTOH you only have a single model, everything becomes so much
-simpler. You just need to be able to express exactly what you want.
+> 
+>>> +	}
+>>
+>> But what happens if clk is not set here?
+> 
+> clk_prepare_enable() just does "return 0" if the clk argument is NULL.
 
+Exactly!
 
+> 
+>> And doesn't clk_prepare_enable() print out a message if it fails?
+> 
+> clk_prepare_enable is silent on errors.
+
+Right!
+
+Thanks
+Frieder
