@@ -2,64 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9AA07FA853
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:52:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A967FA854
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:52:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232335AbjK0Rv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 12:51:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48930 "EHLO
+        id S232414AbjK0RwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 12:52:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230403AbjK0Rv5 (ORCPT
+        with ESMTP id S232336AbjK0Rv6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 12:51:57 -0500
-Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99EFD111;
-        Mon, 27 Nov 2023 09:52:03 -0800 (PST)
-Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-1fa486a0e10so903367fac.3;
-        Mon, 27 Nov 2023 09:52:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701107522; x=1701712322;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1qP2c9CN5CjrhkwDV0xgvtW5t/xJO6d0tsdDX2eLr8w=;
-        b=Ykef37PPVj7uvRjpsBNt6Rc96iudiJIWrBBOvzo1t3jjhEPVZblRjci+apwBg0kRli
-         IP/Z49cdL9QUyWYL5u1y0h5vOnQTZR/5AffxJqgZyMGXP8+l5EqlN3c+iJJ688zOaAKx
-         yVObZ06foaNXjirbZDwvZPjmuH9RyLilMQzx6gjfi6t/uKjnPpaEL/OIQMTjIo/NwZuR
-         WBfdelsHhevpYic4O9dFT0pDpWUPBXM/gUFRnOOoZV02sPE3kcduPOUlhPgp3DPhjSfL
-         GLN+USsRYQmwoY3IqNmfLV621HRjmcmZ9eI51Ngkai+9AZI3aUho1LOz0BnPYS18Gf+j
-         t7gQ==
-X-Gm-Message-State: AOJu0YzFwk533O474XFOu0+7HNfS+isyNKJZa7j5EbjWRI0yzIdcPSZX
-        vqFs2+O2HbTu8r5WtSDCyg==
-X-Google-Smtp-Source: AGHT+IG19I5lae8dWTQhpITCeP9FKx74DPu+CfRsHG/iq0HJR8akTbrvzMlAP81KjFrZih4SR+NR/A==
-X-Received: by 2002:a05:6870:d85:b0:1f4:daf6:78cc with SMTP id mj5-20020a0568700d8500b001f4daf678ccmr15957254oab.31.1701107521903;
-        Mon, 27 Nov 2023 09:52:01 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id z19-20020a056870515300b001efce0658e6sm2436211oak.39.2023.11.27.09.52.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 09:52:01 -0800 (PST)
-Received: (nullmailer pid 1854610 invoked by uid 1000);
-        Mon, 27 Nov 2023 17:52:00 -0000
-Date:   Mon, 27 Nov 2023 11:52:00 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] dt-bindings: fsl,dpaa2-console: drop unneeded quotes
-Message-ID: <170110751966.1854443.5792070352001940257.robh@kernel.org>
-References: <20231122224419.2809361-1-robh@kernel.org>
+        Mon, 27 Nov 2023 12:51:58 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 663E2189;
+        Mon, 27 Nov 2023 09:52:05 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:280:5e00:7e19::646])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 0E1BF2D7;
+        Mon, 27 Nov 2023 17:52:05 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 0E1BF2D7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1701107525; bh=zZ/bza4MDEjj1yNcX/92zO0s45RTP0WbGzGyikArnbY=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=XriM3MjPOyAwGbdRhfZRzEZlQW8QmwQ6BhyL+DHbDzO66VY8LGIlZmSWZAr9kZpmS
+         ktPCNDBW5Fs4bF0qLUTVsyXwuvxGupxV68nvwX8mGnsd5vIOFhaLSQE0FuG59Ya3Yi
+         FY/AmtXUgREtDuHXe5HAq5Gw9mHOhqEOmeb/9p+tW8GooiyDDIPHtiKmsqJF9lVuv6
+         ProFylXRVeR+0u3xVg3C3dtRsfUY7IQxvZQDm8TXTK4QKwyXqUZss4i8GsX7AHvGhT
+         GhQHuo2MR8fVhApFE6TkVxGo28cPj7Z6rOo79BzX76ZZ5f2pJDtGq1teY8tZeX9RPV
+         jbC1+bvk6rLYw==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Sumit Garg <sumit.garg@linaro.org>, jens.wiklander@linaro.org
+Cc:     vegard.nossum@oracle.com, Rijo-john.Thomas@amd.com,
+        balint.dobszay@arm.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: Re: [PATCH v2] Documentation: Destage TEE subsystem documentation
+In-Reply-To: <20231103061715.196294-1-sumit.garg@linaro.org>
+References: <20231103061715.196294-1-sumit.garg@linaro.org>
+Date:   Mon, 27 Nov 2023 10:52:04 -0700
+Message-ID: <87h6l7yth7.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231122224419.2809361-1-robh@kernel.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,18 +53,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Sumit Garg <sumit.garg@linaro.org> writes:
 
-On Wed, 22 Nov 2023 15:44:19 -0700, Rob Herring wrote:
-> Drop unneeded quotes over simple string values to fix a soon to be
-> enabled yamllint warning:
-> 
->   [error] string value is redundantly quoted with any quotes (quoted-strings)
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> Add a separate documentation directory for TEE subsystem since it is a
+> standalone subsystem which already offers devices consumed by multiple
+> different subsystem drivers.
+>
+> Split overall TEE subsystem documentation modularly where:
+> - The userspace API has been moved to Documentation/userspace-api/tee.rst.
+> - The driver API has been moved to Documentation/driver-api/tee.rst.
+> - The first module covers the overview of TEE subsystem.
+> - The further modules are dedicated to different TEE implementations like:
+>   - OP-TEE
+>   - AMD-TEE
+>   - and so on for future TEE implementation support.
+>
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
 > ---
->  Documentation/devicetree/bindings/misc/fsl,dpaa2-console.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+>
+> Changes in v2:
+> - Move userspace API to Documentation/userspace-api/tee.rst.
+> - Move driver API to Documentation/driver-api/tee.rst.
+>
+>  Documentation/driver-api/index.rst    |   1 +
+>  Documentation/driver-api/tee.rst      |  66 +++++
+>  Documentation/staging/index.rst       |   1 -
+>  Documentation/staging/tee.rst         | 364 --------------------------
+>  Documentation/subsystem-apis.rst      |   1 +
+>  Documentation/tee/amd-tee.rst         |  90 +++++++
+>  Documentation/tee/index.rst           |  19 ++
+>  Documentation/tee/op-tee.rst          | 166 ++++++++++++
+>  Documentation/tee/tee.rst             |  22 ++
+>  Documentation/userspace-api/index.rst |   1 +
+>  Documentation/userspace-api/tee.rst   |  39 +++
+>  MAINTAINERS                           |   4 +-
+>  12 files changed, 408 insertions(+), 366 deletions(-)
+>  create mode 100644 Documentation/driver-api/tee.rst
+>  delete mode 100644 Documentation/staging/tee.rst
+>  create mode 100644 Documentation/tee/amd-tee.rst
+>  create mode 100644 Documentation/tee/index.rst
+>  create mode 100644 Documentation/tee/op-tee.rst
+>  create mode 100644 Documentation/tee/tee.rst
+>  create mode 100644 Documentation/userspace-api/tee.rst
 
-Applied, thanks!
+So I finally got around to applying this...after dealing with the fact
+that it doesn't apply to docs-next, I found that it adds a couple of
+warnings:
 
+> Warning: Documentation/security/keys/trusted-encrypted.rst references a file that doesn't exist: Documentation/staging/tee.rst
+> Warning: drivers/tee/optee/Kconfig references a file that doesn't exist: Documentation/staging/tee.rst
+
+Can I get a version that doesn't leave dangling references like that
+around?
+
+Thanks,
+
+jon
