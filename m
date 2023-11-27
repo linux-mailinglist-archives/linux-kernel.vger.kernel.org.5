@@ -2,199 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7583A7F9E78
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:23:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1E1A7F9E81
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:24:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233173AbjK0LXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 06:23:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44976 "EHLO
+        id S233172AbjK0LYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 06:24:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233146AbjK0LXg (ORCPT
+        with ESMTP id S233140AbjK0LYp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 06:23:36 -0500
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2099.outbound.protection.outlook.com [40.107.13.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DCC810A;
-        Mon, 27 Nov 2023 03:23:42 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RTA9+gKAWq4CFDbK86X8oQEOF6cErA0eiCaQ08UcAaeFviHDuqbXoht1NmK2OEUMgEk2vHHWPexnG+rVjI9gVd+Kk7riycvwkEepqZtlA7qpaqu9wfI80KlueLo9PXB+7HUpFEy+mx9n/gV+Y4+4+MBzPDeUknjZbzJmpvGhh5/Z/irZOxXFmuEGIFbJGoj4auZUxADYXhFWH5HP+1My9T7cbx6Pf/w8bK1ouc1fzrzYQQwkTZODe+wPD8d87NopozabkKgCZT9z8bfSMB+fUSV8Fe1x2ZuqBCjYVhwfMfX5Nm1FaaIp6aCdcBAi2/o1EMQmhLb+vRKeIe061E32Xg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YTYXQS0qnDLglDKCa3AxY43B02Lnnajd9Qc6SBzbvhQ=;
- b=VK4tn0Nk3yoyDGBY1FXc7zfNhhv6ccapqYX4PX7fP1B7CTiKvGXbCZoWv1NC2dBVOx476eC3zgjVogm8KGcKqmO0szMoE3mxtP5z7/cQ15pNTeIWlYFNDcfOiqowsaS+bc2jnrsKIA6+UlQNwl/zwFFrhLWzPaIqI81M5/AaBeEcOQqCMTJ632lRNqB1/mfCPSh2/hfuitFvBfK/9Er9WEJlGFyd9mHEQaEbcwgaFIJf6rdd5cWApbRUvEA/hc0CPNc/qAEyrtlDf6F1QNX6RploSrND4VdqvTiojprRpZUBrFfUEQJ5aeXHftHjDfN+fcpAfG9whDbM82xFhQ8BQQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
- dkim=pass header.d=kontron.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
- s=selector2-mysnt-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YTYXQS0qnDLglDKCa3AxY43B02Lnnajd9Qc6SBzbvhQ=;
- b=NbrY72nNVcZDpX6uZTD31uzMPytVTGgzPQ36/VhpyDoLhJI2uvptNbJBL1MPCDIszKRe8SEDGa5JPg9REXa1tP6BdeeGgpWn2ueylBT/S2qqYeMNaNZWMJh3w8HKIaKpyzvQbzJLT7R1YOOFuCh9vAINj/aQFbxy6q4jlkOQQ3w=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=kontron.de;
-Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:263::10)
- by GVXPR10MB8198.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:113::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Mon, 27 Nov
- 2023 11:23:38 +0000
-Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::27ba:9922:8d12:7b3d]) by PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::27ba:9922:8d12:7b3d%5]) with mapi id 15.20.7025.022; Mon, 27 Nov 2023
- 11:23:38 +0000
-Message-ID: <18b2ad8e-6b06-407a-a141-91a90ee7cffd@kontron.de>
-Date:   Mon, 27 Nov 2023 12:23:36 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] usb: misc: onboard_usb_hub: Print symbolic error
- names
-Content-Language: en-US, de-DE
-To:     Frieder Schrempf <frieder@fris.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        Matthias Kaehlcke <mka@chromium.org>
-Cc:     Alexander Stein <alexander.stein@ew.tq-group.com>,
-        Anand Moon <linux.amoon@gmail.com>,
-        Benjamin Bara <benjamin.bara@skidata.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-References: <20231127111332.107640-1-frieder@fris.de>
-From:   Frieder Schrempf <frieder.schrempf@kontron.de>
-In-Reply-To: <20231127111332.107640-1-frieder@fris.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR2P281CA0116.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:9d::9) To PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:102:263::10)
+        Mon, 27 Nov 2023 06:24:45 -0500
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1275D10DA
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 03:24:33 -0800 (PST)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20231127112432euoutp02151540272c4d4c73537402e656699cf8~bdyIGClcX1433014330euoutp02T
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 11:24:32 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20231127112432euoutp02151540272c4d4c73537402e656699cf8~bdyIGClcX1433014330euoutp02T
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1701084272;
+        bh=RGhhL7XXl0hEOVf83TtpufSve7Y/eXk4j3SDGa7Vcog=;
+        h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
+        b=R+v8Fd1oFcKwPDC6zHd3t0YiokGd4hy/ymteKgdtsCalerrfV0XA6i7qUBQ/eLPO1
+         NqaKeYHINqeVdAuBD/h/Jk4sIkWpeGML4d6n+WlJFwD0FBxOXw9iNBlQAs76qHubft
+         WDE3pEth906QGZ4ATNVY5BLGOliv1X1r4ypVSJys=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20231127112431eucas1p2302dc6bfd4747a11a64a603149d12b27~bdyHpDUWL2065920659eucas1p2b;
+        Mon, 27 Nov 2023 11:24:31 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 51.06.09814.F6C74656; Mon, 27
+        Nov 2023 11:24:31 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231127112431eucas1p2e5cfc376fc3d771cb23c50adc424ab1f~bdyHLuxpv2062420624eucas1p2b;
+        Mon, 27 Nov 2023 11:24:31 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20231127112431eusmtrp2ea6b0ee7f72daa68de80cab944f51163~bdyHKO_tX0076800768eusmtrp2t;
+        Mon, 27 Nov 2023 11:24:31 +0000 (GMT)
+X-AuditID: cbfec7f4-727ff70000002656-fe-65647c6f63ea
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 04.8D.09146.F6C74656; Mon, 27
+        Nov 2023 11:24:31 +0000 (GMT)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20231127112430eusmtip25fcfd6652bdfe64de8db7bf2832183e1~bdyGN4nft1493714937eusmtip2H;
+        Mon, 27 Nov 2023 11:24:30 +0000 (GMT)
+Message-ID: <054f6a93-8911-40bb-b677-ccdfd27d132b@samsung.com>
+Date:   Mon, 27 Nov 2023 12:24:29 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR10MB5681:EE_|GVXPR10MB8198:EE_
-X-MS-Office365-Filtering-Correlation-Id: ef827cfe-8bf9-4543-83c4-08dbef3b4d14
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0J+LqqJRC1zUv3zbhPrCS3YT2BCEJkFnjbP7X6QncJ7A0A4PMvFeksCCrSAIqU3lfvjJ09y1eckIMvBPKcyNMw/1Cw5ncedLRiNKqBmhEbzDcSn0jO/h2xDZIROSxCs6wFTti5qAk3D3wRKASJB/l5bychyBDYj+DNf21pcb0EaItcDbuLTZCq/jXBdtd9VJA/qv+t4uapvRC77TYmsm7vjUZdWz7d88JD/l7/Q/XrXrE9aM503pMh9q5eoJHGy/1bJasinmtwmlBQnA5SvQRuYLgu6W1eQqHqt8YaiM9M4yiwy9Ei6UwELb0Al7S4P4rCuvJBu1+kHteZarENMFljp/I1j4h28HV0wMYkpEyggKyex00IdUzBGbrYx/dZzQEJGlTh6mUBJI/8jBIR89T/3v/vFCmQ2YFJ3/NQbxZLl5BRvq21Sx9Cg4VaevK/L1UZ3e6/5Y2X/Xlw1PBiiCXDQe+QVwwclSU5YlQDaTYADj9kHnKSRY5sar9NNWrM1zpIvGfg9GcH8ohTKeUFhhzght+WvzRMz1t9HhL+rbo9sUxHTL9ObgCmKV/54JWWrieyX1WoJuWjosTXiQ3CVeUscIheedVTTVCxUx5lCJ17QDRcknflHlv0XuV4rdWspReNPJ2u1oVWIz8TgkNwitQg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(376002)(396003)(366004)(39860400002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(2616005)(26005)(6506007)(6512007)(53546011)(8676002)(8936002)(4326008)(44832011)(86362001)(6486002)(5660300002)(478600001)(54906003)(316002)(110136005)(66476007)(66556008)(66946007)(31696002)(38100700002)(83380400001)(31686004)(7416002)(2906002)(41300700001)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NkxiQlBzUXV1eUZFNmlFY0xyL09kOWZLQ1poS1R4bXpEbXZJU0dNOFFKcGRz?=
- =?utf-8?B?QkNmRDVmaGdONU9vbmtoQzZYQ1JvMFd3ZkNFd2VKdC81Q1Fidlh6dVA1RnZQ?=
- =?utf-8?B?dHl2M09pK0Fub29OKy9mQms2RFRJczk4Q1dqQzZ3WE9RWFMwMkRJclB5QnJz?=
- =?utf-8?B?Qi9WbEtML0RWazA5UXlMVnlGTjl2ekpuLzE1VDY4c1orWnY1OXJHMW81UGxO?=
- =?utf-8?B?WGhHTEtxVE5hd3V6VGkwRG5JUlM5MDYrcmR1dHlZdzRwZVgyMnVUak1RblA1?=
- =?utf-8?B?cUhZWVZ4NndNeTBwS3JTTXpUQnF2MmZXMHMrck9QK2VLVTloT1E1dG5sMEM0?=
- =?utf-8?B?cmVkSzN0b3FmM3ZsbFIyc2FBM1YwRVBRVUxWRWlQdmVzVTJHU0Z0SlZISEE5?=
- =?utf-8?B?ek9PQWMyaEFFMklYeENVUDhOZDFYUnJQZC9DUnF5MUY0WnA5bEF0cE80WENn?=
- =?utf-8?B?dlpZaVFENm9UcDZHQjVqYXRZOVd0SmJ4UjhhZE5FSTRJRDFXQ204Z0lFRnk5?=
- =?utf-8?B?blVzOE1ZMElqQkxJY1VNRlFqZmJlVWVSVDE1UWRFa1NWUW1qOEl5VkFoWWhh?=
- =?utf-8?B?dkFGTVliMFV2UzRicG9PcDlSZ3lGYnhPaFE4T0JTaFBVcEtrNDcxaWwvU1V3?=
- =?utf-8?B?NDdjY20xRWtkZjNicWU3TTZuK2dTSS8vSmI0eEV4Nld4d3JValBTcHZ0b0VT?=
- =?utf-8?B?eG1CUGhuZ3RTZmZXSnJ2Z3FjQWNrc2xTeGRCT1FNaFd2Y0kyYmNaSWJSR2pO?=
- =?utf-8?B?citRZXovRHFOOXBkKzNCL01jUnFGTytiNnhRNnJiUmpqcnpTSmlDLzZDWEZz?=
- =?utf-8?B?WHBSRFpnWlkvcHkxeTlocExoTndLSWtGazFha3pTTU1EVzFsV2dMOC82Umgy?=
- =?utf-8?B?M3lsVy85RDBYbG8xRGdpQnpHSTBnc3VPVlQ4SkQxVkFER2xDR2FmQk5oaXFk?=
- =?utf-8?B?Z2srRDBJT1U1YmFJdm8xR042T1doVnlUNytXSjNUUytpZDY3bWdFVzBmUXN6?=
- =?utf-8?B?Z2YvZzY3LyszLzZpUUUxL0oxRjhmekFmWmVKWnhkUTBHbzVSYUp6M2htQ1pn?=
- =?utf-8?B?R3JuSVd3VHRjb2tMMFA4QTI2WUFTSDJnWS8rbnVHNFFQU3c1SWR6N1NUNm9H?=
- =?utf-8?B?dEs3ekNIUWNBQTN3Zzd6K1F3TzdBb2JSOVhsZGI1T09EeFFZT0txZWNTOFYy?=
- =?utf-8?B?MEYyR1Z5d2tKS3llVFZxWkJiL2ZuZGZEUmU5N2I2TmV5SjR4ZG1GL21Ya2VW?=
- =?utf-8?B?cE1oSWQyTkdyVnFYS0ZEOUF6cUR4NHdyM1VGL3grSHZBUEVxdWE2K3p3V1Zn?=
- =?utf-8?B?b0IwK0ZFWjFsR1o3RjlKUFQzalJrUHUySU11U0YvNXlhSFRPZWhFdmtzK3E3?=
- =?utf-8?B?cGJZYllTYmJjQjhVU2QvT0VaSTlMNUJoblk0WUh3Y3JKVjZaQ0ZZdml1L3dk?=
- =?utf-8?B?VzZsQXBXdndDWWd4QWVHSGlZRkl2Mno1ZUIxdlpVWVhySS9SWW1taERJL1Z3?=
- =?utf-8?B?S1NBeWFSQ2hHVmlaSEREQjMzejV0MDNqSVA4NUkrTzlCM25HUmVvL2FmbGda?=
- =?utf-8?B?eU10VGYzYWU0UGNpZGdSNTJaTlo2T1RpQnlRbXBSUU9jZzV5VmxZMXZUOTNo?=
- =?utf-8?B?Wi93U2NpV1lVT2R5c2JYamk4U3l6L0tKMUhMQTV2d2N1a2ZhaExKeHA4cHR4?=
- =?utf-8?B?eFdrTFMvL1MvQmEyRm5jVEFUaEVXaVhYRGNNM3lwWS9YZXlCNFE5aUJnMTNR?=
- =?utf-8?B?MEg3TDR3TEprVDk2SVlid3c3QVhMZDByMExUN1dncXdNUUswM0NtM2pXQkVB?=
- =?utf-8?B?R0cwYlpiRE8ySnB0Qkd3WXFVMkVoSGtqbmpDRFh5dHh5ZlpZTmd2ak1hbzRG?=
- =?utf-8?B?ZXZBMDgxKzFCUXJYVlRIQkpmaE1GaWpTNDRXTEJBZVB1VTFqQlQrdktyTmZJ?=
- =?utf-8?B?aEpYWDkydDl6emttOEVaUWtGaC9XS3hoYllMTGszaXN1ZVVFOWR5RnZhUWJp?=
- =?utf-8?B?UzlLMTZqNnZwd2VUN0sxcXY0K09lbVBnOThlOFJIa3labFdybmM0YjJDc00w?=
- =?utf-8?B?MEZHUDNjbk5kZ212RUpCSVdkdWNTNFdsYzJtbnc0ZDVpVkNITFIzUnJFV0Np?=
- =?utf-8?B?K3BTNnN1MVFCTE5EOUVad29WUVRzNTV3QlZMcHRyUUtDVVF3V0w2N3VtTEkw?=
- =?utf-8?B?ZVE9PQ==?=
-X-OriginatorOrg: kontron.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: ef827cfe-8bf9-4543-83c4-08dbef3b4d14
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2023 11:23:37.9572
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: N9QYDyZ7Sxk4+i+0qCVwmFS02QyBk1ZsSA42FbfJLfohyX0IydsEIL5dN7SVUrn8HDJlqQCp/QR3iin/+F+UhW+V1C1+UJ8Eqh6dcw2JXto=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR10MB8198
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/panfrost: Really power off GPU cores in
+ panfrost_gpu_power_off()
+Content-Language: en-US
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Steven Price <steven.price@arm.com>, tzimmermann@suse.de,
+        linux-kernel@vger.kernel.org, mripard@kernel.org,
+        dri-devel@lists.freedesktop.org, wenst@chromium.org,
+        kernel@collabora.com,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>
+In-Reply-To: <37d373e1-8850-4ab2-8fdb-6b069e2d6976@samsung.com>
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrHKsWRmVeSWpSXmKPExsWy7djPc7r5NSmpBht2a1lcWilhcfrMKSaL
+        K1/fs1lsPtfDarH39VZ2i8u75rBZzDi/j8mirXMZq0XjEaDsljcTWS1mtF1mdeD2WDNvDaPH
+        7IaLLB477i5h9Ni0qpPN4861PWwe97uPM3lsPl3t8XmTXABHFJdNSmpOZllqkb5dAlfGtnkN
+        rAULVCse7FzG2sD4TK6LkZNDQsBEYt+evexdjFwcQgIrGCU2P1/FDOF8YZTY/eMHVOYzo8SM
+        FUcZuxg5wFru3nWGiC9nlGhsnMAG4XxklHg/YzMTSBGvgJ1E8+lakBUsAqoSN85uZAGxeQUE
+        JU7OfAJmiwrIS9y/NYMdxBYWiJY4PuMaE4jNLCAucevJfDCbTcBQouttF9h8EYHNjBIzb21i
+        AXGYBTqYJDb9WsYMsoxTwF7idHM9RLO8RPPW2cwQv03mlDjwOBbCdpGYce0NI4QtLPHq+BZ2
+        CFtG4v9OkGVcQHY7o8SC3/ehnAmMEg3Pb0F1WEvcOfeLDWQZs4CmxPpd+hBhR4nuxi52SKjw
+        Sdx4KwhxA5/EpG3TmSHCvBIdbUIQ1WoSs46vg1t78MIl5gmMSrOQgmUWkvdnIflmFsLeBYws
+        qxjFU0uLc9NTi43yUsv1ihNzi0vz0vWS83M3MQKT2Ol/x7/sYFz+6qPeIUYmDsZDjBIczEoi
+        vHofk1OFeFMSK6tSi/Lji0pzUosPMUpzsCiJ86qmyKcKCaQnlqRmp6YWpBbBZJk4OKUamDjY
+        y57Ye6uznroUu3Kde3fvE5m5G5bHrP36VvGEtGfznR7P7RGZjxI5r639aRiwaHES541mPrbP
+        i2/mRWgqitnPs/p+R4KVZ41m6tLSzXkSmuJNxVcUHxffc7rX11zE6KdT7Sa5xkF4+kVhtbiL
+        J0/U6q7/aOsq6Njcvn/J+W2iD7bEflpV/fnY9rd2N+fyhr3N03v+wsbi92nXar3+gLbpIrOj
+        53t0Zkuwn9UVF4+ZXmVSzRe+qP2s29rkDLWcq0ezNkW8vPG7aKPlpdrrvKEPunMS1Z7VPVjh
+        cGnmeo7Zm7zDrf5ubGa6vXbL+rs/7+tUeyikdc1/zHV7ynH2ZSvfHVO8H76qun7WutXpEUos
+        xRmJhlrMRcWJAOkOwPDRAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrPIsWRmVeSWpSXmKPExsVy+t/xe7r5NSmpBq9aeS0urZSwOH3mFJPF
+        la/v2Sw2n+thtdj7eiu7xeVdc9gsZpzfx2TR1rmM1aLxCFB2y5uJrBYz2i6zOnB7rJm3htFj
+        dsNFFo8dd5cwemxa1cnmcefaHjaP+93HmTw2n672+LxJLoAjSs+mKL+0JFUhI7+4xFYp2tDC
+        SM/Q0kLPyMRSz9DYPNbKyFRJ384mJTUnsyy1SN8uQS9j27wG1oIFqhUPdi5jbWB8JtfFyMEh
+        IWAicfeucxcjF4eQwFJGiXv/HjF2MXICxWUkTk5rYIWwhSX+XOtiA7GFBN4zSjR/MQbp5RWw
+        k2g+XQsSZhFQlbhxdiMLiM0rIChxcuYTMFtUQF7i/q0Z7CC2sEC0xPEZ15hAbGYBcYlbT+aD
+        2WwChhJdb0HGc3GICGxmlDj38BMTiMMs0MEkcfbzZGaIxbtYJL58KARZzClgL3G6uR5ikJlE
+        19YuRghbXqJ562zmCYxCs5DcMQvJvllIWmYhaVnAyLKKUSS1tDg3PbfYUK84Mbe4NC9dLzk/
+        dxMjMGa3Hfu5eQfjvFcf9Q4xMnEwHmKU4GBWEuHV+5icKsSbklhZlVqUH19UmpNafIjRFBgY
+        E5mlRJPzgUkjryTe0MzA1NDEzNLA1NLMWEmc17OgI1FIID2xJDU7NbUgtQimj4mDU6qBSU9g
+        iX6bhL/KW88td4w6uRQWsp8punlnwUlxsyuX1169IF9WoWXMuONREOc7pW/qPJsN0n4Iz/t8
+        6unro5dfznV1fip+x6Fv3fopFyMmpaV9fi73MORAxb+Mhetn356cYMvANMv73uP1IpM1zM8Z
+        8J+1cFnhXGoZwuX2+5KhPDN3+d//3EqvHC5809R3me6Q0ia55JTJ9SJV439+6WG1K9Y8iGGo
+        k2bhrEj9ZS6gfkKiy27fkrUhoY2CCdJHjvRt91xlcaUlpPF1Zvfp1GvCmRd2Vb4+rqDiEtRk
+        7Ch/laFZ36+oxKZvu3B62AuJU3Jpj593HAtNrFgcqG19zVr8wrRcm0ebS7wOfLxzYmG3Ektx
+        RqKhFnNRcSIAfcZa12IDAAA=
+X-CMS-MailID: 20231127112431eucas1p2e5cfc376fc3d771cb23c50adc424ab1f
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20231122092952eucas1p291af9a5570a05c67014f5c871c85e98c
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20231122092952eucas1p291af9a5570a05c67014f5c871c85e98c
+References: <20231102141507.73481-1-angelogioacchino.delregno@collabora.com>
+        <7928524a-b581-483b-b1a1-6ffd719ce650@arm.com>
+        <1c9838fb-7f2d-4752-b86a-95bcf504ac2f@linaro.org>
+        <6b7a4669-7aef-41a7-8201-c2cfe401bc43@collabora.com>
+        <20231121175531.085809f5@collabora.com>
+        <d95259b8-10cf-4ded-866c-47cbd2a44f84@linaro.org>
+        <4c73f67e-174c-497e-85a5-cb053ce657cb@collabora.com>
+        <CGME20231122092952eucas1p291af9a5570a05c67014f5c871c85e98c@eucas1p2.samsung.com>
+        <39e9514b-087c-42eb-8d0e-f75dc620e954@linaro.org>
+        <37d373e1-8850-4ab2-8fdb-6b069e2d6976@samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry, forgot to add the correct version prefix v2 in this series. I
-will resend.
+On 24.11.2023 13:45, Marek Szyprowski wrote:
+> On 22.11.2023 10:29, Krzysztof Kozlowski wrote:
+>> On 22/11/2023 10:06, AngeloGioacchino Del Regno wrote:
+>>>>>> Hey Krzysztof,
+>>>>>>
+>>>>>> This is interesting. It might be about the cores that are missing 
+>>>>>> from the partial
+>>>>>> core_mask raising interrupts, but an external abort on 
+>>>>>> non-linefetch is strange to
+>>>>>> see here.
+>>>>> I've seen such external aborts in the past, and the fault type has
+>>>>> often been misleading. It's unlikely to have anything to do with a
+>>>> Yeah, often accessing device with power or clocks gated.
+>>>>
+>>> Except my commit does *not* gate SoC power, nor SoC clocks 🙂
+>> It could be that something (like clocks or power supplies) was missing
+>> on this board/SoC, which was not critical till your patch came.
+>>
+>>> What the "Really power off ..." commit does is to ask the GPU to 
+>>> internally power
+>>> off the shaders, tilers and L2, that's why I say that it is strange 
+>>> to see that
+>>> kind of abort.
+>>>
+>>> The GPU_INT_CLEAR GPU_INT_STAT, GPU_FAULT_STATUS and 
+>>> GPU_FAULT_ADDRESS_{HI/LO}
+>>> registers should still be accessible even with shaders, tilers and 
+>>> cache OFF.
+>>>
+>>> Anyway, yes, synchronizing IRQs before calling the poweroff sequence 
+>>> would also
+>>> work, but that'd add up quite a bit of latency on the 
+>>> runtime_suspend() call, so
+>>> in this case I'd be more for avoiding to execute any register r/w in 
+>>> the handler
+>>> by either checking if the GPU is supposed to be OFF, or clearing 
+>>> interrupts, which
+>>> may not work if those are generated after the execution of the 
+>>> poweroff function.
+>>> Or we could simply disable the irq after power_off, but that'd be 
+>>> hacky (as well).
+>>>
+>>>
+>>> Let's see if asking to poweroff *everything* works:
+>> Worked.
+>
+> Yes, I also got into this issue some time ago, but I didn't report it 
+> because I also had some power supply related problems on my test farm 
+> and everything was a bit unstable. I wasn't 100% sure that the 
+> $subject patch is responsible for the observed issues. Now, after 
+> fixing power supply, I confirm that the issue was revealed by the 
+> $subject patch and above mentioned change fixes the problem. Feel free 
+> to add:
+>
+> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
 
-On 27.11.23 12:13, Frieder Schrempf wrote:
-> From: Frieder Schrempf <frieder.schrempf@kontron.de>
-> 
-> Instead of printing the decimal error codes, let's use the more
-> human-readable symbolic error names provided by the %pe printk
-> format specifier.
-> 
-> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-> ---
-> Changes in v2:
-> * new patch
-> ---
->  drivers/usb/misc/onboard_usb_hub.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/usb/misc/onboard_usb_hub.c b/drivers/usb/misc/onboard_usb_hub.c
-> index a341b2fbb7b44..077824beffa01 100644
-> --- a/drivers/usb/misc/onboard_usb_hub.c
-> +++ b/drivers/usb/misc/onboard_usb_hub.c
-> @@ -7,6 +7,7 @@
->  
->  #include <linux/device.h>
->  #include <linux/export.h>
-> +#include <linux/err.h>
->  #include <linux/gpio/consumer.h>
->  #include <linux/init.h>
->  #include <linux/kernel.h>
-> @@ -68,7 +69,7 @@ static int onboard_hub_power_on(struct onboard_hub *hub)
->  
->  	err = regulator_bulk_enable(hub->pdata->num_supplies, hub->supplies);
->  	if (err) {
-> -		dev_err(hub->dev, "failed to enable supplies: %d\n", err);
-> +		dev_err(hub->dev, "failed to enable supplies: %pe\n", ERR_PTR(err));
->  		return err;
->  	}
->  
-> @@ -88,7 +89,7 @@ static int onboard_hub_power_off(struct onboard_hub *hub)
->  
->  	err = regulator_bulk_disable(hub->pdata->num_supplies, hub->supplies);
->  	if (err) {
-> -		dev_err(hub->dev, "failed to disable supplies: %d\n", err);
-> +		dev_err(hub->dev, "failed to disable supplies: %pe\n", ERR_PTR(err));
->  		return err;
->  	}
->  
-> @@ -235,7 +236,7 @@ static void onboard_hub_attach_usb_driver(struct work_struct *work)
->  
->  	err = driver_attach(&onboard_hub_usbdev_driver.drvwrap.driver);
->  	if (err)
-> -		pr_err("Failed to attach USB driver: %d\n", err);
-> +		pr_err("Failed to attach USB driver: %pe\n", ERR_PTR(err));
->  }
->  
->  static int onboard_hub_probe(struct platform_device *pdev)
-> @@ -262,7 +263,7 @@ static int onboard_hub_probe(struct platform_device *pdev)
->  
->  	err = devm_regulator_bulk_get(dev, hub->pdata->num_supplies, hub->supplies);
->  	if (err) {
-> -		dev_err(dev, "Failed to get regulator supplies: %d\n", err);
-> +		dev_err(dev, "Failed to get regulator supplies: %pe\n", ERR_PTR(err));
->  		return err;
->  	}
->  
+
+I must revoke my tested-by tag for the above fix alone. Although it 
+fixed the boot issue and system stability issue, it looks that there is 
+still something missing and opening the panfrost dri device causes a 
+system crash:
+
+root@target:~# ./modetest -C
+trying to open device 'i915'...failed
+trying to open device 'amdgpu'...failed
+trying to open device 'radeon'...failed
+trying to open device 'nouveau'...failed
+trying to open device 'vmwgfx'...failed
+trying to open device 'omapdrm'...failed
+trying to open device 'exynos'...done
+root@target:~#
+
+8<--- cut here ---
+Unhandled fault: external abort on non-linefetch (0x1008) at 0xf0c6803c
+[f0c6803c] *pgd=42d87811, *pte=11800653, *ppte=11800453
+Internal error: : 1008 [#1] PREEMPT SMP ARM
+Modules linked in: exynos_gsc s5p_mfc s5p_jpeg v4l2_mem2mem 
+videobuf2_dma_contig videobuf2_memops videobuf2_v4l2 videobuf2_common 
+videodev mc s5p_cec
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 
+6.7.0-rc2-next-20231127-00055-ge14abcb527d6 #7649
+Hardware name: Samsung Exynos (Flattened Device Tree)
+PC is at panfrost_gpu_irq_handler+0x18/0xfc
+LR is at __handle_irq_event_percpu+0xcc/0x31c
+...
+Process swapper/0 (pid: 0, stack limit = 0x0e2875ff)
+Stack: (0xc1301e48 to 0xc1302000)
+...
+  panfrost_gpu_irq_handler from __handle_irq_event_percpu+0xcc/0x31c
+  __handle_irq_event_percpu from handle_irq_event+0x38/0x80
+  handle_irq_event from handle_fasteoi_irq+0x9c/0x250
+  handle_fasteoi_irq from generic_handle_domain_irq+0x24/0x34
+  generic_handle_domain_irq from gic_handle_irq+0x88/0xa8
+  gic_handle_irq from generic_handle_arch_irq+0x34/0x44
+  generic_handle_arch_irq from __irq_svc+0x8c/0xd0
+Exception stack(0xc1301f10 to 0xc1301f58)
+...
+  __irq_svc from default_idle_call+0x20/0x2c4
+  default_idle_call from do_idle+0x244/0x2b4
+  do_idle from cpu_startup_entry+0x28/0x2c
+  cpu_startup_entry from rest_init+0xec/0x190
+  rest_init from arch_post_acpi_subsys_init+0x0/0x8
+Code: e591300c e593402c f57ff04f e591300c (e593903c)
+---[ end trace 0000000000000000 ]---
+Kernel panic - not syncing: Fatal exception in interrupt
+CPU2: stopping
+
+
+It looks that the panfrost interrupts must be somehow synchronized with 
+turning power off, what has been already discussed. Let me know if you 
+want me to test any patch.
+
+
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
