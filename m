@@ -2,92 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B9AE7FA7DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:24:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6F57FA7E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:25:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230062AbjK0RYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 12:24:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44788 "EHLO
+        id S230293AbjK0RZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 12:25:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbjK0RYF (ORCPT
+        with ESMTP id S230120AbjK0RZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 12:24:05 -0500
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF3EBA5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 09:24:11 -0800 (PST)
-Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-285d0ef1056so1649830a91.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 09:24:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701105851; x=1701710651; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rL9LfDvcE9DBnUyEpS1p+L6oMlIKUpS9e4ZuAaaj8xo=;
-        b=dDeDJeVQHlQ994p98Okkt8Fi8rO1ymAvpvZY+lNMB0xLQP3k3YRPwn9ZU9FM10XfYP
-         MpWA0na4iyrnNjsT1acdT0xPP8jDcuoea7DyqVPE2BudYQTvoI4nvsdOXtnIxvyqE9m1
-         fqNWvqdHvZVzjONjkZAQVCua/7BOXMe1xSrmLKgk9Ac2Vs5kx8zUcTeWZoqNhqVerl1K
-         dpBkNjWJrHd8C8c+ubG39GQute/aj+q7GVgozK+sqjlEpTI17g3cIPVDJbYny4+OwWI5
-         7P464B7FJqQt+9EbtT/IrxqNel4bMvdakiNUUYr6hzJ69vYfrNJu+6r1HE2cXoZGrqjJ
-         VqKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701105851; x=1701710651;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rL9LfDvcE9DBnUyEpS1p+L6oMlIKUpS9e4ZuAaaj8xo=;
-        b=cmmx7/H37I3dGCGqRSk9j92g4ou/BzyvNxiiG/EUVr/5xtJ93tzHaLNAp7G8a4c4aW
-         yxzTqpRd9QvN9O3u3D7PMf5TJUh3giLhz6GeW0gi53DnpbQH7IEBu+DubBJFmng8Q0fM
-         tghMag65ET9G9Xc0FxUwDp9sfbOixPbaAFcXpHVt3c7Pf5pnYh+7fBwaQQv6RofjJ9k4
-         NkzAEZYgBkRIqOoPOEAuHOmprA/DOZ4TRoWUVvgX3L9OSrx9XJVz5IPbHHNxBLFmj0w5
-         X7ohs8+Dp1mUMg0jx9s/pLE/sPu0DFvYCCJXnMbodPuYzI97R6S0U0Q9S06jTCUitbwW
-         ihkA==
-X-Gm-Message-State: AOJu0YzcBYQC4r8BAfuYt3QRqCXI0dYKGTM1pRUHmSUGVTxEvcMn0RjL
-        BnBLHtkQTfZT5nBcaHFRjgncVBTyQvM=
-X-Google-Smtp-Source: AGHT+IECzk14EwMjjFb3/1urDD+Q4mbeNYdw2g1/0ksrRD/AQy7nqH1ycmu7b6tnBPlSMiaoFaFQgGrTeFU=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90b:e8e:b0:285:b86b:6412 with SMTP id
- fv14-20020a17090b0e8e00b00285b86b6412mr1194032pjb.4.1701105850944; Mon, 27
- Nov 2023 09:24:10 -0800 (PST)
-Date:   Mon, 27 Nov 2023 09:24:09 -0800
-In-Reply-To: <c858817d3e3be246a1a2278e3b42d06284e615e5.1700766316.git.maciej.szmigiero@oracle.com>
-Mime-Version: 1.0
-References: <c858817d3e3be246a1a2278e3b42d06284e615e5.1700766316.git.maciej.szmigiero@oracle.com>
-Message-ID: <ZWTQuRpwPkutHY-D@google.com>
-Subject: Re: [PATCH] KVM: x86: Allow XSAVES on CPUs where host doesn't use it
- due to an errata
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Mon, 27 Nov 2023 12:25:44 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F7FA5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 09:25:50 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 728D8C433C7;
+        Mon, 27 Nov 2023 17:25:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701105950;
+        bh=lfF7mYOfz1bTjUZRZpi+nzNpv2LWni6xopUZHu5kx+g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CcBUHDytfki6Yc03N/Pa9DuIG7urxHBfpSDNPHmG1gmWrRgEXV7+YKEVsi1yTueIX
+         KPojgBDUpR+HXL+6+t4DQ60ZbWxbX2cwqEmzjpzhzeEJtm3vxh1I8KACjSVEjpD020
+         WczXbca1++KymG7gXAVblCZ15TiGkyeS0+dEoPne1SfIxaORLzYClSJu2ZJks+TPOr
+         tK6JY+n8AfSTNWr4C6r6A/FFAAYs4abc7Crl+sUruW+dl7MB17mp/Qm/sf86sxyzII
+         YKHVgueKg20YLTuauSMoGDoiHlD+1P0M8M7Q7bT+Iu18q/qsmZzfzNXGC3ccYGErk0
+         9VMiD6SO6BnAA==
+Date:   Mon, 27 Nov 2023 17:25:45 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Roland Hieber <rhi@pengutronix.de>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [PATCH] dt-bindings: timer: fsl,imxgpt: Add fsl,imx7d-gpt
+ compatible
+Message-ID: <20231127-morse-favoring-b76d4a436796@spud>
+References: <20231127-b4-dt-bindings-timer-v1-1-e06bd6b2370b@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Bfkf7er0zEK6fHrR"
+Content-Disposition: inline
+In-Reply-To: <20231127-b4-dt-bindings-timer-v1-1-e06bd6b2370b@pengutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023, Maciej S. Szmigiero wrote:
-> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
-> 
-> Since commit b0563468eeac ("x86/CPU/AMD: Disable XSAVES on AMD family 0x17")
-> kernel unconditionally clears the XSAVES CPU feature bit on Zen1/2 CPUs.
-> 
-> Since KVM CPU caps are initialized from the kernel boot CPU features this
-> makes the XSAVES feature also unavailable for KVM guests in this case, even
-> though they might want to decide on their own whether they are affected by
-> this errata.
-> 
-> Allow KVM guests to make such decision by setting the XSAVES KVM CPU
-> capability bit based on the actual CPU capability
 
-This is not generally safe, as the guest can make such a decision if and only if
-the Family/Model/Stepping information is reasonably accurate.
+--Bfkf7er0zEK6fHrR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> This fixes booting Hyper-V enabled Windows Server 2016 VMs with more than
-> one vCPU on Zen1/2 CPUs.
+On Mon, Nov 27, 2023 at 04:38:24PM +0100, Roland Hieber wrote:
+> From: Philipp Zabel <p.zabel@pengutronix.de>
+>=20
+> Add "fsl,imx7d-gpt", "fsl,imx31-gpt", used in imx7s.dtsi, to the list of
+> valid compatibles.
+>=20
+> Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+> Signed-off-by: Roland Hieber <rhi@pengutronix.de>
 
-How/why does lack of XSAVES break a multi-vCPU setup?  Is Windows blindly doing
-XSAVES based on FMS?
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Cheers,
+Conor.
+
+> ---
+>  Documentation/devicetree/bindings/timer/fsl,imxgpt.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/timer/fsl,imxgpt.yaml b/Do=
+cumentation/devicetree/bindings/timer/fsl,imxgpt.yaml
+> index e2607377cbae..2006043b8335 100644
+> --- a/Documentation/devicetree/bindings/timer/fsl,imxgpt.yaml
+> +++ b/Documentation/devicetree/bindings/timer/fsl,imxgpt.yaml
+> @@ -31,6 +31,7 @@ properties:
+>            - enum:
+>                - fsl,imx6sl-gpt
+>                - fsl,imx6sx-gpt
+> +              - fsl,imx7d-gpt
+>                - fsl,imx8mp-gpt
+>                - fsl,imxrt1050-gpt
+>                - fsl,imxrt1170-gpt
+>=20
+> ---
+> base-commit: 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab
+> change-id: 20231127-b4-dt-bindings-timer-95462dfd9758
+>=20
+> Best regards,
+> --=20
+> Roland Hieber, Pengutronix e.K.          | rhi@pengutronix.de          |
+> Steuerwalder Str. 21                     | https://www.pengutronix.de/ |
+> 31137 Hildesheim, Germany                | Phone: +49-5121-206917-0    |
+> Amtsgericht Hildesheim, HRA 2686         | Fax:   +49-5121-206917-5555 |
+>=20
+
+--Bfkf7er0zEK6fHrR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWTRGQAKCRB4tDGHoIJi
+0oV2AQD/OUwpWlz4bqYn6JMiz0Az7JfTMTQxmdGF17z3HvM2bwEAt1/hXpI+jz02
+94mz7ob5CmgmTN1/rwSJh9/7FAnHkgg=
+=40ZV
+-----END PGP SIGNATURE-----
+
+--Bfkf7er0zEK6fHrR--
