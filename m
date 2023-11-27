@@ -2,105 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4432E7F9D4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 11:18:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F27B7F9D49
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 11:16:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232893AbjK0KSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 05:18:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53630 "EHLO
+        id S232862AbjK0KQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 05:16:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232889AbjK0KSU (ORCPT
+        with ESMTP id S232738AbjK0KQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 05:18:20 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C90EA;
-        Mon, 27 Nov 2023 02:18:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701080307; x=1732616307;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=EHjb8a4oKENRdIROHVOuLNb1REGASuIrFu/8GnwvA6M=;
-  b=I1kG75vgCflcYYI6RvFpQfTH38L7BxKPxmXkrwQmnaquDw59v+IykMSE
-   YuNHABUUXb0JE3owaK0uKNeyR9k9B7SE2CpG5WJsw2/RFulit+Ai8C2Tz
-   /68udVlruIfa91OvW7iCCGuaueMHA6wsKY0KanqQMhFcrGjaYFjl7rXJT
-   nvSwbluj0e2QsLhMKBycrEXtVzaTB1/9oP8DZXwzsi3ewl3IfUeCgfVB9
-   ZJYRlon795lF1/VpcR9Z9i4TcBPFhlkWth860YKOf/uyVHBAxskxK/PwU
-   K5Ab72XTX5b2quK/nV5CYILT842dhp7FCkBGlW7a9W8GKCaceU++Hs1bu
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="11372970"
-X-IronPort-AV: E=Sophos;i="6.04,230,1695711600"; 
-   d="scan'208";a="11372970"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 02:18:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10906"; a="891690067"
-X-IronPort-AV: E=Sophos;i="6.04,230,1695711600"; 
-   d="scan'208";a="891690067"
-Received: from ssid-ilbpg3-teeminta.png.intel.com (HELO localhost.localdomain) ([10.88.227.74])
-  by orsmga004.jf.intel.com with ESMTP; 27 Nov 2023 02:18:21 -0800
-From:   Gan Yi Fang <yi.fang.gan@intel.com>
-To:     Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Looi Hong Aun <hong.aun.looi@intel.com>,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Song Yoong Siang <yoong.siang.song@intel.com>,
-        Gan Yi Fang <yi.fang.gan@intel.com>,
-        Lai Peter Jun Ann <jun.ann.lai@intel.com>
-Subject: [PATCH net 1/1] net: phylink: Add module_exit()
-Date:   Mon, 27 Nov 2023 18:16:03 +0800
-Message-Id: <20231127101603.807593-1-yi.fang.gan@intel.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 27 Nov 2023 05:16:46 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B2668C0;
+        Mon, 27 Nov 2023 02:16:52 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DD4422F4;
+        Mon, 27 Nov 2023 02:17:39 -0800 (PST)
+Received: from [10.57.4.90] (unknown [10.57.4.90])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B068D3F73F;
+        Mon, 27 Nov 2023 02:16:50 -0800 (PST)
+Message-ID: <573ec775-c1f0-4a09-afe4-83793fb11f3c@arm.com>
+Date:   Mon, 27 Nov 2023 10:17:51 +0000
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: rockchip: Add dynamic-power-coefficient to
+ rk3399 GPU
+Content-Language: en-US
+To:     Chen-Yu Tsai <wenst@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        heiko@sntech.de, conor+dt@kernel.org, daniel.lezcano@linaro.org
+References: <20231127081511.1911706-1-lukasz.luba@arm.com>
+ <CAGXv+5EgDk2B_FYo9hNiLVogq+mww1j140W4hsDhywExzgpf2g@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <CAGXv+5EgDk2B_FYo9hNiLVogq+mww1j140W4hsDhywExzgpf2g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.4 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Gan, Yi Fang" <yi.fang.gan@intel.com>
 
-In free_module(), if mod->init callback is defined but mod->exit callback
-is not defined, it will assume the module cannot be removed and return
-EBUSY. The module_exit() is missing from current phylink module drive
-causing failure while unloading it.
 
-This patch introduces phylink_exit() for phylink module removal.
+On 11/27/23 10:02, Chen-Yu Tsai wrote:
+> On Mon, Nov 27, 2023 at 4:14 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+>> Add dynamic-power-coefficient to the GPU node. That will create Energy
+>> Model for the GPU based on the coefficient and OPP table information.
+>> It will enable mechanism such as DTMP or IPA to work with the GPU DVFS.
+>> In similar way the Energy Model for CPUs in rk3399 is created, so both
+>> are aligned in power scale. The maximum power used from this coefficient
+>> is 1.5W at 600MHz.
+>>
+>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>> ---
+>>   arch/arm64/boot/dts/rockchip/rk3399.dtsi | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+>> index 9da0b6d77c8d..87cfdf570b19 100644
+>> --- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+>> +++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+>> @@ -2113,6 +2113,7 @@ gpu: gpu@ff9a0000 {
+>>                  interrupt-names = "job", "mmu", "gpu";
+>>                  clocks = <&cru ACLK_GPU>;
+>>                  #cooling-cells = <2>;
+>> +               dynamic-power-coefficient = <2640>;
+> 
+> For reference, in the ChromeOS downstrean v5.10 kernel we have:
+> 
+> gpu_power_model: power_model {
+>          compatible = "arm,mali-simple-power-model";
+>          static-coefficient = <411522>;
+>          dynamic-coefficient = <977>;
+>          ts = <32000 4700 (-80) 2>;
+>          thermal-zone = "gpu";
+> };
+> 
+> This is for the Mali kbase.
 
-Fixes: eca68a3c7d05 ("net: phylink: pass supported host PHY interface modes to phylib for SFP's PHYs")
-Cc: <stable@vger.kernel.org> # 6.1+
-Signed-off-by: Lai Peter Jun Ann <jun.ann.lai@intel.com>
-Signed-off-by: Gan, Yi Fang <yi.fang.gan@intel.com>
----
- drivers/net/phy/phylink.c | 3 +++
- 1 file changed, 3 insertions(+)
+That's downstream driver for downstream IPA thermal governor, which is
+different. As you can see there, there is a split of the total power
+to 'static power' and 'dynamic power' and thus those 2 coefficients:
+'static-coefficient' and 'dynamic-coefficient'. There is also
+polynomial for the exponential curve approximating temperature impact
+to the increasing leakage (static power).
 
-diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
-index 25c19496a336..7121503c9259 100644
---- a/drivers/net/phy/phylink.c
-+++ b/drivers/net/phy/phylink.c
-@@ -3724,7 +3724,10 @@ static int __init phylink_init(void)
- 	return 0;
- }
- 
-+static void __exit phylink_exit(void){}
-+
- module_init(phylink_init);
-+module_exit(phylink_exit);
- 
- MODULE_LICENSE("GPL v2");
- MODULE_DESCRIPTION("phylink models the MAC to optional PHY connection");
--- 
-2.34.1
+This is totally not upstream code and quite complex to derive thus
+fly upstream. Therefore, in upstream we have very simple power
+model right now, but it will be possible to update it at runtime
+when the leakage is increased. I hope the new v5 version that
+I'm going to send, will get into mainline soon [1].
 
+Regards,
+Lukasz
+
+[1] 
+https://lore.kernel.org/lkml/20230925081139.1305766-1-lukasz.luba@arm.com/
