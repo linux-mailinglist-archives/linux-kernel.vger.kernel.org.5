@@ -2,146 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B40317FA963
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 19:59:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE9B7FA972
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 20:00:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232715AbjK0S7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 13:59:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43572 "EHLO
+        id S232701AbjK0TAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 14:00:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231339AbjK0S72 (ORCPT
+        with ESMTP id S229531AbjK0TAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 13:59:28 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F3B10C3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 10:59:33 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50ba8177c9fso6512e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 10:59:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701111571; x=1701716371; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T/wNL+0r9M3vEkbA09HZd27UVLvLuDyJ6shtN1Fiw18=;
-        b=EVpxeUBhEtaaEZLJ2EaBAzJW/AI/02XaVVTWkJZhJQQAj5jji6Jj8B7AtDIxJjlyOw
-         eGqrplgxchQsvnIxz3inYTDFeMLX/A9SohlR/+N+Jx8A4dXCA18LMCcWtFWODfTzmm3V
-         RZuVEQEhbDShg45MrpyV8+rOPlf7BO1i5aURp/cbwPUt0Ursb+bokAcS9TIkx3w/VWNz
-         NXNTFCn01EFadNN+hHuTuTizuN15k/znCEk46opJGDTvMA3NiH7pv+nJeDtHSNkfJ3K2
-         IsIjiULNRH9x45uotkZ64IdC15Z+QiOwE1EsPtNOE27HEP7qV3jP5ie3xV8jyxhFLIXZ
-         BFyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701111571; x=1701716371;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T/wNL+0r9M3vEkbA09HZd27UVLvLuDyJ6shtN1Fiw18=;
-        b=dLjm20s7LdrKmyDhTgJIbii2jICER6HPbIYqS5/+wtrQja6LyXGKxk9V8aW9ubGfFM
-         BHxQIL1aawDPs+Nuimv3iRTJfJ1NAVhd1XJ20pDNy94hHClJTVa60HiIsmz7nl2ffT0/
-         oertWZwa7rCIxO+rnk+HTV9gPMWNd5p1PWrmZawy6OFOGsR+X4WKkAnbrfeihy/GwarE
-         zmg07s19F/EIjd7YzhFv0ADNGZ/vNIiukqp/yNqfHogy4/t4CdMmhRT8KWfuCaNRbIlZ
-         T7J7mWqBfto6qbxmPDvG9x3zvNU9oJnKyp6Idhydpy1KxaHs+zSbb58ZBZMbCs2u7lW3
-         aXVA==
-X-Gm-Message-State: AOJu0YzXHOnJRoHZUUoTs2q9uareSIfvYQBHnRbz7HXlB/aQ3+2fRcik
-        IqC8BdHXcaenOjWUqtP7xg0AvJIYDWI1iPjcNIPoZw==
-X-Google-Smtp-Source: AGHT+IFIAPAtevzEtWkxa9wwhZFABJpCknrBAnmFb4+PZShkXnzqu4GkAv8l8u+FsLttnXvygTx7rM76t/73JCe0nps=
-X-Received: by 2002:a05:6512:6ce:b0:4fe:ffbc:ac98 with SMTP id
- u14-20020a05651206ce00b004feffbcac98mr564192lff.4.1701111571318; Mon, 27 Nov
- 2023 10:59:31 -0800 (PST)
-MIME-Version: 1.0
-References: <20231102175735.2272696-1-irogers@google.com> <20231102175735.2272696-2-irogers@google.com>
- <CAM9d7cgbPGzgc=QG8dStvq1iX8snGyeKTJDrg2XBjX0pCX9Qtg@mail.gmail.com>
- <CAP-5=fXgy95LsYLbbWN85prBs43jvGehOcwYFK-ZK2cOqCyPJA@mail.gmail.com> <CAM9d7ch9pXWZdFKf5zrQZg+nrf_0YpVro5vvkkO+LPfoLTynPQ@mail.gmail.com>
-In-Reply-To: <CAM9d7ch9pXWZdFKf5zrQZg+nrf_0YpVro5vvkkO+LPfoLTynPQ@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 27 Nov 2023 10:59:19 -0800
-Message-ID: <CAP-5=fWpNUPfZ6Qs45kw1BkDB0erOu0whzaV0VsYtkLuJhGpAg@mail.gmail.com>
-Subject: Re: [PATCH v4 01/53] perf comm: Use regular mutex
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Dmitrii Dolgov <9erthalion6@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Ming Wang <wangming01@loongson.cn>,
-        James Clark <james.clark@arm.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        German Gomez <german.gomez@arm.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 27 Nov 2023 14:00:21 -0500
+Received: from BN3PR00CU001.outbound.protection.outlook.com (mail-eastus2azon11020003.outbound.protection.outlook.com [52.101.56.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D71BD4D;
+        Mon, 27 Nov 2023 11:00:27 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ray5gNQ2Y1s6FzyTIIW8MeULHc+VUUdw9wIlyC6l2qjrJVKquxK/EuvUPMCmuZJk+bzG18rf3XhIDD/MWXqSJodlMzPF+2iVKs3DZRj9l1b5xlLQVJ/Vc3ICvO+Y0IX8y98umyb1t2wQoT3Ro171G+b74ak+6kRuLkPUYGC3Jry9C+25zcvd/PK2pmfw8QtrqocG1NrgFmbtdjVAOOfJTmlLl5j5pml8NiR6QqGdM/bkiE7xZQqkbPS8IL1nBtUX+ajY/AVG0Qeh7kNKIM5DjMorNf9nk+NP3rvqtxR/Wqrr+edV4RVc4JdxorGsnlozvzCTOK54MzInZlfp9lacrw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WdgBUKoTz4I7jZmDuInB/0vzCwb/FJ7uKb8PnW7hlh4=;
+ b=frrF2iDh98ObeYMs57o3IPNJv0lWJBTe38ZEz78+z/q4ZiSoo+4NstQoiwqewv+k3SJMlrvLGaAzFx3kULP92EH3k8AIJFawdxAGwsrXQnrixKkleoxNybSEx6BV/aplWcE8rFFKBHUi+8HWcJD8c9dNLSnZMI5Gdkg103IxZmms9v5QLX/an6wGX3I9dPwuUr8vsB+IH6HT5EAvTm0g2eabc6H34VlbTBs7VGBevYfk68/xZvL9DHjmmDImOHvcmYJFImdeu4sqLgeSicI7drfn3jTB8V1tC0DMdtUBkojjDIFT06dGuuTgEntlRd+MdpB+m9XFcvnC3rUGVZj2KQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WdgBUKoTz4I7jZmDuInB/0vzCwb/FJ7uKb8PnW7hlh4=;
+ b=GDbagUr6Gq/IIfrf75R38O64bJpjdgm007ncdPfLpDFLmLTwcIYXwrsACzrkdcuD5DaioyrKfx55XPA2yXn0R0zxTD2ONfp5FJkacmZvMm1krEv4LN7uUn8ucIK3qOBq4ThD4aEImnIW7v8oGfXfKvbJIFEMIgYFHeCKolQxizE=
+Received: from PH7PR21MB3263.namprd21.prod.outlook.com (2603:10b6:510:1db::16)
+ by SJ1PR21MB3576.namprd21.prod.outlook.com (2603:10b6:a03:454::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.5; Mon, 27 Nov
+ 2023 19:00:24 +0000
+Received: from PH7PR21MB3263.namprd21.prod.outlook.com
+ ([fe80::3c1:f565:8d:2954]) by PH7PR21MB3263.namprd21.prod.outlook.com
+ ([fe80::3c1:f565:8d:2954%7]) with mapi id 15.20.7068.002; Mon, 27 Nov 2023
+ 19:00:22 +0000
+From:   Long Li <longli@microsoft.com>
+To:     Simon Horman <horms@kernel.org>,
+        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>
+CC:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        Ajay Sharma <sharmaajay@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [Patch v1 2/4] RDMA/mana_ib: create and process EQ events
+Thread-Topic: [Patch v1 2/4] RDMA/mana_ib: create and process EQ events
+Thread-Index: AQHaHbqcE/8yybp090GLgM5Yz7Lg2bCM3LsAgAGvpWA=
+Date:   Mon, 27 Nov 2023 19:00:21 +0000
+Message-ID: <PH7PR21MB3263ECFFD2850220F3F55E29CEBDA@PH7PR21MB3263.namprd21.prod.outlook.com>
+References: <1700709010-22042-1-git-send-email-longli@linuxonhyperv.com>
+ <1700709010-22042-3-git-send-email-longli@linuxonhyperv.com>
+ <20231126171504.GC84723@kernel.org>
+In-Reply-To: <20231126171504.GC84723@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=e8d0692c-b95c-4026-b431-c495eeba7fac;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-11-27T18:59:58Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR21MB3263:EE_|SJ1PR21MB3576:EE_
+x-ms-office365-filtering-correlation-id: 6a4ce887-8b87-4571-bec9-08dbef7b1b13
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: epBkAQckz08nULmJSIXr0LYZf0i9ZFekvUgol4GXuZjvHXTQo9gHygbwkaaQ0UFSiLVQwL4S+OWc/1gvEXIfZQ5uiPRZbby1xYLH0iOPtLXpuIU7xs+lMs3b/JCN5NR30gCmuXo5YjNbBctCbv0VdSfKkeUH768Jns5fV+hhxbZFePy1s4gTtAi5DNeF/log0RQ3d0Pk5iDX5WFpQwLwYjzWCksaFEbjq9MkWEr5HucUotGKYQoh5RSl5lspwchHBhuGcg4lANitKDDJ4f2DLTBG+YbGM1uK81blk1B3aeiTTahrZ8f2PP/ycDDpoeACC9OrR1uyViG2+iIs1uOSCQUqu9UJ7h6hjFPlMnYZBg3TP0DA8GSlo5SSzgc/GRn/9FJ3NDVTBJtPTzUIRqB0L4dUfBD/MfF+uVLNzc/2Etc9w/SnD5h6YtOUE8SDfLfwa+lLWsRnx1tTlwWsGr7mp0/kWoug9DS8X3SRTm63NwUYnJKuuesBDwDHAHtbK63IinDFv4ql0qHe6XOXqWtgeB58o4anK4mGmx4JcHtbOb82Bm0j2tL7Pq7wBmakwmxIwOEw1cpBjDlHhRmY1fwwBqqhfj375oh73b7olcH7uwNyq36h4IinfH9MXonW+M/uB74et0c2kj8cd6l3QJguXDPG3sQXXpHB/fwibO76DVg=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3263.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(366004)(376002)(346002)(39860400002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(83380400001)(38100700002)(82950400001)(33656002)(86362001)(82960400001)(38070700009)(122000001)(41300700001)(66946007)(110136005)(64756008)(54906003)(316002)(66446008)(66476007)(66556008)(76116006)(8676002)(8936002)(4326008)(52536014)(55016003)(8990500004)(7416002)(5660300002)(4744005)(2906002)(9686003)(7696005)(6506007)(10290500003)(478600001)(26005)(71200400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?4RqpWX+hHgcGcKYU+EFyCkmVDOXlbM2R6gLkguKs23SUOEjqR9ASry34/fJw?=
+ =?us-ascii?Q?oU1ZQb3njc9YaxzIgnz4JnzpTHs3fo1Z91b+740AKFWXmyIjEPzRJuck0id7?=
+ =?us-ascii?Q?b8RWR+1qFc/hS4O0Z4Beet7lAPzBqahUP2HYZ8tVvilNWYOcnrzfbYuoOju8?=
+ =?us-ascii?Q?iy/LBpri/zGKoKZzfCXqZKB/CyAEz8sti7HICPk0rahRW5MxLrG2KDgLeepV?=
+ =?us-ascii?Q?Rxgi+6lAcL7NZNJQW4MbkCE6kUb14gT3Dl9Lnag7TkObqbJKBMlb9bvDdpjK?=
+ =?us-ascii?Q?GtmzKM//PLCIomkIW3oynW8W2iqISmQ7Hnm1qdS+NOr6mGYr3u46jzpPFRU2?=
+ =?us-ascii?Q?WDcVgm94Y8mZzWP2EK4aF878RKSgd7QRBuufLP9WT032Tyzl/OlEHB0+yp0I?=
+ =?us-ascii?Q?sAULAaR6qXHIaahw0CvB/47V6U+qiFeQHTTyk1Ovrsmv8EHfY/kU4KJinu7p?=
+ =?us-ascii?Q?p7DYAc3S9yvTI75FLlwwkOUDBIM/mdpWB/oYmvQCBaI+aae8Vl46TMrjnAXE?=
+ =?us-ascii?Q?Mu2OG2OgVeInJP5VtL65r+YMXUf7Wi7ABYFKxGmXk7+ZdVZjGz7Hek5da1C9?=
+ =?us-ascii?Q?lAYjiTIgmkmTww47siy5TsuVS8sohOPRohQe/XNM//YNrqnLx/neKppgM4EK?=
+ =?us-ascii?Q?cwKInzY/SIj8jJZNGtSMhCdjguDWDWxoVoCg5QmVsAC5SECNE2CWkX1qD4ZL?=
+ =?us-ascii?Q?pOLOC+5HgGSX1BsA+3BHija7VfjMbqtDNWEcron17oEXYdGOJgLyjjgL8xya?=
+ =?us-ascii?Q?SmfmQALNgw568mL+0W1yETYkK8pNQwdwaZm6NdXBoTqZGuekX/UHLlPCFB61?=
+ =?us-ascii?Q?91lqdrepFaokgI/YrQSdGy49Hc+AgxLsNJNM0bIbrWnNR6v7/qShwLwm/wTS?=
+ =?us-ascii?Q?sg+DQkByLMT7uvB5pDmVxSS22NNcrSNNyp5yYbbTJIijlG5hGGEIu7zTSZJc?=
+ =?us-ascii?Q?1Cbv/YIa/5gzyrxbbkmhcZjdmAPO81Xw+C/KkEv/Lwql4xS93weN7hsPNhHR?=
+ =?us-ascii?Q?WuoZ5OHQ+2Dtt+Spc4V1vuTiYllhMdI4gSz+Z0z1CYqib7ZyWja6YsiSBrk1?=
+ =?us-ascii?Q?B1mqNNmtWKpObArNdPPrbzEUty/CCXdLowQiEHutCV1IJR5/fVAxbAxXgLQr?=
+ =?us-ascii?Q?AnaSWeRCeOZsz3ToR6uPIU3T079QPIoufkF5tvupwjCC+WnDumPq0k9cvDDv?=
+ =?us-ascii?Q?1Wk9ZSt28bB21dIX0pNv6E4oPCaXweqMxAMBGd86VPETNup/BAZqTFkw9jUo?=
+ =?us-ascii?Q?w0sy0k0KjugSnsX+rPAj3Sha2m1G5q4CcmHFdSZqIQeIoWxZ3ESjYuJfRAfd?=
+ =?us-ascii?Q?hGf9RLFdkW8u6EghLHwvyz91+OCllErqchrCJ17yTCu88XWenQwYq5wmJia0?=
+ =?us-ascii?Q?2U7N3d7emvYOu/gWB6zdPDh/qvFArwuWnFOTnK4J/uVKQYPrT7byyNq4kAQt?=
+ =?us-ascii?Q?uBDEe2xnt8//d/vmFDu08t5aJTkuK6wn9MQxNwtgX5qe/a9j9eAaiy2bvbfu?=
+ =?us-ascii?Q?FC6kB9lryfBsAtfKyO6fGb3rseSITbwyWzb8gIX/db4CDks1JpsXCNgtIvmt?=
+ =?us-ascii?Q?boDYKe9pOOLCymcbWi/OMCkLd2yqgv5nuxv2XyEk?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3263.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6a4ce887-8b87-4571-bec9-08dbef7b1b13
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Nov 2023 19:00:21.6826
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bg+wEFra6TVapjXjGaQsV+i8C+QYgY0zzd5fptsE4J6zVFyzT1ZU+l1LF3oYdSzWayKTtSr438hxRHxjgehPSg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR21MB3576
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 5, 2023 at 7:59=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
-rote:
->
-> On Sun, Nov 5, 2023 at 1:35=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
+> > @@ -505,14 +507,24 @@ static void mana_gd_deregiser_irq(struct
+> gdma_queue *queue)
+> >       if (WARN_ON(msix_index >=3D gc->num_msix_usable))
+> >               return;
 > >
-> > On Sun, Nov 5, 2023 at 9:32=E2=80=AFAM Namhyung Kim <namhyung@kernel.or=
-g> wrote:
-> > >
-> > > Hi Ian,
-> > >
-> > > On Thu, Nov 2, 2023 at 10:58=E2=80=AFAM Ian Rogers <irogers@google.co=
-m> wrote:
-> > > >
-> > > > The rwsem is only after used for writing so switch to a mutex that =
-has
-> > > > better error checking.
-> > >
-> > > Hmm.. ok.  It doesn't make sense to use rwsem without readers.
-> > >
-> > > >
-> > > > Fixes: 7a8f349e9d14 ("perf rwsem: Add debug mode that uses a mutex"=
-)
-> > >
-> > > But I'm not sure this is a fix.  Other than that,
-> >
-> > Thanks Namhyung, it fixes the case that you enable RWS_ERRORCHECK in
-> > rwsem.h as the rwsem static initialization is wrong for a mutex.
->
-> Sounds like we need a separate fix.  Maybe you need to
-> add a static initializer macro depending on the config.
+> > +     spin_lock_irqsave(&r->lock, flags);
+> > +
+> >       gic =3D &gc->irq_contexts[msix_index];
+> > -     gic->handler =3D NULL;
+> > -     gic->arg =3D NULL;
+> > +     list_for_each_rcu(p, &gic->eq_list) {
+> > +             eq =3D list_entry(p, struct gdma_queue, entry);
+>=20
+> Hi Long Li,
+>=20
+> Sparse complains a bit about this construction:
+>=20
+>  .../gdma_main.c:513:9: error: incompatible types in comparison expressio=
+n
+> (different address spaces):
+>  .../gdma_main.c:513:9:    struct list_head [noderef] __rcu *
+>  .../gdma_main.c:513:9:    struct list_head *
+>  .../gdma_main.c:513:9: error: incompatible types in comparison expressio=
+n
+> (different address spaces):
+>  .../gdma_main.c:513:9:    struct list_head [noderef] __rcu *
+>  .../gdma_main.c:513:9:    struct list_head *
+>=20
+> Perhaps using list_for_each_entry_rcu() is appropriate here.
 
-Agreed, but the only use would be here and switching this case to a
-mutex gives extra error checking such as the mutex being taken
-recursively. Given that, I prefer the existing change and the static
-initializer for rwsem can be a follow up when needed.
+Thank you, I will fix this.
 
-Thanks,
-Ian
-
-> Thanks,
-> Namhyung
+Long
