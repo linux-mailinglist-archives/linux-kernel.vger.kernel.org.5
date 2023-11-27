@@ -2,80 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C28337FA520
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 16:48:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58B957FA52D
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 16:51:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234034AbjK0PsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 10:48:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57774 "EHLO
+        id S234064AbjK0PvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 10:51:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233793AbjK0Pr7 (ORCPT
+        with ESMTP id S233793AbjK0Pu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 10:47:59 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 951AFBE;
-        Mon, 27 Nov 2023 07:48:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=svOT1Ab/ZzY/i1DkMPg/q3PvUAlQ9TMeZEgdR1xeIck=; b=n9iaFImXGrlemMfVNe1O1oYwG+
-        m2MiS3GRpBOlJMg3MBA6xyk7/IJBnTv6BKn+fcSGug/QQKY8w10C6MXHGWzI6Lu4v0rmU9Bg2u4os
-        C9fpQsKfkFALcRzeGWLajGLy6lVynVQ0sv+Yl5HyuYUUnUX67WhMv4YEMj2OvBS1wZICYjx+Hb9jz
-        /nTFc4am1zkaVS1l4PHTZMH+uiI0l2MR+xa+0v2AisBrVREmkLJNJ47QApNSRkW+HANCHhROxmXuU
-        TuIQQj2RDf8aUlixNL95cSJL9z10RUyyu5tt9bks9VRLXSslLcbVx8Ddyr+NISk+uCJJ8yTxa3rBm
-        TmczTHNA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46976)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1r7dpn-00066b-0L;
-        Mon, 27 Nov 2023 15:47:43 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1r7dpn-000223-1L; Mon, 27 Nov 2023 15:47:43 +0000
-Date:   Mon, 27 Nov 2023 15:47:42 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
+        Mon, 27 Nov 2023 10:50:58 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 230BD92
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 07:51:04 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-507975d34e8so6090478e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 07:51:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701100262; x=1701705062; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sSRGYqYUfUnqbzNe7H+CWECtE/5YcXXPUavqSdoHXi4=;
+        b=dNcvmzLzgf5UKBCTUKR7+OeP3NQgbU6fjykfT68cuEqJ9cSAQKUeAM3aJMmNcEgsS1
+         hiy+hyeJMgWT2VWUWswQfAC1wVbGy8iTAobBLtwRjBPFwyrpDeBvEZqihZfRlwLQmLDC
+         q9MRbeQ6/ZjjwAV80qy7nMJXFz79MbaHTof7GmASU18lT2NLspOCz3kVxJhxV2zzK4UZ
+         UpCZppeHI2ZkT7E2jgDweLQMusdU99+Vhdbwn4V+TkBC2S33a3HNWmcxiMk0Lq97/N6g
+         vrpXnx5NHr+aNZGvhhv85VYR7bwyRj2mM5AAeTGVWNMLOW1O8/f2M/DfglrBRuH0RVr4
+         XywA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701100262; x=1701705062;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sSRGYqYUfUnqbzNe7H+CWECtE/5YcXXPUavqSdoHXi4=;
+        b=PQjtFZSimFQ0LSRRJZdSqGwc9YHSjdr2F4S798UVmMoR5MtwgPPs3ksTfnfUMbgJxE
+         YbJjoAZ/y/Yyq37I6GqAdj9J8nqwHiPIxOXQLRJCYhZ/4qAqykvgcS8xssONQqbUTb8l
+         znx6KrKJYHW/4E28xL/oEEgogulYXM/GofHPLmGVT/ngyooNjEro5hEZdA3j8eLnnfrj
+         hyRGyO9Y28XbZcWoyTXsqNg91GAPl5OEolVGfFtI9mTAtW/f080FdQAM0I9r65CEGv5e
+         YroDKZRwyChqanbTti4IesrUHhwbqfH0PcWs80uOur6ur8J1RF1KgVqDsNkserWSIpfz
+         1M9Q==
+X-Gm-Message-State: AOJu0YzhHwXUMi4drm7yvrRvzhmcehWb13BsmCclcTH6RHM8PoVLdGAN
+        E6O/e50N1ebK9t5T6CjjCv/mDQ==
+X-Google-Smtp-Source: AGHT+IFyYkInntn7WIIXtaQUomX+9JyW5bRImW46V9s7iz9kDzwm8pq5GnI0bsoTxBKg/4uR1CTr9w==
+X-Received: by 2002:a05:6512:12c8:b0:50a:7575:1339 with SMTP id p8-20020a05651212c800b0050a75751339mr11124629lfg.18.1701100262314;
+        Mon, 27 Nov 2023 07:51:02 -0800 (PST)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id b16-20020ac25e90000000b0050a71df5d39sm1515787lfq.300.2023.11.27.07.51.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 07:51:01 -0800 (PST)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH v9 0/3] ARM/ARM64: dts: mv88e6xxx fixes for Marvell
+Date:   Mon, 27 Nov 2023 16:50:59 +0100
+Message-Id: <20231127-mv88e6xxx-mvebu-fixes-v9-0-d19b963e81fb@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOO6ZGUC/x2LywqAIBAAf0X2nJBmaf1KdOix1h56oBRC+O8t3
+ WYY5oWIgTBCJ14I+FCk82BpCwHzNh4rSlrYQZe6UkpbuT/OYZNSYsLplp4SRmnq0dtKm9k4Bfx
+ eAf/Aaz/k/AE/SQPvZwAAAA==
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Alexander Couzens <lynxis@fe80.eu>,
-        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org
-Subject: Re: [RFC PATCH 5/8] dt-bindings: net: pcs: add bindings for MediaTek
- USXGMII PCS
-Message-ID: <ZWS6Hl2tZ0MPj+OL@shell.armlinux.org.uk>
-References: <cover.1699565880.git.daniel@makrotopia.org>
- <2dff6aff7006573d3232ec2ddd93c1792740d4d3.1699565880.git.daniel@makrotopia.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2dff6aff7006573d3232ec2ddd93c1792740d4d3.1699565880.git.daniel@makrotopia.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+        Russell King <linux@armlinux.org.uk>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>
+X-Mailer: b4 0.12.4
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,47 +81,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 09:51:47PM +0000, Daniel Golle wrote:
-> MediaTek's USXGMII can be found in the MT7988 SoC. We need to access
-> it in order to configure and monitor the Ethernet SerDes link in
-> USXGMII, 10GBase-R and 5GBase-R mode. By including a wrapped
-> legacy 1000Base-X/2500Base-X/Cisco SGMII LynxI PCS as well, those
-> interface modes are also available.
+This fixes and adjusts a few Marvell platform device trees
+to the new bindings which will be merged separately to the
+netdev tree.
 
-I think this binding is based on the implementation than on hardware.
+The last patch adds the special compatibles we need to avoid
+the annoying warnings on nonstandard ABI nodenames used by
+U-Boot
 
-What I believe you have is this setup:
+This patch set mixes ARM and ARM64 DTS changes but I am
+sure the maintainers can sort it out.
 
-        .---- LynxI PCS ----.
-MAC ---+                     +--- PEXTP --- world
-        `--- USXGMII PCS ---'
+Link to v9 bindings patches:
+https://lore.kernel.org/r/20231127-marvell-88e6152-wan-led-v9-0-272934e04681@linaro.org
 
-You are representing the PEXTP as a separate entity in DT, but then
-you're representing the LynxI PCS and the USXGMII PCS as a single
-block, which seems to be how you've decided to implement it.
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+Linus Walleij (3):
+      ARM: dts: marvell: Fix some common switch mistakes
+      ARM64: dts: marvell: Fix some common switch mistakes
+      ARM64: dts: Add special compatibles for the Turris Mox
 
-Given that the LynxI PCS is already in use elsewhere in the Mediatek
-range, I suggest that the LynxI PCS is one block of IP, and the USXGMII
-PCS is a separate block of IP.
+ arch/arm/boot/dts/marvell/armada-370-rd.dts        | 24 +++---
+ .../dts/marvell/armada-381-netgear-gs110emx.dts    | 44 +++++-----
+ .../dts/marvell/armada-385-clearfog-gtr-l8.dts     | 38 ++++-----
+ .../dts/marvell/armada-385-clearfog-gtr-s4.dts     | 22 ++---
+ arch/arm/boot/dts/marvell/armada-385-linksys.dtsi  | 18 ++--
+ .../boot/dts/marvell/armada-385-turris-omnia.dts   | 20 ++---
+ arch/arm/boot/dts/marvell/armada-388-clearfog.dts  | 20 ++---
+ .../boot/dts/marvell/armada-xp-linksys-mamba.dts   | 18 ++--
+ .../dts/marvell/armada-3720-espressobin-ultra.dts  | 14 ++--
+ .../boot/dts/marvell/armada-3720-espressobin.dtsi  | 20 ++---
+ .../boot/dts/marvell/armada-3720-gl-mv1000.dts     | 20 ++---
+ .../boot/dts/marvell/armada-3720-turris-mox.dts    | 97 ++++++++++++----------
+ .../boot/dts/marvell/armada-7040-mochabin.dts      | 24 +++---
+ .../dts/marvell/armada-8040-clearfog-gt-8k.dts     | 22 ++---
+ arch/arm64/boot/dts/marvell/cn9130-crb.dtsi        | 42 +++++-----
+ 15 files changed, 217 insertions(+), 226 deletions(-)
+---
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+change-id: 20231127-mv88e6xxx-mvebu-fixes-45af7324c481
 
-1) Would it not be better to model the two PCS seperately?
-
-2) The addition of the SGMII reset needs more information - is this
-   controlling a reset for the LynxI block? If so, it should be part
-   of a LynxI PCS binding.
-
-3) The PEXTP is presumably a separate block which can be shared between
-   several devices - for example, the LynxI, USXGMII, and probably SATA
-   and PCIe as well. From the 802.3's network model, the PEXTP is the
-   PMA/PMD.
-
-   From the point of view of 802.3's model, a network interface has
-   various layers such as the MAC, PCS and PMA/PMD, and sitting above
-   these layers is the management of the system. Rather than chasing
-   the data flow (which in a network device can be complex) wouldn't
-   it be better to continue with the 802.3 model as we are doing with
-   other devices, rather than trying to go with a new approach here?
-
+Best regards,
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Linus Walleij <linus.walleij@linaro.org>
+
