@@ -2,175 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9F3C7FACEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 23:03:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F196C7FACEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 23:05:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233368AbjK0WDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 17:03:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48112 "EHLO
+        id S233427AbjK0WFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 17:05:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231437AbjK0WDa (ORCPT
+        with ESMTP id S229821AbjK0WFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 17:03:30 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD5891AE
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:03:36 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E386C433C7;
-        Mon, 27 Nov 2023 22:03:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701122616;
-        bh=sgOJ6U7HZ+AC7XaG2fCShwuNmSNdLJ8YQTkNUpN7nZg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q+a5RdsPeiaQ54NWiK+EKzu7bs8ByxbFAfEqornh3xkrEW1HwUB5TmXEccV/B9y0j
-         uRzqKrEVkO3tif+P3BGK5r6o9Shp1bznyFfc5mzQQOO7oPLwfee7XzW8kqTlUDtMKk
-         opeVtzHxo0dP0WHtPgXd84285qsrKKtdyy5dDdgTajhgduZUbiYgRzGCB///T/zVY0
-         RMa0JupNUOs30FbsdfQd2fmVkcCj3vQTsJJZ5/OPG4HIca9ZvgGxOfKZhpIt75O+pR
-         h3ur5N9/n0Kc4x1J8ySnaBcxEzYm4DavvWmssohucTyp/YxNZmPKjvSimtF3eYOiad
-         jdIVXf5ciUY/A==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id AB4FA40094; Mon, 27 Nov 2023 19:03:32 -0300 (-03)
-Date:   Mon, 27 Nov 2023 19:03:32 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Dmitrii Dolgov <9erthalion6@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Ming Wang <wangming01@loongson.cn>,
-        James Clark <james.clark@arm.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        German Gomez <german.gomez@arm.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v4 10/53] perf record: Be lazier in allocating lost
- samples buffer
-Message-ID: <ZWUSNLmApMByu94B@kernel.org>
-References: <20231102175735.2272696-1-irogers@google.com>
- <20231102175735.2272696-11-irogers@google.com>
+        Mon, 27 Nov 2023 17:05:10 -0500
+Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3781A1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:05:16 -0800 (PST)
+Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-1f5da5df68eso2860033fac.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:05:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1701122715; x=1701727515; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ddP9Seydg6uEHR4Cvl6RvAssgCZN9rnWQDGKZ5eImoI=;
+        b=ncEyNEJbvWhsaBY29eJFOGggCC34Ka0RjJ4NQBqiLZ7viuMrEYpcP/Wt99+lI9MqOC
+         XTj4dGFtdGnxSU0Q4CgqvE1GJEswqrYqGrfnkBuHCl/hUkvT+2jUCsV2RgDaBHpmGPEM
+         O93paTRA018yacQrvlyrR7clJLmCY3H9gzeRMqgSHAcJLfNAbqHaRtQaiaihP6n91HiJ
+         /4m+kG7ikeLeUtuej0X6etHW20NZMfeBVlkhUzt+QvKDUqSewD4VGAr7s/FRZ6NKCCBq
+         o7PUy2/oeb+ubNt28RKdndhH5GCGsu2lZ6PYgsDHPLTZE3kVFM/8ANy/rhm9A5K9VUUr
+         Gd2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701122715; x=1701727515;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ddP9Seydg6uEHR4Cvl6RvAssgCZN9rnWQDGKZ5eImoI=;
+        b=Iyh9/wk8E1c/kjI0ygqdV9l8qOQLYkxP+3pA6pb53Pqra8QrZ5oKjZvWQCee/ZFoKo
+         4qZdxwpEFXZhENHRzxeVILP1w6oL7o9LlrLQnngHWVjCLKdX9ZFkHweqnkmUESuBz66T
+         KpX3Fk92cMNDuhhxRWNksxOiXGsED5ofw+3yUXLy2GpnuZHprC3BWRfu+amBToQhDA4i
+         GLuPdOtY9GmaoVcsvkhlzFTiVSKmn8aHJkSxbzZHDHbno1xbrj7EKr58xAemhR9WmXGQ
+         iuGIRuLkz3BYjwyhm/AFqRrZAFPjqHaySrvQJpvB5Rz7tx6yCYXxpKIet3eZVFORtFeB
+         GrKg==
+X-Gm-Message-State: AOJu0Ywg14eNDNrQoOO1jZlr1Io5FrqU4imkZ94WrfyhTLngysnTAqGs
+        WXvjiDNYbNbj+J8BkeSlI2doYA==
+X-Google-Smtp-Source: AGHT+IEnj7s/9ky803AWh0qNXrHLp8Gp+Nrp25b0P7l4iEHKpfaZkXNiO6XBdHlUg8afXhaq7X7Hjg==
+X-Received: by 2002:a05:6870:b88:b0:1fa:1c63:738d with SMTP id lg8-20020a0568700b8800b001fa1c63738dmr14171941oab.7.1701122715440;
+        Mon, 27 Nov 2023 14:05:15 -0800 (PST)
+Received: from charlie.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id x23-20020a056830115700b006d679b53e8asm1458890otq.24.2023.11.27.14.05.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 14:05:15 -0800 (PST)
+From:   Charlie Jenkins <charlie@rivosinc.com>
+Subject: [PATCH v4 0/2] riscv: Fix issues with module loading
+Date:   Mon, 27 Nov 2023 14:04:58 -0800
+Message-Id: <20231127-module_linking_freeing-v4-0-a2ca1d7027d0@rivosinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231102175735.2272696-11-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAIoSZWUC/4XNwQrCMAyA4VcZPVtZ01U3T76HiGxtqsGtlVaLM
+ vbudp5EFE/hD+TLyCIGwsg2xcgCJorkXY5qUTB9at0ROZncDEqQQkDJB29uPR56cmdyx4MNiHl
+ y6FQrO1CqU8jy8SWgpfsL3u1znyhefXi8/iQxb/+SSXDBrbW1MGuoG6u3gZKP5PRS+4HNaoJ3S
+ fyUIEvNuuqsNnK1qvCLJN8l+ClJXvIaG6wEtFKW6kOapukJKCp0/lMBAAA=
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Ron Economos <re@w6rz.net>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        Andreas Schwab <schwab@linux-m68k.org>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Charlie Jenkins <charlie@rivosinc.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1701122714; l=1275;
+ i=charlie@rivosinc.com; s=20231120; h=from:subject:message-id;
+ bh=ktmhIbS4nLRNl0CJgpmhOEvy8Ne38cd75WPfhvHt4w8=;
+ b=LvG3ouNrZDAB8lSTyo77I0DXPO2z8KvBEY0edkFxLi/zJhf9q/nZbwvTknADYULxy6qmtlgoV
+ Wb0g/PZstEtAy3ZNIDk8PWwi5awR4QNle4aGVl8+hSrIs5vPyWmNvGc
+X-Developer-Key: i=charlie@rivosinc.com; a=ed25519;
+ pk=t4RSWpMV1q5lf/NWIeR9z58bcje60/dbtxxmoSfBEcs=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Nov 02, 2023 at 10:56:52AM -0700, Ian Rogers escreveu:
-> Wait until a lost sample occurs to allocate the lost samples buffer,
-> often the buffer isn't necessary. This saves a 64kb allocation and
-> 5.3kb of peak memory consumption.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/builtin-record.c | 29 +++++++++++++++++++----------
->  1 file changed, 19 insertions(+), 10 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index 9b4f3805ca92..b6c8c1371b39 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -1924,21 +1924,13 @@ static void __record__save_lost_samples(struct record *rec, struct evsel *evsel,
->  static void record__read_lost_samples(struct record *rec)
->  {
->  	struct perf_session *session = rec->session;
-> -	struct perf_record_lost_samples *lost;
-> +	struct perf_record_lost_samples *lost = NULL;
->  	struct evsel *evsel;
->  
->  	/* there was an error during record__open */
->  	if (session->evlist == NULL)
->  		return;
->  
-> -	lost = zalloc(PERF_SAMPLE_MAX_SIZE);
-> -	if (lost == NULL) {
-> -		pr_debug("Memory allocation failed\n");
-> -		return;
-> -	}
+Module loading did not account for multiple threads concurrently loading
+modules. This patch fixes that issue. There is also a small patch to fix
+the type of a __le16 variable.
 
-Shouldn't we take the time here and instead improve this error message
-and then propagate the error?
+Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+---
+Changes in v4:
+- Make functions only used internally static
+- Free data structures on kmalloc failure (Andreas)
+- Link to v3: https://lore.kernel.org/r/20231122-module_linking_freeing-v3-0-8e9e412a3305@rivosinc.com
 
-For instance, we may want to still get some perf.data file without these
-records but inform the user at this point how many records were lost
-(count.lost)?
+Changes in v3:
+- Cleanup pointer passing (Samuel)
+- Correct indentation (Samuel)
+- Check for kmalloc failures (Samuel)
+- Link to v2: https://lore.kernel.org/r/20231121-module_linking_freeing-v2-1-974bfcd3664e@rivosinc.com
 
-- Arnaldo
+Changes in v2:
+- Support linking modules concurrently across threads.
+- Link to v1: https://lore.kernel.org/r/20231120-module_linking_freeing-v1-1-fff81d7289fc@rivosinc.com
 
-> -
-> -	lost->header.type = PERF_RECORD_LOST_SAMPLES;
-> -
->  	evlist__for_each_entry(session->evlist, evsel) {
->  		struct xyarray *xy = evsel->core.sample_id;
->  		u64 lost_count;
-> @@ -1961,6 +1953,14 @@ static void record__read_lost_samples(struct record *rec)
->  				}
->  
->  				if (count.lost) {
-> +					if (!lost) {
-> +						lost = zalloc(PERF_SAMPLE_MAX_SIZE);
-> +						if (!lost) {
-> +							pr_debug("Memory allocation failed\n");
-> +							return;
-> +						}
-> +						lost->header.type = PERF_RECORD_LOST_SAMPLES;
-> +					}
->  					__record__save_lost_samples(rec, evsel, lost,
->  								    x, y, count.lost, 0);
->  				}
-> @@ -1968,9 +1968,18 @@ static void record__read_lost_samples(struct record *rec)
->  		}
->  
->  		lost_count = perf_bpf_filter__lost_count(evsel);
-> -		if (lost_count)
-> +		if (lost_count) {
-> +			if (!lost) {
-> +				lost = zalloc(PERF_SAMPLE_MAX_SIZE);
-> +				if (!lost) {
-> +					pr_debug("Memory allocation failed\n");
-> +					return;
-> +				}
-> +				lost->header.type = PERF_RECORD_LOST_SAMPLES;
-> +			}
->  			__record__save_lost_samples(rec, evsel, lost, 0, 0, lost_count,
->  						    PERF_RECORD_MISC_LOST_SAMPLES_BPF);
-> +		}
->  	}
->  out:
->  	free(lost);
-> -- 
-> 2.42.0.869.gea05f2083d-goog
-> 
+---
+Charlie Jenkins (2):
+      riscv: Safely remove entries from relocation list
+      riscv: Correct type casting in module loading
 
+ arch/riscv/kernel/module.c | 114 +++++++++++++++++++++++++++++++++------------
+ 1 file changed, 84 insertions(+), 30 deletions(-)
+---
+base-commit: 98b1cc82c4affc16f5598d4fa14b1858671b2263
+change-id: 20231120-module_linking_freeing-2b5a3b255b5e
 -- 
+- Charlie
 
-- Arnaldo
