@@ -2,148 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 834897F9CBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 10:36:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0357F9CC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 10:37:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232848AbjK0Jfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 04:35:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37964 "EHLO
+        id S232849AbjK0JhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 04:37:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232828AbjK0Jfs (ORCPT
+        with ESMTP id S232832AbjK0JhA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 04:35:48 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6B15911B
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 01:35:54 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 954202F4;
-        Mon, 27 Nov 2023 01:36:41 -0800 (PST)
-Received: from [10.57.73.191] (unknown [10.57.73.191])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A92323F6C4;
-        Mon, 27 Nov 2023 01:35:50 -0800 (PST)
-Message-ID: <bfebd80b-b60d-48e2-b350-7c0ac0299cda@arm.com>
-Date:   Mon, 27 Nov 2023 09:35:49 +0000
+        Mon, 27 Nov 2023 04:37:00 -0500
+Received: from HK2P15301CU002.outbound.protection.outlook.com (mail-eastasiaazlp170100001.outbound.protection.outlook.com [IPv6:2a01:111:f403:c400::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF2D12D;
+        Mon, 27 Nov 2023 01:37:05 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LohO1OY8ofD7vU6VNYovbvtWEjpYo3ZP7ntvhAcldst/ntVMUc8QMe9bPUw5lYXRw//y39gN2UOp4jhC6qt2GejM0bgcjPNtOwl/PO0YUGnBnbfZcyU7wNy8gjmRz4f6BfdmazeVOjIVsV6oTLqSFuwcIlYtulkBQVVsu3sx7WWMKiK3e7W6iqHhBLfPPiIq9j5sVdUfM9TD+2bpSjE1gMYUZQGCUCLnGhlxcjHiZQvbG2HaxfrhGPjdK4oOD5+Tfk8HbQ5tmEOF6iXVyN5HbYCYzt/o2XdYbf2sMBpS1PDPlINevhN/6Ui31c+cjx+WgVgea+FVxttdvn+Wo9A6fw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Kf5D/6r+NXC7ziXzfOuUKnI5OAASYMDQ9PCJ9kx0Ohk=;
+ b=l95ullQ6rSV0+BrAGrqZtTaL8HcQ5egN2L+A5RSuAvp4A8J0nCRDG1s7362AGFtFfKhoiG0hbzA2Ewvm5gQSlTFCc/WMMEh890+xrCwU23x6Mi7SzN+6Gc+1cRiP1RKYqIp+YwPh4q9pW0Or+4G2caOKxyFliQf5MgIN4FgyGEZknPasWj+viUTt6WV8ciMA9yG6/Imle2Ph3f4/F0STHV1fiS5ow2Un2UaeEE7dYxOTF//qZ7S0852OWn8pcv0oIOzi1+RYocU1vj6Ti76svtssc+yVQiAnxz4Ax4bGXa0VCP+enEnAMc8gJA+KkmZQDENSdUkt1j6nyez3rqhuOg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Kf5D/6r+NXC7ziXzfOuUKnI5OAASYMDQ9PCJ9kx0Ohk=;
+ b=KPYpr/ERACMNnQNB1eLTK+nYsQkpIGLIHoeIMPrKQntEVE/2CYFHAdEiTaBSw5v5QSFNF3rHxex7FOV4f5mP3USAX3nF+RfJctm+REGx7N1zXafyYaXYjPN4MRP1g5hXTrECqI8YfF2Hf+P3W45s7RH6D6AqFi6hZNlaHi+KjqM=
+Received: from PUZP153MB0788.APCP153.PROD.OUTLOOK.COM (2603:1096:301:fc::10)
+ by SEYP153MB0976.APCP153.PROD.OUTLOOK.COM (2603:1096:101:140::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.5; Mon, 27 Nov
+ 2023 09:36:39 +0000
+Received: from PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
+ ([fe80::a516:f38b:f94e:b77a]) by PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
+ ([fe80::a516:f38b:f94e:b77a%7]) with mapi id 15.20.7068.002; Mon, 27 Nov 2023
+ 09:36:38 +0000
+From:   Souradeep Chakrabarti <schakrabarti@microsoft.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+CC:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        Long Li <longli@microsoft.com>,
+        "sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
+        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Paul Rosswurm <paulros@microsoft.com>
+Subject: RE: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning IRQ
+ affinity on HT cores
+Thread-Topic: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning IRQ
+ affinity on HT cores
+Thread-Index: AQHaHIJKVWtqOkYgZ0uGtD+z/VnogLCFcX6AgAh9zEA=
+Date:   Mon, 27 Nov 2023 09:36:38 +0000
+Message-ID: <PUZP153MB0788476CD22D5AA2ECDC11ABCCBDA@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
+References: <1700574877-6037-1-git-send-email-schakrabarti@linux.microsoft.com>
+ <20231121154841.7fc019c8@kernel.org>
+In-Reply-To: <20231121154841.7fc019c8@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=face184a-dcef-4d2d-9024-da46c997f307;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-11-27T09:29:00Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PUZP153MB0788:EE_|SEYP153MB0976:EE_
+x-ms-office365-filtering-correlation-id: a7deb21d-9a94-40a2-bc37-08dbef2c5ab3
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: uyyw2hHQuQLWqg9LNjczsGCQFC0TPdhSlChDAs46kriyq4xN1+QN23N6hKYsEB4wNJ8Z0orc6sCR91FTcedtFLeWWhWzrpHfvdwhcEhubaNMXGsbFyoyHKi8IwR5fXAV9pv4z3xzRHDK0ZMsbK7qOWelSCZyqib09pDNYS6T2MZFeEGZ/0C3xW0Ah5Lvo0Tm8ik2EKLUHSAnIJt3fqmKEmfMQOz6vbjlsPJDVe4O6PkgrOlRAQNxe97hD57a4j0rjUv+0XfV7X4zQudMJFac7Alkc8gnhfF/IyMy1tSgPY90CcrubXZOhs7+JlTCI7maaejSivkSdoJ0tK0Nbewxjpl2XsyJyDiB1KCl3E1Tdh5gAhDCMZl0q73Yn+DkkSwxQy5L8DLJiNqU4+Vez3MTrsJTHXbHco0bMlITlks1FdWMzzq2KuFHgAjujGv4tdMGOhrYwkLGxgTSKh9qOjxRYbrldRy8yc5yaPxcEJkUxGIbUx3EA16zPfxVDH5GjeAvnjJTYcBmZWxz3O0TEpCSPvdDZY+x6U1jRa10OWk4UrpAd/Iml5Lbz6zpym3KJaoeTWjXpTJA90IGCqzy9OGDDevpE6r4EvAir0ljXFICkq0X+cICHjeJqTJxct9wFebx5x3PNV1FpKKTz1qDPy5PzNBxZxlqkpZdzRE5/ArytXmTWBgVAyPIhU3JSeZVKibBXRo2PPndFD1tMXcKYdMvJg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZP153MB0788.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(366004)(396003)(376002)(39860400002)(230922051799003)(230273577357003)(230173577357003)(186009)(451199024)(64100799003)(1800799012)(4326008)(52536014)(5660300002)(41300700001)(8990500004)(7416002)(26005)(8936002)(8676002)(2906002)(55016003)(10290500003)(478600001)(71200400001)(7696005)(6506007)(9686003)(107886003)(83380400001)(38100700002)(66946007)(316002)(76116006)(66446008)(66476007)(66556008)(64756008)(54906003)(110136005)(122000001)(82950400001)(82960400001)(86362001)(33656002)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?4fjGuBdHrW0zIjFHqi33QLEz4cHTbKMvXp7AdeQ9rJO8mF362iAwMpt3r/6V?=
+ =?us-ascii?Q?KAr3A2fIr9SS82+oNCG9oSDIjhvVpFsVoVCJKy9ulh3lxrv/83sq0AndN14a?=
+ =?us-ascii?Q?NTcyAinKW8gwx+5hCVQRHiwVKQ1lcTGe1Txx7XUU0AT4TnUd184sk8zMYB4s?=
+ =?us-ascii?Q?pASgCFvRys+j/IX/oCAAt1R8zeFtGNf6NEy92NYKXafysxVrsd8U9+tdVkHz?=
+ =?us-ascii?Q?PM2SPt/riEsHniW4FRd/8NpOczPkFts33MWo3J5v5pw2w2IXwsA0fVbTrJb8?=
+ =?us-ascii?Q?1+dORMtWotYd8XPhqmSf9GJjJ9UzeZke8/yUG1jimeA7JjUc/8Pnf5DFLSio?=
+ =?us-ascii?Q?N6HqOmn2iHSt8BTw5IbdCs9DLbB0P+pxoy/6BS89mpGWST5EuML5qNcdIogt?=
+ =?us-ascii?Q?O1lT2qd9k/D5W8kmKZSYpt5effK9RbExqFF9Maqtye8PZpjtpF84uuITOVv3?=
+ =?us-ascii?Q?bpSOrdgn0PMFYVQzJIIIZ0KblaofQuymLPi8+MJoCkoFPtTqLNUAlOeZM1dF?=
+ =?us-ascii?Q?2uQdNCH2/vJv8thAs3r+2DH8nguSuCu88kEXhjx5hnDaVFh3iCKf80kbkDBu?=
+ =?us-ascii?Q?H1Z1pGjjAw5qmcn4xY8J3p9KGeFh9ZkAXNpHO2Cd6IWr4nZaIsaUR21h+erA?=
+ =?us-ascii?Q?/67UbXOtDeIwYIkX1dJOZeW+FOHmdbIuUvYd05DlwY/3hUmVbk9T2aK7Wv2u?=
+ =?us-ascii?Q?Qc3YG5WXBUplQWcQIyi6Er1LPWGA8DrV85BUz2BxhHqmqJTwefKRv7LLCXC9?=
+ =?us-ascii?Q?DiK93BFLJ3Fc7cHfR5SXoxoFI4sxSpk4G23kXcYdZVOcrK+61DoNB9I18MkZ?=
+ =?us-ascii?Q?ehSpdHKJhK5gpd2Lj/At1nLUw8gu0EHk9pD3VC0QlOr10QRigMkxLzJ/L+L7?=
+ =?us-ascii?Q?7EyN+Sh4qZFrHw1gZKpvf3Ft1+N6Eo424dyUlSAkz4+Cg0jAZjzVcXeILmgp?=
+ =?us-ascii?Q?7Vc1xLXCvJkJWi9ZgEZkbyYAwKPwtL7OLTSBYkV7s1wHPYmyvrINM+sNKspB?=
+ =?us-ascii?Q?7xPy4p4NxU3mJIu+TQGzscj9p5xkvB+2dj5zNCFnMGtSLXBj50YQLRpd5faT?=
+ =?us-ascii?Q?kAtoGDjHd61b316gT3cxml6nKWyFXP7RETsyYyyDlQylEq11UhIltNAHQpbF?=
+ =?us-ascii?Q?VGUVxKRUml4OgnOgQMyRzDmkNbQDwYngGNkVSWCEZQ6Qr+Qw6dY6kND3/ml0?=
+ =?us-ascii?Q?qt9jNBTcpYDzfwXvz4r4wD4pNRlXsI+i2VlF7aT4vfgWb0PdJB8dsreaXrAu?=
+ =?us-ascii?Q?ChXizThgANi+MqNCuRi4L4Oq2WBT1SpndHg6UbZj0i4wdF1DQIdo9PAKoMAQ?=
+ =?us-ascii?Q?u9Ez9W6UVAJ9iwR5N7EXnEDbmfM3enEPYt9d3RxnzOSyNmYFuWhIrcar7t7d?=
+ =?us-ascii?Q?bz7cw+caLnXKOlCfXnXug3Ua87mQcukL6D1T0B5G/2VrEDs/J9cJqvD53X3x?=
+ =?us-ascii?Q?eu0BB9+WieT84Vwt0bSXH1a6d9gga4ksRhYRTkMn0AvPFzGGwQ+tfTVbsD3b?=
+ =?us-ascii?Q?Comhio9G1MvXNVnbEHylHyEaX/aR0nDyc5L+?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
-Content-Language: en-GB
-To:     Barry Song <21cnbao@gmail.com>, david@redhat.com
-Cc:     akpm@linux-foundation.org, andreyknvl@gmail.com,
-        anshuman.khandual@arm.com, ardb@kernel.org,
-        catalin.marinas@arm.com, dvyukov@google.com, glider@google.com,
-        james.morse@arm.com, jhubbard@nvidia.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mark.rutland@arm.com, maz@kernel.org,
-        oliver.upton@linux.dev, ryabinin.a.a@gmail.com,
-        suzuki.poulose@arm.com, vincenzo.frascino@arm.com,
-        wangkefeng.wang@huawei.com, will@kernel.org, willy@infradead.org,
-        yuzenghui@huawei.com, yuzhao@google.com, ziy@nvidia.com
-References: <271f1e98-6217-4b40-bae0-0ac9fe5851cb@redhat.com>
- <20231127084217.13110-1-v-songbaohua@oppo.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20231127084217.13110-1-v-songbaohua@oppo.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: a7deb21d-9a94-40a2-bc37-08dbef2c5ab3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Nov 2023 09:36:38.2381
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ehEa9d60wgnPQRWtjyXD2pYPu466U1/I+o3dKKhbsnz6zhFKozyUkkiektS7QmEK/42Q5dMJ4/jg6eiXdQVDjKzQq1d9/6SSc7eRCaPZXI8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYP153MB0976
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/11/2023 08:42, Barry Song wrote:
->>> +		for (i = 0; i < nr; i++, page++) {
->>> +			if (anon) {
->>> +				/*
->>> +				 * If this page may have been pinned by the
->>> +				 * parent process, copy the page immediately for
->>> +				 * the child so that we'll always guarantee the
->>> +				 * pinned page won't be randomly replaced in the
->>> +				 * future.
->>> +				 */
->>> +				if (unlikely(page_try_dup_anon_rmap(
->>> +						page, false, src_vma))) {
->>> +					if (i != 0)
->>> +						break;
->>> +					/* Page may be pinned, we have to copy. */
->>> +					return copy_present_page(
->>> +						dst_vma, src_vma, dst_pte,
->>> +						src_pte, addr, rss, prealloc,
->>> +						page);
->>> +				}
->>> +				rss[MM_ANONPAGES]++;
->>> +				VM_BUG_ON(PageAnonExclusive(page));
->>> +			} else {
->>> +				page_dup_file_rmap(page, false);
->>> +				rss[mm_counter_file(page)]++;
->>> +			}
->>>   		}
->>> -		rss[MM_ANONPAGES]++;
->>> -	} else if (page) {
->>> -		folio_get(folio);
->>> -		page_dup_file_rmap(page, false);
->>> -		rss[mm_counter_file(page)]++;
->>> +
->>> +		nr = i;
->>> +		folio_ref_add(folio, nr);
->>
->> You're changing the order of mapcount vs. refcount increment. Don't. 
->> Make sure your refcount >= mapcount.
->>
->> You can do that easily by doing the folio_ref_add(folio, nr) first and 
->> then decrementing in case of error accordingly. Errors due to pinned 
->> pages are the corner case.
->>
->> I'll note that it will make a lot of sense to have batch variants of 
->> page_try_dup_anon_rmap() and page_dup_file_rmap().
->>
-> 
-> i still don't understand why it is not a entire map+1, but an increment
-> in each basepage.
 
-Because we are PTE-mapping the folio, we have to account each individual page.
-If we accounted the entire folio, where would we unaccount it? Each page can be
-unmapped individually (e.g. munmap() part of the folio) so need to account each
-page. When PMD mapping, the whole thing is either mapped or unmapped, and its
-atomic, so we can account the entire thing.
 
-> 
-> as long as it is a CONTPTE large folio, there is no much difference with
-> PMD-mapped large folio. it has all the chance to be DoubleMap and need
-> split.
-> 
-> When A and B share a CONTPTE large folio, we do madvise(DONTNEED) or any
-> similar things on a part of the large folio in process A,
-> 
-> this large folio will have partially mapped subpage in A (all CONTPE bits
-> in all subpages need to be removed though we only unmap a part of the
-> large folioas HW requires consistent CONTPTEs); and it has entire map in
-> process B(all PTEs are still CONPTES in process B).
-> 
-> isn't it more sensible for this large folios to have entire_map = 0(for
-> process B), and subpages which are still mapped in process A has map_count
-> =0? (start from -1).
-> 
->> Especially, the batch variant of page_try_dup_anon_rmap() would only 
->> check once if the folio maybe pinned, and in that case, you can simply 
->> drop all references again. So you either have all or no ptes to process, 
->> which makes that code easier.
-
-I'm afraid this doesn't make sense to me. Perhaps I've misunderstood. But
-fundamentally you can only use entire_mapcount if its only possible to map and
-unmap the whole folio atomically.
-
+>-----Original Message-----
+>From: Jakub Kicinski <kuba@kernel.org>
+>Sent: Wednesday, November 22, 2023 5:19 AM
+>To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+>Cc: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
+><haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
+><decui@microsoft.com>; davem@davemloft.net; edumazet@google.com;
+>pabeni@redhat.com; Long Li <longli@microsoft.com>;
+>sharmaajay@microsoft.com; leon@kernel.org; cai.huoqing@linux.dev;
+>ssengar@linux.microsoft.com; vkuznets@redhat.com; tglx@linutronix.de; linu=
+x-
+>hyperv@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.o=
+rg;
+>linux-rdma@vger.kernel.org; Souradeep Chakrabarti
+><schakrabarti@microsoft.com>; Paul Rosswurm <paulros@microsoft.com>
+>Subject: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning IRQ affin=
+ity on
+>HT cores
+>
+>On Tue, 21 Nov 2023 05:54:37 -0800 Souradeep Chakrabarti wrote:
+>> Existing MANA design assigns IRQ to every CPUs, including sibling
+>> hyper-threads in a core. This causes multiple IRQs to work on same CPU
+>> and may reduce the network performance with RSS.
 >>
->> But that can be added on top, and I'll happily do that.
->>
->> -- 
->> Cheers,
->>
->> David / dhildenb
-> 
-> Thanks
-> Barry
-> 
-
+>> Improve the performance by adhering the configuration for RSS, which
+>> assigns IRQ on HT cores.
+>
+>Drivers should not have to carry 120 LoC for something as basic as spreadi=
+ng IRQs.
+>Please take a look at include/linux/topology.h and if there's nothing that=
+ fits your
+>needs there - add it. That way other drivers can reuse it.
+Because of the current design idea, it is easier to keep things inside
+the mana driver code here. As the idea of IRQ distribution here is :
+1)Loop through interrupts to assign CPU
+2)Find non sibling online CPU from local NUMA and assign the IRQs
+on them.
+3)If number of IRQs is more than number of non-sibling CPU in that
+NUMA node, then assign on sibling CPU of that node.
+4)Keep doing it till all the online CPUs are used or no more IRQs.
+5)If all CPUs in that node are used, goto next NUMA node with CPU.
+Keep doing 2 and 3.
+6) If all CPUs in all NUMA nodes are used, but still there are IRQs
+then wrap over from first local NUMA node and continue
+doing 2, 3 4 till all IRQs are assigned.
