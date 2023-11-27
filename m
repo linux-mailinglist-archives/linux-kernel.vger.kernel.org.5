@@ -2,59 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BA627FAA97
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 20:49:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB4D7FAA9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 20:51:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232967AbjK0Ttq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 14:49:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49988 "EHLO
+        id S229531AbjK0Tuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 14:50:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232986AbjK0Ttn (ORCPT
+        with ESMTP id S232927AbjK0Tup (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 14:49:43 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C13210C3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 11:49:46 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF345C433CC;
-        Mon, 27 Nov 2023 19:49:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701114586;
-        bh=kLT4h06WD18nH9XJUOYId4CY/OMjL8Pp0wVPy8Dmo5k=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZQmRGurtQ/ymuqgkPK0S1auQK1jsqKsXA7ocVJ8YHFYFckwUYrdWasFs0vthwPFG6
-         cBGuFNJI0ddO7kW1QKc6Yu76RJ6F+jdK1uA9IFXFukRKB/QZpSDPByMLL+x9iXczaF
-         ihxrobCdRdEws2xjOf2N8p6R5ZH9Lkmwuro/zv+59tyIcoavkt/6B53khFbQBn2J6D
-         KrptU5Ez5t2g0e7dEbsTHGk+xOWdSOG2F2nl6IZMey806jXeFaGvmKCwbRJwUXpWQr
-         e+FnZbMo8h9N1MdTFLHkYW6r7skfAckBzAQTR6El+QFn+3FN2MIfP1BPfb5UWRVkkS
-         nepgkAVRhzUrw==
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-507ad511315so6519543e87.0;
-        Mon, 27 Nov 2023 11:49:45 -0800 (PST)
-X-Gm-Message-State: AOJu0YwNX8RGa74I6oIsKbUZjRZfChBcxApGLLDNMkNFB4Ig/7N64cMr
-        biYjrUWfoG3RT9260QyrO7sCGlSGHIl/rlMRTg==
-X-Google-Smtp-Source: AGHT+IGNdZ3nXKFdr7ac3lMqcvw4UBbPABOb47aX7ue0+l6bJSzouGDgMxTJptlpiC2GKZuLcdUzV8D/ndIVyh6M4AY=
-X-Received: by 2002:a05:6512:b97:b0:502:ff3b:766f with SMTP id
- b23-20020a0565120b9700b00502ff3b766fmr11352186lfv.6.1701114584115; Mon, 27
- Nov 2023 11:49:44 -0800 (PST)
+        Mon, 27 Nov 2023 14:50:45 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B556C10CA;
+        Mon, 27 Nov 2023 11:50:51 -0800 (PST)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARFJN4k026954;
+        Mon, 27 Nov 2023 19:50:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=xx3ph+X+6fmNeu0VE3E8kkIP8/jldxtnFkLaySCwVXw=;
+ b=mpmEtfGCNLMr5qdU8KVHZQ/7GQQckgZXepcDRwuxBjOQsKWjlimiOI6jCc90UaDfl/RQ
+ /3qsmH9Zk5bRCFPHZbhxFHhBIg4dxVYafa83lKIYCosWLvwqChD6esI9K+89Ln073bhO
+ SMqe/WE7XBiH5b+QqY38I2QgdNUfsaOFrZitYyyMJpVKWHLkTP66hOf5kyx+OL8fj93g
+ R+fF69StE3N6e/P3b/MHER/OWiZlAZ12nAXdgc4XsrLz2xek6dYz3FFh1bgFxz+hhQIJ
+ CXm1PXOUCIejX17R4PTzx4rnrjqkhOXEmXuCyBrkV5CaGHuC01z/OCHSmbNwYTX52hho eA== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3umwn5rs9a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 19:50:38 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ARJocG8004114
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 19:50:38 GMT
+Received: from [10.216.56.80] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 27 Nov
+ 2023 11:50:35 -0800
+Message-ID: <653abe51-cc6a-7bb0-6a10-6dc33389cb68@quicinc.com>
+Date:   Tue, 28 Nov 2023 01:20:19 +0530
 MIME-Version: 1.0
-References: <20231127190857.1977974-1-enachman@marvell.com> <20231127190857.1977974-2-enachman@marvell.com>
-In-Reply-To: <20231127190857.1977974-2-enachman@marvell.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 27 Nov 2023 13:49:31 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJ90mOMUS040SBtjnuELcyM1qnOyHzuga6xPNbMct2PvA@mail.gmail.com>
-Message-ID: <CAL_JsqJ90mOMUS040SBtjnuELcyM1qnOyHzuga6xPNbMct2PvA@mail.gmail.com>
-Subject: Re: [PATCH v6 1/3] MAINTAINERS: add ac5 to list of maintained Marvell
- dts files
-To:     Elad Nachman <enachman@marvell.com>
-Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        andrew@lunn.ch, gregory.clement@bootlin.com,
-        sebastian.hesselbarth@gmail.com, pali@kernel.org,
-        mrkiko.rs@gmail.com, chris.packham@alliedtelesis.co.nz,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, cyuval@marvell.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v10 0/4] Misc SCM driver changes
+Content-Language: en-US
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <linus.walleij@linaro.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1698945247-16033-1-git-send-email-quic_mojha@quicinc.com>
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <1698945247-16033-1-git-send-email-quic_mojha@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: GU0iX8YLJuuJ_I-Wcw9YXe_P4kv5Qi8z
+X-Proofpoint-GUID: GU0iX8YLJuuJ_I-Wcw9YXe_P4kv5Qi8z
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-27_18,2023-11-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
+ spamscore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0 malwarescore=0
+ suspectscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2311270137
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -63,74 +78,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 1:09=E2=80=AFPM Elad Nachman <enachman@marvell.com>=
- wrote:
->
-> From: Elad Nachman <enachman@marvell.com>
->
-> Add ac5 dts files to the list of maintained Marvell Armada dts files
->
-> Signed-off-by: Elad Nachman <enachman@marvell.com>
-> ---
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index b81da7a36a36..6f863a0c3248 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2339,6 +2339,7 @@ F:        arch/arm/boot/dts/marvell/armada*
->  F:     arch/arm/boot/dts/marvell/kirkwood*
->  F:     arch/arm/configs/mvebu_*_defconfig
->  F:     arch/arm/mach-mvebu/
-> +F:     arch/arm64/boot/dts/marvell/ac5*
->  F:     arch/arm64/boot/dts/marvell/armada*
->  F:     arch/arm64/boot/dts/marvell/cn913*
+Bjorn,
 
-$ ls arch/arm64/boot/dts/marvell/
-ac5-98dx25xx.dtsi                    armada-7040.dtsi
-armada-ap810-ap0.dtsi
-ac5-98dx35xx.dtsi                    armada-7040-mochabin.dts
-armada-ap810-ap0-octa-core.dtsi
-ac5-98dx35xx-rd.dts                  armada-70x0.dtsi
-armada-common.dtsi
-armada-371x.dtsi                     armada-8020.dtsi
-armada-cp110.dtsi
-armada-3720-db.dts                   armada-8040-clearfog-gt-8k.dts
-armada-cp115.dtsi
-armada-3720-eDPU.dts                 armada-8040-db.dts
-armada-cp11x.dtsi
-armada-3720-espressobin.dts          armada-8040.dtsi
-cn9130-crb-A.dts
-armada-3720-espressobin.dtsi         armada-8040-mcbin.dts
-cn9130-crb-B.dts
-armada-3720-espressobin-emmc.dts     armada-8040-mcbin.dtsi
-cn9130-crb.dtsi
-armada-3720-espressobin-ultra.dts    armada-8040-mcbin-singleshot.dts
-cn9130-db-B.dts
-armada-3720-espressobin-v7.dts       armada-8040-puzzle-m801.dts
-cn9130-db.dts
-armada-3720-espressobin-v7-emmc.dts  armada-8080-db.dts
-cn9130-db.dtsi
-armada-3720-gl-mv1000.dts            armada-8080.dtsi
-cn9130.dtsi
-armada-3720-turris-mox.dts           armada-80x0.dtsi
-cn9131-db-B.dts
-armada-3720-uDPU.dts                 armada-ap806.dtsi
-cn9131-db.dts
-armada-3720-uDPU.dtsi                armada-ap806-dual.dtsi
-cn9131-db.dtsi
-armada-372x.dtsi                     armada-ap806-quad.dtsi
-cn9132-db-B.dts
-armada-37xx.dtsi                     armada-ap807.dtsi
-cn9132-db.dts
-armada-7020.dtsi                     armada-ap807-quad.dtsi
-cn9132-db.dtsi
-armada-7040-db.dts                   armada-ap80x.dtsi                 Make=
-file
+Any comments on these patches?
 
-Looks to me like a single entry will do:
+-Mukesh
 
-F: arch/arm64/boot/dts/marvell/
-
-Rob
+On 11/2/2023 10:44 PM, Mukesh Ojha wrote:
+> First two changes changes are needed to enable download mode on
+> chipset like IPQ9574 and IPQ5332 SoCs as for these targets others
+> bits in download mode registers are used for different purpose
+> and earlier kernel code was mistakenly overwrite the other bits.
+> 
+> First three changes(1/4-3/4) are SCM driver specific while 4/4 from
+> pinctrl try to use the introduced API(1/3).
+> 
+> Changes from v9: https://lore.kernel.org/lkml/1698648967-974-1-git-send-email-quic_mojha@quicinc.com/
+>   - Added 3/4 new patch.
+>   - commit subject modification.
+> 
+> Change from v8: https://lore.kernel.org/lkml/1698235506-16993-1-git-send-email-quic_mojha@quicinc.com/
+>   - Introduce enum for dload mode constants as per suggestion from [Elliot].
+>   - Rebased on linux-next.
+> 
+> Changes from v7: https://lore.kernel.org/lkml/1696440338-12561-1-git-send-email-quic_mojha@quicinc.com/
+>   - Rebased it on next-20231025.
+>   - Added reviewed-by tag and take care of comment made about
+>     commit text should be in imperative mode.
+>   - Modified the name of the API to qcom_scm_io_rmw() as per suggestion
+>     made by [Dmitry]
+>   - Moved spinlock inside qcom_scm structure.
+>   - Corrected the patch order as per subsystem SCM first then pinctrl.
+> 
+> Change from minidump-v5(13/17-15/17):https://lore.kernel.org/lkml/1694429639-21484-1-git-send-email-quic_mojha@quicinc.com/ - Removed mistakenly added macros.
+>     https://lore.kernel.org/lkml/9da888dc-401a-4cbb-b616-b4654fa79e35@quicinc.com/
+>   - Added Acked-by tag from Linus.w to 2/3.
+> Change from minidump-v5(13/17-15/17):https://lore.kernel.org/lkml/1694429639-21484-1-git-send-email-quic_mojha@quicinc.com/
+>   - Removed mistakenly added macros.
+>     https://lore.kernel.org/lkml/9da888dc-401a-4cbb-b616-b4654fa79e35@quicinc.com/
+>   - Added Acked-by tag from Linus.w to 2/3.
+> 
+> Changes in v6: https://lore.kernel.org/lkml/1680076012-10785-1-git-send-email-quic_mojha@quicinc.com/
+>   - Rebased it on latest tag available on linux-next
+>   - Added missed Poovendhan sign-off on 15/17 and tested-by tag from
+>     Kathiravan. Thanks to him for testing and reminding me of missing sign-off.
+>   - Addressed comments made on dload mode patch v6 version
+> 
+> Changes in v5: https://lore.kernel.org/lkml/1680017869-22421-1-git-send-email-quic_mojha@quicinc.com/
+>    - Tried to fix the issue reported by kernel test robot
+>      https://lore.kernel.org/lkml/202303280535.acb66sQT-lkp@intel.com/
+> 
+>    - Applied some of the improvement suggested by [Bjorn.andersson]
+> 
+>      . Dropped 'both' instead support full,mini or mini,full for setting download
+>      mode to collect both minidump and full dump.
+> 
+>      . logging improvement.
+> 
+> Changes in v4: https://lore.kernel.org/lkml/1679935281-18445-1-git-send-email-quic_mojha@quicinc.com/
+>    - val should be shifted within the function [srinivas.kandagatla]
+>      i.e new = (old & ~mask) | (val << ffs(mask) - 1);
+>    - Added Acked-by [linus.walleij] on pinctrl change.
+> 
+> Changes in v3 : https://lore.kernel.org/lkml/1679070482-8391-1-git-send-email-quic_mojha@quicinc.com/
+>   - Removed [1] from the series and sent as a separate patch[2], although this series
+>     should be applied on top [2].
+>    [1] https://lore.kernel.org/lkml/1677664555-30191-2-git-send-email-quic_mojha@quicinc.com/
+>    [2] https://lore.kernel.org/lkml/1678979666-551-1-git-send-email-quic_mojha@quicinc.com/
+>   - Introduce new exported symbol on suggestion from [srinivas.kandagatla]
+>   - Use the symbol from drivers/pinctrl/qcom/pinctrl-msm.c.
+>   - Addressed comment given by [dmitry.baryshkov]
+>   - Converted non-standard Originally-by to Signed-off-by.
+> 
+> Changes in v2: https://lore.kernel.org/lkml/1677664555-30191-1-git-send-email-quic_mojha@quicinc.com/
+>   - Addressed comment made by [bjorn]
+>   - Added download mask.
+>   - Passed download mode as parameter
+>   - Accept human accepatable download mode string.
+>   - enable = !!dload_mode
+>   - Shifted module param callback to somewhere down in
+>     the file so that it no longer need to know the
+>     prototype of qcom_scm_set_download_mode()
+>   - updated commit text.
+> 
+> 
+> Mukesh Ojha (4):
+>    firmware: qcom: scm: provide a read-modify-write function
+>    firmware: qcom: scm: Modify only the download bits in TCSR register
+>    firmware: qcom: scm: Rework dload mode availability check
+>    pinctrl: qcom: Use qcom_scm_io_rmw() function
+> 
+>   drivers/firmware/qcom/qcom_scm.c       | 50 ++++++++++++++++++++++++++++------
+>   drivers/pinctrl/qcom/pinctrl-msm.c     | 10 +++----
+>   include/linux/firmware/qcom/qcom_scm.h |  1 +
+>   3 files changed, 47 insertions(+), 14 deletions(-)
+> 
