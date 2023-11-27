@@ -2,157 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0135E7F98F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 06:54:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8227F98F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 06:56:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229878AbjK0Fyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 00:54:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52328 "EHLO
+        id S229651AbjK0F4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 00:56:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjK0Fya (ORCPT
+        with ESMTP id S229480AbjK0F4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 00:54:30 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2CB131
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 21:54:36 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6c4eb5fda3cso3756357b3a.2
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 21:54:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701064475; x=1701669275; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sOXILmKXZldhKWQnQlWNCBsYfucE8pgkM3z8uK/DEzw=;
-        b=NqbYI2bUVmAHejc3pCQ0T1pHUpj9DBHrNj0TxeCzBrWT23HvYWVdohbg9AG/2hfkoV
-         azuvGeWJtmFxZwxpmAmczuMTAwl/gqq7L6h+uUtYTrRK0CnwWNB/DAApr1/fQatF5BqZ
-         bRppd+vksl3ItA7lYrRkVK/wncStqPXhdahgmn/tEMVZo4DEP7Dc4xmL+Bbo70KhT4kK
-         V7UsTFbEGKCZ6dSlA5sU1xRC7Nkm6X6vO7jvEklkfDLTPb5ZXL2GJoTHjA6OCVkiQdvY
-         yjxhmYUYE11owxBiR1Ttx8bR0HwFxVQtBf9CGkqrcCxG2F1gjXbjbG5isD0lLO+jJbhf
-         5IfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701064475; x=1701669275;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sOXILmKXZldhKWQnQlWNCBsYfucE8pgkM3z8uK/DEzw=;
-        b=ITRia1hLlVi8RmK6zLZLnUogTbw8+g0XxWCYXm7wsFyDetUmTfN0d87t4tVCV465Qr
-         rbUuLCq/SL6/dtY9kacXwPMiBbzUuj6tNQZiP/L5RGKab+Ka+t3ZMrPk94VuL5CIhGk3
-         LpVuBdiLDvXL5IxN0UkQywZ7Sk+nl9iqx39ct0DRyamNBl0LqSkDNt28FvsF11d8hvLp
-         rkjjYuUlmLhO9lfdPVRTEWlHO9SlNtC4pmLd+Im/CNFOhIFd6u/4pD9rvSaa9VfvJMdw
-         MlqgP3mQ0fiWdSdXeW7yMwbo8cncY9+2MTqhwjz62HreGiJ3Lnyvvrq4li9o16r+QV7T
-         ctbA==
-X-Gm-Message-State: AOJu0YxYWTwAo+KpMDZ0C0HE9uPo3hwILbl3Itob5YyR666u5GMsAHVz
-        iupKBj80cL2vNaFuU4gK7fs=
-X-Google-Smtp-Source: AGHT+IHyx7SqBKV4eZDV5ZT42b271aGYC7KYgXNe9EH1UiqXskUInT4E8XIHNPcjIJEdM0Tb4s1VtQ==
-X-Received: by 2002:a05:6a00:2d9d:b0:6cb:8ccc:a5cf with SMTP id fb29-20020a056a002d9d00b006cb8ccca5cfmr12497223pfb.18.1701064475563;
-        Sun, 26 Nov 2023 21:54:35 -0800 (PST)
-Received: from barry-desktop.hub ([2407:7000:8942:5500:6f18:c2e2:c23c:9ba2])
-        by smtp.gmail.com with ESMTPSA id t22-20020aa79396000000b006be0fb89ac2sm6435370pfe.197.2023.11.26.21.54.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Nov 2023 21:54:35 -0800 (PST)
-From:   Barry Song <21cnbao@gmail.com>
-X-Google-Original-From: Barry Song <v-songbaohua@oppo.com>
-To:     ryan.roberts@arm.com
-Cc:     akpm@linux-foundation.org, andreyknvl@gmail.com,
-        anshuman.khandual@arm.com, ardb@kernel.org,
-        catalin.marinas@arm.com, david@redhat.com, dvyukov@google.com,
-        glider@google.com, james.morse@arm.com, jhubbard@nvidia.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mark.rutland@arm.com, maz@kernel.org,
-        oliver.upton@linux.dev, ryabinin.a.a@gmail.com,
-        suzuki.poulose@arm.com, vincenzo.frascino@arm.com,
-        wangkefeng.wang@huawei.com, will@kernel.org, willy@infradead.org,
-        yuzenghui@huawei.com, yuzhao@google.com, ziy@nvidia.com
-Subject: Re: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
-Date:   Mon, 27 Nov 2023 18:54:14 +1300
-Message-Id: <20231127055414.9015-1-v-songbaohua@oppo.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231115163018.1303287-2-ryan.roberts@arm.com>
-References: <20231115163018.1303287-2-ryan.roberts@arm.com>
+        Mon, 27 Nov 2023 00:56:07 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB7628F;
+        Sun, 26 Nov 2023 21:56:12 -0800 (PST)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AR5sFHh018175;
+        Mon, 27 Nov 2023 05:55:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=nlI8cWTeXYFoG1oJvZ938PdClUylpLDMRPsO/tEC1cM=;
+ b=GQjpePUqxxgqZwJVWHz0ocJe30he/L4gpdtZY+v3MqtiSVNfWAqrdc08ao+73dAC4D6W
+ kwJ1brNbaNnBDpFn2BWXzFgvZr2g5xK8N/Xz7h3O75pK3rvQSzFY2ZjuNto7cSgLebwv
+ c+c8vLyXPccDgic09MbYt4FRhyYTvydbBZ7NFeJJjwDZePkj8KnT+psk5EY2Q0wFk2Iq
+ tB/xfv5DiuI9NaCr+sXSu2cZj0O5Ckndj9Y18Q3hMH6kNCXWgwk4HoiGi0WutCKulcJe
+ ibz3dvaI9u3TSwkEJcbG62EeXmzKq99/kT4XBvK2MFnC1oGLedRrDqwVH+2ITnzSGXZv wg== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uk9adk9kp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 05:55:47 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AR5tkoW021046
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 05:55:46 GMT
+Received: from [10.216.37.62] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 26 Nov
+ 2023 21:55:38 -0800
+Message-ID: <47c9eb95-ff6a-4432-a7ef-1f3ebf6f593f@quicinc.com>
+Date:   Mon, 27 Nov 2023 11:25:34 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] net: stmmac: update Rx clk divider for 10M SGMII
+Content-Language: en-US
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC:     Vinod Koul <vkoul@kernel.org>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
+        Andrew Halaney <ahalaney@redhat.com>
+References: <20231124050818.1221-1-quic_snehshah@quicinc.com>
+ <ZWBo5EKjkffNOqkQ@shell.armlinux.org.uk>
+From:   Sneh Shah <quic_snehshah@quicinc.com>
+In-Reply-To: <ZWBo5EKjkffNOqkQ@shell.armlinux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: m6oG0PAYAdRoiQlI4f-kSCLeC0qZhmxp
+X-Proofpoint-GUID: m6oG0PAYAdRoiQlI4f-kSCLeC0qZhmxp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-27_03,2023-11-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
+ clxscore=1011 priorityscore=1501 malwarescore=0 lowpriorityscore=0
+ phishscore=0 bulkscore=0 mlxlogscore=933 adultscore=0 impostorscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311270039
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +copy_present_ptes(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
-> +		  pte_t *dst_pte, pte_t *src_pte,
-> +		  unsigned long addr, unsigned long end,
-> +		  int *rss, struct folio **prealloc)
->  {
->  	struct mm_struct *src_mm = src_vma->vm_mm;
->  	unsigned long vm_flags = src_vma->vm_flags;
->  	pte_t pte = ptep_get(src_pte);
->  	struct page *page;
->  	struct folio *folio;
-> +	int nr = 1;
-> +	bool anon;
-> +	bool any_dirty = pte_dirty(pte);
-> +	int i;
->  
->  	page = vm_normal_page(src_vma, addr, pte);
-> -	if (page)
-> +	if (page) {
->  		folio = page_folio(page);
-> -	if (page && folio_test_anon(folio)) {
-> -		/*
-> -		 * If this page may have been pinned by the parent process,
-> -		 * copy the page immediately for the child so that we'll always
-> -		 * guarantee the pinned page won't be randomly replaced in the
-> -		 * future.
-> -		 */
-> -		folio_get(folio);
-> -		if (unlikely(page_try_dup_anon_rmap(page, false, src_vma))) {
-> -			/* Page may be pinned, we have to copy. */
-> -			folio_put(folio);
-> -			return copy_present_page(dst_vma, src_vma, dst_pte, src_pte,
-> -						 addr, rss, prealloc, page);
-> +		anon = folio_test_anon(folio);
-> +		nr = folio_nr_pages_cont_mapped(folio, page, src_pte, addr,
-> +						end, pte, &any_dirty);
+You are right here for GENMASK(15,14) | BIT(10). I am using this to create a field value.I will switch to FIELD_PREP as that seems like a better way to do this.
 
-in case we have a large folio with 16 CONTPTE basepages, and userspace
-do madvise(addr + 4KB * 5, DONTNEED);
+This field programming is required only for 10M speed in for SGMII mode. other speeds are agnostic to this field. Hence we are programming it always when SGMII link comes up in 10M mode. init driver data for ethqos is common for sgmii and rgmii. As this fix is specific to SGMII we can't add this to init driver data.
 
-thus, the 4th basepage of PTE becomes PTE_NONE and folio_nr_pages_cont_mapped()
-will return 15. in this case, we should copy page0~page3 and page5~page15.
-
-but the current code is copying page0~page14, right? unless we are immediatly
-split_folio to basepages in zap_pte_range(), we will have problems?
-
-> +
-> +		for (i = 0; i < nr; i++, page++) {
-> +			if (anon) {
-> +				/*
-> +				 * If this page may have been pinned by the
-> +				 * parent process, copy the page immediately for
-> +				 * the child so that we'll always guarantee the
-> +				 * pinned page won't be randomly replaced in the
-> +				 * future.
-> +				 */
-> +				if (unlikely(page_try_dup_anon_rmap(
-> +						page, false, src_vma))) {
-> +					if (i != 0)
-> +						break;
-> +					/* Page may be pinned, we have to copy. */
-> +					return copy_present_page(
-> +						dst_vma, src_vma, dst_pte,
-> +						src_pte, addr, rss, prealloc,
-> +						page);
-> +				}
-> +				rss[MM_ANONPAGES]++;
-> +				VM_BUG_ON(PageAnonExclusive(page));
-> +			} else {
-> +				page_dup_file_rmap(page, false);
-> +				rss[mm_counter_file(page)]++;
-> +			}
-
-Thanks
-Barry
-
+On 11/24/2023 2:42 PM, Russell King (Oracle) wrote:
+> On Fri, Nov 24, 2023 at 10:38:18AM +0530, Sneh Shah wrote:
+>>  #define RGMII_CONFIG_LOOPBACK_EN		BIT(2)
+>>  #define RGMII_CONFIG_PROG_SWAP			BIT(1)
+>>  #define RGMII_CONFIG_DDR_MODE			BIT(0)
+>> +#define RGMII_CONFIG_SGMII_CLK_DVDR		GENMASK(18, 10)
+> 
+> So you're saying here that this is a 9 bit field...
+> 
+>> @@ -617,6 +618,8 @@ static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
+>>  	case SPEED_10:
+>>  		val |= ETHQOS_MAC_CTRL_PORT_SEL;
+>>  		val &= ~ETHQOS_MAC_CTRL_SPEED_MODE;
+>> +		rgmii_updatel(ethqos, RGMII_CONFIG_SGMII_CLK_DVDR, BIT(10) |
+>> +			      GENMASK(15, 14), RGMII_IO_MACRO_CONFIG);
+> 
+> ... and then you use GENMASK(15,14) | BIT(10) here to set bits in that
+> bitfield. If there are multiple bitfields, then these should be defined
+> separately and the mask built up.
+> 
+> I suspect that they aren't, and you're using this to generate a _value_
+> that has bits 5, 4, and 0 set for something that really takes a _value_.
+> So, FIELD_PREP(RGMII_CONFIG_SGMII_CLK_DVDR, 0x31) or
+> FIELD_PREP(RGMII_CONFIG_SGMII_CLK_DVDR, 49) would be entirely correct
+> here.
+> 
+> The next concern I have is that you're only doing this for SPEED_10.
+> If it needs to be programmed for SPEED_10 to work, and not any of the
+> other speeds, isn't this something that can be done at initialisation
+> time? If it has to be done depending on the speed, then don't you need
+> to do this for each speed with an appropriate value?
+> 
