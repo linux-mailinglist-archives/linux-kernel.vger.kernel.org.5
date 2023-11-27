@@ -2,60 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD1D7F9E67
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:19:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 213377F9E63
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 12:18:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233122AbjK0LTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 06:19:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43716 "EHLO
+        id S233054AbjK0LR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 06:17:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233095AbjK0LTp (ORCPT
+        with ESMTP id S233122AbjK0LRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 06:19:45 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6AD135
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 03:19:51 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1r7ZeO-0000ed-Kg; Mon, 27 Nov 2023 12:19:40 +0100
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <sha@pengutronix.de>)
-        id 1r7ZeL-00BvgR-89; Mon, 27 Nov 2023 12:19:37 +0100
-Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1r7ZeL-00459o-52; Mon, 27 Nov 2023 12:19:37 +0100
-Date:   Mon, 27 Nov 2023 12:19:37 +0100
-From:   Sascha Hauer <s.hauer@pengutronix.de>
-To:     Andy Yan <andyshrk@163.com>
-Cc:     heiko@sntech.de, hjc@rock-chips.com,
-        dri-devel@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
-        kever.yang@rock-chips.com, chris.obbard@collabora.com,
-        Andy Yan <andy.yan@rock-chips.com>
-Subject: Re: [PATCH v2 10/12] drm/rockchip: vop2: Add support for rk3588
-Message-ID: <20231127111937.GW3359458@pengutronix.de>
-References: <20231122125316.3454268-1-andyshrk@163.com>
- <20231122125544.3454918-1-andyshrk@163.com>
+        Mon, 27 Nov 2023 06:17:53 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D3B6185
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 03:17:59 -0800 (PST)
+Received: from dggpemm100020.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Sf32g6Y5CzWh8q;
+        Mon, 27 Nov 2023 19:17:15 +0800 (CST)
+Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
+ dggpemm100020.china.huawei.com (7.185.36.32) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 27 Nov 2023 19:17:56 +0800
+Received: from huawei.com (10.175.103.91) by dggpemm500007.china.huawei.com
+ (7.185.36.183) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 27 Nov
+ 2023 19:17:56 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <mingo@redhat.com>, <peterz@infradead.org>,
+        <juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
+        <dietmar.eggemann@arm.com>, <rostedt@goodmis.org>,
+        <bsegall@google.com>, <mgorman@suse.de>, <bristot@redhat.com>,
+        <vschneid@redhat.com>, <tglx@linutronix.de>, <yu.c.chen@intel.com>,
+        <tim.c.chen@linux.intel.com>, <yangyingliang@huawei.com>
+Subject: [PATCH v2] sched/smt: fix unbalance sched_smt_present dec/inc
+Date:   Mon, 27 Nov 2023 19:22:08 +0800
+Message-ID: <20231127112208.1309105-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231122125544.3454918-1-andyshrk@163.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500007.china.huawei.com (7.185.36.183)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -64,61 +55,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+I got the following warn report while doing stress test:
 
-Looks good overall, two small things inside.
+jump label: negative count!
+WARNING: CPU: 3 PID: 38 at kernel/jump_label.c:263 static_key_slow_try_dec+0x9d/0xb0
+Call Trace:
+ <TASK>
+ __static_key_slow_dec_cpuslocked+0x16/0x70
+ sched_cpu_deactivate+0x26e/0x2a0
+ cpuhp_invoke_callback+0x3ad/0x10d0
+ cpuhp_thread_fun+0x3f5/0x680
+ smpboot_thread_fn+0x56d/0x8d0
+ kthread+0x309/0x400
+ ret_from_fork+0x41/0x70
+ ret_from_fork_asm+0x1b/0x30
+ </TASK>
 
-On Wed, Nov 22, 2023 at 08:55:44PM +0800, Andy Yan wrote:
->  
-> +#define vop2_output_if_is_hdmi(x)	(x == ROCKCHIP_VOP2_EP_HDMI0 || x == ROCKCHIP_VOP2_EP_HDMI1)
-> +#define vop2_output_if_is_dp(x)		(x == ROCKCHIP_VOP2_EP_DP0 || x == ROCKCHIP_VOP2_EP_DP1)
-> +#define vop2_output_if_is_edp(x)	(x == ROCKCHIP_VOP2_EP_EDP0 || x == ROCKCHIP_VOP2_EP_EDP1)
-> +#define vop2_output_if_is_mipi(x)	(x == ROCKCHIP_VOP2_EP_MIPI0 || x == ROCKCHIP_VOP2_EP_MIPI1)
-> +#define vop2_output_if_is_lvds(x)	(x == ROCKCHIP_VOP2_EP_LVDS0 || x == ROCKCHIP_VOP2_EP_LVDS1)
-> +#define vop2_output_if_is_dpi(x)	(x == ROCKCHIP_VOP2_EP_RGB0)
+Because when cpuset_cpu_inactive() fails in sched_cpu_deactivate(),
+the cpu offline failed, but sched_smt_present is decremented before
+calling sched_cpu_deactivate(), it leads to unbalanced dec/inc, so
+fix it by incrementing sched_smt_present in the error path.
 
-Not that it matters in practice here, but you should add braces around
-the x argument in the macros usage, i.e. ((x) == ROCKCHIP_VOP2_EP_RGB0)
+Fixes: c5511d03ec09 ("sched/smt: Make sched_smt_present track topology")
+Reviewed-by: Chen Yu <yu.c.chen@intel.com>
+Reviewed-by: Tim Chen <tim.c.chen@linux.intel.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+v1 -> v2:
+  Fix typo in commit log.
+---
+ kernel/sched/core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> +static unsigned long rk3588_set_intf_mux(struct vop2_video_port *vp, int id, u32 polflags)
-> +{
-> +	struct vop2 *vop2 = vp->vop2;
-> +	int dclk_core_div, dclk_out_div, if_pixclk_div, if_dclk_div;
-> +	unsigned long clock;
-> +	u32 die, dip, div, vp_clk_div, val;
-> +
-> +	clock = rk3588_calc_cru_cfg(vp, id, &dclk_core_div, &dclk_out_div,
-> +				    &if_pixclk_div, &if_dclk_div);
-> +	if (!clock)
-> +		return 0;
-> +
-> +	vp_clk_div = FIELD_PREP(RK3588_VP_CLK_CTRL__DCLK_CORE_DIV, dclk_core_div);
-> +	vp_clk_div |= FIELD_PREP(RK3588_VP_CLK_CTRL__DCLK_OUT_DIV, dclk_out_div);
-> +
-> +	die = vop2_readl(vop2, RK3568_DSP_IF_EN);
-> +	dip = vop2_readl(vop2, RK3568_DSP_IF_POL);
-> +	div = vop2_readl(vop2, RK3568_DSP_IF_CTRL);
-> +
-> +	switch (id) {
-> +	case ROCKCHIP_VOP2_EP_HDMI0:
-> +		div |= FIELD_PREP(RK3588_DSP_IF_EDP_HDMI0_DCLK_DIV, if_dclk_div);
-
-you should clear the bits of a mask before setting them again. The same
-goes for several other bits modified in this switch/case.
-
-> +		div |= FIELD_PREP(RK3588_DSP_IF_EDP_HDMI0_PCLK_DIV, if_pixclk_div);
-> +		die &= ~RK3588_SYS_DSP_INFACE_EN_EDP_HDMI0_MUX;
-> +		die |= RK3588_SYS_DSP_INFACE_EN_HDMI0 |
-> +			    FIELD_PREP(RK3588_SYS_DSP_INFACE_EN_EDP_HDMI0_MUX, vp->id);
-> +		val = rk3588_get_hdmi_pol(polflags);
-> +		regmap_write(vop2->vop_grf, RK3588_GRF_VOP_CON2, HIWORD_UPDATE(1, 1, 1));
-> +		regmap_write(vop2->vo1_grf, RK3588_GRF_VO1_CON0, HIWORD_UPDATE(val, 6, 5));
-> +		break;
-
-Sascha
-
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index a708d225c28e..477b9500c8b9 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -9711,6 +9711,10 @@ int sched_cpu_deactivate(unsigned int cpu)
+ 	sched_update_numa(cpu, false);
+ 	ret = cpuset_cpu_inactive(cpu);
+ 	if (ret) {
++#ifdef CONFIG_SCHED_SMT
++		if (cpumask_weight(cpu_smt_mask(cpu)) == 2)
++			static_branch_inc_cpuslocked(&sched_smt_present);
++#endif
+ 		balance_push_set(cpu, false);
+ 		set_cpu_active(cpu, true);
+ 		sched_update_numa(cpu, true);
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.25.1
+
