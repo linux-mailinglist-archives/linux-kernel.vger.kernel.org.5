@@ -2,144 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8716C7FABC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 21:42:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8AE7FAC04
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 21:50:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233324AbjK0Ulw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 15:41:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51354 "EHLO
+        id S233372AbjK0UuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 15:50:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231601AbjK0Ult (ORCPT
+        with ESMTP id S231757AbjK0UuW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 15:41:49 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EEDCD60;
-        Mon, 27 Nov 2023 12:41:55 -0800 (PST)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARJl5x0011147;
-        Mon, 27 Nov 2023 20:41:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=33k6fG7CN8caIQqp5re35EClf3g84aCx79/bsayWk6Y=;
- b=m4OwfOd0wlHGrvPq9yqK8s+YZQvbOCvSfMDn0N/8g4xpZxWQnwhHRoUVum1q+42B2QiU
- 0j9NsyY9eneILDBYEKakLHz/T868hngsVDQRIiIPr4TPG82qAOBwHZA75FZ31OBCKZqB
- N5mInXNWjDWwAGQcBcr71hHQvE2J2MQPN3LjIu1bk/Um1GAKC+HyOPG5GvM9GjVzySmD
- Yo+sdxRnwplYdMDqFeu/2co1bs1RNCyJgsLH+4/meX2w5OAfDOVj8ME7IutcIw+UHumw
- z6VUSPQ+THQxrSdf80UU+whrWSs2HAHG8UyU1R+ZURcXAd9rApivUdGQ7n365Q9oepSD Og== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3un0xetax9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 20:41:48 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ARJofA7021579;
-        Mon, 27 Nov 2023 20:41:48 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3un0xetawx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 20:41:48 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARJcpLI001736;
-        Mon, 27 Nov 2023 20:41:47 GMT
-Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ukwy1jqr3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 20:41:47 +0000
-Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
-        by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ARKfkle16450228
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 27 Nov 2023 20:41:47 GMT
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9C2EE58054;
-        Mon, 27 Nov 2023 20:41:46 +0000 (GMT)
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9AC4958045;
-        Mon, 27 Nov 2023 20:41:45 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 27 Nov 2023 20:41:45 +0000 (GMT)
-Message-ID: <ba84a7c1-f397-45f3-b76c-7faed89a005d@linux.ibm.com>
-Date:   Mon, 27 Nov 2023 15:41:45 -0500
+        Mon, 27 Nov 2023 15:50:22 -0500
+X-Greylist: delayed 488 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 27 Nov 2023 12:50:27 PST
+Received: from letterbox.kde.org (letterbox.kde.org [46.43.1.242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57FA19D;
+        Mon, 27 Nov 2023 12:50:27 -0800 (PST)
+Received: from vertex.localdomain (pool-173-49-113-140.phlapa.fios.verizon.net [173.49.113.140])
+        (Authenticated sender: zack)
+        by letterbox.kde.org (Postfix) with ESMTPSA id 5A23D32F798;
+        Mon, 27 Nov 2023 20:42:15 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kde.org; s=users;
+        t=1701117736; bh=wYChciMP/u7b3bVBtF5SUMzfxSiI5SlS5MrqMpbiQK8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LwMZNHjPKu3gQGUs2zBpToliB1ZzYCMuL34W2376Ck6cOVyI7BnjmkZLR8+7sFdJm
+         p0igcbnr2XaZs9e1C0xn9cljMXxomKf5+gzZwVGu+pNPGxTRfTCv2KAt8R+w211UUJ
+         kdtXbq8ylXxg8zp7lP3Cp1Byh9Tv0QsKCG3/QbqrhkC9rGvfGYDUT/EP/yTDHVO4FS
+         hWW6MiNpAMkHLIsnZjdQsmP+dJmUH26o/uR15Vc/Q7uysUC28Yt4N7wR/27GayWwD+
+         OaibKxWZA/5lrDJrP8/CqkH8Ay85xAw/sIJ3PGDlVMmJSepHXER1DZE98GJwFUqggF
+         0hjpDJUqqHUVQ==
+From:   Zack Rusin <zack@kde.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Zack Rusin <zackr@vmware.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        VMware Graphics Reviewers 
+        <linux-graphics-maintainer@vmware.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Raul Rangel <rrangel@chromium.org>,
+        linux-input@vger.kernel.org, stable@vger.kernel.org
+Subject: [PATCH] input/vmmouse: Fix device name copies
+Date:   Mon, 27 Nov 2023 15:42:06 -0500
+Message-Id: <20231127204206.3593559-1-zack@kde.org>
+X-Mailer: git-send-email 2.39.2
+Reply-To: Zack Rusin <zackr@vmware.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 4/8] tpm: Update struct tpm_buf documentation comments
-Content-Language: en-US
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        linux-integrity@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        William Roberts <bill.c.roberts@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>
-References: <20231124020237.27116-1-jarkko@kernel.org>
- <20231124020237.27116-5-jarkko@kernel.org>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <20231124020237.27116-5-jarkko@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: aiuvupNQQzQ38zcO7U2FAyRSc5dYlS83
-X-Proofpoint-GUID: 0JPz4-f2rM993IWewFRLLRQXDmE1qw0C
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-27_19,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
- lowpriorityscore=0 mlxlogscore=999 suspectscore=0 impostorscore=0
- spamscore=0 bulkscore=0 priorityscore=1501 adultscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311270143
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Zack Rusin <zackr@vmware.com>
 
+Make sure vmmouse_data::phys can hold serio::phys (which is 32 bytes)
+plus an extra string, extend it to 64.
 
-On 11/23/23 21:02, Jarkko Sakkinen wrote:
-> Remove deprecated portions and document enum values.
-> 
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> ---
-> v1 [2023-11-21]: A new patch.
-> v2 [2023-11-24]: Refined the commit message a bit.
-> ---
->   include/linux/tpm.h | 9 ++++-----
->   1 file changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/linux/tpm.h b/include/linux/tpm.h
-> index bb0e8718a432..0a8c1351adc2 100644
-> --- a/include/linux/tpm.h
-> +++ b/include/linux/tpm.h
-> @@ -297,15 +297,14 @@ struct tpm_header {
->   	};
->   } __packed;
->   
-> -/* A string buffer type for constructing TPM commands. This is based on the
-> - * ideas of string buffer code in security/keys/trusted.h but is heap based
-> - * in order to keep the stack usage minimal.
-> - */
-> -
->   enum tpm_buf_flags {
-> +	/* the capacity exceeded: */
+Fixes gcc13 warnings:
+drivers/input/mouse/vmmouse.c: In function ‘vmmouse_init’:
+drivers/input/mouse/vmmouse.c:455:53: warning: ‘/input1’ directive output may be truncated writing 7 bytes into a region of size between 1 and 32 [-Wformat-truncation=]
+  455 |         snprintf(priv->phys, sizeof(priv->phys), "%s/input1",
+      |                                                     ^~~~~~~
+drivers/input/mouse/vmmouse.c:455:9: note: ‘snprintf’ output between 8 and 39 bytes into a destination of size 32
+  455 |         snprintf(priv->phys, sizeof(priv->phys), "%s/input1",
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  456 |                  psmouse->ps2dev.serio->phys);
+      |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-was exceeded
+Signed-off-by: Zack Rusin <zackr@vmware.com>
+Fixes: 8b8be51b4fd3 ("Input: add vmmouse driver")
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Raul Rangel <rrangel@chromium.org>
+Cc: linux-input@vger.kernel.org
+Cc: <stable@vger.kernel.org> # v4.1+
+---
+ drivers/input/mouse/vmmouse.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->   	TPM_BUF_OVERFLOW	= BIT(0),
->   };
->   
-> +/*
-> + * A string buffer type for constructing TPM commands.
-> + */
->   struct tpm_buf {
->   	unsigned int flags;
->   	u8 *data;
+diff --git a/drivers/input/mouse/vmmouse.c b/drivers/input/mouse/vmmouse.c
+index ea9eff7c8099..7248cada4c8c 100644
+--- a/drivers/input/mouse/vmmouse.c
++++ b/drivers/input/mouse/vmmouse.c
+@@ -72,7 +72,7 @@
+  */
+ struct vmmouse_data {
+ 	struct input_dev *abs_dev;
+-	char phys[32];
++	char phys[64];
+ 	char dev_name[128];
+ };
+ 
+-- 
+2.39.2
 
-Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
