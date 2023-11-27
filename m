@@ -2,67 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F78F7FA77F
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:06:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FAF97FA7C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343496AbjK0RGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 12:06:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57082 "EHLO
+        id S1343505AbjK0RNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 12:13:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343820AbjK0RGV (ORCPT
+        with ESMTP id S234864AbjK0RNT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 12:06:21 -0500
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE7EB3C16;
-        Mon, 27 Nov 2023 09:02:23 -0800 (PST)
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6ce2b6b3cb6so2739406a34.3;
-        Mon, 27 Nov 2023 09:02:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701104543; x=1701709343;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=egdCKcTL5F1nxl2XwDwu8DS/+z9OxCWFUwjLPJGVEYM=;
-        b=urHBs7tqGEgjp5TNs8Qa41tId4Fco5Y8T4iJs1dYSx30hJ1duG9k+k28ZrDBi7ofwd
-         hsXtTmrHrOfMAgVLegk4/12Y4+R1+XRmYH/rYW9gt6VG1WLqZLoHE2OoXjbKBWyTR8B5
-         FCCyFIkn5mgALEuY3MoCmrLSptDKBt0bfbbLs+0aXQ+8wylZbxC29HDy7FBiaiZo5Mhq
-         Biuz+MONScMgPud3qt7d7bQGTxvzlDYuPNn8nHRcvJ2988Z7yl9Tm5aUGSv5F/BFTQgu
-         5bj08/r+YshEmVYc2nrYqQ6DLaPj12OwH/wSAqmCSXqXzQs/MGWdwOuzstZVVYY8kWN5
-         CW0Q==
-X-Gm-Message-State: AOJu0YzwORhZKnTfcmW8Cq7mYWKHwsBMdmdk6MasKh3pxtEzNan+9Puo
-        ys31yB0jpJEF//3Oi2E7ZrDJBXXMyA==
-X-Google-Smtp-Source: AGHT+IGu7+X9A7HDeL5cLIqKrFNpUqAS8XGhG7FU7efpiBVxtKmwRfmvKUAtyTz1NNkDSJZWu0usIA==
-X-Received: by 2002:a9d:6944:0:b0:6d8:11f1:de4d with SMTP id p4-20020a9d6944000000b006d811f1de4dmr8299962oto.32.1701104542837;
-        Mon, 27 Nov 2023 09:02:22 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id i14-20020a4aab0e000000b0057327cecdd8sm1529024oon.10.2023.11.27.09.02.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 09:02:22 -0800 (PST)
-Received: (nullmailer pid 1424446 invoked by uid 1000);
-        Mon, 27 Nov 2023 17:02:20 -0000
-Date:   Mon, 27 Nov 2023 11:02:20 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Rohit Agarwal <quic_rohiagar@quicinc.com>
-Cc:     tglx@linutronix.de, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org,
-        Conor Dooley <conor.dooley@microchip.com>,
-        andersson@kernel.org, conor+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, agross@kernel.org,
-        konrad.dybcio@linaro.org
-Subject: Re: [PATCH v5] dt-bindings: interrupt-controller: Add SDX75 PDC
- compatible
-Message-ID: <170110453222.1422827.15955753691131343417.robh@kernel.org>
-References: <20231117082829.609882-1-quic_rohiagar@quicinc.com>
+        Mon, 27 Nov 2023 12:13:19 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A8B30C7;
+        Mon, 27 Nov 2023 09:05:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701104703; x=1732640703;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=q0Cs8/Z2gWXTtybRmRR8o0521aCJxHfPoBNVT4y79Tk=;
+  b=JmLF1v+eyK3sPnlZoX7bUa6eSIgALzI9incLDzP8xeTG+RoJEnpdPa1+
+   Hl/JPJ75eSDGCXPY0pxw4ArKftDZrhVplPcU/7C6pcWKXSU9sEN118+fw
+   I7DiRNZvS0qrZjui8t38o2RgHRocVTpq/rqRTnbbirBKa0I9MJJyJZ7Ui
+   Hxbi0n7ZkZxYrJUM8MV343rvht37ASx1MkRD3k+A9grSBksuySio3rkhn
+   tg4xUfNGcbN6IzQCMP24nArp+8TMfxtrxK06TbU8QWagrKltj/IzYTukl
+   rlNcZJ4O367ahRUjLpYr7De0C8V4bYTNRI/LKKhjTjzPCg+a/4LXIu3lT
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="392495108"
+X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
+   d="scan'208";a="392495108"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 09:05:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="771998345"
+X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
+   d="scan'208";a="771998345"
+Received: from thomasob-mobl3.amr.corp.intel.com (HELO [10.255.231.114]) ([10.255.231.114])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 09:05:02 -0800
+Message-ID: <beb0b52d-7136-43b2-a4d0-ce7114c772e4@linux.intel.com>
+Date:   Mon, 27 Nov 2023 09:05:02 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231117082829.609882-1-quic_rohiagar@quicinc.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: Race b/w pciehp and FirmwareFirst DPC->EDR flow - Reg
+Content-Language: en-US
+To:     Vidya Sagar <vidyas@nvidia.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Lukas Wunner <lukas@wunner.de>,
+        "kbusch@kernel.org" <kbusch@kernel.org>
+Cc:     Vikram Sethi <vsethi@nvidia.com>,
+        Krishna Thota <kthota@nvidia.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        sagar.tv@gmail.com
+References: <BN8PR12MB290002441CA3C24D1FA742D2B8AEA@BN8PR12MB2900.namprd12.prod.outlook.com>
+ <529acc15-1932-4785-9edf-c5327db64ab1@nvidia.com>
+ <a73a2156-124b-47f7-b545-6751f6e87d54@nvidia.com>
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <a73a2156-124b-47f7-b545-6751f6e87d54@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -70,39 +74,60 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Fri, 17 Nov 2023 13:58:29 +0530, Rohit Agarwal wrote:
-> Add device tree bindings for PDC on SDX75 SOC.
-> 
-> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> ---
-> 
-> Hi,
-> 
-> Changes in v5:
->  - Rebased on 6.7-rc1
->  - Removed all the applied patches from this series.
->  - Link to v4: https://lore.kernel.org/all/1686311438-24177-1-git-send-email-quic_rohiagar@quicinc.com/
-> 
-> Changes in v4:
->  - Addressed some of the dt bindings check mentioned by Krzysztof.
-> 
-> Changes in v3:
->  - Clubbed all the dt node into a single patch as suggested by Krzysztof.
->  - Removed the applied patch.
->  - Addressed some comments from Konrad and Dmitry.
-> 
-> Changes in v2:
->  - Added the CPUFreq support patch.
->  - Collected the Acked by tags.
->  - Addressed some minor comments from Konrad.
+
+On 11/27/2023 6:43 AM, Vidya Sagar wrote:
+> Hi Bjorn and others,
+> Could you please share your thoughts on this?
 > 
 > Thanks,
-> Rohit.
+> Vidya Sagar
 > 
->  .../devicetree/bindings/interrupt-controller/qcom,pdc.yaml       | 1 +
->  1 file changed, 1 insertion(+)
-> 
+> On 11/10/2023 10:31 PM, Vidya Sagar wrote:
+>> There was a typo. Corrected it.
+>>
+>> s/If DPC->EDR flow checks DPC also/If DPC->EDR flow checks 'PD Change' also
+>>
+>> On 11/10/2023 6:30 PM, Vidya Sagar wrote:
+>>> Hi folks,
+>>> Here are the platform details.
+>>> - System with a Firmware First approach for both AER and DPC
+>>> - CPERs are sent to the OS for the AER events
+>>> - DPC is notified to the OS through EDR mechanism
+>>> - System doesn't have support for in-band PD and supports only OOB PD where writing to a private register would set the PD state
+>>> - System has this design where PD state gets cleared whenever there is a link down (without even writing to the private register)
+>>>
 
-Applied, thanks!
+Is clearing the PD state when link goes down normal? Is this a bug in the hardware?
 
+>>> In this system, if the root port has to experience a DPC because of any right reasons (say SW trigger of DPC for time being), I'm observing the following flow which is causing a race.
+>>> 1. Since DPC brings the link down, there is a DLLSC and an MSI is sent to the OS hence PCIe HP ISR is invoked.
+>>> 2. ISR then takes stock of the Slot_Status register to see what all events caused the MSI generation.
+>>> 3. It sees both DLLSC and PDC bits getting set.
+>>> 4. PDC is set because of the aforementioned hardware design where for every link down, PD state gets cleared and since this is considered as a change in the PD state, PDC also gets set.
+>>> 5. PCIe HP ISR flow transitions to the PCIe HP IST (interrupt thread/bottom half) and waits for the DPC_EDR to complete (because DLLSC is one of the events)
+>>> 6. Parallel to the PCIe HP ISR/IST, DPC interrupt is raised to the firmware and that would then send an EDR event to the OS. Firmware also sets the PD state to '1' before that, as the endpoint device is still available.
+>>> 7. Firmware programming of the private register to set the PD state raises second interrupt and PCIe HP ISR takes stock of the events and this time it is only the PDC and not DLLSC. ISR sends a wake to the IST, but since there is an IST in progress already, nothing much happens at this point.
+>>> 8. Once the DPC is completed and link comes back up again, DPC framework asks the endpoint drivers to handle it by calling the 'pci_error_handlers' callabacks registered by the endpoint device drivers.
+>>> 9. The PCIe HP IST (of the very first MSI) resumes after receiving the completion from the DPC framework saying that DPC recovery is successful.
+>>> 10. Since PDC (Presence Detect Change) bit is also set for the first interrupt, IST attempts to remove the devices (as part of pciehp_handle_presence_or_link_change())
+>>>
+>>> At this point, there is a race between the device driver that is trying to work with the device (through pci_error_handlers callback) and the IST that is trying to remove the device.
+
+IIUC, this step is after DPC recovery, which means the device is up and error_handlers are not used anymore, right? Why do you say there is a race between IST and error handler?
+
+>>> To be fair to pciehp_handle_presence_or_link_change(), after removing the devices, it checks for the link-up/PD being '1' and scans the devices again if the device is still available. But unfortunately, IST is deadlocked (with the device driver) while removing the devices itself and won't go to the next step.
+>>>
+>>> The rationale given in the form of a comment in pciehp_handle_presence_or_link_change() for removing the devices first (without checking PD/link-up) and adding them back after checking link-up/PD is that, since there is a change in PD, the new link-up need not be with the same old device rather it could be with a different device. So, it justifies in removing the existing devices and then scanning for new ones. But this is causing deadlock with the already initiated DPC recovery process.
+>>>
+>>> I see two ways to avoid the deadlock in this scenario.
+>>> 1. When PCIe HP IST is looking at both DLLSC and PDC, why should DPC->EDR flow look at only DLLSC and not DPC? If DPC->EDR flow checks 'PD Change' also (along with DLL) and declares that the DPC recovery can't happen (as there could be a change of device) hence returning DPC recovery failure, then, the device driver's pci_error_handlers callbacks won't be called and there won't be any deadlock.
+>>> 2. Check for the possibility of a common lock so that PCIe HP IST and device driver's pci_error_handlers callbacks don't race.
+>>>
+>>> Let me know your comments on this.
+>>>
+>>> Thanks,
+>>> Vidya Sagar
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
