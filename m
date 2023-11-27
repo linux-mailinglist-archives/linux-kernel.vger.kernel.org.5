@@ -2,212 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C43E7FADB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 23:47:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52CE57FADAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 23:47:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233674AbjK0Wqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 17:46:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56838 "EHLO
+        id S233640AbjK0Wqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 17:46:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233360AbjK0Wqw (ORCPT
+        with ESMTP id S233360AbjK0Wqs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 17:46:52 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0841E136
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:46:58 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50aabfa1b75so6834209e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 14:46:57 -0800 (PST)
+        Mon, 27 Nov 2023 17:46:48 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499BF137;
+        Mon, 27 Nov 2023 14:46:52 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6c320a821c4so4128515b3a.2;
+        Mon, 27 Nov 2023 14:46:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf.com; s=google; t=1701125216; x=1701730016; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1701125212; x=1701730012; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=I6h9xJ1VXHv+qvv2KV0aJYsRErzcVo7sfauMJWo2Gqg=;
-        b=ISMjksLtODNUpoBIB4lu0wYzBwciHOhp7Yxcr+YgscVmxNrtY6kUrFrRpzNQ3Q19U1
-         HYwEMVCc8pAqiusxgj4e6RzQ9Ki8dX68aOlNA4Is6uLQtb7LpduOXrPm3ieaglURSsiG
-         tyA/Gk0jGjDniwNPmEOPvxXsERknd5VB7h3fcy6YPBmSwMcCSMlaR54n/UrSqQVh5WFt
-         hcy50Lj1elLnWNGRhOXu3dj0vdCDb7ODmFgUqK8F/n1GCosEkrGPjXRdBSSiYgi71t6T
-         WylB3euWGiLumOcxB4IwwLSjEs1D3ZHUGeyyq9h7MYiNQ5fIhWhr4dvlrdQ6TiN6nKE8
-         Cvzg==
+        bh=1oCTGiSWgB9NsXiyG8nsZcknofook+2izslwvO0IvTU=;
+        b=jzCS4G0sHsouh0ifFdwoiS3GlA2BszjlZHS3kCWqxN+eQSTkHaEQ9PpIPviCQzzTIg
+         qUYBXHTJW0gshTMQQMOJz9QVwfFmgtYMldKODHPY9MFAP/Rt8bPtGJ08IABkvlb63LWF
+         oIY7j7Rj/UvlFeoyim3THydk7Nh7MRxrrsfexmB3s6PcizhdpS5R7rD5/6zleNVoIBrT
+         zTjp4DpEszp20UQuckI8mE+/yEsrLm1d+qDwh01RB4CUgOraOxE5P7IIuXBfOqNlz882
+         jIouhs0PJNx+3zlhvtnzetvKzuMVmR3IARHNYxFrQmEARdcWZuntJAPLO1oit33D8r6S
+         7JUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701125216; x=1701730016;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1701125212; x=1701730012;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=I6h9xJ1VXHv+qvv2KV0aJYsRErzcVo7sfauMJWo2Gqg=;
-        b=od1CoFzI4yUL0axSir2sLzVAY0cAWX90yMq/2TdM8QF6R/i4EOWNumYW2H+YSoAuRH
-         mzmwEOLEOOLs0MXDDw7UpbLI3mDcjyng2koC570IDYGQyDDBthBhFHZpGpKskMRDkJkf
-         1fJLQpvciewTNWVZ3XLs6yXI9sAHJACGUczWY2tkCd/ssKQhtywR4t8qrLkO4U/CQWeH
-         gO1g77H702hAn3Np0NWn67AQ2LSNAOw5SnqQNOdI5v+8i5byleHV8tl1NgEMgAdhrN8e
-         exRThmajaEWo5m5X3pK6WEYq/+AqeHeko67PQWuHBYvnsX90p2dLPnOZrxjf8vM32g0b
-         WvFA==
-X-Gm-Message-State: AOJu0YzbiQc/UD2oRj3uzIopKlkpEGwbYMFwMa4PenzYWkQ/G/Jd9gsP
-        T1XGJHJKgjJuFWmOpeBSDSptWb5Ya7sJvz/HOXOHyjZBcviFwvg=
-X-Google-Smtp-Source: AGHT+IEHlofYKiVFRD+a0QshyTP4Axy7hN3IFZ8/uWujZWXRGn5gtaru88msHJ7/6QtORF8Eyb/iKgPyv/srktguhiI=
-X-Received: by 2002:a05:6512:3b0a:b0:509:4b78:69b5 with SMTP id
- f10-20020a0565123b0a00b005094b7869b5mr7567693lfv.36.1701125216093; Mon, 27
- Nov 2023 14:46:56 -0800 (PST)
+        bh=1oCTGiSWgB9NsXiyG8nsZcknofook+2izslwvO0IvTU=;
+        b=X8RXYdE+0gaqHvNZMXaEB+sBOzSUt111ehoKPLmAR0iwn0qMFurKZQQsM0YlIEOb8W
+         dYFZaS6TqOuA6yKNKQO6TFdI6rrs8nOMOTKPv7IT2Ba/p5HxrbyCqbsMtrxWCrdBP/4d
+         7vAP24K0aYTczhGNJzEotuGTZGwKlyHAO98cwAGGvUm1hN0mFBFHzY1+HbHyQjO8InWq
+         WRaNAK4Qro/ZTDYB77coAq/2hsXsJmjoYzhZjUPXn0C7AQT8AvsxUfyRZJP0HBdSioml
+         LwN+N71q7f8YWPaXLdN+Hm8LNf9jvF9Du9WBdvbyr1MwbmD63ZIAPc+uGuDdpzajPdLv
+         k6Yg==
+X-Gm-Message-State: AOJu0YzocVgzfKMqWQgseYZyTBAseV5NY/ljNeBxxDA8gWPv/VCbNGbe
+        TUtCGAZwZ3TfLZuJDPlA9QZd9rLt43I=
+X-Google-Smtp-Source: AGHT+IGKeqtz/gytGYQg7Gh1zFzW6bXH0N87MgWSyLX0d4AxerflPbMRaTGFF8CtCxibds40VZi0pw==
+X-Received: by 2002:a05:6a00:2d90:b0:6c9:9e11:859d with SMTP id fb16-20020a056a002d9000b006c99e11859dmr14050165pfb.1.1701125211462;
+        Mon, 27 Nov 2023 14:46:51 -0800 (PST)
+Received: from localhost (fwdproxy-prn-023.fbsv.net. [2a03:2880:ff:17::face:b00c])
+        by smtp.gmail.com with ESMTPSA id h5-20020a056a00218500b00690ca67d429sm7615145pfi.100.2023.11.27.14.46.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 14:46:51 -0800 (PST)
+From:   Nhat Pham <nphamcs@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     hannes@cmpxchg.org, cerasuolodomenico@gmail.com,
+        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
+        vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
+        kernel-team@meta.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org
+Subject: [PATCH v6 1/6] list_lru: allows explicit memcg and NUMA node selection (fix)
+Date:   Mon, 27 Nov 2023 14:46:50 -0800
+Message-Id: <20231127224650.2636224-1-nphamcs@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231127193703.1980089-2-nphamcs@gmail.com>
+References: <20231127193703.1980089-2-nphamcs@gmail.com>
 MIME-Version: 1.0
-References: <20231103131011.1316396-1-lb@semihalf.com> <20231103131011.1316396-8-lb@semihalf.com>
- <CAJfuBxzWSyw-Xp3k5WzOexbRZFydCUp_nX4A_BZs8Gq0OE2U7Q@mail.gmail.com>
- <CAK8ByeL=A6xC=q8Ah4im4JQGUcN_NZNg10pSezBPCeKW9J_DeQ@mail.gmail.com>
- <CAJfuBxzH=G++Qs86OGUFTC2WuBZh8JZ4y7a7KcVi+7R8L3N7Fw@mail.gmail.com>
- <CAK8Bye+uX38zDyGdd4GbsYWfPACNiaiBW92vZuRjuM1VDQqe0A@mail.gmail.com>
- <CAK8ByeK8mVQbmYsbCdZGf4F=RHPbGguDcKfhtbWF3-MpVDNkbg@mail.gmail.com> <CAJfuBxyVDy6e-M+g7-aydfHov_KGuF5Ze7Gx_bEGuU5mzzjbcg@mail.gmail.com>
-In-Reply-To: <CAJfuBxyVDy6e-M+g7-aydfHov_KGuF5Ze7Gx_bEGuU5mzzjbcg@mail.gmail.com>
-From:   =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
-Date:   Mon, 27 Nov 2023 23:46:44 +0100
-Message-ID: <CAK8ByeKXh2JWW8vsokx4wJo_S7GZvg=McJBJ7sucp5Lf6Ccbvw@mail.gmail.com>
-Subject: Re: [PATCH v1 07/12] dyndbg: repack struct _ddebug
-To:     jim.cromie@gmail.com
-Cc:     Jason Baron <jbaron@akamai.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Guenter Roeck <groeck@google.com>,
-        Yaniv Tzoreff <yanivt@google.com>,
-        Benson Leung <bleung@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        upstream@semihalf.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-niedz., 26 lis 2023 o 07:00 <jim.cromie@gmail.com> napisa=C5=82(a):
->
-> On Fri, Nov 24, 2023 at 7:39=E2=80=AFAM =C5=81ukasz Bartosik <lb@semihalf=
-.com> wrote:
-> >
-> > niedz., 12 lis 2023 o 17:28 =C5=81ukasz Bartosik <lb@semihalf.com> napi=
-sa=C5=82(a):
-> > >
-> > > pt., 10 lis 2023 o 22:01 <jim.cromie@gmail.com> napisa=C5=82(a):
-> > > >
-> > > > On Fri, Nov 10, 2023 at 7:51=E2=80=AFAM =C5=81ukasz Bartosik <lb@se=
-mihalf.com> wrote:
-> > > > >
-> > > > > sob., 4 lis 2023 o 02:49 <jim.cromie@gmail.com> napisa=C5=82(a):
-> > > > > >
-> > > > > > On Fri, Nov 3, 2023 at 7:10=E2=80=AFAM =C5=81ukasz Bartosik <lb=
-@semihalf.com> wrote:
-> > > > > > >
-> > > > > > > From: Jim Cromie <jim.cromie@gmail.com>
-> > > > > > >
-> > > > > > > Move the JUMP_LABEL to the top of the struct, since theyre bo=
-th
-> > > > > > > align(8) and this closes a pahole (unfortunately trading for =
-padding,
-> > > > > > > but still).
-> > > > > > >
-> > > > > > > Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
-> > > > > >
-> > > > > > let me add, I havent really tested this, nevermind thorough.
-> > > > > > specifically, I didnt look for any offset dependence on the sta=
-tic-key
-> > > > > > inside their container.
-> > > > > > Conversely, maybe theres a free default or something in there.
-> > > > > >
-> > > > >
-> > > > > Any idea how to properly test the relocation of the key ?
-> > > >
-> > > > I was hoping Jason knew it from memory.
-> > > >
-> > > > I have booted dd-kitchen-sink, which includes it, and it didnt melt=
- the box.
-> > > >
-> > > > I just checked `pahole vmlinux` output for the existence of 0-offse=
-t keys.
-> > > > Its not conclusive, cuz im only looking at x86.
-> > > >
-> > > > it does occur, but only for "sub-types".
-> > > >
-> > > > struct static_key_true {
-> > > >         struct static_key          key;                  /*     0  =
-  16 */
-> > > >
-> > > >         /* size: 16, cachelines: 1, members: 1 */
-> > > >         /* last cacheline: 16 bytes */
-> > > > };
-> > > > struct static_key_false {
-> > > >         struct static_key          key;                  /*     0  =
-  16 */
-> > > >
-> > > >         /* size: 16, cachelines: 1, members: 1 */
-> > > >         /* last cacheline: 16 bytes */
-> > > > };
-> > > > struct static_key_false_deferred {
-> > > >         struct static_key_false    key;                  /*     0  =
-  16 */
-> > > > ...};
-> > > > struct static_key_mod {
-> > > >         struct static_key_mod *    next;                 /*     0  =
-   8 */
-> > > > ...};
-> > > > struct static_key_deferred {
-> > > >         struct static_key          key;                  /*     0  =
-  16 */
-> > >
-> > > I will test it on arm64.
-> >
-> > Hi Jim,
-> >
-> > I verified that relocation of JUMP_LABEL to the top of the _ddebug
-> > struct does not brak dynamic debug functionality on arm64.
-> > I double checked I had CONFIG_JUMP_LABEL enabled in the kernel config f=
-or arm64.
-> > I was able to enable/disable callsites and see debug logs being written=
-.
-> >
-> > But if you're concerned there might be issue related to that
-> > relocation on other architectures then let's drop this patch
-> > and I will use pahole instead of padding for location of flags and
-> > trace destination fields.
-> > What do you think ?
-> >
->
->
-> On balance, I think it should go in.
-> 0 - my bias was towards abundance of paranoia
-> 1 - youve done real work to evaluate the actual risk
-> 2 - Jason is on thread, hasnt said WHOA
-> 3 - actual patches have seen some testing (lkp-robot included)
-> 4 - static-keys/jump-labels have been around a long time
->
-> One new topic:
->
-> Do you have any thoughts or plans wrt self-testing ?
->
+The original patch missed a list_lru_del() -> list_lru_del_obj()
+conversion. This patch fixed that.
 
-Actually I didn't think about it at all ;). It is not so common
-practice to write tests among kernel developers. Addition of trace
-instances & events to the dynamic debug is a major change so I see the
-value in having it thoroughly tested. That said I'm not saying no to
-writing test harness for that purpose but I wonder if there is any
-test framework in the kernel that could be reused or is everyone on
-their own when it comes to the testing area ?
+Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+---
+ drivers/android/binder_alloc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Lukasz
-
-> the addition of private instances,
-> that can be opened & closed, and written to by +T:private_1
->
-> would benefit greatly from a test harness to validate it.
-> so far all Ive done is demo scripts
->
-> :-) thanks
->
-> > Thanks,
-> > Lukasz
+diff --git a/drivers/android/binder_alloc.c b/drivers/android/binder_alloc.c
+index e80669d4e037..f69d30c9f50f 100644
+--- a/drivers/android/binder_alloc.c
++++ b/drivers/android/binder_alloc.c
+@@ -234,7 +234,7 @@ static int binder_update_page_range(struct binder_alloc *alloc, int allocate,
+ 		if (page->page_ptr) {
+ 			trace_binder_alloc_lru_start(alloc, index);
+ 
+-			on_lru = list_lru_del(&binder_alloc_lru, &page->lru);
++			on_lru = list_lru_del_obj(&binder_alloc_lru, &page->lru);
+ 			WARN_ON(!on_lru);
+ 
+ 			trace_binder_alloc_lru_end(alloc, index);
+-- 
+2.34.1
