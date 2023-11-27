@@ -2,173 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37EF77FABC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 21:41:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8716C7FABC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 21:42:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233050AbjK0Ull (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 15:41:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57970 "EHLO
+        id S233324AbjK0Ulw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 15:41:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231601AbjK0Ulj (ORCPT
+        with ESMTP id S231601AbjK0Ult (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 15:41:39 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70EE2191
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 12:41:45 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40b35199f94so262325e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 12:41:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701117704; x=1701722504; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l4K6Lj4z8jII9KHfI86VtnivPUcuSuyrPVeih1ksGS0=;
-        b=SX+NmCAqfhLqt6MrlqNhoZj9BkD1J7uX25aX7M9g+L1YFeO1764xAdt0gaKHTFSaqR
-         EyWOBrjebu/lIT/Njk3RaTn7vWp5G45qemiCXXgnYNWHAlrG52Du77Yuklf7TbEDn2uj
-         4gXGpbq1MXk3/RnV6YtxJ45kGKWYN4o7lgbON9gTZhKoVOvCGDSqnfcUNrNKrBj4S/Wt
-         npPztinlDxKpENfyy5zh0pYj4oNpUghHz1n4yIEE/NwezSFYkpJHuIufsi/CwhSpdhmd
-         Xuic1ZyU7p3MV+Iz0Ds8PukfJzUK9Yt2Xk6XOzQ8O8YR6+PMEb7sHtTCHyDnwuPScP8T
-         sHzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701117704; x=1701722504;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l4K6Lj4z8jII9KHfI86VtnivPUcuSuyrPVeih1ksGS0=;
-        b=lQqCs3rdHckx/jXPLnOTkbQpWDWjPnhwl8PZc5/bfIGmjTcxE9jCjgmcUbbwmPUSqJ
-         eKiz1Z0Fic9jTSobBONy1laAx+gb77eG7R78UT/HGcIWdfEpu4zNNq4724dDUhbOQxju
-         MosKud7244uFrcYNFM7DUK0EQu9FzQE080IKZg2DlMIE6m4M0HFQn2GTLZ0DHWyC2xqN
-         aAaT2ThS6MeMgdVjSygkDTtzCXmtBf6sDjGWILbwHiK3mmCTiTnxyR2AlsrZBvNOwl14
-         2TW6jBNQTIfiL8hkjPb4kALEOvnaqpkiKWyLbTklsYIG7LvyO/eTEupzgy6MCRQfCeJb
-         genA==
-X-Gm-Message-State: AOJu0Yzy9xF2wDBIoEcVQ/YodNe9PwFx19E/5PzyGuUb5TGMfppimh7H
-        ZzK2qlXBrcuxdn+OwekvH4sUIqomTrZty3DIx5bwlA==
-X-Google-Smtp-Source: AGHT+IHKRetPWPd1P+93r7+brysZhebjHGGesRrPYg31OtmoLNt2ABSI2w8nDut3kTN2NopSvxANGWpLRHDZi+OQTDU=
-X-Received: by 2002:a05:600c:206:b0:40b:443d:9b78 with SMTP id
- 6-20020a05600c020600b0040b443d9b78mr202972wmi.0.1701117703673; Mon, 27 Nov
- 2023 12:41:43 -0800 (PST)
+        Mon, 27 Nov 2023 15:41:49 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EEDCD60;
+        Mon, 27 Nov 2023 12:41:55 -0800 (PST)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARJl5x0011147;
+        Mon, 27 Nov 2023 20:41:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=33k6fG7CN8caIQqp5re35EClf3g84aCx79/bsayWk6Y=;
+ b=m4OwfOd0wlHGrvPq9yqK8s+YZQvbOCvSfMDn0N/8g4xpZxWQnwhHRoUVum1q+42B2QiU
+ 0j9NsyY9eneILDBYEKakLHz/T868hngsVDQRIiIPr4TPG82qAOBwHZA75FZ31OBCKZqB
+ N5mInXNWjDWwAGQcBcr71hHQvE2J2MQPN3LjIu1bk/Um1GAKC+HyOPG5GvM9GjVzySmD
+ Yo+sdxRnwplYdMDqFeu/2co1bs1RNCyJgsLH+4/meX2w5OAfDOVj8ME7IutcIw+UHumw
+ z6VUSPQ+THQxrSdf80UU+whrWSs2HAHG8UyU1R+ZURcXAd9rApivUdGQ7n365Q9oepSD Og== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3un0xetax9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 20:41:48 +0000
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ARJofA7021579;
+        Mon, 27 Nov 2023 20:41:48 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3un0xetawx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 20:41:48 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARJcpLI001736;
+        Mon, 27 Nov 2023 20:41:47 GMT
+Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ukwy1jqr3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 20:41:47 +0000
+Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
+        by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ARKfkle16450228
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Nov 2023 20:41:47 GMT
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9C2EE58054;
+        Mon, 27 Nov 2023 20:41:46 +0000 (GMT)
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9AC4958045;
+        Mon, 27 Nov 2023 20:41:45 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Mon, 27 Nov 2023 20:41:45 +0000 (GMT)
+Message-ID: <ba84a7c1-f397-45f3-b76c-7faed89a005d@linux.ibm.com>
+Date:   Mon, 27 Nov 2023 15:41:45 -0500
 MIME-Version: 1.0
-References: <20231102175735.2272696-1-irogers@google.com> <20231102175735.2272696-8-irogers@google.com>
- <CAM9d7chKHASNE2BbL-6G7KJ-SwKMGXW+wujLsqiB+pFUPxJ2kA@mail.gmail.com>
-In-Reply-To: <CAM9d7chKHASNE2BbL-6G7KJ-SwKMGXW+wujLsqiB+pFUPxJ2kA@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 27 Nov 2023 12:41:32 -0800
-Message-ID: <CAP-5=fWvUOiMBeDzJboihg+vPrSEBYkAju1X-JpnwTadG1XBiQ@mail.gmail.com>
-Subject: Re: [PATCH v4 07/53] tools api fs: Avoid reading whole file for a 1
- byte bool
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Dmitrii Dolgov <9erthalion6@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Ming Wang <wangming01@loongson.cn>,
-        James Clark <james.clark@arm.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        German Gomez <german.gomez@arm.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 4/8] tpm: Update struct tpm_buf documentation comments
+Content-Language: en-US
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        linux-integrity@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        William Roberts <bill.c.roberts@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>
+References: <20231124020237.27116-1-jarkko@kernel.org>
+ <20231124020237.27116-5-jarkko@kernel.org>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <20231124020237.27116-5-jarkko@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: aiuvupNQQzQ38zcO7U2FAyRSc5dYlS83
+X-Proofpoint-GUID: 0JPz4-f2rM993IWewFRLLRQXDmE1qw0C
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-27_19,2023-11-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
+ lowpriorityscore=0 mlxlogscore=999 suspectscore=0 impostorscore=0
+ spamscore=0 bulkscore=0 priorityscore=1501 adultscore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311270143
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 5, 2023 at 7:56=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
-rote:
->
-> On Thu, Nov 2, 2023 at 10:58=E2=80=AFAM Ian Rogers <irogers@google.com> w=
-rote:
-> >
-> > sysfs__read_bool used the first byte from a fully read file into a
-> > string. It then looked at the first byte's value. Avoid doing this and
-> > just read the first byte.
-> >
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/lib/api/fs/fs.c | 18 +++++++++---------
-> >  1 file changed, 9 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/tools/lib/api/fs/fs.c b/tools/lib/api/fs/fs.c
-> > index 496812b5f1d2..4c35a689d1fc 100644
-> > --- a/tools/lib/api/fs/fs.c
-> > +++ b/tools/lib/api/fs/fs.c
-> > @@ -447,15 +447,16 @@ int sysfs__read_str(const char *entry, char **buf=
-, size_t *sizep)
-> >
-> >  int sysfs__read_bool(const char *entry, bool *value)
-> >  {
-> > -       char *buf;
-> > -       size_t size;
-> > -       int ret;
-> > +       struct io io;
-> > +       char bf[16];
-> > +       int ret =3D 0;
-> >
-> > -       ret =3D sysfs__read_str(entry, &buf, &size);
-> > -       if (ret < 0)
-> > -               return ret;
-> > +       io.fd =3D open(entry, O_RDONLY);
->
-> The entry is a name in sysfs, so you need to get the full name.
->
-> Thanks,
-> Namhyung
 
-Thanks, added in v5.
 
-Ian
+On 11/23/23 21:02, Jarkko Sakkinen wrote:
+> Remove deprecated portions and document enum values.
+> 
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> ---
+> v1 [2023-11-21]: A new patch.
+> v2 [2023-11-24]: Refined the commit message a bit.
+> ---
+>   include/linux/tpm.h | 9 ++++-----
+>   1 file changed, 4 insertions(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/tpm.h b/include/linux/tpm.h
+> index bb0e8718a432..0a8c1351adc2 100644
+> --- a/include/linux/tpm.h
+> +++ b/include/linux/tpm.h
+> @@ -297,15 +297,14 @@ struct tpm_header {
+>   	};
+>   } __packed;
+>   
+> -/* A string buffer type for constructing TPM commands. This is based on the
+> - * ideas of string buffer code in security/keys/trusted.h but is heap based
+> - * in order to keep the stack usage minimal.
+> - */
+> -
+>   enum tpm_buf_flags {
+> +	/* the capacity exceeded: */
 
->
-> > +       if (io.fd < 0)
-> > +               return -errno;
-> >
-> > -       switch (buf[0]) {
-> > +       io__init(&io, io.fd, bf, sizeof(bf));
-> > +       switch (io__get_char(&io)) {
-> >         case '1':
-> >         case 'y':
-> >         case 'Y':
-> > @@ -469,8 +470,7 @@ int sysfs__read_bool(const char *entry, bool *value=
-)
-> >         default:
-> >                 ret =3D -1;
-> >         }
-> > -
-> > -       free(buf);
-> > +       close(io.fd);
-> >
-> >         return ret;
-> >  }
-> > --
-> > 2.42.0.869.gea05f2083d-goog
-> >
+was exceeded
+
+>   	TPM_BUF_OVERFLOW	= BIT(0),
+>   };
+>   
+> +/*
+> + * A string buffer type for constructing TPM commands.
+> + */
+>   struct tpm_buf {
+>   	unsigned int flags;
+>   	u8 *data;
+
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
