@@ -2,141 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBAAF7FACD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:55:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C1E7FACDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:55:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233355AbjK0Vz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 16:55:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60314 "EHLO
+        id S233409AbjK0Vzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 16:55:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231437AbjK0Vz0 (ORCPT
+        with ESMTP id S233357AbjK0Vz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 16:55:26 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5626BD
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 13:55:32 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-a02d12a2444so695252366b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 13:55:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701122129; x=1701726929; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CaSFhmgVx3V8dB4TtK9NswdosRwsp4UPGC8yEbKiUf8=;
-        b=LAUj6wUrOlHiXIK0KnUJpgQrIPQjU3e48Pr/DRUoRLri3yLVkK+kYJkRGy3mXtxbo3
-         qTNab4nRhN2TvWLLQ7PU7EQzLl9r/a+yN7ezhohOWUmm4jSgtziCJPA6GBSCHAn75YR7
-         zNERwmKMG5CH+CNApDKDzy+Or+Tz9qSt61Gd8=
+        Mon, 27 Nov 2023 16:55:28 -0500
+Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C4CC1;
+        Mon, 27 Nov 2023 13:55:35 -0800 (PST)
+Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-1fa1bcf1d01so1662305fac.0;
+        Mon, 27 Nov 2023 13:55:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701122129; x=1701726929;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CaSFhmgVx3V8dB4TtK9NswdosRwsp4UPGC8yEbKiUf8=;
-        b=pkk8779BrhYmJeRcfy+rbiDLNvr9h/R1LDWEQ4qrrMN4o3QYErCQLpTiVLUfRv9NLc
-         vpVsUzr13i3xoaxTKJRvdXrFXJ5+kY8Cto9S04djJo4BIFBzCjC3KAh+4MlGEkKDaCFY
-         wq2/mlZwjIqNIPYf8AS+T5VE/R3ikVhvIBQ6UhdoWhstrGHsfHQ7m75NVxbi6gwfvbl2
-         t/rKISZd9WSnOogUBR92S73acvq5sv8D3O6HQd1pFU2pAEWrGWmmOie06iHp7bwJyneV
-         IWjYuRYyZXmliH6ZoFXPIzVKj8nxvrkUXMr/nYGPDV4VQj6VwKig5B4O0rChM66WDeQG
-         98hw==
-X-Gm-Message-State: AOJu0YwDeC4diUNLbMLkASKxzvh9j3EGkLiUB4AH2yRwJWn9699YAw1b
-        ygU48BTXxThzgtQzb1BwbFEThd/9/ljN8KvdZ114Nw==
-X-Google-Smtp-Source: AGHT+IGyzyZfBsPpybXpNtY1RCkJowU8rl4GKTVh4sYBzp2UVWFn227S2TnYTIKURIGc0RPwDtSUjg==
-X-Received: by 2002:a17:907:874a:b0:9cf:35a7:9ea5 with SMTP id qo10-20020a170907874a00b009cf35a79ea5mr11310185ejc.74.1701122129732;
-        Mon, 27 Nov 2023 13:55:29 -0800 (PST)
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com. [209.85.128.47])
-        by smtp.gmail.com with ESMTPSA id jx19-20020a170906ca5300b009fc9fab9178sm6109569ejb.125.2023.11.27.13.55.28
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Nov 2023 13:55:29 -0800 (PST)
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40b35199f94so3775e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 13:55:28 -0800 (PST)
-X-Received: by 2002:a05:600c:3b03:b0:40b:33aa:a2b9 with SMTP id
- m3-20020a05600c3b0300b0040b33aaa2b9mr623198wms.4.1701122128554; Mon, 27 Nov
- 2023 13:55:28 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701122134; x=1701726934;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q+Cbf4Z4xMq9dOhY2lkOSlIg0Yv9C+GaGVRwFcKdaa4=;
+        b=mrXfHhXWE/HlW2oFiNizk/4cY7MlU1odoM361EH5rtfmSMORp9a7f5V4lxp8RhJKOG
+         RtiNb4XcSSukoq7dWX47nS31m3RPr/AOlH/cLj1xYR3xvLsiC8hZlcPkr66cchGj8a1P
+         G9YBcRlvEWNcvVTVkzK37yyjIbOkS9RkAGy7nOMY5JdE0fAN+x1y1fXwzoUFgNShccKr
+         vAzgQAdN9Pen4VpF7x8keE/HTjvUSftSllOlBfqEidZynaEDnllI9SeEVVuVUk6pBOj1
+         nHIVZA6CJWX2zS/lpo5elch+xJsO65OpC3RN+AAxZugOK09QyAt7dgIDRWaSpdk3WOmN
+         6CKw==
+X-Gm-Message-State: AOJu0YxdpstD7o/e9IpkjZVtXCniis3oekydzZjW6JjpIdFjUF6EsK3i
+        Vseh7+bJV2+xp2XRvIsEnatSwb+Fpg==
+X-Google-Smtp-Source: AGHT+IHE/25NEUwlRx2TOFVPP+SptbOdKM4BzwgEQJDXuam12+MKf64pu6FFsol8jZ2RdnKGcptx6g==
+X-Received: by 2002:a05:6870:5d93:b0:1f0:656b:5b99 with SMTP id fu19-20020a0568705d9300b001f0656b5b99mr19942781oab.11.1701122134393;
+        Mon, 27 Nov 2023 13:55:34 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id lu4-20020a056871314400b001fa54ae35e0sm681401oac.12.2023.11.27.13.55.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 13:55:33 -0800 (PST)
+Received: (nullmailer pid 3942464 invoked by uid 1000);
+        Mon, 27 Nov 2023 21:55:32 -0000
+Date:   Mon, 27 Nov 2023 15:55:32 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Andrew Davis <afd@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>, Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Chen-Yu Tsai <wens@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michal Simek <michal.simek@amd.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        workflows@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v3] docs: dt-bindings: add DTS Coding Style document
+Message-ID: <20231127215532.GA3822595-robh@kernel.org>
+References: <20231125184422.12315-1-krzysztof.kozlowski@linaro.org>
+ <20231125193737.GD7486@pendragon.ideasonboard.com>
+ <26f095ab-c47d-4bcb-9830-4493b1c0cc75@linaro.org>
+ <20231126145340.GA19999@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-References: <CAD=FV=XhqDxmk=yTdujwtFyF23NZ13LORH0GMS5_iTAEVva_rA@mail.gmail.com>
- <20231122035304.57483-1-lizhe.67@bytedance.com> <ZWTORl4jMi9ODns1@alley>
-In-Reply-To: <ZWTORl4jMi9ODns1@alley>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 27 Nov 2023 13:55:16 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=UJc3Ln7KDXVfXfpmbWmmbp2v=1o4T_11nv2R=bWttZeQ@mail.gmail.com>
-Message-ID: <CAD=FV=UJc3Ln7KDXVfXfpmbWmmbp2v=1o4T_11nv2R=bWttZeQ@mail.gmail.com>
-Subject: Re: [RFC] softlockup: serialized softlockup's log
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     lizhe.67@bytedance.com, akpm@linux-foundation.org,
-        kernelfans@gmail.com, lecopzer.chen@mediatek.com,
-        linux-kernel@vger.kernel.org, lizefan.x@bytedance.com,
-        John Ogness <john.ogness@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231126145340.GA19999@pendragon.ideasonboard.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sun, Nov 26, 2023 at 04:53:40PM +0200, Laurent Pinchart wrote:
+> Hi Krzysztof,
+> 
+> On Sun, Nov 26, 2023 at 11:32:17AM +0100, Krzysztof Kozlowski wrote:
+> > On 25/11/2023 20:37, Laurent Pinchart wrote:
+> > > On Sat, Nov 25, 2023 at 07:44:22PM +0100, Krzysztof Kozlowski wrote:
+> > >> Document preferred coding style for Devicetree sources (DTS and DTSI),
+> > >> to bring consistency among all (sub)architectures and ease in reviews.
 
-On Mon, Nov 27, 2023 at 9:13=E2=80=AFAM Petr Mladek <pmladek@suse.com> wrot=
-e:
->
-> > I've tried several times, but unfortunately I haven't been able to
-> > reproduce the problem you mentioned. My concern is that if the lock
-> > is shared, there will be potential deadlock issues because hardlockup
-> > exploits nmi.
->
-> Yes, one has to be very careful when using locks under NMI.
-> I am aware of three approaches:
->
->   1. It should be safe to use a lock which is used only in NMI.
->      The only problem might be ABBA deadlocks.
->
->      But this is not usable to serialize softlockup and hardlockup.
->
->
->   2. Using try_lock() in NMI and skipping the report when the lock
->      could not be taken.
->
->     But we probably should not skip the detailed info printed by the
->     hardlockup detector just because another softlockup or
->     hardlockup report is running in parallel.
->
->
->   3. Using a lock which might be nested on the same CPU.
->
->     It does not prevent mixed output completely. The nested
->     context will print the messages in the middle of the outer
->     one on the same CPU. But it would serialize output against
->     other CPUs.
->
->     There already is one used to serialize some backtraces,
->     see printk_cpu_sync_get_irqsave() in dump_stack_lvl() and
->     nmi_cpu_backtrace().
->
->     It should be safe when the locked code does not wait for
->     other CPUs. And when it is a leaf lock so that there
->     is no need to think about ABBA deadlocks against
->     other locks.
->
->     IMHO, printk_cpu_sync_get_irqsave() probably should be
->     safe to serialize the softlockup and hardlockup
->     detectors.
->
->
-> Adding John into Cc. He is familiar with
-> printk_cpu_sync_get_irqsave(). He wanted to use it also
-> for synchronizing console drivers. Well, it will be done
-> another way in the end.
 
-Thanks for all the detailed info! Using printk_cpu_sync_get_irqsave()
-looks pretty promising. I'll try to do some testing with this and then
-aim to send a patch later this week that builds upon Li Zhe's patch.
-If everything works out I'll probably remove the newly added spinlock
-and use printk_cpu_sync_get_irqsave() instead, but the spinlock should
-work fine in the short term in any case.
+> > >> +
+> > >> +Naming and Valid Characters
+> > >> +---------------------------
+> > >> +
+> > >> +Devicetree specification allows broader range of characters in node and
+> > > 
+> > > s/Devicetree specification/The Devicetree specification/
+> > > s/broader range/a broad range/
+> > 
+> > Ack, but I really expect people finish with grammar and style fixes at
+> > v3. Please point the language things now or just let it go.
+> 
+> v3 is the first version that ended up in my inbox. I haven't noticed any
+> other spelling or grammar error in this patch, but I can't guarantee I
+> won't see any in new text that gets introduced in a future version :-)
+> 
+> > >> +property names, but for code readability the choice shall be narrowed.
+> > >> +
+> > >> +1. Node and property names are allowed to use only:
+> > >> +
+> > >> +   * lowercase characters: [a-z]
+> > >> +   * digits: [0-9]
+> > >> +   * dash: -
+> > >> +
+> > >> +2. Labels are allowed to use only:
+> > >> +
+> > >> +   * lowercase characters: [a-z]
+> > >> +   * digits: [0-9]
+> > >> +   * underscore: _
+> > >> +
+> > >> +3. Unit addresses shall use lowercase hex, without leading zeros (padding).
 
--Doug
+Unless a bus defines differently, unit addresses shall ...
+
+> > > 
+> > > I'm curious, what's the reason for this ? I think it makes the sources
+> > > less readable. If the rule is "just" because that's how DT sources are
+> > > written today and it would be too complicated to change that, that's
+> > > fine with me.
+> > 
+> > Warning (unit_address_format): /cpus/cpu@0100: unit name should not have
+> > leading 0s
+> > 
+> > And we fixed all or most of DTS some time ago.
+> 
+> It's the current practice in DT sources and I understand it won't get
+> changed, but I was more curious about the rationale behind that.
+
+I put the dtc check in, but the rational predates me. The OF PCI bus 
+supplement from the 1990s defines that. My only rationale to check it 
+was to be consistent. We don't check "the unit-address is lowercase hex"
+because technically the bus defines the format. Leading 0s was as much 
+as I could get David G to agree to check without regard to bus type.
+
+Rob
