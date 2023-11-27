@@ -2,242 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8FD7FA7C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B318D7FA7C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 18:14:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234700AbjK0RM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 12:12:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60932 "EHLO
+        id S1343507AbjK0ROG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 12:14:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231690AbjK0RM1 (ORCPT
+        with ESMTP id S234728AbjK0RNl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 12:12:27 -0500
-Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BEECA5
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 09:12:24 -0800 (PST)
-Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3ARDiDTb019822;
-        Mon, 27 Nov 2023 18:12:15 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding:content-type; s=selector1; bh=3rQUjhT
-        +AfG8UO1cbyIJMxJrIwkZH4cYCzvy484HdE4=; b=19wUlMChMKMIjJFa+Apb4Xw
-        WeoBzfTyGJO6FfPXRNFBXWqp7j2vVIV6gxzWJv+CIr4umSh8NM1YhaqE/b2cys0W
-        JG0jBfJyh5GtKAU+xc5LjuLSrytGyWyjyf4ovnG5eVl74MBs5aEu7xkin5hrzxcZ
-        +uiBfTxJtR6mlGvuquS4lJrytWP9/xkkF2uZZignyfLcxEFUc1sACUAlF+TPyRaT
-        2lxr+lvCc9cTs2ujFuEoazTx1FT4jj06bGuWzEei7//FEFfk2WQttadkUBYLJFAh
-        G+qwNgDxyIxmtM2RunYcVcvfAnwyKA1VeggwaJ+VFtMeHmHw4lLnkHNTdjVUvcA=
-        =
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3ukvrp5vmt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 27 Nov 2023 18:12:15 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 075C210004B;
-        Mon, 27 Nov 2023 18:12:15 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id EFA2D24B8AF;
-        Mon, 27 Nov 2023 18:12:14 +0100 (CET)
-Received: from localhost (10.201.20.163) by SHFDAG1NODE2.st.com (10.75.129.70)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 27 Nov
- 2023 18:12:14 +0100
-From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>
-CC:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        <op-tee@lists.trustedfirmware.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] tee: Use iov_iter to better support shared buffer registration
-Date:   Mon, 27 Nov 2023 18:12:07 +0100
-Message-ID: <20231127171207.285554-1-arnaud.pouliquen@foss.st.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 27 Nov 2023 12:13:41 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C7CC10C1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 09:13:46 -0800 (PST)
+Received: from relay2.suse.de (unknown [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id E22A91FB65;
+        Mon, 27 Nov 2023 17:13:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1701105224; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vjdwBoc71B6p+F8vuhQJSuRH+k9neKC5ACYn3X653Dw=;
+        b=hhwhubHYY2FawaEFJ3o6u+GQ9ZDcqCDXUfr+3oqfoLVLIrt7HFj+ynnwl3JcISc9KC9cOh
+        J0nm5dd7ocxcWfH8Tu+76j2XyLUh9Cbxgr3QMAoWKuUPKP60bTYMtq++KaguWg9CRqShSa
+        bZO6a5NAgc2tI3tQq1ZLBu3Oy1t+Zf8=
+Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 011C02C194;
+        Mon, 27 Nov 2023 17:13:42 +0000 (UTC)
+Date:   Mon, 27 Nov 2023 18:13:42 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     lizhe.67@bytedance.com
+Cc:     dianders@chromium.org, akpm@linux-foundation.org,
+        kernelfans@gmail.com, lecopzer.chen@mediatek.com,
+        linux-kernel@vger.kernel.org, lizefan.x@bytedance.com,
+        John Ogness <john.ogness@linutronix.de>
+Subject: Re: [RFC] softlockup: serialized softlockup's log
+Message-ID: <ZWTORl4jMi9ODns1@alley>
+References: <CAD=FV=XhqDxmk=yTdujwtFyF23NZ13LORH0GMS5_iTAEVva_rA@mail.gmail.com>
+ <20231122035304.57483-1-lizhe.67@bytedance.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.201.20.163]
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-27_15,2023-11-27_01,2023-05-22_02
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231122035304.57483-1-lizhe.67@bytedance.com>
+X-Spamd-Bar: +++++++++++++++++++++++
+Authentication-Results: smtp-out2.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
+        spf=fail (smtp-out2.suse.de: domain of pmladek@suse.com does not designate 149.44.160.134 as permitted sender) smtp.mailfrom=pmladek@suse.com
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [23.60 / 50.00];
+         RDNS_NONE(1.00)[];
+         BAYES_SPAM(5.10)[99.99%];
+         SPAMHAUS_XBL(0.00)[149.44.160.134:from];
+         TO_DN_SOME(0.00)[];
+         RWL_MAILSPIKE_GOOD(-1.00)[149.44.160.134:from];
+         HFILTER_HELO_IP_A(1.00)[relay2.suse.de];
+         HFILTER_HELO_NORES_A_OR_MX(0.30)[relay2.suse.de];
+         R_RATELIMIT(0.00)[rip(RLa6h5sh378tcam5q78u)];
+         MX_GOOD(-0.01)[];
+         RCPT_COUNT_SEVEN(0.00)[8];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         RDNS_DNSFAIL(0.00)[];
+         ARC_NA(0.00)[];
+         R_SPF_FAIL(1.00)[-all];
+         FROM_HAS_DN(0.00)[];
+         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         VIOLATED_DIRECT_SPF(3.50)[];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         MID_RHS_NOT_FQDN(0.50)[];
+         FREEMAIL_CC(0.00)[chromium.org,linux-foundation.org,gmail.com,mediatek.com,vger.kernel.org,bytedance.com,linutronix.de];
+         RCVD_COUNT_TWO(0.00)[2];
+         HFILTER_HOSTNAME_UNKNOWN(2.50)[]
+X-Spam-Score: 23.60
+X-Rspamd-Queue-Id: E22A91FB65
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is not possible to register buffers allocated with vmalloc.
-Use iov_iter and associated helper functions to manage the page
-registration for all type of memories.
+On Wed 2023-11-22 11:53:04, lizhe.67@bytedance.com wrote:
+> On Fri, 17 Nov 2023 13:45:21 <dianders@chromium.org> wrote:
+> >>
+> >> From: Li Zhe <lizhe.67@bytedance.com>
+> >>
+> >> If multiple CPUs trigger softlockup at the same time, the softlockup's
+> >> logs will appear staggeredly in dmesg, which will affect the viewing of
+> >> the logs for developer. Since the code path for outputting softlockup logs
+> >> is not a kernel hotspot and the performance requirements for the code
+> >> are not strict, locks are used to serialize the softlockup log output
+> >> to improve the readability of the logs.
+> >>
+> >> Signed-off-by: Li Zhe <lizhe.67@bytedance.com>
+> >> ---
+> >>  kernel/watchdog.c | 3 +++
+> >>  1 file changed, 3 insertions(+)
+> >
+> >This seems reasonable to me. It might be interesting to talk about in
+> >your commit message how this interacts with the various options. From
+> >code inspection, I believe:
+> 
+> Thanks for your advice. I will send a V2 patch to optimize my commit
+> message.
+> 
+> >* If `softlockup_all_cpu_backtrace` then this is a no-op since other
+> >CPUs will be prevented from running the printing code while one is
+> >already printing.
 
-Suggested-by: Christoph Hellwig <hch@infradead.org>
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
----
+Yup.
 
-update from V1 to V2:
-- replace ITER_SOURCE by ITER_DEST flag in tee_shm_register_user_buf(),
-- replace IS_ERR_OR NULL(shm) by IS_ERR(shm) in tee_shm_register_user_buf().
+> Yes your are right. If `softlockup_all_cpu_backtrace` is set, interleaving
+> problem is gone. And we don't need to worry about interleaving problem
+> in function trigger_allbutcpu_cpu_backtrace() because it has already
+> serialized the logs.
+> 
+> >* I'm not 100% sure what happens if `softlockup_panic` is set and I
+> >haven't sat down to test this myself. Will one CPUs panic message
+> >interleave the other CPUs traces. I guess in the end both CPUs will
+> >call panic()? Maybe you could experiment and describe the behavior in
+> >your commit message?
+> 
+> I did experiments and checked the implementation of the panic function.
+> I have not reproduced interleaving problem with this patch. The panic
+> function internally serializes the panic's logs by using variable
+> 'panic_cpu'. Besides, function panic() will stop other cpu before outputing
+> logs, so I think the interleaving problem between softlockup logs from
+> cpu A and the panic logs from softlockup cpu B does not exist.
 
-V1:
-The support of buffer registration allocated with vmalloc is no more
-available since c83900393aa1 ("tee: Remove vmalloc page support").
+panic() actually prints a lot of information before stopping
+CPUs. They are stopped either inside of __crash_kexec() when
+used. Or they are stopped right after when __crash_kexec()
+was not called.
 
-This patch is an alternative to a revert and resulted from a discussion
-with Christopher Hellwig [1].
+Well, the spinlock in watchdog_timer_fn() should be safe from
+panic() POV because:
 
-This patch has been tested using xtest tool in optee qemu environment [2]
-and using the series related to the remoteproc tee that should be
-proposed soon [3].
+   1. panic() disables interrupts before trying to become
+      "panic_cpu". So that watchdog_timer_fn() should never
+      trigger on the CPU handling panic().
 
-References:
-[1] https://lore.kernel.org/linux-arm-kernel/18a8528d-7d9d-6ed0-0045-5ee47dd39fb2@foss.st.com/T/#m8ec683c44fcd9b69c2aee42eaed0793afac9dd18in
-[2] https://optee.readthedocs.io/en/latest/building/devices/qemu.html#build-instructions
-[3] https://lore.kernel.org/linux-arm-kernel/18a8528d-7d9d-6ed0-0045-5ee47dd39fb2@foss.st.com/T/#maca0a1fc897aadd54c7deac432e11473fe970d1d
----
- drivers/tee/tee_shm.c | 72 +++++++++++++++++++++++--------------------
- 1 file changed, 38 insertions(+), 34 deletions(-)
+   2. panic() does not wait for other CPUs to finish any work.
+      It must assume that the system is broken and other CPUs
+      might be blocked.
 
-diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
-index 673cf0359494..4a24b9942938 100644
---- a/drivers/tee/tee_shm.c
-+++ b/drivers/tee/tee_shm.c
-@@ -22,23 +22,13 @@ static void shm_put_kernel_pages(struct page **pages, size_t page_count)
- 		put_page(pages[n]);
- }
- 
--static int shm_get_kernel_pages(unsigned long start, size_t page_count,
--				struct page **pages)
-+static void shm_get_kernel_pages(struct page **pages, size_t page_count)
- {
--	struct page *page;
- 	size_t n;
- 
--	if (WARN_ON_ONCE(is_vmalloc_addr((void *)start) ||
--			 is_kmap_addr((void *)start)))
--		return -EINVAL;
--
--	page = virt_to_page((void *)start);
--	for (n = 0; n < page_count; n++) {
--		pages[n] = page + n;
-+	/* iov_iter_extract_kvec_pages does not get reference on the pages, get a pin on them. */
-+	for (n = 0; n < page_count; n++)
- 		get_page(pages[n]);
--	}
--
--	return page_count;
- }
- 
- static void release_registered_pages(struct tee_shm *shm)
-@@ -214,13 +204,12 @@ struct tee_shm *tee_shm_alloc_priv_buf(struct tee_context *ctx, size_t size)
- EXPORT_SYMBOL_GPL(tee_shm_alloc_priv_buf);
- 
- static struct tee_shm *
--register_shm_helper(struct tee_context *ctx, unsigned long addr,
--		    size_t length, u32 flags, int id)
-+register_shm_helper(struct tee_context *ctx, struct iov_iter *iter, u32 flags, int id)
- {
- 	struct tee_device *teedev = ctx->teedev;
- 	struct tee_shm *shm;
--	unsigned long start;
--	size_t num_pages;
-+	unsigned long start, addr;
-+	size_t num_pages, length, len, off;
- 	void *ret;
- 	int rc;
- 
-@@ -245,31 +234,31 @@ register_shm_helper(struct tee_context *ctx, unsigned long addr,
- 	shm->flags = flags;
- 	shm->ctx = ctx;
- 	shm->id = id;
--	addr = untagged_addr(addr);
-+	addr = (unsigned long)iter_iov_addr(iter);
-+	length = iter_iov_len(iter);
- 	start = rounddown(addr, PAGE_SIZE);
--	shm->offset = addr - start;
--	shm->size = length;
--	num_pages = (roundup(addr + length, PAGE_SIZE) - start) / PAGE_SIZE;
-+	num_pages = iov_iter_npages(iter, INT_MAX);
-+	if (!num_pages) {
-+		ret = ERR_PTR(-ENOMEM);
-+		goto err_ctx_put;
-+	}
-+
- 	shm->pages = kcalloc(num_pages, sizeof(*shm->pages), GFP_KERNEL);
- 	if (!shm->pages) {
- 		ret = ERR_PTR(-ENOMEM);
- 		goto err_free_shm;
- 	}
- 
--	if (flags & TEE_SHM_USER_MAPPED)
--		rc = pin_user_pages_fast(start, num_pages, FOLL_WRITE,
--					 shm->pages);
--	else
--		rc = shm_get_kernel_pages(start, num_pages, shm->pages);
--	if (rc > 0)
--		shm->num_pages = rc;
--	if (rc != num_pages) {
--		if (rc >= 0)
--			rc = -ENOMEM;
--		ret = ERR_PTR(rc);
-+	len = iov_iter_extract_pages(iter, &shm->pages, LONG_MAX, num_pages, 0, &off);
-+	if (len != length) {
-+		ret = len ? ERR_PTR(len) : ERR_PTR(-ENOMEM);
- 		goto err_put_shm_pages;
- 	}
- 
-+	shm->offset = off;
-+	shm->size = len;
-+	shm->num_pages = num_pages;
-+
- 	rc = teedev->desc->ops->shm_register(ctx, shm, shm->pages,
- 					     shm->num_pages, start);
- 	if (rc) {
-@@ -307,6 +296,8 @@ struct tee_shm *tee_shm_register_user_buf(struct tee_context *ctx,
- 	u32 flags = TEE_SHM_USER_MAPPED | TEE_SHM_DYNAMIC;
- 	struct tee_device *teedev = ctx->teedev;
- 	struct tee_shm *shm;
-+	struct iovec iov;
-+	struct iov_iter iter;
- 	void *ret;
- 	int id;
- 
-@@ -319,7 +310,10 @@ struct tee_shm *tee_shm_register_user_buf(struct tee_context *ctx,
- 	if (id < 0)
- 		return ERR_PTR(id);
- 
--	shm = register_shm_helper(ctx, addr, length, flags, id);
-+	iov.iov_base = (void __user *)addr;
-+	iov.iov_len = length;
-+	iov_iter_init(&iter, ITER_DEST, &iov, 1, length);
-+	shm = register_shm_helper(ctx, &iter, flags, id);
- 	if (IS_ERR(shm)) {
- 		mutex_lock(&teedev->mutex);
- 		idr_remove(&teedev->idr, id);
-@@ -351,9 +345,19 @@ struct tee_shm *tee_shm_register_user_buf(struct tee_context *ctx,
- struct tee_shm *tee_shm_register_kernel_buf(struct tee_context *ctx,
- 					    void *addr, size_t length)
- {
-+	struct tee_shm *shm;
- 	u32 flags = TEE_SHM_DYNAMIC;
-+	struct kvec kvec;
-+	struct iov_iter iter;
- 
--	return register_shm_helper(ctx, (unsigned long)addr, length, flags, -1);
-+	kvec.iov_base = addr;
-+	kvec.iov_len = length;
-+	iov_iter_kvec(&iter, ITER_DEST, &kvec, 1, length);
-+	shm = register_shm_helper(ctx, &iter, flags, -1);
-+	if (!IS_ERR(shm))
-+		shm_get_kernel_pages(shm->pages, shm->num_pages);
-+
-+	return shm;
- }
- EXPORT_SYMBOL_GPL(tee_shm_register_kernel_buf);
- 
--- 
-2.25.1
 
+> >> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+> >> index 5cd6d4e26915..8324ac194d0a 100644
+> >> --- a/kernel/watchdog.c
+> >> +++ b/kernel/watchdog.c
+> >> @@ -448,6 +448,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
+> >>         struct pt_regs *regs = get_irq_regs();
+> >>         int duration;
+> >>         int softlockup_all_cpu_backtrace = sysctl_softlockup_all_cpu_backtrace;
+> >> +       static DEFINE_SPINLOCK(watchdog_timer_lock);
+> >
+> >I'd be tempted to define this outside the scope of this function. I
+> >need to dig more, but I'm pretty sure I've seen cases where a soft
+> >lockup could trigger while I was trying to print traces for a
+> >hardlockup, so it might be useful to grab the same spinlock in both
+> >places...
+> 
+> I've tried several times, but unfortunately I haven't been able to
+> reproduce the problem you mentioned. My concern is that if the lock
+> is shared, there will be potential deadlock issues because hardlockup
+> exploits nmi.
+
+Yes, one has to be very careful when using locks under NMI.
+I am aware of three approaches:
+
+  1. It should be safe to use a lock which is used only in NMI.
+     The only problem might be ABBA deadlocks.
+
+     But this is not usable to serialize softlockup and hardlockup.
+
+
+  2. Using try_lock() in NMI and skipping the report when the lock
+     could not be taken.
+
+    But we probably should not skip the detailed info printed by the
+    hardlockup detector just because another softlockup or
+    hardlockup report is running in parallel.
+
+
+  3. Using a lock which might be nested on the same CPU.
+
+    It does not prevent mixed output completely. The nested
+    context will print the messages in the middle of the outer
+    one on the same CPU. But it would serialize output against
+    other CPUs.
+
+    There already is one used to serialize some backtraces,
+    see printk_cpu_sync_get_irqsave() in dump_stack_lvl() and
+    nmi_cpu_backtrace().
+
+    It should be safe when the locked code does not wait for
+    other CPUs. And when it is a leaf lock so that there
+    is no need to think about ABBA deadlocks against
+    other locks.
+
+    IMHO, printk_cpu_sync_get_irqsave() probably should be
+    safe to serialize the softlockup and hardlockup
+    detectors.
+
+
+Adding John into Cc. He is familiar with
+printk_cpu_sync_get_irqsave(). He wanted to use it also
+for synchronizing console drivers. Well, it will be done
+another way in the end.
+
+Best Regards,
+Petr
