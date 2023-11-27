@@ -2,252 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CE927FAC3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:07:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0877FAC44
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 22:08:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232022AbjK0VHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 16:07:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60344 "EHLO
+        id S232902AbjK0VIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 16:08:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjK0VHB (ORCPT
+        with ESMTP id S229527AbjK0VIJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 16:07:01 -0500
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51AB519D
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 13:07:07 -0800 (PST)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-5ce8eff71e1so29263387b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 13:07:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701119226; x=1701724026; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HUU3+89wZrgDbzq+c00gpiQNcqaCPhQOfgZ74RHd2SY=;
-        b=q5FdhAj3PI3P2/F7hAOXnatnGewHgwFkCOjipwJzTXtv3CPlKQ/MCjL7i2XkBtbkme
-         4cIK36OMYRFg3Wq2UqFvg9Dy06h2xjfx9S5yJulKL1sXqN9DG+2A3geaND8iEVFEBKvL
-         o0uwHeRcY0gmrxlgGFWw0O0N8vS8X8izx07hor6H4mJLokFawAYB67lL4IuxBj8hRc++
-         Jf07Fpp93vFxf3MUepugMkxjulcCYp8L3hRkHR/50zHSU7fR9sKrGzpIOXEKdVBA3CnI
-         SolGORjJ2tqmFx0BfGQz3s07f0Z7MKHkYazGV+svCz+lUHbSFW68kaKuI1wpATqHunRW
-         S/9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701119226; x=1701724026;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HUU3+89wZrgDbzq+c00gpiQNcqaCPhQOfgZ74RHd2SY=;
-        b=ucPU+1Qd+ZpNPMjfnysKIOZT6xnOCKEIrHpy1ZTX8yqCjJ/sYDCzPKkKhSPVgQZ+Q1
-         0zqgXcXO1qxJFNYsWIqBvKy3wejQ1vHbCrEQpKogJZqBHUQl7ll8VmVg4Q2YT403umS3
-         1J/wy+itqGYMVSqQUdiUMluSNLlmOaQAH9zPppKYTYn3HjeB+c8It6y6jFGkdB05Nl3a
-         3Clhfmr8frpSkuA9mZUGUog1ApmeSZZSJAlVKKRV1NPMSUqwJmnmQIcyWH9c7073XmHA
-         8JY5fTFLY/vH7m+C5KF+cOU9AQcjq0Hc8WqzEIEDiTPrq1bkBwISC6FBCMPnIlbo1GZN
-         AHOw==
-X-Gm-Message-State: AOJu0YzMTCR4RNNlCLNUNWmF8hPEWk/WqLr0VigFIX514supSNejBFiX
-        hbXRF9lG87Vz2dMDdh7Y6CVG2voAX9AH9o5iydGcNA==
-X-Google-Smtp-Source: AGHT+IF+k1LKe2Ufl37lo2dRXkW3bDFo2hDN+DJaSNvvCtX+/g+2Hd5wjHLMUZMnlAdWEBan4IGHhabadU7daPRnizw=
-X-Received: by 2002:a81:6006:0:b0:5c9:af70:8e99 with SMTP id
- u6-20020a816006000000b005c9af708e99mr13101599ywb.41.1701119226420; Mon, 27
- Nov 2023 13:07:06 -0800 (PST)
+        Mon, 27 Nov 2023 16:08:09 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29FDE191;
+        Mon, 27 Nov 2023 13:08:16 -0800 (PST)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARKAmpx001569;
+        Mon, 27 Nov 2023 21:08:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=4LopCIk+VbSRPrGHln6ohxeSl7MfENo2tZiIppXReWQ=;
+ b=cbR2bmBgmZTnms5y3cdrfMs2wWuK2efgBrf3dZN/JSn08sEjrK9bzdoVmuQ1g6ksgkf6
+ mxl/ifeSOPqfZe7LOO152c7A0wVHNiwKBG/YPZrozyxHwrTf9IAtCI0h2TvKnxoAcg0a
+ i8zLvKMZ0DZGHEKIITmUHcPBXlr2UrvfGNDssx4FbSbYVlvz+8eq3lPPdYDt2nLv45wV
+ OGLMmWmcZ8yZ9x6azZiC97YnjI7cRIWLsJdjM5Wpvs3ej37DYpnRaB5cUdWAnUwI/NAw
+ QTWOnsUQNQzxNO98hetfK5b7tPqAd8HTjqwbgqseAuDt4qCVkc+G2t0tf43XQpR1g314 qw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3un0mdkgm8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 21:08:11 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ARKBNTe004677;
+        Mon, 27 Nov 2023 21:08:11 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3un0mdkgke-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 21:08:11 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARJWQiN009176;
+        Mon, 27 Nov 2023 21:08:09 GMT
+Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ukumybjd3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Nov 2023 21:08:09 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+        by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ARL89qI17892090
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Nov 2023 21:08:09 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E7A1F5805D;
+        Mon, 27 Nov 2023 21:08:08 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2413058052;
+        Mon, 27 Nov 2023 21:08:08 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Mon, 27 Nov 2023 21:08:08 +0000 (GMT)
+Message-ID: <a9d5b31d-2d89-4787-959e-2df2c059db9b@linux.ibm.com>
+Date:   Mon, 27 Nov 2023 16:08:07 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 6/8] tpm: TPM2B formatted buffers
+Content-Language: en-US
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        linux-integrity@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        William Roberts <bill.c.roberts@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>
+References: <20231124020237.27116-1-jarkko@kernel.org>
+ <20231124020237.27116-7-jarkko@kernel.org>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <20231124020237.27116-7-jarkko@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: xOHUTHP6x6ahT23qLkSvmsjkl4sx1t1n
+X-Proofpoint-GUID: XU5Okn9GBCsD6m9LPskvoqo-KqBsw7_M
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20231115141928.429688-1-dipamt1729@gmail.com> <CAA8EJprqnUGQxmj4Y=qttVuj0zJxdD9B6neHa6sPseLLETpk5A@mail.gmail.com>
- <CALHmwsoC5h7_w9OzpUS_-xM6x5WF5V-vFExLEf4y99b2eCcqGQ@mail.gmail.com>
- <CAA8EJpoyC=paF1ZuznXgJAkT1fne0RwYfqJh-cdz0WLt02i+bw@mail.gmail.com>
- <CAF6AEGtdKD6-xA+AeZDXuKc+k4MnP8Ba4-12hHxt00bXLhJ7Eg@mail.gmail.com>
- <CAA8EJprj7F_K1zxnGdz1ReLNMR2CiYfRxWHUmudTZC+qjKA+kA@mail.gmail.com> <CAF6AEGtW5XZS+S0xQViE8RwmdsxXsSg3yz8-1=oGO5+HTzw52g@mail.gmail.com>
-In-Reply-To: <CAF6AEGtW5XZS+S0xQViE8RwmdsxXsSg3yz8-1=oGO5+HTzw52g@mail.gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Mon, 27 Nov 2023 23:06:55 +0200
-Message-ID: <CAA8EJpr6QerE_VhfQksgSUFHY=-gg3xWAqY9cfAHzfMtyBnNKA@mail.gmail.com>
-Subject: Re: [PATCH v2] Remove custom dumb_map_offset implementation in msm driver
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Dipam Turkar <dipamt1729@gmail.com>, quic_abhinavk@quicinc.com,
-        sean@poorly.run, marijn.suijten@somainline.org, airlied@gmail.com,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-27_19,2023-11-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ bulkscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0 mlxlogscore=999
+ phishscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311270147
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Nov 2023 at 22:52, Rob Clark <robdclark@gmail.com> wrote:
->
-> On Tue, Nov 21, 2023 at 5:14=E2=80=AFAM Dmitry Baryshkov
-> <dmitry.baryshkov@linaro.org> wrote:
-> >
-> > On Tue, 21 Nov 2023 at 04:26, Rob Clark <robdclark@gmail.com> wrote:
-> > >
-> > > On Wed, Nov 15, 2023 at 11:33=E2=80=AFAM Dmitry Baryshkov
-> > > <dmitry.baryshkov@linaro.org> wrote:
-> > > >
-> > > > On Wed, 15 Nov 2023 at 20:46, Dipam Turkar <dipamt1729@gmail.com> w=
-rote:
-> > > > >
-> > > > > They are not outdated, my bad. I went through the locks' code and=
- saw that they have been updated. But they are probably not necessary here =
-as most of the drivers do not use any form of locking in their implementati=
-ons. The generic implementations drm_gem_dumb_map_offset() and drm_gem_ttm_=
-dumb_map_offset() do not have any locking mechanisms either.
-> > > >
-> > > > Excuse me, but this doesn't sound right to me. There are different
-> > > > drivers with different implementations. So either we'd need a good
-> > > > explanation of why it is not necessary, or this patch is NAKed.
-> > >
-> > > Digging a bit thru history, it looks like commit 0de23977cfeb
-> > > ("drm/gem: convert to new unified vma manager") made external locking
-> > > unnecessary, since the vma mgr already had it's own internal locking.
-> >
-> > So, should we drop our own locking system?
->
-> specifically for _just_ vma_offset_manager/vma_node, we could.  But I
-> think that only amounts to mmap_offset().
-
-I see. I'll try digging into the mentioned commit. In the meantime,
-this looks like an R-B from you, doesn't it?
-
->
-> BR,
-> -R
->
-> > >
-> > > BR,
-> > > -R
-> > >
-> > > > >
-> > > > > Thanks and regards
-> > > > > Dipam Turkar
-> > > > >
-> > > > > On Wed, Nov 15, 2023 at 8:37=E2=80=AFPM Dmitry Baryshkov <dmitry.=
-baryshkov@linaro.org> wrote:
-> > > > >>
-> > > > >> On Wed, 15 Nov 2023 at 16:30, Dipam Turkar <dipamt1729@gmail.com=
-> wrote:
-> > > > >> >
-> > > > >> > Make msm use drm_gem_create_map_offset() instead of its custom
-> > > > >> > implementation for associating GEM object with a fake offset. =
-Since,
-> > > > >> > we already have this generic implementation, we don't need the=
- custom
-> > > > >> > implementation and it is better to standardize the code for GE=
-M based
-> > > > >> > drivers. This also removes the outdated locking leftovers.
-> > > > >>
-> > > > >> Why are they outdated?
-> > > > >>
-> > > > >> >
-> > > > >> > Signed-off-by: Dipam Turkar <dipamt1729@gmail.com>
-> > > > >> > ---
-> > > > >> >  drivers/gpu/drm/msm/msm_drv.c |  2 +-
-> > > > >> >  drivers/gpu/drm/msm/msm_gem.c | 21 ---------------------
-> > > > >> >  drivers/gpu/drm/msm/msm_gem.h |  2 --
-> > > > >> >  3 files changed, 1 insertion(+), 24 deletions(-)
-> > > > >> >
-> > > > >> > Changes in v2:
-> > > > >> > Modify commit message to include the absence of internal locki=
-ng leftovers
-> > > > >> > around allocating a fake offset in msm_gem_mmap_offset() in th=
-e generic
-> > > > >> > implementation drm_gem_create_map_offset().
-> > > > >> >
-> > > > >> > diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/m=
-sm/msm_drv.c
-> > > > >> > index a428951ee539..86a15992c717 100644
-> > > > >> > --- a/drivers/gpu/drm/msm/msm_drv.c
-> > > > >> > +++ b/drivers/gpu/drm/msm/msm_drv.c
-> > > > >> > @@ -1085,7 +1085,7 @@ static const struct drm_driver msm_drive=
-r =3D {
-> > > > >> >         .open               =3D msm_open,
-> > > > >> >         .postclose          =3D msm_postclose,
-> > > > >> >         .dumb_create        =3D msm_gem_dumb_create,
-> > > > >> > -       .dumb_map_offset    =3D msm_gem_dumb_map_offset,
-> > > > >> > +       .dumb_map_offset    =3D drm_gem_dumb_map_offset,
-> > > > >> >         .gem_prime_import_sg_table =3D msm_gem_prime_import_sg=
-_table,
-> > > > >> >  #ifdef CONFIG_DEBUG_FS
-> > > > >> >         .debugfs_init       =3D msm_debugfs_init,
-> > > > >> > diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/m=
-sm/msm_gem.c
-> > > > >> > index db1e748daa75..489694ef79cb 100644
-> > > > >> > --- a/drivers/gpu/drm/msm/msm_gem.c
-> > > > >> > +++ b/drivers/gpu/drm/msm/msm_gem.c
-> > > > >> > @@ -671,27 +671,6 @@ int msm_gem_dumb_create(struct drm_file *=
-file, struct drm_device *dev,
-> > > > >> >                         MSM_BO_SCANOUT | MSM_BO_WC, &args->han=
-dle, "dumb");
-> > > > >> >  }
-> > > > >> >
-> > > > >> > -int msm_gem_dumb_map_offset(struct drm_file *file, struct drm=
-_device *dev,
-> > > > >> > -               uint32_t handle, uint64_t *offset)
-> > > > >> > -{
-> > > > >> > -       struct drm_gem_object *obj;
-> > > > >> > -       int ret =3D 0;
-> > > > >> > -
-> > > > >> > -       /* GEM does all our handle to object mapping */
-> > > > >> > -       obj =3D drm_gem_object_lookup(file, handle);
-> > > > >> > -       if (obj =3D=3D NULL) {
-> > > > >> > -               ret =3D -ENOENT;
-> > > > >> > -               goto fail;
-> > > > >> > -       }
-> > > > >> > -
-> > > > >> > -       *offset =3D msm_gem_mmap_offset(obj);
-> > > > >> > -
-> > > > >> > -       drm_gem_object_put(obj);
-> > > > >> > -
-> > > > >> > -fail:
-> > > > >> > -       return ret;
-> > > > >> > -}
-> > > > >> > -
-> > > > >> >  static void *get_vaddr(struct drm_gem_object *obj, unsigned m=
-adv)
-> > > > >> >  {
-> > > > >> >         struct msm_gem_object *msm_obj =3D to_msm_bo(obj);
-> > > > >> > diff --git a/drivers/gpu/drm/msm/msm_gem.h b/drivers/gpu/drm/m=
-sm/msm_gem.h
-> > > > >> > index 8ddef5443140..dc74a0ef865d 100644
-> > > > >> > --- a/drivers/gpu/drm/msm/msm_gem.h
-> > > > >> > +++ b/drivers/gpu/drm/msm/msm_gem.h
-> > > > >> > @@ -139,8 +139,6 @@ struct page **msm_gem_pin_pages(struct drm=
-_gem_object *obj);
-> > > > >> >  void msm_gem_unpin_pages(struct drm_gem_object *obj);
-> > > > >> >  int msm_gem_dumb_create(struct drm_file *file, struct drm_dev=
-ice *dev,
-> > > > >> >                 struct drm_mode_create_dumb *args);
-> > > > >> > -int msm_gem_dumb_map_offset(struct drm_file *file, struct drm=
-_device *dev,
-> > > > >> > -               uint32_t handle, uint64_t *offset);
-> > > > >> >  void *msm_gem_get_vaddr_locked(struct drm_gem_object *obj);
-> > > > >> >  void *msm_gem_get_vaddr(struct drm_gem_object *obj);
-> > > > >> >  void *msm_gem_get_vaddr_active(struct drm_gem_object *obj);
-> > > > >> > --
-> > > > >> > 2.34.1
-> > > > >> >
-> > > > >>
-> > > > >>
-> > > > >> --
-> > > > >> With best wishes
-> > > > >> Dmitry
-> > > >
-> > > >
-> > > >
-> > > > --
-> > > > With best wishes
-> > > > Dmitry
-> >
-> >
-> >
-> > --
-> > With best wishes
-> > Dmitry
 
 
+On 11/23/23 21:02, Jarkko Sakkinen wrote:
+> Declare tpm_buf_init_sized() and tpm_buf_reset_sized() for creating TPM2B
+> formatted buffers. These buffers are also known as sized buffers in the
+> specifications and literature.
+> 
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 
---=20
-With best wishes
-Dmitry
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+
+> ---
+> v2: [2021-11-21] Refine the API according to the comments for
+>      https://lore.kernel.org/linux-integrity/20231024011531.442587-5-jarkko@kernel.org/
+> ---
+>   drivers/char/tpm/tpm-buf.c | 38 +++++++++++++++++++++++++++++++++++---
+>   include/linux/tpm.h        |  4 ++++
+>   2 files changed, 39 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/char/tpm/tpm-buf.c b/drivers/char/tpm/tpm-buf.c
+> index 3f39893f3bb1..099b4a56c5d5 100644
+> --- a/drivers/char/tpm/tpm-buf.c
+> +++ b/drivers/char/tpm/tpm-buf.c
+> @@ -47,6 +47,36 @@ void tpm_buf_reset(struct tpm_buf *buf, u16 tag, u32 ordinal)
+>   }
+>   EXPORT_SYMBOL_GPL(tpm_buf_reset);
+>   
+> +/**
+> + * tpm_buf_init_sized() - Allocate and initialize a sized (TPM2B) buffer
+> + * @buf:	A @tpm_buf
+> + *
+> + * Return: 0 or -ENOMEM
+> + */
+> +int tpm_buf_init_sized(struct tpm_buf *buf)
+> +{
+> +	buf->data = (u8 *)__get_free_page(GFP_KERNEL);
+> +	if (!buf->data)
+> +		return -ENOMEM;
+> +
+> +	tpm_buf_reset_sized(buf);
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(tpm_buf_init_sized);
+> +
+> +/**
+> + * tpm_buf_reset_sized() - Initialize a sized buffer
+> + * @buf:	A &tpm_buf
+> + */
+> +void tpm_buf_reset_sized(struct tpm_buf *buf)
+> +{
+> +	buf->flags = TPM_BUF_TPM2B;
+> +	buf->length = 2;
+> +	buf->data[0] = 0;
+> +	buf->data[1] = 0;
+> +}
+> +EXPORT_SYMBOL_GPL(tpm_buf_reset_sized);
+> +
+>   void tpm_buf_destroy(struct tpm_buf *buf)
+>   {
+>   	free_page((unsigned long)buf->data);
+> @@ -72,8 +102,6 @@ EXPORT_SYMBOL_GPL(tpm_buf_length);
+>    */
+>   void tpm_buf_append(struct tpm_buf *buf, const u8 *new_data, u16 new_length)
+>   {
+> -	struct tpm_header *head = (struct tpm_header *)buf->data;
+> -
+>   	/* Return silently if overflow has already happened. */
+>   	if (buf->flags & TPM_BUF_OVERFLOW)
+>   		return;
+> @@ -86,7 +114,11 @@ void tpm_buf_append(struct tpm_buf *buf, const u8 *new_data, u16 new_length)
+>   
+>   	memcpy(&buf->data[buf->length], new_data, new_length);
+>   	buf->length += new_length;
+> -	head->length = cpu_to_be32(buf->length);
+> +
+> +	if (buf->flags & TPM_BUF_TPM2B)
+> +		((__be16 *)buf->data)[0] = cpu_to_be16(buf->length - 2);
+> +	else
+> +		((struct tpm_header *)buf->data)->length = cpu_to_be32(buf->length);
+>   }
+>   EXPORT_SYMBOL_GPL(tpm_buf_append);
+>   
+> diff --git a/include/linux/tpm.h b/include/linux/tpm.h
+> index 1d7b39b5c383..715db4a91c1f 100644
+> --- a/include/linux/tpm.h
+> +++ b/include/linux/tpm.h
+> @@ -300,6 +300,8 @@ struct tpm_header {
+>   enum tpm_buf_flags {
+>   	/* the capacity exceeded: */
+>   	TPM_BUF_OVERFLOW	= BIT(0),
+> +	/* TPM2B format: */
+> +	TPM_BUF_TPM2B		= BIT(1),
+>   };
+>   
+>   /*
+> @@ -328,6 +330,8 @@ struct tpm2_hash {
+>   
+>   int tpm_buf_init(struct tpm_buf *buf, u16 tag, u32 ordinal);
+>   void tpm_buf_reset(struct tpm_buf *buf, u16 tag, u32 ordinal);
+> +int tpm_buf_init_sized(struct tpm_buf *buf);
+> +void tpm_buf_reset_sized(struct tpm_buf *buf);
+>   void tpm_buf_destroy(struct tpm_buf *buf);
+>   u32 tpm_buf_length(struct tpm_buf *buf);
+>   void tpm_buf_append(struct tpm_buf *buf, const u8 *new_data, u16 new_length);
