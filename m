@@ -2,108 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B4697FA69E
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:38:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9BD07FA6A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 17:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234145AbjK0QiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 11:38:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41552 "EHLO
+        id S234186AbjK0QjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 11:39:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231679AbjK0QiK (ORCPT
+        with ESMTP id S233918AbjK0QjD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 11:38:10 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24DB2B6
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:38:17 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F78FC433C7;
-        Mon, 27 Nov 2023 16:38:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701103096;
-        bh=Jc3uA/l1xBlBTvWQCweF4LiIVoRMESPYgni0yWyW2Fs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RTQIm9VH39NKodbZyyDvRXxu01IHJDuYFiSXB4jaBnPiFhXMweVgff7c7Ccb6CS/F
-         LnM3e6/tBcAaiZUxblFUn6aj9+y55YxbyqHf32ns3pwKhPRxDBOHY51UCo6QxclrTB
-         faIMrxb/8qLlPrMx7z6Pi4ppFSX5Zqo/sR0uEDxTb7xgsFOFqSUVszxMpSu8QMvFNw
-         Cph8H3g+F+BZzwmh/K0i3MIMjzxYI85fQ/0vrnLEeWtAFhcBwB6EnIgiLYbVYfKyG0
-         /N2EPflRHlJAso6QDwGSjJVgRFmyhkYoeJWlLxO/9eIZwiEBRJNsyUGE+x1qB1l0ZH
-         I27k7+m89VOGw==
-Date:   Mon, 27 Nov 2023 17:38:13 +0100
-From:   Maxime Ripard <mripard@kernel.org>
-To:     rafael@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-next@vger.kernel.org, sfr@canb.auug.org.au,
-        andrzej.hajda@intel.com, neil.armstrong@linaro.org,
-        rfoss@kernel.org, Laurent.pinchart@ideasonboard.com,
-        jonas@kwiboo.se, jernej.skrabec@gmail.com,
-        maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
-        airlied@gmail.com, daniel@ffwll.ch,
-        angelogioacchino.delregno@collabora.com, ulf.hansson@linaro.org,
-        linus.walleij@linaro.org, Liu Ying <victor.liu@nxp.com>
-Subject: Re: [PATCH v2 1/2] driver core: Export device_is_dependent() to
- modules
-Message-ID: <v6rthnruba5xaxazsn4jsptn6catso5qwuyf5xxbf4ml25b6eo@snttjo7oqlod>
-References: <20231127051414.3783108-1-victor.liu@nxp.com>
- <20231127051414.3783108-2-victor.liu@nxp.com>
+        Mon, 27 Nov 2023 11:39:03 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FB5FC6
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:39:10 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-507be298d2aso6044835e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 08:39:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701103148; x=1701707948; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mbaBvVs4jJomuZqndjy6yrs8VhBzsYpU6MK+yNn7wYo=;
+        b=iP02GF5eKWdrEOLl75L3zMir44AgVKPu0jJSymY7S8h/X3xWdYWBxC3Ruxe8kReObY
+         M1IpKQY5RmJ6RFVWA+tLJ9D87irdYaxGvBB0xBuAMQz4ctwDHMR3d3+Ts00OnXdzvwiV
+         M7zdfOh5EK50IQ9ExTsD25xwxwssHKUOPcNT8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701103148; x=1701707948;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mbaBvVs4jJomuZqndjy6yrs8VhBzsYpU6MK+yNn7wYo=;
+        b=L+R2hc2crJQ34miLVCB/WxjT7iRtB+8rubLoo2LDMsbnVzUdj2dw+VrrFnn2tj69Ta
+         +hRlcFCUnwiygocGSfZMFgtwGFA8R03lpW5NYMapW6tu+wJTOGJd3Wdwxy9fKhnVZAW8
+         ztZpZSGJxhl9zabYxkA1oqIhJfTHyAzxNausI3ZBsegE0CD2uWxpIB3nl8s/6yVKtl/W
+         O3aWoXkTlgcFyS5SeD/PmKWZ5mP9pUJJz77lXxJk3weDbAHQWsZ+/u26O6zah+g/uHfp
+         Qo/6HwEcR1/O8KsQkJHDiCzaDFG4YUdnhSSwjRlWxB/xBCPfBILu6kocS7dKSzIC31v0
+         BciQ==
+X-Gm-Message-State: AOJu0Yy69L3Gdtchb6qJxV70QlJMgPnTLgLwdDwXzWwUIvzs+Zay1V5H
+        +WweQvPVa5wsxXBcl5hXlOXi8pPvKBwR3nvh0xN9Zg==
+X-Google-Smtp-Source: AGHT+IG1KaGzzgqkd/bVl0htNdKZU5Bn8cbei0/SCcALuzYLvd3G7A/NDsEbwNme3869KE8Y7hH9x4OGUsfYwhzFnkY=
+X-Received: by 2002:a05:6512:3190:b0:50a:68f4:6361 with SMTP id
+ i16-20020a056512319000b0050a68f46361mr9952921lfe.17.1701103148299; Mon, 27
+ Nov 2023 08:39:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qtwx6kzcm62expan"
-Content-Disposition: inline
-In-Reply-To: <20231127051414.3783108-2-victor.liu@nxp.com>
+References: <20230925163313.1.I55bfb5880d6755094a995d3ae44c13810ae98be4@changeid>
+ <ZWF76ALANQwP_9b1@google.com>
+In-Reply-To: <ZWF76ALANQwP_9b1@google.com>
+From:   Jonathan Denose <jdenose@chromium.org>
+Date:   Mon, 27 Nov 2023 10:38:57 -0600
+Message-ID: <CALNJtpUHHaq6g0wSuyaNBxtOE9kt6vDzdAGGu6j=JJdJmerDWQ@mail.gmail.com>
+Subject: Re: [PATCH] Input: i8042 - add quirk for Lenovo ThinkPad T14 Gen 1
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-input@vger.kernel.org, Jonathan Denose <jdenose@google.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+        Takashi Iwai <tiwai@suse.de>,
+        Werner Sembach <wse@tuxedocomputers.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Dmitry
 
---qtwx6kzcm62expan
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, Nov 24, 2023 at 10:45=E2=80=AFPM Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
+>
+> Hi Jonathan,
+>
+> On Mon, Sep 25, 2023 at 04:33:20PM -0500, Jonathan Denose wrote:
+> > The ThinkPad T14 Gen 1 touchpad works fine except that clicking
+> > and dragging by tapping the touchpad or depressing the touchpad
+> > do not work. Disabling PNP for controller setting discovery enables
+> > click and drag without negatively impacting other touchpad features.
+>
+> I would like to understand more on how enabling PnP discovery for i8042
+> affects the touchpad. Do you see it using different interrupt or IO
+> ports? What protocol does the touchpad use with/without PnP? If the
+> protocol is the same, do you see difference in the ranges (pressure,
+> etc) reported by the device?
+>
+> Thanks.
+>
+> --
+> Dmitry
 
-Greg, Rafael,
+Without PnP discovery the touchpad is using the SynPS/2 protocol, with
+PnP discovery, the touchpad is using the rmi4 protocol. Since the
+protocols are different, so are the ranges but let me know if you
+still want to see them.
 
-On Mon, Nov 27, 2023 at 01:14:13PM +0800, Liu Ying wrote:
-> Export device_is_dependent() since the drm_kms_helper module is starting
-> to use it.
->=20
-> Signed-off-by: Liu Ying <victor.liu@nxp.com>
-> ---
-> v2:
-> * Newly introduced as needed by patch 2.
->=20
->  drivers/base/core.c | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index 67ba592afc77..bfd2bf0364b7 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -328,6 +328,7 @@ int device_is_dependent(struct device *dev, void *tar=
-get)
->  	}
->  	return ret;
->  }
-> +EXPORT_SYMBOL_GPL(device_is_dependent);
+Can you tell me how to check the interrupt/IO ports? I'm not sure how
+to do that.
 
-So, a committer just applied this to drm-misc-fixes without your
-approval. Could you ack it? If you don't want to, we'll fix it.
-
-Maxime
-
---qtwx6kzcm62expan
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZWTF9QAKCRDj7w1vZxhR
-xb0rAP48ijAtHc/miJhU3dvSZ7sHTokRzAIYyqw7KRtdReE2hwD/ahQdxB+702cR
-W49SZmDCxK5raw/Hq4Pk4Xi/s7ICwA4=
-=B8s7
------END PGP SIGNATURE-----
-
---qtwx6kzcm62expan--
+Thanks,
+Jonathan
