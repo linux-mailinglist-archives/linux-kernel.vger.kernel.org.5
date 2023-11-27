@@ -2,68 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25EC47F9866
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 05:34:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1897D7F9869
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 05:37:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232072AbjK0Eed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 26 Nov 2023 23:34:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45626 "EHLO
+        id S232079AbjK0EhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 26 Nov 2023 23:37:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjK0Eec (ORCPT
+        with ESMTP id S229379AbjK0Eg7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 26 Nov 2023 23:34:32 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84710136
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 20:34:37 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-50ba8177c9fso3615e87.1
-        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 20:34:37 -0800 (PST)
+        Sun, 26 Nov 2023 23:36:59 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D9D5123
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 20:37:05 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6cc02e77a9cso1459649b3a.0
+        for <linux-kernel@vger.kernel.org>; Sun, 26 Nov 2023 20:37:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701059676; x=1701664476; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=IXbKy2pJw1weWM2AUX6qsAkpX0IgEY8LocF0NM/epjw=;
-        b=15Dd2Zy+17OiBlpkXITchllL/RZsVXC3gOE/7TE67o+frvAEOQ1MKR5rHzVOLyxLlv
-         oSs002rQJ/dphUqpdi/hP10kgJ8bZEWuzKhklW7zekP4Y/vQose5SHNnzvDhWTdgdxLk
-         xgcZmsQL0fyISWhKU+aMMU0B+p2aIRI6s2iHLeNVYwvMHE40WveS6/rt0eWdRtw+1l4Q
-         /ze7vtn9lfR8ozNER73tpJOaah+qq1OZzRjmVychz6qbzl2R7yS0fKKinGjL0I9NM8/3
-         a2m4AgOm/thelf1dHeGXjdx49YAq107mSy8pr/mwSj93qSXYistJbnsZ/U09C2Fbf7p5
-         niFg==
+        d=gmail.com; s=20230601; t=1701059825; x=1701664625; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RrkhcZr7BZmlIlQDlknFFhzCf6BgW+GunyjUL2ZUQMY=;
+        b=FEAl0udMvPsWqL7yBv3wR0yKGxtrJrCjP/ZHHgqCC8t3tNKmJN2/csmqv8Yc8ZrJ6M
+         7zW8s0zMOMwL+3ZLaVBKP/9mFImCbQ2h7vqdlyrW2DB3UilKEX88SjW2cSCkdqa1OI9W
+         J9FC4ObrGMuV9JfXpQbBsutwsNCYDjyE+SBfMqyPwVLuKp7e2FGt5Et4Wim69PuhmlYc
+         vhqW7b3PZqvUgW5Ko4LguasawhR5O9NH8+EWk178rjkoRiF93dIXgS7oJJGdd0f1QHhY
+         pjI6KKz9oQ1/BxcARjOCrYex66Xxw3Zj3OTjV1TW00REsPbfqaF/LxjvROe3u1a98BCm
+         i2wQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701059676; x=1701664476;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IXbKy2pJw1weWM2AUX6qsAkpX0IgEY8LocF0NM/epjw=;
-        b=VJTU9jeVXuDdBchTbUzctCy6ba6qYOyPHGhcUI+LWFc/j9d6dPheBNqVltXBDD2wr8
-         pbYfObOMrw8euKoMB4AxGjZA2s+gwJtOGn09gdi48FiQuzm87afYaaj+vh8mp3N79aWl
-         JWv+u1ub07ojsosEIiqvQlnlPp2A//DIxexyVtJXMhRYgYHc0qTy82iWAR8UJ87xLdKF
-         bHXEBH4c3eeYWaBKos3ANYhDSTyKhSKrqORapQmfo6xpxPGh5zqHz3Ix5zoMZmgNE6Th
-         jcE7oJTb6NnWZNGVxdKfb3Wi0b1yDsdPv+bgemqVM4OcPTxjKCi/D+r8t4kbAQYI//GR
-         B++g==
-X-Gm-Message-State: AOJu0YxKQTo0V+ie7EuqGMbAFdQqDvHs7BHnzJqQbV5mIq0vX12wprq2
-        KOQvC8usIm2qzuGIYYP6Rh12soKO45+S4stkhPmUwA==
-X-Google-Smtp-Source: AGHT+IFhdT60DfmJFK01YP5LJxJl2q5WHKddBuvyqA3O+DhvY0L2910Po9fgOI0KxYcxbbBEVJoe6jXahBGdrtcbosA=
-X-Received: by 2002:a05:6512:239e:b0:501:a2b9:6046 with SMTP id
- c30-20020a056512239e00b00501a2b96046mr452354lfv.7.1701059675534; Sun, 26 Nov
- 2023 20:34:35 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701059825; x=1701664625;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RrkhcZr7BZmlIlQDlknFFhzCf6BgW+GunyjUL2ZUQMY=;
+        b=HkjbwdXG5ewzFIXyBdc7LkrF6san5tJdsiPiAUWsOzPzhg3kofTzVCpbuDuGWviN77
+         E1u5GMYqNh4SzUrbRlABusMJWmNdY8QSUWWxbqWF62gCLYiI+L+ESyiudmRoSTKgfAaz
+         cXvdHHnwXso39PH7+Ony5Ai8mLK7PbyLkIBG9dfi/z3K53i+xh1iuH4RvLauBCg+djZZ
+         P7mdHOVkFMY9CSvUJNd+axOcQewCJGnfHu8SZLrNKxOJB6RVSSjG2Ck0i0UYTQuWq3o4
+         fLZFo0sZuILtuHwwFQKNEaqJotwJ2UfY6SsMRJ3Us4E5ABaCWHTJcBke7ear5ytwYTIw
+         HOxg==
+X-Gm-Message-State: AOJu0Yzca7oaq3nwpCF4ujIvmxURv8J066/mPbc+m77ZAb3bi7/Ymfc0
+        y5oPTyNM0sFAtBxtjVlDfi4=
+X-Google-Smtp-Source: AGHT+IHwesZsTaMAmxY5AjIARHXfR+Dyw7vU44Vm1eFKSxddz6zpVn7aLU/+DeyilY0G+gQPL8pCww==
+X-Received: by 2002:a05:6a21:192:b0:18b:5b7e:6b9 with SMTP id le18-20020a056a21019200b0018b5b7e06b9mr16364839pzb.2.1701059824943;
+        Sun, 26 Nov 2023 20:37:04 -0800 (PST)
+Received: from barry-desktop.hub ([2407:7000:8942:5500:6f18:c2e2:c23c:9ba2])
+        by smtp.gmail.com with ESMTPSA id h15-20020a17090aea8f00b002802d264240sm6663134pjz.29.2023.11.26.20.36.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 26 Nov 2023 20:37:04 -0800 (PST)
+From:   Barry Song <21cnbao@gmail.com>
+X-Google-Original-From: Barry Song <v-songbaohua@oppo.com>
+To:     ryan.roberts@arm.com
+Cc:     akpm@linux-foundation.org, anshuman.khandual@arm.com,
+        catalin.marinas@arm.com, david@redhat.com, fengwei.yin@intel.com,
+        hughd@google.com, itaru.kitayama@gmail.com, jhubbard@nvidia.com,
+        kirill.shutemov@linux.intel.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mcgrof@kernel.org, rientjes@google.com,
+        shy828301@gmail.com, vbabka@suse.cz, wangkefeng.wang@huawei.com,
+        willy@infradead.org, ying.huang@intel.com, yuzhao@google.com,
+        ziy@nvidia.com
+Subject: Re: [RESEND PATCH v7 02/10] mm: Non-pmd-mappable, large folios for folio_add_new_anon_rmap()
+Date:   Mon, 27 Nov 2023 17:36:44 +1300
+Message-Id: <20231127043644.8072-1-v-songbaohua@oppo.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231122162950.3854897-3-ryan.roberts@arm.com>
+References: <20231122162950.3854897-3-ryan.roberts@arm.com>
 MIME-Version: 1.0
-References: <VI1P193MB07529BC28E5B333A8526BEBD99BEA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-In-Reply-To: <VI1P193MB07529BC28E5B333A8526BEBD99BEA@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 27 Nov 2023 05:34:22 +0100
-Message-ID: <CACT4Y+aVjKTxTamnybC9gS7uvSodYjvHst9obo=GjJ_km-_pdw@mail.gmail.com>
-Subject: Re: [PATCH v2] kasan: Record and report more information
-To:     Juntong Deng <juntong.deng@outlook.com>
-Cc:     ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
-        vincenzo.frascino@arm.com, akpm@linux-foundation.org,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,252 +80,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 26 Nov 2023 at 23:25, Juntong Deng <juntong.deng@outlook.com> wrote:
->
-> Record and report more information to help us find the cause of the
-> bug and to help us correlate the error with other system events.
->
-> This patch adds recording and showing CPU number and timestamp at
-> allocation and free (controlled by CONFIG_KASAN_EXTRA_INFO). The
-> timestamps in the report use the same format and source as printk.
->
-> Error occurrence timestamp is already implicit in the printk log,
-> and CPU number is already shown by dump_stack_lvl, so there is no
-> need to add it.
->
-> In order to record CPU number and timestamp at allocation and free,
-> corresponding members need to be added to the relevant data structures,
-> which will lead to increased memory consumption.
->
-> In Generic KASAN, members are added to struct kasan_track. Since in
-> most cases, alloc meta is stored in the redzone and free meta is
-> stored in the object or the redzone, memory consumption will not
-> increase much.
->
-> In SW_TAGS KASAN and HW_TAGS KASAN, members are added to
-> struct kasan_stack_ring_entry. Memory consumption increases as the
-> size of struct kasan_stack_ring_entry increases (this part of the
-> memory is allocated by memblock), but since this is configurable,
-> it is up to the user to choose.
->
-> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
-> ---
-> V1 -> V2: Use bit field to reduce memory consumption. Add more detailed
-> config help. Cancel printing of redundant error occurrence timestamp.
->
->  lib/Kconfig.kasan      | 21 +++++++++++++++++++++
->  mm/kasan/common.c      | 10 ++++++++++
->  mm/kasan/kasan.h       | 10 ++++++++++
->  mm/kasan/report.c      |  6 ++++++
->  mm/kasan/report_tags.c | 16 ++++++++++++++++
->  mm/kasan/tags.c        | 17 +++++++++++++++++
->  6 files changed, 80 insertions(+)
->
-> diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
-> index 935eda08b1e1..8653f5c38be7 100644
-> --- a/lib/Kconfig.kasan
-> +++ b/lib/Kconfig.kasan
-> @@ -207,4 +207,25 @@ config KASAN_MODULE_TEST
->           A part of the KASAN test suite that is not integrated with KUnit.
->           Incompatible with Hardware Tag-Based KASAN.
->
-> +config KASAN_EXTRA_INFO
-> +       bool "Record and report more information"
-> +       depends on KASAN
-> +       help
-> +         Record and report more information to help us find the cause of the
-> +         bug and to help us correlate the error with other system events.
-> +
-> +         Currently, the CPU number and timestamp are additionally
-> +         recorded for each heap block at allocation and free time, and
-> +         8 bytes will be added to each metadata structure that records
-> +         allocation or free information.
-> +
-> +         In Generic KASAN, each kmalloc-8 and kmalloc-16 object will add
-> +         16 bytes of additional memory consumption, and each kmalloc-32
-> +         object will add 8 bytes of additional memory consumption, not
-> +         affecting other larger objects.
-> +
-> +         In SW_TAGS KASAN and HW_TAGS KASAN, depending on the stack_ring_size
-> +         boot parameter, it will add 8 * stack_ring_size bytes of additional
-> +         memory consumption.
-> +
->  endif # KASAN
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index b5d8bd26fced..2f0884c762b7 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -20,6 +20,7 @@
->  #include <linux/module.h>
->  #include <linux/printk.h>
->  #include <linux/sched.h>
-> +#include <linux/sched/clock.h>
->  #include <linux/sched/task_stack.h>
->  #include <linux/slab.h>
->  #include <linux/stackdepot.h>
-> @@ -49,6 +50,15 @@ depot_stack_handle_t kasan_save_stack(gfp_t flags, depot_flags_t depot_flags)
->
->  void kasan_set_track(struct kasan_track *track, gfp_t flags)
+>  void folio_add_new_anon_rmap(struct folio *folio, struct vm_area_struct *vma,
+>  		unsigned long address)
 >  {
-> +#ifdef CONFIG_KASAN_EXTRA_INFO
-> +       u32 cpu = raw_smp_processor_id();
-> +       u64 ts_nsec = local_clock();
-> +       unsigned long rem_usec = do_div(ts_nsec, NSEC_PER_SEC) / 1000;
+> -	int nr;
+> +	int nr = folio_nr_pages(folio);
+> 
+> -	VM_BUG_ON_VMA(address < vma->vm_start || address >= vma->vm_end, vma);
+> +	VM_BUG_ON_VMA(address < vma->vm_start ||
+> +			address + (nr << PAGE_SHIFT) > vma->vm_end, vma);
+>  	__folio_set_swapbacked(folio);
+> +	__folio_set_anon(folio, vma, address, true);
+> 
+> -	if (likely(!folio_test_pmd_mappable(folio))) {
+> +	if (likely(!folio_test_large(folio))) {
+>  		/* increment count (starts at -1) */
+>  		atomic_set(&folio->_mapcount, 0);
+> -		nr = 1;
+> +		SetPageAnonExclusive(&folio->page);
+> +	} else if (!folio_test_pmd_mappable(folio)) {
+> +		int i;
 > +
-> +       track->cpu = cpu;
-> +       track->ts_sec = ts_nsec;
-> +       track->ts_usec = rem_usec;
-> +#endif /* CONFIG_KASAN_EXTRA_INFO */
->         track->pid = current->pid;
->         track->stack = kasan_save_stack(flags,
->                         STACK_DEPOT_FLAG_CAN_ALLOC | STACK_DEPOT_FLAG_GET);
-> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-> index b29d46b83d1f..2a37baa4ce2f 100644
-> --- a/mm/kasan/kasan.h
-> +++ b/mm/kasan/kasan.h
-> @@ -187,6 +187,11 @@ static inline bool kasan_requires_meta(void)
->  struct kasan_track {
->         u32 pid;
->         depot_stack_handle_t stack;
-> +#ifdef CONFIG_KASAN_EXTRA_INFO
-> +       u64 cpu:20;
-> +       u64 ts_sec:22;
-> +       u64 ts_usec:22;
-> +#endif /* CONFIG_KASAN_EXTRA_INFO */
->  };
->
->  enum kasan_report_type {
-> @@ -278,6 +283,11 @@ struct kasan_stack_ring_entry {
->         u32 pid;
->         depot_stack_handle_t stack;
->         bool is_free;
-> +#ifdef CONFIG_KASAN_EXTRA_INFO
-> +       u64 cpu:20;
-> +       u64 ts_sec:22;
-> +       u64 ts_usec:22;
-> +#endif /* CONFIG_KASAN_EXTRA_INFO */
->  };
->
->  struct kasan_stack_ring {
-> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> index e77facb62900..8cd8f6e5cf24 100644
-> --- a/mm/kasan/report.c
-> +++ b/mm/kasan/report.c
-> @@ -262,7 +262,13 @@ static void print_error_description(struct kasan_report_info *info)
->
->  static void print_track(struct kasan_track *track, const char *prefix)
->  {
-> +#ifdef CONFIG_KASAN_EXTRA_INFO
-> +       pr_err("%s by task %u on cpu %d at %u.%06us:\n",
-> +                       prefix, track->pid, track->cpu,
-> +                       track->ts_sec, track->ts_usec);
-> +#else
->         pr_err("%s by task %u:\n", prefix, track->pid);
-> +#endif /* CONFIG_KASAN_EXTRA_INFO */
->         if (track->stack)
->                 stack_depot_print(track->stack);
->         else
-> diff --git a/mm/kasan/report_tags.c b/mm/kasan/report_tags.c
-> index 55154743f915..bf895b1d2dc2 100644
-> --- a/mm/kasan/report_tags.c
-> +++ b/mm/kasan/report_tags.c
-> @@ -27,6 +27,16 @@ static const char *get_common_bug_type(struct kasan_report_info *info)
->         return "invalid-access";
+> +		for (i = 0; i < nr; i++) {
+> +			struct page *page = folio_page(folio, i);
+> +
+> +			/* increment count (starts at -1) */
+> +			atomic_set(&page->_mapcount, 0);
+> +			SetPageAnonExclusive(page);
+
+Hi Ryan,
+
+we are doing an entire mapping, right? what is the reason to
+increase mapcount for each subpage? shouldn't we only increase
+mapcount of subpage in either split or doublemap case?
+
+in page_add_anon_rmap(), are we also increasing mapcount of
+each subpage for fork() case where the entire large folio
+is inheritted by child processes?
+
+> +		}
+> +
+> +		atomic_set(&folio->_nr_pages_mapped, nr);
+>  	} else {
+>  		/* increment count (starts at -1) */
+>  		atomic_set(&folio->_entire_mapcount, 0);
+>  		atomic_set(&folio->_nr_pages_mapped, COMPOUND_MAPPED);
+> -		nr = folio_nr_pages(folio);
+> +		SetPageAnonExclusive(&folio->page);
+>  		__lruvec_stat_mod_folio(folio, NR_ANON_THPS, nr);
+>  	}
+> 
+>  	__lruvec_stat_mod_folio(folio, NR_ANON_MAPPED, nr);
+> -	__folio_set_anon(folio, vma, address, true);
+> -	SetPageAnonExclusive(&folio->page);
 >  }
->
-> +#ifdef CONFIG_KASAN_EXTRA_INFO
-> +static void kasan_complete_extra_report_info(struct kasan_track *track,
-> +                                        struct kasan_stack_ring_entry *entry)
-> +{
-> +       track->cpu = entry->cpu;
-> +       track->ts_sec = entry->ts_sec;
-> +       track->ts_usec = entry->ts_usec;
-> +}
-> +#endif /* CONFIG_KASAN_EXTRA_INFO */
-> +
->  void kasan_complete_mode_report_info(struct kasan_report_info *info)
->  {
->         unsigned long flags;
-> @@ -73,6 +83,9 @@ void kasan_complete_mode_report_info(struct kasan_report_info *info)
->
->                         info->free_track.pid = entry->pid;
->                         info->free_track.stack = entry->stack;
-> +#ifdef CONFIG_KASAN_EXTRA_INFO
-> +                       kasan_complete_extra_report_info(&info->free_track, entry);
-> +#endif /* CONFIG_KASAN_EXTRA_INFO */
->                         free_found = true;
->
->                         /*
-> @@ -88,6 +101,9 @@ void kasan_complete_mode_report_info(struct kasan_report_info *info)
->
->                         info->alloc_track.pid = entry->pid;
->                         info->alloc_track.stack = entry->stack;
-> +#ifdef CONFIG_KASAN_EXTRA_INFO
-> +                       kasan_complete_extra_report_info(&info->alloc_track, entry);
-> +#endif /* CONFIG_KASAN_EXTRA_INFO */
->                         alloc_found = true;
->
->                         /*
-> diff --git a/mm/kasan/tags.c b/mm/kasan/tags.c
-> index 739ae997463d..c172e115b9bb 100644
-> --- a/mm/kasan/tags.c
-> +++ b/mm/kasan/tags.c
-> @@ -13,6 +13,7 @@
->  #include <linux/memblock.h>
->  #include <linux/memory.h>
->  #include <linux/mm.h>
-> +#include <linux/sched/clock.h>
->  #include <linux/stackdepot.h>
->  #include <linux/static_key.h>
->  #include <linux/string.h>
-> @@ -93,6 +94,19 @@ void __init kasan_init_tags(void)
->         }
->  }
->
-> +#ifdef CONFIG_KASAN_EXTRA_INFO
-> +static void save_extra_info(struct kasan_stack_ring_entry *entry)
-> +{
-> +       u32 cpu = raw_smp_processor_id();
-> +       u64 ts_nsec = local_clock();
-> +       unsigned long rem_usec = do_div(ts_nsec, NSEC_PER_SEC) / 1000;
-> +
-> +       entry->cpu = cpu;
-> +       entry->ts_sec = ts_nsec;
-> +       entry->ts_usec = rem_usec;
 
-I would timestamp as a single field in all structs and convert it to
-sec/usec only when we print it. It would make all initialization and
-copying shorter. E.g. this function can be just:
+Thanks
+Barry
 
-       entry->cpu = raw_smp_processor_id();
-       entry->timestamp = local_clock() / 1024;
-
-Dividing by 1024 is much faster and gives roughly the same precision.
-This can be unscaled during reporting:
-
-       u64 sec = entry->timestamp * 1024;
-       unsigned long usec = do_div(sec, NSEC_PER_SEC) / 1000;
-
-But otherwise the patch looks good to me.
-
-Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
-
-> +}
-> +#endif /* CONFIG_KASAN_EXTRA_INFO */
-> +
->  static void save_stack_info(struct kmem_cache *cache, void *object,
->                         gfp_t gfp_flags, bool is_free)
->  {
-> @@ -128,6 +142,9 @@ static void save_stack_info(struct kmem_cache *cache, void *object,
->         entry->pid = current->pid;
->         entry->stack = stack;
->         entry->is_free = is_free;
-> +#ifdef CONFIG_KASAN_EXTRA_INFO
-> +       save_extra_info(entry);
-> +#endif /* CONFIG_KASAN_EXTRA_INFO */
->
->         entry->ptr = object;
->
-> --
-> 2.39.2
->
