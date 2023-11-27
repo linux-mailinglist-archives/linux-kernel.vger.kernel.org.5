@@ -2,185 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 124907FA493
-	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 16:29:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0BB27FA4C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 27 Nov 2023 16:30:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233989AbjK0P3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 10:29:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58962 "EHLO
+        id S234125AbjK0Pai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 10:30:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233965AbjK0P3I (ORCPT
+        with ESMTP id S234087AbjK0PaR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 10:29:08 -0500
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2089.outbound.protection.outlook.com [40.107.6.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 457D019D;
-        Mon, 27 Nov 2023 07:29:09 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QXYANBbNHM7VweXHp5cuoMu9Wl+B/VT9akN9jPH/rd4sS4SjUEC1CfL2BOEOaZyB49VsSlNoYCWqCsrdrkjIUM2/6NPP5KCiwDVM553b9oOCg9tKGGh78xYd4n4gIM8qKDC/FrPiq7A5609ym0T6ggImXZupbZq6YWGEfyjLR+NqDqtY7ysh3JsYMZhUajxZT7PT7LGnDXecDDLDetmXvBfvDbM282hJSepJAiuQ6tKC5IGXOORiVppTk++27PcUgj9G0UIY+CPaEjQGJJ0y2cBHobMiQ+Ky2VvG1XaGzFfSCbxqKDC/02R0ANAjXTcJD+KrDNqHX3y0nVavvSelAA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qUWltBBsIZE4eUYAIWtqNILb3mSl1d9ipSKOn96uw9k=;
- b=hviesataSvTUlpOwVF07DH1ikyLKM4WGEForUwTh4YjC4fTPtpuBSt2Em3DJA11CtTpQFGENOjDNS3NUwmLiXafj4VSFPR0nI63U6qX2AIc9DiAYTzZwAedLwNRgW4Bf0EIYBXZWp/KUJnqCd2zATFpOuXuF7uQ4YklHAwwL2BLmAMSnwpQFz87fuBdWqyXYUD+RU8iPE6GOhefd8yB9b80A3YvJ1aakUTqhn4LlNEmtU4COtMu6kzEKNC/CP8ADN3Y05qSk/sWmWTKb5IXfbYTs2jm2YgEGNdt0na59OrucaQgBM8w0CoNmTnBi43sGLWy0+7wDkmr4FrI+emIenw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qUWltBBsIZE4eUYAIWtqNILb3mSl1d9ipSKOn96uw9k=;
- b=AahtNgUD7e8gc8PNQqKMHjvbYHZ0KLdBJ9pqcysv4lBqdkSYLMXLTxip0hC0lIWsfIWlW45ZsJI9XUHT5jXPGLRargoWeVL9g+PRYx4glh+FTLD/cnzEpPtLJsYeTnlwMyuznF8ntiy/PIPlLA2IVscCqokOz7A5607O+pvFbpg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB4845.eurprd04.prod.outlook.com (2603:10a6:803:51::30)
- by AS1PR04MB9456.eurprd04.prod.outlook.com (2603:10a6:20b:4d7::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.19; Mon, 27 Nov
- 2023 15:29:07 +0000
-Received: from VI1PR04MB4845.eurprd04.prod.outlook.com
- ([fe80::6410:9a52:b833:5bc1]) by VI1PR04MB4845.eurprd04.prod.outlook.com
- ([fe80::6410:9a52:b833:5bc1%4]) with mapi id 15.20.7046.015; Mon, 27 Nov 2023
- 15:29:07 +0000
-Date:   Mon, 27 Nov 2023 10:28:57 -0500
-From:   Frank Li <Frank.li@nxp.com>
-To:     Peter Chen <peter.chen@kernel.org>, gregkh@linuxfoundation.org
-Cc:     imx@lists.linux.dev, Pawel Laszczak <pawell@cadence.com>,
-        Roger Quadros <rogerq@kernel.org>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:CADENCE USB3 DRD IP DRIVER" <linux-usb@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] usb: cdns3: skip set TRB_IOC when usb_request:
- no_interrupt is true
-Message-ID: <ZWS1ucR7dXs153R1@lizhi-Precision-Tower-5810>
-References: <20231027183919.664271-1-Frank.Li@nxp.com>
- <20231031084521.GA1948529@nchen-desktop>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231031084521.GA1948529@nchen-desktop>
-X-ClientProxiedBy: SJ0PR13CA0067.namprd13.prod.outlook.com
- (2603:10b6:a03:2c4::12) To VI1PR04MB4845.eurprd04.prod.outlook.com
- (2603:10a6:803:51::30)
+        Mon, 27 Nov 2023 10:30:17 -0500
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 559501A1;
+        Mon, 27 Nov 2023 07:29:56 -0800 (PST)
+Received: from i53875bf8.versanet.de ([83.135.91.248] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <heiko@sntech.de>)
+        id 1r7dYQ-0003UD-D8; Mon, 27 Nov 2023 16:29:46 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Andy Yan <andyshrk@163.com>
+Cc:     hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
+        kever.yang@rock-chips.com, chris.obbard@collabora.com,
+        s.hauer@pengutronix.de, Andy Yan <andy.yan@rock-chips.com>
+Subject: Re: [PATCH v2 10/12] drm/rockchip: vop2: Add support for rk3588
+Date:   Mon, 27 Nov 2023 16:29:45 +0100
+Message-ID: <4788319.uZKlY2gecq@diego>
+In-Reply-To: <20231122125544.3454918-1-andyshrk@163.com>
+References: <20231122125316.3454268-1-andyshrk@163.com>
+ <20231122125544.3454918-1-andyshrk@163.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: VI1PR04MB4845:EE_|AS1PR04MB9456:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1ad2a7af-da0e-4ed6-5217-08dbef5d984d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /fGPnU+TxaVY+JlBCnxTkf6H77Knt+pi6gZgW2TOA476SU0SDhJqxleUk1MxtIAVyzwGWqqVsdCiVrnXMMEBbNDfplDPxMQpO+wS9sWYcZHLNN5xFSmsv28tA658/L4GxTWRgkmAcvksPp/TmGIYY2x4qIdZDV5BHfgi//jn98ly5xFRhSp5vEh7wsVYvhLK3fKCj4aBEjHQw8SHbh8RZwSIhujyTY9YRdPxjh1EIfEws3NQxpsF9kRbAUber9dpCrdLHWOEgCqm09j44ENSwk1hZOzvCG6UB9ureEUIMplk2QuBjxD6DpCPt6xoq/lm/kVIvxMoo9y5i6lI9wqlWuWGGj+uSEHCwVeNSfbO7uAUFmuqoHkaphth5dLOGzCOlYFy/GZGi4g9jaxUugP2IQKspMi6jz+QJzKpUR/BXdzUFFrlVd8brT/07DVabqXWwb3sWakP4sMLUg0SvBamoxLL/d5JABZHn91kSoF3BcYp+MytAjSoyJPmWxWIGN8dVIIOy0N+RVLxnfy/zhx3slxtxN8dI2d4Lt2lOLUzJ+BM6dWWxD9gErIy8l05XBYpL1Mb4s0nZxqIrw9IVoY+xPUMmihtbUZAzcBtbsOTMSL7dyK0HwOCNFRTTvH+VX7m
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4845.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(346002)(396003)(376002)(39860400002)(366004)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(38100700002)(33716001)(38350700005)(86362001)(54906003)(316002)(66556008)(66476007)(8936002)(8676002)(41300700001)(66946007)(9686003)(6512007)(53546011)(52116002)(6666004)(6506007)(478600001)(6486002)(4326008)(5660300002)(2906002)(26005)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Gwd4fPMcATdQDWFGRtynUJdrVRVcmS89LBa/JWFi89zamPtrtT3tmnaG65yD?=
- =?us-ascii?Q?wcbK0VTICdbJsEmbeY0up8cfNUUUWkjizOO2AZI0oGcxmcXYfTcWWa0tYO8/?=
- =?us-ascii?Q?ZwZTxPtC7fF13RbxdsIgRsgaboTiUDL8/TwLg7MRdeH3CNF36sxJlfLrHbTa?=
- =?us-ascii?Q?zRzbIxh2+Ls9DqbjtAlphbkbGxqhUoo/TK2v5KiRMRtB2i+J+V19OXJxxEE1?=
- =?us-ascii?Q?GxCmceU7osFiNy38zb5zNQw2EsY6jKN4EYHMEUcdBaug0gbtTsGTKDvjthsZ?=
- =?us-ascii?Q?k8A9JB+DW3AAFuZ1BI/wNA2Kvj9zpN98GM/v69HErHR/hDL+QXQxvJ3mFZ8a?=
- =?us-ascii?Q?/7PDD11IpsC1pymk9UbqofxoJQrsmastwqsSAr45LblUzjpUOji+mph8NsXG?=
- =?us-ascii?Q?FJwlsRQeIqFbYnAm+lPEfoQSaZmmPU4Ontz6Wn1D4q+9GZK1J8yJfMIOqX45?=
- =?us-ascii?Q?4QavtBEivPTCT3TkYp5tEJY4deOAY3S0Onr7aClHLyh0RIQ9ekqgzokOzQ+s?=
- =?us-ascii?Q?MJtF8gX0QZ2Crc9Db9KD/T3YY3wNVvoSvyapLgGz8SBV6Flr6Fd+Mh+oH2T0?=
- =?us-ascii?Q?zra/1qxzQGjMOaAgJLwvFpX83A3fX1ElrQIduHyL93SXzD6Q9Va8PgQBspaf?=
- =?us-ascii?Q?HUYDW6QcMwpltzemCZPKFdqR5xgC7Mi3lY9+xENOsVcrzI1abn3Bf8NB+AC7?=
- =?us-ascii?Q?aVfEm0WxFy0HEex3qH+tzSidxJ1QYRkVyxHGeWvyc/t4HddXxPUoXx5IEe0v?=
- =?us-ascii?Q?Ty+724W6y4wylovQ5xgErA1hYvdyelzowOMnnG3pO8ZkVwQDoR/vB77MFNjn?=
- =?us-ascii?Q?XTrWLXgFINWfz46pkfIY44JgNRxIdhjgWRk7oNWKN2vsVoPdRsL7cVbII4oV?=
- =?us-ascii?Q?i9yotu4ZAsxPbkbw/sU/vgYUz55M7t7y0EodzenCKZXWJNv/D82XP1af9Cfx?=
- =?us-ascii?Q?74UYQlHAUcG+3mIE2jG/Fxfb0s2wvNtuXONsHuR5rRzlol5wMLXVf9gvkysU?=
- =?us-ascii?Q?chjSLlEPiGs405QSIbZgG6f8B4kku4ExS7XF+V5nivpL2wsxuxKii8Ndlt/5?=
- =?us-ascii?Q?osWsGN/OOnnL77Pz9R6U28I6HSdOxbqzP/eJk1eEOWdfQMp/MGM3IpPXI5VE?=
- =?us-ascii?Q?Au1oF8nhZn4ByV3b+DKCOon1BDCL7qwrQe6zDl1C9NDTZDqDbDgK7mfVl1uE?=
- =?us-ascii?Q?tYl2/j+lPWfjyhX73XP3HON1l1nb11zrB4vZj5GsT+rAdAY3PS0Ph+7c3HKI?=
- =?us-ascii?Q?OPcQxXqIMZA89AEKszJn+FiZcZdBnzPqIPoakJjTXN0mnGJuPpRyCPLVDaE5?=
- =?us-ascii?Q?c996NhNzlllcozMJnlvh4jgV0CHpXXU670UWjLmfDFQZtwO1X6p29/BIx0W1?=
- =?us-ascii?Q?i8S1CUEzpIf0WX/wgWoDz0q+09vHaJXwl5KbsCizu2jfdii8q8yAqKecYQio?=
- =?us-ascii?Q?5Q2tlKie951JSoI5KSlI6tkYYjNA3EN0wrHDDPqVcy9sTIHLQcZHriD1jR89?=
- =?us-ascii?Q?rOYnYanbu659ZT1/kQFsMbwuSIXkbt9TWl8dsASNLz2nlqd4GPSrnzxkTZ8r?=
- =?us-ascii?Q?absXwUl+bxIX/RtZ1S8=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1ad2a7af-da0e-4ed6-5217-08dbef5d984d
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4845.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2023 15:29:07.1181
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vndQcXH6hQcj/8C9sHW+tzGSTsAZ0xftpOD5JRMEWBh8VdkW0rBRpeR9Srv23QsdsFbAqtzEV9WpmuswC6x3bQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS1PR04MB9456
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 31, 2023 at 04:45:21PM +0800, Peter Chen wrote:
-> On 23-10-27 14:39:19, Frank Li wrote:
-> > No completion irq is needed if no_interrupt is true. Needn't set TRB_IOC
-> > at this case.
-> > 
-> > Check usb_request: no_interrupt and set/skip TRB_IOC in
-> > cdns3_ep_run_transfer().
-> > 
-> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> 
-> Acked-by: Peter Chen <peter.chen@kernel.org>
+Hi Andy,
 
-@Greg:
-	ping
+Am Mittwoch, 22. November 2023, 13:55:44 CET schrieb Andy Yan:
+> From: Andy Yan <andy.yan@rock-chips.com>
+> 
+> VOP2 on rk3588:
+> 
+> Four video ports:
+> VP0 Max 4096x2160
+> VP1 Max 4096x2160
+> VP2 Max 4096x2160
+> VP3 Max 2048x1080
+> 
+> 4 4K Cluster windows with AFBC/line RGB and AFBC-only YUV support
+> 4 4K Esmart windows with line RGB/YUV support
+> 
+> Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+> 
+> ---
+> 
+> Changes in v2:
+> - add rk3588_ prefix for functions which are rk3588 only
+> - make some calculation as fixed value and keep calculation formula as
+>   comment
+> - check return value for some cru calculation functions.
+> - check return value for syscon_regmap_lookup_by_phandle
+> - add NV20/NV30 for esmart plane
+> 
+>  drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 381 ++++++++++++++++++-
+>  drivers/gpu/drm/rockchip/rockchip_drm_vop2.h |  66 ++++
+>  drivers/gpu/drm/rockchip/rockchip_vop2_reg.c | 221 +++++++++++
+>  3 files changed, 660 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+> index 4bcc405bcf11..9eecbe1f71f9 100644
+> --- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
 
-Frank
+> @@ -271,9 +282,12 @@ static bool vop2_cluster_window(const struct vop2_win *win)
+>  static void vop2_cfg_done(struct vop2_video_port *vp)
+>  {
+>  	struct vop2 *vop2 = vp->vop2;
+> +	u32 val;
+> +
+> +	val = BIT(vp->id) | (BIT(vp->id) << 16) |
+> +		RK3568_REG_CFG_DONE__GLB_CFG_DONE_EN;
+>  
+> -	regmap_set_bits(vop2->map, RK3568_REG_CFG_DONE,
+> -			BIT(vp->id) | RK3568_REG_CFG_DONE__GLB_CFG_DONE_EN);
+> +	regmap_set_bits(vop2->map, RK3568_REG_CFG_DONE, val);
 
-> 
-> Peter
-> > ---
-> >  drivers/usb/cdns3/cdns3-gadget.c | 7 ++++---
-> >  1 file changed, 4 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/usb/cdns3/cdns3-gadget.c b/drivers/usb/cdns3/cdns3-gadget.c
-> > index 69a44bd7e5d02..cd08897f8da8b 100644
-> > --- a/drivers/usb/cdns3/cdns3-gadget.c
-> > +++ b/drivers/usb/cdns3/cdns3-gadget.c
-> > @@ -1124,6 +1124,7 @@ static int cdns3_ep_run_transfer(struct cdns3_endpoint *priv_ep,
-> >  	u16 total_tdl = 0;
-> >  	struct scatterlist *s = NULL;
-> >  	bool sg_supported = !!(request->num_mapped_sgs);
-> > +	u32 ioc = request->no_interrupt ? 0 : TRB_IOC;
-> >  
-> >  	if (priv_ep->type == USB_ENDPOINT_XFER_ISOC)
-> >  		num_trb = priv_ep->interval;
-> > @@ -1233,11 +1234,11 @@ static int cdns3_ep_run_transfer(struct cdns3_endpoint *priv_ep,
-> >  			control |= pcs;
-> >  
-> >  		if (priv_ep->type == USB_ENDPOINT_XFER_ISOC  && !priv_ep->dir) {
-> > -			control |= TRB_IOC | TRB_ISP;
-> > +			control |= ioc | TRB_ISP;
-> >  		} else {
-> >  			/* for last element in TD or in SG list */
-> >  			if (sg_iter == (num_trb - 1) && sg_iter != 0)
-> > -				control |= pcs | TRB_IOC | TRB_ISP;
-> > +				control |= pcs | ioc | TRB_ISP;
-> >  		}
-> >  
-> >  		if (sg_iter)
-> > @@ -1268,7 +1269,7 @@ static int cdns3_ep_run_transfer(struct cdns3_endpoint *priv_ep,
-> >  	priv_req->num_of_trb = num_trb;
-> >  
-> >  	if (sg_iter == 1)
-> > -		trb->control |= cpu_to_le32(TRB_IOC | TRB_ISP);
-> > +		trb->control |= cpu_to_le32(ioc | TRB_ISP);
-> >  
-> >  	if (priv_dev->dev_ver < DEV_VER_V2 &&
-> >  	    (priv_ep->flags & EP_TDLCHK_EN)) {
-> > -- 
-> > 2.34.1
-> > 
-> 
-> -- 
-> 
-> Thanks,
-> Peter Chen
+I don't fully understand that code:
+(1) the write mask is also present on the rk3568, so should this change
+    be a separate patch with a fixes tag?
+(2) RK3568_REG_CFG_DONE__GLB_CFG_DONE_EN does not contain the part for
+    the write-mask
+
+	#define RK3568_REG_CFG_DONE__GLB_CFG_DONE_EN     BIT(15)
+
+    why is this working then?
+
+>  }
+>  
+>  static void vop2_win_disable(struct vop2_win *win)
+
+[...]
+
+> @@ -1298,7 +1346,11 @@ static void vop2_plane_atomic_update(struct drm_plane *plane,
+>  			vop2_win_write(win, VOP2_WIN_AFBC_ENABLE, 1);
+>  		vop2_win_write(win, VOP2_WIN_AFBC_FORMAT, afbc_format);
+>  		vop2_win_write(win, VOP2_WIN_AFBC_UV_SWAP, uv_swap);
+> -		vop2_win_write(win, VOP2_WIN_AFBC_AUTO_GATING_EN, 0);
+> +		if (vop2->data->soc_id == 3566 || vop2->data->soc_id == 3568)
+> +			vop2_win_write(win, VOP2_WIN_AFBC_AUTO_GATING_EN, 0);
+> +		else
+> +			vop2_win_write(win, VOP2_WIN_AFBC_AUTO_GATING_EN, 1);
+> +
+
+I think this at least warrants a comment, what is happening here. Also,
+can you already see how future vop2-users are behaving - aka are all new
+socs in the "else" part of the conditional, or would a switch-case better
+represent future socs?
+
+
+>  		vop2_win_write(win, VOP2_WIN_AFBC_BLOCK_SPLIT_EN, 0);
+>  		transform_offset = vop2_afbc_transform_offset(pstate, half_block_en);
+>  		vop2_win_write(win, VOP2_WIN_AFBC_HDR_PTR, yrgb_mst);
+
+
+> @@ -1627,9 +1937,17 @@ static void vop2_crtc_atomic_enable(struct drm_crtc *crtc,
+>  	drm_for_each_encoder_mask(encoder, crtc->dev, crtc_state->encoder_mask) {
+>  		struct rockchip_encoder *rkencoder = to_rockchip_encoder(encoder);
+>  
+> -		rk3568_set_intf_mux(vp, rkencoder->crtc_endpoint_id, polflags);
+> +		/*
+> +		 * for drive a high resolution(4KP120, 8K), vop on rk3588/rk3576 need
+> +		 * process multi(1/2/4/8) pixels per cycle, so the dclk feed by the
+> +		 * system cru may be the 1/2 or 1/4 of mode->clock.
+> +		 */
+> +		clock = vop2_set_intf_mux(vp, rkencoder->crtc_endpoint_id, polflags);
+>  	}
+>  
+> +	if (!clock)
+> +		return;
+> +
+
+hmm, shouldn't the check for the validity of a mode happen before
+atomic_enable is run? So this shouldn't error out in the middle of the
+function?
+
+
+>  	if (vcstate->output_mode == ROCKCHIP_OUT_MODE_AAAA &&
+>  	    !(vp_data->feature & VOP_FEATURE_OUTPUT_10BIT))
+>  		out_mode = ROCKCHIP_OUT_MODE_P888;
+
+
+Thanks
+Heiko
+
+
