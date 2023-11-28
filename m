@@ -2,90 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA287FC43E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 20:27:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54BFD7FC446
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 20:30:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344553AbjK1T0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 14:26:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46226 "EHLO
+        id S230171AbjK1Tab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 14:30:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbjK1T0u (ORCPT
+        with ESMTP id S229875AbjK1Taa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 14:26:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54670D66
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 11:26:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701199615;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MS3bSC/lh7WFrp63LfDhGI9l2oiNjApvavz8PpRiwhM=;
-        b=W5pxptq3kCgyMCEsenTvEdIrgFUF1vRmhqksZ6aUyYA2/QmPM1ydlaWJ/WZ/i7naFxDOJF
-        bH0RM3w3u9eDc0LyRiqdKQhcjHJJlK6F1R+TlBRu+8UvxV2b0Kd/9K+Re55rjcXPAnzbZP
-        xq8Tv6+eDNMmfO4Txe2aghZ0MXBTzoU=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-612-ndCCNtc-M56-hFeUPPh2aw-1; Tue, 28 Nov 2023 14:26:53 -0500
-X-MC-Unique: ndCCNtc-M56-hFeUPPh2aw-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-332d213c2bbso4036196f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 11:26:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701199612; x=1701804412;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MS3bSC/lh7WFrp63LfDhGI9l2oiNjApvavz8PpRiwhM=;
-        b=t6iXqTmT6V29kHDT1rrZXDmEq+4D3TRPVxvBh14Wh34RXvSXXbWm7vTP1PSMf5dbGA
-         EWgEDTldkfkMeD9nVQgf7+Ha3NAvbZDba4w9YxY67bvbWo46pJArgGve+tDgiE+kzmfL
-         YoDyc53sRAh5XCd3dzYM+k1dSbNJpc2o63tUrPgRZhbQ3B1mNR8/S8OnBD3uB+r9TDqH
-         CaFTcz6vz6EL4bfe1b/MtfcLhHcUhv0pJ2i1wdVMRBIiEuyTKlI4khT8xaJ9B11BZyhf
-         jlqJ2J55SwOZ467atbaUQJMd72jD7IGxmtinZ5HdRXOrlr8kiVyNmWft+3XC3wruwrCf
-         EWHg==
-X-Gm-Message-State: AOJu0YxSrJTfDwWyB5pkhrHj0HgYI9meB7K27CHR236c9LahI6WD6qm0
-        TSOhNXfijp1dyFyNlb+7CFgRZlls490jX9qJ7ulegOQP5worcDxDaMrnJFkO9K4mQItvr475Px9
-        ysdRUqONQlkWraqcULtOaMR23V7y6iz2v
-X-Received: by 2002:a5d:698f:0:b0:333:a30:1084 with SMTP id g15-20020a5d698f000000b003330a301084mr2562148wru.36.1701199612453;
-        Tue, 28 Nov 2023 11:26:52 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFgXVVnlAR7W0JMvI7O0Q/Or9OcgM4j86TTiRG31fyoyYCrlzYqVF+Thl0Tirl17AB6LtZAoQ==
-X-Received: by 2002:a5d:698f:0:b0:333:a30:1084 with SMTP id g15-20020a5d698f000000b003330a301084mr2562142wru.36.1701199612107;
-        Tue, 28 Nov 2023 11:26:52 -0800 (PST)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id s18-20020a5d6a92000000b00332eaede976sm12668449wru.86.2023.11.28.11.26.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 11:26:51 -0800 (PST)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Frank Binns <frank.binns@imgtec.com>,
-        Donald Robson <donald.robson@imgtec.com>,
-        Matt Coster <matt.coster@imgtec.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sarah Walker <sarah.walker@imgtec.com>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] drm/imagination: DRM_POWERVR should depend on ARCH_K3
-In-Reply-To: <CAMuHMdUhuO++ZSxh+_TX_6DHHxjPYY20jTppbNZ4FnuBvxxinQ@mail.gmail.com>
-References: <b9360c2044a1001b9a5bcb5914611711d040d4fe.1701196029.git.geert+renesas@glider.be>
- <87o7fdbszs.fsf@minerva.mail-host-address-is-not-set>
- <CAMuHMdUhuO++ZSxh+_TX_6DHHxjPYY20jTppbNZ4FnuBvxxinQ@mail.gmail.com>
-Date:   Tue, 28 Nov 2023 20:26:51 +0100
-Message-ID: <87il5lbrwk.fsf@minerva.mail-host-address-is-not-set>
+        Tue, 28 Nov 2023 14:30:30 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DCC51990
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 11:30:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AA71C433C7;
+        Tue, 28 Nov 2023 19:30:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1701199836;
+        bh=lXatMCCChhhmktfYNo6tMyEuByDsuZMc7G+9uhfCyz4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aIiTdymSvXObOZ46h3uRmspQQ/WdPLdG6Hvam/4t219Nehx7xAWosk90BCYrX/ggo
+         /0rMhvSe9IK0yDEoDtX2x4hhr3Q0AJ2Iwcfr1oVYoqUJ7oV3zGz8xwSMWgPbvbJF3W
+         pU0zOy5rO/bCSpmQ46uOYVTp4qtjliIG3qc5ATxk=
+Date:   Tue, 28 Nov 2023 19:30:34 +0000
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     =?iso-8859-1?Q?Fran=E7ois?= Valenduc <francoisvalenduc@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
+        jslaby@suse.cz
+Subject: Re: Linux 6.1.64
+Message-ID: <2023112854-filth-diaper-1a20@gregkh>
+References: <2023112826-glitter-onion-8533@gregkh>
+ <7f07bb2d-bb00-4774-8cc0-d66b7210380c@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7f07bb2d-bb00-4774-8cc0-d66b7210380c@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,73 +49,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+On Tue, Nov 28, 2023 at 08:22:22PM +0100, François Valenduc wrote:
+> Build fails on my baremetal server on scaleway:
+> 
+> In file included from arch/x86/kvm/vmx/vmx.c:54:
+> arch/x86/kvm/vmx/evmcs.h:215:20: note: previous definition of
+> ‘evmptr_is_valid’ with type ‘bool(u64)’ {aka ‘_Bool(long long unsigned
+> int)’}
+>   215 | static inline bool evmptr_is_valid(u64 evmptr)
+>       |                    ^~~~~~~~~~~~~~~
+> In file included from arch/x86/kvm/vmx/vmx.c:55:
+> arch/x86/kvm/vmx/hyperv.h:184:6: error: redeclaration of ‘enum
+> nested_evmptrld_status’
+>   184 | enum nested_evmptrld_status {
+>       |      ^~~~~~~~~~~~~~~~~~~~~~
+> In file included from arch/x86/kvm/vmx/vmx.c:54:
+> arch/x86/kvm/vmx/evmcs.h:220:6: note: originally defined here
+>   220 | enum nested_evmptrld_status {
+>       |      ^~~~~~~~~~~~~~~~~~~~~~
+> In file included from arch/x86/kvm/vmx/vmx.c:55:
+> arch/x86/kvm/vmx/hyperv.h:185:9: error: redeclaration of enumerator
+> ‘EVMPTRLD_DISABLED’
+>   185 |         EVMPTRLD_DISABLED,
+>       |         ^~~~~~~~~~~~~~~~~
+> In file included from arch/x86/kvm/vmx/vmx.c:54:
+> arch/x86/kvm/vmx/evmcs.h:221:9: note: previous definition of
+> ‘EVMPTRLD_DISABLED’ with type ‘enum nested_evmptrld_status’
+>   221 |         EVMPTRLD_DISABLED,
+>       |         ^~~~~~~~~~~~~~~~~
+> In file included from arch/x86/kvm/vmx/vmx.c:55:
+> arch/x86/kvm/vmx/hyperv.h:186:9: error: redeclaration of enumerator
+> ‘EVMPTRLD_SUCCEEDED’
+>   186 |         EVMPTRLD_SUCCEEDED,
+>       |         ^~~~~~~~~~~~~~~~~~
+> In file included from arch/x86/kvm/vmx/vmx.c:54:
+> arch/x86/kvm/vmx/evmcs.h:222:9: note: previous definition of
+> ‘EVMPTRLD_SUCCEEDED’ with type ‘enum nested_evmptrld_status’
+>   222 |         EVMPTRLD_SUCCEEDED,
+>       |         ^~~~~~~~~~~~~~~~~~
+> In file included from arch/x86/kvm/vmx/vmx.c:55:
+> arch/x86/kvm/vmx/hyperv.h:187:9: error: redeclaration of enumerator
+> ‘EVMPTRLD_VMFAIL’
+>   187 |         EVMPTRLD_VMFAIL,
+>       |         ^~~~~~~~~~~~~~~
+> In file included from arch/x86/kvm/vmx/vmx.c:54:
+> arch/x86/kvm/vmx/evmcs.h:223:9: note: previous definition of
+> ‘EVMPTRLD_VMFAIL’ with type ‘enum nested_evmptrld_status’
+>   223 |         EVMPTRLD_VMFAIL,
+>       |         ^~~~~~~~~~~~~~~
+> In file included from arch/x86/kvm/vmx/vmx.c:55:
+> arch/x86/kvm/vmx/hyperv.h:188:9: error: redeclaration of enumerator
+> ‘EVMPTRLD_ERROR’
+>   188 |         EVMPTRLD_ERROR,
+>       |         ^~~~~~~~~~~~~~
+> In file included from arch/x86/kvm/vmx/vmx.c:54:
+> arch/x86/kvm/vmx/evmcs.h:224:9: note: previous definition of
+> ‘EVMPTRLD_ERROR’ with type ‘enum nested_evmptrld_status’
+>   224 |         EVMPTRLD_ERROR,
+>       |         ^~~~~~~~~~~~~~
+> make[3]: *** [scripts/Makefile.build:250: arch/x86/kvm/vmx/vmx.o] Error 1
+> make[2]: *** [scripts/Makefile.build:500: arch/x86/kvm] Error 2
+> make[1]: *** [scripts/Makefile.build:500: arch/x86] Error 2
+> 
+> The configuration file is attached. Kernel 6.1.62 compiled fine.
+> Does somebody have an idea about this ?
 
-> Hi Javier,
->
-> On Tue, Nov 28, 2023 at 8:03=E2=80=AFPM Javier Martinez Canillas
-> <javierm@redhat.com> wrote:
->> Geert Uytterhoeven <geert+renesas@glider.be> writes:
->> > The Imagination Technologies PowerVR Series 6 GPU is currently only
->> > supported on Texas Instruments K3 AM62x SoCs.  Hence add a dependency =
-on
->> > ARCH_K3, to prevent asking the user about this driver when configuring=
- a
->> > kernel without Texas Instruments K3 Multicore SoC support.
->> >
->> > Fixes: 4babef0708656c54 ("drm/imagination: Add skeleton PowerVR driver=
-")
->> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
->> > ---
->>
->> Indeed. Although I wonder what is the supposed policy since for example
->> the DRM_PANFROST symbol only depends on ARM || ARM64 and others such as
->
-> I think ARM Mali is sufficiently ubiquitous on ARM/ARM64 systems to
-> have just an ARM/ARM64 dependency...
->
+That's odd, any chance you can run 'git bisect' to track down the
+offending commit?
 
-Fair.
+thanks,
 
->> DRM_ETNAVIV don't even have an SoC or architecture dependency.
->
-> Vivante GPUs are found in DTS files on at least 4 architectures.
-> Might be worthwhile to add some dependencies, though...
->
-
-Yeah, that's what I was thinking.
-
->> In any case, I agree with you that restricting to only K3 makes sense.
->
-> I am looking forward to adding || SOC_AM33XX || ARCH_RENESAS || ...,
-> eventually ;-)
->
-
-Same! :)
-
->> Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
->
-> Thanks!
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --=20
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
-8k.org
->
-> In personal conversations with technical people, I call myself a hacker. =
-But
-> when I'm talking to journalists I just say "programmer" or something like=
- that.
->                                 -- Linus Torvalds
->
-
---=20
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
-
+greg k-h
