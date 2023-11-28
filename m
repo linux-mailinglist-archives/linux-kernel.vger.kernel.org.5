@@ -2,233 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B8507FC116
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:14:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C74FA7FC28E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232195AbjK1QF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 11:05:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45134 "EHLO
+        id S1344798AbjK1QFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:05:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234807AbjK1QFX (ORCPT
+        with ESMTP id S1346465AbjK1QFm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 11:05:23 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA23D5D;
-        Tue, 28 Nov 2023 08:05:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701187530; x=1732723530;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=n4FQMPux4UB2/bvmgAQSybz67feBXvKZ4BLzKEcYsoc=;
-  b=UuLM9h85+PWEQntZZeueM8VQgpFCYyEqki/TD3JWDiTCBxbQWL/xi3K8
-   IcFxLks+lwTqWHDgwT16JQ0+bFw1EDjlFZha0WEFasoUOG6HzzeZghWoO
-   BzvMXWaCnoffcDoewITYWqiKPZImv/rc0eHTRlEN12+jkodemyjOJGNNA
-   slUL4WTquMODhKkdDJs2rDufCBvzGD/Ig7O8zdVQCd9nz8fRaCzyLUFXl
-   Nuq8Xa96ZqRXJ5KzsVJrYAL47CXzNQMMfaz+nf4yluwlHIUkJV9GUY1cl
-   T4le9hYhr7odmW1Rnee8ERIxR0KDaIsCHRFrO9EQwm79i4aQmuwGfjjZT
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="459458483"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="459458483"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 08:05:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="9989480"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Nov 2023 08:05:28 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 28 Nov 2023 08:05:28 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 28 Nov 2023 08:05:27 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Tue, 28 Nov 2023 08:05:27 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Tue, 28 Nov 2023 08:05:27 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oWG+7YIHzYYOpobB9SizHKo3jXizDsaftn0qK45723cWc1JvlgAf5/W/yQ5oCoyZyM1HUcW5BNFo4CrB6Q5jhsqxtBEYBRJ86UIgFaCyc4iB6dELJSFxe4Gn5CIs0m3cq0SW0xYej6Igki9tSy4yZTnreeMe/XT/2DVM+qhQQLPWVDgVUnjxL6hci4AV/s3WzmHFop+rU4BwJvsaP8tWbrSZTwHYKZbHuIzRhwFmHPSTfxKJaUulVKp0+NCNENAtoS4Z4nb+ZEkovO9uzGDmwkte3WUrvOqKtRwmN4sFmAhdPPLClB1REeecBwLbsY6rgI602P08LHyP+oDN4+ejcA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Gn09bnSKGuH59jurI7o6JVTNf91av3pyRWMXp5Q6gNA=;
- b=lgTxpxd2cWkHDTijB7ZDZrWcnukUuKwocchhxBNMdTEWYbuUzgvrdtZMxKqvyOoXeHK26dNXwfSKWU0C6GTECjaecFW+8lRkxyO299fCY7nYcafSNrSb4v+PmBFRYhrQ4U9n5LF/Ekx44YdkDGwim5ld8n9vNf30akW2oweVvDqz595g0pw7OER1DRHwCafU1LlIS/Ix9ZavBBbBcRjTVYGxJnHnx5WtCPhXe/o5w7Il4zS5BboF6AteBfGr+9WEi/XiIDWZjHLi53qbAlIRhVsdZKLJ3BNsY939YBFnLJ7UYIHGkRnKj5BbAFx4mmHdBwk1y31YVZ4mZvGyFSIFaQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MN0PR11MB6059.namprd11.prod.outlook.com (2603:10b6:208:377::9)
- by PH8PR11MB7990.namprd11.prod.outlook.com (2603:10b6:510:259::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Tue, 28 Nov
- 2023 16:05:26 +0000
-Received: from MN0PR11MB6059.namprd11.prod.outlook.com
- ([fe80::ada2:f954:a3a5:6179]) by MN0PR11MB6059.namprd11.prod.outlook.com
- ([fe80::ada2:f954:a3a5:6179%5]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
- 16:05:25 +0000
-Date:   Tue, 28 Nov 2023 11:05:18 -0500
-From:   Rodrigo Vivi <rodrigo.vivi@intel.com>
-To:     Thomas =?iso-8859-1?Q?Hellstr=F6m?= 
-        <thomas.hellstrom@linux.intel.com>
-CC:     <linux-doc@vger.kernel.org>,
-        Francois Dugast <francois.dugast@intel.com>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        "Boris Brezillon" <boris.brezillon@collabora.com>,
-        Danilo Krummrich <dakr@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        <intel-xe@lists.freedesktop.org>
-Subject: Re: [Intel-xe] [PATCH v5] Documentation/gpu: VM_BIND locking document
-Message-ID: <ZWYPvhDzmqipdhC/@intel.com>
-References: <20231121104046.3201-1-thomas.hellstrom@linux.intel.com>
- <ZWTvohD9rTx9aAWa@intel.com>
- <03712311650b5fcf7162309f13a18dbd240e8a9f.camel@linux.intel.com>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <03712311650b5fcf7162309f13a18dbd240e8a9f.camel@linux.intel.com>
-X-ClientProxiedBy: BY3PR04CA0030.namprd04.prod.outlook.com
- (2603:10b6:a03:217::35) To MN0PR11MB6059.namprd11.prod.outlook.com
- (2603:10b6:208:377::9)
+        Tue, 28 Nov 2023 11:05:42 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A8B31BC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:05:48 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-548c6efc020so13326a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:05:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701187546; x=1701792346; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=r2cTKWI7R55/iFDTqwsIaf+WXaI/iXMnBA7xP0H4r4c=;
+        b=Q4QxmKQQScv5b0hhfI/va1tScKymbgrgyegc2SsNs7VornAnEHvlG68r/7Bpeqb3/y
+         ogpjp2H/QyuOiw4Ngvn7oQ/T16oyl1PYVcAfNLtGktzjwioP6vXLaYW9/enfGcfByzIz
+         D7lWKv8/hGJ98t5+05I3LfpyYJ7Lyv3wK4Mt/e3c1Scr3Q2vjxJrz3X2tv4RExdL25X4
+         PzoaTAZNIHdbz9wmYLCPr/bMod/NFtZRfAkyK0sxZDeERFpinmdOynRfo/CVvDAArE67
+         5N+IqLRsFToLEXR8sGMBhDRTo5Lq0wTYstiDISSLXWp5qDbSq3P5bfgSSPQPYPWUjJfZ
+         fkfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701187546; x=1701792346;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=r2cTKWI7R55/iFDTqwsIaf+WXaI/iXMnBA7xP0H4r4c=;
+        b=VvJbUbibsNCGTYJ7C/i6X8tqySg0j47Ut/4F4gnQkAhvdfc/MBjsf4orI6346O0ipI
+         sjeynQZgXRjjHxm7zbsHABVbkIj+zjCt3EXwpDxcc7/yda4q1pKzcAI+hPrTXWo6TuSt
+         IsiLQwyipSL/kmiujXGnchaODASHNl44428cXNCv6pLwfzr2sXaWzkYPDL3Dh8wK27Y7
+         nTzx4pp2Yz3zbR5G1RvSj+oDweVNQzbQTL1gbKdh8YZqD93r3kMKA9Ur5ATpPKoaVk+V
+         FbP9Tnb/kY4h7OF0H6iYDbYVk9TIowJhIorLLIdHaurQ7YWymRlgZx4kPTTkhMX8V6eQ
+         +n2g==
+X-Gm-Message-State: AOJu0YxXOToBhO76yVN0p/idgxQdKElzLv5u7evdUttz2Iv1E/zTBQ3H
+        XoH6AjjWzjWbUFESFrhbZ1zx5kyumSZvk9BxcZ60eg==
+X-Google-Smtp-Source: AGHT+IHJKBbj/F5FKZ1D3ESO8Jmia2QT/9SbwyLr/znN2c+WFOVGeF/jMWhQjnH3nWm7VD5AHCIclaTm33tGIPxdiPY=
+X-Received: by 2002:a05:6402:5515:b0:543:fb17:1a8 with SMTP id
+ fi21-20020a056402551500b00543fb1701a8mr862055edb.3.1701187546023; Tue, 28 Nov
+ 2023 08:05:46 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR11MB6059:EE_|PH8PR11MB7990:EE_
-X-MS-Office365-Filtering-Correlation-Id: fde76c31-5a4c-474f-f338-08dbf02bd4c4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IWegBw+PGkd5LFkxumqRyIRf2V5Ig+fggMmmUL08FkydFFzktqGyXJuOJJbl3zsb7tptMJHIg+Y+3TFqw6H9Ak/wTysv33+7i4SbbVdQsKSv3X3qZHEIuuKK6WkOB/jGTOxPqsAZ5p592e4GrMDxts2Px6QR8fXjOdLWLJojIFpvQVkhv/5JHELbBwzfGyZ2nxP9sw2XCtL0BkwGG0d+lSQbXeJ4Ah7OF9Wk7whO2GLrhR8maUSSpbatz1L7FCE3jGpCB3xFykVR/aj4E9tSGP1fbM74pAqBAe7W8zHBKeERMWxprq01GDSmLjWq6rIKhOsxmueq+EiMK+Fw/m6qGh8JbNUnc/rbD5MbDJDFdG7RI6jpFFPWvne0aA1gQVjy1wDXOldhRSpK1pH+N4Zint7vxE5Sc6lWlrgwaBHPhJ71EMFGvkck9BinvW1jaoJZR4LxbW89JULvV7GpFrAFa8vdvN5cI3u5KfLiXXjmZ+3fa85uFrVmgyqxEi+JCH1bzXFE1oJDy+7sJL5m2TyeDit22K9Y5gXC+3ONiExkPPQTscNlgxxg0zMwriuEYvvK
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6059.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(366004)(396003)(39860400002)(346002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(6512007)(6506007)(6486002)(2616005)(478600001)(6666004)(66574015)(83380400001)(2906002)(4001150100001)(44832011)(41300700001)(66946007)(6916009)(316002)(54906003)(4326008)(8676002)(66556008)(8936002)(5660300002)(66476007)(82960400001)(38100700002)(86362001)(36756003)(26005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?1snx0pEL7dTTfMQ+Q8Hbr4at2cgWOuEJIaDgxoJat50Dr6OQvD2ZeSxWX2?=
- =?iso-8859-1?Q?p2QoPkKokojtdYD3FDHMbpYbdxW1bemTerElzMoJeEo0FF7MN4vhStmvy0?=
- =?iso-8859-1?Q?ETb2bDraj6tLRIudHIw9rLRZFiTIMoppuwA50YTssR9CxTJi2zkGsQMRdx?=
- =?iso-8859-1?Q?GXDFHhZL7YSbm3qN3W6RVL+yU9+lU7E9ZxXkW6ov2sWRADV2G6PP6RWvEf?=
- =?iso-8859-1?Q?DPUWtwQ2D1axHCcGTjN6LJGIzzyTBxknGFVZZdDsokCB0U6MS7/MJRDzxC?=
- =?iso-8859-1?Q?paVdOe/V0PH9452hEf/IK6FK0A6LNg1mhd1PpwOQQ9rKsLg+cxX8iacRXt?=
- =?iso-8859-1?Q?JoaAKoESz24uqafQAEgug9N/q2pZVmi6m8IgAco7EbEetsvDaIIzJ6qF1P?=
- =?iso-8859-1?Q?BDcVAeVavnB0aj19rkHKgcBGLW+SGjF+dHikBQDtEYWeDGFpqMC14oWbOX?=
- =?iso-8859-1?Q?7It1zg0jU0PqRx2f4hwMgI6awYqEzXZdmLqyIBrL/8uLLeJpq6M8Tgm//A?=
- =?iso-8859-1?Q?d/xVvcnLPmu5OnVy2eZlD4bWkGpF7+ufyWZ5WmnVVLY8G6UtuQ4SCQWfrA?=
- =?iso-8859-1?Q?kEL5MdL5UZOksbXHLynaggDcH1aiZQKDB/VlEHI7q5JwBLPw5P5YI8EaPC?=
- =?iso-8859-1?Q?aJRTHGbWLrtZPHrBv3Lt7P4krXzZMrkzcP6mRzc3j7MBNISoXJcfT4otbf?=
- =?iso-8859-1?Q?kt3/VYEWSK2ygf4X1Hjc52ZrFrytsy8K5O05nKmSWuS5CnvF5gx2F0buTU?=
- =?iso-8859-1?Q?bMfaJA7rerJ0M2RqDc0CKnsFL5rjREru7iBHbGYl+M5Qx2uPdH7fXWmaJn?=
- =?iso-8859-1?Q?oJd9ZZiFQNTb+q3qBdsR2YXCNWXMGLiyRVlHlP/mbmA/61wLFzomCjNsiH?=
- =?iso-8859-1?Q?bOzZlkaVJ981be8ruL0NFDeBEy847Ik6cWfi4PrejwHJewXcA9rJIL+hGA?=
- =?iso-8859-1?Q?kjZCFju3CPQ+TXr6RnQhjxjyCp05tA4hF17TtPvL+Ac+BKElBxwHr6FMEc?=
- =?iso-8859-1?Q?D7x2FNytZIGaicFmJm8DZmZm0uNJFzXE65eeYjbZVloBbHxATSsSK+qA+S?=
- =?iso-8859-1?Q?hp3djBviP8/v1Xi7tOf7kKUMCTwI2ZrpCfmyroZ4wQz2uuMHJuz6Dr/bDM?=
- =?iso-8859-1?Q?/DO6uddSZbHFSsJ5WkkzLIWYbA7GN6+68U4gfky1Pn7zzt6dnahhpbtBDz?=
- =?iso-8859-1?Q?EgOZKBFjVyYFincWBbNfoc7T3xuZT95trUlxY0bt87+vlhHFjwwODRH1HE?=
- =?iso-8859-1?Q?gkcKzghhllxsmv4G+WI59mMSMY8h8GLL1Qh1QiZq+CPzWCj3caXtj8ipdg?=
- =?iso-8859-1?Q?Avv49b0CPy5UpESNDUIZdbw99AquFd6R6WWglx1qwag27XD64mOQal44CG?=
- =?iso-8859-1?Q?7AloCphH+eEEAYxSJS/3NncZbQJ/QA5eQfz2Y7iA6bBa9O2luhFh1+gFQZ?=
- =?iso-8859-1?Q?9OsVI4gEs4Khe/uCak5SF9VVLRubKnEn2q4dyru7cUrCg2aomkyhunKn3j?=
- =?iso-8859-1?Q?3YGtfcd+PENB5By7cx68wIcsNxBtpRLkVeI941Y5y3KzVPcOihcOZlJwZS?=
- =?iso-8859-1?Q?R6sQKsNFCognhT7fPOrvpVbGjMTcmlnVlhSygBgifJyAfEvHaG0gPCrTny?=
- =?iso-8859-1?Q?EmRV6LrtQn7rFkBksKZ6ulXahozR5JuEbdKmfjaaJoiZVG55fDC7hnww?=
- =?iso-8859-1?Q?=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: fde76c31-5a4c-474f-f338-08dbf02bd4c4
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6059.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 16:05:25.1383
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gg9V/zEhnSwmwAS65xCsSHvPhf/g4qkc83IUWiF9IDyePZZQ8LzsqnzIb60zSvlwjTKwtYsQMsMAWwXdJnRNfA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB7990
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231126151652.372783-1-syoshida@redhat.com> <CANn89iKcstKYWoqUCXHO__7PfVRMFNnN5nRQVCTAADvFbcJRww@mail.gmail.com>
+ <9daf8509e39cd20d9d806afdb425ad43af037f8d.camel@redhat.com>
+In-Reply-To: <9daf8509e39cd20d9d806afdb425ad43af037f8d.camel@redhat.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 28 Nov 2023 17:05:34 +0100
+Message-ID: <CANn89iKO-5nwPAUtOzqRfqLhK77kgQB7Ep33rwFM+hgNKARLEw@mail.gmail.com>
+Subject: Re: [PATCH net] ipv4: ip_gre: Handle skb_pull() failure in ipgre_xmit()
+To:     Paolo Abeni <pabeni@redhat.com>
+Cc:     Shigeru Yoshida <syoshida@redhat.com>, davem@davemloft.net,
+        dsahern@kernel.org, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 04:51:25PM +0100, Thomas Hellström wrote:
-> On Mon, 2023-11-27 at 14:36 -0500, Rodrigo Vivi wrote:
-> > On Tue, Nov 21, 2023 at 11:40:46AM +0100, Thomas Hellström wrote:
-> > > Add the first version of the VM_BIND locking document which is
-> > > intended to be part of the xe driver upstreaming agreement.
-> > > 
-> > > The document describes and discuss the locking used during exec-
-> > > functions, evicton and for userptr gpu-vmas. Intention is to be
-> > > using the
-> > > same nomenclature as the drm-vm-bind-async.rst.
-> > > 
-> > > v2:
-> > > - s/gvm/gpu_vm/g (Rodrigo Vivi)
-> > > - Clarify the userptr seqlock with a pointer to mm/mmu_notifier.c
-> > >   (Rodrigo Vivi)
-> > > - Adjust commit message accordingly.
-> > > - Add SPDX license header.
-> > > 
-> > > v3:
-> > > - Large update to align with the drm_gpuvm manager locking
-> > > - Add "Efficient userptr gpu_vma exec function iteration" section
-> > > - Add "Locking at bind- and unbind time" section.
-> > > 
-> > > v4:
-> > > - Fix tabs vs space errors by untabifying (Rodrigo Vivi)
-> > > - Minor style fixes and typos (Rodrigo Vivi)
-> > > - Clarify situations where stale GPU mappings are occurring and how
-> > >   access through these mappings are blocked. (Rodrigo Vivi)
-> > > - Insert into the toctree in implementation_guidelines.rst
-> > > 
-> > > v5:
-> > > - Add a section about recoverable page-faults.
-> > > - Use local references to other documentation where possible
-> > >   (Bagas Sanjaya)
-> > > - General documentation fixes and typos (Danilo Krummrich and
-> > >   Boris Brezillon)
-> > > - Improve the documentation around locks that need to be grabbed
-> > > from the
-> > >   dm-fence critical section (Boris Brezillon)
-> > > - Add more references to the DRM GPUVM helpers (Danilo Krummrich
-> > > and
-> > >   Boriz Brezillon)
-> > > - Update the rfc/xe.rst document.
-> > > 
-> > > Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-> > > Signed-off-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
-> > 
-> > First of all, with Bagas and Boris latest suggestions, already few
-> > free to use:
-> > 
-> > Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
-> > 
-> > But a few minor comments below. Mostly trying to address Boris
-> > feeling
-> > of long sentences. However, take them with a grain of salt since I'm
-> > not
-> > a native english speaker. :) 
-> 
-> Hi, Rodrigo.
-> 
-> Thanks for the reviewing. I've added most but not all of the
-> suggestions in v6. Regarding the comment about "zapping", that's used
-> by the core mm for the process of unmapping page-table entries;
-> zap_vma_ptes() etc. Merely following that, although I'm not really
-> against using unmapping etc.
+On Tue, Nov 28, 2023 at 4:51=E2=80=AFPM Paolo Abeni <pabeni@redhat.com> wro=
+te:
+>
+> On Tue, 2023-11-28 at 16:45 +0100, Eric Dumazet wrote:
+> > On Sun, Nov 26, 2023 at 4:17=E2=80=AFPM Shigeru Yoshida <syoshida@redha=
+t.com> wrote:
+> > >
+> > > In ipgre_xmit(), skb_pull() may fail even if pskb_inet_may_pull() ret=
+urns
+> > > true. For example, applications can create a malformed packet that ca=
+uses
+> > > this problem with PF_PACKET.
+> > >
+> > > This patch fixes the problem by dropping skb and returning from the
+> > > function if skb_pull() fails.
+> > >
+> > > Fixes: c54419321455 ("GRE: Refactor GRE tunneling code.")
+> > > Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
+> > > ---
+> > >  net/ipv4/ip_gre.c | 3 ++-
+> > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/net/ipv4/ip_gre.c b/net/ipv4/ip_gre.c
+> > > index 22a26d1d29a0..95efa97cb84b 100644
+> > > --- a/net/ipv4/ip_gre.c
+> > > +++ b/net/ipv4/ip_gre.c
+> > > @@ -643,7 +643,8 @@ static netdev_tx_t ipgre_xmit(struct sk_buff *skb=
+,
+> > >                 /* Pull skb since ip_tunnel_xmit() needs skb->data po=
+inting
+> > >                  * to gre header.
+> > >                  */
+> > > -               skb_pull(skb, tunnel->hlen + sizeof(struct iphdr));
+> > > +               if (!skb_pull(skb, tunnel->hlen + sizeof(struct iphdr=
+)))
+> > > +                       goto free_skb;
+> > >                 skb_reset_mac_header(skb);
+> > >
+> > >                 if (skb->ip_summed =3D=3D CHECKSUM_PARTIAL &&
+> > > --
+> >
+> >
+> > I have syszbot reports with an actual repro for this one.
+>
+> Could you please share them? I could not find easily the reports in
+> https://syzkaller.appspot.com/upstream
 
-Perfect then. No concerns from my side.
+Stack trace looks like the following:
 
-Thanks,
-Rodrigo.
-
-> 
-> /Thomas
-> 
+skbuff: skb_under_panic: text:ffffffff845f50a0 len:920 put:20
+head:ffff888171931000 data:ffff888171930ff8 tail:0x390 end:0x680
+dev:gre4
+------------[ cut here ]------------
+kernel BUG at net/core/skbuff.c:120 !
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 12705 Comm: kworker/0:0 Not tainted
+6.1.43-syzkaller-00022-g8f46c3493178 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine,
+BIOS Google 10/09/2023
+Workqueue: mld mld_ifc_work
+RIP: 0010:skb_panic net/core/skbuff.c:120 [inline]
+RIP: 0010:skb_under_panic+0x14c/0x150 net/core/skbuff.c:130
+Code: 60 98 da 85 48 c7 c6 05 6b 2f 86 48 8b 55 c0 8b 4d d4 44 8b 45
+d0 4c 8b 4d c8 53 41 55 41 54 41 57 e8 fc db f4 00 48 83 c4 20 <0f> 0b
+66 90 55 48 89 e5 41 57 41 56 41 55 41 54 53 48 83 ec 18 41
+RSP: 0018:ffffc9000551f0a0 EFLAGS: 00010286
+RAX: 0000000000000087 RBX: ffff888162226000 RCX: 98ecdd4da3f28000
+RDX: 0000000000000000 RSI: 0000000000000400 RDI: 0000000000000000
+RBP: ffffc9000551f0e0 R08: ffffffff815a9ea5 R09: fffff52000aa3dad
+R10: 0000000000000000 R11: dffffc0000000001 R12: 0000000000000390
+R13: 0000000000000680 R14: dffffc0000000000 R15: ffff888171930ff8
+FS: 0000000000000000(0000) GS:ffff8881f7000000(0000) knlGS:0000000000000000
+CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2f421000 CR3: 000000010f5a3000 CR4: 00000000003506b0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+<TASK>
+skb_push+0xf3/0x120 net/core/skbuff.c:2181
+iptunnel_xmit+0x2d0/0x940 net/ipv4/ip_tunnel_core.c:67
+ip_tunnel_xmit+0x218f/0x2ae0 net/ipv4/ip_tunnel.c:813
+__gre_xmit net/ipv4/ip_gre.c:469 [inline]
+ipgre_xmit+0x7ac/0xaa0 net/ipv4/ip_gre.c:661
+__netdev_start_xmit include/linux/netdevice.h:4908 [inline]
+netdev_start_xmit include/linux/netdevice.h:4922 [inline]
+xmit_one net/core/dev.c:3602 [inline]
+dev_hard_start_xmit+0x1de/0x630 net/core/dev.c:3618
+__dev_queue_xmit+0x18c0/0x3700 net/core/dev.c:4268
+dev_queue_xmit include/linux/netdevice.h:3076 [inline]
+neigh_direct_output+0x17/0x20 net/core/neighbour.c:1592
+neigh_output include/net/neighbour.h:552 [inline]
+ip6_finish_output2+0x104a/0x1820 net/ipv6/ip6_output.c:134
+__ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
+ip6_finish_output+0x5d9/0xb60 net/ipv6/ip6_output.c:206
+NF_HOOK_COND include/linux/netfilter.h:294 [inline]
+ip6_output+0x1f7/0x4d0 net/ipv6/ip6_output.c:227
+dst_output include/net/dst.h:444 [inline]
+NF_HOOK include/linux/netfilter.h:305 [inline]
+mld_sendpack+0x803/0xe40 net/ipv6/mcast.c:1820
+mld_send_cr net/ipv6/mcast.c:2121 [inline]
+mld_ifc_work+0x7dc/0xba0 net/ipv6/mcast.c:2653
+process_one_work+0x73d/0xcb0 kernel/workqueue.c:2299
+worker_thread+0xa60/0x1260 kernel/workqueue.c:2446
+kthread+0x26d/0x300 kernel/kthread.c:376
+ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
+</TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:skb_panic net/core/skbuff.c:120 [inline]
+RIP: 0010:skb_under_panic+0x14c/0x150 net/core/skbuff.c:130
+Code: 60 98 da 85 48 c7 c6 05 6b 2f 86 48 8b 55 c0 8b 4d d4 44 8b 45
+d0 4c 8b 4d c8 53 41 55 41 54 41 57 e8 fc db f4 00 48 83 c4 20 <0f> 0b
+66 90 55 48 89 e5 41 57 41 56 41 55 41 54 53 48 83 ec 18 41
+RSP: 0018:ffffc9000551f0a0 EFLAGS: 00010286
+RAX: 0000000000000087 RBX: ffff888162226000 RCX: 98ecdd4da3f28000
+RDX: 0000000000000000 RSI: 0000000000000400 RDI: 0000000000000000
+RBP: ffffc9000551f0e0 R08: ffffffff815a9ea5 R09: fffff52000aa3dad
+R10: 0000000000000000 R11: dffffc0000000001 R12: 0000000000000390
+R13: 0000000000000680 R14: dffffc0000000000 R15: ffff888171930ff8
+FS: 0000000000000000(0000) GS:ffff8881f7000000(0000) knlGS:0000000000000000
+CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2f421000 CR3: 000000010f5a3000 CR4: 00000000003506b0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
