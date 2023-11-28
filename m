@@ -2,101 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 558097FB80D
+	by mail.lfdr.de (Postfix) with ESMTP id AB9D57FB80E
 	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:38:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234929AbjK1Khy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 05:37:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35188 "EHLO
+        id S1344452AbjK1KiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 05:38:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234956AbjK1KhY (ORCPT
+        with ESMTP id S234937AbjK1Kha (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 05:37:24 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC73D72
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:34:31 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6cbd24d9557so3809005b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:34:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701167671; x=1701772471; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8Yyve/MpYopjqzKEDi1Y9CR3K8+cxDXLytjrxavvjAU=;
-        b=vNg89kuFzkutHT6nenw0wB5E+SvIdw2AOS0ytnHwaQyfmaGrcTNUNvFLv8DBdHTZ3B
-         g70V+bf5M5PiaUsFBKsJFummHFMx76ca3WHH+bgR4ajRa70uWWBnmC3e6tL2sEEO1/gh
-         QwMyGR0pu/N//0xIliW5odG1ccMfY48PWVuuU0dshLqnmn3j7+PQx1RJa8kmQtNBMDhS
-         38CXQRmdPKG02dlO6DAL/KbZpeZNRU32AXYOMsDpdEzjYH9i4O96kEoBazNzmK9ntfdM
-         Osj1LrbmJwkjx49P5ks07aIpe6l0e2gqrL6SEzaV3BBCsrj7E+trIQzrf+i62hxs59xD
-         Mwsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701167671; x=1701772471;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8Yyve/MpYopjqzKEDi1Y9CR3K8+cxDXLytjrxavvjAU=;
-        b=pEJnuxSHmxAz3tEV//1YL+BFDZzT/YPlXH0Gw4/l/52mvm4NdDXnXPCTdybIb40hAa
-         DEj6n7GRiZQKbl+cC123b8BJzgD+GXlPoZjB+4CwaKPqbtLWDt1bmnyRZw1HtjI69dMX
-         +nY8Iaa9ZjS1cOARnit39J5G+qE8g8WFOAqV0NDuBixkXFm+xdbsitClX7PCawwkIDcj
-         1T/pUSwJPzgzF2gKS8kHkUQXGMRIkte8VWLCjIye4rsHvXBVIhJZp4t+KdBVaX/Vpl6U
-         5T60PDvyhYGtYw0ffVD6Bk8EDjeE78OY6tFlLngpvoO/ua3OmnlLjO/NxW2uiGkU7lND
-         P0kQ==
-X-Gm-Message-State: AOJu0Yym9Hoz3Tf5cE7PnFLzmFG/dsu7aVRkN1eBBcVEiP/2WGQFpoc9
-        c+ab//UDKJg7iEoS8jTcxHV7UA==
-X-Google-Smtp-Source: AGHT+IFphre2IOCGQmscY6xeXA4mJ80hFOQLqrzgfqIhwhyj3EcjqOVFv1DI9ExufEeI4z1KX4HrYQ==
-X-Received: by 2002:a05:6a20:8f01:b0:18c:a983:a5f2 with SMTP id b1-20020a056a208f0100b0018ca983a5f2mr7390871pzk.29.1701167670999;
-        Tue, 28 Nov 2023 02:34:30 -0800 (PST)
-Received: from localhost ([122.172.82.6])
-        by smtp.gmail.com with ESMTPSA id by6-20020a056a02058600b005c216d903bdsm7982692pgb.89.2023.11.28.02.34.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 02:34:30 -0800 (PST)
-Date:   Tue, 28 Nov 2023 16:04:28 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>, Nishanth Menon <nm@ti.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 0/3]  OPP: Simplify required-opp handling
-Message-ID: <20231128103428.hckenu5khg3n5cok@vireshk-i7>
-References: <cover.1700131353.git.viresh.kumar@linaro.org>
- <ZWXA9_VDRKzMA9Nj@kernkonzept.com>
+        Tue, 28 Nov 2023 05:37:30 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 435E32720;
+        Tue, 28 Nov 2023 02:35:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ywzJ900a2ajqKWMAZ1RXwUxbjIFP4a4N/LNkum40b84=; b=OEaE8iBJFMLypOJEI7eDK6VbXl
+        HevRBMVCn3wtHBWmLzYecdk3q/VcAcQRFH5dalBCaCrFwhMTVdzQ5BcvQa3xsF1YE9L/a+XQeXoSc
+        TY8c4FO3eAFzAWZPD8Vhtw27uNh6sfjxbz2n2alhRf+7HJGugNwAb+C6oElow7RyJdOj5ffDFR/Gi
+        T9FPW7U5z6JxJohiIus6zRYQ2nDfqAJ9ATa9fy4lpnWIVy9YwkEZ3tOGCP3Ftqpygho2vCDB4T3Jl
+        CLMAiQRkfPG1y7Ua+Iuxi+SYzV4ZHF/SJ0Gf8UcmZ361n4uTeb+DWMAenQ56Z1ndb0dCuHRRFjk5I
+        +1KL3LTQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37610)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1r7vQi-00079K-05;
+        Tue, 28 Nov 2023 10:35:00 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1r7vQi-0002sT-7G; Tue, 28 Nov 2023 10:35:00 +0000
+Date:   Tue, 28 Nov 2023 10:35:00 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Jie Luo <quic_luoj@quicinc.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, hkallweit1@gmail.com, corbet@lwn.net,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v6 3/6] net: phy: at803x: add QCA8084 ethernet phy support
+Message-ID: <ZWXCVPq2aE59uJs+@shell.armlinux.org.uk>
+References: <20231126060732.31764-1-quic_luoj@quicinc.com>
+ <20231126060732.31764-4-quic_luoj@quicinc.com>
+ <0b22dd51-417c-436d-87ce-7ebc41185860@lunn.ch>
+ <f0604c25-87a7-497a-8884-7a779ee7a2f5@quicinc.com>
+ <8e4046dd-813c-4766-83fb-c54a700caf31@lunn.ch>
+ <9c4c1fe7-5d71-4bb2-8b92-f4e9a136e93d@quicinc.com>
+ <ZWWsLf/w82N0vwBq@shell.armlinux.org.uk>
+ <a324b7d4-5265-4766-814a-36c53a84f732@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZWXA9_VDRKzMA9Nj@kernkonzept.com>
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+In-Reply-To: <a324b7d4-5265-4766-814a-36c53a84f732@quicinc.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28-11-23, 11:29, Stephan Gerhold wrote:
-> Sorry for the delay. I tested the "opp/linux-next" branch (which seems
-> to contain the changes in this series already now) with the following
-> configurations:
+On Tue, Nov 28, 2023 at 05:50:41PM +0800, Jie Luo wrote:
 > 
->  - Single genpd used for cpufreq (MSM8909): Works
->  - Multiple genpd used for cpufreq (MSM8916): Works
->  - Single genpd used for cpufreq + parent genpd (MSM8916): Works, warning gone
 > 
-> Thanks for fixing this! :-)
-
-Thanks a lot.
-
-> I guess I'm too late now but FWIW:
+> On 11/28/2023 5:00 PM, Russell King (Oracle) wrote:
+> > On Tue, Nov 28, 2023 at 03:16:45PM +0800, Jie Luo wrote:
+> > > > > The interface mode is passed in the .config_init, which is configured
+> > > > > by the PCS driver, the hardware register is located in the PCS, this
+> > > > > driver will be pushed later.
+> > > > 
+> > > > Is this the same as how the syqca807x works? Can the PCS driver be
+> > > > shared by these two drivers?
+> > > 
+> > > I am not sure syqca807x, would you point me the code path of this driver?
+> > > 
+> > > > 
+> > > > What i don't like at the moment is that we have two driver
+> > > > developments going on at once for hardware which seems very similar,
+> > > > but no apparent cooperation?
+> > > > 
+> > > > 	Andrew
+> > > 
+> > > The PCS of qca8084 is the PHY PCS, which should be new PCS driver,
+> > > in the previous chips, we don't have this kind of PHY PCS.
+> > 
+> > No. PCS drivers are for MAC-side PCS drivers, not PHY-side PCS drivers.
+> > 
+> >                       +-------------
+> > 		     |     PHY
+> > MAC---PCS --- link --- PCS --- ...
+> >         ^             |  ^
+> >         |	     +--|----------
+> >    For this PCS          |
+> >                    Not for this PCS
+> > 
 > 
-> Tested-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+> The PCS drivers in drivers/net/pcs/ should be in PHY side, such as
+> pcs-lynx.c and pcs-xpcs.c, they are configuring the MDIO device
+> registers.
 
-Updated the commits with your tag :)
+Wrong. No they are not. Just because they are accessed via MDIO does
+not mean they are in the PHY. MDIO can be used for more than just the
+PHY, and is on a lot of platforms.
+
+LX2160A for example has many MDIO buses, and the PCSes (of which there
+are multiple inside the chip, and use pcs-lynx) are accessed through
+the MDIO bus specific to each port. They are not MMIO mapped.
+
+The same is true on stmmac platforms, where xpcs is used - xpcs is the
+_MAC_ side PCS.
+
+Sorry but you are wrong.
 
 -- 
-viresh
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
