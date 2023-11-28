@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC807FC49D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 21:04:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 335CC7FC4FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 21:12:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344653AbjK1UDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 15:03:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58192 "EHLO
+        id S230346AbjK1UMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 15:12:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344375AbjK1UDr (ORCPT
+        with ESMTP id S1345064AbjK1UMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 15:03:47 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5348612C;
-        Tue, 28 Nov 2023 12:03:53 -0800 (PST)
+        Tue, 28 Nov 2023 15:12:13 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F6219A4;
+        Tue, 28 Nov 2023 12:12:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701201834; x=1732737834;
+  t=1701202339; x=1732738339;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=3uSEXFAfigJrZCoXVJ4ZtMtwaJ+4f5OEieqGUBtBbV0=;
-  b=A+DIenp3GsG5ercT3CGJSnme2k869dgqlsbSmZ0kvumfBimspCybBhLY
-   7oJuWykA4V1t4abl9JiNtpAZVBxOXCyHvUfZfr6/1YLSBZmBpDwqR+3rY
-   NMHMA+DSLF27EQrzEXfj6zr6qFexVGtDwxtyxlPrq0g0RMikSc036JcpN
-   ORubwSdOZACPwFfThPLs7NRMnUyhpkfRsM4W367FOn4qEoeBE/yf04Czo
-   hdeChbgpd3LMDTZp9W+seQKNjJ0D5zXBwjPTU2DxD3HYixA8K3UwQoaN4
-   inFC0pKwf43EGhuccxJ8LRCEju0NukeeMvdPg/PcPi48GERW2Lh0xmU0b
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="6217551"
+  bh=NbQPPAhSXc+lH2scgSPRWjHrBuSZh78A/g5NEt950rk=;
+  b=DGJzu5IvoF/pgOvEDSuGLHx4LjEBXi7SH0FGXQ96bkmK/amdVISsS49F
+   x8tPjSL0h28FSAJ882p9adK1dWFz4UM9fFylZqePNb8Z6lEcYG3qzte9L
+   KH9iTseD2KM9W/olVSJJUxn+O5y1dCKxauToJgX/urx+xYywFe+k+nQ7j
+   Qe6Kus00Y4v/FPDTFocF+oVvPh9Timn1GzHWoBEFHqTS4VCDV6lLXbOC5
+   128HKezJvO+zqCx8mTjQ2LN3V6IaFfJdz/Q2a6/N4NAe7YvDcY7nKOzTx
+   hpJuxmOhrDrNInRq8bOelh1B91aJxRWjmWX2NzlO+mBh0rcgp8XMHhqWm
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="392767556"
 X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="6217551"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 12:02:08 -0800
+   d="scan'208";a="392767556"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 12:12:17 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="797687918"
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="834754922"
 X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="797687918"
+   d="scan'208";a="834754922"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga008.jf.intel.com with ESMTP; 28 Nov 2023 12:01:59 -0800
+  by fmsmga008.fm.intel.com with ESMTP; 28 Nov 2023 12:12:08 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id F27D879F; Tue, 28 Nov 2023 22:01:57 +0200 (EET)
+        id 0EF69968; Tue, 28 Nov 2023 22:01:58 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
@@ -75,9 +75,9 @@ Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
         Emil Renner Berthing <kernel@esmil.dk>,
         Hal Feng <hal.feng@starfivetech.com>
-Subject: [PATCH v3 03/22] pinctrl: equilibrium: Unshadow error code of of_property_count_u32_elems()
-Date:   Tue, 28 Nov 2023 21:56:52 +0200
-Message-ID: <20231128200155.438722-4-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v3 04/22] pinctrl: equilibrium: Use temporary variable to hold pins
+Date:   Tue, 28 Nov 2023 21:56:53 +0200
+Message-ID: <20231128200155.438722-5-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20231128200155.438722-1-andriy.shevchenko@linux.intel.com>
 References: <20231128200155.438722-1-andriy.shevchenko@linux.intel.com>
@@ -93,38 +93,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-of_property_count_u32_elems() might return an error code in some cases.
-It's naturally better to assign what it's returned to the err variable
-and supply the real code to the upper layer(s). Besides that, it's a
-common practice to avoid assignments for the data in cases when we know
-that the error condition happened. Refactor the code accordingly.
+The pins are allocated from the heap, but in order to pass
+them as constant object, we need to use non-constant pointer.
+Achieve this by using a temporary variable.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/pinctrl/pinctrl-equilibrium.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/pinctrl/pinctrl-equilibrium.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/pinctrl/pinctrl-equilibrium.c b/drivers/pinctrl/pinctrl-equilibrium.c
-index 5b5ddf7e5d0e..54755b583d3f 100644
+index 54755b583d3f..fd59cfdeefac 100644
 --- a/drivers/pinctrl/pinctrl-equilibrium.c
 +++ b/drivers/pinctrl/pinctrl-equilibrium.c
-@@ -715,12 +715,13 @@ static int eqbr_build_groups(struct eqbr_pinctrl_drv_data *drvdata)
- 		if (!prop)
- 			continue;
- 
--		group.num_pins = of_property_count_u32_elems(np, "pins");
--		if (group.num_pins < 0) {
-+		err = of_property_count_u32_elems(np, "pins");
-+		if (err < 0) {
- 			dev_err(dev, "No pins in the group: %s\n", prop->name);
- 			of_node_put(np);
--			return -EINVAL;
-+			return err;
+@@ -704,7 +704,7 @@ static int eqbr_build_groups(struct eqbr_pinctrl_drv_data *drvdata)
+ {
+ 	struct device *dev = drvdata->dev;
+ 	struct device_node *node = dev->of_node;
+-	unsigned int *pinmux, pin_id, pinmux_id;
++	unsigned int *pins, *pinmux, pin_id, pinmux_id;
+ 	struct group_desc group;
+ 	struct device_node *np;
+ 	struct property *prop;
+@@ -723,15 +723,14 @@ static int eqbr_build_groups(struct eqbr_pinctrl_drv_data *drvdata)
  		}
-+		group.num_pins = err;
+ 		group.num_pins = err;
  		group.name = prop->value;
- 		group.pins = devm_kcalloc(dev, group.num_pins,
- 					  sizeof(*(group.pins)), GFP_KERNEL);
+-		group.pins = devm_kcalloc(dev, group.num_pins,
+-					  sizeof(*(group.pins)), GFP_KERNEL);
+-		if (!group.pins) {
++		pins = devm_kcalloc(dev, group.num_pins, sizeof(*pins), GFP_KERNEL);
++		if (!pins) {
+ 			of_node_put(np);
+ 			return -ENOMEM;
+ 		}
++		group.pins = pins;
+ 
+-		pinmux = devm_kcalloc(dev, group.num_pins, sizeof(*pinmux),
+-				      GFP_KERNEL);
++		pinmux = devm_kcalloc(dev, group.num_pins, sizeof(*pinmux), GFP_KERNEL);
+ 		if (!pinmux) {
+ 			of_node_put(np);
+ 			return -ENOMEM;
+@@ -750,7 +749,7 @@ static int eqbr_build_groups(struct eqbr_pinctrl_drv_data *drvdata)
+ 				of_node_put(np);
+ 				return -EINVAL;
+ 			}
+-			group.pins[j] = pin_id;
++			pins[j] = pin_id;
+ 			if (of_property_read_u32_index(np, "pinmux", j, &pinmux_id)) {
+ 				dev_err(dev, "Group %s: Read intel pinmux id failed\n",
+ 					group.name);
 -- 
 2.43.0.rc1.1.gbec44491f096
 
