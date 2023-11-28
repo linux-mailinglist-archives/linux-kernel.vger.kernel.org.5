@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D6E7FBBAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 14:36:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7303E7FBBB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 14:36:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345430AbjK1Nge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 08:36:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34136 "EHLO
+        id S1345757AbjK1Ngi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 08:36:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344120AbjK1Ngd (ORCPT
+        with ESMTP id S1345429AbjK1Nge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 08:36:33 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 446E6BC;
-        Tue, 28 Nov 2023 05:36:39 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40b479ec4a3so15356615e9.2;
-        Tue, 28 Nov 2023 05:36:39 -0800 (PST)
+        Tue, 28 Nov 2023 08:36:34 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C6FDA;
+        Tue, 28 Nov 2023 05:36:40 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3316c6e299eso3656019f8f.1;
+        Tue, 28 Nov 2023 05:36:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701178597; x=1701783397; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701178599; x=1701783399; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=3PtocJM18WUz/9bnwDNM1XbvsGaiWt5uOf7PvLbW1SQ=;
-        b=X02PSeDluLYybLIckm+ByL4seOqNVOU55IoJeAjz6QE69bsGBOPEfWGBaqkude+b5q
-         EViH4tKYA72QnBCzKdjqr+qLCUMd+V60F2230XkH7Gzv8I86OFaksKpgXeMMt81KDwid
-         8+nt7HViMQC4bAqKCQdY8OuSPj0kOijG8Dy5tYT8kbxmSj6kai8w55caIwBtlxPD6iSs
-         IgPyP5ZQKp3yRCryvj7alpYOiBJlFCSRAkOz9pMNc632Dl6gqo6UBS616HiOvKI/aSdv
-         jMwprLToIbfCTtVW87Q4WkqkuQMQpCbP1M1nC/SHyzo/2s5Tjj/4HdhaTTswOr7lRWaG
-         kKjQ==
+        bh=c+1JCV7ywK09T18Om+G9iHl0r6MG2LGHGo6/W9Qoc40=;
+        b=QEKfkZdMoXdjdUAZAXU+VmMyz0BsV2Acgm3TpBtMobubzc+z16u6sAUMGovlCiowE9
+         Y85mFbGidXqs13AvHfHcCsAzWJ95ekEFQQJOib6fm+JdUBRUE4JRXqNBbVMT/DqRGaCc
+         jiBspQmG2ZggsfPTAF6q7trZFrgeqWKDpIXIwBLY+Sj+5kB/b+8xeEaqQqxk/QCcjQS4
+         fXWMWf4W4DpK+L+y5gA0znMult+uGPAmSMCn1EmVJKeE3bvE/t32QQB23cPwPvT9a50n
+         9h5z0zkiBpCPsv0EMf33IYuk1oYPj0nzfHg+qzQyMwxg8PFhw6qoUqHhKq7k+11IpSGH
+         XY2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701178597; x=1701783397;
+        d=1e100.net; s=20230601; t=1701178599; x=1701783399;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3PtocJM18WUz/9bnwDNM1XbvsGaiWt5uOf7PvLbW1SQ=;
-        b=Luf3aZYDAiraz3soz8ef8PijrL7QBLISNUVhM5oh2Ea3FheLBjkmu9PGtt6E2SkhXk
-         p9L8WkOm/7cj8PrMPg2komQqqvqnLSWDJmoRXbe9pp9FUb7uTxRNkYAoj6Kw8ssFhjTA
-         wh+/hprQQAkiAnViefjvXkAHx1lxbEgGjT1n4ry9NiuKqv5EY5mauofr9wWnHFMAeVJo
-         2+D7SuHrgjvej7NpDbicL8udZpOaNqchRs3flSehGLHVa9In7okwxTn+RlQ6UQaph3RT
-         NHyJdkxDfIkDkk24Kh7gdxMuviOMSazKMRukBHIqQi2JQjXKKClYEg9gS4X/TEpu+odL
-         hc/w==
-X-Gm-Message-State: AOJu0Yxa94HiGffrNLT+WfYnOMr33D12rvfqPy7tY9rOVh1o1D4nUnST
-        zb+1IZW/FEc23112Lv3WD7o=
-X-Google-Smtp-Source: AGHT+IFqmOoUdzxoPYBTKeyCujmYngjUtNeA+KuMG7Iz+WGTaO0M7CJC3Glb/QcHRk19sHOE/f9Rtw==
-X-Received: by 2002:a05:600c:684:b0:408:56ea:f061 with SMTP id a4-20020a05600c068400b0040856eaf061mr11843153wmn.24.1701178597364;
-        Tue, 28 Nov 2023 05:36:37 -0800 (PST)
+        bh=c+1JCV7ywK09T18Om+G9iHl0r6MG2LGHGo6/W9Qoc40=;
+        b=DuIdFs1HpZYsMUBku2cH4OfqFtUFmsoM9PH7QCm66d4/zmrpttUD+90KZxAIMqpUcT
+         viv7ABEqFfWJ53yIoMuQWZVaEP7XwDxFurxrbBkFdSYsKEW7pApozobcEmqS77KzT8Az
+         mrX3jZ60UXIJfUVRS0XcEIADkZIYQA7WibaOCU9H+yhCYgy14Ah9gUuYDJ0cRr81Z0WI
+         /3Hcig/x3lS77mpoDEQsqw7IUK4APaq58yWk66mJOFoqFUprWnXyk96whnk93dKqsJLB
+         KKMzlWPD4BnH6yauK7kRA7NKAP/syQMKnPXrYkmIm0zoR5snW9FnKbG7oQSH38Wsjkp3
+         WPdQ==
+X-Gm-Message-State: AOJu0YylYylQaUSTMrvoFVcbT431LxYPVM+wz1W4uz4VMMcGAykz5ccD
+        OcAIAxLHQUshxgKma9l9euE=
+X-Google-Smtp-Source: AGHT+IGBWA7E4n9A6yrT8bT49hI66jo6Xoe/HykW+OqNQj7X2ede5bp6U11rvVqpaOW1la2xTM3gBw==
+X-Received: by 2002:a05:6000:bc1:b0:331:6a36:a05f with SMTP id dm1-20020a0560000bc100b003316a36a05fmr10323256wrb.65.1701178598506;
+        Tue, 28 Nov 2023 05:36:38 -0800 (PST)
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id a8-20020adffb88000000b00333083a20e5sm3713132wrr.113.2023.11.28.05.36.36
+        by smtp.googlemail.com with ESMTPSA id a8-20020adffb88000000b00333083a20e5sm3713132wrr.113.2023.11.28.05.36.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 05:36:37 -0800 (PST)
+        Tue, 28 Nov 2023 05:36:38 -0800 (PST)
 From:   Christian Marangi <ansuelsmth@gmail.com>
 To:     Florian Fainelli <florian.fainelli@broadcom.com>,
         Broadcom internal kernel review list 
@@ -66,9 +66,9 @@ To:     Florian Fainelli <florian.fainelli@broadcom.com>,
         Harini Katakam <harini.katakam@amd.com>,
         Christian Marangi <ansuelsmth@gmail.com>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [net-next PATCH v3 2/3] net: phy: restructure __phy_write/read_mmd to helper and phydev user
-Date:   Tue, 28 Nov 2023 14:36:29 +0100
-Message-Id: <20231128133630.7829-2-ansuelsmth@gmail.com>
+Subject: [net-next PATCH v3 3/3] net: phy: add support for PHY package MMD read/write
+Date:   Tue, 28 Nov 2023 14:36:30 +0100
+Message-Id: <20231128133630.7829-3-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231128133630.7829-1-ansuelsmth@gmail.com>
 References: <20231128133630.7829-1-ansuelsmth@gmail.com>
@@ -84,120 +84,220 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Restructure phy_write_mmd and phy_read_mmd to implement generic helper
-for direct mdiobus access for mmd and use these helper for phydev user.
+Some PHY in PHY package may require to read/write MMD regs to correctly
+configure the PHY package.
 
-This is needed in preparation of PHY package API that requires generic
-access to the mdiobus and are deatched from phydev struct but instead
-access them based on PHY package base_addr and offsets.
+Add support for these additional required function in both lock and no
+lock variant.
+
+It's assumed that the entire PHY package is either C22 or C45. We use
+C22 or C45 way of writing/reading to mmd regs based on the passed phydev
+whether it's C22 or C45.
 
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 ---
 Changes v3:
-- Move to phy-core.c instead of inline in phy.h
+- Move in phy-core.c from phy.h
+- Base c45 from phydev
 Changes v2:
-- Introduce this patch
+- Rework to use newly introduced helper
+- Add common check for regnum and devad
 
- drivers/net/phy/phy-core.c | 64 ++++++++++++++++++--------------------
- 1 file changed, 30 insertions(+), 34 deletions(-)
+ drivers/net/phy/phy-core.c | 136 +++++++++++++++++++++++++++++++++++++
+ include/linux/phy.h        |  33 +++++++++
+ 2 files changed, 169 insertions(+)
 
 diff --git a/drivers/net/phy/phy-core.c b/drivers/net/phy/phy-core.c
-index 966c93cbe616..b729ac8b2640 100644
+index b729ac8b2640..b5868282def1 100644
 --- a/drivers/net/phy/phy-core.c
 +++ b/drivers/net/phy/phy-core.c
-@@ -540,6 +540,28 @@ static void mmd_phy_indirect(struct mii_bus *bus, int phy_addr, int devad,
- 			devad | MII_MMD_CTRL_NOINCR);
+@@ -650,6 +650,142 @@ int phy_write_mmd(struct phy_device *phydev, int devad, u32 regnum, u16 val)
  }
+ EXPORT_SYMBOL(phy_write_mmd);
  
-+static int mmd_phy_read(struct mii_bus *bus, int phy_addr, bool is_c45,
-+			int devad, u32 regnum)
++/**
++ * __phy_package_read_mmd - Convenience function for reading a register
++ * on an MMD on a given PHY using the PHY package base addr, added of
++ * the addr_offset value.
++ * @phydev: The phy_device struct
++ * @addr_offset: The offset to be added to PHY package base_addr
++ * @devad: The MMD to read from
++ * @regnum: The register on the MMD to read
++ *
++ * Same rules as for __phy_read();
++ *
++ * NOTE: It's assumed that the entire PHY package is either C22 or C45.
++ */
++int __phy_package_read_mmd(struct phy_device *phydev,
++			   unsigned int addr_offset, int devad,
++			   u32 regnum)
 +{
-+	if (is_c45)
-+		return __mdiobus_c45_read(bus, phy_addr, devad, regnum);
++	struct phy_package_shared *shared = phydev->shared;
++	int addr = shared->base_addr + addr_offset;
 +
-+	mmd_phy_indirect(bus, phy_addr, devad, regnum);
-+	/* Read the content of the MMD's selected register */
-+	return __mdiobus_read(bus, phy_addr, MII_MMD_DATA);
++	if (addr >= PHY_MAX_ADDR)
++		return -EIO;
++
++	if (regnum > (u16)~0 || devad > 32)
++		return -EINVAL;
++
++	return mmd_phy_read(phydev->mdio.bus, addr, phydev->is_c45, devad,
++			    regnum);
 +}
++EXPORT_SYMBOL(__phy_package_read_mmd);
 +
-+static int mmd_phy_write(struct mii_bus *bus, int phy_addr, bool is_c45,
-+			 int devad, u32 regnum, u16 val)
++/**
++ * phy_package_read_mmd - Convenience function for reading a register
++ * on an MMD on a given PHY using the PHY package base addr, added of
++ * the addr_offset value.
++ * @phydev: The phy_device struct
++ * @addr_offset: The offset to be added to PHY package base_addr
++ * @devad: The MMD to read from
++ * @regnum: The register on the MMD to read
++ *
++ * Same rules as for phy_read();
++ *
++ * NOTE: It's assumed that the entire PHY package is either C22 or C45.
++ */
++int phy_package_read_mmd(struct phy_device *phydev,
++			 unsigned int addr_offset, int devad,
++			 u32 regnum)
 +{
-+	if (is_c45)
-+		return __mdiobus_c45_write(bus, phy_addr, devad, regnum, val);
++	struct phy_package_shared *shared = phydev->shared;
++	int addr = shared->base_addr + addr_offset;
++	int val;
 +
-+	mmd_phy_indirect(bus, phy_addr, devad, regnum);
-+	/* Write the data into MMD's selected register */
-+	return __mdiobus_write(bus, phy_addr, MII_MMD_DATA, val);
++	if (addr >= PHY_MAX_ADDR)
++		return -EIO;
++
++	if (regnum > (u16)~0 || devad > 32)
++		return -EINVAL;
++
++	phy_lock_mdio_bus(phydev);
++	val = mmd_phy_read(phydev->mdio.bus, addr, phydev->is_c45, devad,
++			   regnum);
++	phy_unlock_mdio_bus(phydev);
++
++	return val;
 +}
++EXPORT_SYMBOL(phy_package_read_mmd);
++
++/**
++ * __phy_package_write_mmd - Convenience function for writing a register
++ * on an MMD on a given PHY using the PHY package base addr, added of
++ * the addr_offset value.
++ * @phydev: The phy_device struct
++ * @addr_offset: The offset to be added to PHY package base_addr
++ * @devad: The MMD to read from
++ * @regnum: The register on the MMD to read
++ * @val: value to write to @regnum
++ *
++ * Same rules as for __phy_write();
++ *
++ * NOTE: It's assumed that the entire PHY package is either C22 or C45.
++ */
++int __phy_package_write_mmd(struct phy_device *phydev,
++			    unsigned int addr_offset, int devad,
++			    u32 regnum, u16 val)
++{
++	struct phy_package_shared *shared = phydev->shared;
++	int addr = shared->base_addr + addr_offset;
++
++	if (addr >= PHY_MAX_ADDR)
++		return -EIO;
++
++	if (regnum > (u16)~0 || devad > 32)
++		return -EINVAL;
++
++	return mmd_phy_write(phydev->mdio.bus, addr, phydev->is_c45, devad,
++			     regnum, val);
++}
++EXPORT_SYMBOL(__phy_package_write_mmd);
++
++/**
++ * phy_package_write_mmd - Convenience function for writing a register
++ * on an MMD on a given PHY using the PHY package base addr, added of
++ * the addr_offset value.
++ * @phydev: The phy_device struct
++ * @addr_offset: The offset to be added to PHY package base_addr
++ * @devad: The MMD to read from
++ * @regnum: The register on the MMD to read
++ * @val: value to write to @regnum
++ *
++ * Same rules as for phy_write();
++ *
++ * NOTE: It's assumed that the entire PHY package is either C22 or C45.
++ */
++int phy_package_write_mmd(struct phy_device *phydev,
++			  unsigned int addr_offset, int devad,
++			  u32 regnum, u16 val)
++{
++	struct phy_package_shared *shared = phydev->shared;
++	int addr = shared->base_addr + addr_offset;
++	int ret;
++
++	if (addr >= PHY_MAX_ADDR)
++		return -EIO;
++
++	if (regnum > (u16)~0 || devad > 32)
++		return -EINVAL;
++
++	phy_lock_mdio_bus(phydev);
++	ret = mmd_phy_write(phydev->mdio.bus, addr, phydev->is_c45, devad,
++			    regnum, val);
++	phy_unlock_mdio_bus(phydev);
++
++	return ret;
++}
++EXPORT_SYMBOL(phy_package_write_mmd);
 +
  /**
-  * __phy_read_mmd - Convenience function for reading a register
-  * from an MMD on a given PHY.
-@@ -551,26 +573,14 @@ static void mmd_phy_indirect(struct mii_bus *bus, int phy_addr, int devad,
-  */
- int __phy_read_mmd(struct phy_device *phydev, int devad, u32 regnum)
- {
--	int val;
--
- 	if (regnum > (u16)~0 || devad > 32)
- 		return -EINVAL;
- 
--	if (phydev->drv && phydev->drv->read_mmd) {
--		val = phydev->drv->read_mmd(phydev, devad, regnum);
--	} else if (phydev->is_c45) {
--		val = __mdiobus_c45_read(phydev->mdio.bus, phydev->mdio.addr,
--					 devad, regnum);
--	} else {
--		struct mii_bus *bus = phydev->mdio.bus;
--		int phy_addr = phydev->mdio.addr;
-+	if (phydev->drv && phydev->drv->read_mmd)
-+		return phydev->drv->read_mmd(phydev, devad, regnum);
- 
--		mmd_phy_indirect(bus, phy_addr, devad, regnum);
--
--		/* Read the content of the MMD's selected register */
--		val = __mdiobus_read(bus, phy_addr, MII_MMD_DATA);
--	}
--	return val;
-+	return mmd_phy_read(phydev->mdio.bus, phydev->mdio.addr,
-+			    phydev->is_c45, devad, regnum);
+  * phy_modify_changed - Function for modifying a PHY register
+  * @phydev: the phy_device struct
+diff --git a/include/linux/phy.h b/include/linux/phy.h
+index 51702e349d83..41e0698a3685 100644
+--- a/include/linux/phy.h
++++ b/include/linux/phy.h
+@@ -2049,6 +2049,39 @@ static inline int __phy_package_write(struct phy_device *phydev,
+ 	return __mdiobus_write(phydev->mdio.bus, addr, regnum, val);
  }
- EXPORT_SYMBOL(__phy_read_mmd);
  
-@@ -607,28 +617,14 @@ EXPORT_SYMBOL(phy_read_mmd);
-  */
- int __phy_write_mmd(struct phy_device *phydev, int devad, u32 regnum, u16 val)
++/*
++ * __phy_package_read_mmd - Convenience function for reading a register
++ * on an MMD on a given PHY using the PHY package base addr, added of
++ * the addr_offset value.
++ */
++int __phy_package_read_mmd(struct phy_device *phydev,
++			   unsigned int addr_offset, int devad,
++			   u32 regnum);
++/*
++ * phy_package_read_mmd - Convenience function for reading a register
++ * on an MMD on a given PHY using the PHY package base addr, added of
++ * the addr_offset value.
++ */
++int phy_package_read_mmd(struct phy_device *phydev,
++			 unsigned int addr_offset, int devad,
++			 u32 regnum);
++/*
++ * __phy_package_write_mmd - Convenience function for writing a register
++ * on an MMD on a given PHY using the PHY package base addr, added of
++ * the addr_offset value.
++ */
++int __phy_package_write_mmd(struct phy_device *phydev,
++			    unsigned int addr_offset, int devad,
++			    u32 regnum, u16 val);
++/*
++ * phy_package_write_mmd - Convenience function for writing a register
++ * on an MMD on a given PHY using the PHY package base addr, added of
++ * the addr_offset value.
++ */
++int phy_package_write_mmd(struct phy_device *phydev,
++			  unsigned int addr_offset, int devad,
++			  u32 regnum, u16 val);
++
+ static inline bool __phy_package_set_once(struct phy_device *phydev,
+ 					  unsigned int b)
  {
--	int ret;
--
- 	if (regnum > (u16)~0 || devad > 32)
- 		return -EINVAL;
- 
--	if (phydev->drv && phydev->drv->write_mmd) {
--		ret = phydev->drv->write_mmd(phydev, devad, regnum, val);
--	} else if (phydev->is_c45) {
--		ret = __mdiobus_c45_write(phydev->mdio.bus, phydev->mdio.addr,
--					  devad, regnum, val);
--	} else {
--		struct mii_bus *bus = phydev->mdio.bus;
--		int phy_addr = phydev->mdio.addr;
-+	if (phydev->drv && phydev->drv->write_mmd)
-+		return phydev->drv->write_mmd(phydev, devad, regnum, val);
- 
--		mmd_phy_indirect(bus, phy_addr, devad, regnum);
--
--		/* Write the data into MMD's selected register */
--		__mdiobus_write(bus, phy_addr, MII_MMD_DATA, val);
--
--		ret = 0;
--	}
--	return ret;
-+	return mmd_phy_write(phydev->mdio.bus, phydev->mdio.addr,
-+			     phydev->is_c45, devad, regnum, val);
- }
- EXPORT_SYMBOL(__phy_write_mmd);
- 
 -- 
 2.40.1
 
