@@ -2,156 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 153437FB477
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:42:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3BEA7FB499
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344173AbjK1ImX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 03:42:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58508 "EHLO
+        id S1344214AbjK1IpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 03:45:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232697AbjK1ImV (ORCPT
+        with ESMTP id S1344234AbjK1Io6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 03:42:21 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6187F9D
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:42:27 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50aaaf6e58fso7821252e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:42:27 -0800 (PST)
+        Tue, 28 Nov 2023 03:44:58 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B4D210E7
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:45:01 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1cfabcbda7bso24682205ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:45:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701160945; x=1701765745; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Erf0gitB2S5rXXmcEeV/xkrurthBZdKYZBJso/PS/Ac=;
-        b=Apc9CIzXM4rfC5ZSXd1ivVWekxUkRBkorcQrIfWg9UxFpW/kkcBW693lTkSMe0p91X
-         dH+AGuEp8gSJLF8weWBEyByCMpOdvUUB36/gkLdXCoQBGOHS/mjf9YbfV3Td0OHKVNBF
-         HCqKD2BP7JxUDZLWgKdyrr1NZ/0t3dkOC+ypfHUAjXVmQR32qUbxgfWxa6LXZ8FfyPOs
-         5BxuNGFhc9VaGfA4/508bxDJBAy96WcsxAXF16v698Rn70cdDsrmcAx4kFZhQ/teflhB
-         dUln7Gu116rsaKGhKstouo33XNVghztbLvvGfDcUfUodzNCsLSIo98m50zhV0h0gVU2h
-         4KrA==
+        d=chromium.org; s=google; t=1701161101; x=1701765901; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RQ8OywwOJb3LFaBwr6mMhYpmBsDcdIoX+4ygc5IgZ6U=;
+        b=SLRRJjWL9nUXo04Hq0FLqCMjg6PpRewsCugnE0Os7hG156LDM8//rXW5FTBnxRiAHC
+         32pkW9KT6Yy65WMRAjXRN+Xts/fxv9iGm0kqGUNGUhb1BNhJKxngoShxCWkifMGkrEI6
+         Ez+UcSldhdDymNXpNVg36e816neGwA/MCEMn4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701160945; x=1701765745;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Erf0gitB2S5rXXmcEeV/xkrurthBZdKYZBJso/PS/Ac=;
-        b=UuPTLvUMqiB0jUQAGaIhC8tvC1zTkuBQHDlfnRsils59ZVyBpIUWZ2c65rLvIn0+CM
-         BNogOhfB0ytZAl07NPGmomoGiSClSYNNypUFpnHIjxUcIf9m+XiYdWwHTuSS8l0/sz7t
-         YmzdRBU7MV2axoYGOLOxZVxZ9h3NV9sjNytpabb5Kd/Kh6X1jzU7zSqRc1YtygpOeY1U
-         TfSN/erPbhDnTnjxuOz3EKVt7ABbkZ46XpYxPDAlvTapOGnbHazIZQH7KYlJtuqnqnmr
-         noAytPs+qwXKMX2rFYAlm63/rK7k7D1cRzp+DLuqYSuuO4ln5TaSEfbyPPwXBMx7+X9v
-         jdjw==
-X-Gm-Message-State: AOJu0Yzwcwq4pPiCAsVLcWP4gyiHmGC5LLjDts7sCpNmslt8CLSbEs+S
-        yWhCsslFmgbkBk72iiZowFHkiw==
-X-Google-Smtp-Source: AGHT+IGpPMz6U7UlSZRGx1bf2JkG6T7mTur+DF+VvbtmPQO99UJytTF3JNBbD72JCUwE18GKibK6OA==
-X-Received: by 2002:a05:6512:2244:b0:50b:bd7a:abbc with SMTP id i4-20020a056512224400b0050bbd7aabbcmr560068lfu.66.1701160945641;
-        Tue, 28 Nov 2023 00:42:25 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:eada:f40e:7ab3:2afe? ([2a01:e0a:982:cbb0:eada:f40e:7ab3:2afe])
-        by smtp.gmail.com with ESMTPSA id q19-20020a194313000000b0050a78dac3fasm1795027lfa.12.2023.11.28.00.42.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Nov 2023 00:42:25 -0800 (PST)
-Message-ID: <9bb9b7e3-ba59-4c29-99b8-173b1e8f247a@linaro.org>
-Date:   Tue, 28 Nov 2023 09:42:23 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH RESEND] dt-bindings: PCI: qcom: document the SM8650 PCIe
- Controller
-Content-Language: en-US, fr
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
+        d=1e100.net; s=20230601; t=1701161101; x=1701765901;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RQ8OywwOJb3LFaBwr6mMhYpmBsDcdIoX+4ygc5IgZ6U=;
+        b=X1F3Fs14L4/2c6gwzoGHuD161iGRSWbfzj//2pIkln74sOmDi2HZyzR+oQOihqhWjU
+         ix4rLg0765d8rNtJ1XTNw/mlYNGCCLul0HRmuQXcI68bMk54u7gNQIUtDmj7/ycm2+ZJ
+         ZKZpijS2Bppl4jt9qyZiXphpysJfFyQl47BQ/9yIL8rIW8qKDWJR7sb08VRhN190vnMW
+         FS8c1EH3O1kd4boDsFC6V8YbHvtOLmtJsfLUXRzMB1x4AJKjT453IaJNjo96wCvQ/yaq
+         VNYU28VshfKXUCZ5kTNmchHlrChU51R8AG9QhrY+AVPIHOZmW3jrKGYCqnGyhy3y9JlU
+         ItMg==
+X-Gm-Message-State: AOJu0Yw65zYVxm7oMiK6AoJg0Ch4TANsapBoFQbBt+Piwee3w1KcO7YS
+        GJV+jUXX5IGlGQlUoHF84A2+sQ==
+X-Google-Smtp-Source: AGHT+IE+ifoo8mgSxSw5S/xxmI2DMsomMPuTsaot5+xQeJxVwLn/vJiYkhRhgcbDX2yhQ4p2oAgnhg==
+X-Received: by 2002:a17:903:22c9:b0:1cf:7bf7:e648 with SMTP id y9-20020a17090322c900b001cf7bf7e648mr25962620plg.33.1701161100925;
+        Tue, 28 Nov 2023 00:45:00 -0800 (PST)
+Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:a990:1e95:a915:9c70])
+        by smtp.gmail.com with ESMTPSA id j1-20020a170902c08100b001ab39cd875csm8358074pld.133.2023.11.28.00.44.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 00:45:00 -0800 (PST)
+From:   Chen-Yu Tsai <wenst@chromium.org>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231128-topic-sm8650-upstream-bindings-pcie-v1-1-9c803b439952@linaro.org>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20231128-topic-sm8650-upstream-bindings-pcie-v1-1-9c803b439952@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Tzung-Bi Shih <tzungbi@kernel.org>
+Cc:     Chen-Yu Tsai <wenst@chromium.org>, chrome-platform@lists.linux.dev,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Johan Hovold <johan@kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        andriy.shevchenko@linux.intel.com, Jiri Kosina <jikos@kernel.org>,
+        linus.walleij@linaro.org, broonie@kernel.org,
+        gregkh@linuxfoundation.org, hdegoede@redhat.com,
+        james.clark@arm.com, james@equiv.tech, keescook@chromium.org,
+        rafael@kernel.org, tglx@linutronix.de,
+        Jeff LaBundy <jeff@labundy.com>, linux-input@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+Subject: [RFC PATCH v3 0/5] platform/chrome: Introduce DT hardware prober
+Date:   Tue, 28 Nov 2023 16:42:29 +0800
+Message-ID: <20231128084236.157152-1-wenst@chromium.org>
+X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lorenzo,
+Hi everyone,
 
-On 28/11/2023 09:36, Neil Armstrong wrote:
-> Document the PCIe Controller on the SM8650 platform by using the
-> SM8550 bindings as a fallback.
-> 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+This is v3 of my "of: Introduce hardware prober driver" [1] series.
+v2 continued Doug's "of: device: Support 2nd sources of probeable but
+undiscoverable devices" [2] series, but follows the scheme suggested by Rob, marking all second
+source component device nodes as "fail-needs-probe", and having a
+hardware prober driver enable the one of them. I tried to include
+everyone from the original Cc: list. Please let me know if you would
+like to be dropped from future submissions.
 
-Please ignore this resend, I forgot to add reviews.
+Changes since v2:
+- Added of_changeset_update_prop_string()
+- Moved generic I2C code to the I2C core
+- Moved remaining platform specific code to platform/chrome/
+- Switched to of_node_is_available() to check if node is enabled.
+- Switched to OF changeset API to update status property
+- I2C probe helper function now accepts "struct device *dev" instead to
+  reduce line length and dereferences
+- Moved "ret = 0" to just before for_each_child_of_node(i2c_node, node)
+- Depend on rather than select CONFIG_I2C
+- Copied machine check to driver init function
+- Explicitly mentioned "device tree" or OF in driver name, description
+  and Kconfig symbol
+- Dropped filename from inside the file
+- Made loop variable size_t (instead of unsigned int as Andy asked)
+- Switched to PLATFORM_DEVID_NONE instead of raw -1
+- Switched to standard goto error path pattern in hw_prober_driver_init()
+- Dropped device class from status property
 
-Thanks,
-Neil
+Patches removed from v3 and saved for later:
+- of: base: Add of_device_is_fail
+- of: hw_prober: Support Chromebook SKU ID based component selection
+- dt-bindings: arm: mediatek: Remove SKU specific compatibles for Google Krane
+- arm64: dts: mediatek: mt8183-kukui: Merge Krane device trees
 
-> ---
-> For convenience, a regularly refreshed linux-next based git tree containing
-> all the SM8650 related work is available at:
-> https://git.codelinaro.org/neil.armstrong/linux/-/tree/topic/sm85650/upstream/integ
-> ---
->   Documentation/devicetree/bindings/pci/qcom,pcie.yaml | 4 ++++
->   1 file changed, 4 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
-> index eadba38171e1..af537732ded6 100644
-> --- a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
-> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
-> @@ -41,6 +41,10 @@ properties:
->             - qcom,pcie-sm8450-pcie0
->             - qcom,pcie-sm8450-pcie1
->             - qcom,pcie-sm8550
-> +      - items:
-> +          - enum:
-> +              - qcom,pcie-sm8650
-> +          - const: qcom,pcie-sm8550
->         - items:
->             - const: qcom,pcie-msm8998
->             - const: qcom,pcie-msm8996
-> 
-> ---
-> base-commit: fe1998aa935b44ef873193c0772c43bce74f17dc
-> change-id: 20231016-topic-sm8650-upstream-bindings-pcie-56e90536c258
-> 
-> Best regards,
+For the I2C component (touchscreens and trackpads) case from the
+original series, the hardware prober driver finds the particular
+class of device in the device tree, gets its parent I2C adapter,
+and tries to initiate a simple I2C read for each device under that
+I2C bus. When it finds one that responds, it considers that one
+present, marks it as "okay", and returns, letting the driver core
+actually probe the device.
+
+This works fine in most cases since these components are connected
+via ribbon cable and always have the same resources. The driver as
+implemented currently doesn't deal with regulators or GPIO pins,
+since in the existing device trees they are either always on for
+regulators, or have GPIO hogs or pinmux and pinconfig directly
+tied to the pin controller.
+
+The other case, selecting a display panel to use based on the SKU ID
+from the firmware, hit a bit of an issue with fixing the OF graph.
+I've left it out of v3 for now.
+
+Patch 1 adds of_changeset_update_prop_string(), as requested by Rob.
+
+Patch 2 implements probing the I2C bus for presence of components as
+a helper function in the I2C core.
+
+Patch 3 adds a ChromeOS specific DT hardware prober. This initial
+version targets the Hana Chromebooks, probing its I2C trackpads and
+touchscreens.
+
+Patch 4 modifies the Hana device tree and marks the touchscreens
+and trackpads as "fail-needs-probe", ready for the driver to probe.
+
+Patch 5 adds a missing touchscreen variant to Hana. This patch
+conflicts with another one in flight [3] that is almost the same.
+
+
+Assuming this is acceptable to folks, because there are compile
+time dependencies, I think it would be easier for the code bits
+(patches 1 through 4) to go through either the OF tree or I2C
+tree. Patches 5 and 6 can go through the soc tree via the mediatek
+tree.
+
+
+Thanks
+ChenYu
+
+
+Background as given in Doug's cover letter:
+
+Support for multiple "equivalent" sources for components (also known
+as second sourcing components) is a standard practice that helps keep
+cost down and also makes sure that if one component is unavailable due
+to a shortage that we don't need to stop production for the whole
+product.
+
+Some components are very easy to second source. eMMC, for instance, is
+fully discoverable and probable so you can stuff a wide variety of
+similar eMMC chips on your board and things will work without a hitch.
+
+Some components are more difficult to second source, specifically
+because it's difficult for software to probe what component is present
+on any given board. In cases like this software is provided
+supplementary information to help it, like a GPIO strap or a SKU ID
+programmed into an EEPROM. This helpful information can allow the
+bootloader to select a different device tree. The various different
+"SKUs" of different Chromebooks are examples of this.
+
+Some components are somewhere in between. These in-between components
+are the subject of this patch. Specifically, these components are
+easily "probeable" but not easily "discoverable".
+
+A good example of a probeable but undiscoverable device is an
+i2c-connected touchscreen or trackpad. Two separate components may be
+electrically compatible with each other and may have compatible power
+sequencing requirements but may require different software. If
+software is told about the different possible components (because it
+can't discover them), it can safely probe them to figure out which
+ones are present.
+
+On systems using device tree, if we want to tell the OS about all of
+the different components we need to list them all in the device
+tree. This leads to a problem. The multiple sources for components
+likely use the same resources (GPIOs, interrupts, regulators). If the
+OS tries to probe all of these components at the same time then it
+will detect a resource conflict and that's a fatal error.
+
+The fact that Linux can't handle these probeable but undiscoverable
+devices well has had a few consequences:
+1. In some cases, we've abandoned the idea of second sourcing
+   components for a given board, which increases cost / generates
+   manufacturing headaches.
+2. In some cases, we've been forced to add some sort of strapping /
+   EEPROM to indicate which component is present. This adds difficulty
+   to manufacturing / refurb processes.
+3. In some cases, we've managed to make things work by the skin of our
+   teeth through slightly hacky solutions. Specifically, if we remove
+   the "pinctrl" entry from the various options then it won't
+   conflict. Regulators inherently can have more than one consumer, so
+   as long as there are no GPIOs involved in power sequencing and
+   probing devices then things can work. This is how
+   "sc8280xp-lenovo-thinkpad-x13s" works and also how
+   "mt8173-elm-hana" works.
+
+End of background from Doug's cover letter.
+
+[1] https://lore.kernel.org/linux-arm-kernel/20231109100606.1245545-1-wenst@chromium.org/
+[2] https://lore.kernel.org/all/20230921102420.RFC.1.I9dddd99ccdca175e3ceb1b9fa1827df0928c5101@changeid/
+[3] https://lore.kernel.org/linux-mediatek/20231115043511.2670477-1-treapking@chromium.org/
+
+Chen-Yu Tsai (5):
+  of: dynamic: Add of_changeset_update_prop_string
+  i2c: of: Introduce component probe function
+  platform/chrome: Introduce device tree hardware prober
+  arm64: dts: mediatek: mt8173-elm-hana: Mark touchscreens and trackpads
+    as fail
+  arm64: dts: mediatek: mt8173-elm-hana: Add G2touch G7500 touchscreen
+
+ .../boot/dts/mediatek/mt8173-elm-hana.dtsi    |  20 ++++
+ drivers/i2c/i2c-core-of.c                     | 110 ++++++++++++++++++
+ drivers/of/dynamic.c                          |  47 ++++++++
+ drivers/platform/chrome/Kconfig               |  11 ++
+ drivers/platform/chrome/Makefile              |   1 +
+ .../platform/chrome/chromeos_of_hw_prober.c   |  89 ++++++++++++++
+ include/linux/i2c.h                           |   4 +
+ include/linux/of.h                            |   3 +
+ 8 files changed, 285 insertions(+)
+ create mode 100644 drivers/platform/chrome/chromeos_of_hw_prober.c
+
+-- 
+2.43.0.rc1.413.gea7ed67945-goog
 
