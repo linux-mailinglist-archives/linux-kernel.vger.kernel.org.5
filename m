@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 958CD7FB377
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:01:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 039A77FB379
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:01:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234629AbjK1IBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 03:01:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58984 "EHLO
+        id S1343969AbjK1IBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 03:01:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343963AbjK1IAh (ORCPT
+        with ESMTP id S1343948AbjK1IAi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 03:00:37 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B4CB6;
-        Tue, 28 Nov 2023 00:00:42 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50abb83866bso6932977e87.3;
-        Tue, 28 Nov 2023 00:00:42 -0800 (PST)
+        Tue, 28 Nov 2023 03:00:38 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E592C5;
+        Tue, 28 Nov 2023 00:00:43 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50bb92811c0so410654e87.1;
+        Tue, 28 Nov 2023 00:00:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701158441; x=1701763241; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701158442; x=1701763242; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MRdqwIFL2uVW5SxPC7i3fG3JaqKAc+zofDkQy5XD79k=;
-        b=LfhBQkt4wO0EbJX2OvRJREaSOnZEbNUkktBqO1TRXMgOZ8ds3NkB2YsMFzPlLmtLmY
-         wBk5SyDZy4tQiciLSbv791qs56flA+8XRMJWbgrxJpNkrrxeskv8H37gkmRmXazphcW6
-         LKXj14loIRF0rTWMV3GuAPUcWNBh+zBL4m7U2N7+uV4CiHJ68Dx3VCYaBso3Me3B3bWw
-         /RcXClN2pPmQTsf68A0giys4f+DhwnkRwgj3P0rtheFnll0oxTVLLYIShtYIK/3gzGuU
-         J3dtw/zqc3IFuy8nEHs0+yXdh4JesRQmrhUnI8Y8kr66mf74JoQ00UN0XGDyI+mBpN+W
-         WjBA==
+        bh=v1knYvYUft74/9sPbBJw7fP0T2tfAJH0adcanUwigNQ=;
+        b=U8/i3izUbmxxzt7x7qWA0aMVn1+fmScgc3KgJ5TcFYmK1q4Sy/Bi3nx3w7S86VwI0I
+         8nRpCf4OSYWrY94hbbNjKkc49UsLjb79Bw5AP1At4W3roCB9uiUqWuuespkrPV3QskNu
+         1J01GS6gEoekZu6/bfTLmyJsg2TpK7zfKV5YMiqfNCrOTncZ3C9uIj5otbsryQyDJaxv
+         /zkGiV2My8Mp6tonwuZM5V4FToVeKpIPi/V9LXAak0wa0yqoNnvXeDDhVDrjzgDVvRcf
+         UiBNwD/YuhfC1T3TODAhuCn+8pSwn/F+hsLzQt56+lXDb7tFdsoeAp7aUnDbew/K5ple
+         E4gA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701158441; x=1701763241;
+        d=1e100.net; s=20230601; t=1701158442; x=1701763242;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MRdqwIFL2uVW5SxPC7i3fG3JaqKAc+zofDkQy5XD79k=;
-        b=V4x4lDDxhXBTebb9mjzmNjFdURqOPPLqJ0nae87okG7YgDDgEeGIMrlg1GnE1lxPRf
-         W61rBva6utkhWmIke7xMzVc9r/KL5qi5CCFjnuV8XZpyDcLxGAMoJnwN2w63HSR1qZ1O
-         hC3SXFi+foFgmdJBkrVhq1H1ClRfSLqF4MItDZzfciz5CC0WqVm4AaO36M6r2daHoJGp
-         +blkhDEFNrFuLN3sjPLe+GUqGVzFRVPU2uOrcClQUgEZ/wnKQkMrgj+eC8amFrLlPsRc
-         ocRQhfXOquleSMbecCFbEOJV/Yd+ZNl8BAzvZKjEDRjeDlbbdm7YCiM82JrVPdI7NnMk
-         q/wA==
-X-Gm-Message-State: AOJu0YwTvdclA3soNl3y+WeV1FDYoNe4lDqvFwTdcK3ujOwnUSO4utk0
-        Wp5Q+GORhIVVBGSaTga2nG0=
-X-Google-Smtp-Source: AGHT+IHe6xi4biLqoNAaaRuvyFCyxXEagtGb5TcjgRABkz7K+RpGBmUMYSw1iQ20LwMVr1VBG52asQ==
-X-Received: by 2002:a05:6512:1282:b0:50b:ae9f:bf9c with SMTP id u2-20020a056512128200b0050bae9fbf9cmr5286278lfs.55.1701158440567;
-        Tue, 28 Nov 2023 00:00:40 -0800 (PST)
+        bh=v1knYvYUft74/9sPbBJw7fP0T2tfAJH0adcanUwigNQ=;
+        b=Po09UyuJhYjQwT2iHXorYojbvkER+1ABx2sgoE4tnCx9qOy3f5/Cdu8yz0NtXMB+KJ
+         U80d7ImLzTFGtsdgg5KZcMhTSSSxV4yIQa7iXdRwhBGvpgV5zTk4eEXZqjwoAebUT82u
+         Crp/jaicDyzyYN/pKyupjPco0w1hZ5y1XmxsnFnwXi887BXL52DiGEr+u5lgx87+s3St
+         j2J8u8FaRcKly19rq74Wd2EJynn426VF3cPKXWdHPjhX+E/X0/YGKZcjCheW+bSHrhTR
+         ZPGDum4Cye505lXP0gsSpVfqMtPrd97AblCz1Hh10K+yefJ8nZvVQlGfGAuwanVrG1P8
+         2ZkQ==
+X-Gm-Message-State: AOJu0YzoRsldp38+hoQ9736rCSz1Uhpeo+pa3qRNtDAfHCSaXadbPhMI
+        Ml/J/IpY6ZfB+aK1aZbPk88=
+X-Google-Smtp-Source: AGHT+IErBw7TS/n7sMQjbGmIi8k8IyP59ASSbwuOKTqfop6fLeJD/O5Albo8MhhmaCePMWvDn/ZCKQ==
+X-Received: by 2002:a05:6512:401f:b0:4fe:8ba8:1a8b with SMTP id br31-20020a056512401f00b004fe8ba81a8bmr5553476lfb.7.1701158441575;
+        Tue, 28 Nov 2023 00:00:41 -0800 (PST)
 Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id o16-20020ac24bd0000000b004fe202a5c7csm1765501lfq.135.2023.11.28.00.00.39
+        by smtp.gmail.com with ESMTPSA id o16-20020ac24bd0000000b004fe202a5c7csm1765501lfq.135.2023.11.28.00.00.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 00:00:40 -0800 (PST)
+        Tue, 28 Nov 2023 00:00:41 -0800 (PST)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     "Paul E . McKenney" <paulmck@kernel.org>
 Cc:     RCU <rcu@vger.kernel.org>,
@@ -61,9 +61,9 @@ Cc:     RCU <rcu@vger.kernel.org>,
         Uladzislau Rezki <urezki@gmail.com>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
         Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH v3 5/7] rcu: Support direct wake-up of synchronize_rcu() users
-Date:   Tue, 28 Nov 2023 09:00:31 +0100
-Message-Id: <20231128080033.288050-6-urezki@gmail.com>
+Subject: [PATCH v3 6/7] rcu: Move sync related data to rcu_state structure
+Date:   Tue, 28 Nov 2023 09:00:32 +0100
+Message-Id: <20231128080033.288050-7-urezki@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231128080033.288050-1-urezki@gmail.com>
 References: <20231128080033.288050-1-urezki@gmail.com>
@@ -79,26 +79,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch introduces a small enhancement which allows to do a
-direct wake-up of synchronize_rcu() callers. It occurs after a
-completion of grace period, thus by the gp-kthread.
-
-Number of clients is limited by the hard-coded maximum allowed
-threshold. The remaining part, if still exists is deferred to
-a main worker.
+Move synchronize_rcu() main control data under the rcu_state
+structure. An access is done via "rcu_state" global variable.
 
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- kernel/rcu/tree.c | 39 +++++++++++++++++++++++++++++++++++++--
- 1 file changed, 37 insertions(+), 2 deletions(-)
+ kernel/rcu/tree.c | 50 ++++++++++++++---------------------------------
+ kernel/rcu/tree.h | 19 ++++++++++++++++++
+ 2 files changed, 34 insertions(+), 35 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index d7b48996825f..69663a6d5050 100644
+index 69663a6d5050..c0d3e46730e8 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -1384,6 +1384,12 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
+@@ -1384,19 +1384,6 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
  }
+ 
+-/*
+- * A max threshold for synchronize_rcu() users which are
+- * awaken directly by the rcu_gp_kthread(). Left part is
+- * deferred to the main worker.
+- */
+-#define SR_MAX_USERS_WAKE_FROM_GP 5
+-#define SR_NORMAL_GP_WAIT_HEAD_MAX 5
+-
+-struct sr_wait_node {
+-	atomic_t inuse;
+-	struct llist_node node;
+-};
+-
+ /*
+  * There is a single llist, which is used for handling
+  * synchronize_rcu() users' enqueued rcu_synchronize nodes.
+@@ -1523,17 +1510,10 @@ struct sr_wait_node {
+  * +----------+     +--------+
+  *
+  */
+-static struct sr_normal_state {
+-	struct llist_head srs_next;	/* request a GP users. */
+-	struct llist_node *srs_wait_tail; /* wait for GP users. */
+-	struct llist_node *srs_done_tail; /* ready for GP users. */
+-	struct sr_wait_node srs_wait_nodes[SR_NORMAL_GP_WAIT_HEAD_MAX];
+-} sr;
+-
+ static bool rcu_sr_is_wait_head(struct llist_node *node)
+ {
+-	return &(sr.srs_wait_nodes)[0].node <= node &&
+-		node <= &(sr.srs_wait_nodes)[SR_NORMAL_GP_WAIT_HEAD_MAX - 1].node;
++	return &(rcu_state.srs_wait_nodes)[0].node <= node &&
++		node <= &(rcu_state.srs_wait_nodes)[SR_NORMAL_GP_WAIT_HEAD_MAX - 1].node;
+ }
+ 
+ static struct llist_node *rcu_sr_get_wait_head(void)
+@@ -1542,7 +1522,7 @@ static struct llist_node *rcu_sr_get_wait_head(void)
+ 	int i;
+ 
+ 	for (i = 0; i < SR_NORMAL_GP_WAIT_HEAD_MAX; i++) {
+-		sr_wn = &(sr.srs_wait_nodes)[i];
++		sr_wn = &(rcu_state.srs_wait_nodes)[i];
+ 
+ 		if (!atomic_cmpxchg_acquire(&sr_wn->inuse, 0, 1))
+ 			return &sr_wn->node;
+@@ -1590,7 +1570,7 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+ 	 * cannot execute concurrently by multiple kworkers,
+ 	 * the done tail list manipulations are protected here.
+ 	 */
+-	done = smp_load_acquire(&sr.srs_done_tail);
++	done = smp_load_acquire(&rcu_state.srs_done_tail);
+ 	if (!done)
+ 		return;
+ 
+@@ -1626,12 +1606,12 @@ static void rcu_sr_normal_gp_cleanup(void)
+ 	struct llist_node *wait_tail, *head, *rcu;
+ 	int done = 0;
+ 
+-	wait_tail = sr.srs_wait_tail;
++	wait_tail = rcu_state.srs_wait_tail;
+ 	if (wait_tail == NULL)
+ 		return;
+ 
+-	sr.srs_wait_tail = NULL;
+-	ASSERT_EXCLUSIVE_WRITER(sr.srs_wait_tail);
++	rcu_state.srs_wait_tail = NULL;
++	ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_wait_tail);
+ 
+ 	WARN_ON_ONCE(!rcu_sr_is_wait_head(wait_tail));
+ 	head = wait_tail->next;
+@@ -1662,8 +1642,8 @@ static void rcu_sr_normal_gp_cleanup(void)
+ 	}
+ 
+ 	// concurrent sr_normal_gp_cleanup work might observe this update.
+-	smp_store_release(&sr.srs_done_tail, wait_tail);
+-	ASSERT_EXCLUSIVE_WRITER(sr.srs_done_tail);
++	smp_store_release(&rcu_state.srs_done_tail, wait_tail);
++	ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_done_tail);
+ 
+ 	if (wait_tail->next)
+ 		queue_work(system_highpri_wq, &sr_normal_gp_cleanup);
+@@ -1678,7 +1658,7 @@ static bool rcu_sr_normal_gp_init(void)
+ 	struct llist_node *wait_head;
+ 	bool start_new_poll = false;
+ 
+-	first = READ_ONCE(sr.srs_next.first);
++	first = READ_ONCE(rcu_state.srs_next.first);
+ 	if (!first || rcu_sr_is_wait_head(first))
+ 		return start_new_poll;
+ 
+@@ -1690,23 +1670,23 @@ static bool rcu_sr_normal_gp_init(void)
+ 	}
+ 
+ 	/* Inject a wait-dummy-node. */
+-	llist_add(wait_head, &sr.srs_next);
++	llist_add(wait_head, &rcu_state.srs_next);
+ 
+ 	/*
+ 	 * A waiting list of rcu_synchronize nodes should be empty on
+ 	 * this step, since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
+ 	 * rolls it over. If not, it is a BUG, warn a user.
+ 	 */
+-	WARN_ON_ONCE(sr.srs_wait_tail != NULL);
+-	sr.srs_wait_tail = wait_head;
+-	ASSERT_EXCLUSIVE_WRITER(sr.srs_wait_tail);
++	WARN_ON_ONCE(rcu_state.srs_wait_tail != NULL);
++	rcu_state.srs_wait_tail = wait_head;
++	ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_wait_tail);
+ 
+ 	return start_new_poll;
+ }
+ 
+ static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
+ {
+-	llist_add((struct llist_node *) &rs->head, &sr.srs_next);
++	llist_add((struct llist_node *) &rs->head, &rcu_state.srs_next);
+ }
+ 
+ /*
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 192536916f9a..f72166b5067a 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -316,6 +316,19 @@ do {									\
+ 	__set_current_state(TASK_RUNNING);				\
+ } while (0)
  
 +/*
 + * A max threshold for synchronize_rcu() users which are
@@ -106,60 +229,29 @@ index d7b48996825f..69663a6d5050 100644
 + * deferred to the main worker.
 + */
 +#define SR_MAX_USERS_WAKE_FROM_GP 5
- #define SR_NORMAL_GP_WAIT_HEAD_MAX 5
- 
- struct sr_wait_node {
-@@ -1617,7 +1623,8 @@ static DECLARE_WORK(sr_normal_gp_cleanup, rcu_sr_normal_gp_cleanup_work);
-  */
- static void rcu_sr_normal_gp_cleanup(void)
- {
--	struct llist_node *wait_tail;
-+	struct llist_node *wait_tail, *head, *rcu;
-+	int done = 0;
- 
- 	wait_tail = sr.srs_wait_tail;
- 	if (wait_tail == NULL)
-@@ -1626,11 +1633,39 @@ static void rcu_sr_normal_gp_cleanup(void)
- 	sr.srs_wait_tail = NULL;
- 	ASSERT_EXCLUSIVE_WRITER(sr.srs_wait_tail);
- 
-+	WARN_ON_ONCE(!rcu_sr_is_wait_head(wait_tail));
-+	head = wait_tail->next;
++#define SR_NORMAL_GP_WAIT_HEAD_MAX 5
 +
-+	/*
-+	 * Process (a) and (d) cases. See an illustration. Apart of
-+	 * that it handles the scenario when all clients are done,
-+	 * wait-head is released if last. The worker is not kicked.
-+	 */
-+	llist_for_each_safe(rcu, head, head) {
-+		if (rcu_sr_is_wait_head(rcu)) {
-+			if (!rcu->next) {
-+				rcu_sr_put_wait_head(rcu);
-+				wait_tail->next = NULL;
-+			} else {
-+				wait_tail->next = rcu;
-+			}
++struct sr_wait_node {
++	atomic_t inuse;
++	struct llist_node node;
++};
 +
-+			break;
-+		}
+ /*
+  * RCU global state, including node hierarchy.  This hierarchy is
+  * represented in "heap" form in a dense array.  The root (first level)
+@@ -397,6 +410,12 @@ struct rcu_state {
+ 						/* Synchronize offline with */
+ 						/*  GP pre-initialization. */
+ 	int nocb_is_setup;			/* nocb is setup from boot */
 +
-+		rcu_sr_normal_complete(rcu);
-+		// It can be last, update a next on this step.
-+		wait_tail->next = head;
-+
-+		if (++done == SR_MAX_USERS_WAKE_FROM_GP)
-+			break;
-+	}
-+
- 	// concurrent sr_normal_gp_cleanup work might observe this update.
- 	smp_store_release(&sr.srs_done_tail, wait_tail);
- 	ASSERT_EXCLUSIVE_WRITER(sr.srs_done_tail);
++	/* synchronize_rcu() part. */
++	struct llist_head srs_next;	/* request a GP users. */
++	struct llist_node *srs_wait_tail; /* wait for GP users. */
++	struct llist_node *srs_done_tail; /* ready for GP users. */
++	struct sr_wait_node srs_wait_nodes[SR_NORMAL_GP_WAIT_HEAD_MAX];
+ };
  
--	if (wait_tail)
-+	if (wait_tail->next)
- 		queue_work(system_highpri_wq, &sr_normal_gp_cleanup);
- }
- 
+ /* Values for rcu_state structure's gp_flags field. */
 -- 
 2.39.2
 
