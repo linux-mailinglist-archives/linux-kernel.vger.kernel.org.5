@@ -2,84 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A94BD7FC1B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43CA77FC169
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343949AbjK1Q0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 11:26:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44256 "EHLO
+        id S232201AbjK1Q1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:27:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjK1QZ7 (ORCPT
+        with ESMTP id S229532AbjK1Q1H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 11:25:59 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD369AB
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:26:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=6YdxQ6TPTCO0wTiV5GT2AhsiDswNReE589bphcgljEY=; b=ADgKcEYyEXvG3Mr2mt+9ghny6L
-        thlIgwCSfq3HD+j2IeeCDJJVH9ysDjlxQV1fYEJBYfmiYENxItb1ZP99OXQtqdpcb49wTYmH6yHCv
-        B0vrKjTrg+mZ/J1pDKfF1kk4P7CpaOBktKDZ8cvBKgr3UIiP2BAonKSwkehWdro6q8FPT1DUKaG33
-        xMXQoDlvVY7Zm26dTV97kN4oI+o0ABh63AGP+oV2PcRMWJbyxXC2xvy00nOfF140ruJml+J3+xAEZ
-        5wycLC7LU+D2ljS9VV1HpMtKabsolAQGKNaGp2Fmq8kmguo2s7pGkbPPi5uGqg2a8PpDcM0gVVk5z
-        MalqlmQg==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r80uS-005oAG-22;
-        Tue, 28 Nov 2023 16:26:04 +0000
-Message-ID: <d9ac4b6c-e473-4c00-b016-a9cebdb59325@infradead.org>
-Date:   Tue, 28 Nov 2023 08:26:03 -0800
+        Tue, 28 Nov 2023 11:27:07 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B781C98
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:27:14 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5D12C433C8;
+        Tue, 28 Nov 2023 16:27:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701188834;
+        bh=aK3/21f9RdYQmcl78FRdiNXVmir4FYYt7jy6fX2hIpg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XFWHfHx5ueIQ0Tg3EIGPSyC7hgzi/Jb+ytpkcUDYu3ppS3nmkvWds7wqI9z7dRVcv
+         wqtgM/4geSq5d9Dx57DkPryfc0Vc9TbJX/wQEFuyy2COHIBYEkUBcuA+fgB6McUwG2
+         79TqcJTuYyZwXlkF/fFa+C2B/W+atrX2ecSTWUMLJBiIAbnu1dqxZYGSepbOM7leei
+         2Ati39yHhzabrAgw7BSTTAAEXsiX4tMvaBrM59ZFYGkFQ0iBScxMDL/qVwsGKMqJOk
+         j71ETCHZKJgvr6s+ESmFYnqXHFJUZVAbz/7YJ28YU9GfDhOMwUoIYyN/Ye9bKwCalj
+         Ra9G7fV0xue1w==
+Date:   Tue, 28 Nov 2023 08:27:12 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Shinas Rasheed <srasheed@marvell.com>
+Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Haseeb Gani <hgani@marvell.com>,
+        Vimlesh Kumar <vimleshk@marvell.com>,
+        "egallen@redhat.com" <egallen@redhat.com>,
+        "mschmidt@redhat.com" <mschmidt@redhat.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "horms@kernel.org" <horms@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "wizhao@redhat.com" <wizhao@redhat.com>,
+        "konguyen@redhat.com" <konguyen@redhat.com>,
+        Veerasenareddy Burru <vburru@marvell.com>,
+        Sathesh B Edara <sedara@marvell.com>,
+        Eric Dumazet <edumazet@google.com>
+Subject: Re: [EXT] Re: [PATCH net-next v1 1/2] octeon_ep: implement device
+ unload control net API
+Message-ID: <20231128082712.223c4590@kernel.org>
+In-Reply-To: <PH0PR18MB4734281BD887FD9AFD64B2DEC7BCA@PH0PR18MB4734.namprd18.prod.outlook.com>
+References: <20231127162135.2529363-1-srasheed@marvell.com>
+        <20231127162135.2529363-2-srasheed@marvell.com>
+        <20231127184306.68c2d517@kernel.org>
+        <PH0PR18MB4734281BD887FD9AFD64B2DEC7BCA@PH0PR18MB4734.namprd18.prod.outlook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] lib: kstrtox: fix typo in comment
-Content-Language: en-US
-To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>,
-        linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>
-References: <ZWWkeVTvDBQDA_SF@monster.localdomain>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <ZWWkeVTvDBQDA_SF@monster.localdomain>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/28/23 00:27, Wilken Gottwalt wrote:
-> Delete one of the double f's in "iff".
+On Tue, 28 Nov 2023 04:22:11 +0000 Shinas Rasheed wrote:
+> > On Mon, 27 Nov 2023 08:21:34 -0800 Shinas Rasheed wrote:  
+> > > Device unload control net function should inform firmware  
+> > 
+> > What is "control net" again?  
 > 
-> Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
+> Control net is just a software layer which is used by the host driver
+> as well as the firmware to communicate with each other, given in the
+> source file octep_ctrl_net.c and the corresponding octep_ctrl_net.h
+> interface, which is already part of upstreamed driver.
 
-Nope, see:
-  https://en.wikipedia.org/wiki/If_and_only_if
+Yes, I think it went in before I had time to nack it.
+I'm strongly against using the IP stack to talk to FW,
+if you read the ML you would know it.
 
-> ---
->  lib/kstrtox.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/lib/kstrtox.c b/lib/kstrtox.c
-> index d586e6af5e5a..b0a9fdce15b3 100644
-> --- a/lib/kstrtox.c
-> +++ b/lib/kstrtox.c
-> @@ -340,7 +340,7 @@ EXPORT_SYMBOL(kstrtos8);
->   * @s: input string
->   * @res: result
->   *
-> - * This routine returns 0 iff the first character is one of 'YyTt1NnFf0', or
-> + * This routine returns 0 if the first character is one of 'YyTt1NnFf0', or
->   * [oO][NnFf] for "on" and "off". Otherwise it will return -EINVAL.  Value
->   * pointed to by res is updated upon finding a match.
->   */
-
--- 
-~Randy
+No new patches to octep_ctrl_net will be accepted.
