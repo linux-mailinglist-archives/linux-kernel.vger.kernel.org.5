@@ -2,72 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE217FB07A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 04:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4CB7FB096
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 04:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234443AbjK1ChA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 21:37:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46958 "EHLO
+        id S234453AbjK1Cip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 21:38:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjK1Cg7 (ORCPT
+        with ESMTP id S229487AbjK1Cio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 21:36:59 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99CE118E;
-        Mon, 27 Nov 2023 18:37:01 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2c50305c5c4so64592521fa.1;
-        Mon, 27 Nov 2023 18:37:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701139020; x=1701743820; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=p9DehPb+B0avMQIEahya5tFyVOrTp2O4+WIgAS2v9xk=;
-        b=FMO7hcbnv3OCuTYDZhns5/GKavPWFd1M2oUl75oFXByMLXpkpM3+JNzPgoU++MtKei
-         2KnzR5DbYk/7e9yBi8OaGI4lnykEz/87OtRyVMNtcf3WxksbrObnFSuf8hsorytie4OT
-         UR6dcZcm4uUnRhSxEhIBWq5cjLnib54H990xLUfQtmHoIaLohegVY47Gu/PG3SgSUpJB
-         YUvlfkxIK6UxtVXcLpVmR2o4GrE65/oLI930N3aYTi5nkoSzmQm7FE428EV/cKbbNHaC
-         Vd6Pic8l9RSVK6Y3mQoABTU2Pe5ieGRHSFQf4ReSUjJ3UnjT+AzBWCVWItAYKsHqStbQ
-         SCVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701139020; x=1701743820;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=p9DehPb+B0avMQIEahya5tFyVOrTp2O4+WIgAS2v9xk=;
-        b=n9IF974PAVuEyOSUOjSGN6YQgc24ANBiYThbcRYRbvFm91LTEdLKAtLa6SLchdMy0k
-         KwbWvTsyqWQxIQJZUlARyolwJSl8iJMtYws5eKz1HsGsUNtOns/J0NwllM7lC7alCP7s
-         ger9nH6vy3FRxpwdhgNq+gmhEne6OVDaj9u4uo4xxlP9Z/czcr1jpHXKgn3yY2w8IJ8C
-         am3ar3YsFkrGf+BwYZt0ieshuKzLpfKbyTsHquYnr3zEhVpoMPTr7vvUFAKzCFsdJHr5
-         h2yts9JO6Sti+5/b6zUhVfsyMEeuCCQc6Ag0pZwewVRYIfhx54ZbwChaYP/qZlhr+FNl
-         b7yA==
-X-Gm-Message-State: AOJu0YwVOOUEx7IbkQSSJrgBJijW1V1o1hQT0954Cydaih3JNAKPSL3k
-        sKh6WtwfEc/wvUzFJ3VBYX700SnndE0MJsAmvjA=
-X-Google-Smtp-Source: AGHT+IF6Md78NIt1A4rE+Nxd2qAgloV2QTWu429Ac/B5IF8drR/zassEwyV2rUGEvSdF/ZuusnjIQKQCbQbZcTWYPGU=
-X-Received: by 2002:a2e:9490:0:b0:2c8:71d5:abfb with SMTP id
- c16-20020a2e9490000000b002c871d5abfbmr10288257ljh.43.1701139019479; Mon, 27
- Nov 2023 18:36:59 -0800 (PST)
+        Mon, 27 Nov 2023 21:38:44 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEE4F18F
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 18:38:50 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E23C1C433C7;
+        Tue, 28 Nov 2023 02:38:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701139130;
+        bh=+OSbBnS4vP20UuX2XQA37QRXeVEXzq+hur1Q3s0Vb80=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mCFameLSmm/b3mYOMTuAw9k9WZdn3d/OHcLU5VjWb+U8ys0lnwGO5MVtrUTBXrPzB
+         YswropNRxsv6OXrtVHUBOcG7RHeipO0J6vEd0hWtD9czfcTA73BNqQa+nbohZcZG9r
+         HK4t4L6MzQLTFHfwNlG6lJTmLX8cfKdVwFEORQz1dRbqucnzFS9Mn5WXNY1p8/OGEt
+         srum54ahvKy33nvQgjI6rEcnxpxmkSuWdrKRVC5ZkVvaoDoKTW/D8cSradUxWdbLHM
+         M8wPzTqmclFkbZ6NIBfLXxqdnaEGQeFsbAVuES5/n4ZYPoupGwWT58grkDe8KlM9wI
+         XHJr2pSd/pYSg==
+Date:   Mon, 27 Nov 2023 18:38:49 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Suman Ghosh <sumang@marvell.com>
+Cc:     <sgoutham@marvell.com>, <gakula@marvell.com>,
+        <sbhatta@marvell.com>, <hkelam@marvell.com>,
+        <lcherian@marvell.com>, <jerinj@marvell.com>,
+        <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <horms@kernel.org>, <naveenm@marvell.com>
+Subject: Re: [net PATCH v2] octeontx2-pf: Fix updation of adaptive interrupt
+ coalescing
+Message-ID: <20231127183849.140e8809@kernel.org>
+In-Reply-To: <20231127060538.3780111-1-sumang@marvell.com>
+References: <20231127060538.3780111-1-sumang@marvell.com>
 MIME-Version: 1.0
-References: <CACkBjsZGEUaRCHsmaX=h-efVogsRfK1FPxmkgb0Os_frnHiNdw@mail.gmail.com>
-In-Reply-To: <CACkBjsZGEUaRCHsmaX=h-efVogsRfK1FPxmkgb0Os_frnHiNdw@mail.gmail.com>
-From:   Andrei Matei <andreimatei1@gmail.com>
-Date:   Mon, 27 Nov 2023 21:36:47 -0500
-Message-ID: <CABWLseuvzphU7+1BxXnjdbBMbqYzvXH-OSX+2bKi6KMNnFiqcA@mail.gmail.com>
-Subject: Re: [Bug Report] bpf: zero access_size of stack causes array indix
- oob in check_stack_range_initialized()
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for another great report, Hao! Will investigate.
+On Mon, 27 Nov 2023 11:35:38 +0530 Suman Ghosh wrote:
+> The current adaptive interrupt coalescing code updates only rx
+> packet stats for dim algorithm. This patch fixes that and also
+> updates tx packet stats which will be useful when there is
+> only tx traffic. Also moved configuring hardware adaptive
+> interrupt setting to driver dim callback.
+> 
+> Fixes: 6e144b47f560 ("octeontx2-pf: Add support for adaptive interrupt coalescing")
+> Signed-off-by: Naveen Mamindlapalli <naveenm@marvell.com>
+> ---
+> v2 changes:
+> - Missed adding the fixes tag in v1. Added the same in v2.
+
+Please read:
+https://www.kernel.org/doc/html/next/process/maintainer-netdev.html
+-- 
+pw-bot: cr
+pv-bot: 24h
