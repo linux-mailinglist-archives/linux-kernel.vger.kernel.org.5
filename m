@@ -2,43 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B04D7FC880
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9CA7FC8A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:53:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376365AbjK1VHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 16:07:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35616 "EHLO
+        id S1376394AbjK1VHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 16:07:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346651AbjK1VG5 (ORCPT
+        with ESMTP id S1346729AbjK1VHI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 16:06:57 -0500
+        Tue, 28 Nov 2023 16:07:08 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C351BDD
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:06:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03D64C433CB;
-        Tue, 28 Nov 2023 21:06:43 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FDD61FE2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:06:48 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3689C433C9;
+        Tue, 28 Nov 2023 21:06:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701205604;
-        bh=K2JVbDHeoqX+MlOIFHC1DfxUy2I0OtEKxFLemGaGLwc=;
+        s=k20201202; t=1701205608;
+        bh=EDCjcGa/9qYw0OmkOOcM9slY4BEMMCgERd1JriivOxA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=scYo0i5qZ9sgH8BnNo+91WVZzGkO39iRiLsp5Lx2zZsJDqPloH7NWQp3gK60zjOyn
-         pT8dNEprWLAnVChnZ5DUst2MK4w8nmgbNCLGJAXFXVkYZeoJGAK4uonHdFASTGXUXb
-         LG20CQ4Zvt8l1lpMK7Ag80sgD1b/KkTlonan6u9d183G7S+KkxM0z3TFktz1slINQJ
-         xsFxZ6HZVxLUJc12ForFiXHInutG4tRKyzjiZSeHRiEtE6AG9X1Z7dIjINAv6Ty1a8
-         Mua1MfBzHAyv4m5XVw2dEflFjfpWX8vUd9n97ZiVQXxoPuUOEpSn+Lmfh0fcqj9afs
-         kFuWHv7VPQOow==
+        b=IWUE5p09g1r86ue3lc5sNqnhdJmrfrvFBFn+EqfX3WSQSl+WwWdMHcVnykwM0banh
+         ZRG09GJKNo+Kn0OQYM6DnYv5OSfOcbz4TxDDOkyIkrXHDLY1cF5Jb9G+8meDXPHJAB
+         abtd73lMBo6hoNsDrPolST9+NFSXnKFmkPXpoewvebMyywZfz/OhBHpcLamFnmh1kE
+         bY59fgMGOKiUntmAIr55rmLv5tbNiaLoyayzdI2orn4uod7JHoVWonsp1Xuev4Jq+D
+         gEkgYFPoRNtlOfLfNhBnGb+kAzsV+NShP1usMdyWh+2w8TLVrvXLq/knJ+Y2xcpQdF
+         a80guQiGyJcUQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hannes Reinecke <hare@suse.de>, Keith Busch <kbusch@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, sagi@grimberg.me,
-        linux-nvme@lists.infradead.org
-Subject: [PATCH AUTOSEL 6.6 16/40] nvme: catch errors from nvme_configure_metadata()
-Date:   Tue, 28 Nov 2023 16:05:22 -0500
-Message-ID: <20231128210615.875085-16-sashal@kernel.org>
+Cc:     Eduard Zingerman <eddyz87@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, daniel@iogearbox.net,
+        shuah@kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 17/40] selftests/bpf: fix bpf_loop_bench for new callback verification scheme
+Date:   Tue, 28 Nov 2023 16:05:23 -0500
+Message-ID: <20231128210615.875085-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231128210615.875085-1-sashal@kernel.org>
 References: <20231128210615.875085-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.3
@@ -53,81 +57,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannes Reinecke <hare@suse.de>
+From: Eduard Zingerman <eddyz87@gmail.com>
 
-[ Upstream commit cd9aed606088d36a7ffff3e808db4e76b1854285 ]
+[ Upstream commit f40bfd1679446b22d321e64a1fa98b7d07d2be08 ]
 
-nvme_configure_metadata() is issuing I/O, so we might incur an I/O
-error which will cause the connection to be reset.
-But in that case any further probing will race with reset and
-cause UAF errors.
-So return a status from nvme_configure_metadata() and abort
-probing if there was an I/O error.
+This is a preparatory change. A follow-up patch "bpf: verify callbacks
+as if they are called unknown number of times" changes logic for
+callbacks handling. While previously callbacks were verified as a
+single function call, new scheme takes into account that callbacks
+could be executed unknown number of times.
 
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-Signed-off-by: Keith Busch <kbusch@kernel.org>
+This has dire implications for bpf_loop_bench:
+
+    SEC("fentry/" SYS_PREFIX "sys_getpgid")
+    int benchmark(void *ctx)
+    {
+            for (int i = 0; i < 1000; i++) {
+                    bpf_loop(nr_loops, empty_callback, NULL, 0);
+                    __sync_add_and_fetch(&hits, nr_loops);
+            }
+            return 0;
+    }
+
+W/o callbacks change verifier sees it as a 1000 calls to
+empty_callback(). However, with callbacks change things become
+exponential:
+- i=0: state exploring empty_callback is scheduled with i=0 (a);
+- i=1: state exploring empty_callback is scheduled with i=1;
+  ...
+- i=999: state exploring empty_callback is scheduled with i=999;
+- state (a) is popped from stack;
+- i=1: state exploring empty_callback is scheduled with i=1;
+  ...
+
+Avoid this issue by rewriting outer loop as bpf_loop().
+Unfortunately, this adds a function call to a loop at runtime, which
+negatively affects performance:
+
+            throughput               latency
+   before:  149.919 ± 0.168 M ops/s, 6.670 ns/op
+   after :  137.040 ± 0.187 M ops/s, 7.297 ns/op
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+Link: https://lore.kernel.org/r/20231121020701.26440-4-eddyz87@gmail.com
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/core.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ tools/testing/selftests/bpf/progs/bpf_loop_bench.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 21783aa2ee8e1..5e314a8fb9407 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -1813,16 +1813,18 @@ static int nvme_init_ms(struct nvme_ns *ns, struct nvme_id_ns *id)
- 	return ret;
+diff --git a/tools/testing/selftests/bpf/progs/bpf_loop_bench.c b/tools/testing/selftests/bpf/progs/bpf_loop_bench.c
+index 4ce76eb064c41..d461746fd3c1e 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_loop_bench.c
++++ b/tools/testing/selftests/bpf/progs/bpf_loop_bench.c
+@@ -15,13 +15,16 @@ static int empty_callback(__u32 index, void *data)
+ 	return 0;
  }
  
--static void nvme_configure_metadata(struct nvme_ns *ns, struct nvme_id_ns *id)
-+static int nvme_configure_metadata(struct nvme_ns *ns, struct nvme_id_ns *id)
- {
- 	struct nvme_ctrl *ctrl = ns->ctrl;
-+	int ret;
- 
--	if (nvme_init_ms(ns, id))
--		return;
-+	ret = nvme_init_ms(ns, id);
-+	if (ret)
-+		return ret;
- 
- 	ns->features &= ~(NVME_NS_METADATA_SUPPORTED | NVME_NS_EXT_LBAS);
- 	if (!ns->ms || !(ctrl->ops->flags & NVME_F_METADATA_SUPPORTED))
--		return;
-+		return 0;
- 
- 	if (ctrl->ops->flags & NVME_F_FABRICS) {
- 		/*
-@@ -1831,7 +1833,7 @@ static void nvme_configure_metadata(struct nvme_ns *ns, struct nvme_id_ns *id)
- 		 * remap the separate metadata buffer from the block layer.
- 		 */
- 		if (WARN_ON_ONCE(!(id->flbas & NVME_NS_FLBAS_META_EXT)))
--			return;
-+			return 0;
- 
- 		ns->features |= NVME_NS_EXT_LBAS;
- 
-@@ -1858,6 +1860,7 @@ static void nvme_configure_metadata(struct nvme_ns *ns, struct nvme_id_ns *id)
- 		else
- 			ns->features |= NVME_NS_METADATA_SUPPORTED;
- 	}
++static int outer_loop(__u32 index, void *data)
++{
++	bpf_loop(nr_loops, empty_callback, NULL, 0);
++	__sync_add_and_fetch(&hits, nr_loops);
 +	return 0;
++}
++
+ SEC("fentry/" SYS_PREFIX "sys_getpgid")
+ int benchmark(void *ctx)
+ {
+-	for (int i = 0; i < 1000; i++) {
+-		bpf_loop(nr_loops, empty_callback, NULL, 0);
+-
+-		__sync_add_and_fetch(&hits, nr_loops);
+-	}
++	bpf_loop(1000, outer_loop, NULL, 0);
+ 	return 0;
  }
- 
- static void nvme_set_queue_limits(struct nvme_ctrl *ctrl,
-@@ -2031,7 +2034,11 @@ static int nvme_update_ns_info_block(struct nvme_ns *ns,
- 	ns->lba_shift = id->lbaf[lbaf].ds;
- 	nvme_set_queue_limits(ns->ctrl, ns->queue);
- 
--	nvme_configure_metadata(ns, id);
-+	ret = nvme_configure_metadata(ns, id);
-+	if (ret < 0) {
-+		blk_mq_unfreeze_queue(ns->disk->queue);
-+		goto out;
-+	}
- 	nvme_set_chunk_sectors(ns, id);
- 	nvme_update_disk_info(ns->disk, ns, id);
- 
 -- 
 2.42.0
 
