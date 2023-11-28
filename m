@@ -2,107 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 321EC7FB6BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:07:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F8397FB6BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:07:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343981AbjK1KHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 05:07:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35070 "EHLO
+        id S1343988AbjK1KHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 05:07:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231488AbjK1KG6 (ORCPT
+        with ESMTP id S1343991AbjK1KHO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 05:06:58 -0500
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63087DC
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:07:04 -0800 (PST)
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5490b325edcso1131730a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:07:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701166023; x=1701770823;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CDrEySI/1pWlb/EVtcfzf3j47hSXHdd6oiAatlhFT1c=;
-        b=R57xHF8ScnlVixdl2SZFJtSkIZMPrUendc0V7PG2t2gY1KGg5RG9/xPNBsyKk+VAIs
-         V1LtbThRx9Okto/6mLQBz78WyZGHmf7iDuAoQJQhRXyuGIFvueYJlquouscC1WGcr7Tr
-         c9b+B6Gq78uJHyThTB0YPn/Hhyshnchhb2YI+7w6B9g8r2Wcb9NlZvAVMrnNYiuBQld6
-         kc76mu7v9K74oQ3+jDUSxE8UEU61FdmMZCb3xaGIWqQdtZU2lNiM2BHGlYK5Nyu31SMq
-         D/FULwo2N4UF/CIa0tdRDV3CTNL6L4Q8V33MP2a4SMzu8C59wOMzUd6u3WPKmw186oLD
-         3rBA==
-X-Gm-Message-State: AOJu0Yx3ZwGlpTGk/Tgo4GWff3RM182P5DAr4nWKUyzu1qwBNa/RnX2K
-        MnBW+HPItM201sDMVEE6WuU=
-X-Google-Smtp-Source: AGHT+IGhSyFpXGgBeC+cRpX2q+J7NdJHxOrw9GPgE9CCUiMz/ubPGmld7qE6QoPJVugrVsSU7ULNOA==
-X-Received: by 2002:a05:6402:1d4b:b0:546:efd8:7f05 with SMTP id dz11-20020a0564021d4b00b00546efd87f05mr11056136edb.1.1701166022633;
-        Tue, 28 Nov 2023 02:07:02 -0800 (PST)
-Received: from [192.168.64.177] (bzq-219-42-90.isdn.bezeqint.net. [62.219.42.90])
-        by smtp.gmail.com with ESMTPSA id j14-20020aa7de8e000000b0053e3d8f1d9fsm6035528edv.67.2023.11.28.02.07.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Nov 2023 02:07:01 -0800 (PST)
-Message-ID: <e8ae84bf-2cd8-4eea-8523-62de6e493dfc@grimberg.me>
-Date:   Tue, 28 Nov 2023 12:06:59 +0200
+        Tue, 28 Nov 2023 05:07:14 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D8231B8
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:07:20 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0C9862198D;
+        Tue, 28 Nov 2023 10:07:19 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E3AD51343E;
+        Tue, 28 Nov 2023 10:07:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id zBOZNNa7ZWXyagAAD6G6ig
+        (envelope-from <mhocko@suse.com>); Tue, 28 Nov 2023 10:07:18 +0000
+Date:   Tue, 28 Nov 2023 11:07:18 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>
+Subject: Re: [PATCH 4/7] mm: Centralize & improve oom reporting in show_mem.c
+Message-ID: <ZWW71lfACwiHw3zk@tiehlicka>
+References: <20231122232515.177833-1-kent.overstreet@linux.dev>
+ <20231122232515.177833-5-kent.overstreet@linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC v1] nvme: add cse, ds, ms, nsze and nuse to sysfs
-Content-Language: en-US
-To:     Daniel Wagner <dwagner@suse.de>, Keith Busch <kbusch@kernel.org>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Hannes Reinecke <hare@suse.de>
-References: <20231127103208.25748-1-dwagner@suse.de>
- <20231127141857.GA25833@lst.de>
- <ZWS5dM5FzTMr5ftO@kbusch-mbp.dhcp.thefacebook.com>
- <20231127155649.GA1403@lst.de>
- <ZWTEFvYbI1bFTXyZ@kbusch-mbp.dhcp.thefacebook.com>
- <20231127163333.GA2273@lst.de>
- <ZWTH85bmw0cdePXf@kbusch-mbp.dhcp.thefacebook.com>
- <n57gxockmm4iqt53olerr52rgxg3mvgdp4wfshyci2r7dohxfg@22mqtj3ya3g3>
-From:   Sagi Grimberg <sagi@grimberg.me>
-In-Reply-To: <n57gxockmm4iqt53olerr52rgxg3mvgdp4wfshyci2r7dohxfg@22mqtj3ya3g3>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231122232515.177833-5-kent.overstreet@linux.dev>
+X-Spamd-Bar: +++++++++++++++
+Authentication-Results: smtp-out1.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
+        spf=fail (smtp-out1.suse.de: domain of mhocko@suse.com does not designate 2a07:de40:b281:104:10:150:64:97 as permitted sender) smtp.mailfrom=mhocko@suse.com
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [15.00 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         R_SPF_FAIL(1.00)[-all];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-0.99)[-0.987];
+         MIME_GOOD(-0.10)[text/plain];
+         MID_RHS_NOT_FQDN(0.50)[];
+         DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+         RCPT_COUNT_FIVE(0.00)[6];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+         RCVD_COUNT_THREE(0.00)[3];
+         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
+         MX_GOOD(-0.01)[];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-0.10)[65.54%]
+X-Spam-Score: 15.00
+X-Rspamd-Queue-Id: 0C9862198D
+X-Spam: Yes
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed 22-11-23 18:25:09, Kent Overstreet wrote:
+[...]
+> 00177 Shrinkers:
+> 00177 super_cache_scan: objects: 127
+> 00177 super_cache_scan: objects: 106
+> 00177 jbd2_journal_shrink_scan: objects: 32
+> 00177 ext4_es_scan: objects: 32
+> 00177 bch2_btree_cache_scan: objects: 8
+> 00177   nr nodes:          24
+> 00177   nr dirty:          0
+> 00177   cannibalize lock:  0000000000000000
+> 00177
+> 00177 super_cache_scan: objects: 8
+> 00177 super_cache_scan: objects: 1
 
->>>>>> Should this even be an nvme specific attribute? I thought we should have
->>>>>> blk-integrity.c report its 'tuple_size' attribute instead. That should
->>>>>> work as long as we're not dealing with extended metadata at least, but
->>>>>> that's kind of a special format that doesn't have block layer support.
->>>>>
->>>>> Reporting the tuple size is a good idea.  But is that enough for
->>>>> the existing nvme-cli use case?
-> 
-> 'nvme list' is just listening the block size and the meta size in the
-> 'Format' field. So nothing really crazy going on:
-> 
->    Usage                      Format
->    -------------------------- ----------------
->    343.33  GB / 512.11  GB    512   B +  0 B
-> 
-> nvme-cli commands like 'nmve ns-id' etc will always issue a command so
-> that is not a concern. It's just the libnvme nvme_scan_topology() call
-> which should stop issuing any commands.
-> 
-> I'll add the missing tuple_size to the integrity sysfs dir in this case.
-> 
->>>> nvme-cli currently queries with admin passthrough identify command, so
->>>> adding a new attribute won't break that. I assume Daniel would have it
->>>> fallback to that same command for backward compatibilty if a desired
->>>> sysfs attribute doesn't exist.
-> 
-> Yes, a fallback will exist. There is no need to break existing users.
-> 
-> In summary, the only missing entries are
-> 
->   - csi
->   - tuple_size
->   - nuse
+It would be really great to provide an example on how these numbers are
+useful for the oom evaluation.
 
-I agree with the comments made, especially the one made by Christoph
-that these values should be added to the nshead.
+[...]
+> @@ -423,4 +426,21 @@ void __show_mem(unsigned int filter, nodemask_t *nodemask, int max_zone_idx)
+>  #ifdef CONFIG_MEMORY_FAILURE
+>  	printk("%lu pages hwpoisoned\n", atomic_long_read(&num_poisoned_pages));
+>  #endif
+> +
+> +	buf = kmalloc(4096, GFP_ATOMIC);
+
+I really do not think we want to allow allocations from the OOM context.
+Is there any reason why this cannot be a statically allocated buffer?
+
+> +	if (buf) {
+> +		struct seq_buf s;
+> +
+> +		printk("Unreclaimable slab info:\n");
+> +		seq_buf_init(&s, buf, 4096);
+> +		dump_unreclaimable_slab(&s);
+> +		printk("%s", seq_buf_str(&s));
+> +
+> +		printk("Shrinkers:\n");
+> +		seq_buf_init(&s, buf, 4096);
+> +		shrinkers_to_text(&s);
+> +		printk("%s", seq_buf_str(&s));
+> +
+> +		kfree(buf);
+> +	}
+>  }
+-- 
+Michal Hocko
+SUSE Labs
