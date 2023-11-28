@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 111B87FC6B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:06:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1276A7FC841
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:52:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346442AbjK1VGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 16:06:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45932 "EHLO
+        id S1346602AbjK1VGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 16:06:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345529AbjK1VGO (ORCPT
+        with ESMTP id S1346555AbjK1VGR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 16:06:14 -0500
+        Tue, 28 Nov 2023 16:06:17 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A28051727
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:06:20 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B08B5C433C8;
-        Tue, 28 Nov 2023 21:06:18 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D35198D
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:06:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBDC5C433C9;
+        Tue, 28 Nov 2023 21:06:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701205580;
-        bh=KvPIR5/RgJS18Y9VyiocKdiV2Sj+qnkbBx9d3kX0Ja4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=n+orgIKubMeVDKBTG693l8yMKXzWfgj7sLwYltDan58tZAz/5HAY752808RVuCvh0
-         j0lzgHF1XUiHP/VVrxHdNrGzv+ujE2WRq6+xNyl2XeLUnWiP7D+5FkinvvHKCreyub
-         d4kn6lo2dSIW0tCC+DP0XT6B2hamaKngynLefUdA8zL3xxJ1bcC0KF+FgKiyQIWPkA
-         Jgh2wRVmyoX2MJQxg8ZEWvVGqTNB4mpLEm7F1vYoB4ljK+Q6VhteLnnWqQetE4H0rR
-         f9cBGBfoPadHxPdSmew0CDp2MhET9lS5bw4/Mw8Oaf5deoE4gazFIRJmwDSA1ByFM0
-         rj2x84QvjATXA==
+        s=k20201202; t=1701205584;
+        bh=VF+FqZDwC1y4zaNtTATkaYq4JV+XiOLwLQAQ5id2JQw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dyDhiu1tR/k04EBFPd6vrsXtq/mrug4hKe43nvPKWEkVWg1Yay3OSKTIJtT7yruF0
+         Pkzgfjrh7oRuOmfJ0HeP+NjpHtkZbqMx/FaQkmXglNIzF7d2LpWqhwzsRvRalNR34i
+         YqrcRIIzSlde31yAgrPVkUNGjtIgSRsM0qdWYqm7Y0xFmzZHLeZ7+W1z5OzN/76foo
+         VewVtqkNsfJSSkl/ga0XWNdO4JCvvAPEv9U/ogHeW+aV3wCCZIRUQ5gWy2cYlWX+Qv
+         6XkI/NTBOAx9Cvd3/o+0QcIf3OPf54dGwnX+M7IhUjNs0dVWJ1pnHoqWe63wdjoDpO
+         +xFOK9/kewGOA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Saurabh Sengar <ssengar@linux.microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, kys@microsoft.com,
-        haiyangz@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        linux-hyperv@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 01/40] x86/hyperv: Fix the detection of E820_TYPE_PRAM in a Gen2 VM
-Date:   Tue, 28 Nov 2023 16:05:07 -0500
-Message-ID: <20231128210615.875085-1-sashal@kernel.org>
+Cc:     Oliver Neukum <oneukum@suse.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 02/40] usb: aqc111: check packet for fixup for true limit
+Date:   Tue, 28 Nov 2023 16:05:08 -0500
+Message-ID: <20231128210615.875085-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231128210615.875085-1-sashal@kernel.org>
+References: <20231128210615.875085-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -54,90 +55,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Saurabh Sengar <ssengar@linux.microsoft.com>
+From: Oliver Neukum <oneukum@suse.com>
 
-[ Upstream commit 7e8037b099c0bbe8f2109dc452dbcab8d400fc53 ]
+[ Upstream commit ccab434e674ca95d483788b1895a70c21b7f016a ]
 
-A Gen2 VM doesn't support legacy PCI/PCIe, so both raw_pci_ops and
-raw_pci_ext_ops are NULL, and pci_subsys_init() -> pcibios_init()
-doesn't call pcibios_resource_survey() -> e820__reserve_resources_late();
-as a result, any emulated persistent memory of E820_TYPE_PRAM (12) via
-the kernel parameter memmap=nn[KMG]!ss is not added into iomem_resource
-and hence can't be detected by register_e820_pmem().
+If a device sends a packet that is inbetween 0
+and sizeof(u64) the value passed to skb_trim()
+as length will wrap around ending up as some very
+large value.
 
-Fix this by directly calling e820__reserve_resources_late() in
-hv_pci_init(), which is called from arch_initcall(pci_arch_init).
+The driver will then proceed to parse the header
+located at that position, which will either oops or
+process some random value.
 
-It's ok to move a Gen2 VM's e820__reserve_resources_late() from
-subsys_initcall(pci_subsys_init) to arch_initcall(pci_arch_init) because
-the code in-between doesn't depend on the E820 resources.
-e820__reserve_resources_late() depends on e820__reserve_resources(),
-which has been called earlier from setup_arch().
+The fix is to check against sizeof(u64) rather than
+0, which the driver currently does. The issue exists
+since the introduction of the driver.
 
-For a Gen-2 VM, the new hv_pci_init() also adds any memory of
-E820_TYPE_PMEM (7) into iomem_resource, and acpi_nfit_register_region() ->
-acpi_nfit_insert_resource() -> region_intersects() returns
-REGION_INTERSECTS, so the memory of E820_TYPE_PMEM won't get added twice.
-
-Changed the local variable "int gen2vm" to "bool gen2vm".
-
-Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
-Signed-off-by: Dexuan Cui <decui@microsoft.com>
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
-Message-ID: <1699691867-9827-1-git-send-email-ssengar@linux.microsoft.com>
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/hyperv/hv_init.c | 25 +++++++++++++++++++++----
- 1 file changed, 21 insertions(+), 4 deletions(-)
+ drivers/net/usb/aqc111.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-index 21556ad87f4ba..8f3a4d16bb791 100644
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@ -15,6 +15,7 @@
- #include <linux/io.h>
- #include <asm/apic.h>
- #include <asm/desc.h>
-+#include <asm/e820/api.h>
- #include <asm/sev.h>
- #include <asm/ibt.h>
- #include <asm/hypervisor.h>
-@@ -286,15 +287,31 @@ static int hv_cpu_die(unsigned int cpu)
+diff --git a/drivers/net/usb/aqc111.c b/drivers/net/usb/aqc111.c
+index a017e9de2119d..7b8afa589a53c 100644
+--- a/drivers/net/usb/aqc111.c
++++ b/drivers/net/usb/aqc111.c
+@@ -1079,17 +1079,17 @@ static int aqc111_rx_fixup(struct usbnet *dev, struct sk_buff *skb)
+ 	u16 pkt_count = 0;
+ 	u64 desc_hdr = 0;
+ 	u16 vlan_tag = 0;
+-	u32 skb_len = 0;
++	u32 skb_len;
  
- static int __init hv_pci_init(void)
- {
--	int gen2vm = efi_enabled(EFI_BOOT);
-+	bool gen2vm = efi_enabled(EFI_BOOT);
+ 	if (!skb)
+ 		goto err;
  
- 	/*
--	 * For Generation-2 VM, we exit from pci_arch_init() by returning 0.
--	 * The purpose is to suppress the harmless warning:
-+	 * A Generation-2 VM doesn't support legacy PCI/PCIe, so both
-+	 * raw_pci_ops and raw_pci_ext_ops are NULL, and pci_subsys_init() ->
-+	 * pcibios_init() doesn't call pcibios_resource_survey() ->
-+	 * e820__reserve_resources_late(); as a result, any emulated persistent
-+	 * memory of E820_TYPE_PRAM (12) via the kernel parameter
-+	 * memmap=nn[KMG]!ss is not added into iomem_resource and hence can't be
-+	 * detected by register_e820_pmem(). Fix this by directly calling
-+	 * e820__reserve_resources_late() here: e820__reserve_resources_late()
-+	 * depends on e820__reserve_resources(), which has been called earlier
-+	 * from setup_arch(). Note: e820__reserve_resources_late() also adds
-+	 * any memory of E820_TYPE_PMEM (7) into iomem_resource, and
-+	 * acpi_nfit_register_region() -> acpi_nfit_insert_resource() ->
-+	 * region_intersects() returns REGION_INTERSECTS, so the memory of
-+	 * E820_TYPE_PMEM won't get added twice.
-+	 *
-+	 * We return 0 here so that pci_arch_init() won't print the warning:
- 	 * "PCI: Fatal: No config space access function found"
- 	 */
--	if (gen2vm)
-+	if (gen2vm) {
-+		e820__reserve_resources_late();
- 		return 0;
-+	}
+-	if (skb->len == 0)
++	skb_len = skb->len;
++	if (skb_len < sizeof(desc_hdr))
+ 		goto err;
  
- 	/* For Generation-1 VM, we'll proceed in pci_arch_init().  */
- 	return 1;
+-	skb_len = skb->len;
+ 	/* RX Descriptor Header */
+-	skb_trim(skb, skb->len - sizeof(desc_hdr));
++	skb_trim(skb, skb_len - sizeof(desc_hdr));
+ 	desc_hdr = le64_to_cpup((u64 *)skb_tail_pointer(skb));
+ 
+ 	/* Check these packets */
 -- 
 2.42.0
 
