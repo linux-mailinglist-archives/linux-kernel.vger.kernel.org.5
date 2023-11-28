@@ -2,147 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0E47FB712
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:23:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D65847FB716
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:24:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344132AbjK1KXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 05:23:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44282 "EHLO
+        id S1344150AbjK1KYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 05:24:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234651AbjK1KXp (ORCPT
+        with ESMTP id S231656AbjK1KYQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 05:23:45 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6094C186;
-        Tue, 28 Nov 2023 02:23:51 -0800 (PST)
-Received: from [100.122.216.38] (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 58AE76606F5E;
-        Tue, 28 Nov 2023 10:23:49 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701167029;
-        bh=Qfm6uqEOnWvLZh3donKgv+pWA6CIt9GNyYhvnnw2sck=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ia8VkIk+iHf3ASvMi5U9L2zkxq8g51P51FnWBXg7GjtulES56vrePQJAcxuuKU7Pp
-         hAS9kwizyB6zZXuKlGRWKGlcGr2eAVmAKbs32S8NCZ6iBpxC5tEVKHI0YAxS5l11QQ
-         KyFbZr24cyVO9ulM6l6O1sF1KGqAyfxQRS9cOcQ2PHlepldqMzyy3D5dkoEBBBBWdX
-         x4ZNnhAg/Rb9Jbwdz1AxWMsuOhHLTTTuuf51Iyb+hkEJrOPcVRm+qVmuJI3b9++7g2
-         MiWHszup7dvJuxwq/hUwU17a0T59F97xjYmu6gzvI+GkQlvdLWKgfBA7KsCIuSoExU
-         xF1ld+8zZKZ0g==
-Message-ID: <f1402052-f688-4f4b-98ef-e65fdbec3d51@collabora.com>
-Date:   Tue, 28 Nov 2023 11:23:46 +0100
+        Tue, 28 Nov 2023 05:24:16 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C41183
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:24:22 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97CA6C433C7;
+        Tue, 28 Nov 2023 10:24:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701167062;
+        bh=qYMomW8pY6YBLbLameKXjKgQdEQkpgpJT4hyaH2avZQ=;
+        h=From:Subject:Date:To:Cc:From;
+        b=R9L+6QCM8mKAqcCvs65DNHxiFBZttUtgtTgG7HGa3ThKymGHaK6Te+GS/jEa2hueD
+         BZAFuEEgeSWoqepxLfIbE6Fq6ueL/CiSfgnM6Tc0hClzrj+WsbZW0BAnIJijBcozN4
+         k7758Su0wDlUyWgE9N4EQlXK8ugxITO1UUAbRzx76rCyW5SYMF1WcOt0Gv7k9YRgwO
+         +Y+0vm2GZ2gBu3Fq1/CJMGLqIueLEpYKWou0z2xuz5pRP5kvTBkUbf/vbgKYC3gzip
+         nJBie7PIeIB1SDrUDo0K+CCSNYPZZqTVsseMcskBp3UQoM9nndXPvHTQUSoYJAUuUd
+         /CY1dVZiIU5jA==
+From:   Maxime Ripard <mripard@kernel.org>
+Subject: [PATCH v4 00/45] drm/connector: Create HDMI Connector
+ infrastructure
+Date:   Tue, 28 Nov 2023 11:24:11 +0100
+Message-Id: <20231128-kms-hdmi-connector-state-v4-0-c7602158306e@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 03/55] media: usb: cx231xx: Stop abusing of
- min_buffers_needed field
-Content-Language: en-US
-To:     Hans Verkuil <hverkuil@xs4all.nl>, mchehab@kernel.org,
-        tfiga@chromium.org, m.szyprowski@samsung.com,
-        matt.ranostay@konsulko.com
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, kernel@collabora.com
-References: <20231127165454.166373-1-benjamin.gaignard@collabora.com>
- <20231127165454.166373-4-benjamin.gaignard@collabora.com>
- <44ca55bf-978d-47e8-abd2-8e3adb5071a2@xs4all.nl>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-In-Reply-To: <44ca55bf-978d-47e8-abd2-8e3adb5071a2@xs4all.nl>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAMu/ZWUC/43MTQrCMBQE4KuUrI3kr0nqynuIi9j32obaBJJSk
+ NK7G1woIhRXwzDMt5KMyWMmp2olCReffQylqENF2sGFHqmH0olgQjLLFR2nTAeYPG1jCNjOMdE
+ 8uxmp5tpYg9o0wpByH3wu4+MlL7zE5Q9k4ZRRpiyrFXRS1+o8Ygp4P8bUk2tRF/GRGsF2JFEkb
+ hopwAGAgR9JviXOJN+RZJGksDfWOVTSmS9p27YnBGrQqkUBAAA=
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sandy Huang <hjc@rock-chips.com>,
+        =?utf-8?q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        Maxime Ripard <mripard@kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=8165; i=mripard@kernel.org;
+ h=from:subject:message-id; bh=qYMomW8pY6YBLbLameKXjKgQdEQkpgpJT4hyaH2avZQ=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDKmp+y/07FgpoN3aZONQF/Bs86WPnx/4HnwvL7T4uURkw
+ JWC5MuvO0pZGMS4GGTFFFlihM2XxJ2a9bqTjW8ezBxWJpAhDFycAjARl4cMv9l3SGmEMrG65p4y
+ 9Zj5KpIz6JyF39S7VS8dlwt2CsUr3GdkOPNYWa96ZcaNdWWX7vduUF6yp/f+i/j0yH3991b23+z
+ ZyA4A
+X-Developer-Key: i=mripard@kernel.org; a=openpgp;
+ fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-Le 28/11/2023 à 11:18, Hans Verkuil a écrit :
-> On 27/11/2023 17:54, Benjamin Gaignard wrote:
->> 'min_buffers_needed' is suppose to be used to indicate the number
->> of buffers needed by DMA engine to start streaming.
->> cx231xx driver doesn't use DMA engine and just want to specify
->> the minimum number of buffers to allocate when calling VIDIOC_REQBUFS.
->> That 'min_reqbufs_allocation' field purpose so use it.
->>
->> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->> ---
->>   drivers/media/usb/cx231xx/cx231xx-417.c   | 2 +-
->>   drivers/media/usb/cx231xx/cx231xx-video.c | 4 ++--
->>   2 files changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/media/usb/cx231xx/cx231xx-417.c b/drivers/media/usb/cx231xx/cx231xx-417.c
->> index 45973fe690b2..66043ed50c8e 100644
->> --- a/drivers/media/usb/cx231xx/cx231xx-417.c
->> +++ b/drivers/media/usb/cx231xx/cx231xx-417.c
->> @@ -1782,7 +1782,7 @@ int cx231xx_417_register(struct cx231xx *dev)
->>   	q->ops = &cx231xx_video_qops;
->>   	q->mem_ops = &vb2_vmalloc_memops;
->>   	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
->> -	q->min_buffers_needed = 1;
->> +	q->min_reqbufs_allocation = 1;
-> There is no point setting min_reqbufs_allocation to 1: you can't allocate
-> less than 1 buffer after all.
+Here's a series that creates some extra infrastructure specifically
+targeted at HDMI controllers.
 
-Does that mean I should just remove this line ?
+The idea behind this series came from a recent discussion on IRC during
+which we discussed infoframes generation of i915 vs everything else.
 
->
-> It is different in that respect from min_buffers_needed: you can call
-> VIDIOC_STREAMON (and thus start_streaming) without any buffers queued.
->
-> This also suggests a better name for min_buffers_needed: min_queued_buffers
->
-> So 'min_queued_buffers' buffers have to be queued before start_streaming can
-> be called.
+Infoframes generation code still requires some decent boilerplate, with
+each driver doing some variation of it.
 
-Ok I will change that in V2
+In parallel, while working on vc4, we ended up converting a lot of i915
+logic (mostly around format / bpc selection, and scrambler setup) to
+apply on top of a driver that relies only on helpers.
 
-Regards,
-Benjamin
+While currently sitting in the vc4 driver, none of that logic actually
+relies on any driver or hardware-specific behaviour.
 
->
-> The old min_buffers_needed mixed up the two requirements of the minimum
-> number of buffers to allocate in REQBUFS and the minimum number of buffers
-> that need to be queued before you can start streaming. Separating these two
-> meanings should make things easier to understand.
->
-> The only relationship between the two is that min_reqbufs_allocation >
-> min_queued_buffers, otherwise you would end up in a state where the
-> driver would just cycle buffers and never be able to return a buffer
-> to userspace to process.
->
-> Regards,
->
-> 	Hans
->
->>   	q->lock = &dev->lock;
->>   	err = vb2_queue_init(q);
->>   	if (err)
->> diff --git a/drivers/media/usb/cx231xx/cx231xx-video.c b/drivers/media/usb/cx231xx/cx231xx-video.c
->> index c8eb4222319d..df572c466bfb 100644
->> --- a/drivers/media/usb/cx231xx/cx231xx-video.c
->> +++ b/drivers/media/usb/cx231xx/cx231xx-video.c
->> @@ -1811,7 +1811,7 @@ int cx231xx_register_analog_devices(struct cx231xx *dev)
->>   	q->ops = &cx231xx_video_qops;
->>   	q->mem_ops = &vb2_vmalloc_memops;
->>   	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
->> -	q->min_buffers_needed = 1;
->> +	q->min_reqbufs_allocation = 1;
->>   	q->lock = &dev->lock;
->>   	ret = vb2_queue_init(q);
->>   	if (ret)
->> @@ -1871,7 +1871,7 @@ int cx231xx_register_analog_devices(struct cx231xx *dev)
->>   	q->ops = &cx231xx_vbi_qops;
->>   	q->mem_ops = &vb2_vmalloc_memops;
->>   	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
->> -	q->min_buffers_needed = 1;
->> +	q->min_reqbufs_allocation = 1;
->>   	q->lock = &dev->lock;
->>   	ret = vb2_queue_init(q);
->>   	if (ret)
->
+The only missing piece to make it shareable are a bunch of extra
+variables stored in a state (current bpc, format, RGB range selection,
+etc.).
+
+The initial implementation was relying on some generic subclass of
+drm_connector to address HDMI connectors, with a bunch of helpers that
+will take care of all the "HDMI Spec" related code. Scrambler setup is
+missing at the moment but can easily be plugged in.
+
+The feedback was that creating a connector subclass like was done for
+writeback would prevent the adoption of those helpers since it couldn't
+be used in all situations (like when the connector driver can implement
+multiple output) and required more churn to cast between the
+drm_connector and its subclass. The decision was thus to provide a set
+of helper and to store the required variables in drm_connector and
+drm_connector_state. This what has been implemented now.
+
+Hans Verkuil also expressed interest in implementing a mechanism in v4l2
+to retrieve infoframes from HDMI receiver and implementing an
+infoframe-decode tool.
+
+This series thus leverages the infoframe generation code to expose it
+through debugfs.
+
+I also used the occasion to unit-test everything but the infoframe
+generation, which can come later once I get a proper understanding of
+what the infoframe are supposed to look like. This required to add some
+extra kunit helpers and infrastructure to have multiple EDIDs and allow
+each test to run with a particular set of capabilities.
+
+This entire series has been tested on a Pi4, passes all its unittests
+(125 new tests), and has only been build-tested for sunxi and rockchip.
+
+Let me know what you think,
+Maxime
+
+Signed-off-by: Maxime Ripard <mripard@kernel.org>
+---
+Changes in v4:
+- Create unit tests for everything but infoframes
+- Fix a number of bugs identified by the unit tests
+- Rename DRM (Dynamic Range and Mastering) infoframe file to HDR_DRM
+- Drop RFC status
+- Link to v3: https://lore.kernel.org/r/20231031-kms-hdmi-connector-state-v3-0-328b0fae43a7@kernel.org
+
+Changes in v3:
+- Made sure the series work on the RaspberryPi4
+- Handle YUV420 in the char clock rate computation
+- Use the maximum bpc value the connector allows at reset
+- Expose the RGB Limited vs Full Range value in the connector state
+  instead of through a helper
+- Fix Broadcast RGB documentation
+- Add more debug logging
+- Small fixes here and there
+- Link to v2: https://lore.kernel.org/r/20230920-kms-hdmi-connector-state-v2-0-17932daddd7d@kernel.org
+
+Changes in v2:
+- Change from a subclass to a set of helpers for drm_connector and
+  drm_connector state
+- Don't assume that all drivers support RGB, YUV420 and YUV422 but make
+  them provide a bitfield instead.
+- Don't assume that all drivers support the Broadcast RGB property but
+  make them call the registration helper.
+- Document the Broacast RGB property
+- Convert the inno_hdmi and sun4i_hdmi driver.
+- Link to v1: https://lore.kernel.org/r/20230814-kms-hdmi-connector-state-v1-0-048054df3654@kernel.org
+
+---
+Maxime Ripard (45):
+      drm/tests: helpers: Include missing drm_drv header
+      drm/tests: helpers: Add atomic helpers
+      drm/tests: Add helper to create mock plane
+      drm/tests: Add helper to create mock crtc
+      drm/connector: Check drm_connector_init pointers arguments
+      drm/tests: connector: Add tests for drmm_connector_init
+      drm/connector: Introduce an HDMI connector initialization function
+      drm/connector: hdmi: Create an HDMI sub-state
+      drm/connector: hdmi: Add Broadcast RGB property
+      drm/connector: hdmi: Add RGB Quantization Range to the connector state
+      drm/connector: hdmi: Add output BPC to the connector state
+      drm/connector: hdmi: Add support for output format
+      drm/connector: hdmi: Add HDMI compute clock helper
+      drm/connector: hdmi: Calculate TMDS character rate
+      drm/connector: hdmi: Add custom hook to filter TMDS character rate
+      drm/connector: hdmi: Compute bpc and format automatically
+      drm/connector: hdmi: Add Infoframes generation
+      drm/connector: hdmi: Create Infoframe DebugFS entries
+      drm/vc4: hdmi: Create destroy state implementation
+      drm/vc4: hdmi: Switch to HDMI connector
+      drm/vc4: tests: Remove vc4_dummy_plane structure
+      drm/vc4: tests: Convert to plane creation helper
+      drm/rockchip: inno_hdmi: Remove useless mode_fixup
+      drm/rockchip: inno_hdmi: Remove useless copy of drm_display_mode
+      drm/rockchip: inno_hdmi: Switch encoder hooks to atomic
+      drm/rockchip: inno_hdmi: Get rid of mode_set
+      drm/rockchip: inno_hdmi: no need to store vic
+      drm/rockchip: inno_hdmi: Remove unneeded has audio flag
+      drm/rockchip: inno_hdmi: Remove useless input format
+      drm/rockchip: inno_hdmi: Remove useless output format
+      drm/rockchip: inno_hdmi: Remove useless colorimetry
+      drm/rockchip: inno_hdmi: Remove useless enum
+      drm/rockchip: inno_hdmi: Remove tmds rate from structure
+      drm/rockchip: inno_hdmi: Remove useless coeff_csc matrix
+      drm/rockchip: inno_hdmi: Remove useless mode_valid
+      drm/rockchip: inno_hdmi: Move infoframe disable to separate function
+      drm/rockchip: inno_hdmi: Create mask retrieval functions
+      drm/rockchip: inno_hdmi: Switch to infoframe type
+      drm/rockchip: inno_hdmi: Remove unused drm device pointer
+      drm/rockchip: inno_hdmi: Switch to HDMI connector
+      drm/sun4i: hdmi: Convert encoder to atomic
+      drm/sun4i: hdmi: Move mode_set into enable
+      drm/sun4i: hdmi: Switch to container_of_const
+      drm/sun4i: hdmi: Consolidate atomic_check and mode_valid
+      drm/sun4i: hdmi: Switch to HDMI connector
+
+ Documentation/gpu/kms-properties.csv               |    1 -
+ drivers/gpu/drm/Kconfig                            |    1 +
+ drivers/gpu/drm/drm_atomic.c                       |   11 +
+ drivers/gpu/drm/drm_atomic_state_helper.c          |  659 ++++++++
+ drivers/gpu/drm/drm_atomic_uapi.c                  |    4 +
+ drivers/gpu/drm/drm_connector.c                    |  249 +++
+ drivers/gpu/drm/drm_debugfs.c                      |  110 ++
+ drivers/gpu/drm/rockchip/inno_hdmi.c               |  409 ++---
+ drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c             |  203 ++-
+ drivers/gpu/drm/tests/Makefile                     |    1 +
+ .../gpu/drm/tests/drm_atomic_state_helper_test.c   | 1728 ++++++++++++++++++++
+ drivers/gpu/drm/tests/drm_connector_test.c         | 1345 ++++++++++++++-
+ drivers/gpu/drm/tests/drm_kunit_edid.h             |  482 ++++++
+ drivers/gpu/drm/tests/drm_kunit_helpers.c          |  150 ++
+ drivers/gpu/drm/vc4/tests/vc4_mock.c               |    6 +-
+ drivers/gpu/drm/vc4/tests/vc4_mock.h               |    9 +-
+ drivers/gpu/drm/vc4/tests/vc4_mock_plane.c         |   44 +-
+ drivers/gpu/drm/vc4/vc4_hdmi.c                     |  624 +------
+ drivers/gpu/drm/vc4/vc4_hdmi.h                     |   44 +-
+ drivers/gpu/drm/vc4/vc4_hdmi_phy.c                 |    6 +-
+ include/drm/drm_atomic_state_helper.h              |   12 +
+ include/drm/drm_connector.h                        |  257 +++
+ include/drm/drm_kunit_helpers.h                    |   23 +
+ 23 files changed, 5389 insertions(+), 989 deletions(-)
+---
+base-commit: 815d8b0425ad1164e45953ac3d56a9f6f63792cc
+change-id: 20230814-kms-hdmi-connector-state-616787e67927
+
+Best regards,
+-- 
+Maxime Ripard <mripard@kernel.org>
+
