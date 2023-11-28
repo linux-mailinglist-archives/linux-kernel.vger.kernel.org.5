@@ -2,288 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 874AC7FCA69
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 00:03:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC69E7FCA6B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 00:04:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345842AbjK1XDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 18:03:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54974 "EHLO
+        id S1346023AbjK1XEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 18:04:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbjK1XDi (ORCPT
+        with ESMTP id S229595AbjK1XEH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 18:03:38 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D05712C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 15:03:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701212622; x=1732748622;
-  h=date:from:to:cc:subject:message-id;
-  bh=VDo9B81HjFSp//2uiP97gGkbJLHv+j9urez1rTWilJ8=;
-  b=ZZsvj3Lb/r5q/ntizsKN/jxWOoczRE1tpe0gjSaf6iOyk0P5qgmbrISf
-   1GWy0rcoRt0NvcfCBEjHaTWp0mmNWpay01uPjkF0lgVZ9xOTnGvCzlQbV
-   wXprs8LWGFTuSwLoYH5G63OX0yNM4RBNACgdC6f2ts99bdciZaYqJ/v9k
-   DfV6QPEieb7dqq2rrDWSxoUNLYOOhftEKzwhjFQRNxUAgNNDVPaQrINiL
-   DkXJ2RibiKLJdXJl+bclH3+RBTzEqP+DGuHjTWmN6FanzeB9mHzYy4SOq
-   7Ytq2qbsrn37YY0gc0kOSAQerPHWl2HT68xt3gNhuI8oKQFXpSAybURKO
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="479244361"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="479244361"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 15:03:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="912613884"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="912613884"
-Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 28 Nov 2023 15:03:40 -0800
-Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r877C-0008GF-2Y;
-        Tue, 28 Nov 2023 23:03:38 +0000
-Date:   Wed, 29 Nov 2023 07:03:27 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars:testing/next20231127-Warray-bounds] BUILD
- SUCCESS cb7d8700da3e4c763ac30bfa34ee7dc143bd2758
-Message-ID: <202311290720.TzNYq81c-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Tue, 28 Nov 2023 18:04:07 -0500
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F36183
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 15:04:12 -0800 (PST)
+Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-58d564b98c9so2252854eaf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 15:04:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701212652; x=1701817452; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=43/GorJHph6wZf7ST1s9EfwOKwV7OvTpzkca3ztNxsA=;
+        b=T4+k+4UIC04cOOUR2nvsU3u7pNoVVtWCRDRoeU582COZQW2ayY+qUXL3KQdPvLCbza
+         VH1pT9x4sKAeCs9phGD+jh2rDGTtT6lCf+JsqtWLxgBXOO+e3wYPxGpqAyC+JSNCFKmB
+         vzrhJ+lQlSvRgweKlSV5qiYjs+/LqHfca1OuVtBAC5+4iZqhTpnCc4xuh/OHo+wXJOSx
+         Funu3YeeGPrrwqfLv4VV9jiQ4dHL2GWOGeeeVX9R7QUh92Lp/tCRdnva8MZQOYk0m8Al
+         juJzaiCk7kKVw5t4rSexsTnuQYEfcHxlV2jjujm7rkS1Zpa+hScOzyUMvxNGtC5DAWYl
+         bPtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701212652; x=1701817452;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=43/GorJHph6wZf7ST1s9EfwOKwV7OvTpzkca3ztNxsA=;
+        b=lNS3t+nw7u+yXP1dL/H/TlCPpSZm7/YQ+czq+R088C6dHfKNS3dfRIT1/lSje9cb5m
+         q+zVBAoIfyu9DfaDi3JX2AZ8sQc9LRA94f3T9VhoYKPs1MJtl41dwqqn00d1//L3fjch
+         MCSJtsIqArjk02+MVu6GlVUEifkMQbBgMLxkYqUShPpYtzl2RPPQCZXAciQLm6LwzEXQ
+         3Jbt4H/AfZmx+ZT0jBpV9JNP4rfpjcsoJuzonKu4ogpKzyqkic2z1BDys+cBh+CRgjnh
+         K9+2zjkRf0CTwrpLOJqSyRPdsF1KFM8ZZ4rd/AfDxje7dUty4VeDlyD7RvPZq4cnZbRF
+         Vuow==
+X-Gm-Message-State: AOJu0Yx+nRGzauOauDis7q50EbqrPAC1kTjm6ulKcJX0DElfgdtbouJo
+        woKe4rahPVTpuB6lOJTTSqzk0ZWu8hcFsJy8HTs1ZQ==
+X-Google-Smtp-Source: AGHT+IGHG/fZ39GpQH7XprtM75RYsFLPLsqrr/P3BS2SaFOkE/NfcmuncSRUnInNrgp9PW0qlhq9u6ZhURJEjUsg//c=
+X-Received: by 2002:a05:6359:67a9:b0:16d:bd74:19c9 with SMTP id
+ sq41-20020a05635967a900b0016dbd7419c9mr14576065rwb.16.1701212651861; Tue, 28
+ Nov 2023 15:04:11 -0800 (PST)
+MIME-Version: 1.0
+References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
+ <CAJD7tkb1FqTqwONrp2nphBDkEamQtPCOFm0208H3tp0Gq2OLMQ@mail.gmail.com> <CA+CK2bB3nHfu1Z6_6fqN3YTAzKXMiJ12MOWpbs8JY7rQo4Fq0g@mail.gmail.com>
+In-Reply-To: <CA+CK2bB3nHfu1Z6_6fqN3YTAzKXMiJ12MOWpbs8JY7rQo4Fq0g@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 28 Nov 2023 15:03:30 -0800
+Message-ID: <CAJD7tkZZNhf4KGV+7N+z8NFpJrvyeNudXU-WdVeE8Rm9pobfgQ@mail.gmail.com>
+Subject: Re: [PATCH 00/16] IOMMU memory observability
+To:     Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc:     akpm@linux-foundation.org, alex.williamson@redhat.com,
+        alim.akhtar@samsung.com, alyssa@rosenzweig.io,
+        asahi@lists.linux.dev, baolu.lu@linux.intel.com,
+        bhelgaas@google.com, cgroups@vger.kernel.org, corbet@lwn.net,
+        david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org,
+        heiko@sntech.de, iommu@lists.linux.dev, jasowang@redhat.com,
+        jernej.skrabec@gmail.com, jgg@ziepe.ca, jonathanh@nvidia.com,
+        joro@8bytes.org, kevin.tian@intel.com,
+        krzysztof.kozlowski@linaro.org, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
+        marcan@marcan.st, mhiramat@kernel.org, mst@redhat.com,
+        m.szyprowski@samsung.com, netdev@vger.kernel.org,
+        paulmck@kernel.org, rdunlap@infradead.org, robin.murphy@arm.com,
+        samuel@sholland.org, suravee.suthikulpanit@amd.com,
+        sven@svenpeter.dev, thierry.reding@gmail.com, tj@kernel.org,
+        tomas.mudrunka@gmail.com, vdumpa@nvidia.com,
+        virtualization@lists.linux.dev, wens@csie.org, will@kernel.org,
+        yu-cheng.yu@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/next20231127-Warray-bounds
-branch HEAD: cb7d8700da3e4c763ac30bfa34ee7dc143bd2758  Makefile: Enable -Warray-bounds globally
+On Tue, Nov 28, 2023 at 2:32=E2=80=AFPM Pasha Tatashin
+<pasha.tatashin@soleen.com> wrote:
+>
+> On Tue, Nov 28, 2023 at 4:34=E2=80=AFPM Yosry Ahmed <yosryahmed@google.co=
+m> wrote:
+> >
+> > On Tue, Nov 28, 2023 at 12:49=E2=80=AFPM Pasha Tatashin
+> > <pasha.tatashin@soleen.com> wrote:
+> > >
+> > > From: Pasha Tatashin <tatashin@google.com>
+> > >
+> > > IOMMU subsystem may contain state that is in gigabytes. Majority of t=
+hat
+> > > state is iommu page tables. Yet, there is currently, no way to observ=
+e
+> > > how much memory is actually used by the iommu subsystem.
+> > >
+> > > This patch series solves this problem by adding both observability to
+> > > all pages that are allocated by IOMMU, and also accountability, so
+> > > admins can limit the amount if via cgroups.
+> > >
+> > > The system-wide observability is using /proc/meminfo:
+> > > SecPageTables:    438176 kB
+> > >
+> > > Contains IOMMU and KVM memory.
+> > >
+> > > Per-node observability:
+> > > /sys/devices/system/node/nodeN/meminfo
+> > > Node N SecPageTables:    422204 kB
+> > >
+> > > Contains IOMMU and KVM memory memory in the given NUMA node.
+> > >
+> > > Per-node IOMMU only observability:
+> > > /sys/devices/system/node/nodeN/vmstat
+> > > nr_iommu_pages 105555
+> > >
+> > > Contains number of pages IOMMU allocated in the given node.
+> >
+> > Does it make sense to have a KVM-only entry there as well?
+> >
+> > In that case, if SecPageTables in /proc/meminfo is found to be
+> > suspiciously high, it should be easy to tell which component is
+> > contributing most usage through vmstat. I understand that users can do
+> > the subtraction, but we wouldn't want userspace depending on that, in
+> > case a third class of "secondary" page tables emerges that we want to
+> > add to SecPageTables. The in-kernel implementation can do the
+> > subtraction for now if it makes sense though.
+>
+> Hi Yosry,
+>
+> Yes, another counter for KVM could be added. On the other hand KVM
+> only can be computed by subtracting one from another as there are only
+> two types of secondary page tables, KVM and IOMMU:
+>
+> /sys/devices/system/node/node0/meminfo
+> Node 0 SecPageTables:    422204 kB
+>
+>  /sys/devices/system/node/nodeN/vmstat
+> nr_iommu_pages 105555
+>
+> KVM only =3D SecPageTables - nr_iommu_pages * PAGE_SIZE / 1024
+>
 
-Unverified Warning (likely false positive, please contact us if interested):
-
-arch/sparc/mm/init_64.c:3088:31: warning: array subscript -1 is outside array bounds of 'char[]' [-Warray-bounds=]
-fs/bcachefs/chardev.c:570:44: warning: array subscript i is outside array bounds of 'struct bch_ioctl_dev_usage_type[0]' [-Warray-bounds=]
-
-Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- alpha-allyesconfig
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- arc-allmodconfig
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- arc-allyesconfig
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- arm-allmodconfig
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- arm-allyesconfig
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- csky-allmodconfig
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- csky-allyesconfig
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- csky-randconfig-002-20231128
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- loongarch-allmodconfig
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- m68k-allmodconfig
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- m68k-allyesconfig
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- microblaze-allmodconfig
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- microblaze-allyesconfig
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- mips-allyesconfig
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- nios2-allmodconfig
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- nios2-allyesconfig
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- riscv-allmodconfig
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- riscv-allyesconfig
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- s390-allmodconfig
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- s390-allyesconfig
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- sh-allmodconfig
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- sh-allyesconfig
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- sh-randconfig-002-20231128
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- sparc-allmodconfig
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- sparc-randconfig-r133-20231128
-|   |-- arch-sparc-mm-init_64.c:warning:array-subscript-is-outside-array-bounds-of-char
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- sparc64-allmodconfig
-|   |-- arch-sparc-mm-init_64.c:warning:array-subscript-is-outside-array-bounds-of-char
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- sparc64-allyesconfig
-|   |-- arch-sparc-mm-init_64.c:warning:array-subscript-is-outside-array-bounds-of-char
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-|-- sparc64-randconfig-001-20231128
-|   |-- arch-sparc-mm-init_64.c:warning:array-subscript-is-outside-array-bounds-of-char
-|   `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-`-- sparc64-randconfig-002-20231128
-    |-- arch-sparc-mm-init_64.c:warning:array-subscript-is-outside-array-bounds-of-char
-    `-- fs-bcachefs-chardev.c:warning:array-subscript-i-is-outside-array-bounds-of-struct-bch_ioctl_dev_usage_type
-
-elapsed time: 1487m
-
-configs tested: 139
-configs skipped: 0
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                            allyesconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                     nsimosci_hs_defconfig   gcc  
-arc                   randconfig-001-20231128   gcc  
-arc                   randconfig-002-20231128   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                         orion5x_defconfig   clang
-arm                   randconfig-001-20231128   clang
-arm                   randconfig-002-20231128   clang
-arm                   randconfig-003-20231128   clang
-arm                   randconfig-004-20231128   clang
-arm                        spear3xx_defconfig   clang
-arm64                            allmodconfig   clang
-arm64                 randconfig-001-20231128   clang
-arm64                 randconfig-002-20231128   clang
-arm64                 randconfig-003-20231128   clang
-arm64                 randconfig-004-20231128   clang
-csky                             allmodconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                  randconfig-001-20231128   gcc  
-csky                  randconfig-002-20231128   gcc  
-hexagon                          allyesconfig   clang
-hexagon               randconfig-001-20231128   clang
-hexagon               randconfig-002-20231128   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386         buildonly-randconfig-001-20231128   clang
-i386         buildonly-randconfig-002-20231128   clang
-i386         buildonly-randconfig-003-20231128   clang
-i386         buildonly-randconfig-004-20231128   clang
-i386         buildonly-randconfig-005-20231128   clang
-i386         buildonly-randconfig-006-20231128   clang
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231128   clang
-i386                  randconfig-002-20231128   clang
-i386                  randconfig-003-20231128   clang
-i386                  randconfig-004-20231128   clang
-i386                  randconfig-005-20231128   clang
-i386                  randconfig-006-20231128   clang
-i386                  randconfig-011-20231128   gcc  
-i386                  randconfig-012-20231128   gcc  
-i386                  randconfig-013-20231128   gcc  
-i386                  randconfig-014-20231128   gcc  
-i386                  randconfig-015-20231128   gcc  
-i386                  randconfig-016-20231128   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch             randconfig-001-20231128   gcc  
-loongarch             randconfig-002-20231128   gcc  
-m68k                             allmodconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                       bvme6000_defconfig   gcc  
-m68k                          hp300_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                       allyesconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                 decstation_r4k_defconfig   gcc  
-mips                      loongson3_defconfig   gcc  
-mips                          malta_defconfig   clang
-nios2                            allmodconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                 randconfig-001-20231128   gcc  
-nios2                 randconfig-002-20231128   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                       virt_defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                randconfig-001-20231128   gcc  
-parisc                randconfig-002-20231128   gcc  
-powerpc                          allmodconfig   clang
-powerpc                          allyesconfig   clang
-powerpc                 mpc836x_rdk_defconfig   clang
-powerpc                    mvme5100_defconfig   clang
-powerpc               randconfig-001-20231128   clang
-powerpc               randconfig-002-20231128   clang
-powerpc               randconfig-003-20231128   clang
-powerpc                  storcenter_defconfig   gcc  
-powerpc                     stx_gp3_defconfig   gcc  
-powerpc64             randconfig-001-20231128   clang
-powerpc64             randconfig-002-20231128   clang
-powerpc64             randconfig-003-20231128   clang
-riscv                            allmodconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                 randconfig-001-20231128   clang
-riscv                 randconfig-002-20231128   clang
-riscv                          rv32_defconfig   clang
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                  randconfig-001-20231128   gcc  
-s390                  randconfig-002-20231128   gcc  
-s390                       zfcpdump_defconfig   gcc  
-sh                               alldefconfig   gcc  
-sh                               allmodconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                    randconfig-001-20231128   gcc  
-sh                    randconfig-002-20231128   gcc  
-sh                          rsk7264_defconfig   gcc  
-sh                      rts7751r2d1_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64               randconfig-001-20231128   gcc  
-sparc64               randconfig-002-20231128   gcc  
-um                               allmodconfig   clang
-um                               allyesconfig   clang
-um                    randconfig-001-20231128   clang
-um                    randconfig-002-20231128   clang
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20231128   clang
-x86_64       buildonly-randconfig-002-20231128   clang
-x86_64       buildonly-randconfig-003-20231128   clang
-x86_64       buildonly-randconfig-004-20231128   clang
-x86_64       buildonly-randconfig-005-20231128   clang
-x86_64       buildonly-randconfig-006-20231128   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231128   gcc  
-x86_64                randconfig-002-20231128   gcc  
-x86_64                randconfig-003-20231128   gcc  
-x86_64                randconfig-004-20231128   gcc  
-x86_64                randconfig-005-20231128   gcc  
-x86_64                randconfig-006-20231128   gcc  
-x86_64                randconfig-011-20231128   clang
-x86_64                randconfig-012-20231128   clang
-x86_64                randconfig-013-20231128   clang
-x86_64                randconfig-014-20231128   clang
-x86_64                randconfig-015-20231128   clang
-x86_64                randconfig-016-20231128   clang
-x86_64                randconfig-071-20231128   clang
-x86_64                randconfig-072-20231128   clang
-x86_64                randconfig-073-20231128   clang
-x86_64                randconfig-074-20231128   clang
-x86_64                randconfig-075-20231128   clang
-x86_64                randconfig-076-20231128   clang
-x86_64                          rhel-8.3-rust   clang
-xtensa                randconfig-001-20231128   gcc  
-xtensa                randconfig-002-20231128   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Right, but as I mention above, if userspace starts depending on this
+equation, we won't be able to add any more classes of "secondary" page
+tables to SecPageTables. I'd like to avoid that if possible. We can do
+the subtraction in the kernel.
