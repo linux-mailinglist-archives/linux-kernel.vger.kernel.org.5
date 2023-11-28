@@ -2,67 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF217FB30D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:45:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DF57FB311
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:46:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343884AbjK1How (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 02:44:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54190 "EHLO
+        id S1343851AbjK1HqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 02:46:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjK1Hou (ORCPT
+        with ESMTP id S229737AbjK1HqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 02:44:50 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C816C1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:44:55 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-77dbb976149so26201085a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:44:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701157494; x=1701762294; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IBDIQL5HcRIhr1awKzWm+Cv6Tgz5Ge7a0W16MuNWbIY=;
-        b=ibigtHueVymo40pkFN61oNEL+KPAERVBh6A0MmLE86EcT0RdeFjNqd1zGQT5HQFClm
-         HWPx3xj/lGfqCK1Xt+ApAkVvKyJ6lPlUAZEGJOL9x2dqMD8SIV+BeD1gHbUzGN2mobvd
-         /HSgAfN9W4xwqd5kcLXZSyyywaHqafNtSQCMZWbmVycZOlyrwZlw1FTYbTEw/cuBJEAl
-         aBaUGdgfq0ql4x7B6LExgJ/aS3mG1fPWSqApZ1AZmy3QsJ5VdZEBCU08yG7aDnvZ3u1A
-         kc0fbQg6/8IAZqqeJhc9T5mNTHYLWGCQ8FA544akPr2TyToIdrA3hlrMKEZdYxbSyDHl
-         U6tg==
+        Tue, 28 Nov 2023 02:46:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 053DAD4B
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:46:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701157573;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wb25FdrboGaZvJETW0bMwe9DFjRK33J4XlIEQW2L1fM=;
+        b=XyHECXPTaAC9Hsog9mAQjA7boliT4Z8FX37tSTb77X/AmPCnSvmpZn3zmOvS6Y4tbOk/6c
+        UdrSKwHRQrPXQqHeIc60hONq5qrQJqHzA1fE8IkNsw0Y7Kj+HVNT61Y14BAL0KYkqYLmK9
+        1Ww0wcC4BhECvSzrbmKTGW+GEsOJsuQ=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-642-kYmhnrzzMJ6ICcpr1kKu8Q-1; Tue, 28 Nov 2023 02:46:11 -0500
+X-MC-Unique: kYmhnrzzMJ6ICcpr1kKu8Q-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40b2977d7c5so30142975e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:46:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701157494; x=1701762294;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IBDIQL5HcRIhr1awKzWm+Cv6Tgz5Ge7a0W16MuNWbIY=;
-        b=BwaJUOQnrxz9PyQUCLIEEijN1uoXVmZerbbKAGBF5RqRc3RAdK1EO5eKPzUbe7gLO8
-         rXjj1tHspfu5vLOrAQXNay+92LtCFQ3FsL6jNXN7nBVoYDcMBMNq8Shx1W+38FNtMfqG
-         mo/URpQGcr/vC4OJ/V5fawWwc0NbIfegSLDCD+s7eYfg7jI3jutlJUWcAzMKIMV2kQ12
-         xuOgL79jF130XRQUe/9MrlTvhIHEKS8JZAUSoh/FPy5EwWVBCHUTUzC+bFi56zrHGp7g
-         OAmBu9MVX1lIP99Pdg2mG0wGMZRun88T5RQT1uYli8mQvM2p6Q1CsfkDlZMSiuzp4s8M
-         Ftow==
-X-Gm-Message-State: AOJu0YwuquQJ7P6L3Ffut46cQU5mkLlTVZuMMoV+iaKjGSxDNUVrwz7J
-        6qoJZrByGu/A6KHc0n55F7dHc6OARhLzjo82tj497g==
-X-Google-Smtp-Source: AGHT+IFSo+6nKqUMLE4Ffo4avyrEd2TQXSTM1Fq8R/zHevJAtsib/33467gbxdCvb0TIqJUfgBv3bOPPrD91kq7wGXU=
-X-Received: by 2002:a05:6214:5603:b0:67a:1074:26f2 with SMTP id
- mg3-20020a056214560300b0067a107426f2mr14286545qvb.40.1701157494616; Mon, 27
- Nov 2023 23:44:54 -0800 (PST)
-MIME-Version: 1.0
-References: <20231127171207.285554-1-arnaud.pouliquen@foss.st.com>
-In-Reply-To: <20231127171207.285554-1-arnaud.pouliquen@foss.st.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Tue, 28 Nov 2023 08:44:43 +0100
-Message-ID: <CAHUa44G+CeWQVO3K4gJMhUNDp30RcPzo8u1crO3yyLZhLmzzFQ@mail.gmail.com>
-Subject: Re: [PATCH v2] tee: Use iov_iter to better support shared buffer registration
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Sumit Garg <sumit.garg@linaro.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        op-tee@lists.trustedfirmware.org, linux-kernel@vger.kernel.org
+        d=1e100.net; s=20230601; t=1701157570; x=1701762370;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Wb25FdrboGaZvJETW0bMwe9DFjRK33J4XlIEQW2L1fM=;
+        b=EXPv6JikuVv0WQ95GDpV1kcm8F3zxj8s+V76y2eeNkfaWRef61upDHmC8v0q1NT/86
+         SuBmMn7GuN4Yk3IbQkqZfQpRhTnnAwnZwN1lB0u9sO1O6HEwFz99VO7RuxZNgpH+02jp
+         HEm4RPjysM3hVxHVu/qgCWu+MEAsf9gtdJ3MATUihBf8Qv/kjktnyFmwjQvXuAEBwoSb
+         SmR3MImU9xAWgoEzsHX/YDbDqD1kJszJ62UJubXRn/71molPm6v4vZaTLwW0Pc7GwGTk
+         HFDxG+kZDGGtzpd0RzX/0KiaH2MSgrnoxut4NKoClhcBGzV623ssFySycKrl2Ttq5X/O
+         kWIw==
+X-Gm-Message-State: AOJu0YwDLaK2HJf/MzMtl0IUWMAowWn76wpP3y29SeA3+IHemPTxe/42
+        SIkBvcJZXXohwC+ArmBsmrIwhMbUI667chJ32oA1DPFALQCXSZsbPFWK1U65EYqeobcPskmqZCb
+        Qgo+j7NT2RHYYEJn/Z0iaej7e
+X-Received: by 2002:a05:600c:3b87:b0:401:b2c7:34a8 with SMTP id n7-20020a05600c3b8700b00401b2c734a8mr10311405wms.7.1701157570385;
+        Mon, 27 Nov 2023 23:46:10 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFM7X409mjq5z4s/W9dIlio0yKzGMUB5yp4pNmEB/Qs5xVM/kuQuPrmslzwru1Fpb2W+QylOQ==
+X-Received: by 2002:a05:600c:3b87:b0:401:b2c7:34a8 with SMTP id n7-20020a05600c3b8700b00401b2c734a8mr10311382wms.7.1701157570040;
+        Mon, 27 Nov 2023 23:46:10 -0800 (PST)
+Received: from starship ([77.137.131.4])
+        by smtp.gmail.com with ESMTPSA id az15-20020a05600c600f00b0040b2b9bf321sm17200797wmb.9.2023.11.27.23.46.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 23:46:09 -0800 (PST)
+Message-ID: <c55ae0a19330d3e1d4aaa92f33193d9861bd12bb.camel@redhat.com>
+Subject: Re: [RFC 27/33] KVM: x86/mmu/hyper-v: Validate memory faults
+ against per-VTL memprots
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Nicolas Saenz Julienne <nsaenz@amazon.com>, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        anelkz@amazon.com, graf@amazon.com, dwmw@amazon.co.uk,
+        jgowans@amazon.com, corbert@lwn.net, kys@microsoft.com,
+        haiyangz@microsoft.com, decui@microsoft.com, x86@kernel.org,
+        linux-doc@vger.kernel.org
+Date:   Tue, 28 Nov 2023 09:46:07 +0200
+In-Reply-To: <20231108111806.92604-28-nsaenz@amazon.com>
+References: <20231108111806.92604-1-nsaenz@amazon.com>
+         <20231108111806.92604-28-nsaenz@amazon.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,201 +86,161 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 6:12=E2=80=AFPM Arnaud Pouliquen
-<arnaud.pouliquen@foss.st.com> wrote:
->
-> It is not possible to register buffers allocated with vmalloc.
-> Use iov_iter and associated helper functions to manage the page
-> registration for all type of memories.
->
-> Suggested-by: Christoph Hellwig <hch@infradead.org>
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+On Wed, 2023-11-08 at 11:18 +0000, Nicolas Saenz Julienne wrote:
+> Introduce a new step in __kvm_faultin_pfn() that'll validate the
+> fault against the vCPU's VTL protections and generate a user space exit
+> when invalid.
+> 
+> Note that kvm_hv_faultin_pfn() has to be run after resolving the fault
+> against the memslots, since that operation steps over
+> 'fault->map_writable'.
+> 
+> Non VSM users shouldn't see any behaviour change.
+> 
+> Signed-off-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
 > ---
->
-> update from V1 to V2:
-> - replace ITER_SOURCE by ITER_DEST flag in tee_shm_register_user_buf(),
-> - replace IS_ERR_OR NULL(shm) by IS_ERR(shm) in tee_shm_register_user_buf=
-().
->
-> V1:
-> The support of buffer registration allocated with vmalloc is no more
-> available since c83900393aa1 ("tee: Remove vmalloc page support").
->
-> This patch is an alternative to a revert and resulted from a discussion
-> with Christopher Hellwig [1].
->
-> This patch has been tested using xtest tool in optee qemu environment [2]
-> and using the series related to the remoteproc tee that should be
-> proposed soon [3].
->
-> References:
-> [1] https://lore.kernel.org/linux-arm-kernel/18a8528d-7d9d-6ed0-0045-5ee4=
-7dd39fb2@foss.st.com/T/#m8ec683c44fcd9b69c2aee42eaed0793afac9dd18in
-> [2] https://optee.readthedocs.io/en/latest/building/devices/qemu.html#bui=
-ld-instructions
-> [3] https://lore.kernel.org/linux-arm-kernel/18a8528d-7d9d-6ed0-0045-5ee4=
-7dd39fb2@foss.st.com/T/#maca0a1fc897aadd54c7deac432e11473fe970d1d
-> ---
->  drivers/tee/tee_shm.c | 72 +++++++++++++++++++++++--------------------
->  1 file changed, 38 insertions(+), 34 deletions(-)
->
-> diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
-> index 673cf0359494..4a24b9942938 100644
-> --- a/drivers/tee/tee_shm.c
-> +++ b/drivers/tee/tee_shm.c
-> @@ -22,23 +22,13 @@ static void shm_put_kernel_pages(struct page **pages,=
- size_t page_count)
->                 put_page(pages[n]);
->  }
->
-> -static int shm_get_kernel_pages(unsigned long start, size_t page_count,
-> -                               struct page **pages)
-> +static void shm_get_kernel_pages(struct page **pages, size_t page_count)
->  {
-> -       struct page *page;
->         size_t n;
->
-> -       if (WARN_ON_ONCE(is_vmalloc_addr((void *)start) ||
-> -                        is_kmap_addr((void *)start)))
-> -               return -EINVAL;
-> -
-> -       page =3D virt_to_page((void *)start);
-> -       for (n =3D 0; n < page_count; n++) {
-> -               pages[n] =3D page + n;
-> +       /* iov_iter_extract_kvec_pages does not get reference on the page=
-s, get a pin on them. */
-This line is longer than 80 columns, please break it.
-
-> +       for (n =3D 0; n < page_count; n++)
->                 get_page(pages[n]);
-> -       }
-> -
-> -       return page_count;
->  }
->
->  static void release_registered_pages(struct tee_shm *shm)
-> @@ -214,13 +204,12 @@ struct tee_shm *tee_shm_alloc_priv_buf(struct tee_c=
-ontext *ctx, size_t size)
->  EXPORT_SYMBOL_GPL(tee_shm_alloc_priv_buf);
->
->  static struct tee_shm *
-> -register_shm_helper(struct tee_context *ctx, unsigned long addr,
-> -                   size_t length, u32 flags, int id)
-> +register_shm_helper(struct tee_context *ctx, struct iov_iter *iter, u32 =
-flags, int id)
-This line is longer than 80 columns, please break it.
-
-Thanks,
-Jens
-
->  {
->         struct tee_device *teedev =3D ctx->teedev;
->         struct tee_shm *shm;
-> -       unsigned long start;
-> -       size_t num_pages;
-> +       unsigned long start, addr;
-> +       size_t num_pages, length, len, off;
->         void *ret;
->         int rc;
->
-> @@ -245,31 +234,31 @@ register_shm_helper(struct tee_context *ctx, unsign=
-ed long addr,
->         shm->flags =3D flags;
->         shm->ctx =3D ctx;
->         shm->id =3D id;
-> -       addr =3D untagged_addr(addr);
-> +       addr =3D (unsigned long)iter_iov_addr(iter);
-> +       length =3D iter_iov_len(iter);
->         start =3D rounddown(addr, PAGE_SIZE);
-> -       shm->offset =3D addr - start;
-> -       shm->size =3D length;
-> -       num_pages =3D (roundup(addr + length, PAGE_SIZE) - start) / PAGE_=
-SIZE;
-> +       num_pages =3D iov_iter_npages(iter, INT_MAX);
-> +       if (!num_pages) {
-> +               ret =3D ERR_PTR(-ENOMEM);
-> +               goto err_ctx_put;
-> +       }
+>  arch/x86/kvm/hyperv.c  | 66 ++++++++++++++++++++++++++++++++++++++++++
+>  arch/x86/kvm/hyperv.h  |  1 +
+>  arch/x86/kvm/mmu/mmu.c |  9 +++++-
+>  3 files changed, 75 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+> index bcace0258af1..eb6a4848e306 100644
+> --- a/arch/x86/kvm/hyperv.c
+> +++ b/arch/x86/kvm/hyperv.c
+> @@ -42,6 +42,8 @@
+>  #include "irq.h"
+>  #include "fpu.h"
+>  
+> +#include "mmu/mmu_internal.h"
 > +
->         shm->pages =3D kcalloc(num_pages, sizeof(*shm->pages), GFP_KERNEL=
-);
->         if (!shm->pages) {
->                 ret =3D ERR_PTR(-ENOMEM);
->                 goto err_free_shm;
->         }
->
-> -       if (flags & TEE_SHM_USER_MAPPED)
-> -               rc =3D pin_user_pages_fast(start, num_pages, FOLL_WRITE,
-> -                                        shm->pages);
-> -       else
-> -               rc =3D shm_get_kernel_pages(start, num_pages, shm->pages)=
-;
-> -       if (rc > 0)
-> -               shm->num_pages =3D rc;
-> -       if (rc !=3D num_pages) {
-> -               if (rc >=3D 0)
-> -                       rc =3D -ENOMEM;
-> -               ret =3D ERR_PTR(rc);
-> +       len =3D iov_iter_extract_pages(iter, &shm->pages, LONG_MAX, num_p=
-ages, 0, &off);
-> +       if (len !=3D length) {
-> +               ret =3D len ? ERR_PTR(len) : ERR_PTR(-ENOMEM);
->                 goto err_put_shm_pages;
->         }
->
-> +       shm->offset =3D off;
-> +       shm->size =3D len;
-> +       shm->num_pages =3D num_pages;
+>  #define KVM_HV_MAX_SPARSE_VCPU_SET_BITS DIV_ROUND_UP(KVM_MAX_VCPUS, HV_VCPUS_PER_SPARSE_BANK)
+>  
+>  /*
+> @@ -3032,6 +3034,55 @@ struct kvm_hv_vtl_dev {
+>  	struct xarray mem_attrs;
+>  };
+>  
+> +static struct xarray *kvm_hv_vsm_get_memprots(struct kvm_vcpu *vcpu);
 > +
->         rc =3D teedev->desc->ops->shm_register(ctx, shm, shm->pages,
->                                              shm->num_pages, start);
->         if (rc) {
-> @@ -307,6 +296,8 @@ struct tee_shm *tee_shm_register_user_buf(struct tee_=
-context *ctx,
->         u32 flags =3D TEE_SHM_USER_MAPPED | TEE_SHM_DYNAMIC;
->         struct tee_device *teedev =3D ctx->teedev;
->         struct tee_shm *shm;
-> +       struct iovec iov;
-> +       struct iov_iter iter;
->         void *ret;
->         int id;
->
-> @@ -319,7 +310,10 @@ struct tee_shm *tee_shm_register_user_buf(struct tee=
-_context *ctx,
->         if (id < 0)
->                 return ERR_PTR(id);
->
-> -       shm =3D register_shm_helper(ctx, addr, length, flags, id);
-> +       iov.iov_base =3D (void __user *)addr;
-> +       iov.iov_len =3D length;
-> +       iov_iter_init(&iter, ITER_DEST, &iov, 1, length);
-> +       shm =3D register_shm_helper(ctx, &iter, flags, id);
->         if (IS_ERR(shm)) {
->                 mutex_lock(&teedev->mutex);
->                 idr_remove(&teedev->idr, id);
-> @@ -351,9 +345,19 @@ struct tee_shm *tee_shm_register_user_buf(struct tee=
-_context *ctx,
->  struct tee_shm *tee_shm_register_kernel_buf(struct tee_context *ctx,
->                                             void *addr, size_t length)
+> +bool kvm_hv_vsm_access_valid(struct kvm_page_fault *fault, unsigned long attrs)
+> +{
+> +	if (attrs == KVM_MEMORY_ATTRIBUTE_NO_ACCESS)
+> +		return false;
+> +
+> +	/* We should never get here without read permissions, force a fault. */
+> +	if (WARN_ON_ONCE(!(attrs & KVM_MEMORY_ATTRIBUTE_READ)))
+> +		return false;
+> +
+> +	if (fault->write && !(attrs & KVM_MEMORY_ATTRIBUTE_WRITE))
+> +		return false;
+> +
+> +	if (fault->exec && !(attrs & KVM_MEMORY_ATTRIBUTE_EXECUTE))
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+> +static unsigned long kvm_hv_vsm_get_memory_attributes(struct kvm_vcpu *vcpu,
+> +						      gfn_t gfn)
+> +{
+> +	struct xarray *prots = kvm_hv_vsm_get_memprots(vcpu);
+> +
+> +	if (!prots)
+> +		return 0;
+> +
+> +	return xa_to_value(xa_load(prots, gfn));
+> +}
+> +
+> +int kvm_hv_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
+> +{
+> +	unsigned long attrs;
+> +
+> +	attrs = kvm_hv_vsm_get_memory_attributes(vcpu, fault->gfn);
+> +	if (!attrs)
+> +		return RET_PF_CONTINUE;
+> +
+> +	if (kvm_hv_vsm_access_valid(fault, attrs)) {
+> +		fault->map_executable =
+> +			!!(attrs & KVM_MEMORY_ATTRIBUTE_EXECUTE);
+> +		fault->map_writable = !!(attrs & KVM_MEMORY_ATTRIBUTE_WRITE);
+> +		return RET_PF_CONTINUE;
+> +	}
+> +
+> +	return -EFAULT;
+> +}
+> +
+>  static int kvm_hv_vtl_get_attr(struct kvm_device *dev,
+>  			       struct kvm_device_attr *attr)
 >  {
-> +       struct tee_shm *shm;
->         u32 flags =3D TEE_SHM_DYNAMIC;
-> +       struct kvec kvec;
-> +       struct iov_iter iter;
->
-> -       return register_shm_helper(ctx, (unsigned long)addr, length, flag=
-s, -1);
-> +       kvec.iov_base =3D addr;
-> +       kvec.iov_len =3D length;
-> +       iov_iter_kvec(&iter, ITER_DEST, &kvec, 1, length);
-> +       shm =3D register_shm_helper(ctx, &iter, flags, -1);
-> +       if (!IS_ERR(shm))
-> +               shm_get_kernel_pages(shm->pages, shm->num_pages);
+> @@ -3120,6 +3171,21 @@ static struct kvm_device_ops kvm_hv_vtl_ops = {
+>  	.get_attr = kvm_hv_vtl_get_attr,
+>  };
+>  
+> +static struct xarray *kvm_hv_vsm_get_memprots(struct kvm_vcpu *vcpu)
+> +{
+> +	struct kvm_hv_vtl_dev *vtl_dev;
+> +	struct kvm_device *tmp;
 > +
-> +       return shm;
+> +	list_for_each_entry(tmp, &vcpu->kvm->devices, vm_node)
+> +		if (tmp->ops == &kvm_hv_vtl_ops) {
+> +			vtl_dev = tmp->private;
+> +			if (vtl_dev->vtl == kvm_hv_get_active_vtl(vcpu))
+> +				return &vtl_dev->mem_attrs;
+> +		}
+> +
+> +	return NULL;
+> +}
+> +
+>  static int kvm_hv_vtl_create(struct kvm_device *dev, u32 type)
+>  {
+>  	struct kvm_hv_vtl_dev *vtl_dev;
+> diff --git a/arch/x86/kvm/hyperv.h b/arch/x86/kvm/hyperv.h
+> index 3cc664e144d8..ae781b4d4669 100644
+> --- a/arch/x86/kvm/hyperv.h
+> +++ b/arch/x86/kvm/hyperv.h
+> @@ -271,5 +271,6 @@ static inline void kvm_mmu_role_set_hv_bits(struct kvm_vcpu *vcpu,
+>  
+>  int kvm_hv_vtl_dev_register(void);
+>  void kvm_hv_vtl_dev_unregister(void);
+> +int kvm_hv_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault);
+>  
+>  #endif
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index a76028aa8fb3..ba454c7277dc 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -4374,7 +4374,7 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
+>  					  fault->write, &fault->map_writable,
+>  					  &fault->hva);
+>  	if (!async)
+> -		return RET_PF_CONTINUE; /* *pfn has correct page already */
+> +		goto pf_continue; /* *pfn has correct page already */
+>  
+>  	if (!fault->prefetch && kvm_can_do_async_pf(vcpu)) {
+>  		trace_kvm_try_async_get_page(fault->addr, fault->gfn);
+> @@ -4395,6 +4395,13 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
+>  	fault->pfn = __gfn_to_pfn_memslot(slot, fault->gfn, false, true, NULL,
+>  					  fault->write, &fault->map_writable,
+>  					  &fault->hva);
+> +pf_continue:
+> +	if (kvm_hv_vsm_enabled(vcpu->kvm)) {
+> +		if (kvm_hv_faultin_pfn(vcpu, fault)) {
+> +			kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
+> +			return -EFAULT;
+> +		}
+> +	}
+>  	return RET_PF_CONTINUE;
 >  }
->  EXPORT_SYMBOL_GPL(tee_shm_register_kernel_buf);
->
-> --
-> 2.25.1
->
+>  
+
+If we don't go with Sean's suggestion of having a VM per VTL,
+then this feature should be VSM agnostic IMHO, because it might be useful for other security features that might
+want to change the guest memory protection based on some 'level' like VSM.
+
+Even SMM to some extent fits this description although in theory I think that SMM can have "different" memory mapped to the same GPA.
+
+Best regards,
+	Maxim Levitsky
+
+
