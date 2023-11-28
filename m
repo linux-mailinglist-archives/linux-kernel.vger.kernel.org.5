@@ -2,102 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9F437FB9FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B40FD7FBA01
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:23:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344225AbjK1MWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 07:22:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48552 "EHLO
+        id S1344555AbjK1MWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 07:22:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234668AbjK1MWV (ORCPT
+        with ESMTP id S1344006AbjK1MWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 07:22:21 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A0D95;
-        Tue, 28 Nov 2023 04:22:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=2AMt7jp7zrGQ1Hr3T3kEt4MJP2MZsgNYKWbkaVlt5lk=; b=bJ65ZEwGSH2/MC2OoHkcrz4GcS
-        d+gmN9w5J4sSugxSmgc44OC9HhFr5Gp145bwfaOcSUcRMdonH1ZRdHT2it78kzD4P5BTf2tm7g9BY
-        9e5Q5zqZHhZDb6kwhBJf4X22sCAOM4qNehy+hvPCYuA8oKQR5St65HLa6xr+el5C9w5Kyx5jVii5d
-        5lEMPCxbd9wv6rz3A95i1PUbfBw+wDDpQTaaTsCFHqPF7TNQIZedX7f1SfAOA4Uti+qPV+px7CddW
-        6O9FEWcVE7w+GOiqfArHIdSwncoehFRgPuI0rqhC263cnhEfI5KEPT6JmLxZ/wBEs5AcLIKssDQxN
-        N7yFTKTQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:47282)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1r7x6V-0007HZ-2S;
-        Tue, 28 Nov 2023 12:22:15 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1r7x6U-0002wn-Ib; Tue, 28 Nov 2023 12:22:14 +0000
-Date:   Tue, 28 Nov 2023 12:22:14 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        David Epping <david.epping@missinglinkelectronics.com>,
-        Harini Katakam <harini.katakam@amd.com>,
-        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH v2 3/4] net: phy: restructure
- __phy_write/read_mmd to helper and phydev user
-Message-ID: <ZWXbdjOCKxJFyXJK@shell.armlinux.org.uk>
-References: <20231126235141.17996-1-ansuelsmth@gmail.com>
- <20231126235141.17996-3-ansuelsmth@gmail.com>
- <d3747eda-7109-4d53-82fa-9df3f8d71f62@lunn.ch>
- <6565d8d6.5d0a0220.5f8f1.b9d7@mx.google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6565d8d6.5d0a0220.5f8f1.b9d7@mx.google.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 28 Nov 2023 07:22:50 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED31495
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 04:22:56 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 635FCC433C8;
+        Tue, 28 Nov 2023 12:22:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701174173;
+        bh=DXX2yyZV07cfawdxMHdycC1Xx/lp1zrsIhlOIBHIVfM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RR7f6n2PxMOFQyeu21keut9EcMLkqoasl9Ot7S6MYIuDmXdN7qJFnhMFTdg9149fh
+         ZDIVdt9H2VRkT/IG4BODcbsU4p6fZpPOBnPWHcgaciDqy8WPkhBb3nA4yjZ9NEeXVT
+         BNYi3bnu+jQmW+pfEMn/iEqxAmXUQnAOBC9nuRzGuazCVbAXDSFw6OWq6mdxYiBVXk
+         ekKVhu3U61kQtNIgMwHyXrTVZyi34aXbyirKMFFV5OgkLLVacqKt0Pl8sUHNi8NSVo
+         a7gUBUmY5uyb6Ufob/2svRwgGwXSRaSSIvXLrkNaWYYTM5YgPUyhOHOcqW2PvNcdSq
+         6N9PG+K4PW4tg==
+Date:   Tue, 28 Nov 2023 21:22:46 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v3 28/33] fprobe: Rewrite fprobe on function-graph
+ tracer
+Message-Id: <20231128212246.db6a3dafdab190cc745c4364@kernel.org>
+In-Reply-To: <ZWXGn3_5pN-0fniR@krava>
+References: <170109317214.343914.4784420430328654397.stgit@devnote2>
+        <170109352014.343914.17580314660854847955.stgit@devnote2>
+        <ZWXGn3_5pN-0fniR@krava>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 01:11:00PM +0100, Christian Marangi wrote:
-> On Tue, Nov 28, 2023 at 01:46:10AM +0100, Andrew Lunn wrote:
-> > On Mon, Nov 27, 2023 at 12:51:40AM +0100, Christian Marangi wrote:
-> > > Restructure phy_write_mmd and phy_read_mmd to implement generic helper
-> > > for direct mdiobus access for mmd and use these helper for phydev user.
-> > > 
-> > > This is needed in preparation of PHY package API that requires generic
-> > > access to the mdiobus and are deatched from phydev struct but instead
-> > > access them based on PHY package base_addr and offsets.
-> > 
-> > Why is this all going into the header file?
-> >
-> 
-> Was following the pattern done by phy_package_read/write.
-> 
-> Considering those API are not single function call... I wonder if those
-> should be moved in phy_core.c instead of static inline them in the
-> header.
+On Tue, 28 Nov 2023 11:53:19 +0100
+Jiri Olsa <olsajiri@gmail.com> wrote:
 
-phy_package_{read,write} are simple affairs - one test and a call
-to a function. That makes them fairly small. The proposed new
-functions aren't small, which means that we get a load of code each
-time they're used. Therefore, it's better that they're out of line.
+> On Mon, Nov 27, 2023 at 10:58:40PM +0900, Masami Hiramatsu (Google) wrote:
+> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > 
+> > Rewrite fprobe implementation on function-graph tracer.
+> > Major API changes are:
+> >  -  'nr_maxactive' field is deprecated.
+> >  -  This depends on CONFIG_DYNAMIC_FTRACE_WITH_ARGS or
+> >     !CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS, and
+> >     CONFIG_HAVE_FUNCTION_GRAPH_FREGS. So currently works only
+> >     on x86_64.
+> >  -  Currently the entry size is limited in 15 * sizeof(long).
+> >  -  If there is too many fprobe exit handler set on the same
+> >     function, it will fail to probe.
+> > 
+> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > ---
+> >  Changes in v3:
+> >   - Update for new reserve_data/retrieve_data API.
+> >   - Fix internal push/pop on fgraph data logic so that it can
+> >     correctly save/restore the returning fprobes.
+> 
+> hi,
+> looks like this one conflicts with recent:
+> 
+>   4bbd93455659 kprobes: kretprobe scalability improvement
+
+Thanks for reporting!
+
+I also found some other patches conflicts with recent commits.
+Let me rebase it on the recent branch.
+
+Thank!
+
+> 
+> jirka
+
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
