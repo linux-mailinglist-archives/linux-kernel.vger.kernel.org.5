@@ -2,191 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E4147FB59A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:24:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A3737FB59E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:25:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234830AbjK1JYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 04:24:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34662 "EHLO
+        id S234831AbjK1JYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 04:24:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbjK1JYM (ORCPT
+        with ESMTP id S230044AbjK1JYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 04:24:12 -0500
-Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01olkn2073.outbound.protection.outlook.com [40.92.99.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7AF5D0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:24:18 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cszRAVam13KzLSpyri0Z+neo5RcFBmyBQL1JYI0HEhZsGV+nzGA923CNIh5ApASvMuAVAFYuGkGZONBcIIko7YZN7c/xoyftgYEIq+/HX2nLlINfKAHJsxBt/Z50afxOwrXweid56aij9StHWJEAH+X6nnvd6pdZ6YKzdtTGBNFsTr+7Of45qfIXdvDIOM423E0i/5fU5ulARxoteVctUcSqvwPOnWIiU0wBwRogECTUI+dyOujEI1zr+HTg5B6yv7osFNmP84EatvQtfetd9PzRt4FhY4+EQ+lNF/cDeTZ+58yqh3EtwCY/hNoUUxnHMa37xeOQ8x7aTzhWl67fLA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4kEb4vVlqMF9z+4MBpf5lIv4WR04bwkZdLBmgTCGfco=;
- b=UYsE6V3VYYSzgKDatut7WMltz0lUb5QV+lPI4NaZaAAVVYgw1m22ZsEBgpuWzywldxqN0am/GpzMkwwQKi86nLFxbfg5nvhsy/lSUEKu9FbKwsdc6Ek1RZLneNTzKFT9lvEzCGnslpOK1Aim1j7re1gwHIAyCAnie8ZSufqaBnXj2cImuFgDkHta7gAvcCydjW2rVUUSpW+NV3hTz0bm3rbGN2aosyp2qP/Un7wIku/nGhztaJb8w8PbaRe38JEjIRbSwap3IMbqK8LBAkIWEYrfjMjI6HaG3KuO4gMNvpNOEHQ1ol5JuEjPuQ6gnS2UxEraYxFtpEhvhs1zc98kCA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4kEb4vVlqMF9z+4MBpf5lIv4WR04bwkZdLBmgTCGfco=;
- b=SWYkHcX7u8C94pm5cpqWpaQzaUXgjMdYnSDecf8I0MSZKAeskpZpW9G+U/cGnCRXntYxiB76EXSLi5hkh+F89ipMwzgcHn/Oj0aIYrg5Ivfg/55cGCYDT5RB7H3+Y3ZZ2GB5R1qoBmR8zJLic2vCwUMBcwKqwB0vNXMMpQeJQCNRX4LFZVyNCOanNdHzBx/ryiJGSPigu/xJAoeQJiSUFNmdotOPbY6KjwcZNDekaXS5LOoyV8O6WjNI1e9AFrf+vP7Axg03brRrwN3jwadfFVgpXWOoRfMQ96dzyv2khKadvJ3mLHfQHrB6WfHlWqV23eqPXeyIljYtUaBjT7YMMg==
-Received: from TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:158::13)
- by TY1P286MB3405.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:2e2::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Tue, 28 Nov
- 2023 09:24:15 +0000
-Received: from TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM
- ([fe80::a621:9714:c1cf:e4f0]) by TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM
- ([fe80::a621:9714:c1cf:e4f0%7]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
- 09:24:15 +0000
-From:   Peng Liu <pngliu@hotmail.com>
-Cc:     frederic@kernel.org, tglx@linutronix.de, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, liupeng17@lenovo.com
-Subject: [PATCH v2 2/2] tick/nohz: Remove duplicate between tick_nohz_lowres_handler() and tick_nohz_highres_handler()
-Date:   Tue, 28 Nov 2023 17:24:13 +0800
-Message-ID: <TYCP286MB2146FA111842EAD33796AF5EC6BCA@TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231127083118.145704-1-pngliu@hotmail.com>
-References: <20231127083118.145704-1-pngliu@hotmail.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [g3cg2rXksPg0mwyiatDHncz3IuPGL2VA]
-X-ClientProxiedBy: TYWPR01CA0015.jpnprd01.prod.outlook.com
- (2603:1096:400:a9::20) To TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:158::13)
-X-Microsoft-Original-Message-ID: <20231128092413.160451-1-pngliu@hotmail.com>
+        Tue, 28 Nov 2023 04:24:54 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99251D0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:25:00 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6cbda959062so4569720b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:25:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701163500; x=1701768300; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=WIvMM7mjQbdSWD76tI3zt2v2Np/Oon7r71veftvgKKI=;
+        b=G0tYhW7QXHfqpHgOaLstVLQRLosHrP++zSzDnBLVkJ2USaeLduF0hy2abhLudNZfwZ
+         ARxHVMevOGO6YLm+QTgVhAK45l0o7gjymjRVq6AIBZnkddQLruwF9jYRSr3JkwnR2uCJ
+         Se6XzJJiaxyZmqygGRgxbfj7iO5yzFGon+LaIcm6AOPKYmdY8FCH3Gy6KXZp8Y7kBrzT
+         0vaJVIIh9Ky2mDscRrFjpGMKgkaX1O7YWtSl01FNTxhr7lfOS6NqXjfcwVS4mVmwN5D8
+         UB4jm96J9C/r1lJsRU3DEyVfVXbVqxCMoyHF3+vZZb6umcdBZvGWkhsVCB0BmDJVnwTA
+         P8QQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701163500; x=1701768300;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WIvMM7mjQbdSWD76tI3zt2v2Np/Oon7r71veftvgKKI=;
+        b=VfpEFR7LSAEVLCdJHqkSazffVNepMw/h/8a+h+ow2W0gGLHAAtMb/KQiNOOj1k5fK2
+         NimAYKkiziCcy40i89UCFg7fmyF5Uh5D7bJh0bJoDzD/NdMEKFaB5G6fR8PRW93iiSL2
+         6cfz7f4/jSka07LoiMWVjyVuqKE/ezpheOp9AG0WVjbZEJ9+Z5IQTNhitkN7fDClxaF1
+         nZVAydpHr/P6b+y5pF4RyTjvqqRY9R6LZBNSVlEHmCnbilKFz9mA2eHF0pUew0Xy8tuY
+         N4EfDbP505HTv5kpkbuVx3SO43CSZrjNy6M4eV+HjAkelz88Ze4/eOFCwPZWqkdCbfoU
+         G7Jw==
+X-Gm-Message-State: AOJu0YzThW+qEoUyjDr+Sx0ySFexrGR8OGeEroA4fJLehhbTy5Dhoxq2
+        TeUhD/+TJ3kARtZs+UfoJbgng/YPuIkrI1/U/gI=
+X-Google-Smtp-Source: AGHT+IEGq36rOUe7b5le7iMjD2HJ/EEhduxdASKLlAWaV1gEw0963o6fSX8ebv1LJqnqSJoaTn1uwuCDLGAFBCokBtI=
+X-Received: by 2002:a05:6a20:258b:b0:18c:64e0:447b with SMTP id
+ k11-20020a056a20258b00b0018c64e0447bmr10422700pzd.28.1701163499911; Tue, 28
+ Nov 2023 01:24:59 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYCP286MB2146:EE_|TY1P286MB3405:EE_
-X-MS-Office365-Filtering-Correlation-Id: 788d8520-7c0f-4b5d-6195-08dbeff3ca73
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Hz23AqrVKKmuXSNVkSDPdHZmKpwfUxpgPZCf6O3PH2HuL3EuejFCq8h9Bj+1A9P7n3Jo/+9kI0kZ7MIfnq1sqggN4Fy7cVpyVDJPtf+QE8bMYLkVeF+qPZ5aGrCHGu0SZJf+Dt8Ks0DpiEBgeOsQjjFVfN25CnUhChqDroIJXsFKRdYNP4Z8yt/+DC2Do7WjF4ZUoMkoHEybVEwDyp8+xwLPmk5DhaCAAZuRIv5ZJULUGUXDaUM2yWL6U7W5Eck7wV1ROS5467gw5yDnvsG5dRh06v/9NJaRjU6z3dxfxyZ6E/QlGEX3qeGRnBrVi5AhCRxEJUZefHCSEWFZ2W2KDGrEA6yHDrM8xS5ZRF0L8sh4i6jKDSyS0hVD0jd08TX1tX+ZD9QuEECZk8qMr7KEczT8qtASGVq2J36bWm8gxsyt8IKHs8N4kL/c+5L6i3bhVDxTeujsi9xCXTtrbUKk98e0iq/f2jjEA6q/7eb1M2v84/BuV7jluYfcQ+DXZQtCGEXurMYEY7HEsYrQ7nyyCGyn0ySiHac4wdUYfywQK0L/rbPUB0Dy9S+3yfzqdmu+
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NmpkJxuMfuhgpcT6RfwcLNCwf7pPBmDtz9yuZnetP9MWbHtZGt8GsM3EIwvN?=
- =?us-ascii?Q?G/aSAxImmkH1HK8Oe1xihWagb8mkusvAMHDo7Q9JK/lVi8/lgx+pXwq7/sQw?=
- =?us-ascii?Q?Zap7CDVLPF+B0Dn6PSXVKUUWLI9W52DbC/PDGmSJXMG3Ab2oec78FptPulVo?=
- =?us-ascii?Q?SxWB8qah73uG4QOEmM7Rb7Mc9FB049nSFGGH06RNnJja1p6BLOdddwamfQXc?=
- =?us-ascii?Q?tDOqOYKEQxM7K3UkOUvL/F+Bf0Xl/XfIUSbwqF+s1ZadIJqwkiGB8Pzpj8kB?=
- =?us-ascii?Q?G6Hr6MYYLUXb4KC6u8lrdOXU2rqpzZSCjQG5+Y3rDQ7eyhZeBCehCS1DAKW0?=
- =?us-ascii?Q?paolWw3zty/OmxfgRfCNPj+Xk3JhCH671uKyLqQl4uDTOWatbr7dTqb6+pPp?=
- =?us-ascii?Q?oBWQtrbmDacqgaHV5866PbCje3lvJKVYF+oRspSz1Z4NrFSnWVrBGCZfV9sj?=
- =?us-ascii?Q?/f8lo4WVecEuzPcHKYszhkNhLTSqqABMVvvA4aLPV4iwCTx1wUnEEm/jjOGL?=
- =?us-ascii?Q?rrEv1sEMbRsIqVNuEuilbhOU7LkoPSn7pSdBwA5QoeXZqfxI8SrjFLqS6ZlE?=
- =?us-ascii?Q?MUZMQi3yqeCiY9tkJMdVHVZl187jft3aRlo/wEkJbNjlLDot6W35i10IYv9C?=
- =?us-ascii?Q?OTX+psArizsK3QBGRF8IWpMN7ycMH9mI6PRuW9iHoSNzRQacJkPS8KL0yQEA?=
- =?us-ascii?Q?1q6QOvT8PhKQTC3cJHZnUqHPHVxVDz6HmX58Bhg3LWz4BFv5ZCQDHJYzAwfF?=
- =?us-ascii?Q?3iMTecvQcND0PeIfqIgVZYpbCtIXYXnKjyxsZimaw6OQMqEnnUaP6lmDmybX?=
- =?us-ascii?Q?2usrGjgkVjrdTTq0gIzP27xW1sjm2xkJHw39sYKsaP2+fZd6BaPuItsZ6yOG?=
- =?us-ascii?Q?edr6/A4018Inu8WatrBsUSW7SOXa7NaKxbJNQeQQHK2nMAFD8RmbzN+E+H9e?=
- =?us-ascii?Q?e7EPlfUDBRQtdbzuNBfZl1+5h/yR12aMuB+7FB7Widmg2cnSM42UeYY9evwd?=
- =?us-ascii?Q?OuLU2Bse8K9+HWlG1nmP9Szg9dKyE5dZxnEo6sfs4TSq57stiekfKq1GXX5W?=
- =?us-ascii?Q?PRAUuwMwutjbqkpvL/+renfmmvToc1cK+aPFbHtSJyQ2MZpt9I41wZnM2hBK?=
- =?us-ascii?Q?D8VrxwwKc+QhuwERe8VY3qteKWefHDRiwibybK53pT/oo92bGCp34uB0oA75?=
- =?us-ascii?Q?7Yn8JcqERNvaPG/DGmbNOnIK5qftG8s7nDTxJQ=3D=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-05f45.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 788d8520-7c0f-4b5d-6195-08dbeff3ca73
-X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 09:24:15.8717
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY1P286MB3405
+References: <20231127165908.1734951-1-tudor.ambarus@linaro.org>
+ <42c96d63d1ea4f7e8f16a3c8eb0a4cf1@walle.cc> <20231128100313.3c990f69@xps-13> <18ba4126dbd9e49846344b517ad2fbdd@walle.cc>
+In-Reply-To: <18ba4126dbd9e49846344b517ad2fbdd@walle.cc>
+From:   liao jaime <jaimeliao.tw@gmail.com>
+Date:   Tue, 28 Nov 2023 17:24:42 +0800
+Message-ID: <CAAQoYR=ZAEVeoCwkRmky2CHVeKGX55JijM8Q6D5msz_5iW+jtw@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spi-nor: stop printing superfluous debug info
+To:     Michael Walle <michael@walle.cc>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Tudor Ambarus <tudor.ambarus@linaro.org>,
+        jaimeliao@mxic.com.tw, pratyush@kernel.org, richard@nod.at,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Liu <liupeng17@lenovo.com>
+Hi
 
-tick_nohz_lowres_handler() does the same work as tick_nohz_highres_handler()
-plus the clockevent device reprogramming, so should reuse the latter.
 
-Signed-off-by: Peng Liu <liupeng17@lenovo.com>
----
-Changes in v2:
-- Fix build warning: Function parameter or member 'mode' not described in 'tick_setup_sched_timer'
-- Fix build error: use of undeclared identifier 'tick_nohz_highres_handler'
-- Fix build error: use of undeclared identifier 'sched_skew_tick'
----
- kernel/time/tick-sched.c | 28 ++++++----------------------
- 1 file changed, 6 insertions(+), 22 deletions(-)
+>
+> Hi,
+>
+> >> > The mtd data can be obtain with the mtd ioctls and the SPI NOR
+> >> > flash name can be determined interrogating the sysfs entries.
+> >> > Stop polluting the kernel log.
+> >> >
+> >> > Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+> >> >
+> >> > ---
+> >> >  drivers/mtd/spi-nor/core.c | 19 -------------------
+> >> >  1 file changed, 19 deletions(-)
+> >> >
+> >> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> >> > index 25a64c65717d..6de76fd009d1 100644
+> >> > --- a/drivers/mtd/spi-nor/core.c
+> >> > +++ b/drivers/mtd/spi-nor/core.c
+> >> > @@ -3517,25 +3517,6 @@ int spi_nor_scan(struct spi_nor *nor, const char > *name,
+> >> >    /* No mtd_info fields should be used up to this point. */
+> >> >    spi_nor_set_mtd_info(nor);
+> >> >
+> >> > -  dev_info(dev, "%s (%lld Kbytes)\n", info->name,
+> >> > -                  (long long)mtd->size >> 10);
+> >>
+> >> I'd lower this to dev_dbg() and print the jedec id. It might come in
+> >> handy for a quick glance during bootup if debug is enabled.
+> >
+> > Ack. Although, your boot time will almost be unaffected if you don't
+> > print the info messages to the console. What takes the most time is not
+> > writing to the kernel buffer, it's to display the lines on a serial
+> > console, and dev_info() are by default discarded, you need to select a
+> > lower log level manually, and if you do that it means you're not
+> > looking for quick boot times but rather more for additional
+> > information.
+>
+> Also with recent (or planned, dunno the current state) printk won't wait
+> anymore for the slowest console. I really don't have a strong opinion,
+> either dev_info(jedec_id) or dev_dbg(jedec_id). Whatever Tudor prefers.
+>
+> >> > -  dev_dbg(dev,
+> >> > -          "mtd .name = %s, .size = 0x%llx (%lldMiB), "
+> >> > -          ".erasesize = 0x%.8x (%uKiB) .numeraseregions = %d\n",
+> >> > -          mtd->name, (long long)mtd->size, (long long)(mtd->size >> 20),
+> >> > -          mtd->erasesize, mtd->erasesize / 1024, mtd->numeraseregions);
+> >> > -
+> >> > -  if (mtd->numeraseregions)
+> >> > -          for (i = 0; i < mtd->numeraseregions; i++)
+> >> > -                  dev_dbg(dev,
+> >> > -                          "mtd.eraseregions[%d] = { .offset = 0x%llx, "
+> >> > -                          ".erasesize = 0x%.8x (%uKiB), "
+> >> > -                          ".numblocks = %d }\n",
+> >> > -                          i, (long long)mtd->eraseregions[i].offset,
+> >> > -                          mtd->eraseregions[i].erasesize,
+> >> > -                          mtd->eraseregions[i].erasesize / 1024,
+> >> > -                          mtd->eraseregions[i].numblocks);
+> >> >    return 0;
+> >>
+> >> Part of this is already available through the spi-nor debugfs,
+> >> although not
+> >> the actual mtd properties. These I think, should go into the mtdcore
+> >> itself if really needed. Either through dev_dbg() or debugfs.
+> >
+> > Maybe we don't need this at all, as long as one message remains about
+> > the JEDEC ID, but keep in mind that spi-nors are commonly storing the
+> > rootfs and if your spi-nor does not boot you don't have a userspace yet
+> > and all the debugfs entries are purely useless.
+>
+> Good point.
+>
+> Just curious, do you know any boards which has the rootfs writable on
+> the spi-nor flash?
+I am also interested.
 
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 96fcf5cb1b49..c2142b38c31d 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -1383,36 +1383,25 @@ void tick_nohz_idle_exit(void)
- 	local_irq_enable();
- }
- 
-+static enum hrtimer_restart tick_nohz_highres_handler(struct hrtimer *timer);
-+
- /*
-  * In low-resolution mode, the tick handler must be implemented directly
-  * at the clockevent level. hrtimer can't be used instead, because its
-  * infrastructure actually relies on the tick itself as a backend in
-  * low-resolution mode (see hrtimer_run_queues()).
-  *
-- * This low-resolution handler still makes use of some hrtimer APIs meanwhile
-- * for convenience with expiration calculation and forwarding.
-+ * This low-resolution handler still reuse tick_nohz_highres_handler() since
-+ * most of the work is independent of the clockevent level.
-  */
- static void tick_nohz_lowres_handler(struct clock_event_device *dev)
- {
- 	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
--	struct pt_regs *regs = get_irq_regs();
--	ktime_t now = ktime_get();
- 
- 	dev->next_event = KTIME_MAX;
- 
--	tick_sched_do_timer(ts, now);
--	tick_sched_handle(ts, regs);
--
--	/*
--	 * In dynticks mode, tick reprogram is deferred:
--	 * - to the idle task if in dynticks-idle
--	 * - to IRQ exit if in full-dynticks.
--	 */
--	if (likely(!ts->tick_stopped)) {
--		hrtimer_forward(&ts->sched_timer, now, TICK_NSEC);
-+	if (likely(tick_nohz_highres_handler(&ts->sched_timer) == HRTIMER_RESTART))
- 		tick_program_event(hrtimer_get_expires(&ts->sched_timer), 1);
--	}
--
- }
- 
- static inline void tick_nohz_activate(struct tick_sched *ts, int mode)
-@@ -1481,10 +1470,7 @@ void tick_irq_enter(void)
- 	tick_nohz_irq_enter();
- }
- 
--/*
-- * High resolution timer specific code
-- */
--#ifdef CONFIG_HIGH_RES_TIMERS
-+#if defined CONFIG_NO_HZ_COMMON || defined CONFIG_HIGH_RES_TIMERS
- /*
-  * We rearm the timer until we get disabled by the idle code.
-  * Called with interrupts disabled.
-@@ -1519,9 +1505,7 @@ static enum hrtimer_restart tick_nohz_highres_handler(struct hrtimer *timer)
- 
- 	return HRTIMER_RESTART;
- }
--#endif /* HIGH_RES_TIMERS */
- 
--#if defined CONFIG_NO_HZ_COMMON || defined CONFIG_HIGH_RES_TIMERS
- static int sched_skew_tick;
- 
- static int __init skew_tick(char *str)
--- 
-2.34.1
+>
+> -michael
+>
 
+Thanks
+Jaime
