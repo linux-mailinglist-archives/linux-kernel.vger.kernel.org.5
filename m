@@ -2,62 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A96CC7FB8B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:57:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 954A57FB8B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:59:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344168AbjK1K5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 05:57:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49350 "EHLO
+        id S1344393AbjK1K7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 05:59:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343778AbjK1K5Q (ORCPT
+        with ESMTP id S1343778AbjK1K7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 05:57:16 -0500
+        Tue, 28 Nov 2023 05:59:06 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52556189
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:57:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8033C433C7;
-        Tue, 28 Nov 2023 10:57:22 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD655D6
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:59:12 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 849A4C433C8;
+        Tue, 28 Nov 2023 10:59:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701169043;
-        bh=YneTLXB1mmfGNl3d0q1JaknL6gIyvE7m5Usmdw11fFk=;
+        s=k20201202; t=1701169152;
+        bh=pQ6FVnUKsfGHsu8sriIae2vcxGsRE9QkkGxs13ICyCE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AD6s+RD+HhYX03u/xLI9X4ZvmMgS7DysGh94q+tZS3O1cAf+OBIcDcpYBkIiwr53Y
-         EVosBvet6LVHec5YJbCJHj6TjLkISwR64UUZHY5DGWLvU6UmbP75XfBvyCpJeC86tP
-         UjJTzPU8atfgF0MRQNDTRY2GoqpUGc+B7197fW3MtQEoi5ELJYg+R36Xd8rg075hPo
-         1wFeEgfjh2L/KmdVr8uNtrPYuF78BwN0I1lnqoZocOYReov7Le4/gtEzelwIKcQDoq
-         vY4rpwYWwcfiZQFQ1z0EgxF0xz5GNFoS8xetv+l/QEwPod/iNzgf6tvqUz+I10VQX9
-         NKQe2+aV88aNA==
-Received: from johan by xi.lan with local (Exim 4.96.2)
-        (envelope-from <johan@kernel.org>)
-        id 1r7vmo-0005v9-2v;
-        Tue, 28 Nov 2023 11:57:51 +0100
-Date:   Tue, 28 Nov 2023 11:57:50 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-Cc:     Andy Gross <agross@kernel.org>,
+        b=eczUyTMRxEbZgZ3/Aw6I3YRgAF/C6VV0NDmyb7s6k5GencSI9RrbrDLCW9ZbK0FEt
+         pMrlmw2Bjy8kc+9IApv5/S/MJakn78cgvlmoAhveTj1YB8GvRVd4x1+w2rS7qGnLS3
+         L41ie3FrFViEpengiUXm+RvvcQPKViu5GKUSvP2EfkRO2k53AFdiWB5wthhVHnEqPJ
+         tvR6PSCqbfITTwOuw+7AYsQ3dg+YyjVXfx3RI5b+j5nh4GedDVUQGqO6cy5ZPEYfef
+         gcU6oUkOcFeHDVzre5OvMW1yzCCHVNpcqIdWOb7TrXK/8D90xv9YEKjzDrZnDAsrEt
+         XtI2tZXgRXexA==
+Date:   Tue, 28 Nov 2023 16:29:02 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Can Guo <quic_cang@quicinc.com>
+Cc:     bvanassche@acm.org, adrian.hunter@intel.com, beanhuo@micron.com,
+        avri.altman@wdc.com, junwoo80.lee@samsung.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, quic_wcheng@quicinc.com,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_ppratap@quicinc.com, quic_jackp@quicinc.com
-Subject: Re: [PATCH 1/6] dt-bindings: usb: dwc3: Clean up hs_phy_irq in
- bindings
-Message-ID: <ZWXHrvUDnF2dMk6r@hovoldconsulting.com>
-References: <20231122191335.3058-1-quic_kriskura@quicinc.com>
- <ZV9dYpTYRXn63tXe@hovoldconsulting.com>
- <1192d91f-11bf-44af-953a-14e08e2b6ca8@quicinc.com>
- <ZWCpGdJRexnk98IN@hovoldconsulting.com>
- <004ddc69-1566-4de4-b260-0fca96a9395f@quicinc.com>
- <ZWW_FOAKp95Cf9vN@hovoldconsulting.com>
- <18965bb9-7afa-4892-8b71-981ba29d2cd4@quicinc.com>
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 07/10] scsi: ufs: ufs-qcom: Set initial PHY gear to
+ max HS gear for HW ver 5 and newer
+Message-ID: <20231128105902.GP3088@thinkpad>
+References: <1700729190-17268-1-git-send-email-quic_cang@quicinc.com>
+ <1700729190-17268-8-git-send-email-quic_cang@quicinc.com>
+ <20231128060046.GH3088@thinkpad>
+ <d198f09b-6b5f-42de-9331-30c6d2a12b67@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <18965bb9-7afa-4892-8b71-981ba29d2cd4@quicinc.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d198f09b-6b5f-42de-9331-30c6d2a12b67@quicinc.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -68,69 +60,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 04:02:53PM +0530, Krishna Kurapati PSSNV wrote:
-
-> >    >> My opinion would be to keep the power_event irq as mandatory and not to
-> >> include the hs_phy_irq.
+On Tue, Nov 28, 2023 at 03:58:42PM +0800, Can Guo wrote:
+> Hi Mani,
+> 
+> On 11/28/2023 2:00 PM, Manivannan Sadhasivam wrote:
+> > On Thu, Nov 23, 2023 at 12:46:27AM -0800, Can Guo wrote:
+> > > Set the initial PHY gear to max HS gear for hosts with HW ver 5 and newer.
+> > > 
 > > 
-> > Ok, but you still need to explain why dropping hs_phy_irq is correct.
+> > MAX_GEAR will be used for hosts with hw_ver.major >= 4
+> 
+> I put it > 5 because I am not intent to touch any old targets which has
+> proven working fine with starting with PHY gear HS_G2. If I put it >= 4,
+> there would be many targets impacted by this change. I need to go back and
+> test those platforms (HW ver == 4).
+> 
+
+This assumption will make the code hard to maintain. I think if you happen to
+test it on atleast a couple of old targets it should be good since I do not see
+how others can fail.
+
+- Mani
+
+> Thanks,
+> Can Guo.
+> 
 > > 
-> > Until there's a clear answer to that, it seems we need to include it.
-> 
-> Sure, I agree with you. It should describe what hardware is capable of, 
-> not what we choose to add in driver code. In that sense we can add the 
-> hs_phy_irq to all targets.
-> 
-> In my next revision, I can do the following:
-> 
-> 	- anyOf:
-> 	  - items:
-> 	    - const: qusb2_phy
-> 	  - items:
-> 	    - const: dp_hs_phy_irq
-> 	    - const: dm_hs_phy_irq
-> 	- const: hs_phy_irq
-> 	- const: pwr_event
-> 	- const: ss_phy_irq	(optional)
-> 
-> A modified version of your suggestion should help cover all cases and 
-> describe all DT's perfectly.
+> > > This patch is not changing any functionalities or logic but only a
+> > > preparation patch for the next patch in this series.
+> > > 
+> > > Signed-off-by: Can Guo <quic_cang@quicinc.com>
+> > > ---
+> > >   drivers/ufs/host/ufs-qcom.c | 21 +++++++++++++++------
+> > >   1 file changed, 15 insertions(+), 6 deletions(-)
+> > > 
+> > > diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> > > index 6756f8d..7bbccf4 100644
+> > > --- a/drivers/ufs/host/ufs-qcom.c
+> > > +++ b/drivers/ufs/host/ufs-qcom.c
+> > > @@ -1067,6 +1067,20 @@ static void ufs_qcom_advertise_quirks(struct ufs_hba *hba)
+> > >   		hba->quirks |= UFSHCD_QUIRK_REINIT_AFTER_MAX_GEAR_SWITCH;
+> > >   }
+> > > +static void ufs_qcom_set_phy_gear(struct ufs_qcom_host *host)
+> > > +{
+> > > +	struct ufs_host_params *host_params = &host->host_params;
+> > > +
+> > > +	host->phy_gear = host_params->hs_tx_gear;
+> > > +
+> > > +	/*
+> > > +	 * Power up the PHY using the minimum supported gear (UFS_HS_G2).
+> > > +	 * Switching to max gear will be performed during reinit if supported.
+> > 
+> > You need to reword this comment too.
+> > 
+> > > +	 */
+> > > +	if (host->hw_ver.major < 0x5)
+> > 
+> > As I mentioned above, MAX_GEAR will be used if hw_ver.major is >=4 in
+> > ufs_qcom_get_hs_gear(). So this check should be (< 0x4).
+> > 
+> > - Mani
+> > 
+> > > +		host->phy_gear = UFS_HS_G2;
+> > > +}
+> > > +
+> > >   static void ufs_qcom_set_host_params(struct ufs_hba *hba)
+> > >   {
+> > >   	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+> > > @@ -1303,6 +1317,7 @@ static int ufs_qcom_init(struct ufs_hba *hba)
+> > >   	ufs_qcom_set_caps(hba);
+> > >   	ufs_qcom_advertise_quirks(hba);
+> > >   	ufs_qcom_set_host_params(hba);
+> > > +	ufs_qcom_set_phy_gear(host);
+> > >   	err = ufs_qcom_ice_init(host);
+> > >   	if (err)
+> > > @@ -1320,12 +1335,6 @@ static int ufs_qcom_init(struct ufs_hba *hba)
+> > >   		dev_warn(dev, "%s: failed to configure the testbus %d\n",
+> > >   				__func__, err);
+> > > -	/*
+> > > -	 * Power up the PHY using the minimum supported gear (UFS_HS_G2).
+> > > -	 * Switching to max gear will be performed during reinit if supported.
+> > > -	 */
+> > > -	host->phy_gear = UFS_HS_G2;
+> > > -
+> > >   	return 0;
+> > >   out_variant_clear:
+> > > -- 
+> > > 2.7.4
+> > > 
+> > 
 
-It may be better to spell out the permutations. Especially since there
-are no platforms with both qusb2_phy and dp/dm as I thought when
-mentioning the above. Using anyOf also makes it hard to specify
-min/maxItems as you'll need to do.
-
-So back to my initial proposal, with a slight modification moving
-pwr_event first (e.g. as it is not a wakeup interrupt):
-
-qusb2-:
-
-	- const: pwr_event
-	- const: qusb2_phy
-	- const: ss_phy_irq	(optional)
-
-qusb2:
-
-	- const: pwr_event
-	- const: hs_phy_irq
-	- const: qusb2_phy
-	- const: ss_phy_irq	(optional)
-
-femto-:
-	- const: pwr_event
-	- const: dp_hs_phy_irq
-	- const: dm_hs_phy_irq
-	- const: ss_phy_irq	(optional)
-
-femto:
-	- const: pwr_event
-	- const: hs_phy_irq
-	- const: dp_hs_phy_irq
-	- const: dm_hs_phy_irq
-	- const: ss_phy_irq	(optional)
-
-That ss_phy_irq is optional would be expressed as minItems being one
-less than maxItems for each permutation.
-
-Johan
+-- 
+மணிவண்ணன் சதாசிவம்
