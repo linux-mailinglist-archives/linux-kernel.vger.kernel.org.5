@@ -2,139 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3595D7FB8A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:53:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DDDF7FB8AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:55:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344054AbjK1KxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 05:53:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32992 "EHLO
+        id S1344178AbjK1KzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 05:55:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343995AbjK1KxP (ORCPT
+        with ESMTP id S1344042AbjK1KzK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 05:53:15 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F53189
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:53:22 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701168800;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=b+nmSGDUEGGbpS4OWXh0DOTLqhAcww6OfuIQLAIqmSk=;
-        b=fHlZqCBdJXpCeUuNADw2Y84vgaVgAH+Z4kKjzUmk+9zW1l9XJjgLVK4ovgOTTGMQxwekNI
-        FpS8iuVbWQbbYmjvLUdEMuGklceDgIwQg7L/nG6+yKtJ9PibTiuWFb8LCdgNAR1YyG0Iql
-        4S8gbjpOB+ke2l21VnQkFQ7qWiZrlINghV/DZsoTNFh/EIkYi+djv4Ry1n+F0EPebK0OMi
-        cLpoaNE/tuzjgs0SbQGT7t3a4GmdL9QLo84KJESv89zpQQnYB5czrK+rB8OFQeqVCUqoyW
-        m2qlXuUzihqtNqLp2eUfWEdOUAjvygGMGs6C5m/SbZDNmyYwUh3ZSIGTvv22bQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701168800;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=b+nmSGDUEGGbpS4OWXh0DOTLqhAcww6OfuIQLAIqmSk=;
-        b=BfRS4p2OwGfCsN9elxynun7sb8wovaOBqBu8g8+QVG8f+qwRNSKESsGNnr9IJqr8twaRc1
-        tubk7Mo6hW8tMNAA==
-To:     paulmck@kernel.org, Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ankur Arora <ankur.a.arora@oracle.com>,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        torvalds@linux-foundation.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
-        bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
-        bristot@kernel.org, mathieu.desnoyers@efficios.com,
-        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
-        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-        krypton@ulrich-teichert.org, David.Laight@aculab.com,
-        richard@nod.at, mjguzik@gmail.com,
-        Simon Horman <horms@verge.net.au>,
-        Julian Anastasov <ja@ssi.bg>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [RFC PATCH 47/86] rcu: select PREEMPT_RCU if PREEMPT
-In-Reply-To: <e939c924-1dfa-4a6a-9309-2430f19467f5@paulmck-laptop>
-Date:   Tue, 28 Nov 2023 11:53:19 +0100
-Message-ID: <87wmu2ywrk.ffs@tglx>
+        Tue, 28 Nov 2023 05:55:10 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE89B182
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:55:16 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B03AFC433C7;
+        Tue, 28 Nov 2023 10:55:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701168916;
+        bh=xaI8DgSJpCKxnGj0OgbufF5SQT3bV5304U6aBzNRRtU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VXtbiMX+CCuZfqiD8VznplAdiicAVzfiX3wkUpZKwQM9w1U6b5Iwr1vcwOZvy/HcJ
+         JbM+hep59s/yueEpV2COfKs/6Od67nUg/hGKAoEc2A4wohIB1PJzAUl4/+NI01GVvt
+         wpO/5Dhe4G279cAtXNQPcHKvT1tUlqhahkXUU7DzhMTy4G9SmnzmT/TW+UnKpFbily
+         7euOw8ign1svEO5l9EJmYb0kL5n5ZfF6O88DxP1webG52W1wu6g8zG/ALTB8JkfeA+
+         igdkKZzIGCBcQaNFPikaydeyV9Zmx8zqWq3KX/+TpGIQ1FvEnj86+jXcQ+/jboyRLO
+         wXp+ZOJwygbig==
+Date:   Tue, 28 Nov 2023 16:25:06 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Can Guo <quic_cang@quicinc.com>
+Cc:     bvanassche@acm.org, adrian.hunter@intel.com, beanhuo@micron.com,
+        avri.altman@wdc.com, junwoo80.lee@samsung.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 06/10] scsi: ufs: ufs-qcom: Limit HS-G5 Rate-A to
+ hosts with HW version 5
+Message-ID: <20231128105506.GO3088@thinkpad>
+References: <1700729190-17268-1-git-send-email-quic_cang@quicinc.com>
+ <1700729190-17268-7-git-send-email-quic_cang@quicinc.com>
+ <20231128055520.GG3088@thinkpad>
+ <4648b6a0-92cb-4411-9b58-03219962505d@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4648b6a0-92cb-4411-9b58-03219962505d@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paul!
+On Tue, Nov 28, 2023 at 03:48:02PM +0800, Can Guo wrote:
+> Hi Mani,
+> 
+> On 11/28/2023 1:55 PM, Manivannan Sadhasivam wrote:
+> > On Thu, Nov 23, 2023 at 12:46:26AM -0800, Can Guo wrote:
+> > > Qcom UFS hosts, with HW ver 5, can only support up to HS-G5 Rate-A due to
+> > > HW limitations. If the HS-G5 PHY gear is used, update host_params->hs_rate
+> > > to Rate-A, so that the subsequent power mode changes shall stick to Rate-A.
+> > > 
+> > > Signed-off-by: Can Guo <quic_cang@quicinc.com>
+> > 
+> > Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > 
+> > One question below...
+> > 
+> > > ---
+> > >   drivers/ufs/host/ufs-qcom.c | 18 +++++++++++++++++-
+> > >   1 file changed, 17 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> > > index 9613ad9..6756f8d 100644
+> > > --- a/drivers/ufs/host/ufs-qcom.c
+> > > +++ b/drivers/ufs/host/ufs-qcom.c
+> > > @@ -442,9 +442,25 @@ static u32 ufs_qcom_get_hs_gear(struct ufs_hba *hba)
+> > >   static int ufs_qcom_power_up_sequence(struct ufs_hba *hba)
+> > >   {
+> > >   	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+> > > +	struct ufs_host_params *host_params = &host->host_params;
+> > >   	struct phy *phy = host->generic_phy;
+> > > +	enum phy_mode mode;
+> > >   	int ret;
+> > > +	/*
+> > > +	 * HW ver 5 can only support up to HS-G5 Rate-A due to HW limitations.
+> > > +	 * If the HS-G5 PHY gear is used, update host_params->hs_rate to Rate-A,
+> > > +	 * so that the subsequent power mode change shall stick to Rate-A.
+> > > +	 */
+> > > +	if (host->hw_ver.major == 0x5) {
+> > > +		if (host->phy_gear == UFS_HS_G5)
+> > > +			host_params->hs_rate = PA_HS_MODE_A;
+> > > +		else
+> > > +			host_params->hs_rate = PA_HS_MODE_B;
+> > 
+> > Is this 'else' part really needed? Since there wouldn't be any 2nd init, I think
+> > we can skip that.
+> 
+> We need it because, even there is only one init, if a UFS3.1 device is
+> attached, phy_gear is given as UFS_HS_G4 in ufs_qcom_set_phy_gear(), hence
+> we need to put the UFS at HS-G4 Rate B, not Rate A.
+> 
 
-On Tue, Nov 21 2023 at 07:19, Paul E. McKenney wrote:
-> On Tue, Nov 21, 2023 at 10:00:59AM -0500, Steven Rostedt wrote:
->> Right now, the use of cond_resched() is basically a whack-a-mole game where
->> we need to whack all the mole loops with the cond_resched() hammer. As
->> Thomas said, this is backwards. It makes more sense to just not preempt in
->> areas that can cause pain (like holding a mutex or in an RCU critical
->> section), but still have the general kernel be fully preemptable.
->
-> Which is quite true, but that whack-a-mole game can be ended without
-> getting rid of build-time selection of the preemption model.  Also,
-> that whack-a-mole game can be ended without eliminating all calls to
-> cond_resched().
+But the default hs_rate is PA_HS_MODE_B only and the else condition would be not
+needed for the 1st init.
 
-Which calls to cond_resched() should not be eliminated?
+- Mani
 
-They all suck and keeping some of them is just counterproductive as
-again people will sprinkle them all over the place for the very wrong
-reasons.
+> Thanks,
+> Can Guo.
+> 
+> > 
+> > - Mani
+> > 
+> > > +	}
+> > > +
+> > > +	mode = host_params->hs_rate == PA_HS_MODE_B ? PHY_MODE_UFS_HS_B : PHY_MODE_UFS_HS_A;
+> > > +
+> > >   	/* Reset UFS Host Controller and PHY */
+> > >   	ret = ufs_qcom_host_reset(hba);
+> > >   	if (ret)
+> > > @@ -459,7 +475,7 @@ static int ufs_qcom_power_up_sequence(struct ufs_hba *hba)
+> > >   		return ret;
+> > >   	}
+> > > -	phy_set_mode_ext(phy, PHY_MODE_UFS_HS_B, host->phy_gear);
+> > > +	phy_set_mode_ext(phy, mode, host->phy_gear);
+> > >   	/* power on phy - start serdes and phy's power and clocks */
+> > >   	ret = phy_power_on(phy);
+> > > -- 
+> > > 2.7.4
+> > > 
+> > 
 
-> Additionally, if the end goal is to be fully preemptible as in eventually
-> eliminating lazy preemption, you have a lot more convincing to do.
-
-That's absolutely not the case. Even RT uses the lazy mode to prevent
-overeager preemption for non RT tasks.
-
-The whole point of the exercise is to keep the kernel always fully
-preemptible, but only enforce the immediate preemption at the next
-possible preemption point when necessary.
-
-The decision when it is necessary is made by the scheduler and not
-delegated to the whim of cond/might_resched() placement.
-
-That is serving both worlds best IMO:
-
-  1) LAZY preemption prevents the negative side effects of overeager
-     preemption, aka. lock contention and pointless context switching.
-
-     The whole thing behaves like a NONE kernel unless there are
-     real-time tasks or a task did not comply to the lazy request within
-     a given time.
-
-  2) It does not prevent the scheduler from making decisions to preempt
-     at the next possible preemption point in order to get some
-     important computation on the CPU.
-
-     A NONE kernel sucks vs. any sporadic [real-time] task. Just run
-     NONE and watch the latencies. The latencies are determined by the
-     interrupted context, the placement of the cond_resched() call and
-     the length of the loop which is running.
-
-     People have complained about that and the only way out for them is
-     to switch to VOLUNTARY or FULL preemption and thereby paying the
-     price for overeager preemption.
-
-     A price which you don't want to pay for good reasons but at the
-     same time you care about latencies in some aspects and the only
-     answer you have for that is cond_resched() or similar which is not
-     an answer at all.
-
-  3) Looking at the initial problem Ankur was trying to solve there is
-     absolutely no acceptable solution to solve that unless you think
-     that the semantically invers 'allow_preempt()/disallow_preempt()'
-     is anywhere near acceptable.
-
-Thanks,
-
-        tglx
+-- 
+மணிவண்ணன் சதாசிவம்
