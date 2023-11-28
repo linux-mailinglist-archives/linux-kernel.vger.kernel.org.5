@@ -2,105 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 765187FCA0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:56:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3AAB7FCA0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:59:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbjK1W4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 17:56:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44256 "EHLO
+        id S1344006AbjK1W7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 17:59:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjK1W43 (ORCPT
+        with ESMTP id S229526AbjK1W7h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 17:56:29 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D146A8F
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 14:56:35 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50bc4fe8158so72177e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 14:56:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701212194; x=1701816994; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3xuLFYcf0TNvhnaNMn05DlMPThucmO+PUnWnxmCggZI=;
-        b=tZGFT/HbWTpHlL75cnWG0tt0A1z3WRQZ/iZFFMk35F/smV9VEHedJ5mruvYrsLjVE7
-         9OaWddlsWpuYLtn/TA4/VYcmU0hEf6stJ6GSeJjFwvtH9VQdpRc/OFemWcGHl6OlHIdW
-         VCktzHCfrB+kDYPwLJmmMwUdKZaU99YWvAYr/0KqIYJgZsrSpjJfX7CZjRgwsRD3v4n7
-         p5Yu2tMvdQfh3eoq+zzG4qYrtRzek2KykG/2eJ6pyB/rV7kG71/VVqfiwr1dmkax3SHN
-         R1AjFzmyETgqXlmrJxNG3tiNDdYz1iSEfQ0vMGVEIS6FS7vOUWVvfDJi17jOu5oSIXYt
-         8OTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701212194; x=1701816994;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3xuLFYcf0TNvhnaNMn05DlMPThucmO+PUnWnxmCggZI=;
-        b=mQdEcJaoekm8rBPL9Y69DTWJG4MCU1Svl8PofFQb6zKF/5zU73P8aHnJGxlhb8ESNF
-         WiiV5XMw953+nYvPWHFVFClqaCj4dvv5O5oNBiQPRb7ac9Bl1csN6LvMOBtPZ7mdMUpB
-         RuUKJ055VRmwDhaT41mzUGe+W1I502y6GQhw88S9uUW0EO1EaXUrypoCGTZyeFlua/9D
-         4bSoKoo7Mz76hJeFL85qqZ4LQm24VEChO3lRPYw/vUrM0gGkJmeULRe0Q31fvUFHrfEN
-         FjUYr2/S3koO6PF/cb2EOa7yhaR+RxMY+DoLnK5NwwqPiUpxJGWZnhm2XV7l+qSjK3tS
-         4S1g==
-X-Gm-Message-State: AOJu0YyohNSweTwcL6e4i8wZb30/f20do/sFL7IFUmFCUakXg+dbku/k
-        oS9ow+4AQnQ1rgKjWUr1z6Hfyw==
-X-Google-Smtp-Source: AGHT+IHsR0VwQA4IHasXgAGq/EHOQVJtBo8gaHlxH/zBpSKVYWB8W7dA5ok7G4m3yTpFtwdPU9zyvA==
-X-Received: by 2002:ac2:4acc:0:b0:50b:c062:92e1 with SMTP id m12-20020ac24acc000000b0050bc06292e1mr1513725lfp.6.1701212194002;
-        Tue, 28 Nov 2023 14:56:34 -0800 (PST)
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id z20-20020a056512309400b0050aa9cfc238sm1963698lfd.89.2023.11.28.14.56.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 14:56:33 -0800 (PST)
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 28 Nov 2023 23:56:32 +0100
-Subject: [PATCH] iio: proximity: irsd200: Drop unused include
+        Tue, 28 Nov 2023 17:59:37 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DEDA283;
+        Tue, 28 Nov 2023 14:59:43 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D85752F4;
+        Tue, 28 Nov 2023 15:00:30 -0800 (PST)
+Received: from [10.57.71.132] (unknown [10.57.71.132])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C33433F6C4;
+        Tue, 28 Nov 2023 14:59:35 -0800 (PST)
+Message-ID: <79c397ee-b71b-470e-9184-401b4b96a0d2@arm.com>
+Date:   Tue, 28 Nov 2023 22:59:33 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231128-descriptors-iio-v1-1-da1e94755db6@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAB9wZmUC/x3MQQqAIBBA0avErBNSw6KrRAvTqWaTMhMRSHdPW
- r7F/wUEmVBgagow3iSUzgrdNhAOf+6oKFaD6YzV2owqogSmfCUWRZSUGzpnPK69swPUKjNu9Pz
- HeXnfD9ntx/FhAAAA
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Waqar Hameed <waqar.hameed@axis.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 06/16] iommu/dma: use page allocation function provided by
+ iommu-pages.h
+Content-Language: en-GB
+To:     Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc:     akpm@linux-foundation.org, alex.williamson@redhat.com,
+        alim.akhtar@samsung.com, alyssa@rosenzweig.io,
+        asahi@lists.linux.dev, baolu.lu@linux.intel.com,
+        bhelgaas@google.com, cgroups@vger.kernel.org, corbet@lwn.net,
+        david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org,
+        heiko@sntech.de, iommu@lists.linux.dev, jasowang@redhat.com,
+        jernej.skrabec@gmail.com, jgg@ziepe.ca, jonathanh@nvidia.com,
+        joro@8bytes.org, kevin.tian@intel.com,
+        krzysztof.kozlowski@linaro.org, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
+        marcan@marcan.st, mhiramat@kernel.org, mst@redhat.com,
+        m.szyprowski@samsung.com, netdev@vger.kernel.org,
+        paulmck@kernel.org, rdunlap@infradead.org, samuel@sholland.org,
+        suravee.suthikulpanit@amd.com, sven@svenpeter.dev,
+        thierry.reding@gmail.com, tj@kernel.org, tomas.mudrunka@gmail.com,
+        vdumpa@nvidia.com, virtualization@lists.linux.dev, wens@csie.org,
+        will@kernel.org, yu-cheng.yu@intel.com
+References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
+ <20231128204938.1453583-7-pasha.tatashin@soleen.com>
+ <d99e0d4a-94a9-482b-b5b5-833cba518b86@arm.com>
+ <CA+CK2bDswtrqiOMt3+0LBb0+7nJY9aBpzZdsmrWRzy9WxBqKEg@mail.gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <CA+CK2bDswtrqiOMt3+0LBb0+7nJY9aBpzZdsmrWRzy9WxBqKEg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver includes the legacy GPIO header <linux/gpio.h> but doesn't
-use any symbols from it. Drop it.
+On 2023-11-28 10:50 pm, Pasha Tatashin wrote:
+> On Tue, Nov 28, 2023 at 5:34 PM Robin Murphy <robin.murphy@arm.com> wrote:
+>>
+>> On 2023-11-28 8:49 pm, Pasha Tatashin wrote:
+>>> Convert iommu/dma-iommu.c to use the new page allocation functions
+>>> provided in iommu-pages.h.
+>>
+>> These have nothing to do with IOMMU pagetables, they are DMA buffers and
+>> they belong to whoever called the corresponding dma_alloc_* function.
+> 
+> Hi Robin,
+> 
+> This is true, however, we want to account and observe the pages
+> allocated by IOMMU subsystem for DMA buffers, as they are essentially
+> unmovable locked pages. Should we separate IOMMU memory from KVM
+> memory all together and add another field to /proc/meminfo, something
+> like "iommu -> iommu pagetable and dma memory", or do we want to
+> export DMA memory separately from IOMMU page tables?
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- drivers/iio/proximity/irsd200.c | 1 -
- 1 file changed, 1 deletion(-)
+These are not allocated by "the IOMMU subsystem", they are allocated by 
+the DMA API. Even if you want to claim that a driver pinning memory via 
+iommu_dma_ops is somehow different from the same driver pinning the same 
+amount of memory via dma-direct when iommu.passthrough=1, it's still 
+nonsense because you're failing to account the pages which iommu_dma_ops 
+gets from CMA, dma_common_alloc_pages(), dynamic SWIOTLB, the various 
+pools, and so on.
 
-diff --git a/drivers/iio/proximity/irsd200.c b/drivers/iio/proximity/irsd200.c
-index bdff91f6b1a3..323ac6dac90e 100644
---- a/drivers/iio/proximity/irsd200.c
-+++ b/drivers/iio/proximity/irsd200.c
-@@ -7,7 +7,6 @@
- 
- #include <asm/unaligned.h>
- #include <linux/bitfield.h>
--#include <linux/gpio.h>
- #include <linux/i2c.h>
- #include <linux/module.h>
- #include <linux/regmap.h>
+Thanks,
+Robin.
 
----
-base-commit: 05b5bdf18a6ba2dd9db82b6296d4edd6465b6210
-change-id: 20231128-descriptors-iio-67062aeb4637
-
-Best regards,
--- 
-Linus Walleij <linus.walleij@linaro.org>
-
+> Since, I included DMA memory, I specifically removed mentioning of
+> IOMMU page tables in the most of places, and only report it as IOMMU
+> memory. However, since it is still bundled together with SecPageTables
+> it can be confusing.
+> 
+> Pasha
