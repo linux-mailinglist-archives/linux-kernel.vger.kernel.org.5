@@ -2,450 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3728D7FB230
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 07:56:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62AD47FB233
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 07:57:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343633AbjK1G4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 01:56:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
+        id S1343680AbjK1G5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 01:57:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbjK1G4I (ORCPT
+        with ESMTP id S231947AbjK1G5D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 01:56:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9192E1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 22:56:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701154573;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ch3OE1ozu2gGY8h80hPSM9UE3L6wgjuXbkMspcLV54s=;
-        b=Iqi/N3CjIZd31ZtGlu+4Jyb793TBIb3mlpFdCX6bg48mlj9w0ceRQHxKSZq5sMbyDSvJ1j
-        IxD3kUtHYlRzyTfIa0hf9DbPU+k2fKEPHT6eBJyf59Z+vd8XARRpAinHJV1Tw3BrRphJ9Y
-        kJc7oceNgtvUfWpTfEvrCpCU9/w4coM=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-170-YvV-6aojMyS-B6kj9mPJDQ-1; Tue, 28 Nov 2023 01:56:11 -0500
-X-MC-Unique: YvV-6aojMyS-B6kj9mPJDQ-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33303db14d9so1156475f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 22:56:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701154570; x=1701759370;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ch3OE1ozu2gGY8h80hPSM9UE3L6wgjuXbkMspcLV54s=;
-        b=s3tiSwoTNParcvzIPo21KmAsMhXIp+GdBjTeUVIU+xB5xQHzhTtuSNNOlkMVRIDrrh
-         ysWIKRc8udcApvqnme7P/Xa1x6iVpOmt469CXN4fwB3B4+VwkslxkivobOjAOOX3U7eB
-         euKonPMSrudE3Rd/TXLiTsRgOR8t7RlaPbytloMHPI32wLlv31SZRC6lZzjvaPmhxgSl
-         oHt5h/WYZnuBznn690Mx/fFKcu59w2q7yMYJjJHTm3lLWlM4+0F3e5mjznYTSvDfmwE/
-         wUvHQLHcHna4A5S9qufhXoG2U/ichTjwB8eHw5Nw5/fd1J4KZIQGIG4eXeb5VfmpREOc
-         alvA==
-X-Gm-Message-State: AOJu0Yz/pZDMHR73DnKerGKPeDo0RC3jDlUEn05BgV06OQ0kPXL/uVJ3
-        T71UxNxHfJeD24U3FJYasQjh3dwWbPY3eFEspzVCTiozB0+Kh4BYXtcTe9WZTvEx/IYS8PJkHzy
-        ApAfIHl9tjryLRE8KstqTceM/
-X-Received: by 2002:a05:6000:183:b0:332:d060:c7e2 with SMTP id p3-20020a056000018300b00332d060c7e2mr9775738wrx.3.1701154570249;
-        Mon, 27 Nov 2023 22:56:10 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFdJHZLsBu/zyS6DfoQUfP78E9xsHwlMtJuzM/aA154AvvOhwjjUdU6mZr/DsTKEzgLoV/Slw==
-X-Received: by 2002:a05:6000:183:b0:332:d060:c7e2 with SMTP id p3-20020a056000018300b00332d060c7e2mr9775719wrx.3.1701154569865;
-        Mon, 27 Nov 2023 22:56:09 -0800 (PST)
-Received: from starship ([77.137.131.4])
-        by smtp.gmail.com with ESMTPSA id o10-20020adfcf0a000000b00332cda91c85sm13950140wrj.12.2023.11.27.22.56.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 22:56:09 -0800 (PST)
-Message-ID: <98eee37ed7f4b7b9c16bccbe41737e47a116d1f1.camel@redhat.com>
-Subject: Re: [RFC 02/33] KVM: x86: Introduce KVM_CAP_APIC_ID_GROUPS
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Nicolas Saenz Julienne <nsaenz@amazon.com>, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        anelkz@amazon.com, graf@amazon.com, dwmw@amazon.co.uk,
-        jgowans@amazon.com, corbert@lwn.net, kys@microsoft.com,
-        haiyangz@microsoft.com, decui@microsoft.com, x86@kernel.org,
-        linux-doc@vger.kernel.org, Anel Orazgaliyeva <anelkz@amazon.de>
-Date:   Tue, 28 Nov 2023 08:56:07 +0200
-In-Reply-To: <20231108111806.92604-3-nsaenz@amazon.com>
-References: <20231108111806.92604-1-nsaenz@amazon.com>
-         <20231108111806.92604-3-nsaenz@amazon.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Tue, 28 Nov 2023 01:57:03 -0500
+Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB474E1;
+        Mon, 27 Nov 2023 22:57:07 -0800 (PST)
+Received: by nautica.notk.org (Postfix, from userid 108)
+        id 0C074C021; Tue, 28 Nov 2023 07:57:06 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1701154626; bh=YtDBcs5dtkWgUo26OHvbwJYV3lr3fRfrqBl2F/PC0/w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HMI2dGkFHgLFWjaUMf8uaer8VNpkdTIowJXf3uGh/i2zw4/Z9slr9TuUDp+gwZnh6
+         XznizYjUTLDH/grrsJDs3utkoRLn/+1iSkKvRS6DI2nAnehJpmamuOFmvJRE/Z73hW
+         A6szscKoE4i2mxgvt7Qv3y+t1RmhEcdz+/f6vrtHyrFFBBMbT9dEF/mkX+8xPDToWx
+         KA95zOFf0Yliyx4XG2vq+nh3Fwisks+MXR9AG7KwCt76yOzVGy0qR/PICb+mH81VD3
+         NdI3SV5RXLCA4jkj9dSIGB4rIHfGSlU0Dwa0aiBzv5ERzRKMnuceBI9VR4SOsOwx1g
+         GeIFYl+BiUAKQ==
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
+Received: from gaia (localhost [127.0.0.1])
+        by nautica.notk.org (Postfix) with ESMTPS id CFDF1C009;
+        Tue, 28 Nov 2023 07:56:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1701154624; bh=YtDBcs5dtkWgUo26OHvbwJYV3lr3fRfrqBl2F/PC0/w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o6M7FxIIUe/jHiaWMxCnhFBOBhiWkFKS13urGaHJY202myA+AiZfWsA84MzfC3UBU
+         B0ep5VRlXqTamW/NXFg0I7n8AztHaMrJKkD/j7j3fVCz7OzXI+StfcL4mlG7VpF1Jy
+         39mYKBfn3hOQDgQWxApyIO864BuEfyGC4Hj6UXOq7Xk+cqhi4C55IJIQar/5zV0yvQ
+         UmfEteoXpiirASUwimbGRaDQpGvq0yGZW4Pv+n/IcDZj28J3p3gkFd6yrpkU/HvFR2
+         CCYaSJyWVcUog+sRuXl7R4DsHJHR6GsyI7VIJlnJe2TwLEZjlC3Bw/ht25n3tqaOKI
+         D3b0xAxQGxinw==
+Received: from localhost (gaia [local])
+        by gaia (OpenSMTPD) with ESMTPA id 7fc12b28;
+        Tue, 28 Nov 2023 06:56:53 +0000 (UTC)
+Date:   Tue, 28 Nov 2023 15:56:38 +0900
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     Pavel Machek <pavel@denx.de>, youwan Wang <wangyouwan@126.com>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, allen.lkml@gmail.com, maz@kernel.org,
+        andy.shevchenko@gmail.com, brgl@bgdev.pl, wangyouwan@126.com,
+        jani.nikula@intel.com, rf@opensource.cirrus.com,
+        ilpo.jarvinen@linux.intel.com, dan.carpenter@linaro.org
+Subject: Re: [PATCH 5.10 000/187] 5.10.202-rc3 review
+Message-ID: <ZWWPJtXZ12WuTtd1@codewreck.org>
+References: <20231126154335.643804657@linuxfoundation.org>
+ <ZWUJWhOkbHlwC2YB@duo.ucw.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZWUJWhOkbHlwC2YB@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-11-08 at 11:17 +0000, Nicolas Saenz Julienne wrote:
-> From: Anel Orazgaliyeva <anelkz@amazon.de>
+Pavel Machek wrote on Mon, Nov 27, 2023 at 10:25:46PM +0100:
+> > Marc Zyngier <maz@kernel.org>
+> >     gpio: Don't fiddle with irqchips marked as immutable
+>
+> This is attempt to move people to new API, which will cause warning
+> for existing users. "chip_warn(gc, "not an immutable chip, please
+> consider fixing it!\n");". It is marked as dependency of another
+> patch, but I'm not sure we should be doing this in stable.
+
+And this actually did make some tests fail on tegra (other branch on
+this thread), it's probably safer to drop the gpio patches unless we're
+prepared to backport all the "make immutable" patches as well.
+
+(I don't see why it'd be required for dc3115e6c5d9 either but I didn't
+look all that close)
+
+
+> > youwan Wang <wangyouwan@126.com>
+> >     Bluetooth: btusb: Add date->evt_skb is NULL check
 > 
-> Introduce KVM_CAP_APIC_ID_GROUPS, this capability segments the VM's APIC
-> ids into two. The lower bits, the physical APIC id, represent the part
-> that's exposed to the guest. The higher bits, which are private to KVM,
-> groups APICs together. APICs in different groups are isolated from each
-> other, and IPIs can only be directed at APICs that share the same group
-> as its source. Furthermore, groups are only relevant to IPIs, anything
-> incoming from outside the local APIC complex: from the IOAPIC, MSIs, or
-> PV-IPIs is targeted at the default APIC group, group 0.
+> Could someone double check this? If we hit the null check, we'll be
+> returning success, but it sounds like an error case.
+
+I agree with your analysis; added Youwan and Luiz in recipients.
+
+btusb_mtk_hci_wmt_sync will return 0 if the skb is null here -- should
+this be setting err = -EINVAL or something?
+
+> > Jani Nikula <jani.nikula@intel.com>
+> >     drm/msm/dp: skip validity check for DP CTS EDID checksum
 > 
-> When routing IPIs with physical destinations, KVM will OR the source's
-> vCPU APIC group with the ICR's destination ID and use that to resolve
-> the target lAPIC. The APIC physical map is also made group aware in
-> order to speed up this process. For the sake of simplicity, the logical
-> map is not built while KVM_CAP_APIC_ID_GROUPS is in use and we defer IPI
-> routing to the slower per-vCPU scan method.
-> 
-> This capability serves as a building block to implement virtualisation
-> based security features like Hyper-V's Virtual Secure Mode (VSM). VSM
-> introduces a para-virtualised switch that allows for guest CPUs to jump
-> into a different execution context, this switches into a different CPU
-> state, lAPIC state, and memory protections. We model this in KVM by
-> using distinct kvm_vcpus for each context. Moreover, execution contexts
-> are hierarchical and its APICs are meant to remain functional even when
-> the context isn't 'scheduled in'. For example, we have to keep track of
-> timers' expirations, and interrupt execution of lesser priority contexts
-> when relevant. Hence the need to alias physical APIC ids, while keeping
-> the ability to target specific execution contexts.
+> This is preparation for future cleanup, do we need it?
 
+(For cleanup patches I'd say if it makes future backports easier it
+doesn't hurt to take them)
 
-A few general remarks on this patch (assuming that we don't go with
-the approach of a VM per VTL, in which case this patch is not needed)
-
--> This feature has to be done in the kernel because vCPUs sharing same VTL,
-   will have same APIC ID.
-   (In addition to that, APIC state is private to a VTL so each VTL
-   can even change its apic id).
-
-   Because of this KVM has to have at least some awareness of this.
-
--> APICv/AVIC should be supported with VTL eventually: 
-   This is thankfully possible by having separate physid/pid tables per VTL,
-   and will mostly just work but needs KVM awareness.
-
--> I am somewhat against reserving bits in apic id, because that will limit
-   the number of apic id bits available to userspace. Currently this is not
-   a problem but it might be in the future if for some reason the userspace
-   will want an apic id with high bits set.
-
-   But still things change, and with this being part of KVM's ABI, it might backfire.
-   A better idea IMHO is just to have 'APIC namespaces', which like say PID namespaces,
-   such as each namespace is isolated IPI wise on its own, and let each vCPU belong to
-   a one namespace.
-
-   In fact Intel's PRM has a brief mention of a 'hierarchical cluster' mode in which
-   roughly describes this situation in which there are multiple not interconnected APIC buses, 
-   and communication between them needs a 'cluster manager device'
-
-   However I don't think that we need an explicit pairs of vCPUs and VTL awareness in the kernel
-   all of this I think can be done in userspace.
-
-   TL;DR: Lets have APIC namespace. a vCPU can belong to a single namespace, and all vCPUs
-   in a namespace send IPIs to each other and know nothing about vCPUs from other namespace.
-   
-   A vCPU sending IPI to a different VTL thankfully can only do this using a hypercall,
-   and thus can be handled in the userspace.
-
-
-Overall though IMHO the approach of a VM per VTL is better unless some show stoppers show up.
-If we go with a VM per VTL, we gain APIC namespaces for free, together with AVIC support and
-such.
-
-Best regards,
-	Maxim Levitsky
-
-
-> 
-> Signed-off-by: Anel Orazgaliyeva <anelkz@amazon.de>
-> Co-developed-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
-> Signed-off-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
-> ---
->  arch/x86/include/asm/kvm_host.h |  3 ++
->  arch/x86/include/uapi/asm/kvm.h |  5 +++
->  arch/x86/kvm/lapic.c            | 59 ++++++++++++++++++++++++++++-----
->  arch/x86/kvm/lapic.h            | 33 ++++++++++++++++++
->  arch/x86/kvm/x86.c              | 15 +++++++++
->  include/uapi/linux/kvm.h        |  2 ++
->  6 files changed, 108 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index dff10051e9b6..a2f224f95404 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1298,6 +1298,9 @@ struct kvm_arch {
->  	struct rw_semaphore apicv_update_lock;
->  	unsigned long apicv_inhibit_reasons;
->  
-> +	u32 apic_id_group_mask;
-> +	u8 apic_id_group_shift;
-> +
->  	gpa_t wall_clock;
->  
->  	bool mwait_in_guest;
-> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
-> index a448d0964fc0..f73d137784d7 100644
-> --- a/arch/x86/include/uapi/asm/kvm.h
-> +++ b/arch/x86/include/uapi/asm/kvm.h
-> @@ -565,4 +565,9 @@ struct kvm_pmu_event_filter {
->  #define KVM_X86_DEFAULT_VM	0
->  #define KVM_X86_SW_PROTECTED_VM	1
->  
-> +/* for KVM_SET_APIC_ID_GROUPS */
-> +struct kvm_apic_id_groups {
-> +	__u8 n_bits; /* nr of bits used to represent group in the APIC ID */
-> +};
-> +
->  #endif /* _ASM_X86_KVM_H */
-> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> index 3e977dbbf993..f55d216cb2a0 100644
-> --- a/arch/x86/kvm/lapic.c
-> +++ b/arch/x86/kvm/lapic.c
-> @@ -141,7 +141,7 @@ static inline int apic_enabled(struct kvm_lapic *apic)
->  
->  static inline u32 kvm_x2apic_id(struct kvm_lapic *apic)
->  {
-> -	return apic->vcpu->vcpu_id;
-> +	return kvm_apic_id(apic->vcpu);
->  }
->  
->  static bool kvm_can_post_timer_interrupt(struct kvm_vcpu *vcpu)
-> @@ -219,8 +219,8 @@ static int kvm_recalculate_phys_map(struct kvm_apic_map *new,
->  				    bool *xapic_id_mismatch)
->  {
->  	struct kvm_lapic *apic = vcpu->arch.apic;
-> -	u32 x2apic_id = kvm_x2apic_id(apic);
-> -	u32 xapic_id = kvm_xapic_id(apic);
-> +	u32 x2apic_id = kvm_apic_id_and_group(vcpu);
-> +	u32 xapic_id = kvm_apic_id_and_group(vcpu);
->  	u32 physical_id;
->  
->  	/*
-> @@ -299,6 +299,13 @@ static void kvm_recalculate_logical_map(struct kvm_apic_map *new,
->  	u16 mask;
->  	u32 ldr;
->  
-> +	/*
-> +	 * Using maps for logical destinations when KVM_CAP_APIC_ID_GRUPS is in
-> +	 * use isn't supported.
-> +	 */
-> +	if (kvm_apic_group(vcpu))
-> +		new->logical_mode = KVM_APIC_MODE_MAP_DISABLED;
-> +
->  	if (new->logical_mode == KVM_APIC_MODE_MAP_DISABLED)
->  		return;
->  
-> @@ -370,6 +377,25 @@ enum {
->  	DIRTY
->  };
->  
-> +int kvm_vm_ioctl_set_apic_id_groups(struct kvm *kvm,
-> +				    struct kvm_apic_id_groups *groups)
-> +{
-> +	u8 n_bits = groups->n_bits;
-> +
-> +	if (n_bits > 32)
-> +		return -EINVAL;
-> +
-> +	kvm->arch.apic_id_group_mask = n_bits ? GENMASK(31, 32 - n_bits): 0;
-> +	/*
-> +	 * Bitshifts >= than the width of the type are UD, so set the
-> +	 * apic group shift to 0 when n_bits == 0. The group mask above will
-> +	 * clear the APIC ID, so group querying functions will return the
-> +	 * correct value.
-> +	 */
-> +	kvm->arch.apic_id_group_shift = n_bits ? 32 - n_bits : 0;
-> +	return 0;
-> +}
-> +
->  void kvm_recalculate_apic_map(struct kvm *kvm)
->  {
->  	struct kvm_apic_map *new, *old = NULL;
-> @@ -414,7 +440,7 @@ void kvm_recalculate_apic_map(struct kvm *kvm)
->  
->  	kvm_for_each_vcpu(i, vcpu, kvm)
->  		if (kvm_apic_present(vcpu))
-> -			max_id = max(max_id, kvm_x2apic_id(vcpu->arch.apic));
-> +			max_id = max(max_id, kvm_apic_id_and_group(vcpu));
->  
->  	new = kvzalloc(sizeof(struct kvm_apic_map) +
->  	                   sizeof(struct kvm_lapic *) * ((u64)max_id + 1),
-> @@ -525,7 +551,7 @@ static inline void kvm_apic_set_x2apic_id(struct kvm_lapic *apic, u32 id)
->  {
->  	u32 ldr = kvm_apic_calc_x2apic_ldr(id);
->  
-> -	WARN_ON_ONCE(id != apic->vcpu->vcpu_id);
-> +	WARN_ON_ONCE(id != kvm_apic_id(apic->vcpu));
->  
->  	kvm_lapic_set_reg(apic, APIC_ID, id);
->  	kvm_lapic_set_reg(apic, APIC_LDR, ldr);
-> @@ -1067,6 +1093,17 @@ bool kvm_apic_match_dest(struct kvm_vcpu *vcpu, struct kvm_lapic *source,
->  	struct kvm_lapic *target = vcpu->arch.apic;
->  	u32 mda = kvm_apic_mda(vcpu, dest, source, target);
->  
-> +	/*
-> +	 * Make sure vCPUs belong to the same APIC group, it's not possible
-> +	 * to send interrupts across groups.
-> +	 *
-> +	 * Non-IPIs and PV-IPIs can only be injected into the default APIC
-> +	 * group (group 0).
-> +	 */
-> +	if ((source && !kvm_match_apic_group(source->vcpu, vcpu)) ||
-> +	    kvm_apic_group(vcpu))
-> +		return false;
-> +
->  	ASSERT(target);
->  	switch (shorthand) {
->  	case APIC_DEST_NOSHORT:
-> @@ -1518,6 +1555,10 @@ void kvm_apic_send_ipi(struct kvm_lapic *apic, u32 icr_low, u32 icr_high)
->  	else
->  		irq.dest_id = GET_XAPIC_DEST_FIELD(icr_high);
->  
-> +	if (irq.dest_mode == APIC_DEST_PHYSICAL)
-> +		kvm_apic_id_set_group(apic->vcpu->kvm,
-> +				      kvm_apic_group(apic->vcpu), &irq.dest_id);
-> +
->  	trace_kvm_apic_ipi(icr_low, irq.dest_id);
->  
->  	kvm_irq_delivery_to_apic(apic->vcpu->kvm, apic, &irq, NULL);
-> @@ -2541,7 +2582,7 @@ void kvm_lapic_set_base(struct kvm_vcpu *vcpu, u64 value)
->  	/* update jump label if enable bit changes */
->  	if ((old_value ^ value) & MSR_IA32_APICBASE_ENABLE) {
->  		if (value & MSR_IA32_APICBASE_ENABLE) {
-> -			kvm_apic_set_xapic_id(apic, vcpu->vcpu_id);
-> +			kvm_apic_set_xapic_id(apic, kvm_apic_id(vcpu));
->  			static_branch_slow_dec_deferred(&apic_hw_disabled);
->  			/* Check if there are APF page ready requests pending */
->  			kvm_make_request(KVM_REQ_APF_READY, vcpu);
-> @@ -2553,9 +2594,9 @@ void kvm_lapic_set_base(struct kvm_vcpu *vcpu, u64 value)
->  
->  	if ((old_value ^ value) & X2APIC_ENABLE) {
->  		if (value & X2APIC_ENABLE)
-> -			kvm_apic_set_x2apic_id(apic, vcpu->vcpu_id);
-> +			kvm_apic_set_x2apic_id(apic, kvm_apic_id(vcpu));
->  		else if (value & MSR_IA32_APICBASE_ENABLE)
-> -			kvm_apic_set_xapic_id(apic, vcpu->vcpu_id);
-> +			kvm_apic_set_xapic_id(apic, kvm_apic_id(vcpu));
->  	}
->  
->  	if ((old_value ^ value) & (MSR_IA32_APICBASE_ENABLE | X2APIC_ENABLE)) {
-> @@ -2685,7 +2726,7 @@ void kvm_lapic_reset(struct kvm_vcpu *vcpu, bool init_event)
->  
->  	/* The xAPIC ID is set at RESET even if the APIC was already enabled. */
->  	if (!init_event)
-> -		kvm_apic_set_xapic_id(apic, vcpu->vcpu_id);
-> +		kvm_apic_set_xapic_id(apic, kvm_apic_id(vcpu));
->  	kvm_apic_set_version(apic->vcpu);
->  
->  	for (i = 0; i < apic->nr_lvt_entries; i++)
-> diff --git a/arch/x86/kvm/lapic.h b/arch/x86/kvm/lapic.h
-> index e1021517cf04..542bd208e52b 100644
-> --- a/arch/x86/kvm/lapic.h
-> +++ b/arch/x86/kvm/lapic.h
-> @@ -97,6 +97,8 @@ void kvm_lapic_set_tpr(struct kvm_vcpu *vcpu, unsigned long cr8);
->  void kvm_lapic_set_eoi(struct kvm_vcpu *vcpu);
->  void kvm_lapic_set_base(struct kvm_vcpu *vcpu, u64 value);
->  u64 kvm_lapic_get_base(struct kvm_vcpu *vcpu);
-> +int kvm_vm_ioctl_set_apic_id_groups(struct kvm *kvm,
-> +				    struct kvm_apic_id_groups *groups);
->  void kvm_recalculate_apic_map(struct kvm *kvm);
->  void kvm_apic_set_version(struct kvm_vcpu *vcpu);
->  void kvm_apic_after_set_mcg_cap(struct kvm_vcpu *vcpu);
-> @@ -277,4 +279,35 @@ static inline u8 kvm_xapic_id(struct kvm_lapic *apic)
->  	return kvm_lapic_get_reg(apic, APIC_ID) >> 24;
->  }
->  
-> +static inline u32 kvm_apic_id(struct kvm_vcpu *vcpu)
-> +{
-> +	return vcpu->vcpu_id & ~vcpu->kvm->arch.apic_id_group_mask;
-> +}
-> +
-> +static inline u32 kvm_apic_id_and_group(struct kvm_vcpu *vcpu)
-> +{
-> +	return vcpu->vcpu_id;
-> +}
-> +
-> +static inline u32 kvm_apic_group(struct kvm_vcpu *vcpu)
-> +{
-> +	struct kvm *kvm = vcpu->kvm;
-> +
-> +	return (vcpu->vcpu_id & kvm->arch.apic_id_group_mask) >>
-> +	       kvm->arch.apic_id_group_shift;
-> +}
-> +
-> +static inline void kvm_apic_id_set_group(struct kvm *kvm, u32 group,
-> +					 u32 *apic_id)
-> +{
-> +	*apic_id |= ((group << kvm->arch.apic_id_group_shift) &
-> +		     kvm->arch.apic_id_group_mask);
-> +}
-> +
-> +static inline bool kvm_match_apic_group(struct kvm_vcpu *src,
-> +					struct kvm_vcpu *dst)
-> +{
-> +	return kvm_apic_group(src) == kvm_apic_group(dst);
-> +}
-> +
->  #endif
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index e3eb608b6692..4cd3f00475c1 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -4526,6 +4526,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->  	case KVM_CAP_VM_DISABLE_NX_HUGE_PAGES:
->  	case KVM_CAP_IRQFD_RESAMPLE:
->  	case KVM_CAP_MEMORY_FAULT_INFO:
-> +	case KVM_CAP_APIC_ID_GROUPS:
->  		r = 1;
->  		break;
->  	case KVM_CAP_EXIT_HYPERCALL:
-> @@ -7112,6 +7113,20 @@ int kvm_arch_vm_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
->  		r = kvm_vm_ioctl_set_msr_filter(kvm, &filter);
->  		break;
->  	}
-> +	case KVM_SET_APIC_ID_GROUPS: {
-> +		struct kvm_apic_id_groups groups;
-> +
-> +		r = -EINVAL;
-> +		if (kvm->created_vcpus)
-> +			goto out;
-> +
-> +		r = -EFAULT;
-> +		if (copy_from_user(&groups, argp, sizeof(groups)))
-> +			goto out;
-> +
-> +		r = kvm_vm_ioctl_set_apic_id_groups(kvm, &groups);
-> +		break;
-> +	}
->  	default:
->  		r = -ENOTTY;
->  	}
-> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index 5b5820d19e71..d7a01766bf21 100644
-> --- a/include/uapi/linux/kvm.h
-> +++ b/include/uapi/linux/kvm.h
-> @@ -1219,6 +1219,7 @@ struct kvm_ppc_resize_hpt {
->  #define KVM_CAP_MEMORY_ATTRIBUTES 232
->  #define KVM_CAP_GUEST_MEMFD 233
->  #define KVM_CAP_VM_TYPES 234
-> +#define KVM_CAP_APIC_ID_GROUPS 235
->  
->  #ifdef KVM_CAP_IRQ_ROUTING
->  
-> @@ -2307,4 +2308,5 @@ struct kvm_create_guest_memfd {
->  
->  #define KVM_GUEST_MEMFD_ALLOW_HUGEPAGE		(1ULL << 0)
->  
-> +#define KVM_SET_APIC_ID_GROUPS _IOW(KVMIO, 0xd7, struct kvm_apic_id_groups)
->  #endif /* __LINUX_KVM_H */
-
-
-
-
+-- 
+Dominique Martinet | Asmadeus
