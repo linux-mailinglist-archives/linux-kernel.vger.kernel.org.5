@@ -2,69 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2148C7FB568
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:16:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD6C7FB56E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:17:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234635AbjK1JQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 04:16:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48770 "EHLO
+        id S231316AbjK1JRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 04:17:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231316AbjK1JQd (ORCPT
+        with ESMTP id S230195AbjK1JRc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 04:16:33 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63FCA1A5
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:16:38 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40b3e7f2fd9so24266165e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:16:38 -0800 (PST)
+        Tue, 28 Nov 2023 04:17:32 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E0ACC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:17:38 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-50baa1ca01cso3991995e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:17:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701162997; x=1701767797; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=I1ixJzL+G4ExhL3zGwuOlyXJPv0jAqiyItVDxcyAzs0=;
-        b=WLxcWSgxbzy92Jo/uqZjfBRL1qrpntlbZxN6dffnl6+jy2iplssGVN/wuAxL/iHMCK
-         v/v9uPKfAZ1AK3iUklAcTX0wSCSPdauzY7suSCFnfVtrjLT7eiaXi7WiYJH1a2ZAEUEJ
-         ng7GLb6E24Q+yKZrzOL6RlMglp1sqBtt5HIP1GQt0f4lxIekCfydUDc0gpmPu4Qxv4bo
-         ms4iKp93+yKW40nY9xiV22IPsmrx66l242z894k3tuDfD34lYIh9k7RSwL1NwlU6How2
-         sCrF+gkDktJOMj59bx88ESL/S/cN2mEvhaqcyYCrXPMbKUX/qq0tTZvgAFyW2L7HUJj2
-         mQZA==
+        d=linaro.org; s=google; t=1701163057; x=1701767857; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ylfSfQ4mfjwEGaFynXToMh7jz4SUakfDKeXenMXl9cg=;
+        b=ejt0efqSpNASL1RIWI0a3ikuMq3LPDyM5XSTxcni+8KsrSD5SBHFPEMiIOJsE4kPGV
+         Bc3mRD8+BPj971C/3EVotQA1Bzi0yR6Xs3qls6BZ2XB3jt6bWbpOEX1+rRu7CwLgmWro
+         BJCRr/6Wa4O+SduehlGlrEL4hdAuDH0+Ee5ywaWpo8cmDeXf10KoWuHE9KLtQg7ZQPkJ
+         boLHHZp1E4MtPnBO9iu5XINKxqdYRC4VJZRrjo+BucnaEW+gDtgjy+/GmndZ1SyG4SXb
+         RElhPv+AnVQln1BjW8HfsMldqDeQrUHJxmGRvtu4g4toRb0S8GKWAzuJHvv8nvbff1bG
+         mJIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701162997; x=1701767797;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=I1ixJzL+G4ExhL3zGwuOlyXJPv0jAqiyItVDxcyAzs0=;
-        b=Pl4pqhQyOKybAr3tHQ1jqdEw/d4fipDvJqdr4v7Tf7lF7dpRMkiPQH5YkXg/xhsjBV
-         2JrkGGbqR0FWywDDe0zsFx9xzfDvZKJVsn55B/mUK3MsxH6bLsarvNa2EsVYAkHZ5vpc
-         D1OY+NWvBIcMDkt4CJfHzJdkUMUpOskmIIjDTikSlhfEb4VzxlXd24y+bgcdWj5nN2/Y
-         zgnJbLVdGS+8KAHvjgNoEYYJs7MALlh8H5d+9J4FyB6jRjtq0A+xLot2xl1WFJnWzzZN
-         wFJjA21MYGTwre3WqG4ZJNH0JVtJPazn8q+MhpF5yTx2Tf+5670C3qJ+ZmnqYhuLMOhj
-         JyYQ==
-X-Gm-Message-State: AOJu0YwensWcCPvJ0UeTh3CV7KFapSy0zE+yXLmIPgQ6f2M9U+H8cU6M
-        SYzCndLApqVhHPpy7jwhAXI1lw==
-X-Google-Smtp-Source: AGHT+IG6ukaNt2ZgVZQMXe58TmnXHGQqqHO07e+EHx+fN6PCfUc66ZTyBG1sDU5facr7QJDgD0fR8Q==
-X-Received: by 2002:a05:600c:4fcc:b0:40b:338b:5f38 with SMTP id o12-20020a05600c4fcc00b0040b338b5f38mr10094963wmq.8.1701162996775;
-        Tue, 28 Nov 2023 01:16:36 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:eada:f40e:7ab3:2afe? ([2a01:e0a:982:cbb0:eada:f40e:7ab3:2afe])
-        by smtp.gmail.com with ESMTPSA id az21-20020a05600c601500b0040b47c53610sm5045039wmb.14.2023.11.28.01.16.35
+        d=1e100.net; s=20230601; t=1701163057; x=1701767857;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ylfSfQ4mfjwEGaFynXToMh7jz4SUakfDKeXenMXl9cg=;
+        b=jf28fVL+NGcDDRhFMzp7E7nbVxIUO5X1TUzDmFeky7Pn4pDwlxlcu/WRsQDkBRH66p
+         Rmoh7cuvZ22oZR8xqwxinzOLuT39Nf6YzF2ItgohzogHBSPnw1CrvAsdb8SCyXSfrWTi
+         g3uwxOUhaTBoG/jTarQuZv/Cma0YuqTs2dfVU3pVOHOEY86xLWM+id/xqVQizcLLhpSk
+         gjA90NSTp+wgEzTokXNmScNk+iUNNFgRXG8dagCP7GPEm+ftAutzMHjjMcQKkanVVEIW
+         u8xthGp8ijryVilrdkQanEgUnVPrVS5wTOsHX9Ialc0tfFqzh6/smwjPu1UHBnMEmcdX
+         jp3A==
+X-Gm-Message-State: AOJu0Yye0P3oQTii9zPj6ZEjnGpU/gri4YCxnwZvsZ1dFEjPCcHcJoAD
+        YPrfL6vYQsdW3hWgM8kmGyeG5Q==
+X-Google-Smtp-Source: AGHT+IHRTADxly8467HjYp8r8wxHjFPtlnNKCcz3bsTNTcTtKbZAyP0BXNsnz7Mbgg9vo8pUAFPSHQ==
+X-Received: by 2002:ac2:4194:0:b0:503:7dd:7ebd with SMTP id z20-20020ac24194000000b0050307dd7ebdmr5082877lfh.24.1701163056771;
+        Tue, 28 Nov 2023 01:17:36 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.109])
+        by smtp.gmail.com with ESMTPSA id dn26-20020a05640222fa00b0054ba556eb97sm512568edb.97.2023.11.28.01.17.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Nov 2023 01:16:36 -0800 (PST)
-Message-ID: <095f6e9d-dbee-4cfe-91dc-5443608c386d@linaro.org>
-Date:   Tue, 28 Nov 2023 10:16:35 +0100
+        Tue, 28 Nov 2023 01:17:36 -0800 (PST)
+Message-ID: <91528bf4-c971-415e-afb4-51791c6dfc91@linaro.org>
+Date:   Tue, 28 Nov 2023 10:17:34 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 4/5] ASoC: codecs: Add WCD939x Soundwire slave driver
-Content-Language: en-US, fr
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+Subject: Re: [PATCH 2/5] ASoC: dt-bindings: document WCD939x Audio Codec
+Content-Language: en-US
+To:     neil.armstrong@linaro.org,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Banajit Goswami <bgoswami@quicinc.com>,
         Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
         Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -75,39 +72,62 @@ Cc:     linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
         linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <20231123-topic-sm8650-upstream-wcd939x-codec-v1-0-21d4ad9276de@linaro.org>
- <20231123-topic-sm8650-upstream-wcd939x-codec-v1-4-21d4ad9276de@linaro.org>
- <a7725504-89fd-4f62-b8d0-6ec863bd059a@linaro.org>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <a7725504-89fd-4f62-b8d0-6ec863bd059a@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ <20231123-topic-sm8650-upstream-wcd939x-codec-v1-2-21d4ad9276de@linaro.org>
+ <160fc6c4-b07d-49c5-976b-aa0fa35e4f0f@linaro.org>
+ <b637c287-93e5-4214-9275-80fac3c6181b@linaro.org>
+ <60c9ba5d-a2b8-43cd-8b8d-2c709b8e5d04@linaro.org>
+ <752f5347-703a-4b38-b2b1-3493d270389c@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <752f5347-703a-4b38-b2b1-3493d270389c@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -115,129 +135,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/11/2023 12:55, Konrad Dybcio wrote:
-> On 23.11.2023 15:49, Neil Armstrong wrote:
->> Add Soundwire Slave driver for the WCD9390/WCD9395 Audio Codec.
+On 28/11/2023 10:14, neil.armstrong@linaro.org wrote:
 >>
->> The WCD9390/WCD9395 Soundwire Slaves will be used by the
->> main WCD9390/WCD9395 Audio Codec driver to access registers
->> and configure Soundwire RX and TX ports.
->>
->> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
->> ---
-> [...]
+>> Here the device exposes its version in registers, so you can easily rely
+>> on the compatibility. That's also the case multiple times talked on the
+>> mailing lists.
 > 
+> ... you're right here version can be determined at runtime.
 > 
->> +static struct wcd939x_sdw_ch_info wcd939x_sdw_tx_ch_info[] = {
->> +	WCD_SDW_CH(WCD939X_ADC1, WCD939X_ADC_1_4_PORT, BIT(0)),
->> +	WCD_SDW_CH(WCD939X_ADC2, WCD939X_ADC_1_4_PORT, BIT(1)),
->> +	WCD_SDW_CH(WCD939X_ADC3, WCD939X_ADC_1_4_PORT, BIT(2)),
->> +	WCD_SDW_CH(WCD939X_ADC4, WCD939X_ADC_1_4_PORT, BIT(3)),
->> +	// TOFIX support ADC3/4 & DMIC0/1 on port 2
-> Well, fix it or drop it :D
+> But, since both are compatible, there's no primary part number, right?
 > 
->> +	//WCD_SDW_CH(WCD939X_ADC3, WCD939X_ADC_DMIC_1_2_PORT, BIT(0)),
->> +	//WCD_SDW_CH(WCD939X_ADC4, WCD939X_ADC_DMIC_1_2_PORT, BIT(1)),
->> +	//WCD_SDW_CH(WCD939X_DMIC0, WCD939X_ADC_DMIC_1_2_PORT, BIT(2)),
->> +	//WCD_SDW_CH(WCD939X_DMIC1, WCD939X_ADC_DMIC_1_2_PORT, BIT(3)),
->> +	WCD_SDW_CH(WCD939X_DMIC0, WCD939X_DMIC_0_3_MBHC_PORT, BIT(0)),
->> +	WCD_SDW_CH(WCD939X_DMIC1, WCD939X_DMIC_0_3_MBHC_PORT, BIT(1)),
->> +	WCD_SDW_CH(WCD939X_MBHC, WCD939X_DMIC_0_3_MBHC_PORT, BIT(2)),
->> +	WCD_SDW_CH(WCD939X_DMIC2, WCD939X_DMIC_0_3_MBHC_PORT, BIT(2)),
->> +	WCD_SDW_CH(WCD939X_DMIC3, WCD939X_DMIC_0_3_MBHC_PORT, BIT(3)),
->> +	WCD_SDW_CH(WCD939X_DMIC4, WCD939X_DMIC_3_7_PORT, BIT(0)),
->> +	WCD_SDW_CH(WCD939X_DMIC5, WCD939X_DMIC_3_7_PORT, BIT(1)),
->> +	WCD_SDW_CH(WCD939X_DMIC6, WCD939X_DMIC_3_7_PORT, BIT(2)),
->> +	WCD_SDW_CH(WCD939X_DMIC7, WCD939X_DMIC_3_7_PORT, BIT(3)),
->> +};
-> [...]
-> 
->> +
->> +int wcd939x_swr_get_current_bank(struct sdw_slave *sdev)
->> +{
->> +	int bank;
->> +
->> +	bank = sdw_read(sdev, SDW_SCP_CTRL);
->> +
->> +	return ((bank & 0x40) ? 1 : 0);
-> bool conversion?
-> 
-> Also, 0x40 == BIT(6), can you look up what it means and #define it?
-Ack
+> so why use "qcom,wcd9395-codec", "qcom,wcd9390-codec"
 
-> 
-> [...]
-> 
->> +
->> +static int wcd9390_bus_config(struct sdw_slave *slave,
->> +			      struct sdw_bus_params *params)
->> +{
->> +	sdw_write(slave, SWRS_SCP_HOST_CLK_DIV2_CTL_BANK(params->next_bank),
->> +		  0x01);
-> similar, BIT(0)
-Ack
+This one, please.
 
-> [...]
-> 
->> +	{ WCD939X_EAR_STATUS_REG_2, 0x08 },
->> +	{ WCD939X_FLYBACK_NEW_CTRL_2, 0x00 }, //??
->> +	{ WCD939X_FLYBACK_NEW_CTRL_3, 0x00 }, //??
->> +	{ WCD939X_FLYBACK_NEW_CTRL_4, 0x44 }, //??
-> drop //s
+> when "qcom,wcd9390-codec", "qcom,wcd9395-codec" should
+> also be valid, so in this can why not use :
 
-Ack
+Could be valid, sure, but we are humans and we treat higher number as
+something newer or bigger, thus previous one feels more natural. There
+are examples of this way, though.
 
-> [...]
-> 
->> +static bool wcd939x_volatile_register(struct device *dev, unsigned int reg)
->> +{
->> +	if (reg <= WCD939X_BASE)
->> +		return false;
-> Maybe move this check to readonly_register
->> +
->> +	if (wcd939x_readonly_register(dev, reg))
->> +		return true;
-> and call readonly for .volatile_reg as well?
-> [...]
 
-Hmm, let me check
+> "qcom,wcd9390-codec", "qcom,wcd939x-codec"
+> or
+> "qcom,wcd9395-codec", "qcom,wcd939x-codec"
 
-> 
->> +	/**
->> +	 * Port map index starts with 0, however the data port for this codec
->> +	 * are from index 1
->> +	 */
-> This is not kerneldoc
+This not, because wildcards are not allowed in the compatibles. In the
+past there were examples how a wildcard stopped being wild, so guideline
+is: just don't use them.
 
-Ack
-
-> 
->> +	if (of_property_read_bool(dev->of_node, "qcom,tx-port-mapping")) {
->> +		wcd->is_tx = true;
->> +		ret = of_property_read_u32_array(dev->of_node,
->> +						 "qcom,tx-port-mapping",
->> +						 &pdev->m_port_map[1],
->> +						 WCD939X_MAX_TX_SWR_PORTS);
->> +	} else {
->> +		ret = of_property_read_u32_array(dev->of_node,
->> +						 "qcom,rx-port-mapping",
->> +						 &pdev->m_port_map[1],
->> +						 WCD939X_MAX_RX_SWR_PORTS);
->> +	}
-> This is used in wcd9380 and will be used in wcd9370 when that happens some
-> day, maybe it'd be worth to commonize it as qcom_{rx/tx}_portmap_get?
-> [...]
-
-OK but where ?
-
-> 
->> +static const struct sdw_device_id wcd9390_slave_id[] = {
->> +	SDW_SLAVE_ENTRY(0x0217, 0x10e, 0),
-> 0x10e - WCD9380 or 9385 slave? an inline comment at the end of the line
-> would be cool!
-
-Ack
-
-> 
-> Konrad
+Best regards,
+Krzysztof
 
