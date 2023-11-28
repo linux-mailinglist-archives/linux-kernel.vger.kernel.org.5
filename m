@@ -2,109 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 697217FB8C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:00:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8EA97FB8CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344413AbjK1LAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 06:00:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45904 "EHLO
+        id S1344458AbjK1LA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 06:00:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344464AbjK1LAV (ORCPT
+        with ESMTP id S1344417AbjK1LAW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 06:00:21 -0500
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [IPv6:2001:41d0:1004:224b::bc])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 454EBD4B
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 03:00:22 -0800 (PST)
-Message-ID: <6cabaa42-c366-4928-8294-ad261dae0043@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1701169221;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yvcyg4szTb7G/K461C+40gz8EkgFmlMmQb3ja5PYzBA=;
-        b=XDONWV8NJC+c5v7IbeGMStXtx1LoYSM5QxxpY48OJsae5eo2InuIzp1RXvU0yd/DZgtNyU
-        /VzjNlWo4AUClHh0KCXt6HcVI1dqQr+3/kR42NmS/Yg3qI4nUE9chbSfCzU8Gyzn9wy2ik
-        1PDd1dt5thYDxIQXcnKc4EtCZ/Fupt4=
-Date:   Tue, 28 Nov 2023 12:00:17 +0100
+        Tue, 28 Nov 2023 06:00:22 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6CA10D1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 03:00:26 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E5A0DC433CA;
+        Tue, 28 Nov 2023 11:00:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701169226;
+        bh=QOg3KVTER4epeAO54p/axbPEeNoukAl/3jVlyfyz5pA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=LFFLS0Xz8X0pIlB57Xsfgt90E0QExzL9hJa7HWEiUpc/HddEdCCyjz71sgEgiJCOc
+         GOEC22grZxMqOGDRg3tSAi1xhuQgzATZwyFefdVM9ucxBp+PJ32S7suBas2iy72Z4s
+         xc4ZHLzkfPU1O/4Ru/wkKxQLcQfiKsRmpMw/XMuJlvhoxCJkbAY0rQz5dTqjsBAjFu
+         1yv3HBx0s3ZVuu1l+JePwYNYUBvmSbLZ9Q7ocrQ1nz587G+oLXJs81jaNAXEWarh23
+         eDcPkd1CnJ+Otl2VBGnqrFK5W0I663nqwFD66RQwpDnIX6dzY8+7CVxpTJbSH/czjC
+         tVT1Qxlnf1zeg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C79DCC39562;
+        Tue, 28 Nov 2023 11:00:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Subject: Re: [PATCH v6 11/11] blksnap: prevents using devices with data
- integrity or inline encryption
-Content-Language: en-US
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     axboe@kernel.dk, hch@infradead.org, corbet@lwn.net,
-        snitzer@kernel.org, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Sergei Shtepa <sergei.shtepa@veeam.com>
-References: <20231124165933.27580-1-sergei.shtepa@linux.dev>
- <20231124165933.27580-12-sergei.shtepa@linux.dev>
- <20231127224719.GD1463@sol.localdomain>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Sergei Shtepa <sergei.shtepa@linux.dev>
-In-Reply-To: <20231127224719.GD1463@sol.localdomain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v3] net: stmmac: xgmac: Disable FPE MMC interrupts
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170116922581.4807.10674635347082642377.git-patchwork-notify@kernel.org>
+Date:   Tue, 28 Nov 2023 11:00:25 +0000
+References: <20231125060126.2328690-1-0x1207@gmail.com>
+In-Reply-To: <20231125060126.2328690-1-0x1207@gmail.com>
+To:     Furong Xu <0x1207@gmail.com>
+Cc:     davem@davemloft.net, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, mcoquelin.stm32@gmail.com, jpinto@synopsys.com,
+        horms@kernel.org, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        xfr@outlook.com, rock.xu@nio.com, larysa.zaremba@intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
 
+This patch was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-On 11/27/23 23:47, Eric Biggers wrote:
-> On Fri, Nov 24, 2023 at 05:59:33PM +0100, Sergei Shtepa wrote:
->> There is an opinion that the use of the blksnap module may violate the
->> security of encrypted data. The difference storage file may be located
->> on an unreliable disk or even network storage. 
-> I think this misses the point slightly.  The main problem is that blksnap writes
-> data in plaintext that is supposed to be encrypted, as indicated by the bio
-> having an encryption context.  That's just what it does, at least based on the
-> last patchset; it's not just "an opinion".  See
-> https://lore.kernel.org/linux-block/20a5802d-424d-588a-c497-1d1236c52880@veeam.com/
-
-Thanks Eric. Perhaps I formulated the thought inaccurately. The point is that
-blksnap should not be compatible with blk-crypto. Changes in version 6 do not
-allow to take a snapshot with a device on which the encryption context is
-detected. Additionally, protection is implemented in the bio handling code.
-For bio with bi_crypt_context, the COW algorithm is not executed.
+On Sat, 25 Nov 2023 14:01:26 +0800 you wrote:
+> Commit aeb18dd07692 ("net: stmmac: xgmac: Disable MMC interrupts
+> by default") tries to disable MMC interrupts to avoid a storm of
+> unhandled interrupts, but leaves the FPE(Frame Preemption) MMC
+> interrupts enabled, FPE MMC interrupts can cause the same problem.
+> Now we mask FPE TX and RX interrupts to disable all MMC interrupts.
 > 
->> +#ifdef CONFIG_BLK_INLINE_ENCRYPTION
->> +	if (bio->bi_crypt_context) {
->> +		pr_err_once("Hardware inline encryption is not supported\n");
->> +		diff_area_set_corrupted(tracker->diff_area, -EPERM);
->> +		return false;
->> +	}
->> +#endif
-> The error message for ->bi_crypt_context being set should say
-> "Inline encryption", not "Hardware inline encryption".  The submitter of the bio
-> may have intended to use blk-crypto-fallback.
-
-I was looking at the blk-crypto-fallback code. I tested the work in this case.
-Encryption is performed before the bio gets to the block layer. So, the filter
-receives cloned bios with already encrypted data. Therefore, the text of the
-message is correct.
-
-But I haven't tested the code on a device where hardware inline encryption is
-available. I would be glad if anyone could help with this.
+> Fixes: aeb18dd07692 ("net: stmmac: xgmac: Disable MMC interrupts by default")
+> Reviewed-by: Larysa Zaremba <larysa.zaremba@intel.com>
+> Signed-off-by: Furong Xu <0x1207@gmail.com>
 > 
-> Anyway, this patch is better than ignoring the problem.  It's worth noting,
-> though, that this patch does not prevent blksnap from being set up on a block
-> device on which blk-crypto-fallback is already being used (or will be used).
-> When that happens, I/O will suddenly start failing.  For usability reasons,
-> ideally that would be prevented somehow.
+> [...]
 
-I didn't observe any failures during testing. It's just that the snapshot
-image shows files with encrypted names and data. Backup in this case is
-useless. Unfortunately, there is no way to detect a blk-crypto-fallback on
-the block device filter level.
+Here is the summary with links:
+  - [net,v3] net: stmmac: xgmac: Disable FPE MMC interrupts
+    https://git.kernel.org/netdev/net/c/e54d628a2721
 
-Maybe my tests aren't enough. The next step I think would be great to add
-new tests to xfstests.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
