@@ -2,107 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F137FC1F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CA5C7FC2D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345294AbjK1OBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 09:01:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43210 "EHLO
+        id S1345355AbjK1ODP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 09:03:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344806AbjK1OBu (ORCPT
+        with ESMTP id S1345363AbjK1ODN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 09:01:50 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8AD981A5;
-        Tue, 28 Nov 2023 06:01:56 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C2D431FB;
-        Tue, 28 Nov 2023 06:02:43 -0800 (PST)
-Received: from localhost (ionvoi01-desktop.cambridge.arm.com [10.2.78.69])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E7D003F6C4;
-        Tue, 28 Nov 2023 06:01:55 -0800 (PST)
-Date:   Tue, 28 Nov 2023 14:01:54 +0000
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Beata Michalska <beata.michalska@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, sumitg@nvidia.com, sudeep.holla@arm.covm,
-        will@kernel.org, catalin.marinas@arm.com, viresh.kumar@linaro.org,
-        rafael@kernel.org, yang@os.amperecomputing.com,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] cpufreq: Wire-up arch-flavored freq info into
- cpufreq_verify_current_freq
-Message-ID: <ZWXy0h/fFfQh+Rhy@arm.com>
-References: <20231127160838.1403404-1-beata.michalska@arm.com>
- <20231127160838.1403404-3-beata.michalska@arm.com>
+        Tue, 28 Nov 2023 09:03:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40D19AB
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:03:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701180199;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=o6b4zlJ+NQVyh7nGzEMDX1ZgHvtc06NNFgRYvyVDhSc=;
+        b=GBti74QDCFvTfxyj7iVf/cnH84n2MjbDN5/Fyb9VwojuaLCgoRMjS4FiV8vUwtaRWUmCA4
+        atiW9fQ4YOb1QK705YYILnJVeByMsYoiUee/oTdl2mcvV0ZiP1CFEvyCCw8zZj+y4qNCbw
+        J2JYL9mZMpZn+gixBTqY1/kmsQL3jIg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-468-xxJ-ZggePqKq7XGAgfcdJA-1; Tue, 28 Nov 2023 09:03:16 -0500
+X-MC-Unique: xxJ-ZggePqKq7XGAgfcdJA-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 01D35101A529;
+        Tue, 28 Nov 2023 14:03:06 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.14])
+        by smtp.corp.redhat.com (Postfix) with SMTP id E0CEB492BE7;
+        Tue, 28 Nov 2023 14:03:02 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue, 28 Nov 2023 15:02:01 +0100 (CET)
+Date:   Tue, 28 Nov 2023 15:01:57 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     NeilBrown <neilb@suse.de>, Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH/RFC] core/nfsd: allow kernel threads to use task_work.
+Message-ID: <20231128140156.GC22743@redhat.com>
+References: <170112272125.7109.6245462722883333440@noble.neil.brown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231127160838.1403404-3-beata.michalska@arm.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <170112272125.7109.6245462722883333440@noble.neil.brown.name>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Beata, Sumit,
+On 11/28, NeilBrown wrote:
+>
+> I have evidence from a customer site of 256 nfsd threads adding files to
+> delayed_fput_lists nearly twice as fast they are retired by a single
+> work-queue thread running delayed_fput().  As you might imagine this
+> does not end well (20 million files in the queue at the time a snapshot
+> was taken for analysis).
 
-On Monday 27 Nov 2023 at 16:08:38 (+0000), Beata Michalska wrote:
-> From: Sumit Gupta <sumitg@nvidia.com>
-> 
-> When available, use arch_freq_get_on_cpu to obtain current frequency
-> (usually an average reported over given period of time)
-> to better align the cpufreq's view on the current state of affairs.
-> This also automatically pulls in the update for cpuinfo_cur_freq sysfs
-> attribute, aligning it with the scaling_cur_freq one, and thus providing
-> consistent view on relevant platforms.
-> 
-> Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
-> [BM: Subject & commit msg]
-> Signed-off-by: Beata Michalska <beata.michalska@arm.com>
-> ---
->  drivers/cpufreq/cpufreq.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> index 8c4f9c2f9c44..109559438f45 100644
-> --- a/drivers/cpufreq/cpufreq.c
-> +++ b/drivers/cpufreq/cpufreq.c
-> @@ -1756,7 +1756,8 @@ static unsigned int cpufreq_verify_current_freq(struct cpufreq_policy *policy, b
->  {
->  	unsigned int new_freq;
->  
-> -	new_freq = cpufreq_driver->get(policy->cpu);
-> +	new_freq = arch_freq_get_on_cpu(policy->cpu);
-> +	new_freq = new_freq ?: cpufreq_driver->get(policy->cpu);
+On a related note... Neil, Al, et al, can you look at
 
-Given that arch_freq_get_on_cpu() is an average frequency, it does not
-seem right to me to trigger the sync & update process of
-cpufreq_verify_current_freq() based on it.
+	[PATCH 1/3] fput: don't abuse task_work_add() when possible
+	https://lore.kernel.org/all/20150908171446.GA14589@redhat.com/
 
-cpufreq_verify_current_freq() will at least modify the internal state of
-the policy and send PRE and POST notifications, if not do a full frequency
-update, based on this average frequency, which is likely different from
-the current frequency, even beyond the 1MHz threshold.
+(please ignore 3/3).
 
-While I believe it's okay to return this average frequency in
-cpuinfo_cur_freq, I don't think it should be used as an indication of
-an accurate current frequency, which is what
-cpufreq_verify_current_freq() expects.
+Oleg.
 
-Sumit, can you give more details on the issue at [1] and why this change
-fixes it?
-
-[1] https://lore.kernel.org/lkml/6a5710f6-bfbb-5dfd-11cd-0cd02220cee7@nvidia.com/
-
-Thank you,
-Ionela.
-
->  	if (!new_freq)
->  		return 0;
->  
-> -- 
-> 2.25.1
-> 
