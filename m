@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9CA7FC8A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:53:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D3D7FC88B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376394AbjK1VHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 16:07:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47950 "EHLO
+        id S1376411AbjK1VHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 16:07:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346729AbjK1VHI (ORCPT
+        with ESMTP id S1346746AbjK1VHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 16:07:08 -0500
+        Tue, 28 Nov 2023 16:07:12 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FDD61FE2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:06:48 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3689C433C9;
-        Tue, 28 Nov 2023 21:06:46 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 472AA1FF3
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:06:50 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FF79C433C7;
+        Tue, 28 Nov 2023 21:06:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701205608;
-        bh=EDCjcGa/9qYw0OmkOOcM9slY4BEMMCgERd1JriivOxA=;
+        s=k20201202; t=1701205609;
+        bh=xRoEIjR3KV/1kAEQG2vgN5KGGWtoecQCkzDjciK9N1M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IWUE5p09g1r86ue3lc5sNqnhdJmrfrvFBFn+EqfX3WSQSl+WwWdMHcVnykwM0banh
-         ZRG09GJKNo+Kn0OQYM6DnYv5OSfOcbz4TxDDOkyIkrXHDLY1cF5Jb9G+8meDXPHJAB
-         abtd73lMBo6hoNsDrPolST9+NFSXnKFmkPXpoewvebMyywZfz/OhBHpcLamFnmh1kE
-         bY59fgMGOKiUntmAIr55rmLv5tbNiaLoyayzdI2orn4uod7JHoVWonsp1Xuev4Jq+D
-         gEkgYFPoRNtlOfLfNhBnGb+kAzsV+NShP1usMdyWh+2w8TLVrvXLq/knJ+Y2xcpQdF
-         a80guQiGyJcUQ==
+        b=aiWeM5qQns4M7irrxvJIn1lTTAyaAZbs86/QCO2v+Y2kc0l1tLFVIVWUkgdM8aMGc
+         G+e0PWBmBWe9+YkDzoWc5H7rqR6B4MOcAzwjX1R3tEK50OzFWK3zqgqMR0t/Zg0nFZ
+         LyxxuQMcXMttXI8os53ZJONFJYEw9ZsoZBrZrDeZuTGWHNKuBhP1gRHCeM17VphznU
+         Wvig8Qa6KiOloUD4UwiBPPpDeAjkAHCFcAJzON6bbd9wm8EK4HCbjfl+SbWissloLl
+         GOCN3DDiiD90il4oayJ8OWiQDtd0+92kWrFfOEgD71EjxJI3mTAnvMvG4l/mqTnupW
+         jZv1T1ItfYiNQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Eduard Zingerman <eddyz87@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, daniel@iogearbox.net,
-        shuah@kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 17/40] selftests/bpf: fix bpf_loop_bench for new callback verification scheme
-Date:   Tue, 28 Nov 2023 16:05:23 -0500
-Message-ID: <20231128210615.875085-17-sashal@kernel.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Sasha Levin <sashal@kernel.org>, chenhuacai@kernel.org,
+        loongarch@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.6 18/40] LoongArch: Add dependency between vmlinuz.efi and vmlinux.efi
+Date:   Tue, 28 Nov 2023 16:05:24 -0500
+Message-ID: <20231128210615.875085-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231128210615.875085-1-sashal@kernel.org>
 References: <20231128210615.875085-1-sashal@kernel.org>
@@ -57,82 +55,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eduard Zingerman <eddyz87@gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-[ Upstream commit f40bfd1679446b22d321e64a1fa98b7d07d2be08 ]
+[ Upstream commit d3ec75bc635cb0cb8185b63293d33a3d1b942d22 ]
 
-This is a preparatory change. A follow-up patch "bpf: verify callbacks
-as if they are called unknown number of times" changes logic for
-callbacks handling. While previously callbacks were verified as a
-single function call, new scheme takes into account that callbacks
-could be executed unknown number of times.
+A common issue in Makefile is a race in parallel building.
 
-This has dire implications for bpf_loop_bench:
+You need to be careful to prevent multiple threads from writing to the
+same file simultaneously.
 
-    SEC("fentry/" SYS_PREFIX "sys_getpgid")
-    int benchmark(void *ctx)
-    {
-            for (int i = 0; i < 1000; i++) {
-                    bpf_loop(nr_loops, empty_callback, NULL, 0);
-                    __sync_add_and_fetch(&hits, nr_loops);
-            }
-            return 0;
-    }
+Commit 3939f3345050 ("ARM: 8418/1: add boot image dependencies to not
+generate invalid images") addressed such a bad scenario.
 
-W/o callbacks change verifier sees it as a 1000 calls to
-empty_callback(). However, with callbacks change things become
-exponential:
-- i=0: state exploring empty_callback is scheduled with i=0 (a);
-- i=1: state exploring empty_callback is scheduled with i=1;
-  ...
-- i=999: state exploring empty_callback is scheduled with i=999;
-- state (a) is popped from stack;
-- i=1: state exploring empty_callback is scheduled with i=1;
-  ...
+A similar symptom occurs with the following command:
 
-Avoid this issue by rewriting outer loop as bpf_loop().
-Unfortunately, this adds a function call to a loop at runtime, which
-negatively affects performance:
+  $ make -j$(nproc) ARCH=loongarch vmlinux.efi vmlinuz.efi
+    [ snip ]
+    SORTTAB vmlinux
+    OBJCOPY arch/loongarch/boot/vmlinux.efi
+    OBJCOPY arch/loongarch/boot/vmlinux.efi
+    PAD     arch/loongarch/boot/vmlinux.bin
+    GZIP    arch/loongarch/boot/vmlinuz
+    OBJCOPY arch/loongarch/boot/vmlinuz.o
+    LD      arch/loongarch/boot/vmlinuz.efi.elf
+    OBJCOPY arch/loongarch/boot/vmlinuz.efi
 
-            throughput               latency
-   before:  149.919 ± 0.168 M ops/s, 6.670 ns/op
-   after :  137.040 ± 0.187 M ops/s, 7.297 ns/op
+The log "OBJCOPY arch/loongarch/boot/vmlinux.efi" is displayed twice.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-Link: https://lore.kernel.org/r/20231121020701.26440-4-eddyz87@gmail.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+It indicates that two threads simultaneously enter arch/loongarch/boot/
+and write to arch/loongarch/boot/vmlinux.efi.
+
+It occasionally leads to a build failure:
+
+  $ make -j$(nproc) ARCH=loongarch vmlinux.efi vmlinuz.efi
+    [ snip ]
+    SORTTAB vmlinux
+    OBJCOPY arch/loongarch/boot/vmlinux.efi
+    PAD     arch/loongarch/boot/vmlinux.bin
+  truncate: Invalid number: ‘arch/loongarch/boot/vmlinux.bin’
+  make[2]: *** [drivers/firmware/efi/libstub/Makefile.zboot:13:
+  arch/loongarch/boot/vmlinux.bin] Error 1
+  make[2]: *** Deleting file 'arch/loongarch/boot/vmlinux.bin'
+  make[1]: *** [arch/loongarch/Makefile:146: vmlinuz.efi] Error 2
+  make[1]: *** Waiting for unfinished jobs....
+  make: *** [Makefile:234: __sub-make] Error 2
+
+vmlinuz.efi depends on vmlinux.efi, but such a dependency is not
+specified in arch/loongarch/Makefile.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/progs/bpf_loop_bench.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ arch/loongarch/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_loop_bench.c b/tools/testing/selftests/bpf/progs/bpf_loop_bench.c
-index 4ce76eb064c41..d461746fd3c1e 100644
---- a/tools/testing/selftests/bpf/progs/bpf_loop_bench.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_loop_bench.c
-@@ -15,13 +15,16 @@ static int empty_callback(__u32 index, void *data)
- 	return 0;
- }
+diff --git a/arch/loongarch/Makefile b/arch/loongarch/Makefile
+index fb0fada43197e..96747bfec1a10 100644
+--- a/arch/loongarch/Makefile
++++ b/arch/loongarch/Makefile
+@@ -142,6 +142,8 @@ vdso_install:
  
-+static int outer_loop(__u32 index, void *data)
-+{
-+	bpf_loop(nr_loops, empty_callback, NULL, 0);
-+	__sync_add_and_fetch(&hits, nr_loops);
-+	return 0;
-+}
+ all:	$(notdir $(KBUILD_IMAGE))
+ 
++vmlinuz.efi: vmlinux.efi
 +
- SEC("fentry/" SYS_PREFIX "sys_getpgid")
- int benchmark(void *ctx)
- {
--	for (int i = 0; i < 1000; i++) {
--		bpf_loop(nr_loops, empty_callback, NULL, 0);
--
--		__sync_add_and_fetch(&hits, nr_loops);
--	}
-+	bpf_loop(1000, outer_loop, NULL, 0);
- 	return 0;
- }
+ vmlinux.elf vmlinux.efi vmlinuz.efi: vmlinux
+ 	$(Q)$(MAKE) $(build)=$(boot) $(bootvars-y) $(boot)/$@
+ 
 -- 
 2.42.0
 
