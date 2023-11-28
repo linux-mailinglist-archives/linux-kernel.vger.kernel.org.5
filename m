@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9CAC7FC48F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 21:02:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA8C77FC492
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 21:02:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbjK1UC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 15:02:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41388 "EHLO
+        id S229814AbjK1UCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 15:02:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229699AbjK1UC0 (ORCPT
+        with ESMTP id S229826AbjK1UC2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 15:02:26 -0500
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E90DB19A6;
-        Tue, 28 Nov 2023 12:02:32 -0800 (PST)
-Received: by mail-il1-x12e.google.com with SMTP id e9e14a558f8ab-35942cb9ef4so20024955ab.3;
-        Tue, 28 Nov 2023 12:02:32 -0800 (PST)
+        Tue, 28 Nov 2023 15:02:28 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDD5719A7;
+        Tue, 28 Nov 2023 12:02:34 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-35cd70d7735so8746835ab.0;
+        Tue, 28 Nov 2023 12:02:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701201752; x=1701806552; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701201754; x=1701806554; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XL70M8adFcOLLCGpHkIPZ0fFtu8Pki6s4ZjZx6Yvqu4=;
-        b=U+li5Q5yywNkS1V/DdYpcodaW8lGtVtVnTfwWmcrec6CpnC8x4ZcN2GTdV58DMZRD/
-         kpYqfvo/fKoGAMaFOmelQs7tkPI8vSEG6YGZFcAUJFL0Kz194dD4E64CamzELre4FC5Z
-         UcXxmGC1FetEe+EEIikwHr978j00hQgXxkGdi7wcMwp4VoFvZS4vRrhOPjVNVxV5GxAK
-         Zxqu0ygs6wl8bGKHAq4slO6QHwMUHtkJthB/UseH1wxvHlmATGwrm1ss+OPXXkLjb/ks
-         xib/tlsLUJ9yhDyFdVnjSfKoNSysdOMmmu/L6/b5M4DU5dmV7bdyffFww53b8k2OK+7Y
-         JIYg==
+        bh=5tnM12/4j0Y+uLQFwEGrW8QMTCft1ueWMRxbG+QvaFE=;
+        b=HT8CvifQxw6LqAYcaiPSd1WbyhbcDY+krssLP3gErMemeNmJh+0/79y5ghhxMIcNml
+         xbXaQNclKMDv8o1UJOF1prrc2LV07ABZL3f4086Tvb7jqQgZddig9pqQmIXEuyYiVNb/
+         sMI5wdiWR+7CndZkvU7f2r4/DJX5TNhONh4l8nkTtkDJzO2AXSJduU9iQ9l2qqBOK51l
+         HydK/mXTQBwOYZNPGTXh2YVedOKZM1jCZEElQzQWBh2yaCwl63NT0XzRPrVevMS3HEa9
+         joQ5PfWmgJyO9yqeta+8m7DqKAjC7FyiSUVAjrJbvhFwcmkm8jcMciCU/x7H9sCs50ZK
+         BcJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701201752; x=1701806552;
+        d=1e100.net; s=20230601; t=1701201754; x=1701806554;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XL70M8adFcOLLCGpHkIPZ0fFtu8Pki6s4ZjZx6Yvqu4=;
-        b=G0V274f0lL140o327LJfiUy3ZOwT+sxaXSygMi36wMv3jEDKbhOG/KB6fnj4Wk0rvO
-         5ksbLvDgvMV2jtQGZXF6kooBTMBMMhOus2yiZ59yCq33Efm577mWDsW2WMt+okbw0DCU
-         hy6kdjChp0R7DxouyRYu62K9D/taMhN+CoZZWMF61kcurLPdkdNXTRvOnZIIa0IqrU4P
-         lOk3FPlIdp+4dcwzAxQoqkIqlvhfpcCVQ+y2Zq+STCU6KOvj80qC/mWfbE0RqR5gGyT5
-         CZw6itd62yo76OdtWbFm30E1TaTSKYmCyUaOR0B09Hd0ysl6XmJwwnQufGrSP9+nwWNk
-         MMYA==
-X-Gm-Message-State: AOJu0YxYvy9cm2PZ4mPwDfzgcv047+MK262Tq09jM4brxv5Jsb1YuivY
-        2TDv6ROYqLZJSNXiPakdveY=
-X-Google-Smtp-Source: AGHT+IEGeJdSVdfMenIfjs/XLyzvGUcDgc4QUTjM2yrzkgjJHalUKlctJKCJEhc/NEiqWHYeWdm07w==
-X-Received: by 2002:a92:d809:0:b0:35c:ae44:1766 with SMTP id y9-20020a92d809000000b0035cae441766mr11706874ilm.4.1701201752153;
-        Tue, 28 Nov 2023 12:02:32 -0800 (PST)
+        bh=5tnM12/4j0Y+uLQFwEGrW8QMTCft1ueWMRxbG+QvaFE=;
+        b=CstHK5J0AHFlQ3cXvxtiReRkw1hc/9xmbffy7mH7TjeALcVzdEjIVHpaMV6OGGVcIi
+         Rxl8L47bfrpSAfx2iGlzoeNuyFKmGJkf8wQkuKgSepzxf1CknM/lmlDHSPQ7/uTSQFyC
+         +l6TRojuAf4MXBFWvCe8jZutgeByyERHNX5yEY0B5ECCp3W3JIH7HkCk3O1KseXHMQ+r
+         za3UykWy4ROGejSIzNJ9DWN07WOJb4so/6M8tbsXF9GTIqdBhelPH0UJdICRgW0Um95R
+         T3gkl201x2lkqxoffBXPKkP5lPEHTA8VP18Ef2Y2F/hfRxrnPQi0WCCJ9F1rhrucd9Er
+         Yc1w==
+X-Gm-Message-State: AOJu0YzXpgY5s8IInATYThkiiw6+gOgiMJvxPnc3L0N4YQTwaTaluOz+
+        KcOupBheY74hSh3+xdy+I88=
+X-Google-Smtp-Source: AGHT+IHgeNNuAfEhRJ3eVYTVUQa6XM8bmE4W2LGAdkFF6E4X78yV+YYvMT2WkHVR9HQXxIrgA0hD1A==
+X-Received: by 2002:a92:ca0d:0:b0:35b:c7a:cdc5 with SMTP id j13-20020a92ca0d000000b0035b0c7acdc5mr26703331ils.26.1701201753991;
+        Tue, 28 Nov 2023 12:02:33 -0800 (PST)
 Received: from aford-System-Version.lan ([2601:447:d002:5be:9cf:804b:3499:a67b])
-        by smtp.gmail.com with ESMTPSA id bs12-20020a056e02240c00b0035d21e48d28sm323392ilb.8.2023.11.28.12.02.30
+        by smtp.gmail.com with ESMTPSA id bs12-20020a056e02240c00b0035d21e48d28sm323392ilb.8.2023.11.28.12.02.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 12:02:31 -0800 (PST)
+        Tue, 28 Nov 2023 12:02:33 -0800 (PST)
 From:   Adam Ford <aford173@gmail.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
@@ -64,9 +64,9 @@ Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
         Frieder Schrempf <frieder.schrempf@kontron.de>,
         Lucas Stach <l.stach@pengutronix.de>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] arm64: dts: imx8mm: Add optional overdrive DTSI
-Date:   Tue, 28 Nov 2023 14:02:17 -0600
-Message-Id: <20231128200219.226038-2-aford173@gmail.com>
+Subject: [PATCH 3/3] arm64: dts: imx8mm-beacon: Enable overdrive mode
+Date:   Tue, 28 Nov 2023 14:02:18 -0600
+Message-Id: <20231128200219.226038-3-aford173@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231128200219.226038-1-aford173@gmail.com>
 References: <20231128200219.226038-1-aford173@gmail.com>
@@ -82,52 +82,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For boards who run their SoC at a higher voltage than nominal,
-the boards can run several clocks at an overdrive rate for
-better performance.  Add an optional DTSI file which can be
-included by various boards to run in overdrive mode.
-
-This raises the GPU PLL to 1000MHz, and the VPU PLL to
-700MHz while moving VPU_G1 and VPU_H1 to the SYS_PLL3_OUT
-which runs at 750MHz.
+The SoC runs at a high enough voltage to support overdrive
+mode, so include the imx8mm-overdrive.dtsi file to increase
+the VPU and GPU clocks to their overdrive speeds.
 
 Signed-off-by: Adam Ford <aford173@gmail.com>
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-overdrive.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-overdrive.dtsi
-new file mode 100644
-index 000000000000..b31436b5e9b7
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-overdrive.dtsi
-@@ -0,0 +1,29 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
+index f264102bdb27..62ed64663f49 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
+@@ -3,6 +3,8 @@
+  * Copyright 2020 Compass Electronics Group, LLC
+  */
+ 
++#include "imx8mm-overdrive.dtsi"
 +
-+&gpu_2d {
-+	assigned-clocks = <&clk IMX8MM_CLK_GPU2D_CORE>,
-+			  <&clk IMX8MM_GPU_PLL_OUT>;
-+	assigned-clock-parents = <&clk IMX8MM_GPU_PLL_OUT>;
-+	assigned-clock-rates = <0>, <1000000000>;
-+};
-+
-+&gpu_3d {
-+	assigned-clocks = <&clk IMX8MM_CLK_GPU3D_CORE>,
-+			  <&clk IMX8MM_GPU_PLL_OUT>;
-+	assigned-clock-parents = <&clk IMX8MM_GPU_PLL_OUT>;
-+	assigned-clock-rates = <0>, <1000000000>;
-+};
-+
-+&vpu_blk_ctrl {
-+	assigned-clocks = <&clk IMX8MM_CLK_VPU_G1>,
-+			  <&clk IMX8MM_CLK_VPU_G2>,
-+			  <&clk IMX8MM_CLK_VPU_H1>,
-+			  <&clk IMX8MM_VPU_PLL_OUT>;
-+	assigned-clock-parents = <&clk IMX8MM_SYS_PLL3_OUT>,
-+				 <&clk IMX8MM_VPU_PLL_OUT>,
-+				 <&clk IMX8MM_SYS_PLL3_OUT>;
-+	assigned-clock-rates = <750000000>,
-+			       <700000000>,
-+			       <750000000>,
-+			       <700000000>;
-+};
+ / {
+ 	aliases {
+ 		rtc0 = &rtc;
 -- 
 2.40.1
 
