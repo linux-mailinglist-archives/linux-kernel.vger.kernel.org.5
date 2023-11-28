@@ -2,97 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C87447FBA35
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:35:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB3047FBA37
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:37:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344693AbjK1MfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 07:35:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52904 "EHLO
+        id S1344474AbjK1MhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 07:37:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344686AbjK1MfV (ORCPT
+        with ESMTP id S232357AbjK1MhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 07:35:21 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D78E10F7;
-        Tue, 28 Nov 2023 04:35:25 -0800 (PST)
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ASCQHI2010187;
-        Tue, 28 Nov 2023 12:35:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=W2YwZ/OC+qrCGZ6ky0iGSWynUKcyYgVsTnESqnApOV0=;
- b=enNFw54G4dAx5OWb28ZdP+Wjoz0TxhsC5+jjJcgyhkzH69IdxhBFNH4kOMBPr3SWlbB3
- KYdLwvGRC9gqke3Sal2vZBI1gO9is3dIB9vEsjUkGatRlDxWJNn9XZYFJMCu22fPdPfk
- prDNWnJ/M5lZMNak+IZxWvKG+buIOgTca45NkMAvHvSIkwdvprqGHzhpt81UuJmmmSaE
- ftZP70qanShrX2BlovhNg9iQasHy73NLGBZiJ1Uvn5IOpfS26vpObYGt1j7l4E3GbVP3
- AMUC4mK+6KlVqsH7t1h0qc7Z0eLOmTLxsUcb3Zd6UV3bOPyZ0H9TZygeN7oztfp90Y+c GA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3unfk01d60-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Nov 2023 12:35:18 +0000
-Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ASBhg34025897;
-        Tue, 28 Nov 2023 12:35:18 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3unfk01d5q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Nov 2023 12:35:18 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ASAR3f2018253;
-        Tue, 28 Nov 2023 12:35:17 GMT
-Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ukwy1q2cw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Nov 2023 12:35:17 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-        by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ASCZHOd32899640
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Nov 2023 12:35:17 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F2CAB58056;
-        Tue, 28 Nov 2023 12:35:16 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 557E758052;
-        Tue, 28 Nov 2023 12:35:16 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 28 Nov 2023 12:35:16 +0000 (GMT)
-Message-ID: <dd74fdb8-93af-4799-b23a-b2595acfc8aa@linux.ibm.com>
-Date:   Tue, 28 Nov 2023 07:35:15 -0500
+        Tue, 28 Nov 2023 07:37:13 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 895EFD51
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 04:37:19 -0800 (PST)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A64ED66017A7;
+        Tue, 28 Nov 2023 12:37:16 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701175037;
+        bh=lUwoFImFc7lmJuNp+eDWdZh4k60TMdNkbVoZ37tKKEw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HUrtoyW334hiwg7m6r5OfJ6YeexY97cVAVI65jSfGGtKi2cQGPChvF/mG/sPrzlPe
+         12pG3bmFU6VIeHioT6XVnB5p/960z2qXw2zHZLwtS5glXm0ocPUB+hh9gB8vJn0Weh
+         VclkMRGrHBkMIHngWijmK+LaxJuziOSEZy15w7FC6XOeLNMMIj9mx7wv4y/IEP+Qdq
+         xs0ClHlst7tTwSa//pqMy4kjbA27QQByAtVEMIM5ZcCN64cWlptpuUxbtZ59X57seX
+         xO2+ND2rg6Ok9FIIXw0k9khxJEg2s+xrd4x5a04kN3QR2c/4s4d8/o0OF8OK/86gzo
+         wGCqvXwihns4A==
+Date:   Tue, 28 Nov 2023 13:37:12 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+        David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v18 04/26] drm/shmem-helper: Refactor locked/unlocked
+ functions
+Message-ID: <20231128133712.53a6f6cb@collabora.com>
+In-Reply-To: <kw5bho3jx73d3glvtewmjvqt4qty4khju6dcwypuh25ya3gi4b@7slmijjqdi4p>
+References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
+        <20231029230205.93277-5-dmitry.osipenko@collabora.com>
+        <wboljiwogeus7pwgaqzxaltt3xdavy2dzisygn6pdpoiwlnwgc@mwaiukjguzat>
+        <20231124115911.79ab24af@collabora.com>
+        <kw5bho3jx73d3glvtewmjvqt4qty4khju6dcwypuh25ya3gi4b@7slmijjqdi4p>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 7/8] tpm: Add tpm_buf_read_{u8,u16,u32}
-Content-Language: en-US
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        linux-integrity@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        William Roberts <bill.c.roberts@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>
-References: <20231124020237.27116-1-jarkko@kernel.org>
- <20231124020237.27116-8-jarkko@kernel.org>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <20231124020237.27116-8-jarkko@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: rP1408_SM3V8cG8L6CrC_155V6qQmkuY
-X-Proofpoint-GUID: bsfUcVzLwJuE12EumUqxacs0-ek95nM1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-28_12,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- impostorscore=0 lowpriorityscore=0 mlxscore=0 priorityscore=1501
- phishscore=0 suspectscore=0 mlxlogscore=675 clxscore=1015 bulkscore=0
- spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311280100
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -101,42 +72,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 28 Nov 2023 12:14:42 +0100
+Maxime Ripard <mripard@kernel.org> wrote:
 
-
-On 11/23/23 21:02, Jarkko Sakkinen wrote:
-> Declare reader functions for the instances of struct tpm_buf. If the read
-> goes out of boundary, TPM_BUF_BOUNDARY_ERROR is set, and subsequent read
-> will do nothing.
+> Hi,
 > 
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> ---
+> On Fri, Nov 24, 2023 at 11:59:11AM +0100, Boris Brezillon wrote:
+> > On Fri, 24 Nov 2023 11:40:06 +0100
+> > Maxime Ripard <mripard@kernel.org> wrote:
+> >   
+> > > On Mon, Oct 30, 2023 at 02:01:43AM +0300, Dmitry Osipenko wrote:  
+> > > > Add locked and remove unlocked postfixes from drm-shmem function names,
+> > > > making names consistent with the drm/gem core code.
+> > > > 
+> > > > Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+> > > > Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
+> > > > Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>    
+> > > 
+> > > This contradicts my earlier ack on a patch but...
+> > >   
+> > > > ---
+> > > >  drivers/gpu/drm/drm_gem_shmem_helper.c        | 64 +++++++++----------
+> > > >  drivers/gpu/drm/lima/lima_gem.c               |  8 +--
+> > > >  drivers/gpu/drm/panfrost/panfrost_drv.c       |  2 +-
+> > > >  drivers/gpu/drm/panfrost/panfrost_gem.c       |  6 +-
+> > > >  .../gpu/drm/panfrost/panfrost_gem_shrinker.c  |  2 +-
+> > > >  drivers/gpu/drm/panfrost/panfrost_mmu.c       |  2 +-
+> > > >  drivers/gpu/drm/v3d/v3d_bo.c                  |  4 +-
+> > > >  drivers/gpu/drm/virtio/virtgpu_object.c       |  4 +-
+> > > >  include/drm/drm_gem_shmem_helper.h            | 36 +++++------
+> > > >  9 files changed, 64 insertions(+), 64 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> > > > index 0d61f2b3e213..154585ddae08 100644
+> > > > --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+> > > > +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> > > > @@ -43,8 +43,8 @@ static const struct drm_gem_object_funcs drm_gem_shmem_funcs = {
+> > > >  	.pin = drm_gem_shmem_object_pin,
+> > > >  	.unpin = drm_gem_shmem_object_unpin,
+> > > >  	.get_sg_table = drm_gem_shmem_object_get_sg_table,
+> > > > -	.vmap = drm_gem_shmem_object_vmap,
+> > > > -	.vunmap = drm_gem_shmem_object_vunmap,
+> > > > +	.vmap = drm_gem_shmem_object_vmap_locked,
+> > > > +	.vunmap = drm_gem_shmem_object_vunmap_locked,    
+> > > 
+> > > While I think we should indeed be consistent with the names, I would
+> > > also expect helpers to get the locking right by default.  
+> > 
+> > Wait, actually I think this patch does what you suggest already. The
+> > _locked() prefix tells the caller: "you should take care of the locking,
+> > I expect the lock to be held when this is hook/function is called". So
+> > helpers without the _locked() prefix take care of the locking (which I
+> > guess matches your 'helpers get the locking right' expectation), and
+> > those with the _locked() prefix don't.  
+> 
+> What I meant by "getting the locking right" is indeed a bit ambiguous,
+> sorry. What I'm trying to say I guess is that, in this particular case,
+> I don't think you can expect the vmap implementation to be called with
+> or without the locks held. The doc for that function will say that it's
+> either one or the other, but not both.
+> 
+> So helpers should follow what is needed to provide a default vmap/vunmap
+> implementation, including what locking is expected from a vmap/vunmap
+> implementation.
 
-> + */
-> +u16 tpm_buf_read_u16(struct tpm_buf *buf, off_t *offset)
-> +{
-> +	u16 value;
+Hm, yeah, I think that's a matter of taste. When locking is often
+deferrable, like it is in DRM, I find it beneficial for funcions and
+function pointers to reflect the locking scheme, rather than relying on
+people properly reading the doc, especially when this is the only
+outlier in the group of drm_gem_object_funcs we already have, and it's
+not event documented at the drm_gem_object_funcs level [1] :P.
 
-This should be __be16 ...
+> 
+> If that means that vmap is always called with the locks taken, then
+> drm_gem_shmem_object_vmap can just assume that it will be called with
+> the locks taken and there's no need to mention it in the name (and you
+> can probably sprinkle a couple of lockdep assertion to make sure the
+> locking is indeed consistent).
 
-> +
-> +	tpm_buf_read(buf, offset, sizeof(value), &value);
-> +
-> +	return be16_to_cpu(value);
-> +}
-> +EXPORT_SYMBOL_GPL(tpm_buf_read_u16);
-> +
-> +/**
-> + * tpm_buf_read_u32() - Read 32-bit word from a TPM buffer
-> + * @buf:	&tpm_buf instance
-> + * @offset:	offset within the buffer
-> + *
-> + * Return: next 32-bit word
-> + */
-> +u32 tpm_buf_read_u32(struct tpm_buf *buf, off_t *offset)
-> +{
-> +	u32 value;
+Things get very confusing when you end up having drm_gem_shmem helpers
+that are suffixed with _locked() to encode the fact locking is the
+caller's responsibility and no suffix for the
+callee-takes-care-of-the-locking semantics, while other helpers that are
+not suffixed at all actually implement the
+caller-should-take-care-of-the-locking semantics.
 
-... and this __be32 to avoid this here:
+> 
+> > > I'm not sure how reasonable it is, but I think I'd prefer to turn this
+> > > around and keep the drm_gem_shmem_object_vmap/unmap helpers name, and
+> > > convert whatever function needs to be converted to the unlock suffix so
+> > > we get a consistent naming.  
+> > 
+> > That would be an _unlocked() prefix if we do it the other way around. I
+> > think the main confusion comes from the names of the hooks in
+> > drm_gem_shmem_funcs. Some of them, like drm_gem_shmem_funcs::v[un]map()
+> > are called with the GEM resv lock held, and locking is handled by the
+> > core, others, like drm_gem_shmem_funcs::[un]pin() are called
+> > without the GEM resv lock held, and locking is deferred to the
+> > implementation. As I said, I don't mind prefixing hooks/helpers with
+> > _unlocked() for those that take care of the locking, and no prefix for
+> > those that expects locks to be held, as long as it's consistent, but I
+> > just wanted to make sure we're on the same page :-).  
+> 
+> What about _nolock then? It's the same number of characters than
+> _locked, plus it expresses what the function is (not) doing, not what
+> context it's supposed to be called in?
 
-drivers/char/tpm/tpm-buf.c:203:16: warning: cast to restricted __be16
-drivers/char/tpm/tpm-buf.c:220:16: warning: cast to restricted __be32
+Just did a quick
+
+  git grep _nolock drivers/gpu/drm
+
+and it returns zero result, where the _locked/_unlocked pattern seems
+to already be widely used. Not saying we shouldn't change that, but it
+doesn't feel like a change we should do as part of this series.
+
+Regards,
+
+Boris
+
+[1]https://elixir.bootlin.com/linux/v6.7-rc3/source/include/drm/drm_gem.h#L155
