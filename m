@@ -2,66 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3EC7FB551
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:13:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6103B7FB553
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:13:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234815AbjK1JMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 04:12:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44658 "EHLO
+        id S231504AbjK1JNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 04:13:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234786AbjK1JMq (ORCPT
+        with ESMTP id S230298AbjK1JNe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 04:12:46 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2410CD72;
-        Tue, 28 Nov 2023 01:12:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701162769; x=1732698769;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Un1oCC8/yCEZbKgPQ5cvJgMpihh9zk4TGbWwvRUSGUU=;
-  b=K70CKCYz6kp8wUEGy6e4Tjx95lOOScuNk63HhQHAZVQRxzHc5Xe8ebYq
-   V7bXkNELqIrjDW1FuoZLalYsIbtSuKPhuvkG5+WarUCILbrvj+J3A8gV8
-   l4alWX+SCkhURwAvofYphq8bTOz+l2KTQp4sYW/AexFeIlQB9tv1OT65E
-   anpkeeJFQBARv/lrl3+orFz5JY8KpwVXMUjwgY0DDZFu1E7GV0VmWCIuy
-   E2ow5cR/pHEovk2Udsf+dW0EeuvHwn058GLQxGzUL4CWotjEFHlaTrvK3
-   pWlQXGAUnyzaFZagn5FmgDSrkoNIev/MdthYVp9Ab+qVpcDnsicHwZS46
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="373053667"
-X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
-   d="scan'208";a="373053667"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 01:12:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="1100026063"
-X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
-   d="scan'208";a="1100026063"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.221.84])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 01:12:32 -0800
-Message-ID: <66166245-f906-4057-8b44-16ec5a33e6e2@intel.com>
-Date:   Tue, 28 Nov 2023 11:12:30 +0200
+        Tue, 28 Nov 2023 04:13:34 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43982CC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:13:41 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65F74C433C8;
+        Tue, 28 Nov 2023 09:13:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1701162820;
+        bh=ZeeCm7idj89U8UZKIa3RFNtoR2EbeGgCevjyYm3xwuo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ggESWRz7ES06rvYsVhRW6Q8VbbyoBOOB0rxl3/SsUCtei8Rc7gqSGyaRmuTyyOKE4
+         irFXRKPWlUl04mE3x68G4p58//02mSUHY335JTYQYxxRp04YoXtkGa9ZUBQc98WuII
+         ZhXcinQHvj6knNvuiesvuS0JMQkkYZCyWX7tWHzQ=
+Date:   Tue, 28 Nov 2023 09:13:37 +0000
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Saeed Mahameed <saeed@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jason Gunthorpe <jgg@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jiri Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>,
+        Itay Avraham <itayavr@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH V3 3/5] misc: mlx5ctl: Add info ioctl
+Message-ID: <2023112802-false-tumble-ea38@gregkh>
+References: <20231121070619.9836-1-saeed@kernel.org>
+ <20231121070619.9836-4-saeed@kernel.org>
+ <2023112722-imitate-impromptu-c9a7@gregkh>
+ <ZWT-elg2hzX7s7B4@x130>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V13 14/21] mmc: sdhci-uhs2: add set_ios()
-Content-Language: en-US
-To:     Victor Shih <victorshihgli@gmail.com>, ulf.hansson@linaro.org
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        benchuanggli@gmail.com, HL.Liu@genesyslogic.com.tw,
-        Greg.tu@genesyslogic.com.tw, takahiro.akashi@linaro.org,
-        dlunev@chromium.org, Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        Victor Shih <victor.shih@genesyslogic.com.tw>
-References: <20231117113149.9069-1-victorshihgli@gmail.com>
- <20231117113149.9069-15-victorshihgli@gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20231117113149.9069-15-victorshihgli@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWT-elg2hzX7s7B4@x130>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,290 +53,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/11/23 13:31, Victor Shih wrote:
-> From: Victor Shih <victor.shih@genesyslogic.com.tw>
+On Mon, Nov 27, 2023 at 12:39:22PM -0800, Saeed Mahameed wrote:
+> On 27 Nov 19:09, Greg Kroah-Hartman wrote:
+> > On Mon, Nov 20, 2023 at 11:06:17PM -0800, Saeed Mahameed wrote:
+> > > +static int mlx5ctl_info_ioctl(struct file *file,
+> > > +			      struct mlx5ctl_info __user *arg,
+> > > +			      size_t usize)
+> > > +{
+> > > +	struct mlx5ctl_fd *mfd = file->private_data;
+> > > +	struct mlx5ctl_dev *mcdev = mfd->mcdev;
+> > > +	struct mlx5_core_dev *mdev = mcdev->mdev;
+> > > +	struct mlx5ctl_info *info;
+> > > +	size_t ksize = 0;
+> > > +	int err = 0;
+> > > +
+> > > +	ksize = max(sizeof(struct mlx5ctl_info), usize);
+> > 
+> > Why / How can usize be larger than the structure size and you still want
+> > to allocate a memory chunk that big?  Shouldn't the size always match?
+> > 
 > 
-> This is a sdhci version of mmc's set_ios operation.
-> THis is used to handle basic IO bus setting.
-> It covers both UHS-I and UHS-II.
-> 
-> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw>
-> ---
-> 
-> Updates in V13:
->  - Add judgment condition for power mode in the __sdhci_uhs2_set_ios().
->  - Modify comment message.
-> 
-> Updates in V9:
->  - Simplity the turning_on_clk in sdhci_set_ios().
-> 
-> Updates in V8:
->  - Add the judgment formula for MMC_TIMING_SPEED_A_HD, MMC_TIMING_SPEED_B
->    and MMC_TIMING_SPEED_B_HD in __sdhci_uhs2_set_ios().
->  - Add the switch case for MMC_TIMING_SPEED_A_HD, MMC_TIMING_SPEED_B
->    and MMC_TIMING_SPEED_B_HD in sdhci_get_preset_value().
->  - mmc_opt_regulator_set_ocr() to instead of mmc_regulator_set_ocr()
->    in sdhci_uhs2_set_ios().
-> 
-> Updates in V7:
->  - Remove unnecessary functions.
-> 
-> Updates in V6:
->  - Modify return value in some functions.
->  - Remove unnecessary functions.
-> 
-> ---
-> 
->  drivers/mmc/host/sdhci-uhs2.c | 95 +++++++++++++++++++++++++++++++++++
->  drivers/mmc/host/sdhci-uhs2.h |  1 +
->  drivers/mmc/host/sdhci.c      | 55 ++++++++++++--------
->  drivers/mmc/host/sdhci.h      |  2 +
->  4 files changed, 132 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sdhci-uhs2.c
-> index 5a79dd29aa38..a55b910f3615 100644
-> --- a/drivers/mmc/host/sdhci-uhs2.c
-> +++ b/drivers/mmc/host/sdhci-uhs2.c
-> @@ -214,6 +214,101 @@ void sdhci_uhs2_set_timeout(struct sdhci_host *host, struct mmc_command *cmd)
->  }
->  EXPORT_SYMBOL_GPL(sdhci_uhs2_set_timeout);
->  
-> +/**
-> + * sdhci_uhs2_clear_set_irqs - set Error Interrupt Status Enable register
-> + * @host:	SDHCI host
-> + * @clear:	bit-wise clear mask
-> + * @set:	bit-wise set mask
-> + *
-> + * Set/unset bits in UHS-II Error Interrupt Status Enable register
-> + */
-> +void sdhci_uhs2_clear_set_irqs(struct sdhci_host *host, u32 clear, u32 set)
-> +{
-> +	u32 ier;
-> +
-> +	ier = sdhci_readl(host, SDHCI_UHS2_INT_STATUS_ENABLE);
-> +	ier &= ~clear;
-> +	ier |= set;
-> +	sdhci_writel(host, ier, SDHCI_UHS2_INT_STATUS_ENABLE);
-> +	sdhci_writel(host, ier, SDHCI_UHS2_INT_SIGNAL_ENABLE);
-> +}
-> +EXPORT_SYMBOL_GPL(sdhci_uhs2_clear_set_irqs);
-> +
-> +static void __sdhci_uhs2_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
-> +{
-> +	struct sdhci_host *host = mmc_priv(mmc);
-> +	u8 cmd_res, dead_lock;
-> +	u16 ctrl_2;
-> +
-> +	/* UHS2 Timeout Control */
-> +	sdhci_calc_timeout_uhs2(host, &cmd_res, &dead_lock);
-> +
-> +	/* change to use calculate value */
-> +	cmd_res |= FIELD_PREP(SDHCI_UHS2_TIMER_CTRL_DEADLOCK_MASK, dead_lock);
-> +
-> +	sdhci_uhs2_clear_set_irqs(host,
-> +				  SDHCI_UHS2_INT_CMD_TIMEOUT |
-> +				  SDHCI_UHS2_INT_DEADLOCK_TIMEOUT,
-> +				  0);
-> +	sdhci_writeb(host, cmd_res, SDHCI_UHS2_TIMER_CTRL);
-> +	sdhci_uhs2_clear_set_irqs(host, 0,
-> +				  SDHCI_UHS2_INT_CMD_TIMEOUT |
-> +				  SDHCI_UHS2_INT_DEADLOCK_TIMEOUT);
-> +
-> +	/* UHS2 timing. Note, UHS2 timing is disabled when powering off */
-> +	ctrl_2 = sdhci_readw(host, SDHCI_HOST_CONTROL2);
-> +	if (ios->power_mode != MMC_POWER_OFF &&
-> +	    (ios->timing == MMC_TIMING_UHS2_SPEED_A ||
-> +	     ios->timing == MMC_TIMING_UHS2_SPEED_A_HD ||
-> +	     ios->timing == MMC_TIMING_UHS2_SPEED_B ||
-> +	     ios->timing == MMC_TIMING_UHS2_SPEED_B_HD))
-> +		ctrl_2 |= SDHCI_CTRL_UHS2 | SDHCI_CTRL_UHS2_ENABLE;
-> +	else
-> +		ctrl_2 &= ~(SDHCI_CTRL_UHS2 | SDHCI_CTRL_UHS2_ENABLE);
-> +	sdhci_writew(host, ctrl_2, SDHCI_HOST_CONTROL2);
-> +	host->timing = ios->timing;
-> +
-> +	if (!(host->quirks2 & SDHCI_QUIRK2_PRESET_VALUE_BROKEN))
-> +		sdhci_enable_preset_value(host, true);
-> +
-> +	if (host->ops->set_power)
-> +		host->ops->set_power(host, ios->power_mode, ios->vdd);
-> +	else
-> +		sdhci_uhs2_set_power(host, ios->power_mode, ios->vdd);
-> +
-> +	sdhci_set_clock(host, host->clock);
-> +}
-> +
-> +static int sdhci_uhs2_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
-> +{
-> +	struct sdhci_host *host = mmc_priv(mmc);
-> +
-> +	pr_debug("%s: clock %uHz powermode %u Vdd %u timing %u\n",
-> +		 mmc_hostname(mmc), ios->clock, ios->power_mode, ios->vdd, ios->timing);
-> +
-> +	if (!sdhci_uhs2_mode(host)) {
-> +		sdhci_set_ios(mmc, ios);
-> +		return 0;
-> +	}
-> +
-> +	if (ios->power_mode == MMC_POWER_UNDEFINED)
-> +		return 0;
-> +
-> +	if (host->flags & SDHCI_DEVICE_DEAD) {
-> +		if (ios->power_mode == MMC_POWER_OFF) {
-> +			mmc_opt_regulator_set_ocr(mmc, mmc->supply.vmmc, 0);
-> +			mmc_regulator_set_vqmmc2(mmc, ios);
+> new user-space old kernel, the driver would allocate the usiae and make
+> sure to clear all the buffer with 0's, then fill in what the kernel
+> understands and send the whole buffer back to user with trailer always
+> zeroed out.
 
-mmc_regulator_set_vqmmc2() only sets the voltage, it doesn't
-disable the regulator.
+No, at that point you know something is wrong and you need to just abort
+and return -EINVAL as the structure sizes do not match.
 
-> +		}
-> +		return -1;
-> +	}
-> +
-> +	sdhci_set_ios_common(mmc, ios);
-> +
-> +	__sdhci_uhs2_set_ios(mmc, ios);
-> +
-> +	return 0;
-> +}
-> +
->  /*****************************************************************************\
->   *                                                                           *
->   * Driver init/exit                                                          *
-> diff --git a/drivers/mmc/host/sdhci-uhs2.h b/drivers/mmc/host/sdhci-uhs2.h
-> index ccf4e1834c2d..a3641c5f8c77 100644
-> --- a/drivers/mmc/host/sdhci-uhs2.h
-> +++ b/drivers/mmc/host/sdhci-uhs2.h
-> @@ -181,5 +181,6 @@ void sdhci_uhs2_dump_regs(struct sdhci_host *host);
->  bool sdhci_uhs2_mode(struct sdhci_host *host);
->  void sdhci_uhs2_reset(struct sdhci_host *host, u16 mask);
->  void sdhci_uhs2_set_timeout(struct sdhci_host *host, struct mmc_command *cmd);
-> +void sdhci_uhs2_clear_set_irqs(struct sdhci_host *host, u32 clear, u32 set);
->  
->  #endif /* __SDHCI_UHS2_H */
-> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> index 4d50cac7717d..64704f6537e0 100644
-> --- a/drivers/mmc/host/sdhci.c
-> +++ b/drivers/mmc/host/sdhci.c
-> @@ -47,8 +47,6 @@
->  static unsigned int debug_quirks = 0;
->  static unsigned int debug_quirks2;
->  
-> -static void sdhci_enable_preset_value(struct sdhci_host *host, bool enable);
-> -
->  static bool sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd);
->  
->  void sdhci_dumpregs(struct sdhci_host *host)
-> @@ -1877,6 +1875,12 @@ static u16 sdhci_get_preset_value(struct sdhci_host *host)
->  	case MMC_TIMING_MMC_HS400:
->  		preset = sdhci_readw(host, SDHCI_PRESET_FOR_HS400);
->  		break;
-> +	case MMC_TIMING_UHS2_SPEED_A:
-> +	case MMC_TIMING_UHS2_SPEED_A_HD:
-> +	case MMC_TIMING_UHS2_SPEED_B:
-> +	case MMC_TIMING_UHS2_SPEED_B_HD:
-> +		preset = sdhci_readw(host, SDHCI_PRESET_FOR_UHS2);
-> +		break;
->  	default:
->  		pr_warn("%s: Invalid UHS-I mode selected\n",
->  			mmc_hostname(host->mmc));
-> @@ -2323,24 +2327,9 @@ static bool sdhci_presetable_values_change(struct sdhci_host *host, struct mmc_i
->  	       (sdhci_preset_needed(host, ios->timing) || host->drv_type != ios->drv_type);
->  }
->  
-> -void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
-> +void sdhci_set_ios_common(struct mmc_host *mmc, struct mmc_ios *ios)
->  {
->  	struct sdhci_host *host = mmc_priv(mmc);
-> -	bool reinit_uhs = host->reinit_uhs;
-> -	bool turning_on_clk = false;
-> -	u8 ctrl;
-> -
-> -	host->reinit_uhs = false;
-> -
-> -	if (ios->power_mode == MMC_POWER_UNDEFINED)
-> -		return;
-> -
-> -	if (host->flags & SDHCI_DEVICE_DEAD) {
-> -		if (!IS_ERR(mmc->supply.vmmc) &&
-> -		    ios->power_mode == MMC_POWER_OFF)
-> -			mmc_regulator_set_ocr(mmc, mmc->supply.vmmc, 0);
-> -		return;
-> -	}
->  
->  	/*
->  	 * Reset the chip on each power off.
-> @@ -2357,8 +2346,6 @@ void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
->  		sdhci_enable_preset_value(host, false);
->  
->  	if (!ios->clock || ios->clock != host->clock) {
-> -		turning_on_clk = ios->clock && !host->clock;
-> -
->  		host->ops->set_clock(host, ios->clock);
->  		host->clock = ios->clock;
->  
-> @@ -2374,6 +2361,31 @@ void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
->  			mmc->max_busy_timeout /= host->timeout_clk;
->  		}
->  	}
-> +}
-> +EXPORT_SYMBOL_GPL(sdhci_set_ios_common);
-> +
-> +void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
-> +{
-> +	struct sdhci_host *host = mmc_priv(mmc);
-> +	bool reinit_uhs = host->reinit_uhs;
-> +	bool turning_on_clk;
-> +	u8 ctrl;
-> +
-> +	host->reinit_uhs = false;
-> +
-> +	if (ios->power_mode == MMC_POWER_UNDEFINED)
-> +		return;
-> +
-> +	if (host->flags & SDHCI_DEVICE_DEAD) {
-> +		if (!IS_ERR(mmc->supply.vmmc) &&
-> +		    ios->power_mode == MMC_POWER_OFF)
-> +			mmc_regulator_set_ocr(mmc, mmc->supply.vmmc, 0);
-> +		return;
-> +	}
-> +
-> +	turning_on_clk = ios->clock != host->clock && ios->clock && !host->clock;
-> +
-> +	sdhci_set_ios_common(mmc, ios);
->  
->  	if (host->ops->set_power)
->  		host->ops->set_power(host, ios->power_mode, ios->vdd);
-> @@ -2958,7 +2970,7 @@ int sdhci_execute_tuning(struct mmc_host *mmc, u32 opcode)
->  }
->  EXPORT_SYMBOL_GPL(sdhci_execute_tuning);
->  
-> -static void sdhci_enable_preset_value(struct sdhci_host *host, bool enable)
-> +void sdhci_enable_preset_value(struct sdhci_host *host, bool enable)
->  {
->  	/* Host Controller v3.00 defines preset value registers */
->  	if (host->version < SDHCI_SPEC_300)
-> @@ -2986,6 +2998,7 @@ static void sdhci_enable_preset_value(struct sdhci_host *host, bool enable)
->  		host->preset_enabled = enable;
->  	}
->  }
-> +EXPORT_SYMBOL_GPL(sdhci_enable_preset_value);
->  
->  static void sdhci_post_req(struct mmc_host *mmc, struct mmc_request *mrq,
->  				int err)
-> diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
-> index cdb418d97c4d..b2e425dfac95 100644
-> --- a/drivers/mmc/host/sdhci.h
-> +++ b/drivers/mmc/host/sdhci.h
-> @@ -848,6 +848,8 @@ void sdhci_reset(struct sdhci_host *host, u8 mask);
->  void sdhci_set_uhs_signaling(struct sdhci_host *host, unsigned timing);
->  int sdhci_execute_tuning(struct mmc_host *mmc, u32 opcode);
->  int __sdhci_execute_tuning(struct sdhci_host *host, u32 opcode);
-> +void sdhci_enable_preset_value(struct sdhci_host *host, bool enable);
-> +void sdhci_set_ios_common(struct mmc_host *mmc, struct mmc_ios *ios);
->  void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios);
->  int sdhci_start_signal_voltage_switch(struct mmc_host *mmc,
->  				      struct mmc_ios *ios);
+If you need to "extend" the structure to include more information, do so
+in a new ioctl.
 
+> > > --- /dev/null
+> > > +++ b/include/uapi/misc/mlx5ctl.h
+> > > @@ -0,0 +1,24 @@
+> > > +/* SPDX-License-Identifier: BSD-3-Clause OR GPL-2.0 WITH Linux-syscall-note */
+> > > +/* Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved. */
+> > > +
+> > > +#ifndef __MLX5CTL_IOCTL_H__
+> > > +#define __MLX5CTL_IOCTL_H__
+> > > +
+> > > +struct mlx5ctl_info {
+> > > +	__aligned_u64 flags;
+> > 
+> > Is this used?
+> > 
+> 
+> no, not yet, but it is good for future extendibility and compatibility
+> checking.
+
+But you are not checking anything now, so please don't include something
+that will not work in the future.
+
+> > > +	__u32 size;
+> > > +	__u8 devname[64]; /* underlaying ConnectX device */
+> > 
+> > 64 should be a define somewhere, right?  And why 64?
+> > 
+> 
+> It is usually the kobj->name of the underlying device, I will have to
+> define this in the uAPI. 64 seemed large enough, any other suggestion ?
+
+What happens if the names get bigger?
+
+> This field is informational only for the user to have an idea which is the
+> underlying physical device, it's ok if in odd situation the name has to be
+> truncated to fit into the uAPI buffer.
+
+As the truncation will happen on the right side of the string, usually
+the actual device id or unique identifier, that's not going to help out
+much to drop that portion :(
+
+> > > +	__u16 uctx_uid; /* current process allocated UCTX UID */
+> > > +	__u16 reserved1;
+> > 
+> > Where is this checked to be always 0?  Well it's a read so I guess where
+> > is the documentation saying it will always be set to 0?
+> > 
+> 
+> I forgot to add the checks in the info ioctl path, will add that.
+> Isn't it an unwritten rule that reserved fields has to be always 0 ?
+> Do I really need to document this ?
+
+It is a written rule that reserved fields must be 0, please see the
+documentation for how to write an ioctl.
+
+thanks,
+
+greg k-h
