@@ -2,145 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A88C67FB486
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:44:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1AF57FB48D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:44:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344200AbjK1Inx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 03:43:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54308 "EHLO
+        id S1344209AbjK1Ioq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 03:44:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232697AbjK1Inw (ORCPT
+        with ESMTP id S232422AbjK1Iop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 03:43:52 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9304E7
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:43:57 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-32faea0fa1fso2922722f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:43:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701161036; x=1701765836; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4bAL9wCzZrXyWtxL7zNG9vKSMElpc631V0JZdvT/8cE=;
-        b=n8DEtSpbP4Lc12SncjYLjFAKhEcQacRIdvIipccCExHuZgK9eUVTY3X2i4pmLw+EuW
-         SK/fel6OTf/1olZnKC9vU7lZA46w2/EghjfQ52XkQUIaBoKie+tItiLJUqgrVU0N291h
-         Bc7yFGRP6QyaTiwp/KWCttxDHvLcfsOMDINZJsi1hdpVhHgTBzh2LQuwyPMkpjAhPKv1
-         EFtCY5lVA1kZcpngSUuFhjRJ5H9uXO2HuKAjTdAt5RrK8QrKDIS11i7XfJ1ZX7MYYZZt
-         nhf8iGY1qAJ6AknZxijfFPgnDzpahKy1lOVgvA0/7Uo6kpm5vs2qOBdx4CwceQQgrTOq
-         zOcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701161036; x=1701765836;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4bAL9wCzZrXyWtxL7zNG9vKSMElpc631V0JZdvT/8cE=;
-        b=no/I7AY53n5VbsolobiEtoAQOmBS8DBloTTEU9Zbb5B5uucS5BD/vSVHF8UiNDI5CL
-         LhgOgvobCntgplpTiEaELniERVz7h/YiCXwqBAMp7SJwaioBpYQY4Alot8jE83AdT4MO
-         OmbBsQbkymbI4Ni5PtOlBD4Fuybhl6bCCAcWzTikPYqRGLtxmvpJTaAdaO26tRqEdf35
-         eeVlj0gWyM+mZIJficxVRoJF38jA6/DGYr/8uq/2dt+Z7690Y9eVcUhBBzzNzfzpDk5z
-         4fKQkVtBEm1Shdi+KC24JrqzWHxE5nAbQQvroVe/CS+q/DlkoZdQLMEfUYDS3E/0fWcb
-         XZrA==
-X-Gm-Message-State: AOJu0YxsGsxvb9qgJfOucVJdXsRBVqrdyfIM/hyJK83619TFFNDRbcaV
-        r69a17XUITMJsa1HcA3s21YcLfwPY65WW/i5jStheUbv
-X-Google-Smtp-Source: AGHT+IGLKX2x9ZeYgdGvBXnmFO0RbxBreqNPQu++FMoxAjnczCD7QKz1LViCkE3nfFkXvajqCdiNkw==
-X-Received: by 2002:a5d:64e3:0:b0:333:47e:4cf4 with SMTP id g3-20020a5d64e3000000b00333047e4cf4mr4189105wri.15.1701161036204;
-        Tue, 28 Nov 2023 00:43:56 -0800 (PST)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id o19-20020a05600c4fd300b0040b45356b72sm7190730wmq.33.2023.11.28.00.43.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 00:43:55 -0800 (PST)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Date:   Tue, 28 Nov 2023 09:43:53 +0100
-Subject: [PATCH v2] dt-bindings: PCI: qcom: document the SM8650 PCIe
- Controller
+        Tue, 28 Nov 2023 03:44:45 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC3BA7
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:44:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 675D7C433C7;
+        Tue, 28 Nov 2023 08:44:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1701161091;
+        bh=dTDQKOZmcNc1e9sHybD4UiRvu3mNjp8M42tvMHpJpRk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JZhu92WixaQwi/Qx/kebN6h+UCySkmrbrTHsFWprEHwTG48AWwb+lKHjxCv5dHJ4w
+         chWAyGqkaHdvhuli7lTrwZjVYpY6SwMCIPjBYpSNQGdyGyAWyRnyweGFm4Hmi6ClqS
+         za0SQHyPEvcQEzSTCDO92+FemmEAAM+/XPyzHj1w=
+Date:   Tue, 28 Nov 2023 08:44:47 +0000
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Matthew Maurer <mmaurer@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Gary Guo <gary@garyguo.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-modules@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, Laura Abbott <laura@labbott.name>
+Subject: Re: [PATCH v2 0/5] MODVERSIONS + RUST Redux
+Message-ID: <2023112837-jailbreak-carport-ba09@gregkh>
+References: <20231118025748.2778044-1-mmaurer@google.com>
+ <CAK7LNAQt8fy5+vSwpd1aXfzjzeZ5hiyW7EW9SW7pbG2eTJZAOA@mail.gmail.com>
+ <CAGSQo00hyCTVsqHtrzKBBPvuH38z5yRm_4jzdi00C0RV+8APwQ@mail.gmail.com>
+ <2023112314-tubby-eligibly-007a@gregkh>
+ <CAK7LNAT-OcaCi6tqPRgZxPXOV6u+YbaO_0RxtfmrVXPzdrio0Q@mail.gmail.com>
+ <2023112312-certified-substance-007c@gregkh>
+ <CAGSQo005hRiUZdeppCifDqG9zFDJRwahpBLE4x7-MyfJscn7tQ@mail.gmail.com>
+ <2023112824-dispatch-wooing-39de@gregkh>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231128-topic-sm8650-upstream-bindings-pcie-v2-1-b72e2d13bcf1@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAEioZWUC/42NQQ6CMBAAv0J6dk1b0oqe/IfhgGWBTaRttkg0p
- H+3Eh/gceYws4mETJjEpdoE40qJgi+gD5VwU+dHBOoLCy11raSysIRIDtLcWCPhGdPC2M1wJ9+
- THxNERwjG4lma2jptGlFKkXGg1365tYUnSkvg9z5d1df++tr81V8VKJBY93aQzjT6dH2Q7zgcA
- 4+izTl/AI6OQ63XAAAA
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1568;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=b9Lr7rRAqvBSJYXD0r7yOgr6vC6l7cqk9pw+NrXCzHI=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlZahK9SITHC1qQaFOxJtM+0sSsIsMwuBf2G83PX8h
- OLS6Q1GJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZWWoSgAKCRB33NvayMhJ0b+5D/
- 41siyPhaZtKiccO/sqXLqowxzzKa+Ces19XNGgAwfLwaCbu6s4lxoN8+AgoRYpekrVsPM+Kg6SPVgN
- WD0AXKfzhWV/C4m+Y4gbAKc35rv4YaHnGkc3ha0i0GvmJhmIpwFumze6mKrOtspdSfLWXsUJFj0OhH
- LMHrZg6KtsFSYga3psEwcpG6C3nWEg7eQquY+mC+m/xQN5gbtbGiJ2B+x2l7URNgzI95RXb/R8m5IP
- sqNqEQ/zp9niL3xsfIn6zv/0hzZLnk5+graX4LShvSDirqypjjmByL9s7724eqEOEFsRb6KmBa9qcD
- dP5zDeUYkdvR+KrKME/BxsYcicosx/6+RxtotofMWbWu2CxhW9Zf0CFMhlZpgwpYnCMfdTrB/9EH85
- cIaFxHtm/Efzdk8C0Pxmj90cwDCeT58AkjvLIG7hALtBrddaTdCWnORSVTwSL59ue4lW9r7s31c0jG
- 5X4S3mfa2102SGgsTlhxXNaZ9V9mwZH64MiMdAXAtlN7TV8v4TEQAMiAoAsR+YGKJtbuok5A8RvFuM
- 4SJbHRNweFIsY8RL+4NpC5HApIi/UtlN7AvNLirTTCwjI3aA4mWs6osKpIWnykIHNnGv46b/1Bxm8N
- ++YCs4kCxV4S7zsHDyWf+Ns7FOSo7+N/LWYkGkHdLsYzCS7ydat5FNN+mO8w==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023112824-dispatch-wooing-39de@gregkh>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the PCIe Controller on the SM8650 platform by using the
-SM8550 bindings as a fallback.
+On Tue, Nov 28, 2023 at 08:05:26AM +0000, Greg KH wrote:
+> On Mon, Nov 27, 2023 at 11:27:07AM -0800, Matthew Maurer wrote:
+> > > > >
+> > > > > > With regards to future directions that likely won't work for loosening it:
+> > > > > > Unfortunately, the .rmeta format itself is not stable, so I wouldn't want to
+> > > > > > teach genksyms to open it up and split out the pieces for specific functions.
+> > > > > > Extending genksyms to parse Rust would also not solve the situation -
+> > > > > > layouts are allowed to differ across compiler versions or even (in rare
+> > > > > > cases) seemingly unrelated code changes.
+> > > > >
+> > > > > What do you mean by "layout" here?  Yes, the crcs can be different
+> > > > > across compiler versions and seemingly unrelated code changes (genksyms
+> > > > > is VERY fragile) but that's ok, that's not what you are checking here.
+> > > > > You want to know if the rust function signature changes or not from the
+> > > > > last time you built the code, with the same compiler and options, that's
+> > > > > all you are verifying.
+> > What I mean by layout here is that if you write in Rust:
+> > struct Foo {
+> >   x: i32,
+> >   y: i32,
+> > }
+> > it is not guaranteed to have the same layout across different compilations, even
+> > within the same compiler. See
+> > https://doc.rust-lang.org/reference/type-layout.html#the-rust-representation
+> 
+> Then you are going to have big problems, sorry.
+> 
+> > Specifically, the compiler is allowed to arbitrarily insert padding,
+> > reorder fields, etc.
+> > on the same code as long as the overall alignment of the struct and individual
+> > alignment of the fields remains correct and non-overlapping.
+> > 
+> > This means the compiler is *explicitly* allowed to, for example, permute x and y
+> > as an optimization. In the above example this is unlikely, but if you
+> > instead consider
+> > struct Bar {
+> >   x: i8,
+> >   y: i64,
+> >   z: i8,
+> > }
+> > It's easy to see why the compiler might decide to structure this as
+> > y,x,z to reduce the
+> > size of the struct. Those optimization decisions may be affected by
+> > any other part of
+> > the code, PGO, etc.
+> 
+> Then you all need to figure out some way to determine how the compiler
+> layed out the structure after it compiled/optimized it and be able to
+> compare it to previous builds (or just generate a crc based on the
+> layout it chose.)
+> 
+> > > > > > Future directions that might work for loosening it:
+> > > > > > * Generating crcs from debuginfo + compiler + flags
+> > > > > > * Adding a feature to the rust compiler to dump this information. This
+> > > > > > is likely to
+> > > > > >   get pushback because Rust's current stance is that there is no ability to load
+> > > > > >   object code built against a different library.
+> > > > >
+> > > > > Why not parse the function signature like we do for C?
+> > Because the function signature is insufficient to check the ABI, see above.
+> > > > >
+> > > > > > Would setting up Rust symbols so that they have a crc built out of .rmeta be
+> > > > > > sufficient for you to consider this useful? If not, can you help me understand
+> > > > > > what level of precision would be required?
+> > > > >
+> > > > > What exactly does .rmeta have to do with the function signature?  That's
+> > > > > all you care about here.
+> > The .rmeta file contains the decisions the compiler made about layout
+> > in the crate
+> > you're interfacing with. For example, the choice to encode Bar
+> > with a yxz field order would be written into the .rmeta file.
+> 
+> Ok, then yes, can you parse the .rmeta file to get that information?
+> 
+> > > > rmeta is generated per crate.
+> > > >
+> > > > CRC is computed per symbol.
+> > > >
+> > > > They have different granularity.
+> > > > It is weird to refuse a module for incompatibility
+> > > > of a symbol that it is not using at all.
+> > >
+> > > I agree, this should be on a per-symbol basis, so the Rust
+> > > infrastructure in the kernel needs to be fixed up to support this
+> > > properly, not just ignored like this patchset does.
+> > I agree there is a divergence here, I tried to point it out so that it
+> > wouldn't be
+> > a surprise later. The .rmeta file itself (which is the only way we
+> > could know that
+> > the ABI actually matches, because layout decisions are in there) is an unstable
+> > format, which is why I would be reluctant to try to parse it and find only the
+> > relevant portions to hash. This isn't just a "technically unstable"
+> > format, but one
+> > in which the compiler essentially just serializes out relevant internal data
+> > structures, so any parser for it will involve significant alterations
+> > on compiler
+> > updates, which doesn't seem like a good plan.
+> > >
+> > > thanks,
+> > >
+> > > greg k-h
+> > Given the above additional information, would you be interested in a patchset
+> > which either:
+> > 
+> > A. Computes the CRC off the Rust type signature, knowing the compiler is
+> > allowed to change the ABI based on information not contained in the CRC.
+> 
+> No.
+> 
+> > B. Uses the CRC of the .rmeta file, knowing, as was pointed out, that this
+> > effectively contains the ABI of every symbol in the compilation unit, as well
+> > as inline functions and polymorphic functions.
+> 
+> No.
+> 
+> > If neither of these works, we likely can't turn on MODVERSIONS+RUST until
+> > further work is done upstream in the compiler to export some of this data in
+> > an at least semi-stable fashion.
+> 
+> Looks like you need something a bit more fine-grained, as pointed out
+> above.  why not parse the structure/function information in the .rmeta
+> file?  Is the format of that file not stable?
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Acked-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
-For convenience, a regularly refreshed linux-next based git tree containing
-all the SM8650 related work is available at:
-https://git.codelinaro.org/neil.armstrong/linux/-/tree/topic/sm8650/upstream/integ
----
-Changes in v2:
-- Collected Reviews
-- Link to v1: https://lore.kernel.org/r/20231025-topic-sm8650-upstream-bindings-pcie-v1-1-0e3d6f0c5827@linaro.org
----
- Documentation/devicetree/bindings/pci/qcom,pcie.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+Or, step back and figure something else out that can detect the
+structure and function signatures of rust code and determine a way to
+notice when they change.  That's the goal here, you need to notice when
+the code changes, perhaps just use libabigail as that will work on the
+dwarf output?
 
-diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
-index eadba38171e1..af537732ded6 100644
---- a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
-+++ b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
-@@ -41,6 +41,10 @@ properties:
-           - qcom,pcie-sm8450-pcie0
-           - qcom,pcie-sm8450-pcie1
-           - qcom,pcie-sm8550
-+      - items:
-+          - enum:
-+              - qcom,pcie-sm8650
-+          - const: qcom,pcie-sm8550
-       - items:
-           - const: qcom,pcie-msm8998
-           - const: qcom,pcie-msm8996
+Note, libabigail will miss things that the crc checker does not miss
+(and the opposite is true as well) which is why some groups (i.e.
+Android) use both on their kernel to ensure that nothing slips by.
 
----
-base-commit: 48bbaf8b793e0770798519f8ee1ea2908ff0943a
-change-id: 20231016-topic-sm8650-upstream-bindings-pcie-56e90536c258
+thanks,
 
-Best regards,
--- 
-Neil Armstrong <neil.armstrong@linaro.org>
-
+greg k-h
