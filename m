@@ -2,190 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E967FC8C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:53:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 026367FC83B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:52:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346710AbjK1V2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 16:28:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55260 "EHLO
+        id S1346892AbjK1VST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 16:18:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346715AbjK1V1j (ORCPT
+        with ESMTP id S1346879AbjK1VSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 16:27:39 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D7327A84;
-        Tue, 28 Nov 2023 13:11:36 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-333130bcae1so118129f8f.1;
-        Tue, 28 Nov 2023 13:11:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701205894; x=1701810694; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2wYF83HPUNyR5nAyVVBDGsxZcqWFjbNBkZTS8J1OIoA=;
-        b=Ik+ELkSmqY1QNOlyzBOyuXGdrthwWOxAoUqrNZDwFb5c2gdjvtvEUQqOlgea33cr0/
-         cFqv4CRYDITps6kUtbHu7Xfwtdo72D+2FGGvxZqRR04UL6vPAnhjkyBBOi6N66OxRytm
-         20qxbZNUUbp+5WCrtdY5XaaawoZpDKvdttVZsMBuvyKJd5UXACrvsTh7vsmexfl80nYp
-         LXYfDoh4GX0nZ2tSrJhoLw9SYcOrLOOZ1liTIVhDB21jAW7ei8/qnelJnGmGxgr9JG/j
-         +zt13wxg8Na0WbsuhcF8Sq0ONXjvbKrgra4VIMPNJD9tM/gZyMq7ByrLjV2IfvldkW8A
-         Uing==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701205894; x=1701810694;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2wYF83HPUNyR5nAyVVBDGsxZcqWFjbNBkZTS8J1OIoA=;
-        b=mog0mUAM9B4+tKKSuf0JVKRhniGHDMaZTbzwq2aXiGaQmTu+PwSuNYW/4WDi5z6+zP
-         X2NYdG4NceGg9UiJwg4NJNeweVEHSyh/uxrAo6+MZI0bIlLH9Q2LSdQnz+d5qRNXh8KR
-         TlJSsD2U44jdOhI4Gi3CrMBpKEpCY3Uf1vL5FYHhBTQFCbLQv0pUIcYxVH7CuoHGLWQZ
-         2Vd0EtXxtPvygzCEuZANBI459QYRmn1+QN9kNerutI2vn3sfwhMLlVi3pRBvOFf+qHC8
-         R59rbrcCaRBfoE95NZjbqJaurMPdlaQainev0gVGTm71T/pWwNqI5KPY070iqJvNVWkw
-         /Tfg==
-X-Gm-Message-State: AOJu0YxRxqp52UqbkPtFWdUSIm/0BvdtQk9fIYWPbv4ROovhfT1lf96k
-        MYpIq4sY0PgGdqioCDlAXpg=
-X-Google-Smtp-Source: AGHT+IF2IDD5UdB84u5IhsSvfErEf7DdYKLkumkJB5LrhCaWccvKA5jFjn/vu4/BHERnBMhxHENNFw==
-X-Received: by 2002:a5d:698d:0:b0:333:7ad:58fc with SMTP id g13-20020a5d698d000000b0033307ad58fcmr3625090wru.3.1701205894105;
-        Tue, 28 Nov 2023 13:11:34 -0800 (PST)
-Received: from ?IPV6:2a02:2788:416:318:a650:c5d8:5f59:d6? ([2a02:2788:416:318:a650:c5d8:5f59:d6])
-        by smtp.gmail.com with ESMTPSA id v11-20020a05600c444b00b0040b3867a297sm17043001wmn.36.2023.11.28.13.11.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Nov 2023 13:11:33 -0800 (PST)
-Message-ID: <0d1087e9-a8f2-48ee-bc8d-bc2a5518571a@gmail.com>
-Date:   Tue, 28 Nov 2023 22:11:32 +0100
+        Tue, 28 Nov 2023 16:18:03 -0500
+Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA0781BC1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:11:39 -0800 (PST)
+Received: from eig-obgw-6004a.ext.cloudfilter.net ([10.0.30.197])
+        by cmsmtp with ESMTPS
+        id 83sKrWDNJ6nOZ85MorBM29; Tue, 28 Nov 2023 21:11:38 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id 85Mnr4QyzRGmS85Mnr4Mwn; Tue, 28 Nov 2023 21:11:37 +0000
+X-Authority-Analysis: v=2.4 cv=efcuwpIH c=1 sm=1 tr=0 ts=65665789
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=7m0pAUNwt3ppyxJkgzeoew==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=BNY50KLci1gA:10 a=wYkD_t78qR0A:10 a=zd2uoN0lAAAA:8
+ a=9zuar6N38og71xDKz2QA:9 a=QEXdDO2ut3YA:10
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=TiP/2V3RC/zKLbrrfqT8GJnX8XnNxPZk+5RBTrP/V9g=; b=KD5go6n4Le1krDwyf5jeGC8zSu
+        Qw/3YLFf/p+C22i+MOSJLnd9nze0xXzvlA1S5uBXbKaXJD1RE3MIpGxnINEKteLY3csjClrNIc0Vz
+        O5yUWRfxEgqomVRie2QZtb9tsCI00dI+/qqYlss5aa/ECT8XBHASTE6kcgXk+6eZwpvekCcYwOZtX
+        FctGxBVNIT58kNyOlP+wx/p74CrhNrEWbzFSY4DNUXG8kgfCfOKOZJJ5fpecBzXX7Prr6+5Yu3NZ2
+        l5/y0OjF7qrRxidQQGauBPvcICw2YtuyA2dVL7eTQzNFUHx39oWkMAnESjVMvJKEj5QuRKY+NCc49
+        qb6w6SeA==;
+Received: from 187.184.156.122.cable.dyn.cableonline.com.mx ([187.184.156.122]:31312 helo=[192.168.0.9])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1r85Mm-003FhB-2a;
+        Tue, 28 Nov 2023 15:11:36 -0600
+Message-ID: <001021e0-2262-49c8-89d0-c0d0720ca313@embeddedor.com>
+Date:   Tue, 28 Nov 2023 15:11:35 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Linux 6.1.64
-Content-Language: fr-FR
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org, lwn@lwn.net,
-        jslaby@suse.cz
-References: <2023112826-glitter-onion-8533@gregkh>
- <7f07bb2d-bb00-4774-8cc0-d66b7210380c@gmail.com>
- <2023112843-strep-goliath-875c@gregkh>
-From:   =?UTF-8?Q?Fran=C3=A7ois_Valenduc?= <francoisvalenduc@gmail.com>
-Autocrypt: addr=francoisvalenduc@gmail.com; keydata=
- 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
-In-Reply-To: <2023112843-strep-goliath-875c@gregkh>
+Subject: Re: linux-next: build warnings after merge of the kspp-gustavo tree
+Content-Language: en-US
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     "Aithal, Srikanth" <sraithal@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20231122144814.649823ac@canb.auug.org.au>
+ <813f3aa2-3449-7264-fa54-eaafd9981add@amd.com>
+ <20231128091351.2bfb38dd@canb.auug.org.au>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20231128091351.2bfb38dd@canb.auug.org.au>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.184.156.122
+X-Source-L: No
+X-Exim-ID: 1r85Mm-003FhB-2a
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187.184.156.122.cable.dyn.cableonline.com.mx ([192.168.0.9]) [187.184.156.122]:31312
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 2
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfLJow5y7hpYAhYTwCX5RuUJsAgAqiPti15joqkVuIMpv9049l/UIUu8NdgvqkcuTXUUMK55QMLVeLLQPFj7O+ZKU4M/40MN3T9WFZDre0Jxjh4kZ7frW
+ klyNcz8OSSAg3OsYrnSJVoct7vXufMxXdUCupIoYm3vzEkrigypeeJygJ/X+9Luh/+VGDYU1g2WRY1YiI5jmyavB79BFqbCiVkcMoGpfi5yV9ZcTyRwCfbdp
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Stephen,
 
-Le 28/11/23 à 20:35, Greg Kroah-Hartman a écrit :
-> On Tue, Nov 28, 2023 at 08:22:22PM +0100, François Valenduc wrote:
->> Build fails on my baremetal server on scaleway:
+On 11/27/23 16:13, Stephen Rothwell wrote:
+> Hi Gustavo,
+> 
+> On Wed, 22 Nov 2023 10:21:27 +0530 "Aithal, Srikanth" <sraithal@amd.com> wrote:
 >>
->> In file included from arch/x86/kvm/vmx/vmx.c:54:
->> arch/x86/kvm/vmx/evmcs.h:215:20: note: previous definition of
->> ‘evmptr_is_valid’ with type ‘bool(u64)’ {aka ‘_Bool(long long unsigned
->> int)’}
->>    215 | static inline bool evmptr_is_valid(u64 evmptr)
->>        |                    ^~~~~~~~~~~~~~~
->> In file included from arch/x86/kvm/vmx/vmx.c:55:
->> arch/x86/kvm/vmx/hyperv.h:184:6: error: redeclaration of ‘enum
->> nested_evmptrld_status’
->>    184 | enum nested_evmptrld_status {
->>        |      ^~~~~~~~~~~~~~~~~~~~~~
->> In file included from arch/x86/kvm/vmx/vmx.c:54:
->> arch/x86/kvm/vmx/evmcs.h:220:6: note: originally defined here
->>    220 | enum nested_evmptrld_status {
->>        |      ^~~~~~~~~~~~~~~~~~~~~~
->> In file included from arch/x86/kvm/vmx/vmx.c:55:
->> arch/x86/kvm/vmx/hyperv.h:185:9: error: redeclaration of enumerator
->> ‘EVMPTRLD_DISABLED’
->>    185 |         EVMPTRLD_DISABLED,
->>        |         ^~~~~~~~~~~~~~~~~
->> In file included from arch/x86/kvm/vmx/vmx.c:54:
->> arch/x86/kvm/vmx/evmcs.h:221:9: note: previous definition of
->> ‘EVMPTRLD_DISABLED’ with type ‘enum nested_evmptrld_status’
->>    221 |         EVMPTRLD_DISABLED,
->>        |         ^~~~~~~~~~~~~~~~~
->> In file included from arch/x86/kvm/vmx/vmx.c:55:
->> arch/x86/kvm/vmx/hyperv.h:186:9: error: redeclaration of enumerator
->> ‘EVMPTRLD_SUCCEEDED’
->>    186 |         EVMPTRLD_SUCCEEDED,
->>        |         ^~~~~~~~~~~~~~~~~~
->> In file included from arch/x86/kvm/vmx/vmx.c:54:
->> arch/x86/kvm/vmx/evmcs.h:222:9: note: previous definition of
->> ‘EVMPTRLD_SUCCEEDED’ with type ‘enum nested_evmptrld_status’
->>    222 |         EVMPTRLD_SUCCEEDED,
->>        |         ^~~~~~~~~~~~~~~~~~
->> In file included from arch/x86/kvm/vmx/vmx.c:55:
->> arch/x86/kvm/vmx/hyperv.h:187:9: error: redeclaration of enumerator
->> ‘EVMPTRLD_VMFAIL’
->>    187 |         EVMPTRLD_VMFAIL,
->>        |         ^~~~~~~~~~~~~~~
->> In file included from arch/x86/kvm/vmx/vmx.c:54:
->> arch/x86/kvm/vmx/evmcs.h:223:9: note: previous definition of
->> ‘EVMPTRLD_VMFAIL’ with type ‘enum nested_evmptrld_status’
->>    223 |         EVMPTRLD_VMFAIL,
->>        |         ^~~~~~~~~~~~~~~
->> In file included from arch/x86/kvm/vmx/vmx.c:55:
->> arch/x86/kvm/vmx/hyperv.h:188:9: error: redeclaration of enumerator
->> ‘EVMPTRLD_ERROR’
->>    188 |         EVMPTRLD_ERROR,
->>        |         ^~~~~~~~~~~~~~
->> In file included from arch/x86/kvm/vmx/vmx.c:54:
->> arch/x86/kvm/vmx/evmcs.h:224:9: note: previous definition of
->> ‘EVMPTRLD_ERROR’ with type ‘enum nested_evmptrld_status’
->>    224 |         EVMPTRLD_ERROR,
->>        |         ^~~~~~~~~~~~~~
->> make[3]: *** [scripts/Makefile.build:250: arch/x86/kvm/vmx/vmx.o] Error 1
->> make[2]: *** [scripts/Makefile.build:500: arch/x86/kvm] Error 2
->> make[1]: *** [scripts/Makefile.build:500: arch/x86] Error 2
->>
->> The configuration file is attached. Kernel 6.1.62 compiled fine.
->> Does somebody have an idea about this ?
-> I just tried your .config file here and it builds just fine for 6.1.64,
-> what version of gcc are you using that causes failures?  I tried gcc-12
-> successfully.
->
-> thanks,
->
-> greg k-h
+>> @Gustavo I see you have mentioned it as gcc issue. I was not hitting this until yesterdays linux-next build. I am on latest gcc which RHEL 9.x provides,
+>> gcc --version
+>> gcc (GCC) 11.4.1 20230605 (Red Hat 11.4.1-2)
+> 
+> Given that gcc 11 is a provided compiler on RHEL 9, can you not add
+> -Wstringop-overflow for that compiler, please.
 
-Bisection gave very strange results until I found the tree was 
-corrupted. I recreated it correctly and it works fine.
-Sorry for the noise.
 
-Best regards.
+Sure thing. Working on that. :)
 
-François Valenduc
+--
+Gustavo
 
