@@ -2,56 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6327FB960
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:24:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B46667FB95E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:24:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344587AbjK1LYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 06:24:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56256 "EHLO
+        id S1344580AbjK1LYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 06:24:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344558AbjK1LYd (ORCPT
+        with ESMTP id S1344576AbjK1LYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 06:24:33 -0500
+        Tue, 28 Nov 2023 06:24:19 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 776C4D60
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 03:24:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36231C433C8;
-        Tue, 28 Nov 2023 11:24:22 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB37D59
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 03:24:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79166C433C7;
+        Tue, 28 Nov 2023 11:24:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701170679;
-        bh=IsNn+ClgvkZ4uETCGvuIForgy3jvNsLeqUnXrX0XuV4=;
+        s=k20201202; t=1701170664;
+        bh=sAPmFm7cnWhTJeY7ueW6GOIoW7e7zZ9rt09iElgE6oQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pCmNuBi1q7zW0CbjVsoOuWVtQzzGwuXlPKHnOE7o7cFo3lHpuDDHUQHlT8A6qYUZu
-         ThI+045PVpaG57yYVqFKBxRA7FB/bkn9kjc2GlmWcP8q0U45AkNTKRdPoNkaM2srAJ
-         6c8pomjEvMzsvZWY4zG/cFhLbU6oc88VQhianOZMQEZLDC04mWHP+mrTRPMDCvEIwA
-         3FMj4mja4ZiEzdZ6thgqm2XTYLoJtF0ZVVi2zS6nJQdRy/1qx/WajBeX4CfchHTLlG
-         heu2ClC6A+ryTfAZJWf6jWpVcE0LMdsY4nKGKDPzM6aioCbw5tBSj4GnsWW1uRqZsM
-         fiE7KxIfNLqHg==
-Date:   Tue, 28 Nov 2023 16:54:09 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Can Guo <quic_cang@quicinc.com>
-Cc:     bvanassche@acm.org, adrian.hunter@intel.com, beanhuo@micron.com,
-        avri.altman@wdc.com, junwoo80.lee@samsung.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 06/10] scsi: ufs: ufs-qcom: Limit HS-G5 Rate-A to
- hosts with HW version 5
-Message-ID: <20231128112409.GU3088@thinkpad>
-References: <1700729190-17268-1-git-send-email-quic_cang@quicinc.com>
- <1700729190-17268-7-git-send-email-quic_cang@quicinc.com>
- <20231128055520.GG3088@thinkpad>
- <4648b6a0-92cb-4411-9b58-03219962505d@quicinc.com>
- <20231128105506.GO3088@thinkpad>
- <46b24613-cffc-4a87-9232-8b93e09906f1@quicinc.com>
+        b=DWwDFxYQAAoifWIczDFp1o9BUBA1RFxx19MI9z3tQ9EmKDmxuTkxTcSKuTT3GlS1V
+         gVkZupihx/7ozj1uuN9wLU5TX31QkgPUJOAsFEywBfPbNbb0vb+f/KR8QmCWAsZYgr
+         XzMCeW+3wXYb8hFKEMQj5zrcp0o1VO/J1dqcuFxxJEimvB3NsYdZMFgsxwSHY/YNGo
+         jaa4WsjiQ/ZVscPrCt6DN9d0PMjBGxci24iF2LCwuKsO08kNiRaY/IB9oVcMcaD8ey
+         PlIjmbumgdt8Cu549p22WPQmZ3M0fgvJmpgGhfKFLHYLtB8umUEnIIUg51V1AcHlI3
+         Q5N8QdDFsXQgg==
+Date:   Tue, 28 Nov 2023 12:24:18 +0100
+From:   Christian Brauner <brauner@kernel.org>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, Jens Axboe <axboe@kernel.dk>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH/RFC] core/nfsd: allow kernel threads to use task_work.
+Message-ID: <20231128-arsch-halbieren-b2a95645de53@brauner>
+References: <170112272125.7109.6245462722883333440@noble.neil.brown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <46b24613-cffc-4a87-9232-8b93e09906f1@quicinc.com>
+In-Reply-To: <170112272125.7109.6245462722883333440@noble.neil.brown.name>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -62,103 +57,156 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 06:59:39PM +0800, Can Guo wrote:
+On Tue, Nov 28, 2023 at 09:05:21AM +1100, NeilBrown wrote:
 > 
+> I have evidence from a customer site of 256 nfsd threads adding files to
+> delayed_fput_lists nearly twice as fast they are retired by a single
+> work-queue thread running delayed_fput().  As you might imagine this
+> does not end well (20 million files in the queue at the time a snapshot
+> was taken for analysis).
 > 
-> On 11/28/2023 6:55 PM, Manivannan Sadhasivam wrote:
-> > On Tue, Nov 28, 2023 at 03:48:02PM +0800, Can Guo wrote:
-> > > Hi Mani,
-> > > 
-> > > On 11/28/2023 1:55 PM, Manivannan Sadhasivam wrote:
-> > > > On Thu, Nov 23, 2023 at 12:46:26AM -0800, Can Guo wrote:
-> > > > > Qcom UFS hosts, with HW ver 5, can only support up to HS-G5 Rate-A due to
-> > > > > HW limitations. If the HS-G5 PHY gear is used, update host_params->hs_rate
-> > > > > to Rate-A, so that the subsequent power mode changes shall stick to Rate-A.
-> > > > > 
-> > > > > Signed-off-by: Can Guo <quic_cang@quicinc.com>
-> > > > 
-> > > > Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > > 
-> > > > One question below...
-> > > > 
-> > > > > ---
-> > > > >    drivers/ufs/host/ufs-qcom.c | 18 +++++++++++++++++-
-> > > > >    1 file changed, 17 insertions(+), 1 deletion(-)
-> > > > > 
-> > > > > diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> > > > > index 9613ad9..6756f8d 100644
-> > > > > --- a/drivers/ufs/host/ufs-qcom.c
-> > > > > +++ b/drivers/ufs/host/ufs-qcom.c
-> > > > > @@ -442,9 +442,25 @@ static u32 ufs_qcom_get_hs_gear(struct ufs_hba *hba)
-> > > > >    static int ufs_qcom_power_up_sequence(struct ufs_hba *hba)
-> > > > >    {
-> > > > >    	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> > > > > +	struct ufs_host_params *host_params = &host->host_params;
-> > > > >    	struct phy *phy = host->generic_phy;
-> > > > > +	enum phy_mode mode;
-> > > > >    	int ret;
-> > > > > +	/*
-> > > > > +	 * HW ver 5 can only support up to HS-G5 Rate-A due to HW limitations.
-> > > > > +	 * If the HS-G5 PHY gear is used, update host_params->hs_rate to Rate-A,
-> > > > > +	 * so that the subsequent power mode change shall stick to Rate-A.
-> > > > > +	 */
-> > > > > +	if (host->hw_ver.major == 0x5) {
-> > > > > +		if (host->phy_gear == UFS_HS_G5)
-> > > > > +			host_params->hs_rate = PA_HS_MODE_A;
-> > > > > +		else
-> > > > > +			host_params->hs_rate = PA_HS_MODE_B;
-> > > > 
-> > > > Is this 'else' part really needed? Since there wouldn't be any 2nd init, I think
-> > > > we can skip that.
-> > > 
-> > > We need it because, even there is only one init, if a UFS3.1 device is
-> > > attached, phy_gear is given as UFS_HS_G4 in ufs_qcom_set_phy_gear(), hence
-> > > we need to put the UFS at HS-G4 Rate B, not Rate A.
-> > > 
-> > 
-> > But the default hs_rate is PA_HS_MODE_B only and the else condition would be not
-> > needed for the 1st init.
+> While this might point to a problem with the filesystem not handling the
+> final close efficiently, such problems should only hurt throughput, not
+> lead to memory exhaustion.
 > 
-> You are right, but still we need this in case the UFS device version is not
-> populated, meaning dual init can also happen to SM8550. We need to apply the
-> right hs_rate in case the 2nd init asks for HS_G4.
+> For normal threads, the thread that closes the file also calls the
+> final fput so there is natural rate limiting preventing excessive growth
+> in the list of delayed fputs.  For kernel threads, and particularly for
+> nfsd, delayed in the final fput do not impose any throttling to prevent
+> the thread from closing more files.
 > 
+> A simple way to fix this is to treat nfsd threads like normal processes
+> for task_work.  Thus the pending files are queued for the thread, and
+> the same thread finishes the work.
+> 
+> Currently KTHREADs are assumed never to call task_work_run().  With this
+> patch that it still the default but it is implemented by storing the
+> magic value TASK_WORKS_DISABLED in ->task_works.  If a kthread, such as
+> nfsd, will call task_work_run() periodically, it sets ->task_works
+> to NULL to indicate this.
+> 
+> Signed-off-by: NeilBrown <neilb@suse.de>
+> ---
+> 
+> I wonder which tree this should go through assuming everyone likes it.
+> VFS maybe??
 
-Hmm, yeah I missed that corner case. This is fine.
+Sure.
 
-- Mani
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index 292c31697248..c63c2bedbf71 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -1117,6 +1117,7 @@ struct task_struct {
+>  	unsigned int			sas_ss_flags;
+>  
+>  	struct callback_head		*task_works;
+> +#define	TASK_WORKS_DISABLED	((void*)1)
 
-> Thanks,
-> Can Guo.
-> 
-> > 
-> > - Mani
-> > 
-> > > Thanks,
-> > > Can Guo.
-> > > 
-> > > > 
-> > > > - Mani
-> > > > 
-> > > > > +	}
-> > > > > +
-> > > > > +	mode = host_params->hs_rate == PA_HS_MODE_B ? PHY_MODE_UFS_HS_B : PHY_MODE_UFS_HS_A;
-> > > > > +
-> > > > >    	/* Reset UFS Host Controller and PHY */
-> > > > >    	ret = ufs_qcom_host_reset(hba);
-> > > > >    	if (ret)
-> > > > > @@ -459,7 +475,7 @@ static int ufs_qcom_power_up_sequence(struct ufs_hba *hba)
-> > > > >    		return ret;
-> > > > >    	}
-> > > > > -	phy_set_mode_ext(phy, PHY_MODE_UFS_HS_B, host->phy_gear);
-> > > > > +	phy_set_mode_ext(phy, mode, host->phy_gear);
-> > > > >    	/* power on phy - start serdes and phy's power and clocks */
-> > > > >    	ret = phy_power_on(phy);
-> > > > > -- 
-> > > > > 2.7.4
-> > > > > 
-> > > > 
-> > 
+Should be simpler if you invert the logic?
 
+COMPLETELY UNTESTED
+
+---
+ fs/file_table.c           |  2 +-
+ fs/nfsd/nfssvc.c          |  4 ++++
+ include/linux/task_work.h |  3 +++
+ kernel/fork.c             |  3 +++
+ kernel/task_work.c        | 12 ++++++++++++
+ 5 files changed, 23 insertions(+), 1 deletion(-)
+
+diff --git a/fs/file_table.c b/fs/file_table.c
+index de4a2915bfd4..e79351df22be 100644
+--- a/fs/file_table.c
++++ b/fs/file_table.c
+@@ -445,7 +445,7 @@ void fput(struct file *file)
+ 	if (atomic_long_dec_and_test(&file->f_count)) {
+ 		struct task_struct *task = current;
+ 
+-		if (likely(!in_interrupt() && !(task->flags & PF_KTHREAD))) {
++		if (likely(!in_interrupt())) {
+ 			init_task_work(&file->f_rcuhead, ____fput);
+ 			if (!task_work_add(task, &file->f_rcuhead, TWA_RESUME))
+ 				return;
+diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
+index d6122bb2d167..cea76bad3a95 100644
+--- a/fs/nfsd/nfssvc.c
++++ b/fs/nfsd/nfssvc.c
+@@ -13,6 +13,7 @@
+ #include <linux/fs_struct.h>
+ #include <linux/swap.h>
+ #include <linux/siphash.h>
++#include <linux/task_work.h>
+ 
+ #include <linux/sunrpc/stats.h>
+ #include <linux/sunrpc/svcsock.h>
+@@ -943,6 +944,7 @@ nfsd(void *vrqstp)
+ 
+ 	current->fs->umask = 0;
+ 
++	task_work_manage(current); /* Declare that I will call task_work_run() */
+ 	atomic_inc(&nfsdstats.th_cnt);
+ 
+ 	set_freezable();
+@@ -956,6 +958,8 @@ nfsd(void *vrqstp)
+ 
+ 		svc_recv(rqstp);
+ 		validate_process_creds();
++		if (task_work_pending(current))
++			task_work_run();
+ 	}
+ 
+ 	atomic_dec(&nfsdstats.th_cnt);
+diff --git a/include/linux/task_work.h b/include/linux/task_work.h
+index 795ef5a68429..645fb94e47e0 100644
+--- a/include/linux/task_work.h
++++ b/include/linux/task_work.h
+@@ -20,6 +20,9 @@ enum task_work_notify_mode {
+ 	TWA_SIGNAL_NO_IPI,
+ };
+ 
++void task_work_off(struct task_struct *task);
++void task_work_manage(struct task_struct *task);
++
+ static inline bool task_work_pending(struct task_struct *task)
+ {
+ 	return READ_ONCE(task->task_works);
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 10917c3e1f03..348ed8fa9333 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2346,6 +2346,9 @@ __latent_entropy struct task_struct *copy_process(
+ 	if (args->io_thread)
+ 		p->flags |= PF_IO_WORKER;
+ 
++	if (args->kthread)
++		task_work_off(p);
++
+ 	if (args->name)
+ 		strscpy_pad(p->comm, args->name, sizeof(p->comm));
+ 
+diff --git a/kernel/task_work.c b/kernel/task_work.c
+index 95a7e1b7f1da..2ae948d0d124 100644
+--- a/kernel/task_work.c
++++ b/kernel/task_work.c
+@@ -5,6 +5,18 @@
+ 
+ static struct callback_head work_exited; /* all we need is ->next == NULL */
+ 
++void task_work_off(struct task_struct *task)
++{
++	task->task_works = &work_exited;
++}
++EXPORT_SYMBOL(task_work_off);
++
++void task_work_manage(struct task_struct *task)
++{
++	task->task_works = NULL;
++}
++EXPORT_SYMBOL(task_work_manage);
++
+ /**
+  * task_work_add - ask the @task to execute @work->func()
+  * @task: the task which should run the callback
 -- 
-மணிவண்ணன் சதாசிவம்
+2.42.0
