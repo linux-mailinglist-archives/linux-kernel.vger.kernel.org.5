@@ -2,107 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34DFF7FC27F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF437FC1A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346284AbjK1OKj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Nov 2023 09:10:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38486 "EHLO
+        id S1346327AbjK1OLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 09:11:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346164AbjK1OKO (ORCPT
+        with ESMTP id S1346304AbjK1OLY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 09:10:14 -0500
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7EC530C6;
-        Tue, 28 Nov 2023 06:09:28 -0800 (PST)
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-58787a6583aso182114eaf.1;
-        Tue, 28 Nov 2023 06:09:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701180568; x=1701785368;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ok2Pvzx+XTxobx7csp7M2Qcx2McFJVa+pNHhV6WPiok=;
-        b=rVsOHmyjemSh93VuSBAwWFrypV/mCCxxqfuOSDg0PYf0dWpC5pFsupb5/P5gCdwO6c
-         6pAxzeYcfDh1ujGv8QnjhrRLffgOL/UhuDCN54sG6VpHNPfUNCaBluJU7zqaoPYQgv9k
-         MR8WinmXtl49c4v+3xIhzdoBegSC9zRFUxpCwcfWlCObAPsXpYts3XE1Y2TDsgvnHlld
-         aOS+vdcz+NuhqyG8LP3Lj2DB9f3AYOodROe98BOaLJrMD7db5ejCvp0/H6quU+C5NPV0
-         zLtcLcMd9UVjIGg0s0n/tyX4wBUIRbnK4vbcTjsNN6zyW4TW+hRbwgAO5/dwYTCBQciQ
-         ydBQ==
-X-Gm-Message-State: AOJu0YwFh3jaeTFt5lQ46wWwixALXlvVGOAis14/B3fYLupN1s1u8qzj
-        oteNzX1QbGtIZdqafhBr0njaHwzX+FmlOLp33Fw=
-X-Google-Smtp-Source: AGHT+IHtASnhM/OKnxuGbYr1Q38yde7vCFfBhm7lG85droOtfxF2ahM5o850ntu1JZLLI+LZB/0AZOwFvaWAC0V9glc=
-X-Received: by 2002:a4a:eb86:0:b0:58d:5302:5b18 with SMTP id
- d6-20020a4aeb86000000b0058d53025b18mr10488312ooj.1.1701180568163; Tue, 28 Nov
- 2023 06:09:28 -0800 (PST)
+        Tue, 28 Nov 2023 09:11:24 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0324F271F
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:10:29 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98BD3C433C9;
+        Tue, 28 Nov 2023 14:10:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701180629;
+        bh=60EtB08YT7Ko8yqV3Wwijj0Q4rDlAXw7Ibne/o3zM/s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X4OShPFUo67/hTM7CP0T5xlROgke47ag9YYEcSS/ddt4MiwJzPweh7w6xdi0Cvesx
+         F/8yEKqXWrixCvb1kA2smHWsNtmgQN/ovflspS+geIMXD2+AJgKxKXTlYxvH7K6Vhn
+         WHbqKUN3K31QmfxQ2/pKM+CXH3J95hQTGtOETNXh/ZnWapdNWYEFpZEtLvvMXvrV+F
+         4+8ofw5pC1p64zwwB2+Axp/kGR/Oz2Q5idf3lljuruSLhgfx+NyLdo1+IwK0RAni4O
+         hvuf9HEsXlCgWGIE3Zx9ZJIVmOxHcwv2gKqkZT/JltiXlFI1ncAeRdqMRMa1u+NTn2
+         L+JXI1dxyLYMQ==
+Date:   Tue, 28 Nov 2023 14:10:22 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     "Bird, Tim" <Tim.Bird@sony.com>
+Cc:     =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado 
+        <nfraprado@collabora.com>, Shuah Khan <shuah@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "kernelci@lists.linux.dev" <kernelci@lists.linux.dev>,
+        David Gow <davidgow@google.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "kernel@collabora.com" <kernel@collabora.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        Doug Anderson <dianders@chromium.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v2 2/2] kselftest: devices: Add sample board file for
+ google,spherion
+Message-ID: <1baeddbe-83ed-476e-a748-7d2838b44c5f@sirena.org.uk>
+References: <20231127233558.868365-1-nfraprado@collabora.com>
+ <20231127233558.868365-3-nfraprado@collabora.com>
+ <BN8PR13MB27384F089C7DAAF06DF9DDECFDBCA@BN8PR13MB2738.namprd13.prod.outlook.com>
 MIME-Version: 1.0
-References: <20231127111121.400-1-gautham.shenoy@amd.com>
-In-Reply-To: <20231127111121.400-1-gautham.shenoy@amd.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 28 Nov 2023 15:09:17 +0100
-Message-ID: <CAJZ5v0j7QahmFU=eVG=4iBCmN4wk58GgyfUchr9wcc0Fh0Rwag@mail.gmail.com>
-Subject: Re: [PATCH v2] cpufreq/amd-pstate: Fix the return value of amd_pstate_fast_switch()
-To:     "Gautham R. Shenoy" <gautham.shenoy@amd.com>
-Cc:     Wyes Karny <wyes.karny@amd.com>, Huang Rui <ray.huang@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Perry Yuan <Perry.Yuan@amd.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="VIfEQR6tichIZgMF"
+Content-Disposition: inline
+In-Reply-To: <BN8PR13MB27384F089C7DAAF06DF9DDECFDBCA@BN8PR13MB2738.namprd13.prod.outlook.com>
+X-Cookie: Must be over 21.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 12:11 PM Gautham R. Shenoy
-<gautham.shenoy@amd.com> wrote:
->
-> cpufreq_driver->fast_switch() callback expects a frequency as a return
-> value. amd_pstate_fast_switch() was returning the return value of
-> amd_pstate_update_freq(), which only indicates a success or failure.
->
-> Fix this by making amd_pstate_fast_switch() return the target_freq
-> when the call to amd_pstate_update_freq() is successful, and return
-> the current frequency from policy->cur when the call to
-> amd_pstate_update_freq() is unsuccessful.
->
-> Fixes: 4badf2eb1e98 ("cpufreq: amd-pstate: Add ->fast_switch() callback")
-> Acked-by: Huang Rui <ray.huang@amd.com>
-> Reviewed-by: Wyes Karny <wyes.karny@amd.com>
-> Reviewed-by: Perry Yuan <perry.yuan@amd.com>
-> Cc: stable@vger.kernel.org # v6.4+
-> Signed-off-by: Gautham R. Shenoy <gautham.shenoy@amd.com>
-> ---
->  drivers/cpufreq/amd-pstate.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
-> index 9a1e194d5cf8..300f81d36291 100644
-> --- a/drivers/cpufreq/amd-pstate.c
-> +++ b/drivers/cpufreq/amd-pstate.c
-> @@ -518,7 +518,9 @@ static int amd_pstate_target(struct cpufreq_policy *policy,
->  static unsigned int amd_pstate_fast_switch(struct cpufreq_policy *policy,
->                                   unsigned int target_freq)
->  {
-> -       return amd_pstate_update_freq(policy, target_freq, true);
-> +       if (!amd_pstate_update_freq(policy, target_freq, true))
-> +               return target_freq;
-> +       return policy->cur;
->  }
->
->  static void amd_pstate_adjust_perf(unsigned int cpu,
-> --
 
-Applied as 6.7-rc material, thanks!
+--VIfEQR6tichIZgMF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-BTW, if you are aware of any pending AMD P-state fixes for 6.7, please
-let me know.
+On Tue, Nov 28, 2023 at 12:10:46AM +0000, Bird, Tim wrote:
+
+> I'm not a big fan of naming these with a comma in the name.  Is there a r=
+eason
+> you are not using dash or underscore?
+
+That's a common patter with this sort of software (eg, bootrr does the
+same).  It's convenient to just be able to use the compatible straight
+=66rom DT without having to mangle it.
+
+--VIfEQR6tichIZgMF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVl9M0ACgkQJNaLcl1U
+h9Cktgf+Oq0BN8WyZ7CzPTibZyr6k1r2sWjG2VUqEZQKYA66zH1D965ND5J8XJB8
+cqw3KD0X/8KNc/u890NCBnr7QTxlKdczAbTEMZtYAcy/7xiA41z0ITXFc6DE8/nO
+V76cOaRGh2vCNkBROokKzewYxb+4MWHHFNUBu/7AXYZHVhtt4U1kcxNcm9HwvC/j
+S3ubDODyZk++hbyHQhxf3ENesyQuIObeKWx6qVPieVbbeCEn3SLZH1KTEOcEr4Cz
+uCkWQKMpUS4iMafKTdMigLtOE4TskFAd+eH+cFMm4Yy7bhr+5pxKmAaDleKBAORF
+/OS87yV3a5qUCNslQ03RnzaSJr1BmQ==
+=ujz7
+-----END PGP SIGNATURE-----
+
+--VIfEQR6tichIZgMF--
