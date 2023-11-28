@@ -2,145 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74DAB7FB4FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:58:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 863597FB501
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:58:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344333AbjK1I5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 03:57:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34816 "EHLO
+        id S1344334AbjK1I6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 03:58:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344328AbjK1I5h (ORCPT
+        with ESMTP id S231902AbjK1I6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 03:57:37 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C797A7
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:57:43 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6cd89f2af9dso2167877b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:57:43 -0800 (PST)
+        Tue, 28 Nov 2023 03:58:07 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C73F4;
+        Tue, 28 Nov 2023 00:58:14 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-54a945861c6so7133404a12.3;
+        Tue, 28 Nov 2023 00:58:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1701161863; x=1701766663; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BTYsamGNaQ8fRNjNMaxridTGMNfJmuFsAlfcl9yavQs=;
-        b=jrl1bmceyHOFSDtvQApVUTf5TVwt6J7Mv/Mq6VjJic6wS1BHy8agCIMRXABStPzYOw
-         WmGDF2ELP6qmx6LyxcP+KwWnLsahstorvThiBWPTRZGDOrQNF1rg3Irv0yS0JxZpAzVK
-         +0uo5DLXF828BUL6NXVFSIssdFrHdF09t+NwEQ0zNYo9VXWOAMrrm1TgOoRgreRtRcF2
-         CIk7oAr2rjiSDFZU/pTD6x+OGzyH1/7K01yTO2VDaNV5kn5q7xr97kgu5fvPJz7EVVNI
-         tPP0pw6WF8zTDk/rJtadRqtw+LHUaHM5rrz1+FTZCKHQfxK87KOiHxJ1vUbpEUr2IGFg
-         /m3w==
+        d=gmail.com; s=20230601; t=1701161893; x=1701766693; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7eThDWl/p719tUnMNV7tBdoRpTLwA6GR+r/kwIo8Uvw=;
+        b=QMZ0VrslsocHnaDUxbJ9hJ1Mi8HVpLisOjj7iB+jmbmTLVo9/9BOTF/ZSm4MzXmDPv
+         t/6bqlWbqVULF5K1CB3KX8xUlFju9Holt0MDX05h8JoyKvZ98jtS7CS9GmzWo1o8El5z
+         8MmZRmAyLaxX6TPb2crEVMXVCKiKav6xD/9VK5b/NvlLVMyRVbr4+ooc2+NkG+1plGvr
+         6w6Hy2GPzieTzIX2yyXq9cU6TR2/N3GqUfKBNc731s+iKrDEqpYh9o5T9fvdFe65zijt
+         BHpWV5uuJpNkKSBIYdzkKilP+Oi4G3yx2SOsKDKX4RGPsbzmpto1gl+LSsZxIfgqfHec
+         FcQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701161863; x=1701766663;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BTYsamGNaQ8fRNjNMaxridTGMNfJmuFsAlfcl9yavQs=;
-        b=CNaiqXOvIrbVyUbTffzoLAuPrRuLGZwkvOWy4q57AJOSdGI1+aESKFr90kuYkCWIvI
-         V9ZQRbBxu3HnvRH/6hXfUUmeJJzrLzEE8N6ICsQyUrMo39DlaJprXfTjiwPLGGI57LO1
-         W0d6SjCeXvKfZYg045RO5dl5ASBNxjmJtkqV5xOEC6NUUToKD5oAq8a7/YQtyKCAZbJ/
-         ImRNPayqiZO3oEL9YM+GlSKonNeiPNa6lM9ORfYoURYe3Al+Bz3Kr9Nwmv8BgztSH4W/
-         5PcJiDZuJogexmupx1+5pkEB9xlC+pt+eCtKfbK2gChiBbUuFg4R3sfY2RjGaznzzT54
-         QO9Q==
-X-Gm-Message-State: AOJu0YwxrAsswS6trx6WebQAyU972VUVT5+CinAghwH8XTmtPGPp6B9y
-        1i5msRBKunFnRvoHPkv5gaoUqA==
-X-Google-Smtp-Source: AGHT+IE/fng9QOuiUZBluDfizhRPgWmYcOqQIfRFSizRR9MTI4Ihwkn53PdiTZ2Of0dfq0nFdnkdKA==
-X-Received: by 2002:a05:6a20:5650:b0:18b:9053:d865 with SMTP id is16-20020a056a20565000b0018b9053d865mr15666672pzc.42.1701161862894;
-        Tue, 28 Nov 2023 00:57:42 -0800 (PST)
-Received: from ?IPv6:2402:7500:4ce:8338:14c0:b892:2482:e230? ([2402:7500:4ce:8338:14c0:b892:2482:e230])
-        by smtp.gmail.com with ESMTPSA id g8-20020a056a00078800b00694fee1011asm8522232pfu.208.2023.11.28.00.57.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 28 Nov 2023 00:57:42 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
-Subject: Re: [PATCH v2 13/13] RISC-V: crypto: add Zvkb accelerated ChaCha20
- implementation
-From:   Jerry Shih <jerry.shih@sifive.com>
-In-Reply-To: <20231128042503.GL1463@sol.localdomain>
-Date:   Tue, 28 Nov 2023 16:57:38 +0800
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>, palmer@dabbelt.com,
-        Albert Ou <aou@eecs.berkeley.edu>, herbert@gondor.apana.org.au,
-        davem@davemloft.net, conor.dooley@microchip.com, ardb@kernel.org,
-        heiko@sntech.de, phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <3B3784E0-0DE2-4A99-878E-657BB0E0765D@sifive.com>
-References: <20231127070703.1697-1-jerry.shih@sifive.com>
- <20231127070703.1697-14-jerry.shih@sifive.com>
- <20231128042503.GL1463@sol.localdomain>
-To:     Eric Biggers <ebiggers@kernel.org>
-X-Mailer: Apple Mail (2.3445.9.7)
+        d=1e100.net; s=20230601; t=1701161893; x=1701766693;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7eThDWl/p719tUnMNV7tBdoRpTLwA6GR+r/kwIo8Uvw=;
+        b=veuMsuEFbbdIjaB+Pq7BcSJxLXAGLqKIEIMTr8qgFZzLkdr1t2Tu0xQB1wDy1wb2Na
+         k9gGu9k1VV/4pBb9rKvz3J3vdzQftMHxe+sLhnXukjr78JWBYHjWGyBwyeSDSKN6sKDO
+         LA1OTP0bVcHgW6jcegAJ+HY9PRUGIf4kPoa92XWiCV/GpHDjbFOnUJJ+CCgPc2ageVuU
+         mwkVM/tuMsEIHeF4UuRp2bAgBr80WOMa+jX18HKz75YXFLeVjVpteYCZknRXFqgdus61
+         uZO2Yg1QME4plStx8aByiJYnpljixJ1oIltMxXnb0+K4XuKdcxMJYO5QZnSjhkT8PQ3I
+         9C1w==
+X-Gm-Message-State: AOJu0Yz5ARoskIiZn3+GWKOHd49Epzvjp2Dh653yx9mYcDfQPNaJodHR
+        RxL9J5I8cu2VqFT1Q+xvF+U=
+X-Google-Smtp-Source: AGHT+IFR5RnA5vAR+1Mvjlycnu2h0GtN0a4lFsYU5ANWlySGynJdKlWATFHR8EF2K/rPwT6dWGJYig==
+X-Received: by 2002:a05:6402:290b:b0:54b:9817:bf91 with SMTP id ee11-20020a056402290b00b0054b9817bf91mr1811570edb.7.1701161892405;
+        Tue, 28 Nov 2023 00:58:12 -0800 (PST)
+Received: from [172.27.56.182] ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id e7-20020a056402104700b00542db304680sm6058243edu.63.2023.11.28.00.58.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Nov 2023 00:58:12 -0800 (PST)
+Message-ID: <3d3b6a1f-40b6-45b5-a899-d01acb91213d@gmail.com>
+Date:   Tue, 28 Nov 2023 10:58:04 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] net/mlx5e: fix a potential double-free in
+ fs_any_create_groups
+Content-Language: en-US
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Zhengchao Shao <shaozhengchao@huawei.com>,
+        Rahul Rameshbabu <rrameshbabu@nvidia.com>,
+        Simon Horman <horms@kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>, Aya Levin <ayal@nvidia.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tariq Toukan <tariqt@nvidia.com>
+References: <20231128082812.24483-1-dinghao.liu@zju.edu.cn>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20231128082812.24483-1-dinghao.liu@zju.edu.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Nov 28, 2023, at 12:25, Eric Biggers <ebiggers@kernel.org> wrote:
-> On Mon, Nov 27, 2023 at 03:07:03PM +0800, Jerry Shih wrote:
->> +config CRYPTO_CHACHA20_RISCV64
->=20
-> Can you call this kconfig option just CRYPTO_CHACHA_RISCV64?  I.e. =
-drop the
-> "20".  The ChaCha family of ciphers includes more than just ChaCha20.
->=20
-> The other architectures do use "CHACHA20" in their equivalent option, =
-even when
-> they implement XChaCha12 too.  But that's for historical reasons -- we =
-didn't
-> want to break anything by renaming the kconfig options.  For a new =
-option we
-> should use the more general name from the beginning, even if initially =
-only
-> ChaCha20 is implemented (which is fine).
 
-I will use `CRYPTO_CHACHA_RISCV64` instead.
 
->> +static int chacha20_encrypt(struct skcipher_request *req)
->=20
-> riscv64_chacha_crypt(), please.  chacha20_encrypt() is dangerously =
-close to
-> being the same name as chacha20_crypt() which already exists in =
-crypto/chacha.h.
+On 28/11/2023 10:28, Dinghao Liu wrote:
+> When kcalloc() for ft->g succeeds but kvzalloc() for in fails,
+> fs_any_create_groups() will free ft->g. However, its caller
+> fs_any_create_table() will free ft->g again through calling
+> mlx5e_destroy_flow_table(), which will lead to a double-free.
+> Fix this by removing the kfree(ft->g) in fs_any_create_groups().
+> 
+> Fixes: 0f575c20bf06 ("net/mlx5e: Introduce Flow Steering ANY API")
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
+>   drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c b/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
+> index be83ad9db82a..b222d23bfb9a 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
+> @@ -434,7 +434,6 @@ static int fs_any_create_groups(struct mlx5e_flow_table *ft)
+>   	ft->g = kcalloc(MLX5E_FS_UDP_NUM_GROUPS, sizeof(*ft->g), GFP_KERNEL);
+>   	in = kvzalloc(inlen, GFP_KERNEL);
+>   	if  (!in || !ft->g) {
+> -		kfree(ft->g);
+>   		kvfree(in);
+>   		return -ENOMEM;
+>   	}
 
-The function will will have additional prefix/suffix.
-
->> +static inline bool check_chacha20_ext(void)
->> +{
->> +	return riscv_isa_extension_available(NULL, ZVKB) &&
->> +	       riscv_vector_vlen() >=3D 128;
->> +}
->=20
-> Just to double check: your intent is to simply require VLEN >=3D 128 =
-for all the
-> RISC-V vector crypto code, even when some might work with a shorter =
-VLEN?  I
-> don't see anything in chacha-riscv64-zvkb.pl that assumes VLEN >=3D =
-128, for
-> example.  I think it would even work with VLEN =3D=3D 32.
-
-Yes, the chacha algorithm here only needs the VLEN>=3D32. But I think we =
-will not get
-benefits with that kind of hw.
-
-> I think requiring VLEN >=3D 128 anyway makes sense so that we don't =
-have to worry
-> about validating the code with shorter VLEN.  And "application =
-processors" are
-> supposed to have VLEN >=3D 128.  But I just wanted to make sure this =
-is what you
-> intended too.
-
-The standard "V" extension assumes VLEN>=3D128. I just follow that =
-assumption.
-=
-https://github.com/riscv/riscv-v-spec/blob/master/v-spec.adoc#183-v-vector=
--extension-for-application-processors
-
--Jerry
-
+Function fs_any_create_groups should not return failure without cleaning 
+itself up. This is not the right fix.
+Freeing ft->g and setting it to NULL will do it, and will avoid the 
+double free.
