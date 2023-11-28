@@ -2,106 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2141A7FB92F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:15:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 129367FB930
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:15:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344500AbjK1LPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 06:15:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38144 "EHLO
+        id S1344530AbjK1LPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 06:15:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234692AbjK1LPI (ORCPT
+        with ESMTP id S1344124AbjK1LPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 06:15:08 -0500
-Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01olkn2067.outbound.protection.outlook.com [40.92.99.67])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AAE1D6;
-        Tue, 28 Nov 2023 03:15:15 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hmdjhCkZlzJtNFLNr41XaSCfyFC+al8aGLCaNg7YHBRHOTufFOSs89IkGxiFWHa0Jmpmijkqy7iUwbTSSfxmorQSo2Q7kgE7da9kvyVzM+wpQ5vdd58HnN3GD7xfrojSrJBFyfc19HwmfMf50/tfKrMQsZKV5eNNqnKa1ZIxKb6cq4QpBOUIjZnN/ddeNAbbF5vS1IyNcU4ra7g+L8uyKHrUVWAWe4WP0OSt33HMpJnVPnq240dNxHLSjRBnzYzCd44Mj/mYyS6TBC6LNp3ugY40zpveXiEuW89EbbcALysRT9T2iHSloDbLpnFehKKCtOhiqFaDt38hFHeggz+o2A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
- b=UM+KarxPDwtWU5CdX8Ji4Gpq1dGZtR+6dx6qGNRCRf0vOerjj8BZ7K0LbJb0keEZjUowLcX7uNqWnv3J/I6+rwFoXioDRVkp3ejs4g43sxelefvgTaLZ5zbPpvaf5VU341wE4v+aOlIoCw976y0uKy/zdZFvSlIFuqAR1CemcqwII9pxrl+7pgL1GIGOLGpRCIY6kfy9FQ6oFU0sXUNS6wc/Lv8U0c9HStA5ethxcklCoEC6E00Uapzz0y/xmYRVeAAkFZ8PfPp793drrwSBdc1OZLJFjKWHiMVPRyzWpW24a8PMzAGLtnpn8sJijCPBbVGG9BYaXOeOqCY1kze01A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
- b=qTudIV55S7X+jm+y9VAHDgRjm7HPcs9Y5KxA7k0IuuollpapLl0rBSgbQbSjChjuEemg8iROL7V640s4wCeiDxThnPp34fGBrk+muRoNOPXdApdesPOwwO7B93cxtSZ1uAfd9ekLtPBHsX1ptsYGG3KbBUrK69NQ20Ky++XQXTkqhgm3UFlsW1TLWt6v1kv7h1zahC6FdXkNa+KBpLZMjP7GC7s4pUwPzz9DXqOqN+Uf7D2CactLqzGfSeJ3Ss5wVfnpGS62ZL983Ci0rM0M5W2CyuIIDOBAAZWM6u2gNYVARynq0+p94pJaz8OjwZRLGcrSlsK/OFTyeiY/GrmCCA==
-Received: from OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM (2603:1096:604:1b9::12)
- by TYWP286MB3756.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:3ff::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Tue, 28 Nov
- 2023 11:15:12 +0000
-Received: from OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM
- ([fe80::353:ccff:c96d:6290]) by OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM
- ([fe80::353:ccff:c96d:6290%5]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
- 11:15:12 +0000
-From:   Anquan Wu <leiqi96@hotmail.com>
-To:     leiqi96@hotmail.com, andrii@kernel.org, daniel@iogearbox.net,
-        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
-        kpsingh@kernel.org
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] libbpf: fix the name of a reused map
-Date:   Tue, 28 Nov 2023 19:14:52 +0800
-Message-ID: <OSZP286MB1725AFE5BEA5E8C515DAA080B8BCA@OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [wPry6Xq6/tcJ+u4QxG7HhA1DqCOg7KVM]
-X-ClientProxiedBy: SI2PR01CA0010.apcprd01.prod.exchangelabs.com
- (2603:1096:4:191::12) To OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:604:1b9::12)
-X-Microsoft-Original-Message-ID: <OSZP286MB1725CEA1C95C5CB8E7CCC53FB8869@OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM>
- (raw)
+        Tue, 28 Nov 2023 06:15:17 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 14E45D60
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 03:15:24 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 48454C15;
+        Tue, 28 Nov 2023 03:16:11 -0800 (PST)
+Received: from [10.1.33.188] (XHFQ2J9959.cambridge.arm.com [10.1.33.188])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B4A923F73F;
+        Tue, 28 Nov 2023 03:15:20 -0800 (PST)
+Message-ID: <51f57fa1-a2ca-4e3e-82cd-b0733d4f12a7@arm.com>
+Date:   Tue, 28 Nov 2023 11:15:19 +0000
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: OSZP286MB1725:EE_|TYWP286MB3756:EE_
-X-MS-Office365-Filtering-Correlation-Id: 662af05a-57d3-4cf4-1d81-08dbf00349b5
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nxaHdsW1E3VKUMsT25SnLZHX+158BK6zAXGUzSYETl6+lgDoGB6q2DMKvveU7nKf2fmF7OnuJ/WpqYYpliYuL/Z+b9Mo8zvek5T2A9/MHWyWyasb6ZtKbSetJ+TGf4rWGUlfk0+/tvBTsPCXdgJ8Wkv8wvZqpy4FYHhO0XdE53rxLoPr1qMMN1uEgeEflBoWCzeB9yKR25f9NNKAy2Ds4cGyhfPUOetUx+MYpzCWXsyaV+sOc2aH7rjmnQfHZaUtdiQ6F1lZ1Z2Lg7okHmNQBfqu4up24nqiGIRjs3z0jGLkhHb9xI0owheuZU4vx9CxxXRIXAF1LZUHGV1cONM22BUDA5V1jo79P+nThfgNL14=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1NWZbXFl0E2YQ8jDOL9opRgleRAy5qskMFwU/wWwyZvQUN/6qJ77nuJ5OhJA?=
- =?us-ascii?Q?wZ/tihtrdOkpJp9fQ4G52R9Tzz2FzQ1UrkdSAuK9e16ECjkplRdjDuF8yzNm?=
- =?us-ascii?Q?z42qaU6UjlTpAeZxpX7+BHnMk2P/4GKUXlCaGfeC3VBwP6Pc9e9+UokexJ3x?=
- =?us-ascii?Q?2nKWtX3l1JVLHYWyHQaqrZyh5QePYqP+839OSyVHF4mc+7XtYuyfutGUNj+t?=
- =?us-ascii?Q?If3FsUQbRbHIQ1PD83Xl2/PB9lQEJ/nFZaBzjBDxjEQVGbcLw8i7FQ6isGk+?=
- =?us-ascii?Q?5uNtpD3EKZT2/AWSwmKKwPv8HPUvWzcjRdx1bqMZ8cWGStFE+Md+KTPYJJ+H?=
- =?us-ascii?Q?5Wmsm2/L7iQW6CM6pY69ZFLr4wegThSL89bFY5fTbbx7VkuS9p0UijT0bGqn?=
- =?us-ascii?Q?rYkoq12RZj21Sajx/phrRlzxPkw9rlpPDL6zyvwITAWc9FMKOUL7N+nhF1O4?=
- =?us-ascii?Q?ROKk8Zorn6W7IRGqm/gWn7MhbFjZ1gYGdcgwCv7B/MiN25iG5KCrXapKH/GJ?=
- =?us-ascii?Q?axVFLFd39LSa7RJLh7FXVSXoVTGurDBGPJqJY+p/RU7DcIA/t/qLlu2f1lr7?=
- =?us-ascii?Q?GHO1+mUuv0LkCNDg7hOY1rqejnTyGR/EJNH6WIoLJVjrGuTbtU0Ec/q+JMpB?=
- =?us-ascii?Q?5LiQfNm0CwHYLra222VLgOz5zuBgB5KikNR5sQdL2FS6QkaG12ZcnguuCSt2?=
- =?us-ascii?Q?AEiC4/aa6sfx67iOCD5XuFhHsaE3fjHScgr8dN5SCpqpvDmWawDyUB3AEmsR?=
- =?us-ascii?Q?cHjTECULHcQsLnNJNfkbcSI7o12QXB25uZuEEZe/FDXnBt0x9UztM8eKiWmg?=
- =?us-ascii?Q?xrTyAMpCd7WzVLwxB8C1PuEGojX/XvZLUjDOmxrke0AlpDw5AA4MaEOPB8iV?=
- =?us-ascii?Q?oCd+yyJUI4yXo8kaG+6VihC1gLt+S7GsNdz5Qyyh7ql3P6lkLal39iIiFdyQ?=
- =?us-ascii?Q?nVEZ/oA8wusH33Gm7oXolFiQip1GIxH6xbZTDtX/c4J+BgTLM6UXI8Ne1KyA?=
- =?us-ascii?Q?O1xaBhLtimaj70krYcD3vhd8ksP3I+X+QyavNacwg0/s961js2iWV+CiGR8w?=
- =?us-ascii?Q?yPLTyZZtQ/RpAlCRdiIo+j0V5jddEtC2udMbMKwqWgYMrGX+Shr6S5PROltD?=
- =?us-ascii?Q?NJjA9wv5sgFC4Lzy2YyOh2vKpujVAiOpZwXNkiin1bSrG5rLlinAy/O9zWsf?=
- =?us-ascii?Q?75tOaUUAQ6c3ftm7z5Dtv1Qh0wmnV+Iak5iRtw=3D=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-05f45.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 662af05a-57d3-4cf4-1d81-08dbf00349b5
-X-MS-Exchange-CrossTenant-AuthSource: OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 11:15:11.9639
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYWP286MB3756
-X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,EMPTY_MESSAGE,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=no
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 14/14] arm64/mm: Add ptep_get_and_clear_full() to
+ optimize process teardown
+Content-Language: en-GB
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     akpm@linux-foundation.org, andreyknvl@gmail.com,
+        anshuman.khandual@arm.com, ardb@kernel.org,
+        catalin.marinas@arm.com, david@redhat.com, dvyukov@google.com,
+        glider@google.com, james.morse@arm.com, jhubbard@nvidia.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mark.rutland@arm.com, maz@kernel.org,
+        oliver.upton@linux.dev, ryabinin.a.a@gmail.com,
+        suzuki.poulose@arm.com, vincenzo.frascino@arm.com,
+        wangkefeng.wang@huawei.com, will@kernel.org, willy@infradead.org,
+        yuzenghui@huawei.com, yuzhao@google.com, ziy@nvidia.com
+References: <20231115163018.1303287-15-ryan.roberts@arm.com>
+ <20231128073254.37870-1-v-songbaohua@oppo.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20231128073254.37870-1-v-songbaohua@oppo.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
+
+On 28/11/2023 07:32, Barry Song wrote:
+>> +#define __HAVE_ARCH_PTEP_GET_AND_CLEAR_FULL
+>> +static inline pte_t ptep_get_and_clear_full(struct mm_struct *mm,
+>> +				unsigned long addr, pte_t *ptep, int full)
+>> +{
+>> +	pte_t orig_pte = __ptep_get(ptep);
+>> +
+>> +	if (!pte_valid_cont(orig_pte) || !full) {
+>> +		contpte_try_unfold(mm, addr, ptep, orig_pte);
+>> +		return __ptep_get_and_clear(mm, addr, ptep);
+>> +	} else
+>> +		return contpte_ptep_get_and_clear_full(mm, addr, ptep);
+>> +}
+>> +
+> 
+> Hi Ryan,
+> 
+> I feel quite hard to understand the code. when !pte_valid_cont(orig_pte),
+> we will call contpte_try_unfold(mm, addr, ptep, orig_pte);
+> 
+> but in contpte_try_unfold(), we call unfold only if pte_valid_cont()
+> is true:
+> static inline void contpte_try_unfold(struct mm_struct *mm, unsigned long addr,
+>                                         pte_t *ptep, pte_t pte) 
+> {
+>         if (contpte_is_enabled(mm) && pte_valid_cont(pte))
+>                 __contpte_try_unfold(mm, addr, ptep, pte);
+> }
+> 
+> so do you mean the below?
+> 
+> if (!pte_valid_cont(orig_pte))
+> 	return __ptep_get_and_clear(mm, addr, ptep);
+> 
+> if (!full) {
+> 	contpte_try_unfold(mm, addr, ptep, orig_pte);
+> 	return __ptep_get_and_clear(mm, addr, ptep);	
+> } else {
+> 	return contpte_ptep_get_and_clear_full(mm, addr, ptep);
+> }
+
+Yes, this is equivalent. In general, I was trying not to spray `if
+(pte_valid_cont(orig_pte))` checks everywhere to guard contpte_try_unfold() and
+instead put the checks into contpte_try_unfold() (hence the 'try'). I figured
+just calling it unconditionally and letting the compiler optimize as it sees fit
+was the cleanest approach.
+
+But in this instance I can see this is confusing. I'll modify as you suggest.
+Thanks!
+
+> 
+> Thanks
+> Barry
+> 
+> 
 
