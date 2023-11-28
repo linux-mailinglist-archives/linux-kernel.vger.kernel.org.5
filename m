@@ -2,62 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD617FB2CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:35:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9347FB2D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:35:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343753AbjK1Het (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 02:34:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47560 "EHLO
+        id S1343827AbjK1HfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 02:35:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234615AbjK1Hep (ORCPT
+        with ESMTP id S1343814AbjK1HfK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 02:34:45 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19E90D5A
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:34:49 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6cd8c3a9edaso1782164b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:34:49 -0800 (PST)
+        Tue, 28 Nov 2023 02:35:10 -0500
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DBDC19B7
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:35:07 -0800 (PST)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5cc77e23218so52166877b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:35:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701156889; x=1701761689; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8tC1vo962immBLHWFedYDSlvhqp+GdE0dvr3eRBBUwo=;
-        b=ES4q3UevYiYeKtZA5iYXPjHUzePk45sQp0QCna3dZovBoNBi+W2MKtLvFRjSfuHy96
-         yjvtbbBDoCdLdKquKeHfd62GQbP6mftmgnm7Q6pPTPPa49GmU3/jTYDJhuqWWoeTxo1R
-         bI7HE/sFtxLZtZtwHveJR/6HENkOJzeWqmTpzMufQtDwJ7bZ4MZywB1kiiGtJILhlYLj
-         gCep35R6KKqz0ccVSe1Fbf+onH6Uko+O29OqZCeCZfzjniB6BwqT0C4L0/SWP/2ivcJW
-         u9LmUsUhM9QIA2TluiI/5F3bVaOwsCHNTFAtMrOWOH6MP6EXpzy70oJRogrRi9AE2xra
-         u/6A==
+        d=gmail.com; s=20230601; t=1701156906; x=1701761706; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZkYXobmQORad3/hpJazSzxaZjqFiG7V4HM30XOOtlqU=;
+        b=Wei5KdWt6COAubw+NNgbXg5tQnBd29H6QJX7Dofrk6R4zIP5tul8Fkun6CIa6JRsYB
+         WiT+CnVUf+7AMsQhjmwR5ZG+7XgFft5FaD8ZiQKsE0URJg8v9r2SxZHLGcVl+2KZ20xt
+         dRhxLXmi8yJ3SfbonkKRS86oOZaRM1M9eacqV/kt6Metx3BrXkvG5igjjrFodnuSExDx
+         HIOr+ARqhQLbwB+nJSM6UtcVk2PFMZgtZi9PPmmfdR9spB/2IpmakkXQ5E/VFRm8HZyk
+         ynv3MvtTlh70aZmYjgetwsyvZ9PbiyQx734sO6AK6tknYcU2KbJp875dVPLeavxvxYJ0
+         KM7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701156889; x=1701761689;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8tC1vo962immBLHWFedYDSlvhqp+GdE0dvr3eRBBUwo=;
-        b=D0myEWqFQgYbmifloo0mS7FG5EKxOiF5IcwSHd8CBbNsffmV1H4HdoNs9zXPgGUDPH
-         tYW2aRqkqp0tGyWYA3wAXLMhZhHPTNl/LvfJcsK+r1HXOdohDSSqhxrVqtNfJP7eaIQZ
-         MK2MB/jyYh3bCeDhXFVIwdi1opdYNxoH4tA2IYHqE8ZFDHs4tpKSHOenyPGUeiY7gW5w
-         XXiHfUU1dfeXiVLV0NthfwIYWg1hJNGiVXp3D1FylGyOIBqpPw1jbSqJOi/kWggax+O8
-         lqQ+VN2gzUoHWGZbUs0JT/XQDB1ss/+Ab8dXl0bORN0MxY4o5CPGPkR6/obeh+IKe18K
-         ur4g==
-X-Gm-Message-State: AOJu0Yy9q5nydXX8zQwF2CpqXJ1FOQV4Fwrnz9EUoSoSQd8EgPrYDJaK
-        ajfpQUY1PlMDaK8f+1fSarU=
-X-Google-Smtp-Source: AGHT+IEwSoEUaKAMjeNT/B4UJ5bMwZdWDAfLciF7L1mX1p1kKd8ibEh0049/OWwsh4tfQl6RWFuIfQ==
-X-Received: by 2002:a05:6a00:21d2:b0:68e:3772:4e40 with SMTP id t18-20020a056a0021d200b0068e37724e40mr14373197pfj.3.1701156888736;
-        Mon, 27 Nov 2023 23:34:48 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701156906; x=1701761706;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZkYXobmQORad3/hpJazSzxaZjqFiG7V4HM30XOOtlqU=;
+        b=HvWr4gfH4szweGgm1RyeUwqulQeO4Kt5vGH+//ciSjRprVkHyAHm0Y8DH73FAxpTKM
+         gNYw9VbvW74TEVWQEalbZ6s5EYlJm1wfEpcGFEexcQn5XfN0m6NKYd1NuyNDqWPIE6Jy
+         RL60omU3VagSPmPY6yWKrr+Ujros8EMdfq/TxG3O7cZeeRnfX9q4cgUh0rQ8B0c5o9KJ
+         8413FY8txNJQRBI1r3tqoCuNgp21c3t+P1Hvws7lDobfMFgVX4mIHl5jHppPYSKRDyVK
+         Hab/hqyuJ8G0lXX0ApZgmbMzFcC7JuaUbwnGsZjR9U52MfssmVrscLrYPfmRj7f9BOhT
+         1TGQ==
+X-Gm-Message-State: AOJu0YzeYmNxisvhRNFecHJMxqjSpW61FdzDKk0oCxu1PeW3hNXdZZsP
+        I1fCHF6piOIoJgor0H+cumM=
+X-Google-Smtp-Source: AGHT+IHY5XDAgMbNEpLvOxM9X1wUTOqLGATih0InMi8U33BF1AbXSRtWRTq3pq3Q+sVjwW2W4Qaz6w==
+X-Received: by 2002:a81:af10:0:b0:5cd:f783:df03 with SMTP id n16-20020a81af10000000b005cdf783df03mr10556684ywh.23.1701156906369;
+        Mon, 27 Nov 2023 23:35:06 -0800 (PST)
 Received: from cuiyangpei.mioffice.cn ([43.224.245.227])
-        by smtp.gmail.com with ESMTPSA id d25-20020aa78159000000b006cb4fa1174dsm8331333pfn.124.2023.11.27.23.34.46
+        by smtp.gmail.com with ESMTPSA id d25-20020aa78159000000b006cb4fa1174dsm8331333pfn.124.2023.11.27.23.35.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 23:34:48 -0800 (PST)
+        Mon, 27 Nov 2023 23:35:06 -0800 (PST)
 From:   cuiyangpei <cuiyangpei@gmail.com>
 X-Google-Original-From: cuiyangpei <cuiyangpei@xiaomi.com>
 To:     sj@kernel.org, akpm@linux-foundation.org, damon@lists.linux.dev,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Cc:     cuiyangpei <cuiyangpei@xiaomi.com>
-Subject: [PATCH 1/2] mm/damon/sysfs: Implement recording feature
-Date:   Tue, 28 Nov 2023 15:34:39 +0800
-Message-ID: <20231128073440.11894-1-cuiyangpei@xiaomi.com>
+Subject: [PATCH 2/2] mm/damon/core: add sysfs nodes to set last_nr_accesses weight
+Date:   Tue, 28 Nov 2023 15:34:40 +0800
+Message-ID: <20231128073440.11894-2-cuiyangpei@xiaomi.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231128073440.11894-1-cuiyangpei@xiaomi.com>
+References: <20231128073440.11894-1-cuiyangpei@xiaomi.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -70,433 +73,173 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The user space users can control DAMON and get the monitoring results
-via implements 'recording' feature in 'damon-sysfs'.  The feature
-can be used via 'record' and 'state' file in the '<sysfs>/kernel/mm/
-damon/admin/kdamonds/N/' directory.
-
-The file allows users to record monitored access patterns in a text
-file. Firstly, users set the size of the buffer and the path of the
-result file by writing to the ``record`` file. Then the recorded
-results are first written in an in-memory buffer and flushed the
-recorded results to a file in batch by writing 'record' to the
-``state`` file.
-
-For example, below commands set the buffer to be 4 KiB and the result
-to be saved in ``/damon.txt``. ::
-
-    # cd <sysfs>/kernel/mm/damon/admin/kdamonds/N
-    # echo "4096 /damon.txt" > record
-    # echo "record" > state
+The date access frequency is cleared every time the aggregation
+interval is reached. In order to refer to the past time access
+frequency, the current access frequency can be calculated by
+setting the weight of the last access frequency.
 
 Signed-off-by: cuiyangpei <cuiyangpei@xiaomi.com>
 ---
- .../ABI/testing/sysfs-kernel-mm-damon         |  20 +-
- include/linux/damon.h                         |  11 +
- mm/damon/sysfs.c                              | 282 ++++++++++++++++++
- 3 files changed, 307 insertions(+), 6 deletions(-)
+ .../ABI/testing/sysfs-kernel-mm-damon         |  6 ++++
+ include/linux/damon.h                         |  3 ++
+ mm/damon/core.c                               | 29 +++++++++++++++++
+ mm/damon/sysfs.c                              | 31 +++++++++++++++++++
+ 4 files changed, 69 insertions(+)
 
 diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-damon b/Documentation/ABI/testing/sysfs-kernel-mm-damon
-index b35649a46a2f..819534dcfb6c 100644
+index 819534dcfb6c..8367e26bf4da 100644
 --- a/Documentation/ABI/testing/sysfs-kernel-mm-damon
 +++ b/Documentation/ABI/testing/sysfs-kernel-mm-damon
-@@ -25,15 +25,23 @@ Description:	Writing 'on' or 'off' to this file makes the kdamond starts or
- 		stops, respectively.  Reading the file returns the keywords
- 		based on the current status.  Writing 'commit' to this file
- 		makes the kdamond reads the user inputs in the sysfs files
--		except 'state' again.  Writing 'update_schemes_stats' to the
--		file updates contents of schemes stats files of the kdamond.
--		Writing 'update_schemes_tried_regions' to the file updates
--		contents of 'tried_regions' directory of every scheme directory
--		of this kdamond.  Writing 'update_schemes_tried_bytes' to the
--		file updates only '.../tried_regions/total_bytes' files of this
-+		except 'state' again.  Writing 'record' to this file makes the
-+		kdamond saves the monitoring results to file specified by the
-+		/record file. Writing 'update_schemes_stats'to the file updates
-+		contents of schemes stats files of the kdamond. Writing
-+		'update_schemes_tried_regions' to the file updates contents of
-+		'tried_regions' directory of every scheme directory of this
-+		kdamond.  Writing 'update_schemes_tried_bytes' to the file
-+		updates only '.../tried_regions/total_bytes' files of this
- 		kdamond.  Writing 'clear_schemes_tried_regions' to the file
- 		removes contents of the 'tried_regions' directory.
+@@ -74,6 +74,12 @@ Description:	Writing a keyword for a monitoring operations set ('vaddr' for
+ 		Note that only the operations sets that listed in
+ 		'avail_operations' file are valid inputs.
  
-+What:		/sys/kernel/mm/damon/admin/kdamonds/<K>/record
++What:		/sys/kernel/mm/damon/admin/kdamonds/<K>/contexts/<C>/monitoring_attrs/last_nr_accesses_weight
 +Date:		Nov 2023
 +Contact:	Ping Xiong <xiongping1@xiaomi.com>
-+Description:	Writing a string '4096 /damon.txt' to this file makes the
-+		user to record monitored access patterns in a text file.
++Description:	Writing a value to this file sets last_nr_accesses weight
++		of the DAMON context. Reading this file returns the value.
 +
- What:		/sys/kernel/mm/damon/admin/kdamonds/<K>/pid
+ What:		/sys/kernel/mm/damon/admin/kdamonds/<K>/contexts/<C>/monitoring_attrs/intervals/sample_us
  Date:		Mar 2022
  Contact:	SeongJae Park <sj@kernel.org>
 diff --git a/include/linux/damon.h b/include/linux/damon.h
-index ab2f17d9926b..6495513cc6de 100644
+index 6495513cc6de..71e67a9d0996 100644
 --- a/include/linux/damon.h
 +++ b/include/linux/damon.h
-@@ -19,6 +19,17 @@
+@@ -18,6 +18,8 @@
+ #define DAMON_MIN_REGION	PAGE_SIZE
  /* Max priority score for DAMON-based operation schemes */
  #define DAMOS_MAX_SCORE		(99)
++/* set last_nr_accesses weight */
++#define LAST_NR_ACCESSES_WEIGHT	0
  
-+#define MIN_RECORD_BUFFER_LEN	1024
-+#define MAX_RECORD_BUFFER_LEN	(4 * 1024 * 1024)
-+#define MAX_RFILE_PATH_LEN	256
-+
-+struct sysfs_recorder {
-+	unsigned char *rbuf;
-+	unsigned int rbuf_len;
-+	unsigned int rbuf_offset;
-+	char *rfile_path;
-+};
-+
- /* Get a random number in [l, r) */
- static inline unsigned long damon_rand(unsigned long l, unsigned long r)
- {
-diff --git a/mm/damon/sysfs.c b/mm/damon/sysfs.c
-index e27846708b5a..7a7d41e609e3 100644
---- a/mm/damon/sysfs.c
-+++ b/mm/damon/sysfs.c
-@@ -994,6 +994,8 @@ enum damon_sysfs_cmd {
- 	DAMON_SYSFS_CMD_OFF,
- 	/* @DAMON_SYSFS_CMD_COMMIT: Update kdamond inputs. */
- 	DAMON_SYSFS_CMD_COMMIT,
-+	/* @DAMON_SYSFS_CMD_RECORD: Save the monitoring results to file. */
-+	DAMON_SYSFS_CMD_RECORD,
- 	/*
- 	 * @DAMON_SYSFS_CMD_UPDATE_SCHEMES_STATS: Update scheme stats sysfs
- 	 * files.
-@@ -1025,6 +1027,7 @@ static const char * const damon_sysfs_cmd_strs[] = {
- 	"on",
- 	"off",
- 	"commit",
-+	"record",
- 	"update_schemes_stats",
- 	"update_schemes_tried_bytes",
- 	"update_schemes_tried_regions",
-@@ -1349,6 +1352,160 @@ static int damon_sysfs_commit_input(struct damon_sysfs_kdamond *kdamond)
- 			kdamond->contexts->contexts_arr[0]);
+ #define MIN_RECORD_BUFFER_LEN	1024
+ #define MAX_RECORD_BUFFER_LEN	(4 * 1024 * 1024)
+@@ -522,6 +524,7 @@ struct damon_attrs {
+ 	unsigned long ops_update_interval;
+ 	unsigned long min_nr_regions;
+ 	unsigned long max_nr_regions;
++	unsigned int last_nr_accesses_weight;
+ };
+ 
+ /**
+diff --git a/mm/damon/core.c b/mm/damon/core.c
+index 630077d95dc6..230afcceea22 100644
+--- a/mm/damon/core.c
++++ b/mm/damon/core.c
+@@ -1142,6 +1142,34 @@ static void kdamond_apply_schemes(struct damon_ctx *c)
+ 	}
  }
  
-+/*
-+ * Flush the content in the result buffer to the result file
-+ */
-+static int sysfs_flush_rbuffer(struct sysfs_recorder *rec)
++static unsigned int __calculate_nr_accesses(struct damon_ctx *c, struct damon_region *r)
 +{
-+	ssize_t sz;
-+	loff_t pos = 0;
-+	struct file *rfile;
++	unsigned int rem_old, rem_new;
++	unsigned int res;
++	unsigned int weight = c->attrs.last_nr_accesses_weight;
 +
-+	if (!rec->rbuf_offset)
-+		return 0;
++	res = div_u64_rem(r->nr_accesses, 100, &rem_new) * (100 - weight)
++		+ div_u64_rem(r->last_nr_accesses, 100, &rem_old) * weight;
 +
-+	rfile = filp_open(rec->rfile_path,
-+			O_CREAT | O_RDWR | O_APPEND | O_LARGEFILE, 0644);
-+	if (IS_ERR(rfile)) {
-+		pr_err("Cannot open the result file %s\n",
-+				rec->rfile_path);
-+		return PTR_ERR(rfile);
-+	}
++	if (rem_new)
++		res += rem_new * (100 - weight) / 100;
++	if (rem_old)
++		res += rem_old * weight / 100;
 +
-+	while (rec->rbuf_offset) {
-+		sz = kernel_write(rfile, rec->rbuf, rec->rbuf_offset, &pos);
-+		if (sz < 0) {
-+			filp_close(rfile, NULL);
-+			return sz;
-+		}
-+		rec->rbuf_offset -= sz;
-+	}
-+	filp_close(rfile, NULL);
-+
-+	return 0;
++	return res;
 +}
 +
-+/*
-+ * Write a data into the result buffer
-+ */
-+static void sysfs_write_rbuf(struct damon_ctx *ctx, char *data, int size)
-+{
-+	struct sysfs_recorder *rec = ctx->callback.private;
-+
-+	if (!rec->rbuf_len || !rec->rbuf || !rec->rfile_path)
-+		return;
-+	if (rec->rbuf_offset + size > rec->rbuf_len)
-+		sysfs_flush_rbuffer(ctx->callback.private);
-+	if (rec->rbuf_offset + size > rec->rbuf_len) {
-+		pr_warn("%s: flush failed, or wrong size given(%u, %d)\n",
-+				__func__, rec->rbuf_offset, size);
-+		return;
-+	}
-+
-+	memcpy(&rec->rbuf[rec->rbuf_offset], data, size);
-+	rec->rbuf_offset += size;
-+}
-+
-+static unsigned int nr_damon_targets(struct damon_ctx *ctx)
++static void kdamon_update_nr_accesses(struct damon_ctx *c)
 +{
 +	struct damon_target *t;
-+	unsigned int nr_targets = 0;
-+	int count = 0;
-+
-+	damon_for_each_target(t, ctx) {
-+		count++;
-+		nr_targets++;
-+	}
-+
-+	return nr_targets;
-+}
-+
-+/*
-+ * Store the aggregated monitoring results to the result buffer
-+ *
-+ * The format for the result buffer is as below:
-+ *
-+ *   <time> <number of targets>
-+ *
-+ *   target info: <pid> <number of regions>
-+ *   region info: <start address> <region size> <nr_accesses>
-+ */
-+static int damon_flush_aggregation(struct damon_ctx *c)
-+{
-+	struct damon_target *t;
-+	struct timespec64 now;
-+	struct task_struct *tsk;
-+	int tsk_pid = -1;
-+	unsigned int nr = 0;
-+	char buf[128];
-+	int rc = 0;
-+
-+	memset(buf, 0, sizeof(buf));
-+	ktime_get_coarse_ts64(&now);
-+	nr = nr_damon_targets(c);
-+	rc = scnprintf(buf, sizeof(buf), "time: %lld.%09ld, nr: %u\n",
-+			(long long)now.tv_sec, now.tv_nsec, nr);
-+	if (!rc)
-+		return -ENOMEM;
-+
-+	sysfs_write_rbuf(c, buf, rc);
-+	memset(buf, 0, sizeof(buf));
++	struct damon_region *r;
 +
 +	damon_for_each_target(t, c) {
-+		struct damon_region *r;
-+
-+		tsk = get_pid_task(t->pid, PIDTYPE_PID);
-+		tsk_pid = tsk->pid;
-+		nr = damon_nr_regions(t);
-+		rc = scnprintf(buf, sizeof(buf), "pid: %d, nr: %u\n", tsk_pid, nr);
-+		if (!rc)
-+			return -ENOMEM;
-+
-+		sysfs_write_rbuf(c, buf, rc);
-+		memset(buf, 0, sizeof(buf));
-+
-+		damon_for_each_region(r, t) {
-+
-+			rc = scnprintf(buf, sizeof(buf), "%lu, %lu, %d\n",
-+					r->ar.start, r->ar.end - r->ar.start, r->nr_accesses);
-+			if (!rc)
-+				return -ENOMEM;
-+
-+			sysfs_write_rbuf(c, buf, rc);
-+			memset(buf, 0, sizeof(buf));
-+		}
++		damon_for_each_region(r, t)
++			r->nr_accesses = __calculate_nr_accesses(c, r);
 +	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * damon_sysfs_record() - Save the monitoring results to file.
-+ * @kdamond:	The kobject wrapper for the associated kdamond.
-+ *
-+ * If the sysfs input is wrong, the kdamond will be terminated.
-+ */
-+static int damon_sysfs_record(struct damon_sysfs_kdamond *kdamond)
-+{
-+	struct damon_ctx *ctx = kdamond->damon_ctx;
-+	struct sysfs_recorder *rec = ctx->callback.private;
-+	int err = 0;
-+
-+	if (!damon_sysfs_kdamond_running(kdamond))
-+		return -EINVAL;
-+	/* TODO: Support multiple contexts per kdamond */
-+	if (kdamond->contexts->nr != 1)
-+		return -EINVAL;
-+
-+	err = damon_flush_aggregation(ctx);
-+	if (!err) {
-+		if (rec->rbuf_offset)
-+			err = sysfs_flush_rbuffer(rec);
-+	}
-+
-+	return err;
 +}
 +
  /*
-  * damon_sysfs_cmd_request_callback() - DAMON callback for handling requests.
-  * @c:		The DAMON context of the callback.
-@@ -1371,6 +1528,9 @@ static int damon_sysfs_cmd_request_callback(struct damon_ctx *c, bool active)
- 	if (!kdamond || kdamond->damon_ctx != c)
- 		goto out;
- 	switch (damon_sysfs_cmd_request.cmd) {
-+	case DAMON_SYSFS_CMD_RECORD:
-+		err = damon_sysfs_record(kdamond);
-+		break;
- 	case DAMON_SYSFS_CMD_UPDATE_SCHEMES_STATS:
- 		err = damon_sysfs_upd_schemes_stats(kdamond);
- 		break;
-@@ -1433,6 +1593,65 @@ static int damon_sysfs_after_aggregation(struct damon_ctx *c)
- 	return damon_sysfs_cmd_request_callback(c, true);
+  * Merge two adjacent regions into one region
+  */
+@@ -1469,6 +1497,7 @@ static int kdamond_fn(void *data)
+ 			max_nr_accesses = ctx->ops.check_accesses(ctx);
+ 
+ 		if (ctx->passed_sample_intervals == next_aggregation_sis) {
++			kdamon_update_nr_accesses(ctx);
+ 			kdamond_merge_regions(ctx,
+ 					max_nr_accesses / 10,
+ 					sz_limit);
+diff --git a/mm/damon/sysfs.c b/mm/damon/sysfs.c
+index 7a7d41e609e3..2946b0e91ad8 100644
+--- a/mm/damon/sysfs.c
++++ b/mm/damon/sysfs.c
+@@ -544,6 +544,7 @@ struct damon_sysfs_attrs {
+ 	struct kobject kobj;
+ 	struct damon_sysfs_intervals *intervals;
+ 	struct damon_sysfs_ul_range *nr_regions_range;
++	unsigned int last_nr_accesses_weight;
+ };
+ 
+ static struct damon_sysfs_attrs *damon_sysfs_attrs_alloc(void)
+@@ -553,6 +554,7 @@ static struct damon_sysfs_attrs *damon_sysfs_attrs_alloc(void)
+ 	if (!attrs)
+ 		return NULL;
+ 	attrs->kobj = (struct kobject){};
++	attrs->last_nr_accesses_weight = LAST_NR_ACCESSES_WEIGHT;
+ 	return attrs;
  }
  
-+/*
-+ * sysfs_set_recording() - Set attributes for the recording.
-+ * @ctx:	target kdamond context
-+ * @rbuf_len:	length of the result buffer
-+ * @rfile_path:	path to the monitor result files
-+ *
-+ * Setting 'rbuf_len' 0 disables recording.
-+ *
-+ * This function should not be called while the kdamond is running.
-+ *
-+ * Return: 0 on success, negative error code otherwise.
-+ */
-+static int sysfs_set_recording(struct damon_ctx *ctx,
-+			unsigned int rbuf_len, char *rfile_path)
-+{
-+	struct sysfs_recorder *recorder;
-+	size_t rfile_path_len;
-+
-+	if (rbuf_len && (rbuf_len > MAX_RECORD_BUFFER_LEN ||
-+			rbuf_len < MIN_RECORD_BUFFER_LEN)) {
-+		pr_err("result buffer size (%u) is out of [%d,%d]\n",
-+				rbuf_len, MIN_RECORD_BUFFER_LEN,
-+				MAX_RECORD_BUFFER_LEN);
-+		return -EINVAL;
-+	}
-+	rfile_path_len = strnlen(rfile_path, MAX_RFILE_PATH_LEN);
-+	if (rfile_path_len >= MAX_RFILE_PATH_LEN) {
-+		pr_err("too long (>%d) result file path %s\n",
-+				MAX_RFILE_PATH_LEN, rfile_path);
-+		return -EINVAL;
-+	}
-+
-+	recorder = ctx->callback.private;
-+	if (!recorder) {
-+		recorder = kzalloc(sizeof(*recorder), GFP_KERNEL);
-+		if (!recorder)
-+			return -ENOMEM;
-+		ctx->callback.private = recorder;
-+	}
-+
-+	recorder->rbuf_len = rbuf_len;
-+	kfree(recorder->rbuf);
-+	recorder->rbuf = NULL;
-+	kfree(recorder->rfile_path);
-+	recorder->rfile_path = NULL;
-+
-+	if (rbuf_len) {
-+		recorder->rbuf = kvmalloc(rbuf_len, GFP_KERNEL);
-+		if (!recorder->rbuf)
-+			return -ENOMEM;
-+	}
-+	recorder->rfile_path = kmalloc(rfile_path_len + 1, GFP_KERNEL);
-+	if (!recorder->rfile_path)
-+		return -ENOMEM;
-+	strscpy(recorder->rfile_path, rfile_path, rfile_path_len + 1);
-+
-+	return 0;
-+}
-+
- static struct damon_ctx *damon_sysfs_build_ctx(
- 		struct damon_sysfs_context *sys_ctx)
- {
-@@ -1442,6 +1661,12 @@ static struct damon_ctx *damon_sysfs_build_ctx(
- 	if (!ctx)
- 		return ERR_PTR(-ENOMEM);
- 
-+	err = sysfs_set_recording(ctx, 0, "none");
-+	if (err) {
-+		damon_destroy_ctx(ctx);
-+		return ERR_PTR(err);
-+	}
-+
- 	err = damon_sysfs_apply_inputs(ctx, sys_ctx);
- 	if (err) {
- 		damon_destroy_ctx(ctx);
-@@ -1599,6 +1824,59 @@ static ssize_t pid_show(struct kobject *kobj,
- 	return sysfs_emit(buf, "%d\n", pid);
+@@ -602,12 +604,40 @@ static void damon_sysfs_attrs_rm_dirs(struct damon_sysfs_attrs *attrs)
+ 	kobject_put(&attrs->intervals->kobj);
  }
  
-+static ssize_t record_show(struct kobject *kobj,
++static ssize_t last_nr_accesses_weight_show(struct kobject *kobj,
 +		struct kobj_attribute *attr, char *buf)
 +{
-+	struct damon_sysfs_kdamond *kdamond = container_of(kobj,
-+			struct damon_sysfs_kdamond, kobj);
-+	struct damon_ctx *ctx;
-+	struct sysfs_recorder *rec;
-+	int len = 0;
++	struct damon_sysfs_attrs *attrs = container_of(kobj,
++			struct damon_sysfs_attrs, kobj);
 +
-+	if (!mutex_trylock(&damon_sysfs_lock))
-+		return -EBUSY;
-+	ctx = kdamond->damon_ctx;
-+	if (!ctx)
-+		goto out;
-+	rec = ctx->callback.private;
-+	len = sysfs_emit(buf, "%u %s\n", rec->rbuf_len, rec->rfile_path);
-+
-+out:
-+	mutex_unlock(&damon_sysfs_lock);
-+	return len;
++	return sysfs_emit(buf, "%u\n", attrs->last_nr_accesses_weight);
 +}
 +
-+static ssize_t record_store(struct kobject *kobj,
++static ssize_t last_nr_accesses_weight_store(struct kobject *kobj,
 +		struct kobj_attribute *attr, const char *buf, size_t count)
 +{
-+	struct damon_sysfs_kdamond *kdamond = container_of(kobj,
-+			struct damon_sysfs_kdamond, kobj);
-+	struct damon_ctx *ctx;
-+	unsigned int rbuf_len;
-+	char rfile_path[MAX_RFILE_PATH_LEN];
-+	ssize_t ret = count;
-+	int err;
++	struct damon_sysfs_attrs *attrs = container_of(kobj,
++			struct damon_sysfs_attrs, kobj);
++	int err = kstrtoint(buf, 0, &attrs->last_nr_accesses_weight);
 +
-+	if (sscanf(buf, "%10u %128s", &rbuf_len, rfile_path) != 2) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	if (!mutex_trylock(&damon_sysfs_lock))
-+		return -EBUSY;
-+	ctx = kdamond->damon_ctx;
-+	if (!ctx)
-+		goto unlock_out;
-+
-+	err = sysfs_set_recording(ctx, rbuf_len, rfile_path);
 +	if (err)
-+		ret = err;
-+unlock_out:
-+	mutex_unlock(&damon_sysfs_lock);
-+out:
-+	return ret;
++		return -EINVAL;
++	if (attrs->last_nr_accesses_weight > 100)
++		return -EINVAL;
++
++	return count;
 +}
 +
- static void damon_sysfs_kdamond_release(struct kobject *kobj)
+ static void damon_sysfs_attrs_release(struct kobject *kobj)
  {
- 	struct damon_sysfs_kdamond *kdamond = container_of(kobj,
-@@ -1615,9 +1893,13 @@ static struct kobj_attribute damon_sysfs_kdamond_state_attr =
- static struct kobj_attribute damon_sysfs_kdamond_pid_attr =
- 		__ATTR_RO_MODE(pid, 0400);
+ 	kfree(container_of(kobj, struct damon_sysfs_attrs, kobj));
+ }
  
-+static struct kobj_attribute damon_sysfs_kdamond_record_attr =
-+		__ATTR_RW_MODE(record, 0600);
++static struct kobj_attribute damon_sysfs_attrs_last_nr_accesses_weight_attr =
++		__ATTR_RW_MODE(last_nr_accesses_weight, 0600);
 +
- static struct attribute *damon_sysfs_kdamond_attrs[] = {
- 	&damon_sysfs_kdamond_state_attr.attr,
- 	&damon_sysfs_kdamond_pid_attr.attr,
-+	&damon_sysfs_kdamond_record_attr.attr,
+ static struct attribute *damon_sysfs_attrs_attrs[] = {
++	&damon_sysfs_attrs_last_nr_accesses_weight_attr.attr,
  	NULL,
  };
- ATTRIBUTE_GROUPS(damon_sysfs_kdamond);
+ ATTRIBUTE_GROUPS(damon_sysfs_attrs);
+@@ -1083,6 +1113,7 @@ static int damon_sysfs_set_attrs(struct damon_ctx *ctx,
+ 		.ops_update_interval = sys_intervals->update_us,
+ 		.min_nr_regions = sys_nr_regions->min,
+ 		.max_nr_regions = sys_nr_regions->max,
++		.last_nr_accesses_weight = sys_attrs->last_nr_accesses_weight,
+ 	};
+ 	return damon_set_attrs(ctx, &attrs);
+ }
 -- 
 2.43.0
 
