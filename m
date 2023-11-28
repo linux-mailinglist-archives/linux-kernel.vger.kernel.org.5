@@ -2,79 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D89A7FC2C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 585987FC2A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346271AbjK1PvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 10:51:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60766 "EHLO
+        id S1346382AbjK1Pv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 10:51:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346220AbjK1PvJ (ORCPT
+        with ESMTP id S1346220AbjK1Pv5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 10:51:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F0512A
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 07:51:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701186674;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4h4K1ccbQslEI6CdDcMlauekllahJXsz5FTmnurJLoU=;
-        b=bjs0f/mYwiLUBREsuEF4KX692+u5LQZmNOr/jJIP8NqTseNQCakFYPuS3FtX9NDYNnsxm2
-        XrZDS+bmaZR4MH1X1aXuiR8qH43ymgI6r4/YOIzVvDKnpwH9l1pnA+w97nWZbhrHew5eQQ
-        KyIbsFWMBnEY04CNGIOhqgzBvUobaNg=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-511-DdnSqRwwPKS5rBn5PejAMA-1; Tue, 28 Nov 2023 10:51:13 -0500
-X-MC-Unique: DdnSqRwwPKS5rBn5PejAMA-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-332e4030884so784142f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 07:51:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701186672; x=1701791472;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4h4K1ccbQslEI6CdDcMlauekllahJXsz5FTmnurJLoU=;
-        b=LphjsC2akkI1xTfW9M3+r49dTFmNtu0cQ5yCh4pw1vqjUzusyrtYnKPSM7bcC898i8
-         +iI/cq7FDABHltCG1ZmpChyRn1hvat+V3+79kz4GvpGfD0KsLnLi5Rk+zz9KakFY18nP
-         2GsM0iYl2S1FGR8rhH23iztg7hK3ksgq9GeRzAhXWpNBEQAjiHqbjik3TXfOTA55auP0
-         TmKzp1TtQrUqMYuXE/+tclzK7V3AKL+OESQVo7qUSAwCtQJ6FTQmyBLwwrqmcD6loK5/
-         uIQ+Pr0fYCptCWtuYxPDulVNlSNOMUOAeZOAafKCaPSbgRDHTHmtmXZhHr7Nak+2CepU
-         +9Lg==
-X-Gm-Message-State: AOJu0YwL3YXAiAdp7Etgozng0YwOdVxaEjkQq+SPDCH01qQ6WfsCgZII
-        iBTYUA5oItWZthNMQX2/j7dgRTfRjMyfqCyFRQQyMmrRVCISwPC7g2AdQMCVd4XcrwerSSc32xx
-        gcM2ZaUNqzW1xOrMGrLlCpw/M
-X-Received: by 2002:a05:6000:1b85:b0:333:980:c388 with SMTP id r5-20020a0560001b8500b003330980c388mr1939161wru.5.1701186672056;
-        Tue, 28 Nov 2023 07:51:12 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFfMnj/2FNTGqvThbUF/4m8o1l2cbXNDZ7gJ4fjNtdMGR7oHS66wq+o/saOJAuM68jSexVxLQ==
-X-Received: by 2002:a05:6000:1b85:b0:333:980:c388 with SMTP id r5-20020a0560001b8500b003330980c388mr1939149wru.5.1701186671709;
-        Tue, 28 Nov 2023 07:51:11 -0800 (PST)
-Received: from gerbillo.redhat.com (146-241-249-156.dyn.eolo.it. [146.241.249.156])
-        by smtp.gmail.com with ESMTPSA id q4-20020adfea04000000b003296b488961sm15260012wrm.31.2023.11.28.07.51.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 07:51:11 -0800 (PST)
-Message-ID: <9daf8509e39cd20d9d806afdb425ad43af037f8d.camel@redhat.com>
-Subject: Re: [PATCH net] ipv4: ip_gre: Handle skb_pull() failure in
- ipgre_xmit()
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Eric Dumazet <edumazet@google.com>,
-        Shigeru Yoshida <syoshida@redhat.com>
-Cc:     davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 28 Nov 2023 16:51:09 +0100
-In-Reply-To: <CANn89iKcstKYWoqUCXHO__7PfVRMFNnN5nRQVCTAADvFbcJRww@mail.gmail.com>
-References: <20231126151652.372783-1-syoshida@redhat.com>
-         <CANn89iKcstKYWoqUCXHO__7PfVRMFNnN5nRQVCTAADvFbcJRww@mail.gmail.com>
+        Tue, 28 Nov 2023 10:51:57 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD5790;
+        Tue, 28 Nov 2023 07:52:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701186723; x=1732722723;
+  h=message-id:subject:from:to:cc:in-reply-to:references:
+   content-transfer-encoding:mime-version:date;
+  bh=G6WuKwckF5V3NRC/1N7CGXl15yQ58N1giIylX483ywI=;
+  b=C3e341XCyrYHEtGowdrHkyYfnNf6eMxjH7b3chqjHiRDd5ozaVWexk7C
+   vY0VZJ8qXTCdfkDCdoFuytaWZzEBvREbZ08JBFm5q+UvLj24uDRD2gNuf
+   yhva0NNnRSWCeNvN1EagP2249FOyL7JVH8BltesWQ64mk3MKHMLEDLts8
+   MT7qpozJJDNsXYjLM6XCzPmPuSpMkuiAXu9iiNNfoyBDQoqIAiwRkb3ff
+   p+0pD9RBrt7k6770hKJwlK6cLmTuG2ipM3JaTp5Or1jRZNI9UNEGzt8F0
+   CvJKHV4YngTZf7YetucSxUCSlcw9KmWOkJyN3LiuwXy29PdJMkvkKw9Y/
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="372323268"
+X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
+   d="scan'208";a="372323268"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 07:51:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="802983212"
+X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
+   d="scan'208";a="802983212"
+Received: from lapeders-mobl1.ger.corp.intel.com (HELO [10.249.254.81]) ([10.249.254.81])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 07:51:49 -0800
+Message-ID: <03712311650b5fcf7162309f13a18dbd240e8a9f.camel@linux.intel.com>
+Subject: Re: [Intel-xe] [PATCH v5] Documentation/gpu: VM_BIND locking
+ document
+From:   Thomas =?ISO-8859-1?Q?Hellstr=F6m?= 
+        <thomas.hellstrom@linux.intel.com>
+To:     Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc:     intel-xe@lists.freedesktop.org,
+        Francois Dugast <francois.dugast@intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Danilo Krummrich <dakr@redhat.com>,
+        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>
+In-Reply-To: <ZWTvohD9rTx9aAWa@intel.com>
+References: <20231121104046.3201-1-thomas.hellstrom@linux.intel.com>
+         <ZWTvohD9rTx9aAWa@intel.com>
+Organization: Intel Sweden AB, Registration Number: 556189-6027
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+Date:   Tue, 28 Nov 2023 16:51:25 +0100
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -83,50 +70,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-11-28 at 16:45 +0100, Eric Dumazet wrote:
-> On Sun, Nov 26, 2023 at 4:17=E2=80=AFPM Shigeru Yoshida <syoshida@redhat.=
-com> wrote:
+On Mon, 2023-11-27 at 14:36 -0500, Rodrigo Vivi wrote:
+> On Tue, Nov 21, 2023 at 11:40:46AM +0100, Thomas Hellstr=C3=B6m wrote:
+> > Add the first version of the VM_BIND locking document which is
+> > intended to be part of the xe driver upstreaming agreement.
 > >=20
-> > In ipgre_xmit(), skb_pull() may fail even if pskb_inet_may_pull() retur=
-ns
-> > true. For example, applications can create a malformed packet that caus=
-es
-> > this problem with PF_PACKET.
+> > The document describes and discuss the locking used during exec-
+> > functions, evicton and for userptr gpu-vmas. Intention is to be
+> > using the
+> > same nomenclature as the drm-vm-bind-async.rst.
 > >=20
-> > This patch fixes the problem by dropping skb and returning from the
-> > function if skb_pull() fails.
+> > v2:
+> > - s/gvm/gpu_vm/g (Rodrigo Vivi)
+> > - Clarify the userptr seqlock with a pointer to mm/mmu_notifier.c
+> > =C2=A0 (Rodrigo Vivi)
+> > - Adjust commit message accordingly.
+> > - Add SPDX license header.
 > >=20
-> > Fixes: c54419321455 ("GRE: Refactor GRE tunneling code.")
-> > Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
-> > ---
-> >  net/ipv4/ip_gre.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > v3:
+> > - Large update to align with the drm_gpuvm manager locking
+> > - Add "Efficient userptr gpu_vma exec function iteration" section
+> > - Add "Locking at bind- and unbind time" section.
 > >=20
-> > diff --git a/net/ipv4/ip_gre.c b/net/ipv4/ip_gre.c
-> > index 22a26d1d29a0..95efa97cb84b 100644
-> > --- a/net/ipv4/ip_gre.c
-> > +++ b/net/ipv4/ip_gre.c
-> > @@ -643,7 +643,8 @@ static netdev_tx_t ipgre_xmit(struct sk_buff *skb,
-> >                 /* Pull skb since ip_tunnel_xmit() needs skb->data poin=
-ting
-> >                  * to gre header.
-> >                  */
-> > -               skb_pull(skb, tunnel->hlen + sizeof(struct iphdr));
-> > +               if (!skb_pull(skb, tunnel->hlen + sizeof(struct iphdr))=
-)
-> > +                       goto free_skb;
-> >                 skb_reset_mac_header(skb);
+> > v4:
+> > - Fix tabs vs space errors by untabifying (Rodrigo Vivi)
+> > - Minor style fixes and typos (Rodrigo Vivi)
+> > - Clarify situations where stale GPU mappings are occurring and how
+> > =C2=A0 access through these mappings are blocked. (Rodrigo Vivi)
+> > - Insert into the toctree in implementation_guidelines.rst
 > >=20
-> >                 if (skb->ip_summed =3D=3D CHECKSUM_PARTIAL &&
-> > --
+> > v5:
+> > - Add a section about recoverable page-faults.
+> > - Use local references to other documentation where possible
+> > =C2=A0 (Bagas Sanjaya)
+> > - General documentation fixes and typos (Danilo Krummrich and
+> > =C2=A0 Boris Brezillon)
+> > - Improve the documentation around locks that need to be grabbed
+> > from the
+> > =C2=A0 dm-fence critical section (Boris Brezillon)
+> > - Add more references to the DRM GPUVM helpers (Danilo Krummrich
+> > and
+> > =C2=A0 Boriz Brezillon)
+> > - Update the rfc/xe.rst document.
+> >=20
+> > Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+> > Signed-off-by: Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com>
 >=20
+> First of all, with Bagas and Boris latest suggestions, already few
+> free to use:
 >=20
-> I have syszbot reports with an actual repro for this one.
+> Reviewed-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
+>=20
+> But a few minor comments below. Mostly trying to address Boris
+> feeling
+> of long sentences. However, take them with a grain of salt since I'm
+> not
+> a native english speaker. :)=20
 
-Could you please share them? I could not find easily the reports in
-https://syzkaller.appspot.com/upstream
+Hi, Rodrigo.
 
-Thanks,
+Thanks for the reviewing. I've added most but not all of the
+suggestions in v6. Regarding the comment about "zapping", that's used
+by the core mm for the process of unmapping page-table entries;
+zap_vma_ptes() etc. Merely following that, although I'm not really
+against using unmapping etc.
 
-Paolo
+/Thomas
 
