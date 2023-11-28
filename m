@@ -2,108 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5E17FC135
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D977FC187
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344720AbjK1QsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 11:48:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51480 "EHLO
+        id S1344721AbjK1QtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:49:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjK1QsS (ORCPT
+        with ESMTP id S229671AbjK1QtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 11:48:18 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B900D4B
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:48:24 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-da040c021aeso7902994276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:48:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701190104; x=1701794904; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uA6IXD+Y3WRAlqXJ/CITjoEeJvV8WozOfc0Um1r0Klo=;
-        b=yN4tDn5HJWeYr0l+fYp9PpLEGYA/ueaTCQaVJJwPyJZ6FVHIUnzOjz0vBmFqWnI3yI
-         0mPUEmxUhVhw1hVGLqCht3HtBOTX7L4R5JW90r+o/SC30DhjKiTiZrK63C6SCOyYZtLM
-         dfmbvQgLRdlTBu67Hbyy0xIlAlm2ynB8JBEkrWJO7XJKEuRXxvWHrcTQ6dUfzJJiA4C3
-         lS/+DfUJe84jc/5bRo5ZTKQfTCU0ahdmrwepjW+GIA2RSLTRssppru81SRm2aYOQ9l+5
-         F3g3p5Gbiw+G0RQ1SF7/4irSv2VrdvadI9xlHjp0DZtXQ5DOd50O/HSAficrwPQIKnrd
-         3N6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701190104; x=1701794904;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uA6IXD+Y3WRAlqXJ/CITjoEeJvV8WozOfc0Um1r0Klo=;
-        b=jfFWeJt97h6c6XRyV5cznv/Zq1ND3+SAdG3RBw013QxI5jUlGBq0fXZsA5QK71dc+X
-         JBWZKwTOTyyGu8ye9cfOtWI+QxYw0DhiM17CBIQxyDQHRX69MDWB0UZEtoafjdtBrxmH
-         0B+kC/EJlpiz2Y9j0sW6i1PLGPqIMFmm5022ft8REU24ZKaDbpEWtKq3bAhQXovpwTO4
-         d2nZHUXgb7Qo9B1iaU4uA9H5Ldx997FjavLQ1mJ2mrPpTrkiaJKWjImLsbZWBs6BPuSv
-         7xgZdo+wy1O844SpHKyzDWXA+oXkaaJqWQwHkQPbmu2BJxa6d3tb1eXiWbK3cyelhZUd
-         bxcg==
-X-Gm-Message-State: AOJu0YxOSo529rQXYesMI+8H+oqczxWaL9YhdXjqIr67x4jgVjNkXtb6
-        t2E1oz2qX1mfdOzX2mqQYdWELVtHXvs=
-X-Google-Smtp-Source: AGHT+IFUGK7/QTbQin6XENsFSAaDkeT3IWWH8DLbxWfvEu8yMLlQc6felk11vuaE8kO9WUWqRWfY2d5B078=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:3d44:0:b0:da0:567d:f819 with SMTP id
- k65-20020a253d44000000b00da0567df819mr515103yba.10.1701190103797; Tue, 28 Nov
- 2023 08:48:23 -0800 (PST)
-Date:   Tue, 28 Nov 2023 08:48:22 -0800
-In-Reply-To: <50076263-8b4f-4167-8419-e8baede7e9b0@maciej.szmigiero.name>
-Mime-Version: 1.0
-References: <c858817d3e3be246a1a2278e3b42d06284e615e5.1700766316.git.maciej.szmigiero@oracle.com>
- <ZWTQuRpwPkutHY-D@google.com> <50076263-8b4f-4167-8419-e8baede7e9b0@maciej.szmigiero.name>
-Message-ID: <ZWYZ1ldqQ1Q-7Jk0@google.com>
-Subject: Re: [PATCH] KVM: x86: Allow XSAVES on CPUs where host doesn't use it
- due to an errata
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 28 Nov 2023 11:49:24 -0500
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7838AD4B;
+        Tue, 28 Nov 2023 08:49:30 -0800 (PST)
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3ASEY25D012922;
+        Tue, 28 Nov 2023 17:49:07 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=selector1; bh=iB8QxrE
+        lAv61BdkbTURf/4YgreurgxTFFxpS69+3uGo=; b=7t+x/6KGi240X0k541eunHF
+        Gl9QJCuAwAIAYxYUi5WTQBVW9QOQJQ7xjA/QlihkN7/8+qE0Gi4fHKYkCjZK47IK
+        1UGop2m+qX4a+IRaAsvTAOK57CFg6v/0l83b2R4piVV4TKA6FkdGvWhoiXCWtW67
+        2NhpeWQQxjvdeF4mbVOChPN1k4IUmMHv9ILtBkkzbgc5iDIIdAi57GhJ1UD8tYJk
+        ELeQGAcLJB6obvv37D5LzeW70kz1h7HyAk+LWsUZGlYjAc1wmSUAMvD7Krdfaizg
+        aghsLtlH8rb1CLy2hiLwKmaSP7RyEXNw3lZ5NU3+TG+NeBGJSspIV3gRSYK9/wA=
+        =
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3ums0rpgwh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Nov 2023 17:49:07 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3703F10002A;
+        Tue, 28 Nov 2023 17:49:06 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 2DB1926028A;
+        Tue, 28 Nov 2023 17:49:06 +0100 (CET)
+Received: from localhost (10.201.21.240) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 28 Nov
+ 2023 17:49:05 +0100
+From:   <gabriel.fernandez@foss.st.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+CC:     <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 0/5] Introduce STM32MP257 clock driver
+Date:   Tue, 28 Nov 2023 17:48:46 +0100
+Message-ID: <20231128164851.588315-1-gabriel.fernandez@foss.st.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.201.21.240]
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-28_18,2023-11-27_01,2023-05-22_02
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023, Maciej S. Szmigiero wrote:
-> On 27.11.2023 18:24, Sean Christopherson wrote:
-> > On Thu, Nov 23, 2023, Maciej S. Szmigiero wrote:
-> > > From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
-> > > 
-> > > Since commit b0563468eeac ("x86/CPU/AMD: Disable XSAVES on AMD family 0x17")
-> > > kernel unconditionally clears the XSAVES CPU feature bit on Zen1/2 CPUs.
-> > > 
-> > > Since KVM CPU caps are initialized from the kernel boot CPU features this
-> > > makes the XSAVES feature also unavailable for KVM guests in this case, even
-> > > though they might want to decide on their own whether they are affected by
-> > > this errata.
-> > > 
-> > > Allow KVM guests to make such decision by setting the XSAVES KVM CPU
-> > > capability bit based on the actual CPU capability
-> > 
-> > This is not generally safe, as the guest can make such a decision if and only if
-> > the Family/Model/Stepping information is reasonably accurate.
-> 
-> If one lies to the guest about the CPU it is running on then obviously
-> things may work non-optimally.
+From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
 
-But this isn't about running optimally, it's about functional correctness.  And
-"lying" to the guest about F/M/S is extremely common.
+This patch-set introduces clock driver for STM32MP257 based on Arm Cortex-35.
+It creates also a menuconfig for all STM32MP clock drivers.
+The STM32MP1 and STM32MP13 are now in same stm32 directory
 
-> > > This fixes booting Hyper-V enabled Windows Server 2016 VMs with more than
-> > > one vCPU on Zen1/2 CPUs.
-> > 
-> > How/why does lack of XSAVES break a multi-vCPU setup?  Is Windows blindly doing
-> > XSAVES based on FMS?
-> 
-> The hypercall from L2 Windows to L1 Hyper-V asking to boot the first AP
-> returns HV_STATUS_CPUID_XSAVE_FEATURE_VALIDATION_ERROR.
+v4:
+  - use GPL-2.0-only OR BSD-2-Clause for clock and reset binding files
+  - use quotes ' for #clock-cells and #reset-cells in YAML documentation
+  - reset binding start now to 0 instead 1
+  - improve management of reset lines that are not managed 
 
-If it's just about CPUID enumeration, then userspace can simply stuff the XSAVES
-feature flag.  This is not something that belongs in KVM, because this is safe if
-and only if F/M/S is accurate and the guest is actually aware of the erratum (or
-will not actually use XSAVES for other reasons), neither of which KVM can guarantee.
+v3:
+  - from Rob Herring change clock item description in YAML documentation
+v2:
+  - rework reset binding (use ID witch start from 0)
+  - rework reset driver to manage STM32MP13 / STM32MP15 / STM32MP25
+  - rework YAML documentation
+
+Gabriel Fernandez (5):
+  clk: stm32mp1: move stm32mp1 clock driver into stm32 directory
+  clk: stm32mp1: use stm32mp13 reset driver
+  dt-bindings: stm32: add clocks and reset binding for stm32mp25
+    platform
+  clk: stm32: introduce clocks for STM32MP257 platform
+  arm64: dts: st: add rcc support in stm32mp251
+
+ .../bindings/clock/st,stm32mp25-rcc.yaml      |   76 +
+ arch/arm64/boot/dts/st/stm32mp251.dtsi        |   59 +-
+ drivers/clk/Kconfig                           |   11 +-
+ drivers/clk/Makefile                          |    1 -
+ drivers/clk/stm32/Kconfig                     |   36 +
+ drivers/clk/stm32/Makefile                    |    2 +
+ drivers/clk/stm32/clk-stm32-core.c            |    5 +-
+ drivers/clk/stm32/clk-stm32-core.h            |    5 +-
+ drivers/clk/{ => stm32}/clk-stm32mp1.c        |  127 +-
+ drivers/clk/stm32/clk-stm32mp13.c             |    9 +-
+ drivers/clk/stm32/clk-stm32mp25.c             | 1125 ++++
+ drivers/clk/stm32/reset-stm32.c               |   73 +-
+ drivers/clk/stm32/reset-stm32.h               |   15 +-
+ drivers/clk/stm32/stm32mp25_rcc.h             | 4977 +++++++++++++++++
+ include/dt-bindings/clock/st,stm32mp25-rcc.h  |  492 ++
+ include/dt-bindings/reset/st,stm32mp25-rcc.h  |  167 +
+ 16 files changed, 6999 insertions(+), 181 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
+ create mode 100644 drivers/clk/stm32/Kconfig
+ rename drivers/clk/{ => stm32}/clk-stm32mp1.c (95%)
+ create mode 100644 drivers/clk/stm32/clk-stm32mp25.c
+ create mode 100644 drivers/clk/stm32/stm32mp25_rcc.h
+ create mode 100644 include/dt-bindings/clock/st,stm32mp25-rcc.h
+ create mode 100644 include/dt-bindings/reset/st,stm32mp25-rcc.h
+
+-- 
+2.25.1
+
