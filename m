@@ -2,246 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C29407FC3D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:59:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C416B7FC3E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 20:00:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345626AbjK1S7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 13:59:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50450 "EHLO
+        id S1376271AbjK1TAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 14:00:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229944AbjK1S73 (ORCPT
+        with ESMTP id S230050AbjK1TAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 13:59:29 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A7D131;
-        Tue, 28 Nov 2023 10:59:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701197975; x=1732733975;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=ET9PG4CKpoX1gdcryX+E6dg/rV1xrWLxYxO1uwmTuSU=;
-  b=AR41OsS2p9MOwITnbf7xizuDsffdIrT8cm6Bn4hnPSTgYkFPr5SBohNp
-   fk7eGzk33keiJ8mcdrHD6KxrrG8jl5PaWj5ubrly/PbSEUe0fyMfNQZ+k
-   dWQrbfPaXgMxFVk0oMd3q4KWhVp11+eRDAnk3ZOQbQqmpm0XRM1UoDhFm
-   5AQv6Y224XzEYRfaUtlW7cp/IbdZF+AaFYti18MDOpDm5rVAOfwYQS4oI
-   byRzT7YIxx4uPR9GKmMhaj7qPqjK6jeJKRTbLAxnGxE+RRoo2J1TRFq1G
-   A/ct2rT2dX4cmBoaYgd1OORgBqDypjvQEmD/IPkVSSg2q+Fh/Yafy1GS1
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="11700430"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="11700430"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 10:59:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="16698835"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Nov 2023 10:59:34 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 28 Nov 2023 10:59:33 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Tue, 28 Nov 2023 10:59:33 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Tue, 28 Nov 2023 10:59:33 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EtbSwyl1Ozllxk7wxMQUWRZpRkt8ni1/TBNIbf4rh4xzFE0bEiv/npJIGTtS3h/D7KMBARG1LGZP1Rx9XEPt0dbpvyecmuD0uQnLLWLKNTilkJOlWDyEFskmvZx1JIMtk+klTZVSL6zws0E2YjP/OJJnyRkY3fgXylsssEgDyRK819vq1VZCYTZDKZ4CIpLsvlxKNWHTwvHXo9L4z2dTnlrQ/zqFddEeVQ35c/K9FCecTP6wGPBA0QJJfvVDFWGexjGGav1qs4FxYVSPI2YUepizmMuUOdyxLM7FYBx9mbVAKD3rRWjgmgCHJ3kk0iibWtcgIOr6xIIKFZzuZ9dgfA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ET9PG4CKpoX1gdcryX+E6dg/rV1xrWLxYxO1uwmTuSU=;
- b=bYOcC2TfCJwpExQHK1VqHAloJheejaBETB+p+t5un7PvBbex9sc1tVUI2lN7p+v1qGwOZOwrjZr86kd3uNFqLD6QDEW/jS1LnEdiMlYF0048florrza//15iTdfbklnH8IwLXc7uWapuOTlm9Wl4Dd3Polt3aGgLl+ql+atgaI4Mk2cREdlku6C7WbjFdCQ3wM5XVStQ/IQ5Rqb5KKs9i9cXFFryAKlNyHebrVSFtowgJjMYBBvYEgzZlrKcCJuWQcWWzLii3NgZKlsM0slWZ7L5vhKwTe2AcjGlKY9PByYRniIpmXvGrTtLd+cALCPL1V95JkYKzNYOgu/PiFX6Zg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
- by DS0PR11MB7335.namprd11.prod.outlook.com (2603:10b6:8:11e::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.22; Tue, 28 Nov
- 2023 18:59:30 +0000
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::5260:13db:a6e:35e9]) by MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::5260:13db:a6e:35e9%6]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
- 18:59:30 +0000
-From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To:     "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "mhklinux@outlook.com" <mhklinux@outlook.com>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "Cui, Dexuan" <decui@microsoft.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "urezki@gmail.com" <urezki@gmail.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "hpa@zytor.com" <hpa@zytor.com>, "bp@alien8.de" <bp@alien8.de>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "Rodel, Jorg" <jroedel@suse.de>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "lstoakes@gmail.com" <lstoakes@gmail.com>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCH v2 4/8] x86/sev: Enable PVALIDATE for PFNs without a valid
- virtual address
-Thread-Topic: [PATCH v2 4/8] x86/sev: Enable PVALIDATE for PFNs without a
- valid virtual address
-Thread-Index: AQHaHMCWxDaQ2OOq0UaKl0u/qG7/4LCOur0AgAFXcACAAA5WgA==
-Date:   Tue, 28 Nov 2023 18:59:29 +0000
-Message-ID: <00222b634b4ce443f8d1a793c4f8fe69b7ad39d0.camel@intel.com>
-References: <20231121212016.1154303-1-mhklinux@outlook.com>
-         <20231121212016.1154303-5-mhklinux@outlook.com>
-         <3ddcad72637dece4bd3ecb7c49b8ad0e5bd233c0.camel@intel.com>
-         <SN6PR02MB4157A935C8B8F9DBB30F9512D4BCA@SN6PR02MB4157.namprd02.prod.outlook.com>
-In-Reply-To: <SN6PR02MB4157A935C8B8F9DBB30F9512D4BCA@SN6PR02MB4157.namprd02.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|DS0PR11MB7335:EE_
-x-ms-office365-filtering-correlation-id: 3493b3c9-b270-49fa-84e8-08dbf044263e
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: xKfffLSlppNJVjvjAzrqTr+UEyRY6SEHgIy56+UAuBPdUnGDt8dXICM0Lrj1PSIbCNLLmUEY0MTxfIFYf4bdfoHpyCdJhvr1BLUhGMtk/r9TgOFrJNwt3cXrKxAjqKnXbb0+22hR+LLAicXki9uQbGggSPhOFfmTx+mB5H2O21cV1dBwVPMXcRAlP0hzMMx50tWuzamsqRDYW93EqKLweYif5E72ZTcGQKBAX4r2WLGymfQg8EnDMeHyY5raVtA8eCD/ke50pL5OvlDfZlk12vkLasUp0NkDGg3eQH9CWM463KhjjtN4kPrlfkJjNfcBiBT71m+k9vYwQHw2y9o5+/bcPnXZlRV6e4+uTM2UgV8Veta6VIkkM50rQE9gD31C0SyBBXBp/X+rDqrPj8QwMoFMl3vavln/23EPKdtUZ3fjppqNFS2GVDJLuMqOaqtXoIlztwD67klMrHyPTosCin0ZUyTJH3lKpChwZ+XCvMUu5SX3MN/40s7KdZEZR/I1PIa5xqUS/TyMglwrdg01sI9aQmZvbxLHAE8kVIxJcBQO4BdtkoQjKwRGiPhz1kdYCGv/EpM8MwNFhW0Jjxiv84H50DaUVPgzpHZoQTSSVjtmoCarV+XltH+s+5HMgzPx4alB/Y5cisAdGknjlspB+Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(39860400002)(136003)(376002)(396003)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(83380400001)(2616005)(6506007)(71200400001)(86362001)(66946007)(66476007)(66446008)(110136005)(64756008)(66556008)(26005)(76116006)(91956017)(316002)(8936002)(8676002)(478600001)(6486002)(6512007)(7416002)(38100700002)(5660300002)(82960400001)(122000001)(921008)(41300700001)(2906002)(4001150100001)(38070700009)(36756003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?S2krZzY3REFJc3R3c29MdGdDZFJZcmFFT0xTa2wyQUtPcUIrU0g4VndIL2RU?=
- =?utf-8?B?bW5YK25zZTFYZmVvSHZtNGdqaWswS3ZlUHZhQiswSnNXb1VpZ2xkZmFiaksv?=
- =?utf-8?B?UlMyL3pacjI0NWV4MXR2V0ZLSmdLY2lXTXVKQnpKYmFSWGpaaEpJaTV1TjEy?=
- =?utf-8?B?M0tyK1BiSGF0azdPellKT3ZRWFMxZVJublNRU2RtZUhWaWRsdjlSRHd1TWxv?=
- =?utf-8?B?Sm0zMWtrNk9CZG5pUWJVMHRrZFVxR1pWeUR1bEEwUm1QN05CMjd3eWdEWDJ5?=
- =?utf-8?B?MjJoRWY0K1ZuSC9jeVJOcWdvSTlwL0VIN29abUljak05MzRYWnZYQ2dtckV3?=
- =?utf-8?B?QW5scThDQjVkS1lhZGFvcHNLek1ybzRaKy9tc2UxR3lRbm1MS0tnSVU3MnM1?=
- =?utf-8?B?YXFrRlM3d0xvTjg5aG1MTWRIclg0MWpCd2o0NWU0Vm10MTdKSlhhc084MklW?=
- =?utf-8?B?dG0zQW5QYnVwVkZacTZETTE5OE9HbzhHZTdFbnVNNWhNZ2pxZzU0QU1sRU9F?=
- =?utf-8?B?VVB1U2sxN2FEczF1b0hPV1pYMUF2R1NLR092UVBOUFF0VlJxbWpkWjZ2amhF?=
- =?utf-8?B?Y3laenBzdm03aFNmZHE5WHBjaEFZcUtBYm5zcFYxVDlNSGlYVTNFeW1Da1Mz?=
- =?utf-8?B?bUdyK1lWLy9CMkVlUXYrRFJFZG5TTUZEWXhPK1dCVHA3c2lLdjA1K3ArWUlT?=
- =?utf-8?B?VFFDOG9yM3gvR2QzdzNua0VnbWRWRldIRWdJZzRmTVZOaU4xM1Q2OTBhMlFy?=
- =?utf-8?B?TVlTU2ZOZnNoRWY1UFhLbTErWGZTNk9HRWwzRXlKZTFYVUlWVSt1Q1VwNDM5?=
- =?utf-8?B?NXJFK1ZhZFJVejBjT2k5RmN5VGp1SnhUakx4cXAra0tocGJDN1hpU0w4alBI?=
- =?utf-8?B?ZFVXWHMwOXN3dWNOSno5NnRBdStnclluKzNhQStUM28weFBUc3BtejZMWFRC?=
- =?utf-8?B?Vlpsc3NLOUxWd1MrWkNSdnZnUDNuTTdoQk9nRG9WbjdNKy9PWVkrRG5GYXg3?=
- =?utf-8?B?emxKTUlNeUYvR0Z5bWxsWHN3aVhkaFV2SjRnNU4wQTg0QjN0UitadGJXMHk2?=
- =?utf-8?B?YWtZeFpOd3hsWC92TGVwNnYyb1pZNzBrZDJYaGZyVnJLME1kYXZydXJmNzRH?=
- =?utf-8?B?bHUvVTdmb2pPWXR1dk5qY1lhcXRuTGtjSGZ0dE91NFNNU2EyVjVDdVB6cU1R?=
- =?utf-8?B?YWZ3TjNWNGpPOVJiTkVwalRHOVA5SjUyM2c0OWpsU2hKWFRZRHNDZWN3NGxG?=
- =?utf-8?B?a2o3NjE2R3JSQWluV080S3JFb3lZU0J6WmR0eGNuNkhVNDRKWmUvSW8xQS9C?=
- =?utf-8?B?V0pDcmpyamFOeHJqOWd1azY4Nzkxd3hlS1J2SWpaV0gySW5WZTNub3k2NnNE?=
- =?utf-8?B?OTJHTnRmbUVXTjBnKzI3WGVTLzk0Zk9zSTFYQk05U1RXV2ZvL0g1MlZWT2kr?=
- =?utf-8?B?eGtzK3AremJyOFh5cVBRRjZ0RmFGcjFINkRjenY5bnBWUWczQmF3dXM5NWVv?=
- =?utf-8?B?Wk5KaE95SkNIMnZCV3lYcWxLd0RuVEhPYmF6OXJndVcwcVlETktsdWd4UEh2?=
- =?utf-8?B?OTlYSDFvOXdXUG9Jd0U3aWViYmh4SnpBZ2daSUpvSmw1UlNHN0tSVElNV0hO?=
- =?utf-8?B?VSttT2xDREF6WkVjZTVralRDNWtrYmVySWNJZHFWbGZ2R2VvK0xickJuOHJw?=
- =?utf-8?B?dXE1b1RnbFpRandhU0RqUTkySEp4OCthKzJLaXlQRVhSMTlubTZFQmQ5TkNJ?=
- =?utf-8?B?aStsUVhtd0tORUdHckU3TnljQktDN3hGdEI0TC9NNEdMQlo2clZnQnJoZDJN?=
- =?utf-8?B?L2RYTDBzd21pbW1UUjJEWGN4T1N3YjFQOGpqdmxSaExSVkVLd1NPc2cwQzRI?=
- =?utf-8?B?Um5GUXB1NDZJa05nUitnUEV6VXRPNDR3RlRrVnZsOENTYkVkM3kzcW45OVFN?=
- =?utf-8?B?OGJrU0tBRkoxQTVFNmx4c1lwaWowOGVOZ213TWNnSTJsT2tBMXcxNW9CZ1RY?=
- =?utf-8?B?TXh5RkhnSjlOem5saDRiTzN0MW1ZdW9UNzJmTklBYTBDcXdMaFQwaTVMVi9I?=
- =?utf-8?B?M1piT1JyUzFzZm1LRzVXQTljZXZyM05najgzVlgvYzU2cFFVYUptV2ppU1dI?=
- =?utf-8?B?RFhyY29QYWNJU2d0ZmZIWWxCbHkxVzIycDNFSHpNUEdCMlhFakxYTnFhOEYw?=
- =?utf-8?Q?2BjZNMWYmMvqNIJ7CLBHiY4=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <E70E6C2F5772F644862DA9C874CB0141@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Tue, 28 Nov 2023 14:00:21 -0500
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 520E4131
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 11:00:27 -0800 (PST)
+Received: by mail-ua1-x933.google.com with SMTP id a1e0cc1a2514c-7c4adc5dcdaso921397241.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 11:00:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701198026; x=1701802826; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=anm1dOFExfLy75gHJZ/W03bfpmv/nns8TAXn2nHoHQI=;
+        b=ivuwWdQr6DZjWe6bFMrAr5KTu5bJxj20aRdV6yizu6VLZpRp++5GZyn9mzvRjEkqp8
+         rCN4eFhA/z3AIN4tg/wrEE3bmx3njt9Zrylksic5nTbFjXA3W98sb0MuU4GDF799z4L9
+         TefbWRQs151VLW/mcyZ36glAuXQAjsSve64od8/7QX8eYG5BWzLqusVJWYPRZ+yDJwbc
+         U2yKPo+KN8TKOlaKEplPtF28wbH96/V4EXig0Sl5ZOIftRcwoWtFhT64o1nxHI0huujL
+         ngRl69AAqKmVxwGggfRbRbHGvixH/R8fLlsukvm8+/0KIshiGy0E4i/s25fAl9Uphy2k
+         LQqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701198026; x=1701802826;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=anm1dOFExfLy75gHJZ/W03bfpmv/nns8TAXn2nHoHQI=;
+        b=llXrYYaHVAXQ+FSMs+zDZ0mjloo7WkwzG4yA+FF2CL7kZw1zPRoJQ2UWk1LcMsz0Hm
+         1naay/EFbinlflJ49Wz+jOwA9uxvW6KuixV1eGm29ibPzRjNzikZa4LNmZLtgzaQEdAG
+         UJnfCMgDUKzHLsKMIRoCioBFsYq4iJwXG5t8Mez/TtM7FGPgGlTPXOJZ5Q1eQpKVayXJ
+         t8S6x8BQBxO0hrpdka2heCRS3LcmQ3+WFdg9yikgdwT62PGb6T5af2TdcjMRDFJ8OTOi
+         JDv2oLo61TMgwyRWsDujTEbSkM9bW8WziqQoB1s8uadAvApmmKVHkObMzZVaGkvfwVPU
+         pi6Q==
+X-Gm-Message-State: AOJu0YyoPdejAeB99IiSu1eSutGqGvGhhFqtP31kmLASbiox3aXrDI4F
+        3P7WHRqKSqZJT4ZOD6gBBTAhWoLxVUWzRNupFL8=
+X-Google-Smtp-Source: AGHT+IHLoiGeuCVOh3TlGs+3ECmEk64qJ+sV0ApYTRDtWpUDW3Xs3BePMa+BoYyAvROWgh4JlqPIl4RzPSt9PjU4dNU=
+X-Received: by 2002:a05:6102:3bfa:b0:463:d3:513e with SMTP id
+ be26-20020a0561023bfa00b0046300d3513emr6221823vsb.27.1701198024786; Tue, 28
+ Nov 2023 11:00:24 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3493b3c9-b270-49fa-84e8-08dbf044263e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Nov 2023 18:59:29.2655
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: LohINehjEufcbSHN2cB7ZVC/7dzEwSzbZ80jQysztGLe/aOvH+js3sVvycUn/enTuN0k0aE58xmtUq29yJVcdxeEWX9xQKBnX7YzKALA3Ow=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7335
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231115163018.1303287-2-ryan.roberts@arm.com>
+ <20231127055414.9015-1-v-songbaohua@oppo.com> <755343a1-ce94-4d38-8317-0925e2dae3bc@arm.com>
+ <CAGsJ_4z_ftxvG-EcTe=X+Te8fNSShhVHHPvbEgAa1rQXgO5XCA@mail.gmail.com> <a43d8da8-d902-440c-aa64-df78fa4e185d@arm.com>
+In-Reply-To: <a43d8da8-d902-440c-aa64-df78fa4e185d@arm.com>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Wed, 29 Nov 2023 08:00:13 +1300
+Message-ID: <CAGsJ_4w9E_90Bs9kWP1HWmKsknszw2i=Vtarj0UGD80yNpt5mw@mail.gmail.com>
+Subject: Re: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     akpm@linux-foundation.org, andreyknvl@gmail.com,
+        anshuman.khandual@arm.com, ardb@kernel.org,
+        catalin.marinas@arm.com, david@redhat.com, dvyukov@google.com,
+        glider@google.com, james.morse@arm.com, jhubbard@nvidia.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mark.rutland@arm.com, maz@kernel.org,
+        oliver.upton@linux.dev, ryabinin.a.a@gmail.com,
+        suzuki.poulose@arm.com, vincenzo.frascino@arm.com,
+        wangkefeng.wang@huawei.com, will@kernel.org, willy@infradead.org,
+        yuzenghui@huawei.com, yuzhao@google.com, ziy@nvidia.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIzLTExLTI4IGF0IDE4OjA4ICswMDAwLCBNaWNoYWVsIEtlbGxleSB3cm90ZToN
-Cj4gPiANCj4gPiBTb3J0IG9mIHNlcGFyYXRlbHksIGlmIHRob3NlIHZtYWxsb2Mgb2JqZWN0aW9u
-cyBjYW4ndCBiZSB3b3JrZWQNCj4gPiB0aHJvdWdoLCBkaWQgeW91IGNvbnNpZGVyIGRvaW5nIHNv
-bWV0aGluZyBsaWtlIHRleHRfcG9rZSgpIGRvZXMNCj4gPiAoY3JlYXRlDQo+ID4gdGhlIHRlbXBv
-cmFyeSBtYXBwaW5nIGluIGEgdGVtcG9yYXJ5IE1NKSBmb3IgcHZhbGlkYXRlIHB1cnBvc2VzPyBJ
-DQo+ID4gZG9uJ3Qga25vdyBlbm91Z2ggYWJvdXQgd2hhdCBraW5kIG9mIHNwZWNpYWwgZXhjZXB0
-aW9ucyBtaWdodCBwb3B1cA0KPiA+IGR1cmluZyB0aGF0IG9wZXJhdGlvbiB0aG91Z2gsIG1pZ2h0
-IGJlIHBsYXlpbmcgd2l0aCBmaXJlLi4uDQo+IA0KPiBJbnRlcmVzdGluZyBpZGVhLsKgIEJ1dCBm
-cm9tIGEgcXVpY2sgZ2xhbmNlIGF0IHRoZSB0ZXh0X3Bva2UoKSBjb2RlLA0KPiBzdWNoIGFuIGFw
-cHJvYWNoIHNlZW1zIHNvbWV3aGF0IGNvbXBsZXgsIGFuZCBJIHN1c3BlY3QgaXQgd2lsbCBoYXZl
-IA0KPiB0aGUgc2FtZSBwZXJmIGlzc3VlcyAob3Igd29yc2UpIGFzIGNyZWF0aW5nIGEgbmV3IHZt
-YWxsb2MgYXJlYSBmb3INCj4gZWFjaCBQVkFMSURBVEUgaW52b2NhdGlvbi4NCg0KVXNpbmcgbmV3
-IHZtYWxsb2MgYXJlYSdzIHdpbGwgZXZlbnR1YWxseSByZXN1bHQgaW4gYSBrZXJuZWwgc2hvb3Rk
-b3duLA0KYnV0IHVzdWFsbHkgaGF2ZSBubyBmbHVzaGVzLiB0ZXh0X3Bva2Ugd2lsbCBhbHdheXMg
-cmVzdWx0IGluIGEgbG9jYWwtDQpvbmx5IGZsdXNoLiBTbyBhdCBsZWFzdCB3aGF0ZXZlciBzbG93
-ZG93biB0aGVyZSBpcyB3b3VsZCBvbmx5IGFmZmVjdA0KdGhlIGNhbGxpbmcgdGhyZWFkLg0KDQpB
-cyBmb3IgY29tcGxleGl0eSwgSSB0aGluayBpdCBtaWdodCBiZSBzaW1wbGUgdG8gaW1wbGVtZW50
-IGFjdHVhbGx5Lg0KV2hhdCBraW5kIG9mIHNwZWNpYWwgZXhjZXB0aW9ucyBjb3VsZCBjb21lIG91
-dCBvZiBwdmFsaWRhdGUsIEknbSBub3Qgc28NCnN1cmUuIEJ1dCB0aGUga2VybmVsIHRlcm1pbmF0
-ZXMgdGhlIFZNIG9uIGZhaWx1cmUgYW55d2F5LCBzbyBtYXliZSBpdCdzDQpub3QgYW4gaXNzdWU/
-DQogDQpkaWZmIC0tZ2l0IGEvYXJjaC94ODYva2VybmVsL2FsdGVybmF0aXZlLmMNCmIvYXJjaC94
-ODYva2VybmVsL2FsdGVybmF0aXZlLmMNCmluZGV4IDczYmUzOTMxZTRmMC4uYTEzMjkzNTY0ZWVi
-IDEwMDY0NA0KLS0tIGEvYXJjaC94ODYva2VybmVsL2FsdGVybmF0aXZlLmMNCisrKyBiL2FyY2gv
-eDg2L2tlcm5lbC9hbHRlcm5hdGl2ZS5jDQpAQCAtMTkwNSw2ICsxOTA1LDE2IEBAIHZvaWQgKnRl
-eHRfcG9rZSh2b2lkICphZGRyLCBjb25zdCB2b2lkICpvcGNvZGUsDQpzaXplX3QgbGVuKQ0KICAg
-ICAgICByZXR1cm4gX190ZXh0X3Bva2UodGV4dF9wb2tlX21lbWNweSwgYWRkciwgb3Bjb2RlLCBs
-ZW4pOw0KIH0NCiANCitzdGF0aWMgdm9pZCB0ZXh0X3Bva2VfcHZhbGlkYXRlKHZvaWQgKmRzdCwg
-Y29uc3Qgdm9pZCAqc3JjLCBzaXplX3QNCmxlbikNCit7DQorICAgICAgIHB2YWxpZGF0ZShkc3Qs
-IGxlbiwgdHJ1ZSk7IC8vIGlmIGZhaWwsIHRlcm1pbmF0ZQ0KK30NCisNCit2b2lkICpwdmFsaWRh
-dGVkX3Bva2Uodm9pZCAqYWRkcikNCit7DQorICAgICAgIHJldHVybiBfX3RleHRfcG9rZSh0ZXh0
-X3Bva2VfcHZhbGlkYXRlLCBhZGRyLCBOVUxMLCBQQUdFX1NJWkUpOw0KK30NCisNCiAvKioNCiAg
-KiB0ZXh0X3Bva2Vfa2dkYiAtIFVwZGF0ZSBpbnN0cnVjdGlvbnMgb24gYSBsaXZlIGtlcm5lbCBi
-eSBrZ2RiDQogICogQGFkZHI6IGFkZHJlc3MgdG8gbW9kaWZ5DQoNCg0KDQo+IA0KPiBBdCB0aGlz
-IHBvaW50LCB0aGUgY29tcGxleGl0eSBvZiBjcmVhdGluZyB0aGUgdGVtcCBtYXBwaW5nIGZvcg0K
-PiBQVkFMSURBVEUgaXMgc2VlbWluZyBleGNlc3NpdmUuwqAgT24gYmFsYW5jZSBpdCBzZWVtcyBz
-aW1wbGVyIHRvDQo+IHJldmVydCB0byBhbiBhcHByb2FjaCB3aGVyZSB0aGUgdXNlIG9mIHNldF9t
-ZW1vcnlfbnAoKSBhbmQNCj4gc2V0X21lbW9yeV9wKCkgaXMgY29uZGl0aW9uYWwuwqAgSXQgd291
-bGQgYmUgbmVjZXNzYXJ5IHdoZW4gI1ZDDQo+IGFuZCAjVkUgZXhjZXB0aW9ucyBhcmUgZGlyZWN0
-ZWQgdG8gYSBwYXJhdmlzb3IuwqAgKFRoaXMgYXNzdW1lcyB0aGUNCj4gcGFyYXZpc29yIGludGVy
-ZmFjZSBpbiB0aGUgaHlwZXJ2aXNvciBjYWxsYmFja3MgZG9lcyB0aGUgbmF0dXJhbA0KPiB0aGlu
-Zw0KPiBvZiB3b3JraW5nIHdpdGggcGh5c2ljYWwgYWRkcmVzc2VzLCBzbyB0aGVyZSdzIG5vIG5l
-ZWQgZm9yIGEgdGVtcA0KPiBtYXBwaW5nLikNCj4gDQo+IE9wdGlvbmFsbHksIHRoZSBzZXRfbWVt
-b3J5X25wKCkvc2V0X21lbW9yeV9wKCkgYXBwcm9hY2ggY291bGQNCj4gYmUgdXNlZCBpbiBvdGhl
-ciBjYXNlcyB3aGVyZSB0aGUgaHlwZXJ2aXNvciBjYWxsYmFja3Mgd29yayB3aXRoDQo+IHBoeXNp
-Y2FsIGFkZHJlc3Nlcy7CoCBCdXQgaXQgY2FuJ3QgYmUgdXNlZCB3aXRoIGNhc2VzIHdoZXJlIHRo
-ZQ0KPiBoeXBlcnZpc29yDQo+IGNhbGxiYWNrcyBuZWVkIHZhbGlkIHZpcnR1YWwgYWRkcmVzc2Vz
-Lg0KPiANCj4gU28gb24gbmV0LCBzZXRfbWVtb3J5X25wKCkvc2V0X21lbW9yeV9wKCkgd291bGQg
-YmUgdXNlZCBpbg0KPiB0aGUgSHlwZXItViBjYXNlcyBvZiBURFggYW5kIFNFVi1TTlAgd2l0aCBh
-IHBhcmF2aXNvci7CoMKgIEl0IGNvdWxkDQo+IG9wdGlvbmFsbHkgYmUgdXNlZCB3aXRoIFREWCB3
-aXRoIG5vIHBhcmF2aXNvciwgYnV0IG15IHNlbnNlIGlzDQo+IHRoYXQgS2lyaWxsIHdhbnRzIHRv
-IGtlZXAgVERYICJhcyBpcyIgYW5kIGxldCB0aGUgZXhjZXB0aW9uIGhhbmRsZXJzDQo+IGRvIHRo
-ZSBsb2FkX3VuYWxpZ25lZF96ZXJvcGFkKCkgZml4dXAuDQo+IA0KPiBJdCBjb3VsZCBub3QgYmUg
-dXNlZCB3aXRoIFNFVi1TTlAgd2l0aCBubyBwYXJhdmlzb3IuwqDCoCBBZGRpdGlvbmFsDQo+IGZp
-eGVzDQo+IG1heSBiZSBuZWVkZWQgb24gdGhlIFNFVi1TTlAgc2lkZSB0byBwcm9wZXJseSBmaXh1
-cA0KPiBsb2FkX3VuYWxpZ25lZF96ZXJvcGFkKCkgYWNjZXNzZXMgdG8gYSBwYWdlIHRoYXQncyBp
-biB0cmFuc2l0aW9uDQo+IGJldHdlZW4gZW5jcnlwdGVkIGFuZCBkZWNyeXB0ZWQuDQo+IA0KDQpZ
-ZWEsIEkgZG9uJ3Qga25vdyBhYm91dCB0aGlzIHBhcmF2aXNvci9leGNlcHRpb24gc3R1ZmYuDQo=
+On Wed, Nov 29, 2023 at 12:00=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com=
+> wrote:
+>
+> On 28/11/2023 00:11, Barry Song wrote:
+> > On Mon, Nov 27, 2023 at 10:24=E2=80=AFPM Ryan Roberts <ryan.roberts@arm=
+.com> wrote:
+> >>
+> >> On 27/11/2023 05:54, Barry Song wrote:
+> >>>> +copy_present_ptes(struct vm_area_struct *dst_vma, struct vm_area_st=
+ruct *src_vma,
+> >>>> +              pte_t *dst_pte, pte_t *src_pte,
+> >>>> +              unsigned long addr, unsigned long end,
+> >>>> +              int *rss, struct folio **prealloc)
+> >>>>  {
+> >>>>      struct mm_struct *src_mm =3D src_vma->vm_mm;
+> >>>>      unsigned long vm_flags =3D src_vma->vm_flags;
+> >>>>      pte_t pte =3D ptep_get(src_pte);
+> >>>>      struct page *page;
+> >>>>      struct folio *folio;
+> >>>> +    int nr =3D 1;
+> >>>> +    bool anon;
+> >>>> +    bool any_dirty =3D pte_dirty(pte);
+> >>>> +    int i;
+> >>>>
+> >>>>      page =3D vm_normal_page(src_vma, addr, pte);
+> >>>> -    if (page)
+> >>>> +    if (page) {
+> >>>>              folio =3D page_folio(page);
+> >>>> -    if (page && folio_test_anon(folio)) {
+> >>>> -            /*
+> >>>> -             * If this page may have been pinned by the parent proc=
+ess,
+> >>>> -             * copy the page immediately for the child so that we'l=
+l always
+> >>>> -             * guarantee the pinned page won't be randomly replaced=
+ in the
+> >>>> -             * future.
+> >>>> -             */
+> >>>> -            folio_get(folio);
+> >>>> -            if (unlikely(page_try_dup_anon_rmap(page, false, src_vm=
+a))) {
+> >>>> -                    /* Page may be pinned, we have to copy. */
+> >>>> -                    folio_put(folio);
+> >>>> -                    return copy_present_page(dst_vma, src_vma, dst_=
+pte, src_pte,
+> >>>> -                                             addr, rss, prealloc, p=
+age);
+> >>>> +            anon =3D folio_test_anon(folio);
+> >>>> +            nr =3D folio_nr_pages_cont_mapped(folio, page, src_pte,=
+ addr,
+> >>>> +                                            end, pte, &any_dirty);
+> >>>
+> >>> in case we have a large folio with 16 CONTPTE basepages, and userspac=
+e
+> >>> do madvise(addr + 4KB * 5, DONTNEED);
+> >>
+> >> nit: if you are offsetting by 5 pages from addr, then below I think yo=
+u mean
+> >> page0~page4 and page6~15?
+> >>
+> >>>
+> >>> thus, the 4th basepage of PTE becomes PTE_NONE and folio_nr_pages_con=
+t_mapped()
+> >>> will return 15. in this case, we should copy page0~page3 and page5~pa=
+ge15.
+> >>
+> >> No I don't think folio_nr_pages_cont_mapped() will return 15; that's c=
+ertainly
+> >> not how its intended to work. The function is scanning forwards from t=
+he current
+> >> pte until it finds the first pte that does not fit in the batch - eith=
+er because
+> >> it maps a PFN that is not contiguous, or because the permissions are d=
+ifferent
+> >> (although this is being relaxed a bit; see conversation with DavidH ag=
+ainst this
+> >> same patch).
+> >>
+> >> So the first time through this loop, folio_nr_pages_cont_mapped() will=
+ return 5,
+> >> (page0~page4) then the next time through the loop we will go through t=
+he
+> >> !present path and process the single swap marker. Then the 3rd time th=
+rough the
+> >> loop folio_nr_pages_cont_mapped() will return 10.
+> >
+> > one case we have met by running hundreds of real phones is as below,
+> >
+> >
+> > static int
+> > copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *s=
+rc_vma,
+> >                pmd_t *dst_pmd, pmd_t *src_pmd, unsigned long addr,
+> >                unsigned long end)
+> > {
+> >         ...
+> >         dst_pte =3D pte_alloc_map_lock(dst_mm, dst_pmd, addr, &dst_ptl)=
+;
+> >         if (!dst_pte) {
+> >                 ret =3D -ENOMEM;
+> >                 goto out;
+> >         }
+> >         src_pte =3D pte_offset_map_nolock(src_mm, src_pmd, addr, &src_p=
+tl);
+> >         if (!src_pte) {
+> >                 pte_unmap_unlock(dst_pte, dst_ptl);
+> >                 /* ret =3D=3D 0 */
+> >                 goto out;
+> >         }
+> >         spin_lock_nested(src_ptl, SINGLE_DEPTH_NESTING);
+> >         orig_src_pte =3D src_pte;
+> >         orig_dst_pte =3D dst_pte;
+> >         arch_enter_lazy_mmu_mode();
+> >
+> >         do {
+> >                 /*
+> >                  * We are holding two locks at this point - either of t=
+hem
+> >                  * could generate latencies in another task on another =
+CPU.
+> >                  */
+> >                 if (progress >=3D 32) {
+> >                         progress =3D 0;
+> >                         if (need_resched() ||
+> >                             spin_needbreak(src_ptl) || spin_needbreak(d=
+st_ptl))
+> >                                 break;
+> >                 }
+> >                 ptent =3D ptep_get(src_pte);
+> >                 if (pte_none(ptent)) {
+> >                         progress++;
+> >                         continue;
+> >                 }
+> >
+> > the above iteration can break when progress > =3D32. for example, at th=
+e
+> > beginning,
+> > if all PTEs are none, we break when progress >=3D32, and we break when =
+we
+> > are in the 8th pte of 16PTEs which might become CONTPTE after we releas=
+e
+> > PTL.
+> >
+> > since we are releasing PTLs, next time when we get PTL, those pte_none(=
+) might
+> > become pte_cont(), then are you going to copy CONTPTE from 8th pte,
+> > thus, immediately
+> > break the consistent CONPTEs rule of hardware?
+> >
+> > pte0 - pte_none
+> > pte1 - pte_none
+> > ...
+> > pte7 - pte_none
+> >
+> > pte8 - pte_cont
+> > ...
+> > pte15 - pte_cont
+> >
+> > so we did some modification to avoid a break in the middle of PTEs
+> > which can potentially
+> > become CONTPE.
+> > do {
+> >                 /*
+> >                 * We are holding two locks at this point - either of th=
+em
+> >                 * could generate latencies in another task on another C=
+PU.
+> >                 */
+> >                 if (progress >=3D 32) {
+> >                                 progress =3D 0;
+> > #ifdef CONFIG_CONT_PTE_HUGEPAGE
+> >                 /*
+> >                 * XXX: don't release ptl at an unligned address as
+> > cont_pte might form while
+> >                 * ptl is released, this causes double-map
+> >                 */
+> >                 if (!vma_is_chp_anonymous(src_vma) ||
+> >                    (vma_is_chp_anonymous(src_vma) && IS_ALIGNED(addr,
+> > HPAGE_CONT_PTE_SIZE)))
+> > #endif
+> >                 if (need_resched() ||
+> >                    spin_needbreak(src_ptl) || spin_needbreak(dst_ptl))
+> >                                 break;
+> > }
+> >
+> > We could only reproduce the above issue by running thousands of phones.
+> >
+> > Does your code survive from this problem?
+>
+> Yes I'm confident my code is safe against this; as I said before, the CON=
+T_PTE
+> bit is not blindly "copied" from parent to child pte. As far as the core-=
+mm is
+> concerned, there is no CONT_PTE bit; they are just regular PTEs. So the c=
+ode
+> will see some pte_none() entries followed by some pte_present() entries. =
+And
+> when calling set_ptes() on the child, the arch code will evaluate the cur=
+rent
+> state of the pgtable along with the new set_ptes() request and determine =
+where
+> it should insert the CONT_PTE bit.
+
+yep, i have read very carefully and think your code is safe here. The
+only problem
+is that the code can randomly unfold parent processes' CONPTE while setting
+wrprotect in the middle of a large folio while it actually should keep CONT
+bit as all PTEs can be still consistent if we set protect from the 1st PTE.
+
+while A forks B,  progress >=3D 32 might interrupt in the middle of a
+new CONTPTE folio which is forming, as we have to set wrprotect to parent A=
+,
+this parent immediately loses CONT bit. this is  sad. but i can't find a
+good way to resolve it unless CONT is exposed to mm-core. any idea on
+this?
+
+Our code[1] resolves this by only breaking at the aligned address
+
+if (progress >=3D 32) {
+     progress =3D 0;
+     #ifdef CONFIG_CONT_PTE_HUGEPAGE
+     /*
+      * XXX: don't release ptl at an unligned address as cont_pte
+might form while
+      * ptl is released, this causes double-map
+     */
+    if (!vma_is_chp_anonymous(src_vma) ||
+        (vma_is_chp_anonymous(src_vma) && IS_ALIGNED(addr,
+HPAGE_CONT_PTE_SIZE)))
+    #endif
+        if (need_resched() ||
+           spin_needbreak(src_ptl) || spin_needbreak(dst_ptl))
+             break;
+}
+
+[1] https://github.com/OnePlusOSS/android_kernel_oneplus_sm8550/blob/oneplu=
+s/sm8550_u_14.0.0_oneplus11/mm/memory.c#L1180
+
+
+Thanks
+Barry
