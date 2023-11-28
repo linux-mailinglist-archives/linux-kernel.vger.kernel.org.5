@@ -2,142 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C2FE7FBB52
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 14:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB31C7FBB4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 14:20:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344738AbjK1NU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 08:20:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52372 "EHLO
+        id S1345138AbjK1NU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 08:20:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343821AbjK1NU5 (ORCPT
+        with ESMTP id S1344995AbjK1NUY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 08:20:57 -0500
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2813D62;
-        Tue, 28 Nov 2023 05:21:01 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 39C60C000C;
-        Tue, 28 Nov 2023 13:20:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1701177660;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=uG7hIl7at36uWKJHQ21nTIZih0E8GqWucxRcdCXoYHQ=;
-        b=OL2Gbi/I03qzlLOdV3y8RDkLDr2fYDmcARSVxreMVGFgfnRLhaHz4RuRSWXvKPfJSYFFvG
-        KPrfiTjtSTHyf/JVyg+I9TZ1LT8u17m+OhCOkzC2SGmc0B3qpxN9VkyxqzMUXyVVyCCwDO
-        J/4CcWDr0p2HU958mwSRHlcWWDAH3rr+W/5RJ38FBZCNH1+KWcO882LqRlFfkyfhEKRxkL
-        c25599glt9Nit566C56v3UM9e/V8NYIT/uFmp8zvtb3rF4VVRTuMz37+RbXYLB7LMEHkxz
-        Aj8vNYR7yBj9DMgyaTh+WngIkTSasROcHKGwJKsa339hipUODpV9XpjfaZ29jA==
-From:   Thomas Richard <thomas.richard@bootlin.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        s-vadapalli@ti.com, rogerq@kernel.org, grygorii.strashko@ti.com,
-        dan.carpenter@linaro.org, thomas.petazzoni@bootlin.com,
-        gregory.clement@bootlin.com, u-kumar1@ti.com,
-        Thomas Richard <thomas.richard@bootlin.com>
-Subject: [PATCH] net: ethernet: ti: am65-cpsw: improve suspend/resume support for J7200
-Date:   Tue, 28 Nov 2023 14:19:36 +0100
-Message-Id: <20231128131936.600233-1-thomas.richard@bootlin.com>
-X-Mailer: git-send-email 2.39.2
+        Tue, 28 Nov 2023 08:20:24 -0500
+Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A8590;
+        Tue, 28 Nov 2023 05:20:30 -0800 (PST)
+Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-1fa289a3b6aso1805011fac.3;
+        Tue, 28 Nov 2023 05:20:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701177629; x=1701782429; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=On66ueZto3GF440UWVrRBZc4wrXhVsUGn1SXWaiDi8g=;
+        b=nOb130mw+xpBoGsNiULUoOXulipzQ/m87Ge8d0uVlx2W0To1XkjSgaYck+hNekcdcq
+         8O+RGFRUsxTuSvfTOrC6QcFY/mortnROYFilnD5xZLz8VdJc8CiaTxpTR5DAdm8K8Njm
+         H/ZHLFd9lURqj3iTDF0/8p2abXJ1vdxIf34po8M/CPPGQL6D3fAF/6yZwjD06cfDwgXU
+         4ZSW7zyvB/vMJ8YhCEciL5KOrhgPR/hjfZLyFzRbT9Hu+DqVvAebX+YOyHJxV2LZt5LR
+         Bns+o0nE/0dLwf2UyQxl4uhXbA6SSKZEeHchUh15aHhZ+SeViHrJsd/GINDgF7kHJ97A
+         MBlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701177629; x=1701782429;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=On66ueZto3GF440UWVrRBZc4wrXhVsUGn1SXWaiDi8g=;
+        b=X5ov/zQ08McqTvG/StlNEiN6wnIbFoSJBQZ4v1NlyWhHoGx8ZxmgR8kqZTOStc+/DI
+         QmeIzCszATCNEQnu7xytfo/iCmQxJrQlxwK1uVcsCxhlKkKPAET48uI63Fqt2VD/DKMi
+         aDahbkfBkPO+7w4lMpEo6wLeKumpOfdxoqBFaG5lYJmdvfRynqFRORZoKXz/LKid4N/m
+         q8wolX6k/hVTX2h/PEwMdlqfKc+0N8r0LBXt216X1y89qZNCA2KcDDqAZMoOFF+95bob
+         HFL3Rx9o09xiCnzRHNMt4XwEQeCyC+9wFIQ9VwzkBFFxpqamIDtlo7HGZwYv+wwXbjeD
+         gUWg==
+X-Gm-Message-State: AOJu0Yw7/VWE2rjtkz+DAuNS+QTOa/fCm77pHMNfhJM3MXKpJoDozhpU
+        6SfHSjGXcGRYuwFrTOhOaKvP/hJgkNrUhNMwibAL2/0dhflKVfpH
+X-Google-Smtp-Source: AGHT+IEA6UtACp1At/yuKOgBXha03/AXtZNDcuSQGTuIOcoIm/wVD0Z2tmYIHiOzc7bOCaCNw+wXQ+9dUt2B7jIcqqk=
+X-Received: by 2002:a05:6870:788c:b0:1eb:e8b:73cb with SMTP id
+ hc12-20020a056870788c00b001eb0e8b73cbmr21421178oab.58.1701177629143; Tue, 28
+ Nov 2023 05:20:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: thomas.richard@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231121094642.2973795-1-qiujingbao.dlmu@gmail.com>
+ <20231121094642.2973795-2-qiujingbao.dlmu@gmail.com> <84a12a2c-3f64-4517-8d38-14c8516e70d0@linaro.org>
+In-Reply-To: <84a12a2c-3f64-4517-8d38-14c8516e70d0@linaro.org>
+From:   jingbao qiu <qiujingbao.dlmu@gmail.com>
+Date:   Tue, 28 Nov 2023 21:20:18 +0800
+Message-ID: <CAJRtX8ToRv7Bzyj7fZ530H9oYQWGNnEK_2G5EQjECgg_Y37guQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: rtc: add binding for Sophgo CV1800B rtc controller
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
+        krzysztof.kozlowski+dt@linaro.org, chao.wei@sophgo.com,
+        unicorn_wang@outlook.com, conor+dt@kernel.org, robh+dt@kernel.org,
+        conor@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, linux-rtc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gregory CLEMENT <gregory.clement@bootlin.com>
+On Tue, Nov 21, 2023 at 5:57=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 21/11/2023 10:46, Jingbao Qiu wrote:
+> > Add devicetree binding for Sophgo CV1800B SoC rtc controller.
+>
+> A nit, subject: drop second/last, redundant "binding for". The
+> "dt-bindings" prefix is already stating that these are bindings.
 
-On J7200 the SoC is off during suspend, so the clocks have to be
-completely power down, and phy_set_mode_ext must be called again.
+will fix.
 
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
----
- drivers/net/ethernet/ti/am65-cpsw-nuss.c | 25 ++++++++++++++++++++++++
- drivers/net/ethernet/ti/am65-cpts.c      | 11 +++++++++--
- 2 files changed, 34 insertions(+), 2 deletions(-)
+>
+> >
+> > Signed-off-by: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+> > ---
+> >  .../bindings/rtc/sophgo,cv1800b-rtc.yaml      | 37 +++++++++++++++++++
+> >  1 file changed, 37 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/rtc/sophgo,cv1800=
+b-rtc.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/rtc/sophgo,cv1800b-rtc.y=
+aml b/Documentation/devicetree/bindings/rtc/sophgo,cv1800b-rtc.yaml
+> > new file mode 100644
+> > index 000000000000..fefb1e70c45c
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/rtc/sophgo,cv1800b-rtc.yaml
+> > @@ -0,0 +1,37 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/rtc/sophgo,cv1800b-rtc.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Sophgo CV1800B SoC RTC Controller
+>
+> What is a RTC Controller? You have multiple RTCs there?
+>
 
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index ece9f8df98ae..e95ef30bd67f 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -2115,6 +2115,27 @@ static int am65_cpsw_nuss_init_slave_ports(struct am65_cpsw_common *common)
- 	return ret;
- }
- 
-+static int am65_cpsw_nuss_resume_slave_ports(struct am65_cpsw_common *common)
-+{
-+	struct device *dev = common->dev;
-+	int i;
-+
-+	for (i = 1; i <= common->port_num; i++) {
-+		struct am65_cpsw_port *port;
-+		int ret;
-+
-+		port = am65_common_get_port(common, i);
-+
-+		ret = phy_set_mode_ext(port->slave.ifphy, PHY_MODE_ETHERNET, port->slave.phy_if);
-+		if (ret) {
-+			dev_err(dev, "port %d error setting phy mode %d\n", i, ret);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static void am65_cpsw_pcpu_stats_free(void *data)
- {
- 	struct am65_cpsw_ndev_stats __percpu *stats = data;
-@@ -3087,6 +3108,10 @@ static int am65_cpsw_nuss_resume(struct device *dev)
- 	if (common->rx_irq_disabled)
- 		disable_irq(common->rx_chns.irq);
- 
-+	ret = am65_cpsw_nuss_resume_slave_ports(common);
-+	if (ret)
-+		dev_err(dev, "failed to resume slave ports: %d", ret);
-+
- 	am65_cpts_resume(common->cpts);
- 
- 	for (i = 0; i < common->port_num; i++) {
-diff --git a/drivers/net/ethernet/ti/am65-cpts.c b/drivers/net/ethernet/ti/am65-cpts.c
-index c66618d91c28..e6db5b61409a 100644
---- a/drivers/net/ethernet/ti/am65-cpts.c
-+++ b/drivers/net/ethernet/ti/am65-cpts.c
-@@ -1189,7 +1189,11 @@ void am65_cpts_suspend(struct am65_cpts *cpts)
- 	cpts->sr_cpts_ns = am65_cpts_gettime(cpts, NULL);
- 	cpts->sr_ktime_ns = ktime_to_ns(ktime_get_real());
- 	am65_cpts_disable(cpts);
--	clk_disable(cpts->refclk);
-+
-+	/* During suspend the SoC can be power off, so let's not only
-+	 * disable but also unprepare the clock
-+	 */
-+	clk_disable_unprepare(cpts->refclk);
- 
- 	/* Save GENF state */
- 	memcpy_fromio(&cpts->sr_genf, &cpts->reg->genf, sizeof(cpts->sr_genf));
-@@ -1204,8 +1208,11 @@ void am65_cpts_resume(struct am65_cpts *cpts)
- 	int i;
- 	s64 ktime_ns;
- 
-+	/* During suspend the SoC can be power off, so let's not only
-+	 * enable but also prepare the clock
-+	 */
-+	clk_prepare_enable(cpts->refclk);
- 	/* restore state and enable CPTS */
--	clk_enable(cpts->refclk);
- 	am65_cpts_write32(cpts, cpts->sr_rftclk_sel, rftclk_sel);
- 	am65_cpts_set_add_val(cpts);
- 	am65_cpts_write32(cpts, cpts->sr_control, control);
--- 
-2.39.2
+will drop "Controller", as I think RTC is not something like I2C, eMMC, USB=
+,
+which have the "controller <-> client/device" model.
 
+> > +
+> > +maintainers:
+> > +  - Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+> > +
+>
+> Missing ref to rtc.yaml. Unless it is not applicable but then why?
+
+ok, I should ref this file.
+
+>
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - sophgo,cv1800b-rtc
+>
+> Blank line
+
+ok
+
+>
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - interrupts
+> > +
+> > +additionalProperties: false
+>
+> unevaluatedProperties instead
+
+will fix .
+
+>
+> > +
+> > +examples:
+> > +  - |
+> > +    rtc-controller@05026000{
+>
+> The names is always "rtc", unless this is not RTC. If it isn't, please
+> add full description of the hardware.
+
+I will use "rtc" replace "rtc-controller" .
+
+>
+> > +      compatible =3D "sophgo,cv800b-rtc";
+> > +      reg =3D <0x05026000 0x1000>;
+> > +      interrupts =3D <17 IRQ_TYPE_LEVEL_HIGH>;
+> > +      interrupt-parent =3D <&plic0>;
+> > +      clocks =3D <&osc>;
+>
+> Why do you send untested bindings? Review costs significant amount of
+> effort. Code was also not compiled? Warnings not fixed?
+
+I will check it.
+Leading 0 and referencing issues will be fixed.
+
+>
+> Best regards,
+> Krzysztof
+>
+
+I'm sorry for taking so long to reply.
+I took a few days off due to being infected with the flu.
+Thank you again for your patient reply.
+
+Best regards,
+Jingbao Qiu
