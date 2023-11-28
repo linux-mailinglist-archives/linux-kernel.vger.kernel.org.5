@@ -2,122 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A579C7FC510
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 21:13:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD547FC514
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 21:15:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345220AbjK1UNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 15:13:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47114 "EHLO
+        id S1345388AbjK1UOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 15:14:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjK1UNe (ORCPT
+        with ESMTP id S229892AbjK1UOu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 15:13:34 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BA783;
-        Tue, 28 Nov 2023 12:13:41 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-548ce39b101so7855017a12.2;
-        Tue, 28 Nov 2023 12:13:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701202419; x=1701807219; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wR68o+FcLbsjMSQ16SqXF4RBidgTdDJ0WL15TOT2Y7Y=;
-        b=Z8p0bJ7lTmmlvBMHjinpc44Wq7L/itkwxLgNrpiruEVpUmF2oRlhtmVQsCkkRbMcCx
-         Jhso6dL8Ce1WOivBMq9X42sa5VDiNaMzVrgG00tSUlgsuaJ5N3sQ/NNbueRat0qyqnIF
-         7NkM1opaCXOMKoyYpukTwz4GfI4RYMT8jf05MqOPeJLmMyflTK84MLPSg2jLFJeDR1Hp
-         g0WoGSsLgmAAhCFJMIWe5UBiyo2CWAnFhCN62cZdjvjdbqQsQgBz9VVjDXqiE0P45tpj
-         CcWJPX+Agf8YH8XxU7lFyuqZye7WdLydm/MHQrwF+qFLsM+2OZx00GHtMProGZ8+b6gL
-         su6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701202419; x=1701807219;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wR68o+FcLbsjMSQ16SqXF4RBidgTdDJ0WL15TOT2Y7Y=;
-        b=d+yHp08o1egA4qrtfzmbosFXf+v0Oh4N0LmrXPLTDbsBjUguSLgMJNhz6b3onpdZRH
-         Ng2OYK5pNigMvCCtK4xUMih2D/X4sS3Jw/AZ70uTJRZtSq0SeFFVMcQHygYcKc3y3Xmg
-         /qeiNzcNfm42/UulFFAme0vj9+l/WRtgYEbK3uLMWpyc02h3WkJF+6yTfo5jc/642e1r
-         r20uuuStwKXzvjFV1fzGLfNVtwMC6OnuhtVGpDv0RPCAu8/r5+gdBpvsRUFKNBCdiJ/R
-         eWmdyPaX4ZS1/H8zWu36fZvnxVRo87ZHYosTi0dGEs/BjzDlNcpzALxRROOlRRtxGX3u
-         hN8Q==
-X-Gm-Message-State: AOJu0YywQ6dB0sWLWlAe/Edqxp1t07EXXT/GIsHao+OvNT8zm6fQkGuO
-        LdDSklmgPV9YPLpz70uqz+0L/Wkz+Uc=
-X-Google-Smtp-Source: AGHT+IEXtv/0vHkXr7m5Lwaz+QkYqvcyBt48sGWnYQAibbW7HfxmLOVzZwvVsnHhRapAQHTxJ9vXTw==
-X-Received: by 2002:a17:907:3a93:b0:9fe:ac0e:9c01 with SMTP id fh19-20020a1709073a9300b009feac0e9c01mr10432027ejc.62.1701202419430;
-        Tue, 28 Nov 2023 12:13:39 -0800 (PST)
-Received: from ?IPV6:2a02:8071:b783:140:927c:82ba:d32d:99c1? ([2a02:8071:b783:140:927c:82ba:d32d:99c1])
-        by smtp.gmail.com with ESMTPSA id 26-20020a170906009a00b009b9aa8fffdasm7071508ejc.131.2023.11.28.12.13.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Nov 2023 12:13:38 -0800 (PST)
-Message-ID: <944b641e-9351-40d1-89cb-82b448802aa1@gmail.com>
-Date:   Tue, 28 Nov 2023 21:13:37 +0100
+        Tue, 28 Nov 2023 15:14:50 -0500
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D85083;
+        Tue, 28 Nov 2023 12:14:55 -0800 (PST)
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3ASEWoYk025952;
+        Tue, 28 Nov 2023 21:14:36 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=selector1; bh=3wum3M3
+        uGkwBSpakL3jJmsR2FXWJMQzhEHn2WaGllZI=; b=6thw0lQMM3/jSHUykSdUmg5
+        g60wNRp1znWXHe3w2Qdf1vqk9mqXAtsWRmJ64nfh+ovGcSocDzPeRsbcJHGs4d0D
+        fxv0T9cvtVacdgGw/eRFDFWBOJEzZQqmhISZtPiTgxzHk5PBKnTAAIdr4yWbLP5U
+        TvBZUWcPEMXIrS+5BI9rfNgBJzsV27q2ldmLmc61UQ1YNwtsQnEKyqODEgL6sxys
+        42mb6HBUuJ897KMObaTym+vAR/c/x5pAtZauXIKe0absnsJTUGEAgQP+oVsq0X5M
+        9vxtzMoZLNwCn69MuOXg39xWh63IzIDCvLTuKNvLDPPRgRBgcHd8G6u0ItIVKXA=
+        =
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uk8pjwn91-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Nov 2023 21:14:36 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5547310002A;
+        Tue, 28 Nov 2023 21:14:34 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4A135276D9F;
+        Tue, 28 Nov 2023 21:14:34 +0100 (CET)
+Received: from localhost (10.252.11.142) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 28 Nov
+ 2023 21:14:34 +0100
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
+        Alain Volmat <alain.volmat@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        <linux-media@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] media: stm32-dcmipp: correct kerneldoc issues in dcmipp-common
+Date:   Tue, 28 Nov 2023 21:14:03 +0100
+Message-ID: <20231128201404.237856-1-alain.volmat@foss.st.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] platform/surface: aggregator: fix recv_buf() return
- value
-Content-Language: en-US
-To:     Francesco Dolcini <francesco@dolcini.it>,
-        Hans de Goede <hdegoede@redhat.com>,
-        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>
-Cc:     Francesco Dolcini <francesco.dolcini@toradex.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20231128194935.11350-1-francesco@dolcini.it>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-In-Reply-To: <20231128194935.11350-1-francesco@dolcini.it>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.252.11.142]
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-28_23,2023-11-27_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/28/23 20:49, Francesco Dolcini wrote:
-> From: Francesco Dolcini <francesco.dolcini@toradex.com>
-> 
-> Serdev recv_buf() callback is supposed to return the amount of bytes
-> consumed, therefore an int in between 0 and count.
-> 
-> Do not return negative number in case of issue, when
-> ssam_controller_receive_buf() returns ESHUTDOWN just returns 0, e.g. no
-> bytes consumed, this keep the exact same behavior as it was before.
-> 
-> This fixes a potential WARN in serdev-ttyport.c:ttyport_receive_buf().
-> 
-> Cc: <stable@vger.kernel.org>
-> Fixes: c167b9c7e3d6 ("platform/surface: Add Surface Aggregator subsystem")
-> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+Correct kerneldoc issues regarding:
+  - dcmipp_ent_sd_register
+  - dcmipp_pads_init
+  - dcmipp_colorimetry_clamp
 
-Thanks! Looks good to me.
+Rename as well dcmipp_pads_init parameter from pads_flag to pads_flags.
 
-Reviewed-by: Maximilian Luz <luzmaximilian@gmail.com>
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+---
+ .../media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c    | 4 ++--
+ .../media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h    | 6 ++++--
+ 2 files changed, 6 insertions(+), 4 deletions(-)
 
-> ---
->   drivers/platform/surface/aggregator/core.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/platform/surface/aggregator/core.c b/drivers/platform/surface/aggregator/core.c
-> index 1a6373dea109..6152be38398c 100644
-> --- a/drivers/platform/surface/aggregator/core.c
-> +++ b/drivers/platform/surface/aggregator/core.c
-> @@ -231,9 +231,12 @@ static int ssam_receive_buf(struct serdev_device *dev, const unsigned char *buf,
->   			    size_t n)
->   {
->   	struct ssam_controller *ctrl;
-> +	int ret;
->   
->   	ctrl = serdev_device_get_drvdata(dev);
-> -	return ssam_controller_receive_buf(ctrl, buf, n);
-> +	ret = ssam_controller_receive_buf(ctrl, buf, n);
-> +
-> +	return ret < 0 ? 0 : ret;
->   }
->   
->   static void ssam_write_wakeup(struct serdev_device *dev)
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c
+index d4f149f7e1b7..562933e08d62 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.c
+@@ -14,7 +14,7 @@
+ #include "dcmipp-common.h"
+ 
+ /* Helper function to allocate and initialize pads */
+-struct media_pad *dcmipp_pads_init(u16 num_pads, const unsigned long *pads_flag)
++struct media_pad *dcmipp_pads_init(u16 num_pads, const unsigned long *pads_flags)
+ {
+ 	struct media_pad *pads;
+ 	unsigned int i;
+@@ -27,7 +27,7 @@ struct media_pad *dcmipp_pads_init(u16 num_pads, const unsigned long *pads_flag)
+ 	/* Initialize the pads */
+ 	for (i = 0; i < num_pads; i++) {
+ 		pads[i].index = i;
+-		pads[i].flags = pads_flag[i];
++		pads[i].flags = pads_flags[i];
+ 	}
+ 
+ 	return pads;
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
+index 5fd26d6f857a..69cfa67ffeeb 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
++++ b/drivers/media/platform/st/stm32/stm32-dcmipp/dcmipp-common.h
+@@ -33,7 +33,7 @@
+ #define DCMIPP_XFER_FUNC_DEFAULT	V4L2_XFER_FUNC_DEFAULT
+ 
+ /**
+- * struct dcmipp_colorimetry_clamp - Adjust colorimetry parameters
++ * dcmipp_colorimetry_clamp() - Adjust colorimetry parameters
+  *
+  * @fmt:		the pointer to struct v4l2_pix_format or
+  *			struct v4l2_mbus_framefmt
+@@ -103,7 +103,7 @@ struct dcmipp_ent_device {
+  * Helper functions to allocate/initialize pads
+  */
+ struct media_pad *dcmipp_pads_init(u16 num_pads,
+-				   const unsigned long *pads_flag);
++				   const unsigned long *pads_flags);
+ 
+ /**
+  * dcmipp_pads_cleanup - free pads
+@@ -130,6 +130,8 @@ static inline void dcmipp_pads_cleanup(struct media_pad *pads)
+  * @pads_flag:	flags to use in each pad
+  * @sd_int_ops:	pointer to &struct v4l2_subdev_internal_ops
+  * @sd_ops:	pointer to &struct v4l2_subdev_ops.
++ * @handler:	func pointer of the irq handler
++ * @thread_fn:	func pointer of the threaded irq handler
+  *
+  * Helper function initialize and register the struct dcmipp_ent_device and
+  * struct v4l2_subdev which represents a subdev node in the topology
+-- 
+2.34.1
+
