@@ -2,120 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12B767FC9D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:46:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CABC7FC9D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:47:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345589AbjK1WqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 17:46:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36392 "EHLO
+        id S1346711AbjK1WrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 17:47:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230346AbjK1WqS (ORCPT
+        with ESMTP id S229595AbjK1WrE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 17:46:18 -0500
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0287019A6;
-        Tue, 28 Nov 2023 14:46:25 -0800 (PST)
-Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-67a14f504f8so21906676d6.0;
-        Tue, 28 Nov 2023 14:46:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701211584; x=1701816384; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qhpsd/CJqEzY2wViCgUIbvNNXzGivZKIEmu3PQkzhVE=;
-        b=XsO10W1qy+mn6Jn2XJIxwFQda9GAd1l86NcOKW0FIS4X30PWcnafgnYBcgWvDd8vmV
-         cEHV4GVANUDTvwghgrKVKMbsa3l0Bsb6sr711dGbC3yZsdTxnzGDVIBZbAxd71zsFU0X
-         kVlkiAVgQ8+2Jni9zkyJp5udj0ibaduBnV3vIRWGiAJlYYaai8Ej1nk6BUd9b/TrPzz2
-         q2XwUHj3SxV/WMRI/z+wpJvULjICgspCVH270Qv8nqsk5pIOtmtwSSwA+da3n+qJXEjY
-         q8f3JArkkGXtN7ZW7Nm5Y88C77gCGfH4ZD92+hXBrFwJcegLmh0TFv2N0WoEvJbdwpHa
-         HIpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701211584; x=1701816384;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qhpsd/CJqEzY2wViCgUIbvNNXzGivZKIEmu3PQkzhVE=;
-        b=G0sgdxHFCX8gkh2DuOsQv1cGeUr01l/hVnzhpYQAmRubCnnr6kic8u84N8PX9x97cS
-         aBVP2CNo1/9E0ppdQrl3OKPioB3R90Rx74EI7hhjAoJ62HtBg6SoXQ5rHqmPEUFm6Gfg
-         N14YcYWjRQYCWNUVpypCXwZjhmDvHB0yRifg6G0EbAQXlTTrCh03YGoH6J82+ZqvjbMh
-         wTbNbY21TMp6JKzf26yA1jgB1GjcbbN2oOrDIa9G9FhHypbsCbgnlLHSV0vosYw8FH4f
-         MPQY5EL0zZfNKuKQLuaAbX/8Nkz3XVd+WjvsEMgJfSsPX5+23CwBX4U3Kubc+CH82m9e
-         HB3Q==
-X-Gm-Message-State: AOJu0Yyea1pU+EMtvopn3YiC/puTfF5lCYX9TJg23VeBYiO4NBMAxBPh
-        ealeoMRQmFVZtKVFqGT0Ha8=
-X-Google-Smtp-Source: AGHT+IE6pRwhOTqRhINFN2eazXP7q4ErDCKPBsRwJZFUkJDiwFErGp8qdvqAseNy6DBU+RYnFDa6hQ==
-X-Received: by 2002:a05:6214:806:b0:67a:590a:18f6 with SMTP id df6-20020a056214080600b0067a590a18f6mr3626618qvb.51.1701211584122;
-        Tue, 28 Nov 2023 14:46:24 -0800 (PST)
-Received: from angquan-linux.. ([72.36.119.4])
-        by smtp.gmail.com with ESMTPSA id em15-20020ad44f8f000000b0067a543e6379sm1336565qvb.75.2023.11.28.14.46.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 14:46:23 -0800 (PST)
-From:   angquan yu <angquan21@gmail.com>
-X-Google-Original-From: angquan yu
-To:     skhan@linuxfoundation.org
-Cc:     shuah@kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        angquan yu <angquan21@gmail.com>
-Subject: [PATCH] Fix Format String Warnings in lam.c
-Date:   Tue, 28 Nov 2023 16:46:07 -0600
-Message-Id: <20231128224607.71334-1-angquan21@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Tue, 28 Nov 2023 17:47:04 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5330819B0;
+        Tue, 28 Nov 2023 14:47:09 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1C1F11FB;
+        Tue, 28 Nov 2023 14:47:56 -0800 (PST)
+Received: from [10.57.71.132] (unknown [10.57.71.132])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C40BF3F6C4;
+        Tue, 28 Nov 2023 14:47:00 -0800 (PST)
+Message-ID: <8e1961c9-0359-4450-82d8-2b2fcb2c5557@arm.com>
+Date:   Tue, 28 Nov 2023 22:46:59 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 05/16] iommu/io-pgtable-arm-v7s: use page allocation
+ function provided by iommu-pages.h
+Content-Language: en-GB
+To:     Pasha Tatashin <pasha.tatashin@soleen.com>,
+        akpm@linux-foundation.org, alex.williamson@redhat.com,
+        alim.akhtar@samsung.com, alyssa@rosenzweig.io,
+        asahi@lists.linux.dev, baolu.lu@linux.intel.com,
+        bhelgaas@google.com, cgroups@vger.kernel.org, corbet@lwn.net,
+        david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org,
+        heiko@sntech.de, iommu@lists.linux.dev, jasowang@redhat.com,
+        jernej.skrabec@gmail.com, jgg@ziepe.ca, jonathanh@nvidia.com,
+        joro@8bytes.org, kevin.tian@intel.com,
+        krzysztof.kozlowski@linaro.org, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
+        marcan@marcan.st, mhiramat@kernel.org, mst@redhat.com,
+        m.szyprowski@samsung.com, netdev@vger.kernel.org,
+        paulmck@kernel.org, rdunlap@infradead.org, samuel@sholland.org,
+        suravee.suthikulpanit@amd.com, sven@svenpeter.dev,
+        thierry.reding@gmail.com, tj@kernel.org, tomas.mudrunka@gmail.com,
+        vdumpa@nvidia.com, virtualization@lists.linux.dev, wens@csie.org,
+        will@kernel.org, yu-cheng.yu@intel.com
+References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
+ <20231128204938.1453583-6-pasha.tatashin@soleen.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20231128204938.1453583-6-pasha.tatashin@soleen.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: angquan yu <angquan21@gmail.com>
+On 2023-11-28 8:49 pm, Pasha Tatashin wrote:
+> Convert iommu/io-pgtable-arm-v7s.c to use the new page allocation functions
+> provided in iommu-pages.h.
+> 
+> Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+> ---
+>   drivers/iommu/io-pgtable-arm-v7s.c | 9 ++++++---
+>   1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/iommu/io-pgtable-arm-v7s.c b/drivers/iommu/io-pgtable-arm-v7s.c
+> index 75f244a3e12d..3d494ca1f671 100644
+> --- a/drivers/iommu/io-pgtable-arm-v7s.c
+> +++ b/drivers/iommu/io-pgtable-arm-v7s.c
+> @@ -34,6 +34,7 @@
+>   #include <linux/types.h>
+>   
+>   #include <asm/barrier.h>
+> +#include "iommu-pages.h"
+>   
+>   /* Struct accessors */
+>   #define io_pgtable_to_data(x)						\
+> @@ -255,7 +256,7 @@ static void *__arm_v7s_alloc_table(int lvl, gfp_t gfp,
+>   		 GFP_KERNEL : ARM_V7S_TABLE_GFP_DMA;
+>   
+>   	if (lvl == 1)
+> -		table = (void *)__get_free_pages(gfp_l1 | __GFP_ZERO, get_order(size));
+> +		table = iommu_alloc_pages(gfp_l1, get_order(size));
+>   	else if (lvl == 2)
+>   		table = kmem_cache_zalloc(data->l2_tables, gfp);
 
-This commit addresses compiler warnings in lam.c related to the usage
-of non-literal format strings without format arguments in the
-'run_test' function.
+Is it really meaningful to account the L1 table which is always 
+allocated upon initial creation, yet not the L2 tables which are 
+allocated in use?
 
-Warnings fixed:
-- Resolved warnings indicating that 'ksft_test_result_skip' and
-'ksft_test_result' were called with 't->msg' as a format string without
-accompanying format arguments.
+Thanks,
+Robin.
 
-Changes made:
-- Modified the calls to 'ksft_test_result_skip' and 'ksft_test_result'
-to explicitly include a format specifier ("%s") for 't->msg'.
-- This ensures that the string is safely treated as a format argument,
-adhering to safer coding practices and resolving the compiler warnings.
-
-Signed-off-by: angquan yu <angquan21@gmail.com>
----
- tools/testing/selftests/x86/lam.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/x86/lam.c b/tools/testing/selftests/x86/lam.c
-index 8f9b06d9c..215b8150b 100644
---- a/tools/testing/selftests/x86/lam.c
-+++ b/tools/testing/selftests/x86/lam.c
-@@ -817,7 +817,7 @@ static void run_test(struct testcases *test, int count)
- 
- 		/* return 3 is not support LA57, the case should be skipped */
- 		if (ret == 3) {
--			ksft_test_result_skip(t->msg);
-+			ksft_test_result_skip("%s", t->msg);
- 			continue;
- 		}
- 
-@@ -826,7 +826,7 @@ static void run_test(struct testcases *test, int count)
- 		else
- 			ret = !(t->expected);
- 
--		ksft_test_result(ret, t->msg);
-+		ksft_test_result(ret, "%s", t->msg);
- 	}
- }
- 
--- 
-2.39.2
-
+> @@ -283,6 +284,7 @@ static void *__arm_v7s_alloc_table(int lvl, gfp_t gfp,
+>   	}
+>   	if (lvl == 2)
+>   		kmemleak_ignore(table);
+> +
+>   	return table;
+>   
+>   out_unmap:
+> @@ -290,7 +292,7 @@ static void *__arm_v7s_alloc_table(int lvl, gfp_t gfp,
+>   	dma_unmap_single(dev, dma, size, DMA_TO_DEVICE);
+>   out_free:
+>   	if (lvl == 1)
+> -		free_pages((unsigned long)table, get_order(size));
+> +		iommu_free_pages(table, get_order(size));
+>   	else
+>   		kmem_cache_free(data->l2_tables, table);
+>   	return NULL;
+> @@ -306,8 +308,9 @@ static void __arm_v7s_free_table(void *table, int lvl,
+>   	if (!cfg->coherent_walk)
+>   		dma_unmap_single(dev, __arm_v7s_dma_addr(table), size,
+>   				 DMA_TO_DEVICE);
+> +
+>   	if (lvl == 1)
+> -		free_pages((unsigned long)table, get_order(size));
+> +		iommu_free_pages(table, get_order(size));
+>   	else
+>   		kmem_cache_free(data->l2_tables, table);
+>   }
