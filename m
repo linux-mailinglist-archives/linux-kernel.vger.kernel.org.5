@@ -2,174 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0775F7FC908
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:04:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A59647FC907
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:04:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345905AbjK1V6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 16:58:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55692 "EHLO
+        id S1346063AbjK1V7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 16:59:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjK1V57 (ORCPT
+        with ESMTP id S229543AbjK1V7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 16:57:59 -0500
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2083.outbound.protection.outlook.com [40.107.104.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C749197;
-        Tue, 28 Nov 2023 13:58:05 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VNF0f3F6laCOZhs5o93IEcGCicpQQJT5HFzxLf1prs26ZbCEoUaDvb1C+B/BluvWoTv+mkPeATKQcv+k2X+yadoVh0mXGtBWun9wK9fX5+7Qsjas+AtxEBnuOx5Nykwjw7UKnM4BwZa6zYkKlpwweGq2XvDUOa2FRUL5DhKADKdZzJGX19YYQV6XJYeLZm8NHagmvRfvxMMdQHxXIvluglqnn+lVFsmWU3Bno3EppxyaMiCpqEdM4pkHt/LiHYMMBvIvxOJmHPf+9GxXeGOqHmfnfP6hbCuS2TYaPWWUoib1rdLStHqNH5UGajL6eerF5DrASd3/PTpZlH6BEIGgIQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uWjD3b7e+Wo1Gyp4U1J57AVQ6mICM9SLtWlIoXVePZ4=;
- b=VULKqLowyhl7nQJilXgnMYrhe1YWcIqQL5umeie9V+wD1eOeHnF/zWio3jTJ7XSdRKghqUlYSJxL7rS4VDqWbehabfV6pBq6jhyijGaRNllX2l1n67RLreHRAvWqoK1qxk96Jgt6ClWdxHVc0kBGklu5G2dlXg8jxALbWcAhXf5igb5iRcYqCSsGHKunkvf+yJ38SY2yc3/3Tc0Bv31MV4SP74f4UBU5EcHWJdYunqfyHawzc/xvSgu57xk6M2L1Nhx+WRyllJB9sTjBkSZfxUYD5zGwu1KN4DIVMeFkktIY1Jcvly3KZFfNUkF3GSQgI+YZOaEl9CvYron6b4QkKg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uWjD3b7e+Wo1Gyp4U1J57AVQ6mICM9SLtWlIoXVePZ4=;
- b=EpxOH/eBJWVz2XK6aSlYkMrfT+mOROB44In/2YEFJ+xnq2OKaFkyVlZcxM7mPzHDrdqNTc1s/C+IFyW1zEqvRBcJbajdzsc9sOefWghTVDZNXXOyqk9QG9fLOnTVvzeXZHqaCU32JhtmrHKHsGGWoe2FDJKXlnMJJQuUela11Hg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by AM7PR04MB6965.eurprd04.prod.outlook.com (2603:10a6:20b:104::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.22; Tue, 28 Nov
- 2023 21:58:03 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::95f5:5118:258f:ee40]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::95f5:5118:258f:ee40%6]) with mapi id 15.20.7046.015; Tue, 28 Nov 2023
- 21:58:03 +0000
-Date:   Tue, 28 Nov 2023 16:57:55 -0500
-From:   Frank Li <Frank.li@nxp.com>
-To:     wangxiaolei <xiaolei.wang@windriver.com>
-Cc:     vkoul@kernel.org, imx@lists.linux.dev, dmaengine@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: dmaengine: fsl-edma: dmatest timeout
-Message-ID: <ZWZiY4Cy/GP8L+Px@lizhi-Precision-Tower-5810>
-References: <64cde245-0e53-6559-0a3b-ffe0a5415519@windriver.com>
- <ZWYJgc/S8xMofmWw@lizhi-Precision-Tower-5810>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWYJgc/S8xMofmWw@lizhi-Precision-Tower-5810>
-X-ClientProxiedBy: BYAPR07CA0075.namprd07.prod.outlook.com
- (2603:10b6:a03:12b::16) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+        Tue, 28 Nov 2023 16:59:41 -0500
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E17198;
+        Tue, 28 Nov 2023 13:59:46 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id C9DE05C01C9;
+        Tue, 28 Nov 2023 16:59:43 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 28 Nov 2023 16:59:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1701208783; x=1701295183; bh=d8
+        dJOAJYV2mmOf6TcGIvZmDZwHIgzbX0ltRZ3M1V2lw=; b=YadBYp87SiMJCaGzl2
+        yVc3F50keLYMG0BPExwY8/BqRr1jtomyhEMHUHcjv1B7Y0wKLCawIKdX6iESbFQQ
+        4vhEAkznbyaTd6QYK3Aw58pnQHFyNK7vOzA0xuTo1K++WTdH5Hw9XWP9l0j+6nVn
+        aMeRCc5Uf2YujIdPdbaVOX/Bh3mZ+/TW16bSdDf4ucNINlZNB1pXhksKlpfCROo/
+        6m4seBQbPWXnNI+dzGPyZfycWzf88q44WxOIe7T3h+z2rLUlaWRhfIufbJOOfLdV
+        ItxFUAyRfq4woqYXsdgd8c8vLoaSeWJRAzQis6EPnhDwx7jnuVX6WuyHBj8WbET3
+        jmvQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1701208783; x=1701295183; bh=d8dJOAJYV2mmO
+        f6TcGIvZmDZwHIgzbX0ltRZ3M1V2lw=; b=YRhLjdkUetYblVbHU3qi3TsBj1N2h
+        l371QqfFu4yKaZo3e7wvdFu3CVifWDqBD8dyKz2ggJ4czdkoJzGz06jtLorXUU+6
+        RvWcCmE9CLI7OpYTNPr2fSgg/fdrdB14owu5Zn/rvCfBNCJ5xtt187Tvi1UaG+gT
+        fGPzNFACe1HInjwdphnTR9FoPucssW079THQ01K0hPBWOAJK/e6lVzFBv4ZMT7sK
+        EizBVnE11+dpAYOLLJ3xMQxHPUPqh2PKIrrp9zU5mkLJ6cRdtHa1u7X0wmPT+B+t
+        3tEeaZWfKA5axK/pCDxMSm/P9w+dco8mszuqdC14OBpH/v2oah6z2Xfww==
+X-ME-Sender: <xms:zmJmZb3O7tz8UuCX34Rn3M6sKvNG9N9HnwtRSnNKVnLmvL_YHCc2Yw>
+    <xme:zmJmZaHwnWMoR0sl6URtWgfkI0DFEkmahH_9Z2MIpTIPgnXe8THtaV-n244CqPda9
+    yPCC1FHZ8WsoY_wMAY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeifedgudehgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
+    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:zmJmZb5yPLqTPRHYUrooghTHvcLDx4wQxgxZ14cQzvaSCiD1ZAF4dQ>
+    <xmx:zmJmZQ373mqOsYB-HA5iTc6aJBCrxpkHOc47MjyLqeZA06N54nbWKg>
+    <xmx:zmJmZeFWvsgXQqwrMDFVDDw2pagiE28iAO3k1HCBrc60O5RDW-NnnQ>
+    <xmx:z2JmZcGX0YtYNEWQuMvvSVOro-SvT-xoqxQYgMlal-5ZjNj0PeT3vw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 4C268B60089; Tue, 28 Nov 2023 16:59:42 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1234-gac66594aae-fm-20231122.001-gac66594a
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AM7PR04MB6965:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9d0c4c24-53ea-4a63-e645-08dbf05d1805
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iuShHfhRthVWQ81fnhjkcVf6muTCjlxKwL7ff96+ZKMgpBRQtFulE790l2tZ5OOrKT4UP1vBj8H0+F/UUMNDGhT7WJ/eDL1PgzoZPApkzIfkvFnf2mxGZrbvn6usRcEOgSwZSZRfLhXn4+L46suOMoe1yhJXdmAyf566wkZg2XWT9OfkHzmzVMDwdn8zqvrepONnEjncYVh3obnhdYJLIp4fzDewf2XipmBB4joWs2ETVdCU/MGIzDTu9/SNvZ5HkEZSHslC3tP/5rJ9OOe6gbrGdsYpjHOcxD96KtCyAbenxgTuRSVSCJd9JEhcgG0E/cJHIAlBdbnkQss+4hbP2BL8P0BrdIIe5btvf16fW7kTn5p7lVZYC2vF/mc/DcMD9rLn7xtXOZR3aAwtrY/Y4uWRAO/97wQkmjqBuD7fuSguKAff/JqJNLp1iYPGNjxUB5YyyUn7ZMvVKD7nZtbdQ5EG8ZO6uob1QQRmg/i+r7uc2iDgGPzv/UrcgwyJ2ayXL6dJGAoZMPo3XOncoQJdpj2JSrR3D7GWRbwyLgFFpd2K//54V7qsnHxJQB7MBeR45VCLHIDXpfi59Jm8Hamm03zqzhFMlUB7aBZzc8MrhKpo1vrSxIl+87/C0NNFskZ/
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(136003)(366004)(346002)(376002)(39860400002)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(33716001)(41300700001)(5660300002)(2906002)(66556008)(6916009)(66476007)(8676002)(8936002)(66946007)(38350700005)(316002)(4326008)(9686003)(38100700002)(86362001)(83380400001)(6512007)(52116002)(6486002)(26005)(6666004)(6506007)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0Os5RrxnXXnbJpF2nXo/jonHgzl/aE7+WM2mcfUTDQgZEHHnpyzfr/UMerPt?=
- =?us-ascii?Q?+qlm/RsBNulTt5RNVcSstuKj5xC+nbmA4irt1mPWcAYk4eAk/mXaajlcx1C3?=
- =?us-ascii?Q?Yl865FNNUxDdRssVi5W/kuWcnnC8w00gtH7wPTwBJFjQzQN1ZdUjSeRa/trZ?=
- =?us-ascii?Q?qPpac3cP1/oQVUZZhZ35LwzhCfZT09zz9tnqgZ+BgIhhDyvrN5wI2tEXvV5L?=
- =?us-ascii?Q?PbpT5bZuIu12JAwHucd+8mz6XTuhKQGD+7CO7A6y1l/omctdYwGbf5WArgbB?=
- =?us-ascii?Q?DqEyi47qQ5ULfyp6MsrLEx+riAP8QeRpj77NrGCJbyavecWYDNvyN875ZK5F?=
- =?us-ascii?Q?X3MBR84xeu3aaCt+CUeKld5zdCGmw+KdhyQGzRbXI/oX6RwJ6mLy0Opst34f?=
- =?us-ascii?Q?gBcpvI4u0NcXXFvzNiZW1ziaPVDU2hBj1Lp+k322U685f0Ji/te/1H7mDItq?=
- =?us-ascii?Q?ixPq4JAz16vyUCUATFkhJ0tpBFS+JqUvzZKxii/Izg1CzUhyWxNaqg7Jhm9z?=
- =?us-ascii?Q?RacQfGD1QmY5yntKHUsQHJl+C66PKCYcfSSMihlDw71dlXvd8syANUPzvrJr?=
- =?us-ascii?Q?eP2L8U+V1vY80q1rZ0h0oQ8m0avVm5zqClEWSSBYNPzcSko366oZosfBnwZq?=
- =?us-ascii?Q?3vyhPVKNh1FkVmm5YPsoILo/y4D7ps+DcL9aCX+25v/z7XdwXrXKPzx6u9Bd?=
- =?us-ascii?Q?fSnaBdYdvSF1H8l59GhNTz5+oCZrgxS8L9ZxzbUhDQox3ArOiMkr33xr89dA?=
- =?us-ascii?Q?RpQPm6A5XHkVZeYMLF7ciOQqqyPypklD+nsCnW19F5MzYwxTARsqZSZ0oBs8?=
- =?us-ascii?Q?BVDLHE0Ll7KSLs9xVRvheuVzzslrkaBoJHcuLpX+GtQgeSmg4yxFEHiG6tyQ?=
- =?us-ascii?Q?rIK9WN0vvGuqA+u6DduGyOYdLffi1H/RIo5iznQjiafggSd5O9jJ+dgUPuPN?=
- =?us-ascii?Q?km5AOsgn1BpQfrxMqe3tWHqtZsXDH5NotLbEXflZAnnkQWeD9nFjownuRuFW?=
- =?us-ascii?Q?5hvXdd6MulhufkiBqOwraEzWvA3p6Ut/wuNKDOWkL1ZZWC/2uG3UABbNPyVc?=
- =?us-ascii?Q?GDCYUe6x7gsxOtyz4/c9QgXk9+VQybBcabZlyWfhIbuUE9MUJnXy5V1ijQhY?=
- =?us-ascii?Q?1cExIszvDSHOw0eU/UppmAtUu7M/FS1sFt3vEufVxjx55xv9dtcLJ051n8Bj?=
- =?us-ascii?Q?PCeJWmuHsuoPo9wlZtglUgTmbdBmSzaycyWz5jeTo+sIT5qAPy8ltiACZA9r?=
- =?us-ascii?Q?P1BEw4VCuueqcgg+iJyL3LBvjcmyz3SY4Zp0H2pp7Exr6mh49rBFzGVKWnmD?=
- =?us-ascii?Q?I6TuP7Yf5M6YWa8H75SdpCmmrzCcok2ji2CTsM0VjpfPlYoArTLkCAx/ZqoM?=
- =?us-ascii?Q?8LfSzH7gxd56taXPayOaKpmu9FXLmpL0YXyfY5fuEhP7AcSIyD1J9Q+uWQbC?=
- =?us-ascii?Q?KUIYeU9gbm+pZMaNpd83AnZStkxwNlJUqvwaVoBnyiH/TAFxzrSLkUcpzJAw?=
- =?us-ascii?Q?+3Ggn5MXYi+BoJG660g9tOuKzoJS0f5eGjqMZSLXXBFdaJfjaoI+zVHzR1aO?=
- =?us-ascii?Q?T9/sy5CfuqK8C6d9AIA=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9d0c4c24-53ea-4a63-e645-08dbf05d1805
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 21:58:03.0455
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ynO2pQ3wt+4GhLLh7B5mM6hVOCOr28lpzSGXgv7WQs8WB7d7yg26yyLoIVUjzppAAeONYFBoMh8L3Tv3vJOuYg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB6965
+Message-Id: <00c225bf-ed99-4721-9d6a-1e58cdffc79f@app.fastmail.com>
+In-Reply-To: <fvbe4625dgh57c3njx7fhd6vlnfxynzipfz43ieu2txflc2q4r@xzvrrmmktxsb>
+References: <c7cuvhuu6py5vxhhvkhekv6ned5sro4a3wzzn7v45oahfw42ud@gyqmucagt5e2>
+ <8ca730b9-fa8c-46ea-bdc5-158da0f29c3a@app.fastmail.com>
+ <ZV9Fq1ihUm1Rn6yO@alpha.franken.de>
+ <d6d7e27a-b1a1-48af-be6c-aa9097c48992@app.fastmail.com>
+ <ZV94rifAIF2p9Nej@alpha.franken.de>
+ <245d3985-9085-4be0-8c74-d95d06334584@app.fastmail.com>
+ <3iksuovvsln3cw3xpmjd7f7xixfvwaneu4ok56fnookvyolpco@wrxxew3thgnq>
+ <dfda70b6-3291-462f-bc87-06dcc87bd068@app.fastmail.com>
+ <ysij22pivneyg7tk3bv3hti3tsgbzglb6pin3my7r3bokzxjj6@jrjmu45gbupr>
+ <c1c0a409-902e-4609-ae84-8939226b4fa0@app.fastmail.com>
+ <fvbe4625dgh57c3njx7fhd6vlnfxynzipfz43ieu2txflc2q4r@xzvrrmmktxsb>
+Date:   Tue, 28 Nov 2023 22:59:10 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Serge Semin" <fancer.lancer@gmail.com>
+Cc:     "Jiaxun Yang" <jiaxun.yang@flygoat.com>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Mike Rapoport" <rppt@kernel.org>,
+        "Matthew Wilcox" <willy@infradead.org>,
+        "Tiezhu Yang" <yangtiezhu@loongson.cn>,
+        "Huacai Chen" <chenhuacai@kernel.org>,
+        "Yinglu Yang" <yangyinglu@loongson.cn>,
+        "Alexey Malahov" <Alexey.Malahov@baikalelectronics.ru>,
+        "Aleksandar Rikalo" <aleksandar.rikalo@syrmia.com>,
+        "Aleksandar Rikalo" <arikalo@gmail.com>,
+        "Dragan Mladjenovic" <dragan.mladjenovic@syrmia.com>,
+        "Chao-ying Fu" <cfu@wavecomp.com>, "Marc Zyngier" <maz@kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/7] mips: dmi: Fix early remap on MIPS32
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 10:38:41AM -0500, Frank Li wrote:
-> On Tue, Nov 28, 2023 at 12:43:59PM +0800, wangxiaolei wrote:
-> > Hi
-> > 
-> > When I executed the following command to do dmatest on the imx8qm platform,
-> > 
-> > I found that the timeout occurred on the current mainline kernel:
-> > 
-> > 
-> > modprobe dmatest run=1 iterations=42
-> > 
-> 
-> dmatest use mem to mem transfer. It seldom used at actual system. Let me
-> check it. 
-> 
-> Frank
-> 
-> > 
-> > I found that the completion interrupt was not received in
-> > fsl_edma3_tx_handler().
+On Tue, Nov 28, 2023, at 14:52, Serge Semin wrote:
+> On Tue, Nov 28, 2023 at 01:41:51PM +0100, Arnd Bergmann wrote:
+>> On Mon, Nov 27, 2023, at 17:23, Serge Semin wrote:
+>> > On Fri, Nov 24, 2023 at 10:03:49PM +0000, Jiaxun Yang wrote:
+>> but ioremap_cache() is generally underspecified because the
+>> resulting pointer is neither safe to dereference nor to pass into
+>> readl()/writel()/memcpy_fromio() on all architectures.
+>
+> I don't know about ARM64 (which for instance has it utilized to access
+> the DMI region), but at least in case of MIPS32 (a fortiori MIPS64
+> seeing the ioremap_cache() method actually returns a pointer to the
+> uncached region) I don't see a reason why it wouldn't be safe in both
+> cases described by you. All IO and memory regions are accessed by the
+> generic load and store instructions. The only difference is that the
+> MMIO-space accessors normally implies additional barriers, which just
+> slow down the execution, but shouldn't cause any other problem. Could
+> you clarify why do you think otherwise?
 
-I test at imx93, it works. I supposed it is the same as 8qm.
+On arch/powerpc, CONFIG_PPC_INDIRECT_MMIO makes all ioremap()
+type functions return a token that can be passed into the readl/writel
+family but that is not a pointer you can dereference.
 
-echo dma0chan0 > /sys/module/dmatest/parameters/channel
-echo 2000 > /sys/module/dmatest/parameters/timeout
-echo 1 > /sys/module/dmatest/parameters/iterations
-echo 1 > /sys/module/dmatest/parameters/run
+On s390, the mechanism is different, but similarly __iomem
+tokens are not pointers at all.
 
-I add debug message: 
+>> There was an effort to convert the remaining ioremap_cache() calls
+>> into memremap() a few years ago, not sure if that's still being worked
+>> on but it would be the right thing to do.
+>
+> I see. Thanks for the pointing out to that. I guess it could be done
+> for MIPS too (at least on our MIPS32 platform DMI is just a memory
+> region pre-initialized by the bootloader), but the conversion would
+> require much efforts. Alas currently I can't afford to get it
+> implemented in the framework of this patchset. (I saved your note in
+> my MIPS TODO list though. Let's hope eventually I'll be able to get
+> back to this topic.)
 
-[  154.090765] fsl_edma_tx_chan_handler
-[  154.094711] fsl_edma_prep_memcpy 8d842340 8d839280 7104
-[  154.100063] fsl_edma_tx_chan_handler
-[  154.103949] fsl_edma_prep_memcpy 8d8419c0 8d838580 4288
-[  154.109265] fsl_edma_tx_chan_handler
-[  154.113235] fsl_edma_prep_memcpy 8d840ec0 8d838340 6016
-[  154.118573] fsl_edma_tx_chan_handler
-[  154.122508] fsl_edma_prep_memcpy 8d841c00 8d83a8c0 1920
-[  154.127791] fsl_edma_tx_chan_handler
-[  154.131738] fsl_edma_prep_memcpy 8d840040 8d838200 14784
-[  154.137272] fsl_edma_tx_chan_handler
-[  154.141171] fsl_edma_prep_memcpy 8d840280 8d838080 15616
-[  154.146716] fsl_edma_tx_chan_handler
-[  154.150598] fsl_edma_prep_memcpy 8d840e00 8d838f40 4928
-[  154.155915] fsl_edma_tx_chan_handler
-[  154.159858] fsl_edma_prep_memcpy 8d8419c0 8d838040 7424
-[  154.165203] fsl_edma_tx_chan_handler
-[  154.169140] fsl_edma_prep_memcpy 8d841700 8d839380 2560
+I just noticed that the only architectures that actually provide
+ioremap_cache() are x86, arm, arm64, mips, loongarch, powerpc, sh
+and xtensa. The ones that have ACPI support still definitely
+need it, most of the other ones can probably be fixed without
+too much trouble.
 
-Frank
-
-> > 
-> > I didn't find any special configuration from the manual. Can anyone give
-> > some suggestions?
-> > 
-> > 
-> > thanks
-> > 
-> > xiaolei
-> > 
+     Arnd
