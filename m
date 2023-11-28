@@ -2,205 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF997FC40F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 20:12:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B94E57FC413
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 20:14:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376296AbjK1TMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 14:12:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33038 "EHLO
+        id S1346550AbjK1TOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 14:14:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230050AbjK1TMa (ORCPT
+        with ESMTP id S1345286AbjK1TOG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 14:12:30 -0500
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12olkn2087.outbound.protection.outlook.com [40.92.21.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB08A1707;
-        Tue, 28 Nov 2023 11:12:36 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IzVfgAcwbE6aSrDnMb74dxCNJFntWzNeH7SZ1SDz1UH3RISx3qBZpxHMe0CPWdOi8IgsM8deOC4J9+I7Xidru4xgmTYuYOSgp+t3UxiRQO01V3cI08wifA9wU1VU07BACYfAZc871okhu1ei7xFZ/tsaeGA8L8bROTAswTEWl5vmFmAdnnLe0VuI3JZfowxCjwcXrMH88b+tZ4j5Eh6PjrjXQDUGfCGQ+s1jUMNymWs66DDHoMBGf6yec22tojDSkVFUo9TpiqtUy5zgte2nCvifZlYn27N/izZ1stpLbBlQZgozGbbzFEJSn9BvLWkRtq6T2hGqU4YlRbkSnKG/pg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KKsGGv7KIpMrwwkHZcgPzPyNczYPg6IxevN9YGYU2Uo=;
- b=NtFbG6YgIb+gcFkWY/CpzwiBleFYIq0R4LwIO+P9EO7HAj9HKKR56CzHM7UdCkKfZKYUEgdHjP7CO/rFDVB3bkm3sErg1TurSjVTqgtv/+ce4DpjBfAHeTF47axfqlHDnf2B7QmzMyn9HJudBtgRhuvhoUVrxzonqBPP6nbLUUlFtW7Bo/yboFagdgsW3rGiO/UX7+ZcS0f3bHUzbmkBR/m2aQIzOhLkkxunk+gaMK9nh8PAAAENKAO1PRlF8FttuiWM4JDTQr94zMevtsYNfommQQrifrw/gEk990bUg90v5sOc59bPtHIkjqGl4SWbH5cyFtTQBpc+fIZYCplehQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KKsGGv7KIpMrwwkHZcgPzPyNczYPg6IxevN9YGYU2Uo=;
- b=I5luXcq12rzBPiEpAIxt0GTFTMJu94yo1/IvcFkU+9YbtKOeHepikzWIGTO7go585Txm1GSEZJu9uD7VDBTU8cr9a7aiARkwNNYoASSsUryHZ5rNVngAa/0VP3grnkdYCmmbNpXoZfZtCfUdcomgd6/Yb2NjQzIBY+iVRKzxeLCYbMrcPEmRSDPRaOaC8Ioi3J7iLM1KKwraBcYcFoJqSNFBvMTQVuNcMpVtIczfQ4sv5IHHaX0IC7ytZptXhPVSEW/jQ0X821Xxw4m1PBG39tAZ3KB4aMv/+0p8o1vhexAi3UBFUlowGWMOsJosLiT0KZhnJYjbuV2E+N/fC/PIOg==
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
- by DM3PR02MB10207.namprd02.prod.outlook.com (2603:10b6:0:1e::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.22; Tue, 28 Nov
- 2023 19:12:34 +0000
-Received: from SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::54e5:928f:135c:6190]) by SN6PR02MB4157.namprd02.prod.outlook.com
- ([fe80::54e5:928f:135c:6190%7]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
- 19:12:34 +0000
-From:   Michael Kelley <mhklinux@outlook.com>
-To:     "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
-CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "decui@microsoft.com" <decui@microsoft.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "urezki@gmail.com" <urezki@gmail.com>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "lstoakes@gmail.com" <lstoakes@gmail.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "jroedel@suse.de" <jroedel@suse.de>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: RE: [PATCH v2 0/8] x86/coco: Mark CoCo VM pages not present when
- changing encrypted state
-Thread-Topic: [PATCH v2 0/8] x86/coco: Mark CoCo VM pages not present when
- changing encrypted state
-Thread-Index: AQHaHMCVvp/6+xDImEK+4X8HvaXRwbCJQkWAgAbY+vA=
-Date:   Tue, 28 Nov 2023 19:12:33 +0000
-Message-ID: <SN6PR02MB415717E09C249A31F2A4E229D4BCA@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <20231121212016.1154303-1-mhklinux@outlook.com>
- <20231124100627.avltdnuhminwuzax@box>
-In-Reply-To: <20231124100627.avltdnuhminwuzax@box>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-tmn:  [J/wGVSpGYeRz3Rj6poBi8W9Icwyhmj64]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|DM3PR02MB10207:EE_
-x-ms-office365-filtering-correlation-id: 963872c1-4437-4ef8-e68d-08dbf045f9fe
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: LBwc96x5VDZSRmK7/vQXWkByGAbOAa3X0xbw8i2nPy3hvPGHIFouK/GxCbMxOHCmIsGAjOVs7yrGLY4NsQeYyJebqUFPJMOk9ooCj+bnMUSbAKfbR0PFzPd/+oSU3jFcfnImkuIWuhM/zOjDlbEViJfH9aDUQhaZxaimJFGB9pQogLEY9gjHWNs+lL1/byKHnFsRJ8nAuiAk2L2yBg5LWrLGESHkGNv/YN1V7sUvY4RCSEJUTQjZXbUBFADmlcaBlrZwF3Qri73T8KKpAoZOPCzdrhkpdpdZEX3dE+h742ayXpF6h+wmd61rvz1FUiXIyrKfNrP7er0UNTU1ncH0GKtPwEcPdVpj4e8AVFLEN4pZwxKr8FIL0uCR8z7dHOSNohsXdBH1hqcBTrWGBgSOq4OI44BgAnHmCItNxkUBndCZMGaPYfS6qbsMnuHBzYDRHE3b2g0km7tiAFYhP0XTKtfaLP5SfMjd3mzXjYsvyLklh4CCBcEe8PGR5WFHEtAnXl9ylyV6aAGI/ITLAXtuVal4R1kW3xy6k4d6K6Qj8yG+4Gd3DDIwK/NFwi2JvfE4
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?NCjh7/kvtj3FIm3YxOaghhhUa1UnjjqBnsiTH3Y7Lk7EAM2nNAqNzOarG2Q3?=
- =?us-ascii?Q?Ie8l7MJvNeMsJIiOGgMTWvREBEiPJN89YYLPjdDGPyRsdaHvgTesn5Qd3Nd3?=
- =?us-ascii?Q?oNPS1PfjPMjjOADL82M2K4mWamQDNL9a/TznvohiwlDnE8ON3H0Pz41QFH65?=
- =?us-ascii?Q?SwnMlw6+25HulG5g573Z2kOyxGSqKSfLlCCKFU2o57DbmrDxjiFQsPcmQwTS?=
- =?us-ascii?Q?QFv2P99kcFxSVYedAKKfpNLNQWJGzBbxAbWNbzANCHHW3yCAf1koZ7/Jen14?=
- =?us-ascii?Q?i1TfYNc69TSCjDoWESGDISpHMEJcqDiDQ3+HK9IDn+ugkBA+qYAvqLGDXYSy?=
- =?us-ascii?Q?co9KMzO9DTFYEf5iJt2jt/i7Ux5z494E58gOe5s6v7QifxDtstBXiFhWYUX1?=
- =?us-ascii?Q?DTGZ68TxsCNV9bUcUwn2B5BZMhUmWp7F9oDL39KpARTfF1Pgdbbj2+5kgffY?=
- =?us-ascii?Q?b9wIwrdqEGLoXVIk6GIx9tKRTU2t1Yt0od2si5R/W6XkeEcqVhwE+TQ+s6OA?=
- =?us-ascii?Q?aNrADg37GHycCJuJVdxvz3Io/JaMv/7tXd8V66syh+HjSk/SKn1+7bXaA5rY?=
- =?us-ascii?Q?z1ECp8YWNhGQYtCjLChFx8zsGNtTwaLPoDeRf5vvOaYQR5QCD9FpW4bqU9kT?=
- =?us-ascii?Q?BAWtWSxgbr3CoHqEoSp8t4S/V+44YIF2zarFmLc6Yq6Xk4TzfWUaQxpxoMq0?=
- =?us-ascii?Q?g9SXM+a8JJ3vARnh/irZQrte3la9N4L8t9rVzw4+no8TRgm0QgHtIGHYgqgB?=
- =?us-ascii?Q?MbkDjrP8DBt8C+m0YRBHDeR0SyLpydnAWybPxYM7w52b/BzzUhhiX0CoFEfI?=
- =?us-ascii?Q?3Y4qHoM9ItV4B0dh+Idw4VQOuWd4o9V3QHNjua3RxH0Hlyn741wDHfScdUpD?=
- =?us-ascii?Q?F1f3yfEiO1T3SfF8MgsR+YaGYcAELXeswOnfqFePHZm1PetqMTPiWZVjeGRc?=
- =?us-ascii?Q?sfwPV1dTjq5C1Bpw/kIucVIVQjxnpLzrQ6BeMdAkjqZZ8DurIztDJbcLOZ9D?=
- =?us-ascii?Q?MZCLADz9eGTiOb1KfQ/3zW4N+erZ/wYaMHOxrulL+F1IVTqwJS8KPgs6+vyg?=
- =?us-ascii?Q?Ivp3rgKA5ph+HW/4SMVLD8c176cL8n8HQNO4P6PKR4ZBGE9GdbKlarceCJ6o?=
- =?us-ascii?Q?z/Y3DVo4X8FShA3ooTJKSHr3qZyerkUS3kblOZ8uyIgpSm4yWnEtgQSgMNPQ?=
- =?us-ascii?Q?qmdHjpJgvymdybJv?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 28 Nov 2023 14:14:06 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FEC61707
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 11:14:12 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40b367a0a12so9185e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 11:14:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701198851; x=1701803651; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1sQJEQO1lAXLUO7lOurIsnWNVY/yZ4K1PFUY114AiIg=;
+        b=UTiD8QGp5Xp1eKjwifmVLLr7sxUtHpUEziO2Noc8x1Sa37ahGCzd70cf9mCLlsriYR
+         HZD+A+nLCdmaZgOAt1LFCEdH0a3v4V5/yO8F5ej7JhiIyw4AJS+wSsRA1Eyw7RoNmHbS
+         kEprG0pVuaaVo2AYOfUQIfypUCGP+UKZoRh2lSKEO06R8raWtHeTgJvRQCCmC9b+p6T3
+         5id3cBOWTHJDTewr1W4SgT2jaTr6kna3vAlN3wTGnrJqg2ootaVfB373R/jCYusW81go
+         3ib+Dg2t2i5xOP546YGZTw9JSZrLDP9pCGbzhpZDIACDYc9IVXsiZyG/jjKB0ZMFjimt
+         nG+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701198851; x=1701803651;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1sQJEQO1lAXLUO7lOurIsnWNVY/yZ4K1PFUY114AiIg=;
+        b=hfWfVaHY8zPfMdqFAiIo7hAHRC0qryPGqKRQZnpNfZiEoqmYqCbAmHJTommXNXcpTL
+         FQsMGViPstQTfZVkgTBWiXIwe4Oobm3ugHt+lJCwFOTIisOJjs2Y54hZXb/fOTjbxcVN
+         pkeppK4Rlx7HFswYOlaRamP46X8MMlZUJIvBueEDY0tHTXUMeUV+o34FQ4R17hONEpai
+         SGakjy4pbm1rc9bjQoG7p0eWB3YnuqmvwVCvqnnrJosHW2LjzwSkIyDPFN1OkeFsniBm
+         RmsKj1wSqyQBSLMOszQKTmlET+10K7pDyk+nI4oyNfPGCSJnwOf49RCZ/EOd/Dyh09Hj
+         LUmQ==
+X-Gm-Message-State: AOJu0Yz7UNb2l8YKeczefRTPuaAiyJLZnKggo9iIviGclAK9KCA6pl6U
+        NWGz5AqDMmowMxy4FcE73/O6VSaKa1FRoin3SMD2mA==
+X-Google-Smtp-Source: AGHT+IEuzdV2LP9iggW4NsbrWUCJTF1PKKYjnA9pmxZjCHha1l8TTtDbQbnJcZcnV6cuVeQyFQfWgediT0WIcK14cYo=
+X-Received: by 2002:a05:600c:4f44:b0:408:3727:92c5 with SMTP id
+ m4-20020a05600c4f4400b00408372792c5mr852331wmq.2.1701198850618; Tue, 28 Nov
+ 2023 11:14:10 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 963872c1-4437-4ef8-e68d-08dbf045f9fe
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Nov 2023 19:12:34.0150
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PR02MB10207
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231128175441.721579-1-namhyung@kernel.org>
+In-Reply-To: <20231128175441.721579-1-namhyung@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 28 Nov 2023 11:13:55 -0800
+Message-ID: <CAP-5=fWfKqgT60TFRALw8vTDQT7VFV+0+eo1rFSSH3eVrjzPmA@mail.gmail.com>
+Subject: Re: [PATCHSET 0/8] perf annotate: Make annotation_options global (v1)
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kirill.shutemov@linux.intel.com <kirill.shutemov@linux.intel.com> Sen=
-t: Friday, November 24, 2023 2:06 AM
->=20
-> On Tue, Nov 21, 2023 at 01:20:08PM -0800, mhkelley58@gmail.com wrote:
-> > From: Michael Kelley <mhklinux@outlook.com>
-> >
-> > In a CoCo VM when a page transitions from encrypted to decrypted, or vi=
-ce
-> > versa, attributes in the PTE must be updated *and* the hypervisor must
-> > be notified of the change.
->=20
-> Strictly speaking it is not true for TDX. Conversion to shared can be
-> implicit: set shared bit and touch the page will do the conversion. MapGP=
-A
-> is optional.
+On Tue, Nov 28, 2023 at 9:54=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>
+> Hello,
+>
+> It used to have annotation_options for each command separately (for
+> example, perf report, annotate, and top), but we can make it global as
+> they never used together (with different settings).  This would save
+> some memory for each symbol when annotation is enabled.
+>
+> This code is available at 'perf/annotate-option-v1' branch in
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
+>
+> Thanks,
+> Namhyung
 
-Interesting.  Given that, is there a reason to use the explicit
-hypervisor callbacks in for private->shared transitions in=20
-__set_mem_enc_pgtable()?   It probably doesn't have direct relevance
-to this patch series, but I'm just trying to understand the tradeoffs of
-the implicit vs. explicit approach.  And am I correct that
-shared->private transitions must use the explicit approach?
+Thanks for doing this and I think it is progress. I think there is a
+common problem with having things be an option rather than say part of
+session. Having a global variable seems unfortunate but I'm not sure
+if in all locations we have easy access to the session. The rough
+structure with annotations as I understand it is:
 
->=20
-> > Because there are two separate steps, there's
-> > a window where the settings are inconsistent.  Normally the code that
-> > initiates the transition (via set_memory_decrypted() or
-> > set_memory_encrypted()) ensures that the memory is not being accessed
-> > during a transition, so the window of inconsistency is not a problem.
-> > However, the load_unaligned_zeropad() function can read arbitrary memor=
-y
-> > pages at arbitrary times, which could read a transitioning page during
-> > the window.  In such a case, CoCo VM specific exceptions are taken
-> > (depending on the CoCo architecture in use).  Current code in those
-> > exception handlers recovers and does "fixup" on the result returned by
-> > load_unaligned_zeropad().  Unfortunately, this exception handling can't
-> > work in paravisor scenarios (TDX Paritioning and SEV-SNP in vTOM mode)
-> > if the exceptions are routed to the paravisor.  The paravisor can't
-> > do load_unaligned_zeropad() fixup, so the exceptions would need to
-> > be forwarded from the paravisor to the Linux guest, but there are
-> > no architectural specs for how to do that.
->=20
-> Hm. Can't we inject #PF (or #GP) into L2 if #VE/#VC handler in L1 sees
-> cross-page access to shared memory while no fixup entry for the page in
-> L1. It would give L2 chance to handle the situation in a transparent way.
->=20
-> Maybe I miss something, I donno.
+session has machines
+a machine has dsos
+a dso has symbols
+a symbol has an annotation
 
-I'm recounting what the Hyper-V paravisor folks say without knowing all the
-details. :-(   But it seems like any kind of forwarding scheme needs to be =
-a
-well-defined contract that would work for both TDX and SEV-SNP.   The
-paravisor in L1 might or might not be Linux-based, so the contract must be =
-OS
-independent.  And the L2 guest might or might not be Linux, so there's
-potential for some other kind of error to be confused with a Linux
-load_unaligned_zeropad() reference.
+Annotation is something of unfortunate abstraction as it covers things
+like an IPC per symbol (why hard code to just IPC?) and things like
+source files and line numbers.
 
-Maybe all that could be sorted out, but I come back to believing that it's
-better now and in the long run to just avoid all this complexity by decoupl=
-ing
-private-shared page transitions and Linux load_unaligned_zeropad().
-Unfortunately that decoupling hasn't been as simple as I first envisioned
-because of SEV-SNP PVALIDATE needing a virtual address.  But doing the
-decoupling only in the paravisor case still seems like the simpler approach=
-.
+A recent success story where we got rid of a configuration variable
+was by switching to lazy allocation with sorting by name for symbols
+within a dso. If we could have a lazy allocation model with
+annotations then maybe we can do away with large hammers like global
+options.
 
-Michael
+Thanks,
+Ian
 
->=20
+
+
+
+> Namhyung Kim (8):
+>   perf annotate: Introduce global annotation_options
+>   perf report: Convert to the global annotation_options
+>   perf top: Convert to the global annotation_options
+>   perf annotate: Use global annotation_options
+>   perf ui/browser/annotate: Use global annotation_options
+>   perf annotate: Ensure init/exit for global options
+>   perf annotate: Remove remaining usages of local annotation options
+>   perf annotate: Get rid of local annotation options
+>
+>  tools/perf/builtin-annotate.c     |  43 +++++----
+>  tools/perf/builtin-report.c       |  37 ++++----
+>  tools/perf/builtin-top.c          |  45 +++++-----
+>  tools/perf/ui/browsers/annotate.c |  85 ++++++++----------
+>  tools/perf/ui/browsers/hists.c    |  34 +++----
+>  tools/perf/ui/browsers/hists.h    |   2 -
+>  tools/perf/util/annotate.c        | 142 +++++++++++++++---------------
+>  tools/perf/util/annotate.h        |  38 ++++----
+>  tools/perf/util/block-info.c      |   6 +-
+>  tools/perf/util/block-info.h      |   3 +-
+>  tools/perf/util/hist.h            |  25 ++----
+>  tools/perf/util/top.h             |   1 -
+>  12 files changed, 206 insertions(+), 255 deletions(-)
+>
+>
+> base-commit: 757489991f7c08603395b85037a981c31719c92c
 > --
->   Kiryl Shutsemau / Kirill A. Shutemov
+> 2.43.0.rc1.413.gea7ed67945-goog
+>
