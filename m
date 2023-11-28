@@ -2,109 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CAA37FB4B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:46:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38DFF7FB4B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:46:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344212AbjK1Iqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 03:46:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55526 "EHLO
+        id S1344216AbjK1IqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 03:46:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234651AbjK1IqX (ORCPT
+        with ESMTP id S234655AbjK1Ipq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 03:46:23 -0500
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C9CD4C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:46:28 -0800 (PST)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AS8jhsP126477;
-        Tue, 28 Nov 2023 02:45:43 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701161143;
-        bh=JkFDeCqJmckzWs1ufj6K6gwsUL+dVWL+7I8UvRnW6Wo=;
-        h=From:To:CC:Subject:Date;
-        b=HQgtaL9DZaRQ/dkPUk2rri73x85S76ad2MaZxIhCsPvc2TU8gcSb+gP9qFSGdYjlN
-         8PNG9ivDVi0jgrmFsoboQ3qqG+mxW/5btvX/fBTNMzCQpGU8cDTOLGlwJkvj38ixjx
-         k89QwVPDRc49BKxclZiTbUpFAb7OMi9lUe9ZE8rc=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AS8jhco119336
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 28 Nov 2023 02:45:43 -0600
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 28
- Nov 2023 02:45:43 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 28 Nov 2023 02:45:43 -0600
-Received: from lelv0854.itg.ti.com (lelv0854.itg.ti.com [10.181.64.140])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AS8jhAa017859;
-        Tue, 28 Nov 2023 02:45:43 -0600
-Received: from localhost (danish-tpc.dhcp.ti.com [10.24.69.31])
-        by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 3AS8jg6G003404;
-        Tue, 28 Nov 2023 02:45:42 -0600
-From:   MD Danish Anwar <danishanwar@ti.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>
-CC:     Peng Fan <peng.fan@nxp.com>, Udit Kumar <u-kumar1@ti.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@collabora.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Tue, 28 Nov 2023 03:45:46 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91B5010E6
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:45:52 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CE0AC433C8;
+        Tue, 28 Nov 2023 08:45:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1701161152;
+        bh=040d+0nGCease9G+karywhOlIGG+XWg9r1vHEsxDPa4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=I3tIdr00meyMEdFHCTEhlekGmRQyoNN/XFtiA+BSQyZUc4KDPFZuzz7IdQWu+zSEi
+         DJoFqise9Yx7b/UOKFKLuBX+8fFOsXg/OiNM+MxMFu4NlkaC0aSIV8JI0OSnVZf0eV
+         lyFHR1qO4EsVYjWuoMZtTbiYGRJwGPhOqghQYrnI=
+Date:   Tue, 28 Nov 2023 08:45:49 +0000
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Hagar Gamal Halim Hemdan <hagarhem@amazon.com>
+Cc:     Maximilian Heyne <mheyne@amazon.de>,
+        Norbert Manthey <nmanthey@amazon.de>, stable@vger.kernel.org,
+        Bryan Tan <bryantan@vmware.com>,
+        Vishnu Dasa <vdasa@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
         Arnd Bergmann <arnd@arndb.de>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
-        <r-gunasekaran@ti.com>, Roger Quadros <rogerq@kernel.org>,
-        MD Danish Anwar <danishanwar@ti.com>
-Subject: [PATCH] arm64: defconfig: Enable TI_ICSSG_PRUETH
-Date:   Tue, 28 Nov 2023 14:15:37 +0530
-Message-ID: <20231128084537.3946895-1-danishanwar@ti.com>
-X-Mailer: git-send-email 2.34.1
+        Dmitry Torokhov <dtor@vmware.com>,
+        George Zhang <georgezhang@vmware.com>,
+        Andy king <acking@vmware.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] vmci: prevent speculation leaks by sanitizing event
+ in event_deliver()
+Message-ID: <2023112833-various-shaded-ce11@gregkh>
+References: <20231128083658.23960-1-hagarhem@amazon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231128083658.23960-1-hagarhem@amazon.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Programmable Real-time Unit and Industrial Communication Subsystem
-Gigabit (PRU_ICSSG) is a low-latency microcontroller subsystem in the TI
-K3 SoCs such as AM654x, AM64x. This subsystem is provided for the use
-cases like implementation of custom peripheral interfaces, offloading of
-tasks from the other processor cores of the SoC, etc.
+On Tue, Nov 28, 2023 at 08:36:58AM +0000, Hagar Gamal Halim Hemdan wrote:
+> Coverity spotted that event_msg is controlled by user-space,
+> event_msg->event_data.event is passed to event_deliver() and used
+> as an index without sanitization.
+> 
+> This change ensures that the event index is sanitized to mitigate any
+> possibility of speculative information leaks.
+> 
+> Fixes: 1d990201f9bb ("VMCI: event handling implementation.")
+> 
+> Signed-off-by: Hagar Gamal Halim Hemdan <hagarhem@amazon.com>
+> Cc: stable@vger.kernel.org
+> ---
+>  drivers/misc/vmw_vmci/vmci_event.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/misc/vmw_vmci/vmci_event.c b/drivers/misc/vmw_vmci/vmci_event.c
+> index 5d7ac07623c2..9a41ab65378d 100644
+> --- a/drivers/misc/vmw_vmci/vmci_event.c
+> +++ b/drivers/misc/vmw_vmci/vmci_event.c
+> @@ -9,6 +9,7 @@
+>  #include <linux/vmw_vmci_api.h>
+>  #include <linux/list.h>
+>  #include <linux/module.h>
+> +#include <linux/nospec.h>
+>  #include <linux/sched.h>
+>  #include <linux/slab.h>
+>  #include <linux/rculist.h>
+> @@ -86,9 +87,12 @@ static void event_deliver(struct vmci_event_msg *event_msg)
+>  {
+>  	struct vmci_subscription *cur;
+>  	struct list_head *subscriber_list;
+> +	u32 sanitized_event, max_vmci_event;
+>  
+>  	rcu_read_lock();
+> -	subscriber_list = &subscriber_array[event_msg->event_data.event];
+> +	max_vmci_event = ARRAY_SIZE(subscriber_array);
+> +	sanitized_event = array_index_nospec(event_msg->event_data.event, max_vmci_event);
+> +	subscriber_list = &subscriber_array[sanitized_event];
+>  	list_for_each_entry_rcu(cur, subscriber_list, node) {
+>  		cur->callback(cur->id, &event_msg->event_data,
+>  			      cur->callback_data);
+> -- 
+> 2.40.1
+> 
+> 
 
-Currently AM654x-EVM uses ICSSG driver.
+Hi,
 
-Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 5ad2b841aafc..145ee4858c50 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -368,6 +368,7 @@ CONFIG_SNI_NETSEC=y
- CONFIG_STMMAC_ETH=m
- CONFIG_DWMAC_TEGRA=m
- CONFIG_TI_K3_AM65_CPSW_NUSS=y
-+CONFIG_TI_ICSSG_PRUETH=m
- CONFIG_QCOM_IPA=m
- CONFIG_MESON_GXL_PHY=m
- CONFIG_AQUANTIA_PHY=y
--- 
-2.34.1
+You are receiving this message because of the following common error(s)
+as indicated below:
 
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/process/submitting-patches.rst for what
+  needs to be done here to properly describe this.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
