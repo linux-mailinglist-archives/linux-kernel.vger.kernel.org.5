@@ -2,160 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA697FB5E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:33:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 375257FB5E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:33:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343753AbjK1Jct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 04:32:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56690 "EHLO
+        id S232357AbjK1Jda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 04:33:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231316AbjK1Jcq (ORCPT
+        with ESMTP id S230256AbjK1Jd2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 04:32:46 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71804DE;
-        Tue, 28 Nov 2023 01:32:52 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 211EB2198D;
-        Tue, 28 Nov 2023 09:32:51 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ED9751343E;
-        Tue, 28 Nov 2023 09:32:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id ALBEMsKzZWWUYAAAD6G6ig
-        (envelope-from <mhocko@suse.com>); Tue, 28 Nov 2023 09:32:50 +0000
-Date:   Tue, 28 Nov 2023 10:32:50 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Dmitry Rokosov <ddrokosov@salutedevices.com>
-Cc:     rostedt@goodmis.org, mhiramat@kernel.org, hannes@cmpxchg.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, akpm@linux-foundation.org,
-        kernel@sberdevices.ru, rockosov@gmail.com, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] mm: memcg: introduce new event to trace
- shrink_memcg
-Message-ID: <ZWWzwhWnW1_iX0FP@tiehlicka>
-References: <20231123193937.11628-1-ddrokosov@salutedevices.com>
- <20231123193937.11628-3-ddrokosov@salutedevices.com>
- <ZWRifQgRR0570oDY@tiehlicka>
- <20231127113644.btg2xrcpjhq4cdgu@CAB-WSD-L081021>
- <ZWSQji7UDSYa1m5M@tiehlicka>
- <20231127161637.5eqxk7xjhhyr5tj4@CAB-WSD-L081021>
+        Tue, 28 Nov 2023 04:33:28 -0500
+Received: from mail-m17213.xmail.ntesmail.com (mail-m17213.xmail.ntesmail.com [45.195.17.213])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B79C492;
+        Tue, 28 Nov 2023 01:33:32 -0800 (PST)
+DKIM-Signature: a=rsa-sha256;
+        b=DcLVgxkd4hRXhqcF3LFgwFiUkuAPVte4HOriks3qtqli+asr6UfOwv7yHAFzmCNlUz7Bf3c5/Bmhnrj/qEbFnUGyFThMExb+W/upEMTqz1W3kNPPB6p7lrjOUYeOjkn1+C2+dgJdnfIgDi8o8qSP0fKbohNU2w8kwVZMuLUenaQ=;
+        s=default; c=relaxed/relaxed; d=rock-chips.com; v=1;
+        bh=W++6O1OO0uiQqmpaiWwyK1zsoZBp0YmOXKt4LJxyAwk=;
+        h=date:mime-version:subject:message-id:from;
+Received: from [172.16.12.141] (unknown [58.22.7.114])
+        by mail-m12762.qiye.163.com (Hmail) with ESMTPA id 7DFB25C03E3;
+        Tue, 28 Nov 2023 17:32:55 +0800 (CST)
+Message-ID: <f179e9ae-b2cd-4f6c-badc-4d76d8a3ba0d@rock-chips.com>
+Date:   Tue, 28 Nov 2023 17:32:55 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231127161637.5eqxk7xjhhyr5tj4@CAB-WSD-L081021>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [-4.00 / 50.00];
-         REPLY(-4.00)[]
-X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: 211EB2198D
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 10/12] drm/rockchip: vop2: Add support for rk3588
+Content-Language: en-US
+To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        Andy Yan <andyshrk@163.com>
+Cc:     hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
+        kever.yang@rock-chips.com, chris.obbard@collabora.com,
+        s.hauer@pengutronix.de
+References: <20231122125316.3454268-1-andyshrk@163.com>
+ <20231122125544.3454918-1-andyshrk@163.com> <4788319.uZKlY2gecq@diego>
+From:   Andy Yan <andy.yan@rock-chips.com>
+In-Reply-To: <4788319.uZKlY2gecq@diego>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGkpDTlZPHk1CQ0MZH0sdHh5VEwETFh
+        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk1PSU5JVUpLS1VKQl
+        kG
+X-HM-Tid: 0a8c15464494b229kuuu7dfb25c03e3
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NBA6Qjo4Mzw#Dh45Gi81ERw8
+        QjgwFAJVSlVKTEtKSk1IQkxNT0xNVTMWGhIXVRoVHwJVAhoVOwkUGBBWGBMSCwhVGBQWRVlXWRIL
+        WUFZTkNVSUlVTFVKSk9ZV1kIAVlBTUJPSjcG
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 27-11-23 19:16:37, Dmitry Rokosov wrote:
-> On Mon, Nov 27, 2023 at 01:50:22PM +0100, Michal Hocko wrote:
-> > On Mon 27-11-23 14:36:44, Dmitry Rokosov wrote:
-> > > On Mon, Nov 27, 2023 at 10:33:49AM +0100, Michal Hocko wrote:
-> > > > On Thu 23-11-23 22:39:37, Dmitry Rokosov wrote:
-> > > > > The shrink_memcg flow plays a crucial role in memcg reclamation.
-> > > > > Currently, it is not possible to trace this point from non-direct
-> > > > > reclaim paths. However, direct reclaim has its own tracepoint, so there
-> > > > > is no issue there. In certain cases, when debugging memcg pressure,
-> > > > > developers may need to identify all potential requests for memcg
-> > > > > reclamation including kswapd(). The patchset introduces the tracepoints
-> > > > > mm_vmscan_memcg_shrink_{begin|end}() to address this problem.
-> > > > > 
-> > > > > Example of output in the kswapd context (non-direct reclaim):
-> > > > >     kswapd0-39      [001] .....   240.356378: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> > > > >     kswapd0-39      [001] .....   240.356396: mm_vmscan_memcg_shrink_end: nr_reclaimed=0 memcg=16
-> > > > >     kswapd0-39      [001] .....   240.356420: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> > > > >     kswapd0-39      [001] .....   240.356454: mm_vmscan_memcg_shrink_end: nr_reclaimed=1 memcg=16
-> > > > >     kswapd0-39      [001] .....   240.356479: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> > > > >     kswapd0-39      [001] .....   240.356506: mm_vmscan_memcg_shrink_end: nr_reclaimed=4 memcg=16
-> > > > >     kswapd0-39      [001] .....   240.356525: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> > > > >     kswapd0-39      [001] .....   240.356593: mm_vmscan_memcg_shrink_end: nr_reclaimed=11 memcg=16
-> > > > >     kswapd0-39      [001] .....   240.356614: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> > > > >     kswapd0-39      [001] .....   240.356738: mm_vmscan_memcg_shrink_end: nr_reclaimed=25 memcg=16
-> > > > >     kswapd0-39      [001] .....   240.356790: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
-> > > > >     kswapd0-39      [001] .....   240.357125: mm_vmscan_memcg_shrink_end: nr_reclaimed=53 memcg=16
-> > > > 
-> > > > In the previous version I have asked why do we need this specific
-> > > > tracepoint when we already do have trace_mm_vmscan_lru_shrink_{in}active
-> > > > which already give you a very good insight. That includes the number of
-> > > > reclaimed pages but also more. I do see that we do not include memcg id
-> > > > of the reclaimed LRU, but that shouldn't be a big problem to add, no?
-> > > 
-> > > >From my point of view, memcg reclaim includes two points: LRU shrink and
-> > > slab shrink, as mentioned in the vmscan.c file.
-> > > 
-> > > 
-> > > static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
-> > > ...
-> > > 		reclaimed = sc->nr_reclaimed;
-> > > 		scanned = sc->nr_scanned;
-> > > 
-> > > 		shrink_lruvec(lruvec, sc);
-> > > 
-> > > 		shrink_slab(sc->gfp_mask, pgdat->node_id, memcg,
-> > > 			    sc->priority);
-> > > ...
-> > > 
-> > > So, both of these operations are important for understanding whether
-> > > memcg reclaiming was successful or not, as well as its effectiveness. I
-> > > believe it would be beneficial to summarize them, which is why I have
-> > > created new tracepoints.
-> > 
-> > This sounds like nice to have rather than must. Put it differently. If
-> > you make existing reclaim trace points memcg aware (print memcg id) then
-> > what prevents you from making analysis you need?
-> 
-> You are right, nothing prevents me from making this analysis... but...
-> 
-> This approach does have some disadvantages:
-> 1) It requires more changes to vmscan. At the very least, the memcg
-> object should be forwarded to all subfunctions for LRU and SLAB
-> shrinkers.
+Hi Heiko:
 
-We should have lruvec or memcg available. lruvec_memcg() could be used
-to get memcg from the lruvec. It might be more places to add the id but
-arguably this would improve them to identify where the memory has been
-scanned/reclaimed from.
- 
-> 2) With this approach, we will not have the ability to trace a situation
-> where the kernel is requesting reclaim for a specific memcg, but due to
-> limits issues, we are unable to run it.
+Thanks for you review.
 
-I do not follow. Could you be more specific please?
+On 11/27/23 23:29, Heiko Stübner wrote:
+> Hi Andy,
+>
+> Am Mittwoch, 22. November 2023, 13:55:44 CET schrieb Andy Yan:
+>> From: Andy Yan <andy.yan@rock-chips.com>
+>>
+>> VOP2 on rk3588:
+>>
+>> Four video ports:
+>> VP0 Max 4096x2160
+>> VP1 Max 4096x2160
+>> VP2 Max 4096x2160
+>> VP3 Max 2048x1080
+>>
+>> 4 4K Cluster windows with AFBC/line RGB and AFBC-only YUV support
+>> 4 4K Esmart windows with line RGB/YUV support
+>>
+>> Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+>>
+>> ---
+>>
+>> Changes in v2:
+>> - add rk3588_ prefix for functions which are rk3588 only
+>> - make some calculation as fixed value and keep calculation formula as
+>>    comment
+>> - check return value for some cru calculation functions.
+>> - check return value for syscon_regmap_lookup_by_phandle
+>> - add NV20/NV30 for esmart plane
+>>
+>>   drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 381 ++++++++++++++++++-
+>>   drivers/gpu/drm/rockchip/rockchip_drm_vop2.h |  66 ++++
+>>   drivers/gpu/drm/rockchip/rockchip_vop2_reg.c | 221 +++++++++++
+>>   3 files changed, 660 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+>> index 4bcc405bcf11..9eecbe1f71f9 100644
+>> --- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+>> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+>> @@ -271,9 +282,12 @@ static bool vop2_cluster_window(const struct vop2_win *win)
+>>   static void vop2_cfg_done(struct vop2_video_port *vp)
+>>   {
+>>   	struct vop2 *vop2 = vp->vop2;
+>> +	u32 val;
+>> +
+>> +	val = BIT(vp->id) | (BIT(vp->id) << 16) |
+>> +		RK3568_REG_CFG_DONE__GLB_CFG_DONE_EN;
+>>   
+>> -	regmap_set_bits(vop2->map, RK3568_REG_CFG_DONE,
+>> -			BIT(vp->id) | RK3568_REG_CFG_DONE__GLB_CFG_DONE_EN);
+>> +	regmap_set_bits(vop2->map, RK3568_REG_CFG_DONE, val);
+> I don't fully understand that code:
+> (1) the write mask is also present on the rk3568, so should this change
+>      be a separate patch with a fixes tag?
 
-> 3) LRU and SLAB shrinkers are too common places to handle memcg-related
-> tasks. Additionally, memcg can be disabled in the kernel configuration.
+The write mask of VP config done on rk356x is missing, that means
 
-Right. This could be all hidden in the tracing code. You simply do not
-print memcg id when the controller is disabled. Or just simply print 0.
-I do not really see any major problems with that.
+you can write the corresponding mask bit, but it has no effect.
 
-I would really prefer to focus on that direction rather than adding
-another begin/end tracepoint which overalaps with existing begin/end
-traces and provides much more limited information because I would bet we
-will have somebody complaining that mere nr_reclaimed is not sufficient.
--- 
-Michal Hocko
-SUSE Labs
+I once considered making it a separate patch,  I can split it as a separate patch if
+
+you like.
+
+> (2) RK3568_REG_CFG_DONE__GLB_CFG_DONE_EN does not contain the part for
+>      the write-mask
+>
+> 	#define RK3568_REG_CFG_DONE__GLB_CFG_DONE_EN     BIT(15)
+>
+>      why is this working then?
+
+
+Actually this bit has no write-mask bit. 🙂
+
+>
+>>   }
+>>   
+>>   static void vop2_win_disable(struct vop2_win *win)
+> [...]
+>
+>> @@ -1298,7 +1346,11 @@ static void vop2_plane_atomic_update(struct drm_plane *plane,
+>>   			vop2_win_write(win, VOP2_WIN_AFBC_ENABLE, 1);
+>>   		vop2_win_write(win, VOP2_WIN_AFBC_FORMAT, afbc_format);
+>>   		vop2_win_write(win, VOP2_WIN_AFBC_UV_SWAP, uv_swap);
+>> -		vop2_win_write(win, VOP2_WIN_AFBC_AUTO_GATING_EN, 0);
+>> +		if (vop2->data->soc_id == 3566 || vop2->data->soc_id == 3568)
+>> +			vop2_win_write(win, VOP2_WIN_AFBC_AUTO_GATING_EN, 0);
+>> +		else
+>> +			vop2_win_write(win, VOP2_WIN_AFBC_AUTO_GATING_EN, 1);
+>> +
+> I think this at least warrants a comment, what is happening here. Also,
+> can you already see how future vop2-users are behaving - aka are all new
+> socs in the "else" part of the conditional, or would a switch-case better
+> represent future socs?
+
+
+On rk356x, this bit is auto gating enable, but this function is not work well so
+
+we need to disable this function.
+
+On rk3588, and the following new soc(rk3528/rk3576), this bit is gating disable,
+
+we should write 1 to disable gating when enable a cluster window.
+
+
+Maybe i add some comments in next version ?
+
+
+
+>
+>>   		vop2_win_write(win, VOP2_WIN_AFBC_BLOCK_SPLIT_EN, 0);
+>>   		transform_offset = vop2_afbc_transform_offset(pstate, half_block_en);
+>>   		vop2_win_write(win, VOP2_WIN_AFBC_HDR_PTR, yrgb_mst);
+>
+>> @@ -1627,9 +1937,17 @@ static void vop2_crtc_atomic_enable(struct drm_crtc *crtc,
+>>   	drm_for_each_encoder_mask(encoder, crtc->dev, crtc_state->encoder_mask) {
+>>   		struct rockchip_encoder *rkencoder = to_rockchip_encoder(encoder);
+>>   
+>> -		rk3568_set_intf_mux(vp, rkencoder->crtc_endpoint_id, polflags);
+>> +		/*
+>> +		 * for drive a high resolution(4KP120, 8K), vop on rk3588/rk3576 need
+>> +		 * process multi(1/2/4/8) pixels per cycle, so the dclk feed by the
+>> +		 * system cru may be the 1/2 or 1/4 of mode->clock.
+>> +		 */
+>> +		clock = vop2_set_intf_mux(vp, rkencoder->crtc_endpoint_id, polflags);
+>>   	}
+>>   
+>> +	if (!clock)
+>> +		return;
+>> +
+> hmm, shouldn't the check for the validity of a mode happen before
+> atomic_enable is run? So this shouldn't error out in the middle of the
+> function?
+>
+>
+>>   	if (vcstate->output_mode == ROCKCHIP_OUT_MODE_AAAA &&
+>>   	    !(vp_data->feature & VOP_FEATURE_OUTPUT_10BIT))
+>>   		out_mode = ROCKCHIP_OUT_MODE_P888;
+>
+> Thanks
+> Heiko
+>
+>
+>
+> _______________________________________________
+> Linux-rockchip mailing list
+> Linux-rockchip@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-rockchip
