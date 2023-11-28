@@ -2,131 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CABC7FC9D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:47:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7403C7FC9E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:48:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346711AbjK1WrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 17:47:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52976 "EHLO
+        id S229727AbjK1WsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 17:48:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbjK1WrE (ORCPT
+        with ESMTP id S229543AbjK1WsX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 17:47:04 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5330819B0;
-        Tue, 28 Nov 2023 14:47:09 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1C1F11FB;
-        Tue, 28 Nov 2023 14:47:56 -0800 (PST)
-Received: from [10.57.71.132] (unknown [10.57.71.132])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C40BF3F6C4;
-        Tue, 28 Nov 2023 14:47:00 -0800 (PST)
-Message-ID: <8e1961c9-0359-4450-82d8-2b2fcb2c5557@arm.com>
-Date:   Tue, 28 Nov 2023 22:46:59 +0000
+        Tue, 28 Nov 2023 17:48:23 -0500
+Received: from mr85p00im-hyfv06011401.me.com (mr85p00im-hyfv06011401.me.com [17.58.23.191])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F8383
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 14:48:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=danm.net; s=sig1;
+        t=1701211709; bh=sqhOH7HDksvDaeNqmw8j4S6QM8peZMro746b6naa7vg=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version;
+        b=fNukShFfmOS+40vu5jj+975abPHCxKE2Y0UdYZ6Lhq4XF3BiHqutQX6FTiIZF9apP
+         OsYEbW8/2WNgKuuDvDhBsQEcBlAezs0W2HiHSGFT+02bOM+IG+eIOWCGZni2qlFCUW
+         DtX0iJ1PzKEgWwg2yY9igjN3bsB+EGWeOc079l/2pJStpRTmdl/WSzw8AWbddKM8nJ
+         gLhABa1o87aW/bm6GtWMy7DOaWxBYfk8t/AEqtah8cq6GIjn/vOEi+MHN3LihR+PsL
+         WJcsU8QUnnzLEHY+GSpLkE9MG9v8JwD4PIbGsbb65Ad8Ppyl/xTWy2fOq5HkBImsqT
+         1o50lyjrtLdfA==
+Received: from hitch.danm.net (mr38p00im-dlb-asmtp-mailmevip.me.com [17.57.152.18])
+        by mr85p00im-hyfv06011401.me.com (Postfix) with ESMTPSA id E42E8357AEC5;
+        Tue, 28 Nov 2023 22:48:25 +0000 (UTC)
+From:   Dan Moulding <dan@danm.net>
+To:     sam@gentoo.org
+Cc:     dan@danm.net, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        toralf.foerster@gmx.de
+Subject: Re: 6.5.13 regression: BUG: kernel NULL pointer dereference, address: 0000000000000020
+Date:   Tue, 28 Nov 2023 15:48:16 -0700
+Message-ID: <20231128224816.6563-1-dan@danm.net>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <87jzq1lflc.fsf@gentoo.org>
+References: <87jzq1lflc.fsf@gentoo.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 05/16] iommu/io-pgtable-arm-v7s: use page allocation
- function provided by iommu-pages.h
-Content-Language: en-GB
-To:     Pasha Tatashin <pasha.tatashin@soleen.com>,
-        akpm@linux-foundation.org, alex.williamson@redhat.com,
-        alim.akhtar@samsung.com, alyssa@rosenzweig.io,
-        asahi@lists.linux.dev, baolu.lu@linux.intel.com,
-        bhelgaas@google.com, cgroups@vger.kernel.org, corbet@lwn.net,
-        david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org,
-        heiko@sntech.de, iommu@lists.linux.dev, jasowang@redhat.com,
-        jernej.skrabec@gmail.com, jgg@ziepe.ca, jonathanh@nvidia.com,
-        joro@8bytes.org, kevin.tian@intel.com,
-        krzysztof.kozlowski@linaro.org, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
-        marcan@marcan.st, mhiramat@kernel.org, mst@redhat.com,
-        m.szyprowski@samsung.com, netdev@vger.kernel.org,
-        paulmck@kernel.org, rdunlap@infradead.org, samuel@sholland.org,
-        suravee.suthikulpanit@amd.com, sven@svenpeter.dev,
-        thierry.reding@gmail.com, tj@kernel.org, tomas.mudrunka@gmail.com,
-        vdumpa@nvidia.com, virtualization@lists.linux.dev, wens@csie.org,
-        will@kernel.org, yu-cheng.yu@intel.com
-References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
- <20231128204938.1453583-6-pasha.tatashin@soleen.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20231128204938.1453583-6-pasha.tatashin@soleen.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: BzPu9jSF4Hw21U6xu4xtvi1w9T--vBIs
+X-Proofpoint-ORIG-GUID: BzPu9jSF4Hw21U6xu4xtvi1w9T--vBIs
+X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
+ =?UTF-8?Q?2903e8d5c8f:6.0.138,18.0.572,17.0.605.474.0000000_definitions?=
+ =?UTF-8?Q?=3D2020-02-14=5F11:2020-02-14=5F02,2020-02-14=5F11,2020-01-23?=
+ =?UTF-8?Q?=5F02_signatures=3D0?=
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
+ mlxscore=0 suspectscore=0 malwarescore=0 mlxlogscore=338 adultscore=0
+ clxscore=1030 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2311280179
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-28 8:49 pm, Pasha Tatashin wrote:
-> Convert iommu/io-pgtable-arm-v7s.c to use the new page allocation functions
-> provided in iommu-pages.h.
-> 
-> Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-> ---
->   drivers/iommu/io-pgtable-arm-v7s.c | 9 ++++++---
->   1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/iommu/io-pgtable-arm-v7s.c b/drivers/iommu/io-pgtable-arm-v7s.c
-> index 75f244a3e12d..3d494ca1f671 100644
-> --- a/drivers/iommu/io-pgtable-arm-v7s.c
-> +++ b/drivers/iommu/io-pgtable-arm-v7s.c
-> @@ -34,6 +34,7 @@
->   #include <linux/types.h>
->   
->   #include <asm/barrier.h>
-> +#include "iommu-pages.h"
->   
->   /* Struct accessors */
->   #define io_pgtable_to_data(x)						\
-> @@ -255,7 +256,7 @@ static void *__arm_v7s_alloc_table(int lvl, gfp_t gfp,
->   		 GFP_KERNEL : ARM_V7S_TABLE_GFP_DMA;
->   
->   	if (lvl == 1)
-> -		table = (void *)__get_free_pages(gfp_l1 | __GFP_ZERO, get_order(size));
-> +		table = iommu_alloc_pages(gfp_l1, get_order(size));
->   	else if (lvl == 2)
->   		table = kmem_cache_zalloc(data->l2_tables, gfp);
+Thanks, Sam. Yes it does look like that's the same issue.
 
-Is it really meaningful to account the L1 table which is always 
-allocated upon initial creation, yet not the L2 tables which are 
-allocated in use?
+I applied that patch to v6.6.3 instead of reverting the change to the
+randomize_layout plugin and the problem also goes away with the patch
+applied.
 
-Thanks,
-Robin.
+In that thread with the patch, Gustavo does mention that many other
+zero-length arrays, besides this one in struct neighbor, were found in
+the kernel source. But a quick (and possibly imperfect) grepping seems
+to show that struct neighbor was the only one used with
+__randomize_layout. So, I *think* it might be the only one that could
+cause a problem with the recent change to the randomize_layout plugin.
 
-> @@ -283,6 +284,7 @@ static void *__arm_v7s_alloc_table(int lvl, gfp_t gfp,
->   	}
->   	if (lvl == 2)
->   		kmemleak_ignore(table);
-> +
->   	return table;
->   
->   out_unmap:
-> @@ -290,7 +292,7 @@ static void *__arm_v7s_alloc_table(int lvl, gfp_t gfp,
->   	dma_unmap_single(dev, dma, size, DMA_TO_DEVICE);
->   out_free:
->   	if (lvl == 1)
-> -		free_pages((unsigned long)table, get_order(size));
-> +		iommu_free_pages(table, get_order(size));
->   	else
->   		kmem_cache_free(data->l2_tables, table);
->   	return NULL;
-> @@ -306,8 +308,9 @@ static void __arm_v7s_free_table(void *table, int lvl,
->   	if (!cfg->coherent_walk)
->   		dma_unmap_single(dev, __arm_v7s_dma_addr(table), size,
->   				 DMA_TO_DEVICE);
-> +
->   	if (lvl == 1)
-> -		free_pages((unsigned long)table, get_order(size));
-> +		iommu_free_pages(table, get_order(size));
->   	else
->   		kmem_cache_free(data->l2_tables, table);
->   }
+-- Dan
