@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C39E7FC4E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 21:08:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA137FC4CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 21:05:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344555AbjK1UH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 15:07:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35744 "EHLO
+        id S229595AbjK1UFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 15:05:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjK1UHz (ORCPT
+        with ESMTP id S230358AbjK1UFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 15:07:55 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E46110F0;
-        Tue, 28 Nov 2023 12:08:01 -0800 (PST)
+        Tue, 28 Nov 2023 15:05:09 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 022391BCE;
+        Tue, 28 Nov 2023 12:05:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701202081; x=1732738081;
+  t=1701201908; x=1732737908;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=CyMweha2ZvuLisSoPmNJvwBvM8UVF+24ES7V+e13w7A=;
-  b=HGcnp9tV83iHVtaN4q3xBFp0xWEVUhCfIt65jQiQKYMnqYLsLBsWoHnP
-   +utQEqDPyVspjj5ttLpu5gQW7WdHIAL4x8SurKAMCA97rnfGJbMa4rSLm
-   B74VPX/fV4fBEgskWaVvAxn9qumO7tJad1A5GcTe25Z4OyRQc/BEVU0hQ
-   z1NM464wnJSNVU9ChrJB+Ke71cvKOipy3ezNJFylUCgOhkdGETRg8rNvE
-   rX89URAPImuobIdRzJ5zHbgCmx/GJBv0sLaj1+gy940VFseo7VTA3WOpU
-   Mr2ZNO752ImjTBdnNyWD31xTzSbNEKqC5Sn4cjJMhXRnT+U/KsUT4jko+
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="457346999"
+  bh=AdFjMuClohqBUYL/nDsewEobDAXp1hIEsDTJLpD8JyY=;
+  b=iVPOYKfE527c+MclXuHNLO+hUlodwmRGRwnlS5NVLJ1I97q4aRYcEVX9
+   k6ZaQQf8gjVM8X7JsQj4aXwe1FnFu32a/KLHCHBo+hFclkwygUPpHnUXP
+   4r1Sr/N/kDj8XCp1C28r7p13RFlc8aEsxgcNckX6CXhfp6aXvNqoCHRDG
+   vDtgkS+WpbRBJwYlnbQ7eoIheNfyAwBGw1qer//KR6oeMpVwb3W8ld8R+
+   E6pClUTpybbVE+/nAw1qvs5wOUEU0cujlSX/HDTb+e7TzeOuopdFMVTGF
+   R+8k4GIpCGbLZj4Fw/Me1/GZXN6pdVNqGrWabBrdkCEvACUu1d+Jh+39k
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="6218031"
 X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="457346999"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 12:06:38 -0800
+   d="scan'208";a="6218031"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 12:02:27 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="1100254115"
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="797687956"
 X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="1100254115"
+   d="scan'208";a="797687956"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga005.fm.intel.com with ESMTP; 28 Nov 2023 12:02:18 -0800
+  by orsmga008.jf.intel.com with ESMTP; 28 Nov 2023 12:02:18 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 4F6ADA96; Tue, 28 Nov 2023 22:01:58 +0200 (EET)
+        id 5E208A9A; Tue, 28 Nov 2023 22:01:58 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
@@ -75,68 +75,68 @@ Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
         Emil Renner Berthing <kernel@esmil.dk>,
         Hal Feng <hal.feng@starfivetech.com>
-Subject: [PATCH v3 09/22] pinctrl: nuvoton: Convert to use struct pingroup and PINCTRL_PINGROUP()
-Date:   Tue, 28 Nov 2023 21:56:58 +0200
-Message-ID: <20231128200155.438722-10-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v3 10/22] pinctrl: core: Add a convenient define PINCTRL_GROUP_DESC()
+Date:   Tue, 28 Nov 2023 21:56:59 +0200
+Message-ID: <20231128200155.438722-11-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20231128200155.438722-1-andriy.shevchenko@linux.intel.com>
 References: <20231128200155.438722-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pin control header provides struct pingroup and PINCTRL_PINGROUP() macro.
-Utilize them instead of open coded variants in the driver.
+Add PINCTRL_GROUP_DESC() macro for inline use.
 
-Reviewed-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/pinctrl/nuvoton/pinctrl-wpcm450.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/pinctrl/core.c | 5 +----
+ drivers/pinctrl/core.h | 9 +++++++++
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c b/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c
-index 0cff44b07b29..4589900244c7 100644
---- a/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c
-+++ b/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c
-@@ -474,9 +474,8 @@ enum {
- #undef WPCM450_GRP
+diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
+index d20e3aad923e..3f1fd50fbb10 100644
+--- a/drivers/pinctrl/core.c
++++ b/drivers/pinctrl/core.c
+@@ -660,10 +660,7 @@ int pinctrl_generic_add_group(struct pinctrl_dev *pctldev, const char *name,
+ 	if (!group)
+ 		return -ENOMEM;
+ 
+-	group->name = name;
+-	group->pins = pins;
+-	group->num_pins = num_pins;
+-	group->data = data;
++	*group = PINCTRL_GROUP_DESC(name, pins, num_pins, data);
+ 
+ 	error = radix_tree_insert(&pctldev->pin_group_tree, selector, group);
+ 	if (error)
+diff --git a/drivers/pinctrl/core.h b/drivers/pinctrl/core.h
+index 01ea1ce99fe8..276a631fd49c 100644
+--- a/drivers/pinctrl/core.h
++++ b/drivers/pinctrl/core.h
+@@ -208,6 +208,15 @@ struct group_desc {
+ 	void *data;
  };
  
--static struct group_desc wpcm450_groups[] = {
--#define WPCM450_GRP(x) { .name = #x, .pins = x ## _pins, \
--			.num_pins = ARRAY_SIZE(x ## _pins) }
-+static struct pingroup wpcm450_groups[] = {
-+#define WPCM450_GRP(x) PINCTRL_PINGROUP(#x, x ## _pins, ARRAY_SIZE(x ## _pins))
- 	WPCM450_GRPS
- #undef WPCM450_GRP
- };
-@@ -852,7 +851,7 @@ static int wpcm450_get_group_pins(struct pinctrl_dev *pctldev,
- 				  const unsigned int **pins,
- 				  unsigned int *npins)
- {
--	*npins = wpcm450_groups[selector].num_pins;
-+	*npins = wpcm450_groups[selector].npins;
- 	*pins  = wpcm450_groups[selector].pins;
++/* Convenience macro to define a generic pin group descriptor */
++#define PINCTRL_GROUP_DESC(_name, _pins, _num_pins, _data)	\
++(struct group_desc) {						\
++	.name = _name,						\
++	.pins = _pins,						\
++	.num_pins = _num_pins,					\
++	.data = _data,						\
++}
++
+ int pinctrl_generic_get_group_count(struct pinctrl_dev *pctldev);
  
- 	return 0;
-@@ -901,7 +900,7 @@ static int wpcm450_pinmux_set_mux(struct pinctrl_dev *pctldev,
- 	struct wpcm450_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
- 
- 	wpcm450_setfunc(pctrl->gcr_regmap, wpcm450_groups[group].pins,
--			wpcm450_groups[group].num_pins, function);
-+			wpcm450_groups[group].npins, function);
- 
- 	return 0;
- }
+ const char *pinctrl_generic_get_group_name(struct pinctrl_dev *pctldev,
 -- 
 2.43.0.rc1.1.gbec44491f096
 
