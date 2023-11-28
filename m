@@ -2,184 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB007FC2AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE057FC166
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345875AbjK1O62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 09:58:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42454 "EHLO
+        id S1345886AbjK1PAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 10:00:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345857AbjK1O61 (ORCPT
+        with ESMTP id S1345857AbjK1PAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 09:58:27 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDB5F127;
-        Tue, 28 Nov 2023 06:58:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701183514; x=1732719514;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=IemFHGu39HfTp3TydwzgSC43ZViUrrVPta7WzXfFrQU=;
-  b=G8m6nXRrWL75QWOqMsSiVH/WXn5VTTivWd0IE8fru45UkR8eVXIrOIrw
-   SZF3D7G6G0ewkmSfSL2b1mlGtEvX8QS3dnSRvOM6+a637QsncR0l1rf61
-   gdWP+vAY1CycDT4x30low09RtMaxAV5E0e3FXhspp7PGLkHJIgtncOJ+7
-   60TfanuJqzgKUnFZ9lp6zTsnRL/6wjMSc1qSQnTH85VEoBJoh1fXUMKC9
-   Z1UpkZZ6+a+r4ha1VOrPbLRa38oO16Z+mPaDsdxNnbQ61rIqyyb68v+GK
-   uY30vW53XS9FJH1HGsrIJ8XvNIyefEPYtMwkG2ka74a0KyVs4KAvyhLgX
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="11633611"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="11633611"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 06:58:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="744928202"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="744928202"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Nov 2023 06:58:33 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 28 Nov 2023 06:58:32 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 28 Nov 2023 06:58:31 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Tue, 28 Nov 2023 06:58:31 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Tue, 28 Nov 2023 06:58:31 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IqPi6cb8D8iJfgyYlcxydBXrf6hrXbbGIXy3+hituLa8SumabQr45d2zWxdAZoqdxuOPyQIO1aZMUoBCrVE9qeFH5834psMedfrn/WQ8lxGryj8uNMrlL/I40POcrW/SJd0LUsJq9QTbXO91LwU5YR1gq6cAcYyjC23SXhR4HrWzQCnyGSL3pa0d9QPKYuqaOtB+ZDLMfMQIMqqP/OU7eKS0ZbdxL5cmuJdus0rmqKnU+PLgiQlg/r/r8xRgIJjv2Q5vJWbR3n+iyEOYKlsXZSYITYGg2zIyezUI7quP7GptWyFcDGXUfHcTOrm2AeIF/K/xF7XMvn6sZabP5hDJrg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IemFHGu39HfTp3TydwzgSC43ZViUrrVPta7WzXfFrQU=;
- b=JS4bmV+KJvsHOJ2fHBOaw3Go2NKL/tpVk7UVabWgKWvPcWS5JKSsJjYEEyR+iIGvbv0PJ10KSgZt0iz+/Pq84jTq1c3YGcG1GCtHf6yA2OzrACIOtkm4chwQ1MnXzYWjguslVJoBfzTzWtCaj4IJwWmi3lZpI6na6a65lz4qWjN6PvASzbkCRx8s/bS8x32UYV5obtH67DTYM0TU+MxmhXJn/Ej/5WEhW1tdQVcjTs8JpRhtbrXJRS/FeJjULr7j+QYE0X4YvGuNdHE/cx2/xRerHXPn/Eink6pgI5oO1wRtj3mJLqyFv0Sc64Vc5GbCZq7DJS9R2wJBRBbhzswvxw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
- by PH7PR11MB6700.namprd11.prod.outlook.com (2603:10b6:510:1ae::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Tue, 28 Nov
- 2023 14:58:27 +0000
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::5260:13db:a6e:35e9]) by MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::5260:13db:a6e:35e9%6]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
- 14:58:27 +0000
-From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Yang, Weijiang" <weijiang.yang@intel.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Hansen, Dave" <dave.hansen@intel.com>
-CC:     "john.allen@amd.com" <john.allen@amd.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "Gao, Chao" <chao.gao@intel.com>,
-        "mlevitsk@redhat.com" <mlevitsk@redhat.com>
-Subject: Re: [PATCH v7 05/26] x86/fpu/xstate: Introduce fpu_guest_cfg for
- guest FPU configuration
-Thread-Topic: [PATCH v7 05/26] x86/fpu/xstate: Introduce fpu_guest_cfg for
- guest FPU configuration
-Thread-Index: AQHaHqwJcLbwxqusyUagEZmr+deVnLCP2VSA
-Date:   Tue, 28 Nov 2023 14:58:26 +0000
-Message-ID: <742a95cece1998673aa360be10036c82c0c535ec.camel@intel.com>
-References: <20231124055330.138870-1-weijiang.yang@intel.com>
-         <20231124055330.138870-6-weijiang.yang@intel.com>
-In-Reply-To: <20231124055330.138870-6-weijiang.yang@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|PH7PR11MB6700:EE_
-x-ms-office365-filtering-correlation-id: a9b382f8-77b9-4049-8d3b-08dbf02279b5
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: xEe7EM+V8oGUHUFPFoyNek7Bnh4QN9Vwcro+s2A1wrIGvo/ICEDKdR9EKYUF3CU54Iwzfogl/AOv1Sc8ScrCCF7eA63s/qQW0HqmS9O/Q4//AQ0kYsSA3/XJNYBRYl//4rEa/EgEBj7jSDLtjtUURaTOfRZrOpYaAgcaYkPQ5jxT6wlGCdoG0NeGFNib+62OzqmhSD33m198rWhyJNEohuu7BO7PUg0uhum5jTVqgeQw2gaQG82Dxh11b6ZZET6D0eZ94sRLC5X6TyrPfSK55bZdrcaelV83f2tUHF3w8MmSnDaEl4QV1rVJdpnqGQjhUaknyRAs1ybQ566hszkgjEsp1HqqNTr3PtnbBqZII9iF5eY4hyyQJDIcm0cfgbZfhYcoKRnv0ZTAZxxFL4Q1VMjJ1Tsklv59z9I7UP7TgBwVOTmv8MN8QNVjqiGxmIQ0DuKWxJoSxvWpb2u42i/phNTmMssXIsky/9HaYMN/umhIYZqGgpmTwqPYrVVzjjqfUKJToBW1laRMMiWP+BrRN08dVHTZXSTUyfpv6PkU5QhdWqbtuQHCzH1fNz3liXrCH8OyRmIj+q7S5UUxBekR0o0vp9BGU+s7/t/wi6LgPt0v18U0IRLpW+x9KX3ulcMn
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(230922051799003)(1800799012)(451199024)(186009)(38100700002)(36756003)(4001150100001)(38070700009)(122000001)(2906002)(4744005)(5660300002)(82960400001)(26005)(86362001)(66446008)(2616005)(6512007)(6506007)(71200400001)(8936002)(8676002)(4326008)(6486002)(508600001)(66556008)(66476007)(91956017)(110136005)(66946007)(76116006)(64756008)(54906003)(316002)(6636002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?d1hhOHhndXNsUzI4Z3ZvTklxb0hqemxXbjFqYWE0NmpJYkc2aGtiWEpWaWdZ?=
- =?utf-8?B?YzQxWndyZFVhaEFpV085d25VWVZiWWlwQWIwWjM3OEt3WmxkMGhLSzZvaCta?=
- =?utf-8?B?S0VRN3ExM1o3YU0rTHdLakpmOUhNK0pSSmFqbWRkeEs4UGxvVkIzdVZiV04v?=
- =?utf-8?B?Y0NnZDdOM2VOU1R6WWhBbWxNcUp3SXVlcEgvRE5qS0JxTGFnZVBDVExib1Bv?=
- =?utf-8?B?UUlSQjNacWtmbGhkcmNaMjNteGIzMXJFRk9mMldSUFdwbkxyRm9xRW1HbWVr?=
- =?utf-8?B?QWN6ZnAzZDNsZzJPQ0ZwcS9BTkVFYU1MOE05Yk9EY0dKR0ZGTGpIVGtjK0xI?=
- =?utf-8?B?UHYrcFB3WEpXWFpYWU5DdjhxMVh3QmRmT285TzBhTklSQ3FOMmtzZnkyamdj?=
- =?utf-8?B?Uks5dEJTS3ErT0M5eDZvT3NBU1hiaUZydVE3c3YzR2xsOGYrcmhRRlZKYlU2?=
- =?utf-8?B?Y2IzZXJFMDZiZndkdjdjMk5vNlhQRG12bzVhVDIyT1hMdHdUL3RKQm9ud0Er?=
- =?utf-8?B?eFk0UVYzb1pLY1VPNlJkbldOOWI0ZEI1ZmM1cmwxTjZFaC83Vlp2MEQzaENn?=
- =?utf-8?B?MS9tYktXRDUxVWY0dFJVUHBVcWpVNmNRcXBTQWkrU3MxZUZocWc2WEc4WEtP?=
- =?utf-8?B?ZFZ1enVZOUY5ZGJZRzVwV2lyNUdsUTBYa3hZRldGZEdpbzA0WUdSNWUyV0xT?=
- =?utf-8?B?NWZlcmQ0dDBpOVU4Sy9mSFFrRnY0UjI1R2o2VUlxOXpGLzhpL201cVFIV1Z4?=
- =?utf-8?B?M2dHbzJzMlFHVmVFVERJbWNuTkcvcy9WZTE2aW4yNER0UldmYm5vZzNBMGJn?=
- =?utf-8?B?OFd4dVEvTXptSGF2aFd3Y0NNVWNzNjk4ZXkwZHF2MndTMytMNkxxU0RBUjVH?=
- =?utf-8?B?WEIzWmJyVjIxNGxac29EYklWdHBCOGI1OUtETjRLakJsMzVhaU1LQjBiTThp?=
- =?utf-8?B?MUp6RWRsSG1zQ2VtZkVESzlwVzVEYk9vd0tNNmFtYkFuRnJRUjNXR2VCS21h?=
- =?utf-8?B?VGpadEQzUXU5UExrRGg0UjNzS0V4YUVkMlhqNVo1eDNkY1ZCLzYzRjZYdWRF?=
- =?utf-8?B?YWlmSzgwTVMvdFVlME1WUTF0UW1VN0dodUNRSWlaTktDSDVMejlqajhVbFlJ?=
- =?utf-8?B?NWZUc1pBQ3hoMy9pa2F0R2VLVnRORG9rK2lrSmVucHNsNm9KM2dYS2ljbzUz?=
- =?utf-8?B?dzNoVytlSmc0WmVka3N3UktGd3YwNno5NGVpNm1oa3IrOEN1Qis3WmdxR1JB?=
- =?utf-8?B?Y2pPOFM5UDBnTHdzRnI5ZVkyVUcwT3psSFRMeTNCTEEvU3hrTHkxTG1TazBa?=
- =?utf-8?B?YnRpVzFxYXR4aE9CN05ocmREQkROem5YVEVtemRHM3NaUVJIVVZ0ZEQvSVls?=
- =?utf-8?B?VWI4S2lZbDJHRklJaGdkaktuUHk3YTdOM3p0WG9iSXhKZnVVT01GQ2NKZDRl?=
- =?utf-8?B?WHgrVUlwa1ZvVmJUaWlLUFU4QjM4VklONzlGNUNqS1dUdmJlcS9GUWhrUEt6?=
- =?utf-8?B?Vi95aEY4S1pjbVBveHYvck5ObGxialFFN2g5aFdyejM0bnl4WSs2MG5mM2hh?=
- =?utf-8?B?c09qTE9CZU5HcW9TTWMzQmVVTGFEcGUzc0FUd1V6QktRWVNkYk92VjhaeHFO?=
- =?utf-8?B?K2c3WlJ0eFJnNkx1UnQ5Qzh6UDU1d29UWlJkcmdXUGxUQXFZcC8wNEJwMVRO?=
- =?utf-8?B?amlEaWtSVFNYYTlTdVNRcE11eURYS2ErcUJ6REd1QXh3OEZpSGxaeUhrSlRr?=
- =?utf-8?B?bmFCQjZXQnFobyt3N3Z0aEJ2aENONzIrWlBvWkZLdlVadjF6TlZzOHpRYUJZ?=
- =?utf-8?B?eDN4Vzc2amNuc0YzZXQxTHdqVGhIcEdXdTgyL2swcy9VWStLVmlLbTcxYTRt?=
- =?utf-8?B?UEQ0NExDc081bDBKUldsck9KUmVQRUNEWmtlbTVpK2hEMVhldk5NVGo5MG1Z?=
- =?utf-8?B?TmQrSEFBSDQzcjNrTDVGZU5nL3BSdTZLejRFWWsxRFRaR3krMzhvUUozU1ZK?=
- =?utf-8?B?OG9YNW5QNndhYTZ3b1pwa0pjUGlZUVZGYk9IZ3JTU0xZTGp1Q2FlTFVGSGwr?=
- =?utf-8?B?VDllZGxXQ3VIbG9BcUNpa2xtZGc3SndUaWxXZnZZTktUVDVZc1JLc2ZlMnU4?=
- =?utf-8?B?L0VVdEQ1aDU2c0UxRE14OXNsSUVMdDdwaklxR2htMDl5RTQ0a09SSmMrTUV6?=
- =?utf-8?Q?ffbEXPWXcE19zVrOxPGP4s0=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B2C958484015AB40853471AAD36EAB79@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Tue, 28 Nov 2023 10:00:15 -0500
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2476910C;
+        Tue, 28 Nov 2023 07:00:21 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SflrL4KYTz67TNp;
+        Tue, 28 Nov 2023 22:55:46 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+        by mail.maildlp.com (Postfix) with ESMTPS id 340931408FF;
+        Tue, 28 Nov 2023 23:00:19 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 28 Nov
+ 2023 15:00:18 +0000
+Date:   Tue, 28 Nov 2023 15:00:17 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC:     Gavin Shan <gshan@redhat.com>, <linux-pm@vger.kernel.org>,
+        <loongarch@lists.linux.dev>, <linux-acpi@vger.kernel.org>,
+        <linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
+        <x86@kernel.org>, <linux-csky@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-ia64@vger.kernel.org>,
+        <linux-parisc@vger.kernel.org>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        <jianyong.wu@arm.com>, <justin.he@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH RFC 10/22] drivers: base: Move cpu_dev_init() after
+ node_dev_init()
+Message-ID: <20231128150017.000069eb@Huawei.com>
+In-Reply-To: <20231128135536.00002ab9@Huawei.com>
+References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
+        <E1r0JLV-00CTxS-QB@rmk-PC.armlinux.org.uk>
+        <095c2d24-735b-4ce2-ba2e-9ec2164f2237@redhat.com>
+        <ZVHXk9JG7gUjtERt@shell.armlinux.org.uk>
+        <ZVywLPwhILp083Jk@shell.armlinux.org.uk>
+        <20231128135536.00002ab9@Huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a9b382f8-77b9-4049-8d3b-08dbf02279b5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Nov 2023 14:58:26.4461
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ywFK8Az+U4SzKrBJyj6d1tq7cwwzK41J9tzBJy3tu/E46AqTDec4IaH4QSyEqz1vfNr6QWJEksNTE1R5R92XCY+v1bUgnYwcvTboqyV+pp4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6700
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIzLTExLTI0IGF0IDAwOjUzIC0wNTAwLCBZYW5nIFdlaWppYW5nIHdyb3RlOg0K
-PiArwqDCoMKgwqDCoMKgwqAvKg0KPiArwqDCoMKgwqDCoMKgwqAgKiBTZXQgZ3Vlc3QncyBfX3Vz
-ZXJfc3RhdGVfc2l6ZSB0byBmcHVfdXNlcl9jZmcuZGVmYXVsdF9zaXplDQo+IHNvIHRoYXQNCj4g
-K8KgwqDCoMKgwqDCoMKgICogZXhpc3RpbmcgdUFQSXMgY2FuIHN0aWxsIHdvcmsuDQo+ICvCoMKg
-wqDCoMKgwqDCoCAqLw0KPiArwqDCoMKgwqDCoMKgwqBmcHUtPmd1ZXN0X3Blcm0uX191c2VyX3N0
-YXRlX3NpemUgPQ0KPiBmcHVfdXNlcl9jZmcuZGVmYXVsdF9zaXplOw0KDQpJdCBzZWVtcyBsaWtl
-IGFuIGFwcHJvcHJpYXRlIHZhbHVlLCBidXQgd2hlcmUgZG9lcyB0aGlzIGNvbWUgaW50byBwbGF5
-DQpleGFjdGx5IGZvciBndWVzdCBGUFVzPw0K
+On Tue, 28 Nov 2023 13:55:36 +0000
+Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+
+> On Tue, 21 Nov 2023 13:27:08 +0000
+> "Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+> 
+> > On Mon, Nov 13, 2023 at 08:00:19AM +0000, Russell King (Oracle) wrote:  
+> > > On Mon, Nov 13, 2023 at 10:58:46AM +1000, Gavin Shan wrote:    
+> > > > 
+> > > > 
+> > > > On 11/7/23 20:30, Russell King (Oracle) wrote:    
+> > > > > From: James Morse <james.morse@arm.com>
+> > > > > 
+> > > > > NUMA systems require the node descriptions to be ready before CPUs are
+> > > > > registered. This is so that the node symlinks can be created in sysfs.
+> > > > > 
+> > > > > Currently no NUMA platform uses GENERIC_CPU_DEVICES, meaning that CPUs
+> > > > > are registered by arch code, instead of cpu_dev_init().
+> > > > > 
+> > > > > Move cpu_dev_init() after node_dev_init() so that NUMA architectures
+> > > > > can use GENERIC_CPU_DEVICES.
+> > > > > 
+> > > > > Signed-off-by: James Morse <james.morse@arm.com>
+> > > > > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> > > > > ---
+> > > > > Note: Jonathan's comment still needs addressing - see
+> > > > >    https://lore.kernel.org/r/20230914121612.00006ac7@Huawei.com
+> > > > > ---
+> > > > >   drivers/base/init.c | 2 +-
+> > > > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > >     
+> > > > 
+> > > > With Jonathan's comments addressed:    
+> > > 
+> > > That needs James' input, which is why I made the note on the patch.    
+> > 
+> > I'm going to be posting the series without RFC soon, and it will be
+> > with Jonathan's comment unaddressed - because as I've said several
+> > times it needs James' input and we have sadly not yet received that.
+> > 
+> > Short of waiting until James can respond, I don't think there are
+> > any other alternatives.  
+> 
+> In the interests of expediency I'm fine with that.  (To be honest I'd
+> forgotten I even made that comment ;)
+>
+ 
+Given what I was looking for was a 'nice to have' extra bit of info in the
+patch description and I'm fine with the actual change even without that:
+
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+> Jonathan
+> 
+> > 
+> > I do hope we can get this queued up for v6.8 though.
+*fingers crossed* !
+> >   
+> 
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
