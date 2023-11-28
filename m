@@ -2,182 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D197FB822
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:39:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E207FB824
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:39:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344366AbjK1KjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 05:39:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50232 "EHLO
+        id S1344468AbjK1Kj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 05:39:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234946AbjK1KjA (ORCPT
+        with ESMTP id S234968AbjK1KjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 05:39:00 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C2E3268
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:26:28 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25D24C433C8;
-        Tue, 28 Nov 2023 10:26:24 +0000 (UTC)
-Message-ID: <cf444351-4305-450d-9b3a-a02a310543c7@xs4all.nl>
-Date:   Tue, 28 Nov 2023 11:26:23 +0100
+        Tue, 28 Nov 2023 05:39:04 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6580F35AC;
+        Tue, 28 Nov 2023 02:26:45 -0800 (PST)
+Received: from [100.122.216.38] (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1D0EF6607295;
+        Tue, 28 Nov 2023 10:26:43 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701167204;
+        bh=wnu068ECaNnR7zM2tCS6WGVU5g0Vyny4l5k0cqi5/Gk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=fPSIAFQe+6bLt14IZnT7Oq4e2qP9zCUUu1mEtQ5CevwcHsIFRBtsaLBWGMyrc8y90
+         evscUsbWNpKSG9kHvDOqeRl9iZUjmwzUgr9iKXjMG2EX0YcjrxnDZouGMEehWJe0Aa
+         61o7FxguyZkUx7b51F3pHeLokSiqjzszdNZrin3Abt2joXa4YXnuMFA5GJT0NKkNqH
+         IZ8T6bEuS6RlUSmFer/Jqkr6Pnv4f66UiMYWNj5Q9r+T3pn4abktqtXVXAgtmb798l
+         5VbFKYCLbmeyOioDfpKiiYgsKC8QrpP75gwPYKYjqts7Eu39fSJQAtwESJQtClZpxT
+         riuckDGEZN1qg==
+Message-ID: <995eb6c2-cc7f-4217-bc37-4ab1a32f36ee@collabora.com>
+Date:   Tue, 28 Nov 2023 11:26:40 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 16/55] media: qcom: venus: Stop abusing of
- min_buffers_needed field
-Content-Language: en-US, nl
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        matt.ranostay@konsulko.com
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, kernel@collabora.com,
-        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-        Vikash Garodia <quic_vgarodia@quicinc.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 07/55] media: imx8-isi: Stop abusing of min_buffers_needed
+ field
+Content-Language: en-US
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        hverkuil@xs4all.nl, mchehab@kernel.org, m.szyprowski@samsung.com,
+        matt.ranostay@konsulko.com, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
 References: <20231127165454.166373-1-benjamin.gaignard@collabora.com>
- <20231127165454.166373-17-benjamin.gaignard@collabora.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <20231127165454.166373-17-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+ <20231127165454.166373-8-benjamin.gaignard@collabora.com>
+ <20231127170700.GC31314@pendragon.ideasonboard.com>
+ <6fa1ec09-3e30-475e-9718-29d23586753e@collabora.com>
+ <CAAFQd5DCVTLpPoKSp_OA6fe_Hqt-oV7=AsCZWSmkJORvLSgUiw@mail.gmail.com>
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+In-Reply-To: <CAAFQd5DCVTLpPoKSp_OA6fe_Hqt-oV7=AsCZWSmkJORvLSgUiw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/11/2023 17:54, Benjamin Gaignard wrote:
-> 'min_buffers_needed' is suppose to be used to indicate the number
-> of buffers needed by DMA engine to start streaming.
-> venus driver doesn't use DMA engine and just want to specify
-> the minimum number of buffers to allocate when calling VIDIOC_REQBUFS.
-> That 'min_reqbufs_allocation' field purpose so use it.
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> CC: Stanimir Varbanov <stanimir.k.varbanov@gmail.com> (maintainer:QUALCOMM VENUS VIDEO ACCELERATOR DRIVER)
-> CC: Vikash Garodia <quic_vgarodia@quicinc.com> (maintainer:QUALCOMM VENUS VIDEO ACCELERATOR DRIVER)
-> CC: "Bryan O'Donoghue" <bryan.odonoghue@linaro.org> (reviewer:QUALCOMM VENUS VIDEO ACCELERATOR DRIVER)
-> CC: Andy Gross <agross@kernel.org> (maintainer:ARM/QUALCOMM SUPPORT)
-> CC: Bjorn Andersson <andersson@kernel.org> (maintainer:ARM/QUALCOMM SUPPORT)
-> CC: Konrad Dybcio <konrad.dybcio@linaro.org> (maintainer:ARM/QUALCOMM SUPPORT)
-> CC: linux-arm-msm@vger.kernel.org
-> ---
->  drivers/media/platform/qcom/venus/vdec.c | 4 ++--
->  drivers/media/platform/qcom/venus/venc.c | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-> index dbf305cec120..16b8d0dde10d 100644
-> --- a/drivers/media/platform/qcom/venus/vdec.c
-> +++ b/drivers/media/platform/qcom/venus/vdec.c
-> @@ -1641,7 +1641,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
->  	src_vq->drv_priv = inst;
->  	src_vq->buf_struct_size = sizeof(struct venus_buffer);
->  	src_vq->allow_zero_bytesused = 1;
-> -	src_vq->min_buffers_needed = 0;
-> +	src_vq->min_reqbufs_allocation = 0;
 
-Just drop this.
+Le 28/11/2023 à 10:35, Tomasz Figa a écrit :
+> On Tue, Nov 28, 2023 at 6:31 PM Benjamin Gaignard
+> <benjamin.gaignard@collabora.com> wrote:
+>>
+>> Le 27/11/2023 à 18:07, Laurent Pinchart a écrit :
+>>> Hi Benjamin,
+>>>
+>>> Thank you for the patch.
+>>>
+>>> On Mon, Nov 27, 2023 at 05:54:06PM +0100, Benjamin Gaignard wrote:
+>>>> 'min_buffers_needed' is suppose to be used to indicate the number
+>>>> of buffers needed by DMA engine to start streaming.
+>>>> imx8-isi driver doesn't use DMA engine and just want to specify
+>>> What do you mean, "doesn't use DMA engine" ? The ISI surely has DMA
+>>> engines :-)
+>> I have done assumption on drivers given if they use or dma_* functions.
+> I suspect the use of vb2_dma_sg_plane_desc() and
+> vb2_dma_contig_plane_dma_addr() may be more correlated to whether
+> there is a DMA involved or not. Usually V4L2 drivers don't really have
+> to deal with the DMA API explicitly, because the vb2 framework handles
+> most of the work.
 
->  	src_vq->dev = inst->core->dev;
->  	src_vq->lock = &inst->ctx_q_lock;
->  	ret = vb2_queue_init(src_vq);
-> @@ -1656,7 +1656,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
->  	dst_vq->drv_priv = inst;
->  	dst_vq->buf_struct_size = sizeof(struct venus_buffer);
->  	dst_vq->allow_zero_bytesused = 1;
-> -	dst_vq->min_buffers_needed = 0;
-> +	dst_vq->min_reqbufs_allocation = 0;
->  	dst_vq->dev = inst->core->dev;
->  	dst_vq->lock = &inst->ctx_q_lock;
->  	return vb2_queue_init(dst_vq);
-> diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-> index 44b13696cf82..e399d01c208c 100644
-> --- a/drivers/media/platform/qcom/venus/venc.c
-> +++ b/drivers/media/platform/qcom/venus/venc.c
-> @@ -1398,7 +1398,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
->  	src_vq->drv_priv = inst;
->  	src_vq->buf_struct_size = sizeof(struct venus_buffer);
->  	src_vq->allow_zero_bytesused = 1;
-> -	src_vq->min_buffers_needed = 1;
-> +	src_vq->min_reqbufs_allocation = 1;
-
-So for platform drivers like this it is going to be more difficult to
-determine which meaning min_buffers_needed had: is at least one queued
-buffer needed before you can start streaming, or is this for a minimum
-buffer allocation?
-
-In the case of m2m devices using the v4l2-mem2mem framework it is almost
-certainly the minimum buffer allocation since the m2m framework already
-checks that there are input and output buffers queued (__v4l2_m2m_try_queue).
-
-So just delete the src_vq->min_buffers_needed = 1; line, and there is
-no need to set min_reqbufs_allocation.
-
->  	src_vq->dev = inst->core->dev;
->  	src_vq->lock = &inst->ctx_q_lock;
->  	if (inst->core->res->hfi_version == HFI_VERSION_1XX)
-> @@ -1415,7 +1415,7 @@ static int m2m_queue_init(void *priv, struct vb2_queue *src_vq,
->  	dst_vq->drv_priv = inst;
->  	dst_vq->buf_struct_size = sizeof(struct venus_buffer);
->  	dst_vq->allow_zero_bytesused = 1;
-> -	dst_vq->min_buffers_needed = 1;
-> +	dst_vq->min_reqbufs_allocation = 1;
->  	dst_vq->dev = inst->core->dev;
->  	dst_vq->lock = &inst->ctx_q_lock;
->  	return vb2_queue_init(dst_vq);
-
-Ditto.
+Unfortunately isn't not true either, for example verisilicon driver use
+these function but doesn't need DMA engine.
+I haven't found yet a 100% criteria to decide if driver use or not DMA engine
+so I plan to fix case by case given maintainers remarks.
 
 Regards,
+Benjamin
 
-	Hans
+>
+> Best regards,
+> Tomasz
+>
+>> I have considers that all PCI drivers are using DMA engine and
+>> I don't know the design for each drivers so I hope to get this information
+>> from maintainers and fix that in v2.
+>> If imx8-isi driver needs a minimum number of buffers before start streaming
+>> I will do a v2 and use min_dma_buffers_needed instead.
+>>
+>> Regards,
+>> Benjamin
+>>
+>>>> the minimum number of buffers to allocate when calling VIDIOC_REQBUFS.
+>>>> That 'min_reqbufs_allocation' field purpose so use it.
+>>>>
+>>>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>>>> CC: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>>>> CC: Mauro Carvalho Chehab <mchehab@kernel.org>
+>>>> CC: Shawn Guo <shawnguo@kernel.org>
+>>>> CC: Sascha Hauer <s.hauer@pengutronix.de>
+>>>> CC: Pengutronix Kernel Team <kernel@pengutronix.de>
+>>>> CC: Fabio Estevam <festevam@gmail.com>
+>>>> CC: NXP Linux Team <linux-imx@nxp.com>
+>>>> ---
+>>>>    drivers/media/platform/nxp/imx8-isi/imx8-isi-video.c | 2 +-
+>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/media/platform/nxp/imx8-isi/imx8-isi-video.c b/drivers/media/platform/nxp/imx8-isi/imx8-isi-video.c
+>>>> index 49bca2b01cc6..81673ff9084b 100644
+>>>> --- a/drivers/media/platform/nxp/imx8-isi/imx8-isi-video.c
+>>>> +++ b/drivers/media/platform/nxp/imx8-isi/imx8-isi-video.c
+>>>> @@ -1453,7 +1453,7 @@ int mxc_isi_video_register(struct mxc_isi_pipe *pipe,
+>>>>       q->mem_ops = &vb2_dma_contig_memops;
+>>>>       q->buf_struct_size = sizeof(struct mxc_isi_buffer);
+>>>>       q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+>>>> -    q->min_buffers_needed = 2;
+>>>> +    q->min_reqbufs_allocation = 2;
+>>>>       q->lock = &video->lock;
+>>>>       q->dev = pipe->isi->dev;
+>>>>
