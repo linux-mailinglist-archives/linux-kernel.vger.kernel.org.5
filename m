@@ -2,75 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E12DF7FB396
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:05:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B8667FB39C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:06:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233871AbjK1IFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 03:05:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38502 "EHLO
+        id S1344001AbjK1IGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 03:06:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343994AbjK1IEs (ORCPT
+        with ESMTP id S1344040AbjK1IFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 03:04:48 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E9D1B6
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:04:52 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40b27726369so36030045e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:04:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1701158691; x=1701763491; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=llunhkM8sKXrafDQaQtl/MAyFYLs2dUG+zsrZHGyqOA=;
-        b=PrE3MAkPkGQcth7uVaMUssbZEHhpQknLEbWRZVyPUW/LT+seWNHo8Ox1JohwEXY1qP
-         R4EF+8QaGmNSOEzhfiP7ywLFi8++Mr/S1eL6p2Y4BinebiRPwRdvDKfUg5ABPUdrTJuf
-         85ZVmWxqVQ4zRVwVPrFJw8wuQ/LJuGDVNsBkryLqb3PkOPgu7e6NjBXhIu0hi/c4ul4m
-         APwfDK/yLoS0wElgR1SgQLjB/Jwct5XYTH5Gb//1nXeKYp3NZJR3ElYaBnQxbVvQY3Bl
-         ABfJSq5FUTxP7SGiQYl58FAu3Y7Hyeyrmt7wgPIBLHwhUibLsXHmAKBABUZY8pn2r5/l
-         5Mjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701158691; x=1701763491;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=llunhkM8sKXrafDQaQtl/MAyFYLs2dUG+zsrZHGyqOA=;
-        b=kzwUTxaji9CoOtBH0JviB9+l9656qtlnoxNZCFkUbFIi288O2FlyBZOWDrqsowZeoJ
-         VW8DP34tfqbON7HIb7Eks9Uf1BKXW9eAoCmUMpUf/9RzSP/IVEoZwQ0RZ7Y+v/GiFbJe
-         kDUwpuP9X5h4TKfSmW/TUFM/G3ncCx1r/snOH5rPeNfSKoIqcNyBKyLRWPjuXYFD1W2z
-         4LvCn8PDwShgCQeOlbK/WoddMDvFui/Oljq12pc6Y/8QncEX78mQAFcjtUgotV4IKHP6
-         8iE+xj4crD+zIn3TmaIyPQrOgtqmK0e3+ToXEZgS5VS12hw7GxQ0kERcnxLm4oywUlR9
-         nTJg==
-X-Gm-Message-State: AOJu0Yxk1u3TXR52gIFBD45orWpFxuQhd+n017+/1fexGC9LnBTeiPAh
-        umWFjdvaf/4caOIbNRdaPPEwwg==
-X-Google-Smtp-Source: AGHT+IGnCMgf0SdfdRgyacJnLuJ5KyPuGcHpPOquhV3N6OvasOIFBd4jOd1MCEmiwzmtXLhZkt/QWg==
-X-Received: by 2002:a05:600c:1f82:b0:408:364e:34a2 with SMTP id je2-20020a05600c1f8200b00408364e34a2mr6194992wmb.10.1701158691121;
-        Tue, 28 Nov 2023 00:04:51 -0800 (PST)
-Received: from claudiu-X670E-Pro-RS.. ([82.78.167.125])
-        by smtp.gmail.com with ESMTPSA id g18-20020a05600c4ed200b0040b4ccdcffbsm1127534wmq.2.2023.11.28.00.04.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 00:04:50 -0800 (PST)
-From:   Claudiu <claudiu.beznea@tuxon.dev>
-X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
-To:     s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, richardcochran@gmail.com,
-        p.zabel@pengutronix.de, yoshihiro.shimoda.uh@renesas.com,
-        renesas@sang-engineering.com, robh@kernel.org,
-        biju.das.jz@bp.renesas.com,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        mitsuhiro.kimura.kc@renesas.com, masaru.nagai.vx@renesas.com
-Cc:     netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/6] net: ravb: Keep reverse order of operations in ravb_remove()
-Date:   Tue, 28 Nov 2023 10:04:39 +0200
-Message-Id: <20231128080439.852467-7-claudiu.beznea.uj@bp.renesas.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231128080439.852467-1-claudiu.beznea.uj@bp.renesas.com>
-References: <20231128080439.852467-1-claudiu.beznea.uj@bp.renesas.com>
+        Tue, 28 Nov 2023 03:05:52 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 994B02697
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:05:29 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66B45C433C8;
+        Tue, 28 Nov 2023 08:05:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1701158729;
+        bh=0Sd6/InjMmJxbg/WRoT45JmnNSyw/cM2gU/plxlLlnI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ao6BfKKi7YES83Ny8zylvOjAjoiJj5W4xlyz/eWe85KivPIuytnW57Q55hTSC4b8c
+         kzfTY4UBr8bJ4G80m8V3tdRTArJn2ZhrX4DIALTciWeCmSquOmsBFZumbXBBP1wiOp
+         3uB72uKQE3l3VGMy29RzF5cAIOr4J9JWf3ca6Oy0=
+Date:   Tue, 28 Nov 2023 08:05:26 +0000
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Matthew Maurer <mmaurer@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Gary Guo <gary@garyguo.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-modules@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, Laura Abbott <laura@labbott.name>
+Subject: Re: [PATCH v2 0/5] MODVERSIONS + RUST Redux
+Message-ID: <2023112824-dispatch-wooing-39de@gregkh>
+References: <20231118025748.2778044-1-mmaurer@google.com>
+ <CAK7LNAQt8fy5+vSwpd1aXfzjzeZ5hiyW7EW9SW7pbG2eTJZAOA@mail.gmail.com>
+ <CAGSQo00hyCTVsqHtrzKBBPvuH38z5yRm_4jzdi00C0RV+8APwQ@mail.gmail.com>
+ <2023112314-tubby-eligibly-007a@gregkh>
+ <CAK7LNAT-OcaCi6tqPRgZxPXOV6u+YbaO_0RxtfmrVXPzdrio0Q@mail.gmail.com>
+ <2023112312-certified-substance-007c@gregkh>
+ <CAGSQo005hRiUZdeppCifDqG9zFDJRwahpBLE4x7-MyfJscn7tQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGSQo005hRiUZdeppCifDqG9zFDJRwahpBLE4x7-MyfJscn7tQ@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,146 +59,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+On Mon, Nov 27, 2023 at 11:27:07AM -0800, Matthew Maurer wrote:
+> > > >
+> > > > > With regards to future directions that likely won't work for loosening it:
+> > > > > Unfortunately, the .rmeta format itself is not stable, so I wouldn't want to
+> > > > > teach genksyms to open it up and split out the pieces for specific functions.
+> > > > > Extending genksyms to parse Rust would also not solve the situation -
+> > > > > layouts are allowed to differ across compiler versions or even (in rare
+> > > > > cases) seemingly unrelated code changes.
+> > > >
+> > > > What do you mean by "layout" here?  Yes, the crcs can be different
+> > > > across compiler versions and seemingly unrelated code changes (genksyms
+> > > > is VERY fragile) but that's ok, that's not what you are checking here.
+> > > > You want to know if the rust function signature changes or not from the
+> > > > last time you built the code, with the same compiler and options, that's
+> > > > all you are verifying.
+> What I mean by layout here is that if you write in Rust:
+> struct Foo {
+>   x: i32,
+>   y: i32,
+> }
+> it is not guaranteed to have the same layout across different compilations, even
+> within the same compiler. See
+> https://doc.rust-lang.org/reference/type-layout.html#the-rust-representation
 
-On RZ/G3S SMARC Carrier II board having RGMII connections b/w Ethernet
-MACs and PHYs it has been discovered that doing unbind/bind for ravb
-driver in a loop leads to wrong speed and duplex for Ethernet links and
-broken connectivity (the connectivity cannot be restored even with
-bringing interface down/up). Before doing unbind/bind the Ethernet
-interfaces were configured though systemd. The sh instructions used to
-do unbind/bind were:
+Then you are going to have big problems, sorry.
 
-$ cd /sys/bus/platform/drivers/ravb/
-$ while :; do echo 11c30000.ethernet > unbind ; \
-  echo 11c30000.ethernet > bind; done
+> Specifically, the compiler is allowed to arbitrarily insert padding,
+> reorder fields, etc.
+> on the same code as long as the overall alignment of the struct and individual
+> alignment of the fields remains correct and non-overlapping.
+> 
+> This means the compiler is *explicitly* allowed to, for example, permute x and y
+> as an optimization. In the above example this is unlikely, but if you
+> instead consider
+> struct Bar {
+>   x: i8,
+>   y: i64,
+>   z: i8,
+> }
+> It's easy to see why the compiler might decide to structure this as
+> y,x,z to reduce the
+> size of the struct. Those optimization decisions may be affected by
+> any other part of
+> the code, PGO, etc.
 
-It has been discovered that there is a race b/w IOCTLs initialized by
-systemd at the response of success binding and the
-"ravb_write(ndev, CCC_OPC_RESET, CCC)" call in ravb_remove() as
-follows:
+Then you all need to figure out some way to determine how the compiler
+layed out the structure after it compiled/optimized it and be able to
+compare it to previous builds (or just generate a crc based on the
+layout it chose.)
 
-1/ as a result of bind success the user space open/configures the
-   interfaces tough an IOCTL; the following stack trace has been
-   identified on RZ/G3S:
+> > > > > Future directions that might work for loosening it:
+> > > > > * Generating crcs from debuginfo + compiler + flags
+> > > > > * Adding a feature to the rust compiler to dump this information. This
+> > > > > is likely to
+> > > > >   get pushback because Rust's current stance is that there is no ability to load
+> > > > >   object code built against a different library.
+> > > >
+> > > > Why not parse the function signature like we do for C?
+> Because the function signature is insufficient to check the ABI, see above.
+> > > >
+> > > > > Would setting up Rust symbols so that they have a crc built out of .rmeta be
+> > > > > sufficient for you to consider this useful? If not, can you help me understand
+> > > > > what level of precision would be required?
+> > > >
+> > > > What exactly does .rmeta have to do with the function signature?  That's
+> > > > all you care about here.
+> The .rmeta file contains the decisions the compiler made about layout
+> in the crate
+> you're interfacing with. For example, the choice to encode Bar
+> with a yxz field order would be written into the .rmeta file.
 
-Call trace:
-dump_backtrace+0x9c/0x100
-show_stack+0x20/0x38
-dump_stack_lvl+0x48/0x60
-dump_stack+0x18/0x28
-ravb_open+0x70/0xa58
-__dev_open+0xf4/0x1e8
-__dev_change_flags+0x198/0x218
-dev_change_flags+0x2c/0x80
-devinet_ioctl+0x640/0x708
-inet_ioctl+0x1e4/0x200
-sock_do_ioctl+0x50/0x108
-sock_ioctl+0x240/0x358
-__arm64_sys_ioctl+0xb0/0x100
-invoke_syscall+0x50/0x128
-el0_svc_common.constprop.0+0xc8/0xf0
-do_el0_svc+0x24/0x38
-el0_svc+0x34/0xb8
-el0t_64_sync_handler+0xc0/0xc8
-el0t_64_sync+0x190/0x198
+Ok, then yes, can you parse the .rmeta file to get that information?
 
-2/ this call may execute concurrently with ravb_remove() as the
-   unbind/bind operation was executed in a loop
-3/ if the operation mode is changed to RESET (through
-   ravb_write(ndev, CCC_OPC_RESET, CCC) call in ravb_remove())
-   while the above ravb_open() is in progress it may lead to MAC
-   (or PHY, or MAC-PHY connection, the right point hasn't been identified
-   at the moment) to be broken, thus the Ethernet connectivity fails to
-   restore.
+> > > rmeta is generated per crate.
+> > >
+> > > CRC is computed per symbol.
+> > >
+> > > They have different granularity.
+> > > It is weird to refuse a module for incompatibility
+> > > of a symbol that it is not using at all.
+> >
+> > I agree, this should be on a per-symbol basis, so the Rust
+> > infrastructure in the kernel needs to be fixed up to support this
+> > properly, not just ignored like this patchset does.
+> I agree there is a divergence here, I tried to point it out so that it
+> wouldn't be
+> a surprise later. The .rmeta file itself (which is the only way we
+> could know that
+> the ABI actually matches, because layout decisions are in there) is an unstable
+> format, which is why I would be reluctant to try to parse it and find only the
+> relevant portions to hash. This isn't just a "technically unstable"
+> format, but one
+> in which the compiler essentially just serializes out relevant internal data
+> structures, so any parser for it will involve significant alterations
+> on compiler
+> updates, which doesn't seem like a good plan.
+> >
+> > thanks,
+> >
+> > greg k-h
+> Given the above additional information, would you be interested in a patchset
+> which either:
+> 
+> A. Computes the CRC off the Rust type signature, knowing the compiler is
+> allowed to change the ABI based on information not contained in the CRC.
 
-The simple fix for this is to move ravb_write(ndev, CCC_OPC_RESET, CCC))
-after unregister_netdev() to avoid resetting the controller while the
-netdev interface is still registered.
+No.
 
-To avoid future issues in ravb_remove(), the patch follows the proper order
-of operations in ravb_remove(): reverse order compared with ravb_probe().
-This avoids described races as the IOCTLs as well as unregister_netdev()
-(called now at the beginning of ravb_remove()) calls rtnl_lock() before
-continuing and IOCTLs check (though devinet_ioctl()) if device is still
-registered just after taking the lock:
+> B. Uses the CRC of the .rmeta file, knowing, as was pointed out, that this
+> effectively contains the ABI of every symbol in the compilation unit, as well
+> as inline functions and polymorphic functions.
 
-int devinet_ioctl(struct net *net, unsigned int cmd, struct ifreq *ifr)
-{
-	// ...
+No.
 
-        rtnl_lock();
+> If neither of these works, we likely can't turn on MODVERSIONS+RUST until
+> further work is done upstream in the compiler to export some of this data in
+> an at least semi-stable fashion.
 
-        ret = -ENODEV;
-        dev = __dev_get_by_name(net, ifr->ifr_name);
-        if (!dev)
-                goto done;
+Looks like you need something a bit more fine-grained, as pointed out
+above.  why not parse the structure/function information in the .rmeta
+file?  Is the format of that file not stable?
 
-	// ...
-done:
-        rtnl_unlock();
-out:
-        return ret;
-}
+thanks,
 
-Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
----
-
-Changes in v2:
-- fixed typos in commit description
-- collected Rb tag
-
-Changes since [1]:
-- s/ravb_dma_init/ravb_dmac_init in commit description
-- collected Rb tag
-
-[1] https://lore.kernel.org/all/20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com/
-
- drivers/net/ethernet/renesas/ravb_main.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-index 2396fab3f608..9178f6d60e74 100644
---- a/drivers/net/ethernet/renesas/ravb_main.c
-+++ b/drivers/net/ethernet/renesas/ravb_main.c
-@@ -2894,22 +2894,26 @@ static void ravb_remove(struct platform_device *pdev)
- 	struct ravb_private *priv = netdev_priv(ndev);
- 	const struct ravb_hw_info *info = priv->info;
- 
--	/* Stop PTP Clock driver */
--	if (info->ccc_gac)
--		ravb_ptp_stop(ndev);
--
--	clk_disable_unprepare(priv->gptp_clk);
--	clk_disable_unprepare(priv->refclk);
--
--	/* Set reset mode */
--	ravb_write(ndev, CCC_OPC_RESET, CCC);
- 	unregister_netdev(ndev);
- 	if (info->nc_queues)
- 		netif_napi_del(&priv->napi[RAVB_NC]);
- 	netif_napi_del(&priv->napi[RAVB_BE]);
-+
- 	ravb_mdio_release(priv);
-+
-+	/* Stop PTP Clock driver */
-+	if (info->ccc_gac)
-+		ravb_ptp_stop(ndev);
-+
- 	dma_free_coherent(ndev->dev.parent, priv->desc_bat_size, priv->desc_bat,
- 			  priv->desc_bat_dma);
-+
-+	/* Set reset mode */
-+	ravb_write(ndev, CCC_OPC_RESET, CCC);
-+
-+	clk_disable_unprepare(priv->gptp_clk);
-+	clk_disable_unprepare(priv->refclk);
-+
- 	pm_runtime_put_sync(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 	reset_control_assert(priv->rstc);
--- 
-2.39.2
-
+greg k-h
