@@ -2,47 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66E397FC861
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:52:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F537FC840
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376442AbjK1VJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 16:09:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35548 "EHLO
+        id S1346610AbjK1VNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 16:13:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376332AbjK1VIp (ORCPT
+        with ESMTP id S234966AbjK1VMw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 16:08:45 -0500
+        Tue, 28 Nov 2023 16:12:52 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06ACD1FD9
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:07:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED34DC433B7;
-        Tue, 28 Nov 2023 21:07:31 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F40F63856
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:07:42 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 003DCC433D9;
+        Tue, 28 Nov 2023 21:07:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701205653;
-        bh=wHte1u9QfLK7WDWnxNZkEMfVUm/Tuw6jcaA+BnmKbUk=;
+        s=k20201202; t=1701205655;
+        bh=y4rSQdulcviLUCuA0nBAkZ4p0g0tNhU4CwbYUgzx3e4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mUr34XZNvRGOJv79jZXCflSoECX+cwoLFS7fQec64AtQiMkoIEAycXoOyqidCGf3n
-         tqkab/MU2/t+fxwI3OJF5+/mXLs2+I/IdT1aHxlAeaB1A1WUHBiE6TjDLdnLS3wcH4
-         VsDWb4Gpus22YfZLOw+B+nj7KDl2DUO74n+lfrXj8kCfg0Fp5EACJ3fofdRYEMVVHh
-         MklhkyvP64fRZvgiSnI+fNraEo6fZwEoE5WEBZp/Feg3M0kPEaCRPbjrHHUuayAsG3
-         Ws73t/RNFSVH1Dm69IoHkT3E9Sfp01BWoDJVezarVfLqCgmG8F8eRzIpMUYU7GFf2K
-         iBrhfyIOFgPEw==
+        b=T6qLB193BOyNYHRcXoJR0Og0SuyAUQVIvzZlWYanNYGhoWUwmpciUYPJ+ZNo/JOVr
+         c4/9vUFedIJ0ba+YmBMnjnoGIvBkzbx42XcWya29oZzmaXqFEyMFC0JK4eiJ3oK59Q
+         8xoT6ERPxr0QfruMk8vWIkO6J2JP9Ye/Eg6hAZOsUUjHXB5H1f1J//9JXQEBR15H4v
+         v1K+WBEHbrqDZFtMAngueJY64+qO2CO7BGbKMzjJWJ/tFmxbanQIlhr2AsFkXYIVEZ
+         BabYDVVoAJYMUykUYg9gih46NyzYWufmov1N/JdY+hFValtFvAF2j8+6hKf9S9YQJZ
+         I/Fuxw3tLQTEg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Lech Perczak <lech.perczak@gmail.com>,
-        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 36/40] net: usb: qmi_wwan: claim interface 4 for ZTE MF290
-Date:   Tue, 28 Nov 2023 16:05:42 -0500
-Message-ID: <20231128210615.875085-36-sashal@kernel.org>
+Cc:     Paulo Alcantara <pc@manguebit.com>,
+        Steve French <stfrench@microsoft.com>,
+        Sasha Levin <sashal@kernel.org>, sfrench@samba.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org
+Subject: [PATCH AUTOSEL 6.6 37/40] smb: client: implement ->query_reparse_point() for SMB1
+Date:   Tue, 28 Nov 2023 16:05:43 -0500
+Message-ID: <20231128210615.875085-37-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231128210615.875085-1-sashal@kernel.org>
 References: <20231128210615.875085-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.3
@@ -57,63 +54,448 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lech Perczak <lech.perczak@gmail.com>
+From: Paulo Alcantara <pc@manguebit.com>
 
-[ Upstream commit 99360d9620f09fb8bc15548d855011bbb198c680 ]
+[ Upstream commit ed3e0a149b58ea8cfd10cc4f7cefb39877ff07ac ]
 
-Interface 4 is used by for QMI interface in stock firmware of MF28D, the
-router which uses MF290 modem. Rebind it to qmi_wwan after freeing it up
-from option driver.
-The proper configuration is:
+Reparse points are not limited to symlinks, so implement
+->query_reparse_point() in order to handle different file types.
 
-Interface mapping is:
-0: QCDM, 1: (unknown), 2: AT (PCUI), 2: AT (Modem), 4: QMI
-
-T:  Bus=01 Lev=02 Prnt=02 Port=00 Cnt=01 Dev#=  4 Spd=480  MxCh= 0
-D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
-P:  Vendor=19d2 ProdID=0189 Rev= 0.00
-S:  Manufacturer=ZTE, Incorporated
-S:  Product=ZTE LTE Technologies MSM
-C:* #Ifs= 5 Cfg#= 1 Atr=e0 MxPwr=500mA
-I:* If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=4ms
-I:* If#= 1 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=4ms
-I:* If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-E:  Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=4ms
-I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
-E:  Ad=84(I) Atr=03(Int.) MxPS=  64 Ivl=2ms
-E:  Ad=85(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=4ms
-I:* If#= 4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=qmi_wwan
-E:  Ad=86(I) Atr=03(Int.) MxPS=  64 Ivl=2ms
-E:  Ad=87(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=4ms
-
-Cc: Bjørn Mork <bjorn@mork.no>
-Signed-off-by: Lech Perczak <lech.perczak@gmail.com>
-Link: https://lore.kernel.org/r/20231117231918.100278-3-lech.perczak@gmail.com
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: Paulo Alcantara (SUSE) <pc@manguebit.com>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/qmi_wwan.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/smb/client/cifspdu.h   |   2 +-
+ fs/smb/client/cifsproto.h |   9 ++
+ fs/smb/client/cifssmb.c   | 193 +++++++++++++++-----------------------
+ fs/smb/client/smb1ops.c   |  49 ++--------
+ fs/smb/client/smb2ops.c   |  35 ++++---
+ 5 files changed, 113 insertions(+), 175 deletions(-)
 
-diff --git a/drivers/net/usb/qmi_wwan.c b/drivers/net/usb/qmi_wwan.c
-index 344af3c5c8366..e2e181378f412 100644
---- a/drivers/net/usb/qmi_wwan.c
-+++ b/drivers/net/usb/qmi_wwan.c
-@@ -1289,6 +1289,7 @@ static const struct usb_device_id products[] = {
- 	{QMI_FIXED_INTF(0x19d2, 0x0168, 4)},
- 	{QMI_FIXED_INTF(0x19d2, 0x0176, 3)},
- 	{QMI_FIXED_INTF(0x19d2, 0x0178, 3)},
-+	{QMI_FIXED_INTF(0x19d2, 0x0189, 4)},    /* ZTE MF290 */
- 	{QMI_FIXED_INTF(0x19d2, 0x0191, 4)},	/* ZTE EuFi890 */
- 	{QMI_FIXED_INTF(0x19d2, 0x0199, 1)},	/* ZTE MF820S */
- 	{QMI_FIXED_INTF(0x19d2, 0x0200, 1)},
+diff --git a/fs/smb/client/cifspdu.h b/fs/smb/client/cifspdu.h
+index e17222fec9d29..efaf22c42ed00 100644
+--- a/fs/smb/client/cifspdu.h
++++ b/fs/smb/client/cifspdu.h
+@@ -1356,7 +1356,7 @@ typedef struct smb_com_transaction_ioctl_rsp {
+ 	__le32 DataDisplacement;
+ 	__u8 SetupCount;	/* 1 */
+ 	__le16 ReturnedDataLen;
+-	__u16 ByteCount;
++	__le16 ByteCount;
+ } __attribute__((packed)) TRANSACT_IOCTL_RSP;
+ 
+ #define CIFS_ACL_OWNER 1
+diff --git a/fs/smb/client/cifsproto.h b/fs/smb/client/cifsproto.h
+index 0c37eefa18a57..a51b4308da9d7 100644
+--- a/fs/smb/client/cifsproto.h
++++ b/fs/smb/client/cifsproto.h
+@@ -457,6 +457,12 @@ extern int CIFSSMBUnixQuerySymLink(const unsigned int xid,
+ 			struct cifs_tcon *tcon,
+ 			const unsigned char *searchName, char **syminfo,
+ 			const struct nls_table *nls_codepage, int remap);
++extern int cifs_query_reparse_point(const unsigned int xid,
++				    struct cifs_tcon *tcon,
++				    struct cifs_sb_info *cifs_sb,
++				    const char *full_path,
++				    u32 *tag, struct kvec *rsp,
++				    int *rsp_buftype);
+ extern int CIFSSMBQuerySymLink(const unsigned int xid, struct cifs_tcon *tcon,
+ 			       __u16 fid, char **symlinkinfo,
+ 			       const struct nls_table *nls_codepage);
+@@ -656,6 +662,9 @@ void cifs_put_tcp_super(struct super_block *sb);
+ int cifs_update_super_prepath(struct cifs_sb_info *cifs_sb, char *prefix);
+ char *extract_hostname(const char *unc);
+ char *extract_sharename(const char *unc);
++int parse_reparse_point(struct reparse_data_buffer *buf,
++			u32 plen, struct cifs_sb_info *cifs_sb,
++			bool unicode, char **target_path);
+ 
+ #ifdef CONFIG_CIFS_DFS_UPCALL
+ static inline int get_dfs_path(const unsigned int xid, struct cifs_ses *ses,
+diff --git a/fs/smb/client/cifssmb.c b/fs/smb/client/cifssmb.c
+index 25503f1a4fd21..bad91ba6c3a9c 100644
+--- a/fs/smb/client/cifssmb.c
++++ b/fs/smb/client/cifssmb.c
+@@ -2690,136 +2690,97 @@ CIFSSMBUnixQuerySymLink(const unsigned int xid, struct cifs_tcon *tcon,
+ 	return rc;
+ }
+ 
+-/*
+- *	Recent Windows versions now create symlinks more frequently
+- *	and they use the "reparse point" mechanism below.  We can of course
+- *	do symlinks nicely to Samba and other servers which support the
+- *	CIFS Unix Extensions and we can also do SFU symlinks and "client only"
+- *	"MF" symlinks optionally, but for recent Windows we really need to
+- *	reenable the code below and fix the cifs_symlink callers to handle this.
+- *	In the interim this code has been moved to its own config option so
+- *	it is not compiled in by default until callers fixed up and more tested.
+- */
+-int
+-CIFSSMBQuerySymLink(const unsigned int xid, struct cifs_tcon *tcon,
+-		    __u16 fid, char **symlinkinfo,
+-		    const struct nls_table *nls_codepage)
++int cifs_query_reparse_point(const unsigned int xid,
++			     struct cifs_tcon *tcon,
++			     struct cifs_sb_info *cifs_sb,
++			     const char *full_path,
++			     u32 *tag, struct kvec *rsp,
++			     int *rsp_buftype)
+ {
+-	int rc = 0;
+-	int bytes_returned;
+-	struct smb_com_transaction_ioctl_req *pSMB;
+-	struct smb_com_transaction_ioctl_rsp *pSMBr;
+-	bool is_unicode;
+-	unsigned int sub_len;
+-	char *sub_start;
+-	struct reparse_symlink_data *reparse_buf;
+-	struct reparse_posix_data *posix_buf;
++	struct cifs_open_parms oparms;
++	TRANSACT_IOCTL_REQ *io_req = NULL;
++	TRANSACT_IOCTL_RSP *io_rsp = NULL;
++	struct cifs_fid fid;
+ 	__u32 data_offset, data_count;
+-	char *end_of_smb;
++	__u8 *start, *end;
++	int io_rsp_len;
++	int oplock = 0;
++	int rc;
+ 
+-	cifs_dbg(FYI, "In Windows reparse style QueryLink for fid %u\n", fid);
+-	rc = smb_init(SMB_COM_NT_TRANSACT, 23, tcon, (void **) &pSMB,
+-		      (void **) &pSMBr);
++	cifs_tcon_dbg(FYI, "%s: path=%s\n", __func__, full_path);
++
++	if (cap_unix(tcon->ses))
++		return -EOPNOTSUPP;
++
++	oparms = (struct cifs_open_parms) {
++		.tcon = tcon,
++		.cifs_sb = cifs_sb,
++		.desired_access = FILE_READ_ATTRIBUTES,
++		.create_options = cifs_create_options(cifs_sb,
++						      OPEN_REPARSE_POINT),
++		.disposition = FILE_OPEN,
++		.path = full_path,
++		.fid = &fid,
++	};
++
++	rc = CIFS_open(xid, &oparms, &oplock, NULL);
+ 	if (rc)
+ 		return rc;
+ 
+-	pSMB->TotalParameterCount = 0 ;
+-	pSMB->TotalDataCount = 0;
+-	pSMB->MaxParameterCount = cpu_to_le32(2);
+-	/* BB find exact data count max from sess structure BB */
+-	pSMB->MaxDataCount = cpu_to_le32(CIFSMaxBufSize & 0xFFFFFF00);
+-	pSMB->MaxSetupCount = 4;
+-	pSMB->Reserved = 0;
+-	pSMB->ParameterOffset = 0;
+-	pSMB->DataCount = 0;
+-	pSMB->DataOffset = 0;
+-	pSMB->SetupCount = 4;
+-	pSMB->SubCommand = cpu_to_le16(NT_TRANSACT_IOCTL);
+-	pSMB->ParameterCount = pSMB->TotalParameterCount;
+-	pSMB->FunctionCode = cpu_to_le32(FSCTL_GET_REPARSE_POINT);
+-	pSMB->IsFsctl = 1; /* FSCTL */
+-	pSMB->IsRootFlag = 0;
+-	pSMB->Fid = fid; /* file handle always le */
+-	pSMB->ByteCount = 0;
++	rc = smb_init(SMB_COM_NT_TRANSACT, 23, tcon,
++		      (void **)&io_req, (void **)&io_rsp);
++	if (rc)
++		goto error;
+ 
+-	rc = SendReceive(xid, tcon->ses, (struct smb_hdr *) pSMB,
+-			 (struct smb_hdr *) pSMBr, &bytes_returned, 0);
+-	if (rc) {
+-		cifs_dbg(FYI, "Send error in QueryReparseLinkInfo = %d\n", rc);
+-		goto qreparse_out;
+-	}
++	io_req->TotalParameterCount = 0;
++	io_req->TotalDataCount = 0;
++	io_req->MaxParameterCount = cpu_to_le32(2);
++	/* BB find exact data count max from sess structure BB */
++	io_req->MaxDataCount = cpu_to_le32(CIFSMaxBufSize & 0xFFFFFF00);
++	io_req->MaxSetupCount = 4;
++	io_req->Reserved = 0;
++	io_req->ParameterOffset = 0;
++	io_req->DataCount = 0;
++	io_req->DataOffset = 0;
++	io_req->SetupCount = 4;
++	io_req->SubCommand = cpu_to_le16(NT_TRANSACT_IOCTL);
++	io_req->ParameterCount = io_req->TotalParameterCount;
++	io_req->FunctionCode = cpu_to_le32(FSCTL_GET_REPARSE_POINT);
++	io_req->IsFsctl = 1;
++	io_req->IsRootFlag = 0;
++	io_req->Fid = fid.netfid;
++	io_req->ByteCount = 0;
++
++	rc = SendReceive(xid, tcon->ses, (struct smb_hdr *)io_req,
++			 (struct smb_hdr *)io_rsp, &io_rsp_len, 0);
++	if (rc)
++		goto error;
+ 
+-	data_offset = le32_to_cpu(pSMBr->DataOffset);
+-	data_count = le32_to_cpu(pSMBr->DataCount);
+-	if (get_bcc(&pSMBr->hdr) < 2 || data_offset > 512) {
+-		/* BB also check enough total bytes returned */
+-		rc = -EIO;	/* bad smb */
+-		goto qreparse_out;
+-	}
+-	if (!data_count || (data_count > 2048)) {
++	data_offset = le32_to_cpu(io_rsp->DataOffset);
++	data_count = le32_to_cpu(io_rsp->DataCount);
++	if (get_bcc(&io_rsp->hdr) < 2 || data_offset > 512 ||
++	    !data_count || data_count > 2048) {
+ 		rc = -EIO;
+-		cifs_dbg(FYI, "Invalid return data count on get reparse info ioctl\n");
+-		goto qreparse_out;
+-	}
+-	end_of_smb = 2 + get_bcc(&pSMBr->hdr) + (char *)&pSMBr->ByteCount;
+-	reparse_buf = (struct reparse_symlink_data *)
+-				((char *)&pSMBr->hdr.Protocol + data_offset);
+-	if ((char *)reparse_buf >= end_of_smb) {
+-		rc = -EIO;
+-		goto qreparse_out;
+-	}
+-	if (reparse_buf->ReparseTag == cpu_to_le32(IO_REPARSE_TAG_NFS)) {
+-		cifs_dbg(FYI, "NFS style reparse tag\n");
+-		posix_buf =  (struct reparse_posix_data *)reparse_buf;
+-
+-		if (posix_buf->InodeType != cpu_to_le64(NFS_SPECFILE_LNK)) {
+-			cifs_dbg(FYI, "unsupported file type 0x%llx\n",
+-				 le64_to_cpu(posix_buf->InodeType));
+-			rc = -EOPNOTSUPP;
+-			goto qreparse_out;
+-		}
+-		is_unicode = true;
+-		sub_len = le16_to_cpu(reparse_buf->ReparseDataLength);
+-		if (posix_buf->PathBuffer + sub_len > end_of_smb) {
+-			cifs_dbg(FYI, "reparse buf beyond SMB\n");
+-			rc = -EIO;
+-			goto qreparse_out;
+-		}
+-		*symlinkinfo = cifs_strndup_from_utf16(posix_buf->PathBuffer,
+-				sub_len, is_unicode, nls_codepage);
+-		goto qreparse_out;
+-	} else if (reparse_buf->ReparseTag !=
+-			cpu_to_le32(IO_REPARSE_TAG_SYMLINK)) {
+-		rc = -EOPNOTSUPP;
+-		goto qreparse_out;
++		goto error;
+ 	}
+ 
+-	/* Reparse tag is NTFS symlink */
+-	sub_start = le16_to_cpu(reparse_buf->SubstituteNameOffset) +
+-				reparse_buf->PathBuffer;
+-	sub_len = le16_to_cpu(reparse_buf->SubstituteNameLength);
+-	if (sub_start + sub_len > end_of_smb) {
+-		cifs_dbg(FYI, "reparse buf beyond SMB\n");
++	end = 2 + get_bcc(&io_rsp->hdr) + (__u8 *)&io_rsp->ByteCount;
++	start = (__u8 *)&io_rsp->hdr.Protocol + data_offset;
++	if (start >= end) {
+ 		rc = -EIO;
+-		goto qreparse_out;
++		goto error;
+ 	}
+-	if (pSMBr->hdr.Flags2 & SMBFLG2_UNICODE)
+-		is_unicode = true;
+-	else
+-		is_unicode = false;
+-
+-	/* BB FIXME investigate remapping reserved chars here */
+-	*symlinkinfo = cifs_strndup_from_utf16(sub_start, sub_len, is_unicode,
+-					       nls_codepage);
+-	if (!*symlinkinfo)
+-		rc = -ENOMEM;
+-qreparse_out:
+-	cifs_buf_release(pSMB);
+ 
+-	/*
+-	 * Note: On -EAGAIN error only caller can retry on handle based calls
+-	 * since file handle passed in no longer valid.
+-	 */
++	*tag = le32_to_cpu(((struct reparse_data_buffer *)start)->ReparseTag);
++	rsp->iov_base = io_rsp;
++	rsp->iov_len = io_rsp_len;
++	*rsp_buftype = CIFS_LARGE_BUFFER;
++	CIFSSMBClose(xid, tcon, fid.netfid);
++	return 0;
++
++error:
++	cifs_buf_release(io_req);
++	CIFSSMBClose(xid, tcon, fid.netfid);
+ 	return rc;
+ }
+ 
+diff --git a/fs/smb/client/smb1ops.c b/fs/smb/client/smb1ops.c
+index 9bf8735cdd1e8..6b4d8effa79df 100644
+--- a/fs/smb/client/smb1ops.c
++++ b/fs/smb/client/smb1ops.c
+@@ -979,18 +979,13 @@ static int cifs_query_symlink(const unsigned int xid,
+ 			      char **target_path,
+ 			      struct kvec *rsp_iov)
+ {
++	struct reparse_data_buffer *buf;
++	TRANSACT_IOCTL_RSP *io = rsp_iov->iov_base;
++	bool unicode = !!(io->hdr.Flags2 & SMBFLG2_UNICODE);
++	u32 plen = le16_to_cpu(io->ByteCount);
+ 	int rc;
+-	int oplock = 0;
+-	bool is_reparse_point = !!rsp_iov;
+-	struct cifs_fid fid;
+-	struct cifs_open_parms oparms;
+ 
+-	cifs_dbg(FYI, "%s: path: %s\n", __func__, full_path);
+-
+-	if (is_reparse_point) {
+-		cifs_dbg(VFS, "reparse points not handled for SMB1 symlinks\n");
+-		return -EOPNOTSUPP;
+-	}
++	cifs_tcon_dbg(FYI, "%s: path=%s\n", __func__, full_path);
+ 
+ 	/* Check for unix extensions */
+ 	if (cap_unix(tcon->ses)) {
+@@ -1001,37 +996,12 @@ static int cifs_query_symlink(const unsigned int xid,
+ 			rc = cifs_unix_dfs_readlink(xid, tcon, full_path,
+ 						    target_path,
+ 						    cifs_sb->local_nls);
+-
+-		goto out;
++		return rc;
+ 	}
+ 
+-	oparms = (struct cifs_open_parms) {
+-		.tcon = tcon,
+-		.cifs_sb = cifs_sb,
+-		.desired_access = FILE_READ_ATTRIBUTES,
+-		.create_options = cifs_create_options(cifs_sb,
+-						      OPEN_REPARSE_POINT),
+-		.disposition = FILE_OPEN,
+-		.path = full_path,
+-		.fid = &fid,
+-	};
+-
+-	rc = CIFS_open(xid, &oparms, &oplock, NULL);
+-	if (rc)
+-		goto out;
+-
+-	rc = CIFSSMBQuerySymLink(xid, tcon, fid.netfid, target_path,
+-				 cifs_sb->local_nls);
+-	if (rc)
+-		goto out_close;
+-
+-	convert_delimiter(*target_path, '/');
+-out_close:
+-	CIFSSMBClose(xid, tcon, fid.netfid);
+-out:
+-	if (!rc)
+-		cifs_dbg(FYI, "%s: target path: %s\n", __func__, *target_path);
+-	return rc;
++	buf = (struct reparse_data_buffer *)((__u8 *)&io->hdr.Protocol +
++					     le32_to_cpu(io->DataOffset));
++	return parse_reparse_point(buf, plen, cifs_sb, unicode, target_path);
+ }
+ 
+ static bool
+@@ -1214,6 +1184,7 @@ struct smb_version_operations smb1_operations = {
+ 	.is_path_accessible = cifs_is_path_accessible,
+ 	.can_echo = cifs_can_echo,
+ 	.query_path_info = cifs_query_path_info,
++	.query_reparse_point = cifs_query_reparse_point,
+ 	.query_file_info = cifs_query_file_info,
+ 	.get_srv_inum = cifs_get_srv_inum,
+ 	.set_path_size = CIFSSMBSetEOF,
+diff --git a/fs/smb/client/smb2ops.c b/fs/smb/client/smb2ops.c
+index 9aeecee6b91b3..abc0792698349 100644
+--- a/fs/smb/client/smb2ops.c
++++ b/fs/smb/client/smb2ops.c
+@@ -2886,27 +2886,26 @@ parse_reparse_posix(struct reparse_posix_data *symlink_buf,
+ 	return 0;
+ }
+ 
+-static int
+-parse_reparse_symlink(struct reparse_symlink_data_buffer *symlink_buf,
+-		      u32 plen, char **target_path,
+-		      struct cifs_sb_info *cifs_sb)
++static int parse_reparse_symlink(struct reparse_symlink_data_buffer *sym,
++				 u32 plen, bool unicode, char **target_path,
++				 struct cifs_sb_info *cifs_sb)
+ {
+ 	unsigned int sub_len;
+ 	unsigned int sub_offset;
+ 
+ 	/* We handle Symbolic Link reparse tag here. See: MS-FSCC 2.1.2.4 */
+ 
+-	sub_offset = le16_to_cpu(symlink_buf->SubstituteNameOffset);
+-	sub_len = le16_to_cpu(symlink_buf->SubstituteNameLength);
++	sub_offset = le16_to_cpu(sym->SubstituteNameOffset);
++	sub_len = le16_to_cpu(sym->SubstituteNameLength);
+ 	if (sub_offset + 20 > plen ||
+ 	    sub_offset + sub_len + 20 > plen) {
+ 		cifs_dbg(VFS, "srv returned malformed symlink buffer\n");
+ 		return -EIO;
+ 	}
+ 
+-	*target_path = cifs_strndup_from_utf16(
+-				symlink_buf->PathBuffer + sub_offset,
+-				sub_len, true, cifs_sb->local_nls);
++	*target_path = cifs_strndup_from_utf16(sym->PathBuffer + sub_offset,
++					       sub_len, unicode,
++					       cifs_sb->local_nls);
+ 	if (!(*target_path))
+ 		return -ENOMEM;
+ 
+@@ -2916,19 +2915,17 @@ parse_reparse_symlink(struct reparse_symlink_data_buffer *symlink_buf,
+ 	return 0;
+ }
+ 
+-static int
+-parse_reparse_point(struct reparse_data_buffer *buf,
+-		    u32 plen, char **target_path,
+-		    struct cifs_sb_info *cifs_sb)
++int parse_reparse_point(struct reparse_data_buffer *buf,
++			u32 plen, struct cifs_sb_info *cifs_sb,
++			bool unicode, char **target_path)
+ {
+-	if (plen < sizeof(struct reparse_data_buffer)) {
++	if (plen < sizeof(*buf)) {
+ 		cifs_dbg(VFS, "reparse buffer is too small. Must be at least 8 bytes but was %d\n",
+ 			 plen);
+ 		return -EIO;
+ 	}
+ 
+-	if (plen < le16_to_cpu(buf->ReparseDataLength) +
+-	    sizeof(struct reparse_data_buffer)) {
++	if (plen < le16_to_cpu(buf->ReparseDataLength) + sizeof(*buf)) {
+ 		cifs_dbg(VFS, "srv returned invalid reparse buf length: %d\n",
+ 			 plen);
+ 		return -EIO;
+@@ -2943,7 +2940,7 @@ parse_reparse_point(struct reparse_data_buffer *buf,
+ 	case IO_REPARSE_TAG_SYMLINK:
+ 		return parse_reparse_symlink(
+ 			(struct reparse_symlink_data_buffer *)buf,
+-			plen, target_path, cifs_sb);
++			plen, unicode, target_path, cifs_sb);
+ 	default:
+ 		cifs_dbg(VFS, "srv returned unknown symlink buffer tag:0x%08x\n",
+ 			 le32_to_cpu(buf->ReparseTag));
+@@ -2962,11 +2959,11 @@ static int smb2_query_symlink(const unsigned int xid,
+ 	struct smb2_ioctl_rsp *io = rsp_iov->iov_base;
+ 	u32 plen = le32_to_cpu(io->OutputCount);
+ 
+-	cifs_dbg(FYI, "%s: path: %s\n", __func__, full_path);
++	cifs_tcon_dbg(FYI, "%s: path: %s\n", __func__, full_path);
+ 
+ 	buf = (struct reparse_data_buffer *)((u8 *)io +
+ 					     le32_to_cpu(io->OutputOffset));
+-	return parse_reparse_point(buf, plen, target_path, cifs_sb);
++	return parse_reparse_point(buf, plen, cifs_sb, true, target_path);
+ }
+ 
+ static int smb2_query_reparse_point(const unsigned int xid,
 -- 
 2.42.0
 
