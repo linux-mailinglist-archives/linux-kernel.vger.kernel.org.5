@@ -2,90 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB247FBB54
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 14:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6356F7FBB58
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 14:22:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345153AbjK1NVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 08:21:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33536 "EHLO
+        id S1345111AbjK1NW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 08:22:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344566AbjK1NVC (ORCPT
+        with ESMTP id S1344875AbjK1NW2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 08:21:02 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A61DDA;
-        Tue, 28 Nov 2023 05:21:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701177668; x=1732713668;
-  h=from:to:cc:in-reply-to:references:subject:message-id:
-   date:mime-version:content-transfer-encoding;
-  bh=q8LFbcF8XIOorZjKnJKfcMWLygjGPUyZvF6azgdLJzc=;
-  b=gvo7FWXDxhAFc8tRzZ1Zz7FHWB3LP5XsBc94smGcmXvep0nmrq6N4jSQ
-   Cvqb77plH9SuqlimpEgknjaQFE5BNNXkY/+8rL7asCNWfpDtQGGOK9NT1
-   yQ2DS4K9l8ezz/558Lf8AyMsTIH/LjMi6w5IwUWUUZbpe6NBGSSoUaJfG
-   Ek0e3i/SSx5oBg3251m4tIitHCjMV74S9O9bLBKFlUKpkhx3i/biWoOZ9
-   fZDuSZs4VVxfhmoITYr09wkA0DVqslnD+Vnq934sSZHg4wW61Qw1zQo2l
-   pwFOOHOwzQsNiyNSU+8Qng4N3IIITdPgxvYn6S08fWy12J2IGByNFOvko
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="11618512"
-X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
-   d="scan'208";a="11618512"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 05:21:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
-   d="scan'208";a="16625071"
-Received: from mvafin-mobl2.ger.corp.intel.com (HELO localhost) ([10.252.43.98])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 05:21:06 -0800
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     hdegoede@redhat.com, "Luke D. Jones" <luke@ljones.dev>
-Cc:     corentin.chary@gmail.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231126230521.125708-1-luke@ljones.dev>
-References: <20231126230521.125708-1-luke@ljones.dev>
-Subject: Re: [PATCH v2 0/1] platform/x86: asus-wmi: disable USB0 hub on ROG
- Ally before suspend
-Message-Id: <170117767063.1996.14540015573395714093.b4-ty@linux.intel.com>
-Date:   Tue, 28 Nov 2023 15:21:10 +0200
+        Tue, 28 Nov 2023 08:22:28 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA25A0;
+        Tue, 28 Nov 2023 05:22:34 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1cfc34b6890so19769405ad.1;
+        Tue, 28 Nov 2023 05:22:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701177754; x=1701782554; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=30VypmY2CFZ8lvqagGC6jaet2OpETydP+u6D3TSu8fI=;
+        b=gS+2sAKa2JBYPVICquPPt+xxjHgT5NonnAOR9Cqy8i7FTINvDQVAf/A0/FGQgetPCV
+         AUN0lka06G7EFwylo9Mg/Nllkm9BmB6SB7coVFP/fXq1Mgmg3CyhFS3hDmx6BPgZkLTk
+         Wto9aTndWnNpv9uAFjhsqvj6+p3PFabmTqwsaZkTAlx+66FRZal1lwVNZBqZJnEJPvsz
+         64mnZpQYzEMsLcwwioi8z4o+IoY+VZr/lRwuOKmpBsL6fVoHVbLg5WJW8/3pDXVQoBNa
+         1+6zjBO/TxGrtwoT9RYlhJA4a1C6rrzR9knhZ9JzkLIJ9mLHdife8X7V/c1Eabx2mky1
+         lDXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701177754; x=1701782554;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=30VypmY2CFZ8lvqagGC6jaet2OpETydP+u6D3TSu8fI=;
+        b=esnAz3IWr4MPwVkAk2tfURXRFB/EDbvo4uNK7q0Lenk4NBNGE5nliOpf+glX9qCF3o
+         TzwGlNFEdAOz5UMTwJJ54zsZBPWG7WVnfnW/vw9/SZgOMD6aYwKuhMltjsCXIUmXadER
+         sURfYzffcaMPM4CVZOfcy+rXV93F7/JHXGYfuiOFv+6mcS0iYh/3H7SwZAHblDSkOCVh
+         iStQbsuIIXmokrv+Xnqj0rwSCU281fEkRk6d8a3aQgni7eSVt3xwISFgJp8QopMY8bcP
+         lEGfUgQv7iSiGPkbCTNX2rT8Aoaz+GJj4+7yhTQoBd4fFyD+8mQi+SkTt4T74BWIudnk
+         6rNA==
+X-Gm-Message-State: AOJu0YwK8iNoxLWw7wf00JspSo9K76MbgW4qrwmaIJW766yi0DQkAY/y
+        mHBmivqMnXDNAVOPjHUYrNMJtcdIK6qIAA==
+X-Google-Smtp-Source: AGHT+IH3JFeDBdC18l8j/Q+NB48Ja1KZVkzEIv229wi7jf8qWZFdPd/OFYbLqFjShGbgQBekqvZ+4w==
+X-Received: by 2002:a17:902:ead2:b0:1cf:a53f:200f with SMTP id p18-20020a170902ead200b001cfa53f200fmr16674842pld.32.1701177753559;
+        Tue, 28 Nov 2023 05:22:33 -0800 (PST)
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id u11-20020a170902e5cb00b001cfbd011ca9sm5767276plf.113.2023.11.28.05.22.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Nov 2023 05:22:33 -0800 (PST)
+Message-ID: <01df8329-06d7-4fd1-9c7a-05296f33231e@gmail.com>
+Date:   Tue, 28 Nov 2023 20:22:27 +0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Power Management <linux-pm@vger.kernel.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ramses VdP <ramses@well-founded.dev>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: Intel hybrid CPU scheduler always prefers E cores
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Nov 2023 12:05:20 +1300, Luke D. Jones wrote:
+Hi,
 
-> This is a fix for the ROG Ally not being able to use the N-Key device after a suspend/resume cycle.
+I come across an interesting bug report on Bugzilla [1]. The reporter
+wrote:
+
+> I am running an intel alder lake system (Core i7-1260P), with a mix of P and E cores.
 > 
-> The root of the issue is that ASUS changed the MCU firmware to dfisconnect the USB0 hub when the
-> screen is switched off during the s2idle suspend path. I tried many many different tactics to try
-> and get this s2idle part to work but it seems there are races between this and other subsystems.
+> Since Linux 6.6, and also on the current 6.7 RC, the scheduler seems to have a strong preference for the E cores, and single threaded workloads are consistently scheduled on one of the E cores.
 > 
-> What has so far been reliable and consistent is a manual call to the CSEE method that is called in
-> ACPI by the Microsoft DSM screen off path followed by a short sleep in asus-wmi. The PM prepare
-> hook looks to be the earliest possible place. A sleep that is too long ends up with USB subsystem
-> registering a disconnect, and thus on resume the device paths change. Too short and it is unreliable.
+> With Linux 6.4 and before, when I ran a single threaded CPU-bound process, it was scheduled on a P core. With 6.5, it seems that the choice of P or E seemed rather random.
 > 
-> [...]
+> I tested these by running "stress" with different amounts of threads. With a single thread on Linux 6.6 and 6.7, I always have an E core at 100% and no load on the P cores. Starting from 3 threads I get some load on the P cores as well, but the E cores stay more heavily loaded.
+> With "taskset" I can force a process to run on a P core, but clearly it's not very practical to have to do CPU scheduling manually.
+> 
+> This severely affects single-threaded performance of my CPU since the E cores are considerably slower. Several of my workflows are now a lot slower due to them being single-threaded and heavily CPU-bound and being scheduled on E cores whereas they would run on P cores before.
+> 
+> I am not sure what the exact desired behaviour is here, to balance power consumption and performance, but currently my P cores are barely used for single-threaded workloads.
+> 
+> Is this intended behaviour or is this indeed a regression? Or is there perhaps any configuration that I should have done from my side? Is there any further info that I can provide to help you figure out what's going on?
 
+PM and scheduler people, is this a regression or works as intended?
 
-Thank you for your contribution, it has been applied to my local
-review-ilpo branch. Note it will show up in the public
-platform-drivers-x86/review-ilpo branch only once I've pushed my
-local branch there, which might take a while.
+Thanks.
 
-The list of commits applied:
-[1/1] platform/x86: asus-wmi: disable USB0 hub on ROG Ally before suspend
-      commit: e0894ff038d86f30614ec16ec26dacb88c8d2bd4
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=218195
 
---
- i.
-
+-- 
+An old man doll... just what I always wanted! - Clara
