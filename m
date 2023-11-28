@@ -2,80 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7677FB1D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 07:14:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 841F27FB1F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 07:31:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343629AbjK1GOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 01:14:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50354 "EHLO
+        id S1343615AbjK1GWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 01:22:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234613AbjK1GO3 (ORCPT
+        with ESMTP id S232615AbjK1GW3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 01:14:29 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7815C4;
-        Mon, 27 Nov 2023 22:14:35 -0800 (PST)
-Received: from [100.124.219.30] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: vignesh)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0511B66072A4;
-        Tue, 28 Nov 2023 06:14:31 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701152073;
-        bh=ZG0Tm8rmeYeyaVrNuXAmLFqred76mjRjFtnoj7e50pc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ARfjCT2z30i9fMFc6uRARQ/ghAqWw4A2tIgSIb9WZ6Tjo411B4URSZP0mgHsu/rdv
-         iti4J2nZMLwPI1R4S8ZpuxTPMFs7LFlGn77OoxO5JQitCNI4VRKbho9RLqPN5eOpiH
-         kkrj+7yDHLMydfsb6QfXuuGUBivkzDe1RuU7bcEKYPi+FFFqiM0A7TORq0WlqkMbFr
-         KFyyMTKs97wP8t2fa3L/mItY5ZsmROhydQRASx4nh7Jr5YEXIfWi9ZbVcsM/oJvFkO
-         4lJGtp6uWQqY86UdD2EfTjIsiNGyhvnOT76+Csksn34xbEmzSC+cCuLlun0VGVp6rj
-         cYBam44Q0sE8w==
-Message-ID: <50a9f061-e1d3-6aca-b528-56dbb6c729d9@collabora.com>
-Date:   Tue, 28 Nov 2023 11:44:26 +0530
+        Tue, 28 Nov 2023 01:22:29 -0500
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC9E183
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 22:22:35 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VxJbmTM_1701152551;
+Received: from 30.178.66.233(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0VxJbmTM_1701152551)
+          by smtp.aliyun-inc.com;
+          Tue, 28 Nov 2023 14:22:33 +0800
+Message-ID: <65b0c372-b308-46dd-c2f2-a5ddb50adb10@linux.alibaba.com>
+Date:   Tue, 28 Nov 2023 14:22:27 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] PCI: qcom: Fix compile error
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     intel-gfx@lists.freedesktop.org, helen.koike@collabora.com,
-        daniels@collabora.com, linux-pci@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20231128042026.130442-1-vignesh.raman@collabora.com>
- <20231128051456.GA3088@thinkpad>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH] nvme: fix deadlock between reset and scan
 Content-Language: en-US
-From:   Vignesh Raman <vignesh.raman@collabora.com>
-In-Reply-To: <20231128051456.GA3088@thinkpad>
+To:     Keith Busch <kbusch@kernel.org>
+Cc:     axboe@kernel.dk, hch@lst.de, sagi@grimberg.me,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kanie@linux.alibaba.com
+References: <1700737213-110685-1-git-send-email-yaoma@linux.alibaba.com>
+ <ZWTa0DJmcLKHRWWC@kbusch-mbp.dhcp.thefacebook.com>
+From:   yaoma <yaoma@linux.alibaba.com>
+In-Reply-To: <ZWTa0DJmcLKHRWWC@kbusch-mbp.dhcp.thefacebook.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-11.8 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mani,
+Hi Keith Busch
 
-On 28/11/23 10:44, Manivannan Sadhasivam wrote:
-> On Tue, Nov 28, 2023 at 09:50:26AM +0530, Vignesh Raman wrote:
->> Commit a2458d8f618a ("PCI/ASPM: pci_enable_link_state: Add argument
->> to acquire bus lock") has added an argument to acquire bus lock
->> in pci_enable_link_state, but qcom_pcie_enable_aspm calls it
->> without this argument, resulting in below build error.
->>
+Thanks for your reply.
+
+The idea to avoid such a deadlock between nvme_reset and nvme_scan is to 
+ensure that no namespace can be added to ctrl->namespaces after 
+nvme_start_freeze has already been called. We can achieve this goal by 
+assessing the ctrl->state after we have already acquired the 
+ctrl->namespaces_rwsem lock, to decide whether to add the namespace to 
+the list or not.
+1. After we determine that ctrl->state is LIVE, it may be immediately 
+changed to another state. However, since we have already acquired the 
+lock, other tasks cannot access ctrl->namespace, so we can still safely 
+add the namespace to the list. After acquiring the lock, 
+nvme_start_freeze will freeze all ns->q in the list, including any newly 
+added namespaces.
+2. Before the completion of nvme_reset, ctrl->state will not be changed 
+to LIVE, so we will not add any more namespaces to the list. All ns->q 
+in the list is frozen, so nvme_wait_freeze can exit normally.
+
+
+On 2023/11/28 02:07, Keith Busch wrote:
+> On Thu, Nov 23, 2023 at 07:00:13PM +0800, Bitao Hu wrote:
+>> @@ -3631,6 +3631,11 @@ static void nvme_alloc_ns(struct nvme_ctrl *ctrl, struct nvme_ns_info *info)
+>>   		goto out_unlink_ns;
+>>   
+>>   	down_write(&ctrl->namespaces_rwsem);
+>> +	/* preventing adding ns during resetting */
+>> +	if (unlikely(ctrl->state != NVME_CTRL_LIVE)) {
 > 
-> Where do you see this error? That patch is not even merged. Looks like you are
-> sending the patch against some downstream tree.
-
-I got this error with drm-tip - git://anongit.freedesktop.org/drm-tip
-
-This commit is merged in drm-intel/topic/core-for-CI - 
-https://cgit.freedesktop.org/drm-intel/log/?h=topic/core-for-CI
-
-Regards,
-Vignesh
+> We can't rely on ctrl->state for preventing deadlocks. Reading unlocked
+> ctrl->state is often used, but should be considered advisory-only since
+> the state could change immediatly after reading it.
+> 
+>> +		up_write(&ctrl->namespaces_rwsem);
+>> +		goto out_unlink_ns;
+>> +	}
+>>   	nvme_ns_add_to_ctrl_list(ns);
+>>   	up_write(&ctrl->namespaces_rwsem);
+>>   	nvme_get_ctrl(ctrl);
