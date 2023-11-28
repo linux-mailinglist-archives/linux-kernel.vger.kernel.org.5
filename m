@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C0CE7FBB1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 14:16:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E30BE7FBB25
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 14:16:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345017AbjK1NP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 08:15:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34804 "EHLO
+        id S1345073AbjK1NQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 08:16:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345015AbjK1NPy (ORCPT
+        with ESMTP id S1345059AbjK1NQM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 08:15:54 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36BF610CC
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 05:16:00 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50aab3bf71fso7419276e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 05:16:00 -0800 (PST)
+        Tue, 28 Nov 2023 08:16:12 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 741B210D8
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 05:16:18 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c8880fbb33so71054071fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 05:16:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701177358; x=1701782158; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701177376; x=1701782176; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=o2U0Dw+C6h6+RoUlbLOMo/lv9uHPeB9SLzHDaRTZV7s=;
-        b=aq4aBjShzauCTPcrw1rBmEmFJRHOZAvJt92AhlThn+N+MBM/k1/D2ClUuo/oIiLVlk
-         ZoS9400FlRyjHk6VaNgyfV3BO3qyUWFTehddU0TwpMUVzdULBViISpeoNlnAO6dfNc5M
-         Ep19/2B7gGFoVHIcBwbr/PMzKvGWGLe8K/2/0VxjuTLkTWIwRCAta+YCrhUnmZEl3Ude
-         n4CI9rMo7RYVlq5NC8lt0+b/BgLqLXNBxtItNssBlnLIquZYBJJ7ZWjZ2CgSus9yezBL
-         Ua9es5B5T/ja87fcsFOiCOicDItstxAG0sBEUpE5VOhrlUFLl7rFMVX+2zEk7CywknB3
-         W4xg==
+        bh=WmeGSvtEsOAwFPC0jalyYEqEza/s+5wNIdTIQtIdcwI=;
+        b=PcrMzjCG+PCUYDXVVFIQ0EBfkvuPnkCgqM7PfIH72Zl6IKJ+8zWbqv++SsqVRKElru
+         8M2w/F6wq+jUlWl0cBGq1W0R5bPuyTfVRH3FdoNbToeS/shpKThFF7f9JqpFFSeJ0FKY
+         7jzdtdQvESiXKBsdZ3PWUiT1epKSYX5G/zu7EA3PxWNojw7mvV+dM75L8l25OuCIYmp6
+         tnV6iRGAi2MY0klCC7s/gkbD4X0LPDubgeOGNUJNS2e3mJpo9iGmJaHGdq+G0Pn7rzoT
+         c3ILKFSw9ZD5zdNg1WglU2Wv2d+1IYXdRyDwrHQOnAGAW3QJNo3KGgBft8aodfGFIgOw
+         MNwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701177358; x=1701782158;
+        d=1e100.net; s=20230601; t=1701177376; x=1701782176;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=o2U0Dw+C6h6+RoUlbLOMo/lv9uHPeB9SLzHDaRTZV7s=;
-        b=F8uOryOgInfrTEnQu4gc08VrP4GrPLz6SVTu+defl9hcE9Qc01Fy0JWyY9MDYdS70M
-         g452TmkOSyTYKqFowdjZPv12CdSrl68MMb/V9QIPQnWj5546jLp2IvjCugGr5K4uRLm9
-         uhXj1mARGrY1Lgxa/U35v10u95Kn9VTb6gEPcxlO0Pg+sP3cpKtCt8pA/+Rbejhinl6R
-         muySevqQdcWlvpcTj9CE2tieIHrI+44L82RqrNFWz8umhc7iW5y0ad65Owrki5IBVVgo
-         LKn4H1DZDl03dzEMc67QG6IGsSclhH6f68Cm9zW4wNTWJBi13PSLZO9SJfryQXvoWYql
-         Y+Rg==
-X-Gm-Message-State: AOJu0YyJL7CSkXryfW/RCPzBYJdbwoJnpXZFYR0RlENcFRU4dVHjlGxk
-        qOu7rSd+Ebg/95wicWrj8U+/dQ==
-X-Google-Smtp-Source: AGHT+IEzEaz+EEBfeJx7la23pJ4m/XXEUN3X5Za/9Q6XMgt9Zg15Eol47FvI5Utk4vk+9djDSK1vPg==
-X-Received: by 2002:a2e:888f:0:b0:2c9:b96e:16e4 with SMTP id k15-20020a2e888f000000b002c9b96e16e4mr403296lji.42.1701177358355;
-        Tue, 28 Nov 2023 05:15:58 -0800 (PST)
+        bh=WmeGSvtEsOAwFPC0jalyYEqEza/s+5wNIdTIQtIdcwI=;
+        b=TZy8Bpav+eaDoY5KxLdatVaE4vLdPrFryzoAOoou9GM1R8atJgBxaYkFwq9nNycRrC
+         6wQr3MkoU7BnUYTQO0/eJwsLezx0ZcPsqKvUuYRH/i3iypstyNdCfZaWrNa0jNOudJZe
+         YG3nIH/jQpe9LEugNs8VH45rK8JAO6O+2NO71AcMd1iLBOgS6WEaq2E6W3lqEkgK/19c
+         pQbjl8Vbi7oGw44Hlh9o4PUolgmEKzHfFyRJ7LLJHZNkQ9xoZPt6PMgdXGzc/B4jFqRX
+         YCP3sV6EtKYfCkEMqH5tewL/1N2aUNFLJsRJQ8dyfR3pustcs7JrkIxg5Y6fiYXZ7rQP
+         5uRQ==
+X-Gm-Message-State: AOJu0Yw3fMnH7FXypAFDk4Wh0aJPb0z9qGhkiK24PTvK37nkdkKd2yoV
+        iab3K307lJRDMJ3GauwYWZ5Cpw==
+X-Google-Smtp-Source: AGHT+IFskJyn7Zq5NG/6PRdOGtYuywm3exL/CEYWZRl+u7wYVqyx+UY7EtVtNQLM/KOV4FpstpD10A==
+X-Received: by 2002:a2e:958e:0:b0:2c9:b9f8:c51e with SMTP id w14-20020a2e958e000000b002c9b9f8c51emr194960ljh.22.1701177376551;
+        Tue, 28 Nov 2023 05:16:16 -0800 (PST)
 Received: from ?IPV6:2001:14ba:a0db:1f00::227? (dzdqv0yyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::227])
-        by smtp.gmail.com with ESMTPSA id t7-20020a2e9547000000b002b657f10b78sm1707226ljh.58.2023.11.28.05.15.57
+        by smtp.gmail.com with ESMTPSA id t7-20020a2e9547000000b002b657f10b78sm1707226ljh.58.2023.11.28.05.16.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Nov 2023 05:15:57 -0800 (PST)
-Message-ID: <37bfdc21-8d2a-4a6c-a2eb-9eaa1e808496@linaro.org>
-Date:   Tue, 28 Nov 2023 15:15:57 +0200
+        Tue, 28 Nov 2023 05:16:16 -0800 (PST)
+Message-ID: <0ab17fbe-1247-4f79-9a48-50cb185154ee@linaro.org>
+Date:   Tue, 28 Nov 2023 15:16:15 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 12/12] arm64: dts: qcom: qrb2210-rb1: add wifi variant
- property
+Subject: Re: [PATCH v2 10/12] arm64: dts: qcom: qrb2210-rb1: Set up HDMI
 Content-Language: en-GB
 To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
         Rob Clark <robdclark@gmail.com>,
@@ -88,9 +87,9 @@ Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
         linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         iommu@lists.linux.dev
 References: <20231125-topic-rb1_feat-v2-0-979b28f35e4a@linaro.org>
- <20231125-topic-rb1_feat-v2-12-979b28f35e4a@linaro.org>
+ <20231125-topic-rb1_feat-v2-10-979b28f35e4a@linaro.org>
 From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <20231125-topic-rb1_feat-v2-12-979b28f35e4a@linaro.org>
+In-Reply-To: <20231125-topic-rb1_feat-v2-10-979b28f35e4a@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -104,51 +103,15 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 27/11/2023 17:28, Konrad Dybcio wrote:
-> From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Add the required nodes to support display output via the HDMI port.
 > 
-> The RB1 platform doesn't have board-specific board-id programmed, it uses
-> generic 0xff. Thus add the property with the 'variant' of the
-> calibration data.
-> 
-> Note: the driver will check for the calibration data for the following
-> IDs, so existing board-2.bin files will continue to work.
-> 
-> - 'bus=snoc,qmi-board-id=ff,qmi-chip-id=120,variant=Thundercomm_RB1'
-> - 'bus=snoc,qmi-board-id=ff,qmi-chip-id=120'
-> - 'bus=snoc,qmi-board-id=ff'
-> 
-> For the reference, the board is identified by the driver in the
-> following way:
-> 
-> ath10k_snoc c800000.wifi: qmi chip_id 0x120 chip_family 0x4007 board_id 0xff soc_id 0x40670000
-> ath10k_snoc c800000.wifi: qmi fw_version 0x337302d3 fw_build_timestamp 2023-01-06 01:50 fw_build_id QC_IMAGE_VERSION_STRING=WLAN.HL.3.3.7.c2-00723-QCAHLSWMTPLZ-1
-> ath10k_snoc c800000.wifi: wcn3990 hw1.0 target 0x00000008 chip_id 0x00000000 sub 0000:0000
-> ath10k_snoc c800000.wifi: kconfig debug 0 debugfs 0 tracing 0 dfs 0 testmode 0
-> ath10k_snoc c800000.wifi: firmware ver  api 5 features wowlan,mgmt-tx-by-reference,non-bmi crc32 b3d4b790
-> ath10k_snoc c800000.wifi: htt-ver 3.114 wmi-op 4 htt-op 3 cal file max-sta 32 raw 0 hwcrypto 1
-> 
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-
-As you are resending this patch, you should add your S-o-b.
-
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 > ---
->   arch/arm64/boot/dts/qcom/qrb2210-rb1.dts | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/qrb2210-rb1.dts b/arch/arm64/boot/dts/qcom/qrb2210-rb1.dts
-> index ac597eb3fe9d..bd7bcf803654 100644
-> --- a/arch/arm64/boot/dts/qcom/qrb2210-rb1.dts
-> +++ b/arch/arm64/boot/dts/qcom/qrb2210-rb1.dts
-> @@ -535,6 +535,7 @@ &wifi {
->   	vdd-1.8-xo-supply = <&pm2250_l13>;
->   	vdd-1.3-rfa-supply = <&pm2250_l10>;
->   	vdd-3.3-ch0-supply = <&pm2250_l22>;
-> +	qcom,ath10k-calibration-variant = "Thundercomm_RB1";
->   	status = "okay";
->   };
->   
-> 
+>   arch/arm64/boot/dts/qcom/qrb2210-rb1.dts | 86 ++++++++++++++++++++++++++++++++
+>   1 file changed, 86 insertions(+)
+
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
 
 -- 
 With best wishes
