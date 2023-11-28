@@ -2,163 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27EEC7FB098
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 04:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 081837FB0A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 04:45:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234578AbjK1DcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 22:32:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54684 "EHLO
+        id S234447AbjK1DoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 22:44:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232694AbjK1DcR (ORCPT
+        with ESMTP id S229789AbjK1DoY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 22:32:17 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2139.outbound.protection.outlook.com [40.107.93.139])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1EF0C9
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 19:32:22 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gRvm9FuENhbmqUpapiFqiw1bsr9TvNIvoIUSQaSCcHdEvDzY+Is7LnmoZeTa8xnZ9Fbqfc+TmwgBGaxNZcSyR/dRbpHI1iRI/X+pOtQmVLcGhSLOxpaZr/8XuxJfsC0aJc/AI6YSLQtqVnkB6+5HUVI59xobDxJN20csgMcwQXw73MxBN8b9+lLbDpiBa8ogMmCCu9fcuRUG5OGUyijV85lvNtvq598U0DgX+xlO+cjw6Jk4V2bzQ339qnNk6NGtV2PZwfubLwo5Z4HEY48GkLqGEZ4xJpM50a3ykeryGF7NOH+zwZwBTBFUExBFutOaxjPh1WdgEJD1XUXHzpmnzQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MzMuDtOaoN9gAD2j21FVfjp6m/IZJh54uZcF0EjP7io=;
- b=SvtiIvKw4EMV101rnU5ppTrInzwpyQK65AxXr3sEmkLibVzhyz9eJaFcMcXjjLqnjFiqN24oTVFj5VfVzIKyICy2zhGS4PFSOPdhQYCgmWsGHlbeVWjteDf8UbL/DdT+h9+H5VM5phewdrf8ARrFQlTBCHvdQUBFMgfpWaPhL5dwxHTK0mGALlMzyj86u8G3QAixIo6nh6PBP3tVKOw3sfR6/JRrE/K3EeqRha4EFugD35LuuZQYPdOcqgpv3syjBpwhUqfJ9gltzaN98LMe/9DanOh3Oi35orBPlelV7wszo1z0JBtp0ixDfoMb9nLEnZRevO+cs2KiHp6GZAUUJg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=amperemail.onmicrosoft.com; dkim=pass
- header.d=amperemail.onmicrosoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amperemail.onmicrosoft.com; s=selector1-amperemail-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MzMuDtOaoN9gAD2j21FVfjp6m/IZJh54uZcF0EjP7io=;
- b=SrBb4w0GeuwXPOl5lxfcjlPXPTBd1g23jwOh72oGs9WwldP2zIK+16Xl9cv3NX2Hw22cDT5N64+ThdNUsH+bzSefSDtn9HAGNk/UfecyGkI+GCPAqb0CREX8nJXoARg4THkTDTk4c2/a0KYU4d71Ut71Hx0Mq6UToHyKBkkfKiw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amperemail.onmicrosoft.com;
-Received: from PH0PR01MB7975.prod.exchangelabs.com (2603:10b6:510:26d::15) by
- BY3PR01MB6641.prod.exchangelabs.com (2603:10b6:a03:367::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7025.29; Tue, 28 Nov 2023 03:32:17 +0000
-Received: from PH0PR01MB7975.prod.exchangelabs.com
- ([fe80::3f45:6905:e017:3b77]) by PH0PR01MB7975.prod.exchangelabs.com
- ([fe80::3f45:6905:e017:3b77%7]) with mapi id 15.20.7025.020; Tue, 28 Nov 2023
- 03:32:17 +0000
-Message-ID: <a7d85fee-23cd-4b85-adc6-16980b6e5e02@amperemail.onmicrosoft.com>
-Date:   Tue, 28 Nov 2023 11:31:42 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] crash_core: export vmemmap when CONFIG_SPARSEMEM_VMEMMAP
- is enabled
-To:     Baoquan He <bhe@redhat.com>
-Cc:     Huang Shijie <shijie@os.amperecomputing.com>, k-hagio-ab@nec.com,
-        lijiang@redhat.com, akpm@linux-foundation.org, vgoyal@redhat.com,
-        dyoung@redhat.com, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org, patches@amperecomputing.com
-References: <20231127020727.25296-1-shijie@os.amperecomputing.com>
- <ZWQEP4SczFh+GUHq@MiWiFi-R3L-srv>
- <33021b87-4c6a-45fc-a6ae-265765cfcd78@amperemail.onmicrosoft.com>
- <ZWVdxAv/PPHY3Ndl@MiWiFi-R3L-srv>
-From:   Shijie Huang <shijie@amperemail.onmicrosoft.com>
-In-Reply-To: <ZWVdxAv/PPHY3Ndl@MiWiFi-R3L-srv>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: CH2PR16CA0025.namprd16.prod.outlook.com
- (2603:10b6:610:50::35) To PH0PR01MB7975.prod.exchangelabs.com
- (2603:10b6:510:26d::15)
+        Mon, 27 Nov 2023 22:44:24 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6CF1131
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 19:44:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78668C433C7;
+        Tue, 28 Nov 2023 03:44:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701143070;
+        bh=jZVtKdg3uUmw3uHl6QOUyGKbzs5bk3U+PgKpgr5tU94=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=k1YFpsKDNqu++QXD5tJFWUI5ZAlwUJScVY0zR44JmTdzIVJjo9MK7jchMTcGRbq5X
+         Nr4kfLvR9eSWSoO1uoyWknhW0fzVXXh3XrGv8r8dXsaUnJjrYXOZR4m2A6PU3O4Iui
+         0tuLcygJpFoDnlVAiJm532qesv+hV9onn71Wnubhf1yRJ5CAL/1HbHV9qHi6Dvas5h
+         Vk9RwDC1+bWSgdZPCbUwQ4T9ubQabJ1A+C5lhhiskaUOD2UWTSMJ01Xxw5fB8UUt88
+         MoSC6czFPXR5W9EdG8tJWqdRbHXytQG+d2i0weXDTJ2fvkf6slZX+kNCp4rkNOEqio
+         NeG8mEJ9Ea6YA==
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2c8872277fcso50467001fa.1;
+        Mon, 27 Nov 2023 19:44:30 -0800 (PST)
+X-Gm-Message-State: AOJu0YxrCNDtPPBnlO9RYSiktdXHM/rIIClDThZBVtEB+eWuM5Hz18nP
+        wR6fRqL20hb6vWe777rn7BdP+UAH3jNmtlyNuKE=
+X-Google-Smtp-Source: AGHT+IH2z47wozKU81jgZhzavWFn37VHv3IbNpyIomXMIeJKjCG+ZurozSNlSL5O32XroF7ofHJAixpVXzt5Ygqi6O0=
+X-Received: by 2002:a2e:910d:0:b0:2c9:a38b:57d8 with SMTP id
+ m13-20020a2e910d000000b002c9a38b57d8mr1834190ljg.16.1701143068686; Mon, 27
+ Nov 2023 19:44:28 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR01MB7975:EE_|BY3PR01MB6641:EE_
-X-MS-Office365-Filtering-Correlation-Id: 22b1b539-dd3c-44d0-287c-08dbefc29e9e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lGGRMQ9BSLhlwT8CTnxr95bBhHd/oJb850guMQ2SgQYFuORAXbrFbIjb5B4gpIGg210hfffWL42xRUhIjowTecBJjhxz9hYMrazPllJaR4OVlyTqj24g/vEfWx7gO9QIlRzSdQKy4k7cQ8VbwE8VuKrbl2mBOpg2Q6Krs/Ou0wUKq3VJMxkee+p8TKtib+siR2jAxVCmO0A8dCCjZqasDIfzV6jXppOhRCdztwTPmmBzw6NT/C3ewXzczqmpd1w4IAOYYABUlTohNAXFqwIV8HhQGC2Ri/HkmIXDkxxbFLYfGGbLkA5KI46BquJ1r7s/YOrvApjqvGxzjQXAtQhS9o4NEy1q747n2vihbON6lIxIPOHCPo8gVMixvSjB3zahoLLSDWH6ShTGSjl8/Eb6BZWUIpw3EJFC4g6LKRQXfOBYXhC6KlowLXdFBqenVw2uvp+g26DkBu8XTzHktSYYE73JV6hcHD1/HPFAgSrAyY7ebJZUVgyVhqTBqHSbZwC+PmHNv+ZDrGcVZ/YEQnAaLbt4WXUrjJHW3K4+vMqD5HHKNFBaLDLBED82Y4yT7+hV6lEpYr6YZd4Z7+oetYjHRxKZ8bfh+7of5DQjrskpkmk6e4ZQ928pwtdb5HxlMQ99
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB7975.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(366004)(396003)(346002)(136003)(376002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(6916009)(38100700002)(42882007)(31696002)(83170400001)(66556008)(66476007)(8676002)(8936002)(4326008)(5660300002)(2906002)(6512007)(31686004)(107886003)(41300700001)(66946007)(6506007)(2616005)(316002)(478600001)(26005)(6486002)(6666004)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T3VmcVQwMlBsdDVldGJZTUhFZERDT3R2aU4xSTZYK1VPRVgwSC81OXRwOTFl?=
- =?utf-8?B?NXhBaGp3Tjd3RlNUaXd2MlpPUTlObHNaSEx0VGR3cWlqWU9SakNkRjZYZEt4?=
- =?utf-8?B?RkZyQkhaU1pxaW0wWU5hQlJ2WjZISTlpK1diY09JcUJVTlRoTlA0SlBmb1Zn?=
- =?utf-8?B?SHhYTy8ya0FVWDM5b1hmVDgvcjZJWVZOb2hYR0pTb1ozTjgyYUdIaGVOMVdR?=
- =?utf-8?B?ZEl6QTNZT3drMXd6dCtNNVhUNmFWVXc3d1QycEVTMXBqWW1tSnMwUVhYMXVp?=
- =?utf-8?B?R0JhY2dYY2RnWHhOS1EzWEdhdHlxb1crak9oVURjSXk3UGJtUXZMQTdGUndl?=
- =?utf-8?B?UzcvMFAzbGdkZGpDc2JQRUFIZWVVVGM0M1VCU1dscjlKNy94SEVGbWx1WGJw?=
- =?utf-8?B?NlZMVm5IMldVQW9BdUZuS09NV2tBTGZUTVowcFlPSWduUHNKZ0hZcHoyMkRM?=
- =?utf-8?B?dUE2b1pyVE5HdlBQcStlbVlEaVhhY1loTVJ6RVRUNHRNSHVqWWx6bzN1ekVz?=
- =?utf-8?B?QnJxNmRKWTM5V0g1Z0FKV29MYlQyTG5YMVRIeENraHROS3ZGMU1tTHE4dUZp?=
- =?utf-8?B?RnJubWpHRWF0NnpLUjE1RXVMRG14WVRwcDRxNnZpWXJJV2YrK2NOQzFGUDI0?=
- =?utf-8?B?bitSbGEwdHpMdnFab0wyaTE1bk5JUHdERHVCUDNWUlhDdUptdS9DZXdQS203?=
- =?utf-8?B?NFJHcVpPa0V2aGxSaFU0ejJ5cWRBR1JORk9adWQwZ2V2T05uYmJHSWdkdFNz?=
- =?utf-8?B?MStOaGFwd3BNNGdIclI2RWlzeHM3dllRQWdVUDl5OUZXWDZiVDVQRHl2QUNv?=
- =?utf-8?B?ZVl3UkFoVXJvQnNMVXBtLzdVZktHTlJNd1hwL3pmcEFpQTVneHVaRERrSk90?=
- =?utf-8?B?dXR0aHhWSmloWjArc2JRSjNoenVWRStFNC9hVUhPRkJjaEdIR0JTZ25JcW5w?=
- =?utf-8?B?UEtWSjNNZXU4ZENscmVKQk5MRkYvaHhqbmMrY3RNV3dVYzhUZUxqY2kzM3hM?=
- =?utf-8?B?NXZmVHBFd2Y0aGU2WkJFMGVoVXU5RFEzeVZMQzZBU0RnNjdSTWEvMnR4eHAz?=
- =?utf-8?B?WkxIanBKcWtmdEVVSzVSWlE3N0xXQVh6dnhLWEZYdytib25YUFBjNTVhekVM?=
- =?utf-8?B?YURwaXVmdjczc2tMUnhvYUp1K1RrZE44czZvRXBZb2VyWFBJM21rVVF0TWRX?=
- =?utf-8?B?K3k3aUU0OFdsRjNOdFlaWVVZd2R0WWhqNDlJVHlZc3l4KzVyQUhzd3l6TGNv?=
- =?utf-8?B?bStrcWJVa2xoTHFNektGN1I2VDdySDlERTVMWHptMjJ4VGROOUMxNzFPUjdj?=
- =?utf-8?B?WjlMU3hGRHRSZUpoUENZclpTWFkvSVQ1S0FESEROR2xZbmEwMHR3K0pNczYx?=
- =?utf-8?B?am8yclNqTUVCejBGNEhGajFiYTFmTmN6eEdWcXhaS2VDbm5jUVdGYWlIZVRC?=
- =?utf-8?B?aXVCR3VRbHlzVHlwdjg4aUJsVFAvNHhLeElCcGtoVXFCR0k2c2hmYThFSHcw?=
- =?utf-8?B?L1pjZEIwK3ZEL3p3UXJTeG55TlQ3b3Z0d3Q2L0xpQVJJRmgwWFFJcm1hYUx4?=
- =?utf-8?B?UHk2ZDlveDV1OHFRMkpYNFBvczkxM1lyQ2YyaHA1UEVYYVpqVUpieUVrOW9C?=
- =?utf-8?B?TWVZc2ZvNTZpN3lDcWtmLzBLUTRKNndDYW9UK0o1a01RNWNwaFFYUkF3Z0l0?=
- =?utf-8?B?bkg2M1l1c3F3bEFNOHBmYTYrMExjSHBKSjJWdTNXbjVoTG9HNmhuN21UeUZ0?=
- =?utf-8?B?WW5QZzlIWEIxd2NLSURvWFVBQjhTMEFsV1hQRmVBaEhFZnJvNExMbTlMN1lt?=
- =?utf-8?B?QmlmMXpTeXdPMlU0RmVOdFUvY2YvYlcwKzMxZ3d3RXViYytKb0RTd2YwZThl?=
- =?utf-8?B?dXVBakIrZDBscS9ZZUZJNVVadGRZRTE3R3k2SkxoQmpGczlXM1BCbVpDODVG?=
- =?utf-8?B?TDZJYUdlTDBPZ0YxMFFWZkFlakxGUVpSVFNtQW5ZVk5SWGZRWWwrNDRKblpN?=
- =?utf-8?B?ZzhyWjhxa3pOMDJZVEFVSWZCWTAzbG90Vm01aTl2SHB4akJvVjUwdjdlR3Fy?=
- =?utf-8?B?WitON0N6VS9najVZMEZwRWZZS0hTTVhtY0RidnljLzZmRXMrSjFTNE02cW02?=
- =?utf-8?B?VkllZ2tWQkFWNzJRYmR6KzAwQUs2TVpCR0REbXpGZllzeHVkZTAwWFZmbUly?=
- =?utf-8?B?SVE9PQ==?=
-X-OriginatorOrg: amperemail.onmicrosoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 22b1b539-dd3c-44d0-287c-08dbefc29e9e
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB7975.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 03:32:17.0066
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: l4zsEAGED2WSBkuKXo+YjBysRV0jvNfkDvcakTfQDCQWNlUaTERsL8shR10LkqUYDWe/h6/jwb9HNP+oUmZgDj+mEZoY73aLNGJWbl4Z+8ZwRF1sh/nNd/a25/NU7L92
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR01MB6641
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+References: <20231125065419.3518254-1-yukuai1@huaweicloud.com>
+ <CAPhsuW4YsDXdpHMuscQrW4NdXZxhg8-k4J0Xt_47twA8sG_Fmg@mail.gmail.com>
+ <CAPhsuW57SuytxCY-fV74qx6B8AYb65nFC_t2VVeTN34Pamp=gQ@mail.gmail.com> <ac4470c6-f9a4-ba63-63d7-69b56ef92cc7@huaweicloud.com>
+In-Reply-To: <ac4470c6-f9a4-ba63-63d7-69b56ef92cc7@huaweicloud.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 27 Nov 2023 19:44:16 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW7iy9rD3_z+ug1qaHrBEkSj-g1d8wC0YPX+s-93FuU-Gw@mail.gmail.com>
+Message-ID: <CAPhsuW7iy9rD3_z+ug1qaHrBEkSj-g1d8wC0YPX+s-93FuU-Gw@mail.gmail.com>
+Subject: Re: [PATCH -next v2] md: synchronize flush io with array reconfiguration
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     maan@systemlinux.org, neilb@suse.de, linux-raid@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 27, 2023 at 6:12=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
+rote:
+>
+> Hi,
+>
+> =E5=9C=A8 2023/11/28 7:32, Song Liu =E5=86=99=E9=81=93:
+> > On Mon, Nov 27, 2023 at 2:16=E2=80=AFPM Song Liu <song@kernel.org> wrot=
+e:
+> >>
+> >> On Fri, Nov 24, 2023 at 10:54=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.=
+com> wrote:
+> >>>
+> >>> From: Yu Kuai <yukuai3@huawei.com>
+> >>>
+> >>> Currently rcu is used to protect iterating rdev from submit_flushes()=
+:
+> >>>
+> >>> submit_flushes                  remove_and_add_spares
+> >>>                                  synchronize_rcu
+> >>>                                  pers->hot_remove_disk()
+> >>>   rcu_read_lock()
+> >>>   rdev_for_each_rcu
+> >>>    if (rdev->raid_disk >=3D 0)
+> >>>                                  rdev->radi_disk =3D -1;
+> >>>     atomic_inc(&rdev->nr_pending)
+> >>>     rcu_read_unlock()
+> >>>     bi =3D bio_alloc_bioset()
+> >>>     bi->bi_end_io =3D md_end_flush
+> >>>     bi->private =3D rdev
+> >>>     submit_bio
+> >>>     // issue io for removed rdev
+> >>>
+> >>> Fix this problem by grabbing 'acive_io' before iterating rdev, make s=
+ure
+> >>> that remove_and_add_spares() won't concurrent with submit_flushes().
+> >>>
+> >>> Fixes: a2826aa92e2e ("md: support barrier requests on all personaliti=
+es.")
+> >>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> >>> ---
+> >>> Changes v2:
+> >>>   - Add WARN_ON in case md_flush_request() is not called from
+> >>>   md_handle_request() in future.
+> >>>
+> >>>   drivers/md/md.c | 22 ++++++++++++++++------
+> >>>   1 file changed, 16 insertions(+), 6 deletions(-)
+> >>>
+> >>> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> >>> index 86efc9c2ae56..2ffedc39edd6 100644
+> >>> --- a/drivers/md/md.c
+> >>> +++ b/drivers/md/md.c
+> >>> @@ -538,6 +538,9 @@ static void md_end_flush(struct bio *bio)
+> >>>          rdev_dec_pending(rdev, mddev);
+> >>>
+> >>>          if (atomic_dec_and_test(&mddev->flush_pending)) {
+> >>> +               /* The pair is percpu_ref_tryget() from md_flush_requ=
+est() */
+> >>> +               percpu_ref_put(&mddev->active_io);
+> >>> +
+> >>>                  /* The pre-request flush has finished */
+> >>>                  queue_work(md_wq, &mddev->flush_work);
+> >>>          }
+> >>> @@ -557,12 +560,8 @@ static void submit_flushes(struct work_struct *w=
+s)
+> >>>          rdev_for_each_rcu(rdev, mddev)
+> >>>                  if (rdev->raid_disk >=3D 0 &&
+> >>>                      !test_bit(Faulty, &rdev->flags)) {
+> >>> -                       /* Take two references, one is dropped
+> >>> -                        * when request finishes, one after
+> >>> -                        * we reclaim rcu_read_lock
+> >>> -                        */
+> >>>                          struct bio *bi;
+> >>> -                       atomic_inc(&rdev->nr_pending);
+> >>> +
+> >>>                          atomic_inc(&rdev->nr_pending);
+> >>>                          rcu_read_unlock();
+> >>>                          bi =3D bio_alloc_bioset(rdev->bdev, 0,
+> >>> @@ -573,7 +572,6 @@ static void submit_flushes(struct work_struct *ws=
+)
+> >>>                          atomic_inc(&mddev->flush_pending);
+> >>>                          submit_bio(bi);
+> >>>                          rcu_read_lock();
+> >>> -                       rdev_dec_pending(rdev, mddev);
+> >>>                  }
+> >>>          rcu_read_unlock();
+> >>>          if (atomic_dec_and_test(&mddev->flush_pending))
+> >>> @@ -626,6 +624,18 @@ bool md_flush_request(struct mddev *mddev, struc=
+t bio *bio)
+> >>>          /* new request after previous flush is completed */
+> >>>          if (ktime_after(req_start, mddev->prev_flush_start)) {
+> >>>                  WARN_ON(mddev->flush_bio);
+> >>> +               /*
+> >>> +                * Grab a reference to make sure mddev_suspend() will=
+ wait for
+> >>> +                * this flush to be done.
+> >>> +                *
+> >>> +                * md_flush_reqeust() is called under md_handle_reque=
+st() and
+> >>> +                * 'active_io' is already grabbed, hence percpu_ref_t=
+ryget()
+> >>> +                * won't fail, percpu_ref_tryget_live() can't be used=
+ because
+> >>> +                * percpu_ref_kill() can be called by mddev_suspend()
+> >>> +                * concurrently.
+> >>> +                */
+> >>> +               if (WARN_ON(percpu_ref_tryget(&mddev->active_io)))
+> >>
+> >> This should be "if (!WARN_ON(..))", right?
+>
+> Sorry for the mistake, this actually should be:
+>
+> if (WARN_ON(!percpu_ref_tryget(...))
+> >>
+> >> Song
+> >>
+> >>> +                       percpu_ref_get(&mddev->active_io);
+> >
+> > Actually, we can just use percpu_ref_get(), no?
+>
+> Yes, we can, but if someone else doesn't call md_flush_request() under
+> md_handle_request() in the fulture, there will be problem and
+> percpu_ref_get() can't catch this, do you think it'll make sense to
+> prevent such case?
 
-在 2023/11/28 11:25, Baoquan He 写道:
-> On 11/27/23 at 11:18am, Shijie Huang wrote:
->> 在 2023/11/27 10:51, Baoquan He 写道:
->>> Hi,
->>>
->>> On 11/27/23 at 10:07am, Huang Shijie wrote:
->>>> In memory_model.h, if CONFIG_SPARSEMEM_VMEMMAP is configed,
->>>> kernel will use vmemmap to do the __pfn_to_page/page_to_pfn,
->>>> and kernel will not use the "classic sparse" to do the
->>>> __pfn_to_page/page_to_pfn.
->>>>
->>>> So export the vmemmap when CONFIG_SPARSEMEM_VMEMMAP is configed.
->>>> This makes the user applications (crash, etc) get faster
->>>> pfn_to_page/page_to_pfn operations too.
->>> Are there Crash or makedupfile patches posted yet to make use of this?
->> I have patches for Crash to use the 'vmemmap', but after this patch is
->> merged, I will send it out.
->>
->> (I think Kazu will not merge a crash patch which depends on a kernel patch
->> which is not merged.)
-> Maybe post these userspace patches too so that Kazu can evaluat if those
-> improvement is necessary?
+This combination is really weird
 
-No problem.  I will send out them later.
++               if (WARN_ON(percpu_ref_tryget(&mddev->active_io)))
++                       percpu_ref_get(&mddev->active_io);
 
+We can use percpu_ref_get() here, and add
+WARN_ON(percpu_ref_is_zero()) earlier in the function. Does this
+make sense?
 
-Thanks
-
-Huang Shijie
-
+Thanks,
+Song
