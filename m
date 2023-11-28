@@ -2,73 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6356F7FBB58
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 14:22:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 398D47FBB5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 14:23:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345111AbjK1NW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 08:22:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38076 "EHLO
+        id S1345184AbjK1NW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 08:22:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344875AbjK1NW2 (ORCPT
+        with ESMTP id S1344875AbjK1NW5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 08:22:28 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA25A0;
-        Tue, 28 Nov 2023 05:22:34 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1cfc34b6890so19769405ad.1;
-        Tue, 28 Nov 2023 05:22:34 -0800 (PST)
+        Tue, 28 Nov 2023 08:22:57 -0500
+Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D706FA0;
+        Tue, 28 Nov 2023 05:23:03 -0800 (PST)
+Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-1fa48ad4e99so1243799fac.3;
+        Tue, 28 Nov 2023 05:23:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701177754; x=1701782554; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1701177783; x=1701782583; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=30VypmY2CFZ8lvqagGC6jaet2OpETydP+u6D3TSu8fI=;
-        b=gS+2sAKa2JBYPVICquPPt+xxjHgT5NonnAOR9Cqy8i7FTINvDQVAf/A0/FGQgetPCV
-         AUN0lka06G7EFwylo9Mg/Nllkm9BmB6SB7coVFP/fXq1Mgmg3CyhFS3hDmx6BPgZkLTk
-         Wto9aTndWnNpv9uAFjhsqvj6+p3PFabmTqwsaZkTAlx+66FRZal1lwVNZBqZJnEJPvsz
-         64mnZpQYzEMsLcwwioi8z4o+IoY+VZr/lRwuOKmpBsL6fVoHVbLg5WJW8/3pDXVQoBNa
-         1+6zjBO/TxGrtwoT9RYlhJA4a1C6rrzR9knhZ9JzkLIJ9mLHdife8X7V/c1Eabx2mky1
-         lDXA==
+        bh=3dCUnmn0BnrE2m+8WTS8NvC7pbXYOAUPOHwpmf2nQ5k=;
+        b=Hr3Mz0/UY0h6jQy7EuuYQyzv9uboz54Iyf4bCWukeT7/2J3wo3t2Z9cS/Y9/KSeHNA
+         8mI5015zlE8C9qGNSpBrKFHKrG/pPdBirUboTDKU6O/DnIkRE2A+A2XlB+yaBJrv/hAO
+         ewVix0i55Hh8A5WvWFhQKsQlUml3FxBOw1UDxJpjDGXI1vXGvFkSQ60djYhv0ukHzoA7
+         dcolUVQwJ3HnZMYbs1FXEZpEuupG/zJ9sDb2eOFMWGpIovCelHbiZRHee5jHmDe1xoSA
+         RSVQPS05rt7wibN4DXcFzRFSndf+SaAENTvmeQTL6tPbeqAW90sEErWneVS/mUGV0aPz
+         2Sug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701177754; x=1701782554;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=30VypmY2CFZ8lvqagGC6jaet2OpETydP+u6D3TSu8fI=;
-        b=esnAz3IWr4MPwVkAk2tfURXRFB/EDbvo4uNK7q0Lenk4NBNGE5nliOpf+glX9qCF3o
-         TzwGlNFEdAOz5UMTwJJ54zsZBPWG7WVnfnW/vw9/SZgOMD6aYwKuhMltjsCXIUmXadER
-         sURfYzffcaMPM4CVZOfcy+rXV93F7/JHXGYfuiOFv+6mcS0iYh/3H7SwZAHblDSkOCVh
-         iStQbsuIIXmokrv+Xnqj0rwSCU281fEkRk6d8a3aQgni7eSVt3xwISFgJp8QopMY8bcP
-         lEGfUgQv7iSiGPkbCTNX2rT8Aoaz+GJj4+7yhTQoBd4fFyD+8mQi+SkTt4T74BWIudnk
-         6rNA==
-X-Gm-Message-State: AOJu0YwK8iNoxLWw7wf00JspSo9K76MbgW4qrwmaIJW766yi0DQkAY/y
-        mHBmivqMnXDNAVOPjHUYrNMJtcdIK6qIAA==
-X-Google-Smtp-Source: AGHT+IH3JFeDBdC18l8j/Q+NB48Ja1KZVkzEIv229wi7jf8qWZFdPd/OFYbLqFjShGbgQBekqvZ+4w==
-X-Received: by 2002:a17:902:ead2:b0:1cf:a53f:200f with SMTP id p18-20020a170902ead200b001cfa53f200fmr16674842pld.32.1701177753559;
-        Tue, 28 Nov 2023 05:22:33 -0800 (PST)
-Received: from [192.168.0.106] ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id u11-20020a170902e5cb00b001cfbd011ca9sm5767276plf.113.2023.11.28.05.22.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Nov 2023 05:22:33 -0800 (PST)
-Message-ID: <01df8329-06d7-4fd1-9c7a-05296f33231e@gmail.com>
-Date:   Tue, 28 Nov 2023 20:22:27 +0700
+        d=1e100.net; s=20230601; t=1701177783; x=1701782583;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3dCUnmn0BnrE2m+8WTS8NvC7pbXYOAUPOHwpmf2nQ5k=;
+        b=b7VtmVeH6xdHUCTy/CRSlKl/lBZLE+GDasJQoQqfzmzKmbJwAMpBZpT7ouMOHoQrZI
+         S/KnrR32Ol1XeI1BhodOYtvnhQHk7Xw1B2r66TLCRjyCnkPsMT0OPAA9Cn/3YbWpg66l
+         jaI2Qggc3GkyxC5g7Cfv+1MOqeHKJbX2klFqqi4e5bHpI40+Kzt84rpF7A6kBFxA8Ikv
+         XNrKMpDE1Y7RBszI0ufzEidvXHJ/lL1NQZ3yTQwvBZ80g6xvwVf83s2x6IXTw5t0q8CU
+         wK2H6Hk+mIlYPrEj/6OJOxic++/NJ8QlNmXN25kEIgowJVpZ2VEohZSEtT4vrXpw33aa
+         qiuQ==
+X-Gm-Message-State: AOJu0YxXN8mCWNwGTBTmpPlSDajIBaxC4zNxN3wOR1ybKg4NPqL0aT4/
+        Ya4kgdYbqd3yfT1str3Eys3+5STKnT8+3ctiw0o=
+X-Google-Smtp-Source: AGHT+IG4eo1lRqCyzRbI4aFlhW1Z6q6ycRX9VtpnrLDU5d/q8u+XwyLpGVKGiY10at7a6Aa740AOieFwgKcjbmp/tBw=
+X-Received: by 2002:a05:6870:6c0b:b0:1ef:f14e:6f0a with SMTP id
+ na11-20020a0568706c0b00b001eff14e6f0amr20536626oab.0.1701177783127; Tue, 28
+ Nov 2023 05:23:03 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Power Management <linux-pm@vger.kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ramses VdP <ramses@well-founded.dev>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Fwd: Intel hybrid CPU scheduler always prefers E cores
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231121094642.2973795-1-qiujingbao.dlmu@gmail.com>
+ <20231121094642.2973795-3-qiujingbao.dlmu@gmail.com> <09b29f1f-a42b-49f7-afca-f82357acd4c8@linaro.org>
+In-Reply-To: <09b29f1f-a42b-49f7-afca-f82357acd4c8@linaro.org>
+From:   jingbao qiu <qiujingbao.dlmu@gmail.com>
+Date:   Tue, 28 Nov 2023 21:22:52 +0800
+Message-ID: <CAJRtX8TU9Z3OXL1zw9+mGNhxugp_C2jo40k-s9V2byNCQeBoLQ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] rtc: add rtc controller support for Sophgo CV1800B SoC
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
+        krzysztof.kozlowski+dt@linaro.org, chao.wei@sophgo.com,
+        unicorn_wang@outlook.com, conor+dt@kernel.org, robh+dt@kernel.org,
+        conor@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, linux-rtc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -79,31 +74,183 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Nov 21, 2023 at 6:01=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 21/11/2023 10:46, Jingbao Qiu wrote:
+> > Implement the RTC driver for CV1800B, which able to provide time and
+> > alarm functionality.
+> >
+> > Signed-off-by: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+> > ---
+> >  drivers/rtc/Kconfig       |  10 ++
+> >  drivers/rtc/Makefile      |   1 +
+> >  drivers/rtc/rtc-cv1800b.c | 293 ++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 304 insertions(+)
+> >  create mode 100644 drivers/rtc/rtc-cv1800b.c
+>
+> Bindings were not tested, so I assume you did not compile the code
+> either. Please confirm that you fixed all warnings pointed out by W=3D1
+> builds, smatch and sparse. All of them.
 
-I come across an interesting bug report on Bugzilla [1]. The reporter
-wrote:
+ will test & fix in next version
 
-> I am running an intel alder lake system (Core i7-1260P), with a mix of P and E cores.
-> 
-> Since Linux 6.6, and also on the current 6.7 RC, the scheduler seems to have a strong preference for the E cores, and single threaded workloads are consistently scheduled on one of the E cores.
-> 
-> With Linux 6.4 and before, when I ran a single threaded CPU-bound process, it was scheduled on a P core. With 6.5, it seems that the choice of P or E seemed rather random.
-> 
-> I tested these by running "stress" with different amounts of threads. With a single thread on Linux 6.6 and 6.7, I always have an E core at 100% and no load on the P cores. Starting from 3 threads I get some load on the P cores as well, but the E cores stay more heavily loaded.
-> With "taskset" I can force a process to run on a P core, but clearly it's not very practical to have to do CPU scheduling manually.
-> 
-> This severely affects single-threaded performance of my CPU since the E cores are considerably slower. Several of my workflows are now a lot slower due to them being single-threaded and heavily CPU-bound and being scheduled on E cores whereas they would run on P cores before.
-> 
-> I am not sure what the exact desired behaviour is here, to balance power consumption and performance, but currently my P cores are barely used for single-threaded workloads.
-> 
-> Is this intended behaviour or is this indeed a regression? Or is there perhaps any configuration that I should have done from my side? Is there any further info that I can provide to help you figure out what's going on?
+>
+> >
+> > diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+> > index 3814e0845e77..2089cceea38c 100644
+> > --- a/drivers/rtc/Kconfig
+> > +++ b/drivers/rtc/Kconfig
+> > @@ -1103,6 +1103,16 @@ config RTC_DRV_DS2404
+> >         This driver can also be built as a module. If so, the module
+> >         will be called rtc-ds2404.
+> >
+> > +config RTC_DRV_CV1800B
+> > +     tristate "Sophgo CV1800B RTC"
+> > +     depends on ARCH_SOPHGO || COMPILE_TEST
+> > +     help
+> > +       If you say yes here you will get support for the
+> > +       RTC of the Sophgo CV1800B SOC.
+> > +
+> > +       This depend on ARCH_SOPHGO and COMPILE_TEST. Please
+> > +       first config that.
+>
+> ...
+>
+> > +static int cv1800b_rtc_probe(struct platform_device *pdev)
+> > +{
+> > +     struct cv1800b_rtc_priv *rtc;
+> > +     struct resource *res;
+> > +     int ret;
+> > +
+> > +     rtc =3D devm_kzalloc(&pdev->dev, sizeof(*rtc), GFP_KERNEL);
+> > +     if (!rtc)
+> > +             return -ENOMEM;
+> > +
+> > +     res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > +     if (!res) {
+> > +             ret =3D -ENODEV;
+> > +             goto err;
+> > +     }
+> > +
+> > +     rtc->core_map =3D devm_ioremap_resource(&pdev->dev, res);
+>
+> Use helper combining these two calls.
 
-PM and scheduler people, is this a regression or works as intended?
+Ok, will use devm_platform_ioremap_resource() to replace it.
 
-Thanks.
+>
+> > +     if (IS_ERR(rtc->core_map)) {
+> > +             ret =3D PTR_ERR(rtc->core_map);
+> > +             goto err;
+> > +     }
+> > +
+> > +     rtc->irq =3D platform_get_irq(pdev, 0);
+> > +     platform_set_drvdata(pdev, rtc);
+>
+> Your code has random order. First you get IRQ, then you check its value,
+> then you go further.
 
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=218195
+ok
 
--- 
-An old man doll... just what I always wanted! - Clara
+>
+> > +     if (rtc->irq < 0) {
+> > +             ret =3D -EINVAL;
+> > +             goto err;
+> > +     }
+> > +
+> > +     ret =3D
+> > +         devm_request_irq(&pdev->dev, rtc->irq, cv1800b_rtc_irq_handle=
+r,
+>
+> Wrong wrapping.
+
+ok
+
+>
+> > +                          IRQF_SHARED, "rtc alarm", &pdev->dev);
+>
+> Why shared?
+
+ok
+
+>
+> > +     if (ret)
+> > +             goto err;
+> > +
+> > +     rtc->clk =3D devm_clk_get(&pdev->dev, NULL);
+> > +     if (IS_ERR(rtc->clk)) {
+> > +             dev_err(&pdev->dev, "no clock");
+>
+> This code is not ready for upstream. There are multiple things wrong here=
+.
+>
+> First, syntax is return dev_err_probe.
+>
+> Second, you do not have clocks and you do not allow them! Just open your
+> binding.
+
+I'm not fully understanding here, can you elaborate more?
+as there is clocks info like this in the dt-bindings:
+ clocks =3D <&osc>;
+
+>
+> Third, use wrapper - devm_clk_get_enable or something like that.
+
+I will use devm_clk_get_enabled() to replace it.
+
+>
+>
+> > +             ret =3D PTR_ERR(rtc->clk);
+> > +             goto err;
+> > +     }
+>
+> Blank line.
+
+ok
+
+>
+> > +     ret =3D clk_prepare_enable(rtc->clk);
+> > +     if (ret)
+> > +             goto err;
+>
+> Blank line.
+
+ok
+
+>
+> > +     ret =3D cv1800b_rtc_softinit(rtc);
+> > +     if (ret)
+> > +             goto err;
+> > +     cv1800b_rtc_alarm_irq_enable(&pdev->dev, 1);
+> > +     rtc->rtc_dev =3D devm_rtc_allocate_device(&pdev->dev);
+> > +     if (IS_ERR(rtc->rtc_dev)) {
+> > +             ret =3D PTR_ERR(rtc->rtc_dev);
+> > +             goto err;
+> > +     }
+> > +     rtc->rtc_dev->range_max =3D U32_MAX;
+> > +     rtc->rtc_dev->ops =3D &cv800b_rtc_ops;
+> > +
+> > +     return rtc_register_device(rtc->rtc_dev);
+
+I find the commet of devm_rtc_device_register wirte
+=E2=80=9CThis function is deprecated, use devm_rtc_allocate_device and
+rtc_register_device instead=E2=80=9D
+but all of code about this, they all use devm_rtc_device_register
+function. So which one do you suggest I use?
+
+> > +err:
+> > +     return dev_err_probe(&pdev->dev, ret, "Failed to init cv1800b rtc=
+\n");
+>
+> Drop, just return.
+
+ok
+
+>
+> Best regards,
+> Krzysztof
+>
+
+Best regards,
+Jingbao Qiu
