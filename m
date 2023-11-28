@@ -2,90 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 639B07FB7E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:33:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2633D7FB7F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:35:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344269AbjK1KdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 05:33:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49844 "EHLO
+        id S1344160AbjK1Kez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 05:34:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234908AbjK1Kcw (ORCPT
+        with ESMTP id S234887AbjK1Kei (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 05:32:52 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361802722
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:28:21 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 502D6C433C7;
-        Tue, 28 Nov 2023 10:28:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1701167300;
-        bh=nnqZ06ksK0pk3r0lDcdYcgWXjjX1wHxDRcwFEc8XS0Y=;
-        h=From:To:Cc:Subject:Date:From;
-        b=rXUxKllRuBxV9GetXRXTafM9LWGk5dnCV9/zUrU6M673IhyjL0FNCdblspQNwCumW
-         cpaW4+ofvJr1iFT4oBGnqq8XHTsxmagiB7s112d0l9bYGAHpiXgpliRdhiq7QuA1O/
-         dSlazoAyeO0+9w+lyJYEzV5SZ3Rimcd/rvjJsOJM=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tue, 28 Nov 2023 05:34:38 -0500
+Received: from mx.kernkonzept.com (serv1.kernkonzept.com [IPv6:2a01:4f8:1c1c:b490::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7920F5B8A;
+        Tue, 28 Nov 2023 02:29:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kernkonzept.com; s=mx1; h=In-Reply-To:Content-Type:MIME-Version:References:
+        Message-ID:Subject:Cc:To:From:Date:Content-Transfer-Encoding:Reply-To:
+        Content-ID:Content-Description;
+        bh=EpPTjdpeYg0w4loH5/do8EUAnKxDsHXE57/3N6Z68X8=; b=aLdRprn3bm9/VdAqUWI8sZMDGy
+        4Ueng9SKAuU2e4Wskgkno4UbZJlnpP1eXl7/6jV83jVYOdflrys0QAs5XEyLEhJAVz+3zfCG1nQ/K
+        UsECCbRLlUpCwUYGqIKNij7GFXm/zEzzUhop4GmiIe29IczYFLyBNWr6ND5nCi5U6/EY5SEBMYaVG
+        Ts4FZFbJTzvcmHSneNFdPCkUT/xUVlPJDP46mN09+1yQnBgpvVdEKHDorkkVgSkg3hTloxLFZUcgX
+        Ae1wbZ+mlHK2lNlDk6tFANDHpBn6pf2/rXnN5qDETiZmVfpSq4NOfeer3tEfxtBlRYoeTXdMjxUek
+        /R1p8+7w==;
+Received: from [10.22.3.24] (helo=kernkonzept.com)
+        by mx.kernkonzept.com with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.96)
+        id 1r7vLD-008QQS-33;
+        Tue, 28 Nov 2023 11:29:19 +0100
+Date:   Tue, 28 Nov 2023 11:29:11 +0100
+From:   Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>, Nishanth Menon <nm@ti.com>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
-        Saravana Kannan <saravanak@google.com>
-Subject: [PATCH] driver core: make device_is_dependent() static
-Date:   Tue, 28 Nov 2023 10:28:15 +0000
-Message-ID: <2023112815-faculty-thud-add8@gregkh>
-X-Mailer: git-send-email 2.43.0
+        Stephen Boyd <sboyd@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 0/3]  OPP: Simplify required-opp handling
+Message-ID: <ZWXA9_VDRKzMA9Nj@kernkonzept.com>
+References: <cover.1700131353.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-Lines:  40
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1629; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=nnqZ06ksK0pk3r0lDcdYcgWXjjX1wHxDRcwFEc8XS0Y=; b=owGbwMvMwCRo6H6F97bub03G02pJDKmpB/bLBQs3V5yIlQ+42nn61s0pxodteqLW35WU7toXH vGCZ1VsRywLgyATg6yYIsuXbTxH91ccUvQytD0NM4eVCWQIAxenAEzEXphhwTGF33HxL68oJxtf U2Z+vLTvDut+GYZ5BoaTNhatcc76K/lZUbq5JDbGT+kAAA==
-X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1700131353.git.viresh.kumar@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function device_is_dependent() is only called by the driver core
-internally and should not, at this time, be called by anyone else
-outside of it, so mark it as static so as not to give driver authors the
-wrong idea.
+On Thu, Nov 16, 2023 at 04:13:04PM +0530, Viresh Kumar wrote:
+> Configuring the required OPP was never properly implemented, we just
+> took an exception for genpds and configured them directly, while leaving
+> out all other required OPP types.
+> 
+> Now that a standard call to dev_pm_opp_set_opp() takes care of
+> configuring the opp->level too, the special handling for genpds can be
+> avoided by simply calling dev_pm_opp_set_opp() for the required OPPs,
+> which shall eventually configure the corresponding level for genpds.
+> 
+> This also makes it possible for us to configure other type of required
+> OPPs (no concrete users yet though), via the same path. This is how
+> other frameworks take care of parent nodes, like clock, regulators, etc,
+> where we recursively call the same helper.
+> 
+> Pushed here:
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/vireshk/pm.git opp/required-opps
+> 
 
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Saravana Kannan <saravanak@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/base/core.c    | 2 +-
- include/linux/device.h | 1 -
- 2 files changed, 1 insertion(+), 2 deletions(-)
+Sorry for the delay. I tested the "opp/linux-next" branch (which seems
+to contain the changes in this series already now) with the following
+configurations:
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index dafdb9970901..6dcc26eec096 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -298,7 +298,7 @@ static inline bool device_link_flag_is_sync_state_only(u32 flags)
-  * Check if @target depends on @dev or any device dependent on it (its child or
-  * its consumer etc).  Return 1 if that is the case or 0 otherwise.
-  */
--int device_is_dependent(struct device *dev, void *target)
-+static int device_is_dependent(struct device *dev, void *target)
- {
- 	struct device_link *link;
- 	int ret;
-diff --git a/include/linux/device.h b/include/linux/device.h
-index c11d60cabaab..6a4ee40af3df 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -1071,7 +1071,6 @@ int device_rename(struct device *dev, const char *new_name);
- int device_move(struct device *dev, struct device *new_parent,
- 		enum dpm_order dpm_order);
- int device_change_owner(struct device *dev, kuid_t kuid, kgid_t kgid);
--int device_is_dependent(struct device *dev, void *target);
- 
- static inline bool device_supports_offline(struct device *dev)
- {
+ - Single genpd used for cpufreq (MSM8909): Works
+ - Multiple genpd used for cpufreq (MSM8916): Works
+ - Single genpd used for cpufreq + parent genpd (MSM8916): Works, warning gone
+
+Thanks for fixing this! :-)
+
+I guess I'm too late now but FWIW:
+
+Tested-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+
+> V2->V3:
+> - Dropped patch 1/3, merged.
+> - Added a new commit to avoid propagation and a WARN() for parent genpd case.
+> 
+> V1->V2:
+> - Support opp-level 0, drop vote i.e..
+> - Fix OPP pointer while calling dev_pm_opp_set_opp() recursively.
+> - Minor checks and fixes.
+> - Add Reviewed-by from Ulf.
+> 
+> --
+> Viresh
+> 
+> Viresh Kumar (3):
+>   OPP: Use _set_opp_level() for single genpd case
+>   OPP: Call dev_pm_opp_set_opp() for required OPPs
+>   OPP: Don't set OPP recursively for a parent genpd
+> 
+>  drivers/opp/core.c     | 180 ++++++++++++++++++++++-------------------
+>  drivers/opp/of.c       |  49 ++++++++---
+>  drivers/opp/opp.h      |   8 +-
+>  include/linux/pm_opp.h |   7 +-
+>  4 files changed, 144 insertions(+), 100 deletions(-)
+> 
+> -- 
+> 2.31.1.272.g89b43f80a514
+> 
+
 -- 
-2.43.0
-
+Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+Kernkonzept GmbH at Dresden, Germany, HRB 31129, CEO Dr.-Ing. Michael Hohmuth
