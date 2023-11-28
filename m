@@ -2,151 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6827FB211
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 07:47:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B337E7FB219
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 07:49:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343657AbjK1Grc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 01:47:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55280 "EHLO
+        id S1343662AbjK1Gtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 01:49:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbjK1Grb (ORCPT
+        with ESMTP id S231540AbjK1Gtm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 01:47:31 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F41A7E1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 22:47:37 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0489C433C7;
-        Tue, 28 Nov 2023 06:47:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701154057;
-        bh=OxJgD4qf34Xbg3woKklJaOmC7kHvKBOOhlmPWeA/HYs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UcAob4de27eAJnSsYkTco2tUOVxlt6u5AaClzpVwGIEQSrsj/KI4FWlQWvN6PcwG3
-         9gClQeLhzRkLfAfBIBTJLr+DilMRg6YAXNWHsDYjMG03tyu8XKkzi79NR0U2W3kV+0
-         Krm7w+iGO86EnRwIHbF3sVUACJ7gAu4viZgX4mnclQr5sZFKGDniOyTc+DVVZjyf2Q
-         oFqBoY9XRb2JY/lTwmnO0+pY7j1yzO0OV3YxqOSW3hYmGBwbBUxvc/4YobEQOjud7r
-         i3HKJX7Mj0fq1Hjh+46Z7q8cJBq20gWs0MlqtZydntZLdy3j6ocP23cYRLgSHpCQ+M
-         FE3bj5drIgN2A==
-Date:   Tue, 28 Nov 2023 12:17:21 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Can Guo <quic_cang@quicinc.com>
-Cc:     bvanassche@acm.org, adrian.hunter@intel.com, beanhuo@micron.com,
-        avri.altman@wdc.com, junwoo80.lee@samsung.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        "open list:GENERIC PHY FRAMEWORK" <linux-phy@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 09/10] phy: qualcomm: phy-qcom-qmp-ufs: Add High Speed
- Gear 5 support for SM8550
-Message-ID: <20231128064721.GJ3088@thinkpad>
-References: <1700729190-17268-1-git-send-email-quic_cang@quicinc.com>
- <1700729190-17268-10-git-send-email-quic_cang@quicinc.com>
+        Tue, 28 Nov 2023 01:49:42 -0500
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 119BBE1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 22:49:46 -0800 (PST)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 3AS6mhXG087957;
+        Tue, 28 Nov 2023 14:48:43 +0800 (+08)
+        (envelope-from Zhiguo.Niu@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4SfXvy5tlyz2K1r9S;
+        Tue, 28 Nov 2023 14:43:10 +0800 (CST)
+Received: from bj08434pcu.spreadtrum.com (10.0.73.87) by
+ BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Tue, 28 Nov 2023 14:48:41 +0800
+From:   Zhiguo Niu <zhiguo.niu@unisoc.com>
+To:     <jaegeuk@kernel.org>, <chao@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <niuzhiguo84@gmail.com>,
+        <zhiguo.niu@unisoc.com>, <hongyu.jin@unisoc.com>
+Subject: [PATCH V2] f2fs: show more discard status by sysfs
+Date:   Tue, 28 Nov 2023 14:48:16 +0800
+Message-ID: <1701154096-23883-1-git-send-email-zhiguo.niu@unisoc.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1700729190-17268-10-git-send-email-quic_cang@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.0.73.87]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ BJMBX02.spreadtrum.com (10.0.64.8)
+X-MAIL: SHSQR01.spreadtrum.com 3AS6mhXG087957
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 12:46:29AM -0800, Can Guo wrote:
-> On SM8550, two sets of UFS PHY settings are provided, one set is to support
-> HS-G5, another set is to support HS-G4 and lower gears. The two sets of PHY
-> settings are programming different values to different registers, mixing
-> the two sets and/or overwriting one set with another set is definitely not
-> blessed by UFS PHY designers.
-> 
-> To add HS-G5 support for SM8550, split the two sets of PHY settings into
-> their dedicated overlay tables, only the common parts of the two sets of
-> PHY settings are left in the .tbls.
-> 
-> Consider we are going to add even higher gear support in future, to avoid
-> adding more tables with different names, rename the .tbls_hs_g4 and make it
-> an array, a size of 2 is enough as of now.
-> 
-> In this case, .tbls alone is not a complete set of PHY settings, so either
-> tbls_hs_overlay[0] or tbls_hs_overlay[1] must be applied on top of the
-> .tbls to become a complete set of PHY settings.
-> 
+The current pending_discard attr just only shows the discard_cmd_cnt
+information. More discard status can be shown so that we can check
+them through sysfs when needed.
 
-Thanks for the update! This really helps in minimizing the changes for future
-gears.
+Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+---
+changes of v2: Improve the patch according to Chao's suggestions.
+---
+---
+ Documentation/ABI/testing/sysfs-fs-f2fs |  6 ++++++
+ fs/f2fs/sysfs.c                         | 18 ++++++++++++++++++
+ 2 files changed, 24 insertions(+)
 
-> Signed-off-by: Can Guo <quic_cang@quicinc.com>
-> ---
->  drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h     |   2 +
->  drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v6.h |   2 +
->  .../qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h    |   9 ++
->  drivers/phy/qualcomm/phy-qcom-qmp-ufs.c            | 174 ++++++++++++++++++---
->  4 files changed, 166 insertions(+), 21 deletions(-)
-> 
->  
-
-[...]
-
-> -static void qmp_ufs_init_registers(struct qmp_ufs *qmp, const struct qmp_phy_cfg *cfg)
-> +static bool qmp_ufs_match_gear_overlay(struct qmp_ufs *qmp, const struct qmp_phy_cfg *cfg, int *i)
-> +{
-> +	u32 max_gear, floor_max_gear = cfg->max_supported_gear;
-> +	bool found = false;
-> +	int j;
-> +
-> +	for (j = 0; j < NUM_OVERLAY; j ++) {
-> +		max_gear = cfg->tbls_hs_overlay[j].max_gear;
-> +
-> +		if (max_gear == 0)
-
-Is this condition possible for hs_overlay tables?
-
-> +			continue;
-> +
-> +		/* Direct matching, bail */
-> +		if (qmp->submode == max_gear) {
-> +			*i = j;
-> +			return true;
-> +		}
-> +
-> +		/* If no direct matching, the lowest gear is the best matching */
-> +		if (max_gear < floor_max_gear) {
-
-Can you start the loop from max? If looks odd to set the matching params in the
-first iteration itself and then checking the next one.
-
-> +			*i = j;
-> +			found = true;
-> +			floor_max_gear = max_gear;
-> +		}
-> +	}
-> +
-> +	return found;
-> +}
-> +
-> +static int qmp_ufs_init_registers(struct qmp_ufs *qmp, const struct qmp_phy_cfg *cfg)
->  {
-> +	bool apply_overlay;
-> +	int i;
-> +
-> +	if (qmp->submode > cfg->max_supported_gear || qmp->submode == 0) {
-> +		dev_err(qmp->dev, "Invalid PHY submode %u\n", qmp->submode);
-> +		return -EINVAL;
-> +	}
-
-This check should be moved to qmp_ufs_set_mode().
-
-Rest LGTM.
-
-- Mani
-
+diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
+index 36c3cb5..c6970e5 100644
+--- a/Documentation/ABI/testing/sysfs-fs-f2fs
++++ b/Documentation/ABI/testing/sysfs-fs-f2fs
+@@ -498,6 +498,12 @@ Description:	Show status of f2fs checkpoint in real time.
+ 		CP_RESIZEFS_FLAG		0x00004000
+ 		=============================== ==============================
+ 
++What:		/sys/fs/f2fs/<disk>/stat/discard_status
++Date:		November 2023
++Contact:	"Zhiguo Niu" <zhiguo.niu@unisoc.com>
++Description:	Show status of f2fs discard in real time, including
++		"issued discard","queued discard" and "undiscard blocks".
++
+ What:		/sys/fs/f2fs/<disk>/ckpt_thread_ioprio
+ Date:		January 2021
+ Contact:	"Daeho Jeong" <daehojeong@google.com>
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index 417fae96..2b80116 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -134,6 +134,22 @@ static ssize_t cp_status_show(struct f2fs_attr *a,
+ 	return sysfs_emit(buf, "%x\n", le32_to_cpu(F2FS_CKPT(sbi)->ckpt_flags));
+ }
+ 
++static ssize_t discard_status_show(struct f2fs_attr *a,
++		struct f2fs_sb_info *sbi, char *buf)
++{
++	struct discard_cmd_control *dcc = SM_I(sbi)->dcc_info;
++
++	if (!dcc)
++		return -EINVAL;
++
++	return sysfs_emit(buf, "%llu, %llu, %u\n",
++			(unsigned long long)atomic_read(
++				&dcc->issued_discard),
++			(unsigned long long)atomic_read(
++				&dcc->queued_discard),
++			dcc->undiscard_blks);
++}
++
+ static ssize_t pending_discard_show(struct f2fs_attr *a,
+ 		struct f2fs_sb_info *sbi, char *buf)
+ {
+@@ -1197,9 +1213,11 @@ static ssize_t f2fs_sb_feature_show(struct f2fs_attr *a,
+ 
+ F2FS_GENERAL_RO_ATTR(sb_status);
+ F2FS_GENERAL_RO_ATTR(cp_status);
++F2FS_GENERAL_RO_ATTR(discard_status);
+ static struct attribute *f2fs_stat_attrs[] = {
+ 	ATTR_LIST(sb_status),
+ 	ATTR_LIST(cp_status),
++	ATTR_LIST(discard_status),
+ 	NULL,
+ };
+ ATTRIBUTE_GROUPS(f2fs_stat);
 -- 
-மணிவண்ணன் சதாசிவம்
+1.9.1
+
