@@ -2,134 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C844E7FAFE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 03:10:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A3C7FAFE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 03:10:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234276AbjK1CHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 21:07:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59434 "EHLO
+        id S234364AbjK1CHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 21:07:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231623AbjK1CHG (ORCPT
+        with ESMTP id S234367AbjK1CHQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 21:07:06 -0500
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C79AC3;
-        Mon, 27 Nov 2023 18:07:12 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SfQnR392mz4f3kFZ;
-        Tue, 28 Nov 2023 10:07:07 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-        by mail.maildlp.com (Postfix) with ESMTP id 523E21A085D;
-        Tue, 28 Nov 2023 10:07:09 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP1 (Coremail) with SMTP id cCh0CgDHyhBMS2VlsMmJCA--.64884S3;
-        Tue, 28 Nov 2023 10:07:09 +0800 (CST)
-Subject: Re: [PATCH v2 1/6] md: fix missing flush of sync_work
-To:     Song Liu <song@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     xni@redhat.com, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20231124075953.1932764-1-yukuai1@huaweicloud.com>
- <20231124075953.1932764-2-yukuai1@huaweicloud.com>
- <CAPhsuW5mjvpMmEN5g_-ADQgJKZ1=QyNxxSw-7kq-W2jww09Aag@mail.gmail.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <e3b8298c-1154-c5ce-d025-b9346a6cd2ab@huaweicloud.com>
-Date:   Tue, 28 Nov 2023 10:07:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Mon, 27 Nov 2023 21:07:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D96A1B1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 18:07:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701137241;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=26ylPeTUKwauoxaVi1z6xco5xaOkWba8wbcA5nPLGlY=;
+        b=Xwi6xBmsWf+cGkiQYvW2D+8DGpctYsxNmf5kkFyfzbCxgmCx4RpqUvIg+uioDE0yJEe/t0
+        E7vpGJUr3T+H+3Prm2mAwVJxpquX5caF2c0UkVMtAfEsUPyLOTcfF0uikcYOJAoulbAUjq
+        3KdW9XD1+Nt8jLO/mwcmN59ofCRiSEM=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-629-f-boATXjOW2vq0AyQxrXlQ-1; Mon, 27 Nov 2023 21:07:20 -0500
+X-MC-Unique: f-boATXjOW2vq0AyQxrXlQ-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-67804869762so60035426d6.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 18:07:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701137239; x=1701742039;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=26ylPeTUKwauoxaVi1z6xco5xaOkWba8wbcA5nPLGlY=;
+        b=u2I/JhG8Q2z2z+3pl0o94Lfnq4bVvOVcVmn4l+LekaQmiddCnZy4OnnAWoTPETqmo3
+         osKAIbCl+Y4MtJqd3i6bst5ihodwAf+3RZNVZlYUH/dOLEzm5bmIO7r7AvjCiDPQC6NW
+         XxqZGK6/i7/NBu758ikDCWBGwUlYmFNCa8azeOkH2Cu32HY10yqQ202nyNMEeragp0PN
+         doeyf9XtF9+A7ycbbEoBSY6PJTMMqqcyL5r7JECZMSD/dU/BszEtAGRX5nFD+rjiZVKR
+         /3Zv5TnR9U+cXoYatjvjDO//vEGfBZwEclhBi+WmaCGaWQvLlBm1Ylw5PUkWrkDwFQRo
+         bHJw==
+X-Gm-Message-State: AOJu0YzoH20b6x1A2HlJ5SjzDcIKIm9oLuFwntMIKfRUazRwOgLpO+Zw
+        plPY561O+rGtmiJ7vO5BuvR2u+CfODF0Gg0bhnzhPvLx1gYJxzuU1CgnvoScRvFswQP2oTtiN5m
+        IgXNLEVmzDmz435FtjseRyxcMuS+iJh4nrjmmnZwk4eSVK2bwI8nhsQ==
+X-Received: by 2002:ad4:4582:0:b0:67a:2c28:ce06 with SMTP id x2-20020ad44582000000b0067a2c28ce06mr8365654qvu.63.1701137239593;
+        Mon, 27 Nov 2023 18:07:19 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFTw8IiCvQDQz/rDMw7LbIWJb2p+jcHMtz7+40WBg/SDRsyIbNd4vmRPgJFXJrHQVJWKiRODIA+xEo2TuwpTVs=
+X-Received: by 2002:ad4:4582:0:b0:67a:2c28:ce06 with SMTP id
+ x2-20020ad44582000000b0067a2c28ce06mr8365639qvu.63.1701137239401; Mon, 27 Nov
+ 2023 18:07:19 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAPhsuW5mjvpMmEN5g_-ADQgJKZ1=QyNxxSw-7kq-W2jww09Aag@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgDHyhBMS2VlsMmJCA--.64884S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zw1kAFykWF1fur4UuFWDtwb_yoW8ZFy3p3
-        ySq3W5ArW8AayUtw47KFyq9FyFgw10qrZrKrW3uw1rJFn8Jr15G3WruF1YvFy8Ar93Cwnx
-        Za18ta9xu3W0vr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
-        IcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
-        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
-        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUF9a9DU
-        UUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <ZWD_fAPqEWkFlEkM@dwarf.suse.cz> <CAO7dBbUVQn8xzPZQhhw1XqF+sQT0c6phk4sda+X=MrR6RmPE0A@mail.gmail.com>
+ <ZWJllXCN0SDIELrX@dwarf.suse.cz>
+In-Reply-To: <ZWJllXCN0SDIELrX@dwarf.suse.cz>
+From:   Pingfan Liu <piliu@redhat.com>
+Date:   Tue, 28 Nov 2023 10:07:08 +0800
+Message-ID: <CAF+s44QDMzSq3ihzRtaP9ZwF-drfAiQq713d9bastsJFiReJ4w@mail.gmail.com>
+Subject: Re: [PATCH 0/4] kdump: crashkernel reservation from CMA
+To:     Jiri Bohac <jbohac@suse.cz>
+Cc:     Tao Liu <ltao@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org, mhocko@suse.cz
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sun, Nov 26, 2023 at 5:24=E2=80=AFAM Jiri Bohac <jbohac@suse.cz> wrote:
+>
+> Hi Tao,
+>
+> On Sat, Nov 25, 2023 at 09:51:54AM +0800, Tao Liu wrote:
+> > Thanks for the idea of using CMA as part of memory for the 2nd kernel.
+> > However I have a question:
+> >
+> > What if there is on-going DMA/RDMA access on the CMA range when 1st
+> > kernel crash? There might be data corruption when 2nd kernel and
+> > DMA/RDMA write to the same place, how to address such an issue?
+>
+> The crash kernel CMA area(s) registered via
+> cma_declare_contiguous() are distinct from the
+> dma_contiguous_default_area or device-specific CMA areas that
+> dma_alloc_contiguous() would use to reserve memory for DMA.
+>
+> Kernel pages will not be allocated from the crash kernel CMA
+> area(s), because they are not GFP_MOVABLE. The CMA area will only
+> be used for user pages.
+>
+> User pages for RDMA, should be pinned with FOLL_LONGTERM and that
+> would migrate them away from the CMA area.
+>
+> But you're right that DMA to user pages pinned without
+> FOLL_LONGTERM would still be possible. Would this be a problem in
+> practice? Do you see any way around it?
+>
 
-在 2023/11/28 8:02, Song Liu 写道:
-> On Fri, Nov 24, 2023 at 12:00 AM Yu Kuai <yukuai1@huaweicloud.com> wrote:
->>
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> Commit ac619781967b ("md: use separate work_struct for md_start_sync()")
->> use a new sync_work to replace del_work, however, stop_sync_thread() and
->> __md_stop_writes() was trying to wait for sync_thread to be done, hence
->> they should switch to use sync_work as well.
->>
->> Noted that md_start_sync() from sync_work will grab 'reconfig_mutex',
->> hence other contex can't held the same lock to flush work, and this will
->> be fixed in later patches.
->>
->> Fixes: ac619781967b ("md: use separate work_struct for md_start_sync()")
-> 
-> This fix should go via md-fixes branch. Please send it separately.
+I have not a real case in mind. But this problem has kept us from
+using the CMA area in kdump for years.  Most importantly, this method
+will introduce an uneasy tracking bug.
 
-This patch alone is not good, there are follow up problems to be fixed
-completely after patch 5. Can this patchset applied to md-fixes?
-
-Or I can split patch 1,4 and 5 for md-fixes, and keep others to md-next.
+For a way around, maybe you can introduce a specific zone, and for any
+GUP, migrate the pages away. I have doubts about whether this approach
+is worthwhile, considering the trade-off between benefits and
+complexity.
 
 Thanks,
-Kuai
 
-> 
-> Thanks,
-> Song
-> 
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->>   drivers/md/md.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/md/md.c b/drivers/md/md.c
->> index 09686d8db983..1701e2fb219f 100644
->> --- a/drivers/md/md.c
->> +++ b/drivers/md/md.c
->> @@ -4865,7 +4865,7 @@ static void stop_sync_thread(struct mddev *mddev)
->>                  return;
->>          }
->>
->> -       if (work_pending(&mddev->del_work))
->> +       if (work_pending(&mddev->sync_work))
->>                  flush_workqueue(md_misc_wq);
->>
->>          set_bit(MD_RECOVERY_INTR, &mddev->recovery);
->> @@ -6273,7 +6273,7 @@ static void md_clean(struct mddev *mddev)
->>   static void __md_stop_writes(struct mddev *mddev)
->>   {
->>          set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->> -       if (work_pending(&mddev->del_work))
->> +       if (work_pending(&mddev->sync_work))
->>                  flush_workqueue(md_misc_wq);
->>          if (mddev->sync_thread) {
->>                  set_bit(MD_RECOVERY_INTR, &mddev->recovery);
->> --
->> 2.39.2
->>
-> .
-> 
+Pingfan
 
