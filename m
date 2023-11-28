@@ -2,192 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9503C7FB97F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:34:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C425C7FB980
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:35:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344542AbjK1LeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 06:34:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42558 "EHLO
+        id S234756AbjK1Lev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 06:34:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234671AbjK1LeF (ORCPT
+        with ESMTP id S234671AbjK1Les (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 06:34:05 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BC791A5;
-        Tue, 28 Nov 2023 03:34:11 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-507bd19eac8so7272188e87.0;
-        Tue, 28 Nov 2023 03:34:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701171249; x=1701776049; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=HinylyjMIV3zakyLQJjGGG/zA6qqtkTIM5z3ZBjPgUw=;
-        b=TzMd6X1e60RedeDp8HpShngardyf8Qvpt/VVm2W5npSSboXzc143/RhKu8nqXqW3V7
-         Iew7MpTnt1p4HjaIyM4AeGgHRhBKY72yaSTtBXHkt9NJhF117rxFhZMPRyv6tZ2ftRk8
-         LkuRyXBbvPaUfh3z5NkCiU/y4HEcByowM0KnF1Q0dfdGOkzs3pd2LwGWDPvSd4Zhjxj1
-         AFvM+Fx5M0YvJbXbTI059k1pT6E+A1R2ORvY/aLQErB+bIKfg5/yFmELXm6ReXOs1To9
-         Ag8+QC+miHCiSBKZ0SNTka2MQBVUJ0SDBSLg6nKBlgF77Rx7O2JpUefH062ItjCvR90B
-         SBxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701171249; x=1701776049;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HinylyjMIV3zakyLQJjGGG/zA6qqtkTIM5z3ZBjPgUw=;
-        b=gD6vJTDluYwzwWoRVn2RNijKe/Ll/+Kf9OObHb7YppPK8d4DiS7iSkFJ8I4GlmAEkU
-         x2tcUSymzFvgw9hpNDNXergVuCOMz+uNht4t8Ol/KSWfCUhpa1W2tXiuDkBUGQKBw945
-         Kqdu6aGbG9Fv3kpRgUJ5Kaa0aUaWbXh6ebvxH8p9N+yFz7fB9hrhjpvsia3pnbFnb9Dq
-         OjBgzYsQQPGRXauL/TbiXoLuqRQAl3qfXPWvBhe814Ri99JaZ2zGO2byr9/fvd6SrwjC
-         MK5d3nFpHxL0y6DiNOQkML3SOYC5LYrFRBlNSWDkejI72TmYE1iB6g5FJANa74PAaeXS
-         FjSQ==
-X-Gm-Message-State: AOJu0YwW6i+j+i+RsWD6P1f22xuy1I/6bVHUdgaTr44a4m11+oKfLSLZ
-        yTkw/5fUOmzoxX4zo+0Yyl4=
-X-Google-Smtp-Source: AGHT+IGE5qifJckMD+F1s0FDK+EpXSW5ug9B4iWKSn8uouCdGMtyGXXLIyjxoyEEXslH/qHIkCjT9w==
-X-Received: by 2002:ac2:4c48:0:b0:507:b7db:1deb with SMTP id o8-20020ac24c48000000b00507b7db1debmr11909699lfk.38.1701171249157;
-        Tue, 28 Nov 2023 03:34:09 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id k20-20020ac24574000000b00507a8789b43sm1820151lfm.269.2023.11.28.03.34.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 03:34:08 -0800 (PST)
-Date:   Tue, 28 Nov 2023 14:34:05 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Yinglu Yang <yangyinglu@loongson.cn>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Aleksandar Rikalo <aleksandar.rikalo@syrmia.com>,
-        Aleksandar Rikalo <arikalo@gmail.com>,
-        Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>,
-        Chao-ying Fu <cfu@wavecomp.com>, Marc Zyngier <maz@kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/7] mips: dmi: Fix early remap on MIPS32
-Message-ID: <3pgnihbrp5orh4tmj45fipbfoxdwzjh6uefitdpcea2vgkarcm@d56gv3areswl>
-References: <c7cuvhuu6py5vxhhvkhekv6ned5sro4a3wzzn7v45oahfw42ud@gyqmucagt5e2>
- <8ca730b9-fa8c-46ea-bdc5-158da0f29c3a@app.fastmail.com>
- <ZV9Fq1ihUm1Rn6yO@alpha.franken.de>
- <d6d7e27a-b1a1-48af-be6c-aa9097c48992@app.fastmail.com>
- <ZV94rifAIF2p9Nej@alpha.franken.de>
- <245d3985-9085-4be0-8c74-d95d06334584@app.fastmail.com>
- <3iksuovvsln3cw3xpmjd7f7xixfvwaneu4ok56fnookvyolpco@wrxxew3thgnq>
- <dfda70b6-3291-462f-bc87-06dcc87bd068@app.fastmail.com>
- <ysij22pivneyg7tk3bv3hti3tsgbzglb6pin3my7r3bokzxjj6@jrjmu45gbupr>
- <c73d9dbf-b637-47ff-ae2d-6f8987345410@app.fastmail.com>
+        Tue, 28 Nov 2023 06:34:48 -0500
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E16B1B5;
+        Tue, 28 Nov 2023 03:34:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1701171294; x=1732707294;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=RRgZT73GE0PemZtPQmyUTrBFpmxdtx5md87gBaEJquw=;
+  b=f8F6BqD7JFcmWUcQSj5+VdY+qiJQS/RuCrvf6/KENR1ZRs9jUTgW8/yI
+   PacVvBULj1u/Nye+XhlSbhkuagbxR5y8oPx4jjtVGKvo7xB8811rrxsl3
+   08xSKfsWOc9WQRedsCVLwdHfOAEkPVFM2Vy+PllPmGjMf3jqhd+6gUVYP
+   iXfYMAGJu0LlVfiffk0atry3rpOkFzMrczj0mzuGO0FTPf9eohuM8JBMj
+   rHSKVoKILSIHGwyx4svyKr25ejJiWJEi1fF3bkSTdgSPS8Ffsv8rT/hMX
+   ewwFl3mbtzzPq01/I3YUjykTDoUGgNRc2i7m5WOn7RIOpkdCuqhbNttZJ
+   g==;
+X-CSE-ConnectionGUID: 0hKpsaz1QDme7RntdZpeCA==
+X-CSE-MsgGUID: dAW0adsLSMyhYVDHdbg2Ew==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
+   d="scan'208";a="12323700"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 28 Nov 2023 04:34:53 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Tue, 28 Nov 2023 04:34:46 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (10.10.215.250)
+ by email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21 via Frontend Transport; Tue, 28 Nov 2023 04:34:46 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SyZ2u/znP7cDXa1OnPq4uDja4L+4cfELMb8Yeb3ksmF7Ehv1qAzNUf8ZP2+GbouO8kS6u++6tyCeLpHGNQsyk6b/tFM23n+70/DlfliI85ZDPkDvEfQZTWdEs72IwYOWxgbLquuy9km2S9jzF0fHCHvLfGgBZbvV+eCKTTZjDY6FNrCq9ooxyuYaUZAUL7ptdlvBhNKeC8jKHwbQ7Xs39df3c5nvnIGuZkFxYgm4ClUs8L5YiGg4MdxLu6rmwttdrzVf/F/7ZqSM4FSXy6xOCx8CNDZnMNIU/bJYfWCSNNVrqHNxHGDPrIZ2O6dg+6GR3kTBWV9At53Ie1BLBByy5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kS8fT6ETub7kQX8+9D35OrlQuVJWziZhpXkUPPhrc8Y=;
+ b=LfpaTEH1N6dv2Fa6JpUKcEa2zPul+jbvoppQtm8tSIWK1Pk6ZJRMOZ46JjWo2O/SH+XAsLAeLlwgOc9BESP2u+bOYIolkbpI7JduSdz0eAU/94O90BPj4Kf7LMFqEyP7GnypePS7ODMbB+SZawfxlh2OHnqbxCn8g/jsMOxJ5g6BLMceqSsOK1g2UaF9BJ7Sb0DMqFuIkocsL15ifvdakZBzLa+whUb7Kc789e5ZvI+UPbmyTg7KvR+3Hu7cOrrhZEGzhXLFGxYnLjPCienTNlKKnYrMe19BBsyhZIuprBW3BBQnJ/3FSfEzYSCim/3e/46xsqkRpkMhvD8qCy40Xw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kS8fT6ETub7kQX8+9D35OrlQuVJWziZhpXkUPPhrc8Y=;
+ b=bqOBDetE/uADfX5CwrDsiTDRZ6gWnAsEcDu4IKAktCJBJDCMZLwxD7OOAkewJGwL26E9IyY/57BLNFuLaO7HxGMBfJb/lDU1kPO6da1hiOPaT1frX5c+cGkJHpe66JCMaccOSHY1rIGxO177EqnNtPq+5jBNQvprfXUAU/zPxR1FJgwgcQZAAqb9+jHyIpVKpzXSonCc56AwOYMwLVH3E7HR+P1utNZtp7SsEGv3huIKHZbxakcveDque09qoIZ/0H94peU6TrpwrCOxep3MCxoWCwMXSLX7vjkiSCAhkPX2O/IHTjORjod9PezRS0Sr0UvUejeUI9WtQw/aO0fgmg==
+Received: from PH0PR11MB5611.namprd11.prod.outlook.com (2603:10b6:510:ed::9)
+ by IA1PR11MB7822.namprd11.prod.outlook.com (2603:10b6:208:3f2::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Tue, 28 Nov
+ 2023 11:34:44 +0000
+Received: from PH0PR11MB5611.namprd11.prod.outlook.com
+ ([fe80::447:632:a9ce:152f]) by PH0PR11MB5611.namprd11.prod.outlook.com
+ ([fe80::447:632:a9ce:152f%4]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
+ 11:34:44 +0000
+From:   <Shravan.Chippa@microchip.com>
+To:     <vkoul@kernel.org>
+CC:     <green.wan@sifive.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <palmer@dabbelt.com>,
+        <paul.walmsley@sifive.com>, <conor+dt@kernel.org>,
+        <dmaengine@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <Nagasuresh.Relli@microchip.com>, <Praveen.Kumar@microchip.com>
+Subject: RE: [PATCH v4 1/4] dmaengine: sf-pdma: Support
+ of_dma_controller_register()
+Thread-Topic: [PATCH v4 1/4] dmaengine: sf-pdma: Support
+ of_dma_controller_register()
+Thread-Index: AQHaC7rwiAakoMNSeUabYOyvai+WirCJhnmAgAY/ogA=
+Date:   Tue, 28 Nov 2023 11:34:44 +0000
+Message-ID: <PH0PR11MB561175B8951083F151A7269681BCA@PH0PR11MB5611.namprd11.prod.outlook.com>
+References: <20231031052753.3430169-1-shravan.chippa@microchip.com>
+ <20231031052753.3430169-2-shravan.chippa@microchip.com>
+ <ZWCSS+UXpRO+4y9h@matsya>
+In-Reply-To: <ZWCSS+UXpRO+4y9h@matsya>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR11MB5611:EE_|IA1PR11MB7822:EE_
+x-ms-office365-filtering-correlation-id: 07286717-c2d9-4797-f887-08dbf00604b8
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: VF/Gz9DqWDcPZyKw9W2is75z+Q+IwyoVDPnJ9mqq/JbMwrKI7S3aLlb8uGT3EzBuZ32/D1U3AXJgojzc+24f1ExrnVyBpSQeMGTcnS+hA3A1kgPMhjComnAQvYC/O6UApHxavQthtsSL5ZuRy2w+ArEVvMqnZllEd4vSTiOeMMklODrzLtY4QVDc+e1qjS5+Li63qKILg78+nnNZ+IAb0cnM7zKX9weXCLkC221Xhgmv2PEtEtN/PWr+BvlciwucbUIJklpPt8L0fHhHqAmzLtvo9lGN3p8YMeUi6TlCEt9d47N+jIA01IhxR5pGBxBEEOVlbWuQDb1Khqcd2Eiz/M0WPTcH17qyqTJtLrWZnmixiH3/DCcEt9ZbDVEYVECGAZKGYWW6EWcuZKbe7pG8Y+EpQuH8iHBCj3X7dOlD3YrniaPh9KKUYwtXy/broL03UE1vTBX4YRqwFmUa7Az5XxxLwhSd2nDVgvytPn3pYoO0KmBVxi7xJEs5cXVY5ETAoQmb9D4BsYQBlqUURrcPptETiImKUBqL+r9MarO1skgpA/hxooGzzPLnFcrpkQ6VSsd4nvxzDoxf05VGZmt7VuHkqZEgZ92dyKBU+5DJ6fvcRS+wbVmk4H/+ESXWXye3+qgKvyPEZawvDFnGWFCd7w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5611.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(376002)(396003)(136003)(346002)(230173577357003)(230922051799003)(230273577357003)(451199024)(64100799003)(186009)(1800799012)(107886003)(26005)(6506007)(71200400001)(53546011)(86362001)(55016003)(7696005)(52536014)(8676002)(8936002)(5660300002)(66556008)(4326008)(76116006)(478600001)(6916009)(316002)(66946007)(54906003)(66476007)(66446008)(64756008)(7416002)(38100700002)(83380400001)(122000001)(38070700009)(41300700001)(33656002)(9686003)(2906002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?sU0ZKLTExSGeZU5JTCNq9MZYBbCQ9XIsG5o0w2NMqm6VBH5t5VF8GmvBDMRe?=
+ =?us-ascii?Q?Foi8cK6pwooubVLW6f1criN7oQSLF4/hICkyW0SXfQ9kViObkfFyUyXkPP+T?=
+ =?us-ascii?Q?oP4oq+xeDg90v8bBZOzDF356ZNUzzz0gT4MLXzrflc523LgKjz8z3OolOTNG?=
+ =?us-ascii?Q?CG7qj1elKgRYIwsFht5HKqVnEKtovsqjePblIcDVniUuthh+6LopD7n/wk+V?=
+ =?us-ascii?Q?6HCjPtDuI/aOEMIs4sWx37CknucFHvaVM+oWWyzFDvETMMuwdfHnyEWc3vBt?=
+ =?us-ascii?Q?ePCxcPktpn3REoEtAcrEKQImNXcc4pB+tfx/hgOX8B/EXK4L/WlQ8H6GGut2?=
+ =?us-ascii?Q?15fMhkGlGQbeV/LYWvD9LUvgQ1ELOyq0Lt9kGlL1DQb1riwmKawpVS3YYKze?=
+ =?us-ascii?Q?g0hkjhGGXYtA3w+Y0NKTz+hA3RJ1UEoLyYjaVBedQJTzCX5ol25996HTqloA?=
+ =?us-ascii?Q?/t9vZXDjayrZwsQ/tyPCwAdk8q4b4H0XJyf2pRxKgBQ9RHO5gFWZM2ldMrQI?=
+ =?us-ascii?Q?S/AJkWelphtj4qJWhnAyEsLIq94y3tAWdNzXAOnoAf6ePd20+ie4cU6E19ND?=
+ =?us-ascii?Q?VD7G3EXIZMI5E6mhA7eog9rjpDVRLjUo1Rg02rWcHNTXPJa5ZFJNb/ts+wii?=
+ =?us-ascii?Q?mWdMytTksHxnixbxP10MOeveVXBb7jR9gDhaT0L7J2Tje9tcuqFjDbQ4c25Z?=
+ =?us-ascii?Q?6n9Kn9wAfQwKiOgzJ2zQ2dT3bvxC7sYerOf7jdJBLnSZeb/Lx/fXS/z9d0Rb?=
+ =?us-ascii?Q?wMZQRfTDJgr2W7PWEf9K2hSH34e6EwKFJtzKxGHMQty/bFgQauQ+2ztM0UtG?=
+ =?us-ascii?Q?Drs0RhXG+j2pHDTyBzkBQnJb710JiSm4j8Rwrdx6qL9IdC8Kzg110EPLUQ7Q?=
+ =?us-ascii?Q?X4Zctjd3kgB3QAidgxLqIqPboF7hRsLOihPNXWQqTmM93oZNLc8+0EV2d2Zz?=
+ =?us-ascii?Q?0HD3czbuy62/WQGKzaVOWKGFHWXk3hVQ8nyxLXkbhvCMOdt6jrR4hP9xF8XF?=
+ =?us-ascii?Q?27Egihd73IhaSFukq2soBPehFladDOiCSt2ZNOCEj/xCMNyJ7u40d+z0jnKi?=
+ =?us-ascii?Q?5tut0sFdmjO7u/7tE8kG3J7OfmY2KrshGDu9d+TMLn1Ln27bNWZ0Y976R13C?=
+ =?us-ascii?Q?lfpEWpLygUuD1B6elMtb8geL5/tQLrtT2fjgXbPm5RwnkYIiGFpDqKja3Bb7?=
+ =?us-ascii?Q?T/TDXUpPTyqVrZ62oEf3MWrB1nnbrtsoESBhJQGTkXWGVvU5t3XEHgmk+7EC?=
+ =?us-ascii?Q?Du3QJnNnbNtHmHdzjOlt8erNi7sdxMS4jiRa04O/kkY25ooLNGSrC6vVozBS?=
+ =?us-ascii?Q?q10H6PlWjEvOqiu+BiG/J2AE+NbTJjchu5DpOexhFVpqm8pxYVqACpyZoz+6?=
+ =?us-ascii?Q?qnbVPXpFR2cRmCjlFuFd0/hNc5m8GixE1YdLr6EE/xjY2vPB1g+Rdm7RSF5R?=
+ =?us-ascii?Q?Pe2aEweX6RjBllwwc5neXytzllEE4Qn9hEElLwybBG+G1OLIrLAeG4k77fAb?=
+ =?us-ascii?Q?vS6kFsnKTvKG2Hp7b4DRL72hiUHxZSHiWW8PbYDBNPrkavFgUvU+TtK1VGCh?=
+ =?us-ascii?Q?c9VlYuOzaylRLpwHOG1wNLHvMoTX2eO+PzpIMOfh36v8cvONImMvwWg68ai1?=
+ =?us-ascii?Q?VA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c73d9dbf-b637-47ff-ae2d-6f8987345410@app.fastmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5611.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 07286717-c2d9-4797-f887-08dbf00604b8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Nov 2023 11:34:44.2452
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: mhpd/X40uUcKt75WKCKP0TrsVbWLbs6lBvbYVAmmVRYLvTKjFmLmP7ZZgEJT1qjIRhx61jphq0EbYtoFQtbn7sdisTbCX5RI1Mi0mJoIizU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7822
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 09:08:11PM +0000, Jiaxun Yang wrote:
-> 
-> 
-> 在2023年11月27日十一月 下午4:23，Serge Semin写道：
-> [...]
-> >> I just made a quick grep in tree, and it seems like we don't have much
-> >> user of ioremap_cache (as well as ioremap_uc/wc) here so I think it is
-> >> a safe assumption.
-> >
-> > I wouldn't say there aren't much users. ioremap_wc() and it's
-> > devm-version is widely utilized in the GPU and network and some other
-> > subsystems. ioremap_cache() isn't widespread indeed. In anyway even a
-> > single user must be supported in safely calling the method if it's
-> > provided by the arch-code, otherwise the method could be considered as
-> > just a bogus stub to have the kernel successfully built. I bet you'll
-> > agree with that. But that's not the point in this case,
-> >
-> > A bit later you also noted:
-> >
-> > On Fri, Nov 24, 2023 at 10:34:49PM +0000, Jiaxun Yang wrote:
-> >> A nip, _page_cachable_default is set in cpu_cache_init() as well. We'd
-> >> better move it to cpu-probe.c, or give it a reasonable default value.
-> >
-> > Right. Thanks. To be honest I haven't noticed that before your
-> > message. _page_cachable_default is indeed initialized in the
-> > cpu_cache_init() method, several steps after it would be used in the
-> > framework of dmi_remap_early(). On the other hand ioremap_cache() is
-> > defined as ioremap_prot() with the _page_cachable_default variable
-> > passed. So my code will still correctly work unless
-> > _page_cachable_default is pre-initialized with something other than
-> > zero. On the other hand we can't easily change its default value
-> > because it will affect and likely break the r3k (CPU_R3000) and Octeon
-> > based platforms, because it's utilized to initialize the
-> > protection-map table. Of course we can fix the r3k_cache_init() and
-> > octeon_cache_init() methods too so they would get the
-> > _page_cachable_default variable back to zero, but it will also make
-> > things around it more complicated.
-> >
-> > Also note, moving the _page_cachable_default initialization to the
-> > earlier stages like cpu_probe() won't work better because the field
-> > value may get change for instance in the framework of the smp_setup()
-> > function (see cps_smp_setup()).
-> >
-> > So after all the considerations above this solution now looks even
-> > clumsier than before.( Any idea how to make it better?
-> 
+Hi Vinod,
 
-> I think the best solution maybe just use CKSEG0 to setup map here.
-> 
-> Btw I was thinking about 64 bit here, I thought for 64bit we would
-> just embedded prot into XKPHYS, however I quickly figure out
-> ioremap_cache was never implemented properly on 64-bit system,
-> so does ioremap_wc.
-> 
-> > u64 base = (flags == _CACHE_UNCACHED ? IO_BASE : UNCAC_BASE);
-> 
-> Which is always uncached mapping.
 
-Indeed. Thanks for pointing that out. In the last days several times I
-was looking at that line and for some reason UNCAC_BASE seemed as
-CAC_BASE to me.) Based on what both IO_BASE and UNCAC_BASE are defined
-as of the uncached region anyway, then it should be safe for any
-currently supported MIPS64 (including the Loongson's) to use ioremap()
-in place of dmi_early_remap(). So basically my current patch in the
-subject won't change the method semantics. Let's not to try to fix a
-problem which doesn't exist then, and keep the patch as is especially
-seeing that the alternatives might still cause some troubles. Will you
-be ok with that?
+> -----Original Message-----
+> From: Vinod Koul <vkoul@kernel.org>
+> Sent: Friday, November 24, 2023 5:39 PM
+> To: shravan Chippa - I35088 <Shravan.Chippa@microchip.com>
+> Cc: green.wan@sifive.com; robh+dt@kernel.org;
+> krzysztof.kozlowski+dt@linaro.org; palmer@dabbelt.com;
+> paul.walmsley@sifive.com; conor+dt@kernel.org;
+> dmaengine@vger.kernel.org; devicetree@vger.kernel.org; linux-
+> riscv@lists.infradead.org; linux-kernel@vger.kernel.org; Nagasuresh Relli=
+ -
+> I67208 <Nagasuresh.Relli@microchip.com>; Praveen Kumar - I30718
+> <Praveen.Kumar@microchip.com>
+> Subject: Re: [PATCH v4 1/4] dmaengine: sf-pdma: Support
+> of_dma_controller_register()
+>=20
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know th=
+e
+> content is safe
+>=20
+> On 31-10-23, 10:57, shravan chippa wrote:
+> > From: Shravan Chippa <shravan.chippa@microchip.com>
+> >
+> > Update sf-pdma driver to adopt generic DMA device tree bindings.
+> > It calls of_dma_controller_register() with sf-pdma specific
+> > of_dma_xlate to get the generic DMA device tree helper support and the
+> > DMA clients can look up the sf-pdma controller using standard APIs.
+> >
+> > Signed-off-by: Shravan Chippa <shravan.chippa@microchip.com>
+> > ---
+> >  drivers/dma/sf-pdma/sf-pdma.c | 44
+> > +++++++++++++++++++++++++++++++++++
+> >  1 file changed, 44 insertions(+)
+> >
+> > diff --git a/drivers/dma/sf-pdma/sf-pdma.c
+> > b/drivers/dma/sf-pdma/sf-pdma.c index d1c6956af452..4c456bdef882
+> > 100644
+> > --- a/drivers/dma/sf-pdma/sf-pdma.c
+> > +++ b/drivers/dma/sf-pdma/sf-pdma.c
+> > @@ -20,6 +20,7 @@
+> >  #include <linux/mod_devicetable.h>
+> >  #include <linux/dma-mapping.h>
+> >  #include <linux/of.h>
+> > +#include <linux/of_dma.h>
+> >  #include <linux/slab.h>
+> >
+> >  #include "sf-pdma.h"
+> > @@ -490,6 +491,33 @@ static void sf_pdma_setup_chans(struct sf_pdma
+> *pdma)
+> >       }
+> >  }
+> >
+> > +static struct dma_chan *sf_pdma_of_xlate(struct of_phandle_args
+> *dma_spec,
+> > +                                      struct of_dma *ofdma) {
+> > +     struct sf_pdma *pdma =3D ofdma->of_dma_data;
+> > +     struct device *dev =3D pdma->dma_dev.dev;
+> > +     struct sf_pdma_chan *chan;
+> > +     struct dma_chan *c;
+> > +     u32 channel_id;
+> > +
+> > +     if (dma_spec->args_count !=3D 1) {
+> > +             dev_err(dev, "Bad number of cells\n");
+> > +             return NULL;
+> > +     }
+> > +
+> > +     channel_id =3D dma_spec->args[0];
+> > +
+> > +     chan =3D &pdma->chans[channel_id];
+> > +
+> > +     c =3D dma_get_slave_channel(&chan->vchan.chan);
+> > +     if (!c) {
+> > +             dev_err(dev, "No more channels available\n");
+> > +             return NULL;
+> > +     }
+> > +
+> > +     return c;
+> > +}
+>=20
+> This seems could be replaced by of_dma_xlate_by_chan_id() can you tell me
+> why that cant be used?
 
--Serge(y)
+I will try to use the of_dma_xlate_by_chan_id() function instead of a custo=
+m function, I will try to send the next revision.
 
-> 
-> >> 
-> [...]
+Thanks,
+Shravan
+
+
+>=20
+> > +
+> >  static int sf_pdma_probe(struct platform_device *pdev)  {
+> >       struct sf_pdma *pdma;
+> > @@ -563,7 +591,20 @@ static int sf_pdma_probe(struct platform_device
+> *pdev)
+> >               return ret;
+> >       }
 > >
-> > Note the memory might be clobbered even before dmi_setup() for
-> > instance by means of the early_memtest() method. In anyway it would be
-> > better if the system booloader would have already reserved the DMI
-> > memory (in DTB) or it would have been done by the platform-specific
-> > plat_mem_setup() method.
-> 
-> Unfortunately, too many machines are shipped with those badly designed
-> firmware. We rely on dmi_setup code to scan and preserve dmi table from
-> random location in memory.
-> 
+> > +     ret =3D of_dma_controller_register(pdev->dev.of_node,
+> > +                                      sf_pdma_of_xlate, pdma);
+> > +     if (ret < 0) {
+> > +             dev_err(&pdev->dev,
+> > +                     "Can't register SiFive Platform OF_DMA. (%d)\n", =
+ret);
+> > +             goto err_unregister;
+> > +     }
+> > +
+> >       return 0;
+> > +
+> > +err_unregister:
+> > +     dma_async_device_unregister(&pdma->dma_dev);
+> > +
+> > +     return ret;
+> >  }
 > >
-> >> The second is we may have some early quirks depends on DMI
-> >> information.
+> >  static int sf_pdma_remove(struct platform_device *pdev) @@ -583,6
+> > +624,9 @@ static int sf_pdma_remove(struct platform_device *pdev)
+> >               tasklet_kill(&ch->err_tasklet);
+> >       }
 > >
-> > Which quirks do you mean to be dependent in between the current
-> > dmi_setup() call place and the cpu_cache_init() method invocation?
-> 
-> I think we don't have any for now.
-> 
-> -- 
-> - Jiaxun
+> > +     if (pdev->dev.of_node)
+> > +             of_dma_controller_free(pdev->dev.of_node);
+> > +
+> >       dma_async_device_unregister(&pdma->dma_dev);
+> >
+> >       return 0;
+> > --
+> > 2.34.1
+>=20
+> --
+> ~Vinod
