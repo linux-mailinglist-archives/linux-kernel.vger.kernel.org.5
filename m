@@ -2,96 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F467FC1A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 883DD7FC2AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346436AbjK1PE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 10:04:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33758 "EHLO
+        id S1346566AbjK1PFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 10:05:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345934AbjK1PE6 (ORCPT
+        with ESMTP id S1345934AbjK1PFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 10:04:58 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B5D199;
-        Tue, 28 Nov 2023 07:05:05 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Sflxq0F9pz67Kdt;
-        Tue, 28 Nov 2023 23:00:31 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-        by mail.maildlp.com (Postfix) with ESMTPS id 2CE41140A9C;
-        Tue, 28 Nov 2023 23:05:03 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 28 Nov
- 2023 15:05:02 +0000
-Date:   Tue, 28 Nov 2023 15:05:01 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Russell King <rmk+kernel@armlinux.org.uk>
-CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-        <x86@kernel.org>, <linux-csky@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-ia64@vger.kernel.org>,
-        <linux-parisc@vger.kernel.org>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        <jianyong.wu@arm.com>, <justin.he@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Subject: Re: [PATCH RFC 12/22] drivers: base: Print a warning instead of
- panic() when register_cpu() fails
-Message-ID: <20231128150501.000043b3@Huawei.com>
-In-Reply-To: <E1r0JLg-00CTxd-31@rmk-PC.armlinux.org.uk>
-References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
-        <E1r0JLg-00CTxd-31@rmk-PC.armlinux.org.uk>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Tue, 28 Nov 2023 10:05:36 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E53D8D62
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 07:05:42 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1cfaf05db73so159665ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 07:05:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701183942; x=1701788742; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xIyfxB2pi1DD/xFaz4h7up8NvJi6wi3KWQr5MkbyogY=;
+        b=XYACjMUBcKtzd73PNVSbY7odkcNloAHL4x4+yCQl9nrMJNGi8WAUlwKkcn63Hm74q/
+         owd8eAlyDuMh1xoLNh7NlHGqRPE0OgNAhFEt205JlyGkkZa8dYYbLGOkkyQE8BRahvy/
+         BfsZeQoxusV/48HKvuefFSYxfFUCXKL3M1LYDqynLDXFWjRoSxhrFA3AiFAUrekk5/FJ
+         ZJgMC2uanJIaWyVDyP3qpYHK4sFH9NQxzECkKxNcMiZmNwk81CHfBscWqMuWkUlRJJ4d
+         /FEIzhxvZBJhcHsTZ2KTRAkHqx0ibCIGOy96UJSTHqF/nrgollAnp6zcG3sTwzdFqK2H
+         wf1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701183942; x=1701788742;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xIyfxB2pi1DD/xFaz4h7up8NvJi6wi3KWQr5MkbyogY=;
+        b=SC8h4a3o13qbPp/3dBJa0tL1AhuUEjZ5pcXkugOhTlEsN+A7ym8CHSYgredIxmgBMG
+         3JYugcoX6Z+W+NelxooGD9fFk5U6wdHp2+pdWz+3Kn2Ev4yLYQ1UmFuQvhTcyz0IolJ4
+         x5XJEc8+txqP8nZz80MjaoYnf4D02gDX9Kko29D/z0uw4OCE7gXByUdR4Fmv/Ekd2lCy
+         jYd1fb1MjE9yPYcl/Qma6eU0eKjv5P2IpZh91iW6FF9TktEk5XVhP3Ti21l5aOmPaWDo
+         uQsmuMy4UF/cwJKA9ehYhLeJLbWV9RnyZ/6HbIx1PvVCcjiF/ru1TF+cvW2tsil8FlW5
+         Qscg==
+X-Gm-Message-State: AOJu0YwoP7ChH09MMD3rAxjWDoP4UrtujThCrmyRjJoMzgRcSSBLboyk
+        D5NUBzTbPBA87YAwMFAl5AOE69US1YheKOConi4gpg==
+X-Google-Smtp-Source: AGHT+IGrQdlGKDgA9FHhDONGBYH9TrWtTN+htijQaz06c0I9y8Wie/gSN4rLC6ODCVB86yKfb2AlxQrSgbGy8HeQXRo=
+X-Received: by 2002:a17:902:c113:b0:1cf:b1d3:72ab with SMTP id
+ 19-20020a170902c11300b001cfb1d372abmr709344pli.27.1701183942051; Tue, 28 Nov
+ 2023 07:05:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <00000000000029fce7060ad196ad@google.com> <CAM0EoM=20ATLfrRMGh-zqgx7BrHiyCUmiCYBX_f1ST69UFRfOA@mail.gmail.com>
+In-Reply-To: <CAM0EoM=20ATLfrRMGh-zqgx7BrHiyCUmiCYBX_f1ST69UFRfOA@mail.gmail.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Tue, 28 Nov 2023 16:05:25 +0100
+Message-ID: <CANp29Y6UOHhvwf=hh7PFRsyZspJx=w==4=A8TjPEQqXeYvBD+A@mail.gmail.com>
+Subject: Re: [syzbot] Monthly net report (Nov 2023)
+To:     Jamal Hadi Salim <jhs@mojatatu.com>
+Cc:     syzbot <syzbot+listaba4d9d9775b9482e752@syzkaller.appspotmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 07 Nov 2023 10:30:20 +0000
-Russell King <rmk+kernel@armlinux.org.uk> wrote:
+Hi Jamal,
 
-> From: James Morse <james.morse@arm.com>
-> 
-> loongarch, mips, parisc, riscv and sh all print a warning if
-> register_cpu() returns an error. Architectures that use
-> GENERIC_CPU_DEVICES call panic() instead.
-> 
-> Errors in this path indicate something is wrong with the firmware
-> description of the platform, but the kernel is able to keep running.
-> 
-> Downgrade this to a warning to make it easier to debug this issue.
-> 
-> This will allow architectures that switching over to GENERIC_CPU_DEVICES
-> to drop their warning, but keep the existing behaviour.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+This sounds interesting, thanks for the suggestion!
 
-I guess there may be paths later that were never exposed because of
-this panic, but any such should be fixed rather than relying on this
-big hammer.
+It would be a lot of emails though, so maybe we could randomly pick a
+few of them each time.
+I've filed https://github.com/google/syzkaller/issues/4369
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+--=20
+Aleksandr
+
+On Thu, Nov 23, 2023 at 3:03=E2=80=AFPM Jamal Hadi Salim <jhs@mojatatu.com>=
+ wrote:
+>
+> On Thu, Nov 23, 2023 at 8:12=E2=80=AFAM syzbot
+> <syzbot+listaba4d9d9775b9482e752@syzkaller.appspotmail.com> wrote:
+> >
+> > Hello net maintainers/developers,
+> >
+> > This is a 31-day syzbot report for the net subsystem.
+> > All related reports/information can be found at:
+> > https://syzkaller.appspot.com/upstream/s/net
+> >
+>
+> Hi,
+> Could you please Cc the stakeholders for each issue (especially when
+> there is a reproducer)? Not everybody reads every single message that
+> shows up in the kernel.
+>
+> cheers,
+> jamal
+>
+> > During the period, 5 new issues were detected and 13 were fixed.
+> > In total, 77 issues are still open and 1358 have been fixed so far.
+> >
+> > Some of the still happening issues:
+> >
+> > Ref  Crashes Repro Title
+> > <1>  3878    Yes   KMSAN: uninit-value in eth_type_trans (2)
+> >                    https://syzkaller.appspot.com/bug?extid=3D0901d0cc75=
+c3d716a3a3
+> > <2>  892     Yes   possible deadlock in __dev_queue_xmit (3)
+> >                    https://syzkaller.appspot.com/bug?extid=3D3b165dac15=
+094065651e
+> > <3>  860     Yes   INFO: task hung in switchdev_deferred_process_work (=
+2)
+> >                    https://syzkaller.appspot.com/bug?extid=3D8ecc009e20=
+6a956ab317
+> > <4>  590     Yes   INFO: task hung in rtnetlink_rcv_msg
+> >                    https://syzkaller.appspot.com/bug?extid=3D8218a8a0ff=
+60c19b8eae
+> > <5>  390     Yes   WARNING in kcm_write_msgs
+> >                    https://syzkaller.appspot.com/bug?extid=3D52624bdfbf=
+2746d37d70
+> > <6>  373     Yes   INFO: rcu detected stall in corrupted (4)
+> >                    https://syzkaller.appspot.com/bug?extid=3Daa7d098bd6=
+fa788fae8e
+> > <7>  249     Yes   INFO: rcu detected stall in tc_modify_qdisc
+> >                    https://syzkaller.appspot.com/bug?extid=3D9f78d5c664=
+a8c33f4cce
+> > <8>  240     Yes   BUG: corrupted list in p9_fd_cancelled (2)
+> >                    https://syzkaller.appspot.com/bug?extid=3D1d26c4ed77=
+bc6c5ed5e6
+> > <9>  172     No    INFO: task hung in linkwatch_event (3)
+> >                    https://syzkaller.appspot.com/bug?extid=3Dd4b2f8282f=
+84f54e87a1
+> > <10> 154     Yes   WARNING in print_bfs_bug (2)
+> >                    https://syzkaller.appspot.com/bug?extid=3D630f83b42d=
+801d922b8b
+> >
+> > ---
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> >
+> > To disable reminders for individual bugs, reply with the following comm=
+and:
+> > #syz set <Ref> no-reminders
+> >
+> > To change bug's subsystems, reply with:
+> > #syz set <Ref> subsystems: new-subsystem
+> >
+> > You may send multiple commands in a single email message.
+> >
+>
+> --
+> You received this message because you are subscribed to the Google Groups=
+ "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgi=
+d/syzkaller-bugs/CAM0EoM%3D20ATLfrRMGh-zqgx7BrHiyCUmiCYBX_f1ST69UFRfOA%40ma=
+il.gmail.com.
