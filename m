@@ -2,120 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1AFD7FC12E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8097FC17B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234885AbjK1QxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 11:53:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54058 "EHLO
+        id S1344809AbjK1Qwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:52:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344772AbjK1Qw6 (ORCPT
+        with ESMTP id S234885AbjK1Qws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 11:52:58 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8393410D8
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:53:04 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6DD3C433C8;
-        Tue, 28 Nov 2023 16:53:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701190384;
-        bh=3qurBRQ+YYPOV/RKYMrmvhtcPz7PtaDGGqvhTMc0mA0=;
-        h=From:Date:Subject:To:Cc:From;
-        b=ATXuq9a1kuRQI+tUyQf1iziGaB7B4aDpmGQS2N9tEcFvJZj5aiTOTwX2OT9xpIxcg
-         fzciCjeJroMPD6cqwjYwHngs2wF6WR2nYGPmsQUVxuDR61Q+FPoGREmCQMRsGDxMcj
-         hXfNc1TlS5dNs+lSrdVPHLS52uqdJlNQ6LRcZQwUGg5ZIb7YzJWfRrWJiEs6Imx4ko
-         t19+nUjhDgDb5Ez9AamWTI5wI2yDPz/URNJJS87llNisCUp7nCP/+F4TtEP1qTb6CX
-         7WwSqwqarbfVhS+Ou/AlWYiVwNuYCx9IKHek/gcKMiQ6Fd5Cegf2Gt1i+2pp9Hgzed
-         p1Xwfc9uah7bQ==
-From:   Nathan Chancellor <nathan@kernel.org>
-Date:   Tue, 28 Nov 2023 09:52:48 -0700
-Subject: [PATCH] arm64: vdso32: Define BUILD_VDSO32_64 to correct
- prototypes
+        Tue, 28 Nov 2023 11:52:48 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABFC4D4B;
+        Tue, 28 Nov 2023 08:52:54 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6c4eb5fda3cso5667358b3a.2;
+        Tue, 28 Nov 2023 08:52:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701190374; x=1701795174; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=C2GFpgF/UShDGrhmadEJvLPiDWgQypGxozPNByeW60o=;
+        b=NDWmC4MH7Mm8z/Z8L8CxHtmHUSKUlUQd86MiCD8Gl4OyMG+oAmYSBxx6QsGn42edpB
+         DhexSvUjC493LFwfH03GUjIv3+b/ZZ9dyh/brIQjWOuSDRG+UouzNF3lRw4/ycPfDjvV
+         l3cpVnHZXnESIVh5BBJUoRUnQrgr4Rbu4wOCz7kP5H3FOTY9x/TZskRBE5yX4E3gIt+D
+         CfCv9jWtcFa5nxd9VqLJaaTJEiozXa9WdOkcQp6aPJyTIzYhLh1Qsp9u9z9UYchos+mp
+         FCSyonoW0ZE4+0C2TKYMZE4P7xW5y7VPDE+SkP1Y51M4cH70Uv3bcZp+iGgjDvDPlQ1k
+         j//A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701190374; x=1701795174;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=C2GFpgF/UShDGrhmadEJvLPiDWgQypGxozPNByeW60o=;
+        b=QkTakBxmYNjNIp2Gf9m7jazJHChxAujBBm92bLQwi+dXZHjdOuKxTFjh4ZCteZy7B3
+         5G53irlDVsgHhE/nnVvyhUhvg68Zs1AmnnFeItDc5r6XyIUdLJW73zzoXEQV3CYykz/B
+         PoddfW1gmgOCDk067BEQfoP6LlHOdq5D6lu1y/98sdeLceGjbA614KGpsIm/wiDvn9Xu
+         ITht5wnBt4hXdyukcnJ7gubPw0ag2XyI822h2D5sQpVAK4vMj/odJzT/EeSBKg9+PjM6
+         EQ6Mgqrn2M4x0nhk88s1vJWN0VfCfVUtkKdSn5bN/hz6oVl6zNdmnoolLokaPh3rBfHz
+         OsAQ==
+X-Gm-Message-State: AOJu0YwfOuQIF5qwnlhdsoOhsDGEZQ1lkmBeeCSit7XvJmmEp6NbgpHI
+        w1WWjcdKBQnff++WYspqMm4=
+X-Google-Smtp-Source: AGHT+IESZLkr/1OKBV5n340oK9Jlw1VXrLMt+uC0XUIpwOTG/i3VDKrrFNQVcCHkdDaR5zTGF7B+2A==
+X-Received: by 2002:a05:6a00:1486:b0:68f:bb02:fdf with SMTP id v6-20020a056a00148600b0068fbb020fdfmr20872768pfu.27.1701190374037;
+        Tue, 28 Nov 2023 08:52:54 -0800 (PST)
+Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
+        by smtp.gmail.com with ESMTPSA id fc14-20020a056a002e0e00b006cd08377a13sm5045838pfb.190.2023.11.28.08.52.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 08:52:53 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 28 Nov 2023 06:52:52 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Mark Hasemeyer <markhas@google.com>
+Cc:     Tim Van Patten <timvp@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tim Van Patten <timvp@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org
+Subject: Re: [PATCH] cgroup_freezer: cgroup_freezing: Check if not frozen
+Message-ID: <ZWYa5IlXpdus2q3R@slm.duckdns.org>
+References: <20231115162054.2896748-1-timvp@chromium.org>
+ <ZVokO6_4o07FU0xP@slm.duckdns.org>
+ <CAP0ea-sSvFGdpqz8Axcjrq=UX0watg=j6iBxd1OkNeKHi_pJ=Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231128-arm64-vdso32-missing-prototypes-error-v1-1-0fdd403cea07@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAN8aZmUC/x3NwQrCMAyA4VcZORtoUxXxVcRDWbOZw5qSjDEZe
- 3eLx+/y/wc4m7DDczjAeBMXrR3xMsD4yXVmlNINFCjFSA/MttyvuBXXRLiIu9QZm+mq67exI5u
- pIYeSQo4j32iC3mrGk+z/z+t9nj/APoitdwAAAA==
-To:     arnd@arndb.de, catalin.marinas@arm.com, will@kernel.org
-Cc:     vincenzo.frascino@arm.com, nathan@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2927; i=nathan@kernel.org;
- h=from:subject:message-id; bh=3qurBRQ+YYPOV/RKYMrmvhtcPz7PtaDGGqvhTMc0mA0=;
- b=owGbwMvMwCUmm602sfCA1DTG02pJDKlpUu83Tt2XejStwHnRKj+HDXckRB6y+QjrnHN1Cnz1o
- +xB1ZOajlIWBjEuBlkxRZbqx6rHDQ3nnGW8cWoSzBxWJpAhDFycAjCRpUoM/9PuCLDdfrTRir03
- h+ecI8up+4FPdN0zNc/wPXmRkXpi30dGhqt7a9ZFd+oEiYuc4zTYd7oke9oiwZhjJx9Oknl/TDR
- 0HzsA
-X-Developer-Key: i=nathan@kernel.org; a=openpgp;
- fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP0ea-sSvFGdpqz8Axcjrq=UX0watg=j6iBxd1OkNeKHi_pJ=Q@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 42874e4eb35b ("arch: vdso: consolidate gettime
-prototypes"), there are a couple of errors when building the 32-bit
-compat vDSO for arm64:
+On Mon, Nov 27, 2023 at 11:19:52AM -0700, Mark Hasemeyer wrote:
+> > Applied to cgroup/for-6.7-fixes.
+> >
+> > Thanks.
+> >
+> > --
+> > tejun
+> 
+> Thanks Tejun!
+> As this hasn't been merged to Linus's tree yet, do you think you could
+> Cc: stable@vger.kernel.org?
 
-  arch/arm64/kernel/vdso32/vgettimeofday.c:10:5: error: conflicting types for '__vdso_clock_gettime'; have 'int(clockid_t,  struct old_timespec32 *)' {aka 'int(int,  struct old_timespec32 *)'}
-     10 | int __vdso_clock_gettime(clockid_t clock,
-        |     ^~~~~~~~~~~~~~~~~~~~
-  In file included from arch/arm64/kernel/vdso32/vgettimeofday.c:8:
-  include/vdso/gettime.h:16:5: note: previous declaration of '__vdso_clock_gettime' with type 'int(clockid_t,  struct __kernel_timespec *)' {aka 'int(int,  struct __kernel_timespec *)'}
-     16 | int __vdso_clock_gettime(clockid_t clock, struct __kernel_timespec *ts);
-        |     ^~~~~~~~~~~~~~~~~~~~
-  arch/arm64/kernel/vdso32/vgettimeofday.c:28:5: error: conflicting types for '__vdso_clock_getres'; have 'int(clockid_t,  struct old_timespec32 *)' {aka 'int(int,  struct old_timespec32 *)'}
-     28 | int __vdso_clock_getres(clockid_t clock_id,
-        |     ^~~~~~~~~~~~~~~~~~~
-  include/vdso/gettime.h:15:5: note: previous declaration of '__vdso_clock_getres' with type 'int(clockid_t,  struct __kernel_timespec *)' {aka 'int(int,  struct __kernel_timespec *)'}
-     15 | int __vdso_clock_getres(clockid_t clock, struct __kernel_timespec *res);
-        |     ^~~~~~~~~~~~~~~~~~~
+Yeah, I can do that. That'd be for v6.1+ and fix f5d39b020809
+("freezer,sched: Rewrite core freezer logic"), right?
 
-The type of the second parameter in __vdso_clock_getres() and
-__vdso_clock_gettime() changes based on whether compiling for 32-bit vs.
-64-bit, which is controlled by CONFIG_64BIT or the preprocessor macro
-BUILD_VDSO32_64, which denotes a 32-bit vDSO is being built for a 64-bit
-architecture. Since this situation is the latter case, define
-BUILD_VDSO32_64 before the inclusion of include/vdso/gettime.h to clear
-up the warning
+Thanks.
 
-Fixes: 42874e4eb35b ("arch: vdso: consolidate gettime prototypes")
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Closes: https://lore.kernel.org/CA+G9fYtV6X=c3JVTTAX89_=wc+uqLpzggnsbGSx-98m_5yd5yw@mail.gmail.com/
-Reported-by: Mark Brown <broonie@kernel.org>
-Closes: https://lore.kernel.org/ZWCRWArzbTYUjvon@finisterre.sirena.org.uk/
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- arch/arm64/kernel/vdso32/vgettimeofday.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/kernel/vdso32/vgettimeofday.c b/arch/arm64/kernel/vdso32/vgettimeofday.c
-index e23c7f4ef26b..29b4d8f61e39 100644
---- a/arch/arm64/kernel/vdso32/vgettimeofday.c
-+++ b/arch/arm64/kernel/vdso32/vgettimeofday.c
-@@ -5,6 +5,7 @@
-  * Copyright (C) 2018 ARM Limited
-  *
-  */
-+#define BUILD_VDSO32_64
- #include <vdso/gettime.h>
- 
- int __vdso_clock_gettime(clockid_t clock,
-
----
-base-commit: ca8e45c8048a2c9503c74751d25414601f730580
-change-id: 20231128-arm64-vdso32-missing-prototypes-error-e0d30a1ce52f
-
-Best regards,
 -- 
-Nathan Chancellor <nathan@kernel.org>
-
+tejun
