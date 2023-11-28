@@ -2,177 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DADB7FB929
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:14:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2141A7FB92F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:15:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344321AbjK1LOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 06:14:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33060 "EHLO
+        id S1344500AbjK1LPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 06:15:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234702AbjK1LOi (ORCPT
+        with ESMTP id S234692AbjK1LPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 06:14:38 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387D7D6
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 03:14:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70CABC433C7;
-        Tue, 28 Nov 2023 11:14:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701170084;
-        bh=ghXHN0aqKTTETA6By+7Mc0o8Xy5WxEMUZIlYt+T2S2k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RMsIKIwU5rCX0ZEd0AknFuQtsCuGZOd+UAdrNrElQLX+FzsvWwmnGzu/13zFTjv8S
-         1sEGdUq+2Bh4u+xNBIkrOOA8OSDB/8dEVr+Q56+9wc6pXUozr4s9v+fIFf75ETOlF8
-         XzZ2CFbTXGZyPhcJTLNeLIW2fjYac22oBY/+Br5aBCc6IHjl+TkO83cOKk+1da8jxN
-         kcv0PqsiaEZGa6Py7G5TSKYyFsk91CQK+QFXFSva2vpwwhI8R7/GtaB6DiMrQG0oCq
-         vpfDbnOoEWH7qtaUuEpPX6SypVnAweYMwsC1Zn+ukA5U3TbtvvX/W9MFchbO8JwdGt
-         XHotEI5pg4ayg==
-Date:   Tue, 28 Nov 2023 12:14:42 +0100
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-        David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v18 04/26] drm/shmem-helper: Refactor locked/unlocked
- functions
-Message-ID: <kw5bho3jx73d3glvtewmjvqt4qty4khju6dcwypuh25ya3gi4b@7slmijjqdi4p>
-References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
- <20231029230205.93277-5-dmitry.osipenko@collabora.com>
- <wboljiwogeus7pwgaqzxaltt3xdavy2dzisygn6pdpoiwlnwgc@mwaiukjguzat>
- <20231124115911.79ab24af@collabora.com>
+        Tue, 28 Nov 2023 06:15:08 -0500
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01olkn2067.outbound.protection.outlook.com [40.92.99.67])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AAE1D6;
+        Tue, 28 Nov 2023 03:15:15 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hmdjhCkZlzJtNFLNr41XaSCfyFC+al8aGLCaNg7YHBRHOTufFOSs89IkGxiFWHa0Jmpmijkqy7iUwbTSSfxmorQSo2Q7kgE7da9kvyVzM+wpQ5vdd58HnN3GD7xfrojSrJBFyfc19HwmfMf50/tfKrMQsZKV5eNNqnKa1ZIxKb6cq4QpBOUIjZnN/ddeNAbbF5vS1IyNcU4ra7g+L8uyKHrUVWAWe4WP0OSt33HMpJnVPnq240dNxHLSjRBnzYzCd44Mj/mYyS6TBC6LNp3ugY40zpveXiEuW89EbbcALysRT9T2iHSloDbLpnFehKKCtOhiqFaDt38hFHeggz+o2A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+ b=UM+KarxPDwtWU5CdX8Ji4Gpq1dGZtR+6dx6qGNRCRf0vOerjj8BZ7K0LbJb0keEZjUowLcX7uNqWnv3J/I6+rwFoXioDRVkp3ejs4g43sxelefvgTaLZ5zbPpvaf5VU341wE4v+aOlIoCw976y0uKy/zdZFvSlIFuqAR1CemcqwII9pxrl+7pgL1GIGOLGpRCIY6kfy9FQ6oFU0sXUNS6wc/Lv8U0c9HStA5ethxcklCoEC6E00Uapzz0y/xmYRVeAAkFZ8PfPp793drrwSBdc1OZLJFjKWHiMVPRyzWpW24a8PMzAGLtnpn8sJijCPBbVGG9BYaXOeOqCY1kze01A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+ b=qTudIV55S7X+jm+y9VAHDgRjm7HPcs9Y5KxA7k0IuuollpapLl0rBSgbQbSjChjuEemg8iROL7V640s4wCeiDxThnPp34fGBrk+muRoNOPXdApdesPOwwO7B93cxtSZ1uAfd9ekLtPBHsX1ptsYGG3KbBUrK69NQ20Ky++XQXTkqhgm3UFlsW1TLWt6v1kv7h1zahC6FdXkNa+KBpLZMjP7GC7s4pUwPzz9DXqOqN+Uf7D2CactLqzGfSeJ3Ss5wVfnpGS62ZL983Ci0rM0M5W2CyuIIDOBAAZWM6u2gNYVARynq0+p94pJaz8OjwZRLGcrSlsK/OFTyeiY/GrmCCA==
+Received: from OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM (2603:1096:604:1b9::12)
+ by TYWP286MB3756.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:3ff::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Tue, 28 Nov
+ 2023 11:15:12 +0000
+Received: from OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::353:ccff:c96d:6290]) by OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::353:ccff:c96d:6290%5]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
+ 11:15:12 +0000
+From:   Anquan Wu <leiqi96@hotmail.com>
+To:     leiqi96@hotmail.com, andrii@kernel.org, daniel@iogearbox.net,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        kpsingh@kernel.org
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] libbpf: fix the name of a reused map
+Date:   Tue, 28 Nov 2023 19:14:52 +0800
+Message-ID: <OSZP286MB1725AFE5BEA5E8C515DAA080B8BCA@OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [wPry6Xq6/tcJ+u4QxG7HhA1DqCOg7KVM]
+X-ClientProxiedBy: SI2PR01CA0010.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:191::12) To OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:604:1b9::12)
+X-Microsoft-Original-Message-ID: <OSZP286MB1725CEA1C95C5CB8E7CCC53FB8869@OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM>
+ (raw)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4o4oj77z6epqtcan"
-Content-Disposition: inline
-In-Reply-To: <20231124115911.79ab24af@collabora.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: OSZP286MB1725:EE_|TYWP286MB3756:EE_
+X-MS-Office365-Filtering-Correlation-Id: 662af05a-57d3-4cf4-1d81-08dbf00349b5
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nxaHdsW1E3VKUMsT25SnLZHX+158BK6zAXGUzSYETl6+lgDoGB6q2DMKvveU7nKf2fmF7OnuJ/WpqYYpliYuL/Z+b9Mo8zvek5T2A9/MHWyWyasb6ZtKbSetJ+TGf4rWGUlfk0+/tvBTsPCXdgJ8Wkv8wvZqpy4FYHhO0XdE53rxLoPr1qMMN1uEgeEflBoWCzeB9yKR25f9NNKAy2Ds4cGyhfPUOetUx+MYpzCWXsyaV+sOc2aH7rjmnQfHZaUtdiQ6F1lZ1Z2Lg7okHmNQBfqu4up24nqiGIRjs3z0jGLkhHb9xI0owheuZU4vx9CxxXRIXAF1LZUHGV1cONM22BUDA5V1jo79P+nThfgNL14=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1NWZbXFl0E2YQ8jDOL9opRgleRAy5qskMFwU/wWwyZvQUN/6qJ77nuJ5OhJA?=
+ =?us-ascii?Q?wZ/tihtrdOkpJp9fQ4G52R9Tzz2FzQ1UrkdSAuK9e16ECjkplRdjDuF8yzNm?=
+ =?us-ascii?Q?z42qaU6UjlTpAeZxpX7+BHnMk2P/4GKUXlCaGfeC3VBwP6Pc9e9+UokexJ3x?=
+ =?us-ascii?Q?2nKWtX3l1JVLHYWyHQaqrZyh5QePYqP+839OSyVHF4mc+7XtYuyfutGUNj+t?=
+ =?us-ascii?Q?If3FsUQbRbHIQ1PD83Xl2/PB9lQEJ/nFZaBzjBDxjEQVGbcLw8i7FQ6isGk+?=
+ =?us-ascii?Q?5uNtpD3EKZT2/AWSwmKKwPv8HPUvWzcjRdx1bqMZ8cWGStFE+Md+KTPYJJ+H?=
+ =?us-ascii?Q?5Wmsm2/L7iQW6CM6pY69ZFLr4wegThSL89bFY5fTbbx7VkuS9p0UijT0bGqn?=
+ =?us-ascii?Q?rYkoq12RZj21Sajx/phrRlzxPkw9rlpPDL6zyvwITAWc9FMKOUL7N+nhF1O4?=
+ =?us-ascii?Q?ROKk8Zorn6W7IRGqm/gWn7MhbFjZ1gYGdcgwCv7B/MiN25iG5KCrXapKH/GJ?=
+ =?us-ascii?Q?axVFLFd39LSa7RJLh7FXVSXoVTGurDBGPJqJY+p/RU7DcIA/t/qLlu2f1lr7?=
+ =?us-ascii?Q?GHO1+mUuv0LkCNDg7hOY1rqejnTyGR/EJNH6WIoLJVjrGuTbtU0Ec/q+JMpB?=
+ =?us-ascii?Q?5LiQfNm0CwHYLra222VLgOz5zuBgB5KikNR5sQdL2FS6QkaG12ZcnguuCSt2?=
+ =?us-ascii?Q?AEiC4/aa6sfx67iOCD5XuFhHsaE3fjHScgr8dN5SCpqpvDmWawDyUB3AEmsR?=
+ =?us-ascii?Q?cHjTECULHcQsLnNJNfkbcSI7o12QXB25uZuEEZe/FDXnBt0x9UztM8eKiWmg?=
+ =?us-ascii?Q?xrTyAMpCd7WzVLwxB8C1PuEGojX/XvZLUjDOmxrke0AlpDw5AA4MaEOPB8iV?=
+ =?us-ascii?Q?oCd+yyJUI4yXo8kaG+6VihC1gLt+S7GsNdz5Qyyh7ql3P6lkLal39iIiFdyQ?=
+ =?us-ascii?Q?nVEZ/oA8wusH33Gm7oXolFiQip1GIxH6xbZTDtX/c4J+BgTLM6UXI8Ne1KyA?=
+ =?us-ascii?Q?O1xaBhLtimaj70krYcD3vhd8ksP3I+X+QyavNacwg0/s961js2iWV+CiGR8w?=
+ =?us-ascii?Q?yPLTyZZtQ/RpAlCRdiIo+j0V5jddEtC2udMbMKwqWgYMrGX+Shr6S5PROltD?=
+ =?us-ascii?Q?NJjA9wv5sgFC4Lzy2YyOh2vKpujVAiOpZwXNkiin1bSrG5rLlinAy/O9zWsf?=
+ =?us-ascii?Q?75tOaUUAQ6c3ftm7z5Dtv1Qh0wmnV+Iak5iRtw=3D=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-05f45.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 662af05a-57d3-4cf4-1d81-08dbf00349b5
+X-MS-Exchange-CrossTenant-AuthSource: OSZP286MB1725.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 11:15:11.9639
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYWP286MB3756
+X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,EMPTY_MESSAGE,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---4o4oj77z6epqtcan
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Fri, Nov 24, 2023 at 11:59:11AM +0100, Boris Brezillon wrote:
-> On Fri, 24 Nov 2023 11:40:06 +0100
-> Maxime Ripard <mripard@kernel.org> wrote:
->=20
-> > On Mon, Oct 30, 2023 at 02:01:43AM +0300, Dmitry Osipenko wrote:
-> > > Add locked and remove unlocked postfixes from drm-shmem function name=
-s,
-> > > making names consistent with the drm/gem core code.
-> > >=20
-> > > Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-> > > Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
-> > > Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com> =20
-> >=20
-> > This contradicts my earlier ack on a patch but...
-> >=20
-> > > ---
-> > >  drivers/gpu/drm/drm_gem_shmem_helper.c        | 64 +++++++++--------=
---
-> > >  drivers/gpu/drm/lima/lima_gem.c               |  8 +--
-> > >  drivers/gpu/drm/panfrost/panfrost_drv.c       |  2 +-
-> > >  drivers/gpu/drm/panfrost/panfrost_gem.c       |  6 +-
-> > >  .../gpu/drm/panfrost/panfrost_gem_shrinker.c  |  2 +-
-> > >  drivers/gpu/drm/panfrost/panfrost_mmu.c       |  2 +-
-> > >  drivers/gpu/drm/v3d/v3d_bo.c                  |  4 +-
-> > >  drivers/gpu/drm/virtio/virtgpu_object.c       |  4 +-
-> > >  include/drm/drm_gem_shmem_helper.h            | 36 +++++------
-> > >  9 files changed, 64 insertions(+), 64 deletions(-)
-> > >=20
-> > > diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm=
-/drm_gem_shmem_helper.c
-> > > index 0d61f2b3e213..154585ddae08 100644
-> > > --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-> > > +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> > > @@ -43,8 +43,8 @@ static const struct drm_gem_object_funcs drm_gem_sh=
-mem_funcs =3D {
-> > >  	.pin =3D drm_gem_shmem_object_pin,
-> > >  	.unpin =3D drm_gem_shmem_object_unpin,
-> > >  	.get_sg_table =3D drm_gem_shmem_object_get_sg_table,
-> > > -	.vmap =3D drm_gem_shmem_object_vmap,
-> > > -	.vunmap =3D drm_gem_shmem_object_vunmap,
-> > > +	.vmap =3D drm_gem_shmem_object_vmap_locked,
-> > > +	.vunmap =3D drm_gem_shmem_object_vunmap_locked, =20
-> >=20
-> > While I think we should indeed be consistent with the names, I would
-> > also expect helpers to get the locking right by default.
->=20
-> Wait, actually I think this patch does what you suggest already. The
-> _locked() prefix tells the caller: "you should take care of the locking,
-> I expect the lock to be held when this is hook/function is called". So
-> helpers without the _locked() prefix take care of the locking (which I
-> guess matches your 'helpers get the locking right' expectation), and
-> those with the _locked() prefix don't.
-
-What I meant by "getting the locking right" is indeed a bit ambiguous,
-sorry. What I'm trying to say I guess is that, in this particular case,
-I don't think you can expect the vmap implementation to be called with
-or without the locks held. The doc for that function will say that it's
-either one or the other, but not both.
-
-So helpers should follow what is needed to provide a default vmap/vunmap
-implementation, including what locking is expected from a vmap/vunmap
-implementation.
-
-If that means that vmap is always called with the locks taken, then
-drm_gem_shmem_object_vmap can just assume that it will be called with
-the locks taken and there's no need to mention it in the name (and you
-can probably sprinkle a couple of lockdep assertion to make sure the
-locking is indeed consistent).
-
-> > I'm not sure how reasonable it is, but I think I'd prefer to turn this
-> > around and keep the drm_gem_shmem_object_vmap/unmap helpers name, and
-> > convert whatever function needs to be converted to the unlock suffix so
-> > we get a consistent naming.
->=20
-> That would be an _unlocked() prefix if we do it the other way around. I
-> think the main confusion comes from the names of the hooks in
-> drm_gem_shmem_funcs. Some of them, like drm_gem_shmem_funcs::v[un]map()
-> are called with the GEM resv lock held, and locking is handled by the
-> core, others, like drm_gem_shmem_funcs::[un]pin() are called
-> without the GEM resv lock held, and locking is deferred to the
-> implementation. As I said, I don't mind prefixing hooks/helpers with
-> _unlocked() for those that take care of the locking, and no prefix for
-> those that expects locks to be held, as long as it's consistent, but I
-> just wanted to make sure we're on the same page :-).
-
-What about _nolock then? It's the same number of characters than
-_locked, plus it expresses what the function is (not) doing, not what
-context it's supposed to be called in?
-
-Maxime
-
---4o4oj77z6epqtcan
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZWXLogAKCRDj7w1vZxhR
-xdPLAP0bk4jcd19Kcw1HVEeKM+/ZsKBusXZ3qgtT2fHoMh5QUQEAsOV0Jvb2c6uk
-6hLo3uAZKWG2e93N+kwfw1XjMKiwpQA=
-=DFKK
------END PGP SIGNATURE-----
-
---4o4oj77z6epqtcan--
