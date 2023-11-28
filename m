@@ -2,204 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44DDD7FC909
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:05:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 909717FC916
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:10:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346076AbjK1WFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 17:05:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56690 "EHLO
+        id S1345732AbjK1WJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 17:09:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjK1WFT (ORCPT
+        with ESMTP id S229543AbjK1WJ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 17:05:19 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5294A1AE
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 14:05:23 -0800 (PST)
-Received: from [10.3.2.161] (zone.collabora.co.uk [167.235.23.81])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id B3B516606F5E;
-        Tue, 28 Nov 2023 22:05:19 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701209121;
-        bh=7xgiiHIZkyd3bNeww2hca8PoCyeMwxX6P4rjuWlBVFI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=n8dwM/TCV3O6RarGRKcaHc2GVNFP2eV8mBM9p+GTAY9OtPs5odN7Rve38Z40SF0YW
-         uJDWRbOp2AIjdieZ62k6hadUKjCOJr5Ve/5E+Pc5zmNmxnTjkw5R+CB2rFVtPKmcp7
-         tLqEftMuTH//JGYMvXc9rcRYqLezXl6sncBpcuf33pGc97/j6Ig762QhNPecsOtIKw
-         HEsu5xLB7cOoZf1xEXVTM4J0lKhF2ZhjjrLF4Z5fJF+t3ADstCP5BEAY5EIfLUHRtC
-         HuHHKuQBIjPL7hRlZPD0OjFFlpY/0cXcRRY6I+27jM9eVsT4ouhKvGqYD/DYUyuBG9
-         ISVlewrxM0AiA==
-Message-ID: <37208c72-7908-0a78-fc89-2fa9b8d756a5@collabora.com>
-Date:   Wed, 29 Nov 2023 01:05:14 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v18 04/26] drm/shmem-helper: Refactor locked/unlocked
- functions
+        Tue, 28 Nov 2023 17:09:57 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA3719A;
+        Tue, 28 Nov 2023 14:10:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701209403; x=1732745403;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=wHwD/3MPSClSmT4Sdvee3on/wvJjjoGSJdKU6N5rEIY=;
+  b=Ise6EhZVOAcBSHw8AfR2qlym92hulZNnYw4RRBCsuE3krjTytgc7hbRu
+   4Atss2nMgTlflGLQ/oFdN9+57v1H142Z0TZj4FZJdHD+3SOpxYyI+HYfs
+   meDTEhbM4edTf0A6cetTgkiQwhL0cpO4lTQvc5BQrRuMuWSp27WMhAI6A
+   5wRdnokxiUyLGUv6tZgv0FWfGcMN2PeD10COVqrXHEA9G4wDXleqjC/Pq
+   VIp6zokrGPsNVeHVtJJHr9/PGH39EzBG1pBS+ghCc6ASgK2U2bkSvGuVA
+   yHryA6AFaE/9RFecSFfI9WiWZQnu3wxJXsYErq6EXBbX607sjkEVmYwAp
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="457374126"
+X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
+   d="scan'208";a="457374126"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 14:09:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="718536166"
+X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
+   d="scan'208";a="718536166"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Nov 2023 14:09:54 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Tue, 28 Nov 2023 14:09:53 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Tue, 28 Nov 2023 14:09:53 -0800
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.169)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Tue, 28 Nov 2023 14:09:48 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dnKRB6T08bma0S3yT4jUmwofs+kM5n+t9n7H272iDvzvwXIML5nHqb2O5gtGY+cYevlsLSbUvN/5R0izBk5a9Voebn17CPPlsElq50gpQXmavju5+vppMIWCn93qOIQkORrxjPXxNseCvqZbOmYQ5bOkm4qvjksWkJ1gem2fsBMKK/bXtGTSQy811SOY3srfQbZJsWow0irLF7iwjibZmLW20XOfkc6K7ANRlFxGNjGcruFlcvfEBs+injK6umq/qEoPifbvkdLVOHSZ4sR/W3jvYK91q9IdKs2OmeIc/dMCj/5WS8zZNWyEpzalEl1Bc+hgme5aTFPR/1+Qu9H2vQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6Oxx76B163MpB6sdsHBdqVlFRJTGAOiTnZCA5m8FJcc=;
+ b=euMhLeKfOUWwXClxNqb9elYMuvyLPsZSpTXh1lFPp8mc4BcmjbQWP4S8CpJhvl7Ckqp9silXdQ+HtmLn3pJmlvLorOZtB6UUfEBkay/8jLMzPX3i9dEs7PvV9QbUHYGvluBibNhJHTbMMs93Yd+pUbJXL2l84jKwuD5O6WLR9ByKwhuSQ9Z6oQcb+JRKMxUDPpVwxXZkfSsMhY0ZlH3zeJL786dZbCGc/OmOExlnvQ7OSprsM+L5bma/gywDg0JCjX1X+DcHemNwiZxb8mjw+oAM3Q/4ToydoiLF5GfsmdG9sWZif0xgMGdSyRoFRVQ8bPD6vEV77YqW4D8UqsCgVw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by DS0PR11MB6328.namprd11.prod.outlook.com (2603:10b6:8:cc::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7025.29; Tue, 28 Nov 2023 22:09:41 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5%5]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
+ 22:09:41 +0000
+Message-ID: <1b538450-3a36-40ac-9520-04d6015f3d20@intel.com>
+Date:   Tue, 28 Nov 2023 14:09:39 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 01/26] selftests/resctrl: Don't use ctrlc_handler()
+ outside signal handling
+To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "Shaopeng Tan" <tan.shaopeng@jp.fujitsu.com>,
+        =?UTF-8?Q?Maciej_Wiecz=C3=B3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>
+CC:     <linux-kernel@vger.kernel.org>
+References: <20231120111340.7805-1-ilpo.jarvinen@linux.intel.com>
+ <20231120111340.7805-2-ilpo.jarvinen@linux.intel.com>
 Content-Language: en-US
-To:     Boris Brezillon <boris.brezillon@collabora.com>,
-        Maxime Ripard <mripard@kernel.org>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
- <20231029230205.93277-5-dmitry.osipenko@collabora.com>
- <wboljiwogeus7pwgaqzxaltt3xdavy2dzisygn6pdpoiwlnwgc@mwaiukjguzat>
- <20231124115911.79ab24af@collabora.com>
- <kw5bho3jx73d3glvtewmjvqt4qty4khju6dcwypuh25ya3gi4b@7slmijjqdi4p>
- <20231128133712.53a6f6cb@collabora.com>
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <20231128133712.53a6f6cb@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <20231120111340.7805-2-ilpo.jarvinen@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MW4PR04CA0192.namprd04.prod.outlook.com
+ (2603:10b6:303:86::17) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|DS0PR11MB6328:EE_
+X-MS-Office365-Filtering-Correlation-Id: a2d61e08-0d47-425f-7b95-08dbf05eb866
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: x9TbIX+qs7Lzz4vlJRAoz2sbEc6jNY/ktmng8W7aHhXWuq+oa2pDEf1uEhVPLpP4ZBfzkjngw01vezIbBmawZBmeowvysWcCsfa4nd3PE5qnYg5RNXlW8vySnHDFc32PJ7hKjapVmeL6N+rRfHjaJ+yCinlIkAt+XCQsR8Ij8ULYktmPEAFTIqYuYB7YUu7RZN2l5kPUBKFvKTQ2B34xATmcq0Ysu0nnOJt8gVQKs/YOZ074CJ8+bRv+9QsZjJALrmuV4xjkJyKkn112ay2yFPkCI8mhF5Bj7PShJ9m9juNvcIsrMJZtmWgsUYlAb22TagVfvGxG/acLAOoArmZK39UJq+GcIB3yqxWJ8xOO4wLKvivPWKcJRbsnLCAA9FPLIyIhCgpkMtxCWQizAF2c6R1XWXj13zDix+50gG8/nZfSo0tYKE5iPVZ+cVOfBOZF446iwwjhMB6KiZ0nW1od6+1JyYEty7XED24/9cX+NqhqrWBlLA2JmOLBbUZmLhwoSDanKA79aMvYWwuQnZFA/jtlPhVHIk0Oevo5e/z9Lz2bdQbaMnfd5cqyEXM2saAKFbXZzB08HAqjWRxwKfCHkJ2k5mJooL6E+DLkjwVqB33Utbxp3Ozhng0TMJehe5+ll3hCSUALekPo6llVXAxeAQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(396003)(376002)(366004)(136003)(230922051799003)(186009)(1800799012)(64100799003)(451199024)(5660300002)(4744005)(44832011)(41300700001)(8936002)(4326008)(8676002)(31686004)(2906002)(110136005)(6636002)(316002)(66556008)(66946007)(66476007)(2616005)(6486002)(478600001)(36756003)(53546011)(6512007)(26005)(6506007)(86362001)(38100700002)(82960400001)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b0czbDBxc01WUFNHYU9HZXljdHNZKzBKQ2RqNHNGNDVEVFJ6ZHFNMjVPU0ZH?=
+ =?utf-8?B?NWR1dENpUm1PZ1I0SVJaaFdUZGNYRG9TVGthMzRjc0QzWFkwU3E5Zm8zS0VW?=
+ =?utf-8?B?SWxkclA0emdJUnJTWVlCMGVST3BqQXc0MjRVc0hMdFhXdnVhaCtNbGpEdWZj?=
+ =?utf-8?B?NmRpSmhrN3B5WFB1RlFsamNsbU5PaVl5NWg1VmhkWXg0Qy9DVU9QZ0FEU0tt?=
+ =?utf-8?B?WStvQ1ZORDcxc280NTNXcktnZjMzL1FBNDlzeEpybm9DYVBHcnFrV21qbEU2?=
+ =?utf-8?B?MkJ6ODV6bXUxYS9hRlYySm5MTXNLRW9sMzZMVk9OVitNelJlWGNXeHdqemFD?=
+ =?utf-8?B?Q0tHcEU4Q0QycTg2emtSZk1sV0xwVnpXb09KRU9iRVZuTVVhOGoxSW10OE1z?=
+ =?utf-8?B?ckdIL3ZWRXB2dmpMRlZvbUtmaUFXVnFLb1JPVXF4RzZpMktGS0syaGZHZE9O?=
+ =?utf-8?B?ckdJaTBFV0NDUThkRENwblhkeWRiZ0xOTUpIa2hHalp1ckMzcHBxeE5ZckxJ?=
+ =?utf-8?B?RHFYOENYdDRYNUpDaVp3L1RxRUJTVUwydFJudGFSeVlnbjEvMWZyZmFLRkhL?=
+ =?utf-8?B?RzVsOHJteVFzUDZpMjl5N3VlQmpOQjNIUys1VmVOc3VEZld4em5sc1ErZjNX?=
+ =?utf-8?B?U0NGUUE3am5BV0ppRC9vY0RmazNob1ZKT0U4MWlaamhKU3EybGkvMHBPUlR4?=
+ =?utf-8?B?Y0VJWW1Zb05kT2J2UVY1WlE3YWZXYVU2WStONkU1d3lLenRzMzE2K3hYUjk2?=
+ =?utf-8?B?VUtZSzdMd0VUSkxWdEFWUEI0L2pKSWxnRksyN3krK1NiWGNNMGxxNzI5ajZW?=
+ =?utf-8?B?bVpjcTJnK3REM1VJTCtlaUxTZHlyMUx0R3p6MjVmYnptc2FRYlo1eDlVVnV2?=
+ =?utf-8?B?QXdYZWZYaXNMazVCWDlrblVLMmsrQWIvVXF0d3Z6cVZNUnBDUjJTM1lnWVcr?=
+ =?utf-8?B?QVJ2Z0FHbGl2MUJOalp1UVBHY2hpTjJrcXdBV1pMSWxoazVCcnpjblN1NVlE?=
+ =?utf-8?B?RWdNbDdlaHBIZXhMZ1orQ1RmZGpKb2orVlFvbXJDMTRjanE0ckF3NnhTTVVP?=
+ =?utf-8?B?YndRb2locWo1ZWwwb0pWTDhSVzlaTUQ1N29LVS9lUThPWVBocythdjNrUHpo?=
+ =?utf-8?B?NGIvNmNpcnpRVy9oK0JFMWFCbHdLRjFDZGNYOGU3bXU4QmIrTDBzMjFFOE54?=
+ =?utf-8?B?blpSY0dQSzc5VVhRckN2K2xOVFNYNXZzVDhkcEhjbHBKaFgyMTdyVEhnbXhJ?=
+ =?utf-8?B?NFBMcWNIanZNVC90Ujd6d2l1dkkzblVPaTZ4dWpGTUdzcjh2RE53NjJwWUlS?=
+ =?utf-8?B?NWtURlhhR2RZRlFkeU9QUThFMTVJWGpzb0FsckVJeU9PSWtaYUNwYm05RW56?=
+ =?utf-8?B?Tm1Ic05jMWM1VUR4Q0hZYXBxL0JuUWo2b2FFaDBFUnIxbmV1TTdYeDBCL2xF?=
+ =?utf-8?B?WHRZK2NvUkZwalpaN2tpR21IQm0rdkpiMkwxZEhlbE1yWGVURFlWQlRyWU9o?=
+ =?utf-8?B?MXhhWjZETUVhSDdCYTJvcTM3QmRXcTBJT25KT2EvaU5RTmd1ODdnejBNYXph?=
+ =?utf-8?B?MEJ2aXNWSFM5eVN3cE8wR2MwbnNKUnVCUGJCUUY1ckRISXhReGVUNUI4bjlL?=
+ =?utf-8?B?NEJiMG1rMDUxTWZtdWFhRWE1cExwYXpIdmI4dElyRUhMeHQydlZML1NkdnhR?=
+ =?utf-8?B?K0VrbER1TTc3d1htdEJTOTBiTGU1SzdXaWdQZ2dBZ0RnMW5nM3N5YTVzaWVm?=
+ =?utf-8?B?MzZxKzhMaVQxZFpvc2l4cm9hc1gzM3k4ZVFsVjM2SFdmNDlWenMrRC9sSW8w?=
+ =?utf-8?B?QVUvMFpVN3VjY0w3OEdJMEQ3OTkrMWF4a0J2RDJ4bmJrbkZrc0FHYytuaGxD?=
+ =?utf-8?B?NXQ3cG1yVHh5WnNYM21KYkZXRjhxNTh6QTNTVFBTb0dTcFcwODFVUXVOeHQ0?=
+ =?utf-8?B?cjhCSEZFKzZlOW53cVRhVmVXdWpmcm9jUWI0TlNZKzZrME9NTEViTkI2dG40?=
+ =?utf-8?B?eGdwRk52RmlmWHdHcTJLa3J5Sml0ekpjVGVGdVFZNjJ0VjVHVm5vZEJvWHk3?=
+ =?utf-8?B?MTJQQVhjMHFwOXgrZm1HMjllQ3gwWWVzakJ0c0xuMG1JV3B2Nnp4TFkvVDVC?=
+ =?utf-8?B?eG11ckJ1V2RwOWJ5MnJ4dkZpbFZZVGpZTG1MZWJKb3N6L1kvZ1ZtcFdYamgz?=
+ =?utf-8?B?akE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a2d61e08-0d47-425f-7b95-08dbf05eb866
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 22:09:41.5888
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uWB5Ya3X0cpSDJ7/9DOl+Sr0YHWmQDsbTgwQ1rBtdMLVo8igF3M4DoL8JrMsmXJTOnxjpz+Mu1zhG90e5wjrAzb1i5jK5L7qNEAHF7eujbU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB6328
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/28/23 15:37, Boris Brezillon wrote:
-> On Tue, 28 Nov 2023 12:14:42 +0100
-> Maxime Ripard <mripard@kernel.org> wrote:
-> 
->> Hi,
->>
->> On Fri, Nov 24, 2023 at 11:59:11AM +0100, Boris Brezillon wrote:
->>> On Fri, 24 Nov 2023 11:40:06 +0100
->>> Maxime Ripard <mripard@kernel.org> wrote:
->>>   
->>>> On Mon, Oct 30, 2023 at 02:01:43AM +0300, Dmitry Osipenko wrote:  
->>>>> Add locked and remove unlocked postfixes from drm-shmem function names,
->>>>> making names consistent with the drm/gem core code.
->>>>>
->>>>> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
->>>>> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
->>>>> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>    
->>>>
->>>> This contradicts my earlier ack on a patch but...
->>>>   
->>>>> ---
->>>>>  drivers/gpu/drm/drm_gem_shmem_helper.c        | 64 +++++++++----------
->>>>>  drivers/gpu/drm/lima/lima_gem.c               |  8 +--
->>>>>  drivers/gpu/drm/panfrost/panfrost_drv.c       |  2 +-
->>>>>  drivers/gpu/drm/panfrost/panfrost_gem.c       |  6 +-
->>>>>  .../gpu/drm/panfrost/panfrost_gem_shrinker.c  |  2 +-
->>>>>  drivers/gpu/drm/panfrost/panfrost_mmu.c       |  2 +-
->>>>>  drivers/gpu/drm/v3d/v3d_bo.c                  |  4 +-
->>>>>  drivers/gpu/drm/virtio/virtgpu_object.c       |  4 +-
->>>>>  include/drm/drm_gem_shmem_helper.h            | 36 +++++------
->>>>>  9 files changed, 64 insertions(+), 64 deletions(-)
->>>>>
->>>>> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
->>>>> index 0d61f2b3e213..154585ddae08 100644
->>>>> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
->>>>> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
->>>>> @@ -43,8 +43,8 @@ static const struct drm_gem_object_funcs drm_gem_shmem_funcs = {
->>>>>  	.pin = drm_gem_shmem_object_pin,
->>>>>  	.unpin = drm_gem_shmem_object_unpin,
->>>>>  	.get_sg_table = drm_gem_shmem_object_get_sg_table,
->>>>> -	.vmap = drm_gem_shmem_object_vmap,
->>>>> -	.vunmap = drm_gem_shmem_object_vunmap,
->>>>> +	.vmap = drm_gem_shmem_object_vmap_locked,
->>>>> +	.vunmap = drm_gem_shmem_object_vunmap_locked,    
->>>>
->>>> While I think we should indeed be consistent with the names, I would
->>>> also expect helpers to get the locking right by default.  
->>>
->>> Wait, actually I think this patch does what you suggest already. The
->>> _locked() prefix tells the caller: "you should take care of the locking,
->>> I expect the lock to be held when this is hook/function is called". So
->>> helpers without the _locked() prefix take care of the locking (which I
->>> guess matches your 'helpers get the locking right' expectation), and
->>> those with the _locked() prefix don't.  
->>
->> What I meant by "getting the locking right" is indeed a bit ambiguous,
->> sorry. What I'm trying to say I guess is that, in this particular case,
->> I don't think you can expect the vmap implementation to be called with
->> or without the locks held. The doc for that function will say that it's
->> either one or the other, but not both.
->>
->> So helpers should follow what is needed to provide a default vmap/vunmap
->> implementation, including what locking is expected from a vmap/vunmap
->> implementation.
-> 
-> Hm, yeah, I think that's a matter of taste. When locking is often
-> deferrable, like it is in DRM, I find it beneficial for funcions and
-> function pointers to reflect the locking scheme, rather than relying on
-> people properly reading the doc, especially when this is the only
-> outlier in the group of drm_gem_object_funcs we already have, and it's
-> not event documented at the drm_gem_object_funcs level [1] :P.
-> 
->>
->> If that means that vmap is always called with the locks taken, then
->> drm_gem_shmem_object_vmap can just assume that it will be called with
->> the locks taken and there's no need to mention it in the name (and you
->> can probably sprinkle a couple of lockdep assertion to make sure the
->> locking is indeed consistent).
-> 
-> Things get very confusing when you end up having drm_gem_shmem helpers
-> that are suffixed with _locked() to encode the fact locking is the
-> caller's responsibility and no suffix for the
-> callee-takes-care-of-the-locking semantics, while other helpers that are
-> not suffixed at all actually implement the
-> caller-should-take-care-of-the-locking semantics.
-> 
->>
->>>> I'm not sure how reasonable it is, but I think I'd prefer to turn this
->>>> around and keep the drm_gem_shmem_object_vmap/unmap helpers name, and
->>>> convert whatever function needs to be converted to the unlock suffix so
->>>> we get a consistent naming.  
->>>
->>> That would be an _unlocked() prefix if we do it the other way around. I
->>> think the main confusion comes from the names of the hooks in
->>> drm_gem_shmem_funcs. Some of them, like drm_gem_shmem_funcs::v[un]map()
->>> are called with the GEM resv lock held, and locking is handled by the
->>> core, others, like drm_gem_shmem_funcs::[un]pin() are called
->>> without the GEM resv lock held, and locking is deferred to the
->>> implementation. As I said, I don't mind prefixing hooks/helpers with
->>> _unlocked() for those that take care of the locking, and no prefix for
->>> those that expects locks to be held, as long as it's consistent, but I
->>> just wanted to make sure we're on the same page :-).  
->>
->> What about _nolock then? It's the same number of characters than
->> _locked, plus it expresses what the function is (not) doing, not what
->> context it's supposed to be called in?
-> 
-> Just did a quick
-> 
->   git grep _nolock drivers/gpu/drm
-> 
-> and it returns zero result, where the _locked/_unlocked pattern seems
-> to already be widely used. Not saying we shouldn't change that, but it
-> doesn't feel like a change we should do as part of this series.
-> 
-> Regards,
-> 
-> Boris
-> 
-> [1]https://elixir.bootlin.com/linux/v6.7-rc3/source/include/drm/drm_gem.h#L155
+Hi Ilpo,
 
-I'm fine with dropping the _locked() postfix from the common GEM helpers
-and documenting the locking rule in drm_gem. Thank you all for the
-suggestions :)
+On 11/20/2023 3:13 AM, Ilpo Järvinen wrote:
+> perf_event_open_llc_miss() calls ctrlc_handler() to cleanup if
+> perf_event_open() returns an error. Those cleanups, however, are not
+> the responsability of perf_event_open_llc_miss() and it thus interferes
 
--- 
-Best regards,
-Dmitry
+responsibility
 
+> unnecessarily with the usual cleanup pattern. Worse yet,
+> ctrlc_handler() calls exit() in the end preventing the ordinary cleanup
+> done in the calling function from executing.
+> 
+> ctrlc_handler() should only be used as a signal handler, not during
+> normal error handling.
+> 
+> Remove call to ctrlc_handler() from perf_event_open_llc_miss(). As
+> unmounting resctrlfs and test cleanup are already handled properly
+> by error rollbacks in the calling functions, no other changes are
+> necessary.
+> 
+> Suggested-by: Reinette Chatre <reinette.chatre@intel.com>
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+
+Reinette
