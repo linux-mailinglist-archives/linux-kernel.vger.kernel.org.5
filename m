@@ -2,95 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF3707FC189
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B6D7FC1CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345357AbjK1RQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 12:16:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48988 "EHLO
+        id S1345364AbjK1RR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 12:17:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjK1RQm (ORCPT
+        with ESMTP id S229519AbjK1RR1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 12:16:42 -0500
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 410E3112;
-        Tue, 28 Nov 2023 09:16:49 -0800 (PST)
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6d81fc0ad6eso1815974a34.2;
-        Tue, 28 Nov 2023 09:16:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701191808; x=1701796608;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oSxaWECo+SoCPkPcgpg66jWsY5n75WOX6TEqToGLZ/Y=;
-        b=FU30CcjL2/BiQaBb35czzBVVXhVMh1frC3EybjFRtEEGgbxg/bOATSZtttOmy2ItBL
-         AhmvbGpvxBAZj6ZwZupH2JWHGqzKSk4wdRFZqIgUYq9+UoQjDitMGV6RWh+/kcd1GGbu
-         bAjA1rM9v8wwHDH/Ng7wfHgRkwZJ5OsZKMScT4XY9grBOabtZ8lgcBe2Rpuks1OK7zT6
-         zFJ4qiBXhiyCggle7WtSa+njAml4RjUwgoaMXnsEho8utGhvK54RL01HhYVdTM4Vrc/0
-         eemVGjZ4TKoboCHnyPrCYSQt47dZ3mL4LK/FMDU6XSmNWmO/sCaHMsNmD9uFmaAnNd4w
-         zaFA==
-X-Gm-Message-State: AOJu0YyRKe7RqAmOv/T9P/pENoYAWELNItVvtOWJjM/lrwldO64X8SiX
-        7oYZ3ECPRiCDx0KyfMLbS6bm9LQOMg==
-X-Google-Smtp-Source: AGHT+IHvVqecVFyyONprur+6eo+yl0fMCE2yoFPpWSNzy7UBUsQLpPgr1zOkPI5pjRd2ZjgqIXuGFA==
-X-Received: by 2002:a05:6830:16ca:b0:6d8:2843:8887 with SMTP id l10-20020a05683016ca00b006d828438887mr8076088otr.34.1701191808521;
-        Tue, 28 Nov 2023 09:16:48 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id m10-20020a9d644a000000b006d81ae3d8f6sm931210otl.56.2023.11.28.09.16.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 09:16:47 -0800 (PST)
-Received: (nullmailer pid 3522278 invoked by uid 1000);
-        Tue, 28 Nov 2023 17:16:47 -0000
-Date:   Tue, 28 Nov 2023 11:16:47 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        kristo@kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: clock: ti: Convert interface.txt to
- json-schema
-Message-ID: <20231128171647.GA3343123-robh@kernel.org>
-References: <20231127202359.145778-1-andreas@kemnade.info>
+        Tue, 28 Nov 2023 12:17:27 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 88FF610EC;
+        Tue, 28 Nov 2023 09:17:33 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 99F93C15;
+        Tue, 28 Nov 2023 09:18:20 -0800 (PST)
+Received: from raptor (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3F3773F6C4;
+        Tue, 28 Nov 2023 09:17:28 -0800 (PST)
+Date:   Tue, 28 Nov 2023 17:17:25 +0000
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
+        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
+        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
+        rppt@kernel.org, hughd@google.com, pcc@google.com,
+        steven.price@arm.com, anshuman.khandual@arm.com,
+        vincenzo.frascino@arm.com, eugenis@google.com, kcc@google.com,
+        hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC v2 05/27] mm: page_alloc: Add an arch hook to allow
+ prep_new_page() to fail
+Message-ID: <ZWYgpVFpQNxKrQM2@raptor>
+References: <20231119165721.9849-1-alexandru.elisei@arm.com>
+ <20231119165721.9849-6-alexandru.elisei@arm.com>
+ <dadc9d17-f311-47f1-a264-28b42bed0ab0@redhat.com>
+ <ZWSHF2hVOPTBIQLY@raptor>
+ <0a0f9345-3138-4e89-80cd-c7edaf2ff62d@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231127202359.145778-1-andreas@kemnade.info>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <0a0f9345-3138-4e89-80cd-c7edaf2ff62d@redhat.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 09:23:59PM +0100, Andreas Kemnade wrote:
-> Convert the OMAP interface clock device tree binding to json-schema
-> and fix up reg property which is optional and taken from parent if
-> not specified.
-> Specify the creator of the original binding as a maintainer.
+Hi,
 
-Great! This and other TI clocks are at the top of the list[1] of 
-occurrences of undocumented (by schemas) compatibles: 
+On Tue, Nov 28, 2023 at 05:57:31PM +0100, David Hildenbrand wrote:
+> On 27.11.23 13:09, Alexandru Elisei wrote:
+> > Hi,
+> > 
+> > Thank you so much for your comments, there are genuinely useful.
+> > 
+> > On Fri, Nov 24, 2023 at 08:35:47PM +0100, David Hildenbrand wrote:
+> > > On 19.11.23 17:56, Alexandru Elisei wrote:
+> > > > Introduce arch_prep_new_page(), which will be used by arm64 to reserve tag
+> > > > storage for an allocated page. Reserving tag storage can fail, for example,
+> > > > if the tag storage page has a short pin on it, so allow prep_new_page() ->
+> > > > arch_prep_new_page() to similarly fail.
+> > > 
+> > > But what are the side-effects of this? How does the calling code recover?
+> > > 
+> > > E.g., what if we need to populate a page into user space, but that
+> > > particular page we allocated fails to be prepared? So we inject a signal
+> > > into that poor process?
+> > 
+> > When the page fails to be prepared, it is put back to the tail of the
+> > freelist with __free_one_page(.., FPI_TO_TAIL). If all the allocation paths
+> > are exhausted and no page has been found for which tag storage has been
+> > reserved, then that's treated like an OOM situation.
+> > 
+> > I have been thinking about this, and I think I can simplify the code by
+> > making tag reservation a best effort approach. The page can be allocated
+> > even if reserving tag storage fails, but the page is marked as invalid in
+> > set_pte_at() (PAGE_NONE + an extra bit to tell arm64 that it needs tag
+> > storage) and next time it is accessed, arm64 will reserve tag storage in
+> > the fault handling code (the mechanism for that is implemented in patch #19
+> > of the series, "mm: mprotect: Introduce PAGE_FAULT_ON_ACCESS for
+> > mprotect(PROT_MTE)").
+> > 
+> > With this new approach, prep_new_page() stays the way it is, and no further
+> > changes are required for the page allocator, as there are already arch
+> > callbacks that can be used for that, for example tag_clear_highpage() and
+> > arch_alloc_page(). The downside is extra page faults, which might impact
+> > performance.
+> > 
+> > What do you think?
+> 
+> That sounds a lot more robust, compared to intermittent failures to allocate
+> pages.
 
-   3763 ['ti,omap3-interface-clock']
-   3249 ['ti,divider-clock']
-   1764 ['ti,mux-clock']
-   1680 ['ti,gate-clock']
-   1522 ['ti,wait-gate-clock']
-   1459 ['ti,composite-clock']
-   1343 ['ti,composite-mux-clock']
-   1341 ['ti,clkctrl']
-   1296 ['fsl,imx6q-ssi', 'fsl,imx51-ssi']
-   1196 ['ti,composite-gate-clock']
-   1032 ['ti,clockdomain']
+Great, thank you for the feedback, I will use this approach for the next
+iteration of the series.
 
-Of course, that's largely due to OMAP being early clock adopter and 
-trying to do fine-grained clocks in DT.
+Thanks,
+Alex
 
-Rob
-
-[1] https://gitlab.com/robherring/linux-dt/-/jobs/5620809910#L5618
+> 
+> -- 
+> Cheers,
+> 
+> David / dhildenb
+> 
