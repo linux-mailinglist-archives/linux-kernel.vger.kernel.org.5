@@ -2,129 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C9D7FB801
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:36:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01CCD7FB809
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:37:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344281AbjK1Kgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 05:36:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50402 "EHLO
+        id S234831AbjK1Khe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 05:37:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234895AbjK1KgY (ORCPT
+        with ESMTP id S234941AbjK1KhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 05:36:24 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E210335BB;
-        Tue, 28 Nov 2023 02:31:12 -0800 (PST)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 42A93BB2;
-        Tue, 28 Nov 2023 11:30:36 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1701167436;
-        bh=OXd6WFN+hXV6bAu/T8kro/U446h2pL6QGhhs60nEIi4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rrlqwtw2gOQQrNMKVW//q6jy+QDsES4uivGL0gr+shfBzULUgf8EIPHup52837x6M
-         lkjEvjo+r5i+ErgPYmnwxd9IEVaCbbtjkecd0f/jixfjw9p22lRsstRNb28SEuU2fe
-         uiM/3GmHY9w/a0YXrbP6QkaEtxAR6gre/elYP32E=
-Date:   Tue, 28 Nov 2023 12:31:17 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        hverkuil@xs4all.nl, mchehab@kernel.org, m.szyprowski@samsung.com,
-        matt.ranostay@konsulko.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Subject: Re: [PATCH 07/55] media: imx8-isi: Stop abusing of
- min_buffers_needed field
-Message-ID: <20231128103117.GF31314@pendragon.ideasonboard.com>
-References: <20231127165454.166373-1-benjamin.gaignard@collabora.com>
- <20231127165454.166373-8-benjamin.gaignard@collabora.com>
- <20231127170700.GC31314@pendragon.ideasonboard.com>
- <6fa1ec09-3e30-475e-9718-29d23586753e@collabora.com>
- <CAAFQd5DCVTLpPoKSp_OA6fe_Hqt-oV7=AsCZWSmkJORvLSgUiw@mail.gmail.com>
+        Tue, 28 Nov 2023 05:37:13 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C764ED6D;
+        Tue, 28 Nov 2023 02:33:18 -0800 (PST)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AS9IOKA030987;
+        Tue, 28 Nov 2023 10:32:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=6WJrDs6aXBvRV/cHzyTFtHB3cjvoU5uFPQPLuXGwXh4=;
+ b=oyKSQb4yUVsiTvtgVlnCchbcwTqCsKms8gp+pNTQQ+dka3v/ZaReHN4opnVCpE7nP3CF
+ 6SBKSdBj+Z/xQLOAXFoOc2mGRme+GYGCYO85PVD0YqaATHIg0s/FQgOnHTOCS1HB5wrZ
+ rixDvAMBLXBapiEx++tWW218UIBUqSqhhD93s/wysZmrj/eEYS7hYzIYYc5tzKtpePz8
+ QV6hPgrZdkJLYqTlAmO/RunKvHwgEzREDOe8rMLxFltU3wbQYO6biEANVX4PyzpYwdTl
+ gdCg4Q3EX3OlrCha7+9PSsLlHa5TNLcxkvpTbKGl06czSfrt7bUl8pfuIkG/OhuUYlTR Hw== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3un02h1xbj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Nov 2023 10:32:53 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ASAWp99022084
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Nov 2023 10:32:51 GMT
+Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 28 Nov
+ 2023 02:32:40 -0800
+Message-ID: <d5fa95e7-ad2a-0dc7-5c79-6a9a789dad5f@quicinc.com>
+Date:   Tue, 28 Nov 2023 16:02:33 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAFQd5DCVTLpPoKSp_OA6fe_Hqt-oV7=AsCZWSmkJORvLSgUiw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [Patch v6 10/12] pstore/ram: Add dynamic ramoops region support
+ through commandline
+To:     Pavan Kondeti <quic_pkondeti@quicinc.com>
+CC:     <corbet@lwn.net>, <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <keescook@chromium.org>, <tony.luck@intel.com>,
+        <gpiccoli@igalia.com>, <mathieu.poirier@linaro.org>,
+        <vigneshr@ti.com>, <nm@ti.com>, <matthias.bgg@gmail.com>,
+        <kgene@kernel.org>, <alim.akhtar@samsung.com>,
+        <bmasney@redhat.com>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-hardening@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <kernel@quicinc.com>
+References: <1700864395-1479-1-git-send-email-quic_mojha@quicinc.com>
+ <1700864395-1479-11-git-send-email-quic_mojha@quicinc.com>
+ <ad38fb23-e2a2-448e-bdea-fa0985f82b50@quicinc.com>
+Content-Language: en-US
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <ad38fb23-e2a2-448e-bdea-fa0985f82b50@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 51E3dRmfj17vx50XeFUlt--L527HdirG
+X-Proofpoint-ORIG-GUID: 51E3dRmfj17vx50XeFUlt--L527HdirG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-28_08,2023-11-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 malwarescore=0 adultscore=0 lowpriorityscore=0
+ impostorscore=0 spamscore=0 mlxscore=0 phishscore=0 bulkscore=0
+ mlxlogscore=999 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2311280083
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 06:35:51PM +0900, Tomasz Figa wrote:
-> On Tue, Nov 28, 2023 at 6:31 PM Benjamin Gaignard wrote:
-> > Le 27/11/2023 à 18:07, Laurent Pinchart a écrit :
-> > > Hi Benjamin,
-> > >
-> > > Thank you for the patch.
-> > >
-> > > On Mon, Nov 27, 2023 at 05:54:06PM +0100, Benjamin Gaignard wrote:
-> > >> 'min_buffers_needed' is suppose to be used to indicate the number
-> > >> of buffers needed by DMA engine to start streaming.
-> > >> imx8-isi driver doesn't use DMA engine and just want to specify
-> > > What do you mean, "doesn't use DMA engine" ? The ISI surely has DMA
-> > > engines :-)
-> >
-> > I have done assumption on drivers given if they use or dma_* functions.
+
+
+On 11/27/2023 5:04 PM, Pavan Kondeti wrote:
+> On Sat, Nov 25, 2023 at 03:49:53AM +0530, Mukesh Ojha wrote:
+>> The reserved memory region for ramoops is assumed to be at a fixed
+>> and known location when read from the devicetree. This may not be
+>> required for something like Qualcomm's minidump which is interested
+>> in knowing addresses of ramoops region but it does not put hard
+>> requirement of address being fixed as most of it's SoC does not
+>> support warm reset and does not use pstorefs at all instead it has
+>> firmware way of collecting ramoops region if it gets to know the
+>> address and register it with apss minidump table which is sitting
+>> in shared memory region in DDR and firmware will have access to
+>> these table during reset and collects it on crash of SoC.
+>>
+>> So, add the support of reserving ramoops region to be dynamically
+>> allocated early during boot if it is request through command line
+>> via 'dyn_ramoops_size=<size>' and fill up reserved resource structure
+>> and export the structure, so that it can be read by ramoops driver.
+>>
+>> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+>> ---
+>>   Documentation/admin-guide/ramoops.rst |  7 ++++
+>>   fs/pstore/Kconfig                     | 15 +++++++++
+>>   fs/pstore/ram.c                       | 62 ++++++++++++++++++++++++++++++++---
+>>   include/linux/pstore_ram.h            |  5 +++
+>>   init/main.c                           |  2 ++
+>>   5 files changed, 87 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/Documentation/admin-guide/ramoops.rst b/Documentation/admin-guide/ramoops.rst
+>> index e9f85142182d..af737adbf079 100644
+>> --- a/Documentation/admin-guide/ramoops.rst
+>> +++ b/Documentation/admin-guide/ramoops.rst
+>> @@ -33,6 +33,13 @@ memory are implementation defined, and won't work on many ARMs such as omaps.
+>>   Setting ``mem_type=2`` attempts to treat the memory region as normal memory,
+>>   which enables full cache on it. This can improve the performance.
+>>   
+>> +Ramoops memory region can also be allocated dynamically for a special case where
+>> +there is no requirement to access the logs from pstorefs on next boot instead there
+>> +is separate backend mechanism like minidump present which has awareness about the
+>> +dynamic ramoops region and can recover the logs. This is enabled via command line
+>> +parameter ``dyn_ramoops_size=<size>`` and should not be used in absence of
+>> +separate backend which knows how to recover this dynamic region.
+>> +
+>>   The memory area is divided into ``record_size`` chunks (also rounded down to
+>>   power of two) and each kmesg dump writes a ``record_size`` chunk of
+>>   information.
+>> diff --git a/fs/pstore/Kconfig b/fs/pstore/Kconfig
+>> index 3acc38600cd1..e13e53d7a225 100644
+>> --- a/fs/pstore/Kconfig
+>> +++ b/fs/pstore/Kconfig
+>> @@ -81,6 +81,21 @@ config PSTORE_RAM
+>>   
+>>   	  For more information, see Documentation/admin-guide/ramoops.rst.
+>>   
+>> +config PSTORE_DYNAMIC_RAMOOPS_REGION_RESERVATION
+>> +	bool "Reserve ramoops region dynamically"
+>> +	select PSTORE_RAM
+>> +	help
+>> +	  This enables the dynamic reservation of ramoops region for a special case
+>> +	  where there is no requirement to access the logs from pstorefs on next boot
+>> +	  instead there is separate backend mechanism like minidump present which has
+>> +	  awareness about the dynamic ramoops region and can recover the logs. This is
+>> +	  enabled via command line parameter dyn_ramoops_size=<size> and should not be
+>> +	  used in absence of separate backend which knows how to recover this dynamic
+>> +	  region.
+>> +
+>> +	  Note whenever this config is selected ramoops driver will be build statically
+>> +	  into kernel.
+>> +
 > 
-> I suspect the use of vb2_dma_sg_plane_desc() and
-> vb2_dma_contig_plane_dma_addr() may be more correlated to whether
-> there is a DMA involved or not. Usually V4L2 drivers don't really have
-> to deal with the DMA API explicitly, because the vb2 framework handles
-> most of the work.
+> Is there any advantage if we decouple this memory reservation from
+> pstore ram so that pstore ram can still be compiled as module? Asking
+> because you explicitly mentioned this limitation.
 
-And this is anyway not related to DMA at all, but to the logic each
-driver implements when it deals with buffers. There's a lower chance a
-USB driver driver will have a hard requirement for more than one buffer
-compared to an AMBA/platform/PCI device driver, but at the end of the
-day, each driver needs to be analyzed individually to check what they
-require. Benjamin, I think you'll have some more homework to do :-)
+This is doable and it will be needing export(may be _NS) of
+ramoops resource if ramoops needs to be build as modules.
 
-> > I have considers that all PCI drivers are using DMA engine and
-> > I don't know the design for each drivers so I hope to get this information
-> > from maintainers and fix that in v2.
-> > If imx8-isi driver needs a minimum number of buffers before start streaming
-> > I will do a v2 and use min_dma_buffers_needed instead.
-> >
-> > >> the minimum number of buffers to allocate when calling VIDIOC_REQBUFS.
-> > >> That 'min_reqbufs_allocation' field purpose so use it.
-> > >>
-> > >> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> > >> CC: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > >> CC: Mauro Carvalho Chehab <mchehab@kernel.org>
-> > >> CC: Shawn Guo <shawnguo@kernel.org>
-> > >> CC: Sascha Hauer <s.hauer@pengutronix.de>
-> > >> CC: Pengutronix Kernel Team <kernel@pengutronix.de>
-> > >> CC: Fabio Estevam <festevam@gmail.com>
-> > >> CC: NXP Linux Team <linux-imx@nxp.com>
-> > >> ---
-> > >>   drivers/media/platform/nxp/imx8-isi/imx8-isi-video.c | 2 +-
-> > >>   1 file changed, 1 insertion(+), 1 deletion(-)
-> > >>
-> > >> diff --git a/drivers/media/platform/nxp/imx8-isi/imx8-isi-video.c b/drivers/media/platform/nxp/imx8-isi/imx8-isi-video.c
-> > >> index 49bca2b01cc6..81673ff9084b 100644
-> > >> --- a/drivers/media/platform/nxp/imx8-isi/imx8-isi-video.c
-> > >> +++ b/drivers/media/platform/nxp/imx8-isi/imx8-isi-video.c
-> > >> @@ -1453,7 +1453,7 @@ int mxc_isi_video_register(struct mxc_isi_pipe *pipe,
-> > >>      q->mem_ops = &vb2_dma_contig_memops;
-> > >>      q->buf_struct_size = sizeof(struct mxc_isi_buffer);
-> > >>      q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
-> > >> -    q->min_buffers_needed = 2;
-> > >> +    q->min_reqbufs_allocation = 2;
-> > >>      q->lock = &video->lock;
-> > >>      q->dev = pipe->isi->dev;
-> > >>
+Thanks for suggestion.
+But Let's hear it from other people as well if they have something
+to add otherwise, will do it next series.
 
--- 
-Regards,
+> 
+>>   config PSTORE_ZONE
+>>   	tristate
+>>   	depends on PSTORE
+>> diff --git a/fs/pstore/ram.c b/fs/pstore/ram.c
+>> index 88b34fdbf759..a6c0da8cfdd4 100644
+>> --- a/fs/pstore/ram.c
+>> +++ b/fs/pstore/ram.c
+>> @@ -20,6 +20,7 @@
+>>   #include <linux/compiler.h>
+>>   #include <linux/of.h>
+>>   #include <linux/of_address.h>
+>> +#include <linux/memblock.h>
+>>   #include <linux/mm.h>
+>>   
+>>   #include "internal.h"
+>> @@ -103,6 +104,55 @@ struct ramoops_context {
+>>   };
+>>   
+>>   static struct platform_device *dummy;
+>> +static int dyn_ramoops_size;
+>> +/* Location of the reserved area for the dynamic ramoops */
+>> +static struct resource dyn_ramoops_res = {
+>> +	.name  = "ramoops",
+>> +	.start = 0,
+>> +	.end   = 0,
+>> +	.flags = IORESOURCE_BUSY | IORESOURCE_SYSTEM_RAM,
+>> +	.desc  = IORES_DESC_NONE,
+>> +};
+>> +
+>> +static int __init parse_dyn_ramoops_size(char *p)
+>> +{
+>> +	char *tmp;
+>> +
+>> +	dyn_ramoops_size = memparse(p, &tmp);
+>> +	if (p == tmp) {
+>> +		pr_err("ramoops: memory size expected\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +early_param("dyn_ramoops_size", parse_dyn_ramoops_size);
+> 
+> should not this code be under
+> CONFIG_PSTORE_DYNAMIC_RAMOOPS_REGION_RESERVATION?
 
-Laurent Pinchart
+Yeah, looks to be miss., thanks again..
+
+> 
+>> +
+>> +#ifdef CONFIG_PSTORE_DYNAMIC_RAMOOPS_REGION_RESERVATION
+>> +/*
+>> + * setup_dynamic_ramoops() - reserves memory for dynamic ramoops
+>> + *
+>> + * This enable dynamic reserve memory support for ramoops through
+>> + * command line.
+>> + */
+>> +void __init setup_dynamic_ramoops(void)
+>> +{
+>> +	unsigned long long ramoops_base;
+>> +	unsigned long long ramoops_size;
+>> +
+>> +	ramoops_base = memblock_phys_alloc_range(dyn_ramoops_size, SMP_CACHE_BYTES,
+>> +						 0, MEMBLOCK_ALLOC_NOLEAKTRACE);
+>> +	if (!ramoops_base) {
+>> +		pr_err("cannot allocate ramoops dynamic memory (size:0x%llx).\n",
+>> +			ramoops_size);
+>> +		return;
+>> +	}
+> 
+> This error needs to be propagated to ramoops_register_dummy() since it
+> rely on !dyn_ramoops_size . one way is to set dyn_ramoops_size to 0.
+
+Good point, will do that..
+
+> 
+>> +
+>> +	dyn_ramoops_res.start = ramoops_base;
+>> +	dyn_ramoops_res.end = ramoops_base + dyn_ramoops_size - 1;
+>> +	insert_resource(&iomem_resource, &dyn_ramoops_res);
+>> +}
+>> +#endif
+>>   
+>>   static int ramoops_pstore_open(struct pstore_info *psi)
+>>   {
+>> @@ -915,14 +965,18 @@ static void __init ramoops_register_dummy(void)
+>>   
+>>   	/*
+>>   	 * Prepare a dummy platform data structure to carry the module
+>> -	 * parameters. If mem_size isn't set, then there are no module
+>> -	 * parameters, and we can skip this.
+>> +	 * parameters. If mem_size isn't set, check for dynamic ramoops
+>> +	 * size and use if it is set.
+>>   	 */
+>> -	if (!mem_size)
+>> +	if (!mem_size && !dyn_ramoops_size)
+>>   		return;
+>>   
+> 
+> If mem_size and dyn_ramoops_size are set, you are taking
+> dyn_ramoops_size precedence here. The comment is a bit confusing, pls
+> review it once.
+
+Ideally, both should not be set and there will always be
+confusion.
+
+Do you think, if we use mem_size a single variable both for earlier
+and dynamic ramoops where based on dyn_ramoops_size=true/on a boolean
+it will take dynamic ramoops path and if not mentioned it will take 
+older path.
+
+-Mukesh
+> 
+>> -	pr_info("using module parameters\n");
+>> +	if (dyn_ramoops_size) {
+>> +		mem_size = dyn_ramoops_size;
+>> +		mem_address = dyn_ramoops_res.start;
+>> +	}
+>>   
+> 
+> Overall it Looks good to me. Thanks.
