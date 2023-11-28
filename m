@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDAC7FB10E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 06:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A387FB10B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 06:04:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343508AbjK1Ey2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 23:54:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43056 "EHLO
+        id S1343520AbjK1Eyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 23:54:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232891AbjK1EyY (ORCPT
+        with ESMTP id S1343507AbjK1Ey1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 23:54:24 -0500
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31F21AA;
-        Mon, 27 Nov 2023 20:54:30 -0800 (PST)
-Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-35ba5e00dc5so20931395ab.1;
-        Mon, 27 Nov 2023 20:54:30 -0800 (PST)
+        Mon, 27 Nov 2023 23:54:27 -0500
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9FFB1A1;
+        Mon, 27 Nov 2023 20:54:32 -0800 (PST)
+Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-35c7971a374so9520425ab.2;
+        Mon, 27 Nov 2023 20:54:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701147270; x=1701752070; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701147272; x=1701752072; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3SKlaGhSsAL25beNhK5KHJ+yWzkVMbOPMoVfUG9EKvw=;
-        b=APLgs9RD29JW/gjb+vgwGv0z+MYKtBX5ymih/2tUvwliqVg13qsNPJWmy7UyUTfbcc
-         g6WmffcPYgUcvgnVHIkLyPu2AU1IrOXzr0Gd9NJFZZLRUMbgpv213h79BPYMHbPAQTLi
-         14J8WpMbb/dMB9Xyc/mqER7IuCkJCWCYP/ya/afbZRLdpPLHAGkSTfAVrA1l3TtY3c2q
-         XaDTNnthl8HX6AogpA2p2Ti4zTp8Xt4ijEceUO/vZNYrmwuEs/MLuYN1gnw5wYhOVjZc
-         A9O7Gd7ElIb2uQH/Pyj2/RTVyXNikxo5076H9jWPmxEn7D5qkaUi4TLBgAep0y4T/ncC
-         TjNw==
+        bh=VNceZKOO+3PgAe77vYkS4p5mUHqXVjcNpHRywKWrUJE=;
+        b=fJEZySqe1Ql8o9xYoOK67a3mvaDut5U6zgo1C7dm39m2Par8eoZMPpTfkuLY4jlris
+         X5jBoULkHsTb9hpwu/IP/Y0w/5Z/cr3wGqMxNa0iGrM/rjkTP5ntWio5a4l7T+TvBSi7
+         38X0Yrl1pbHkLZ+SzncYnWoCPW/5s3ZijvixVyNEj+i9ujtTijaAfJPjG2AyYTe6MGiU
+         6RGQAfmHqcSjh/1JF3U4mZyoXnNVaRMi8LjHFAI0/jwF9BZ6Rrlgw/P1DH5EyCS6GtXt
+         HLTObHhkpCkj/rbTqvbTGQidp+NLMUQmr+23RLExnMsXxK0diwxmwmmjjsi7ZWL49nGU
+         F9Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701147270; x=1701752070;
+        d=1e100.net; s=20230601; t=1701147272; x=1701752072;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3SKlaGhSsAL25beNhK5KHJ+yWzkVMbOPMoVfUG9EKvw=;
-        b=MMKoE3Gohg5laY3NWuhukZbZdMpTHl0n56Ffpz7V9wuaMXUL/pYQX4SV/qpqF/nZ3k
-         hJB5JnY1YLOXz6IPxmKD1fF//0uGKkm0voo6TIR2NqufzekFmNd9MXbnZ4nGzBFzUK2C
-         FHsh84Kj/wtOoTthVe635TuWcqy/sDM0SPH7e0t9IrxsdAGFaAwP+e/dpbXrBA1fDwK5
-         7hRz2YUstVmuwUaDWZpim1P0MsB3NuyC1hK9V//CponSWR6AsNZdpzOVm2+R2HKLTaQ6
-         2LPqSPZxN0b1zJm5LNtTkBxj781u81BIQrnRh1EFaRI8NtgdGX9vRKDjnoWMqrPm6PiD
-         pkyA==
-X-Gm-Message-State: AOJu0Yxj6mBK/GPQsw9fJhYwcO/374XUjEhpj+u7TfzZ1E0U/xQL2rnJ
-        TdeSP8NhRuOL1jnDu8hzVj4=
-X-Google-Smtp-Source: AGHT+IH+8mU+usPNnE6Nb7VCm7UMBVeY098YDDcNFPbxmWBxiyZdGBeVDnpatUnTwox2uTSEh8Qtmw==
-X-Received: by 2002:a05:6e02:220d:b0:359:4376:6615 with SMTP id j13-20020a056e02220d00b0035943766615mr19132843ilf.30.1701147270115;
-        Mon, 27 Nov 2023 20:54:30 -0800 (PST)
+        bh=VNceZKOO+3PgAe77vYkS4p5mUHqXVjcNpHRywKWrUJE=;
+        b=PTQhxFncBEaf5tochsqb6ndJDoawpc2E3v5Q84vPJaecb7wOSxrZ/l7MZ/QRBDWLfn
+         /vOfAMoi9eg6K2VCrIyhrpgO33SlZaPLi1sYhVBFv4Ujn/sW9kXplP3blgMXme5bhQf5
+         q1W6/YVOq6G202Z2Q0KjAyOBerSmoabBoMd4Y5yPal2MjZv8pbf1iqk9mYzQ7SS/15nX
+         0dk51UNP6cSMdW7onGVMjhbA97wtsrHTN3G8DZAIk9/kE1hr21vTZCBW8sT6//vIvXl4
+         qvxVPRSk4Y2gSv5M0lrW7gnzETbjq3IP320D3PlLzxgcBtQesSQdRhtT/gVkos4Xv0gR
+         1SIQ==
+X-Gm-Message-State: AOJu0Yz5piXtfJtZ6IQZqRFKqRFIzaKaYWSUS3K19hbBNmiAptW6XtGG
+        +yZW+4xS/tjcN1k3oBW6SUX8Z1eSGs0=
+X-Google-Smtp-Source: AGHT+IExnDh815yNXcdkZQfo9IX7WR97yNJG3EUz1x0WT2HG5Y2G5t4wO/8aeDBpZWykVIfrcsDVTQ==
+X-Received: by 2002:a05:6e02:1c07:b0:35c:d4c8:b272 with SMTP id l7-20020a056e021c0700b0035cd4c8b272mr5638454ilh.30.1701147271815;
+        Mon, 27 Nov 2023 20:54:31 -0800 (PST)
 Received: from aford-System-Version.lan ([2601:447:d002:5be:5d62:b359:8b5c:90ac])
-        by smtp.gmail.com with ESMTPSA id bo33-20020a056e02342100b0035b0b05189bsm3357251ilb.38.2023.11.27.20.54.28
+        by smtp.gmail.com with ESMTPSA id bo33-20020a056e02342100b0035b0b05189bsm3357251ilb.38.2023.11.27.20.54.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 20:54:29 -0800 (PST)
+        Mon, 27 Nov 2023 20:54:31 -0800 (PST)
 From:   Adam Ford <aford173@gmail.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     aford@beaconembeded.com, Adam Ford <aford173@gmail.com>,
@@ -62,9 +62,9 @@ Cc:     aford@beaconembeded.com, Adam Ford <aford173@gmail.com>,
         Fabio Estevam <festevam@gmail.com>,
         NXP Linux Team <linux-imx@nxp.com>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] arm64: dts: imx8mm: Remove video_pll1 clock rate from clk node
-Date:   Mon, 27 Nov 2023 22:54:14 -0600
-Message-Id: <20231128045415.210682-2-aford173@gmail.com>
+Subject: [PATCH 3/3] arm64: dts: imx8mm: Slow default video_pll1 clock rate
+Date:   Mon, 27 Nov 2023 22:54:15 -0600
+Message-Id: <20231128045415.210682-3-aford173@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231128045415.210682-1-aford173@gmail.com>
 References: <20231128045415.210682-1-aford173@gmail.com>
@@ -80,33 +80,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two clock-rate assignments for video_pll1, and the
-only one it should really have belongs inside the lcdif node,
-since it's the only consumer of this clock.  Remove it from
-the clk node.
+Since commit 8208181fe536 ("clk: imx: composite-8m:
+Add imx8m_divider_determine_rate") the lcdif controller has
+had the ability to set the lcdif_pixel rate which propagates
+up the tree and sets the video_pll1 rate automatically.
+
+By setting this value low, it will force the recalculation of
+video_pll1 to the lowest rate needed by lcdif instead of
+dividing a larger clock down to the desired clock speed. This
+has the  advantage of being able to lower the video_pll1 rate
+from 594MHz to 148.5MHz when operating at 1080p. It can go even
+lower when operating at lower resolutions and refresh rates.
 
 Signed-off-by: Adam Ford <aford173@gmail.com>
 
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-index 8d872568231d..a3dae114c20e 100644
+index a3dae114c20e..669fdd2c54e4 100644
 --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
 +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-@@ -647,7 +647,6 @@ clk: clock-controller@30380000 {
- 						<&clk IMX8MM_CLK_AUDIO_AHB>,
- 						<&clk IMX8MM_CLK_IPG_AUDIO_ROOT>,
- 						<&clk IMX8MM_SYS_PLL3>,
--						<&clk IMX8MM_VIDEO_PLL1>,
- 						<&clk IMX8MM_AUDIO_PLL1>;
- 				assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_800M>,
- 							 <&clk IMX8MM_ARM_PLL_OUT>,
-@@ -657,7 +656,6 @@ clk: clock-controller@30380000 {
- 							<400000000>,
- 							<400000000>,
- 							<750000000>,
--							<594000000>,
- 							<393216000>;
- 			};
- 
+@@ -1131,7 +1131,7 @@ lcdif: lcdif@32e00000 {
+ 				assigned-clock-parents = <&clk IMX8MM_VIDEO_PLL1_OUT>,
+ 							 <&clk IMX8MM_SYS_PLL2_1000M>,
+ 							 <&clk IMX8MM_SYS_PLL1_800M>;
+-				assigned-clock-rates = <594000000>, <500000000>, <200000000>;
++				assigned-clock-rates = <24000000>, <500000000>, <200000000>;
+ 				interrupts = <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
+ 				power-domains = <&disp_blk_ctrl IMX8MM_DISPBLK_PD_LCDIF>;
+ 				status = "disabled";
 -- 
 2.40.1
 
