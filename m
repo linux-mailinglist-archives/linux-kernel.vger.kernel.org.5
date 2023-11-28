@@ -2,73 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B90037FC2EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F287FC2EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345467AbjK1SRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 13:17:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59352 "EHLO
+        id S234851AbjK1SRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 13:17:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229921AbjK1SRQ (ORCPT
+        with ESMTP id S234638AbjK1SRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 13:17:16 -0500
+        Tue, 28 Nov 2023 13:17:18 -0500
 Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D0F171D
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 10:17:22 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id D8B355C0206;
-        Tue, 28 Nov 2023 13:17:21 -0500 (EST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671D71990
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 10:17:24 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id D23345C01E9;
+        Tue, 28 Nov 2023 13:17:23 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Tue, 28 Nov 2023 13:17:21 -0500
+  by compute2.internal (MEProxy); Tue, 28 Nov 2023 13:17:23 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
         cc:cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to; s=fm1; t=1701195441; x=1701281841; bh=iuMysMVGg8
-        PJ26JKT0z4QtNuMFMPdYynoB7Q9nJhvPE=; b=SiXPgcEEeg5u0Wdwq+4s/ASRVX
-        tCYN7/g8QJZnOX3hszxjP7NAWa03sl2vvSi2MaoMX738V3nqb1+baiIVZuxyYUuZ
-        blddL1TQI1QxnvWsOo6y9tLQ0CwV+FmXpKKzkdDMw5MRmXNW1x9ffrOHbbxFYHn+
-        GOTP5X1vGMtS3p65WUWFq2qzZrDQVDCVLtQq8MvblXhgr6SmN4MUxSP9QXGFCHBl
-        M1aR208jGwokdMs4cpOvm6FrKvUQ1ZjNjfauCia56Ule27aso+ZjG3kK6bL9r95T
-        3VZt3dxexAZnJ51mEuVwYYDwQfQlnMqmx8vYFIFXjzrErIu8QIxDgDyfvjmg==
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1701195443; x=
+        1701281843; bh=DGt/u5VtnW/s5etlOXvVuEt4iqTg+WUDCBQcBJzdb9s=; b=L
+        88rWrZd+XyCW2CLPeh73uDIHOW8Y6+GD0nMUCcUVK6XnU4VgwvpbXVI4pvBnU95A
+        Ur7hiiUmhejrrEfvL46aHMcLODRjzN0dQQuyOneY77Rju0kKYbne+Xwwz682zoSB
+        aS7tN8rK5NxNS2ryrzU/ig7nfk9gU1i+ii0+VZaHLZOFv9w9xWizT/7hwK+lGRqm
+        txAHE99pCrLA8A16gBsxNkqGwXSA6RZU78xnYtOKAAeIgkMtwvFLAcOfxSUNVZSj
+        4VLdXSUabn5dpMy0Hx1wtTfYB8lQZhjsige04NRa9Hb2JkJ4MxQ4HS/iLKDqYUes
+        QxDTOtfbvzvA0V7UF583g==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1701195441; x=1701281841; bh=iuMysMVGg8PJ2
-        6JKT0z4QtNuMFMPdYynoB7Q9nJhvPE=; b=Oc1aRgNCBne59AmE42OSBzJWoz+ow
-        O5czAK/+QAWF8TF3yyD2MoCX8nXv1yNd65fLtzU5v/llXgxbaa+/xYSG3wBggWN0
-        pI1/tkq7E0G3PwrKennvGeTZNPdCnT5c0Lgq0qYsWFVUxIZiTiYiGnVNYXuNJySz
-        JjUbfsjV1MOK33R7h1czmpRYuZNkVz3HVvSThAaL5zO80KMoAwgGAg6SUoAZEnjV
-        AGNVJRXTkHCmOdsXlPH5W6gYdIkE4eqEebrh/0NXUle/1gAQq0hLUnHMUMSzQ8m5
-        lsaeRjWbSYTfeau9WiEynPWA6An7bFD3kp6Q0JHScojpwf4ZiUWAJAr/Q==
-X-ME-Sender: <xms:sS5mZS1p9-eoX9F4KgQuDjirDfAVOG5d1aeN-03auB5Abqtbh-79Sw>
-    <xme:sS5mZVFSSFBpWOJcdgJ9QNLPyA2Pgat7iuyAOV91GLSoIBOl3OE5O3xBBJTGjO3hH
-    qKDo8XLs4A-fmKprqQ>
-X-ME-Received: <xmr:sS5mZa4qzEDUWFDzir1u6OOK8S3tl9-KMW_CN43r9Ak3jm56LBr1Okpn5odUdMHmqe0A_MUORXT_3s3IBcu10WY4YTAuRiQbG3sHELsv7LE2>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeifedguddtlecutefuodetggdotefrod
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1701195443; x=
+        1701281843; bh=DGt/u5VtnW/s5etlOXvVuEt4iqTg+WUDCBQcBJzdb9s=; b=K
+        6b7FxNhVk0ktnPxP6roBlqPDlNY+SJFXFWBFBcwNzW04z4DskvV2c/3AItMKwFIp
+        GL8T4UxyfQRn6LSpHVw96aA0Rsjxp454mJyjmRe2AnYcTmFH26Fw6aSHHVhrb9NX
+        9gF6eiBpWa3dmbFFhuAoTCBEETS/7x3K9MQtjLTAJsLO9PM6qJw7izdWw6G1FJpG
+        h3wVJ3FBCHFfb3TuWiOmk3rkSvQ2lTWltkU8fWJECYiHh6eG0SLt8ry3ZIrDtui8
+        ctLxRoKWhsbFC6mQ3WIAvv+1FQwNtgAvy1r36PJaSsgkBQ0mnjFB96zS6eeP+7J+
+        RcWiyRnYhuZYATfxrzgpQ==
+X-ME-Sender: <xms:sy5mZUTuJiUOqfQFFCvec0EUWg-ZbXUFTyVxUedVV6HNBmI1KSlrAw>
+    <xme:sy5mZRynSrI3hTwKcymJ3PM3R4HHmq-irrLzyJkcrCBKRhYNI9DQhodZWYEAAgs4j
+    O8oECITWofzZYDFkv4>
+X-ME-Received: <xmr:sy5mZR2nHEkemhjKeZUs3Ouiis0VpI66lTQseR1A7z2Z5fGL68YOrBhGo4abEgJHrdjYUul2y0NZA7KMBdDeMUutuDIs2WAAq--2aB4hYeGx>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeifedguddtkecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekre
-    dtredttdenucfhrhhomhepifgrrhihucftohhokhgrrhguuceoghgrrhihrhhoohhkrghr
-    ugesfhgrshhtmhgrihhlrdhorhhgqeenucggtffrrghtthgvrhhnpeelgefffffghefhje
-    egjeehiedvgfelfeehueeuteektdffiefhveelhfegvedvveenucevlhhushhtvghrufhi
-    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrghrhihrohhokhgrrhgusehfrg
-    hsthhmrghilhdrohhrgh
-X-ME-Proxy: <xmx:sS5mZT3skYZODA5XaommfwTKoTZG83kPxRbfhS_9aq8oq6ww4SjtGA>
-    <xmx:sS5mZVEo4FDymjIFx57iOlJ02hsZJmcGQdxdf8DNJM2irb3lxiz6TQ>
-    <xmx:sS5mZc-MPL1K-IhiqgBDAdq9mdczBre4EQWxReBqyoJG2-0xkaPmFQ>
-    <xmx:sS5mZVAd1tCX1iM05QCFU4-fznv9_qm-dySDGy1tovD_pvp_HQ_dBg>
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestd
+    ekredtredttdenucfhrhhomhepifgrrhihucftohhokhgrrhguuceoghgrrhihrhhoohhk
+    rghrugesfhgrshhtmhgrihhlrdhorhhgqeenucggtffrrghtthgvrhhnpeekuedvffeuud
+    ekgeeiueffjeehgfekteefheeuleefudeugfevleelhfefgfejvdenucevlhhushhtvghr
+    ufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrghrhihrohhokhgrrhguse
+    hfrghsthhmrghilhdrohhrgh
+X-ME-Proxy: <xmx:sy5mZYCh9lil9tNz5r_fZSfqHXOslho1CwTTRzpDCRMARHft3b9zew>
+    <xmx:sy5mZdiHX5Sv2ncYqr3c-p996z8AZqeTiPP6jTHq4_kn_XIOFYquXw>
+    <xmx:sy5mZUqDvwzaVLyL2N-RanlQyUfDusLQv32eauuSUAoZg8e9gwchag>
+    <xmx:sy5mZStIlWxbPZ8JUHKd_PDDpFmHcyBNT_z3xPzTs1ofjEs0zucjfQ>
 Feedback-ID: ifd194980:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 28 Nov 2023 13:17:21 -0500 (EST)
+ 28 Nov 2023 13:17:23 -0500 (EST)
 From:   Gary Rookard <garyrookard@fastmail.org>
 To:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Gary Rookard <garyrookard@fastmail.org>
-Subject: [PATCH v3 0/3] staging: rtl8192e: patch series renames (3) different variables
-Date:   Tue, 28 Nov 2023 13:17:24 -0500
-Message-ID: <20231128181727.19504-1-garyrookard@fastmail.org>
+Subject: [PATCH v3 1/3] staging: rtl8192e: renamed variable nMcsRate
+Date:   Tue, 28 Nov 2023 13:17:25 -0500
+Message-ID: <20231128181727.19504-2-garyrookard@fastmail.org>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231128181727.19504-1-garyrookard@fastmail.org>
+References: <20231128181727.19504-1-garyrookard@fastmail.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -82,35 +86,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-This [v3]  patch series renames 3 different variables
-and improves the commit message style.
-[v2] Style issues, redo.
-[v1] Style issues, redo.
-
-Patch 1/3) Coding style issue, checkpatch Avoid CamelCase,
+Coding style issue, checkpatch Avoid CamelCase,
 rename it nMcsRate -> mcs_rate.
 
-Patch 2/3) Coding style issue, checkpatch Avoid CamelCase,
-rename it bCurBW40MHz -> cur_bw_40mhz.
-
-Patch 3/3) Coding style issue, checkpatch Avoid CamelCase,
-rename it nDateRate -> data_rate.
 
 Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
+---
+v3: Corrects commit message style issues.
+v2: Style issues, redo.
+v1: Style issues, redo.
+ drivers/staging/rtl8192e/rtl819x_HTProc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Gary Rookard (3):
-  staging: rtl8192e: renamed variable nMcsRate
-  staging: rtl8192e: renamed variable bCurBW40MHz
-  staging: rtl8192e: renamed variable nDataRate
-
- drivers/staging/rtl8192e/rtl819x_HT.h        |  2 +-
- drivers/staging/rtl8192e/rtl819x_HTProc.c    | 36 ++++++++++----------
- drivers/staging/rtl8192e/rtllib_softmac_wx.c |  4 +--
- drivers/staging/rtl8192e/rtllib_tx.c         | 10 +++---
- 4 files changed, 26 insertions(+), 26 deletions(-)
-
+diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+index 00273d709f3c..4ed72936eb4a 100644
+--- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
++++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+@@ -103,7 +103,7 @@ void ht_update_default_setting(struct rtllib_device *ieee)
+ 	ht_info->rx_reorder_pending_time = 30;
+ }
+ 
+-static u16 ht_mcs_to_data_rate(struct rtllib_device *ieee, u8 nMcsRate)
++static u16 ht_mcs_to_data_rate(struct rtllib_device *ieee, u8 mcs_rate)
+ {
+ 	struct rt_hi_throughput *ht_info = ieee->ht_info;
+ 
+@@ -111,7 +111,7 @@ static u16 ht_mcs_to_data_rate(struct rtllib_device *ieee, u8 nMcsRate)
+ 	u8	isShortGI = (ht_info->bCurBW40MHz) ?
+ 			    ((ht_info->bCurShortGI40MHz) ? 1 : 0) :
+ 			    ((ht_info->bCurShortGI20MHz) ? 1 : 0);
+-	return MCS_DATA_RATE[is40MHz][isShortGI][(nMcsRate & 0x7f)];
++	return MCS_DATA_RATE[is40MHz][isShortGI][(mcs_rate & 0x7f)];
+ }
+ 
+ u16  tx_count_to_data_rate(struct rtllib_device *ieee, u8 nDataRate)
 -- 
 2.41.0
 
