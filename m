@@ -2,163 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34EF97FC221
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A94BD7FC1B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229870AbjK1QZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 11:25:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44234 "EHLO
+        id S1343949AbjK1Q0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:26:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjK1QZz (ORCPT
+        with ESMTP id S229658AbjK1QZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 11:25:55 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD3898;
-        Tue, 28 Nov 2023 08:26:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701188761; x=1732724761;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=WQHZ+PbGGa3aDyciuChblMvLCm0dgXzHSZ5ktHj28m0=;
-  b=bSPbZ9c5azkxLWG50D9N/FTbgfbLDO07LBiAGTDa9/q5ZQX9xKXE7g08
-   CGrq06Ltpnq4h+T3siVS8D361QlVFX9QZIvUDJ0N6EY+ZcdRCKxVkTV5r
-   GJMfCEZPHGxfbiIsRSwOwtz9OAAAVeMem9eDeI6bfTEEqBC2Yn2onzcmB
-   Tcy7S/bUTqrf++B5w0hoT+yxndYZf4G8SnYmSB4tlP2jHO3Og3NvNIzTf
-   Fj8tLMqr7Td0LrNao3A8p84X5egw1ioTiAKUAnKdHbcBYkQJA6R+LxpRW
-   QzXLJiiRt39+skzrwcxFdnT25Lk7eULZtGJCL+xT6oElKVFnX7+b1Auk6
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="424106462"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="424106462"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 08:26:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="768577278"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="768577278"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 08:25:51 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1r80uB-00000000CyG-1z99;
-        Tue, 28 Nov 2023 18:25:47 +0200
-Date:   Tue, 28 Nov 2023 18:25:47 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Chen-Yu Tsai <wenst@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Benson Leung <bleung@chromium.org>,
-        Tzung-Bi Shih <tzungbi@kernel.org>,
-        chrome-platform@lists.linux.dev, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Johan Hovold <johan@kernel.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jiri Kosina <jikos@kernel.org>, linus.walleij@linaro.org,
-        broonie@kernel.org, gregkh@linuxfoundation.org,
-        hdegoede@redhat.com, james.clark@arm.com, james@equiv.tech,
-        keescook@chromium.org, rafael@kernel.org, tglx@linutronix.de,
-        Jeff LaBundy <jeff@labundy.com>, linux-input@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-Subject: Re: [RFC PATCH v3 3/5] platform/chrome: Introduce device tree
- hardware prober
-Message-ID: <ZWYUi3Q5ptQXR0uQ@smile.fi.intel.com>
-References: <20231128084236.157152-1-wenst@chromium.org>
- <20231128084236.157152-4-wenst@chromium.org>
+        Tue, 28 Nov 2023 11:25:59 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD369AB
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:26:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=6YdxQ6TPTCO0wTiV5GT2AhsiDswNReE589bphcgljEY=; b=ADgKcEYyEXvG3Mr2mt+9ghny6L
+        thlIgwCSfq3HD+j2IeeCDJJVH9ysDjlxQV1fYEJBYfmiYENxItb1ZP99OXQtqdpcb49wTYmH6yHCv
+        B0vrKjTrg+mZ/J1pDKfF1kk4P7CpaOBktKDZ8cvBKgr3UIiP2BAonKSwkehWdro6q8FPT1DUKaG33
+        xMXQoDlvVY7Zm26dTV97kN4oI+o0ABh63AGP+oV2PcRMWJbyxXC2xvy00nOfF140ruJml+J3+xAEZ
+        5wycLC7LU+D2ljS9VV1HpMtKabsolAQGKNaGp2Fmq8kmguo2s7pGkbPPi5uGqg2a8PpDcM0gVVk5z
+        MalqlmQg==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r80uS-005oAG-22;
+        Tue, 28 Nov 2023 16:26:04 +0000
+Message-ID: <d9ac4b6c-e473-4c00-b016-a9cebdb59325@infradead.org>
+Date:   Tue, 28 Nov 2023 08:26:03 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231128084236.157152-4-wenst@chromium.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] lib: kstrtox: fix typo in comment
+Content-Language: en-US
+To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>,
+        linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>
+References: <ZWWkeVTvDBQDA_SF@monster.localdomain>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <ZWWkeVTvDBQDA_SF@monster.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 04:42:32PM +0800, Chen-Yu Tsai wrote:
-> Some devices are designed and manufactured with some components having
-> multiple drop-in replacement options. These components are often
-> connected to the mainboard via ribbon cables, having the same signals
-> and pin assignments across all options. These may include the display
-> panel and touchscreen on laptops and tablets, and the trackpad on
-> laptops. Sometimes which component option is used in a particular device
-> can be detected by some firmware provided identifier, other times that
-> information is not available, and the kernel has to try to probe each
-> device.
+
+
+On 11/28/23 00:27, Wilken Gottwalt wrote:
+> Delete one of the double f's in "iff".
 > 
-> This change attempts to make the "probe each device" case cleaner. The
-> current approach is to have all options added and enabled in the device
-> tree. The kernel would then bind each device and run each driver's probe
-> function. This works, but has been broken before due to the introduction
-> of asynchronous probing, causing multiple instances requesting "shared"
-> resources, such as pinmuxes, GPIO pins, interrupt lines, at the same
-> time, with only one instance succeeding. Work arounds for these include
-> moving the pinmux to the parent I2C controller, using GPIO hogs or
-> pinmux settings to keep the GPIO pins in some fixed configuration, and
-> requesting the interrupt line very late. Such configurations can be seen
-> on the MT8183 Krane Chromebook tablets, and the Qualcomm sc8280xp-based
-> Lenovo Thinkpad 13S.
+> Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
+
+Nope, see:
+  https://en.wikipedia.org/wiki/If_and_only_if
+
+> ---
+>  lib/kstrtox.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Instead of this delicate dance between drivers and device tree quirks,
-> this change introduces a simple I2C component prober. For any given
-> class of devices on the same I2C bus, it will go through all of them,
-> doing a simple I2C read transfer and see which one of them responds.
-> It will then enable the device that responds.
-> 
-> This requires some minor modifications in the existing device tree.
-> The status for all the device nodes for the component options must be
-> set to "failed-needs-probe". This makes it clear that some mechanism is
-> needed to enable one of them, and also prevents the prober and device
-> drivers running at the same time.
-
-...
-
-> +#include <linux/array_size.h>
-> +#include <linux/i2c.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_device.h>
-
-init.h for init calls.
-
-
-> +static int chromeos_of_hw_prober_probe(struct platform_device *pdev)
-> +{
-> +	for (size_t i = 0; i < ARRAY_SIZE(hw_prober_platforms); i++)
-> +		if (of_machine_is_compatible(hw_prober_platforms[i].compatible)) {
-> +			int ret;
-
-Perhaps
-
-		if (!of_machine_is_compatible(hw_prober_platforms[i].compatible))
-			continue;
-
-?
-
-> +			ret = hw_prober_platforms[i].prober(&pdev->dev,
-> +							    hw_prober_platforms[i].data);
-> +			if (ret)
-> +				return ret;
-> +		}
-> +
-> +	return 0;
-> +}
+> diff --git a/lib/kstrtox.c b/lib/kstrtox.c
+> index d586e6af5e5a..b0a9fdce15b3 100644
+> --- a/lib/kstrtox.c
+> +++ b/lib/kstrtox.c
+> @@ -340,7 +340,7 @@ EXPORT_SYMBOL(kstrtos8);
+>   * @s: input string
+>   * @res: result
+>   *
+> - * This routine returns 0 iff the first character is one of 'YyTt1NnFf0', or
+> + * This routine returns 0 if the first character is one of 'YyTt1NnFf0', or
+>   * [oO][NnFf] for "on" and "off". Otherwise it will return -EINVAL.  Value
+>   * pointed to by res is updated upon finding a match.
+>   */
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+~Randy
