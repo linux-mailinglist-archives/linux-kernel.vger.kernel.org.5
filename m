@@ -2,174 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 388F37FC47E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 20:56:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3CE7FC499
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 21:03:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234684AbjK1T4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 14:56:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45372 "EHLO
+        id S1343651AbjK1UDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 15:03:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjK1T4c (ORCPT
+        with ESMTP id S229586AbjK1UDp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 14:56:32 -0500
-Received: from s1.sapience.com (s1.sapience.com [72.84.236.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B9619A6;
-        Tue, 28 Nov 2023 11:56:38 -0800 (PST)
-Authentication-Results: dkim-srvy7; dkim=pass (Good ed25519-sha256 
-   signature) header.d=sapience.com header.i=@sapience.com 
-   header.a=ed25519-sha256; dkim=pass (Good 2048 bit rsa-sha256 signature) 
-   header.d=sapience.com header.i=@sapience.com header.a=rsa-sha256
-Received: from srv8.prv.sapience.com (srv8.prv.sapience.com [x.x.x.x])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
-        (No client certificate requested)
-        by s1.sapience.com (Postfix) with ESMTPS id 44364480AAD;
-        Tue, 28 Nov 2023 14:56:38 -0500 (EST)
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=sapience.com;
- i=@sapience.com; q=dns/txt; s=dk-ed25519-220413; t=1701201398;
- h=message-id : date : mime-version : subject : from : to : cc :
- references : in-reply-to : content-type : content-transfer-encoding :
- from; bh=lvM7CD1aGwZ6qshcUNO7zZN11rYmgCaJQ5Sq7osdZss=;
- b=IZRTfrfUjKwUlBRh8e41JparbdbZbo/6pBbJFb3ZQr2St+s6trY7EA5hWDK3qOEVvDU5y
- FZ9yjIwQn1URbS+AA==
-ARC-Seal: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412; t=1701201398;
-        cv=none; b=NybB63NQIXnbqFHjpq6kvsgL8G1eZLBXq49hlUNoByOOSAIbvNhiIymu6vcEmGhVM8kSYmcbSWRbjyznnd1zioRTuIcysPxwaV4D985pQ2isTXmAlzxuH7tp3PdphfZ5RQD0iGb7bRlODZR4wEDUDDKVxROyIJxTEzmtJc9vdYV/uVLYgwX3D5MsNHDf5AIOcQ3jG2rgNgjV/W4KXMb3VFOboqaTFlUYRy6YazWeJEmWBt/uqryoAbHBfbrVnXpNixsZaJyjVhGGcgtdiYa1klk/TXWUCBF9qalCKE+goDFDCHANeH0/FpS9f+tcZaneySaEoQhTx8JvKZagNsqC5Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412;
-        t=1701201398; c=relaxed/simple;
-        bh=Kn+tnaE511rc7i46SK6IJUPRfkEyfvTf2ILD0jr1oJ0=;
-        h=DKIM-Signature:DKIM-Signature:Message-ID:Date:MIME-Version:
-         User-Agent:Subject:Content-Language:From:To:Cc:References:
-         In-Reply-To:Content-Type:Content-Transfer-Encoding; b=GrHqwVzC6nFW1g0+DekoMrXY1Grrp+Ue7SUXw2UsWCesZZa3s6VVcc0utdGQwekaw4knr7u0WA346q06fv+dgF1bkEdAsHOch0qTKGU2/iXV+YcWo9azazxiOFgm+s62kU6PvY+uw67uypsCu4stmnOfeklUesTn0YVrijuz5ulR6b9zi2mkVoORnyVEBMVTp5so9XEas4JoXluS8HLi+lUtCuD3SvWwADpFeG75iAIw0vtNELq8Jjulo6h2m51RP2LfP7uu9Vk+cYVAPePV2NxxMEvH5GJHRNHKwhZSWAq3WV9zwsdVt9G6ZojBo+z9o8t2YNgSTqmbDGQ54+GQLA==
-ARC-Authentication-Results: i=1; arc-srv8.sapience.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sapience.com;
- i=@sapience.com; q=dns/txt; s=dk-rsa-220413; t=1701201398;
- h=message-id : date : mime-version : subject : from : to : cc :
- references : in-reply-to : content-type : content-transfer-encoding :
- from; bh=lvM7CD1aGwZ6qshcUNO7zZN11rYmgCaJQ5Sq7osdZss=;
- b=WNaQ/oksUMcpTrdlsLiTsCpjMWm6WGTlYXB4uga2kc59FNJgOvGqARdrUZSSZzvA27Hg7
- eIfAzrG1/HEqzaaGwy7C4PBqO/BOuCU9MOs1S/mj7aSGH6mDl1U3WDcD95tDjG+sZ/maiwb
- sFRyjNjVN2oPkf47PPzJ82zgFME1PVnsS2VerA6q2oUaaFqvQBjh+gRy5jMqqdIi65a7KqT
- 4UyMmJtUcrOMvaNOulYrBwJCHtQRXihC0rHCt1tqhYoaJHHI22xJDSREPGocCcsZFaPFeD7
- i474uGU/0jde1peTIEIAoWyvLmKa+MidUbTbK+Gh9Zq4HTP8JnparjswExEw==
-Message-ID: <022c67aa-b90a-4756-8725-5f7fba7dc780@sapience.com>
-Date:   Tue, 28 Nov 2023 14:56:37 -0500
+        Tue, 28 Nov 2023 15:03:45 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20F7B19A4;
+        Tue, 28 Nov 2023 12:03:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701201833; x=1732737833;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Qqh2pcByd+e2zO9M4U/s3/66TY0T4He1j0iO/aoG8Gg=;
+  b=BQSZP1GLydboC9A1FSgrM7mjyFRX+H3up7qc+yet7gJ6lEggJw2YJoMu
+   xu3eco6sFvBEHiVh4Z7URFUJoMXkcTJYoGerWdsnqW43VW7+W6tQzoXSJ
+   VBFmDJmxMf5I6vhKGA3ixwm1Z89S/8/i83HfGqNOXNEyHaSqJXaCxE3jU
+   fU/960QhwvnKha+AAtHb3Etb/DirgRjn9qb9LXLRp8aDSgDYfyzFRk2Iw
+   6KXFoAyib2XTTyY6ZZziSCsylb/2uKSQ7P7aqkOjGxym3Tzq5Z85b9T17
+   GXuz+BN4nMgC7gX+C+a85th9wJoETsLAceSoagYILy/kv5UWUBGg5iZUs
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="6217534"
+X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
+   d="scan'208";a="6217534"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 12:02:08 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="797687914"
+X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
+   d="scan'208";a="797687914"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga008.jf.intel.com with ESMTP; 28 Nov 2023 12:01:59 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id C7DC423E; Tue, 28 Nov 2023 22:01:57 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Jianlong Huang <jianlong.huang@starfivetech.com>,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Hal Feng <hal.feng@starfivetech.com>
+Subject: [PATCH v3 00/22] pinctrl: Convert struct group_desc to use struct pingroup
+Date:   Tue, 28 Nov 2023 21:56:49 +0200
+Message-ID: <20231128200155.438722-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: crash with 6.7 rc2 and rc3
-Content-Language: en-US
-From:   Genes Lists <lists@sapience.com>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>, tglx@linutronix.de,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        gregory.greenman@intel.com, kvalo@kernel.org,
-        Linux Wireless <linux-wireless@vger.kernel.org>
-Cc:     Linux Regressions <regressions@lists.linux.dev>
-References: <c46a6462-8263-455c-a6ea-1860020f5fab@sapience.com>
- <ZWV7JworMrjHJHsO@archie.me>
- <cf2dcc97-845d-4860-be4d-5822d2ebbfca@sapience.com>
-In-Reply-To: <cf2dcc97-845d-4860-be4d-5822d2ebbfca@sapience.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/28/23 05:39, Genes Lists wrote:
-> On 11/28/23 00:31, Bagas Sanjaya wrote:
->> On Mon, Nov 27, 2023 at 03:55:37PM -0500, Genes Lists wrote:
->>>
->>> lenovo laptop boots fine under 6.7rc1 and older including 6.6.2 stable.
->>> but not for 6.7 rc2 or rc3.
->>>
->>> It has a intel 7260 (rev 3) wireless and :
->>>
->>> cpu family    : 6
->>> model        : 60
->>> model name    : Intel(R) Core(TM) i7-4800MQ CPU @ 2.70GHz
->>> stepping    : 3
->>> microcode    : 0x28
->>>
->>>
->>> As of 6.7 rc2 / rc3 it crashes towards the end of boot bringing up 
->>> services
->>> -  some parts of crash scrolled off the screen so I apologize if this
->>> (manually transcribed) trace didn't catch the first part.
->>>
->>> I did a git bisect between rc1 and rc2 but was unable to reproduce 
->>> the crash
->>> for some reason. (I did not do make clean between each bisects).
->>>
->>> During the bisect it booted every time, but networking was not 
->>> functional
->>> for any of the bisects.
->>>
->>> Hope it's okay to report even though git bisect didn't get anywhere.
->>>
->>> Gene
->>>
->>> This is the what I got from screen :
->>>
->>> CS: 0010 DS: 000 ES: 0000 CR0: 0000000080050033
->>> CR2: 00007f30cf49ba38 CR3: 000000025b620004 CR4: 00000000001706f0
->>> Call Trace:
->>>   <IRQ>
->>>   ? die_addr+0x36/0x90
->>>   ? exc_general_protection+0x1c5/0x430
->>>   ? asm_exc_gemeral_protection+0x26/0x30
->>>   ? iwl_phy_db_set_section+0xd6/0x1f0 [iwlwifi]
->>>   ? __kmem_cache_alloc_node+0x1d5/0x2b0
->>>   ? iwl_phy_db_set_section+0xd6/0x1f0 [iwlwifi]
->>>   ? iwl_phy_db_set_section+0xd6/0x1f0 [iwlwifi]
->>>   __kmalloc_node_track_caller+0x51/0x160
->>>   kmemdup+0x20/0x50
->>>   iwl_phy_db_set_section+0xd6/0x1f0 [iwlwifi]
->>>   iwl_wait_phy_db_entry+0x2f/0x40 [iwlmvm]
->>>   iwl_notification_wait+0xb0/0xf0 [iwlwifi]
->>>   iwl_mvm_rx_common+0x8e/0x320 [iwlwifi]
->>>   iwl_pcie_napi_poll+0x2d/0x150 [iwlwifi]
->>>   __napi_poll+0x2b/0x1c0
->>>   net_rx_action+0x2b4/0x320
->>>   __do_softirq+0xff/0x339
->>>   net_rx_action+0x2b4/0x320
->>>   __do_softirq.part.0+0x88/0xa0
->>> </IRQ>
->>> <TASK>
->>> __local_bh_enable_ip+0x91/0xa0
->>> iwl_pcie_irq_handler+0x58d/0xc40 [iwlwifi]
->>> ? __pfx_irq_thread_fn+0x10/0x10
->>> irq_thread_fn+0x23/0x60
->>> irq_thread+0xfe/0x60
->>> ? __pfx_irq_thread_dtor+0x10/0x10
->>> ? __pfx_irq_thread+0x10/0x10
->>> kthread+0xfa/0x130
->>> ? pff_kthread+0x10/0x10
->>> ret_from_fork+0x34/0x50
->>> ? __pfx_kthread+0x10/0x10
->>> ret_from_fork_asm+0x1b/0x30
->>
->> Do you have any full system logs that can be attached?
->>
->> Anyway, thanks for the regression report. I'm adding it to regzbot:
->>
->> #regzbot ^introduced: v6.7-rc1..v6.7-rc2
->>
-> 
-> journalctl -k for 6.6.2 and the last bisect
-> 
-> gene
-> 
+The struct group_desc has a lot of duplication with struct pingroup.
+Deduplicate that by embeddind the latter in the former and convert
+users.
 
-6.6.3 crashes for me same way - also an intel NUC also crashes with 
-6.6.3 buty works on 6.6.2. Will take a while before I get additional 
-info on the latter box.
+Linus, assuming everything is fine, I can push this to my tree.
+Or you can apply it (assumming all CIs and people are happy with
+the series).
 
-gene
+NB. It seems to me that GCC 7.x has an issue when compound literal
+is being assigned to a constant object. I believe it's a false positive
+(at least I can't reproduce this with recent GCC and LLVM and hence
+I haven't touched the code in order to address this.
 
+NB. This series contains previously sent patches for Qualcomm and
+Nuovoton. Here the updated version for Qualcomm that splits previous
+patch to two and fixes compilation warnings.
 
+NB. The function_desc is in plan to follow the similar deduplication.
 
+In v3:
+- fixed reported bug in equilibrium code (LKP)
+- collected tags (Emil, Florian, Paul)
+
+v2: https://lore.kernel.org/r/20231123193355.3400852-1-andriy.shevchenko@linux.intel.com
+
+In v2:
+- added a few patches to fix multiple compile-time errors (LKP)
+- added tag (Jonathan)
+
+v1: https://lore.kernel.org/r/20231122164040.2262742-1-andriy.shevchenko@linux.intel.com
+
+Andy Shevchenko (22):
+  pinctrl: qcom: lpass-lpi: Replace kernel.h with what is being used
+  pinctrl: qcom: lpass-lpi: Remove unused member in struct lpi_pingroup
+  pinctrl: equilibrium: Unshadow error code of
+    of_property_count_u32_elems()
+  pinctrl: equilibrium: Use temporary variable to hold pins
+  pinctrl: imx: Use temporary variable to hold pins
+  pinctrl: core: Make pins const in struct group_desc
+  pinctrl: equilibrium: Convert to use struct pingroup
+  pinctrl: keembay: Convert to use struct pingroup
+  pinctrl: nuvoton: Convert to use struct pingroup and
+    PINCTRL_PINGROUP()
+  pinctrl: core: Add a convenient define PINCTRL_GROUP_DESC()
+  pinctrl: ingenic: Make use of PINCTRL_GROUP_DESC()
+  pinctrl: mediatek: Make use of PINCTRL_GROUP_DESC()
+  pinctrl: core: Embed struct pingroup into struct group_desc
+  pinctrl: bcm: Convert to use grp member
+  pinctrl: equilibrium: Convert to use grp member
+  pinctrl: imx: Convert to use grp member
+  pinctrl: ingenic: Convert to use grp member
+  pinctrl: keembay: Convert to use grp member
+  pinctrl: mediatek: Convert to use grp member
+  pinctrl: renesas: Convert to use grp member
+  pinctrl: starfive: Convert to use grp member
+  pinctrl: core: Remove unused members from struct group_desc
+
+ drivers/pinctrl/bcm/pinctrl-ns.c              |  4 +-
+ drivers/pinctrl/core.c                        | 13 +++---
+ drivers/pinctrl/core.h                        | 19 +++++---
+ drivers/pinctrl/freescale/pinctrl-imx.c       | 44 +++++++++----------
+ drivers/pinctrl/mediatek/pinctrl-moore.c      | 13 +++---
+ drivers/pinctrl/mediatek/pinctrl-moore.h      |  7 +--
+ drivers/pinctrl/mediatek/pinctrl-paris.h      |  7 +--
+ drivers/pinctrl/nuvoton/pinctrl-wpcm450.c     |  9 ++--
+ drivers/pinctrl/pinctrl-equilibrium.c         | 42 +++++++++---------
+ drivers/pinctrl/pinctrl-ingenic.c             | 27 +++++-------
+ drivers/pinctrl/pinctrl-keembay.c             |  6 +--
+ drivers/pinctrl/qcom/pinctrl-lpass-lpi.h      |  6 +--
+ .../pinctrl/qcom/pinctrl-sc7280-lpass-lpi.c   | 16 -------
+ .../pinctrl/qcom/pinctrl-sc8280xp-lpass-lpi.c | 20 ---------
+ .../pinctrl/qcom/pinctrl-sm6115-lpass-lpi.c   | 20 ---------
+ .../pinctrl/qcom/pinctrl-sm8250-lpass-lpi.c   | 15 -------
+ .../pinctrl/qcom/pinctrl-sm8350-lpass-lpi.c   | 16 -------
+ .../pinctrl/qcom/pinctrl-sm8450-lpass-lpi.c   | 24 ----------
+ .../pinctrl/qcom/pinctrl-sm8550-lpass-lpi.c   | 24 ----------
+ .../pinctrl/qcom/pinctrl-sm8650-lpass-lpi.c   | 24 ----------
+ drivers/pinctrl/renesas/pinctrl-rza1.c        |  2 +-
+ drivers/pinctrl/renesas/pinctrl-rza2.c        | 10 ++---
+ drivers/pinctrl/renesas/pinctrl-rzg2l.c       |  6 +--
+ drivers/pinctrl/renesas/pinctrl-rzv2m.c       |  6 +--
+ .../starfive/pinctrl-starfive-jh7100.c        |  8 ++--
+ .../starfive/pinctrl-starfive-jh7110.c        |  8 ++--
+ 26 files changed, 108 insertions(+), 288 deletions(-)
+
+-- 
+2.43.0.rc1.1.gbec44491f096
 
