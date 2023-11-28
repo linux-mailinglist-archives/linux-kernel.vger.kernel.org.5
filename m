@@ -2,167 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B3B7FC114
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 766BE7FC2D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346489AbjK1PyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 10:54:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34358 "EHLO
+        id S1346160AbjK1P4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 10:56:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346497AbjK1Px4 (ORCPT
+        with ESMTP id S1346145AbjK1P4o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 10:53:56 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE773BD
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 07:54:02 -0800 (PST)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id BB97D66072A4;
-        Tue, 28 Nov 2023 15:54:00 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701186841;
-        bh=kX8VFnjMmnUgzzjN92JSyU07DWZZRpGOPGYPIFQv0sI=;
+        Tue, 28 Nov 2023 10:56:44 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A611790
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 07:56:50 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 311AEC433C8;
+        Tue, 28 Nov 2023 15:56:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701187010;
+        bh=ErOez7LtTIIlU6uCAGYZae93iSfxpHNPOaxqhC3H1FM=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hlDKx346ueHXtFqp4rG4thCHSpEwBhnnPyznIUhe0IsmQLLDEg6UMSVZfW0TI0F7a
-         67uk/P5Mzu4dCCr0hGtRvlwvXObfkHClrlrBQDcOSLenmc7EHauF48DDUOf50uTfwj
-         i4K7CsQcUQ5deNunZ7R8h4YMRA86C7foHWkP/foEMPeCx73eba0ApCVo8HbxuC3GQB
-         AFS3YeB/T73Kod+k0HdtCa+2ldqcMN4ybpwlGsJC93RvUo8iQ8mwZe/01egy2rOWGa
-         DXCuQZ8JoYp/7+4VsEAvjOXm6b1snFUORsOJybic7rnugvRJE127SN6UC+0aa5YoYW
-         9CkRSBuHhILWQ==
-Date:   Tue, 28 Nov 2023 16:53:57 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     robh@kernel.org, steven.price@arm.com,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, m.szyprowski@samsung.com,
-        krzysztof.kozlowski@linaro.org
-Subject: Re: [PATCH v2 3/3] drm/panfrost: Synchronize and disable interrupts
- before powering off
-Message-ID: <20231128165357.2c9bfdf1@collabora.com>
-In-Reply-To: <f5208c45-54c7-4030-9985-cb7c8f1d6466@collabora.com>
-References: <20231128124510.391007-1-angelogioacchino.delregno@collabora.com>
-        <20231128124510.391007-4-angelogioacchino.delregno@collabora.com>
-        <20231128145712.3f4d3f74@collabora.com>
-        <f5208c45-54c7-4030-9985-cb7c8f1d6466@collabora.com>
-Organization: Collabora
+        b=J3utn8bTcJ1cmN7Bvm3YfgFjGz08H29IA5GdCAsIqol/Dwe2eltl2dwCjTlyI8JsH
+         FFTXmB+EDNxEmtYPUmOdCKEfDyQrmcj7oBdr7zc+G4QmeAl/oZz8BERw2mDhr70Vhm
+         nGtJE5HFDnb5CbJ/jXjkxuQEOAeMeDH8JiVtftrkrNHaL3T2G32LzuOjGIQPMoq8VM
+         BOOkZEhNjlH8YVLKLHvJkmNruZ/xDga3NWglGHFPpZmiF0IuCfXEmiuE5SZPocz0JI
+         GwD3fnHOY54fJ56pLltUsxsiXWifjER3mQfEWXMjhrvsMUZ19nxiPPpZHpk+JWDPvf
+         wa4Q88tbBf6pw==
+Date:   Tue, 28 Nov 2023 16:56:45 +0100
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Akira Yokosawa <akiyks@gmail.com>
+Subject: Re: [PATCH] docs: Raise the minimum Sphinx requirement to 2.4.4
+Message-ID: <20231128165645.2dbe416c@coco.lan>
+In-Reply-To: <877cm2uegr.fsf@meer.lwn.net>
+References: <87sf4qvkmc.fsf@meer.lwn.net>
+        <20231128023015.0e446a06@coco.lan>
+        <877cm2uegr.fsf@meer.lwn.net>
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Nov 2023 16:10:45 +0100
-AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-wrote:
+Em Tue, 28 Nov 2023 07:42:12 -0700
+Jonathan Corbet <corbet@lwn.net> escreveu:
 
-> >>   static void panfrost_job_handle_err(struct panfrost_device *pfdev,
-> >>   				    struct panfrost_job *job,
-> >>   				    unsigned int js)
-> >> @@ -792,9 +800,13 @@ static irqreturn_t panfrost_job_irq_handler_thread(int irq, void *data)
-> >>   	struct panfrost_device *pfdev = data;
-> >>   
-> >>   	panfrost_job_handle_irqs(pfdev);
-> >> -	job_write(pfdev, JOB_INT_MASK,
-> >> -		  GENMASK(16 + NUM_JOB_SLOTS - 1, 16) |
-> >> -		  GENMASK(NUM_JOB_SLOTS - 1, 0));
-> >> +
-> >> +	/* Enable interrupts only if we're not about to get suspended */
-> >> +	if (!test_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspending))  
-> > 
-> > The irq-line is requested with IRQF_SHARED, meaning the line might be
-> > shared between all three GPU IRQs, but also with other devices. I think
-> > if we want to be totally safe, we need to also check this is_suspending
-> > field in the hard irq handlers before accessing the xxx_INT_yyy
-> > registers.
-> >   
+> Mauro Carvalho Chehab <mchehab@kernel.org> writes:
 > 
-> This would mean that we would have to force canceling jobs in the suspend
-> handler, but if the IRQ never fired, would we still be able to find the
-> right bits flipped in JOB_INT_RAWSTAT?
+> > Em Mon, 27 Nov 2023 16:31:39 -0700
+> > Jonathan Corbet <corbet@lwn.net> escreveu:  
+> 
+> >> diff --git a/scripts/sphinx-pre-install b/scripts/sphinx-pre-install
+> >> index 1fb88fdceec3..db75b1b86086 100755
+> >> --- a/scripts/sphinx-pre-install
+> >> +++ b/scripts/sphinx-pre-install
+> >> @@ -32,8 +32,7 @@ my $python_cmd = "";
+> >>  my $activate_cmd;
+> >>  my $min_version;
+> >>  my $cur_version;
+> >> -my $rec_version = "1.7.9";	# PDF won't build here
+> >> -my $min_pdf_version = "2.4.4";	# Min version where pdf builds
+> >> +my $rec_version = "3.0";  
+> >
+> > Please don't. 3.0 version has a broken C domain, not properly supported.
+> > The fixes arrived only starting at 3.1 (I guess some went to 3.2, but
+> > 3.1 is usable, as far as I remember).  
+> 
+> So you're asking for 3.1 or 3.2 instead of 3.0?
 
-There should be no jobs left if we enter suspend. If there is, that's a
-bug we should fix, but I'm digressing.
+Yes. 
 
 > 
->  From what I understand, are you suggesting to call, in job_suspend_irq()
-> something like
-> 
-> void panfrost_job_suspend_irq(struct panfrost_device *pfdev)
-> {
->          u32 status;
-> 
-> 	set_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspending);
-> 
-> 	job_write(pfdev, JOB_INT_MASK, 0);
-> 	synchronize_irq(pfdev->js->irq);
-> 
-> 	status = job_read(pfdev, JOB_INT_STAT);
+> Honestly, I just picked 3.0 out of the air in the hopes of eventually
+> deprecating 2.x.  Not lots of thought has gone into that
+> number...perhaps we should recommend higher yet?
 
-I guess you meant _RAWSTAT. _STAT should always be zero after we've
-written 0 to _INT_MASK.
+Well, we could recommend a higher version, but I can't see much
+differences between 3.2 and the latest version: for what we use,
+both will work on a similar way. Ok, layout may be different, there
+were some improvements on PDF output, etc. but they will all produce
+a decent documentation.
 
-> 	if (status)
-> 		panfrost_job_irq_handler_thread(pfdev->js->irq, (void*)pfdev);
+Yet, while most C domain bugs introduced on 3.0 were solved in 3.1
+and 3.2, there's one still pending issue[1].
 
-Nope, we don't need to read the STAT reg and forcibly call the threaded
-handler if it's != 0. The synchronize_irq() call should do exactly that
-(make sure all pending interrupts are processed before returning), and
-our previous job_write(pfdev, JOB_INT_MASK, 0) guarantees that no new
-interrupts will kick in after that point.
+Once C domain finally gets rid from this long term bug that having:
 
-> }
-> 
-> and then while still retaining the check in the IRQ thread handler, also
-> check it in the hardirq handler like
-> 
-> static irqreturn_t panfrost_job_irq_handler(int irq, void *data)
-> {
-> 	struct panfrost_device *pfdev = data;
-> 	u32 status;
-> 
-> 	if (!test_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspending))
-> 		return IRQ_NONE;
+	.. c:struct:: foo
 
-Yes, that's the extra check I was talking about, and that's also the
-very reason I'm suggesting to call this field suspended_irqs instead of
-is_suspending. Ultimately, each bit in this bitmap encodes the status
-of a specific IRQ, not the transition from active-to-suspended,
-otherwise we'd be clearing the bit at the end of
-panfrost_job_suspend_irq(), right after the synchronize_irq(). But if
-we were doing that, our hard IRQ handler could be called because other
-devices raised an interrupt on the very same IRQ line while we are
-suspended, and we'd be doing an invalid GPU reg read while the
-clks/power-domains are off.
+	.. c:function:: void foo(void)
 
-> 
-> 	status = job_read(pfdev, JOB_INT_STAT);
-> 	if (!status)
-> 	        return IRQ_NONE;
-> 
-> 	job_write(pfdev, JOB_INT_MASK, 0);
-> 	return IRQ_WAKE_THREAD;
-> }
-> 
-> (rinse and repeat for panfrost_mmu)
-> 
-> ..or am I misunderstanding you?
-> 
-> Cheers,
-> Angelo
-> 
-> 
+Produce warnings that "foo" id duplicated, then we'll have, IMO,
+our next recommended version :-)
 
+While Sphinx developers don't fix such bug, it doesn't really matter 
+what version user will pick, so I would just pick the fastest one
+as a recommendation, starting from 3.1 or 3.2 as our currently
+recommended version.
+
+[1] https://github.com/sphinx-doc/sphinx/pull/8313
+
+While I didn't make any benchmarks, I remember people reported
+poor performance with newer versions, so, without thinking to
+much, 3.1 or 3.2 seems a good candidate for the recommended
+version.
+
+Regards,
+Mauro
