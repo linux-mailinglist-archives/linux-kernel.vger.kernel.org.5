@@ -2,83 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 231817FB283
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:17:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B04F7FB27E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:17:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343781AbjK1HRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 02:17:21 -0500
+        id S1343806AbjK1HRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 02:17:07 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343811AbjK1HRP (ORCPT
+        with ESMTP id S1343813AbjK1HRB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 02:17:15 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 432E7D4B;
-        Mon, 27 Nov 2023 23:17:10 -0800 (PST)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AS5TPPG009575;
-        Tue, 28 Nov 2023 07:16:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=x6K4f+OPEftNFmuo369lliTD2CG6kzo5gCB7A0J1JUo=;
- b=HvKJb6X7jfrCJ/jBEjfvG8idvHVgOGLW7sSR/9XkZ0XgfAQT2dCVwQ3FlgMr1zHLv7Bd
- k0Qde/VsA4P1krjzB+vDDfFRQR8SvjZADITqwI105hwueMJ+zKEpm/nn75DmzHyMTING
- IYcE+45JEvFLVj56O2vwP3bBiGmKYglh6nbdia0QuOSSxG6YwxkaYodcUm+uDAgxrtNK
- D8havENIU+ItbQVt9xTRMg/Ue8UqryiMsW8sMJbLLcbHS3vorLCA1I78mcNvo1Sk2dsI
- FJiwC1SDa22bRSdxSJbhUiMgQBo69znm/hwWorBvcPDFhGvhY6KStjUB/F33Mpih2Pas Qg== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3umt632mk1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Nov 2023 07:16:52 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AS7GpMj014522
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Nov 2023 07:16:51 GMT
-Received: from [10.253.72.234] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 27 Nov
- 2023 23:16:47 -0800
-Message-ID: <9c4c1fe7-5d71-4bb2-8b92-f4e9a136e93d@quicinc.com>
-Date:   Tue, 28 Nov 2023 15:16:45 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 3/6] net: phy: at803x: add QCA8084 ethernet phy support
-Content-Language: en-US
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <hkallweit1@gmail.com>, <linux@armlinux.org.uk>, <corbet@lwn.net>,
-        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>
-References: <20231126060732.31764-1-quic_luoj@quicinc.com>
- <20231126060732.31764-4-quic_luoj@quicinc.com>
- <0b22dd51-417c-436d-87ce-7ebc41185860@lunn.ch>
- <f0604c25-87a7-497a-8884-7a779ee7a2f5@quicinc.com>
- <8e4046dd-813c-4766-83fb-c54a700caf31@lunn.ch>
-From:   Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <8e4046dd-813c-4766-83fb-c54a700caf31@lunn.ch>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: sQivrcbt6sr1381r_AlFHt39Y1KM7cWh
-X-Proofpoint-ORIG-GUID: sQivrcbt6sr1381r_AlFHt39Y1KM7cWh
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-28_05,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- mlxlogscore=734 bulkscore=0 suspectscore=0 spamscore=0 lowpriorityscore=0
- malwarescore=0 phishscore=0 clxscore=1015 impostorscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311280055
+        Tue, 28 Nov 2023 02:17:01 -0500
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46CB3D4D
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:17:00 -0800 (PST)
+Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-58d4e32ea2fso1846141eaf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:17:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1701155818; x=1701760618; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1hGy46pUf93WoDJ7rnnE2nED/iyelB1yhgDX8ASNQ7E=;
+        b=VnvqGzM1DoJNEubPnROwF86hlxKEiEWVfnKtU35EpW3SwaDsQl00Vg4Q+3ei3FLYQL
+         0IxC9bwYlWUizFMOJLbamv7xSQHZsJId4jdCNCSBrS2+nmRZ6EmiQxMDtxNB2mZ4w0kG
+         CGKK+qbBS2n6W5CN1sfXbfK1Zc2Ew/UrEw536CDfeVOY/C5SxTnYDfWGnv/BHju8hzBJ
+         H7qzYo3ZaDvnjhksHFSyBTx3hljMmgvCCa6i8vTUxVcHu+soTp2u5GNI4QtMsPrz5/xe
+         0V194CeXMZ0ANSL2sAKQOOpdXK74z8Huy+zSLr04f7AAUyXZlQyOBuUYjsPDyj6HQOmo
+         /0qA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701155818; x=1701760618;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1hGy46pUf93WoDJ7rnnE2nED/iyelB1yhgDX8ASNQ7E=;
+        b=fQqjeQLonL+Ncyszujkw/FXmTwws4068i51NBZnifu97b9bjSqrB5QT7B6/RExxnlQ
+         pZMXS9VT/h4hMHHzQPODvT1R0eYx0lVA8nlfbceY4PotKSFGBEVvsArrHOmGuG94g4EJ
+         3BSbxp+dyXeBw/eEN3PzkmtMnBiJ8hoMBPA43XvpKAmif3wiXJiaVfE3TOqhmTPCRpUx
+         UX8SWVMDGMqT+IWP7U537XHFanhf7ega9DP7RgPxl3rVAGpxFsEP/LA/PhcwXBaTyJLT
+         F+VhO0Sg74w0qZ9HHb2AxXd+zTMMUFe7D2D8WXEz9YQmMxmHVCK17XVnDX9F3zvdR/6a
+         mpfQ==
+X-Gm-Message-State: AOJu0YzatpUqtVvejRFb2xKm3fZLXriBpfxEJR5+N43hMJFaKJiaTeEK
+        Q3r2Adl6yobFKqy3RQsVM1Fuag==
+X-Google-Smtp-Source: AGHT+IFgwFw7npmV6jjE0YipeNTQs2cwOSwYlG2/9Hv4A2Hr9ObLQntqtxAzF+6fw3EgWDGHIqkZ2Q==
+X-Received: by 2002:a05:6358:52c6:b0:16b:c479:d6c1 with SMTP id z6-20020a05635852c600b0016bc479d6c1mr17221034rwz.9.1701155817816;
+        Mon, 27 Nov 2023 23:16:57 -0800 (PST)
+Received: from ?IPv6:2402:7500:4ce:8338:14c0:b892:2482:e230? ([2402:7500:4ce:8338:14c0:b892:2482:e230])
+        by smtp.gmail.com with ESMTPSA id n7-20020a634007000000b005c2185be2basm8957980pga.54.2023.11.27.23.16.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 27 Nov 2023 23:16:57 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
+Subject: Re: [PATCH v2 09/13] RISC-V: crypto: add Zvknha/b accelerated
+ SHA224/256 implementations
+From:   Jerry Shih <jerry.shih@sifive.com>
+In-Reply-To: <20231128041235.GJ1463@sol.localdomain>
+Date:   Tue, 28 Nov 2023 15:16:53 +0800
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>, palmer@dabbelt.com,
+        Albert Ou <aou@eecs.berkeley.edu>, herbert@gondor.apana.org.au,
+        davem@davemloft.net, conor.dooley@microchip.com, ardb@kernel.org,
+        heiko@sntech.de, phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <51190E7A-25BD-4D9A-AADF-02FE2A280508@sifive.com>
+References: <20231127070703.1697-1-jerry.shih@sifive.com>
+ <20231127070703.1697-10-jerry.shih@sifive.com>
+ <20231128041235.GJ1463@sol.localdomain>
+To:     Eric Biggers <ebiggers@kernel.org>
+X-Mailer: Apple Mail (2.3445.9.7)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,47 +81,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Nov 28, 2023, at 12:12, Eric Biggers <ebiggers@kernel.org> wrote:
+> On Mon, Nov 27, 2023 at 03:06:59PM +0800, Jerry Shih wrote:
+>> +/*
+>> + * sha256 using zvkb and zvknha/b vector crypto extension
+>> + *
+>> + * This asm function will just take the first 256-bit as the sha256 =
+state from
+>> + * the pointer to `struct sha256_state`.
+>> + */
+>> +asmlinkage void
+>> +sha256_block_data_order_zvkb_zvknha_or_zvknhb(struct sha256_state =
+*digest,
+>> +					      const u8 *data, int =
+num_blks);
+>=20
+> The SHA-2 and SM3 assembly functions are potentially being called =
+using indirect
+> calls, depending on whether the compiler optimizes out the indirect =
+call that
+> exists in the code or not.  These assembly functions also are not =
+defined using
+> SYM_TYPED_FUNC_START.  This is not compatible with Control Flow =
+Integrity
+> (CONFIG_CFI_CLANG); these indirect calls might generate CFI failures.
+>=20
+> I recommend using wrapper functions to avoid this issue, like what is =
+done in
+> arch/arm64/crypto/sha2-ce-glue.c.
+>=20
+> - Eric
 
+Here is the previous review comment for the assembly function wrapper:
+> > +asmlinkage void sha256_block_data_order_zvbb_zvknha(u32 *digest, =
+const void *data,
+> > +					unsigned int num_blks);
+> > +
+> > +static void __sha256_block_data_order(struct sha256_state *sst, u8 =
+const *src,
+> > +				      int blocks)
+> > +{
+> > +	sha256_block_data_order_zvbb_zvknha(sst->state, src, blocks);
+> > +}
+> Having a double-underscored function wrap around a non-underscored one =
+like this
+> isn't conventional for Linux kernel code.  IIRC some of the other =
+crypto code
+> happens to do this, but it really is supposed to be the other way =
+around.
+>=20
+> I think you should just declare the assembly function to take a =
+'struct
+> sha256_state', with a comment mentioning that only the 'u32 state[8]' =
+at the
+> beginning is actually used.  That's what =
+arch/x86/crypto/sha256_ssse3_glue.c
+> does, for example.  Then, __sha256_block_data_order() would be =
+unneeded.
 
-On 11/27/2023 9:22 PM, Andrew Lunn wrote:
-> On Mon, Nov 27, 2023 at 02:21:46PM +0800, Jie Luo wrote:
->>
->>
->> On 11/27/2023 1:31 AM, Andrew Lunn wrote:
->>>> +		/* There are two PCSs available for QCA8084, which support the
->>>> +		 * following interface modes.
->>>> +		 *
->>>> +		 * 1. PHY_INTERFACE_MODE_10G_QXGMII utilizes PCS1 for all
->>>> +		 * available 4 ports, which is for all link speeds.
->>>> +		 *
->>>> +		 * 2. PHY_INTERFACE_MODE_2500BASEX utilizes PCS0 for the
->>>> +		 * fourth port, which is only for the link speed 2500M same
->>>> +		 * as QCA8081.
->>>> +		 *
->>>> +		 * 3. PHY_INTERFACE_MODE_SGMII utilizes PCS0 for the fourth
->>>> +		 * port, which is for the link speed 10M, 100M and 1000M same
->>>> +		 * as QCA8081.
->>>> +		 */
->>>
->>> How are these 3 modes configured? I don't see any software
->>> configuration of this in these drivers. Can it only by configured by
->>> strapping?
->>
->> The interface mode is passed in the .config_init, which is configured
->> by the PCS driver, the hardware register is located in the PCS, this
->> driver will be pushed later.
-> 
-> Is this the same as how the syqca807x works? Can the PCS driver be
-> shared by these two drivers?
+Do you mean that we need the wrapper functions back for both SHA-* and =
+SM3?
+If yes, we also don't need to check the state offset like:
+	BUILD_BUG_ON(offsetof(struct sha256_state, state) !=3D 0);
 
-I am not sure syqca807x, would you point me the code path of this driver?
+Could we just use the `SYM_TYPED_FUNC_START` in asm directly without the
+wrappers?
 
-> 
-> What i don't like at the moment is that we have two driver
-> developments going on at once for hardware which seems very similar,
-> but no apparent cooperation?
-> 
-> 	Andrew
-
-The PCS of qca8084 is the PHY PCS, which should be new PCS driver,
-in the previous chips, we don't have this kind of PHY PCS.
+-Jerry=
