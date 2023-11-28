@@ -2,436 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 457977FAFA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 02:38:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D187FAF8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 02:30:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234354AbjK1BiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 20:38:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48330 "EHLO
+        id S234214AbjK1Ba1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 20:30:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjK1BiD (ORCPT
+        with ESMTP id S231979AbjK1BaY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 20:38:03 -0500
-Received: from mail.rnplus.nl (mail.rnplus.nl [178.251.25.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA261B1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 17:37:58 -0800 (PST)
-Received: from localhost (unknown [127.0.0.1])
-        by mail.rnplus.nl (Postfix) with ESMTP id 1EEE8379451
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:33:54 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at rnplus.nl
-Received: from mail.rnplus.nl ([127.0.0.1])
-        by localhost (mail.rnplus.nl [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id EAuO1YF5GhjY for <linux-kernel@vger.kernel.org>;
-        Tue, 28 Nov 2023 02:33:53 +0100 (CET)
-Received: from werkpc.lan (87-101-2-254.dsl.cambrium.nl [87.101.2.254])
-        by mail.rnplus.nl (Postfix) with ESMTPSA id ADBCA37943B;
-        Tue, 28 Nov 2023 02:33:50 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=rnplus.nl; s=dkim;
-        t=1701135230; bh=YGEF5Ps2JU/C98wflH1iN9dJ8KqPtSpeJvqjjiPh7A8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=sk942tqR/F8amkJEXN5S6081f1Fkvsu9q/kvC6+9JtF71g3y/lVKHMUCUQBJ5dKuq
-         4DO3nvbBdUbrpKu0bzGUUNb4ryjFbrvpDZ+GKzJg531QnIRurMvwpFmb0OB8h+tASm
-         zpf6v3xyXpp/XkPndRC3y/u7kBx8AKeVpq5uIKV8=
-From:   Renze Nicolai <renze@rnplus.nl>
-To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
-        arnd@arndb.de, olof@lixom.net, soc@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, joel@jms.id.au, andrew@aj.id.au
-Cc:     Renze Nicolai <renze@rnplus.nl>
-Subject: [PATCH 2/2] ARM: dts: aspeed: asrock: Add ASRock X570D4U BMC
-Date:   Tue, 28 Nov 2023 02:30:17 +0100
-Message-ID: <20231128013136.2699317-3-renze@rnplus.nl>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231128013136.2699317-1-renze@rnplus.nl>
-References: <20231128013136.2699317-1-renze@rnplus.nl>
+        Mon, 27 Nov 2023 20:30:24 -0500
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2077.outbound.protection.outlook.com [40.107.101.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 141CA1BD;
+        Mon, 27 Nov 2023 17:30:31 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eOD0TYzmC4KnVQLRIXvUftoiy8Qok4M2N1m/Plv7FCZvSLIQI1ZGGwn5TomBO78HF7Yay6KvZRo6ATJHH+vehMOTuhYNIdoZODd8Z7XJ1XI994fsMUNuuCC6P7SWKjYnjoiQUOy7TOy99hSKKvqW7YnvKqyX4M3Iw7IqxiUX70DLoegVLe3999WNuyRF+/2IevHkGWZN8NAZF5mIULVqYhSGi1q8wgSn4jNltj2rB8Yhnugpq1/MmVPGN07B9/+WT8qJ8KdIdzE0IzCD1LxUauQ0cYLi/AtxEebcJHByZv9oC8/mAawFKdUbtV1krSjlwtG23Eh2AP8ZwCAAwjM2gQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nPO8ZTW7Kce7So/mDZ+XpN0ANNJtiHYC1pkP7m4caF4=;
+ b=bHo/zqZffHqxDocYEPgrKcJ3XL92XupAPGRa87WYrJUTYBVqOKBJMZlLyWsepMQaEf0NMFQsrg815kHrrRKyGrgMsq/aQDjQTVKMwcnjm4maeLCiWBc2c2YmESYZNTyewoi7c3f/7pgdUtNAMhCmyXKECSkUvLFxXfLdNGn40L4omDjdc781vOWaFQyVdj6crfGT+K4odDKYgy23+ld4W1AugiNgq2UItsOdya8YhJyd/S1O6Z6xsbpAGnB3MPgBNbqQNsi31TYIELNojPTB6gJNDion6BkQrsJR+qJKtZTv6qXd/8RsyjQQ9OfknX5GNBuhpFS9B/djPVg7Y6qsZw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nPO8ZTW7Kce7So/mDZ+XpN0ANNJtiHYC1pkP7m4caF4=;
+ b=CSxTxet4ICLbe10xiVDW9jiyrNMR4fTKW71gkeXp1KVCnw2FMFz7nX7qE+yNE6BjeQOpTL2USGfOTo1Kkp0m/P5jOc2J+EcTzdG25NiGHuQosYlZapgKXtDm/dcKW+MYrMP20lraINyOoMlc/b1ohE5hFYMEPeXgOe9lXwbgpj4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by SA3PR12MB7924.namprd12.prod.outlook.com (2603:10b6:806:313::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Tue, 28 Nov
+ 2023 01:30:28 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::83d7:9c4f:4d9b:1f2a]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::83d7:9c4f:4d9b:1f2a%5]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
+ 01:30:28 +0000
+Message-ID: <000161eb-a6f7-4715-b8ba-7c2f4758d0f0@amd.com>
+Date:   Mon, 27 Nov 2023 19:30:26 -0600
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/1] platform/x86: asus-wmi: disable USB0 hub on ROG
+ Ally before suspend
+To:     Luke Jones <luke@ljones.dev>, Armin Wolf <W_Armin@gmx.de>
+Cc:     hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com,
+        corentin.chary@gmail.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231126230521.125708-1-luke@ljones.dev>
+ <20231126230521.125708-2-luke@ljones.dev>
+ <30293382-2287-45a2-9269-55d547432085@amd.com>
+ <F1VS4S.MV0FEK6EB3K22@ljones.dev>
+ <e583fd64-2cff-4595-a559-a675c6f5ad0d@amd.com>
+ <fb8ebdfb-fc53-4343-8df3-96f04b405ace@gmx.de>
+ <1J6T4S.AGCT3HWF4DTB1@ljones.dev>
+ <75db5770-fe31-4569-bab5-1f259223506e@gmx.de>
+ <3Q7T4S.YETEEQF4KQOU@ljones.dev>
+Content-Language: en-US
+From:   Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <3Q7T4S.YETEEQF4KQOU@ljones.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA1PR02CA0019.namprd02.prod.outlook.com
+ (2603:10b6:806:2cf::12) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|SA3PR12MB7924:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7fcf955f-0d04-4d8f-d557-08dbefb19a46
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BECFi+rZRGMRfDTqJPOqMt4ZCKdNXMWpDM0d5LBcayPbIZEiS0CoXLTlIRU5ZLKMMjzkQI/tKaE0g3RJaYK7HqEENWP5OFhzjJQbHXp60kN9SLaQrBkA3T4BEllORhE2NOAMNFGXi8NHvO8IDM95TZE9myeTaXPQiluQZrkgTNVf6XvPWBBK6D9r96/wzwnS71B/5Q6By+rISiVu5yv18vKKhHYWrI1Ub3ZkeHeCa/NxUJMWBhydY/ilU6+H/sUgG0RzyP4h4pK/eYUAQ/BwvDRLx5aj5a9DR3s/wmQlQwTypOc9kCtsm2Z4DEmJTEDJYzZueLBrY1Gmr0gdP0+BeQSKY8gns4ICkVGXawk+qaX1OFDRrsNGsUjHeC0quEvDqRO5C2F04T94g3KNCkkU/kREDzJKACLr5E5TwbRHdk5562hBdYzVZ0+u8zyswWL2K6wtK44K0FZ0zd5LY0bLcIj/uj8PhFXtnDvTMfR8JJZTXk9wahHfQb21KxBYwHLfJNU4qSWT1YLsN4ro43AdgpiWHzP//UDJOeRxi3AuY+87+khRFNbirU3uwWKXdfaq062vdQBvCNQ4SccpLaBMG0ML9opXO163WSRtCnI123VnQ6UDXUym9J1V8sWwkY7UJo+mdMBBSH4rq91oHt6RXw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(39860400002)(346002)(396003)(136003)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(316002)(6506007)(53546011)(6512007)(31696002)(86362001)(2616005)(26005)(36756003)(110136005)(6486002)(38100700002)(478600001)(66556008)(66476007)(66946007)(44832011)(5660300002)(2906002)(4744005)(41300700001)(31686004)(4326008)(8936002)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?S1UyNDhOS3pNRFFCUDJWOXhHYWpmOGQwVU9GeFAxV0ozRzZKcmlJU0I5SHpB?=
+ =?utf-8?B?bWFJWWpRbUJzeld5bjA5SVJ1Q29ZTnZDZnlFMjlaam1kUnB3VFV1dkQ3ZFNm?=
+ =?utf-8?B?SnpXc20vRHZmUzRhc1Q4UytSRVQwNjd1WVc1MGYzSG5BR09tZG5OcUZqUXgw?=
+ =?utf-8?B?NmQwekRUTGVLeW82OXBSWUtNYTl1VGZZRVl6R0cwL3YzU1dES2x4MlhjKy9T?=
+ =?utf-8?B?OVF6WVdWTU1jUWlCQmRmUitSNTNYUHppQVJDcGwrdzNxQVAzd3NleHJTbWtt?=
+ =?utf-8?B?NUk3VVhlc2k5WXY1a0N3VmdXdlVyYUhGbm9USUVrRmJjcGF1ektNUnZsb204?=
+ =?utf-8?B?MUp4RUI0aFh2Z1VkS21Ed0p5U0RlMTU3ajFuZ1ZXRldzNEt3RkMxOUZjQ2VI?=
+ =?utf-8?B?K1NRVG5XRXpVUlo2SEVmZE95UTdnczlIdmE5WHFmZXNMeDUrMEpKUm4zZTN1?=
+ =?utf-8?B?enFCYlUvRDRwYlNVTFdpdXY3cDgrWXZNVTFrWkJoWVc5MExaMGkzQmF6aEVm?=
+ =?utf-8?B?QlVUUDBIbUUvZVdLeFpYU2FRY28vcUhyWStIUjhGbmIxdjMvRVVHY1p4STJI?=
+ =?utf-8?B?WHFOUUs3bnVwSnhoNVlJalpIT1o0dm5vZkVsOU1sK3YyTDVjNUhkQ2hPZEpy?=
+ =?utf-8?B?ejRpQWJ5dDQwSjJLUndNODhuWDFjQUVlS1BhVHpaYlIxZGRERjQ4akw5bnFn?=
+ =?utf-8?B?emY5ODJhMkVUVndPclV0eHhjY004OERRTFNNenJ3UjJxbG1keFNwU005clIy?=
+ =?utf-8?B?dnVSVUdoc3VhM1ZiNkxDeW9iN0gvNnN2a1Vsb3RIYXV5YXpKcksxQWRwODcz?=
+ =?utf-8?B?Z0F5MnYrQTlEWWwyL2VrazlvYTg4UzRyWHBHQS9nRUNURjdkdXBPOC8vVkhs?=
+ =?utf-8?B?UHFydmh4SUQxb0N2cjFxdVN4Z3Z6NEhDVlowa1lXMFV3OXE2WDQ4cGo0ai9t?=
+ =?utf-8?B?OEdSTXA4TkViWGZYR05QLzkrRmZBM05TdlVUNEIxMmNJYTRwcVhIREwzWlVw?=
+ =?utf-8?B?SWpUSThka1ZKVEVodGI5WmpRbm43RTN4RlFvK3dOT25YcHVUWVBldnN6ckgy?=
+ =?utf-8?B?ZzJLdWNMQXMrS3RRU05NYnN4ZjZ0ZTRYeURKM3VUTDZlYUcxMlFwblAxSXVY?=
+ =?utf-8?B?elgxTXJXbHlpZEw1YUFMNFN6ekVUQlFPSDRHS2RPaXZpV1JnNUk3RlJQbkFR?=
+ =?utf-8?B?TmxXZUdndTBnKzlVZjJFTkpWWGROL283Q2JBcmF2Qy82UyswVVUzSDNQWHNI?=
+ =?utf-8?B?amYzN3RCcUw0Mk9hT0dVTHcxdGYwYmVDbUtmUFRuT3JpdFlYeEk5MTRPZWE3?=
+ =?utf-8?B?VmJFb1M2YjV0NE5NbGtqS3pWYnBidWJJaWxoUXJCKzIvK3pCL3BSYTM4WWFN?=
+ =?utf-8?B?aGVWYWg0ZUJvZW9jcjB1UEdaUkJNUmIzVWIwM2F2NmRFZUZPNkJvUENBb2ZK?=
+ =?utf-8?B?ZXB5cmNKM0hjQXA0ZWFQa1NBcGpwYkxCU1ZncnRONWEwNkNUSis5alJZdUUx?=
+ =?utf-8?B?cXJUUW13YkM1Q3orT29wMkF5Zyt2UUJWNWZhaEpJbXEwZlJBSElZRS95T1A5?=
+ =?utf-8?B?cjVSODVqR1hNYlhTYmVDaTVud0dKN1JsbXV6aUp3WWNNdURQUXVDSVlrTDhR?=
+ =?utf-8?B?ckJsMHArRTU3UGlsS1RML294d2JHaXZnR21vamI2ZFM2V0pzTlpCUUJpcmRq?=
+ =?utf-8?B?U3dzYzh4OS9uUkptY05kZEsxaUgvbjA4QkdycW5OK01Wa2djc2pNT0MxdFV0?=
+ =?utf-8?B?SEZveE5mbGV6QzluNVFwN0RMSnpxMnNmcE1sanJSOUx3bVByWkVlOWJncnpv?=
+ =?utf-8?B?NFl6NlNZakJXV3pGcmVPVnd4OGxZaW4xeFBZOEhrYkR3N3ovVUZUSk1TZU1P?=
+ =?utf-8?B?WUYzNUZuYUx4eE0zemYraXcwNUxpaW1ZNDY3ZHo0dkJDZG81TUI0dEs5N0dU?=
+ =?utf-8?B?dG91SnRpbnMzemRhRDFOdGhtVkdVTnV2RlEwZ1hBM2s2WXZiTnZRYS95eWcz?=
+ =?utf-8?B?V0Zaa2cwSTFqQTBQNnVVNnVJM0Q1a2RQOXZpRTBpWmE2V1ZpOHdrNDExR3k5?=
+ =?utf-8?B?VU1HT0MwbVFWMnZEY3psb0tMUGh3Yk1GMkNQa0dOdkUrYU1OWUowN1pIQytw?=
+ =?utf-8?Q?Ds59eO+xnqnuOGCr/6wNRyPle?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7fcf955f-0d04-4d8f-d557-08dbefb19a46
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 01:30:28.1316
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EN7YZNnujKu+IJ779835CX0Mh+1y2nHLiulQD6bXrNtGorfXMV42aL3e1AIYTL/S437Gp3jNbsAFIt85A/YL5g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB7924
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a relatively low-cost AST2500-based Amd Ryzen 5000 Series
-micro-ATX board that we hope can provide a decent platform for OpenBMC
-development.
+On 11/27/2023 19:20, Luke Jones wrote:
+> 
+> 
+> Okay i understand now, thank you. I'll make a note of it in my next 
+> response to ASUS.
+> 
+Another thought here - could they be doing this MCU on/off control as 
+part of the ACPI power resource on and off methods for the USB 
+controller and embed any required waits there instead?
 
-This initial device-tree provides the necessary configuration for
-basic BMC functionality such as serial console, KVM support
-and POST code snooping.
-
-Signed-off-by: Renze Nicolai <renze@rnplus.nl>
----
- arch/arm/boot/dts/aspeed/Makefile             |   1 +
- .../dts/aspeed/aspeed-bmc-asrock-x570d4u.dts  | 344 ++++++++++++++++++
- 2 files changed, 345 insertions(+)
- create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-x570d4u.dts
-
-diff --git a/arch/arm/boot/dts/aspeed/Makefile b/arch/arm/boot/dts/aspeed/Makefile
-index d3ac20e316d0..2205bd079d0c 100644
---- a/arch/arm/boot/dts/aspeed/Makefile
-+++ b/arch/arm/boot/dts/aspeed/Makefile
-@@ -10,6 +10,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
- 	aspeed-bmc-arm-stardragon4800-rep2.dtb \
- 	aspeed-bmc-asrock-e3c246d4i.dtb \
- 	aspeed-bmc-asrock-romed8hm3.dtb \
-+	aspeed-bmc-asrock-x570d4u.dtb \
- 	aspeed-bmc-bytedance-g220a.dtb \
- 	aspeed-bmc-delta-ahe50dc.dtb \
- 	aspeed-bmc-facebook-bletchley.dtb \
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-x570d4u.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-x570d4u.dts
-new file mode 100644
-index 000000000000..9fb1d76abacb
---- /dev/null
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-x570d4u.dts
-@@ -0,0 +1,344 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/dts-v1/;
-+#include "aspeed-g5.dtsi"
-+#include <dt-bindings/gpio/aspeed-gpio.h>
-+
-+/ {
-+	model = "Asrock Rack X570D4U BMC";
-+	compatible = "asrock,x570d4u-bmc";
-+
-+	chosen {
-+			stdout-path = &uart5;
-+			bootargs = "console=ttyS4,115200 earlycon";
-+	};
-+
-+	memory@80000000 {
-+			reg = <0x80000000 0x20000000>;
-+	};
-+
-+	reserved-memory {
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges;
-+
-+			pci_memory: region@9A000000 {
-+				no-map;
-+				reg = <0x9A000000 0x00010000>; /* 64K */
-+			};
-+
-+			video_engine_memory: jpegbuffer {
-+				size = <0x02800000>;	/* 40M */
-+				alignment = <0x01000000>;
-+				compatible = "shared-dma-pool";
-+				reusable;
-+			};
-+
-+			gfx_memory: framebuffer {
-+				size = <0x01000000>;
-+				alignment = <0x01000000>;
-+				compatible = "shared-dma-pool";
-+				reusable;
-+			};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		heartbeat {
-+			/* led-heartbeat-n */
-+			gpios = <&gpio ASPEED_GPIO(H, 6) GPIO_ACTIVE_LOW>;
-+			linux,default-trigger = "timer";
-+		};
-+
-+		system-fault {
-+			/* led-fault-n */
-+			gpios = <&gpio ASPEED_GPIO(Z, 2) GPIO_ACTIVE_LOW>;
-+			panic-indicator;
-+		};
-+	};
-+
-+	iio-hwmon {
-+		compatible = "iio-hwmon";
-+		io-channels = <&adc 0>, <&adc 1>, <&adc 2>, <&adc 3>, <&adc 4>,
-+			<&adc 5>, <&adc 6>, <&adc 7>, <&adc 8>, <&adc 9>,
-+			<&adc 10>, <&adc 11>, <&adc 12>;
-+	};
-+};
-+
-+&gpio {
-+	status = "okay";
-+	gpio-line-names =
-+	/*A0-A3*/       "status-locatorled-n",                    "",                      "button-nmi-n",          "",
-+	/*A4-A7*/       "",                                       "",                      "",                      "",
-+	/*B0-B3*/       "input-bios-post-cmplt-n",                "",                      "",                      "",
-+	/*B4-B7*/       "",                                       "",                      "",                      "",
-+	/*C0-C3*/       "",                                       "",                      "",                      "",
-+	/*C4-C7*/       "",                                       "",                      "control-locatorbutton", "",
-+	/*D0-D3*/       "button-power",                           "control-power",         "button-reset",          "control-reset",
-+	/*D4-D7*/       "",                                       "",                      "",                      "",
-+	/*E0-E3*/       "",                                       "",                      "",                      "",
-+	/*E4-E7*/       "",                                       "",                      "",                      "",
-+	/*F0-F3*/       "",                                       "",                      "",                      "",
-+	/*F4-F7*/       "",                                       "",                      "",                      "",
-+	/*G0-G3*/       "output-rtc-battery-voltage-read-enable", "input-id0",             "input-id1",             "input-id2",
-+	/*G4-G7*/       "input-alert1-n",                         "input-alert2-n",        "input-alert3-n",        "",
-+	/*H0-H3*/       "",                                       "",                      "",                      "",
-+	/*H4-H7*/       "input-mfg",                              "",                      "led-heartbeat-n",       "input-caseopen",
-+	/*I0-I3*/       "",                                       "",                      "",                      "",
-+	/*I4-I7*/       "",                                       "",                      "",                      "",
-+	/*J0-J3*/       "output-bmc-ready",                       "",                      "",                      "",
-+	/*J4-J7*/       "",                                       "",                      "",                      "",
-+	/*K0-K3*/       "",                                       "",                      "",                      "",
-+	/*K4-K7*/       "",                                       "",                      "",                      "",
-+	/*L0-L3*/       "",                                       "",                      "",                      "",
-+	/*L4-L7*/       "",                                       "",                      "",                      "",
-+	/*M0-M3*/       "",                                       "",                      "",                      "",
-+	/*M4-M7*/       "",                                       "",                      "",                      "",
-+	/*N0-N3*/       "",                                       "",                      "",                      "",
-+	/*N4-N7*/       "",                                       "",                      "",                      "",
-+	/*O0-O3*/       "",                                       "",                      "",                      "",
-+	/*O4-O7*/       "",                                       "",                      "",                      "",
-+	/*P0-P3*/       "",                                       "",                      "",                      "",
-+	/*P4-P7*/       "",                                       "",                      "",                      "",
-+	/*Q0-Q3*/       "",                                       "",                      "",                      "",
-+	/*Q4-Q7*/       "",                                       "",                      "",                      "",
-+	/*R0-R3*/       "",                                       "",                      "",                      "",
-+	/*R4-R7*/       "",                                       "",                      "",                      "",
-+	/*S0-S3*/       "input-bmc-pchhot-n",                     "",                      "",                      "",
-+	/*S4-S7*/       "",                                       "",                      "",                      "",
-+	/*T0-T3*/       "",                                       "",                      "",                      "",
-+	/*T4-T7*/       "",                                       "",                      "",                      "",
-+	/*U0-U3*/       "",                                       "",                      "",                      "",
-+	/*U4-U7*/       "",                                       "",                      "",                      "",
-+	/*V0-V3*/       "",                                       "",                      "",                      "",
-+	/*V4-V7*/       "",                                       "",                      "",                      "",
-+	/*W0-W3*/       "",                                       "",                      "",                      "",
-+	/*W4-W7*/       "",                                       "",                      "",                      "",
-+	/*X0-X3*/       "",                                       "",                      "",                      "",
-+	/*X4-X7*/       "",                                       "",                      "",                      "",
-+	/*Y0-Y3*/       "",                                       "",                      "",                      "",
-+	/*Y4-Y7*/       "",                                       "",                      "",                      "",
-+	/*Z0-Z3*/       "",                                       "",                      "led-fault-n",           "output-bmc-throttle-n",
-+	/*Z4-Z7*/       "",                                       "",                      "",                      "",
-+	/*AA0-AA3*/     "input-cpu1-thermtrip-latch-n",           "",                      "input-cpu1-prochot-n",  "",
-+	/*AA4-AC7*/     "",                                       "",                      "",                      "",
-+	/*AB0-AB3*/     "",                                       "",                      "",                      "",
-+	/*AB4-AC7*/     "",                                       "",                      "",                      "",
-+	/*AC0-AC3*/     "",                                       "",                      "",                      "",
-+	/*AC4-AC7*/     "",                                       "",                      "",                      "";
-+
-+
-+	/* Assert output-bmc-ready to allow the BIOS to continue booting */
-+	bmc-ready {
-+		gpio-hog;
-+		/* output-bmc-ready */
-+		gpios = <ASPEED_GPIO(J, 0) GPIO_ACTIVE_LOW>;
-+		output-high;
-+	};
-+};
-+
-+&fmc {
-+	status = "okay";
-+	flash@0 {
-+			status = "okay";
-+			label = "bmc";
-+			m25p,fast-read;
-+			spi-max-frequency = <10000000>;
-+#include "openbmc-flash-layout-64.dtsi"
-+	};
-+};
-+
-+&uart5 {
-+	status = "okay";
-+};
-+
-+&vuart {
-+	status = "okay";
-+};
-+
-+&mac0 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_rgmii1_default &pinctrl_mdio1_default>;
-+};
-+
-+&mac1 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_rmii2_default &pinctrl_mdio2_default>;
-+	use-ncsi;
-+};
-+
-+&i2c0 {
-+	status = "okay";
-+};
-+
-+&i2c1 {
-+	status = "okay";
-+
-+	w83773g@4c {
-+		compatible = "nuvoton,w83773g";
-+		reg = <0x4c>;
-+	};
-+};
-+
-+&i2c2 {
-+	status = "okay";
-+};
-+
-+&i2c3 {
-+	status = "okay";
-+};
-+
-+&i2c4 {
-+	status = "okay";
-+
-+	i2c-switch@70 {
-+		compatible = "nxp,pca9545";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		reg = <0x70>;
-+
-+		interrupt-parent = <&i2c_ic>;
-+		interrupts = <4>;
-+		interrupt-controller;
-+		#interrupt-cells = <2>;
-+
-+		i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+		};
-+
-+		i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+		};
-+
-+		i2c@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <2>;
-+		};
-+
-+		i2c@3 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <3>;
-+		};
-+	};
-+};
-+
-+&i2c5 {
-+	status = "okay";
-+};
-+
-+&i2c7 {
-+	status = "okay";
-+
-+	eeprom@57 {
-+		compatible = "st,24c128", "atmel,24c128";
-+		reg = <0x57>;
-+		pagesize = <16>;
-+	};
-+};
-+
-+&gfx {
-+	status = "okay";
-+};
-+
-+&pinctrl {
-+	aspeed,external-nodes = <&gfx &lhc>;
-+};
-+
-+&vhub {
-+	status = "okay";
-+};
-+
-+&ehci1 {
-+	status = "okay";
-+};
-+&uhci {
-+	status = "okay";
-+};
-+
-+&kcs3 {
-+	aspeed,lpc-io-reg = <0xca2>;
-+	status = "okay";
-+};
-+
-+&lpc_ctrl {
-+	status = "okay";
-+};
-+
-+&lpc_snoop {
-+	status = "okay";
-+	snoop-ports = <0x80>;
-+};
-+
-+&p2a {
-+	status = "okay";
-+	memory-region = <&pci_memory>;
-+};
-+
-+&video {
-+	status = "okay";
-+	memory-region = <&video_engine_memory>;
-+};
-+
-+&pwm_tacho {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_pwm0_default
-+				&pinctrl_pwm1_default
-+				&pinctrl_pwm2_default
-+				&pinctrl_pwm3_default
-+				&pinctrl_pwm4_default
-+				&pinctrl_pwm5_default>;
-+	fan@0 {
-+		reg = <0x00>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x00 0x01>;
-+	};
-+	fan@1 {
-+		reg = <0x01>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x02 0x03>;
-+	};
-+	fan@2 {
-+		reg = <0x02>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x04 0x05>;
-+	};
-+	fan@3 {
-+		reg = <0x03>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x06 0x07>;
-+	};
-+	fan@4 {
-+		reg = <0x04>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x08 0x09>;
-+	};
-+	fan@5 {
-+		reg = <0x05>;
-+		aspeed,fan-tach-ch = /bits/ 8 <0x0a 0x0b>;
-+	};
-+};
-+
-+&adc {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_adc0_default
-+				&pinctrl_adc1_default
-+				&pinctrl_adc2_default
-+				&pinctrl_adc3_default
-+				&pinctrl_adc4_default
-+				&pinctrl_adc5_default
-+				&pinctrl_adc6_default
-+				&pinctrl_adc7_default
-+				&pinctrl_adc8_default
-+				&pinctrl_adc9_default
-+				&pinctrl_adc10_default
-+				&pinctrl_adc11_default
-+				&pinctrl_adc12_default
-+				&pinctrl_adc13_default
-+				&pinctrl_adc14_default
-+				&pinctrl_adc15_default>;
-+};
--- 
-2.43.0
-
+I would think this could then be "invisible" to any drivers on any OS.
