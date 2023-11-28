@@ -2,143 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B38AD7FB2B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D177FB2AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:27:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233003AbjK1H1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 02:27:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49570 "EHLO
+        id S1343718AbjK1H0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 02:26:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234358AbjK1H1D (ORCPT
+        with ESMTP id S231858AbjK1H0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 02:27:03 -0500
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD5CD6D;
-        Mon, 27 Nov 2023 23:27:09 -0800 (PST)
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AS20ROl031456;
-        Tue, 28 Nov 2023 08:26:54 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=selector1; bh=Ssqh7w0gyO7jZ8y3HEvt5
-        feOCunBeqJzsQ7BVPvXVNk=; b=5+dddTwDgfGM3saJyJ2k6qe0mmiiWTsiflx7l
-        kqL2iTnqTq+4O+DoQXIHkHtH99G7dh2FI4od5yIOQc2E2dolxWOa/4+6JttE3YMy
-        Iw9oeL8PFkDMnEnp0E6hBQfvMe2qK7EcZTHg+HorMiLV+cn7/MCjC6yufeuncdds
-        AzvFBq06XQV96oLm97nOA0HWhEemuZpWu/sflKcjwH9WT7NfSXo3HdhJX2CWr8ws
-        StPHYOGms3pE/b+O9DOaHmU61338bLAKWyeeqmVnYMX2zTeG7m8XZ1MGCVAK0gXK
-        3HA3VAINFSdLqUKrXPZMOgfYbJeWw4VNjazVYImuooe+QLZaA==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uk951u1j5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Nov 2023 08:26:54 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9138910002A;
-        Tue, 28 Nov 2023 08:26:53 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4458D214D20;
-        Tue, 28 Nov 2023 08:26:53 +0100 (CET)
-Received: from gnbcxd0016.gnb.st.com (10.129.178.213) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 28 Nov
- 2023 08:26:53 +0100
-Date:   Tue, 28 Nov 2023 08:26:45 +0100
-From:   Alain Volmat <alain.volmat@foss.st.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
-        Sylvain Petinot <sylvain.petinot@foss.st.com>,
-        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/7] media: i2c: st-mipid02: use active state to store
- pad formats
-Message-ID: <20231128072645.GA1435577@gnbcxd0016.gnb.st.com>
-Mail-Followup-To: Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
-        Sylvain Petinot <sylvain.petinot@foss.st.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231125182057.1379357-1-alain.volmat@foss.st.com>
- <20231125182057.1379357-5-alain.volmat@foss.st.com>
- <ZWWLQkjvovzJMc73@kekkonen.localdomain>
+        Tue, 28 Nov 2023 02:26:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09C2B1BB
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:26:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701156415;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aDhxfrZ6A0IBRHudGpkZAOoM1jn0urSkC0LwcNBapbI=;
+        b=ViYkU0kQPWRym9rgySUPrmYgvewMwjphtyt8W2TlvLzoXg1GbxGJzQ+ZjQLjv7GaGM5Qgb
+        vbCJsc7WGRBrEWdORICTz8qvizGDdkvne8CKW4siCOrizj81HzXhLZxRHjVNWE1aNsUCe8
+        v4nRkZftUiYHy6cDA2wrBAleH5PzNmk=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-619-It0yUrn1N0iFdlYtaaW3Vw-1; Tue, 28 Nov 2023 02:26:52 -0500
+X-MC-Unique: It0yUrn1N0iFdlYtaaW3Vw-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-407d3e55927so35597965e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:26:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701156411; x=1701761211;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aDhxfrZ6A0IBRHudGpkZAOoM1jn0urSkC0LwcNBapbI=;
+        b=ezjfbB44yyIEQNG74/RQ7WHsb2M8ljHHR4ucoUR49v77nw6oHHzdfXW9N5+FrX85D+
+         Q7rQHdPkapqndaq5PPt5J02KLswno+pIEn55jJB+M4LwgjeMNI9kwxjIO/kSuP9HeQr4
+         UMM4zhxLSkUzFh21FE90x18OtiTnNNTwcroclSc1WbrO5nRwbjmpBehSP1q8PXTVVF13
+         bhbYKOGNaoCeawoMJ5D87DIt3xljgoMpRGLvFdSbI8yAoyxxOPfE3UAcp/PI8nR8lYVs
+         Bo+XgjePzf58wXIwPQDE9oHl0mM7/185NvjQcCQv3Z4sW1JRpNhVwZnEMGrplU4PN1Fe
+         qviA==
+X-Gm-Message-State: AOJu0YwXvDh+KX1yThZTM45wV4c+0cwscYZF0FJ9/2h7aagJ93rlHFt3
+        VSWh+p1tli49H8MxkeMxAP7ze0+bjJaxTRTQES2iQr0xWnmVhjGzlvPa/XhdZyco746AmcWSQBc
+        IlokPRREUhg/z6hQNXc5DuoMZ
+X-Received: by 2002:a05:600c:1f93:b0:401:2ee0:7558 with SMTP id je19-20020a05600c1f9300b004012ee07558mr10641348wmb.32.1701156411736;
+        Mon, 27 Nov 2023 23:26:51 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF4M7NxKP9raF3yxSld89xnv352HPd9UfYd6M9jkbwCiMadp3oGAStD9ceWph2CLoGlKw1rNQ==
+X-Received: by 2002:a05:600c:1f93:b0:401:2ee0:7558 with SMTP id je19-20020a05600c1f9300b004012ee07558mr10641324wmb.32.1701156411350;
+        Mon, 27 Nov 2023 23:26:51 -0800 (PST)
+Received: from starship ([77.137.131.4])
+        by smtp.gmail.com with ESMTPSA id l15-20020a05600c4f0f00b00405959bbf4fsm16310283wmq.19.2023.11.27.23.26.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 23:26:51 -0800 (PST)
+Message-ID: <38e52b16dfb57d0759b0e196fc952f20a62b0d3f.camel@redhat.com>
+Subject: Re: [RFC 11/33] KVM: x86: hyper-v: Handle GET/SET_VP_REGISTER hcall
+ in user-space
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Alexander Graf <graf@amazon.com>,
+        Nicolas Saenz Julienne <nsaenz@amazon.com>,
+        kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        anelkz@amazon.com, dwmw@amazon.co.uk, jgowans@amazon.com,
+        corbert@lwn.net, kys@microsoft.com, haiyangz@microsoft.com,
+        decui@microsoft.com, x86@kernel.org, linux-doc@vger.kernel.org
+Date:   Tue, 28 Nov 2023 09:26:48 +0200
+In-Reply-To: <b9c6ad26-ce8b-45f3-b856-8e6be2497f6e@amazon.com>
+References: <20231108111806.92604-1-nsaenz@amazon.com>
+         <20231108111806.92604-12-nsaenz@amazon.com>
+         <b9c6ad26-ce8b-45f3-b856-8e6be2497f6e@amazon.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZWWLQkjvovzJMc73@kekkonen.localdomain>
-X-Disclaimer: ce message est personnel / this message is private
-X-Originating-IP: [10.129.178.213]
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-28_06,2023-11-27_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
-
-On Tue, Nov 28, 2023 at 06:40:02AM +0000, Sakari Ailus wrote:
-> On Sat, Nov 25, 2023 at 07:20:52PM +0100, Alain Volmat wrote:
-> > Store formats information within pad allowing to simplify further more
-> > the driver (mutex / format store within the driver structure no more
-> > necessary).
+On Wed, 2023-11-08 at 13:14 +0100, Alexander Graf wrote:
+> On 08.11.23 12:17, Nicolas Saenz Julienne wrote:
+> > Let user-space handle HVCALL_GET_VP_REGISTERS and
+> > HVCALL_SET_VP_REGISTERS through the KVM_EXIT_HYPERV_HVCALL exit reason.
+> > Additionally, expose the cpuid bit.
 > > 
-> > Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+> > Signed-off-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
+> > ---
+> >   arch/x86/kvm/hyperv.c             | 9 +++++++++
+> >   include/asm-generic/hyperv-tlfs.h | 1 +
+> >   2 files changed, 10 insertions(+)
+> > 
+> > diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+> > index caaa859932c5..a3970d52eef1 100644
+> > --- a/arch/x86/kvm/hyperv.c
+> > +++ b/arch/x86/kvm/hyperv.c
+> > @@ -2456,6 +2456,9 @@ static void kvm_hv_write_xmm(struct kvm_hyperv_xmm_reg *xmm)
+> >   
+> >   static bool kvm_hv_is_xmm_output_hcall(u16 code)
+> >   {
+> > +	if (code == HVCALL_GET_VP_REGISTERS)
+> > +		return true;
+> > +
+> >   	return false;
+> >   }
+> >   
+> > @@ -2520,6 +2523,8 @@ static bool is_xmm_fast_hypercall(struct kvm_hv_hcall *hc)
+> >   	case HVCALL_FLUSH_VIRTUAL_ADDRESS_LIST_EX:
+> >   	case HVCALL_FLUSH_VIRTUAL_ADDRESS_SPACE_EX:
+> >   	case HVCALL_SEND_IPI_EX:
+> > +	case HVCALL_GET_VP_REGISTERS:
+> > +	case HVCALL_SET_VP_REGISTERS:
+> >   		return true;
+> >   	}
+> >   
+> > @@ -2738,6 +2743,9 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
+> >   			break;
+> >   		}
+> >   		goto hypercall_userspace_exit;
+> > +	case HVCALL_GET_VP_REGISTERS:
+> > +	case HVCALL_SET_VP_REGISTERS:
+> > +		goto hypercall_userspace_exit;
+> >   	default:
+> >   		ret = HV_STATUS_INVALID_HYPERCALL_CODE;
+> >   		break;
+> > @@ -2903,6 +2911,7 @@ int kvm_get_hv_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid2 *cpuid,
+> >   			ent->ebx |= HV_POST_MESSAGES;
+> >   			ent->ebx |= HV_SIGNAL_EVENTS;
+> >   			ent->ebx |= HV_ENABLE_EXTENDED_HYPERCALLS;
+> > +			ent->ebx |= HV_ACCESS_VP_REGISTERS;
 > 
-> Applied with the following diff:
+> Do we need to guard this?
+
+I think so, check should be added to 'hv_check_hypercall_access'.
+
+I do wonder though why KVM can't just pass all unknown hypercalls to userspace
+instead of having a whitelist.
+
+
+Best regards,
+	Maxim Levitsky
+
 > 
-> diff --git a/drivers/media/i2c/st-mipid02.c b/drivers/media/i2c/st-mipid02.c
-> index 7af209905d7b..2cc07b3ed0da 100644
-> --- a/drivers/media/i2c/st-mipid02.c
-> +++ b/drivers/media/i2c/st-mipid02.c
-> @@ -563,8 +563,8 @@ static const struct v4l2_mbus_framefmt default_fmt = {
->  	.height = 480,
->  };
->  
-> -static int mipid02_init_cfg(struct v4l2_subdev *sd,
-> -			    struct v4l2_subdev_state *state)
-> +static int mipid02_init_state(struct v4l2_subdev *sd,
-> +			      struct v4l2_subdev_state *state)
->  {
->  	*v4l2_subdev_state_get_format(state, MIPID02_SINK_0) = default_fmt;
->  	/* MIPID02_SINK_1 isn't supported yet */
-> @@ -642,7 +642,6 @@ static const struct v4l2_subdev_video_ops mipid02_video_ops = {
->  };
->  
->  static const struct v4l2_subdev_pad_ops mipid02_pad_ops = {
-> -	.init_cfg = mipid02_init_cfg,
->  	.enum_mbus_code = mipid02_enum_mbus_code,
->  	.get_fmt = v4l2_subdev_get_fmt,
->  	.set_fmt = mipid02_set_fmt,
-> @@ -653,6 +652,10 @@ static const struct v4l2_subdev_ops mipid02_subdev_ops = {
->  	.pad = &mipid02_pad_ops,
->  };
->  
-> +static const struct v4l2_subdev_internal_ops mipid02_subdev_internal_ops = {
-> +	.init_state = mipid02_init_state,
-> +};
-> +
->  static const struct media_entity_operations mipid02_subdev_entity_ops = {
->  	.link_validate = v4l2_subdev_link_validate,
->  };
-> @@ -851,6 +854,7 @@ static int mipid02_probe(struct i2c_client *client)
->  
->  	bridge->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
->  	bridge->sd.entity.function = MEDIA_ENT_F_VID_IF_BRIDGE;
-> +	bridge->sd.internal_ops = &mipid02_subdev_internal_ops;
->  	bridge->sd.entity.ops = &mipid02_subdev_entity_ops;
->  	bridge->pad[0].flags = MEDIA_PAD_FL_SINK;
->  	bridge->pad[1].flags = MEDIA_PAD_FL_SINK;
+> 
+> Alex
+> 
+> 
+> 
+> 
+> Amazon Development Center Germany GmbH
+> Krausenstr. 38
+> 10117 Berlin
+> Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+> Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+> Sitz: Berlin
+> Ust-ID: DE 289 237 879
+> 
 > 
 
-Thanks a lot Sakari for taking care of that !!
 
-Regards,
-Alain
 
-> -- 
-> Sakari Ailus
+
