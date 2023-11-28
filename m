@@ -2,214 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7617FC240
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 306397FC1E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344498AbjK1Qjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 11:39:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59242 "EHLO
+        id S1344703AbjK1QrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:47:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbjK1Qjf (ORCPT
+        with ESMTP id S229716AbjK1QrW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 11:39:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FE88D6
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:39:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701189581;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=q1jB4RVXxVVTLsFdPQcHPWyCB55F72GQ+BZr9q/xXCc=;
-        b=HQb0xAD6WZiqyT1FYoctpfUEp5xhD/0tzeDfAtvM8Pt0v6fGxXBe2COXTAJWTOnSGqKR+r
-        /WqCqVu8VZffY6491nJwdIBsHXOjvq8M46gdTjSIaqOxXz1XfIdqOsHEoalJT9s1ivzqr3
-        yi4DGgOn06KgoOJX5RDcU8b+z9k6y8U=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-620-ye-4Cs-yMwm5eiVOej0Osw-1; Tue, 28 Nov 2023 11:39:38 -0500
-X-MC-Unique: ye-4Cs-yMwm5eiVOej0Osw-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40b296a4450so32895415e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:39:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701189578; x=1701794378;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q1jB4RVXxVVTLsFdPQcHPWyCB55F72GQ+BZr9q/xXCc=;
-        b=A03B4TqQyEuvKrpKFT/Umd5IdT4VcoMbXJknSlmImSjxWn4upUr9mntOujHTjPxzx+
-         5lN/rCKpSCMFADgfzzozZmMpb2DL3RhZSPMdkjxS756Bnb+VjguIoBYYEV1q5iZ6qpqv
-         2KPQq6fyJGA2AE9YrMh6yAw9EjAfFKa9AqCCzU8ML2PrlKNQ9QMO+BdPXRZeSXCulQfv
-         MncOlyGlENODeVZuUIxXvELyu2f64GAiKl0FZddYOjKx1gbLYv0NKEH1eivDN2kjIlDM
-         vJZ7ospgzqDt/8YW/1LkkuzxxCu9rhDUnzxGNWYNIE6cCr9YaHhNEijyfT/Q7heNutor
-         4ekg==
-X-Gm-Message-State: AOJu0YzYDLP9I+PDeli5v4hppxv1HzacELz7rXOjBYkcPhuXpd3PZ0C4
-        0NkrS0EpNXyhUn7GRBQiqrVPlzPRCM4a9xgZ1vYqcxoFgV9PGjdzHCHckv0HheegQyFBhZv+d+q
-        eMjiSHZbx1rG/RO+n3RtX2931
-X-Received: by 2002:a05:600c:45c6:b0:40b:37f2:95b6 with SMTP id s6-20020a05600c45c600b0040b37f295b6mr12138061wmo.0.1701189577758;
-        Tue, 28 Nov 2023 08:39:37 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFnDb//LFkh4avxdiYNErHdqNEds8FYFfN+DB77BgOaSJMAUp17ceUNnFt08FeNplEv+t63cw==
-X-Received: by 2002:a05:600c:45c6:b0:40b:37f2:95b6 with SMTP id s6-20020a05600c45c600b0040b37f295b6mr12138040wmo.0.1701189577179;
-        Tue, 28 Nov 2023 08:39:37 -0800 (PST)
-Received: from ?IPV6:2003:cb:c708:1d00:99ec:9656:7475:678d? (p200300cbc7081d0099ec96567475678d.dip0.t-ipconnect.de. [2003:cb:c708:1d00:99ec:9656:7475:678d])
-        by smtp.gmail.com with ESMTPSA id w21-20020a05600c475500b0040b2976eb02sm17948819wmo.10.2023.11.28.08.39.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Nov 2023 08:39:36 -0800 (PST)
-Message-ID: <f1b52042-646d-4679-b375-7550973701f5@redhat.com>
-Date:   Tue, 28 Nov 2023 17:39:35 +0100
+        Tue, 28 Nov 2023 11:47:22 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A7ED5D;
+        Tue, 28 Nov 2023 08:47:28 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 067CB219A1;
+        Tue, 28 Nov 2023 16:47:27 +0000 (UTC)
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id D1EA6133B5;
+        Tue, 28 Nov 2023 16:47:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap2.dmz-prg2.suse.org with ESMTPSA
+        id uh4GM54ZZmUUXgAAn2gu4w
+        (envelope-from <dsterba@suse.cz>); Tue, 28 Nov 2023 16:47:26 +0000
+Date:   Tue, 28 Nov 2023 17:40:10 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     syzbot <syzbot+10d5b62a8d7046b86d22@syzkaller.appspotmail.com>,
+        clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [btrfs?] WARNING in btrfs_use_block_rsv
+Message-ID: <20231128164010.GM18929@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <0000000000004d4716060af08a45@google.com>
+ <531f8f07-6c4c-66bb-1d8e-7637222154af@oracle.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/5] mm/rmap: introduce and use hugetlb_remove_rmap()
-Content-Language: en-US
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>
-References: <20231128145205.215026-1-david@redhat.com>
- <20231128145205.215026-3-david@redhat.com> <ZWYQeW1dqK6xM1T9@x1n>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <ZWYQeW1dqK6xM1T9@x1n>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <531f8f07-6c4c-66bb-1d8e-7637222154af@oracle.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Bar: ++++++++
+X-Spam-Score: 9.00
+X-Rspamd-Server: rspamd1
+Authentication-Results: smtp-out1.suse.de;
+        dkim=none;
+        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of dsterba@suse.cz) smtp.mailfrom=dsterba@suse.cz;
+        dmarc=none
+X-Rspamd-Queue-Id: 067CB219A1
+X-Spamd-Result: default: False [9.00 / 50.00];
+         HAS_REPLYTO(0.30)[dsterba@suse.cz];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_SPAM(0.00)[40.64%];
+         TO_DN_SOME(0.00)[];
+         REPLYTO_ADDR_EQ_FROM(0.00)[];
+         R_SPF_SOFTFAIL(4.60)[~all];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         NEURAL_HAM_SHORT(-0.20)[-0.984];
+         RCPT_COUNT_SEVEN(0.00)[9];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         SUBJECT_HAS_QUESTION(0.00)[];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=6ae1a4ee971a7305];
+         TAGGED_RCPT(0.00)[10d5b62a8d7046b86d22];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(1.20)[suse.cz];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:98:from];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,GB_FAKE_RF_SHORT,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.11.23 17:08, Peter Xu wrote:
-> On Tue, Nov 28, 2023 at 03:52:02PM +0100, David Hildenbrand wrote:
->> hugetlb rmap handling differs quite a lot from "ordinary" rmap code. We
->> don't want this hugetlb special-casing in the rmap functions, as
->> we're special casing the callers already. Let's simply use a separate
->> function for hugetlb.
+On Sun, Nov 26, 2023 at 06:59:41AM +0800, Anand Jain wrote:
 > 
-> We were special casing some, not all..
 > 
-> And IIUC the suggestion from the community is we reduce that "special
-> casing", instead of adding more?  To be explicit below..
-
-Quoting from the cover letter:
-
-"We have hugetlb special-casing/checks in the callers in all cases 
-either way already in place: it doesn't make too much sense to call 
-generic-looking functions that end up doing hugetlb specific things from 
-hugetlb special-cases."
-
-[...]
-
->> +++ b/mm/rmap.c
->> @@ -1440,13 +1440,6 @@ void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
->>   
->>   	VM_BUG_ON_PAGE(compound && !PageHead(page), page);
->>   
->> -	/* Hugetlb pages are not counted in NR_*MAPPED */
->> -	if (unlikely(folio_test_hugetlb(folio))) {
->> -		/* hugetlb pages are always mapped with pmds */
->> -		atomic_dec(&folio->_entire_mapcount);
->> -		return;
->> -	}
+> On 25/11/2023 10:08, syzbot wrote:
+> > syzbot has bisected this issue to:
+> > 
+> > commit a5b8a5f9f8355d27a4f8d0afa93427f16d2f3c1e
+> > Author: Anand Jain <anand.jain@oracle.com>
+> > Date:   Thu Sep 28 01:09:47 2023 +0000
+> > 
+> >      btrfs: support cloned-device mount capability
+> > 
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1446d344e80000
+> > start commit:   d3fa86b1a7b4 Merge tag 'net-6.7-rc3' of git://git.kernel.o..
+> > git tree:       upstream
+> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=1646d344e80000
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=1246d344e80000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=6ae1a4ee971a7305
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=10d5b62a8d7046b86d22
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1431040ce80000
+> > 
+> > Reported-by: syzbot+10d5b62a8d7046b86d22@syzkaller.appspotmail.com
+> > Fixes: a5b8a5f9f835 ("btrfs: support cloned-device mount capability")
+> > 
+> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 > 
-> Fundamentally in the ideal world when hugetlb can be merged into generic
-> mm, I'd imagine that as dropping here, meanwhile...
 > 
+> It is completely strange that this issue bisects to the commit
+> a5b8a5f9f835 ('btrfs: support cloned-device mount capability').
+> I am unable to reproduce this as well.
 
-Quoting from the cover letter:
+I think it's because of changed timing or it can be an inconclusive
+bisect. Things around space handling depend on timing, the test would
+need to be run a few times to be sure.
 
-"If ever something about hugetlb changes that makes them actually
-partially-mappable folios, we can look into cleanly merging all code
-paths, not just some."
+The report provides an image so it may be good to analyze if it's scaled
+properly or if the reproducer does something strange.
 
->> -
->>   	/* Is page being unmapped by PTE? Is this its last map to be removed? */
->>   	if (likely(!compound)) {
->>   		last = atomic_add_negative(-1, &page->_mapcount);
->> @@ -1804,7 +1797,10 @@ static bool try_to_unmap_one(struct folio *folio, struct vm_area_struct *vma,
->>   			dec_mm_counter(mm, mm_counter_file(&folio->page));
->>   		}
->>   discard:
->> -		page_remove_rmap(subpage, vma, folio_test_hugetlb(folio));
->> +		if (unlikely(folio_test_hugetlb(folio)))
->> +			hugetlb_remove_rmap(folio);
->> +		else
->> +			page_remove_rmap(subpage, vma, false);
+> -------------------
+> WARNING: CPU: 1 PID: 58 at fs/btrfs/block-rsv.c:523 
+> btrfs_use_block_rsv+0x60d/0x860 fs/btrfs/block-rsv.c:523
+> <snap>
+> Call Trace:
+>   <TASK>
+>   btrfs_alloc_tree_block+0x1e0/0x12c0 fs/btrfs/extent-tree.c:5114
+>   btrfs_force_cow_block+0x3e5/0x19e0 fs/btrfs/ctree.c:563
+>   btrfs_cow_block+0x2b6/0xb30 fs/btrfs/ctree.c:741
+>   push_leaf_left+0x315/0x4d0 fs/btrfs/ctree.c:3485
+>   split_leaf+0x9c3/0x13b0 fs/btrfs/ctree.c:3681
+>   search_leaf fs/btrfs/ctree.c:1944 [inline]
+>   btrfs_search_slot+0x24ba/0x2fd0 fs/btrfs/ctree.c:2131
+>   btrfs_insert_empty_items+0xb6/0x1b0 fs/btrfs/ctree.c:4285
+>   btrfs_insert_empty_item fs/btrfs/ctree.h:657 [inline]
+>   insert_reserved_file_extent+0x7aa/0x950 fs/btrfs/inode.c:2907
+>   insert_ordered_extent_file_extent fs/btrfs/inode.c:3005 [inline]
+>   btrfs_finish_one_ordered+0x12dc/0x20d0 fs/btrfs/inode.c:3113
+>   btrfs_work_helper+0x210/0xbf0 fs/btrfs/async-thread.c:315
+>   process_one_work+0x886/0x15d0 kernel/workqueue.c:2630
+>   process_scheduled_works kernel/workqueue.c:2703 [inline]
+>   worker_thread+0x8b9/0x1290 kernel/workqueue.c:2784
+>   kthread+0x2c6/0x3a0 kernel/kthread.c:388
+>   ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+>   ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+> -----------------
 > 
-> ... rather than moving hugetlb_* handlings even upper the stack, we should
-> hopefully be able to keep this one as a generic api.
-> 
-> I worry this patch is adding more hugetlb-specific paths even onto higher
-> call stacks so it's harder to generalize, going the other way round to what
-> we wanted per previous discussions.
-> 
-> Said that, indeed I read mostly nothing yet with the recent rmap patches,
-> so I may miss some important goal here.
-
-Quoting from the cover letter:
-
-"This is a stanalone cleanup, but it gets more relevant when adding more
-rmap batching (we cannot map parts of a hugetlb folio) or changing the 
-way we handle partially-mappable folios as in [1], whereby we'd have to 
-add more hugetlb special casing to keep hugetlb working as is."
-
-
-Thanks for the review. If you have strong feelings, please add an 
-explicit nack. Otherwise, I'll move forward with this.
-
--- 
-Cheers,
-
-David / dhildenb
-
+> btrfs_use_block_rsv()
+> <snap>
+>          /*
+>           * The global reserve still exists to save us from ourselves, 
+> so don't
+>           * warn_on if we are short on our delayed refs reserve.
+>           */
+>          if (block_rsv->type != BTRFS_BLOCK_RSV_DELREFS &&
+>              btrfs_test_opt(fs_info, ENOSPC_DEBUG)) {
+>                  static DEFINE_RATELIMIT_STATE(_rs,
+>                                  DEFAULT_RATELIMIT_INTERVAL * 10,
+>                                  /*DEFAULT_RATELIMIT_BURST*/ 1);
+>                  if (__ratelimit(&_rs))
+>                          WARN(1, KERN_DEBUG
+>                                  "BTRFS: block rsv %d returned %d\n",
+>                                  block_rsv->type, ret);
+>          }
+> ----------
