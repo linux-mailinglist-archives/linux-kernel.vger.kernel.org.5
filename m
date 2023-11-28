@@ -2,191 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 695507FC231
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B207FC194
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345055AbjK1Q5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 11:57:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45810 "EHLO
+        id S1345044AbjK1Q6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:58:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234886AbjK1Q5c (ORCPT
+        with ESMTP id S229716AbjK1Q6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 11:57:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E078D4B
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:57:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701190657;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=Mhz2aAjozGznk5js3AKekQTCp0LGPxPOzTnF3OrDrGk=;
-        b=DcmDT7nHwttuTinhgZ24+i8amJxNNGQJW3QwvNLDU/pKBoNiybFcAGaJO1T31yGOY1J1Y+
-        AVx3ib0g+L2zDqElnT80HtS2dyRLAAWB72PL5RCOfVbAEG6maYykdh187PqvRFKPZkYTZd
-        FF7nGHcPigQO5g5TV7VjQDznNaXUlQU=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-312-xUcNDg5CND-2u8I9R7zFrQ-1; Tue, 28 Nov 2023 11:57:35 -0500
-X-MC-Unique: xUcNDg5CND-2u8I9R7zFrQ-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40b3dae2285so23735905e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:57:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701190654; x=1701795454;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        Tue, 28 Nov 2023 11:58:52 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2072DD6;
+        Tue, 28 Nov 2023 08:58:59 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-7b34c5d7ecdso207893539f.0;
+        Tue, 28 Nov 2023 08:58:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701190738; x=1701795538; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Mhz2aAjozGznk5js3AKekQTCp0LGPxPOzTnF3OrDrGk=;
-        b=WM2SNcGALzFRtBp9rFk70ddXPB8N8UjI9kYSk43dMG2ZFKLGLzaTJf6WWktbKTNZ7L
-         w/HXJCICsYp4hSUThb757kDaeNQpwZKjKktBvMXf948SNTX+tkurnp82H2CL3Ppu7PnC
-         stgXNEaaFwTr9cD8+qUgcbfUCHeCqlTf4mn5XpHZPz6knjS+ygSn0+zHcDANJt6027ql
-         JnbdmLL9TpZWeuxZG24mZcZGOGdgwxH80nXqmc0H+orhRQujJO07Wjc31qVkvbleS6p8
-         EI5pzJ36XTZzWw1VxoeXxlgtXOP1kwDVnwKIY8YGbORzkOXJrDXw1h0AXBVrwm+CmoB4
-         +YUQ==
-X-Gm-Message-State: AOJu0YwcqTqy1fFv+qQdOyZ4iPgPgMKmps0N8O/cZBp2L+obst7JCLZ5
-        /CgAaqyC78vB/HfLpwye5uiN4GqI31L3h5wENuqigi0JYXMAgpG8+Nmqk3FpYamKbUXW8tKG0Nw
-        PEdPcYQWuzn1u0RWML+nHEAHx
-X-Received: by 2002:a05:600c:5486:b0:40b:4aee:ea9e with SMTP id iv6-20020a05600c548600b0040b4aeeea9emr1841368wmb.17.1701190654561;
-        Tue, 28 Nov 2023 08:57:34 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE2rxk0Q3GVvHMRjedMUVFzyjVJeCSZm/niH70YFfgmRZLrknHuTNDj9GCIicfRzDSV2e5yEg==
-X-Received: by 2002:a05:600c:5486:b0:40b:4aee:ea9e with SMTP id iv6-20020a05600c548600b0040b4aeeea9emr1841351wmb.17.1701190654112;
-        Tue, 28 Nov 2023 08:57:34 -0800 (PST)
-Received: from ?IPV6:2003:cb:c708:1d00:99ec:9656:7475:678d? (p200300cbc7081d0099ec96567475678d.dip0.t-ipconnect.de. [2003:cb:c708:1d00:99ec:9656:7475:678d])
-        by smtp.gmail.com with ESMTPSA id m6-20020a5d4a06000000b003330aede2aesm2717126wrq.112.2023.11.28.08.57.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Nov 2023 08:57:33 -0800 (PST)
-Message-ID: <0a0f9345-3138-4e89-80cd-c7edaf2ff62d@redhat.com>
-Date:   Tue, 28 Nov 2023 17:57:31 +0100
+        bh=2fI/LznoECWCqcF0gUCTmOAEWgm3bqBRaqsoNP6NJb0=;
+        b=YvLWilmzQsaW2jRY1xeZ/WOZF4rqXq7SLpyW9iD4htL5d2Zu98YcjsWprbzRJawKWN
+         4UVTEsH6N3gsob3hUFlHGqo4oOxMBJ3bcyCZqR/yswAmyxtyCLr1eA/MshAL3tTrq/VI
+         VY3/UhGFSc3XvSpMrsXLQ9SNOFN/iGi/PuJZb59I2cFbUj5WoCaNEUUIul8X3z8TWLqi
+         KbAz7jXSBVaAO/V/v5LC1saKUuXhCsJi0/RFEZKVwkp47CbRiupkCfO52O5vT/CFXH2O
+         PFGxlLWsklWCud8FjvUwPgC7hllQo3mnQWVgc8pyqMXV2l0dzyp69UYLr9xYQU737ai9
+         aUmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701190738; x=1701795538;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2fI/LznoECWCqcF0gUCTmOAEWgm3bqBRaqsoNP6NJb0=;
+        b=l9qmxeGifIBhft6s/wgIP5B7LPyq02vvT8Eaj97L7DCNixfnpxZakxZ/Y9VtDseczF
+         Wa6iw6GgoEvjTuNXKeGA+mJBfFmGRN8djDlUuhqrepHko+VBvomNTECmYy2s45y1lWnn
+         AJK2sMZ5CFcS9Zz7UNAC3QVKaNWdpHAQ6/9RTN3SvHkbJbOLCO/Vjr9/aBNE6u2EEqHR
+         O30hWJx12ps9WGg3gSKhowps4xldGPPMZpqoVVtZXFfZ86Z5sAsc26X1HBlIbiBi1Sn2
+         dh+Q76A7sR2gpATv9cHRAMY6j5XRc9pZ+hXVKDXEUloAGZGFKCOJeGDuYHy6D9Z39xoS
+         xuCg==
+X-Gm-Message-State: AOJu0YxVyaZuPvlg8OdVnqLz2o1gZg/yoH3mAPzEfodFf+IoIyJvIauJ
+        0MT+INnmbIrbQjjrUKLquPhMfCttNs8IDS9GpIM=
+X-Google-Smtp-Source: AGHT+IHnsz1sdC0tq9NnxI0ceiNpHLvCP/gAZY/typAxLv95pCgArj+vZFNUBd3rEY5RkZ9BfVXhaODco8rR03ngRmQ=
+X-Received: by 2002:a6b:6d18:0:b0:79f:99b6:63 with SMTP id a24-20020a6b6d18000000b0079f99b60063mr13394697iod.9.1701190738383;
+ Tue, 28 Nov 2023 08:58:58 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v2 05/27] mm: page_alloc: Add an arch hook to allow
- prep_new_page() to fail
-Content-Language: en-US
-To:     Alexandru Elisei <alexandru.elisei@arm.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
-        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
-        rppt@kernel.org, hughd@google.com, pcc@google.com,
-        steven.price@arm.com, anshuman.khandual@arm.com,
-        vincenzo.frascino@arm.com, eugenis@google.com, kcc@google.com,
-        hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
-References: <20231119165721.9849-1-alexandru.elisei@arm.com>
- <20231119165721.9849-6-alexandru.elisei@arm.com>
- <dadc9d17-f311-47f1-a264-28b42bed0ab0@redhat.com> <ZWSHF2hVOPTBIQLY@raptor>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <ZWSHF2hVOPTBIQLY@raptor>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231127193703.1980089-1-nphamcs@gmail.com> <20231127193703.1980089-3-nphamcs@gmail.com>
+ <ZWW1IG0Mv3r0m4mp@tiehlicka> <CAKEwX=OGtkqWys9VM9EBScoCdAjSdfPjEkvoY7_u9udDZBFFpw@mail.gmail.com>
+In-Reply-To: <CAKEwX=OGtkqWys9VM9EBScoCdAjSdfPjEkvoY7_u9udDZBFFpw@mail.gmail.com>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Tue, 28 Nov 2023 08:58:47 -0800
+Message-ID: <CAKEwX=PnjGwSCceZw5H_hPUx9cxAqoUVw2QnAX=q3wVbHTpeAQ@mail.gmail.com>
+Subject: Re: [PATCH v6 2/6] memcontrol: allows mem_cgroup_iter() to check for onlineness
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
+        cerasuolodomenico@gmail.com, yosryahmed@google.com,
+        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
+        kernel-team@meta.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27.11.23 13:09, Alexandru Elisei wrote:
-> Hi,
-> 
-> Thank you so much for your comments, there are genuinely useful.
-> 
-> On Fri, Nov 24, 2023 at 08:35:47PM +0100, David Hildenbrand wrote:
->> On 19.11.23 17:56, Alexandru Elisei wrote:
->>> Introduce arch_prep_new_page(), which will be used by arm64 to reserve tag
->>> storage for an allocated page. Reserving tag storage can fail, for example,
->>> if the tag storage page has a short pin on it, so allow prep_new_page() ->
->>> arch_prep_new_page() to similarly fail.
->>
->> But what are the side-effects of this? How does the calling code recover?
->>
->> E.g., what if we need to populate a page into user space, but that
->> particular page we allocated fails to be prepared? So we inject a signal
->> into that poor process?
-> 
-> When the page fails to be prepared, it is put back to the tail of the
-> freelist with __free_one_page(.., FPI_TO_TAIL). If all the allocation paths
-> are exhausted and no page has been found for which tag storage has been
-> reserved, then that's treated like an OOM situation.
-> 
-> I have been thinking about this, and I think I can simplify the code by
-> making tag reservation a best effort approach. The page can be allocated
-> even if reserving tag storage fails, but the page is marked as invalid in
-> set_pte_at() (PAGE_NONE + an extra bit to tell arm64 that it needs tag
-> storage) and next time it is accessed, arm64 will reserve tag storage in
-> the fault handling code (the mechanism for that is implemented in patch #19
-> of the series, "mm: mprotect: Introduce PAGE_FAULT_ON_ACCESS for
-> mprotect(PROT_MTE)").
-> 
-> With this new approach, prep_new_page() stays the way it is, and no further
-> changes are required for the page allocator, as there are already arch
-> callbacks that can be used for that, for example tag_clear_highpage() and
-> arch_alloc_page(). The downside is extra page faults, which might impact
-> performance.
-> 
-> What do you think?
+On Tue, Nov 28, 2023 at 8:53=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrote=
+:
+>
+> On Tue, Nov 28, 2023 at 1:38=E2=80=AFAM Michal Hocko <mhocko@suse.com> wr=
+ote:
+> >
+> > On Mon 27-11-23 11:36:59, Nhat Pham wrote:
+> > > The new zswap writeback scheme requires an online-only memcg hierarch=
+y
+> > > traversal. Add a new parameter to mem_cgroup_iter() to check for
+> > > onlineness before returning.
+> >
+> > Why is this needed?
+>
+> For context, in patch 3 of this series, Domenico and I are adding
+> cgroup-aware LRU to zswap, so that we can perform workload-specific
+> zswap writeback. When the reclaim happens due to the global zswap
+> limit being hit, a cgroup is selected by the mem_cgroup_iter(), and
+> the last one selected is saved in the zswap pool (so that the
+> iteration can follow from there next time the limit is hit).
+>
+> However, one problem with this scheme is we will be pinning the
+> reference to that saved memcg until the next global reclaim attempt,
+> which could prevent it from being killed for quite some time after it
+> has been offlined. Johannes, Yosry, and I discussed a couple of
+> approaches for a while, and decided to add a callback that would
+> release the reference held by the zswap pool when the memcg is
+> offlined, and the zswap pool will obtain the reference to the next
+> online memcg in the traversal (or at least one that has not had the
+> zswap-memcg-release-callback run on it yet).
 
-That sounds a lot more robust, compared to intermittent failures to 
-allocate pages.
+I forgot to add, but as Andrew had pointed out, this is quite a niche
+use case (well only zswap is using it specifically). So I have decided
+to keep the original behavior for mem_cgroup_iter(), and added a
+special mem_cgroup_iter_online() that does this. All the current
+mem_cgroup_iter() users should not see any change. This is already in
+v7 of this patch series:
 
--- 
-Cheers,
+https://lore.kernel.org/linux-mm/20231127234600.2971029-3-nphamcs@gmail.com=
+/
 
-David / dhildenb
 
+
+
+>
+> > --
+> > Michal Hocko
+> > SUSE Labs
