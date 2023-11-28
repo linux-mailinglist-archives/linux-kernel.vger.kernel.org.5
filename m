@@ -2,46 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7287FC839
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:52:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 089B87FC857
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:52:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345855AbjK1Vfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 16:35:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39856 "EHLO
+        id S1346323AbjK1Vfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 16:35:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229832AbjK1Vff (ORCPT
+        with ESMTP id S231207AbjK1Vff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 28 Nov 2023 16:35:35 -0500
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F091BE6;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C111FC1;
         Tue, 28 Nov 2023 13:35:40 -0800 (PST)
 Received: from beast.luon.net (cola.collaboradmins.com [195.201.22.229])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (No client certificate requested)
         (Authenticated sender: sjoerd)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 17E966606F5E;
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 46F4966072E7;
         Tue, 28 Nov 2023 21:35:39 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
         s=mail; t=1701207339;
-        bh=Q18yxCAMZdN7nqiu9m/OAbtpx24RwZE3q1MsbEWOa8o=;
+        bh=EA3Sl4Au7lUnYnJzLlX/RZSBt2UJuslBcjVt/8x9WDs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PQPg8MN/oxUvLf3w9cigr+CJprQ51vuDvEvd7dBzVyh2GmC768EDHjK34zK12p2pg
-         MWM0fgDPctMPdp8qmtZEXizuZ0N/9r4Sx80Ftv2JaDuGw9h1E0QHEi5ruHYXxVgFNO
-         Nlr6k+GgQeNIMGML0bjvpp/NnVVFnzUGEPGb0JaQJn9ZnSZPfD85c/qOTLcLB99rFk
-         KiUtXt+7u66CbkWmOvFDmufFLSe4FNwlahCURVjY/PZR6BFT70ILoN52NctfvN+H/2
-         2yElwtwyghTzgPNBkZ3orF8iQ1L5q0DvwaNBAC1h1mPHIzBZ7LZQY5oVBdS8ExwjOW
-         +WlSqvvisScSQ==
+        b=ZEp9XUnKUM1gGQiTwlQAQadMFC5KorC0k2m7ZfpvRuKXIZ07rRz9NOa+BSfXuzwWo
+         dAZRIl+kVb1ppR4xQ5mxpA7Y82IQrZifXQ8ck/IbTLcJtForp8yK6Mdy813vPNNZ7p
+         pHrTvt9eIxz9FzsKcdzOiTIIk7l+J9U1E00fPA2Q5AE9TzjHQnqAIYBBlNZH0t/w7X
+         4Yr8K7FafTiijBf1eghAs7Z6NmqBRN2BP5/dwnplRLE0rYF/t2izUkiSWIyc74a1j/
+         GJTQk9M4FUQ+bPFOJP/+YPxAStPAcYx5CbAjXwgBuM+3RT5d5XyLLFUq96sUOfSl7x
+         ZJIQIlK/A8fMQ==
 Received: by beast.luon.net (Postfix, from userid 1000)
-        id 4C16E9676CFC; Tue, 28 Nov 2023 22:35:37 +0100 (CET)
+        id 7AC3C9676CFE; Tue, 28 Nov 2023 22:35:37 +0100 (CET)
 From:   Sjoerd Simons <sjoerd@collabora.com>
 To:     =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
 Cc:     =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
         kernel@collabora.com, stable@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/3] bus: moxtet: Add spi device table
-Date:   Tue, 28 Nov 2023 22:35:05 +0100
-Message-ID: <20231128213536.3764212-3-sjoerd@collabora.com>
+Subject: [PATCH v2 3/3] arm64: dts: armada-3720-turris-mox: set irq type for RTC
+Date:   Tue, 28 Nov 2023 22:35:06 +0100
+Message-ID: <20231128213536.3764212-4-sjoerd@collabora.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231128213536.3764212-1-sjoerd@collabora.com>
 References: <20231128213536.3764212-1-sjoerd@collabora.com>
@@ -58,44 +65,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The moxtet module fails to auto-load on. Add a SPI id table to
-allow it to do so.
+The rtc on the mox shares its interrupt line with the moxtet bus. Set
+the interrupt type to be consistent between both devices. This ensures
+correct setup of the interrupt line regardless of probing order.
 
 Signed-off-by: Sjoerd Simons <sjoerd@collabora.com>
-Cc: stable@vger.kernel.org
+Cc: stable@vger.kernel.org # v6.2+
+Fixes: 21aad8ba615e ("arm64: dts: armada-3720-turris-mox: Add missing interrupt for RTC")
 
 ---
 
 (no changes since v1)
 
- drivers/bus/moxtet.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/bus/moxtet.c b/drivers/bus/moxtet.c
-index 48c18f95660a..e384fbc6c1d9 100644
---- a/drivers/bus/moxtet.c
-+++ b/drivers/bus/moxtet.c
-@@ -830,6 +830,12 @@ static void moxtet_remove(struct spi_device *spi)
- 	mutex_destroy(&moxtet->lock);
- }
- 
-+static const struct spi_device_id moxtet_spi_ids[] = {
-+	{ "moxtet" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(spi, moxtet_spi_ids);
-+
- static const struct of_device_id moxtet_dt_ids[] = {
- 	{ .compatible = "cznic,moxtet" },
- 	{},
-@@ -841,6 +847,7 @@ static struct spi_driver moxtet_spi_driver = {
- 		.name		= "moxtet",
- 		.of_match_table = moxtet_dt_ids,
- 	},
-+	.id_table	= moxtet_spi_ids,
- 	.probe		= moxtet_probe,
- 	.remove		= moxtet_remove,
+diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
+index 9eab2bb22134..805ef2d79b40 100644
+--- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
++++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
+@@ -130,7 +130,7 @@ rtc@6f {
+ 		compatible = "microchip,mcp7940x";
+ 		reg = <0x6f>;
+ 		interrupt-parent = <&gpiosb>;
+-		interrupts = <5 0>; /* GPIO2_5 */
++		interrupts = <5 IRQ_TYPE_EDGE_FALLING>; /* GPIO2_5 */
+ 	};
  };
+ 
 -- 
 2.43.0
 
