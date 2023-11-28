@@ -2,518 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD2B7FBA7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:51:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF8E57FBA83
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:52:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344784AbjK1MvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 07:51:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56876 "EHLO
+        id S1344711AbjK1MwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 07:52:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344754AbjK1MvB (ORCPT
+        with ESMTP id S1344733AbjK1MwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 07:51:01 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A108B10C1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 04:50:53 -0800 (PST)
-Received: from kwepemm000018.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Sfj021mG3z1P8qX;
-        Tue, 28 Nov 2023 20:47:14 +0800 (CST)
-Received: from DESKTOP-RAUQ1L5.china.huawei.com (10.174.179.172) by
- kwepemm000018.china.huawei.com (7.193.23.4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 28 Nov 2023 20:50:49 +0800
-From:   Weixi Zhu <weixi.zhu@huawei.com>
-To:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <akpm@linux-foundation.org>
-CC:     <weixi.zhu@openeuler.sh>, <mgorman@suse.de>, <jglisse@redhat.com>,
-        <rcampbell@nvidia.com>, <jhubbard@nvidia.com>,
-        <apopple@nvidia.com>, <mhairgrove@nvidia.com>, <ziy@nvidia.com>,
-        <alexander.deucher@amd.com>, <christian.koenig@amd.com>,
-        <Xinhui.Pan@amd.com>, <amd-gfx@lists.freedesktop.org>,
-        <Felix.Kuehling@amd.com>, <ogabbay@kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <jgg@nvidia.com>,
-        <leonro@nvidia.com>, <zhenyuw@linux.intel.com>,
-        <zhi.a.wang@intel.com>, <intel-gvt-dev@lists.freedesktop.org>,
-        <intel-gfx@lists.freedesktop.org>, <jani.nikula@linux.intel.com>,
-        <joonas.lahtinen@linux.intel.com>, <rodrigo.vivi@intel.com>,
-        <tvrtko.ursulin@linux.intel.com>, Weixi Zhu <weixi.zhu@huawei.com>
-Subject: [RFC PATCH 6/6] mm/gmem: extending Linux core MM to support unified virtual address space
-Date:   Tue, 28 Nov 2023 20:50:25 +0800
-Message-ID: <20231128125025.4449-7-weixi.zhu@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231128125025.4449-1-weixi.zhu@huawei.com>
-References: <20231128125025.4449-1-weixi.zhu@huawei.com>
+        Tue, 28 Nov 2023 07:52:05 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1F7D72
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 04:52:01 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6cbd24d9557so3898503b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 04:52:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701175921; x=1701780721; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=n6bad8B9cC8RrYfgSYXaycNnUCy6f5+O9t/rtKgIGic=;
+        b=iu/8gtVInWkbIJkDdREl9Bz+uUpBHmtgSyXNeJE9Xke3GjYoyRvPT5lytSQimwmlH7
+         EMNn1WaoX8JlLFjbWEp8eLczZ9CMM9UDCBz4IqMTWcBo8JYNsoOSgLx3vjNdEjHiMwd/
+         XXyX+NG4+zau+l5PT8U1t17IZqWYDLIbk3C1D0hZ6UO6OMKEU2u6ShxA4RhBQdY4yrSm
+         9y1lGSs1KaI6ezNbunelErh6UCtBkevG24O6tn9MHA8OCedys9mFmmMlS5vmOsMNygcN
+         9y2O50zE9i0qVK4xLB9XDMkr238jGFiLhcoImIkp8++CTU8nr1WgRR6tnzmDx8EYJHiS
+         iXGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701175921; x=1701780721;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=n6bad8B9cC8RrYfgSYXaycNnUCy6f5+O9t/rtKgIGic=;
+        b=QMCb8cJbDUnedkH/+rzBvQ1ZM7hUSI+V+wx5lnBLol1yRfq2lCdoXLBHcvdim7ubnZ
+         M91t3WVgWgeQHkVHdG1FoT/iZe4WtInEdWZWxFIiKsyVoRsW7VoVf/GttKyfjXfC1Cxc
+         JmmldsGDVcCqxcmiukWds44reJugNkIy8fcnyAa6k9oIebGaIFTFldorgSqVL4mE2dZW
+         sRXes7Skn2XWW9EgFRtvRemlet6rcFit8pSnBNghgI5crVxYnikOEXi5bwxc6hJhPqfL
+         Rjz/yjNkO1rcC99pdSdpwnuF1SfhzKkbhCWBYlwQc0JNxF5Zd4J42vRPHL4Bp2kuRLIi
+         u2Jg==
+X-Gm-Message-State: AOJu0YwbqQT69iW5qmj2Mla9FdXAyB4RiU9/aDixowbm6V5cQ+CpSCqE
+        BCTYapCimD9djgfRer4jIgw=
+X-Google-Smtp-Source: AGHT+IGLkiODPCwRZXjMdtXwC1kEWYOvJD+XcGHfXzi0SYejT/y9lrwY9jYwCktE88T4f6EHr6+Gug==
+X-Received: by 2002:a62:ab02:0:b0:6c3:450f:2b64 with SMTP id p2-20020a62ab02000000b006c3450f2b64mr24271982pff.6.1701175920751;
+        Tue, 28 Nov 2023 04:52:00 -0800 (PST)
+Received: from [192.168.50.127] (awork111197.netvigator.com. [203.198.94.197])
+        by smtp.gmail.com with ESMTPSA id fi35-20020a056a0039a300b006c2d53e0b5fsm8870942pfb.57.2023.11.28.04.51.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Nov 2023 04:52:00 -0800 (PST)
+Message-ID: <eedad403-5754-4d5e-965d-19eff02e3d40@gmail.com>
+Date:   Tue, 28 Nov 2023 20:51:31 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.179.172]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm000018.china.huawei.com (7.193.23.4)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] f2fs: fix fallocate failed under pinned block
+ situation
+Content-Language: en-US
+To:     Chao Yu <chao@kernel.org>, Wu Bo <bo.wu@vivo.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+References: <20231030094024.263707-1-bo.wu@vivo.com>
+ <c181256e-9f6e-d43e-4d02-a7d8d5286d56@kernel.org>
+ <670ce4a6-f00c-dbe9-86e2-366311221cf3@gmail.com>
+ <a69b7544-2312-486c-d655-8b86e370c55e@kernel.org>
+ <faa90acc-c03e-2913-c19a-bd50fd93d197@gmail.com>
+ <5d8726fc-e912-6954-3820-862eecff07b0@kernel.org>
+From:   Wu Bo <wubo.oduw@gmail.com>
+In-Reply-To: <5d8726fc-e912-6954-3820-862eecff07b0@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch extends Linux core MM to support unified virtual address space.
-A unified virtual address space provides a coherent view of memory for the
-CPU and devices. This is achieved by maintaining coherent page tables for
-the CPU and any attached devices for each process, without assuming that
-the underlying interconnect between the CPU and peripheral device is
-cache-coherent.
 
-Specifically, for each mm_struct that is attached with one or more device
-computing contexts, a per-process logical page table is utilized to track
-the mapping status of anonymous memory allocated via mmap(MAP_PRIVATE |
-MAP_PEER_SHARED). The CPU page fault handling path is modified to examine
-whether a faulted virtual page has already been faulted elsewhere, e.g. on
-a device, by looking up the logical page table in vm_object. If so, a page
-migration operation should be orchestrated by the core MM to prepare the
-CPU physical page, instead of zero-filling. This is achieved by invoking
-gm_host_fault_locked(). The logical page table must also be updated once
-the CPU page table gets modified.
-
-Ideally, the logical page table should always be looked up or modified
-first if the CPU page table is changed, but the currently implementation is
-reverse. Also, current implementation only considers anonymous memory,
-while a device may want to operate on a disk-file directly via mmap(fd). In
-the future, logical page table is planned to play a more generic role for
-anonymous memory, folios/huge pages and file-backed memory, as well as to
-provide a clean abstraction for CPU page table functions (including these
-stage-2 functions). More, the page fault handler path will be enhanced to
-deal with cache-coherent buses as well, since it might be desirable for
-devices to operate sparse data remotely instead of migration data at page
-granules.
-
-Signed-off-by: Weixi Zhu <weixi.zhu@huawei.com>
----
- kernel/fork.c    |  1 +
- mm/huge_memory.c | 85 +++++++++++++++++++++++++++++++++++++++++++-----
- mm/memory.c      | 42 +++++++++++++++++++++---
- mm/mmap.c        |  2 ++
- mm/oom_kill.c    |  2 ++
- mm/vm_object.c   | 84 +++++++++++++++++++++++++++++++++++++++++++++++
- 6 files changed, 203 insertions(+), 13 deletions(-)
-
-diff --git a/kernel/fork.c b/kernel/fork.c
-index eab96cdb25a6..06130c73bf2e 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -543,6 +543,7 @@ static void vm_area_free_rcu_cb(struct rcu_head *head)
- 
- void vm_area_free(struct vm_area_struct *vma)
- {
-+	free_gm_mappings(vma);
- #ifdef CONFIG_PER_VMA_LOCK
- 	call_rcu(&vma->vm_rcu, vm_area_free_rcu_cb);
- #else
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 4f542444a91f..590000f63f04 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -37,6 +37,7 @@
- #include <linux/page_owner.h>
- #include <linux/sched/sysctl.h>
- #include <linux/memory-tiers.h>
-+#include <linux/gmem.h>
- 
- #include <asm/tlb.h>
- #include <asm/pgalloc.h>
-@@ -684,6 +685,10 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
- 	pgtable_t pgtable;
- 	unsigned long haddr = vmf->address & HPAGE_PMD_MASK;
- 	vm_fault_t ret = 0;
-+	struct gm_mapping *gm_mapping = NULL;
-+
-+	if (vma_is_peer_shared(vma))
-+		gm_mapping = vm_object_lookup(vma->vm_mm->vm_obj, haddr);
- 
- 	VM_BUG_ON_FOLIO(!folio_test_large(folio), folio);
- 
-@@ -691,7 +696,8 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
- 		folio_put(folio);
- 		count_vm_event(THP_FAULT_FALLBACK);
- 		count_vm_event(THP_FAULT_FALLBACK_CHARGE);
--		return VM_FAULT_FALLBACK;
-+		ret = VM_FAULT_FALLBACK;
-+		goto gm_mapping_release;
- 	}
- 	folio_throttle_swaprate(folio, gfp);
- 
-@@ -701,7 +707,14 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
- 		goto release;
- 	}
- 
--	clear_huge_page(page, vmf->address, HPAGE_PMD_NR);
-+	/*
-+	 * Skip zero-filling page if the logical mapping indicates
-+	 * that page contains valid data of the virtual address. This
-+	 * could happen if the page was a victim of device memory
-+	 * oversubscription.
-+	 */
-+	if (!(vma_is_peer_shared(vma) && gm_mapping_cpu(gm_mapping)))
-+		clear_huge_page(page, vmf->address, HPAGE_PMD_NR);
- 	/*
- 	 * The memory barrier inside __folio_mark_uptodate makes sure that
- 	 * clear_huge_page writes become visible before the set_pmd_at()
-@@ -726,7 +739,7 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
- 			pte_free(vma->vm_mm, pgtable);
- 			ret = handle_userfault(vmf, VM_UFFD_MISSING);
- 			VM_BUG_ON(ret & VM_FAULT_FALLBACK);
--			return ret;
-+			goto gm_mapping_release;
- 		}
- 
- 		entry = mk_huge_pmd(page, vma->vm_page_prot);
-@@ -734,6 +747,13 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
- 		folio_add_new_anon_rmap(folio, vma, haddr);
- 		folio_add_lru_vma(folio, vma);
- 		pgtable_trans_huge_deposit(vma->vm_mm, vmf->pmd, pgtable);
-+		if (vma_is_peer_shared(vma) && gm_mapping_device(gm_mapping)) {
-+			vmf->page = page;
-+			ret = gm_host_fault_locked(vmf, PMD_ORDER);
-+			if (ret)
-+				goto unlock_release;
-+		}
-+
- 		set_pmd_at(vma->vm_mm, haddr, vmf->pmd, entry);
- 		update_mmu_cache_pmd(vma, vmf->address, vmf->pmd);
- 		add_mm_counter(vma->vm_mm, MM_ANONPAGES, HPAGE_PMD_NR);
-@@ -741,6 +761,11 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
- 		spin_unlock(vmf->ptl);
- 		count_vm_event(THP_FAULT_ALLOC);
- 		count_memcg_event_mm(vma->vm_mm, THP_FAULT_ALLOC);
-+		if (vma_is_peer_shared(vma)) {
-+			gm_mapping_flags_set(gm_mapping, GM_PAGE_CPU);
-+			gm_mapping->page = page;
-+			mutex_unlock(&gm_mapping->lock);
-+		}
- 	}
- 
- 	return 0;
-@@ -750,6 +775,9 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
- 	if (pgtable)
- 		pte_free(vma->vm_mm, pgtable);
- 	folio_put(folio);
-+gm_mapping_release:
-+	if (vma_is_peer_shared(vma))
-+		mutex_unlock(&gm_mapping->lock);
- 	return ret;
- 
- }
-@@ -808,17 +836,41 @@ vm_fault_t do_huge_pmd_anonymous_page(struct vm_fault *vmf)
- {
- 	struct vm_area_struct *vma = vmf->vma;
- 	gfp_t gfp;
--	struct folio *folio;
-+	struct folio *folio = NULL;
- 	unsigned long haddr = vmf->address & HPAGE_PMD_MASK;
-+	vm_fault_t ret = 0;
-+	struct gm_mapping *gm_mapping;
-+
-+	if (vma_is_peer_shared(vma)) {
-+		struct vm_object *vm_obj = vma->vm_mm->vm_obj;
- 
--	if (!transhuge_vma_suitable(vma, haddr))
--		return VM_FAULT_FALLBACK;
--	if (unlikely(anon_vma_prepare(vma)))
--		return VM_FAULT_OOM;
-+		xa_lock(vm_obj->logical_page_table);
-+		gm_mapping = vm_object_lookup(vm_obj, haddr);
-+		if (!gm_mapping) {
-+			vm_object_mapping_create(vm_obj, haddr);
-+			gm_mapping = vm_object_lookup(vm_obj, haddr);
-+		}
-+		xa_unlock(vm_obj->logical_page_table);
-+		mutex_lock(&gm_mapping->lock);
-+		if (unlikely(!pmd_none(*vmf->pmd))) {
-+			mutex_unlock(&gm_mapping->lock);
-+			goto gm_mapping_release;
-+		}
-+	}
-+
-+	if (!transhuge_vma_suitable(vma, haddr)) {
-+		ret = VM_FAULT_FALLBACK;
-+		goto gm_mapping_release;
-+	}
-+	if (unlikely(anon_vma_prepare(vma))) {
-+		ret = VM_FAULT_OOM;
-+		goto gm_mapping_release;
-+	}
- 	khugepaged_enter_vma(vma, vma->vm_flags);
- 
- 	if (!(vmf->flags & FAULT_FLAG_WRITE) &&
- 			!mm_forbids_zeropage(vma->vm_mm) &&
-+			!vma_is_peer_shared(vma) &&
- 			transparent_hugepage_use_zero_page()) {
- 		pgtable_t pgtable;
- 		struct page *zero_page;
-@@ -857,12 +909,27 @@ vm_fault_t do_huge_pmd_anonymous_page(struct vm_fault *vmf)
- 		return ret;
- 	}
- 	gfp = vma_thp_gfp_mask(vma);
-+
-+	if (vma_is_peer_shared(vma) && gm_mapping_cpu(gm_mapping))
-+		folio = page_folio(gm_mapping->page);
-+	if (!folio) {
-+		if (vma_is_peer_shared(vma))
-+			gfp = GFP_TRANSHUGE;
-+		folio = vma_alloc_folio(gfp, HPAGE_PMD_ORDER, vma, haddr, true);
-+	}
- 	folio = vma_alloc_folio(gfp, HPAGE_PMD_ORDER, vma, haddr, true);
-+
- 	if (unlikely(!folio)) {
- 		count_vm_event(THP_FAULT_FALLBACK);
--		return VM_FAULT_FALLBACK;
-+		ret = VM_FAULT_FALLBACK;
-+		goto gm_mapping_release;
- 	}
- 	return __do_huge_pmd_anonymous_page(vmf, &folio->page, gfp);
-+
-+gm_mapping_release:
-+	if (vma_is_peer_shared(vma))
-+		mutex_unlock(&gm_mapping->lock);
-+	return ret;
- }
- 
- static void insert_pfn_pmd(struct vm_area_struct *vma, unsigned long addr,
-diff --git a/mm/memory.c b/mm/memory.c
-index 1f18ed4a5497..d6cc278dc39b 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -78,6 +78,7 @@
- #include <linux/ptrace.h>
- #include <linux/vmalloc.h>
- #include <linux/sched/sysctl.h>
-+#include <linux/gmem.h>
- 
- #include <trace/events/kmem.h>
- 
-@@ -1695,8 +1696,10 @@ static void unmap_single_vma(struct mmu_gather *tlb,
- 				__unmap_hugepage_range(tlb, vma, start, end,
- 							     NULL, zap_flags);
- 			}
--		} else
-+		} else {
- 			unmap_page_range(tlb, vma, start, end, details);
-+			unmap_gm_mappings_range(vma, start, end);
-+		}
- 	}
- }
- 
-@@ -4126,7 +4129,9 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
- {
- 	bool uffd_wp = vmf_orig_pte_uffd_wp(vmf);
- 	struct vm_area_struct *vma = vmf->vma;
--	struct folio *folio;
-+	struct gm_mapping *gm_mapping;
-+	bool skip_put_page = false;
-+	struct folio *folio = NULL;
- 	vm_fault_t ret = 0;
- 	pte_t entry;
- 
-@@ -4141,8 +4146,25 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
- 	if (pte_alloc(vma->vm_mm, vmf->pmd))
- 		return VM_FAULT_OOM;
- 
-+	if (vma_is_peer_shared(vma)) {
-+		xa_lock(vma->vm_mm->vm_obj->logical_page_table);
-+		gm_mapping = vm_object_lookup(vma->vm_mm->vm_obj, vmf->address);
-+		if (!gm_mapping) {
-+			vm_object_mapping_create(vma->vm_mm->vm_obj, vmf->address);
-+			gm_mapping = vm_object_lookup(vma->vm_mm->vm_obj, vmf->address);
-+		}
-+		xa_unlock(vma->vm_mm->vm_obj->logical_page_table);
-+		mutex_lock(&gm_mapping->lock);
-+
-+		if (gm_mapping_cpu(gm_mapping)) {
-+			folio = page_folio(gm_mapping->page);
-+			skip_put_page = true;
-+		}
-+	}
-+
- 	/* Use the zero-page for reads */
- 	if (!(vmf->flags & FAULT_FLAG_WRITE) &&
-+			!vma_is_peer_shared(vma) &&
- 			!mm_forbids_zeropage(vma->vm_mm)) {
- 		entry = pte_mkspecial(pfn_pte(my_zero_pfn(vmf->address),
- 						vma->vm_page_prot));
-@@ -4168,7 +4190,8 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
- 	/* Allocate our own private page. */
- 	if (unlikely(anon_vma_prepare(vma)))
- 		goto oom;
--	folio = vma_alloc_zeroed_movable_folio(vma, vmf->address);
-+	if (!folio)
-+		folio = vma_alloc_zeroed_movable_folio(vma, vmf->address);
- 	if (!folio)
- 		goto oom;
- 
-@@ -4211,6 +4234,14 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
- 	inc_mm_counter(vma->vm_mm, MM_ANONPAGES);
- 	folio_add_new_anon_rmap(folio, vma, vmf->address);
- 	folio_add_lru_vma(folio, vma);
-+	if (vma_is_peer_shared(vma)) {
-+		if (gm_mapping_device(gm_mapping)) {
-+			vmf->page = &folio->page;
-+			gm_host_fault_locked(vmf, 0);
-+		}
-+		gm_mapping_flags_set(gm_mapping, GM_PAGE_CPU);
-+		gm_mapping->page = &folio->page;
-+	}
- setpte:
- 	if (uffd_wp)
- 		entry = pte_mkuffd_wp(entry);
-@@ -4221,9 +4252,12 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
- unlock:
- 	if (vmf->pte)
- 		pte_unmap_unlock(vmf->pte, vmf->ptl);
-+	if (vma_is_peer_shared(vma))
-+		mutex_unlock(&gm_mapping->lock);
- 	return ret;
- release:
--	folio_put(folio);
-+	if (!skip_put_page)
-+		folio_put(folio);
- 	goto unlock;
- oom_free_page:
- 	folio_put(folio);
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 55d43763ea49..8b8faa007dbc 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -2616,6 +2616,8 @@ do_vmi_align_munmap(struct vma_iterator *vmi, struct vm_area_struct *vma,
- #endif
- 	} for_each_vma_range(*vmi, next, end);
- 
-+	munmap_in_peer_devices(mm, start, end);
-+
- #if defined(CONFIG_DEBUG_VM_MAPLE_TREE)
- 	/* Make sure no VMAs are about to be lost. */
- 	{
-diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-index 9e6071fde34a..31ec027e98c7 100644
---- a/mm/oom_kill.c
-+++ b/mm/oom_kill.c
-@@ -44,6 +44,7 @@
- #include <linux/kthread.h>
- #include <linux/init.h>
- #include <linux/mmu_notifier.h>
-+#include <linux/gmem.h>
- 
- #include <asm/tlb.h>
- #include "internal.h"
-@@ -547,6 +548,7 @@ static bool __oom_reap_task_mm(struct mm_struct *mm)
- 				continue;
- 			}
- 			unmap_page_range(&tlb, vma, range.start, range.end, NULL);
-+			unmap_gm_mappings_range(vma, range.start, range.end);
- 			mmu_notifier_invalidate_range_end(&range);
- 			tlb_finish_mmu(&tlb);
- 		}
-diff --git a/mm/vm_object.c b/mm/vm_object.c
-index 5432930d1226..e0d1b558df31 100644
---- a/mm/vm_object.c
-+++ b/mm/vm_object.c
-@@ -142,6 +142,9 @@ void free_gm_mappings(struct vm_area_struct *vma)
- 	struct gm_mapping *gm_mapping;
- 	struct vm_object *obj;
- 
-+	if (vma_is_peer_shared(vma))
-+		return;
-+
- 	obj = vma->vm_mm->vm_obj;
- 	if (!obj)
- 		return;
-@@ -223,3 +226,84 @@ void gm_release_vma(struct mm_struct *mm, struct list_head *head)
- 		kfree(node);
- 	}
- }
-+
-+static int munmap_in_peer_devices_inner(struct mm_struct *mm,
-+					struct vm_area_struct *vma,
-+					unsigned long start, unsigned long end,
-+					int page_size)
-+{
-+	struct vm_object *obj = mm->vm_obj;
-+	struct gm_mapping *gm_mapping;
-+	struct gm_fault_t gmf = {
-+		.mm = mm,
-+		.copy = false,
-+	};
-+	int ret;
-+
-+	start = start > vma->vm_start ? start : vma->vm_start;
-+	end = end < vma->vm_end ? end : vma->vm_end;
-+
-+	for (; start < end; start += page_size) {
-+		xa_lock(obj->logical_page_table);
-+		gm_mapping = vm_object_lookup(obj, start);
-+		if (!gm_mapping) {
-+			xa_unlock(obj->logical_page_table);
-+			continue;
-+		}
-+		xa_unlock(obj->logical_page_table);
-+
-+		mutex_lock(&gm_mapping->lock);
-+		if (!gm_mapping_device(gm_mapping)) {
-+			mutex_unlock(&gm_mapping->lock);
-+			continue;
-+		}
-+
-+		gmf.va = start;
-+		gmf.size = page_size;
-+		gmf.dev = gm_mapping->dev;
-+		ret = gm_mapping->dev->mmu->peer_unmap(&gmf);
-+		if (ret != GM_RET_SUCCESS) {
-+			pr_err("%s: call dev peer_unmap error %d\n", __func__,
-+			       ret);
-+			mutex_unlock(&gm_mapping->lock);
-+			continue;
-+		}
-+		mutex_unlock(&gm_mapping->lock);
-+	}
-+
-+	return 0;
-+}
-+
-+void munmap_in_peer_devices(struct mm_struct *mm, unsigned long start,
-+			    unsigned long end)
-+{
-+	struct vm_object *obj = mm->vm_obj;
-+	struct vm_area_struct *vma;
-+
-+	if (!gmem_is_enabled())
-+		return;
-+
-+	if (!obj)
-+		return;
-+
-+	if (!mm->gm_as)
-+		return;
-+
-+	mmap_read_lock(mm);
-+	do {
-+		vma = find_vma_intersection(mm, start, end);
-+		if (!vma) {
-+			pr_debug("gmem: there is no valid vma\n");
-+			break;
-+		}
-+
-+		if (!vma_is_peer_shared(vma)) {
-+			pr_debug("gmem: not peer-shared vma, skip dontneed\n");
-+			start = vma->vm_end;
-+			continue;
-+		}
-+
-+		munmap_in_peer_devices_inner(mm, vma, start, end, HPAGE_SIZE);
-+	} while (start < end);
-+	mmap_read_unlock(mm);
-+}
--- 
-2.25.1
-
+On 2023/11/28 14:22, Chao Yu wrote:
+> On 2023/11/17 7:34, Wu Bo wrote:
+>> On 2023/11/11 12:49, Chao Yu wrote:
+>>> On 2023/11/8 21:48, Wu Bo wrote:
+>>>> On 2023/11/7 22:39, Chao Yu wrote:
+>>>>> On 2023/10/30 17:40, Wu Bo wrote:
+>>>>>> If GC victim has pinned block, it can't be recycled.
+>>>>>> And if GC is foreground running, after many failure try, the 
+>>>>>> pinned file
+>>>>>> is expected to be clear pin flag. To enable the section be recycled.
+>>>>>>
+>>>>>> But when fallocate trigger FG_GC, GC can never recycle the pinned
+>>>>>> section. Because GC will go to stop before the failure try meet the
+>>>>>> threshold:
+>>>>>>      if (has_enough_free_secs(sbi, sec_freed, 0)) {
+>>>>>>          if (!gc_control->no_bg_gc &&
+>>>>>>              total_sec_freed < gc_control->nr_free_secs)
+>>>>>>              goto go_gc_more;
+>>>>>>          goto stop;
+>>>>>>      }
+>>>>>>
+>>>>>> So when fallocate trigger FG_GC, at least recycle one.
+>>>>>
+>>>>> Hmm... it may break pinfile's semantics at least on one pinned file?
+>>>>> In this case, I prefer to fail fallocate() rather than unpinning 
+>>>>> file,
+>>>>> in order to avoid leaving invalid LBA references of unpinned file 
+>>>>> held
+>>>>> by userspace.
+>>>>
+>>>> As f2fs designed now, FG_GC is able to unpin the pinned file.
+>>>>
+>>>> fallocate() triggered FG_GC, but can't recycle space.  It breaks the
+>>>> design logic of FG_GC.
+>>>
+>>> Yes, contradictoriness exists.
+>>>
+>>> IMO, unpin file by GC looks more dangerous, it may cause potential data
+>>> corruption w/ below case:
+>>> 1. app pins file & holds LBAs of data blocks.
+>>> 2. GC unpins file and migrates its data to new LBAs.
+>>> 3. other file reuses previous LBAs.
+>>> 4. app read/write data via previous LBAs.
+>>>
+>>> So I suggest to normalize use of pinfile and do not add more unpin 
+>>> cases
+>>> in filesystem inner processes.
+>>>
+>>>>
+>>>> This issue is happened in Android OTA scenario.  fallocate() always
+>>>> return failure cause OTA fail.
+>>>
+>>> Can you please check why other pinned files were so fragmented that 
+>>> f2fs_gc()
+>>> can not recycle one free section?
+>>>
+>> Not because pinned files were fragmented, but if the GC victim 
+>> section has one block is pinned will cause this issue.
+>>
+>> If the section don't unpin the block, it can't be recycled. But there 
+>> is high chance that the pinned section will be chosen next time under 
+>> f2fs current victim selection strategy.
+>>
+>> So if we want to avoid unpin files, I think change victim selection 
+>> to considering pinned blocks can fix this issue.
+>
+> Oh, I get it.
+>
+> How about this?
+>
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index 325dab01a29d..3fb52dec5df8 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -1730,7 +1730,10 @@ next_alloc:
+>              f2fs_down_write(&sbi->gc_lock);
+>              stat_inc_gc_call_count(sbi, FOREGROUND);
+>              err = f2fs_gc(sbi, &gc_control);
+> -            if (err && err != -ENODATA)
+> +
+> +            if (err == -EAGAIN)
+> +                f2fs_balance_fs(sbi, true);
+> +            else if (err && err != -ENODATA)
+>                  goto out_err;
+>          }
+Do you mean to call f2fs_balance_fs() to recycle one section?
+But in this situation, f2fs_balance_fs() will return at 
+enough-free-section check:
+     if (has_enough_free_secs(sbi, 0, 0))
+         return;
+>
+> However, the code won't fix contradictoriness issue, because the root 
+> cause
+> is we left fragmented pinned data in filesystem, which should be 
+> avoided in
+> GC-reliance LFS filesyetem as much as possible.
+>
+> Thanks,
+>
+>>
+>>> Thanks,
+>>>
+>>>>
+>>>>    And this commit changed previous behavior of fallocate():
+>>>>
+>>>> Commit 2e42b7f817ac ("f2fs: stop allocating pinned sections if EAGAIN
+>>>> happens")
+>>>>
+>>>> Before this commit, if fallocate() meet this situation, it will 
+>>>> trigger
+>>>> FG_GC to recycle pinned space finally.
+>>>>
+>>>> FG_GC is expected to recycle pinned space when there is no more free
+>>>> space.  And this is the right time to do it when fallocate() need free
+>>>> space.
+>>>>
+>>>> It is weird when f2fs shows enough spare space but can't 
+>>>> fallocate(). So
+>>>> I think it should be fixed.
+>>>>
+>>>>>
+>>>>> Thoughts?
+>>>>>
+>>>>> Thanks,
+>>>>>
+>>>>>>
+>>>>>> This issue can be reproduced by filling f2fs space as following 
+>>>>>> layout.
+>>>>>> Every segment has one block is pinned:
+>>>>>> +-+-+-+-+-+-+-----+-+
+>>>>>> | | |p| | | | ... | | seg_n
+>>>>>> +-+-+-+-+-+-+-----+-+
+>>>>>> +-+-+-+-+-+-+-----+-+
+>>>>>> | | |p| | | | ... | | seg_n+1
+>>>>>> +-+-+-+-+-+-+-----+-+
+>>>>>> ...
+>>>>>> +-+-+-+-+-+-+-----+-+
+>>>>>> | | |p| | | | ... | | seg_n+k
+>>>>>> +-+-+-+-+-+-+-----+-+
+>>>>>>
+>>>>>> And following are steps to reproduce this issue:
+>>>>>> dd if=/dev/zero of=./f2fs_pin.img bs=2M count=1024
+>>>>>> mkfs.f2fs f2fs_pin.img
+>>>>>> mkdir f2fs
+>>>>>> mount f2fs_pin.img ./f2fs
+>>>>>> cd f2fs
+>>>>>> dd if=/dev/zero of=./large_padding bs=1M count=1760
+>>>>>> ./pin_filling.sh
+>>>>>> rm padding*
+>>>>>> sync
+>>>>>> touch fallocate_40m
+>>>>>> f2fs_io pinfile set fallocate_40m
+>>>>>> fallocate -l 41943040 fallocate_40m
+>>>>>>
+>>>>>> fallocate always fail with EAGAIN even there has enough free space.
+>>>>>>
+>>>>>> 'pin_filling.sh' is:
+>>>>>> count=1
+>>>>>> while :
+>>>>>> do
+>>>>>>       # filling the seg space
+>>>>>>       for i in {1..511}:
+>>>>>>       do
+>>>>>>           name=padding_$count-$i
+>>>>>>           echo write $name
+>>>>>>           dd if=/dev/zero of=./$name bs=4K count=1 > /dev/null 2>&1
+>>>>>>           if [ $? -ne 0 ]; then
+>>>>>>                   exit 0
+>>>>>>           fi
+>>>>>>       done
+>>>>>>       sync
+>>>>>>
+>>>>>>       # pin one block in a segment
+>>>>>>       name=pin_file$count
+>>>>>>       dd if=/dev/zero of=./$name bs=4K count=1 > /dev/null 2>&1
+>>>>>>       sync
+>>>>>>       f2fs_io pinfile set $name
+>>>>>>       count=$(($count + 1))
+>>>>>> done
+>>>>>>
+>>>>>> Signed-off-by: Wu Bo <bo.wu@vivo.com>
+>>>>>> ---
+>>>>>>    fs/f2fs/file.c | 2 +-
+>>>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>
+>>>>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+>>>>>> index ca5904129b16..e8a13616543f 100644
+>>>>>> --- a/fs/f2fs/file.c
+>>>>>> +++ b/fs/f2fs/file.c
+>>>>>> @@ -1690,7 +1690,7 @@ static int f2fs_expand_inode_data(struct inode
+>>>>>> *inode, loff_t offset,
+>>>>>>                .init_gc_type = FG_GC,
+>>>>>>                .should_migrate_blocks = false,
+>>>>>>                .err_gc_skipped = true,
+>>>>>> -            .nr_free_secs = 0 };
+>>>>>> +            .nr_free_secs = 1 };
+>>>>>>        pgoff_t pg_start, pg_end;
+>>>>>>        loff_t new_size;
+>>>>>>        loff_t off_end;
