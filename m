@@ -2,199 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B3FA7FC276
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5508A7FC1B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346600AbjK1R5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 12:57:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38132 "EHLO
+        id S1346705AbjK1R6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 12:58:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346825AbjK1R5Q (ORCPT
+        with ESMTP id S1346850AbjK1R6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 12:57:16 -0500
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 796413C28;
-        Tue, 28 Nov 2023 09:56:02 -0800 (PST)
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-58d08497aa1so3477340eaf.0;
-        Tue, 28 Nov 2023 09:56:02 -0800 (PST)
+        Tue, 28 Nov 2023 12:58:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C774268D
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:56:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701194199;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=mb/SELaNzaD9twNmu/FD3NMqayq4NlkgR97UOh62crI=;
+        b=VnfFcmdpkSV1rvb7MrA82y3pM4jUPyZXxCdhmZ5M0WmIApQQNkth6tBB5aXntOi6czhmbn
+        CmqPjfg4A09bFjweeRI7FuWC9rRHd6ZNRfUv0NaB/x4/4pcLh1Fwhi+Ubp6fn9ghSwg6vb
+        LXmb9I9lfkDyZhPxcbIFzP7zNqdRdAc=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-543-KGm3X86dO3uBNG4eWOl40w-1; Tue, 28 Nov 2023 12:56:37 -0500
+X-MC-Unique: KGm3X86dO3uBNG4eWOl40w-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-333063a304fso1470913f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:56:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701194161; x=1701798961;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1701194196; x=1701798996;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Bs6R+1ViXv8isxXJHVhn7+t7Vqy/2+C/xsvsAMtl13I=;
-        b=DTVL5+yBwKjBChKlkrtLEKIegWld25ljRNpaGhHg7/TTvb8teaYXvYwjp6tOjswtLL
-         mHBGFJarGdMiu1/z717icp/g+1aLwlXF7uTd+MCRHBg+mMLuUnr3bcMrssnlI7lLFq+H
-         HiXCfur+ChuOoWtWCTPGAdzOH6vXohSfCSNahJJEJdSng+kqfEVIAOz4Khx6nZhgNV0I
-         6A7+toiRFZ4JLrAUn+gevzO+Y82XOv/rTmLLBAP/03+aiPz7PR7pA5Nf8DlFaidVtWJP
-         QKqOPbdTjl6Ey1s/3/o4w5/jQ8kZ4pyMglt1ZsDtYLrzfzlLAFTksrwxME34tNwPhbh9
-         ncxw==
-X-Gm-Message-State: AOJu0YxMkVwWCajNyHbsQZHgBjVRa6L2SfmPF16inE5Enf293Kf2fdFl
-        VE0/of4e9/GMy8TYNUTzIg==
-X-Google-Smtp-Source: AGHT+IGeg4re/q79qKMf1UiFl5udVI93xS3FHFxcA69DyiZXx7kQI5xJS90+UM5KshM+NJalD6QD5w==
-X-Received: by 2002:a05:6820:22a9:b0:581:ed38:5506 with SMTP id ck41-20020a05682022a900b00581ed385506mr17626203oob.4.1701194161096;
-        Tue, 28 Nov 2023 09:56:01 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id 124-20020a4a1782000000b0058d304dfc45sm1838862ooe.20.2023.11.28.09.55.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 09:56:00 -0800 (PST)
-Received: (nullmailer pid 3563944 invoked by uid 1000);
-        Tue, 28 Nov 2023 17:55:59 -0000
-Date:   Tue, 28 Nov 2023 11:55:59 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Petre Rodan <petre.rodan@subdimension.ro>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH v4 1/2] dt-bindings: iio: pressure: add honeywell,hsc030
-Message-ID: <20231128175559.GA3560351-robh@kernel.org>
-References: <20231128124042.22744-1-petre.rodan@subdimension.ro>
+        bh=mb/SELaNzaD9twNmu/FD3NMqayq4NlkgR97UOh62crI=;
+        b=U8BUWFLhAOMRPl5bfK5uJoNMF1JHEk7Okt7tC3BUPsk77OF1o2+nRDGbZjcWyeNjMW
+         lvYQKcPKHv8GqgjDpaHp9Ua5Sd9AFW2LuEnJ1+GTwGmWS7Hwn/1QSyxrrVgbtyIDRNdV
+         8zspXlxNt618q7937MfJ77oJiD98hrA4v+TEBBC+QShkbxtDKTdZwZ/E7iWmt9bxLm6V
+         52g+9cmCeUXMhthnyMH2Cskjv5PYMdXX3ijkSbWnXhn4hR/3P5g0eLeuPSiQxtCUImbq
+         w6i7xkdYCONn/MF0u22byr4CbuKNlnXMPRKusO8+VDGvbAVYzeYfYU7kIaVZWPUvDlH3
+         dqDQ==
+X-Gm-Message-State: AOJu0YyB4R8lwhDCl73GGOuZR71B+wDuw0+LJ09Z4s58O2Bswcj7cflI
+        VKqW5xfBLXjCQikCsIc0r3XeEI2bjosOID6t5cJqKW4UCnFUGBCNH0O1x34f8V8nq590INWyzr2
+        7E/X9Gv2Mzcfi72p5DzC+iJPU
+X-Received: by 2002:a5d:4947:0:b0:332:fe86:7f64 with SMTP id r7-20020a5d4947000000b00332fe867f64mr5843140wrs.43.1701194196613;
+        Tue, 28 Nov 2023 09:56:36 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGj+3zYY7VsSNyNUu8sA5/8Eh+WYvSczsybLrcFtvaAm0lZ2m/9N/KercXdu/KmAUvDHpd7Iw==
+X-Received: by 2002:a5d:4947:0:b0:332:fe86:7f64 with SMTP id r7-20020a5d4947000000b00332fe867f64mr5843119wrs.43.1701194196186;
+        Tue, 28 Nov 2023 09:56:36 -0800 (PST)
+Received: from ?IPV6:2003:cb:c708:1d00:99ec:9656:7475:678d? (p200300cbc7081d0099ec96567475678d.dip0.t-ipconnect.de. [2003:cb:c708:1d00:99ec:9656:7475:678d])
+        by smtp.gmail.com with ESMTPSA id x1-20020adfec01000000b00332cfd83b8dsm15601843wrn.96.2023.11.28.09.56.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Nov 2023 09:56:35 -0800 (PST)
+Message-ID: <2cb6090d-b71f-472f-ab89-715b75dba067@redhat.com>
+Date:   Tue, 28 Nov 2023 18:56:34 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231128124042.22744-1-petre.rodan@subdimension.ro>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v2 20/27] mm: hugepage: Handle huge page fault on
+ access
+Content-Language: en-US
+To:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
+        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
+        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
+        rppt@kernel.org, hughd@google.com
+Cc:     pcc@google.com, steven.price@arm.com, anshuman.khandual@arm.com,
+        vincenzo.frascino@arm.com, eugenis@google.com, kcc@google.com,
+        hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
+References: <20231119165721.9849-1-alexandru.elisei@arm.com>
+ <20231119165721.9849-21-alexandru.elisei@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20231119165721.9849-21-alexandru.elisei@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 02:40:37PM +0200, Petre Rodan wrote:
-> Adds binding for digital Honeywell TruStability HSC and SSC series
-> pressure and temperature sensors. 
-> Communication is one way. The sensor only requires 4 bytes worth of
-> clock pulses on both i2c and spi in order to push the data out.
-> The i2c address is hardcoded and depends on the part number.
-> There is no additional GPIO control.
+On 19.11.23 17:57, Alexandru Elisei wrote:
+> Handle PAGE_FAULT_ON_ACCESS faults for huge pages in a similar way to
+> regular pages.
 > 
-> Datasheet:
-> https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf [HSC]
-> Datasheet:
-> https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-ssc-series/documents/sps-siot-trustability-ssc-series-standard-accuracy-board-mount-pressure-sensors-50099533-a-en-ciid-151134.pdf [SSC]
-> Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
+> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
 > ---
-> V2: - fix yaml struct
->     - cleanup based on Krzysztof's review
-> V3: - rename range_str -> honeywell,pressure-triplet to define the string
->        containing the pressure range, measurement unit and type
->     - honeywell,pmax-pascal becomes uint32
-> V4: - added enum to honeywell,transfer-function
-> ---
->  .../iio/pressure/honeywell,hsc030pa.yaml      | 134 ++++++++++++++++++
->  1 file changed, 134 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
-> new file mode 100644
-> index 000000000000..418fb1d2eefd
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
-> @@ -0,0 +1,134 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/pressure/honeywell,hsc030pa.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Honeywell TruStability HSC and SSC pressure sensor series
-> +
-> +description: |
-> +  support for Honeywell TruStability HSC and SSC digital pressure sensor
-> +  series.
-> +
-> +  These sensors have either an I2C, an SPI or an analog interface. Only the
-> +  digital versions are supported by this driver.
-> +
-> +  There are 118 models with different pressure ranges available in each family.
-> +  The vendor calls them "HSC series" and "SSC series". All of them have an
-> +  identical programming model but differ in pressure range, unit and transfer
-> +  function.
-> +
-> +  To support different models one needs to specify the pressure range as well
-> +  as the transfer function. Pressure range can either be provided via
-> +  pressure-triplet (directly extracted from the part number) or in case it's
-> +  a custom chip via numerical range limits converted to pascals.
-> +
-> +  The transfer function defines the ranges of raw conversion values delivered
-> +  by the sensor. pmin-pascal and pmax-pascal corespond to the minimum and
-> +  maximum pressure that can be measured.
-> +
-> +  Please note that in case of an SPI-based sensor, the clock signal should not
-> +  exceed 800kHz and the MOSI signal is not required.
-> +
-> +  Specifications about the devices can be found at:
-> +  https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf
-> +  https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-ssc-series/documents/sps-siot-trustability-ssc-series-standard-accuracy-board-mount-pressure-sensors-50099533-a-en-ciid-151134.pdf
-> +
-> +maintainers:
-> +  - Petre Rodan <petre.rodan@subdimension.ro>
-> +
-> +properties:
-> +  compatible:
-> +    const: honeywell,hsc030pa
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  honeywell,transfer-function:
-> +    description: |
-> +      Transfer function which defines the range of valid values delivered by
-> +      the sensor.
-> +      0 - A, 10% to 90% of 2^14
-> +      1 - B, 5% to 95% of 2^14
-> +      2 - C, 5% to 85% of 2^14
-> +      3 - F, 4% to 94% of 2^14
-> +    enum: [0, 1, 2, 3]
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +  honeywell,pressure-triplet:
-> +    description: |
-> +      Case-sensitive five character string that defines pressure range, unit
-> +      and type as part of the device nomenclature. In the unlikely case of a
-> +      custom chip, set to "NA" and provide pmin-pascal and pmax-pascal.
-> +    enum: [001BA, 1.6BA, 2.5BA, 004BA, 006BA, 010BA, 1.6MD, 2.5MD, 004MD,
-> +           006MD, 010MD, 016MD, 025MD, 040MD, 060MD, 100MD, 160MD, 250MD,
-> +           400MD, 600MD, 001BD, 1.6BD, 2.5BD, 004BD, 2.5MG, 004MG, 006MG,
-> +           010MG, 016MG, 025MG, 040MG, 060MG, 100MG, 160MG, 250MG, 400MG,
-> +           600MG, 001BG, 1.6BG, 2.5BG, 004BG, 006BG, 010BG, 100KA, 160KA,
-> +           250KA, 400KA, 600KA, 001GA, 160LD, 250LD, 400LD, 600LD, 001KD,
-> +           1.6KD, 2.5KD, 004KD, 006KD, 010KD, 016KD, 025KD, 040KD, 060KD,
-> +           100KD, 160KD, 250KD, 400KD, 250LG, 400LG, 600LG, 001KG, 1.6KG,
-> +           2.5KG, 004KG, 006KG, 010KG, 016KG, 025KG, 040KG, 060KG, 100KG,
-> +           160KG, 250KG, 400KG, 600KG, 001GG, 015PA, 030PA, 060PA, 100PA,
-> +           150PA, 0.5ND, 001ND, 002ND, 004ND, 005ND, 010ND, 020ND, 030ND,
-> +           001PD, 005PD, 015PD, 030PD, 060PD, 001NG, 002NG, 004NG, 005NG,
-> +           010NG, 020NG, 030NG, 001PG, 005PG, 015PG, 030PG, 060PG, 100PG,
-> +           150PG, NA]
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +
-> +  honeywell,pmin-pascal:
-> +    description: |
-> +      Minimum pressure value the sensor can measure in pascal.
-> +      To be specified only if honeywell,pressure-triplet is set to "NA".
 
-This constraint can be expressed as:
+Same comments :)
 
-dependentSchemas:
-  honeywell,pmin-pascal:
-    properties:
-      honeywell,pressure-triplet:
-        const: NA
+-- 
+Cheers,
 
-And similar for honeywell,pmax-pascal
+David / dhildenb
 
-> +    $ref: /schemas/types.yaml#/definitions/int32
-> +
-> +  honeywell,pmax-pascal:
-> +    description: |
-> +      Maximum pressure value the sensor can measure in pascal.
-> +      To be specified only if honeywell,pressure-triplet is set to "NA".
-> +    $ref: /schemas/types.yaml#/definitions/uint32
