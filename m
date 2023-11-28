@@ -2,55 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2431B7FB470
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:39:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F437FB472
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:41:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344184AbjK1Ijd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 03:39:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33344 "EHLO
+        id S1344124AbjK1Ikw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 03:40:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344124AbjK1Ijc (ORCPT
+        with ESMTP id S1344204AbjK1Ikr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 03:39:32 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 760A49D;
-        Tue, 28 Nov 2023 00:39:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=MBiIXNrb73AICT7WA99rxKEqLxagLVhyMJH3WI5+ja4=; b=zWz1azk3VLxkXYsQlPEi1xjc/b
-        aDUAKoBcCKAtJSHGzPAXdG7Oh1RsrwqeNpCC1qZDwnPNC5muSd5auFDu1QWe+iLJ4lKJsa715dPyb
-        bjX5hbgK4yG+VYVlGURf/OxkzYT0StuxL5nDHgkP1ENjGc9ZBBTpaBqIQN+FdDdFWGHvheBYKQ+7E
-        YPQH2Ei4Ci9WIRDAXhOjk1lbnSRd52T3vNDb5eRxEzJWNp9G5DPAqQtub8ZOHXXUWRA20Ni4KvUvD
-        7XFSp5NMWUtWaIKqzNMB/9LgNH2PJ1knUf01Q2sU3KGiICX2gk+JqiuEcWarsexGD/H39lczR3oZI
-        oUl23Ewg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1r7tcv-004Yn8-1K;
-        Tue, 28 Nov 2023 08:39:29 +0000
-Date:   Tue, 28 Nov 2023 00:39:29 -0800
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
-Cc:     Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        Allison Henderson <allison.henderson@oracle.com>,
-        Zhang Tianci <zhangtianci.1997@bytedance.com>,
-        Brian Foster <bfoster@redhat.com>, Ben Myers <bpm@sgi.com>,
-        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xieyongji@bytedance.com, me@jcix.top
-Subject: Re: [PATCH 2/2] xfs: update dir3 leaf block metadata after swap
-Message-ID: <ZWWnQYo73yHnctvi@infradead.org>
-References: <20231128053202.29007-1-zhangjiachen.jaycee@bytedance.com>
- <20231128053202.29007-3-zhangjiachen.jaycee@bytedance.com>
+        Tue, 28 Nov 2023 03:40:47 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8E4AA
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:40:53 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c4fdf94666so63844441fa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:40:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701160852; x=1701765652; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LVRiyNGDErI9XTI/vrVWZOiT2Pl7o4YcTccYSefpKSA=;
+        b=dCW47SZWZGkfpXhqKEPXYhLvhfut8wIjMj6c5KcG5KWfwWvOdhAL1X07YsPf8jpjhr
+         wGbuFU1BruV/MM5YyJjcBJL9Ni9CFQ7surNJGDCw2n0sxodXJxACYLwxPKrhg/W7LRyc
+         GBuYoR9nVB+d5BsdhVyE2mWeBgwhnr53AHkQ0HzGFVCUAyVLx/sX8Wo6NJBIPyEKCIg1
+         bEIfjupqwC8OiaGTy3cnvKfVj9RHG9/RenPzxRozDvSFcBwaDXIJKemjPNZEU4i3qViI
+         sRMpEquetEoM1DjxOx0ehlDJcLOi4Ymh7FQS2+4ciD91eC/L2pftj0QTITt+ph0cIXYJ
+         JxaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701160852; x=1701765652;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=LVRiyNGDErI9XTI/vrVWZOiT2Pl7o4YcTccYSefpKSA=;
+        b=si+XQJC97Nl8yNHp4chHXarPixZZOMJcBhAIJJxgdoCZ5g3UkMkchRkFvu/hmo5WoV
+         LKOymE0KaEdWJgh8uNhW7EbXZXliYYs9WrvHifM1oDYct905lXmM0bN9ekgtnMBo/RJ8
+         3x0CyVe9YlQ8zY2yOswzOkjTrrdfID6NJvOcwiy+JdZl6WjIAKlh3RxNtqO9Ssgse7o5
+         sGt1A5Ss6kCtitLXp5awCrkZvnR6OBYk588P7/+ZIaKvmlMeGZovpM8eEhudAj9iNH+Q
+         GIHSERtQZ/to7nllDeWv3jW3K+tGV/rSlmN6O7K9C+6uwTM0vV58f4pmMsB8qqasRWfL
+         FVsQ==
+X-Gm-Message-State: AOJu0YxK4blOgKPV1i0bztsujA5Jm5yw9aXRXXmijrD8Hbn8tU8P+xpa
+        3HXHSTWkUK47gwoim3NY03I9SQVqh702RwTTBm9rwoFF
+X-Google-Smtp-Source: AGHT+IGikPt0H0KS7bN45FwdgyQ2apyHZnpUKr+WFCTNrHwjt6MeMhNgUKMLjTFcdyy/QtaeJhTJgw==
+X-Received: by 2002:a19:8c56:0:b0:50a:a8c0:2ef8 with SMTP id i22-20020a198c56000000b0050aa8c02ef8mr7932789lfj.43.1701160851719;
+        Tue, 28 Nov 2023 00:40:51 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:eada:f40e:7ab3:2afe? ([2a01:e0a:982:cbb0:eada:f40e:7ab3:2afe])
+        by smtp.gmail.com with ESMTPSA id q19-20020a194313000000b0050a78dac3fasm1795027lfa.12.2023.11.28.00.40.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Nov 2023 00:40:51 -0800 (PST)
+Message-ID: <4680cf22-a567-491b-abc0-735a2174bfc9@linaro.org>
+Date:   Tue, 28 Nov 2023 09:40:49 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231128053202.29007-3-zhangjiachen.jaycee@bytedance.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH RESEND] dt-bindings: iommu: arm,smmu: document the SM8650
+ System MMU
+Content-Language: en-US, fr
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231128-topic-sm8650-upstream-bindings-smmu-v1-1-d330854170d4@linaro.org>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20231128-topic-sm8650-upstream-bindings-smmu-v1-1-d330854170d4@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,78 +107,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 01:32:02PM +0800, Jiachen Zhang wrote:
-> From: Zhang Tianci <zhangtianci.1997@bytedance.com>
-> 
-> xfs_da3_swap_lastblock() copy the last block content to the dead block,
-> but do not update the metadata in it. We need update some metadata
-> for some kinds of type block, such as dir3 leafn block records its
-> blkno, we shall update it to the dead block blkno. Otherwise,
-> before write the xfs_buf to disk, the verify_write() will fail in
-> blk_hdr->blkno != xfs_buf->b_bn, then xfs will be shutdown.
+Hi Will,
 
-Do you have a reproducer for this?  It would be very helpful to add it
-to xfstests.
+On 28/11/2023 09:37, Neil Armstrong wrote:
+> Document the System MMU on the SM8650 Platform.
+> 
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 
-> 
-> We will get this warning:
-> 
->   XFS (dm-0): Metadata corruption detected at xfs_dir3_leaf_verify+0xa8/0xe0 [xfs], xfs_dir3_leafn block 0x178
->   XFS (dm-0): Unmount and run xfs_repair
->   XFS (dm-0): First 128 bytes of corrupted metadata buffer:
->   00000000e80f1917: 00 80 00 0b 00 80 00 07 3d ff 00 00 00 00 00 00  ........=.......
->   000000009604c005: 00 00 00 00 00 00 01 a0 00 00 00 00 00 00 00 00  ................
->   000000006b6fb2bf: e4 44 e3 97 b5 64 44 41 8b 84 60 0e 50 43 d9 bf  .D...dDA..`.PC..
->   00000000678978a2: 00 00 00 00 00 00 00 83 01 73 00 93 00 00 00 00  .........s......
->   00000000b28b247c: 99 29 1d 38 00 00 00 00 99 29 1d 40 00 00 00 00  .).8.....).@....
->   000000002b2a662c: 99 29 1d 48 00 00 00 00 99 49 11 00 00 00 00 00  .).H.....I......
->   00000000ea2ffbb8: 99 49 11 08 00 00 45 25 99 49 11 10 00 00 48 fe  .I....E%.I....H.
->   0000000069e86440: 99 49 11 18 00 00 4c 6b 99 49 11 20 00 00 4d 97  .I....Lk.I. ..M.
->   XFS (dm-0): xfs_do_force_shutdown(0x8) called from line 1423 of file fs/xfs/xfs_buf.c.  Return address = 00000000c0ff63c1
->   XFS (dm-0): Corruption of in-memory data detected.  Shutting down filesystem
->   XFS (dm-0): Please umount the filesystem and rectify the problem(s)
-> 
-> >From the log above, we know xfs_buf->b_no is 0x178, but the block's hdr record
-> its blkno is 0x1a0.
-> 
-> Fixes: 24df33b45ecf ("xfs: add CRC checking to dir2 leaf blocks")
-> Signed-off-by: Zhang Tianci <zhangtianci.1997@bytedance.com>
+Please ignore this resend, I forgot to add Rob's Ack.
+
+Thanks,
+Neil
+
 > ---
->  fs/xfs/libxfs/xfs_da_btree.c | 12 +++++++++++-
->  1 file changed, 11 insertions(+), 1 deletion(-)
+> For convenience, a regularly refreshed linux-next based git tree containing
+> all the SM8650 related work is available at:
+> https://git.codelinaro.org/neil.armstrong/linux/-/tree/topic/sm85650/upstream/integ
+> ---
+>   Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 2 ++
+>   1 file changed, 2 insertions(+)
 > 
-> diff --git a/fs/xfs/libxfs/xfs_da_btree.c b/fs/xfs/libxfs/xfs_da_btree.c
-> index e576560b46e9..35f70e4c6447 100644
-> --- a/fs/xfs/libxfs/xfs_da_btree.c
-> +++ b/fs/xfs/libxfs/xfs_da_btree.c
-> @@ -2318,8 +2318,18 @@ xfs_da3_swap_lastblock(
->  	 * Copy the last block into the dead buffer and log it.
->  	 */
->  	memcpy(dead_buf->b_addr, last_buf->b_addr, args->geo->blksize);
-> -	xfs_trans_log_buf(tp, dead_buf, 0, args->geo->blksize - 1);
->  	dead_info = dead_buf->b_addr;
-> +	/*
-> +	 * Update the moved block's blkno if it's a dir3 leaf block
-> +	 */
-> +	if (dead_info->magic == cpu_to_be16(XFS_DIR3_LEAF1_MAGIC) ||
-> +	    dead_info->magic == cpu_to_be16(XFS_DIR3_LEAFN_MAGIC) ||
-> +	    dead_info->magic == cpu_to_be16(XFS_ATTR3_LEAF_MAGIC)) {
-> +		struct xfs_da3_blkinfo *dap = (struct xfs_da3_blkinfo *)dead_info;
-> +
-> +		dap->blkno = cpu_to_be64(dead_buf->b_bn);
-> +	}
-> +	xfs_trans_log_buf(tp, dead_buf, 0, args->geo->blksize - 1);
-
-The fix here looks correct to me, but also a little ugly and ad-hoc.
-
-At last we should be using container_of and not casts for getting from a
-xfs_da_blkinfo to a xfs_da3_blkinfo (even if there is bad precedence
-for the cast in existing code).
-
-But I think it would be useful to add a helper that stamps in the blkno
-in for a caller that only has as xfs_da_blkinfo but no xfs_da3_blkinfo
-and use in all the places that do it currently in an open coded fashion
-e.g. xfs_da3_root_join, xfs_da3_root_split, xfs_attr3_leaf_to_node.
-
-That should probably be done on top of the small backportable fix.
+> diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> index aa9e1c0895a5..157de0d0a24d 100644
+> --- a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> +++ b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+> @@ -56,6 +56,7 @@ properties:
+>                 - qcom,sm8350-smmu-500
+>                 - qcom,sm8450-smmu-500
+>                 - qcom,sm8550-smmu-500
+> +              - qcom,sm8650-smmu-500
+>             - const: qcom,smmu-500
+>             - const: arm,mmu-500
+>   
+> @@ -475,6 +476,7 @@ allOf:
+>                 - qcom,sm8350-smmu-500
+>                 - qcom,sm8450-smmu-500
+>                 - qcom,sm8550-smmu-500
+> +              - qcom,sm8650-smmu-500
+>       then:
+>         properties:
+>           clock-names: false
+> 
+> ---
+> base-commit: fe1998aa935b44ef873193c0772c43bce74f17dc
+> change-id: 20231016-topic-sm8650-upstream-bindings-smmu-7d52c88bc6ff
+> 
+> Best regards,
 
