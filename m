@@ -2,56 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DDDF7FB8AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:55:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 527147FB8D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:02:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344178AbjK1KzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 05:55:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60230 "EHLO
+        id S1344474AbjK1Kz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 05:55:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344042AbjK1KzK (ORCPT
+        with ESMTP id S1344189AbjK1Kzm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 05:55:10 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE89B182
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:55:16 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B03AFC433C7;
-        Tue, 28 Nov 2023 10:55:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701168916;
-        bh=xaI8DgSJpCKxnGj0OgbufF5SQT3bV5304U6aBzNRRtU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VXtbiMX+CCuZfqiD8VznplAdiicAVzfiX3wkUpZKwQM9w1U6b5Iwr1vcwOZvy/HcJ
-         JbM+hep59s/yueEpV2COfKs/6Od67nUg/hGKAoEc2A4wohIB1PJzAUl4/+NI01GVvt
-         wpO/5Dhe4G279cAtXNQPcHKvT1tUlqhahkXUU7DzhMTy4G9SmnzmT/TW+UnKpFbily
-         7euOw8ign1svEO5l9EJmYb0kL5n5ZfF6O88DxP1webG52W1wu6g8zG/ALTB8JkfeA+
-         igdkKZzIGCBcQaNFPikaydeyV9Zmx8zqWq3KX/+TpGIQ1FvEnj86+jXcQ+/jboyRLO
-         wXp+ZOJwygbig==
-Date:   Tue, 28 Nov 2023 16:25:06 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Can Guo <quic_cang@quicinc.com>
-Cc:     bvanassche@acm.org, adrian.hunter@intel.com, beanhuo@micron.com,
-        avri.altman@wdc.com, junwoo80.lee@samsung.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 06/10] scsi: ufs: ufs-qcom: Limit HS-G5 Rate-A to
- hosts with HW version 5
-Message-ID: <20231128105506.GO3088@thinkpad>
-References: <1700729190-17268-1-git-send-email-quic_cang@quicinc.com>
- <1700729190-17268-7-git-send-email-quic_cang@quicinc.com>
- <20231128055520.GG3088@thinkpad>
- <4648b6a0-92cb-4411-9b58-03219962505d@quicinc.com>
+        Tue, 28 Nov 2023 05:55:42 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 391FB189;
+        Tue, 28 Nov 2023 02:55:46 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6c4eb5fda3cso5281351b3a.2;
+        Tue, 28 Nov 2023 02:55:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701168945; x=1701773745; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oDdeUFllCI6cz5ZamrullL8d06k38FlFlbto7fVB9l4=;
+        b=B4m/PFfa51fSzsZGi09BtmtawHjidxBuaPIJEj4eHWLt2uldpHfh8fI6CiuzcshL4L
+         /lMqMVd3aEacZh59TeNCpGRdlC0rexSRIVhFi0Hry6n9GHF6xZKns0f2LWtIYx3IoJFO
+         /XP5sdAWGR1kxS3V+5C4E9Jqoy/FpD2RrEPGG0ODCkvoeD8r4B2Xd64DsuTemUU0vY2t
+         IcKm0vXjZzjxyiffMWGWUEITB+xoUAXfySZMevh2Gch2iAnDVyMKJaKDByPGyparw0Jb
+         x3OH0khQsZIcwU4M0yqCK/JNnIUZhptwsfzHTTOqwJDUc8QLPYQ/31Lm3+UdqK4ltBxh
+         /QOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701168945; x=1701773745;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oDdeUFllCI6cz5ZamrullL8d06k38FlFlbto7fVB9l4=;
+        b=iiVweCLVcP8Rindxxgf4sgp1exw0+M19hy0tcp+WoSkTN1r7PzPMaONo5zLRTn5fHr
+         Bya9iQCsCVtF+cDphmQx1hFwUJ6sYvrrF2DYYTO3m5pJI5iq5u1OGrpBqm1rPPzEbqTY
+         hR7OYMGhh9E4mZzivBNEXx9C6Pu+f6XGGi25ExOYNWUAg++VxONKk96gZENvt3ooNmva
+         1aooTYWLt7PZL/gMZI2yauRdTadzQYdqjxCI5ed5Xw3w3uOVwc8Zr4yzws2dFbjLo/NW
+         9K3Gw8kQNHe5h6sVW5SMcsQ2lg1CCVagPvj+LAx+qsGQnJd+j+90pOF81i6X8qCP7yJE
+         A+EA==
+X-Gm-Message-State: AOJu0YzkUwW5xLnwMZwW5ZbnMKup//GSEUMKENv2XoaWOqWuREz15H5R
+        HWyRRRHQU5KlyGa9B4ysqdnqV8QQePuUzy5fsak=
+X-Google-Smtp-Source: AGHT+IF24zFZZLIL6TJUNOQhmXdxP/jw4lM1esNCOX7reQjH2BztbwpEI40LFIB0b45T3tk6Lte/jzEWuK1W1Xw9XOk=
+X-Received: by 2002:a05:6a20:72a5:b0:18c:1d42:4e13 with SMTP id
+ o37-20020a056a2072a500b0018c1d424e13mr15539521pzk.25.1701168945526; Tue, 28
+ Nov 2023 02:55:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4648b6a0-92cb-4411-9b58-03219962505d@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+References: <20231123132749.108827-1-boerge.struempfel@gmail.com>
+ <CAHp75VcBMbENVKhbdJnXHGxAP85_5CMNxoq7JqV5XbUyRLPoaQ@mail.gmail.com> <CAEktqctA0KWmL_W6aVM67DWB0Q6hOWUQqMwkOp6hn4+iouj1cA@mail.gmail.com>
+In-Reply-To: <CAEktqctA0KWmL_W6aVM67DWB0Q6hOWUQqMwkOp6hn4+iouj1cA@mail.gmail.com>
+From:   =?UTF-8?B?QsO2cmdlIFN0csO8bXBmZWw=?= <boerge.struempfel@gmail.com>
+Date:   Tue, 28 Nov 2023 11:55:34 +0100
+Message-ID: <CAEktqcuxS1sPfkGVCgSy1ki8fmUDmuUsHrdAT+zFKy5vGSoKPw@mail.gmail.com>
+Subject: Re: [PATCH] gpiolib: sysfs: Fix improper error handling on failed export
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bstruempfel@ultratronik.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,85 +72,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 03:48:02PM +0800, Can Guo wrote:
-> Hi Mani,
-> 
-> On 11/28/2023 1:55 PM, Manivannan Sadhasivam wrote:
-> > On Thu, Nov 23, 2023 at 12:46:26AM -0800, Can Guo wrote:
-> > > Qcom UFS hosts, with HW ver 5, can only support up to HS-G5 Rate-A due to
-> > > HW limitations. If the HS-G5 PHY gear is used, update host_params->hs_rate
-> > > to Rate-A, so that the subsequent power mode changes shall stick to Rate-A.
-> > > 
-> > > Signed-off-by: Can Guo <quic_cang@quicinc.com>
-> > 
-> > Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > 
-> > One question below...
-> > 
-> > > ---
-> > >   drivers/ufs/host/ufs-qcom.c | 18 +++++++++++++++++-
-> > >   1 file changed, 17 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> > > index 9613ad9..6756f8d 100644
-> > > --- a/drivers/ufs/host/ufs-qcom.c
-> > > +++ b/drivers/ufs/host/ufs-qcom.c
-> > > @@ -442,9 +442,25 @@ static u32 ufs_qcom_get_hs_gear(struct ufs_hba *hba)
-> > >   static int ufs_qcom_power_up_sequence(struct ufs_hba *hba)
-> > >   {
-> > >   	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> > > +	struct ufs_host_params *host_params = &host->host_params;
-> > >   	struct phy *phy = host->generic_phy;
-> > > +	enum phy_mode mode;
-> > >   	int ret;
-> > > +	/*
-> > > +	 * HW ver 5 can only support up to HS-G5 Rate-A due to HW limitations.
-> > > +	 * If the HS-G5 PHY gear is used, update host_params->hs_rate to Rate-A,
-> > > +	 * so that the subsequent power mode change shall stick to Rate-A.
-> > > +	 */
-> > > +	if (host->hw_ver.major == 0x5) {
-> > > +		if (host->phy_gear == UFS_HS_G5)
-> > > +			host_params->hs_rate = PA_HS_MODE_A;
-> > > +		else
-> > > +			host_params->hs_rate = PA_HS_MODE_B;
-> > 
-> > Is this 'else' part really needed? Since there wouldn't be any 2nd init, I think
-> > we can skip that.
-> 
-> We need it because, even there is only one init, if a UFS3.1 device is
-> attached, phy_gear is given as UFS_HS_G4 in ufs_qcom_set_phy_gear(), hence
-> we need to put the UFS at HS-G4 Rate B, not Rate A.
-> 
+Hi Andy,
 
-But the default hs_rate is PA_HS_MODE_B only and the else condition would be not
-needed for the 1st init.
+On Thu, Nov 23, 2023 at 4:01=E2=80=AFPM B=C3=B6rge Str=C3=BCmpfel
+<boerge.struempfel@gmail.com> wrote:
+>
+> Hi Andy
+>
+> thank you for your feedback
+>
+> On Thu, Nov 23, 2023 at 3:25=E2=80=AFPM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> >
+> > On Thu, Nov 23, 2023 at 3:30=E2=80=AFPM Boerge Struempfel
+> > <boerge.struempfel@gmail.com> wrote:
+> > >
+> > > If gpio_set_transitory fails, we should free the gpio again. Most
+> >
+> > We refer to functions as func() in the text and comments (note parenthe=
+ses).
+> >
+> > GPIO
+>
+> Thanks for letting me know, I will update the the commit message in
+> regards to this.
+>
+> >
+> > > notably, the flag FLAG_REQUESTED has previously been set in
+> > > gpiod_request_commit, and should be reset on failure.
+> >
+> > Same about func().
+> >
+> > ...
+> >
+> > Seems the correct fix, but you may also add that no existing user is
+> > returning anything except 0 or ENOTSUPP that is converted to 0 in
+> > GPIOLIB core code. Hence no Fixes tag is needed, but still possible if
+> > maintainers want it.
+> >
+>
+> You are right. For now, all mainline users are returning 0. We only found
+> this due to downstream-specific code. I'll add a comment about this not
+> affecting any existing users to the commit message.
+>
 
-- Mani
+A small update:
+I looked through the possible users again, and there seems to be at least
+the possibility for some other return values. The reason for this is, that
+the .set_config() of the specific gpio driver is called during the
+gpiod_set_transitory() call. For example the .set_config() of gpio-aspeed
+might in certain (somewhat unlikely) cases return -EPROBE_DEFER as
+well as -EINVAL.
 
-> Thanks,
-> Can Guo.
-> 
-> > 
-> > - Mani
-> > 
-> > > +	}
-> > > +
-> > > +	mode = host_params->hs_rate == PA_HS_MODE_B ? PHY_MODE_UFS_HS_B : PHY_MODE_UFS_HS_A;
-> > > +
-> > >   	/* Reset UFS Host Controller and PHY */
-> > >   	ret = ufs_qcom_host_reset(hba);
-> > >   	if (ret)
-> > > @@ -459,7 +475,7 @@ static int ufs_qcom_power_up_sequence(struct ufs_hba *hba)
-> > >   		return ret;
-> > >   	}
-> > > -	phy_set_mode_ext(phy, PHY_MODE_UFS_HS_B, host->phy_gear);
-> > > +	phy_set_mode_ext(phy, mode, host->phy_gear);
-> > >   	/* power on phy - start serdes and phy's power and clocks */
-> > >   	ret = phy_power_on(phy);
-> > > -- 
-> > > 2.7.4
-> > > 
-> > 
+However I don't think, that these conditional paths can be reached on a
+properly configured system.
 
--- 
-மணிவண்ணன் சதாசிவம்
+Kind Regards,
+B=C3=B6rge Str=C3=BCmpfel
