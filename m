@@ -2,243 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15AFF7FC57E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 21:32:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 154967FC58D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 21:36:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345838AbjK1Ucn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 15:32:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54958 "EHLO
+        id S1345842AbjK1Uf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 15:35:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbjK1Uck (ORCPT
+        with ESMTP id S229526AbjK1Uf4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 15:32:40 -0500
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2053.outbound.protection.outlook.com [40.107.96.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41FA019AB;
-        Tue, 28 Nov 2023 12:32:46 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i7F30byYmrvJ79klsk6NlOI2ItzZFIc00RJuEcyP5s9fa0OONRTbbVM7G5wiFG3v4y5bwiqcXvKklHlEttLUWKODeTU+kA4iQ/JxiQGXjybifXhjMoYJjujfosNPLF2pZPgS7c64QWbJSwzfbsWXN4Eupm9Pn6c7yxKjeysEd/yJmesBXjPDRTC2uq8WkTphpL+dgkvdfOGVgk6U//8ZMKfye5Drz5VyLkg9OEE2Fs6ujF4R2JtLjRZDebRSgagmIlUQAmqNd0rhdksJe3di4SaIr1ECle3m9tnW4brL22R0myvOKKjJi6IDwTrr33DGPHNQGYywAbL53KJq4c/3ww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=I4d8JARsiHdmnhMQI9Ls7SXRPCS8HRUzdm+NMxh61xg=;
- b=YluJqPgVfhnVV3pp+n7y4LlBHZbZlQcHh8lgBEK/IuKxJiTtguIqHhz3TCIu7yxfRD3M4u4cPsgF2BfV3fM93rQ18uCbyxSMO+LUpVqRkyFVyAqgnpWyAwv+4NBBuSxax6nbYaPZPGtZxwUSQYUQcckSAqWl4zr0Wnq+DAiexu4CV32glActEblE/y0eX4urWSR9LyfkuXNvo96I1B1V1tJk0oiJdZWStypak5h9UoqDGwvy9tns0DVfH7O2lE3xzeEMK3dXxMIPiyb+f/gudb91G+h9UeyApSUC9Y8VvAKh+8eg7y+UMX5UdkKitObyagxC3QvzGhnCMAoI2xRcAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I4d8JARsiHdmnhMQI9Ls7SXRPCS8HRUzdm+NMxh61xg=;
- b=qidAOeuEQCjcT/HewZwydBYi+nbMdv+w9LXek4c/OkvvjD/BappYbWNxn1Q15m0KJWKDMXDUWLCaegpMNmB+2ju0yPjkNtNiOgqvcg01lHozwko+kS2JSFN7sC5HRqGj3yTYHVPM06kGYZ9un9/OQcYdQbG8UhmiopCsq95/Y24=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BYAPR12MB2869.namprd12.prod.outlook.com (2603:10b6:a03:132::30)
- by DS7PR12MB5791.namprd12.prod.outlook.com (2603:10b6:8:76::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Tue, 28 Nov
- 2023 20:32:42 +0000
-Received: from BYAPR12MB2869.namprd12.prod.outlook.com
- ([fe80::ea10:2f7:ef14:9c]) by BYAPR12MB2869.namprd12.prod.outlook.com
- ([fe80::ea10:2f7:ef14:9c%5]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
- 20:32:42 +0000
-Subject: Re: [PATCH RFC v4 5/6] firmware/efi: Process CXL Component Events
-To:     Ira Weiny <ira.weiny@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Shiju Jose <shiju.jose@huawei.com>
-Cc:     Yazen Ghannam <yazen.ghannam@amd.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org
-References: <20230601-cxl-cper-v4-0-47bb901f135e@intel.com>
- <20230601-cxl-cper-v4-5-47bb901f135e@intel.com>
-From:   Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Message-ID: <7ec6d2af-c860-9b05-7eaf-c82f50f8e66e@amd.com>
-Date:   Tue, 28 Nov 2023 12:32:40 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-In-Reply-To: <20230601-cxl-cper-v4-5-47bb901f135e@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PH7PR17CA0068.namprd17.prod.outlook.com
- (2603:10b6:510:325::12) To BYAPR12MB2869.namprd12.prod.outlook.com
- (2603:10b6:a03:132::30)
+        Tue, 28 Nov 2023 15:35:56 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4656BE4
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 12:36:02 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3b88f2a37deso480147b6e.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 12:36:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701203761; x=1701808561; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8QlqPdsqaKfOX4ybpeoxfRZcdk2EJ2CcgPBS+ybUncU=;
+        b=OZo70hHWiTTFFoNK/myvRMKlNndV5GgTqTBj7uIQhy8oyN4WgomPZMPm7k21r2PJV2
+         Siv8v78XFghK3IYVj8ah0Nos6L7hfS4zO2+mYubq9Hst5wTOjQnNBkj2v+RdSd23SlYW
+         oxpBSp92bCszoWbYMob3cpV+H46wO6Q73xw8vOGZLcTKYQOPhDQpWZZhZP+Lp9SEO78a
+         680geMRkI6YKOC90jr82eBA878lf6CJQnypyAQfpw/s0I0cUFYZRVft45W2oa8u72fuk
+         PVLU1AWmiHSmCMZBUFDbK2jz0hV2H2TkfAP01IsxF9UY/3FDsVpx33KwajyGwyMflJd2
+         eUPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701203761; x=1701808561;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8QlqPdsqaKfOX4ybpeoxfRZcdk2EJ2CcgPBS+ybUncU=;
+        b=iJ7yXqMS9b/n5Nrii0VJwVQbx7wcWAJ1ilAAgFf1dxe7RZQVEhBX09R+QBGrax/5PZ
+         a17x+v+OygqgfKy1mJp73TeQyybLZJ/B6NGr21hUrdReWbB6qgfihkc9rH3hGj+sLzvf
+         X58SIL59qOnIhoHFLGeDjevUpLGEawNfwbJWx+ysa2B6QtpeLFKKkTrLUkd2A1g5I6+9
+         qiEhOD49D513qXofxJ5rH/F6tVnzwBuskGq42TOED2z7dq5tZcfr1QdoRIWmEqBtFQIY
+         /Kxzg8MohRLDhdqu+x0YxKiAfAZ0gWRgP5PsphePW44TesWthws7+cP51CuikOrThF9w
+         PHNA==
+X-Gm-Message-State: AOJu0YxOBKBAfRzKpLULmp2e3/5nS7/1urcJ4QC9VjTOhF041XTuuIGD
+        qfMKXc8kUjca6E0dgR30K7+sVbIxpyRoYRaI58kdvQ==
+X-Google-Smtp-Source: AGHT+IFzsmlB/1Q5gxxim4y4vmRNi1YzA551Xf7Btg7SG2Mt7yLBRFaDXl11rOlT2eb6ssG2GPUC+ENHaKVHfploOV4=
+X-Received: by 2002:a05:6358:60cd:b0:16b:c249:9b97 with SMTP id
+ i13-20020a05635860cd00b0016bc2499b97mr20105639rwi.18.1701203761477; Tue, 28
+ Nov 2023 12:36:01 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2869:EE_|DS7PR12MB5791:EE_
-X-MS-Office365-Filtering-Correlation-Id: 167d49d8-14a2-4df5-fae2-08dbf0512c17
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1NOAZV/II+GwFA6kLNDxJh3vneFgeO0j2zxVvxJ4nZDBlN06uTGB61E6hY2L6WjD7Mf4fL196Euz4u51UWAfknPA+a+nle+E8vqHB2pkIHSguR1/7neZ2MtzMp7xyhppzJtFMelAW5mlkcW6K8enrx2aR2kC9xJD1XOKmq7YyQoGaAjW3b8qqwaqx167/hIlCijBUqva6PIvHAKQxWA6nPhTPQF9hsEpFG9NAa9J+VxnAwK50q86DFmSxRpFQXuttBTDAga49cEDLZWk1fvqKmiA40Y0EISw0yEQRh9HzW/yMs7V1eqjZTWtqrlbWJK9l+CIM/HzBsZ1C5+i3hYePV11JThdudhmNf01AnoX6fsg+R8yk8AZFAc4iavJTUdTVkO13VfBDhlGlZ5vLo2Ytnf/JTDKr4M49Zn3+KXUt8X4xv3lOdecvW7sEtAMtj2CsVJsNh258SP2NCBO0Ottt9cA0h+4/vMwxWTBQ0Nc4ftJmzM3QrFd6hjhB/GeJqF7IzIkxcqShFPdtes/yYiuzVJc0q4qMBwuOSzUNERwYZfnd9RXd4EUkDWwjJ15yue1Mu61FlDb0G7Iqol3MLdcP8qDnATwYKt1A0qxHJa4+NvVkl/1JAVVJ1lYllq6EQYUdyTFytSONXYU+umMwcMb5g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(396003)(39860400002)(136003)(376002)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(6512007)(6506007)(478600001)(6486002)(2616005)(53546011)(83380400001)(2906002)(5660300002)(41300700001)(7416002)(66946007)(4326008)(316002)(8676002)(8936002)(66476007)(66556008)(54906003)(110136005)(38100700002)(86362001)(36756003)(31696002)(31686004)(26005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?alE4S2RvRHJPN1FhRkF2TityYzE3ZDZtRGhWWW55YlYrN3dLY2tjdXFEdnds?=
- =?utf-8?B?ckdJbEUyNTVEMW00Z3VFd0ttMmt2Yng1bHc3a2hMdnNodlFCQWNIajcrMGxN?=
- =?utf-8?B?WCsvN1lwY1RTbWdYb3pCb0tweGZRcTFGaWxMT0hwblR4WjdKa0Ryc3I0SEhz?=
- =?utf-8?B?aG1DZHBVc05jQ1ZNelNhTUR3ak9LU0l0OVlXV3hqZkFmbVlGTkZPbmVPMEFP?=
- =?utf-8?B?MGV4OVNCUjdnTTN5K0RZa2ZMVW1maXgxa201ek5lanE5QmQ4SnYrQjBTb2dk?=
- =?utf-8?B?S0FoMDVRQmw0S09yeG9EV0lOZ05mTXRtRnM2aWVpUldMdWwweWlzQXBEeVND?=
- =?utf-8?B?MWcvZXlBem5VWDRXTlFCN3JqNmlBekRaS0oxakIyWExib1JlcW1qMHMvZjZm?=
- =?utf-8?B?cVVXQ0ZIUmE1K2gvS3Q4L0dIaTlnbXpqeXo3S2JjNW0wRU1iUnhyTXF5a2I3?=
- =?utf-8?B?SXIxQkEva0hwSVBGVlB2TlJsbHZwMnhiQ2VNd04ycmN0RGhFbFN6bWp1VW1w?=
- =?utf-8?B?MDNncXhLRmNULy9TUWRIOEtrL1lMbEl1SFN6QVB6eDVTenFHcHkyMzVLY3Q2?=
- =?utf-8?B?dHFJTllZOS9qbiszMEtxUEJ0aW1UTmtGS2ZxeWRBNXhXYWNycSsyMjFNejNC?=
- =?utf-8?B?djV4Uy9NT1BNQjY3WjAxWXIzQW44SExPNnpNd3RBYS9lNnBUbVdicEFhSjU1?=
- =?utf-8?B?NTJySldVTjEzVkdhSU12RE14MWpGZTlEZU1ubW1WSitra3UrZlQ0c0ZZV2VG?=
- =?utf-8?B?NEFpdXg1Q1hVSkJic2JwZXdiN0cyUmpDQjd6UG05YnFWZDNad05OdFFrRDR3?=
- =?utf-8?B?QXZXZjV1bGNlOE1PMmc2VlVNUi9Gd252MHZ6Vm5wb3JzUkg0V3Z0eUdBWnlS?=
- =?utf-8?B?ZjBIQ3AzU2dWSlF0SlFLVGlOdzBJWllTa29WOUNKQUkwbzc4Mi83RlBHMHRF?=
- =?utf-8?B?YU44YVh4WXV4M2VVdFNFMXpKcTF3aGtZSEhPU2xzZzRUMXViNGVpS0VyaENR?=
- =?utf-8?B?d0VkOVVIUUl5TWNFRzVmOTNyenhoaFFlV1JFYzA1bnBCaldMRlJKTlM0N1RY?=
- =?utf-8?B?dy8rRTdtc2VxVHRXalpDOVpvWDlBSUFSQmJQOERHd3VxaEhBdHlrandac2c5?=
- =?utf-8?B?alRwQWF0cnZKK3grbVIvTzJXcmZrVDBVNHE3Z3gwSTgrQ2RrZkplbGVqMk1n?=
- =?utf-8?B?RVh6eGk1R0t6WWpCenJaN2UwOWtmOCtXdnY1L1NIVEtmbDVQaHdTcng1S0RH?=
- =?utf-8?B?SVoyNUJrb21YTVAzUEFqR2lXaVBFYy9leXllNHpZSERwV3NSaDFMNi9LSE0z?=
- =?utf-8?B?bzV5eXpGeXozZTF1ZnJVUUtreHFWLzBwaFFaZklKMThMN3JrL05ndmU4T1Rw?=
- =?utf-8?B?ejRPZ0h6VFlHNUpDZTVScFU4eVpJMTBEbUhQQVVoOU5TZ0JCMTg2eVkyWE43?=
- =?utf-8?B?U0lsWTVwR0dNQlRVNE1rOFkyRk5uWHRGc0xsRnJEQnFlb0k5c3EwU2NiRjVq?=
- =?utf-8?B?NUpEcjMwaUVZVGt0Q3JDUnJpN0xubXFHYXJ1WW90Q0JyMURsdk5leWVJMTlW?=
- =?utf-8?B?OGxsK1BvZ1FDYlZxV0pHWnJNZHVVZ0JvV1NBKzI1YjhJSUZTeHF5TzR2SGpS?=
- =?utf-8?B?NmljZGFmNFB5ZHBCWVVLWVcxT25Qb2FYRkp1R0hQYngvb1FENWxobjU5eTlV?=
- =?utf-8?B?SW40TzFiYnRzYnRFYVp1eFI1Y2liL3ZDbi9YUHY0Q3hPQXRYUytyVFQxVGpI?=
- =?utf-8?B?QUN4Y0YzcnFEbGg0TEJ5bUxPYUR0Vyt1dUpON3gxMnh0ZVFNK0k3a29RN0U5?=
- =?utf-8?B?NzBUdDU1SHIzRG53VHppbUt6eUtIbGRvaTVnbWprMENQUGU2Zll6UDBJbmVk?=
- =?utf-8?B?bnByRlZDRjNXdDVvUjUyejR3MnlqWG5JNFc4Yml3Qm9HK0dCR0dSVExSak5L?=
- =?utf-8?B?TWdnaDlIY0dQUFp4TjlyU3JLV3RwL29wejlvMTJrRkFsbTJualIzbE1vZTl5?=
- =?utf-8?B?VnJpUlhvYy9GT21oRmtZVEc5U0Q4UTZzdFQxZ3B6NkU2TE1lSGd1RUFsbURU?=
- =?utf-8?B?aGg4RHF0MVFrN01lSDc4VCtkZDkyVHZTUy9vTzhrYzlMVmMzRXdPYnFrR3py?=
- =?utf-8?Q?3SaxSXxkiGlEa+4HylFTh+sDr?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 167d49d8-14a2-4df5-fae2-08dbf0512c17
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 20:32:42.7305
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MgcM/FUUPGGQ9H5Jfh0FNNj4k65sQlB2ATR9Z/KejCsGqza0EEVwZyj/5fd40L1A9kTHEeeWrKp+Ji5FkC3quQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB5791
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230607152427.108607-1-manivannan.sadhasivam@linaro.org>
+ <20230607094922.43106896@kernel.org> <20230607171153.GA109456@thinkpad>
+ <20230607104350.03a51711@kernel.org> <20230608123720.GC5672@thinkpad>
+ <20231117070602.GA10361@thinkpad> <20231117162638.7cdb3e7d@kernel.org>
+ <20231127060439.GA2505@thinkpad> <20231127084639.6be47207@kernel.org>
+In-Reply-To: <20231127084639.6be47207@kernel.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 28 Nov 2023 22:35:50 +0200
+Message-ID: <CAA8EJppL0YHHjHj=teCnAwPDkNhwR1EWYuLPnDue1QdfZ3RS_w@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] Add MHI Endpoint network driver
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+        mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ira,
+On Mon, 27 Nov 2023 at 18:46, Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Mon, 27 Nov 2023 11:34:39 +0530 Manivannan Sadhasivam wrote:
+> > I think you made up your mind that this driver is exposing the network interface
+> > to the firmware on the device. I ought to clearify that the device running this
+> > driver doesn't necessarily be a modem but a PCIe endpoint instance that uses the
+> > netdev exposed by this driver to share data connectivity with another device.
+>
+> Doesn't matter how many legit use cases you can come up with.
+> Using netdev as a device comm channel is something I am
+> fundamentally opposed to.
+>
+> > This concept is not new and being supported by other protocols such as Virtio
+> > etc...
+>
+> Yes. Use virtio, please.
 
-I tested this out. Just one correction below to make it work.
+We can try using virtio if we control both sides of the link. However
+there are usecases of the upstream Linux running on the modem (PCIe
+EP) side and other systems (Win, Android) running on the RC side. In
+such cases we have to provide the interface that is expected by the
+host driver, which unfortunately is MHI. Not to mention that one of
+the PCIe EP regions contains registers which are targeting the MHI
+protocol. I am not sure how hardware will react if we bypass this
+completely and implement VirtIIO or NTB instead.
 
-On 11/9/2023 2:07 PM, Ira Weiny wrote:
-> BIOS can configure memory devices as firmware first.  This will send CXL
-> events to the firmware instead of the OS.  The firmware can then send
-> these events to the OS via UEFI.
-> 
-> UEFI v2.10 section N.2.14 defines a Common Platform Error Record (CPER)
-> format for CXL Component Events.  The format is mostly the same as the
-> CXL Common Event Record Format.  The difference is a GUID is used in
-> the Section Type to identify the event type.
-> 
-> Add EFI support to detect CXL CPER records and call a notifier chain
-> with the record data blobs to be processed by the CXL code.
-> 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
-> ---
-> Changes from RFC v3
-> [Smita: ensure cper_cxl_event_rec is packed]
-> 
-> Changes from RFC v2
-> [djbw: use common event structures]
-> [djbw: remove print in core cper code]
-> [djbw: export register call as NS_GPL]
-> [iweiny: fix 0day issues]
-> 
-> Changes from RFC v1
-> [iweiny: use an enum for know record types and skip converting GUID to UUID]
-> [iweiny: commit to the UUID not being part of the event record data]
-> [iweiny: use defines for GUID definitions]
-> ---
+Also, please excuse me if this was already answered, just for my understanding:
+- If we limit functionality to just networking channels which are used
+to pass IP data between host and EP, will that be accepted?
 
-[snip]
+- If we were to implement the PCIe networking card running Linux (e.g.
+using Freescale PowerQUICC or Cavium Octeon chips), would you also be
+opposed to implementing the EP side of the link as the netdev?
 
-> diff --git a/include/linux/cxl-event.h b/include/linux/cxl-event.h
-> index 6b689e1efc78..733ab2ab8639 100644
-> --- a/include/linux/cxl-event.h
-> +++ b/include/linux/cxl-event.h
-> @@ -108,4 +108,53 @@ struct cxl_event_record_raw {
->   	union cxl_event event;
->   } __packed;
->   
-> +enum cxl_event_type {
-> +	CXL_CPER_EVENT_GEN_MEDIA,
-> +	CXL_CPER_EVENT_DRAM,
-> +	CXL_CPER_EVENT_MEM_MODULE,
-> +};
-> +
-> +#define CPER_CXL_DEVICE_ID_VALID		BIT(0)
-> +#define CPER_CXL_DEVICE_SN_VALID		BIT(1)
-> +#define CPER_CXL_COMP_EVENT_LOG_VALID		BIT(2)
-> +struct cper_cxl_event_rec {
-> +	struct {
-> +		u32 length;
-> +		u64 validation_bits;
-> +		struct cper_cxl_event_devid {
-> +			u16 vendor_id;
-> +			u16 device_id;
-> +			u8 func_num;
-> +			u8 device_num;
-> +			u8 bus_num;
-> +			u16 segment_num;
-> +			u16 slot_num; /* bits 2:0 reserved */
-> +			u8 reserved;
-> +		} device_id;
-> +		struct cper_cxl_event_sn {
-> +			u32 lower_dw;
-> +			u32 upper_dw;
-> +		} dev_serial_num;
-> +	} hdr;
-> +
-> +	union cxl_event event;
-> +} __packed;
-
-__packed attribute just for cper_cxl_event_rec still fails to properly 
-align structure elements. Looks like, __packed attribute is needed for 
-all structs (cper_cxl_event_devid and cper_cxl_event_sn) inside 
-cper_cxl_event_rec.
-
-Seems easier to use global pragma instead.. I could test and obtain the 
-output as expected using pragma..
-
-Thanks,
-Smita
-
-> +
-> +struct cxl_cper_notifier_data {
-> +	enum cxl_event_type event_type;
-> +	struct cper_cxl_event_rec *rec;
-> +};
-> +
-> +#ifdef CONFIG_UEFI_CPER
-> +int register_cxl_cper_notifier(struct notifier_block *nb);
-> +void unregister_cxl_cper_notifier(struct notifier_block *nb);
-> +#else
-> +static inline int register_cxl_cper_notifier(struct notifier_block *nb)
-> +{
-> +	return 0;
-> +}
-> +
-> +static inline void unregister_cxl_cper_notifier(struct notifier_block *nb) { }
-> +#endif
-> +
->   #endif /* _LINUX_CXL_EVENT_H */
-> 
+-- 
+With best wishes
+Dmitry
