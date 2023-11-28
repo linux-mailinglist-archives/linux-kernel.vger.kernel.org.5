@@ -2,121 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E0087FC24E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B477FC2BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344006AbjK1QbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 11:31:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39856 "EHLO
+        id S1344412AbjK1QbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:31:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbjK1QbP (ORCPT
+        with ESMTP id S1344331AbjK1QbT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 11:31:15 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A514D53
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:31:21 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5caf86963ecso79394887b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:31:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701189080; x=1701793880; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LkifhWeFq2AKAH7BOOvlkDTRE/IRSV6lCofOJbiTrgk=;
-        b=BEHt+2359ElZZ5O0q5swBpofB3e6PlqcIlk9Jhlt46Dl+Yy3jDhtYUk75bjhSEioVQ
-         NbplDtP+BZciI/dlgikmxAZ8z91Sj4kap+/Ywalcuh495XRDah5bTqjYwk8a162uyXbP
-         spMayaUrIAN6BA/t8MbzvJ9RKaQnMdVnt25GwubQPqrYosf6RC9fLLTOrD8nsumc3cAF
-         i/qvqcvuf0R3q7sMOFR+pc6oCE3L5GOLrUhoXvXLDpnhPWMX/fOfmuz7IUd0FcxEw+NF
-         BXvSNJDpjauz44b7gsRkDKhDCkoHLFW9KSAEsJAcuNoKXsLDH2Z6OOLJV2fWfd/swzsF
-         +KyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701189080; x=1701793880;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LkifhWeFq2AKAH7BOOvlkDTRE/IRSV6lCofOJbiTrgk=;
-        b=RIPwrlgGTKAbOWaxy4QZESR0M+w9KSo+5EnPqkQl39DgrujPLb6pSohF+0LFLjXRDE
-         ex/wno71roDzEAV905mxoPiz4qP2dcMTtH5j1JmQbDusqRILsEg0nNPCRZQEjJNfyB3N
-         CB/XP5qv3XIauuYI5b/BcQD1crInqjdoSpcsulhJB0NBuefoY+ZEgLXAeYKPItt6ze8B
-         HTEU2Q9tkZg/yjkdXwIHvVmB2okHCj4NEPBJypfYwFaGlu+frChGLca5y9w8lX95NWeI
-         ZyZEGIl6hM+WwDGTAonUrKz7uxg2rugvEstoCr1Kar/l8eByH3zg0ezY5vGrH5EplnUB
-         hdvA==
-X-Gm-Message-State: AOJu0YyE0l/sMqPNOlx4bhL5dOdTiJPJH3+F89INeDhZWxHMe7Hdb6I6
-        uNkupAfuaOgDgT507Kl4itpEY4rOvZ8=
-X-Google-Smtp-Source: AGHT+IE6iXeIU9xVOZUNgTDVtSSOhSFc12TNtoEA7Y1QnCurGnLjmDvGB9zjJ61WPs74wQDuAfvDjFcCHnc=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:d4c6:0:b0:dae:292e:68de with SMTP id
- m189-20020a25d4c6000000b00dae292e68demr498633ybf.6.1701189080247; Tue, 28 Nov
- 2023 08:31:20 -0800 (PST)
-Date:   Tue, 28 Nov 2023 08:31:18 -0800
-In-Reply-To: <69c10848d4a4f36ab71ca518f4b23d4dee377572.camel@redhat.com>
-Mime-Version: 1.0
-References: <20231108111806.92604-1-nsaenz@amazon.com> <20231108111806.92604-17-nsaenz@amazon.com>
- <69c10848d4a4f36ab71ca518f4b23d4dee377572.camel@redhat.com>
-Message-ID: <ZWYVw93lixTmlCqD@google.com>
-Subject: Re: [RFC 16/33] KVM: x86/mmu: Expose R/W/X flags during memory fault exits
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Nicolas Saenz Julienne <nsaenz@amazon.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        pbonzini@redhat.com, vkuznets@redhat.com, anelkz@amazon.com,
-        graf@amazon.com, dwmw@amazon.co.uk, jgowans@amazon.com,
-        corbert@lwn.net, kys@microsoft.com, haiyangz@microsoft.com,
-        decui@microsoft.com, x86@kernel.org, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Tue, 28 Nov 2023 11:31:19 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7E37DAB;
+        Tue, 28 Nov 2023 08:31:25 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 70A2DC15;
+        Tue, 28 Nov 2023 08:32:12 -0800 (PST)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5732C3F6C4;
+        Tue, 28 Nov 2023 08:31:22 -0800 (PST)
+Message-ID: <a91938e3-a7cb-4f74-aeaa-7cb56c0b43a4@arm.com>
+Date:   Tue, 28 Nov 2023 16:31:20 +0000
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Bug in add_dma_entry()'s debugging code
+Content-Language: en-GB
+To:     Alan Stern <stern@rowland.harvard.edu>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     Hamza Mahfooz <someguy@effective-light.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Andrew <travneff@gmail.com>,
+        Ferry Toth <ferry.toth@elsinga.info>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        iommu@lists.linux.dev,
+        Kernel development list <linux-kernel@vger.kernel.org>,
+        USB mailing list <linux-usb@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+References: <736e584f-7d5f-41aa-a382-2f4881ba747f@rowland.harvard.edu>
+ <20231127160759.GA1668@lst.de>
+ <637d6dff-de56-4815-a15a-1afccde073f0@rowland.harvard.edu>
+ <20231128133702.GA9917@lst.de>
+ <cb7dc5da-37cb-45ba-9846-5a085f55692e@rowland.harvard.edu>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <cb7dc5da-37cb-45ba-9846-5a085f55692e@rowland.harvard.edu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023, Maxim Levitsky wrote:
-> On Wed, 2023-11-08 at 11:17 +0000, Nicolas Saenz Julienne wrote:
-> > Include the fault's read, write and execute status when exiting to
-> > user-space.
-> > 
-> > Signed-off-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
-> > ---
-> >  arch/x86/kvm/mmu/mmu.c   | 4 ++--
-> >  include/linux/kvm_host.h | 9 +++++++--
-> >  include/uapi/linux/kvm.h | 6 ++++++
-> >  3 files changed, 15 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index 4e02d506cc25..feca077c0210 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -4300,8 +4300,8 @@ static inline u8 kvm_max_level_for_order(int order)
-> >  static void kvm_mmu_prepare_memory_fault_exit(struct kvm_vcpu *vcpu,
-> >  					      struct kvm_page_fault *fault)
-> >  {
-> > -	kvm_prepare_memory_fault_exit(vcpu, fault->gfn << PAGE_SHIFT,
-> > -				      PAGE_SIZE, fault->write, fault->exec,
-> > +	kvm_prepare_memory_fault_exit(vcpu, fault->gfn << PAGE_SHIFT, PAGE_SIZE,
-> > +				      fault->write, fault->exec, fault->user,
-> >  				      fault->is_private);
-> >  }
-> >  
-> > diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> > index 71e1e8cf8936..631fd532c97a 100644
-> > --- a/include/linux/kvm_host.h
-> > +++ b/include/linux/kvm_host.h
-> > @@ -2367,14 +2367,19 @@ static inline void kvm_account_pgtable_pages(void *virt, int nr)
-> >  static inline void kvm_prepare_memory_fault_exit(struct kvm_vcpu *vcpu,
-> >  						 gpa_t gpa, gpa_t size,
-> >  						 bool is_write, bool is_exec,
-> > -						 bool is_private)
-> > +						 bool is_read, bool is_private)
+On 28/11/2023 3:18 pm, Alan Stern wrote:
+> On Tue, Nov 28, 2023 at 02:37:02PM +0100, Christoph Hellwig wrote:
+>> I'd actually go one step back:
+>>
+>>   1) for not cache coherent DMA you can't do overlapping operations inside
+>>      a cache line
 > 
-> It almost feels like there is a need for a struct to hold all of those parameters.
+> Rephrasing slightly: You mustn't perform multiple non-cache-coherent DMA
+> operations that touch the same cache line concurrently.  (The word
+> "overlapping" is a a little ambiguous in this context.)
+> 
+> (Right now dma-debug considers only DMA-IN operations.  In theory this
+> restriction should apply even when some of the concurrent operations are
+> DMA-OUT, provided that at least one of them is DMA-IN.  Minor point...)
+> 
+>>   2) dma-debug is intended to find DMA API misuses, even if they don't
+>>      have bad effects on your particular system
+>>   3) the fact that the kmalloc implementation returns differently aligned
+>>      memory depending on the platform breaks how dma-debug works currently
+> 
+> Exactly.  That's essentially what Bugzilla #215740 is about.
+> 
+>> The logical confcusion from that would be that IFF dma-debug is enabled on
+>> any platform we need to set ARCH_DMA_MINALIGN to the cache line size.
+> 
+> (IF, not IFF.)  And tell distributions that CONFIG_DMA_API_DEBUG is not
+> meant for production systems but rather for kernel testing, right?
 
-The most obvious solution would be to make "struct kvm_page_fault" common, e.g.
-ARM's user_mem_abort() fills RWX booleans just like x86 fills kvm_page_fault.
-But I think it's best to wait to do something like that until after Anish's series
-lands[*].  That way the conversion can be more of a pure refactoring.
+Yikes, I'd hope that distros are heeding the warning that the Kconfig 
+calls out already. It's perhaps somewhat understated, as I'd describe 
+the performance impact to large modern systems with high-bandwidth I/O 
+as somewhere between "severe" and "crippling".
 
-[*] https://lore.kernel.org/all/20231109210325.3806151-1-amoorthy@google.com
+>> BUT:  we're actually reduzing our dependency on ARCH_DMA_MINALIGN by
+>> moving to bounce buffering unaligned memory for non-coherent
+>> architectures,
+> 
+> What's the reason for this?  To allow the minimum allocation size to be
+> smaller than the cache line size?  Does the savings in memory make up
+> for the extra overhead of bounce buffering?
 
+Yes, on systems where non-coherent streaming DMA is expected to be rare, 
+or at least not performance-critical, not having to allocate 128 bytes 
+every time we want just 8 or so soon adds up.
+
+> Or is this just to allow people to be more careless about how they
+> allocate their DMA buffers (which doesn't seem to make sense)?
+> 
+>>   which makes this even more complicated.  Right now I
+>> don't have a good idea how to actually deal with having the cachline
+>> sanity checks with that, but I'm Ccing some of the usual suspects if
+>> they have a better idea.
+> 
+> I get the impression that you would really like to have two different
+> versions of kmalloc() and friends: one for buffers that will be used in
+> DMA (and hence require cache-line alignment) and one for buffers that
+> won't be.
+
+That approach was mooted, but still has potentially-fiddly corner cases 
+like when the DMA buffer is a member of a larger struct, so we settled 
+on the bounce-buffering solution as the most robust compromise.
+
+Thanks,
+Robin.
