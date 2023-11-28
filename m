@@ -2,63 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C577FAFCD
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 02:55:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E5E7FAFD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 02:57:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234276AbjK1BzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 20:55:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48174 "EHLO
+        id S232573AbjK1B5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 20:57:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjK1BzT (ORCPT
+        with ESMTP id S229488AbjK1B5L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 20:55:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D2E1A7
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 17:55:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701136524;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NHu+lqeWh4DisTkj49UpVbjWkoKf/V0c7GXH9eX4XIw=;
-        b=jEFNwwB9nF/d6URgxbafgFhk5e7gLTSqp8gWATZYghYfZewWkXe+7QmHtiXxD+rR8+Hb1O
-        Q5ngCsYm/2P3hm0V1iKGv2GX6o4c1TPtgWj/C4PGNEJ+Bij3HVvg0SwT7R8xLHDKHI36HP
-        rDo1FxGO1a2P2rwaDTOvmTR01lrAXPI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-557-WkLp9sgrMQeVCRzucbnBNg-1; Mon, 27 Nov 2023 20:55:20 -0500
-X-MC-Unique: WkLp9sgrMQeVCRzucbnBNg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 90B2685A5BD;
-        Tue, 28 Nov 2023 01:55:19 +0000 (UTC)
-Received: from [10.22.8.93] (unknown [10.22.8.93])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E1DF740C6EB9;
-        Tue, 28 Nov 2023 01:55:18 +0000 (UTC)
-Message-ID: <cbd2705d-9d43-4822-9b5c-ea437a2ccca7@redhat.com>
-Date:   Mon, 27 Nov 2023 20:55:18 -0500
+        Mon, 27 Nov 2023 20:57:11 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B181A2;
+        Mon, 27 Nov 2023 17:57:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701136637; x=1732672637;
+  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=+snk+mM+TxyaWw6DJecEKyanpjoN0GjRNcW3jAnYR9g=;
+  b=KoUCajl6yxLLbaZntjFSGFenq9pp6/IkLWKjHRpIF891ENp1ft2EHliP
+   M6U+Hd+40TJIwdOKTtGZiSiWf2EcR66+lrabukzMxP2KZE4GrbgNKvD4C
+   2yo3EFBJmVKIHz+YrnEwKdC1cDTksQl9F3OE+3T39uX+i5bJwJfwJu/ti
+   HvzUDS7VavryWtxIP2KnsvMPU/mW7ejG0CBSxnBvFgp5qrjWml3DEUYT5
+   b8wRYMi91WCGQcgtSQu2GFpyG+FOhvQPZzhMeFXq24al7bod5xlRnbkaC
+   r319SHDm3rQzlVs3/SZOqZM/lEaiwC/KwLdgJJnRNgoFXu6rUQZZU4Qzc
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="395647075"
+X-IronPort-AV: E=Sophos;i="6.04,232,1695711600"; 
+   d="scan'208";a="395647075"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 17:55:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="1015754868"
+X-IronPort-AV: E=Sophos;i="6.04,232,1695711600"; 
+   d="scan'208";a="1015754868"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 17:55:58 -0800
+Received: from luisdsan-mobl28.amr.corp.intel.com (unknown [10.209.42.149])
+        by linux.intel.com (Postfix) with ESMTP id 440C2580AA7;
+        Mon, 27 Nov 2023 17:55:58 -0800 (PST)
+Message-ID: <adb8c80395d2c23488496b9ad323bfc265ad3514.camel@linux.intel.com>
+Subject: Re: [PATCH V5 12/20] asm-generic/io.h: iounmap/ioport_unmap
+ cleanup.h support
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        bhe@redhat.com, schnelle@linux.ibm.com
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com,
+        dave.hansen@linux.intel.com, peterz@infradead.org
+Date:   Mon, 27 Nov 2023 17:55:58 -0800
+In-Reply-To: <f83e4a40-314-d279-75e6-17ad83501982@linux.intel.com>
+References: <20231123040355.82139-1-david.e.box@linux.intel.com>
+         <20231123040355.82139-13-david.e.box@linux.intel.com>
+         <f83e4a40-314-d279-75e6-17ad83501982@linux.intel.com>
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/1] locking: introduce devm_mutex_init and
- devm_mutex_destroy
-Content-Language: en-US
-To:     George Stark <gnstark@salutedevices.com>, peterz@infradead.org,
-        mingo@redhat.com, will@kernel.org, boqun.feng@gmail.com,
-        andriy.shevchenko@linux.intel.com, jic23@kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel@salutedevices.com
-References: <20231128000910.73784-1-gnstark@salutedevices.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20231128000910.73784-1-gnstark@salutedevices.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,90 +72,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/23 19:09, George Stark wrote:
-> Using of devm API leads to certain order of releasing resources.
-> So all dependent resources which are not devm-wrapped should be deleted
-> with respect to devm-release order. Mutex is one of such objects that
-> often is bound to other resources and has no own devm wrapping.
-> Since mutex_destroy() actually does nothing in non-debug builds
-> frequently calling mutex_destroy() is just ignored which is safe for now
-> but wrong formally and can lead to a problem if mutex_destroy() will be
-> extended so introduce devm_mutex_init() and devm_mutex_destroy().
->
-> Signed-off-by: George Stark <gnstark@salutedevices.com>
-> ---
->   include/linux/mutex.h  |  3 +++
->   kernel/locking/mutex.c | 37 +++++++++++++++++++++++++++++++++++++
->   2 files changed, 40 insertions(+)
->
-> diff --git a/include/linux/mutex.h b/include/linux/mutex.h
-> index a33aa9eb9fc3..7f60cd842322 100644
-> --- a/include/linux/mutex.h
-> +++ b/include/linux/mutex.h
-> @@ -119,6 +119,9 @@ do {									\
->   extern void __mutex_init(struct mutex *lock, const char *name,
->   			 struct lock_class_key *key);
->   
-> +int devm_mutex_init(struct device *dev, struct mutex *lock);
-> +void devm_mutex_destroy(struct device *dev, struct mutex *lock);
-> +
->   /**
->    * mutex_is_locked - is the mutex locked
->    * @lock: the mutex to be queried
-> diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-> index d973fe6041bf..a73124719dcb 100644
-> --- a/kernel/locking/mutex.c
-> +++ b/kernel/locking/mutex.c
-> @@ -56,6 +56,43 @@ __mutex_init(struct mutex *lock, const char *name, struct lock_class_key *key)
->   }
->   EXPORT_SYMBOL(__mutex_init);
->   
-> +static void devm_mutex_release(struct device *dev, void *res)
-> +{
-> +	mutex_destroy(*(struct mutex **)res);
-> +}
-> +
-> +static int devm_mutex_match(struct device *dev, void *res, void *data)
-> +{
-> +	struct mutex **r = res;
-> +
-> +	if (WARN_ON(!r || !*r))
-> +		return 0;
-> +
-> +	return *r == data;
-> +}
-> +
-> +int devm_mutex_init(struct device *dev, struct mutex *lock)
-> +{
-> +	struct mutex **ptr;
-> +
-> +	ptr = devres_alloc(devm_mutex_release, sizeof(*ptr), GFP_KERNEL);
-> +	if (!ptr)
-> +		return -ENOMEM;
-> +
-> +	mutex_init(lock);
-> +
-> +	*ptr = lock;
-> +	devres_add(dev, ptr);
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(devm_mutex_init);
-> +
-> +void devm_mutex_destroy(struct device *dev, struct mutex *lock)
-> +{
-> +	devres_release(dev, devm_mutex_release, devm_mutex_match, lock);
-> +}
-> +EXPORT_SYMBOL(devm_mutex_destroy);
-> +
->   /*
->    * @owner: contains: 'struct task_struct *' to the current lock owner,
->    * NULL means not owned. Since task_struct pointers are aligned at
++Baoquan for ioremap question.
 
-These APIs are specific to devres. I don't believe it is suitable to put 
-them into the generic mutex.h header file. All devres_* functions are 
-defined in include/linux/device.h which is probabably not included in 
-mutex.h. You may consider putting these APIs into device.h instead.
+On Thu, 2023-11-23 at 16:30 +0200, Ilpo J=C3=A4rvinen wrote:
+> On Wed, 22 Nov 2023, David E. Box wrote:
+>=20
+> > Add auto-release cleanups for iounmap() and ioport_unmap().
+> >=20
+> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> > Suggested-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+> > ---
+> > V2 - Move from linux/io.h to asm-generic/io.h. Adds iounmap cleanup if
+> > =C2=A0=C2=A0=C2=A0=C2=A0 iounmap() is defined. Adds ioport_unmap cleanu=
+p if CONFIG_IOPORT_MAP
+> > =C2=A0=C2=A0=C2=A0=C2=A0 is defined.
+> >=20
+> > =C2=A0include/asm-generic/io.h | 6 ++++++
+> > =C2=A01 file changed, 6 insertions(+)
+> >=20
+> > diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
+> > index bac63e874c7b..9ef0332490b1 100644
+> > --- a/include/asm-generic/io.h
+> > +++ b/include/asm-generic/io.h
+> > @@ -8,6 +8,7 @@
+> > =C2=A0#define __ASM_GENERIC_IO_H
+> > =C2=A0
+> > =C2=A0#include <asm/page.h> /* I/O is all done through memory accesses =
+*/
+> > +#include <linux/cleanup.h>
+> > =C2=A0#include <linux/string.h> /* for memset() and memcpy() */
+> > =C2=A0#include <linux/types.h>
+> > =C2=A0#include <linux/instruction_pointer.h>
+> > @@ -1065,6 +1066,10 @@ static inline void __iomem *ioremap(phys_addr_t =
+addr,
+> > size_t size)
+> > =C2=A0#endif
+> > =C2=A0#endif /* !CONFIG_MMU || CONFIG_GENERIC_IOREMAP */
+> > =C2=A0
+> > +#ifdef iounmap
+> > +DEFINE_FREE(iounmap, void __iomem *, iounmap(_T));
+> > +#endif
 
-Cheers,
-Longman
+Baoquan, LKP is reporting an undeclared function 'iounmap' error with the a=
+bove
+change from this patch when building for s390 with PCI disabled. The iorema=
+p
+defines in arch/s390/include/asm/io.h are not wrapped under the #ifdef
+CONFIG_PCI block. Shouldn't they be since the s390 Kconfig only adds
+GENERIC_IOREMAP if PCI?
+
+https://lore.kernel.org/oe-kbuild-all/202311241214.jcL84du7-lkp@intel.com
+
+
+Note that the report includes pointer arithmetic warnings that are not rela=
+ted
+to this patch. Those warnings occur in mainline as well.
+
+David
+
+> > +
+> > =C2=A0#ifndef ioremap_wc
+> > =C2=A0#define ioremap_wc ioremap
+> > =C2=A0#endif
+> > @@ -1127,6 +1132,7 @@ static inline void ioport_unmap(void __iomem *p)
+> > =C2=A0extern void __iomem *ioport_map(unsigned long port, unsigned int =
+nr);
+> > =C2=A0extern void ioport_unmap(void __iomem *p);
+> > =C2=A0#endif /* CONFIG_GENERIC_IOMAP */
+> > +DEFINE_FREE(ioport_unmap, void __iomem *, ioport_unmap(_T));
+> > =C2=A0#endif /* CONFIG_HAS_IOPORT_MAP */
+> > =C2=A0
+> > =C2=A0#ifndef CONFIG_GENERIC_IOMAP
+>=20
+> Has this now built successfully with LKP? (I don't think we get success=
+=20
+> notifications from LKP for patch submissions, only failures).
+>=20
+> There were some odd errors last time but I think all they were unrelated=
+=20
+> to this change (besides the checkpatch false positive, I mean).
+>=20
 
