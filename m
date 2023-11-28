@@ -2,59 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D57037FB180
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 06:45:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B957FB182
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 06:46:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343581AbjK1Fpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 00:45:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34368 "EHLO
+        id S1343569AbjK1FqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 00:46:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343682AbjK1FpW (ORCPT
+        with ESMTP id S1343670AbjK1Fpf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 00:45:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8045319AD
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 21:45:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701150308;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=DkFOYUhEAoDi41UNIQLbbZKM5BkyisGjvMBAr8Dzpp4=;
-        b=UC6uMP89GRA20ba+XMVnkkuIej7wHTfZGVKVl/OVfBSytwl5LCtI/7ye4c7Ys0dBY3xLou
-        qOwXOaSsssq/U7787h2P5mQP/V/P7EILxeDTM6EeUQod8ZEnTy9PO+3X0mfmjGb/4XmzMv
-        i8+VVIxbfYQtt3Ns7jCqfH9DbB/B+eU=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-552-m6uElDqCN9--93qcEkaJNw-1; Tue, 28 Nov 2023 00:45:04 -0500
-X-MC-Unique: m6uElDqCN9--93qcEkaJNw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1800E185A780;
-        Tue, 28 Nov 2023 05:45:04 +0000 (UTC)
-Received: from MiWiFi-R3L-srv.redhat.com (unknown [10.72.112.30])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E8C685028;
-        Tue, 28 Nov 2023 05:45:00 +0000 (UTC)
-From:   Baoquan He <bhe@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-        akpm@linux-foundation.org, ignat@cloudflare.com,
-        eric_devolder@yahoo.com, agordeev@linux.ibm.com,
-        Baoquan He <bhe@redhat.com>
-Subject: [PATCH v2] kernel/Kconfig.kexec: drop select of KEXEC for CRASH_DUMP
-Date:   Tue, 28 Nov 2023 13:44:57 +0800
-Message-ID: <20231128054457.659452-1-bhe@redhat.com>
+        Tue, 28 Nov 2023 00:45:35 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7CC010C3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 21:45:38 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E651C433C7;
+        Tue, 28 Nov 2023 05:45:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701150338;
+        bh=IpdDHxnNUn+Hb3z1l3qGEkObmpbHSBRfgo+SKmvwZ5o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=saHyu7lNp0b6woOoouZ9hk5wL7KbSDmevsLyOGFewWjonoTx9XL7yZUOr3kZaJIuE
+         pf1MKQAUh01DIwrJAKdq+TT5S82eQh4XMjgelEvAdpqmA+MmiXOSmgnnAnY2YBaE3E
+         mtne3FqO7JytprCHGNlTSCbr/NxNXdzYLunWhGs6bavezuC+SWT2Dcpkf1C1mtvDBa
+         dHk2m45LvUlOqd7Yokd0VsLc3OEGp+qYM8XLF/PNK2V/Q4JrASRf9OryqU5POR1Ufc
+         2zLAznk/aQZ8EYz7MuVD/plLW472lq1mi/YSFCLweWZeU5QzocihKimOryvwV50y+z
+         R45h6Bn8YhBKA==
+Date:   Tue, 28 Nov 2023 11:15:22 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Can Guo <quic_cang@quicinc.com>
+Cc:     bvanassche@acm.org, adrian.hunter@intel.com, beanhuo@micron.com,
+        avri.altman@wdc.com, junwoo80.lee@samsung.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 04/10] scsi: ufs: ufs-qcom: Limit negotiated gear to
+ selected PHY gear
+Message-ID: <20231128054522.GF3088@thinkpad>
+References: <1700729190-17268-1-git-send-email-quic_cang@quicinc.com>
+ <1700729190-17268-5-git-send-email-quic_cang@quicinc.com>
 MIME-Version: 1.0
-Content-type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <1700729190-17268-5-git-send-email-quic_cang@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,85 +58,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ignat Korchagin complained that a potential config regression was
-introduced by commit 89cde455915f ("kexec: consolidate kexec and
-crash options into kernel/Kconfig.kexec"). Before the commit,
-CONFIG_CRASH_DUMP has no dependency on CONFIG_KEXEC. After the commit,
-CRASH_DUMP selects KEXEC. That enforces system to have CONFIG_KEXEC=y
-as long as CONFIG_CRASH_DUMP=Y which people may not want.
+On Thu, Nov 23, 2023 at 12:46:24AM -0800, Can Guo wrote:
+> In the dual init scenario, the initial PHY gear is set to HS-G2, and the
+> first Power Mode Change (PMC) is meant to find the best matching PHY gear
+> for the 2nd init. However, for the first PMC, if the negotiated gear (say
+> HS-G4) is higher than the initial PHY gear, we cannot go ahead let PMC to
+> the negotiated gear happen, because the programmed UFS PHY settings may not
+> support the negotiated gear. Fix it by overwriting the negotiated gear with
+> the PHY gear.
+> 
 
-In Ignat's case, he sets CONFIG_CRASH_DUMP=y, CONFIG_KEXEC_FILE=y and
-CONFIG_KEXEC=n because kexec_load interface could have security issue if
-kernel/initrd has no chance to be signed and verified.
+I don't quite understand this patch. If the phy_gear is G2 initially and the
+negotiated gear is G4, then as per this change,
 
-CRASH_DUMP has select of KEXEC because Eric, author of above commit,
-met a LKP report of build failure when posting patch of earlier version.
-Please see below link to get detail of the LKP report:
+phy_gear = G4;
+negotiated gear = G2;
 
-    https://lore.kernel.org/all/3e8eecd1-a277-2cfb-690e-5de2eb7b988e@oracle.com/T/#u
+Could you please explain how this make sense?
 
-In fact, that LKP report is triggered because arm's <asm/kexec.h> is
-wrapped in CONFIG_KEXEC ifdeffery scope. That is wrong. CONFIG_KEXEC
-controls the enabling/disabling of kexec_load interface, but not kexec
-feature. Removing the wrongly added CONFIG_KEXEC ifdeffery scope in
-<asm/kexec.h> of arm allows us to drop the select KEXEC for CRASH_DUMP.
-Meanwhile, change arch/arm/kernel/Makefile to let machine_kexec.o
-relocate_kernel.o depend on KEXEC_CORE.
+- Mani
 
-Fixes: commit 89cde455915f ("kexec: consolidate kexec and crash options into kernel/Kconfig.kexec")
-Reported-by: Ignat Korchagin <ignat@cloudflare.com>
-Signed-off-by: Baoquan He <bhe@redhat.com>
----
- arch/arm/include/asm/kexec.h | 4 ----
- arch/arm/kernel/Makefile     | 2 +-
- kernel/Kconfig.kexec         | 1 -
- 3 files changed, 1 insertion(+), 6 deletions(-)
+> Signed-off-by: Can Guo <quic_cang@quicinc.com>
+> ---
+>  drivers/ufs/host/ufs-qcom.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> index cc0eb37..d4edf58 100644
+> --- a/drivers/ufs/host/ufs-qcom.c
+> +++ b/drivers/ufs/host/ufs-qcom.c
+> @@ -920,8 +920,13 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
+>  		 * because, the PHY gear settings are backwards compatible and we only need to
+>  		 * change the PHY gear settings while scaling to higher gears.
+>  		 */
+> -		if (dev_req_params->gear_tx > host->phy_gear)
+> +		if (dev_req_params->gear_tx > host->phy_gear) {
+> +			u32 old_phy_gear = host->phy_gear;
+> +
+>  			host->phy_gear = dev_req_params->gear_tx;
+> +			dev_req_params->gear_tx = old_phy_gear;
+> +			dev_req_params->gear_rx = old_phy_gear;
+> +		}
+>  
+>  		/* enable the device ref clock before changing to HS mode */
+>  		if (!ufshcd_is_hs_mode(&hba->pwr_info) &&
+> -- 
+> 2.7.4
+> 
 
-diff --git a/arch/arm/include/asm/kexec.h b/arch/arm/include/asm/kexec.h
-index e62832dcba76..a8287e7ab9d4 100644
---- a/arch/arm/include/asm/kexec.h
-+++ b/arch/arm/include/asm/kexec.h
-@@ -2,8 +2,6 @@
- #ifndef _ARM_KEXEC_H
- #define _ARM_KEXEC_H
- 
--#ifdef CONFIG_KEXEC
--
- /* Maximum physical address we can use pages from */
- #define KEXEC_SOURCE_MEMORY_LIMIT (-1UL)
- /* Maximum address we can reach in physical address mode */
-@@ -82,6 +80,4 @@ static inline struct page *boot_pfn_to_page(unsigned long boot_pfn)
- 
- #endif /* __ASSEMBLY__ */
- 
--#endif /* CONFIG_KEXEC */
--
- #endif /* _ARM_KEXEC_H */
-diff --git a/arch/arm/kernel/Makefile b/arch/arm/kernel/Makefile
-index d53f56d6f840..771264d4726a 100644
---- a/arch/arm/kernel/Makefile
-+++ b/arch/arm/kernel/Makefile
-@@ -59,7 +59,7 @@ obj-$(CONFIG_FUNCTION_TRACER)	+= entry-ftrace.o
- obj-$(CONFIG_DYNAMIC_FTRACE)	+= ftrace.o insn.o patch.o
- obj-$(CONFIG_FUNCTION_GRAPH_TRACER)	+= ftrace.o insn.o patch.o
- obj-$(CONFIG_JUMP_LABEL)	+= jump_label.o insn.o patch.o
--obj-$(CONFIG_KEXEC)		+= machine_kexec.o relocate_kernel.o
-+obj-$(CONFIG_KEXEC_CORE)	+= machine_kexec.o relocate_kernel.o
- # Main staffs in KPROBES are in arch/arm/probes/ .
- obj-$(CONFIG_KPROBES)		+= patch.o insn.o
- obj-$(CONFIG_OABI_COMPAT)	+= sys_oabi-compat.o
-diff --git a/kernel/Kconfig.kexec b/kernel/Kconfig.kexec
-index 7aff28ded2f4..1cc3b1c595d7 100644
---- a/kernel/Kconfig.kexec
-+++ b/kernel/Kconfig.kexec
-@@ -97,7 +97,6 @@ config CRASH_DUMP
- 	depends on ARCH_SUPPORTS_KEXEC
- 	select CRASH_CORE
- 	select KEXEC_CORE
--	select KEXEC
- 	help
- 	  Generate crash dump after being started by kexec.
- 	  This should be normally only set in special crash dump kernels
 -- 
-2.41.0
-
+மணிவண்ணன் சதாசிவம்
