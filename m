@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF2DE7FBAA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 14:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 276237FBAAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 14:00:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344844AbjK1NAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 08:00:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48934 "EHLO
+        id S1344852AbjK1NAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 08:00:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344840AbjK1NA3 (ORCPT
+        with ESMTP id S1344891AbjK1NAk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 08:00:29 -0500
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2078.outbound.protection.outlook.com [40.107.244.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B07C8D72;
-        Tue, 28 Nov 2023 05:00:34 -0800 (PST)
+        Tue, 28 Nov 2023 08:00:40 -0500
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2070.outbound.protection.outlook.com [40.107.220.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DF51702;
+        Tue, 28 Nov 2023 05:00:41 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aEWO6fgRq7y9owoRHHE+C+BdqiYjsyDQ0Up4vC5qfPvW3tgLEo5fxx1GEDjSL/1IK/49GOsFsEvlOBXHNhZpXCwTAKLsbC/gD5RhUbIC/EUB+9XJUnqh0K5aN8wjyDsk2R0YX/Bj0GvYs9krpirdByl1OZ3ts1FghqPsVncXiPhT2eTDdlhe2el7/tpPx8KDGLJT9gB7Kj6K36raotY49ktBiIL6tr7tHfGlrZiSxzkOM08L/nrD7mcyQZZSvtAG1z/aPF1Id/wKb0GbpW2TAK1oyu2GlzHlA6AlU9ZubP+3RrewWnVCbkOB8/CX/YC5nMiA4IRbf6NwqP+d4vrLBQ==
+ b=lYOSo6KdqDl4mkVBuOZPAVzmxzj2iewSYf9xTzqeQ4s5Gmka7qyWtOaEhFje4Lv5sdENsm91DqZ9HYoJZ5m+lhupsBQ63mlSRQV421fn1RNQUhwEu8ln4oLWRv0HGj380zW4EpI2qd56lZZL/7za7ZxO6qFWfg8Xk/b7fcwQlMMuacEbMzsRbLHqsdU08MamhVNwzhXbgRig1OLkcLOMvva2B+3WsUlyFQOMpBRPx6a3EIdrM5DmxzNT3kCP41vVnpI3LSAomYHbem6lV+BY1oJnVtJYXwzcMTpQtUt2nluDrhiR1+XgCmOOvO30uSH8M55+bW+E5ceIKnmMaMskaQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7T3zDODN927+8s4apyuLZYZicHXyFa2x66/1zTcElM4=;
- b=WA6Ywk1oC03N77JgHE1WY0JiABOGwc5chaqow8SLGSLdx6gA/4mxTjWNMTfKhBGBWu4JJhEmuKZ4UvqY0FG5e1RGHRGI/G+Nr+Z1jDAk3bxkxv3PKa/cDucschjrj60UmdA7zEt0MjVFIxk14hO+9XanW70gYRx9ebQGzAKLTXS4Dg7b/qIzCWlRNA3lVv7Ipbvohxt67VQShNoPvYyVCMLgzKQg3JhRxJKmzTGMJpuZj5/LN3jdNBMN+OXRNyjyNmYwiMtBk6OX405yhV+CpTQUBRfMobUL+YRzcC+spQFyl3Awh2AlzkB1TBP6zo1oeLD/CL9m/HEhX0ipg9oKig==
+ bh=umd0BtZh8h70YPkvnUqmLlRivnCav1cJRD2MEsZFvOI=;
+ b=lZ9s+fTT/D1l7xwQTyyn77IPom+wsTkox5WAHQB1eLo1HJS8oU8nS1xqpMQysaOOWECeo5X1L2jPmib1VCmSz3JJVkTYJTldp85pEHkNopCNVjfEb+glQSRv+dp7tbhRXxljXOW1E+0cNlOahAY7Q6XbWs83lo5FPQK0N8jPcUs02QLS9hQsK4U738PD4+HMmz0Z6+aVEekgHzFIh5KoE4ejKPTo6jB+yTHVE2PPaXpnuj98AI762Rj+m5FTO+poFxn54koqGCi9EDmAL9hnZoSrW9CNCVWHZY1CXjdojDcVKMRIVX4un5CCttFvAoM63bwpc55PBdmu1dtZ0n4OfA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7T3zDODN927+8s4apyuLZYZicHXyFa2x66/1zTcElM4=;
- b=T9nb74RM5F020WApb1yl7kNya1jEKlnR1ePydQLNVk41KayibOYUsfSLZtr1mgRV8ifyF6SbWncsz7obFUSeFw0C40deLmLM2XyBVA/yOmRIB6bGBtORkE9Nwxqqp3xq3k+y1ySzXWzurkOyRibLWYdc0lhBQPhhkI1fRAfkF+o=
-Received: from DM6PR07CA0129.namprd07.prod.outlook.com (2603:10b6:5:330::23)
- by SA0PR12MB4430.namprd12.prod.outlook.com (2603:10b6:806:70::20) with
+ bh=umd0BtZh8h70YPkvnUqmLlRivnCav1cJRD2MEsZFvOI=;
+ b=ya0s0xEiKLR+hqUMfXma/lb1FrldaKN1o/IWwZwSAfEklB5z36Nj7WyuBowemlTNQU6XZtaNWhKlbo9b0NlRWtJb3tGDSESwK2UN0RljBOKb41+s/JGFlKQcmMUhczPCFVWqKzSeqJflB34wNkKEFJyv6gvODRtGVVJ1/YGul/M=
+Received: from CH2PR20CA0017.namprd20.prod.outlook.com (2603:10b6:610:58::27)
+ by SA3PR12MB9160.namprd12.prod.outlook.com (2603:10b6:806:399::9) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Tue, 28 Nov
- 2023 13:00:31 +0000
-Received: from CY4PEPF0000EE37.namprd05.prod.outlook.com
- (2603:10b6:5:330:cafe::cf) by DM6PR07CA0129.outlook.office365.com
- (2603:10b6:5:330::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29 via Frontend
- Transport; Tue, 28 Nov 2023 13:00:31 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Tue, 28 Nov
+ 2023 13:00:39 +0000
+Received: from CY4PEPF0000EE33.namprd05.prod.outlook.com
+ (2603:10b6:610:58:cafe::b7) by CH2PR20CA0017.outlook.office365.com
+ (2603:10b6:610:58::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.22 via Frontend
+ Transport; Tue, 28 Nov 2023 13:00:38 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -47,13 +47,13 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000EE37.mail.protection.outlook.com (10.167.242.43) with Microsoft
+ CY4PEPF0000EE33.mail.protection.outlook.com (10.167.242.39) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7046.17 via Frontend Transport; Tue, 28 Nov 2023 13:00:31 +0000
+ 15.20.7046.17 via Frontend Transport; Tue, 28 Nov 2023 13:00:38 +0000
 Received: from gomati.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 28 Nov
- 2023 07:00:26 -0600
+ 2023 07:00:34 -0600
 From:   Nikunj A Dadhania <nikunj@amd.com>
 To:     <linux-kernel@vger.kernel.org>, <thomas.lendacky@amd.com>,
         <x86@kernel.org>, <kvm@vger.kernel.org>
@@ -61,9 +61,9 @@ CC:     <bp@alien8.de>, <mingo@redhat.com>, <tglx@linutronix.de>,
         <dave.hansen@linux.intel.com>, <dionnaglaze@google.com>,
         <pgonda@google.com>, <seanjc@google.com>, <pbonzini@redhat.com>,
         <nikunj@amd.com>
-Subject: [PATCH v6 01/16] virt: sev-guest: Use AES GCM crypto library
-Date:   Tue, 28 Nov 2023 18:29:44 +0530
-Message-ID: <20231128125959.1810039-2-nikunj@amd.com>
+Subject: [PATCH v6 03/16] virt: sev-guest: Replace dev_dbg with pr_debug
+Date:   Tue, 28 Nov 2023 18:29:46 +0530
+Message-ID: <20231128125959.1810039-4-nikunj@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231128125959.1810039-1-nikunj@amd.com>
 References: <20231128125959.1810039-1-nikunj@amd.com>
@@ -75,23 +75,23 @@ X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE37:EE_|SA0PR12MB4430:EE_
-X-MS-Office365-Filtering-Correlation-Id: abcd63a9-e1dc-4790-54c7-08dbf01200d8
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE33:EE_|SA3PR12MB9160:EE_
+X-MS-Office365-Filtering-Correlation-Id: b72bd33c-a6b5-49e6-73fa-08dbf01204fe
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PzcSa2PQOvt4+EH5cw8vMoDP94kybE5evcBChce9d5yhe8aw/ZRQDJfQZwc/6pocfUj0levmhAh9D3TcK6EHX5EbgoOEbHPN+jAeZKxdSUsO4fIbl999xajX5LVWh29Y9o7niGovss97msODtlB2ekBTN6Z5vgtMMbHkebDj3bwhgWwTHYadrV/Zp4jjd159LnXtcnzaVApCElZFqhG3f4ES4eoLe+zVcg6aKMHRIwlbbgYTXV8gm1wkDClOYKSwjhDbWnwJHwkPfF4U79/fYWOdQIqOkIjdwVCkpMhyZj36B9j87Z9s7pCZf780xy1UWExZwRCIMMxwcrPLDt+5ty7uL8PwYleVBLpm9Uboxo7lkcTHi+WT8egXBGfZ77Oho/7IqoymqfJWc6PoGosGK53kD0noRzzVBAFMHek8Ld9DCIsSY/Q3xka8joptTe70u7Et2lliDPx4xsjVwpFuh+gBzQIJ7C0hRbej79oRfiSwPQyrncMxkfXH/Vy64QsQb7s8DTAVYh9b8e7A2xc1HVyysARULv7A3uHqvot9jsRhaLNvkCjNd+/G/DIOEjqHqyw3XiCRmlLYVmfVUwLkAu9Oox10sYC4wM9buLKnCuCUPRe+aWX+HBGufH0sp3oG7YKQNH1uYdmvaA+CyMbtFmSJ+EkC4tNGHO96B7gJg83ysSsRU3W7QXm5XPKeG/rNEo9bJfKYQg1x7cqBa5fNP5TG+HeXPUK6lG6fRgItw9gEty663xxjmBRb0Qyi5KVLXvNYK8hW1RPOHsL6cPNung==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(376002)(346002)(39860400002)(396003)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(82310400011)(40470700004)(46966006)(36840700001)(6666004)(8936002)(8676002)(4326008)(7696005)(54906003)(110136005)(70586007)(70206006)(316002)(478600001)(40460700003)(36860700001)(81166007)(30864003)(356005)(47076005)(41300700001)(1076003)(36756003)(26005)(16526019)(2906002)(2616005)(40480700001)(83380400001)(336012)(426003)(7416002)(82740400003)(5660300002)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: FceRks+WbgOE6yuMuo4Oa/I3AG7m1+cdEP0Ay00RcjSg8UIkQlibkxmp03OawXSt+oZy77fzEI8rIzGC0GddDRPX16Kspm+GvlpxhBONIR4bm42xq/++mZMf+0AmFBv1hM9rVSBwRLSf1bf4oFnoxtrNdF3oDNGHChRchX1IUpje7SEZc72i+9dWEsY/UqsiicVs6m1Hmn6FtSiM73uMlFvN2FkUREsm/50PwDZfidWpYZ5pGAwN6X/GZ7dm72JbyV1VooXE1yWnaW5UT4H6CUNcXOZYSZ5VF0etdhIEAty8z+mzbU8KDRlBM3EOjslppsTs3R6jtVY0XAIvuYgnHluYvdGjJd13ikRDS6sHeajyF9EVpnpRhf/pRsfv7bydicuSmdxfZg/h69qiKwHvv8lK3ovNS1BqMTNdnG7wlCk/v/8IdUESgaIByqC03KqfdWV/NUc7dYj5lCM6TO3Kgfmqkgg/UQ2K4PL6E5wnhmYrfUrjCYyeejyeVBPkAhnahLCHG214UpCznIwgjKAML4OKgruNYjbSsT9DJY/kV61r6u9htvZeX4bxfqwdSMJHrqJAXko5nPAUPP2A+TVsK2XLLXuTLalvrZTCjjbDwVWdNgNHjnf11/cbdYIw3DUJ/T2xAy/vLzTpmE5ZgsMkVfg5L/ZXt5nox/kQxFaSQl42YGmCAAucNhw2zlc7CGfuTuHmtSCrDrGJseMJZtAFa/vnadRYpndCskY0KBIju4uc2DDyEaBA4XVqY4JRVYd6aN54/iw1gkkO8JEq2imCWg==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(346002)(376002)(136003)(396003)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(82310400011)(46966006)(36840700001)(40470700004)(82740400003)(356005)(81166007)(40460700003)(36756003)(478600001)(316002)(110136005)(70586007)(26005)(5660300002)(16526019)(1076003)(54906003)(70206006)(426003)(6666004)(7696005)(2616005)(336012)(4326008)(2906002)(7416002)(41300700001)(8676002)(8936002)(36860700001)(40480700001)(83380400001)(47076005)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 13:00:31.6374
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 13:00:38.5669
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: abcd63a9-e1dc-4790-54c7-08dbf01200d8
+X-MS-Exchange-CrossTenant-Network-Message-Id: b72bd33c-a6b5-49e6-73fa-08dbf01204fe
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE37.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE33.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4430
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB9160
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
@@ -102,372 +102,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sev-guest driver encryption code uses Crypto API for SNP guest
-messaging to interact with AMD Security processor. For enabling SecureTSC,
-SEV-SNP guests need to send a TSC_INFO request guest message before the
-smpboot phase starts. Details from the TSC_INFO response will be used to
-program the VMSA before the secondary CPUs are brought up. The Crypto API
-is not available this early in the boot phase.
+In preparation of moving code to arch/x86/kernel/sev.c,
+replace dev_dbg with pr_debug.
 
-In preparation of moving the encryption code out of sev-guest driver to
-support SecureTSC and make reviewing the diff easier, start using AES GCM
-library implementation instead of Crypto API.
-
-Drop __enc_payload() and dec_payload() helpers as both are pretty small and
-can be moved to the respective callers.
-
-CC: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Nikunj A Dadhania <nikunj@amd.com>
 Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
 ---
- drivers/virt/coco/sev-guest/Kconfig     |   4 +-
- drivers/virt/coco/sev-guest/sev-guest.c | 175 ++++++------------------
- drivers/virt/coco/sev-guest/sev-guest.h |   3 +
- 3 files changed, 43 insertions(+), 139 deletions(-)
+ drivers/virt/coco/sev-guest/sev-guest.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/virt/coco/sev-guest/Kconfig b/drivers/virt/coco/sev-guest/Kconfig
-index 1cffc72c41cb..0b772bd921d8 100644
---- a/drivers/virt/coco/sev-guest/Kconfig
-+++ b/drivers/virt/coco/sev-guest/Kconfig
-@@ -2,9 +2,7 @@ config SEV_GUEST
- 	tristate "AMD SEV Guest driver"
- 	default m
- 	depends on AMD_MEM_ENCRYPT
--	select CRYPTO
--	select CRYPTO_AEAD2
--	select CRYPTO_GCM
-+	select CRYPTO_LIB_AESGCM
- 	select TSM_REPORTS
- 	help
- 	  SEV-SNP firmware provides the guest a mechanism to communicate with
 diff --git a/drivers/virt/coco/sev-guest/sev-guest.c b/drivers/virt/coco/sev-guest/sev-guest.c
-index bc564adcf499..aedc842781b6 100644
+index 8382fd657e67..917c19e9e5ed 100644
 --- a/drivers/virt/coco/sev-guest/sev-guest.c
 +++ b/drivers/virt/coco/sev-guest/sev-guest.c
-@@ -17,8 +17,7 @@
- #include <linux/set_memory.h>
- #include <linux/fs.h>
- #include <linux/tsm.h>
--#include <crypto/aead.h>
--#include <linux/scatterlist.h>
-+#include <crypto/gcm.h>
- #include <linux/psp-sev.h>
- #include <linux/sockptr.h>
- #include <linux/cleanup.h>
-@@ -32,24 +31,16 @@
- #include "sev-guest.h"
+@@ -178,8 +178,9 @@ static int verify_and_dec_payload(struct snp_guest_dev *snp_dev, void *payload,
+ 	struct aesgcm_ctx *ctx = snp_dev->ctx;
+ 	u8 iv[GCM_AES_IV_SIZE] = {};
  
- #define DEVICE_NAME	"sev-guest"
--#define AAD_LEN		48
--#define MSG_HDR_VER	1
+-	dev_dbg(snp_dev->dev, "response [seqno %lld type %d version %d sz %d]\n",
+-		resp_hdr->msg_seqno, resp_hdr->msg_type, resp_hdr->msg_version, resp_hdr->msg_sz);
++	pr_debug("response [seqno %lld type %d version %d sz %d]\n",
++		 resp_hdr->msg_seqno, resp_hdr->msg_type, resp_hdr->msg_version,
++		 resp_hdr->msg_sz);
  
- #define SNP_REQ_MAX_RETRY_DURATION	(60*HZ)
- #define SNP_REQ_RETRY_DELAY		(2*HZ)
+ 	/* Copy response from shared memory to encrypted memory. */
+ 	memcpy(resp, snp_dev->response, sizeof(*resp));
+@@ -232,8 +233,8 @@ static int enc_payload(struct snp_guest_dev *snp_dev, u64 seqno, int version, u8
+ 	if (!hdr->msg_seqno)
+ 		return -ENOSR;
  
--struct snp_guest_crypto {
--	struct crypto_aead *tfm;
--	u8 *iv, *authtag;
--	int iv_len, a_len;
--};
--
- struct snp_guest_dev {
- 	struct device *dev;
- 	struct miscdevice misc;
+-	dev_dbg(snp_dev->dev, "request [seqno %lld type %d version %d sz %d]\n",
+-		hdr->msg_seqno, hdr->msg_type, hdr->msg_version, hdr->msg_sz);
++	pr_debug("request [seqno %lld type %d version %d sz %d]\n",
++		 hdr->msg_seqno, hdr->msg_type, hdr->msg_version, hdr->msg_sz);
  
- 	void *certs_data;
--	struct snp_guest_crypto *crypto;
-+	struct aesgcm_ctx *ctx;
- 	/* request and response are in unencrypted memory */
- 	struct snp_guest_msg *request, *response;
- 
-@@ -161,132 +152,31 @@ static inline struct snp_guest_dev *to_snp_dev(struct file *file)
- 	return container_of(dev, struct snp_guest_dev, misc);
- }
- 
--static struct snp_guest_crypto *init_crypto(struct snp_guest_dev *snp_dev, u8 *key, size_t keylen)
-+static struct aesgcm_ctx *snp_init_crypto(u8 *key, size_t keylen)
- {
--	struct snp_guest_crypto *crypto;
-+	struct aesgcm_ctx *ctx;
- 
--	crypto = kzalloc(sizeof(*crypto), GFP_KERNEL_ACCOUNT);
--	if (!crypto)
-+	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL_ACCOUNT);
-+	if (!ctx)
- 		return NULL;
- 
--	crypto->tfm = crypto_alloc_aead("gcm(aes)", 0, 0);
--	if (IS_ERR(crypto->tfm))
--		goto e_free;
--
--	if (crypto_aead_setkey(crypto->tfm, key, keylen))
--		goto e_free_crypto;
--
--	crypto->iv_len = crypto_aead_ivsize(crypto->tfm);
--	crypto->iv = kmalloc(crypto->iv_len, GFP_KERNEL_ACCOUNT);
--	if (!crypto->iv)
--		goto e_free_crypto;
--
--	if (crypto_aead_authsize(crypto->tfm) > MAX_AUTHTAG_LEN) {
--		if (crypto_aead_setauthsize(crypto->tfm, MAX_AUTHTAG_LEN)) {
--			dev_err(snp_dev->dev, "failed to set authsize to %d\n", MAX_AUTHTAG_LEN);
--			goto e_free_iv;
--		}
-+	if (aesgcm_expandkey(ctx, key, keylen, AUTHTAG_LEN)) {
-+		pr_err("Crypto context initialization failed\n");
-+		kfree(ctx);
-+		return NULL;
- 	}
- 
--	crypto->a_len = crypto_aead_authsize(crypto->tfm);
--	crypto->authtag = kmalloc(crypto->a_len, GFP_KERNEL_ACCOUNT);
--	if (!crypto->authtag)
--		goto e_free_iv;
--
--	return crypto;
--
--e_free_iv:
--	kfree(crypto->iv);
--e_free_crypto:
--	crypto_free_aead(crypto->tfm);
--e_free:
--	kfree(crypto);
--
--	return NULL;
--}
--
--static void deinit_crypto(struct snp_guest_crypto *crypto)
--{
--	crypto_free_aead(crypto->tfm);
--	kfree(crypto->iv);
--	kfree(crypto->authtag);
--	kfree(crypto);
--}
--
--static int enc_dec_message(struct snp_guest_crypto *crypto, struct snp_guest_msg *msg,
--			   u8 *src_buf, u8 *dst_buf, size_t len, bool enc)
--{
--	struct snp_guest_msg_hdr *hdr = &msg->hdr;
--	struct scatterlist src[3], dst[3];
--	DECLARE_CRYPTO_WAIT(wait);
--	struct aead_request *req;
--	int ret;
--
--	req = aead_request_alloc(crypto->tfm, GFP_KERNEL);
--	if (!req)
--		return -ENOMEM;
--
--	/*
--	 * AEAD memory operations:
--	 * +------ AAD -------+------- DATA -----+---- AUTHTAG----+
--	 * |  msg header      |  plaintext       |  hdr->authtag  |
--	 * | bytes 30h - 5Fh  |    or            |                |
--	 * |                  |   cipher         |                |
--	 * +------------------+------------------+----------------+
--	 */
--	sg_init_table(src, 3);
--	sg_set_buf(&src[0], &hdr->algo, AAD_LEN);
--	sg_set_buf(&src[1], src_buf, hdr->msg_sz);
--	sg_set_buf(&src[2], hdr->authtag, crypto->a_len);
--
--	sg_init_table(dst, 3);
--	sg_set_buf(&dst[0], &hdr->algo, AAD_LEN);
--	sg_set_buf(&dst[1], dst_buf, hdr->msg_sz);
--	sg_set_buf(&dst[2], hdr->authtag, crypto->a_len);
--
--	aead_request_set_ad(req, AAD_LEN);
--	aead_request_set_tfm(req, crypto->tfm);
--	aead_request_set_callback(req, 0, crypto_req_done, &wait);
--
--	aead_request_set_crypt(req, src, dst, len, crypto->iv);
--	ret = crypto_wait_req(enc ? crypto_aead_encrypt(req) : crypto_aead_decrypt(req), &wait);
--
--	aead_request_free(req);
--	return ret;
--}
--
--static int __enc_payload(struct snp_guest_dev *snp_dev, struct snp_guest_msg *msg,
--			 void *plaintext, size_t len)
--{
--	struct snp_guest_crypto *crypto = snp_dev->crypto;
--	struct snp_guest_msg_hdr *hdr = &msg->hdr;
--
--	memset(crypto->iv, 0, crypto->iv_len);
--	memcpy(crypto->iv, &hdr->msg_seqno, sizeof(hdr->msg_seqno));
--
--	return enc_dec_message(crypto, msg, plaintext, msg->payload, len, true);
--}
--
--static int dec_payload(struct snp_guest_dev *snp_dev, struct snp_guest_msg *msg,
--		       void *plaintext, size_t len)
--{
--	struct snp_guest_crypto *crypto = snp_dev->crypto;
--	struct snp_guest_msg_hdr *hdr = &msg->hdr;
--
--	/* Build IV with response buffer sequence number */
--	memset(crypto->iv, 0, crypto->iv_len);
--	memcpy(crypto->iv, &hdr->msg_seqno, sizeof(hdr->msg_seqno));
--
--	return enc_dec_message(crypto, msg, msg->payload, plaintext, len, false);
-+	return ctx;
- }
- 
- static int verify_and_dec_payload(struct snp_guest_dev *snp_dev, void *payload, u32 sz)
- {
--	struct snp_guest_crypto *crypto = snp_dev->crypto;
- 	struct snp_guest_msg *resp = &snp_dev->secret_response;
- 	struct snp_guest_msg *req = &snp_dev->secret_request;
- 	struct snp_guest_msg_hdr *req_hdr = &req->hdr;
- 	struct snp_guest_msg_hdr *resp_hdr = &resp->hdr;
-+	struct aesgcm_ctx *ctx = snp_dev->ctx;
-+	u8 iv[GCM_AES_IV_SIZE] = {};
- 
- 	dev_dbg(snp_dev->dev, "response [seqno %lld type %d version %d sz %d]\n",
- 		resp_hdr->msg_seqno, resp_hdr->msg_type, resp_hdr->msg_version, resp_hdr->msg_sz);
-@@ -307,11 +197,16 @@ static int verify_and_dec_payload(struct snp_guest_dev *snp_dev, void *payload,
- 	 * If the message size is greater than our buffer length then return
- 	 * an error.
- 	 */
--	if (unlikely((resp_hdr->msg_sz + crypto->a_len) > sz))
-+	if (unlikely((resp_hdr->msg_sz + ctx->authsize) > sz))
+ 	if (WARN_ON((sz + ctx->authsize) > sizeof(req->payload)))
  		return -EBADMSG;
- 
- 	/* Decrypt the payload */
--	return dec_payload(snp_dev, resp, payload, resp_hdr->msg_sz + crypto->a_len);
-+	memcpy(iv, &resp_hdr->msg_seqno, sizeof(resp_hdr->msg_seqno));
-+	if (!aesgcm_decrypt(ctx, payload, resp->payload, resp_hdr->msg_sz,
-+			    &resp_hdr->algo, AAD_LEN, iv, resp_hdr->authtag))
-+		return -EBADMSG;
-+
-+	return 0;
- }
- 
- static int enc_payload(struct snp_guest_dev *snp_dev, u64 seqno, int version, u8 type,
-@@ -319,6 +214,8 @@ static int enc_payload(struct snp_guest_dev *snp_dev, u64 seqno, int version, u8
- {
- 	struct snp_guest_msg *req = &snp_dev->secret_request;
- 	struct snp_guest_msg_hdr *hdr = &req->hdr;
-+	struct aesgcm_ctx *ctx = snp_dev->ctx;
-+	u8 iv[GCM_AES_IV_SIZE] = {};
- 
- 	memset(req, 0, sizeof(*req));
- 
-@@ -338,7 +235,14 @@ static int enc_payload(struct snp_guest_dev *snp_dev, u64 seqno, int version, u8
- 	dev_dbg(snp_dev->dev, "request [seqno %lld type %d version %d sz %d]\n",
- 		hdr->msg_seqno, hdr->msg_type, hdr->msg_version, hdr->msg_sz);
- 
--	return __enc_payload(snp_dev, req, payload, sz);
-+	if (WARN_ON((sz + ctx->authsize) > sizeof(req->payload)))
-+		return -EBADMSG;
-+
-+	memcpy(iv, &hdr->msg_seqno, sizeof(hdr->msg_seqno));
-+	aesgcm_encrypt(ctx, req->payload, payload, sz, &hdr->algo, AAD_LEN,
-+		       iv, hdr->authtag);
-+
-+	return 0;
- }
- 
- static int __handle_guest_request(struct snp_guest_dev *snp_dev, u64 exit_code,
-@@ -486,7 +390,6 @@ struct snp_req_resp {
- 
- static int get_report(struct snp_guest_dev *snp_dev, struct snp_guest_request_ioctl *arg)
- {
--	struct snp_guest_crypto *crypto = snp_dev->crypto;
- 	struct snp_report_req *req = &snp_dev->req.report;
- 	struct snp_report_resp *resp;
- 	int rc, resp_len;
-@@ -504,7 +407,7 @@ static int get_report(struct snp_guest_dev *snp_dev, struct snp_guest_request_io
- 	 * response payload. Make sure that it has enough space to cover the
- 	 * authtag.
- 	 */
--	resp_len = sizeof(resp->data) + crypto->a_len;
-+	resp_len = sizeof(resp->data) + snp_dev->ctx->authsize;
- 	resp = kzalloc(resp_len, GFP_KERNEL_ACCOUNT);
- 	if (!resp)
- 		return -ENOMEM;
-@@ -526,7 +429,6 @@ static int get_report(struct snp_guest_dev *snp_dev, struct snp_guest_request_io
- static int get_derived_key(struct snp_guest_dev *snp_dev, struct snp_guest_request_ioctl *arg)
- {
- 	struct snp_derived_key_req *req = &snp_dev->req.derived_key;
--	struct snp_guest_crypto *crypto = snp_dev->crypto;
- 	struct snp_derived_key_resp resp = {0};
- 	int rc, resp_len;
- 	/* Response data is 64 bytes and max authsize for GCM is 16 bytes. */
-@@ -542,7 +444,7 @@ static int get_derived_key(struct snp_guest_dev *snp_dev, struct snp_guest_reque
- 	 * response payload. Make sure that it has enough space to cover the
- 	 * authtag.
- 	 */
--	resp_len = sizeof(resp.data) + crypto->a_len;
-+	resp_len = sizeof(resp.data) + snp_dev->ctx->authsize;
- 	if (sizeof(buf) < resp_len)
- 		return -ENOMEM;
- 
-@@ -569,7 +471,6 @@ static int get_ext_report(struct snp_guest_dev *snp_dev, struct snp_guest_reques
- 
- {
- 	struct snp_ext_report_req *req = &snp_dev->req.ext_report;
--	struct snp_guest_crypto *crypto = snp_dev->crypto;
- 	struct snp_report_resp *resp;
- 	int ret, npages = 0, resp_len;
- 	sockptr_t certs_address;
-@@ -612,7 +513,7 @@ static int get_ext_report(struct snp_guest_dev *snp_dev, struct snp_guest_reques
- 	 * response payload. Make sure that it has enough space to cover the
- 	 * authtag.
- 	 */
--	resp_len = sizeof(resp->data) + crypto->a_len;
-+	resp_len = sizeof(resp->data) + snp_dev->ctx->authsize;
- 	resp = kzalloc(resp_len, GFP_KERNEL_ACCOUNT);
- 	if (!resp)
- 		return -ENOMEM;
-@@ -954,8 +855,8 @@ static int __init sev_guest_probe(struct platform_device *pdev)
- 		goto e_free_response;
- 
- 	ret = -EIO;
--	snp_dev->crypto = init_crypto(snp_dev, snp_dev->vmpck, VMPCK_KEY_LEN);
--	if (!snp_dev->crypto)
-+	snp_dev->ctx = snp_init_crypto(snp_dev->vmpck, VMPCK_KEY_LEN);
-+	if (!snp_dev->ctx)
- 		goto e_free_cert_data;
- 
- 	misc = &snp_dev->misc;
-@@ -978,11 +879,13 @@ static int __init sev_guest_probe(struct platform_device *pdev)
- 
- 	ret =  misc_register(misc);
- 	if (ret)
--		goto e_free_cert_data;
-+		goto e_free_ctx;
- 
- 	dev_info(dev, "Initialized SEV guest driver (using vmpck_id %d)\n", vmpck_id);
- 	return 0;
- 
-+e_free_ctx:
-+	kfree(snp_dev->ctx);
- e_free_cert_data:
- 	free_shared_pages(snp_dev->certs_data, SEV_FW_BLOB_MAX_SIZE);
- e_free_response:
-@@ -1001,7 +904,7 @@ static int __exit sev_guest_remove(struct platform_device *pdev)
- 	free_shared_pages(snp_dev->certs_data, SEV_FW_BLOB_MAX_SIZE);
- 	free_shared_pages(snp_dev->response, sizeof(struct snp_guest_msg));
- 	free_shared_pages(snp_dev->request, sizeof(struct snp_guest_msg));
--	deinit_crypto(snp_dev->crypto);
-+	kfree(snp_dev->ctx);
- 	misc_deregister(&snp_dev->misc);
- 
- 	return 0;
-diff --git a/drivers/virt/coco/sev-guest/sev-guest.h b/drivers/virt/coco/sev-guest/sev-guest.h
-index 21bda26fdb95..ceb798a404d6 100644
---- a/drivers/virt/coco/sev-guest/sev-guest.h
-+++ b/drivers/virt/coco/sev-guest/sev-guest.h
-@@ -13,6 +13,9 @@
- #include <linux/types.h>
- 
- #define MAX_AUTHTAG_LEN		32
-+#define AUTHTAG_LEN		16
-+#define AAD_LEN			48
-+#define MSG_HDR_VER		1
- 
- /* See SNP spec SNP_GUEST_REQUEST section for the structure */
- enum msg_type {
 -- 
 2.34.1
 
