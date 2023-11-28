@@ -2,174 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 879F37FC1C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CDE37FC1D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345404AbjK1N7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 08:59:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39720 "EHLO
+        id S1345084AbjK1N7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 08:59:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345275AbjK1N7k (ORCPT
+        with ESMTP id S1343981AbjK1N7g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 08:59:40 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B6A685;
-        Tue, 28 Nov 2023 05:59:46 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c6b30aca06so68078021fa.3;
-        Tue, 28 Nov 2023 05:59:46 -0800 (PST)
+        Tue, 28 Nov 2023 08:59:36 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F227B5
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 05:59:42 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-50aab0ca90aso7890598e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 05:59:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701179985; x=1701784785; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=y1+2rF99RIlk0tjgM2uDSY6T9EFLrajDJx6/gd5QzVw=;
-        b=Vp2msTLEpRyt2LSJFUCuvP8uzek8VAp25TzvVp2M8JwhK76Hey+fehlXWgyONYTUxj
-         kMURVvCi9d5xOxC8EjMl20yBdTKSQxroQ/4a1mhRZEjbsvH1J3E6uquV78J7Z0HApkoi
-         YS/UTMZ1jdBYQn/tZJVF0eioN8giZw1XfLFLcY/OI4jvcRqpPpDOaAUbdOTIHKcvANTM
-         HPucg151lSdvJ2qswE5c9qT8xhmhlNzSqrNdlCCme74h9eTzt9ZzI0CDvMTiQ3jKTDgv
-         p/f2dz9efk3PckC7SknCLbW2pxtHGSwJWjn9+o0g38koZ+xQuVMUBk3GVMWRlIM9XmSo
-         gD/Q==
+        d=linaro.org; s=google; t=1701179980; x=1701784780; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=+mkha0IAGj2KB0F4H6bacXlhgX/QEw7yYVbprPdEXMU=;
+        b=FEzXdTT9uSM8IoFrpiomJSu85j/LOacN5x5HMkb9XkM0P5/01m791xHQ+iTPp/+qfj
+         zQh93vrc5dtxba11mpMq2QMtIIzwUjNr5SoeOzOGrZjGcjvWMHPjJdiOzKrNO+5X09GN
+         spTMrOMOcyeZhiZJu0uVF5kL9cLEKl6PvWCbvd4N9LocF8ECdHXRaCWSxwMVKecP3Rx6
+         K2L8Q36SWWdddJBv7o6+lOil1kRP9kC5ze8K05KkY9WoczCblCor/QqHvxMoClNTMl8S
+         Eis14WzV7LYirKrLXkxb7pDdJXwrkByzjwQOZeb0Gg74WSl0YgoSqcviKJXQfv0l+Teb
+         8TZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701179985; x=1701784785;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=y1+2rF99RIlk0tjgM2uDSY6T9EFLrajDJx6/gd5QzVw=;
-        b=fEccCJsA7neO+pXds9+sax23pP3XrFdgPCQDmnbji21DsiSIqY6E37kwqlHz2E3ytH
-         ZYUCP1nHtyQKVV8W5XFFXi2GpT6jlyyH8okFuzBlvXuin9QjKR4TyqwXaGJgNKTKorv+
-         JY//1vT1qp3V8hPwnzcdyUuze8Ll01kjrMgxKahEfOh0Kggst7v+bVb176BIBje7IVxs
-         VnGhsyxvPiUHeGkT9BeoqQMW/AIQBg4+/RqaJ0C/AEnlAiHHHjdlaORJtAdyFZff+ej3
-         qhqwz4+XHciy9srZ6+HESqcwYwhssuJM+yXEM6etXsxdiJaNv89Tof/WDWZYXVD/E4ds
-         B11Q==
-X-Gm-Message-State: AOJu0YyNbguA0OQVGMxelLPzkYGII4o9s3ux9dh9ZNBAPmQcpNOrIjOl
-        byEoZa9l5elkrv15liBvBJM=
-X-Google-Smtp-Source: AGHT+IFv4VKMOMWs3MsKFxq94yoWwi2fsDLXN0TjQ2O517oz0RblEWnGPgPHwfx8nl1TrJt/tgQ5mQ==
-X-Received: by 2002:a2e:965a:0:b0:2c8:8bba:c09d with SMTP id z26-20020a2e965a000000b002c88bbac09dmr10509568ljh.9.1701179984334;
-        Tue, 28 Nov 2023 05:59:44 -0800 (PST)
-Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id ay12-20020a05600c1e0c00b0040588d85b3asm18395156wmb.15.2023.11.28.05.59.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 05:59:44 -0800 (PST)
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Christian Marangi <ansuelsmth@gmail.com>,
-        Robert Marko <robimarko@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kernel test robot <lkp@intel.com>
-Subject: [net-next PATCH v3] net: phy: aquantia: drop wrong endianness conversion for addr and CRC
-Date:   Tue, 28 Nov 2023 14:59:28 +0100
-Message-Id: <20231128135928.9841-1-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.40.1
+        d=1e100.net; s=20230601; t=1701179980; x=1701784780;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+mkha0IAGj2KB0F4H6bacXlhgX/QEw7yYVbprPdEXMU=;
+        b=qoRovl9GBI0fiwgknhcxvK9e/RGKflymcXzXgYbVhMCx+39pL9xXoy9/jXdUrFkXjf
+         HNROQl4G1lm/amGVcrhJTxwuiW6OykRxqmRghfCKjkeGIUbNi6YzrCAP9GNAzIqZPnci
+         3WVYZayT3mP7OBxZ5FUUZc+6j0zAzUC6DIFmAeZ/k1E73FJAdVibFpwq4gibr3U6F5VD
+         vEXRFzP3HdJ64te8NH9eAdjlQnw8/hPOyTQKFokd/0F9CZEhG8X2N8Mm0cHsGMr4oqc3
+         DHN/P3IPamQOrjjnqLgr9ZOgCkLik2q7KovexjGv2YQ+vGc7fPvEDkky+nRoMxh9qDeV
+         oixw==
+X-Gm-Message-State: AOJu0Yx5VUxZ2ZZuFWvbXwbMSO7mLwXg8vwV7oL33sReTU2QPd25YrTx
+        4kgrxQ9CsJrrvVaIM2306qTVyQ==
+X-Google-Smtp-Source: AGHT+IFcaI+Etx2eE8pIwnwY1Yr68cYvKSIiTgHJQs8Rwl/uuciWGJdvx/6mE4KVicdEHR/SqC6mDA==
+X-Received: by 2002:a19:4f0b:0:b0:507:a229:f53e with SMTP id d11-20020a194f0b000000b00507a229f53emr6874521lfb.24.1701179980579;
+        Tue, 28 Nov 2023 05:59:40 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.109])
+        by smtp.gmail.com with ESMTPSA id pw11-20020a17090720ab00b00a0f1025b17asm2545133ejb.130.2023.11.28.05.59.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Nov 2023 05:59:40 -0800 (PST)
+Message-ID: <438768a3-c50c-46f1-8a4e-2233c7545453@linaro.org>
+Date:   Tue, 28 Nov 2023 14:59:37 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] rtc: add rtc controller support for Sophgo CV1800B
+ SoC
+To:     jingbao qiu <qiujingbao.dlmu@gmail.com>
+Cc:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
+        krzysztof.kozlowski+dt@linaro.org, chao.wei@sophgo.com,
+        unicorn_wang@outlook.com, conor+dt@kernel.org, robh+dt@kernel.org,
+        conor@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, linux-rtc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231121094642.2973795-1-qiujingbao.dlmu@gmail.com>
+ <20231121094642.2973795-3-qiujingbao.dlmu@gmail.com>
+ <09b29f1f-a42b-49f7-afca-f82357acd4c8@linaro.org>
+ <CAJRtX8TU9Z3OXL1zw9+mGNhxugp_C2jo40k-s9V2byNCQeBoLQ@mail.gmail.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CAJRtX8TU9Z3OXL1zw9+mGNhxugp_C2jo40k-s9V2byNCQeBoLQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On further testing on BE target with kernel test robot, it was notice
-that the endianness conversion for addr and CRC in fw_load_memory was
-wrong.
+On 28/11/2023 14:22, jingbao qiu wrote:
+>>> +     if (ret)
+>>> +             goto err;
+>>> +
+>>> +     rtc->clk = devm_clk_get(&pdev->dev, NULL);
+>>> +     if (IS_ERR(rtc->clk)) {
+>>> +             dev_err(&pdev->dev, "no clock");
+>>
+>> This code is not ready for upstream. There are multiple things wrong here.
+>>
+>> First, syntax is return dev_err_probe.
+>>
+>> Second, you do not have clocks and you do not allow them! Just open your
+>> binding.
+> 
+> I'm not fully understanding here, can you elaborate more?
 
-Drop the cpu_to_le32 conversion for addr load as it's not needed.
+That the syntax is dev_err_probe() or that you do not have clocks?
 
-Use get_unaligned_le32 instead of get_unaligned for FW data word load to
-correctly convert data in the correct order to follow system endian.
 
-Also drop the cpu_to_be32 for CRC calculation as it's wrong and would
-cause different CRC on BE system.
-The loaded word is swapped internally and MAILBOX calculates the CRC on
-the swapped word. To correctly calculate the CRC to be later matched
-with the one from MAILBOX, use an u8 struct and swap the word there to
-keep the same order on both LE and BE for crc_ccitt_false function.
-Also add additional comments on how the CRC verification for the loaded
-section works.
+> as there is clocks info like this in the dt-bindings:
+>  clocks = <&osc>;
 
-CRC is calculated as we load the section and verified with the MAILBOX
-only after the entire section is loaded to skip additional slowdown by
-loop the section data again.
+Really?
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202311210414.sEJZjlcD-lkp@intel.com/
-Fixes: e93984ebc1c8 ("net: phy: aquantia: add firmware load support")
-Tested-by: Robert Marko <robimarko@gmail.com> # ipq8072 LE device
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
-Changes v3:
-- Add more info in commit description
-- Actually propose a fixed patch
-Changes v2:
-- Add further explaination in commit description
-- Fix wrong CRC conversion and swap only when needed
+Point me to the line in your patch:
 
- drivers/net/phy/aquantia/aquantia_firmware.c | 24 ++++++++++++--------
- 1 file changed, 14 insertions(+), 10 deletions(-)
++properties:
++  compatible:
++    enum:
++      - sophgo,cv1800b-rtc
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
 
-diff --git a/drivers/net/phy/aquantia/aquantia_firmware.c b/drivers/net/phy/aquantia/aquantia_firmware.c
-index c5f292b1c4c8..ff34d00d5a0e 100644
---- a/drivers/net/phy/aquantia/aquantia_firmware.c
-+++ b/drivers/net/phy/aquantia/aquantia_firmware.c
-@@ -93,9 +93,6 @@ static int aqr_fw_load_memory(struct phy_device *phydev, u32 addr,
- 	u16 crc = 0, up_crc;
- 	size_t pos;
- 
--	/* PHY expect addr in LE */
--	addr = (__force u32)cpu_to_le32(addr);
--
- 	phy_write_mmd(phydev, MDIO_MMD_VEND1,
- 		      VEND1_GLOBAL_MAILBOX_INTERFACE1,
- 		      VEND1_GLOBAL_MAILBOX_INTERFACE1_CRC_RESET);
-@@ -110,10 +107,11 @@ static int aqr_fw_load_memory(struct phy_device *phydev, u32 addr,
- 	 * If a firmware that is not word aligned is found, please report upstream.
- 	 */
- 	for (pos = 0; pos < len; pos += sizeof(u32)) {
-+		u8 crc_data[4];
- 		u32 word;
- 
- 		/* FW data is always stored in little-endian */
--		word = get_unaligned((const u32 *)(data + pos));
-+		word = get_unaligned_le32((const u32 *)(data + pos));
- 
- 		phy_write_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_MAILBOX_INTERFACE5,
- 			      VEND1_GLOBAL_MAILBOX_INTERFACE5_MSW_DATA(word));
-@@ -124,15 +122,21 @@ static int aqr_fw_load_memory(struct phy_device *phydev, u32 addr,
- 			      VEND1_GLOBAL_MAILBOX_INTERFACE1_EXECUTE |
- 			      VEND1_GLOBAL_MAILBOX_INTERFACE1_WRITE);
- 
--		/* calculate CRC as we load data to the mailbox.
--		 * We convert word to big-endian as PHY is BE and mailbox will
--		 * return a BE CRC.
-+		/* Word is swapped internally and MAILBOX CRC is calculated
-+		 * using big-endian order. Mimic what the PHY does to have a
-+		 * matching CRC...
- 		 */
--		word = (__force u32)cpu_to_be32(word);
--		crc = crc_ccitt_false(crc, (u8 *)&word, sizeof(word));
--	}
-+		crc_data[0] = word >> 24;
-+		crc_data[1] = word >> 16;
-+		crc_data[2] = word >> 8;
-+		crc_data[3] = word;
- 
-+		/* ...calculate CRC as we load data... */
-+		crc = crc_ccitt_false(crc, crc_data, sizeof(crc_data));
-+	}
-+	/* ...gets CRC from MAILBOX after we have loaded the entire section... */
- 	up_crc = phy_read_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_MAILBOX_INTERFACE2);
-+	/* ...and make sure it does match our calculated CRC */
- 	if (crc != up_crc) {
- 		phydev_err(phydev, "CRC mismatch: calculated 0x%04x PHY 0x%04x\n",
- 			   crc, up_crc);
--- 
-2.40.1
+Where are the clocks?
+
+
+Best regards,
+Krzysztof
 
