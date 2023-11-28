@@ -2,79 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B577FB5CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:29:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB2F7FB5D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:30:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234837AbjK1J3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 04:29:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60046 "EHLO
+        id S1343633AbjK1Jal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 04:30:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbjK1J3e (ORCPT
+        with ESMTP id S230105AbjK1Jai (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 04:29:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D121FDA
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:29:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701163780;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qqtlxM7GFQZXHgjH0zB9XWmn8WNFIyJK5XRONp7hXak=;
-        b=UDrH1IrHyDzYV9jYQhChQ9x+3mqQdIbI0+1HsK19FtWBugBTqwtS5ptwITjpe0rRFBKBcu
-        /msvrIG7yMnruSI7wl8sqAfj/c6CG/WJpurZRq6GTe9mu/d92om30gOePWhj6/l8BMTCf2
-        pBlj0wHiFKXW1cxv8iB42dVoW0NUiPQ=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-170-ssCoMIRIPmK3WJQw_Zz3Ew-1; Tue, 28 Nov 2023 04:29:36 -0500
-X-MC-Unique: ssCoMIRIPmK3WJQw_Zz3Ew-1
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-5450c83aa5dso468290a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:29:36 -0800 (PST)
+        Tue, 28 Nov 2023 04:30:38 -0500
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9980A109
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:30:43 -0800 (PST)
+Received: by mail-vs1-xe33.google.com with SMTP id ada2fe7eead31-460f623392fso1794311137.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:30:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701163842; x=1701768642; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RysSL349wtX71+LB9aMToXkLSEollEFV5Ko+eyRvxOc=;
+        b=Du8/im8OsTBF0QLxWEzV/gnUkiuFCeMhlCksHptJ/c3BN5wCjwFliHBMKXDlFJx65P
+         awVVPx1FdCpkuC72KCfQ1jd0tEEqhvYj//QCJJIyVpu4mdTKFN9V/tydKayAaJF1LVI0
+         GgewjTB3DrfE/bHoQoin7hizuHpi1FcUDdsInywV9Zb8CmPOP1omlJsP0HS4ZhJFAkvo
+         IHo0vgLSxxvt+F91FkOVBNNnl2DQe0hbKzP/sRAp7cbV2Iz0nQUto19bEJr8KpjuE27L
+         PsuuOpl8OJrCLbZyRA931Thr4n94ZMKoGDnDrRJDaTd3C3DX3l3f2+0ntK2EZNgC8f9i
+         BeNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701163775; x=1701768575;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qqtlxM7GFQZXHgjH0zB9XWmn8WNFIyJK5XRONp7hXak=;
-        b=wPyYQvOs9xBhvJ7qxFCjyV5d9wMKQo2gr7FhVmoLOwItXW+VM904Xq5rsnnY5qgTtK
-         LyuvPhNcPL4RIYDYKU5+XJpoYQGWozzdLh0zVxG8igESrQsccZh6+ObfEuwxRE/PGe7P
-         TMsKRZGUmXLq3FpTtD0g0Mq9IOxJdC4cKbo1ukxxEJ6oZ9vyHn2RjJv8T/MnsS58JxIh
-         v2S0YTmRfFeoi0zwYWCSS8Z5TM59dy1sPiJ06+XudrVWT8L2CZk1ulC1lkr3iIFHn5iM
-         Oh0pZZy4qfcclgDr1FbSdy+0YOBgP0KzzM0eH4TvYBmSWQlq+UFnHKTp3WYDgti7IiFJ
-         Hm0g==
-X-Gm-Message-State: AOJu0YxisCE7LZ7lfVnli0LBK+R6DsH5vgCfvw3L4GBWc4L5RWzp1eNX
-        8CrcxhIq0yzynSVAQkLBjDe06/uO96jNupRH0hZOckZn3F04BDFVm/dlaaG3SGyheQUsmq00XYO
-        OV+bVjMWYMlrHGbKRZqf5cH2E
-X-Received: by 2002:a05:6402:513:b0:54b:5052:e8dc with SMTP id m19-20020a056402051300b0054b5052e8dcmr4917096edv.1.1701163775087;
-        Tue, 28 Nov 2023 01:29:35 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEot1IhWN0J2XnqZbGQrLBGO5LU8L7U29OjFUZE2cK8+dg/qQmf571zz96IaGjAZL6rSZaF3g==
-X-Received: by 2002:a05:6402:513:b0:54b:5052:e8dc with SMTP id m19-20020a056402051300b0054b5052e8dcmr4917076edv.1.1701163774737;
-        Tue, 28 Nov 2023 01:29:34 -0800 (PST)
-Received: from gerbillo.redhat.com (146-241-249-156.dyn.eolo.it. [146.241.249.156])
-        by smtp.gmail.com with ESMTPSA id c21-20020a056402101500b0053e5f67d637sm6108032edu.9.2023.11.28.01.29.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 01:29:34 -0800 (PST)
-Message-ID: <5e8d805ba8e033d495c879d1f58c90dc1f3ea23b.camel@redhat.com>
-Subject: Re: [PATCH net-next v5 1/1] ptp: clockmatrix: support 32-bit
- address space
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Min Li <lnimi@hotmail.com>, richardcochran@gmail.com,
-        lee@kernel.org
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Min Li <min.li.xe@renesas.com>
-Date:   Tue, 28 Nov 2023 10:29:32 +0100
-In-Reply-To: <PH7PR03MB7064DBC8094260993E1B524BA0B8A@PH7PR03MB7064.namprd03.prod.outlook.com>
-References: <PH7PR03MB7064DBC8094260993E1B524BA0B8A@PH7PR03MB7064.namprd03.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        d=1e100.net; s=20230601; t=1701163842; x=1701768642;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RysSL349wtX71+LB9aMToXkLSEollEFV5Ko+eyRvxOc=;
+        b=AtXmW71kP3p/Y5FLQBFEO52gEFcZw3mK0CRb4Q2qobc845BFtLbhMB+E+Grn1B3Trl
+         uNHvz4JvA5x/HefNigmfWG9xd2X7zLXjLUONWJXTq2QLrL/IWgDphHpgP3gE/RqHZbGg
+         NeSDQpV8sxZqZMg3NGACMnuiage8sWrlEBEhM1QhSU9xt4GZkZn0KblKSwp8BwvHEUZ9
+         /sEQoi08H+/a4HWPsR5X9/PDRrJ+A6bdaD7r8yLJ7Jkax36Xi33ODMv8WMviVcJhXazP
+         gTS/WRwc9Y6Z1cpkRrjlHJ1kikg2BLhK5bV7Zqx21OW6IYagGWtn8O6hX/ZkDqt64JNp
+         dS3w==
+X-Gm-Message-State: AOJu0YxUQuUQUpTE0KXQlwc3Gc1AOlvBYUSDou8VTKwkPOOVNIMrcxsK
+        tUlovpWqjc6UEi14Yh7F2gJmGWNs06j2NmP3Kx7sKbNNRA65ly4sqUU=
+X-Google-Smtp-Source: AGHT+IHkuIAtRcV8IkdzBUFavg/7wgDk43HoJLjLYNj3a9prWCPjkVLZE61la+uUUIFD1opUnJvdm9gXU5uNADwJ8ss=
+X-Received: by 2002:a05:6102:54ac:b0:45f:3b30:9c9a with SMTP id
+ bk44-20020a05610254ac00b0045f3b309c9amr15983484vsb.27.1701163842635; Tue, 28
+ Nov 2023 01:30:42 -0800 (PST)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+References: <20231126154335.643804657@linuxfoundation.org>
+In-Reply-To: <20231126154335.643804657@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 28 Nov 2023 15:00:31 +0530
+Message-ID: <CA+G9fYvmF=PVjePVE7m9-ZGW7EfKCv-9iwe-uwqdNqwVHGmNYA@mail.gmail.com>
+Subject: Re: [PATCH 5.10 000/187] 5.10.202-rc3 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, allen.lkml@gmail.com,
+        Marc Zyngier <maz@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,96 +74,170 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sun, 26 Nov 2023 at 21:17, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.202 release.
+> There are 187 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Tue, 28 Nov 2023 15:43:06 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.202-rc3.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-I'm sorry for the late feedback, I have a few comments below...
+Results from Linaro's test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-On Fri, 2023-11-24 at 15:20 -0500, Min Li wrote:
-> From: Min Li <min.li.xe@renesas.com>
->=20
-> We used to assume 0x2010xxxx address. Now that
-> we need to access 0x2011xxxx address, we need
-> to support read/write the whole 32-bit address space.
->=20
-> Signed-off-by: Min Li <min.li.xe@renesas.com>
-> ---
-> - Drop MAX_ABS_WRITE_PHASE_PICOSECONDS advised by Rahul
-> - Apply SCSR_ADDR to scrach register in idtcm_load_firmware advised by Si=
-mon
-> - Apply u32 to base in idtcm_output_enable advised by Simon
-> - Correct sync_ctrl0/1 parameter position for idtcm_write advised by Simo=
-n
-> - Restore adjphase function suggested by Rahul
->=20
->  drivers/ptp/ptp_clockmatrix.c    |  69 ++--
->  drivers/ptp/ptp_clockmatrix.h    |  32 +-
->  include/linux/mfd/idt8a340_reg.h | 542 ++++++++++++++++---------------
->  3 files changed, 329 insertions(+), 314 deletions(-)
->=20
-> diff --git a/drivers/ptp/ptp_clockmatrix.c b/drivers/ptp/ptp_clockmatrix.=
-c
-> index f6f9d4adce04..8a48214adc26 100644
-> --- a/drivers/ptp/ptp_clockmatrix.c
-> +++ b/drivers/ptp/ptp_clockmatrix.c
-> @@ -41,7 +41,7 @@ module_param(firmware, charp, 0);
->  static int _idtcm_adjfine(struct idtcm_channel *channel, long scaled_ppm=
-);
-> =20
->  static inline int idtcm_read(struct idtcm *idtcm,
-> -			     u16 module,
-> +			     u32 module,
->  			     u16 regaddr,
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-If you change 'regaddr' type to u32, that will allow reducing some
-relevant 'noise' in the chunks below, avoid swapping the 'mudule' and
-'regaddr' arguments from the callers.
+NOTE:
+As others reported on gpio warning while booting arm and arm64 noticed.
 
-Such mentioned chunks are IMHO quite confusing/counter-intuitive, it
-would be better get rid of them regardless of the better diffstat.
+[    0.466552] gpio gpiochip0: (1000000.pinctrl): not an immutable
+chip, please consider fixing it!
+[    4.741930] gpio gpiochip2: (200f000.spmi:pmic@0:gpios@c000): not
+an immutable chip, please consider fixing it!
 
->  			     u8 *buf,
->  			     u16 count)
-> @@ -50,7 +50,7 @@ static inline int idtcm_read(struct idtcm *idtcm,
->  }
-> =20
->  static inline int idtcm_write(struct idtcm *idtcm,
-> -			      u16 module,
-> +			      u32 module,
->  			      u16 regaddr,
+Links,
+ - https://lkft.validation.linaro.org/scheduler/job/7060124#L2577
 
-Same here.
+## Build
+* kernel: 5.10.202-rc3
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.10.y
+* git commit: 80dc4301c91e15c9c3cf12b393d70e0952bcd9ee
+* git describe: v5.10.201-188-g80dc4301c91e
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10.201-188-g80dc4301c91e
 
->  			      u8 *buf,
->  			      u16 count)
+## Test Regressions (compared to v5.10.201)
 
-> @@ -1395,6 +1396,20 @@ static int idtcm_set_pll_mode(struct idtcm_channel=
- *channel,
->  	struct idtcm *idtcm =3D channel->idtcm;
->  	int err;
->  	u8 dpll_mode;
-> +	u8 timeout =3D 0;
-> +
-> +	/* Setup WF/WP timer for phase pull-in to work correctly */
-> +	err =3D idtcm_write(idtcm, channel->dpll_n, DPLL_WF_TIMER,
-> +			  &timeout, sizeof(timeout));
-> +	if (err)
-> +		return err;
-> +
-> +	if (mode =3D=3D PLL_MODE_WRITE_PHASE)
-> +		timeout =3D 160;
-> +	err =3D idtcm_write(idtcm, channel->dpll_n, DPLL_WP_TIMER,
-> +			  &timeout, sizeof(timeout));
-> +	if (err)
-> +		return err;
-> =20
->  	err =3D idtcm_read(idtcm, channel->dpll_n,
->  			 IDTCM_FW_REG(idtcm->fw_ver, V520, DPLL_MODE),
+## Metric Regressions (compared to v5.10.201)
 
-I think this chunk could/should go in a different patch: a first one is
-implementing the support for 32 bit address space, a 2nd is leveraging
-it to configure the PLL correctly.
+## Test Fixes (compared to v5.10.201)
 
-Cheers,
+## Metric Fixes (compared to v5.10.201)
 
-Paolo
+## Test result summary
+total: 88957, pass: 67831, fail: 3474, skip: 17604, xfail: 48
 
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 117 total, 117 passed, 0 failed
+* arm64: 44 total, 44 passed, 0 failed
+* i386: 35 total, 35 passed, 0 failed
+* mips: 24 total, 24 passed, 0 failed
+* parisc: 3 total, 0 passed, 3 failed
+* powerpc: 25 total, 25 passed, 0 failed
+* riscv: 11 total, 11 passed, 0 failed
+* s390: 12 total, 12 passed, 0 failed
+* sh: 10 total, 10 passed, 0 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 38 total, 38 passed, 0 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* libgpiod
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* perf
+* rcutorture
+
+--
+Linaro LKFT
+https://lkft.linaro.org
