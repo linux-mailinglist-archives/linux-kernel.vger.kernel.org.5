@@ -2,63 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6717C7FAEF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 01:20:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AAE47FAEF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 01:21:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234039AbjK1AUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 19:20:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54966 "EHLO
+        id S234116AbjK1AUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 19:20:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231392AbjK1AUN (ORCPT
+        with ESMTP id S234104AbjK1AUt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 19:20:13 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 178151B1;
-        Mon, 27 Nov 2023 16:20:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=3rCiSJ0JteV9fXbkXFk1duODECuXLFBCy7Ih056e2Wc=; b=hW0dZeRHACO/frHZ9YnX3eoLtx
-        ZG4ktbt2J7QdboYO3eTqrtkBibe95L41acOPNsXyHMn18Tcb4nOT/FUxsSZ4TCrDrEGGdm3h96IKk
-        dUWHSEb2dcLSLRLxSlaIuQDe25Ra/l8MSE+VbSNVoGi8Q3oHYvX4dFWWcxVE1XmvLONU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r7lpj-001OoV-D5; Tue, 28 Nov 2023 01:20:11 +0100
-Date:   Tue, 28 Nov 2023 01:20:11 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
+        Mon, 27 Nov 2023 19:20:49 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05BA41B8
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 16:20:55 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1ce28faa92dso37136415ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 16:20:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701130854; x=1701735654; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=b9LcCMDmTSdehjuq3j0tEJnIQIb6+TDJYhvhvJwU+wo=;
+        b=j0HaNRlM9mX4bZwsZGFVAiz0eTkwB/pdJTDOabkRfx0fXjD+BG8NEjs+UgHvBdx9p8
+         SZUt107ra1xcyurkJA4DZwHGWm3OG5s2lXKYeoM+M6wy12DdKJuRDLngUnCBOQwt2njK
+         etgNzmp1epSToBuG6kIer8nyHFs7tD6fboSXo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701130854; x=1701735654;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=b9LcCMDmTSdehjuq3j0tEJnIQIb6+TDJYhvhvJwU+wo=;
+        b=UPueqrqo6fYriFcMLnLbHnpHlC5Dx0M1l89kKuWAf8nHHBfBguFAHVrHA4jgY72hr9
+         wtsWx8EL0jG1afmu0IDpST23TETppkBhHwLs3Q8VqlbWEDOudxnWXiu0rPIIwS0WzIxw
+         JBg41R2d/5hnBNF/6/33SZyZKdXJWbCvOUWGApLPmGX9GKZjI/DreoMUCggsjcymfP9U
+         P2d39nMzP8G5g+SMuFkaKEP+QoboMdZqtveWzaXCMIdtqjgdBdHdhH/dRTcdGaOxkXX8
+         gplp21D9YmDm/vMOMtt0zXEs6hsI4CRP9Km8o1kDvsgrUoXHl1QtbGywG8ApfOuxfeTt
+         1osA==
+X-Gm-Message-State: AOJu0YyhEFa2g08bClYvaj7RZQl1woVa7UePZOoRb6KhYpEZMm98mvdu
+        zDgcs8r/ewN5XVbSPhwqp0lO3A==
+X-Google-Smtp-Source: AGHT+IGFzSIOfg8sKm6Au/0ACHEqu0Oge23/jZd49oSPNDz1XcwfEzxfUkI9Gck94hxyHvZcKR6OQQ==
+X-Received: by 2002:a17:902:d303:b0:1cc:2f70:4865 with SMTP id b3-20020a170902d30300b001cc2f704865mr12921138plc.26.1701130854419;
+        Mon, 27 Nov 2023 16:20:54 -0800 (PST)
+Received: from smtp.gmail.com ([2620:15c:11a:201:6438:b5d1:198e:8bb0])
+        by smtp.gmail.com with ESMTPSA id c5-20020a170902d90500b001c60c3f9508sm8878786plz.230.2023.11.27.16.20.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 16:20:54 -0800 (PST)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        devicetree@vger.kernel.org,
+        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Jonathan Corbet <corbet@lwn.net>,
         Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [net-next PATCH RFC v3 0/8] net: phy: Support DT PHY package
-Message-ID: <a29b1106-87a6-4ea2-bb1d-9858f9ab425b@lunn.ch>
-References: <20231126015346.25208-1-ansuelsmth@gmail.com>
+        Douglas Anderson <dianders@chromium.org>
+Subject: [PATCH] dt-bindings: arm: qcom: Fix html link
+Date:   Mon, 27 Nov 2023 16:20:51 -0800
+Message-ID: <20231128002052.2520402-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231126015346.25208-1-ansuelsmth@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,WEIRD_QUOTING
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,65 +72,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 26, 2023 at 02:53:38AM +0100, Christian Marangi wrote:
-> This depends on another series for PHY package API change. [1]
-> 
-> Idea of this big series is to introduce the concept of PHY package in DT
-> and generalize the support of it by PHY driver.
-> 
-> The concept of PHY package is nothing new and is already a thing in the
-> kernel with the API phy_package_join/leave/read/write.
-> 
-> The main idea of those API is to permit the PHY to have a shared global
-> data and to run probe/config only once for the PHY package. There are
-> various example of this already in the kernel with the mscc, bcm54140
-> mediatek ge and micrle driver and they all follow the same pattern.
-> 
-> What is currently lacking is describing this in DT and better reference
-> the PHY in charge of global configuration of the PHY package. For the
-> already present PHY, the implementation is simple enough with only one
-> PHY having the required regs to apply global configuration.
-> 
-> This can be ok for simple PHY package but some Qcom PHY package on
-> ""modern"" SoC have more complex implementation. One example is the PHY
-> for qca807x where some global regs are present in the so-called "combo"
-> port and everything about psgmii calibration is placed in a 5th port in
-> the PHY package.
-> 
-> Given these additional thing, the original phy_package API are extended
-> with support for multiple global PHY for configuration. Each PHY driver
-> will have an enum of the ID for the global PHY to reference and is
-> required to pass to the read/write function.
+This link got broken by commit e790a4ce5290 ("arm: docs: Move Arm
+documentation to Documentation/arch/") when the doc moved from arm/ to
+arch/arm/. Fix the link so that it can continue to be followed.
 
-Please update the text. As far as i see, a lot of this is not relevant
-for this patch set. phy_package_join() etc has no relation to DT,
-since the driver knows how many devices are in its package, it knows
-its base address, etc.
+Fixes: e790a4ce5290 ("arm: docs: Move Arm documentation to Documentation/arch/")
+Cc: Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Cc: Yanteng Si <siyanteng@loongson.cn>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Bjorn Andersson <andersson@kernel.org>
+Cc: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
+ Documentation/devicetree/bindings/arm/qcom.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The DT is only about properties which are shared by all PHYs within
-the package, e.g reset, regulators, maybe the MODE_CFG register for
-this particular PHY package.
+diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+index 7f80f48a0954..8a6466d1fc4e 100644
+--- a/Documentation/devicetree/bindings/arm/qcom.yaml
++++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+@@ -138,7 +138,7 @@ description: |
+   There are many devices in the list below that run the standard ChromeOS
+   bootloader setup and use the open source depthcharge bootloader to boot the
+   OS. These devices do not use the scheme described above. For details, see:
+-  https://docs.kernel.org/arm/google/chromebook-boot-flow.html
++  https://docs.kernel.org/arch/arm/google/chromebook-boot-flow.html
+ 
+ properties:
+   $nodename:
 
-> 
-> On top of this, it's added correct DT support for describing PHY
-> package.
-> 
-> One example is this:
-> 
->         ethernet-phy-package@0 {
->             compatible = "ethernet-phy-package";
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+-- 
+https://chromeos.dev
 
-This needs a compatible for this particular PHY package.
-
->             #address-cells = <1>;
->             #size-cells = <0>;
-> 
->             reg = <0>;
->             qcom,package-mode = "qsgmii";
-
-This property it not useful. Why PCA does it apply to, when there are
-two? It makes much more sense to describe the overall configuration
-mode, from which you can derive what interface mode each port should
-be using, and thus validate the phy-mode in DT.
-
-   Andrew
