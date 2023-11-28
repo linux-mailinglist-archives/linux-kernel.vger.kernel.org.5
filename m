@@ -2,301 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8364C7FB862
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:46:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B444C7FB868
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:46:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344414AbjK1Kpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 05:45:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59666 "EHLO
+        id S1344439AbjK1KqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 05:46:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344409AbjK1Kpk (ORCPT
+        with ESMTP id S234922AbjK1KqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 05:45:40 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 137E81B6
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:45:46 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 304E3C433C8;
-        Tue, 28 Nov 2023 10:45:41 +0000 (UTC)
-Message-ID: <50db7366-cd3d-4675-aaad-b857202234de@xs4all.nl>
-Date:   Tue, 28 Nov 2023 11:45:40 +0100
+        Tue, 28 Nov 2023 05:46:00 -0500
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8823719AC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:46:05 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-77d84f8808dso201150485a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:46:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701168364; x=1701773164; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Ody4rvie3s+8GD4mOiQPrgYycVPJoTVFCyOTzD8p7Dc=;
+        b=VVcwBs/b2plLhMdowmgnpGeaR/p64jc/3wVcA5V9u1TArYgHpVYDo4b6sqX9UeSPn2
+         fMvWBNhS+aPCNenJRkw2pzCBwCx+3ZTv9N/7KDGoyI5dK13I9jVYJs1vM40vyz/vEPac
+         jOTof+4QgMyY+hE3B8/La7TxTf42o/BDm39V7K3sxWZcoq/p7NxHJmjEx4aq+gxWA9yH
+         Qq4C18MGFL4RFOw+6d3WnyJ56SP12ljjcwZIEAcXU9CcngJFCrSuz07J7vrcLDWOKMti
+         I9plXoVv8KhfziDuXQA251s+5TeL4QfYJB4GMSL6raXlBNr9tIA/ap6Y1Kot2QPRAX40
+         ENlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701168364; x=1701773164;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ody4rvie3s+8GD4mOiQPrgYycVPJoTVFCyOTzD8p7Dc=;
+        b=Yx+fs9fXXMqJWQWEP+ajJcXqL2/lj4oYXnCAjv0yl4r5scK3I9DVO3ueF0phu5mSu2
+         bPv2MqMqF6jnNg7l+dPbJKcjiSfE/NuyrzUg3kM6K0cp4jzmnYG6W07tadREx5dYeND/
+         qJn/bUMMJNH7hZ65+SmL1TR0DTk52EYLeSehdAx5qfyvosVXkOonjrG2fepsF272KuE/
+         JZNxQznRJsXrl7AB8FD+DRDZ1T9bvZJ7C7k3A4KR0lW8NJOsAhjQa3kXN5hwWAJ7l7nq
+         ME5jkcxvGXsmlT38pfmIMkya0PYFzmh60F/TscL0IdNSPG9blvLw8rQyvgyfet7esPiR
+         ng8w==
+X-Gm-Message-State: AOJu0YxY3DYkydSrcJTpH72IddK9FosQ7u6Xns1mydrDlEdpYKC9hyVL
+        otruFw+WlO0u75XsHxzWxi8c
+X-Google-Smtp-Source: AGHT+IE8SWfZ7GqO4s0fMyj3jKQqECEGMDFDC8TEC7GRCVPyBE185OA3cmNu5rktS/g6Fo8eFgfD6g==
+X-Received: by 2002:a0c:fd6b:0:b0:67a:5457:77c9 with SMTP id k11-20020a0cfd6b000000b0067a545777c9mr3755673qvs.11.1701168364626;
+        Tue, 28 Nov 2023 02:46:04 -0800 (PST)
+Received: from thinkpad ([59.92.99.177])
+        by smtp.gmail.com with ESMTPSA id b18-20020a0c9b12000000b0065b13180892sm5074170qve.16.2023.11.28.02.45.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 02:46:04 -0800 (PST)
+Date:   Tue, 28 Nov 2023 16:15:49 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     Vignesh Raman <vignesh.raman@collabora.com>,
+        "David E. Box" <david.e.box@linux.intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>, daniels@collabora.com,
+        linux-pci@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        helen.koike@collabora.com
+Subject: Re: [PATCH] PCI: qcom: Fix compile error
+Message-ID: <20231128104549.GM3088@thinkpad>
+References: <20231128042026.130442-1-vignesh.raman@collabora.com>
+ <20231128051456.GA3088@thinkpad>
+ <50a9f061-e1d3-6aca-b528-56dbb6c729d9@collabora.com>
+ <20231128065104.GK3088@thinkpad>
+ <87a5qy88mx.fsf@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 00/45] drm/connector: Create HDMI Connector
- infrastructure
-Content-Language: en-US, nl
-To:     Maxime Ripard <mripard@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sandy Huang <hjc@rock-chips.com>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev
-References: <20231128-kms-hdmi-connector-state-v4-0-c7602158306e@kernel.org>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <20231128-kms-hdmi-connector-state-v4-0-c7602158306e@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87a5qy88mx.fsf@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/11/2023 11:24, Maxime Ripard wrote:
-> Hi,
+On Tue, Nov 28, 2023 at 12:39:02PM +0200, Jani Nikula wrote:
+> On Tue, 28 Nov 2023, Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote:
+> > On Tue, Nov 28, 2023 at 11:44:26AM +0530, Vignesh Raman wrote:
+> >> Hi Mani,
+> >> 
+> >> On 28/11/23 10:44, Manivannan Sadhasivam wrote:
+> >> > On Tue, Nov 28, 2023 at 09:50:26AM +0530, Vignesh Raman wrote:
+> >> > > Commit a2458d8f618a ("PCI/ASPM: pci_enable_link_state: Add argument
+> >> > > to acquire bus lock") has added an argument to acquire bus lock
+> >> > > in pci_enable_link_state, but qcom_pcie_enable_aspm calls it
+> >> > > without this argument, resulting in below build error.
+> >> > > 
+> >> > 
+> >> > Where do you see this error? That patch is not even merged. Looks like you are
+> >> > sending the patch against some downstream tree.
+> >> 
+> >> I got this error with drm-tip - git://anongit.freedesktop.org/drm-tip
+> >> 
+> >> This commit is merged in drm-intel/topic/core-for-CI -
+> >> https://cgit.freedesktop.org/drm-intel/log/?h=topic/core-for-CI
+> >> 
+> >
+> > Okay. Since this patch is just for CI, please do not CC linux-pci as it causes
+> > confusion.
 > 
-> Here's a series that creates some extra infrastructure specifically
-> targeted at HDMI controllers.
+> Agreed. More on-topic for linux-pci is what happened with [1].
 > 
-> The idea behind this series came from a recent discussion on IRC during
-> which we discussed infoframes generation of i915 vs everything else.
+> We've been running CI with that for months now to avoid lockdep splats,
+> and it's obviously in everyone's best interest to get a fix upstream.
 > 
-> Infoframes generation code still requires some decent boilerplate, with
-> each driver doing some variation of it.
-> 
-> In parallel, while working on vc4, we ended up converting a lot of i915
-> logic (mostly around format / bpc selection, and scrambler setup) to
-> apply on top of a driver that relies only on helpers.
-> 
-> While currently sitting in the vc4 driver, none of that logic actually
-> relies on any driver or hardware-specific behaviour.
-> 
-> The only missing piece to make it shareable are a bunch of extra
-> variables stored in a state (current bpc, format, RGB range selection,
-> etc.).
-> 
-> The initial implementation was relying on some generic subclass of
-> drm_connector to address HDMI connectors, with a bunch of helpers that
-> will take care of all the "HDMI Spec" related code. Scrambler setup is
-> missing at the moment but can easily be plugged in.
-> 
-> The feedback was that creating a connector subclass like was done for
-> writeback would prevent the adoption of those helpers since it couldn't
-> be used in all situations (like when the connector driver can implement
-> multiple output) and required more churn to cast between the
-> drm_connector and its subclass. The decision was thus to provide a set
-> of helper and to store the required variables in drm_connector and
-> drm_connector_state. This what has been implemented now.
-> 
-> Hans Verkuil also expressed interest in implementing a mechanism in v4l2
-> to retrieve infoframes from HDMI receiver and implementing an
-> infoframe-decode tool.
 
-For those who are interested in the InfoFrame parser:
+Yes, ofc. Right now we have 2 series/patches to fix the locking issue:
 
-https://git.linuxtv.org/hverkuil/edid-decode.git/log/?h=hverkuil
+https://lore.kernel.org/all/20230321233849.3408339-1-david.e.box@linux.intel.com/
+https://lore.kernel.org/linux-pci/20231128081512.19387-1-johan+linaro@kernel.org/
 
-This is work-in-progress, and will definitely be rebased at times.
+Bjorn has to choose one among them.
 
-It is integrated into edid-decode since I want to be able to check the
-InfoFrames against the EDID capabilities. If no EDID is given, then
-those checks are skipped.
+- Mani
 
-You can parse the InfoFrames with -I <path-to-if-file>. All known InfoFrames
-are parsed, and I am working on adding the checks against the EDID whenever
-time permits.
-
-It's quite handy already as a parser, but it is really the checks against the
-EDID that will make this really useful.
-
-A related note: exposing InfoFrames is equally useful for the media subsystem
-for video receivers (and the odd V4L2 video transmitter driver). I did look
-at whether any of this drm code could be generalized, but it is too different
-and frankly not worth the effort.
-
-Also, when receiving InfoFrames you don't want to use the hdmi.h functions,
-you want to dump the raw unprocessed InfoFrame.
-
-I did a proof-of-concept for the adv7511-v4l2 tx and adv7604 rx drivers here:
-
-https://git.linuxtv.org/hverkuil/media_tree.git/commit/?h=infoframe&id=19c80e21b30e2cafc0669cfae093a0b7a17c6b55
-
-I am using debugfs here as well, but I am not actually certain whether that's
-the best approach, esp. for receivers where access to InfoFrames can be very
-useful for userspace. Options are e.g. /sys/class/video4linux/<devnode>/infoframes
-or perhaps using V4L2 controls. TBD.
-
-Regards,
-
-	Hans
-
+> David, Bjorn?
 > 
-> This series thus leverages the infoframe generation code to expose it
-> through debugfs.
 > 
-> I also used the occasion to unit-test everything but the infoframe
-> generation, which can come later once I get a proper understanding of
-> what the infoframe are supposed to look like. This required to add some
-> extra kunit helpers and infrastructure to have multiple EDIDs and allow
-> each test to run with a particular set of capabilities.
+> BR,
+> Jani.
 > 
-> This entire series has been tested on a Pi4, passes all its unittests
-> (125 new tests), and has only been build-tested for sunxi and rockchip.
 > 
-> Let me know what you think,
-> Maxime
+> [1] https://lore.kernel.org/all/20230321233849.3408339-1-david.e.box@linux.intel.com/
 > 
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
-> ---
-> Changes in v4:
-> - Create unit tests for everything but infoframes
-> - Fix a number of bugs identified by the unit tests
-> - Rename DRM (Dynamic Range and Mastering) infoframe file to HDR_DRM
-> - Drop RFC status
-> - Link to v3: https://lore.kernel.org/r/20231031-kms-hdmi-connector-state-v3-0-328b0fae43a7@kernel.org
 > 
-> Changes in v3:
-> - Made sure the series work on the RaspberryPi4
-> - Handle YUV420 in the char clock rate computation
-> - Use the maximum bpc value the connector allows at reset
-> - Expose the RGB Limited vs Full Range value in the connector state
->   instead of through a helper
-> - Fix Broadcast RGB documentation
-> - Add more debug logging
-> - Small fixes here and there
-> - Link to v2: https://lore.kernel.org/r/20230920-kms-hdmi-connector-state-v2-0-17932daddd7d@kernel.org
 > 
-> Changes in v2:
-> - Change from a subclass to a set of helpers for drm_connector and
->   drm_connector state
-> - Don't assume that all drivers support RGB, YUV420 and YUV422 but make
->   them provide a bitfield instead.
-> - Don't assume that all drivers support the Broadcast RGB property but
->   make them call the registration helper.
-> - Document the Broacast RGB property
-> - Convert the inno_hdmi and sun4i_hdmi driver.
-> - Link to v1: https://lore.kernel.org/r/20230814-kms-hdmi-connector-state-v1-0-048054df3654@kernel.org
 > 
-> ---
-> Maxime Ripard (45):
->       drm/tests: helpers: Include missing drm_drv header
->       drm/tests: helpers: Add atomic helpers
->       drm/tests: Add helper to create mock plane
->       drm/tests: Add helper to create mock crtc
->       drm/connector: Check drm_connector_init pointers arguments
->       drm/tests: connector: Add tests for drmm_connector_init
->       drm/connector: Introduce an HDMI connector initialization function
->       drm/connector: hdmi: Create an HDMI sub-state
->       drm/connector: hdmi: Add Broadcast RGB property
->       drm/connector: hdmi: Add RGB Quantization Range to the connector state
->       drm/connector: hdmi: Add output BPC to the connector state
->       drm/connector: hdmi: Add support for output format
->       drm/connector: hdmi: Add HDMI compute clock helper
->       drm/connector: hdmi: Calculate TMDS character rate
->       drm/connector: hdmi: Add custom hook to filter TMDS character rate
->       drm/connector: hdmi: Compute bpc and format automatically
->       drm/connector: hdmi: Add Infoframes generation
->       drm/connector: hdmi: Create Infoframe DebugFS entries
->       drm/vc4: hdmi: Create destroy state implementation
->       drm/vc4: hdmi: Switch to HDMI connector
->       drm/vc4: tests: Remove vc4_dummy_plane structure
->       drm/vc4: tests: Convert to plane creation helper
->       drm/rockchip: inno_hdmi: Remove useless mode_fixup
->       drm/rockchip: inno_hdmi: Remove useless copy of drm_display_mode
->       drm/rockchip: inno_hdmi: Switch encoder hooks to atomic
->       drm/rockchip: inno_hdmi: Get rid of mode_set
->       drm/rockchip: inno_hdmi: no need to store vic
->       drm/rockchip: inno_hdmi: Remove unneeded has audio flag
->       drm/rockchip: inno_hdmi: Remove useless input format
->       drm/rockchip: inno_hdmi: Remove useless output format
->       drm/rockchip: inno_hdmi: Remove useless colorimetry
->       drm/rockchip: inno_hdmi: Remove useless enum
->       drm/rockchip: inno_hdmi: Remove tmds rate from structure
->       drm/rockchip: inno_hdmi: Remove useless coeff_csc matrix
->       drm/rockchip: inno_hdmi: Remove useless mode_valid
->       drm/rockchip: inno_hdmi: Move infoframe disable to separate function
->       drm/rockchip: inno_hdmi: Create mask retrieval functions
->       drm/rockchip: inno_hdmi: Switch to infoframe type
->       drm/rockchip: inno_hdmi: Remove unused drm device pointer
->       drm/rockchip: inno_hdmi: Switch to HDMI connector
->       drm/sun4i: hdmi: Convert encoder to atomic
->       drm/sun4i: hdmi: Move mode_set into enable
->       drm/sun4i: hdmi: Switch to container_of_const
->       drm/sun4i: hdmi: Consolidate atomic_check and mode_valid
->       drm/sun4i: hdmi: Switch to HDMI connector
+> >
+> > - Mani
+> >
+> >> Regards,
+> >> Vignesh
 > 
->  Documentation/gpu/kms-properties.csv               |    1 -
->  drivers/gpu/drm/Kconfig                            |    1 +
->  drivers/gpu/drm/drm_atomic.c                       |   11 +
->  drivers/gpu/drm/drm_atomic_state_helper.c          |  659 ++++++++
->  drivers/gpu/drm/drm_atomic_uapi.c                  |    4 +
->  drivers/gpu/drm/drm_connector.c                    |  249 +++
->  drivers/gpu/drm/drm_debugfs.c                      |  110 ++
->  drivers/gpu/drm/rockchip/inno_hdmi.c               |  409 ++---
->  drivers/gpu/drm/sun4i/sun4i_hdmi_enc.c             |  203 ++-
->  drivers/gpu/drm/tests/Makefile                     |    1 +
->  .../gpu/drm/tests/drm_atomic_state_helper_test.c   | 1728 ++++++++++++++++++++
->  drivers/gpu/drm/tests/drm_connector_test.c         | 1345 ++++++++++++++-
->  drivers/gpu/drm/tests/drm_kunit_edid.h             |  482 ++++++
->  drivers/gpu/drm/tests/drm_kunit_helpers.c          |  150 ++
->  drivers/gpu/drm/vc4/tests/vc4_mock.c               |    6 +-
->  drivers/gpu/drm/vc4/tests/vc4_mock.h               |    9 +-
->  drivers/gpu/drm/vc4/tests/vc4_mock_plane.c         |   44 +-
->  drivers/gpu/drm/vc4/vc4_hdmi.c                     |  624 +------
->  drivers/gpu/drm/vc4/vc4_hdmi.h                     |   44 +-
->  drivers/gpu/drm/vc4/vc4_hdmi_phy.c                 |    6 +-
->  include/drm/drm_atomic_state_helper.h              |   12 +
->  include/drm/drm_connector.h                        |  257 +++
->  include/drm/drm_kunit_helpers.h                    |   23 +
->  23 files changed, 5389 insertions(+), 989 deletions(-)
-> ---
-> base-commit: 815d8b0425ad1164e45953ac3d56a9f6f63792cc
-> change-id: 20230814-kms-hdmi-connector-state-616787e67927
-> 
-> Best regards,
+> -- 
+> Jani Nikula, Intel
 
+-- 
+மணிவண்ணன் சதாசிவம்
