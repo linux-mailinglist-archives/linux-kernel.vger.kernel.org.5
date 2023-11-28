@@ -2,57 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BAC67FBA33
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:35:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C87447FBA35
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:35:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344674AbjK1MfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 07:35:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52696 "EHLO
+        id S1344693AbjK1MfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 07:35:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344178AbjK1MfM (ORCPT
+        with ESMTP id S1344686AbjK1MfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 07:35:12 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64321D6D
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 04:35:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701174918; x=1732710918;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=/3sAMg2V84H5Vstw+gUHNTtgnS/tko/sRA+QSibSk9w=;
-  b=bVVf/jQWfwTE/cYBZG9a99mQpiatgcVPP2qroNRkI8Bjql1Zee9iQWbB
-   cZhRiHy4h2wZ3aVgqy5YRMNM4g7EbhU8j+4rUPj+GDp94tt4CZ3tpK7hG
-   kWdprmPL97OhX9lVgFvtoXywDMfAiqzACsJAZNNujUZ/qo3hLcyzO5oqp
-   dD/41RJTums1L4dB1Rua/ZajWZDmEWB9iZNGEZK8Jo+r1tVOMTfoZyGke
-   eQziqgavSCYWModcuNK+kbFxgnL8YG8o6OaBOPXilYtBjqvuCEIhmzgjO
-   BX8CphST7aeI4Kt0GpBpgsYnPfKvidn7QMjNQDdQ7x/JNLWWoYPMKul8I
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="373086880"
-X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
-   d="scan'208";a="373086880"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 04:35:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
-   d="scan'208";a="9935687"
-Received: from shsensorbuild2.sh.intel.com ([10.239.134.197])
-  by orviesa002.jf.intel.com with ESMTP; 28 Nov 2023 04:35:15 -0800
-From:   Wentong Wu <wentong.wu@intel.com>
-To:     gregkh@linuxfoundation.org, tomas.winkler@intel.com,
-        hdegoede@redhat.com
-Cc:     andriy.shevchenko@linux.intel.com, sakari.ailus@linux.intel.com,
-        alexander.usyskin@intel.com, zhifeng.wang@intel.com,
-        linux-kernel@vger.kernel.org, Wentong Wu <wentong.wu@intel.com>
-Subject: [PATCH 2/2] mei: Add MEI hardware support for IVSC device
-Date:   Tue, 28 Nov 2023 20:34:06 +0800
-Message-Id: <1701174846-16316-3-git-send-email-wentong.wu@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1701174846-16316-1-git-send-email-wentong.wu@intel.com>
-References: <1701174846-16316-1-git-send-email-wentong.wu@intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        Tue, 28 Nov 2023 07:35:21 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D78E10F7;
+        Tue, 28 Nov 2023 04:35:25 -0800 (PST)
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ASCQHI2010187;
+        Tue, 28 Nov 2023 12:35:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=W2YwZ/OC+qrCGZ6ky0iGSWynUKcyYgVsTnESqnApOV0=;
+ b=enNFw54G4dAx5OWb28ZdP+Wjoz0TxhsC5+jjJcgyhkzH69IdxhBFNH4kOMBPr3SWlbB3
+ KYdLwvGRC9gqke3Sal2vZBI1gO9is3dIB9vEsjUkGatRlDxWJNn9XZYFJMCu22fPdPfk
+ prDNWnJ/M5lZMNak+IZxWvKG+buIOgTca45NkMAvHvSIkwdvprqGHzhpt81UuJmmmSaE
+ ftZP70qanShrX2BlovhNg9iQasHy73NLGBZiJ1Uvn5IOpfS26vpObYGt1j7l4E3GbVP3
+ AMUC4mK+6KlVqsH7t1h0qc7Z0eLOmTLxsUcb3Zd6UV3bOPyZ0H9TZygeN7oztfp90Y+c GA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3unfk01d60-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Nov 2023 12:35:18 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ASBhg34025897;
+        Tue, 28 Nov 2023 12:35:18 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3unfk01d5q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Nov 2023 12:35:18 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ASAR3f2018253;
+        Tue, 28 Nov 2023 12:35:17 GMT
+Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ukwy1q2cw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Nov 2023 12:35:17 +0000
+Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
+        by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ASCZHOd32899640
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Nov 2023 12:35:17 GMT
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F2CAB58056;
+        Tue, 28 Nov 2023 12:35:16 +0000 (GMT)
+Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 557E758052;
+        Tue, 28 Nov 2023 12:35:16 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 28 Nov 2023 12:35:16 +0000 (GMT)
+Message-ID: <dd74fdb8-93af-4799-b23a-b2595acfc8aa@linux.ibm.com>
+Date:   Tue, 28 Nov 2023 07:35:15 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 7/8] tpm: Add tpm_buf_read_{u8,u16,u32}
+Content-Language: en-US
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        linux-integrity@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        William Roberts <bill.c.roberts@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>
+References: <20231124020237.27116-1-jarkko@kernel.org>
+ <20231124020237.27116-8-jarkko@kernel.org>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <20231124020237.27116-8-jarkko@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: rP1408_SM3V8cG8L6CrC_155V6qQmkuY
+X-Proofpoint-GUID: bsfUcVzLwJuE12EumUqxacs0-ek95nM1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-28_12,2023-11-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 lowpriorityscore=0 mlxscore=0 priorityscore=1501
+ phishscore=0 suspectscore=0 mlxlogscore=675 clxscore=1015 bulkscore=0
+ spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311280100
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,505 +101,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The protocol used for the IVSC device to communicate with HOST is MEI.
-The MEI hardware interfaces for the IVSC device are implemented.
 
-The APIs are exposed by MEI framework to mei clients, e.g. mei_csi and
-mei_ace.
 
-Signed-off-by: Wentong Wu <wentong.wu@intel.com>
-Reviewed-by: Alexander Usyskin <alexander.usyskin@intel.com>
-Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
----
- drivers/misc/mei/Kconfig        |  13 ++
- drivers/misc/mei/Makefile       |   3 +
- drivers/misc/mei/platform-vsc.c | 442 ++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 458 insertions(+)
- create mode 100644 drivers/misc/mei/platform-vsc.c
+On 11/23/23 21:02, Jarkko Sakkinen wrote:
+> Declare reader functions for the instances of struct tpm_buf. If the read
+> goes out of boundary, TPM_BUF_BOUNDARY_ERROR is set, and subsequent read
+> will do nothing.
+> 
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> ---
 
-diff --git a/drivers/misc/mei/Kconfig b/drivers/misc/mei/Kconfig
-index 470957a..2c5312b 100644
---- a/drivers/misc/mei/Kconfig
-+++ b/drivers/misc/mei/Kconfig
-@@ -71,6 +71,19 @@ config INTEL_MEI_VSC_HW
- 	  This driver can also be built as a module. If so, the module
- 	  will be called mei-vsc-hw.
- 
-+config INTEL_MEI_VSC
-+	tristate "Intel visual sensing controller device with ME interface"
-+	select INTEL_MEI_VSC_HW
-+	depends on INTEL_MEI
-+	help
-+	  Intel MEI over SPI driver for Intel visual sensing controller
-+	  (IVSC) device embedded in IA platform. It supports camera sharing
-+	  between IVSC for context sensing and IPU for typical media usage.
-+	  Select this config will enable transport layer for IVSC device.
-+
-+	  This driver can also be built as a module. If so, the module
-+	  will be called mei-vsc.
-+
- source "drivers/misc/mei/hdcp/Kconfig"
- source "drivers/misc/mei/pxp/Kconfig"
- source "drivers/misc/mei/gsc_proxy/Kconfig"
-diff --git a/drivers/misc/mei/Makefile b/drivers/misc/mei/Makefile
-index 3d0da19..6f9fdbf 100644
---- a/drivers/misc/mei/Makefile
-+++ b/drivers/misc/mei/Makefile
-@@ -35,3 +35,6 @@ obj-$(CONFIG_INTEL_MEI_GSC_PROXY) += gsc_proxy/
- obj-$(CONFIG_INTEL_MEI_VSC_HW) += mei-vsc-hw.o
- mei-vsc-hw-y := vsc-tp.o
- mei-vsc-hw-y += vsc-fw-loader.o
-+
-+obj-$(CONFIG_INTEL_MEI_VSC) += mei-vsc.o
-+mei-vsc-y := platform-vsc.o
-diff --git a/drivers/misc/mei/platform-vsc.c b/drivers/misc/mei/platform-vsc.c
-new file mode 100644
-index 0000000..8bd016d
---- /dev/null
-+++ b/drivers/misc/mei/platform-vsc.c
-@@ -0,0 +1,442 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2023, Intel Corporation.
-+ * Intel Visual Sensing Controller Interface Linux driver
-+ */
-+
-+#include <linux/align.h>
-+#include <linux/cache.h>
-+#include <linux/cleanup.h>
-+#include <linux/iopoll.h>
-+#include <linux/list.h>
-+#include <linux/mei.h>
-+#include <linux/module.h>
-+#include <linux/mutex.h>
-+#include <linux/overflow.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/timekeeping.h>
-+#include <linux/types.h>
-+
-+#include <asm-generic/bug.h>
-+#include <asm-generic/unaligned.h>
-+
-+#include "mei_dev.h"
-+#include "vsc-tp.h"
-+
-+#define VSC_MEI_MAX_MSG_SIZE		512
-+
-+#define MEI_VSC_POLL_DELAY_US		(50 * USEC_PER_MSEC)
-+#define MEI_VSC_POLL_TIMEOUT_US		(200 * USEC_PER_MSEC)
-+
-+#define mei_dev_to_vsc_hw(dev)		((struct mei_vsc_hw *)((dev)->hw))
-+
-+struct mei_vsc_host_timestamp {
-+	u64 realtime;
-+	u64 boottime;
-+};
-+
-+struct mei_vsc_hw {
-+	struct vsc_tp *tp;
-+
-+	bool fw_ready;
-+	bool host_ready;
-+
-+	atomic_t write_lock_cnt;
-+
-+	u32 rx_len;
-+	u32 rx_hdr;
-+
-+	/* buffer for tx */
-+	char tx_buf[VSC_MEI_MAX_MSG_SIZE + sizeof(struct mei_msg_hdr)] ____cacheline_aligned;
-+	/* buffer for rx */
-+	char rx_buf[VSC_MEI_MAX_MSG_SIZE + sizeof(struct mei_msg_hdr)] ____cacheline_aligned;
-+};
-+
-+static int mei_vsc_read_helper(struct mei_vsc_hw *hw, u8 *buf,
-+			       u32 max_len)
-+{
-+	struct mei_vsc_host_timestamp ts = {
-+		.realtime = ktime_to_ns(ktime_get_real()),
-+		.boottime = ktime_to_ns(ktime_get_boottime()),
-+	};
-+
-+	return vsc_tp_xfer(hw->tp, VSC_TP_CMD_READ, &ts, sizeof(ts),
-+			   buf, max_len);
-+}
-+
-+static int mei_vsc_write_helper(struct mei_vsc_hw *hw, u8 *buf, u32 len)
-+{
-+	u8 status;
-+
-+	return vsc_tp_xfer(hw->tp, VSC_TP_CMD_WRITE, buf, len, &status,
-+			   sizeof(status));
-+}
-+
-+static int mei_vsc_fw_status(struct mei_device *mei_dev,
-+			     struct mei_fw_status *fw_status)
-+{
-+	if (!fw_status)
-+		return -EINVAL;
-+
-+	fw_status->count = 0;
-+
-+	return 0;
-+}
-+
-+static inline enum mei_pg_state mei_vsc_pg_state(struct mei_device *mei_dev)
-+{
-+	return MEI_PG_OFF;
-+}
-+
-+static void mei_vsc_intr_enable(struct mei_device *mei_dev)
-+{
-+	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
-+
-+	vsc_tp_intr_enable(hw->tp);
-+}
-+
-+static void mei_vsc_intr_disable(struct mei_device *mei_dev)
-+{
-+	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
-+
-+	vsc_tp_intr_disable(hw->tp);
-+}
-+
-+/* mei framework requires this ops */
-+static void mei_vsc_intr_clear(struct mei_device *mei_dev)
-+{
-+}
-+
-+/* wait for pending irq handler */
-+static void mei_vsc_synchronize_irq(struct mei_device *mei_dev)
-+{
-+	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
-+
-+	vsc_tp_intr_synchronize(hw->tp);
-+}
-+
-+static int mei_vsc_hw_config(struct mei_device *mei_dev)
-+{
-+	return 0;
-+}
-+
-+static bool mei_vsc_host_is_ready(struct mei_device *mei_dev)
-+{
-+	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
-+
-+	return hw->host_ready;
-+}
-+
-+static bool mei_vsc_hw_is_ready(struct mei_device *mei_dev)
-+{
-+	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
-+
-+	return hw->fw_ready;
-+}
-+
-+static int mei_vsc_hw_start(struct mei_device *mei_dev)
-+{
-+	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
-+	int ret, rlen;
-+	u8 buf;
-+
-+	hw->host_ready = true;
-+
-+	vsc_tp_intr_enable(hw->tp);
-+
-+	ret = read_poll_timeout(mei_vsc_read_helper, rlen,
-+				rlen >= 0, MEI_VSC_POLL_DELAY_US,
-+				MEI_VSC_POLL_TIMEOUT_US, true,
-+				hw, &buf, sizeof(buf));
-+	if (ret) {
-+		dev_err(mei_dev->dev, "wait fw ready failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	hw->fw_ready = true;
-+
-+	return 0;
-+}
-+
-+static bool mei_vsc_hbuf_is_ready(struct mei_device *mei_dev)
-+{
-+	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
-+
-+	return atomic_read(&hw->write_lock_cnt) == 0;
-+}
-+
-+static int mei_vsc_hbuf_empty_slots(struct mei_device *mei_dev)
-+{
-+	return VSC_MEI_MAX_MSG_SIZE / MEI_SLOT_SIZE;
-+}
-+
-+static u32 mei_vsc_hbuf_depth(const struct mei_device *mei_dev)
-+{
-+	return VSC_MEI_MAX_MSG_SIZE / MEI_SLOT_SIZE;
-+}
-+
-+static int mei_vsc_write(struct mei_device *mei_dev,
-+			 const void *hdr, size_t hdr_len,
-+			 const void *data, size_t data_len)
-+{
-+	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
-+	char *buf = hw->tx_buf;
-+	int ret;
-+
-+	if (WARN_ON(!hdr || !IS_ALIGNED(hdr_len, 4)))
-+		return -EINVAL;
-+
-+	if (!data || data_len > VSC_MEI_MAX_MSG_SIZE)
-+		return -EINVAL;
-+
-+	atomic_inc(&hw->write_lock_cnt);
-+
-+	memcpy(buf, hdr, hdr_len);
-+	memcpy(buf + hdr_len, data, data_len);
-+
-+	ret = mei_vsc_write_helper(hw, buf, hdr_len + data_len);
-+
-+	atomic_dec_if_positive(&hw->write_lock_cnt);
-+
-+	return ret < 0 ? ret : 0;
-+}
-+
-+static inline u32 mei_vsc_read(const struct mei_device *mei_dev)
-+{
-+	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
-+	int ret;
-+
-+	ret = mei_vsc_read_helper(hw, hw->rx_buf, sizeof(hw->rx_buf));
-+	if (ret < 0 || ret < sizeof(u32))
-+		return 0;
-+	hw->rx_len = ret;
-+
-+	hw->rx_hdr = get_unaligned_le32(hw->rx_buf);
-+
-+	return hw->rx_hdr;
-+}
-+
-+static int mei_vsc_count_full_read_slots(struct mei_device *mei_dev)
-+{
-+	return VSC_MEI_MAX_MSG_SIZE / MEI_SLOT_SIZE;
-+}
-+
-+static int mei_vsc_read_slots(struct mei_device *mei_dev, unsigned char *buf,
-+			      unsigned long len)
-+{
-+	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
-+	struct mei_msg_hdr *hdr;
-+
-+	hdr = (struct mei_msg_hdr *)&hw->rx_hdr;
-+	if (len != hdr->length || hdr->length + sizeof(*hdr) != hw->rx_len)
-+		return -EINVAL;
-+
-+	memcpy(buf, hw->rx_buf + sizeof(*hdr), len);
-+
-+	return 0;
-+}
-+
-+static bool mei_vsc_pg_in_transition(struct mei_device *mei_dev)
-+{
-+	return mei_dev->pg_event >= MEI_PG_EVENT_WAIT &&
-+	       mei_dev->pg_event <= MEI_PG_EVENT_INTR_WAIT;
-+}
-+
-+static bool mei_vsc_pg_is_enabled(struct mei_device *mei_dev)
-+{
-+	return false;
-+}
-+
-+static int mei_vsc_hw_reset(struct mei_device *mei_dev, bool intr_enable)
-+{
-+	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
-+
-+	vsc_tp_reset(hw->tp);
-+
-+	vsc_tp_intr_disable(hw->tp);
-+
-+	return vsc_tp_init(hw->tp, mei_dev->dev);
-+}
-+
-+static const struct mei_hw_ops mei_vsc_hw_ops = {
-+	.fw_status = mei_vsc_fw_status,
-+	.pg_state = mei_vsc_pg_state,
-+
-+	.host_is_ready = mei_vsc_host_is_ready,
-+	.hw_is_ready = mei_vsc_hw_is_ready,
-+	.hw_reset = mei_vsc_hw_reset,
-+	.hw_config = mei_vsc_hw_config,
-+	.hw_start = mei_vsc_hw_start,
-+
-+	.pg_in_transition = mei_vsc_pg_in_transition,
-+	.pg_is_enabled = mei_vsc_pg_is_enabled,
-+
-+	.intr_clear = mei_vsc_intr_clear,
-+	.intr_enable = mei_vsc_intr_enable,
-+	.intr_disable = mei_vsc_intr_disable,
-+	.synchronize_irq = mei_vsc_synchronize_irq,
-+
-+	.hbuf_free_slots = mei_vsc_hbuf_empty_slots,
-+	.hbuf_is_ready = mei_vsc_hbuf_is_ready,
-+	.hbuf_depth = mei_vsc_hbuf_depth,
-+	.write = mei_vsc_write,
-+
-+	.rdbuf_full_slots = mei_vsc_count_full_read_slots,
-+	.read_hdr = mei_vsc_read,
-+	.read = mei_vsc_read_slots,
-+};
-+
-+static void mei_vsc_event_cb(void *context)
-+{
-+	struct mei_device *mei_dev = context;
-+	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
-+	struct list_head cmpl_list;
-+	s32 slots;
-+	int ret;
-+
-+	if (mei_dev->dev_state == MEI_DEV_RESETTING ||
-+	    mei_dev->dev_state == MEI_DEV_INITIALIZING)
-+		return;
-+
-+	INIT_LIST_HEAD(&cmpl_list);
-+
-+	guard(mutex)(&mei_dev->device_lock);
-+
-+	while (vsc_tp_need_read(hw->tp)) {
-+		/* check slots available for reading */
-+		slots = mei_count_full_read_slots(mei_dev);
-+
-+		ret = mei_irq_read_handler(mei_dev, &cmpl_list, &slots);
-+		if (ret) {
-+			if (ret != -ENODATA) {
-+				if (mei_dev->dev_state != MEI_DEV_RESETTING &&
-+				    mei_dev->dev_state != MEI_DEV_POWER_DOWN)
-+					schedule_work(&mei_dev->reset_work);
-+			}
-+
-+			return;
-+		}
-+	}
-+
-+	mei_dev->hbuf_is_ready = mei_hbuf_is_ready(mei_dev);
-+	ret = mei_irq_write_handler(mei_dev, &cmpl_list);
-+	if (ret)
-+		dev_err(mei_dev->dev, "dispatch write request failed: %d\n", ret);
-+
-+	mei_dev->hbuf_is_ready = mei_hbuf_is_ready(mei_dev);
-+	mei_irq_compl_handler(mei_dev, &cmpl_list);
-+}
-+
-+static int mei_vsc_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct mei_device *mei_dev;
-+	struct mei_vsc_hw *hw;
-+	struct vsc_tp *tp;
-+	int ret;
-+
-+	tp = *(struct vsc_tp **)dev_get_platdata(dev);
-+	if (!tp)
-+		return dev_err_probe(dev, -ENODEV, "no platform data\n");
-+
-+	mei_dev = devm_kzalloc(dev, size_add(sizeof(*mei_dev), sizeof(*hw)),
-+			       GFP_KERNEL);
-+	if (!mei_dev)
-+		return -ENOMEM;
-+
-+	mei_device_init(mei_dev, dev, false, &mei_vsc_hw_ops);
-+	mei_dev->fw_f_fw_ver_supported = 0;
-+	mei_dev->kind = "ivsc";
-+
-+	hw = mei_dev_to_vsc_hw(mei_dev);
-+	atomic_set(&hw->write_lock_cnt, 0);
-+	hw->tp = tp;
-+
-+	platform_set_drvdata(pdev, mei_dev);
-+
-+	vsc_tp_register_event_cb(tp, mei_vsc_event_cb, mei_dev);
-+
-+	ret = mei_start(mei_dev);
-+	if (ret) {
-+		dev_err_probe(dev, ret, "init hw failed\n");
-+		goto err_cancel;
-+	}
-+
-+	ret = mei_register(mei_dev, dev);
-+	if (ret)
-+		goto err_stop;
-+
-+	pm_runtime_enable(mei_dev->dev);
-+
-+	return 0;
-+
-+err_stop:
-+	mei_stop(mei_dev);
-+
-+err_cancel:
-+	mei_cancel_work(mei_dev);
-+
-+	mei_disable_interrupts(mei_dev);
-+
-+	return ret;
-+}
-+
-+static int mei_vsc_remove(struct platform_device *pdev)
-+{
-+	struct mei_device *mei_dev = platform_get_drvdata(pdev);
-+
-+	pm_runtime_disable(mei_dev->dev);
-+
-+	mei_stop(mei_dev);
-+
-+	mei_disable_interrupts(mei_dev);
-+
-+	mei_deregister(mei_dev);
-+
-+	return 0;
-+}
-+
-+static int mei_vsc_suspend(struct device *dev)
-+{
-+	struct mei_device *mei_dev = dev_get_drvdata(dev);
-+
-+	mei_stop(mei_dev);
-+
-+	return 0;
-+}
-+
-+static int mei_vsc_resume(struct device *dev)
-+{
-+	struct mei_device *mei_dev = dev_get_drvdata(dev);
-+	int ret;
-+
-+	ret = mei_restart(mei_dev);
-+	if (ret)
-+		return ret;
-+
-+	/* start timer if stopped in suspend */
-+	schedule_delayed_work(&mei_dev->timer_work, HZ);
-+
-+	return 0;
-+}
-+
-+static DEFINE_SIMPLE_DEV_PM_OPS(mei_vsc_pm_ops, mei_vsc_suspend, mei_vsc_resume);
-+
-+static struct platform_driver mei_vsc_drv = {
-+	.probe = mei_vsc_probe,
-+	.remove = mei_vsc_remove,
-+	.driver = {
-+		.name = "intel_vsc",
-+		.pm = &mei_vsc_pm_ops,
-+		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
-+	},
-+};
-+module_platform_driver(mei_vsc_drv);
-+
-+MODULE_AUTHOR("Wentong Wu <wentong.wu@intel.com>");
-+MODULE_AUTHOR("Zhifeng Wang <zhifeng.wang@intel.com>");
-+MODULE_DESCRIPTION("Intel Visual Sensing Controller Interface");
-+MODULE_ALIAS("platform:intel_vsc");
-+MODULE_LICENSE("GPL");
-+MODULE_IMPORT_NS(VSC_TP);
--- 
-2.7.4
+> + */
+> +u16 tpm_buf_read_u16(struct tpm_buf *buf, off_t *offset)
+> +{
+> +	u16 value;
 
+This should be __be16 ...
+
+> +
+> +	tpm_buf_read(buf, offset, sizeof(value), &value);
+> +
+> +	return be16_to_cpu(value);
+> +}
+> +EXPORT_SYMBOL_GPL(tpm_buf_read_u16);
+> +
+> +/**
+> + * tpm_buf_read_u32() - Read 32-bit word from a TPM buffer
+> + * @buf:	&tpm_buf instance
+> + * @offset:	offset within the buffer
+> + *
+> + * Return: next 32-bit word
+> + */
+> +u32 tpm_buf_read_u32(struct tpm_buf *buf, off_t *offset)
+> +{
+> +	u32 value;
+
+... and this __be32 to avoid this here:
+
+drivers/char/tpm/tpm-buf.c:203:16: warning: cast to restricted __be16
+drivers/char/tpm/tpm-buf.c:220:16: warning: cast to restricted __be32
