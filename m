@@ -2,57 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 383867FB625
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:44:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 400287FB630
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:45:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343839AbjK1Jnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 04:43:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52838 "EHLO
+        id S229548AbjK1Joy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 04:44:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343751AbjK1Jnj (ORCPT
+        with ESMTP id S231394AbjK1Joq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 04:43:39 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 632B3DE;
-        Tue, 28 Nov 2023 01:43:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701164626; x=1732700626;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=FZXwYPux8v3qXqso189iJLVxfKNYIPXcudfEW5b3mrY=;
-  b=YtpQb0ULzt4eREZLsGlPRWJUPdJYF44/bLUtVXFSG0td6yLT4CpQQCRr
-   uQb/AwlVMITcw0kvN6XV8+cfxRxPmGqiWQOQV1Rbv23u3rRkPmeVDz79k
-   ZtbGR9YVgMkwf8KOv8IgmZD6C2YogwbGF7jixdjyhf0w6KzZfA6PYn6GX
-   dykgAqfwi7P9PdOGyiUjPdbo8AwzVJwU+VZaXo16SHXurMDeLSwDq4Hhn
-   tURUJ75N80LODH10ROmkgzv5tkpTYrj6dqqRutmRPEpzcSn+9P2jqlNHL
-   48MadI8kYSJZI6FznHzQSvwmygfPanAnH9/+7CmgTRh3C9AegfGBj/uls
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="392636957"
-X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
-   d="scan'208";a="392636957"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 01:43:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="839010677"
-X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
-   d="scan'208";a="839010677"
-Received: from haslam-mobl1.ger.corp.intel.com ([10.252.43.79])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 01:43:44 -0800
-Date:   Tue, 28 Nov 2023 11:43:39 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Kalle Valo <kvalo@kernel.org>
-cc:     =?ISO-8859-2?Q?Rafa=B3_Mi=B3ecki?= <zajec5@gmail.com>,
-        linux-wireless@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 6/6] bcma: Use PCI_HEADER_TYPE_MASK instead of literal
-In-Reply-To: <87a5qz7itw.fsf@kernel.org>
-Message-ID: <8ed249a4-89d3-2f31-6ce1-d38131d632f0@linux.intel.com>
-References: <20231124090919.23687-1-ilpo.jarvinen@linux.intel.com> <20231124090919.23687-6-ilpo.jarvinen@linux.intel.com> <87a5qz7itw.fsf@kernel.org>
+        Tue, 28 Nov 2023 04:44:46 -0500
+Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB09110E
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:44:51 -0800 (PST)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 3AS9iIWO061665;
+        Tue, 28 Nov 2023 17:44:18 +0800 (+08)
+        (envelope-from Yunlong.Xing@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4SfcpY5H47z2MxJxp;
+        Tue, 28 Nov 2023 17:38:45 +0800 (CST)
+Received: from tj10379pcu.spreadtrum.com (10.5.32.15) by
+ BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Tue, 28 Nov 2023 17:44:16 +0800
+From:   Yunlong Xing <yunlong.xing@unisoc.com>
+To:     <agk@redhat.com>, <snitzer@kernel.org>, <mpatocka@redhat.com>,
+        <dm-devel@lists.linux.dev>, <linux-kernel@vger.kernel.org>
+CC:     <yibin.ding@unisoc.com>, <hongyu.jin@unisoc.com>,
+        <dongliang.cui@unisoc.com>, <yunlong.xing@unisoc.com>,
+        <xiuhong.wang@unisoc.com>
+Subject: [PATCH] dm: increase the io priority of the kworker-kverityd process
+Date:   Tue, 28 Nov 2023 17:44:14 +0800
+Message-ID: <20231128094414.583666-1-yunlong.xing@unisoc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-922961056-1701164625=:1797"
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.5.32.15]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ BJMBX02.spreadtrum.com (10.0.64.8)
+X-MAIL: SHSQR01.spreadtrum.com 3AS9iIWO061665
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,28 +51,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+From: Hongyu Jin <hongyu.jin@unisoc.com>
 
---8323329-922961056-1701164625=:1797
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+When obtaining the hash value of a high IO priority data block
+from the disk, the kverity-worker that obtains the hash will
+also have a high IO priority to avoid being blocked by other
+IO with low IO priority.
 
-On Mon, 27 Nov 2023, Kalle Valo wrote:
+Signed-off-by: Hongyu Jin <hongyu.jin@unisoc.com>
+Signed-off-by: Yibin Ding <yibin.ding@unisoc.com>
+---
+ drivers/md/dm-verity-target.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> Ilpo Järvinen <ilpo.jarvinen@linux.intel.com> writes:
-> 
-> > Replace literal 0x7f with PCI_HEADER_TYPE_MASK.
-> >
-> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> 
-> I couldn't find the cover letter. Should I take this patch to
-> wireless-next or do you have other plans for this?
-
-Just take it through the normal trees, so in this case wireless-next. 
-Thank you.
-
+diff --git a/drivers/md/dm-verity-target.c b/drivers/md/dm-verity-target.c
+index e115fcfe723c..ade9c6734154 100644
+--- a/drivers/md/dm-verity-target.c
++++ b/drivers/md/dm-verity-target.c
+@@ -22,6 +22,7 @@
+ #include <linux/scatterlist.h>
+ #include <linux/string.h>
+ #include <linux/jump_label.h>
++#include <linux/ioprio.h>
+ 
+ #define DM_MSG_PREFIX			"verity"
+ 
+@@ -639,7 +640,9 @@ static void verity_finish_io(struct dm_verity_io *io, blk_status_t status)
+ static void verity_work(struct work_struct *w)
+ {
+ 	struct dm_verity_io *io = container_of(w, struct dm_verity_io, work);
++	struct bio *bio = dm_bio_from_per_bio_data(io, io->v->ti->per_io_data_size);
+ 
++	set_task_ioprio(current, bio->bi_ioprio);
+ 	io->in_tasklet = false;
+ 
+ 	verity_fec_init_io(io);
 -- 
- i.
+2.25.1
 
---8323329-922961056-1701164625=:1797--
