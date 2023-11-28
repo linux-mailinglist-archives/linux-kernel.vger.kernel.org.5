@@ -2,356 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F4FF7FB482
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:43:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A88C67FB486
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:44:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344196AbjK1InS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 03:43:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59942 "EHLO
+        id S1344200AbjK1Inx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 03:43:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232697AbjK1InP (ORCPT
+        with ESMTP id S232697AbjK1Inw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 03:43:15 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4791BC
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:43:21 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CFE6C433C8;
-        Tue, 28 Nov 2023 08:43:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701161001;
-        bh=9Are99utxUpb51rSuMw8hi7bQqLnSrPy5eLlELhxogY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CFoaMaiDP3S4q1sWspDPyl/BDxvasrWH8wTZVNqFRdOjgYbfmvGeQNqS93I5MgHe1
-         eByXUfqtI03yTIyNdSsveFZ8e/YqOKAAIbuxsdlyr2+N/80e9RidR66SaoaPF9uH5b
-         u/kFTM0zIvyyl2hTacqQwAUXscaRj0kr1gWC4umNdgOOmTJXIJfjCjUGBbT5Rr7q+n
-         zP50EOBPiFjOfifwtPz8OlpSMZP4qHtCz19W61fyv1/bcD6rUguROgtf6L9uKJTPWk
-         piwwOSFmef2LnOXN/LDK4ZCPAt6GJZ1c4+sT/MdSclr5AKfgGtb+I+enmOKKgRb8le
-         TQCKjDwW4Mbnw==
-Received: from disco-boy.misterjones.org ([217.182.43.188] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <maz@kernel.org>)
-        id 1r7tgc-00H3Kk-8d;
-        Tue, 28 Nov 2023 08:43:18 +0000
+        Tue, 28 Nov 2023 03:43:52 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9304E7
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:43:57 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-32faea0fa1fso2922722f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:43:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701161036; x=1701765836; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4bAL9wCzZrXyWtxL7zNG9vKSMElpc631V0JZdvT/8cE=;
+        b=n8DEtSpbP4Lc12SncjYLjFAKhEcQacRIdvIipccCExHuZgK9eUVTY3X2i4pmLw+EuW
+         SK/fel6OTf/1olZnKC9vU7lZA46w2/EghjfQ52XkQUIaBoKie+tItiLJUqgrVU0N291h
+         Bc7yFGRP6QyaTiwp/KWCttxDHvLcfsOMDINZJsi1hdpVhHgTBzh2LQuwyPMkpjAhPKv1
+         EFtCY5lVA1kZcpngSUuFhjRJ5H9uXO2HuKAjTdAt5RrK8QrKDIS11i7XfJ1ZX7MYYZZt
+         nhf8iGY1qAJ6AknZxijfFPgnDzpahKy1lOVgvA0/7Uo6kpm5vs2qOBdx4CwceQQgrTOq
+         zOcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701161036; x=1701765836;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4bAL9wCzZrXyWtxL7zNG9vKSMElpc631V0JZdvT/8cE=;
+        b=no/I7AY53n5VbsolobiEtoAQOmBS8DBloTTEU9Zbb5B5uucS5BD/vSVHF8UiNDI5CL
+         LhgOgvobCntgplpTiEaELniERVz7h/YiCXwqBAMp7SJwaioBpYQY4Alot8jE83AdT4MO
+         OmbBsQbkymbI4Ni5PtOlBD4Fuybhl6bCCAcWzTikPYqRGLtxmvpJTaAdaO26tRqEdf35
+         eeVlj0gWyM+mZIJficxVRoJF38jA6/DGYr/8uq/2dt+Z7690Y9eVcUhBBzzNzfzpDk5z
+         4fKQkVtBEm1Shdi+KC24JrqzWHxE5nAbQQvroVe/CS+q/DlkoZdQLMEfUYDS3E/0fWcb
+         XZrA==
+X-Gm-Message-State: AOJu0YxsGsxvb9qgJfOucVJdXsRBVqrdyfIM/hyJK83619TFFNDRbcaV
+        r69a17XUITMJsa1HcA3s21YcLfwPY65WW/i5jStheUbv
+X-Google-Smtp-Source: AGHT+IGLKX2x9ZeYgdGvBXnmFO0RbxBreqNPQu++FMoxAjnczCD7QKz1LViCkE3nfFkXvajqCdiNkw==
+X-Received: by 2002:a5d:64e3:0:b0:333:47e:4cf4 with SMTP id g3-20020a5d64e3000000b00333047e4cf4mr4189105wri.15.1701161036204;
+        Tue, 28 Nov 2023 00:43:56 -0800 (PST)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id o19-20020a05600c4fd300b0040b45356b72sm7190730wmq.33.2023.11.28.00.43.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 00:43:55 -0800 (PST)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Date:   Tue, 28 Nov 2023 09:43:53 +0100
+Subject: [PATCH v2] dt-bindings: PCI: qcom: document the SM8650 PCIe
+ Controller
 MIME-Version: 1.0
-Date:   Tue, 28 Nov 2023 08:43:18 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Shaoqin Huang <shahuang@redhat.com>,
-        Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Oliver Upton <oliver.upton@linux.dev>, kvmarm@lists.linux.dev,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/3] KVM: selftests: aarch64: Move the pmu helper
- function into lib/
-In-Reply-To: <CAJHc60wsEjjLmAVUrb3n9Tyftqi7UXWh7V1hE1E90bUXiUk+Tw@mail.gmail.com>
-References: <20231123063750.2176250-1-shahuang@redhat.com>
- <20231123063750.2176250-3-shahuang@redhat.com>
- <CAJHc60wsEjjLmAVUrb3n9Tyftqi7UXWh7V1hE1E90bUXiUk+Tw@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.15
-Message-ID: <ae81aa3f6527b663ef73b64a3fb72e5b@kernel.org>
-X-Sender: maz@kernel.org
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 217.182.43.188
-X-SA-Exim-Rcpt-To: shahuang@redhat.com, rananta@google.com, oliver.upton@linux.dev, kvmarm@lists.linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, pbonzini@redhat.com, shuah@kernel.org, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231128-topic-sm8650-upstream-bindings-pcie-v2-1-b72e2d13bcf1@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAEioZWUC/42NQQ6CMBAAv0J6dk1b0oqe/IfhgGWBTaRttkg0p
+ H+3Eh/gceYws4mETJjEpdoE40qJgi+gD5VwU+dHBOoLCy11raSysIRIDtLcWCPhGdPC2M1wJ9+
+ THxNERwjG4lma2jptGlFKkXGg1365tYUnSkvg9z5d1df++tr81V8VKJBY93aQzjT6dH2Q7zgcA
+ 4+izTl/AI6OQ63XAAAA
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Manivannan Sadhasivam <mani@kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1568;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=b9Lr7rRAqvBSJYXD0r7yOgr6vC6l7cqk9pw+NrXCzHI=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlZahK9SITHC1qQaFOxJtM+0sSsIsMwuBf2G83PX8h
+ OLS6Q1GJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZWWoSgAKCRB33NvayMhJ0b+5D/
+ 41siyPhaZtKiccO/sqXLqowxzzKa+Ces19XNGgAwfLwaCbu6s4lxoN8+AgoRYpekrVsPM+Kg6SPVgN
+ WD0AXKfzhWV/C4m+Y4gbAKc35rv4YaHnGkc3ha0i0GvmJhmIpwFumze6mKrOtspdSfLWXsUJFj0OhH
+ LMHrZg6KtsFSYga3psEwcpG6C3nWEg7eQquY+mC+m/xQN5gbtbGiJ2B+x2l7URNgzI95RXb/R8m5IP
+ sqNqEQ/zp9niL3xsfIn6zv/0hzZLnk5+graX4LShvSDirqypjjmByL9s7724eqEOEFsRb6KmBa9qcD
+ dP5zDeUYkdvR+KrKME/BxsYcicosx/6+RxtotofMWbWu2CxhW9Zf0CFMhlZpgwpYnCMfdTrB/9EH85
+ cIaFxHtm/Efzdk8C0Pxmj90cwDCeT58AkjvLIG7hALtBrddaTdCWnORSVTwSL59ue4lW9r7s31c0jG
+ 5X4S3mfa2102SGgsTlhxXNaZ9V9mwZH64MiMdAXAtlN7TV8v4TEQAMiAoAsR+YGKJtbuok5A8RvFuM
+ 4SJbHRNweFIsY8RL+4NpC5HApIi/UtlN7AvNLirTTCwjI3aA4mWs6osKpIWnykIHNnGv46b/1Bxm8N
+ ++YCs4kCxV4S7zsHDyWf+Ns7FOSo7+N/LWYkGkHdLsYzCS7ydat5FNN+mO8w==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-27 21:48, Raghavendra Rao Ananta wrote:
-> Hi Shaoqin,
-> 
-> On Wed, Nov 22, 2023 at 10:39 PM Shaoqin Huang <shahuang@redhat.com> 
-> wrote:
->> 
->> Move those pmu helper function into lib/, thus it can be used by other
->> pmu test.
->> 
->> Signed-off-by: Shaoqin Huang <shahuang@redhat.com>
->> ---
->>  .../kvm/aarch64/vpmu_counter_access.c         | 118 -----------------
->>  .../selftests/kvm/include/aarch64/vpmu.h      | 119 
->> ++++++++++++++++++
->>  2 files changed, 119 insertions(+), 118 deletions(-)
->> 
->> diff --git a/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c 
->> b/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
->> index 17305408a334..62d6315790ab 100644
->> --- a/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
->> +++ b/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
->> @@ -20,12 +20,6 @@
->>  #include <perf/arm_pmuv3.h>
->>  #include <linux/bitfield.h>
->> 
->> -/* The max number of the PMU event counters (excluding the cycle 
->> counter) */
->> -#define ARMV8_PMU_MAX_GENERAL_COUNTERS (ARMV8_PMU_MAX_COUNTERS - 1)
->> -
->> -/* The cycle counter bit position that's common among the PMU 
->> registers */
->> -#define ARMV8_PMU_CYCLE_IDX            31
->> -
->>  static struct vpmu_vm *vpmu_vm;
->> 
->>  struct pmreg_sets {
->> @@ -35,118 +29,6 @@ struct pmreg_sets {
->> 
->>  #define PMREG_SET(set, clr) {.set_reg_id = set, .clr_reg_id = clr}
->> 
->> -static uint64_t get_pmcr_n(uint64_t pmcr)
->> -{
->> -       return (pmcr >> ARMV8_PMU_PMCR_N_SHIFT) & 
->> ARMV8_PMU_PMCR_N_MASK;
->> -}
->> -
->> -static void set_pmcr_n(uint64_t *pmcr, uint64_t pmcr_n)
->> -{
->> -       *pmcr = *pmcr & ~(ARMV8_PMU_PMCR_N_MASK << 
->> ARMV8_PMU_PMCR_N_SHIFT);
->> -       *pmcr |= (pmcr_n << ARMV8_PMU_PMCR_N_SHIFT);
->> -}
->> -
->> -static uint64_t get_counters_mask(uint64_t n)
->> -{
->> -       uint64_t mask = BIT(ARMV8_PMU_CYCLE_IDX);
->> -
->> -       if (n)
->> -               mask |= GENMASK(n - 1, 0);
->> -       return mask;
->> -}
->> -
->> -/* Read PMEVTCNTR<n>_EL0 through PMXEVCNTR_EL0 */
->> -static inline unsigned long read_sel_evcntr(int sel)
->> -{
->> -       write_sysreg(sel, pmselr_el0);
->> -       isb();
->> -       return read_sysreg(pmxevcntr_el0);
->> -}
->> -
->> -/* Write PMEVTCNTR<n>_EL0 through PMXEVCNTR_EL0 */
->> -static inline void write_sel_evcntr(int sel, unsigned long val)
->> -{
->> -       write_sysreg(sel, pmselr_el0);
->> -       isb();
->> -       write_sysreg(val, pmxevcntr_el0);
->> -       isb();
->> -}
->> -
->> -/* Read PMEVTYPER<n>_EL0 through PMXEVTYPER_EL0 */
->> -static inline unsigned long read_sel_evtyper(int sel)
->> -{
->> -       write_sysreg(sel, pmselr_el0);
->> -       isb();
->> -       return read_sysreg(pmxevtyper_el0);
->> -}
->> -
->> -/* Write PMEVTYPER<n>_EL0 through PMXEVTYPER_EL0 */
->> -static inline void write_sel_evtyper(int sel, unsigned long val)
->> -{
->> -       write_sysreg(sel, pmselr_el0);
->> -       isb();
->> -       write_sysreg(val, pmxevtyper_el0);
->> -       isb();
->> -}
->> -
->> -static inline void enable_counter(int idx)
->> -{
->> -       uint64_t v = read_sysreg(pmcntenset_el0);
->> -
->> -       write_sysreg(BIT(idx) | v, pmcntenset_el0);
->> -       isb();
->> -}
->> -
->> -static inline void disable_counter(int idx)
->> -{
->> -       uint64_t v = read_sysreg(pmcntenset_el0);
->> -
->> -       write_sysreg(BIT(idx) | v, pmcntenclr_el0);
->> -       isb();
->> -}
->> -
->> -static void pmu_disable_reset(void)
->> -{
->> -       uint64_t pmcr = read_sysreg(pmcr_el0);
->> -
->> -       /* Reset all counters, disabling them */
->> -       pmcr &= ~ARMV8_PMU_PMCR_E;
->> -       write_sysreg(pmcr | ARMV8_PMU_PMCR_P, pmcr_el0);
->> -       isb();
->> -}
->> -
->> -#define RETURN_READ_PMEVCNTRN(n) \
->> -       return read_sysreg(pmevcntr##n##_el0)
->> -static unsigned long read_pmevcntrn(int n)
->> -{
->> -       PMEVN_SWITCH(n, RETURN_READ_PMEVCNTRN);
->> -       return 0;
->> -}
->> -
->> -#define WRITE_PMEVCNTRN(n) \
->> -       write_sysreg(val, pmevcntr##n##_el0)
->> -static void write_pmevcntrn(int n, unsigned long val)
->> -{
->> -       PMEVN_SWITCH(n, WRITE_PMEVCNTRN);
->> -       isb();
->> -}
->> -
->> -#define READ_PMEVTYPERN(n) \
->> -       return read_sysreg(pmevtyper##n##_el0)
->> -static unsigned long read_pmevtypern(int n)
->> -{
->> -       PMEVN_SWITCH(n, READ_PMEVTYPERN);
->> -       return 0;
->> -}
->> -
->> -#define WRITE_PMEVTYPERN(n) \
->> -       write_sysreg(val, pmevtyper##n##_el0)
->> -static void write_pmevtypern(int n, unsigned long val)
->> -{
->> -       PMEVN_SWITCH(n, WRITE_PMEVTYPERN);
->> -       isb();
->> -}
->> -
->>  /*
->>   * The pmc_accessor structure has pointers to PMEV{CNTR,TYPER}<n>_EL0
->>   * accessors that test cases will use. Each of the accessors will
->> diff --git a/tools/testing/selftests/kvm/include/aarch64/vpmu.h 
->> b/tools/testing/selftests/kvm/include/aarch64/vpmu.h
->> index 0a56183644ee..e0cc1ca1c4b7 100644
->> --- a/tools/testing/selftests/kvm/include/aarch64/vpmu.h
->> +++ b/tools/testing/selftests/kvm/include/aarch64/vpmu.h
->> @@ -1,10 +1,17 @@
->>  /* SPDX-License-Identifier: GPL-2.0 */
->> 
->>  #include <kvm_util.h>
->> +#include <perf/arm_pmuv3.h>
->> 
->>  #define GICD_BASE_GPA  0x8000000ULL
->>  #define GICR_BASE_GPA  0x80A0000ULL
->> 
->> +/* The max number of the PMU event counters (excluding the cycle 
->> counter) */
->> +#define ARMV8_PMU_MAX_GENERAL_COUNTERS (ARMV8_PMU_MAX_COUNTERS - 1)
->> +
->> +/* The cycle counter bit position that's common among the PMU 
->> registers */
->> +#define ARMV8_PMU_CYCLE_IDX            31
->> +
->>  struct vpmu_vm {
->>         struct kvm_vm *vm;
->>         struct kvm_vcpu *vcpu;
->> @@ -14,3 +21,115 @@ struct vpmu_vm {
->>  struct vpmu_vm *create_vpmu_vm(void *guest_code);
->> 
->>  void destroy_vpmu_vm(struct vpmu_vm *vpmu_vm);
->> +
->> +static inline uint64_t get_pmcr_n(uint64_t pmcr)
->> +{
->> +       return (pmcr >> ARMV8_PMU_PMCR_N_SHIFT) & 
->> ARMV8_PMU_PMCR_N_MASK;
->> +}
->> +
->> +static inline void set_pmcr_n(uint64_t *pmcr, uint64_t pmcr_n)
->> +{
->> +       *pmcr = *pmcr & ~(ARMV8_PMU_PMCR_N_MASK << 
->> ARMV8_PMU_PMCR_N_SHIFT);
->> +       *pmcr |= (pmcr_n << ARMV8_PMU_PMCR_N_SHIFT);
->> +}
->> +
->> +static inline uint64_t get_counters_mask(uint64_t n)
->> +{
->> +       uint64_t mask = BIT(ARMV8_PMU_CYCLE_IDX);
->> +
->> +       if (n)
->> +               mask |= GENMASK(n - 1, 0);
->> +       return mask;
->> +}
->> +
->> +/* Read PMEVTCNTR<n>_EL0 through PMXEVCNTR_EL0 */
->> +static inline unsigned long read_sel_evcntr(int sel)
->> +{
->> +       write_sysreg(sel, pmselr_el0);
->> +       isb();
->> +       return read_sysreg(pmxevcntr_el0);
->> +}
->> +
->> +/* Write PMEVTCNTR<n>_EL0 through PMXEVCNTR_EL0 */
->> +static inline void write_sel_evcntr(int sel, unsigned long val)
->> +{
->> +       write_sysreg(sel, pmselr_el0);
->> +       isb();
->> +       write_sysreg(val, pmxevcntr_el0);
->> +       isb();
->> +}
->> +
->> +/* Read PMEVTYPER<n>_EL0 through PMXEVTYPER_EL0 */
->> +static inline unsigned long read_sel_evtyper(int sel)
->> +{
->> +       write_sysreg(sel, pmselr_el0);
->> +       isb();
->> +       return read_sysreg(pmxevtyper_el0);
->> +}
->> +
->> +/* Write PMEVTYPER<n>_EL0 through PMXEVTYPER_EL0 */
->> +static inline void write_sel_evtyper(int sel, unsigned long val)
->> +{
->> +       write_sysreg(sel, pmselr_el0);
->> +       isb();
->> +       write_sysreg(val, pmxevtyper_el0);
->> +       isb();
->> +}
->> +
->> +static inline void enable_counter(int idx)
->> +{
->> +       uint64_t v = read_sysreg(pmcntenset_el0);
->> +
->> +       write_sysreg(BIT(idx) | v, pmcntenset_el0);
->> +       isb();
->> +}
->> +
->> +static inline void disable_counter(int idx)
->> +{
->> +       uint64_t v = read_sysreg(pmcntenset_el0);
->> +
->> +       write_sysreg(BIT(idx) | v, pmcntenclr_el0);
->> +       isb();
->> +}
->> +
-> As mentioned in [1], the current implementation of disable_counter()
-> is buggy and would end up disabling all the counters.
-> However if you intend to keep it (even though it would remain unused),
-> may be change the definition something to:
-> 
-> static inline void disable_counter(int idx)
-> {
->     write_sysreg(BIT(idx), pmcntenclr_el0);
->     isb();
-> }
+Document the PCIe Controller on the SM8650 platform by using the
+SM8550 bindings as a fallback.
 
-Same thing for the enable_counter() function, by the way.
-It doesn't have the same disastrous effect, but it is
-buggy (imagine an interrupt disabling a counter between
-the read and the write...).
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+---
+For convenience, a regularly refreshed linux-next based git tree containing
+all the SM8650 related work is available at:
+https://git.codelinaro.org/neil.armstrong/linux/-/tree/topic/sm8650/upstream/integ
+---
+Changes in v2:
+- Collected Reviews
+- Link to v1: https://lore.kernel.org/r/20231025-topic-sm8650-upstream-bindings-pcie-v1-1-0e3d6f0c5827@linaro.org
+---
+ Documentation/devicetree/bindings/pci/qcom,pcie.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-In general, the set/clr registers should always be used
-in their write form, never in a RMW form.
+diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+index eadba38171e1..af537732ded6 100644
+--- a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
++++ b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+@@ -41,6 +41,10 @@ properties:
+           - qcom,pcie-sm8450-pcie0
+           - qcom,pcie-sm8450-pcie1
+           - qcom,pcie-sm8550
++      - items:
++          - enum:
++              - qcom,pcie-sm8650
++          - const: qcom,pcie-sm8550
+       - items:
+           - const: qcom,pcie-msm8998
+           - const: qcom,pcie-msm8996
 
-Thanks,
+---
+base-commit: 48bbaf8b793e0770798519f8ee1ea2908ff0943a
+change-id: 20231016-topic-sm8650-upstream-bindings-pcie-56e90536c258
 
-         M.
+Best regards,
 -- 
-Jazz is not dead. It just smells funny...
+Neil Armstrong <neil.armstrong@linaro.org>
+
