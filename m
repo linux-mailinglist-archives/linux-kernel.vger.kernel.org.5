@@ -2,83 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9547FB2E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:36:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC227FB2E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:37:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343746AbjK1Hgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 02:36:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36542 "EHLO
+        id S1343750AbjK1HhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 02:37:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343885AbjK1HgF (ORCPT
+        with ESMTP id S234358AbjK1Hg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 02:36:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85041D64
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:36:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701156966;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dsdX9JWACBEXSXLe6/UFcpYHlYKNddh0vSmdD6PItQ0=;
-        b=DRSTe3AJD+EV/njZcwbuzYrqKv4/Aih6tmlA1wIzAxz8oykBqSrDCPTnMIs/iiTjAnj/IT
-        E/QRMioGRCtNhzp4Ncmy3SxFub5c/dCeq209qOaGySoOxnuVsR+aotjYnQTcKqhagivBok
-        Jer84wrYj/1BewkI06rHUBpkNapV1PM=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-10-hbxQd84dNbiDG-1FQ40WPw-1; Tue, 28 Nov 2023 02:36:04 -0500
-X-MC-Unique: hbxQd84dNbiDG-1FQ40WPw-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40b2be01a2dso29780105e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:36:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701156963; x=1701761763;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        Tue, 28 Nov 2023 02:36:56 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13FE710CC
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:37:03 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-50bbef0e5d5so92363e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:37:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701157021; x=1701761821; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=dsdX9JWACBEXSXLe6/UFcpYHlYKNddh0vSmdD6PItQ0=;
-        b=JjHEqHP5DzWu+pQKiGMw1QWxx3II5LnBGssr4uqeVUjas/wtnxjl+2qSsZZ3gBns/W
-         nsRoHb8EknvC2iFf0Ov8p+WcSshmGzrFsMVqAQ2JWi0UKiZuVtLlLBVQZVJunuBKF9VF
-         gz7dakqKsaezRVrUhfpOpx2w8Q8FYpzZINuptYg05Ftnty9yCCEbVltC0yocKG9tJMmF
-         W0M56d3qenGCgR0IqScUXHFxwd8J2KdF9e1HJFdP3TIVn1tu3uy7GpT/OJ6Pq4khK/GC
-         7tPN9yORNp2zaItxda77IcdjFrugxAtWMHsgoW/BlU15e4jANyjsnkyi8TolU4/sUFME
-         9z8g==
-X-Gm-Message-State: AOJu0YwQuHwYJrReSvyQ90fM8APDyg1GP8YSHgCF+dlaRhePPQIoqbA6
-        EoQrDHO7WmpjG0knpiAje1sGMWrH0ilQleSZ6pq2kYo6XdNoc+ArQnb1WWut2uBGWLZPnZF/UCH
-        jZ8DIRXsQwI0Uzatfc7M0YhSh
-X-Received: by 2002:a05:600c:290:b0:40b:377a:2ac1 with SMTP id 16-20020a05600c029000b0040b377a2ac1mr10104660wmk.20.1701156963678;
-        Mon, 27 Nov 2023 23:36:03 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHAOpVyXJnyHDBx5SdhWAQsdciuEWUKK9zbiujUHqCWUzkEMj7vCi7I9Y4a12hutDtc/rzKcw==
-X-Received: by 2002:a05:600c:290:b0:40b:377a:2ac1 with SMTP id 16-20020a05600c029000b0040b377a2ac1mr10104637wmk.20.1701156963320;
-        Mon, 27 Nov 2023 23:36:03 -0800 (PST)
-Received: from starship ([77.137.131.4])
-        by smtp.gmail.com with ESMTPSA id bh5-20020a05600c3d0500b00405d9a950a2sm17293024wmb.28.2023.11.27.23.36.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 23:36:03 -0800 (PST)
-Message-ID: <69c10848d4a4f36ab71ca518f4b23d4dee377572.camel@redhat.com>
-Subject: Re: [RFC 16/33] KVM: x86/mmu: Expose R/W/X flags during memory
- fault exits
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Nicolas Saenz Julienne <nsaenz@amazon.com>, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        anelkz@amazon.com, graf@amazon.com, dwmw@amazon.co.uk,
-        jgowans@amazon.com, corbert@lwn.net, kys@microsoft.com,
-        haiyangz@microsoft.com, decui@microsoft.com, x86@kernel.org,
-        linux-doc@vger.kernel.org
-Date:   Tue, 28 Nov 2023 09:36:00 +0200
-In-Reply-To: <20231108111806.92604-17-nsaenz@amazon.com>
-References: <20231108111806.92604-1-nsaenz@amazon.com>
-         <20231108111806.92604-17-nsaenz@amazon.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        bh=q4Ty/mc3A4dG4z2IpAQDxL6wASTKN0l3PuXuZz1XJ+c=;
+        b=gD4GEBn7eC180lkPjlFRkDpxfx+J8oCzQAiCfC8X8AA/GP6G/sTkcl3OPWQmv/ptKR
+         bwcTz0Suvo+FOripXIFjePqp+J8700pjoeaVC6VtfR8TPuWgMDr1x9DnI8hQ/B5oaI2F
+         kf5faFkyLbPc8Ee1P0psWpDxacqFX8TYkBFz3f22wFt6gIDO7jdZBVL5oKmKawvEfb57
+         7YO2N8O8TmLJ2GpmEy3LEHFQ52N+lklbc4cN+K+M3C3/z9p/2us+7vsiCxdqV/B1FT/3
+         PLK5wrIqy15Ftnjoy5B4qJ3N6E0c67BZY9jSABIaoVnHDxhEKM2Qn8A2bdhLMofqSKnv
+         9+Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701157021; x=1701761821;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=q4Ty/mc3A4dG4z2IpAQDxL6wASTKN0l3PuXuZz1XJ+c=;
+        b=hd3QW5PlqGQXQVH3mIJGRcELJzdgN+ETcqZ+JvAdJprZS9bhXZPTsctuMPGjoRwxgd
+         LvC3Y47tALCASuUZhFa694ign1MoOhlLUPZ/aCLtyB1udFhttkZOfY3tuUmbIO8nZPxi
+         EbbfaLdsx6Arw2K88ll8K65YVomOGXNDVqL4sSU8s9Mfr88lrw1JVzHOUTU9mzMPh3N4
+         ALpmfHwbLHOaLbfOzoQ0Z7b18BsAP35gzUkp7UdU1ET3iqsNIYYLfZetL7+soXGgJ1Wz
+         BL7+8aBJ1pLG/paNDh7YoH26kU/+jLT3AaT19k+HaydoH3rOUQgplAfA/hNipo2CRGC7
+         At7Q==
+X-Gm-Message-State: AOJu0Yx2G4zI3065lWG91js2ZlgWyPdTloyO1kLvAh1b0eAJPuMhtGHY
+        60xbvEtEmZaseyf+t0cML1nh7A==
+X-Google-Smtp-Source: AGHT+IHCg4GpPpTE+clk6c1JZ8ms9g4d9Zj/QYHanq7kDauwzXvkjZZgy28czyyUOTYCzI9IzN6YZg==
+X-Received: by 2002:a05:6512:746:b0:509:8da4:93da with SMTP id c6-20020a056512074600b005098da493damr8472890lfs.18.1701157021339;
+        Mon, 27 Nov 2023 23:37:01 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.109])
+        by smtp.gmail.com with ESMTPSA id q23-20020a17090676d700b00a017da998bdsm6473249ejn.32.2023.11.27.23.36.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Nov 2023 23:37:00 -0800 (PST)
+Message-ID: <5f4cf393-5c6c-4eed-b116-b65adf133d19@linaro.org>
+Date:   Tue, 28 Nov 2023 08:36:58 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] dt-bindings: mmc: mtk-sd: add tuning steps related
+ property
+Content-Language: en-US
+To:     Axe Yang <axe.yang@mediatek.com>,
+        Chaotian Jing <chaotian.jing@mediatek.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Wenbin Mei <wenbin.mei@mediatek.com>
+Cc:     linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20231128070127.27442-1-axe.yang@mediatek.com>
+ <20231128070127.27442-2-axe.yang@mediatek.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231128070127.27442-2-axe.yang@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,84 +131,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-11-08 at 11:17 +0000, Nicolas Saenz Julienne wrote:
-> Include the fault's read, write and execute status when exiting to
-> user-space.
+On 28/11/2023 08:01, Axe Yang wrote:
+> Add 'mediatek,tuning-steps' setting. This property will give MSDC
+> a chance to extend tuning steps up to 64. With more tuning steps,
+> MSDC may achieve a more optimal calibration result, thus avoiding
+> potential CRC issues.
 > 
-> Signed-off-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
-> ---
->  arch/x86/kvm/mmu/mmu.c   | 4 ++--
->  include/linux/kvm_host.h | 9 +++++++--
->  include/uapi/linux/kvm.h | 6 ++++++
->  3 files changed, 15 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 4e02d506cc25..feca077c0210 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -4300,8 +4300,8 @@ static inline u8 kvm_max_level_for_order(int order)
->  static void kvm_mmu_prepare_memory_fault_exit(struct kvm_vcpu *vcpu,
->  					      struct kvm_page_fault *fault)
->  {
-> -	kvm_prepare_memory_fault_exit(vcpu, fault->gfn << PAGE_SHIFT,
-> -				      PAGE_SIZE, fault->write, fault->exec,
-> +	kvm_prepare_memory_fault_exit(vcpu, fault->gfn << PAGE_SHIFT, PAGE_SIZE,
-> +				      fault->write, fault->exec, fault->user,
->  				      fault->is_private);
->  }
->  
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 71e1e8cf8936..631fd532c97a 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -2367,14 +2367,19 @@ static inline void kvm_account_pgtable_pages(void *virt, int nr)
->  static inline void kvm_prepare_memory_fault_exit(struct kvm_vcpu *vcpu,
->  						 gpa_t gpa, gpa_t size,
->  						 bool is_write, bool is_exec,
-> -						 bool is_private)
-> +						 bool is_read, bool is_private)
+> Signed-off-by: Axe Yang <axe.yang@mediatek.com>
 
-It almost feels like there is a need for a struct to hold all of those parameters.
-
->  {
->  	vcpu->run->exit_reason = KVM_EXIT_MEMORY_FAULT;
->  	vcpu->run->memory_fault.gpa = gpa;
->  	vcpu->run->memory_fault.size = size;
->  
-> -	/* RWX flags are not (yet) defined or communicated to userspace. */
->  	vcpu->run->memory_fault.flags = 0;
-> +	if (is_read)
-> +		vcpu->run->memory_fault.flags |= KVM_MEMORY_EXIT_FLAG_READ;
-> +	if (is_write)
-> +		vcpu->run->memory_fault.flags |= KVM_MEMORY_EXIT_FLAG_WRITE;
-> +	if (is_exec)
-> +		vcpu->run->memory_fault.flags |= KVM_MEMORY_EXIT_FLAG_EXECUTE;
->  	if (is_private)
->  		vcpu->run->memory_fault.flags |= KVM_MEMORY_EXIT_FLAG_PRIVATE;
->  }
-> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index 03f5c08fd7aa..0ddffb8b0c99 100644
-> --- a/include/uapi/linux/kvm.h
-> +++ b/include/uapi/linux/kvm.h
-> @@ -533,7 +533,13 @@ struct kvm_run {
->  		} notify;
->  		/* KVM_EXIT_MEMORY_FAULT */
->  		struct {
-> +#define KVM_MEMORY_EXIT_FLAG_READ	(1ULL << 0)
-> +#define KVM_MEMORY_EXIT_FLAG_WRITE	(1ULL << 1)
-> +#define KVM_MEMORY_EXIT_FLAG_EXECUTE	(1ULL << 2)
->  #define KVM_MEMORY_EXIT_FLAG_PRIVATE	(1ULL << 3)
-> +#define KVM_MEMORY_EXIT_NO_ACCESS                            \
-> +	(KVM_MEMORY_EXIT_FLAG_NR | KVM_MEMORY_EXIT_FLAG_NW | \
-> +	 KVM_MEMORY_EXIT_FLAG_NX)
->  			__u64 flags;
->  			__u64 gpa;
->  			__u64 size;
-
-
-I don't think that KVM_MEMORY_EXIT_FLAG_NR, KVM_MEMORY_EXIT_FLAG_NW, KVM_MEMORY_EXIT_FLAG_NX are defined anywhere.
-Also why KVM_MEMORY_EXIT_NO_ACCESS is needed - userspace can infer it from the lack of other access flags.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
-	Maxim Levitsky
+Krzysztof
 
