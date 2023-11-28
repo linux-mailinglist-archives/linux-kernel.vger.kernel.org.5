@@ -2,152 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E93A57FB15B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 06:38:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 613B67FB15D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 06:39:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343557AbjK1Fia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 00:38:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50158 "EHLO
+        id S1343552AbjK1Fj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 00:39:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234622AbjK1Fi3 (ORCPT
+        with ESMTP id S234635AbjK1FjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 00:38:29 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 076BFDA
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 21:38:35 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id 5614622812f47-3b844357f7cso3202514b6e.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 21:38:35 -0800 (PST)
+        Tue, 28 Nov 2023 00:39:23 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309D0E6
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 21:39:29 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1cfaf05db73so77135ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 21:39:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1701149914; x=1701754714; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1701149968; x=1701754768; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+3smZGD6pLNRGkaXwEXKVlmQX+QFLadDCcT3fwIXSsw=;
-        b=nbfwNWSoboTplLxvdYf114aUHYh0v2VFFkU+CLo3nXdQxi6lL2B3xq/q1CixUJyN4i
-         I8Ix2Uem4kIFVGyW/zVshhU1DO3z0TurBLEsWa2/+bivLKz9Te8uPiVqDvA/A1wsJTPn
-         uuG+2PzXKNsx2JhxxSDizCl5umvE2fNaCrNLGLih0mOqJhmDifeQUK9+FpoRWRQOlU1F
-         ltfkVTp00e4X0tCgxVgHDR/v1LHw40FJEGNCu/vAwV23UtFwTvCnK0s00Qlh7ebVTm/u
-         s39uMjAdUAOj9y1U+pwSIaWqtcDDSfz2z6w3uCYXo/1+OFdj85qGmjnNeWWozfrMmwnx
-         Gcrw==
+        bh=Hd11373At0fgNthDfz475jB2pnftz8WhsrA0gYblitY=;
+        b=bXsqjc+O5lZombFifNkiB/W9AfwHyZFQ5SLgjbDKMWasF8nfXxWucjm+pLF9q3ltG8
+         hWu+arqrb5nyPU5LfwYm3OQqevjctUuBwRkzRQo9/TD8xmYcXESa0baCmh8igVavgGAU
+         A+bJonGvaqIDwNd5J1K9IB6tgYId5oH3Gn5jCz9ShWNpUwe7mARFCA5czA1Q04PKKk+j
+         qII1dgoS7kry8uzXKIdABg91Fg6+7nt2hROBNRJmJ/XTU4lJbf1Hx7vjLvTA8zxhySZC
+         sZKi1YoBWc1RamGA7oevhBsV1Ea6eybFg7uRFdbpf+Em5JTHNa/5SlFtOGDJE6IIWv/6
+         PLvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701149914; x=1701754714;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1701149968; x=1701754768;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+3smZGD6pLNRGkaXwEXKVlmQX+QFLadDCcT3fwIXSsw=;
-        b=wlUZemIuGK23V7jFHOMdCYeHrgm/gFdM2OhMcyrC7LTWVpX/BM7GarDFf9zbo3eEtT
-         GTwT+pCsjNR+pQVBZ+apEIsRs8ve3F0/GFw+4/SoozfpSSLKtfFwy0FfQLIKcxv6mgYE
-         t9VUrzx2C5XHZapa9Wlwi7guAX70gowbcH+Ao44tB5u83NGmixmAzZ9p0I6jOYObncyA
-         lbYYgy9vGKWoe9/E/Y3Xol0w4oqJ94/OqGJd0CppTwd5oF88Cg++oczIxH+xvNr6cGeD
-         kTbTRpXXF6WAEYthvPl4EgvInlNur2IE+V+YGNGqp8ncOMkK5vXPo0px5bIaplFBEYcf
-         5Rsw==
-X-Gm-Message-State: AOJu0YzhNsr5NQUsN4G+lCq9f/c26dI8s13CTL7NFdp6ofdWFQSk4Lun
-        SpAgDcVVjo+VFzXaGVTvhmU98g==
-X-Google-Smtp-Source: AGHT+IEwY+qDOH5RdVmpp3afIODK9OZ2MAKzfbsV5gxBTlRaiFetM3EKZhzvR/gD6Q8ZvgHWcrukkA==
-X-Received: by 2002:a05:6808:1901:b0:3ae:5e0e:1671 with SMTP id bf1-20020a056808190100b003ae5e0e1671mr20436537oib.4.1701149914332;
-        Mon, 27 Nov 2023 21:38:34 -0800 (PST)
-Received: from ?IPv6:2402:7500:4ce:8338:14c0:b892:2482:e230? ([2402:7500:4ce:8338:14c0:b892:2482:e230])
-        by smtp.gmail.com with ESMTPSA id r10-20020aa78b8a000000b006cbb3512266sm8087953pfd.1.2023.11.27.21.38.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 27 Nov 2023 21:38:33 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
-Subject: Re: [PATCH v2 05/13] crypto: simd - Update `walksize` in simd
- skcipher
-From:   Jerry Shih <jerry.shih@sifive.com>
-In-Reply-To: <20231128035814.GH1463@sol.localdomain>
-Date:   Tue, 28 Nov 2023 13:38:29 +0800
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>, palmer@dabbelt.com,
-        Albert Ou <aou@eecs.berkeley.edu>, herbert@gondor.apana.org.au,
-        davem@davemloft.net, conor.dooley@microchip.com, ardb@kernel.org,
-        heiko@sntech.de, phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org
+        bh=Hd11373At0fgNthDfz475jB2pnftz8WhsrA0gYblitY=;
+        b=Nqw3Y80WR1GJLICSaUU0GhdRpGv8J2l8mTBqOnrfjIbUAOxMhKLQveDm1K7qBENJXA
+         qZtIw0tr5Tc+0OyBW6NP+2cxCQmuOlJokZLdnx62elYQJCdv020MZqdOsyAONwejjKBK
+         zEHlIWH7gpCOW6pEGeoPXv5H6ud+D0cMcgv3ThXxwB7epNfdyg3Ler2/92til3nXpbe1
+         W1b/m0K1Y7PXjdeyWzqXPfqQNhBV5JC9MZHRVzXplFfHFTBZM4qVofROQ6cHmJaKjMoA
+         yZtp/vzPaVZucaST8r2/V+leV75fBGGo0YarBrdRksOzymJ9I5zyJe1fM/4cDHjJ/w5P
+         7RVg==
+X-Gm-Message-State: AOJu0YwXOSvC9IKCJY6K0eykxI2T0m8yCZSXSPBWp3rX++KZp+XKy5sU
+        de3oesDGKE7Rsk9sBL/SxMcmP08sdHheRFVJ61z8Kg==
+X-Google-Smtp-Source: AGHT+IHMM+TBLPbm7+22ArJ0V2KCgdhbcD8w4150pEudfRnDapexGxJDfjwu4kPbNStb74F9bfmDWp9Y8DnvbExoUpc=
+X-Received: by 2002:a17:903:1206:b0:1cf:6f62:88d9 with SMTP id
+ l6-20020a170903120600b001cf6f6288d9mr1243304plh.9.1701149968448; Mon, 27 Nov
+ 2023 21:39:28 -0800 (PST)
+MIME-Version: 1.0
+References: <20231119165721.9849-1-alexandru.elisei@arm.com> <20231119165721.9849-22-alexandru.elisei@arm.com>
+In-Reply-To: <20231119165721.9849-22-alexandru.elisei@arm.com>
+From:   Peter Collingbourne <pcc@google.com>
+Date:   Mon, 27 Nov 2023 21:39:17 -0800
+Message-ID: <CAMn1gO5WYC5Xx7LfBxN_j-xqkVT+tjXP5PqDfrvhgqPOa0ZCsA@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 21/27] mm: arm64: Handle tag storage pages mapped
+ before mprotect(PROT_MTE)
+To:     Alexandru Elisei <alexandru.elisei@arm.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
+        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
+        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
+        rppt@kernel.org, hughd@google.com, steven.price@arm.com,
+        anshuman.khandual@arm.com, vincenzo.frascino@arm.com,
+        david@redhat.com, eugenis@google.com, kcc@google.com,
+        hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <56F07E23-CA7D-466B-84C7-643F2839E199@sifive.com>
-References: <20231127070703.1697-1-jerry.shih@sifive.com>
- <20231127070703.1697-6-jerry.shih@sifive.com>
- <20231128035814.GH1463@sol.localdomain>
-To:     Eric Biggers <ebiggers@kernel.org>
-X-Mailer: Apple Mail (2.3445.9.7)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Nov 28, 2023, at 11:58, Eric Biggers <ebiggers@kernel.org> wrote:
-> On Mon, Nov 27, 2023 at 03:06:55PM +0800, Jerry Shih wrote:
->> The `walksize` assignment is missed in simd skcipher.
->>=20
->> Signed-off-by: Jerry Shih <jerry.shih@sifive.com>
->> ---
->> crypto/cryptd.c | 1 +
->> crypto/simd.c   | 1 +
->> 2 files changed, 2 insertions(+)
->>=20
->> diff --git a/crypto/cryptd.c b/crypto/cryptd.c
->> index bbcc368b6a55..253d13504ccb 100644
->> --- a/crypto/cryptd.c
->> +++ b/crypto/cryptd.c
->> @@ -405,6 +405,7 @@ static int cryptd_create_skcipher(struct =
-crypto_template *tmpl,
->> 		(alg->base.cra_flags & CRYPTO_ALG_INTERNAL);
->> 	inst->alg.ivsize =3D crypto_skcipher_alg_ivsize(alg);
->> 	inst->alg.chunksize =3D crypto_skcipher_alg_chunksize(alg);
->> +	inst->alg.walksize =3D crypto_skcipher_alg_walksize(alg);
->> 	inst->alg.min_keysize =3D crypto_skcipher_alg_min_keysize(alg);
->> 	inst->alg.max_keysize =3D crypto_skcipher_alg_max_keysize(alg);
->>=20
->> diff --git a/crypto/simd.c b/crypto/simd.c
->> index edaa479a1ec5..ea0caabf90f1 100644
->> --- a/crypto/simd.c
->> +++ b/crypto/simd.c
->> @@ -181,6 +181,7 @@ struct simd_skcipher_alg =
-*simd_skcipher_create_compat(const char *algname,
->>=20
->> 	alg->ivsize =3D ialg->ivsize;
->> 	alg->chunksize =3D ialg->chunksize;
->> +	alg->walksize =3D ialg->walksize;
->> 	alg->min_keysize =3D ialg->min_keysize;
->> 	alg->max_keysize =3D ialg->max_keysize;
->=20
-> What are the consequences of this bug?  I wonder if it actually =
-matters?  The
-> "inner" algorithm is the one that actually gets used for the "walk", =
-right?
->=20
-> - Eric
+Hi Alexandru,
 
-Without this, we might still use chunksize or cra_blocksize as the =
-walksize
-even though we setup with the larger walksize.
+On Sun, Nov 19, 2023 at 8:59=E2=80=AFAM Alexandru Elisei
+<alexandru.elisei@arm.com> wrote:
+>
+> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> ---
+>  arch/arm64/include/asm/mte_tag_storage.h |  1 +
+>  arch/arm64/kernel/mte_tag_storage.c      | 15 +++++++
+>  arch/arm64/mm/fault.c                    | 55 ++++++++++++++++++++++++
+>  include/linux/migrate.h                  |  8 +++-
+>  include/linux/migrate_mode.h             |  1 +
+>  mm/internal.h                            |  6 ---
+>  6 files changed, 78 insertions(+), 8 deletions(-)
+>
+> diff --git a/arch/arm64/include/asm/mte_tag_storage.h b/arch/arm64/includ=
+e/asm/mte_tag_storage.h
+> index b97406d369ce..6a8b19a6a758 100644
+> --- a/arch/arm64/include/asm/mte_tag_storage.h
+> +++ b/arch/arm64/include/asm/mte_tag_storage.h
+> @@ -33,6 +33,7 @@ int reserve_tag_storage(struct page *page, int order, g=
+fp_t gfp);
+>  void free_tag_storage(struct page *page, int order);
+>
+>  bool page_tag_storage_reserved(struct page *page);
+> +bool page_is_tag_storage(struct page *page);
+>
+>  vm_fault_t handle_page_missing_tag_storage(struct vm_fault *vmf);
+>  vm_fault_t handle_huge_page_missing_tag_storage(struct vm_fault *vmf);
+> diff --git a/arch/arm64/kernel/mte_tag_storage.c b/arch/arm64/kernel/mte_=
+tag_storage.c
+> index a1cc239f7211..5096ce859136 100644
+> --- a/arch/arm64/kernel/mte_tag_storage.c
+> +++ b/arch/arm64/kernel/mte_tag_storage.c
+> @@ -500,6 +500,21 @@ bool page_tag_storage_reserved(struct page *page)
+>         return test_bit(PG_tag_storage_reserved, &page->flags);
+>  }
+>
+> +bool page_is_tag_storage(struct page *page)
+> +{
+> +       unsigned long pfn =3D page_to_pfn(page);
+> +       struct range *tag_range;
+> +       int i;
+> +
+> +       for (i =3D 0; i < num_tag_regions; i++) {
+> +               tag_range =3D &tag_regions[i].tag_range;
+> +               if (tag_range->start <=3D pfn && pfn <=3D tag_range->end)
+> +                       return true;
+> +       }
+> +
+> +       return false;
+> +}
+> +
+>  int reserve_tag_storage(struct page *page, int order, gfp_t gfp)
+>  {
+>         unsigned long start_block, end_block;
+> diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+> index 6730a0812a24..964c5ae161a3 100644
+> --- a/arch/arm64/mm/fault.c
+> +++ b/arch/arm64/mm/fault.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/extable.h>
+>  #include <linux/kfence.h>
+>  #include <linux/signal.h>
+> +#include <linux/migrate.h>
+>  #include <linux/mm.h>
+>  #include <linux/hardirq.h>
+>  #include <linux/init.h>
+> @@ -956,6 +957,50 @@ void tag_clear_highpage(struct page *page)
+>  }
+>
+>  #ifdef CONFIG_ARM64_MTE_TAG_STORAGE
+> +
+> +#define MR_TAGGED_TAG_STORAGE  MR_ARCH_1
+> +
+> +extern bool isolate_lru_page(struct page *page);
+> +extern void putback_movable_pages(struct list_head *l);
 
-Here is the code for the walksize default value:
-	static int skcipher_prepare_alg(struct skcipher_alg *alg)
-	{
-		...
-		if (!alg->chunksize)
-			alg->chunksize =3D base->cra_blocksize;
-		if (!alg->walksize)
-			alg->walksize =3D alg->chunksize;
+Could we move these declarations to a non-mm-internal header and
+#include it instead of manually declaring them here?
 
-And we already have the bigger walksize for x86 aes-xts.
-		.base =3D {
-			.cra_name		=3D "__xts(aes)",
-			...
-		},
-		.walksize	=3D 2 * AES_BLOCK_SIZE,
+> +
+> +/* Returns with the page reference dropped. */
+> +static void migrate_tag_storage_page(struct page *page)
+> +{
+> +       struct migration_target_control mtc =3D {
+> +               .nid =3D NUMA_NO_NODE,
+> +               .gfp_mask =3D GFP_HIGHUSER_MOVABLE | __GFP_TAGGED,
+> +       };
+> +       unsigned long i, nr_pages =3D compound_nr(page);
+> +       LIST_HEAD(pagelist);
+> +       int ret, tries;
+> +
+> +       lru_cache_disable();
+> +
+> +       for (i =3D 0; i < nr_pages; i++) {
+> +               if (!isolate_lru_page(page + i)) {
+> +                       ret =3D -EAGAIN;
+> +                       goto out;
+> +               }
+> +               /* Isolate just grabbed another reference, drop ours. */
+> +               put_page(page + i);
+> +               list_add_tail(&(page + i)->lru, &pagelist);
+> +       }
+> +
+> +       tries =3D 5;
+> +       while (tries--) {
+> +               ret =3D migrate_pages(&pagelist, alloc_migration_target, =
+NULL, (unsigned long)&mtc,
+> +                                   MIGRATE_SYNC, MR_TAGGED_TAG_STORAGE, =
+NULL);
+> +               if (ret =3D=3D 0 || ret !=3D -EBUSY)
 
-The x86 aes-xts only uses one `walk` to handle the tail elements. It =
-assumes
-that the walksize contains 2 aes blocks. If walksize is not set =
-correctly, maybe
-some tail elements is not processed in simd-cipher mode for x86 aes-xts.
+This could be simplified to:
 
--Jerry=
+if (ret !=3D -EBUSY)
+
+Peter
