@@ -2,137 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0464C7FB45D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:37:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 935C17FB464
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:37:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344176AbjK1IhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 03:37:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60080 "EHLO
+        id S1344210AbjK1IhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 03:37:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344182AbjK1IhI (ORCPT
+        with ESMTP id S1344196AbjK1IhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 03:37:08 -0500
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F38D1A3;
-        Tue, 28 Nov 2023 00:37:14 -0800 (PST)
-Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3b86f3cdca0so1237183b6e.3;
-        Tue, 28 Nov 2023 00:37:14 -0800 (PST)
+        Tue, 28 Nov 2023 03:37:16 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56542D51
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:37:20 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-507c5249d55so7804106e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:37:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701160634; x=1701765434; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=go40FnkWcUCXyHhLKOuIPbJom9fe45XP5cbqv8kDvJI=;
-        b=jdoFQfn7ZmQkc+/6b5f7+hQEoMPx03gk18cZqFrz1f1v+g6W58huGM4Q+p3813cDKr
-         HRCqrS4XZFZjzo9wvs1MK+UlexlKjj+6KIzUKjpvynZc4rzGXQTJJeXQl6YFZtKzzx4T
-         c/TlrgMBZXBhVNVqYF/jBt/5a3TLlNbGO2z0SPYuDcjX7ooIgkJfBM30GU7Py0Njewco
-         CDBIAvfK91xwR8FH7JRTL4ixaZ1dbB3FQypvjGFXg5O56A+lVloqPC3shx7jH5CcMOJk
-         qoMgqwui2lL5+mLiOnsgyXk0/OZP0Cwu/nK5L2qGlVKf8jLoK8opD311Akw4Iq7e4Afm
-         980A==
+        d=linaro.org; s=google; t=1701160638; x=1701765438; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=jGKLjx3luJGU+DnwzUn3Qi9imxdPkVHML+rqCOmAtck=;
+        b=y8msmTu/0ijVSnrlmJDVYaHkGc+qOWK5/G4fc+LtaQ2v/Hv7wuWO+K8EHachk8s2+N
+         /eAWN50FM/0xBECm5Tn11nLhXEKfwV3d0LkmLkynTwv4gaW/G5/TMk6jEkGALs1LYmmx
+         VIbPSjGY8lCxJh4YO+Mw93Vt0ZcX8Zzl8vuprZdOgqIn8F0UiJtX8GWHM2bCpgjEAQLo
+         2xcGOskquJyRAOgVAr4QvuvAb6S7r1nyXMjAC+MIiqB5Pxvr26pzAv4ObluSSLf/oOdZ
+         y5r77Uj0zZH0fm1jWfAziytFhR4H43N9amS+fRfDrT8bOPNVS7hky1wkU62p4zbhQfJ5
+         IEIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701160634; x=1701765434;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=go40FnkWcUCXyHhLKOuIPbJom9fe45XP5cbqv8kDvJI=;
-        b=U5a1Aq0NQ1zmHDNoh7c/ck3qJqtQE9pDWpKK1ufyUMvY8rIoNncDYi/uMXDUZRs2nF
-         22pDMUs2Uyo5j5t6trEq4OnoM7WuwUd4F/MfvPE4Z5Y93YxRgIw5shw12M30xXccJ/O/
-         9hl26q/ShIzPi2/F4Xa5LYHdGW9hgL1ZoeF33vJbMqx/UgE5ULZigboqiyvpRK1wJyZv
-         /7b+yO5TozC4843wfKoaDImikM9rO61CtG+IMY3h49lJj79ZRDeUvA1/OApMZegwYnUM
-         BhvBExXJ22dC+KCkcUc+wtZsRe4+C6ePN6bQb9VIQGeMBF8UT8KhxJB50HOnKsKvRZfC
-         bsWA==
-X-Gm-Message-State: AOJu0YwRiBfUoQ7pa3hcARa8ljqchECbulfpmWKPFWZz/nx5M2+GMZip
-        5dxf8llzj7a7uBWuXDrHKW0=
-X-Google-Smtp-Source: AGHT+IH15015NSX8qmJ739FcoZiRc/C3jxCCRjr3Vh5MZvXfq67+xUo++xPB4DyN4B5DNUibvqf3Mg==
-X-Received: by 2002:a05:6808:150a:b0:3b8:5c54:fe0a with SMTP id u10-20020a056808150a00b003b85c54fe0amr13691919oiw.2.1701160633761;
-        Tue, 28 Nov 2023 00:37:13 -0800 (PST)
-Received: from [172.19.1.47] (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
-        by smtp.gmail.com with ESMTPSA id d10-20020aa7814a000000b006cb94e20014sm8510066pfn.41.2023.11.28.00.37.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Nov 2023 00:37:13 -0800 (PST)
-Message-ID: <a0be9aaa-290d-450e-b0b8-d87453bcaaa0@gmail.com>
-Date:   Tue, 28 Nov 2023 16:37:09 +0800
+        d=1e100.net; s=20230601; t=1701160638; x=1701765438;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jGKLjx3luJGU+DnwzUn3Qi9imxdPkVHML+rqCOmAtck=;
+        b=pANWpv0kUnceN51WuoSOrQTzL5konXxACWkFaVdkgQdqNW1Ck+ADUjAC2BPjoxisp2
+         3Q75GzSdGddi0pOwqT8eU2U2lpd+1kvFYKocnOOpK4w9ZZbYwI0u7I4YL3NsB3ARV7UP
+         JWTdr82J6YEKHH2Zb1soUOeVO0W2HBtk8ZEcko/yfj+1GFHxXPhg9GK0M+vasgLsQyjv
+         YKzs3289fOPJjSak3XIdnTqnUZLKhcJU945gwhBOlaShJS1ZJz7kHSg/1G3R3DnYF+K9
+         FbbQ/VkG5g4JQa4lDW9593WnV0chwKTlzYco8rlLIdHxuSnMh3bTZ5XWvSq2GUKX/6Mo
+         pkLA==
+X-Gm-Message-State: AOJu0YwTI8NtGm5Ok1K0XcaMIzEKlB+To74+6P3FEf0QvHBC7IxwgljE
+        9BWiIaLXMCuA5ZDbwHwPDcXLig==
+X-Google-Smtp-Source: AGHT+IGV9g8Gt0GdX7z42ch7sDJF6Eu8IzKDEWg0GGo3YxYJjiALZKGhZW5/q4ocv0/V3tt/PsVvSQ==
+X-Received: by 2002:a05:6512:4022:b0:509:4ae3:465b with SMTP id br34-20020a056512402200b005094ae3465bmr12923505lfb.8.1701160638511;
+        Tue, 28 Nov 2023 00:37:18 -0800 (PST)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
+        by smtp.gmail.com with ESMTPSA id o18-20020a05600c4fd200b0040b4b2a15ebsm1853454wmq.28.2023.11.28.00.37.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 00:37:18 -0800 (PST)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Date:   Tue, 28 Nov 2023 09:37:15 +0100
+Subject: [PATCH RESEND v2] dt-bindings: thermal: qcom-tsens: document the
+ SM8650 Temperature Sensor
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/4] arm64: dts: nuvoton: Add pinctrl support for
- ma35d1
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        linus.walleij@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        p.zabel@pengutronix.de, j.neuschaefer@gmx.net
-Cc:     linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231128-topic-sm8650-upstream-bindings-tsens-v2-1-8a21f61130a5@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Thara Gopinath <thara.gopinath@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ychuang3@nuvoton.com, schung@nuvoton.com
-References: <20231128061118.575847-1-ychuang570808@gmail.com>
- <20231128061118.575847-4-ychuang570808@gmail.com>
- <7edda3ca-b98a-4125-979f-3ee7ac718a9a@linaro.org>
-From:   Jacky Huang <ychuang570808@gmail.com>
-In-Reply-To: <7edda3ca-b98a-4125-979f-3ee7ac718a9a@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Neil Armstrong <neil.armstrong@linaro.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1381;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=9N+6dBAkFtncfZi6ZHXGSHcpyq1NPV2HQpTLMM/rMdA=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlZaa9KgSozkm2ZH1Xcfu/rkLseV0mf3PJhCPUInPW
+ pXh1t4WJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZWWmvQAKCRB33NvayMhJ0f/GD/
+ 960lAxxbkUmvvPIT14Hh+ln9cs81E0R+EQ02UdLYQ+EGUeC/sLDsR18EHMxrHWDj3at63o9c4nVh9A
+ /iqanWFHRlFcFrDTLxZpeqxaJCMAKGm6wqYrBl8Q9QEG8Yf+THxAldSWQZOKNDGdgqo1SKVWtUkaZm
+ PcoQKZ7yYny0+2vNpwgX3ILw4f9UUGYjkDHCzrb4h9nrAnpPo+21skempCfvqTGA0UlIv34S61XrwJ
+ xJUqNbz5LyIZL36Z9IqZP8wspF7isX6wl9lnojvoX/enIKPVBS7T19IrGOW8y0fQj3te0LVBCqqfsu
+ vswBcJtKDhZFAqsY1pUdfbel5w4SSRgHkRatNlp+XrXbSHYCHeGVTNJKnoyGYOPHf6AL17p1mh484x
+ 0EDJhxe7BjslPA0/yf3Ho0miPbneu33Jbjc5fku7CBnYeHPghgxZN00biJRIFWV6vpo+uQLOk3gfoS
+ t7FYCTPLLnwu60BO/ugC7ZYYO2rrMQhSy6ZVLoY7VcY7HCSdmAt4dg2IpRJZHKJuWUn145P/lvCdd5
+ P1PdsTTuG2VZ2EnxCqjHaLioI2w5TqNbUqsJy5LaHjElHXlBJXokPCV3BHMVs1R2jTRV7OeBBFya/e
+ SIJe+eoGV0OxIt2kux8bdoXtoAis0S11Fb/+A/bg7rlLJDAvOeSL4i32GXOA==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Krzysztof,
+Document the Temperature Sensor (TSENS) on the SM8650 Platform.
 
-Thanks for your review.
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+---
+For convenience, a regularly refreshed linux-next based git tree containing
+all the SM8650 related work is available at:
+https://git.codelinaro.org/neil.armstrong/linux/-/tree/topic/sm85650/upstream/integ
+---
+Changes in v2:
+- Fixed typo in subject
+- Link to v1: https://lore.kernel.org/r/20231025-topic-sm8650-upstream-bindings-tsens-v1-1-09fdd17b1116@linaro.org
+---
+ Documentation/devicetree/bindings/thermal/qcom-tsens.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+index 437b74732886..99d9c526c0b6 100644
+--- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
++++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
+@@ -66,6 +66,7 @@ properties:
+               - qcom,sm8350-tsens
+               - qcom,sm8450-tsens
+               - qcom,sm8550-tsens
++              - qcom,sm8650-tsens
+           - const: qcom,tsens-v2
+ 
+       - description: v2 of TSENS with combined interrupt
 
-On 2023/11/28 下午 03:35, Krzysztof Kozlowski wrote:
-> On 28/11/2023 07:11, Jacky Huang wrote:
->> From: Jacky Huang <ychuang3@nuvoton.com>
->>
->> Add 'pinctrl' node and 'gpioa' ~ 'gpion' nodes to the dtsi of ma35d1
->> SoC and describe default pin configurations.
->>
->> Enable all UART nodes presented on som and iot boards, and add pinctrl
->> function settings to these nodes.
->>
->> Signed-off-by: Jacky Huang <ychuang3@nuvoton.com>
->
->> +
->> +			gpion: gpio@40040340 {
->> +				reg = <0x340 0x40>;
->> +				interrupts = <GIC_SPI  105 IRQ_TYPE_LEVEL_HIGH>;
->> +				clocks = <&clk GPN_GATE>;
->> +				gpio-controller;
->> +				#gpio-cells = <2>;
->> +				interrupt-controller;
->> +				#interrupt-cells = <2>;
->> +			};
->> +
->> +			pcfg_default: pin-default {
->> +				slew-rate = <0>;
->> +				input-schmitt-disable;
->> +				bias-disable;
->> +				power-source = <1>;
->> +				drive-strength = <17100>;
->> +			};
-> It does not look like you tested the DTS against bindings. Please run
-> `make dtbs_check W=1` (see
-> Documentation/devicetree/bindings/writing-schema.rst or
-> https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-> for instructions).
->
-> Best regards,
-> Krzysztof
->
+---
+base-commit: fe1998aa935b44ef873193c0772c43bce74f17dc
+change-id: 20231016-topic-sm8650-upstream-bindings-tsens-4e748933642e
 
-I forgot to remove 'ma35d1-pinfunc.h' from my local copy.
-After remove the '#include <dt-bindings/pinctrl/ma35d1-pinfunc.h>', it 
-can pass
-the `make dtbs_check W=1` check.
-I will fix it in the next version.
-
-
-Best Regards,
-Jacky Huang
+Best regards,
+-- 
+Neil Armstrong <neil.armstrong@linaro.org>
 
