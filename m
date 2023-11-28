@@ -2,269 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 131F77FC298
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3FA7FC276
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346688AbjK1R5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 12:57:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57484 "EHLO
+        id S1346600AbjK1R5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 12:57:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346600AbjK1R4l (ORCPT
+        with ESMTP id S1346825AbjK1R5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 12:56:41 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FFAC324E
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:55:36 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50bbf7a6029so160e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:55:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701194135; x=1701798935; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ugBeSgSYCz9ybgMm2e5vxSBN02IdcZ2SmwFOGZ5+9F0=;
-        b=oB/5DRkOGxxviIWEL62mZQ+uG/0sNBpNs0jLysXVVgRcN9OW9HuPqk26AHPZfOwar3
-         3pajZmcJGgfnaxcAs1xvQQ5TBBloOdFFGA//cYjJbX02TXjzqBEBistq2P0+BEViDwpi
-         YkRjtsfxrZU88QJMwrf0o50x2mDGhguvsp+kJV04AQYYma5I+DWTqSONHq1W7fdCPVVX
-         kacUv0XK6GM4YAEymoR4Thb6S3OGDNCX0T4ota/IB9URp/y4XcOSvESNPsb9V2X3wNT+
-         hzdGwno4t4PXmWd8+H2b2kK7pfOL4Vz8Mn3zvSc6IvHfETFz1+Irzyu402A9O0YyyFay
-         WLMQ==
+        Tue, 28 Nov 2023 12:57:16 -0500
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 796413C28;
+        Tue, 28 Nov 2023 09:56:02 -0800 (PST)
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-58d08497aa1so3477340eaf.0;
+        Tue, 28 Nov 2023 09:56:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701194135; x=1701798935;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ugBeSgSYCz9ybgMm2e5vxSBN02IdcZ2SmwFOGZ5+9F0=;
-        b=nWvWas2XBwpwVsNct3aprRb+7LlS9XVzPNS7HMuPQ5OjT0eH8JMKVua6NTd1lUihcy
-         Ylb+LtQrlCYu0MONQi8EzSupUBJRw0mXtj1vDia3LruT9CHCCcUPkH60ylFlXYIk9WQz
-         SGcwgGynVmoYzJX4ByQtWsbpyPxsKVHzsEdH2hHtAWyA392xM2BPC8JQdIP9n3fz1PDK
-         w4cz2AdqQqMzeVLuC8+HSnopAs3rTcdz9ympIC8C0MZpLDiH8ByQDMt79iSUhgWa14VV
-         Qc1JbiCNFLKu1J9evc6KMUYE/IIMpKq7d/rkdxI99oA6BV4C4MoizfUbKUW9vWuee5g9
-         XXGg==
-X-Gm-Message-State: AOJu0YwIFmCqeKO5aAUWWMgWvzf508zAWIlZWXPLJTso5/S5X9i2fuX0
-        jmTtKhL+SVG2G0pdP4BgHYno6C7m4JvUZ3WoYSIY4Q==
-X-Google-Smtp-Source: AGHT+IFaDkaMABJ614yhVDsD1gyDQpT8ElYwuxkdZVgJr7NOCU4EaS8jYCxz2m7q7PAH8Cgd13o5YCt9dKwp9QyPghQ=
-X-Received: by 2002:a19:3811:0:b0:50b:bca9:72c with SMTP id
- f17-20020a193811000000b0050bbca9072cmr65388lfa.3.1701194134505; Tue, 28 Nov
- 2023 09:55:34 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701194161; x=1701798961;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Bs6R+1ViXv8isxXJHVhn7+t7Vqy/2+C/xsvsAMtl13I=;
+        b=DTVL5+yBwKjBChKlkrtLEKIegWld25ljRNpaGhHg7/TTvb8teaYXvYwjp6tOjswtLL
+         mHBGFJarGdMiu1/z717icp/g+1aLwlXF7uTd+MCRHBg+mMLuUnr3bcMrssnlI7lLFq+H
+         HiXCfur+ChuOoWtWCTPGAdzOH6vXohSfCSNahJJEJdSng+kqfEVIAOz4Khx6nZhgNV0I
+         6A7+toiRFZ4JLrAUn+gevzO+Y82XOv/rTmLLBAP/03+aiPz7PR7pA5Nf8DlFaidVtWJP
+         QKqOPbdTjl6Ey1s/3/o4w5/jQ8kZ4pyMglt1ZsDtYLrzfzlLAFTksrwxME34tNwPhbh9
+         ncxw==
+X-Gm-Message-State: AOJu0YxMkVwWCajNyHbsQZHgBjVRa6L2SfmPF16inE5Enf293Kf2fdFl
+        VE0/of4e9/GMy8TYNUTzIg==
+X-Google-Smtp-Source: AGHT+IGeg4re/q79qKMf1UiFl5udVI93xS3FHFxcA69DyiZXx7kQI5xJS90+UM5KshM+NJalD6QD5w==
+X-Received: by 2002:a05:6820:22a9:b0:581:ed38:5506 with SMTP id ck41-20020a05682022a900b00581ed385506mr17626203oob.4.1701194161096;
+        Tue, 28 Nov 2023 09:56:01 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id 124-20020a4a1782000000b0058d304dfc45sm1838862ooe.20.2023.11.28.09.55.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 09:56:00 -0800 (PST)
+Received: (nullmailer pid 3563944 invoked by uid 1000);
+        Tue, 28 Nov 2023 17:55:59 -0000
+Date:   Tue, 28 Nov 2023 11:55:59 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Petre Rodan <petre.rodan@subdimension.ro>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH v4 1/2] dt-bindings: iio: pressure: add honeywell,hsc030
+Message-ID: <20231128175559.GA3560351-robh@kernel.org>
+References: <20231128124042.22744-1-petre.rodan@subdimension.ro>
 MIME-Version: 1.0
-References: <20231102175735.2272696-1-irogers@google.com> <20231102175735.2272696-5-irogers@google.com>
- <ZWURZvDA2L4Mr3HR@kernel.org> <ZWYf+Sy6JKd7CYlN@kernel.org> <ZWYlgPwGmAEUKIsE@kernel.org>
-In-Reply-To: <ZWYlgPwGmAEUKIsE@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 28 Nov 2023 09:55:22 -0800
-Message-ID: <CAP-5=fVgVY8hhhhgW-aJic6Vez2CJmA8VLx+Az3kKJFB7fz1Pg@mail.gmail.com>
-Subject: Re: [PATCH v4 04/53] perf mmap: Lazily initialize zstd streams
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nick Terrell <terrelln@fb.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        "Steinar H. Gunderson" <sesse@google.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Dmitrii Dolgov <9erthalion6@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Ming Wang <wangming01@loongson.cn>,
-        James Clark <james.clark@arm.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        German Gomez <german.gomez@arm.com>,
-        Changbin Du <changbin.du@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231128124042.22744-1-petre.rodan@subdimension.ro>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 9:38=E2=80=AFAM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Tue, Nov 28, 2023 at 02:14:33PM -0300, Arnaldo Carvalho de Melo escrev=
-eu:
-> > Em Mon, Nov 27, 2023 at 07:00:06PM -0300, Arnaldo Carvalho de Melo escr=
-eveu:
-> > > Em Thu, Nov 02, 2023 at 10:56:46AM -0700, Ian Rogers escreveu:
-> > > > Zstd streams create dictionaries that can require significant RAM,
-> > > > especially when there is one per-CPU. Tools like perf record won't =
-use
-> > > > the streams without the -z option, and so the creation of the strea=
-ms
-> > > > is pure overhead. Switch to creating the streams on first use.
->
-> > > > Signed-off-by: Ian Rogers <irogers@google.com>
->
-> > > Thanks, applied to perf-tools-next.
->
-> > Trying to fix this now:
-> >
-> >   6    20.59 alpine:3.18                   : FAIL gcc version 12.2.1 20=
-220924 (Alpine 12.2.1_git20220924-r10)
-> >     In file included from util/zstd.c:5:
-> >     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:1: error: unknown=
- type name 'ssize_t'; did you mean 'size_t'?
->
-> So the problem was really the one above, that got fixed with the patch
-> below, that is what 'man size_t' documents on my fedora:38 system.
+On Tue, Nov 28, 2023 at 02:40:37PM +0200, Petre Rodan wrote:
+> Adds binding for digital Honeywell TruStability HSC and SSC series
+> pressure and temperature sensors. 
+> Communication is one way. The sensor only requires 4 bytes worth of
+> clock pulses on both i2c and spi in order to push the data out.
+> The i2c address is hardcoded and depends on the part number.
+> There is no additional GPIO control.
+> 
+> Datasheet:
+> https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf [HSC]
+> Datasheet:
+> https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-ssc-series/documents/sps-siot-trustability-ssc-series-standard-accuracy-board-mount-pressure-sensors-50099533-a-en-ciid-151134.pdf [SSC]
+> Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
+> ---
+> V2: - fix yaml struct
+>     - cleanup based on Krzysztof's review
+> V3: - rename range_str -> honeywell,pressure-triplet to define the string
+>        containing the pressure range, measurement unit and type
+>     - honeywell,pmax-pascal becomes uint32
+> V4: - added enum to honeywell,transfer-function
+> ---
+>  .../iio/pressure/honeywell,hsc030pa.yaml      | 134 ++++++++++++++++++
+>  1 file changed, 134 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+> new file mode 100644
+> index 000000000000..418fb1d2eefd
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+> @@ -0,0 +1,134 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/pressure/honeywell,hsc030pa.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Honeywell TruStability HSC and SSC pressure sensor series
+> +
+> +description: |
+> +  support for Honeywell TruStability HSC and SSC digital pressure sensor
+> +  series.
+> +
+> +  These sensors have either an I2C, an SPI or an analog interface. Only the
+> +  digital versions are supported by this driver.
+> +
+> +  There are 118 models with different pressure ranges available in each family.
+> +  The vendor calls them "HSC series" and "SSC series". All of them have an
+> +  identical programming model but differ in pressure range, unit and transfer
+> +  function.
+> +
+> +  To support different models one needs to specify the pressure range as well
+> +  as the transfer function. Pressure range can either be provided via
+> +  pressure-triplet (directly extracted from the part number) or in case it's
+> +  a custom chip via numerical range limits converted to pascals.
+> +
+> +  The transfer function defines the ranges of raw conversion values delivered
+> +  by the sensor. pmin-pascal and pmax-pascal corespond to the minimum and
+> +  maximum pressure that can be measured.
+> +
+> +  Please note that in case of an SPI-based sensor, the clock signal should not
+> +  exceed 800kHz and the MOSI signal is not required.
+> +
+> +  Specifications about the devices can be found at:
+> +  https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf
+> +  https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-ssc-series/documents/sps-siot-trustability-ssc-series-standard-accuracy-board-mount-pressure-sensors-50099533-a-en-ciid-151134.pdf
+> +
+> +maintainers:
+> +  - Petre Rodan <petre.rodan@subdimension.ro>
+> +
+> +properties:
+> +  compatible:
+> +    const: honeywell,hsc030pa
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  honeywell,transfer-function:
+> +    description: |
+> +      Transfer function which defines the range of valid values delivered by
+> +      the sensor.
+> +      0 - A, 10% to 90% of 2^14
+> +      1 - B, 5% to 95% of 2^14
+> +      2 - C, 5% to 85% of 2^14
+> +      3 - F, 4% to 94% of 2^14
+> +    enum: [0, 1, 2, 3]
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +  honeywell,pressure-triplet:
+> +    description: |
+> +      Case-sensitive five character string that defines pressure range, unit
+> +      and type as part of the device nomenclature. In the unlikely case of a
+> +      custom chip, set to "NA" and provide pmin-pascal and pmax-pascal.
+> +    enum: [001BA, 1.6BA, 2.5BA, 004BA, 006BA, 010BA, 1.6MD, 2.5MD, 004MD,
+> +           006MD, 010MD, 016MD, 025MD, 040MD, 060MD, 100MD, 160MD, 250MD,
+> +           400MD, 600MD, 001BD, 1.6BD, 2.5BD, 004BD, 2.5MG, 004MG, 006MG,
+> +           010MG, 016MG, 025MG, 040MG, 060MG, 100MG, 160MG, 250MG, 400MG,
+> +           600MG, 001BG, 1.6BG, 2.5BG, 004BG, 006BG, 010BG, 100KA, 160KA,
+> +           250KA, 400KA, 600KA, 001GA, 160LD, 250LD, 400LD, 600LD, 001KD,
+> +           1.6KD, 2.5KD, 004KD, 006KD, 010KD, 016KD, 025KD, 040KD, 060KD,
+> +           100KD, 160KD, 250KD, 400KD, 250LG, 400LG, 600LG, 001KG, 1.6KG,
+> +           2.5KG, 004KG, 006KG, 010KG, 016KG, 025KG, 040KG, 060KG, 100KG,
+> +           160KG, 250KG, 400KG, 600KG, 001GG, 015PA, 030PA, 060PA, 100PA,
+> +           150PA, 0.5ND, 001ND, 002ND, 004ND, 005ND, 010ND, 020ND, 030ND,
+> +           001PD, 005PD, 015PD, 030PD, 060PD, 001NG, 002NG, 004NG, 005NG,
+> +           010NG, 020NG, 030NG, 001PG, 005PG, 015PG, 030PG, 060PG, 100PG,
+> +           150PG, NA]
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +
+> +  honeywell,pmin-pascal:
+> +    description: |
+> +      Minimum pressure value the sensor can measure in pascal.
+> +      To be specified only if honeywell,pressure-triplet is set to "NA".
 
+This constraint can be expressed as:
 
-Thanks, perhaps this is something clang-tidy, clang-format or similar
-could help with in the future. There was event IWYU discussion at LPC:
-https://lpc.events/event/17/contributions/1620/attachments/1228/2520/Linux%=
-20Kernel%20Header%20Optimization.pdf
+dependentSchemas:
+  honeywell,pmin-pascal:
+    properties:
+      honeywell,pressure-triplet:
+        const: NA
 
-Thanks,
-Ian
+And similar for honeywell,pmax-pascal
 
-> - Arnaldo
->
-> diff --git a/tools/perf/util/compress.h b/tools/perf/util/compress.h
-> index 9eb6eb5bf038ce54..b29109cd36095c4f 100644
-> --- a/tools/perf/util/compress.h
-> +++ b/tools/perf/util/compress.h
-> @@ -3,7 +3,8 @@
->  #define PERF_COMPRESS_H
->
->  #include <stdbool.h>
-> -#include <stdlib.h>
-> +#include <stddef.h>
-> +#include <sys/types.h>
->  #ifdef HAVE_ZSTD_SUPPORT
->  #include <zstd.h>
->  #endif
->
-> >        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
-ata, void *dst, size_t dst_size,
-> >           | ^~~~~~~
-> >           | size_t
-> >     util/zstd.c:31:9: error: conflicting types for 'zstd_compress_strea=
-m_to_records'; have 'ssize_t(struct zstd_data *, void *, size_t,  void *, s=
-ize_t,  size_t,  size_t (*)(void *, size_t))' {aka 'long int(struct zstd_da=
-ta *, void *, long unsigned int,  void *, long unsigned int,  long unsigned=
- int,  long unsigned int (*)(void *, long unsigned int))'}
-> >        31 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
-ata, void *dst, size_t dst_size,
-> >           |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:9: note: previous=
- declaration of 'zstd_compress_stream_to_records' with type 'int(struct zst=
-d_data *, void *, size_t,  void *, size_t,  size_t,  size_t (*)(void *, siz=
-e_t))' {aka 'int(struct zstd_data *, void *, long unsigned int,  void *, lo=
-ng unsigned int,  long unsigned int,  long unsigned int (*)(void *, long un=
-signed int))'}
-> >        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
-ata, void *dst, size_t dst_size,
-> >           |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >     make[3]: *** [/git/perf-6.6.0-rc1/tools/build/Makefile.build:158: u=
-til] Error 2
-> >       CC      /tmp/build/perf/util/zstd.o
-> >       CC      /tmp/build/perf/util/cap.o
-> >       CXX     /tmp/build/perf/util/demangle-cxx.o
-> >       CC      /tmp/build/perf/util/demangle-ocaml.o
-> >     In file included from util/zstd.c:5:
-> >     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:1: error: unknown=
- type name 'ssize_t'; did you mean 'size_t'?
-> >        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
-ata, void *dst, size_t dst_size,
-> >           | ^~~~~~~
-> >           | size_t
-> >       CC      /tmp/build/perf/util/demangle-java.o
-> >     util/zstd.c:31:9: error: conflicting types for 'zstd_compress_strea=
-m_to_records'; have 'ssize_t(struct zstd_data *, void *, size_t,  void *, s=
-ize_t,  size_t,  size_t (*)(void *, size_t))' {aka 'long int(struct zstd_da=
-ta *, void *, long unsigned int,  void *, long unsigned int,  long unsigned=
- int,  long unsigned int (*)(void *, long unsigned int))'}
-> >        31 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
-ata, void *dst, size_t dst_size,
-> >           |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:9: note: previous=
- declaration of 'zstd_compress_stream_to_records' with type 'int(struct zst=
-d_data *, void *, size_t,  void *, size_t,  size_t,  size_t (*)(void *, siz=
-e_t))' {aka 'int(struct zstd_data *, void *, long unsigned int,  void *, lo=
-ng unsigned int,  long unsigned int,  long unsigned int (*)(void *, long un=
-signed int))'}
-> >        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
-ata, void *dst, size_t dst_size,
-> >    7    21.14 alpine:edge                   : FAIL gcc version 13.1.1 2=
-0230722 (Alpine 13.1.1_git20230722)
-> >     In file included from util/zstd.c:5:
-> >     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:1: error: unknown=
- type name 'ssize_t'; did you mean 'size_t'?
-> >        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
-ata, void *dst, size_t dst_size,
-> >           | ^~~~~~~
-> >           | size_t
-> >     util/zstd.c:31:9: error: conflicting types for 'zstd_compress_strea=
-m_to_records'; have 'ssize_t(struct zstd_data *, void *, size_t,  void *, s=
-ize_t,  size_t,  size_t (*)(void *, size_t))' {aka 'long int(struct zstd_da=
-ta *, void *, long unsigned int,  void *, long unsigned int,  long unsigned=
- int,  long unsigned int (*)(void *, long unsigned int))'}
-> >        31 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
-ata, void *dst, size_t dst_size,
-> >           |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:9: note: previous=
- declaration of 'zstd_compress_stream_to_records' with type 'int(struct zst=
-d_data *, void *, size_t,  void *, size_t,  size_t,  size_t (*)(void *, siz=
-e_t))' {aka 'int(struct zstd_data *, void *, long unsigned int,  void *, lo=
-ng unsigned int,  long unsigned int,  long unsigned int (*)(void *, long un=
-signed int))'}
-> >        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
-ata, void *dst, size_t dst_size,
-> >           |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >     make[3]: *** [/git/perf-6.6.0-rc1/tools/build/Makefile.build:158: u=
-til] Error 2
-> >       CC      /tmp/build/perf/util/cap.o
-> >       CXX     /tmp/build/perf/util/demangle-cxx.o
-> >       CC      /tmp/build/perf/util/demangle-ocaml.o
-> >       CC      /tmp/build/perf/util/demangle-java.o
-> >     In file included from util/zstd.c:5:
-> >     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:1: error: unknown=
- type name 'ssize_t'; did you mean 'size_t'?
-> >        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
-ata, void *dst, size_t dst_size,
-> >           | ^~~~~~~
-> >           | size_t
-> >     util/zstd.c:31:9: error: conflicting types for 'zstd_compress_strea=
-m_to_records'; have 'ssize_t(struct zstd_data *, void *, size_t,  void *, s=
-ize_t,  size_t,  size_t (*)(void *, size_t))' {aka 'long int(struct zstd_da=
-ta *, void *, long unsigned int,  void *, long unsigned int,  long unsigned=
- int,  long unsigned int (*)(void *, long unsigned int))'}
-> >        31 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
-ata, void *dst, size_t dst_size,
-> >           |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:9: note: previous=
- declaration of 'zstd_compress_stream_to_records' with type 'int(struct zst=
-d_data *, void *, size_t,  void *, size_t,  size_t,  size_t (*)(void *, siz=
-e_t))' {aka 'int(struct zstd_data *, void *, long unsigned int,  void *, lo=
-ng unsigned int,  long unsigned int,  long unsigned int (*)(void *, long un=
-signed int))'}
-> >        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
-ata, void *dst, size_t dst_size,
-> >           |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >
->
-> --
+> +    $ref: /schemas/types.yaml#/definitions/int32
+> +
+> +  honeywell,pmax-pascal:
+> +    description: |
+> +      Maximum pressure value the sensor can measure in pascal.
+> +      To be specified only if honeywell,pressure-triplet is set to "NA".
+> +    $ref: /schemas/types.yaml#/definitions/uint32
