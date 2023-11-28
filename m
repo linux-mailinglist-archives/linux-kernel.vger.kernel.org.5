@@ -2,59 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7D27FCAE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 00:35:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 967A57FCAE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 00:35:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376565AbjK1Xbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 18:31:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57806 "EHLO
+        id S1376487AbjK1Xbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 18:31:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231400AbjK1Xbm (ORCPT
+        with ESMTP id S229526AbjK1Xbc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 18:31:42 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 852EB19B2;
-        Tue, 28 Nov 2023 15:31:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=lFBU8IhjZL/WEnPoZ4ruJNwwW8kAAIaljT/PQim0kSI=; b=NQzUHNNU2uQcmDwAFa9P8JXdwa
-        KNs/FBr7pBpV7mPRdpVrUqxZCBMEyFoOseyV8MTcUfSUhveQNlolMDdvVLSvC8bBzEDReKfzyD/0j
-        Hu0XLDi+Ya19v1nH1zbhS3I0Qtqxkz7nXdL2x5xZEqdENrxvAEB79yCS74JHy16q+anU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r87Y1-001VRR-9G; Wed, 29 Nov 2023 00:31:21 +0100
-Date:   Wed, 29 Nov 2023 00:31:21 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Tomer Maimon <tmaimon77@gmail.com>
-Cc:     alexandre.torgue@foss.st.com, tali.perry1@gmail.com,
-        edumazet@google.com, krzysztof.kozlowski+dt@linaro.org,
-        linux-stm32@st-md-mailman.stormreply.com, benjaminfair@google.com,
-        openbmc@lists.ozlabs.org, joabreu@synopsys.com, joel@jms.id.au,
-        devicetree@vger.kernel.org, j.neuschaefer@gmx.net,
-        robh+dt@kernel.org, peppe.cavallaro@st.com,
-        linux-arm-kernel@lists.infradead.org, avifishman70@gmail.com,
-        venture@google.com, linux-kernel@vger.kernel.org,
-        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
-        davem@davemloft.net
-Subject: Re: [PATCH v1 2/2] net: stmmac: Add NPCM support
-Message-ID: <a551aefa-777d-4fd3-b1a5-086dc3e62646@lunn.ch>
-References: <20231121151733.2015384-1-tmaimon77@gmail.com>
- <20231121151733.2015384-3-tmaimon77@gmail.com>
- <6aeb28f5-04c2-4723-9da2-d168025c307c@lunn.ch>
- <CAP6Zq1j0kyrg+uxkXH-HYqHz0Z4NwWRUGzprius=BPC9+WfKFQ@mail.gmail.com>
- <9ad42fef-b210-496a-aafc-eb2a7416c4df@lunn.ch>
- <CAP6Zq1jw9uLP_FQGR8=p3Y2NTP6XcNtzkJQ0dm3+xVNE1SpsVg@mail.gmail.com>
- <CAP6Zq1ijfMSPjk1vPwDM2B+r_vAH3DShhSu_jr8xJyUkTQY89w@mail.gmail.com>
+        Tue, 28 Nov 2023 18:31:32 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A101AD;
+        Tue, 28 Nov 2023 15:31:38 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 1EAD41F898;
+        Tue, 28 Nov 2023 23:31:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1701214296; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jhtBuDaZGYA819mpouZcxSxxgJoRCLewkkNQb5qq+ak=;
+        b=DItGLTbAaAMYDM9LJCQSj619BbDcAxCPE6J8TDRdH7N2nffEuOa0O5dxPHUV7YF5k8dQ6Q
+        EBtmO2q18FuKLYBnoVIEujaOo421wJDL7pXkWRC+QEd6LK5X0lLkB8icLwbZx3ujg34MkS
+        P3R9qSgriY9ZoWptcQyGVQm+mRWnWxQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1701214296;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jhtBuDaZGYA819mpouZcxSxxgJoRCLewkkNQb5qq+ak=;
+        b=jY4I5ejmx/t9jlh1zSn6SEjz+2pLcB/a0Y3mg1rPbJPnnp5KFl1VspmnrF4qEyg1VVXapT
+        InIUpp9YrlhQ8ACw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C4BE913763;
+        Tue, 28 Nov 2023 23:31:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id jHFRHFV4ZmUFWgAAD6G6ig
+        (envelope-from <neilb@suse.de>); Tue, 28 Nov 2023 23:31:33 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP6Zq1ijfMSPjk1vPwDM2B+r_vAH3DShhSu_jr8xJyUkTQY89w@mail.gmail.com>
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Jeff Layton" <jlayton@kernel.org>
+Cc:     "Christian Brauner" <brauner@kernel.org>,
+        "Al Viro" <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org
+Subject: Re: [PATCH/RFC] core/nfsd: allow kernel threads to use task_work.
+In-reply-to: <518775f9f9bd3ad1afec0bde4d0a6bee3370bdd4.camel@kernel.org>
+References: <170112272125.7109.6245462722883333440@noble.neil.brown.name>,
+ <ZWUfNyO6OG/+aFuo@tissot.1015granger.net>,
+ <170113056683.7109.13851405274459689039@noble.neil.brown.name>,
+ <20231128-blumig-anreichern-b9d8d1dc49b3@brauner>,
+ <518775f9f9bd3ad1afec0bde4d0a6bee3370bdd4.camel@kernel.org>
+Date:   Wed, 29 Nov 2023 10:31:30 +1100
+Message-id: <170121429051.7109.6920588851658122847@noble.neil.brown.name>
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spamd-Result: default: False [-1.29 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         TO_DN_SOME(0.00)[];
+         RCPT_COUNT_FIVE(0.00)[6];
+         RCVD_COUNT_THREE(0.00)[3];
+         NEURAL_HAM_SHORT(-0.19)[-0.952];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         BAYES_HAM(-0.00)[12.59%];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -1.29
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,28 +97,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 05:19:15PM +0200, Tomer Maimon wrote:
-> Hi Andrew,
+On Wed, 29 Nov 2023, Jeff Layton wrote:
 > 
-> I took a look at the xpcs driver and the stmmac driver and it doesn't
-> cover NPCM use.
-> 
-> in the NPCM case the stmmac ID=0x37 therefore the driver is linked to DWMAC1000
-> https://elixir.bootlin.com/linux/v6.7-rc2/source/drivers/net/ethernet/stmicro/stmmac/hwif.c#L139
-> 
-> to enable the xpcs, the stmmac should support xgmac or gmac4 and in
-> the NPCM is support only gmac.
-> https://elixir.bootlin.com/linux/v6.7-rc2/source/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c#L555
-> https://elixir.bootlin.com/linux/v6.7-rc2/source/drivers/net/ethernet/stmicro/stmmac/stmmac_mdio.c#L573
-> 
-> and the most important thing is that the XPCS is handled through an
-> indirect register access and not through MDIO. the MDIO is connected
-> to the external PHY and not to the XPCS.
+> This is another place where we might want to reserve a "rescuer" thread
+> that avoids doing work that can end up blocked. Maybe we could switch
+> back to queuing them to the list when we're below a certain threshold of
+> available threads (1? 2? 4?).
 
-What really matters here is, is the PCS hardware block you have an
-XPCS? We don't want two drivers for the same block of hardware. 
+A rescuer isn't for cases where work might be blocked, but for cases
+whether otherwise work might be deadlocked - though maybe that is what
+you meant.
 
-MDIO vs indirect register access can be solved with a bit of
-layering. That is not a reason to write a second driver.
+Could nfsd calling filp_close() or __fput() ever deadlock?
+I think we know from the experience pre v5.8 that calling filp_close()
+doesn't cause deadlocks.  Could __fput, and particularly ->release ever
+deadlock w.r.t nfsd?  i.e.  could a ->release function for a file
+exported through NFS ever wait for nfsd to handle an NFS request?
 
-	Andrew
+We don't need to worry about indirect dependencies like allocating
+memory and waiting for nfsd to flush out writes - that is already
+handled so that we can support loop-back mounts.
+
+So to have a problem we would need to nfs-export an NFS filesystem that
+was being served by the local NFS server.  Now that we support NFS
+re-export, and we support loop-back mounts, it is fair to ask if we
+support the combination of the two.  If we did, then calling ->release
+from the nfsd thread could deadlock.  But calling ->read and ->write (or
+whatever those interfaces are called today) would also deadlock.
+
+So I think we have to say that nfs-reexporting a loop-back NFS mount is
+not supported, and not supportable.  Whether we should try to detect and
+reject this case is an interesting question, but quite a separate
+question from that of how to handle the closing of files.
+
+In short - I don't think there is any need or value in a dedicated
+"rescuer" thread here.
+
+Thanks,
+NeilBrown
