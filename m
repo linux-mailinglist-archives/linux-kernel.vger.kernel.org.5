@@ -2,114 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E67E27FC94E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:18:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96A967FC956
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:20:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376462AbjK1WRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 17:17:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55622 "EHLO
+        id S1376470AbjK1WUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 17:20:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376288AbjK1WRx (ORCPT
+        with ESMTP id S1345755AbjK1WT6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 17:17:53 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14052D42
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 14:18:00 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-daed1e15daeso7883075276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 14:18:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701209879; x=1701814679; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=gtOvYyh8TGYD6IrQq8VICCerYbS5GRseWpF/kithmZE=;
-        b=ULD2cjSQkohEETdlH+cvO1fMkphoK7YHLoDcr+B6kHrGgMGh2NdpEFaK0MlL0rdH3S
-         yY9/4+26aqjaQoRAwy2Cl4q0FbAfxQ6uDSntqoTvgRmeW4ajgTFLklmuZKWiqbzy8wk6
-         F78SKWywxNy12tDfJVlhnFE2+vbAo2ysz6eiL8N5EaKrYdaWA/xoM2ZPA0pOc1MLKF3o
-         LKEUfsZHO71RMG7RZn0O16Qw7B/knKsnDtEXSGDjs6zKXLauFRNg0CnAGO/m3hsxg2UT
-         3HFdHMgXQ7mwqigkpsWAmoyOHGA7VpzSj9hgpSmxmAiO1VXoNuGpHJVZ+o0db4zeoiRJ
-         viqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701209879; x=1701814679;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gtOvYyh8TGYD6IrQq8VICCerYbS5GRseWpF/kithmZE=;
-        b=l40aGuqi4vAsfg3ku57KDd4D8p+MoJNLw3qrbrExZuovJbDVeq4VT09SrRddMq3cRO
-         aAY5xotNcu5lDJPvayk5CoqLKJUdwya5BWAD9PtTaikZji5oW6ANsWxS5YG5XftbbV3D
-         ZIFveuETrVgsTms1h0CqhMLxpEl5FJXhWSrn5/lQwh7hA3n+lQFUDQNRAenLRXx8smgX
-         CfHMRHcv36Z9+nvfrFSx04znUR1SwDM5QIVQE7st9KDHBqtCy4nEJyP3u1ZVEiJaMKa3
-         dG1/3oX0ABAc2y+hdcAr1KSJGjEheEb03URMRO2ZZnZXy98LeelaNeCS4ba982jF1Xxk
-         XegA==
-X-Gm-Message-State: AOJu0Yxg4AJASw03Qk8JQTrpohFHg28YlSvS4ip/HAU+aLH7OcIJ4pju
-        pjTA4vlUcES2Xh+7xKu9Q8j4DRISNx4=
-X-Google-Smtp-Source: AGHT+IGQUntYpd/ff69xHUeLkNoISStZOZyRssWrSNWB1MYAnQBnISSg8Bi84PrhRI3g/WQcGy4hwxgjaas=
-X-Received: from royluo-cloudtop0.c.googlers.com ([fda3:e722:ac3:cc00:14:4d90:c0a8:bb8])
- (user=royluo job=sendgmr) by 2002:a25:cf8e:0:b0:daf:d9a1:ef48 with SMTP id
- f136-20020a25cf8e000000b00dafd9a1ef48mr493929ybg.9.1701209879262; Tue, 28 Nov
- 2023 14:17:59 -0800 (PST)
-Date:   Tue, 28 Nov 2023 22:17:56 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-Message-ID: <20231128221756.2591158-1-royluo@google.com>
-Subject: [PATCH v3] USB: gadget: core: adjust uevent timing on gadget unbind
-From:   Roy Luo <royluo@google.com>
-To:     royluo@google.com, gregkh@linuxfoundation.org,
-        stern@rowland.harvard.edu, badhri@google.com,
-        quic_kriskura@quicinc.com, francesco.dolcini@toradex.com,
-        quic_eserrao@quicinc.com, ivan.orlov0322@gmail.com,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org
+        Tue, 28 Nov 2023 17:19:58 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5448585;
+        Tue, 28 Nov 2023 14:20:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701210004; x=1732746004;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=vwdvbouqOcTgJhJV/CjMuuNp+XwMdlsXPGgLISZxVe8=;
+  b=bDEN4THKIo0oNOwjBuCZovAug5hmuc9615eGGqR71V+OWHL6e1isNb8n
+   it7jHw5J/at2QTxyOUBuTyxoN3EAczWMfw6Uck0JWMWtqRTl0m0u38KV8
+   WXPGxLpTFQqoq/9JB10+cA7xYsg202rCmnuZgLd+1kFpqysXHoogwAD+U
+   g2q1q6A0AGdqnRvVWsHK521gtpvkw8TlT0PhTLPDlWkql/IXeBbHK0zVb
+   9lViWhYGtIBLcZrp9LQx+dL0CuFADrDCTqOuL80mKCTqwbOxcheYXMBv9
+   nkVHkBkyFSHbabHfwUasFZ9uNYTywl9//fwfw3ugdH2fE8aWEIP/TUV9Z
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="392792409"
+X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
+   d="scan'208";a="392792409"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 14:20:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="762079981"
+X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
+   d="scan'208";a="762079981"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Nov 2023 14:20:03 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Tue, 28 Nov 2023 14:20:03 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Tue, 28 Nov 2023 14:18:38 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Tue, 28 Nov 2023 14:18:38 -0800
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Tue, 28 Nov 2023 14:18:31 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=J2HiUVyQvfafesCweCBrwZjaqre1Rl+SKxLqH2p1KYq7f6pq8oPOGe+dkxtU5r6BqRPca86U0QYkWsXeHyqSIRiPRxe7gD6Cie6PIFMx23C3G3kZn4k7DeTmfO7HCqPjFhUh4ORGCmnD389lB6fZTVcTg8zJzDjX2FVamC/89W/AXBllxoeChqRQVS3ympA5fhQUbwznqf4wRLiZER9YX4fNAqWFX/wpjqnsFyzshr48tlBh/CzpnjEX2znzmcuFlRe+6DrX3TI8PVM5ao/nghmfAifUoz+VThG32Ll6xV9YnoNw5RgrbvNBt0EfQQE+eNWxfdrtRS+CEUppSvEHFQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FAn599vZ6AkEScXZ5yERlJvi1m24Zq026qHStGuA1JI=;
+ b=Ae7zQqow9F+/0mmTzl3DTyUPUBzlgAM2BnXWJqgTJDoAMnHxlGPTgd92rT+AEuYBXGMtmeYjqr1P5xEMAdjYIwwrZwr9slSTavtpvAE7F5pqd1Bt9iJKlYZi+NHpnPAuiVoeDLkC4B58c0SsEWR7kC0DG6EqRbp35GS4fW6tIie37cgqzvjFs3h68IlOWIUpnPxV74czMGlyW/h4dz4JvkoxD6wqm6Ci5Wbjad2A8LB+ay2M0p8Nik2kq7A6quomoee85HCLvjVKeLQ9ku1+9n0ZTbcmtKongHoHl/fI+j+niGcoWEDQ9AKPWx/fq9RkOK1D07iY9HiVBeEZ4b/tew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by SA3PR11MB8024.namprd11.prod.outlook.com (2603:10b6:806:300::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Tue, 28 Nov
+ 2023 22:18:29 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5%5]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
+ 22:18:29 +0000
+Message-ID: <82eb1ef0-3818-425f-8a0c-90f58bb49913@intel.com>
+Date:   Tue, 28 Nov 2023 14:18:29 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 20/26] selftests/resctrl: Create struct for input
+ parameters
+Content-Language: en-US
+To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "Shaopeng Tan" <tan.shaopeng@jp.fujitsu.com>,
+        =?UTF-8?Q?Maciej_Wiecz=C3=B3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>
+CC:     <linux-kernel@vger.kernel.org>
+References: <20231120111340.7805-1-ilpo.jarvinen@linux.intel.com>
+ <20231120111340.7805-21-ilpo.jarvinen@linux.intel.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <20231120111340.7805-21-ilpo.jarvinen@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: MW4PR04CA0192.namprd04.prod.outlook.com
+ (2603:10b6:303:86::17) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|SA3PR11MB8024:EE_
+X-MS-Office365-Filtering-Correlation-Id: fd67835e-532a-4e1d-d644-08dbf05ff32e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lmHWIHml2How80PvW+DL8wv8Ni7T/TV9MpW0/LFwbSEKnNySvD/J1vfpQqFixvC9Kvu9s4c4WOPElZhDtRWNvLLW3aiHxfEzB2/k/8PfZh8SwEMUhtLgzB+kFQQPcwPavvduMEE3UX4UB2+4xnN/ILyfBAp0C01y1oHIlMXovvg6pl9TetfuMLaV3NK4Ie80pVm3y0iJ5fi/NF52s5/zPyopzd2pFEp+laXula3FZNLtiHOm2gj0nEXWA4gNIFrQDGlbB5/X2NvzaNeuc8sv+2Fmyz17ACv10nIEH6mJ1PkATMcmUr8Ac/nUlZGa67svfzHQKFmhfPaZkPnxNwFgVx9jsMSw78jP6il5Eq9O22A43vpGbCdWfLtS/52l+TD83YVw6lReL1rL510+Ev8GjOjTK3GLppNrkSlBh63lxdLrvqBmQE7UlvN/SEBBJjnk3Y88KjfkEYfEgPPVN6D8VihvcmnJro90lVJ4QS9nbc1kEobhve6fBi5Nl5KVDzTtekOuzajl6DbipBBUcZ/WLBtHtIUieyZBj+ZGbcoCnWopIa3VU63wpuz4U7OXB/vNxHqeDWxF0mLuFbYTOTkKk0zQhAQ0sWor2SauMJtV70boyBaKfgdZI9CL4ej41wR9bGdHbuuNJedLDuNW84OwUQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39860400002)(136003)(376002)(346002)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(38100700002)(41300700001)(36756003)(31686004)(4744005)(5660300002)(82960400001)(26005)(86362001)(2616005)(2906002)(44832011)(6512007)(6506007)(53546011)(8936002)(4326008)(31696002)(8676002)(6486002)(478600001)(316002)(66476007)(66556008)(66946007)(110136005)(6636002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?N0tEOWtwTk14dCt3Mis5dWFuOVZ4Y1B4R1Q1anFENnlFamx4S2x0ekpVRVhN?=
+ =?utf-8?B?d3dXK0s4ZDVoM0xoUklnTDREWDFFdGlHaU1yVEU0c2wxUnRYbVh0SEFPK3Zl?=
+ =?utf-8?B?QmtDcVJTMFJ0b1luN0pCQUUwb1ZFRWdPODFNUDVoZ256VGhMYTc0WEZ1bVdt?=
+ =?utf-8?B?TUUwQk5DaE50MFljSUxUWTU2TjNWcnhiWWM4NHpubCtjRkJBMTZ6c3RVcjZI?=
+ =?utf-8?B?ZS90d1ZUSm5VYVowdWVXUHdNbmc5OGxKYXh4UktjWWhWVWNoNThPc2t1aExR?=
+ =?utf-8?B?RlNUMm5KSVNHMWw0UGF2akNxTDBmK2RzOUIxK3JpbUZTWGtDWldob3JlMmlC?=
+ =?utf-8?B?MUpSYmhRemdwNzQxaVpPc0V4bmJSa0NZdlhkeFprL3RDdnovY3VHVGdMVnFi?=
+ =?utf-8?B?TXBYZk00UnJsUDhDdUpGN1daUnk1ZC9lSTdydlN1SlJVNjlraW1lKzZPYkpu?=
+ =?utf-8?B?Z1FscTloYmIyYWJUTEoxQVM1UmJWRFBOQ0E0V2JNUHIreVhLN2NweE1OMVZa?=
+ =?utf-8?B?c25XVnNFYmI0MXM5Q3NzelpVTktIMWNaSy94VmdFa3ZRdVVqTE1GdC9JbVlI?=
+ =?utf-8?B?NUxMZjdBQzgvVjhWTi84OVZCNExkZjJCUXlNZXZRNEFLVnRSdFlYTTU3clRU?=
+ =?utf-8?B?Tzg0VFgwRUFmYTdWM0ZVWlgxSW8xVDY3M2hsb3cyMkRaRUlkQzc5dGxqTDBT?=
+ =?utf-8?B?WjV6YytQMXJ5d3hJQVBkUWdaNHRORm5QSzNVR0hXdU90K0JYa0dpeDN5dTJR?=
+ =?utf-8?B?UEJEK1Q3dVZOdUtNRWFScXVTZzA5UndIL1pMMWYrcXg0SjFvMy85SVp2cWxl?=
+ =?utf-8?B?UkRjNEkzQ1E2S2RYQ0dTWTloSVVNRTRSVHpVZWUwM1JQbkFpSm9wUExMRmcr?=
+ =?utf-8?B?N1ZLYkJQNzUxRlpCNUhGaUZ2bkdaaVpqTVI1aTViT3JaYVVwNXJEZ1FzbXhv?=
+ =?utf-8?B?ZzArRWV0YmlRSTlua1NyYkZKaXJMZHdVeHN6SkdSMVZ0SWd5TWxnVTVCdSs3?=
+ =?utf-8?B?OVhlbVV5bGFTMnZ1bFpMNVIrS29ScjVVZ1V2cjhLQ2tud3cwd2tVMHhjTnhX?=
+ =?utf-8?B?SjhpWUdkVW1ZNUxwcDRJSDh5a3FZR2pOYWdGVkExRG9hNWZQZTN6VXZjWEVZ?=
+ =?utf-8?B?V1dybjlhR3FJeGtvMHV0aldqVHZCczNvbjhDbmo5cEJ5cEpiYnhuZFpmSW1E?=
+ =?utf-8?B?dFRzNDJlWS83WCt5N0JiK3FOcE8wcTRhZzhLdVp0NVBlK2pybzA3T0VOYUl3?=
+ =?utf-8?B?eWtQZDdLQk15SkhwT3ZiZDArOCsxdDJ1SHg3OTBDOXlkZEJyTlk4RWVZSkNF?=
+ =?utf-8?B?RGdtc1U1T2pvQzZGb29wZnNKazRQYkxCRnhyLzBpZzh2THNKcVg5UldFTllG?=
+ =?utf-8?B?UElJa2wzUlNsVEJTVFRENkx3Y2U2YzN6MjhWMExsZlJ0ZHFCZW9HU3R2SVBW?=
+ =?utf-8?B?bzE2STBMWnRVbmtoU3BBNWwyYkNEMGNLTU9tU3puc2UxWWNnbGRtaWNqTmJh?=
+ =?utf-8?B?T083TGRnZU5lTEs4cStiRFlRSkVwK09nK1hwSmxJVTdTK3k5R3p6M3FRU3V6?=
+ =?utf-8?B?b2IvTWZtZndVK0hwakdRTEhZM3ROdWY4N2N4eDJCZ0xnYTdNVGZicVBnWHVi?=
+ =?utf-8?B?d29NWjBqYkJKdU9RWXNKL3MyZlBZaFRpb0c1aS8xL2VnOGFYdGgyYndtYnFQ?=
+ =?utf-8?B?MmlTSHo2eDdoTnNTdXJOV2lVVGxib1JDRStjbXFWTFVMbmlOOFkzcU1SQWFm?=
+ =?utf-8?B?OS9oZlh1aXh3NXBNVGVpREcwWjJiVGpZekNmWFg3aFhDL1JxUzZXYzd1dHBt?=
+ =?utf-8?B?dDcvdy83R3ZqdGN1bjVMeHUxUEh4YXp6dWI4WmhlSFMvWkN3dmllWExOaHVL?=
+ =?utf-8?B?ZTdXRHRtQVNLeE9nMExDSSt6R1RJS1B3QlJmK2U4WkxMdzNmbHZqc2RwUFVh?=
+ =?utf-8?B?K0x1OVNHQmlWTnpqU0Vlblpsd2RvMWV2eEYyNTlGVHhralA1UzlMcnlBY0lM?=
+ =?utf-8?B?dkRBSG9zWGhWRTBtdDE5dW1BaTAyMnAxRENzc3pkcEtNT0RpNFUyMUJsaUdH?=
+ =?utf-8?B?V3Q3TTBzdjFWdC9weVNnSjFHVmhhSGRjTkZXcUtmU243VXVZL3d0QndjNEtm?=
+ =?utf-8?B?QTVXYmdoVFBJLzViL1NQOU1TUXNkM0xhMzZMQzlmeEpKdGFjb1J4L1NsbFdn?=
+ =?utf-8?B?UGc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: fd67835e-532a-4e1d-d644-08dbf05ff32e
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 22:18:29.6640
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PMmfhLBnXUIFgTxYxc1zgJsQ+/v/XHzipejWvqs7B97lx2lTQ+Xz6ejmUv1nNQjTp3cmzn8o9rWQ+6tV7I+W4OGH81y0Ozpw5Whn9tYHCaM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR11MB8024
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The KOBJ_CHANGE uevent is sent before gadget unbind is actually
-executed, resulting in inaccurate uevent emitted at incorrect timing
-(the uevent would have USB_UDC_DRIVER variable set while it would
-soon be removed).
-Move the KOBJ_CHANGE uevent to the end of the unbind function so that
-uevent is sent only after the change has been made.
+Hi Ilpo,
 
-Fixes: 2ccea03a8f7e ("usb: gadget: introduce UDC Class")
-Cc: stable@vger.kernel.org
-Signed-off-by: Roy Luo <royluo@google.com>
----
-Changes since v1: add Fixes tag
-Changes since v2: add cc stable@vger.kernel.org
----
- drivers/usb/gadget/udc/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 11/20/2023 3:13 AM, Ilpo Järvinen wrote:
 
-diff --git a/drivers/usb/gadget/udc/core.c b/drivers/usb/gadget/udc/core.c
-index ded9531f141b..d59f94464b87 100644
---- a/drivers/usb/gadget/udc/core.c
-+++ b/drivers/usb/gadget/udc/core.c
-@@ -1646,8 +1646,6 @@ static void gadget_unbind_driver(struct device *dev)
- 
- 	dev_dbg(&udc->dev, "unbinding gadget driver [%s]\n", driver->function);
- 
--	kobject_uevent(&udc->dev.kobj, KOBJ_CHANGE);
--
- 	udc->allow_connect = false;
- 	cancel_work_sync(&udc->vbus_work);
- 	mutex_lock(&udc->connect_lock);
-@@ -1667,6 +1665,8 @@ static void gadget_unbind_driver(struct device *dev)
- 	driver->is_bound = false;
- 	udc->driver = NULL;
- 	mutex_unlock(&udc_lock);
-+
-+	kobject_uevent(&udc->dev.kobj, KOBJ_CHANGE);
- }
- 
- /* ------------------------------------------------------------------------- */
+...
 
-base-commit: 9b6de136b5f0158c60844f85286a593cb70fb364
--- 
-2.43.0.rc1.413.gea7ed67945-goog
+>  
+> +static void init_user_params(struct user_params *uparams)
+> +{
+> +	uparams->cpu = 1;
+> +	uparams->bits = 0;
+> +}
+> +
+>  int main(int argc, char **argv)
+>  {
+>  	bool mbm_test = true, mba_test = true, cmt_test = true;
+> -	const char *benchmark_cmd[BENCHMARK_ARGS] = {};
+> -	int c, cpu_no = 1, i, no_of_bits = 0;
+> +	struct user_params uparams = {};
+>  	char *span_str = NULL;
+>  	bool cat_test = true;
+>  	int tests = 0;
+> -	int ret;
+> +	int ret, c, i;
+> +
+> +	init_user_params(&uparams);
+>  
+
+It is unexpected that this uses a combination of designated
+initializer (via {}) as well as an explicit init function to
+initialize the struct. I think it would be simpler to do
+all initialization in the init function.
+
+Reinette
 
