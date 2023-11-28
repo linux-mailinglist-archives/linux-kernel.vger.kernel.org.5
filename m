@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F897FB953
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9B847FB952
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:20:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344124AbjK1LU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 06:20:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42748 "EHLO
+        id S1344534AbjK1LUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 06:20:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344564AbjK1LUW (ORCPT
+        with ESMTP id S1344558AbjK1LUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 06:20:22 -0500
+        Tue, 28 Nov 2023 06:20:21 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B1B9D60
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1426CD5D
         for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 03:20:26 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id AF679C433CA;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A266CC433C7;
         Tue, 28 Nov 2023 11:20:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1701170425;
-        bh=urPJ4vOJ76R60Bbw9R055iOzZ5pzXSFIvAM6WcsmwOU=;
+        bh=Bbx88lqFMGatwFHlD0kQVkdO9pmX8bC2BeBmnxyMEmQ=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=VkinbTfpjETTMtxSNDuhNEZjy8WF5A5l5TDTfxisiOTD18nJifwg9L5X92OGyDQzy
-         IzPlX8+ymSluUnRVxgYNQM/+KZOjYfQvcvHtiYl8nXIeDMG6auDB6jya+wCobGeOEG
-         qQotkBZ/YvmFWR7DUi55rRs3RW1wfSse4iCqHxxKVEu5z/NUtq6pRRyhSG4cspsg2i
-         iQD2DxX55FTfT4BbCgNjRD2Z7++hSdJtJg5ZqalgABybFe5NW9321r9ZeHOJlH5N+L
-         XUvM6ztc7EcMM5ZLzfGsfI00pslFCNiahOYqc8of2bKn78TeBQXHL1wRLq4jBz8BEc
-         Z9oAgnFi0lWpg==
+        b=GgSy7foS9Mx9VL3KJuEL7r1pvft1WAsNxazpPgZpFChIpm9hPTAzcPa6LzjZoxH2F
+         ilp72qD9tIpKuThy+Sxs0AjoV31d17lTKwX+cp2+sOcuZ3A33qKmp/YnsAUSA197VY
+         nd6xnCxiqUf43dbgNDPC/uEgng3RdA2yJBQoReaPxh6Txp7yZlfVWGDqznF0NHO5S2
+         1UAUl5Yx2nHd5TkcOlqcoe1v48hv2u2Fo2vUMF3JJnGflpwEH6VEA9KJyIgwQYmnPH
+         KXd71HVLA133Uwpu4kSjGTgqZKZkQGP1uz+2wdzqj/InV4J1hDli0zH4cv22FNp7qk
+         BSSVLGbRs9YmQ==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8FF05C39562;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 88933DFAA83;
         Tue, 28 Nov 2023 11:20:25 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] octeontx2-pf: Fix adding mbox work queue entry when
- num_vfs > 64
+Subject: Re: [PATCH net] octeontx2-pf: Restore TC ingress police rules when
+ interface is up
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <170117042558.17319.13811133588326696769.git-patchwork-notify@kernel.org>
+Message-Id: <170117042555.17319.6348597047572958500.git-patchwork-notify@kernel.org>
 Date:   Tue, 28 Nov 2023 11:20:25 +0000
-References: <1700930042-5400-1-git-send-email-sbhatta@marvell.com>
-In-Reply-To: <1700930042-5400-1-git-send-email-sbhatta@marvell.com>
+References: <1700930217-5707-1-git-send-email-sbhatta@marvell.com>
+In-Reply-To: <1700930217-5707-1-git-send-email-sbhatta@marvell.com>
 To:     Subbaraya Sundeep Bhatta <sbhatta@marvell.com>
 Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
@@ -60,22 +60,22 @@ Hello:
 This patch was applied to netdev/net.git (main)
 by Paolo Abeni <pabeni@redhat.com>:
 
-On Sat, 25 Nov 2023 22:04:02 +0530 you wrote:
-> From: Geetha sowjanya <gakula@marvell.com>
-> 
-> When more than 64 VFs are enabled for a PF then mbox communication
-> between VF and PF is not working as mbox work queueing for few VFs
-> are skipped due to wrong calculation of VF numbers.
-> 
-> Fixes: d424b6c02415 ("octeontx2-pf: Enable SRIOV and added VF mbox handling")
-> Signed-off-by: Geetha sowjanya <gakula@marvell.com>
-> Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
+On Sat, 25 Nov 2023 22:06:57 +0530 you wrote:
+> TC ingress policer rules depends on interface receive queue
+> contexts since the bandwidth profiles are attached to RQ
+> contexts. When an interface is brought down all the queue
+> contexts are freed. This in turn frees bandwidth profiles in
+> hardware causing ingress police rules non-functional after
+> the interface is brought up. Fix this by applying all the ingress
+> police rules config to hardware in otx2_open. Also allow
+> adding ingress rules only when interface is running
+> since no contexts exist for the interface when it is down.
 > 
 > [...]
 
 Here is the summary with links:
-  - [net] octeontx2-pf: Fix adding mbox work queue entry when num_vfs > 64
-    https://git.kernel.org/netdev/net/c/51597219e0cd
+  - [net] octeontx2-pf: Restore TC ingress police rules when interface is up
+    https://git.kernel.org/netdev/net/c/fd7f98b2e12a
 
 You are awesome, thank you!
 -- 
