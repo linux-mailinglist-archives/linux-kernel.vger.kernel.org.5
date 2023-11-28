@@ -2,217 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C397FB3DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:18:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0557FB3E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:18:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344062AbjK1ISA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 03:18:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54134 "EHLO
+        id S1344074AbjK1ISc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 03:18:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbjK1IR6 (ORCPT
+        with ESMTP id S230044AbjK1ISa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 03:17:58 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAADEB0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:18:04 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1cf8c462766so36842155ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:18:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701159484; x=1701764284; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=avri5+l4jh4I23MBWhAH2OdfRZsJMW+CaKeEjn0D5Uc=;
-        b=HKnaZyXomxMX0CYpvmFHQP+5llu0mo+S91tmCdhifRA3RxhEtZviqjOqz1nl+3GF71
-         /ibxDtCY0wsC52Z8kdgyOmcpdGOOzXv/FPSOgINLxS9dAIh2htvtNMi2mKxMnK4Vux9Y
-         +4XfK98sMMNNo0YFJe6Fdg2WGfxJNaTOUeeOdJyKqxQNLZMREYpcDiY76iFdGUHDR3AA
-         sgj1NQOINDR0KTTUAuc4rEhD3OXVavJLRUO+aDfsN3FpbGwfc+gUrlVpfE55oadlnO+Z
-         0+cusVdkqg7UHxIF01ZXL5xgCVsmI9hFu8KT94ojkKbpGqEcCZpIi+aej4x8JGhicSTX
-         +MvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701159484; x=1701764284;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=avri5+l4jh4I23MBWhAH2OdfRZsJMW+CaKeEjn0D5Uc=;
-        b=LuZ0Kwu4QS5NMpfYTj1sx08usdjwNHPrY1nk7X6g6lF0PQkGgXCzaNS/dL37SoGfDD
-         tnvxPSmzYNGgbEiTjInOGI+zsSNOmhecyMOZsPfF32BkqJ+BOdKOuMMv0IgfySS7SSF8
-         Y4vgVDHAhrH6IzB23ZJhCK+Vrnne9HCKg4PCc2vRCB19Amf1RKsh38vc7QjYY8gtelGn
-         DB4t2dIQ+ReRvh1ZY9V30NcWFI7aGS4ANiyUh8CfUWhkU7Xsf7RUS+tglcNWDOSpEeXL
-         QixhYeMmUp6NFoFel+8R56uCO476RHki9h9Dsh3s6GTUjKffKENTrLoI03Tjy1qOSIL+
-         N+zQ==
-X-Gm-Message-State: AOJu0YzkpV6yT2CHanEqNQCnuSQHCFb0oIr8OAH9zZNvmgcrMbeQopFk
-        BboOg5QkbEWF0A4njBOBdrA=
-X-Google-Smtp-Source: AGHT+IHg5I/Ci0iCDZnbxkvP6wNr9HbmrpJG8sakGeJnQdcAnq4ez+i1YbJ3DGIkY3W0SdSQ+FYcFQ==
-X-Received: by 2002:a17:903:246:b0:1cf:b29d:3e8e with SMTP id j6-20020a170903024600b001cfb29d3e8emr10213348plh.58.1701159484095;
-        Tue, 28 Nov 2023 00:18:04 -0800 (PST)
-Received: from barry-desktop.hub ([2407:7000:8942:5500:6e62:da63:8968:8aec])
-        by smtp.gmail.com with ESMTPSA id v9-20020a170902b7c900b001cfcc10491fsm3628891plz.161.2023.11.28.00.17.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 00:18:03 -0800 (PST)
-From:   Barry Song <21cnbao@gmail.com>
-X-Google-Original-From: Barry Song <v-songbaohua@oppo.com>
-To:     ryan.roberts@arm.com
-Cc:     akpm@linux-foundation.org, andreyknvl@gmail.com,
-        anshuman.khandual@arm.com, ardb@kernel.org,
-        catalin.marinas@arm.com, david@redhat.com, dvyukov@google.com,
-        glider@google.com, james.morse@arm.com, jhubbard@nvidia.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mark.rutland@arm.com, maz@kernel.org,
-        oliver.upton@linux.dev, ryabinin.a.a@gmail.com,
-        suzuki.poulose@arm.com, vincenzo.frascino@arm.com,
-        wangkefeng.wang@huawei.com, will@kernel.org, willy@infradead.org,
-        yuzenghui@huawei.com, yuzhao@google.com, ziy@nvidia.com
-Subject: Re: [PATCH v2 14/14] arm64/mm: Add ptep_get_and_clear_full() to optimize process teardown
-Date:   Tue, 28 Nov 2023 21:17:42 +1300
-Message-Id: <20231128081742.39204-1-v-songbaohua@oppo.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231115163018.1303287-15-ryan.roberts@arm.com>
-References: <20231115163018.1303287-15-ryan.roberts@arm.com>
+        Tue, 28 Nov 2023 03:18:30 -0500
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19095B0;
+        Tue, 28 Nov 2023 00:18:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1701159511;
+        bh=bALKkCMp4lwFvbZNSnYUsuxiPjBZcOtLPTfv5JH7kEI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=W2yx2WsKSKX+OxGDFmsqxigPuTgF7gXV5uUuM1cjTjiMJJPTck/FA5tPFo/sJKb36
+         1mbhhZfmKMRRb9N0vtU1BV0SzPDGW6lmu1Tex4fcrh7kV4Qf3z6Vjk5OibJPIdVwai
+         Ccq9HpQqWDDyeLlcWeZ3SdowZByoz58cE27ue6lg=
+Date:   Tue, 28 Nov 2023 09:18:30 +0100
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Joel Granados <j.granados@samsung.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH RFC 0/7] sysctl: constify sysctl ctl_tables
+Message-ID: <475cd5fa-f0cc-4b8b-9e04-458f6d143178@t-8ch.de>
+References: <CGME20231125125305eucas1p2ebdf870dd8ef46ea9d346f727b832439@eucas1p2.samsung.com>
+ <20231125-const-sysctl-v1-0-5e881b0e0290@weissschuh.net>
+ <20231127101323.sdnibmf7c3d5ovye@localhost>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231127101323.sdnibmf7c3d5ovye@localhost>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +pte_t contpte_ptep_get_and_clear_full(struct mm_struct *mm,
-> +					unsigned long addr, pte_t *ptep)
-> +{
-> +	/*
-> +	 * When doing a full address space teardown, we can avoid unfolding the
-> +	 * contiguous range, and therefore avoid the associated tlbi. Instead,
-> +	 * just get and clear the pte. The caller is promising to call us for
-> +	 * every pte, so every pte in the range will be cleared by the time the
-> +	 * tlbi is issued.
-> +	 *
-> +	 * This approach is not perfect though, as for the duration between
-> +	 * returning from the first call to ptep_get_and_clear_full() and making
-> +	 * the final call, the contpte block in an intermediate state, where
-> +	 * some ptes are cleared and others are still set with the PTE_CONT bit.
-> +	 * If any other APIs are called for the ptes in the contpte block during
-> +	 * that time, we have to be very careful. The core code currently
-> +	 * interleaves calls to ptep_get_and_clear_full() with ptep_get() and so
-> +	 * ptep_get() must be careful to ignore the cleared entries when
-> +	 * accumulating the access and dirty bits - the same goes for
-> +	 * ptep_get_lockless(). The only other calls we might resonably expect
-> +	 * are to set markers in the previously cleared ptes. (We shouldn't see
-> +	 * valid entries being set until after the tlbi, at which point we are
-> +	 * no longer in the intermediate state). Since markers are not valid,
-> +	 * this is safe; set_ptes() will see the old, invalid entry and will not
-> +	 * attempt to unfold. And the new pte is also invalid so it won't
-> +	 * attempt to fold. We shouldn't see this for the 'full' case anyway.
-> +	 *
-> +	 * The last remaining issue is returning the access/dirty bits. That
-> +	 * info could be present in any of the ptes in the contpte block.
-> +	 * ptep_get() will gather those bits from across the contpte block. We
-> +	 * don't bother doing that here, because we know that the information is
-> +	 * used by the core-mm to mark the underlying folio as accessed/dirty.
-> +	 * And since the same folio must be underpinning the whole block (that
-> +	 * was a requirement for folding in the first place), that information
-> +	 * will make it to the folio eventually once all the ptes have been
-> +	 * cleared. This approach means we don't have to play games with
-> +	 * accumulating and storing the bits. It does mean that any interleaved
-> +	 * calls to ptep_get() may lack correct access/dirty information if we
-> +	 * have already cleared the pte that happened to store it. The core code
-> +	 * does not rely on this though.
+Hi Joel,
 
-even without any other threads running and touching those PTEs, this won't survive
-on some hardware. we expose inconsistent CONTPTEs to hardware, this might result
-in crashed firmware even in trustzone, strange&unknown faults to trustzone we have
-seen on Qualcomm, but for MTK, it seems fine. when you do tlbi on a part of PTEs
-with dropped CONT but still some other PTEs have CONT, we make hardware totally
-confused.
+On 2023-11-27 11:13:23+0100, Joel Granados wrote:
+> In general I would like to see more clarity with the motivation and I
+> would also expect some system testing. My comments inline:
 
-zap_pte_range() has a force_flush when tlbbatch is full:
+Thanks for your feedback, response are below.
 
-                        if (unlikely(__tlb_remove_page(tlb, page, delay_rmap))) {
-                                force_flush = 1; 
-                                addr += PAGE_SIZE;
-                                break;
-                        }
+> On Sat, Nov 25, 2023 at 01:52:49PM +0100, Thomas Weißschuh wrote:
+> > Problem description:
+> > 
+> > The kernel contains a lot of struct ctl_table throught the tree.
+> > These are very often 'static' definitions.
+> > It would be good to mark these tables const to avoid accidental or
+> > malicious modifications.
 
-this means you can expose partial tlbi/flush directly to hardware while some
-other PTEs are still CONT.
+> It is unclear to me what you mean here with accidental or malicious
+> modifications. Do you have a specific attack vector in mind? Do you
+> have an example of how this could happen maliciously? With
+> accidental, do you mean in proc/sysctl.c? Can you expand more on the
+> accidental part?
 
-on the other hand, contpte_ptep_get_and_clear_full() doesn't need to depend
-on fullmm, as long as zap range covers a large folio, we can flush tlbi for
-those CONTPTEs all together in your contpte_ptep_get_and_clear_full() rather
-than clearing one PTE.
+There is no specific attack vector I have in mind. The goal is to remove
+mutable data, especially if it contains pointers, that could be used by
+an attacker as a step in an exploit. See for example [0], [1].
 
-Our approach in [1] is we do a flush for all CONTPTEs and go directly to the end
-of the large folio:
+Accidental can be any out-of-bounds write throughout the kernel.
 
-#ifdef CONFIG_CONT_PTE_HUGEPAGE
-			if (pte_cont(ptent)) {
-				unsigned long next = pte_cont_addr_end(addr, end);
+> What happens with the code that modifies these outside the sysctl core?
+> Like for example in sysctl_route_net_init where the table is modified
+> depending on the net->user_ns? Would these non-const ctl_table pointers
+> be ok? would they be handled differently?
 
-				if (next - addr != HPAGE_CONT_PTE_SIZE) {
-					__split_huge_cont_pte(vma, pte, addr, false, NULL, ptl);
-					/*
-					 * After splitting cont-pte
-					 * we need to process pte again.
-					 */
-					goto again_pte;
-				} else {
-					cont_pte_huge_ptep_get_and_clear(mm, addr, pte);
+It is still completely fine to modify the tables before registering,
+like sysctl_route_net_init is doing. That code should not need any
+changes.
 
-					tlb_remove_cont_pte_tlb_entry(tlb, pte, addr);
-					if (unlikely(!page))
-						continue;
+Modifying the table inside the handler function would bypass the
+validation done when registering so sounds like a bad idea in general.
+It would still be possible however for a subsystem to do so by just not
+making their sysctl table const and then modifying the table directly.
+ 
+> > Unfortunately the tables can not be made const because the core
+> > registration functions expect mutable tables.
+> > 
+> > This is for two reasons:
+> > 
+> > 1) sysctl_{set,clear}_perm_empty_ctl_header in the sysctl core modify
+> >    the table. This should be fixable by only modifying the header
+> >    instead of the table itself.
+> > 2) The table is passed to the handler function as a non-const pointer.
+> > 
+> > This series is an aproach on fixing reason 2).
 
-					if (is_huge_zero_page(page)) {
-						tlb_remove_page_size(tlb, page, HPAGE_CONT_PTE_SIZE);
-						goto cont_next;
-					}
+> So number 2 will be sent in another set?
 
-					rss[mm_counter(page)] -= HPAGE_CONT_PTE_NR;
-					page_remove_rmap(page, true);
-					if (unlikely(page_mapcount(page) < 0))
-						print_bad_pte(vma, addr, ptent, page);
+If the initial feedback to the RFC and general process is positive, yes.
 
-					tlb_remove_page_size(tlb, page, HPAGE_CONT_PTE_SIZE);
-				}
-cont_next:
-				/* "do while()" will do "pte++" and "addr + PAGE_SIZE" */
-				pte += (next - PAGE_SIZE - (addr & PAGE_MASK))/PAGE_SIZE;
-				addr = next - PAGE_SIZE;
-				continue;
-			}
-#endif
+> > 
+> > Full process:
+> > 
+> > * Introduce field proc_handler_new for const handlers (this series)
+> > * Migrate all core handlers to proc_handler_new (this series, partial)
+> >   This can hopefully be done in a big switch, as it only involves
+> >   functions and structures owned by the core sysctl code.
+> > * Migrate all other sysctl handlers to proc_handler_new.
+> > * Drop the old proc_handler_field.
+> > * Fix the sysctl core to not modify the tables anymore.
+> > * Adapt public sysctl APIs to take "const struct ctl_table *".
+> > * Teach checkpatch.pl to warn on non-const "struct ctl_table"
+> >   definitions.
+> > * Migrate definitions of "struct ctl_table" to "const" where applicable.
+> >  
+> > 
+> > Notes:
+> > 
+> > Just casting the function pointers around would trigger
+> > CFI (control flow integrity) warnings.
+> > 
+> > The name of the new handler "proc_handler_new" is a bit too long messing
+> > up the alignment of the table definitions.
+> > Maybe "proc_handler2" or "proc_handler_c" for (const) would be better.
 
-this is our "full" counterpart, which clear_flush CONT_PTES pages directly, and
-it never requires tlb->fullmm at all.
+> indeed the name does not say much. "_new" looses its meaning quite fast
+> :)
 
-static inline pte_t __cont_pte_huge_ptep_get_and_clear_flush(struct mm_struct *mm,
-				       unsigned long addr,
-				       pte_t *ptep,
-				       bool flush)
-{
-	pte_t orig_pte = ptep_get(ptep);
+Hopefully somebody comes up with a better name!
 
-	CHP_BUG_ON(!pte_cont(orig_pte));
-	CHP_BUG_ON(!IS_ALIGNED(addr, HPAGE_CONT_PTE_SIZE));
-	CHP_BUG_ON(!IS_ALIGNED(pte_pfn(orig_pte), HPAGE_CONT_PTE_NR));
+> In my experience these tree wide modifications are quite tricky. Have you
+> run any tests to see that everything is as it was? sysctl selftests and
+> 0-day come to mind.
 
-	return get_clear_flush(mm, addr, ptep, PAGE_SIZE, CONT_PTES, flush);
-}
+I managed to miss one change in my initial submission:
+With the hunk below selftests and typing emails work.
 
-[1] https://github.com/OnePlusOSS/android_kernel_oneplus_sm8550/blob/oneplus/sm8550_u_14.0.0_oneplus11/mm/memory.c#L1539
+--- a/fs/proc/proc_sysctl.c
++++ b/fs/proc/proc_sysctl.c
+@@ -1151,7 +1151,7 @@ static int sysctl_check_table(const char *path, struct ctl_table_header *header)
+                        else
+                                err |= sysctl_check_table_array(path, entry);
+                }
+-               if (!entry->proc_handler)
++               if (!entry->proc_handler && !entry->proc_handler_new)
+                        err |= sysctl_err(path, entry, "No proc_handler");
+ 
+                if ((entry->mode & (S_IRUGO|S_IWUGO)) != entry->mode)
 
-> +	 */
-> +
-> +	return __ptep_get_and_clear(mm, addr, ptep);
-> +}
-> +EXPORT_SYMBOL(contpte_ptep_get_and_clear_full);
-> +
+> [..]
 
-Thanks
-Barry
+[0] 43a7206b0963 ("driver core: class: make class_register() take a const *")
+[1] https://lore.kernel.org/lkml/20230930050033.41174-1-wedsonaf@gmail.com/
 
 
+Thomas
