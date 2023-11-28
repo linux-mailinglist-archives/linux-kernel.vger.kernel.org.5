@@ -2,139 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A18C17FB378
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:01:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 872DA7FB374
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:01:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344013AbjK1IBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 03:01:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43178 "EHLO
+        id S1343975AbjK1IAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 03:00:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343945AbjK1IAi (ORCPT
+        with ESMTP id S1343955AbjK1IAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 03:00:38 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3883BCB;
-        Tue, 28 Nov 2023 00:00:44 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-50abb83866bso6933036e87.3;
-        Tue, 28 Nov 2023 00:00:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701158442; x=1701763242; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QQVOvwrmfo1nPfUgIyQbOVsMWsIZrJImgM152q/sqUE=;
-        b=W/PgcouFN/Z8pHWi5vDSGdOT1N5xbMMpc+cYROJFFgVtTK/TtpHatoK3A8HuGvSaSz
-         UHiZCaRUUKegN4wsUoFPGtYo7xXlKolFOtJc0BoQ01aLah0HZCeEyO0Vp+jCcnv8k1Df
-         vwOGTSMTVJjEDS8dz8N90ovwdbMdqHckOJnAIeQKjiQzLLJmbfMzPXvVo9tNWAiHY9qr
-         ryHVY277Dg7evEmo1KConVX6ew7bmAAezkeG7EGxIDSLtJH4tgA5v5G8KHimunS/wyij
-         b0nkPB7WsPFZT+nobrcficgZ/rwcWm7NX+RAqyhzJStnotTOMKS97OT1d/Np9tLafqEZ
-         U6IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701158442; x=1701763242;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QQVOvwrmfo1nPfUgIyQbOVsMWsIZrJImgM152q/sqUE=;
-        b=Et/VHFtJzCerm5EgrTn05ATQ5LOHhiXd33ql4/YyvleEn2Tbmypp3+mIizrGXdKZLn
-         +SQY1WoEAUvt/wGiRwJ7a0oAK5AVssHkU0mImXDsmmJZILhTTYIv6ms7JWBhFK1uzQt6
-         MwgV/+o5G7Q3gERQS54EOV9r2CadaRvZOthBTVpN8fnWtE6vhxsnqke+hO/XMXwnh7Sf
-         OlfukZ01N7kJ/B+IEEjTzJZxVPLoPyCFvmYtBgHOLtor9NiSHDGebe8aFaEMuOzkBDT8
-         TN4sQncb69IOUCGRYrsV0gDpeCTFW8XiUNJv+7OgiPkMKjo+6coo/TN597oPe9YHcYva
-         AQNw==
-X-Gm-Message-State: AOJu0Yx0KlAT1C4TKMZSGsOn9kLTw+reYOHT9RqOE3wu4/2DxliT0tPC
-        nu7QHy2lFZMf/+U0CaisV7s=
-X-Google-Smtp-Source: AGHT+IGpGnDLULRUYULHIiEqENx6drVMGcTjDMRTQ69MqVN/chnP9zQSnV1eWsGowYbRCIcIp5MNkQ==
-X-Received: by 2002:a19:5506:0:b0:500:b53f:fbc2 with SMTP id n6-20020a195506000000b00500b53ffbc2mr8986246lfe.26.1701158442372;
-        Tue, 28 Nov 2023 00:00:42 -0800 (PST)
-Received: from pc638.lan ([155.137.26.201])
-        by smtp.gmail.com with ESMTPSA id o16-20020ac24bd0000000b004fe202a5c7csm1765501lfq.135.2023.11.28.00.00.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 00:00:42 -0800 (PST)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     RCU <rcu@vger.kernel.org>,
-        Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH v3 7/7] rcu: Add CONFIG_RCU_SR_NORMAL_DEBUG_GP
-Date:   Tue, 28 Nov 2023 09:00:33 +0100
-Message-Id: <20231128080033.288050-8-urezki@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231128080033.288050-1-urezki@gmail.com>
-References: <20231128080033.288050-1-urezki@gmail.com>
+        Tue, 28 Nov 2023 03:00:33 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 003A210A
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:00:39 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 482E9C433C9;
+        Tue, 28 Nov 2023 08:00:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1701158439;
+        bh=XsSMYgbPthzsqVva9D0suVZ4nWHiEJsubyND6RHq0UM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ae2am8lm7OGWz/wFSHlecym9K80fpY5DiEzAY9yJ0tRhCt54pvWrWJ5lmDEhtLdWH
+         b4pTDWEtLRm7QGc4PEgiSIb0BiehAW2IibphzDtoU8yaFRG+tHskOAqwhSc/s2+NGn
+         5SAB0e8+wKWVw+xdj0NfOC6od44tytRCugtR8kjo=
+Date:   Tue, 28 Nov 2023 08:00:36 +0000
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Roy Luo <royluo@google.com>
+Cc:     stern@rowland.harvard.edu, badhri@google.com,
+        quic_kriskura@quicinc.com, francesco.dolcini@toradex.com,
+        quic_eserrao@quicinc.com, ivan.orlov0322@gmail.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] USB: gadget: core: adjust uevent timing on gadget
+ unbind
+Message-ID: <2023112827-repent-broadband-e557@gregkh>
+References: <20231127220047.2199234-1-royluo@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231127220047.2199234-1-royluo@google.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This option enables additional debugging for detecting a grace
-period incompletion for synchronize_rcu() users. If a GP is not
-fully passed for any user, the warning message is emitted.
+On Mon, Nov 27, 2023 at 10:00:47PM +0000, Roy Luo wrote:
+> The KOBJ_CHANGE uevent is sent before gadget unbind is actually
+> executed, resulting in inaccurate uevent emitted at incorrect timing
+> (the uevent would have USB_UDC_DRIVER variable set while it would
+> soon be removed).
+> Move the KOBJ_CHANGE uevent to the end of the unbind function so that
+> uevent is sent only after the change has been made.
+> 
+> Fixes: 2ccea03a8f7e ("usb: gadget: introduce UDC Class")
+> Signed-off-by: Roy Luo <royluo@google.com>
+> ---
+> Changes since v1: add Fixes tag
+> ---
+>  drivers/usb/gadget/udc/core.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- kernel/rcu/Kconfig.debug | 12 ++++++++++++
- kernel/rcu/tree.c        |  7 +++++--
- 2 files changed, 17 insertions(+), 2 deletions(-)
+Hi,
 
-diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
-index 2984de629f74..3d44106ca1f0 100644
---- a/kernel/rcu/Kconfig.debug
-+++ b/kernel/rcu/Kconfig.debug
-@@ -143,4 +143,16 @@ config RCU_STRICT_GRACE_PERIOD
- 	  when looking for certain types of RCU usage bugs, for example,
- 	  too-short RCU read-side critical sections.
- 
-+config RCU_SR_NORMAL_DEBUG_GP
-+	bool "Debug synchronize_rcu() callers for a grace period completion"
-+	depends on DEBUG_KERNEL && RCU_EXPERT
-+	default n
-+	help
-+	  This option enables additional debugging for detecting a grace
-+	  period incompletion for synchronize_rcu() users. If a GP is not
-+	  fully passed for any user, the warning message is emitted.
-+
-+	  Say Y here if you want to enable such debugging
-+	  Say N if you are unsure.
-+
- endmenu # "RCU Debugging"
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index c0d3e46730e8..421bce4b8dd7 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1547,7 +1547,8 @@ static void rcu_sr_normal_complete(struct llist_node *node)
- 		(struct rcu_head *) node, struct rcu_synchronize, head);
- 	unsigned long oldstate = (unsigned long) rs->head.func;
- 
--	WARN_ONCE(!rcu_gp_is_expedited() && !poll_state_synchronize_rcu(oldstate),
-+	WARN_ONCE(IS_ENABLED(CONFIG_RCU_SR_NORMAL_DEBUG_GP) &&
-+		!poll_state_synchronize_rcu(oldstate),
- 		"A full grace period is not passed yet: %lu",
- 		rcu_seq_diff(get_state_synchronize_rcu(), oldstate));
- 
-@@ -3822,7 +3823,9 @@ static void synchronize_rcu_normal(void)
- 	 * This code might be preempted, therefore take a GP
- 	 * snapshot before adding a request.
- 	 */
--	rs.head.func = (void *) get_state_synchronize_rcu();
-+	if (IS_ENABLED(CONFIG_RCU_SR_NORMAL_DEBUG_GP))
-+		rs.head.func = (void *) get_state_synchronize_rcu();
-+
- 	rcu_sr_normal_add_req(&rs);
- 
- 	/* Kick a GP and start waiting. */
--- 
-2.39.2
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- You have marked a patch with a "Fixes:" tag for a commit that is in an
+  older released kernel, yet you do not have a cc: stable line in the
+  signed-off-by area at all, which means that the patch will not be
+  applied to any older kernel releases.  To properly fix this, please
+  follow the documented rules in the
+  Documentation/process/stable-kernel-rules.rst file for how to resolve
+  this.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
