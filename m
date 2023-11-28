@@ -2,152 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E77B87FB25E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:09:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C89E7FB260
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343714AbjK1HJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 02:09:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45500 "EHLO
+        id S1343767AbjK1HMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 02:12:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343699AbjK1HJm (ORCPT
+        with ESMTP id S233003AbjK1HMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 02:09:42 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2696F197;
-        Mon, 27 Nov 2023 23:09:48 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5F9F5C15;
-        Mon, 27 Nov 2023 23:10:35 -0800 (PST)
-Received: from [10.163.33.60] (unknown [10.163.33.60])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5221B3F5A1;
-        Mon, 27 Nov 2023 23:09:44 -0800 (PST)
-Message-ID: <8305dee1-6668-4011-aaf7-68d072a1251c@arm.com>
-Date:   Tue, 28 Nov 2023 12:39:42 +0530
+        Tue, 28 Nov 2023 02:12:06 -0500
+Received: from outboundhk.mxmail.xiaomi.com (outboundhk.mxmail.xiaomi.com [207.226.244.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 394C4182
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:12:11 -0800 (PST)
+X-IronPort-AV: E=Sophos;i="6.04,233,1695657600"; 
+   d="scan'208";a="97503624"
+From:   sparkhuang <huangshaobo3@xiaomi.com>
+To:     <vnkgutta@codeaurora.org>
+CC:     <alexander.deucher@amd.com>, <davem@davemloft.net>,
+        <gregkh@linuxfoundation.org>, <jshriram@codeaurora.org>,
+        <linux-kernel@vger.kernel.org>, <psodagud@codeaurora.org>,
+        <tsoni@codeaurora.org>
+Subject: Re: [PATCH] driver core: platform: Fix the usage of platform device name(pdev->name)
+Date:   Mon, 27 Nov 2023 23:12:07 -0800
+Message-ID: <1701155527-2697-1-git-send-email-huangshaobo3@xiaomi.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1555978589-4998-1-git-send-email-vnkgutta@codeaurora.org>
+References: <1555978589-4998-1-git-send-email-vnkgutta@codeaurora.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/7] coresight: tmc: Move ACPI support from AMBA driver to
- platform driver
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org,
-        linux-stm32@st-md-mailman.stormreply.com
-References: <20231027072943.3418997-1-anshuman.khandual@arm.com>
- <20231027072943.3418997-6-anshuman.khandual@arm.com> <ZV40itsgT5OSJmdC@bogus>
-Content-Language: en-US
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <ZV40itsgT5OSJmdC@bogus>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.237.8.18]
+X-ClientProxiedBy: bj-mbx11.mioffice.cn (10.237.8.131) To BJ-MBX01.mioffice.cn
+ (10.237.8.121)
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Apr 22, 2019 at 05:16:29PM -0700, Venkata Narendra Kumar Gutta wrote:
+> Platform core is using pdev->name as the platform device name to do
+> the binding of the devices with the drivers. But, when the platform
+> driver overrides the platform device name with dev_set_name(),
+> the pdev->name is pointing to a location which is freed and becomes
+> an invalid parameter to do the binding match.
+>
+> use-after-free instance:
+>
+> [   33.325013] BUG: KASAN: use-after-free in strcmp+0x8c/0xb0
+> [   33.330646] Read of size 1 at addr ffffffc10beae600 by task modprobe
+> [   33.339068] CPU: 5 PID: 518 Comm: modprobe Tainted:
+>                       G S      W  O      4.19.30+ #3
+> [   33.346835] Hardware name: MTP (DT)
+> [   33.350419] Call trace:
+> [   33.352941]  dump_backtrace+0x0/0x3b8
+> [   33.356713]  show_stack+0x24/0x30
+> [   33.360119]  dump_stack+0x160/0x1d8
+> [   33.363709]  print_address_description+0x84/0x2e0
+> [   33.368549]  kasan_report+0x26c/0x2d0
+> [   33.372322]  __asan_report_load1_noabort+0x2c/0x38
+> [   33.377248]  strcmp+0x8c/0xb0
+> [   33.380306]  platform_match+0x70/0x1f8
+> [   33.384168]  __driver_attach+0x78/0x3a0
+> [   33.388111]  bus_for_each_dev+0x13c/0x1b8
+> [   33.392237]  driver_attach+0x4c/0x58
+> [   33.395910]  bus_add_driver+0x350/0x560
+> [   33.399854]  driver_register+0x23c/0x328
+> [   33.403886]  __platform_driver_register+0xd0/0xe0
 
+We also encountered the same problem, is there any solution?
 
-On 11/22/23 22:34, Sudeep Holla wrote:
-> On Fri, Oct 27, 2023 at 12:59:41PM +0530, Anshuman Khandual wrote:
->> Add support for the tmc devices in the platform driver, which can then be
->> used on ACPI based platforms. This change would now allow runtime power
->> management for ACPI based systems. The driver would try to enable the APB
->> clock if available.
->>
->> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
->> Cc: Sudeep Holla <sudeep.holla@arm.com>
->> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Cc: James Clark <james.clark@arm.com>
->> Cc: linux-acpi@vger.kernel.org
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linux-kernel@vger.kernel.org
->> Cc: coresight@lists.linaro.org
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>  drivers/acpi/arm64/amba.c                     |   2 -
->>  .../hwtracing/coresight/coresight-tmc-core.c  | 127 +++++++++++++++---
->>  drivers/hwtracing/coresight/coresight-tmc.h   |   1 +
->>  3 files changed, 113 insertions(+), 17 deletions(-)
-> 
-> [...]
-> 
->> diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
->> index 7ec5365e2b64..618bc0b7a1a5 100644
->> --- a/drivers/hwtracing/coresight/coresight-tmc-core.c
->> +++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
-> 
-> [...]
-> 
->> @@ -573,9 +579,9 @@ static void tmc_shutdown(struct amba_device *adev)
->>  	spin_unlock_irqrestore(&drvdata->spinlock, flags);
->>  }
->>  
->> -static void tmc_remove(struct amba_device *adev)
->> +static void __tmc_remove(struct device *dev)
->>  {
->> -	struct tmc_drvdata *drvdata = dev_get_drvdata(&adev->dev);
->> +	struct tmc_drvdata *drvdata = dev_get_drvdata(dev);
->>  
->>  	/*
->>  	 * Since misc_open() holds a refcount on the f_ops, which is
->> @@ -586,6 +592,11 @@ static void tmc_remove(struct amba_device *adev)
->>  	coresight_unregister(drvdata->csdev);
->>  }
->>  
->> +static void tmc_remove(struct amba_device *adev)
->> +{
->> +	__tmc_remove(&adev->dev);
->> +}
->> +
->>  static const struct amba_id tmc_ids[] = {
->>  	CS_AMBA_ID(0x000bb961),
->>  	/* Coresight SoC 600 TMC-ETR/ETS */
->> @@ -613,6 +624,92 @@ static struct amba_driver tmc_driver = {
->>  
->>  module_amba_driver(tmc_driver);
->>  
->> +static int tmc_platform_probe(struct platform_device *pdev)
->> +{
->> +	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> +	struct tmc_drvdata *drvdata;
->> +	int ret = 0;
->> +
->> +	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
->> +	if (!drvdata)
->> +		return -ENOMEM;
->> +
->> +	drvdata->pclk = coresight_get_enable_apb_pclk(&pdev->dev);
->> +	if (IS_ERR(drvdata->pclk))
->> +		return -ENODEV;
->> +
-> 
-> --->8
->> +	if (res) {
->> +		drvdata->base = devm_ioremap_resource(&pdev->dev, res);
->> +		if (IS_ERR(drvdata->base)) {
->> +			clk_put(drvdata->pclk);
->> +			return PTR_ERR(drvdata->base);
->> +		}
->> +	}
->> +
+> So, use dev_name(&pdev->dev), which fetches the platform device name from
+> the kobject(dev->kobj->name) of the device instead of the pdev->name.
+>
+> Signed-off-by: Venkata Narendra Kumar Gutta <vnkgutta@codeaurora.org>
 > ---
-> 
-> You need drop the above hunk as _tmc_probe() already takes care of that.
+>  drivers/base/platform.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+> index dab0a5a..0e23aa2 100644
+> --- a/drivers/base/platform.c
+> +++ b/drivers/base/platform.c
+> @@ -888,7 +888,7 @@ static ssize_t modalias_show(struct device *dev, struct device_attribute *a,
+>       if (len != -ENODEV)
+>               return len;
+>
+> -     len = snprintf(buf, PAGE_SIZE, "platform:%s\n", pdev->name);
+> +     len = snprintf(buf, PAGE_SIZE, "platform:%s\n", dev_name(&pdev->dev));
+>
+>       return (len >= PAGE_SIZE) ? (PAGE_SIZE - 1) : len;
+>  }
+> @@ -964,7 +964,7 @@ static int platform_uevent(struct device *dev, struct kobj_uevent_env *env)
+>               return rc;
+>
+>       add_uevent_var(env, "MODALIAS=%s%s", PLATFORM_MODULE_PREFIX,
+> -                     pdev->name);
+> +                     dev_name(&pdev->dev));
+>       return 0;
+>  }
+>
+> @@ -973,7 +973,7 @@ static const struct platform_device_id *platform_match_id(
+>                       struct platform_device *pdev)
+>  {
+>       while (id->name[0]) {
+> -             if (strcmp(pdev->name, id->name) == 0) {
+> +             if (strcmp(dev_name(&pdev->dev), id->name) == 0) {
+>                       pdev->id_entry = id;
+>                       return id;
+>               }
+> @@ -1017,7 +1017,7 @@ static int platform_match(struct device *dev, struct device_driver *drv)
+>               return platform_match_id(pdrv->id_table, pdev) != NULL;
+>
+>       /* fall-back to driver name match */
+> -     return (strcmp(pdev->name, drv->name) == 0);
+> +     return (strcmp(dev_name(&pdev->dev), drv->name) == 0);
+>  }
+>
+>  #ifdef CONFIG_PM_SLEEP
+> --
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+>
 
-Dropped.
-
-> This is the root cause for the issue I reported in the other thread. Also
-> sorry for the confusion, I had to refer to coresight-tmc-core.c and post
-> the patch to unify module_init/exit but completely mixed up the file/patch
-> and referred coresight-tpiu-core.c instead as that patch was dealing with
-> it.
-> 
