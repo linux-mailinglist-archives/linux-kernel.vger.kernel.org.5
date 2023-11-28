@@ -2,93 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E947FC568
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 21:29:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 203A67FC569
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 21:29:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345818AbjK1U3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 15:29:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45860 "EHLO
+        id S1345875AbjK1U3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 15:29:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345786AbjK1U3U (ORCPT
+        with ESMTP id S1345805AbjK1U3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 15:29:20 -0500
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D0C19A7
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 12:29:26 -0800 (PST)
-Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3b8929269a0so272985b6e.1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 12:29:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1701203365; x=1701808165; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zvt+0jiHGDPEXGWp4ZUeTSZX/GfEE6mq7HiGkqqcPN0=;
-        b=YN9dStQQR9PxRz3pqydJDqEn5TQMF+BJd0ZZdbhYrA0VIUPZ2FuQFNtOROFUiLL6No
-         NiKm3FgdlRNYeHBDQkhxmV9Yg3XxZkhkCH/4ac+91ncD1z0PCcnh2Skc0iX4H/gMdxyO
-         aXwzs+vbkM63CaWwGs1NS/Ns3OlBpOEXl4WyBrLBLeWhyvF41sy5YlG2JBIJ3mSfwalk
-         vpiH97AlZPNHaFlBHjNRYAOmplv2XuA3d+TvhEQXLFfQjrZ5HxV1AFGy3add8hcc32ty
-         bFuA+c+Y9vZzhIN9CflBuSL4xuYe/d9ElxWBhJswhB4pmjncow3sifx5vu2alSiSvXaE
-         0JDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701203365; x=1701808165;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Zvt+0jiHGDPEXGWp4ZUeTSZX/GfEE6mq7HiGkqqcPN0=;
-        b=MCT2dCTuu25yMpRalbR7soIvqKZ9uCTD+MWrYhnKeoAE1Bo+mnEqvQPkh3T6kN65Vm
-         Ox+xdE8aKCCfNOaLDhlGRH5k+3aoUeBAwIRVCLCy7cE5ofPqK2M9UCsKAJB2nG9Sf09/
-         d35sh49dG/2hY7WK+lVvAiB/LGbCA418k7yoF1XdFWEZ1DRu3eOQ4ns8ah5jGvRBicHg
-         2E8Dy1Vh8hby3PtFySNJvpE48ubeP5k1j4cAmR34Uax4U0DsG3U02HSTClt3ORWe6Wwf
-         ipOvilkOh0XXO3SlnQCm4ESuxXQV5n2ks4QN+6uBFE+AyfZZkYKsQo3EKh8iQXqR+OE2
-         BLqg==
-X-Gm-Message-State: AOJu0YzWdo3+6CJyi4XnEFxqyIJWW62pURp2S4Nf0W1Q0RELFx9iaP3m
-        fslvhWukHJV46alGxTjk12wOrQ==
-X-Google-Smtp-Source: AGHT+IH1AMb0wvmjly+Gb2M1jv/sGk5FjXtFf3fxlEgnnu+/RlL7wn+A3EsF3kPCAgb5HqebLh2sRA==
-X-Received: by 2002:a05:6808:398e:b0:3b8:5bae:83ad with SMTP id gq14-20020a056808398e00b003b85bae83admr17915369oib.17.1701203365354;
-        Tue, 28 Nov 2023 12:29:25 -0800 (PST)
-Received: from debug.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id i7-20020a056808030700b003b8347de3c2sm1933081oie.19.2023.11.28.12.29.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 12:29:24 -0800 (PST)
-Date:   Tue, 28 Nov 2023 12:29:22 -0800
-From:   Deepak Gupta <debug@rivosinc.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "szabolcs.nagy@arm.com" <szabolcs.nagy@arm.com>,
-        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-        "kito.cheng@sifive.com" <kito.cheng@sifive.com>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: Shadow stack enabling from dynamic loader v/s kernel on exec
-Message-ID: <ZWZNothlvzQKStOc@debug.ba.rivosinc.com>
-References: <CAKC1njRkpaqbAFWrZpz75u4M-T8mniY2QHVZEENameqnHOOGPg@mail.gmail.com>
- <d36b02fc0da364ea0d660e5e5ecac9df7e327f79.camel@intel.com>
- <ZWXiYCs45Ryb6UMf@finisterre.sirena.org.uk>
+        Tue, 28 Nov 2023 15:29:22 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D3151988
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 12:29:28 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDED7C433C8;
+        Tue, 28 Nov 2023 20:29:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701203368;
+        bh=LZUDexNsDfHLTiZ4vVRpRhkkcAv3/p4UDi4s40i48v4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OhKeSxSO/+o1xVPh+tVwuB7lC0aY6qGjLmq8MfFmK6FOP6uqqFw7rQv6QJvQfn8fg
+         Bwt9XF6Ohp8j0E0656s9FJM4udBDzPjufetxZD9cUL+o1M3/30QK48CIcRuxnCqVDG
+         zTI/eu2XZtyWnYFmi9bbXafQIeXNNzKSDEZLRApPl9WZYgJPS2yB4xfE8h3f7+nwVq
+         i3mn1qROrQqIG3yplMopoHS6dxOEy7v59xX39wQSmNi8wBodbgRg1nfxxgQAmoo3Fs
+         zY+G8zm8UbLCFjilY/KzkvYhjG/dY6zSjyHDFfk0gm8N/E9Jd4zQazLFZauCCWrtfd
+         dRISCTybmDIZA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 93DD540094; Tue, 28 Nov 2023 17:29:25 -0300 (-03)
+Date:   Tue, 28 Nov 2023 17:29:25 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Dmitrii Dolgov <9erthalion6@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        James Clark <james.clark@arm.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        German Gomez <german.gomez@arm.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v4 04/53] perf mmap: Lazily initialize zstd streams
+Message-ID: <ZWZNpdAGL58ViyNZ@kernel.org>
+References: <20231102175735.2272696-1-irogers@google.com>
+ <20231102175735.2272696-5-irogers@google.com>
+ <ZWURZvDA2L4Mr3HR@kernel.org>
+ <ZWYf+Sy6JKd7CYlN@kernel.org>
+ <ZWYlgPwGmAEUKIsE@kernel.org>
+ <CAP-5=fVgVY8hhhhgW-aJic6Vez2CJmA8VLx+Az3kKJFB7fz1Pg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZWXiYCs45Ryb6UMf@finisterre.sirena.org.uk>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fVgVY8hhhhgW-aJic6Vez2CJmA8VLx+Az3kKJFB7fz1Pg@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 12:51:44PM +0000, Mark Brown wrote:
->On Mon, Nov 27, 2023 at 05:41:16PM +0000, Edgecombe, Rick P wrote:
->> On Wed, 2023-11-22 at 16:19 -0800, Deepak Gupta wrote:
->
->> Thanks. As we look at adding some final glibc support, I've wondered if
->> there might be enough topics to warrant an occasional meeting to
->> discuss stuff like this. I'd also like to discuss the shadow stack life
->> cycle issues (uncontext, etc), alt shadow stacks and all of the
->> compatibility last mile problems. Towards the goal of avoiding
->> unnecessary divergence on app developer expectations.
->
->It'd definitely be good to ensure we're coordinating well, I'd be
->willing to give it a go.
+Em Tue, Nov 28, 2023 at 09:55:22AM -0800, Ian Rogers escreveu:
+> On Tue, Nov 28, 2023 at 9:38 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > Em Tue, Nov 28, 2023 at 02:14:33PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > > Trying to fix this now:
+> > >
+> > >   6    20.59 alpine:3.18                   : FAIL gcc version 12.2.1 20220924 (Alpine 12.2.1_git20220924-r10)
+> > >     In file included from util/zstd.c:5:
+> > >     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:1: error: unknown type name 'ssize_t'; did you mean 'size_t'?
 
-Same here.
+> > So the problem was really the one above, that got fixed with the patch
+> > below, that is what 'man size_t' documents on my fedora:38 system.
+ 
+> Thanks, perhaps this is something clang-tidy, clang-format or similar
+> could help with in the future. There was event IWYU discussion at LPC:
+> https://lpc.events/event/17/contributions/1620/attachments/1228/2520/Linux%20Kernel%20Header%20Optimization.pdf
+
+Yeah, that is interesting, I took a quick look and it looks promising.
+
+I did this manually in various areas of the kernel and in tools/perf
+from time to time, to speed up the building process, etc.
+
+- Arnaldo
