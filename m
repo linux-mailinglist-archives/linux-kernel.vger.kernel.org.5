@@ -2,69 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB3047FBA37
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:37:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F03A67FBA53
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:41:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344474AbjK1MhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 07:37:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58074 "EHLO
+        id S234782AbjK1Mkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 07:40:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232357AbjK1MhN (ORCPT
+        with ESMTP id S1344683AbjK1Mku (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 07:37:13 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 895EFD51
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 04:37:19 -0800 (PST)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        Tue, 28 Nov 2023 07:40:50 -0500
+Received: from mail.subdimension.ro (unknown [IPv6:2a01:7e01:e001:1d1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CADDD51;
+        Tue, 28 Nov 2023 04:40:55 -0800 (PST)
+Received: from localhost.localdomain (unknown [188.24.94.216])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id A64ED66017A7;
-        Tue, 28 Nov 2023 12:37:16 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701175037;
-        bh=lUwoFImFc7lmJuNp+eDWdZh4k60TMdNkbVoZ37tKKEw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=HUrtoyW334hiwg7m6r5OfJ6YeexY97cVAVI65jSfGGtKi2cQGPChvF/mG/sPrzlPe
-         12pG3bmFU6VIeHioT6XVnB5p/960z2qXw2zHZLwtS5glXm0ocPUB+hh9gB8vJn0Weh
-         VclkMRGrHBkMIHngWijmK+LaxJuziOSEZy15w7FC6XOeLNMMIj9mx7wv4y/IEP+Qdq
-         xs0ClHlst7tTwSa//pqMy4kjbA27QQByAtVEMIM5ZcCN64cWlptpuUxbtZ59X57seX
-         xO2+ND2rg6Ok9FIIXw0k9khxJEg2s+xrd4x5a04kN3QR2c/4s4d8/o0OF8OK/86gzo
-         wGCqvXwihns4A==
-Date:   Tue, 28 Nov 2023 13:37:12 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-        David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v18 04/26] drm/shmem-helper: Refactor locked/unlocked
- functions
-Message-ID: <20231128133712.53a6f6cb@collabora.com>
-In-Reply-To: <kw5bho3jx73d3glvtewmjvqt4qty4khju6dcwypuh25ya3gi4b@7slmijjqdi4p>
-References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
-        <20231029230205.93277-5-dmitry.osipenko@collabora.com>
-        <wboljiwogeus7pwgaqzxaltt3xdavy2dzisygn6pdpoiwlnwgc@mwaiukjguzat>
-        <20231124115911.79ab24af@collabora.com>
-        <kw5bho3jx73d3glvtewmjvqt4qty4khju6dcwypuh25ya3gi4b@7slmijjqdi4p>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        (Client did not present a certificate)
+        by mail.subdimension.ro (Postfix) with ESMTPSA id 9429E28EE6F;
+        Tue, 28 Nov 2023 12:40:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
+        s=skycaves; t=1701175253;
+        bh=445nBh8jeISJn7/7ca4zeuuwAqc9EBuV/Atp2i/lZQo=;
+        h=From:To:Cc:Subject:Date;
+        b=Hv9JhTAVO0ZZm5bYNfeD673dplGPD9JonGSv0SIGFw+BXLOIy+LjbHAbasQgC/RCK
+         /U1AdQ2K+CAFoqV+ju5T9p+82Ditz8yyqmO/G+jDiasXFBjZGHTQukksOeOAAFE6bp
+         jWjyqR2oXV+JjsZ3ViEVlI50pdCiued3nm/BZmg0=
+From:   Petre Rodan <petre.rodan@subdimension.ro>
+To:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     Petre Rodan <petre.rodan@subdimension.ro>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: [PATCH v4 1/2] dt-bindings: iio: pressure: add honeywell,hsc030
+Date:   Tue, 28 Nov 2023 14:40:37 +0200
+Message-ID: <20231128124042.22744-1-petre.rodan@subdimension.ro>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,122 +54,170 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Nov 2023 12:14:42 +0100
-Maxime Ripard <mripard@kernel.org> wrote:
+Adds binding for digital Honeywell TruStability HSC and SSC series
+pressure and temperature sensors. 
+Communication is one way. The sensor only requires 4 bytes worth of
+clock pulses on both i2c and spi in order to push the data out.
+The i2c address is hardcoded and depends on the part number.
+There is no additional GPIO control.
 
-> Hi,
-> 
-> On Fri, Nov 24, 2023 at 11:59:11AM +0100, Boris Brezillon wrote:
-> > On Fri, 24 Nov 2023 11:40:06 +0100
-> > Maxime Ripard <mripard@kernel.org> wrote:
-> >   
-> > > On Mon, Oct 30, 2023 at 02:01:43AM +0300, Dmitry Osipenko wrote:  
-> > > > Add locked and remove unlocked postfixes from drm-shmem function names,
-> > > > making names consistent with the drm/gem core code.
-> > > > 
-> > > > Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-> > > > Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
-> > > > Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>    
-> > > 
-> > > This contradicts my earlier ack on a patch but...
-> > >   
-> > > > ---
-> > > >  drivers/gpu/drm/drm_gem_shmem_helper.c        | 64 +++++++++----------
-> > > >  drivers/gpu/drm/lima/lima_gem.c               |  8 +--
-> > > >  drivers/gpu/drm/panfrost/panfrost_drv.c       |  2 +-
-> > > >  drivers/gpu/drm/panfrost/panfrost_gem.c       |  6 +-
-> > > >  .../gpu/drm/panfrost/panfrost_gem_shrinker.c  |  2 +-
-> > > >  drivers/gpu/drm/panfrost/panfrost_mmu.c       |  2 +-
-> > > >  drivers/gpu/drm/v3d/v3d_bo.c                  |  4 +-
-> > > >  drivers/gpu/drm/virtio/virtgpu_object.c       |  4 +-
-> > > >  include/drm/drm_gem_shmem_helper.h            | 36 +++++------
-> > > >  9 files changed, 64 insertions(+), 64 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> > > > index 0d61f2b3e213..154585ddae08 100644
-> > > > --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-> > > > +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> > > > @@ -43,8 +43,8 @@ static const struct drm_gem_object_funcs drm_gem_shmem_funcs = {
-> > > >  	.pin = drm_gem_shmem_object_pin,
-> > > >  	.unpin = drm_gem_shmem_object_unpin,
-> > > >  	.get_sg_table = drm_gem_shmem_object_get_sg_table,
-> > > > -	.vmap = drm_gem_shmem_object_vmap,
-> > > > -	.vunmap = drm_gem_shmem_object_vunmap,
-> > > > +	.vmap = drm_gem_shmem_object_vmap_locked,
-> > > > +	.vunmap = drm_gem_shmem_object_vunmap_locked,    
-> > > 
-> > > While I think we should indeed be consistent with the names, I would
-> > > also expect helpers to get the locking right by default.  
-> > 
-> > Wait, actually I think this patch does what you suggest already. The
-> > _locked() prefix tells the caller: "you should take care of the locking,
-> > I expect the lock to be held when this is hook/function is called". So
-> > helpers without the _locked() prefix take care of the locking (which I
-> > guess matches your 'helpers get the locking right' expectation), and
-> > those with the _locked() prefix don't.  
-> 
-> What I meant by "getting the locking right" is indeed a bit ambiguous,
-> sorry. What I'm trying to say I guess is that, in this particular case,
-> I don't think you can expect the vmap implementation to be called with
-> or without the locks held. The doc for that function will say that it's
-> either one or the other, but not both.
-> 
-> So helpers should follow what is needed to provide a default vmap/vunmap
-> implementation, including what locking is expected from a vmap/vunmap
-> implementation.
+Datasheet:
+https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf [HSC]
+Datasheet:
+https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-ssc-series/documents/sps-siot-trustability-ssc-series-standard-accuracy-board-mount-pressure-sensors-50099533-a-en-ciid-151134.pdf [SSC]
+Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
+---
+V2: - fix yaml struct
+    - cleanup based on Krzysztof's review
+V3: - rename range_str -> honeywell,pressure-triplet to define the string
+       containing the pressure range, measurement unit and type
+    - honeywell,pmax-pascal becomes uint32
+V4: - added enum to honeywell,transfer-function
+---
+ .../iio/pressure/honeywell,hsc030pa.yaml      | 134 ++++++++++++++++++
+ 1 file changed, 134 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
 
-Hm, yeah, I think that's a matter of taste. When locking is often
-deferrable, like it is in DRM, I find it beneficial for funcions and
-function pointers to reflect the locking scheme, rather than relying on
-people properly reading the doc, especially when this is the only
-outlier in the group of drm_gem_object_funcs we already have, and it's
-not event documented at the drm_gem_object_funcs level [1] :P.
+diff --git a/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+new file mode 100644
+index 000000000000..418fb1d2eefd
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+@@ -0,0 +1,134 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/pressure/honeywell,hsc030pa.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Honeywell TruStability HSC and SSC pressure sensor series
++
++description: |
++  support for Honeywell TruStability HSC and SSC digital pressure sensor
++  series.
++
++  These sensors have either an I2C, an SPI or an analog interface. Only the
++  digital versions are supported by this driver.
++
++  There are 118 models with different pressure ranges available in each family.
++  The vendor calls them "HSC series" and "SSC series". All of them have an
++  identical programming model but differ in pressure range, unit and transfer
++  function.
++
++  To support different models one needs to specify the pressure range as well
++  as the transfer function. Pressure range can either be provided via
++  pressure-triplet (directly extracted from the part number) or in case it's
++  a custom chip via numerical range limits converted to pascals.
++
++  The transfer function defines the ranges of raw conversion values delivered
++  by the sensor. pmin-pascal and pmax-pascal corespond to the minimum and
++  maximum pressure that can be measured.
++
++  Please note that in case of an SPI-based sensor, the clock signal should not
++  exceed 800kHz and the MOSI signal is not required.
++
++  Specifications about the devices can be found at:
++  https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf
++  https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-ssc-series/documents/sps-siot-trustability-ssc-series-standard-accuracy-board-mount-pressure-sensors-50099533-a-en-ciid-151134.pdf
++
++maintainers:
++  - Petre Rodan <petre.rodan@subdimension.ro>
++
++properties:
++  compatible:
++    const: honeywell,hsc030pa
++
++  reg:
++    maxItems: 1
++
++  honeywell,transfer-function:
++    description: |
++      Transfer function which defines the range of valid values delivered by
++      the sensor.
++      0 - A, 10% to 90% of 2^14
++      1 - B, 5% to 95% of 2^14
++      2 - C, 5% to 85% of 2^14
++      3 - F, 4% to 94% of 2^14
++    enum: [0, 1, 2, 3]
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++  honeywell,pressure-triplet:
++    description: |
++      Case-sensitive five character string that defines pressure range, unit
++      and type as part of the device nomenclature. In the unlikely case of a
++      custom chip, set to "NA" and provide pmin-pascal and pmax-pascal.
++    enum: [001BA, 1.6BA, 2.5BA, 004BA, 006BA, 010BA, 1.6MD, 2.5MD, 004MD,
++           006MD, 010MD, 016MD, 025MD, 040MD, 060MD, 100MD, 160MD, 250MD,
++           400MD, 600MD, 001BD, 1.6BD, 2.5BD, 004BD, 2.5MG, 004MG, 006MG,
++           010MG, 016MG, 025MG, 040MG, 060MG, 100MG, 160MG, 250MG, 400MG,
++           600MG, 001BG, 1.6BG, 2.5BG, 004BG, 006BG, 010BG, 100KA, 160KA,
++           250KA, 400KA, 600KA, 001GA, 160LD, 250LD, 400LD, 600LD, 001KD,
++           1.6KD, 2.5KD, 004KD, 006KD, 010KD, 016KD, 025KD, 040KD, 060KD,
++           100KD, 160KD, 250KD, 400KD, 250LG, 400LG, 600LG, 001KG, 1.6KG,
++           2.5KG, 004KG, 006KG, 010KG, 016KG, 025KG, 040KG, 060KG, 100KG,
++           160KG, 250KG, 400KG, 600KG, 001GG, 015PA, 030PA, 060PA, 100PA,
++           150PA, 0.5ND, 001ND, 002ND, 004ND, 005ND, 010ND, 020ND, 030ND,
++           001PD, 005PD, 015PD, 030PD, 060PD, 001NG, 002NG, 004NG, 005NG,
++           010NG, 020NG, 030NG, 001PG, 005PG, 015PG, 030PG, 060PG, 100PG,
++           150PG, NA]
++    $ref: /schemas/types.yaml#/definitions/string
++
++  honeywell,pmin-pascal:
++    description: |
++      Minimum pressure value the sensor can measure in pascal.
++      To be specified only if honeywell,pressure-triplet is set to "NA".
++    $ref: /schemas/types.yaml#/definitions/int32
++
++  honeywell,pmax-pascal:
++    description: |
++      Maximum pressure value the sensor can measure in pascal.
++      To be specified only if honeywell,pressure-triplet is set to "NA".
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++  vdd-supply:
++    description:
++      Provide VDD power to the sensor (either 3.3V or 5V depending on the chip)
++
++  spi-max-frequency:
++    maximum: 800000
++
++required:
++  - compatible
++  - reg
++  - honeywell,transfer-function
++  - honeywell,pressure-triplet
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        pressure@28 {
++            compatible = "honeywell,hsc030pa";
++            reg = <0x28>;
++            honeywell,transfer-function = <0>;
++            honeywell,pressure-triplet = "030PA";
++        };
++    };
++  - |
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        pressure@0 {
++            compatible = "honeywell,hsc030pa";
++            reg = <0>;
++            spi-max-frequency = <800000>;
++            honeywell,transfer-function = <0>;
++            honeywell,pressure-triplet = "NA";
++            honeywell,pmin-pascal = <0>;
++            honeywell,pmax-pascal = <200000>;
++        };
++    };
++...
+-- 
+2.41.0
 
-> 
-> If that means that vmap is always called with the locks taken, then
-> drm_gem_shmem_object_vmap can just assume that it will be called with
-> the locks taken and there's no need to mention it in the name (and you
-> can probably sprinkle a couple of lockdep assertion to make sure the
-> locking is indeed consistent).
-
-Things get very confusing when you end up having drm_gem_shmem helpers
-that are suffixed with _locked() to encode the fact locking is the
-caller's responsibility and no suffix for the
-callee-takes-care-of-the-locking semantics, while other helpers that are
-not suffixed at all actually implement the
-caller-should-take-care-of-the-locking semantics.
-
-> 
-> > > I'm not sure how reasonable it is, but I think I'd prefer to turn this
-> > > around and keep the drm_gem_shmem_object_vmap/unmap helpers name, and
-> > > convert whatever function needs to be converted to the unlock suffix so
-> > > we get a consistent naming.  
-> > 
-> > That would be an _unlocked() prefix if we do it the other way around. I
-> > think the main confusion comes from the names of the hooks in
-> > drm_gem_shmem_funcs. Some of them, like drm_gem_shmem_funcs::v[un]map()
-> > are called with the GEM resv lock held, and locking is handled by the
-> > core, others, like drm_gem_shmem_funcs::[un]pin() are called
-> > without the GEM resv lock held, and locking is deferred to the
-> > implementation. As I said, I don't mind prefixing hooks/helpers with
-> > _unlocked() for those that take care of the locking, and no prefix for
-> > those that expects locks to be held, as long as it's consistent, but I
-> > just wanted to make sure we're on the same page :-).  
-> 
-> What about _nolock then? It's the same number of characters than
-> _locked, plus it expresses what the function is (not) doing, not what
-> context it's supposed to be called in?
-
-Just did a quick
-
-  git grep _nolock drivers/gpu/drm
-
-and it returns zero result, where the _locked/_unlocked pattern seems
-to already be widely used. Not saying we shouldn't change that, but it
-doesn't feel like a change we should do as part of this series.
-
-Regards,
-
-Boris
-
-[1]https://elixir.bootlin.com/linux/v6.7-rc3/source/include/drm/drm_gem.h#L155
