@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B1617FC83F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:52:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADD57FC8C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:53:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346635AbjK1VIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 16:08:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59824 "EHLO
+        id S1376414AbjK1VIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 16:08:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346654AbjK1VIG (ORCPT
+        with ESMTP id S1346650AbjK1VII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 16:08:06 -0500
+        Tue, 28 Nov 2023 16:08:08 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63F451BC0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:07:16 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA200C433CB;
-        Tue, 28 Nov 2023 21:07:14 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B04C02D67
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:07:17 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44E4CC433C9;
+        Tue, 28 Nov 2023 21:07:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701205635;
-        bh=P2uQ5/4CmM9CK+imh/1k1oIXYXrTVS9ToOqdCaQdvL0=;
+        s=k20201202; t=1701205637;
+        bh=ob+HZVAARe+Rhv/4hXZU6NwzWHjA4yQyjh2YxsKF1kA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sm8v9YS9PDTmIbAlp6TXINicYiBKVn9YQBz+bDkpYs8OBvVl4tpi4HdK5kKRRF44U
-         PAOyJ1oAv6gYP/sovQUelVIzluY8mtSrAB8iwCIYn9fqQt/9/YUV5KaNav6YkygvTW
-         YE3ETncJIuQtHtpt0oF/dSFqH1LEFU7zItt+YEZY6DvnCYPXVXE6k3g+M15pzVnEGC
-         XOtkoCGq3WqKUxGg23HSIB11kCKVjE9Qx/xGrUtQZ/uTWq82gAN1QMwqUFGVBzw3vH
-         oSqIpJGrmkrD2oNuSz+yE3FBAvm8VpbyTlXKcw7L9tgvrvQ9jKDnQYjkz8jJFXRn9A
-         VqWWDo9NcQyFQ==
+        b=tgy07eK5Al6xocrq85J7/hISaJm5A3JQ7Qxeqeo7JHMyce2zi/ExJNSmAx84vWbao
+         Ocg2OXC9tLXGVU1+cNTugR/9Wn+hQzET+ftZFRFD71fR+IkBxVdE/+dlC2y4rrb2dY
+         EZjm00AEXjgM+dCdqUwwpjhrGpAwCqyJzisQkb/eUhTbp2n1wsEPT5tAeOoxeczvuQ
+         hHT+979Pp8/TpyD/CfQgBtX5XtZalxAYRBaDg2i+3OZPgkEZVLfQeiifIq7k0WgIv3
+         S8wZCl1m/GK5ynVLTzosdteC//w4ns6xOyTkZy0ta61y3MMi/ALcbD/+2DexPTpR/F
+         qqiZAF1B1xgOg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hamish Martin <hamish.martin@alliedtelesis.co.nz>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>,
-        gupt21@gmail.com, jikos@kernel.org, benjamin.tissoires@redhat.com,
-        linux-i2c@vger.kernel.org, linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 25/40] HID: mcp2221: Allow IO to start during probe
-Date:   Tue, 28 Nov 2023 16:05:31 -0500
-Message-ID: <20231128210615.875085-25-sashal@kernel.org>
+Cc:     Yihong Cao <caoyihong4@outlook.com>, Jiri Kosina <jkosina@suse.cz>,
+        Sasha Levin <sashal@kernel.org>, jikos@kernel.org,
+        benjamin.tissoires@redhat.com, linux-input@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 26/40] HID: apple: add Jamesdonkey and A3R to non-apple keyboards list
+Date:   Tue, 28 Nov 2023 16:05:32 -0500
+Message-ID: <20231128210615.875085-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231128210615.875085-1-sashal@kernel.org>
 References: <20231128210615.875085-1-sashal@kernel.org>
@@ -54,44 +53,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
+From: Yihong Cao <caoyihong4@outlook.com>
 
-[ Upstream commit 73ce9f1f2741a38f5d27393e627702ae2c46e6f2 ]
+[ Upstream commit 113f736655e4f20633e107d731dd5bd097d5938c ]
 
-During the probe we add an I2C adapter and as soon as we add that adapter
-it may be used for a transfer (e.g via the code in i2cdetect()).
-Those transfers are not able to complete and time out. This is because the
-HID raw_event callback (mcp2221_raw_event) will not be invoked until the
-HID device's 'driver_input_lock' is marked up at the completion of the
-probe in hid_device_probe(). This starves the driver of the responses it
-is waiting for.
-In order to allow the I2C transfers to complete while we are still in the
-probe, start the IO once we have completed init of the HID device.
+Jamesdonkey A3R keyboard is identified as "Jamesdonkey A3R" in wired
+mode, "A3R-U" in wireless mode and "A3R" in bluetooth mode. Adding them
+to non-apple keyboards fixes function key.
 
-This issue seems to have been seen before and a patch was submitted but
-it seems it was never accepted. See:
-https://lore.kernel.org/all/20221103222714.21566-3-Enrik.Berkhan@inka.de/
-
-Signed-off-by: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
+Signed-off-by: Yihong Cao <caoyihong4@outlook.com>
 Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-mcp2221.c | 2 ++
+ drivers/hid/hid-apple.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/hid/hid-mcp2221.c b/drivers/hid/hid-mcp2221.c
-index b95f31cf0fa21..aef0785c91cc2 100644
---- a/drivers/hid/hid-mcp2221.c
-+++ b/drivers/hid/hid-mcp2221.c
-@@ -1142,6 +1142,8 @@ static int mcp2221_probe(struct hid_device *hdev,
- 	if (ret)
- 		return ret;
+diff --git a/drivers/hid/hid-apple.c b/drivers/hid/hid-apple.c
+index 3ca45975c686e..d9e9829b22001 100644
+--- a/drivers/hid/hid-apple.c
++++ b/drivers/hid/hid-apple.c
+@@ -345,6 +345,8 @@ static const struct apple_non_apple_keyboard non_apple_keyboards[] = {
+ 	{ "AONE" },
+ 	{ "GANSS" },
+ 	{ "Hailuck" },
++	{ "Jamesdonkey" },
++	{ "A3R" },
+ };
  
-+	hid_device_io_start(hdev);
-+
- 	/* Set I2C bus clock diviser */
- 	if (i2c_clk_freq > 400)
- 		i2c_clk_freq = 400;
+ static bool apple_is_non_apple_keyboard(struct hid_device *hdev)
 -- 
 2.42.0
 
