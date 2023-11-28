@@ -2,121 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F8847FB2A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:24:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B39777FB2A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:24:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343853AbjK1HYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 02:24:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47444 "EHLO
+        id S1343855AbjK1HYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 02:24:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343847AbjK1HYa (ORCPT
+        with ESMTP id S1343835AbjK1HY0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 02:24:30 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4242DD45
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:24:35 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5ca2a6f07b6so74589377b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:24:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701156274; x=1701761074; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hL9Tqag7AJX6zAdbbkbaDwLX0iVjHOEY+HYssYNlBSs=;
-        b=R3O79Cw8aWGA1Ko2Wlpc7FUaut6rEhvk3H35RBLLYZqFbPxBL3pU8Q0gTRsoUhnH8Z
-         odE5pA+ErI5frmKIGo2WNviooWT9caTN/vNtcclMttrIS3k9rn+WiTqcwH5xODKd3Z6a
-         c8DlSj+6t7PR7zsE9yZWnCCswQT5QqzcnAbQd2dwIu5r/3z9YPCs2LdZVumjKq5xedDz
-         4NXI2jz71GhRJBN5Wl2j3Ggo/sQcBqmipjCNQFWMnCh1dRumkxhXMwY2u14EA8/GkXah
-         nuDbZB1+MAbNUpxf6TEC2lVi2BqAF9I/RdQDxC4/NlEcYJpcDBXDcYa+zlkvHFVzmVE2
-         /mog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701156274; x=1701761074;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hL9Tqag7AJX6zAdbbkbaDwLX0iVjHOEY+HYssYNlBSs=;
-        b=pcqYTVKQKgPgWS/yeqzS2Y7fNGZjVEAy8h3HV2FYbBzatCU40Mirpi1uhYkOqMpgPq
-         2thOuQMr3v7cZuiJkmp3+jRDeoP5NCUaRiy6PJZdChAu94RyWUA+O5JAG0S/v58UQxzJ
-         MeRJMKV/A0VPqPNfilbnoypYUgrNFKfNzQ7mhYYHdZlr3IE3ROg1TCp9hY3sFDRoMarv
-         GvH5r3PJzsjZ9xjEfbsesBR1exZnwsozokaLGQe5SIb+bCo59f2nBjp+/piIl0m1bNzc
-         vuo6nezFaIonFEcURnnV0Ramqim+zSbeX06yg92oO92pmFauRG7CdK+nBf8TiMs1Xfmi
-         sKjA==
-X-Gm-Message-State: AOJu0YyYO1UulRoB6nGYmFFNC2OFVEMNjWk/nZad45lLWFbP3hrp9QFE
-        yug4s0IUaJBF5ywRKJHD2d6dcadVJqzX5Q==
-X-Google-Smtp-Source: AGHT+IGoRIHKr3JyrbM3tkKrf0PmKkWlRFIRiSnxD6FAHnrPxKsZM4C/FRkjkDW0SuhziYxtsE89EeXxGNnLEA==
-X-Received: from slicestar.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:20a1])
- (user=davidgow job=sendgmr) by 2002:a25:3741:0:b0:db5:2a4:aef1 with SMTP id
- e62-20020a253741000000b00db502a4aef1mr30191yba.13.1701156274525; Mon, 27 Nov
- 2023 23:24:34 -0800 (PST)
-Date:   Tue, 28 Nov 2023 15:24:07 +0800
-In-Reply-To: <20231128072410.952662-1-davidgow@google.com>
-Mime-Version: 1.0
-References: <20231128072410.952662-1-davidgow@google.com>
-X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-Message-ID: <20231128072410.952662-3-davidgow@google.com>
-Subject: [PATCH v2 3/3] drm/vc4: tests: Use KUNIT_DEFINE_ACTION_WRAPPER
-From:   David Gow <davidgow@google.com>
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        Rae Moar <rmoar@google.com>, dlatypov@google.com
-Cc:     David Gow <davidgow@google.com>,
-        Benjamin Berg <benjamin.berg@intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        llvm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Tue, 28 Nov 2023 02:24:26 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F7A182
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:24:33 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10D15C433C8;
+        Tue, 28 Nov 2023 07:24:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701156273;
+        bh=wHLpDRtlsJs4HepAIlsqx4TqaV8tZMOkNBJ09guFv/o=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=sto11whmosIJgJVF6UpSCqU4GgxplcN17T6I2Ft75kYbSXXtcT4NIBqYeG/k9dh7l
+         0wJo5AePlq8xtkKemVs8rjk/QRgAWOrjgOC23mk/ptrJy5cxa/99YoPJ5tTB3n/sen
+         WFRcPMedsenOOAYtlRhul94JxbjLCSrqVlBjNo6c8K4uHSY7JtrMuUct/gJlNVP676
+         LcIvA5Sdh01VCtjrIEhqnX8bK40MSI3nwLlxJ3jcgPw4C9K1Gz2JK1PVElXuEV/bF1
+         ck6rCI4ZWmWbUAhN01r6kgRypuZ2uRqG+j8oq1Uc9NjXCe3Y7W9iq5tg91I9e7pxxH
+         vpTaVkee3uqXQ==
+Message-ID: <dae38777-0ac3-4881-a566-a0a8fce5e6ed@kernel.org>
+Date:   Tue, 28 Nov 2023 08:24:27 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: dtbs_check:
+ Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml:
+ properties:honeywell,pmin-pascal: '$ref' should not be valid under {'const':
+ '$ref'}
+Content-Language: en-US
+To:     kernel test robot <lkp@intel.com>,
+        Andreas Klinger <ak@it-klinger.de>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-doc@vger.kernel.org
+References: <202311280502.L6YVZhv5-lkp@intel.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <202311280502.L6YVZhv5-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to pass functions to kunit_add_action(), they need to be of the
-kunit_action_t type. While casting the function pointer can work, it
-will break control-flow integrity.
+On 28/11/2023 01:19, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   2cc14f52aeb78ce3f29677c2de1f06c0e91471ab
+> commit: a765c985e69671054f397046b1d94d8c6e34149e dt-bindings: iio: pressure: Support Honeywell mprls0025pa sensor
+> date:   6 months ago
+> compiler: loongarch64-linux-gcc (GCC) 13.2.0
+> reproduce: (https://download.01.org/0day-ci/archive/20231128/202311280502.L6YVZhv5-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202311280502.L6YVZhv5-lkp@intel.com/
+> 
 
-vc4_mock already defines such a wrapper for drm_dev_unregister(), but it
-involves less boilerplate to use the new macro, so replace the manual
-implementation.
+Entire report looks like result of running newer dtschema on old commit.
+That's not good approach, because we add new checks to dtschema, so such
+failures are expected (for 6 month old commit!). LKP should probably not
+test old commits with dtschema.
 
-Signed-off-by: David Gow <davidgow@google.com>
----
-
-No changes since v1:
-https://lore.kernel.org/linux-kselftest/20231110200830.1832556-3-davidgow@google.com/
-
----
- drivers/gpu/drm/vc4/tests/vc4_mock.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/gpu/drm/vc4/tests/vc4_mock.c b/drivers/gpu/drm/vc4/tests/vc4_mock.c
-index 63ca46f4cb35..becb3dbaa548 100644
---- a/drivers/gpu/drm/vc4/tests/vc4_mock.c
-+++ b/drivers/gpu/drm/vc4/tests/vc4_mock.c
-@@ -153,12 +153,9 @@ static int __build_mock(struct kunit *test, struct drm_device *drm,
- 	return 0;
- }
- 
--static void kunit_action_drm_dev_unregister(void *ptr)
--{
--	struct drm_device *drm = ptr;
--
--	drm_dev_unregister(drm);
--}
-+KUNIT_DEFINE_ACTION_WRAPPER(kunit_action_drm_dev_unregister,
-+			    drm_dev_unregister,
-+			    struct drm_device *);
- 
- static struct vc4_dev *__mock_device(struct kunit *test, bool is_vc5)
- {
--- 
-2.43.0.rc1.413.gea7ed67945-goog
+Best regards,
+Krzysztof
 
