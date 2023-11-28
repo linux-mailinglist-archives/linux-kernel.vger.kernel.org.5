@@ -2,271 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED1A7FAF2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 01:40:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5FDF7FAF2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 01:40:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233895AbjK1Ake (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 19:40:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52888 "EHLO
+        id S234229AbjK1Akr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 19:40:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbjK1Akc (ORCPT
+        with ESMTP id S229637AbjK1Akp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 19:40:32 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91EAB1B1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 16:40:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 247C8C433C7;
-        Tue, 28 Nov 2023 00:40:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701132038;
-        bh=MdyQiFcxFvhv7Vq9MsjoGjqD7+bkRxAbVVAo+rygz+A=;
-        h=From:Date:Subject:To:Cc:Reply-To:From;
-        b=NJA7OdakXn+Ewaeesnc4Yjc8o+PLJx31jYK5HvbN49p0UFywSlot9oUxbaK3hkvFR
-         aL1aXmn0cyFbomhiTFl/NwMUYodlZPRiBaZvhFzr6ofvJCiFgtvo8iNmSdImYybiDk
-         kfAyIgSDdNWxrYHnFs3csM/MLJBI01l696lTFY/xJJVYS99GW7dEQNOppamG+StMlY
-         gHAcgg0ZEM7I46nlPyPx9NhO1WJ8gI13jjhLOIaWl4OiLnhWWQnjaumIwLVaPrE+tY
-         oOJh1mMYOrGreev/+TAxlVMbZ5w7U36O5uHywh0jGezHBmidVO1yrRC8pAjX6Zx8T1
-         YNhB38PNRdp9Q==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id 022D0C4167B;
-        Tue, 28 Nov 2023 00:40:38 +0000 (UTC)
-From:   Nathan Lynch via B4 Relay 
-        <devnull+nathanl.linux.ibm.com@kernel.org>
-Date:   Mon, 27 Nov 2023 18:40:09 -0600
-Subject: [PATCH] powerpc/rtas_pci: rename and properly expose config access
- APIs
+        Mon, 27 Nov 2023 19:40:45 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5842FD45;
+        Mon, 27 Nov 2023 16:40:51 -0800 (PST)
+Received: from [100.116.17.117] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: cristicc)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id EBEE06602F33;
+        Tue, 28 Nov 2023 00:40:46 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701132049;
+        bh=h7YSTfO06hlkQSwOKq0bWn+ONs0St86lF+pU8MQKvuI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=VmzBZg6CWKaixb4KhvHQgi7BX64H30ILpSwJn84YmYWZ/X9EQUVAtEmmGPbQpqjCJ
+         HlT7k94u4qqZtBcttWVg+gCoMWQfTU58LRK9PgNINlDI92FYyfON2ZP2c7zMhbFGUq
+         VtsKwOMjNIUtJW6ZTM6LsA6pmm6EnetWS5jxDZ6wPURQsBAzHiCw+prW9MpZHFbbgx
+         D2IA6oWvtQXonHcb96Ec7wfwr49e/9EQCZ1huEjNJI0s2tbgruvzMtdY8cO8/g5kRd
+         IUJOvu14Vz0cBTusg/X8G9ZIeIgdyGUPNFETVGWOlhz5XnDIp9Z88xnPCahH5UHD8F
+         DW51oTFSIXKvQ==
+Message-ID: <2f06ce36-0dc1-495e-b6a6-318951a53e8d@collabora.com>
+Date:   Tue, 28 Nov 2023 02:40:43 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 12/12] [UNTESTED] riscv: dts: starfive:
+ beaglev-starlight: Enable gmac
+To:     Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Samin Guo <samin.guo@starfivetech.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
+References: <20231029042712.520010-1-cristian.ciocaltea@collabora.com>
+ <20231029042712.520010-13-cristian.ciocaltea@collabora.com>
+ <CAJM55Z9e=vjGKNnmURN15mvXo2bVd3igBA-3puF9q7eh5hiP+A@mail.gmail.com>
+Content-Language: en-US
+From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+In-Reply-To: <CAJM55Z9e=vjGKNnmURN15mvXo2bVd3igBA-3puF9q7eh5hiP+A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231127-rtas-pci-rw-config-v1-1-385d29ace3df@linux.ibm.com>
-X-B4-Tracking: v=1; b=H4sIAOk2ZWUC/x3MMQqAMAxA0atIZgNtRAWvIg6lppqllVRUKN7d4
- viG/wtkVuEMU1NA+ZIsKVbYtgG/u7gxyloNZKizlkbU02U8vKDe6FMMsiEZ1w/WBFq7Hmp4KAd
- 5/um8vO8Hvq+MEGQAAAA=
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>
-Cc:     lkft-triage@lists.linaro.org, Benjamin Gray <bgray@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        clang-built-linux <llvm@lists.linux.dev>,
-        regressions@lists.linux.dev,
-        Linux Kernel Functional Testing <lkft@linaro.org>,
-        Nathan Lynch <nathanl@linux.ibm.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1701132037; l=7740;
- i=nathanl@linux.ibm.com; s=20230817; h=from:subject:message-id;
- bh=jedyw4vu/T4uAMv9jtKkjATg+3BmdKuMIcKlpdHEM+E=;
- b=z9fpMpvCrtxWqHhOrHpwe2l+zQKGqgpGR+iOa/99ZkVdBd411YMCgseolqFW5xzSQIscfzo9M
- BCg5/0hmGOTDxE4jTzvqHC1Kj/iqOCcVRhFNLd0PHr7StGVwpdMk31l
-X-Developer-Key: i=nathanl@linux.ibm.com; a=ed25519;
- pk=jPDF44RvT+9DGFOH3NGoIu1xN9dF+82pjdpnKjXfoJ0=
-X-Endpoint-Received: by B4 Relay for nathanl@linux.ibm.com/20230817 with auth_id=78
-X-Original-From: Nathan Lynch <nathanl@linux.ibm.com>
-Reply-To: <nathanl@linux.ibm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Lynch <nathanl@linux.ibm.com>
+On 11/26/23 23:10, Emil Renner Berthing wrote:
+> Cristian Ciocaltea wrote:
+>> The BeagleV Starlight SBC uses a Microchip KSZ9031RNXCA PHY supporting
+>> RGMII-ID.
+>>
+>> TODO: Verify if manual adjustment of the RX internal delay is needed. If
+>> yes, add the mdio & phy sub-nodes.
+> 
+> Sorry for being late here. I've tested that removing the mdio and phy nodes on
+> the the Starlight board works fine, but the rx-internal-delay-ps = <900>
+> property not needed on any of my VisionFive V1 boards either. 
 
-The rtas_read_config() and rtas_write_config() functions in
-kernel/rtas_pci.c have external linkage and two users in arch/powerpc:
-the rtas_pci code itself and the pseries platform's "enhanced error
-handling" (EEH) support code.
+No problem, thanks a lot for taking the time to help with the testing!
 
-The prototypes for these functions in asm/ppc-pci.h have until now
-been guarded by CONFIG_EEH since the only external caller is the
-pseries EEH code. However, this presumably has always generated
-warnings when built with !CONFIG_EEH and -Wmissing-prototypes:
+> So I wonder why you need that on your board
 
-  arch/powerpc/kernel/rtas_pci.c:46:5: error: no previous prototype for
-  function 'rtas_read_config' [-Werror,-Wmissing-prototypes]
-     46 | int rtas_read_config(struct pci_dn *pdn, int where,
-                               int size, u32 *val)
+I noticed you have a patch 70ca054e82b5 ("net: phy: motorcomm: Disable
+rgmii rx delay") in your tree, hence I you please confirm the tests were
+done with that commit reverted?
 
-  arch/powerpc/kernel/rtas_pci.c:98:5: error: no previous prototype for
-  function 'rtas_write_config' [-Werror,-Wmissing-prototypes]
-     98 | int rtas_write_config(struct pci_dn *pdn, int where,
-                                int size, u32 val)
+> Also in the driver patch you add support for phy-mode = "rgmii-txid", but here
+> you still set it to "rgmii-id", so which is it?
 
-The introduction of commit c6345dfa6e3e ("Makefile.extrawarn: turn on
-missing-prototypes globally") forces the issue.
+Please try with "rgmii-id" first. I added "rgmii-txid" to have a
+fallback solution in case the former cannot be used.
 
-The efika and chrp platform code have (static) functions with the same
-names but different signatures. We may as well eliminate the potential
-for conflicts and confusion by renaming the globally visible versions
-as their prototypes get moved out of the CONFIG_EEH-guarded region;
-their current names are too generic anyway. Since they operate on
-objects of the type 'struct pci_dn *', give them the slightly more
-verbose prefix "rtas_pci_dn_" and fix up all the call sites.
+> You've alse removed the phy reset gpio on the Starlight board:
+> 
+>   snps,reset-gpios = <&gpio 63 GPIO_ACTIVE_LOW>
+> 
+> Why?
 
-Fixes: c6345dfa6e3e ("Makefile.extrawarn: turn on missing-prototypes globally")
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-Closes: https://lore.kernel.org/linuxppc-dev/CA+G9fYt0LLXtjSz+Hkf3Fhm-kf0ZQanrhUS+zVZGa3O+Wt2+vg@mail.gmail.com/
-Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
----
- arch/powerpc/include/asm/ppc-pci.h           |  5 +++--
- arch/powerpc/kernel/rtas_pci.c               |  8 ++++----
- arch/powerpc/platforms/pseries/eeh_pseries.c | 18 +++++++++---------
- 3 files changed, 16 insertions(+), 15 deletions(-)
+I missed this in v1 as the gmac handling was done exclusively in
+jh7100-common. Thanks for noticing!
 
-diff --git a/arch/powerpc/include/asm/ppc-pci.h b/arch/powerpc/include/asm/ppc-pci.h
-index d9fcff575027..ce2b1b5eebdd 100644
---- a/arch/powerpc/include/asm/ppc-pci.h
-+++ b/arch/powerpc/include/asm/ppc-pci.h
-@@ -35,6 +35,9 @@ extern void init_pci_config_tokens (void);
- extern unsigned long get_phb_buid (struct device_node *);
- extern int rtas_setup_phb(struct pci_controller *phb);
- 
-+int rtas_pci_dn_read_config(struct pci_dn *pdn, int where, int size, u32 *val);
-+int rtas_pci_dn_write_config(struct pci_dn *pdn, int where, int size, u32 val);
-+
- #ifdef CONFIG_EEH
- 
- void eeh_addr_cache_insert_dev(struct pci_dev *dev);
-@@ -44,8 +47,6 @@ void eeh_slot_error_detail(struct eeh_pe *pe, int severity);
- int eeh_pci_enable(struct eeh_pe *pe, int function);
- int eeh_pe_reset_full(struct eeh_pe *pe, bool include_passed);
- void eeh_save_bars(struct eeh_dev *edev);
--int rtas_write_config(struct pci_dn *, int where, int size, u32 val);
--int rtas_read_config(struct pci_dn *, int where, int size, u32 *val);
- void eeh_pe_state_mark(struct eeh_pe *pe, int state);
- void eeh_pe_mark_isolated(struct eeh_pe *pe);
- void eeh_pe_state_clear(struct eeh_pe *pe, int state, bool include_passed);
-diff --git a/arch/powerpc/kernel/rtas_pci.c b/arch/powerpc/kernel/rtas_pci.c
-index e1fdc7473b72..fccf96e897f6 100644
---- a/arch/powerpc/kernel/rtas_pci.c
-+++ b/arch/powerpc/kernel/rtas_pci.c
-@@ -43,7 +43,7 @@ static inline int config_access_valid(struct pci_dn *dn, int where)
- 	return 0;
- }
- 
--int rtas_read_config(struct pci_dn *pdn, int where, int size, u32 *val)
-+int rtas_pci_dn_read_config(struct pci_dn *pdn, int where, int size, u32 *val)
- {
- 	int returnval = -1;
- 	unsigned long buid, addr;
-@@ -87,7 +87,7 @@ static int rtas_pci_read_config(struct pci_bus *bus,
- 	pdn = pci_get_pdn_by_devfn(bus, devfn);
- 
- 	/* Validity of pdn is checked in here */
--	ret = rtas_read_config(pdn, where, size, val);
-+	ret = rtas_pci_dn_read_config(pdn, where, size, val);
- 	if (*val == EEH_IO_ERROR_VALUE(size) &&
- 	    eeh_dev_check_failure(pdn_to_eeh_dev(pdn)))
- 		return PCIBIOS_DEVICE_NOT_FOUND;
-@@ -95,7 +95,7 @@ static int rtas_pci_read_config(struct pci_bus *bus,
- 	return ret;
- }
- 
--int rtas_write_config(struct pci_dn *pdn, int where, int size, u32 val)
-+int rtas_pci_dn_write_config(struct pci_dn *pdn, int where, int size, u32 val)
- {
- 	unsigned long buid, addr;
- 	int ret;
-@@ -134,7 +134,7 @@ static int rtas_pci_write_config(struct pci_bus *bus,
- 	pdn = pci_get_pdn_by_devfn(bus, devfn);
- 
- 	/* Validity of pdn is checked in here. */
--	return rtas_write_config(pdn, where, size, val);
-+	return rtas_pci_dn_write_config(pdn, where, size, val);
- }
- 
- static struct pci_ops rtas_pci_ops = {
-diff --git a/arch/powerpc/platforms/pseries/eeh_pseries.c b/arch/powerpc/platforms/pseries/eeh_pseries.c
-index def184da51cf..b1ae0c0d1187 100644
---- a/arch/powerpc/platforms/pseries/eeh_pseries.c
-+++ b/arch/powerpc/platforms/pseries/eeh_pseries.c
-@@ -252,7 +252,7 @@ static int pseries_eeh_cap_start(struct pci_dn *pdn)
- 	if (!pdn)
- 		return 0;
- 
--	rtas_read_config(pdn, PCI_STATUS, 2, &status);
-+	rtas_pci_dn_read_config(pdn, PCI_STATUS, 2, &status);
- 	if (!(status & PCI_STATUS_CAP_LIST))
- 		return 0;
- 
-@@ -270,11 +270,11 @@ static int pseries_eeh_find_cap(struct pci_dn *pdn, int cap)
- 		return 0;
- 
-         while (cnt--) {
--		rtas_read_config(pdn, pos, 1, &pos);
-+		rtas_pci_dn_read_config(pdn, pos, 1, &pos);
- 		if (pos < 0x40)
- 			break;
- 		pos &= ~3;
--		rtas_read_config(pdn, pos + PCI_CAP_LIST_ID, 1, &id);
-+		rtas_pci_dn_read_config(pdn, pos + PCI_CAP_LIST_ID, 1, &id);
- 		if (id == 0xff)
- 			break;
- 		if (id == cap)
-@@ -294,7 +294,7 @@ static int pseries_eeh_find_ecap(struct pci_dn *pdn, int cap)
- 
- 	if (!edev || !edev->pcie_cap)
- 		return 0;
--	if (rtas_read_config(pdn, pos, 4, &header) != PCIBIOS_SUCCESSFUL)
-+	if (rtas_pci_dn_read_config(pdn, pos, 4, &header) != PCIBIOS_SUCCESSFUL)
- 		return 0;
- 	else if (!header)
- 		return 0;
-@@ -307,7 +307,7 @@ static int pseries_eeh_find_ecap(struct pci_dn *pdn, int cap)
- 		if (pos < 256)
- 			break;
- 
--		if (rtas_read_config(pdn, pos, 4, &header) != PCIBIOS_SUCCESSFUL)
-+		if (rtas_pci_dn_read_config(pdn, pos, 4, &header) != PCIBIOS_SUCCESSFUL)
- 			break;
- 	}
- 
-@@ -412,8 +412,8 @@ static void pseries_eeh_init_edev(struct pci_dn *pdn)
- 	if ((pdn->class_code >> 8) == PCI_CLASS_BRIDGE_PCI) {
- 		edev->mode |= EEH_DEV_BRIDGE;
- 		if (edev->pcie_cap) {
--			rtas_read_config(pdn, edev->pcie_cap + PCI_EXP_FLAGS,
--					 2, &pcie_flags);
-+			rtas_pci_dn_read_config(pdn, edev->pcie_cap + PCI_EXP_FLAGS,
-+						2, &pcie_flags);
- 			pcie_flags = (pcie_flags & PCI_EXP_FLAGS_TYPE) >> 4;
- 			if (pcie_flags == PCI_EXP_TYPE_ROOT_PORT)
- 				edev->mode |= EEH_DEV_ROOT_PORT;
-@@ -676,7 +676,7 @@ static int pseries_eeh_read_config(struct eeh_dev *edev, int where, int size, u3
- {
- 	struct pci_dn *pdn = eeh_dev_to_pdn(edev);
- 
--	return rtas_read_config(pdn, where, size, val);
-+	return rtas_pci_dn_read_config(pdn, where, size, val);
- }
- 
- /**
-@@ -692,7 +692,7 @@ static int pseries_eeh_write_config(struct eeh_dev *edev, int where, int size, u
- {
- 	struct pci_dn *pdn = eeh_dev_to_pdn(edev);
- 
--	return rtas_write_config(pdn, where, size, val);
-+	return rtas_pci_dn_write_config(pdn, where, size, val);
- }
- 
- #ifdef CONFIG_PCI_IOV
+>>
+>> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+>> ---
+>>  arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dts | 5 +++++
+>>  1 file changed, 5 insertions(+)
+>>
+>> diff --git a/arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dts b/arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dts
+>> index 7cda3a89020a..d3f4c99d98da 100644
+>> --- a/arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dts
+>> +++ b/arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dts
+>> @@ -11,3 +11,8 @@ / {
+>>  	model = "BeagleV Starlight Beta";
+>>  	compatible = "beagle,beaglev-starlight-jh7100-r0", "starfive,jh7100";
+>>  };
+>> +
+>> +&gmac {
+>> +	phy-mode = "rgmii-id";
+>> +	status = "okay";
+>> +};
+> 
+> Lastly the phy-mode and status are the same for the VF1 and Starlight boards,
+> so why can't these be set in the jh7100-common.dtsi?
 
----
-base-commit: 0d555b57ee660d8a871781c0eebf006e855e918d
-change-id: 20231127-rtas-pci-rw-config-20a5610f2d35
+I wasn't sure "rgmii-id" can be used for both boards and I didn't want
+to unconditionally enable gmac on Starlight before getting a
+confirmation that this actually works.
 
-Best regards,
--- 
-Nathan Lynch <nathanl@linux.ibm.com>
+If there is no way to make it working with "rgmii-id" (w/ or w/o
+adjusting rx-internal-delay-ps), than we should switch to "rgmii-txid".
 
+Thanks,
+Cristian
