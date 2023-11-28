@@ -2,200 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 232BA7FAEFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 01:26:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 084C07FAF61
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 02:04:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234158AbjK1A0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 19:26:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49604 "EHLO
+        id S231602AbjK1BCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 20:02:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231391AbjK1A0W (ORCPT
+        with ESMTP id S229576AbjK1BCv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 19:26:22 -0500
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DE8F1B1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 16:26:27 -0800 (PST)
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231128002623epoutp01e8557e344df2551789723fb48029aa1f~bocxjptl23190531905epoutp01Q
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:26:23 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231128002623epoutp01e8557e344df2551789723fb48029aa1f~bocxjptl23190531905epoutp01Q
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1701131183;
-        bh=EVAydPHb+iuI0oFgKT1lEvM3GpdgPhV7iSj5fS7WTjc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bYewLQmiQNvtpEScwNoYGjvs2UJGAMClVYNuGnx3ytjqKSbHgJlN13tWdQaSguUB0
-         s7IPU1twvcI+rlTie+jydV1j62HMla1DcCDWCmgOh5EP527BY5U3MDG7PxjmwFmKk8
-         UFc5vHRRMbE0WUDLZCqz7rhsxJyPGrFphNzDKIeE=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20231128002622epcas2p43775dc1c952c850b7974c430e21b3b43~bocw8NHzj1420714207epcas2p4h;
-        Tue, 28 Nov 2023 00:26:22 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.36.68]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4SfNYB1z9Gz4x9QB; Tue, 28 Nov
-        2023 00:26:22 +0000 (GMT)
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        5A.C2.10006.EA335656; Tue, 28 Nov 2023 09:26:22 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
-        20231128002621epcas2p4379a53cc57d9d26bce92fe0de4722982~bocv8kgXI1420814208epcas2p4r;
-        Tue, 28 Nov 2023 00:26:21 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231128002621epsmtrp2d2067952c91203253bb2b1f13175bffe~bocv75cfD0710707107epsmtrp2A;
-        Tue, 28 Nov 2023 00:26:21 +0000 (GMT)
-X-AuditID: b6c32a45-179ff70000002716-02-656533ae0957
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A0.3A.07368.DA335656; Tue, 28 Nov 2023 09:26:21 +0900 (KST)
-Received: from perf (unknown [10.229.95.91]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231128002621epsmtip14a29ac44b55d090894695741d02bfa17~bocvtqbao0187501875epsmtip1M;
-        Tue, 28 Nov 2023 00:26:21 +0000 (GMT)
-Date:   Tue, 28 Nov 2023 10:01:25 +0900
-From:   Youngmin Nam <youngmin.nam@samsung.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     tomasz.figa@gmail.com, krzysztof.kozlowski@linaro.org,
-        s.nawrocki@samsung.com, alim.akhtar@samsung.com,
-        linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, semen.protsenko@linaro.org
-Subject: Re: [PATCH v2] pinctrl: samsung: add irq_set_affinity() for non
- wake up external gpio interrupt
-Message-ID: <ZWU75VtJ/mXpMyQr@perf>
+        Mon, 27 Nov 2023 20:02:51 -0500
+Received: from out203-205-221-233.mail.qq.com (out203-205-221-233.mail.qq.com [203.205.221.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 561C1C2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 17:02:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1701133366;
+        bh=gYIr0fLGl0A0yMUGkiXP9kYqWmnfeW6NULr2PpdUPrs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=CZjEcZjUxqGAzw+vIpTgyfIQIAX3MaTpmswwcHJF/zHbI+noMygCDBDMJA4VftPZN
+         yPaq//cNLQ1HB3nnrcSdxK3yPYEuYxfD7C01CCn374jaK2CsRds9y75lfSXzN3A6pM
+         d68cjoPmtnk4eoXUa+J+U+z81bSk/QVGKk/e8ZgE=
+Received: from [10.56.52.5] ([39.156.73.12])
+        by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
+        id A9882EF; Tue, 28 Nov 2023 09:02:41 +0800
+X-QQ-mid: xmsmtpt1701133361t39mf7s0h
+Message-ID: <tencent_44E22E4955685EFF479910090D5C84E8B209@qq.com>
+X-QQ-XMAILINFO: OaoBA5NOFC/jOVj7yUQgbw3gi+1HeI4r6RzUUXcFdsuuF0M9wglOSEJSLO6sAw
+         wuVnc7r9ylrhXP5QDntpHtKoSIeqiZ5P/u/eMwNCf42EezroieDc4+ZJ0aCI3LPsTygcc0vcz90u
+         2Uh/buCN5I1biC3suEs3+fjyxVew9eDOAXVpwbD3AApc8mN3oaRFhZz8Kp0n/7DftREPnYKsfO2G
+         XMMVMryq7mRpOJWLo7NHxGt0ycYjxjExE8pCysiqMKaekewlyxebbQvjo6P+7NpaNDQlxmhpIfMB
+         W2WnUoy4/8Knc9WmIaeniT1WsHJjbt2OlYkNMRuCxpk89f1c327ZPJ/CZpayaoN1xAHas8buAw01
+         NzHCii/yU+DKGrEwGW+mp99t6W3KUXRcR1ST9tCfWtZ4VIj5waDGhPmCy9QQiQqBgGQ+Z3WXsyDR
+         GaO2RU2q/JdCpWFjZXrZHnPAMvvUi1nYOA9rxsU92WoqRSpimqj1GrpRALRqT8Z0f9yWvfMpbc4w
+         u1jcAGTsPQ9eNMWuaH/5lnY1T2FUa/fTvfT4AmbHpuG6Qa1lkqBJ1Z3tpIC6JJeMQFzNtUIsNy/e
+         H0WNjrqIyBaMBdk7bP0dKpJNj9KSq/SdgmfBy6NaxzukSrFeIGkOyYdkXU7echOiF3q6QEGbc0EU
+         X2eynoOJzC9lp2cqEQS7qI38slQXXj4AD71CMYwAMExOx7uJRQG6glf9tGLKVPSUUjQHLuX+Czmp
+         yMOxfRh555Qqq7fRkaZn7xpUITrBFRwjI8iqPq+8b6VkuZC/YWrPmOtVtkBHMuywwboEwPGc/bBY
+         jwsW83iZCNchHC3FxaMSAAO1w+Kf25tAz4A9TLS18ouWGEjdwUlptABC/McXc36gal1ZsA2qeS8W
+         JVZ2meVBTrjQNYKCNTnFX7l058D5JZE5QbR2HAqOH2Xj1XKmjjEh+B9EFJr/enIP6xspQUeHdnjT
+         bzgRyAyVF2cggCpxiUC8HdnFcRmz0r6gu1FLIf7cez3/LTDdP3GQ==
+X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
+X-OQ-MSGID: <d9a8441e-c0af-4b60-a9d6-f54592e76cce@foxmail.com>
+Date:   Tue, 28 Nov 2023 09:02:40 +0800
 MIME-Version: 1.0
-In-Reply-To: <bb738a6b-815d-4fad-b73f-559f1ba8cd68@linaro.org>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFJsWRmVeSWpSXmKPExsWy7bCmhe4649RUg66fvBYP5m1js9j7eiu7
-        xZQ/y5ksNj2+xmqxef4fRovLu+awWcw4v4/J4vCbdlaL531A1qpdfxgduDx2zrrL7nHn2h42
-        j81L6j36tqxi9Pi8SS6ANSrbJiM1MSW1SCE1Lzk/JTMv3VbJOzjeOd7UzMBQ19DSwlxJIS8x
-        N9VWycUnQNctMwfoKCWFssScUqBQQGJxsZK+nU1RfmlJqkJGfnGJrVJqQUpOgXmBXnFibnFp
-        XrpeXmqJlaGBgZEpUGFCdsaKJYsYC/aKVHza9JetgXE7fxcjB4eEgInEhtueXYxcHEICOxgl
-        Lq14wQThfGKUWPnsMBuE841R4uLaB0AOJ1jH8w8fWSASexklNr5pZIRwHjJK9K2fyghSxSKg
-        KnH08CRmEJtNQFdi24l/YHERAQuJxRsWsoI0MAusZpK4/fE7WEJYIEvizsZuFhCbV0BZor9j
-        BpQtKHFy5hMwm1PATuL1PYhtEgKtHBKfjhxnhrjJRWLqnqVMELawxKvjW9ghbCmJz+/2Qt2d
-        LbH61yWoeIVE+70eqF5jiVnP2sGOYBbIkHiyAuRSUMgoSxy5xQIR5pPoOPyXHSLMK9HRJgTR
-        qSbxa8oGRghbRmL34hVQEz0knk3exA4JlOOMEr/P3GaZwCg3C8k7s5Bsg7B1JBbs/sQ2C2gF
-        s4C0xPJ/HBCmpsT6XfoLGFlXMYqlFhTnpqcWGxUYwmM4OT93EyM4kWq57mCc/PaD3iFGJg7G
-        Q4wSHMxKIrx6H5NThXhTEiurUovy44tKc1KLDzGaAiNnIrOUaHI+MJXnlcQbmlgamJiZGZob
-        mRqYK4nz3mudmyIkkJ5YkpqdmlqQWgTTx8TBKdXAlPq/8skqi/UxScV5WSJFexPSDz5MCH7P
-        23bax2k2p6nJ48QqW2El3qzz2U+3a6jOub3fgW/6FJ5FbCFfL7GIX/we2rpCNVJt2vo0yT8X
-        C56fq1DvVTr4cfUJubu7L6c7hD1JvOy/MOrO5s07TZplU9JWf8+95Gewc0bOM2v2D98DK7at
-        Sbixff63R6q8+6/L37Fnrurc2flTMGSvTFKmTyffH96qxp8vJ6RN/myyTkfpp8u5fQ49c2Un
-        HHU051mRFtG895TC6/XnVisWrnc2brgmlbhO/vaV4uvPlHcoxfzpmKu45DLTqdN/DlxJCeNX
-        yvD+e/L74ZtTV7WvX+qY5DF5v0xBauUewbytHgdbK5RYijMSDbWYi4oTAQNz9qEtBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrPLMWRmVeSWpSXmKPExsWy7bCSnO5a49RUg8azqhYP5m1js9j7eiu7
-        xZQ/y5ksNj2+xmqxef4fRovLu+awWcw4v4/J4vCbdlaL531A1qpdfxgduDx2zrrL7nHn2h42
-        j81L6j36tqxi9Pi8SS6ANYrLJiU1J7MstUjfLoErY9e5eWwFfwUrftxQamCcwNvFyMkhIWAi
-        8fzDR5YuRi4OIYHdjBKX3u1mhUjISNxeeRnKFpa433KEFaLoPqPE771TmEASLAKqEkcPT2IG
-        sdkEdCW2nfjHCGKLCFhILN6wEKyBWWA1k8Tmx+/BioQFsiQePjzPBmLzCihL9HfMYAGxhQSO
-        M0oceKoOEReUODnzCVicWUBL4sa/l0DLOIBsaYnl/zhAwpwCdhKv7zUyTmAUmIWkYxaSjlkI
-        HQsYmVcxSqYWFOem5yYbFhjmpZbrFSfmFpfmpesl5+duYgTHgZbGDsZ78//pHWJk4mA8xCjB
-        wawkwqv3MTlViDclsbIqtSg/vqg0J7X4EKM0B4uSOK/hjNkpQgLpiSWp2ampBalFMFkmDk6p
-        Bqbnoe/U/jXE/3p/SrM2duMis8jvV/zYwtrlZySsiwyv2nKy86n2AalFaWLnZ8T3m26RTzj5
-        2O9oO9Pxr28PZIl7ySikXah48/HRh7NpTFztuacyZl5rDbsz7RrvLdX3f/2jPROZ3J8WBlyR
-        nOYzz2RJoav9j2ls7//4Pnes2qLJ8XLmQfXJHRFT3art3t2rznEPka/8euHhRbbL0759sb4X
-        fXlu5K6gullVh47tmPHTto318FIRMWU9Ta8dZrXT1/ZuWcGjfZvfZe2lWf0CCqu7j/C+/Flj
-        vfQ2O/OP5PY6feM5/CX3t0d52L7mij21ptH2Y7X/uUX35Ixbqq5dk5/VOVk1SWnlbWm+zZvT
-        GncrsRRnJBpqMRcVJwIAkEdKm/ICAAA=
-X-CMS-MailID: 20231128002621epcas2p4379a53cc57d9d26bce92fe0de4722982
-X-Msg-Generator: CA
-Content-Type: multipart/mixed;
-        boundary="----SiQCcQFW9qxZh2i62NcUcvIKWR48NBmCWce5.T0aiy9ACrIF=_24d13_"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231126091120epcas2p4a1320e3b0f9be8f8a0f575a322981d38
-References: <CGME20231126091120epcas2p4a1320e3b0f9be8f8a0f575a322981d38@epcas2p4.samsung.com>
-        <20231126094618.2545116-1-youngmin.nam@samsung.com>
-        <bb738a6b-815d-4fad-b73f-559f1ba8cd68@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] prctl: Get private anonymous memory region name
+To:     David Hildenbrand <david@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Andy Chiu <andy.chiu@sifive.com>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Stefan Roesch <shr@devkernel.io>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>, rongtao@cestc.cn
+References: <tencent_77E0BC1E8E9A21CA1B9009DD66555C72A90A@qq.com>
+ <20231126135644.GA7199@redhat.com>
+ <b2f4c084-47dc-4e92-a9e3-daec3f48425d@redhat.com>
+Content-Language: en-US
+From:   Rong Tao <rtoax@foxmail.com>
+In-Reply-To: <b2f4c084-47dc-4e92-a9e3-daec3f48425d@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
+        FREEMAIL_FROM,HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-------SiQCcQFW9qxZh2i62NcUcvIKWR48NBmCWce5.T0aiy9ACrIF=_24d13_
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
 
-On Mon, Nov 27, 2023 at 10:54:56AM +0100, Krzysztof Kozlowski wrote:
-> On 26/11/2023 10:46, Youngmin Nam wrote:
-> > To support affinity setting for non wake up external gpio interrupt,
-> > add irq_set_affinity callback using irq number from pinctrl driver data.
-> > 
-> > Before this patch, changing the irq affinity of gpio interrupt is not possible:
-> > 
-> >     # cat /proc/irq/418/smp_affinity
-> >     3ff
-> >     # echo 00f > /proc/irq/418/smp_affinity
-> 
-> Does this command succeed on your board?
-> 
-Yes.
-
-> >     # cat /proc/irq/418/smp_affinity
-> >     3ff
-> >     # cat /proc/interrupts
-> >                CPU0       CPU1       CPU2       CPU3    ...
-> >     418:       3631          0          0          0    ...
-> > 
-> > With this patch applied, it's possible to change irq affinity of gpio interrupt:
-> 
-> ...
-> 
-> On which board did you test it?
-> 
-> 
-I tested on S5E9945 ERD(Exynos Reference Development) board.
-
-> > +	if (parent)
-> > +		return parent->chip->irq_set_affinity(parent, dest, force);
-> > +
-> 
-> I think there is a  helper for it: irq_chip_set_affinity_parent().
-> 
-> 
-
-The irq_chip_set_affinity_parent() requires parent_data of irq_data.
-But when I tested as below, exynos's irqd->parent_data was null.
-So we should use irqchip's affinity function instead of the helper function.
-
---- a/drivers/pinctrl/samsung/pinctrl-exynos.c
-+++ b/drivers/pinctrl/samsung/pinctrl-exynos.c
-@@ -153,14 +153,12 @@ static int exynos_irq_set_type(struct irq_data *irqd, unsigned int type)
- static int exynos_irq_set_affinity(struct irq_data *irqd,
-                                   const struct cpumask *dest, bool force)
- {
--       struct samsung_pin_bank *bank = irq_data_get_irq_chip_data(irqd);
--       struct samsung_pinctrl_drv_data *d = bank->drvdata;
--       struct irq_data *parent = irq_get_irq_data(d->irq);
--
--       if (parent)
--               return parent->chip->irq_set_affinity(parent, dest, force);
-+       if (!irqd->parent_data) {
-+               pr_err("irqd->parent_data is null!!\n");
-+               return -EINVAL;
-+       }
-
--       return -EINVAL;
-+       return irq_chip_set_affinity_parent(irqd, dest, force);
- }
-
-[  149.658395] irqd->parent_data is null!!
-
-> Best regards,
-> Krzysztof
-> 
-> 
-
-------SiQCcQFW9qxZh2i62NcUcvIKWR48NBmCWce5.T0aiy9ACrIF=_24d13_
-Content-Type: text/plain; charset="utf-8"
+On 11/27/23 22:52, David Hildenbrand wrote:
+> On 26.11.23 14:56, Oleg Nesterov wrote:
+>> On 11/26, Rong Tao wrote:
+>>>
+>>> then the PR_GET_VMA interface should be provided accordingly,
+>>> which is necessary, as the userspace program usually wants to know what
+>>> VMA name it has configured for the anonymous page.
+>>
+>> I don't really understand the use-case for PR_GET_VMA ...
+>>
+>
+> Can't we simply read "/proc/PID/maps" and just have that information 
+> from there?
 
 
-------SiQCcQFW9qxZh2i62NcUcvIKWR48NBmCWce5.T0aiy9ACrIF=_24d13_--
+Thank you, David.
+
+The relationship between PR_GET_VMA and /proc/PID/maps is like the 
+relationship between
+
+PR_GET_NAME and /proc/PID/comm. Obviously, both methods can obtain the 
+corresponding
+
+name. However, prctl(2) can be obtained directly from the code level, 
+while reading proc is not
+
+so convenient and efficient. Moreover, reading proc is more like bash 
+command line, rather
+
+than C code.
+
+
+>
+> Also, I don't understand the exact use case, that should be clarified 
+> -- especially, why the existing way is insufficient.
+>
+
+For use-case, in fact, I now want to develop a user-mode patch tool and 
+need to map the patch file to the target
+
+process(Use ptrace(2) and pread/pwrite("/proc/self/mem")). I initially 
+used shared files
+
+     00400000-00401000 r--p 00000000 08:00 241933181 
+/home/sda/git-repos/upatch/tests/hello/hello
+     00401000-00402000 r-xp 00001000 08:00 241933181 
+/home/sda/git-repos/upatch/tests/hello/hello
+     00402000-00403000 r--p 00002000 08:00 241933181 
+/home/sda/git-repos/upatch/tests/hello/hello
+     00403000-00404000 r--p 00002000 08:00 241933181 
+/home/sda/git-repos/upatch/tests/hello/hello
+     00404000-00405000 rw-p 00003000 08:00 241933181 
+/home/sda/git-repos/upatch/tests/hello/hello
+     01136000-01157000 rw-p 00000000 00:00 0 [heap]
+     7f21472c0000-7f21472c2000 rw-p 00000000 00:00 0
+     7f21472c2000-7f21472e8000 r--p 00000000 103:03 3705 
+/usr/lib64/libc.so.6
+     7f21472e8000-7f2147448000 r-xp 00026000 103:03 3705 
+/usr/lib64/libc.so.6
+     7f2147448000-7f2147496000 r--p 00186000 103:03 3705 
+/usr/lib64/libc.so.6
+     7f2147496000-7f214749a000 r--p 001d3000 103:03 3705 
+/usr/lib64/libc.so.6
+     7f214749a000-7f214749c000 rw-p 001d7000 103:03 3705 
+/usr/lib64/libc.so.6
+     7f214749c000-7f21474a6000 rw-p 00000000 00:00 0
+     7f21474be000-7f21474bf000 rwxs 00000000 00:27 7794 
+/tmp/upatch/62984/map_files/patch-FKSYTp   <<
+     7f21474bf000-7f21474c0000 rwxs 00000000 00:27 7793 
+/tmp/upatch/62984/map_files/patch-KFaQNU <<
+     7f21474c0000-7f21474c1000 r--p 00000000 103:03 3702 
+/usr/lib64/ld-linux-x86-64.so.2
+     7f21474c1000-7f21474e8000 r-xp 00001000 103:03 3702 
+/usr/lib64/ld-linux-x86-64.so.2
+     7f21474e8000-7f21474f2000 r--p 00028000 103:03 3702 
+/usr/lib64/ld-linux-x86-64.so.2
+     7f21474f2000-7f21474f4000 r--p 00031000 103:03 3702 
+/usr/lib64/ld-linux-x86-64.so.2
+     7f21474f4000-7f21474f6000 rw-p 00033000 103:03 3702 
+/usr/lib64/ld-linux-x86-64.so.2
+     7ffec158b000-7ffec15ad000 rw-p 00000000 00:00 0 [stack]
+     7ffec15cf000-7ffec15d3000 r--p 00000000 00:00 0 [vvar]
+     7ffec15d3000-7ffec15d5000 r-xp 00000000 00:00 0 [vdso]
+     ffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0 [vsyscall]
+
+However, this is obviously not the best approach, I want to use 
+anonymous pages instead,
+
+     7f21474be000-7f21474bf000 rwxp 00000000 00:27 7794 [anon:patch1]
+     7f21474bf000-7f21474c0000 rwxp 00000000 00:27 7793 [anon:patch2]
+
+I hope to use the address to directly obtain the vma name, which is 
+"patch1". This is very convenient
+
+in the program without parsing /proc/PID/maps in the source code.
+
+Thanks again.
+
+Rong Tao
+
+
+
