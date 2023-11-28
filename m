@@ -2,55 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 912547FB19E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 06:53:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7617FB192
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 06:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343591AbjK1FxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 00:53:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57230 "EHLO
+        id S1343569AbjK1FwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 00:52:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343576AbjK1Fwx (ORCPT
+        with ESMTP id S231540AbjK1FwQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 00:52:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF4A3E6
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 21:52:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701150779;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=gMr7SNIGWG+LCt67HL84oAYmHREAbz0FAtMx7hLa0hk=;
-        b=fczUNevm9+5D8wo6vXI2sBt/Ihcs5Y22w8K4SO9qU8Ob9yDe44CSEJ4Rmj4xDwZzfM7FCx
-        FHpWKqxv2pIYR7sBNEOCekPOonuYyEMgbAKh5UQ17kfkAzMjvmKBbRmKImRKmkGm+pE8EF
-        vLkuiwvx1ENZAFz3sn/16xH2At94RpQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-664-QrJwYi1qPxyK5xc4SEBPyQ-1; Tue, 28 Nov 2023 00:52:55 -0500
-X-MC-Unique: QrJwYi1qPxyK5xc4SEBPyQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C6CCE85A5BD;
-        Tue, 28 Nov 2023 05:52:54 +0000 (UTC)
-Received: from MiWiFi-R3L-srv.redhat.com (unknown [10.72.112.30])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A2E725028;
-        Tue, 28 Nov 2023 05:52:51 +0000 (UTC)
-From:   Baoquan He <bhe@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kexec@lists.infradead.org, x86@kernel.org,
-        akpm@linux-foundation.org, eric_devolder@yahoo.com,
-        ignat@cloudflare.com, agordeev@linux.ibm.com,
-        Baoquan He <bhe@redhat.com>
-Subject: [PATCH v2] drivers/base/cpu: crash data showing should depends on KEXEC_CORE
-Date:   Tue, 28 Nov 2023 13:52:48 +0800
-Message-ID: <20231128055248.659808-1-bhe@redhat.com>
+        Tue, 28 Nov 2023 00:52:16 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C723D6;
+        Mon, 27 Nov 2023 21:52:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701150742; x=1732686742;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=2mexHAnFtnwA4SsG+ihTgBCBbtpMn7NyXEvIaPrTjmI=;
+  b=UKZaWj+lv1seNfGyev6AMBpG/QOuu9Rf3C6cAJjCszChwnSdwGhi7ty1
+   locQdprHhA6gp5xygZZiiNAa7nLn1jxKLwiJZZjD7Yr+S0xalZB372rcz
+   IUmuijNDVQ8WD57wo4rgHwDECZMz3Qz6RqMhVIBGge3OSrddvTEMS/i7W
+   dm80pToVCZVpfcbJ//TniDQaCh+AlqAkuVBi740mmlDlXXbCYXba9TtJP
+   6MMFr5udl/6D6ZmqlbJ1OkvwcLRQVPO7Id3CZXNw0/zfPpAt1tpNoczbu
+   dmSV1/Xebz1eOK1ZFHjbIOa0Y6xtgNtzNmvSIvhD6gR6dg5PjwnvzST3Z
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="395673342"
+X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
+   d="scan'208";a="395673342"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 21:52:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="761841847"
+X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
+   d="scan'208";a="761841847"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Nov 2023 21:52:21 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 27 Nov 2023 21:52:21 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Mon, 27 Nov 2023 21:52:21 -0800
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.40) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Mon, 27 Nov 2023 21:52:20 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b5y4Mvn2eKdqtxGbU1R/vPLohgb00YS0EboDqzKS+p6zRu4Y/HJFoIyXlx2Smnx+iv70i8zX0A0gEiqhfLJYiCCHF9WJTkiguTHyKmcBjau13M8YKvK3wxKaA7eCfsOQZiuyUbkhT1sXr7mdhyajFydxtHdWPR1CuPE3EqhYvnlFi5gT0fP8GyYng4l+4ZWroqJpw72WqkBAzsRvBSosjVFu6h0PMgwft2/gVHpvdFDzo52sqWUuisj+PqPWre+/QJrZm6mB5dKwz1dx7NW+N61Gvb5nFCFveRVByhE6ZFqK4/xYp3knDajLA94o3HkNzDWNDRDvGJcaMg/FppomFw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Y0trd4/q6A7d688ailtZXNWP/8R+FNg5P8/1q6wrcJY=;
+ b=hwMoblepIOW9R1xQFJ5+H1cxluXkCnBM5x1brqZBV3cozZyarrPDQGfRMMQRdu5tTI4/UfNvoJfGBXYwkygJxA/nUF48RVCUzzb2R2jLQ273wmQjkL+pcezLnjIh+zKBImg+SW1JuOBqsQJcJrqsnkECrEoZEkEakWSB36zRfU2/CTccKQQRoLNApW1JjsEq4SuvFO486PeM9JRV9KVbFEBxY5n+9Lo0DrAbaphmb44pQBwttARMhEtgM5p6P/9pde6Nnims4kCJlpoCN1P1TUbiC5E/UxCj2Uh6yF2dL84LnRGY29suYCF5Kg4/4qhJV29/D8h86GZJ4nRQADcyCg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
+ by MW4PR11MB6838.namprd11.prod.outlook.com (2603:10b6:303:213::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Tue, 28 Nov
+ 2023 05:52:18 +0000
+Received: from DS0PR11MB7529.namprd11.prod.outlook.com
+ ([fe80::e4ae:3948:1f55:547d]) by DS0PR11MB7529.namprd11.prod.outlook.com
+ ([fe80::e4ae:3948:1f55:547d%5]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
+ 05:52:18 +0000
+Message-ID: <91e61165-6695-4948-9a38-79c1b1e6305c@intel.com>
+Date:   Tue, 28 Nov 2023 13:54:45 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 2/6] iommufd: Add IOMMU_HWPT_INVALIDATE
+Content-Language: en-US
+To:     Nicolin Chen <nicolinc@nvidia.com>,
+        Baolu Lu <baolu.lu@linux.intel.com>
+CC:     <joro@8bytes.org>, <alex.williamson@redhat.com>, <jgg@nvidia.com>,
+        <kevin.tian@intel.com>, <robin.murphy@arm.com>,
+        <cohuck@redhat.com>, <eric.auger@redhat.com>,
+        <kvm@vger.kernel.org>, <mjrosato@linux.ibm.com>,
+        <chao.p.peng@linux.intel.com>, <yi.y.sun@linux.intel.com>,
+        <peterx@redhat.com>, <jasowang@redhat.com>,
+        <shameerali.kolothum.thodi@huawei.com>, <lulu@redhat.com>,
+        <suravee.suthikulpanit@amd.com>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <zhenzhong.duan@intel.com>, <joao.m.martins@oracle.com>,
+        <xin.zeng@intel.com>, <yan.y.zhao@intel.com>
+References: <20231117130717.19875-1-yi.l.liu@intel.com>
+ <20231117130717.19875-3-yi.l.liu@intel.com>
+ <e36e856a-8d4c-4cc2-a5db-cf00673a9bf7@linux.intel.com>
+ <ZVw90r3/dvgMg94Z@Asurada-Nvidia>
+From:   Yi Liu <yi.l.liu@intel.com>
+In-Reply-To: <ZVw90r3/dvgMg94Z@Asurada-Nvidia>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SI1PR02CA0042.apcprd02.prod.outlook.com
+ (2603:1096:4:1f6::17) To DS0PR11MB7529.namprd11.prod.outlook.com
+ (2603:10b6:8:141::20)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR11MB7529:EE_|MW4PR11MB6838:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9db3ceb9-6125-4307-081c-08dbefd62d4f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JhsnjNmoBNyL30yPMm2juNZHg8Z9NFEk3QhUC5TuXHux3DI/cwwIXDroWvqhVpirCDcJQq+OqjEcJ/lLturm1GXPi3kC4yPaOE3jeTx9aTY4liFuMzGwBmfyZWpIV1J0WYhf00wRrlf16fhQaCJjObCniX3BrrRI/3zOJ9TdkxzNH2D5FVZFvh4L1/u6mclOb8bdg0Ul7p++lPLrDe6rDu0scpJNXKnU1sGVSuyE5vlt7SOXl0dsstmstT5j4NwMNFUhO1UfNOBxyB1EkzVxsJk7nrvLXeQ9s9QkDaolrdqcPTFObDpyvsKroOsfO2G+wQ1pMOLfLjUtE6S9NG+yxRitoM6dZIQTJrktDmJCHRHF3CDzAKhqxhYBZcn8E7pmVMGky8Kg/Pe/XR2fzuHXnexugCaeuUv362wiSCu6FIJFm/N0vjyFB0kJvP7pcyqbUf5aWc/wmoQNVjQ4tn3xaSijmy/Z2YACnp4SnAED6JILUyPd6IwMf+0hX8yCSAjrpsbn0v2F+3b3z+z2LTnDLEulmj2B4KpTiq4O2f1mmYSBeN8F8/5kqyLoc6Xxpq4UelBz7CtmawZ2L/bqCsARp82enn0O88MKoCfTxQ3v8iU2vRkCdx6dhYB/QdPraoJBoUadnK6CYcuUF2i7IrBXPw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(396003)(39860400002)(346002)(366004)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(82960400001)(36756003)(83380400001)(31696002)(86362001)(38100700002)(66476007)(66556008)(110136005)(66946007)(6486002)(316002)(478600001)(5660300002)(41300700001)(4326008)(8676002)(8936002)(2906002)(31686004)(7416002)(26005)(2616005)(6506007)(6666004)(6512007)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?alFETTRhYksxKy80RjhpQWFHRTdPaG55Mzg5ZnNKR280cUMyMmdUVnFlNHA3?=
+ =?utf-8?B?ajZoWVVhWitDZnJwZXEyZlp2ckcrNzB3TGpYVHpRL2ZEODlCK2wrWkJabVN0?=
+ =?utf-8?B?cGlTZlE1bENuTE03ajhRTVk0SGxRTG41Qm1vQkhOWVY4TVVack5Odi9xcnhk?=
+ =?utf-8?B?cGFNWlNiaVF2clpxbzZPQ3pKb1BDZEFVdHBGc3FZVld2cXRhTFR2R21pc1BZ?=
+ =?utf-8?B?WFdvRlY4TmRBR2NiODVNQzlxMWFjQkVqQkxsbDFOQ21BMEtOU3ZwQVkyY2Ri?=
+ =?utf-8?B?czVHMTZ2MlExK2RIR2kwejkzRkNlczdnT1YyZVpTL1dTYzliTG0wZStVcGpS?=
+ =?utf-8?B?SDJyZDFPc0J0OCtRbGdXK0lUWmluYXR3VTdMSHZWN1NmbFoxaysxWWRoRi9U?=
+ =?utf-8?B?a1dIcStYNEY0U1RBSmtld0FNMlJuYndQUUVXaUpISTFsUnNFWG9BYjh1UStQ?=
+ =?utf-8?B?emdGVTlBTGtabTlmaHNMZFlnSEVsTHFZZCtmcnkwK0JZaGdsb1UvYy9JUHpO?=
+ =?utf-8?B?aHlnYnVRZkNhdEFUdnBoNkVlUHVYS042cWc5b25uM1FLYjEwWWxDaEJuK2xI?=
+ =?utf-8?B?SDlmUzJzQTFYbUdjUE5acm5BV2JYSnlTZVlQUTJqNG1WZGE0cGRYZGo5KzBh?=
+ =?utf-8?B?MEM2WHZFcW5mWmdaWGVTcmhyK2ZOdVhTc1d1RUlPTnhnS2dzcGYxbFZLWEpm?=
+ =?utf-8?B?ZVZ0R3RTdHhIdnBLNU5QVnNldC83RzNpWUxkMnJIbnZaMyswV1pvTUZFdnB0?=
+ =?utf-8?B?VzE1QS9SVW1nSUlEL3FvZmlFZGtaQ3NDRlAwMFZGRzBJaTYxYnVuZEhhRWhj?=
+ =?utf-8?B?V2xKSzVWOWxwTFFMa05KczluYi9ESjczNGI2K083dFd2UThNL1VBNmNERC9R?=
+ =?utf-8?B?U3JLL2pBNDJUNVRjbEQvczN1Q0NrS2l4d0xNbjVQTFZCYzRVTU1vUjBpZyt1?=
+ =?utf-8?B?L3RQQzRJVVNESGtPdE0xT3NDNmYrcUpJVmUyejVtVFNyZUZ0QmlGNFJhTFlP?=
+ =?utf-8?B?UmJmbEJONHhkMDFkN1BFYXhUSlpPc1RFcGE5OU80bkIrVkp6S0NOT3hZUTJ1?=
+ =?utf-8?B?UTR1QzdCaFFoeG5ER2ZGeTAzN3dFdmhuSlEybE53clBYWndJTnpvNnJ0a2Vo?=
+ =?utf-8?B?eUk5REVYN0piMkFqSkhEbE92Q1RyWnowVXM1TVlsdi9KNG1HOS80ajRDbW9G?=
+ =?utf-8?B?bjNuZnhXQmMwNHBKbEsxTkJZQW5aMzYyUjBVbGRTL1NHODFIUk15cUt4eFBi?=
+ =?utf-8?B?ZDdHQnlHcVJGZTdzTmtIeG1mWHA0ZjJDdnhEYlpDdkxUaXNBd2RoZElpNVB0?=
+ =?utf-8?B?Ym1GL0F3N0cxTVVEb1J2ejZlVnFSRHlNVHhkTkxMYzQyY1dFU2pOMmF3VkRY?=
+ =?utf-8?B?L1hJK1ZSMk1ZdWNkTlRUdlZWQklQN2djZDJQdVpJdnZJMG9nS0kwWndKVnAr?=
+ =?utf-8?B?ZDBzcXROTXJUZ3Bzc0RJZEl0Q09HOWtoUUJkOEgva044VGVJZW1WSjNCbEJ4?=
+ =?utf-8?B?TnRoQ21uRSs2VUxNZVA2YXh6blFCVmVFdVY5NzFidkRON2UzVk9qTTkrWU5I?=
+ =?utf-8?B?aDdmZ0VvT3VGZVlvUENoc2VOWUdsdjJDVnRuR1BHZlBIRUpSWERoMW1XRFI5?=
+ =?utf-8?B?TTBMdUR0Znl4Rm1Pb0hxdW1hckZoaFprdFF2b3BhMjVvYlIraVRMNWJmbWVP?=
+ =?utf-8?B?dzdTckpzaFp0WTdOb2YwZzV1c1JTTThDZEhuakhrZ2xacDhGUjhDSmYzZ0w1?=
+ =?utf-8?B?ak9pNWg3UUpKbWJYaG52VzBxSmcwU001Uit2RVpvWTlJVlNHTmZkVTFRc1VL?=
+ =?utf-8?B?REd4UTBzRllGNUxyMWZCRWQ5R3ZFRWlNV3c1dmM2M1BOTTM4bmFCa0RaREFE?=
+ =?utf-8?B?ektkZE1SMTlMeHY5R1YyclZmMVVlTzkxQVk3dkt0YWw0N3N1TndaQnJNcmlm?=
+ =?utf-8?B?NXlDTW9pS2dXejVxWmVCTEhZTWpFRldVcjhvYTdHN0w3NHBRbC9EM091a1pQ?=
+ =?utf-8?B?L2ZRa3k3QkY0YzNBR01sVmg2Yi91VW9IOUM1dXI2cmdKY21TMUN0d09jQklY?=
+ =?utf-8?B?TzZFRW01V3ZHNWI2NVRrWG1GRStiRFpoMEdMVEtiM0JHK092UWxBQmdUcGh1?=
+ =?utf-8?Q?RgSavYj6KPANaqXG3rDV7nrlo?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9db3ceb9-6125-4307-081c-08dbefd62d4f
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 05:52:17.9336
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NMl0E317DecJm1XrBGZBS3u/vwEntmzzJo1IC430sp00zwjOBNskPEgzAv36AyM3eatg+WqPC2/TV12dGP3tEA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB6838
+X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
@@ -62,68 +169,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 88a6f8994421 ("crash: memory and CPU hotplug sysfs
-attributes"), on x86_64, if only below kernel configs related to kdump
-are set, compiling error are triggered.
+On 2023/11/21 13:19, Nicolin Chen wrote:
+> On Tue, Nov 21, 2023 at 01:02:49PM +0800, Baolu Lu wrote:
+>> On 11/17/23 9:07 PM, Yi Liu wrote:
+>>> In nested translation, the stage-1 page table is user-managed but cached
+>>> by the IOMMU hardware, so an update on present page table entries in the
+>>> stage-1 page table should be followed with a cache invalidation.
+>>>
+>>> Add an IOMMU_HWPT_INVALIDATE ioctl to support such a cache invalidation.
+>>> It takes hwpt_id to specify the iommu_domain, and a multi-entry array to
+>>> support multiple invalidation requests in one ioctl.
+>>>
+>>> Check cache_invalidate_user op in the iommufd_hw_pagetable_alloc_nested,
+>>> since all nested domains need that.
+>>>
+>>> Co-developed-by: Nicolin Chen<nicolinc@nvidia.com>
+>>> Signed-off-by: Nicolin Chen<nicolinc@nvidia.com>
+>>> Signed-off-by: Yi Liu<yi.l.liu@intel.com>
+>>> ---
+>>>    drivers/iommu/iommufd/hw_pagetable.c    | 35 +++++++++++++++++++++++++
+>>>    drivers/iommu/iommufd/iommufd_private.h |  9 +++++++
+>>>    drivers/iommu/iommufd/main.c            |  3 +++
+>>>    include/uapi/linux/iommufd.h            | 35 +++++++++++++++++++++++++
+>>>    4 files changed, 82 insertions(+)
+>>>
+>>> diff --git a/drivers/iommu/iommufd/hw_pagetable.c b/drivers/iommu/iommufd/hw_pagetable.c
+>>> index 2abbeafdbd22..367459d92f69 100644
+>>> --- a/drivers/iommu/iommufd/hw_pagetable.c
+>>> +++ b/drivers/iommu/iommufd/hw_pagetable.c
+>>> @@ -238,6 +238,11 @@ iommufd_hwpt_nested_alloc(struct iommufd_ctx *ictx,
+>>>                rc = -EINVAL;
+>>>                goto out_abort;
+>>>        }
+>>> +     /* Driver is buggy by missing cache_invalidate_user in domain_ops */
+>>> +     if (WARN_ON_ONCE(!hwpt->domain->ops->cache_invalidate_user)) {
+>>> +             rc = -EINVAL;
+>>> +             goto out_abort;
+>>> +     }
+>>>        return hwpt_nested;
+>>
+>> The WARN message here may cause kernel regression when users bisect
+>> issues. Till this patch, there are no drivers support the
+>> cache_invalidation_user callback yet.
+> 
+> Ah, this is an unintended consequence from our uAPI bisect to
+> merge the nesting alloc first...
+> 
+> Would removing the WARN_ON_ONCE be okay? Although having this
+> WARN is actually the point here...
 
-----
-CONFIG_CRASH_CORE=y
-CONFIG_KEXEC_CORE=y
-CONFIG_CRASH_DUMP=y
-CONFIG_CRASH_HOTPLUG=y
-------
+seems like we may need to remove it. how about your opinion, @Jason?
 
-------------------------------------------------------
-drivers/base/cpu.c: In function ‘crash_hotplug_show’:
-drivers/base/cpu.c:309:40: error: implicit declaration of function ‘crash_hotplug_cpu_support’; did you mean ‘crash_hotplug_show’? [-Werror=implicit-function-declaration]
-  309 |         return sysfs_emit(buf, "%d\n", crash_hotplug_cpu_support());
-      |                                        ^~~~~~~~~~~~~~~~~~~~~~~~~
-      |                                        crash_hotplug_show
-cc1: some warnings being treated as errors
-------------------------------------------------------
+> Thanks
+> Nic
 
-CONFIG_KEXEC is used to enable kexec_load interface, the
-crash_notes/crash_notes_size/crash_hotplug showing depends on
-CONFIG_KEXEC is incorrect. It should depend on KEXEC_CORE instead.
-
-Fix it now.
-
-Fixes: commit 88a6f8994421 ("crash: memory and CPU hotplug sysfs attributes")
-Signed-off-by: Baoquan He <bhe@redhat.com>
----
- drivers/base/cpu.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
-index 9ea22e165acd..548491de818e 100644
---- a/drivers/base/cpu.c
-+++ b/drivers/base/cpu.c
-@@ -144,7 +144,7 @@ static DEVICE_ATTR(release, S_IWUSR, NULL, cpu_release_store);
- #endif /* CONFIG_ARCH_CPU_PROBE_RELEASE */
- #endif /* CONFIG_HOTPLUG_CPU */
- 
--#ifdef CONFIG_KEXEC
-+#ifdef CONFIG_KEXEC_CORE
- #include <linux/kexec.h>
- 
- static ssize_t crash_notes_show(struct device *dev,
-@@ -189,14 +189,14 @@ static const struct attribute_group crash_note_cpu_attr_group = {
- #endif
- 
- static const struct attribute_group *common_cpu_attr_groups[] = {
--#ifdef CONFIG_KEXEC
-+#ifdef CONFIG_KEXEC_CORE
- 	&crash_note_cpu_attr_group,
- #endif
- 	NULL
- };
- 
- static const struct attribute_group *hotplugable_cpu_attr_groups[] = {
--#ifdef CONFIG_KEXEC
-+#ifdef CONFIG_KEXEC_CORE
- 	&crash_note_cpu_attr_group,
- #endif
- 	NULL
 -- 
-2.41.0
-
+Regards,
+Yi Liu
