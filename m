@@ -2,80 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4B57FC17C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E0977FC1E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343909AbjK1QTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 11:19:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39156 "EHLO
+        id S1344305AbjK1QTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:19:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232094AbjK1QTA (ORCPT
+        with ESMTP id S1344234AbjK1QTM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 11:19:00 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2326FD66
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:19:07 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79CD0C433C7;
-        Tue, 28 Nov 2023 16:19:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701188346;
-        bh=0Ag4qaJaVJYeZsmD/Ziq5NjmMiyUyZLsJEveoMz3LW4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PAYeXIcJISUhsgXkvRPJciIHAtJiy3JURj2WtelWdRE52/+33R7yA289mOzSTFPpQ
-         rwvSp+PNfOUOBQH1Ul7Wq1jJD8+OUCi5IgdB99002hA2VEMI461EJ2V1gIkysFpu7N
-         RN3Cf+ilnB3KDSbC3/FaJDuxPCLYlXHUqx26VNbazKoqVS66CESKEjBCMq9aE6UcyS
-         jnrgswmoFSERvHBfI0edS+Js8eB/OusESfzc2lAjul9+/Vs2DD0TrnfSTAUaVMWRlr
-         mKuXnagpjChGo5xeaRCgDhalBQ+0P1TRId5VxBUD9yZLQTTYvJfZ8lRIYJIrVLVAzO
-         wQFQHbq2qH0ng==
-Date:   Tue, 28 Nov 2023 08:19:05 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Allison Henderson <allison.henderson@oracle.com>,
-        Zhang Tianci <zhangtianci.1997@bytedance.com>,
-        Brian Foster <bfoster@redhat.com>, Ben Myers <bpm@sgi.com>,
-        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xieyongji@bytedance.com, me@jcix.top
-Subject: Re: [PATCH 1/2] xfs: ensure tmp_logflags is initialized in
- xfs_bmap_del_extent_real
-Message-ID: <20231128161905.GT2766956@frogsfrogsfrogs>
-References: <20231128053202.29007-1-zhangjiachen.jaycee@bytedance.com>
- <20231128053202.29007-2-zhangjiachen.jaycee@bytedance.com>
- <ZWWii6HhlfkWXSq8@infradead.org>
+        Tue, 28 Nov 2023 11:19:12 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D4B182;
+        Tue, 28 Nov 2023 08:19:18 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-5079f6efd64so7633953e87.2;
+        Tue, 28 Nov 2023 08:19:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701188356; x=1701793156; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=AeC86zbCGJVSk79IhGKH9GShZbi811qqEA24Z7ghM0M=;
+        b=Uu4ot+Y+/yr6anfulEW9FJBZ/sZefqjz76MNgQ7GsoYMn6wK3Lzb7+gP4b/4RopvHv
+         +bTQLNod+CC2soIujByj+Q54uSjmZXqU59jubqO8XxeDkq3/iKXDTsjUDrHRepgmfafp
+         m6czn/C0LdooY3a93n0yMIB+HEzddn3bPn5jZcM46EnyGg4F1MRI9wddH46Z+F2CpaZ1
+         O0gLL9O9LQOQq6vMDSeTNHuojKk+F0Pd9VZn9CFXudT0fTa+MZh+vsbXZU4V06kIQuIx
+         GZMvoBrNolhhsLzzGbCQhyfn36BViO5bRtD19ydnD8H1aNLaJDSl2taJ9gngN3zcVx7r
+         p6ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701188356; x=1701793156;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AeC86zbCGJVSk79IhGKH9GShZbi811qqEA24Z7ghM0M=;
+        b=kRLnyB2vxbeW/RHNzNmruPnnD4oFXgHBigfM6egHn3+Io07nn0SixvEhHZ53E3LsdJ
+         LRXgKJEKpLdY8ZYvzQA+OMA2vjLBEVi5MhFQlQ0DiQsqrocNb2NJ7pFe1L9n/WuIpK6b
+         9DApDp125KMbyrrJsl5tzhcFmWBWEA3aJBvbSSTIlWoo/28Qv/yYT6uc75S7ikP0vsVI
+         YBFkQ/cu8v5jDFEJRSsUoyLh5AFQ55/pZTMNIyCBccVBOBHc8gfy2Pd46Br2G54xoVSe
+         R+EF/7MnNzhAML+L91qCaVCLF9dN3G/7CYTce9kZn3AXu5qqOU7a9Nv/c64AM5o6PrX5
+         Lrkw==
+X-Gm-Message-State: AOJu0Yz2aDtlqozyIoQpfhkaicNPF0/bXqeyaKn2hGrXq6EIE17fD1bQ
+        Nv+euAhf/Rq/w9flCqhpYsU=
+X-Google-Smtp-Source: AGHT+IGMma2vgs85Y0T7461/0MipHE1/19RTn/0fiyXlqiyumPPE/1qzpnDwgkRnEwkYX001zMdDPQ==
+X-Received: by 2002:a05:6512:2245:b0:50a:40b6:2d37 with SMTP id i5-20020a056512224500b0050a40b62d37mr13159186lfu.40.1701188356322;
+        Tue, 28 Nov 2023 08:19:16 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id i14-20020a05640200ce00b0054866f0c1b8sm6386704edu.69.2023.11.28.08.19.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 08:19:15 -0800 (PST)
+Message-ID: <b9f63218d934b8048ccdafa8e2c27f9929e344a6.camel@gmail.com>
+Subject: Re: [PATCH ipsec-next v1 6/7] bpf: selftests: test_tunnel: Disable
+ CO-RE relocations
+From:   Eduard Zingerman <eddyz87@gmail.com>
+To:     Daniel Xu <dxu@dxuuu.xyz>, Yonghong Song <yonghong.song@linux.dev>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        antony.antony@secunet.com, Mykola Lysenko <mykolal@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, devel@linux-ipsec.org,
+        Network Development <netdev@vger.kernel.org>
+Date:   Tue, 28 Nov 2023 18:19:08 +0200
+In-Reply-To: <p6qdiwnuglz7ry6hsssruf3w6n3tnavglya3iampors7eb4ac6@nonyetjx2zvc>
+References: <CAADnVQ+sEsUyNYPeZyOf2PcCnxOvOqw4bUuAuMofCU14szTGvg@mail.gmail.com>
+         <3ec6c068-7f95-419a-a0ae-a901f95e4838@linux.dev>
+         <18e43cdf65e7ba0d8f6912364fbc5b08a6928b35.camel@gmail.com>
+         <uc5fv3keghefszuvono7aclgtjtgjnnia3i54ynejmyrs42ser@bwdpq5gmuvub>
+         <0535eb913f1a0c2d3c291478fde07e0aa2b333f1.camel@gmail.com>
+         <42f9bf0d-695a-412d-bea5-cb7036fa7418@linux.dev>
+         <a5a84482-13ef-47d8-bf07-8017060a5d64@linux.dev>
+         <xehp2qvy5cyaairbnfhem4hvbsl26blo4zzu7z6ywbp26jcwyn@hgp3v2q4ud7o>
+         <53jaqi72ef4gynyafxidl5veb54kfs7dttxezkarwg75t7szd4@cvfg5pc7pyum>
+         <f68c01d6-bf6b-4b76-8b20-53e9f4a61fcd@linux.dev>
+         <p6qdiwnuglz7ry6hsssruf3w6n3tnavglya3iampors7eb4ac6@nonyetjx2zvc>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=mQGNBGKNNQEBDACwcUNXZOGTzn4rr7Sd18SA5Wv0Wna/ONE0ZwZEx+sIjyGrPOIhR14/DsOr3ZJer9UJ/WAJwbxOBj6E5Y2iF7grehljNbLr/jMjzPJ+hJpfOEAb5xjCB8xIqDoric1WRcCaRB+tDSk7jcsIIiMish0diTK3qTdu4MB6i/sh4aeFs2nifkNi3LdBuk8Xnk+RJHRoKFJ+C+EoSmQPuDQIRaF9N2m4yO0eG36N8jLwvUXnZzGvHkphoQ9ztbRJp58oh6xT7uH62m98OHbsVgzYKvHyBu/IU2ku5kVG9pLrFp25xfD4YdlMMkJH6l+jk+cpY0cvMTS1b6/g+1fyPM+uzD8Wy+9LtZ4PHwLZX+t4ONb/48i5AKq/jSsb5HWdciLuKEwlMyFAihZamZpEj+9n91NLPX4n7XeThXHaEvaeVVl4hfW/1Qsao7l1YjU/NCHuLaDeH4U1P59bagjwo9d1n5/PESeuD4QJFNqW+zkmE4tmyTZ6bPV6T5xdDRHeiITGc00AEQEAAbQkRWR1YXJkIFppbmdlcm1hbiA8ZWRkeXo4N0BnbWFpbC5jb20+iQHUBBMBCgA+FiEEx+6LrjApQyqnXCYELgxleklgRAkFAmKNNQECGwMFCQPCZwAFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQLgxleklgRAlWZAv/cJ5v3zlEyP0/jMKQBqbVCCHTirPEw+nqxbkeSO6r2FUds0NnGA9a6NPOpBH+qW7a6+n6q3sIbvH7jlss4pzLI7LYlDC6z+egTv7KR5X1xFrY1uR5UGs1beAjnzYeV2hK4yqRUfygsT0Wk5e4FiNBv4+DUZ8r0cNDkO6swJxU55DO21mcteC147+4aDoHZ40R0tsAu+brDGSSoOPpb0RWVsEf9XOBJqWWA+T7mluw
+ nYzhLWGcczc6J71q1Dje0l5vIPaSFOgwmWD4DA+WvuxM/shH4rtWeodbv iCTce6yYIygHgUAtJcHozAlgRrL0jz44cggBTcoeXp/atckXK546OugZPnl00J3qmm5uWAznU6T5YDv2vCvAMEbz69ib+kHtnOSBvR0Jb86UZZqSb4ATfwMOWe9htGTjKMb0QQOLK0mTcrk/TtymaG+T4Fsos0kgrxqjgfrxxEhYcVNW8v8HISmFGFbqsJmFbVtgk68BcU0wgF8oFxo7u+XYQDdKbI1uQGNBGKNNQEBDADbQIdo8L3sdSWGQtu+LnFqCZoAbYurZCmUjLV3df1b+sg+GJZvVTmMZnzDP/ADufcbjopBBjGTRAY4L76T2niu2EpjclMMM3mtrOc738Kr3+RvPjUupdkZ1ZEZaWpf4cZm+4wH5GUfyu5pmD5WXX2i1r9XaUjeVtebvbuXWmWI1ZDTfOkiz/6Z0GDSeQeEqx2PXYBcepU7S9UNWttDtiZ0+IH4DZcvyKPUcK3tOj4u8GvO3RnOrglERzNCM/WhVdG1+vgU9fXO83TB/PcfAsvxYSie7u792s/I+yA4XKKh82PSTvTzg2/4vEDGpI9yubkfXRkQN28w+HKF5qoRB8/L1ZW/brlXkNzA6SveJhCnH7aOF0Yezl6TfX27w1CW5Xmvfi7X33V/SPvo0tY1THrO1c+bOjt5F+2/K3tvejmXMS/I6URwa8n1e767y5ErFKyXAYRweE9zarEgpNZTuSIGNNAqK+SiLLXt51G7P30TVavIeB6s2lCt1QKt62ccLqUAEQEAAYkBvAQYAQoAJhYhBMfui64wKUMqp1wmBC4MZXpJYEQJBQJijTUBAhsMBQkDwmcAAAoJEC4MZXpJYEQJkRAMAKNvWVwtXm/WxWoiLnXyF2WGXKoDe5+itTLvBmKcV/b1OKZF1s90V7WfSBz712eFAynEzyeezPbwU8QBiTpZcHXwQni3IYKvsh7s
+ t1iq+gsfnXbPz5AnS598ScZI1oP7OrPSFJkt/z4acEbOQDQs8aUqrd46PV jsdqGvKnXZxzylux29UTNby4jTlz9pNJM+wPrDRmGfchLDUmf6CffaUYCbu4FiId+9+dcTCDvxbABRy1C3OJ8QY7cxfJ+pEZW18fRJ0XCl/fiV/ecAOfB3HsqgTzAn555h0rkFgay0hAvMU/mAW/CFNSIxV397zm749ZNLA0L2dMy1AKuOqH+/B+/ImBfJMDjmdyJQ8WU/OFRuGLdqOd2oZrA1iuPIa+yUYyZkaZfz/emQwpIL1+Q4p1R/OplA4yc301AqruXXUcVDbEB+joHW3hy5FwK5t5OwTKatrSJBkydSF9zdXy98fYzGniRyRA65P0Ix/8J3BYB4edY2/w0Ip/mdYsYQljBY0A==
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWWii6HhlfkWXSq8@infradead.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 12:19:23AM -0800, Christoph Hellwig wrote:
-> On Tue, Nov 28, 2023 at 01:32:01PM +0800, Jiachen Zhang wrote:
-> > In the case of returning -ENOSPC, ensure tmp_logflags is initialized by 0.
-> > Otherwise the caller __xfs_bunmapi will set uninitialized illegal
-> > tmp_logflags value into xfs log, which might cause unpredictable error
-> > in the log recovery procedure.
-> 
-> This looks good:
-> 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> 
-> But I wonder if removing the local flags variable and always directly
-> assigning to *logflagsp might be more robust in the long run.
+On Tue, 2023-11-28 at 10:13 -0600, Daniel Xu wrote:
+[...]
+> > One thing for sure is memory layout of bitfields should be the same
+> > for both clang and gcc as it is determined by C standard. Register
+> > representation and how to manipulate could be different for different
+> > compilers.
+>=20
+> I was reading this thread:
+> https://github.com/Lora-net/LoRaMac-node/issues/697. It's obviously not
+> authoritative, but they sure sound confident!
+>=20
+> I think I've also heard it before a long time ago when I was working on
+> adding bitfield support to bpftrace.
+>=20
+>=20
+> [...]
 
-Yes, I think it's better to eliminate opportunities for subtle logic
-bombs by not open-coding variable aliasing.  Perhaps this function
-should set *logflagsp = 0 at the start of the function so that we don't
-have to deal with uninitialized outparams, especially since the caller
-uses it even on an error return.
+Here is a citation from ISO/IEC 9899:201x (C11 standard) =C2=A76.7.2.1
+(Structure and union specifiers), paragraph 11 (page 114 in my pdf):
 
---D
+> An implementation may allocate any addressable storage unit large
+> enough to hold a bit- field. If enough space remains, a bit-field
+> that immediately follows another bit-field in a structure shall be
+> packed into adjacent bits of the same unit. If insufficient space
+> remains, whether a bit-field that does not fit is put into the next
+> unit or overlaps adjacent units is implementation-defined. The order
+> of allocation of bit-fields within a unit (high-order to low-order
+> or low-order to high-order) is implementation-defined. The alignment
+> of the addressable storage unit is unspecified.
