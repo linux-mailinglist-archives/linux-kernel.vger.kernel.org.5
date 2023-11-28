@@ -2,108 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AC737FC128
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B3B7FC114
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346494AbjK1Pxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 10:53:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54808 "EHLO
+        id S1346489AbjK1PyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 10:54:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346537AbjK1Pxl (ORCPT
+        with ESMTP id S1346497AbjK1Px4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 10:53:41 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 745D919B4;
-        Tue, 28 Nov 2023 07:53:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701186812; x=1732722812;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=sEPbvoTt9M7AzxsulQ/KXP+SKFVRFBlAEP7wQyvf3hM=;
-  b=JkCNAjnxQlIJRIRCEu8TQi52kinRb6wVdDIZ28XEpu2QTdxlEUFlrS7k
-   NFG9sHdkwsrNF8E85wuHLzdDBsG3K7mtfBoulO74bG9QpgGCBosqtQSNb
-   FQhkonmVjOR67zNcYi6XNnjfbpiM5H3/ZyDvtYZ/oZnT3qz0piuIwz5A7
-   9KX086POV8LPwYR/PABi4ReQ6KP6q9Ln5Z+AINsaOI55bGlTwYPa9f8lY
-   IRdr2OU4w0ay83iDDxVTgkiMc5aE8hMbbLdz/GuwK4bj+3W9xXdq1lH21
-   zg5DPGDembDbUwoKI5JDhJqAPZkkG7OB4CuixglzAubPtxWCBY+Bjyv61
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="383336617"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="383336617"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 07:53:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="772352569"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="772352569"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 07:53:24 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1r80On-00000000CZZ-06Ld;
-        Tue, 28 Nov 2023 17:53:21 +0200
-Date:   Tue, 28 Nov 2023 17:53:20 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        Jianlong Huang <jianlong.huang@starfivetech.com>,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        oe-kbuild-all@lists.linux.dev, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sean Wang <sean.wang@kernel.org>
-Subject: Re: [PATCH v2 12/21] pinctrl: core: Embed struct pingroup into
- struct group_desc
-Message-ID: <ZWYM8Pjl-S-8CMPu@smile.fi.intel.com>
-References: <20231123193355.3400852-13-andriy.shevchenko@linux.intel.com>
- <202311250448.uz5Yom3N-lkp@intel.com>
+        Tue, 28 Nov 2023 10:53:56 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE773BD
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 07:54:02 -0800 (PST)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id BB97D66072A4;
+        Tue, 28 Nov 2023 15:54:00 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701186841;
+        bh=kX8VFnjMmnUgzzjN92JSyU07DWZZRpGOPGYPIFQv0sI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hlDKx346ueHXtFqp4rG4thCHSpEwBhnnPyznIUhe0IsmQLLDEg6UMSVZfW0TI0F7a
+         67uk/P5Mzu4dCCr0hGtRvlwvXObfkHClrlrBQDcOSLenmc7EHauF48DDUOf50uTfwj
+         i4K7CsQcUQ5deNunZ7R8h4YMRA86C7foHWkP/foEMPeCx73eba0ApCVo8HbxuC3GQB
+         AFS3YeB/T73Kod+k0HdtCa+2ldqcMN4ybpwlGsJC93RvUo8iQ8mwZe/01egy2rOWGa
+         DXCuQZ8JoYp/7+4VsEAvjOXm6b1snFUORsOJybic7rnugvRJE127SN6UC+0aa5YoYW
+         9CkRSBuHhILWQ==
+Date:   Tue, 28 Nov 2023 16:53:57 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     robh@kernel.org, steven.price@arm.com,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, m.szyprowski@samsung.com,
+        krzysztof.kozlowski@linaro.org
+Subject: Re: [PATCH v2 3/3] drm/panfrost: Synchronize and disable interrupts
+ before powering off
+Message-ID: <20231128165357.2c9bfdf1@collabora.com>
+In-Reply-To: <f5208c45-54c7-4030-9985-cb7c8f1d6466@collabora.com>
+References: <20231128124510.391007-1-angelogioacchino.delregno@collabora.com>
+        <20231128124510.391007-4-angelogioacchino.delregno@collabora.com>
+        <20231128145712.3f4d3f74@collabora.com>
+        <f5208c45-54c7-4030-9985-cb7c8f1d6466@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202311250448.uz5Yom3N-lkp@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 25, 2023 at 07:39:02AM +0800, kernel test robot wrote:
-> Hi Andy,
+On Tue, 28 Nov 2023 16:10:45 +0100
+AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+wrote:
+
+> >>   static void panfrost_job_handle_err(struct panfrost_device *pfdev,
+> >>   				    struct panfrost_job *job,
+> >>   				    unsigned int js)
+> >> @@ -792,9 +800,13 @@ static irqreturn_t panfrost_job_irq_handler_thread(int irq, void *data)
+> >>   	struct panfrost_device *pfdev = data;
+> >>   
+> >>   	panfrost_job_handle_irqs(pfdev);
+> >> -	job_write(pfdev, JOB_INT_MASK,
+> >> -		  GENMASK(16 + NUM_JOB_SLOTS - 1, 16) |
+> >> -		  GENMASK(NUM_JOB_SLOTS - 1, 0));
+> >> +
+> >> +	/* Enable interrupts only if we're not about to get suspended */
+> >> +	if (!test_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspending))  
+> > 
+> > The irq-line is requested with IRQF_SHARED, meaning the line might be
+> > shared between all three GPU IRQs, but also with other devices. I think
+> > if we want to be totally safe, we need to also check this is_suspending
+> > field in the hard irq handlers before accessing the xxx_INT_yyy
+> > registers.
+> >   
 > 
-> kernel test robot noticed the following build errors:
+> This would mean that we would have to force canceling jobs in the suspend
+> handler, but if the IRQ never fired, would we still be able to find the
+> right bits flipped in JOB_INT_RAWSTAT?
 
-> [also build test ERROR on linusw-pinctrl/for-next next-20231124]
+There should be no jobs left if we enter suspend. If there is, that's a
+bug we should fix, but I'm digressing.
 
-Hmm... I have compiled tested on Linux Next it several times, I can't reproduce
-this neither with GCC nor with LLVM.
+> 
+>  From what I understand, are you suggesting to call, in job_suspend_irq()
+> something like
+> 
+> void panfrost_job_suspend_irq(struct panfrost_device *pfdev)
+> {
+>          u32 status;
+> 
+> 	set_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspending);
+> 
+> 	job_write(pfdev, JOB_INT_MASK, 0);
+> 	synchronize_irq(pfdev->js->irq);
+> 
+> 	status = job_read(pfdev, JOB_INT_STAT);
 
--- 
-With Best Regards,
-Andy Shevchenko
+I guess you meant _RAWSTAT. _STAT should always be zero after we've
+written 0 to _INT_MASK.
 
+> 	if (status)
+> 		panfrost_job_irq_handler_thread(pfdev->js->irq, (void*)pfdev);
+
+Nope, we don't need to read the STAT reg and forcibly call the threaded
+handler if it's != 0. The synchronize_irq() call should do exactly that
+(make sure all pending interrupts are processed before returning), and
+our previous job_write(pfdev, JOB_INT_MASK, 0) guarantees that no new
+interrupts will kick in after that point.
+
+> }
+> 
+> and then while still retaining the check in the IRQ thread handler, also
+> check it in the hardirq handler like
+> 
+> static irqreturn_t panfrost_job_irq_handler(int irq, void *data)
+> {
+> 	struct panfrost_device *pfdev = data;
+> 	u32 status;
+> 
+> 	if (!test_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspending))
+> 		return IRQ_NONE;
+
+Yes, that's the extra check I was talking about, and that's also the
+very reason I'm suggesting to call this field suspended_irqs instead of
+is_suspending. Ultimately, each bit in this bitmap encodes the status
+of a specific IRQ, not the transition from active-to-suspended,
+otherwise we'd be clearing the bit at the end of
+panfrost_job_suspend_irq(), right after the synchronize_irq(). But if
+we were doing that, our hard IRQ handler could be called because other
+devices raised an interrupt on the very same IRQ line while we are
+suspended, and we'd be doing an invalid GPU reg read while the
+clks/power-domains are off.
+
+> 
+> 	status = job_read(pfdev, JOB_INT_STAT);
+> 	if (!status)
+> 	        return IRQ_NONE;
+> 
+> 	job_write(pfdev, JOB_INT_MASK, 0);
+> 	return IRQ_WAKE_THREAD;
+> }
+> 
+> (rinse and repeat for panfrost_mmu)
+> 
+> ..or am I misunderstanding you?
+> 
+> Cheers,
+> Angelo
+> 
+> 
 
