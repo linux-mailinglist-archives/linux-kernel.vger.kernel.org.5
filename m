@@ -2,195 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E797FC218
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0EA87FC16B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343899AbjK1QKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 11:10:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38834 "EHLO
+        id S1344439AbjK1QLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:11:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232712AbjK1QKR (ORCPT
+        with ESMTP id S229595AbjK1QLO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 11:10:17 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6506ED53
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:10:22 -0800 (PST)
-Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0B60F66072E7;
-        Tue, 28 Nov 2023 16:10:19 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701187821;
-        bh=kMG1I4O6N/0qm/ZYve1cd6mlTUjtXKzKNM/ZG43+6KU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=YemsDFnnTQUsBpAb9E2CaJU7elx0nqKjHIYUM51KCCqPgKzNBsWYeeed0CE8ygw8M
-         60n/aAXkCdZe9q6+D4/n03AEMQiDs0B+54FOpdWn3zRzr523+X/y4AfTUne+x7VhZY
-         Y22xIe89OS0xHE7pa/tU6lg7QGSnAyo5Q634QLH9/Whx3h2KzQDe8Upnk4y3qiuDWv
-         NGUpdrMqZ7wV//dcRX6LIpt0TfFWwBk1PS1A9E07s7wTPr8hWzArBisN8CeyHklX5P
-         TgyrF5+7GI2N6H9n8hJOkHBDUKFyNndXZ27CD8Wxcz6sJF/+nznhY7S/VgfPHBPh6U
-         +UQE+jaqh6bHA==
-Message-ID: <5f45485a-fee6-4ab9-9894-6da4491a985c@collabora.com>
-Date:   Tue, 28 Nov 2023 17:10:17 +0100
+        Tue, 28 Nov 2023 11:11:14 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B06C5DA;
+        Tue, 28 Nov 2023 08:11:20 -0800 (PST)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ASBliTK019059;
+        Tue, 28 Nov 2023 16:11:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=iqbAdlkzfpJ3QRXcSlzFEiRtZrwRPJqcPLYmnFK9te4=;
+ b=H9Bn+40scZaA7X7DxIujXYibiSOUDsAMQErDQ2lE7xZ9WQdn30fiajQGldjhRBHGJwN3
+ N216pFNn0Z7YBUfWmLk1a7tS1oWUYUdQZRwr9xSVu1fUH4SUNw/Ln+Oa7dDLpTH9Aktb
+ Fzp85jTQ3Nd9VFliUO/8oScKD5u2pIp0pH0FHtQ1E9KGGkavvvOtryun3AaFHUcVwmjX
+ 10Fg4bx4L/8VBCIzaVjhVGPo/86OVLC7zJXi1qf/JQ8vH1umzOZaQa3R8lxCr+O3XPPn
+ 9WGu+ql+IGJ9pmNxN/WIvpPCU5Iyd16hRC/skT4aBS0nyiG0zfKNSyhp5vJDlqu/mseJ Mw== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3unfn4rv2u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Nov 2023 16:11:16 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ASGBF1g003718
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Nov 2023 16:11:15 GMT
+Received: from [10.216.35.46] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 28 Nov
+ 2023 08:11:10 -0800
+Message-ID: <26b69814-201b-8d07-d844-27e804aa3016@quicinc.com>
+Date:   Tue, 28 Nov 2023 21:41:06 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] drm/panfrost: Synchronize and disable interrupts
- before powering off
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH V2 0/4] Add runtime PM support for videocc on SM8150
 Content-Language: en-US
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     robh@kernel.org, steven.price@arm.com,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, m.szyprowski@samsung.com,
-        krzysztof.kozlowski@linaro.org
-References: <20231128124510.391007-1-angelogioacchino.delregno@collabora.com>
- <20231128124510.391007-4-angelogioacchino.delregno@collabora.com>
- <20231128145712.3f4d3f74@collabora.com>
- <f5208c45-54c7-4030-9985-cb7c8f1d6466@collabora.com>
- <20231128165357.2c9bfdf1@collabora.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231128165357.2c9bfdf1@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Konrad Dybcio <konradybcio@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+References: <20231118123944.2202630-1-quic_skakitap@quicinc.com>
+ <47925f9e-32aa-4762-a4ec-aa559e18ff12@kernel.org>
+From:   "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>
+In-Reply-To: <47925f9e-32aa-4762-a4ec-aa559e18ff12@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: st3HThTTRbxcV2U3hW0UrJWTCjJP1TlH
+X-Proofpoint-GUID: st3HThTTRbxcV2U3hW0UrJWTCjJP1TlH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-28_18,2023-11-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ impostorscore=0 adultscore=0 clxscore=1011 suspectscore=0
+ priorityscore=1501 mlxscore=0 bulkscore=0 mlxlogscore=983 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311280129
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 28/11/23 16:53, Boris Brezillon ha scritto:
-> On Tue, 28 Nov 2023 16:10:45 +0100
-> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> wrote:
-> 
->>>>    static void panfrost_job_handle_err(struct panfrost_device *pfdev,
->>>>    				    struct panfrost_job *job,
->>>>    				    unsigned int js)
->>>> @@ -792,9 +800,13 @@ static irqreturn_t panfrost_job_irq_handler_thread(int irq, void *data)
->>>>    	struct panfrost_device *pfdev = data;
->>>>    
->>>>    	panfrost_job_handle_irqs(pfdev);
->>>> -	job_write(pfdev, JOB_INT_MASK,
->>>> -		  GENMASK(16 + NUM_JOB_SLOTS - 1, 16) |
->>>> -		  GENMASK(NUM_JOB_SLOTS - 1, 0));
->>>> +
->>>> +	/* Enable interrupts only if we're not about to get suspended */
->>>> +	if (!test_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspending))
->>>
->>> The irq-line is requested with IRQF_SHARED, meaning the line might be
->>> shared between all three GPU IRQs, but also with other devices. I think
->>> if we want to be totally safe, we need to also check this is_suspending
->>> field in the hard irq handlers before accessing the xxx_INT_yyy
->>> registers.
->>>    
->>
->> This would mean that we would have to force canceling jobs in the suspend
->> handler, but if the IRQ never fired, would we still be able to find the
->> right bits flipped in JOB_INT_RAWSTAT?
-> 
-> There should be no jobs left if we enter suspend. If there is, that's a
-> bug we should fix, but I'm digressing.
-> 
->>
->>   From what I understand, are you suggesting to call, in job_suspend_irq()
->> something like
->>
->> void panfrost_job_suspend_irq(struct panfrost_device *pfdev)
->> {
->>           u32 status;
->>
->> 	set_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspending);
->>
->> 	job_write(pfdev, JOB_INT_MASK, 0);
->> 	synchronize_irq(pfdev->js->irq);
->>
->> 	status = job_read(pfdev, JOB_INT_STAT);
-> 
-> I guess you meant _RAWSTAT. _STAT should always be zero after we've
-> written 0 to _INT_MASK.
-> 
 
-Whoops! Yes, as I wrote up there, I meant _RAWSTAT, sorry! :-)
+On 11/20/2023 5:18 PM, Konrad Dybcio wrote:
+> On 18.11.2023 13:39, Satya Priya Kakitapalli wrote:
+>> Add runtime support for videocc on SM8150 and update the resets
+>> and video_pll0_config configuration.
+>>
+>> Satya Priya Kakitapalli (4):
+>>    dt-bindings: clock: Update the videocc resets for sm8150
+>>    clk: qcom: videocc-sm8150: Update the videocc resets
+>>    clk: qcom: videocc-sm8150: Add missing PLL config properties
+>>    clk: qcom: videocc-sm8150: Add runtime PM support
+> Hi, it's good practive to include a link to the previous revision
+> and a summary of changes.
+>
+> The b4 tool [1] does that for you, please consider using it.
 
->> 	if (status)
->> 		panfrost_job_irq_handler_thread(pfdev->js->irq, (void*)pfdev);
-> 
-> Nope, we don't need to read the STAT reg and forcibly call the threaded
-> handler if it's != 0. The synchronize_irq() call should do exactly that
-> (make sure all pending interrupts are processed before returning), and
-> our previous job_write(pfdev, JOB_INT_MASK, 0) guarantees that no new
-> interrupts will kick in after that point.
-> 
 
-Unless we synchronize_irq() *before* masking all interrupts (which would be
-wrong, as some interrupt could still fire after execution of the ISR), we get
-*either of* two scenarios:
+Hi, I have installed b4 and followed all the steps, but it doesn't 
+populate my cover letter with change log and previous series link, do i 
+need to use some option for that?
 
-  - COMP_BIT_JOB is not set, softirq thread unmasks some interrupts by
-    writing to JOB_INT_MASK; or
-  - COMP_BIT_JOB is set, hardirq handler returns IRQ_NONE, the threaded
-    interrupt handler doesn't get executed, jobs are not canceled.
 
-So if we don't forbicly call the threaded handler if RAWSTAT != 0 in there,
-and if the extra check is present in the hardirq handler, and if the hardirq
-handler wasn't executed already before our synchronize_irq() call (so: if the
-hardirq execution has to be done to synchronize irqs), we are not guaranteeing
-that jobs cancellation/dequeuing/removal/whatever-handling is done before
-entering suspend.
-
-That, unless the suggestion was to call panfrost_job_handle_irqs() instead of
-the handler thread like that (because reading it back, it makes sense to do so).
-
-Cheers!
-
->> }
->>
->> and then while still retaining the check in the IRQ thread handler, also
->> check it in the hardirq handler like
->>
->> static irqreturn_t panfrost_job_irq_handler(int irq, void *data)
->> {
->> 	struct panfrost_device *pfdev = data;
->> 	u32 status;
->>
->> 	if (!test_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspending))
->> 		return IRQ_NONE;
-> 
-> Yes, that's the extra check I was talking about, and that's also the
-> very reason I'm suggesting to call this field suspended_irqs instead of
-> is_suspending. Ultimately, each bit in this bitmap encodes the status
-> of a specific IRQ, not the transition from active-to-suspended,
-> otherwise we'd be clearing the bit at the end of
-> panfrost_job_suspend_irq(), right after the synchronize_irq(). But if
-> we were doing that, our hard IRQ handler could be called because other
-> devices raised an interrupt on the very same IRQ line while we are
-> suspended, and we'd be doing an invalid GPU reg read while the
-> clks/power-domains are off.
-> 
->>
->> 	status = job_read(pfdev, JOB_INT_STAT);
->> 	if (!status)
->> 	        return IRQ_NONE;
->>
->> 	job_write(pfdev, JOB_INT_MASK, 0);
->> 	return IRQ_WAKE_THREAD;
->> }
->>
->> (rinse and repeat for panfrost_mmu)
->>
->> ..or am I misunderstanding you?
->>
->> Cheers,
->> Angelo
->>
->>
-> 
-
+> Konrad
+>
+> [1] https://b4.docs.kernel.org/en/latest/index.html
