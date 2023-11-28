@@ -2,123 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF8D7FBA90
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:54:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 727557FBA93
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:55:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344755AbjK1MyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 07:54:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50444 "EHLO
+        id S1344761AbjK1Myv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 07:54:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344747AbjK1MyF (ORCPT
+        with ESMTP id S1344757AbjK1Myt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 07:54:05 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B1DD6D;
-        Tue, 28 Nov 2023 04:54:11 -0800 (PST)
+        Tue, 28 Nov 2023 07:54:49 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0642A10D8;
+        Tue, 28 Nov 2023 04:54:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701176051; x=1732712051;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=5K++CR/OvistPw0XQfzY/YBgYQVr3P4OlOvmEu/zZC4=;
-  b=gXTbmgMBI9JWxWh3pdsub7ntkhG2pDcAauw3qNg36I6GATPTC1nyAgF9
-   vPqc8UZTaYjGQko9j/LBoakBrn20KrtCNFcnC9ovXoOQ4uwSbpNKaYpqz
-   ZfQLgyagThHQnCT2KdQSFyeGtTSWsQT+oqzKFeAVl/Pnc7FICIRkSGCU/
-   cBrDXNB1sWOjs9Jen0SnmTSvWbKm41Dfu/yqTvWJRWnrUDgHL23qM5R2q
-   zS+ZxdJJuoI1VxYFsx6okVE2xRwNcNW6bxIFW4hk6aS3VKQtc85yiWD7M
-   obPkymzN+aNXptgxxh7fIsf4rM+0ElMlIhlqQboYXv1fPHQ/+puycU12R
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="377943906"
+  t=1701176096; x=1732712096;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=dVu4q/x1civBTJPwWNdWPRxz+AZouCiyXKEZvCfSL7A=;
+  b=b0yuf6ygaLe+2qq4qfP2Yw6KCWtZ9pZyHu5EvPYJTt4wJiV8fljZgzoU
+   lt0oi1nTpPtkIxQO3GNDicmfL57hwVTErGlFPhniErPzInWDQwWokeXFd
+   7rf9UW+AhDg0VoU0BeC6d7oJwQzVXPmJ4MrDjAHWR+7GE0ag8JiyFwIKB
+   M5qv4NYE/x7GrgxTzt0Q+fSYIbaDjtCkYzC6gnGcCBqJxd8xIvobSTcVZ
+   /dePggJQQnSVna6R37JCYzP3QaFBiLCDwf3XsI5BGeiZl5FXZedIS0gNL
+   N5OL9sW0qeURP1lTata7rnqeA45u0OVzUHM80Qqm+9Gi0LN3NpYqD9QfI
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="6116070"
 X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
-   d="scan'208";a="377943906"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 04:54:10 -0800
+   d="scan'208";a="6116070"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 04:54:56 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="1015900733"
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="892073899"
 X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
-   d="scan'208";a="1015900733"
-Received: from mravivx-mobl.ger.corp.intel.com (HELO localhost) ([10.252.42.57])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 04:54:04 -0800
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Maxime Ripard <mripard@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sandy Huang <hjc@rock-chips.com>,
-        Heiko =?utf-8?Q?St?= =?utf-8?Q?=C3=BCbner?= <heiko@sntech.de>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        Maxime Ripard <mripard@kernel.org>
-Subject: Re: [PATCH v4 05/45] drm/connector: Check drm_connector_init
- pointers arguments
-In-Reply-To: <20231128-kms-hdmi-connector-state-v4-5-c7602158306e@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20231128-kms-hdmi-connector-state-v4-0-c7602158306e@kernel.org>
- <20231128-kms-hdmi-connector-state-v4-5-c7602158306e@kernel.org>
-Date:   Tue, 28 Nov 2023 14:54:02 +0200
-Message-ID: <87h6l66nth.fsf@intel.com>
+   d="scan'208";a="892073899"
+Received: from haslam-mobl1.ger.corp.intel.com ([10.252.43.79])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 04:54:50 -0800
+Date:   Tue, 28 Nov 2023 14:54:48 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Henry Shi <henryshi2018@gmail.com>
+cc:     hbshi69@hotmail.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, Hans de Goede <hdegoede@redhat.com>,
+        markgross@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
+        LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        hb_shi2003@yahoo.com, henrys@silicom-usa.com, wenw@silicom-usa.com,
+        =?ISO-8859-2?Q?Barnab=E1s_P=F5cze?= <pobrn@protonmail.com>
+Subject: Re: [PATCH v15] platform/x86: Add Silicom Platform Driver
+In-Reply-To: <20231124200334.5318-1-henryshi2018@gmail.com>
+Message-ID: <b9e2321c-7dfb-d2d5-6cb-e3fa1ded1422@linux.intel.com>
+References: <20231124200334.5318-1-henryshi2018@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/mixed; BOUNDARY="8323329-1963003203-1701175569=:1797"
+Content-ID: <e8e7589-3b28-421d-5a5e-9b5531705bfc@linux.intel.com>
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Nov 2023, Maxime Ripard <mripard@kernel.org> wrote:
-> All the drm_connector_init variants take at least a pointer to the
-> device, connector and hooks implementation.
->
-> However, none of them check their value before dereferencing those
-> pointers which can lead to a NULL-pointer dereference if the author
-> isn't careful.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Arguably oopsing on the spot is preferrable when this can't be caused by
-user input. It's always a mistake that should be caught early during
-development.
+--8323329-1963003203-1701175569=:1797
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+Content-ID: <53551940-6a3b-3470-c377-42fbfd0fa7@linux.intel.com>
 
-Not everyone checks the return value of drm_connector_init and friends,
-so those cases will lead to more mysterious bugs later. And probably
-oopses as well.
+On Fri, 24 Nov 2023, Henry Shi wrote:
 
+> platform/x86: Add Silicom Platform Driver
+> 
+> Add Silicom platform (silicom-platform) Linux driver for Swisscom
+> Business Box (Swisscom BB) as well as Cordoba family products.
+> 
+> This platform driver provides support for various functions via
+> the Linux LED framework, GPIO framework, Hardware Monitoring (HWMON)
+> and device attributes.
+> 
+> Signed-off-by: Henry Shi <henryshi2018@gmail.com>
 
-BR,
-Jani.
+As far as I'm concerned, this seems to be okay shape now:
 
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
->
-> Let's test those pointers instead and error out if any is NULL.
->
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
-> ---
->  drivers/gpu/drm/drm_connector.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
-> index b0516505f7ae..2f60755dccdd 100644
-> --- a/drivers/gpu/drm/drm_connector.c
-> +++ b/drivers/gpu/drm/drm_connector.c
-> @@ -229,6 +229,9 @@ static int __drm_connector_init(struct drm_device *dev,
->  	struct ida *connector_ida =
->  		&drm_connector_enum_list[connector_type].ida;
->  
-> +	if (!dev || !connector || !funcs)
-> +		return -EINVAL;
-> +
->  	WARN_ON(drm_drv_uses_atomic_modeset(dev) &&
->  		(!funcs->atomic_destroy_state ||
->  		 !funcs->atomic_duplicate_state));
+It would be good for somebody to check if the devicename part of the led 
+.name is correct (as I cannot even myself figure out what exactly is 
+expected there).
+
 
 -- 
-Jani Nikula, Intel
+ i.
+--8323329-1963003203-1701175569=:1797--
