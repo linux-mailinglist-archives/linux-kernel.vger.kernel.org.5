@@ -2,49 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0557FB3E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:18:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 726217FB3EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:19:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344074AbjK1ISc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 03:18:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50084 "EHLO
+        id S1344126AbjK1ITm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 03:19:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbjK1ISa (ORCPT
+        with ESMTP id S1344116AbjK1ITg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 03:18:30 -0500
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19095B0;
-        Tue, 28 Nov 2023 00:18:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1701159511;
-        bh=bALKkCMp4lwFvbZNSnYUsuxiPjBZcOtLPTfv5JH7kEI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W2yx2WsKSKX+OxGDFmsqxigPuTgF7gXV5uUuM1cjTjiMJJPTck/FA5tPFo/sJKb36
-         1mbhhZfmKMRRb9N0vtU1BV0SzPDGW6lmu1Tex4fcrh7kV4Qf3z6Vjk5OibJPIdVwai
-         Ccq9HpQqWDDyeLlcWeZ3SdowZByoz58cE27ue6lg=
-Date:   Tue, 28 Nov 2023 09:18:30 +0100
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Joel Granados <j.granados@samsung.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH RFC 0/7] sysctl: constify sysctl ctl_tables
-Message-ID: <475cd5fa-f0cc-4b8b-9e04-458f6d143178@t-8ch.de>
-References: <CGME20231125125305eucas1p2ebdf870dd8ef46ea9d346f727b832439@eucas1p2.samsung.com>
- <20231125-const-sysctl-v1-0-5e881b0e0290@weissschuh.net>
- <20231127101323.sdnibmf7c3d5ovye@localhost>
+        Tue, 28 Nov 2023 03:19:36 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 061E018D;
+        Tue, 28 Nov 2023 00:19:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=6P7w5SEBilFSlHhNw2KzHq6PLTIxmHl6RL+UUL/42O4=; b=QSsHW+cmFxrltLh/f9Lb0TdNQW
+        XB3OQhlSlav/WP4TYeNIpcrr31tzYQwifoM59bijQl+S3EIRO4exXXa81GwpjXIQZ9m3PV9UBZ50F
+        +3goC+gwiuixCxTD6YW8VOJtjLCRxfJG1KZO6k9FFyAd0FkS84JYPcwSiCrMfQ+zz3uyFWWXvDaYG
+        toChNVC0eN9plO/QuqPh/DCV9fs8CYsNs6xpVQbH4LmChjO76dK/ZbHFZOxXusVG+kLlyo9WJ/Ylp
+        S1kHVMBjGOkrUtZxPD7OJVSh5XKKYhYcIxlUBQqMfC2geJtiN8sM+CjS2dvhR9kfOH1k8iSh8ER7P
+        Ga4zG69w==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1r7tJT-004W5m-1Z;
+        Tue, 28 Nov 2023 08:19:23 +0000
+Date:   Tue, 28 Nov 2023 00:19:23 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
+Cc:     Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        Allison Henderson <allison.henderson@oracle.com>,
+        Zhang Tianci <zhangtianci.1997@bytedance.com>,
+        Brian Foster <bfoster@redhat.com>, Ben Myers <bpm@sgi.com>,
+        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xieyongji@bytedance.com, me@jcix.top
+Subject: Re: [PATCH 1/2] xfs: ensure tmp_logflags is initialized in
+ xfs_bmap_del_extent_real
+Message-ID: <ZWWii6HhlfkWXSq8@infradead.org>
+References: <20231128053202.29007-1-zhangjiachen.jaycee@bytedance.com>
+ <20231128053202.29007-2-zhangjiachen.jaycee@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231127101323.sdnibmf7c3d5ovye@localhost>
+In-Reply-To: <20231128053202.29007-2-zhangjiachen.jaycee@bytedance.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,117 +59,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joel,
+On Tue, Nov 28, 2023 at 01:32:01PM +0800, Jiachen Zhang wrote:
+> In the case of returning -ENOSPC, ensure tmp_logflags is initialized by 0.
+> Otherwise the caller __xfs_bunmapi will set uninitialized illegal
+> tmp_logflags value into xfs log, which might cause unpredictable error
+> in the log recovery procedure.
 
-On 2023-11-27 11:13:23+0100, Joel Granados wrote:
-> In general I would like to see more clarity with the motivation and I
-> would also expect some system testing. My comments inline:
+This looks good:
 
-Thanks for your feedback, response are below.
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-> On Sat, Nov 25, 2023 at 01:52:49PM +0100, Thomas Weißschuh wrote:
-> > Problem description:
-> > 
-> > The kernel contains a lot of struct ctl_table throught the tree.
-> > These are very often 'static' definitions.
-> > It would be good to mark these tables const to avoid accidental or
-> > malicious modifications.
-
-> It is unclear to me what you mean here with accidental or malicious
-> modifications. Do you have a specific attack vector in mind? Do you
-> have an example of how this could happen maliciously? With
-> accidental, do you mean in proc/sysctl.c? Can you expand more on the
-> accidental part?
-
-There is no specific attack vector I have in mind. The goal is to remove
-mutable data, especially if it contains pointers, that could be used by
-an attacker as a step in an exploit. See for example [0], [1].
-
-Accidental can be any out-of-bounds write throughout the kernel.
-
-> What happens with the code that modifies these outside the sysctl core?
-> Like for example in sysctl_route_net_init where the table is modified
-> depending on the net->user_ns? Would these non-const ctl_table pointers
-> be ok? would they be handled differently?
-
-It is still completely fine to modify the tables before registering,
-like sysctl_route_net_init is doing. That code should not need any
-changes.
-
-Modifying the table inside the handler function would bypass the
-validation done when registering so sounds like a bad idea in general.
-It would still be possible however for a subsystem to do so by just not
-making their sysctl table const and then modifying the table directly.
- 
-> > Unfortunately the tables can not be made const because the core
-> > registration functions expect mutable tables.
-> > 
-> > This is for two reasons:
-> > 
-> > 1) sysctl_{set,clear}_perm_empty_ctl_header in the sysctl core modify
-> >    the table. This should be fixable by only modifying the header
-> >    instead of the table itself.
-> > 2) The table is passed to the handler function as a non-const pointer.
-> > 
-> > This series is an aproach on fixing reason 2).
-
-> So number 2 will be sent in another set?
-
-If the initial feedback to the RFC and general process is positive, yes.
-
-> > 
-> > Full process:
-> > 
-> > * Introduce field proc_handler_new for const handlers (this series)
-> > * Migrate all core handlers to proc_handler_new (this series, partial)
-> >   This can hopefully be done in a big switch, as it only involves
-> >   functions and structures owned by the core sysctl code.
-> > * Migrate all other sysctl handlers to proc_handler_new.
-> > * Drop the old proc_handler_field.
-> > * Fix the sysctl core to not modify the tables anymore.
-> > * Adapt public sysctl APIs to take "const struct ctl_table *".
-> > * Teach checkpatch.pl to warn on non-const "struct ctl_table"
-> >   definitions.
-> > * Migrate definitions of "struct ctl_table" to "const" where applicable.
-> >  
-> > 
-> > Notes:
-> > 
-> > Just casting the function pointers around would trigger
-> > CFI (control flow integrity) warnings.
-> > 
-> > The name of the new handler "proc_handler_new" is a bit too long messing
-> > up the alignment of the table definitions.
-> > Maybe "proc_handler2" or "proc_handler_c" for (const) would be better.
-
-> indeed the name does not say much. "_new" looses its meaning quite fast
-> :)
-
-Hopefully somebody comes up with a better name!
-
-> In my experience these tree wide modifications are quite tricky. Have you
-> run any tests to see that everything is as it was? sysctl selftests and
-> 0-day come to mind.
-
-I managed to miss one change in my initial submission:
-With the hunk below selftests and typing emails work.
-
---- a/fs/proc/proc_sysctl.c
-+++ b/fs/proc/proc_sysctl.c
-@@ -1151,7 +1151,7 @@ static int sysctl_check_table(const char *path, struct ctl_table_header *header)
-                        else
-                                err |= sysctl_check_table_array(path, entry);
-                }
--               if (!entry->proc_handler)
-+               if (!entry->proc_handler && !entry->proc_handler_new)
-                        err |= sysctl_err(path, entry, "No proc_handler");
- 
-                if ((entry->mode & (S_IRUGO|S_IWUGO)) != entry->mode)
-
-> [..]
-
-[0] 43a7206b0963 ("driver core: class: make class_register() take a const *")
-[1] https://lore.kernel.org/lkml/20230930050033.41174-1-wedsonaf@gmail.com/
-
-
-Thomas
+But I wonder if removing the local flags variable and always directly
+assigning to *logflagsp might be more robust in the long run.
