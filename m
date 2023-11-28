@@ -2,45 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 700087FB65F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:54:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9DAE7FB665
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:55:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343930AbjK1JyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 04:54:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39374 "EHLO
+        id S1343899AbjK1JzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 04:55:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343879AbjK1Jx6 (ORCPT
+        with ESMTP id S230044AbjK1JzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 04:53:58 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7825D10E
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:54:04 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C879CC433C7;
-        Tue, 28 Nov 2023 09:54:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1701165244;
-        bh=n+Ar5X9JSbp0izchwv6/lFQCJOtaNSaVKuhBCyJ0pnA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1wjBmdoLl7hA6XpxnkWmlyKxAiYTdui/gybppPOw7NS+DRXo6/xBDKX/6If3IIf0+
-         WGL5S78lFOV5BeHSOlVSI37fD5lory5sZTs8rL1trKebejjW+DFd8RzMrYykR/hl2f
-         hKfMpDdYQyGqZ1Azxcv+rKHq1Jz2Y+OTHbl5XLoE=
-Date:   Tue, 28 Nov 2023 09:54:01 +0000
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, zohar@linux.ibm.com,
-        initramfs@vger.kernel.org, stable@vger.kernel.org,
-        Rob Landley <rob@landley.net>
-Subject: Re: [PATCH v3] rootfs: Fix support for rootfstype= when root= is
- given
-Message-ID: <2023112826-cesspool-cabbie-06c5@gregkh>
-References: <20231120011248.396012-1-stefanb@linux.ibm.com>
+        Tue, 28 Nov 2023 04:55:06 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7899BA8;
+        Tue, 28 Nov 2023 01:55:12 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40b4a8db331so5910335e9.3;
+        Tue, 28 Nov 2023 01:55:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701165311; x=1701770111; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uNtK1TPISezcj213wu4/hg3WdfzJ6KpGq/90DAKkCkQ=;
+        b=lk536cTwukYfEqlMjAgQH6keBmEZ0B2hnV6sFD7UGXt6qkswf/WOPlOqj+ZHtCPrNj
+         uJumn1+Aq3oL36orwKZkFs4z4nYKFYnhfuG8HhXEsDs3gMcPrFhEghUHU+X6Lvlfb7ji
+         h450oOQjxqAqGQBoQed2yEE0jd2Ict+RGdjsX8tMg5npgJt5i/g7ysTmp/uqu3bT3bAJ
+         UNsXI2ksBCH0Rb6ajhB4PXymr4RMlJV5/2O+GHa4HcBMPrlGgLOpnDQRd6T7FuVlim06
+         3eiZ5ycdeYKa85PTSFwK5lURIfpMHPQ5VMBkblkPH/CBSw7iLXdgo2vTQKpOLCQjgJcA
+         6/XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701165311; x=1701770111;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uNtK1TPISezcj213wu4/hg3WdfzJ6KpGq/90DAKkCkQ=;
+        b=NBLqhE9u0x37B15GtEgnUr/YkXyFsEolyR/CrtXFJBtG2oMv9m3/pF9zkrqNT/Qmrf
+         Zmu2tQZu9bAV+s0B3PrRZsaFx3LOQG3Oh8HiRFYT95CtUxP6SBHV7S5B/3o1JPtfVnJ+
+         pgnUAbrDi17R9nTuUrZDsZMb+jWjsndci+3E9XImxxsGvv+abkS8zFvc2AXagV4eKX1K
+         78gq9VVViryZJbjrlBEmlHnB2NVZ8HTC08481V4ZZRHdqWMWpG5dtFSGDW2QArCyeHMM
+         NyCeKrlaHOX85pNX4c3G79mrLp+OmQACttdLO6yU55sa+hQmvAm8latuxJEfgSax/hvQ
+         3rLQ==
+X-Gm-Message-State: AOJu0YznIF0hP5l19BqK+8IC+bzGX1azv7LqFwkZWHLAL084w210nWCy
+        ANpOyo63fUYOPsc8JkMkPMk=
+X-Google-Smtp-Source: AGHT+IEESw4Dcx8wGaG7me+4i6Y2E1BWo5BBLayfLNo/Pid/KFDP8lnXULskXK5rzZYBU8BsjCBJeg==
+X-Received: by 2002:a05:600c:474d:b0:40b:3802:6ef8 with SMTP id w13-20020a05600c474d00b0040b38026ef8mr10185277wmo.34.1701165310650;
+        Tue, 28 Nov 2023 01:55:10 -0800 (PST)
+Received: from [172.27.56.182] ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id p3-20020a1c7403000000b003feea62440bsm16482424wmc.43.2023.11.28.01.55.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Nov 2023 01:55:10 -0800 (PST)
+Message-ID: <89b8f461-84f9-4f43-bf16-308a72daa9f1@gmail.com>
+Date:   Tue, 28 Nov 2023 11:55:07 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231120011248.396012-1-stefanb@linux.ibm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] [v2] net/mlx5e: fix a potential double-free in
+ fs_udp_create_groups
+Content-Language: en-US
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Zhengchao Shao <shaozhengchao@huawei.com>,
+        Simon Horman <horms@kernel.org>,
+        Rahul Rameshbabu <rrameshbabu@nvidia.com>,
+        Aya Levin <ayal@nvidia.com>, Tariq Toukan <tariqt@nvidia.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Tariq Toukan <tariqt@nvidia.com>
+References: <20231128094055.5561-1-dinghao.liu@zju.edu.cn>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20231128094055.5561-1-dinghao.liu@zju.edu.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,50 +85,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 19, 2023 at 08:12:48PM -0500, Stefan Berger wrote:
-> Documentation/filesystems/ramfs-rootfs-initramfs.rst states:
-> 
->   If CONFIG_TMPFS is enabled, rootfs will use tmpfs instead of ramfs by
->   default.  To force ramfs, add "rootfstype=ramfs" to the kernel command
->   line.
-> 
-> This currently does not work when root= is provided since then
-> saved_root_name contains a string and rootfstype= is ignored. Therefore,
-> ramfs is currently always chosen when root= is provided.
-> 
-> The current behavior for rootfs's filesystem is:
-> 
->    root=       | rootfstype= | chosen rootfs filesystem
->    ------------+-------------+--------------------------
->    unspecified | unspecified | tmpfs
->    unspecified | tmpfs       | tmpfs
->    unspecified | ramfs       | ramfs
->     provided   | ignored     | ramfs
-> 
-> rootfstype= should be respected regardless whether root= is given,
-> as shown below:
-> 
->    root=       | rootfstype= | chosen rootfs filesystem
->    ------------+-------------+--------------------------
->    unspecified | unspecified | tmpfs  (as before)
->    unspecified | tmpfs       | tmpfs  (as before)
->    unspecified | ramfs       | ramfs  (as before)
->     provided   | unspecified | ramfs  (compatibility with before)
->     provided   | tmpfs       | tmpfs  (new)
->     provided   | ramfs       | ramfs  (new)
-> 
-> This table represents the new behavior.
-> 
-> Fixes: 6e19eded3684 ("initmpfs: use initramfs if rootfstype= or root=  specified")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Rob Landley <rob@landley.net>
-> Link: https://lore.kernel.org/lkml/8244c75f-445e-b15b-9dbf-266e7ca666e2@landley.net/
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Who should take this patch?  Me?  Or someone else?
+On 28/11/2023 11:40, Dinghao Liu wrote:
+> When kcalloc() for ft->g succeeds but kvzalloc() for in fails,
+> fs_udp_create_groups() will free ft->g. However, its caller
+> fs_udp_create_table() will free ft->g again through calling
+> mlx5e_destroy_flow_table(), which will lead to a double-free.
+> Fix this by setting ft->g to NULL in fs_udp_create_groups().
+> 
+> Fixes: 1c80bd684388 ("net/mlx5e: Introduce Flow Steering UDP API")
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
+> 
+> Changelog:
+> 
+> v2: Setting ft->g to NULL instead of removing the kfree().
+> ---
+>   drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c b/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
+> index be83ad9db82a..e1283531e0b8 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
+> @@ -154,6 +154,7 @@ static int fs_udp_create_groups(struct mlx5e_flow_table *ft, enum fs_udp_type ty
+>   	in = kvzalloc(inlen, GFP_KERNEL);
+>   	if  (!in || !ft->g) {
+>   		kfree(ft->g);
+> +		ft->g = NULL;
+>   		kvfree(in);
+>   		return -ENOMEM;
+>   	}
 
-thanks,
 
-greg k-h
+Thanks for your patch.
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
