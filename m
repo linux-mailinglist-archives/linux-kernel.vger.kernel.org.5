@@ -2,157 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B51E7FC112
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:14:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B70EF7FC133
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346407AbjK1OwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 09:52:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35476 "EHLO
+        id S1345838AbjK1Ox3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 09:53:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346384AbjK1OwL (ORCPT
+        with ESMTP id S1346428AbjK1OxO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 09:52:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E83001701
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:52:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701183137;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2oP52ROWQFWEf94d+ZcdDH9xIN9/viIr5hzxAC40F1s=;
-        b=A1RS3WSs73Ghrw8nLtKzKhrT9wn7+PWalZ5oMzMSXyufOj5BE4gpTjHSFmQbzuBUALBbGU
-        z0Eo1JzQo3dB20Yred1YjI/WtgESh8bDiJW1c3rvYVYUiymO/qmgQz9z4dhQlOGue6OhS3
-        8NpXtobQVhVHV7Ky9rF4nSeQk5cSEcs=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-271-n6VIUHicO2m-dt6V1ZNSMQ-1; Tue,
- 28 Nov 2023 09:52:13 -0500
-X-MC-Unique: n6VIUHicO2m-dt6V1ZNSMQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 237E03C100B4;
-        Tue, 28 Nov 2023 14:52:13 +0000 (UTC)
-Received: from t14s.fritz.box (unknown [10.39.193.189])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 24AC310E45;
-        Tue, 28 Nov 2023 14:52:12 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>
-Subject: [PATCH v1 5/5] mm/rmap: add hugetlb sanity checks
-Date:   Tue, 28 Nov 2023 15:52:05 +0100
-Message-ID: <20231128145205.215026-6-david@redhat.com>
-In-Reply-To: <20231128145205.215026-1-david@redhat.com>
-References: <20231128145205.215026-1-david@redhat.com>
+        Tue, 28 Nov 2023 09:53:14 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C7E741BF5
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:53:05 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0AC18C15;
+        Tue, 28 Nov 2023 06:53:53 -0800 (PST)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C596F3F6C4;
+        Tue, 28 Nov 2023 06:53:04 -0800 (PST)
+Message-ID: <3a8d7ea4-c5f9-421e-84fa-2e4934cd6c92@arm.com>
+Date:   Tue, 28 Nov 2023 14:53:03 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] iommufd/selftest: Use normal IOMMU registration
+Content-Language: en-GB
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     joro@8bytes.org, kevin.tian@intel.com, will@kernel.org,
+        iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <cover.1701165201.git.robin.murphy@arm.com>
+ <44ee6854da69e86b208f49752f60a4c18205c32a.1701165201.git.robin.murphy@arm.com>
+ <20231128143508.GG432016@ziepe.ca>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20231128143508.GG432016@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's make sure we end up with the right folios in the right functions.
+On 28/11/2023 2:35 pm, Jason Gunthorpe wrote:
+> On Tue, Nov 28, 2023 at 10:42:12AM +0000, Robin Murphy wrote:
+>> The IOMMU core now supports coexistence of fwspec-based drivers, which
+>> the mock driver now is, so let's bring the mock bus into iommu_buses,
+>> drop the special interface, and use the normal registration flow. The
+>> one concession we have to make is to ensure that the mock bus is
+>> registered early enough so that bus_for_each_dev() doesn't error out
+>> for other IOMMU drivers registering before iommufd_test_init() runs.
+> 
+> This makes iommufd non-modular which becomes a total PITA for development :(
 
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- include/linux/rmap.h | 6 ++++++
- mm/rmap.c            | 6 ++++++
- 2 files changed, 12 insertions(+)
+Oh fiddle, I misread the makefile, and indeed this doesn't work at all, 
+sorry (turns out it fails to even build for IOMMUFD=m...) Guess I should 
+have been more wary of how suspiciously easy it seemed :(
 
-diff --git a/include/linux/rmap.h b/include/linux/rmap.h
-index 8068c332e2ce..9625b6551d01 100644
---- a/include/linux/rmap.h
-+++ b/include/linux/rmap.h
-@@ -212,6 +212,7 @@ void hugetlb_add_new_anon_rmap(struct folio *, struct vm_area_struct *,
- static inline int hugetlb_try_dup_anon_rmap(struct folio *folio,
- 		struct vm_area_struct *vma)
- {
-+	VM_WARN_ON_FOLIO(!folio_test_hugetlb(folio), folio);
- 	VM_WARN_ON_FOLIO(!folio_test_anon(folio), folio);
- 
- 	if (PageAnonExclusive(&folio->page)) {
-@@ -225,6 +226,7 @@ static inline int hugetlb_try_dup_anon_rmap(struct folio *folio,
- 
- static inline void hugetlb_add_file_rmap(struct folio *folio)
- {
-+	VM_WARN_ON_FOLIO(!folio_test_hugetlb(folio), folio);
- 	VM_WARN_ON_FOLIO(folio_test_anon(folio), folio);
- 
- 	atomic_inc(&folio->_entire_mapcount);
-@@ -232,11 +234,15 @@ static inline void hugetlb_add_file_rmap(struct folio *folio)
- 
- static inline void hugetlb_remove_rmap(struct folio *folio)
- {
-+	VM_WARN_ON_FOLIO(!folio_test_hugetlb(folio), folio);
-+
- 	atomic_dec(&folio->_entire_mapcount);
- }
- 
- static inline void __page_dup_rmap(struct page *page, bool compound)
- {
-+	VM_WARN_ON(folio_test_hugetlb(page_folio(page)));
-+
- 	if (compound) {
- 		struct folio *folio = (struct folio *)page;
- 
-diff --git a/mm/rmap.c b/mm/rmap.c
-index 5037581b79ec..466f1ea5d0a6 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1313,6 +1313,7 @@ void folio_add_new_anon_rmap(struct folio *folio, struct vm_area_struct *vma,
- {
- 	int nr;
- 
-+	VM_WARN_ON_FOLIO(folio_test_hugetlb(folio), folio);
- 	VM_BUG_ON_VMA(address < vma->vm_start || address >= vma->vm_end, vma);
- 	__folio_set_swapbacked(folio);
- 
-@@ -1353,6 +1354,7 @@ void folio_add_file_rmap_range(struct folio *folio, struct page *page,
- 	unsigned int nr_pmdmapped = 0, first;
- 	int nr = 0;
- 
-+	VM_WARN_ON_FOLIO(folio_test_hugetlb(folio), folio);
- 	VM_WARN_ON_FOLIO(compound && !folio_test_pmd_mappable(folio), folio);
- 
- 	/* Is page being mapped by PTE? Is this its first map to be added? */
-@@ -1438,6 +1440,7 @@ void page_remove_rmap(struct page *page, struct vm_area_struct *vma,
- 	bool last;
- 	enum node_stat_item idx;
- 
-+	VM_WARN_ON_FOLIO(folio_test_hugetlb(folio), folio);
- 	VM_BUG_ON_PAGE(compound && !PageHead(page), page);
- 
- 	/* Is page being unmapped by PTE? Is this its last map to be removed? */
-@@ -2585,6 +2588,7 @@ void rmap_walk_locked(struct folio *folio, struct rmap_walk_control *rwc)
- void hugetlb_add_anon_rmap(struct folio *folio, struct vm_area_struct *vma,
- 		unsigned long address, rmap_t flags)
- {
-+	VM_WARN_ON_FOLIO(!folio_test_hugetlb(folio), folio);
- 	VM_WARN_ON_FOLIO(!folio_test_anon(folio), folio);
- 
- 	atomic_inc(&folio->_entire_mapcount);
-@@ -2597,6 +2601,8 @@ void hugetlb_add_anon_rmap(struct folio *folio, struct vm_area_struct *vma,
- void hugetlb_add_new_anon_rmap(struct folio *folio,
- 		struct vm_area_struct *vma, unsigned long address)
- {
-+	VM_WARN_ON_FOLIO(!folio_test_hugetlb(folio), folio);
-+
- 	BUG_ON(address < vma->vm_start || address >= vma->vm_end);
- 	/* increment count (starts at -1) */
- 	atomic_set(&folio->_entire_mapcount, 0);
--- 
-2.41.0
+Dynamic bus registration in general would be a neat thing to explore at 
+some point, since the static iommu_buses array isn't my most favourite 
+part of the whole business, but I guess we leave this as-is for now.
 
+Robin.
