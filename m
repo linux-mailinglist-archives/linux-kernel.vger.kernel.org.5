@@ -2,91 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DCD57FC87E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B28417FC8C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:53:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346327AbjK1Vpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 16:45:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51912 "EHLO
+        id S1346137AbjK1Vr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 16:47:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbjK1Vpu (ORCPT
+        with ESMTP id S229866AbjK1Vr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 16:45:50 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC1999;
-        Tue, 28 Nov 2023 13:45:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1701207951;
-        bh=p68Vf+XiFbE7VsznvJCPzG9I7V5ns6s/5UKY1UqY1TA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=mHKGwpUlQ5XEry9X+XH71jJZwoNLHut+pIxG7Yv0LFl7kTNWKDFdkWP6CqpXZwecP
-         Na5owYnHg2brRWrQV+FHJQADHYBSwU4YVpsR2pWX/lvSMNOO6p2iI16vcJEk7y7Rlc
-         phNQjEvCtVqQVaQRJoS9J8hcd63BR+b0FWkeOD7T9m6FboN3TC6TC2Dr6Q8TDuQo4h
-         ROR61UMvdphFUEWwEG+AXEen1iKn5USbSPUqMdkRz4pE98iArKbGFEIYVhnXKqD+4H
-         4fHidOkukg8+EFqgy1EmsjCKM6DkWMTgrk4wa3T/5BQPfklgeq45MAfZo8UPPmupl/
-         ev9v1clGpYRPQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SfwxV1YfFz4wdD;
-        Wed, 29 Nov 2023 08:45:50 +1100 (AEDT)
-Date:   Wed, 29 Nov 2023 08:45:47 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Dmitry Rokosov <ddrokosov@salutedevices.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the mm tree
-Message-ID: <20231129084547.79c27d63@canb.auug.org.au>
+        Tue, 28 Nov 2023 16:47:56 -0500
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667E998;
+        Tue, 28 Nov 2023 13:48:03 -0800 (PST)
+Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6d7eca548ccso3449624a34.3;
+        Tue, 28 Nov 2023 13:48:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701208082; x=1701812882;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tY859mgZuixEXsQXpxoxdofdHWsZ/aGJN72aWxxZ5dQ=;
+        b=qXCDnFAZWQAmzBbgOS5s8g6UUc2mCDm/AXW/1mOWdbKPHbVDZwFaIEx+0rr4TzAGR7
+         P7K5DIWyXlIr0KfY8KE/HSPkzaixwpzlZSEs+kGSejslAhsOGcx9XJ8zQjP9Y2G9IXkg
+         2DJ0lPJVvmbdhWsVG0sscwwred8Rwy35zt//i4fCAyXwZO3X61AjYpD93E5fMlBBN6l8
+         9ieWZcW7N0tuKnV7Br/k5+SDAZD0gSgwmea7TL/F48iNA8xPk1rdjI5jMz+d6bLRGth4
+         QbVzapp6AadeGJvyfzTmlZp8pjqVxxBSQvA3hFaLGuOkwaOw66DE+uof2sdjdMe0CPAz
+         oI/Q==
+X-Gm-Message-State: AOJu0YyJSQmC9SgdLKX6F5CHuTi+yiOHsCg29cFAB8Syr9O0TWOhjz4c
+        nLInS/j40mcrkJ/8kjbqg6PUORRRbQ==
+X-Google-Smtp-Source: AGHT+IG3MhdI/KC/5pcMn9+h7mJSK+hnGWJUirDvj5cEw3pKREm4LBbTIwkWueAPZns7pEIbVfOTuQ==
+X-Received: by 2002:a05:6870:248e:b0:1fa:1c89:c656 with SMTP id s14-20020a056870248e00b001fa1c89c656mr14173684oaq.56.1701208082608;
+        Tue, 28 Nov 2023 13:48:02 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id z20-20020a056870385400b001fa2823dc13sm1930073oal.0.2023.11.28.13.48.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 13:48:01 -0800 (PST)
+Received: (nullmailer pid 3975504 invoked by uid 1000);
+        Tue, 28 Nov 2023 21:48:00 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Wei Xu <xuwei5@hisilicon.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: reset: hisilicon,hi3660-reset: Drop providers and consumers from example
+Date:   Tue, 28 Nov 2023 15:47:58 -0600
+Message-ID: <20231128214759.3975428-1-robh@kernel.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/NmrR3UJAzvlW_FwXkBTsq1F";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/NmrR3UJAzvlW_FwXkBTsq1F
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Binding examples should generally only cover what the binding covers. A
+provider binding doesn't need to show consumers and vice-versa. The
+hisilicon,hi3660-reset binding example has both, so let's drop them.
 
-Hi all,
+This also fixes an undocumented (by schema) compatible warning for
+"hisilicon,hi3660-iomcu".
 
-After merging the mm tree, today's linux-next build (x86_64 allmodconfig)
-failed like this:
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+ .../reset/hisilicon,hi3660-reset.yaml         | 25 +------------------
+ 1 file changed, 1 insertion(+), 24 deletions(-)
 
-make[5]: *** No rule to make target 'samples/cgroup/cgroup_event_listener.c=
-', needed by 'samples/cgroup/cgroup_event_listener'.  Stop.
+diff --git a/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml b/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml
+index cdfcf32c53fa..e4de002d6903 100644
+--- a/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml
++++ b/Documentation/devicetree/bindings/reset/hisilicon,hi3660-reset.yaml
+@@ -50,32 +50,9 @@ additionalProperties: false
+ 
+ examples:
+   - |
+-    #include <dt-bindings/interrupt-controller/irq.h>
+-    #include <dt-bindings/interrupt-controller/arm-gic.h>
+-    #include <dt-bindings/clock/hi3660-clock.h>
+-
+-    iomcu: iomcu@ffd7e000 {
+-        compatible = "hisilicon,hi3660-iomcu", "syscon";
+-        reg = <0xffd7e000 0x1000>;
+-    };
+-
+-    iomcu_rst: iomcu_rst_controller {
++    iomcu_rst_controller {
+         compatible = "hisilicon,hi3660-reset";
+         hisilicon,rst-syscon = <&iomcu>;
+         #reset-cells = <2>;
+     };
+-
+-    /* Specifying reset lines connected to IP modules */
+-    i2c@ffd71000 {
+-        compatible = "snps,designware-i2c";
+-        reg = <0xffd71000 0x1000>;
+-        interrupts = <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH>;
+-        #address-cells = <1>;
+-        #size-cells = <0>;
+-        clock-frequency = <400000>;
+-        clocks = <&crg_ctrl HI3660_CLK_GATE_I2C0>;
+-        resets = <&iomcu_rst 0x20 3>;
+-        pinctrl-names = "default";
+-        pinctrl-0 = <&i2c0_pmx_func &i2c0_cfg_func>;
+-    };
+ ...
+-- 
+2.42.0
 
-Caused by commit
-
-  fc2cf253aaec ("samples: introduce new samples subdir for cgroup")
-
-I have reverted that commit (and the following one) for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/NmrR3UJAzvlW_FwXkBTsq1F
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVmX4sACgkQAVBC80lX
-0GzUgAf/fYVj1N426VnCX8HYusU4b7ucJl5hLfYkPZ5HykaxWa5es+Gf1b2PlBHk
-IW0X0cUgmyIHdwfuC+UfR1nnQuggDbV5vBs3wgdCtqkE9f/ryHTIp5SkWTA7YHJ+
-CwxobfZfD2Q9fPQ7ZpVeFsUCwk7I9RT6u9pZs74+JRNqKc5HJNprVKYU6OpGOjc9
-imrWab/Fipvmbg8ivvx1qS1dZWA0IHuD8YZPR39iEJKjSVIGU1hBaroYvxfG/Ww0
-yWhDYSdK4diHOODbr9hfdHZBDJNyhZ8x+5eYT3TRo97eX4iT/5hCwoE4WR6OZj3u
-VsMZqOAFcBCHTtc5UdCtFlJ002M8GA==
-=npgA
------END PGP SIGNATURE-----
-
---Sig_/NmrR3UJAzvlW_FwXkBTsq1F--
