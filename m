@@ -2,129 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 303097FC1EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A1A7FC2A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344555AbjK1QkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 11:40:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43538 "EHLO
+        id S229899AbjK1QlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:41:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbjK1QkT (ORCPT
+        with ESMTP id S229666AbjK1QlA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 11:40:19 -0500
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2A11D6
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:40:25 -0800 (PST)
-Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-58a42c3cbb8so3316124eaf.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:40:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701189625; x=1701794425; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XmTesqK+F/QJOwGcug6iguQ/D1cpFRALPok0GTAiegc=;
-        b=W6iio8H0DjYnScIKoSjJxxKpR6lzuR0bWtjfKpNAnwaySc27ItVi06kcA/sYM2/O4e
-         qvnL/aK19jjR2v4dMfCzAwkbtV7zB90NLFHxo9ZqHgYAE8by+ylv/Yw9Muz9nKW8X8lA
-         RWK1mF5L0MvPl8qLl9z0a1W0IZBUHwa81v7Z/rfSVjLEL7FZ0nhWMNQS4OcUbXb69Vyv
-         tYAWhNaEGx/tJNTGOVKNN4sgGCfme8ikmF5vSteBLnjbdhcB6sjVoeS7ZKVIsFhDXD92
-         02YOWomZ76COswgRhL9dRSkmRbi3VWUOzJFvue0Y8Yt8Zvv6Ax0mhJAuklWG1nXioXGw
-         Voig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701189625; x=1701794425;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XmTesqK+F/QJOwGcug6iguQ/D1cpFRALPok0GTAiegc=;
-        b=T1g40vl8MtnZ8sCUkCd7oGtI+4kl6tf2I8FCrr6KT2inXm8wWzGRpTJsyVyp5L5ar6
-         K+kMagzs8Ag88tOfEhlPRWMKr2fLPeEaHNVwl1vw4zP7R9tLzb5QxG5w3aIKkUWajhVW
-         v3kZwZzKB9+ypVJxiEXziEFTB+l3xFFBgKVS7AekHhsgiCFmFHc8WOO2kmfk5jVaLRim
-         6yS2pobibdie/A6N6eP6609kymLqAhdhlx74i/yK0Q8BSaydiy8zIKgLGeRIW7MgRuF9
-         ans9oxf7PDLcT/QY4mRtBsMhm120LuJHH54fIlle8R75NHGCQYrFiK/ebjT2MAngrNoI
-         zZlg==
-X-Gm-Message-State: AOJu0YxDlXkO3k9K2QR9mME8ASl2/78TiaTs74xQEzCa/2N2DStkdLzZ
-        zms+pREja44dL025B6cHaXVoDOvQGdxeUv5rxYjZvGX0lqyr0mru
-X-Google-Smtp-Source: AGHT+IHXFi0CMJEmOBG0drT6Yl0cizFCRxptP85Y28ocOtyAbffCNU1ckrWUrQn8BzD9g8lJdqrDPCghi1L6+RVklQY=
-X-Received: by 2002:a05:6358:9394:b0:16d:fe28:f8cc with SMTP id
- h20-20020a056358939400b0016dfe28f8ccmr17146875rwb.4.1701189624933; Tue, 28
- Nov 2023 08:40:24 -0800 (PST)
+        Tue, 28 Nov 2023 11:41:00 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0FED6
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:41:06 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7944C433C7;
+        Tue, 28 Nov 2023 16:41:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701189666;
+        bh=yu+6XTz4QxpoSP6NjN9BwOG/iZ4IqK6Zn2csX9sKZDw=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=frCVKSbLokR0E/yWEjHthOQ5UlvHZYQShO71hpojY5zY019SQpSXQlD1Lknc/m/S+
+         dP1EBRA5gM1uYfWBnJgX7A1pNAR0E3TIZqVZWO/DNehoniEtE8lP3wnA5FTCWXtUgk
+         fVdFFk+KCGOlJ4biDWc5DKGifK/UV/SMuOF5ioarN0gML+EWOQLIVDfkIvVvYGONzc
+         GSvno96lFxxAe4+CfWtf6/rfmlmDI6jbGWHz7FcIP8nQvH8vkO2u7WF9PBcZkQd223
+         dqgODnyUF21b+yAdZkuqVxqGYxDgj5mjJKZBYeGvBecqq9Mx/seT4hpsTnWySQFmV3
+         Hsk8PSZ1h61JQ==
+From:   Robert Foss <rfoss@kernel.org>
+To:     Liu Ying <victor.liu@nxp.com>, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     jonas@kwiboo.se, andrzej.hajda@intel.com, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, linux-imx@nxp.com,
+        s.hauer@pengutronix.de, airlied@gmail.com,
+        Laurent.pinchart@ideasonboard.com, festevam@gmail.com,
+        kernel test robot <lkp@intel.com>, jernej.skrabec@gmail.com,
+        neil.armstrong@linaro.org, mripard@kernel.org, shawnguo@kernel.org,
+        tzimmermann@suse.de, kernel@pengutronix.de
+In-Reply-To: <20231123051807.3818342-1-victor.liu@nxp.com>
+References: <20231123051807.3818342-1-victor.liu@nxp.com>
+Subject: Re: [PATCH v2] drm/bridge: imx93-mipi-dsi: Fix a couple of building warnings
+Message-Id: <170118966251.1111655.18429253979554815398.b4-ty@kernel.org>
+Date:   Tue, 28 Nov 2023 17:41:02 +0100
 MIME-Version: 1.0
-References: <20231127193716.63143-1-brgl@bgdev.pl> <20231127193716.63143-2-brgl@bgdev.pl>
- <ZWYQmpe7UxnJW0_g@smile.fi.intel.com>
-In-Reply-To: <ZWYQmpe7UxnJW0_g@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 28 Nov 2023 17:40:13 +0100
-Message-ID: <CAMRc=MdJQLe-f_B5OqmV0t5R8Jy72iAesAnPV0E8K-tYcBE2Ag@mail.gmail.com>
-Subject: Re: [PATCH 2/2] gpio: use a mutex to protect the list of GPIO devices
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Mailer: b4 0.10.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 5:09=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Mon, Nov 27, 2023 at 08:37:16PM +0100, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > The global list of GPIO devices is never modified or accessed from
-> > atomic context so it's fine to protect it using a mutex. Add a new
-> > global lock dedicated to the gpio_devices list and use it whenever
-> > accessing or modifying it.
-> >
-> > While at it: fold the sysfs registering of existing devices into
-> > gpiolib.c and make gpio_devices static within its compilation unit.
->
-> ...
->
-> > +     scoped_guard(mutex, &gpio_devices_lock) {
->
-> This is a lot of churn with this because of switching to RAII.
-> Can the body be firstly moved to a helper?
->
+On Thu, 23 Nov 2023 13:18:07 +0800, Liu Ying wrote:
+> Fix a couple of building warnings on used uninitialized 'best_m' and
+> 'best_n' local variables by initializing 'best_m' to zero and 'best_n'
+> to UINT_MAX.  This makes compiler happy only.  No functional change.
+> 
+> 
 
-But that would mean more churn. I don't get why you insist on
-splitting these everytime. We're going from spinlock to a mutex so we
-may as well use guards right away.
+Applied, thanks!
 
-> > +             /*
-> > +              * TODO: this allocates a Linux GPIO number base in the g=
-lobal
-> > +              * GPIO numberspace for this chip. In the long run we wan=
-t to
-> > +              * get *rid* of this numberspace and use only descriptors=
-, but
-> > +              * it may be a pipe dream. It will not happen before we g=
-et rid
-> > +              * of the sysfs interface anyways.
-> > +              */
->
-> ...
->
-> >       list_for_each_entry(gdev, &gpio_devices, list)
-> > +             if (index-- =3D=3D 0)
-> >                       return gdev;
->
-> I believe this is better with outer {}.
->
+[1/1] drm/bridge: imx93-mipi-dsi: Fix a couple of building warnings
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=9f83f37ca76d
 
-Right.
 
-Bart
 
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+Rob
+
