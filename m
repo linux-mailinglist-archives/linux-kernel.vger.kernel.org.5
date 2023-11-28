@@ -2,60 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 033EE7FC47C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 20:55:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 388F37FC47E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 20:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234835AbjK1TzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 14:55:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38260 "EHLO
+        id S234684AbjK1T4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 14:56:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbjK1TzD (ORCPT
+        with ESMTP id S229543AbjK1T4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 14:55:03 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D80201988
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 11:55:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BC72C433C8;
-        Tue, 28 Nov 2023 19:55:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701201309;
-        bh=5LQk5ImQ+S0EdzXUNz2TE2xX76Eio/cuwNPaZkJSEFs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FAjA5ugSe9IcBuB/IU5z6ShxwEe07xfPz/iMcuMVpB5wIcfwrKo0Mpqz1wkBSHNTQ
-         uT533Hcikc1sWkuv181w8/kBvN9kK/oJHg2gOeifJ+U6LNuJrD7MwZFH0MpfxYOWZO
-         9khJZ4loo6kJLf7WoSXiVUhyHBpbY2M5J+mGhmW0wtteIFhKctR9BrbBHArjSO9Tis
-         Zor3Sn3ofiSqE4VUW16NqlGgyk1b6SMZWiUv+k1w8ENw2w4CJktYycuB+Z7gaZijuc
-         t0J4fou9R31yxvm1FNafqQ3j9xVeLJqF1c2MqzKqkcysFvKlF81GzZjzRn/Y2fidpi
-         +tk0iNoasZ0cw==
-Date:   Tue, 28 Nov 2023 11:55:07 -0800
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, David Ahern <dsahern@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>,
-        Itay Avraham <itayavr@nvidia.com>,
-        linux-kernel@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH V3 2/5] misc: mlx5ctl: Add mlx5ctl misc driver
-Message-ID: <ZWZFm2qqhV1wKKCV@x130>
-References: <20231127161732.GL436702@nvidia.com>
- <2023112707-feline-unselect-692f@gregkh>
- <ZWTtTjgBrNxpd9IO@x130>
- <20231127160719.4a8b2ad1@kernel.org>
- <20231128044628.GA8901@u2004-local>
- <20231128065321.53d4d5bb@kernel.org>
- <20231128162413.GP436702@nvidia.com>
- <20231128084421.6321b9b2@kernel.org>
- <20231128175224.GR436702@nvidia.com>
- <20231128103304.25c2c642@kernel.org>
+        Tue, 28 Nov 2023 14:56:32 -0500
+Received: from s1.sapience.com (s1.sapience.com [72.84.236.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B9619A6;
+        Tue, 28 Nov 2023 11:56:38 -0800 (PST)
+Authentication-Results: dkim-srvy7; dkim=pass (Good ed25519-sha256 
+   signature) header.d=sapience.com header.i=@sapience.com 
+   header.a=ed25519-sha256; dkim=pass (Good 2048 bit rsa-sha256 signature) 
+   header.d=sapience.com header.i=@sapience.com header.a=rsa-sha256
+Received: from srv8.prv.sapience.com (srv8.prv.sapience.com [x.x.x.x])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+        (No client certificate requested)
+        by s1.sapience.com (Postfix) with ESMTPS id 44364480AAD;
+        Tue, 28 Nov 2023 14:56:38 -0500 (EST)
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=sapience.com;
+ i=@sapience.com; q=dns/txt; s=dk-ed25519-220413; t=1701201398;
+ h=message-id : date : mime-version : subject : from : to : cc :
+ references : in-reply-to : content-type : content-transfer-encoding :
+ from; bh=lvM7CD1aGwZ6qshcUNO7zZN11rYmgCaJQ5Sq7osdZss=;
+ b=IZRTfrfUjKwUlBRh8e41JparbdbZbo/6pBbJFb3ZQr2St+s6trY7EA5hWDK3qOEVvDU5y
+ FZ9yjIwQn1URbS+AA==
+ARC-Seal: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412; t=1701201398;
+        cv=none; b=NybB63NQIXnbqFHjpq6kvsgL8G1eZLBXq49hlUNoByOOSAIbvNhiIymu6vcEmGhVM8kSYmcbSWRbjyznnd1zioRTuIcysPxwaV4D985pQ2isTXmAlzxuH7tp3PdphfZ5RQD0iGb7bRlODZR4wEDUDDKVxROyIJxTEzmtJc9vdYV/uVLYgwX3D5MsNHDf5AIOcQ3jG2rgNgjV/W4KXMb3VFOboqaTFlUYRy6YazWeJEmWBt/uqryoAbHBfbrVnXpNixsZaJyjVhGGcgtdiYa1klk/TXWUCBF9qalCKE+goDFDCHANeH0/FpS9f+tcZaneySaEoQhTx8JvKZagNsqC5Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412;
+        t=1701201398; c=relaxed/simple;
+        bh=Kn+tnaE511rc7i46SK6IJUPRfkEyfvTf2ILD0jr1oJ0=;
+        h=DKIM-Signature:DKIM-Signature:Message-ID:Date:MIME-Version:
+         User-Agent:Subject:Content-Language:From:To:Cc:References:
+         In-Reply-To:Content-Type:Content-Transfer-Encoding; b=GrHqwVzC6nFW1g0+DekoMrXY1Grrp+Ue7SUXw2UsWCesZZa3s6VVcc0utdGQwekaw4knr7u0WA346q06fv+dgF1bkEdAsHOch0qTKGU2/iXV+YcWo9azazxiOFgm+s62kU6PvY+uw67uypsCu4stmnOfeklUesTn0YVrijuz5ulR6b9zi2mkVoORnyVEBMVTp5so9XEas4JoXluS8HLi+lUtCuD3SvWwADpFeG75iAIw0vtNELq8Jjulo6h2m51RP2LfP7uu9Vk+cYVAPePV2NxxMEvH5GJHRNHKwhZSWAq3WV9zwsdVt9G6ZojBo+z9o8t2YNgSTqmbDGQ54+GQLA==
+ARC-Authentication-Results: i=1; arc-srv8.sapience.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sapience.com;
+ i=@sapience.com; q=dns/txt; s=dk-rsa-220413; t=1701201398;
+ h=message-id : date : mime-version : subject : from : to : cc :
+ references : in-reply-to : content-type : content-transfer-encoding :
+ from; bh=lvM7CD1aGwZ6qshcUNO7zZN11rYmgCaJQ5Sq7osdZss=;
+ b=WNaQ/oksUMcpTrdlsLiTsCpjMWm6WGTlYXB4uga2kc59FNJgOvGqARdrUZSSZzvA27Hg7
+ eIfAzrG1/HEqzaaGwy7C4PBqO/BOuCU9MOs1S/mj7aSGH6mDl1U3WDcD95tDjG+sZ/maiwb
+ sFRyjNjVN2oPkf47PPzJ82zgFME1PVnsS2VerA6q2oUaaFqvQBjh+gRy5jMqqdIi65a7KqT
+ 4UyMmJtUcrOMvaNOulYrBwJCHtQRXihC0rHCt1tqhYoaJHHI22xJDSREPGocCcsZFaPFeD7
+ i474uGU/0jde1peTIEIAoWyvLmKa+MidUbTbK+Gh9Zq4HTP8JnparjswExEw==
+Message-ID: <022c67aa-b90a-4756-8725-5f7fba7dc780@sapience.com>
+Date:   Tue, 28 Nov 2023 14:56:37 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20231128103304.25c2c642@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla Thunderbird
+Subject: Re: crash with 6.7 rc2 and rc3
+Content-Language: en-US
+From:   Genes Lists <lists@sapience.com>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>, tglx@linutronix.de,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        gregory.greenman@intel.com, kvalo@kernel.org,
+        Linux Wireless <linux-wireless@vger.kernel.org>
+Cc:     Linux Regressions <regressions@lists.linux.dev>
+References: <c46a6462-8263-455c-a6ea-1860020f5fab@sapience.com>
+ <ZWV7JworMrjHJHsO@archie.me>
+ <cf2dcc97-845d-4860-be4d-5822d2ebbfca@sapience.com>
+In-Reply-To: <cf2dcc97-845d-4860-be4d-5822d2ebbfca@sapience.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,100 +79,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28 Nov 10:33, Jakub Kicinski wrote:
->On Tue, 28 Nov 2023 13:52:24 -0400 Jason Gunthorpe wrote:
->> > The question at LPC was about making devlink params completely
->> > transparent to the kernel. Basically added directly from FW.
->> > That what I was not happy about.
+On 11/28/23 05:39, Genes Lists wrote:
+> On 11/28/23 00:31, Bagas Sanjaya wrote:
+>> On Mon, Nov 27, 2023 at 03:55:37PM -0500, Genes Lists wrote:
+>>>
+>>> lenovo laptop boots fine under 6.7rc1 and older including 6.6.2 stable.
+>>> but not for 6.7 rc2 or rc3.
+>>>
+>>> It has a intel 7260 (rev 3) wireless and :
+>>>
+>>> cpu family    : 6
+>>> model        : 60
+>>> model name    : Intel(R) Core(TM) i7-4800MQ CPU @ 2.70GHz
+>>> stepping    : 3
+>>> microcode    : 0x28
+>>>
+>>>
+>>> As of 6.7 rc2 / rc3 it crashes towards the end of boot bringing up 
+>>> services
+>>> -  some parts of crash scrolled off the screen so I apologize if this
+>>> (manually transcribed) trace didn't catch the first part.
+>>>
+>>> I did a git bisect between rc1 and rc2 but was unable to reproduce 
+>>> the crash
+>>> for some reason. (I did not do make clean between each bisects).
+>>>
+>>> During the bisect it booted every time, but networking was not 
+>>> functional
+>>> for any of the bisects.
+>>>
+>>> Hope it's okay to report even though git bisect didn't get anywhere.
+>>>
+>>> Gene
+>>>
+>>> This is the what I got from screen :
+>>>
+>>> CS: 0010 DS: 000 ES: 0000 CR0: 0000000080050033
+>>> CR2: 00007f30cf49ba38 CR3: 000000025b620004 CR4: 00000000001706f0
+>>> Call Trace:
+>>>   <IRQ>
+>>>   ? die_addr+0x36/0x90
+>>>   ? exc_general_protection+0x1c5/0x430
+>>>   ? asm_exc_gemeral_protection+0x26/0x30
+>>>   ? iwl_phy_db_set_section+0xd6/0x1f0 [iwlwifi]
+>>>   ? __kmem_cache_alloc_node+0x1d5/0x2b0
+>>>   ? iwl_phy_db_set_section+0xd6/0x1f0 [iwlwifi]
+>>>   ? iwl_phy_db_set_section+0xd6/0x1f0 [iwlwifi]
+>>>   __kmalloc_node_track_caller+0x51/0x160
+>>>   kmemdup+0x20/0x50
+>>>   iwl_phy_db_set_section+0xd6/0x1f0 [iwlwifi]
+>>>   iwl_wait_phy_db_entry+0x2f/0x40 [iwlmvm]
+>>>   iwl_notification_wait+0xb0/0xf0 [iwlwifi]
+>>>   iwl_mvm_rx_common+0x8e/0x320 [iwlwifi]
+>>>   iwl_pcie_napi_poll+0x2d/0x150 [iwlwifi]
+>>>   __napi_poll+0x2b/0x1c0
+>>>   net_rx_action+0x2b4/0x320
+>>>   __do_softirq+0xff/0x339
+>>>   net_rx_action+0x2b4/0x320
+>>>   __do_softirq.part.0+0x88/0xa0
+>>> </IRQ>
+>>> <TASK>
+>>> __local_bh_enable_ip+0x91/0xa0
+>>> iwl_pcie_irq_handler+0x58d/0xc40 [iwlwifi]
+>>> ? __pfx_irq_thread_fn+0x10/0x10
+>>> irq_thread_fn+0x23/0x60
+>>> irq_thread+0xfe/0x60
+>>> ? __pfx_irq_thread_dtor+0x10/0x10
+>>> ? __pfx_irq_thread+0x10/0x10
+>>> kthread+0xfa/0x130
+>>> ? pff_kthread+0x10/0x10
+>>> ret_from_fork+0x34/0x50
+>>> ? __pfx_kthread+0x10/0x10
+>>> ret_from_fork_asm+0x1b/0x30
 >>
->> It is creating a back-porting nightmare for all the enterprise
->> distributions.
->
->We don't care about enterprise distros, Jason, or stable kernel APIs.
->
->> > You can add as many params at the driver level as you want.
->> > In fact I asked Saeed repeatedly to start posting all those
->> > params instead of complaining.
+>> Do you have any full system logs that can be attached?
 >>
->> That really isn't what you said in the video.
+>> Anyway, thanks for the regression report. I'm adding it to regzbot:
 >>
->> Regardless, configurables are only one part of what mlx5ctl addresses,
->> we still have all the debugability problems, which are arguably more
->> important.
->
->Read-only debug interfaces are "do whatever you want" in netdev.
->Params controlling them (ie. writing stuff) need to be reviewed
->but are also allowed.
->
->Doesn't mlx5 have a pile of stuff in debugfs already?
->
-
-not enough, not scalable and it's a backporting and maintenance nightmare
-as Jason already showed.
-
-mlx5 supports creating millions of objects, tools need to selectively
-pick which objects to dump for a specific use case, if it's ok with you to
-do this in debugfs, then ioctl is much cleaner .. so what's your problem
-with mlx5ctl?
-
-
->Nobody bothered to answer my "are you not going support mstreg over
->this" question (arbitrary register writes).
->
->> > Let the users complain about the user problems. Also something
->> > I repeatedly told Saeed. His response was something along the lines
->> > of users are secret, they can't post on the list, blah, blah.
+>> #regzbot ^introduced: v6.7-rc1..v6.7-rc2
 >>
->> You mean like the S390 team at IBM did in the video?
->>
->> This is not a reasonable position. One of the jobs of the vendors is
->> to aggregate the user requests. Even the giant hyperscale customers
->> that do have the capacity to come on this list prefer to delegate
->> these things to us.
->>
->> If you want to get a direct user forum the kernel mailing list is not
->> an appropriate place to do it.
->
->Agree to disagree.
->
->> > You know one user who is participating in this thread?
->> > *ME*
->> > While the lot of you work for vendors.
->>
->> I'm sick of this vendor bashing. You work for *one* user. You know who
->> talks to *every* user out there? *ME*.
->>
->> User and vendors need debugging of this complex HW. I don't need to
->> bring a parade of a dozen users to this thread to re-enforce that
->> obvious truth. Indeed when debugging is required the vendor usually
->> has to do it, so we are the user in this discussion.
->>
->> You didn't answer the question, what is your alternative debug-ability
->> vision here?
->
->Covered above. And it's been discussed multiple times.
->
->Honestly I don't want to spend any more time discussing this.
->Once you're ready to work together in good faith let me know.
->
->On future revisions of this series please carry:
->
->Nacked-by: Jakub Kicinski <kuba@kernel.org>
+> 
+> journalctl -k for 6.6.2 and the last bisect
+> 
+> gene
+> 
 
-I asked before and I never got a technical answer, based on what?
+6.6.3 crashes for me same way - also an intel NUC also crashes with 
+6.6.3 buty works on 6.6.2. Will take a while before I get additional 
+info on the latter box.
 
-All we got is just political views and complaints against vendors.
-What is your proposal for accessing every possible debug information from a
-vendor specific device ? devlink X Y Z, debugfs?  won't work, sorry.
+gene
 
-And I can't accept "do it out of tree" as an answer from a well
-established linux maintainer, the whole point of this is to have this
-available in every linux box with any mlx5 configuration (not only netdev)
-so we can start debugging on the spot.
 
-For your claims that we need this for setting device parameters, it
-is simply not true, because we don't need this driver to do that,
-so please go back and read the cover-letter and code, and let me know what
-is wrong with our approach to get access to our device's debug info.
 
-  
+
