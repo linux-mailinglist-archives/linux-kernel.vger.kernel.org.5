@@ -2,207 +2,539 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D50F7FB883
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:47:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 368817FB88C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:49:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344402AbjK1Kre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 05:47:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59602 "EHLO
+        id S1343969AbjK1Ktb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 05:49:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232890AbjK1Krc (ORCPT
+        with ESMTP id S232885AbjK1Kt3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 05:47:32 -0500
-Received: from mx08-00376f01.pphosted.com (mx08-00376f01.pphosted.com [91.207.212.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 902521B9
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:47:38 -0800 (PST)
-Received: from pps.filterd (m0168888.ppops.net [127.0.0.1])
-        by mx08-00376f01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3AS5sBKn023885;
-        Tue, 28 Nov 2023 10:47:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=imgtec.com; h=
-        from:to:cc:subject:date:message-id:references:in-reply-to
-        :content-type:content-id:content-transfer-encoding:mime-version;
-         s=dk201812; bh=IOQT4JvzDOqWXOh3VVmQTyWoOGJISAfDk0otqwFVWc0=; b=
-        cP9P5p3b19sxpkJ6cEyXJKBGDyDLkyVruzVKLbi9nBbp54EzhXvAHcgDLiBPCAIP
-        05Rc3Wqk1feOk3wcTWpM0iiN0MEOWEBxck8SkXaUw9SFSeia/Nri/ARu3XTa0xRE
-        msdWjh3Vs3KFTDjDm4Y9X7c5f2HQPQuFdlRF7tszBvkis31JZ7cOHIB+4LU4/eQy
-        oNf3n5fvbWSD/1JFNFhWLAQDM6Jx00szbBnif3vvI/TG+HZjTxYHPca7BkKYOx0p
-        UGNmhJCqYMqS2GHbTwkw+n3F6ZUe6xBC9hkpAi7P4o1Qt5SDJK7uxWEZyvyFg+dz
-        fnz9tVhqMMrYRbiNtkzrjg==
-Received: from hhmail04.hh.imgtec.org ([217.156.249.195])
-        by mx08-00376f01.pphosted.com (PPS) with ESMTPS id 3uk82sj1pe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 28 Nov 2023 10:47:21 +0000 (GMT)
-Received: from HHMAIL04.hh.imgtec.org (10.100.10.119) by
- HHMAIL04.hh.imgtec.org (10.100.10.119) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 28 Nov 2023 10:47:20 +0000
-Received: from GBR01-LO4-obe.outbound.protection.outlook.com (104.47.85.105)
- by email.imgtec.com (10.100.10.121) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Tue, 28 Nov 2023 10:47:20 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BIlfCeoDMKo/NckFGBWLLvJnElohVjt8jrayfXb29jGidmBuXgBESeIyfQiuQG84eKXy/sTAsr4GCip6YXdJBY3p7NW/ZN+/kCksvY8XoQY+fIdsB5EoXQmGhXSmirDJoM9S1pEgtIWrL17TEDHJUh5uc3NAnakXjywxE/X7iTNA8OhQSPKCodwBIjsbWMI+/EnjUPY2d7nEh0ADreZEErONCECG56bIjD+GvbQAgEtjVkmeAxHWxTjO45ZrTdjsgw9wOanwm9yX4Rjutzrje5g/DJGU8SQEpmlDynlezz22awbTE0Gkr1m8lAg2c7kb10y6d1fHicr1yfiRevwYxw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IOQT4JvzDOqWXOh3VVmQTyWoOGJISAfDk0otqwFVWc0=;
- b=JbPL5LhAida522V9qEDgWCNkALKDA8TzdcbRXaPsvflgw/QTMIyXwJyeMF754//zUJFPVacDdodfgDXVz8Yul2SE/odghYT/0W4ogGGwkqjcrhBpQKyhrmkH1UB00VOwm0YX4GmM328E9+qAQV7X5cwI4yTlXBQfjS0dLhAUEWGz9cGZfudLDieeAjeI4olwbRkHZtZFVqk++oIISRlK3+FFSQ8Syws6L2VXmmqZQQKFogr/Yj8Rw6EwayZfpxFQ1fqya9+3AqEeEHZiWvZdPJiSDUJ5/VSkaM2XaFp/7HIGQyp3Clk9Sp6OvA7QtZSoOR8tgQQnT/kh6TbWnURz3Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=imgtec.com; dmarc=pass action=none header.from=imgtec.com;
- dkim=pass header.d=imgtec.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=IMGTecCRM.onmicrosoft.com; s=selector2-IMGTecCRM-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IOQT4JvzDOqWXOh3VVmQTyWoOGJISAfDk0otqwFVWc0=;
- b=pbMZXgt25uwDXb06llKMy+BO3tlXof2k0kNCdbtupiqQ6BCAzctdc9pwZDagQGgACQEaWqUPAwFmnCvMu5p4J7upbeee9+Z9nnbheUw4o8X/lfVG1+G9b7Dju/MbX/vLghK5n1JHVK/DzXEjj9KLD19I0hdds/8Sk800Ci54uOU=
-Received: from CWLP265MB5770.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:1a0::8)
- by CWLP265MB1762.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:5d::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.28; Tue, 28 Nov
- 2023 10:47:19 +0000
-Received: from CWLP265MB5770.GBRP265.PROD.OUTLOOK.COM
- ([fe80::a85a:76f7:c085:2b34]) by CWLP265MB5770.GBRP265.PROD.OUTLOOK.COM
- ([fe80::a85a:76f7:c085:2b34%3]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
- 10:47:19 +0000
-From:   Donald Robson <Donald.Robson@imgtec.com>
-To:     "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        Frank Binns <Frank.Binns@imgtec.com>,
-        Matt Coster <Matt.Coster@imgtec.com>,
-        "mripard@kernel.org" <mripard@kernel.org>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "dakr@redhat.com" <dakr@redhat.com>,
-        Sarah Walker <Sarah.Walker@imgtec.com>
-CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [EXTERNAL] [PATCH drm-misc-next 5/5] drm/imagination: vm: make
- use of GPUVM's drm_exec helper
-Thread-Topic: [EXTERNAL] [PATCH drm-misc-next 5/5] drm/imagination: vm: make
- use of GPUVM's drm_exec helper
-Thread-Index: AQHaHy8tlqqfENA3HEmgWsNuuiCs57CPkiUA
-Date:   Tue, 28 Nov 2023 10:47:19 +0000
-Message-ID: <3582c630ee753db6ef1370612e69f36287536912.camel@imgtec.com>
-References: <20231124233650.152653-1-dakr@redhat.com>
-         <20231124233650.152653-6-dakr@redhat.com>
-In-Reply-To: <20231124233650.152653-6-dakr@redhat.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: CWLP265MB5770:EE_|CWLP265MB1762:EE_
-x-ms-office365-filtering-correlation-id: 3fd46f67-6eee-405a-9fdd-08dbefff64ec
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: JfjBwXxN1inx/bxUb2lYlPLvSZeJX6WBbKirVRVV6CZHgKaqonNz9I8GmvZODndMluP1F6bZqSgPkjqNirv9FvtCgwBCx7wpeqilTXWq/FTKETFbPxjdOVkVF++fzyQMG1GeX644jbFCQ+sssVnnw0EdkMhYJCiZ/YlKzh/u4vvJywRfUQRZjGJKlDq5/ztgohgTxp49/YjOsJVmXjWD6IKSc/MSRQzbhFisFTAzsRYhQW9F725M7zm1IUFMuwOc6b3MuEMAAhMCmPcqaE8OhUDXSF4etYUkrHzNjX2IY67kTtavTLTLiPJ4DkqLI3kcXNQnWR3WfLcLEypEaUHmnHwxaMmvRNV2Fl6cpSAI5qEMX63SZc+ZflMLrUB7ydVwXqducZ77WI9d7CA6CrMR6ulBboilqelqgmdI9SEBt1TBfJ3JeAE4hngcYM/WJPzlEJCLu+sAuwvt59Uua8v2oer605ly+yl4fiytHzncEXj707KzvmhB10L7UvoGwuuRaS5Ie5srUU9SuQRLF+QrhXexuFIIZpHhAJu/LjwmGU89E/tT5yYlsqh740Dw+aKca12OPtcWgL+GCEiJjxwd3Sx2gPk8WWg8uVh3VRgNFYgNjdtuUW5VLqcvLPsUYMx8iQs0eBoEL6S89KfwxMV3uSHWfIWPu6vvApY4+1h9B3Y=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP265MB5770.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(346002)(376002)(39850400004)(136003)(230173577357003)(230922051799003)(230273577357003)(186009)(64100799003)(451199024)(1800799012)(71200400001)(2616005)(478600001)(26005)(6506007)(6512007)(5660300002)(83380400001)(2906002)(4001150100001)(4326008)(41300700001)(64756008)(54906003)(66446008)(66476007)(66556008)(66946007)(316002)(6486002)(6636002)(8676002)(8936002)(91956017)(110136005)(76116006)(38070700009)(122000001)(38100700002)(86362001)(36756003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?a3hKc2RQbUFSd3FFd1VjRENESWRZekEwZlh4VEgydnNuZHR1enZKYUUxeFRS?=
- =?utf-8?B?SXFuUHYwVWI3UDdZSms5SWovOUwzZXhjQWt5Mzd1Qmp2YVg1NTFhZzJpK1Bk?=
- =?utf-8?B?WHFhWnZkdWdIWDRCMEFzWEx0OHJxNmdJUU5HQjVYNmoweTdNUzJlZ0JaWEc3?=
- =?utf-8?B?ZlpRTU1Tb1FJNkhUaTUreFUxd0tHZVU1TTdGUXJiODBXcitaZ0hFOFV2a29k?=
- =?utf-8?B?K05CRTBqdzcrNGV0VlVLMjhONCtWcEpqWU91WTlTM09Dakt4eEVwT21qc3VS?=
- =?utf-8?B?UGtvSjViNHZRb0RDVW51U1R6cnlQeGhtSlkvWWpYRiswRlEvYlpUR2tDS3Nz?=
- =?utf-8?B?dUpJZTVxNnJFTG5VczJDRit2b1RseEJUSldpaVFYSTlUNWpVRWhjTE5ldjht?=
- =?utf-8?B?ellhUDFYdTlMaEpSMFFiQnM1U2lHaW1GbTNTQngrbEdDY2E5WXJvWkxSWXVz?=
- =?utf-8?B?MDllVzROYmIrdkJqZ1lzVEpFY2hpTk9oaDZ3TzI4TkhIVWNRN3Z2SllNRGRh?=
- =?utf-8?B?Q21vM0d6dXZ3SWVVbVRGbWhSZHVZR0tObm9vdWkzTUZNU1cvZGM4OHAvOVBD?=
- =?utf-8?B?dCtjalJ3TTlaaS9CQWdMY2NmUEVtSUZ3Q2lCSEllbUdEWHZvNGowZ25NVDA3?=
- =?utf-8?B?L3Ezd0s0V1JSaElLeHBrSTZ3SUtlelpHU09SdFlaNEgrQitpaXd0Q2x1SUh3?=
- =?utf-8?B?SFFDcVQxUllOM1k2RWUvU0tSS2ozRUJQT2VoMVdMLzRrYVlhYXh0Q2p1SjlU?=
- =?utf-8?B?VDRWMWhGUDJ6UlhZb2gxVGFjZEZnSnJva0hXQmxDTnVpdEk3Yk1qNlRLMWpr?=
- =?utf-8?B?VExWZzUwZHFjY05wTFREbDk4UEQ0Vi84Y1Y1SGlLL001VzEvcnpwNHU2bHYr?=
- =?utf-8?B?aElGcDVjalpVbGNzd3padjJsNWZ1UlNLUit3cXNyUjFOZVB3RGxhblF6VE96?=
- =?utf-8?B?V3ZKQWhUeEpUVkFWaUR4dWJOem5nbVF0cFVHV2ZWTE9NZlhBTENhd1JQRmNS?=
- =?utf-8?B?SFl1NzRHNjlldSs4elE1V2tKWVdZUkpUc0pEdXdNbGhDVlM4RlJqN3pEOE5V?=
- =?utf-8?B?YlB3cDIzTWlYdndkMkJOeDBCZ1BjVFpVL1NIMGxGUFYrM3p6OENTUVhlUmI4?=
- =?utf-8?B?dWlxUTNlWkhBdGpkcURXakt3c2JaU0JDZlBWZlVxVjEyeVZveGVxZktyMzZl?=
- =?utf-8?B?Q3hQSkExdFV4bjRtWm9zb0dtdXRBdHMwZ0d2azJ2aDU1TzdLRDNHOWN5MUlT?=
- =?utf-8?B?QW1XM2UxRXlmVmVvdWxyajhUenpMOFRRRlovTERJdHlnVHMyTE8vcG81djF0?=
- =?utf-8?B?M2QwQUJuZTA2MzN6djk4ZTZ0SVZHQ3hBb1cxdGdnckoyZ1Q0RDIxdVlnMWVu?=
- =?utf-8?B?d0Npd0srbnY3VmdMZldoajYrS3NCT1k0VEphNnVXSnUxdGdETXFTMHFsVU5H?=
- =?utf-8?B?OG5uSnBpUWxOallWYkwyWHdpK0Ezbm9ZQ3h4MkUrRHJVcFNFKzFjUWpRUmNF?=
- =?utf-8?B?azA3RTZicUFsV25RTmlYRnk2aXRod0x5RTdQZ09qbjNzbWNmcUg2bGExeHo3?=
- =?utf-8?B?OG5wOGtsYVBzRVhoQWdVNDZKWDZnbnhYQXpBeEo0TmVPbUFHc3IxQnJpNjd6?=
- =?utf-8?B?M2tQWXBhYitSb3orbHVEMmI5RXpJMlhkRkE0Q1oxQzEwdGE0UlQrWHZxWFlQ?=
- =?utf-8?B?UGNsbGhhWkJJTWh1ZkZWQTJod0ZFamtrVUVBM2s2S05zMTFWU0VXczIya0Zp?=
- =?utf-8?B?QU1aUGJWcHZaTHBnc2wwT1oyc3pSdUFzNU9QU2pPM1grTi9EZC9JVmp5V1dI?=
- =?utf-8?B?YUp3d1VpbURZMytDRHBaSG1LakhPa05MWDNTUXFGeXFxMXk3aDRhZ2hIZ0VH?=
- =?utf-8?B?UVl6NzAxWnRvZ3l5U25rR3NrM3V2QkpRQWx6Y1ltUUx4UHdjQ2hvNkJBOTZn?=
- =?utf-8?B?Mkl6Nk4zUVlrcUlnNnhWS3Faa1F6bHdWNmUwWHVpWUFwY3VpQ1l2WWpRK0Rv?=
- =?utf-8?B?NWdqQkxSQ2VCa0FxekptYUJoaFlJUnl1ZEhvdFpZM04zMDNXa1NxWHBrakJj?=
- =?utf-8?B?ZzVXSjNRSUxTUHhUdUV2bjExMVZTRENpTldQaDZyeStjMys0RW11RzNGYXEx?=
- =?utf-8?B?RVR5VEpwdHRqTTJEWm4rLzlwbVdMT1dFenY0U2d5Qmxkc0hXK09HWElEMDZk?=
- =?utf-8?B?TEE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <32C15F50D12F6F419D3337BBF190C27E@GBRP265.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+        Tue, 28 Nov 2023 05:49:29 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 377A012C
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:49:34 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E1F00C15;
+        Tue, 28 Nov 2023 02:50:20 -0800 (PST)
+Received: from [10.1.33.188] (XHFQ2J9959.cambridge.arm.com [10.1.33.188])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 423603F73F;
+        Tue, 28 Nov 2023 02:49:30 -0800 (PST)
+Message-ID: <974feb64-d056-4f3c-9166-9b116bea1318@arm.com>
+Date:   Tue, 28 Nov 2023 10:49:29 +0000
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CWLP265MB5770.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3fd46f67-6eee-405a-9fdd-08dbefff64ec
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Nov 2023 10:47:19.1667
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 0d5fd8bb-e8c2-4e0a-8dd5-2c264f7140fe
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wa2QbSs1eGvPJ+ZYo75xnBmeo3W3SQm79V8GyR1A2TgX85bgPpENcVHw4187yTHxABTP5nXL5qxX+Z5IkSOzBHNBVlIrkisH8SgkLn7HVHY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP265MB1762
-X-OriginatorOrg: imgtec.com
-X-EXCLAIMER-MD-CONFIG: 15a78312-3e47-46eb-9010-2e54d84a9631
-X-Proofpoint-ORIG-GUID: kTvIEiHVho1FDSiwbapebhmmky5GVuPr
-X-Proofpoint-GUID: kTvIEiHVho1FDSiwbapebhmmky5GVuPr
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
+Content-Language: en-GB
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     david@redhat.com, akpm@linux-foundation.org, andreyknvl@gmail.com,
+        anshuman.khandual@arm.com, ardb@kernel.org,
+        catalin.marinas@arm.com, dvyukov@google.com, glider@google.com,
+        james.morse@arm.com, jhubbard@nvidia.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mark.rutland@arm.com, maz@kernel.org,
+        oliver.upton@linux.dev, ryabinin.a.a@gmail.com,
+        suzuki.poulose@arm.com, vincenzo.frascino@arm.com,
+        wangkefeng.wang@huawei.com, will@kernel.org, willy@infradead.org,
+        yuzenghui@huawei.com, yuzhao@google.com, ziy@nvidia.com
+References: <271f1e98-6217-4b40-bae0-0ac9fe5851cb@redhat.com>
+ <20231127084217.13110-1-v-songbaohua@oppo.com>
+ <bfebd80b-b60d-48e2-b350-7c0ac0299cda@arm.com>
+ <CAGsJ_4zMwxNw76bweq-23x5ibpWnERCCwg_kz3zn1pjzeY0qXw@mail.gmail.com>
+ <c359a8a6-8221-4d83-a945-580039042056@arm.com>
+ <CAGsJ_4zbB5QHu=x9U2-QNFi7SPJkw0hTE+jQoLPcq2rCMC9ArA@mail.gmail.com>
+ <d55e534d-c822-448e-92e0-a4e43122ce88@arm.com>
+ <CAGsJ_4yto+q=PmzOVTu=ELPQjMAcjVi3qvg=1K3++nbSpcK+XQ@mail.gmail.com>
+ <7c4c8ab2-8eb2-472d-ad8d-9d6c20b2191c@arm.com>
+ <CAGsJ_4xfsifqD2sDHO_9fVJEicHqK5j7QZv73UToUjadA0J5-w@mail.gmail.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAGsJ_4xfsifqD2sDHO_9fVJEicHqK5j7QZv73UToUjadA0J5-w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgRGFuaWxvLA0KDQpBcG9sb2dpZXMgLSBJIGd1ZXNzIEkgc2hvdWxkIGhhdmUgc3VibWl0dGVk
-IGEgcGF0Y2ggdG8gaGFuZGxlIHplcm8gZmVuY2VzIGluIHlvdXINCmxvY2tpbmcgZnVuY3Rpb25z
-IHdpdGggdGhlIGZpbmFsIHBhdGNoIHNlcmllcy4NCg0KT24gU2F0LCAyMDIzLTExLTI1IGF0IDAw
-OjM2ICswMTAwLCBEYW5pbG8gS3J1bW1yaWNoIHdyb3RlOg0KPiAqKiogQ0FVVElPTjogVGhpcyBl
-bWFpbCBvcmlnaW5hdGVzIGZyb20gYSBzb3VyY2Ugbm90IGtub3duIHRvIEltYWdpbmF0aW9uIFRl
-Y2hub2xvZ2llcy4gVGhpbmsgYmVmb3JlIHlvdSBjbGljayBhIGxpbmsgb3Igb3BlbiBhbiBhdHRh
-Y2htZW50ICoqKg0KPiANCj4gTWFrZSB1c2Ugb2YgR1BVVk0ncyBkcm1fZXhlYyBoZWxwZXIgZnVu
-Y3Rpb25zIHByZXZlbnRpbmcgZGlyZWN0IGFjY2Vzcw0KPiB0byBHUFVWTSBpbnRlcm5hbCBkYXRh
-IHN0cnVjdHVyZXMsIHN1Y2ggYXMgdGhlIGV4dGVybmFsIG9iamVjdCBsaXN0Lg0KPiANCj4gVGhp
-cyBpcyBlc3BlY2lhbGx5IGltcG9ydGFudCB0byBlbnN1cmUgZm9sbG93aW5nIHRoZSBsb2NraW5n
-IHJ1bGVzDQo+IGFyb3VuZCB0aGUgR1BVVk0gZXh0ZXJuYWwgb2JqZWN0IGxpc3QuDQo+IA0KPiBG
-aXhlczogZmY1ZjY0M2RlMGJmICgiZHJtL2ltYWdpbmF0aW9uOiBBZGQgR0VNIGFuZCBWTSByZWxh
-dGVkIGNvZGUiKQ0KPiBTaWduZWQtb2ZmLWJ5OiBEYW5pbG8gS3J1bW1yaWNoIDxkYWtyQHJlZGhh
-dC5jb20+DQo+IC0tLQ0KPiAgZHJpdmVycy9ncHUvZHJtL2ltYWdpbmF0aW9uL3B2cl92bS5jIHwg
-MTYgKysrKystLS0tLS0tLS0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKSwg
-MTEgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2ltYWdp
-bmF0aW9uL3B2cl92bS5jIGIvZHJpdmVycy9ncHUvZHJtL2ltYWdpbmF0aW9uL3B2cl92bS5jDQo+
-IGluZGV4IGUwZDc0ZDlhNjE5MC4uM2Y3ODg4ZjVjYzUzIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJz
-L2dwdS9kcm0vaW1hZ2luYXRpb24vcHZyX3ZtLmMNCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2lt
-YWdpbmF0aW9uL3B2cl92bS5jDQo+IEBAIC0zMzcsMjcgKzMzNywyMSBAQCBzdGF0aWMgaW50DQo+
-ICBwdnJfdm1fYmluZF9vcF9sb2NrX3Jlc3ZzKHN0cnVjdCBkcm1fZXhlYyAqZXhlYywgc3RydWN0
-IHB2cl92bV9iaW5kX29wICpiaW5kX29wKQ0KPiAgew0KPiAgCWRybV9leGVjX3VudGlsX2FsbF9s
-b2NrZWQoZXhlYykgew0KPiAtCQlzdHJ1Y3QgZHJtX2dlbV9vYmplY3QgKnJfb2JqID0gJmJpbmRf
-b3AtPnZtX2N0eC0+ZHVtbXlfZ2VtOw0KPiAgCQlzdHJ1Y3QgZHJtX2dwdXZtICpncHV2bSA9ICZi
-aW5kX29wLT52bV9jdHgtPmdwdXZtX21ncjsNCj4gIAkJc3RydWN0IHB2cl9nZW1fb2JqZWN0ICpw
-dnJfb2JqID0gYmluZF9vcC0+cHZyX29iajsNCj4gLQkJc3RydWN0IGRybV9ncHV2bV9ibyAqZ3B1
-dm1fYm87DQo+ICANCj4gIAkJLyogQWNxdWlyZSBsb2NrIG9uIHRoZSB2bV9jb250ZXh0J3MgcmVz
-ZXJ2ZSBvYmplY3QuICovDQo+IC0JCWludCBlcnIgPSBkcm1fZXhlY19sb2NrX29iaihleGVjLCBy
-X29iaik7DQo+ICsJCWludCBlcnIgPSBkcm1fZ3B1dm1fcHJlcGFyZV92bShncHV2bSwgZXhlYywg
-MCk7DQo+ICANCj4gIAkJZHJtX2V4ZWNfcmV0cnlfb25fY29udGVudGlvbihleGVjKTsNCj4gIAkJ
-aWYgKGVycikNCj4gIAkJCXJldHVybiBlcnI7DQo+ICANCj4gIAkJLyogQWNxdWlyZSBsb2NrIG9u
-IGFsbCBCT3MgaW4gdGhlIGNvbnRleHQuICovDQo+IC0JCWxpc3RfZm9yX2VhY2hfZW50cnkoZ3B1
-dm1fYm8sICZncHV2bS0+ZXh0b2JqLmxpc3QsDQo+IC0JCQkJICAgIGxpc3QuZW50cnkuZXh0b2Jq
-KSB7DQo+IC0JCQllcnIgPSBkcm1fZXhlY19sb2NrX29iaihleGVjLCBncHV2bV9iby0+b2JqKTsN
-Cj4gLQ0KPiAtCQkJZHJtX2V4ZWNfcmV0cnlfb25fY29udGVudGlvbihleGVjKTsNCj4gLQkJCWlm
-IChlcnIpDQo+IC0JCQkJcmV0dXJuIGVycjsNCj4gLQkJfQ0KPiArCQllcnIgPSBkcm1fZ3B1dm1f
-cHJlcGFyZV9vYmplY3RzKGdwdXZtLCBleGVjLCAwKTsNCj4gKwkJZHJtX2V4ZWNfcmV0cnlfb25f
-Y29udGVudGlvbihleGVjKTsNCj4gKwkJaWYgKGVycikNCj4gKwkJCXJldHVybiBlcnI7DQoNCkJl
-Zm9yZSBJIGRpc2NvdmVyZWQgdGhlIHByb2JsZW0gd2hlbiBub3QgcmVzZXJ2aW5nIGZlbmNlcywg
-SSB3YXMgdHJ5aW5nIHRvIHVzZQ0KZHJtX2dwdXZtX2V4ZWNfbG9jaygpIHdpdGggdm1fZXhlYy0+
-ZXh0cmEuZm4oKSBmb3IgdGhlIHBhcnQgYmVsb3cuICBJcyB0aGVyZQ0KYSByZWFzb24gbm90IHRv
-IGRvIHRoYXQgbm93Pw0KDQpNYW55IHRoYW5rcywNCkRvbmFsZA0KDQo+ICANCj4gIAkJLyogVW5t
-YXAgb3BlcmF0aW9ucyBkb24ndCBoYXZlIGFuIG9iamVjdCB0byBsb2NrLiAqLw0KPiAgCQlpZiAo
-IXB2cl9vYmopDQo=
+On 28/11/2023 09:49, Barry Song wrote:
+> On Tue, Nov 28, 2023 at 10:14 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>
+>> On 27/11/2023 20:34, Barry Song wrote:
+>>> On Tue, Nov 28, 2023 at 12:07 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>
+>>>> On 27/11/2023 10:28, Barry Song wrote:
+>>>>> On Mon, Nov 27, 2023 at 11:11 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>>>
+>>>>>> On 27/11/2023 09:59, Barry Song wrote:
+>>>>>>> On Mon, Nov 27, 2023 at 10:35 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>>>>>
+>>>>>>>> On 27/11/2023 08:42, Barry Song wrote:
+>>>>>>>>>>> +           for (i = 0; i < nr; i++, page++) {
+>>>>>>>>>>> +                   if (anon) {
+>>>>>>>>>>> +                           /*
+>>>>>>>>>>> +                            * If this page may have been pinned by the
+>>>>>>>>>>> +                            * parent process, copy the page immediately for
+>>>>>>>>>>> +                            * the child so that we'll always guarantee the
+>>>>>>>>>>> +                            * pinned page won't be randomly replaced in the
+>>>>>>>>>>> +                            * future.
+>>>>>>>>>>> +                            */
+>>>>>>>>>>> +                           if (unlikely(page_try_dup_anon_rmap(
+>>>>>>>>>>> +                                           page, false, src_vma))) {
+>>>>>>>>>>> +                                   if (i != 0)
+>>>>>>>>>>> +                                           break;
+>>>>>>>>>>> +                                   /* Page may be pinned, we have to copy. */
+>>>>>>>>>>> +                                   return copy_present_page(
+>>>>>>>>>>> +                                           dst_vma, src_vma, dst_pte,
+>>>>>>>>>>> +                                           src_pte, addr, rss, prealloc,
+>>>>>>>>>>> +                                           page);
+>>>>>>>>>>> +                           }
+>>>>>>>>>>> +                           rss[MM_ANONPAGES]++;
+>>>>>>>>>>> +                           VM_BUG_ON(PageAnonExclusive(page));
+>>>>>>>>>>> +                   } else {
+>>>>>>>>>>> +                           page_dup_file_rmap(page, false);
+>>>>>>>>>>> +                           rss[mm_counter_file(page)]++;
+>>>>>>>>>>> +                   }
+>>>>>>>>>>>             }
+>>>>>>>>>>> -           rss[MM_ANONPAGES]++;
+>>>>>>>>>>> -   } else if (page) {
+>>>>>>>>>>> -           folio_get(folio);
+>>>>>>>>>>> -           page_dup_file_rmap(page, false);
+>>>>>>>>>>> -           rss[mm_counter_file(page)]++;
+>>>>>>>>>>> +
+>>>>>>>>>>> +           nr = i;
+>>>>>>>>>>> +           folio_ref_add(folio, nr);
+>>>>>>>>>>
+>>>>>>>>>> You're changing the order of mapcount vs. refcount increment. Don't.
+>>>>>>>>>> Make sure your refcount >= mapcount.
+>>>>>>>>>>
+>>>>>>>>>> You can do that easily by doing the folio_ref_add(folio, nr) first and
+>>>>>>>>>> then decrementing in case of error accordingly. Errors due to pinned
+>>>>>>>>>> pages are the corner case.
+>>>>>>>>>>
+>>>>>>>>>> I'll note that it will make a lot of sense to have batch variants of
+>>>>>>>>>> page_try_dup_anon_rmap() and page_dup_file_rmap().
+>>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> i still don't understand why it is not a entire map+1, but an increment
+>>>>>>>>> in each basepage.
+>>>>>>>>
+>>>>>>>> Because we are PTE-mapping the folio, we have to account each individual page.
+>>>>>>>> If we accounted the entire folio, where would we unaccount it? Each page can be
+>>>>>>>> unmapped individually (e.g. munmap() part of the folio) so need to account each
+>>>>>>>> page. When PMD mapping, the whole thing is either mapped or unmapped, and its
+>>>>>>>> atomic, so we can account the entire thing.
+>>>>>>>
+>>>>>>> Hi Ryan,
+>>>>>>>
+>>>>>>> There is no problem. for example, a large folio is entirely mapped in
+>>>>>>> process A with CONPTE,
+>>>>>>> and only page2 is mapped in process B.
+>>>>>>> then we will have
+>>>>>>>
+>>>>>>> entire_map = 0
+>>>>>>> page0.map = -1
+>>>>>>> page1.map = -1
+>>>>>>> page2.map = 0
+>>>>>>> page3.map = -1
+>>>>>>> ....
+>>>>>>>
+>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> as long as it is a CONTPTE large folio, there is no much difference with
+>>>>>>>>> PMD-mapped large folio. it has all the chance to be DoubleMap and need
+>>>>>>>>> split.
+>>>>>>>>>
+>>>>>>>>> When A and B share a CONTPTE large folio, we do madvise(DONTNEED) or any
+>>>>>>>>> similar things on a part of the large folio in process A,
+>>>>>>>>>
+>>>>>>>>> this large folio will have partially mapped subpage in A (all CONTPE bits
+>>>>>>>>> in all subpages need to be removed though we only unmap a part of the
+>>>>>>>>> large folioas HW requires consistent CONTPTEs); and it has entire map in
+>>>>>>>>> process B(all PTEs are still CONPTES in process B).
+>>>>>>>>>
+>>>>>>>>> isn't it more sensible for this large folios to have entire_map = 0(for
+>>>>>>>>> process B), and subpages which are still mapped in process A has map_count
+>>>>>>>>> =0? (start from -1).
+>>>>>>>>>
+>>>>>>>>>> Especially, the batch variant of page_try_dup_anon_rmap() would only
+>>>>>>>>>> check once if the folio maybe pinned, and in that case, you can simply
+>>>>>>>>>> drop all references again. So you either have all or no ptes to process,
+>>>>>>>>>> which makes that code easier.
+>>>>>>>>
+>>>>>>>> I'm afraid this doesn't make sense to me. Perhaps I've misunderstood. But
+>>>>>>>> fundamentally you can only use entire_mapcount if its only possible to map and
+>>>>>>>> unmap the whole folio atomically.
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>> My point is that CONTPEs should either all-set in all 16 PTEs or all are dropped
+>>>>>>> in 16 PTEs. if all PTEs have CONT, it is entirely mapped; otherwise,
+>>>>>>> it is partially
+>>>>>>> mapped. if a large folio is mapped in one processes with all CONTPTEs
+>>>>>>> and meanwhile in another process with partial mapping(w/o CONTPTE), it is
+>>>>>>> DoubleMapped.
+>>>>>>
+>>>>>> There are 2 problems with your proposal, as I see it;
+>>>>>>
+>>>>>> 1) the core-mm is not enlightened for CONTPTE mappings. As far as it is
+>>>>>> concerned, its just mapping a bunch of PTEs. So it has no hook to inc/dec
+>>>>>> entire_mapcount. The arch code is opportunistically and *transparently* managing
+>>>>>> the CONT_PTE bit.
+>>>>>>
+>>>>>> 2) There is nothing to say a folio isn't *bigger* than the contpte block; it may
+>>>>>> be 128K and be mapped with 2 contpte blocks. Or even a PTE-mapped THP (2M) and
+>>>>>> be mapped with 32 contpte blocks. So you can't say it is entirely mapped
+>>>>>> unless/until ALL of those blocks are set up. And then of course each block could
+>>>>>> be unmapped unatomically.
+>>>>>>
+>>>>>> For the PMD case there are actually 2 properties that allow using the
+>>>>>> entire_mapcount optimization; It's atomically mapped/unmapped through the PMD
+>>>>>> and we know that the folio is exactly PMD sized (since it must be at least PMD
+>>>>>> sized to be able to map it with the PMD, and we don't allocate THPs any bigger
+>>>>>> than PMD size). So one PMD map or unmap operation corresponds to exactly one
+>>>>>> *entire* map or unmap. That is not true when we are PTE mapping.
+>>>>>
+>>>>> well. Thanks for clarification. based on the above description, i agree the
+>>>>> current code might make more sense by always using mapcount in subpage.
+>>>>>
+>>>>> I gave my proposals as  I thought we were always CONTPTE size for small-THP
+>>>>> then we could drop the loop to iterate 16 times rmap. if we do it
+>>>>> entirely, we only
+>>>>> need to do dup rmap once for all 16 PTEs by increasing entire_map.
+>>>>
+>>>> Well its always good to have the discussion - so thanks for the ideas. I think
+>>>> there is a bigger question lurking here; should we be exposing the concept of
+>>>> contpte mappings to the core-mm rather than burying it in the arm64 arch code?
+>>>> I'm confident that would be a huge amount of effort and the end result would be
+>>>> similar performace to what this approach gives. One potential benefit of letting
+>>>> core-mm control it is that it would also give control to core-mm over the
+>>>> granularity of access/dirty reporting (my approach implicitly ties it to the
+>>>> folio). Having sub-folio access tracking _could_ potentially help with future
+>>>> work to make THP size selection automatic, but we are not there yet, and I think
+>>>> there are other (simpler) ways to achieve the same thing. So my view is that
+>>>> _not_ exposing it to core-mm is the right way for now.
+>>>
+>>> Hi Ryan,
+>>>
+>>> We(OPPO) started a similar project like you even before folio was imported to
+>>> mainline, we have deployed the dynamic hugepage(that is how we name it)
+>>> on millions of mobile phones on real products and kernels before 5.16,  making
+>>> a huge success on performance improvement. for example, you may
+>>> find the out-of-tree 5.15 source code here
+>>
+>> Oh wow, thanks for reaching out and explaining this - I have to admit I feel
+>> embarrassed that I clearly didn't do enough research on the prior art because I
+>> wasn't aware of your work. So sorry about that.
+>>
+>> I sensed that you had a different model for how this should work vs what I've
+>> implemented and now I understand why :). I'll review your stuff and I'm sure
+>> I'll have questions. I'm sure each solution has pros and cons.
+>>
+>>
+>>>
+>>> https://github.com/OnePlusOSS/android_kernel_oneplus_sm8550/tree/oneplus/sm8550_u_14.0.0_oneplus11
+>>>
+>>> Our modification might not be so clean and has lots of workarounds
+>>> just for the stability of products
+>>>
+>>> We mainly have
+>>>
+>>> 1. https://github.com/OnePlusOSS/android_kernel_oneplus_sm8550/blob/oneplus/sm8550_u_14.0.0_oneplus11/mm/cont_pte_hugepage.c
+>>>
+>>> some CONTPTE helpers
+>>>
+>>> 2.https://github.com/OnePlusOSS/android_kernel_oneplus_sm8550/blob/oneplus/sm8550_u_14.0.0_oneplus11/include/linux/mm.h
+>>>
+>>> some Dynamic Hugepage APIs
+>>>
+>>> 3. https://github.com/OnePlusOSS/android_kernel_oneplus_sm8550/blob/oneplus/sm8550_u_14.0.0_oneplus11/mm/memory.c
+>>>
+>>> modified all page faults to support
+>>>      (1). allocation of hugepage of 64KB in do_anon_page
+>>
+>> My Small-Sized THP patch set is handling the equivalent of this.
+> 
+> right, the only difference is that we did a huge-zeropage for reading
+> in do_anon_page.
+> mapping all large folios to CONTPTE to zero page.
+
+FWIW, I took a slightly different approach in my original RFC for the zero page
+- although I ripped it all out to simplify for the initial series. I found that
+it was pretty rare for user space to read multiple consecutive pages without
+ever interleving any writes, so I kept the zero page as a base page, but at CoW,
+I would expand the allocation to an approprately sized THP. But for the couple
+of workloads that I've gone deep with, I found that it made barely any dent on
+the amount of memory that ended up contpte-mapped; the vast majority was from
+write allocation in do_anonymous_page().
+
+> 
+>>
+>>>      (2). CoW hugepage in do_wp_page
+>>
+>> This isn't handled yet in my patch set; the original RFC implemented it but I
+>> removed it in order to strip back to the essential complexity for the initial
+>> submission. DavidH has been working on a precise shared vs exclusive map
+>> tracking mechanism - if that goes in, it will make CoWing large folios simpler.
+>> Out of interest, what workloads benefit most from this?
+> 
+> as a phone, Android has a design almost all processes are forked from zygote.
+> thus, CoW happens quite often to all apps.
+
+Sure. But in my analysis I concluded that most of the memory mapped in zygote is
+file-backed and mostly RO so therefore doing THP CoW doesn't help much. Perhaps
+there are cases where that conclusion is wrong.
+
+> 
+>>
+>>>      (3). copy CONPTEs in copy_pte_range
+>>
+>> As discussed this is done as part of the contpte patch set, but its not just a
+>> simple copy; the arch code will notice and set the CONT_PTE bit as needed.
+> 
+> right, i have read all your unfold and fold stuff today, now i understand your
+> approach seems quite nice!
+
+Great - thanks!
+
+> 
+> 
+>>
+>>>      (4). allocate and swap-in Hugepage as a whole in do_swap_page
+>>
+>> This is going to be a problem but I haven't even looked at this properly yet.
+>> The advice so far has been to continue to swap-in small pages only, but improve
+>> khugepaged to collapse to small-sized THP. I'll take a look at your code to
+>> understand how you did this.
+> 
+> this is also crucial to android phone as swap is always happening
+> on an embedded device. if we don't support large folios in swapin,
+> our large folios will never come back after it is swapped-out.
+> 
+> and i hated the collapse solution from the first beginning as there is
+> never a guarantee to succeed and its overhead is unacceptable to user UI,
+> so we supported hugepage allocation in do_swap_page from the first beginning.
+
+Understood. I agree it would be nice to preserve large folios across swap. I
+think this can be layered on top of the current work though.
+
+> 
+>>
+>>>
+>>> 4. https://github.com/OnePlusOSS/android_kernel_oneplus_sm8550/blob/oneplus/sm8550_u_14.0.0_oneplus11/mm/vmscan.c
+>>> https://github.com/OnePlusOSS/android_kernel_oneplus_sm8550/blob/oneplus/sm8550_u_14.0.0_oneplus11/mm/rmap.c
+>>>
+>>> reclaim hugepage as a whole and LRU optimization for 64KB dynamic hugepage.
+>>
+>> I think this is all naturally handled by the folio code that exists in modern
+>> kernels?
+> 
+> We had a CONTPTE hugepage pool, if the pool is very limited, we let LRU
+> reclaim large folios to the pool. as phones are running lots of apps
+> and drivers, and the memory is very limited, after a couple of hours,
+> it will become very hard to allocate large folios in the original buddy. thus,
+> large folios totally disappeared after running the phone for some time
+> if we didn't have the pool.
+> 
+>>
+>>>
+>>> So we are 100% interested in your patchset and hope it can find a way
+>>> to land on the
+>>> mainline, thus decreasing all the cost we have to maintain out-of-tree
+>>> code from a
+>>> kernel to another kernel version which we have done on a couple of
+>>> kernel versions
+>>> before 5.16. Firmly, we are 100% supportive of large anon folios
+>>> things you are leading.
+>>
+>> That's great to hear! Of course Reviewed-By's and Tested-By's will all help move
+>> it closer :). If you had any ability to do any A/B performance testing, it would
+>> be very interesting to see how this stacks up against your solution - if there
+>> are gaps it would be good to know where and develop a plan to plug the gap.
+>>
+> 
+> sure.
+> 
+>>>
+>>> A big pain was we found lots of races especially on CONTPTE unfolding
+>>> and especially a part
+>>> of basepages ran away from the 16 CONPTEs group since userspace is
+>>> always working
+>>> on basepages, having no idea of small-THP.  We ran our code on millions of
+>>> real phones, and now we have got them fixed (or maybe "can't reproduce"),
+>>> no outstanding issue.
+>>
+>> I'm going to be brave and say that my solution shouldn't suffer from these
+>> problems; but of course the proof is only in the testing. I did a lot of work
+>> with our architecture group and micro architects to determine exactly what is
+>> and isn't safe; We even tightened the Arm ARM spec very subtlely to allow the
+>> optimization in patch 13 (see the commit log for details). Of course this has
+>> all been checked with partners and we are confident that all existing
+>> implementations conform to the modified wording.
+> 
+> cool. I like your try_unfold/fold code. it seems your code is setting/dropping
+> CONT automatically based on ALIGHMENT, Page number etc. Alternatively,
+> our code is always stupidly checking some conditions before setting and dropping
+> CONT everywhere.
+> 
+>>
+>>>
+>>> Particularly for the rmap issue we are discussing, our out-of-tree is
+>>> using the entire_map for
+>>> CONTPTE in the way I sent to you. But I guess we can learn from you to decouple
+>>> CONTPTE from mm-core.
+>>>
+>>> We are doing this in mm/memory.c
+>>>
+>>> copy_present_cont_pte(struct vm_area_struct *dst_vma, struct
+>>> vm_area_struct *src_vma,
+>>> pte_t *dst_pte, pte_t *src_pte, unsigned long addr, int *rss,
+>>> struct page **prealloc)
+>>> {
+>>>       struct mm_struct *src_mm = src_vma->vm_mm;
+>>>       unsigned long vm_flags = src_vma->vm_flags;
+>>>       pte_t pte = *src_pte;
+>>>       struct page *page;
+>>>
+>>>        page = vm_normal_page(src_vma, addr, pte);
+>>>       ...
+>>>
+>>>      get_page(page);
+>>>      page_dup_rmap(page, true);   // an entire dup_rmap as you can
+>>> see.............
+>>>      rss[mm_counter(page)] += HPAGE_CONT_PTE_NR;
+>>> }
+>>>
+>>> and we have a split in mm/cont_pte_hugepage.c to handle partially unmap,
+>>>
+>>> static void __split_huge_cont_pte_locked(struct vm_area_struct *vma, pte_t *pte,
+>>> unsigned long haddr, bool freeze)
+>>> {
+>>> ...
+>>>            if (compound_mapcount(head) > 1 && !TestSetPageDoubleMap(head)) {
+>>>                   for (i = 0; i < HPAGE_CONT_PTE_NR; i++)
+>>>                            atomic_inc(&head[i]._mapcount);
+>>>                  atomic_long_inc(&cont_pte_double_map_count);
+>>>            }
+>>>
+>>>
+>>>             if (atomic_add_negative(-1, compound_mapcount_ptr(head))) {
+>>>               ...
+>>> }
+>>>
+>>> I am not selling our solution any more, but just showing you some differences we
+>>> have :-)
+>>
+>> OK, I understand what you were saying now. I'm currently struggling to see how
+>> this could fit into my model. Do you have any workloads and numbers on perf
+>> improvement of using entire_mapcount?
+> 
+> TBH, I don't have any data on this as from the first beginning, we were using
+> entire_map. So I have no comparison at all.
+> 
+>>
+>>>
+>>>>
+>>>>>
+>>>>> BTW, I have concerns that a variable small-THP size will really work
+>>>>> as userspace
+>>>>> is probably friendly to only one fixed size. for example, userspace
+>>>>> heap management
+>>>>> might be optimized to a size for freeing memory to the kernel. it is
+>>>>> very difficult
+>>>>> for the heap to adapt to various sizes at the same time. frequent unmap/free
+>>>>> size not equal with, and particularly smaller than small-THP size will
+>>>>> defeat all
+>>>>> efforts to use small-THP.
+>>>>
+>>>> I'll admit to not knowing a huge amount about user space allocators. But I will
+>>>> say that as currently defined, the small-sized THP interface to user space
+>>>> allows a sysadmin to specifically enable the set of sizes that they want; so a
+>>>> single size can be enabled. I'm diliberately punting that decision away from the
+>>>> kernel for now.
+>>>
+>>> Basically, userspace heap library has a PAGESIZE setting and allows users
+>>> to allocate/free all kinds of small objects such as 16,32,64,128,256,512 etc.
+>>> The default size is for sure equal to the basepage SIZE. once some objects are
+>>> freed by free() and libc get a free "page", userspace heap libraries might free
+>>> the PAGESIZE page to kernel by things like MADV_DONTNEED, then zap_pte_range().
+>>> it is quite similar with kernel slab.
+>>>
+>>> so imagine we have small-THP now, but userspace libraries have *NO*
+>>> idea at all,  so it can frequently cause unfolding.
+>>>
+>>>>
+>>>> FWIW, My experience with the Speedometer/JavaScript use case is that performance
+>>>> is a little bit better when enabling 64+32+16K vs just 64K THP.
+>>>>
+>>>> Functionally, it will not matter if the allocator is not enlightened for the THP
+>>>> size; it can continue to free, and if a partial folio is unmapped it is put on
+>>>> the deferred split list, then under memory pressure it is split and the unused
+>>>> pages are reclaimed. I guess this is the bit you are concerned about having a
+>>>> performance impact?
+>>>
+>>> right. If this is happening on the majority of small-THP folios, we
+>>> don't have performance
+>>> improvement, and probably regression instead. This is really true on
+>>> real workloads!!
+>>>
+>>> So that is why we really love a per-VMA hint to enable small-THP but
+>>> obviously you
+>>> have already supported it now by
+>>> mm: thp: Introduce per-size thp sysfs interface
+>>> https://lore.kernel.org/linux-mm/20231122162950.3854897-4-ryan.roberts@arm.com/
+>>>
+>>> we can use MADVISE rather than ALWAYS and set fixed size like 64KB, so userspace
+>>> can set the VMA flag when it is quite sure this VMA is working with
+>>> the alignment
+>>> of 64KB?
+>>
+>> Yes, that all exists in the series today. We have also discussed the possibility
+>> of adding a new madvise_process() call that would take the set of THP sizes that
+>> should be considered. Then you can set different VMAs to use different sizes;
+>> the plan was to layer that on top if/when a workload was identified. Sounds like
+>> you might be able to help there?
+> 
+> i'm not quite sure as on phones, we are using fixed-size CONTPTE. so we ask
+> for either 64KB or 4KB. If we think one VMA is all good to use CONTPTE, we
+> set a flag in this VMA and try to allocate 64KB.
+
+When you say "we set a flag" do you mean user space? Or is there some heuristic
+in the kernel?
+
+> 
+> But I will try to understand this requirement to madvise THPs size on a specific
+> VMA.
+> 
+>>
+>>>
+>>>>
+>>>> Regardless, it would be good to move this conversation to the small-sized THP
+>>>> patch series since this is all independent of contpte mappings.
+>>>>
+>>>>>
+>>>>>>
+>>>>>>>
+>>>>>>> Since we always hold ptl to set or drop CONTPTE bits, set/drop is
+>>>>>>> still atomic in a
+>>>>>>> spinlock area.
+>>>>>>>
+>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> But that can be added on top, and I'll happily do that.
+>>>>>>>>>>
+>>>>>>>>>> --
+>>>>>>>>>> Cheers,
+>>>>>>>>>>
+>>>>>>>>>> David / dhildenb
+>>>>>>>>>
+>>>>>>>
+>>>>>
+> 
+> Thanks
+> Barry
+
