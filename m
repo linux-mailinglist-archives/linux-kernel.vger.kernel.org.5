@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB7E7FC8CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:53:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 158827FC85A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:52:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376531AbjK1VNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 16:13:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40594 "EHLO
+        id S1346858AbjK1V1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 16:27:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346729AbjK1VMk (ORCPT
+        with ESMTP id S235023AbjK1V1S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 16:12:40 -0500
+        Tue, 28 Nov 2023 16:27:18 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D01E93596
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:07:33 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6C88C43395;
-        Tue, 28 Nov 2023 21:07:24 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0274D35B6
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:07:36 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EFC2BC433C7;
+        Tue, 28 Nov 2023 21:07:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701205645;
-        bh=q4zuJqnRTMKFKpaQD3b9M8K0vV9uChLcAW1eHYiIYr0=;
+        s=k20201202; t=1701205648;
+        bh=qSIOZxomh9bqGqVlenPpEsVcBxrve1a1I35FfYRsidw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gp1b/mMHfw4pShS6Zc5WQlygErjHMMwmTADMvGhP8GD0hhtz0ZOSbllcwKMF+EyvW
-         WWH/gR0nEpTazByZExORqhU4bxsEULpshdJJmXPo+8M4OchMyRX7reDbdbWUCOBGdk
-         s6nmsz+XJGa5E2a4+IA3OreKsqc7o5ynI17kk5X3L9BgSKBqqNZP7X5EkRrTILJ7Ca
-         KM4OhIpf44wLHWvAwdvDsR1uEiLRfgTT7uV388KdP6JQxPkXR9jFaAP4xxGl6Wnt1S
-         8JYV2Hy3QxvrjbWbu7xM4f3PzaiHvoDS2qZL35HJx5WImKWelhHJMILAMwnji1Jn56
-         y+MY5tFFV70Dw==
+        b=RcWvhUWltC6MD21iyFocM32U5tv8iU8jBPFvk6Q7w+Nj3hXLjPDEH84+oVaW9VdQh
+         mAPEUJYcf/j3LBsJziKnc7JqtJPGXCFoTbrhR1h7AEsirGFIest594QeCIVN8npsBA
+         eiDySeWlv+DutR1oDh0sHnUGBx24IHyXyUb9mJ5tINynSQNcBjoGd2s1knXNubXvTE
+         VP5kNMoLF/ua8KMJWQ3ALqOckNULPfjrMwXE1BQmdkjw6o8hk/nrkhfrdd0QGjF4iw
+         sUrWazbo8Pk3nCOR1SC2LJfis1QEE/o0O2Sl07aq+FJV4mO/KaNqJ8PbYZWDwOEWIG
+         KH6RWCimd0TJA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Nguyen Dinh Phi <phind.uet@gmail.com>,
-        syzbot+6eb09d75211863f15e3e@syzkaller.appspotmail.com,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, bongsu.jeon@samsung.com,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 32/40] nfc: virtual_ncidev: Add variable to check if ndev is running
-Date:   Tue, 28 Nov 2023 16:05:38 -0500
-Message-ID: <20231128210615.875085-32-sashal@kernel.org>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>, glaubitz@physik.fu-berlin.de,
+        rdunlap@infradead.org
+Subject: [PATCH AUTOSEL 6.6 33/40] scripts/checkstack.pl: match all stack sizes for s390
+Date:   Tue, 28 Nov 2023 16:05:39 -0500
+Message-ID: <20231128210615.875085-33-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231128210615.875085-1-sashal@kernel.org>
 References: <20231128210615.875085-1-sashal@kernel.org>
@@ -56,62 +54,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nguyen Dinh Phi <phind.uet@gmail.com>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-[ Upstream commit 84d2db91f14a32dc856a5972e3f0907089093c7a ]
+[ Upstream commit aab1f809d7540def24498e81347740a7239a74d5 ]
 
-syzbot reported an memory leak that happens when an skb is add to
-send_buff after virtual nci closed.
-This patch adds a variable to track if the ndev is running before
-handling new skb in send function.
+For some unknown reason the regular expression for checkstack only matches
+three digit numbers starting with the number "3", or any higher
+number. Which means that it skips any stack sizes smaller than 304
+bytes. This makes the checkstack script a bit less useful than it could be.
 
-Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
-Reported-by: syzbot+6eb09d75211863f15e3e@syzkaller.appspotmail.com
-Closes: https://lore.kernel.org/lkml/00000000000075472b06007df4fb@google.com
-Reviewed-by: Bongsu Jeon
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Change the script to match any number. To be filtered out stack sizes
+can be configured with the min_stack variable, which omits any stack
+frame sizes smaller than 100 bytes by default.
+
+Tested-by: Alexander Gordeev <agordeev@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nfc/virtual_ncidev.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ scripts/checkstack.pl | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/nfc/virtual_ncidev.c b/drivers/nfc/virtual_ncidev.c
-index b027be0b0b6ff..590b038e449e5 100644
---- a/drivers/nfc/virtual_ncidev.c
-+++ b/drivers/nfc/virtual_ncidev.c
-@@ -26,10 +26,14 @@ struct virtual_nci_dev {
- 	struct mutex mtx;
- 	struct sk_buff *send_buff;
- 	struct wait_queue_head wq;
-+	bool running;
- };
- 
- static int virtual_nci_open(struct nci_dev *ndev)
- {
-+	struct virtual_nci_dev *vdev = nci_get_drvdata(ndev);
-+
-+	vdev->running = true;
- 	return 0;
- }
- 
-@@ -40,6 +44,7 @@ static int virtual_nci_close(struct nci_dev *ndev)
- 	mutex_lock(&vdev->mtx);
- 	kfree_skb(vdev->send_buff);
- 	vdev->send_buff = NULL;
-+	vdev->running = false;
- 	mutex_unlock(&vdev->mtx);
- 
- 	return 0;
-@@ -50,7 +55,7 @@ static int virtual_nci_send(struct nci_dev *ndev, struct sk_buff *skb)
- 	struct virtual_nci_dev *vdev = nci_get_drvdata(ndev);
- 
- 	mutex_lock(&vdev->mtx);
--	if (vdev->send_buff) {
-+	if (vdev->send_buff || !vdev->running) {
- 		mutex_unlock(&vdev->mtx);
- 		kfree_skb(skb);
- 		return -1;
+diff --git a/scripts/checkstack.pl b/scripts/checkstack.pl
+index 84f5fb7f1cecc..d83ba5d8f3f49 100755
+--- a/scripts/checkstack.pl
++++ b/scripts/checkstack.pl
+@@ -97,8 +97,7 @@ my (@stack, $re, $dre, $sub, $x, $xs, $funcre, $min_stack);
+ 		#   11160:       a7 fb ff 60             aghi   %r15,-160
+ 		# or
+ 		#  100092:	 e3 f0 ff c8 ff 71	 lay	 %r15,-56(%r15)
+-		$re = qr/.*(?:lay|ag?hi).*\%r15,-(([0-9]{2}|[3-9])[0-9]{2})
+-		      (?:\(\%r15\))?$/ox;
++		$re = qr/.*(?:lay|ag?hi).*\%r15,-([0-9]+)(?:\(\%r15\))?$/o;
+ 	} elsif ($arch eq 'sparc' || $arch eq 'sparc64') {
+ 		# f0019d10:       9d e3 bf 90     save  %sp, -112, %sp
+ 		$re = qr/.*save.*%sp, -(([0-9]{2}|[3-9])[0-9]{2}), %sp/o;
 -- 
 2.42.0
 
