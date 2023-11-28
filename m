@@ -2,74 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B0B17FAF3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 01:46:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BED17FAF37
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 01:46:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234364AbjK1AqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 19:46:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40380 "EHLO
+        id S234247AbjK1AqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 19:46:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234360AbjK1AqT (ORCPT
+        with ESMTP id S229637AbjK1AqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 19:46:19 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77085D6D;
-        Mon, 27 Nov 2023 16:46:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=tPsB2hWA3Oc577a+cgExHeE0rQjVhZlCmuxB4d3ag6Y=; b=wOrTyuobaJiBkDDEN+3GnJb9Gj
-        khoMngUKyPMKlVGbsfyCinioYWK0Liy4RVI0/Noz7xvcBvdK128h9OAY0vlKvfQpTRb03Oi9dJFK9
-        /ppp2Ers5rvwGbJhiODR3FSIcr9/87gXJjP/7n93H5gGoTD/zHSh4MjQ4wDbEHbEfDlY=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r7mEs-001Oyh-FN; Tue, 28 Nov 2023 01:46:10 +0100
-Date:   Tue, 28 Nov 2023 01:46:10 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        David Epping <david.epping@missinglinkelectronics.com>,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Harini Katakam <harini.katakam@amd.com>,
-        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH v2 3/4] net: phy: restructure
- __phy_write/read_mmd to helper and phydev user
-Message-ID: <d3747eda-7109-4d53-82fa-9df3f8d71f62@lunn.ch>
-References: <20231126235141.17996-1-ansuelsmth@gmail.com>
- <20231126235141.17996-3-ansuelsmth@gmail.com>
+        Mon, 27 Nov 2023 19:46:09 -0500
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D59C61B5
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 16:46:14 -0800 (PST)
+Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3b2f507c03cso2966813b6e.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 16:46:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1701132374; x=1701737174; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LkjbCgNVUTUv8OQIqjJo1lUIRnLiNJ9ZX7ogrN71ZN4=;
+        b=T75maftKOaY9rDnLYEZzqxw04tD85CHflDZZWsoOAHi+HLGi4MtP7L8ICYb0wMKr1H
+         81xZRN+wOApW8aNs3B8Ai6m6Eirh/sidQFRaLGnEddS0PGotEyeOnqCGYWQjWdZH3E0R
+         PKaE1XozdshPUzItDkro9o5oq20yucAHJTDycQ41us1BYXEPyWSH17HnYNmTTDpSUrgZ
+         rNX/vR6680SHqH6BAeZhzhAY/MrWTQ7lGC9aZKE9VCiHiLGZ4gzW7d9YYzFdHCFfcXPG
+         0/dUYijaZdrW7NaZI2C+kwC+J9ktz8Io/ikChxeq+OcDyfpZrU7IXuHtMkLzIYZZJdnJ
+         vSHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701132374; x=1701737174;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LkjbCgNVUTUv8OQIqjJo1lUIRnLiNJ9ZX7ogrN71ZN4=;
+        b=T2WtdinwQtVVyU2IZHOnif6hHghZ/7UZDt7h0TNyQyRDWiZ5T6pEq0Rqzv30EqYltA
+         SY4kssVPOXncmfIRza2Je3JO9dqsGdtD2K3rjzxgGOeEeTEivu4Zdyhu7T3FA7DI10al
+         /8DcsVXn3UrXsuoPxkQULMfoV4DEOa370AxP0TcCnYb+qxaVXKiFe0Z6TGUTKVf+Rhvp
+         ZUryQnM21GbgxB3xcllcvw0NHaHBL5AOfk0Z4ScKON6tagJEFCvqoo4VPjmcinIHVenF
+         Jo+JA9hCGQ//5WmtJALAEcGvAtsV2fnsePSr5y9bElBofEAK7YvSwq6eAIm7puvSEFXI
+         IOIg==
+X-Gm-Message-State: AOJu0YxwDAosjZVCXaRyFOoN+HHdi3lZV5tMTYMr63KZmzM3BCVpwqKy
+        1QecQaYKDJm3Rl7rzH5O1i4OnQ==
+X-Google-Smtp-Source: AGHT+IFITMTCLDp2mBJtXnfsiUwCzIWYMVKWSGPkiwj34B9WV/cARL/WF/ATd4SkJa1m4AsF35/Epg==
+X-Received: by 2002:aca:d03:0:b0:3b7:673:8705 with SMTP id 3-20020aca0d03000000b003b706738705mr15340826oin.18.1701132374153;
+        Mon, 27 Nov 2023 16:46:14 -0800 (PST)
+Received: from ziepe.ca ([12.97.180.36])
+        by smtp.gmail.com with ESMTPSA id bi21-20020a056808189500b003b85c5813fdsm1029867oib.21.2023.11.27.16.46.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 16:46:13 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1r7mEu-004wOK-AS;
+        Mon, 27 Nov 2023 20:46:12 -0400
+Date:   Mon, 27 Nov 2023 20:46:12 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+Cc:     Brett Creeley <brett.creeley@amd.com>,
+        "yishaih@nvidia.com" <yishaih@nvidia.com>,
+        liulongfang <liulongfang@huawei.com>,
+        "kevin.tian@intel.com" <kevin.tian@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "shannon.nelson@amd.com" <shannon.nelson@amd.com>
+Subject: Re: [PATCH vfio 1/2] hisi_acc_vfio_pci: Change reset_lock to
+ mutex_lock
+Message-ID: <20231128004612.GE432016@ziepe.ca>
+References: <20231122193634.27250-1-brett.creeley@amd.com>
+ <20231122193634.27250-2-brett.creeley@amd.com>
+ <eb2172d1e24044059e65d15b10391f65@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231126235141.17996-3-ansuelsmth@gmail.com>
+In-Reply-To: <eb2172d1e24044059e65d15b10391f65@huawei.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 12:51:40AM +0100, Christian Marangi wrote:
-> Restructure phy_write_mmd and phy_read_mmd to implement generic helper
-> for direct mdiobus access for mmd and use these helper for phydev user.
+On Fri, Nov 24, 2023 at 08:46:58AM +0000, Shameerali Kolothum Thodi wrote:
+> > diff --git a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
+> > b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
+> > index b2f9778c8366..2c049b8de4b4 100644
+> > --- a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
+> > +++ b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
+> > @@ -638,17 +638,17 @@ static void
+> >  hisi_acc_vf_state_mutex_unlock(struct hisi_acc_vf_core_device
+> > *hisi_acc_vdev)
+> >  {
+> >  again:
+> > -	spin_lock(&hisi_acc_vdev->reset_lock);
+> > +	mutex_lock(&hisi_acc_vdev->reset_mutex);
+> >  	if (hisi_acc_vdev->deferred_reset) {
+> >  		hisi_acc_vdev->deferred_reset = false;
+> > -		spin_unlock(&hisi_acc_vdev->reset_lock);
+> > +		mutex_unlock(&hisi_acc_vdev->reset_mutex);
 > 
-> This is needed in preparation of PHY package API that requires generic
-> access to the mdiobus and are deatched from phydev struct but instead
-> access them based on PHY package base_addr and offsets.
+> Don't think we have that sleeping while atomic case for this here.
+> Same for mlx5 as well. But if the idea is to have a common locking
+> across vendor drivers, it is fine.
 
-Why is this all going into the header file?
+Yeah, I'm not sure about changing spinlocks to mutex's for no reason..
+If we don't sleep and don't hold it for very long then the spinlock is
+appropriate
 
-	Andrew
+Jason
