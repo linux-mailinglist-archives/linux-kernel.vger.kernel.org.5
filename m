@@ -2,67 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F297FB9AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:51:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC0C7FB9B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:53:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344599AbjK1Lv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 06:51:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41470 "EHLO
+        id S1344607AbjK1Lwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 06:52:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344569AbjK1LvY (ORCPT
+        with ESMTP id S1344569AbjK1Lwv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 06:51:24 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92423D59
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 03:51:30 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-2839c113cbcso4277429a91.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 03:51:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1701172290; x=1701777090; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=86YcOJ2RQyi48TWuQ5HdsvkloxVpkC018HUuY5xlNz4=;
-        b=TZmOGNxHCkCRJE+0xCkBTPjlJnxYtpgp0RzCsNfX7mgOp7mtjhOiJ75BErFWtaGNf8
-         HWx78IlvbuHcMZUYjfvs5fo/nimgs3D8CKUhKFEO0cV23UjSpAn6LQg4cX/rgPDiHmcw
-         HOImhpviZzDScZzouxavaVKuQhs87EcaBQf/VP9kDdLejeONgzqIrFwUF6VohC30Zpd6
-         dc/ozPyDGqjhHNqlhydXFM6PGLMKyN0Es7flXWEI+Fno1KdlEemTEi2/a0nlLH25h6fe
-         qTZT52ZpUHiEu1Nr+FJL0BESfPpdhAF7k13cAY4qTO7lqEqgwSbmce1WmXTuM28xCV6x
-         bRxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701172290; x=1701777090;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=86YcOJ2RQyi48TWuQ5HdsvkloxVpkC018HUuY5xlNz4=;
-        b=BRGhTBKvIqEzOwb5AnGZensEA/BKxIrnr7ie5mvZbA/XaeqYMOEnJw7Kfj1cAJaAUP
-         d1a9aw/J6QPgN7FsWeTPTBsBPeKlxPGo5banUitbDo7igFfW0D9+kue8LDYVqStGeL9N
-         Qmx0fLNmmb9nRfbCc56EQTcdeVGIRF5P3zuowZe9SAzgKfpwizS+nFZY1qORKk7oEiI9
-         qEMeguicYu/89nUnZc8CBOdulJKFUqUonjrFXsF45SM9v2cLW5dJgtLM0DB6CmuD2kGI
-         DZ3fBL/YHw2QKMriasel3JYVu9TRnCGSpSL8LCfsraWO94tHq3ODw7JGPpqn4avaZ4Nz
-         jSzg==
-X-Gm-Message-State: AOJu0YxhRm81wnuxp7v93GSuQJyROaG8z+fqaWDi1VvrO0Na+Uf5pJH7
-        rpbJLuZVB9gC9LqP686yOvKEmLY+jsEv0GLPUSHCjQ==
-X-Google-Smtp-Source: AGHT+IGmJKRteYV5UGlTJ7ecqKXrP9sLP7hWcJqjHvzwcLS3pfOQtgmuZNcPIe9Ge6NrNkjpEKxoTtQ2N7C4b8WjL7g=
-X-Received: by 2002:a17:90b:3804:b0:285:d6a2:3bf9 with SMTP id
- mq4-20020a17090b380400b00285d6a23bf9mr6643833pjb.11.1701172290035; Tue, 28
- Nov 2023 03:51:30 -0800 (PST)
+        Tue, 28 Nov 2023 06:52:51 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A9469D59
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 03:52:57 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D554BC15;
+        Tue, 28 Nov 2023 03:53:44 -0800 (PST)
+Received: from [10.1.33.188] (XHFQ2J9959.cambridge.arm.com [10.1.33.188])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 45B893F73F;
+        Tue, 28 Nov 2023 03:52:54 -0800 (PST)
+Message-ID: <1537e042-1e73-4920-a1db-1eb32d66e32d@arm.com>
+Date:   Tue, 28 Nov 2023 11:52:53 +0000
 MIME-Version: 1.0
-References: <20231128055248.659808-1-bhe@redhat.com>
-In-Reply-To: <20231128055248.659808-1-bhe@redhat.com>
-From:   Ignat Korchagin <ignat@cloudflare.com>
-Date:   Tue, 28 Nov 2023 11:51:19 +0000
-Message-ID: <CALrw=nG0AhxEmx39bnvM+CKh8bFijvsAPGU3CFY5Top0prS3yw@mail.gmail.com>
-Subject: Re: [PATCH v2] drivers/base/cpu: crash data showing should depends on KEXEC_CORE
-To:     Baoquan He <bhe@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        x86@kernel.org, akpm@linux-foundation.org, eric_devolder@yahoo.com,
-        agordeev@linux.ibm.com, kernel-team <kernel-team@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 00/14] Transparent Contiguous PTEs for User Mappings
+Content-Language: en-GB
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     akpm@linux-foundation.org, andreyknvl@gmail.com,
+        anshuman.khandual@arm.com, ardb@kernel.org,
+        catalin.marinas@arm.com, david@redhat.com, dvyukov@google.com,
+        glider@google.com, james.morse@arm.com, jhubbard@nvidia.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mark.rutland@arm.com, maz@kernel.org,
+        oliver.upton@linux.dev, ryabinin.a.a@gmail.com,
+        suzuki.poulose@arm.com, vincenzo.frascino@arm.com,
+        wangkefeng.wang@huawei.com, will@kernel.org, willy@infradead.org,
+        yuzenghui@huawei.com, yuzhao@google.com, ziy@nvidia.com
+References: <20231115163018.1303287-1-ryan.roberts@arm.com>
+ <20231127031813.5576-1-v-songbaohua@oppo.com>
+ <234021ba-73c2-474a-82f9-91e1604d5bb5@arm.com>
+ <CAGsJ_4w3nGSO+CF-PQaHOVtzpb-RkZiWTqkg51ibT6dDo_EeJA@mail.gmail.com>
+ <d11d713c-9c4e-4d26-9888-8cc843861785@arm.com>
+ <CAGsJ_4yhHuT1Sra+vEzfFykYM3Jdm85q6fRydX_3QjwHL38UMA@mail.gmail.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAGsJ_4yhHuT1Sra+vEzfFykYM3Jdm85q6fRydX_3QjwHL38UMA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,80 +57,169 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 5:53=E2=80=AFAM Baoquan He <bhe@redhat.com> wrote:
->
-> After commit 88a6f8994421 ("crash: memory and CPU hotplug sysfs
-> attributes"), on x86_64, if only below kernel configs related to kdump
-> are set, compiling error are triggered.
->
-> ----
-> CONFIG_CRASH_CORE=3Dy
-> CONFIG_KEXEC_CORE=3Dy
-> CONFIG_CRASH_DUMP=3Dy
-> CONFIG_CRASH_HOTPLUG=3Dy
-> ------
->
-> ------------------------------------------------------
-> drivers/base/cpu.c: In function =E2=80=98crash_hotplug_show=E2=80=99:
-> drivers/base/cpu.c:309:40: error: implicit declaration of function =E2=80=
-=98crash_hotplug_cpu_support=E2=80=99; did you mean =E2=80=98crash_hotplug_=
-show=E2=80=99? [-Werror=3Dimplicit-function-declaration]
->   309 |         return sysfs_emit(buf, "%d\n", crash_hotplug_cpu_support(=
-));
->       |                                        ^~~~~~~~~~~~~~~~~~~~~~~~~
->       |                                        crash_hotplug_show
-> cc1: some warnings being treated as errors
-> ------------------------------------------------------
->
-> CONFIG_KEXEC is used to enable kexec_load interface, the
-> crash_notes/crash_notes_size/crash_hotplug showing depends on
-> CONFIG_KEXEC is incorrect. It should depend on KEXEC_CORE instead.
->
-> Fix it now.
->
-> Fixes: commit 88a6f8994421 ("crash: memory and CPU hotplug sysfs attribut=
-es")
-> Signed-off-by: Baoquan He <bhe@redhat.com>
+On 27/11/2023 22:53, Barry Song wrote:
+> On Tue, Nov 28, 2023 at 12:11 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>
+>> On 27/11/2023 10:35, Barry Song wrote:
+>>> On Mon, Nov 27, 2023 at 10:15 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>
+>>>> On 27/11/2023 03:18, Barry Song wrote:
+>>>>>> Ryan Roberts (14):
+>>>>>>   mm: Batch-copy PTE ranges during fork()
+>>>>>>   arm64/mm: set_pte(): New layer to manage contig bit
+>>>>>>   arm64/mm: set_ptes()/set_pte_at(): New layer to manage contig bit
+>>>>>>   arm64/mm: pte_clear(): New layer to manage contig bit
+>>>>>>   arm64/mm: ptep_get_and_clear(): New layer to manage contig bit
+>>>>>>   arm64/mm: ptep_test_and_clear_young(): New layer to manage contig bit
+>>>>>>   arm64/mm: ptep_clear_flush_young(): New layer to manage contig bit
+>>>>>>   arm64/mm: ptep_set_wrprotect(): New layer to manage contig bit
+>>>>>>   arm64/mm: ptep_set_access_flags(): New layer to manage contig bit
+>>>>>>   arm64/mm: ptep_get(): New layer to manage contig bit
+>>>>>>   arm64/mm: Split __flush_tlb_range() to elide trailing DSB
+>>>>>>   arm64/mm: Wire up PTE_CONT for user mappings
+>>>>>>   arm64/mm: Implement ptep_set_wrprotects() to optimize fork()
+>>>>>>   arm64/mm: Add ptep_get_and_clear_full() to optimize process teardown
+>>>>>
+>>>>> Hi Ryan,
+>>>>> Not quite sure if I missed something, are we splitting/unfolding CONTPTES
+>>>>> in the below cases
+>>>>
+>>>> The general idea is that the core-mm sets the individual ptes (one at a time if
+>>>> it likes with set_pte_at(), or in a block with set_ptes()), modifies its
+>>>> permissions (ptep_set_wrprotect(), ptep_set_access_flags()) and clears them
+>>>> (ptep_clear(), etc); This is exactly the same interface as previously.
+>>>>
+>>>> BUT, the arm64 implementation of those interfaces will now detect when a set of
+>>>> adjacent PTEs (a contpte block - so 16 naturally aligned entries when using 4K
+>>>> base pages) are all appropriate for having the CONT_PTE bit set; in this case
+>>>> the block is "folded". And it will detect when the first PTE in the block
+>>>> changes such that the CONT_PTE bit must now be unset ("unfolded"). One of the
+>>>> requirements for folding a contpte block is that all the pages must belong to
+>>>> the *same* folio (that means its safe to only track access/dirty for thecontpte
+>>>> block as a whole rather than for each individual pte).
+>>>>
+>>>> (there are a couple of optimizations that make the reality slightly more
+>>>> complicated than what I've just explained, but you get the idea).
+>>>>
+>>>> On that basis, I believe all the specific cases you describe below are all
+>>>> covered and safe - please let me know if you think there is a hole here!
+>>>>
+>>>>>
+>>>>> 1. madvise(MADV_DONTNEED) on a part of basepages on a CONTPTE large folio
+>>>>
+>>>> The page will first be unmapped (e.g. ptep_clear() or ptep_get_and_clear(), or
+>>>> whatever). The implementation of that will cause an unfold and the CONT_PTE bit
+>>>> is removed from the whole contpte block. If there is then a subsequent
+>>>> set_pte_at() to set a swap entry, the implementation will see that its not
+>>>> appropriate to re-fold, so the range will remain unfolded.
+>>>>
+>>>>>
+>>>>> 2. vma split in a large folio due to various reasons such as mprotect,
+>>>>> munmap, mlock etc.
+>>>>
+>>>> I'm not sure if PTEs are explicitly unmapped/remapped when splitting a VMA? I
+>>>> suspect not, so if the VMA is split in the middle of a currently folded contpte
+>>>> block, it will remain folded. But this is safe and continues to work correctly.
+>>>> The VMA arrangement is not important; it is just important that a single folio
+>>>> is mapped contiguously across the whole block.
+>>>
+>>> I don't think it is safe to keep CONTPTE folded in a split_vma case. as
+>>> otherwise, copy_ptes in your other patch might only copy a part
+>>> of CONTPES.
+>>> For example,  if page0-page4 and page5-page15 are splitted in split_vma,
+>>> in fork, while copying pte for the first VMA, we are copying page0-page4,
+>>> this will immediately cause inconsistent CONTPTE. as we have to
+>>> make sure all CONTPTEs are atomically mapped in a PTL.
+>>
+>> No that's not how it works. The CONT_PTE bit is not blindly copied from parent
+>> to child. It is explicitly managed by the arch code and set when appropriate. In
+>> the case above, we will end up calling set_ptes() for page0-page4 in the child.
+>> set_ptes() will notice that there are only 5 contiguous pages so it will map
+>> without the CONT_PTE bit.
+> 
+> Ok. cool. alternatively, in the code I shared to you, we are doing an unfold
+> immediately when split_vma happens within a large anon folio, so we disallow
+> CONTPTE to cross two VMAs to avoid all kinds of complexity afterwards.
+> 
+> https://github.com/OnePlusOSS/android_kernel_oneplus_sm8550/blob/oneplus/sm8550_u_14.0.0_oneplus11/mm/huge_memory.c
+> 
+> #ifdef CONFIG_CONT_PTE_HUGEPAGE
+> void vma_adjust_cont_pte_trans_huge(struct vm_area_struct *vma,
+>     unsigned long start,
+>     unsigned long end,
+>     long adjust_next)
+> {
+>          /*
+>          * If the new start address isn't hpage aligned and it could
+>          * previously contain an hugepage: check if we need to split
+>          * an huge pmd.
+>          */
+>          if (start & ~HPAGE_CONT_PTE_MASK &&
+>              (start & HPAGE_CONT_PTE_MASK) >= vma->vm_start &&
+>              (start & HPAGE_CONT_PTE_MASK) + HPAGE_CONT_PTE_SIZE <= vma->vm_end)
+>                   split_huge_cont_pte_address(vma, start, false, NULL);
+> 
+>          ....
+> }
+> #endif
+> 
+> In your approach, you are still holding CONTPTE crossing two VMAs. but it seems
+> ok. I can't have a case which might fail in my brain right now. only
 
-Tested-by: Ignat Korchagin <ignat@cloudflare.com> # compile-time only
-for x86 and arm
+Yes, I'm dealing with the CONT_PTE bit at the pgtable level, not at the VMA level.
 
-> ---
->  drivers/base/cpu.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
-> index 9ea22e165acd..548491de818e 100644
-> --- a/drivers/base/cpu.c
-> +++ b/drivers/base/cpu.c
-> @@ -144,7 +144,7 @@ static DEVICE_ATTR(release, S_IWUSR, NULL, cpu_releas=
-e_store);
->  #endif /* CONFIG_ARCH_CPU_PROBE_RELEASE */
->  #endif /* CONFIG_HOTPLUG_CPU */
->
-> -#ifdef CONFIG_KEXEC
-> +#ifdef CONFIG_KEXEC_CORE
->  #include <linux/kexec.h>
->
->  static ssize_t crash_notes_show(struct device *dev,
-> @@ -189,14 +189,14 @@ static const struct attribute_group crash_note_cpu_=
-attr_group =3D {
->  #endif
->
->  static const struct attribute_group *common_cpu_attr_groups[] =3D {
-> -#ifdef CONFIG_KEXEC
-> +#ifdef CONFIG_KEXEC_CORE
->         &crash_note_cpu_attr_group,
->  #endif
->         NULL
->  };
->
->  static const struct attribute_group *hotplugable_cpu_attr_groups[] =3D {
-> -#ifdef CONFIG_KEXEC
-> +#ifdef CONFIG_KEXEC_CORE
->         &crash_note_cpu_attr_group,
->  #endif
->         NULL
-> --
-> 2.41.0
->
+
+> running the code on
+> a large amount of real hardware will tell :-)
+
+Indeed - is this something you might be able to help with? :)
+
+> 
+>>
+>>>
+>>>>
+>>>>>
+>>>>> 3. try_to_unmap_one() to reclaim a folio, ptes are scanned one by one
+>>>>> rather than being as a whole.
+>>>>
+>>>> Yes, as per 1; the arm64 implementation will notice when the first entry is
+>>>> cleared and unfold the contpte block.
+>>>>
+>>>>>
+>>>>> In hardware, we need to make sure CONTPTE follow the rule - always 16
+>>>>> contiguous physical address with CONTPTE set. if one of them run away
+>>>>> from the 16 ptes group and PTEs become unconsistent, some terrible
+>>>>> errors/faults can happen in HW. for example
+>>>>
+>>>> Yes, the implementation obeys all these rules; see contpte_try_fold() and
+>>>> contpte_try_unfold(). the fold/unfold operation is only done when all
+>>>> requirements are met, and we perform it in a manner that is conformant to the
+>>>> architecture requirements (see contpte_fold() - being renamed to
+>>>> contpte_convert() in the next version).
+>>>>
+>>>> Thanks for the review!
+>>>>
+>>>> Thanks,
+>>>> Ryan
+>>>>
+>>>>>
+>>>>> case0:
+>>>>> addr0 PTE - has no CONTPE
+>>>>> addr0+4kb PTE - has CONTPTE
+>>>>> ....
+>>>>> addr0+60kb PTE - has CONTPTE
+>>>>>
+>>>>> case 1:
+>>>>> addr0 PTE - has no CONTPE
+>>>>> addr0+4kb PTE - has CONTPTE
+>>>>> ....
+>>>>> addr0+60kb PTE - has swap
+>>>>>
+>>>>> Unconsistent 16 PTEs will lead to crash even in the firmware based on
+>>>>> our observation.
+>>>>>
+>>>
+> 
+> Thanks
+> Barry
+
