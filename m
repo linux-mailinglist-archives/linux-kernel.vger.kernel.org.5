@@ -2,67 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47FB07FC265
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F8EA7FC277
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345139AbjK1RjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 12:39:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39978 "EHLO
+        id S1345783AbjK1Rei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 12:34:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344940AbjK1RjP (ORCPT
+        with ESMTP id S1345554AbjK1Ref (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 12:39:15 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 293A710CA;
-        Tue, 28 Nov 2023 09:39:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701193161; x=1732729161;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=E+As1VEvubpOiVH0Ou+RDAjr7+3D05qZrxWeULMmbqU=;
-  b=mXwS6BiVP+OwkSGUrmBEub3KNYwyDBKAJlzrzrdbd6FKUKAhacOdLIYV
-   1i9v3uDEq+KKqpzU+vEDp2wTq3DHVMjwWtgcCgyMH2DW1uY2V4hDO+4A6
-   UnF8RxoHrPOQudHge2XP9HxPjjIOi1v50FAqCJrRazvEZ+sjvrgbaxG3h
-   3wjDIFHlNKQbxDXAeZbQmwFhSr8UUVdLQWL/H4CZQIqOcn5CTf0OCsGZW
-   LL0rPf48m7tPgB3Iusw/En0M1tHJfNqGHVMWGeaIoA2IrdVN7KhP+Buoh
-   IKClQ0kW2pGA9zVzywnzciLpTl4+/tk4UD3uHh7T1pFiw6GFdtojF3fUe
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="378001818"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="378001818"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 09:39:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="859514426"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="859514426"
-Received: from bmnolan-mobl.amr.corp.intel.com (HELO [10.209.106.201]) ([10.209.106.201])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 09:33:25 -0800
-Message-ID: <b2b9121c6d2003b45f7fde6a97bb479a1ed634c7.camel@linux.intel.com>
-Subject: Re: Fwd: Intel hybrid CPU scheduler always prefers E cores
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Power Management <linux-pm@vger.kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ramses VdP <ramses@well-founded.dev>,
-        Yu Chen <yu.c.chen@intel.com>
-Date:   Tue, 28 Nov 2023 09:33:24 -0800
-In-Reply-To: <01df8329-06d7-4fd1-9c7a-05296f33231e@gmail.com>
-References: <01df8329-06d7-4fd1-9c7a-05296f33231e@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+        Tue, 28 Nov 2023 12:34:35 -0500
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11olkn2057.outbound.protection.outlook.com [40.92.19.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73CF8D5B;
+        Tue, 28 Nov 2023 09:34:41 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eRJDh4dxpphcTcqJQw1XBOeLW5BFOj+THmU/ynQhs/1Cx1HwCaLV0IKLJbY7P41Hh5pFpcS77oJQ0QhNjE4eramHHDuAP/BmSjzPBmMeJX39lK7Qy0Ek6S1Qhp3c5fziQU2rI2rSaRJ68Inta2AqRNlocU4NNe1Vw5jBsQPOVgb1QUS1cAVUcaDRYOSCNB/c7b7Dzw0J3c6Nh+wNvFv9MtMjKYkW+FdI9ZQu656ZAJhZLAE5KwouSPay9b/SBAgQKtaGQZoepbQStyyXBR5RTqTd1DqR8XJxG4XgFxam0OUkWIeEVWU+gibLPp5HyiqFGSVf1vbOPD/1IVLtmeP7kg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=etZG95++lXbBRptlcgOqOny5SulXi8w1E68hcgafbVc=;
+ b=IIDQTiqt8YYXvTNSGB0dK5bFyyG7wrdfW6vFRwWaPXY58et89rWk+eGzJykuMJoYGsTLqvV1QaLdR/KDxClNFvYHa0usD7LXlkvZN3ChfCgPlKBbwyfjwj8Z2knguU59S7l8BxUWwYhyPvT4OmgOOWH7pHQN9Tm+6bxDGfbywLh2/s3ohj+Wx7SJA/6tYaXtr0D4G5smJV/aMMbIavrVhYD6+UYu2p5VOxt8zxvqqJg0cv460SyLNnDyFUP6L36cPeMUhuEjRfsRK7r7Bu52gjXOvGgdpMFAHEife5vSMyrM+dwSuoxKgTzEdCMUZx8EKO3aaAybwwBWMw4PzfDGoA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=etZG95++lXbBRptlcgOqOny5SulXi8w1E68hcgafbVc=;
+ b=gTRZMyaUfhgOZeR0FpB44hPw1XG/tA+ItmZgThK3mBx0cRgifJFy4seIzF5gTKu4Tql9vicHs8irFpzIZOm8Gew8h5+D9/GRSOxHI427jBJS9RAMF1Mk+GNKTztI1nYTl3CuPoJTRPuOsAsYN2VC43MCeAGTlx89dItIr9D8+9s/9Rvnjii1w/qKsomIfZO7z4VcZMBwagRJumpStl8FLKV8GBIPdjuYjIshWVePUGf01BwtzVAlZ2CQ/v+Aoa5QmkhXJSzh3IuEH+r/el3P3HxaE6c3gQaVIv9yfI8N2s2QvrCzwXasSBQIF8fFL5JeTS96MZuCB802HE8g6DAifg==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by PH0PR02MB7157.namprd02.prod.outlook.com (2603:10b6:510:17::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Tue, 28 Nov
+ 2023 17:34:38 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::54e5:928f:135c:6190]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::54e5:928f:135c:6190%7]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
+ 17:34:38 +0000
+From:   Michael Kelley <mhklinux@outlook.com>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kys@microsoft.com" <kys@microsoft.com>,
+        "Cui, Dexuan" <decui@microsoft.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "urezki@gmail.com" <urezki@gmail.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>, "Rodel, Jorg" <jroedel@suse.de>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "lstoakes@gmail.com" <lstoakes@gmail.com>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: RE: [PATCH v2 2/8] x86/mm: Don't do a TLB flush if changing a PTE
+ that isn't marked present
+Thread-Topic: [PATCH v2 2/8] x86/mm: Don't do a TLB flush if changing a PTE
+ that isn't marked present
+Thread-Index: AQHaHMCZqqw22lSVnUqFkh2+XRP0FrCOxoeAgAE5LFA=
+Date:   Tue, 28 Nov 2023 17:34:38 +0000
+Message-ID: <SN6PR02MB41573431683896536879EF40D4BCA@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20231121212016.1154303-1-mhklinux@outlook.com>
+         <20231121212016.1154303-3-mhklinux@outlook.com>
+ <4a64d05c80c9c490d291af881a86c3d853160060.camel@intel.com>
+In-Reply-To: <4a64d05c80c9c490d291af881a86c3d853160060.camel@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-tmn:  [vVoMCQPoqiUQ+vIvcEVURONnMzuvxNgX]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|PH0PR02MB7157:EE_
+x-ms-office365-filtering-correlation-id: 802ff28a-270a-412b-3996-08dbf0384bc8
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7MQq/Z+861MpMmRItJtj4KzAPPrjAVzD9uoqjipBoN9ZdA3OyUwbV9tiJAI1m90sq5UnOv+nPweu4SmQIkgONBmRODRfGGbAKeOyKl9ODiRWEHpJyRU39m5HhXnkzWWMzC6aEd/vwW/94Txf09BAuPS+BzjrlzFjsEs+1oZDs/vNe+xic2ZL0TRMGnRQ0IgBNGdQ8UqOQ2dBrX7jPxbwG0Sp6Zw8L5KADRSQe6X7CG3WWpRZ9ZQtEfUYgpMtra6BB1uiDtcr+fHGBG5ktvRnDY+9NFP8TkbhG76rqZvF6trcq4HAqIjqJ65b+V22s9LHrUu+AWznu9KWyRTEFuZARuCUhUrtHUafClWcTRypFgmeolQ9L31GT087iltuS0Uxn4RBSkpTaZ2dXvS9lx5TZ5VnhFROB4qQv6mKnUcNsoiriB55vG46kD/V8uPqPg0YJHUJq86J+vJL//z+uAIffEc1zWuGglyK7S2gtlakrE/sCcCmi38pwVRLtQnnhc+JYv+byREj6sjOJJUZ9QBnB9iCYyvNpWZSt3Krygv2FeLmGK+LeQmHuM7hXGfCyJ8M
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?N1dObzdwMDNCMlBGbEM0RmlkK2NBSVlxK0E1cUtPdUVhek1uL2k1d0xsR2lm?=
+ =?utf-8?B?cDJmTE50MUtsUWlKVDEvRmYyNm9pOVJIa2VjdkFMZHlQdmxqRzFHWEhoWHZ1?=
+ =?utf-8?B?TVN3TU42bHdDQnZPT3o3LzJ4RzFMdEdkQmNZS1VBUXFEbUk0SGd6QTZLSWkv?=
+ =?utf-8?B?MTB6MXFlSEc4V01XTjdURDNtdkwyUExtMkNBRmhWVS9IbXA0S01EZmZsNmNr?=
+ =?utf-8?B?Qi8zTlZhYjRrVFQvZ0tSTGdoY2l5ZUo1ZDJDRUxqNzRkb2FVdkxheWVFdERl?=
+ =?utf-8?B?MzJrRllsaGpRTGF2YW1PYTg2NThJbWNjZmNZbHZwM2RteThiUmI0cnp3SENN?=
+ =?utf-8?B?MFRNSWhaUlJvYXhCNFRQUmJLNVl6UFEvK1lFTG9RYzNaUmxtRERzcXV3NFhS?=
+ =?utf-8?B?QTV2b2x0UExOUzBpblZNQ2lWZkRSRWcrRFpDNXNNWWt3eFFSQXJFWGlyOGdL?=
+ =?utf-8?B?dTNMZVFvL2pQbW5aenBSZGRnbEtZcFJGVTh3YSthaCtqT0Z1VllFTzROTDNB?=
+ =?utf-8?B?MnM5TlIrM1FiQS84UXcwUll3YW5aUGlxVXdSd0VadkJhK25FaFVCeW1YN2hW?=
+ =?utf-8?B?eFYvWUhLWXlXMzRjZnJYbjMzYTcyTjhsSXdOVHhVakFpQW9QVFc3M3RSSlcv?=
+ =?utf-8?B?OWJxeU4ya2ZjL1ovRk1MS2ovZDRIVDFCMCt3NTJ4TUJlejI3dFRWRTNYVHo1?=
+ =?utf-8?B?S2lCUGx0TUU4VkZGa0N6NXdOUU8yWmg4bXRQbnM2U3prUWlLOHRvZW9BTk9j?=
+ =?utf-8?B?ZFErNTVrOW4zc3N1dXEyb2I2elZmZ0dVc0pCRlR2OGg3MUpkeVl3S2ZoR052?=
+ =?utf-8?B?TFQ3T2xBNVFDekhWM0VkVjdKRFVvbE9mdW9yL3pQTGZJbTJkNlBER0VJU0M3?=
+ =?utf-8?B?VVYxYzFPWmtHNC81Tjh3eEJPNDArNlJCNVRzd3JZSEJLSlc2dHJtVzFIc0VD?=
+ =?utf-8?B?RUFBWjVwdkVjUGlOQU0veGtTWVBVclJHUGJ3WUFUc1ZvT3paSzhwTGMxZ1RQ?=
+ =?utf-8?B?OEdsUWp2Y2EwUVhBT1lnZGlDVUpKalFrU3NybmpxN0x0b2M4UUdxME41ZVR3?=
+ =?utf-8?B?S3NTR2ZITUFSTDBSUGh4dERmbS80VmxFa29BRDNKZXZYNTZxTWpHUVkzQlBW?=
+ =?utf-8?B?c2N6MFJiNGxEMzNCWGVKaHdTTFhJVnpjZHpWb3JJUzdTa3ZzNlVkaXowSzhx?=
+ =?utf-8?B?eVBKa3NienF6c2hSZGd2UlE4LzhtTjU1WE5vMytXVmhybjIxZ0JFYk03Y2w5?=
+ =?utf-8?B?eFpWOEJCc2FUMTg2WmIxTUN3cFFSZ2RURG56cnpLNnV6Yld1a0xUcnpBL2VB?=
+ =?utf-8?B?WDNOeGFzKytlei9nbjdJbU9kNkZFeXZ4U1RmNUN5L3JsYmswZ3NFQlZZYjRi?=
+ =?utf-8?B?Y0xFblc5UzdxWjV5em1IRWx5Z2Y5WUdNUTBwcUliK1ZqTEZCQ1dSTkJzUWhJ?=
+ =?utf-8?B?VllyVER3OU80MmJRWmUwNEh3UmxOWTlWL0pUejcybXUzVXlJMkdJeGx2Q1lz?=
+ =?utf-8?B?R2h4S0Z3RU5RVzAxcldSckRyVVBJSlNkTEplalltWkE0b3llWWNyRk5VY3lk?=
+ =?utf-8?Q?hl7XuW24OC87ZI1oMlnhGlMn7pM4HNAUA+LJBi9R05ON/G?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 802ff28a-270a-412b-3996-08dbf0384bc8
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Nov 2023 17:34:38.2918
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR02MB7157
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,140 +139,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-11-28 at 20:22 +0700, Bagas Sanjaya wrote:
-> Hi,
->=20
-> I come across an interesting bug report on Bugzilla [1]. The reporter
-> wrote:
->=20
-> > I am running an intel alder lake system (Core i7-1260P), with a mix of =
-P and E cores.
-> >=20
-> > Since Linux 6.6, and also on the current 6.7 RC, the scheduler seems to=
- have a strong preference for the E cores, and single threaded workloads ar=
-e consistently scheduled on one of the E cores.
-> >=20
-> > With Linux 6.4 and before, when I ran a single threaded CPU-bound proce=
-ss, it was scheduled on a P core. With 6.5, it seems that the choice of P o=
-r E seemed rather random.
-> >=20
-> > I tested these by running "stress" with different amounts of threads. W=
-ith a single thread on Linux 6.6 and 6.7, I always have an E core at 100% a=
-nd no load on the P cores. Starting from 3 threads I get some load on the P=
- cores as well, but the E cores stay more heavily loaded.
-> > With "taskset" I can force a process to run on a P core, but clearly it=
-'s not very practical to have to do CPU scheduling manually.
-> >=20
-> > This severely affects single-threaded performance of my CPU since the E=
- cores are considerably slower. Several of my workflows are now a lot slowe=
-r due to them being single-threaded and heavily CPU-bound and being schedul=
-ed on E cores whereas they would run on P cores before.
-> >=20
-> > I am not sure what the exact desired behaviour is here, to balance powe=
-r consumption and performance, but currently my P cores are barely used for=
- single-threaded workloads.
-> >=20
-> > Is this intended behaviour or is this indeed a regression? Or is there =
-perhaps any configuration that I should have done from my side? Is there an=
-y further info that I can provide to help you figure out what's going on?
->=20
-> PM and scheduler people, is this a regression or works as intended?
->=20
-> Thanks.
->=20
-> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=3D218195
->=20
-
-I have noticed that the current code sometimes is quite trigger happy
-moving tasks off P-core, whenever there are more than 2 tasks on a core.
-Sometimes, Short running house keeping tasks
-could disturb the running task on P-core as a result.
-
-Can you try the following patch?  On my Alder Lake system, I see as I add s=
-ingle
-threaded tasks, they first run on P-cores, then followed by E-cores with th=
-is
-patch on 6.6.
-
-Tim
-
-From 68a15ef01803c252261ebb47d86dfc1f2c68ae1e Mon Sep 17 00:00:00 2001
-From: Tim Chen <tim.c.chen@linux.intel.com>
-Date: Fri, 6 Oct 2023 15:58:56 -0700
-Subject: [PATCH] sched/fair: Don't force smt balancing when CPU has spare
- capacity
-
-Currently group_smt_balance is picked whenever there are more
-than two tasks on a core with two SMT.  However, the utilization
-of those tasks may be low and do not warrant a task
-migration to a CPU of lower priority.
-
-Adjust sched group clssification and sibling_imbalance()
-to reflect this consideration.  Use sibling_imbalance() to
-compute imbalance in calculate_imbalance() for the group_smt_balance
-case.
-
-Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
-
----
- kernel/sched/fair.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index ef7490c4b8b4..7dd7c2d2367a 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -9460,14 +9460,15 @@ group_type group_classify(unsigned int imbalance_pc=
-t,
- 	if (sgs->group_asym_packing)
- 		return group_asym_packing;
-=20
--	if (sgs->group_smt_balance)
--		return group_smt_balance;
--
- 	if (sgs->group_misfit_task_load)
- 		return group_misfit_task;
-=20
--	if (!group_has_capacity(imbalance_pct, sgs))
--		return group_fully_busy;
-+	if (!group_has_capacity(imbalance_pct, sgs)) {
-+		if (sgs->group_smt_balance)
-+			return group_smt_balance;
-+		else
-+			return group_fully_busy;
-+	}
-=20
- 	return group_has_spare;
- }
-@@ -9573,6 +9574,11 @@ static inline long sibling_imbalance(struct lb_env *=
-env,
- 	if (env->idle =3D=3D CPU_NOT_IDLE || !busiest->sum_nr_running)
- 		return 0;
-=20
-+	/* Do not pull tasks off preferred group with spare capacity */
-+	if (busiest->group_type =3D=3D group_has_spare &&
-+	    sched_asym_prefer(sds->busiest->asym_prefer_cpu, env->dst_cpu))
-+		return 0;
-+
- 	ncores_busiest =3D sds->busiest->cores;
- 	ncores_local =3D sds->local->cores;
-=20
-@@ -10411,13 +10417,6 @@ static inline void calculate_imbalance(struct lb_e=
-nv *env, struct sd_lb_stats *s
- 		return;
- 	}
-=20
--	if (busiest->group_type =3D=3D group_smt_balance) {
--		/* Reduce number of tasks sharing CPU capacity */
--		env->migration_type =3D migrate_task;
--		env->imbalance =3D 1;
--		return;
--	}
--
- 	if (busiest->group_type =3D=3D group_imbalanced) {
- 		/*
- 		 * In the group_imb case we cannot rely on group-wide averages
---=20
-2.32.0
-
-
+RnJvbTogRWRnZWNvbWJlLCBSaWNrIFAgPHJpY2sucC5lZGdlY29tYmVAaW50ZWwuY29tPiBTZW50
+OiBNb25kYXksIE5vdmVtYmVyIDI3LCAyMDIzIDI6MjEgUE0NCj4gDQo+IE9uIFR1ZSwgMjAyMy0x
+MS0yMSBhdCAxMzoyMCAtMDgwMCwgbWhrZWxsZXk1OEBnbWFpbC5jb20gd3JvdGU6DQo+ID4gLS0t
+IGEvYXJjaC94ODYvbW0vcGF0L3NldF9tZW1vcnkuYw0KPiA+ICsrKyBiL2FyY2gveDg2L21tL3Bh
+dC9zZXRfbWVtb3J5LmMNCj4gPiBAQCAtMTYzNiw3ICsxNjM2LDEwIEBAIHN0YXRpYyBpbnQgX19j
+aGFuZ2VfcGFnZV9hdHRyKHN0cnVjdCBjcGFfZGF0YQ0KPiA+ICpjcGEsIGludCBwcmltYXJ5KQ0K
+PiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICovDQo+ID4gwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAocHRlX3ZhbChvbGRfcHRlKSAhPSBwdGVfdmFsKG5ld19w
+dGUpKSB7DQo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgc2V0X3B0ZV9hdG9taWMoa3B0ZSwgbmV3X3B0ZSk7DQo+ID4gLcKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBjcGEtPmZsYWdzIHw9IENQQV9GTFVTSFRMQjsN
+Cj4gPiArDQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAvKiBJZiBvbGRfcHRlIGlzbid0IHByZXNlbnQsIGl0J3Mgbm90IGluIHRoZSBUTEIgKi8NCj4g
+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmIChwdGVf
+cHJlc2VudChvbGRfcHRlKSkNCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBjcGEtPmZsYWdzIHw9IENQQV9GTFVTSFRMQjsN
+Cj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoH0NCj4gPiDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoGNwYS0+bnVtcGFnZXMgPSAxOw0KPiA+IMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIDA7DQo+ID4NCj4gDQo+IE1ha2VzIHNlbnNlIHRvIG1l
+LiBUaGUgUE1EIGNhc2UgY2FuIGJlIGhhbmRsZWQgc2ltaWxhcmx5IGluDQo+IF9fc2hvdWxkX3Nw
+bGl0X2xhcmdlX3BhZ2UoKS4NCg0KT0ssIEknbGwgbG9vayBhdCB0aGF0IGNhc2UuDQoNCj4gDQo+
+IEkgYWxzbyB0aGluayBpdCBzaG91bGQgYmUgbW9yZSByb2J1c3QgaW4gcmVnYXJkcyB0byB0aGUg
+Y2FjaGUgZmx1c2hpbmcNCj4gY2hhbmdlcy4NCj4gDQo+IElmIGNhbGxlcnMgZGlkOg0KPiBzZXRf
+bWVtb3J5X25wKCkNCj4gc2V0X21lbW9yeV91YygpDQo+IHNldF9tZW1vcnlfcCgpDQo+IA0KPiBU
+aGVuIHRoZSBjYWNoZSBmbHVzaCB3b3VsZCBiZSBtaXNzZWQuICBJIGRvbid0IHRoaW5rIGFueW9u
+ZSBpcywgYnV0IHdlDQo+IHNob3VsZG4ndCBpbnRyb2R1Y2UgaGlkZGVuIHRoaW5ncyBsaWtlIHRo
+YXQuIE1heWJlIGZpeCBpdCBsaWtlIHRoaXM6DQo+IA0KPiBkaWZmIC0tZ2l0IGEvYXJjaC94ODYv
+bW0vcGF0L3NldF9tZW1vcnkuYw0KPiBiL2FyY2gveDg2L21tL3BhdC9zZXRfbWVtb3J5LmMNCj4g
+aW5kZXggZjUxOWU1Y2E1NDNiLi4yOGZmNTNhNDQ0N2EgMTAwNjQ0DQo+IC0tLSBhL2FyY2gveDg2
+L21tL3BhdC9zZXRfbWVtb3J5LmMNCj4gKysrIGIvYXJjaC94ODYvbW0vcGF0L3NldF9tZW1vcnku
+Yw0KPiBAQCAtMTg1NiwxMSArMTg1Niw2IEBAIHN0YXRpYyBpbnQgY2hhbmdlX3BhZ2VfYXR0cl9z
+ZXRfY2xyKHVuc2lnbmVkDQo+IGxvbmcgKmFkZHIsIGludCBudW1wYWdlcywNCj4gDQo+ICAgICAg
+ICAgcmV0ID0gX19jaGFuZ2VfcGFnZV9hdHRyX3NldF9jbHIoJmNwYSwgMSk7DQo+IA0KPiAtICAg
+ICAgIC8qDQo+IC0gICAgICAgICogQ2hlY2sgd2hldGhlciB3ZSByZWFsbHkgY2hhbmdlZCBzb21l
+dGhpbmc6DQo+IC0gICAgICAgICovDQo+IC0gICAgICAgaWYgKCEoY3BhLmZsYWdzICYgQ1BBX0ZM
+VVNIVExCKSkNCj4gLSAgICAgICAgICAgICAgIGdvdG8gb3V0Ow0KPiANCj4gICAgICAgICAvKg0K
+PiAgICAgICAgICAqIE5vIG5lZWQgdG8gZmx1c2gsIHdoZW4gd2UgZGlkIG5vdCBzZXQgYW55IG9m
+IHRoZSBjYWNoaW5nDQo+IEBAIC0xODY4LDYgKzE4NjMsMTIgQEAgc3RhdGljIGludCBjaGFuZ2Vf
+cGFnZV9hdHRyX3NldF9jbHIodW5zaWduZWQNCj4gbG9uZyAqYWRkciwgaW50IG51bXBhZ2VzLA0K
+PiAgICAgICAgICAqLw0KPiAgICAgICAgIGNhY2hlID0gISFwZ3Byb3QyY2FjaGVtb2RlKG1hc2tf
+c2V0KTsNCj4gDQo+ICsgICAgICAgLyoNCj4gKyAgICAgICAgKiBDaGVjayB3aGV0aGVyIHdlIHJl
+YWxseSBjaGFuZ2VkIHNvbWV0aGluZzoNCj4gKyAgICAgICAgKi8NCj4gKyAgICAgICBpZiAoIShj
+cGEuZmxhZ3MgJiBDUEFfRkxVU0hUTEIpICYmICFjYWNoZSkNCj4gKyAgICAgICAgICAgICAgIGdv
+dG8gb3V0Ow0KPiArDQo+ICAgICAgICAgLyoNCj4gICAgICAgICAgKiBPbiBlcnJvcjsgZmx1c2gg
+ZXZlcnl0aGluZyB0byBiZSBzdXJlLg0KPiAgICAgICAgICAqLw0KPiANCj4gSG1tLCBtaWdodCB3
+YW50IHRvIG1haW50YWluIHRoZSAiT24gZXJyb3I7IGZsdXNoIGV2ZXJ5dGhpbmcgdG8gYmUgc3Vy
+ZSINCj4gbG9naWMgaW4gdGhlIE5QLT5QIGNhc2UgYXMgd2VsbC4NCg0KT0ssIEkgc2VlIHlvdXIg
+cG9pbnQuICBJIGhhZCBub3QgcmVhbGl6ZWQgdGhhdCBDUEFfRkxVU0hUTEIgcmVhbGx5DQpoYXMg
+YSBtZWFuaW5nIGJleW9uZCBqdXN0IGluZGljYXRpbmcgdGhhdCB0aGUgVExCIG5lZWRzIHRvIGJl
+DQpmbHVzaGVkLiAgSXQgcmVhbGx5IG1lYW5zICJzb21ldGhpbmcgaGFzIGNoYW5nZWQiIGluIGEg
+UFRFLiAgSSdsbA0KaW5jb3Jwb3JhdGUgeW91ciBzdWdnZXN0aW9uLg0KDQpNaWNoYWVsDQo=
