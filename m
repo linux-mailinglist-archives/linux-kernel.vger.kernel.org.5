@@ -2,152 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A59647FC907
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:04:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44DDD7FC909
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:05:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346063AbjK1V7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 16:59:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35060 "EHLO
+        id S1346076AbjK1WFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 17:05:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjK1V7l (ORCPT
+        with ESMTP id S229543AbjK1WFT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 16:59:41 -0500
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E17198;
-        Tue, 28 Nov 2023 13:59:46 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id C9DE05C01C9;
-        Tue, 28 Nov 2023 16:59:43 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 28 Nov 2023 16:59:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1701208783; x=1701295183; bh=d8
-        dJOAJYV2mmOf6TcGIvZmDZwHIgzbX0ltRZ3M1V2lw=; b=YadBYp87SiMJCaGzl2
-        yVc3F50keLYMG0BPExwY8/BqRr1jtomyhEMHUHcjv1B7Y0wKLCawIKdX6iESbFQQ
-        4vhEAkznbyaTd6QYK3Aw58pnQHFyNK7vOzA0xuTo1K++WTdH5Hw9XWP9l0j+6nVn
-        aMeRCc5Uf2YujIdPdbaVOX/Bh3mZ+/TW16bSdDf4ucNINlZNB1pXhksKlpfCROo/
-        6m4seBQbPWXnNI+dzGPyZfycWzf88q44WxOIe7T3h+z2rLUlaWRhfIufbJOOfLdV
-        ItxFUAyRfq4woqYXsdgd8c8vLoaSeWJRAzQis6EPnhDwx7jnuVX6WuyHBj8WbET3
-        jmvQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1701208783; x=1701295183; bh=d8dJOAJYV2mmO
-        f6TcGIvZmDZwHIgzbX0ltRZ3M1V2lw=; b=YRhLjdkUetYblVbHU3qi3TsBj1N2h
-        l371QqfFu4yKaZo3e7wvdFu3CVifWDqBD8dyKz2ggJ4czdkoJzGz06jtLorXUU+6
-        RvWcCmE9CLI7OpYTNPr2fSgg/fdrdB14owu5Zn/rvCfBNCJ5xtt187Tvi1UaG+gT
-        fGPzNFACe1HInjwdphnTR9FoPucssW079THQ01K0hPBWOAJK/e6lVzFBv4ZMT7sK
-        EizBVnE11+dpAYOLLJ3xMQxHPUPqh2PKIrrp9zU5mkLJ6cRdtHa1u7X0wmPT+B+t
-        3tEeaZWfKA5axK/pCDxMSm/P9w+dco8mszuqdC14OBpH/v2oah6z2Xfww==
-X-ME-Sender: <xms:zmJmZb3O7tz8UuCX34Rn3M6sKvNG9N9HnwtRSnNKVnLmvL_YHCc2Yw>
-    <xme:zmJmZaHwnWMoR0sl6URtWgfkI0DFEkmahH_9Z2MIpTIPgnXe8THtaV-n244CqPda9
-    yPCC1FHZ8WsoY_wMAY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeifedgudehgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedt
-    keetffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:zmJmZb5yPLqTPRHYUrooghTHvcLDx4wQxgxZ14cQzvaSCiD1ZAF4dQ>
-    <xmx:zmJmZQ373mqOsYB-HA5iTc6aJBCrxpkHOc47MjyLqeZA06N54nbWKg>
-    <xmx:zmJmZeFWvsgXQqwrMDFVDDw2pagiE28iAO3k1HCBrc60O5RDW-NnnQ>
-    <xmx:z2JmZcGX0YtYNEWQuMvvSVOro-SvT-xoqxQYgMlal-5ZjNj0PeT3vw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 4C268B60089; Tue, 28 Nov 2023 16:59:42 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1234-gac66594aae-fm-20231122.001-gac66594a
+        Tue, 28 Nov 2023 17:05:19 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5294A1AE
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 14:05:23 -0800 (PST)
+Received: from [10.3.2.161] (zone.collabora.co.uk [167.235.23.81])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id B3B516606F5E;
+        Tue, 28 Nov 2023 22:05:19 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701209121;
+        bh=7xgiiHIZkyd3bNeww2hca8PoCyeMwxX6P4rjuWlBVFI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=n8dwM/TCV3O6RarGRKcaHc2GVNFP2eV8mBM9p+GTAY9OtPs5odN7Rve38Z40SF0YW
+         uJDWRbOp2AIjdieZ62k6hadUKjCOJr5Ve/5E+Pc5zmNmxnTjkw5R+CB2rFVtPKmcp7
+         tLqEftMuTH//JGYMvXc9rcRYqLezXl6sncBpcuf33pGc97/j6Ig762QhNPecsOtIKw
+         HEsu5xLB7cOoZf1xEXVTM4J0lKhF2ZhjjrLF4Z5fJF+t3ADstCP5BEAY5EIfLUHRtC
+         HuHHKuQBIjPL7hRlZPD0OjFFlpY/0cXcRRY6I+27jM9eVsT4ouhKvGqYD/DYUyuBG9
+         ISVlewrxM0AiA==
+Message-ID: <37208c72-7908-0a78-fc89-2fa9b8d756a5@collabora.com>
+Date:   Wed, 29 Nov 2023 01:05:14 +0300
 MIME-Version: 1.0
-Message-Id: <00c225bf-ed99-4721-9d6a-1e58cdffc79f@app.fastmail.com>
-In-Reply-To: <fvbe4625dgh57c3njx7fhd6vlnfxynzipfz43ieu2txflc2q4r@xzvrrmmktxsb>
-References: <c7cuvhuu6py5vxhhvkhekv6ned5sro4a3wzzn7v45oahfw42ud@gyqmucagt5e2>
- <8ca730b9-fa8c-46ea-bdc5-158da0f29c3a@app.fastmail.com>
- <ZV9Fq1ihUm1Rn6yO@alpha.franken.de>
- <d6d7e27a-b1a1-48af-be6c-aa9097c48992@app.fastmail.com>
- <ZV94rifAIF2p9Nej@alpha.franken.de>
- <245d3985-9085-4be0-8c74-d95d06334584@app.fastmail.com>
- <3iksuovvsln3cw3xpmjd7f7xixfvwaneu4ok56fnookvyolpco@wrxxew3thgnq>
- <dfda70b6-3291-462f-bc87-06dcc87bd068@app.fastmail.com>
- <ysij22pivneyg7tk3bv3hti3tsgbzglb6pin3my7r3bokzxjj6@jrjmu45gbupr>
- <c1c0a409-902e-4609-ae84-8939226b4fa0@app.fastmail.com>
- <fvbe4625dgh57c3njx7fhd6vlnfxynzipfz43ieu2txflc2q4r@xzvrrmmktxsb>
-Date:   Tue, 28 Nov 2023 22:59:10 +0100
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Serge Semin" <fancer.lancer@gmail.com>
-Cc:     "Jiaxun Yang" <jiaxun.yang@flygoat.com>,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Mike Rapoport" <rppt@kernel.org>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        "Tiezhu Yang" <yangtiezhu@loongson.cn>,
-        "Huacai Chen" <chenhuacai@kernel.org>,
-        "Yinglu Yang" <yangyinglu@loongson.cn>,
-        "Alexey Malahov" <Alexey.Malahov@baikalelectronics.ru>,
-        "Aleksandar Rikalo" <aleksandar.rikalo@syrmia.com>,
-        "Aleksandar Rikalo" <arikalo@gmail.com>,
-        "Dragan Mladjenovic" <dragan.mladjenovic@syrmia.com>,
-        "Chao-ying Fu" <cfu@wavecomp.com>, "Marc Zyngier" <maz@kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/7] mips: dmi: Fix early remap on MIPS32
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v18 04/26] drm/shmem-helper: Refactor locked/unlocked
+ functions
+Content-Language: en-US
+To:     Boris Brezillon <boris.brezillon@collabora.com>,
+        Maxime Ripard <mripard@kernel.org>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
+ <20231029230205.93277-5-dmitry.osipenko@collabora.com>
+ <wboljiwogeus7pwgaqzxaltt3xdavy2dzisygn6pdpoiwlnwgc@mwaiukjguzat>
+ <20231124115911.79ab24af@collabora.com>
+ <kw5bho3jx73d3glvtewmjvqt4qty4khju6dcwypuh25ya3gi4b@7slmijjqdi4p>
+ <20231128133712.53a6f6cb@collabora.com>
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <20231128133712.53a6f6cb@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023, at 14:52, Serge Semin wrote:
-> On Tue, Nov 28, 2023 at 01:41:51PM +0100, Arnd Bergmann wrote:
->> On Mon, Nov 27, 2023, at 17:23, Serge Semin wrote:
->> > On Fri, Nov 24, 2023 at 10:03:49PM +0000, Jiaxun Yang wrote:
->> but ioremap_cache() is generally underspecified because the
->> resulting pointer is neither safe to dereference nor to pass into
->> readl()/writel()/memcpy_fromio() on all architectures.
->
-> I don't know about ARM64 (which for instance has it utilized to access
-> the DMI region), but at least in case of MIPS32 (a fortiori MIPS64
-> seeing the ioremap_cache() method actually returns a pointer to the
-> uncached region) I don't see a reason why it wouldn't be safe in both
-> cases described by you. All IO and memory regions are accessed by the
-> generic load and store instructions. The only difference is that the
-> MMIO-space accessors normally implies additional barriers, which just
-> slow down the execution, but shouldn't cause any other problem. Could
-> you clarify why do you think otherwise?
+On 11/28/23 15:37, Boris Brezillon wrote:
+> On Tue, 28 Nov 2023 12:14:42 +0100
+> Maxime Ripard <mripard@kernel.org> wrote:
+> 
+>> Hi,
+>>
+>> On Fri, Nov 24, 2023 at 11:59:11AM +0100, Boris Brezillon wrote:
+>>> On Fri, 24 Nov 2023 11:40:06 +0100
+>>> Maxime Ripard <mripard@kernel.org> wrote:
+>>>   
+>>>> On Mon, Oct 30, 2023 at 02:01:43AM +0300, Dmitry Osipenko wrote:  
+>>>>> Add locked and remove unlocked postfixes from drm-shmem function names,
+>>>>> making names consistent with the drm/gem core code.
+>>>>>
+>>>>> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+>>>>> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
+>>>>> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>    
+>>>>
+>>>> This contradicts my earlier ack on a patch but...
+>>>>   
+>>>>> ---
+>>>>>  drivers/gpu/drm/drm_gem_shmem_helper.c        | 64 +++++++++----------
+>>>>>  drivers/gpu/drm/lima/lima_gem.c               |  8 +--
+>>>>>  drivers/gpu/drm/panfrost/panfrost_drv.c       |  2 +-
+>>>>>  drivers/gpu/drm/panfrost/panfrost_gem.c       |  6 +-
+>>>>>  .../gpu/drm/panfrost/panfrost_gem_shrinker.c  |  2 +-
+>>>>>  drivers/gpu/drm/panfrost/panfrost_mmu.c       |  2 +-
+>>>>>  drivers/gpu/drm/v3d/v3d_bo.c                  |  4 +-
+>>>>>  drivers/gpu/drm/virtio/virtgpu_object.c       |  4 +-
+>>>>>  include/drm/drm_gem_shmem_helper.h            | 36 +++++------
+>>>>>  9 files changed, 64 insertions(+), 64 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+>>>>> index 0d61f2b3e213..154585ddae08 100644
+>>>>> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+>>>>> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+>>>>> @@ -43,8 +43,8 @@ static const struct drm_gem_object_funcs drm_gem_shmem_funcs = {
+>>>>>  	.pin = drm_gem_shmem_object_pin,
+>>>>>  	.unpin = drm_gem_shmem_object_unpin,
+>>>>>  	.get_sg_table = drm_gem_shmem_object_get_sg_table,
+>>>>> -	.vmap = drm_gem_shmem_object_vmap,
+>>>>> -	.vunmap = drm_gem_shmem_object_vunmap,
+>>>>> +	.vmap = drm_gem_shmem_object_vmap_locked,
+>>>>> +	.vunmap = drm_gem_shmem_object_vunmap_locked,    
+>>>>
+>>>> While I think we should indeed be consistent with the names, I would
+>>>> also expect helpers to get the locking right by default.  
+>>>
+>>> Wait, actually I think this patch does what you suggest already. The
+>>> _locked() prefix tells the caller: "you should take care of the locking,
+>>> I expect the lock to be held when this is hook/function is called". So
+>>> helpers without the _locked() prefix take care of the locking (which I
+>>> guess matches your 'helpers get the locking right' expectation), and
+>>> those with the _locked() prefix don't.  
+>>
+>> What I meant by "getting the locking right" is indeed a bit ambiguous,
+>> sorry. What I'm trying to say I guess is that, in this particular case,
+>> I don't think you can expect the vmap implementation to be called with
+>> or without the locks held. The doc for that function will say that it's
+>> either one or the other, but not both.
+>>
+>> So helpers should follow what is needed to provide a default vmap/vunmap
+>> implementation, including what locking is expected from a vmap/vunmap
+>> implementation.
+> 
+> Hm, yeah, I think that's a matter of taste. When locking is often
+> deferrable, like it is in DRM, I find it beneficial for funcions and
+> function pointers to reflect the locking scheme, rather than relying on
+> people properly reading the doc, especially when this is the only
+> outlier in the group of drm_gem_object_funcs we already have, and it's
+> not event documented at the drm_gem_object_funcs level [1] :P.
+> 
+>>
+>> If that means that vmap is always called with the locks taken, then
+>> drm_gem_shmem_object_vmap can just assume that it will be called with
+>> the locks taken and there's no need to mention it in the name (and you
+>> can probably sprinkle a couple of lockdep assertion to make sure the
+>> locking is indeed consistent).
+> 
+> Things get very confusing when you end up having drm_gem_shmem helpers
+> that are suffixed with _locked() to encode the fact locking is the
+> caller's responsibility and no suffix for the
+> callee-takes-care-of-the-locking semantics, while other helpers that are
+> not suffixed at all actually implement the
+> caller-should-take-care-of-the-locking semantics.
+> 
+>>
+>>>> I'm not sure how reasonable it is, but I think I'd prefer to turn this
+>>>> around and keep the drm_gem_shmem_object_vmap/unmap helpers name, and
+>>>> convert whatever function needs to be converted to the unlock suffix so
+>>>> we get a consistent naming.  
+>>>
+>>> That would be an _unlocked() prefix if we do it the other way around. I
+>>> think the main confusion comes from the names of the hooks in
+>>> drm_gem_shmem_funcs. Some of them, like drm_gem_shmem_funcs::v[un]map()
+>>> are called with the GEM resv lock held, and locking is handled by the
+>>> core, others, like drm_gem_shmem_funcs::[un]pin() are called
+>>> without the GEM resv lock held, and locking is deferred to the
+>>> implementation. As I said, I don't mind prefixing hooks/helpers with
+>>> _unlocked() for those that take care of the locking, and no prefix for
+>>> those that expects locks to be held, as long as it's consistent, but I
+>>> just wanted to make sure we're on the same page :-).  
+>>
+>> What about _nolock then? It's the same number of characters than
+>> _locked, plus it expresses what the function is (not) doing, not what
+>> context it's supposed to be called in?
+> 
+> Just did a quick
+> 
+>   git grep _nolock drivers/gpu/drm
+> 
+> and it returns zero result, where the _locked/_unlocked pattern seems
+> to already be widely used. Not saying we shouldn't change that, but it
+> doesn't feel like a change we should do as part of this series.
+> 
+> Regards,
+> 
+> Boris
+> 
+> [1]https://elixir.bootlin.com/linux/v6.7-rc3/source/include/drm/drm_gem.h#L155
 
-On arch/powerpc, CONFIG_PPC_INDIRECT_MMIO makes all ioremap()
-type functions return a token that can be passed into the readl/writel
-family but that is not a pointer you can dereference.
+I'm fine with dropping the _locked() postfix from the common GEM helpers
+and documenting the locking rule in drm_gem. Thank you all for the
+suggestions :)
 
-On s390, the mechanism is different, but similarly __iomem
-tokens are not pointers at all.
+-- 
+Best regards,
+Dmitry
 
->> There was an effort to convert the remaining ioremap_cache() calls
->> into memremap() a few years ago, not sure if that's still being worked
->> on but it would be the right thing to do.
->
-> I see. Thanks for the pointing out to that. I guess it could be done
-> for MIPS too (at least on our MIPS32 platform DMI is just a memory
-> region pre-initialized by the bootloader), but the conversion would
-> require much efforts. Alas currently I can't afford to get it
-> implemented in the framework of this patchset. (I saved your note in
-> my MIPS TODO list though. Let's hope eventually I'll be able to get
-> back to this topic.)
-
-I just noticed that the only architectures that actually provide
-ioremap_cache() are x86, arm, arm64, mips, loongarch, powerpc, sh
-and xtensa. The ones that have ACPI support still definitely
-need it, most of the other ones can probably be fixed without
-too much trouble.
-
-     Arnd
