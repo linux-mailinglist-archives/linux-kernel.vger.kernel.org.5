@@ -2,82 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 656117FAF41
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 01:47:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 743767FAF43
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 01:48:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234230AbjK1ArG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Nov 2023 19:47:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58272 "EHLO
+        id S232295AbjK1Ar7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 19:47:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234342AbjK1Aqt (ORCPT
+        with ESMTP id S231378AbjK1Ar6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 19:46:49 -0500
-Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5EA010D2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 16:46:55 -0800 (PST)
-Received: from omf16.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay08.hostedemail.com (Postfix) with ESMTP id 8F397140141;
-        Tue, 28 Nov 2023 00:46:54 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf16.hostedemail.com (Postfix) with ESMTPA id 286CA2000F;
-        Tue, 28 Nov 2023 00:46:52 +0000 (UTC)
-Message-ID: <bfe9cc37ea78bd7833d22e5859495929cc896fa3.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: don't complain on _Static_assert and
- _Generic use
-From:   Joe Perches <joe@perches.com>
-To:     Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Jacob Keller <jacob.e.keller@intel.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Mon, 27 Nov 2023 16:46:51 -0800
-In-Reply-To: <20231127151847.52945-1-przemyslaw.kitszel@intel.com>
-References: <20231127151847.52945-1-przemyslaw.kitszel@intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Mon, 27 Nov 2023 19:47:58 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F341AA
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 16:48:04 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61A4FC433C8;
+        Tue, 28 Nov 2023 00:48:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701132484;
+        bh=rWkxJ6IcyviVAp9PF8CpLDKPseHgpWh9B3/hZ3BcgVo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mBtQ9xbg4WqeloNr38BAuZF/FrWncf/3bkKiVz61Lcf3INQgqpn8l0gHrphNVcnS1
+         FqLq7/UgqIJCB2LtKqdzjSpHYFsTIr+uaRmFYXscaW/2Su1kRNeUux6naUuWNiT1N3
+         7SyHKRKgwv48E4qM0JGOWzdg+jwpXRMHvhsoA48Sq1E6Xc8HmPe9roJZ65f9JDdPS6
+         9pOaXFZ3plP+E6OBW+irLzNzaIdUn9MtHBiuY0bY+DVvh4Q8ci2yOiUYriQ3Pjk/yb
+         VY0lslPMvHCcIx3uYPaJ1aElh/1ark1fBThHAdFffZej7rfBSvrlU8ZQH9vMkyYOuw
+         6IKs1LrhVB6Pg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id BF97540094; Mon, 27 Nov 2023 21:48:01 -0300 (-03)
+Date:   Mon, 27 Nov 2023 21:48:01 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>, Namhyung Kim <namhyung@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Dmitrii Dolgov <9erthalion6@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        James Clark <james.clark@arm.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        German Gomez <german.gomez@arm.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v4 01/53] perf comm: Use regular mutex
+Message-ID: <ZWU4wZcMj77p8tyz@kernel.org>
+References: <20231102175735.2272696-1-irogers@google.com>
+ <20231102175735.2272696-2-irogers@google.com>
+ <CAM9d7cgbPGzgc=QG8dStvq1iX8snGyeKTJDrg2XBjX0pCX9Qtg@mail.gmail.com>
+ <ZWUPz6ETFEBsrDkZ@kernel.org>
 MIME-Version: 1.0
-X-Stat-Signature: xkkziewzj7otx8uwo1p4bccebqaku1zx
-X-Rspamd-Server: rspamout04
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Rspamd-Queue-Id: 286CA2000F
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19AKWLmL6cO7if+ibDwWyhw8PX5h3djOBk=
-X-HE-Tag: 1701132412-473074
-X-HE-Meta: U2FsdGVkX1/XWu44x4hOZIKNJZgx2dvQriidbcB3IwaU8U82F9R/EokXlCtFlwRDLKLl7Dkt7ysW7xZ43X6pi/yA1VJWknS78/fgcuLCpJv/xmsb5zNr2U3my2ZywO3XkcWycqbIPmo2n7wHSQ+ddSku7u9UBrctOKGjwSv7tKfIvANwk2ceeQ/Kg7kzPeGZiCuIcTxxhlrGLGt90jMCbxzhvRJV1P2q4y5sjs4RjsOFJMjSatij6CoId7sFsSwH5gZNJkqYr7HMLnyAQqsrN8FIAE9VXfq2h/Yf9EaT+i/Bf9EFOpT0CeVcvBVRBbiUtSbfktEAnk2D1nj3Z6rfBtU2DFe7PMbD
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZWUPz6ETFEBsrDkZ@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-11-27 at 16:18 +0100, Przemek Kitszel wrote:
-> Improve CamelCase recognition logic to avoid reporting on _Static_assert()
-> and _Generic() use.
+Em Mon, Nov 27, 2023 at 06:53:19PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Sun, Nov 05, 2023 at 09:31:47AM -0800, Namhyung Kim escreveu:
+> > Hi Ian,
+> > 
+> > On Thu, Nov 2, 2023 at 10:58 AM Ian Rogers <irogers@google.com> wrote:
+> > >
+> > > The rwsem is only after used for writing so switch to a mutex that has
+> > > better error checking.
+> > 
+> > Hmm.. ok.  It doesn't make sense to use rwsem without readers.
 > 
-> Other C keywords, such as _Bool, are intentionally omitted, as those
-> should be rather avoided in new source code.
-[]
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -5839,6 +5839,8 @@ sub process {
->  #CamelCase
->  			if ($var !~ /^$Constant$/ &&
->  			    $var =~ /[A-Z][a-z]|[a-z][A-Z]/ &&
-> +#Ignore C keywords
-> +			    $var !~ /_Static_assert|_Generic/ &&
+> Well, the only reader is a findnew method, that will primarily read,
+> but possibly write if it doesn't find it there, so converting to a
+> regular mutex seems sensible.
 
-You'll need
+To be fixed tomorrow:
 
-			    $var != /^(?:_Static_assert|_Generic)$/ &&
+   3    32.71 alpine:3.15                   : FAIL gcc version 10.3.1 20211027 (Alpine 10.3.1_git20211027)
+    util/comm.c:20:46: error: 'PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP' undeclared here (not in a function)
+       20 | static struct mutex comm_str_lock = {.lock = PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP,};
+          |                                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    make[3]: *** [/git/perf-6.6.0-rc1/tools/build/Makefile.build:158: util] Error 2
+   4    32.17 alpine:3.16                   : FAIL gcc version 11.2.1 20220219 (Alpine 11.2.1_git20220219)
+    util/comm.c:20:46: error: 'PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP' undeclared here (not in a function)
+       20 | static struct mutex comm_str_lock = {.lock = PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP,};
+          |                                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    make[3]: *** [/git/perf-6.6.0-rc1/tools/build/Makefile.build:158: util] Error 2
+   5    25.82 alpine:3.17                   : FAIL gcc version 12.2.1 20220924 (Alpine 12.2.1_git20220924-r4)
+    util/comm.c:20:46: error: 'PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP' undeclared here (not in a function)
+       20 | static struct mutex comm_str_lock = {.lock = PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP,};
+          |                                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    make[3]: *** [/git/perf-6.6.0-rc1/tools/build/Makefile.build:158: util] Error 2
+   6    26.64 alpine:3.18                   : FAIL gcc version 12.2.1 20220924 (Alpine 12.2.1_git20220924-r10)
+    util/comm.c:20:46: error: 'PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP' undeclared here (not in a function)
+       20 | static struct mutex comm_str_lock = {.lock = PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP,};
+          |                                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    make[3]: *** [/git/perf-6.6.0-rc1/tools/build/Makefile.build:158: util] Error 2
+   7    29.66 alpine:edge                   : FAIL gcc version 13.1.1 20230722 (Alpine 13.1.1_git20230722)
+    util/comm.c:20:46: error: 'PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP' undeclared here (not in a function)
+       20 | static struct mutex comm_str_lock = {.lock = PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP,};
+          |                                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    make[3]: *** [/git/perf-6.6.0-rc1/tools/build/Makefile.build:158: util] Error 2
 
-to avoid words that contain either
 
+ I.e. doesn't play well with musl libc.
 
->  #Ignore some autogenerated defines and enum values
->  			    $var !~ /^(?:[A-Z]+_){1,5}[A-Z]{1,3}[a-z]/ &&
->  #Ignore Page<foo> variants
-
+ - Arnaldo
