@@ -2,44 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86AA37FC8A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:53:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7067FC8A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:53:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376572AbjK1VSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 16:18:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51512 "EHLO
+        id S1376490AbjK1VOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 16:14:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346933AbjK1VSN (ORCPT
+        with ESMTP id S1376416AbjK1VN5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 16:18:13 -0500
+        Tue, 28 Nov 2023 16:13:57 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 998F53C3F
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:09:57 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40BF4C433C8;
-        Tue, 28 Nov 2023 21:09:56 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546C43C01
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:09:59 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7563C433A9;
+        Tue, 28 Nov 2023 21:09:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701205797;
-        bh=u5mztADiX1T2VEvcf4Ybw/rj0X9fGjTqPL9zn4Mv4KM=;
+        s=k20201202; t=1701205798;
+        bh=Lmekx3QN79MlWykgZQVrFzX+VnH2qflN9/VVt0W0TWE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FPwMKBNTTVoAHLFPDLNrCP7ru4hm62JgobM8x+YImoxfSxu0OCHPVDG9MuW6JGaCS
-         sB66XyoA4JPchfH18gqfIlvQPMy7+Le3wifFm9xPGW+UZfGdWTCBz6T8o68Z1DlKuC
-         fivNIQkSby1sTnwac6jN48dtWU0LoUQ607JaSuLQzBTfwZB0vy9QrA/ZdWf1fbljJu
-         OyLe/gsBcleM3ezY9xPSiYsZc66W1ZAu9QsufdQLdsAsWNHxyAvvOniY9fvtlJGEFf
-         Uz0gkjNZv8zF09IX8yo0l1Pe6b8DlCZbKyLlIOYsWv4z6MZYLyjuvlWJQnCuz+djKS
-         FFnC7I6d+vDyQ==
+        b=AJFm85h9VKcfAhfIO4+TDxiXGX/qCMW+ty688HwCMyAGcn9D/kSfp8RIEIzODPSnk
+         9h9Z1pmpcfhTQc1dpQZPqClPzWXrTTOt636cPhlh62psJ1hAi2FDAA1ZZvScdoH+5V
+         /ckYcXdbNeHkkywgYHBA2FBo2ivSr4HDrRm+ZutKyQ8IaZKteO5QRzlb6R08uDa0P/
+         OJWXJwRWLoRueuD24sFCVtijRCD4o4lXJN4ue8NyNbEPKc9MFBU1vQeDAtmo3HGXUO
+         K2fgM+dO12xj7X/3YUl132SMWLPfSsp5HSkTEfh5Wp7sdKuVzFzqvdzT8rlwwZ8IDy
+         YosRJs47i43Qg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Guo Ren <guoren@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, linux-arch@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 10/11] asm-generic: qspinlock: fix queued_spin_value_unlocked() implementation
-Date:   Tue, 28 Nov 2023 16:09:34 -0500
-Message-ID: <20231128210941.877094-10-sashal@kernel.org>
+Cc:     Lech Perczak <lech.perczak@gmail.com>,
+        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 11/11] net: usb: qmi_wwan: claim interface 4 for ZTE MF290
+Date:   Tue, 28 Nov 2023 16:09:35 -0500
+Message-ID: <20231128210941.877094-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231128210941.877094-1-sashal@kernel.org>
 References: <20231128210941.877094-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.4.262
@@ -54,48 +57,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Lech Perczak <lech.perczak@gmail.com>
 
-[ Upstream commit 125b0bb95dd6bec81b806b997a4ccb026eeecf8f ]
+[ Upstream commit 99360d9620f09fb8bc15548d855011bbb198c680 ]
 
-We really don't want to do atomic_read() or anything like that, since we
-already have the value, not the lock.  The whole point of this is that
-we've loaded the lock from memory, and we want to check whether the
-value we loaded was a locked one or not.
+Interface 4 is used by for QMI interface in stock firmware of MF28D, the
+router which uses MF290 modem. Rebind it to qmi_wwan after freeing it up
+from option driver.
+The proper configuration is:
 
-The main use of this is the lockref code, which loads both the lock and
-the reference count in one atomic operation, and then works on that
-combined value.  With the atomic_read(), the compiler would pointlessly
-spill the value to the stack, in order to then be able to read it back
-"atomically".
+Interface mapping is:
+0: QCDM, 1: (unknown), 2: AT (PCUI), 2: AT (Modem), 4: QMI
 
-This is the qspinlock version of commit c6f4a9002252 ("asm-generic:
-ticket-lock: Optimize arch_spin_value_unlocked()") which fixed this same
-bug for ticket locks.
+T:  Bus=01 Lev=02 Prnt=02 Port=00 Cnt=01 Dev#=  4 Spd=480  MxCh= 0
+D:  Ver= 2.00 Cls=00(>ifc ) Sub=00 Prot=00 MxPS=64 #Cfgs=  1
+P:  Vendor=19d2 ProdID=0189 Rev= 0.00
+S:  Manufacturer=ZTE, Incorporated
+S:  Product=ZTE LTE Technologies MSM
+C:* #Ifs= 5 Cfg#= 1 Atr=e0 MxPwr=500mA
+I:* If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=01(O) Atr=02(Bulk) MxPS= 512 Ivl=4ms
+I:* If#= 1 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=4ms
+I:* If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+E:  Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=03(O) Atr=02(Bulk) MxPS= 512 Ivl=4ms
+I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=option
+E:  Ad=84(I) Atr=03(Int.) MxPS=  64 Ivl=2ms
+E:  Ad=85(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=04(O) Atr=02(Bulk) MxPS= 512 Ivl=4ms
+I:* If#= 4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=qmi_wwan
+E:  Ad=86(I) Atr=03(Int.) MxPS=  64 Ivl=2ms
+E:  Ad=87(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=05(O) Atr=02(Bulk) MxPS= 512 Ivl=4ms
 
-Cc: Guo Ren <guoren@kernel.org>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Waiman Long <longman@redhat.com>
-Link: https://lore.kernel.org/all/CAHk-=whNRv0v6kQiV5QO6DJhjH4KEL36vWQ6Re8Csrnh4zbRkQ@mail.gmail.com/
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Bjørn Mork <bjorn@mork.no>
+Signed-off-by: Lech Perczak <lech.perczak@gmail.com>
+Link: https://lore.kernel.org/r/20231117231918.100278-3-lech.perczak@gmail.com
+Signed-off-by: Paolo Abeni <pabeni@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/asm-generic/qspinlock.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/usb/qmi_wwan.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/asm-generic/qspinlock.h b/include/asm-generic/qspinlock.h
-index fde943d180e03..6dc2269a5398a 100644
---- a/include/asm-generic/qspinlock.h
-+++ b/include/asm-generic/qspinlock.h
-@@ -38,7 +38,7 @@ static __always_inline int queued_spin_is_locked(struct qspinlock *lock)
-  */
- static __always_inline int queued_spin_value_unlocked(struct qspinlock lock)
- {
--	return !atomic_read(&lock.val);
-+	return !lock.val.counter;
- }
- 
- /**
+diff --git a/drivers/net/usb/qmi_wwan.c b/drivers/net/usb/qmi_wwan.c
+index ebc1f01d5ea27..c2bd4abce6de5 100644
+--- a/drivers/net/usb/qmi_wwan.c
++++ b/drivers/net/usb/qmi_wwan.c
+@@ -1247,6 +1247,7 @@ static const struct usb_device_id products[] = {
+ 	{QMI_FIXED_INTF(0x19d2, 0x0168, 4)},
+ 	{QMI_FIXED_INTF(0x19d2, 0x0176, 3)},
+ 	{QMI_FIXED_INTF(0x19d2, 0x0178, 3)},
++	{QMI_FIXED_INTF(0x19d2, 0x0189, 4)},    /* ZTE MF290 */
+ 	{QMI_FIXED_INTF(0x19d2, 0x0191, 4)},	/* ZTE EuFi890 */
+ 	{QMI_FIXED_INTF(0x19d2, 0x0199, 1)},	/* ZTE MF820S */
+ 	{QMI_FIXED_INTF(0x19d2, 0x0200, 1)},
 -- 
 2.42.0
 
