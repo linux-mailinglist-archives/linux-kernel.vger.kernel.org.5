@@ -2,91 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 935C17FB464
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:37:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 021967FB46C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:38:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344210AbjK1IhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 03:37:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46958 "EHLO
+        id S1344168AbjK1IiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 03:38:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344196AbjK1IhQ (ORCPT
+        with ESMTP id S234659AbjK1Ih6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 03:37:16 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56542D51
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:37:20 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-507c5249d55so7804106e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:37:20 -0800 (PST)
+        Tue, 28 Nov 2023 03:37:58 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB2451727
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:38:03 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40859dee28cso41953435e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:38:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701160638; x=1701765438; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701160682; x=1701765482; darn=vger.kernel.org;
         h=cc:to:message-id:content-transfer-encoding:mime-version:subject
          :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jGKLjx3luJGU+DnwzUn3Qi9imxdPkVHML+rqCOmAtck=;
-        b=y8msmTu/0ijVSnrlmJDVYaHkGc+qOWK5/G4fc+LtaQ2v/Hv7wuWO+K8EHachk8s2+N
-         /eAWN50FM/0xBECm5Tn11nLhXEKfwV3d0LkmLkynTwv4gaW/G5/TMk6jEkGALs1LYmmx
-         VIbPSjGY8lCxJh4YO+Mw93Vt0ZcX8Zzl8vuprZdOgqIn8F0UiJtX8GWHM2bCpgjEAQLo
-         2xcGOskquJyRAOgVAr4QvuvAb6S7r1nyXMjAC+MIiqB5Pxvr26pzAv4ObluSSLf/oOdZ
-         y5r77Uj0zZH0fm1jWfAziytFhR4H43N9amS+fRfDrT8bOPNVS7hky1wkU62p4zbhQfJ5
-         IEIw==
+        bh=crclIHZgLMbk6m6cpstTsXFLirHjxlOQ97dZu+AQEPg=;
+        b=knrtVQhjUkrxhiRs60FoiDimLAc3GDYrLShURYB61xOmT0MFpzMJoYxqw1SgC4BXXJ
+         2awm+lWiqIs44hBPjd7Bl05ENnVpkuyRWJC5OSHF6VmwFJNOU7ew1th0+/0JaSlvKcvi
+         T/pnCm8D/N7KonZffUptWkNF/1beB7q2IJbjJvpD7JID2vuWu/7byD6A/2QRdA4BUcH7
+         jwJVBfAuLBgX1vZ7Rmhw+TCCj8egMbVLb/c4C+PU0kUBNmS+2/Usmhf/lc1cqoqZYGty
+         qSLJMCWtggl/uC74qVmrEH+bQJ6Siv/ifJIMxBGo8o+P0flaE0ZfLV8vwj7eeDskYyjS
+         eIsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701160638; x=1701765438;
+        d=1e100.net; s=20230601; t=1701160682; x=1701765482;
         h=cc:to:message-id:content-transfer-encoding:mime-version:subject
          :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=jGKLjx3luJGU+DnwzUn3Qi9imxdPkVHML+rqCOmAtck=;
-        b=pANWpv0kUnceN51WuoSOrQTzL5konXxACWkFaVdkgQdqNW1Ck+ADUjAC2BPjoxisp2
-         3Q75GzSdGddi0pOwqT8eU2U2lpd+1kvFYKocnOOpK4w9ZZbYwI0u7I4YL3NsB3ARV7UP
-         JWTdr82J6YEKHH2Zb1soUOeVO0W2HBtk8ZEcko/yfj+1GFHxXPhg9GK0M+vasgLsQyjv
-         YKzs3289fOPJjSak3XIdnTqnUZLKhcJU945gwhBOlaShJS1ZJz7kHSg/1G3R3DnYF+K9
-         FbbQ/VkG5g4JQa4lDW9593WnV0chwKTlzYco8rlLIdHxuSnMh3bTZ5XWvSq2GUKX/6Mo
-         pkLA==
-X-Gm-Message-State: AOJu0YwTI8NtGm5Ok1K0XcaMIzEKlB+To74+6P3FEf0QvHBC7IxwgljE
-        9BWiIaLXMCuA5ZDbwHwPDcXLig==
-X-Google-Smtp-Source: AGHT+IGV9g8Gt0GdX7z42ch7sDJF6Eu8IzKDEWg0GGo3YxYJjiALZKGhZW5/q4ocv0/V3tt/PsVvSQ==
-X-Received: by 2002:a05:6512:4022:b0:509:4ae3:465b with SMTP id br34-20020a056512402200b005094ae3465bmr12923505lfb.8.1701160638511;
-        Tue, 28 Nov 2023 00:37:18 -0800 (PST)
+        bh=crclIHZgLMbk6m6cpstTsXFLirHjxlOQ97dZu+AQEPg=;
+        b=GnjOZDunJUvYzeSzU+q3ROKCJiTul1Bc8jHYXYq0TjgrSNQcdw6ToNcFpFiaFttgz9
+         TRipdn5Kpb6Pz5fL5bqORnvB80Y0piUIMk+wxOKmR27IVIvTYlRS/m6zEEqiAaPD+QiN
+         nNUPVU5HPXSLZAbg3Em/XFsW2GWMmT32zGAXuekYCjooGGCgnRhtGeqvvEJAtXYjLGVa
+         h52kBA/JLz23fqJG8o36djMBTRsbYyuUugVdD75sS7dZd7kcVRDxnZuPJoeXV7syiCxv
+         14UIhmnE6Ysg5jyY71VaONiLmxggH3Spo7aUCXzj99VpOrOIy88XlnXDaVwxY/VM4K2b
+         6jwA==
+X-Gm-Message-State: AOJu0YwRZ0HAbJoolIeK5yLzuXkZCjb+5Cw2LLLbQH773DMWuT+neb5c
+        7c4+HKG7Of9/Fg/ZGpAbFIE3pg==
+X-Google-Smtp-Source: AGHT+IGJhOJb3UCnHXw0kECBhzTOYoNKUyrbF2v0TFjW3e4PIQzArhIUJmoMawYTO9aIZqORwmHskw==
+X-Received: by 2002:a05:600c:470f:b0:40b:37ef:3671 with SMTP id v15-20020a05600c470f00b0040b37ef3671mr11367081wmo.38.1701160682275;
+        Tue, 28 Nov 2023 00:38:02 -0800 (PST)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id o18-20020a05600c4fd200b0040b4b2a15ebsm1853454wmq.28.2023.11.28.00.37.17
+        by smtp.gmail.com with ESMTPSA id c4-20020a05600c0a4400b003fefaf299b6sm16718638wmq.38.2023.11.28.00.38.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 00:37:18 -0800 (PST)
+        Tue, 28 Nov 2023 00:38:01 -0800 (PST)
 From:   Neil Armstrong <neil.armstrong@linaro.org>
-Date:   Tue, 28 Nov 2023 09:37:15 +0100
-Subject: [PATCH RESEND v2] dt-bindings: thermal: qcom-tsens: document the
- SM8650 Temperature Sensor
+Date:   Tue, 28 Nov 2023 09:37:59 +0100
+Subject: [PATCH RESEND] dt-bindings: iommu: arm,smmu: document the SM8650
+ System MMU
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231128-topic-sm8650-upstream-bindings-tsens-v2-1-8a21f61130a5@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Thara Gopinath <thara.gopinath@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
+Message-Id: <20231128-topic-sm8650-upstream-bindings-smmu-v1-1-d330854170d4@linaro.org>
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+Cc:     linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         Neil Armstrong <neil.armstrong@linaro.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1381;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1415;
  i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=9N+6dBAkFtncfZi6ZHXGSHcpyq1NPV2HQpTLMM/rMdA=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlZaa9KgSozkm2ZH1Xcfu/rkLseV0mf3PJhCPUInPW
- pXh1t4WJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZWWmvQAKCRB33NvayMhJ0f/GD/
- 960lAxxbkUmvvPIT14Hh+ln9cs81E0R+EQ02UdLYQ+EGUeC/sLDsR18EHMxrHWDj3at63o9c4nVh9A
- /iqanWFHRlFcFrDTLxZpeqxaJCMAKGm6wqYrBl8Q9QEG8Yf+THxAldSWQZOKNDGdgqo1SKVWtUkaZm
- PcoQKZ7yYny0+2vNpwgX3ILw4f9UUGYjkDHCzrb4h9nrAnpPo+21skempCfvqTGA0UlIv34S61XrwJ
- xJUqNbz5LyIZL36Z9IqZP8wspF7isX6wl9lnojvoX/enIKPVBS7T19IrGOW8y0fQj3te0LVBCqqfsu
- vswBcJtKDhZFAqsY1pUdfbel5w4SSRgHkRatNlp+XrXbSHYCHeGVTNJKnoyGYOPHf6AL17p1mh484x
- 0EDJhxe7BjslPA0/yf3Ho0miPbneu33Jbjc5fku7CBnYeHPghgxZN00biJRIFWV6vpo+uQLOk3gfoS
- t7FYCTPLLnwu60BO/ugC7ZYYO2rrMQhSy6ZVLoY7VcY7HCSdmAt4dg2IpRJZHKJuWUn145P/lvCdd5
- P1PdsTTuG2VZ2EnxCqjHaLioI2w5TqNbUqsJy5LaHjElHXlBJXokPCV3BHMVs1R2jTRV7OeBBFya/e
- SIJe+eoGV0OxIt2kux8bdoXtoAis0S11Fb/+A/bg7rlLJDAvOeSL4i32GXOA==
+ bh=88P3e6NmMBveIZbiqKlF5tiz9ASGje5GZTyQzmMCUXo=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlZabpqbPdoPQ1taztccvMYrIrhnlTcN2ProIe2tPh
+ XJSM8r+JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZWWm6QAKCRB33NvayMhJ0ToJD/
+ wIZQE+dwjvziSy/ZB2A2vdc+xTal7T4iFb4xeYUY5f3BR/HHGHUoJFnxhq5dH8ogXzTh7uLQ5bmL8j
+ +PjJrEeQ+fye0WSqRKn06FI7bAR7/ugL5pyol+I1IfaAn0AdVc9oaLtUo0PkobawcvQCgpd6KP36du
+ iTTNc/E+3PE6qDOOCXyNvmQnBtGa1+noRQpuivp9CO4znj0aOSZzc0bQtwN61HqK4DetMSTU9i7/Ca
+ x4HQkJYx+6aprnnnpk3x5jKal2XbgeJ01HFhv6tz3jQgmmnlGQe5h6lV5KP1l7m5ni6eSPKJCbRhlE
+ W/Kriv/+duBA/6EreApVb/z8o9r5dMWHWEjBWB7tVd0KLD3NvA8zySC0XYLBL97xwMqFFdbe3spNqo
+ kZHRiVht1I0//eZJpI24Z3rvsTSq0+7nL7h+jCcvT639fmeT50T8DL904TxRb1oSyMDnh0zRE3Cf5l
+ 9seqw6+sBfWjzHNrTcF90F6BV4CFQyGJczF7/gNyKApz6oYo0dUbsbzcC2KXzR5zPgjW3IqeWsypyx
+ 3faV08W7hsEtn6rpSuVWDckfVDSUWwpOTPhNP9+5z0q7yxDTztM0YimB4ulxrgyH0XOpOynBUlez0Y
+ +5SjIX6DiuozGGDcn3J2YxcS5kFKd0BBSk8NS/oazKcZ5b1x+ebs+LAJFb8g==
 X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
  fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -99,7 +92,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the Temperature Sensor (TSENS) on the SM8650 Platform.
+Document the System MMU on the SM8650 Platform.
 
 Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
@@ -107,29 +100,33 @@ For convenience, a regularly refreshed linux-next based git tree containing
 all the SM8650 related work is available at:
 https://git.codelinaro.org/neil.armstrong/linux/-/tree/topic/sm85650/upstream/integ
 ---
-Changes in v2:
-- Fixed typo in subject
-- Link to v1: https://lore.kernel.org/r/20231025-topic-sm8650-upstream-bindings-tsens-v1-1-09fdd17b1116@linaro.org
----
- Documentation/devicetree/bindings/thermal/qcom-tsens.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-index 437b74732886..99d9c526c0b6 100644
---- a/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-+++ b/Documentation/devicetree/bindings/thermal/qcom-tsens.yaml
-@@ -66,6 +66,7 @@ properties:
-               - qcom,sm8350-tsens
-               - qcom,sm8450-tsens
-               - qcom,sm8550-tsens
-+              - qcom,sm8650-tsens
-           - const: qcom,tsens-v2
+diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+index aa9e1c0895a5..157de0d0a24d 100644
+--- a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
++++ b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+@@ -56,6 +56,7 @@ properties:
+               - qcom,sm8350-smmu-500
+               - qcom,sm8450-smmu-500
+               - qcom,sm8550-smmu-500
++              - qcom,sm8650-smmu-500
+           - const: qcom,smmu-500
+           - const: arm,mmu-500
  
-       - description: v2 of TSENS with combined interrupt
+@@ -475,6 +476,7 @@ allOf:
+               - qcom,sm8350-smmu-500
+               - qcom,sm8450-smmu-500
+               - qcom,sm8550-smmu-500
++              - qcom,sm8650-smmu-500
+     then:
+       properties:
+         clock-names: false
 
 ---
 base-commit: fe1998aa935b44ef873193c0772c43bce74f17dc
-change-id: 20231016-topic-sm8650-upstream-bindings-tsens-4e748933642e
+change-id: 20231016-topic-sm8650-upstream-bindings-smmu-7d52c88bc6ff
 
 Best regards,
 -- 
