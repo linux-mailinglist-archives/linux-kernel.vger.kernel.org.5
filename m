@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF05C7FC8C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:53:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0147FC87A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:52:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376539AbjK1VNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 16:13:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37674 "EHLO
+        id S234996AbjK1V14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 16:27:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346806AbjK1VMm (ORCPT
+        with ESMTP id S1346621AbjK1V1a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 16:12:42 -0500
+        Tue, 28 Nov 2023 16:27:30 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BBF23852
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:09:30 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F434C433B9;
-        Tue, 28 Nov 2023 21:09:29 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C4A1FCC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:09:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6D0FC433B6;
+        Tue, 28 Nov 2023 21:09:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701205770;
-        bh=iYS5R2sEAUWcUJ4irfOImBV6OzZrQINJIReZ13xLvXg=;
+        s=k20201202; t=1701205771;
+        bh=RMjOgEOTskDcygPK8gkjmTm0pl1d2CsHI68lWcA/Lcs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DWKwpC3o6kweIMDZTgseV7bZ6iWf6ySz9sVwwxm2e/1llrKgUnrv2xcUoxR6Bkh/f
-         4X0sX4KC8eEtVFlDFk4Rm9n3268DY+ki1/wF/JeqPFR4sem13LiOWEtpH0EpAxqEeY
-         5W/GYdsL25OKKs5v6QZ+jOj0xbQ7JCvWfVJNSUlhcpC1EpClRNBG/JCG+lD5ki87iL
-         v5A/FYhONozcGBxH4ZW+3sDdHWmOd2uOOP4GgV/Q83WWbBYMP5ax5kEkxszZ6c4zWH
-         Y4HbE2TYfFVWtpF4y+69Vt1A5H6mh+W8IAadBmTxA+Mo3tSxHBJHkBz9g0/XXd3gnu
-         jeiaEFchqy/wA==
+        b=XiSuEO36DQOG96eHRsAu7WY3stHGvHcbK9hPBTuRhvqll4Nxgmll1aL2JXg3gkP/C
+         4yCBHh9nbKuWykAA2P62YcDXgHUOxgHc2ArKA/aDsPCGygUpe9vbtEqD6r6vOZiCn0
+         jVq2m+FkpfY8GIOB2+wG6p6oFPx7wYaN+iHQuGTx730mLlCur0JwKc41WGtbNxJ/10
+         kQgBApAh/6JiPMKRZl0wrJ+xJVg1kxLbzYK28+5Swld/vfnehkeoWUEtjRZCTMm5Bh
+         jp1NXo2eXlTKug1iR0mGEZAWu0vZi28wPLpltXphLnnWuY5PFin6NP0ndIob+KeVEY
+         xNN28Yg4IwFTQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Denis Benato <benato.denis96@gmail.com>,
-        "Luke D . Jones" <luke@ljones.dev>, Jiri Kosina <jkosina@suse.cz>,
+Cc:     Aoba K <nexp_0x17@outlook.com>, Jiri Kosina <jkosina@suse.cz>,
         Sasha Levin <sashal@kernel.org>, jikos@kernel.org,
         benjamin.tissoires@redhat.com, linux-input@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 10/13] HID: hid-asus: reset the backlight brightness level on resume
-Date:   Tue, 28 Nov 2023 16:09:04 -0500
-Message-ID: <20231128210914.876813-10-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 11/13] HID: multitouch: Add quirk for HONOR GLO-GXXX touchpad
+Date:   Tue, 28 Nov 2023 16:09:05 -0500
+Message-ID: <20231128210914.876813-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231128210914.876813-1-sashal@kernel.org>
 References: <20231128210914.876813-1-sashal@kernel.org>
@@ -54,65 +53,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Denis Benato <benato.denis96@gmail.com>
+From: Aoba K <nexp_0x17@outlook.com>
 
-[ Upstream commit 546edbd26cff7ae990e480a59150e801a06f77b1 ]
+[ Upstream commit 9ffccb691adb854e7b7f3ee57fbbda12ff70533f ]
 
-Some devices managed by this driver automatically set brightness to 0
-before entering a suspended state and reset it back to a default
-brightness level after the resume:
-this has the effect of having the kernel report wrong brightness
-status after a sleep, and on some devices (like the Asus RC71L) that
-brightness is the intensity of LEDs directly facing the user.
+Honor MagicBook 13 2023 has a touchpad which do not switch to the multitouch
+mode until the input mode feature is written by the host.  The touchpad do
+report the input mode at touchpad(3), while itself working under mouse mode. As
+a workaround, it is possible to call MT_QUIRE_FORCE_GET_FEATURE to force set
+feature in mt_set_input_mode for such device.
 
-Fix the above issue by setting back brightness to the level it had
-before entering a sleep state.
+The touchpad reports as BLTP7853, which cannot retrive any useful manufacture
+information on the internel by this string at present.  As the serial number of
+the laptop is GLO-G52, while DMI info reports the laptop serial number as
+GLO-GXXX, this workaround should applied to all models which has the GLO-GXXX.
 
-Signed-off-by: Denis Benato <benato.denis96@gmail.com>
-Signed-off-by: Luke D. Jones <luke@ljones.dev>
+Signed-off-by: Aoba K <nexp_0x17@outlook.com>
 Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-asus.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ drivers/hid/hid-multitouch.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/hid/hid-asus.c b/drivers/hid/hid-asus.c
-index 6865cab33cf8a..52b0ef99bc955 100644
---- a/drivers/hid/hid-asus.c
-+++ b/drivers/hid/hid-asus.c
-@@ -901,6 +901,24 @@ static int asus_start_multitouch(struct hid_device *hdev)
- 	return 0;
- }
+diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
+index 84b12599eaf69..7d43d62df2409 100644
+--- a/drivers/hid/hid-multitouch.c
++++ b/drivers/hid/hid-multitouch.c
+@@ -1962,6 +1962,11 @@ static const struct hid_device_id mt_devices[] = {
+ 		MT_USB_DEVICE(USB_VENDOR_ID_HANVON_ALT,
+ 			USB_DEVICE_ID_HANVON_ALT_MULTITOUCH) },
  
-+static int __maybe_unused asus_resume(struct hid_device *hdev) {
-+	struct asus_drvdata *drvdata = hid_get_drvdata(hdev);
-+	int ret = 0;
++	/* HONOR GLO-GXXX panel */
++	{ .driver_data = MT_CLS_VTL,
++		HID_DEVICE(BUS_I2C, HID_GROUP_MULTITOUCH_WIN_8,
++			0x347d, 0x7853) },
 +
-+	if (drvdata->kbd_backlight) {
-+		const u8 buf[] = { FEATURE_KBD_REPORT_ID, 0xba, 0xc5, 0xc4,
-+				drvdata->kbd_backlight->cdev.brightness };
-+		ret = asus_kbd_set_report(hdev, buf, sizeof(buf));
-+		if (ret < 0) {
-+			hid_err(hdev, "Asus failed to set keyboard backlight: %d\n", ret);
-+			goto asus_resume_err;
-+		}
-+	}
-+
-+asus_resume_err:
-+	return ret;
-+}
-+
- static int __maybe_unused asus_reset_resume(struct hid_device *hdev)
- {
- 	struct asus_drvdata *drvdata = hid_get_drvdata(hdev);
-@@ -1177,6 +1195,7 @@ static struct hid_driver asus_driver = {
- 	.input_configured       = asus_input_configured,
- #ifdef CONFIG_PM
- 	.reset_resume           = asus_reset_resume,
-+	.resume					= asus_resume,
- #endif
- 	.event			= asus_event,
- 	.raw_event		= asus_raw_event
+ 	/* Ilitek dual touch panel */
+ 	{  .driver_data = MT_CLS_NSMU,
+ 		MT_USB_DEVICE(USB_VENDOR_ID_ILITEK,
 -- 
 2.42.0
 
