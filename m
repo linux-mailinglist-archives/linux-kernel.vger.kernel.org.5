@@ -2,48 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D21287FC2A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7197FC27B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345064AbjK1Q4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 11:56:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32914 "EHLO
+        id S234730AbjK1Q4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:56:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345029AbjK1Q4I (ORCPT
+        with ESMTP id S234886AbjK1Q4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 11:56:08 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83812D4F
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:56:14 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C737FC433C7;
-        Tue, 28 Nov 2023 16:56:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701190574;
-        bh=OY8Ow22MyrAVlMRwF371bD3qmtjpS3+hhDNNRpCJdKM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TI7N3S3KUs661mm3dASe/zGx52toUNAAkHDMpzBCiz8DEW/vqQKomWD3aanAbrW85
-         T98u0NPMzpsiEPEUfwLYwFqle00plhbYOtvX6lFQdyZRPvoBFjsjB54VTM/Hxa4FIO
-         btogyRh8y7cidA/7UmLGzL8B8EVZ94VvOiiunXLzkSKm7tkTVMxOs8ZidAW4zgXw/n
-         8MVmuAKtsgu+eEMofEXAJ/jxDiQJKAQv+7bHPu5Wyn6FAfk9BBl/CKTVPSpQNDSY+3
-         mgPI10b+cQ7ykyW4VQyrM/nYvUV8TfqdNz3F3nCCu1trbkmXUF3nsZDzGM2oCSlBX2
-         Z/BZVP1FXvrkQ==
-Date:   Tue, 28 Nov 2023 17:56:11 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peng Liu <pngliu@hotmail.com>
-Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        liupeng17@lenovo.com
-Subject: Re: [PATCH v2 1/2] tick/nohz: Remove duplicate between
- tick_nohz_switch_to_nohz() and tick_setup_sched_timer()
-Message-ID: <ZWYbqwZrP+WfvT/N@lothringen>
-References: <20231127083049.145447-1-pngliu@hotmail.com>
- <TYCP286MB21464DF5148B8FF8B142ADF7C6BCA@TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM>
+        Tue, 28 Nov 2023 11:56:43 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A85CD53
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:56:48 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50943ccbbaeso7989376e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:56:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701190606; x=1701795406; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KlvtVgcoH+Cr5quxDgXdgueDoRBrewPBnFO4wuUANns=;
+        b=k1/7oWDO8Upg20YhSnrFid6v51+cWhjhqEWchgKnlaAZMZZwiBjGPsIiyh87yseYB8
+         7aBkj8UwvhoxixH4lCmZbCpD670cakYgtM0zqYzmg7oDPadfojbCyt863PHGizN33nQ6
+         JP9Of5rOgZjAQ1MYnIPaSP1jcnF6ArfKRu8XGDSDy0uxAaOlj8GOcSOMlkFZlDtraC5Q
+         8syP7pL+2JMZawfz4aAhLLvJelgDqoIyEKSlQXwEuAmjQlzLbJ//TP3lQ3R2KK/KOhLt
+         A7KEWhunRnZCzj9xxiNPjmSUGD3BD8emRkL1SSQqBYrnH9EkXpkfIAUSWBvi3CQf9+HI
+         tNWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701190606; x=1701795406;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KlvtVgcoH+Cr5quxDgXdgueDoRBrewPBnFO4wuUANns=;
+        b=PvG8neI+RpiBARWXXwAwFKsbeL3WMv3tMI3hPwA5eSPSEdU+B3s7mRHGl6R0lR//6D
+         7Rks/jbLUvSu9Gavcs/7LwoCsBfYXp96YdRCVHmSyRZ9SB6qCNEIGgxT/gebZetIjXFq
+         ESXPql5wM9r00uuyqhUpOdNNVuifFzQqBVUP//C4GvRDUUeZRBzUCvQRJc/Dx+salEXE
+         Rct93Jx3FHXzQAuJxBaUSPV3zzZVYklxjpXJAXQFyTjYeYrCKo6J+lby8JT8v+SuYziX
+         y3knabvLmH3oGITe3p5WqGJzGK3zn3KTaB8BoTiDAjxEoj2imruShhGANUiMhYdRnMHX
+         v2nA==
+X-Gm-Message-State: AOJu0YxeQD8PXxq0s0XE0dcU80I8COQth451ErX/RD41TdZs1uE8pV72
+        3+aj4aCKYItr6/h7g6R9NwcNRA==
+X-Google-Smtp-Source: AGHT+IF3hUBfKX//GdxpAzLW32DtoinveGYlCmLpmAQLjqtDChB2bMM64TERz8Kx5aYwPkRWwl/Ifw==
+X-Received: by 2002:a05:6512:ea1:b0:50b:c102:a65d with SMTP id bi33-20020a0565120ea100b0050bc102a65dmr1112291lfb.9.1701190605996;
+        Tue, 28 Nov 2023 08:56:45 -0800 (PST)
+Received: from krzk-bin.. ([178.197.223.109])
+        by smtp.gmail.com with ESMTPSA id cw18-20020a170906c79200b009bf7a4d591csm7126252ejb.11.2023.11.28.08.56.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 08:56:45 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Sanyog Kale <sanyog.r.kale@intel.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linux-sound@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 1/2] ASoC: qcom: Add helper for allocating Soundwire stream runtime
+Date:   Tue, 28 Nov 2023 17:56:37 +0100
+Message-Id: <20231128165638.757665-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <TYCP286MB21464DF5148B8FF8B142ADF7C6BCA@TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,69 +82,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 05:23:54PM +0800, Peng Liu wrote:
-> @@ -1529,7 +1519,9 @@ static enum hrtimer_restart tick_nohz_highres_handler(struct hrtimer *timer)
->  
->  	return HRTIMER_RESTART;
->  }
-> +#endif /* HIGH_RES_TIMERS */
->  
-> +#if defined CONFIG_NO_HZ_COMMON || defined CONFIG_HIGH_RES_TIMERS
+Newer Qualcomm SoC soundcards will need to allocate Soundwire stream
+runtime in their startup op.  The code will be exactly the same for all
+soundcards, so add a helper for that.
 
-tick-sched.c is only ever built if CONFIG_TICK_ONESHOT=y and
-CONFIG_TICK_ONESHOT is basically (CONFIG_NO_HZ_COMMON || CONFIG_HIGH_RES_TIMERS)
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ sound/soc/qcom/sdw.c | 45 +++++++++++++++++++++++++++++++++++++++++++-
+ sound/soc/qcom/sdw.h |  1 +
+ 2 files changed, 45 insertions(+), 1 deletion(-)
 
-So probably the above is not needed and if you like you can even send
-a subsequent patch removing such ifdefs within this file :-)
+diff --git a/sound/soc/qcom/sdw.c b/sound/soc/qcom/sdw.c
+index dd275123d31d..77dbe0c28b29 100644
+--- a/sound/soc/qcom/sdw.c
++++ b/sound/soc/qcom/sdw.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
+-// Copyright (c) 2018, Linaro Limited.
++// Copyright (c) 2018-2023, Linaro Limited.
+ // Copyright (c) 2018, The Linux Foundation. All rights reserved.
+ 
+ #include <dt-bindings/sound/qcom,q6afe.h>
+@@ -7,6 +7,49 @@
+ #include <sound/soc.h>
+ #include "sdw.h"
+ 
++/**
++ * qcom_snd_sdw_startup() - Helper to start Soundwire stream for SoC audio card
++ * @substream: The PCM substream from audio, as passed to snd_soc_ops->startup()
++ *
++ * Helper for the SoC audio card (snd_soc_ops->startup()) to allocate and set
++ * Soundwire stream runtime to each codec DAI.
++ *
++ * The shutdown() callback should call sdw_release_stream() on the same
++ * sdw_stream_runtime.
++ *
++ * Return: 0 or errno
++ */
++int qcom_snd_sdw_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
++	struct sdw_stream_runtime *sruntime;
++	struct snd_soc_dai *codec_dai;
++	int ret, i;
++
++	sruntime = sdw_alloc_stream(cpu_dai->name);
++	if (!sruntime)
++		return -ENOMEM;
++
++	for_each_rtd_codec_dais(rtd, i, codec_dai) {
++		ret = snd_soc_dai_set_stream(codec_dai, sruntime,
++					     substream->stream);
++		if (ret < 0 && ret != -ENOTSUPP) {
++			dev_err(rtd->dev, "Failed to set sdw stream on %s\n",
++				codec_dai->name);
++			goto err_set_stream;
++		}
++	}
++
++	return 0;
++
++err_set_stream:
++	sdw_release_stream(sruntime);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(qcom_snd_sdw_startup);
++
+ int qcom_snd_sdw_prepare(struct snd_pcm_substream *substream,
+ 			 struct sdw_stream_runtime *sruntime,
+ 			 bool *stream_prepared)
+diff --git a/sound/soc/qcom/sdw.h b/sound/soc/qcom/sdw.h
+index d74cbb84da13..392e3455f1b1 100644
+--- a/sound/soc/qcom/sdw.h
++++ b/sound/soc/qcom/sdw.h
+@@ -6,6 +6,7 @@
+ 
+ #include <linux/soundwire/sdw.h>
+ 
++int qcom_snd_sdw_startup(struct snd_pcm_substream *substream);
+ int qcom_snd_sdw_prepare(struct snd_pcm_substream *substream,
+ 			 struct sdw_stream_runtime *runtime,
+ 			 bool *stream_prepared);
+-- 
+2.34.1
 
->  static int sched_skew_tick;
->  
->  static int __init skew_tick(char *str)
-> @@ -1542,15 +1534,19 @@ early_param("skew_tick", skew_tick);
->  
->  /**
->   * tick_setup_sched_timer - setup the tick emulation timer
-> + * @mode: tick_nohz_mode to setup for
->   */
-> -void tick_setup_sched_timer(void)
-> +void tick_setup_sched_timer(int mode)
->  {
->  	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
->  	ktime_t now = ktime_get();
->  
->  	/* Emulate tick processing via per-CPU hrtimers: */
->  	hrtimer_init(&ts->sched_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_HARD);
-> -	ts->sched_timer.function = tick_nohz_highres_handler;
-> +#ifdef CONFIG_HIGH_RES_TIMERS
-> +	if (mode == NOHZ_MODE_HIGHRES)
-> +		ts->sched_timer.function = tick_nohz_highres_handler;
-> +#endif
-
-That ifdef could simply be removed.
-
->  
->  	/* Get the next period (per-CPU) */
->  	hrtimer_set_expires(&ts->sched_timer, tick_init_jiffy_update());
-> @@ -1564,12 +1560,15 @@ void tick_setup_sched_timer(void)
->  	}
-
-That invisible part above is the skew_tick thing, which can probably work
-on low-res mode so why not but please tell about that in the changelog.
-
->  
->  	hrtimer_forward(&ts->sched_timer, now, TICK_NSEC);
-
-Looks like this can be hrtimer_forward_now() and you can remove the now.
-
-> -	hrtimer_start_expires(&ts->sched_timer, HRTIMER_MODE_ABS_PINNED_HARD);
-> -	tick_nohz_activate(ts, NOHZ_MODE_HIGHRES);
-> +#ifdef CONFIG_HIGH_RES_TIMERS
-> +	if (mode == NOHZ_MODE_HIGHRES)
-> +		hrtimer_start_expires(&ts->sched_timer, HRTIMER_MODE_ABS_PINNED_HARD);
-> +	else
-> +#endif
-
-And probably that ifdef could simply be turned to
-IS_ENABLED(CONFIG_HIGH_RES_TIMERS).
-
-Thanks!
