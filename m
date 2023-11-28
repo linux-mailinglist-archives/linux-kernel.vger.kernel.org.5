@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD1D7FB412
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:29:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC6B7FB411
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:28:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344038AbjK1I3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 03:29:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39988 "EHLO
+        id S1344034AbjK1I2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 03:28:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232697AbjK1I3L (ORCPT
+        with ESMTP id S229737AbjK1I2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 03:29:11 -0500
-Received: from zju.edu.cn (mail.zju.edu.cn [61.164.42.155])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BB767100
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:29:15 -0800 (PST)
-Received: from localhost.localdomain (unknown [10.190.69.212])
-        by mail-app3 (Coremail) with SMTP id cC_KCgDX33OjpGVlGlw0AA--.115S4;
-        Tue, 28 Nov 2023 16:28:26 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn
-Cc:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Rahul Rameshbabu <rrameshbabu@nvidia.com>,
-        Simon Horman <horms@kernel.org>,
-        Tariq Toukan <tariqt@nvidia.com>, Aya Levin <ayal@nvidia.com>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net/mlx5e: fix a potential double-free in fs_any_create_groups
-Date:   Tue, 28 Nov 2023 16:28:09 +0800
-Message-Id: <20231128082812.24483-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgDX33OjpGVlGlw0AA--.115S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrKrWxAr45WrW7CF4rZFW3trb_yoWkKFc_C3
-        4Iq3Z5JayYqr4rKw13WrW5GrWI9r4q9rn3AFZIgFZ8t347uF4UJ34fZFy3CFn3uFyUCr90
-        qr42qF47C34UtjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbskFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
-        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
-        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
-        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
-        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
-        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
-        0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
-        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
-        IFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgsIBmVfIgMaAQAbsc
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Tue, 28 Nov 2023 03:28:44 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE62F5
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:28:51 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1126C433C8;
+        Tue, 28 Nov 2023 08:28:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1701160131;
+        bh=zYAML8pYZVkNA1Zvcok1nkSUd7fnE1Gq5rdjaPq3ww0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Tzsig0lxGo6SKlj0UyjU5aDnvHQnK2a3qp8WyigMAXZ9HVhmGGlz+tC4bFvq79Rmr
+         bjZKA3kTHiBeXvn8Q97tAOWHcNKwtpY9P4nPl95lecyvFLDaieG68CVqJX5Hj8o+5t
+         BmR4z6SDCdR/m7thC/Y3tjcnkhBFiVxOg2FyseWM=
+Date:   Tue, 28 Nov 2023 08:28:48 +0000
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Liu Ying <victor.liu@nxp.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 0/3] Revert panel fixes and original buggy patch
+Message-ID: <2023112811-abide-oversold-922f@gregkh>
+References: <20231128-revert-panel-fix-v1-0-69bb05048dae@linaro.org>
+ <20231127232542.GB25590@pendragon.ideasonboard.com>
+ <CACRpkdYWjHbgWQc46hGM3bg+5nf4NiveEZJmHrnx0X-=XsUDLA@mail.gmail.com>
+ <20231127235244.GD31314@pendragon.ideasonboard.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231127235244.GD31314@pendragon.ideasonboard.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,30 +62,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When kcalloc() for ft->g succeeds but kvzalloc() for in fails,
-fs_any_create_groups() will free ft->g. However, its caller
-fs_any_create_table() will free ft->g again through calling
-mlx5e_destroy_flow_table(), which will lead to a double-free.
-Fix this by removing the kfree(ft->g) in fs_any_create_groups().
+On Tue, Nov 28, 2023 at 01:52:44AM +0200, Laurent Pinchart wrote:
+> On Tue, Nov 28, 2023 at 12:36:15AM +0100, Linus Walleij wrote:
+> > On Tue, Nov 28, 2023 at 12:25 AM Laurent Pinchart wrote:
+> > > On Tue, Nov 28, 2023 at 12:10:18AM +0100, Linus Walleij wrote:
+> > > > This series reverts the attempts to fix the bug that went
+> > > > into v6.7-rc1 in commit 199cf07ebd2b
+> > > > "drm/bridge: panel: Add a device link between drm device and panel device"
+> > > > and then it reverts that patch as well.
+> > > >
+> > > > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> > > > ---
+> > > > Linus Walleij (3):
+> > > >       Revert "driver core: Export device_is_dependent() to modules"
+> > > >       Revert "drm/bridge: panel: Check device dependency before managing device link"
+> > > >       Revert "drm/bridge: panel: Add a device link between drm device and panel device"
+> > >
+> > > To preserve bisectability, you should revert in the opposite order.
+> > 
+> > You mean apply patch 2, then 1, then 3 so the kernel builds after each
+> > revert?
+> > 
+> > Yeah that's a good idea, I don't know if I should apply these though, better
+> > someone else do it since I screwed up too much.
+> > 
+> > Another option is to just squash the reverts into one, that bisects too :/
+> 
+> I thought the commits have been applied to drm-misc in a bisectable
+> order in the first place, but that doesn't seem to be the case :-(
+> Reverting "driver core: Export device_is_dependent() to modules" last
+> seems to be the best option in this case. I wouldn't squash them.
 
-Fixes: 0f575c20bf06 ("net/mlx5e: Introduce Flow Steering ANY API")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
- drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c | 1 -
- 1 file changed, 1 deletion(-)
+Agreed, don't squash, just revert in the opposite order they were
+applied in originally, that way the tree can always build.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c b/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
-index be83ad9db82a..b222d23bfb9a 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
-@@ -434,7 +434,6 @@ static int fs_any_create_groups(struct mlx5e_flow_table *ft)
- 	ft->g = kcalloc(MLX5E_FS_UDP_NUM_GROUPS, sizeof(*ft->g), GFP_KERNEL);
- 	in = kvzalloc(inlen, GFP_KERNEL);
- 	if  (!in || !ft->g) {
--		kfree(ft->g);
- 		kvfree(in);
- 		return -ENOMEM;
- 	}
--- 
-2.17.1
+thanks,
 
+greg k-h
