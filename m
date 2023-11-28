@@ -2,353 +2,715 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 451CB7FC2CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F7D7FC150
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345786AbjK1RUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 12:20:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49456 "EHLO
+        id S1345683AbjK1RVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 12:21:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234566AbjK1RUv (ORCPT
+        with ESMTP id S1345858AbjK1RVV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 12:20:51 -0500
+        Tue, 28 Nov 2023 12:21:21 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E4FC10F0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:20:56 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 545E2C433C7;
-        Tue, 28 Nov 2023 17:20:55 +0000 (UTC)
-Date:   Tue, 28 Nov 2023 12:21:17 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        dmaluka@google.com, Sean Paul <seanpaul@chromium.org>,
-        Arun Easi <aeasi@marvell.com>, Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH] tracing: Allow creating instances with specified system
- events
-Message-ID: <20231128122117.2276f4a7@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD28A10EC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:21:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDD40C433C7;
+        Tue, 28 Nov 2023 17:21:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1701192085;
+        bh=m1pQuxCMUOdHXv/Lj/ymW1iChY6ccvsi6+iPHrH0SCE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=a+gIRcz3RCVd06rJuYb6AuHmlgwFO9CZZ4hHiBnfauIpJKxifQ/6hstDdGK3XGRlN
+         VMrrkRdHwD+nC5V13bwvkGzt1nXQWbOsuI1Lw1OeZPzxK5CRJbDgNISFTnCcOklP8S
+         VFPvaAnImDeFg7/Y56nl+qHISlLPpOLOCR6bsljs=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 5.10.202
+Date:   Tue, 28 Nov 2023 17:21:21 +0000
+Message-ID: <2023112821-zoologist-wavy-3123@gregkh>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+I'm announcing the release of the 5.10.202 kernel.
 
-A trace instance may only need to enable specific events. As the eventfs
-directory of an instance currently creates all events which adds overhead,
-allow internal instances to be created with just the events in systems
-that they care about. This currently only deals with systems and not
-individual events, but this should bring down the overhead of creating
-instances for specific use cases quite bit.
+All users of the 5.10 kernel series must upgrade.
 
-The trace_array_get_by_name() now has another parameter "systems". This
-parameter is a const string pointer of a comma/space separated list of
-event systems that should be created by the trace_array. (Note if the
-trace_array already exists, this parameter is ignored).
+The updated 5.10.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.10.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-The list of systems is saved and if a module is loaded, its events will
-not be added unless the system for those events also match the systems
-string.
+thanks,
 
-Note that all dynamic events are still added as they are created by the
-user.
+greg k-h
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-Changes since RFC: https://lore.kernel.org/all/20231127174108.3c331c9c@gandalf.local.home/
+------------
 
-- Record "systems" in the trace_array so that only events with the system
-  name will be added. This includes modules that create events after the
-  trace_array is created.
+ Makefile                                                   |    2 
+ arch/arm/include/asm/exception.h                           |    4 
+ arch/arm64/Kconfig                                         |    2 
+ arch/arm64/boot/dts/qcom/ipq6018.dtsi                      |   15 -
+ arch/parisc/include/uapi/asm/pdc.h                         |    1 
+ arch/parisc/kernel/entry.S                                 |    7 
+ arch/parisc/kernel/head.S                                  |    5 
+ arch/powerpc/perf/core-book3s.c                            |    5 
+ arch/x86/include/asm/msr-index.h                           |    1 
+ arch/x86/include/asm/numa.h                                |    7 
+ arch/x86/kernel/cpu/hygon.c                                |    8 
+ arch/x86/kvm/hyperv.c                                      |   10 -
+ arch/x86/kvm/x86.c                                         |    2 
+ arch/x86/mm/numa.c                                         |    7 
+ crypto/pcrypt.c                                            |    4 
+ drivers/acpi/resource.c                                    |   12 +
+ drivers/atm/iphase.c                                       |   20 +-
+ drivers/bluetooth/btusb.c                                  |   15 +
+ drivers/clk/qcom/gcc-ipq6018.c                             |    6 
+ drivers/clk/qcom/gcc-ipq8074.c                             |    6 
+ drivers/clocksource/timer-atmel-tcb.c                      |    1 
+ drivers/clocksource/timer-imx-gpt.c                        |   18 +-
+ drivers/cpufreq/cpufreq_stats.c                            |   14 -
+ drivers/dma/stm32-mdma.c                                   |    4 
+ drivers/firmware/qcom_scm.c                                |    7 
+ drivers/gpu/drm/amd/amdgpu/amdgpu_bo_list.c                |    1 
+ drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c                |    6 
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c                 |    3 
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c                    |    9 -
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c          |   13 -
+ drivers/gpu/drm/amd/display/dc/core/dc_stream.c            |    4 
+ drivers/gpu/drm/amd/display/dmub/dmub_srv.h                |   22 +-
+ drivers/gpu/drm/amd/display/dmub/src/dmub_srv.c            |   32 ++-
+ drivers/gpu/drm/amd/include/pptable.h                      |    4 
+ drivers/gpu/drm/amd/pm/amdgpu_pm.c                         |    8 
+ drivers/gpu/drm/amd/pm/powerplay/hwmgr/pptable_v1_0.h      |   16 -
+ drivers/gpu/drm/arm/display/komeda/komeda_pipeline_state.c |    9 -
+ drivers/gpu/drm/msm/dp/dp_panel.c                          |   21 --
+ drivers/gpu/drm/panel/panel-arm-versatile.c                |    2 
+ drivers/gpu/drm/panel/panel-sitronix-st7703.c              |   25 +--
+ drivers/gpu/drm/panel/panel-tpo-tpg110.c                   |    2 
+ drivers/hid/hid-ids.h                                      |    1 
+ drivers/hid/hid-lenovo.c                                   |   68 +++++---
+ drivers/hid/hid-quirks.c                                   |    1 
+ drivers/i2c/busses/i2c-designware-master.c                 |   19 +-
+ drivers/i2c/busses/i2c-i801.c                              |   19 +-
+ drivers/i2c/busses/i2c-sun6i-p2wi.c                        |    5 
+ drivers/i2c/i2c-core.h                                     |    2 
+ drivers/i3c/master/i3c-master-cdns.c                       |    6 
+ drivers/infiniband/hw/hfi1/pcie.c                          |    9 -
+ drivers/interconnect/qcom/bcm-voter.c                      |    5 
+ drivers/interconnect/qcom/icc-rpmh.h                       |    2 
+ drivers/mcb/mcb-core.c                                     |    1 
+ drivers/mcb/mcb-parse.c                                    |    2 
+ drivers/media/pci/cobalt/cobalt-driver.c                   |   11 -
+ drivers/media/platform/qcom/camss/camss-vfe.c              |    2 
+ drivers/media/platform/qcom/venus/hfi_msgs.c               |    2 
+ drivers/media/platform/qcom/venus/hfi_parser.c             |   15 +
+ drivers/media/platform/qcom/venus/hfi_venus.c              |   10 +
+ drivers/media/rc/imon.c                                    |    6 
+ drivers/media/rc/ir-sharp-decoder.c                        |    8 
+ drivers/media/rc/lirc_dev.c                                |    6 
+ drivers/media/test-drivers/vivid/vivid-rds-gen.c           |    2 
+ drivers/media/usb/gspca/cpia1.c                            |    3 
+ drivers/misc/pci_endpoint_test.c                           |    4 
+ drivers/mmc/host/meson-gx-mmc.c                            |    1 
+ drivers/mmc/host/sdhci_am654.c                             |    2 
+ drivers/mmc/host/vub300.c                                  |    1 
+ drivers/mtd/chips/cfi_cmdset_0001.c                        |   20 ++
+ drivers/net/bonding/bond_main.c                            |    6 
+ drivers/net/dsa/lan9303_mdio.c                             |    4 
+ drivers/net/ethernet/cortina/gemini.c                      |   45 +++--
+ drivers/net/ethernet/cortina/gemini.h                      |    4 
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c            |    2 
+ drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c  |   14 +
+ drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.h  |    1 
+ drivers/net/ethernet/mellanox/mlx5/core/devlink.c          |    2 
+ drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c        |   10 -
+ drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c       |    4 
+ drivers/net/ethernet/mellanox/mlx5/core/en_rep.c           |   13 -
+ drivers/net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c    |    2 
+ drivers/net/ethernet/mellanox/mlx5/core/main.c             |   10 -
+ drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h        |    3 
+ drivers/net/ethernet/realtek/r8169_main.c                  |    4 
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c          |    2 
+ drivers/net/ipvlan/ipvlan_core.c                           |   41 +++-
+ drivers/net/macvlan.c                                      |    2 
+ drivers/net/phy/phylink.c                                  |    1 
+ drivers/net/ppp/ppp_synctty.c                              |    6 
+ drivers/net/wireless/ath/ath10k/debug.c                    |    2 
+ drivers/net/wireless/ath/ath10k/snoc.c                     |   18 +-
+ drivers/net/wireless/ath/ath11k/dp_rx.c                    |    8 
+ drivers/net/wireless/ath/ath11k/wmi.c                      |   12 +
+ drivers/net/wireless/ath/ath9k/debug.c                     |    2 
+ drivers/net/wireless/ath/ath9k/htc_drv_debug.c             |    2 
+ drivers/net/wireless/intel/iwlwifi/mvm/tx.c                |   14 +
+ drivers/net/wireless/mac80211_hwsim.c                      |    2 
+ drivers/pci/controller/dwc/pci-exynos.c                    |    4 
+ drivers/pci/controller/dwc/pci-keystone.c                  |    8 
+ drivers/pci/controller/dwc/pcie-tegra194.c                 |    9 -
+ drivers/pci/pci-acpi.c                                     |    2 
+ drivers/pci/pci-sysfs.c                                    |    5 
+ drivers/pci/pcie/aspm.c                                    |    2 
+ drivers/platform/x86/thinkpad_acpi.c                       |    1 
+ drivers/ptp/ptp_chardev.c                                  |    3 
+ drivers/ptp/ptp_clock.c                                    |    5 
+ drivers/ptp/ptp_private.h                                  |    8 
+ drivers/ptp/ptp_sysfs.c                                    |    3 
+ drivers/scsi/libfc/fc_lport.c                              |    6 
+ drivers/scsi/megaraid/megaraid_sas_base.c                  |    4 
+ drivers/scsi/mpt3sas/mpt3sas_base.c                        |    4 
+ drivers/tty/hvc/hvc_xen.c                                  |   37 +++-
+ drivers/tty/serial/meson_uart.c                            |   33 ++-
+ drivers/tty/sysrq.c                                        |    3 
+ drivers/tty/vcc.c                                          |   16 +
+ drivers/usb/gadget/function/f_ncm.c                        |   27 +--
+ drivers/usb/host/xhci-pci.c                                |    4 
+ drivers/usb/host/xhci-ring.c                               |  108 ++++++-------
+ drivers/xen/events/events_base.c                           |    4 
+ fs/btrfs/delalloc-space.c                                  |    3 
+ fs/cifs/cifs_spnego.c                                      |    4 
+ fs/cifs/smb2transport.c                                    |    5 
+ fs/exfat/namei.c                                           |   29 ++-
+ fs/ext4/acl.h                                              |    5 
+ fs/ext4/extents_status.c                                   |    4 
+ fs/ext4/resize.c                                           |   19 --
+ fs/f2fs/compress.c                                         |    2 
+ fs/gfs2/inode.c                                            |   14 +
+ fs/gfs2/quota.c                                            |   11 +
+ fs/gfs2/super.c                                            |    2 
+ fs/jbd2/recovery.c                                         |    8 
+ fs/jfs/jfs_dmap.c                                          |   23 ++
+ fs/jfs/jfs_imap.c                                          |    5 
+ fs/nfs/nfs4proc.c                                          |    5 
+ fs/nfsd/nfs4state.c                                        |    2 
+ fs/overlayfs/super.c                                       |    2 
+ fs/proc/proc_sysctl.c                                      |    1 
+ fs/quota/dquot.c                                           |   14 +
+ include/linux/lsm_hook_defs.h                              |    4 
+ include/linux/mlx5/driver.h                                |    2 
+ include/linux/pwm.h                                        |    4 
+ include/linux/sunrpc/clnt.h                                |    1 
+ include/linux/trace_events.h                               |    4 
+ include/net/netfilter/nf_tables.h                          |    3 
+ include/net/sock.h                                         |   26 ++-
+ include/sound/soc-card.h                                   |   37 ++++
+ include/sound/soc.h                                        |   11 +
+ include/uapi/linux/netfilter/nf_tables.h                   |    1 
+ io_uring/io_uring.c                                        |   18 +-
+ kernel/audit_watch.c                                       |    9 -
+ kernel/bpf/core.c                                          |    6 
+ kernel/bpf/verifier.c                                      |    9 -
+ kernel/debug/debug_core.c                                  |    3 
+ kernel/events/ring_buffer.c                                |    6 
+ kernel/irq/generic-chip.c                                  |   25 ++-
+ kernel/locking/test-ww_mutex.c                             |   20 +-
+ kernel/padata.c                                            |    2 
+ kernel/power/snapshot.c                                    |   16 -
+ kernel/rcu/tree.c                                          |    9 +
+ kernel/reboot.c                                            |    1 
+ kernel/trace/trace.c                                       |   15 +
+ kernel/trace/trace.h                                       |    3 
+ kernel/trace/trace_events.c                                |   43 +++--
+ kernel/trace/trace_events_filter.c                         |    3 
+ kernel/watchdog.c                                          |    7 
+ mm/cma.c                                                   |    2 
+ mm/memcontrol.c                                            |    3 
+ mm/memory_hotplug.c                                        |    2 
+ net/9p/trans_fd.c                                          |   13 +
+ net/bluetooth/hci_conn.c                                   |    6 
+ net/bluetooth/hci_sysfs.c                                  |   23 +-
+ net/bridge/netfilter/nf_conntrack_bridge.c                 |    2 
+ net/core/sock.c                                            |    2 
+ net/ipv4/tcp_output.c                                      |    2 
+ net/mac80211/cfg.c                                         |    4 
+ net/ncsi/ncsi-aen.c                                        |    5 
+ net/netfilter/nf_tables_api.c                              |   62 +++++--
+ net/sunrpc/clnt.c                                          |    7 
+ net/sunrpc/rpcb_clnt.c                                     |    4 
+ net/tipc/netlink_compat.c                                  |    1 
+ scripts/gcc-plugins/randomize_layout_plugin.c              |   11 -
+ security/integrity/ima/ima_api.c                           |    5 
+ security/integrity/ima/ima_main.c                          |   16 +
+ security/integrity/integrity.h                             |    2 
+ sound/core/info.c                                          |   21 +-
+ sound/hda/hdac_stream.c                                    |    6 
+ sound/pci/hda/patch_realtek.c                              |   20 --
+ sound/soc/ti/omap-mcbsp.c                                  |    6 
+ tools/power/x86/turbostat/turbostat.c                      |    2 
+ tools/testing/selftests/efivarfs/create-read.c             |    2 
+ 190 files changed, 1186 insertions(+), 614 deletions(-)
 
-- Dynamic events had to be specified directly to still allow them to be
-  created.
+Al Viro (1):
+      gfs2: fix an oops in gfs2_permission
 
- drivers/scsi/qla2xxx/qla_os.c       |  2 +-
- include/linux/trace.h               |  4 +--
- include/linux/trace_events.h        |  4 +++
- kernel/trace/trace.c                | 23 ++++++++++---
- kernel/trace/trace.h                |  1 +
- kernel/trace/trace_boot.c           |  2 +-
- kernel/trace/trace_events.c         | 52 +++++++++++++++++++++++++++--
- samples/ftrace/sample-trace-array.c |  2 +-
- 8 files changed, 78 insertions(+), 12 deletions(-)
+Alain Volmat (1):
+      dmaengine: stm32-mdma: correct desc prep when channel running
 
-diff --git a/drivers/scsi/qla2xxx/qla_os.c b/drivers/scsi/qla2xxx/qla_os.c
-index 03348f605c2e..dd674378f2f3 100644
---- a/drivers/scsi/qla2xxx/qla_os.c
-+++ b/drivers/scsi/qla2xxx/qla_os.c
-@@ -2889,7 +2889,7 @@ static void qla2x00_iocb_work_fn(struct work_struct *work)
- static void
- qla_trace_init(void)
- {
--	qla_trc_array = trace_array_get_by_name("qla2xxx");
-+	qla_trc_array = trace_array_get_by_name("qla2xxx", NULL);
- 	if (!qla_trc_array) {
- 		ql_log(ql_log_fatal, NULL, 0x0001,
- 		       "Unable to create qla2xxx trace instance, instance logging will be disabled.\n");
-diff --git a/include/linux/trace.h b/include/linux/trace.h
-index 2a70a447184c..fdcd76b7be83 100644
---- a/include/linux/trace.h
-+++ b/include/linux/trace.h
-@@ -51,7 +51,7 @@ int trace_array_printk(struct trace_array *tr, unsigned long ip,
- 		       const char *fmt, ...);
- int trace_array_init_printk(struct trace_array *tr);
- void trace_array_put(struct trace_array *tr);
--struct trace_array *trace_array_get_by_name(const char *name);
-+struct trace_array *trace_array_get_by_name(const char *name, const char *systems);
- int trace_array_destroy(struct trace_array *tr);
- 
- /* For osnoise tracer */
-@@ -84,7 +84,7 @@ static inline int trace_array_init_printk(struct trace_array *tr)
- static inline void trace_array_put(struct trace_array *tr)
- {
- }
--static inline struct trace_array *trace_array_get_by_name(const char *name)
-+static inline struct trace_array *trace_array_get_by_name(const char *name, const char *systems)
- {
- 	return NULL;
- }
-diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-index d68ff9b1247f..ff818cab07b8 100644
---- a/include/linux/trace_events.h
-+++ b/include/linux/trace_events.h
-@@ -365,6 +365,10 @@ enum {
- 
- #define TRACE_EVENT_FL_UKPROBE (TRACE_EVENT_FL_KPROBE | TRACE_EVENT_FL_UPROBE)
- 
-+#define TRACE_EVENT_FL_DYNAMIC_MASK					\
-+	(TRACE_EVENT_FL_DYNAMIC | TRACE_EVENT_FL_KPROBE |		\
-+	 TRACE_EVENT_FL_UPROBE | TRACE_EVENT_FL_EPROBE | TRACE_EVENT_FL_FPROBE)
-+
- struct trace_event_call {
- 	struct list_head	list;
- 	struct trace_event_class *class;
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 9aebf904ff97..1c7129d07bfb 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -9520,7 +9520,8 @@ static int trace_array_create_dir(struct trace_array *tr)
- 	return ret;
- }
- 
--static struct trace_array *trace_array_create(const char *name)
-+static struct trace_array *
-+trace_array_create_systems(const char *name, const char *systems)
- {
- 	struct trace_array *tr;
- 	int ret;
-@@ -9540,6 +9541,12 @@ static struct trace_array *trace_array_create(const char *name)
- 	if (!zalloc_cpumask_var(&tr->pipe_cpumask, GFP_KERNEL))
- 		goto out_free_tr;
- 
-+	if (systems) {
-+		tr->system_names = kstrdup_const(systems, GFP_KERNEL);
-+		if (!tr->system_names)
-+			goto out_free_tr;
-+	}
-+
- 	tr->trace_flags = global_trace.trace_flags & ~ZEROED_TRACE_FLAGS;
- 
- 	cpumask_copy(tr->tracing_cpumask, cpu_all_mask);
-@@ -9586,12 +9593,18 @@ static struct trace_array *trace_array_create(const char *name)
- 	free_trace_buffers(tr);
- 	free_cpumask_var(tr->pipe_cpumask);
- 	free_cpumask_var(tr->tracing_cpumask);
-+	kfree_const(tr->system_names);
- 	kfree(tr->name);
- 	kfree(tr);
- 
- 	return ERR_PTR(ret);
- }
- 
-+static struct trace_array *trace_array_create(const char *name)
-+{
-+	return trace_array_create_systems(name, NULL);
-+}
-+
- static int instance_mkdir(const char *name)
- {
- 	struct trace_array *tr;
-@@ -9617,6 +9630,7 @@ static int instance_mkdir(const char *name)
- /**
-  * trace_array_get_by_name - Create/Lookup a trace array, given its name.
-  * @name: The name of the trace array to be looked up/created.
-+ * @system: A list of systems to create event directories for (NULL for all)
-  *
-  * Returns pointer to trace array with given name.
-  * NULL, if it cannot be created.
-@@ -9630,7 +9644,7 @@ static int instance_mkdir(const char *name)
-  * trace_array_put() is called, user space can not delete it.
-  *
-  */
--struct trace_array *trace_array_get_by_name(const char *name)
-+struct trace_array *trace_array_get_by_name(const char *name, const char *systems)
- {
- 	struct trace_array *tr;
- 
-@@ -9642,7 +9656,7 @@ struct trace_array *trace_array_get_by_name(const char *name)
- 			goto out_unlock;
- 	}
- 
--	tr = trace_array_create(name);
-+	tr = trace_array_create_systems(name, systems);
- 
- 	if (IS_ERR(tr))
- 		tr = NULL;
-@@ -9689,6 +9703,7 @@ static int __remove_instance(struct trace_array *tr)
- 
- 	free_cpumask_var(tr->pipe_cpumask);
- 	free_cpumask_var(tr->tracing_cpumask);
-+	kfree_const(tr->system_names);
- 	kfree(tr->name);
- 	kfree(tr);
- 
-@@ -10407,7 +10422,7 @@ __init static void enable_instances(void)
- 		if (IS_ENABLED(CONFIG_TRACER_MAX_TRACE))
- 			do_allocate_snapshot(tok);
- 
--		tr = trace_array_get_by_name(tok);
-+		tr = trace_array_get_by_name(tok, NULL);
- 		if (!tr) {
- 			pr_warn("Failed to create instance buffer %s\n", curr_str);
- 			continue;
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index b7f4ea25a194..97b01dfd7070 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -377,6 +377,7 @@ struct trace_array {
- 	unsigned char		trace_flags_index[TRACE_FLAGS_MAX_SIZE];
- 	unsigned int		flags;
- 	raw_spinlock_t		start_lock;
-+	const char		*system_names;
- 	struct list_head	err_log;
- 	struct dentry		*dir;
- 	struct dentry		*options;
-diff --git a/kernel/trace/trace_boot.c b/kernel/trace/trace_boot.c
-index 7ccc7a8e155b..dbe29b4c6a7a 100644
---- a/kernel/trace/trace_boot.c
-+++ b/kernel/trace/trace_boot.c
-@@ -633,7 +633,7 @@ trace_boot_init_instances(struct xbc_node *node)
- 		if (!p || *p == '\0')
- 			continue;
- 
--		tr = trace_array_get_by_name(p);
-+		tr = trace_array_get_by_name(p, NULL);
- 		if (!tr) {
- 			pr_err("Failed to get trace instance %s\n", p);
- 			continue;
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index f29e815ca5b2..e8a56cf52cc1 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -2896,6 +2896,31 @@ void trace_event_eval_update(struct trace_eval_map **map, int len)
- 	up_write(&trace_event_sem);
- }
- 
-+static bool event_in_systems(struct trace_event_call *call,
-+			     const char *systems)
-+{
-+	const char *system;
-+	const char *p;
-+
-+	if (!systems)
-+		return true;
-+
-+	/* Dynamic events are always created */
-+	if (call->flags & TRACE_EVENT_FL_DYNAMIC_MASK)
-+		return true;
-+
-+	system = call->class->system;
-+	p = strstr(systems, system);
-+	if (!p)
-+		return false;
-+
-+	if (p != systems && !isspace(*(p - 1)) && *(p - 1) != ',')
-+		return false;
-+
-+	p += strlen(system);
-+	return !*p || isspace(*p) || *p == ',';
-+}
-+
- static struct trace_event_file *
- trace_create_new_event(struct trace_event_call *call,
- 		       struct trace_array *tr)
-@@ -2905,9 +2930,12 @@ trace_create_new_event(struct trace_event_call *call,
- 	struct trace_event_file *file;
- 	unsigned int first;
- 
-+	if (!event_in_systems(call, tr->system_names))
-+		return NULL;
-+
- 	file = kmem_cache_alloc(file_cachep, GFP_TRACE);
- 	if (!file)
--		return NULL;
-+		return ERR_PTR(-ENOMEM);
- 
- 	pid_list = rcu_dereference_protected(tr->filtered_pids,
- 					     lockdep_is_held(&event_mutex));
-@@ -2972,8 +3000,17 @@ __trace_add_new_event(struct trace_event_call *call, struct trace_array *tr)
- 	struct trace_event_file *file;
- 
- 	file = trace_create_new_event(call, tr);
-+	/*
-+	 * trace_create_new_event() returns ERR_PTR(-ENOMEM) if failed
-+	 * allocation, or NULL if the event is not part of the tr->system_names.
-+	 * When the event is not part of the tr->system_names, return zero, not
-+	 * an error.
-+	 */
- 	if (!file)
--		return -ENOMEM;
-+		return 0;
-+
-+	if (IS_ERR(file))
-+		return PTR_ERR(file);
- 
- 	if (eventdir_initialized)
- 		return event_create_dir(tr->event_dir, file);
-@@ -3012,8 +3049,17 @@ __trace_early_add_new_event(struct trace_event_call *call,
- 	int ret;
- 
- 	file = trace_create_new_event(call, tr);
-+	/*
-+	 * trace_create_new_event() returns ERR_PTR(-ENOMEM) if failed
-+	 * allocation, or NULL if the event is not part of the tr->system_names.
-+	 * When the event is not part of the tr->system_names, return zero, not
-+	 * an error.
-+	 */
- 	if (!file)
--		return -ENOMEM;
-+		return 0;
-+
-+	if (IS_ERR(file))
-+		return PTR_ERR(file);
- 
- 	ret = event_define_fields(call);
- 	if (ret)
-diff --git a/samples/ftrace/sample-trace-array.c b/samples/ftrace/sample-trace-array.c
-index 6aba02a31c96..89b72957e687 100644
---- a/samples/ftrace/sample-trace-array.c
-+++ b/samples/ftrace/sample-trace-array.c
-@@ -105,7 +105,7 @@ static int __init sample_trace_array_init(void)
- 	 * NOTE: This function increments the reference counter
- 	 * associated with the trace array - "tr".
- 	 */
--	tr = trace_array_get_by_name("sample-instance");
-+	tr = trace_array_get_by_name("sample-instance", "sched,timer");
- 
- 	if (!tr)
- 		return -1;
--- 
-2.42.0
+Alexander Sverdlin (1):
+      net: dsa: lan9303: consequently nested-lock physical MDIO
+
+Anastasia Belova (1):
+      cifs: spnego: add ';' in HOST_KEY_LEN
+
+Andreas Gruenbacher (1):
+      gfs2: Silence "suspicious RCU usage in gfs2_permission" warning
+
+Artem Lukyanov (1):
+      Bluetooth: btusb: Add Realtek RTL8852BE support ID 0x0cb8:0xc559
+
+Axel Lin (1):
+      i2c: sun6i-p2wi: Prevent potential division by zero
+
+Baruch Siach (1):
+      net: stmmac: fix rx budget limit check
+
+Bas Nieuwenhuizen (1):
+      drm/amd/pm: Handle non-terminated overdrive commands.
+
+Basavaraj Natikar (1):
+      xhci: Enable RPM on controllers that support low-power states
+
+Benjamin Bara (2):
+      kernel/reboot: emergency_restart: Set correct system_state
+      i2c: core: Run atomic i2c xfer when !preemptible
+
+Bob Peterson (1):
+      gfs2: ignore negated quota changes
+
+Brian Geffon (2):
+      PM: hibernate: Use __get_safe_page() rather than touching the list
+      PM: hibernate: Clean up sync_read handling in snapshot_write_next()
+
+Bryan O'Donoghue (1):
+      media: qcom: camss: Fix vfe_get() error jump
+
+Catalin Marinas (1):
+      rcu: kmemleak: Ignore kmemleak false positives when RCU-freeing objects
+
+Cezary Rojewski (1):
+      ALSA: hda: Fix possible null-ptr-deref when assigning a stream
+
+Chandradeep Dey (1):
+      ALSA: hda/realtek - Enable internal speaker of ASUS K6500ZC
+
+Chandrakanth patil (1):
+      scsi: megaraid_sas: Increase register read retry rount from 3 to 30 for selected registers
+
+Christian König (1):
+      drm/amdgpu: fix error handling in amdgpu_bo_list_get()
+
+Christian Marangi (1):
+      cpufreq: stats: Fix buffer overflow detection in trans_stats()
+
+Colin Ian King (1):
+      serial: meson: remove redundant initialization of variable id
+
+Dan Carpenter (3):
+      pwm: Fix double shift bug
+      SUNRPC: Add an IS_ERR() check back to where it was
+      mmc: vub300: fix an error code
+
+David Woodhouse (2):
+      hvc/xen: fix console unplug
+      hvc/xen: fix error path in xen_hvc_init() to always register frontend driver
+
+Dmitry Antipov (3):
+      wifi: mac80211_hwsim: fix clang-specific fortify warning
+      wifi: ath9k: fix clang-specific fortify warnings
+      wifi: ath10k: fix clang-specific fortify warning
+
+Douglas Anderson (2):
+      wifi: ath10k: Don't touch the CE interrupt registers after power up
+      kgdb: Flush console before entering kgdb on panic
+
+Dust Li (1):
+      net/mlx5e: fix double free of encap_header
+
+Ekaterina Esina (1):
+      cifs: fix check of rc in function generate_smb3signingkey
+
+Eric Biggers (1):
+      quota: explicitly forbid quota files from being encrypted
+
+Eric Dumazet (5):
+      net: annotate data-races around sk->sk_tx_queue_mapping
+      net: annotate data-races around sk->sk_dst_pending_confirm
+      ipvlan: add ipvlan_route_v6_outbound() helper
+      ptp: annotate data-race around q->head and q->tail
+      bonding: stop the device in bond_setup_by_slave()
+
+Greg Kroah-Hartman (1):
+      Linux 5.10.202
+
+Guan Wentao (1):
+      Bluetooth: btusb: Add 0bda:b85b for Fn-Link RTL8852BE
+
+Hans Verkuil (1):
+      media: vivid: avoid integer overflow
+
+Hao Sun (1):
+      bpf: Fix check_stack_write_fixed_off() to correctly spill imm
+
+Hardik Gajjar (1):
+      usb: gadget: f_ncm: Always set current gadget in ncm_bind()
+
+Heiner Kallweit (3):
+      PCI/ASPM: Fix L1 substate handling in aspm_attr_store_common()
+      i2c: i801: fix potential race in i801_block_transaction_byte_by_byte
+      Revert "net: r8169: Disable multicast filter for RTL8168H and RTL8107E"
+
+Helge Deller (3):
+      parisc/pdc: Add width field to struct pdc_model
+      parisc: Prevent booting 64-bit kernels on PA1.x machines
+      parisc/pgtable: Do not drop upper 5 address bits of physical address
+
+Herve Codina (1):
+      genirq/generic_chip: Make irq_remove_generic_chip() irqdomain aware
+
+Ilpo Järvinen (4):
+      RDMA/hfi1: Use FIELD_GET() to extract Link Width
+      PCI: tegra194: Use FIELD_GET()/FIELD_PREP() with Link Width fields
+      atm: iphase: Do PCI error checks on own line
+      media: cobalt: Use FIELD_GET() to extract Link Width
+
+Jacky Bai (1):
+      clocksource/drivers/timer-imx-gpt: Fix potential memory leak
+
+Jani Nikula (1):
+      drm/msm/dp: skip validity check for DP CTS EDID checksum
+
+Jens Axboe (1):
+      io_uring/fdinfo: lock SQ thread while retrieving thread cpu/pid
+
+Jijie Shao (1):
+      net: hns3: fix VF reset fail issue
+
+Jiri Kosina (1):
+      HID: Add quirk for Dell Pro Wireless Keyboard and Mouse KM5221W
+
+Johan Hovold (3):
+      wifi: ath11k: fix temperature event locking
+      wifi: ath11k: fix dfs radar event locking
+      wifi: ath11k: fix htt pktlog locking
+
+John Stultz (1):
+      locking/ww_mutex/test: Fix potential workqueue corruption
+
+Johnathan Mantey (1):
+      Revert ncsi: Propagate carrier gain/loss events to the NCSI controller
+
+Josef Bacik (1):
+      btrfs: don't arbitrarily slow down delalloc if we're committing
+
+Joshua Yeong (1):
+      i3c: master: cdns: Fix reading status register
+
+Juergen Gross (1):
+      xen/events: fix delayed eoi list handling
+
+Juntong Deng (2):
+      fs/jfs: Add check for negative db_l2nbperpage
+      fs/jfs: Add validity check for db_maxag and db_agpref
+
+Kailang Yang (1):
+      ALSA: hda/realtek - Add Dell ALC295 to pin fall back table
+
+Kathiravan Thirumoorthy (3):
+      clk: qcom: ipq8074: drop the CLK_SET_RATE_PARENT flag from PLL clocks
+      clk: qcom: ipq6018: drop the CLK_SET_RATE_PARENT flag from PLL clocks
+      firmware: qcom_scm: use 64-bit calling convention only when client is 64-bit
+
+Kees Cook (1):
+      randstruct: Fix gcc-plugin performance mode to stay in group
+
+Kemeng Shi (3):
+      ext4: correct offset of gdb backup in non meta_bg group to update_backups
+      ext4: correct return value of ext4_convert_meta_bg
+      ext4: remove gdb backup copy for meta bg in setup_new_flex_group_blocks
+
+Klaus Kudielka (1):
+      net: phylink: initialize carrier state at creation
+
+Krister Johansen (1):
+      watchdog: move softlockup_panic back to early_param
+
+Krzysztof Kozlowski (1):
+      arm64: dts: qcom: ipq6018: switch TCSR mutex to MMIO
+
+Kumar Kartikeya Dwivedi (1):
+      bpf: Detect IP == ksym.end as part of BPF program
+
+Lad Prabhakar (1):
+      serial: meson: Use platform_get_irq() to get the interrupt
+
+Larry Finger (2):
+      bluetooth: Add device 0bda:887b to device tables
+      bluetooth: Add device 13d3:3571 to device tables
+
+Leon Romanovsky (1):
+      net/mlx5_core: Clean driver version and name
+
+Lewis Huang (1):
+      drm/amd/display: Change the DMCUB mailbox memory location from FB to inbox
+
+Linkui Xiao (1):
+      netfilter: nf_conntrack_bridge: initialize err to 0
+
+Linus Walleij (4):
+      net: ethernet: cortina: Fix max RX frame define
+      net: ethernet: cortina: Handle large frames
+      net: ethernet: cortina: Fix MTU max setting
+      mtd: cfi_cmdset_0001: Byte swap OTP info
+
+Lu Jialin (1):
+      crypto: pcrypt - Fix hungtask for PADATA_RESET
+
+Lukas Wunner (1):
+      PCI/sysfs: Protect driver's D3cold preference from user space
+
+Ma Ke (2):
+      drm/panel: fix a possible null pointer dereference
+      drm/panel/panel-tpo-tpg110: fix a possible null pointer dereference
+
+Maciej S. Szmigiero (1):
+      KVM: x86: Ignore MSR_AMD64_TW_CFG access
+
+Mahmoud Adam (1):
+      nfsd: fix file memleak on client_opens_release
+
+Manas Ghandat (2):
+      jfs: fix array-index-out-of-bounds in dbFindLeaf
+      jfs: fix array-index-out-of-bounds in diAlloc
+
+Marco Elver (1):
+      9p/trans_fd: Annotate data-racy writes to file::f_flags
+
+Mario Limonciello (2):
+      drm/amd: Fix UBSAN array-index-out-of-bounds for SMU7
+      drm/amd: Fix UBSAN array-index-out-of-bounds for Polaris and Tonga
+
+Masum Reza (1):
+      Bluetooth: btusb: Add RTW8852BE device 13d3:3570 to device tables
+
+Mathias Nyman (1):
+      xhci: turn cancelled td cleanup to its own function
+
+Max Kellermann (1):
+      ext4: apply umask if ACL support is disabled
+
+Mike Rapoport (IBM) (1):
+      x86/mm: Drop the 4 MB restriction on minimal NUMA node memory size
+
+Mike Tipton (1):
+      interconnect: qcom: Add support for mask-based BCMs
+
+Mikhail Khvainitski (1):
+      HID: lenovo: Detect quirk-free fw on cptkbd and stop applying workaround
+
+Mimi Zohar (1):
+      ima: detect changes to the backing overlay file
+
+Miri Korenblit (1):
+      wifi: iwlwifi: Use FW rate for non-data frames
+
+Muhammad Usama Anjum (1):
+      tty/sysrq: replace smp_processor_id() with get_cpu()
+
+Nathan Chancellor (1):
+      arm64: Restrict CPU_BIG_ENDIAN to GNU as or LLVM IAS 15.x or newer
+
+Neil Armstrong (1):
+      tty: serial: meson: retrieve port FIFO size from DT
+
+Nicholas Piggin (1):
+      powerpc/perf: Fix disabling BHRB and instruction sampling
+
+Nicolas Saenz Julienne (1):
+      KVM: x86: hyper-v: Don't auto-enable stimer on write from user-space
+
+Nitin Yadav (1):
+      mmc: sdhci_am654: fix start loop index for TAP value parsing
+
+Olga Kornievskaia (1):
+      NFSv4.1: fix SP4_MACH_CRED protection for pnfs IO
+
+Olli Asikainen (1):
+      platform/x86: thinkpad_acpi: Add battery quirk for Thinkpad X120e
+
+Ondrej Jirman (1):
+      drm/panel: st7703: Pick different reset sequence
+
+Ondrej Mosnacek (2):
+      lsm: fix default return value for vm_enough_memory
+      lsm: fix default return value for inode_getsecctx
+
+Pablo Neira Ayuso (3):
+      netfilter: nftables: update table flags from the commit phase
+      netfilter: nf_tables: fix table flag updates
+      netfilter: nf_tables: disable toggling dormant table state more than once
+
+Paul Moore (2):
+      audit: don't take task_lock() in audit_exe_compare() code path
+      audit: don't WARN_ON_ONCE(!current->mm) in audit_exe_compare()
+
+Pavel Krasavin (1):
+      tty: serial: meson: fix hard LOCKUP on crtscts mode
+
+Ping-Ke Shih (1):
+      wifi: mac80211: don't return unset power in ieee80211_get_tx_power()
+
+Pu Wen (1):
+      x86/cpu/hygon: Fix the CPU topology evaluation for real
+
+Qu Huang (1):
+      drm/amdgpu: Fix a null pointer access when the smc_rreg pointer is NULL
+
+Rahul Rameshbabu (1):
+      net/mlx5e: Check return value of snprintf writing to fw_version buffer for representors
+
+Rajeshwar R Shinde (1):
+      media: gspca: cpia1: shift-out-of-bounds in set_flicker
+
+Ranjan Kumar (1):
+      scsi: mpt3sas: Fix loop logic
+
+Richard Fitzgerald (1):
+      ASoC: soc-card: Add storage for PCI SSID
+
+Roman Gushchin (1):
+      mm: kmem: drop __GFP_NOFAIL when allocating objcg vectors
+
+Ronald Wahl (1):
+      clocksource/drivers/timer-atmel-tcb: Fix initialization on SAM9 hardware
+
+Rong Chen (1):
+      mmc: meson-gx: Remove setting of CMD_CFG_ERROR
+
+Sanjuán García, Jorge (1):
+      mcb: fix error handling for different scenarios when parsing
+
+Sean Young (2):
+      media: lirc: drop trailing space from scancode transmit
+      media: sharp: fix sharp encoding
+
+Shigeru Yoshida (2):
+      tty: Fix uninit-value access in ppp_sync_receive()
+      tipc: Fix kernel-infoleak due to uninitialized TLV value
+
+Shuai Xue (1):
+      perf/core: Bail out early if the request AUX area is out of bound
+
+Shung-Hsi Yu (1):
+      bpf: Fix precision tracking for BPF_ALU | BPF_TO_BE | BPF_END
+
+Stanley.Yang (1):
+      drm/amdgpu: Fix potential null pointer derefernce
+
+Steven Rostedt (Google) (1):
+      tracing: Have trace_event_file have ref counters
+
+Su Hui (1):
+      f2fs: avoid format-overflow warning
+
+Takashi Iwai (2):
+      media: imon: fix access to invalid resource for the second interface
+      ALSA: info: Fix potential deadlock at disconnection
+
+Tam Nguyen (1):
+      i2c: designware: Disable TX_EMPTY irq while waiting for block length byte
+
+Tony Lindgren (1):
+      ASoC: ti: omap-mcbsp: Fix runtime PM underflow warnings
+
+Trond Myklebust (1):
+      SUNRPC: ECONNRESET might require a rebind
+
+Uwe Kleine-König (3):
+      PCI: keystone: Don't discard .remove() callback
+      PCI: keystone: Don't discard .probe() callback
+      PCI: exynos: Don't discard .remove() callback
+
+Vignesh Viswanathan (2):
+      arm64: dts: qcom: ipq6018: Fix hwlock index for SMEM
+      arm64: dts: qcom: ipq6018: Fix tcsr_mutex register size
+
+Vikash Garodia (4):
+      media: venus: hfi: add checks to perform sanity on queue pointers
+      media: venus: hfi_parser: Add check to keep the number of codecs within range
+      media: venus: hfi: fix the check to handle session buffer requirement
+      media: venus: hfi: add checks to handle capabilities from firmware
+
+Vincent Whitchurch (1):
+      ARM: 9320/1: fix stack depot IRQ stack filter
+
+Vitaly Prosyak (1):
+      drm/amdgpu: fix software pci_unplug on some chips
+
+Vlad Buslov (1):
+      macvlan: Don't propagate promisc change to lower dev in passthru
+
+Wayne Lin (1):
+      drm/amd/display: Avoid NULL dereference of timing generator
+
+Wenchao Hao (1):
+      scsi: libfc: Fix potential NULL pointer dereference in fc_lport_ptp_setup()
+
+Werner Sembach (1):
+      ACPI: resource: Do IRQ override on TongFang GMxXGxx
+
+Willem de Bruijn (1):
+      ppp: limit MRU to 64K
+
+Yi Yang (1):
+      tty: vcc: Add check for kstrdup() in vcc_probe()
+
+Yonglong Liu (1):
+      net: hns3: fix variable may not initialized problem in hns3_init_mac_addr()
+
+Yoshihiro Shimoda (1):
+      misc: pci_endpoint_test: Add Device ID for R-Car S4-8 PCIe controller
+
+Yuezhang Mo (1):
+      exfat: support handle zero-size directory
+
+Zhang Rui (1):
+      tools/power/turbostat: Fix a knl bug
+
+Zhang Yi (1):
+      ext4: correct the start block of counting reserved clusters
+
+ZhengHan Wang (1):
+      Bluetooth: Fix double free in hci_conn_cleanup
+
+Zhihao Cheng (1):
+      jbd2: fix potential data lost in recovering journal raced with synchronizing fs bdev
+
+Zi Yan (2):
+      mm/cma: use nth_page() in place of direct struct page manipulation
+      mm/memory_hotplug: use pfn math in place of direct struct page manipulation
+
+baozhu.liu (1):
+      drm/komeda: drop all currently held locks if deadlock happens
+
+felix (1):
+      SUNRPC: Fix RPC client cleaned up the freed pipefs dentries
+
+youwan Wang (1):
+      Bluetooth: btusb: Add date->evt_skb is NULL check
+
+zhujun2 (1):
+      selftests/efivarfs: create-read: fix a resource leak
 
