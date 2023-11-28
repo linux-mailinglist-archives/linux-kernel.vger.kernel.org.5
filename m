@@ -2,102 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF437FC1A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6277FC2E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346327AbjK1OLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 09:11:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38048 "EHLO
+        id S1346383AbjK1OMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 09:12:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346304AbjK1OLY (ORCPT
+        with ESMTP id S1346372AbjK1OMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 09:11:24 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0324F271F
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:10:29 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98BD3C433C9;
-        Tue, 28 Nov 2023 14:10:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701180629;
-        bh=60EtB08YT7Ko8yqV3Wwijj0Q4rDlAXw7Ibne/o3zM/s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X4OShPFUo67/hTM7CP0T5xlROgke47ag9YYEcSS/ddt4MiwJzPweh7w6xdi0Cvesx
-         F/8yEKqXWrixCvb1kA2smHWsNtmgQN/ovflspS+geIMXD2+AJgKxKXTlYxvH7K6Vhn
-         WHbqKUN3K31QmfxQ2/pKM+CXH3J95hQTGtOETNXh/ZnWapdNWYEFpZEtLvvMXvrV+F
-         4+8ofw5pC1p64zwwB2+Axp/kGR/Oz2Q5idf3lljuruSLhgfx+NyLdo1+IwK0RAni4O
-         hvuf9HEsXlCgWGIE3Zx9ZJIVmOxHcwv2gKqkZT/JltiXlFI1ncAeRdqMRMa1u+NTn2
-         L+JXI1dxyLYMQ==
-Date:   Tue, 28 Nov 2023 14:10:22 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     "Bird, Tim" <Tim.Bird@sony.com>
-Cc:     =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado 
-        <nfraprado@collabora.com>, Shuah Khan <shuah@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "kernelci@lists.linux.dev" <kernelci@lists.linux.dev>,
-        David Gow <davidgow@google.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "kernel@collabora.com" <kernel@collabora.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        Doug Anderson <dianders@chromium.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v2 2/2] kselftest: devices: Add sample board file for
- google,spherion
-Message-ID: <1baeddbe-83ed-476e-a748-7d2838b44c5f@sirena.org.uk>
-References: <20231127233558.868365-1-nfraprado@collabora.com>
- <20231127233558.868365-3-nfraprado@collabora.com>
- <BN8PR13MB27384F089C7DAAF06DF9DDECFDBCA@BN8PR13MB2738.namprd13.prod.outlook.com>
+        Tue, 28 Nov 2023 09:12:07 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A997119B2;
+        Tue, 28 Nov 2023 06:11:12 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1C93B2199E;
+        Tue, 28 Nov 2023 14:11:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1701180671; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bZslgzkC5KxsP7jHMJfyQVKff23207T2myOVc/HMRlA=;
+        b=gOLpy9ooR5alEUjxfM+2syKJDlcrb3FB5iXQd7qKs9JYJFcQmpltz/bEmpMZcZ6R3AK0uo
+        Ecf64Donp/eqfIQGF64lFT4dMv/1bhH5kg/T9LU7xZCHWFRUsuvgVtO1yucw6i58Z2mYeq
+        YMg7dG+ez05xRcpfxL8in70wUt8APcI=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E8B481343E;
+        Tue, 28 Nov 2023 14:11:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id /3/NNf70ZWVIOAAAD6G6ig
+        (envelope-from <mhocko@suse.com>); Tue, 28 Nov 2023 14:11:10 +0000
+Date:   Tue, 28 Nov 2023 15:11:06 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Gregory Price <gourry.memverge@gmail.com>
+Cc:     linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, arnd@arndb.de, tglx@linutronix.de,
+        luto@kernel.org, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        tj@kernel.org, ying.huang@intel.com,
+        Gregory Price <gregory.price@memverge.com>
+Subject: Re: [RFC PATCH 06/11] mm/mempolicy: modify do_mbind to operate on
+ task argument instead of current
+Message-ID: <ZWX0-hEjqkmnR1Nq@tiehlicka>
+References: <20231122211200.31620-1-gregory.price@memverge.com>
+ <20231122211200.31620-7-gregory.price@memverge.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="VIfEQR6tichIZgMF"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <BN8PR13MB27384F089C7DAAF06DF9DDECFDBCA@BN8PR13MB2738.namprd13.prod.outlook.com>
-X-Cookie: Must be over 21.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231122211200.31620-7-gregory.price@memverge.com>
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spamd-Result: default: False [0.70 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         TO_DN_SOME(0.00)[];
+         RCVD_COUNT_THREE(0.00)[3];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         FREEMAIL_TO(0.00)[gmail.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         RCPT_COUNT_TWELVE(0.00)[19];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         MID_RHS_NOT_FQDN(0.50)[];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: 0.70
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed 22-11-23 16:11:55, Gregory Price wrote:
+[...]
+> + * Like get_vma_policy and get_task_policy, must hold alloc/task_lock
+> + * while calling this.
+> + */
+> +static struct mempolicy *get_task_vma_policy(struct task_struct *task,
+> +					     struct vm_area_struct *vma,
+> +					     unsigned long addr, int order,
+> +					     pgoff_t *ilx)
+[...]
 
---VIfEQR6tichIZgMF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+You should add lockdep annotation for alloc_lock/task_lock here for clarity and 
+also...  
+> @@ -1844,16 +1899,7 @@ struct mempolicy *__get_vma_policy(struct vm_area_struct *vma,
+>  struct mempolicy *get_vma_policy(struct vm_area_struct *vma,
+>  				 unsigned long addr, int order, pgoff_t *ilx)
+>  {
+> -	struct mempolicy *pol;
+> -
+> -	pol = __get_vma_policy(vma, addr, ilx);
+> -	if (!pol)
+> -		pol = get_task_policy(current);
+> -	if (pol->mode == MPOL_INTERLEAVE) {
+> -		*ilx += vma->vm_pgoff >> order;
+> -		*ilx += (addr - vma->vm_start) >> (PAGE_SHIFT + order);
+> -	}
+> -	return pol;
+> +	return get_task_vma_policy(current, vma, addr, order, ilx);
 
-On Tue, Nov 28, 2023 at 12:10:46AM +0000, Bird, Tim wrote:
+I do not think that all get_vma_policy take task_lock (just random check
+dequeue_hugetlb_folio_vma->huge_node->get_vma_policy AFAICS)
 
-> I'm not a big fan of naming these with a comma in the name.  Is there a r=
-eason
-> you are not using dash or underscore?
-
-That's a common patter with this sort of software (eg, bootrr does the
-same).  It's convenient to just be able to use the compatible straight
-=66rom DT without having to mangle it.
-
---VIfEQR6tichIZgMF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVl9M0ACgkQJNaLcl1U
-h9Cktgf+Oq0BN8WyZ7CzPTibZyr6k1r2sWjG2VUqEZQKYA66zH1D965ND5J8XJB8
-cqw3KD0X/8KNc/u890NCBnr7QTxlKdczAbTEMZtYAcy/7xiA41z0ITXFc6DE8/nO
-V76cOaRGh2vCNkBROokKzewYxb+4MWHHFNUBu/7AXYZHVhtt4U1kcxNcm9HwvC/j
-S3ubDODyZk++hbyHQhxf3ENesyQuIObeKWx6qVPieVbbeCEn3SLZH1KTEOcEr4Cz
-uCkWQKMpUS4iMafKTdMigLtOE4TskFAd+eH+cFMm4Yy7bhr+5pxKmAaDleKBAORF
-/OS87yV3a5qUCNslQ03RnzaSJr1BmQ==
-=ujz7
------END PGP SIGNATURE-----
-
---VIfEQR6tichIZgMF--
+Also I do not see policy_nodemask to be handled anywhere. That one is
+used along with get_vma_policy (sometimes hidden like in
+alloc_pages_mpol). It has a dependency on
+cpuset_nodemask_valid_mems_allowed. That means that e.g. mbind on a
+remote task would be constrained by current task cpuset when allocating
+migration targets for the target task. I am wondering how many other
+dependencies like that are lurking there.
+-- 
+Michal Hocko
+SUSE Labs
