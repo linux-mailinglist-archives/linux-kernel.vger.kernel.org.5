@@ -2,118 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 341967FC4F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 21:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7F27FC50F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 21:12:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbjK1UMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 15:12:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44856 "EHLO
+        id S231400AbjK1UMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 15:12:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjK1UMI (ORCPT
+        with ESMTP id S1346011AbjK1UM2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 15:12:08 -0500
-Received: from omta38.uswest2.a.cloudfilter.net (omta38.uswest2.a.cloudfilter.net [35.89.44.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387DD83
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 12:12:14 -0800 (PST)
-Received: from eig-obgw-5001a.ext.cloudfilter.net ([10.0.29.139])
-        by cmsmtp with ESMTPS
-        id 7t0nrjTq3KOkL84RJreB4T; Tue, 28 Nov 2023 20:12:13 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id 84RIrKsGqkTVW84RIrvlLy; Tue, 28 Nov 2023 20:12:12 +0000
-X-Authority-Analysis: v=2.4 cv=a58jSGeF c=1 sm=1 tr=0 ts=6566499c
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=7m0pAUNwt3ppyxJkgzeoew==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=BNY50KLci1gA:10 a=wYkD_t78qR0A:10
- a=2Hst6vopFtGx82aOUKEA:9 a=QEXdDO2ut3YA:10
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=OsKcEDvP0RJqOniczsfYwBsWjtoeOoLyMxdYiyznFe8=; b=Sn2nq0bNlhLS7bFh9GNAEbCmvF
-        Iu9IUfJA9BcST3mlzJZ/nVxt0u8R8sZwXnBqGKQqXneNRQ0SKC3J7t822YgSfquvt4I10nXWe11hB
-        7B2yCijnOBhuwInkCAWNNsmpWAzS9XYbKIOw4u7sLjWB+/KZwwjwJFyV/MTcAf9+3EuugFdiUDP87
-        bos+E4MxIAe8JWJ8ELgVvFZnKUoH7O+dMD9j8Oq4hO2XUfcJcOiIk1qgECF635awfjOAFdumxuj85
-        WXmKiAUQk36sdY9XhmNXcdql6uNrny28p+mgwrGk3TOaHzWHha/VLopoAnnfRgIQj5Y1mwLGh4VnE
-        7GgMqoKQ==;
-Received: from 187.184.156.122.cable.dyn.cableonline.com.mx ([187.184.156.122]:12895 helo=[192.168.0.9])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1r84RH-002N7Y-1K;
-        Tue, 28 Nov 2023 14:12:11 -0600
-Message-ID: <a1656a7c-7eb0-4a21-8c49-89014beeb7ed@embeddedor.com>
-Date:   Tue, 28 Nov 2023 14:12:08 -0600
+        Tue, 28 Nov 2023 15:12:28 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 531A01BE1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 12:12:31 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 884BBC433C7;
+        Tue, 28 Nov 2023 20:12:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701202351;
+        bh=MhX9PEGZOUPQ3Y/dHE9lpPPcT4wCLCEPYr8D6D5VCtI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=I2oSykRN0FvNVERNHm6/mDH1mmOkc0Q49tLDgd40gyaDip6gEW7TAl9Jl/MxHObYA
+         mdl/hcepl0h4CXURQz3Tn8VcDCpPQ0NXOnPu68SuNYjvg/HQgzZ8g4KrNzM5TZPDbJ
+         vDC1pzxUpGiHmYxfU45duhcvVDLjsmwei0St+4UE1NUI6IMhUgdA8mzeRXuH+mLU4q
+         a9yc1zaSWu/cJYpBKDvcaynYd9nSzkV4ILJkE9pokYSgNviVD9rofuNx9vfvhXXoO0
+         vs/iR/aqK59xYP/4AVrqBmBlKYcCuz41pVbRh1aFxjKBpXasnU4aR8ZDjcQrf4mS9b
+         /NZ1g23uTLU3w==
+Date:   Tue, 28 Nov 2023 12:12:28 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Jerry Shih <jerry.shih@sifive.com>, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        conor.dooley@microchip.com, ardb@kernel.org, heiko@sntech.de,
+        phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+Subject: Re: [PATCH v2 04/13] RISC-V: crypto: add Zvkned accelerated AES
+ implementation
+Message-ID: <20231128201228.GE1148@sol.localdomain>
+References: <20231127070703.1697-1-jerry.shih@sifive.com>
+ <20231127070703.1697-5-jerry.shih@sifive.com>
+ <20231128-await-tipper-2094715466f2@spud>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] neighbour: Fix __randomize_layout crash in struct
- neighbour
-Content-Language: en-US
-To:     Joey Gouly <joey.gouly@arm.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Bill Wendling <morbo@google.com>,
-        Kees Cook <keescook@chromium.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <ZWJoRsJGnCPdJ3+2@work>
- <20231128111028.GA2382233@e124191.cambridge.arm.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20231128111028.GA2382233@e124191.cambridge.arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.184.156.122
-X-Source-L: No
-X-Exim-ID: 1r84RH-002N7Y-1K
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187.184.156.122.cable.dyn.cableonline.com.mx ([192.168.0.9]) [187.184.156.122]:12895
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 2
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfLVKCNATWXiNK3gyOWfmDLTYyz7uDkVxaV5RqFKQvP7B+fPdCYY6BJdx7FykCOY44lOX7uREAxemmVIL2G3G6IrRbaLqANat3DqCW82y3BdXL4v3xgtv
- NRA3nhJcGNZxMKtw6SLThYcaOiDlJXWs/reKm8/B3cygeSLpr7Knrq4QEMdw8hAiKbfJ0N4dKqWF6vakjwTATudOhwZF9l8g/EYPxrPApKU2Uv7HoLKq4doP
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231128-await-tipper-2094715466f2@spud>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
->> diff --git a/include/net/neighbour.h b/include/net/neighbour.h
->> index 07022bb0d44d..0d28172193fa 100644
->> --- a/include/net/neighbour.h
->> +++ b/include/net/neighbour.h
->> @@ -162,7 +162,7 @@ struct neighbour {
->>   	struct rcu_head		rcu;
->>   	struct net_device	*dev;
->>   	netdevice_tracker	dev_tracker;
->> -	u8			primary_key[0];
->> +	u8			primary_key[];
->>   } __randomize_layout;
->>   
->>   struct neigh_ops {
+On Tue, Nov 28, 2023 at 05:54:49PM +0000, Conor Dooley wrote:
+> > +static inline bool check_aes_ext(void)
+> > +{
+> > +	return riscv_isa_extension_available(NULL, ZVKNED) &&
+> > +	       riscv_vector_vlen() >= 128;
+> > +}
 > 
-> Fixes the crash for me!
+> I'm not keen on this construct, where you are checking vlen greater than
+> 128 and the presence of Zvkned without checking for the presence of V
+> itself. Can you use "has_vector()" in any places where you depend on the
+> presence of vector please?
 
-Awesome. :)
+Shouldn't both of those things imply vector support already?
 
---
-Gustavo
+> Also, there are potentially a lot of places in this drivers where you
+> can replace "riscv_isa_extension_available()" with
+> "riscv_has_extension_likely()". The latter is optimised with
+> alternatives, so in places that are going to be evaluated frequently it
+> may be beneficial for you.
+
+These extension checks are only executed in module_init functions, so they're
+not performance critical.
+
+- Eric
