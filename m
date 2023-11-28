@@ -2,47 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFFA97FC8B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 497977FC85E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:52:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376430AbjK1VIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 16:08:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59690 "EHLO
+        id S1376452AbjK1VI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 16:08:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376428AbjK1VH5 (ORCPT
+        with ESMTP id S1376441AbjK1VH7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 16:07:57 -0500
+        Tue, 28 Nov 2023 16:07:59 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FD1273E
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:07:13 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94768C43397;
-        Tue, 28 Nov 2023 21:07:11 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCD752D4C
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:07:14 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30D3CC433C8;
+        Tue, 28 Nov 2023 21:07:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701205632;
-        bh=zSwLFu7OtLy2Zn+0zDwtDj7975oDWp+IIFJU4t6gJi4=;
+        s=k20201202; t=1701205634;
+        bh=IVw3bUqj96xvMhDrvVTGpuXVF4X6lVujV/9OUJK9BNI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PnMytZHvCr046sPZV/Y2WsMB7FJdpb/F4EwXyCQRUqcRQccW0b8mNvZ2nzl2rO+Bt
-         oPpieRlrle8WpZ/GilYTj7wbWCKcO5UX1vpFM1+hK8EO/TtU0h3UUcrKUnqpOZPxaE
-         yJZIsEFoMJLX3K4oA0LiroZO0aLcaW+a/X1A6kYAkwJCb2Kq3iUusVuiGK7mUhYhS0
-         Bv2OtKie7kPygmsU1r+haDIyExlbm/sjEiAP+Qg/K5xy0/iyTPypR8BwIs5eSSrpws
-         ASINNpw/Qd4bAzU5JzCPSy4TZHjQpLBiqoEuvUy/MmSXYbHucKkVztRSbvwwLZ1GK4
-         Eu5xoFQnjjNQw==
+        b=cTHEKupmG7Q9tJP8bIE3KCijOkIcZIMe5HV9l7fnG9UFD5ZZAojr8eB1oYUtf108l
+         8bTZVISWXDik00Gp+l2yBZUFkSE02ll2Un0Dei15js1fyQDboAgMeuTXAWEYGR4Ezb
+         l9AuREuY2mue/s7jn9AcpveU2LW2x7kW0oyUUAtakXQlRTUjgUvP+SyBxmUE86q35h
+         YtS51qxz3xNTXaMlf54QcB7ddTpnt5MBlL6zUmNP4ION9QiOVew0Shxt2f8Ngh/oHa
+         0zP7KylIFTreWGjVlanrZTFOsnY0Kc6Rlwk1zQcQ8DefHA2Q6MecgwutEQf8uYnYkb
+         ZUFcAOsRpKSqA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        kernel test robot <lkp@intel.com>,
-        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>, david.e.box@linux.intel.com,
-        hdegoede@redhat.com, platform-driver-x86@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 23/40] platform/x86: intel_telemetry: Fix kernel doc descriptions
-Date:   Tue, 28 Nov 2023 16:05:29 -0500
-Message-ID: <20231128210615.875085-23-sashal@kernel.org>
+Cc:     Hamish Martin <hamish.martin@alliedtelesis.co.nz>,
+        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>,
+        gupt21@gmail.com, jikos@kernel.org, benjamin.tissoires@redhat.com,
+        linux-i2c@vger.kernel.org, linux-input@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 24/40] HID: mcp2221: Set driver data before I2C adapter add
+Date:   Tue, 28 Nov 2023 16:05:30 -0500
+Message-ID: <20231128210615.875085-24-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231128210615.875085-1-sashal@kernel.org>
 References: <20231128210615.875085-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.3
@@ -57,52 +54,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
 
-[ Upstream commit a6584711e64d9d12ab79a450ec3628fd35e4f476 ]
+[ Upstream commit f2d4a5834638bbc967371b9168c0b481519f7c5e ]
 
-LKP found issues with a kernel doc in the driver:
+The process of adding an I2C adapter can invoke I2C accesses on that new
+adapter (see i2c_detect()).
 
-core.c:116: warning: Function parameter or member 'ioss_evtconfig' not described in 'telemetry_update_events'
-core.c:188: warning: Function parameter or member 'ioss_evtconfig' not described in 'telemetry_get_eventconfig'
+Ensure we have set the adapter's driver data to avoid null pointer
+dereferences in the xfer functions during the adapter add.
 
-It looks like it were copy'n'paste typos when these descriptions
-had been introduced. Fix the typos.
+This has been noted in the past and the same fix proposed but not
+completed. See:
+https://lore.kernel.org/lkml/ef597e73-ed71-168e-52af-0d19b03734ac@vigem.de/
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202310070743.WALmRGSY-lkp@intel.com/
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20231120150756.1661425-1-andriy.shevchenko@linux.intel.com
-Reviewed-by: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Signed-off-by: Hamish Martin <hamish.martin@alliedtelesis.co.nz>
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/intel/telemetry/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/hid/hid-mcp2221.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/platform/x86/intel/telemetry/core.c b/drivers/platform/x86/intel/telemetry/core.c
-index fdf55b5d69480..e4be40f73eebf 100644
---- a/drivers/platform/x86/intel/telemetry/core.c
-+++ b/drivers/platform/x86/intel/telemetry/core.c
-@@ -102,7 +102,7 @@ static const struct telemetry_core_ops telm_defpltops = {
- /**
-  * telemetry_update_events() - Update telemetry Configuration
-  * @pss_evtconfig: PSS related config. No change if num_evts = 0.
-- * @pss_evtconfig: IOSS related config. No change if num_evts = 0.
-+ * @ioss_evtconfig: IOSS related config. No change if num_evts = 0.
-  *
-  * This API updates the IOSS & PSS Telemetry configuration. Old config
-  * is overwritten. Call telemetry_reset_events when logging is over
-@@ -176,7 +176,7 @@ EXPORT_SYMBOL_GPL(telemetry_reset_events);
- /**
-  * telemetry_get_eventconfig() - Returns the pss and ioss events enabled
-  * @pss_evtconfig: Pointer to PSS related configuration.
-- * @pss_evtconfig: Pointer to IOSS related configuration.
-+ * @ioss_evtconfig: Pointer to IOSS related configuration.
-  * @pss_len:	   Number of u32 elements allocated for pss_evtconfig array
-  * @ioss_len:	   Number of u32 elements allocated for ioss_evtconfig array
-  *
+diff --git a/drivers/hid/hid-mcp2221.c b/drivers/hid/hid-mcp2221.c
+index 72883e0ce7575..b95f31cf0fa21 100644
+--- a/drivers/hid/hid-mcp2221.c
++++ b/drivers/hid/hid-mcp2221.c
+@@ -1157,12 +1157,12 @@ static int mcp2221_probe(struct hid_device *hdev,
+ 	snprintf(mcp->adapter.name, sizeof(mcp->adapter.name),
+ 			"MCP2221 usb-i2c bridge");
+ 
++	i2c_set_adapdata(&mcp->adapter, mcp);
+ 	ret = devm_i2c_add_adapter(&hdev->dev, &mcp->adapter);
+ 	if (ret) {
+ 		hid_err(hdev, "can't add usb-i2c adapter: %d\n", ret);
+ 		return ret;
+ 	}
+-	i2c_set_adapdata(&mcp->adapter, mcp);
+ 
+ #if IS_REACHABLE(CONFIG_GPIOLIB)
+ 	/* Setup GPIO chip */
 -- 
 2.42.0
 
