@@ -2,233 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38CCA7FC1AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 240907FC179
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344081AbjK1Qcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 11:32:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54172 "EHLO
+        id S1344331AbjK1Qdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:33:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbjK1Qct (ORCPT
+        with ESMTP id S229691AbjK1Qdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 11:32:49 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A834AB
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:32:56 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99617C433C8;
-        Tue, 28 Nov 2023 16:32:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701189175;
-        bh=VqwYFsYHgSQ8CyCGvVqeYL2Kouihl83vwFCUUepGWfI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pz7PxjXPGQGLsinMNEMBDkmAyuEpMnUG+Jm7gW6FcUO24AfwJb/D0iAk/OuIx4pU/
-         qQf9myOFtKdJwc2uV/uuafK6fvgEd+95aiAqkGk2zNNav8o0Dwku9x65PpKbXXqwKA
-         Ue2ZGVwKZVyXoc4E1TUfhPpgw9Fq/AOEAZHGoiYoRN3fAG2LA3cunU4yzAH3Xud74d
-         nKRX6z0acKx0A+PI059ekv0O4P5R1ahYnQmr9fkj1yfxC3vs/s3ciLPXKQHalVcy5q
-         DlkD1Y1ndCU+zThaemauUXEUNA1O2fQTBjvJ70WZ7+aCrkIXcFslM2Qo8rtrdutfq6
-         zK1MrgY8MECYg==
-Date:   Tue, 28 Nov 2023 08:32:55 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Documentation <linux-doc@vger.kernel.org>,
-        Linux XFS <linux-xfs@vger.kernel.org>,
-        Linux Kernel Workflows <workflows@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        Steve French <stfrench@microsoft.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Allison Henderson <allison.henderson@oracle.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Charles Han <hanchunchao@inspur.com>,
-        Vegard Nossum <vegard.nossum@oracle.com>
-Subject: Re: [PATCH RESEND v2] Documentation: xfs: consolidate XFS docs into
- its own subdirectory
-Message-ID: <20231128163255.GV2766956@frogsfrogsfrogs>
-References: <20231128124522.28499-1-bagasdotme@gmail.com>
+        Tue, 28 Nov 2023 11:33:38 -0500
+Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C45BAB
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:33:44 -0800 (PST)
+Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1fa619735c1so1129183fac.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:33:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1701189224; x=1701794024; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HN35qZ+uGTBAFYCaQRWTgLrt9+VoejNBpfU4/ki1w6g=;
+        b=fXpPCgSSVXWkXBa/5/iQ1mlMAp/yPiPDgnKIGsX373O3zrFFOx3AATG2oTavjcA5wZ
+         N/8GuB5hQdXtoqcHtK2jWl5kVpyghuD4FoK+z8X6o6glSkgqpWf31hxbc8TLxfLzt9Lg
+         CExsjpnldbntu+Q9hSh2bqv4wITgRc5BX5F8+yGsU55Bji36esuOllw6KLdPOTYrj63H
+         FDYBN4o616+H6pr/so0HaDoqg5eWMuWkxTSchnaQ3+TMLZuixiDay40aIeTOkacglr6h
+         h0teNjgFjvGsbejEmR/ztCm2Z/pPmBLaGbFYM7q9AZNDF1Kq/23hJl6KWtk+fZmziBNY
+         OJLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701189224; x=1701794024;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HN35qZ+uGTBAFYCaQRWTgLrt9+VoejNBpfU4/ki1w6g=;
+        b=gnCzqvZloIF7wBZLBb3lXZmSMwkgFiVQ9i1GHdHvPANvl4RibjM2zH7oOZ/2UF4lVU
+         WXK8hQNa83ywEHakwbTka/xj9wNt8yz5EaVs/KTAia2XtthXUi2EZemV/7A8pDe8o3Wr
+         dRJdXlzT6BBuCsOOEGxyN7IU5jtrM9HysphXlDarFXIqVSUi/+/kJwPFpbisRNBbPq10
+         JGP1zlF8w10pVBbIGpp0J/xqIgufEDmTRSPMKeRTohobR/SvDVAuOqOavwAE1G1XOkZW
+         N5mf8L/oIJUQvtZjYSp4OZfYHXgAb40y4FF7DLqFcxeXtmmyfXqid7pCLkUS3hgIAjBW
+         zCKQ==
+X-Gm-Message-State: AOJu0YxzUbIrvRWnq+BgnRRhotkBdXepYCKBXMxlXT2DGHD+oAIz2JQX
+        3Bvd7hYXioFXfiGCPfzSVsmn/A==
+X-Google-Smtp-Source: AGHT+IFTCfs4volRi4dOFIcsdSDNqlvXP8PkQi+sW0alsSi8XNp6WNUtD/IJadmfz7As4aT8DcCV/w==
+X-Received: by 2002:a05:6871:328b:b0:1eb:e8b:7206 with SMTP id mp11-20020a056871328b00b001eb0e8b7206mr24273641oac.14.1701189223401;
+        Tue, 28 Nov 2023 08:33:43 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
+        by smtp.gmail.com with ESMTPSA id ml13-20020a056871724d00b001fa4f5ffd90sm1123887oac.26.2023.11.28.08.33.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 08:33:42 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1r811q-005VHk-1K;
+        Tue, 28 Nov 2023 12:33:42 -0400
+Date:   Tue, 28 Nov 2023 12:33:42 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     joro@8bytes.org, kevin.tian@intel.com, will@kernel.org,
+        iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] iommufd/selftest: Use a fwnode to distinguish devices
+Message-ID: <20231128163342.GI432016@ziepe.ca>
+References: <cover.1701165201.git.robin.murphy@arm.com>
+ <e365c08b21a8d0b60e6f5d1411be6701c1a06a53.1701165201.git.robin.murphy@arm.com>
+ <20231128144331.GA1191405@ziepe.ca>
+ <69db9205-cb9a-425a-a48e-6d68d1f900f1@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231128124522.28499-1-bagasdotme@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <69db9205-cb9a-425a-a48e-6d68d1f900f1@arm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 07:45:22PM +0700, Bagas Sanjaya wrote:
-> XFS docs are currently in upper-level Documentation/filesystems.
-> Although these are currently 4 docs, they are already outstanding as
-> a group and can be moved to its own subdirectory.
+On Tue, Nov 28, 2023 at 04:02:42PM +0000, Robin Murphy wrote:
+> On 28/11/2023 2:43 pm, Jason Gunthorpe wrote:
+> > On Tue, Nov 28, 2023 at 10:42:11AM +0000, Robin Murphy wrote:
+> > > With bus ops gone, the trick of registering against a specific bus no
+> > > longer really works, and we start getting given devices from other buses
+> > > to probe,
+> > 
+> > Make sense
+> > 
+> > > which leads to spurious groups for devices with no IOMMU on
+> > > arm64,
+> > 
+> > I'm not sure I'm fully understanding what this means?
 > 
-> Consolidate them into Documentation/filesystems/xfs/.
+> It means on my arm64 ACPI system, random platform devices which are created
+> after iommufd_test_init() has run get successfully probed by the mock
+> driver, unexpectedly:
+
+Okay that is what I guessed
+
+> > I guess that the mock driver is matching random things once it starts
+> > being called all the time because this is missing:
+> > 
+> >   static struct iommu_device *mock_probe_device(struct device *dev)
+> >   {
+> > +       if (dev->bus != &iommufd_mock_bus_type)
+> > +               return -ENODEV;
+> >          return &mock_iommu_device;
+> >   }
+> > 
+> > Is that sufficient to solve the problem?
 > 
-> Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
-> ---
-> Changes since v1 [1]:
-> 
->   * Also update references to old doc path to address kernel test robot
->     warnings [2].
-> 
-> [1]: https://lore.kernel.org/linux-doc/20231121095658.28254-1-bagasdotme@gmail.com/
-> [2]: https://lore.kernel.org/linux-doc/a9abc5ec-f3cd-4a1a-81b9-a6900124d38b@gmail.com/
-> 
->  Documentation/filesystems/index.rst                |  5 +----
->  Documentation/filesystems/xfs/index.rst            | 14 ++++++++++++++
->  .../{ => xfs}/xfs-delayed-logging-design.rst       |  0
->  .../{ => xfs}/xfs-maintainer-entry-profile.rst     |  0
->  .../{ => xfs}/xfs-online-fsck-design.rst           |  2 +-
->  .../{ => xfs}/xfs-self-describing-metadata.rst     |  0
->  .../maintainer/maintainer-entry-profile.rst        |  2 +-
->  MAINTAINERS                                        |  4 ++--
->  8 files changed, 19 insertions(+), 8 deletions(-)
->  create mode 100644 Documentation/filesystems/xfs/index.rst
->  rename Documentation/filesystems/{ => xfs}/xfs-delayed-logging-design.rst (100%)
->  rename Documentation/filesystems/{ => xfs}/xfs-maintainer-entry-profile.rst (100%)
->  rename Documentation/filesystems/{ => xfs}/xfs-online-fsck-design.rst (99%)
->  rename Documentation/filesystems/{ => xfs}/xfs-self-describing-metadata.rst (100%)
+> Unfortunately not...
 
-I think the rst filename should drop the 'xfs-' prefix, e.g.
+I see, so we create the other problem that without bus ops we don't
+get to have two 'global' drivers and with the above mock won't probe
+on x86.
 
-	Documentation/filesystems/xfs/delayed-logging-design.rst
+> I did intend coexistence to work on x86 too, where the "other" driver would
+> be virtio-iommu using fwnodes, so aligning the mock driver that way seemed
+> far neater than any more special-case hacks in core code.
 
-since that seems to be what most filesystems do:
+Lets just do the above and what I suggested earlier. This is from a
+WIP tree I have, it shows the idea but needs other stuff to work. If
+you agree I'll pull its parts out and post a clean version of them.
 
-Documentation/filesystems/caching/backend-api.rst
-Documentation/filesystems/caching/cachefiles.rst
-Documentation/filesystems/caching/fscache.rst
-Documentation/filesystems/caching/index.rst
-Documentation/filesystems/caching/netfs-api.rst
-Documentation/filesystems/cifs/cifsroot.rst
-Documentation/filesystems/cifs/index.rst
-Documentation/filesystems/cifs/ksmbd.rst
-Documentation/filesystems/ext4/about.rst
-Documentation/filesystems/ext4/allocators.rst
-Documentation/filesystems/ext4/attributes.rst
-<snip>
-Documentation/filesystems/ext4/special_inodes.rst
-Documentation/filesystems/ext4/super.rst
-Documentation/filesystems/ext4/verity.rst
-Documentation/filesystems/nfs/client-identifier.rst
-Documentation/filesystems/nfs/exporting.rst
-Documentation/filesystems/nfs/index.rst
-Documentation/filesystems/nfs/knfsd-stats.rst
-Documentation/filesystems/nfs/nfs41-server.rst
-Documentation/filesystems/nfs/pnfs.rst
-Documentation/filesystems/nfs/reexport.rst
-Documentation/filesystems/nfs/rpc-cache.rst
-Documentation/filesystems/nfs/rpc-server-gss.rst
-Documentation/filesystems/smb/cifsroot.rst
-Documentation/filesystems/smb/index.rst
-Documentation/filesystems/smb/ksmbd.rst
-Documentation/filesystems/spufs/index.rst
-Documentation/filesystems/spufs/spu_create.rst
-Documentation/filesystems/spufs/spufs.rst
-Documentation/filesystems/spufs/spu_run.rst
+commit 51c9a54cc111b4b31af6a0527015db82e782e1d3
+Author: Jason Gunthorpe <jgg@ziepe.ca>
+Date:   Tue Nov 28 11:54:47 2023 -0400
 
-> diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
-> index 09cade7eaefc8c..e18bc5ae3b35f8 100644
-> --- a/Documentation/filesystems/index.rst
-> +++ b/Documentation/filesystems/index.rst
-> @@ -121,8 +121,5 @@ Documentation for filesystem implementations.
->     udf
->     virtiofs
->     vfat
-> -   xfs-delayed-logging-design
-> -   xfs-maintainer-entry-profile
-> -   xfs-self-describing-metadata
-> -   xfs-online-fsck-design
-> +   xfs/index
->     zonefs
-> diff --git a/Documentation/filesystems/xfs/index.rst b/Documentation/filesystems/xfs/index.rst
-> new file mode 100644
-> index 00000000000000..ab66c57a5d18ea
-> --- /dev/null
-> +++ b/Documentation/filesystems/xfs/index.rst
-> @@ -0,0 +1,14 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +============================
-> +XFS Filesystem Documentation
-> +============================
-> +
-> +.. toctree::
-> +   :maxdepth: 2
-> +   :numbered:
-> +
-> +   xfs-delayed-logging-design
-> +   xfs-maintainer-entry-profile
-> +   xfs-self-describing-metadata
-> +   xfs-online-fsck-design
-> diff --git a/Documentation/filesystems/xfs-delayed-logging-design.rst b/Documentation/filesystems/xfs/xfs-delayed-logging-design.rst
-> similarity index 100%
-> rename from Documentation/filesystems/xfs-delayed-logging-design.rst
-> rename to Documentation/filesystems/xfs/xfs-delayed-logging-design.rst
-> diff --git a/Documentation/filesystems/xfs-maintainer-entry-profile.rst b/Documentation/filesystems/xfs/xfs-maintainer-entry-profile.rst
-> similarity index 100%
-> rename from Documentation/filesystems/xfs-maintainer-entry-profile.rst
-> rename to Documentation/filesystems/xfs/xfs-maintainer-entry-profile.rst
-> diff --git a/Documentation/filesystems/xfs-online-fsck-design.rst b/Documentation/filesystems/xfs/xfs-online-fsck-design.rst
-> similarity index 99%
-> rename from Documentation/filesystems/xfs-online-fsck-design.rst
-> rename to Documentation/filesystems/xfs/xfs-online-fsck-design.rst
-> index a0678101a7d02d..352516feef6ffe 100644
-> --- a/Documentation/filesystems/xfs-online-fsck-design.rst
-> +++ b/Documentation/filesystems/xfs/xfs-online-fsck-design.rst
-> @@ -962,7 +962,7 @@ disk, but these buffer verifiers cannot provide any consistency checking
->  between metadata structures.
->  
->  For more information, please see the documentation for
-> -Documentation/filesystems/xfs-self-describing-metadata.rst
-> +Documentation/filesystems/xfs/xfs-self-describing-metadata.rst
->  
->  Reverse Mapping
->  ---------------
-> diff --git a/Documentation/filesystems/xfs-self-describing-metadata.rst b/Documentation/filesystems/xfs/xfs-self-describing-metadata.rst
-> similarity index 100%
-> rename from Documentation/filesystems/xfs-self-describing-metadata.rst
-> rename to Documentation/filesystems/xfs/xfs-self-describing-metadata.rst
-> diff --git a/Documentation/maintainer/maintainer-entry-profile.rst b/Documentation/maintainer/maintainer-entry-profile.rst
-> index 7ad4bfc2cc038a..18cee1edaecb6f 100644
-> --- a/Documentation/maintainer/maintainer-entry-profile.rst
-> +++ b/Documentation/maintainer/maintainer-entry-profile.rst
-> @@ -105,4 +105,4 @@ to do something different in the near future.
->     ../driver-api/media/maintainer-entry-profile
->     ../driver-api/vfio-pci-device-specific-driver-acceptance
->     ../nvme/feature-and-quirk-policy
-> -   ../filesystems/xfs-maintainer-entry-profile
-> +   ../filesystems/xfs/xfs-maintainer-entry-profile
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index ea790149af7951..fd288ac57e19fb 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -23893,10 +23893,10 @@ S:	Supported
->  W:	http://xfs.org/
->  C:	irc://irc.oftc.net/xfs
->  T:	git git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git
-> -P:	Documentation/filesystems/xfs-maintainer-entry-profile.rst
-> +P:	Documentation/filesystems/xfs/xfs-maintainer-entry-profile.rst
->  F:	Documentation/ABI/testing/sysfs-fs-xfs
->  F:	Documentation/admin-guide/xfs.rst
-> -F:	Documentation/filesystems/xfs-*
-> +F:	Documentation/filesystems/xfs/xfs-*
+    iommu: Call all drivers if there is no fwspec
+    
+    Real systems only have one ops, so this effectively invokes the single op
+    in the system to probe each device. If there are multiple ops we invoke
+    each one once, and drivers that don't understand the struct device should
+    return -ENODEV.
+    
+    Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 
-Shouldn't this be "Documentation/filesystems/xfs/*" ?
-
---D
-
->  F:	fs/xfs/
->  F:	include/uapi/linux/dqblk_xfs.h
->  F:	include/uapi/linux/fsmap.h
-> 
-> base-commit: 9c235dfc3d3f901fe22acb20f2ab37ff39f2ce02
-> -- 
-> An old man doll... just what I always wanted! - Clara
-> 
-> 
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 7468a64778931b..54e3f14429b3b4 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -241,6 +241,26 @@ static int remove_iommu_group(struct device *dev, void *data)
+ 	return 0;
+ }
+ 
++static void iommu_device_add(struct iommu_device *iommu)
++{
++	struct iommu_device *cur;
++
++	/*
++	 * Keep the iommu_device_list grouped by ops so that
++	 * iommu_find_init_device() works efficiently.
++	 */
++	mutex_lock(&iommu_probe_device_lock);
++	list_for_each_entry(cur, &iommu_device_list, list) {
++		if (cur->ops == iommu->ops) {
++			list_add(&iommu->list, &cur->list);
++			goto out;
++		}
++	}
++	list_add(&iommu->list, &iommu_device_list);
++out:
++	mutex_unlock(&iommu_probe_device_lock);
++}
++
+ /**
+  * iommu_device_register() - Register an IOMMU hardware instance
+  * @iommu: IOMMU handle for the instance
+@@ -262,9 +282,7 @@ int iommu_device_register(struct iommu_device *iommu,
+ 	if (hwdev)
+ 		iommu->fwnode = dev_fwnode(hwdev);
+ 
+-	mutex_lock(&iommu_probe_device_lock);
+-	list_add_tail(&iommu->list, &iommu_device_list);
+-	mutex_unlock(&iommu_probe_device_lock);
++	iommu_device_add(iommu);
+ 
+ 	for (int i = 0; i < ARRAY_SIZE(iommu_buses) && !err; i++)
+ 		err = bus_iommu_probe(iommu_buses[i]);
+@@ -502,6 +520,29 @@ static void iommu_deinit_device(struct device *dev)
+ 
+ DEFINE_MUTEX(iommu_probe_device_lock);
+ 
++static int iommu_find_init_device(struct iommu_probe_info *pinf)
++{
++	const struct iommu_ops *ops = NULL;
++	struct iommu_device *iommu;
++	int ret;
++
++	lockdep_assert_held(&iommu_probe_device_lock);
++
++	/*
++	 * Each unique ops gets a chance to claim the device, -ENODEV means the
++	 * driver does not support the device.
++	 */
++	list_for_each_entry(iommu, &iommu_device_list, list) {
++		if (iommu->ops != ops) {
++			ops = iommu->ops;
++			ret = iommu_init_device(pinf, iommu->ops);
++			if (ret != -ENODEV)
++				return ret;
++		}
++	}
++	return -ENODEV;
++}
++
+ static int __iommu_probe_device(struct iommu_probe_info *pinf)
+ {
+ 	struct device *dev = pinf->dev;
+@@ -524,13 +565,6 @@ static int __iommu_probe_device(struct iommu_probe_info *pinf)
+ 		ops = fwspec->ops;
+ 		if (!ops)
+ 			return -ENODEV;
+-	} else {
+-		struct iommu_device *iommu;
+-
+-		iommu = iommu_device_from_fwnode(NULL);
+-		if (!iommu)
+-			return -ENODEV;
+-		ops = iommu->ops;
+ 	}
+ 
+ 	/*
+@@ -546,7 +580,10 @@ static int __iommu_probe_device(struct iommu_probe_info *pinf)
+ 	if (dev->iommu_group)
+ 		return 0;
+ 
+-	ret = iommu_init_device(pinf, ops);
++	if (ops)
++		ret = iommu_init_device(pinf, ops);
++	else
++		ret = iommu_find_init_device(pinf);
+ 	if (ret)
+ 		return ret;
+ 
