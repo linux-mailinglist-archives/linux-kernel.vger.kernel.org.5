@@ -2,62 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C7E47FB363
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:57:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DDA57FB368
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:59:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343956AbjK1H5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 02:57:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37800 "EHLO
+        id S1343904AbjK1H7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 02:59:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234625AbjK1H5U (ORCPT
+        with ESMTP id S229737AbjK1H7F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 02:57:20 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B37FB6;
-        Mon, 27 Nov 2023 23:57:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701158246; x=1732694246;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=4pTOr0kLyZ8iwib8Ous/I90Y8o+1IZ42hC+2YkZN1PM=;
-  b=dqwHMTYrCxpAe86aOOA6jiDh6zuHkFQnAZmJs7ZGbl/OLITKooR7WU1e
-   1a/1tE8GLbEwip2JHBxJf4N29s+3l4JhBl/8rUn9jHVn87r+Xv4AV+TYX
-   UByUKXhLafAek6F6C9uJUGyLADFjgBjzFQgw56wnROMh2XMW0Xwg91V/Y
-   EIQpGaz1A5+uUwq26Tz1y5iJabIbgKl5CiPvMrezRQwnrc6l6OxgDD/mZ
-   i/JTidhhcWMvQiklx2memgWObZXtPKg/dqECPoPazu1uBqrIqak765jXJ
-   VAYUEgVExa+IjYjyAwVzi15tlqb9wOSeBX4xE+PlFr3dJ2KVfgX/TAITJ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="391745045"
-X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
-   d="scan'208";a="391745045"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 23:57:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="772225256"
-X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
-   d="scan'208";a="772225256"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga007.fm.intel.com with SMTP; 27 Nov 2023 23:57:23 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 28 Nov 2023 09:57:22 +0200
-Date:   Tue, 28 Nov 2023 09:57:22 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     RD Babiera <rdbabiera@google.com>
-Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        badhri@google.com
-Subject: Re: [PATCH v1 1/2] usb: typec: tcpm: add tcpm_port_error_recovery
- symbol
-Message-ID: <ZWWdYg+Iu4vJjS3/@kuha.fi.intel.com>
-References: <20231121203845.170234-4-rdbabiera@google.com>
- <20231121203845.170234-5-rdbabiera@google.com>
+        Tue, 28 Nov 2023 02:59:05 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7DEC98;
+        Mon, 27 Nov 2023 23:59:11 -0800 (PST)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AS6GqE8001089;
+        Tue, 28 Nov 2023 07:58:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=iP4D1xc8qjOBWc18n0ipl4FCtPM7EFhZSPIDx8Ekxhk=;
+ b=BDiPfUU2RMhctcIXaJbw5B2AMsTuGrtKM7+UiQz3hViKlg0ktB63NNVNVDGgn33ApBT2
+ 1fDEdK7mTUhEH4ImeVBFqgLLzraMRlHw6UT2TNX4JgfN+eY14SB3eEYYKThU/GwbgfNe
+ 50WVPCTw5U9OuDkeTGbJamnxc9siBc6BDIBjhqJodAs1/EGZJBKg8hYj5mptB0VelLLX
+ jPU1/t75DS/ljMLwjc46d5d2YpR17PBrxW7i+KMO1nBHmWiKGPTri9qGxbrAddHEmjWV
+ 2OXAFjrq8noGCDXyoqceKcNk8xyHrZuOSDdlV7r2PShly/4be8i/QPtvjRcD4EoldG0z vw== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3umt4qjrwr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Nov 2023 07:58:49 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AS7wmWH023979
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Nov 2023 07:58:48 GMT
+Received: from [10.253.11.37] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 27 Nov
+ 2023 23:58:45 -0800
+Message-ID: <d198f09b-6b5f-42de-9331-30c6d2a12b67@quicinc.com>
+Date:   Tue, 28 Nov 2023 15:58:42 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231121203845.170234-5-rdbabiera@google.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 07/10] scsi: ufs: ufs-qcom: Set initial PHY gear to max
+ HS gear for HW ver 5 and newer
+Content-Language: en-US
+To:     Manivannan Sadhasivam <mani@kernel.org>
+CC:     <bvanassche@acm.org>, <adrian.hunter@intel.com>,
+        <beanhuo@micron.com>, <avri.altman@wdc.com>,
+        <junwoo80.lee@samsung.com>, <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1700729190-17268-1-git-send-email-quic_cang@quicinc.com>
+ <1700729190-17268-8-git-send-email-quic_cang@quicinc.com>
+ <20231128060046.GH3088@thinkpad>
+From:   Can Guo <quic_cang@quicinc.com>
+In-Reply-To: <20231128060046.GH3088@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 9qe8RAQpKU5XAiM3wLaKj1tHqJi6QOzm
+X-Proofpoint-GUID: 9qe8RAQpKU5XAiM3wLaKj1tHqJi6QOzm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-28_06,2023-11-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 malwarescore=0 bulkscore=0 mlxlogscore=999 mlxscore=0
+ phishscore=0 adultscore=0 spamscore=0 lowpriorityscore=0 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311280061
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,73 +88,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 08:38:47PM +0000, RD Babiera wrote:
-> Add tcpm_port_error_recovery symbol and corresponding event that runs in
-> tcpm_pd_event handler to set the port to the ERROR_RECOVERY state. tcpci
-> drivers can use the symbol to reset the port when tcpc faults affect port
-> functionality.
+Hi Mani,
+
+On 11/28/2023 2:00 PM, Manivannan Sadhasivam wrote:
+> On Thu, Nov 23, 2023 at 12:46:27AM -0800, Can Guo wrote:
+>> Set the initial PHY gear to max HS gear for hosts with HW ver 5 and newer.
+>>
 > 
-> Signed-off-by: RD Babiera <rdbabiera@google.com>
+> MAX_GEAR will be used for hosts with hw_ver.major >= 4
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+I put it > 5 because I am not intent to touch any old targets which has 
+proven working fine with starting with PHY gear HS_G2. If I put it >= 4, 
+there would be many targets impacted by this change. I need to go back 
+and test those platforms (HW ver == 4).
 
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 14 ++++++++++++++
->  include/linux/usb/tcpm.h      |  1 +
->  2 files changed, 15 insertions(+)
+Thanks,
+Can Guo.
+
 > 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 058d5b853b57..2e553dc63619 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -251,6 +251,7 @@ enum frs_typec_current {
->  #define TCPM_FRS_EVENT		BIT(3)
->  #define TCPM_SOURCING_VBUS	BIT(4)
->  #define TCPM_PORT_CLEAN		BIT(5)
-> +#define TCPM_PORT_ERROR		BIT(6)
->  
->  #define LOG_BUFFER_ENTRIES	1024
->  #define LOG_BUFFER_ENTRY_SIZE	128
-> @@ -5477,6 +5478,10 @@ static void tcpm_pd_event_handler(struct kthread_work *work)
->  					tcpm_set_state(port, tcpm_default_state(port), 0);
->  			}
->  		}
-> +		if (events & TCPM_PORT_ERROR) {
-> +			tcpm_log(port, "port triggering error recovery");
-> +			tcpm_set_state(port, ERROR_RECOVERY, 0);
-> +		}
->  
->  		spin_lock(&port->pd_event_lock);
->  	}
-> @@ -5544,6 +5549,15 @@ bool tcpm_port_is_toggling(struct tcpm_port *port)
->  }
->  EXPORT_SYMBOL_GPL(tcpm_port_is_toggling);
->  
-> +void tcpm_port_error_recovery(struct tcpm_port *port)
-> +{
-> +	spin_lock(&port->pd_event_lock);
-> +	port->pd_events |= TCPM_PORT_ERROR;
-> +	spin_unlock(&port->pd_event_lock);
-> +	kthread_queue_work(port->wq, &port->event_work);
-> +}
-> +EXPORT_SYMBOL_GPL(tcpm_port_error_recovery);
-> +
->  static void tcpm_enable_frs_work(struct kthread_work *work)
->  {
->  	struct tcpm_port *port = container_of(work, struct tcpm_port, enable_frs);
-> diff --git a/include/linux/usb/tcpm.h b/include/linux/usb/tcpm.h
-> index ab7ca872950b..65fac5e1f317 100644
-> --- a/include/linux/usb/tcpm.h
-> +++ b/include/linux/usb/tcpm.h
-> @@ -173,5 +173,6 @@ void tcpm_pd_hard_reset(struct tcpm_port *port);
->  void tcpm_tcpc_reset(struct tcpm_port *port);
->  void tcpm_port_clean(struct tcpm_port *port);
->  bool tcpm_port_is_toggling(struct tcpm_port *port);
-> +void tcpm_port_error_recovery(struct tcpm_port *port);
->  
->  #endif /* __LINUX_USB_TCPM_H */
-> -- 
-> 2.43.0.rc1.413.gea7ed67945-goog
-
--- 
-heikki
+>> This patch is not changing any functionalities or logic but only a
+>> preparation patch for the next patch in this series.
+>>
+>> Signed-off-by: Can Guo <quic_cang@quicinc.com>
+>> ---
+>>   drivers/ufs/host/ufs-qcom.c | 21 +++++++++++++++------
+>>   1 file changed, 15 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+>> index 6756f8d..7bbccf4 100644
+>> --- a/drivers/ufs/host/ufs-qcom.c
+>> +++ b/drivers/ufs/host/ufs-qcom.c
+>> @@ -1067,6 +1067,20 @@ static void ufs_qcom_advertise_quirks(struct ufs_hba *hba)
+>>   		hba->quirks |= UFSHCD_QUIRK_REINIT_AFTER_MAX_GEAR_SWITCH;
+>>   }
+>>   
+>> +static void ufs_qcom_set_phy_gear(struct ufs_qcom_host *host)
+>> +{
+>> +	struct ufs_host_params *host_params = &host->host_params;
+>> +
+>> +	host->phy_gear = host_params->hs_tx_gear;
+>> +
+>> +	/*
+>> +	 * Power up the PHY using the minimum supported gear (UFS_HS_G2).
+>> +	 * Switching to max gear will be performed during reinit if supported.
+> 
+> You need to reword this comment too.
+> 
+>> +	 */
+>> +	if (host->hw_ver.major < 0x5)
+> 
+> As I mentioned above, MAX_GEAR will be used if hw_ver.major is >=4 in
+> ufs_qcom_get_hs_gear(). So this check should be (< 0x4).
+> 
+> - Mani
+> 
+>> +		host->phy_gear = UFS_HS_G2;
+>> +}
+>> +
+>>   static void ufs_qcom_set_host_params(struct ufs_hba *hba)
+>>   {
+>>   	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+>> @@ -1303,6 +1317,7 @@ static int ufs_qcom_init(struct ufs_hba *hba)
+>>   	ufs_qcom_set_caps(hba);
+>>   	ufs_qcom_advertise_quirks(hba);
+>>   	ufs_qcom_set_host_params(hba);
+>> +	ufs_qcom_set_phy_gear(host);
+>>   
+>>   	err = ufs_qcom_ice_init(host);
+>>   	if (err)
+>> @@ -1320,12 +1335,6 @@ static int ufs_qcom_init(struct ufs_hba *hba)
+>>   		dev_warn(dev, "%s: failed to configure the testbus %d\n",
+>>   				__func__, err);
+>>   
+>> -	/*
+>> -	 * Power up the PHY using the minimum supported gear (UFS_HS_G2).
+>> -	 * Switching to max gear will be performed during reinit if supported.
+>> -	 */
+>> -	host->phy_gear = UFS_HS_G2;
+>> -
+>>   	return 0;
+>>   
+>>   out_variant_clear:
+>> -- 
+>> 2.7.4
+>>
+> 
