@@ -2,81 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 863597FB501
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:58:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB6B77FB504
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:59:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344334AbjK1I6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 03:58:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36838 "EHLO
+        id S1344338AbjK1I6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 03:58:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231902AbjK1I6H (ORCPT
+        with ESMTP id S231902AbjK1I6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 03:58:07 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C73F4;
-        Tue, 28 Nov 2023 00:58:14 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-54a945861c6so7133404a12.3;
-        Tue, 28 Nov 2023 00:58:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701161893; x=1701766693; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7eThDWl/p719tUnMNV7tBdoRpTLwA6GR+r/kwIo8Uvw=;
-        b=QMZ0VrslsocHnaDUxbJ9hJ1Mi8HVpLisOjj7iB+jmbmTLVo9/9BOTF/ZSm4MzXmDPv
-         t/6bqlWbqVULF5K1CB3KX8xUlFju9Holt0MDX05h8JoyKvZ98jtS7CS9GmzWo1o8El5z
-         8MmZRmAyLaxX6TPb2crEVMXVCKiKav6xD/9VK5b/NvlLVMyRVbr4+ooc2+NkG+1plGvr
-         6w6Hy2GPzieTzIX2yyXq9cU6TR2/N3GqUfKBNc731s+iKrDEqpYh9o5T9fvdFe65zijt
-         BHpWV5uuJpNkKSBIYdzkKilP+Oi4G3yx2SOsKDKX4RGPsbzmpto1gl+LSsZxIfgqfHec
-         FcQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701161893; x=1701766693;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7eThDWl/p719tUnMNV7tBdoRpTLwA6GR+r/kwIo8Uvw=;
-        b=veuMsuEFbbdIjaB+Pq7BcSJxLXAGLqKIEIMTr8qgFZzLkdr1t2Tu0xQB1wDy1wb2Na
-         k9gGu9k1VV/4pBb9rKvz3J3vdzQftMHxe+sLhnXukjr78JWBYHjWGyBwyeSDSKN6sKDO
-         LA1OTP0bVcHgW6jcegAJ+HY9PRUGIf4kPoa92XWiCV/GpHDjbFOnUJJ+CCgPc2ageVuU
-         mwkVM/tuMsEIHeF4UuRp2bAgBr80WOMa+jX18HKz75YXFLeVjVpteYCZknRXFqgdus61
-         uZO2Yg1QME4plStx8aByiJYnpljixJ1oIltMxXnb0+K4XuKdcxMJYO5QZnSjhkT8PQ3I
-         9C1w==
-X-Gm-Message-State: AOJu0Yz5ARoskIiZn3+GWKOHd49Epzvjp2Dh653yx9mYcDfQPNaJodHR
-        RxL9J5I8cu2VqFT1Q+xvF+U=
-X-Google-Smtp-Source: AGHT+IFR5RnA5vAR+1Mvjlycnu2h0GtN0a4lFsYU5ANWlySGynJdKlWATFHR8EF2K/rPwT6dWGJYig==
-X-Received: by 2002:a05:6402:290b:b0:54b:9817:bf91 with SMTP id ee11-20020a056402290b00b0054b9817bf91mr1811570edb.7.1701161892405;
-        Tue, 28 Nov 2023 00:58:12 -0800 (PST)
-Received: from [172.27.56.182] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id e7-20020a056402104700b00542db304680sm6058243edu.63.2023.11.28.00.58.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Nov 2023 00:58:12 -0800 (PST)
-Message-ID: <3d3b6a1f-40b6-45b5-a899-d01acb91213d@gmail.com>
-Date:   Tue, 28 Nov 2023 10:58:04 +0200
+        Tue, 28 Nov 2023 03:58:51 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0919C194
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:58:57 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A965D21987;
+        Tue, 28 Nov 2023 08:58:55 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 90A6213763;
+        Tue, 28 Nov 2023 08:58:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id pOlCIM+rZWXNUwAAD6G6ig
+        (envelope-from <mhocko@suse.com>); Tue, 28 Nov 2023 08:58:55 +0000
+Date:   Tue, 28 Nov 2023 09:58:46 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Pingfan Liu <piliu@redhat.com>
+Cc:     Jiri Bohac <jbohac@suse.cz>, Tao Liu <ltao@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/4] kdump: crashkernel reservation from CMA
+Message-ID: <ZWWrxt0HLC6V4_6X@tiehlicka>
+References: <ZWD_fAPqEWkFlEkM@dwarf.suse.cz>
+ <CAO7dBbUVQn8xzPZQhhw1XqF+sQT0c6phk4sda+X=MrR6RmPE0A@mail.gmail.com>
+ <ZWJllXCN0SDIELrX@dwarf.suse.cz>
+ <CAF+s44QDMzSq3ihzRtaP9ZwF-drfAiQq713d9bastsJFiReJ4w@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net/mlx5e: fix a potential double-free in
- fs_any_create_groups
-Content-Language: en-US
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Rahul Rameshbabu <rrameshbabu@nvidia.com>,
-        Simon Horman <horms@kernel.org>,
-        Tariq Toukan <tariqt@nvidia.com>, Aya Levin <ayal@nvidia.com>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tariq Toukan <tariqt@nvidia.com>
-References: <20231128082812.24483-1-dinghao.liu@zju.edu.cn>
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20231128082812.24483-1-dinghao.liu@zju.edu.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAF+s44QDMzSq3ihzRtaP9ZwF-drfAiQq713d9bastsJFiReJ4w@mail.gmail.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [-4.00 / 50.00];
+         REPLY(-4.00)[]
+X-Spam-Score: -4.00
+X-Rspamd-Queue-Id: A965D21987
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -85,35 +66,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 28/11/2023 10:28, Dinghao Liu wrote:
-> When kcalloc() for ft->g succeeds but kvzalloc() for in fails,
-> fs_any_create_groups() will free ft->g. However, its caller
-> fs_any_create_table() will free ft->g again through calling
-> mlx5e_destroy_flow_table(), which will lead to a double-free.
-> Fix this by removing the kfree(ft->g) in fs_any_create_groups().
+On Tue 28-11-23 10:07:08, Pingfan Liu wrote:
+> On Sun, Nov 26, 2023 at 5:24 AM Jiri Bohac <jbohac@suse.cz> wrote:
+> >
+> > Hi Tao,
+> >
+> > On Sat, Nov 25, 2023 at 09:51:54AM +0800, Tao Liu wrote:
+> > > Thanks for the idea of using CMA as part of memory for the 2nd kernel.
+> > > However I have a question:
+> > >
+> > > What if there is on-going DMA/RDMA access on the CMA range when 1st
+> > > kernel crash? There might be data corruption when 2nd kernel and
+> > > DMA/RDMA write to the same place, how to address such an issue?
+> >
+> > The crash kernel CMA area(s) registered via
+> > cma_declare_contiguous() are distinct from the
+> > dma_contiguous_default_area or device-specific CMA areas that
+> > dma_alloc_contiguous() would use to reserve memory for DMA.
+> >
+> > Kernel pages will not be allocated from the crash kernel CMA
+> > area(s), because they are not GFP_MOVABLE. The CMA area will only
+> > be used for user pages.
+> >
+> > User pages for RDMA, should be pinned with FOLL_LONGTERM and that
+> > would migrate them away from the CMA area.
+> >
+> > But you're right that DMA to user pages pinned without
+> > FOLL_LONGTERM would still be possible. Would this be a problem in
+> > practice? Do you see any way around it?
+> >
 > 
-> Fixes: 0f575c20bf06 ("net/mlx5e: Introduce Flow Steering ANY API")
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c | 1 -
->   1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c b/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
-> index be83ad9db82a..b222d23bfb9a 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
-> @@ -434,7 +434,6 @@ static int fs_any_create_groups(struct mlx5e_flow_table *ft)
->   	ft->g = kcalloc(MLX5E_FS_UDP_NUM_GROUPS, sizeof(*ft->g), GFP_KERNEL);
->   	in = kvzalloc(inlen, GFP_KERNEL);
->   	if  (!in || !ft->g) {
-> -		kfree(ft->g);
->   		kvfree(in);
->   		return -ENOMEM;
->   	}
+> I have not a real case in mind. But this problem has kept us from
+> using the CMA area in kdump for years.  Most importantly, this method
+> will introduce an uneasy tracking bug.
 
-Function fs_any_create_groups should not return failure without cleaning 
-itself up. This is not the right fix.
-Freeing ft->g and setting it to NULL will do it, and will avoid the 
-double free.
+Long term pinning is something that has changed the picture IMHO. The
+API had been breweing for a long time but it has been established and
+usage spreading. Is it possible that some driver could be doing remote
+DMA without the long term pinning? Quite possible but this means such a
+driver should be fixed rather than preventing cma use for this usecase
+TBH.
+ 
+> For a way around, maybe you can introduce a specific zone, and for any
+> GUP, migrate the pages away. I have doubts about whether this approach
+> is worthwhile, considering the trade-off between benefits and
+> complexity.
+
+No, a zone is definitely not an answer to that because because a)
+userspace would need to be able to use that memory and userspace might
+pin memory for direct IO and others. So in the end longterm pinning
+would need to be used anyway.
+
+-- 
+Michal Hocko
+SUSE Labs
