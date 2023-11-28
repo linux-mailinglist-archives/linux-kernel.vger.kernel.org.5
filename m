@@ -2,156 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 122E27FC1DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4887FC1AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346430AbjK1OwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 09:52:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35542 "EHLO
+        id S1346414AbjK1OwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 09:52:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346370AbjK1OwN (ORCPT
+        with ESMTP id S1346390AbjK1OwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 09:52:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CAB5D5D
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:52:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701183138;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OTmuEGR3gJmZpzV6zcBNIBMMhBTdNFHIsA/oNnAKXzk=;
-        b=Lajk4O61sCSZ46Eo29/44tmEoAt02sWZYeveNXPg5vfLdv3xKlkd5iVPdYadeteDBT4eMW
-        xVBHxBsgZwFOp4jusnARHDNeNPsDKLj+zrzCJLkdgHh/HCW0nwXrStRoIa5PHj+6HMgmzY
-        dT3mFtjuKc1NE66qp7eGOe/F926OqlQ=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-111-vnhnDkNXPWC8poKFInuLGw-1; Tue,
- 28 Nov 2023 09:52:12 -0500
-X-MC-Unique: vnhnDkNXPWC8poKFInuLGw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DDC0C2825E9F;
-        Tue, 28 Nov 2023 14:52:11 +0000 (UTC)
-Received: from t14s.fritz.box (unknown [10.39.193.189])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D8D0D5028;
-        Tue, 28 Nov 2023 14:52:10 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>
-Subject: [PATCH v1 4/5] mm/rmap: introduce and use hugetlb_try_dup_anon_rmap()
-Date:   Tue, 28 Nov 2023 15:52:04 +0100
-Message-ID: <20231128145205.215026-5-david@redhat.com>
-In-Reply-To: <20231128145205.215026-1-david@redhat.com>
-References: <20231128145205.215026-1-david@redhat.com>
+        Tue, 28 Nov 2023 09:52:12 -0500
+Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA9C1707
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:52:17 -0800 (PST)
+Received: by mail-vk1-xa30.google.com with SMTP id 71dfb90a1353d-4ac1988ca66so3033655e0c.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:52:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701183137; x=1701787937; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EUFCdjj6KweraZbgFnvcdT6qQJR48sxHc17tLoetRbs=;
+        b=Ipu1x7sa1LVGcPnrZhioSIe0f7XKV5BzbJNuadbQ7MTnRj+X/2jzk9t7qk7sSnKjZx
+         pbydwfW61TqZ3oPr3kOe0Q09Pzr9uX6JevrhntxrcxcqcA/38n1RREM0UcpkBesV4K8S
+         krzXTAayILIRxqxLv7xA4egfNcYGf0skEt47jzP0H+TAcV/aNHJ8kJiOelfrDo84311W
+         g1xcwqnLN8hV0dOlBY5MGZJhhSb+9ucrChgE9n4DL+L9vzPAz20zjprECKXJ8oCsI8AJ
+         wm2Ib1CZ5pEVigsm9zm+hHo699PuI2/IacQitFjIaH7288bt9SllW+vcjy1qGIO4nlm5
+         Z9KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701183137; x=1701787937;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EUFCdjj6KweraZbgFnvcdT6qQJR48sxHc17tLoetRbs=;
+        b=oSxIp5Ftmo+rWi8o0TWTSV6ILRHf61DanXBwRWJhLVZbbBzNRehV1xDCA8TDC5JbWV
+         W4HsGLy94Fc4fVi7wirSSEw+a3dPq/TgqZPNZW7PeswclWS5P5krb0Mj5vCiX/wQlYnJ
+         btXDNW8WoNik3LY3xqWy+M+odGCjoA2EFN3VTV06T7ondfAiDqUumDwOT0y0L1SHqVpT
+         YMfxq7ZDDwfqB/dhboSVOUcgkTbRSAiCVo1ZK0BJrGHF654l8mueEK1+ym5lyvJwHWYn
+         wch9++eHPeTyzuVKAJNf6aTTITZU/uvrOBbQII15jB2Z+H8NrhJDpTd+eACpuy7XVsMZ
+         YTXw==
+X-Gm-Message-State: AOJu0YyuKiZrJBiQDhlA90QCShDnc8xZbhSRN4rZbJOVHASNhrGUo1jZ
+        wv3YkRvkfGiQjJUW/xNJAfQZ1eTlmiOOhX2qspDyOpKIgwuoEFKl
+X-Google-Smtp-Source: AGHT+IEQE+IhvE8xm4/QE8ljBQ6yzfz9383hhTbW4b3pcYoRCHKY2aERTpyTDKGMWHUEtrWHdh4Yxvr3d5rkRljoPQw=
+X-Received: by 2002:a1f:c582:0:b0:4ab:da7a:c573 with SMTP id
+ v124-20020a1fc582000000b004abda7ac573mr10394319vkf.8.1701183136967; Tue, 28
+ Nov 2023 06:52:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231127193716.63143-1-brgl@bgdev.pl> <20231127193716.63143-2-brgl@bgdev.pl>
+ <CACRpkdYG5FbOLDLM+WGEbX-42mjkALU-HfAgdLLhHSq+K1gnaw@mail.gmail.com>
+In-Reply-To: <CACRpkdYG5FbOLDLM+WGEbX-42mjkALU-HfAgdLLhHSq+K1gnaw@mail.gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 28 Nov 2023 15:52:05 +0100
+Message-ID: <CAMRc=MdSO_Zp2wqyZQvqadDoUdZVi09vE2fo3oZF3161W-+Qhw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] gpio: use a mutex to protect the list of GPIO devices
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hugetlb rmap handling differs quite a lot from "ordinary" rmap code, and
-we already have dedicated functions for adding anon hugetlb folios and
-removing hugetlb folios.
+On Tue, Nov 28, 2023 at 3:21=E2=80=AFPM Linus Walleij <linus.walleij@linaro=
+.org> wrote:
+>
+> On Mon, Nov 27, 2023 at 8:37=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.p=
+l> wrote:
+>
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > The global list of GPIO devices is never modified or accessed from
+> > atomic context so it's fine to protect it using a mutex. Add a new
+> > global lock dedicated to the gpio_devices list and use it whenever
+> > accessing or modifying it.
+> >
+> > While at it: fold the sysfs registering of existing devices into
+> > gpiolib.c and make gpio_devices static within its compilation unit.
+> >
+> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> Nice! I might have found some snag:
+>
+> gpio_device_find() still does guard(spinlock_irqsave)(&gpio_lock);
+> shouldn't that be switched to the mutex?
+>
 
-So let's introduce and use hugetlb_try_dup_anon_rmap() to make all
-hugetlb handling use dedicated hugetlb_* rmap functions.
+Good catch!
 
-While this is a cleanup, this will also make it easier to change rmap
-handling for partially-mappable folios.
+> On top of this I can update my patch to the delete the comment
+> for gpio_lock to just rename that thing to gpio_descriptor_lock
+> and document it as such.
+>
 
-Note that is_device_private_page() does not apply to hugetlb.
+No need, this will soon go away anyway. See below.
 
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- include/linux/mm.h   | 12 +++++++++---
- include/linux/rmap.h | 15 +++++++++++++++
- mm/hugetlb.c         |  3 +--
- 3 files changed, 25 insertions(+), 5 deletions(-)
+> But when I think about it: gpio[_decriptor]_lock can now (after this
+> patch) be moved into struct gpio_chip as it is really just protecting
+> the descriptors on the same chip from simultaneous modification,
+> especially desc->flags. This is a BIG WIN because it makes it a local
+> lock not a global one, do you wanna try it or should I? (On top of
+> these two patches, then.)
+>
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 418d26608ece..24c1c7c5a99c 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1953,15 +1953,21 @@ static inline bool page_maybe_dma_pinned(struct page *page)
-  *
-  * The caller has to hold the PT lock and the vma->vm_mm->->write_protect_seq.
-  */
--static inline bool page_needs_cow_for_dma(struct vm_area_struct *vma,
--					  struct page *page)
-+static inline bool folio_needs_cow_for_dma(struct vm_area_struct *vma,
-+					  struct folio *folio)
- {
- 	VM_BUG_ON(!(raw_read_seqcount(&vma->vm_mm->write_protect_seq) & 1));
- 
- 	if (!test_bit(MMF_HAS_PINNED, &vma->vm_mm->flags))
- 		return false;
- 
--	return page_maybe_dma_pinned(page);
-+	return folio_maybe_dma_pinned(folio);
-+}
-+
-+static inline bool page_needs_cow_for_dma(struct vm_area_struct *vma,
-+					  struct page *page)
-+{
-+	return folio_needs_cow_for_dma(vma, page_folio(page));
- }
- 
- /**
-diff --git a/include/linux/rmap.h b/include/linux/rmap.h
-index 0a81e8420a96..8068c332e2ce 100644
---- a/include/linux/rmap.h
-+++ b/include/linux/rmap.h
-@@ -208,6 +208,21 @@ void hugetlb_add_anon_rmap(struct folio *, struct vm_area_struct *,
- void hugetlb_add_new_anon_rmap(struct folio *, struct vm_area_struct *,
- 		unsigned long address);
- 
-+/* See page_try_dup_anon_rmap() */
-+static inline int hugetlb_try_dup_anon_rmap(struct folio *folio,
-+		struct vm_area_struct *vma)
-+{
-+	VM_WARN_ON_FOLIO(!folio_test_anon(folio), folio);
-+
-+	if (PageAnonExclusive(&folio->page)) {
-+		if (unlikely(folio_needs_cow_for_dma(vma, folio)))
-+			return -EBUSY;
-+		ClearPageAnonExclusive(&folio->page);
-+	}
-+	atomic_inc(&folio->_entire_mapcount);
-+	return 0;
-+}
-+
- static inline void hugetlb_add_file_rmap(struct folio *folio)
- {
- 	VM_WARN_ON_FOLIO(folio_test_anon(folio), folio);
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 541a8f38cfdc..d927f8b2893c 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -5402,8 +5402,7 @@ int copy_hugetlb_page_range(struct mm_struct *dst, struct mm_struct *src,
- 			 */
- 			if (!folio_test_anon(pte_folio)) {
- 				hugetlb_add_file_rmap(pte_folio);
--			} else if (page_try_dup_anon_rmap(&pte_folio->page,
--							  true, src_vma)) {
-+			} else if (hugetlb_try_dup_anon_rmap(pte_folio, src_vma)) {
- 				pte_t src_pte_old = entry;
- 				struct folio *new_folio;
- 
--- 
-2.41.0
+I will have the series making locking in GPIOLIB more fine-grained
+ready tomorrow or on Thursday. It will have separate locks for each
+descriptor. We will use spinlock or mutex per descriptor depending on
+the value of gc->can_sleep. I think it should work fine as a sleeping
+chip can always use a mutex and a non-sleeping one cannot have
+sleeping callbacks (correct me if I'm wrong).
 
+We don't need to lock the GPIO device or chip separately - the
+descriptor structs will stay alive as long as there's a live reference
+to the GPIO device. GPIO device will have an SRCU cookie for
+protecting API calls against removal of the chip.
+
+To summarize: one mutex for the GPIO device list, one lock per GPIO
+descriptor and SRCU protection of the GPIO device's chip.
+
+Does it make sense?
+
+Bart
+
+> Yours,
+> Linus Walleij
