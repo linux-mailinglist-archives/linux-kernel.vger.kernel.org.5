@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C25D7FB61F
+	by mail.lfdr.de (Postfix) with ESMTP id B73877FB620
 	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:43:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343778AbjK1Jnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 04:43:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52814 "EHLO
+        id S1343825AbjK1Jnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 04:43:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231316AbjK1Jng (ORCPT
+        with ESMTP id S231495AbjK1Jnh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 04:43:36 -0500
+        Tue, 28 Nov 2023 04:43:37 -0500
 Received: from mx.kernkonzept.com (serv1.kernkonzept.com [IPv6:2a01:4f8:1c1c:b490::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FC64DA;
-        Tue, 28 Nov 2023 01:43:42 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D7BBE;
+        Tue, 28 Nov 2023 01:43:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=kernkonzept.com; s=mx1; h=Cc:To:In-Reply-To:References:Message-Id:
         Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:
         Reply-To:Content-ID:Content-Description;
-        bh=9KbMf3Wwnz9sl7k+vIjP8ILlV978ueS9S52e5elZ8v4=; b=EnGpX4BSGQGYxrkUjnp4HZ7vuJ
-        KXHqjdo7zMpLvgfrse5dFNZ3GwWlBk+9fT8aEUQNJkOJ1RcV5tLWxy4jXjqFmPv+wSdcQWeDMeePw
-        VyZtasf7k/IibR+6p3wlLXstwhQwRAoooJqa273CGJMvIIQ+Me/F1ZNSqBiGy0xe6DgyY4xtobjsy
-        FKZ20e+mLTkbFh5Zb1hZRucA0d45LwXlIOk18+VVsdz4gQ+yzRe2+YSFtER8gRscG0hfHV6fDVgV/
-        BxYLUd4dWf+C3uFVgHMeCawSziU1FPy5BU3pzOA79OfMVE1ZjJtT2EYXi4SZyZQkmeU4x5JpmAMCc
-        KgsEaWug==;
+        bh=GjQ22P+oFYyA7vy5m4Ea/60ju9n2QPtg1X1479aEht8=; b=W3O6YEh3bTw4DKC7ZJpbBcYyxv
+        2tZrbqjlwRBSgE2O0V1e3GyIqb2yO/2ZNytCSoyjS6hsyLg64u3cx0MCkbgFtpeA2YdZMh70AJ/xO
+        3JgVY3HJkLpjy6c2OCM859TWMTzanLEcTi/XiqrGYvcecY6mmcoGns7fY+haIc7sOTYn/5djyGtoo
+        opiandhH6j42aDImRc2Qys4osvdAU7TKADQukEwSOdKCKWN1yeiXeYu9u4Dr4aFCdrN3W1tvlq2Af
+        t6dGhWSGWQUj5uK0F3tsVUDXTHMJPGvvUPZd5zQOul4nDGhShtnB6DuFWAp6abjkIN9yjWjKNyBRH
+        UECpp/Iw==;
 Received: from [10.22.3.24] (helo=serv1.dd1.int.kernkonzept.com)
         by mx.kernkonzept.com with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.96)
-        id 1r7ud0-008PbT-2K;
-        Tue, 28 Nov 2023 10:43:38 +0100
+        id 1r7ud2-008PbT-17;
+        Tue, 28 Nov 2023 10:43:40 +0100
 From:   Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-Date:   Tue, 28 Nov 2023 10:43:32 +0100
-Subject: [PATCH 1/2] dt-bindings: serial: qcom,msm-uartdm: Vote for shared
- resources
+Date:   Tue, 28 Nov 2023 10:43:33 +0100
+Subject: [PATCH 2/2] serial: msm: Use OPP table for DVFS support
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231128-serial-msm-dvfs-v1-1-4f290d20a4be@kernkonzept.com>
+Message-Id: <20231128-serial-msm-dvfs-v1-2-4f290d20a4be@kernkonzept.com>
 References: <20231128-serial-msm-dvfs-v1-0-4f290d20a4be@kernkonzept.com>
 In-Reply-To: <20231128-serial-msm-dvfs-v1-0-4f290d20a4be@kernkonzept.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
@@ -61,61 +60,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document power-domains, operating-points-v2 and interconnects to allow
-making performance state votes for certain clock frequencies of the UART
-DM controller. The interconnect path to DRAM is needed when UART DM is
-used together with a DMA engine.
+Parse the OPP table from the device tree and use dev_pm_opp_set_rate()
+instead of clk_set_rate() to allow making performance state votes
+specified in the OPP table (e.g. for power domains and interconnects).
 
-Voting for these shared resources is necessary to guarantee performance
-with power management enabled. Otherwise these resources might run at
-minimal performance state which is not sufficient for certain UART
-baud rates.
+Without an OPP table in the device tree this will behave just as before
+this patch.
 
 Signed-off-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
 ---
- .../devicetree/bindings/serial/qcom,msm-uartdm.yaml         | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/tty/serial/msm_serial.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/serial/qcom,msm-uartdm.yaml b/Documentation/devicetree/bindings/serial/qcom,msm-uartdm.yaml
-index ee52bf8e8917..e0fa363ad7e2 100644
---- a/Documentation/devicetree/bindings/serial/qcom,msm-uartdm.yaml
-+++ b/Documentation/devicetree/bindings/serial/qcom,msm-uartdm.yaml
-@@ -48,9 +48,17 @@ properties:
-       - const: tx
-       - const: rx
+diff --git a/drivers/tty/serial/msm_serial.c b/drivers/tty/serial/msm_serial.c
+index 7fc8f0b16aef..e24204ad35de 100644
+--- a/drivers/tty/serial/msm_serial.c
++++ b/drivers/tty/serial/msm_serial.c
+@@ -24,6 +24,7 @@
+ #include <linux/slab.h>
+ #include <linux/clk.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_opp.h>
+ #include <linux/delay.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+@@ -1131,7 +1132,7 @@ static int msm_set_baud_rate(struct uart_port *port, unsigned int baud,
+ 	uart_port_unlock_irqrestore(port, flags);
  
-+  interconnects:
-+    maxItems: 1
+ 	entry = msm_find_best_baud(port, baud, &rate);
+-	clk_set_rate(msm_port->clk, rate);
++	dev_pm_opp_set_rate(port->dev, rate);
+ 	baud = rate / 16 / entry->divisor;
+ 
+ 	uart_port_lock_irqsave(port, &flags);
+@@ -1186,6 +1187,7 @@ static void msm_init_clock(struct uart_port *port)
+ {
+ 	struct msm_port *msm_port = to_msm_port(port);
+ 
++	dev_pm_opp_set_rate(port->dev, port->uartclk);
+ 	clk_prepare_enable(msm_port->clk);
+ 	clk_prepare_enable(msm_port->pclk);
+ 	msm_serial_set_mnd_regs(port);
+@@ -1239,6 +1241,7 @@ static int msm_startup(struct uart_port *port)
+ 
+ 	clk_disable_unprepare(msm_port->pclk);
+ 	clk_disable_unprepare(msm_port->clk);
++	dev_pm_opp_set_rate(port->dev, 0);
+ 
+ 	return ret;
+ }
+@@ -1254,6 +1257,7 @@ static void msm_shutdown(struct uart_port *port)
+ 		msm_release_dma(msm_port);
+ 
+ 	clk_disable_unprepare(msm_port->clk);
++	dev_pm_opp_set_rate(port->dev, 0);
+ 
+ 	free_irq(port->irq, port);
+ }
+@@ -1419,11 +1423,13 @@ static void msm_power(struct uart_port *port, unsigned int state,
+ 
+ 	switch (state) {
+ 	case 0:
++		dev_pm_opp_set_rate(port->dev, port->uartclk);
+ 		clk_prepare_enable(msm_port->clk);
+ 		clk_prepare_enable(msm_port->pclk);
+ 		break;
+ 	case 3:
+ 		clk_disable_unprepare(msm_port->clk);
++		dev_pm_opp_set_rate(port->dev, 0);
+ 		clk_disable_unprepare(msm_port->pclk);
+ 		break;
+ 	default:
+@@ -1789,7 +1795,7 @@ static int msm_serial_probe(struct platform_device *pdev)
+ 	struct resource *resource;
+ 	struct uart_port *port;
+ 	const struct of_device_id *id;
+-	int irq, line;
++	int irq, line, ret;
+ 
+ 	if (pdev->dev.of_node)
+ 		line = of_alias_get_id(pdev->dev.of_node, "serial");
+@@ -1824,6 +1830,15 @@ static int msm_serial_probe(struct platform_device *pdev)
+ 			return PTR_ERR(msm_port->pclk);
+ 	}
+ 
++	ret = devm_pm_opp_set_clkname(&pdev->dev, "core");
++	if (ret)
++		return ret;
 +
-   interrupts:
-     maxItems: 1
- 
-+  operating-points-v2: true
++	/* OPP table is optional */
++	ret = devm_pm_opp_of_add_table(&pdev->dev);
++	if (ret && ret != -ENODEV)
++		return dev_err_probe(&pdev->dev, ret, "invalid OPP table\n");
 +
-+  power-domains:
-+    maxItems: 1
-+
-   qcom,rx-crci:
-     $ref: /schemas/types.yaml#/definitions/uint32
-     description:
-@@ -99,7 +107,9 @@ unevaluatedProperties: false
+ 	port->uartclk = clk_get_rate(msm_port->clk);
+ 	dev_info(&pdev->dev, "uartclk = %d\n", port->uartclk);
  
- examples:
-   - |
-+    #include <dt-bindings/interconnect/qcom,msm8996.h>
-     #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/power/qcom-rpmpd.h>
- 
-     serial@f991e000 {
-         compatible = "qcom,msm-uartdm-v1.4", "qcom,msm-uartdm";
-@@ -109,4 +119,7 @@ examples:
-         clock-names = "core", "iface";
-         dmas = <&dma0 0>, <&dma0 1>;
-         dma-names = "tx", "rx";
-+        power-domains = <&rpmpd MSM8996_VDDCX>;
-+        operating-points-v2 = <&uart_opp_table>;
-+        interconnects = <&pnoc MASTER_BLSP_1 &bimc SLAVE_EBI_CH0>;
-     };
 
 -- 
 2.39.2
