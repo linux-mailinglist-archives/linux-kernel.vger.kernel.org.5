@@ -2,71 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA0137FBAB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 14:01:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0E77FBBC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 14:39:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344987AbjK1NBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 08:01:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39508 "EHLO
+        id S1344751AbjK1Nir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 08:38:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344924AbjK1NA5 (ORCPT
+        with ESMTP id S1344864AbjK1NAj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 08:00:57 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1212019A3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 05:01:04 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55219C433C7;
-        Tue, 28 Nov 2023 13:01:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701176463;
-        bh=cno0wrTciQcAWVSsnIZ43dCdMCLvNvzuyANDvYgnksw=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=aXVlGl515Dfgo5/K1KozTP82iuF3KvDFwv+ZDaBUl+zAblgkAnP4MYltZlGXrQX4S
-         GHKUtwhG8dEviY9RQEO/ECqcW/ICgiIstWLe4kdomhHILClEBjQ49mmkY0Jzi6O0ue
-         X5qzBMKUs2wDqPwjoFRT7Vb1/bvzuRfaJcbV0CLri3FQjJ9KsWzeHfmcXXY/lHRk3w
-         VNQqE3waXpplg99R7nRF0RNF+eIMnf2pZOK2ls7jYED82nCFda0xS9LYWBi2B0Vhjm
-         0d/ikYHDDRsSBfYwtPr5uv5qWvzgjTmU5dMeWH7Vyo9AXBECKvGq2QtdwcOMD6bvmp
-         aajCxQJuF4gFg==
-From:   Maxime Ripard <mripard@kernel.org>
-To:     airlied@gmail.com, daniel@ffwll.ch, frank.binns@imgtec.com,
-        donald.robson@imgtec.com, matt.coster@imgtec.com,
-        sarah.walker@imgtec.com, Danilo Krummrich <dakr@redhat.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231124233650.152653-4-dakr@redhat.com>
-References: <20231124233650.152653-1-dakr@redhat.com>
- <20231124233650.152653-4-dakr@redhat.com>
-Subject: Re: (subset) [PATCH drm-misc-next 3/5] drm/imagination: vm: fix
- drm_gpuvm reference count
-Message-Id: <170117646120.2825698.16047207632231408028.b4-ty@kernel.org>
-Date:   Tue, 28 Nov 2023 14:01:01 +0100
+        Tue, 28 Nov 2023 08:00:39 -0500
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6AB10E6;
+        Tue, 28 Nov 2023 05:00:37 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ahWgjj2zt/ANCAZqSUEnnk4pS6HqewVMEhfx8tiAKy/c7n4IEb76exkAG8RJ7oTXPJuzV5XgBpQCnTl3+MUqe6pzrgj5wR/LUBKx4f2KyoeG4vYernRxOqlAdkTrmhpGSeXxYOkExbKN5LpwCda8uIADXxUHkWGfMZ+Y2ZWfznwdQjCwHhidGhCznRsrDNbgxNehiwX4hY9YYV/8FfgpVdkQYcu7v9i+ApX8FrL/ekNO6+uaHG8mzz3YPX4JZSXo8ZgqL1laTzkntXHHVbmO8j73SSHcLjTvApp2UwHe+06G7Gop2UcTErEvpYxG6FczMopxzazyOA47J61QUQ3+Pg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FobeKRIWyENJYRq0LgNYrV697tvGzj5iPJRquaePZc0=;
+ b=nXkGoxqyvfWCKKHP5WmVAc4VhacGT7MlAPr2aMmgrARnPpS3IAClqvZAVcQ+VQZVOUU7aOKoCdv7Cg6b9jzU2BfYiGnUJGbXIS5INO7QLBdCi0NsHhVarcS5YRIC0zZsGsfiyFn1oZux49y4r+P4Mje+7lVXc2zZrLySSUDhTudZxF9ampOl+cejA2pKEakW+7cUNLHr9MgXbaTINd2yIZveyuVDCsLKZyjdznhvxPjWrRq3vCA+ggxqXmZ6h2Iw/N+KyzcOvVx43jELo9IuYZOJ69Uyrq1Biuvhwt0jA6Ca2gjvZJKVKOE74Ky02DGxjp++Wryi3cjJ5cLAJ4fIjQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FobeKRIWyENJYRq0LgNYrV697tvGzj5iPJRquaePZc0=;
+ b=tdCYZoW1E+KELHjEfIfzfSTnxJkHE+iqpYEB1gHq7zEeQaWQZzQa/ZJ6QSK6AJV23g+ckLWZTKiR8+fu3YEfz4uHk2QxJ/wkH6aW3OuPtTbqzl3HTZQVNcIvRi3fF95WqTfyL0IpWBMnHHXVoleRB6MsX8n0Whl1tDfFnwJ5jw8=
+Received: from DM6PR07CA0117.namprd07.prod.outlook.com (2603:10b6:5:330::32)
+ by DS7PR12MB8249.namprd12.prod.outlook.com (2603:10b6:8:ea::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Tue, 28 Nov
+ 2023 13:00:35 +0000
+Received: from CY4PEPF0000EE37.namprd05.prod.outlook.com
+ (2603:10b6:5:330:cafe::9) by DM6PR07CA0117.outlook.office365.com
+ (2603:10b6:5:330::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29 via Frontend
+ Transport; Tue, 28 Nov 2023 13:00:35 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000EE37.mail.protection.outlook.com (10.167.242.43) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7046.17 via Frontend Transport; Tue, 28 Nov 2023 13:00:34 +0000
+Received: from gomati.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 28 Nov
+ 2023 07:00:30 -0600
+From:   Nikunj A Dadhania <nikunj@amd.com>
+To:     <linux-kernel@vger.kernel.org>, <thomas.lendacky@amd.com>,
+        <x86@kernel.org>, <kvm@vger.kernel.org>
+CC:     <bp@alien8.de>, <mingo@redhat.com>, <tglx@linutronix.de>,
+        <dave.hansen@linux.intel.com>, <dionnaglaze@google.com>,
+        <pgonda@google.com>, <seanjc@google.com>, <pbonzini@redhat.com>,
+        <nikunj@amd.com>
+Subject: [PATCH v6 02/16] virt: sev-guest: Move mutex to SNP guest device structure
+Date:   Tue, 28 Nov 2023 18:29:45 +0530
+Message-ID: <20231128125959.1810039-3-nikunj@amd.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231128125959.1810039-1-nikunj@amd.com>
+References: <20231128125959.1810039-1-nikunj@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE37:EE_|DS7PR12MB8249:EE_
+X-MS-Office365-Filtering-Correlation-Id: d5394e54-e4f8-4e62-3f0a-08dbf01202c8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: B8MM9UzWLfAzdVlba7i2mkzyYKbm37oiE/4zPcw69cp0Zq1jnXs/Kb3WFSBh7kiK4gqzP6LCirTGI6Chu1pJmHeRo31WOjkoQj3r53BY5oWLzQrCcBUpLmT76UnTLhQ9kLrZ48vK9KTHXq6UXzL5V+76ashd4AY8y7VfTl23mKncgr8W4Nd4hhSpVWu4xBTjYTRA7ukkrXn31OJ2OFiV79ylMfGhEfHVKwKikWtZnRNAc92/y6prqDkg16cULN7Lr0n3lYlaCObOux2CkNe41c+ghv5ezAcx8/kmsBBzVeH11hqj4Li2OPpjT4zE5M0X3Q+fCmi3o2Q5sZ6Cbus0J4W/JpYaOPvaNrJ7NEA8HWNs0MTKxoRGxPEDqy/7Ath50FfTXZLv7KA3laqgertzhPgBwVYhNPCl0O2mZ0F3n8aYrrBWR2m/76ZpF4LsHjLygwl3/mx8a1s21oaDLGjRL1HHByFPFHF5gTpj25UPQC9Q1LrE1pjGZbVs9oOSf/19KlneOtpnrnukhVpm609x+pqLItze2MGxS2+Ja1Pza2NIUJ442pIH77nx3gtbeE9DCwH3xMpH62fwkOvYy+VGPATS71qgeOF6ZtiFSxZqjemYuOf7aImPkgyt152j5jdgZ0DdygZ2V/h4bm67b7agviHGnp5HMZxuA3nFfWAJk5Y5rKau9q7UiQLLMntlfST5ZmDFeR6jgO3qSMIYtRD37du+aojFdTUj90fajKORnfji7Gfvn4fCQfBtHFlz8JJ63Mt9SMLSXWU2eFcAep9AVw==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(376002)(396003)(136003)(346002)(230922051799003)(64100799003)(451199024)(186009)(82310400011)(1800799012)(36840700001)(46966006)(40470700004)(40460700003)(2616005)(1076003)(26005)(16526019)(6666004)(426003)(336012)(8676002)(5660300002)(8936002)(4326008)(82740400003)(7416002)(47076005)(70206006)(478600001)(316002)(110136005)(70586007)(54906003)(7696005)(36860700001)(83380400001)(356005)(81166007)(41300700001)(40480700001)(36756003)(2906002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 13:00:34.8874
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d5394e54-e4f8-4e62-3f0a-08dbf01202c8
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE37.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8249
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 25 Nov 2023 00:36:38 +0100, Danilo Krummrich wrote:
-> The driver specific reference count indicates whether the VM should be
-> teared down, whereas GPUVM's reference count indicates whether the VM
-> structure can finally be freed.
-> 
-> Hence, free the VM structure in pvr_gpuvm_free() and drop the last
-> GPUVM reference after tearing down the VM. Generally, this prevents
-> lifetime issues such as the VM being freed as long as drm_gpuvm_bo
-> structures still hold references to the VM.
-> 
-> [...]
+In preparation for providing a new API to the sev-guest driver for sending
+an SNP guest message, move the SNP command mutex to the snp_guest_dev
+structure. Drop the snp_cmd_mutex.
 
-Applied to drm/drm-misc (drm-misc-next).
+Signed-off-by: Nikunj A Dadhania <nikunj@amd.com>
+Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
+---
+ drivers/virt/coco/sev-guest/sev-guest.c | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
-Thanks!
-Maxime
+diff --git a/drivers/virt/coco/sev-guest/sev-guest.c b/drivers/virt/coco/sev-guest/sev-guest.c
+index aedc842781b6..8382fd657e67 100644
+--- a/drivers/virt/coco/sev-guest/sev-guest.c
++++ b/drivers/virt/coco/sev-guest/sev-guest.c
+@@ -39,6 +39,9 @@ struct snp_guest_dev {
+ 	struct device *dev;
+ 	struct miscdevice misc;
+ 
++	/* Mutex to serialize the shared buffer access and command handling. */
++	struct mutex cmd_mutex;
++
+ 	void *certs_data;
+ 	struct aesgcm_ctx *ctx;
+ 	/* request and response are in unencrypted memory */
+@@ -65,9 +68,6 @@ static u32 vmpck_id;
+ module_param(vmpck_id, uint, 0444);
+ MODULE_PARM_DESC(vmpck_id, "The VMPCK ID to use when communicating with the PSP.");
+ 
+-/* Mutex to serialize the shared buffer access and command handling. */
+-static DEFINE_MUTEX(snp_cmd_mutex);
+-
+ static bool is_vmpck_empty(struct snp_guest_dev *snp_dev)
+ {
+ 	char zero_key[VMPCK_KEY_LEN] = {0};
+@@ -107,7 +107,7 @@ static inline u64 __snp_get_msg_seqno(struct snp_guest_dev *snp_dev)
+ {
+ 	u64 count;
+ 
+-	lockdep_assert_held(&snp_cmd_mutex);
++	lockdep_assert_held(&snp_dev->cmd_mutex);
+ 
+ 	/* Read the current message sequence counter from secrets pages */
+ 	count = *snp_dev->os_area_msg_seqno;
+@@ -394,7 +394,7 @@ static int get_report(struct snp_guest_dev *snp_dev, struct snp_guest_request_io
+ 	struct snp_report_resp *resp;
+ 	int rc, resp_len;
+ 
+-	lockdep_assert_held(&snp_cmd_mutex);
++	lockdep_assert_held(&snp_dev->cmd_mutex);
+ 
+ 	if (!arg->req_data || !arg->resp_data)
+ 		return -EINVAL;
+@@ -434,7 +434,7 @@ static int get_derived_key(struct snp_guest_dev *snp_dev, struct snp_guest_reque
+ 	/* Response data is 64 bytes and max authsize for GCM is 16 bytes. */
+ 	u8 buf[64 + 16];
+ 
+-	lockdep_assert_held(&snp_cmd_mutex);
++	lockdep_assert_held(&snp_dev->cmd_mutex);
+ 
+ 	if (!arg->req_data || !arg->resp_data)
+ 		return -EINVAL;
+@@ -475,7 +475,7 @@ static int get_ext_report(struct snp_guest_dev *snp_dev, struct snp_guest_reques
+ 	int ret, npages = 0, resp_len;
+ 	sockptr_t certs_address;
+ 
+-	lockdep_assert_held(&snp_cmd_mutex);
++	lockdep_assert_held(&snp_dev->cmd_mutex);
+ 
+ 	if (sockptr_is_null(io->req_data) || sockptr_is_null(io->resp_data))
+ 		return -EINVAL;
+@@ -564,12 +564,12 @@ static long snp_guest_ioctl(struct file *file, unsigned int ioctl, unsigned long
+ 	if (!input.msg_version)
+ 		return -EINVAL;
+ 
+-	mutex_lock(&snp_cmd_mutex);
++	mutex_lock(&snp_dev->cmd_mutex);
+ 
+ 	/* Check if the VMPCK is not empty */
+ 	if (is_vmpck_empty(snp_dev)) {
+ 		dev_err_ratelimited(snp_dev->dev, "VMPCK is disabled\n");
+-		mutex_unlock(&snp_cmd_mutex);
++		mutex_unlock(&snp_dev->cmd_mutex);
+ 		return -ENOTTY;
+ 	}
+ 
+@@ -594,7 +594,7 @@ static long snp_guest_ioctl(struct file *file, unsigned int ioctl, unsigned long
+ 		break;
+ 	}
+ 
+-	mutex_unlock(&snp_cmd_mutex);
++	mutex_unlock(&snp_dev->cmd_mutex);
+ 
+ 	if (input.exitinfo2 && copy_to_user(argp, &input, sizeof(input)))
+ 		return -EFAULT;
+@@ -702,7 +702,7 @@ static int sev_report_new(struct tsm_report *report, void *data)
+ 	if (!buf)
+ 		return -ENOMEM;
+ 
+-	guard(mutex)(&snp_cmd_mutex);
++	guard(mutex)(&snp_dev->cmd_mutex);
+ 
+ 	/* Check if the VMPCK is not empty */
+ 	if (is_vmpck_empty(snp_dev)) {
+@@ -837,6 +837,7 @@ static int __init sev_guest_probe(struct platform_device *pdev)
+ 		goto e_unmap;
+ 	}
+ 
++	mutex_init(&snp_dev->cmd_mutex);
+ 	platform_set_drvdata(pdev, snp_dev);
+ 	snp_dev->dev = dev;
+ 	snp_dev->layout = layout;
+-- 
+2.34.1
 
