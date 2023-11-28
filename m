@@ -2,72 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2297C7FC85D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:52:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D89DD7FC8CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:53:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344955AbjK1Vjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 16:39:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33930 "EHLO
+        id S1344042AbjK1Vdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 16:33:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234863AbjK1Vjw (ORCPT
+        with ESMTP id S229526AbjK1Vdk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 16:39:52 -0500
-X-Greylist: delayed 576 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 28 Nov 2023 13:39:59 PST
-Received: from mr85p00im-zteg06011601.me.com (mr85p00im-zteg06011601.me.com [17.58.23.186])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FA6699
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:39:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=danm.net; s=sig1;
-        t=1701207022; bh=8EgrIGGkKnoJKisc1H42SGVc/w0J4XCT9HdiJld5EXw=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version;
-        b=IwyqayvjwD1xQmxscxr7LH4lWhHQ1vHpJOMcjhUUCEmDvIifRESLlm644nFnA0OVf
-         wBAq/gd/5TqPhxBy7W2DoQNU375PVThmJkVNuiJTDdTUvx+jzksH3cwKZsJzKFVkC9
-         XspyLNimzZg1CuYKRCg0J4r1eiZ4plFnooZ8kGcw5yYlAJGS7uahT0B9heCYUzGDEP
-         Kq5kypb9omKe4li/vOQ6wzzdD2REKbvp/2WkQctaofNRlRpNMIOy5iTESe/K510XiV
-         idF806M3ZTSjv0n+YsBNZX53J8oRLTomrzcxpTSXl4Nb9yrqltnMgNm4IuYcKZqys7
-         VN/HFGzvy2h1w==
-Received: from hitch.danm.net (mr38p00im-dlb-asmtp-mailmevip.me.com [17.57.152.18])
-        by mr85p00im-zteg06011601.me.com (Postfix) with ESMTPSA id 6B4D71804BF;
-        Tue, 28 Nov 2023 21:30:20 +0000 (UTC)
-From:   dan@danm.net
-To:     toralf.foerster@gmx.de
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: 6.5.13 regression: BUG: kernel NULL pointer dereference, address: 0000000000000020
-Date:   Tue, 28 Nov 2023 14:30:18 -0700
-Message-ID: <20231128213018.6896-1-dan@danm.net>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <2b5d6cd4-0afb-4193-ab88-235f910a7293@gmx.de>
-References: <2b5d6cd4-0afb-4193-ab88-235f910a7293@gmx.de>
+        Tue, 28 Nov 2023 16:33:40 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 214B2CC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:33:47 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19E63C433C7;
+        Tue, 28 Nov 2023 21:33:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701207226;
+        bh=0y0x3HeNVaPz4M/ZlU2XszvPzKuo0CxoGX3FIFfMi8A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XBQZ66AmVpr8uvTcU1bD28+iYbg3ktmiGd87sNJMM9JdcHsAYoyYr2iXJ+LuKFH/0
+         wyWSfEL0qR3h/Jhuub4iMGXY07SHCVUCdW4B1wLkkv6FdAbvd1Ocl08eWIur6Ua2CZ
+         5xLZlTByC6iCTVgGdFVElS3zDx+Dm3u5Z3SfWQiY4OhPz+I+M11Fn5fbIpLVm4wzEn
+         nvg2IY8KCEO+IG0ON9JNergQfb5kpcC9WP3D8Ht356FFI5xKhjt5H/RceXuyN/j59t
+         nUh2WLBmjXlw1pJNJHKPG4GhIDp+Vi3lzxy+/0UzY8HYVIxaR9wWlXFYcHcvvi/BiO
+         tv8+IP0l/60Og==
+Date:   Tue, 28 Nov 2023 14:33:44 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        David Sterba <dsterba@suse.cz>,
+        David Sterba <dsterba@suse.com>, Jan Kara <jack@suse.cz>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the vfs-brauner tree with the btrfs
+ tree
+Message-ID: <20231128213344.GA3423530@dev-arch.thelio-3990X>
+References: <20231127092001.54a021e8@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: yHOGWyb5AYz0eJuRV1grMCXODbeaoiHr
-X-Proofpoint-GUID: yHOGWyb5AYz0eJuRV1grMCXODbeaoiHr
-X-Proofpoint-Virus-Version: =?UTF-8?Q?vendor=3Dfsecure_engine=3D1.1.170-22c6f66c430a71ce266a39bfe25bc?=
- =?UTF-8?Q?2903e8d5c8f:6.0.138,18.0.572,17.11.62.513.0000000_definitions?=
- =?UTF-8?Q?=3D2020-02-14=5F11:2020-02-14=5F02,2020-02-14=5F11,2021-12-02?=
- =?UTF-8?Q?=5F01_signatures=3D0?=
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=470 malwarescore=0
- spamscore=0 clxscore=1030 bulkscore=0 adultscore=0 phishscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2311280171
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231127092001.54a021e8@canb.auug.org.au>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm seeing this too, but on 6.6.3 (6.6.2 is fine).
+Hi Stephen (and other maintainers),
 
-Bisected it down to commit 2e8b4e0992e16 ("gcc-plugins: randstruct:
-Only warn about true flexible arrays"). Reverting that commit on top
-of v6.6.3 makes it go away.
+On Mon, Nov 27, 2023 at 09:20:01AM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the vfs-brauner tree got a conflict in:
+> 
+>   fs/btrfs/super.c
+> 
+> between commit:
+> 
+>   2f2cfead5107 ("btrfs: remove old mount API code")
+> 
+> from the btrfs tree and commit:
+> 
+>   ead622674df5 ("btrfs: Do not restrict writes to btrfs devices")
+> 
+> from the vfs-brauner tree.
+> 
+> I fixed it up (the former removed the funtion updated by the latter, but
+> a further fix may be required to implement the intent of the latter?)
 
-I do wonder if content such as that (which *looks* like it's purely
-preparing for future changes) is appropriate for the stable trees.
+Yes, the lack of ead622674df5 appears to cause issues with mounting
+btrfs volumes on at least next-20231128 due to the presence of commit
+6f861765464f ("fs: Block writes to mounted block devices"). In QEMU, I
+can see:
+
+  :: running early hook [udev]
+  Warning: /lib/modules/6.7.0-rc3-next-20231128/modules.devname not found - ignoring
+  Starting systemd-udevd version 252.5-1-arch
+  :: running hook [udev]
+  :: Triggering uevents...
+  :: running hook [keymap]
+  :: Loading keymap...kbd_mode: KDSKBMODE: Inappropriate ioctl for device
+  done.
+  :: performing fsck on '/dev/vda2'
+  :: mounting '/dev/vda2' on real root
+  mount: /new_root: wrong fs type, bad option, bad superblock on /dev/vda2, missing codepage or helper program, or other error.
+         dmesg(1) may have more information after failed mount system call.
+  You are now being dropped into an emergency shell.
+  sh: can't access tty; job control turned off
+  [rootfs ]#
+
+The following diff allows my VM to boot properly but I am not sure if
+there is a better or more proper fix (I am already out of my element
+heh). If a proper merge solution cannot be found quickly, can
+6f861765464f be reverted in the meantime so that all my machines with
+btrfs can boot properly? :)
 
 Cheers,
+Nathan
 
--- Dan
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 99d10a25a579..23db0306b8ef 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -299,6 +299,7 @@ static int btrfs_parse_param(struct fs_context *fc,
+ 	case Opt_device: {
+ 		struct btrfs_device *device;
+ 		blk_mode_t mode = sb_open_mode(fc->sb_flags);
++		mode &= ~BLK_OPEN_RESTRICT_WRITES;
+ 
+ 		mutex_lock(&uuid_mutex);
+ 		device = btrfs_scan_one_device(param->string, mode, false);
+@@ -1801,6 +1802,8 @@ static int btrfs_get_tree_super(struct fs_context *fc)
+ 	blk_mode_t mode = sb_open_mode(fc->sb_flags);
+ 	int ret;
+ 
++	mode &= ~BLK_OPEN_RESTRICT_WRITES;
++
+ 	btrfs_ctx_to_info(fs_info, ctx);
+ 	mutex_lock(&uuid_mutex);
+ 
