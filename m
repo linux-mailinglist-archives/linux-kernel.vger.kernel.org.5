@@ -2,168 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 777667FAFBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 02:46:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A01597FAFBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 02:48:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234276AbjK1Bqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 20:46:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42640 "EHLO
+        id S234366AbjK1BsG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Nov 2023 20:48:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjK1Bql (ORCPT
+        with ESMTP id S229488AbjK1BsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 20:46:41 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 660DBE6;
-        Mon, 27 Nov 2023 17:46:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701136007; x=1732672007;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=DN1sDPJpi0daNEsnfehBLeNHApw4DKCZ+v66jJYhV3U=;
-  b=T9fWCFvfWaIpk8UQaVNVXk2u/ohSFzO3uFWvG69Lq2db2d4+K5PoZGCu
-   yDj/dDxgUKt4WBFjpyRUeJXbD48IXLmSygbDyW7geLUbwrloQugNYNCq1
-   wFGxRqRuR5xc3ydXrzUjG2md5QBRAkvUwt0EYX5QZQZH1F4zMlkmOPp6O
-   EoROW6Q7VNDkxmQBFTs1XSiEBC+GkfDM5EQ1x/Q9Md6YZHzcrJXsrlo/l
-   keRIOYXOMFuMdCmocGw6X2GTwVSGiJ3SoyquRUf/ZeBjGcUfk0XUAN+Z+
-   Nn9GSrB3+901WCkR7LLVQXg75hp6DTp3olVPGRNMVvcdwemJtpoEbzLJi
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="392579977"
-X-IronPort-AV: E=Sophos;i="6.04,232,1695711600"; 
-   d="scan'208";a="392579977"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 17:46:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="1099937951"
-X-IronPort-AV: E=Sophos;i="6.04,232,1695711600"; 
-   d="scan'208";a="1099937951"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Nov 2023 17:46:45 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 27 Nov 2023 17:46:44 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Mon, 27 Nov 2023 17:46:44 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Mon, 27 Nov 2023 17:46:44 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k1HFmcz8GS1VGrMt/t4KZFT2vTPRBq2rzwLRhQRTqA8S+uvezKljZttbP7fNWVEDLsR55fyKi2eHtX6drKuYrFeBtmxHMOLdW5Ef4PnsgtrN4Mg538gx6OU/QnPwidAqm0NcAPmE7XLnnnNYyjQVXiPWv8yPuIKw9JrayiwkgwpErJFeFPLox2mkFb6wdzBU3JoLh+rYobM/W7OgfF/2GTL6NQwRvZDIQjwRtpVuseYYeRaM37ZPX7xosaNuLYb4Ni+FvJXeazqiGVnJQsvqooE8S4fZP42+Jfo5Ja8BsbUws2VJCMiFpBZoS2TW+uuchIe0H9kbCnQ0z8xmgun4Sg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DN1sDPJpi0daNEsnfehBLeNHApw4DKCZ+v66jJYhV3U=;
- b=UBoaAgZJuyMcj1cGC940XeoHlVgO1sWcv5Ac12PG+/L8DvhQ3csExbXMh26S3pMNdrOpWjLlazHo0V6aqrB0+Tm6JAVzydIL1RRy2qVP8jokAPUMXCuiLZWcynKO53rR7EOiKe+fR4Iyr8tkueqvfWap2DAkJ3tg9wi2CBaJpxKdXPn7u1KgtQ+mAy493A8PozX0yrls7O7fPoAdGbbaY5+pT0p5XDo8tmdgCa0FhUnZNhw/HYIg2HTbO4MWf5AXEVafMXCVhCzdMQr3nHVEm8Zsb3N2BBUhDpCFmCLfgXiApwg8crpezLqGXJUI2/WlLgt3tzfktNV2/OfO/6QE1g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
- by PH7PR11MB6883.namprd11.prod.outlook.com (2603:10b6:510:202::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Tue, 28 Nov
- 2023 01:46:42 +0000
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::5260:13db:a6e:35e9]) by MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::5260:13db:a6e:35e9%6]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
- 01:46:42 +0000
-From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Yang, Weijiang" <weijiang.yang@intel.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Hansen, Dave" <dave.hansen@intel.com>
-CC:     "john.allen@amd.com" <john.allen@amd.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "Gao, Chao" <chao.gao@intel.com>,
-        "mlevitsk@redhat.com" <mlevitsk@redhat.com>
-Subject: Re: [PATCH v7 04/26] x86/fpu/xstate: Introduce
- XFEATURE_MASK_KERNEL_DYNAMIC xfeature set
-Thread-Topic: [PATCH v7 04/26] x86/fpu/xstate: Introduce
- XFEATURE_MASK_KERNEL_DYNAMIC xfeature set
-Thread-Index: AQHaHqwJgZjdYYieAEWfcgnw7RStqbCO/B+A
-Date:   Tue, 28 Nov 2023 01:46:42 +0000
-Message-ID: <bbcdb8c0729b6577684f89b180cae2f5ec422bdc.camel@intel.com>
-References: <20231124055330.138870-1-weijiang.yang@intel.com>
-         <20231124055330.138870-5-weijiang.yang@intel.com>
-In-Reply-To: <20231124055330.138870-5-weijiang.yang@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|PH7PR11MB6883:EE_
-x-ms-office365-filtering-correlation-id: a0005154-6d76-47ea-dc49-08dbefb3deed
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: b6roJ8yZ8oO0r4XjawPaKkUbOJNqLMylRA/6YqU1JKWTwbmfSnQIPHnAKYicnvTXDyz41oWYXrvnAQPzrcpmHOZE7Qs5YfFko6K0E8gVBl+T7yx9Aoma1qrELfn4OLT/lDhy/BWSFngT78rEI9qhLnI9MD3tZW87dcrbcswAp3DiD/7rzWXHYTCDXdQhSObHMZWW+ENCeSidpPmXSrLvx8Ogjh3Qr+w8yozFlO/rnXY5dHIG9DS6uKv+VR3rAr5v9vI0gbUKAnHzZnFJ1NCuvVBuNzg1nHt1aa4Sdp0u3fxmRocGx9gQyGePFpAfcpKjds5G+OytZrtZStoOSKNgdTwkAqzrI4Dcbcfa+Wq77afiFnufGi9YJGRHjqSKxxJya1viNRSdUKxmbCFq/FJvLROhvlMMXJWITKon7HM4MU3A2gJH77eut+foDSnjhG8Gu3zHDkDHWXccZnZl7rd44pk2FtIR0u5MLlAYy6WWudwJUSwzxpx5nT6n54Sjct8WNDjzc+lP9svZ5aMY2kWdhKJK/AIgwjSiOVdFenWIwHccCwJkKwNocI2pzHYSzZ/4jz5OGTd5Ew7Gx0o85EZ/qcXd/URVjtpQnNDs05aUKMR7QiGQRIY8tb+hot5W+2r/
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(136003)(396003)(39860400002)(366004)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(8676002)(41300700001)(4001150100001)(2906002)(71200400001)(38070700009)(86362001)(5660300002)(8936002)(4326008)(66446008)(66476007)(76116006)(36756003)(66946007)(66556008)(316002)(54906003)(64756008)(6636002)(6486002)(110136005)(91956017)(2616005)(6506007)(478600001)(26005)(6512007)(122000001)(38100700002)(82960400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MDlMaGswWG8ydTJJdHh5MHlPRjBVeWZDZVdXRFVWNitzRGJadUc2YjhWcDlB?=
- =?utf-8?B?YmxjWGZCczdDLzNQVTV2SUZIc0tvQWtMQ0Rla01SVUI5MEdJK1RDL21sQ3lH?=
- =?utf-8?B?dEx2YXVXL1ZMZi9tcVgyUGUzVG1pZ1JMYjl4bDJOVW15blIrb21YNmE5eWZO?=
- =?utf-8?B?N1hudlVSUUFKSENsTkR2U1dCY1JiQ0YvV0podnhQMy9Wa0F3S1BmU09yUCtO?=
- =?utf-8?B?VllTZml4b2d3b3pZVXdNcGh2SldaYVBkWXZBb1JQck1VemZvMXJGVlhNYXlk?=
- =?utf-8?B?U2c2Uk9NREdJSW9MenhFM1pMeXo3aEhwd1ZhbytxWUVVYlRpMEVMa1doSFRG?=
- =?utf-8?B?dVZxWlJHRjVoV2lERCtTNzYvUHZXVHlzWkpreWYwQzlSSHg2U2NaRkVFVHVr?=
- =?utf-8?B?WlBQd0ZhRHdTMi9GcWwycHZUZ1RJcXFZWUxTelgvR0NYQi9UQmxmTnR5VjBk?=
- =?utf-8?B?Zk0zeDQ3d28xcEZWaUM4VldnblRlZUF2TkFLTkIvZlFJUnBhWUw0OG0vNEZn?=
- =?utf-8?B?SkNxSndGV1ZwSTYycEpkc0htdVJEVkhjMEVIMXI0SWxBakExKytRQjJKUE1I?=
- =?utf-8?B?SExWQUZsK1pCaVdQYkk5SmpKWit6WCt2MERlTXVhY2l5ZmRFWkJVTXVsRkNl?=
- =?utf-8?B?blFOZ1g4ZkkxYXJMb3hlQU1xbWhFeTBxb1VpNis2bFUrTEgzdm9JVmRqbklT?=
- =?utf-8?B?V2hHcFJRMXE5ZVNkdERKdWV4a2s4OEpCM1ZveHdXMGFaTmJZbmxnSnF1M3BC?=
- =?utf-8?B?OW9nRGNRUjFKaitYUlBqSlp1UE1NQWx0cDgxTC9oMXRpWHlOM1B1RWVTOTZJ?=
- =?utf-8?B?bkZsZVR2Z2dxN09ka0k2blVxK3NkTitVT0U2YVhhcnNJUUJzelNzTkJGSnND?=
- =?utf-8?B?SVJCL0ZXTmNRcGd6dW9BazhWcmEyN0UyZlIrLy9XTXJpd3Vtam9MUUpjV0Jq?=
- =?utf-8?B?eGhqTkJqYTlwSldDZzlEV3VNRUtpTkRlWmVrZWlhblAzV0NPd2R0Z0d1dVJF?=
- =?utf-8?B?U2Z1S2dEOE9ObkZFV0tyM013d1plWi91RnBtMHpNY1ZmT1l5bDU5Z3J3RWdH?=
- =?utf-8?B?ZUVkM1pQcy9GV1lUZFA3TDZxUHB6RGdtZkhZOWRsbUVOUFNRK3ZpRnRBdDdU?=
- =?utf-8?B?ck1OZEZoemloQzdXVVNiZGcxZGhDeEtEam5GaVFaZjEwZVE2RjhKS3BLWWpx?=
- =?utf-8?B?QWxKV2x4cU9xN2FFaXI4WmljQ1VFaGlLV0VabWJjd1kraWpheDFKc0FjeXZL?=
- =?utf-8?B?ejFiVzgxY2hOeFhMRHR6L1d4N3RoMHQ1LzQ2eG81U1l3ckcwUlltaloxRVJ1?=
- =?utf-8?B?NWloSy91RFhIaTZmeld0S0JBTVBzcDI0eVhKSnJ3UEt2ME5abEl5c0VRTTBi?=
- =?utf-8?B?VlJZY1d1dGZjZ3hES2tERXJ3ajlRTWFVQ2RXUWY0K1UrTFFmcnQ4WFAzUFFC?=
- =?utf-8?B?ZkhMZE9aVzVqRWVLRG9LSmlKUjk5QWNpblpOY09SUFJ0NThkNHMvSzh0NEJs?=
- =?utf-8?B?bjZ0bjIxRGNYdmJxVUE3U3VsWHE4L2ZlTHJoa2JCRkFNazY0Z09IZTNLemtO?=
- =?utf-8?B?MTFnOWZLdWdkaUdjc1VaRWo1R0tUL0JXdDlKbWk3dlgzbXpCTTVlTnFKOGRm?=
- =?utf-8?B?cmppd2xLTU1zUmdoWGlEYnFzNEUrOTZjNTRicitYd1dUK1VkNUZEeHVSWlQ4?=
- =?utf-8?B?bUF0VnRSL2RVZUNFdVlPaERYS1BleTlrbkVhODVpQ1AzZ2xKWEdhbFlxMkww?=
- =?utf-8?B?b1p0eGxHSWxKaHExNjNPeHlFZzZsd1dGQWQ4bG90ZnZvdkZBTlFzTDlqZHFY?=
- =?utf-8?B?L1plYmUzSzl0eWlScElpLzh6ZVFlaHRwWTZqcnFNazM2ZFVTZmtwUlYyUHpk?=
- =?utf-8?B?ODhtTVBhb3VNSTRZSjZJNC9FS21CT2tHQWt5cm9ybi9RUHpiZHZWdnFKaFdV?=
- =?utf-8?B?N25JR1RSQzBoWW9wRDFNLytTUkZENTVjNi81TXhWRWhuZE5oWkZSMUJsaFVK?=
- =?utf-8?B?RkJBR3czeFNtK0I5MjFncXRHY0ZIUE1jd2VsUklXVzFDVzJBRjc2R0d5dnQ1?=
- =?utf-8?B?UGdPeUVWQXk3L0hJMGUzV25ZNm54UWR3azlYdldLU202RVBNM2VHZWYvL2gy?=
- =?utf-8?B?NUh3bmExVDZTdVM0enZHUVh4aEE2M0VTQUFPdlhEcG14cGNobzVkUVVYZmlq?=
- =?utf-8?Q?xM5e1xuj/KZ9RraI03rkq1I=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D1B1CEB9249B2D4595E1C2DDD079263C@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Mon, 27 Nov 2023 20:48:04 -0500
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C213138;
+        Mon, 27 Nov 2023 17:48:07 -0800 (PST)
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3b837d974ecso3095293b6e.2;
+        Mon, 27 Nov 2023 17:48:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701136086; x=1701740886;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JVr3F2hxQwUzP61DpYsFkJ3ETcJcTqVqqeZTUprliR8=;
+        b=xUTX/z2Sw2rW1o/yVrd0h2yysRxMsGTGGdmgLoNCwfyaAAjnPj0nzrAPcvnAR+iERr
+         EKyMNxR2RwZ/uwZvO2CemnjXOUauaE3YMjme9f2e5aPTqac6z81vKlsuNC4XkvPa64vq
+         ljhfNGdhAM31tThyQsCOWBPJVWexyxLOcxEn1DpOc9DbjkMQSBAq2PrNsQihn+0Kua0l
+         P2nbIEMhpaYrX2IbnTFPZamHb/kan2ReIUoajQQ33DLxqmxlUoTMUmY9rPoVnT8JjgX8
+         EGTPgcp76JMpSWqKSVCSUj4DoaL22jvk6Tj+IQr9zDlgTI0ox5OIAmyvPTACd5iWMRzH
+         Y77A==
+X-Gm-Message-State: AOJu0YxeTV17EpdiEx9k8HV2eH9sBcwyyTkCx54ustoSP38FivdUS+lp
+        rzEKbYeIapA6Qr5RAPFjjWv074ZL0irctc7eO5k=
+X-Google-Smtp-Source: AGHT+IGvxNlGukeQgZNcXeGDTi+TJJ93S20Hj8BOi49VO0yFr6+9IKAW+lVKp5+sV6kNLbcACqkrXXBiDVMzccFfCUw=
+X-Received: by 2002:a05:6871:296:b0:1fa:3b7d:1573 with SMTP id
+ i22-20020a056871029600b001fa3b7d1573mr8676008oae.7.1701136086592; Mon, 27 Nov
+ 2023 17:48:06 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a0005154-6d76-47ea-dc49-08dbefb3deed
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Nov 2023 01:46:42.0832
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Y8mIklbR2aHuo9isenbbz2PzaG/SQTCZeYLw20524EgKHqSVhox833KEcJHTudiKyeeXXtHfIaRxXt9VHmYyo996o0tEOJ6DS7SV33TCCo4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6883
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20231003050751.525932-1-wyes.karny@amd.com>
+In-Reply-To: <20231003050751.525932-1-wyes.karny@amd.com>
+From:   Len Brown <lenb@kernel.org>
+Date:   Mon, 27 Nov 2023 20:47:55 -0500
+Message-ID: <CAJvTdKnE4RW7fkHX2r6MvtrC80ynMazgP90KGi7Yump-s3-09g@mail.gmail.com>
+Subject: Re: [PATCH v2] tools/power turbostat: Increase the limit for fd opened
+To:     Wyes Karny <wyes.karny@amd.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Doug Smythies <dsmythies@telus.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -171,30 +58,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIzLTExLTI0IGF0IDAwOjUzIC0wNTAwLCBZYW5nIFdlaWppYW5nIHdyb3RlOg0K
-PiBEZWZpbmUgbmV3IFhGRUFUVVJFX01BU0tfS0VSTkVMX0RZTkFNSUMgc2V0IGluY2x1ZGluZyB0
-aGUgZmVhdHVyZXMNCj4gY2FuIGJlDQo+IG9wdGlvbmFsbHkgZW5hYmxlZCBieSBrZXJuZWwgY29t
-cG9uZW50cywgaS5lLiwgdGhlIGZlYXR1cmVzIGFyZQ0KPiByZXF1aXJlZCBieQ0KPiBzcGVjaWZp
-YyBrZXJuZWwgY29tcG9uZW50cy4NCg0KVGhlIGFib3ZlIGlzIGEgYml0IHRvdWdoIHRvIHBhcnNl
-LiBEb2VzIGFueSBvZiB0aGlzIHNlZW0gY2xlYXJlcj8NCg0KRGVmaW5lIGEgbmV3IFhGRUFUVVJF
-X01BU0tfS0VSTkVMX0RZTkFNSUMgbWFzayB0byBzcGVjaWZ5IHRoZSBmZWF0dXJlcw0KdGhhdCBj
-YW4gYmUgb3B0aW9uYWxseSBlbmFibGVkIGJ5IGtlcm5lbCBjb21wb25lbnRzLsKgVGhpcyBpcyBz
-aW1pbGFyIHRvDQpYRkVBVFVSRV9NQVNLX0tFUk5FTF9EWU5BTUlDIGluIHRoYXQgaXQgY29udGFp
-bnMgb3B0aW9uYWwgeGZlYXR1cmVzDQp0aGF0IGNhbiBhbGxvd3MgdGhlIEZQVSBidWZmZXIgdG8g
-YmUgZHluYW1pY2FsbHkgc2l6ZWQuIFRoZSBkaWZmZXJlbmNlDQppcyB0aGF0IHRoZSBLRVJORUwg
-dmFyaWFudCBjb250YWlucyBzdXBlcnZpc29yIGZlYXR1cmVzIGFuZCB3aWxsIGJlDQplbmFibGVk
-IGJ5IGtlcm5lbCBjb21wb25lbnRzIHRoYXQgbmVlZCB0aGVtLCBhbmQgbm90IGRpcmVjdGx5IGJ5
-IHRoZQ0KdXNlci4NCg0KPiAgQ3VycmVudGx5IGl0J3MgdXNlZCBieSBLVk0gdG8gY29uZmlndXJl
-IGd1ZXN0DQo+IGRlZGljYXRlZCBmcHN0YXRlIGZvciBjYWxjdWxhdGluZyB0aGUgeGZlYXR1cmUg
-YW5kIGZwc3RhdGUgc3RvcmFnZQ0KPiBzaXplIGV0Yy4NCj4gDQo+IFRoZSBrZXJuZWwgZHluYW1p
-YyB4ZmVhdHVyZXMgbm93IG9ubHkgY29udGFpbiBYRkVBVFVSRV9DRVRfS0VSTkVMLA0KPiB3aGlj
-aCBpcw0KPiBzdXBwb3J0ZWQgYnkgaG9zdCBhcyB0aGV5J3JlIGVuYWJsZWQgaW4geHNhdmVzL3hy
-c3RvcnMgb3BlcmF0aW5nDQo+IHhmZWF0dXJlIHNldA0KPiAoWENSMCB8IFhTUyksIGJ1dCB0aGUg
-cmVsZXZhbnQgQ1BVIGZlYXR1cmUsIGkuZS4sIHN1cGVydmlzb3Igc2hhZG93DQo+IHN0YWNrLCBp
-cw0KPiBub3QgZW5hYmxlZCBpbiBob3N0IGtlcm5lbCBzbyBpdCBjYW4gYmUgb21pdHRlZCBmb3Ig
-bm9ybWFsIGZwc3RhdGUgYnkNCj4gZGVmYXVsdC4NCj4gDQo+IFJlbW92ZSB0aGUga2VybmVsIGR5
-bmFtaWMgZmVhdHVyZSBmcm9tDQo+IGZwdV9rZXJuZWxfY2ZnLmRlZmF1bHRfZmVhdHVyZXMgc28g
-dGhhdA0KPiB0aGUgYml0cyBpbiB4c3RhdGVfYnYgYW5kIHhjb21wX2J2IGFyZSBjbGVhcmVkIGFu
-ZCB4c2F2ZXMveHJzdG9ycyBjYW4NCj4gYmUNCj4gb3B0aW1pemVkIGJ5IEhXIGZvciBub3JtYWwg
-ZnBzdGF0ZS4NCg0KVGhhbmtzIGZvciBicmVha2luZyB0aGVzZSBpbnRvIHNtYWxsIHBhdGNoZXMu
-DQo=
+Applied
+
+Thanks Wyes!
+
+On Tue, Oct 3, 2023 at 1:08 AM Wyes Karny <wyes.karny@amd.com> wrote:
+>
+> When running turbostat, a system with 512 cpus reaches the limit for
+> maximum number of file descriptors that can be opened. To solve this
+> problem, the limit is raised to 2^15, which is a large enough number.
+>
+> Below data is collected from AMD server systems while running turbostat:
+>
+> |-----------+-------------------------------|
+> | # of cpus | # of opened fds for turbostat |
+> |-----------+-------------------------------|
+> | 128       | 260                           |
+> |-----------+-------------------------------|
+> | 192       | 388                           |
+> |-----------+-------------------------------|
+> | 512       | 1028                          |
+> |-----------+-------------------------------|
+>
+> So, the new max limit would be sufficient up to 2^14 cpus (but this
+> also depends on how many counters are enabled).
+>
+> Reviewed-by: Doug Smythies <dsmythies@telus.net>
+> Tested-by: Doug Smythies <dsmythies@telus.net>
+> Signed-off-by: Wyes Karny <wyes.karny@amd.com>
+> ---
+> v1 -> v2:
+> - Take care of already higher rlim_max, rlim_curr
+> - Minor tweak in commit text
+>
+>  tools/power/x86/turbostat/turbostat.c | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+>
+> diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
+> index 9a10512e3407..1563a0ae7e4c 100644
+> --- a/tools/power/x86/turbostat/turbostat.c
+> +++ b/tools/power/x86/turbostat/turbostat.c
+> @@ -53,6 +53,8 @@
+>  #define        NAME_BYTES 20
+>  #define PATH_BYTES 128
+>
+> +#define MAX_NOFILE 0x8000
+> +
+>  enum counter_scope { SCOPE_CPU, SCOPE_CORE, SCOPE_PACKAGE };
+>  enum counter_type { COUNTER_ITEMS, COUNTER_CYCLES, COUNTER_SECONDS, COUNTER_USEC };
+>  enum counter_format { FORMAT_RAW, FORMAT_DELTA, FORMAT_PERCENT };
+> @@ -6717,6 +6719,22 @@ void cmdline(int argc, char **argv)
+>         }
+>  }
+>
+> +void set_rlimit(void)
+> +{
+> +       struct rlimit limit;
+> +
+> +       if (getrlimit(RLIMIT_NOFILE, &limit) < 0)
+> +               err(1, "Failed to get rlimit");
+> +
+> +       if (limit.rlim_max < MAX_NOFILE)
+> +               limit.rlim_max = MAX_NOFILE;
+> +       if (limit.rlim_cur < MAX_NOFILE)
+> +               limit.rlim_cur = MAX_NOFILE;
+> +
+> +       if (setrlimit(RLIMIT_NOFILE, &limit) < 0)
+> +               err(1, "Failed to set rlimit");
+> +}
+> +
+>  int main(int argc, char **argv)
+>  {
+>         outf = stderr;
+> @@ -6729,6 +6747,9 @@ int main(int argc, char **argv)
+>
+>         probe_sysfs();
+>
+> +       if (!getuid())
+> +               set_rlimit();
+> +
+>         turbostat_init();
+>
+>         msr_sum_record();
+> --
+> 2.34.1
+>
+
+
+-- 
+Len Brown, Intel
