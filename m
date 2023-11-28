@@ -2,49 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 761227FC29C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90F3D7FC1C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346122AbjK1Ppx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 10:45:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48856 "EHLO
+        id S1346154AbjK1PrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 10:47:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346214AbjK1Ppt (ORCPT
+        with ESMTP id S1346059AbjK1PrB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 10:45:49 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E8221735
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 07:45:56 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18D9EC433C7;
-        Tue, 28 Nov 2023 15:45:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1701186355;
-        bh=8rY6TA3NSAkF9JG5HOzJ8ff3+LplvArK8YdCLW++XDU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uGn+1/T/NHZhQPL0TOkHSv62Ex0ajuoXyWKc9Ux3u9VD2TYBHlu/abZ17jIxwqd3q
-         yDtkumKn4Z/SZdG4Pc79tLKJ5bFcK9RPj1n4e4Nqne6Xbqq+1YrfjwdfeJIWXHp5PF
-         CIQF7Eu8XQOQOQV4/IXuBmcdqrLVRbM0C/hEoyMU=
-Date:   Tue, 28 Nov 2023 15:45:52 +0000
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Conor Dooley <conor.dooley@microchip.com>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, allen.lkml@gmail.com
-Subject: Re: [PATCH 6.1 000/366] 6.1.64-rc4 review
-Message-ID: <2023112838-blandness-exodus-5ff8@gregkh>
-References: <20231126154359.953633996@linuxfoundation.org>
- <20231128-perceive-impulsive-754e8e2e2bbf@wendy>
+        Tue, 28 Nov 2023 10:47:01 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 638D012A;
+        Tue, 28 Nov 2023 07:47:05 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6d8029dae41so2712896a34.0;
+        Tue, 28 Nov 2023 07:47:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701186424; x=1701791224; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cM6IJHXap0cWHVgv8jcH9qHYNny0Fi1EYGKNuvxbiD0=;
+        b=TKG9EXwACnvWXmxqmaeooyWGw34+FJIGtPSD/po1VyjFPdfGwHPJiW3Ct5MPyPZQy0
+         bTMlQSPKyTB+i2pVjpPtxMQujgMj1a++zKIvM8rJvZpFnbMGHOJtZtC86Ufdm0w0sD6v
+         szoiy4ud/1ckVNxtj7fPC/5h0jtUFT8S1M5aSsZdsPgVZzWJ1S+qWUXwAnH1Rh5ViRqV
+         GWjx4+o2kOL5HISnuHGSDnPp3uv+bjGlGPGhTV9JxfrIqrCHWqlZbx2rOap5lj3K4oXE
+         XzI0EvO6p000GT0k0Cs0Ipe0y6M/wjGE7T3GGtdnrWry771euXIkwSbzZY7KCuUK6PKp
+         3Cpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701186424; x=1701791224;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cM6IJHXap0cWHVgv8jcH9qHYNny0Fi1EYGKNuvxbiD0=;
+        b=Z2BghdY0cGMc4T05LZSfragodwg+jo6lmcPJWZRqGzoAHSph7JAZcAD4hnwn8ZnlYq
+         IPfUXC/L6PU4kHU9A2eiJtrbyskNw2XYrQTQx3VDsg/GUMJIxWMJwfLSksCKBrXxhN+q
+         rqSBrDp5nQDhExeCbHkISWjwgZVnIRHrxIN264+FFpE5Zvw4KmCU00QeQvlYWpNWFcDP
+         OA0EUNJDyUtgXANCytKia/UGDorBIwKuj4gv8tPZSYMOVMVF/8HZsXjJ5WyeZ/a5SfaK
+         IrU3V5T+mW+FwxudLO5pbSXa8j+/HUD+pIBjzfeWFIz2Y3ljTZooXKEDLmyguZtVict3
+         6WPA==
+X-Gm-Message-State: AOJu0Yws/TXs3MCv+jIzBtjISKcUFV0CNvFzHrd92LECG+q0ifZiybUW
+        O15XUgn8Jhg4eBmwuuQLXX0YT0onN95l7p5kQ0o=
+X-Google-Smtp-Source: AGHT+IGyhl5v7GLlbP0U7JzSZav8TWObNwdNZ/p+U+JKJ3cJI+0dp/6n/qDLP+1tW4xvmtotemP04gahFL4htQaUDiM=
+X-Received: by 2002:a05:6830:213:b0:6d7:ed0f:87d4 with SMTP id
+ em19-20020a056830021300b006d7ed0f87d4mr16552726otb.33.1701186424670; Tue, 28
+ Nov 2023 07:47:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231128-perceive-impulsive-754e8e2e2bbf@wendy>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20231125200519.1750-1-ddrokosov@salutedevices.com> <20231125200519.1750-3-ddrokosov@salutedevices.com>
+In-Reply-To: <20231125200519.1750-3-ddrokosov@salutedevices.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 28 Nov 2023 17:46:28 +0200
+Message-ID: <CAHp75Vfsz6KPgHbttumzngkU2BkDS_6FZ3r4eTENCcML3mYD+Q@mail.gmail.com>
+Subject: Re: [PATCH v5 02/11] leds: aw200xx: support HWEN hardware control
+To:     Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc:     lee@kernel.org, pavel@ucw.cz, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        kernel@sberdevices.ru, rockosov@gmail.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,55 +72,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 11:38:30AM +0000, Conor Dooley wrote:
-> On Sun, Nov 26, 2023 at 03:46:28PM +0000, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 6.1.64 release.
-> > There are 366 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> 
-> I missed testing 6.1.63 so I noticed this only here, but my CI is
-> complaining about seeing some
-> [    0.000000] Couldn't find cpu id for hartid [0]
-> during boot.
-> 
-> It was caused by
-> 
-> commit 3df98bd3196665f2fd37fcc5b2d483a24a314095
-> Author: Anup Patel <apatel@ventanamicro.com>
-> Date:   Fri Oct 27 21:12:53 2023 +0530
-> 
->     RISC-V: Don't fail in riscv_of_parent_hartid() for disabled HARTs
->     
->     [ Upstream commit c4676f8dc1e12e68d6511f9ed89707fdad4c962c ]
->     
->     The riscv_of_processor_hartid() used by riscv_of_parent_hartid() fails
->     for HARTs disabled in the DT. This results in the following warning
->     thrown by the RISC-V INTC driver for the E-core on SiFive boards:
->     
->     [    0.000000] riscv-intc: unable to find hart id for /cpus/cpu@0/interrupt-controller
->     
->     The riscv_of_parent_hartid() is only expected to read the hartid
->     from the DT so we directly call of_get_cpu_hwid() instead of calling
->     riscv_of_processor_hartid().
->     
->     Fixes: ad635e723e17 ("riscv: cpu: Add 64bit hartid support on RV64")
->     Signed-off-by: Anup Patel <apatel@ventanamicro.com>
->     Reviewed-by: Atish Patra <atishp@rivosinc.com>
->     Link: https://lore.kernel.org/r/20231027154254.355853-2-apatel@ventanamicro.com
->     Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
->     Signed-off-by: Sasha Levin <sashal@kernel.org>
-> 
-> and there is already a fix for this in Linus' tree though that you can
-> pick:
-> 52909f176802 ("RISC-V: drop error print from riscv_hartid_to_cpuid()")
-> 
-> That's just one error print that realistically has no impact on the
-> operation of the system, and is not introduced by this particular
-> version, so
-> 
-> Tested-by: Conor Dooley <conor.dooley@microchip.com>
+On Sat, Nov 25, 2023 at 10:05=E2=80=AFPM Dmitry Rokosov
+<ddrokosov@salutedevices.com> wrote:
+>
+> HWEN is hardware control, which is used for enable/disable aw200xx chip.
+> It's high active, internally pulled down to GND.
+>
+> After HWEN pin set high the chip begins to load the OTP information,
+> which takes 200us to complete. About 200us wait time is needed for
+> internal oscillator startup and display SRAM initialization. After
+> display SRAM initialization, the registers in page 1 to page 5 can be
+> configured via i2c interface.
 
-Thanks, I'll go queue that patch up now too, can't hurt :)
+...
 
-greg k-h
+> +       chip->hwen =3D devm_gpiod_get_optional(&client->dev, "enable",
+> +                                            GPIOD_OUT_HIGH);
+> +       if (IS_ERR(chip->hwen))
+> +               return dev_err_probe(&client->dev, PTR_ERR(chip->hwen),
+> +                                    "Cannot get enable GPIO");
+
+You can make it neater with
+
+  struct device *dev =3D &client->dev;
+
+--=20
+With Best Regards,
+Andy Shevchenko
