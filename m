@@ -2,345 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4197FB9EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:10:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 973D77FB9E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:09:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344610AbjK1MJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 07:09:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38020 "EHLO
+        id S1344622AbjK1MJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 07:09:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344527AbjK1MJr (ORCPT
+        with ESMTP id S1344381AbjK1MJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 07:09:47 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E8BD59;
-        Tue, 28 Nov 2023 04:09:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701173393; x=1732709393;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mtIu5f1hDVaKzrp3gZyRN6bomQimaf0cxFp5LllKoNg=;
-  b=UxZhaiDK4zs6A/BpUWP+RqLVQoFykZWA4dqfeUaxIBZGmbfwCTW81cx3
-   9f2Duj0JEEGUm7ddoTq4JaQ6e5RWXZYx4WeOMjyBx1FrfkPxsuYIE46dH
-   N+Gd+BLRAkzu2AanFwBXmcPq/e9xzF7kN7H/CNF2/S247tBL8kqtY48+S
-   Uk3e9deLVI7ABb0v02V6OtezUd/uZS1bYQ0BBDpACdQN06Zs4oSVJgP7O
-   ec6tkCY5ShnkXixO4egn2dqMg72zMafP2vdx95lNlL2w93R5m/ObJ9Flf
-   GN4MvGxNJRvrvdQq1P2VJaDZ2wqgN+a9KJIA70ocrTaVRDehtU2jLpG+x
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="391783864"
-X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
-   d="scan'208";a="391783864"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 04:09:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="772294330"
-X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
-   d="scan'208";a="772294330"
-Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 28 Nov 2023 04:09:47 -0800
-Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r7wuP-0007Xk-0i;
-        Tue, 28 Nov 2023 12:09:45 +0000
-Date:   Tue, 28 Nov 2023 20:08:36 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, Dave Chinner <dchinner@redhat.com>,
-        Allison Henderson <allison.henderson@oracle.com>,
-        Zhang Tianci <zhangtianci.1997@bytedance.com>,
-        Brian Foster <bfoster@redhat.com>, Ben Myers <bpm@sgi.com>,
-        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xieyongji@bytedance.com, me@jcix.top
-Subject: Re: [PATCH 2/2] xfs: update dir3 leaf block metadata after swap
-Message-ID: <202311281904.r45MkLJq-lkp@intel.com>
-References: <20231128053202.29007-3-zhangjiachen.jaycee@bytedance.com>
+        Tue, 28 Nov 2023 07:09:22 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E3E7182;
+        Tue, 28 Nov 2023 04:09:28 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40b397793aaso24700815e9.0;
+        Tue, 28 Nov 2023 04:09:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701173367; x=1701778167; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=oGZ/AOFCUofp/Ip1CkJeKXSMao5eFIWJrE7N8FH5Dk4=;
+        b=h3usQyvEcDxiGMbYnhFh+sY19pffIWnIa6aEI/xTNJnxg/Egci3WGZbeSz9AOc2G2Q
+         HlTHrsYtapKcN6ZyPIu95Ry/1U81k2qNcwQ7fJxaptB2AS1wmthWrB3Kpib9pLdEvV3S
+         vSMyFh6wF6xbh/4XVPt0lvnW4b1WH6P2sxuZfpMeP8IIe2jWcX7Vy7+2IG1ZdVK9YKkk
+         64IcsrkDcizWVuwSj0/wX/5wkd/RENMSTQSDmKuQ4e1EauJgcCXUbfe/QLXAaJpVfzE+
+         qSXs+Ef73UgJlKkFgwS5f4CRZsfrxQtopywGWYH/7AnAOGZ+2/7HKamZ6QdyqlBPPT3l
+         EWtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701173367; x=1701778167;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oGZ/AOFCUofp/Ip1CkJeKXSMao5eFIWJrE7N8FH5Dk4=;
+        b=iEyUdBfNC/5u+mejT0SLZ5qbCk88mAHXJ6Q5rSAj29Ar6bzyJsV3D6+sdjIJUkglRc
+         T46Z9ybhG0flYJy/941dj7Ys5Tuo4RR438Cn/3o4QIEjmhrnTFQdj65ammu1Zm0ru5od
+         sAdatcfVqV92QFL0kXaZoTL+G7ItrkCkm4ntohaSTVdf/PKjzG5Z90RCxyOGvJSw43Kl
+         /Tlv2wBL/9HUdZlgOGqeNO/Ff1WEvGxDg83NDFVDRk2GC5GA2fIEtfWJ1Gup50eH3/JE
+         1B7nFJ4Gykb13r22UQ/lWrENOLtce7i4KGLYDDSq3l5jqxxWRvA4TuQ3rUvvYClpZ4DB
+         QD1g==
+X-Gm-Message-State: AOJu0YzqPwsO7f5l2/lm9EddLmhydonjEaLF+jXxKPq4N5X1XpScBk3x
+        IkvGwGHuyoQOBqeF2N1e61I=
+X-Google-Smtp-Source: AGHT+IGbBBv6SLNWzhb+OGjrpkkr9ufbL/wiM7k+E/3ue7yfq8P984X8hsnAh2R7HaBI8aT4sqQLDQ==
+X-Received: by 2002:a05:600c:5124:b0:40b:2ad8:579f with SMTP id o36-20020a05600c512400b0040b2ad8579fmr15342645wms.3.1701173366197;
+        Tue, 28 Nov 2023 04:09:26 -0800 (PST)
+Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.gmail.com with ESMTPSA id n19-20020a05600c501300b0040b4c26d2dasm2231768wmr.32.2023.11.28.04.09.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 04:09:25 -0800 (PST)
+Message-ID: <6565d875.050a0220.d709d.658b@mx.google.com>
+X-Google-Original-Message-ID: <ZWXYcwbGdFX0vGMD@Ansuel-xps.>
+Date:   Tue, 28 Nov 2023 13:09:23 +0100
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [net-next PATCH RFC v3 2/8] net: phy: add initial support for
+ PHY package in DT
+References: <20231126015346.25208-1-ansuelsmth@gmail.com>
+ <20231126015346.25208-3-ansuelsmth@gmail.com>
+ <b28b5d10-08cd-4e30-9909-f37834d80c81@lunn.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231128053202.29007-3-zhangjiachen.jaycee@bytedance.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <b28b5d10-08cd-4e30-9909-f37834d80c81@lunn.ch>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        WEIRD_QUOTING autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiachen,
+On Tue, Nov 28, 2023 at 01:39:02AM +0100, Andrew Lunn wrote:
+> > +static int of_phy_package(struct phy_device *phydev)
+> > +{
+> > +	struct device_node *node = phydev->mdio.dev.of_node;
+> > +	struct device_node *package_node;
+> > +	u32 base_addr;
+> > +	int ret;
+> > +
+> > +	if (!node)
+> > +		return 0;
+> > +
+> > +	package_node = of_get_parent(node);
+> > +	if (!package_node)
+> > +		return 0;
+> > +
+> > +	if (!of_device_is_compatible(package_node, "ethernet-phy-package"))
+> > +		return 0;
+> > +
+> > +	if (of_property_read_u32(package_node, "reg", &base_addr))
+> > +		return -EINVAL;
+> > +
+> > +	ret = devm_phy_package_join(&phydev->mdio.dev, phydev,
+> > +				    base_addr, 0);
+> 
+> No don't do this. It is just going to lead to errors. The PHY driver
+> knows how many PHYs are in the package. So it can figure out what the
+> base address is and create the package. It can add each PHY as they
+> probe. That cannot go wrong.
+>
 
-kernel test robot noticed the following build errors:
+No it can't and we experiment this with a funny implementation on the
+QSDK. Maybe I'm confused?
 
-[auto build test ERROR on xfs-linux/for-next]
-[also build test ERROR on linus/master v6.7-rc3 next-20231128]
-[cannot apply to djwong-xfs/djwong-devel]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Example on QSDK they were all based on a value first_phy_addr. This was
+filled with the first phy addr found (for the package).
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jiachen-Zhang/xfs-ensure-tmp_logflags-is-initialized-in-xfs_bmap_del_extent_real/20231128-135955
-base:   https://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git for-next
-patch link:    https://lore.kernel.org/r/20231128053202.29007-3-zhangjiachen.jaycee%40bytedance.com
-patch subject: [PATCH 2/2] xfs: update dir3 leaf block metadata after swap
-config: i386-randconfig-141-20231128 (https://download.01.org/0day-ci/archive/20231128/202311281904.r45MkLJq-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231128/202311281904.r45MkLJq-lkp@intel.com/reproduce)
+All OEM followed a template with declaring all sort of bloat and they
+probably have no idea what they are actually putting in DT. We reverse
+all the properties and we gave a meaning to all the values...
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311281904.r45MkLJq-lkp@intel.com/
+We quikly notice that the parsing was very fragile and on some strange
+device (an example a Xiaomi 36000) the first PHY for the package was
+actually not attached to anything. Resulting in all this logic of
+"first_phy_addr" failing as by removing the first PHY, the value was set
+to a wrong addr resulting in all sort of problems.
 
-All errors (new ones prefixed by >>):
+This changed a lot (the original series used a more robust way with
+phandle, but it was asked to use base_addr and use offset in the PHY
+addr, less robust still OK)
 
->> fs/xfs/libxfs/xfs_da_btree.c:2330:38: error: no member named 'b_bn' in 'struct xfs_buf'
-                   dap->blkno = cpu_to_be64(dead_buf->b_bn);
-                                            ~~~~~~~~  ^
-   include/linux/byteorder/generic.h:92:21: note: expanded from macro 'cpu_to_be64'
-   #define cpu_to_be64 __cpu_to_be64
-                       ^
-   include/uapi/linux/byteorder/little_endian.h:38:53: note: expanded from macro '__cpu_to_be64'
-   #define __cpu_to_be64(x) ((__force __be64)__swab64((x)))
-                                                       ^
-   include/uapi/linux/swab.h:128:54: note: expanded from macro '__swab64'
-   #define __swab64(x) (__u64)__builtin_bswap64((__u64)(x))
-                                                        ^
-   1 error generated.
+If we revert to PHY driver making the PHY package then we lose all kind
+of ""automation"" of having a correct base addr. In PHY driver we would
+have to manually parse with parent (as we do here) and check the value?
 
+Why not do the thing directly on PHY core?
 
-vim +2330 fs/xfs/libxfs/xfs_da_btree.c
+By making the PHY driver creating the package, we are back on all kind
+of bloat in the PHY driver doing the same thing (parsing package nodes,
+probe_once check, config_once check) instead of handling them directly
+in PHY core.
 
-  2254	
-  2255	/*
-  2256	 * Ick.  We need to always be able to remove a btree block, even
-  2257	 * if there's no space reservation because the filesystem is full.
-  2258	 * This is called if xfs_bunmapi on a btree block fails due to ENOSPC.
-  2259	 * It swaps the target block with the last block in the file.  The
-  2260	 * last block in the file can always be removed since it can't cause
-  2261	 * a bmap btree split to do that.
-  2262	 */
-  2263	STATIC int
-  2264	xfs_da3_swap_lastblock(
-  2265		struct xfs_da_args	*args,
-  2266		xfs_dablk_t		*dead_blknop,
-  2267		struct xfs_buf		**dead_bufp)
-  2268	{
-  2269		struct xfs_da_blkinfo	*dead_info;
-  2270		struct xfs_da_blkinfo	*sib_info;
-  2271		struct xfs_da_intnode	*par_node;
-  2272		struct xfs_da_intnode	*dead_node;
-  2273		struct xfs_dir2_leaf	*dead_leaf2;
-  2274		struct xfs_da_node_entry *btree;
-  2275		struct xfs_da3_icnode_hdr par_hdr;
-  2276		struct xfs_inode	*dp;
-  2277		struct xfs_trans	*tp;
-  2278		struct xfs_mount	*mp;
-  2279		struct xfs_buf		*dead_buf;
-  2280		struct xfs_buf		*last_buf;
-  2281		struct xfs_buf		*sib_buf;
-  2282		struct xfs_buf		*par_buf;
-  2283		xfs_dahash_t		dead_hash;
-  2284		xfs_fileoff_t		lastoff;
-  2285		xfs_dablk_t		dead_blkno;
-  2286		xfs_dablk_t		last_blkno;
-  2287		xfs_dablk_t		sib_blkno;
-  2288		xfs_dablk_t		par_blkno;
-  2289		int			error;
-  2290		int			w;
-  2291		int			entno;
-  2292		int			level;
-  2293		int			dead_level;
-  2294	
-  2295		trace_xfs_da_swap_lastblock(args);
-  2296	
-  2297		dead_buf = *dead_bufp;
-  2298		dead_blkno = *dead_blknop;
-  2299		tp = args->trans;
-  2300		dp = args->dp;
-  2301		w = args->whichfork;
-  2302		ASSERT(w == XFS_DATA_FORK);
-  2303		mp = dp->i_mount;
-  2304		lastoff = args->geo->freeblk;
-  2305		error = xfs_bmap_last_before(tp, dp, &lastoff, w);
-  2306		if (error)
-  2307			return error;
-  2308		if (XFS_IS_CORRUPT(mp, lastoff == 0))
-  2309			return -EFSCORRUPTED;
-  2310		/*
-  2311		 * Read the last block in the btree space.
-  2312		 */
-  2313		last_blkno = (xfs_dablk_t)lastoff - args->geo->fsbcount;
-  2314		error = xfs_da3_node_read(tp, dp, last_blkno, &last_buf, w);
-  2315		if (error)
-  2316			return error;
-  2317		/*
-  2318		 * Copy the last block into the dead buffer and log it.
-  2319		 */
-  2320		memcpy(dead_buf->b_addr, last_buf->b_addr, args->geo->blksize);
-  2321		dead_info = dead_buf->b_addr;
-  2322		/*
-  2323		 * Update the moved block's blkno if it's a dir3 leaf block
-  2324		 */
-  2325		if (dead_info->magic == cpu_to_be16(XFS_DIR3_LEAF1_MAGIC) ||
-  2326		    dead_info->magic == cpu_to_be16(XFS_DIR3_LEAFN_MAGIC) ||
-  2327		    dead_info->magic == cpu_to_be16(XFS_ATTR3_LEAF_MAGIC)) {
-  2328			struct xfs_da3_blkinfo *dap = (struct xfs_da3_blkinfo *)dead_info;
-  2329	
-> 2330			dap->blkno = cpu_to_be64(dead_buf->b_bn);
-  2331		}
-  2332		xfs_trans_log_buf(tp, dead_buf, 0, args->geo->blksize - 1);
-  2333		/*
-  2334		 * Get values from the moved block.
-  2335		 */
-  2336		if (dead_info->magic == cpu_to_be16(XFS_DIR2_LEAFN_MAGIC) ||
-  2337		    dead_info->magic == cpu_to_be16(XFS_DIR3_LEAFN_MAGIC)) {
-  2338			struct xfs_dir3_icleaf_hdr leafhdr;
-  2339			struct xfs_dir2_leaf_entry *ents;
-  2340	
-  2341			dead_leaf2 = (xfs_dir2_leaf_t *)dead_info;
-  2342			xfs_dir2_leaf_hdr_from_disk(dp->i_mount, &leafhdr,
-  2343						    dead_leaf2);
-  2344			ents = leafhdr.ents;
-  2345			dead_level = 0;
-  2346			dead_hash = be32_to_cpu(ents[leafhdr.count - 1].hashval);
-  2347		} else {
-  2348			struct xfs_da3_icnode_hdr deadhdr;
-  2349	
-  2350			dead_node = (xfs_da_intnode_t *)dead_info;
-  2351			xfs_da3_node_hdr_from_disk(dp->i_mount, &deadhdr, dead_node);
-  2352			btree = deadhdr.btree;
-  2353			dead_level = deadhdr.level;
-  2354			dead_hash = be32_to_cpu(btree[deadhdr.count - 1].hashval);
-  2355		}
-  2356		sib_buf = par_buf = NULL;
-  2357		/*
-  2358		 * If the moved block has a left sibling, fix up the pointers.
-  2359		 */
-  2360		if ((sib_blkno = be32_to_cpu(dead_info->back))) {
-  2361			error = xfs_da3_node_read(tp, dp, sib_blkno, &sib_buf, w);
-  2362			if (error)
-  2363				goto done;
-  2364			sib_info = sib_buf->b_addr;
-  2365			if (XFS_IS_CORRUPT(mp,
-  2366					   be32_to_cpu(sib_info->forw) != last_blkno ||
-  2367					   sib_info->magic != dead_info->magic)) {
-  2368				error = -EFSCORRUPTED;
-  2369				goto done;
-  2370			}
-  2371			sib_info->forw = cpu_to_be32(dead_blkno);
-  2372			xfs_trans_log_buf(tp, sib_buf,
-  2373				XFS_DA_LOGRANGE(sib_info, &sib_info->forw,
-  2374						sizeof(sib_info->forw)));
-  2375			sib_buf = NULL;
-  2376		}
-  2377		/*
-  2378		 * If the moved block has a right sibling, fix up the pointers.
-  2379		 */
-  2380		if ((sib_blkno = be32_to_cpu(dead_info->forw))) {
-  2381			error = xfs_da3_node_read(tp, dp, sib_blkno, &sib_buf, w);
-  2382			if (error)
-  2383				goto done;
-  2384			sib_info = sib_buf->b_addr;
-  2385			if (XFS_IS_CORRUPT(mp,
-  2386					   be32_to_cpu(sib_info->back) != last_blkno ||
-  2387					   sib_info->magic != dead_info->magic)) {
-  2388				error = -EFSCORRUPTED;
-  2389				goto done;
-  2390			}
-  2391			sib_info->back = cpu_to_be32(dead_blkno);
-  2392			xfs_trans_log_buf(tp, sib_buf,
-  2393				XFS_DA_LOGRANGE(sib_info, &sib_info->back,
-  2394						sizeof(sib_info->back)));
-  2395			sib_buf = NULL;
-  2396		}
-  2397		par_blkno = args->geo->leafblk;
-  2398		level = -1;
-  2399		/*
-  2400		 * Walk down the tree looking for the parent of the moved block.
-  2401		 */
-  2402		for (;;) {
-  2403			error = xfs_da3_node_read(tp, dp, par_blkno, &par_buf, w);
-  2404			if (error)
-  2405				goto done;
-  2406			par_node = par_buf->b_addr;
-  2407			xfs_da3_node_hdr_from_disk(dp->i_mount, &par_hdr, par_node);
-  2408			if (XFS_IS_CORRUPT(mp,
-  2409					   level >= 0 && level != par_hdr.level + 1)) {
-  2410				error = -EFSCORRUPTED;
-  2411				goto done;
-  2412			}
-  2413			level = par_hdr.level;
-  2414			btree = par_hdr.btree;
-  2415			for (entno = 0;
-  2416			     entno < par_hdr.count &&
-  2417			     be32_to_cpu(btree[entno].hashval) < dead_hash;
-  2418			     entno++)
-  2419				continue;
-  2420			if (XFS_IS_CORRUPT(mp, entno == par_hdr.count)) {
-  2421				error = -EFSCORRUPTED;
-  2422				goto done;
-  2423			}
-  2424			par_blkno = be32_to_cpu(btree[entno].before);
-  2425			if (level == dead_level + 1)
-  2426				break;
-  2427			xfs_trans_brelse(tp, par_buf);
-  2428			par_buf = NULL;
-  2429		}
-  2430		/*
-  2431		 * We're in the right parent block.
-  2432		 * Look for the right entry.
-  2433		 */
-  2434		for (;;) {
-  2435			for (;
-  2436			     entno < par_hdr.count &&
-  2437			     be32_to_cpu(btree[entno].before) != last_blkno;
-  2438			     entno++)
-  2439				continue;
-  2440			if (entno < par_hdr.count)
-  2441				break;
-  2442			par_blkno = par_hdr.forw;
-  2443			xfs_trans_brelse(tp, par_buf);
-  2444			par_buf = NULL;
-  2445			if (XFS_IS_CORRUPT(mp, par_blkno == 0)) {
-  2446				error = -EFSCORRUPTED;
-  2447				goto done;
-  2448			}
-  2449			error = xfs_da3_node_read(tp, dp, par_blkno, &par_buf, w);
-  2450			if (error)
-  2451				goto done;
-  2452			par_node = par_buf->b_addr;
-  2453			xfs_da3_node_hdr_from_disk(dp->i_mount, &par_hdr, par_node);
-  2454			if (XFS_IS_CORRUPT(mp, par_hdr.level != level)) {
-  2455				error = -EFSCORRUPTED;
-  2456				goto done;
-  2457			}
-  2458			btree = par_hdr.btree;
-  2459			entno = 0;
-  2460		}
-  2461		/*
-  2462		 * Update the parent entry pointing to the moved block.
-  2463		 */
-  2464		btree[entno].before = cpu_to_be32(dead_blkno);
-  2465		xfs_trans_log_buf(tp, par_buf,
-  2466			XFS_DA_LOGRANGE(par_node, &btree[entno].before,
-  2467					sizeof(btree[entno].before)));
-  2468		*dead_blknop = last_blkno;
-  2469		*dead_bufp = last_buf;
-  2470		return 0;
-  2471	done:
-  2472		if (par_buf)
-  2473			xfs_trans_brelse(tp, par_buf);
-  2474		if (sib_buf)
-  2475			xfs_trans_brelse(tp, sib_buf);
-  2476		xfs_trans_brelse(tp, last_buf);
-  2477		return error;
-  2478	}
-  2479	
+Also just to point out, the way the current PHY driver derive the base
+addr is problematic. All of them use special regs to find the base one
+but I can totally see a PHY driver in the future assuming the first PHY
+being the first in the package to be probed, set the base addr on the
+first PHY and also assuming that it's always define in DT.
+
+If we really don't want the OF parsing in PHY core and autojoin them,
+is at least OK to introduce an helper to get the base addr from a PHY
+package node structure? (to at least try to minimaze the bloat that PHY
+driver will have?)
+
+Also with the OF support dropped, I guess also the added API in this
+series has to be dropped. (as they would be called after the first PHY
+probe and that is problematic if for some reason only one PHY of the
+package is declared in DT) (an alternative might be moving the
+probe_once after the PHY is probed as we expect the phy_package_join
+call done in the PHY probe call)
+
+> If you create the package based on DT you have to validate that the DT
+> is correct. You need the same information, the base address, how many
+> packages are in the PHY, etc. So DT gains your nothing except more
+> potential to get it wrong.
+> 
+
+For the sake of package join, only the reg has to be validated and the
+validation is just if addrs makes sense. Everything else can be done by
+PHY package probe once.
+
+> Please use DT just for properties for the package, nothing else.
+> 
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+	Ansuel
