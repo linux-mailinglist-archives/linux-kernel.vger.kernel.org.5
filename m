@@ -2,66 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2637FB164
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 06:41:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D158C7FB166
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 06:42:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343546AbjK1Flu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 00:41:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37774 "EHLO
+        id S1343553AbjK1Fmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 00:42:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbjK1Fls (ORCPT
+        with ESMTP id S231540AbjK1Fm3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 00:41:48 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6274D6;
-        Mon, 27 Nov 2023 21:41:53 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3AS5fblH71825394, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3AS5fblH71825394
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Nov 2023 13:41:37 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Tue, 28 Nov 2023 13:41:37 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Tue, 28 Nov 2023 13:41:36 +0800
-Received: from RTEXMBS01.realtek.com.tw ([fe80::540c:c8d6:1d0f:ab9f]) by
- RTEXMBS01.realtek.com.tw ([fe80::540c:c8d6:1d0f:ab9f%5]) with mapi id
- 15.01.2507.034; Tue, 28 Nov 2023 13:41:36 +0800
-From:   Ricky WU <ricky_wu@realtek.com>
-To:     "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Ricky WU <ricky_wu@realtek.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "frank.li@vivo.com" <frank.li@vivo.com>,
-        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-Subject: [PATCH v5 2/3] misc: rtsx: add to support new card reader rts5264
-Thread-Topic: [PATCH v5 2/3] misc: rtsx: add to support new card reader
- rts5264
-Thread-Index: AQHaIb0P0+oEcb3iS0upupsHxudEnQ==
-Date:   Tue, 28 Nov 2023 05:41:36 +0000
-Message-ID: <78c703d7ad3e4edb9b7df9e4ade60014@realtek.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.22.81.102]
-x-kse-serverinfo: RTEXMBS04.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+        Tue, 28 Nov 2023 00:42:29 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC84CC4
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 21:42:34 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-a02ba1f500fso719335866b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 21:42:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701150153; x=1701754953; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/q5Ao6kkaSp6ntRr5jYTJ0UF0vBlRA6OurkdKyp1VkQ=;
+        b=aAMuUkOchABJYb6Q0bDMA7m8QZWvNRiYeVA3AQ8ex7sK8kM9KXGU2+FiKPl/wO7nCu
+         bcM/Ronm0E1VOxP7Ft2vp/fZ2VYYRNPWPigLTUYOM8as7Fxuks9+gBdAlsVzWfu2fFvb
+         EkhbxP4E3CyO6WKN4cxqGveDBgzHtC/YRXYhkj0ghJc0yNpFdb0sIRXKBaDV3ugp/u0l
+         z0rCGx85CKsFzpJTwpxunoFirJ7XFxNogAhDKTIlTK8f1eQfj35xPnHCUJnUYvrDa2aZ
+         KTc+XbzqbVc6sTbycm/oqz3A8uMcjV9iItmLDAQPUfkEEcuFi88B4m2rp+nnS51Km86G
+         AuVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701150153; x=1701754953;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/q5Ao6kkaSp6ntRr5jYTJ0UF0vBlRA6OurkdKyp1VkQ=;
+        b=OHZZI2nvIryqrTEDrmuIfFJbT+k71dQWcQ3jDWAuYudDlnHKIaw9Nhx5KoyteNK0eY
+         OXatLjffqOP2TtmBV6r6IMzYRbLb8Z1BfKViqfumHCsFg0Z8JRRNVttmPATd5ZMsidWy
+         VKG27xjQCu+BzU/X6YHKa0PWjWYUXhVys/BvgbLGmPDh5N7fuH2uEyCYJ6MpvQLBMTns
+         NdHOkW4QZwoOCTzvnN69Y6Zwr6Xe9B2Q/UzDhgb/IWYrPcLGPUY416NJLWEVsF7Z+RTE
+         tKFH7xIdMgOTXhfvLQH4pKzrzzlRBt+xRw7/uH3fwPlFv73laSvM7OusnBfUYzKBRG2t
+         Ho5w==
+X-Gm-Message-State: AOJu0YzCZ6zythwObpQ0g8jrYijGrbyAP9CxJ21bK5fvsvewV2DpBAKV
+        9KSAMhnEpkor/u/pt27tjr9xc0FBB3To/BbCir59sg==
+X-Google-Smtp-Source: AGHT+IGG9T6aRbPaRWTVnBmWs0xDlUd+awySyMmO96LVP9S96Rltx1iOrej1rIz/glTs0p1wejc1wrNoThvjnBG9w+Q=
+X-Received: by 2002:a17:906:eb17:b0:a03:6fd8:f14b with SMTP id
+ mb23-20020a170906eb1700b00a036fd8f14bmr10117355ejb.28.1701150153208; Mon, 27
+ Nov 2023 21:42:33 -0800 (PST)
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <ZV3BWZ4ZaD5Rj_HS@tiehlicka> <ZV3TQCElHpcp0h0V@tiehlicka>
+ <CAJD7tka0=JR1s0OzQ0+H8ksFhvB2aBHXx_2-hVc97Enah9DqGQ@mail.gmail.com>
+ <ZV3_6UH28KMt0ZDb@tiehlicka> <87msv58068.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <ZWDPuR5Ssx07nBHb@tiehlicka> <87h6l77wl5.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <CAF8kJuOcMDpqZV+9+QjK-hsoJLGhoBzBOczAc7+UMypVJresSw@mail.gmail.com>
+ <87bkbf7gz6.fsf@yhuang6-desk2.ccr.corp.intel.com> <CAF8kJuNKH_vcF-=6nw3zP5cMaZHLudHZfxNDtHm0K2BXJ+EAgA@mail.gmail.com>
+ <ZWUKziMl6cFV2uWN@google.com> <CAJD7tkZNa_3mWYeix_Xc-BFRNVMkBF3uzL0JCkZOYw5ubAaj9w@mail.gmail.com>
+ <87msuy5zuv.fsf@yhuang6-desk2.ccr.corp.intel.com> <CAJD7tkZmyzohNRqgvZvZC5L7OFHzDRm-Y3JEQHiDYcwTCz-FBQ@mail.gmail.com>
+ <87fs0q5xsq.fsf@yhuang6-desk2.ccr.corp.intel.com> <CAJD7tkZKS=1BSoaCnF5wkto5z3-_sx=6GSVqdhXz=Dcw_-C3BA@mail.gmail.com>
+ <87bkbe5tha.fsf@yhuang6-desk2.ccr.corp.intel.com>
+In-Reply-To: <87bkbe5tha.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 27 Nov 2023 21:41:54 -0800
+Message-ID: <CAJD7tkbgPo1_Gij+EL==tedRh=nJe_etuZors-6Y-obYu44FMQ@mail.gmail.com>
+Subject: Re: [PATCH v10] mm: vmscan: try to reclaim swapcache pages if no swap space
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Minchan Kim <minchan@kernel.org>, Chris Li <chriscli@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sachin Sant <sachinp@linux.ibm.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,118 +86,178 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-YWRkIHJ0czUyNjQgdG8ganVkZ2VtZW50IHRoZW4gZG8gdGhlIHJ0czUyNjQgZnVuY3Rpb24NCm9y
-IHNldCBzb21lIHJ0czUyNjQgcmVnaXN0ZXJzDQoNClNpZ25lZC1vZmYtYnk6IFJpY2t5IFd1IDxy
-aWNreV93dUByZWFsdGVrLmNvbT4NCi0tLQ0KdjI6IHJlbW92ZWQgaWMgdmVyc2lvbiBjaGVjaw0K
-djM6IHNwbGl0IHRoZSBwYXRjaCB1cCB3aXRoIGNhcmRyZWFkZXIgcGFydCBhbmQgbW1jIHBhcnQN
-CnY0OiBzcGxpdCBuZXcgZGVmaW5pdGlvbiB1cCBmcm9tIHYzDQotLS0NCiBkcml2ZXJzL21pc2Mv
-Y2FyZHJlYWRlci9ydHN4X3Bjci5jIHwgMzAgKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0t
-DQogZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzeF9wY3IuaCB8ICAxICsNCiBpbmNsdWRlL2xp
-bnV4L3J0c3hfcGNpLmggICAgICAgICAgIHwgIDggKysrKysrKysNCiAzIGZpbGVzIGNoYW5nZWQs
-IDM0IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJz
-L21pc2MvY2FyZHJlYWRlci9ydHN4X3Bjci5jIGIvZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRz
-eF9wY3IuYw0KaW5kZXggYTMwNzUxYWQzNzMzLi4xYTY0MzY0NzAwZWIgMTAwNjQ0DQotLS0gYS9k
-cml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHN4X3Bjci5jDQorKysgYi9kcml2ZXJzL21pc2MvY2Fy
-ZHJlYWRlci9ydHN4X3Bjci5jDQpAQCAtMjYsNiArMjYsNyBAQA0KICNpbmNsdWRlICJydHN4X3Bj
-ci5oIg0KICNpbmNsdWRlICJydHM1MjYxLmgiDQogI2luY2x1ZGUgInJ0czUyMjguaCINCisjaW5j
-bHVkZSAicnRzNTI2NC5oIg0KIA0KIHN0YXRpYyBib29sIG1zaV9lbiA9IHRydWU7DQogbW9kdWxl
-X3BhcmFtKG1zaV9lbiwgYm9vbCwgU19JUlVHTyB8IFNfSVdVU1IpOw0KQEAgLTU0LDYgKzU1LDcg
-QEAgc3RhdGljIGNvbnN0IHN0cnVjdCBwY2lfZGV2aWNlX2lkIHJ0c3hfcGNpX2lkc1tdID0gew0K
-IAl7IFBDSV9ERVZJQ0UoMHgxMEVDLCAweDUyNjApLCBQQ0lfQ0xBU1NfT1RIRVJTIDw8IDE2LCAw
-eEZGMDAwMCB9LA0KIAl7IFBDSV9ERVZJQ0UoMHgxMEVDLCAweDUyNjEpLCBQQ0lfQ0xBU1NfT1RI
-RVJTIDw8IDE2LCAweEZGMDAwMCB9LA0KIAl7IFBDSV9ERVZJQ0UoMHgxMEVDLCAweDUyMjgpLCBQ
-Q0lfQ0xBU1NfT1RIRVJTIDw8IDE2LCAweEZGMDAwMCB9LA0KKwl7IFBDSV9ERVZJQ0UoMHgxMEVD
-LCAweDUyNjQpLCBQQ0lfQ0xBU1NfT1RIRVJTIDw8IDE2LCAweEZGMDAwMCB9LA0KIAl7IDAsIH0N
-CiB9Ow0KIA0KQEAgLTcxNCw2ICs3MTYsOSBAQCBpbnQgcnRzeF9wY2lfc3dpdGNoX2Nsb2NrKHN0
-cnVjdCBydHN4X3BjciAqcGNyLCB1bnNpZ25lZCBpbnQgY2FyZF9jbG9jaywNCiAJaWYgKFBDSV9Q
-SUQocGNyKSA9PSBQSURfNTIyOCkNCiAJCXJldHVybiBydHM1MjI4X3BjaV9zd2l0Y2hfY2xvY2so
-cGNyLCBjYXJkX2Nsb2NrLA0KIAkJCQlzc2NfZGVwdGgsIGluaXRpYWxfbW9kZSwgZG91YmxlX2Ns
-aywgdnBjbGspOw0KKwlpZiAoUENJX1BJRChwY3IpID09IFBJRF81MjY0KQ0KKwkJcmV0dXJuIHJ0
-czUyNjRfcGNpX3N3aXRjaF9jbG9jayhwY3IsIGNhcmRfY2xvY2ssDQorCQkJCXNzY19kZXB0aCwg
-aW5pdGlhbF9tb2RlLCBkb3VibGVfY2xrLCB2cGNsayk7DQogDQogCWlmIChpbml0aWFsX21vZGUp
-IHsNCiAJCS8qIFdlIHVzZSAyNTBrKGFyb3VuZCkgaGVyZSwgaW4gaW5pdGlhbCBzdGFnZSAqLw0K
-QEAgLTk4Nyw3ICs5OTIsOCBAQCBzdGF0aWMgaXJxcmV0dXJuX3QgcnRzeF9wY2lfaXNyKGludCBp
-cnEsIHZvaWQgKmRldl9pZCkNCiANCiAJaW50X3JlZyAmPSAocGNyLT5iaWVyIHwgMHg3RkZGRkYp
-Ow0KIA0KLQlpZiAoaW50X3JlZyAmIFNEX09DX0lOVCkNCisJaWYgKChpbnRfcmVnICYgU0RfT0Nf
-SU5UKSB8fA0KKwkJCSgoaW50X3JlZyAmIFNEX09WUF9JTlQpICYmIChQQ0lfUElEKHBjcikgPT0g
-UElEXzUyNjQpKSkNCiAJCXJ0c3hfcGNpX3Byb2Nlc3Nfb2NwX2ludGVycnVwdChwY3IpOw0KIA0K
-IAlpZiAoaW50X3JlZyAmIFNEX0lOVCkgew0KQEAgLTExNTksNyArMTE2NSw5IEBAIHZvaWQgcnRz
-eF9wY2lfZW5hYmxlX29vYnNfcG9sbGluZyhzdHJ1Y3QgcnRzeF9wY3IgKnBjcikNCiB7DQogCXUx
-NiB2YWw7DQogDQotCWlmICgoUENJX1BJRChwY3IpICE9IFBJRF81MjVBKSAmJiAoUENJX1BJRChw
-Y3IpICE9IFBJRF81MjYwKSkgew0KKwlpZiAoKFBDSV9QSUQocGNyKSAhPSBQSURfNTI1QSkgJiYN
-CisJCShQQ0lfUElEKHBjcikgIT0gUElEXzUyNjApICYmDQorCQkoUENJX1BJRChwY3IpICE9IFBJ
-RF81MjY0KSkgew0KIAkJcnRzeF9wY2lfcmVhZF9waHlfcmVnaXN0ZXIocGNyLCAweDAxLCAmdmFs
-KTsNCiAJCXZhbCB8PSAxPDw5Ow0KIAkJcnRzeF9wY2lfd3JpdGVfcGh5X3JlZ2lzdGVyKHBjciwg
-MHgwMSwgdmFsKTsNCkBAIC0xMTc1LDcgKzExODMsOSBAQCB2b2lkIHJ0c3hfcGNpX2Rpc2FibGVf
-b29ic19wb2xsaW5nKHN0cnVjdCBydHN4X3BjciAqcGNyKQ0KIHsNCiAJdTE2IHZhbDsNCiANCi0J
-aWYgKChQQ0lfUElEKHBjcikgIT0gUElEXzUyNUEpICYmIChQQ0lfUElEKHBjcikgIT0gUElEXzUy
-NjApKSB7DQorCWlmICgoUENJX1BJRChwY3IpICE9IFBJRF81MjVBKSAmJg0KKwkJKFBDSV9QSUQo
-cGNyKSAhPSBQSURfNTI2MCkgJiYNCisJCShQQ0lfUElEKHBjcikgIT0gUElEXzUyNjQpKSB7DQog
-CQlydHN4X3BjaV9yZWFkX3BoeV9yZWdpc3RlcihwY3IsIDB4MDEsICZ2YWwpOw0KIAkJdmFsICY9
-IH4oMTw8OSk7DQogCQlydHN4X3BjaV93cml0ZV9waHlfcmVnaXN0ZXIocGNyLCAweDAxLCB2YWwp
-Ow0KQEAgLTEyMjYsNyArMTIzNiw3IEBAIHN0YXRpYyBpbnQgcnRzeF9wY2lfaW5pdF9odyhzdHJ1
-Y3QgcnRzeF9wY3IgKnBjcikNCiAJcnRzeF9wY2lfZW5hYmxlX2J1c19pbnQocGNyKTsNCiANCiAJ
-LyogUG93ZXIgb24gU1NDICovDQotCWlmIChQQ0lfUElEKHBjcikgPT0gUElEXzUyNjEpIHsNCisJ
-aWYgKChQQ0lfUElEKHBjcikgPT0gUElEXzUyNjEpIHx8IChQQ0lfUElEKHBjcikgPT0gUElEXzUy
-NjQpKSB7DQogCQkvKiBHYXRpbmcgcmVhbCBtY3UgY2xvY2sgKi8NCiAJCWVyciA9IHJ0c3hfcGNp
-X3dyaXRlX3JlZ2lzdGVyKHBjciwgUlRTNTI2MV9GV19DRkcxLA0KIAkJCVJUUzUyNjFfTUNVX0NM
-T0NLX0dBVElORywgMCk7DQpAQCAtMTI3MCw2ICsxMjgwLDExIEBAIHN0YXRpYyBpbnQgcnRzeF9w
-Y2lfaW5pdF9odyhzdHJ1Y3QgcnRzeF9wY3IgKnBjcikNCiAJZWxzZSBpZiAoUENJX1BJRChwY3Ip
-ID09IFBJRF81MjI4KQ0KIAkJcnRzeF9wY2lfYWRkX2NtZChwY3IsIFdSSVRFX1JFR19DTUQsIFNT
-Q19DVEwyLCAweEZGLA0KIAkJCVJUUzUyMjhfU1NDX0RFUFRIXzJNKTsNCisJZWxzZSBpZiAoaXNf
-dmVyc2lvbihwY3IsIDB4NTI2NCwgSUNfVkVSX0EpKQ0KKwkJcnRzeF9wY2lfYWRkX2NtZChwY3Is
-IFdSSVRFX1JFR19DTUQsIFNTQ19DVEwxLCBTU0NfUlNUQiwgMCk7DQorCWVsc2UgaWYgKFBDSV9Q
-SUQocGNyKSA9PSBQSURfNTI2NCkNCisJCXJ0c3hfcGNpX2FkZF9jbWQocGNyLCBXUklURV9SRUdf
-Q01ELCBTU0NfQ1RMMiwgMHhGRiwNCisJCQlSVFM1MjY0X1NTQ19ERVBUSF8yTSk7DQogCWVsc2UN
-CiAJCXJ0c3hfcGNpX2FkZF9jbWQocGNyLCBXUklURV9SRUdfQ01ELCBTU0NfQ1RMMiwgMHhGRiwg
-MHgxMik7DQogDQpAQCAtMTMwNSw2ICsxMzIwLDcgQEAgc3RhdGljIGludCBydHN4X3BjaV9pbml0
-X2h3KHN0cnVjdCBydHN4X3BjciAqcGNyKQ0KIAljYXNlIFBJRF81MjYwOg0KIAljYXNlIFBJRF81
-MjYxOg0KIAljYXNlIFBJRF81MjI4Og0KKwljYXNlIFBJRF81MjY0Og0KIAkJcnRzeF9wY2lfd3Jp
-dGVfcmVnaXN0ZXIocGNyLCBQTV9DTEtfRk9SQ0VfQ1RMLCAxLCAxKTsNCiAJCWJyZWFrOw0KIAlk
-ZWZhdWx0Og0KQEAgLTE0MDQsNiArMTQyMCwxMCBAQCBzdGF0aWMgaW50IHJ0c3hfcGNpX2luaXRf
-Y2hpcChzdHJ1Y3QgcnRzeF9wY3IgKnBjcikNCiAJY2FzZSAweDUyMjg6DQogCQlydHM1MjI4X2lu
-aXRfcGFyYW1zKHBjcik7DQogCQlicmVhazsNCisNCisJY2FzZSAweDUyNjQ6DQorCQlydHM1MjY0
-X2luaXRfcGFyYW1zKHBjcik7DQorCQlicmVhazsNCiAJfQ0KIA0KIAlwY3JfZGJnKHBjciwgIlBJ
-RDogMHglMDR4LCBJQyB2ZXJzaW9uOiAweCUwMnhcbiIsDQpAQCAtMTU0NCw3ICsxNTY0LDcgQEAg
-c3RhdGljIGludCBydHN4X3BjaV9wcm9iZShzdHJ1Y3QgcGNpX2RldiAqcGNpZGV2LA0KIAlwY3It
-PnBjaSA9IHBjaWRldjsNCiAJZGV2X3NldF9kcnZkYXRhKCZwY2lkZXYtPmRldiwgaGFuZGxlKTsN
-CiANCi0JaWYgKENIS19QQ0lfUElEKHBjciwgMHg1MjVBKSkNCisJaWYgKChDSEtfUENJX1BJRChw
-Y3IsIDB4NTI1QSkpIHx8IChDSEtfUENJX1BJRChwY3IsIDB4NTI2NCkpKQ0KIAkJYmFyID0gMTsN
-CiAJbGVuID0gcGNpX3Jlc291cmNlX2xlbihwY2lkZXYsIGJhcik7DQogCWJhc2UgPSBwY2lfcmVz
-b3VyY2Vfc3RhcnQocGNpZGV2LCBiYXIpOw0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWlzYy9jYXJk
-cmVhZGVyL3J0c3hfcGNyLmggYi9kcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHN4X3Bjci5oDQpp
-bmRleCAzN2QxZjMxNmFlMTcuLjkyMTVkNjZkZTAwYyAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvbWlz
-Yy9jYXJkcmVhZGVyL3J0c3hfcGNyLmgNCisrKyBiL2RyaXZlcnMvbWlzYy9jYXJkcmVhZGVyL3J0
-c3hfcGNyLmgNCkBAIC03NCw2ICs3NCw3IEBAIHZvaWQgcnRsODQxMWJfaW5pdF9wYXJhbXMoc3Ry
-dWN0IHJ0c3hfcGNyICpwY3IpOw0KIHZvaWQgcnRzNTI2MF9pbml0X3BhcmFtcyhzdHJ1Y3QgcnRz
-eF9wY3IgKnBjcik7DQogdm9pZCBydHM1MjYxX2luaXRfcGFyYW1zKHN0cnVjdCBydHN4X3BjciAq
-cGNyKTsNCiB2b2lkIHJ0czUyMjhfaW5pdF9wYXJhbXMoc3RydWN0IHJ0c3hfcGNyICpwY3IpOw0K
-K3ZvaWQgcnRzNTI2NF9pbml0X3BhcmFtcyhzdHJ1Y3QgcnRzeF9wY3IgKnBjcik7DQogDQogc3Rh
-dGljIGlubGluZSB1OCBtYXBfc2RfZHJpdmUoaW50IGlkeCkNCiB7DQpkaWZmIC0tZ2l0IGEvaW5j
-bHVkZS9saW51eC9ydHN4X3BjaS5oIGIvaW5jbHVkZS9saW51eC9ydHN4X3BjaS5oDQppbmRleCA1
-MzQwMzhkOTYyZTQuLjQ2MTJlZjA5YTBjNyAxMDA2NDQNCi0tLSBhL2luY2x1ZGUvbGludXgvcnRz
-eF9wY2kuaA0KKysrIGIvaW5jbHVkZS9saW51eC9ydHN4X3BjaS5oDQpAQCAtNjAsNiArNjAsNyBA
-QA0KICNkZWZpbmUgICBTRF9FWElTVAkJCSgxIDw8IDE2KQ0KICNkZWZpbmUgICBERUxJTktfSU5U
-CQkJR1BJTzBfSU5UDQogI2RlZmluZSAgIE1TX09DX0lOVAkJCSgxIDw8IDIzKQ0KKyNkZWZpbmUg
-ICBTRF9PVlBfSU5UCQkoMSA8PCAyMykNCiAjZGVmaW5lICAgU0RfT0NfSU5UCQkJKDEgPDwgMjIp
-DQogDQogI2RlZmluZSBDQVJEX0lOVAkJKFhEX0lOVCB8IE1TX0lOVCB8IFNEX0lOVCkNCkBAIC04
-MCw2ICs4MSw3IEBADQogI2RlZmluZSAgIE9DX0lOVF9FTgkJCSgxIDw8IDIzKQ0KICNkZWZpbmUg
-ICBERUxJTktfSU5UX0VOCQkJR1BJTzBfSU5UX0VODQogI2RlZmluZSAgIE1TX09DX0lOVF9FTgkJ
-CSgxIDw8IDIzKQ0KKyNkZWZpbmUgICBTRF9PVlBfSU5UX0VOCQkJKDEgPDwgMjMpDQogI2RlZmlu
-ZSAgIFNEX09DX0lOVF9FTgkJCSgxIDw8IDIyKQ0KIA0KICNkZWZpbmUgUlRTWF9EVU1fUkVHCQkJ
-MHgxQw0KQEAgLTU4Myw2ICs1ODUsNyBAQA0KICNkZWZpbmUgICBPQkZGX0RJU0FCTEUJCQkweDAw
-DQogDQogI2RlZmluZSBDRFJFU1VNRUNUTAkJCTB4RkU1Mg0KKyNkZWZpbmUgQ0RHVwkJCQkweEZF
-NTMNCiAjZGVmaW5lIFdBS0VfU0VMX0NUTAkJCTB4RkU1NA0KICNkZWZpbmUgUENMS19DVEwJCQkw
-eEZFNTUNCiAjZGVmaW5lICAgUENMS19NT0RFX1NFTAkJCTB4MjANCkBAIC03NjQsNiArNzY3LDkg
-QEANCiAjZGVmaW5lICAgU0RfVklPX0xET18xVjgJCTB4NDANCiAjZGVmaW5lICAgU0RfVklPX0xE
-T18zVjMJCTB4NzANCiANCisjZGVmaW5lIFJUUzUyNjRfQVVUT0xPQURfQ0ZHMgkJMHhGRjdEDQor
-I2RlZmluZSBSVFM1MjY0X0NISVBfUlNUX05fU0VMCQkoMSA8PCA2KQ0KKw0KICNkZWZpbmUgUlRT
-NTI2MF9BVVRPTE9BRF9DRkc0CQkweEZGN0YNCiAjZGVmaW5lICAgUlRTNTI2MF9NSU1PX0RJU0FC
-TEUJCTB4OEENCiAvKlJUUzUyNjEqLw0KQEAgLTEyNjEsNiArMTI2Nyw3IEBAIHN0cnVjdCBydHN4
-X3BjciB7DQogCXU4CQkJCWRtYV9lcnJvcl9jb3VudDsNCiAJdTgJCQlvY3Bfc3RhdDsNCiAJdTgJ
-CQlvY3Bfc3RhdDI7DQorCXU4CQkJb3ZwX3N0YXQ7DQogCXU4CQkJcnRkM19lbjsNCiB9Ow0KIA0K
-QEAgLTEyNzEsNiArMTI3OCw3IEBAIHN0cnVjdCBydHN4X3BjciB7DQogI2RlZmluZSBQSURfNTI2
-MAkweDUyNjANCiAjZGVmaW5lIFBJRF81MjYxCTB4NTI2MQ0KICNkZWZpbmUgUElEXzUyMjgJMHg1
-MjI4DQorI2RlZmluZSBQSURfNTI2NAkweDUyNjQNCiANCiAjZGVmaW5lIENIS19QQ0lfUElEKHBj
-ciwgcGlkKQkJKChwY3IpLT5wY2ktPmRldmljZSA9PSAocGlkKSkNCiAjZGVmaW5lIFBDSV9WSUQo
-cGNyKQkJCSgocGNyKS0+cGNpLT52ZW5kb3IpDQotLSANCjIuMjUuMQ0K
+On Mon, Nov 27, 2023 at 9:39=E2=80=AFPM Huang, Ying <ying.huang@intel.com> =
+wrote:
+>
+> Yosry Ahmed <yosryahmed@google.com> writes:
+>
+> > On Mon, Nov 27, 2023 at 8:05=E2=80=AFPM Huang, Ying <ying.huang@intel.c=
+om> wrote:
+> >>
+> >> Yosry Ahmed <yosryahmed@google.com> writes:
+> >>
+> >> > On Mon, Nov 27, 2023 at 7:21=E2=80=AFPM Huang, Ying <ying.huang@inte=
+l.com> wrote:
+> >> >>
+> >> >> Yosry Ahmed <yosryahmed@google.com> writes:
+> >> >>
+> >> >> > On Mon, Nov 27, 2023 at 1:32=E2=80=AFPM Minchan Kim <minchan@kern=
+el.org> wrote:
+> >> >> >>
+> >> >> >> On Mon, Nov 27, 2023 at 12:22:59AM -0800, Chris Li wrote:
+> >> >> >> > On Mon, Nov 27, 2023 at 12:14=E2=80=AFAM Huang, Ying <ying.hua=
+ng@intel.com> wrote:
+> >> >> >> > > >  I agree with Ying that anonymous pages typically have dif=
+ferent page
+> >> >> >> > > > access patterns than file pages, so we might want to treat=
+ them
+> >> >> >> > > > differently to reclaim them effectively.
+> >> >> >> > > > One random idea:
+> >> >> >> > > > How about we put the anonymous page in a swap cache in a d=
+ifferent LRU
+> >> >> >> > > > than the rest of the anonymous pages. Then shrinking again=
+st those
+> >> >> >> > > > pages in the swap cache would be more effective.Instead of=
+ having
+> >> >> >> > > > [anon, file] LRU, now we have [anon not in swap cache, ano=
+n in swap
+> >> >> >> > > > cache, file] LRU
+> >> >> >> > >
+> >> >> >> > > I don't think that it is necessary.  The patch is only for a=
+ special use
+> >> >> >> > > case.  Where the swap device is used up while some pages are=
+ in swap
+> >> >> >> > > cache.  The patch will kill performance, but it is used to a=
+void OOM
+> >> >> >> > > only, not to improve performance.  Per my understanding, we =
+will not use
+> >> >> >> > > up swap device space in most cases.  This may be true for ZR=
+AM, but will
+> >> >> >> > > we keep pages in swap cache for long when we use ZRAM?
+> >> >> >> >
+> >> >> >> > I ask the question regarding how many pages can be freed by th=
+is patch
+> >> >> >> > in this email thread as well, but haven't got the answer from =
+the
+> >> >> >> > author yet. That is one important aspect to evaluate how valua=
+ble is
+> >> >> >> > that patch.
+> >> >> >>
+> >> >> >> Exactly. Since swap cache has different life time with page cach=
+e, they
+> >> >> >> would be usually dropped when pages are unmapped(unless they are=
+ shared
+> >> >> >> with others but anon is usually exclusive private) so I wonder h=
+ow much
+> >> >> >> memory we can save.
+> >> >> >
+> >> >> > I think the point of this patch is not saving memory, but rather
+> >> >> > avoiding an OOM condition that will happen if we have no swap spa=
+ce
+> >> >> > left, but some pages left in the swap cache. Of course, the OOM
+> >> >> > avoidance will come at the cost of extra work in reclaim to swap =
+those
+> >> >> > pages out.
+> >> >> >
+> >> >> > The only case where I think this might be harmful is if there's p=
+lenty
+> >> >> > of pages to reclaim on the file LRU, and instead we opt to chase =
+down
+> >> >> > the few swap cache pages. So perhaps we can add a check to only s=
+et
+> >> >> > sc->swapcache_only if the number of pages in the swap cache is mo=
+re
+> >> >> > than the number of pages on the file LRU or similar? Just make su=
+re we
+> >> >> > don't chase the swapcache pages down if there's plenty to scan on=
+ the
+> >> >> > file LRU?
+> >> >>
+> >> >> The swap cache pages can be divided to 3 groups.
+> >> >>
+> >> >> - group 1: pages have been written out, at the tail of inactive LRU=
+, but
+> >> >>   not reclaimed yet.
+> >> >>
+> >> >> - group 2: pages have been written out, but were failed to be recla=
+imed
+> >> >>   (e.g., were accessed before reclaiming)
+> >> >>
+> >> >> - group 3: pages have been swapped in, but were kept in swap cache.=
+  The
+> >> >>   pages may be in active LRU.
+> >> >>
+> >> >> The main target of the original patch should be group 1.  And the p=
+ages
+> >> >> may be cheaper to reclaim than file pages.
+> >> >>
+> >> >> Group 2 are hard to be reclaimed if swap_count() isn't 0.
+> >> >>
+> >> >> Group 3 should be reclaimed in theory, but the overhead may be high=
+.
+> >> >> And we may need to reclaim the swap entries instead of pages if the=
+ pages
+> >> >> are hot.  But we can start to reclaim the swap entries before the s=
+wap
+> >> >> space is run out.
+> >> >>
+> >> >> So, if we can count group 1, we may use that as indicator to scan a=
+non
+> >> >> pages.  And we may add code to reclaim group 3 earlier.
+> >> >>
+> >> >
+> >> > My point was not that reclaiming the pages in the swap cache is more
+> >> > expensive that reclaiming the pages in the file LRU. In a lot of
+> >> > cases, as you point out, the pages in the swap cache can just be
+> >> > dropped, so they may be as cheap or cheaper to reclaim than the page=
+s
+> >> > in the file LRU.
+> >> >
+> >> > My point was that scanning the anon LRU when swap space is exhausted
+> >> > to get to the pages in the swap cache may be much more expensive,
+> >> > because there may be a lot of pages on the anon LRU that are not in
+> >> > the swap cache, and hence are not reclaimable, unlike pages in the
+> >> > file LRU, which should mostly be reclaimable.
+> >> >
+> >> > So what I am saying is that maybe we should not do the effort of
+> >> > scanning the anon LRU in the swapcache_only case unless there aren't=
+ a
+> >> > lot of pages to reclaim on the file LRU (relatively). For example, i=
+f
+> >> > we have a 100 pages in the swap cache out of 10000 pages in the anon
+> >> > LRU, and there are 10000 pages in the file LRU, it's probably not
+> >> > worth scanning the anon LRU.
+> >>
+> >> For group 1 pages, they are at the tail of the anon inactive LRU, so t=
+he
+> >> scan overhead is low too.  For example, if number of group 1 pages is
+> >> 100, we just need to scan 100 pages to reclaim them.  We can choose to
+> >> stop scanning when the number of the non-group-1 pages reached some
+> >> threshold.
+> >>
+> >
+> > We should still try to reclaim pages in groups 2 & 3 before OOMing
+> > though. Maybe the motivation for this patch is group 1, but I don't
+> > see why we should special case them. Pages in groups 2 & 3 should be
+> > roughly equally cheap to reclaim. They may have higher refault cost,
+> > but IIUC we should still try to reclaim them before OOMing.
+>
+> The scan cost of group 3 may be high, you may need to scan all anonymous
+> pages to identify them.  The reclaim cost of group 2 may be high, it may
+> just cause trashing (shared pages that are accessed by just one
+> process).  So I think that we can allow reclaim group 1 in all cases.
+> Try to reclaim swap entries for group 3 during normal LRU scanning after
+> more than half of swap space of limit is used.  As a last resort before
+> OOM, try to reclaim group 2 and group 3.  Or, limit scan count for group
+> 2 and group 3.
+
+It would be nice if this can be done auto-magically without having to
+keep track of the groups separately.
+
+>
+> BTW, in some situation, OOM is not the worst situation.  For example,
+> trashing may kill interaction latency, while killing the memory hog (may
+> be caused by memory leak) saves system response time.
+
+I agree that in some situations OOMs are better than thrashing, it's
+not an easy problem.
