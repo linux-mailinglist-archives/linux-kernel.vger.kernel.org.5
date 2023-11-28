@@ -2,85 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D33237FB253
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:08:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 518777FB256
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:08:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231947AbjK1HHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 02:07:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44088 "EHLO
+        id S232858AbjK1HIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 02:08:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234606AbjK1HHv (ORCPT
+        with ESMTP id S234358AbjK1HIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 02:07:51 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E95A1AE;
-        Mon, 27 Nov 2023 23:07:57 -0800 (PST)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AS5ExcH007156;
-        Tue, 28 Nov 2023 07:07:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=EHSnQ1K6dOFn8dhTgForb72oyvuW7hJGJHFHf26W7IA=;
- b=ZWvhmU/hu+6MkblFm+8eVWkq670vBKQaSKNHi68Rk3YChBy9hWx5hcPxNUe3fovwy55A
- O0+DmomHAoV0dN+avl3euKEXL3T6OiEBK/s5/Skc4x4pBedsGu+UW4uQpQ0sMR7r2HSx
- pRCGiYlfR4htiJvVD14cK5JJiBH5gcVr2TyRmcDV9Ipht8q23SAmXp2eKZ90bZmQsxm+
- RBV+J0tqxaI/HJs/qDAFgl7pw0LiUjyV7wrAPckUMYMmhQAkBYqWu8tpXgT1bOWoEGWB
- Wb+6NPAnDyqs7UgqCEvOAXbrBDyr98uOjWIWC4VB8m2sdONAe3Bw5YY1RYjsVuFsyRHh pQ== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3un04bhfna-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Nov 2023 07:07:26 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AS77Put030220
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Nov 2023 07:07:25 GMT
-Received: from [10.253.72.234] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 27 Nov
- 2023 23:07:21 -0800
-Message-ID: <16265061-3850-483b-9040-3540a6a173d8@quicinc.com>
-Date:   Tue, 28 Nov 2023 15:07:19 +0800
+        Tue, 28 Nov 2023 02:08:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879A11BD
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:08:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701155287;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/uf+KIQMohmHryi8WcF8JWaeP3JqTeiI/tviURW9B+w=;
+        b=AJWReCRAn/CPlAcbv3vzGHLhqSsHsCoTJIuxQlc0MHhsJrwOWp+scGWsVRYxAqiU5H6sEX
+        7OFrQHSt/sAT8QVNausGP21idhoaBcpry9UUZ/Xi4H2qGyHR9TCPygqR8ipAjxGPl4bRuw
+        LqUt3sPidE7ZuhLHWam49uyqpT51LrQ=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-411-T3X9nVZjMPey44uORD9l0Q-1; Tue, 28 Nov 2023 02:08:06 -0500
+X-MC-Unique: T3X9nVZjMPey44uORD9l0Q-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40b42bd8de5so14805145e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:08:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701155285; x=1701760085;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/uf+KIQMohmHryi8WcF8JWaeP3JqTeiI/tviURW9B+w=;
+        b=sYVg755exNqi3CTCu85QJZF1IFso3d+IMKsS2Nh9w78bUjkvwfnwlKUpilx+MLbvFi
+         6FwJCP9iBJrvYs+PN/j0UtGIPestaUGW02dUEHu2++Z05u//OD/VMJeJ6Kqv5EqeNoZs
+         5iSGhY8NCkmHRVK7pjaJkP29CITiy2Qg931XMCPck9NZ+dngJ0ake2ouvjnibvdNHZ65
+         gs5h+P9mEi1eZYOd9IADg9/+agKUAIqwUZ1QFvUn6a+pYLhezeIa7ZpB8iobANJpIgOV
+         SIHkx54pD8woP4YtPgj4CM+sIFVbr8UV+HEqgwuSSLLOlLCfjdjv132joARdwmYcLN0f
+         +C/Q==
+X-Gm-Message-State: AOJu0YyWLX8YGT52/TG9HM5AOMnpD/LA8x58RaowmkFuzfRkpclRq1+X
+        TOtWCnJDSztMJLAuSv20+7E/RcIg6ykiE67wEirbErhg4ZYBektMVbvWOhzzdKlXIm2xMfh96xJ
+        cP33w6Ox3NaDElYrlo0lTT02l
+X-Received: by 2002:a05:600c:3b04:b0:40b:27b4:b4eb with SMTP id m4-20020a05600c3b0400b0040b27b4b4ebmr14623267wms.4.1701155285238;
+        Mon, 27 Nov 2023 23:08:05 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHdTgN4bUXPWY0w6S1SgRuzTvhr9Yu+FQg1/w5ilASNGnnb07efbRWXhEtxSzfxO7OVVytjFw==
+X-Received: by 2002:a05:600c:3b04:b0:40b:27b4:b4eb with SMTP id m4-20020a05600c3b0400b0040b27b4b4ebmr14623238wms.4.1701155284837;
+        Mon, 27 Nov 2023 23:08:04 -0800 (PST)
+Received: from starship ([77.137.131.4])
+        by smtp.gmail.com with ESMTPSA id s9-20020a05600c45c900b0040b3829eb50sm14834788wmo.20.2023.11.27.23.08.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 23:08:04 -0800 (PST)
+Message-ID: <f4495d1f697cf9a7ddfb786eaeeac90f554fc6db.camel@redhat.com>
+Subject: Re: [RFC 05/33] KVM: x86: hyper-v: Introduce VTL call/return
+ prologues in hypercall page
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Nicolas Saenz Julienne <nsaenz@amazon.com>, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        anelkz@amazon.com, graf@amazon.com, dwmw@amazon.co.uk,
+        jgowans@amazon.com, corbert@lwn.net, kys@microsoft.com,
+        haiyangz@microsoft.com, decui@microsoft.com, x86@kernel.org,
+        linux-doc@vger.kernel.org
+Date:   Tue, 28 Nov 2023 09:08:02 +0200
+In-Reply-To: <20231108111806.92604-6-nsaenz@amazon.com>
+References: <20231108111806.92604-1-nsaenz@amazon.com>
+         <20231108111806.92604-6-nsaenz@amazon.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/9] net: mdio: ipq4019: Enable the clocks for ipq5332
- platform
-Content-Language: en-US
-To:     Simon Horman <horms@kernel.org>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <andrew@lunn.ch>, <hkallweit1@gmail.com>,
-        <linux@armlinux.org.uk>, <robert.marko@sartura.hr>,
-        <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_srichara@quicinc.com>
-References: <20231115032515.4249-1-quic_luoj@quicinc.com>
- <20231115032515.4249-3-quic_luoj@quicinc.com>
- <20231127093759.GD84723@kernel.org>
-From:   Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <20231127093759.GD84723@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: wUKUtMUGFT-K7jnix_TdLAopXa9GVf3c
-X-Proofpoint-GUID: wUKUtMUGFT-K7jnix_TdLAopXa9GVf3c
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-28_05,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1015 suspectscore=0 priorityscore=1501 malwarescore=0 mlxscore=0
- mlxlogscore=999 bulkscore=0 spamscore=0 adultscore=0 impostorscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311280053
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,40 +86,199 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 2023-11-08 at 11:17 +0000, Nicolas Saenz Julienne wrote:
+> VTL call/return hypercalls have their own entry points in the hypercall
+> page because they don't follow normal hyper-v hypercall conventions.
+> Move the VTL call/return control input into ECX/RAX and set the
+> hypercall code into EAX/RCX before calling the hypercall instruction in
+> order to be able to use the Hyper-V hypercall entry function.
+> 
+> Guests can read an emulated code page offsets register to know the
+> offsets into the hypercall page for the VTL call/return entries.
+> 
+> Signed-off-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
+> 
+> ---
+> 
+> My tree has the additional patch, we're still trying to understand under
+> what conditions Windows expects the offset to be fixed.
+> 
+> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+> index 54f7f36a89bf..9f2ea8c34447 100644
+> --- a/arch/x86/kvm/hyperv.c
+> +++ b/arch/x86/kvm/hyperv.c
+> @@ -294,6 +294,7 @@ static int patch_hypercall_page(struct kvm_vcpu *vcpu, u64 data)
+> 
+>         /* VTL call/return entries */
+>         if (!kvm_xen_hypercall_enabled(kvm) && kvm_hv_vsm_enabled(kvm)) {
+> +               i = 22;
+>  #ifdef CONFIG_X86_64
+>                 if (is_64_bit_mode(vcpu)) {
+>                         /*
+> ---
+>  arch/x86/include/asm/kvm_host.h   |  2 +
+>  arch/x86/kvm/hyperv.c             | 78 ++++++++++++++++++++++++++++++-
+>  include/asm-generic/hyperv-tlfs.h | 11 +++++
+>  3 files changed, 90 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index a2f224f95404..00cd21b09f8c 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1105,6 +1105,8 @@ struct kvm_hv {
+>  	u64 hv_tsc_emulation_status;
+>  	u64 hv_invtsc_control;
+>  
+> +	union hv_register_vsm_code_page_offsets vsm_code_page_offsets;
+> +
+>  	/* How many vCPUs have VP index != vCPU index */
+>  	atomic_t num_mismatched_vp_indexes;
+>  
+> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+> index 78d053042667..d4b1b53ea63d 100644
+> --- a/arch/x86/kvm/hyperv.c
+> +++ b/arch/x86/kvm/hyperv.c
+> @@ -259,7 +259,8 @@ static void synic_exit(struct kvm_vcpu_hv_synic *synic, u32 msr)
+>  static int patch_hypercall_page(struct kvm_vcpu *vcpu, u64 data)
+>  {
+>  	struct kvm *kvm = vcpu->kvm;
+> -	u8 instructions[9];
+> +	struct kvm_hv *hv = to_kvm_hv(kvm);
+> +	u8 instructions[0x30];
+>  	int i = 0;
+>  	u64 addr;
+>  
+> @@ -285,6 +286,81 @@ static int patch_hypercall_page(struct kvm_vcpu *vcpu, u64 data)
+>  	/* ret */
+>  	((unsigned char *)instructions)[i++] = 0xc3;
+>  
+> +	/* VTL call/return entries */
+> +	if (!kvm_xen_hypercall_enabled(kvm) && kvm_hv_vsm_enabled(kvm)) {
+> +#ifdef CONFIG_X86_64
+> +		if (is_64_bit_mode(vcpu)) {
+> +			/*
+> +			 * VTL call 64-bit entry prologue:
+> +			 * 	mov %rcx, %rax
+> +			 * 	mov $0x11, %ecx
+> +			 * 	jmp 0:
+
+This isn't really 'jmp 0' as I first wondered but actually backward jump 32 bytes back (if I did the calculation correctly).
+This is very dangerous because code that was before can change and in fact I don't think that this
+offset is even correct now, and on top of that it depends on support for xen hypercalls as well.
+
+This can be fixed by calculating the offset in runtime, however I am thinking:
 
 
-On 11/27/2023 5:37 PM, Simon Horman wrote:
-> On Wed, Nov 15, 2023 at 11:25:08AM +0800, Luo Jie wrote:
->> For the platform ipq5332, the related GCC clocks need to be enabled
->> to make the GPIO reset of the MDIO slave devices taking effect.
->>
->> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
->> ---
->>   drivers/net/mdio/mdio-ipq4019.c | 67 +++++++++++++++++++++++++++++----
->>   1 file changed, 60 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/net/mdio/mdio-ipq4019.c b/drivers/net/mdio/mdio-ipq4019.c
->> index 9d444f5f7efb..a77982a1a1e1 100644
->> --- a/drivers/net/mdio/mdio-ipq4019.c
->> +++ b/drivers/net/mdio/mdio-ipq4019.c
-> 
-> ...
-> 
->> +const char *const mdio_clk_name[] = {
->> +	"gcc_mdio_ahb_clk",
->> +	"gcc_uniphy0_ahb_clk",
->> +	"gcc_uniphy0_sys_clk",
->> +	"gcc_uniphy1_ahb_clk",
->> +	"gcc_uniphy1_sys_clk"
->>   };
-> 
-> Hi Luo Jie,
-> 
-> A minor nit from my side: It appears that mdio_clk_name is only
-> used in this file. If so it should be declared as static.
-> 
-> ...
+Since userspace will have to be aware of the offsets in this page, and since
+pretty much everything else is done in userspace, it might make sense to create
+the hypercall page in the userspace.
 
-Hi Simon,
-The mdio_clk_name is only used in this file, will update to use
-static, thanks.
+In fact, the fact that KVM currently overwrites the guest page, is a violation of
+the HV spec.
+
+It's more correct regardless of VTL to do userspace vm exit and let the userspace put a memslot ("overlay")
+over the address, and put whatever userspace wants there, including the above code.
+
+Then we won't need the new ioctl as well.
+
+To support this I think that we can add a userspace msr filter on the HV_X64_MSR_HYPERCALL,
+although I am not 100% sure if a userspace msr filter overrides the in-kernel msr handling.
+
+Best regards,
+	Maxim Levitsky
+
+
+> +			 */
+> +			hv->vsm_code_page_offsets.vtl_call_offset = i;
+> +			instructions[i++] = 0x48;
+> +			instructions[i++] = 0x89;
+> +			instructions[i++] = 0xc8;
+> +			instructions[i++] = 0xb9;
+> +			instructions[i++] = 0x11;
+> +			instructions[i++] = 0x00;
+> +			instructions[i++] = 0x00;
+> +			instructions[i++] = 0x00;
+> +			instructions[i++] = 0xeb;
+> +			instructions[i++] = 0xe0;
+> +			/*
+> +			 * VTL return 64-bit entry prologue:
+> +			 * 	mov %rcx, %rax
+> +			 * 	mov $0x12, %ecx
+> +			 * 	jmp 0:
+> +			 */
+> +			hv->vsm_code_page_offsets.vtl_return_offset = i;
+> +			instructions[i++] = 0x48;
+> +			instructions[i++] = 0x89;
+> +			instructions[i++] = 0xc8;
+> +			instructions[i++] = 0xb9;
+> +			instructions[i++] = 0x12;
+> +			instructions[i++] = 0x00;
+> +			instructions[i++] = 0x00;
+> +			instructions[i++] = 0x00;
+> +			instructions[i++] = 0xeb;
+> +			instructions[i++] = 0xd6;
+> +		} else
+> +#endif
+> +		{
+> +			/*
+> +			 * VTL call 32-bit entry prologue:
+> +			 * 	mov %eax, %ecx
+> +			 * 	mov $0x11, %eax
+> +			 * 	jmp 0:
+> +			 */
+> +			hv->vsm_code_page_offsets.vtl_call_offset = i;
+> +			instructions[i++] = 0x89;
+> +			instructions[i++] = 0xc1;
+> +			instructions[i++] = 0xb8;
+> +			instructions[i++] = 0x11;
+> +			instructions[i++] = 0x00;
+> +			instructions[i++] = 0x00;
+> +			instructions[i++] = 0x00;
+> +			instructions[i++] = 0xeb;
+> +			instructions[i++] = 0xf3;
+> +			/*
+> +			 * VTL return 32-bit entry prologue:
+> +			 * 	mov %eax, %ecx
+> +			 * 	mov $0x12, %eax
+> +			 * 	jmp 0:
+> +			 */
+> +			hv->vsm_code_page_offsets.vtl_return_offset = i;
+> +			instructions[i++] = 0x89;
+> +			instructions[i++] = 0xc1;
+> +			instructions[i++] = 0xb8;
+> +			instructions[i++] = 0x12;
+> +			instructions[i++] = 0x00;
+> +			instructions[i++] = 0x00;
+> +			instructions[i++] = 0x00;
+> +			instructions[i++] = 0xeb;
+> +			instructions[i++] = 0xea;
+> +		}
+> +	}
+>  	addr = data & HV_X64_MSR_HYPERCALL_PAGE_ADDRESS_MASK;
+>  	if (kvm_vcpu_write_guest(vcpu, addr, instructions, i))
+>  		return 1;
+> diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
+> index fdac4a1714ec..0e7643c1ef01 100644
+> --- a/include/asm-generic/hyperv-tlfs.h
+> +++ b/include/asm-generic/hyperv-tlfs.h
+> @@ -823,4 +823,15 @@ struct hv_mmio_write_input {
+>  	u8 data[HV_HYPERCALL_MMIO_MAX_DATA_LENGTH];
+>  } __packed;
+>  
+> +/*
+> + * VTL call/return hypercall page offsets register
+> + */
+> +union hv_register_vsm_code_page_offsets {
+> +	u64 as_u64;
+> +	struct {
+> +		u64 vtl_call_offset:12;
+> +		u64 vtl_return_offset:12;
+> +		u64 reserved:40;
+> +	} __packed;
+> +};
+>  #endif
+
+
+
+
+
