@@ -2,82 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8597FC294
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E3B7FC2BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345735AbjK1RcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 12:32:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55288 "EHLO
+        id S1345245AbjK1RkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 12:40:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345467AbjK1RcI (ORCPT
+        with ESMTP id S1345197AbjK1RkI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 12:32:08 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 297D8F5
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:32:15 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40b367a0a12so53765e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:32:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701192733; x=1701797533; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dJyIox/fp2fBmF5ORORc6mIFmRJKaIKe+cG1xBjp8o8=;
-        b=H3cdw0o6i9B7BlkgtdPTK0qDLz/zAtYw5eLZFtspffj/XsjUWO7xTgIUtlJ+Sv1/oQ
-         4gLt34pYRLiklnNX+/7tG1IdlSTydBmp3ZYWq9+lqu4etUCrF++vywgRcTwZfbL+Kpx0
-         /a+/gve3P0LxrR4e+EXyjZMAFlWMUvT6f4tsqTjDNJzbW/jR6VbaWABcrGR5VnuREtb0
-         xdfGbEp7MyJcuY1etq71SIZdKdUjaGGLKbazRS6COgxlzf+qgW+Juo80FXLbOoxLueMP
-         nYvgrA/6HAF5jvlYxonXp3EDtRuBO4Bsm73c+Jy4jj99QfbTfYVnBuMDWAd4SFzwXapL
-         HpHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701192733; x=1701797533;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dJyIox/fp2fBmF5ORORc6mIFmRJKaIKe+cG1xBjp8o8=;
-        b=sBKVda4u9pyDDJyfRoh0rZ/+aUXPROJvsTJaIPgigHT1YChRLg9+D/QTtfsg30+j+I
-         nO2HrviAZtcYloFzrRZLK9uGCLjgpdVb3467Os9RDVcHFyG8Dp8z50l3eqW0eV1pgrsS
-         EKO95SVREEVIES2c9kXaL34S6PkZsrKYxCxaA9Jvj1PvmyLGzBAwC1R4QTvwY5Oe716O
-         lDAdKMBePskuOD213uh7v/xPtmDNiIA5ExcAQAo+OkZwzM0cOHY3WPLHENp9uVz4MeXF
-         wyCk6xJbYyLYje6YEyeQ7MYRMOlXKcmvj8UYEj9ETVzV7tvTPmF5TZmPtaFSos3n4i44
-         K9Hw==
-X-Gm-Message-State: AOJu0Yxr3YpRVl1HhvuSgH7WsZee2ulYABoKiitcNvRU8+HALLgVA8aZ
-        gIFE4jlXruJm+c6xBsONNnr0xH6drh8RwQT0HYgV6A==
-X-Google-Smtp-Source: AGHT+IEc6Z4SpVUZAk2CF7793Z7n3QqquvlPQt5tnx5NSbillEpYOmwy7C1hitmTJzSl1aG/3dNSEggEj4OrHsC8Fjw=
-X-Received: by 2002:a05:600c:1ca6:b0:40b:4228:ee9a with SMTP id
- k38-20020a05600c1ca600b0040b4228ee9amr384291wms.0.1701192733522; Tue, 28 Nov
- 2023 09:32:13 -0800 (PST)
+        Tue, 28 Nov 2023 12:40:08 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10481D5B;
+        Tue, 28 Nov 2023 09:40:14 -0800 (PST)
+Received: from relay2.suse.de (unknown [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 92E06219A6;
+        Tue, 28 Nov 2023 17:40:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1701193212; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=vAnAMESl/RBl5agN44vVIGlcM5QSzJDmBjb6iA6A5vA=;
+        b=b1Pp+ndv/UVUOUZq50Z7179KQ7WWCW7i1BKysBKsGD4JigbE46gU3Q/askHemVvPTC6vV2
+        XKF7pFlTHR1R5sLxbPOaR9p2vAJw3eZ7VGtDQEscH3ZC8n/dkrAHWqOMQoPihCxs5F0cho
+        YD9JocMe6yDGMyxq/BN613cgKzgv/Us=
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 6211F2C152;
+        Tue, 28 Nov 2023 17:40:11 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 78178DA86C; Tue, 28 Nov 2023 18:32:59 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 6.7-rc4
+Date:   Tue, 28 Nov 2023 18:32:56 +0100
+Message-ID: <cover.1701191460.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-References: <20231115162054.2896748-1-timvp@chromium.org> <ZVokO6_4o07FU0xP@slm.duckdns.org>
- <CAP0ea-sSvFGdpqz8Axcjrq=UX0watg=j6iBxd1OkNeKHi_pJ=Q@mail.gmail.com> <ZWYa5IlXpdus2q3R@slm.duckdns.org>
-In-Reply-To: <ZWYa5IlXpdus2q3R@slm.duckdns.org>
-From:   Mark Hasemeyer <markhas@google.com>
-Date:   Tue, 28 Nov 2023 10:32:00 -0700
-Message-ID: <CAP0ea-tJJAJ0V2Wk1j6cHxEscA=J9RByVWBBCRYMD3u3hNEB_w@mail.gmail.com>
-Subject: Re: [PATCH] cgroup_freezer: cgroup_freezing: Check if not frozen
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Tim Van Patten <timvp@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tim Van Patten <timvp@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spamd-Bar: +++++++++++++++++++++
+X-Spam-Score: 21.50
+X-Rspamd-Server: rspamd1
+Authentication-Results: smtp-out1.suse.de;
+        dkim=none;
+        spf=pass (smtp-out1.suse.de: domain of dsterba@suse.cz designates 149.44.160.134 as permitted sender) smtp.mailfrom=dsterba@suse.cz;
+        dmarc=fail reason="SPF not aligned (relaxed), No valid DKIM" header.from=suse.com (policy=quarantine)
+X-Rspamd-Queue-Id: 92E06219A6
+X-Spamd-Result: default: False [21.50 / 50.00];
+         RDNS_NONE(1.00)[];
+         SPAMHAUS_XBL(0.00)[149.44.160.134:from];
+         TO_DN_SOME(0.00)[];
+         R_MISSING_CHARSET(2.50)[];
+         R_SPF_ALLOW(-0.20)[+ip4:149.44.0.0/16];
+         RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
+         HFILTER_HELO_IP_A(1.00)[relay2.suse.de];
+         BROKEN_CONTENT_TYPE(1.50)[];
+         HFILTER_HELO_NORES_A_OR_MX(0.30)[relay2.suse.de];
+         MX_GOOD(-0.01)[];
+         FORGED_SENDER(0.30)[dsterba@suse.com,dsterba@suse.cz];
+         RCVD_NO_TLS_LAST(0.10)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         FROM_NEQ_ENVFROM(0.10)[dsterba@suse.com,dsterba@suse.cz];
+         BAYES_HAM(-3.00)[100.00%];
+         RDNS_DNSFAIL(0.00)[];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         RCPT_COUNT_THREE(0.00)[4];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_SPAM_SHORT(3.00)[1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_POLICY_QUARANTINE(1.50)[suse.com : SPF not aligned (relaxed), No valid DKIM,quarantine];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         NEURAL_SPAM_LONG(3.50)[1.000];
+         MID_CONTAINS_FROM(1.00)[];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         RCVD_COUNT_TWO(0.00)[2];
+         HFILTER_HOSTNAME_UNKNOWN(2.50)[]
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Yeah, I can do that. That'd be for v6.1+ and fix f5d39b020809
-> ("freezer,sched: Rewrite core freezer logic"), right?
->
-> Thanks.
->
-> --
-> tejun
+Hi,
 
-Correct. Thank you!
+there are a few fixes and message updates. Please pull, thanks.
+
+- fixes:
+
+  - for simple quotas, handle the case when a snapshot is created and
+    the target qgroup already exists
+
+  - fix a warning when file descriptor given to send ioctl is not writable
+
+  - fix off-by-one condition when checking chunk maps
+
+  - free pages when page array allocation fails during compression read,
+    other cases were handled
+
+  - fix memory leak on error handling path in ref-verify debugging feature
+
+  - copy missing struct member 'version' in 64/32bit compat send ioctl
+
+- other updates
+
+  - tree-checker verifies inline backref ordering
+
+  - print messages to syslog on first mount and last unmount
+
+  - update error messages when reading chunk maps
+
+----------------------------------------------------------------
+The following changes since commit d3933152442b7f94419e9ea71835d71b620baf0e:
+
+  btrfs: make OWNER_REF_KEY type value smallest among inline refs (2023-11-09 14:02:12 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.7-rc3-tag
+
+for you to fetch changes up to 0ac1d13a55eb37d398b63e6ff6db4a09a2c9128c:
+
+  btrfs: send: ensure send_fd is writable (2023-11-24 18:50:53 +0100)
+
+----------------------------------------------------------------
+Bragatheswaran Manickavel (1):
+      btrfs: ref-verify: fix memory leaks in btrfs_ref_tree_mod()
+
+David Sterba (1):
+      btrfs: fix 64bit compat send ioctl arguments not initializing version member
+
+Filipe Manana (2):
+      btrfs: fix off-by-one when checking chunk map includes logical address
+      btrfs: make error messages more clear when getting a chunk map
+
+Jann Horn (1):
+      btrfs: send: ensure send_fd is writable
+
+Qu Wenruo (4):
+      btrfs: tree-checker: add type and sequence check for inline backrefs
+      btrfs: do not abort transaction if there is already an existing qgroup
+      btrfs: add dmesg output for first mount and last unmount of a filesystem
+      btrfs: free the allocated memory if btrfs_alloc_page_array() fails
+
+ fs/btrfs/disk-io.c      |  1 +
+ fs/btrfs/extent_io.c    | 11 ++++++++---
+ fs/btrfs/ioctl.c        |  1 +
+ fs/btrfs/ref-verify.c   |  2 ++
+ fs/btrfs/send.c         |  2 +-
+ fs/btrfs/super.c        |  5 ++++-
+ fs/btrfs/transaction.c  |  2 +-
+ fs/btrfs/tree-checker.c | 39 +++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/volumes.c      |  9 +++++----
+ 9 files changed, 62 insertions(+), 10 deletions(-)
