@@ -2,194 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C62DE7FB097
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 04:37:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27EEC7FB098
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 04:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234529AbjK1D2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 22:28:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41360 "EHLO
+        id S234578AbjK1DcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 22:32:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234578AbjK1D2K (ORCPT
+        with ESMTP id S232694AbjK1DcR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 22:28:10 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F38A1A7
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 19:28:16 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a03a900956dso941732766b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 19:28:16 -0800 (PST)
+        Mon, 27 Nov 2023 22:32:17 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2139.outbound.protection.outlook.com [40.107.93.139])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1EF0C9
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 19:32:22 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gRvm9FuENhbmqUpapiFqiw1bsr9TvNIvoIUSQaSCcHdEvDzY+Is7LnmoZeTa8xnZ9Fbqfc+TmwgBGaxNZcSyR/dRbpHI1iRI/X+pOtQmVLcGhSLOxpaZr/8XuxJfsC0aJc/AI6YSLQtqVnkB6+5HUVI59xobDxJN20csgMcwQXw73MxBN8b9+lLbDpiBa8ogMmCCu9fcuRUG5OGUyijV85lvNtvq598U0DgX+xlO+cjw6Jk4V2bzQ339qnNk6NGtV2PZwfubLwo5Z4HEY48GkLqGEZ4xJpM50a3ykeryGF7NOH+zwZwBTBFUExBFutOaxjPh1WdgEJD1XUXHzpmnzQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MzMuDtOaoN9gAD2j21FVfjp6m/IZJh54uZcF0EjP7io=;
+ b=SvtiIvKw4EMV101rnU5ppTrInzwpyQK65AxXr3sEmkLibVzhyz9eJaFcMcXjjLqnjFiqN24oTVFj5VfVzIKyICy2zhGS4PFSOPdhQYCgmWsGHlbeVWjteDf8UbL/DdT+h9+H5VM5phewdrf8ARrFQlTBCHvdQUBFMgfpWaPhL5dwxHTK0mGALlMzyj86u8G3QAixIo6nh6PBP3tVKOw3sfR6/JRrE/K3EeqRha4EFugD35LuuZQYPdOcqgpv3syjBpwhUqfJ9gltzaN98LMe/9DanOh3Oi35orBPlelV7wszo1z0JBtp0ixDfoMb9nLEnZRevO+cs2KiHp6GZAUUJg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=amperemail.onmicrosoft.com; dkim=pass
+ header.d=amperemail.onmicrosoft.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701142095; x=1701746895; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=52k2p5CyGPUAHKSXeNr7BKmEfDoFNmiiCRt1xrKRz/g=;
-        b=CidLbP3JSP4VZimniBjZc9xXFte8/D+upOzfHIOjkV/Q51TYlwjJarP9QSmxSDKsyF
-         Wk6iEVMr6DztgicHNJis3+L+PhDI85ACoQyiN1VcVw0bZaD9pP7aZZBaFyGnmCx2lUeB
-         HvDbEVQaPl5LVWDNZu3tYwMq9KCgL7K24fZ32ebXXbDe1feV0P5KniLDj91wGV5CLAG+
-         nXQyUakWOUYsb/SanHoB7PFLJRIL8dbwUpe3ngriv0LRI0wxKEedbABlvhsw4WiIOhuj
-         int2ECpLJ9iQh+EdE4kQvSuGDcsD/42ofeYKkVODX2D8RjW/q5H7ZYAkm30mX1h84zgQ
-         j4+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701142095; x=1701746895;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=52k2p5CyGPUAHKSXeNr7BKmEfDoFNmiiCRt1xrKRz/g=;
-        b=f0t9mI/3tkmg9tzIm0hEKq+xC1sosqtv3tiI/VgySnXKAZEm/DikFdBz/7qeOtA2xC
-         nemMdZXeTBSNXJtPaTXnIrcxgFcAEDoF9DWpD4UEocQD+iC9DsjvxPTATbBxBD3wA/5B
-         NNEKfT1uU+D1HzIdwMP2sACKFP8uutl5XP7UsrWuVqN6ag1oMhBUMYQ9myiKcG/0Mfu2
-         pKF3nSvbMHCSFR8CqZhyp0gkOVB3QxY6zx38VptaR/pHho2Ir/yStblJ6e7Te1BHxISH
-         KzUD29TWQDPAdRPLJuYetkSDyvlf1aeGFAt4CKo8r59AI+tjo64hYACqixXJZ+Buw0BW
-         SHzg==
-X-Gm-Message-State: AOJu0YwXEMHXACdJheKjY1TI5hH+bfRzu825QfgIDBpojRpcdmw7riL+
-        wy7sQXGYC64KeZViPAh1SJNtonUdccVbT6BjCxt4dpJfyJgEkvpGWZ2AZA==
-X-Google-Smtp-Source: AGHT+IEx8LNvwobnDx8T7P4u06cc4stnXOlF9kWWIeNLvdVuv2+mne0/S4GlmVWguwn8jwd+aU1VZ9grdt9uhMK+RRo=
-X-Received: by 2002:a17:906:2bd1:b0:9e8:2441:5cd4 with SMTP id
- n17-20020a1709062bd100b009e824415cd4mr10023918ejg.17.1701142094665; Mon, 27
- Nov 2023 19:28:14 -0800 (PST)
+ d=amperemail.onmicrosoft.com; s=selector1-amperemail-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MzMuDtOaoN9gAD2j21FVfjp6m/IZJh54uZcF0EjP7io=;
+ b=SrBb4w0GeuwXPOl5lxfcjlPXPTBd1g23jwOh72oGs9WwldP2zIK+16Xl9cv3NX2Hw22cDT5N64+ThdNUsH+bzSefSDtn9HAGNk/UfecyGkI+GCPAqb0CREX8nJXoARg4THkTDTk4c2/a0KYU4d71Ut71Hx0Mq6UToHyKBkkfKiw=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amperemail.onmicrosoft.com;
+Received: from PH0PR01MB7975.prod.exchangelabs.com (2603:10b6:510:26d::15) by
+ BY3PR01MB6641.prod.exchangelabs.com (2603:10b6:a03:367::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7025.29; Tue, 28 Nov 2023 03:32:17 +0000
+Received: from PH0PR01MB7975.prod.exchangelabs.com
+ ([fe80::3f45:6905:e017:3b77]) by PH0PR01MB7975.prod.exchangelabs.com
+ ([fe80::3f45:6905:e017:3b77%7]) with mapi id 15.20.7025.020; Tue, 28 Nov 2023
+ 03:32:17 +0000
+Message-ID: <a7d85fee-23cd-4b85-adc6-16980b6e5e02@amperemail.onmicrosoft.com>
+Date:   Tue, 28 Nov 2023 11:31:42 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] crash_core: export vmemmap when CONFIG_SPARSEMEM_VMEMMAP
+ is enabled
+To:     Baoquan He <bhe@redhat.com>
+Cc:     Huang Shijie <shijie@os.amperecomputing.com>, k-hagio-ab@nec.com,
+        lijiang@redhat.com, akpm@linux-foundation.org, vgoyal@redhat.com,
+        dyoung@redhat.com, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org, patches@amperecomputing.com
+References: <20231127020727.25296-1-shijie@os.amperecomputing.com>
+ <ZWQEP4SczFh+GUHq@MiWiFi-R3L-srv>
+ <33021b87-4c6a-45fc-a6ae-265765cfcd78@amperemail.onmicrosoft.com>
+ <ZWVdxAv/PPHY3Ndl@MiWiFi-R3L-srv>
+From:   Shijie Huang <shijie@amperemail.onmicrosoft.com>
+In-Reply-To: <ZWVdxAv/PPHY3Ndl@MiWiFi-R3L-srv>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: CH2PR16CA0025.namprd16.prod.outlook.com
+ (2603:10b6:610:50::35) To PH0PR01MB7975.prod.exchangelabs.com
+ (2603:10b6:510:26d::15)
 MIME-Version: 1.0
-References: <ZV3BWZ4ZaD5Rj_HS@tiehlicka> <ZV3TQCElHpcp0h0V@tiehlicka>
- <CAJD7tka0=JR1s0OzQ0+H8ksFhvB2aBHXx_2-hVc97Enah9DqGQ@mail.gmail.com>
- <ZV3_6UH28KMt0ZDb@tiehlicka> <87msv58068.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <ZWDPuR5Ssx07nBHb@tiehlicka> <87h6l77wl5.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <CAF8kJuOcMDpqZV+9+QjK-hsoJLGhoBzBOczAc7+UMypVJresSw@mail.gmail.com>
- <87bkbf7gz6.fsf@yhuang6-desk2.ccr.corp.intel.com> <CAF8kJuNKH_vcF-=6nw3zP5cMaZHLudHZfxNDtHm0K2BXJ+EAgA@mail.gmail.com>
- <ZWUKziMl6cFV2uWN@google.com> <CAJD7tkZNa_3mWYeix_Xc-BFRNVMkBF3uzL0JCkZOYw5ubAaj9w@mail.gmail.com>
- <87msuy5zuv.fsf@yhuang6-desk2.ccr.corp.intel.com>
-In-Reply-To: <87msuy5zuv.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Mon, 27 Nov 2023 19:27:36 -0800
-Message-ID: <CAJD7tkZmyzohNRqgvZvZC5L7OFHzDRm-Y3JEQHiDYcwTCz-FBQ@mail.gmail.com>
-Subject: Re: [PATCH v10] mm: vmscan: try to reclaim swapcache pages if no swap space
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Minchan Kim <minchan@kernel.org>, Chris Li <chriscli@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sachin Sant <sachinp@linux.ibm.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR01MB7975:EE_|BY3PR01MB6641:EE_
+X-MS-Office365-Filtering-Correlation-Id: 22b1b539-dd3c-44d0-287c-08dbefc29e9e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lGGRMQ9BSLhlwT8CTnxr95bBhHd/oJb850guMQ2SgQYFuORAXbrFbIjb5B4gpIGg210hfffWL42xRUhIjowTecBJjhxz9hYMrazPllJaR4OVlyTqj24g/vEfWx7gO9QIlRzSdQKy4k7cQ8VbwE8VuKrbl2mBOpg2Q6Krs/Ou0wUKq3VJMxkee+p8TKtib+siR2jAxVCmO0A8dCCjZqasDIfzV6jXppOhRCdztwTPmmBzw6NT/C3ewXzczqmpd1w4IAOYYABUlTohNAXFqwIV8HhQGC2Ri/HkmIXDkxxbFLYfGGbLkA5KI46BquJ1r7s/YOrvApjqvGxzjQXAtQhS9o4NEy1q747n2vihbON6lIxIPOHCPo8gVMixvSjB3zahoLLSDWH6ShTGSjl8/Eb6BZWUIpw3EJFC4g6LKRQXfOBYXhC6KlowLXdFBqenVw2uvp+g26DkBu8XTzHktSYYE73JV6hcHD1/HPFAgSrAyY7ebJZUVgyVhqTBqHSbZwC+PmHNv+ZDrGcVZ/YEQnAaLbt4WXUrjJHW3K4+vMqD5HHKNFBaLDLBED82Y4yT7+hV6lEpYr6YZd4Z7+oetYjHRxKZ8bfh+7of5DQjrskpkmk6e4ZQ928pwtdb5HxlMQ99
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB7975.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(39850400004)(366004)(396003)(346002)(136003)(376002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(6916009)(38100700002)(42882007)(31696002)(83170400001)(66556008)(66476007)(8676002)(8936002)(4326008)(5660300002)(2906002)(6512007)(31686004)(107886003)(41300700001)(66946007)(6506007)(2616005)(316002)(478600001)(26005)(6486002)(6666004)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T3VmcVQwMlBsdDVldGJZTUhFZERDT3R2aU4xSTZYK1VPRVgwSC81OXRwOTFl?=
+ =?utf-8?B?NXhBaGp3Tjd3RlNUaXd2MlpPUTlObHNaSEx0VGR3cWlqWU9SakNkRjZYZEt4?=
+ =?utf-8?B?RkZyQkhaU1pxaW0wWU5hQlJ2WjZISTlpK1diY09JcUJVTlRoTlA0SlBmb1Zn?=
+ =?utf-8?B?SHhYTy8ya0FVWDM5b1hmVDgvcjZJWVZOb2hYR0pTb1ozTjgyYUdIaGVOMVdR?=
+ =?utf-8?B?ZEl6QTNZT3drMXd6dCtNNVhUNmFWVXc3d1QycEVTMXBqWW1tSnMwUVhYMXVp?=
+ =?utf-8?B?R0JhY2dYY2RnWHhOS1EzWEdhdHlxb1crak9oVURjSXk3UGJtUXZMQTdGUndl?=
+ =?utf-8?B?UzcvMFAzbGdkZGpDc2JQRUFIZWVVVGM0M1VCU1dscjlKNy94SEVGbWx1WGJw?=
+ =?utf-8?B?NlZMVm5IMldVQW9BdUZuS09NV2tBTGZUTVowcFlPSWduUHNKZ0hZcHoyMkRM?=
+ =?utf-8?B?dUE2b1pyVE5HdlBQcStlbVlEaVhhY1loTVJ6RVRUNHRNSHVqWWx6bzN1ekVz?=
+ =?utf-8?B?QnJxNmRKWTM5V0g1Z0FKV29MYlQyTG5YMVRIeENraHROS3ZGMU1tTHE4dUZp?=
+ =?utf-8?B?RnJubWpHRWF0NnpLUjE1RXVMRG14WVRwcDRxNnZpWXJJV2YrK2NOQzFGUDI0?=
+ =?utf-8?B?bitSbGEwdHpMdnFab0wyaTE1bk5JUHdERHVCUDNWUlhDdUptdS9DZXdQS203?=
+ =?utf-8?B?NFJHcVpPa0V2aGxSaFU0ejJ5cWRBR1JORk9adWQwZ2V2T05uYmJHSWdkdFNz?=
+ =?utf-8?B?MStOaGFwd3BNNGdIclI2RWlzeHM3dllRQWdVUDl5OUZXWDZiVDVQRHl2QUNv?=
+ =?utf-8?B?ZVl3UkFoVXJvQnNMVXBtLzdVZktHTlJNd1hwL3pmcEFpQTVneHVaRERrSk90?=
+ =?utf-8?B?dXR0aHhWSmloWjArc2JRSjNoenVWRStFNC9hVUhPRkJjaEdIR0JTZ25JcW5w?=
+ =?utf-8?B?UEtWSjNNZXU4ZENscmVKQk5MRkYvaHhqbmMrY3RNV3dVYzhUZUxqY2kzM3hM?=
+ =?utf-8?B?NXZmVHBFd2Y0aGU2WkJFMGVoVXU5RFEzeVZMQzZBU0RnNjdSTWEvMnR4eHAz?=
+ =?utf-8?B?WkxIanBKcWtmdEVVSzVSWlE3N0xXQVh6dnhLWEZYdytib25YUFBjNTVhekVM?=
+ =?utf-8?B?YURwaXVmdjczc2tMUnhvYUp1K1RrZE44czZvRXBZb2VyWFBJM21rVVF0TWRX?=
+ =?utf-8?B?K3k3aUU0OFdsRjNOdFlaWVVZd2R0WWhqNDlJVHlZc3l4KzVyQUhzd3l6TGNv?=
+ =?utf-8?B?bStrcWJVa2xoTHFNektGN1I2VDdySDlERTVMWHptMjJ4VGROOUMxNzFPUjdj?=
+ =?utf-8?B?WjlMU3hGRHRSZUpoUENZclpTWFkvSVQ1S0FESEROR2xZbmEwMHR3K0pNczYx?=
+ =?utf-8?B?am8yclNqTUVCejBGNEhGajFiYTFmTmN6eEdWcXhaS2VDbm5jUVdGYWlIZVRC?=
+ =?utf-8?B?aXVCR3VRbHlzVHlwdjg4aUJsVFAvNHhLeElCcGtoVXFCR0k2c2hmYThFSHcw?=
+ =?utf-8?B?L1pjZEIwK3ZEL3p3UXJTeG55TlQ3b3Z0d3Q2L0xpQVJJRmgwWFFJcm1hYUx4?=
+ =?utf-8?B?UHk2ZDlveDV1OHFRMkpYNFBvczkxM1lyQ2YyaHA1UEVYYVpqVUpieUVrOW9C?=
+ =?utf-8?B?TWVZc2ZvNTZpN3lDcWtmLzBLUTRKNndDYW9UK0o1a01RNWNwaFFYUkF3Z0l0?=
+ =?utf-8?B?bkg2M1l1c3F3bEFNOHBmYTYrMExjSHBKSjJWdTNXbjVoTG9HNmhuN21UeUZ0?=
+ =?utf-8?B?WW5QZzlIWEIxd2NLSURvWFVBQjhTMEFsV1hQRmVBaEhFZnJvNExMbTlMN1lt?=
+ =?utf-8?B?QmlmMXpTeXdPMlU0RmVOdFUvY2YvYlcwKzMxZ3d3RXViYytKb0RTd2YwZThl?=
+ =?utf-8?B?dXVBakIrZDBscS9ZZUZJNVVadGRZRTE3R3k2SkxoQmpGczlXM1BCbVpDODVG?=
+ =?utf-8?B?TDZJYUdlTDBPZ0YxMFFWZkFlakxGUVpSVFNtQW5ZVk5SWGZRWWwrNDRKblpN?=
+ =?utf-8?B?ZzhyWjhxa3pOMDJZVEFVSWZCWTAzbG90Vm01aTl2SHB4akJvVjUwdjdlR3Fy?=
+ =?utf-8?B?WitON0N6VS9najVZMEZwRWZZS0hTTVhtY0RidnljLzZmRXMrSjFTNE02cW02?=
+ =?utf-8?B?VkllZ2tWQkFWNzJRYmR6KzAwQUs2TVpCR0REbXpGZllzeHVkZTAwWFZmbUly?=
+ =?utf-8?B?SVE9PQ==?=
+X-OriginatorOrg: amperemail.onmicrosoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 22b1b539-dd3c-44d0-287c-08dbefc29e9e
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB7975.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 03:32:17.0066
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: l4zsEAGED2WSBkuKXo+YjBysRV0jvNfkDvcakTfQDCQWNlUaTERsL8shR10LkqUYDWe/h6/jwb9HNP+oUmZgDj+mEZoY73aLNGJWbl4Z+8ZwRF1sh/nNd/a25/NU7L92
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR01MB6641
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 7:21=E2=80=AFPM Huang, Ying <ying.huang@intel.com> =
-wrote:
->
-> Yosry Ahmed <yosryahmed@google.com> writes:
->
-> > On Mon, Nov 27, 2023 at 1:32=E2=80=AFPM Minchan Kim <minchan@kernel.org=
-> wrote:
-> >>
-> >> On Mon, Nov 27, 2023 at 12:22:59AM -0800, Chris Li wrote:
-> >> > On Mon, Nov 27, 2023 at 12:14=E2=80=AFAM Huang, Ying <ying.huang@int=
-el.com> wrote:
-> >> > > >  I agree with Ying that anonymous pages typically have different=
- page
-> >> > > > access patterns than file pages, so we might want to treat them
-> >> > > > differently to reclaim them effectively.
-> >> > > > One random idea:
-> >> > > > How about we put the anonymous page in a swap cache in a differe=
-nt LRU
-> >> > > > than the rest of the anonymous pages. Then shrinking against tho=
-se
-> >> > > > pages in the swap cache would be more effective.Instead of havin=
-g
-> >> > > > [anon, file] LRU, now we have [anon not in swap cache, anon in s=
-wap
-> >> > > > cache, file] LRU
-> >> > >
-> >> > > I don't think that it is necessary.  The patch is only for a speci=
-al use
-> >> > > case.  Where the swap device is used up while some pages are in sw=
-ap
-> >> > > cache.  The patch will kill performance, but it is used to avoid O=
-OM
-> >> > > only, not to improve performance.  Per my understanding, we will n=
-ot use
-> >> > > up swap device space in most cases.  This may be true for ZRAM, bu=
-t will
-> >> > > we keep pages in swap cache for long when we use ZRAM?
-> >> >
-> >> > I ask the question regarding how many pages can be freed by this pat=
-ch
-> >> > in this email thread as well, but haven't got the answer from the
-> >> > author yet. That is one important aspect to evaluate how valuable is
-> >> > that patch.
-> >>
-> >> Exactly. Since swap cache has different life time with page cache, the=
-y
-> >> would be usually dropped when pages are unmapped(unless they are share=
-d
-> >> with others but anon is usually exclusive private) so I wonder how muc=
-h
-> >> memory we can save.
-> >
-> > I think the point of this patch is not saving memory, but rather
-> > avoiding an OOM condition that will happen if we have no swap space
-> > left, but some pages left in the swap cache. Of course, the OOM
-> > avoidance will come at the cost of extra work in reclaim to swap those
-> > pages out.
-> >
-> > The only case where I think this might be harmful is if there's plenty
-> > of pages to reclaim on the file LRU, and instead we opt to chase down
-> > the few swap cache pages. So perhaps we can add a check to only set
-> > sc->swapcache_only if the number of pages in the swap cache is more
-> > than the number of pages on the file LRU or similar? Just make sure we
-> > don't chase the swapcache pages down if there's plenty to scan on the
-> > file LRU?
->
-> The swap cache pages can be divided to 3 groups.
->
-> - group 1: pages have been written out, at the tail of inactive LRU, but
->   not reclaimed yet.
->
-> - group 2: pages have been written out, but were failed to be reclaimed
->   (e.g., were accessed before reclaiming)
->
-> - group 3: pages have been swapped in, but were kept in swap cache.  The
->   pages may be in active LRU.
->
-> The main target of the original patch should be group 1.  And the pages
-> may be cheaper to reclaim than file pages.
->
-> Group 2 are hard to be reclaimed if swap_count() isn't 0.
->
-> Group 3 should be reclaimed in theory, but the overhead may be high.
-> And we may need to reclaim the swap entries instead of pages if the pages
-> are hot.  But we can start to reclaim the swap entries before the swap
-> space is run out.
->
-> So, if we can count group 1, we may use that as indicator to scan anon
-> pages.  And we may add code to reclaim group 3 earlier.
->
 
-My point was not that reclaiming the pages in the swap cache is more
-expensive that reclaiming the pages in the file LRU. In a lot of
-cases, as you point out, the pages in the swap cache can just be
-dropped, so they may be as cheap or cheaper to reclaim than the pages
-in the file LRU.
+在 2023/11/28 11:25, Baoquan He 写道:
+> On 11/27/23 at 11:18am, Shijie Huang wrote:
+>> 在 2023/11/27 10:51, Baoquan He 写道:
+>>> Hi,
+>>>
+>>> On 11/27/23 at 10:07am, Huang Shijie wrote:
+>>>> In memory_model.h, if CONFIG_SPARSEMEM_VMEMMAP is configed,
+>>>> kernel will use vmemmap to do the __pfn_to_page/page_to_pfn,
+>>>> and kernel will not use the "classic sparse" to do the
+>>>> __pfn_to_page/page_to_pfn.
+>>>>
+>>>> So export the vmemmap when CONFIG_SPARSEMEM_VMEMMAP is configed.
+>>>> This makes the user applications (crash, etc) get faster
+>>>> pfn_to_page/page_to_pfn operations too.
+>>> Are there Crash or makedupfile patches posted yet to make use of this?
+>> I have patches for Crash to use the 'vmemmap', but after this patch is
+>> merged, I will send it out.
+>>
+>> (I think Kazu will not merge a crash patch which depends on a kernel patch
+>> which is not merged.)
+> Maybe post these userspace patches too so that Kazu can evaluat if those
+> improvement is necessary?
 
-My point was that scanning the anon LRU when swap space is exhausted
-to get to the pages in the swap cache may be much more expensive,
-because there may be a lot of pages on the anon LRU that are not in
-the swap cache, and hence are not reclaimable, unlike pages in the
-file LRU, which should mostly be reclaimable.
+No problem.  I will send out them later.
 
-So what I am saying is that maybe we should not do the effort of
-scanning the anon LRU in the swapcache_only case unless there aren't a
-lot of pages to reclaim on the file LRU (relatively). For example, if
-we have a 100 pages in the swap cache out of 10000 pages in the anon
-LRU, and there are 10000 pages in the file LRU, it's probably not
-worth scanning the anon LRU.
+
+Thanks
+
+Huang Shijie
+
