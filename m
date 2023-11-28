@@ -2,186 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 084C07FAF61
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 02:04:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C90987FAF66
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 02:11:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231602AbjK1BCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 20:02:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60072 "EHLO
+        id S232118AbjK1BK6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Nov 2023 20:10:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjK1BCv (ORCPT
+        with ESMTP id S229637AbjK1BK4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 20:02:51 -0500
-Received: from out203-205-221-233.mail.qq.com (out203-205-221-233.mail.qq.com [203.205.221.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 561C1C2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 17:02:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1701133366;
-        bh=gYIr0fLGl0A0yMUGkiXP9kYqWmnfeW6NULr2PpdUPrs=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=CZjEcZjUxqGAzw+vIpTgyfIQIAX3MaTpmswwcHJF/zHbI+noMygCDBDMJA4VftPZN
-         yPaq//cNLQ1HB3nnrcSdxK3yPYEuYxfD7C01CCn374jaK2CsRds9y75lfSXzN3A6pM
-         d68cjoPmtnk4eoXUa+J+U+z81bSk/QVGKk/e8ZgE=
-Received: from [10.56.52.5] ([39.156.73.12])
-        by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
-        id A9882EF; Tue, 28 Nov 2023 09:02:41 +0800
-X-QQ-mid: xmsmtpt1701133361t39mf7s0h
-Message-ID: <tencent_44E22E4955685EFF479910090D5C84E8B209@qq.com>
-X-QQ-XMAILINFO: OaoBA5NOFC/jOVj7yUQgbw3gi+1HeI4r6RzUUXcFdsuuF0M9wglOSEJSLO6sAw
-         wuVnc7r9ylrhXP5QDntpHtKoSIeqiZ5P/u/eMwNCf42EezroieDc4+ZJ0aCI3LPsTygcc0vcz90u
-         2Uh/buCN5I1biC3suEs3+fjyxVew9eDOAXVpwbD3AApc8mN3oaRFhZz8Kp0n/7DftREPnYKsfO2G
-         XMMVMryq7mRpOJWLo7NHxGt0ycYjxjExE8pCysiqMKaekewlyxebbQvjo6P+7NpaNDQlxmhpIfMB
-         W2WnUoy4/8Knc9WmIaeniT1WsHJjbt2OlYkNMRuCxpk89f1c327ZPJ/CZpayaoN1xAHas8buAw01
-         NzHCii/yU+DKGrEwGW+mp99t6W3KUXRcR1ST9tCfWtZ4VIj5waDGhPmCy9QQiQqBgGQ+Z3WXsyDR
-         GaO2RU2q/JdCpWFjZXrZHnPAMvvUi1nYOA9rxsU92WoqRSpimqj1GrpRALRqT8Z0f9yWvfMpbc4w
-         u1jcAGTsPQ9eNMWuaH/5lnY1T2FUa/fTvfT4AmbHpuG6Qa1lkqBJ1Z3tpIC6JJeMQFzNtUIsNy/e
-         H0WNjrqIyBaMBdk7bP0dKpJNj9KSq/SdgmfBy6NaxzukSrFeIGkOyYdkXU7echOiF3q6QEGbc0EU
-         X2eynoOJzC9lp2cqEQS7qI38slQXXj4AD71CMYwAMExOx7uJRQG6glf9tGLKVPSUUjQHLuX+Czmp
-         yMOxfRh555Qqq7fRkaZn7xpUITrBFRwjI8iqPq+8b6VkuZC/YWrPmOtVtkBHMuywwboEwPGc/bBY
-         jwsW83iZCNchHC3FxaMSAAO1w+Kf25tAz4A9TLS18ouWGEjdwUlptABC/McXc36gal1ZsA2qeS8W
-         JVZ2meVBTrjQNYKCNTnFX7l058D5JZE5QbR2HAqOH2Xj1XKmjjEh+B9EFJr/enIP6xspQUeHdnjT
-         bzgRyAyVF2cggCpxiUC8HdnFcRmz0r6gu1FLIf7cez3/LTDdP3GQ==
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-X-OQ-MSGID: <d9a8441e-c0af-4b60-a9d6-f54592e76cce@foxmail.com>
-Date:   Tue, 28 Nov 2023 09:02:40 +0800
+        Mon, 27 Nov 2023 20:10:56 -0500
+Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51C3D135;
+        Mon, 27 Nov 2023 17:11:02 -0800 (PST)
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-1f9decb7446so2459060fac.2;
+        Mon, 27 Nov 2023 17:11:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701133861; x=1701738661;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ne/1BGfawz38RnpEDcGFX2lcTtrweNNkz2EvVODo1EA=;
+        b=dQz0XNEm5qU7FVlNN//Ce7Ti20FNoWWsO6OHeGYDz2vzaqP7b9Jj6Ci0A9GN2Xs1KN
+         kbuwJ7pZ5Fqi2PMXJvcMtdywvF1PKXol2MZI+c/jtQaILfG+T0SsajaFDYoVP8+//cN0
+         BLyt+AmLK/5SshT2gdISw7ynAEQUUBYalyGyqmgL+cHnhs6NGJBUPsi9a4NnYGpAfmOd
+         +sLVoV070z/CzWuLtEIJFsbwQD8RamBScpa1QVritij6zdKFBCvOR1iofOk9z+4dcVd0
+         WC1HPMlH0ckyDDHx0fpXC3bvrV93b4yxnQJBdXQuaqNDQ/u/XG/gRQxUiO+iVDY6S4Mv
+         1yFw==
+X-Gm-Message-State: AOJu0YwROMARTqjxLe6ru+F3ZT5f6NiktbpTJKJ9mOZQCYVP3sVACtgp
+        j/Qu3PZ8TrC75bveB24XWMsaTB13gsqUdDhctkBJZ7Np
+X-Google-Smtp-Source: AGHT+IFj+A9tDPPZZ1IPR3GhrwcRUxIkAARPbua8/pydDU5x95PxtY53KncURTsCPPPLL6cuSqdeRSt66DasCi1Tqv0=
+X-Received: by 2002:a05:6871:5811:b0:1f9:5e2a:ea2d with SMTP id
+ oj17-20020a056871581100b001f95e2aea2dmr15726384oac.37.1701133861529; Mon, 27
+ Nov 2023 17:11:01 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] prctl: Get private anonymous memory region name
-To:     David Hildenbrand <david@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Andy Chiu <andy.chiu@sifive.com>,
-        Joey Gouly <joey.gouly@arm.com>,
-        Stefan Roesch <shr@devkernel.io>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>, rongtao@cestc.cn
-References: <tencent_77E0BC1E8E9A21CA1B9009DD66555C72A90A@qq.com>
- <20231126135644.GA7199@redhat.com>
- <b2f4c084-47dc-4e92-a9e3-daec3f48425d@redhat.com>
-Content-Language: en-US
-From:   Rong Tao <rtoax@foxmail.com>
-In-Reply-To: <b2f4c084-47dc-4e92-a9e3-daec3f48425d@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
-        FREEMAIL_FROM,HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+References: <20231022055221.569634-1-yu.c.chen@intel.com>
+In-Reply-To: <20231022055221.569634-1-yu.c.chen@intel.com>
+From:   Len Brown <lenb@kernel.org>
+Date:   Mon, 27 Nov 2023 20:10:50 -0500
+Message-ID: <CAJvTdKkFLTzWdU7bssUSJkTW4ocfKcFEu5c+8m=EVNZ44+iXug@mail.gmail.com>
+Subject: Re: [RFC PATCH] tools/power turbostat: Do not print negative LPI residency
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Todd Brandt <todd.e.brandt@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+BIOS bugs:-(
 
-On 11/27/23 22:52, David Hildenbrand wrote:
-> On 26.11.23 14:56, Oleg Nesterov wrote:
->> On 11/26, Rong Tao wrote:
->>>
->>> then the PR_GET_VMA interface should be provided accordingly,
->>> which is necessary, as the userspace program usually wants to know what
->>> VMA name it has configured for the anonymous page.
->>
->> I don't really understand the use-case for PR_GET_VMA ...
->>
+I agree that printing 0 is an improvement over printing an insane
+negative number.
+
+But printing 0 suggests that there was no residency, and that could be
+misleading...
+
+Maybe we should output some kind of warning about the broken BIOS?
+
+On Sun, Oct 22, 2023 at 1:53 AM Chen Yu <yu.c.chen@intel.com> wrote:
 >
-> Can't we simply read "/proc/PID/maps" and just have that information 
-> from there?
-
-
-Thank you, David.
-
-The relationship between PR_GET_VMA and /proc/PID/maps is like the 
-relationship between
-
-PR_GET_NAME and /proc/PID/comm. Obviously, both methods can obtain the 
-corresponding
-
-name. However, prctl(2) can be obtained directly from the code level, 
-while reading proc is not
-
-so convenient and efficient. Moreover, reading proc is more like bash 
-command line, rather
-
-than C code.
-
-
+> turbostat prints the abnormal SYS%LPI across suspend-to-idle:
+> SYS%LPI = 114479815993277.50
 >
-> Also, I don't understand the exact use case, that should be clarified 
-> -- especially, why the existing way is insufficient.
+> This is reproduced by:
+> Run a freeze cycle, e.g. "sleepgraph -m freeze -rtcwake 15".
+> Then do a reboot. After boot up, launch the suspend-idle-idle
+> and check the SYS%LPI field.
+>
+> The slp_so residence counter is in LPIT table, and BIOS does not
+> clears this register across reset. The PMC expects the OS to calculate
+> the LPI residency based on the delta. However, there is an firmware
+> issue that the LPIT gets cleared to 0 during the second suspend
+> to idle after the reboot, which brings negative delta value.
+>
+> Prints a simple 0 to indicate this error to not confuse the user.
+>
+> Reported-by: Todd Brandt <todd.e.brandt@intel.com>
+> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> ---
+>  tools/power/x86/turbostat/turbostat.c | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
+> index 9a10512e3407..3fa5f9a0218a 100644
+> --- a/tools/power/x86/turbostat/turbostat.c
+> +++ b/tools/power/x86/turbostat/turbostat.c
+> @@ -1472,8 +1472,16 @@ int delta_package(struct pkg_data *new, struct pkg_data *old)
+>         old->pc8 = new->pc8 - old->pc8;
+>         old->pc9 = new->pc9 - old->pc9;
+>         old->pc10 = new->pc10 - old->pc10;
+> -       old->cpu_lpi = new->cpu_lpi - old->cpu_lpi;
+> -       old->sys_lpi = new->sys_lpi - old->sys_lpi;
+> +       if (new->cpu_lpi > old->cpu_lpi) {
+> +               old->cpu_lpi = new->cpu_lpi - old->cpu_lpi;
+> +       } else {
+> +               old->cpu_lpi = 0;
+> +       }
+> +       if (new->sys_lpi > old->sys_lpi) {
+> +               old->sys_lpi = new->sys_lpi - old->sys_lpi;
+> +       } else {
+> +               old->sys_lpi = 0;
+> +       }
+>         old->pkg_temp_c = new->pkg_temp_c;
+>
+>         /* flag an error when rc6 counter resets/wraps */
+> --
+> 2.25.1
 >
 
-For use-case, in fact, I now want to develop a user-mode patch tool and 
-need to map the patch file to the target
 
-process(Use ptrace(2) and pread/pwrite("/proc/self/mem")). I initially 
-used shared files
-
-     00400000-00401000 r--p 00000000 08:00 241933181 
-/home/sda/git-repos/upatch/tests/hello/hello
-     00401000-00402000 r-xp 00001000 08:00 241933181 
-/home/sda/git-repos/upatch/tests/hello/hello
-     00402000-00403000 r--p 00002000 08:00 241933181 
-/home/sda/git-repos/upatch/tests/hello/hello
-     00403000-00404000 r--p 00002000 08:00 241933181 
-/home/sda/git-repos/upatch/tests/hello/hello
-     00404000-00405000 rw-p 00003000 08:00 241933181 
-/home/sda/git-repos/upatch/tests/hello/hello
-     01136000-01157000 rw-p 00000000 00:00 0 [heap]
-     7f21472c0000-7f21472c2000 rw-p 00000000 00:00 0
-     7f21472c2000-7f21472e8000 r--p 00000000 103:03 3705 
-/usr/lib64/libc.so.6
-     7f21472e8000-7f2147448000 r-xp 00026000 103:03 3705 
-/usr/lib64/libc.so.6
-     7f2147448000-7f2147496000 r--p 00186000 103:03 3705 
-/usr/lib64/libc.so.6
-     7f2147496000-7f214749a000 r--p 001d3000 103:03 3705 
-/usr/lib64/libc.so.6
-     7f214749a000-7f214749c000 rw-p 001d7000 103:03 3705 
-/usr/lib64/libc.so.6
-     7f214749c000-7f21474a6000 rw-p 00000000 00:00 0
-     7f21474be000-7f21474bf000 rwxs 00000000 00:27 7794 
-/tmp/upatch/62984/map_files/patch-FKSYTp   <<
-     7f21474bf000-7f21474c0000 rwxs 00000000 00:27 7793 
-/tmp/upatch/62984/map_files/patch-KFaQNU <<
-     7f21474c0000-7f21474c1000 r--p 00000000 103:03 3702 
-/usr/lib64/ld-linux-x86-64.so.2
-     7f21474c1000-7f21474e8000 r-xp 00001000 103:03 3702 
-/usr/lib64/ld-linux-x86-64.so.2
-     7f21474e8000-7f21474f2000 r--p 00028000 103:03 3702 
-/usr/lib64/ld-linux-x86-64.so.2
-     7f21474f2000-7f21474f4000 r--p 00031000 103:03 3702 
-/usr/lib64/ld-linux-x86-64.so.2
-     7f21474f4000-7f21474f6000 rw-p 00033000 103:03 3702 
-/usr/lib64/ld-linux-x86-64.so.2
-     7ffec158b000-7ffec15ad000 rw-p 00000000 00:00 0 [stack]
-     7ffec15cf000-7ffec15d3000 r--p 00000000 00:00 0 [vvar]
-     7ffec15d3000-7ffec15d5000 r-xp 00000000 00:00 0 [vdso]
-     ffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0 [vsyscall]
-
-However, this is obviously not the best approach, I want to use 
-anonymous pages instead,
-
-     7f21474be000-7f21474bf000 rwxp 00000000 00:27 7794 [anon:patch1]
-     7f21474bf000-7f21474c0000 rwxp 00000000 00:27 7793 [anon:patch2]
-
-I hope to use the address to directly obtain the vma name, which is 
-"patch1". This is very convenient
-
-in the program without parsing /proc/PID/maps in the source code.
-
-Thanks again.
-
-Rong Tao
-
-
-
+-- 
+Len Brown, Intel
