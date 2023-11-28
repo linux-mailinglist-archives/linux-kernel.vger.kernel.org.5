@@ -2,53 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22AA37FC3BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:55:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16FBC7FC3CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:56:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345612AbjK1Syx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 13:54:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35308 "EHLO
+        id S1346502AbjK1S4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 13:56:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229944AbjK1Syw (ORCPT
+        with ESMTP id S1345719AbjK1S4a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 13:54:52 -0500
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EE99131
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 10:54:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1701197696;
-        bh=g5ZQtgKHvReyc2FbFJdjdcOuj1Mex1OD2XH15wvt0xQ=;
-        h=From:Date:Subject:To:Cc:From;
-        b=UsY78Z+onca9EojgI9jD7Jla9fc3zmxsMioryJWG96SHdyXoUKgb3hkAodn3SkG3/
-         sbW0zkfwTSfBHP3/sb2loAGcb/X9InCqO5nFOKCvKzQBTurDYOmlJOnZouQAhkBHgd
-         BvJx8zx1QDBLYxKPzsFnG1omOWdJcAEDWR042NiI=
-From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date:   Tue, 28 Nov 2023 19:54:54 +0100
-Subject: [PATCH] x86/cpu: Update power flags
+        Tue, 28 Nov 2023 13:56:30 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B29410C1;
+        Tue, 28 Nov 2023 10:56:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701197797; x=1732733797;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=SKWRFSAvHQiILnXdmSeYIzw8dazAB7XEhCo2n8N+zzs=;
+  b=TDCAdM9cR2R/MiRAs5ONUtiGUq8Cdta9Z2Xy3QWJb2WRuI1Ej3TTC7Ws
+   3qkm7U9htu0Io+q8rOkpfkjycOKF4wrXmVg7fokYB70XQ+aZmiEI05ks3
+   khS/KOs73gTuf5586dJT7sSQYe8TpdtdW22iy+FxZbzcsbW1t6FPeQiv6
+   gnqk14344wDDt4LPdXfOdXjRuR/+ke7B+KhrUCPY1IKZ1mVDaxmM3uZnP
+   E1c0owu6pqE96jzgggpCGQh1yXZ6kHg11AvO7Iq4fb0Fih/DvRVCs5fik
+   XIk6d9o3MIgLEA1dSwL52uYlwjAZmZLdtv+kQ5mijHzeQOeT6hoVySwvK
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="372366942"
+X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
+   d="scan'208";a="372366942"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 10:56:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="892165779"
+X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
+   d="scan'208";a="892165779"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.14])
+  by orsmga004.jf.intel.com with ESMTP; 28 Nov 2023 10:56:10 -0800
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     hdegoede@redhat.com, markgross@kernel.org,
+        ilpo.jarvinen@linux.intel.com, andriy.shevchenko@linux.intel.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [PATCH 0/6] TPMI update for new defines and permissions
+Date:   Tue, 28 Nov 2023 10:55:59 -0800
+Message-Id: <20231128185605.3027653-1-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20231128-powerflags-v1-1-87e8fe020a3d@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIAH03ZmUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2NDQyML3YL88tSitJzE9GJdi+RUM7NES7M0szRjJaCGgqLUtMwKsGHRsbW
- 1AEcnwoNcAAAA
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
-Cc:     linux-kernel@vger.kernel.org,
-        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1701197695; l=1122;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=g5ZQtgKHvReyc2FbFJdjdcOuj1Mex1OD2XH15wvt0xQ=;
- b=52wa1GJz31VPEzbWBaqm9xum2pA9yacoidwksoWRik5Os7VvN69m/qrOREF+DTTHV0Z0xNA/7
- 9/RtLohigCLA7HVojfPZOB7vtYDSBuWGOLf9y+3NY5R/CjbMPeBSxNP
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,35 +60,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As described on page 99 of
-"Processing Programming Reference (PPR) for AMD Family 19h Model 61h, Revision B1 Processor".
-(AMD Documentation Hub Document 56713)
+Add TPMI information header version 2 fields. Also process read/write
+ and enabled state for feature drivers. When a feature is disabled,
+don't create a device to load a feature driver. When a read is blocked
+then don't load feature drivers. When write is blocked continue to
+function in read only mode.
 
-Tested on an "AMD Ryzen 7 7840U w/ Radeon  780M Graphics".
+Srinivas Pandruvada (6):
+  platform/x86/intel/tpmi: Add additional TPMI header fields
+  platform/x86/intel/tpmi: Don't create devices for disabled features
+  platform/x86/intel/tpmi: Modify external interface to get read/write
+    state
+  platform/x86/intel/tpmi: Move TPMI ID definition
+  platform/x86: ISST: Process read/write blocked feature status
+  platform/x86/intel-uncore-freq: Process read/write blocked feature
+    status
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
- arch/x86/kernel/cpu/powerflags.c | 3 +++
- 1 file changed, 3 insertions(+)
+ .../intel/speed_select_if/isst_tpmi_core.c    | 25 +++++++++++
+ drivers/platform/x86/intel/tpmi.c             | 42 ++++++++++---------
+ .../uncore-frequency/uncore-frequency-tpmi.c  | 15 +++++++
+ include/linux/intel_tpmi.h                    | 24 +++++++++--
+ 4 files changed, 84 insertions(+), 22 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/powerflags.c b/arch/x86/kernel/cpu/powerflags.c
-index fd6ec2aa0303..0c98405aeae2 100644
---- a/arch/x86/kernel/cpu/powerflags.c
-+++ b/arch/x86/kernel/cpu/powerflags.c
-@@ -21,4 +21,7 @@ const char *const x86_power_flags[32] = {
- 	"eff_freq_ro", /* Readonly aperf/mperf */
- 	"proc_feedback", /* processor feedback interface */
- 	"acc_power", /* accumulated power mechanism */
-+	"connected_standby", /* connected standby */
-+	"rapl", /* running average power limit */
-+	"fast_cppc", /* fast collaborative processor performance control */
- };
-
----
-base-commit: df60cee26a2e3d937a319229e335cb3f9c1f16d2
-change-id: 20231128-powerflags-8ce66a96f6f3
-
-Best regards,
 -- 
-Thomas Weißschuh <linux@weissschuh.net>
+2.41.0
 
