@@ -2,69 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4977FB100
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 05:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC4A7FB102
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 05:44:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234602AbjK1El6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 23:41:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35756 "EHLO
+        id S232930AbjK1EoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 23:44:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbjK1El4 (ORCPT
+        with ESMTP id S229789AbjK1EoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 23:41:56 -0500
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 736531AA;
-        Mon, 27 Nov 2023 20:42:02 -0800 (PST)
-Received: from [192.168.1.107] (89-186-112-232.pool.digikabel.hu [89.186.112.232])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hs@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 4934B87516;
-        Tue, 28 Nov 2023 05:41:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1701146520;
-        bh=6qv/nhkVe9kw+UVFtxebwNFRGl9GVaetLZvjjatGHLI=;
-        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=IhkaUsjqWZECkl4fwg0URQWwo1xqctlgqI7ObtVTXqkSfvoA6Reu2gWxTY2dooyTz
-         wy5RnryJcpQLf6bhz9CLSOl2SX5RJ0Fvf1GtRvSoyjmXI6NBIUpqBgqMWWzZDh2lCn
-         wt879N/8YxOrz2q6Rd801QlM+P4GrQlo0FdKSx+rURMcutswDNGkQMwHA+Ea4PVFkj
-         Ho905n56TNcqICxMSt7yv30uegPsr11Fx+NJhhBYxXbUTYuDvTzei0EjfBix1FhjcY
-         WHk+OVF/YNqp7dWeZco2iW8Z8NMWp5c/a2X99WYkFuNDS2YHNOiEC2sCmJYflBWgm8
-         X9zhq2MRnN+nw==
-Reply-To: hs@denx.de
-Subject: Re: [PATCH] net: fec: fix probing of fec1 when fec0 is not probed yet
-To:     Wei Fang <wei.fang@nxp.com>, Andrew Lunn <andrew@lunn.ch>,
-        Heiko Schocher <heiko.schocher@gmail.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Shenwei Wang <shenwei.wang@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexander Sverdlin <alexander.sverdlin@siemens.com>
-References: <20231123132744.62519-1-hs@denx.de>
- <132aca53-6570-41a4-b2b2-0907d74f9b31@lunn.ch>
- <AM5PR04MB313982936800424F9B2E660688B8A@AM5PR04MB3139.eurprd04.prod.outlook.com>
- <227dc52c-c555-34e4-d534-1a749af15425@denx.de>
- <AM5PR04MB31395DCE58A5312BD4E8A67A88BDA@AM5PR04MB3139.eurprd04.prod.outlook.com>
-From:   Heiko Schocher <hs@denx.de>
-Message-ID: <af87e335-e6f2-7ffd-ba19-22289558819e@denx.de>
-Date:   Tue, 28 Nov 2023 05:41:43 +0100
+        Mon, 27 Nov 2023 23:44:23 -0500
+Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E6B6194;
+        Mon, 27 Nov 2023 20:44:29 -0800 (PST)
+Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 3AS4EoZB001317;
+        Tue, 28 Nov 2023 04:44:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
+         h=to:cc:from:subject:message-id:date:content-type
+        :content-transfer-encoding:mime-version; s=PPS06212021; bh=DTzhN
+        HhtpK7G1gNLMEZy/Qn03J2paGdfQYKIrk3uwFQ=; b=QYj00ehGT1+FvE7t4xG82
+        fksHp9qN5+P06Sh3SEmZLW4icHRmh4b4LCTb6hBTbJoTYMm4IJA/E4dICFnxc9Oy
+        HbC/EEEdhWBHf7CurviApGSkcvugbpL/S/VHTjb+1wQrV1BiRkdbxXTfhqTYlWYD
+        eNwvFCgfdjizq1qh4D5ubKnYIZCHb47lQpPo7BN9vV5KbDbxxw6bjdfZaXF6YUaZ
+        XGiRaNXRJvJjCBCAEUMbSuFpYlBuEBsFmDn2a9+c/re7hKUn7zvVFPgsHnzYXQEL
+        OdslCzMJwegqMon2vlbsl0RwatSlT5jFznUNvSkkGVv+uG6RL/iz7e9bYC5Y56Z2
+        g==
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2040.outbound.protection.outlook.com [104.47.56.40])
+        by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3uk7w6j9uw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Nov 2023 04:44:10 +0000 (GMT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NTGg4UNtczGE/ogr+CWHuQC72VGx48TQb+SjwKMjzte//JoLNw9VEWF8yaWcUiSU0eynbeYZjKiv3W7iVxrRfp4TkdonryfUUIpyTq2Ih89vRfna7HvqFIimy/tISSRCRFoJhS8Ne/erv2ipuL7Ok6Jw3TRRbwCGDzIZsTL09bUqwptDNc+gBGJp8jbPisWW0B3dAyap+KA0XZEQmHKMoKBRDLUtQ4zbLyPEGJgmxahc+Kz+jCN4iule1rLzQLhli1Kwc1ueDysMVMhC8hzbfwNiPOPmM2FFprF+UCCmIRK8yywwnljGXN44LquYheBiH10Ro1TPHR9h8eURFfzfng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DTzhNHhtpK7G1gNLMEZy/Qn03J2paGdfQYKIrk3uwFQ=;
+ b=jMo72/qCHtY9/BjriB7QPY4ur1YFNWuDmXFqqCA+l+BqE9Pi1ER8lwgbttQo23pmgX0IAA6IyEhmDmyC261cuoIcwxJEubOSQhJiGHkcI5bIZ97JSQkC3nJ73cxlESPJuJZwkExQNBHr8WqkoD0lSLpvlG+2j5+3WsRY4CB15XeLfs/uG5xeTZJuhL/A4NEsJ1mWuHOXPbX8fi9c5Gw28gEQNo+pq98uzD19oFIqgW7gdLF8IaMOnivkgu2H9Y59tKjusWJjJ36qQ15UZAgQQlw+Fz8fCIfoYS/LnxU5WzDJkfWscR0fbSEGBSly+Pgu87IYsWu7tHStORsL9q1iCg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+Received: from MW5PR11MB5764.namprd11.prod.outlook.com (2603:10b6:303:197::8)
+ by PH7PR11MB7121.namprd11.prod.outlook.com (2603:10b6:510:20c::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Tue, 28 Nov
+ 2023 04:44:06 +0000
+Received: from MW5PR11MB5764.namprd11.prod.outlook.com
+ ([fe80::7d7c:4379:e96:3537]) by MW5PR11MB5764.namprd11.prod.outlook.com
+ ([fe80::7d7c:4379:e96:3537%7]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
+ 04:44:05 +0000
+To:     Frank Li <frank.li@nxp.com>, vkoul@kernel.org
+Cc:     imx@lists.linux.dev, dmaengine@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   wangxiaolei <xiaolei.wang@windriver.com>
+Subject: dmaengine: fsl-edma: dmatest timeout
+Message-ID: <64cde245-0e53-6559-0a3b-ffe0a5415519@windriver.com>
+Date:   Tue, 28 Nov 2023 12:43:59 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <AM5PR04MB31395DCE58A5312BD4E8A67A88BDA@AM5PR04MB3139.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=gbk
+ Thunderbird/78.13.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-ClientProxiedBy: TYAPR01CA0060.jpnprd01.prod.outlook.com
+ (2603:1096:404:2b::24) To MW5PR11MB5764.namprd11.prod.outlook.com
+ (2603:10b6:303:197::8)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW5PR11MB5764:EE_|PH7PR11MB7121:EE_
+X-MS-Office365-Filtering-Correlation-Id: 39a8770e-6566-4ca7-2967-08dbefcca6cc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bmMmocO0NOe7wVS5MfetOOOAYSQuOsMiDiJsXCZ2wJ//F0dWNu/1jjMgQNFZc4apXI/AN5+wqGKt/5hP7qsT90C5g9O4mq55F0qf0Fp/+7bsaAnuiNHiza/f8oI/sSdSh9Dg5xluivmJMw7CRg1dIGR13uoP8yc8vPPP7wwdMpy+aCCKHEB+5GUh4C8/tp74yIjjUBjkqgyH56cD/T+K+kYeQWtW1EEHaFZ4tX61PHerQmY5MF1msI1BD0JFSWGoSiYANSY/JXv8xaAbXMcxVlLRaZ/QT0TQDytzeqRAKdPCNjrgdaE8yC/PvST06ZccHcClcYZdNxJQpolJN3c6GYwmGRWE/Gh8UmCWZmXIfIJE9UvBQfTIzOUmTKiOX1h46St/Ns89BfXAt7qPMJa1a3dEpq+vpQ2gRLQkZqEqVyxLiMEcF+Jup2iJawOkj5tDvxWLJkjtYD7ORUmlMvRFtmVZ3x9N/KZyICNi4Zf6foRWuzpWs/eXLVBl2vSb+4ze1jB1IGu50knmCNs6MTCejkX+Yneu4voHYLucoO8SzYrOuVMzcC9cCroIun6P6cDT5u7yltd3ijgLFL6KIS/HXyUsZIV0ceWkFJPENxeo3beTqv/yX1b9g5ynRNIzl9snYdSoi+6p58XQ8azUPrapPGsK2SAPOe6hzQsOucJywnc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW5PR11MB5764.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(39850400004)(396003)(346002)(136003)(230922051799003)(1800799012)(186009)(64100799003)(451199024)(2906002)(4744005)(5660300002)(38100700002)(86362001)(4326008)(8936002)(8676002)(31696002)(41300700001)(31686004)(66476007)(316002)(66946007)(66556008)(2616005)(6506007)(26005)(478600001)(6512007)(6486002)(6666004)(36756003)(43062005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?djhPcTY0RWNINlpVZm1ocFVXR0RqU1N3YVVaYzhxazc4dndqQzZlMEl5eE1Q?=
+ =?utf-8?B?STFPeUNjaUJKOHBONTBzT2pIeVVpZ3pya3BYVjhZSW5kdnVOTTBEczgwQ09J?=
+ =?utf-8?B?ZEtYRktVYjJEajA0VWRhRlJGTUZoam9EWFV5Nk81K1E1Y1Fab1h0Zzg2b29V?=
+ =?utf-8?B?bXRzWnJPM2twams5WkVuOGRqMG1BK3YwVldtWUJGc0l1cXNiREhid3BDd1Ax?=
+ =?utf-8?B?bXd1WWh5UVdsUkErSXR6RXBVUk5uazdxSW55Z1VNbXI3bjdOUFNMNU5pckE5?=
+ =?utf-8?B?V3crT0M2bm1tbjVoRlNHcW9xVUZ1MC81SDNJbmFnUHdHNGhYOFhzSFhOYUI0?=
+ =?utf-8?B?RHgyQXQvS2VQNlBzSUFuR05iVy9uYjk3NHMxR0s2OWEvc09KWWhKc3pqTkQ1?=
+ =?utf-8?B?NlB4YWVsVkhUcmlEZVl3Q3U1bWd3UDZ5ZEtwUmpmakp3ekFxWDFxUmFVUnhF?=
+ =?utf-8?B?TERCU3AxeG1pMUw4VitPTVpMa2RRRVVhdkx3bkRRZ28wVHVjRHRrTFQ5RmpU?=
+ =?utf-8?B?S0dUUzlDUGREVkN6amMvRmVHYVNYTGNOR052TG9MdVBoZ3lRczdjN2RuYTdx?=
+ =?utf-8?B?b1g5TEtwbEp4a3VhdHJ4V0xNcmd6S2ZEVlZCYXMySlRaOFhhMnBNeWk5MDNW?=
+ =?utf-8?B?K2M5c3I2NSt0NDR4VWJ5MFgreHJ3aXIveUtUVTVZWjBMRndTclZqeE5OdmVR?=
+ =?utf-8?B?Z0FPTEhUY0VtRCtndEI2MEtjZnVRemc4WEcrM1FPZFZhQnp0WFp4c0MwNU5t?=
+ =?utf-8?B?WE9nT0NNRnFCVGdrL3g5T0VLOUNaL3ZkN0ZVVTVzTmRGalZ2c0J0UVZhVFZU?=
+ =?utf-8?B?T1JBTmlOS0tlRG05K1Z5NkdWRDgzNTRFRXVyV1VmbzUyY1FpTVkyZHhTMGJz?=
+ =?utf-8?B?WFp4MCtkcVNIWWtMQS9LZXh1SEpVZVRndHJiMk5pa0tTS2JSOVcxWThqbWFw?=
+ =?utf-8?B?RlNUVlYyQ3h6bVJmeTVzSUwxKzR2YTd4aEF1KzZ1LzBQbDhndThmSm1tOWlD?=
+ =?utf-8?B?UHJicUY5S2lEaGthWTNHMVlwMnk4YjlRQURpZXVaY215Ykc4K1dwWnc2dlls?=
+ =?utf-8?B?WmE1a1dtRDJYa3ZBaWVLUFo2bU5QY3ZqOVhtaVJzWG9zSmZtWGxZakw1ZDha?=
+ =?utf-8?B?Zjl3dmFjQ09CWVBBVFNkcE1va0twUTdhUmVoSVlhU25WSFBUVVFweFdDb3ZG?=
+ =?utf-8?B?MndxQjltMC8yYUN2amtXNDkyamRaTDk5SkV4WWhCZjA2ODNMVWxnMEw0d01Y?=
+ =?utf-8?B?ak9ENG1HQ0o4Q1RmMFl6Um9LVFUzZW15RWlBalcxditUbFduZDBWMU9FbTA1?=
+ =?utf-8?B?Sno2TU90NkUvU1lHd1l0Tmo2bTREelgxWDJPalJWZ1FMRzJscVpkYnJVdEsx?=
+ =?utf-8?B?YWxOcGtzTjF1N25mWnZNQ2pYcmkvVEM3RG4rU282L2ZabmhGOFdCa2Rad2xa?=
+ =?utf-8?B?Z0hMU1Nud1dNdCtETUQ4aHEzSW51Wm1PMnpua1Zjb0Q2VUdZcUhDTktRMFpX?=
+ =?utf-8?B?eGw5ejhtSEZyZkxEKzNvNGhoSEc3anlYYnpld3F3S2ozb0ROR0RyZnBVa1Bs?=
+ =?utf-8?B?am9qSmdOaW1VR2IxUzIrM1J4SDJUM09HUTNrY3J0YStGcSs0b1dmQmw4VUIy?=
+ =?utf-8?B?czBCcXg4UFN4QkNlZURXaXBBTnAxQUhLRDRiaFNKU2tTWFpjTG5ZeHZPdjlx?=
+ =?utf-8?B?WlpzOU9udmQvOW8zK1MrNWJrUzN3cmZNL243WXpkdWN4S3FRREx2dEJDUVN0?=
+ =?utf-8?B?SjEzL05NVjRqN3ZteWtCN1dlQS9hQ1NNOHV2RVZHL0tzWXhGL1JvZjhSVFpX?=
+ =?utf-8?B?R0NCRVVqUXd0enhaOGc2MnoyVEJmUnhwQlZna1dNbG12NXlXekd1a0drdExa?=
+ =?utf-8?B?OFprR1IwUllDZWxDU1hNRHNmMlZybEhOMGZ3NXZ4VHFlU1Z3M3FaVWRGTlBR?=
+ =?utf-8?B?cmNjdG0vbXNMZmVQZzRicy9IQWUwbEZBYnRuQWJkOHI5dFZUR29hbGFEWkJH?=
+ =?utf-8?B?U0Z0aDBVbnJzbzlYcjU2eVVKeTR5VUFvdVJNME42Vjg0ZERkVWhna1N5cndq?=
+ =?utf-8?B?YnhWbmlCSWVCL012cElIbzAzYUl6ZURScjEyQ3lqVEJMM2pKMEdlcCszS1dS?=
+ =?utf-8?B?NmQ1MmVHc0JyWVp5TWdxWWdFb1VRZ01xaUlqdkZWQWFTQnIxdUVScGx3SkhO?=
+ =?utf-8?B?T3c9PQ==?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 39a8770e-6566-4ca7-2967-08dbefcca6cc
+X-MS-Exchange-CrossTenant-AuthSource: MW5PR11MB5764.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 04:44:05.4837
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: b26OIkwLN4O+hzMzpZVV9wgSg1yAU+cqchKmV+Js0h8zB8KBBokn9qBlpQeg3XcSAtre71QDScA2gjAYVqjXclYtKgOKeo6zXrdV4tIlo3s=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7121
+X-Proofpoint-GUID: FY3A4KBv0zkSRV6B2iJTkzYWUdfhOpYN
+X-Proofpoint-ORIG-GUID: FY3A4KBv0zkSRV6B2iJTkzYWUdfhOpYN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-16_25,2023-11-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ clxscore=1015 spamscore=0 suspectscore=0 bulkscore=0 mlxscore=0
+ adultscore=0 phishscore=0 malwarescore=0 impostorscore=0 mlxlogscore=593
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311060001 definitions=main-2311280036
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,117 +144,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Wei,
+Hi
 
-On 27.11.23 07:55, Wei Fang wrote:
->> -----Original Message-----
->> From: Heiko Schocher <hs@denx.de>
->> Sent: 2023年11月24日 13:19
->> To: Wei Fang <wei.fang@nxp.com>; Andrew Lunn <andrew@lunn.ch>; Heiko
->> Schocher <heiko.schocher@gmail.com>
->> Cc: netdev@vger.kernel.org; Clark Wang <xiaoning.wang@nxp.com>; David S.
->> Miller <davem@davemloft.net>; Eric Dumazet <edumazet@google.com>;
->> Jakub Kicinski <kuba@kernel.org>; dl-linux-imx <linux-imx@nxp.com>; Paolo
->> Abeni <pabeni@redhat.com>; Shenwei Wang <shenwei.wang@nxp.com>;
->> linux-kernel@vger.kernel.org; Alexander Sverdlin
->> <alexander.sverdlin@siemens.com>
->> Subject: Re: [PATCH] net: fec: fix probing of fec1 when fec0 is not probed yet
->>
->> Hello Wei,
->>
->> On 24.11.23 03:33, Wei Fang wrote:
->>>> -----Original Message-----
->>>> From: Andrew Lunn <andrew@lunn.ch>
->>>> Sent: 2023年11月24日 4:09
->>>> To: Heiko Schocher <heiko.schocher@gmail.com>
->>>> Cc: netdev@vger.kernel.org; Heiko Schocher <hs@denx.de>; Clark Wang
->>>> <xiaoning.wang@nxp.com>; David S. Miller <davem@davemloft.net>; Eric
->>>> Dumazet <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>;
->>>> dl-linux-imx <linux-imx@nxp.com>; Paolo Abeni <pabeni@redhat.com>;
->>>> Shenwei Wang <shenwei.wang@nxp.com>; Wei Fang
->> <wei.fang@nxp.com>;
->>>> linux-kernel@vger.kernel.org
->>>> Subject: Re: [PATCH] net: fec: fix probing of fec1 when fec0 is not
->>>> probed yet
->>>>
->>>> On Thu, Nov 23, 2023 at 02:27:43PM +0100, Heiko Schocher wrote:
->>>>> it is possible that fec1 is probed before fec0. On SoCs with
->>>>> FEC_QUIRK_SINGLE_MDIO set (which means fec1 uses mii from fec0) init
->>>>> of mii fails for fec1 when fec0 is not yet probed, as fec0 setups
->>>>> mii bus. In this case fec_enet_mii_init for fec1 returns with
->>>>> -ENODEV, and so fec1 never comes up.
->>>>>
->>>>> Return here with -EPROBE_DEFER so interface gets later probed again.
->>>>>
->>>>> Found this on imx8qxp based board, using 2 ethernet interfaces, and
->>>>> from time to time, fec1 interface came not up.
->>>>>
->>>>> Signed-off-by: Heiko Schocher <hs@denx.de>
->>>>> ---
->>>>>
->>>>>  drivers/net/ethernet/freescale/fec_main.c | 2 +-
->>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/drivers/net/ethernet/freescale/fec_main.c
->>>>> b/drivers/net/ethernet/freescale/fec_main.c
->>>>> index c3b7694a7485..d956f95e7a65 100644
->>>>> --- a/drivers/net/ethernet/freescale/fec_main.c
->>>>> +++ b/drivers/net/ethernet/freescale/fec_main.c
->>>>> @@ -2445,7 +2445,7 @@ static int fec_enet_mii_init(struct
->>>> platform_device *pdev)
->>>>>  			mii_cnt++;
->>>>>  			return 0;
->>>>>  		}
->>>>> -		return -ENOENT;
->>>>> +		return -EPROBE_DEFER;
->>>>
->>>> I think this has been tried before.
->>>>
->>> Yes, there was indeed a similar patch [1] before. but this issue seems
->>> to only exist in downstream tree, because there is a local patch which is not
->> in the upstream.
->>>
->>>         /* board only enable one mii bus in default */
->>>         if (!of_get_property(np, "fsl,mii-exclusive", NULL))
->>>                 fep->quirks |= FEC_QUIRK_SINGLE_MDIO;
->>
->> Yes, sorry for overseeing this ... but there are SoCs in upstream which set
->> FEC_QUIRK_SINGLE_MDIO and so mii bus from for example fec0 is used on
->> other fecX devices, correct?
->>
-> Yes, i.MX28 still uses FEC_QUIRK_SINGLE_MDIO flag in the upstream, But the
-> current patch doesn't seem to completely solve this issue.
-> 
-> If fec1 is probed before fec0, I think its fep->dev_id should be equal to 0, so it will
-> not go to the following statement.
+When I executed the following command to do dmatest on the imx8qm platform,
 
-Indeed... and than fep->dev_id is interchanged too... I wonder why not using:
+I found that the timeout occurred on the current mainline kernel:
 
-	fep->dev_id = of_alias_get_id(np, "ethernet");
 
-in fec_probe function for getting the dev_id. With that no problems with
-"wrong" dev_id and also my change makes sense...
+modprobe dmatest run=1 iterations=42
 
-But you are correct, currently patch is useless.
 
->  if ((fep->quirks & FEC_QUIRK_SINGLE_MDIO) && fep->dev_id > 0) {
-> 		/* fec1 uses fec0 mii_bus */
-> 		if (mii_cnt && fec0_mii_bus) {
-> 			fep->mii_bus = fec0_mii_bus;
-> 			mii_cnt++;
-> 			return 0;
-> 		}
-> 		return -ENOENT;
-> }
-> 
-> I'm considering removing the FEC_QUIRK_SINGLE_MDIO flag from upstream
-> in the future as it's not necessary. But not now as I am busy with other projects.
+I found that the completion interrupt was not received in 
+fsl_edma3_tx_handler().
 
-Hmm.. and what is on platforms which have this usecase?
+I didn't find any special configuration from the manual. Can anyone give 
+some suggestions?
 
-bye,
-Heiko
--- 
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-52   Fax: +49-8142-66989-80   Email: hs@denx.de
+
+thanks
+
+xiaolei
+
