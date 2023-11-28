@@ -2,94 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE827FC4F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 21:10:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 341967FC4F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 21:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344921AbjK1UJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 15:09:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52656 "EHLO
+        id S229930AbjK1UMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 15:12:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjK1UJ4 (ORCPT
+        with ESMTP id S229526AbjK1UMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 15:09:56 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA3A383
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 12:10:02 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE5D6C433C7;
-        Tue, 28 Nov 2023 20:10:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701202202;
-        bh=K6Xt5r/KWRZDak2N2GxiFYTdyVHnUjvbJFtqF4jWPwU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P98rUFF1CB6n+nrnecTOo8tJ13l1VIojfi4kCFPpiNzHrODvLKgPXwP5CRRUTgnYr
-         LW3kkjgcS7/NI1AGsf7+8eIWHs7B92BkhQcIv48QvsZcS4K84cqvq23A4iYqQQ1q9Y
-         9x3AwvNpJCUQLQi3lxC9Ps3k+MzGNlCExkUuxwpo82A26bVPgZ/Mwq/4tAlS0kLxEq
-         XVmrf6/VjtGVTQ5G4LamVdT/q5lZmHRelCqvwnzVj+hDywgTxXhwnSQYfXNX0ymYyG
-         bLp6Jsiwo7ufstQ2fko0/+owq+mheZ/rqAA2AZuFCPT6ACcp33SmrVvl1NZGR6G1tW
-         5P5P3SRNqOZZA==
-Date:   Tue, 28 Nov 2023 12:10:00 -0800
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, David Ahern <dsahern@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>,
-        Itay Avraham <itayavr@nvidia.com>,
-        linux-kernel@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH V3 2/5] misc: mlx5ctl: Add mlx5ctl misc driver
-Message-ID: <ZWZJGF7moDM_k6TU@x130>
-References: <20231127161732.GL436702@nvidia.com>
- <2023112707-feline-unselect-692f@gregkh>
- <ZWTtTjgBrNxpd9IO@x130>
- <20231127160719.4a8b2ad1@kernel.org>
- <20231128044628.GA8901@u2004-local>
- <20231128065321.53d4d5bb@kernel.org>
- <20231128162413.GP436702@nvidia.com>
- <20231128084421.6321b9b2@kernel.org>
- <20231128175224.GR436702@nvidia.com>
- <20231128103304.25c2c642@kernel.org>
+        Tue, 28 Nov 2023 15:12:08 -0500
+Received: from omta38.uswest2.a.cloudfilter.net (omta38.uswest2.a.cloudfilter.net [35.89.44.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387DD83
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 12:12:14 -0800 (PST)
+Received: from eig-obgw-5001a.ext.cloudfilter.net ([10.0.29.139])
+        by cmsmtp with ESMTPS
+        id 7t0nrjTq3KOkL84RJreB4T; Tue, 28 Nov 2023 20:12:13 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id 84RIrKsGqkTVW84RIrvlLy; Tue, 28 Nov 2023 20:12:12 +0000
+X-Authority-Analysis: v=2.4 cv=a58jSGeF c=1 sm=1 tr=0 ts=6566499c
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=7m0pAUNwt3ppyxJkgzeoew==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=BNY50KLci1gA:10 a=wYkD_t78qR0A:10
+ a=2Hst6vopFtGx82aOUKEA:9 a=QEXdDO2ut3YA:10
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=OsKcEDvP0RJqOniczsfYwBsWjtoeOoLyMxdYiyznFe8=; b=Sn2nq0bNlhLS7bFh9GNAEbCmvF
+        Iu9IUfJA9BcST3mlzJZ/nVxt0u8R8sZwXnBqGKQqXneNRQ0SKC3J7t822YgSfquvt4I10nXWe11hB
+        7B2yCijnOBhuwInkCAWNNsmpWAzS9XYbKIOw4u7sLjWB+/KZwwjwJFyV/MTcAf9+3EuugFdiUDP87
+        bos+E4MxIAe8JWJ8ELgVvFZnKUoH7O+dMD9j8Oq4hO2XUfcJcOiIk1qgECF635awfjOAFdumxuj85
+        WXmKiAUQk36sdY9XhmNXcdql6uNrny28p+mgwrGk3TOaHzWHha/VLopoAnnfRgIQj5Y1mwLGh4VnE
+        7GgMqoKQ==;
+Received: from 187.184.156.122.cable.dyn.cableonline.com.mx ([187.184.156.122]:12895 helo=[192.168.0.9])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96.2)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1r84RH-002N7Y-1K;
+        Tue, 28 Nov 2023 14:12:11 -0600
+Message-ID: <a1656a7c-7eb0-4a21-8c49-89014beeb7ed@embeddedor.com>
+Date:   Tue, 28 Nov 2023 14:12:08 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20231128103304.25c2c642@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] neighbour: Fix __randomize_layout crash in struct
+ neighbour
+Content-Language: en-US
+To:     Joey Gouly <joey.gouly@arm.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Bill Wendling <morbo@google.com>,
+        Kees Cook <keescook@chromium.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <ZWJoRsJGnCPdJ3+2@work>
+ <20231128111028.GA2382233@e124191.cambridge.arm.com>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20231128111028.GA2382233@e124191.cambridge.arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.184.156.122
+X-Source-L: No
+X-Exim-ID: 1r84RH-002N7Y-1K
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187.184.156.122.cable.dyn.cableonline.com.mx ([192.168.0.9]) [187.184.156.122]:12895
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 2
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfLVKCNATWXiNK3gyOWfmDLTYyz7uDkVxaV5RqFKQvP7B+fPdCYY6BJdx7FykCOY44lOX7uREAxemmVIL2G3G6IrRbaLqANat3DqCW82y3BdXL4v3xgtv
+ NRA3nhJcGNZxMKtw6SLThYcaOiDlJXWs/reKm8/B3cygeSLpr7Knrq4QEMdw8hAiKbfJ0N4dKqWF6vakjwTATudOhwZF9l8g/EYPxrPApKU2Uv7HoLKq4doP
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28 Nov 10:33, Jakub Kicinski wrote:
->On Tue, 28 Nov 2023 13:52:24 -0400 Jason Gunthorpe wrote:
->> > The question at LPC was about making devlink params completely
->> > transparent to the kernel. Basically added directly from FW.
->> > That what I was not happy about.
->>
->> It is creating a back-porting nightmare for all the enterprise
->> distributions.
->
->We don't care about enterprise distros, Jason, or stable kernel APIs.
->
 
-Oh, I missed this one, so you don't care about users? 
+>> diff --git a/include/net/neighbour.h b/include/net/neighbour.h
+>> index 07022bb0d44d..0d28172193fa 100644
+>> --- a/include/net/neighbour.h
+>> +++ b/include/net/neighbour.h
+>> @@ -162,7 +162,7 @@ struct neighbour {
+>>   	struct rcu_head		rcu;
+>>   	struct net_device	*dev;
+>>   	netdevice_tracker	dev_tracker;
+>> -	u8			primary_key[0];
+>> +	u8			primary_key[];
+>>   } __randomize_layout;
+>>   
+>>   struct neigh_ops {
+> 
+> Fixes the crash for me!
 
-Users often pay to distros for support, and distros always turn to vendors
-for debug situations, in fact one of the high stakeholders for this is an
-enterprise distro..
+Awesome. :)
 
-Also Jason and I are users, and more than 300 engineers at nvidia
-and dozens of customers are users, deploying 100s of thousands of ConnectX
-chips in their fleets.
-
-if it weren't important for us and our users, I wouldn't even fight this
-hard.. but it is important, and very useful, I can't express that hard
-enough.
-
-So you don't care ? Then don't ask about who the users are, in the other
-email, apparently it's all about your personal opinion and views about
-vendors what drives your responses. So it is really hard to debate with
-you..
+--
+Gustavo
