@@ -2,92 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E486B7FC692
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:00:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52A007FC696
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345634AbjK1U6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 15:58:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52954 "EHLO
+        id S1346511AbjK1U7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 15:59:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346617AbjK1U6J (ORCPT
+        with ESMTP id S1345294AbjK1U7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 15:58:09 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C00B1735
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 12:58:10 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 592C3C433C7;
-        Tue, 28 Nov 2023 20:58:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701205089;
-        bh=UX5C2qgBjiUo8YBuIWLh8l0BZcz0KqX1PVlM2d6g/Hs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=oV48eUKntnEzVvcv9ghdk4dk2660mtkgGC0Rq09ovnIQzNbwC5LzvTjX/pzHoS/w3
-         lLE7UZJsygtUY9+gFwrkTl/tIUufnO5J+XaoPSeACsp5uhGSjr3NZlsIcqT6IMqBMt
-         mUdIRT8gLBx/KVa/AsVZ5XPeuU4n/mlHj24sCUS3EfVqaO+1fYX0ZHIekyUhVvl1rw
-         yJSvsUyC6LHCwm9kfTJPE/ezpij/gexK4CA3CSIK2r4EyQMTDlPD7Ff11jVcLUm388
-         Kf/Ejt8CDzUL0EfvfRoTI7fZgHwjeouX3YFeY+AbNe63iOFcohuGQRLioe/DbznTix
-         OpVa7ZM6cd+3Q==
-Date:   Tue, 28 Nov 2023 12:58:08 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-        mhi@lists.linux.dev, linux-arm-msm@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org
-Subject: Re: [PATCH v2 0/2] Add MHI Endpoint network driver
-Message-ID: <20231128125808.7a5f0028@kernel.org>
-In-Reply-To: <CAA8EJppL0YHHjHj=teCnAwPDkNhwR1EWYuLPnDue1QdfZ3RS_w@mail.gmail.com>
-References: <20230607152427.108607-1-manivannan.sadhasivam@linaro.org>
-        <20230607094922.43106896@kernel.org>
-        <20230607171153.GA109456@thinkpad>
-        <20230607104350.03a51711@kernel.org>
-        <20230608123720.GC5672@thinkpad>
-        <20231117070602.GA10361@thinkpad>
-        <20231117162638.7cdb3e7d@kernel.org>
-        <20231127060439.GA2505@thinkpad>
-        <20231127084639.6be47207@kernel.org>
-        <CAA8EJppL0YHHjHj=teCnAwPDkNhwR1EWYuLPnDue1QdfZ3RS_w@mail.gmail.com>
+        Tue, 28 Nov 2023 15:59:17 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78D0C19B2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 12:59:24 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r85AN-0006nV-7B; Tue, 28 Nov 2023 21:58:47 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r85AI-00CFt4-DE; Tue, 28 Nov 2023 21:58:42 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r85AI-00AOAR-2T; Tue, 28 Nov 2023 21:58:42 +0100
+Date:   Tue, 28 Nov 2023 21:58:41 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Lee Jones <lee@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Sam Protsenko <semen.protsenko@linaro.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: (subset) [PATCH 00/17] dt-bindings: samsung: add specific
+ compatibles for existing SoC
+Message-ID: <20231128205841.al23ra5s34rn3muj@pengutronix.de>
+References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
+ <170119374454.445690.515311393756577368.b4-ty@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="bibczb2zawwhoawf"
+Content-Disposition: inline
+In-Reply-To: <170119374454.445690.515311393756577368.b4-ty@gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Nov 2023 22:35:50 +0200 Dmitry Baryshkov wrote:
-> Also, please excuse me if this was already answered, just for my understanding:
-> - If we limit functionality to just networking channels which are used
-> to pass IP data between host and EP, will that be accepted?
 
-That's too hard to enforce. We have 200+ drivers, we can't carefully
-review every single line of code to make sure you stick to the "just
-networking" promise you make us. Plus the next guy will come and tell
-us "but you let the company X do it".
+--bibczb2zawwhoawf
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> - If we were to implement the PCIe networking card running Linux (e.g.
-> using Freescale PowerQUICC or Cavium Octeon chips), would you also be
-> opposed to implementing the EP side of the link as the netdev?
+On Tue, Nov 28, 2023 at 06:49:23PM +0100, Thierry Reding wrote:
+>=20
+> On Wed, 08 Nov 2023 11:43:26 +0100, Krzysztof Kozlowski wrote:
+> > Merging
+> > =3D=3D=3D=3D=3D=3D=3D
+> > I propose to take entire patchset through my tree (Samsung SoC), becaus=
+e:
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Yes.
+> > 1. Next cycle two new SoCs will be coming (Google GS101 and ExynosAutov=
+920), so
+> >    they will touch the same lines in some of the DT bindings (not all, =
+though).
+> >    It is reasonable for me to take the bindings for the new SoCs, to ha=
+ve clean
+> >    `make dtbs_check` on the new DTS.
+> > 2. Having it together helps me to have clean `make dtbs_check` within m=
+y tree
+> >    on the existing DTS.
+> > 3. No drivers are affected by this change.
+> > 4. I plan to do the same for Tesla FSD and Exynos ARM32 SoCs, thus expe=
+ct
+> >    follow up patchsets.
+> >=20
+> > [...]
+>=20
+> Applied, thanks!
+>=20
+> [12/17] dt-bindings: pwm: samsung: add specific compatibles for existing =
+SoC
+>         commit: 5d67b8f81b9d598599366214e3b2eb5f84003c9f
 
-It's very tempting to reuse existing code, written for traffic to build
-a control channel. This becomes painful because:
- - the lifetime rules for interfaces to configure vs to pass traffic 
-   are different, which inevitably leads to bugs in common code,
- - the use cases are different, which leads to hacks / abuse,
-   and then it's a lot harder for us to refactor and optimize core 
-   code / data structures,
- - IDK how "channel to talk to FW" fits with the normal IP stack...
+You didn't honor (or even comment) Krzysztof's proposal to take the
+whole patchset via his tree (marked above). Was there some off-list
+agreement?
 
-The "FW channel netdevs" exist for decades now, and are very popular
-with middle box SDKs, I know. Your choices are:
- - keep the code out of tree,
- - use a generic interface with a strong standard definition, like
-   virtio, and expect that no customizations will be allowed.
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--bibczb2zawwhoawf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVmVIAACgkQj4D7WH0S
+/k4mPQgAuzfJsEw0Nil25KsPJwyY53qFjfCGd8WTObzTDFpeIlzV2EL87bWT2Gtd
+vEFgfX2Uj+RoOLX5CNnyuEfwH5e+O5oVYF9gfpsdqtRTJ3zyPV3dUiFCaIh2KNqZ
+aaY1tsb4vECeh7dmEL/y2VUWoO2bAa08sZe6EpJXOkeUWN54VdTCMBwncH1utjgh
+Tb/pHhjkfvdcbXuvxsFY4gL86pT8BER5EjIRZZaPN0kHDrGTBR+ZqjFvMVWTrFbq
+IUK1gAMX+BOooJDwVFE4SeRta6p/lfClW73PbWk1++SyLPA2KbTp8jTul4qgXWKT
+IbIJY8Qwg5trzJ0LHDMX3a02COS9hg==
+=P7ML
+-----END PGP SIGNATURE-----
+
+--bibczb2zawwhoawf--
