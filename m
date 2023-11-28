@@ -2,218 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3800A7FB8E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:04:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 017277FB8E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:04:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344489AbjK1LET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 06:04:19 -0500
+        id S1344443AbjK1LED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 06:04:03 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344388AbjK1LD5 (ORCPT
+        with ESMTP id S1344331AbjK1LD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 06:03:57 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02A2D62;
-        Tue, 28 Nov 2023 03:04:03 -0800 (PST)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ASB254f025913;
-        Tue, 28 Nov 2023 11:03:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=shUyYZ2Z3ut3Lwca1JzgJ1p3wYsUGEfvmN4QGWlAmEo=;
- b=Ii2DDpGlAY78NEZPp39Mb2qf2zQBdPJWr/Cma2NLVgMqYXpQU5bW69GK1dkk858fi84u
- 5Sml7RPJg2gnM84fcQJ5yK6AGHPIHE2yavobp7cUdHVsUPSHZUvEF1bIOmENQOob7rgM
- mgCF49OSqcsCV3I8ac4TaCjTh2XUhKwLpONy3C3/3BizeMMi8iOyo1WKehzLggSEBN+F
- CGSevQShpRkyem7LDMYqRN83u7GpxlVaGIdu9rotKWDixtNHgKaNLgXcJFdtt3XnIMeR
- GndqL1dSwWV0PzkzM08UIsUP4jL++QXzTbjKGWrZCgCxYVi1eCgfQdMs1c7ofBf5xwpP 7Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uneyp818k-1
+        Tue, 28 Nov 2023 06:03:56 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA7B1A3;
+        Tue, 28 Nov 2023 03:04:01 -0800 (PST)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AS48moO029212;
+        Tue, 28 Nov 2023 11:03:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=KSo20Un2/Lnvkx5ReP8LPWosM7ux6fjmTV9ToFT3EWw=;
+ b=h2sqorHxGjlXkOgzVTcxY07WhUu5oKxrCnJuLqteYjjh7BlmxEsvJMi7I8OeBFNBiiK3
+ ++bwihC43pun2DqjWMf2yGxl1juW4D1ZQmeOs3galC3Icpl5rZSfRmdPIlYPYY/NyM46
+ s7nFMJppayxLMmtI8mbWFGee4SrOhtvvi45x9SgPQ/YQkYk846NGobQFihUvOVxrcCdN
+ 4aOpI9eojQCSrK0sPDps3+EIH0XvLjO4mARLOE1PfbVJkvulmL91eNLhnsMZLapdBSfL
+ XCPq2JdZqo2+FIiSr9tZIdePezROJG5lSLSptkMWkybBK4JdZ6MeHovurwWgJfj/fxUd +g== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3un02h20uw-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Nov 2023 11:03:51 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ASB3oaK031307;
-        Tue, 28 Nov 2023 11:03:50 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uneyp817s-1
+        Tue, 28 Nov 2023 11:03:48 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ASB3lNX005594
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Nov 2023 11:03:50 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ASAYt6s012206;
-        Tue, 28 Nov 2023 11:03:49 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ukvrkf1me-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Nov 2023 11:03:49 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ASB3kZP11403954
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Nov 2023 11:03:46 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 40FAA20040;
-        Tue, 28 Nov 2023 11:03:46 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E708820043;
-        Tue, 28 Nov 2023 11:03:45 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Tue, 28 Nov 2023 11:03:45 +0000 (GMT)
-From:   Sumanth Korikkar <sumanthk@linux.ibm.com>
-To:     linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>
-Cc:     Oscar Salvador <osalvador@suse.de>, Michal Hocko <mhocko@suse.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 4/5] s390/mm: implement MEM_PREPARE_ONLINE/MEM_FINISH_OFFLINE notifiers
-Date:   Tue, 28 Nov 2023 12:03:41 +0100
-Message-Id: <20231128110342.102096-5-sumanthk@linux.ibm.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231128110342.102096-1-sumanthk@linux.ibm.com>
-References: <20231128110342.102096-1-sumanthk@linux.ibm.com>
+        Tue, 28 Nov 2023 11:03:47 GMT
+Received: from [10.253.11.37] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 28 Nov
+ 2023 03:03:44 -0800
+Message-ID: <238a3df1-5631-4922-b268-83d3dfb80c6a@quicinc.com>
+Date:   Tue, 28 Nov 2023 19:03:41 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 98U7NOVK_bxOH5XumKU7eprbvIZmuzMp
-X-Proofpoint-GUID: iSk767hBzyOipeNYXEJmkIyF_QDcPhhc
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 04/10] scsi: ufs: ufs-qcom: Limit negotiated gear to
+ selected PHY gear
+Content-Language: en-US
+To:     Manivannan Sadhasivam <mani@kernel.org>
+CC:     <bvanassche@acm.org>, <adrian.hunter@intel.com>,
+        <beanhuo@micron.com>, <avri.altman@wdc.com>,
+        <junwoo80.lee@samsung.com>, <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1700729190-17268-1-git-send-email-quic_cang@quicinc.com>
+ <1700729190-17268-5-git-send-email-quic_cang@quicinc.com>
+ <20231128054522.GF3088@thinkpad>
+ <bc69d9ef-6ddc-4389-8bf0-9405385a494b@quicinc.com>
+ <20231128105237.GN3088@thinkpad>
+From:   Can Guo <quic_cang@quicinc.com>
+In-Reply-To: <20231128105237.GN3088@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Oj0iJPKTX0ClYzcCPOYKZr_r7tjf7B9Q
+X-Proofpoint-ORIG-GUID: Oj0iJPKTX0ClYzcCPOYKZr_r7tjf7B9Q
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-28_10,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- impostorscore=0 lowpriorityscore=0 malwarescore=0 priorityscore=1501
- mlxscore=0 spamscore=0 adultscore=0 clxscore=1015 suspectscore=0
- phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311280087
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 malwarescore=0 adultscore=0 lowpriorityscore=0
+ impostorscore=0 spamscore=0 mlxscore=0 phishscore=0 bulkscore=0
+ mlxlogscore=999 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2311280087
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MEM_PREPARE_ONLINE memory notifier makes memory block physical
-accessible via sclp assign command. The notifier ensures self-contained
-memory maps are accessible and hence enabling the "memmap on memory" on
-s390.
 
-MEM_FINISH_OFFLINE memory notifier shifts the memory block to an
-inaccessible state via sclp unassign command.
 
-Implementation considerations:
-* When MHP_MEMMAP_ON_MEMORY is disabled, the system retains the old
-  behavior. This means the memory map is allocated from default memory.
-* If MACHINE_HAS_EDAT1 is unavailable, MHP_MEMMAP_ON_MEMORY is
-  automatically disabled. This ensures that vmemmap pagetables do not
-  consume additional memory from the default memory allocator.
-* The MEM_GOING_ONLINE notifier has been modified to perform no
-  operation, as MEM_PREPARE_ONLINE already executes the sclp assign
-  command.
-* The MEM_CANCEL_ONLINE/MEM_OFFLINE notifier now performs no operation, as
-  MEM_FINISH_OFFLINE already executes the sclp unassign command.
+On 11/28/2023 6:52 PM, Manivannan Sadhasivam wrote:
+> On Tue, Nov 28, 2023 at 04:05:59PM +0800, Can Guo wrote:
+>> Hi Mani,
+>>
+>> On 11/28/2023 1:45 PM, Manivannan Sadhasivam wrote:
+>>> On Thu, Nov 23, 2023 at 12:46:24AM -0800, Can Guo wrote:
+>>>> In the dual init scenario, the initial PHY gear is set to HS-G2, and the
+>>>> first Power Mode Change (PMC) is meant to find the best matching PHY gear
+>>>> for the 2nd init. However, for the first PMC, if the negotiated gear (say
+>>>> HS-G4) is higher than the initial PHY gear, we cannot go ahead let PMC to
+>>>> the negotiated gear happen, because the programmed UFS PHY settings may not
+>>>> support the negotiated gear. Fix it by overwriting the negotiated gear with
+>>>> the PHY gear.
+>>>>
+>>>
+>>> I don't quite understand this patch. If the phy_gear is G2 initially and the
+>>> negotiated gear is G4, then as per this change,
+>>>
+>>> phy_gear = G4;
+>>> negotiated gear = G2;
+>>>
+>>> Could you please explain how this make sense?
+>>
+>> phy_gear was G2 (in the beginning) and just now changed to G4, but the PHY
+>> settings programmed in the beginning can only support no-G4 (not G4).
+>> Without this change, as the negotiated gear is G4, the power mode change is
+>> going to put UFS at HS-G4 mode, but the PHY settings programmed is no-G4.
+> 
+> But we are going to reinit the PHY anyway, isn't it?
 
-Reviewed-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Signed-off-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
----
- drivers/s390/char/sclp_cmd.c | 47 +++++++++++++++++++++++++++++++-----
- 1 file changed, 41 insertions(+), 6 deletions(-)
+We are power mode changing to HS-G4 with no-G4 PHY settings programmed, 
+the power mode change operation, in the 1st init, may immediately cause 
+UIC errors and lead to probe fail. We are not seeing issues as of now, 
+maybe because the amount of HW used for testing is not large enough.
 
-diff --git a/drivers/s390/char/sclp_cmd.c b/drivers/s390/char/sclp_cmd.c
-index 355e63e44e95..c551dc6734fe 100644
---- a/drivers/s390/char/sclp_cmd.c
-+++ b/drivers/s390/char/sclp_cmd.c
-@@ -18,6 +18,7 @@
- #include <linux/mm.h>
- #include <linux/mmzone.h>
- #include <linux/memory.h>
-+#include <linux/memory_hotplug.h>
- #include <linux/module.h>
- #include <asm/ctlreg.h>
- #include <asm/chpid.h>
-@@ -26,6 +27,7 @@
- #include <asm/sclp.h>
- #include <asm/numa.h>
- #include <asm/facility.h>
-+#include <asm/page-states.h>
- 
- #include "sclp.h"
- 
-@@ -319,6 +321,7 @@ static bool contains_standby_increment(unsigned long start, unsigned long end)
- static int sclp_mem_notifier(struct notifier_block *nb,
- 			     unsigned long action, void *data)
- {
-+	unsigned long altmap_start, altmap_size;
- 	unsigned long start, size;
- 	struct memory_notify *arg;
- 	unsigned char id;
-@@ -340,13 +343,43 @@ static int sclp_mem_notifier(struct notifier_block *nb,
- 		if (contains_standby_increment(start, start + size))
- 			rc = -EPERM;
- 		break;
--	case MEM_GOING_ONLINE:
-+	case MEM_PREPARE_ONLINE:
-+		/*
-+		 * Access the altmap_start_pfn and altmap_nr_pages fields
-+		 * within the struct memory_notify specifically when dealing
-+		 * with only MEM_PREPARE_ONLINE/MEM_PREPARE_OFFLINE notifiers.
-+		 */
-+		altmap_start = arg->altmap_start_pfn << PAGE_SHIFT;
-+		altmap_size = arg->altmap_nr_pages << PAGE_SHIFT;
-+		/*
-+		 * When altmap is in use, take the specified memory range
-+		 * online, which includes the altmap.
-+		 */
-+		if (altmap_size) {
-+			start = altmap_start;
-+			size += altmap_size;
-+		}
- 		rc = sclp_mem_change_state(start, size, 1);
-+		if (rc || !altmap_size)
-+			break;
-+		/*
-+		 * Set CMMA state to nodat here, since the struct page memory
-+		 * at the beginning of the memory block will not go through the
-+		 * buddy allocator later.
-+		 */
-+		__arch_set_page_nodat((void *)__va(start), arg->altmap_nr_pages);
- 		break;
--	case MEM_CANCEL_ONLINE:
--		sclp_mem_change_state(start, size, 0);
--		break;
--	case MEM_OFFLINE:
-+	case MEM_FINISH_OFFLINE:
-+		altmap_start = arg->altmap_start_pfn << PAGE_SHIFT;
-+		altmap_size = arg->altmap_nr_pages << PAGE_SHIFT;
-+		/*
-+		 * When altmap is in use, take the specified memory range
-+		 * offline, which includes the altmap.
-+		 */
-+		if (altmap_size) {
-+			start = altmap_start;
-+			size += altmap_size;
-+		}
- 		sclp_mem_change_state(start, size, 0);
- 		break;
- 	default:
-@@ -397,7 +430,9 @@ static void __init add_memory_merged(u16 rn)
- 	if (!size)
- 		goto skip_add;
- 	for (addr = start; addr < start + size; addr += block_size)
--		add_memory(0, addr, block_size, MHP_NONE);
-+		add_memory(0, addr, block_size,
-+			   MACHINE_HAS_EDAT1 ?
-+			   MHP_MEMMAP_ON_MEMORY | MHP_OFFLINE_INACCESSIBLE : MHP_NONE);
- skip_add:
- 	first_rn = rn;
- 	num = 1;
--- 
-2.41.0
+This change is not really related to this specific series, I can remove 
+it in next version.
 
+Thanks,
+Can Guo.
+
+> 
+>> This change is to limit the negotiated gear to HS-G2 for the 1st init. In
+>> the 2nd init, as the new PHY gear is G4, G4 PHY settings would be
+>> programmed, it'd be safe to put the UFS at HS-G4 mode.
+>>
+> 
+> Why do we need to limit it since we already have the logic in place to set
+> whatever gear mode applicable for 1st init?
+> 
+> - Mani
+> 
+>> Thanks,
+>> Can Guo.
+>>>
+>>> - Mani
+>>>
+>>>> Signed-off-by: Can Guo <quic_cang@quicinc.com>
+>>>> ---
+>>>>    drivers/ufs/host/ufs-qcom.c | 7 ++++++-
+>>>>    1 file changed, 6 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+>>>> index cc0eb37..d4edf58 100644
+>>>> --- a/drivers/ufs/host/ufs-qcom.c
+>>>> +++ b/drivers/ufs/host/ufs-qcom.c
+>>>> @@ -920,8 +920,13 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
+>>>>    		 * because, the PHY gear settings are backwards compatible and we only need to
+>>>>    		 * change the PHY gear settings while scaling to higher gears.
+>>>>    		 */
+>>>> -		if (dev_req_params->gear_tx > host->phy_gear)
+>>>> +		if (dev_req_params->gear_tx > host->phy_gear) {
+>>>> +			u32 old_phy_gear = host->phy_gear;
+>>>> +
+>>>>    			host->phy_gear = dev_req_params->gear_tx;
+>>>> +			dev_req_params->gear_tx = old_phy_gear;
+>>>> +			dev_req_params->gear_rx = old_phy_gear;
+>>>> +		}
+>>>>    		/* enable the device ref clock before changing to HS mode */
+>>>>    		if (!ufshcd_is_hs_mode(&hba->pwr_info) &&
+>>>> -- 
+>>>> 2.7.4
+>>>>
+>>>
+> 
