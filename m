@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0954E7FC698
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:00:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A81167FC697
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346565AbjK1U6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 15:58:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33560 "EHLO
+        id S1346573AbjK1U6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 15:58:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346346AbjK1U56 (ORCPT
+        with ESMTP id S1346323AbjK1U56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 28 Nov 2023 15:57:58 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC8F319A4
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 12:58:03 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-32f737deedfso3763549f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 12:58:03 -0800 (PST)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21ED319AB
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 12:58:05 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40b40423df8so25444185e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 12:58:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1701205082; x=1701809882; darn=vger.kernel.org;
+        d=arista.com; s=google; t=1701205083; x=1701809883; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=H1xPXn0VYaTrAb1Nt5Hiecyvp9SYb9ivj7o6hsBOhvw=;
-        b=GQqnu53nPxiuqc3wQMp+V2lZtUgSOi0g+3mNyKCM1V8SDSE7PxTVxwIfazl8iRCjIL
-         xF11Wge8ndNxRD6aQ5aaHbTSHnAZehAzej7r13XTzUJUSZZnfzm7k89GSL3Lp5OUjN6w
-         bNGN215Sgf3azVHXwNjs6OYFeF1i1W6IuxYZB2Z9C9I7D1V2A7Bvekhfm+hahNfpQYz4
-         1Lz2bpclrAcy3G2QZabStSPfUdjCMGrMY1/lV7sORLvSrV+PbXCorxMrMKeiX7DQDv9d
-         R4x+zxN4Me1dbasSKhz5v7dd7B4F7ER4KBwDRWmgWO0D73pOBDTG5jtFVJSnSrKrImO1
-         RhSw==
+        bh=+1zqOorwszBSy7715/FfAd+B6Hz5TxCnBSal1fxWdU4=;
+        b=elzW+7nHN98jC6ZJZMIqiLsFfmXCX42bi2ai1Y4bS/09yKYcU6wF9dk4lhpsrX5KgI
+         V0Y9omLOT+CvFthG444zGkNllvn5FqXuw0tZh79L1inaTsGIaaShV4UvMViWoR4DIKCZ
+         CwvbeML3MKMLybJeF34nxXOvaezU+VGRXxoXeuVlPx4LLeU4oQ81TfPfjoJtRWukXBjd
+         Iwr11MpHFokR5J4xK77NOJxPoseJyL/VwyQ8sZVgRCOw6uJAAh0pLoUwVwSDiGoQNL8O
+         uFLPljZsFoyAvKbG8++Vo5wQDFopMfeAEAqwMJzdvLjHCnQ9NNsvNmTJDHS3y9MrDEFV
+         byaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701205082; x=1701809882;
+        d=1e100.net; s=20230601; t=1701205083; x=1701809883;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=H1xPXn0VYaTrAb1Nt5Hiecyvp9SYb9ivj7o6hsBOhvw=;
-        b=ldiupr78hOgtzOPdD7OJJ92n42n3nmIq//BnrOdFA/NK4zTGXitqyxZFcxYqdlEQOL
-         4chDOpRbYj1E84l7A+C0g58rOqp5nZ+IDWHeChwXp49YeP1J9qeB0BzQmS/Gpj6osaM4
-         BY2y9tgi3WLabQbFuSqfcYZ4KpQCrICQC/Zlpumy5WmBQj/NpmuSW6WcWW4esPbE5YAR
-         SzTKZWfs/1fAPPU9uF6scB0D6s2QOeH8MVYC+ng+7SBk3V6XbPFNYtocoyFzM1exHQ/v
-         gNFOGODTj9xgUy92u2wjM/5BtSrL4bp+ysBbcUIlcq7XC6PaZGD+OBHFnGtt2nDIrdsB
-         SehQ==
-X-Gm-Message-State: AOJu0YwgR7LisnNSzNo3Nx16L6AJI7JFc0JPo4fz4F7osOAOs0aDAOGr
-        grUMa6m74OraeDnH5CrKtkqwYQ==
-X-Google-Smtp-Source: AGHT+IFOwJBMZz5KpTnXbkRb6NrPG/IC/IH8dzG88Ydc9UIUlFjnbR4D5Y+Sl4qmFwxh+Y33lgZUzg==
-X-Received: by 2002:a5d:6309:0:b0:333:85e:a11c with SMTP id i9-20020a5d6309000000b00333085ea11cmr3785785wru.16.1701205082440;
-        Tue, 28 Nov 2023 12:58:02 -0800 (PST)
+        bh=+1zqOorwszBSy7715/FfAd+B6Hz5TxCnBSal1fxWdU4=;
+        b=gQ30R1WfUuIgwYv62zFqNhv1bXZoJ5Jh1GwdnMc/3tqqQeD99fkcKlN7bke6dElgAl
+         /IZKAUtHEsXq/oGfipq6SEpX0Ah44bfTQ3vaZ6NcKejjZrlB5P3SZmhjMVSOmw3FQbUt
+         dKheBi4mHRvDaKq49GiJc5nMHZhhSJ/5DKZ23ZkOQF/nzPyLqtL1U8OdM1CHBqTcpR/N
+         QQ6lTpY0YUpmTEhjHnOsbqI3XM40tSoefrPh9tvm4aFA4qWLp8ogpO7pLXQPkHtvrS23
+         9Zxl68/Dxg+C0Hxst6FSkd3MVKGA7bRNoDAFWWZIDZrJhUfCnSieIVmnL/niqjBR5QG4
+         Bweg==
+X-Gm-Message-State: AOJu0YzLyUhUxPqoPICnlpZoMZ9yUkIrzGP2FH0WsBif10hNtgfeGyU9
+        HlM3JEUXeAOrJT9gg61KKop85Q==
+X-Google-Smtp-Source: AGHT+IFrXyrxI2DheRUy2qRVidUrN3TX/h847BSafti/fP2chMfRtHxz+JkNhBcBQeK9NEeeMi1vGQ==
+X-Received: by 2002:a05:600c:1d89:b0:407:4944:76d1 with SMTP id p9-20020a05600c1d8900b00407494476d1mr10794865wms.17.1701205083659;
+        Tue, 28 Nov 2023 12:58:03 -0800 (PST)
 Received: from Mindolluin.ire.aristanetworks.com ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id o19-20020a05600c4fd300b0040b45356b72sm9247423wmq.33.2023.11.28.12.58.01
+        by smtp.gmail.com with ESMTPSA id o19-20020a05600c4fd300b0040b45356b72sm9247423wmq.33.2023.11.28.12.58.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 12:58:01 -0800 (PST)
+        Tue, 28 Nov 2023 12:58:03 -0800 (PST)
 From:   Dmitry Safonov <dima@arista.com>
 To:     David Ahern <dsahern@kernel.org>,
         Eric Dumazet <edumazet@google.com>,
@@ -61,9 +61,9 @@ Cc:     linux-kernel@vger.kernel.org, Dmitry Safonov <dima@arista.com>,
         Francesco Ruggeri <fruggeri05@gmail.com>,
         Salam Noureddine <noureddine@arista.com>,
         Simon Horman <horms@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH v3 4/7] net/tcp: Allow removing current/rnext TCP-AO keys on TCP_LISTEN sockets
-Date:   Tue, 28 Nov 2023 20:57:46 +0000
-Message-ID: <20231128205749.312759-5-dima@arista.com>
+Subject: [PATCH v3 5/7] net/tcp: Don't add key with non-matching VRF on connected sockets
+Date:   Tue, 28 Nov 2023 20:57:47 +0000
+Message-ID: <20231128205749.312759-6-dima@arista.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231128205749.312759-1-dima@arista.com>
 References: <20231128205749.312759-1-dima@arista.com>
@@ -79,44 +79,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TCP_LISTEN sockets are not connected to any peer, so having
-current_key/rnext_key doesn't make sense.
+If the connection was established, don't allow adding TCP-AO keys that
+don't match the peer. Currently, there are checks for ip-address
+matching, but L3 index check is missing. Add it to restrict userspace
+shooting itself somewhere.
 
-The userspace may falter over this issue by setting current or rnext
-TCP-AO key before listen() syscall. setsockopt(TCP_AO_DEL_KEY) doesn't
-allow removing a key that is in use (in accordance to RFC 5925), so
-it might be inconvenient to have keys that can be destroyed only with
-listener socket.
-
-Fixes: 4954f17ddefc ("net/tcp: Introduce TCP_AO setsockopt()s")
+Fixes: 248411b8cb89 ("net/tcp: Wire up l3index to TCP-AO")
 Signed-off-by: Dmitry Safonov <dima@arista.com>
 ---
- net/ipv4/tcp_ao.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ net/ipv4/tcp_ao.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/net/ipv4/tcp_ao.c b/net/ipv4/tcp_ao.c
-index c8be1d526eac..bf41be6d4721 100644
+index bf41be6d4721..2d000e275ce7 100644
 --- a/net/ipv4/tcp_ao.c
 +++ b/net/ipv4/tcp_ao.c
-@@ -1818,8 +1818,16 @@ static int tcp_ao_del_cmd(struct sock *sk, unsigned short int family,
- 		if (!new_rnext)
- 			return -ENOENT;
- 	}
--	if (cmd.del_async && sk->sk_state != TCP_LISTEN)
--		return -EINVAL;
-+	if (sk->sk_state == TCP_LISTEN) {
-+		/* Cleaning up possible "stale" current/rnext keys state,
-+		 * that may have preserved from TCP_CLOSE, before sys_listen()
-+		 */
-+		ao_info->current_key = NULL;
-+		ao_info->rnext_key = NULL;
-+	} else {
-+		if (cmd.del_async)
-+			return -EINVAL;
-+	}
+@@ -1608,6 +1608,9 @@ static int tcp_ao_add_cmd(struct sock *sk, unsigned short int family,
+ 		if (!dev || !l3index)
+ 			return -EINVAL;
  
- 	if (family == AF_INET) {
- 		struct sockaddr_in *sin = (struct sockaddr_in *)&cmd.addr;
++		if (!((1 << sk->sk_state) & (TCPF_LISTEN | TCPF_CLOSE)))
++			return -EINVAL;
++
+ 		/* It's still possible to bind after adding keys or even
+ 		 * re-bind to a different dev (with CAP_NET_RAW).
+ 		 * So, no reason to return error here, rather try to be
 -- 
 2.43.0
 
