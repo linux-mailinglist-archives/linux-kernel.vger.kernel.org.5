@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0277FC8CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:53:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D72B07FC8B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:53:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376560AbjK1VQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 16:16:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53874 "EHLO
+        id S1376604AbjK1VQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 16:16:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376613AbjK1VPd (ORCPT
+        with ESMTP id S1376680AbjK1VPn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 16:15:33 -0500
+        Tue, 28 Nov 2023 16:15:43 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26EF33C2F
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:10:24 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C61AAC433C7;
-        Tue, 28 Nov 2023 21:10:22 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A866479B
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:10:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F9C4C433CB;
+        Tue, 28 Nov 2023 21:10:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701205823;
-        bh=tU9f6DT2W4nxeMj/TXZs4n8BgSihvgJc+kQy9yEDCAY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ZB0kq2Aq2U9v13f/oegVmU4gHNMAuVdUzXMeUFcDK7dKx/T3fjnaFEmYsQILswxf9
-         s+EPvTiSWTbZogFnbs8ef+RPicZjqQZIVvdZj/sHTF76PloqEjZpMbsFtH8JbrQFm9
-         BDrcI5C403DHAAuhyy+rcG6ONY+JI2ask3vxwxHyI/H9q/rbljR49+PNCqa52zudrq
-         58PNRW7V+cZlRiGMkY/CLPmE4NjXv/RQ+VndHaNgyETltllgGxXoYevBkEMXPwYTdK
-         VqemzSS3Erkpb15ex4AZfS+y4ww3pu37muegZ11nYg6le42nIcKZdb0lafHnOVo9+T
-         E0/SqWc011lfw==
+        s=k20201202; t=1701205825;
+        bh=fW63/CiTAgbhnmWVlbsFrMgXtMtoseIMU1+tTNE0MIk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=iyJB7S28JW1x7a5AkatNaOWkUhX00gE+zgOjb5K87DpkP3hOEwLBI9WFMuwkb9yVj
+         uLhV/pfay+d6XljZsVM++Nq6LUpe54yKaaxvPUGHQW5T+ZoepqKrPkc7mzJKjVZOFP
+         dEU1wZLGMLCIybXoTXtHWKijEvW5KhF8FFiDW2a4sF5V3WZyVmF/2ZY9ISXYA8wDJc
+         lKtlB57z+hcwKOwQkVcy8+Wg1XytTzTxGI90KuJSlnMCKK8HZi98sAGQGEOgCbQHnb
+         JEK5cPZu1qesD6XtDe4CMG2RCxRAJlbHECl/7YIbWLqCdrkN7ZD4TLsnXBpNOCrn+w
+         JIOcsuP8NtZPg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ming Lei <ming.lei@redhat.com>, Changhui Zhong <czhong@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        tj@kernel.org, josef@toxicpanda.com, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 1/7] blk-throttle: fix lockdep warning of "cgroup_mutex or RCU read lock required!"
-Date:   Tue, 28 Nov 2023 16:10:11 -0500
-Message-ID: <20231128211018.877548-1-sashal@kernel.org>
+Cc:     Coly Li <colyli@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        Sasha Levin <sashal@kernel.org>, kent.overstreet@gmail.com,
+        linux-bcache@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 2/7] bcache: add code comments for bch_btree_node_get() and __bch_btree_node_alloc()
+Date:   Tue, 28 Nov 2023 16:10:12 -0500
+Message-ID: <20231128211018.877548-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231128211018.877548-1-sashal@kernel.org>
+References: <20231128211018.877548-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -52,46 +53,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Coly Li <colyli@suse.de>
 
-[ Upstream commit 27b13e209ddca5979847a1b57890e0372c1edcee ]
+[ Upstream commit 31f5b956a197d4ec25c8a07cb3a2ab69d0c0b82f ]
 
-Inside blkg_for_each_descendant_pre(), both
-css_for_each_descendant_pre() and blkg_lookup() requires RCU read lock,
-and either cgroup_assert_mutex_or_rcu_locked() or rcu_read_lock_held()
-is called.
+This patch adds code comments to bch_btree_node_get() and
+__bch_btree_node_alloc() that NULL pointer will not be returned and it
+is unnecessary to check NULL pointer by the callers of these routines.
 
-Fix the warning by adding rcu read lock.
-
-Reported-by: Changhui Zhong <czhong@redhat.com>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Link: https://lore.kernel.org/r/20231117023527.3188627-2-ming.lei@redhat.com
+Signed-off-by: Coly Li <colyli@suse.de>
+Link: https://lore.kernel.org/r/20231120052503.6122-10-colyli@suse.de
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-throttle.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/md/bcache/btree.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index fcbbe2e45a2bb..e52a9632993a7 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -1391,6 +1391,7 @@ static void tg_conf_updated(struct throtl_grp *tg, bool global)
- 		   tg_bps_limit(tg, READ), tg_bps_limit(tg, WRITE),
- 		   tg_iops_limit(tg, READ), tg_iops_limit(tg, WRITE));
+diff --git a/drivers/md/bcache/btree.c b/drivers/md/bcache/btree.c
+index fba0fff8040d6..6312b01829204 100644
+--- a/drivers/md/bcache/btree.c
++++ b/drivers/md/bcache/btree.c
+@@ -972,6 +972,9 @@ static struct btree *mca_alloc(struct cache_set *c, struct btree_op *op,
+  *
+  * The btree node will have either a read or a write lock held, depending on
+  * level and op->lock.
++ *
++ * Note: Only error code or btree pointer will be returned, it is unncessary
++ *       for callers to check NULL pointer.
+  */
+ struct btree *bch_btree_node_get(struct cache_set *c, struct btree_op *op,
+ 				 struct bkey *k, int level, bool write,
+@@ -1070,6 +1073,10 @@ static void btree_node_free(struct btree *b)
+ 	mutex_unlock(&b->c->bucket_lock);
+ }
  
-+	rcu_read_lock();
- 	/*
- 	 * Update has_rules[] flags for the updated tg's subtree.  A tg is
- 	 * considered to have rules if either the tg itself or any of its
-@@ -1418,6 +1419,7 @@ static void tg_conf_updated(struct throtl_grp *tg, bool global)
- 		this_tg->latency_target = max(this_tg->latency_target,
- 				parent_tg->latency_target);
- 	}
-+	rcu_read_unlock();
- 
- 	/*
- 	 * We're already holding queue_lock and know @tg is valid.  Let's
++/*
++ * Only error code or btree pointer will be returned, it is unncessary for
++ * callers to check NULL pointer.
++ */
+ struct btree *__bch_btree_node_alloc(struct cache_set *c, struct btree_op *op,
+ 				     int level, bool wait,
+ 				     struct btree *parent)
 -- 
 2.42.0
 
