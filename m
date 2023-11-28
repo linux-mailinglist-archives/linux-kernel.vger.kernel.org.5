@@ -2,54 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD917FC252
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E93A07FC12B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344191AbjK1Q3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 11:29:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55782 "EHLO
+        id S1344868AbjK1QzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:55:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234738AbjK1Q3S (ORCPT
+        with ESMTP id S229716AbjK1QzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 11:29:18 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C060DD63
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:29:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F6B0C433C7;
-        Tue, 28 Nov 2023 16:29:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701188963;
-        bh=sIfDB3k+KYyERGoUwnCBqm5HDGxlFAUPH4Qei1wkjhs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IRJlA/ahfz20AacKT1Y1Of4TQTFUwixgP9x+n+Zg8MxGoLrFbZzVTHlmzJngIXSlm
-         KvLYlbeFcxtpgjYOd0ovo7GztyLiVOq5JXlC5Dd9H4ib7svMvynWpDVHQunFUsprXX
-         y+JQek9omRrnQmyHDMu7fwOMPqOdqR2Ul9yPHyII2oMD6fQJapIdDj1ur79bGOuReh
-         jGcfR1lIq7KAqSKRqVy/ENDogMR3xYmQ+i7Ulya2kJWRQfq0pquVD7mMLhjJRqtm0G
-         20yTn3PpgX8vZ6vXdz8HUPGK9zlPiB0hApXFkEYbMLdDS5RzyMiwWtbO8zQ31nQ+yW
-         Pg1g/c9WzmcQg==
-Date:   Tue, 28 Nov 2023 08:29:21 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Allison Henderson <allison.henderson@oracle.com>,
-        Zhang Tianci <zhangtianci.1997@bytedance.com>,
-        Brian Foster <bfoster@redhat.com>, Ben Myers <bpm@sgi.com>,
-        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xieyongji@bytedance.com, me@jcix.top
-Subject: Re: [PATCH 2/2] xfs: update dir3 leaf block metadata after swap
-Message-ID: <20231128162921.GU2766956@frogsfrogsfrogs>
-References: <20231128053202.29007-1-zhangjiachen.jaycee@bytedance.com>
- <20231128053202.29007-3-zhangjiachen.jaycee@bytedance.com>
- <ZWWnQYo73yHnctvi@infradead.org>
- <39b76473-fe00-0f1b-62e3-ae349a9f80d3@bytedance.com>
+        Tue, 28 Nov 2023 11:55:08 -0500
+X-Greylist: delayed 1442 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 28 Nov 2023 08:55:14 PST
+Received: from maynard.decadent.org.uk (maynard.decadent.org.uk [95.217.213.242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E439D6;
+        Tue, 28 Nov 2023 08:55:13 -0800 (PST)
+Received: from [213.219.164.206] (helo=deadeye)
+        by maynard with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ben@decadent.org.uk>)
+        id 1r80z8-00080L-7u; Tue, 28 Nov 2023 17:30:54 +0100
+Received: from ben by deadeye with local (Exim 4.97)
+        (envelope-from <ben@decadent.org.uk>)
+        id 1r80z7-0000000DbDM-379u;
+        Tue, 28 Nov 2023 16:30:53 +0000
+Message-ID: <7a2684e680ffe279ed1e586e8ddb24b94c2cf010.camel@decadent.org.uk>
+Subject: Re: [PATCH v2] kbuild: deb-pkg: remove the fakeroot builds support
+From:   Ben Hutchings <ben@decadent.org.uk>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org
+Cc:     Guillem Jover <guillem@debian.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 28 Nov 2023 16:30:35 +0000
+In-Reply-To: <20231128153858.84932-1-masahiroy@kernel.org>
+References: <20231128153858.84932-1-masahiroy@kernel.org>
+Autocrypt: addr=ben@decadent.org.uk; prefer-encrypt=mutual;
+ keydata=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
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="=-iHFOhYnSgOYjebv1pxSh"
+User-Agent: Evolution 3.50.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <39b76473-fe00-0f1b-62e3-ae349a9f80d3@bytedance.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-SA-Exim-Connect-IP: 213.219.164.206
+X-SA-Exim-Mail-From: ben@decadent.org.uk
+X-SA-Exim-Scanned: No (on maynard); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,172 +61,159 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 05:39:50PM +0800, Jiachen Zhang wrote:
-> On 2023/11/28 16:39, Christoph Hellwig wrote:
-> > On Tue, Nov 28, 2023 at 01:32:02PM +0800, Jiachen Zhang wrote:
-> > > From: Zhang Tianci <zhangtianci.1997@bytedance.com>
-> > > 
-> > > xfs_da3_swap_lastblock() copy the last block content to the dead block,
-> > > but do not update the metadata in it. We need update some metadata
-> > > for some kinds of type block, such as dir3 leafn block records its
-> > > blkno, we shall update it to the dead block blkno. Otherwise,
-> > > before write the xfs_buf to disk, the verify_write() will fail in
-> > > blk_hdr->blkno != xfs_buf->b_bn, then xfs will be shutdown.
-> > 
-> > Do you have a reproducer for this?  It would be very helpful to add it
-> > to xfstests.
-> 
-> Hi Christoph,
-> 
-> Thanks for the review!
-> 
-> It's hard to reproduce the issue. Currently we can reproduce it with
-> some kernel code changes. We forcely reserve 0 t_blk_res for xfs_remove
-> on kernel version 4.19:
-> 
-> diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-> index f2d06e1e4906..c8f84b95a0ec 100644
-> --- a/fs/xfs/xfs_inode.c
-> +++ b/fs/xfs/xfs_inode.c
-> @@ -2551,13 +2551,8 @@ xfs_remove(
->          * insert tries to happen, instead trimming the LAST
->          * block from the directory.
->          */
-> -       resblks = XFS_REMOVE_SPACE_RES(mp);
-> -       error = xfs_trans_alloc(mp, &M_RES(mp)->tr_remove, resblks, 0, 0,
-> &tp);
-> -       if (error == -ENOSPC) {
-> -               resblks = 0;
-> -               error = xfs_trans_alloc(mp, &M_RES(mp)->tr_remove, 0, 0, 0,
-> -                               &tp);
-> -       }
-> +       resblks = 0;
-> +       error = xfs_trans_alloc(mp, &M_RES(mp)->tr_remove, 0, 0, 0, &tp);
->         if (error) {
->                 ASSERT(error != -ENOSPC);
->                 goto std_return
-> 
-> 
-> After insmod the new modified xfs.ko, run the following scripts, and it
-> can reproduce the problem consistently on the final `umount mnt`:
-> 
-> fallocate -l 1G xfs.img
-> mkfs.xfs -f xfs.img
-> mkdir -p mnt
-> losetup /dev/loop0 xfs.img
-> mount -t xfs /dev/loop0 mnt
-> pushd mnt
-> mkdir dir3
-> prefix="a_"
-> for j in $(seq 0 13); do
->     for i in $(seq 0 2800); do
->             touch dir3/${prefix}_${i}_${j}
->     done
->     for i in $(seq 0 2500); do
->             rm -f dir3/${prefix}_${i}_${j}
->             if [ "$i" == "2094" ] && [ "$j" == "13" ]; then
->                     echo "should reproduce now, so break here!"
->                     break;
->             fi
->     done
-> done
-> popd
-> umount mnt
-> 
-> 
-> We are still trying to make a reproducer without any kernel changes. Do
-> you have any suggestions on this?
 
-Add a debugging knob that calls xfs_da3_swap_lastblock without trying
-bunmapi, modify the script to activate the knob, then that can be turned
-into an fstest.
+--=-iHFOhYnSgOYjebv1pxSh
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> > 
-> > > 
-> > > We will get this warning:
-> > > 
-> > >    XFS (dm-0): Metadata corruption detected at xfs_dir3_leaf_verify+0xa8/0xe0 [xfs], xfs_dir3_leafn block 0x178
-> > >    XFS (dm-0): Unmount and run xfs_repair
-> > >    XFS (dm-0): First 128 bytes of corrupted metadata buffer:
-> > >    00000000e80f1917: 00 80 00 0b 00 80 00 07 3d ff 00 00 00 00 00 00  ........=.......
-> > >    000000009604c005: 00 00 00 00 00 00 01 a0 00 00 00 00 00 00 00 00  ................
-> > >    000000006b6fb2bf: e4 44 e3 97 b5 64 44 41 8b 84 60 0e 50 43 d9 bf  .D...dDA..`.PC..
-> > >    00000000678978a2: 00 00 00 00 00 00 00 83 01 73 00 93 00 00 00 00  .........s......
-> > >    00000000b28b247c: 99 29 1d 38 00 00 00 00 99 29 1d 40 00 00 00 00  .).8.....).@....
-> > >    000000002b2a662c: 99 29 1d 48 00 00 00 00 99 49 11 00 00 00 00 00  .).H.....I......
-> > >    00000000ea2ffbb8: 99 49 11 08 00 00 45 25 99 49 11 10 00 00 48 fe  .I....E%.I....H.
-> > >    0000000069e86440: 99 49 11 18 00 00 4c 6b 99 49 11 20 00 00 4d 97  .I....Lk.I. ..M.
-> > >    XFS (dm-0): xfs_do_force_shutdown(0x8) called from line 1423 of file fs/xfs/xfs_buf.c.  Return address = 00000000c0ff63c1
-> > >    XFS (dm-0): Corruption of in-memory data detected.  Shutting down filesystem
-> > >    XFS (dm-0): Please umount the filesystem and rectify the problem(s)
+On Wed, 2023-11-29 at 00:38 +0900, Masahiro Yamada wrote:
+> In 2017, the dpkg suite introduced the rootless builds support with the
+> following commits:
+>=20
+>   - 2436807c87b0 ("dpkg-deb: Add support for rootless builds")
+>   - fca1bfe84068 ("dpkg-buildpackage: Add support for rootless builds")
+>=20
+> This feature is available in the default dpkg on Debian 10 and Ubuntu
+> 20.04.
+>=20
+> Remove the old method.
 
-Aha, that might explain the weird recovery failures that I've been
-seeing every now and then with my parent pointer recovery stress test.
+This seems reasonable.
 
-> > > 
-> > > >From the log above, we know xfs_buf->b_no is 0x178, but the block's hdr record
-> > > its blkno is 0x1a0.
-> > > 
-> > > Fixes: 24df33b45ecf ("xfs: add CRC checking to dir2 leaf blocks")
-> > > Signed-off-by: Zhang Tianci <zhangtianci.1997@bytedance.com>
-> > > ---
-> > >   fs/xfs/libxfs/xfs_da_btree.c | 12 +++++++++++-
-> > >   1 file changed, 11 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/fs/xfs/libxfs/xfs_da_btree.c b/fs/xfs/libxfs/xfs_da_btree.c
-> > > index e576560b46e9..35f70e4c6447 100644
-> > > --- a/fs/xfs/libxfs/xfs_da_btree.c
-> > > +++ b/fs/xfs/libxfs/xfs_da_btree.c
-> > > @@ -2318,8 +2318,18 @@ xfs_da3_swap_lastblock(
-> > >   	 * Copy the last block into the dead buffer and log it.
-> > >   	 */
-> > >   	memcpy(dead_buf->b_addr, last_buf->b_addr, args->geo->blksize);
-> > > -	xfs_trans_log_buf(tp, dead_buf, 0, args->geo->blksize - 1);
-> > >   	dead_info = dead_buf->b_addr;
-> > > +	/*
-> > > +	 * Update the moved block's blkno if it's a dir3 leaf block
-> > > +	 */
-> > > +	if (dead_info->magic == cpu_to_be16(XFS_DIR3_LEAF1_MAGIC) ||
-> > > +	    dead_info->magic == cpu_to_be16(XFS_DIR3_LEAFN_MAGIC) ||
-> > > +	    dead_info->magic == cpu_to_be16(XFS_ATTR3_LEAF_MAGIC)) {
-> > > +		struct xfs_da3_blkinfo *dap = (struct xfs_da3_blkinfo *)dead_info;
-> > > +
-> > > +		dap->blkno = cpu_to_be64(dead_buf->b_bn);
 
-	dap->blkno = cpu_to_be64(xfs_buf_daddr(dead_buf));
+> Additionally, export DEB_RULES_REQUIRES_ROOT=3Dno in case debian/rules is
+> invoked without dpkg-buildpackage. This change aligns with the Debian
+> kernel commit 65206e29f378 ("Allow to run d/rules.real without root").
 
-(IOWs, please send patches against latest upstream, not 4.19.)
+The Debian linux package has multiple makefiles used recursively
+(rather than included).  The referenced commit is kind of a hack to
+make rootless builds of a subset of binary packages work when invoking
+one of the lower-level makefiles directly.
 
-((Code looks good to me too, compile errors and style notwithstanding.))
+It works because the package runs dh_builddeb, which checks
+DEB_RULES_REQUIRES_ROOT.  But setting DEB_RULES_REQUIRES_ROOT has
+absolutely zero effect on dpkg-deb or other low-level tools.
 
---D
+> While the upstream kernel currently does not run dh_testroot, it may
+> be useful in the future.
 
-> > > +	}
-> > > +	xfs_trans_log_buf(tp, dead_buf, 0, args->geo->blksize - 1);
-> > 
-> > The fix here looks correct to me, but also a little ugly and ad-hoc.
-> > 
-> > At last we should be using container_of and not casts for getting from a
-> > xfs_da_blkinfo to a xfs_da3_blkinfo (even if there is bad precedence
-> > for the cast in existing code).
-> > 
-> 
-> Thanks, we will optimize the code in the next version of the patchset.
-> 
-> > But I think it would be useful to add a helper that stamps in the blkno
-> > in for a caller that only has as xfs_da_blkinfo but no xfs_da3_blkinfo
-> > and use in all the places that do it currently in an open coded fashion
-> > e.g. xfs_da3_root_join, xfs_da3_root_split, xfs_attr3_leaf_to_node.
-> > 
-> > That should probably be done on top of the small backportable fix.
-> > 
-> 
-> I think the idea to add helper is great, and we can do it after this
-> fixes patch is merged.
-> 
-> 
-> Thanks,
-> Jiachen
-> 
-> 
+We can do one of:
+
+1. Ignore DEB_RULES_REQUIRES_ROOT, assume that dpkg-deb supports
+   --root-owner-group and use it unconditionally (your v1).
+2. Check DEB_RULES_REQUIRES_ROOT, do either fakeroot and chown or
+   dpkg-deb --root-owner-group (current behaviour), and maybe also do
+   the equivalent of dh_testroot.
+3. Delegate this to dh_builddeb.  Since we use dh_listpackages now,
+   debhelper is already required and this would make things a lot
+   simpler.
+
+But the combination of changes in v2 does not make sense to me.
+
+Ben.
+
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+>=20
+> Changes in v2:
+>   - add DEB_RULES_REQUIRES_ROOT=3Dno to debian/rules
+>=20
+>  scripts/Makefile.package     | 4 +---
+>  scripts/package/builddeb     | 8 +-------
+>  scripts/package/debian/rules | 2 ++
+>  3 files changed, 4 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/scripts/Makefile.package b/scripts/Makefile.package
+> index 0c3adc48dfe8..a81dfb1f5181 100644
+> --- a/scripts/Makefile.package
+> +++ b/scripts/Makefile.package
+> @@ -109,8 +109,6 @@ debian-orig: linux.tar$(debian-orig-suffix) debian
+>  		cp $< ../$(orig-name); \
+>  	fi
+> =20
+> -KBUILD_PKG_ROOTCMD ?=3D 'fakeroot -u'
+> -
+>  PHONY +=3D deb-pkg srcdeb-pkg bindeb-pkg
+> =20
+>  deb-pkg:    private build-type :=3D source,binary
+> @@ -125,7 +123,7 @@ deb-pkg srcdeb-pkg bindeb-pkg:
+>  	$(if $(findstring source, $(build-type)), \
+>  		--unsigned-source --compression=3D$(KDEB_SOURCE_COMPRESS)) \
+>  	$(if $(findstring binary, $(build-type)), \
+> -		-R'$(MAKE) -f debian/rules' -j1 -r$(KBUILD_PKG_ROOTCMD) -a$$(cat debia=
+n/arch), \
+> +		-R'$(MAKE) -f debian/rules' -j1 -a$$(cat debian/arch), \
+>  		--no-check-builddeps) \
+>  	$(DPKG_FLAGS))
+> =20
+> diff --git a/scripts/package/builddeb b/scripts/package/builddeb
+> index d7dd0d04c70c..2fe51e6919da 100755
+> --- a/scripts/package/builddeb
+> +++ b/scripts/package/builddeb
+> @@ -36,19 +36,13 @@ create_package() {
+>  	sh -c "cd '$pdir'; find . -type f ! -path './DEBIAN/*' -printf '%P\0' \
+>  		| xargs -r0 md5sum > DEBIAN/md5sums"
+> =20
+> -	# Fix ownership and permissions
+> -	if [ "$DEB_RULES_REQUIRES_ROOT" =3D "no" ]; then
+> -		dpkg_deb_opts=3D"--root-owner-group"
+> -	else
+> -		chown -R root:root "$pdir"
+> -	fi
+>  	# a+rX in case we are in a restrictive umask environment like 0077
+>  	# ug-s in case we build in a setuid/setgid directory
+>  	chmod -R go-w,a+rX,ug-s "$pdir"
+> =20
+>  	# Create the package
+>  	dpkg-gencontrol -p$pname -P"$pdir"
+> -	dpkg-deb $dpkg_deb_opts ${KDEB_COMPRESS:+-Z$KDEB_COMPRESS} --build "$pd=
+ir" ..
+> +	dpkg-deb --root-owner-group ${KDEB_COMPRESS:+-Z$KDEB_COMPRESS} --build =
+"$pdir" ..
+>  }
+> =20
+>  install_linux_image () {
+> diff --git a/scripts/package/debian/rules b/scripts/package/debian/rules
+> index 3dafa9496c63..f23d97087948 100755
+> --- a/scripts/package/debian/rules
+> +++ b/scripts/package/debian/rules
+> @@ -5,6 +5,8 @@ include debian/rules.vars
+> =20
+>  srctree ?=3D .
+> =20
+> +export DEB_RULES_REQUIRES_ROOT :=3D no
+> +
+>  ifneq (,$(filter-out parallel=3D1,$(filter parallel=3D%,$(DEB_BUILD_OPTI=
+ONS))))
+>      NUMJOBS =3D $(patsubst parallel=3D%,%,$(filter parallel=3D%,$(DEB_BU=
+ILD_OPTIONS)))
+>      MAKEFLAGS +=3D -j$(NUMJOBS)
+
+--=20
+Ben Hutchings
+For every complex problem
+there is a solution that is simple, neat, and wrong.
+
+
+--=-iHFOhYnSgOYjebv1pxSh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEErCspvTSmr92z9o8157/I7JWGEQkFAmVmFasACgkQ57/I7JWG
+EQlg7hAAi221IYvXWHElPmBfQfGsjyT/CJQkFMksCYNxOPUgV464Vh8phOsSr4Ux
+kuhlU5HlO4+1dYdqCwpuMiXtFMyuVtEToik3Dom2RLMFZuWC8J6B2e5wF9XWjb/U
+59uy9xm537NQU658w632ubnQLQQHPash20xD8E0re0Wn1kcVKn0qK35ZZHANIaqO
+p0rY7wY7+mFVowOR/mYDYebFYFQ71ujcFVs2B/gXA5a2X1UIA+aX9xRGtCd8Jho6
+kTH+DlBTM20dGpcZEsqQ0e0Wv9jeLaz7RC+VvnQABcEqq51W/NdjOYmInAfpf8n2
+EEbZcn6Wm4CUYvokZA42VYJbZgcRv7G2UAO8OxvVNh5C146fk6/l2qBaI+vOpmvt
+RNbcO+3sVBW9Ti2HVarCfFzonYyI3kqLQ45e5PVh35dShD/O9LbfMJQ18gaYvLB7
+NkKmFNvp/maZsumVd+NnFduoIyYQ8as4qWmNZJNXIjf/ciTGnSl77MEEmInpYPez
+pMzGUQ8LidO19tcds2SXVhPl0drm8FEf9EksdH/c/T4QU6A/CpiydG8xdxXCU5MO
+aPuYp6FMVZKBuoMQZkme2Tyx4DWYozg2F+XR90LW4Rset338eox51iXLPWuAVwcd
+pMi2ltnhKhNTzPzG9JsBmiDF0gXgavZrMiXeWi22YIVf9qXH+Ro=
+=k7nd
+-----END PGP SIGNATURE-----
+
+--=-iHFOhYnSgOYjebv1pxSh--
