@@ -2,96 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 179CE7FC247
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA557FC1CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345385AbjK1R0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 12:26:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33302 "EHLO
+        id S1344987AbjK1R33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 12:29:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230382AbjK1R0j (ORCPT
+        with ESMTP id S1345317AbjK1R3Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 12:26:39 -0500
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CC96E6;
-        Tue, 28 Nov 2023 09:26:45 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D5DAB60005;
-        Tue, 28 Nov 2023 17:26:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1701192404;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bng8R5x/Jmq2SVxmDJwMSiwsK4vhqKDM3h6nqdBSV2s=;
-        b=AKK5qcPcfM1hiW5bzr3BhkVuOFr724YPqPa74JpMexXiVIIJB8NpxTTx5iws+jqvFTmzKe
-        spY8WrOUXoem/qgXMTVJ2910ttXabpuTGG70MuZp5z5dxN99O4e0PcyVI/8CNzzDK7J3J+
-        f1Zgd3K6cWN3DTLrkCj/pNHcg7nRF4dfaeQNz016qiFh4vNszeVlCdrSOvDdlNoqgYpm+P
-        PD2N/3MCCql4071pAIpf1BRkJqTYm5tzprPYWkJlAj48bvJt3/Ccm5L5qbSZHuUsIAO+QB
-        6lOA9DMmFQYoQQaanpr3Z9ceucEwY881QiV9dW3Fe1r0jcmn2fr9WOQ1UX6MmA==
-Date:   Tue, 28 Nov 2023 18:26:41 +0100
-From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Simon Horman <horms@kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        alexis.lothore@bootlin.com
-Subject: Re: [PATCH net] net: stmmac: dwmac-socfpga: Don't access SGMII
- adapter when not available
-Message-ID: <20231128182641.7e2363c0@device.home>
-In-Reply-To: <50d318fd-a82c-4756-a349-682b867c0b8b@lunn.ch>
-References: <20231128094538.228039-1-maxime.chevallier@bootlin.com>
-        <50d318fd-a82c-4756-a349-682b867c0b8b@lunn.ch>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Tue, 28 Nov 2023 12:29:24 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29265127
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:29:31 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 875ECC433C7;
+        Tue, 28 Nov 2023 17:29:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701192570;
+        bh=4XvKlG/zv6MZy3Qi+1cyz4jVKinz5Rpd8AQHCJ5MZWo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uhIS7Awr6BRSM0qCLhFQKcG5NqrcWBrH+WnLFYMSXN00D0yANQf2FPU39R4pZoWtb
+         XEVIgw5PGnKQDSVDxZxmW5a2n+zkS3nJ17kFTHbH+sqQ8opEtYf4t2t4RSlYlI2pZi
+         gP0kNhoalFZ4jn2wXiy2U3QEar0nD+8Zz0Z5uVLx1tF3keYaGu8IEv2xe1xqCYRlJC
+         YyK2ctqeirUNTrhk3OffUuTsyTv9iuo5juELUOMWHUPQPqidgiThtDfd5ttStxXDtu
+         TCu3K4WLyDU/Am1wThc5Af9e4mRCEw/R+iNMwZFhZ1TrRxjJ/DroZPJWjT5g+pfISV
+         AWcsn1escATwA==
+Date:   Tue, 28 Nov 2023 17:29:25 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Ante Knezic <ante.knezic@helmholz.de>, netdev@vger.kernel.org,
+        woojung.huh@microchip.com, andrew@lunn.ch, f.fainelli@gmail.com,
+        olteanv@gmail.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        marex@denx.de, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com
+Subject: Re: [PATCH net-next v6 1/2] dt-bindings: net: microchip,ksz:
+ document microchip,rmii-clk-internal
+Message-ID: <20231128-laxative-overjoyed-ab1b4b3656a1@spud>
+References: <cover.1701091042.git.ante.knezic@helmholz.de>
+ <7f1f89010743a06c4880fd224149ea495fe32512.1701091042.git.ante.knezic@helmholz.de>
+ <20231128150203.GA3264915-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Eaz27h0FCLG7yZaF"
+Content-Disposition: inline
+In-Reply-To: <20231128150203.GA3264915-robh@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
 
-On Tue, 28 Nov 2023 17:37:30 +0100
-Andrew Lunn <andrew@lunn.ch> wrote:
+--Eaz27h0FCLG7yZaF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> On Tue, Nov 28, 2023 at 10:45:37AM +0100, Maxime Chevallier wrote:
-> > The SGMII adapter isn't present on all dwmac-socfpga implementations.
-> > Make sure we don't try to configure it if we don't have this adapter.  
-> 
-> If it does not exist, why even try to call socfpga_sgmii_config()?
-> 
-> It seems like this test needs moving up the call stack. socfpga_gen5_set_phy_mode():
-> 
-> 	if (phymode == PHY_INTERFACE_MODE_SGMII)
-> 		if (dwmac->sgmii_adapter_base)
-> 			socfpga_sgmii_config(dwmac, true);
-> 		else
-> 			return -EINVAL;
+On Tue, Nov 28, 2023 at 09:02:03AM -0600, Rob Herring wrote:
+> On Mon, Nov 27, 2023 at 02:20:42PM +0100, Ante Knezic wrote:
+> > Add documentation for selecting reference rmii clock on KSZ88X3 devices
+> >=20
+> > Signed-off-by: Ante Knezic <ante.knezic@helmholz.de>
+> > ---
+> >  .../devicetree/bindings/net/dsa/microchip,ksz.yaml | 38 ++++++++++++++=
++++++++-
+> >  1 file changed, 37 insertions(+), 1 deletion(-)
+>=20
+> You forgot Conor's ack.
 
-I don't have access to a platform with the SGMII adapter available, but
-my understanding is that we shouldn't error-out when we don't have the
-adapter, as some other component (like the lynx PCS) might be there to
-handle that mode.
+I think that's for the better, v5 and v6 look to have changed a decent
+amount from what I acked in v4.
 
-However you have a valid point in that we might want to check if we
-have either an SGMII adapter or a PCS, and if we have none of these we
-error-out. Thanks for the suggestion, I'll address that :)
+--Eaz27h0FCLG7yZaF
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Maxime
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWYjdQAKCRB4tDGHoIJi
+0sM2AP0UONa6EAG1nkKSAMDOqDho9LhS8mI88zn0U4Zuvi53FQD+IEMco3IIebRn
+qUJ59RjTmGnDpyXY+3khiNsf+D9M3QA=
+=BBCx
+-----END PGP SIGNATURE-----
+
+--Eaz27h0FCLG7yZaF--
