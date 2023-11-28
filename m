@@ -2,99 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E7A7FAF17
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 01:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 756927FAF18
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 01:34:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234207AbjK1AeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 19:34:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43476 "EHLO
+        id S234214AbjK1Ae0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 19:34:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231391AbjK1AeM (ORCPT
+        with ESMTP id S231391AbjK1AeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 19:34:12 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC9A1B1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 16:34:18 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-5bd099e3d3cso2904739a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 16:34:18 -0800 (PST)
+        Mon, 27 Nov 2023 19:34:25 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4EE31B6
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 16:34:31 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-2858ae35246so2505268a91.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 16:34:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701131658; x=1701736458; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1701131671; x=1701736471; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xYiTIXqRTDarNbi0aa1f81qxroNRuY69MIWNnPKjAyY=;
-        b=Zj/s9vWMze0CQMyIflVTK3B3dxSeRg1P9NPpAdamgEcVQzPB+/KC5Bg0UH6DBrYjz+
-         Cw9uwhTWfRln18EmUt4Rro0DET7kc4CoKcieM+nxU5Ge9irWUlRC8c10o2ffkuyspse5
-         6qMsjsR0wydgD20oX3OOAvpvvrDhBusbtvndQ=
+        bh=+GcVqTQw8m82AWs/bM0FSCPyGHvrEjXN+2g9CIkLzcQ=;
+        b=GNluDj37zVD74g3JJOgPYd9rlpNSH7h+hKQOozL1J0TQaVqoD+kNBgdWiV/YNosUm1
+         GzMdFn3eobA83BvJJXL6Zg2h09SIbY68byaxgp0GfVVZgCXscg4kaYoJXLaeQ5fgFd9D
+         UgO/Gc6ZcKwTkdv6LOo8oFu4VStkK/TH+GVE0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701131658; x=1701736458;
+        d=1e100.net; s=20230601; t=1701131671; x=1701736471;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xYiTIXqRTDarNbi0aa1f81qxroNRuY69MIWNnPKjAyY=;
-        b=btLmKdugEPs1NM3Y4u8noHlqAtbZVrf+U32+RBwuzfL5Bo/gI1xGLAltRpzH6Xn4LA
-         Gu2lTWDrQP2eDXlRxF27SPWHBgRK3LeLc4KQz2LJHkCc4jWwRPGerrq3X7WpCCZxFR7c
-         30DF+se2yJKijdmxsj19FD56lpWRcAyvWVImbo+sGvRuABULbKHry0i6iWE7ZbFl76+h
-         esEJEKUNZ1mAFjf2ZY9COwCdKTwHT8GRMIB4Om/kGYPvBG5lUaEzSkwuXr4AwfT3gvCw
-         bGwEaJFCecM74Rvuc7cxVVsXqT/qKlxUtTOq4bJurQ46vFTNjuL+DNusio3nKYFC/cib
-         jMfg==
-X-Gm-Message-State: AOJu0YyS04z5jjx3v0nDX2fKgF3u/G1DzKdROsYC3++flug/spn6Lo8x
-        aPVfoicE6+GIDe2NX9OnGDCm3Q==
-X-Google-Smtp-Source: AGHT+IE1qopXbd9oTJotAIwAhuzGIfmugcli9ua2BkHYosf3Vb/rPrjdoH2dQ3EIE9Fwv7Aw8jhVSA==
-X-Received: by 2002:a05:6a20:144b:b0:18c:382e:48fe with SMTP id a11-20020a056a20144b00b0018c382e48femr11176362pzi.15.1701131658027;
-        Mon, 27 Nov 2023 16:34:18 -0800 (PST)
+        bh=+GcVqTQw8m82AWs/bM0FSCPyGHvrEjXN+2g9CIkLzcQ=;
+        b=MfisO1LO4mKIB/i1ma/m55CRcZD5x/3xaHKxWVcHFws2BDzzpKxkKFgh4uUH3cDLkG
+         0RwYAg5x3rlABb658MU9su93x8bZZsT8qRqtRWsZcGR905bwS30Id9+0bnPEDfyjpfj2
+         kwTCjZiNPqtVYsTdewAxKXrZKfx7yMUk1SdylP+53B44uwFOLmC63iiZ0Y3m/nj4pt0K
+         iVce+jzL2OoPrHd8WATHWa10Nu7+OuYLRevL4EmOPK9EfzjrrYN4j6fwo3mvDr59IQ1S
+         DjbT2aXUhRY8fLJxTVqROyHu/SDE3Sn2SxVvM/xPvSf124exGUjENiHtk4jz6qM8VA1x
+         yUAw==
+X-Gm-Message-State: AOJu0YxDfAO73j4XFrXtWHVMP6hzm47SBENsuuVvsgtOb24Ihv1VvLYy
+        m+TE7C6YZQc0nbBIbVbTDidEEQ==
+X-Google-Smtp-Source: AGHT+IEg9YpgUHIsAkHdMiZvyAgRVEYWc790jPMLYF5li9yRb7+pLe8zebCBHBpg3vbwButtn+Zb/Q==
+X-Received: by 2002:a17:90b:4ad0:b0:27c:f80a:2c8a with SMTP id mh16-20020a17090b4ad000b0027cf80a2c8amr13008909pjb.0.1701131671211;
+        Mon, 27 Nov 2023 16:34:31 -0800 (PST)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 102-20020a17090a09ef00b002800e0b4852sm9214040pjo.22.2023.11.27.16.34.17
+        by smtp.gmail.com with ESMTPSA id jk8-20020a170903330800b001cc31dcec49sm8903085plb.146.2023.11.27.16.34.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 16:34:17 -0800 (PST)
+        Mon, 27 Nov 2023 16:34:30 -0800 (PST)
 From:   Kees Cook <keescook@chromium.org>
-To:     ndesaulniers@google.com
+To:     Dmitry Antipov <dmantipov@yandex.ru>
 Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Bill Wendling <morbo@google.com>,
-        Justin Stitt <justinstitt@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>, llvm@lists.linux.dev,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: refresh LLVM support
-Date:   Mon, 27 Nov 2023 16:34:11 -0800
-Message-Id: <170113164796.1670732.18133777682518787773.b4-ty@chromium.org>
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Will Deacon <will@kernel.org>, Kalle Valo <kvalo@kernel.org>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] uapi: propagate __struct_group() attributes to the container union
+Date:   Mon, 27 Nov 2023 16:34:27 -0800
+Message-Id: <170113166294.1670814.14494797449586768583.b4-ty@chromium.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231117-maintainers-v1-1-85f2a7422ed9@google.com>
-References: <20231117-maintainers-v1-1-85f2a7422ed9@google.com>
+In-Reply-To: <20231120110607.98956-1-dmantipov@yandex.ru>
+References: <20231120110607.98956-1-dmantipov@yandex.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Nov 2023 11:24:02 -0800, ndesaulniers@google.com wrote:
-> As discussed at the ClangBuiltLinux '23 meetup (co-located with Linux Plumbers
-> Conf '23), I'll be taking a step back from kernel work to focus on my growing
-> family and helping Google figure out its libc story. So I think it's time to
-> formally hand over the reigns to my co-maintainer Nathan.
+On Mon, 20 Nov 2023 14:05:08 +0300, Dmitry Antipov wrote:
+> Recently the kernel test robot has reported an ARM-specific BUILD_BUG_ON()
+> in an old and unmaintained wil6210 wireless driver. The problem comes from
+> the structure packing rules of old ARM ABI ('-mabi=apcs-gnu'). For example,
+> the following structure is packed to 18 bytes instead of 16:
 > 
-> As such, remove myself from reviewer for:
-> - CLANG CONTROL FLOW INTEGRITY SUPPORT
-> - COMPILER ATTRIBUTES
-> - KERNEL BUILD
+> struct poorly_packed {
+>         unsigned int a;
+>         unsigned int b;
+>         unsigned short c;
+>         union {
+>                 struct {
+>                         unsigned short d;
+>                         unsigned int e;
+>                 } __attribute__((packed));
+>                 struct {
+>                         unsigned short d;
+>                         unsigned int e;
+>                 } __attribute__((packed)) inner;
+>         };
+> } __attribute__((packed));
 > 
 > [...]
 
 Applied to for-linus/hardening, thanks!
 
-[1/1] MAINTAINERS: refresh LLVM support
-      https://git.kernel.org/kees/c/9099184dec26
+[1/1] uapi: propagate __struct_group() attributes to the container union
+      https://git.kernel.org/kees/c/4e86f32a13af
 
 Take care,
 
