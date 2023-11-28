@@ -2,122 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B993D7FB0D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 05:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B39237FB0D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 05:11:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234562AbjK1EI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 23:08:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51340 "EHLO
+        id S234559AbjK1EKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 23:10:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbjK1EI0 (ORCPT
+        with ESMTP id S229789AbjK1EKv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 23:08:26 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF47C1;
-        Mon, 27 Nov 2023 20:08:32 -0800 (PST)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AS3Tqan029324;
-        Tue, 28 Nov 2023 04:07:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id; s=qcppdkim1;
- bh=qUwNKjV6vBhluDMosGG/8iehvGvwRyNVKPeilLEK/9k=;
- b=V8/m46iqlUfIOanMV6EWFJynpU3Ug8Cnvbc0t1YzoohTzqQCLM5eq90vv0PyDyPv+i2z
- 3UOpsO9S8FG05BPmW8y1CVJ/5xb+c7Fn8AmYEj3ojekH2d0XZlYDBXloEiwtsPZW1KWS
- LubXJqx2OGXDvAzv1vzTNXvpAs8+QuF5uF6WVLoLMLsa9ZMM6tyr/DXtwcwVEbkxcgF4
- jiA7f132nMmxqiDGnrHP/ZuVOsVUTNj+s9I9DuvA4O+9kihEnLIhCnxu5xGc4tvh1lCn
- SojXYhah23IhS0XhlbKAzfidkmr6qrOiiMsyYyi3s3YtnUxI3AAbj4dzfi0ddsLrTd8d Gw== 
-Received: from aptaippmta01.qualcomm.com (tpe-colo-wan-fw-bordernet.qualcomm.com [103.229.16.4])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3un586rdff-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Nov 2023 04:07:57 +0000
-Received: from pps.filterd (APTAIPPMTA01.qualcomm.com [127.0.0.1])
-        by APTAIPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3AS47swO026209;
-        Tue, 28 Nov 2023 04:07:54 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APTAIPPMTA01.qualcomm.com (PPS) with ESMTP id 3uka0ke4d8-1;
-        Tue, 28 Nov 2023 04:07:54 +0000
-Received: from APTAIPPMTA01.qualcomm.com (APTAIPPMTA01.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AS47sEW026149;
-        Tue, 28 Nov 2023 04:07:54 GMT
-Received: from cbsp-sh-gv.qualcomm.com (CBSP-SH-gv.ap.qualcomm.com [10.231.249.68])
-        by APTAIPPMTA01.qualcomm.com (PPS) with ESMTP id 3AS47rW9026147;
-        Tue, 28 Nov 2023 04:07:54 +0000
-Received: by cbsp-sh-gv.qualcomm.com (Postfix, from userid 393357)
-        id D54EA5535; Tue, 28 Nov 2023 12:07:52 +0800 (CST)
-From:   Ziqi Chen <quic_ziqichen@quicinc.com>
-To:     quic_asutoshd@quicinc.com, quic_cang@quicinc.com,
-        bvanassche@acm.org, mani@kernel.org, stanley.chu@mediatek.com,
-        adrian.hunter@intel.com, beanhuo@micron.com, avri.altman@wdc.com,
-        junwoo80.lee@samsung.com, martin.petersen@oracle.com,
-        quic_ziqichen@quicinc.com, quic_nguyenb@quicinc.com,
-        quic_nitirawa@quicinc.com
-Cc:     linux-scsi@vger.kernel.org, Alim Akhtar <alim.akhtar@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v4] dt-bindings: ufs: Add msi-parent for UFS MCQ
-Date:   Tue, 28 Nov 2023 12:07:47 +0800
-Message-Id: <1701144469-1018-1-git-send-email-quic_ziqichen@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: jQe91lEE1mZXUhaeS7LmGUao8ukLbf-b
-X-Proofpoint-GUID: jQe91lEE1mZXUhaeS7LmGUao8ukLbf-b
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-28_02,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=888 priorityscore=1501 spamscore=0 impostorscore=0
- adultscore=0 mlxscore=0 phishscore=0 suspectscore=0 clxscore=1011
- bulkscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311060000 definitions=main-2311280031
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        Mon, 27 Nov 2023 23:10:51 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1929A198
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 20:10:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NHKll15xTEo9mrdFdz2lzv6dtg/D50aR80vn8riWfoE=; b=HlUOQUSKbr7DQ1gja3nUKu+/s4
+        DwaB3NGfmkiikfrisc2djL9zmQHERJZhTd7zE/VvQFAEkS67pGvX+QPVAQicuCPId2JB9NydtZkKN
+        BAaCzVr2w/VJ4FjGrVLtAQ/8SMYcrv5hyDOY6BNssTFsLg/OkOCP3iKX5rv8Oe+NYgaGVydzhbYtT
+        P8KDh9I30jnTkzeX6h61x/fptdXccHo5/x0tLA01tPU4AeaQB1PCURKntm0hCxjS+Rv1Ar1WvC1Aa
+        EnkXNx8BOnkeuoLGskMsDdQQPppN+0T1YGcx59ngob8nGFdfWi8j+cdjRA7+wpEE/8EB+zY3fJXxo
+        6zeim5sw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r7pQj-00C1MJ-O7; Tue, 28 Nov 2023 04:10:37 +0000
+Date:   Tue, 28 Nov 2023 04:10:37 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH v7 00/10] Small-sized THP for anonymous memory
+Message-ID: <ZWVoPT4AZOLJ/eE4@casper.infradead.org>
+References: <20231122162950.3854897-1-ryan.roberts@arm.com>
+ <ZV9267tQEhoPzCru@casper.infradead.org>
+ <f8e518f2-fb15-4295-a335-bea5a8010ab2@arm.com>
+ <ZWC9lwDAjMZsNzoG@casper.infradead.org>
+ <9c8f6d2a-7ed8-45d2-9684-d77489bd99b8@redhat.com>
+ <ZWDG6BYqmZVpyTLL@casper.infradead.org>
+ <26c361bc-6d87-4a57-9fae-ef635c9039c7@redhat.com>
+ <87sf4rppuc.fsf@nvdebian.thelocal>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87sf4rppuc.fsf@nvdebian.thelocal>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Message Signaled Interrupts (MSI) support has been introduced in
-UFSHCI version 4.0 (JESD223E). The MSI is the recommended interrupt
-approach for MCQ. If choose to use MSI, In UFS DT, we need to provide
-msi-parent property that point to the hardware entity which serves as
-the MSI controller for this UFS controller.
+On Mon, Nov 27, 2023 at 07:20:26PM +1100, Alistair Popple wrote:
+> I don't like "large anon folios" because it seems to confuse collegaues
+> when explaining that large anon folios are actually smaller than the
+> existing Hugetlb/THP size. I suspect this is because they already assume
+> large folios are used for THP. I guess this wouldn't be an issue if
+> everyone assumed THP was implemented with huge folios, but that doesn't
+> seem to be the case for me at least. Likely because the default THP size
+> is often 2MB, which is hardly huge.
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-Signed-off-by: Ziqi Chen <quic_ziqichen@quicinc.com>
----
-V3 -> V4: Corrected version change format.
-V2 -> V3: Wrap commit message to meet Linux coding style.
-V1 -> V2: Rebased on Linux 6.7-rc1 and updated the commit message to
-          incorporate the details about when MCQ/MSI got introduced.
----
- Documentation/devicetree/bindings/ufs/ufs-common.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+I find your colleagues confusing.  To me, "huge" seems bigger than
+"large".  I don't seem to be the only one:
 
-diff --git a/Documentation/devicetree/bindings/ufs/ufs-common.yaml b/Documentation/devicetree/bindings/ufs/ufs-common.yaml
-index 985ea8f..31fe7f3 100644
---- a/Documentation/devicetree/bindings/ufs/ufs-common.yaml
-+++ b/Documentation/devicetree/bindings/ufs/ufs-common.yaml
-@@ -87,6 +87,8 @@ properties:
-     description:
-       Specifies max. load that can be drawn from VCCQ2 supply.
- 
-+  msi-parent: true
-+
- dependencies:
-   freq-table-hz: [ clocks ]
-   operating-points-v2: [ clocks, clock-names ]
--- 
-2.7.4
+https://www.quora.com/What-is-the-difference-among-big-large-huge-enormous-and-giant
+(for example)
 
+Perhaps the problem is that people have turned "THP" into a thing in its
+own right.  So they feel comfortable talking about small THP, medium THP
+and large THP and ignoring that there's already a "huge" embedded in THP.
+
+Now if you'll excuse me, I have to put my PIN number into the ATM machine.
