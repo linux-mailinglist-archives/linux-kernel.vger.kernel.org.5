@@ -2,111 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A387FB10B
+	by mail.lfdr.de (Postfix) with ESMTP id E9D3D7FB10C
 	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 06:04:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343520AbjK1Eyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 23:54:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43062 "EHLO
+        id S1343504AbjK1FDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 00:03:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343507AbjK1Ey1 (ORCPT
+        with ESMTP id S229789AbjK1FDr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 23:54:27 -0500
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9FFB1A1;
-        Mon, 27 Nov 2023 20:54:32 -0800 (PST)
-Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-35c7971a374so9520425ab.2;
-        Mon, 27 Nov 2023 20:54:32 -0800 (PST)
+        Tue, 28 Nov 2023 00:03:47 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C0F61AD;
+        Mon, 27 Nov 2023 21:03:54 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-5c239897895so3411906a12.2;
+        Mon, 27 Nov 2023 21:03:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701147272; x=1701752072; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VNceZKOO+3PgAe77vYkS4p5mUHqXVjcNpHRywKWrUJE=;
-        b=fJEZySqe1Ql8o9xYoOK67a3mvaDut5U6zgo1C7dm39m2Par8eoZMPpTfkuLY4jlris
-         X5jBoULkHsTb9hpwu/IP/Y0w/5Z/cr3wGqMxNa0iGrM/rjkTP5ntWio5a4l7T+TvBSi7
-         38X0Yrl1pbHkLZ+SzncYnWoCPW/5s3ZijvixVyNEj+i9ujtTijaAfJPjG2AyYTe6MGiU
-         6RGQAfmHqcSjh/1JF3U4mZyoXnNVaRMi8LjHFAI0/jwF9BZ6Rrlgw/P1DH5EyCS6GtXt
-         HLTObHhkpCkj/rbTqvbTGQidp+NLMUQmr+23RLExnMsXxK0diwxmwmmjjsi7ZWL49nGU
-         F9Zw==
+        d=gmail.com; s=20230601; t=1701147834; x=1701752634; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=W23J0BcgxSklclO8sluyghV5NSHeDrAZd0UrfhgnfVA=;
+        b=ZRpk78XtHwpInvUHIEr6OftfgYaxjxx6ARRz61ZxfE5JAsW7RNFjkPqtjoTvKfioxx
+         tb9QaCUpGLjUxKsa9JCWJrA4VjVd15NGMzrp5cocSqwK1r/3Bh+ZOdfb3fGA9axQLeOL
+         HUmIM17Q9S5pqkKOY9H1Lc+ArDVgE/g4fJZFpSm40Mi+51TF0rKZXyuen4B0Uj/XKZuR
+         4L+uqzkJDSdkadJ6ZKfkPCYwc+nc+0zpzU/TpNhM2kLsaTVAwUDKw1zxR2wi7m+LbkV4
+         Q1QBbEeAosbURzhzeBdr4TDUxtOY9r8nFJLgn9hGvwOAuoBEMKZ7AaNSo6FAEP02j8Oj
+         DDkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701147272; x=1701752072;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VNceZKOO+3PgAe77vYkS4p5mUHqXVjcNpHRywKWrUJE=;
-        b=PTQhxFncBEaf5tochsqb6ndJDoawpc2E3v5Q84vPJaecb7wOSxrZ/l7MZ/QRBDWLfn
-         /vOfAMoi9eg6K2VCrIyhrpgO33SlZaPLi1sYhVBFv4Ujn/sW9kXplP3blgMXme5bhQf5
-         q1W6/YVOq6G202Z2Q0KjAyOBerSmoabBoMd4Y5yPal2MjZv8pbf1iqk9mYzQ7SS/15nX
-         0dk51UNP6cSMdW7onGVMjhbA97wtsrHTN3G8DZAIk9/kE1hr21vTZCBW8sT6//vIvXl4
-         qvxVPRSk4Y2gSv5M0lrW7gnzETbjq3IP320D3PlLzxgcBtQesSQdRhtT/gVkos4Xv0gR
-         1SIQ==
-X-Gm-Message-State: AOJu0Yz5piXtfJtZ6IQZqRFKqRFIzaKaYWSUS3K19hbBNmiAptW6XtGG
-        +yZW+4xS/tjcN1k3oBW6SUX8Z1eSGs0=
-X-Google-Smtp-Source: AGHT+IExnDh815yNXcdkZQfo9IX7WR97yNJG3EUz1x0WT2HG5Y2G5t4wO/8aeDBpZWykVIfrcsDVTQ==
-X-Received: by 2002:a05:6e02:1c07:b0:35c:d4c8:b272 with SMTP id l7-20020a056e021c0700b0035cd4c8b272mr5638454ilh.30.1701147271815;
-        Mon, 27 Nov 2023 20:54:31 -0800 (PST)
-Received: from aford-System-Version.lan ([2601:447:d002:5be:5d62:b359:8b5c:90ac])
-        by smtp.gmail.com with ESMTPSA id bo33-20020a056e02342100b0035b0b05189bsm3357251ilb.38.2023.11.27.20.54.30
+        d=1e100.net; s=20230601; t=1701147834; x=1701752634;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W23J0BcgxSklclO8sluyghV5NSHeDrAZd0UrfhgnfVA=;
+        b=K12Qw7LcNJn3j5kmtm9PmVqVNW08wB7/vzrTsrOLcFTS3ibszWiXT7AloBmtwKMvMB
+         p8Kjf5PSVbvROx48XWnBOZHnQFT7K9/IqOZfbqSIU9PiGcgPiEIohM1xCpUOJYoZIJ2d
+         MTupbTcBGzHnMO7fWjnZFtBnQs9+YXs/4NF3BxXHw+xpT/7BRF0XVQxskJRFNESF0TUT
+         +arpP4ExEJtsyY9zAtW89gSvxtPgYuwbZ8nGUl/3F7U2YCYc9gy6K++fbMqeU8ZEPvJ2
+         9BaS8SGy5a6EEVlhhoBP9CGTB8i+9VNh1NbADBd1cWNZVaMfGXukYzKoFQ3AQ4SVH23+
+         jOUQ==
+X-Gm-Message-State: AOJu0Yw7aDKq+F0VbWpl5RweVf/wzBtS8McWs2xsGMcExZ6BmdyS2v5n
+        gzdQ/Ogd62wSc47+OKU2xbg=
+X-Google-Smtp-Source: AGHT+IFuJn1MeVxt1Lb37TBLOtXkrbySVrPTWFS2/isDPs/CGbGxTtuD1nU4JDP4hz4LPEdarkbjSQ==
+X-Received: by 2002:a05:6a20:9e4d:b0:187:9521:92b4 with SMTP id mt13-20020a056a209e4d00b00187952192b4mr15282620pzb.19.1701147833813;
+        Mon, 27 Nov 2023 21:03:53 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id d10-20020a170903230a00b001cfc44aac0fsm3860940plh.111.2023.11.27.21.03.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 20:54:31 -0800 (PST)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     aford@beaconembeded.com, Adam Ford <aford173@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] arm64: dts: imx8mm: Slow default video_pll1 clock rate
-Date:   Mon, 27 Nov 2023 22:54:15 -0600
-Message-Id: <20231128045415.210682-3-aford173@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231128045415.210682-1-aford173@gmail.com>
-References: <20231128045415.210682-1-aford173@gmail.com>
+        Mon, 27 Nov 2023 21:03:52 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+        id D5C34101D8AAE; Tue, 28 Nov 2023 12:03:50 +0700 (WIB)
+Date:   Tue, 28 Nov 2023 12:03:50 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        allen.lkml@gmail.com
+Subject: Re: [PATCH 6.6 000/525] 6.6.3-rc4 review
+Message-ID: <ZWV0tk_99WPgDgv1@archie.me>
+References: <20231126154418.032283745@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="22dtCgJlc3FKpRYP"
+Content-Disposition: inline
+In-Reply-To: <20231126154418.032283745@linuxfoundation.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 8208181fe536 ("clk: imx: composite-8m:
-Add imx8m_divider_determine_rate") the lcdif controller has
-had the ability to set the lcdif_pixel rate which propagates
-up the tree and sets the video_pll1 rate automatically.
 
-By setting this value low, it will force the recalculation of
-video_pll1 to the lowest rate needed by lcdif instead of
-dividing a larger clock down to the desired clock speed. This
-has the  advantage of being able to lower the video_pll1 rate
-from 594MHz to 148.5MHz when operating at 1080p. It can go even
-lower when operating at lower resolutions and refresh rates.
+--22dtCgJlc3FKpRYP
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
+On Sun, Nov 26, 2023 at 03:46:18PM +0000, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.6.3 release.
+> There are 525 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-index a3dae114c20e..669fdd2c54e4 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-@@ -1131,7 +1131,7 @@ lcdif: lcdif@32e00000 {
- 				assigned-clock-parents = <&clk IMX8MM_VIDEO_PLL1_OUT>,
- 							 <&clk IMX8MM_SYS_PLL2_1000M>,
- 							 <&clk IMX8MM_SYS_PLL1_800M>;
--				assigned-clock-rates = <594000000>, <500000000>, <200000000>;
-+				assigned-clock-rates = <24000000>, <500000000>, <200000000>;
- 				interrupts = <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
- 				power-domains = <&disp_blk_ctrl IMX8MM_DISPBLK_PD_LCDIF>;
- 				status = "disabled";
--- 
-2.40.1
+Successfully compiled and installed the kernel on my computer (Acer
+Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
 
+Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--22dtCgJlc3FKpRYP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZWV0sgAKCRD2uYlJVVFO
+o0ijAP0RDLvzKuwa7DyIA5i0DwkZMEZnmCpEUPiA/1G6gmMefQD/SIfbBmRymQCW
+4SybJh+OqlDHhDkn4EmBcZCCrkLoXwg=
+=k/b/
+-----END PGP SIGNATURE-----
+
+--22dtCgJlc3FKpRYP--
