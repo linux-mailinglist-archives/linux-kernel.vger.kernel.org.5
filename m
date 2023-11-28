@@ -2,61 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B548E7FB21A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 07:50:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE46D7FB21E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 07:51:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343661AbjK1GuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 01:50:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36842 "EHLO
+        id S1343651AbjK1GvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 01:51:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbjK1GuI (ORCPT
+        with ESMTP id S231540AbjK1GvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 01:50:08 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 464D2E1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 22:50:15 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3030C433C7;
-        Tue, 28 Nov 2023 06:50:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701154214;
-        bh=BijUODoSlZIznO9rdGnXggiSdi32BpO3PHuXhYrN1B8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=if9fM89P+gYlCDnvkkF1Yr+BLEwcjrzHNVmL7eGBgP+mcsTCAA44Zo/jA2dVG0hka
-         h/LUzMc86Pns899eb+eBzUHUyopA70K0VId+L6bo9UvWEtksLRnYfQgsCIcyFXTmsA
-         StTDz/fcXiBOKdqidbSxUBOYr9dC1xwA/C8VFRnyTj6XuPag4Tu8h7UGU8HWcwBG9+
-         1fH3R1gOS/OEy8/WIfOf04Wk3ofHB909dr1lvVQRSa/GLjFVYWIitbmdb/iG2c0hqj
-         gI9GkHgvnjBOAPs5NT6aeOVlwPQnvsC/4BEjUwfK4dSUKeT8i6bctj0fIX1Dbg8u2L
-         G9GIlEM7e/Y1Q==
-Date:   Tue, 28 Nov 2023 08:49:57 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Alexandru Elisei <alexandru.elisei@arm.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
-        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
-        hughd@google.com, pcc@google.com, steven.price@arm.com,
-        anshuman.khandual@arm.com, vincenzo.frascino@arm.com,
-        david@redhat.com, eugenis@google.com, kcc@google.com,
-        hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC v2 04/27] mm: migrate/mempolicy: Add hook to modify
- migration target gfp
-Message-ID: <20231128064957.GI636165@kernel.org>
-References: <20231119165721.9849-1-alexandru.elisei@arm.com>
- <20231119165721.9849-5-alexandru.elisei@arm.com>
- <20231125100322.GH636165@kernel.org>
- <ZWSDGGJDWDtY0G35@raptor>
+        Tue, 28 Nov 2023 01:51:06 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903FF113
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 22:51:12 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6bd32d1a040so5110202b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 22:51:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701154272; x=1701759072; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=uBQiDTGElGC/iQuipJvaEvquIy+irMHsbVUaQJuQwC4=;
+        b=oC2BWySdg2uYob0IRI+M8ezMLlQsG62loSyygbvzxmBG5nJmEhjukn/C79pTqfK0Tc
+         lBb7noCXoB3E8Plwq0+bNt1ZZ8vyE/uEmmZfhLU71BZoY5PA88uThki8LOQ65aRXtUBK
+         iJX6qk8tKWxt14y0QacEem1DFnhJPu798e36yPTRzY10wGdPs4eYS/EXuwa3JlFGukry
+         /CUMHa6ZeWl/oMLaCLjiMqW35rlHRtohKSvrsfVsOy7i2aye6+Gj8mDNbjB5hko/uIV3
+         XpLlpHulgLV71wGH8Y/HuFI7QuFiue8/M5X/mNFShGoCErYOallx7r1pffVRGqCIMjWl
+         xuog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701154272; x=1701759072;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uBQiDTGElGC/iQuipJvaEvquIy+irMHsbVUaQJuQwC4=;
+        b=PtfwIYT5YlYMuxnfy7Nq2AJZoM1PXPJszxbyRbZ5R2zE0GF+rh/Q/8xZF+I/aUVjMv
+         ofvzVBhd/zo+yI2G8QeP4Q/OWFXrW+TK7JBjo3EEOPoCUM/gaUTFplhr+RGoG4gZaQlj
+         yYy0saHhvUE7GvzLphLGbinK3/6v8/7jCYAL7GBiwUZTMTfkF9T7vGoh+ds3Dq3cseGm
+         DKCjcGjEahwsFZli7UDBqCn0CZU2y6jf54gQlv1tWz4ZGTgJV4eAX0LOlrUx13qsi18O
+         cXh9oaRSMbjXu45IQAW5qrm5eabLLWRdwlMhGcyYKFX3wXDppjw3uOrwn3NyB6Dsyzw9
+         c8Ew==
+X-Gm-Message-State: AOJu0Yxewe9FHSen5yynMqcCm7nIDz9Gm9VDsjjfZ+tFMftICVp1hcOL
+        vx9Y35KayaeGl8yo7lVR4rdj
+X-Google-Smtp-Source: AGHT+IEnvI4ydDHNEQqF42I/aL26b1A2O/ZB/+msey5Q3lR6xnG7ljDsBqZEJiYNuUCIne2HrUUoPA==
+X-Received: by 2002:a05:6a00:a18:b0:6cb:8a8a:4bb6 with SMTP id p24-20020a056a000a1800b006cb8a8a4bb6mr16162259pfh.11.1701154272009;
+        Mon, 27 Nov 2023 22:51:12 -0800 (PST)
+Received: from thinkpad ([117.213.103.241])
+        by smtp.gmail.com with ESMTPSA id m22-20020aa78a16000000b00692cb1224casm8293437pfa.183.2023.11.27.22.51.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 22:51:11 -0800 (PST)
+Date:   Tue, 28 Nov 2023 12:21:04 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Vignesh Raman <vignesh.raman@collabora.com>
+Cc:     intel-gfx@lists.freedesktop.org, helen.koike@collabora.com,
+        daniels@collabora.com, linux-pci@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: qcom: Fix compile error
+Message-ID: <20231128065104.GK3088@thinkpad>
+References: <20231128042026.130442-1-vignesh.raman@collabora.com>
+ <20231128051456.GA3088@thinkpad>
+ <50a9f061-e1d3-6aca-b528-56dbb6c729d9@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZWSDGGJDWDtY0G35@raptor>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <50a9f061-e1d3-6aca-b528-56dbb6c729d9@collabora.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -65,85 +76,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 11:52:56AM +0000, Alexandru Elisei wrote:
-> Hi Mike,
+On Tue, Nov 28, 2023 at 11:44:26AM +0530, Vignesh Raman wrote:
+> Hi Mani,
 > 
-> I really appreciate you having a look!
-> 
-> On Sat, Nov 25, 2023 at 12:03:22PM +0200, Mike Rapoport wrote:
-> > On Sun, Nov 19, 2023 at 04:56:58PM +0000, Alexandru Elisei wrote:
-> > > It might be desirable for an architecture to modify the gfp flags used to
-> > > allocate the destination page for migration based on the page that it is
-> > > being replaced. For example, if an architectures has metadata associated
-> > > with a page (like arm64, when the memory tagging extension is implemented),
-> > > it can request that the destination page similarly has storage for tags
-> > > already allocated.
+> On 28/11/23 10:44, Manivannan Sadhasivam wrote:
+> > On Tue, Nov 28, 2023 at 09:50:26AM +0530, Vignesh Raman wrote:
+> > > Commit a2458d8f618a ("PCI/ASPM: pci_enable_link_state: Add argument
+> > > to acquire bus lock") has added an argument to acquire bus lock
+> > > in pci_enable_link_state, but qcom_pcie_enable_aspm calls it
+> > > without this argument, resulting in below build error.
 > > > 
-> > > No functional change.
-> > > 
-> > > Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
-> > > ---
-> > >  include/linux/migrate.h | 4 ++++
-> > >  mm/mempolicy.c          | 2 ++
-> > >  mm/migrate.c            | 3 +++
-> > >  3 files changed, 9 insertions(+)
-> > > 
-> > > diff --git a/include/linux/migrate.h b/include/linux/migrate.h
-> > > index 2ce13e8a309b..0acef592043c 100644
-> > > --- a/include/linux/migrate.h
-> > > +++ b/include/linux/migrate.h
-> > > @@ -60,6 +60,10 @@ struct movable_operations {
-> > >  /* Defined in mm/debug.c: */
-> > >  extern const char *migrate_reason_names[MR_TYPES];
-> > >  
-> > > +#ifndef arch_migration_target_gfp
-> > > +#define arch_migration_target_gfp(src, gfp) 0
-> > > +#endif
-> > > +
-> > >  #ifdef CONFIG_MIGRATION
-> > >  
-> > >  void putback_movable_pages(struct list_head *l);
-> > > diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> > > index 10a590ee1c89..50bc43ab50d6 100644
-> > > --- a/mm/mempolicy.c
-> > > +++ b/mm/mempolicy.c
-> > > @@ -1182,6 +1182,7 @@ static struct folio *alloc_migration_target_by_mpol(struct folio *src,
-> > >  
-> > >  		h = folio_hstate(src);
-> > >  		gfp = htlb_alloc_mask(h);
-> > > +		gfp |= arch_migration_target_gfp(src, gfp);
 > > 
-> > I think it'll be more robust to have arch_migration_target_gfp() to modify
-> > the flags and return the new mask with added (or potentially removed)
-> > flags.
+> > Where do you see this error? That patch is not even merged. Looks like you are
+> > sending the patch against some downstream tree.
 > 
-> I did it this way so an arch won't be able to remove flags set by the MM code.
-> There's a similar pattern in do_mmap() -> calc_vm_flag_bits() ->
-> arch_calc_vm_flag_bits().
+> I got this error with drm-tip - git://anongit.freedesktop.org/drm-tip
+> 
+> This commit is merged in drm-intel/topic/core-for-CI -
+> https://cgit.freedesktop.org/drm-intel/log/?h=topic/core-for-CI
+> 
 
-Ok, just add a sentence about it to the commit message.
- 
-> Thanks,
-> Alex
-> 
-> > 
-> > >  		nodemask = policy_nodemask(gfp, pol, ilx, &nid);
-> > >  		return alloc_hugetlb_folio_nodemask(h, nid, nodemask, gfp);
-> > >  	}
-> > > @@ -1190,6 +1191,7 @@ static struct folio *alloc_migration_target_by_mpol(struct folio *src,
-> > >  		gfp = GFP_TRANSHUGE;
-> > >  	else
-> > >  		gfp = GFP_HIGHUSER_MOVABLE | __GFP_RETRY_MAYFAIL | __GFP_COMP;
-> > > +	gfp |= arch_migration_target_gfp(src, gfp);
-> > >  
-> > >  	page = alloc_pages_mpol(gfp, order, pol, ilx, nid);
-> > >  	return page_rmappable_folio(page);
-> > 
-> > -- 
-> > Sincerely yours,
-> > Mike.
-> > 
+Okay. Since this patch is just for CI, please do not CC linux-pci as it causes
+confusion.
+
+- Mani
+
+> Regards,
+> Vignesh
 
 -- 
-Sincerely yours,
-Mike.
+மணிவண்ணன் சதாசிவம்
