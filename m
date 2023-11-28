@@ -2,103 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A77D7FB2F5
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0407FB2F6
 	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:40:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343829AbjK1HkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 02:40:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45024 "EHLO
+        id S1343836AbjK1HkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 02:40:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234118AbjK1HkS (ORCPT
+        with ESMTP id S1343828AbjK1HkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 02:40:18 -0500
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44928183;
-        Mon, 27 Nov 2023 23:40:24 -0800 (PST)
-Received: from francesco-nb.int.toradex.com (31-10-206-125.static.upc.ch [31.10.206.125])
-        by mail11.truemail.it (Postfix) with ESMTPA id 7B50D2074D;
-        Tue, 28 Nov 2023 08:40:22 +0100 (CET)
-Date:   Tue, 28 Nov 2023 08:40:21 +0100
-From:   Francesco Dolcini <francesco@dolcini.it>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     Francesco Dolcini <francesco@dolcini.it>,
-        Amitkumar Karwar <amitkumar.karwar@nxp.com>,
-        Neeraj Kale <neeraj.sanjaykale@nxp.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Subject: Re: [PATCH v1 1/3] Bluetooth: btnxpuart: fix recv_buf() return value
-Message-ID: <ZWWZZQUzZpnTm4i5@francesco-nb.int.toradex.com>
-References: <20231127191409.151254-1-francesco@dolcini.it>
- <20231127191409.151254-2-francesco@dolcini.it>
- <5f2995d5-3c7c-4234-82ef-dd43bc73a730@kernel.org>
+        Tue, 28 Nov 2023 02:40:19 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE965D4D
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:40:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06171C433C8;
+        Tue, 28 Nov 2023 07:40:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1701157225;
+        bh=sQ8eFRy8ecWkoljPx54B1yii7txseyEFBs2HyY8n+wk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0CknmWSAvMLQx5OiL5X7KW4Iw2Mrbo6oKxUPdjCYpr07sE0c/WFbDsrkiNm1pS4g7
+         XdHyAQUn9+EDO59QVR6mA2OIJabxl1GhzzO0w44IMVaEAjwOyn4iMloe/g/P80fLVW
+         l1/Kojo5fk1mip0XLmakL/SIJxPquRGz46TiouYo=
+Date:   Tue, 28 Nov 2023 07:40:21 +0000
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Ricky WU <ricky_wu@realtek.com>
+Cc:     "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "frank.li@vivo.com" <frank.li@vivo.com>,
+        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
+        "yangyingliang@huawei.com" <yangyingliang@huawei.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
+Subject: Re: [PATCH v5 0/3] Support new card reader rts5264
+Message-ID: <2023112848-handoff-wistful-dec5@gregkh>
+References: <d166d6a70c46419f8d2670e63f542ea1@realtek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5f2995d5-3c7c-4234-82ef-dd43bc73a730@kernel.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <d166d6a70c46419f8d2670e63f542ea1@realtek.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 06:23:21AM +0100, Jiri Slaby wrote:
-> On 27. 11. 23, 20:14, Francesco Dolcini wrote:
-> > From: Francesco Dolcini <francesco.dolcini@toradex.com>
-> > 
-> > Serdev recv_buf() callback is supposed to return the amount of bytes
-> > consumed, therefore an int in between 0 and count.
-> > 
-> > Do not return negative number in case of issue, just print an error and
-> > return count.  This fixes a WARN in ttyport_receive_buf().
-
-...
-
-> >   drivers/bluetooth/btnxpuart.c | 7 +++----
-> >   1 file changed, 3 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/bluetooth/btnxpuart.c b/drivers/bluetooth/btnxpuart.c
-> > index b7e66b7ac570..951fe3014a3f 100644
-> > --- a/drivers/bluetooth/btnxpuart.c
-> > +++ b/drivers/bluetooth/btnxpuart.c
-> > @@ -1276,11 +1276,10 @@ static int btnxpuart_receive_buf(struct serdev_device *serdev, const u8 *data,
-> >   	if (IS_ERR(nxpdev->rx_skb)) {
-> >   		int err = PTR_ERR(nxpdev->rx_skb);
-> >   		/* Safe to ignore out-of-sync bootloader signatures */
-> > -		if (is_fw_downloading(nxpdev))
-> > -			return count;
-> > -		bt_dev_err(nxpdev->hdev, "Frame reassembly failed (%d)", err);
-> > +		if (!is_fw_downloading(nxpdev))
-> > +			bt_dev_err(nxpdev->hdev, "Frame reassembly failed (%d)", err);
-> >   		nxpdev->rx_skb = NULL;
+On Tue, Nov 28, 2023 at 05:32:47AM +0000, Ricky WU wrote:
+> Summary
+> =======
+> This series adds support new card reader rts5264
+> rts5264 can support sd express card 
+> new definitions and functions define in new file rts5264.h rts5264.c
 > 
-> Is this NULLing not needed in the good case?
-NULLing in the good case would be a bug, in addition to that NULLing is
-not needed at all even in the bad case and it will be removed in the
-last patch, as a cleanup. Here I just maintained the existing logic.
+> Patch structure
+> ===============
+> v4->v5:
+> add summary for this series
 
-> > -		return err;
-> > +		return count;
-> 
-> Should you return 0? I don't know, maybe not
-My reasoning is that we have some corrupted data, so we should just
-use it all and maybe we'll get something valid at a later point, this is
-what was already done before this change in the is_fw_downloading()
-branch.
+That is not what I asked for here.  Please make the changelog text for
+the individual patches MUCH better.  Perhaps work with one of your
+coworkers to come up with some more text that properly describes what
+the change is doing?  Did you read the documentation link that I pointed
+you at that should answer how to do this better?
 
-In my specific case it makes no difference, it will never recover from
-this state.
+Also, your patches are NOT properly linked together (look at them on
+lore.kernel.org for proof), please use something like git send-email to
+have them be linked so that we can apply them properly at the same time
+together once they are ready.
 
-Any other opinion?
+thanks,
 
-> but you should document it in the commit log.
-Ack
-
-Francesco
-
+greg k-h
