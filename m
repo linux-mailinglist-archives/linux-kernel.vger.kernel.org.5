@@ -2,128 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC3217FC1C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85BFB7FC16D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346675AbjK1O4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 09:56:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36028 "EHLO
+        id S1346224AbjK1OyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 09:54:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346606AbjK1Ozn (ORCPT
+        with ESMTP id S1346248AbjK1OyH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 09:55:43 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE67211D
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:55:28 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-285d1101868so1887661a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:55:28 -0800 (PST)
+        Tue, 28 Nov 2023 09:54:07 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EC8E1739
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:54:13 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1cfd9ce0745so128975ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:54:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1701183327; x=1701788127; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1701183253; x=1701788053; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+VVLFlRU9wYvo88+4OGIocSm8Yau0IVgd5ynlDYwNo0=;
-        b=FCKkVKyvcgg2+FuLc7kglFATD0ozGf/gJK2xQP7zxLCp9d/x3u32YbiaqQomA6VieS
-         CDfqC3ufh5zsv3SuyE0WdkNCp+Y4haDkLmAQq4xWn/fumm9S2iIF7sjXo63OLgoNxn3C
-         kLPU8SKAF6XLDMErpBz0OS3kds0tUaJ6Jskrl3+1havDFGoUsE0KlXmgZ7z8ivFbUuIE
-         7GwgEAt8tM/1Ta0i8b6PJojNPX8ptjNGzGydXqyVeTl0M9f+ApU3KbvQQt8+RZVGLXIk
-         ONEahHSYkK6WvwZ8i1iLo15iE55JHOJXgqesTtYQxd5SnJ85FDR8oJE4GQQ06ZyQHR20
-         kFkQ==
+        bh=Vsh2mMUKOXR8rABG0J7/JCsvNsJy41xjQD3uPT5bxQQ=;
+        b=WgHfHB3gtR4cQNfCXmT6g5D69yDeXnejdR9BJtKnJkXs8TBpaYH7O/2KKBSFlhsKui
+         lmUVfK4uoM2Fn9M5TbUcyzZ2zCKz+sz2sM2svN8wAPJOaaQ+asuUVSrzi5WHn/lbFu9f
+         806fxUWYtNJ3SnAAEJ3IFeATf/fFl/gJxZRYZcBxw2In+eoY3y96YqgXG0WnBBdZaVLL
+         Ab9PdDVnHJvuGfnG/Kv3cBPn/L+w4V1MMgDxTFV3gaEhzqLjUTvwa5MdNBPKCgoPIKTr
+         GKyZ8u5lWFTP4+cJGmFdJP/cRUDEVVsDq0oLU7MlkXVtSq3h0EGpq6zYe9rTY2Htq+iq
+         RB7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701183327; x=1701788127;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1701183253; x=1701788053;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+VVLFlRU9wYvo88+4OGIocSm8Yau0IVgd5ynlDYwNo0=;
-        b=oXqr3cZUK6sqNpNL3KnsOQT1/s9JpUFMhhPW8lqq/mej9a/pdWGzbVCVUeFYuoEXNn
-         v5f56ue8o/ElQSl66PGi9ElQzJVUzwAwYDPWEyoCUURqQNxYZKAECtjEixzZ+ct8KQj8
-         ex91AgeU04yE+AdEDcFDQo2DMdjqgCFtc+ihWwegm/HG8cLebbivpEWBcRME3HAZcX0f
-         GdHVK74S32TdDGEamXjJgXjg2yjGgM8JEJR4haI580XhDR8PsK1R9ewztLZQ07RI0JcX
-         h05O8Q3uYCikhosx0u/B6QR51NgGN8r4B53OVq/lwDDcKIzj6yNkpYtcrPzXwn6nQEtz
-         oezQ==
-X-Gm-Message-State: AOJu0YxpU+K9IcrkVvxJOm9Io7NPwsIl0Ltq3r1Iwd6C68wA4RJj2PTT
-        lvvMya/9y6KSJGDxr+WprGT2pA==
-X-Google-Smtp-Source: AGHT+IHZ95VAy9/7S8RkRKOXL8kFHrGKjfJWJoXp0yuxzlNt0eSXamoYyifB6bHsdqesqmrNE+3K7g==
-X-Received: by 2002:a17:90a:1a5d:b0:280:24c7:509 with SMTP id 29-20020a17090a1a5d00b0028024c70509mr13617016pjl.46.1701183327478;
-        Tue, 28 Nov 2023 06:55:27 -0800 (PST)
-Received: from anup-ubuntu-vm.localdomain ([103.97.165.210])
-        by smtp.gmail.com with ESMTPSA id u11-20020a170902e80b00b001bf11cf2e21sm10281552plg.210.2023.11.28.06.55.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 06:55:27 -0800 (PST)
-From:   Anup Patel <apatel@ventanamicro.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Anup Patel <anup@brainfault.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        devicetree@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Anup Patel <apatel@ventanamicro.com>
-Subject: [PATCH 15/15] KVM: riscv: selftests: Add Zfa extension to get-reg-list test
-Date:   Tue, 28 Nov 2023 20:23:57 +0530
-Message-Id: <20231128145357.413321-16-apatel@ventanamicro.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231128145357.413321-1-apatel@ventanamicro.com>
-References: <20231128145357.413321-1-apatel@ventanamicro.com>
+        bh=Vsh2mMUKOXR8rABG0J7/JCsvNsJy41xjQD3uPT5bxQQ=;
+        b=BbOcTguKPDSFfx9GyDY56Mj9VThL3Pz8jptujjmzjm7BxLwx4ejhgOuaf16og4sqqE
+         /ICWx5eEpE8K2jqrbCRmqpvnjMqGaJoY/FqGylqhOaqnP4viVPxlOBCMNajU50sCaSKH
+         Fw89iFffCSj+7FnmG3SJEXyNmRl3kov6BlMzc++ku61ArHQcrNcFuua6gX7myC+werep
+         7ldyZFDcW6Th1RSJFwXcqrJywgLNMxlFNHfA1FJajTynR0OY9ncyK6cV3YAj4KlW2pjo
+         6JH/mN5N1PvAI2+l7f5O3jeZZ7wlduHjDL70euov0EqvmftUx3CdwLFhwUxTr0pwVIu1
+         9lQQ==
+X-Gm-Message-State: AOJu0Yy9W3NeG7HcJvesS4D2txlCGO+G1xHA42BHVEQunQ1yi0A6z2l1
+        Ph/HKEqAOhEkGeQpikSqVSTVjNXRHqItnpZf0DSXVHH0OwVx5awp3yWhdg==
+X-Google-Smtp-Source: AGHT+IGa7uI6oT3u3fJpJBJLDKtUv6BkE/bZhI/Oz3lcbQXkUrx2pktUUQxDz/STXFo5kafOwENu7BifWcNK7JUsFF0=
+X-Received: by 2002:a17:903:4d1:b0:1cf:a032:aeff with SMTP id
+ jm17-20020a17090304d100b001cfa032aeffmr891111plb.11.1701183252371; Tue, 28
+ Nov 2023 06:54:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <00000000000029fce7060ad196ad@google.com> <20231124182844.3d304412@kernel.org>
+In-Reply-To: <20231124182844.3d304412@kernel.org>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Tue, 28 Nov 2023 15:54:00 +0100
+Message-ID: <CANp29Y77rtNrUgQA9HKcB3=bt8FrhbqUSnbZJi3_OGmTpSda6A@mail.gmail.com>
+Subject: Re: [syzbot] Monthly net report (Nov 2023)
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     syzbot <syzbot+listaba4d9d9775b9482e752@syzkaller.appspotmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The KVM RISC-V allows Zfa extension for Guest/VM so let us
-add this extension to get-reg-list test.
+On Sat, Nov 25, 2023 at 3:28=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wr=
+ote:
+>
+> On Thu, 23 Nov 2023 05:12:23 -0800 syzbot wrote:
+> > <8>  240     Yes   BUG: corrupted list in p9_fd_cancelled (2)
+> >                    https://syzkaller.appspot.com/bug?extid=3D1d26c4ed77=
+bc6c5ed5e6
+>
+> One nit - p9 is not really net.
 
-Signed-off-by: Anup Patel <apatel@ventanamicro.com>
----
- tools/testing/selftests/kvm/riscv/get-reg-list.c | 4 ++++
- 1 file changed, 4 insertions(+)
+At least it's not reflected in MAINTAINERS:
 
-diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-index df03bc511fbf..3ae919469c38 100644
---- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
-+++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-@@ -49,6 +49,7 @@ bool filter_reg(__u64 reg)
- 	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZBKC:
- 	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZBKX:
- 	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZBS:
-+	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZFA:
- 	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZFH:
- 	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZFHMIN:
- 	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICBOM:
-@@ -392,6 +393,7 @@ static const char *isa_ext_id_to_str(const char *prefix, __u64 id)
- 		KVM_ISA_EXT_ARR(ZBKC),
- 		KVM_ISA_EXT_ARR(ZBKX),
- 		KVM_ISA_EXT_ARR(ZBS),
-+		KVM_ISA_EXT_ARR(ZFA),
- 		KVM_ISA_EXT_ARR(ZFH),
- 		KVM_ISA_EXT_ARR(ZFHMIN),
- 		KVM_ISA_EXT_ARR(ZICBOM),
-@@ -796,6 +798,7 @@ KVM_ISA_EXT_SIMPLE_CONFIG(zbkb, ZBKB);
- KVM_ISA_EXT_SIMPLE_CONFIG(zbkc, ZBKC);
- KVM_ISA_EXT_SIMPLE_CONFIG(zbkx, ZBKX);
- KVM_ISA_EXT_SIMPLE_CONFIG(zbs, ZBS);
-+KVM_ISA_EXT_SIMPLE_CONFIG(zfa, ZFA);
- KVM_ISA_EXT_SIMPLE_CONFIG(zfh, ZFH);
- KVM_ISA_EXT_SIMPLE_CONFIG(zfhmin, ZFHMIN);
- KVM_ISA_EXT_SUBLIST_CONFIG(zicbom, ZICBOM);
-@@ -844,6 +847,7 @@ struct vcpu_reg_list *vcpu_configs[] = {
- 	&config_zbkc,
- 	&config_zbkx,
- 	&config_zbs,
-+	&config_zfa,
- 	&config_zfh,
- 	&config_zfhmin,
- 	&config_zicbom,
--- 
-2.34.1
+$ ./scripts/get_maintainer.pl --nom --nor ./net/9p/
+v9fs@lists.linux.dev (open list:9P FILE SYSTEM)
+netdev@vger.kernel.org (open list:NETWORKING [GENERAL])
+linux-kernel@vger.kernel.org (open list)
 
+Maybe it could be worth it to add "X: net/9p/" to "NETWORKING [GENERAL]"?
+Syzbot would then eventually also pick up the change.
+
+--=20
+Aleksandr
+
+>
+> Thanks again for restarting the reports!
+>
