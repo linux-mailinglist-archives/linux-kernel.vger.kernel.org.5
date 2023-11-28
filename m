@@ -2,62 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A80587FC18E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E10F7FC120
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346129AbjK1Pm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 10:42:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35228 "EHLO
+        id S1346023AbjK1PpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 10:45:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345899AbjK1PmZ (ORCPT
+        with ESMTP id S1345879AbjK1PpD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 10:42:25 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D6D3D4F
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 07:42:30 -0800 (PST)
-Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id EAA8966072A4;
-        Tue, 28 Nov 2023 15:42:27 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701186149;
-        bh=8chB7Hf/7fvnKT3TALs/wJ17MCLdyGBUU/ypcCPLzg4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=HeN9ra9Pi/G1Hcx6jSHDWUVSotuMs4/OcI5uZ1J3b74RroJB2xtAAmeXZyflFwzrL
-         Tz3KeKogPKEGq0wUjLRd4yS/26o7MiV5WnvY0Rnqp7h9nVKfhby+pKzj0PXRsDjMuB
-         qoeKwDIJQq6w4Bjnj1fi0Rs5hqF8GTYEgY+LUDLaELyt+r6wPhhNobDIk08+TH+qvW
-         DfrRKk9+hYZF3twU67aNyck/7WObsTCMnOQm3lKrXjRB8hONicXo3xLudASy4jEbJB
-         BAO9pLuJEqn0oHLekgJeHnsx2oiGX0pqEd5adn2wD5fM5r54Exn/0Jw4Ztn514stpB
-         dd9M9OuTz7L0A==
-Message-ID: <34b7ae7d-c4d3-4d94-a1e9-62d3d4fc6b9a@collabora.com>
-Date:   Tue, 28 Nov 2023 16:42:25 +0100
+        Tue, 28 Nov 2023 10:45:03 -0500
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B305C5
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 07:45:07 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SfmvR3PBkz6K9FF;
+        Tue, 28 Nov 2023 23:43:31 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+        by mail.maildlp.com (Postfix) with ESMTPS id 256F114025A;
+        Tue, 28 Nov 2023 23:45:05 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 28 Nov
+ 2023 15:44:48 +0000
+Date:   Tue, 28 Nov 2023 15:44:48 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Huisong Li <lihuisong@huawei.com>
+CC:     <xuwei5@hisilicon.com>, <linux-kernel@vger.kernel.org>,
+        <soc@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <arnd@arndb.de>, <krzk@kernel.org>, <sudeep.holla@arm.com>,
+        <liuyonglong@huawei.com>
+Subject: Re: [PATCH v1 3/3] soc: hisilicon: kunpeng_hccs: Support the
+ platform with PCC type3 and interrupt ack
+Message-ID: <20231128154448.00006b8f@Huawei.com>
+In-Reply-To: <20231109054526.27270-4-lihuisong@huawei.com>
+References: <20231109054526.27270-1-lihuisong@huawei.com>
+        <20231109054526.27270-4-lihuisong@huawei.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] drm/panfrost: Synchronize and disable interrupts
- before powering off
-Content-Language: en-US
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     robh@kernel.org, steven.price@arm.com,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, m.szyprowski@samsung.com,
-        krzysztof.kozlowski@linaro.org
-References: <20231128124510.391007-1-angelogioacchino.delregno@collabora.com>
- <20231128124510.391007-4-angelogioacchino.delregno@collabora.com>
- <20231128150612.17f6a095@collabora.com>
- <6c14d90f-f9e1-4af7-877e-f000b7fa1e08@collabora.com>
- <20231128163808.094a8afa@collabora.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231128163808.094a8afa@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -66,141 +56,255 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 28/11/23 16:38, Boris Brezillon ha scritto:
-> On Tue, 28 Nov 2023 16:10:43 +0100
-> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> wrote:
-> 
->> Il 28/11/23 15:06, Boris Brezillon ha scritto:
->>> On Tue, 28 Nov 2023 13:45:10 +0100
->>> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->>> wrote:
->>>    
->>>> To make sure that we don't unintentionally perform any unclocked and/or
->>>> unpowered R/W operation on GPU registers, before turning off clocks and
->>>> regulators we must make sure that no GPU, JOB or MMU ISR execution is
->>>> pending: doing that required to add a mechanism to synchronize the
->>>> interrupts on suspend.
->>>>
->>>> Add functions panfrost_{gpu,job,mmu}_suspend_irq() which will perform
->>>> interrupts masking and ISR execution synchronization, and then call
->>>> those in the panfrost_device_runtime_suspend() handler in the exact
->>>> sequence of job (may require mmu!) -> mmu -> gpu.
->>>>
->>>> As a side note, JOB and MMU suspend_irq functions needed some special
->>>> treatment: as their interrupt handlers will unmask interrupts, it was
->>>> necessary to add a bitmap for "is_suspending" which is used to address
->>>> the possible corner case of unintentional IRQ unmasking because of ISR
->>>> execution after a call to synchronize_irq().
->>>>
->>>> Of course, unmasking the interrupts is being done as part of the reset
->>>> happening during runtime_resume(): since we're anyway resuming all of
->>>> GPU, JOB, MMU, the only additional action is to zero out the newly
->>>> introduced `is_suspending` bitmap directly in the resume handler, as
->>>> to avoid adding panfrost_{job,mmu}_resume_irq() function just for
->>>> clearing own bits, especially because it currently makes way more sense
->>>> to just zero out the bitmap.
->>>>
->>>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->>>> ---
->>>>    drivers/gpu/drm/panfrost/panfrost_device.c |  4 ++++
->>>>    drivers/gpu/drm/panfrost/panfrost_device.h |  7 +++++++
->>>>    drivers/gpu/drm/panfrost/panfrost_gpu.c    |  7 +++++++
->>>>    drivers/gpu/drm/panfrost/panfrost_gpu.h    |  1 +
->>>>    drivers/gpu/drm/panfrost/panfrost_job.c    | 18 +++++++++++++++---
->>>>    drivers/gpu/drm/panfrost/panfrost_job.h    |  1 +
->>>>    drivers/gpu/drm/panfrost/panfrost_mmu.c    | 17 ++++++++++++++---
->>>>    drivers/gpu/drm/panfrost/panfrost_mmu.h    |  1 +
->>>>    8 files changed, 50 insertions(+), 6 deletions(-)
->>>>
->>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
->>>> index c90ad5ee34e7..ed34aa55a7da 100644
->>>> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
->>>> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
->>>> @@ -407,6 +407,7 @@ static int panfrost_device_runtime_resume(struct device *dev)
->>>>    {
->>>>    	struct panfrost_device *pfdev = dev_get_drvdata(dev);
->>>>    
->>>> +	bitmap_zero(pfdev->is_suspending, PANFROST_COMP_BIT_MAX);
->>>
->>> I would let each sub-block clear their bit in the reset path, since
->>> that's where the IRQs are effectively unmasked.
->>>    
->>
->>
->> Honestly I wouldn't like seeing that: the reason is that this is something that
->> is done *for* suspend/resume and only for that, while reset may be called out of
->> the suspend/resume handlers.
->>
->> I find clearing the suspend bits in the HW reset path a bit confusing, especially
->> when it is possible to avoid doing it there...
-> 
-> Well, I do think it's preferable to keep the irq_is_no_longer_suspended
-> state update where the interrupt is effectively unmasked. Note that
-> when you do a reset, the IRQ is silently suspended just after the
-> reset happens, because the xxx_INT_MASKs are restored to their default
-> value, so I do consider that clearing this bit in the reset path makes
-> sense.
-> 
+On Thu, 9 Nov 2023 13:45:26 +0800
+Huisong Li <lihuisong@huawei.com> wrote:
 
-Okay then, I can move it, no problem.
-
->>
->>>>    	panfrost_device_reset(pfdev);
->>>>    	panfrost_devfreq_resume(pfdev);
->>>>    
->>>> @@ -421,6 +422,9 @@ static int panfrost_device_runtime_suspend(struct device *dev)
->>>>    		return -EBUSY;
->>>>    
->>>>    	panfrost_devfreq_suspend(pfdev);
->>>> +	panfrost_job_suspend_irq(pfdev);
->>>> +	panfrost_mmu_suspend_irq(pfdev);
->>>> +	panfrost_gpu_suspend_irq(pfdev);
->>>>    	panfrost_gpu_power_off(pfdev);
->>>>    
->>>>    	return 0;
->>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
->>>> index 54a8aad54259..29f89f2d3679 100644
->>>> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
->>>> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
->>>> @@ -25,6 +25,12 @@ struct panfrost_perfcnt;
->>>>    #define NUM_JOB_SLOTS 3
->>>>    #define MAX_PM_DOMAINS 5
->>>>    
->>>> +enum panfrost_drv_comp_bits {
->>>> +	PANFROST_COMP_BIT_MMU,
->>>> +	PANFROST_COMP_BIT_JOB,
->>>> +	PANFROST_COMP_BIT_MAX
->>>> +};
->>>> +
->>>>    /**
->>>>     * enum panfrost_gpu_pm - Supported kernel power management features
->>>>     * @GPU_PM_CLK_DIS:  Allow disabling clocks during system suspend
->>>> @@ -109,6 +115,7 @@ struct panfrost_device {
->>>>    
->>>>    	struct panfrost_features features;
->>>>    	const struct panfrost_compatible *comp;
->>>> +	DECLARE_BITMAP(is_suspending, PANFROST_COMP_BIT_MAX);
->>>
->>> nit: Maybe s/is_suspending/suspended_irqs/, given the state remains
->>> until the device is resumed.
->>
->> If we keep the `is_suspending` name, we can use this one more generically in
->> case we ever need to, what do you think?
+> Support the platform with PCC type3 and interrupt ack.
+Probably mention this is version 2 as that's what you call it
+in the code.
 > 
-> I'm lost. Why would we want to reserve a name for something we don't
-> know about? My comment was mostly relating to the fact this bitmap
-> doesn't reflect the is_suspending state, but rather is_suspended,
-> because it remains set until the device is resumed. And we actually want
-> it to reflect the is_suspended state, so we can catch interrupts that
-> are not for us without reading regs in the hard irq handler, when the
-> GPU is suspended.
+> Signed-off-by: Huisong Li <lihuisong@huawei.com>
 
-`is_suspended` (fun story: that's the first name I gave it) looks good to me,
-the doubt I raised was about calling it `suspended_irqs` instead, as I would
-prefer to keep names "more generic", but that's just personal preference at
-this point anyway.
+Hi.
 
-Cheers,
-Angelo
+Main comment in here is that it is almost always better to use
+a version specific structure with callbacks / data etc rather than
+have instances of if (version1) do_x; else if (version2) do_y;
+
+It ends up pulling all the differences into one place + allows a
+great deal more flexibility.  See inline for details.
+
+Otherwise looks fine to me
+
+Jonathan
+
+> ---
+>  drivers/soc/hisilicon/kunpeng_hccs.c | 137 +++++++++++++++++++++------
+>  drivers/soc/hisilicon/kunpeng_hccs.h |   2 +
+>  2 files changed, 110 insertions(+), 29 deletions(-)
+> 
+> diff --git a/drivers/soc/hisilicon/kunpeng_hccs.c b/drivers/soc/hisilicon/kunpeng_hccs.c
+> index fd3ca0eb8175..96cdac7be244 100644
+> --- a/drivers/soc/hisilicon/kunpeng_hccs.c
+> +++ b/drivers/soc/hisilicon/kunpeng_hccs.c
+> @@ -38,6 +38,11 @@
+...
+
+>  
+> +static int hccs_get_device_version(struct hccs_dev *hdev)
+> +{
+> +	const struct acpi_device_id *acpi_id;
+> +
+> +	acpi_id = acpi_match_device(hdev->dev->driver->acpi_match_table,
+> +				    hdev->dev);
+
+
+Why not just have
+hdev->dev_ver = (u8)acpi_device_get_match_data(&hdev->dev);
+inline where this is called?
+
+You probably don't even need the error check as you can't get here
+without an appropriate match as the driver would never be matched.
+
+> +	if (!acpi_id) {
+> +		dev_err(hdev->dev, "get device version failed.");
+> +		return -EINVAL;
+> +	}
+> +
+> +	hdev->dev_ver = (u8)acpi_id->driver_data;
+> +	return 0;
+> +}
+> +
+
+...
+
+>  static void hccs_unregister_pcc_channel(struct hccs_dev *hdev)
+>  {
+>  	struct hccs_mbox_client_info *cl_info = &hdev->cl_info;
+> @@ -131,6 +159,11 @@ static int hccs_register_pcc_channel(struct hccs_dev *hdev)
+>  	cl->tx_block = false;
+>  	cl->knows_txdone = true;
+>  	cl->tx_done = hccs_chan_tx_done;
+> +	if (hdev->dev_ver == HCCS_HW_DEVICE_V2) {
+
+I'd prefer to see this done as data. That is, instead of having an enum
+used in the ACPI match data, have a pointer to a struct with the callback.
+Then this will become something like
+
+	hcc_info = acpi_device_get_match_data(hdev);
+	cl->rx_callback = hcc_info->rx_callback;
+	init_completion(&cl_info->done);
+
+Initializing the completion is harmless if it's not used, so just do it
+unconditionally.
+
+> +		cl->rx_callback = hccs_pcc_rx_callback;
+> +		init_completion(&cl_info->done);
+> +	}
+> +
+>  	pcc_chan = pcc_mbox_request_channel(cl, hdev->chan_id);
+>  	if (IS_ERR(pcc_chan)) {
+>  		dev_err(dev, "PPC channel request failed.\n");
+> @@ -147,10 +180,16 @@ static int hccs_register_pcc_channel(struct hccs_dev *hdev)
+>  	 */
+>  	cl_info->deadline_us =
+>  			HCCS_PCC_CMD_WAIT_RETRIES_NUM * pcc_chan->latency;
+> -	if (cl_info->mbox_chan->mbox->txdone_irq) {
+> +	if (hdev->dev_ver == HCCS_HW_DEVICE_V1 &&
+> +	    cl_info->mbox_chan->mbox->txdone_irq) {
+
+Also data in hcc_info would be better than version number based
+code flow.
+	if (hcc_info->has_txdone_irq &&
+	    cl_info->mbox_chan->mbox->rx_done_irq) {
+	....
+	} else if (!hcc_info->has_txdone_irq &&
+		   !cl_info->mbox_chan->mbox->tx_done_irq) {
+	...
+	}
+>  		dev_err(dev, "PCC IRQ in PCCT is enabled.\n");
+>  		rc = -EINVAL;
+>  		goto err_mbx_channel_free;
+> +	} else if (hdev->dev_ver == HCCS_HW_DEVICE_V2 &&
+> +		   !cl_info->mbox_chan->mbox->txdone_irq) {
+> +		dev_err(dev, "PCC IRQ in PCCT isn't supported.\n");
+> +		rc = -EINVAL;
+> +		goto err_mbx_channel_free;
+>  	}
+>  
+>  	if (pcc_chan->shmem_base_addr) {
+> @@ -175,49 +214,81 @@ static int hccs_register_pcc_channel(struct hccs_dev *hdev)
+>  static int hccs_check_chan_cmd_complete(struct hccs_dev *hdev)
+>  {
+>  	struct hccs_mbox_client_info *cl_info = &hdev->cl_info;
+> -	struct acpi_pcct_shared_memory __iomem *comm_base =
+> -							cl_info->pcc_comm_addr;
+> +	struct acpi_pcct_shared_memory __iomem *comm_base;
+> +	int ret = 0;
+>  	u16 status;
+> -	int ret;
+>  
+>  	/*
+>  	 * Poll PCC status register every 3us(delay_us) for maximum of
+>  	 * deadline_us(timeout_us) until PCC command complete bit is set(cond)
+>  	 */
+> -	ret = readw_poll_timeout(&comm_base->status, status,
+> -				 status & PCC_STATUS_CMD_COMPLETE,
+> -				 HCCS_POLL_STATUS_TIME_INTERVAL_US,
+> -				 cl_info->deadline_us);
+> -	if (unlikely(ret))
+> -		dev_err(hdev->dev, "poll PCC status failed, ret = %d.\n", ret);
+> +	if (hdev->dev_ver == HCCS_HW_DEVICE_V1) {
+
+As above. I'd prefer to see this as a call back in an info structure rather
+than code here.
+
+> +		comm_base = cl_info->pcc_comm_addr;
+> +		ret = readw_poll_timeout(&comm_base->status, status,
+> +					status & PCC_STATUS_CMD_COMPLETE,
+> +					HCCS_POLL_STATUS_TIME_INTERVAL_US,
+> +					cl_info->deadline_us);
+> +		if (unlikely(ret))
+> +			dev_err(hdev->dev, "poll PCC status failed, ret = %d.\n", ret);
+> +	} else {
+> +		if (!wait_for_completion_timeout(&cl_info->done,
+> +				usecs_to_jiffies(cl_info->deadline_us))) {
+> +			dev_err(hdev->dev, "PCC command executed timeout!\n");
+> +			ret = -ETIMEDOUT;
+> +		}
+> +	}
+>  
+>  	return ret;
+>  }
+>  
+> +static void hccs_fill_pcc_shared_mem_region(struct hccs_dev *hdev, u8 cmd,
+> +					    struct hccs_desc *desc,
+> +					    void __iomem *comm_space,
+> +					    u16 space_size)
+> +{
+> +	struct hccs_mbox_client_info *cl_info = &hdev->cl_info;
+> +	struct acpi_pcct_ext_pcc_shared_memory tmp1 = {0};
+> +	struct acpi_pcct_shared_memory tmp2 = {0};
+> +
+> +	if (hdev->dev_ver == HCCS_HW_DEVICE_V1) {
+1) tmp1 and temp2 are local to the two forks of this statement
+so pull them down here.
+2) Use c99 style struct init to make this cleaner.
+		struct acpi_pcct_shared_memory = {
+			.signature = x,
+			.command = cmd,
+		};
+
+I'd also like this to be a callback in the version specific info
+structure rather than done as an if / else here that really doesn't
+extend well if we get a lot more versions doing it differently.
+
+> +		tmp2.signature = PCC_SIGNATURE | hdev->chan_id;
+> +		tmp2.command = cmd;
+> +		tmp2.status = 0;
+> +		memcpy_toio(cl_info->pcc_comm_addr, (void *)&tmp2,
+> +			    sizeof(struct acpi_pcct_shared_memory));
+> +	} else {
+> +		tmp1.signature = PCC_SIGNATURE | hdev->chan_id;
+> +		tmp1.command = cmd;
+> +		tmp1.flags = PCC_CMD_COMPLETION_NOTIFY;
+> +		tmp1.length = HCCS_PCC_SHARE_MEM_BYTES;
+> +		memcpy_toio(cl_info->pcc_comm_addr, (void *)&tmp1,
+> +			    sizeof(struct acpi_pcct_ext_pcc_shared_memory));
+> +	}
+> +
+> +	/* Copy the message to the PCC comm space */
+> +	memcpy_toio(comm_space, (void *)desc, space_size);
+> +}
+...
+
+
+> @@ -1214,6 +1288,10 @@ static int hccs_probe(struct platform_device *pdev)
+>  	hdev->dev = &pdev->dev;
+>  	platform_set_drvdata(pdev, hdev);
+>  
+> +	rc = hccs_get_device_version(hdev);
+> +	if (rc)
+> +		return rc;
+> +
+>  	mutex_init(&hdev->lock);
+>  	rc = hccs_get_pcc_chan_id(hdev);
+>  	if (rc)
+> @@ -1251,7 +1329,8 @@ static void hccs_remove(struct platform_device *pdev)
+>  }
+>  
+>  static const struct acpi_device_id hccs_acpi_match[] = {
+> -	{ "HISI04B1"},
+> +	{ "HISI04B1", HCCS_HW_DEVICE_V1},
+> +	{ "HISI04B2", HCCS_HW_DEVICE_V2},
+>  	{ ""},
+Side comment, but 
+	{}
+So no content (rely on c initializing it to be zero filled anyway and no comma
+as we don't want anything after this point.
+
+>  };
+>  MODULE_DEVICE_TABLE(acpi, hccs_acpi_match);
+> diff --git a/drivers/soc/hisilicon/kunpeng_hccs.h b/drivers/soc/hisilicon/kunpeng_hccs.h
+> index 6012d2776028..bbb1aada0c6c 100644
+> --- a/drivers/soc/hisilicon/kunpeng_hccs.h
+> +++ b/drivers/soc/hisilicon/kunpeng_hccs.h
+> @@ -51,12 +51,14 @@ struct hccs_mbox_client_info {
+>  	struct pcc_mbox_chan *pcc_chan;
+>  	u64 deadline_us;
+>  	void __iomem *pcc_comm_addr;
+> +	struct completion done;
+>  };
+>  
+>  struct hccs_dev {
+>  	struct device *dev;
+>  	struct acpi_device *acpi_dev;
+>  	u64 caps;
+> +	u8 dev_ver;
+See above, but I'd rather see
+	const struct hcc_verspecific_info *info;
+here that encodes the differences as callbacks and data and rather than code.
+>  	u8 chip_num;
+>  	struct hccs_chip_info *chips;
+>  	u8 chan_id;
 
