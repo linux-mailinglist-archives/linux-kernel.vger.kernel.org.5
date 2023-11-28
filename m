@@ -2,830 +2,561 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 956717FC84F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:52:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A9AB7FC6AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:05:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376353AbjK1VGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 16:06:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59786 "EHLO
+        id S1346122AbjK1VEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 16:04:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346621AbjK1VGa (ORCPT
+        with ESMTP id S1343838AbjK1VEq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 16:06:30 -0500
-Received: from raptorengineering.com (mail.raptorengineering.com [23.155.224.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2686B1735;
-        Tue, 28 Nov 2023 13:06:28 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.rptsys.com (Postfix) with ESMTP id 755E482869AB;
-        Tue, 28 Nov 2023 15:00:21 -0600 (CST)
-Received: from mail.rptsys.com ([127.0.0.1])
-        by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 99nT8btp4x0f; Tue, 28 Nov 2023 15:00:19 -0600 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.rptsys.com (Postfix) with ESMTP id 6A3558286993;
-        Tue, 28 Nov 2023 15:00:19 -0600 (CST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.rptsys.com 6A3558286993
+        Tue, 28 Nov 2023 16:04:46 -0500
+Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 028EEDE
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:04:52 -0800 (PST)
+Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-1fa22326ad0so2069855fac.1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:04:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raptorengineering.com; s=B8E824E6-0BE2-11E6-931D-288C65937AAD;
-        t=1701205219; bh=MLpZRoS4K+Hbmg/mWJsiQBHYXD3iBMuaLmXA/bnnbOk=;
-        h=From:To:Date:Message-Id:MIME-Version;
-        b=TzUxT7bu/yWiyiGt9HQw9zyjB98B7CE6+Fd3at9XSyh/Ue4f/vM7esC9IUIjglPBH
-         mu1RFSyAa/Tvr1tDqM89xNx8UYLt/nrKWP5AINi9u6AclciFBmT/mhOXIbqIh3rqeh
-         9HbSBAEjp/NlETydWBzyGf/o6IWsODPr8AYkOJJw=
-X-Virus-Scanned: amavisd-new at rptsys.com
-Received: from mail.rptsys.com ([127.0.0.1])
-        by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id cQziNNk2Tcyz; Tue, 28 Nov 2023 15:00:19 -0600 (CST)
-Received: from raptor-ewks-026.2lan (5.edge.rptsys.com [23.155.224.38])
-        by mail.rptsys.com (Postfix) with ESMTPSA id D238B8286981;
-        Tue, 28 Nov 2023 15:00:18 -0600 (CST)
-From:   Shawn Anastasio <sanastasio@raptorengineering.com>
-To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee@kernel.org>,
-        Georgy Yakovlev <Georgy.Yakovlev@sony.com>
-Cc:     Timothy Pearson <tpearson@raptorengineering.com>,
-        Shawn Anastasio <sanastasio@raptorengineering.com>
-Subject: [PATCH v2 2/2] mfd: sie-cronos-cpld: Add driver for Sony Cronos CPLD
-Date:   Tue, 28 Nov 2023 15:00:09 -0600
-Message-Id: <05fae4dfc455e44a9eda7da447e86a3f34ee395e.1701203916.git.sanastasio@raptorengineering.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1701203916.git.sanastasio@raptorengineering.com>
-References: <cover.1701203916.git.sanastasio@raptorengineering.com>
+        d=gmail.com; s=20230601; t=1701205491; x=1701810291; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=B2+az4m4rNbNX28kjrkVuqLIyDrask3+419UkoIJP3s=;
+        b=VIZtioMfBotkVuw0RVAF3oYa98vE4fju6I0xdeKejpgv4Aw5dOWe9CVA5cn+MLdmMi
+         UWOSxmw1UTpRNuR6hpncrbnkFoEK18wRaSw5EfYRZuaHzIQBQNWcL6zfaw05EXcwVeDU
+         m915ro6gXiMzuvWyb+QL1w5mw4BBzP5zPSzfxeWyvgNcuaTfw/ddTfpu8jcQV2xCHQKv
+         Q9OpeD2KljRACPrfAeNDo/+z8MopkFfXk47msu5mFJdqJMnCiN1Lgs96NSJNW5jL0iUd
+         z0LcWUs1lUROd4uqIhyjkOkDgWvlfco86yjuVZGZbvnfRWONTUwykdsXhK2UVxsHmSxO
+         f+cA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701205491; x=1701810291;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=B2+az4m4rNbNX28kjrkVuqLIyDrask3+419UkoIJP3s=;
+        b=kMtfw1rnn/BFdjgfYZZ5X01FCn0baXLxeEs4T2H1/GXyjzcsB+mrX8JbNMN9cWCPFa
+         dYhj/491aYxFnj2GvWLjmMJcsVpqHBUmJa32wm0VEsIlSFVIQ4DthygZbiPnt+ql3cNL
+         pdqgU0Ld3L3ED6jnjbsGQ5OS29WiwQg9U8wU1duqYdsF8lBbG+Qr7tPm2xX1WAtJZPyD
+         +A6hgA7m9HEx4Pi0WQIhAk9yZbYKebebamZIwKamVw4yF5jZiXb+sQMhx+2qRao7b34O
+         ln2fCrouGS+onb8RvvWqi+t0sgWspiF1TnvmFLjsajn9Zzqs7uvU9imhvCuZ8mDg4N4B
+         BJXA==
+X-Gm-Message-State: AOJu0YxbRZPlib5jL9REqYrakGE57fbBnmuSSSntPa7Lklg8hZ8u9BEs
+        cUWcqrw6lTn+UnHwLR6QvzCgplBrdvU=
+X-Google-Smtp-Source: AGHT+IE+jcano+NXVlT5zLyJi002XKm3KQ1V8/gb4fjrkTG+8VRCxqfJGY9cguAp0tdjMwQqrhZArA==
+X-Received: by 2002:a05:6870:658b:b0:1fa:3e11:711a with SMTP id fp11-20020a056870658b00b001fa3e11711amr11941878oab.33.1701205490542;
+        Tue, 28 Nov 2023 13:04:50 -0800 (PST)
+Received: from localhost.localdomain ([143.166.81.254])
+        by smtp.gmail.com with ESMTPSA id pp23-20020a0568709d1700b001fa619a3fd9sm953864oab.52.2023.11.28.13.04.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 13:04:49 -0800 (PST)
+From:   Stuart Hayes <stuart.w.hayes@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Tanjore Suresh <tansuresh@google.com>,
+        Martin Belanger <Martin.Belanger@dell.com>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        Keith Busch <kbusch@kernel.org>, Lukas Wunner <lukas@wunner.de>
+Cc:     Stuart Hayes <stuart.w.hayes@gmail.com>
+Subject: [PATCH v5] driver core: shut down devices asynchronously
+Date:   Tue, 28 Nov 2023 15:04:36 -0600
+Message-Id: <20231128210436.506510-1-stuart.w.hayes@gmail.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Timothy Pearson <tpearson@raptorengineering.com>
+Add code to shut down devices asynchronously, while ensuring that each
+device is shut down before its parent, and allowing devices that share a
+driver to be shutdown one at a time if necessary.
 
-The Sony Cronos Platform Controller CPLD is a multi-purpose platform
-controller that provides both a watchdog timer and an LED controller for
-the Sony Interactive Entertainment Cronos x86 server platform. As both
-functions are provided by the same CPLD, a multi-function device is
-exposed as the parent of both functions.
+Add /sys/kernel/async_shutdown to allow user control of this feature:
 
-Signed-off-by: Timothy Pearson <tpearson@raptorengineering.com>
-Signed-off-by: Shawn Anastasio <sanastasio@raptorengineering.com>
+  off:	shut down all devices synchronously (default)
+  on:	shut down all devices asynchronously, unless disabled by the driver
+	(driver opt-out)
+  safe: shut down all devices synchronously, unless driver prefers async
+	shutdown, or device has no driver or an unregistered driver (driver
+	opt-in)
+
+Add an async_shutdown sysfs attribute to drivers to allow users to see and
+change driver opt-in/opt-out, with values:
+
+ async:   driver opt-in to async device shutdown (devices will be shut down
+          asynchronously if async_shutdown is "on" or "safe")
+ sync:    driver opt-out of async device shutdown (devices will always be
+          shut down synchronously)
+ default: devices will be shutdown asynchronously if async_shutdown is "on"
+
+This can dramatically reduce system shutdown/reboot time on systems that
+have multiple devices that take many seconds to shut down (like certain
+NVMe drives). On one system tested, the shutdown time went from 11 minutes
+without this patch to 55 seconds with the patch.
+
+Signed-off-by: Stuart Hayes <stuart.w.hayes@gmail.com>
 ---
-Changes in v2:
-  - Change SIE to Sony (SIE's parent company) to be more consistent
-  with how other subsidiaries are treated in the kernel
-  - Fix build issue under !CONFIG_OF discovered by kernel test robot
-  by guarding definition of `cronos_cpld_dt_ids` as is done in other
-  drivers.
-
- MAINTAINERS                               |   7 +
- drivers/mfd/Kconfig                       |  11 +
- drivers/mfd/Makefile                      |   1 +
- drivers/mfd/sony-cronos-cpld.c            | 591 ++++++++++++++++++++++
- include/linux/mfd/sony/cronos/core.h      |  17 +
- include/linux/mfd/sony/cronos/registers.h |  59 +++
- 6 files changed, 686 insertions(+)
- create mode 100644 drivers/mfd/sony-cronos-cpld.c
- create mode 100644 include/linux/mfd/sony/cronos/core.h
- create mode 100644 include/linux/mfd/sony/cronos/registers.h
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 6c4cce45a09d..623681826820 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -19932,6 +19932,13 @@ S:	Maintained
- F:	drivers/ssb/
- F:	include/linux/ssb/
-
-+SONY CRONOS CPLD DRIVER
-+M:	Georgy Yakovlev <Georgy.Yakovlev@sony.com>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/mfd/sony,cronos-cpld.yaml
-+F:	drivers/mfd/sony-cronos-cpld.c
-+F:	include/linux/mfd/sony/cronos/
-+
- SONY IMX208 SENSOR DRIVER
- M:	Sakari Ailus <sakari.ailus@linux.intel.com>
- L:	linux-media@vger.kernel.org
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index 90ce58fd629e..27f28fbbc7cc 100644
---- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -2217,6 +2217,17 @@ config MFD_QCOM_PM8008
- 	  under it in the device tree. Additional drivers must be enabled in
- 	  order to use the functionality of the device.
-
-+config MFD_SONY_CRONOS_CPLD
-+	tristate "Sony Cronos CPLD Support"
-+	select MFD_CORE
-+	select REGMAP_I2C
-+	depends on I2C
-+	help
-+      Support for the Sony Cronos system control CPLDs. Additional drivers must
-+      be enabled in order to use the functionality of the device, including LED
-+      control and the system watchdog. The controller itself is a custom design
-+      tailored to the specific needs of the Sony Cronos hardware platform.
-+
- menu "Multimedia Capabilities Port drivers"
- 	depends on ARCH_SA1100
-
-diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index c66f07edcd0e..be9974f0fe9c 100644
---- a/drivers/mfd/Makefile
-+++ b/drivers/mfd/Makefile
-@@ -284,3 +284,4 @@ rsmu-i2c-objs			:= rsmu_core.o rsmu_i2c.o
- rsmu-spi-objs			:= rsmu_core.o rsmu_spi.o
- obj-$(CONFIG_MFD_RSMU_I2C)	+= rsmu-i2c.o
- obj-$(CONFIG_MFD_RSMU_SPI)	+= rsmu-spi.o
-+obj-$(CONFIG_MFD_SONY_CRONOS_CPLD)	+= sony-cronos-cpld.o
-diff --git a/drivers/mfd/sony-cronos-cpld.c b/drivers/mfd/sony-cronos-cpld.c
-new file mode 100644
-index 000000000000..569793cd9697
---- /dev/null
-+++ b/drivers/mfd/sony-cronos-cpld.c
-@@ -0,0 +1,591 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * I2C device driver for Sony Cronos CPLDs
-+ * Copyright (C) 2015-2017  Dialog Semiconductor
-+ * Copyright (C) 2022  Raptor Engineering, LLC
+v1->v2: rewritten using kernel async code (suggested by Lukas Wunner)
+v2->v3: removed recursive functions to schedule children to be shutdown
+          before parents, since existing device_shutdown loop will already
+          do this
+v3->v4: bug fix (used "parent" not "dev->parent", in device_shutdown)
+v4->v5: change code to use cookies for synchronization rather than async
+          domains
+        allow async shutdown to be disabled via sysfs, and allow driver
+          opt-in or opt-out of async shutdown (when not disabled), with
+          ability to control driver opt-in/opt-out via sysfs
+---
+diff --git a/drivers/base/base.h b/drivers/base/base.h
+index eb4c0ace9242..8b87947a79b5 100644
+--- a/drivers/base/base.h
++++ b/drivers/base/base.h
+@@ -11,6 +11,7 @@
+  *
+  */
+ #include <linux/notifier.h>
++#include <linux/async.h>
+ 
+ /**
+  * struct subsys_private - structure to hold the private to the driver core portions of the bus_type/class structure.
+@@ -75,12 +76,21 @@ static inline void subsys_put(struct subsys_private *sp)
+ 
+ struct subsys_private *class_to_subsys(const struct class *class);
+ 
++/**
++ * struct driver_private - structure to hold the private to the driver core portions of the driver
++ * structure.
++ *
++ * @shutdown_cookie - cookie used to synchronize shutdown of devices used by this driver, used when
++ *                    async device shutdown is enabled system-wide, but not allowed for devices
++ *                    using this driver
 + */
-+
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/device.h>
-+#include <linux/interrupt.h>
-+#include <linux/regmap.h>
-+#include <linux/mfd/core.h>
-+#include <linux/i2c.h>
-+#include <linux/mfd/sony/cronos/core.h>
-+#include <linux/mfd/sony/cronos/registers.h>
-+
-+static struct resource cronos_wdt_resources[] = {
-+};
-+
-+static struct resource cronos_led_resources[] = {
-+};
-+
-+static const struct mfd_cell cronos_cpld_devs[] = {
-+	{
-+		.name          = "cronos-watchdog",
-+		.num_resources = ARRAY_SIZE(cronos_wdt_resources),
-+		.resources     = cronos_wdt_resources,
-+		.of_compatible = "sony,cronos-watchdog",
-+	},
-+	{
-+		.name          = "cronos-leds",
-+		.id            = 1,
-+		.num_resources = ARRAY_SIZE(cronos_led_resources),
-+		.resources     = cronos_led_resources,
-+		.of_compatible = "sony,cronos-leds",
-+	},
-+};
-+
-+static ssize_t payload_power_show(struct device *dev, struct device_attribute *attr, char *buf)
+ struct driver_private {
+ 	struct kobject kobj;
+ 	struct klist klist_devices;
+ 	struct klist_node knode_bus;
+ 	struct module_kobject *mkobj;
+ 	struct device_driver *driver;
++	async_cookie_t shutdown_cookie;
+ };
+ #define to_driver(obj) container_of(obj, struct driver_private, kobj)
+ 
+@@ -97,6 +107,7 @@ struct driver_private {
+  *	the device; typically because it depends on another driver getting
+  *	probed first.
+  * @async_driver - pointer to device driver awaiting probe via async_probe
++ * @shutdown_cookie - cookie used during async shutdown to ensure correct shutdown ordering.
+  * @device - pointer back to the struct device that this structure is
+  * associated with.
+  * @dead - This device is currently either in the process of or has been
+@@ -114,6 +125,7 @@ struct device_private {
+ 	struct list_head deferred_probe;
+ 	struct device_driver *async_driver;
+ 	char *deferred_probe_reason;
++	async_cookie_t shutdown_cookie;
+ 	struct device *device;
+ 	u8 dead:1;
+ };
+diff --git a/drivers/base/bus.c b/drivers/base/bus.c
+index 84a21084d67d..7aac9580945d 100644
+--- a/drivers/base/bus.c
++++ b/drivers/base/bus.c
+@@ -10,6 +10,7 @@
+  */
+ 
+ #include <linux/async.h>
++#include <linux/capability.h>
+ #include <linux/device/bus.h>
+ #include <linux/device.h>
+ #include <linux/module.h>
+@@ -635,6 +636,46 @@ static ssize_t uevent_store(struct device_driver *drv, const char *buf,
+ }
+ static DRIVER_ATTR_WO(uevent);
+ 
++static ssize_t async_shutdown_show(struct device_driver *drv, char *buf)
 +{
-+	unsigned int payloadpower_val = 0;
-+	int ret = -EIO;
-+	struct sony_cronos_cpld *chip = dev_get_drvdata(dev);
-+
-+	ret = regmap_read(chip->regmap, CRONOS_CPLD_PAYLOAD_POWER_CTL_REG, &payloadpower_val);
-+	if (ret < 0)
-+		return ret;
-+
-+	return snprintf(buf, PAGE_SIZE, "0x%02x\n", payloadpower_val);
-+}
-+
-+static ssize_t payload_power_store(struct device *dev,
-+				   struct device_attribute *attr,
-+				   const char *buf, size_t len)
-+{
-+	u8 val = 0;
-+	int ret = -EIO;
-+	struct sony_cronos_cpld *chip = dev_get_drvdata(dev);
-+
-+	if (kstrtou8(buf, 0, &val))
-+		return -EINVAL;
-+
-+	ret = regmap_write(chip->regmap, CRONOS_CPLD_PAYLOAD_POWER_CTL_REG, val);
-+	if (ret) {
-+		dev_err(dev, "Failed to write value 0x%02x to address 0x%02x",
-+			val, CRONOS_CPLD_PAYLOAD_POWER_CTL_REG);
-+		return ret;
-+	}
-+	return len;
-+}
-+
-+
-+static ssize_t bmc_flash_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	unsigned int bmcflash_val = 0;
-+	int ret = -EIO;
-+	struct sony_cronos_cpld *chip = dev_get_drvdata(dev);
-+
-+	ret = regmap_read(chip->regmap, CRONOS_CPLD_BMC_BOOT_FLASH_SELECT_REG, &bmcflash_val);
-+	if (ret < 0)
-+		return ret;
-+
-+	return snprintf(buf, PAGE_SIZE, "0x%02x\n", bmcflash_val);
-+}
-+
-+static ssize_t bmc_flash_store(struct device *dev,
-+			       struct device_attribute *attr,
-+			       const char *buf, size_t len)
-+{
-+	u8 val = 0;
-+	int ret = -EIO;
-+	struct sony_cronos_cpld *chip = dev_get_drvdata(dev);
-+
-+	if (kstrtou8(buf, 0, &val))
-+		return -EINVAL;
-+
-+	ret = regmap_write(chip->regmap, CRONOS_CPLD_BMC_BOOT_FLASH_SELECT_REG, val);
-+	if (ret) {
-+		dev_err(dev, "Failed to write value 0x%02x to address 0x%02x",
-+			val, CRONOS_CPLD_BMC_BOOT_FLASH_SELECT_REG);
-+		return ret;
-+	}
-+	return len;
-+}
-+
-+
-+static ssize_t switch_reset_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	unsigned int switchreset_val = 0;
-+	int ret = -EIO;
-+	struct sony_cronos_cpld *chip = dev_get_drvdata(dev);
-+
-+	ret = regmap_read(chip->regmap, CRONOS_CPLD_SWITCH_RESET_CMD_REG, &switchreset_val);
-+	if (ret < 0)
-+		return ret;
-+
-+	return snprintf(buf, PAGE_SIZE, "0x%02x\n", switchreset_val);
-+}
-+
-+static ssize_t switch_reset_store(struct device *dev,
-+				  struct device_attribute *attr,
-+				  const char *buf, size_t len)
-+{
-+	unsigned int switchreset_val = 0;
-+	u8 val = -EINVAL;
-+	int ret = -EIO;
-+	struct sony_cronos_cpld *chip = dev_get_drvdata(dev);
-+
-+	if (kstrtou8(buf, 0, &val))
-+		return -EINVAL;
-+
-+	if (val != 1)
-+		return -EINVAL;
-+
-+	ret = regmap_read(chip->regmap, CRONOS_CPLD_SWITCH_RESET_CMD_REG, &switchreset_val);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = regmap_write(chip->regmap, CRONOS_CPLD_SWITCH_RESET_CMD_REG, switchreset_val);
-+	if (ret) {
-+		dev_err(dev, "Failed to write value 0x%02x to address 0x%02x",
-+				switchreset_val, CRONOS_CPLD_SWITCH_RESET_CMD_REG);
-+		return ret;
-+	}
-+	return len;
-+}
-+
-+
-+static ssize_t switch_flash_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	unsigned int switchflash_val = 0;
-+	int ret = -EIO;
-+	struct sony_cronos_cpld *chip = dev_get_drvdata(dev);
-+
-+	ret = regmap_read(chip->regmap, CRONOS_CPLD_SWITCH_BOOT_FLASH_SELECT_REG, &switchflash_val);
-+	if (ret < 0)
-+		return ret;
-+
-+	return snprintf(buf, PAGE_SIZE, "0x%02x\n", switchflash_val);
-+}
-+
-+static ssize_t switch_flash_store(struct device *dev,
-+				  struct device_attribute *attr,
-+				  const char *buf, size_t len)
-+{
-+	u8 val = 0;
-+	int ret = -EIO;
-+	struct sony_cronos_cpld *chip = dev_get_drvdata(dev);
-+
-+	if (kstrtou8(buf, 0, &val))
-+		return -EINVAL;
-+
-+	ret = regmap_write(chip->regmap, CRONOS_CPLD_SWITCH_BOOT_FLASH_SELECT_REG, val);
-+	if (ret) {
-+		dev_err(dev, "Failed to write value 0x%02x to address 0x%02x",
-+			val, CRONOS_CPLD_SWITCH_BOOT_FLASH_SELECT_REG);
-+		return ret;
-+	}
-+	return len;
-+}
-+
-+
-+static ssize_t uart_mux_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	unsigned int uartmux_val = 0;
-+	int ret = -EIO;
-+	struct sony_cronos_cpld *chip = dev_get_drvdata(dev);
-+
-+	ret = regmap_read(chip->regmap, CRONOS_CPLD_UART_MUX_REG, &uartmux_val);
-+	if (ret < 0)
-+		return ret;
-+
-+	return snprintf(buf, PAGE_SIZE, "0x%02x\n", uartmux_val);
-+}
-+
-+static ssize_t uart_mux_store(struct device *dev,
-+			      struct device_attribute *attr,
-+			      const char *buf, size_t len)
-+{
-+	u8 val = 0;
-+	int ret = -EIO;
-+	struct sony_cronos_cpld *chip = dev_get_drvdata(dev);
-+
-+	if (kstrtou8(buf, 0, &val))
-+		return -EINVAL;
-+
-+	ret = regmap_write(chip->regmap, CRONOS_CPLD_UART_MUX_REG, val);
-+	if (ret) {
-+		dev_err(dev, "Failed to write value 0x%02x to address 0x%02x",
-+			val, CRONOS_CPLD_UART_MUX_REG);
-+		return ret;
-+	}
-+	return len;
-+}
-+
-+
-+static ssize_t led_get_brightness(struct sony_cronos_cpld *chip, unsigned int reg, char *buf)
-+{
-+	unsigned int brightness_val;
-+	int ret = -EIO;
-+
-+	ret = regmap_read(chip->regmap, reg, &brightness_val);
-+	if (ret != 0)
-+		return ret;
-+
-+	return snprintf(buf, PAGE_SIZE, "0x%02x\n", brightness_val);
-+}
-+
-+static ssize_t led_set_brightness(struct sony_cronos_cpld *chip, unsigned int reg, const char *buf,
-+	size_t len)
-+{
-+	u8 val = 0;
-+	int ret = -EIO;
-+
-+	if (kstrtou8(buf, 0, &val))
-+		return -EINVAL;
-+
-+	ret = regmap_update_bits(chip->regmap, reg, CRONOS_CPLD_LEDS_BRIGHTNESS_SET_MASK, val);
-+	if (ret) {
-+		dev_err(chip->dev, "Failed to write value 0x%02x to address 0x%02x", val, reg);
-+		return ret;
-+	}
-+	return len;
-+}
-+
-+static ssize_t brightness_red_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	struct sony_cronos_cpld *chip = dev_get_drvdata(dev);
-+
-+	return led_get_brightness(chip, CRONOS_CPLD_BRIGHTNESS_RED_REG, buf);
-+}
-+
-+static ssize_t brightness_red_store(struct device *dev,
-+				    struct device_attribute *attr,
-+				    const char *buf, size_t len)
-+{
-+	struct sony_cronos_cpld *chip = dev_get_drvdata(dev);
-+
-+	return led_set_brightness(chip, CRONOS_CPLD_BRIGHTNESS_RED_REG, buf, len);
-+}
-+
-+static ssize_t brightness_green_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	struct sony_cronos_cpld *chip = dev_get_drvdata(dev);
-+
-+	return led_get_brightness(chip, CRONOS_CPLD_BRIGHTNESS_GREEN_REG, buf);
-+}
-+
-+static ssize_t brightness_green_store(struct device *dev,
-+				    struct device_attribute *attr,
-+				    const char *buf, size_t len)
-+{
-+	struct sony_cronos_cpld *chip = dev_get_drvdata(dev);
-+
-+	return led_set_brightness(chip, CRONOS_CPLD_BRIGHTNESS_GREEN_REG, buf, len);
-+}
-+
-+static ssize_t brightness_blue_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	struct sony_cronos_cpld *chip = dev_get_drvdata(dev);
-+
-+	return led_get_brightness(chip, CRONOS_CPLD_BRIGHTNESS_BLUE_REG, buf);
-+}
-+
-+static ssize_t brightness_blue_store(struct device *dev,
-+				    struct device_attribute *attr,
-+				    const char *buf, size_t len)
-+{
-+	struct sony_cronos_cpld *chip = dev_get_drvdata(dev);
-+
-+	return led_set_brightness(chip, CRONOS_CPLD_BRIGHTNESS_BLUE_REG, buf, len);
-+}
-+
-+
-+static ssize_t revision_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	u16 revision = 0;
-+	int ret = -EIO;
-+	struct sony_cronos_cpld *chip = dev_get_drvdata(dev);
-+
-+	ret = regmap_bulk_read(chip->regmap, CRONOS_CPLD_REVISION_LOW_REG, &revision, 2);
-+	if (ret)
-+		return -EIO;
-+
-+	return snprintf(buf, PAGE_SIZE, "0x%04x\n", revision);
-+}
-+
-+static ssize_t device_id_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	u16 device_id = 0;
-+	int ret = -EIO;
-+	struct sony_cronos_cpld *chip = dev_get_drvdata(dev);
-+
-+	ret = regmap_bulk_read(chip->regmap, CRONOS_CPLD_DEVICE_ID_LOW_REG, &device_id, 2);
-+	if (ret)
-+		return -EIO;
-+
-+	return snprintf(buf, PAGE_SIZE, "0x%04x\n", device_id);
-+}
-+
-+static ssize_t bmc_mac_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	u8 bmc_mac[6];
-+	int ret = -EIO;
-+	struct sony_cronos_cpld *chip = dev_get_drvdata(dev);
-+
-+	ret = regmap_bulk_read(chip->regmap, CRONOS_CPLD_BMC_MAC_LOW_REG, bmc_mac, 6);
-+	if (ret)
-+		return -EIO;
-+
-+	return snprintf(buf, PAGE_SIZE, "%pM\n", bmc_mac);
-+}
-+
-+static ssize_t status_2_show(struct device *dev, struct device_attribute *attr, char *buf)
-+{
-+	unsigned int last_boot = 0;
-+	int ret = -EIO;
-+	struct sony_cronos_cpld *chip = dev_get_drvdata(dev);
-+
-+	ret = regmap_read(chip->regmap, CRONOS_CPLD_STATUS_2_REG, &last_boot);
-+	if (ret < 0)
-+		return ret;
-+
-+	return snprintf(buf, PAGE_SIZE, "0x%02x\n", last_boot);
-+}
-+
-+
-+static DEVICE_ATTR_RO(revision);
-+static DEVICE_ATTR_RO(device_id);
-+static DEVICE_ATTR_RO(bmc_mac);
-+static DEVICE_ATTR_RO(status_2);
-+
-+static DEVICE_ATTR_RW(uart_mux);
-+static DEVICE_ATTR_RW(switch_flash);
-+static DEVICE_ATTR_RW(switch_reset);
-+static DEVICE_ATTR_RW(bmc_flash);
-+static DEVICE_ATTR_RW(payload_power);
-+
-+static DEVICE_ATTR_RW(brightness_red);
-+static DEVICE_ATTR_RW(brightness_green);
-+static DEVICE_ATTR_RW(brightness_blue);
-+static struct attribute *cronos_cpld_sysfs_entries[] = {
-+	&dev_attr_revision.attr,
-+	&dev_attr_device_id.attr,
-+	&dev_attr_bmc_mac.attr,
-+	&dev_attr_status_2.attr,
-+	&dev_attr_uart_mux.attr,
-+	&dev_attr_switch_flash.attr,
-+	&dev_attr_switch_reset.attr,
-+	&dev_attr_bmc_flash.attr,
-+	&dev_attr_payload_power.attr,
-+	&dev_attr_brightness_red.attr,
-+	&dev_attr_brightness_green.attr,
-+	&dev_attr_brightness_blue.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group cronos_cpld_attr_group = {
-+	.attrs	= cronos_cpld_sysfs_entries,
-+};
-+
-+static int sony_cronos_get_device_type(struct sony_cronos_cpld *chip)
-+{
-+	int device_id;
-+	int byte;
-+	int ret;
-+
-+	ret = regmap_read(chip->regmap, CRONOS_CPLD_DEVICE_ID_HIGH_REG, &byte);
-+	if (ret < 0) {
-+		dev_err(chip->dev, "Cannot read chip ID.\n");
-+		return -EIO;
-+	}
-+	device_id = byte << 8;
-+	ret = regmap_read(chip->regmap, CRONOS_CPLD_DEVICE_ID_LOW_REG, &byte);
-+	if (ret < 0) {
-+		dev_err(chip->dev, "Cannot read chip ID.\n");
-+		return -EIO;
-+	}
-+	device_id |= byte;
-+	if (device_id != CRONOS_CPLD_DEVICE_ID) {
-+		dev_err(chip->dev, "Invalid device ID: 0x%04x\n", device_id);
-+		return -ENODEV;
-+	}
-+
-+	dev_info(chip->dev,
-+		 "Device detected (device-ID: 0x%04X)\n",
-+		 device_id);
-+
-+	return ret;
-+}
-+
-+static bool cronos_cpld_is_writeable_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case CRONOS_CPLD_BRIGHTNESS_RED_REG:
-+	case CRONOS_CPLD_BRIGHTNESS_GREEN_REG:
-+	case CRONOS_CPLD_BRIGHTNESS_BLUE_REG:
-+	case CRONOS_LEDS_SMC_STATUS_REG:
-+	case CRONOS_LEDS_SWITCH_STATUS_REG:
-+	case CRONOS_LEDS_CCM1_STATUS_REG:
-+	case CRONOS_LEDS_CCM2_STATUS_REG:
-+	case CRONOS_LEDS_CCM3_STATUS_REG:
-+	case CRONOS_LEDS_CCM4_STATUS_REG:
-+	case CRONOS_LEDS_CCM_POWER_REG:
-+
-+	case CRONOS_WDT_CTL_REG:
-+	case CRONOS_WDT_CLR_REG:
-+
-+	case CRONOS_CPLD_UART_MUX_REG:
-+	case CRONOS_CPLD_SWITCH_BOOT_FLASH_SELECT_REG:
-+	case CRONOS_CPLD_SWITCH_RESET_CMD_REG:
-+	case CRONOS_CPLD_BMC_BOOT_FLASH_SELECT_REG:
-+	case CRONOS_CPLD_PAYLOAD_POWER_CTL_REG:
-+		return true;
++	char *output;
++
++	switch (drv->shutdown_type) {
++	case SHUTDOWN_DEFAULT_STRATEGY:
++		output = "default";
++		break;
++	case SHUTDOWN_PREFER_ASYNCHRONOUS:
++		output = "enabled";
++		break;
++	case SHUTDOWN_FORCE_SYNCHRONOUS:
++		output = "disabled";
++		break;
 +	default:
-+		return false;
++		output = "unknown";
 +	}
++	return sysfs_emit(buf, "%s\n", output);
 +}
 +
-+static bool cronos_cpld_is_readable_reg(struct device *dev, unsigned int reg)
++static ssize_t async_shutdown_store(struct device_driver *drv, const char *buf,
++			      size_t count)
 +{
-+	switch (reg) {
-+	case CRONOS_CPLD_REVISION_HIGH_REG:
-+	case CRONOS_CPLD_REVISION_LOW_REG:
-+	case CRONOS_CPLD_DEVICE_ID_HIGH_REG:
-+	case CRONOS_CPLD_DEVICE_ID_LOW_REG:
++	if (!capable(CAP_SYS_BOOT))
++		return -EPERM;
 +
-+	case CRONOS_CPLD_BRIGHTNESS_RED_REG:
-+	case CRONOS_CPLD_BRIGHTNESS_GREEN_REG:
-+	case CRONOS_CPLD_BRIGHTNESS_BLUE_REG:
-+	case CRONOS_LEDS_SMC_STATUS_REG:
-+	case CRONOS_LEDS_SWITCH_STATUS_REG:
-+	case CRONOS_LEDS_CCM1_STATUS_REG:
-+	case CRONOS_LEDS_CCM2_STATUS_REG:
-+	case CRONOS_LEDS_CCM3_STATUS_REG:
-+	case CRONOS_LEDS_CCM4_STATUS_REG:
-+	case CRONOS_LEDS_CCM_POWER_REG:
++	if (!strncmp(buf, "disabled", 8))
++		drv->shutdown_type = SHUTDOWN_FORCE_SYNCHRONOUS;
++	else if (!strncmp(buf, "enabled", 2))
++		drv->shutdown_type = SHUTDOWN_PREFER_ASYNCHRONOUS;
++	else if (!strncmp(buf, "default", 4))
++		drv->shutdown_type = SHUTDOWN_DEFAULT_STRATEGY;
++	else
++		return -EINVAL;
 +
-+	case CRONOS_WDT_CTL_REG:
-+	case CRONOS_WDT_CLR_REG:
++	return count;
++}
 +
-+	case CRONOS_CPLD_STATUS_2_REG:
-+	case CRONOS_CPLD_UART_MUX_REG:
-+	case CRONOS_CPLD_SWITCH_BOOT_FLASH_SELECT_REG:
-+	case CRONOS_CPLD_SWITCH_RESET_CMD_REG:
-+	case CRONOS_CPLD_BMC_BOOT_FLASH_SELECT_REG:
-+	case CRONOS_CPLD_PAYLOAD_POWER_CTL_REG:
++static DRIVER_ATTR_RW(async_shutdown);
 +
-+	case CRONOS_CPLD_BMC_MAC_LOW_REG ... CRONOS_CPLD_BMC_MAC_HIGH_REG:
-+		return true;
+ /**
+  * bus_add_driver - Add a driver to the bus.
+  * @drv: driver.
+@@ -661,6 +702,7 @@ int bus_add_driver(struct device_driver *drv)
+ 	}
+ 	klist_init(&priv->klist_devices, NULL, NULL);
+ 	priv->driver = drv;
++	priv->shutdown_cookie = 0;
+ 	drv->p = priv;
+ 	priv->kobj.kset = sp->drivers_kset;
+ 	error = kobject_init_and_add(&priv->kobj, &driver_ktype, NULL,
+@@ -696,6 +738,11 @@ int bus_add_driver(struct device_driver *drv)
+ 				__func__, drv->name);
+ 		}
+ 	}
++	error = driver_create_file(drv, &driver_attr_async_shutdown);
++	if (error) {
++		pr_err("%s: async_shutdown attr (%s) failed\n",
++			__func__, drv->name);
++	}
+ 
+ 	return 0;
+ 
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 67ba592afc77..553d3b8fafd1 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -9,6 +9,7 @@
+  */
+ 
+ #include <linux/acpi.h>
++#include <linux/async.h>
+ #include <linux/cpufreq.h>
+ #include <linux/device.h>
+ #include <linux/err.h>
+@@ -45,6 +46,64 @@ static void __fw_devlink_link_to_consumers(struct device *dev);
+ static bool fw_devlink_drv_reg_done;
+ static bool fw_devlink_best_effort;
+ 
++enum async_device_shutdown_enabled {
++	ASYNC_DEV_SHUTDOWN_DISABLED,
++	ASYNC_DEV_SHUTDOWN_SAFE,
++	ASYNC_DEV_SHUTDOWN_ENABLED,
++};
++
++static enum async_device_shutdown_enabled async_device_shutdown_enabled;
++
++static ssize_t async_device_shutdown_show(struct kobject *kobj,
++					  struct kobj_attribute *attr, char *buf)
++{
++	const char *output;
++
++	switch (async_device_shutdown_enabled) {
++	case ASYNC_DEV_SHUTDOWN_DISABLED:
++		output = "off";
++		break;
++	case ASYNC_DEV_SHUTDOWN_SAFE:
++		output = "safe";
++		break;
++	case ASYNC_DEV_SHUTDOWN_ENABLED:
++		output = "on";
++		break;
 +	default:
-+		return false;
++		output = "unknown";
 +	}
++
++	return sysfs_emit(buf, "%s\n", output);
 +}
 +
-+static bool cronos_cpld_is_volatile_reg(struct device *dev, unsigned int reg)
++static ssize_t async_device_shutdown_store(struct kobject *kobj,
++					   struct kobj_attribute *attr,
++					   const char *buf, size_t count)
 +{
-+	switch (reg) {
-+	case CRONOS_CPLD_REVISION_HIGH_REG:
-+	case CRONOS_CPLD_REVISION_LOW_REG:
++	if (!capable(CAP_SYS_BOOT))
++		return -EPERM;
 +
-+	case CRONOS_CPLD_SWITCH_BOOT_FLASH_SELECT_REG:
-+	case CRONOS_CPLD_SWITCH_RESET_CMD_REG:
-+	case CRONOS_CPLD_BMC_BOOT_FLASH_SELECT_REG:
-+	case CRONOS_CPLD_PAYLOAD_POWER_CTL_REG:
++	if (!strncmp(buf, "off", 3))
++		async_device_shutdown_enabled = ASYNC_DEV_SHUTDOWN_DISABLED;
++	else if (!strncmp(buf, "safe", 4))
++		async_device_shutdown_enabled = ASYNC_DEV_SHUTDOWN_SAFE;
++	else if (!strncmp(buf, "on", 2))
++		async_device_shutdown_enabled = ASYNC_DEV_SHUTDOWN_ENABLED;
++	else
++		return -EINVAL;
 +
-+	case CRONOS_WDT_CTL_REG:
-+	case CRONOS_WDT_CLR_REG:
-+		return true;
++	return count;
++}
++
++static struct kobj_attribute async_device_shutdown_attr = __ATTR_RW(async_device_shutdown);
++
++static int __init async_shutdown_sysfs_init(void)
++{
++	return sysfs_create_file(kernel_kobj, &async_device_shutdown_attr.attr);
++}
++
++late_initcall(async_shutdown_sysfs_init);
++
+ /**
+  * __fwnode_link_add - Create a link between two fwnode_handles.
+  * @con: Consumer end of the link.
+@@ -3474,6 +3533,7 @@ static int device_private_init(struct device *dev)
+ 	klist_init(&dev->p->klist_children, klist_children_get,
+ 		   klist_children_put);
+ 	INIT_LIST_HEAD(&dev->p->deferred_probe);
++	dev->p->shutdown_cookie = 0;
+ 	return 0;
+ }
+ 
+@@ -4719,12 +4779,112 @@ int device_change_owner(struct device *dev, kuid_t kuid, kgid_t kgid)
+ }
+ EXPORT_SYMBOL_GPL(device_change_owner);
+ 
++ASYNC_DOMAIN(sd_domain);
++async_cookie_t big_shutdown_cookie;
++
++static async_cookie_t *dev_shutdown_synchronization_cookie(struct device *dev)
++{
++
++	switch (async_device_shutdown_enabled) {
++	case ASYNC_DEV_SHUTDOWN_ENABLED:
++		if (!dev->driver)
++			return NULL;
++		/*
++		 * async unless the driver forbids it
++		 */
++		if (dev->driver->shutdown_type != SHUTDOWN_FORCE_SYNCHRONOUS)
++			return NULL;
++		break;
++	case ASYNC_DEV_SHUTDOWN_SAFE:
++		if (!dev->driver)
++			return NULL;
++		/*
++		 * async only if the driver prefers it
++		 */
++		if (dev->driver->shutdown_type == SHUTDOWN_PREFER_ASYNCHRONOUS)
++			return NULL;
++		break;
++	case ASYNC_DEV_SHUTDOWN_DISABLED:
 +	default:
-+		return false;
++		/*
++		 * synchronize everything
++		 */
++		return &big_shutdown_cookie;
 +	}
++
++	/*
++	 * synchronize with other devices with this driver
++	 */
++	if (dev->driver->p)
++		return &dev->driver->p->shutdown_cookie;
++
++	/*
++	 * device with unregistered driver
++	 */
++	return &big_shutdown_cookie;
 +}
 +
-+static struct regmap_config cronos_cpld_regmap_config = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+	.max_register = CRONOS_CPLD_REVISION_HIGH_REG,
-+	.writeable_reg = cronos_cpld_is_writeable_reg,
-+	.readable_reg = cronos_cpld_is_readable_reg,
-+	.volatile_reg = cronos_cpld_is_volatile_reg,
-+	.use_single_read = true,
-+	.use_single_write = true,
-+	.cache_type = REGCACHE_RBTREE,
-+};
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id cronos_cpld_dt_ids[] = {
-+	{ .compatible = "sony,cronos-cpld", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, cronos_cpld_dt_ids);
-+#endif
-+
-+static int sony_cronos_i2c_probe(struct i2c_client *i2c)
-+{
-+	struct sony_cronos_cpld *chip;
-+	const struct of_device_id *match;
-+	const struct mfd_cell *cell;
-+	const struct regmap_config *config;
-+	int cell_num;
-+	int ret;
-+
-+	chip = devm_kzalloc(&i2c->dev, sizeof(*chip), GFP_KERNEL);
-+	if (!chip)
-+		return -ENOMEM;
-+
-+	if (i2c->dev.of_node) {
-+		match = of_match_node(cronos_cpld_dt_ids, i2c->dev.of_node);
-+		if (!match)
-+			return -EINVAL;
-+	}
-+
-+	i2c_set_clientdata(i2c, chip);
-+	chip->dev = &i2c->dev;
-+
-+	cell = cronos_cpld_devs;
-+	cell_num = ARRAY_SIZE(cronos_cpld_devs);
-+	config = &cronos_cpld_regmap_config;
-+
-+	chip->regmap = devm_regmap_init_i2c(i2c, config);
-+	if (IS_ERR(chip->regmap)) {
-+		ret = PTR_ERR(chip->regmap);
-+		dev_err(chip->dev, "Failed to allocate register map: %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	ret = sony_cronos_get_device_type(chip);
-+	if (ret)
-+		return ret;
-+
-+	ret = mfd_add_devices(chip->dev, PLATFORM_DEVID_NONE, cell,
-+			      cell_num, NULL, 0, NULL);
-+	if (ret) {
-+		dev_err(chip->dev, "Cannot register child devices\n");
-+		return ret;
-+	}
-+
-+	/* Add sysfs */
-+	ret = sysfs_create_group(&chip->dev->kobj, &cronos_cpld_attr_group);
-+	if (ret)
-+		dev_err(chip->dev, "Failed to create sysfs entries\n");
-+
-+	return ret;
-+}
-+
-+static void sony_cronos_i2c_remove(struct i2c_client *i2c)
-+{
-+	struct sony_cronos_cpld *chip = i2c_get_clientdata(i2c);
-+
-+	sysfs_remove_group(&chip->dev->kobj, &cronos_cpld_attr_group);
-+	mfd_remove_devices(chip->dev);
-+}
-+
-+static struct i2c_driver sony_cronos_i2c_driver = {
-+	.driver = {
-+		.name = "sony-cronos",
-+		.of_match_table = of_match_ptr(cronos_cpld_dt_ids),
-+	},
-+	.probe    = sony_cronos_i2c_probe,
-+	.remove   = sony_cronos_i2c_remove,
-+};
-+
-+module_i2c_driver(sony_cronos_i2c_driver);
-+
-+MODULE_DESCRIPTION("Core device driver for sony Cronos CPLDs");
-+MODULE_AUTHOR("Raptor Engineering, LLC <support@raptorengineering.com>");
-+MODULE_LICENSE("GPL");
-diff --git a/include/linux/mfd/sony/cronos/core.h b/include/linux/mfd/sony/cronos/core.h
-new file mode 100644
-index 000000000000..6f80b90af5ca
---- /dev/null
-+++ b/include/linux/mfd/sony/cronos/core.h
-@@ -0,0 +1,17 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Copyright (C) 2015-2017  Dialog Semiconductor
-+ * Copyright (C) 2022  Raptor Engineering, LLC
++/**
++ * shutdown_device - shutdown one device
++ * @data: the pointer to the struct device to be shutdown
++ * @cookie: not used
++ *
++ * This shuts down one device, after waiting for children to finish
++ * shutdown.  This should be scheduled for any children first.
 + */
++static void shutdown_device(void *data, async_cookie_t cookie)
++{
++	struct device *dev = data;
 +
-+#ifndef __MFD_SONY_CRONOS_CORE_H__
-+#define __MFD_SONY_CRONOS_CORE_H__
++	/*
++	 * Wait for other devices to finish shutdown if needed
++	 */
++	async_synchronize_cookie_domain(dev->p->shutdown_cookie + 1, &sd_domain);
 +
-+#include <linux/mfd/sony/cronos/registers.h>
++	/*
++	 * Make sure the device is off the kset list, in the
++	 * event that dev->*->shutdown() doesn't remove it.
++	 */
++	spin_lock(&devices_kset->list_lock);
++	list_del_init(&dev->kobj.entry);
++	spin_unlock(&devices_kset->list_lock);
 +
-+struct sony_cronos_cpld {
++	/* hold lock to avoid race with probe/release */
++	if (dev->parent)
++		device_lock(dev->parent);
++	device_lock(dev);
++
++	/* Don't allow any more runtime suspends */
++	pm_runtime_get_noresume(dev);
++	pm_runtime_barrier(dev);
++
++	if (dev->class && dev->class->shutdown_pre) {
++		if (initcall_debug)
++			dev_info(dev, "shutdown_pre\n");
++		dev->class->shutdown_pre(dev);
++	}
++	if (dev->bus && dev->bus->shutdown) {
++		if (initcall_debug)
++			dev_info(dev, "shutdown\n");
++		dev->bus->shutdown(dev);
++	} else if (dev->driver && dev->driver->shutdown) {
++		if (initcall_debug)
++			dev_info(dev, "shutdown\n");
++		dev->driver->shutdown(dev);
++	}
++
++	device_unlock(dev);
++	if (dev->parent)
++		device_unlock(dev->parent);
++	put_device(dev);
++}
++
+ /**
+  * device_shutdown - call ->shutdown() on each device to shutdown.
+  */
+ void device_shutdown(void)
+ {
+-	struct device *dev, *parent;
 +	struct device *dev;
-+	struct regmap *regmap;
+ 
+ 	wait_for_device_probe();
+ 	device_block_probing();
+@@ -4733,20 +4893,16 @@ void device_shutdown(void)
+ 
+ 	spin_lock(&devices_kset->list_lock);
+ 	/*
+-	 * Walk the devices list backward, shutting down each in turn.
+-	 * Beware that device unplug events may also start pulling
++	 * Walk the devices list backward, scheduling shutdown of each in
++	 * turn. Beware that device unplug events may also start pulling
+ 	 * devices offline, even as the system is shutting down.
+ 	 */
+ 	while (!list_empty(&devices_kset->list)) {
++		async_cookie_t *dev_sdsync_cookie, cookie;
++
+ 		dev = list_entry(devices_kset->list.prev, struct device,
+ 				kobj.entry);
+ 
+-		/*
+-		 * hold reference count of device's parent to
+-		 * prevent it from being freed because parent's
+-		 * lock is to be held
+-		 */
+-		parent = get_device(dev->parent);
+ 		get_device(dev);
+ 		/*
+ 		 * Make sure the device is off the kset list, in the
+@@ -4755,40 +4911,28 @@ void device_shutdown(void)
+ 		list_del_init(&dev->kobj.entry);
+ 		spin_unlock(&devices_kset->list_lock);
+ 
+-		/* hold lock to avoid race with probe/release */
+-		if (parent)
+-			device_lock(parent);
+-		device_lock(dev);
++		/*
++		 * set cookie to ensure desired shutdown synchronization
++		 */
++		dev_sdsync_cookie = dev_shutdown_synchronization_cookie(dev);
++		if ((dev_sdsync_cookie) && (*dev_sdsync_cookie > dev->p->shutdown_cookie))
++			dev->p->shutdown_cookie = *dev_sdsync_cookie;
+ 
+-		/* Don't allow any more runtime suspends */
+-		pm_runtime_get_noresume(dev);
+-		pm_runtime_barrier(dev);
++		cookie = async_schedule_domain(shutdown_device, dev, &sd_domain);
+ 
+-		if (dev->class && dev->class->shutdown_pre) {
+-			if (initcall_debug)
+-				dev_info(dev, "shutdown_pre\n");
+-			dev->class->shutdown_pre(dev);
+-		}
+-		if (dev->bus && dev->bus->shutdown) {
+-			if (initcall_debug)
+-				dev_info(dev, "shutdown\n");
+-			dev->bus->shutdown(dev);
+-		} else if (dev->driver && dev->driver->shutdown) {
+-			if (initcall_debug)
+-				dev_info(dev, "shutdown\n");
+-			dev->driver->shutdown(dev);
+-		}
+-
+-		device_unlock(dev);
+-		if (parent)
+-			device_unlock(parent);
++		if (dev_sdsync_cookie)
++			*dev_sdsync_cookie = cookie;
+ 
+-		put_device(dev);
+-		put_device(parent);
++		/*
++		 * ensure parent devs don't get shut down before their children
++		 */
++		if (dev->parent)
++			dev->parent->p->shutdown_cookie = cookie;
+ 
+ 		spin_lock(&devices_kset->list_lock);
+ 	}
+ 	spin_unlock(&devices_kset->list_lock);
++	async_synchronize_full_domain(&sd_domain);
+ }
+ 
+ /*
+diff --git a/include/linux/device/driver.h b/include/linux/device/driver.h
+index 7738f458995f..f414c8a6f814 100644
+--- a/include/linux/device/driver.h
++++ b/include/linux/device/driver.h
+@@ -48,6 +48,12 @@ enum probe_type {
+ 	PROBE_FORCE_SYNCHRONOUS,
+ };
+ 
++enum shutdown_type {
++	SHUTDOWN_DEFAULT_STRATEGY,
++	SHUTDOWN_PREFER_ASYNCHRONOUS,
++	SHUTDOWN_FORCE_SYNCHRONOUS,
 +};
 +
-+#endif /* __MFD_SONY_CRONOS_H__ */
-diff --git a/include/linux/mfd/sony/cronos/registers.h b/include/linux/mfd/sony/cronos/registers.h
-new file mode 100644
-index 000000000000..2bcc3cf17fe5
---- /dev/null
-+++ b/include/linux/mfd/sony/cronos/registers.h
-@@ -0,0 +1,59 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Copyright (C) 2015-2017  Dialog Semiconductor
-+ * Copyright (C) 2022  Raptor Engineering, LLC
-+ */
-+
-+#ifndef __SONY_CRONOS_H__
-+#define __SONY_CRONOS_H__
-+
-+#define CRONOS_CPLD_DEVICE_ID		0x0134
-+
-+/*
-+ * Registers and control masks / values
-+ */
-+
-+#define CRONOS_CPLD_REVISION_HIGH_REG			0x73
-+#define CRONOS_CPLD_REVISION_LOW_REG			0x72
-+#define CRONOS_CPLD_DEVICE_ID_HIGH_REG			0x71
-+#define CRONOS_CPLD_DEVICE_ID_LOW_REG			0x70
-+
-+#define CRONOS_CPLD_BRIGHTNESS_RED_REG			0x17
-+#define CRONOS_CPLD_BRIGHTNESS_GREEN_REG		0x18
-+#define CRONOS_CPLD_BRIGHTNESS_BLUE_REG			0x19
-+
-+#define CRONOS_CPLD_LEDS_BRIGHTNESS_SET_MASK		0x7F
-+#define CRONOS_LEDS_MAX_BRIGHTNESS			0x7F
-+
-+#define CRONOS_LEDS_SMC_STATUS_REG			0x10
-+#define CRONOS_LEDS_SWITCH_STATUS_REG			0x11
-+
-+#define CRONOS_LEDS_CCM1_STATUS_REG			0x15
-+#define CRONOS_LEDS_CCM2_STATUS_REG			0x13
-+#define CRONOS_LEDS_CCM3_STATUS_REG			0x12
-+#define CRONOS_LEDS_CCM4_STATUS_REG			0x14
-+
-+#define CRONOS_LEDS_CCM_POWER_REG			0x16
-+
-+#define CRONOS_CPLD_UART_MUX_REG			0x0e
-+#define CRONOS_CPLD_SWITCH_BOOT_FLASH_SELECT_REG	0x00
-+#define CRONOS_CPLD_SWITCH_RESET_CMD_REG		0x01
-+#define CRONOS_CPLD_BMC_BOOT_FLASH_SELECT_REG		0x02
-+#define CRONOS_CPLD_PAYLOAD_POWER_CTL_REG		0x0a
-+#define CRONOS_CPLD_BMC_MAC_LOW_REG			0x30
-+#define CRONOS_CPLD_BMC_MAC_HIGH_REG			0x35
-+
-+#define CRONOS_WDT_CLR_REG		0x03
-+#define CRONOS_WDT_CTL_REG		0x0c
-+
-+#define CRONOS_CPLD_STATUS_2_REG	0x05
-+
-+#define CRONOS_WDT_CLR_VAL		0xc3
-+#define CRONOS_WDT_ENABLE_MASK		0x80
-+#define CRONOS_WDT_ENABLE_VAL		0x80
-+#define CRONOS_WDT_DISABLE_VAL		0x00
-+#define CRONOS_WDT_TIMEOUT_MASK		0x07
-+#define CRONOS_WDT_CTL_RESET_VAL	0x00
-+
-+
-+#endif /* __SONY_CRONOS_H__ */
---
-2.30.2
+ /**
+  * struct device_driver - The basic device driver structure
+  * @name:	Name of the device driver.
+@@ -56,6 +62,7 @@ enum probe_type {
+  * @mod_name:	Used for built-in modules.
+  * @suppress_bind_attrs: Disables bind/unbind via sysfs.
+  * @probe_type:	Type of the probe (synchronous or asynchronous) to use.
++ * @shutdown_type: Type of the shutdown (synchronous or asynchronous) to use.
+  * @of_match_table: The open firmware table.
+  * @acpi_match_table: The ACPI match table.
+  * @probe:	Called to query the existence of a specific device,
+@@ -102,6 +109,7 @@ struct device_driver {
+ 
+ 	bool suppress_bind_attrs;	/* disables bind/unbind via sysfs */
+ 	enum probe_type probe_type;
++	enum shutdown_type shutdown_type;
+ 
+ 	const struct of_device_id	*of_match_table;
+ 	const struct acpi_device_id	*acpi_match_table;
+-- 
+2.39.3
 
