@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF4E7FB10D
+	by mail.lfdr.de (Postfix) with ESMTP id 9FDAC7FB10E
 	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 06:04:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234604AbjK1EyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 23:54:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43040 "EHLO
+        id S1343508AbjK1Ey2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 23:54:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbjK1EyX (ORCPT
+        with ESMTP id S232891AbjK1EyY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 23:54:23 -0500
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696CF1A1;
-        Mon, 27 Nov 2023 20:54:29 -0800 (PST)
-Received: by mail-il1-x12e.google.com with SMTP id e9e14a558f8ab-35c86914439so13388925ab.2;
-        Mon, 27 Nov 2023 20:54:29 -0800 (PST)
+        Mon, 27 Nov 2023 23:54:24 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31F21AA;
+        Mon, 27 Nov 2023 20:54:30 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-35ba5e00dc5so20931395ab.1;
+        Mon, 27 Nov 2023 20:54:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701147269; x=1701752069; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=b55s7y8g8GjEWWisOWcT6dnxOgGgxH8qO5b8KhVk6qE=;
-        b=GVY81iCXMqx6LipJB+sU/TTO1niIQxThAp13xYdYP/oxxrpzXG8PSEmYwf2QouYcnE
-         iQKnh74CobYVEm1qmnFue9JdRh1VEl6vup7EOyE9dxa3Qqney+3svFxgN89YfC59Sfsx
-         jJngwC8egMI0nppCzjOU2AZId1uU9gorI8xfqYk7hABcmYZBqDr5gl71mL3nSc3Qcxji
-         PnPzx8WCxPeEiSuzwj3VTbvZZDiv+uFVmaC4hr7P5gaLEkRU+EAsM5bz3DxtchzW+qx4
-         y622yKUNN0g+lOXzdAsWCt/Z3RutEeDWrkwttKeUyn12e+odCM4RralwQcnUnK+yxQKE
-         HnIg==
+        d=gmail.com; s=20230601; t=1701147270; x=1701752070; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3SKlaGhSsAL25beNhK5KHJ+yWzkVMbOPMoVfUG9EKvw=;
+        b=APLgs9RD29JW/gjb+vgwGv0z+MYKtBX5ymih/2tUvwliqVg13qsNPJWmy7UyUTfbcc
+         g6WmffcPYgUcvgnVHIkLyPu2AU1IrOXzr0Gd9NJFZZLRUMbgpv213h79BPYMHbPAQTLi
+         14J8WpMbb/dMB9Xyc/mqER7IuCkJCWCYP/ya/afbZRLdpPLHAGkSTfAVrA1l3TtY3c2q
+         XaDTNnthl8HX6AogpA2p2Ti4zTp8Xt4ijEceUO/vZNYrmwuEs/MLuYN1gnw5wYhOVjZc
+         A9O7Gd7ElIb2uQH/Pyj2/RTVyXNikxo5076H9jWPmxEn7D5qkaUi4TLBgAep0y4T/ncC
+         TjNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701147269; x=1701752069;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=b55s7y8g8GjEWWisOWcT6dnxOgGgxH8qO5b8KhVk6qE=;
-        b=EG8Nnc6S8XcRWlR2li8cGolcDYdLak9QjLpoyelDtWrg7R1hEZoxvfzD8Tw7P/d4/a
-         XSJ/BvUUnathKZxFiqYNt6TnHERKyuYd3bjRKLXNzyuf5rQ4P0VoWh7+d30ZZy6B2VQV
-         TK260LgQm2DSJnvkXErzV5Wi+pWad18S3qmIbCEZPUE5xnQOfi6L+TMzDmgERiKy/mdp
-         RgSVCylGATNiDe0VFCD2mfUKu2k/tGaSPJ5Z+luvjvq4m6Ggmv91+B7PfSplcQRJjHDl
-         UlZlvV2/6vgp7tghhLIXmGde8mQNh/cF218aEYoY+BWEqHI6GRwhknIA83Z5c2L08Lo0
-         KUKw==
-X-Gm-Message-State: AOJu0YxjO/wvZSRvF2y9Ck7ue2Na7kmVJVcsoVYHKNRftfHjM3We2UWc
-        5i+kK1sLJkIjdC+oIQYNMPk=
-X-Google-Smtp-Source: AGHT+IFhiH/15Ck9qsS6ll4kOBnmnDX2P/PqYsF/LqXF6kX3cwJfGxmN44P4EiNNZJ8jCQpyV4Nhaw==
-X-Received: by 2002:a05:6e02:152e:b0:35c:b333:a853 with SMTP id i14-20020a056e02152e00b0035cb333a853mr8868900ilu.23.1701147268665;
-        Mon, 27 Nov 2023 20:54:28 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701147270; x=1701752070;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3SKlaGhSsAL25beNhK5KHJ+yWzkVMbOPMoVfUG9EKvw=;
+        b=MMKoE3Gohg5laY3NWuhukZbZdMpTHl0n56Ffpz7V9wuaMXUL/pYQX4SV/qpqF/nZ3k
+         hJB5JnY1YLOXz6IPxmKD1fF//0uGKkm0voo6TIR2NqufzekFmNd9MXbnZ4nGzBFzUK2C
+         FHsh84Kj/wtOoTthVe635TuWcqy/sDM0SPH7e0t9IrxsdAGFaAwP+e/dpbXrBA1fDwK5
+         7hRz2YUstVmuwUaDWZpim1P0MsB3NuyC1hK9V//CponSWR6AsNZdpzOVm2+R2HKLTaQ6
+         2LPqSPZxN0b1zJm5LNtTkBxj781u81BIQrnRh1EFaRI8NtgdGX9vRKDjnoWMqrPm6PiD
+         pkyA==
+X-Gm-Message-State: AOJu0Yxj6mBK/GPQsw9fJhYwcO/374XUjEhpj+u7TfzZ1E0U/xQL2rnJ
+        TdeSP8NhRuOL1jnDu8hzVj4=
+X-Google-Smtp-Source: AGHT+IH+8mU+usPNnE6Nb7VCm7UMBVeY098YDDcNFPbxmWBxiyZdGBeVDnpatUnTwox2uTSEh8Qtmw==
+X-Received: by 2002:a05:6e02:220d:b0:359:4376:6615 with SMTP id j13-20020a056e02220d00b0035943766615mr19132843ilf.30.1701147270115;
+        Mon, 27 Nov 2023 20:54:30 -0800 (PST)
 Received: from aford-System-Version.lan ([2601:447:d002:5be:5d62:b359:8b5c:90ac])
-        by smtp.gmail.com with ESMTPSA id bo33-20020a056e02342100b0035b0b05189bsm3357251ilb.38.2023.11.27.20.54.27
+        by smtp.gmail.com with ESMTPSA id bo33-20020a056e02342100b0035b0b05189bsm3357251ilb.38.2023.11.27.20.54.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 20:54:28 -0800 (PST)
+        Mon, 27 Nov 2023 20:54:29 -0800 (PST)
 From:   Adam Ford <aford173@gmail.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     aford@beaconembeded.com, Adam Ford <aford173@gmail.com>,
@@ -61,10 +62,12 @@ Cc:     aford@beaconembeded.com, Adam Ford <aford173@gmail.com>,
         Fabio Estevam <festevam@gmail.com>,
         NXP Linux Team <linux-imx@nxp.com>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] arm64: dts: imx8mm: Simplify mipi_dsi clocks
-Date:   Mon, 27 Nov 2023 22:54:13 -0600
-Message-Id: <20231128045415.210682-1-aford173@gmail.com>
+Subject: [PATCH 2/3] arm64: dts: imx8mm: Remove video_pll1 clock rate from clk node
+Date:   Mon, 27 Nov 2023 22:54:14 -0600
+Message-Id: <20231128045415.210682-2-aford173@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231128045415.210682-1-aford173@gmail.com>
+References: <20231128045415.210682-1-aford173@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -77,42 +80,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device tree clock structure for the mipi_dsi is
-unnecessarily redundant.
-
-The default clock parent of IMX8MM_CLK_DSI_PHY_REF is
-already IMX8MM_CLK_24M, so there is no need to set the
-parent-child relationship between them.  The default clock
-rates for IMX8MM_SYS_PLL1_266M and IMX8MM_CLK_24M are
-already defined to be 266MHz and 24MHz respectively,
-so there is no need to define those clock rates.
-
-On i.MX8M[MNP] the  samsung,pll-clock-frequency is not
-necessary, because the driver will read it from sclk_mipi
-which is also already set to 24MHz making it also
-redundant.
+There are two clock-rate assignments for video_pll1, and the
+only one it should really have belongs inside the lcdif node,
+since it's the only consumer of this clock.  Remove it from
+the clk node.
 
 Signed-off-by: Adam Ford <aford173@gmail.com>
 
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-index 738024baaa57..8d872568231d 100644
+index 8d872568231d..a3dae114c20e 100644
 --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
 +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-@@ -1151,12 +1151,8 @@ mipi_dsi: dsi@32e10000 {
- 				clocks = <&clk IMX8MM_CLK_DSI_CORE>,
- 					 <&clk IMX8MM_CLK_DSI_PHY_REF>;
- 				clock-names = "bus_clk", "sclk_mipi";
--				assigned-clocks = <&clk IMX8MM_CLK_DSI_CORE>,
--						  <&clk IMX8MM_CLK_DSI_PHY_REF>;
--				assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_266M>,
--							 <&clk IMX8MM_CLK_24M>;
--				assigned-clock-rates = <266000000>, <24000000>;
--				samsung,pll-clock-frequency = <24000000>;
-+				assigned-clocks = <&clk IMX8MM_CLK_DSI_CORE>;
-+				assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_266M>;
- 				interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
- 				power-domains = <&disp_blk_ctrl IMX8MM_DISPBLK_PD_MIPI_DSI>;
- 				status = "disabled";
+@@ -647,7 +647,6 @@ clk: clock-controller@30380000 {
+ 						<&clk IMX8MM_CLK_AUDIO_AHB>,
+ 						<&clk IMX8MM_CLK_IPG_AUDIO_ROOT>,
+ 						<&clk IMX8MM_SYS_PLL3>,
+-						<&clk IMX8MM_VIDEO_PLL1>,
+ 						<&clk IMX8MM_AUDIO_PLL1>;
+ 				assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_800M>,
+ 							 <&clk IMX8MM_ARM_PLL_OUT>,
+@@ -657,7 +656,6 @@ clk: clock-controller@30380000 {
+ 							<400000000>,
+ 							<400000000>,
+ 							<750000000>,
+-							<594000000>,
+ 							<393216000>;
+ 			};
+ 
 -- 
 2.40.1
 
