@@ -2,96 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95BEA7FC229
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C85A7FC1D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbjK1QoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 11:44:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47172 "EHLO
+        id S1344653AbjK1Qpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:45:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjK1QoQ (ORCPT
+        with ESMTP id S229716AbjK1Qp2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 11:44:16 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19BC4D6
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:44:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3042EC433C8;
-        Tue, 28 Nov 2023 16:44:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701189862;
-        bh=VXBxDQYXemPJD2OWSBAxs4OdN3/5YPb2d7fGJc3c0so=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=feZ0lBAvj+a8TYsX0HsEYspGxzNhQjd6bEAOt8m5Y2IcAG55AsIPeHaUle7U62GiO
-         h6bD/CDMiYE5nH++594r6bvD4651o+5eOZUkkxaf1mTVfcOeMKagIeWuNp7ry4a+aP
-         kR/BMdqQUQlxXYpbF+mYE3UxVeSFzdfYIHGkHvkxdFVc0iX1/uVM2HGWVJIZIBBcYF
-         kVAk7n+2kd+6S+YoOSLe69xs2K092B6hR7i/LjHE+QbDWDt7mdsFuBIVtvb3hFUiDi
-         Yhrmq6M3ibZqPQRlbZhnBqWyBSlxQOdD7uoDG63X+LMzX3gfrCNqCRvnIzwXgWlwdf
-         ai8Pvb1JYmpDQ==
-Date:   Tue, 28 Nov 2023 08:44:21 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     David Ahern <dsahern@kernel.org>,
-        Saeed Mahameed <saeed@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>,
-        Itay Avraham <itayavr@nvidia.com>,
-        linux-kernel@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH V3 2/5] misc: mlx5ctl: Add mlx5ctl misc driver
-Message-ID: <20231128084421.6321b9b2@kernel.org>
-In-Reply-To: <20231128162413.GP436702@nvidia.com>
-References: <20231121070619.9836-3-saeed@kernel.org>
-        <2023112702-postal-rumbling-003f@gregkh>
-        <20231127144017.GK436702@nvidia.com>
-        <2023112752-pastel-unholy-c63d@gregkh>
-        <20231127161732.GL436702@nvidia.com>
-        <2023112707-feline-unselect-692f@gregkh>
-        <ZWTtTjgBrNxpd9IO@x130>
-        <20231127160719.4a8b2ad1@kernel.org>
-        <20231128044628.GA8901@u2004-local>
-        <20231128065321.53d4d5bb@kernel.org>
-        <20231128162413.GP436702@nvidia.com>
+        Tue, 28 Nov 2023 11:45:28 -0500
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74791D62
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:45:34 -0800 (PST)
+Received: by mail-vs1-xe2a.google.com with SMTP id ada2fe7eead31-4629afba9acso1777451137.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:45:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701189933; x=1701794733; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ahP72vGF/z2SVVNy+HP+Vo4YpFZClknMh1TjcUEInCw=;
+        b=izBVUVjBf3tbpYQjLw1BnM6Sm4Q+C0/VLgEAgzcZn2PEwVoEmNWNvis2jUP6vEcJbC
+         zdx/DwtbvMfpM9KvX3fw69dZevxMPhawFv+5PBDx74rd+uSHqIqK5PHwBGwsk4/n2wp2
+         oZ7RleBkToH4kkvgyJ84sGe/zHR8Z39TLWyHgkG/6OkaQfptUoYRWls9EHSGF5VyQgFx
+         BYUvv7u7YOGayd3zdULN12V6627fMrXAwVFxVvOzb0Brbp77TdP8/J0g7bYBLhaMscB5
+         T6ifRLywafr7FU7uYV6mprwj88ZgN5YTQp7eRFEenD1eKS9VmApZ4KdM5Cgu9ZVID6+M
+         XTUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701189933; x=1701794733;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ahP72vGF/z2SVVNy+HP+Vo4YpFZClknMh1TjcUEInCw=;
+        b=AZ0gQ81M+ki5AmqyRAvZoqVQ0Hy9SmW1AuFJBC4tY/WvUnq84elt8W7a/8bwcmAa1p
+         ygtK1HZ9rGdVYAVlc6U4AHptQLtxJk1UBXOGQ/GX+tj3HzjsdvlaC6Vd7iQQiSe22OVL
+         SSq1+C5QSrO7XiEZ2BJCOC+0ZmJ3dd4+hNOJWpI/bHuUi+EMlp2dpFUBVOw157zaAUl7
+         qRqmkybBHkQwvH4OykXVO0qn3uCPlYTaS5tXy99FhREAeBJ52X23B+HWGZbM9plZFAYC
+         4AarBUKU0Uz4iAp1gIzrGY/PW3QgqM9ZsA2Izr0v40wqj5fCN7KoIqdk4TqAyFWfmYdO
+         TPVw==
+X-Gm-Message-State: AOJu0YxUpBAEYoZhwacTyKlH2KdCVvCBzlRQz90ZeiUTdZCihPTvgrlc
+        rKpMc5+JA3K4DcudFdJxdrZ1vFSA9YW2eIgNipPjEQ==
+X-Google-Smtp-Source: AGHT+IFnot74kFB1veZb9ps6KuKkZEz8SgPqmiLHRLNSHAH+Ekxr3lOm0ylmqvdn9tGDjz8lnKY7oEI9u6UKnMQla3Y=
+X-Received: by 2002:a05:6102:1611:b0:462:aaf0:7c98 with SMTP id
+ cu17-20020a056102161100b00462aaf07c98mr11387095vsb.19.1701189933242; Tue, 28
+ Nov 2023 08:45:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231127193716.63143-1-brgl@bgdev.pl>
+In-Reply-To: <20231127193716.63143-1-brgl@bgdev.pl>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 28 Nov 2023 17:45:22 +0100
+Message-ID: <CAMRc=MfCh5V7TE-kq1bP92QzUmv_NU_qfqKtBusrX2p161mGtA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] gpio: sysfs: fix forward declaration of struct gpio_device
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Nov 2023 12:24:13 -0400 Jason Gunthorpe wrote:
-> You said you already rejected it at the very start of this discussion
-> and linked to the video recording of the rejection discussion:
-> 
-> https://lore.kernel.org/all/20231019165055.GT3952@nvidia.com/
-> 
-> This session was specifically on the 600 FW configuration parameters
-> that mlx5 has. This is something that is done today on non-secure boot
-> systems with direct PCI access on sysfs and would be absorbed into
-> this driver on secure-boot systems. Ie nothing really changes from the
-> broader ecosystem perspective.
+On Mon, Nov 27, 2023 at 8:37=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
+>
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> The forward declaration for struct gpio_device should be provided for
+> both branches of the #ifdef.
+>
+> Fixes: 08a149c40bdb ("gpiolib: Clean up headers")
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
+>  drivers/gpio/gpiolib-sysfs.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpio/gpiolib-sysfs.h b/drivers/gpio/gpiolib-sysfs.h
+> index 0f213bdb4732..b794b396d6a5 100644
+> --- a/drivers/gpio/gpiolib-sysfs.h
+> +++ b/drivers/gpio/gpiolib-sysfs.h
+> @@ -3,10 +3,10 @@
+>  #ifndef GPIOLIB_SYSFS_H
+>  #define GPIOLIB_SYSFS_H
+>
+> -#ifdef CONFIG_GPIO_SYSFS
+> -
+>  struct gpio_device;
+>
+> +#ifdef CONFIG_GPIO_SYSFS
+> +
+>  int gpiochip_sysfs_register(struct gpio_device *gdev);
+>  void gpiochip_sysfs_unregister(struct gpio_device *gdev);
+>
+> --
+> 2.40.1
+>
 
-The question at LPC was about making devlink params completely
-transparent to the kernel. Basically added directly from FW.
-That what I was not happy about.
+I applied this. I'll make patch 2/2 part of the upcoming locking rework.
 
-You can add as many params at the driver level as you want.
-In fact I asked Saeed repeatedly to start posting all those
-params instead of complaining.
-
-> I second Dave's question - if you do not like mlx5ctl, then what is
-> your vision to solve all these user problems?
-
-Let the users complain about the user problems. Also something
-I repeatedly told Saeed. His response was something along the lines
-of users are secret, they can't post on the list, blah, blah.
-
-You know one user who is participating in this thread?
-*ME*
-While the lot of you work for vendors.
+Bart
