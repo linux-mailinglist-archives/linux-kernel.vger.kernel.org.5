@@ -2,86 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53DE37FB146
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 06:33:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBFB07FB14C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 06:34:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343526AbjK1FdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 00:33:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38444 "EHLO
+        id S234358AbjK1Fep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 00:34:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232615AbjK1FdS (ORCPT
+        with ESMTP id S232974AbjK1Fen (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 00:33:18 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C66DDE;
-        Mon, 27 Nov 2023 21:33:23 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3AS5WmWeA1823288, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3AS5WmWeA1823288
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Nov 2023 13:32:49 +0800
-Received: from RTEXMBS02.realtek.com.tw (172.21.6.95) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Tue, 28 Nov 2023 13:32:48 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Tue, 28 Nov 2023 13:32:47 +0800
-Received: from RTEXMBS01.realtek.com.tw ([fe80::540c:c8d6:1d0f:ab9f]) by
- RTEXMBS01.realtek.com.tw ([fe80::540c:c8d6:1d0f:ab9f%5]) with mapi id
- 15.01.2507.034; Tue, 28 Nov 2023 13:32:47 +0800
-From:   Ricky WU <ricky_wu@realtek.com>
-To:     "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Ricky WU <ricky_wu@realtek.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "frank.li@vivo.com" <frank.li@vivo.com>,
-        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-        "yangyingliang@huawei.com" <yangyingliang@huawei.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-Subject: [PATCH v5 0/3] Support new card reader rts5264
-Thread-Topic: [PATCH v5 0/3] Support new card reader rts5264
-Thread-Index: AQHaIbrekMPUQS8MCESu3/xB2PqzCQ==
-Date:   Tue, 28 Nov 2023 05:32:47 +0000
-Message-ID: <d166d6a70c46419f8d2670e63f542ea1@realtek.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.22.81.102]
-x-kse-serverinfo: RTEXMBS02.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+        Tue, 28 Nov 2023 00:34:43 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C84DA
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 21:34:49 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1cf7a8ab047so38876605ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 21:34:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701149689; x=1701754489; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rLD4U1IQ3GBXZUYRBdNM3XjIajDHuVM3KMdSWM11Qn4=;
+        b=Hndy02yttaR7uPciKF4mqyxHp/ZzphH50Pn8hswI1nmCCmMRiACwdOOxOCtKxpzAEm
+         rvFD7mswAZUI9zITOhIQyqdG2ChpV+lnvWbnkm1jLevUdOntKSO8G629xXhHayTJ1jfK
+         3Uei5bjNJ4tTfNr6zirGydojqZaAb7dnWkjpw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701149689; x=1701754489;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rLD4U1IQ3GBXZUYRBdNM3XjIajDHuVM3KMdSWM11Qn4=;
+        b=Vy63bPmm+GyuVYy7xnsq/C4+AB6+31wnv3uBSZjF5EelVqwbxWHYg3F86rbrr8lh4/
+         yPJSXy3BOhM1TxYsYwP4I+/Df/FcHycvkhoP6Ijoy6S6E8yoR6pTonJABsLJhPwsbbth
+         u3bHgSK/yjq3WYSMmqPcyaTs05u70NTizib4IK/6Vk2EwGVoDpAF+ta7gG3HQE75Cjoe
+         tKoKJqkxqQzt/IpEDO2bktmzlbsL3QeEnyg5YaShQy5rJyOUDRz9001xGmYKNKu3Euq+
+         msGj8lKppoyqAK2Sy+DxcyDd3wqspNjG1v1h2VrLJa4St2ICU8p3u4Wgrc4MABqUOgJc
+         96OQ==
+X-Gm-Message-State: AOJu0YzrU7T3eOPDilvOvakRFqqaEj/xqpnFahI05DUmkOmu1p8YJxeZ
+        1HL6K8S2TyBSOARZudyVafLV9A==
+X-Google-Smtp-Source: AGHT+IG9oo9og7X0ZOa7sH8woREQOsxuAEQf7/f2lcKOZ5d71WwjwmAbp9twRvlp1eqdZVSNGAhVTQ==
+X-Received: by 2002:a17:902:9a96:b0:1cf:b4ca:4e79 with SMTP id w22-20020a1709029a9600b001cfb4ca4e79mr6869880plp.17.1701149688975;
+        Mon, 27 Nov 2023 21:34:48 -0800 (PST)
+Received: from google.com (KD124209171220.ppp-bb.dion.ne.jp. [124.209.171.220])
+        by smtp.gmail.com with ESMTPSA id l13-20020a170902d34d00b001cc29b5a2aesm9280184plk.254.2023.11.27.21.34.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 21:34:48 -0800 (PST)
+Date:   Tue, 28 Nov 2023 14:34:43 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Patrick Georgi <pgeorgi@google.com>, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Stefan Reinauer <reinauer@google.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>
+Subject: Re: [PATCH] kconfig: WERROR unmet symbol dependency
+Message-ID: <20231128053443.GA6525@google.com>
+References: <20231122034753.1446513-1-senozhatsky@chromium.org>
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231122034753.1446513-1-senozhatsky@chromium.org>
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-U3VtbWFyeQ0KPT09PT09PQ0KVGhpcyBzZXJpZXMgYWRkcyBzdXBwb3J0IG5ldyBjYXJkIHJlYWRl
-ciBydHM1MjY0DQpydHM1MjY0IGNhbiBzdXBwb3J0IHNkIGV4cHJlc3MgY2FyZCANCm5ldyBkZWZp
-bml0aW9ucyBhbmQgZnVuY3Rpb25zIGRlZmluZSBpbiBuZXcgZmlsZSBydHM1MjY0LmggcnRzNTI2
-NC5jDQoNClBhdGNoIHN0cnVjdHVyZQ0KPT09PT09PT09PT09PT09DQp2NC0+djU6DQphZGQgc3Vt
-bWFyeSBmb3IgdGhpcyBzZXJpZXMNCg0KdjMtPnY0Og0Kc3BsaXQgbmV3IGRlZmluaXRpb24gcGFy
-dCB1cCBmcm9tIHNhbWUgcGF0Y2ggDQoNCnYyLT52MzoNCnNwbGl0IG1pc2MgcGFydCBhbmQgbW1j
-IHBhcnQNCg0KdjEtPnYyOg0KcmVtb3ZlIGljIHZlcnNpb24gY2hlY2sgZm9yIHJ0czUyNjQNCg0K
-Umlja3kgV3UoMyk6DQogbWlzYzogcnRzeDogYWRkIHRvIHN1cHBvcnQgbmV3IGNhcmQgcmVhZGVy
-IHJ0czUyNjQgbmV3DQogZGVmaW5pdGlvbiBhbmQgZnVuY3Rpb24NCiBtaXNjOiBydHN4OiBhZGQg
-dG8gc3VwcG9ydCBuZXcgY2FyZCByZWFkZXIgcnRzNTI2NA0KIG1tYzogcnRzeDogYWRkIHJ0czUy
-NjQgdG8gc3VwcG9ydCBzZCBleHByZXNzIGNhcmQNCg0KIGRyaXZlcnMvbWlzYy9jYXJkcmVhZGVy
-L01ha2VmaWxlICAgfCAgIDIgKy0NCiBkcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjY0LmMg
-IHwgODg2ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQogZHJpdmVycy9taXNjL2NhcmRy
-ZWFkZXIvcnRzNTI2NC5oICB8IDI3OCArKysrKysrKysNCiBkcml2ZXJzL21pc2MvY2FyZHJlYWRl
-ci9ydHN4X3Bjci5jIHwgIDMwICstDQogZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzeF9wY3Iu
-aCB8ICAgMSArDQogZHJpdmVycy9tbWMvaG9zdC9ydHN4X3BjaV9zZG1tYy5jICB8ICAxNyArLQ0K
-IGluY2x1ZGUvbGludXgvcnRzeF9wY2kuaCAgICAgICAgICAgfCAgIDggKw0KIDcgZmlsZXMgY2hh
-bmdlZCwgMTIxNSBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQ0KIGNyZWF0ZSBtb2RlIDEw
-MDY0NCBkcml2ZXJzL21pc2MvY2FyZHJlYWRlci9ydHM1MjY0LmMNCiBjcmVhdGUgbW9kZSAxMDA2
-NDQgZHJpdmVycy9taXNjL2NhcmRyZWFkZXIvcnRzNTI2NC5oDQoNCg0KLS0gDQoyLjI1LjE=
+On (23/11/22 12:47), Sergey Senozhatsky wrote:
+> When KCONFIG_WERROR env variable is set treat unmet direct
+> symbol dependency as a terminal condition (error).
+> 
+> Suggested-by: Stefan Reinauer <reinauer@google.com>
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+
+Gentle ping.
