@@ -2,53 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B46667FB95E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:24:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B34D7FB963
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:25:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344580AbjK1LYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 06:24:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55106 "EHLO
+        id S1344579AbjK1LZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 06:25:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344576AbjK1LYT (ORCPT
+        with ESMTP id S1344558AbjK1LZO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 06:24:19 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB37D59
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 03:24:24 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79166C433C7;
-        Tue, 28 Nov 2023 11:24:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701170664;
-        bh=sAPmFm7cnWhTJeY7ueW6GOIoW7e7zZ9rt09iElgE6oQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DWwDFxYQAAoifWIczDFp1o9BUBA1RFxx19MI9z3tQ9EmKDmxuTkxTcSKuTT3GlS1V
-         gVkZupihx/7ozj1uuN9wLU5TX31QkgPUJOAsFEywBfPbNbb0vb+f/KR8QmCWAsZYgr
-         XzMCeW+3wXYb8hFKEMQj5zrcp0o1VO/J1dqcuFxxJEimvB3NsYdZMFgsxwSHY/YNGo
-         jaa4WsjiQ/ZVscPrCt6DN9d0PMjBGxci24iF2LCwuKsO08kNiRaY/IB9oVcMcaD8ey
-         PlIjmbumgdt8Cu549p22WPQmZ3M0fgvJmpgGhfKFLHYLtB8umUEnIIUg51V1AcHlI3
-         Q5N8QdDFsXQgg==
-Date:   Tue, 28 Nov 2023 12:24:18 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, Jens Axboe <axboe@kernel.dk>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org
-Subject: Re: [PATCH/RFC] core/nfsd: allow kernel threads to use task_work.
-Message-ID: <20231128-arsch-halbieren-b2a95645de53@brauner>
-References: <170112272125.7109.6245462722883333440@noble.neil.brown.name>
+        Tue, 28 Nov 2023 06:25:14 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5812FD6;
+        Tue, 28 Nov 2023 03:25:20 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-54af0eca12dso5617002a12.3;
+        Tue, 28 Nov 2023 03:25:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701170719; x=1701775519; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NNUOJ8uqp2dGRLuoBkbadBA/67h+j2C/uKAs+8CYKXM=;
+        b=cAE7czg6I3oNenklweRaFBjEdrf+2YjUL3e3znEXmQ3+sxR2VTF3qAdLi2p3tySGeA
+         MB6IQd14yIhvlt/3JwhHJ6jRyOLBBdnSWphjpR4+TrC/wlkH4kno93yNerevUhhcwtFD
+         ltE0ryzwVLkeZClWZoAe6qp6pBDt8UfxlDQrlp+/YzqSiiWHWBod8/2M0JjJUVX0R958
+         mt13vNhBFPEoGr17cPhuiMQ8vBKV3bDKqpRRsxy7S/kQMFj4p8fmIL+EQyfuWcnJOPEc
+         MMxIhnA1hGL88vJ9yGx3jW8+bhI9nIbyvbKpL7kPbT7MjRAZTD/KEe5xtZlwl8EIcv1y
+         sJGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701170719; x=1701775519;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NNUOJ8uqp2dGRLuoBkbadBA/67h+j2C/uKAs+8CYKXM=;
+        b=Je81wdYKviKlHsQ8ttWJNcQ6NeZTvih1vRvKakTFFuOd6JFb05KZKm5NR5H6frH18e
+         4jZHmYKERWnYE2xHhrXJehshiaE7kGUn7k3RFKIwc9FNy5jDLb+qxavUld8CE9IqAUXW
+         7XGr/47AGHAV7G5oNsGzn0otmfRuBCAS961kOHRT4xuwLKMGLGwX8SOq/I0MO/T7qDBo
+         ayVpyECjrlaP9u1rnXE4Ivm/PNmQBMJyr31mA55H/jez6DIjd7yC+POVdp6QJnEEQrUP
+         fxsb2N216sgxrH3GBTFV11S2Ec1GGb2rwR4pn7R3Bvw1s5A5POuThZNBmL0qvQazCemL
+         SQfg==
+X-Gm-Message-State: AOJu0Yw6AoLnQNrBVMQ6QSKj6WZefZMGTaShPNW5YTspSrwINVJrkBbr
+        MfncQVECKgoBvFZ7ouhmxao=
+X-Google-Smtp-Source: AGHT+IHqbMoYr9M/PBSf9Q1XSD3aTt9QqOplQiVgAE1r6Wwb8HV4II+bQf9Ppd8QDWo6j6Q7X3fGSg==
+X-Received: by 2002:a17:906:7691:b0:a04:837e:87af with SMTP id o17-20020a170906769100b00a04837e87afmr11132340ejm.33.1701170718549;
+        Tue, 28 Nov 2023 03:25:18 -0800 (PST)
+Received: from orome.fritz.box (p200300e41f0fa600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f0f:a600:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id pw11-20020a17090720ab00b00a0f1025b17asm2417847ejb.130.2023.11.28.03.25.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 03:25:18 -0800 (PST)
+Date:   Tue, 28 Nov 2023 12:25:16 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        linux-kernel@vger.kernel.org, Baolu Lu <baolu.lu@linux.intel.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>, iommu@lists.linux.dev,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v2] iommu/tegra-smmu: drop error checking for
+ debugfs_create_dir()
+Message-ID: <ZWXOHI48GyIJsdnT@orome.fritz.box>
+References: <20231025152609.2042815-1-dario.binacchi@amarulasolutions.com>
+ <ZWRhDMgPCjP_hlZW@8bytes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="nNpisfqc0N5bJikl"
 Content-Disposition: inline
-In-Reply-To: <170112272125.7109.6245462722883333440@noble.neil.brown.name>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+In-Reply-To: <ZWRhDMgPCjP_hlZW@8bytes.org>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,156 +81,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 09:05:21AM +1100, NeilBrown wrote:
-> 
-> I have evidence from a customer site of 256 nfsd threads adding files to
-> delayed_fput_lists nearly twice as fast they are retired by a single
-> work-queue thread running delayed_fput().  As you might imagine this
-> does not end well (20 million files in the queue at the time a snapshot
-> was taken for analysis).
-> 
-> While this might point to a problem with the filesystem not handling the
-> final close efficiently, such problems should only hurt throughput, not
-> lead to memory exhaustion.
-> 
-> For normal threads, the thread that closes the file also calls the
-> final fput so there is natural rate limiting preventing excessive growth
-> in the list of delayed fputs.  For kernel threads, and particularly for
-> nfsd, delayed in the final fput do not impose any throttling to prevent
-> the thread from closing more files.
-> 
-> A simple way to fix this is to treat nfsd threads like normal processes
-> for task_work.  Thus the pending files are queued for the thread, and
-> the same thread finishes the work.
-> 
-> Currently KTHREADs are assumed never to call task_work_run().  With this
-> patch that it still the default but it is implemented by storing the
-> magic value TASK_WORKS_DISABLED in ->task_works.  If a kthread, such as
-> nfsd, will call task_work_run() periodically, it sets ->task_works
-> to NULL to indicate this.
-> 
-> Signed-off-by: NeilBrown <neilb@suse.de>
-> ---
-> 
-> I wonder which tree this should go through assuming everyone likes it.
-> VFS maybe??
 
-Sure.
+--nNpisfqc0N5bJikl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 292c31697248..c63c2bedbf71 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -1117,6 +1117,7 @@ struct task_struct {
->  	unsigned int			sas_ss_flags;
->  
->  	struct callback_head		*task_works;
-> +#define	TASK_WORKS_DISABLED	((void*)1)
+On Mon, Nov 27, 2023 at 10:27:40AM +0100, Joerg Roedel wrote:
+> On Wed, Oct 25, 2023 at 05:25:58PM +0200, Dario Binacchi wrote:
+> > The return value of debugfs_create_dir() should be checked using the
+> > IS_ERR() function. The patch, however, drops the check statement without
+> > fixing it because the subsequent functions (i. e. debugfs_create_file())
+> > can handle the case where `@parent` is an error pointer.
+>=20
+> This deserves a comment in the code explaining why no error checking is
+> needed.
 
-Should be simpler if you invert the logic?
+This is a duplicate of f7da9c081517 ("iommu/tegra-smmu: Drop unnecessary
+error check for for debugfs_create_dir()"), which is already in v6.7-rc1
+so I think we can ignore this one.
 
-COMPLETELY UNTESTED
+Thierry
 
----
- fs/file_table.c           |  2 +-
- fs/nfsd/nfssvc.c          |  4 ++++
- include/linux/task_work.h |  3 +++
- kernel/fork.c             |  3 +++
- kernel/task_work.c        | 12 ++++++++++++
- 5 files changed, 23 insertions(+), 1 deletion(-)
+--nNpisfqc0N5bJikl
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/fs/file_table.c b/fs/file_table.c
-index de4a2915bfd4..e79351df22be 100644
---- a/fs/file_table.c
-+++ b/fs/file_table.c
-@@ -445,7 +445,7 @@ void fput(struct file *file)
- 	if (atomic_long_dec_and_test(&file->f_count)) {
- 		struct task_struct *task = current;
- 
--		if (likely(!in_interrupt() && !(task->flags & PF_KTHREAD))) {
-+		if (likely(!in_interrupt())) {
- 			init_task_work(&file->f_rcuhead, ____fput);
- 			if (!task_work_add(task, &file->f_rcuhead, TWA_RESUME))
- 				return;
-diff --git a/fs/nfsd/nfssvc.c b/fs/nfsd/nfssvc.c
-index d6122bb2d167..cea76bad3a95 100644
---- a/fs/nfsd/nfssvc.c
-+++ b/fs/nfsd/nfssvc.c
-@@ -13,6 +13,7 @@
- #include <linux/fs_struct.h>
- #include <linux/swap.h>
- #include <linux/siphash.h>
-+#include <linux/task_work.h>
- 
- #include <linux/sunrpc/stats.h>
- #include <linux/sunrpc/svcsock.h>
-@@ -943,6 +944,7 @@ nfsd(void *vrqstp)
- 
- 	current->fs->umask = 0;
- 
-+	task_work_manage(current); /* Declare that I will call task_work_run() */
- 	atomic_inc(&nfsdstats.th_cnt);
- 
- 	set_freezable();
-@@ -956,6 +958,8 @@ nfsd(void *vrqstp)
- 
- 		svc_recv(rqstp);
- 		validate_process_creds();
-+		if (task_work_pending(current))
-+			task_work_run();
- 	}
- 
- 	atomic_dec(&nfsdstats.th_cnt);
-diff --git a/include/linux/task_work.h b/include/linux/task_work.h
-index 795ef5a68429..645fb94e47e0 100644
---- a/include/linux/task_work.h
-+++ b/include/linux/task_work.h
-@@ -20,6 +20,9 @@ enum task_work_notify_mode {
- 	TWA_SIGNAL_NO_IPI,
- };
- 
-+void task_work_off(struct task_struct *task);
-+void task_work_manage(struct task_struct *task);
-+
- static inline bool task_work_pending(struct task_struct *task)
- {
- 	return READ_ONCE(task->task_works);
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 10917c3e1f03..348ed8fa9333 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2346,6 +2346,9 @@ __latent_entropy struct task_struct *copy_process(
- 	if (args->io_thread)
- 		p->flags |= PF_IO_WORKER;
- 
-+	if (args->kthread)
-+		task_work_off(p);
-+
- 	if (args->name)
- 		strscpy_pad(p->comm, args->name, sizeof(p->comm));
- 
-diff --git a/kernel/task_work.c b/kernel/task_work.c
-index 95a7e1b7f1da..2ae948d0d124 100644
---- a/kernel/task_work.c
-+++ b/kernel/task_work.c
-@@ -5,6 +5,18 @@
- 
- static struct callback_head work_exited; /* all we need is ->next == NULL */
- 
-+void task_work_off(struct task_struct *task)
-+{
-+	task->task_works = &work_exited;
-+}
-+EXPORT_SYMBOL(task_work_off);
-+
-+void task_work_manage(struct task_struct *task)
-+{
-+	task->task_works = NULL;
-+}
-+EXPORT_SYMBOL(task_work_manage);
-+
- /**
-  * task_work_add - ask the @task to execute @work->func()
-  * @task: the task which should run the callback
--- 
-2.42.0
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmVlzhwACgkQ3SOs138+
+s6HGDRAAgujp8COqpO6Y7LdZQaRa4p7ssRczFgQWmdy2vpheWyCgu7OyKfl+9EHL
+tT5/soH/rqrC0i3oq8qqWHOUjRSYYoIqCGz8j/4y8KkdVYQ8GTto0mp4rtIpB1ie
+g1Cc32zVimxrZHqaxU4K0U6Jq6fWM5WWs12ZCzlbdjl7U8hwD44vNh/kS76Y6JZh
+XNVuTL1ijVskDAdxQLULdoBW7S5qCOWjfDbNbW3v9AxOyr789oW5llERZwddvw5G
+ndiKBnvtfCsA72jGO71z7A/Vg9gXKkfBJLxTsd1aShhOCW/psC3s+jVC27AJ82xo
+giT0rssa9TQlgy4foU+N0JRJ30GODYFF5vRApYREIIHU2bb2qaiG3s6Oavl51gVY
+jdihwdz31vjcHrHcj4lC93AvIjl+N418uzaAjvGPhPrVsOw3qQI5onR4WMQ0ZwP+
+Tk40z9FyDHFQQKpseUo8+S+qrmlUVYZUm950DMA0mzk7d+KpCKEsPswNnTcStsKU
+MnPMzS4w35d8k9JOwfILR5cy5ouXtAwOXbrnKdjLMazFNhlpAYyb3MZgMnCQgLtz
+f97/E56oMdODosYuc5S42wKn8CR5Xmd7vnXy7+DXXg8aS4LubEE5jk1YGAgdHh3V
+A332A20cCAWZKvgFYbE46Tj6A0eQBD4O5edw0bJZxQQofvNYOfY=
+=mBlz
+-----END PGP SIGNATURE-----
+
+--nNpisfqc0N5bJikl--
