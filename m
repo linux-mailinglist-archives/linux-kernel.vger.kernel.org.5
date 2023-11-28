@@ -2,165 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8DE17FC14A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F82F7FC2C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346592AbjK1PIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 10:08:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38286 "EHLO
+        id S1346599AbjK1PJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 10:09:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343904AbjK1PIw (ORCPT
+        with ESMTP id S1346571AbjK1PJb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 10:08:52 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1134F1B9;
-        Tue, 28 Nov 2023 07:08:58 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Sfm2J09dQz6J6pH;
-        Tue, 28 Nov 2023 23:04:24 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-        by mail.maildlp.com (Postfix) with ESMTPS id 3FA6614025A;
-        Tue, 28 Nov 2023 23:08:56 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 28 Nov
- 2023 15:08:55 +0000
-Date:   Tue, 28 Nov 2023 15:08:54 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Russell King <rmk+kernel@armlinux.org.uk>
-CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-        <x86@kernel.org>, <linux-csky@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-ia64@vger.kernel.org>,
-        <linux-parisc@vger.kernel.org>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        <jianyong.wu@arm.com>, <justin.he@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH RFC 13/22] arm64: setup: Switch over to
- GENERIC_CPU_DEVICES using arch_register_cpu()
-Message-ID: <20231128150854.00005370@Huawei.com>
-In-Reply-To: <E1r0JLl-00CTxk-7O@rmk-PC.armlinux.org.uk>
-References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
-        <E1r0JLl-00CTxk-7O@rmk-PC.armlinux.org.uk>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Tue, 28 Nov 2023 10:09:31 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B2F2D45
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 07:09:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86E24C433CA;
+        Tue, 28 Nov 2023 15:09:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701184176;
+        bh=S4bgiYUP21DwI7+UOp+Rc5V33gFVMAbp28HLFbPCGcY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JmYmlxFcp2G43v8JayKuqAr76duiGA0PahFxkFC5KEm3SkvTShcCK9qaU0NbLTGaP
+         y0gPqZPPaHHS8e4AttXAB2CsbiTCbhOsomdej/qwkMD91ghQtczICA44TflWuI5bZD
+         iij7FseeKgqjgqTzOY2rVyWofo/C05V5Cyl+ZHb6NACBCPmi+sUGVDGyYMLzxXAG8D
+         3l+eZJ+5wxh27VLNqepKWbT20HeWI0TR4h2ER/sef1KeiUJXW5gE1i8dsThxpPsa/t
+         ZNcGNhjYSflLhNrstGNC/hURdhdVQLtFME3JK9MfOLv/oITK8pN7iAsjoKTeUDBSQv
+         /pajZFr80h7nw==
+Date:   Tue, 28 Nov 2023 16:09:34 +0100
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Dipam Turkar <dipamt1729@gmail.com>
+Cc:     maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
+        airlied@gmail.com, daniel@ffwll.ch, mairacanal@riseup.net,
+        javierm@redhat.com, arthurgrillo@riseup.net,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] drm/tests: Add KUnit tests for
+ drm_mode_create_dvi_i_properties()
+Message-ID: <goxsh3zfoaacariu2dst5ww6ta7g2ubk24impowabvmfte5d4a@fxemdptwshzs>
+References: <20231110192452.734925-1-dipamt1729@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xd6p4uebt7quuk7k"
+Content-Disposition: inline
+In-Reply-To: <20231110192452.734925-1-dipamt1729@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 07 Nov 2023 10:30:25 +0000
-Russell King <rmk+kernel@armlinux.org.uk> wrote:
 
-> From: James Morse <james.morse@arm.com>
-> 
-> To allow ACPI's _STA value to hide CPUs that are present, but not
-> available to online right now due to VMM or firmware policy, the
-> register_cpu() call needs to be made by the ACPI machinery when ACPI
-> is in use. This allows it to hide CPUs that are unavailable from sysfs.
-> 
-> Switching to GENERIC_CPU_DEVICES is an intermediate step to allow all
-> five ACPI architectures to be modified at once.
-> 
-> Switch over to GENERIC_CPU_DEVICES, and provide an arch_register_cpu()
-> that populates the hotpluggable flag. arch_register_cpu() is also the
-> interface the ACPI machinery expects.
-> 
-> The struct cpu in struct cpuinfo_arm64 is never used directly, remove
-> it to use the one GENERIC_CPU_DEVICES provides.
-> 
-> This changes the CPUs visible in sysfs from possible to present, but
-> on arm64 smp_prepare_cpus() ensures these are the same.
-> 
-> This patch also has the effect of moving the registration of CPUs from
-> subsys to driver core initialisation, prior to any initcalls running.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+--xd6p4uebt7quuk7k
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Given this series adds an arch_cpu_is_hotpluggable() callback we probably
-want something in this patch description to say why this
-isn't using that, but instead overriding arch_register_cpu()
+Hi,
 
-Jonathan
-
+On Sat, Nov 11, 2023 at 12:54:53AM +0530, Dipam Turkar wrote:
+> Introduce unit tests for the drm_mode_create_dvi_i_properties() function =
+to ensure
+> the proper creation of DVI-I specific connector properties.
+>=20
+> Signed-off-by: Dipam Turkar <dipamt1729@gmail.com>
 > ---
-> Changes since RFC v2:
->  * Add note about initialisation order change.
-> ---
->  arch/arm64/Kconfig           |  1 +
->  arch/arm64/include/asm/cpu.h |  1 -
->  arch/arm64/kernel/setup.c    | 13 ++++---------
->  3 files changed, 5 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 7b071a00425d..84bce830e365 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -132,6 +132,7 @@ config ARM64
->  	select GENERIC_ARCH_TOPOLOGY
->  	select GENERIC_CLOCKEVENTS_BROADCAST
->  	select GENERIC_CPU_AUTOPROBE
-> +	select GENERIC_CPU_DEVICES
->  	select GENERIC_CPU_VULNERABILITIES
->  	select GENERIC_EARLY_IOREMAP
->  	select GENERIC_IDLE_POLL_SETUP
-> diff --git a/arch/arm64/include/asm/cpu.h b/arch/arm64/include/asm/cpu.h
-> index f3034099fd95..b1e43f56ee46 100644
-> --- a/arch/arm64/include/asm/cpu.h
-> +++ b/arch/arm64/include/asm/cpu.h
-> @@ -38,7 +38,6 @@ struct cpuinfo_32bit {
+>  drivers/gpu/drm/tests/drm_connector_test.c | 38 ++++++++++++++++++++++
+>  1 file changed, 38 insertions(+)
+>=20
+> diff --git a/drivers/gpu/drm/tests/drm_connector_test.c b/drivers/gpu/drm=
+/tests/drm_connector_test.c
+> index c66aa2dc8d9d..9ac1fd32c579 100644
+> --- a/drivers/gpu/drm/tests/drm_connector_test.c
+> +++ b/drivers/gpu/drm/tests/drm_connector_test.c
+> @@ -4,6 +4,9 @@
+>   */
+> =20
+>  #include <drm/drm_connector.h>
+> +#include <drm/drm_device.h>
+> +#include <drm/drm_drv.h>
+> +#include <drm/drm_kunit_helpers.h>
+> =20
+>  #include <kunit/test.h>
+> =20
+> @@ -58,6 +61,30 @@ static void drm_test_get_tv_mode_from_name_truncated(s=
+truct kunit *test)
+>  	KUNIT_EXPECT_LT(test, ret, 0);
 >  };
->  
->  struct cpuinfo_arm64 {
-> -	struct cpu	cpu;
->  	struct kobject	kobj;
->  	u64		reg_ctr;
->  	u64		reg_cntfrq;
-> diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-> index 417a8a86b2db..165bd2c0dd5a 100644
-> --- a/arch/arm64/kernel/setup.c
-> +++ b/arch/arm64/kernel/setup.c
-> @@ -402,19 +402,14 @@ static inline bool cpu_can_disable(unsigned int cpu)
->  	return false;
->  }
->  
-> -static int __init topology_init(void)
-> +int arch_register_cpu(int num)
->  {
-> -	int i;
-> +	struct cpu *cpu = &per_cpu(cpu_devices, num);
->  
-> -	for_each_possible_cpu(i) {
-> -		struct cpu *cpu = &per_cpu(cpu_data.cpu, i);
-> -		cpu->hotpluggable = cpu_can_disable(i);
-> -		register_cpu(cpu, i);
-> -	}
-> +	cpu->hotpluggable = cpu_can_disable(num);
->  
-> -	return 0;
-> +	return register_cpu(cpu, num);
->  }
-> -subsys_initcall(topology_init);
->  
->  static void dump_kernel_offset(void)
->  {
+> =20
+> +/*
+> + * Test that drm_mode_create_dvi_i_properties() succeeds and
+> + * DVI-I subconnector and select subconectors properties have
+> + * been created.
+> + */
+> +static void drm_test_mode_create_dvi_i_properties(struct kunit *test)
+> +{
+> +	struct drm_device *drm;
+> +	struct device *dev;
+> +
+> +	dev =3D drm_kunit_helper_alloc_device(test);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, dev);
+> +
+> +	drm =3D __drm_kunit_helper_alloc_drm_device(test, dev, sizeof(*drm), 0,=
+ DRIVER_MODESET);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, drm);
+> +
+> +	KUNIT_EXPECT_EQ(test, drm_mode_create_dvi_i_properties(drm), 0);
+> +	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, drm->mode_config.dvi_i_select_subcon=
+nector_property);
+> +	KUNIT_EXPECT_NOT_ERR_OR_NULL(test, drm->mode_config.dvi_i_subconnector_=
+property);
+> +
+> +	// Expect the function to return 0 if called twice.
 
+This is not the proper comment format
+
+> +	KUNIT_EXPECT_EQ(test, drm_mode_create_dvi_i_properties(drm), 0);
+
+This should be in a separate test, with a separate description. We want
+to test two things: that the function works well, and that the function
+still works if we call it a second time.
+
+> +}
+> +
+>  static struct kunit_case drm_get_tv_mode_from_name_tests[] =3D {
+>  	KUNIT_CASE_PARAM(drm_test_get_tv_mode_from_name_valid,
+>  			 drm_get_tv_mode_from_name_valid_gen_params),
+> @@ -70,7 +97,18 @@ static struct kunit_suite drm_get_tv_mode_from_name_te=
+st_suite =3D {
+>  	.test_cases =3D drm_get_tv_mode_from_name_tests,
+>  };
+
+The test should be next to the test suite definition
+
+> +static struct kunit_case drm_connector_tests[] =3D {
+> +	KUNIT_CASE(drm_test_mode_create_dvi_i_properties),
+> +	{ }
+> +};
+> +
+> +static struct kunit_suite drm_connector_test_suite =3D {
+> +	.name =3D "drm_connector",
+
+That's too generic, the test suite is only about
+drm_mode_create_dvi_i_properties(), not drm_connector in general.
+
+> +	.test_cases =3D drm_connector_tests,
+> +};
+> +
+>  kunit_test_suite(drm_get_tv_mode_from_name_test_suite);
+> +kunit_test_suite(drm_connector_test_suite);
+
+kunit_test_suites
+
+Maxime
+
+--xd6p4uebt7quuk7k
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZWYCrQAKCRDj7w1vZxhR
+xZhoAP9/HSr1uPgk3bR/O7z+sJhZ8oF8HIDcczUezdS6TxzzRgD/UqFNjWcuLggw
+67V6UEyZYpHGgXIdMD7K6Tk5eL5x5QQ=
+=1gZ7
+-----END PGP SIGNATURE-----
+
+--xd6p4uebt7quuk7k--
