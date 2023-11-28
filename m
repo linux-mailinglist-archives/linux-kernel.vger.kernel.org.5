@@ -2,307 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42FA57FB596
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:23:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8273A7FB599
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:24:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234805AbjK1JXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 04:23:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39876 "EHLO
+        id S234802AbjK1JX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 04:23:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230506AbjK1JXM (ORCPT
+        with ESMTP id S230044AbjK1JXz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 04:23:12 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AB67C9
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:23:18 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40b4a8db314so5990335e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:23:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1701163397; x=1701768197; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/eenye9HdwTQxcArWUErxKolkkutscBR5gpaggr02P4=;
-        b=GnGkZbtiheroQobMSUxq7dUvI00AKEHIchWrvd3HEctrXtCg+trXbZRnN3I228o7lQ
-         8qDfKZ6gkD2c3VSTW0p/PXS9qknyyVFmzAIOSFYPyuxtgYsh7BhQVhcfKu0BdAZPaG5o
-         ehgj6tWDrt/C173tX2+PvMHhyX1+oc988kXd2h329RWxndmHzpxnj41MstDiXQgiw1zj
-         i0tnspF7c4R3iny7iHx8YE5Wh08OKfwf1lH2ODFbOEhK6DZxRTYRbCY/ObIfHWFVxy1d
-         1TONFb57q6prPv48+q+jh325hWSpbs3rtETVHB977/4mZqOc5tNIVL5DEYLkirj/wouY
-         9zcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701163397; x=1701768197;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/eenye9HdwTQxcArWUErxKolkkutscBR5gpaggr02P4=;
-        b=CCyK97VTU+XMgK8D6EvWhjgqH+1PE5/vsqOSytNWZZksihP4mF7y9p4rDq3EMyqedO
-         kULxVV8Mx+wx1rQrVH/KNwrahPSAxP/ikKX/TzQSANVRoMt2vtThMC8GKwm1wMc0mKCd
-         Mulp/bBilPrKnuD8afmLfNfDCySYKZOajSt6jFsqk1BWp0koU+MG/V9X92w57im+mBEH
-         CayjBOrr5wnUZ6Q5kz+uw6bfhUX07AVWjpAALcgbhbTOQwZU+dgLcQlHt5DbW1J22hkj
-         HntvJdb2zoMYcafSj3o/g3W4MDm7DmFpGg25ANKRlG4omlxlpSlx7ZnBf15CVNu+nAEb
-         Nj9Q==
-X-Gm-Message-State: AOJu0YzVDm9bWaSr2Tauxr/gogAWCtVDydscNF3m/LXeCS+xpI1I0OPp
-        /MjjByxXe2YMpreOdcleLOvwkg==
-X-Google-Smtp-Source: AGHT+IGibnyWd1w48I6Ajmwf/X3NGYilAHusSAq4LrFN1+MyJ4arDz0Y2YD15SvgxvKbXqE/SQ790g==
-X-Received: by 2002:a05:600c:3595:b0:409:7d0:d20b with SMTP id p21-20020a05600c359500b0040907d0d20bmr10879906wmq.24.1701163396780;
-        Tue, 28 Nov 2023 01:23:16 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.125])
-        by smtp.gmail.com with ESMTPSA id fl8-20020a05600c0b8800b004030e8ff964sm17602133wmb.34.2023.11.28.01.23.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Nov 2023 01:23:16 -0800 (PST)
-Message-ID: <6bcc69b6-d198-4185-aaab-b9ab9aa09c87@tuxon.dev>
-Date:   Tue, 28 Nov 2023 11:23:14 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 13/13] net: ravb: Add runtime PM support
-Content-Language: en-US
-From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        p.zabel@pengutronix.de, yoshihiro.shimoda.uh@renesas.com,
-        wsa+renesas@sang-engineering.com, biju.das.jz@bp.renesas.com,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        sergei.shtylyov@cogentembedded.com,
-        mitsuhiro.kimura.kc@renesas.com, masaru.nagai.vx@renesas.com,
-        netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com>
- <20231120084606.4083194-14-claudiu.beznea.uj@bp.renesas.com>
- <04cb07fe-cccc-774a-f14d-763ce7ae7b07@omp.ru>
- <b3456a4d-336c-434d-9fd5-4c87582443cb@tuxon.dev>
- <9af21eb9-6fe1-de3a-f2eb-4493778ebb32@omp.ru>
- <e35882ea-c325-4039-bb84-c18b0244dbe0@tuxon.dev>
- <CAMuHMdVCRXYKtcwaC=v-HhJW-PLV-zhj_3GmeU6Vu1JOK_eu0Q@mail.gmail.com>
- <ece2601d-9311-462b-8687-c241d889ec16@tuxon.dev>
-In-Reply-To: <ece2601d-9311-462b-8687-c241d889ec16@tuxon.dev>
-Content-Type: text/plain; charset=UTF-8
+        Tue, 28 Nov 2023 04:23:55 -0500
+Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01olkn2109.outbound.protection.outlook.com [40.92.98.109])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB9ACC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:24:01 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XmLCmFvrlPtth7gx3FDEdiEQvUIzqx+lop6BnMEY+Q+VRagdGYvzBTmHYehTj/ZwIvIWAyXIkMt+WUaPtjq2fGsIlrV77TxRXGXeVQif8WKpZXlMZ7RENqpLbWgXuoxHXsL+D9qhuiiAeIw0yo/ESRpU0ZDfI3DYNXXmPTD+S9GrP+S1lazWq87o6zgwvNMkcmjlH3ho2XUdKmaoT/dQRYojyNA1mo9k1h4HlnjYxhldJUItE/PgrYz/Y1co2q1Lj//oKlrSCc8c8BnRrPWM0rGfcknPIxfFYG3dlR+Yf9JaGesiJ/1TQjMjnI+vMftBGHqK1BrHB3rI/4jMu28RKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rLZHFQjeR5l5f3KenJMNmQpZB2+0r0sY1aWm5t/CK7Q=;
+ b=D2XOVw8pkTil4N1Sr+ZF12vU626LbLhxEc06E/ulRN2pDpd1JJ6zVc3zIRAnoxCvEJqsgQI/hDpCn8eqGP8gF+RoqVMpTaj+/de7GfmcoIwUKo4MWKoGLbX0VbNopyJASD2wO2mGGFrd7AM4bnJQs3CyHPbTGNgaja4puQKanNvofaeSYTTsnOGK7+OVbVV74pPq8BuCYVKkodZTtGyA3mPxfHU1Lrx2nNKBLRSUyrnIrvHuS3Z+yxrkGGQPyXVX5KPej3LTN79BqpmojoHgJorJ89zLGqGQ3GzFHvPzQWjN4a5Hu6yK5ZOWOhSIVtBYrYfGrlQyYBGLkABg5GcUfg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rLZHFQjeR5l5f3KenJMNmQpZB2+0r0sY1aWm5t/CK7Q=;
+ b=twbH6aIS1XBvLNbvrHbZBQuZIwnv9OqoiFWrkZ5YD4afxmBbxhNZ5WXe7p/3gT0gFmBHSDpu3TS5bm0K4RSxOMs65HX1++BXHNhJBML/XOcQBFiv/fM/IeomeP0eqJJpWfKn+FBw5v4ngu5i0VsLcbj91jYdxywRu3GwCVugjF1VqiEFaWvlA9gFmSy9/jO9vrcwvoVueYQ1hN7agbAjZ2Cco7pR1b2DFjWlpgC772TrkXu/oZIlBXxgc7HlWVEnZeHTkd3f6g5Bnqqp+rvH0bh/iw524AqJXFqpT4Ky/F3bHi/IlOCn182uYMImgSAbTcNLXSoUqI/L58gqkkseRw==
+Received: from TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:158::13)
+ by TY1P286MB3422.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:2e2::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Tue, 28 Nov
+ 2023 09:23:58 +0000
+Received: from TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::a621:9714:c1cf:e4f0]) by TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::a621:9714:c1cf:e4f0%7]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
+ 09:23:58 +0000
+From:   Peng Liu <pngliu@hotmail.com>
+Cc:     frederic@kernel.org, tglx@linutronix.de, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, liupeng17@lenovo.com
+Subject: [PATCH v2 1/2] tick/nohz: Remove duplicate between tick_nohz_switch_to_nohz() and tick_setup_sched_timer()
+Date:   Tue, 28 Nov 2023 17:23:54 +0800
+Message-ID: <TYCP286MB21464DF5148B8FF8B142ADF7C6BCA@TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231127083049.145447-1-pngliu@hotmail.com>
+References: <20231127083049.145447-1-pngliu@hotmail.com>
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [eaMjgQIEfNDt/mcglzzZK0Ko0fBLeRJi]
+X-ClientProxiedBy: TYWPR01CA0018.jpnprd01.prod.outlook.com
+ (2603:1096:400:a9::23) To TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:158::13)
+X-Microsoft-Original-Message-ID: <20231128092354.160263-1-pngliu@hotmail.com>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYCP286MB2146:EE_|TY1P286MB3422:EE_
+X-MS-Office365-Filtering-Correlation-Id: 743bcd06-ffc1-4a4a-51b1-08dbeff3bfef
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: G5eQ6GXzgGDvR4do60Az/hFzl00fwjX/gohRIGklKtbQOz1W9IW+jYv1mQX8o/wkWiRlMGMfVoUX2HDLtRlWBjOycTOhKgkp9im5ZnuAEom57L6QuuH0SoyX6vBdKsOj9Ui4tV9KpEkFlcxJLUbc3kL4Jw7GcjA3u86UASBr5jt4ZS6vgtn0kUKpjCJsawH//8n4Zf32fB4Uqm7Xuoh6ruSsRyHFEtusIx0LNKtJdTffyAdeTQbF9HT2tRBXxs/e9t5tAGY4Kkm7Z7Sc16sf34ysh0Rk2Da+i6tvR+HOYPEVFw5dK9Dc1WqQFiQU4t3jXhKLumaAQ1TvpEH4T9PSg3Q8B7CwrIQ8ErqVMxCR7pU2h49YrEUsT6B53eLE4O0RsdiADiK3KPTpQYHieuaGhIIHea4Eyf7ydihSbTiHZfSlTy+yUaH9YAgdlo12znHbrz3P7WZxCthNttRkQsHD6p4gU6BrEkVuunI1bHbuMkXRboqbA7pa3vKClYabttinlxE5bEHM9sAM6UXTQKAlnLNCgOMr2uRmzFWxMZ/l6JmgCEqFumdYMNQ9YkgrB7y4
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ZNP/2ZSGYt4zDAtqenh9MhemnZzmWcnZg4D4+fbjksY0li9fiTmlhGcwbAiR?=
+ =?us-ascii?Q?1Lh7BzzzB6C5Ia/ZZK6jQwUTWDDgsdyaDTkRnANNV55SO44NQ3KKxJiVH5pL?=
+ =?us-ascii?Q?+YtCSV3LC5pAXJNmour3aw8fpM8/5Ytb7tG1RwMPxjZbFRv3QFCpkMNHX+Ks?=
+ =?us-ascii?Q?F0AAz3sOGQtBnXSCRIEfusR5tkf/k1nF3Ez8pQa1uLPNX4tzRIortdnObYR4?=
+ =?us-ascii?Q?x4uLkv/XIwHk3F3JM5nT0rMGypGjL8trm3QLdPPxg5nBZm+JLhLmJQQgVvvA?=
+ =?us-ascii?Q?ZF1gsUCTy7cTRMwuWLwZHCWTCH614s00WrPsOL6k2sIqR3bB1WYCzSe+upFV?=
+ =?us-ascii?Q?JdAIMa488xaBX97APDNCK0arsoJR854glokFw/ztESRDZb4Wn75z2YalsL5s?=
+ =?us-ascii?Q?9runyEMK6bWzj2e8k+CUgNVdIj/ITuLtkxj5qCZQz3vRQ7B9TR8VummUnk50?=
+ =?us-ascii?Q?T+cv+FvGNtEDLXb0WyjTrydFfhnOa+/rcFs+KFKNNxzHM22Eekr6jkcCuE8T?=
+ =?us-ascii?Q?h31/t8qEdkRPYp+QMKHG+H6S1VgG0glP14fhqj+gICr4JHHBRk99V9mPrxlu?=
+ =?us-ascii?Q?/RoR/P8HH9JKFIjEnzIZ7dEapAwqEqmuqZc1aeim88JCY2mmthAgvy+hJYIb?=
+ =?us-ascii?Q?tSemvK2rJ0ODiVTwMztbBHuGRQ0Nfo7U8pK1QfeopJoZ5phrC3AOKO1PUFBN?=
+ =?us-ascii?Q?rn5AoEfZarStOjeGd5caCeMZhkWeuG62hnRfnksQAU1Zy0FmbkFv6D14wjiF?=
+ =?us-ascii?Q?J2pFHzFaxGQwwx6rcdB/lpXVIlbSO+FDsGwY3i3hqHIFC+3wd6oYXymbdyyM?=
+ =?us-ascii?Q?4ZeretRq2tAD04+dvnEsZ5HeQ2wrbdL7r1byrQ3aHHSVbky4cIKj0j4bcmQj?=
+ =?us-ascii?Q?2R8oZaQhClPEof/bFsaVyxNVsMM4ayxMSvPFEglp3mqCB8qxG1E1s4lJR5kg?=
+ =?us-ascii?Q?u+dZ1M0LPKMB/hV9LWY/Asu3CcAE0x+8zVR8yi2+Kb+nNbBzo4GhBJ+btOt/?=
+ =?us-ascii?Q?AmVa++qihVEjAeRHK7z8nR/1dnkLcdT6UHh4LxNXMLFoskLza9dRHdbsG8vZ?=
+ =?us-ascii?Q?LsHrr1UQOrZnI7oaWk7kDrZfuVLyL2ycthLi4iNHQCPxAkkK9X2uSEc4mrJj?=
+ =?us-ascii?Q?4UnS6ka4Ob0obXoePv0yT5/zkPLH6RIOy0/6g6/5k5sQ/4BLHtCB/Tl185Az?=
+ =?us-ascii?Q?lDUT8MXN2iOqLk6M31gN4cMpZW6forgefDIoRA=3D=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-05f45.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 743bcd06-ffc1-4a4a-51b1-08dbeff3bfef
+X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 09:23:58.2621
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY1P286MB3422
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Geert,
+From: Peng Liu <liupeng17@lenovo.com>
 
-On 27.11.2023 16:46, claudiu beznea wrote:
-> Hi, Geert,
-> 
-> On 27.11.2023 16:05, Geert Uytterhoeven wrote:
->> Hi Claudiu,
->>
->> On Sat, Nov 25, 2023 at 12:00 AM claudiu beznea
->> <claudiu.beznea@tuxon.dev> wrote:
->>> On 23.11.2023 21:19, Sergey Shtylyov wrote:
->>>> On 11/23/23 8:04 PM, claudiu beznea wrote:
->>>>>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>>>>
->>>>>>> RZ/G3S supports enabling/disabling clocks for its modules (including
->>>>>>> Ethernet module). For this commit adds runtime PM support which
->>>>>>> relies on PM domain to enable/disable Ethernet clocks.
->>>>>>
->>>>>>    That's not exactly something new in RZ/G3S. The ravb driver has unconditional
->>>>>> RPM calls already in the probe() and remove() methods...
->>>>>> And the sh_eth driver
->>>>>> has RPM support since 2009...
->>>>>>
->>>>>>> At the end of probe ravb_pm_runtime_put() is called which will turn
->>>>>>
->>>>>>    I'd suggest a shorter name, like ravb_rpm_put() but (looking at this function)
->>>>>>> off the Ethernet clocks (if no other request arrives at the driver).
->>>>>>> After that if the interface is brought up (though ravb_open()) then
->>>>>>> the clocks remain enabled until interface is brought down (operation
->>>>>>> done though ravb_close()).
->>>>>>>
->>>>>>> If any request arrives to the driver while the interface is down the
->>>>>>> clocks are enabled to serve the request and then disabled.
->>>>>>>
->>>>>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->>>>>>> --- a/drivers/net/ethernet/renesas/ravb.h
->>>>>>> +++ b/drivers/net/ethernet/renesas/ravb.h
->>>>>>> @@ -1044,6 +1044,7 @@ struct ravb_hw_info {
->>>>>>>    unsigned magic_pkt:1;           /* E-MAC supports magic packet detection */
->>>>>>>    unsigned half_duplex:1;         /* E-MAC supports half duplex mode */
->>>>>>>    unsigned refclk_in_pd:1;        /* Reference clock is part of a power domain. */
->>>>>>> +  unsigned rpm:1;                 /* Runtime PM available. */
->>>>>>
->>>>>>    No, I don't think this flag makes any sense. We should support RPM
->>>>>> unconditionally...
->>>>
->>>>    If RPM calls work in the probe()/remove() methods, they should work
->>>> in the ndo_{open|stop}() methods, right?
->>>
->>> It might depend on hardware support... E.g.
->>>
->>> I debugged it further the issue I had with this implementation on other
->>> SoCs and it seems we cannot do RPM for those w/o reworking way the driver
->>> is configured.
->>>
->>> I wiped out the RPM code from this patch and just called:
->>>
->>> pm_runtime_put_sync();          // [1]
->>> usleep_range(300000, 400000);   // [2]
->>> pm_runtime_get_sync();          // [3]
->>>
->>> at the end of ravb_probe(); with this the interfaces fails to work. I
->>> continue debugging it and interrogated CSR and this returns RESET after
->>> [3]. I tried to switched it back to configuration mode after [3] but fails
->>> to restore to a proper working state.
->>>
->>> Then continued to debug it further to see what happens on the clock driver.
->>> The clk enable/disable reaches function at [4] which sets control_regs[reg]
->>> which is one of the System module stop control registers. Setting this
->>> activates module standby (AFICT). Switch to reset state on Ethernet IP
->>> might be backed by note (2) on "Operating Mode Transitions Due to Hardware"
->>> chapter of the G1H HW manual (which I don't fully understand).
->>
->> You mean 37A.3.1.3 (2) "Transition during power-off by module standby"?
-> 
-> Yes!
-> 
->>
->>     The AVB-DMAC completes the bus master access in progress,
->>     and then shifts to reset mode. At this time, the operating mode
->>     configuration bits in the AVB-DMAC mode register (CCC.OPC) are
->>     set to B'00.
->>
->> "reset mode" could be interpreted as "register contents are reset (lost)".
->> However, the R-Car Gen3 documentation contains the same paragraph,
->> and register contents are known not to be lost...
-> 
-> I remember (from the debugging session I've run few weeks ago) that I
-> checked on G1H an Ethernet register before point [1] and after point [3]
-> and the values were the same (but I may be wrong, I need to double check it).
+The ts->sched_timer initialization work of tick_nohz_switch_to_nohz()
+is almost the same as that of tick_setup_sched_timer(), so adjust the
+latter to get it reused by tick_nohz_switch_to_nohz().
 
-I checked again DBAT before point [1] and after point [3]. Before point [1]
-DBAT=0x6c040000, after point [3] DBAT=0x00000000.
+Signed-off-by: Peng Liu <liupeng17@lenovo.com>
+---
+Changes in v2:
+- Fix build warning: Function parameter or member 'mode' not described in 'tick_setup_sched_timer'
+- Fix build error: use of undeclared identifier 'tick_nohz_highres_handler'
+- Fix build error: use of undeclared identifier 'sched_skew_tick'
+---
+ kernel/time/hrtimer.c    |  2 +-
+ kernel/time/tick-sched.c | 37 ++++++++++++++++++-------------------
+ kernel/time/tick-sched.h |  2 +-
+ 3 files changed, 20 insertions(+), 21 deletions(-)
 
-However, if all the register settings done before point [1] are re-executed
-after point [3] the Ethernet connection seems usable. I tried the above
-settings after point [3] to confirm this:
+diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+index 760793998cdd..355b5a957f7f 100644
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -746,7 +746,7 @@ static void hrtimer_switch_to_hres(void)
+ 	base->hres_active = 1;
+ 	hrtimer_resolution = HIGH_RES_NSEC;
+ 
+-	tick_setup_sched_timer();
++	tick_setup_sched_timer(NOHZ_MODE_HIGHRES);
+ 	/* "Retrigger" the interrupt to get things going */
+ 	retrigger_next_event(NULL);
+ }
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index be77b021e5d6..96fcf5cb1b49 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -1430,9 +1430,6 @@ static inline void tick_nohz_activate(struct tick_sched *ts, int mode)
+  */
+ static void tick_nohz_switch_to_nohz(void)
+ {
+-	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
+-	ktime_t next;
+-
+ 	if (!tick_nohz_enabled)
+ 		return;
+ 
+@@ -1441,16 +1438,9 @@ static void tick_nohz_switch_to_nohz(void)
+ 
+ 	/*
+ 	 * Recycle the hrtimer in 'ts', so we can share the
+-	 * hrtimer_forward_now() function with the highres code.
++	 * highres code.
+ 	 */
+-	hrtimer_init(&ts->sched_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_HARD);
+-	/* Get the next period */
+-	next = tick_init_jiffy_update();
+-
+-	hrtimer_set_expires(&ts->sched_timer, next);
+-	hrtimer_forward_now(&ts->sched_timer, TICK_NSEC);
+-	tick_program_event(hrtimer_get_expires(&ts->sched_timer), 1);
+-	tick_nohz_activate(ts, NOHZ_MODE_LOWRES);
++	tick_setup_sched_timer(NOHZ_MODE_LOWRES);
+ }
+ 
+ static inline void tick_nohz_irq_enter(void)
+@@ -1529,7 +1519,9 @@ static enum hrtimer_restart tick_nohz_highres_handler(struct hrtimer *timer)
+ 
+ 	return HRTIMER_RESTART;
+ }
++#endif /* HIGH_RES_TIMERS */
+ 
++#if defined CONFIG_NO_HZ_COMMON || defined CONFIG_HIGH_RES_TIMERS
+ static int sched_skew_tick;
+ 
+ static int __init skew_tick(char *str)
+@@ -1542,15 +1534,19 @@ early_param("skew_tick", skew_tick);
+ 
+ /**
+  * tick_setup_sched_timer - setup the tick emulation timer
++ * @mode: tick_nohz_mode to setup for
+  */
+-void tick_setup_sched_timer(void)
++void tick_setup_sched_timer(int mode)
+ {
+ 	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
+ 	ktime_t now = ktime_get();
+ 
+ 	/* Emulate tick processing via per-CPU hrtimers: */
+ 	hrtimer_init(&ts->sched_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_HARD);
+-	ts->sched_timer.function = tick_nohz_highres_handler;
++#ifdef CONFIG_HIGH_RES_TIMERS
++	if (mode == NOHZ_MODE_HIGHRES)
++		ts->sched_timer.function = tick_nohz_highres_handler;
++#endif
+ 
+ 	/* Get the next period (per-CPU) */
+ 	hrtimer_set_expires(&ts->sched_timer, tick_init_jiffy_update());
+@@ -1564,12 +1560,15 @@ void tick_setup_sched_timer(void)
+ 	}
+ 
+ 	hrtimer_forward(&ts->sched_timer, now, TICK_NSEC);
+-	hrtimer_start_expires(&ts->sched_timer, HRTIMER_MODE_ABS_PINNED_HARD);
+-	tick_nohz_activate(ts, NOHZ_MODE_HIGHRES);
++#ifdef CONFIG_HIGH_RES_TIMERS
++	if (mode == NOHZ_MODE_HIGHRES)
++		hrtimer_start_expires(&ts->sched_timer, HRTIMER_MODE_ABS_PINNED_HARD);
++	else
++#endif
++		tick_program_event(hrtimer_get_expires(&ts->sched_timer), 1);
++	tick_nohz_activate(ts, mode);
+ }
+-#endif /* HIGH_RES_TIMERS */
+ 
+-#if defined CONFIG_NO_HZ_COMMON || defined CONFIG_HIGH_RES_TIMERS
+ void tick_cancel_sched_timer(int cpu)
+ {
+ 	struct tick_sched *ts = &per_cpu(tick_cpu_sched, cpu);
+@@ -1581,7 +1580,7 @@ void tick_cancel_sched_timer(int cpu)
+ 
+ 	memset(ts, 0, sizeof(*ts));
+ }
+-#endif
++#endif /* CONFIG_NO_HZ_COMMON || CONFIG_HIGH_RES_TIMERS */
+ 
+ /*
+  * Async notification about clocksource changes
+diff --git a/kernel/time/tick-sched.h b/kernel/time/tick-sched.h
+index 5ed5a9d41d5a..35808bbb8a47 100644
+--- a/kernel/time/tick-sched.h
++++ b/kernel/time/tick-sched.h
+@@ -102,7 +102,7 @@ struct tick_sched {
+ 
+ extern struct tick_sched *tick_get_tick_sched(int cpu);
+ 
+-extern void tick_setup_sched_timer(void);
++extern void tick_setup_sched_timer(int mode);
+ #if defined CONFIG_NO_HZ_COMMON || defined CONFIG_HIGH_RES_TIMERS
+ extern void tick_cancel_sched_timer(int cpu);
+ #else
+-- 
+2.34.1
 
-        ravb_set_config_mode(ndev);
-
-        usleep_range(1000, 2000);
-
-        pr_err("%s(): 2: mode=%08x\n", __func__, ravb_read(ndev, CSR));
-
-
-
-        if (info->gptp || info->ccc_gac) {
-
-                /* Set GTI value */
-
-                error = ravb_set_gti(ndev);
-
-                if (error)
-
-                        goto out_disable_refclk;
-
-
-
-                /* Request GTI loading */
-
-                ravb_modify(ndev, GCCR, GCCR_LTI, GCCR_LTI);
-
-        }
-
-
-
-        if (info->internal_delay) {
-
-                ravb_parse_delay_mode(np, ndev);
-
-                ravb_set_delay_mode(ndev);
-
-        }
-
-
-
-        ravb_write(ndev, priv->desc_bat_dma, DBAT);
-
-
-
-        /* Initialise PTP Clock driver */
-
-        ravb_wait(ndev, GCCR, GCCR_TCR, GCCR_TCR_NOREQ);
-
-        ravb_modify(ndev, GCCR, GCCR_TCSS, GCCR_TCSS_ADJGPTP);
-
-
-However, I don't have a PTP setup to check.
-
-> 
-> I will double check also the value of MSTOP for Ethernet on RZ/G3S (though
-> I checked that this worked on my code), maybe RZ/G3S doesn't go to standby,
-> I have a bug in my code and that's why it works for RZ/G3S...
-
-All is good in RZ/G3S. MSTOP is set accordingly and no issues.
-
-Thank you,
-Claudiu Beznea
-
-> 
-> Also, I see that the STANDBY state is missing from CCC.OPC documentation
-> (chapter "37A.3.1 AVB-DMAC Operating Modes" on RZ/G1H vs "31.5.1 DMAC
-> Operating Modes" on RZ/G3S).
-> 
->>
->> 37.7.2 for Ether ("sh-eth") states:
->>
->>     After returning from the standby state, the ether should be reset
->> and initialized.
-> 
-> Ok, I found that one in my G1H manual. It is not available on RZ/G3S
-> manual, though.
-> 
->>
->> Sergey: does sh_eth.c really reinitialize the hardware completely after
->> pm_runtime_get_sync()?
->>
->>> Also, the manual of G1H states from some IPs that register state is
->>> preserved in standby mode but not for AVB.
->>
->> Indeed, AFAIK all modules on SH/R-Mobile, R-Car, and RZ/G SoCs keep
->> their register contents when in standby-mode (module standby enabled).
->> On modules in a (not always-on) power area (e.g. SH/R-Mobile), register
->> contents are lost when the power area is powered down.
->> So I'd be surprised if EtherAVB behaves differently.  Of course that
->> is still possible, there are big difference between EtherAVB in R-Car
->> Gen2 and RZ/G1, and the revision found in later SoC families.
->>
->>>>> The reasons I've limited only to RZ/G3S are:
->>>>> 1/ I don't have all the platforms to test it
->>>>
->>>>    That's a usual problem with the kernel development...
->>>>
->>>>> 2/ on G1H this doesn't work. I tried to debugged it but I don't have a
->>>>>    platform at hand, only remotely, and is hardly to debug once the
->>>>>    ethernet fails to work: probe is working(), open is executed, PHY is
->>>>>    initialized and then TX/RX is not working... don't know why ATM.
->>>>
->>>>    That's why we have the long bug fixing period after -rc1...
->>>
->>> I prefer to not introduce any bug by intention.
->>
->> Iff register contents are lost on RZ/G1H, I'd rather add
->> an extra clk_prepare_enable(priv->clk) to ravb_probe() on
->> "renesas,etheravb-rcar-gen2"....
-> 
-> This should work, though I would go with a pm_runtime_put_noidle().
-> 
-> Thank you,
-> Claudiu Beznea
-> 
->>
->> Gr{oetje,eeting}s,
->>
->>                         Geert
->>
