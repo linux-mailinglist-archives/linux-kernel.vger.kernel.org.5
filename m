@@ -2,115 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AA807FB5C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1058F7FB659
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:53:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234795AbjK1J2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 04:28:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45442 "EHLO
+        id S1343838AbjK1Jxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 04:53:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230506AbjK1J2b (ORCPT
+        with ESMTP id S230105AbjK1Jxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 04:28:31 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C331CC;
-        Tue, 28 Nov 2023 01:28:37 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-a002562bd8bso988439566b.0;
-        Tue, 28 Nov 2023 01:28:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701163716; x=1701768516; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/I37Hy+CPxtqaGJSStMJzaZK7V1cChne6wXUX2MFad4=;
-        b=A9Hvk3oCbZRaVXIKKfGepnGcLcNvJfFCshHrc13RyRUH4xZzCclsJbK5TuMAS61+YH
-         fBww3etSsCPpi0ioVhKBE3z9ExuQZNx/F63KsnrN1G6+mfocW4bbccUZv9X9sJJRcMBS
-         XTUkJdjGB7OhMNzI6eP6odf5EDpBVWjvduh+gdVAUH85Vdc9pwDa156EwdZpA3EVudiW
-         qMrvUfJZ2oCcmwjMHJcVO66SgV5okuC81SDxxb0cMBFW4EZ6v/naLrHC5RJ4MTJAdLWc
-         f2so1dD6X/WGRMP7b0gSnqLGbz9Xlf41FuSL5i8fPfKu1vhZm3tDiymEKlz+WlTj818p
-         tb6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701163716; x=1701768516;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/I37Hy+CPxtqaGJSStMJzaZK7V1cChne6wXUX2MFad4=;
-        b=NH46r8Ybst3dl5fpuIRPSfouA6n0meHoQyhRG3VLdLZg5N0W4ufMrSD9ZIu2tdl/rG
-         kLtzL7eyWFVlgda7dlft+jdcqkADPYdFbqMZQq9PJwC1PkCDpWIcfoYXL/Qjt3Kf5gWP
-         L8huybxVrcyplHIzHH5WjhM+gpmpip+uOId/5ahDo4psj+TI7MMgneu9wRfj4+dAIkwR
-         XeGVTOnrMaYqFvIRWD2g6a6FAeZVAWEoV4nCMF1HxZGx3QWTiGRN9sbL9b2wzhd9U6AS
-         hex97ThU9Cf5ypuCUVf7KAk3j4b/6sI9YjMCS6cfyuy7GIc7rI5k6bHyOokgP+JKDt5o
-         domQ==
-X-Gm-Message-State: AOJu0Yx3qcu/gMnAtsNLMzZHM7kQ6/Hin0XpIQS+v63ONQC99KAwJhE7
-        VGy98vtp1xBbIWnNOppSHGPdkYzM6yU=
-X-Google-Smtp-Source: AGHT+IFEH4EFXz1SkAIQ0bi87cfTz2YfZJMxHuimsbsOY121G4/9iPjVSo4FUzJwYEYUkxZgVW3udg==
-X-Received: by 2002:a17:906:c791:b0:9ad:8a96:ad55 with SMTP id cw17-20020a170906c79100b009ad8a96ad55mr16418289ejb.14.1701163715664;
-        Tue, 28 Nov 2023 01:28:35 -0800 (PST)
-Received: from [172.27.56.182] ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id 20-20020a170906319400b00a097c5162b0sm5140142ejy.87.2023.11.28.01.28.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Nov 2023 01:28:35 -0800 (PST)
-Message-ID: <4092804e-6266-47ae-a0f2-9658231fde40@gmail.com>
-Date:   Tue, 28 Nov 2023 11:28:32 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net/mlx5e: fix a potential double-free in
- fs_udp_create_groups
-Content-Language: en-US
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+        Tue, 28 Nov 2023 04:53:41 -0500
+Received: from aliyun-sdnproxy-1.icoremail.net (aliyun-cloud.icoremail.net [47.90.88.95])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 23C9FA8
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:53:45 -0800 (PST)
+Received: from localhost.localdomain (unknown [10.190.69.212])
+        by mail-app3 (Coremail) with SMTP id cC_KCgBn3o3wsmVlDtY0AA--.61010S4;
+        Tue, 28 Nov 2023 17:29:37 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn
 Cc:     Saeed Mahameed <saeedm@nvidia.com>,
         Leon Romanovsky <leon@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Simon Horman <horms@kernel.org>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
         Rahul Rameshbabu <rrameshbabu@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>, Aya Levin <ayal@nvidia.com>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tariq Toukan <tariqt@nvidia.com>
-References: <20231128084303.27227-1-dinghao.liu@zju.edu.cn>
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-In-Reply-To: <20231128084303.27227-1-dinghao.liu@zju.edu.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Zhengchao Shao <shaozhengchao@huawei.com>,
+        Simon Horman <horms@kernel.org>, Aya Levin <ayal@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] net/mlx5e: fix a potential double-free in fs_any_create_groups
+Date:   Tue, 28 Nov 2023 17:29:01 +0800
+Message-Id: <20231128092904.2916-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgBn3o3wsmVlDtY0AA--.61010S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrKrWxAr45WrW7CF4rKr1fXrb_yoWkKwc_Cr
+        4Iq3Z5JrW2qr4rKw15GrW5JrWIkr4qgrn3AFZIgFZ8t34UCF4UJw1fWF17uFn3uFyUAr98
+        Xr42qF47Cw17tjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbskFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWU
+        XwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
+        0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
+        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
+        IFyTuYvjfUF9a9DUUUU
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgsIBmVfIgMaAQAhsm
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When kcalloc() for ft->g succeeds but kvzalloc() for in fails,
+fs_any_create_groups() will free ft->g. However, its caller
+fs_any_create_table() will free ft->g again through calling
+mlx5e_destroy_flow_table(), which will lead to a double-free.
+Fix this by setting ft->g to NULL in fs_any_create_groups().
 
+Fixes: 0f575c20bf06 ("net/mlx5e: Introduce Flow Steering ANY API")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
 
-On 28/11/2023 10:43, Dinghao Liu wrote:
-> When kcalloc() for ft->g succeeds but kvzalloc() for in fails,
-> fs_udp_create_groups() will free ft->g. However, its caller
-> fs_udp_create_table() will free ft->g again through calling
-> mlx5e_destroy_flow_table(), which will lead to a double-free.
-> Fix this by removing the kfree(ft->g) in fs_udp_create_groups().
-> 
-> Fixes: 1c80bd684388 ("net/mlx5e: Introduce Flow Steering UDP API")
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c | 1 -
->   1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c b/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
-> index be83ad9db82a..806a5093ff63 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
-> @@ -153,7 +153,6 @@ static int fs_udp_create_groups(struct mlx5e_flow_table *ft, enum fs_udp_type ty
->   	ft->g = kcalloc(MLX5E_FS_UDP_NUM_GROUPS, sizeof(*ft->g), GFP_KERNEL);
->   	in = kvzalloc(inlen, GFP_KERNEL);
->   	if  (!in || !ft->g) {
-> -		kfree(ft->g);
->   		kvfree(in);
->   		return -ENOMEM;
->   	}
+Changelog:
 
-Same comment applies here. See the other mail thread.
+v2: Setting ft->g to NULL instead of removing the kfree().
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c b/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
+index be83ad9db82a..6207ffe74233 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
+@@ -435,6 +435,7 @@ static int fs_any_create_groups(struct mlx5e_flow_table *ft)
+ 	in = kvzalloc(inlen, GFP_KERNEL);
+ 	if  (!in || !ft->g) {
+ 		kfree(ft->g);
++		ft->g = NULL;
+ 		kvfree(in);
+ 		return -ENOMEM;
+ 	}
+-- 
+2.17.1
+
