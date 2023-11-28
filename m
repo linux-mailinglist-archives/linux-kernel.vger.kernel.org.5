@@ -2,128 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 148EC7FB949
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:19:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F897FB953
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:20:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344527AbjK1LT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 06:19:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39984 "EHLO
+        id S1344124AbjK1LU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 06:20:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344124AbjK1LT2 (ORCPT
+        with ESMTP id S1344564AbjK1LUW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 06:19:28 -0500
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2136D6
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 03:19:34 -0800 (PST)
-Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-462bf380db8so1824781137.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 03:19:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701170374; x=1701775174; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=bCnoZKgpcEhOGCM5lZjXBdwz27cftHLpr/W77wEAkbk=;
-        b=QLTkKrhsbZKx7TkYKjao9rP3Z48bnx4LI+O1SmR/pn94fMqJiB9R1+Y28+9lH8m0XC
-         8xyuTkVdIKG0ceIMqE+JGSpNWqnpPTyL3abpsLt4z0pouBikoPRr6ngYY2eUDBV5bavu
-         hE0t2TwEpf6wmhbAvjltDh2kckliCHlH/t2n8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701170374; x=1701775174;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bCnoZKgpcEhOGCM5lZjXBdwz27cftHLpr/W77wEAkbk=;
-        b=Z2ZHFrfuAPH79oHVlzKkPWYj9HJqwEBPj+Qkzhp55VmbcGDbb6Fm8oYTNUIfTHqfdc
-         CBJM2EY9T2wDkTilR2M9tSaF35m7vS7K+6aZFbBuqBJ0yjpCdyDFoMwoet2XSLH3rQtH
-         7Kgxy4hBJQxR4PbL8dI2oxiuv3Fp8zp0qXUnfEraEZqdecdyd7cqvomI430yfxDZFjZV
-         gPeryCxuRgv3Ul/f6xaQaoPIEw3hZ0l2PCinlEmK/GWNNZyI3UFsMBf7Kv8DQQg094X4
-         itLVNuQoACbKKe5b91AAYgMeY6us/J5F6gDqPHEvwWhkK0tVT6QnrH9OJjLvSrxHNo3z
-         tNJQ==
-X-Gm-Message-State: AOJu0YzGfSXnjYXMilz/A2UiQ/BeRcpW1B5DQlaZRq++LcY+dXbrpDfD
-        tQ6NE3+9t8mhSRUNE3fc+GZCeQ==
-X-Google-Smtp-Source: AGHT+IH87Ag0JlT90Hx66H+qK+YLeNQoRQwoQQDAx90SCLVYeMakySpUwE7/cgjUOuOsUEPWnqz5xw==
-X-Received: by 2002:a05:6102:34f5:b0:45f:bab9:4414 with SMTP id bi21-20020a05610234f500b0045fbab94414mr16425679vsb.24.1701170373973;
-        Tue, 28 Nov 2023 03:19:33 -0800 (PST)
-Received: from google.com (193.132.150.34.bc.googleusercontent.com. [34.150.132.193])
-        by smtp.gmail.com with ESMTPSA id dw12-20020a0562140a0c00b0067a1c7d8e98sm3852798qvb.41.2023.11.28.03.19.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 03:19:33 -0800 (PST)
-Date:   Tue, 28 Nov 2023 11:19:32 +0000
-From:   Paz Zcharya <pazz@chromium.org>
-To:     Andrzej Hajda <andrzej.hajda@intel.com>
-Cc:     Subrata Banik <subratabanik@google.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        intel-gfx@lists.freedesktop.org,
-        Marcin Wojtas <mwojtas@chromium.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Sean Paul <seanpaul@chromium.org>, matthew.auld@intel.com,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Drew Davenport <ddavenport@chromium.org>,
-        David Airlie <airlied@gmail.com>,
-        Nirmoy Das <nirmoy.das@intel.com>
-Subject: Re: [Intel-gfx] [PATCH] drm/i915/display: Fix phys_base to be
- relative not absolute
-Message-ID: <ZWXMxLPIwXgwbEkz@google.com>
-References: <20231105172718.18673-1-pazz@chromium.org>
- <ZVQ3d8FFqxsy0OX7@intel.com>
- <ZVfw3ghfBLdHB7uk@google.com>
- <8dd6f4da-dcc9-4ea3-8395-bf048b0dbc93@intel.com>
- <6f08cfee-a60b-4f6e-b69a-20517c563259@intel.com>
- <ZWVizpRkf5iJ2LnQ@google.com>
- <51baffb9-2249-4080-a245-eb1e03c02b9b@intel.com>
+        Tue, 28 Nov 2023 06:20:22 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B1B9D60
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 03:20:26 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id AF679C433CA;
+        Tue, 28 Nov 2023 11:20:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701170425;
+        bh=urPJ4vOJ76R60Bbw9R055iOzZ5pzXSFIvAM6WcsmwOU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=VkinbTfpjETTMtxSNDuhNEZjy8WF5A5l5TDTfxisiOTD18nJifwg9L5X92OGyDQzy
+         IzPlX8+ymSluUnRVxgYNQM/+KZOjYfQvcvHtiYl8nXIeDMG6auDB6jya+wCobGeOEG
+         qQotkBZ/YvmFWR7DUi55rRs3RW1wfSse4iCqHxxKVEu5z/NUtq6pRRyhSG4cspsg2i
+         iQD2DxX55FTfT4BbCgNjRD2Z7++hSdJtJg5ZqalgABybFe5NW9321r9ZeHOJlH5N+L
+         XUvM6ztc7EcMM5ZLzfGsfI00pslFCNiahOYqc8of2bKn78TeBQXHL1wRLq4jBz8BEc
+         Z9oAgnFi0lWpg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8FF05C39562;
+        Tue, 28 Nov 2023 11:20:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <51baffb9-2249-4080-a245-eb1e03c02b9b@intel.com>
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
+Subject: Re: [PATCH net] octeontx2-pf: Fix adding mbox work queue entry when
+ num_vfs > 64
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170117042558.17319.13811133588326696769.git-patchwork-notify@kernel.org>
+Date:   Tue, 28 Nov 2023 11:20:25 +0000
+References: <1700930042-5400-1-git-send-email-sbhatta@marvell.com>
+In-Reply-To: <1700930042-5400-1-git-send-email-sbhatta@marvell.com>
+To:     Subbaraya Sundeep Bhatta <sbhatta@marvell.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
+        edumazet@google.com, sgoutham@marvell.com, gakula@marvell.com,
+        hkelam@marvell.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 12:12:08PM +0100, Andrzej Hajda wrote:
-> On 28.11.2023 04:47, Paz Zcharya wrote:
-> > 
-> > On Mon, Nov 27, 2023 at 8:20 PM Paz Zcharya <pazz@chromium.org> wrote:
-> > 
-> > Hey Andrzej,
-> > 
-> > On a second thought, what do you think about something like
-> > 
-> > +               gen8_pte_t __iomem *gte = to_gt(i915)->ggtt->gsm;
-> > +               gen8_pte_t pte;
-> > +               gte += base / I915_GTT_PAGE_SIZE;
-> > +               pte = ioread64(gte);
-> > +               pte = pte & I915_GTT_PAGE_MASK;
-> > +               phys_base = pte - i915->mm.stolen_region->region.start;
-> > 
-> > The only difference is the last line.
-> 
-> Bingo :) It seems to be generic algorithm to get phys_base for all
-> platforms:
-> - on older platforms stolen_region points to system memory which starts at
-> 0,
-> - on DG2 it uses lmem region which starts at 0 as well,
-> - on MTL stolen_region points to stolen-local which starts at 0x800000.
-> 
-> So this whole "if (IS_DGFX(i915)) {...} else {...}" could be replaced
-> with sth generic.
-> 1. Find pte.
-> 2. if(IS_DGFX(i915) && pte & GEN12_GGTT_PTE_LM) mem =
-> i915->mm.regions[INTEL_REGION_LMEM_0] else mem = i915->mm.stolen_region
-> 3. phys_base = (pte & I915_GTT_PAGE_MASK) - mem->region.start;
-> 
-> Regards
-> Andrzej
-> 
-> 
+Hello:
 
-Good stuff!! I'll work on this revision and resubmit.
+This patch was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-Thank you so much Andrzej!
+On Sat, 25 Nov 2023 22:04:02 +0530 you wrote:
+> From: Geetha sowjanya <gakula@marvell.com>
+> 
+> When more than 64 VFs are enabled for a PF then mbox communication
+> between VF and PF is not working as mbox work queueing for few VFs
+> are skipped due to wrong calculation of VF numbers.
+> 
+> Fixes: d424b6c02415 ("octeontx2-pf: Enable SRIOV and added VF mbox handling")
+> Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+> Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
+> 
+> [...]
+
+Here is the summary with links:
+  - [net] octeontx2-pf: Fix adding mbox work queue entry when num_vfs > 64
+    https://git.kernel.org/netdev/net/c/51597219e0cd
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
