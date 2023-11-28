@@ -2,108 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4DC7FB4FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:57:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74DAB7FB4FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:58:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344331AbjK1I5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 03:57:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34790 "EHLO
+        id S1344333AbjK1I5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 03:57:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344322AbjK1I5f (ORCPT
+        with ESMTP id S1344328AbjK1I5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 03:57:35 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ED08182
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:57:41 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50baa2a278bso3952916e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:57:41 -0800 (PST)
+        Tue, 28 Nov 2023 03:57:37 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C797A7
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:57:43 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6cd89f2af9dso2167877b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:57:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ferroamp-se.20230601.gappssmtp.com; s=20230601; t=1701161860; x=1701766660; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nZ5f4xCIO2ZXm2cUVIZd9fOfVKkANnuLxl9JfSDH3H4=;
-        b=BykxVZt3ADcr/JfZmgteC6QClsl4e0+e/lD8tk1ttdCiE2NhUj1i91XVxlakBisFAR
-         NyFmWPeUm6xalZUM9K7w+d74hw6yBaCNzco+VL+8CPDT5QL4cONU8Z1t/fonepBwiF5X
-         eE9847dKF8noCvO83/g5gEpTfLIL+O+h2XlmgAkGXyk0j57HEFbvdcgu0LaZqD+AFXLn
-         s0gVIreJKHntV4YmTwVrS41djxJSNSNnR4TSvvK4mKNFav0JHhkdtAcOOLlSJyuQSoRW
-         8Qmz+nGgFGbVnhXCm76lfQFGxPx5LUi7yxUQM7yv3dbX1wW++RTN7THv10KExg/SAV6n
-         Pwww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701161860; x=1701766660;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=sifive.com; s=google; t=1701161863; x=1701766663; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nZ5f4xCIO2ZXm2cUVIZd9fOfVKkANnuLxl9JfSDH3H4=;
-        b=ktcMeg+hwR6llupJG3jHOlsuFn1jACso0TqcQzmX1wYwm+gXBhWI4/mOXeQokeUSld
-         fFICKNvz3xKz7QCqNn7hiZ8VkYjU/r1YPQ/PpkzwIHzRtGdf3GM6vp26cvZP+qLlQtpx
-         XjWoeqiZi/hFmOS9eIXRIs9DYpiaNoplEjrB3wEgYiwaiMze8TX3TRRO7eKQ/wVL/JUj
-         jdCEa5agrT4/KLBjWPi4+uu55SZdEjRpjAANgBdFDxa0OxXVkNDQsgHobZ4KHnrM3J5Z
-         Ndyq2KkfKYVwpsz2gDrzVp34bjwc6ikLUEv9T3fUf1DlEtCBK35Lb0wD8lgIuPaipHuB
-         6hKw==
-X-Gm-Message-State: AOJu0Yxo5ss9QnazfiGKwVRDWhC8UW2leNq3uqpyVAP3zsCPjNFWVg0G
-        aYKPuBdbGQTT3roki0rb+j2q0A==
-X-Google-Smtp-Source: AGHT+IF34nWU7hOhaSOTP7wYX7j9yWUCipg9dusjDeaF8bjTmFBJ66VMTNPJbpiQ+ehJdbpDj763XQ==
-X-Received: by 2002:a19:5e03:0:b0:507:a003:57a2 with SMTP id s3-20020a195e03000000b00507a00357a2mr5918449lfb.52.1701161859761;
-        Tue, 28 Nov 2023 00:57:39 -0800 (PST)
-Received: from debian ([185.117.107.42])
-        by smtp.gmail.com with ESMTPSA id y26-20020ac2447a000000b0050aaaa33204sm1776147lfl.64.2023.11.28.00.57.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 00:57:39 -0800 (PST)
-Date:   Tue, 28 Nov 2023 09:57:35 +0100
-From:   =?iso-8859-1?Q?Ram=F3n?= Nordin Rodriguez 
-        <ramon.nordin.rodriguez@ferroamp.se>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] net: microchip_t1s: additional phy support and
- collision detect handling
-Message-ID: <ZWWrf4svgQc8x1PU@debian>
-References: <20231127104045.96722-1-ramon.nordin.rodriguez@ferroamp.se>
- <d79803b5-60ec-425b-8c5c-3e96ff351e09@lunn.ch>
- <ZWS2GYBGGZg2MS0d@debian>
- <270f74c0-4a1d-4a82-a77c-0e8a8982e80f@lunn.ch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <270f74c0-4a1d-4a82-a77c-0e8a8982e80f@lunn.ch>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
-        T_SPF_PERMERROR autolearn=ham autolearn_force=no version=3.4.6
+        bh=BTYsamGNaQ8fRNjNMaxridTGMNfJmuFsAlfcl9yavQs=;
+        b=jrl1bmceyHOFSDtvQApVUTf5TVwt6J7Mv/Mq6VjJic6wS1BHy8agCIMRXABStPzYOw
+         WmGDF2ELP6qmx6LyxcP+KwWnLsahstorvThiBWPTRZGDOrQNF1rg3Irv0yS0JxZpAzVK
+         +0uo5DLXF828BUL6NXVFSIssdFrHdF09t+NwEQ0zNYo9VXWOAMrrm1TgOoRgreRtRcF2
+         CIk7oAr2rjiSDFZU/pTD6x+OGzyH1/7K01yTO2VDaNV5kn5q7xr97kgu5fvPJz7EVVNI
+         tPP0pw6WF8zTDk/rJtadRqtw+LHUaHM5rrz1+FTZCKHQfxK87KOiHxJ1vUbpEUr2IGFg
+         /m3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701161863; x=1701766663;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BTYsamGNaQ8fRNjNMaxridTGMNfJmuFsAlfcl9yavQs=;
+        b=CNaiqXOvIrbVyUbTffzoLAuPrRuLGZwkvOWy4q57AJOSdGI1+aESKFr90kuYkCWIvI
+         V9ZQRbBxu3HnvRH/6hXfUUmeJJzrLzEE8N6ICsQyUrMo39DlaJprXfTjiwPLGGI57LO1
+         W0d6SjCeXvKfZYg045RO5dl5ASBNxjmJtkqV5xOEC6NUUToKD5oAq8a7/YQtyKCAZbJ/
+         ImRNPayqiZO3oEL9YM+GlSKonNeiPNa6lM9ORfYoURYe3Al+Bz3Kr9Nwmv8BgztSH4W/
+         5PcJiDZuJogexmupx1+5pkEB9xlC+pt+eCtKfbK2gChiBbUuFg4R3sfY2RjGaznzzT54
+         QO9Q==
+X-Gm-Message-State: AOJu0YwxrAsswS6trx6WebQAyU972VUVT5+CinAghwH8XTmtPGPp6B9y
+        1i5msRBKunFnRvoHPkv5gaoUqA==
+X-Google-Smtp-Source: AGHT+IE/fng9QOuiUZBluDfizhRPgWmYcOqQIfRFSizRR9MTI4Ihwkn53PdiTZ2Of0dfq0nFdnkdKA==
+X-Received: by 2002:a05:6a20:5650:b0:18b:9053:d865 with SMTP id is16-20020a056a20565000b0018b9053d865mr15666672pzc.42.1701161862894;
+        Tue, 28 Nov 2023 00:57:42 -0800 (PST)
+Received: from ?IPv6:2402:7500:4ce:8338:14c0:b892:2482:e230? ([2402:7500:4ce:8338:14c0:b892:2482:e230])
+        by smtp.gmail.com with ESMTPSA id g8-20020a056a00078800b00694fee1011asm8522232pfu.208.2023.11.28.00.57.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 28 Nov 2023 00:57:42 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
+Subject: Re: [PATCH v2 13/13] RISC-V: crypto: add Zvkb accelerated ChaCha20
+ implementation
+From:   Jerry Shih <jerry.shih@sifive.com>
+In-Reply-To: <20231128042503.GL1463@sol.localdomain>
+Date:   Tue, 28 Nov 2023 16:57:38 +0800
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>, palmer@dabbelt.com,
+        Albert Ou <aou@eecs.berkeley.edu>, herbert@gondor.apana.org.au,
+        davem@davemloft.net, conor.dooley@microchip.com, ardb@kernel.org,
+        heiko@sntech.de, phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <3B3784E0-0DE2-4A99-878E-657BB0E0765D@sifive.com>
+References: <20231127070703.1697-1-jerry.shih@sifive.com>
+ <20231127070703.1697-14-jerry.shih@sifive.com>
+ <20231128042503.GL1463@sol.localdomain>
+To:     Eric Biggers <ebiggers@kernel.org>
+X-Mailer: Apple Mail (2.3445.9.7)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 05:03:54PM +0100, Andrew Lunn wrote:
-> > * 3-4 nodes (depending on how many usb ports and dongles I have)
-> > * run iperf with long cables and CSMA/CD
-> > * run iperf with long cables and CMSA/No CD
-> > 
-> > I'll report back the results. Anything you'd like to add/focus on with
-> > evaluation?
-> 
-> Humm, thinking about how CSMA/CD works...
-> 
-> Maybe look at what counters the MAC provides. Does it have collisions
-> and bad FCS? A collision should result in a bad FCS, if you are not
-> using CD. So if things are working correctly, the count for CD should
-> move to FCS if you turn CD off. If CD is falsely triggering, FCS as a
-> % should not really change, but you probably get more frames over the
-> link?
-> 
+On Nov 28, 2023, at 12:25, Eric Biggers <ebiggers@kernel.org> wrote:
+> On Mon, Nov 27, 2023 at 03:07:03PM +0800, Jerry Shih wrote:
+>> +config CRYPTO_CHACHA20_RISCV64
+>=20
+> Can you call this kconfig option just CRYPTO_CHACHA_RISCV64?  I.e. =
+drop the
+> "20".  The ChaCha family of ciphers includes more than just ChaCha20.
+>=20
+> The other architectures do use "CHACHA20" in their equivalent option, =
+even when
+> they implement XChaCha12 too.  But that's for historical reasons -- we =
+didn't
+> want to break anything by renaming the kconfig options.  For a new =
+option we
+> should use the more general name from the beginning, even if initially =
+only
+> ChaCha20 is implemented (which is fine).
 
-That is some really cool input, I have to do some datasheet digging and
-hacking. I'll try to set everything up today, tomorrow I can hang in
-the lab after hours and test things out!
+I will use `CRYPTO_CHACHA_RISCV64` instead.
 
-Partihban suggested that Microchips support might be able to help with
-testing, might give them a ping soon as I a solid plan.
+>> +static int chacha20_encrypt(struct skcipher_request *req)
+>=20
+> riscv64_chacha_crypt(), please.  chacha20_encrypt() is dangerously =
+close to
+> being the same name as chacha20_crypt() which already exists in =
+crypto/chacha.h.
 
-Really appreciate the insight! 
-R
+The function will will have additional prefix/suffix.
+
+>> +static inline bool check_chacha20_ext(void)
+>> +{
+>> +	return riscv_isa_extension_available(NULL, ZVKB) &&
+>> +	       riscv_vector_vlen() >=3D 128;
+>> +}
+>=20
+> Just to double check: your intent is to simply require VLEN >=3D 128 =
+for all the
+> RISC-V vector crypto code, even when some might work with a shorter =
+VLEN?  I
+> don't see anything in chacha-riscv64-zvkb.pl that assumes VLEN >=3D =
+128, for
+> example.  I think it would even work with VLEN =3D=3D 32.
+
+Yes, the chacha algorithm here only needs the VLEN>=3D32. But I think we =
+will not get
+benefits with that kind of hw.
+
+> I think requiring VLEN >=3D 128 anyway makes sense so that we don't =
+have to worry
+> about validating the code with shorter VLEN.  And "application =
+processors" are
+> supposed to have VLEN >=3D 128.  But I just wanted to make sure this =
+is what you
+> intended too.
+
+The standard "V" extension assumes VLEN>=3D128. I just follow that =
+assumption.
+=
+https://github.com/riscv/riscv-v-spec/blob/master/v-spec.adoc#183-v-vector=
+-extension-for-application-processors
+
+-Jerry
+
