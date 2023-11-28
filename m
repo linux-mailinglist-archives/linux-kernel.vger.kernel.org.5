@@ -2,67 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5817FB9F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:15:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D46EE7FB9F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:18:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344547AbjK1MPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 07:15:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49560 "EHLO
+        id S1344636AbjK1MSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 07:18:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344302AbjK1MPd (ORCPT
+        with ESMTP id S1344302AbjK1MSH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 07:15:33 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5104F183
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 04:15:39 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E44DCC15;
-        Tue, 28 Nov 2023 04:16:25 -0800 (PST)
-Received: from [10.1.33.188] (XHFQ2J9959.cambridge.arm.com [10.1.33.188])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E69273F73F;
-        Tue, 28 Nov 2023 04:15:32 -0800 (PST)
-Message-ID: <58af512c-3d7d-4774-88f7-6336c9384b61@arm.com>
-Date:   Tue, 28 Nov 2023 12:15:30 +0000
+        Tue, 28 Nov 2023 07:18:07 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96688A3;
+        Tue, 28 Nov 2023 04:18:13 -0800 (PST)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ASBCugr004876;
+        Tue, 28 Nov 2023 12:18:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=M0R7sT0yHbVLSs9KlT1UhPFGTZrBwQe0mpt3AA0irHU=;
+ b=GEL8QTyC3NK1msYD5mFAokLAV9OWesv5g9qO52CKWjWnnXHQZKHvfKArVGl0uuZTi74X
+ jTCnzw6wCtlDjWSuEJd7FrJ5njxoMVLuDd3PmxS9FFxdtZ39boRYuwUTk5ab8eX68arS
+ njyNCSVeFKLsqxohNspWSVJqfoBBpPbUwNw/ugfKNyqWeGRxdn/qUZaTdjmUHifmQMdh
+ wfd0TGgh4uN5vWTLaZfWCzP1SbrC7p6BNo3xTLVKNnVXlPZN4X7lXP7lFLfasdCNWyE2
+ /8vFxr29Yt/tx5QygOKniXlbXFo7m1rxRKSWDzoT9Pyoy1NcT9Cn6CaR2pzqZuxg0qDt ww== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3unf4t9v2t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Nov 2023 12:18:10 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ASAWfDl031072;
+        Tue, 28 Nov 2023 12:18:09 GMT
+Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uku8sys7f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Nov 2023 12:18:09 +0000
+Received: from smtpav06.dal12v.mail.ibm.com (smtpav06.dal12v.mail.ibm.com [10.241.53.105])
+        by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ASCI8fe21037600
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Nov 2023 12:18:09 GMT
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A951058055;
+        Tue, 28 Nov 2023 12:18:08 +0000 (GMT)
+Received: from smtpav06.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3D04758043;
+        Tue, 28 Nov 2023 12:18:08 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.61.23.127])
+        by smtpav06.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 28 Nov 2023 12:18:08 +0000 (GMT)
+Message-ID: <10660ec7032cf66a772ecd0b7cfdbba88849929a.camel@linux.ibm.com>
+Subject: Re: [PATCH v3] rootfs: Fix support for rootfstype= when root= is
+ given
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Stefan Berger <stefanb@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, initramfs@vger.kernel.org,
+        stable@vger.kernel.org, Rob Landley <rob@landley.net>
+Date:   Tue, 28 Nov 2023 07:18:07 -0500
+In-Reply-To: <2023112826-cesspool-cabbie-06c5@gregkh>
+References: <20231120011248.396012-1-stefanb@linux.ibm.com>
+         <2023112826-cesspool-cabbie-06c5@gregkh>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: zE4Nml1FFyToPOchE1F8OrpMNtyMU7T0
+X-Proofpoint-ORIG-GUID: zE4Nml1FFyToPOchE1F8OrpMNtyMU7T0
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v7 00/10] Small-sized THP for anonymous memory
-Content-Language: en-GB
-To:     David Hildenbrand <david@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231122162950.3854897-1-ryan.roberts@arm.com>
- <ZV9267tQEhoPzCru@casper.infradead.org>
- <f8e518f2-fb15-4295-a335-bea5a8010ab2@arm.com>
- <ZWC9lwDAjMZsNzoG@casper.infradead.org>
- <9c8f6d2a-7ed8-45d2-9684-d77489bd99b8@redhat.com>
- <ZWDG6BYqmZVpyTLL@casper.infradead.org>
- <26c361bc-6d87-4a57-9fae-ef635c9039c7@redhat.com>
- <87sf4rppuc.fsf@nvdebian.thelocal>
- <51e6c9f1-e863-464b-b5f3-d7f60a7ebed6@arm.com>
- <b2d19306-0d68-4aef-9b68-15948ddc8ea0@nvidia.com>
- <afb92816-25ed-41c8-a48b-94fb2d885d8e@redhat.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <afb92816-25ed-41c8-a48b-94fb2d885d8e@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-28_12,2023-11-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=963
+ malwarescore=0 priorityscore=1501 suspectscore=0 clxscore=1015 mlxscore=0
+ phishscore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311280098
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,33 +89,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/11/2023 08:48, David Hildenbrand wrote:
+On Tue, 2023-11-28 at 09:54 +0000, Greg KH wrote:
+> On Sun, Nov 19, 2023 at 08:12:48PM -0500, Stefan Berger wrote:
+> > Documentation/filesystems/ramfs-rootfs-initramfs.rst states:
+> > 
+> >   If CONFIG_TMPFS is enabled, rootfs will use tmpfs instead of ramfs by
+> >   default.  To force ramfs, add "rootfstype=ramfs" to the kernel command
+> >   line.
+> > 
+> > This currently does not work when root= is provided since then
+> > saved_root_name contains a string and rootfstype= is ignored. Therefore,
+> > ramfs is currently always chosen when root= is provided.
+> > 
+> > The current behavior for rootfs's filesystem is:
+> > 
+> >    root=       | rootfstype= | chosen rootfs filesystem
+> >    ------------+-------------+--------------------------
+> >    unspecified | unspecified | tmpfs
+> >    unspecified | tmpfs       | tmpfs
+> >    unspecified | ramfs       | ramfs
+> >     provided   | ignored     | ramfs
+> > 
+> > rootfstype= should be respected regardless whether root= is given,
+> > as shown below:
+> > 
+> >    root=       | rootfstype= | chosen rootfs filesystem
+> >    ------------+-------------+--------------------------
+> >    unspecified | unspecified | tmpfs  (as before)
+> >    unspecified | tmpfs       | tmpfs  (as before)
+> >    unspecified | ramfs       | ramfs  (as before)
+> >     provided   | unspecified | ramfs  (compatibility with before)
+> >     provided   | tmpfs       | tmpfs  (new)
+> >     provided   | ramfs       | ramfs  (new)
+> > 
+> > This table represents the new behavior.
+> > 
+> > Fixes: 6e19eded3684 ("initmpfs: use initramfs if rootfstype= or root=  specified")
+> > Cc: <stable@vger.kernel.org>
+> > Signed-off-by: Rob Landley <rob@landley.net>
+> > Link: https://lore.kernel.org/lkml/8244c75f-445e-b15b-9dbf-266e7ca666e2@landley.net/
+> > Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
 > 
->>>
->>> Agreed. We are bikeshedding here. But if we really can't swallow "small-sized
->>> THP" then perhaps the most efficient way to move this forwards is to review the
->>> documentation (where "small-sized THP" appears twice in order to differentiate
->>> from PMD-sized THP) - its in patch 3. Perhaps it will be easier to come up with
->>> a good description in the context of those prose? Then once we have that,
->>> hopefully a term will fall out that I'll update the commit logs with.
->>>
->>
->> I will see you over in patch 3, then. I've already looked at it and am going
->> to suggest a long and a short name. The long name is for use in comments and
->> documentation, and the short name is for variable fragments:
->>
->>       Long name:  "pte-mapped THPs"
->>       Short names: pte_thp, or pte-thp
+> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > 
-> The issue is that any THP can be pte-mapped, even a PMD-sized THP. However, the
-> "natural" way to map a PMD-sized THP is using a PMD.
-> 
+> Who should take this patch?  Me?  Or someone else?
 
-How about we just stop trying to come up with a term for the "small-sized THP"
-vs "PMD-sized THP" and instead invent a name that covers ALL THP:
+Reviewed-and-Tested-by: Mimi Zohar <zohar@linux.ibm.com>
 
-"multi-size THP" vs "PMD-sized THP".
+Thanks, Greg.  As there is no initramfs maintainer, I'd appreciate your
+picking it up.
 
-Then in the docs we can talk about how multi-size THP introduces the ability to
-allocate memory in blocks that are bigger than a base page but smaller than
-traditional PMD-size, in increments of a power-of-2 number of pages.
+-- 
+thanks,
+
+Mimi
+
