@@ -2,113 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD0D7FB135
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 06:25:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 725A17FB136
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 06:27:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234622AbjK1FZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 00:25:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53690 "EHLO
+        id S1343541AbjK1F0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 00:26:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343538AbjK1FZm (ORCPT
+        with ESMTP id S232858AbjK1F0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 00:25:42 -0500
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30409D63
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 21:25:42 -0800 (PST)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id E7A2424E16E;
-        Tue, 28 Nov 2023 13:25:40 +0800 (CST)
-Received: from EXMBX164.cuchost.com (172.16.7.74) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 28 Nov
- 2023 13:25:40 +0800
-Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX164.cuchost.com
- (172.16.7.74) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 28 Nov
- 2023 13:25:40 +0800
-Received: from EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f]) by
- EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f%17]) with mapi id
- 15.00.1497.044; Tue, 28 Nov 2023 13:25:40 +0800
-From:   JeeHeng Sia <jeeheng.sia@starfivetech.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "conor@kernel.org" <conor@kernel.org>,
-        "kernel@esmil.dk" <kernel@esmil.dk>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "emil.renner.berthing@canonical.com" 
-        <emil.renner.berthing@canonical.com>
-CC:     "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>
-Subject: RE: [PATCH 6/7] serial: xilinx_uartps: Add new compatible string for
- StarFive
-Thread-Topic: [PATCH 6/7] serial: xilinx_uartps: Add new compatible string for
- StarFive
-Thread-Index: AQHaINIphsM8jXvQa0qbM8hLZxm2GLCNVWaAgAG91cA=
-Date:   Tue, 28 Nov 2023 05:25:40 +0000
-Message-ID: <b423574c710b44aabb36cd434693b3e2@EXMBX066.cuchost.com>
-References: <20231127013602.253835-1-jeeheng.sia@starfivetech.com>
- <20231127013602.253835-7-jeeheng.sia@starfivetech.com>
- <07fc5ebe-47b2-4843-ad49-36e6686e5a9a@kernel.org>
-In-Reply-To: <07fc5ebe-47b2-4843-ad49-36e6686e5a9a@kernel.org>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [202.188.176.82]
-x-yovoleruleagent: yovoleflag
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 28 Nov 2023 00:26:52 -0500
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58AC6194;
+        Mon, 27 Nov 2023 21:26:59 -0800 (PST)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-54b450bd014so2673779a12.3;
+        Mon, 27 Nov 2023 21:26:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701149218; x=1701754018;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cs8J+z9oefdjEOONTS8X1AYFuZTGXF+nJPYfwQshUts=;
+        b=vH+h7FhJXJ7uiZbQfHrTWgjAy61lE49BJSTX54mdyW9dok3nvGvALAs02AOI90bWYZ
+         P5o4m/BdX7nifsIpON83315RW8T49lUM02NpE99PFgXGyEKA5ag4swkZ31H6yRLhXV9/
+         i/fghWRWggxH4ChixJQRMT/oVEzFaEZH0Iji8KjvgZVW7BP9xbgEb8JJm/dbUXNU0Ibf
+         2yIQ721AlM0OZAA74eQ93smi3ZPQgGlhalIyN+gSkDxuPszzb//bntzbSlYLpotGlB+H
+         4yMJQlg+4mEAN7WRAosufQMgOD6AGQ8Uus8DO/za0lg9epw9XSP7F5IBjmQoYmVbd01U
+         3ouA==
+X-Gm-Message-State: AOJu0YxRXuxKs8SwDkv36+Bjz+QFaHsLcWfvX/+M48pVrm0LY+//Ufns
+        i3bf41z98I865kZi9FXgrYE=
+X-Google-Smtp-Source: AGHT+IFgi4BPBpTNzSrdxYC1bQPNF8qRaCQcf+EQ7/CiUonAj4qAiN7Yjq+F/yD//1V2l/fIGeCpWw==
+X-Received: by 2002:a05:6402:1a4b:b0:548:5671:b819 with SMTP id bf11-20020a0564021a4b00b005485671b819mr10008396edb.30.1701149217600;
+        Mon, 27 Nov 2023 21:26:57 -0800 (PST)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id b4-20020a509f04000000b0054b3a6243b1sm2979796edf.71.2023.11.27.21.26.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Nov 2023 21:26:57 -0800 (PST)
+Message-ID: <f19ac2b9-7e4c-44e8-b979-c8c4e9d627ab@kernel.org>
+Date:   Tue, 28 Nov 2023 06:26:56 +0100
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 3/3] Bluetooth: btnxpuart: remove useless assignment
+Content-Language: en-US
+To:     Francesco Dolcini <francesco@dolcini.it>,
+        Amitkumar Karwar <amitkumar.karwar@nxp.com>,
+        Neeraj Kale <neeraj.sanjaykale@nxp.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc:     Francesco Dolcini <francesco.dolcini@toradex.com>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231127191409.151254-1-francesco@dolcini.it>
+ <20231127191409.151254-4-francesco@dolcini.it>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <20231127191409.151254-4-francesco@dolcini.it>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogS3J6eXN6dG9mIEtvemxv
-d3NraSA8a3J6a0BrZXJuZWwub3JnPg0KPiBTZW50OiBNb25kYXksIE5vdmVtYmVyIDI3LCAyMDIz
-IDQ6NDkgUE0NCj4gVG86IEplZUhlbmcgU2lhIDxqZWVoZW5nLnNpYUBzdGFyZml2ZXRlY2guY29t
-PjsgcGF1bC53YWxtc2xleUBzaWZpdmUuY29tOyBwYWxtZXJAZGFiYmVsdC5jb207IGFvdUBlZWNz
-LmJlcmtlbGV5LmVkdTsNCj4gY29ub3JAa2VybmVsLm9yZzsga2VybmVsQGVzbWlsLmRrOyByb2Jo
-K2R0QGtlcm5lbC5vcmc7IGVtaWwucmVubmVyLmJlcnRoaW5nQGNhbm9uaWNhbC5jb20NCj4gQ2M6
-IGxpbnV4LXJpc2N2QGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5l
-bC5vcmc7IExleWZvb24gVGFuIDxsZXlmb29uLnRhbkBzdGFyZml2ZXRlY2guY29tPg0KPiBTdWJq
-ZWN0OiBSZTogW1BBVENIIDYvN10gc2VyaWFsOiB4aWxpbnhfdWFydHBzOiBBZGQgbmV3IGNvbXBh
-dGlibGUgc3RyaW5nIGZvciBTdGFyRml2ZQ0KPiANCj4gT24gMjcvMTEvMjAyMyAwMjozNiwgU2lh
-IEplZSBIZW5nIHdyb3RlOg0KPiA+IFRoaXMgcGF0Y2ggYWRkcyB0aGUgbmV3IGNvbXBhdGlibGUg
-c3RyaW5nIGZvciBTdGFyRml2ZSBKSDgxMDAgU29DDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBT
-aWEgSmVlIEhlbmcgPGplZWhlbmcuc2lhQHN0YXJmaXZldGVjaC5jb20+DQo+ID4gUmV2aWV3ZWQt
-Ynk6IExleSBGb29uIFRhbiA8bGV5Zm9vbi50YW5Ac3RhcmZpdmV0ZWNoLmNvbT4NCj4gPiAtLS0N
-Cj4gPiAgZHJpdmVycy90dHkvc2VyaWFsL3hpbGlueF91YXJ0cHMuYyB8IDMgKystDQo+ID4gIDEg
-ZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCj4gPg0KPiA+IGRp
-ZmYgLS1naXQgYS9kcml2ZXJzL3R0eS9zZXJpYWwveGlsaW54X3VhcnRwcy5jIGIvZHJpdmVycy90
-dHkvc2VyaWFsL3hpbGlueF91YXJ0cHMuYw0KPiA+IGluZGV4IDY2YTQ1YTYzNDE1OC4uMTcwOTAx
-YzE0M2MyIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvdHR5L3NlcmlhbC94aWxpbnhfdWFydHBz
-LmMNCj4gPiArKysgYi9kcml2ZXJzL3R0eS9zZXJpYWwveGlsaW54X3VhcnRwcy5jDQo+ID4gQEAg
-LTEyMTAsNyArMTIxMCw3IEBAIE9GX0VBUkxZQ09OX0RFQ0xBUkUoY2RucywgInhsbngseHVhcnRw
-cyIsIGNkbnNfZWFybHlfY29uc29sZV9zZXR1cCk7DQo+ID4gIE9GX0VBUkxZQ09OX0RFQ0xBUkUo
-Y2RucywgImNkbnMsdWFydC1yMXA4IiwgY2Ruc19lYXJseV9jb25zb2xlX3NldHVwKTsNCj4gPiAg
-T0ZfRUFSTFlDT05fREVDTEFSRShjZG5zLCAiY2Rucyx1YXJ0LXIxcDEyIiwgY2Ruc19lYXJseV9j
-b25zb2xlX3NldHVwKTsNCj4gPiAgT0ZfRUFSTFlDT05fREVDTEFSRShjZG5zLCAieGxueCx6eW5x
-bXAtdWFydCIsIGNkbnNfZWFybHlfY29uc29sZV9zZXR1cCk7DQo+ID4gLQ0KPiA+ICtPRl9FQVJM
-WUNPTl9ERUNMQVJFKGNkbnMsICJzdGFyZml2ZSxqaDgxMDAtdWFydCIsIGNkbnNfZWFybHlfY29u
-c29sZV9zZXR1cCk7DQo+ID4NCj4gPiAgLyogU3RhdGljIHBvaW50ZXIgdG8gY29uc29sZSBwb3J0
-ICovDQo+ID4gIHN0YXRpYyBzdHJ1Y3QgdWFydF9wb3J0ICpjb25zb2xlX3BvcnQ7DQo+ID4gQEAg
-LTE0NDgsNiArMTQ0OCw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkIGNkbnNf
-dWFydF9vZl9tYXRjaFtdID0gew0KPiA+ICAJeyAuY29tcGF0aWJsZSA9ICJjZG5zLHVhcnQtcjFw
-OCIsIH0sDQo+ID4gIAl7IC5jb21wYXRpYmxlID0gImNkbnMsdWFydC1yMXAxMiIsIC5kYXRhID0g
-Jnp5bnFtcF91YXJ0X2RlZiB9LA0KPiA+ICAJeyAuY29tcGF0aWJsZSA9ICJ4bG54LHp5bnFtcC11
-YXJ0IiwgLmRhdGEgPSAmenlucW1wX3VhcnRfZGVmIH0sDQo+ID4gKwl7IC5jb21wYXRpYmxlID0g
-InN0YXJmaXZlLGpoODEwMC11YXJ0IiwgfSwNCj4gDQo+IFdoeSB5b3UgZG8gbm90IGV4cHJlc3Mg
-Y29tcGF0aWJpbGl0eSBpbiB5b3VyIGJpbmRpbmdzPyBTa2lwIHRoaXMgZHJpdmVyDQo+IGNoYW5n
-ZS4NClRoZSBjb21wYXRpYmlsaXR5IHN0cmluZyB3YXMgYWRkZWQgdG8gdGhlIGJpbmRpbmcgaW4g
-dGhlIDV0aCBwYXRjaC4gV2UgbmVlZCB0byBhZGQgdGhpcyBjb21wYXRpYmlsaXR5IHN0cmluZyB0
-byB0aGUgZHJpdmVyLCBhcyB0aGUgb3RoZXIgY29tcGF0aWJpbGl0aWVzIHdlcmUgdXNlZCBmb3Ig
-b3RoZXIgU29Dcy4NCj4gDQo+IEJlc3QgcmVnYXJkcywNCj4gS3J6eXN6dG9mDQoNCg==
+On 27. 11. 23, 20:14, Francesco Dolcini wrote:
+> From: Francesco Dolcini <francesco.dolcini@toradex.com>
+> 
+> Remove useless assignment of rx_skb to NULL in case the skb is in error,
+> this is already done in h4_recv_buf() that is executed a few lines
+> before.
+
+In case of error, nxpdev->rx_skb contains the error, not NULL, right?
+
+> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+> ---
+>   drivers/bluetooth/btnxpuart.c | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/bluetooth/btnxpuart.c b/drivers/bluetooth/btnxpuart.c
+> index 951fe3014a3f..b7c56be078f8 100644
+> --- a/drivers/bluetooth/btnxpuart.c
+> +++ b/drivers/bluetooth/btnxpuart.c
+> @@ -1278,7 +1278,6 @@ static int btnxpuart_receive_buf(struct serdev_device *serdev, const u8 *data,
+>   		/* Safe to ignore out-of-sync bootloader signatures */
+>   		if (!is_fw_downloading(nxpdev))
+>   			bt_dev_err(nxpdev->hdev, "Frame reassembly failed (%d)", err);
+> -		nxpdev->rx_skb = NULL;
+
+thanks,
+-- 
+js
+suse labs
+
