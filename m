@@ -2,82 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8FB77FB2B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:28:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E15B7FB2BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:29:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343720AbjK1H2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 02:28:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41258 "EHLO
+        id S1343724AbjK1H33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 02:29:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231858AbjK1H2h (ORCPT
+        with ESMTP id S230316AbjK1H31 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 02:28:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 979EA1AE
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:28:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701156522;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y5BdmHDgt38rlTrgeOjpNrZmrPx70EBF4G1nvkRBLTc=;
-        b=D7cHiGZtbRPMoVo6ImIFpzGTpg+flXP2ETynXTe++VLfSr4m6QsvFJp/Y1jX8CQsQZQVsd
-        mP3k7M2ZegzqoLAP/dEO220sko8g/kF8d/gcV20FMc3Ang2joDYeaIwxFRGQR8exYO4X8l
-        wu8AKQz5s1a1tdBSRp6xNIX6+Ttf9Mg=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-196-OGNOR_m4Mn2vnAny7wP6Bw-1; Tue, 28 Nov 2023 02:28:41 -0500
-X-MC-Unique: OGNOR_m4Mn2vnAny7wP6Bw-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-332f91f43cfso1875303f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:28:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701156520; x=1701761320;
-        h=content-transfer-encoding:mime-version:user-agent:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        Tue, 28 Nov 2023 02:29:27 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 222A6197
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:29:34 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-54b0073d50fso4826331a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:29:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701156572; x=1701761372; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Y5BdmHDgt38rlTrgeOjpNrZmrPx70EBF4G1nvkRBLTc=;
-        b=owVTd5rjGuOKhRh7Dj0YaEkGXp3vYdQ1vnOzUcc5A4ulWJ6hUH7FD/hZIT9iYeKg1e
-         bbI2p4lGIDRKy+/yXfyDDC1MjVColGDhfzurFC6wrf77+YVNG211PUpo8TO98TCWYweo
-         R+4X59FClRHvcuB+++07njyM3C4RPuZX/N7MQ2WX4mf40MepwAkPeAN5fX4/M+PXtfCs
-         hO3OoEdU6z7T9xohDx5OmOnzP9IZZO/28e/OLMlRohqvdZ40pp4T3HqBGyyZWzEpGHRl
-         q6QLswyRmeeyH72+9w8Qh9EtbCZ3c/0q7U37XdI7ouV8o3r2HTZfzuqiFm2hPos78u1W
-         ihvQ==
-X-Gm-Message-State: AOJu0YzNcZG51cf1DjiychPvhrobK+7GL2QWIPPC0Dg6K9DcBMi0ijdN
-        s/CghSZLFIOxNOO9MJIWvAJtrXtonrdzk7DoslZPTHXphB2okfuCdJ1JfpKJlb6hW7txK4GfUDM
-        0GxmwyzxbahvolEqXXNfhMDg+
-X-Received: by 2002:a5d:424a:0:b0:332:c5f8:a082 with SMTP id s10-20020a5d424a000000b00332c5f8a082mr10166403wrr.13.1701156520343;
-        Mon, 27 Nov 2023 23:28:40 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFZq3ysto0FjKshj9voU9tQJ6efJmJfszdfClmLvNLefhFl6RycgLDTK4Zz2uTRdBk65VFnUg==
-X-Received: by 2002:a5d:424a:0:b0:332:c5f8:a082 with SMTP id s10-20020a5d424a000000b00332c5f8a082mr10166397wrr.13.1701156520034;
-        Mon, 27 Nov 2023 23:28:40 -0800 (PST)
-Received: from starship ([77.137.131.4])
-        by smtp.gmail.com with ESMTPSA id w21-20020a05600c475500b0040b2976eb02sm16296878wmo.10.2023.11.27.23.28.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 23:28:39 -0800 (PST)
-Message-ID: <70d51e5f3b202a059009913f165b133265ea4cc2.camel@redhat.com>
-Subject: Re: [RFC 12/33] KVM: x86: hyper-v: Handle VSM hcalls in user-space
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Nicolas Saenz Julienne <nsaenz@amazon.com>, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        anelkz@amazon.com, graf@amazon.com, dwmw@amazon.co.uk,
-        jgowans@amazon.com, corbert@lwn.net, kys@microsoft.com,
-        haiyangz@microsoft.com, decui@microsoft.com, x86@kernel.org,
-        linux-doc@vger.kernel.org
-Date:   Tue, 28 Nov 2023 09:28:37 +0200
-In-Reply-To: <20231108111806.92604-13-nsaenz@amazon.com>
-References: <20231108111806.92604-1-nsaenz@amazon.com>
-         <20231108111806.92604-13-nsaenz@amazon.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        bh=8HhAg3HGx+dCrzaldRtNF0z0A4KKZODNNDBUQrJGE4c=;
+        b=Ftkc4t92tNZTjjfCaIPy6RUhSL7NDdPSJrrcgA7rPQka9gqNbGJVO0jdUNENbl3JkX
+         l2HzCA5Bib0evleN68sijzITuEUU3sYMjekU5oXN/AJpPKQh64k4kCwnecOlmk6Fl3PX
+         sIBgYQnvKexmET9f55zDZyewItOo+tSjThZ91LKiKMuF3gu3wRhLl08ImxDPyl27SZnw
+         GdFpSaocp4HJssYENRtpYha5iU1xpNDcQiQYtdQ/vFrxDppB6YV81FM3izRNhm2pjEdt
+         1dYHQbGNgJS3XIHVNdsWAwjwZndEfnb61vXpGaMj3S5ihUE8iXU58g5Ot2oEyucMwNFM
+         FaiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701156572; x=1701761372;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8HhAg3HGx+dCrzaldRtNF0z0A4KKZODNNDBUQrJGE4c=;
+        b=CQjsqZC2TOA9SQI30RQUSvfbCvYhQdeUU6EqkjaRU5a8jhpsfznrkqSMsA4E45+gZ3
+         wJXnW7se/P7ygdW+wSQpUi1WfSdpFWiixLBP2nbmTPSxynYqgC/2Ti+TaWzCDTWRjkRL
+         OS6y12buv45TG9r44HiXoznUyiTdNTrxfMc8hdKmW6VtEG8K5EAKUBLN+0h1fuNkhxAb
+         4DTzRbwomXJysp2Bvp7VLR4JSPcxK+h379pNKsVa/5WBEPxrpfyKpXnqC9+jUd0hbpdG
+         k9OBbX/ydvvjisRoQJ2Hzk38NzDh6UIvggWooGLgB88XuSOqAYjptkuUn+qAvzUW55P8
+         LqUQ==
+X-Gm-Message-State: AOJu0YzLeYJZMWw9UBvwm0MjrEaisb1Jt6BrMwOKk/8ti+DqNvJxzHah
+        6oxCBzNdBdTqk4ucZh8WiWdVTg==
+X-Google-Smtp-Source: AGHT+IHDTd+j++C59qIQGKF0egEm45p5caSoaodLsq6Y3IPB41RPjR1l++I/9svYgkhuhB3ehzoAXw==
+X-Received: by 2002:a50:8d03:0:b0:548:656c:5371 with SMTP id s3-20020a508d03000000b00548656c5371mr12508831eds.16.1701156572583;
+        Mon, 27 Nov 2023 23:29:32 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.109])
+        by smtp.gmail.com with ESMTPSA id b9-20020a056402350900b0054b7e312b97sm1432048edd.38.2023.11.27.23.29.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Nov 2023 23:29:32 -0800 (PST)
+Message-ID: <1fd55b36-0837-4bf7-9fde-e573d6cb214a@linaro.org>
+Date:   Tue, 28 Nov 2023 08:29:30 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] pinctrl: samsung: add irq_set_affinity() for non wake
+ up external gpio interrupt
+Content-Language: en-US
+To:     Youngmin Nam <youngmin.nam@samsung.com>
+Cc:     tomasz.figa@gmail.com, s.nawrocki@samsung.com,
+        alim.akhtar@samsung.com, linus.walleij@linaro.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, semen.protsenko@linaro.org
+References: <CGME20231126091120epcas2p4a1320e3b0f9be8f8a0f575a322981d38@epcas2p4.samsung.com>
+ <20231126094618.2545116-1-youngmin.nam@samsung.com>
+ <bb738a6b-815d-4fad-b73f-559f1ba8cd68@linaro.org> <ZWU75VtJ/mXpMyQr@perf>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <ZWU75VtJ/mXpMyQr@perf>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,119 +124,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-11-08 at 11:17 +0000, Nicolas Saenz Julienne wrote:
-> Let user-space handle all hypercalls that fall under the AccessVsm
-> partition privilege flag. That is:
->  - HVCALL_MODIFY_VTL_PROTECTION_MASK:
->  - HVCALL_ENABLE_PARTITION_VTL:
->  - HVCALL_ENABLE_VP_VTL:
->  - HVCALL_VTL_CALL:
->  - HVCALL_VTL_RETURN:
-> The hypercalls are processed through the KVM_EXIT_HYPERV_HVCALL exit.
-> Additionally, expose the cpuid bit.
+On 28/11/2023 02:01, Youngmin Nam wrote:
+> On Mon, Nov 27, 2023 at 10:54:56AM +0100, Krzysztof Kozlowski wrote:
+>> On 26/11/2023 10:46, Youngmin Nam wrote:
+>>> To support affinity setting for non wake up external gpio interrupt,
+>>> add irq_set_affinity callback using irq number from pinctrl driver data.
+>>>
+>>> Before this patch, changing the irq affinity of gpio interrupt is not possible:
+>>>
+>>>     # cat /proc/irq/418/smp_affinity
+>>>     3ff
+>>>     # echo 00f > /proc/irq/418/smp_affinity
+>>
+>> Does this command succeed on your board?
+>>
+> Yes.
+
+Hm, fails all the time one mine.
+
 > 
-> Signed-off-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
-> ---
->  arch/x86/kvm/hyperv.c             | 15 +++++++++++++++
->  include/asm-generic/hyperv-tlfs.h |  7 ++++++-
->  2 files changed, 21 insertions(+), 1 deletion(-)
+>>>     # cat /proc/irq/418/smp_affinity
+>>>     3ff
+>>>     # cat /proc/interrupts
+>>>                CPU0       CPU1       CPU2       CPU3    ...
+>>>     418:       3631          0          0          0    ...
+>>>
+>>> With this patch applied, it's possible to change irq affinity of gpio interrupt:
+>>
+>> ...
+>>
+>> On which board did you test it?
+>>
+>>
+> I tested on S5E9945 ERD(Exynos Reference Development) board.
+
+There is no such board upstream. How can we reproduce this issue? I am
+afraid we cannot test neither the bug nor the fix.
+
 > 
-> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-> index a3970d52eef1..a266c5d393f5 100644
-> --- a/arch/x86/kvm/hyperv.c
-> +++ b/arch/x86/kvm/hyperv.c
-> @@ -2462,6 +2462,11 @@ static bool kvm_hv_is_xmm_output_hcall(u16 code)
->  	return false;
->  }
->  
-> +static inline bool kvm_hv_is_vtl_call_return(u16 code)
-> +{
-> +	return code == HVCALL_VTL_CALL || code == HVCALL_VTL_RETURN;
-> +}
-> +
->  static int kvm_hv_hypercall_complete_userspace(struct kvm_vcpu *vcpu)
->  {
->  	bool fast = !!(vcpu->run->hyperv.u.hcall.input & HV_HYPERCALL_FAST_BIT);
-> @@ -2471,6 +2476,9 @@ static int kvm_hv_hypercall_complete_userspace(struct kvm_vcpu *vcpu)
->  	if (kvm_hv_is_xmm_output_hcall(code) && hv_result_success(result) && fast)
->  		kvm_hv_write_xmm(vcpu->run->hyperv.u.hcall.xmm);
->  
-> +	if (kvm_hv_is_vtl_call_return(code))
-> +		return kvm_skip_emulated_instruction(vcpu);
+>>> +	if (parent)
+>>> +		return parent->chip->irq_set_affinity(parent, dest, force);
+>>> +
+>>
+>> I think there is a  helper for it: irq_chip_set_affinity_parent().
+>>
+>>
+> 
+> The irq_chip_set_affinity_parent() requires parent_data of irq_data.
 
-Can you add justification for this?
-If this is justified, does it make sense to move this code to kvm_hv_hypercall_complete
-(which also calls kvm_skip_emulated_instruction())
+Hm, so now I wonder why do we not have parent_data...
+
+> But when I tested as below, exynos's irqd->parent_data was null.
+> So we should use irqchip's affinity function instead of the helper function.
+> 
 
 
-
-> +
->  	return kvm_hv_hypercall_complete(vcpu, result);
->  }
->  
-> @@ -2525,6 +2533,7 @@ static bool is_xmm_fast_hypercall(struct kvm_hv_hcall *hc)
->  	case HVCALL_SEND_IPI_EX:
->  	case HVCALL_GET_VP_REGISTERS:
->  	case HVCALL_SET_VP_REGISTERS:
-> +	case HVCALL_MODIFY_VTL_PROTECTION_MASK:
->  		return true;
->  	}
->  
-> @@ -2745,6 +2754,11 @@ int kvm_hv_hypercall(struct kvm_vcpu *vcpu)
->  		goto hypercall_userspace_exit;
->  	case HVCALL_GET_VP_REGISTERS:
->  	case HVCALL_SET_VP_REGISTERS:
-> +	case HVCALL_MODIFY_VTL_PROTECTION_MASK:
-> +	case HVCALL_ENABLE_PARTITION_VTL:
-> +	case HVCALL_ENABLE_VP_VTL:
-> +	case HVCALL_VTL_CALL:
-> +	case HVCALL_VTL_RETURN:
->  		goto hypercall_userspace_exit;
->  	default:
-
-Also those new hypercalls also should be added to hv_check_hypercall_access.
-
->  		ret = HV_STATUS_INVALID_HYPERCALL_CODE;
-> @@ -2912,6 +2926,7 @@ int kvm_get_hv_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid2 *cpuid,
->  			ent->ebx |= HV_SIGNAL_EVENTS;
->  			ent->ebx |= HV_ENABLE_EXTENDED_HYPERCALLS;
->  			ent->ebx |= HV_ACCESS_VP_REGISTERS;
-> +			ent->ebx |= HV_ACCESS_VSM;
->  
->  			ent->edx |= HV_X64_HYPERCALL_XMM_INPUT_AVAILABLE;
->  			ent->edx |= HV_X64_HYPERCALL_XMM_OUTPUT_AVAILABLE;
 
 Best regards,
-	Maxim Levitsky
-
-> diff --git a/include/asm-generic/hyperv-tlfs.h b/include/asm-generic/hyperv-tlfs.h
-> index 24ea699a3d8e..a8b5c8a84bbc 100644
-> --- a/include/asm-generic/hyperv-tlfs.h
-> +++ b/include/asm-generic/hyperv-tlfs.h
-> @@ -89,6 +89,7 @@
->  #define HV_ACCESS_STATS				BIT(8)
->  #define HV_DEBUGGING				BIT(11)
->  #define HV_CPU_MANAGEMENT			BIT(12)
-> +#define HV_ACCESS_VSM				BIT(16)
->  #define HV_ACCESS_VP_REGISTERS			BIT(17)
->  #define HV_ENABLE_EXTENDED_HYPERCALLS		BIT(20)
->  #define HV_ISOLATION				BIT(22)
-> @@ -147,9 +148,13 @@ union hv_reference_tsc_msr {
->  /* Declare the various hypercall operations. */
->  #define HVCALL_FLUSH_VIRTUAL_ADDRESS_SPACE	0x0002
->  #define HVCALL_FLUSH_VIRTUAL_ADDRESS_LIST	0x0003
-> -#define HVCALL_ENABLE_VP_VTL			0x000f
->  #define HVCALL_NOTIFY_LONG_SPIN_WAIT		0x0008
->  #define HVCALL_SEND_IPI				0x000b
-> +#define HVCALL_MODIFY_VTL_PROTECTION_MASK	0x000c
-> +#define HVCALL_ENABLE_PARTITION_VTL		0x000d
-> +#define HVCALL_ENABLE_VP_VTL			0x000f
-> +#define HVCALL_VTL_CALL				0x0011
-> +#define HVCALL_VTL_RETURN			0x0012
->  #define HVCALL_FLUSH_VIRTUAL_ADDRESS_SPACE_EX	0x0013
->  #define HVCALL_FLUSH_VIRTUAL_ADDRESS_LIST_EX	0x0014
->  #define HVCALL_SEND_IPI_EX			0x0015
-
-
-
+Krzysztof
 
