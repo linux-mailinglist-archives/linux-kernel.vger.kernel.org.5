@@ -2,103 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5ED7FB6AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:05:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 321EC7FB6BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:07:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343909AbjK1KFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 05:05:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51716 "EHLO
+        id S1343981AbjK1KHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 05:07:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234660AbjK1KFa (ORCPT
+        with ESMTP id S231488AbjK1KG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 05:05:30 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD6D113
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:05:33 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3316bb1303bso3263250f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:05:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1701165931; x=1701770731; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ZKJsy/O9sQNKnNFyRJVuTOt01SElG6aFkPQ2+Lfq3iI=;
-        b=ajmIPgE3cf4/VQcKecwZurNFwBZ7fhShFWpQSsfDV0gtymPBLKvL5H3127D9k1L6dp
-         hX+TAPJ6uHosbFCDtux+M7ll0rT1Bey3JLg8DNYEpumCySiJ7nd6xroxIcltB8532kPn
-         gu41KkYYBNQIm56IEzzrBy+Y2oWQCUj/A3o20=
+        Tue, 28 Nov 2023 05:06:58 -0500
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63087DC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:07:04 -0800 (PST)
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5490b325edcso1131730a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:07:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701165931; x=1701770731;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1701166023; x=1701770823;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZKJsy/O9sQNKnNFyRJVuTOt01SElG6aFkPQ2+Lfq3iI=;
-        b=Rvihym9EiUFbC4+3HDm16wEbYisLwtO/LqulihqaSg05NWuZaE++NWhgZn57NRPF7J
-         Z69YnQ6anPbWGUb0Gt/vw6vdi50jEu1qHYTGa8oGbI1WCyHVztYYmmhxZ5+hOUaudhkK
-         vArz7ihY3JRvEml/0lWMC2sxv5t5l26CkDcH1fHzK5o+pjnNC7xdZCYo9g8kHzQsZp/y
-         TtaQJcjEKiB2GwQU49KBOo5hQ74R2JeuSd8Dg4unAqpyTiiVt+ukf083c8vSDpcJScxr
-         E1YC/l4KmyS5GyVcf3ab1JCkCtIE4C2Cm4hR+JjDB/nHXWKQ4ntv21lxcg03QnfjxJ1x
-         AIwQ==
-X-Gm-Message-State: AOJu0YxWGwuGG3g7ccsyuyl3ipiO/1WQ30SUNugmRsxVJSWZMug/mg/D
-        JZ57uOWINK6drpcyHnqBWcHPNw==
-X-Google-Smtp-Source: AGHT+IHso67qiRejATVe+y4q8GA8WkjBME6ZXNG2nx2AvipjQBf9Fe7u/GIhGV/RuBTAoKaGDDxyQg==
-X-Received: by 2002:a5d:4bcf:0:b0:332:f81d:8dac with SMTP id l15-20020a5d4bcf000000b00332f81d8dacmr6833150wrt.67.1701165931581;
-        Tue, 28 Nov 2023 02:05:31 -0800 (PST)
-Received: from localhost ([213.195.113.99])
-        by smtp.gmail.com with ESMTPSA id l10-20020a5d674a000000b00332eef1ca7asm9779426wrw.80.2023.11.28.02.05.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 02:05:31 -0800 (PST)
-Date:   Tue, 28 Nov 2023 11:05:30 +0100
-From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     hch@infradead.org, ming.lei@redhat.com, axboe@kernel.dk,
-        colyli@suse.de, kent.overstreet@gmail.com, joern@lazybastard.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
-        nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
-        adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
-        konishi.ryusuke@gmail.com, dchinner@redhat.com,
-        linux@weissschuh.net, min15.li@samsung.com, yukuai3@huawei.com,
-        dlemoal@kernel.org, willy@infradead.org, akpm@linux-foundation.org,
-        hare@suse.de, p.raghav@samsung.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
-        linux-nilfs@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com
-Subject: Re: [PATCH block/for-next v2 02/16] xen/blkback: use new helper to
- get inode from block_device
-Message-ID: <ZWW7ag6vIhc_Skh5@macbook>
-References: <20231127062116.2355129-1-yukuai1@huaweicloud.com>
- <20231127062116.2355129-3-yukuai1@huaweicloud.com>
+        bh=CDrEySI/1pWlb/EVtcfzf3j47hSXHdd6oiAatlhFT1c=;
+        b=R57xHF8ScnlVixdl2SZFJtSkIZMPrUendc0V7PG2t2gY1KGg5RG9/xPNBsyKk+VAIs
+         V1LtbThRx9Okto/6mLQBz78WyZGHmf7iDuAoQJQhRXyuGIFvueYJlquouscC1WGcr7Tr
+         c9b+B6Gq78uJHyThTB0YPn/Hhyshnchhb2YI+7w6B9g8r2Wcb9NlZvAVMrnNYiuBQld6
+         kc76mu7v9K74oQ3+jDUSxE8UEU61FdmMZCb3xaGIWqQdtZU2lNiM2BHGlYK5Nyu31SMq
+         D/FULwo2N4UF/CIa0tdRDV3CTNL6L4Q8V33MP2a4SMzu8C59wOMzUd6u3WPKmw186oLD
+         3rBA==
+X-Gm-Message-State: AOJu0Yx3ZwGlpTGk/Tgo4GWff3RM182P5DAr4nWKUyzu1qwBNa/RnX2K
+        MnBW+HPItM201sDMVEE6WuU=
+X-Google-Smtp-Source: AGHT+IGhSyFpXGgBeC+cRpX2q+J7NdJHxOrw9GPgE9CCUiMz/ubPGmld7qE6QoPJVugrVsSU7ULNOA==
+X-Received: by 2002:a05:6402:1d4b:b0:546:efd8:7f05 with SMTP id dz11-20020a0564021d4b00b00546efd87f05mr11056136edb.1.1701166022633;
+        Tue, 28 Nov 2023 02:07:02 -0800 (PST)
+Received: from [192.168.64.177] (bzq-219-42-90.isdn.bezeqint.net. [62.219.42.90])
+        by smtp.gmail.com with ESMTPSA id j14-20020aa7de8e000000b0053e3d8f1d9fsm6035528edv.67.2023.11.28.02.07.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Nov 2023 02:07:01 -0800 (PST)
+Message-ID: <e8ae84bf-2cd8-4eea-8523-62de6e493dfc@grimberg.me>
+Date:   Tue, 28 Nov 2023 12:06:59 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231127062116.2355129-3-yukuai1@huaweicloud.com>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC v1] nvme: add cse, ds, ms, nsze and nuse to sysfs
+Content-Language: en-US
+To:     Daniel Wagner <dwagner@suse.de>, Keith Busch <kbusch@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Hannes Reinecke <hare@suse.de>
+References: <20231127103208.25748-1-dwagner@suse.de>
+ <20231127141857.GA25833@lst.de>
+ <ZWS5dM5FzTMr5ftO@kbusch-mbp.dhcp.thefacebook.com>
+ <20231127155649.GA1403@lst.de>
+ <ZWTEFvYbI1bFTXyZ@kbusch-mbp.dhcp.thefacebook.com>
+ <20231127163333.GA2273@lst.de>
+ <ZWTH85bmw0cdePXf@kbusch-mbp.dhcp.thefacebook.com>
+ <n57gxockmm4iqt53olerr52rgxg3mvgdp4wfshyci2r7dohxfg@22mqtj3ya3g3>
+From:   Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <n57gxockmm4iqt53olerr52rgxg3mvgdp4wfshyci2r7dohxfg@22mqtj3ya3g3>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 02:21:02PM +0800, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> Which is more efficiency, and also prepare to remove the field
-> 'bd_inode' from block_device.
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-Acked-by: Roger Pau Monné <roger.pau@citrix.com>
+>>>>>> Should this even be an nvme specific attribute? I thought we should have
+>>>>>> blk-integrity.c report its 'tuple_size' attribute instead. That should
+>>>>>> work as long as we're not dealing with extended metadata at least, but
+>>>>>> that's kind of a special format that doesn't have block layer support.
+>>>>>
+>>>>> Reporting the tuple size is a good idea.  But is that enough for
+>>>>> the existing nvme-cli use case?
+> 
+> 'nvme list' is just listening the block size and the meta size in the
+> 'Format' field. So nothing really crazy going on:
+> 
+>    Usage                      Format
+>    -------------------------- ----------------
+>    343.33  GB / 512.11  GB    512   B +  0 B
+> 
+> nvme-cli commands like 'nmve ns-id' etc will always issue a command so
+> that is not a concern. It's just the libnvme nvme_scan_topology() call
+> which should stop issuing any commands.
+> 
+> I'll add the missing tuple_size to the integrity sysfs dir in this case.
+> 
+>>>> nvme-cli currently queries with admin passthrough identify command, so
+>>>> adding a new attribute won't break that. I assume Daniel would have it
+>>>> fallback to that same command for backward compatibilty if a desired
+>>>> sysfs attribute doesn't exist.
+> 
+> Yes, a fallback will exist. There is no need to break existing users.
+> 
+> In summary, the only missing entries are
+> 
+>   - csi
+>   - tuple_size
+>   - nuse
 
-Thanks, Roger.
+I agree with the comments made, especially the one made by Christoph
+that these values should be added to the nshead.
