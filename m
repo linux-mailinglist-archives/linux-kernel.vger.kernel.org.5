@@ -2,182 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D0987FC183
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB007FC2AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345909AbjK1O6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 09:58:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46234 "EHLO
+        id S1345875AbjK1O62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 09:58:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345857AbjK1O6s (ORCPT
+        with ESMTP id S1345857AbjK1O61 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 09:58:48 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A23410C;
-        Tue, 28 Nov 2023 06:58:55 -0800 (PST)
+        Tue, 28 Nov 2023 09:58:27 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDB5F127;
+        Tue, 28 Nov 2023 06:58:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701183535; x=1732719535;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=MmtHq2AXw3e0z60hXa4rJ0joKeClbwyrFO4/JVmK7So=;
-  b=den1FrdvHvwJ1TmR4oA8E/48cIcrozJlqjewdrru04uweIIkljWdZn9m
-   YsaxSs4PnzvMPH7HfprbqxTPMVyjhqSMlmRMwQCvsxVqWs1avM/+/eJNW
-   jsjUCc58mlbwNiIsJtzAcnS6EZHXcdO0BIuNbYVP/mujo7OImevdAqQSh
-   ff3aCHTenIiXAppeRW+z0eSe8+YCL5LKww5dDjEQ3MzFPQ45ViKHRcjg7
-   NTaPrc62Gi8DwwJ6ssMhIwD3POS5dqWN7u+aOSziAh9Zpdh0+TOYoc6iK
-   8m80dmGbM8gzerlodiDQtYpHtKhjgPiSrxvLWThsK+tQIeeIm03TNX01R
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="459442641"
+  t=1701183514; x=1732719514;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=IemFHGu39HfTp3TydwzgSC43ZViUrrVPta7WzXfFrQU=;
+  b=G8m6nXRrWL75QWOqMsSiVH/WXn5VTTivWd0IE8fru45UkR8eVXIrOIrw
+   SZF3D7G6G0ewkmSfSL2b1mlGtEvX8QS3dnSRvOM6+a637QsncR0l1rf61
+   gdWP+vAY1CycDT4x30low09RtMaxAV5E0e3FXhspp7PGLkHJIgtncOJ+7
+   60TfanuJqzgKUnFZ9lp6zTsnRL/6wjMSc1qSQnTH85VEoBJoh1fXUMKC9
+   Z1UpkZZ6+a+r4ha1VOrPbLRa38oO16Z+mPaDsdxNnbQ61rIqyyb68v+GK
+   uY30vW53XS9FJH1HGsrIJ8XvNIyefEPYtMwkG2ka74a0KyVs4KAvyhLgX
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="11633611"
 X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="459442641"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 06:58:54 -0800
+   d="scan'208";a="11633611"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 06:58:34 -0800
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="744928202"
 X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="9971128"
-Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
-  by orviesa002.jf.intel.com with ESMTP; 28 Nov 2023 06:58:48 -0800
-Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r7zXy-0007eq-14;
-        Tue, 28 Nov 2023 14:58:46 +0000
-Date:   Tue, 28 Nov 2023 22:57:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Maxime Ripard <mripard@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Emma Anholt <emma@anholt.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sandy Huang <hjc@rock-chips.com>,
-        Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        Maxime Ripard <mripard@kernel.org>
-Subject: Re: [PATCH v4 03/45] drm/tests: Add helper to create mock plane
-Message-ID: <202311282223.mefGp1S5-lkp@intel.com>
-References: <20231128-kms-hdmi-connector-state-v4-3-c7602158306e@kernel.org>
+   d="scan'208";a="744928202"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Nov 2023 06:58:33 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Tue, 28 Nov 2023 06:58:32 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Tue, 28 Nov 2023 06:58:31 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Tue, 28 Nov 2023 06:58:31 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Tue, 28 Nov 2023 06:58:31 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IqPi6cb8D8iJfgyYlcxydBXrf6hrXbbGIXy3+hituLa8SumabQr45d2zWxdAZoqdxuOPyQIO1aZMUoBCrVE9qeFH5834psMedfrn/WQ8lxGryj8uNMrlL/I40POcrW/SJd0LUsJq9QTbXO91LwU5YR1gq6cAcYyjC23SXhR4HrWzQCnyGSL3pa0d9QPKYuqaOtB+ZDLMfMQIMqqP/OU7eKS0ZbdxL5cmuJdus0rmqKnU+PLgiQlg/r/r8xRgIJjv2Q5vJWbR3n+iyEOYKlsXZSYITYGg2zIyezUI7quP7GptWyFcDGXUfHcTOrm2AeIF/K/xF7XMvn6sZabP5hDJrg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IemFHGu39HfTp3TydwzgSC43ZViUrrVPta7WzXfFrQU=;
+ b=JS4bmV+KJvsHOJ2fHBOaw3Go2NKL/tpVk7UVabWgKWvPcWS5JKSsJjYEEyR+iIGvbv0PJ10KSgZt0iz+/Pq84jTq1c3YGcG1GCtHf6yA2OzrACIOtkm4chwQ1MnXzYWjguslVJoBfzTzWtCaj4IJwWmi3lZpI6na6a65lz4qWjN6PvASzbkCRx8s/bS8x32UYV5obtH67DTYM0TU+MxmhXJn/Ej/5WEhW1tdQVcjTs8JpRhtbrXJRS/FeJjULr7j+QYE0X4YvGuNdHE/cx2/xRerHXPn/Eink6pgI5oO1wRtj3mJLqyFv0Sc64Vc5GbCZq7DJS9R2wJBRBbhzswvxw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
+ by PH7PR11MB6700.namprd11.prod.outlook.com (2603:10b6:510:1ae::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Tue, 28 Nov
+ 2023 14:58:27 +0000
+Received: from MN0PR11MB5963.namprd11.prod.outlook.com
+ ([fe80::5260:13db:a6e:35e9]) by MN0PR11MB5963.namprd11.prod.outlook.com
+ ([fe80::5260:13db:a6e:35e9%6]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
+ 14:58:27 +0000
+From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+To:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Yang, Weijiang" <weijiang.yang@intel.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Hansen, Dave" <dave.hansen@intel.com>
+CC:     "john.allen@amd.com" <john.allen@amd.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "Gao, Chao" <chao.gao@intel.com>,
+        "mlevitsk@redhat.com" <mlevitsk@redhat.com>
+Subject: Re: [PATCH v7 05/26] x86/fpu/xstate: Introduce fpu_guest_cfg for
+ guest FPU configuration
+Thread-Topic: [PATCH v7 05/26] x86/fpu/xstate: Introduce fpu_guest_cfg for
+ guest FPU configuration
+Thread-Index: AQHaHqwJcLbwxqusyUagEZmr+deVnLCP2VSA
+Date:   Tue, 28 Nov 2023 14:58:26 +0000
+Message-ID: <742a95cece1998673aa360be10036c82c0c535ec.camel@intel.com>
+References: <20231124055330.138870-1-weijiang.yang@intel.com>
+         <20231124055330.138870-6-weijiang.yang@intel.com>
+In-Reply-To: <20231124055330.138870-6-weijiang.yang@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.44.4-0ubuntu2 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|PH7PR11MB6700:EE_
+x-ms-office365-filtering-correlation-id: a9b382f8-77b9-4049-8d3b-08dbf02279b5
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xEe7EM+V8oGUHUFPFoyNek7Bnh4QN9Vwcro+s2A1wrIGvo/ICEDKdR9EKYUF3CU54Iwzfogl/AOv1Sc8ScrCCF7eA63s/qQW0HqmS9O/Q4//AQ0kYsSA3/XJNYBRYl//4rEa/EgEBj7jSDLtjtUURaTOfRZrOpYaAgcaYkPQ5jxT6wlGCdoG0NeGFNib+62OzqmhSD33m198rWhyJNEohuu7BO7PUg0uhum5jTVqgeQw2gaQG82Dxh11b6ZZET6D0eZ94sRLC5X6TyrPfSK55bZdrcaelV83f2tUHF3w8MmSnDaEl4QV1rVJdpnqGQjhUaknyRAs1ybQ566hszkgjEsp1HqqNTr3PtnbBqZII9iF5eY4hyyQJDIcm0cfgbZfhYcoKRnv0ZTAZxxFL4Q1VMjJ1Tsklv59z9I7UP7TgBwVOTmv8MN8QNVjqiGxmIQ0DuKWxJoSxvWpb2u42i/phNTmMssXIsky/9HaYMN/umhIYZqGgpmTwqPYrVVzjjqfUKJToBW1laRMMiWP+BrRN08dVHTZXSTUyfpv6PkU5QhdWqbtuQHCzH1fNz3liXrCH8OyRmIj+q7S5UUxBekR0o0vp9BGU+s7/t/wi6LgPt0v18U0IRLpW+x9KX3ulcMn
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(230922051799003)(1800799012)(451199024)(186009)(38100700002)(36756003)(4001150100001)(38070700009)(122000001)(2906002)(4744005)(5660300002)(82960400001)(26005)(86362001)(66446008)(2616005)(6512007)(6506007)(71200400001)(8936002)(8676002)(4326008)(6486002)(508600001)(66556008)(66476007)(91956017)(110136005)(66946007)(76116006)(64756008)(54906003)(316002)(6636002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?d1hhOHhndXNsUzI4Z3ZvTklxb0hqemxXbjFqYWE0NmpJYkc2aGtiWEpWaWdZ?=
+ =?utf-8?B?YzQxWndyZFVhaEFpV085d25VWVZiWWlwQWIwWjM3OEt3WmxkMGhLSzZvaCta?=
+ =?utf-8?B?S0VRN3ExM1o3YU0rTHdLakpmOUhNK0pSSmFqbWRkeEs4UGxvVkIzdVZiV04v?=
+ =?utf-8?B?Y0NnZDdOM2VOU1R6WWhBbWxNcUp3SXVlcEgvRE5qS0JxTGFnZVBDVExib1Bv?=
+ =?utf-8?B?UUlSQjNacWtmbGhkcmNaMjNteGIzMXJFRk9mMldSUFdwbkxyRm9xRW1HbWVr?=
+ =?utf-8?B?QWN6ZnAzZDNsZzJPQ0ZwcS9BTkVFYU1MOE05Yk9EY0dKR0ZGTGpIVGtjK0xI?=
+ =?utf-8?B?UHYrcFB3WEpXWFpYWU5DdjhxMVh3QmRmT285TzBhTklSQ3FOMmtzZnkyamdj?=
+ =?utf-8?B?Uks5dEJTS3ErT0M5eDZvT3NBU1hiaUZydVE3c3YzR2xsOGYrcmhRRlZKYlU2?=
+ =?utf-8?B?Y2IzZXJFMDZiZndkdjdjMk5vNlhQRG12bzVhVDIyT1hMdHdUL3RKQm9ud0Er?=
+ =?utf-8?B?eFk0UVYzb1pLY1VPNlJkbldOOWI0ZEI1ZmM1cmwxTjZFaC83Vlp2MEQzaENn?=
+ =?utf-8?B?MS9tYktXRDUxVWY0dFJVUHBVcWpVNmNRcXBTQWkrU3MxZUZocWc2WEc4WEtP?=
+ =?utf-8?B?ZFZ1enVZOUY5ZGJZRzVwV2lyNUdsUTBYa3hZRldGZEdpbzA0WUdSNWUyV0xT?=
+ =?utf-8?B?NWZlcmQ0dDBpOVU4Sy9mSFFrRnY0UjI1R2o2VUlxOXpGLzhpL201cVFIV1Z4?=
+ =?utf-8?B?M2dHbzJzMlFHVmVFVERJbWNuTkcvcy9WZTE2aW4yNER0UldmYm5vZzNBMGJn?=
+ =?utf-8?B?OFd4dVEvTXptSGF2aFd3Y0NNVWNzNjk4ZXkwZHF2MndTMytMNkxxU0RBUjVH?=
+ =?utf-8?B?WEIzWmJyVjIxNGxac29EYklWdHBCOGI1OUtETjRLakJsMzVhaU1LQjBiTThp?=
+ =?utf-8?B?MUp6RWRsSG1zQ2VtZkVESzlwVzVEYk9vd0tNNmFtYkFuRnJRUjNXR2VCS21h?=
+ =?utf-8?B?VGpadEQzUXU5UExrRGg0UjNzS0V4YUVkMlhqNVo1eDNkY1ZCLzYzRjZYdWRF?=
+ =?utf-8?B?YWlmSzgwTVMvdFVlME1WUTF0UW1VN0dodUNRSWlaTktDSDVMejlqajhVbFlJ?=
+ =?utf-8?B?NWZUc1pBQ3hoMy9pa2F0R2VLVnRORG9rK2lrSmVucHNsNm9KM2dYS2ljbzUz?=
+ =?utf-8?B?dzNoVytlSmc0WmVka3N3UktGd3YwNno5NGVpNm1oa3IrOEN1Qis3WmdxR1JB?=
+ =?utf-8?B?Y2pPOFM5UDBnTHdzRnI5ZVkyVUcwT3psSFRMeTNCTEEvU3hrTHkxTG1TazBa?=
+ =?utf-8?B?YnRpVzFxYXR4aE9CN05ocmREQkROem5YVEVtemRHM3NaUVJIVVZ0ZEQvSVls?=
+ =?utf-8?B?VWI4S2lZbDJHRklJaGdkaktuUHk3YTdOM3p0WG9iSXhKZnVVT01GQ2NKZDRl?=
+ =?utf-8?B?WHgrVUlwa1ZvVmJUaWlLUFU4QjM4VklONzlGNUNqS1dUdmJlcS9GUWhrUEt6?=
+ =?utf-8?B?Vi95aEY4S1pjbVBveHYvck5ObGxialFFN2g5aFdyejM0bnl4WSs2MG5mM2hh?=
+ =?utf-8?B?c09qTE9CZU5HcW9TTWMzQmVVTGFEcGUzc0FUd1V6QktRWVNkYk92VjhaeHFO?=
+ =?utf-8?B?K2c3WlJ0eFJnNkx1UnQ5Qzh6UDU1d29UWlJkcmdXUGxUQXFZcC8wNEJwMVRO?=
+ =?utf-8?B?amlEaWtSVFNYYTlTdVNRcE11eURYS2ErcUJ6REd1QXh3OEZpSGxaeUhrSlRr?=
+ =?utf-8?B?bmFCQjZXQnFobyt3N3Z0aEJ2aENONzIrWlBvWkZLdlVadjF6TlZzOHpRYUJZ?=
+ =?utf-8?B?eDN4Vzc2amNuc0YzZXQxTHdqVGhIcEdXdTgyL2swcy9VWStLVmlLbTcxYTRt?=
+ =?utf-8?B?UEQ0NExDc081bDBKUldsck9KUmVQRUNEWmtlbTVpK2hEMVhldk5NVGo5MG1Z?=
+ =?utf-8?B?TmQrSEFBSDQzcjNrTDVGZU5nL3BSdTZLejRFWWsxRFRaR3krMzhvUUozU1ZK?=
+ =?utf-8?B?OG9YNW5QNndhYTZ3b1pwa0pjUGlZUVZGYk9IZ3JTU0xZTGp1Q2FlTFVGSGwr?=
+ =?utf-8?B?VDllZGxXQ3VIbG9BcUNpa2xtZGc3SndUaWxXZnZZTktUVDVZc1JLc2ZlMnU4?=
+ =?utf-8?B?L0VVdEQ1aDU2c0UxRE14OXNsSUVMdDdwaklxR2htMDl5RTQ0a09SSmMrTUV6?=
+ =?utf-8?Q?ffbEXPWXcE19zVrOxPGP4s0=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B2C958484015AB40853471AAD36EAB79@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231128-kms-hdmi-connector-state-v4-3-c7602158306e@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a9b382f8-77b9-4049-8d3b-08dbf02279b5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Nov 2023 14:58:26.4461
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ywFK8Az+U4SzKrBJyj6d1tq7cwwzK41J9tzBJy3tu/E46AqTDec4IaH4QSyEqz1vfNr6QWJEksNTE1R5R92XCY+v1bUgnYwcvTboqyV+pp4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6700
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
-
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on drm-misc/drm-misc-next]
-[also build test WARNING on sunxi/sunxi/for-next drm/drm-next linus/master v6.7-rc3 next-20231128]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Maxime-Ripard/drm-tests-helpers-Add-atomic-helpers/20231128-193409
-base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-patch link:    https://lore.kernel.org/r/20231128-kms-hdmi-connector-state-v4-3-c7602158306e%40kernel.org
-patch subject: [PATCH v4 03/45] drm/tests: Add helper to create mock plane
-config: i386-buildonly-randconfig-002-20231128 (https://download.01.org/0day-ci/archive/20231128/202311282223.mefGp1S5-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231128/202311282223.mefGp1S5-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311282223.mefGp1S5-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/gpu/drm/tests/drm_kunit_helpers.c:290: warning: Function parameter or member 'num_formats' not described in 'drm_kunit_helper_create_primary_plane'
->> drivers/gpu/drm/tests/drm_kunit_helpers.c:290: warning: Excess function parameter 'format_count' description in 'drm_kunit_helper_create_primary_plane'
-
-
-vim +290 drivers/gpu/drm/tests/drm_kunit_helpers.c
-
-   257	
-   258	/**
-   259	 * drm_kunit_helper_create_primary_plane - Creates a mock primary plane for a KUnit test
-   260	 * @test: The test context object
-   261	 * @drm: The device to alloc the plane for
-   262	 * @funcs: Callbacks for the new plane. Optional.
-   263	 * @helper_funcs: Helpers callbacks for the new plane. Optional.
-   264	 * @formats: array of supported formats (DRM_FORMAT\_\*). Optional.
-   265	 * @format_count: number of elements in @formats
-   266	 * @modifiers: array of struct drm_format modifiers terminated by
-   267	 *             DRM_FORMAT_MOD_INVALID. Optional.
-   268	 *
-   269	 * This allocates and initializes a mock struct &drm_plane meant to be
-   270	 * part of a mock device for a KUnit test.
-   271	 *
-   272	 * Resources will be cleaned up automatically.
-   273	 *
-   274	 * @funcs will default to the default helpers implementations.
-   275	 * @helper_funcs will default to an empty implementation. @formats will
-   276	 * default to XRGB8888 only. @modifiers will default to a linear
-   277	 * modifier only.
-   278	 *
-   279	 * Returns:
-   280	 * A pointer to the new plane, or an ERR_PTR() otherwise.
-   281	 */
-   282	struct drm_plane *
-   283	drm_kunit_helper_create_primary_plane(struct kunit *test,
-   284					      struct drm_device *drm,
-   285					      const struct drm_plane_funcs *funcs,
-   286					      const struct drm_plane_helper_funcs *helper_funcs,
-   287					      const uint32_t *formats,
-   288					      unsigned int num_formats,
-   289					      const uint64_t *modifiers)
- > 290	{
-   291		struct drm_plane *plane;
-   292	
-   293		if (!funcs)
-   294			funcs = &default_plane_funcs;
-   295	
-   296		if (!helper_funcs)
-   297			helper_funcs = &default_plane_helper_funcs;
-   298	
-   299		if (!formats || !num_formats) {
-   300			formats = default_plane_formats;
-   301			num_formats = ARRAY_SIZE(default_plane_formats);
-   302		}
-   303	
-   304		if (!modifiers)
-   305			modifiers = default_plane_modifiers;
-   306	
-   307		plane = __drmm_universal_plane_alloc(drm,
-   308						     sizeof(struct drm_plane), 0,
-   309						     0,
-   310						     funcs,
-   311						     formats,
-   312						     num_formats,
-   313						     default_plane_modifiers,
-   314						     DRM_PLANE_TYPE_PRIMARY,
-   315						     NULL);
-   316		KUNIT_ASSERT_NOT_ERR_OR_NULL(test, plane);
-   317	
-   318		drm_plane_helper_add(plane, helper_funcs);
-   319	
-   320		return plane;
-   321	}
-   322	EXPORT_SYMBOL_GPL(drm_kunit_helper_create_primary_plane);
-   323	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+T24gRnJpLCAyMDIzLTExLTI0IGF0IDAwOjUzIC0wNTAwLCBZYW5nIFdlaWppYW5nIHdyb3RlOg0K
+PiArwqDCoMKgwqDCoMKgwqAvKg0KPiArwqDCoMKgwqDCoMKgwqAgKiBTZXQgZ3Vlc3QncyBfX3Vz
+ZXJfc3RhdGVfc2l6ZSB0byBmcHVfdXNlcl9jZmcuZGVmYXVsdF9zaXplDQo+IHNvIHRoYXQNCj4g
+K8KgwqDCoMKgwqDCoMKgICogZXhpc3RpbmcgdUFQSXMgY2FuIHN0aWxsIHdvcmsuDQo+ICvCoMKg
+wqDCoMKgwqDCoCAqLw0KPiArwqDCoMKgwqDCoMKgwqBmcHUtPmd1ZXN0X3Blcm0uX191c2VyX3N0
+YXRlX3NpemUgPQ0KPiBmcHVfdXNlcl9jZmcuZGVmYXVsdF9zaXplOw0KDQpJdCBzZWVtcyBsaWtl
+IGFuIGFwcHJvcHJpYXRlIHZhbHVlLCBidXQgd2hlcmUgZG9lcyB0aGlzIGNvbWUgaW50byBwbGF5
+DQpleGFjdGx5IGZvciBndWVzdCBGUFVzPw0K
