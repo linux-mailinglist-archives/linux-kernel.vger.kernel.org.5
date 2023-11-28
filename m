@@ -2,63 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 572EC7FC13E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7987FC233
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344234AbjK1QWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 11:22:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48964 "EHLO
+        id S1344160AbjK1QWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:22:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbjK1QWB (ORCPT
+        with ESMTP id S229826AbjK1QWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 11:22:01 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A18B7131
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:22:07 -0800 (PST)
+        Tue, 28 Nov 2023 11:22:43 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A7F131;
+        Tue, 28 Nov 2023 08:22:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701188527; x=1732724527;
+  t=1701188570; x=1732724570;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=Kkj3XaIBhumPeERmIo13qRy1gqgQbcz4xJqxHlZYauY=;
-  b=h9G4v0F6IFllldsbe/TTRRUBNhD2afIYxTc0t5GAwbCQURl1L97WJh0e
-   N+oICluR0C1basV/PcwWDoBMf0TXWqM0ePYDEHLJIvYd7JlpCBMAR6qnU
-   4FE5HeMulKKjxfKlW+0WfrKjWTP2wIIqO1V1cwNuSSn+GK7x0IlNEBq1A
-   BoJ76V0tFLlZ1Mvj3WcI6oL7sw4ESR7U2Rr4MV66k2LnXzBXHp53t1qQo
-   gHPaue/vk5LKrbGblQqo6PSznGskO+PDN5HeE0zFKBLl0koxRHyjlqofe
-   b7E0FHBjt0g98lRdgD/DPxjiSAzuS87sKi9EKsIQKjCkk53uhsWgFqAjN
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="14519050"
+  bh=gE5J7qstsZ3WcDaR4Cb/bPac5/L+CEn93CqYK6zcnMA=;
+  b=ibPnxvJOQTBzo3VzRYJ8p3jD1jA/V1xB0jKzJHAB4YNZ00YfpepQBW5I
+   /jas0JfMkhVdgOkIuDn9UYPGx/yTrihE5K+WcXI6VtLbTQ+yZKFCpnR4Z
+   kpZNOneLW8NvfAh+Afq24xiJwDbpKYb8XISNA5gIpbo0dGDh/f99gb4qZ
+   1p92Cq8lSoOwL/kdbC3azA75sTQHj/3TPFlORzY57N8NffhgVkaWCYHeZ
+   9HXuP0jnb0xB0l/NghmGYpIYsgtdF9S5xgfWE9Nqcf3uoKaDqNXEnZAuA
+   ip7A/cYA/cNzIWq9F482NvIIuceJZhp4caC0heQ/fHpTRTiZIbyqmykNd
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="459461899"
 X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="14519050"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 08:22:07 -0800
+   d="scan'208";a="459461899"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 08:22:48 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="718433083"
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="1015938153"
 X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="718433083"
-Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 28 Nov 2023 08:22:04 -0800
-Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r80qY-0007jD-0a;
-        Tue, 28 Nov 2023 16:22:02 +0000
-Date:   Wed, 29 Nov 2023 00:21:33 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     cuiyangpei <cuiyangpei@gmail.com>, sj@kernel.org,
-        akpm@linux-foundation.org, damon@lists.linux.dev,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        cuiyangpei <cuiyangpei@xiaomi.com>
-Subject: Re: [PATCH 1/2] mm/damon/sysfs: Implement recording feature
-Message-ID: <202311290021.Jo3VlA8D-lkp@intel.com>
-References: <20231128073440.11894-1-cuiyangpei@xiaomi.com>
+   d="scan'208";a="1015938153"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 08:22:40 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1r80r6-00000000CwM-3RK7;
+        Tue, 28 Nov 2023 18:22:36 +0200
+Date:   Tue, 28 Nov 2023 18:22:36 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Chen-Yu Tsai <wenst@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Tzung-Bi Shih <tzungbi@kernel.org>,
+        chrome-platform@lists.linux.dev, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Johan Hovold <johan@kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Kosina <jikos@kernel.org>, linus.walleij@linaro.org,
+        broonie@kernel.org, gregkh@linuxfoundation.org,
+        hdegoede@redhat.com, james.clark@arm.com, james@equiv.tech,
+        keescook@chromium.org, rafael@kernel.org, tglx@linutronix.de,
+        Jeff LaBundy <jeff@labundy.com>, linux-input@vger.kernel.org,
+        linux-i2c@vger.kernel.org
+Subject: Re: [RFC PATCH v3 2/5] i2c: of: Introduce component probe function
+Message-ID: <ZWYTzGGToEmSu-Yh@smile.fi.intel.com>
+References: <20231128084236.157152-1-wenst@chromium.org>
+ <20231128084236.157152-3-wenst@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231128073440.11894-1-cuiyangpei@xiaomi.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+In-Reply-To: <20231128084236.157152-3-wenst@chromium.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -67,55 +88,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi cuiyangpei,
+On Tue, Nov 28, 2023 at 04:42:31PM +0800, Chen-Yu Tsai wrote:
+> Some devices are designed and manufactured with some components having
+> multiple drop-in replacement options. These components are often
+> connected to the mainboard via ribbon cables, having the same signals
+> and pin assignments across all options. These may include the display
+> panel and touchscreen on laptops and tablets, and the trackpad on
+> laptops. Sometimes which component option is used in a particular device
+> can be detected by some firmware provided identifier, other times that
+> information is not available, and the kernel has to try to probe each
+> device.
+> 
+> This change attempts to make the "probe each device" case cleaner. The
+> current approach is to have all options added and enabled in the device
+> tree. The kernel would then bind each device and run each driver's probe
+> function. This works, but has been broken before due to the introduction
+> of asynchronous probing, causing multiple instances requesting "shared"
+> resources, such as pinmuxes, GPIO pins, interrupt lines, at the same
+> time, with only one instance succeeding. Work arounds for these include
+> moving the pinmux to the parent I2C controller, using GPIO hogs or
+> pinmux settings to keep the GPIO pins in some fixed configuration, and
+> requesting the interrupt line very late. Such configurations can be seen
+> on the MT8183 Krane Chromebook tablets, and the Qualcomm sc8280xp-based
+> Lenovo Thinkpad 13S.
+> 
+> Instead of this delicate dance between drivers and device tree quirks,
+> this change introduces a simple I2C component probe. function For a
+> given class of devices on the same I2C bus, it will go through all of
+> them, doing a simple I2C read transfer and see which one of them responds.
+> It will then enable the device that responds.
+> 
+> This requires some minor modifications in the existing device tree. The
+> status for all the device nodes for the component options must be set
+> to "failed-needs-probe". This makes it clear that some mechanism is
+> needed to enable one of them, and also prevents the prober and device
+> drivers running at the same time.
 
-kernel test robot noticed the following build errors:
+...
 
-[auto build test ERROR on akpm-mm/mm-everything]
+> +/**
+> + * i2c_of_probe_component() - probe for devices of "type" on the same i2c bus
+> + * @dev: &struct device of the caller, only used for dev_* printk messages
+> + * @type: a string to match the device node name prefix to probe for
+> + *
+> + * Probe for possible I2C components of the same "type" on the same I2C bus
+> + * that have their status marked as "fail".
 
-url:    https://github.com/intel-lab-lkp/linux/commits/cuiyangpei/mm-damon-core-add-sysfs-nodes-to-set-last_nr_accesses-weight/20231128-194153
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20231128073440.11894-1-cuiyangpei%40xiaomi.com
-patch subject: [PATCH 1/2] mm/damon/sysfs: Implement recording feature
-config: i386-buildonly-randconfig-001-20231128 (https://download.01.org/0day-ci/archive/20231129/202311290021.Jo3VlA8D-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231129/202311290021.Jo3VlA8D-lkp@intel.com/reproduce)
+Definitely you haven't run kernel-doc validation.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311290021.Jo3VlA8D-lkp@intel.com/
+> + */
 
-All errors (new ones prefixed by >>):
+...
 
-   mm/damon/sysfs.c:1415:6: warning: variable 'count' set but not used [-Wunused-but-set-variable]
-           int count = 0;
-               ^
-   In file included from mm/damon/sysfs.c:2139:
->> mm/damon/sysfs-test.h:15:21: error: redefinition of 'nr_damon_targets'
-   static unsigned int nr_damon_targets(struct damon_ctx *ctx)
-                       ^
-   mm/damon/sysfs.c:1411:21: note: previous definition is here
-   static unsigned int nr_damon_targets(struct damon_ctx *ctx)
-                       ^
-   1 warning and 1 error generated.
+> +		return dev_err_probe(dev, -ENODEV, "Could not find %s device node\n", type);
 
+I haven't noticed clear statement in the description that this API is only for
+the ->probe() stages.
 
-vim +/nr_damon_targets +15 mm/damon/sysfs-test.h
+...
 
-b8ee5575f763c2 SeongJae Park 2023-10-22  14  
-b8ee5575f763c2 SeongJae Park 2023-10-22 @15  static unsigned int nr_damon_targets(struct damon_ctx *ctx)
-b8ee5575f763c2 SeongJae Park 2023-10-22  16  {
-b8ee5575f763c2 SeongJae Park 2023-10-22  17  	struct damon_target *t;
-b8ee5575f763c2 SeongJae Park 2023-10-22  18  	unsigned int nr_targets = 0;
-b8ee5575f763c2 SeongJae Park 2023-10-22  19  
-b8ee5575f763c2 SeongJae Park 2023-10-22  20  	damon_for_each_target(t, ctx)
-b8ee5575f763c2 SeongJae Park 2023-10-22  21  		nr_targets++;
-b8ee5575f763c2 SeongJae Park 2023-10-22  22  
-b8ee5575f763c2 SeongJae Park 2023-10-22  23  	return nr_targets;
-b8ee5575f763c2 SeongJae Park 2023-10-22  24  }
-b8ee5575f763c2 SeongJae Park 2023-10-22  25  
+> +		if (i2c_smbus_xfer(i2c, addr, 0, I2C_SMBUS_READ, 0, I2C_SMBUS_BYTE, &data) < 0)
+> +			continue;
+
+This will require the device to be powered on. Are you sure it will be always
+the case?
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+With Best Regards,
+Andy Shevchenko
+
+
