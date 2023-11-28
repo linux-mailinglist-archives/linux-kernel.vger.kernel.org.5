@@ -2,217 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0E77FBBC4
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 14:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FD117FBAD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 14:04:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344751AbjK1Nir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 08:38:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39904 "EHLO
+        id S1344909AbjK1NET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 08:04:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344864AbjK1NAj (ORCPT
+        with ESMTP id S1344995AbjK1NEH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 08:00:39 -0500
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2041.outbound.protection.outlook.com [40.107.236.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6AB10E6;
-        Tue, 28 Nov 2023 05:00:37 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ahWgjj2zt/ANCAZqSUEnnk4pS6HqewVMEhfx8tiAKy/c7n4IEb76exkAG8RJ7oTXPJuzV5XgBpQCnTl3+MUqe6pzrgj5wR/LUBKx4f2KyoeG4vYernRxOqlAdkTrmhpGSeXxYOkExbKN5LpwCda8uIADXxUHkWGfMZ+Y2ZWfznwdQjCwHhidGhCznRsrDNbgxNehiwX4hY9YYV/8FfgpVdkQYcu7v9i+ApX8FrL/ekNO6+uaHG8mzz3YPX4JZSXo8ZgqL1laTzkntXHHVbmO8j73SSHcLjTvApp2UwHe+06G7Gop2UcTErEvpYxG6FczMopxzazyOA47J61QUQ3+Pg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FobeKRIWyENJYRq0LgNYrV697tvGzj5iPJRquaePZc0=;
- b=nXkGoxqyvfWCKKHP5WmVAc4VhacGT7MlAPr2aMmgrARnPpS3IAClqvZAVcQ+VQZVOUU7aOKoCdv7Cg6b9jzU2BfYiGnUJGbXIS5INO7QLBdCi0NsHhVarcS5YRIC0zZsGsfiyFn1oZux49y4r+P4Mje+7lVXc2zZrLySSUDhTudZxF9ampOl+cejA2pKEakW+7cUNLHr9MgXbaTINd2yIZveyuVDCsLKZyjdznhvxPjWrRq3vCA+ggxqXmZ6h2Iw/N+KyzcOvVx43jELo9IuYZOJ69Uyrq1Biuvhwt0jA6Ca2gjvZJKVKOE74Ky02DGxjp++Wryi3cjJ5cLAJ4fIjQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FobeKRIWyENJYRq0LgNYrV697tvGzj5iPJRquaePZc0=;
- b=tdCYZoW1E+KELHjEfIfzfSTnxJkHE+iqpYEB1gHq7zEeQaWQZzQa/ZJ6QSK6AJV23g+ckLWZTKiR8+fu3YEfz4uHk2QxJ/wkH6aW3OuPtTbqzl3HTZQVNcIvRi3fF95WqTfyL0IpWBMnHHXVoleRB6MsX8n0Whl1tDfFnwJ5jw8=
-Received: from DM6PR07CA0117.namprd07.prod.outlook.com (2603:10b6:5:330::32)
- by DS7PR12MB8249.namprd12.prod.outlook.com (2603:10b6:8:ea::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Tue, 28 Nov
- 2023 13:00:35 +0000
-Received: from CY4PEPF0000EE37.namprd05.prod.outlook.com
- (2603:10b6:5:330:cafe::9) by DM6PR07CA0117.outlook.office365.com
- (2603:10b6:5:330::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29 via Frontend
- Transport; Tue, 28 Nov 2023 13:00:35 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000EE37.mail.protection.outlook.com (10.167.242.43) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7046.17 via Frontend Transport; Tue, 28 Nov 2023 13:00:34 +0000
-Received: from gomati.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Tue, 28 Nov
- 2023 07:00:30 -0600
-From:   Nikunj A Dadhania <nikunj@amd.com>
-To:     <linux-kernel@vger.kernel.org>, <thomas.lendacky@amd.com>,
-        <x86@kernel.org>, <kvm@vger.kernel.org>
-CC:     <bp@alien8.de>, <mingo@redhat.com>, <tglx@linutronix.de>,
-        <dave.hansen@linux.intel.com>, <dionnaglaze@google.com>,
-        <pgonda@google.com>, <seanjc@google.com>, <pbonzini@redhat.com>,
-        <nikunj@amd.com>
-Subject: [PATCH v6 02/16] virt: sev-guest: Move mutex to SNP guest device structure
-Date:   Tue, 28 Nov 2023 18:29:45 +0530
-Message-ID: <20231128125959.1810039-3-nikunj@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231128125959.1810039-1-nikunj@amd.com>
-References: <20231128125959.1810039-1-nikunj@amd.com>
+        Tue, 28 Nov 2023 08:04:07 -0500
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D6701FF6;
+        Tue, 28 Nov 2023 05:03:41 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2E58640004;
+        Tue, 28 Nov 2023 13:03:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1701176619;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=M69X9zsO5QSQQSwQdaGpZVn6EWhBxmM/U6VT85y+SVw=;
+        b=i1l97BTWlQ8sEzg5OGY39O7XrmWseATl3vVs5pIkw2ixDGYImtirn1izfjYlScHH2AVzqk
+        xsQU4nKOQSaRsIleEaWlLjMKytYQyNLpgbSVwP0OWtkFZLsvGgtoup2P1UCrcHLFInPtVp
+        Okym4p82M6+YVhLkufFjrSNgDyAg5p/OxVMTn51Mdu/dVOYdP0mo0AKxfVy+0SAkNaZrIR
+        6M2H3iDvrllXHk6wVJ8lO/Y8QkNOgn66pyLyspk1KqKHpaL5EorY0vu6X68zgWrWoZDnRH
+        /dRKHcsY6OGQd43uXn2ge1MxASuQcuQoaAmvcRvkgQAgWEdwzlwbtnDHEYoZuA==
+From:   Thomas Richard <thomas.richard@bootlin.com>
+To:     rafael@kernel.org, daniel.lezcano@linaro.org
+Cc:     rui.zhang@intel.com, lukasz.luba@arm.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        gregory.clement@bootlin.com, theo.lebrun@bootlin.com,
+        u-kumar1@ti.com, Thomas Richard <thomas.richard@bootlin.com>
+Subject: [PATCH] thermal: k3_j72xx_bandgap: implement suspend/resume support
+Date:   Tue, 28 Nov 2023 14:03:32 +0100
+Message-Id: <20231128130332.584127-1-thomas.richard@bootlin.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE37:EE_|DS7PR12MB8249:EE_
-X-MS-Office365-Filtering-Correlation-Id: d5394e54-e4f8-4e62-3f0a-08dbf01202c8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: B8MM9UzWLfAzdVlba7i2mkzyYKbm37oiE/4zPcw69cp0Zq1jnXs/Kb3WFSBh7kiK4gqzP6LCirTGI6Chu1pJmHeRo31WOjkoQj3r53BY5oWLzQrCcBUpLmT76UnTLhQ9kLrZ48vK9KTHXq6UXzL5V+76ashd4AY8y7VfTl23mKncgr8W4Nd4hhSpVWu4xBTjYTRA7ukkrXn31OJ2OFiV79ylMfGhEfHVKwKikWtZnRNAc92/y6prqDkg16cULN7Lr0n3lYlaCObOux2CkNe41c+ghv5ezAcx8/kmsBBzVeH11hqj4Li2OPpjT4zE5M0X3Q+fCmi3o2Q5sZ6Cbus0J4W/JpYaOPvaNrJ7NEA8HWNs0MTKxoRGxPEDqy/7Ath50FfTXZLv7KA3laqgertzhPgBwVYhNPCl0O2mZ0F3n8aYrrBWR2m/76ZpF4LsHjLygwl3/mx8a1s21oaDLGjRL1HHByFPFHF5gTpj25UPQC9Q1LrE1pjGZbVs9oOSf/19KlneOtpnrnukhVpm609x+pqLItze2MGxS2+Ja1Pza2NIUJ442pIH77nx3gtbeE9DCwH3xMpH62fwkOvYy+VGPATS71qgeOF6ZtiFSxZqjemYuOf7aImPkgyt152j5jdgZ0DdygZ2V/h4bm67b7agviHGnp5HMZxuA3nFfWAJk5Y5rKau9q7UiQLLMntlfST5ZmDFeR6jgO3qSMIYtRD37du+aojFdTUj90fajKORnfji7Gfvn4fCQfBtHFlz8JJ63Mt9SMLSXWU2eFcAep9AVw==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(376002)(396003)(136003)(346002)(230922051799003)(64100799003)(451199024)(186009)(82310400011)(1800799012)(36840700001)(46966006)(40470700004)(40460700003)(2616005)(1076003)(26005)(16526019)(6666004)(426003)(336012)(8676002)(5660300002)(8936002)(4326008)(82740400003)(7416002)(47076005)(70206006)(478600001)(316002)(110136005)(70586007)(54906003)(7696005)(36860700001)(83380400001)(356005)(81166007)(41300700001)(40480700001)(36756003)(2906002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 13:00:34.8874
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d5394e54-e4f8-4e62-3f0a-08dbf01202c8
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE37.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8249
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-GND-Sasl: thomas.richard@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for providing a new API to the sev-guest driver for sending
-an SNP guest message, move the SNP command mutex to the snp_guest_dev
-structure. Drop the snp_cmd_mutex.
+From: Théo Lebrun <theo.lebrun@bootlin.com>
 
-Signed-off-by: Nikunj A Dadhania <nikunj@amd.com>
-Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
+This add suspend-to-ram support.
+
+The derived_table is kept-as is, so the resume is only about
+pm_runtime_* calls and restoring the same registers as the probe.
+
+Extract the hardware initialization procedure to a function called at
+both probe-time & resume-time.
+
+The probe-time loop is split in two to ensure doing the hardware
+initialization before registering thermal zones. That ensures our
+callbacks cannot be called while in bad state.
+
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
 ---
- drivers/virt/coco/sev-guest/sev-guest.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ drivers/thermal/k3_j72xx_bandgap.c | 114 ++++++++++++++++++++---------
+ 1 file changed, 81 insertions(+), 33 deletions(-)
 
-diff --git a/drivers/virt/coco/sev-guest/sev-guest.c b/drivers/virt/coco/sev-guest/sev-guest.c
-index aedc842781b6..8382fd657e67 100644
---- a/drivers/virt/coco/sev-guest/sev-guest.c
-+++ b/drivers/virt/coco/sev-guest/sev-guest.c
-@@ -39,6 +39,9 @@ struct snp_guest_dev {
- 	struct device *dev;
- 	struct miscdevice misc;
+diff --git a/drivers/thermal/k3_j72xx_bandgap.c b/drivers/thermal/k3_j72xx_bandgap.c
+index c74094a86982..c7fdf6e45b1c 100644
+--- a/drivers/thermal/k3_j72xx_bandgap.c
++++ b/drivers/thermal/k3_j72xx_bandgap.c
+@@ -178,6 +178,7 @@ struct k3_j72xx_bandgap {
+ 	void __iomem *base;
+ 	void __iomem *cfg2_base;
+ 	struct k3_thermal_data *ts_data[K3_VTM_MAX_NUM_TS];
++	int cnt;
+ };
  
-+	/* Mutex to serialize the shared buffer access and command handling. */
-+	struct mutex cmd_mutex;
+ /* common data structures */
+@@ -338,24 +339,53 @@ static void print_look_up_table(struct device *dev, int *ref_table)
+ 		dev_dbg(dev, "%d       %d %d\n", i, derived_table[i], ref_table[i]);
+ }
+ 
++static void k3_j72xx_bandgap_init_hw(struct k3_j72xx_bandgap *bgp)
++{
++	struct k3_thermal_data *data;
++	int id, high_max, low_temp;
++	u32 val;
 +
- 	void *certs_data;
- 	struct aesgcm_ctx *ctx;
- 	/* request and response are in unencrypted memory */
-@@ -65,9 +68,6 @@ static u32 vmpck_id;
- module_param(vmpck_id, uint, 0444);
- MODULE_PARM_DESC(vmpck_id, "The VMPCK ID to use when communicating with the PSP.");
++	for (id = 0; id < bgp->cnt; id++) {
++		data = bgp->ts_data[id];
++		val = readl(bgp->cfg2_base + data->ctrl_offset);
++		val |= (K3_VTM_TMPSENS_CTRL_MAXT_OUTRG_EN |
++			K3_VTM_TMPSENS_CTRL_SOC |
++			K3_VTM_TMPSENS_CTRL_CLRZ | BIT(4));
++		writel(val, bgp->cfg2_base + data->ctrl_offset);
++	}
++
++	/*
++	 * Program TSHUT thresholds
++	 * Step 1: set the thresholds to ~123C and 105C WKUP_VTM_MISC_CTRL2
++	 * Step 2: WKUP_VTM_TMPSENS_CTRL_j set the MAXT_OUTRG_EN  bit
++	 *         This is already taken care as per of init
++	 * Step 3: WKUP_VTM_MISC_CTRL set the ANYMAXT_OUTRG_ALERT_EN  bit
++	 */
++	high_max = k3_j72xx_bandgap_temp_to_adc_code(MAX_TEMP);
++	low_temp = k3_j72xx_bandgap_temp_to_adc_code(COOL_DOWN_TEMP);
++
++	writel((low_temp << 16) | high_max, bgp->cfg2_base + K3_VTM_MISC_CTRL2_OFFSET);
++	mdelay(100);
++	writel(K3_VTM_ANYMAXT_OUTRG_ALERT_EN, bgp->cfg2_base + K3_VTM_MISC_CTRL_OFFSET);
++}
++
+ struct k3_j72xx_bandgap_data {
+ 	const bool has_errata_i2128;
+ };
  
--/* Mutex to serialize the shared buffer access and command handling. */
--static DEFINE_MUTEX(snp_cmd_mutex);
+ static int k3_j72xx_bandgap_probe(struct platform_device *pdev)
+ {
+-	int ret = 0, cnt, val, id;
+-	int high_max, low_temp;
+-	struct resource *res;
++	const struct k3_j72xx_bandgap_data *driver_data;
++	struct thermal_zone_device *ti_thermal;
+ 	struct device *dev = &pdev->dev;
++	bool workaround_needed = false;
+ 	struct k3_j72xx_bandgap *bgp;
+ 	struct k3_thermal_data *data;
+-	bool workaround_needed = false;
+-	const struct k3_j72xx_bandgap_data *driver_data;
+-	struct thermal_zone_device *ti_thermal;
+-	int *ref_table;
+ 	struct err_values err_vals;
+ 	void __iomem *fuse_base;
++	int ret = 0, val, id;
++	struct resource *res;
++	int *ref_table;
+ 
+ 	const s64 golden_factors[] = {
+ 		-490019999999999936,
+@@ -422,10 +452,10 @@ static int k3_j72xx_bandgap_probe(struct platform_device *pdev)
+ 
+ 	/* Get the sensor count in the VTM */
+ 	val = readl(bgp->base + K3_VTM_DEVINFO_PWR0_OFFSET);
+-	cnt = val & K3_VTM_DEVINFO_PWR0_TEMPSENS_CT_MASK;
+-	cnt >>= __ffs(K3_VTM_DEVINFO_PWR0_TEMPSENS_CT_MASK);
++	bgp->cnt = val & K3_VTM_DEVINFO_PWR0_TEMPSENS_CT_MASK;
++	bgp->cnt >>= __ffs(K3_VTM_DEVINFO_PWR0_TEMPSENS_CT_MASK);
+ 
+-	data = devm_kcalloc(bgp->dev, cnt, sizeof(*data), GFP_KERNEL);
++	data = devm_kcalloc(bgp->dev, bgp->cnt, sizeof(*data), GFP_KERNEL);
+ 	if (!data) {
+ 		ret = -ENOMEM;
+ 		goto err_alloc;
+@@ -449,8 +479,8 @@ static int k3_j72xx_bandgap_probe(struct platform_device *pdev)
+ 	else
+ 		init_table(3, ref_table, pvt_wa_factors);
+ 
+-	/* Register the thermal sensors */
+-	for (id = 0; id < cnt; id++) {
++	/* Precompute the derived table & fill each thermal sensor struct */
++	for (id = 0; id < bgp->cnt; id++) {
+ 		data[id].bgp = bgp;
+ 		data[id].ctrl_offset = K3_VTM_TMPSENS0_CTRL_OFFSET + id * 0x20;
+ 		data[id].stat_offset = data[id].ctrl_offset +
+@@ -470,13 +500,13 @@ static int k3_j72xx_bandgap_probe(struct platform_device *pdev)
+ 		else if (id == 0 && !workaround_needed)
+ 			memcpy(derived_table, ref_table, TABLE_SIZE * 4);
+ 
+-		val = readl(data[id].bgp->cfg2_base + data[id].ctrl_offset);
+-		val |= (K3_VTM_TMPSENS_CTRL_MAXT_OUTRG_EN |
+-			K3_VTM_TMPSENS_CTRL_SOC |
+-			K3_VTM_TMPSENS_CTRL_CLRZ | BIT(4));
+-		writel(val, data[id].bgp->cfg2_base + data[id].ctrl_offset);
 -
- static bool is_vmpck_empty(struct snp_guest_dev *snp_dev)
- {
- 	char zero_key[VMPCK_KEY_LEN] = {0};
-@@ -107,7 +107,7 @@ static inline u64 __snp_get_msg_seqno(struct snp_guest_dev *snp_dev)
- {
- 	u64 count;
- 
--	lockdep_assert_held(&snp_cmd_mutex);
-+	lockdep_assert_held(&snp_dev->cmd_mutex);
- 
- 	/* Read the current message sequence counter from secrets pages */
- 	count = *snp_dev->os_area_msg_seqno;
-@@ -394,7 +394,7 @@ static int get_report(struct snp_guest_dev *snp_dev, struct snp_guest_request_io
- 	struct snp_report_resp *resp;
- 	int rc, resp_len;
- 
--	lockdep_assert_held(&snp_cmd_mutex);
-+	lockdep_assert_held(&snp_dev->cmd_mutex);
- 
- 	if (!arg->req_data || !arg->resp_data)
- 		return -EINVAL;
-@@ -434,7 +434,7 @@ static int get_derived_key(struct snp_guest_dev *snp_dev, struct snp_guest_reque
- 	/* Response data is 64 bytes and max authsize for GCM is 16 bytes. */
- 	u8 buf[64 + 16];
- 
--	lockdep_assert_held(&snp_cmd_mutex);
-+	lockdep_assert_held(&snp_dev->cmd_mutex);
- 
- 	if (!arg->req_data || !arg->resp_data)
- 		return -EINVAL;
-@@ -475,7 +475,7 @@ static int get_ext_report(struct snp_guest_dev *snp_dev, struct snp_guest_reques
- 	int ret, npages = 0, resp_len;
- 	sockptr_t certs_address;
- 
--	lockdep_assert_held(&snp_cmd_mutex);
-+	lockdep_assert_held(&snp_dev->cmd_mutex);
- 
- 	if (sockptr_is_null(io->req_data) || sockptr_is_null(io->resp_data))
- 		return -EINVAL;
-@@ -564,12 +564,12 @@ static long snp_guest_ioctl(struct file *file, unsigned int ioctl, unsigned long
- 	if (!input.msg_version)
- 		return -EINVAL;
- 
--	mutex_lock(&snp_cmd_mutex);
-+	mutex_lock(&snp_dev->cmd_mutex);
- 
- 	/* Check if the VMPCK is not empty */
- 	if (is_vmpck_empty(snp_dev)) {
- 		dev_err_ratelimited(snp_dev->dev, "VMPCK is disabled\n");
--		mutex_unlock(&snp_cmd_mutex);
-+		mutex_unlock(&snp_dev->cmd_mutex);
- 		return -ENOTTY;
+ 		bgp->ts_data[id] = &data[id];
++	}
++
++	k3_j72xx_bandgap_init_hw(bgp);
++
++	/* Register the thermal sensors */
++	for (id = 0; id < bgp->cnt; id++) {
+ 		ti_thermal = devm_thermal_of_zone_register(bgp->dev, id, &data[id],
+ 							   &k3_of_thermal_ops);
+ 		if (IS_ERR(ti_thermal)) {
+@@ -486,21 +516,7 @@ static int k3_j72xx_bandgap_probe(struct platform_device *pdev)
+ 		}
  	}
  
-@@ -594,7 +594,7 @@ static long snp_guest_ioctl(struct file *file, unsigned int ioctl, unsigned long
- 		break;
- 	}
+-	/*
+-	 * Program TSHUT thresholds
+-	 * Step 1: set the thresholds to ~123C and 105C WKUP_VTM_MISC_CTRL2
+-	 * Step 2: WKUP_VTM_TMPSENS_CTRL_j set the MAXT_OUTRG_EN  bit
+-	 *         This is already taken care as per of init
+-	 * Step 3: WKUP_VTM_MISC_CTRL set the ANYMAXT_OUTRG_ALERT_EN  bit
+-	 */
+-	high_max = k3_j72xx_bandgap_temp_to_adc_code(MAX_TEMP);
+-	low_temp = k3_j72xx_bandgap_temp_to_adc_code(COOL_DOWN_TEMP);
+-
+-	writel((low_temp << 16) | high_max, data[0].bgp->cfg2_base +
+-	       K3_VTM_MISC_CTRL2_OFFSET);
+-	mdelay(100);
+-	writel(K3_VTM_ANYMAXT_OUTRG_ALERT_EN, data[0].bgp->cfg2_base +
+-	       K3_VTM_MISC_CTRL_OFFSET);
++	platform_set_drvdata(pdev, bgp);
  
--	mutex_unlock(&snp_cmd_mutex);
-+	mutex_unlock(&snp_dev->cmd_mutex);
+ 	print_look_up_table(dev, ref_table);
+ 	/*
+@@ -527,6 +543,37 @@ static void k3_j72xx_bandgap_remove(struct platform_device *pdev)
+ 	pm_runtime_disable(&pdev->dev);
+ }
  
- 	if (input.exitinfo2 && copy_to_user(argp, &input, sizeof(input)))
- 		return -EFAULT;
-@@ -702,7 +702,7 @@ static int sev_report_new(struct tsm_report *report, void *data)
- 	if (!buf)
- 		return -ENOMEM;
++#ifdef CONFIG_PM
++static int k3_j72xx_bandgap_suspend(struct device *dev)
++{
++	pm_runtime_put_sync(dev);
++	pm_runtime_disable(dev);
++	return 0;
++}
++
++static int k3_j72xx_bandgap_resume(struct device *dev)
++{
++	struct k3_j72xx_bandgap *bgp = dev_get_drvdata(dev);
++	int ret;
++
++	pm_runtime_enable(dev);
++	ret = pm_runtime_get_sync(dev);
++	if (ret < 0) {
++		pm_runtime_put_noidle(dev);
++		pm_runtime_disable(dev);
++		return ret;
++	}
++
++	k3_j72xx_bandgap_init_hw(bgp);
++
++	return 0;
++}
++
++static const struct dev_pm_ops k3_j72xx_bandgap_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(k3_j72xx_bandgap_suspend, k3_j72xx_bandgap_resume)
++};
++#endif
++
+ static const struct k3_j72xx_bandgap_data k3_j72xx_bandgap_j721e_data = {
+ 	.has_errata_i2128 = true,
+ };
+@@ -554,6 +601,7 @@ static struct platform_driver k3_j72xx_bandgap_sensor_driver = {
+ 	.driver = {
+ 		.name = "k3-j72xx-soc-thermal",
+ 		.of_match_table	= of_k3_j72xx_bandgap_match,
++		.pm = pm_ptr(&k3_j72xx_bandgap_pm_ops),
+ 	},
+ };
  
--	guard(mutex)(&snp_cmd_mutex);
-+	guard(mutex)(&snp_dev->cmd_mutex);
- 
- 	/* Check if the VMPCK is not empty */
- 	if (is_vmpck_empty(snp_dev)) {
-@@ -837,6 +837,7 @@ static int __init sev_guest_probe(struct platform_device *pdev)
- 		goto e_unmap;
- 	}
- 
-+	mutex_init(&snp_dev->cmd_mutex);
- 	platform_set_drvdata(pdev, snp_dev);
- 	snp_dev->dev = dev;
- 	snp_dev->layout = layout;
 -- 
-2.34.1
+2.39.2
 
