@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E76727FBA61
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:45:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43DF67FBA63
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:45:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344617AbjK1MpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 07:45:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45802 "EHLO
+        id S1344683AbjK1MpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 07:45:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234708AbjK1MpL (ORCPT
+        with ESMTP id S1344636AbjK1MpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 07:45:11 -0500
+        Tue, 28 Nov 2023 07:45:12 -0500
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10602D4C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 04:45:17 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 275F6D4C
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 04:45:19 -0800 (PST)
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 6460766020EE;
-        Tue, 28 Nov 2023 12:45:15 +0000 (GMT)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id C4FFF66072EC;
+        Tue, 28 Nov 2023 12:45:16 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701175516;
-        bh=Q1fClNxiy5uCbKocfPk587p66TLkQdgMv+lgueLRZgc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=dicwJevDrgKOkdWNhibo40/NRp7chzmaLrhuk0GWI7Twtdk/HUktcvcbRPmqS6rDR
-         yd7nEZsZupNiNwF7lkpPfnbxC45lnlxcRCtbF11knluuY7G5+Exq4LBVduuIFI5Tmf
-         t8F+ccRtOOohPOMF3nob8jOQpcMTzVQR6DIT9x/PS9RjAZ5pV9xBmmauMjf0ADp5DJ
-         KBSRBqmV5QUubdkDmCB5X2r/sOIMpiCvTKXAnCf5OPKcDhyXgFXZsxMmotU4s0ga6K
-         c2+4TFQNX+bb4f1ELDTEOlbQARZWGnLo71tYEgwb9fVVXYIZOpBmxuu7mJvfyVpu4J
-         X4Ti8TKlB2h2Q==
+        s=mail; t=1701175518;
+        bh=/S8eup1D2CWj7TmAUaPQ57/El8xDPM8qkSVEq3I7Q4I=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=nx7pbJULBrQbAJNvMwJ4VILLXbeYd3V0UTdDsVOZhI1hrUK8JMW9wfeWSsZRq3SzB
+         Oc3WJIcntK6YtZ7v9xTw/5QZVnEyhK/l2Qghr4WsXTD/gl7dIYnFjxbigiJ+x3+L7O
+         XCegF59MpXiQ6KuHv8KOBZAnecVgpAuLuqp632+LY9ewZzYUlS9CMQrom0FspGZt0m
+         Ui5EQFerWwnd6DoKTrGJG6+4l8bALyWh1FI1TeuQGFNF66VVFKjFELVAp3qbOKVlo6
+         TIiv09LWQkVdFD/OpTwZvSOyEmVvrQkSzYUpD7FUi6em4B/jdRsHooIhLIwra2jvC5
+         CbMpcSTgWrReQ==
 From:   AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>
 To:     boris.brezillon@collabora.com
@@ -42,10 +42,12 @@ Cc:     robh@kernel.org, steven.price@arm.com,
         dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         kernel@collabora.com, m.szyprowski@samsung.com,
         krzysztof.kozlowski@linaro.org
-Subject: [PATCH v2 0/3] drm/panfrost: Fix poweroff and sync IRQs for suspend
-Date:   Tue, 28 Nov 2023 13:45:07 +0100
-Message-ID: <20231128124510.391007-1-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v2 1/3] drm/panfrost: Ignore core_mask for poweroff and disable PWRTRANS irq
+Date:   Tue, 28 Nov 2023 13:45:08 +0100
+Message-ID: <20231128124510.391007-2-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231128124510.391007-1-angelogioacchino.delregno@collabora.com>
+References: <20231128124510.391007-1-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -58,33 +60,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series contains a fast fix for the basic GPU poweroff functionality
-and goes further by implementing interrupt masking and synchronization
-before suspend.
+Some SoCs may be equipped with a GPU containing two core groups
+and this is exactly the case of Samsung's Exynos 5422 featuring
+an ARM Mali-T628 MP6 GPU: the support for this GPU in Panfrost
+is partial, as this driver currently supports using only one
+core group and that's reflected on all parts of it, including
+the power on (and power off, previously to this patch) function.
 
-For more information, please look at the conversation at [1], which
-explains the regression seen with the poweroff commit and the initial
-approaches taken to solve that.
+The issue with this is that even though executing the soft reset
+operation should power off all cores unconditionally, on at least
+one platform we're seeing a crash that seems to be happening due
+to an interrupt firing which may be because we are calling power
+transition only on the first core group, leaving the second one
+unchanged, or because ISR execution was pending before entering
+the panfrost_gpu_power_off() function and executed after powering
+off the GPU cores, or all of the above.
 
-Cheers!
+Finally, solve this by:
+ - Avoid to enable the power transition interrupt on reset; and
+ - Ignoring the core_mask and ask the GPU to poweroff both core groups
 
-[1]: https://lore.kernel.org/all/20231123095320.41433-1-angelogioacchino.delregno@collabora.com/
+Fixes: 22aa1a209018 ("drm/panfrost: Really power off GPU cores in panfrost_gpu_power_off()")
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+---
+ drivers/gpu/drm/panfrost/panfrost_gpu.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-AngeloGioacchino Del Regno (3):
-  drm/panfrost: Ignore core_mask for poweroff and disable PWRTRANS irq
-  drm/panfrost: Add gpu_irq, mmu_irq to struct panfrost_device
-  drm/panfrost: Synchronize and disable interrupts before powering off
-
- drivers/gpu/drm/panfrost/panfrost_device.c |  4 +++
- drivers/gpu/drm/panfrost/panfrost_device.h |  9 +++++++
- drivers/gpu/drm/panfrost/panfrost_gpu.c    | 29 +++++++++++++++-------
- drivers/gpu/drm/panfrost/panfrost_gpu.h    |  1 +
- drivers/gpu/drm/panfrost/panfrost_job.c    | 18 +++++++++++---
- drivers/gpu/drm/panfrost/panfrost_job.h    |  1 +
- drivers/gpu/drm/panfrost/panfrost_mmu.c    | 27 ++++++++++++++------
- drivers/gpu/drm/panfrost/panfrost_mmu.h    |  1 +
- 8 files changed, 70 insertions(+), 20 deletions(-)
-
+diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+index 09f5e1563ebd..bd41617c5e4b 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
++++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+@@ -78,7 +78,12 @@ int panfrost_gpu_soft_reset(struct panfrost_device *pfdev)
+ 	}
+ 
+ 	gpu_write(pfdev, GPU_INT_CLEAR, GPU_IRQ_MASK_ALL);
+-	gpu_write(pfdev, GPU_INT_MASK, GPU_IRQ_MASK_ALL);
++
++	/* Only enable the interrupts we care about */
++	gpu_write(pfdev, GPU_INT_MASK,
++		  GPU_IRQ_MASK_ERROR |
++		  GPU_IRQ_PERFCNT_SAMPLE_COMPLETED |
++		  GPU_IRQ_CLEAN_CACHES_COMPLETED);
+ 
+ 	/*
+ 	 * All in-flight jobs should have released their cycle
+@@ -425,11 +430,10 @@ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
+ 
+ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
+ {
+-	u64 core_mask = panfrost_get_core_mask(pfdev);
+ 	int ret;
+ 	u32 val;
+ 
+-	gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present & core_mask);
++	gpu_write(pfdev, SHADER_PWROFF_LO, pfdev->features.shader_present);
+ 	ret = readl_relaxed_poll_timeout(pfdev->iomem + SHADER_PWRTRANS_LO,
+ 					 val, !val, 1, 1000);
+ 	if (ret)
+@@ -441,7 +445,7 @@ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
+ 	if (ret)
+ 		dev_err(pfdev->dev, "tiler power transition timeout");
+ 
+-	gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present & core_mask);
++	gpu_write(pfdev, L2_PWROFF_LO, pfdev->features.l2_present);
+ 	ret = readl_poll_timeout(pfdev->iomem + L2_PWRTRANS_LO,
+ 				 val, !val, 0, 1000);
+ 	if (ret)
 -- 
 2.42.0
 
