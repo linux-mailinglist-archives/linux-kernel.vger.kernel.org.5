@@ -2,134 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C755D7FB2AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:27:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B38AD7FB2B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343693AbjK1H0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 02:26:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35806 "EHLO
+        id S233003AbjK1H1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 02:27:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231783AbjK1H0s (ORCPT
+        with ESMTP id S234358AbjK1H1D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 02:26:48 -0500
-Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB543182
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:26:54 -0800 (PST)
-Received: by mail-vk1-xa2a.google.com with SMTP id 71dfb90a1353d-4ac89e8e964so1352692e0c.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:26:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701156414; x=1701761214; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=XQHZhfJfvy6myNbejEz/bjCAKf8Fay2vrOw4NWLU8tk=;
-        b=Zy+Hw/32OxxdrlhTE7vy+2FprJM1evLmduheqRFxA7cbuOGt1cMnJ0LuYC7trQhV6C
-         tRkEdc2qWL3Z10jPmxXkjfT9tFk+kZp4JBmrwT8cPi9aYsgyZ5Im0I6GDA5wnqggOixG
-         eY2xFhWswxK/Fr38tnQutbXS+FOe9ZqdWJH2jigRw50VxxzWBDHpq45nPnGlvUsjZgsC
-         leqgnB0auyxDBtspIO9Jhd8EMBF2ZOdiqoULNnOYOsLsdMp1yUKr75msnqp15j1guHY0
-         YIQ2kb3wwUFhVvHuD43ArH5xHRC99GhQOzzBUYU9SxkwUfXmII0mtcSWHRYJwlqZzfII
-         xsvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701156414; x=1701761214;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XQHZhfJfvy6myNbejEz/bjCAKf8Fay2vrOw4NWLU8tk=;
-        b=TcNGQ8+RMKGOZSmQT1dlav+7uBZtP3YR0BPOOJ+OCAc0KGpLVfRNAkDamWEKy2JFo1
-         hreX+2gs8SlkygBvFTGiT60fT2h1TshNFdek9Z1aYAGtzYG+UB/dvxtzjRsO/Bx7LEMb
-         qdS0qVvrSF8WaUBuF+F6oY1g60vRhNRr9JEpepedVkSj50rswcHDcua5jE3Bx1qqXFOy
-         Zis1n8KXIEWRUfDXkFZ61xqqJH2cGeYd8bVZCtEAA88ob8RIFc3lJyIyQc8ycX7IB9CU
-         vCjYxGjZ61BrFPQihVBdVSVmW1AqxLIpX/rXhOL6YBqDj0e72p7eAT+/ya03t28XVW9C
-         gPzQ==
-X-Gm-Message-State: AOJu0YwTJ0+8ONFojG5+q8dX3wEeFkBpun/fov/IzTM9cM48YzXA87Nm
-        GENkXTcDjZqDY/Y9agGZwSnsYE7HRN+4UvxFz9vEBQ==
-X-Google-Smtp-Source: AGHT+IFVftVfIjL481V8MUaMw/MvqE5UMxbcrVnbA83NJUcqSW+tuQjWaY+YSV1SVn7KWbLN310PsdKPUSkXzlxwW+0=
-X-Received: by 2002:a1f:4ac2:0:b0:495:cace:d59c with SMTP id
- x185-20020a1f4ac2000000b00495caced59cmr11457812vka.0.1701156413959; Mon, 27
- Nov 2023 23:26:53 -0800 (PST)
+        Tue, 28 Nov 2023 02:27:03 -0500
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD5CD6D;
+        Mon, 27 Nov 2023 23:27:09 -0800 (PST)
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AS20ROl031456;
+        Tue, 28 Nov 2023 08:26:54 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=selector1; bh=Ssqh7w0gyO7jZ8y3HEvt5
+        feOCunBeqJzsQ7BVPvXVNk=; b=5+dddTwDgfGM3saJyJ2k6qe0mmiiWTsiflx7l
+        kqL2iTnqTq+4O+DoQXIHkHtH99G7dh2FI4od5yIOQc2E2dolxWOa/4+6JttE3YMy
+        Iw9oeL8PFkDMnEnp0E6hBQfvMe2qK7EcZTHg+HorMiLV+cn7/MCjC6yufeuncdds
+        AzvFBq06XQV96oLm97nOA0HWhEemuZpWu/sflKcjwH9WT7NfSXo3HdhJX2CWr8ws
+        StPHYOGms3pE/b+O9DOaHmU61338bLAKWyeeqmVnYMX2zTeG7m8XZ1MGCVAK0gXK
+        3HA3VAINFSdLqUKrXPZMOgfYbJeWw4VNjazVYImuooe+QLZaA==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3uk951u1j5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Nov 2023 08:26:54 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9138910002A;
+        Tue, 28 Nov 2023 08:26:53 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4458D214D20;
+        Tue, 28 Nov 2023 08:26:53 +0100 (CET)
+Received: from gnbcxd0016.gnb.st.com (10.129.178.213) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 28 Nov
+ 2023 08:26:53 +0100
+Date:   Tue, 28 Nov 2023 08:26:45 +0100
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+        Sylvain Petinot <sylvain.petinot@foss.st.com>,
+        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/7] media: i2c: st-mipid02: use active state to store
+ pad formats
+Message-ID: <20231128072645.GA1435577@gnbcxd0016.gnb.st.com>
+Mail-Followup-To: Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+        Sylvain Petinot <sylvain.petinot@foss.st.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231125182057.1379357-1-alain.volmat@foss.st.com>
+ <20231125182057.1379357-5-alain.volmat@foss.st.com>
+ <ZWWLQkjvovzJMc73@kekkonen.localdomain>
 MIME-Version: 1.0
-References: <20231103061715.196294-1-sumit.garg@linaro.org> <87h6l7yth7.fsf@meer.lwn.net>
-In-Reply-To: <87h6l7yth7.fsf@meer.lwn.net>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Tue, 28 Nov 2023 12:56:42 +0530
-Message-ID: <CAFA6WYPs2LCepSM=MQ_dXtTeDPMg6ZQg2LjDR1ZgKNhu3+cqbA@mail.gmail.com>
-Subject: Re: [PATCH v2] Documentation: Destage TEE subsystem documentation
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     jens.wiklander@linaro.org, vegard.nossum@oracle.com,
-        Rijo-john.Thomas@amd.com, balint.dobszay@arm.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        op-tee@lists.trustedfirmware.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZWWLQkjvovzJMc73@kekkonen.localdomain>
+X-Disclaimer: ce message est personnel / this message is private
+X-Originating-IP: [10.129.178.213]
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-28_06,2023-11-27_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 27 Nov 2023 at 23:22, Jonathan Corbet <corbet@lwn.net> wrote:
->
-> Sumit Garg <sumit.garg@linaro.org> writes:
->
-> > Add a separate documentation directory for TEE subsystem since it is a
-> > standalone subsystem which already offers devices consumed by multiple
-> > different subsystem drivers.
-> >
-> > Split overall TEE subsystem documentation modularly where:
-> > - The userspace API has been moved to Documentation/userspace-api/tee.rst.
-> > - The driver API has been moved to Documentation/driver-api/tee.rst.
-> > - The first module covers the overview of TEE subsystem.
-> > - The further modules are dedicated to different TEE implementations like:
-> >   - OP-TEE
-> >   - AMD-TEE
-> >   - and so on for future TEE implementation support.
-> >
-> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > ---
-> >
-> > Changes in v2:
-> > - Move userspace API to Documentation/userspace-api/tee.rst.
-> > - Move driver API to Documentation/driver-api/tee.rst.
-> >
-> >  Documentation/driver-api/index.rst    |   1 +
-> >  Documentation/driver-api/tee.rst      |  66 +++++
-> >  Documentation/staging/index.rst       |   1 -
-> >  Documentation/staging/tee.rst         | 364 --------------------------
-> >  Documentation/subsystem-apis.rst      |   1 +
-> >  Documentation/tee/amd-tee.rst         |  90 +++++++
-> >  Documentation/tee/index.rst           |  19 ++
-> >  Documentation/tee/op-tee.rst          | 166 ++++++++++++
-> >  Documentation/tee/tee.rst             |  22 ++
-> >  Documentation/userspace-api/index.rst |   1 +
-> >  Documentation/userspace-api/tee.rst   |  39 +++
-> >  MAINTAINERS                           |   4 +-
-> >  12 files changed, 408 insertions(+), 366 deletions(-)
-> >  create mode 100644 Documentation/driver-api/tee.rst
-> >  delete mode 100644 Documentation/staging/tee.rst
-> >  create mode 100644 Documentation/tee/amd-tee.rst
-> >  create mode 100644 Documentation/tee/index.rst
-> >  create mode 100644 Documentation/tee/op-tee.rst
-> >  create mode 100644 Documentation/tee/tee.rst
-> >  create mode 100644 Documentation/userspace-api/tee.rst
->
-> So I finally got around to applying this...after dealing with the fact
-> that it doesn't apply to docs-next, I found that it adds a couple of
-> warnings:
->
-> > Warning: Documentation/security/keys/trusted-encrypted.rst references a file that doesn't exist: Documentation/staging/tee.rst
-> > Warning: drivers/tee/optee/Kconfig references a file that doesn't exist: Documentation/staging/tee.rst
->
-> Can I get a version that doesn't leave dangling references like that
-> around?
+Hi Sakari,
 
-Sure, sent v3 to incorporate rebasing to docs-next as well as removing
-any dangling references.
+On Tue, Nov 28, 2023 at 06:40:02AM +0000, Sakari Ailus wrote:
+> On Sat, Nov 25, 2023 at 07:20:52PM +0100, Alain Volmat wrote:
+> > Store formats information within pad allowing to simplify further more
+> > the driver (mutex / format store within the driver structure no more
+> > necessary).
+> > 
+> > Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+> 
+> Applied with the following diff:
+> 
+> diff --git a/drivers/media/i2c/st-mipid02.c b/drivers/media/i2c/st-mipid02.c
+> index 7af209905d7b..2cc07b3ed0da 100644
+> --- a/drivers/media/i2c/st-mipid02.c
+> +++ b/drivers/media/i2c/st-mipid02.c
+> @@ -563,8 +563,8 @@ static const struct v4l2_mbus_framefmt default_fmt = {
+>  	.height = 480,
+>  };
+>  
+> -static int mipid02_init_cfg(struct v4l2_subdev *sd,
+> -			    struct v4l2_subdev_state *state)
+> +static int mipid02_init_state(struct v4l2_subdev *sd,
+> +			      struct v4l2_subdev_state *state)
+>  {
+>  	*v4l2_subdev_state_get_format(state, MIPID02_SINK_0) = default_fmt;
+>  	/* MIPID02_SINK_1 isn't supported yet */
+> @@ -642,7 +642,6 @@ static const struct v4l2_subdev_video_ops mipid02_video_ops = {
+>  };
+>  
+>  static const struct v4l2_subdev_pad_ops mipid02_pad_ops = {
+> -	.init_cfg = mipid02_init_cfg,
+>  	.enum_mbus_code = mipid02_enum_mbus_code,
+>  	.get_fmt = v4l2_subdev_get_fmt,
+>  	.set_fmt = mipid02_set_fmt,
+> @@ -653,6 +652,10 @@ static const struct v4l2_subdev_ops mipid02_subdev_ops = {
+>  	.pad = &mipid02_pad_ops,
+>  };
+>  
+> +static const struct v4l2_subdev_internal_ops mipid02_subdev_internal_ops = {
+> +	.init_state = mipid02_init_state,
+> +};
+> +
+>  static const struct media_entity_operations mipid02_subdev_entity_ops = {
+>  	.link_validate = v4l2_subdev_link_validate,
+>  };
+> @@ -851,6 +854,7 @@ static int mipid02_probe(struct i2c_client *client)
+>  
+>  	bridge->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
+>  	bridge->sd.entity.function = MEDIA_ENT_F_VID_IF_BRIDGE;
+> +	bridge->sd.internal_ops = &mipid02_subdev_internal_ops;
+>  	bridge->sd.entity.ops = &mipid02_subdev_entity_ops;
+>  	bridge->pad[0].flags = MEDIA_PAD_FL_SINK;
+>  	bridge->pad[1].flags = MEDIA_PAD_FL_SINK;
+> 
 
--Sumit
+Thanks a lot Sakari for taking care of that !!
 
->
-> Thanks,
->
-> jon
+Regards,
+Alain
+
+> -- 
+> Sakari Ailus
