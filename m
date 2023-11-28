@@ -2,172 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E58277FC208
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 131F77FC298
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346895AbjK1R4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 12:56:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44480 "EHLO
+        id S1346688AbjK1R5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 12:57:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346931AbjK1R43 (ORCPT
+        with ESMTP id S1346600AbjK1R4l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 12:56:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B311F2D59
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:55:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701194124;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=6IpfI+5hX9oWAaqFKgR7pMHL53l1oeTSERZKZMVDwEk=;
-        b=jLirQ2Q16v35ZzL2k/uk3lnHhjMdSrHPEvZKRjrkI5qi3Gu6qo0DmqiOuyMrECStRz2Cq0
-        eHMMEXkePL0KO323veEt1uiGNFeu+4RBGYf2cUlB0aRJyW7KIozdmZ/yVfz4uqcc+Zx32n
-        /jRXfstkiA53SEm9ackOdIjvd2UM5b4=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-681-q9hYhGoRMzyRGB6piv8j2g-1; Tue, 28 Nov 2023 12:55:23 -0500
-X-MC-Unique: q9hYhGoRMzyRGB6piv8j2g-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33309619b52so6768f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:55:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701194121; x=1701798921;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        Tue, 28 Nov 2023 12:56:41 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FFAC324E
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:55:36 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50bbf7a6029so160e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:55:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701194135; x=1701798935; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6IpfI+5hX9oWAaqFKgR7pMHL53l1oeTSERZKZMVDwEk=;
-        b=LqCYe8DCo2u2e/PXOsv1Ngt0kZ/iC8zNms3VuSh/ZWr5/tuLi9r3vwmoqbxwoJDk/S
-         HbifEB5AH9mG/14VlnLHdugxC92xYklCTTT9DtDtbf3y9vmja8VFG8sVZVex1iYq3mFs
-         CjmGMcbnLOwYgRXrdtZY074/2DRM9YqBkTzjk1+ioScCc5S6Ow3UvW3nvjk6Wb+/6u7x
-         +EP/mzlQaimLo5Z5L+UW9nu7PyG6ZiadRHutCqZPiWR5eL4iE8O5aTgSMYvT1xsAxu0+
-         TOQrtM0Awx0Ui7o8HQrZ0+/KfdoTez9y1zakPYYF+8HZhrQerIsdSfYlAWTylB03FYvQ
-         XZmg==
-X-Gm-Message-State: AOJu0Yx9R3lKlCkpjLjJZBau+x9HwgFdRH6OmwP2uDHQhEI4wSeRUl1e
-        hHxC20XG6pIgn71p9McuMJwWfZ+j6IorlOhV+cME/blYN6vLwCatkTuzbrWGJRq3Yro5GjP9MMk
-        8c1ZExy0QNB9HBb9in/j2aKvU
-X-Received: by 2002:adf:e9c6:0:b0:332:ff64:ff50 with SMTP id l6-20020adfe9c6000000b00332ff64ff50mr6720304wrn.3.1701194120770;
-        Tue, 28 Nov 2023 09:55:20 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFxtIUmo/xgDPU+4SynBCZAKg3hJMQbTbqo7KrIGmu/9sGiONimAtj8MpqI83o1bVOsygmqVw==
-X-Received: by 2002:adf:e9c6:0:b0:332:ff64:ff50 with SMTP id l6-20020adfe9c6000000b00332ff64ff50mr6720265wrn.3.1701194120413;
-        Tue, 28 Nov 2023 09:55:20 -0800 (PST)
-Received: from ?IPV6:2003:cb:c708:1d00:99ec:9656:7475:678d? (p200300cbc7081d0099ec96567475678d.dip0.t-ipconnect.de. [2003:cb:c708:1d00:99ec:9656:7475:678d])
-        by smtp.gmail.com with ESMTPSA id x1-20020adfec01000000b00332cfd83b8dsm15601843wrn.96.2023.11.28.09.55.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Nov 2023 09:55:20 -0800 (PST)
-Message-ID: <1c79ad05-cb52-4820-b2aa-bbe07ff82b19@redhat.com>
-Date:   Tue, 28 Nov 2023 18:55:18 +0100
+        bh=ugBeSgSYCz9ybgMm2e5vxSBN02IdcZ2SmwFOGZ5+9F0=;
+        b=oB/5DRkOGxxviIWEL62mZQ+uG/0sNBpNs0jLysXVVgRcN9OW9HuPqk26AHPZfOwar3
+         3pajZmcJGgfnaxcAs1xvQQ5TBBloOdFFGA//cYjJbX02TXjzqBEBistq2P0+BEViDwpi
+         YkRjtsfxrZU88QJMwrf0o50x2mDGhguvsp+kJV04AQYYma5I+DWTqSONHq1W7fdCPVVX
+         kacUv0XK6GM4YAEymoR4Thb6S3OGDNCX0T4ota/IB9URp/y4XcOSvESNPsb9V2X3wNT+
+         hzdGwno4t4PXmWd8+H2b2kK7pfOL4Vz8Mn3zvSc6IvHfETFz1+Irzyu402A9O0YyyFay
+         WLMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701194135; x=1701798935;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ugBeSgSYCz9ybgMm2e5vxSBN02IdcZ2SmwFOGZ5+9F0=;
+        b=nWvWas2XBwpwVsNct3aprRb+7LlS9XVzPNS7HMuPQ5OjT0eH8JMKVua6NTd1lUihcy
+         Ylb+LtQrlCYu0MONQi8EzSupUBJRw0mXtj1vDia3LruT9CHCCcUPkH60ylFlXYIk9WQz
+         SGcwgGynVmoYzJX4ByQtWsbpyPxsKVHzsEdH2hHtAWyA392xM2BPC8JQdIP9n3fz1PDK
+         w4cz2AdqQqMzeVLuC8+HSnopAs3rTcdz9ympIC8C0MZpLDiH8ByQDMt79iSUhgWa14VV
+         Qc1JbiCNFLKu1J9evc6KMUYE/IIMpKq7d/rkdxI99oA6BV4C4MoizfUbKUW9vWuee5g9
+         XXGg==
+X-Gm-Message-State: AOJu0YwIFmCqeKO5aAUWWMgWvzf508zAWIlZWXPLJTso5/S5X9i2fuX0
+        jmTtKhL+SVG2G0pdP4BgHYno6C7m4JvUZ3WoYSIY4Q==
+X-Google-Smtp-Source: AGHT+IFaDkaMABJ614yhVDsD1gyDQpT8ElYwuxkdZVgJr7NOCU4EaS8jYCxz2m7q7PAH8Cgd13o5YCt9dKwp9QyPghQ=
+X-Received: by 2002:a19:3811:0:b0:50b:bca9:72c with SMTP id
+ f17-20020a193811000000b0050bbca9072cmr65388lfa.3.1701194134505; Tue, 28 Nov
+ 2023 09:55:34 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v2 19/27] mm: mprotect: Introduce PAGE_FAULT_ON_ACCESS
- for mprotect(PROT_MTE)
-Content-Language: en-US
-To:     Alexandru Elisei <alexandru.elisei@arm.com>,
-        catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
-        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
-        rppt@kernel.org, hughd@google.com
-Cc:     pcc@google.com, steven.price@arm.com, anshuman.khandual@arm.com,
-        vincenzo.frascino@arm.com, eugenis@google.com, kcc@google.com,
-        hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
-References: <20231119165721.9849-1-alexandru.elisei@arm.com>
- <20231119165721.9849-20-alexandru.elisei@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20231119165721.9849-20-alexandru.elisei@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231102175735.2272696-1-irogers@google.com> <20231102175735.2272696-5-irogers@google.com>
+ <ZWURZvDA2L4Mr3HR@kernel.org> <ZWYf+Sy6JKd7CYlN@kernel.org> <ZWYlgPwGmAEUKIsE@kernel.org>
+In-Reply-To: <ZWYlgPwGmAEUKIsE@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 28 Nov 2023 09:55:22 -0800
+Message-ID: <CAP-5=fVgVY8hhhhgW-aJic6Vez2CJmA8VLx+Az3kKJFB7fz1Pg@mail.gmail.com>
+Subject: Re: [PATCH v4 04/53] perf mmap: Lazily initialize zstd streams
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Dmitrii Dolgov <9erthalion6@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        James Clark <james.clark@arm.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        German Gomez <german.gomez@arm.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.11.23 17:57, Alexandru Elisei wrote:
-> To enable tagging on a memory range, userspace can use mprotect() with the
-> PROT_MTE access flag. Pages already mapped in the VMA don't have the
-> associated tag storage block reserved, so mark the PTEs as
-> PAGE_FAULT_ON_ACCESS to trigger a fault next time they are accessed, and
-> reserve the tag storage on the fault path.
+On Tue, Nov 28, 2023 at 9:38=E2=80=AFAM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Tue, Nov 28, 2023 at 02:14:33PM -0300, Arnaldo Carvalho de Melo escrev=
+eu:
+> > Em Mon, Nov 27, 2023 at 07:00:06PM -0300, Arnaldo Carvalho de Melo escr=
+eveu:
+> > > Em Thu, Nov 02, 2023 at 10:56:46AM -0700, Ian Rogers escreveu:
+> > > > Zstd streams create dictionaries that can require significant RAM,
+> > > > especially when there is one per-CPU. Tools like perf record won't =
+use
+> > > > the streams without the -z option, and so the creation of the strea=
+ms
+> > > > is pure overhead. Switch to creating the streams on first use.
+>
+> > > > Signed-off-by: Ian Rogers <irogers@google.com>
+>
+> > > Thanks, applied to perf-tools-next.
+>
+> > Trying to fix this now:
+> >
+> >   6    20.59 alpine:3.18                   : FAIL gcc version 12.2.1 20=
+220924 (Alpine 12.2.1_git20220924-r10)
+> >     In file included from util/zstd.c:5:
+> >     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:1: error: unknown=
+ type name 'ssize_t'; did you mean 'size_t'?
+>
+> So the problem was really the one above, that got fixed with the patch
+> below, that is what 'man size_t' documents on my fedora:38 system.
 
-That sounds alot like fake PROT_NONE. Would there be a way to unify hat 
-handling and simply reuse pte_protnone()? For example, could we special 
-case on VMA flags?
 
-Like, don't do NUMA hinting in these special VMAs. Then, have something 
-like:
+Thanks, perhaps this is something clang-tidy, clang-format or similar
+could help with in the future. There was event IWYU discussion at LPC:
+https://lpc.events/event/17/contributions/1620/attachments/1228/2520/Linux%=
+20Kernel%20Header%20Optimization.pdf
 
-if (pte_protnone(vmf->orig_pte))
-	return handle_pte_protnone(vmf);
+Thanks,
+Ian
 
-In there, special case on the VMA flags.
-
-I *suspect* that handle_page_missing_tag_storage() stole (sorry :P) some 
-code from the prot_none handling path. At least the recovery path and 
-writability handling looks like it better be located shared in 
-handle_pte_protnone() as well.
-
-That might take some magic out of this patch.
-
--- 
-Cheers,
-
-David / dhildenb
-
+> - Arnaldo
+>
+> diff --git a/tools/perf/util/compress.h b/tools/perf/util/compress.h
+> index 9eb6eb5bf038ce54..b29109cd36095c4f 100644
+> --- a/tools/perf/util/compress.h
+> +++ b/tools/perf/util/compress.h
+> @@ -3,7 +3,8 @@
+>  #define PERF_COMPRESS_H
+>
+>  #include <stdbool.h>
+> -#include <stdlib.h>
+> +#include <stddef.h>
+> +#include <sys/types.h>
+>  #ifdef HAVE_ZSTD_SUPPORT
+>  #include <zstd.h>
+>  #endif
+>
+> >        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
+ata, void *dst, size_t dst_size,
+> >           | ^~~~~~~
+> >           | size_t
+> >     util/zstd.c:31:9: error: conflicting types for 'zstd_compress_strea=
+m_to_records'; have 'ssize_t(struct zstd_data *, void *, size_t,  void *, s=
+ize_t,  size_t,  size_t (*)(void *, size_t))' {aka 'long int(struct zstd_da=
+ta *, void *, long unsigned int,  void *, long unsigned int,  long unsigned=
+ int,  long unsigned int (*)(void *, long unsigned int))'}
+> >        31 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
+ata, void *dst, size_t dst_size,
+> >           |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:9: note: previous=
+ declaration of 'zstd_compress_stream_to_records' with type 'int(struct zst=
+d_data *, void *, size_t,  void *, size_t,  size_t,  size_t (*)(void *, siz=
+e_t))' {aka 'int(struct zstd_data *, void *, long unsigned int,  void *, lo=
+ng unsigned int,  long unsigned int,  long unsigned int (*)(void *, long un=
+signed int))'}
+> >        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
+ata, void *dst, size_t dst_size,
+> >           |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >     make[3]: *** [/git/perf-6.6.0-rc1/tools/build/Makefile.build:158: u=
+til] Error 2
+> >       CC      /tmp/build/perf/util/zstd.o
+> >       CC      /tmp/build/perf/util/cap.o
+> >       CXX     /tmp/build/perf/util/demangle-cxx.o
+> >       CC      /tmp/build/perf/util/demangle-ocaml.o
+> >     In file included from util/zstd.c:5:
+> >     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:1: error: unknown=
+ type name 'ssize_t'; did you mean 'size_t'?
+> >        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
+ata, void *dst, size_t dst_size,
+> >           | ^~~~~~~
+> >           | size_t
+> >       CC      /tmp/build/perf/util/demangle-java.o
+> >     util/zstd.c:31:9: error: conflicting types for 'zstd_compress_strea=
+m_to_records'; have 'ssize_t(struct zstd_data *, void *, size_t,  void *, s=
+ize_t,  size_t,  size_t (*)(void *, size_t))' {aka 'long int(struct zstd_da=
+ta *, void *, long unsigned int,  void *, long unsigned int,  long unsigned=
+ int,  long unsigned int (*)(void *, long unsigned int))'}
+> >        31 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
+ata, void *dst, size_t dst_size,
+> >           |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:9: note: previous=
+ declaration of 'zstd_compress_stream_to_records' with type 'int(struct zst=
+d_data *, void *, size_t,  void *, size_t,  size_t,  size_t (*)(void *, siz=
+e_t))' {aka 'int(struct zstd_data *, void *, long unsigned int,  void *, lo=
+ng unsigned int,  long unsigned int,  long unsigned int (*)(void *, long un=
+signed int))'}
+> >        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
+ata, void *dst, size_t dst_size,
+> >    7    21.14 alpine:edge                   : FAIL gcc version 13.1.1 2=
+0230722 (Alpine 13.1.1_git20230722)
+> >     In file included from util/zstd.c:5:
+> >     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:1: error: unknown=
+ type name 'ssize_t'; did you mean 'size_t'?
+> >        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
+ata, void *dst, size_t dst_size,
+> >           | ^~~~~~~
+> >           | size_t
+> >     util/zstd.c:31:9: error: conflicting types for 'zstd_compress_strea=
+m_to_records'; have 'ssize_t(struct zstd_data *, void *, size_t,  void *, s=
+ize_t,  size_t,  size_t (*)(void *, size_t))' {aka 'long int(struct zstd_da=
+ta *, void *, long unsigned int,  void *, long unsigned int,  long unsigned=
+ int,  long unsigned int (*)(void *, long unsigned int))'}
+> >        31 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
+ata, void *dst, size_t dst_size,
+> >           |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:9: note: previous=
+ declaration of 'zstd_compress_stream_to_records' with type 'int(struct zst=
+d_data *, void *, size_t,  void *, size_t,  size_t,  size_t (*)(void *, siz=
+e_t))' {aka 'int(struct zstd_data *, void *, long unsigned int,  void *, lo=
+ng unsigned int,  long unsigned int,  long unsigned int (*)(void *, long un=
+signed int))'}
+> >        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
+ata, void *dst, size_t dst_size,
+> >           |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >     make[3]: *** [/git/perf-6.6.0-rc1/tools/build/Makefile.build:158: u=
+til] Error 2
+> >       CC      /tmp/build/perf/util/cap.o
+> >       CXX     /tmp/build/perf/util/demangle-cxx.o
+> >       CC      /tmp/build/perf/util/demangle-ocaml.o
+> >       CC      /tmp/build/perf/util/demangle-java.o
+> >     In file included from util/zstd.c:5:
+> >     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:1: error: unknown=
+ type name 'ssize_t'; did you mean 'size_t'?
+> >        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
+ata, void *dst, size_t dst_size,
+> >           | ^~~~~~~
+> >           | size_t
+> >     util/zstd.c:31:9: error: conflicting types for 'zstd_compress_strea=
+m_to_records'; have 'ssize_t(struct zstd_data *, void *, size_t,  void *, s=
+ize_t,  size_t,  size_t (*)(void *, size_t))' {aka 'long int(struct zstd_da=
+ta *, void *, long unsigned int,  void *, long unsigned int,  long unsigned=
+ int,  long unsigned int (*)(void *, long unsigned int))'}
+> >        31 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
+ata, void *dst, size_t dst_size,
+> >           |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:9: note: previous=
+ declaration of 'zstd_compress_stream_to_records' with type 'int(struct zst=
+d_data *, void *, size_t,  void *, size_t,  size_t,  size_t (*)(void *, siz=
+e_t))' {aka 'int(struct zstd_data *, void *, long unsigned int,  void *, lo=
+ng unsigned int,  long unsigned int,  long unsigned int (*)(void *, long un=
+signed int))'}
+> >        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *d=
+ata, void *dst, size_t dst_size,
+> >           |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >
+>
+> --
