@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7340E7FB333
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 643EF7FB337
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:52:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343899AbjK1Hvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 02:51:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57450 "EHLO
+        id S1343897AbjK1HwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 02:52:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjK1Hvq (ORCPT
+        with ESMTP id S229737AbjK1HwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 02:51:46 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE77599
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:51:52 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-a02c48a0420so705713766b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:51:52 -0800 (PST)
+        Tue, 28 Nov 2023 02:52:06 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BCE81AE
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:52:11 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9fffa4c4f43so698645266b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:52:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701157911; x=1701762711; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701157930; x=1701762730; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=diLUBKxJ7l6En7yqtshs/4XmYEvA4pN8uSRRykBAsQI=;
-        b=MAw7RHO2vPmUlWcFJ27RVe11LoPRtsP0tAvwM8s65/54vfKxJHl/0mqPjT2zaRzV3s
-         ASA+v/mQ6i70YA8UentUV9kicZhA3wCPWMUKUfzFmErBRUinhW7AXFiVAqXrTzfGV1R6
-         Hu1oGIBaleP48v0ZJJEGl7M9sI2kzRaXAsw1pF8Phgn0dXn+UBv98zzG27/AMC0nC6+C
-         nmARLcl45yvFcN6rP1Qzk3yyGJ0zY+s9ak/yWBJs0s/hUrt6pjxyFEBKbOid0n47sXxS
-         3zQkBETc1HtHvQYBuFzIGy9wkrBJgD+pWUymw4ftx7rEyi86YgRRri+RN713lXbRVWTL
-         Ez2Q==
+        bh=1Mdz4BEd/239cXzF5fGBLwmtYBQtjtLQ7JDZbNV3gcs=;
+        b=xQe4Rh+LDZ8ELcl/CoP69KFoYKRdF26UaUKkdxdaRDPD/Y3IHjIM78CA0s7vG2JyLK
+         ezCk33uWLXkKfM1vm9E6sq7MI4ioeEgm67XSrnOUwxyXGgnGZwH0933s8+bKsZmaSSrI
+         hkLN+tNfq5EI/H/Rwmcoz/NxnW2j1O6IEVNN5HGEE3LeJtht4wII3T6Y8ONF44WcBt0O
+         1sAZuMjUAoxlv9/z/TTlJWVE+FDJJINuW2UvCn1Yfbjc4LU6E4Jb9CrJ/Swept0MvdP5
+         Vl1SjZcynvlLUbltyQCW1gmhrnsnIrU+aDUNBDl9uS+kfxZEpIhiuFei5XBTVhCAtWWe
+         Rqig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701157911; x=1701762711;
+        d=1e100.net; s=20230601; t=1701157930; x=1701762730;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=diLUBKxJ7l6En7yqtshs/4XmYEvA4pN8uSRRykBAsQI=;
-        b=W1g95lv9cH01t+bhUwesgtW6N4zwyovBMe/Hus9+qQqVcPrSlzMHYd//rN98WgMSso
-         0w/n7jJvVZbcmRpQexPKweWf+VTNUoLhGvrxYd4VO5dqiXmfHMrXubbZgDj3wl/12vjx
-         iZoug5l3IMBghdCOtOc9+WEi7JNUOlZSJQGTmoRlMumN7D8KaoyWygrNDGD3x9IoCsQC
-         Fel7o7YDYLGGPb07cPEVX6YbLWmXvNC/cZ5asNGBO+q6DQE54Ifrb0RxNao/Wg72Io+m
-         MasVNYy67BCKlBHTS1APwA/wzr2TSYmaA2OCLdtG2Qs7nS60am9dreRSQfMD+K9OtmKO
-         Qd5g==
-X-Gm-Message-State: AOJu0Yy7xF+URimK+0q+sAU+1XC7UAHeuFIBar50T+wqlqEdVNzmGBEm
-        irL+lYOesExqxlOyhomv0gq82A==
-X-Google-Smtp-Source: AGHT+IFMLbrMJAnZXnIsnzrNevzEXAlbqZ6Bd6m49ADJTApDCW5INT8IlzqmgXbDUf4sIJoyYncBrQ==
-X-Received: by 2002:a17:906:eb01:b0:9ff:53b6:f951 with SMTP id mb1-20020a170906eb0100b009ff53b6f951mr10046289ejb.23.1701157911325;
-        Mon, 27 Nov 2023 23:51:51 -0800 (PST)
+        bh=1Mdz4BEd/239cXzF5fGBLwmtYBQtjtLQ7JDZbNV3gcs=;
+        b=pScrmqzbY5QsTcgvjO9DPGeLoGHToGeYALzjr0CZwgcnyHtPCVgGHG0zgDKlP5yrCr
+         fCuSs6/hj4PVgs6OzYCbHzkDhfWyqXVS1TQgYnA5ixRzao+HdZCLo4obDNyAk6l65t2s
+         Kn9LRsU2dBquo/wUkPpOAg3INaFu0oEchaAyLjgIACuLhbyWznRZnzo0Ce0h90PabaPR
+         FhuPVoDINZ7c1exQJ61OkHP/wpV/OCKEy/CuWVj0S87u+apmoyxk+q/hcMpRZomm2Er8
+         HfIBhS70OvvvDmXq1vBOex3qMEIOnlhFH26PqYc8Yw1nfQMdwMpTE9weRPaz2DlWWMFE
+         e+cw==
+X-Gm-Message-State: AOJu0YwtqgCbXcAkA3OQSTHQTwsrJKXt/a0Y9JRc/CtK6O+AY/ZGtGK9
+        +HMLszhqQ2LAhAp1xKW4LKQfVg==
+X-Google-Smtp-Source: AGHT+IG81esmqcMA/f2xKnh9xX14ip3wkAD3HBX9/+pk6zaXM3/xzX2wiRQ2vC1eYQRfTjOtqe2mKw==
+X-Received: by 2002:a17:906:2a17:b0:a02:2be5:f821 with SMTP id j23-20020a1709062a1700b00a022be5f821mr8189363eje.77.1701157930052;
+        Mon, 27 Nov 2023 23:52:10 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id xa20-20020a170907b9d400b00a0be4fec1b4sm3787635ejc.138.2023.11.27.23.51.49
+        by smtp.gmail.com with ESMTPSA id xa20-20020a170907b9d400b00a0be4fec1b4sm3787635ejc.138.2023.11.27.23.52.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Nov 2023 23:51:50 -0800 (PST)
-Message-ID: <87c2fa30-dcef-4cf6-9d30-56f3fe2f0f0a@linaro.org>
-Date:   Tue, 28 Nov 2023 08:51:48 +0100
+        Mon, 27 Nov 2023 23:52:09 -0800 (PST)
+Message-ID: <81a6e21c-6d82-412e-a630-31b5677040ee@linaro.org>
+Date:   Tue, 28 Nov 2023 08:52:08 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/5] dt-bindings: at24: add ROHM BR24G04
+Subject: Re: [PATCH 2/5] dt-bindings: vendor-prefixes: add Gossen Metrawatt
 Content-Language: en-US
 To:     Roland Hieber <rhi@pengutronix.de>,
         Bartosz Golaszewski <brgl@bgdev.pl>,
@@ -72,7 +72,7 @@ Cc:     linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         Philipp Zabel <p.zabel@pengutronix.de>
 References: <20231127-b4-imx7-var-som-gome-v1-0-f26f88f2d0bc@pengutronix.de>
- <20231127-b4-imx7-var-som-gome-v1-1-f26f88f2d0bc@pengutronix.de>
+ <20231127-b4-imx7-var-som-gome-v1-2-f26f88f2d0bc@pengutronix.de>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -118,12 +118,12 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231127-b4-imx7-var-som-gome-v1-1-f26f88f2d0bc@pengutronix.de>
+In-Reply-To: <20231127-b4-imx7-var-som-gome-v1-2-f26f88f2d0bc@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -134,8 +134,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 27/11/2023 22:11, Roland Hieber wrote:
 > From: Philipp Zabel <p.zabel@pengutronix.de>
 > 
-> Add compatible for ROHM Semiconductor BR24G04 EEPROMs.
+> Add vendor prefix for Gossen Metrawatt GmbH:
 > 
+> https://www.gossenmetrawatt.de/en/
+> 
+> Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+> Signed-off-by: Roland Hieber <rhi@pengutronix.de>
 
 Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
