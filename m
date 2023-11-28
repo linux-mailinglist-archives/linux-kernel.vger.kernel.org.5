@@ -2,118 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 766BE7FC2D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADF527FC140
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346160AbjK1P4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 10:56:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54720 "EHLO
+        id S1346196AbjK1P56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 10:57:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346145AbjK1P4o (ORCPT
+        with ESMTP id S1346083AbjK1P54 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 10:56:44 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A611790
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 07:56:50 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 311AEC433C8;
-        Tue, 28 Nov 2023 15:56:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701187010;
-        bh=ErOez7LtTIIlU6uCAGYZae93iSfxpHNPOaxqhC3H1FM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=J3utn8bTcJ1cmN7Bvm3YfgFjGz08H29IA5GdCAsIqol/Dwe2eltl2dwCjTlyI8JsH
-         FFTXmB+EDNxEmtYPUmOdCKEfDyQrmcj7oBdr7zc+G4QmeAl/oZz8BERw2mDhr70Vhm
-         nGtJE5HFDnb5CbJ/jXjkxuQEOAeMeDH8JiVtftrkrNHaL3T2G32LzuOjGIQPMoq8VM
-         BOOkZEhNjlH8YVLKLHvJkmNruZ/xDga3NWglGHFPpZmiF0IuCfXEmiuE5SZPocz0JI
-         GwD3fnHOY54fJ56pLltUsxsiXWifjER3mQfEWXMjhrvsMUZ19nxiPPpZHpk+JWDPvf
-         wa4Q88tbBf6pw==
-Date:   Tue, 28 Nov 2023 16:56:45 +0100
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Akira Yokosawa <akiyks@gmail.com>
-Subject: Re: [PATCH] docs: Raise the minimum Sphinx requirement to 2.4.4
-Message-ID: <20231128165645.2dbe416c@coco.lan>
-In-Reply-To: <877cm2uegr.fsf@meer.lwn.net>
-References: <87sf4qvkmc.fsf@meer.lwn.net>
-        <20231128023015.0e446a06@coco.lan>
-        <877cm2uegr.fsf@meer.lwn.net>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Tue, 28 Nov 2023 10:57:56 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8301F90
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 07:58:02 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-35c9cba4fa6so1226525ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 07:58:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1701187082; x=1701791882; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4wAhSwnTXqPL8DFCSCSo1D+1BXr5do7lM46ckR+Mmfg=;
+        b=w560LjwhUX847ndgWUlE7dC7Sx2B8QfuSv/C5KGtQBSlhiHZBsCc+tF1BdqwvE7oBW
+         /VJVpDkgzCLomZ4ZfkpYqXrhQ92kuu/iy4Yv8jNXxAgjiJIdN6fyvGlaHbdxu3wC/4we
+         d0CEihulT7PVByudMvknrWh7MPI0QYeHe7FjGaQ4Oz+UPs0F0cn3jJsXTC7IdygdBF/k
+         8zB6R4SpwBcXyivykIJkdbMZDvEEqB0r0PpnIZ2FChOt97ROk4NIov/VW5GHPM2kkMrB
+         fg5hH2E7/D9vVuuWtlPm4OyH9jnKbDwLg1+IWP8PNU1MBxoDO0FEg+Wngu/4TWfK2VIu
+         MKcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701187082; x=1701791882;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4wAhSwnTXqPL8DFCSCSo1D+1BXr5do7lM46ckR+Mmfg=;
+        b=qvDzafCttc4E6xcKN1ccZHT6vv0ZT7K4/O05gsYAf9Y1X4UlkniddnBLA8aAjiYoN/
+         UVPHHQEycN6wTeeBmlc+YgRblVDxFovmZ2z6WYq8PLNZqeOlSipcnW9uWdX08etHfD8D
+         LGauzWR0Re4bZo2Mpa0jxFQO9Sb80GM7oOUBvs/EON0QcRmKT8mGtx+czazsZeBQB42P
+         oGTZUCqJuyVapYmX5GpslgMMGwGnvtrGTfZFcihpeqhp/kTXdSmjN1Wjv95QTHLGnR5I
+         /euAJvGcfdZyqJYKk59z/q6mIicM1V0RCdDrvJo/o+AqpvNSZBLyBmusBvO/m+hIhBXM
+         6CFg==
+X-Gm-Message-State: AOJu0YwyAi4E5xW0FtP0RnCdUzaRlqLubj23voDOZabDbgGPkzI2UNcI
+        DJA/q1uaAK1loIVke0ttxXRjAQ==
+X-Google-Smtp-Source: AGHT+IFBeeo2doFndHrPVDZookEKt3a/Tb9fkWQtqkqlsaYVIjsLN8dT70/m7FwLRu/1b65C5DqogA==
+X-Received: by 2002:a6b:7a07:0:b0:7b3:92ea:3438 with SMTP id h7-20020a6b7a07000000b007b392ea3438mr9084569iom.2.1701187081825;
+        Tue, 28 Nov 2023 07:58:01 -0800 (PST)
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id dp21-20020a056602069500b007b39447e11fsm452312iob.21.2023.11.28.07.58.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Nov 2023 07:58:01 -0800 (PST)
+Message-ID: <fadbb6b5-a288-40e2-9bb8-7299ea14f0a7@kernel.dk>
+Date:   Tue, 28 Nov 2023 08:58:00 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: io_uring: risky use of task work, especially wrt fdget()
+Content-Language: en-US
+To:     Jann Horn <jannh@google.com>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Cc:     io-uring <io-uring@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>
+References: <CAG48ez1htVSO3TqmrF8QcX2WFuYTRM-VZ_N10i-VZgbtg=NNqw@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <CAG48ez1htVSO3TqmrF8QcX2WFuYTRM-VZ_N10i-VZgbtg=NNqw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, 28 Nov 2023 07:42:12 -0700
-Jonathan Corbet <corbet@lwn.net> escreveu:
-
-> Mauro Carvalho Chehab <mchehab@kernel.org> writes:
+On 11/27/23 2:53 PM, Jann Horn wrote:
+> Hi!
 > 
-> > Em Mon, 27 Nov 2023 16:31:39 -0700
-> > Jonathan Corbet <corbet@lwn.net> escreveu:  
+> I noticed something that I think does not currently cause any
+> significant security issues, but could be problematic in the future:
 > 
-> >> diff --git a/scripts/sphinx-pre-install b/scripts/sphinx-pre-install
-> >> index 1fb88fdceec3..db75b1b86086 100755
-> >> --- a/scripts/sphinx-pre-install
-> >> +++ b/scripts/sphinx-pre-install
-> >> @@ -32,8 +32,7 @@ my $python_cmd = "";
-> >>  my $activate_cmd;
-> >>  my $min_version;
-> >>  my $cur_version;
-> >> -my $rec_version = "1.7.9";	# PDF won't build here
-> >> -my $min_pdf_version = "2.4.4";	# Min version where pdf builds
-> >> +my $rec_version = "3.0";  
-> >
-> > Please don't. 3.0 version has a broken C domain, not properly supported.
-> > The fixes arrived only starting at 3.1 (I guess some went to 3.2, but
-> > 3.1 is usable, as far as I remember).  
+> io_uring sometimes processes task work in the middle of syscalls,
+> including between fdget() and fdput(). My understanding of task work
+> is that it is expected to run in a context similar to directly at
+> syscall entry/exit: task context, no locks held, sleeping is okay, and
+> it doesn't execute in the middle of some syscall that expects private
+> state of the task_struct to stay the same.
 > 
-> So you're asking for 3.1 or 3.2 instead of 3.0?
-
-Yes. 
-
+> An example of another user of task work is the keyring subsystem,
+> which does task_work_add() in keyctl_session_to_parent() to change the
+> cred pointers of another task.
 > 
-> Honestly, I just picked 3.0 out of the air in the hopes of eventually
-> deprecating 2.x.  Not lots of thought has gone into that
-> number...perhaps we should recommend higher yet?
+> Several places in io_uring process task work while holding an fdget()
+> reference to some file descriptor. For example, the io_uring_enter
+> syscall handler calls io_iopoll_check() while the io_ring_ctx is only
+> referenced via fdget(). This means that if there were another kernel
+> subsystem that uses task work to close file descriptors, io_uring
+> would become unsafe. And io_uring does _almost_ that itself, I think:
+> io_queue_worker_create() can be run on a workqueue, and uses task work
+> to launch a worker thread from the context of a userspace thread; and
+> this worker thread can then accept commands to close file descriptors.
+> Except it doesn't accept commands to close io_uring file descriptors.
+> 
+> A closer miss might be io_sync_cancel(), which holds a reference to
+> some normal file with fdget()/fdput() while calling into
+> io_run_task_work_sig(). However, from what I can tell, the only things
+> that are actually done with this file pointer are pointer comparisons,
+> so this also shouldn't have significant security impact.
+> 
+> Would it make sense to use fget()/fput() instead of fdget()/fdput() in
+> io_sync_cancel(), io_uring_enter and io_uring_register? These
+> functions probably usually run in multithreaded environments anyway
+> (thanks to the io_uring worker threads), so I would think fdget()
+> shouldn't bring significant performance savings here?
 
-Well, we could recommend a higher version, but I can't see much
-differences between 3.2 and the latest version: for what we use,
-both will work on a similar way. Ok, layout may be different, there
-were some improvements on PDF output, etc. but they will all produce
-a decent documentation.
+Let me run some testing on that. It's a mistake to think that it's
+usually multithreaded, generally if you end up using io-wq then it's not
+a fast path. A fast networked setup, for example, would never touch the
+threads and hence no threading would be implied by using io_uring. Ditto
+on the storage front, if you're just reading/writing or eg doing polled
+IO. That said, those workloads are generally threaded _anyway_ - not
+because of io_uring, but because that's how these kinds of workloads are
+written to begin with.
 
-Yet, while most C domain bugs introduced on 3.0 were solved in 3.1
-and 3.2, there's one still pending issue[1].
+So probably won't be much of a concern to do the swap. The only
+"interesting" part of the above mix of cancel/register/enter is
+obviously the enter part. The rest are not really fast path.
 
-Once C domain finally gets rid from this long term bug that having:
+-- 
+Jens Axboe
 
-	.. c:struct:: foo
-
-	.. c:function:: void foo(void)
-
-Produce warnings that "foo" id duplicated, then we'll have, IMO,
-our next recommended version :-)
-
-While Sphinx developers don't fix such bug, it doesn't really matter 
-what version user will pick, so I would just pick the fastest one
-as a recommendation, starting from 3.1 or 3.2 as our currently
-recommended version.
-
-[1] https://github.com/sphinx-doc/sphinx/pull/8313
-
-While I didn't make any benchmarks, I remember people reported
-poor performance with newer versions, so, without thinking to
-much, 3.1 or 3.2 seems a good candidate for the recommended
-version.
-
-Regards,
-Mauro
