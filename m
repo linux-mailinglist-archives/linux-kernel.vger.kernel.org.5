@@ -2,124 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B477FC2BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38CCA7FC1AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344412AbjK1QbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 11:31:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39880 "EHLO
+        id S1344081AbjK1Qcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:32:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344331AbjK1QbT (ORCPT
+        with ESMTP id S229716AbjK1Qct (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 11:31:19 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7E37DAB;
-        Tue, 28 Nov 2023 08:31:25 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 70A2DC15;
-        Tue, 28 Nov 2023 08:32:12 -0800 (PST)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5732C3F6C4;
-        Tue, 28 Nov 2023 08:31:22 -0800 (PST)
-Message-ID: <a91938e3-a7cb-4f74-aeaa-7cb56c0b43a4@arm.com>
-Date:   Tue, 28 Nov 2023 16:31:20 +0000
+        Tue, 28 Nov 2023 11:32:49 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A834AB
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:32:56 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99617C433C8;
+        Tue, 28 Nov 2023 16:32:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701189175;
+        bh=VqwYFsYHgSQ8CyCGvVqeYL2Kouihl83vwFCUUepGWfI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pz7PxjXPGQGLsinMNEMBDkmAyuEpMnUG+Jm7gW6FcUO24AfwJb/D0iAk/OuIx4pU/
+         qQf9myOFtKdJwc2uV/uuafK6fvgEd+95aiAqkGk2zNNav8o0Dwku9x65PpKbXXqwKA
+         Ue2ZGVwKZVyXoc4E1TUfhPpgw9Fq/AOEAZHGoiYoRN3fAG2LA3cunU4yzAH3Xud74d
+         nKRX6z0acKx0A+PI059ekv0O4P5R1ahYnQmr9fkj1yfxC3vs/s3ciLPXKQHalVcy5q
+         DlkD1Y1ndCU+zThaemauUXEUNA1O2fQTBjvJ70WZ7+aCrkIXcFslM2Qo8rtrdutfq6
+         zK1MrgY8MECYg==
+Date:   Tue, 28 Nov 2023 08:32:55 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation <linux-doc@vger.kernel.org>,
+        Linux XFS <linux-xfs@vger.kernel.org>,
+        Linux Kernel Workflows <workflows@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        Steve French <stfrench@microsoft.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Allison Henderson <allison.henderson@oracle.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Charles Han <hanchunchao@inspur.com>,
+        Vegard Nossum <vegard.nossum@oracle.com>
+Subject: Re: [PATCH RESEND v2] Documentation: xfs: consolidate XFS docs into
+ its own subdirectory
+Message-ID: <20231128163255.GV2766956@frogsfrogsfrogs>
+References: <20231128124522.28499-1-bagasdotme@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Bug in add_dma_entry()'s debugging code
-Content-Language: en-GB
-To:     Alan Stern <stern@rowland.harvard.edu>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     Hamza Mahfooz <someguy@effective-light.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Andrew <travneff@gmail.com>,
-        Ferry Toth <ferry.toth@elsinga.info>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Thorsten Leemhuis <regressions@leemhuis.info>,
-        iommu@lists.linux.dev,
-        Kernel development list <linux-kernel@vger.kernel.org>,
-        USB mailing list <linux-usb@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-References: <736e584f-7d5f-41aa-a382-2f4881ba747f@rowland.harvard.edu>
- <20231127160759.GA1668@lst.de>
- <637d6dff-de56-4815-a15a-1afccde073f0@rowland.harvard.edu>
- <20231128133702.GA9917@lst.de>
- <cb7dc5da-37cb-45ba-9846-5a085f55692e@rowland.harvard.edu>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <cb7dc5da-37cb-45ba-9846-5a085f55692e@rowland.harvard.edu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231128124522.28499-1-bagasdotme@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/11/2023 3:18 pm, Alan Stern wrote:
-> On Tue, Nov 28, 2023 at 02:37:02PM +0100, Christoph Hellwig wrote:
->> I'd actually go one step back:
->>
->>   1) for not cache coherent DMA you can't do overlapping operations inside
->>      a cache line
+On Tue, Nov 28, 2023 at 07:45:22PM +0700, Bagas Sanjaya wrote:
+> XFS docs are currently in upper-level Documentation/filesystems.
+> Although these are currently 4 docs, they are already outstanding as
+> a group and can be moved to its own subdirectory.
 > 
-> Rephrasing slightly: You mustn't perform multiple non-cache-coherent DMA
-> operations that touch the same cache line concurrently.  (The word
-> "overlapping" is a a little ambiguous in this context.)
+> Consolidate them into Documentation/filesystems/xfs/.
 > 
-> (Right now dma-debug considers only DMA-IN operations.  In theory this
-> restriction should apply even when some of the concurrent operations are
-> DMA-OUT, provided that at least one of them is DMA-IN.  Minor point...)
+> Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+> ---
+> Changes since v1 [1]:
 > 
->>   2) dma-debug is intended to find DMA API misuses, even if they don't
->>      have bad effects on your particular system
->>   3) the fact that the kmalloc implementation returns differently aligned
->>      memory depending on the platform breaks how dma-debug works currently
+>   * Also update references to old doc path to address kernel test robot
+>     warnings [2].
 > 
-> Exactly.  That's essentially what Bugzilla #215740 is about.
+> [1]: https://lore.kernel.org/linux-doc/20231121095658.28254-1-bagasdotme@gmail.com/
+> [2]: https://lore.kernel.org/linux-doc/a9abc5ec-f3cd-4a1a-81b9-a6900124d38b@gmail.com/
 > 
->> The logical confcusion from that would be that IFF dma-debug is enabled on
->> any platform we need to set ARCH_DMA_MINALIGN to the cache line size.
-> 
-> (IF, not IFF.)  And tell distributions that CONFIG_DMA_API_DEBUG is not
-> meant for production systems but rather for kernel testing, right?
+>  Documentation/filesystems/index.rst                |  5 +----
+>  Documentation/filesystems/xfs/index.rst            | 14 ++++++++++++++
+>  .../{ => xfs}/xfs-delayed-logging-design.rst       |  0
+>  .../{ => xfs}/xfs-maintainer-entry-profile.rst     |  0
+>  .../{ => xfs}/xfs-online-fsck-design.rst           |  2 +-
+>  .../{ => xfs}/xfs-self-describing-metadata.rst     |  0
+>  .../maintainer/maintainer-entry-profile.rst        |  2 +-
+>  MAINTAINERS                                        |  4 ++--
+>  8 files changed, 19 insertions(+), 8 deletions(-)
+>  create mode 100644 Documentation/filesystems/xfs/index.rst
+>  rename Documentation/filesystems/{ => xfs}/xfs-delayed-logging-design.rst (100%)
+>  rename Documentation/filesystems/{ => xfs}/xfs-maintainer-entry-profile.rst (100%)
+>  rename Documentation/filesystems/{ => xfs}/xfs-online-fsck-design.rst (99%)
+>  rename Documentation/filesystems/{ => xfs}/xfs-self-describing-metadata.rst (100%)
 
-Yikes, I'd hope that distros are heeding the warning that the Kconfig 
-calls out already. It's perhaps somewhat understated, as I'd describe 
-the performance impact to large modern systems with high-bandwidth I/O 
-as somewhere between "severe" and "crippling".
+I think the rst filename should drop the 'xfs-' prefix, e.g.
 
->> BUT:  we're actually reduzing our dependency on ARCH_DMA_MINALIGN by
->> moving to bounce buffering unaligned memory for non-coherent
->> architectures,
+	Documentation/filesystems/xfs/delayed-logging-design.rst
+
+since that seems to be what most filesystems do:
+
+Documentation/filesystems/caching/backend-api.rst
+Documentation/filesystems/caching/cachefiles.rst
+Documentation/filesystems/caching/fscache.rst
+Documentation/filesystems/caching/index.rst
+Documentation/filesystems/caching/netfs-api.rst
+Documentation/filesystems/cifs/cifsroot.rst
+Documentation/filesystems/cifs/index.rst
+Documentation/filesystems/cifs/ksmbd.rst
+Documentation/filesystems/ext4/about.rst
+Documentation/filesystems/ext4/allocators.rst
+Documentation/filesystems/ext4/attributes.rst
+<snip>
+Documentation/filesystems/ext4/special_inodes.rst
+Documentation/filesystems/ext4/super.rst
+Documentation/filesystems/ext4/verity.rst
+Documentation/filesystems/nfs/client-identifier.rst
+Documentation/filesystems/nfs/exporting.rst
+Documentation/filesystems/nfs/index.rst
+Documentation/filesystems/nfs/knfsd-stats.rst
+Documentation/filesystems/nfs/nfs41-server.rst
+Documentation/filesystems/nfs/pnfs.rst
+Documentation/filesystems/nfs/reexport.rst
+Documentation/filesystems/nfs/rpc-cache.rst
+Documentation/filesystems/nfs/rpc-server-gss.rst
+Documentation/filesystems/smb/cifsroot.rst
+Documentation/filesystems/smb/index.rst
+Documentation/filesystems/smb/ksmbd.rst
+Documentation/filesystems/spufs/index.rst
+Documentation/filesystems/spufs/spu_create.rst
+Documentation/filesystems/spufs/spufs.rst
+Documentation/filesystems/spufs/spu_run.rst
+
+> diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
+> index 09cade7eaefc8c..e18bc5ae3b35f8 100644
+> --- a/Documentation/filesystems/index.rst
+> +++ b/Documentation/filesystems/index.rst
+> @@ -121,8 +121,5 @@ Documentation for filesystem implementations.
+>     udf
+>     virtiofs
+>     vfat
+> -   xfs-delayed-logging-design
+> -   xfs-maintainer-entry-profile
+> -   xfs-self-describing-metadata
+> -   xfs-online-fsck-design
+> +   xfs/index
+>     zonefs
+> diff --git a/Documentation/filesystems/xfs/index.rst b/Documentation/filesystems/xfs/index.rst
+> new file mode 100644
+> index 00000000000000..ab66c57a5d18ea
+> --- /dev/null
+> +++ b/Documentation/filesystems/xfs/index.rst
+> @@ -0,0 +1,14 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +============================
+> +XFS Filesystem Documentation
+> +============================
+> +
+> +.. toctree::
+> +   :maxdepth: 2
+> +   :numbered:
+> +
+> +   xfs-delayed-logging-design
+> +   xfs-maintainer-entry-profile
+> +   xfs-self-describing-metadata
+> +   xfs-online-fsck-design
+> diff --git a/Documentation/filesystems/xfs-delayed-logging-design.rst b/Documentation/filesystems/xfs/xfs-delayed-logging-design.rst
+> similarity index 100%
+> rename from Documentation/filesystems/xfs-delayed-logging-design.rst
+> rename to Documentation/filesystems/xfs/xfs-delayed-logging-design.rst
+> diff --git a/Documentation/filesystems/xfs-maintainer-entry-profile.rst b/Documentation/filesystems/xfs/xfs-maintainer-entry-profile.rst
+> similarity index 100%
+> rename from Documentation/filesystems/xfs-maintainer-entry-profile.rst
+> rename to Documentation/filesystems/xfs/xfs-maintainer-entry-profile.rst
+> diff --git a/Documentation/filesystems/xfs-online-fsck-design.rst b/Documentation/filesystems/xfs/xfs-online-fsck-design.rst
+> similarity index 99%
+> rename from Documentation/filesystems/xfs-online-fsck-design.rst
+> rename to Documentation/filesystems/xfs/xfs-online-fsck-design.rst
+> index a0678101a7d02d..352516feef6ffe 100644
+> --- a/Documentation/filesystems/xfs-online-fsck-design.rst
+> +++ b/Documentation/filesystems/xfs/xfs-online-fsck-design.rst
+> @@ -962,7 +962,7 @@ disk, but these buffer verifiers cannot provide any consistency checking
+>  between metadata structures.
+>  
+>  For more information, please see the documentation for
+> -Documentation/filesystems/xfs-self-describing-metadata.rst
+> +Documentation/filesystems/xfs/xfs-self-describing-metadata.rst
+>  
+>  Reverse Mapping
+>  ---------------
+> diff --git a/Documentation/filesystems/xfs-self-describing-metadata.rst b/Documentation/filesystems/xfs/xfs-self-describing-metadata.rst
+> similarity index 100%
+> rename from Documentation/filesystems/xfs-self-describing-metadata.rst
+> rename to Documentation/filesystems/xfs/xfs-self-describing-metadata.rst
+> diff --git a/Documentation/maintainer/maintainer-entry-profile.rst b/Documentation/maintainer/maintainer-entry-profile.rst
+> index 7ad4bfc2cc038a..18cee1edaecb6f 100644
+> --- a/Documentation/maintainer/maintainer-entry-profile.rst
+> +++ b/Documentation/maintainer/maintainer-entry-profile.rst
+> @@ -105,4 +105,4 @@ to do something different in the near future.
+>     ../driver-api/media/maintainer-entry-profile
+>     ../driver-api/vfio-pci-device-specific-driver-acceptance
+>     ../nvme/feature-and-quirk-policy
+> -   ../filesystems/xfs-maintainer-entry-profile
+> +   ../filesystems/xfs/xfs-maintainer-entry-profile
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index ea790149af7951..fd288ac57e19fb 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -23893,10 +23893,10 @@ S:	Supported
+>  W:	http://xfs.org/
+>  C:	irc://irc.oftc.net/xfs
+>  T:	git git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git
+> -P:	Documentation/filesystems/xfs-maintainer-entry-profile.rst
+> +P:	Documentation/filesystems/xfs/xfs-maintainer-entry-profile.rst
+>  F:	Documentation/ABI/testing/sysfs-fs-xfs
+>  F:	Documentation/admin-guide/xfs.rst
+> -F:	Documentation/filesystems/xfs-*
+> +F:	Documentation/filesystems/xfs/xfs-*
+
+Shouldn't this be "Documentation/filesystems/xfs/*" ?
+
+--D
+
+>  F:	fs/xfs/
+>  F:	include/uapi/linux/dqblk_xfs.h
+>  F:	include/uapi/linux/fsmap.h
 > 
-> What's the reason for this?  To allow the minimum allocation size to be
-> smaller than the cache line size?  Does the savings in memory make up
-> for the extra overhead of bounce buffering?
-
-Yes, on systems where non-coherent streaming DMA is expected to be rare, 
-or at least not performance-critical, not having to allocate 128 bytes 
-every time we want just 8 or so soon adds up.
-
-> Or is this just to allow people to be more careless about how they
-> allocate their DMA buffers (which doesn't seem to make sense)?
+> base-commit: 9c235dfc3d3f901fe22acb20f2ab37ff39f2ce02
+> -- 
+> An old man doll... just what I always wanted! - Clara
 > 
->>   which makes this even more complicated.  Right now I
->> don't have a good idea how to actually deal with having the cachline
->> sanity checks with that, but I'm Ccing some of the usual suspects if
->> they have a better idea.
 > 
-> I get the impression that you would really like to have two different
-> versions of kmalloc() and friends: one for buffers that will be used in
-> DMA (and hence require cache-line alignment) and one for buffers that
-> won't be.
-
-That approach was mooted, but still has potentially-fiddly corner cases 
-like when the DMA buffer is a member of a larger struct, so we settled 
-on the bounce-buffering solution as the most robust compromise.
-
-Thanks,
-Robin.
