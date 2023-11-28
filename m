@@ -2,72 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 649E97FB9BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:57:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC26F7FB9C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:58:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344612AbjK1L44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 06:56:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33148 "EHLO
+        id S1344474AbjK1L5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 06:57:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344569AbjK1L4z (ORCPT
+        with ESMTP id S234708AbjK1L5s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 06:56:55 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D0C94;
-        Tue, 28 Nov 2023 03:57:00 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50bbd9cf923so483745e87.1;
-        Tue, 28 Nov 2023 03:57:00 -0800 (PST)
+        Tue, 28 Nov 2023 06:57:48 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3007B94;
+        Tue, 28 Nov 2023 03:57:54 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-5bd33a450fdso3902033a12.0;
+        Tue, 28 Nov 2023 03:57:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701172619; x=1701777419; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zpP02LYqj14oZTHZilHtJSOBxsPPRRjqKrdzV+LYYCc=;
-        b=dBl+v7ASlJlSgV+aGlOWVGkKWKDEi+yr96s+/EO95c9uB7h/d9nPH648f5chBUj+LW
-         Ee4knOALxpmPigtrMql4jVMTtbmJ83Z3BS0QLqJS9xKJCKVlHyqs8cehmtqYfFzlUEnK
-         Kykxl3UD7IDBw2mzgu76dwCKJ9F1I+vf5xtcORPPOawqqM5LV0fdzOe/GO/t0Tzh2iMc
-         8yFwIEL6XArhdlOEyfggX2rZHEv572Mte6JlcHM2M/MeizLjbrNxVr+yD/GIxipsvQs3
-         c8FhGyWhrKF5zzYPUuzq2rH+b3RJGt5gGlL9yTc4iCoey8N8h/RfNbVWn7b2t/44IzNh
-         tU1A==
+        d=gmail.com; s=20230601; t=1701172673; x=1701777473; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Au9nUxhJpxLlowC1DWuTT8wE7HwJxWHLoh0Fk+7NDQE=;
+        b=GAbRtY9p0mIrzZJtEvNySXPDDKKHOmT0e8m0NZePIaGZqeJyxvCxY8GTX+m8CMbKLS
+         NYWK0THLWte29a/6Hk2qNISh/ltVFAl+Cf/2vbLo0KKOjCIJqx1AFy0bIAZcHlwaMkM5
+         ryieiSct2C3BlQewg+cWieeeL+2wtEBNyk6KA4eS9F0q4O3Ll9beECL19qSHE2LY7t+h
+         c+0CnyuJwfKutZDustGwXkb40yY0kumtXPNXPJdZuJJQOU3Z2V84te8LHRWhxVOvNKS1
+         SPnf3s5zHMJOAHcIMjkub3/Gm8RLhJaUhhaF4nJ3T1v6S5k7VKg4YjDyVTCFeho86ASJ
+         11rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701172619; x=1701777419;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zpP02LYqj14oZTHZilHtJSOBxsPPRRjqKrdzV+LYYCc=;
-        b=KokQILhVPbsc1LACGg51Zb8l0LnOsT3R+UwmliNiCWtu5HEcSWmJbL55abtp72hOEN
-         13+dNX5A0ofRM9GrjzCnpxPwExcubF3y+oTiE1gsXnIE1oHTMJ8kssnDmPg9YicxVn3T
-         iT8+6JrFfsBtp2rPOQ+mAilxDSIEVZLo0bdslEzUW5Vyet0bK48blDXy0sJc3t13Udwk
-         XMqa5fIUjykv3RhKAbdLg8LF2WXuJNig3PBT5Jjqs39Mjt6YGXnTMnZm+eJHQBozjHaY
-         owdNdG5o0go4k8PF+7aa33F5OGC0Akp4vdGGfcCRoLOHA9HqOXRygPossCEGTtBfKzTP
-         mVVA==
-X-Gm-Message-State: AOJu0Yx62ZV1NBqEiN80oPoOuONC/fBQ/hW88U/kIwXqINw/EkdKupCt
-        aEkgIR4HOX+6o7A/brDH58g=
-X-Google-Smtp-Source: AGHT+IHiwkfhyY0N4x0mkv2b7U5SzU/Yw7nwfrygid5pSd+ZBCMI1JYgpfv9A0NkPbooGUBuRiGwnA==
-X-Received: by 2002:a05:6512:280c:b0:503:3808:389a with SMTP id cf12-20020a056512280c00b005033808389amr13592502lfb.11.1701172618964;
-        Tue, 28 Nov 2023 03:56:58 -0800 (PST)
-Received: from ?IPV6:2001:14ba:16f8:1500::2? (dc78bmyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::2])
-        by smtp.gmail.com with ESMTPSA id p17-20020a056512329100b005032ebff21asm28709lfe.279.2023.11.28.03.56.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Nov 2023 03:56:57 -0800 (PST)
-Message-ID: <1fe658cd-bdd5-4afd-8564-d0dcf9eab4ab@gmail.com>
-Date:   Tue, 28 Nov 2023 13:56:57 +0200
+        d=1e100.net; s=20230601; t=1701172673; x=1701777473;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Au9nUxhJpxLlowC1DWuTT8wE7HwJxWHLoh0Fk+7NDQE=;
+        b=txb1i3ILprk0Nt+JbfXmOYtCxfN1mMOsV5yiu35dDFNFNCffBVAFv4WgjmSa2NCp1E
+         pj+ImON7HhWqMbmVIeayr3HHj/ZnL1crZ705cWCBHNo7itjIjjDcH3Nl5bEoN/JxjFlr
+         wKkYx2Y3CVn7copKSXyu6tLan8bhDsG1tpRYnuobVmSgFTcpk+5mg6rF2bW4irx19Twe
+         XgJm90Ob42zZ14NFNCuYldgbqqPBcNxlI1PMs8JcX22fea1mhDE84rAuMrPs50h54dH3
+         eg4Sa5kPbzhGVYxd5VGxOgAmxXmKXBnE7AGSSWSaIcGq3h8IEq/ctQdXR0EAadPbw/6T
+         8G3w==
+X-Gm-Message-State: AOJu0YxHzaz5ii8BnZKyvjVf7nXo7HUFq4iN0dG/WjQRkYIyeI+Mfp0i
+        sMdn8SGPGhYZhgMYVpCk+8r+ejH6e8O7Jbq2Qyw=
+X-Google-Smtp-Source: AGHT+IGI8GYlTLMr6TPAatbYN+qbZr2mza5gojB/P51PZL4deCMh9vGGPnl49tL4WUqHCCgnU8l9jN2GK6+bDluqwi0=
+X-Received: by 2002:a17:90a:e7cf:b0:280:215e:7ae2 with SMTP id
+ kb15-20020a17090ae7cf00b00280215e7ae2mr17609369pjb.2.1701172673606; Tue, 28
+ Nov 2023 03:57:53 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] iio: gts-helpers: Round gains and scales
-Content-Language: en-US, en-GB
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <ZUDN9n8iXoNwzifQ@dc78bmyyyyyyyyyyyyyyt-3.rev.dnainternet.fi>
- <20231126172607.379c9d79@jic23-huawei>
- <8934d9ec-e969-4662-b220-9fb1cbeca7b2@gmail.com>
-In-Reply-To: <8934d9ec-e969-4662-b220-9fb1cbeca7b2@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20231117100958.425354-1-robimarko@gmail.com> <20231117100958.425354-2-robimarko@gmail.com>
+ <ZVdg+vFb46aFRtC0@shell.armlinux.org.uk>
+In-Reply-To: <ZVdg+vFb46aFRtC0@shell.armlinux.org.uk>
+From:   Robert Marko <robimarko@gmail.com>
+Date:   Tue, 28 Nov 2023 12:57:42 +0100
+Message-ID: <CAOX2RU5QWDPguJ1izfipfiGzCO1muFaJQ8=h9PAUD36jdZiUEQ@mail.gmail.com>
+Subject: Re: [PATCH net-next 2/2] net: phy: aquantia: enable USXGMII autoneg
+ on AQR107
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        ansuelsmth@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -78,185 +71,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/23 09:48, Matti Vaittinen wrote:
-> On 11/26/23 19:26, Jonathan Cameron wrote:
->> On Tue, 31 Oct 2023 11:50:46 +0200
->> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
->>
->>> The GTS helpers do flooring of scale when calculating available scales.
->>> This results available-scales to be reported smaller than they should
->>> when the division in scale computation resulted remainder greater than
->>> half of the divider. (decimal part of result > 0.5)
->>>
->>> Furthermore, when gains are computed based on scale, the gain resulting
->>> from the scale computation is also floored. As a consequence the
->>> floored scales reported by available scales may not match the gains that
->>> can be set.
->>>
->>> The related discussion can be found from:
->>> https://lore.kernel.org/all/84d7c283-e8e5-4c98-835c-fe3f6ff94f4b@gmail.com/
->>>
->>> Do rounding when computing scales and gains.
->>>
->>> Fixes: 38416c28e168 ("iio: light: Add gain-time-scale helpers")
->>> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
->>
->> Hi Matti,
->>
->> A few questions inline about the maths.
-> 
-> I appreciate the questions :) Thanks!
->>
->>>
->>> ---
->>> Subjahit, is there any chance you test this patch with your driver? Can
->>> you drop the:
->>>     if (val2 % 10)
->>>         val2 += 1;
->>> from scale setting and do you see written and read scales matching?
->>>
->>> I did run a few Kunit tests on this change - but I'm still a bit jumpy
->>> on it... Reviewing/testing is highly appreciated!
->>>
->>> Just in case someone is interested in seeing the Kunit tests, they're
->>> somewhat unpolished & crude and can emit noisy debug prints - but can
->>> anyways be found from:
->>> https://github.com/M-Vaittinen/linux/commits/iio-gts-helpers-test-v6.6
->>>
->>> ---
->>>   drivers/iio/industrialio-gts-helper.c | 58 +++++++++++++++++++++++----
->>>   1 file changed, 50 insertions(+), 8 deletions(-)
->>>
->>> diff --git a/drivers/iio/industrialio-gts-helper.c 
->>> b/drivers/iio/industrialio-gts-helper.c
->>> index 7653261d2dc2..7dc144ac10c8 100644
->>> --- a/drivers/iio/industrialio-gts-helper.c
->>> +++ b/drivers/iio/industrialio-gts-helper.c
->>> @@ -18,6 +18,32 @@
->>>   #include <linux/iio/iio-gts-helper.h>
->>>   #include <linux/iio/types.h>
->>> +static int iio_gts_get_gain_32(u64 full, unsigned int scale)
->>> +{
->>> +    unsigned int full32 = (unsigned int) full;
->>> +    unsigned int rem;
->>> +    int result;
->>> +
->>> +    if (full == (u64)full32) {
->>> +        unsigned int rem;
->>> +
->>> +        result = full32 / scale;
->>> +        rem = full32 - scale * result;
->>> +        if (rem >= scale / 2)
->>> +            result++;
->>> +
->>> +        return result;
->>> +    }
->>> +
->>> +    rem = do_div(full, scale);
->>
->> As below, can we just add scale/2 to full in the do_div?
-> 
-> The rationale for doing is it in this way is to prevent (theoretical?) 
-> overflow when adding scale/2 to full. Maybe this warrants adding a comment?
-> 
->>
->>> +    if ((u64)rem >= scale / 2)
->>> +        result = full + 1;
->>> +    else
->>> +        result = full;
->>> +
->>> +    return result;
->>> +}
->>> +
->>>   /**
->>>    * iio_gts_get_gain - Convert scale to total gain
->>>    *
->>> @@ -28,30 +54,42 @@
->>>    *        scale is 64 100 000 000.
->>>    * @scale:    Linearized scale to compute the gain for.
->>>    *
->>> - * Return:    (floored) gain corresponding to the scale. -EINVAL if 
->>> scale
->>> + * Return:    (rounded) gain corresponding to the scale. -EINVAL if 
->>> scale
->>>    *        is invalid.
->>>    */
->>>   static int iio_gts_get_gain(const u64 max, const u64 scale)
->>>   {
->>> -    u64 full = max;
->>> +    u64 full = max, half_div;
->>> +    unsigned int scale32 = (unsigned int) scale;
->>>       int tmp = 1;
->>> -    if (scale > full || !scale)
->>> +    if (scale / 2 > full || !scale)
->>
->> Seems odd. Why are we checking scale / 2 here?
-> 
-> I am pretty sure I have been thinking of rounding 0.5 to 1.
-> 
->>
->>>           return -EINVAL;
->>> +    /*
->>> +     * The loop-based implementation below will potentially run _long_
->>> +     * if we have a small scale and large 'max' - which may be 
->>> needed when
->>> +     * GTS is used for channels returning specific units. Luckily we 
->>> can
->>> +     * avoid the loop when scale is small and fits in 32 bits.
->>> +     */
->>> +    if ((u64)scale32 == scale)
->>> +        return iio_gts_get_gain_32(full, scale32);
->>> +
->>>       if (U64_MAX - full < scale) {
->>>           /* Risk of overflow */
->>> -        if (full - scale < scale)
->>> +        if (full - scale / 2 < scale)
->>>               return 1;
->>>           full -= scale;
->>>           tmp++;
->>>       }
->>> -    while (full > scale * (u64)tmp)
->>> +    half_div = scale >> 2;
->>
->> Why divide by 4?  Looks like classic issue with using shifts for division
->> causing confusion.
-> 
-> Yes. Looks like a brainfart to me. I need to fire-up my tests and revise 
-> this (and the check you asked about above). It seems to take a while 
-> from me to wrap my head around this again...
-> 
-> Thanks for pointing this out!
-> 
->>
->>> +
->>> +    while (full + half_div >= scale * (u64)tmp)
->>>           tmp++;
+On Fri, 17 Nov 2023 at 13:47, Russell King (Oracle)
+<linux@armlinux.org.uk> wrote:
+>
+> On Fri, Nov 17, 2023 at 11:09:49AM +0100, Robert Marko wrote:
+> > In case USXGMII is being used as the PHY interface mode then USXGMII
+> > autoneg must be enabled as well.
+> >
+> > HW defaults to USXGMII autoneg being disabled which then results in
+> > autoneg timeout, so enable it in case USXGMII is used.
+>
+> I was led to believe that the bitfield in bits 8:7 of the
+> VEND1_GLOBAL_CFG_* registers, when set to value '1' is something
+> to do with selecting USXGMII mode as opposed to 10GBASE-R. Could
+> you look in to that and whether that is the more correct way of
+> configuring the PHY for USXGMII mode?
 
-Oh. This is a problem. Adding half_div to full here can cause the scale 
-* (u64)tmp to overflow. The overflow-prevention above only ensures full 
-is smaller than the U64_MAX - scale. Here we should ensure full + 
-half_div is less than U64_MAX - scale to ensure the loop always stops.
+Hi,
 
-All in all, this is horrible. Just ran a quick and dirty test on my 
-laptop, and using 0xFFFF FFFF FFFF FFFF as full and 0x1 0000 0000 as 
-scale (without the half_div addition) ran this loop for several seconds.
+bits 8:7 in the VEND1_GLOBAL_CFG_* are used to configure the rate
+adaptation method.
+With the following allowed values:
+0 (Default) = No rate adaptation
+1 = USX rate adaptation
+2 = Pause rate adaptation
 
-Sigh. My brains jammed. I know this can not be an unique problem. I am 
-sure there exists a better solution somewhere - any pointers would be 
-appreciated :)
+I dont think that is related to the issue I am facing here which is
+that by default
+Bit 3 in the PHY XS Transmit (XAUI Rx) Reserved Vendor Provisioning 2 register
+is set to 0.
 
->>> -    return tmp;
->>> +    return tmp - 1;
->>>   }
->>>   /**
+This means that USX Autoneg Control For MAC is disabled and in USXGMII mode
+auto-negotiation between the PHY and MAC will fail/timeout.
 
-Yours,
-	-- Matti
+I have checked various vendor drivers and they all enable this bit in
+case USXGMII
+is used.
 
--- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
+Regards,
+Robert
 
-~~ When things go utterly wrong vim users can always type :help! ~~
-
+>
+> Thanks.
+>
+> --
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
