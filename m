@@ -2,154 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31E5E7FAFD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 02:57:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DC97FAFD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 02:59:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232573AbjK1B5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 20:57:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47440 "EHLO
+        id S234276AbjK1B65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 20:58:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjK1B5L (ORCPT
+        with ESMTP id S229488AbjK1B6z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 20:57:11 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B181A2;
-        Mon, 27 Nov 2023 17:57:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701136637; x=1732672637;
-  h=message-id:subject:from:reply-to:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=+snk+mM+TxyaWw6DJecEKyanpjoN0GjRNcW3jAnYR9g=;
-  b=KoUCajl6yxLLbaZntjFSGFenq9pp6/IkLWKjHRpIF891ENp1ft2EHliP
-   M6U+Hd+40TJIwdOKTtGZiSiWf2EcR66+lrabukzMxP2KZE4GrbgNKvD4C
-   2yo3EFBJmVKIHz+YrnEwKdC1cDTksQl9F3OE+3T39uX+i5bJwJfwJu/ti
-   HvzUDS7VavryWtxIP2KnsvMPU/mW7ejG0CBSxnBvFgp5qrjWml3DEUYT5
-   b8wRYMi91WCGQcgtSQu2GFpyG+FOhvQPZzhMeFXq24al7bod5xlRnbkaC
-   r319SHDm3rQzlVs3/SZOqZM/lEaiwC/KwLdgJJnRNgoFXu6rUQZZU4Qzc
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="395647075"
-X-IronPort-AV: E=Sophos;i="6.04,232,1695711600"; 
-   d="scan'208";a="395647075"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 17:55:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="1015754868"
-X-IronPort-AV: E=Sophos;i="6.04,232,1695711600"; 
-   d="scan'208";a="1015754868"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 17:55:58 -0800
-Received: from luisdsan-mobl28.amr.corp.intel.com (unknown [10.209.42.149])
-        by linux.intel.com (Postfix) with ESMTP id 440C2580AA7;
-        Mon, 27 Nov 2023 17:55:58 -0800 (PST)
-Message-ID: <adb8c80395d2c23488496b9ad323bfc265ad3514.camel@linux.intel.com>
-Subject: Re: [PATCH V5 12/20] asm-generic/io.h: iounmap/ioport_unmap
- cleanup.h support
-From:   "David E. Box" <david.e.box@linux.intel.com>
-Reply-To: david.e.box@linux.intel.com
-To:     Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        bhe@redhat.com, schnelle@linux.ibm.com
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com,
-        dave.hansen@linux.intel.com, peterz@infradead.org
-Date:   Mon, 27 Nov 2023 17:55:58 -0800
-In-Reply-To: <f83e4a40-314-d279-75e6-17ad83501982@linux.intel.com>
-References: <20231123040355.82139-1-david.e.box@linux.intel.com>
-         <20231123040355.82139-13-david.e.box@linux.intel.com>
-         <f83e4a40-314-d279-75e6-17ad83501982@linux.intel.com>
-Organization: David E. Box
+        Mon, 27 Nov 2023 20:58:55 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271651AA
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 17:59:02 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9fa45e75ed9so672856266b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 17:59:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701136740; x=1701741540; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PphOIqSqCVmNNOsOe5Hpj1iumuWnMQ+UeGD+TeZjx4U=;
+        b=tIUWpXayImjFTCSBwCvC9k/n34K4SzVufu+DlrAXNVgLLhzvIhOwrkHntuzx4IP/xC
+         rnYM1wcdm/0Q2i3LZK702k2LwSXQSYybW39h+BVdeIJkzZELV0NwKJUAlLpNTW8lP9P8
+         Fyf2DosQAp8Si+hQ4R4+3pyTcuD2uFjcna3241igT0ugWvFDKxKE7F7+ze/VPxCs5Xt1
+         p4IejA1H3AikSxJARZWPfYS3/DHEPOXP4hrxLxuZa5APO52LckTO4tT9jV6WubdgqhAX
+         nJ+EqFk/3qGqstGZHm/NcZZKkRygbb6xY+I/4zOLn4F9aC7nlcC+P1sFU/DYi/yRcCgP
+         3QsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701136740; x=1701741540;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PphOIqSqCVmNNOsOe5Hpj1iumuWnMQ+UeGD+TeZjx4U=;
+        b=rMp1in+yVnu4cj4Jj9nQYnrjHsHMjNYvGifXaVIbjkYoHMKdd3KWPezasiESlUZ4zv
+         nGPGhPR5V0U8N25aVFifYI24SFtSX4XEIeQ1r6aikfsF2MGUlib5n/UmEOdu9xiNDmSv
+         kqtE/MBlJ59BD/eI0ijAIIYS0TtmKSuUSeQhvIJZFmUz312soXa5KSF0M/GrP1oTJqo3
+         r0zW/8OIfMWnpxBhBwI20QH4RRL14aPQuutwpbZ6b9Yc7rsCymopzh115egYvkBkPEPU
+         kVlNM2DxPUg1uhHFYbMBGnISLa8U4XD7atKrhEG7HfqqUz91kIQWZAWvUuzouelymrSF
+         4L0w==
+X-Gm-Message-State: AOJu0Yxq1jL3ALBo37RXQXYaVDM8RFVCs5jAynuYNlYRbBaPXus+ZGtv
+        Mgl3Yx1b5C7NtZqBM0nvAJMnujGNmOcEmK/HO6Cmew==
+X-Google-Smtp-Source: AGHT+IHFydTp2xVa4ET3Zk3VpJsnsjThN5lHXwAhFmVBcv53GS0WQDvOENSxAYKSIGQKCBEJvRE4lARsexdWQUTfp2Y=
+X-Received: by 2002:a17:906:c282:b0:9be:68db:b763 with SMTP id
+ r2-20020a170906c28200b009be68dbb763mr7753564ejz.71.1701136740404; Mon, 27 Nov
+ 2023 17:59:00 -0800 (PST)
+MIME-Version: 1.0
+References: <20231116022411.2250072-4-yosryahmed@google.com>
+ <202311221542.973f16ad-oliver.sang@intel.com> <CAJD7tkYnn6CxSJdo0QJ1hc6cFY_qWLuJ0=S6g_Pm=GBV+Ss-jw@mail.gmail.com>
+ <ZWVGS2rNgueGH8uU@xsang-OptiPlex-9020>
+In-Reply-To: <ZWVGS2rNgueGH8uU@xsang-OptiPlex-9020>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Mon, 27 Nov 2023 17:58:24 -0800
+Message-ID: <CAJD7tkameJBrJQxRj+ibKL6-yd-i0wyoyv2cgZdh3ZepA1p7wA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] mm: memcg: make stats flushing threshold per-memcg
+To:     Oliver Sang <oliver.sang@intel.com>
+Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org, ying.huang@intel.com,
+        feng.tang@intel.com, fengwei.yin@intel.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
+        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Baoquan for ioremap question.
+On Mon, Nov 27, 2023 at 5:46=E2=80=AFPM Oliver Sang <oliver.sang@intel.com>=
+ wrote:
+>
+> hi, Yosry Ahmed,
+>
+> On Mon, Nov 27, 2023 at 01:13:44PM -0800, Yosry Ahmed wrote:
+> > On Wed, Nov 22, 2023 at 5:54=E2=80=AFAM kernel test robot <oliver.sang@=
+intel.com> wrote:
+> > >
+> > >
+> > >
+> > > Hello,
+> > >
+> > > kernel test robot noticed a -30.2% regression of will-it-scale.per_th=
+read_ops on:
+> > >
+> > >
+> > > commit: c7fbfc7b4e089c4a9b292b1973a42a5761c1342f ("[PATCH v3 3/5] mm:=
+ memcg: make stats flushing threshold per-memcg")
+> > > url: https://github.com/intel-lab-lkp/linux/commits/Yosry-Ahmed/mm-me=
+mcg-change-flush_next_time-to-flush_last_time/20231116-103300
+> > > base: https://git.kernel.org/cgit/linux/kernel/git/akpm/mm.git mm-eve=
+rything
+> > > patch link: https://lore.kernel.org/all/20231116022411.2250072-4-yosr=
+yahmed@google.com/
+> > > patch subject: [PATCH v3 3/5] mm: memcg: make stats flushing threshol=
+d per-memcg
+> > >
+> > > testcase: will-it-scale
+> > > test machine: 104 threads 2 sockets (Skylake) with 192G memory
+> > > parameters:
+> > >
+> > >         nr_task: 50%
+> > >         mode: thread
+> > >         test: fallocate2
+> > >         cpufreq_governor: performance
+> > >
+> > >
+> >
+> > This regression was also reported in v2, and I explicitly mention it
+> > in the cover letter here:
+> > https://lore.kernel.org/lkml/20231116022411.2250072-1-yosryahmed@google=
+.com/
+>
+> got it. this also reminds us to read cover letter for a patch set in the
+> future. Thanks!
+>
+> >
+> > In a nutshell, I think this microbenchmark regression does not
+> > represent real workloads. On the other hand, there are demonstrated
+> > benefits on real workloads from this series in terms of stats reading
+> > time.
+> >
+>
+> ok, if there are future versions of this patch, or when it is merged, we =
+will
+> ignore similar results.
+>
+> just a small question, since we focus on microbenchmark, if we found othe=
+r
+> regression (or improvement) on tests other than will-it-scale::fallocate,
+> do you want us to send report or just ignore them, either?
 
-On Thu, 2023-11-23 at 16:30 +0200, Ilpo J=C3=A4rvinen wrote:
-> On Wed, 22 Nov 2023, David E. Box wrote:
->=20
-> > Add auto-release cleanups for iounmap() and ioport_unmap().
-> >=20
-> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > Suggested-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
-> > ---
-> > V2 - Move from linux/io.h to asm-generic/io.h. Adds iounmap cleanup if
-> > =C2=A0=C2=A0=C2=A0=C2=A0 iounmap() is defined. Adds ioport_unmap cleanu=
-p if CONFIG_IOPORT_MAP
-> > =C2=A0=C2=A0=C2=A0=C2=A0 is defined.
-> >=20
-> > =C2=A0include/asm-generic/io.h | 6 ++++++
-> > =C2=A01 file changed, 6 insertions(+)
-> >=20
-> > diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-> > index bac63e874c7b..9ef0332490b1 100644
-> > --- a/include/asm-generic/io.h
-> > +++ b/include/asm-generic/io.h
-> > @@ -8,6 +8,7 @@
-> > =C2=A0#define __ASM_GENERIC_IO_H
-> > =C2=A0
-> > =C2=A0#include <asm/page.h> /* I/O is all done through memory accesses =
-*/
-> > +#include <linux/cleanup.h>
-> > =C2=A0#include <linux/string.h> /* for memset() and memcpy() */
-> > =C2=A0#include <linux/types.h>
-> > =C2=A0#include <linux/instruction_pointer.h>
-> > @@ -1065,6 +1066,10 @@ static inline void __iomem *ioremap(phys_addr_t =
-addr,
-> > size_t size)
-> > =C2=A0#endif
-> > =C2=A0#endif /* !CONFIG_MMU || CONFIG_GENERIC_IOREMAP */
-> > =C2=A0
-> > +#ifdef iounmap
-> > +DEFINE_FREE(iounmap, void __iomem *, iounmap(_T));
-> > +#endif
-
-Baoquan, LKP is reporting an undeclared function 'iounmap' error with the a=
-bove
-change from this patch when building for s390 with PCI disabled. The iorema=
-p
-defines in arch/s390/include/asm/io.h are not wrapped under the #ifdef
-CONFIG_PCI block. Shouldn't they be since the s390 Kconfig only adds
-GENERIC_IOREMAP if PCI?
-
-https://lore.kernel.org/oe-kbuild-all/202311241214.jcL84du7-lkp@intel.com
-
-
-Note that the report includes pointer arithmetic warnings that are not rela=
-ted
-to this patch. Those warnings occur in mainline as well.
-
-David
-
-> > +
-> > =C2=A0#ifndef ioremap_wc
-> > =C2=A0#define ioremap_wc ioremap
-> > =C2=A0#endif
-> > @@ -1127,6 +1132,7 @@ static inline void ioport_unmap(void __iomem *p)
-> > =C2=A0extern void __iomem *ioport_map(unsigned long port, unsigned int =
-nr);
-> > =C2=A0extern void ioport_unmap(void __iomem *p);
-> > =C2=A0#endif /* CONFIG_GENERIC_IOMAP */
-> > +DEFINE_FREE(ioport_unmap, void __iomem *, ioport_unmap(_T));
-> > =C2=A0#endif /* CONFIG_HAS_IOPORT_MAP */
-> > =C2=A0
-> > =C2=A0#ifndef CONFIG_GENERIC_IOMAP
->=20
-> Has this now built successfully with LKP? (I don't think we get success=
-=20
-> notifications from LKP for patch submissions, only failures).
->=20
-> There were some odd errors last time but I think all they were unrelated=
-=20
-> to this change (besides the checkpatch false positive, I mean).
->=20
-
+I think it would be useful to know if there are
+regressions/improvements in other microbenchmarks, at least to
+investigate whether they represent real regressions.
