@@ -2,99 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DAC27FB965
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:25:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 655BC7FB96A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:27:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234715AbjK1LZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 06:25:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51664 "EHLO
+        id S1344544AbjK1L1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 06:27:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344558AbjK1LZZ (ORCPT
+        with ESMTP id S234733AbjK1L1g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 06:25:25 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8AAD60;
-        Tue, 28 Nov 2023 03:25:30 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1B0A82195A;
-        Tue, 28 Nov 2023 11:25:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1701170729; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OgMlDqCEMti1tWEV4w0pWYe9MRlT/WzXID9W1NpeXw0=;
-        b=BbbKWMmmKaQrhIyb2KL6NpH9DDIGUGVP+hPGD5QCUcS6X4Hr0oBnRDuf1b3xRaZpxJitkm
-        nx8r/gv7jLOAO9h8sIRcCLGDv1rhNgqWuWHGJ7ah3cxLK7G1MZtthXRtKbUzAphJfJYWCL
-        27Ab0kO7Q7aTIYNxJI5IumkJ30JCpcc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1701170729;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OgMlDqCEMti1tWEV4w0pWYe9MRlT/WzXID9W1NpeXw0=;
-        b=OqOvDLmLGZwIjekxgW6yZGcd83xjaN7OTKoc4Bz+CG9jrO4cHbkIF7FMgGnxkr0wQoGRZZ
-        CnZbmSG5J27X0OBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F21441343E;
-        Tue, 28 Nov 2023 11:25:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id isDDOijOZWUIAwAAD6G6ig
-        (envelope-from <vbabka@suse.cz>); Tue, 28 Nov 2023 11:25:28 +0000
-Message-ID: <9be0159e-1762-6c07-e6eb-a86f1c780118@suse.cz>
-Date:   Tue, 28 Nov 2023 12:25:28 +0100
+        Tue, 28 Nov 2023 06:27:36 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75AE31A2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 03:27:42 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8835C433C7;
+        Tue, 28 Nov 2023 11:27:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701170861;
+        bh=B/yIJwxLaAT5R+A6b54U5ynQZIauIfWW6wfH2GeGYOQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AQ9fog7fgQPvyo6YamBdjTQIaFyIbBgPOndM0nhoIRfGIiMmC8WrLEhQvhnCS0QN2
+         QSm3tH0BUAoZ/L99xiBkw4FurCM3Hzqa7BmV8TvAbgVUBa0Co10LGM8UrQ7sRGH9NK
+         W6pszD10ZSyu3bmUx06Lm7rRLpd43MxyYFttVQ+mKq7EtBa4pxDTrXQkVJiYTO9EfN
+         XgIoEBd7Ih0And8QXM4ursYTyw0wENYnqw0JwgXOZjv7La5tnJ/B4G6ZKWgy7gPLvW
+         a2fO87YUdYPYAH18baKyMhpmdPhzrQJE0y4O/ldjFDHfvHdFoXsGlYkyUvyAOFeJ6N
+         pWJgn0s4iP15w==
+Date:   Tue, 28 Nov 2023 16:57:31 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Ziqi Chen <quic_ziqichen@quicinc.com>
+Cc:     Can Guo <quic_cang@quicinc.com>, quic_asutoshd@quicinc.com,
+        bvanassche@acm.org, beanhuo@micron.com, avri.altman@wdc.com,
+        junwoo80.lee@samsung.com, martin.petersen@oracle.com,
+        quic_nguyenb@quicinc.com, quic_nitirawa@quicinc.com,
+        quic_rampraka@quicinc.com, linux-scsi@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] scsi: ufs: qcom: move ufs_qcom_host_reset() to
+ ufs_qcom_device_reset()
+Message-ID: <20231128112731.GV3088@thinkpad>
+References: <1698145815-17396-1-git-send-email-quic_ziqichen@quicinc.com>
+ <20231025074128.GA3648@thinkpad>
+ <85d7a1ef-92c4-49ae-afe0-727c1b446f55@quicinc.com>
+ <c6a72c38-aa63-79b8-c784-d753749f7272@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2] efi/unaccepted: Fix off-by-one when checking for
- overlapping ranges
-Content-Language: en-US
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Michael Roth <michael.roth@amd.com>, linux-efi@vger.kernel.org,
-        x86@kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nikolay Borisov <nik.borisov@suse.com>, stable@kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <20231103151354.110636-1-michael.roth@amd.com>
- <30ff0335-3d9c-7d54-85d0-5898320f4e1f@suse.cz>
- <CAMj1kXF-B_1MJahfFg72cgcmZ9dMvqiEm8WGGejkqRFN=JreEA@mail.gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <CAMj1kXF-B_1MJahfFg72cgcmZ9dMvqiEm8WGGejkqRFN=JreEA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Score: 3.21
-X-Spamd-Result: default: False [3.21 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.19)[-0.959];
-         NEURAL_SPAM_LONG(3.50)[0.999];
-         RCPT_COUNT_TWELVE(0.00)[12];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c6a72c38-aa63-79b8-c784-d753749f7272@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -103,54 +63,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/8/23 12:21, Ard Biesheuvel wrote:
-> On Fri, 3 Nov 2023 at 16:30, Vlastimil Babka <vbabka@suse.cz> wrote:
->>
->> On 11/3/23 16:13, Michael Roth wrote:
->> > When a task needs to accept memory it will scan the accepting_list
->> > to see if any ranges already being processed by other tasks overlap
->> > with its range. Due to an off-by-one in the range comparisons, a task
->> > might falsely determine that an overlapping range is being accepted,
->> > leading to an unnecessary delay before it begins processing the range.
->> >
->> > Fix the off-by-one in the range comparison to prevent this and slightly
->> > improve performance.
->> >
->> > Fixes: 50e782a86c98 ("efi/unaccepted: Fix soft lockups caused by parallel memory acceptance")
->> > Link: https://lore.kernel.org/linux-mm/20231101004523.vseyi5bezgfaht5i@amd.com/T/#me2eceb9906fcae5fe958b3fe88e41f920f8335b6
->> > Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
->> > Signed-off-by: Michael Roth <michael.roth@amd.com>
->>
->> More justification for introducing a common ranges_overlap() helper somewhere :)
->>
->> Acked-by: Vlastimil Babka <vbabka@suse.cz>
->>
+On Tue, Nov 28, 2023 at 03:40:57AM +0800, Ziqi Chen wrote:
 > 
-> Thanks, I'll take this as a fix.
-
-Ping, can't see it in mainline nor -next?
-
 > 
->> > ---
->> > v2:
->> >  * Improve commit message terminology (Kirill)
->> > ---
->> >  drivers/firmware/efi/unaccepted_memory.c | 2 +-
->> >  1 file changed, 1 insertion(+), 1 deletion(-)
->> >
->> > diff --git a/drivers/firmware/efi/unaccepted_memory.c b/drivers/firmware/efi/unaccepted_memory.c
->> > index 135278ddaf62..79fb687bb90f 100644
->> > --- a/drivers/firmware/efi/unaccepted_memory.c
->> > +++ b/drivers/firmware/efi/unaccepted_memory.c
->> > @@ -100,7 +100,7 @@ void accept_memory(phys_addr_t start, phys_addr_t end)
->> >        * overlap on physical address level.
->> >        */
->> >       list_for_each_entry(entry, &accepting_list, list) {
->> > -             if (entry->end < range.start)
->> > +             if (entry->end <= range.start)
->> >                       continue;
->> >               if (entry->start >= range.end)
->> >                       continue;
->>
+> On 11/22/2023 2:14 PM, Can Guo wrote:
+> > 
+> > 
+> > On 10/25/2023 3:41 PM, Manivannan Sadhasivam wrote:
+> > > On Tue, Oct 24, 2023 at 07:10:15PM +0800, Ziqi Chen wrote:
+> > > > During PISI test, we found the issue that host Tx still bursting after
+> > > 
+> > > What is PISI test?
+> 
+> SI measurement.
 > 
 
+Please expand it in the patch description.
+
+> > > 
+> > > > H/W reset. Move ufs_qcom_host_reset() to ufs_qcom_device_reset() and
+> > > > reset host before device reset to stop tx burst.
+> > > > 
+> > > 
+> > > device_reset() callback is supposed to reset only the device and not
+> > > the host.
+> > > So NACK for this patch.
+> > 
+> > Agree, the change should come in a more reasonable way.
+> > 
+> > Actually, similar code is already there in ufs_mtk_device_reset() in
+> > ufs-mediatek.c, I guess here is trying to mimic that fashion.
+> > 
+> > This change, from its functionality point of view, we do need it,
+> > because I occasionally (2 out of 10) hit PHY error on lane 0 during
+> > reboot test (in my case, I tried SM8350, SM8450 and SM8550， all same).
+> > 
+> > [    1.911188] [DEBUG]ufshcd_update_uic_error: UECPA:0x80000002
+> > [    1.922843] [DEBUG]ufshcd_update_uic_error: UECDL:0x80004000
+> > [    1.934473] [DEBUG]ufshcd_update_uic_error: UECN:0x0
+> > [    1.944688] [DEBUG]ufshcd_update_uic_error: UECT:0x0
+> > [    1.954901] [DEBUG]ufshcd_update_uic_error: UECDME:0x0
+> > 
+> > I found out that the PHY error pops out right after UFS device gets
+> > reset in the 2nd init. After having this change in place, the PA/DL
+> > errors are gone.
+> 
+> Hi Mani,
+> 
+> There is another way that adding a new vops that call XXX_host_reset() from
+> soc vendor driver. in this way, we can call this vops in core layer without
+> the dependency of device reset.
+> due to we already observed such error and received many same reports from
+> different OEMs, we need to fix it in some way.
+> if you think above way is available, I will update new patch in soon. Or
+> could you give us other suggestion?
+> 
+
+First, please describe the issue in detail. How the issue is getting triggered
+and then justify your change. I do not have access to the bug reports that you
+received.
+
+- Mani
+
+> -Ziqi
+> 
+> > 
+> > Thanks,
+> > Can Guo.
+> > > 
+> > > - Mani
+> > > 
+> > > > Signed-off-by: Ziqi Chen <quic_ziqichen@quicinc.com>
+> > > > ---
+> > > >   drivers/ufs/host/ufs-qcom.c | 13 +++++++------
+> > > >   1 file changed, 7 insertions(+), 6 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> > > > index 96cb8b5..43163d3 100644
+> > > > --- a/drivers/ufs/host/ufs-qcom.c
+> > > > +++ b/drivers/ufs/host/ufs-qcom.c
+> > > > @@ -445,12 +445,6 @@ static int
+> > > > ufs_qcom_power_up_sequence(struct ufs_hba *hba)
+> > > >       struct phy *phy = host->generic_phy;
+> > > >       int ret;
+> > > > -    /* Reset UFS Host Controller and PHY */
+> > > > -    ret = ufs_qcom_host_reset(hba);
+> > > > -    if (ret)
+> > > > -        dev_warn(hba->dev, "%s: host reset returned %d\n",
+> > > > -                  __func__, ret);
+> > > > -
+> > > >       /* phy initialization - calibrate the phy */
+> > > >       ret = phy_init(phy);
+> > > >       if (ret) {
+> > > > @@ -1709,6 +1703,13 @@ static void ufs_qcom_dump_dbg_regs(struct
+> > > > ufs_hba *hba)
+> > > >   static int ufs_qcom_device_reset(struct ufs_hba *hba)
+> > > >   {
+> > > >       struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+> > > > +    int ret = 0;
+> > > > +
+> > > > +    /* Reset UFS Host Controller and PHY */
+> > > > +    ret = ufs_qcom_host_reset(hba);
+> > > > +    if (ret)
+> > > > +        dev_warn(hba->dev, "%s: host reset returned %d\n",
+> > > > +                  __func__, ret);
+> > > >       /* reset gpio is optional */
+> > > >       if (!host->device_reset)
+> > > > -- 
+> > > > 2.7.4
+> > > > 
+> > > 
+
+-- 
+மணிவண்ணன் சதாசிவம்
