@@ -2,189 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D79C7FC211
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED517FC2D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344940AbjK1Rmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 12:42:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58016 "EHLO
+        id S1345286AbjK1Rmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 12:42:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344939AbjK1Rmb (ORCPT
+        with ESMTP id S234682AbjK1Rms (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 12:42:31 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65020DC;
-        Tue, 28 Nov 2023 09:42:37 -0800 (PST)
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ASGhuoQ019904;
-        Tue, 28 Nov 2023 17:42:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- from : subject : to : cc : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=66T0oWIABKwexOCzTZq1LGAlctaAKl8J8KVmc0ANyPk=;
- b=mfMPTbj9Qb49vlzCkEs0prEvSqSBkfjt4+J0ruQmsTAmjTNHvAgbnoflbg3vvvx+f4z7
- nfqDEvniddkWQRrTLDGt1TXkKECDzT8pSYuxPKxnlhXtrjB5lr6JUbbhvHQwBtyYhu+x
- 3PaSeMI7kszoNSd3NUdbU7ZvpHKpyqidDBH39dwddpB2zT2fd1+znHfSUqNVpuDnMFt9
- z84oi8+evYkKCyu49IoZAg/osVENYkAPTOA1cJt2jSP0z2qSQbpZ3bfaKYFmdL1q1UVH
- hckOwx/NqD2CvOXt373ToAHfKbToQK/LjBokptn9vzLg6us4g5961CkwkXHz1knoCOAH Ig== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uk8hu6fhb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Nov 2023 17:42:19 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3ASH7laJ012634;
-        Tue, 28 Nov 2023 17:42:18 GMT
-Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam04lp2041.outbound.protection.outlook.com [104.47.74.41])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uk7cd1d10-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Nov 2023 17:42:18 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nfsBxF/NZYsV8wKNV8e1OTKJUS7rEZPejiLJMTFtKOCahsdO/7jSnteDD6Zz6g4L/7/U0PzP49b8QIruSFakTIEcHZfvIY2m+ZChRuiGiU51Qh2NXrjaF+XTadhfKmoCUWULT73DDtqVcRI0+dKNM5nJytupI3sFIsKQ2qSdeCLvBeGoGX7+wT/eUgAOl9Lua4JuV060fvapKYr9i49DhSkiPDmR3VVviS+TNZqG+ifiuYYOTcOnm0+uJZ5XdLpEqGug40+xhbxGns4I/e02bhlkOlJOWyswoEN3D1Hy2W7VwkeDINUQh5r7TNIid/YNrn+5EyiVNETV8RSBuazXrA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=66T0oWIABKwexOCzTZq1LGAlctaAKl8J8KVmc0ANyPk=;
- b=RMohNYIl3fs9+Jr4yufn1JRp+fWQAWtQ6WdKZPY0MTmaaVQOr1N1jnSMkj+A4y3BdkqRp1qubf05IewaB6fpYBCekBgqxTQPronVTNjD31LWj22OWu1Mimru2hrncnkFZ9/XsP2o1LKfK57ExmxBTxgKPAlalVI2cgU/6LsaTFDFXPhm46R3vKSXvlQreM/KBu4nAReyJZkmvNfCWJQwukRrXaTCozSr/lzsp/LQ7e03G6u/pSertxUZ5zTKOkqz2ULFTobWF6MeLIrHsuxG2Ib6Y6RnqaAzW0Kl+TReggaV0CwLH1Z6VRYhnyyXk2SJx5/ETBXWUNJXV+0cAaWejw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=66T0oWIABKwexOCzTZq1LGAlctaAKl8J8KVmc0ANyPk=;
- b=egKa7832DbzroHsHCqQJxEHO4LlxCv/QDti2EnG3K8st3ray1qG3cPOt+LjRhAFdlht3vjlU0Afs91SAxjkKT8s21bO+tu238UrZLvK04PDXrvpnodAxtOQAuAPzssBFdJs6rV9nNaVhq3wGDmaxW9wNrskrCLxDt7HTaVzEfVE=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by DS7PR10MB7375.namprd10.prod.outlook.com (2603:10b6:8:d9::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Tue, 28 Nov
- 2023 17:42:16 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::102a:f31:30c6:3187]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::102a:f31:30c6:3187%4]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
- 17:42:16 +0000
-Message-ID: <e4fb6875-e552-45aa-b193-58f15d9a786c@oracle.com>
-Date:   Tue, 28 Nov 2023 17:42:10 +0000
+        Tue, 28 Nov 2023 12:42:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E44E10EC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:42:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701193373;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=SAr5QDfBjoYNxgnqiGi0DG773ECEaxrZ0Actkz0JUII=;
+        b=EmIGZCMmoIDUULxsrtb+ec6Y5UguipD1JO2Fg/VbF4OSu9TrFdWvUcYqFQifwtgSCegywv
+        lawIgaUVxy13gkaAP713x91UHWWfQ4Tydyn9U/EZEwwLwo4mTYioI0AE8nwNUXbvUTwALJ
+        9gpy2EphRtjf4GszjLq9sVq0rC9v2Vw=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-531-NJNdVy1cPRS-5cLhZIGj4Q-1; Tue, 28 Nov 2023 12:42:51 -0500
+X-MC-Unique: NJNdVy1cPRS-5cLhZIGj4Q-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-332f5ff511aso2655188f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:42:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701193366; x=1701798166;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SAr5QDfBjoYNxgnqiGi0DG773ECEaxrZ0Actkz0JUII=;
+        b=pSe40GzW2wb7F+KEZZdWpCrKEDTz7VQytba2uTYcbQErNOCdL3DKyUquh3CtK2cs5W
+         FDYHMixGf/vPBreZJUBUQTfHmdTOYGC8cFus29hDHNDRNsL5H30/eZ4hJXOiqOIwTRSQ
+         rAkctdKjyv4cJRuJfx78OKQme9i2uIxme4v9/cXc2X41bx95L/Z17MhqFgEWleXSsz8N
+         tFNb1hxmK9B4nHA2kPy61GTXsQ7YiW1w5XIjiuSnrgrGoTy/SMyuRx29ppvR3r1k42wG
+         UDcR4y3yXEnW1P5H9Vi2FQovdiVqX1bjJPxZlxa7g9tpyJTW96Zr6YwYWwoZLnh0oFL0
+         3TEQ==
+X-Gm-Message-State: AOJu0Yw+E8Or6IRnLPRi79X0rlY151hyyy7ZJ/XmX6woGomcJr44DmE2
+        irHGiAPvGFBSxa+YGf0I5c9NbC0ATKWhdBngevhKB3Env8AT7jpvfxYmODxsyYrKf8Rn1zDklJk
+        4U5J9m/xaxqY90LpgKKAzUmck
+X-Received: by 2002:a05:6000:1966:b0:333:135f:a7f0 with SMTP id da6-20020a056000196600b00333135fa7f0mr792376wrb.54.1701193366571;
+        Tue, 28 Nov 2023 09:42:46 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGspIGuI/kYFdgQzkVNuyzoM3eXA3AHvA/zr4XiUIQx9yzHK6ckCbknitRxD4yCoHkCf7gp2w==
+X-Received: by 2002:a05:6000:1966:b0:333:135f:a7f0 with SMTP id da6-20020a056000196600b00333135fa7f0mr792362wrb.54.1701193366143;
+        Tue, 28 Nov 2023 09:42:46 -0800 (PST)
+Received: from ?IPV6:2003:cb:c708:1d00:99ec:9656:7475:678d? (p200300cbc7081d0099ec96567475678d.dip0.t-ipconnect.de. [2003:cb:c708:1d00:99ec:9656:7475:678d])
+        by smtp.gmail.com with ESMTPSA id do4-20020a0560000c4400b00332f2288e2esm10265166wrb.102.2023.11.28.09.42.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Nov 2023 09:42:45 -0800 (PST)
+Message-ID: <faf9ca16-ab0b-4ce9-a6e2-ea31842b213a@redhat.com>
+Date:   Tue, 28 Nov 2023 18:42:44 +0100
+MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-From:   John Garry <john.g.garry@oracle.com>
-Subject: Re: [PATCH 17/21] fs: xfs: iomap atomic write support
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     axboe@kernel.dk, kbusch@kernel.org, sagi@grimberg.me,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chandan.babu@oracle.com, dchinner@redhat.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-        linux-api@vger.kernel.org
-References: <20230929102726.2985188-1-john.g.garry@oracle.com>
- <20230929102726.2985188-18-john.g.garry@oracle.com>
- <20231109152615.GB1521@lst.de>
- <a50a16ca-d4b9-a4d8-4230-833d82752bd2@oracle.com>
- <c78bcca7-8f09-41c7-adf0-03b42cde70d6@oracle.com>
- <20231128135619.GA12202@lst.de>
+Subject: Re: [PATCH v1 2/5] mm/rmap: introduce and use hugetlb_remove_rmap()
 Content-Language: en-US
-Organization: Oracle Corporation
-In-Reply-To: <20231128135619.GA12202@lst.de>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>
+References: <20231128145205.215026-1-david@redhat.com>
+ <20231128145205.215026-3-david@redhat.com> <ZWYQeW1dqK6xM1T9@x1n>
+ <f1b52042-646d-4679-b375-7550973701f5@redhat.com> <ZWYf0ZNF9OJgt-mt@x1n>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <ZWYf0ZNF9OJgt-mt@x1n>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM0PR08CA0001.eurprd08.prod.outlook.com
- (2603:10a6:208:d2::14) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|DS7PR10MB7375:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5af35aec-0725-4cc2-6e1b-08dbf0395cc6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qfI/XNXlTv1Sdm/EpL3yX60hBJlWZZBueManuZqIGl+boOybQIZ4Ey7sa+iIICRDsc8s1MoyFJa9+v3UWs82Pecj5hznrSCs0vcNVwyCX4M848JGAVYukLYZ5dO9DS98UFkavmZHNzTj3bixSZTG88+8G7mLC2b7pvXoOwioQtvA+pk0P0cjd/Oh5k+TlBiMv48r6dLBeEDAqT2pOYCUVlW0JpkWJ82TTMDnVkQa0NBJNVLixc1XSIilZ/XTPgXVcu2dcer3LOPk7K7pOnAnMeVL+ep4nWqXLEkZaw9hCu8dA+QQBw94sJ4GxRQYFmcO4s1/Uv2M5oWR3QEv1WfXu6Qa46YFTTVX169lBdYqZEqvrtn+GADC3U54ljQ5ZhF0sXdyc+VaBOESxi2fgSJ2r6vZ7BK/ZFqbu2Tnwnp1TWaytPLa7rdxQ1bDbZcBiHTPiShhnOMHNJX2/PLJyDIrXMB7JC1g3VlXLEqK1K/ZUf1Pf6XrE+BXXmHau554wcyKfixTKVnzGgThlrdxSr8SmhQwRsZLBbQjOxfydohMTQOD2OXKTInkJHooGxBDKio6zw/Raig3M+dsX1SMhoDWZIITGu+ncwjFQDmABKFXrGV0AYW1oqGbiKSrHGAm01EIYlYvrsQuQnVykGXCgzy2Aw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(39860400002)(136003)(396003)(366004)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(31686004)(36916002)(26005)(478600001)(53546011)(6666004)(6512007)(6506007)(2616005)(38100700002)(36756003)(86362001)(31696002)(5660300002)(2906002)(7416002)(41300700001)(83380400001)(316002)(8676002)(6486002)(6916009)(66556008)(66476007)(66946007)(4326008)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SjRPWmRDRWtmWElsU0M2MVVPQ3lZM2E5cTZKcjFsTEpWVUdoWmp1UmV3U3JF?=
- =?utf-8?B?Q28waTR1TkR2c2s1VHJITkpNQmppNExONXh0amh5T1hrN29XejVzazN5b1lw?=
- =?utf-8?B?Y0RjYU15dzh0UEtUcjhYYzkxV2UzbGV6OFlMdDJqSGFucGdBOHBJVU9iTW5k?=
- =?utf-8?B?ZkdlQ1NFMGNIcmdEWk5iREk0aTF6T1BwQS9nWDlwcXlZcHgrQW1IelhyUFBw?=
- =?utf-8?B?K0J1MzgyT1lLU08rcUg4RjNrdSszV1pPWkQxVm8ybStBUkxhWTVYdGZBaW5s?=
- =?utf-8?B?Vy9hcVRGSkVwdU1peVNQWmY5am9CZjZlTzQ5NC9mT04zdVNCS3plV0FNVGQ0?=
- =?utf-8?B?OUVIeXhYZzN3WHhzN09lT09iTFkzcDlwMkdmYkoyZzR4eVVsOW01NWVZTXIx?=
- =?utf-8?B?Tzl0ZElRNXZKWTdZNUY0cklVMnpDL1ZCVVJ0OUJiR09HaXptVlhMK0JLL3ZZ?=
- =?utf-8?B?MzZNaHI2NXB6WGlDM1YyM3l1M0dKdVhVUE5DMU8yM3gvNDRLMnFwWGpBdTgr?=
- =?utf-8?B?UTAvWCt0aEpETUZHRjlyY0RTOG9TeE81SkQxSkUxZGRVNGd1MW5kTjk3d2tB?=
- =?utf-8?B?bk1XOGQwb3RlZVBvRTJiN010dW02aitScmlUdUNUbGRIUUU5blhXVmx4c2wy?=
- =?utf-8?B?RmlmODIxcXVlTjRBS0tGS0JlWWhHUGdMKyt6WWp5ei9HTUhOeFJtWGhIZEhJ?=
- =?utf-8?B?WTFPdXdBRDhDR3hTR1hpTlJrSW5hai9HaFVBWE5JZ0FFRnZ3WDFWZmVEc0FJ?=
- =?utf-8?B?Tlo4SjRjZTV4VUFtQUFLQkdqcGhPc2RtYXNyUmdzUGJXaURlSHQwZWpQbXQ4?=
- =?utf-8?B?cFRSQzJTNmluTTcwTElhVG1EanFyK2JGcTdZWktMV2FZVGFydzlIWWZiRjNz?=
- =?utf-8?B?SlBRZHQ1RTF2VVN5aWZvejR6ZlR5MGhhT0F4cmhhc1AxUXBMOHRXODBtdy9R?=
- =?utf-8?B?WVNyK0x5VHhEQkgxVjR2Y3ZFSWk4bDVrcDlaWE5sbEp6TC9XTC81Q3labURj?=
- =?utf-8?B?RlllSkZEeXhjQjFNMjNhUHRVcldzTzRPRVE1NytRSndlYThaYURuT0djNFl2?=
- =?utf-8?B?RGhUV09pRERIZmdraTVoeVlCTFNOQkxDbUpzRjRFOW5GYjdKRnBRczlhL0hW?=
- =?utf-8?B?SUZBa0gvYmlvdzNJU202NEN2SU1zY2tDRk0wclBlQ01nK1AzYVJvUUpuNkdT?=
- =?utf-8?B?aStzTDZQVmEzVEF1YTl2Si9ONlp0bjdwS2duMDZpWDgxSW5PdjB5RkFwdlFO?=
- =?utf-8?B?UVRPYmI5Q3BZaVphTFdqQVBBcmVNU0tKQ0xBRk14RmtxcGxIUXFRbkRoUzJQ?=
- =?utf-8?B?WURBRS9ObFpmVWI4dGJUWUQ0RFQ2TWxOcW5MRUtud0xuTkkvUUdtYXNCNG9X?=
- =?utf-8?B?bHJ1TzJWcjlDaGpObDlZSHFnejBxVmFCbURWcFVNdzJ6THF6NExDR05TQklQ?=
- =?utf-8?B?eE51ZXFGZndEMGw5NTJoZytENjZXeGlRS1JqeTVpY1N4M0xSelM3UzJBajlu?=
- =?utf-8?B?QkZ4QUJmWG5qblVjTHR5TUhsdE4zWEVBcTd0YzV1Vnk2bzkzS3dZeXdrR1E3?=
- =?utf-8?B?eTB4Y3NjeEo0eGE4VDBxc2pNZjVBZjV0UkczQWF3MnFGVWZaakEzNmV3bGhn?=
- =?utf-8?B?VjFseUhtdDUwditPQjBzdlNJUUZ4dXIvb1ZublA1TVVKU0JmNm9NS3dlancw?=
- =?utf-8?B?SVgvUUZ4MTBzVVpUeDNkcVRoaDdKaWJ4dUFPQ2x6QktiMXRZdDBEaHBkWE5S?=
- =?utf-8?B?NkFhaWdCUERlM2YyUXpqRjVYYnR1UEN4em85ekMrVy9LZ3ZxakhwVDdEbVQr?=
- =?utf-8?B?RmkyVXNPVVc4WDQ3ZXhMK29ZSGtsTFhvVkY5UWhqdG51MndpaUFHa0cxK29q?=
- =?utf-8?B?K0l2d0hydmRPeXpYR2JsZWxhN3E3UDRKM0dTeHpvRjk2VFJCQlpobko4bUxz?=
- =?utf-8?B?UEdjSzRzMWcrbDZaZDJjRWVnOS9Vb08rMDBOZDdyRjJkOFZya3JyTUxMMktj?=
- =?utf-8?B?cWlURUJZaW1rS0VvZk42NUtjTGdMcVUxdjNUVXAvL3hvQnBuWktTRzZyNVYv?=
- =?utf-8?B?V3dEbkhHNTFTQk1qQ0JLOVZUVTd5c3Znc2ZrbmsyL0hqNCtIWmRWUElLRzN3?=
- =?utf-8?Q?ekBr/i3K36Z+G23ad61bgkHeZ?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?THVQTHErcjJyK0d0enUvQkdMWGxZNXk3L2x6T05yV3ZWeUh0K3JLMEdYT3Fq?=
- =?utf-8?B?SEd4ZnZiV1hPbGFEM21BWmRQbnlUM21WdFRiRSszeXpqeGE4M0hQRlhzcXU3?=
- =?utf-8?B?anh2bjcxaE1wcndyakFWMmRVRUtnU29vOERSRmh6ei9jNmZtQXVsNlRHNFhM?=
- =?utf-8?B?bTBtNDR6M2MxZVhBMFdVaEZsNUJVaUo1ZXk0aEN4K3Z5S2FKOVJrQmJTcGZq?=
- =?utf-8?B?aXkxT0RwRERQRllBK1JHM2RrQ1pnWG9OQ3c0cFhWMFBoVUxHT3YvSWRrOWxO?=
- =?utf-8?B?K0tuemdFTm1UbzZQNUk5WlBsZWRzTXFCZzdnZXY3a0hheTdFVEhwMTd4SzVZ?=
- =?utf-8?B?alNONWZaaVh0Z0hVb1JIajIrTnN2SU5vTTUrOWtNT3JrQmRiQjdjQ3FMUERT?=
- =?utf-8?B?U090Uzcwb3dVOG5xOGNWSWJwOXZzN3ZrWm9Ydkw3R2VtSWhFU1QreU9wUVJS?=
- =?utf-8?B?N0NQT2c5cHhMSmdpdmJOY0l4SGRNd2FrV1EvSmFabGxHY0E2Q3k0WXlzUldT?=
- =?utf-8?B?QmFqZG8yL01qaitQZERzbk5vTS9YYmpIdnFZTmNSUVp4Q0dLZlBkWDFGbkRm?=
- =?utf-8?B?UVhzZHVCY3c1L3hjdWM5QUIxNVp6MmQ4amJHaU5obGkxWmQ1K241TXpyUG1U?=
- =?utf-8?B?TmJTZWU5Y0YvNVZjVnBQclJxRDdyZFkweENFZkkvd25YRG5uaTN4cDd3eUxO?=
- =?utf-8?B?TndocnNqcStUTythdml6REZ3V3FtU1d1ZzlHSVo2Z3JIY3R2Q0xsRTdXeGly?=
- =?utf-8?B?YTdRS0lsVHlXak5TYnJHNlNMTjV2eUZpMXlMZnZydGwrUktDenZXZng5UUVT?=
- =?utf-8?B?WUphMWZ0SC92cmlHaVFWZmxtcmdiTjNuWVJJbWFPcFJHeTFDWDlaRHV2S3lS?=
- =?utf-8?B?VUpJOTc1V1N1MCtNVnExSXBOU2FzbVR0RVJoeFk0RGJMMDNzVElIMHFlSU8z?=
- =?utf-8?B?SldmSUcwRExERksyeGZBQy9xNjBkL1VrNXplSE5DdXdJQTNhL1pTaGQxOEMy?=
- =?utf-8?B?TjFYR01xalhoRldHYzE1SmNUelUyUngzanlzU0tlaXJyQXpzZ0FzTTkzZ2pO?=
- =?utf-8?B?Wk9HR08yRC85ZUxwMzZUdVRnK00zdlQ1enNPcVhMeDBsL2t5Y0F3eDVBb252?=
- =?utf-8?B?R1pGaTdQNlVlUEJlVTY3UXdtQnhhR2xRcy8vZldTSG9FY0IwenMxTFVNRXpi?=
- =?utf-8?B?cGdxKzVySU5Mb0dpRTR6RFRZUFJYaStCQ1dzZUlrMXFRWkRUa2VmVitEU2tE?=
- =?utf-8?B?eFZBT1VVdENNL1diVEkrQy9YWG1tQ1VJZGdrNzgxWGpSUjNyK1JuWVRiRS9L?=
- =?utf-8?B?T0lYcTZmdEhUdWR4VXhIT0tMQmJFbERDbzhxRURPTTZsR3R4cHZCbWNNSmw2?=
- =?utf-8?B?U29JVlJTbmZVdm1VWDI1QzdkQ1hKN0thV3BhblJlMUl1WFZqb0tqeWFQMmNi?=
- =?utf-8?B?dzZ5SU05dHpvTjUxaVVubUVTMGFHcFJIZ3JILzNnPT0=?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5af35aec-0725-4cc2-6e1b-08dbf0395cc6
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 17:42:16.4488
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wq7TTgt3aq3zLkniK8Vl6L7IC3msGDHROKRwttaETMUKLyL/ua3dQtLfXu/2u1mFG64zyEV20MSrlnHzrXMTvA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB7375
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-28_19,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 mlxscore=0
- malwarescore=0 adultscore=0 suspectscore=0 spamscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311280141
-X-Proofpoint-GUID: dARGLpdcmOR5R_laSSN-Gc-yZ1PhhKgC
-X-Proofpoint-ORIG-GUID: dARGLpdcmOR5R_laSSN-Gc-yZ1PhhKgC
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -192,61 +130,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/11/2023 13:56, Christoph Hellwig wrote:
-> On Tue, Nov 28, 2023 at 08:56:37AM +0000, John Garry wrote:
->> Are you suggesting some sort of hybrid between the atomic write series you
->> had a few years ago and this solution?
-> Very roughly, yes.
+On 28.11.23 18:13, Peter Xu wrote:
+> On Tue, Nov 28, 2023 at 05:39:35PM +0100, David Hildenbrand wrote:
+>> Quoting from the cover letter:
+>>
+>> "We have hugetlb special-casing/checks in the callers in all cases either
+>> way already in place: it doesn't make too much sense to call generic-looking
+>> functions that end up doing hugetlb specific things from hugetlb
+>> special-cases."
 > 
->> To me that would be continuing with the following:
->> - per-IO RWF_ATOMIC (and not O_ATOMIC semantics of nothing is written until
->> some data sync)
-> Yes.
+> I'll take this one as an example: I think one goal (of my understanding of
+> the mm community) is to make the generic looking functions keep being
+> generic, dropping any function named as "*hugetlb*" if possible one day
+> within that generic implementation.  I said that in my previous reply.
+
+Yes, and I am one of the people asking for that. However, only where it 
+makes sense (e.g., like page table walking, GUP as you said), and only 
+when it is actually unified.
+
+I don't think that rmap handling or fault handling will ever be 
+completely unified to that extreme, and it might also not be desirable. 
+Just like we have separate paths for anon and file in areas where they 
+are reasonable different.
+
+What doesn't make sense is using patterns like:
+
+	page_remove_rmap(subpage, vma, folio_test_hugetlb(folio));
+
+and then, inside page_remove_rmap() have an initial folio_test_hugetlb() 
+check that does something completely different.
+
+So each and everyone calling page_remove_rmap (and knowing that it's 
+certainly not a hugetlb folio) has to run through that check.
+
+Then, we have functions like page_add_file_rmap() that look like they 
+can be used for hugetlb, but hugetlb is smart enough and only calls 
+page_dup_file_rmap(), because it doesn't want to touch any file/anon 
+counters. And to handle that we would have to add folio_test_hugetlb() 
+inside there, which adds the same as above, trying to unify without 
+unifying.
+
+Once we're in the area of folio_add_file_rmap_range(), it all stops 
+making sense, because there is no way we could possibly partially map a 
+folio today. (and if we can in the future, we might still want separate 
+handling, because most caller know with which pages they are dealing, below)
+
+Last but not least, it's all inconsistent right now with 
+hugetlb_add_anon_rmap()/hugetlb_add_new_anon_rmap() being there because 
+they differ reasonably well from the "ordinary" counterparts.
+
 > 
->> - writes must be a power-of-two and at a naturally-aligned offset
-> Where offset is offset in the file? 
+> Having that "*hugetlb*" code already in the code base may or may not be a
+> good reason to further move it upward the stack.
 
-ok, fine, it would not be required for XFS with CoW. Some concerns still:
-a. device atomic write boundary, if any
-b. other FSes which do not have CoW support. ext4 is already being used 
-for "atomic writes" in the field - see dubious amazon torn-write prevention.
+If you see a path forward in the foreseeable future where we would have 
+code that doesn't special-case hugetlb in rmap calling code already, I'd 
+be interested in that.
 
-About b., we could add the pow-of-2 and file offset alignment 
-requirement for other FSes, but then need to add some method to 
-advertise that restriction.
+hugetlb.c knows that it's dealing with hugetlb pages.
 
-> It would not require it.  You
-> probably want to do it for optimal performance, but requiring it
-> feeels rather limited.
+huge_memory.c knows that it's dealing with PMD-mapped thp.
+
+memory.c knows that it it's dealing with PTE-mapped thp or small folios.
+
+Only migrate.c (and e.g., try_to_unmap()) in rmap.c handle different 
+types. But there is plenty of hugetlb special-casing in there that I 
+don't really see going away.
+
 > 
->> - relying on atomic write HW support always
-> And I think that's where we have different opinions.
+> Strong feelings?  No, I don't have.  I'm not knowledged enough to do so.
 
-I'm just trying to understand your idea and that is not necessarily my 
-final opinion.
+I'm sure you are, so I'm trusting your judgment :)
 
->  I think the hw
-> offload is a nice optimization and we should use it wherever we can.
+I don't think going in the other direction and e.g., removing 
+hugetlb_add_anon_rmap / hugetlb_add_new_anon_rmap is making a 
+unification that is not really reasonable. It will only make things 
+slower and the individual functions more complicated.
 
-Sure, but to me it is a concern that we have 2x paths to make robust a. 
-offload via hw, which may involve CoW b. no HW support, i.e. CoW always
+-- 
+Cheers,
 
-And for no HW support, if we don't follow the O_ATOMIC model of 
-committing nothing until a SYNC is issued, would we allocate, write, and 
-later free a new extent for each write, right?
+David / dhildenb
 
-> But building the entire userspace API around it feels like a mistake.
-> 
-
-ok, but FWIW it works for the usecases which we know.
-
->> BTW, we also have rtvol support which does not use forcealign as it already
->> can guarantee alignment, but still does rely on the same principle of
->> requiring alignment - would you want CoW support there also?
-> Upstream doesn't have out of place write support for the RT subvolume
-> yet.  But Darrick has a series for it and we're actively working on
-> upstreaming it.
-Yeah, I thought that I heard this.
-
-Thanks,
-John
