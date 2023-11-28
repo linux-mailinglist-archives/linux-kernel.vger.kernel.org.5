@@ -2,115 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E00D7FC9E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C31C7FC9F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:51:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbjK1Wud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 17:50:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37830 "EHLO
+        id S1345747AbjK1WvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 17:51:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjK1Wuc (ORCPT
+        with ESMTP id S230131AbjK1WvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 17:50:32 -0500
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD91719A4
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 14:50:38 -0800 (PST)
-Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-42033328ad0so33848721cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 14:50:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1701211838; x=1701816638; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dCerhjjG9KrYi0TXMgF4xJvZ7AQK4ONjRJhrC9AuZik=;
-        b=SDn0Lz4Zx0o9l2XkQP0XKmwmFDlTmHaDCTD5x0qdN/sTaQ3Y/lJv8Ff7k9fi8b0cnV
-         X2O65KSloS0sB9E4E7G95iSaoSwD+hD1v6iix54nGZlqoyijw8cdxzbAPU2Nk+OFVXl/
-         8dHRFpOzdc9X0xbNry2XPYUDF/4Ec42YvcghfKK1mHTPGBwCX0cLjfRpuJspxTy+vd02
-         PJzFKkf+d+4JbYq4yikWJneP+mNltRecirfSjOxS/jiZBYry3+90ylg0/HIPQ8h/cWii
-         2rwARbyJKrA+9KV/lF6jK0mls5cSDaSAm7W8Nv+++5Gy475nlEr6RCJx5CJh1FMdLkte
-         Vr8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701211838; x=1701816638;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dCerhjjG9KrYi0TXMgF4xJvZ7AQK4ONjRJhrC9AuZik=;
-        b=OElIrfEuYb4Z//Vjl4ZmOVTEbvRGGgrtBcuz0NmyB+/MzattEqrRZU9mwGGZeEp3nu
-         b7L5uaRcuhsLS+LvvsqLTzJ0dmkCj2NMiL0pMv+CQal5nzf6+2n0UffdHuiqKFLfigz3
-         rE4ufuE7KMi9w16Hd2amPpaLtSovrNCzaz2Blm/VvxjY2ZtqWBQat1YK4RSH/NKKK5qd
-         uiLcN/j+wDJCtKH97WcULJ98eo6TBtwvShz9cC5uB7nm4AzJIaj5sqYsF8wPF4o++Zuh
-         loMtFMa4dJcmXCLKstkOXeEoEhRtxHrHcyreZsyXi02I7RQtmHTcXCvz+mFE1EU0WdxZ
-         /KvQ==
-X-Gm-Message-State: AOJu0YxKgq1/Hj5RSoMpwwQQwPLpOU8r+2jC2kvjKXD9I6nQOHNozWlx
-        0gOp+oVhbN6Dj4SXAw8XfndgKYR1D81HbnPtxEP/FQ==
-X-Google-Smtp-Source: AGHT+IFxEAQBwk403dZeGueHLhec0OT/vzBcOBPxuj+Prssp33QGReImzhYCBhKzogO690G6BVR/8UVJbn/fn+bRF6c=
-X-Received: by 2002:a05:622a:10f:b0:423:78b4:d136 with SMTP id
- u15-20020a05622a010f00b0042378b4d136mr24659151qtw.54.1701211837930; Tue, 28
- Nov 2023 14:50:37 -0800 (PST)
+        Tue, 28 Nov 2023 17:51:06 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 920DF1998
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 14:51:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701211873; x=1732747873;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=wM3wen/zQ5ZSPTjW+74T4zK4X2a83GPNtOy766NaVcA=;
+  b=RUylDj0/lAPettv1dgNsKJsKjOFhXW728GSLGH6rwjbK00jQSZWhaSV3
+   RhXE7H8LuSgcG23YqKLp2K32LoyrvkGy0WCayv3tix4Aatzbrmdm1wcXp
+   Kcbo/ZPLNIxEw32lmsL5p5x9oHPSkEg50YGWipGzhE3N9m7AqFASXBjZk
+   aWE3Z9eFRzlT7Hcs9oNmX5c6LR9+dnSJNcVhsB92zHd/85V24m8E2atMK
+   7OyIjBxkYHdXGBhbXDS6GGxv0a5zQhmxWd8yZW34OkrsLPhxVCF7aoRjQ
+   RgmereshMeQjgc193V0Hi6s6kU9gdb1t4qBoNEXSuwkTJfpKo80m3US/D
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="6304168"
+X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
+   d="scan'208";a="6304168"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 14:51:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="839215225"
+X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
+   d="scan'208";a="839215225"
+Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 28 Nov 2023 14:51:09 -0800
+Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r86v5-0008EB-1M;
+        Tue, 28 Nov 2023 22:51:07 +0000
+Date:   Wed, 29 Nov 2023 06:50:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Wentong Wu <wentong.wu@intel.com>, gregkh@linuxfoundation.org,
+        tomas.winkler@intel.com, hdegoede@redhat.com
+Cc:     Paul Gazzillo <paul@pgazz.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        oe-kbuild-all@lists.linux.dev, andriy.shevchenko@linux.intel.com,
+        sakari.ailus@linux.intel.com, alexander.usyskin@intel.com,
+        zhifeng.wang@intel.com, linux-kernel@vger.kernel.org,
+        Wentong Wu <wentong.wu@intel.com>
+Subject: Re: [PATCH 2/2] mei: Add MEI hardware support for IVSC device
+Message-ID: <202311290342.lucjHsTH-lkp@intel.com>
+References: <1701174846-16316-3-git-send-email-wentong.wu@intel.com>
 MIME-Version: 1.0
-References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
- <20231128204938.1453583-7-pasha.tatashin@soleen.com> <d99e0d4a-94a9-482b-b5b5-833cba518b86@arm.com>
-In-Reply-To: <d99e0d4a-94a9-482b-b5b5-833cba518b86@arm.com>
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-Date:   Tue, 28 Nov 2023 17:50:01 -0500
-Message-ID: <CA+CK2bDswtrqiOMt3+0LBb0+7nJY9aBpzZdsmrWRzy9WxBqKEg@mail.gmail.com>
-Subject: Re: [PATCH 06/16] iommu/dma: use page allocation function provided by iommu-pages.h
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     akpm@linux-foundation.org, alex.williamson@redhat.com,
-        alim.akhtar@samsung.com, alyssa@rosenzweig.io,
-        asahi@lists.linux.dev, baolu.lu@linux.intel.com,
-        bhelgaas@google.com, cgroups@vger.kernel.org, corbet@lwn.net,
-        david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org,
-        heiko@sntech.de, iommu@lists.linux.dev, jasowang@redhat.com,
-        jernej.skrabec@gmail.com, jgg@ziepe.ca, jonathanh@nvidia.com,
-        joro@8bytes.org, kevin.tian@intel.com,
-        krzysztof.kozlowski@linaro.org, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
-        marcan@marcan.st, mhiramat@kernel.org, mst@redhat.com,
-        m.szyprowski@samsung.com, netdev@vger.kernel.org,
-        paulmck@kernel.org, rdunlap@infradead.org, samuel@sholland.org,
-        suravee.suthikulpanit@amd.com, sven@svenpeter.dev,
-        thierry.reding@gmail.com, tj@kernel.org, tomas.mudrunka@gmail.com,
-        vdumpa@nvidia.com, virtualization@lists.linux.dev, wens@csie.org,
-        will@kernel.org, yu-cheng.yu@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1701174846-16316-3-git-send-email-wentong.wu@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 5:34=E2=80=AFPM Robin Murphy <robin.murphy@arm.com>=
- wrote:
->
-> On 2023-11-28 8:49 pm, Pasha Tatashin wrote:
-> > Convert iommu/dma-iommu.c to use the new page allocation functions
-> > provided in iommu-pages.h.
->
-> These have nothing to do with IOMMU pagetables, they are DMA buffers and
-> they belong to whoever called the corresponding dma_alloc_* function.
+Hi Wentong,
 
-Hi Robin,
+kernel test robot noticed the following build warnings:
 
-This is true, however, we want to account and observe the pages
-allocated by IOMMU subsystem for DMA buffers, as they are essentially
-unmovable locked pages. Should we separate IOMMU memory from KVM
-memory all together and add another field to /proc/meminfo, something
-like "iommu -> iommu pagetable and dma memory", or do we want to
-export DMA memory separately from IOMMU page tables?
+[auto build test WARNING on char-misc/char-misc-testing]
+[also build test WARNING on char-misc/char-misc-next char-misc/char-misc-linus linus/master v6.7-rc3 next-20231128]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Since, I included DMA memory, I specifically removed mentioning of
-IOMMU page tables in the most of places, and only report it as IOMMU
-memory. However, since it is still bundled together with SecPageTables
-it can be confusing.
+url:    https://github.com/intel-lab-lkp/linux/commits/Wentong-Wu/mei-Add-transport-driver-for-IVSC-device/20231128-203609
+base:   char-misc/char-misc-testing
+patch link:    https://lore.kernel.org/r/1701174846-16316-3-git-send-email-wentong.wu%40intel.com
+patch subject: [PATCH 2/2] mei: Add MEI hardware support for IVSC device
+config: x86_64-kismet-CONFIG_INTEL_MEI_VSC_HW-CONFIG_INTEL_MEI_VSC-0-0 (https://download.01.org/0day-ci/archive/20231129/202311290342.lucjHsTH-lkp@intel.com/config)
+reproduce: (https://download.01.org/0day-ci/archive/20231129/202311290342.lucjHsTH-lkp@intel.com/reproduce)
 
-Pasha
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311290342.lucjHsTH-lkp@intel.com/
+
+kismet warnings: (new ones prefixed by >>)
+>> kismet: WARNING: unmet direct dependencies detected for INTEL_MEI_VSC_HW when selected by INTEL_MEI_VSC
+   
+   WARNING: unmet direct dependencies detected for INTEL_MEI_VSC_HW
+     Depends on [n]: ACPI [=y] && SPI [=y] && (GPIOLIB [=n] || COMPILE_TEST [=n])
+     Selected by [y]:
+     - INTEL_MEI_VSC [=y] && INTEL_MEI [=y]
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
