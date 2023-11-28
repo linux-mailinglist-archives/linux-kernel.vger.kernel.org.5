@@ -2,253 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8E77FB07E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 04:37:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D50D7FB08F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 04:37:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234514AbjK1C5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 21:57:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45664 "EHLO
+        id S232858AbjK1C5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 21:57:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232324AbjK1C5c (ORCPT
+        with ESMTP id S232324AbjK1C5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 21:57:32 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E48BD;
-        Mon, 27 Nov 2023 18:57:38 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id ADDC82191E;
-        Tue, 28 Nov 2023 02:57:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1701140256; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8uloWfDy1qO999yjRt0c60XuGtbzcIMfOgvsyUIhr8g=;
-        b=X7BZn+OrqnDGoi1OdIncbADYdlFkNrRZw5Nn14akM+QT+2ZRJr6I37h0HEQ0btengO+IJl
-        rEf1vvF2D4etev9EQXscU8II4glksxNp03IKfypO1IKPJcEt4SWYNZSj2eeITPnXunOnR/
-        HsRlYmtkHR3r9Asir0tBDN5FdnUaKrE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1701140256;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8uloWfDy1qO999yjRt0c60XuGtbzcIMfOgvsyUIhr8g=;
-        b=UsROQUjPLnG6QALj8IyTnCBXCUzcvOCuAJuUSgfnDlW0ZBphTQzksDsv0u5O9ID/5o6HrQ
-        xsR87J2Y6mXsNnAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 29C0513763;
-        Tue, 28 Nov 2023 02:57:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id dowRMx1XZWWefQAAD6G6ig
-        (envelope-from <neilb@suse.de>); Tue, 28 Nov 2023 02:57:33 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 27 Nov 2023 21:57:47 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 022EE10D7
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 18:57:50 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6c115026985so4897057b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 18:57:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701140269; x=1701745069; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xq2UZc/qF6ygYEmucjhvtRnAU79JEXbt2OXuiPsGdb0=;
+        b=QEl6nyK2U5F48jH5ohVroLhs6wlnOR8H3THKB2gYQiAndN/UK0dpp9BNOjR1hRPSl9
+         OWJNJRoO5H0HspvwoPMedC9WFF6PiYiIcGFvvSsvsYORYScBDWvmPxsyS8EZ9qiPqdGF
+         fZr4Wxl1QXXfKsSFQtzc2clJx1NznYe5UZBeBg8UjruvwjAp88jJovT8tkwQMY87rI4U
+         Zx8Xgn0o83HlVsXaaeKahG/9G313HHYO78pyXmm1fq2bJHKjpCwaIcwdjtOxTQIT0fw7
+         9Vh1q4jIZFZMGT/5E1OeCxmb2v2NTGmZsZsbitOd858QqHRriDEu6lixNinfw8nQzStN
+         5+cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701140269; x=1701745069;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xq2UZc/qF6ygYEmucjhvtRnAU79JEXbt2OXuiPsGdb0=;
+        b=KakWO9t6mupxY9nEEqlIgeh52oDFq6ETAzQWZszJZYh9/NDS9pSdZjlYkpRBsfusno
+         xnRobLXjarCywtMh+CbRBoMwJaBvbTJhuJ0FNmDMRrc5uyACadC+a0ooJIVQzR9/a2/4
+         18SzE9rUNXUFs6u70O8TCwYVNPFaddFR6L8xHIe5vginCoC7YPVQ/gcoaQ4I2VzDRiTV
+         xbQfNcciezJVYr2F69wIIQT36yW9Q+wIyBtkigMR9jjLtKzK8dTq77kNRb2mcTqOtCDE
+         91qGC9ckua5kCMdApHqI6n8v/l5jSB3lOMn3vFvV7gA7/XNs0rIRZcAndKL0uxDHji0t
+         SCxw==
+X-Gm-Message-State: AOJu0Yz8oI/t8ncqbRtz5jU06YPTCzZW2Wc9c82XxyTP8m649JZzJ7gH
+        MgT5ZpZv65gXjNGqiwegpsU=
+X-Google-Smtp-Source: AGHT+IHKfl6zCTzYaX64gPJ7IlYAWWrLTK7UXpqyPWkn0nLz5fGBBtge77cAR99etqzZixsoLdk/6A==
+X-Received: by 2002:a05:6a20:54a1:b0:187:5302:4b21 with SMTP id i33-20020a056a2054a100b0018753024b21mr17952683pzk.46.1701140269419;
+        Mon, 27 Nov 2023 18:57:49 -0800 (PST)
+Received: from smi-System-Product-Name.tw.smi.ad (125-227-10-151.hinet-ip.hinet.net. [125.227.10.151])
+        by smtp.gmail.com with ESMTPSA id n17-20020a056a0007d100b006cb65cfde6dsm7930782pfu.200.2023.11.27.18.57.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 18:57:49 -0800 (PST)
+From:   "Jim.Lin" <jim.chihjung.lin@gmail.com>
+X-Google-Original-From: "Jim.Lin" <jim.lin@siliconmotion.com>
+To:     kbusch@kernel.org
+Cc:     axboe@kernel.dk, hch@lst.de, sagi@grimberg.me,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jim.lin@siliconmotion.com, cj.chen@siliconmotion.com,
+        david.yeh@siliconmotion.com, hardaway.tseng@sk.com
+Subject: [PATCH] nvme-pci: disable write zeroes for SK Hynix BC901
+Date:   Tue, 28 Nov 2023 10:57:37 +0800
+Message-Id: <20231128025737.53026-1-jim.lin@siliconmotion.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Chuck Lever" <chuck.lever@oracle.com>
-Cc:     "Al Viro" <viro@zeniv.linux.org.uk>,
-        "Christian Brauner" <brauner@kernel.org>,
-        "Jeff Layton" <jlayton@kernel.org>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org
-Subject: Re: [PATCH/RFC] core/nfsd: allow kernel threads to use task_work.
-In-reply-to: <ZWVEcasahyVQ4QqV@tissot.1015granger.net>
-References: <170112272125.7109.6245462722883333440@noble.neil.brown.name>,
- <ZWUfNyO6OG/+aFuo@tissot.1015granger.net>,
- <170113056683.7109.13851405274459689039@noble.neil.brown.name>,
- <ZWVEcasahyVQ4QqV@tissot.1015granger.net>
-Date:   Tue, 28 Nov 2023 13:57:30 +1100
-Message-id: <170114025065.7109.15330780753462853254@noble.neil.brown.name>
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -8.10
-X-Spamd-Result: default: False [-8.10 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         TO_DN_SOME(0.00)[];
-         REPLY(-4.00)[];
-         RCVD_COUNT_THREE(0.00)[3];
-         RCPT_COUNT_SEVEN(0.00)[7];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         BAYES_HAM(-3.00)[100.00%];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         RCVD_TLS_ALL(0.00)[]
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+SK Hynix BC901 drive write zero will cause Chromebook takes more than 20 mins to switch to developer mode
+"disable write zeroes" can fix this issue and Sk Hynix has been verified.
 
-(trimmed cc...)
+Signed-off-by: Jim.Lin <jim.lin@siliconmotion.com>
+---
+ drivers/nvme/host/pci.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-On Tue, 28 Nov 2023, Chuck Lever wrote:
-> On Tue, Nov 28, 2023 at 11:16:06AM +1100, NeilBrown wrote:
-> > On Tue, 28 Nov 2023, Chuck Lever wrote:
-> > > On Tue, Nov 28, 2023 at 09:05:21AM +1100, NeilBrown wrote:
-> > > >=20
-> > > > I have evidence from a customer site of 256 nfsd threads adding files=
- to
-> > > > delayed_fput_lists nearly twice as fast they are retired by a single
-> > > > work-queue thread running delayed_fput().  As you might imagine this
-> > > > does not end well (20 million files in the queue at the time a snapsh=
-ot
-> > > > was taken for analysis).
-> > > >=20
-> > > > While this might point to a problem with the filesystem not handling =
-the
-> > > > final close efficiently, such problems should only hurt throughput, n=
-ot
-> > > > lead to memory exhaustion.
-> > >=20
-> > > I have this patch queued for v6.8:
-> > >=20
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git/commit/?h=
-=3Dnfsd-next&id=3Dc42661ffa58acfeaf73b932dec1e6f04ce8a98c0
-> > >=20
-> >=20
-> > Thanks....
-> > I think that change is good, but I don't think it addresses the problem
-> > mentioned in the description, and it is not directly relevant to the
-> > problem I saw ... though it is complicated.
-> >=20
-> > The problem "workqueue ...  hogged cpu..." probably means that
-> > nfsd_file_dispose_list() needs a cond_resched() call in the loop.
-> > That will stop it from hogging the CPU whether it is tied to one CPU or
-> > free to roam.
-> >=20
-> > Also that work is calling filp_close() which primarily calls
-> > filp_flush().
-> > It also calls fput() but that does minimal work.  If there is much work
-> > to do then that is offloaded to another work-item.  *That* is the
-> > workitem that I had problems with.
-> >=20
-> > The problem I saw was with an older kernel which didn't have the nfsd
-> > file cache and so probably is calling filp_close more often.
->=20
-> Without the file cache, the filp_close() should be handled directly
-> by the nfsd thread handling the RPC, IIRC.
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index 507bc149046d..f27202680741 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -3394,6 +3394,8 @@ static const struct pci_device_id nvme_id_table[] = {
+ 		.driver_data = NVME_QUIRK_DISABLE_WRITE_ZEROES, },
+ 	{ PCI_DEVICE(0x1c5c, 0x174a),   /* SK Hynix P31 SSD */
+ 		.driver_data = NVME_QUIRK_BOGUS_NID, },
++	{ PCI_DEVICE(0x1c5c, 0x1D59),   /* SK Hynix BC901 */
++		.driver_data = NVME_QUIRK_DISABLE_WRITE_ZEROES, },
+ 	{ PCI_DEVICE(0x15b7, 0x2001),   /*  Sandisk Skyhawk */
+ 		.driver_data = NVME_QUIRK_DISABLE_WRITE_ZEROES, },
+ 	{ PCI_DEVICE(0x1d97, 0x2263),   /* SPCC */
+-- 
+2.25.1
 
-Yes - but __fput() is handled by a workqueue.
-
->=20
->=20
-> > So maybe
-> > my patch isn't so important now.  Particularly as nfsd now isn't closing
-> > most files in-task but instead offloads that to another task.  So the
-> > final fput will not be handled by the nfsd task either.
-> >=20
-> > But I think there is room for improvement.  Gathering lots of files
-> > together into a list and closing them sequentially is not going to be as
-> > efficient as closing them in parallel.
->=20
-> I believe the file cache passes the filps to the work queue one at
-
-nfsd_file_close_inode() does.  nfsd_file_gc() and nfsd_file_lru_scan()
-can pass multiple.
-
-> a time, but I don't think there's anything that forces the work
-> queue to handle each flush/close completely before proceeding to the
-> next.
-
-Parallelism with workqueues is controlled by the work items (struct
-work_struct).  Two different work items can run in parallel.  But any
-given work item can never run parallel to itself.
-
-The only work items queued on nfsd_filecache_wq are from
-  nn->fcache_disposal->work.
-There is one of these for each network namespace.  So in any given
-network namespace, all work on nfsd_filecache_wq is fully serialised.
-
->=20
-> IOW there is some parallelism there already, especially now that
-> nfsd_filecache_wq is UNBOUND.
-
-No there is not.  And UNBOUND makes no difference to parallelism in this
-case.  It allows the one work item to migrate between CPUs while it is
-running, but it doesn't allow it to run concurrently on two different
-CPUs.
-
-
-(UNBOUND can improve parallelism when multiple different work items are
- submitted all from the same CPU.  Without UNBOUND all the work would
- happen on the same CPU, though if the work sleeps, the different work
- items can be interleaved.  With UNBOUND the different work items can
- enjoy true parallelism when needed).
-
-
->=20
->=20
-> > > > For normal threads, the thread that closes the file also calls the
-> > > > final fput so there is natural rate limiting preventing excessive gro=
-wth
-> > > > in the list of delayed fputs.  For kernel threads, and particularly f=
-or
-> > > > nfsd, delayed in the final fput do not impose any throttling to preve=
-nt
-> > > > the thread from closing more files.
-> > >=20
-> > > I don't think we want to block nfsd threads waiting for files to
-> > > close. Won't that be a potential denial of service?
-> >=20
-> > Not as much as the denial of service caused by memory exhaustion due to
-> > an indefinitely growing list of files waiting to be closed by a single
-> > thread of workqueue.
->=20
-> The cache garbage collector is single-threaded, but nfsd_filecache_wq
-> has a max_active setting of zero.
-
-This allows parallelism between network namespaces, but not within a
-network namespace.
-
->=20
->=20
-> > I think it is perfectly reasonable that when handling an NFSv4 CLOSE,
-> > the nfsd thread should completely handle that request including all the
-> > flush and ->release etc.  If that causes any denial of service, then
-> > simple increase the number of nfsd threads.
-> >=20
-> > For NFSv3 it is more complex.  On the kernel where I saw a problem the
-> > filp_close happen after each READ or WRITE (though I think the customer
-> > was using NFSv4...).  With the file cache there is no thread that is
-> > obviously responsible for the close.
-> > To get the sort of throttling that I think is need, we could possibly
-> > have each "nfsd_open" check if there are pending closes, and to wait for
-> > some small amount of progress.
->=20
-> Well nfsd_open() in particular appears to be used only for readdir.
->=20
-> But maybe nfsd_file_acquire() could wait briefly, in the garbage-
-> collected case, if the nfsd_net's disposal queue is long.
->=20
->=20
-> > But don't think it is reasonable for the nfsd threads to take none of
-> > the burden of closing files as that can result in imbalance.
-> >=20
-> > I'll need to give this more thought.
->=20
->=20
-> --=20
-> Chuck Lever
->=20
-
-Thanks,
-NeilBrown
