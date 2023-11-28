@@ -2,172 +2,362 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6207FBA87
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:53:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E023C7FBA8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:53:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344725AbjK1Mxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 07:53:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47178 "EHLO
+        id S1344741AbjK1Mxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 07:53:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344655AbjK1Mxh (ORCPT
+        with ESMTP id S1344655AbjK1Mxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 07:53:37 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2078.outbound.protection.outlook.com [40.107.93.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14743D51;
-        Tue, 28 Nov 2023 04:53:44 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jSWhMy61EWeH4Vl3gqKF8uJFNkiK6vPvUrDLKq4Nd1GqXwqM+G2aTgYKnVB759+8RWVheLDJraaZAU3Cljuwr44nnbMKZRPU0cRQQ/0bL/G93HCARIZaFO8f8UGlMG21WPditIz/KvB78sx/hPRsPDncf526/jAN4eoyBhMJDD3XJ4f0hseYQRsJj0KNcWWnCmzWTCKM7L3Bk8Beg3g9QPbI7O/yeWR/5MCHhP/DQVrXgWr5IaDpew3rJJ48OpW/JWL92ovkG64nxjpOcqdXGaI+gbHR3bV8SeptykFU4V0mRSd5mshDbYSEZ16pMR3CYnt0DEkvbUxxZYnSivHg4A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vjuLq6lrapfZo7Nn1kiUPlwNY6uGifn9QDdE9z3qe68=;
- b=LVcgX+YvsI0w9g3ETOe+gl1H7oedoHOO0PbSc7W/XqaNzJhTHlqf5Un/FWAO2N6TJBpTAUqfpljslSpB3TMtkiI2X81n6PUi4AcedENenc62p8ShCDcwmZmJjIDA0wt6d2XIzMFxLQ+PdlmfNGL2trz6i1pgwMh4oebKHbpBd/lyuqdSG9ey0vNCfH3xMFV0P5xBuP21CI7O+cSZ2MfsuxhN+MTBywfbNZxQ8BCAolTyJLGSnPhzlEMcLUulBmZQcPFUTuonbgmwMILtlSfPfD0lLJjV6zwj/uK421ur+YjWAkOD4aZf+zYxVuaAYsr0g0+N2V8orYHZcXNG1wc45Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vjuLq6lrapfZo7Nn1kiUPlwNY6uGifn9QDdE9z3qe68=;
- b=nZSyEaMWp5xt7s2XjweWgUq4XczUNGLMpXqlu3Zcc/908IFK+FXtFHkFHnOKaUUp0wKxuIbci8ueVBA3SBedWL3p/nTaFTxvcTe6QGsMJZr1aH2hiyGzWTyqL/hF+9rr+5jB1fUnJgw7H+ZbI5GNkhxtiRb9Xn5LgEKgD/aBGkeE1bgmn3r1dwnyx654OrrzgxF8oqKgG6iHIhjvE1Of/UB3U5ZcrteA0TJqHYVF5ic8SnjmC6vgw/bZbWxE6eKxChBVOnup4diQSZRLgw614PyRXlMlwFASreqmi5lC37qD75qF5D/ZCTrUjSXxw8HUJj4oB1pvLc7UpTswdBQ6zA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from IA1PR12MB6018.namprd12.prod.outlook.com (2603:10b6:208:3d6::6)
- by SJ2PR12MB8134.namprd12.prod.outlook.com (2603:10b6:a03:4fa::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.28; Tue, 28 Nov
- 2023 12:53:41 +0000
-Received: from IA1PR12MB6018.namprd12.prod.outlook.com
- ([fe80::1f02:538e:871:9bd3]) by IA1PR12MB6018.namprd12.prod.outlook.com
- ([fe80::1f02:538e:871:9bd3%5]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
- 12:53:40 +0000
-Message-ID: <b7300fbb-41b5-4a30-b086-a8dde8ede207@nvidia.com>
-Date:   Tue, 28 Nov 2023 14:53:33 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] [v2] net/mlx5e: fix a potential double-free in
- fs_any_create_groups
-Content-Language: en-US
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rahul Rameshbabu <rrameshbabu@nvidia.com>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Simon Horman <horms@kernel.org>, Aya Levin <ayal@nvidia.com>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231128092904.2916-1-dinghao.liu@zju.edu.cn>
-From:   Tariq Toukan <tariqt@nvidia.com>
-In-Reply-To: <20231128092904.2916-1-dinghao.liu@zju.edu.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P123CA0438.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:1a9::11) To IA1PR12MB6018.namprd12.prod.outlook.com
- (2603:10b6:208:3d6::6)
+        Tue, 28 Nov 2023 07:53:41 -0500
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E1518F
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 04:53:47 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id B1C853200C1C;
+        Tue, 28 Nov 2023 07:53:46 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Tue, 28 Nov 2023 07:53:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjusaka.me; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:message-id:mime-version:reply-to
+        :sender:subject:subject:to:to; s=fm1; t=1701176026; x=
+        1701262426; bh=Vf7sqG7zSpFhtlDZ9epobQhhREhcl6KFlJdEMxbPQDY=; b=o
+        poiZpnUqBexmw9vuM1eajksYqR8dO/T6xmsGqZg47dNZnjOzdT8J9wAlOurY7LY0
+        sNw19vRBt5KUid3bX4xPHc+n1GPah1iggCPmXj6a73QNzsGo0LFAHPI9x5zPBiAY
+        Vs29+nEQ9FT1bSQ58iX5d6NPE9NMAFutjYH2anQc66460CJ3iVh1VhEnOqZaGFiQ
+        n2rciDKRGqMP6BtrIGGWLQtTZVG42rctErzgS3dj/4EjMn3+PexkfPljV39scLz1
+        qdM5TznommptWJCNf7aOTae2eORgJkfWBEQ3GfdvxN8DzF1cTQqf0Lws7HmH8w2z
+        ALe4D3xCMDjaPa6Tx0GWg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:message-id:mime-version:reply-to:sender
+        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm1; t=1701176026; x=1701262426; bh=V
+        f7sqG7zSpFhtlDZ9epobQhhREhcl6KFlJdEMxbPQDY=; b=gWNbFp3dTIPXo/IXG
+        FHg4VPWJLqEQNDebnQ6MzgNkvObEl8ZQIrC8jpvcEseIBDW54E3m6aHMmLShtTPf
+        wQ8/iMxOuBKlm8HdVRmRq6uKhdRuL1iOU+LOxipKEEhTZoI03uj6bn1pz6OODcIL
+        AA0LMQnP/MONz2z6BSMK3lsMySLEf9VSv9Qt0467qQHfxAKFItW/NmY6Ye5az4r+
+        V+aUlaqik/7r5yXV60eVzmggA+j3yKDA/DZi66HUmzihX6+CraIFlCEMCAPscPLB
+        7OX3JWCnhW4J4WfJVoenJTpYgB+SHSS7J2To7qBq+iPqPvjZ7MU0qv+HgkMxersu
+        u5jkw==
+X-ME-Sender: <xms:2eJlZbyEYA1LLSBDWF0WJRAG9LInckMyCmixvFb6kY6d6y7VZIwYRQ>
+    <xme:2eJlZTSInxbp1qb22nYoquvcKm4bt-lxQWX1uR4vF4efKc92XqBo68HzBk2cudBGz
+    4mjDrhnCUdY6Me99vY>
+X-ME-Received: <xmr:2eJlZVUOnJXz7o9J9J_7mePOb8qB5_epMw3uYkI9QXc06sjfL4vknNNDJfWb-5ndcBg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeifedggeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefkffggfgfvvefhufgtgfesthejre
+    dttddvjeenucfhrhhomhepofgrnhhjuhhsrghkrgcuoehmvgesmhgrnhhjuhhsrghkrgdr
+    mhgvqeenucggtffrrghtthgvrhhnpeeugefggfevgeejvedtffdvteelkefgieetieefge
+    ejffdtvedtgeeufffgteeiheenucffohhmrghinhepthhruhgvrdhophgvnhdpghhithhh
+    uhgsrdgtohhmpdhruhhsthdqlhgrnhhgrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomhepmhgvsehmrghnjhhushgrkhgrrdhmvg
+X-ME-Proxy: <xmx:2uJlZVjkkRnbEzDURgm_MtWj63RYV6LZ9LFX1AXcHkvbhiOaD6HolA>
+    <xmx:2uJlZdANqQPsopJnbN96hPyxG1-_JBNDsrVeymWhGA07F-ElXwOH3w>
+    <xmx:2uJlZeJdCg4l7WziZHpybkrg2aULICz2CeGv9nW6Qi9dlbOF1WVOnw>
+    <xmx:2uJlZQrBmjtYgQIiYwnr7RoNHh4eS1ztB8B4JZHHe2RAYtmYw4dcng>
+Feedback-ID: i3ea9498d:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 28 Nov 2023 07:53:44 -0500 (EST)
+Message-ID: <30d0e4e5-d4f1-4fb5-8359-8752a77fce42@manjusaka.me>
+Date:   Tue, 28 Nov 2023 20:53:41 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR12MB6018:EE_|SJ2PR12MB8134:EE_
-X-MS-Office365-Filtering-Correlation-Id: f94c2452-4df4-4302-fd03-08dbf0110bea
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7BSSbbgDOrohucDqq8EFXVwwOh0n0/o8IvdN3fYZv2uE3uhOCu5honiCajw351PhGCAy/kBNBN9cMh1KQIMXC7KH5CQHg/pcP43GGXPNe7qKaM/c767LWXHcFIHI+/KsV8AC+u0m6jCjqHhd5HTDJUEFjQ4Sa/yjOiKdZEpbbmGhGv3Cu5aFrqyAGBx4mq8QP+PmbCaUdVObIAVR7E3hvlvLgk3f8mY1Q16f1dj8V1mqnOBHzI+cAacNlFdc++DuUh9oDl4XBuXkMyhr2C9noo4XLTKuh/s87+gTPlFH6FLIKRPalBL0jjVbERhsYAFNtmAHDpdDO5kxFWv1CszQYF2Qrb0Zb4v2477FRKk7MnwB4QGdTZnP8IDzNf40TofgmqrPXnsTkiPV3rQhq6wFqp/1QO7RbzYYT0RMLT/g2QCbQ2wjhODFUd6ha+R1psR+S0tb1LSVCcYuXV85oqlXtMHN/a/rfxd2Gs8KkKWkyY+3kyvN55fjVLtcqM9OAPjLLOrbd5eHd5uIMlPqikgh87I9LwWEHcJ5nFyeKV3rveT35MhSHt9crIXlDE054cAJzsrDBHU7NFcRq2/ITsGBT8nAXPFgqzFdBhg9Pkolcz7FYThtZCBkK+ErIFNwE2WEppUr11Enr17045GpX1l7aQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB6018.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(39860400002)(396003)(366004)(136003)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(38100700002)(41300700001)(36756003)(31686004)(86362001)(5660300002)(7416002)(2616005)(2906002)(31696002)(26005)(6512007)(53546011)(6506007)(6666004)(8676002)(4326008)(8936002)(478600001)(6486002)(54906003)(66946007)(66556008)(66476007)(6916009)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U012RHpKbktVb1M5U3hVKzdFQlEwNlgwQkpKQytxSDc2b0VBaERiYytrampM?=
- =?utf-8?B?MVd4a2ZsZXR1K3BGbHY4dktpeHhRN0J4bGlKVWRPcHpIYnZPMEdnc3NwMi9Y?=
- =?utf-8?B?dkFKVkRoc0pMWWFyQkpzajhGYzNVNVRET2FEdUN1TUtMeU85dlBjQWM0MU1s?=
- =?utf-8?B?TjF1MmVmczM5V1hQbTd5NWJsTjByWUd1NGVLZXVzQXhVL2RxTzBsUElEMnVr?=
- =?utf-8?B?YnY3UXNWdGN5bTZnZnBYenFnbkdtRXRnL0JaeVp6dTg5bjBOajc1OE1DcVl5?=
- =?utf-8?B?NTdFVU1adG4vdFRBaHErUVFPSU9lemtDWEtyYjNxSlFPb2pVWWdybWxQNVNK?=
- =?utf-8?B?eElncmovOHA0aU5ZVTBBTk4va0NLQjYzb3UxMDlkOGlXUUc5c0duL0Z0bVF6?=
- =?utf-8?B?TlJxcGN3MmYxVFkyd0d6bEFuZ2pMbHZGMGFlUjNmaGlTczVzd1BiNHo1WkFZ?=
- =?utf-8?B?SkZIc1RIQmtrZFVLcE5saEZvQU8wdXovYmNBRTVMU1ZNK2tXK0hEUHhGR1Jo?=
- =?utf-8?B?dUZVOHVhMzdRWkx2Rm9NOENMMy9KR04vQWVTZSt0bmtvbDRPYXdIb2RUVENJ?=
- =?utf-8?B?S3ZubXU1TGlueFdZdHhIdlE0WEV2K1c3T282NkFSd1EwOHFJRmJsNXJ0b3Jt?=
- =?utf-8?B?UEFYdXl5ekQ2ditvaHB5TjBYUkh5VVNaZUVqc1BNV2VJWXFPUDAvblo5UVAx?=
- =?utf-8?B?NFRmdHdiVzNJa3hMNEhSVUlYcnJxVTV1VW56SzhPc0dzZG9rZXVJTDVVRGhQ?=
- =?utf-8?B?SENzQXRtaWpCaklPaEJkU3ZXSlRpRTNwR1lpeDRMajZQeXMxd2U4TTI5ZUV1?=
- =?utf-8?B?WmlHMmovRjU3TEFJQlBVT05uRVdUMVBteStqeVpINTRkM2F6Vm5Vcm5lMFhw?=
- =?utf-8?B?MldHM3hFenlyOHB2dzEzUXFpTEsreVZabEl1Yk00NUwxK011aVYwTXZlTGpW?=
- =?utf-8?B?SVJwMVlMU0czdkMrdXRPVnRQVk5pT2ZUbXA4RnZSR3JKYWM1eFFkZllGY0s3?=
- =?utf-8?B?RDJlcE14V0VMTG5jMXRhZTBJNUJLdTBnVnBaYkZiVWpuNTUwdXY1V2d5bmlw?=
- =?utf-8?B?MHl6YWFya2NqcS9vZUNYc3VLbW5mUFdPRDNoRVZLU1RxNEtYVVlFS1VML2pG?=
- =?utf-8?B?OGxUNzVDSHhMVDNDZ1BQWlhucDlxWUVrYmlHdldLRVlkOWQwc05nV2d1Qkg1?=
- =?utf-8?B?VlRFbGdOdEJ0K25uWCtoY2RwSFZONUF3MWJMMkRsZVFmcUpqRmJKdkxnVEZh?=
- =?utf-8?B?MUdPUW5BdWE3d2o1TzhXVlBqK3YyTHRZeTQ5cFR1RGZhVWhaVk13RFRKMWVS?=
- =?utf-8?B?UWNEbUJJRkI4SWZnUVl2WHNSRlRkcTRvcS9Ka1p4RHh1TWV1cFF1MzhMWHJT?=
- =?utf-8?B?WlExd1hxQm9rU1ZkQjlOOG1NNmZ1SlN2VEhLM2Vxa3ZUSUFmTXdrSUNmWmdW?=
- =?utf-8?B?MEVmd2ZUN3ZYT21EalZoMEgrcGVoS0dnbVJ3S2RrYlRqS05IVXN0ZlUyTUtX?=
- =?utf-8?B?OFNWS05QNVlaVXd0Y3ArbG9pMXV3K2hHVStNTWNyaVI2UXh0azFmVzNhMzZD?=
- =?utf-8?B?aW0xVGxKamVERFN2K0FVMkZVandpZGY4U3ZXREFpUllnZW5NSFM3Z1JwdVJt?=
- =?utf-8?B?bXNvYlR2U05laXpFUXB1RnptQnFPbTU4MmJ1VEM3Vit3cEhsd21yZWY2YjNK?=
- =?utf-8?B?cndKL1VmWm9Rb3VoSFNDQ3RUSnJnN1R6NDlyMG9PTDE0azhDVUZ1ZmdHZ1dx?=
- =?utf-8?B?cFZFREZKVCs2NTZlSFFMNENXOXdxOEEvU01hUStKOWVxUXhKcU80dldWTGQz?=
- =?utf-8?B?QUdDZy9zMHNZc0liWEZVb24xaUFOdEdNK3NhM2RKYWIybkM2M3R3QXJIaEQ1?=
- =?utf-8?B?OFdlZ080OEtLVTg3MHdXVHJuczJpdG5FNmorTXpzTHR4V2NvR210QWRXZkNV?=
- =?utf-8?B?TTZpUThoVUlLVlhrRmpkNHJYTEhKL1JIQk1GK1dMZWd0YkNjQUJQc2ZUZUlY?=
- =?utf-8?B?UGUwc0JNMmNPMG0vWkozSXFSSVdEeVVWczluUEluS1VtdVZsL1p1UFl4MmNt?=
- =?utf-8?B?Y2wxWUw0QVgrTWZzL29vYUZtbG9BZUdVZktGMjNRbUgreGJ1RUZudHdmRkRw?=
- =?utf-8?Q?jN1uc8sDOI9vGBVP5RB562PCJ?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f94c2452-4df4-4302-fd03-08dbf0110bea
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB6018.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 12:53:40.9276
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wK6a3DNQqS60FZ4VazHK9eU6a6g+UPhuT/dFUwH+jhd3Kjd8IDPkQvAnlfLnZhuRlt4ZvrbOlrBzzLTc82kATg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8134
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To:     linux-kernel@vger.kernel.org
+Cc:     ryncsn@gmail.com
+From:   Manjusaka <me@manjusaka.me>
+Subject: [BUG Report] The read syscall extremely slow on some type of the AMD
+ CPU
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello everyone
+
+We have some of the code(Python vs Rust) below 
+
+```python
+import pathlib
+import timeit
+
+root = pathlib.Path(__file__).parent
+filename = "file"
+
+def read_file_with_normal() -> bytes:
+    with open("/tmp/demofile2", "rb") as fp:
+        result = fp.read()
+    return result
+
+if __name__ == "__main__":
+    read_file_with_normal()
+```
+
+```rust
+use std::io::Read;
+use std::fs::OpenOptions;
+
+fn main() {
+    // let bs = op.read("file").unwrap();
+    let mut bs = vec![0; 1024 * 1024 * 64];
+    let mut f = OpenOptions::new().read(true).open("/tmp/demofile2").unwrap();
+    f.read_exact(&mut bs).unwrap();
+    // let bs = std::fs::read("/tmp/test/file").unwrap();
+    //assert_eq!(bs.len(), 64 * 1024 * 1024);
+}
+```
+
+We find out the Rust Code on `read` syscall is slower than Python syscall. we use the eBPF to measure the read operation time on "/tmp/demofile2"
+
+```python
+from bcc import BPF
+import time
+import argparse
+
+bpf_text = """
+#include <uapi/linux/ptrace.h>
+#include <linux/fs.h>
+#include <linux/sched.h>
+
+BPF_HASH(fd_info, pid_t, int);
+BPF_HASH(action_info, pid_t, u64);
+
+struct event_data_t {
+    u32 pid;
+    u64 delta_ts;
+};
 
 
-On 28/11/2023 11:29, Dinghao Liu wrote:
-> When kcalloc() for ft->g succeeds but kvzalloc() for in fails,
-> fs_any_create_groups() will free ft->g. However, its caller
-> fs_any_create_table() will free ft->g again through calling
-> mlx5e_destroy_flow_table(), which will lead to a double-free.
-> Fix this by setting ft->g to NULL in fs_any_create_groups().
-> 
-> Fixes: 0f575c20bf06 ("net/mlx5e: Introduce Flow Steering ANY API")
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> ---
-> 
-> Changelog:
-> 
-> v2: Setting ft->g to NULL instead of removing the kfree().
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c b/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
-> index be83ad9db82a..6207ffe74233 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
-> @@ -435,6 +435,7 @@ static int fs_any_create_groups(struct mlx5e_flow_table *ft)
->   	in = kvzalloc(inlen, GFP_KERNEL);
->   	if  (!in || !ft->g) {
->   		kfree(ft->g);
-> +		ft->g = NULL;
->   		kvfree(in);
->   		return -ENOMEM;
->   	}
+BPF_RINGBUF_OUTPUT(events, 65536);
 
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com> 
- 
- 
+static __always_inline int matchPrefix(const char *cs, const char *ct, int size) {
+    int len = 0;
+    unsigned char c1, c2;
+    for (len=0;len<(size & 0xff);len++) {
+        c1 = *cs++;
+        c2 = *ct++;
+        if (c1 != c2) return c1 < c2 ? -1 : 1;
+        if (!c1) break;
+     }
+     return 0;
+}
 
+TRACEPOINT_PROBE(syscalls, sys_enter_openat) {
+    u32 pid = bpf_get_current_pid_tgid() >> 32;
+    u32 tid = bpf_get_current_pid_tgid();
+    char *filename = args->filename;
+    if (matchPrefix(filename, "/tmp/demofile2", sizeof(filename)) != 0) {
+        return 0;
+    }
+    int fd=0;
+    fd_info.update(&tid, &fd);
+
+    return 0;
+}
+
+TRACEPOINT_PROBE(syscalls, sys_exit_openat) {
+    u32 pid = bpf_get_current_pid_tgid() >> 32;
+    u32 tid = bpf_get_current_pid_tgid();
+    int *dfd = fd_info.lookup(&tid);
+    if (dfd == NULL) {
+        return 0;
+    }
+    int fd = args->ret;
+    fd_info.update(&tid, &fd);
+    return 0;
+}
+
+
+TRACEPOINT_PROBE(syscalls, sys_enter_open) {
+    u32 pid = bpf_get_current_pid_tgid() >> 32;
+    u32 tid = bpf_get_current_pid_tgid();
+    char *filename = args->filename;
+    if (matchPrefix(filename, "/tmp/demofile2", sizeof(filename)) != 0) {
+        return 0;
+    }
+    int fd=0;
+    fd_info.update(&tid, &fd);
+
+    return 0;
+}
+
+TRACEPOINT_PROBE(syscalls, sys_exit_open) {
+    u32 pid = bpf_get_current_pid_tgid() >> 32;
+    u32 tid = bpf_get_current_pid_tgid();
+    int *dfd = fd_info.lookup(&tid);
+    if (dfd == NULL) {
+        return 0;
+    }
+    int fd = args->ret;
+    fd_info.update(&tid, &fd);
+    return 0;
+}
+
+TRACEPOINT_PROBE(syscalls, sys_enter_read) {
+    u32 pid = bpf_get_current_pid_tgid() >> 32;
+    u32 tid = bpf_get_current_pid_tgid();
+    int *dfd = fd_info.lookup(&tid);
+    if (dfd == NULL) {
+        return 0;
+    }
+
+    if (*dfd != args->fd) {
+        return 0;
+    }
+    u64 ts = bpf_ktime_get_ns();
+    action_info.update(&tid, &ts);
+
+    return 0;
+}
+
+TRACEPOINT_PROBE(syscalls, sys_exit_read) {
+    u32 pid = bpf_get_current_pid_tgid() >> 32;
+    u32 tid = bpf_get_current_pid_tgid();
+    u64 *ts = action_info.lookup(&tid);
+    if (ts == NULL) {
+        return 0;
+    }
+    action_info.delete(&tid);
+    struct event_data_t *event_data = events.ringbuf_reserve(sizeof(struct event_data_t));
+    if (!event_data) {
+        return 0;
+    }
+    event_data->pid = pid;
+    event_data->delta_ts = bpf_ktime_get_ns() - *ts;
+    events.ringbuf_submit(event_data, sizeof(event_data));
+    return 0;
+}
+"""
+
+bpf = BPF(text=bpf_text)
+
+
+def process_event_data(cpu, data, size):
+    event = bpf["events"].event(data)
+    print(f"Process {event.pid} read file {event.delta_ts} ns")
+
+
+bpf["events"].open_ring_buffer(process_event_data)
+
+while True:
+    try:
+        bpf.ring_buffer_consume()
+    except KeyboardInterrupt:
+        exit()
+```
+
+The data shows that the Rust code for the read operation time on "/tmp/demofile2" time is almost double times for the Python version.
+
+```text
+Process 88010 read file 11094021 ns
+Process 92652 read file 29149375 ns
+```
+
+We change the Rust code to `C` code 
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+#define FILE_SIZE 64 * 1024 * 1024  // 64 MiB
+
+int main() {
+    FILE *file;
+    char *buffer;
+    size_t result;
+
+    file = fopen("/tmp/file", "rb");
+    if (file == NULL) {
+        fputs("Error opening file", stderr);
+        return 1;
+    }
+
+    buffer = (char *)malloc(sizeof(char) * FILE_SIZE);
+    if (buffer == NULL) {
+        fputs("Memory error", stderr);
+        fclose(file);
+        return 2;
+    }
+
+    result = fread(buffer, 1, FILE_SIZE, file);
+    if (result != FILE_SIZE) {
+        fputs("Reading error", stderr);
+        fclose(file);
+        free(buffer);
+        return 3;
+    }
+
+    fclose(file);
+    free(buffer);
+
+    return 0;
+}
+```
+
+The results is the same.
+
+And we find a interested issue. We change buffer variable's offset in C
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+#define FILE_SIZE 64 * 1024 * 1024  // 64 MiB
+
+int main() {
+    int file;
+    char *buffer;
+    size_t result;
+
+    file = open("/tmp/file", O_RDONLY);
+    if (file == NULL) {
+        fputs("Error opening file", stderr);
+        return 1;
+    }
+
+    buffer = (char *)malloc(sizeof(char) * FILE_SIZE);
+    if (buffer == NULL) {
+        fputs("Memory error", stderr);
+        close(file);
+        return 2;
+    }
+
+    result = read(file, buffer + 0x20, FILE_SIZE);
+    if (result != FILE_SIZE) {
+        fputs("Reading error", stderr);
+        close(file);
+        free(buffer);
+        return 3;
+    }
+
+    close(file);
+    free(buffer);
+
+    return 0;
+}
+```
+
+The result becomes normal. The behavior is same with we change malloc to aligned_alloc.
+
+And we found that the result is normal when the offset is in range [page*4k-0x10,page*4k+0x10], otherwise the result is slow.
+
+This issue can be produced on AMD Ryzen 9 5950X, AMD R7 5700X, AMD Ryzen 9 5900X
+
+Here's some reference for this issue which is reported in the community
+
+1. https://github.com/apache/incubator-opendal/issues/3665
+2. https://users.rust-lang.org/t/std-read-slow/85424/13
