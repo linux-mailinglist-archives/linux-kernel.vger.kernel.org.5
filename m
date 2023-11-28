@@ -2,99 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2173E7FB142
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 06:32:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5F97FB13B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 06:31:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343539AbjK1FcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 00:32:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48766 "EHLO
+        id S1343507AbjK1FbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 00:31:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232892AbjK1FcY (ORCPT
+        with ESMTP id S232858AbjK1FbQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 00:32:24 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F95F1B8;
-        Mon, 27 Nov 2023 21:32:29 -0800 (PST)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AS5DsIV028615;
-        Tue, 28 Nov 2023 05:31:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=4KtQCCKK58dFVDswWJpKZLffA0J7W0Qj8kUzlL5PIxw=;
- b=NxsIPCYoHXSVS9a2kLsgGTgHCfW+T09emuCCu9770Z/wArEIU4hEdG3zK2fuUo+M1Um7
- QKxZnyropEBPlyT+bFjOiAN9PtclsSJlDDGOB9DULGBc1b3p8uT+3/1jqR0cmhCbuMcK
- Qsx9PVPbhzz0si1kxLvFiOwl6bVn5KhbKWkGL4uEN6BZG1WME8KuxL1799Po2Xuu+o07
- G/mxSzCl+6h7zAwL+C2nWfbC8C9zmTYgjgYbaHcyFbxzMBVlsWSF3GAE5j0kgzyhhQvN
- iUk6aX/8W/HIRlelCrHwKHjjp9ihbCliCvpSE51jDduam4i6D0jHE9jJ3NOcbN7mR2ZE Rw== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3un586rj4b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Nov 2023 05:31:48 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AS5VHni018948
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Nov 2023 05:31:17 GMT
-Received: from [10.50.30.106] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 27 Nov
- 2023 21:31:07 -0800
-Message-ID: <d614a89f-0c46-7920-7d09-3db15498bf86@quicinc.com>
-Date:   Tue, 28 Nov 2023 11:01:00 +0530
+        Tue, 28 Nov 2023 00:31:16 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D11E6;
+        Mon, 27 Nov 2023 21:31:23 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6b20a48522fso4073685b3a.1;
+        Mon, 27 Nov 2023 21:31:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701149483; x=1701754283; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=EEPi9c7ppkLgBeiuzKlkFix1rYtohwubig6Zzx1D7yA=;
+        b=le8QwU0jCDY9ZG8m19L67XVIZKrDXN9fQ84HljH7vOr4IqtzYe1Yksg3pY6zeTVGI8
+         T6O1R+2/4mUObwgGo1vTrDWY0diQ9ecKmi2IOHGctPkIFQCjbVy29GVapssYOll5eozF
+         bPVNO0hh1P3Gh5w7EfXg6uTYYz/4JcJUwLwVwpLBmEUYGHUrr0oa78FNTxBaOP2K/kVh
+         X2MygYRlOCAauQ3ziWKI2T4M9mHwMzDtUKlafPlUCchZHg+QY9lpyuvRr7vy118MO8qF
+         HRHPqzoKdf1uFTB6PKl0PrTxOQq7xrgni/7T/+NXGBIWCYUDyQUN510YNrCETwoN5rvO
+         fHAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701149483; x=1701754283;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EEPi9c7ppkLgBeiuzKlkFix1rYtohwubig6Zzx1D7yA=;
+        b=JSvqB77eFKeuTfDTcDKklnpmkb1vsmSjbw1mSHbRN12cMcS0/MKH1NbDzCCZtMklVD
+         ATixskBk+Vh6f4PCBAaY99KJr7WGX8zwfNxITElIrbLuBsN+FIHwPtcjTYhUHWlebIkj
+         NXy9WNtKXgkVPdtdrBshRGDguTImiG75saqZHxiVs4J3T6FsoO6zLYRId7IQ4tk0e3Uq
+         HISR3Eglh/zDFBZBBAenBkAd3NgQeN73XgKoyrnxVNSsk9bo1cf1CS/vyLTKFAQK7BSA
+         CkkLq90+E3mzEZWV6AXXGKHAqSN4BBfIju4TeZEsRpnv+fhSZKoXixw5aiYKYU0lq6xh
+         ssZA==
+X-Gm-Message-State: AOJu0YxGAmZTGhgACfZoNfYluiOyJmV73Ej2LgmbsOoCWGPemDaf7Ztx
+        mBT70rUAYrryjz+EiHxIIMQ=
+X-Google-Smtp-Source: AGHT+IGlXC8UReAEZX2Q21EENrre/8ig09+Y/pOPN2cMuhsa5digs3NrGSN7fY2BDBGQ+2jchBphmQ==
+X-Received: by 2002:a05:6a20:1445:b0:18c:5c04:5564 with SMTP id a5-20020a056a20144500b0018c5c045564mr8897440pzi.60.1701149482790;
+        Mon, 27 Nov 2023 21:31:22 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id m10-20020a170902db0a00b001cfde3ee4e8sm1655108plx.125.2023.11.27.21.31.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 21:31:22 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+        id 024731143686A; Tue, 28 Nov 2023 12:31:19 +0700 (WIB)
+Date:   Tue, 28 Nov 2023 12:31:19 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Genes Lists <lists@sapience.com>, tglx@linutronix.de,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        gregory.greenman@intel.com, kvalo@kernel.org,
+        Linux Wireless <linux-wireless@vger.kernel.org>
+Cc:     Linux Regressions <regressions@lists.linux.dev>
+Subject: Re: crash with 6.7 rc2 and rc3
+Message-ID: <ZWV7JworMrjHJHsO@archie.me>
+References: <c46a6462-8263-455c-a6ea-1860020f5fab@sapience.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.2
-Subject: Re: [PATCH v5 01/10] scsi: ufs: host: Rename structure ufs_dev_params
- to ufs_host_params
-Content-Language: en-US
-To:     Can Guo <quic_cang@quicinc.com>, <bvanassche@acm.org>,
-        <mani@kernel.org>, <adrian.hunter@intel.com>, <beanhuo@micron.com>,
-        <avri.altman@wdc.com>, <junwoo80.lee@samsung.com>,
-        <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Brian Masney <bmasney@redhat.com>,
-        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
-        <linux-mediatek@lists.infradead.org>
-References: <1700729190-17268-1-git-send-email-quic_cang@quicinc.com>
- <1700729190-17268-2-git-send-email-quic_cang@quicinc.com>
-From:   Nitin Rawat <quic_nitirawa@quicinc.com>
-In-Reply-To: <1700729190-17268-2-git-send-email-quic_cang@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: VmG-THo9cajFnBcIN7nZsEe424L6Cu-3
-X-Proofpoint-GUID: VmG-THo9cajFnBcIN7nZsEe424L6Cu-3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-28_04,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=999 priorityscore=1501 spamscore=0 impostorscore=0
- adultscore=0 mlxscore=0 phishscore=0 suspectscore=0 clxscore=1011
- bulkscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311060000 definitions=main-2311280041
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sEcx6aMYousCg2QL"
+Content-Disposition: inline
+In-Reply-To: <c46a6462-8263-455c-a6ea-1860020f5fab@sapience.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -104,326 +77,99 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--sEcx6aMYousCg2QL
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 11/23/2023 2:16 PM, Can Guo wrote:
-> Structure ufs_dev_params is actually used in UFS host vendor drivers to
-> declare host specific power mode parameters, like ufs_<vendor>_params or
-> host_cap, which makes the code not very straightforward to read. Rename the
-> structure ufs_dev_params to ufs_host_params and unify the declarations in
-> all vendor drivers to host_params.
-> 
-> In addition, rename the two functions ufshcd_init_pwr_dev_param() and
-> ufshcd_get_pwr_dev_param() which work based on the ufs_host_params to
-> ufshcd_init_host_param() and ufshcd_negotiate_pwr_param() respectively to
-> avoid confusions.
-> 
-> This change does not change any functionalities or logic.
-> 
-> Acked-by: Andrew Halaney <ahalaney@redhat.com>
-> Signed-off-by: Can Guo <quic_cang@quicinc.com>
-> ---
->   drivers/ufs/host/ufs-exynos.c    |  7 ++--
->   drivers/ufs/host/ufs-hisi.c      | 11 +++----
->   drivers/ufs/host/ufs-mediatek.c  | 12 +++----
->   drivers/ufs/host/ufs-qcom.c      | 12 +++----
->   drivers/ufs/host/ufshcd-pltfrm.c | 69 ++++++++++++++++++++--------------------
->   drivers/ufs/host/ufshcd-pltfrm.h | 10 +++---
->   6 files changed, 57 insertions(+), 64 deletions(-)
-> 
-> diff --git a/drivers/ufs/host/ufs-exynos.c b/drivers/ufs/host/ufs-exynos.c
-> index 71bd6db..674f2f4 100644
-> --- a/drivers/ufs/host/ufs-exynos.c
-> +++ b/drivers/ufs/host/ufs-exynos.c
-> @@ -765,7 +765,7 @@ static int exynos_ufs_pre_pwr_mode(struct ufs_hba *hba,
->   {
->   	struct exynos_ufs *ufs = ufshcd_get_variant(hba);
->   	struct phy *generic_phy = ufs->phy;
-> -	struct ufs_dev_params ufs_exynos_cap;
-> +	struct ufs_host_params host_params;
->   	int ret;
->   
->   	if (!dev_req_params) {
-> @@ -774,10 +774,9 @@ static int exynos_ufs_pre_pwr_mode(struct ufs_hba *hba,
->   		goto out;
->   	}
->   
-> -	ufshcd_init_pwr_dev_param(&ufs_exynos_cap);
-> +	ufshcd_init_host_param(&host_params);
->   
-> -	ret = ufshcd_get_pwr_dev_param(&ufs_exynos_cap,
-> -				       dev_max_params, dev_req_params);
-> +	ret = ufshcd_negotiate_pwr_param(&host_params, dev_max_params, dev_req_params);
->   	if (ret) {
->   		pr_err("%s: failed to determine capabilities\n", __func__);
->   		goto out;
-> diff --git a/drivers/ufs/host/ufs-hisi.c b/drivers/ufs/host/ufs-hisi.c
-> index 0229ac0..bb0c9a7 100644
-> --- a/drivers/ufs/host/ufs-hisi.c
-> +++ b/drivers/ufs/host/ufs-hisi.c
-> @@ -293,9 +293,9 @@ static int ufs_hisi_link_startup_notify(struct ufs_hba *hba,
->   	return err;
->   }
->   
-> -static void ufs_hisi_set_dev_cap(struct ufs_dev_params *hisi_param)
-> +static void ufs_hisi_set_dev_cap(struct ufs_host_params *host_params)
->   {
-> -	ufshcd_init_pwr_dev_param(hisi_param);
-> +	ufshcd_init_host_param(host_params);
->   }
->   
->   static void ufs_hisi_pwr_change_pre_change(struct ufs_hba *hba)
-> @@ -365,7 +365,7 @@ static int ufs_hisi_pwr_change_notify(struct ufs_hba *hba,
->   				       struct ufs_pa_layer_attr *dev_max_params,
->   				       struct ufs_pa_layer_attr *dev_req_params)
->   {
-> -	struct ufs_dev_params ufs_hisi_cap;
-> +	struct ufs_host_params host_params;
->   	int ret = 0;
->   
->   	if (!dev_req_params) {
-> @@ -377,9 +377,8 @@ static int ufs_hisi_pwr_change_notify(struct ufs_hba *hba,
->   
->   	switch (status) {
->   	case PRE_CHANGE:
-> -		ufs_hisi_set_dev_cap(&ufs_hisi_cap);
-> -		ret = ufshcd_get_pwr_dev_param(&ufs_hisi_cap,
-> -					       dev_max_params, dev_req_params);
-> +		ufs_hisi_set_dev_cap(&host_params);
-> +		ret = ufshcd_negotiate_pwr_param(&host_params, dev_max_params, dev_req_params);
->   		if (ret) {
->   			dev_err(hba->dev,
->   			    "%s: failed to determine capabilities\n", __func__);
-> diff --git a/drivers/ufs/host/ufs-mediatek.c b/drivers/ufs/host/ufs-mediatek.c
-> index fc61790..016067d 100644
-> --- a/drivers/ufs/host/ufs-mediatek.c
-> +++ b/drivers/ufs/host/ufs-mediatek.c
-> @@ -996,16 +996,14 @@ static int ufs_mtk_pre_pwr_change(struct ufs_hba *hba,
->   				  struct ufs_pa_layer_attr *dev_req_params)
->   {
->   	struct ufs_mtk_host *host = ufshcd_get_variant(hba);
-> -	struct ufs_dev_params host_cap;
-> +	struct ufs_host_params host_params;
->   	int ret;
->   
-> -	ufshcd_init_pwr_dev_param(&host_cap);
-> -	host_cap.hs_rx_gear = UFS_HS_G5;
-> -	host_cap.hs_tx_gear = UFS_HS_G5;
-> +	ufshcd_init_host_param(&host_params);
-> +	host_params.hs_rx_gear = UFS_HS_G5;
-> +	host_params.hs_tx_gear = UFS_HS_G5;
->   
-> -	ret = ufshcd_get_pwr_dev_param(&host_cap,
-> -				       dev_max_params,
-> -				       dev_req_params);
-> +	ret = ufshcd_negotiate_pwr_param(&host_params, dev_max_params, dev_req_params);
->   	if (ret) {
->   		pr_info("%s: failed to determine capabilities\n",
->   			__func__);
-> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> index 96cb8b5..aee66a3 100644
-> --- a/drivers/ufs/host/ufs-qcom.c
-> +++ b/drivers/ufs/host/ufs-qcom.c
-> @@ -898,7 +898,7 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
->   				struct ufs_pa_layer_attr *dev_req_params)
->   {
->   	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> -	struct ufs_dev_params ufs_qcom_cap;
-> +	struct ufs_host_params host_params;
->   	int ret = 0;
->   
->   	if (!dev_req_params) {
-> @@ -908,15 +908,13 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
->   
->   	switch (status) {
->   	case PRE_CHANGE:
-> -		ufshcd_init_pwr_dev_param(&ufs_qcom_cap);
-> -		ufs_qcom_cap.hs_rate = UFS_QCOM_LIMIT_HS_RATE;
-> +		ufshcd_init_host_param(&host_params);
-> +		host_params.hs_rate = UFS_QCOM_LIMIT_HS_RATE;
->   
->   		/* This driver only supports symmetic gear setting i.e., hs_tx_gear == hs_rx_gear */
-> -		ufs_qcom_cap.hs_tx_gear = ufs_qcom_cap.hs_rx_gear = ufs_qcom_get_hs_gear(hba);
-> +		host_params.hs_tx_gear = host_params.hs_rx_gear = ufs_qcom_get_hs_gear(hba);
->   
-> -		ret = ufshcd_get_pwr_dev_param(&ufs_qcom_cap,
-> -					       dev_max_params,
-> -					       dev_req_params);
-> +		ret = ufshcd_negotiate_pwr_param(&host_params, dev_max_params, dev_req_params);
->   		if (ret) {
->   			dev_err(hba->dev, "%s: failed to determine capabilities\n",
->   					__func__);
-> diff --git a/drivers/ufs/host/ufshcd-pltfrm.c b/drivers/ufs/host/ufshcd-pltfrm.c
-> index da2558e..9ec11b9 100644
-> --- a/drivers/ufs/host/ufshcd-pltfrm.c
-> +++ b/drivers/ufs/host/ufshcd-pltfrm.c
-> @@ -285,61 +285,60 @@ static int ufshcd_parse_operating_points(struct ufs_hba *hba)
->   }
->   
->   /**
-> - * ufshcd_get_pwr_dev_param - get finally agreed attributes for
-> - *                            power mode change
-> - * @pltfrm_param: pointer to platform parameters
-> + * ufshcd_negotiate_pwr_param - find power mode settings that are supported by
-> +				both the controller and the device
-> + * @host_param: pointer to host parameters
->    * @dev_max: pointer to device attributes
->    * @agreed_pwr: returned agreed attributes
->    *
->    * Return: 0 on success, non-zero value on failure.
->    */
-> -int ufshcd_get_pwr_dev_param(const struct ufs_dev_params *pltfrm_param,
-> -			     const struct ufs_pa_layer_attr *dev_max,
-> -			     struct ufs_pa_layer_attr *agreed_pwr)
-> +int ufshcd_negotiate_pwr_param(const struct ufs_host_params *host_param,
-> +			       const struct ufs_pa_layer_attr *dev_max,
-> +			       struct ufs_pa_layer_attr *agreed_pwr)
->   {
-> -	int min_pltfrm_gear;
-> +	int min_host_gear;
->   	int min_dev_gear;
->   	bool is_dev_sup_hs = false;
-> -	bool is_pltfrm_max_hs = false;
-> +	bool is_host_max_hs = false;
->   
->   	if (dev_max->pwr_rx == FAST_MODE)
->   		is_dev_sup_hs = true;
->   
-> -	if (pltfrm_param->desired_working_mode == UFS_HS_MODE) {
-> -		is_pltfrm_max_hs = true;
-> -		min_pltfrm_gear = min_t(u32, pltfrm_param->hs_rx_gear,
-> -					pltfrm_param->hs_tx_gear);
-> +	if (host_param->desired_working_mode == UFS_HS_MODE) {
-> +		is_host_max_hs = true;
-> +		min_host_gear = min_t(u32, host_param->hs_rx_gear,
-> +					host_param->hs_tx_gear);
->   	} else {
-> -		min_pltfrm_gear = min_t(u32, pltfrm_param->pwm_rx_gear,
-> -					pltfrm_param->pwm_tx_gear);
-> +		min_host_gear = min_t(u32, host_param->pwm_rx_gear,
-> +					host_param->pwm_tx_gear);
->   	}
->   
->   	/*
-> -	 * device doesn't support HS but
-> -	 * pltfrm_param->desired_working_mode is HS,
-> -	 * thus device and pltfrm_param don't agree
-> +	 * device doesn't support HS but host_param->desired_working_mode is HS,
-> +	 * thus device and host_param don't agree
->   	 */
-> -	if (!is_dev_sup_hs && is_pltfrm_max_hs) {
-> +	if (!is_dev_sup_hs && is_host_max_hs) {
->   		pr_info("%s: device doesn't support HS\n",
->   			__func__);
->   		return -ENOTSUPP;
-> -	} else if (is_dev_sup_hs && is_pltfrm_max_hs) {
-> +	} else if (is_dev_sup_hs && is_host_max_hs) {
->   		/*
->   		 * since device supports HS, it supports FAST_MODE.
-> -		 * since pltfrm_param->desired_working_mode is also HS
-> +		 * since host_param->desired_working_mode is also HS
->   		 * then final decision (FAST/FASTAUTO) is done according
->   		 * to pltfrm_params as it is the restricting factor
->   		 */
-> -		agreed_pwr->pwr_rx = pltfrm_param->rx_pwr_hs;
-> +		agreed_pwr->pwr_rx = host_param->rx_pwr_hs;
->   		agreed_pwr->pwr_tx = agreed_pwr->pwr_rx;
->   	} else {
->   		/*
-> -		 * here pltfrm_param->desired_working_mode is PWM.
-> +		 * here host_param->desired_working_mode is PWM.
->   		 * it doesn't matter whether device supports HS or PWM,
-> -		 * in both cases pltfrm_param->desired_working_mode will
-> +		 * in both cases host_param->desired_working_mode will
->   		 * determine the mode
->   		 */
-> -		agreed_pwr->pwr_rx = pltfrm_param->rx_pwr_pwm;
-> +		agreed_pwr->pwr_rx = host_param->rx_pwr_pwm;
->   		agreed_pwr->pwr_tx = agreed_pwr->pwr_rx;
->   	}
->   
-> @@ -349,9 +348,9 @@ int ufshcd_get_pwr_dev_param(const struct ufs_dev_params *pltfrm_param,
->   	 * the same decision will be made for rx
->   	 */
->   	agreed_pwr->lane_tx = min_t(u32, dev_max->lane_tx,
-> -				    pltfrm_param->tx_lanes);
-> +				    host_param->tx_lanes);
->   	agreed_pwr->lane_rx = min_t(u32, dev_max->lane_rx,
-> -				    pltfrm_param->rx_lanes);
-> +				    host_param->rx_lanes);
->   
->   	/* device maximum gear is the minimum between device rx and tx gears */
->   	min_dev_gear = min_t(u32, dev_max->gear_rx, dev_max->gear_tx);
-> @@ -364,26 +363,26 @@ int ufshcd_get_pwr_dev_param(const struct ufs_dev_params *pltfrm_param,
->   	 * what is the gear, as it is the one that also decided previously what
->   	 * pwr the device will be configured to.
->   	 */
-> -	if ((is_dev_sup_hs && is_pltfrm_max_hs) ||
-> -	    (!is_dev_sup_hs && !is_pltfrm_max_hs)) {
-> +	if ((is_dev_sup_hs && is_host_max_hs) ||
-> +	    (!is_dev_sup_hs && !is_host_max_hs)) {
->   		agreed_pwr->gear_rx =
-> -			min_t(u32, min_dev_gear, min_pltfrm_gear);
-> +			min_t(u32, min_dev_gear, min_host_gear);
->   	} else if (!is_dev_sup_hs) {
->   		agreed_pwr->gear_rx = min_dev_gear;
->   	} else {
-> -		agreed_pwr->gear_rx = min_pltfrm_gear;
-> +		agreed_pwr->gear_rx = min_host_gear;
->   	}
->   	agreed_pwr->gear_tx = agreed_pwr->gear_rx;
->   
-> -	agreed_pwr->hs_rate = pltfrm_param->hs_rate;
-> +	agreed_pwr->hs_rate = host_param->hs_rate;
->   
->   	return 0;
->   }
-> -EXPORT_SYMBOL_GPL(ufshcd_get_pwr_dev_param);
-> +EXPORT_SYMBOL_GPL(ufshcd_negotiate_pwr_param);
->   
-> -void ufshcd_init_pwr_dev_param(struct ufs_dev_params *dev_param)
-> +void ufshcd_init_host_param(struct ufs_host_params *host_param)
->   {
-> -	*dev_param = (struct ufs_dev_params){
-> +	*host_param = (struct ufs_host_params){
->   		.tx_lanes = UFS_LANE_2,
->   		.rx_lanes = UFS_LANE_2,
->   		.hs_rx_gear = UFS_HS_G3,
-> @@ -398,7 +397,7 @@ void ufshcd_init_pwr_dev_param(struct ufs_dev_params *dev_param)
->   		.desired_working_mode = UFS_HS_MODE,
->   	};
->   }
-> -EXPORT_SYMBOL_GPL(ufshcd_init_pwr_dev_param);
-> +EXPORT_SYMBOL_GPL(ufshcd_init_host_param);
->   
->   /**
->    * ufshcd_pltfrm_init - probe routine of the driver
-> diff --git a/drivers/ufs/host/ufshcd-pltfrm.h b/drivers/ufs/host/ufshcd-pltfrm.h
-> index a86a3ad..2d4d047 100644
-> --- a/drivers/ufs/host/ufshcd-pltfrm.h
-> +++ b/drivers/ufs/host/ufshcd-pltfrm.h
-> @@ -10,7 +10,7 @@
->   #define UFS_PWM_MODE 1
->   #define UFS_HS_MODE  2
->   
-> -struct ufs_dev_params {
-> +struct ufs_host_params {
->   	u32 pwm_rx_gear;        /* pwm rx gear to work in */
->   	u32 pwm_tx_gear;        /* pwm tx gear to work in */
->   	u32 hs_rx_gear;         /* hs rx gear to work in */
-> @@ -25,10 +25,10 @@ struct ufs_dev_params {
->   	u32 desired_working_mode;
->   };
->   
-> -int ufshcd_get_pwr_dev_param(const struct ufs_dev_params *dev_param,
-> -			     const struct ufs_pa_layer_attr *dev_max,
-> -			     struct ufs_pa_layer_attr *agreed_pwr);
-> -void ufshcd_init_pwr_dev_param(struct ufs_dev_params *dev_param);
-> +int ufshcd_negotiate_pwr_param(const struct ufs_host_params *host_param,
-> +			       const struct ufs_pa_layer_attr *dev_max,
-> +			       struct ufs_pa_layer_attr *agreed_pwr);
-> +void ufshcd_init_host_param(struct ufs_host_params *host_param);
->   int ufshcd_pltfrm_init(struct platform_device *pdev,
->   		       const struct ufs_hba_variant_ops *vops);
->   int ufshcd_populate_vreg(struct device *dev, const char *name,
+On Mon, Nov 27, 2023 at 03:55:37PM -0500, Genes Lists wrote:
+>=20
+> lenovo laptop boots fine under 6.7rc1 and older including 6.6.2 stable.
+> but not for 6.7 rc2 or rc3.
+>=20
+> It has a intel 7260 (rev 3) wireless and :
+>=20
+> cpu family	: 6
+> model		: 60
+> model name	: Intel(R) Core(TM) i7-4800MQ CPU @ 2.70GHz
+> stepping	: 3
+> microcode	: 0x28
+>=20
+>=20
+> As of 6.7 rc2 / rc3 it crashes towards the end of boot bringing up servic=
+es
+> -  some parts of crash scrolled off the screen so I apologize if this
+> (manually transcribed) trace didn't catch the first part.
+>=20
+> I did a git bisect between rc1 and rc2 but was unable to reproduce the cr=
+ash
+> for some reason. (I did not do make clean between each bisects).
+>=20
+> During the bisect it booted every time, but networking was not functional
+> for any of the bisects.
+>=20
+> Hope it's okay to report even though git bisect didn't get anywhere.
+>=20
+> Gene
+>=20
+> This is the what I got from screen :
+>=20
+> CS: 0010 DS: 000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f30cf49ba38 CR3: 000000025b620004 CR4: 00000000001706f0
+> Call Trace:
+>  <IRQ>
+>  ? die_addr+0x36/0x90
+>  ? exc_general_protection+0x1c5/0x430
+>  ? asm_exc_gemeral_protection+0x26/0x30
+>  ? iwl_phy_db_set_section+0xd6/0x1f0 [iwlwifi]
+>  ? __kmem_cache_alloc_node+0x1d5/0x2b0
+>  ? iwl_phy_db_set_section+0xd6/0x1f0 [iwlwifi]
+>  ? iwl_phy_db_set_section+0xd6/0x1f0 [iwlwifi]
+>  __kmalloc_node_track_caller+0x51/0x160
+>  kmemdup+0x20/0x50
+>  iwl_phy_db_set_section+0xd6/0x1f0 [iwlwifi]
+>  iwl_wait_phy_db_entry+0x2f/0x40 [iwlmvm]
+>  iwl_notification_wait+0xb0/0xf0 [iwlwifi]
+>  iwl_mvm_rx_common+0x8e/0x320 [iwlwifi]
+>  iwl_pcie_napi_poll+0x2d/0x150 [iwlwifi]
+>  __napi_poll+0x2b/0x1c0
+>  net_rx_action+0x2b4/0x320
+>  __do_softirq+0xff/0x339
+>  net_rx_action+0x2b4/0x320
+>  __do_softirq.part.0+0x88/0xa0
+> </IRQ>
+> <TASK>
+> __local_bh_enable_ip+0x91/0xa0
+> iwl_pcie_irq_handler+0x58d/0xc40 [iwlwifi]
+> ? __pfx_irq_thread_fn+0x10/0x10
+> irq_thread_fn+0x23/0x60
+> irq_thread+0xfe/0x60
+> ? __pfx_irq_thread_dtor+0x10/0x10
+> ? __pfx_irq_thread+0x10/0x10
+> kthread+0xfa/0x130
+> ? pff_kthread+0x10/0x10
+> ret_from_fork+0x34/0x50
+> ? __pfx_kthread+0x10/0x10
+> ret_from_fork_asm+0x1b/0x30
 
-Reviewed-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+Do you have any full system logs that can be attached?
+
+Anyway, thanks for the regression report. I'm adding it to regzbot:
+
+#regzbot ^introduced: v6.7-rc1..v6.7-rc2
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--sEcx6aMYousCg2QL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZWV7IgAKCRD2uYlJVVFO
+o02/AQDz9zBxC7l3PA7XiPWORmbSKTBUjAJWCjZ4HQCsGtw9ZgEA7Zige0E/cGXL
+q1/LpBIwpT3tfL752nITIl7B/mcKdwg=
+=C092
+-----END PGP SIGNATURE-----
+
+--sEcx6aMYousCg2QL--
