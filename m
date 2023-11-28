@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 473B97FB43E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:34:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9067FB432
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:33:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344170AbjK1IeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 03:34:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58358 "EHLO
+        id S1344120AbjK1Id2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 03:33:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230390AbjK1Id6 (ORCPT
+        with ESMTP id S232806AbjK1Id0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 03:33:58 -0500
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2086.outbound.protection.outlook.com [40.107.22.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FDB519A3;
-        Tue, 28 Nov 2023 00:32:29 -0800 (PST)
+        Tue, 28 Nov 2023 03:33:26 -0500
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2050.outbound.protection.outlook.com [40.107.22.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 310552710;
+        Tue, 28 Nov 2023 00:33:00 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bKS474wcTWHiS066RhS7xLu5TunOXfGq+Zr3b5eYDk868z7Phqb/vRVkRWJeP2fq1+WomQdoC9x79V5/0ak0FeyfsQzRKuwJUrScwQIztIDNFEao6Dw8zmEnWxrBThMeA0GPdqoDIXpmKAVIsOtTO4XsSWcZUbAoOvPlF7QH1Bd+44HYxsbydIFaKKhQG8tDROWqvYwAmGZaPU62I+Qwp1qKsAEv7fBlPaSZZrZeVID9KIiDXl8npsBXWDDc1hMU0ccYuG2FYP15ROg9AL6s2E5q/5yiQ9sbJv7x+nlqThoh+5cl3boN4AZDpu1t/5AwMXHoqgVCvutY8haxCj/SJA==
+ b=C89kq+PxzKMi+f8lQDZ6Q6Q+JnIo41DSZ/J9SqCD7uSclwoPU8DFM+iAxp8xVjjAEwdITW+LPxykMBfOyVAARdZtDSJakGZziPDzG6BvxH89oROeloZM8hm2NI5H6C4B666IyjUVZiXKF4ylJmFoerWen39OMpxxbP5mn7OtwAoT1DH+Db7zuxspOhUnPof1QZHkHzyi18LwxowHMdbvni8yvmGsZ090aFRsJtfLXsHWvOJMnzUPeQ++ZrAOpLHfwUctjW47LYFcWxh/jyOlBFKIzOawmhLqEXriF7QWsd4cyeCK7Nil6bvUrjEz2ve7h+jou388L7b0Kqfc2s9k2A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0nG190phW/zEeDWMzaxJTOQNoc728q9tAnr7iDWpFTA=;
- b=djVZxSbIkzxUYyxCPwk+MZFZu8C0c/XLkKq6qrIgiC+XsQ7DJPwxvXRmk/OwS2bldeLHlT4b1eIW3oi3SRQnmwAT0YnMEDmLPdHhTij8VbyClG6T89ecDLs4AiFcmwXqnebQ2QatKGsnH/JAG7ms21RjpiUnIgrg6odAHdeGCpIy8k/HeE+SKmDi8QN+/fxqZz0XnpPtqhQgEwQsJ2W4YpYFHl6E+wVjtaEknDtMhc47r1RNrWG7pe4V9bcaDdHE2aMxwjgYGKo6Mt0cfKgClIGtN/21TsGJIXKmGMRU3VM/GdwDeh7mt4ono9DxdVJ9BjPfIk7t1XYH6TwxxYdCTw==
+ bh=sZrG4C4q1H5THFoH+tI44/yFuOw6ffv1Nnud6P0dn5o=;
+ b=AWzkYmbnIpho7G4Q26jcV5aOvckeKDkM6G0FLBWAq/R27kh+Vis3Wjd2prV0opDcI1SVxHSeWhwq93aYvapaMjJeKqGJzLer7zuHj6q6gC5GBILUmVldq48VGbfZ5OuGGc7kpkdwkGWaDk4r9K+dmCtc/80+5UzbJ4ohJZ7Bg4mY+KHd+cOP6soJeVQI+gJfSJFWsIqt5vjfsRrFh66jn+1Q/RPil897/j7i44OYdVKk/WA0M6tFzmQsFWNevVieRvIvdy3oG13x/DzYl7cvwxSDoYNa/nVTH7jzJbpR0Q1N35B+5gg8dITceAmKdXoeEPq4rQvl+XSarWqO/x8TUA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0nG190phW/zEeDWMzaxJTOQNoc728q9tAnr7iDWpFTA=;
- b=IHy6OfV53L/7JUfb9qjWQX/LqgtnlH9+0w9Mx8TY8Xbt1rhAq/70wSr+8gJJ+k3WnmT1Om1w1bKqgZRdgw7juqo3lVCzQ01q/A5oikT8IaVi1Y/gLU7xha6+a/ph/KWT1tncqgqawrZIDJ2zXUhvX6qdM09C32PJcHBrHTE1iO8=
+ bh=sZrG4C4q1H5THFoH+tI44/yFuOw6ffv1Nnud6P0dn5o=;
+ b=pirNeDjpTHfXhp1NQTWlm2E9HyDoeGAw1u8w2XRjKSj9JGTLqkgSU1DwaUBX92j5y6OGMFSALCoTZzw/qNbteH2LlmSOOVKF6/evGGPHx3tHunXbx7y3by5jikD58Jh1qaYDLyKeWUv+zsZ7v8uqCEPcw7VNxN+UH3lHD7GilMI=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from PA4PR04MB9638.eurprd04.prod.outlook.com (2603:10a6:102:273::20)
  by PAXPR04MB8653.eurprd04.prod.outlook.com (2603:10a6:102:21c::24) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.22; Tue, 28 Nov
- 2023 08:32:10 +0000
+ 2023 08:32:13 +0000
 Received: from PA4PR04MB9638.eurprd04.prod.outlook.com
  ([fe80::34dd:289e:9e8b:9c9b]) by PA4PR04MB9638.eurprd04.prod.outlook.com
  ([fe80::34dd:289e:9e8b:9c9b%7]) with mapi id 15.20.7046.015; Tue, 28 Nov 2023
- 08:32:10 +0000
+ 08:32:13 +0000
 From:   David Lin <yu-hao.lin@nxp.com>
 To:     linux-wireless@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, briannorris@chromium.org,
         kvalo@kernel.org, francesco@dolcini.it, tsung-hsien.hsieh@nxp.com,
         David Lin <yu-hao.lin@nxp.com>
-Subject: [PATCH v7 09/12] wifi: mwifiex: fixed the way to handle link lost.
-Date:   Tue, 28 Nov 2023 16:31:12 +0800
-Message-Id: <20231128083115.613235-10-yu-hao.lin@nxp.com>
+Subject: [PATCH v7 10/12] wifi: mwifiex: fixed AP issue without host mlme.
+Date:   Tue, 28 Nov 2023 16:31:13 +0800
+Message-Id: <20231128083115.613235-11-yu-hao.lin@nxp.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231128083115.613235-1-yu-hao.lin@nxp.com>
 References: <20231128083115.613235-1-yu-hao.lin@nxp.com>
@@ -59,51 +59,51 @@ X-ClientProxiedBy: TYCP286CA0019.JPNP286.PROD.OUTLOOK.COM
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: PA4PR04MB9638:EE_|PAXPR04MB8653:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6ae21bca-303b-4fd6-cab5-08dbefec839f
+X-MS-Office365-Filtering-Correlation-Id: d074516f-7629-4b76-c7af-08dbefec8549
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7W9PXM8iyaw5O5rglbWFIDp7W3jsoMIBo/F0vk2r08r+k5T8p6ruG4ML1TNDWFkhJDFVFeNU8NWo9JCfM5o8wAAW/emjMvAU0tETa5Uf9e3Dzn7bs+JdfF6pSdCt3sau8UeJuDSMYJbvak/PQZTrBoqBxRoIiKNr86YcoCVyHREmA41+7rvJ5QpgQhBY7+BmD2oInbhbzxTr4g+6nuf1TS+4ZCdTkjyN8MODGyqxx1LLvIU2RcK7iSL2hl9YwpydReR5EaGX6eBIQIHgjp1h73C9sNq9Q5Uk4ODKebJbMj+HsAS7R2lW16ns7O2v5wOTDg+AjBTwFMZYkOTQbC6jGksf+J26gtgvmlPj55lc84c1ENLU4jtw+AJ58AFoUlq95h2Yo2yF80dNswwodg9YKkZQGIykxgmgUN/xwCMnTlRfP2H/uTb3iE0GBnreVsU4bal3n/5Pu/0dRxoqN3/MWIaUeeME2qPIkDU4I5DCi3gagC2s8vCaQBUCD6cftu4KhfHaMwogitRuj2527dB2N6JrUWiFjYH/BLVMlBCqIfWopDtuQoNetyNBH7F8xW8waCAYwQws9tc07dRdXIkGh32L38eTU2UxcDWsuYWxR7I=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB9638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(396003)(366004)(376002)(39860400002)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(83380400001)(66946007)(478600001)(6512007)(52116002)(6486002)(86362001)(66556008)(66476007)(6916009)(316002)(8676002)(4326008)(8936002)(6506007)(1076003)(2616005)(5660300002)(38100700002)(41300700001)(2906002)(36756003)(43043002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: vm18zIdthFvU0Md0H7Fdr0YdJtuT0j6GW3AcKUAM6/Q11W4JBhD1LnFaJT81aziWtX29ihfFS6ZPW/YE/f7SXafiQkMmRlTAJ+5m9q/VZ5IRKA6ugN8BHp7x33kgqVcsL9oChQ/Unu3D6V6AYgr/iVVGFV59T1YUpivAEGrkeFntVfuRqXlnb3uJ6mYJx2njcskVe2ehAJ90uzqKuuFtnIQt4asm93WaGO8jS0KivUNzSJnxVuTHG9xCECXh6k8uNguCJvRlShXLVtY7GgBQIfsEyc0ZosycY9L+/V9k+ApGYCpV1N2Npj2U7l95mQG1Mwme43BIjEZ50ofWhmw9RpDxqyTiztYbHLgPCkUNvXcwo4JdSHTuNrsG4gdgArF1e7xIwhQhTwiG92udX3WfzqXwosIxEbLwUZwf0i1x/k3Jo8sAbA9cY8HE945TjjnX1WaX4EZk1zlDO7kSaE8sFl27uYKFDMk3tq8dIUltRlYIngQR5T3b+wdVE4X2QQ1u5kdC7naA26/Hzv5cAQI5l3QT2zrE7K06TVf4a9kx06TWV+xMl4JaHjKkrNTspESv
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB9638.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(396003)(366004)(376002)(39860400002)(230922051799003)(1800799012)(451199024)(64100799003)(186009)(83380400001)(66946007)(478600001)(6512007)(52116002)(6486002)(86362001)(66556008)(66476007)(6916009)(316002)(8676002)(4326008)(8936002)(6506007)(1076003)(2616005)(5660300002)(38100700002)(41300700001)(2906002)(36756003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?UaLe/ZRZBYX/SjqQyWqSwdV92+fJNmmAmbLznsl0l6c/V/uRl9mYuwRr19CU?=
- =?us-ascii?Q?EaeY3Nr/lz8FOD4imHLN9yxjxlGB0zy4Mtlv1v+WBwfGMrI03NT45nW4myaF?=
- =?us-ascii?Q?TL+mtytlZhoJmJ+rahumH56kHg0Cm5CPOHLKbxJpkCRxUWZU9N52JNwg7ZO7?=
- =?us-ascii?Q?H9m6nDDRGXNjYuHohNwnk19OP/MGtwE0qdsZK6/+u9J2JmgJSPHKdmeHGnW+?=
- =?us-ascii?Q?0ELrDtID6dAsD5rvWLvY9EF228BgI1/gQXXXJSksw4uk2J0Ud1M/Vse2cqpM?=
- =?us-ascii?Q?BZBzOHaAGqeITGwx5iHImwOrLWizleUGZCuFE/kGn4FAMAOpw0XawQuC8XzA?=
- =?us-ascii?Q?6BQeu9hPJkeHgwAb6OpdSsFE4SZN2sVPbjYAdKaVCcnMapVBqIqvKecHQLuF?=
- =?us-ascii?Q?JoM3z6wWpyL+MmC5n8chNg+gp9aV/f/HfP1USN8VWfk2VQKwEuFYzgrHUN13?=
- =?us-ascii?Q?dmJli5Qmva4dBr9fc0HMHxcw0ci9BY1LzMXeMZDlHxVMb4JNVnC4XQs0+UeF?=
- =?us-ascii?Q?x3++ikEmAH/BRbVEo+FfkgGr/eEvIYjx0mvfsASgZkHg1JyTvGd92tVE8J8l?=
- =?us-ascii?Q?kPHi5cdR1O/snkJBhDtgmV7CXSqv3kOGseMWY33VZEkQL/tkLX6Ur3u5Tsjl?=
- =?us-ascii?Q?UrlOY8o/ztpEBtzrB68JOBSkB+wvTwlVRY9XEaISqaz9hPPb7+wuDYRhugzF?=
- =?us-ascii?Q?Sjzg/Y+cwwadQyKioPG0W7QHY9I6MSOQC51s432nM0j/kPFX0ww4zL1EXphT?=
- =?us-ascii?Q?40xwWjD4qjdcX4zSH3InB7tx9oGLfZWFW3z4HrvcpEU2WkJjr+3rys/uub9W?=
- =?us-ascii?Q?CJHGZV6OK5qGVwr30TZsqkZ12EtXIhm4WFvfFnZpWTefcXrnJR54kga+XuJ3?=
- =?us-ascii?Q?3mkrYNlbZ74xqJawVCwMfHPhJFKbgdiqvol4olYw/5XA4HH3kGwV5RnoNpyg?=
- =?us-ascii?Q?kQI84TS3NNQL314VApLIFxkkd2AwUL/vM28vL5jgHOWhE+1rFO66UL5Cedxc?=
- =?us-ascii?Q?7DiGrJ2qujvIZ9j/SnZDI1M/BRP5lgVzcrMKrYzMmWcYbSJFEtAyuYkRMmWv?=
- =?us-ascii?Q?aTWJNreUIqxwm/90AzQtwvOnPcQgNqmR0LEPLLqBZoBZxyLKlb0Zys2Tt/YT?=
- =?us-ascii?Q?R3dXQ9a+/fmGwnlh3ItZzsgQQldWdxVqlL3u1w/rPboRtYsZaTTCK2uMA1Ao?=
- =?us-ascii?Q?AmD4VXBUTxd/D+mWI1CbtgE4lfCjGLsZGafe1mu8VxghdHMHpTjKCsYV1wHS?=
- =?us-ascii?Q?UWLmJ8hE9DhaKbkIDJ/OEzv2d6CWTPNE48eeNddMniu/OHZp5C4Msm2v+fU/?=
- =?us-ascii?Q?nINJwCgqdtrFDY//C+wY4/YpRWSDtdwfiw/6ZXdVKxXZWmW9acMdDcFnLf2f?=
- =?us-ascii?Q?DGzlTGpPXVv06KcBxfdA8de+wevTUJgihp0C+AZKGx7LD4MdPnoB7FGiwwWz?=
- =?us-ascii?Q?8vwOAjuOpblxGdxxYLuLakXNyCSjCMElaLVnnwXM/tOdBy7USw2HM6vvckNI?=
- =?us-ascii?Q?qErBrbJ6Ns2/Oc39+vzeNYlx2Zx962B0rzzyswse8K5ofByVZiRpIdDU+1Zi?=
- =?us-ascii?Q?kRpc4DXngLExYeWRlWGEj7h2TC/n+m1y6K6eFr1i6eI3FZbL/CfG7rPvlO+3?=
- =?us-ascii?Q?Tqyf3aU5gRnH/pXKKnX/ZZijxJV8Hmv482hd0TjoXkI1?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2Y+He+H/4a4QEY1/341MOIolyQV/j6FlZ44Dp7D6aeIfBNxYpH/9gT4RrKF+?=
+ =?us-ascii?Q?uG4OBr/p5j1sdmTrvlSMavXlZLK6vy+pLjAb+3at0dqri3j5Ov/LGh2gX1mS?=
+ =?us-ascii?Q?ByFQ9hMvgrRBp/KGDCKzHaKCW0pMajV00CaASCtQNnr2PAQgnJlqJhZtNvPn?=
+ =?us-ascii?Q?5tsdsHvkUUe7QABzG9WEgiA14vU7qv+LCYrlvutjK1yGi7Nlq24/MU8f7B1O?=
+ =?us-ascii?Q?TapH48JblW91Op72uJoUTdkJ5M/rfr+1Qi8yLuQcZRS0cHFMtPVYS0ega950?=
+ =?us-ascii?Q?puawZdKc06k3+x3+LP12/FSCqhfE2OU+wBUUODDXzL/9m1RGKxdz4KOMFyWp?=
+ =?us-ascii?Q?kmHUbgm9+Xw9XfLGRIonTSeQvDiiMwvhKcCRHluFQEi/pyf367hC7kFAgB7C?=
+ =?us-ascii?Q?B47ZTsUYfu8SBeUTvq4kbANU/E5lIcXgfe6fEqWyUca0d9uHPhg6O+Q26oGz?=
+ =?us-ascii?Q?W6A7g9fMLOXc9OHyYe/Bh4lRLE345D4HppLk675YwuXbutOm1Y/RefcGqqEK?=
+ =?us-ascii?Q?10cZG+bg2K7iz/kCZfdyaEubceeIbX1oyyevSZULUsTIBkZ3yhu2iEnNDijj?=
+ =?us-ascii?Q?nqWzw95g6HNa12DIILWJbgIOnG9+F1yU5yY2T/68EU1F16tR5rTQf/g0kqOj?=
+ =?us-ascii?Q?Pm1nsnxEvU+Y6tDP53TXNf87lP8UjhCj0Y7e51DFO0//Yd9yb9xfUmAKWxy6?=
+ =?us-ascii?Q?0f3K81R9+BKVycLAoA64tX5XreUsEooKjYt3b61IdSQePCo60ZH4MaeA/VTX?=
+ =?us-ascii?Q?7GdcwEyq9tYm079Mq6lKkvezDq6Mw4Cjks9k8L6+qKd1/7aPHiKPvwVcAN8m?=
+ =?us-ascii?Q?qRguPXBB872iQAuVJUFu6si93MWGWodi5OMpQEgWkbbHCX1AMJLQzVdncsYX?=
+ =?us-ascii?Q?TwWEOnvzLz8R4leFRXWAcnwiqn6M8t2WX23NdYDOG8jAl1tZOgFbhRqzdXRI?=
+ =?us-ascii?Q?13ccqjXL//O7kKD8qIpVoVNb0rya3ENzHzxQyCn6RULA2a2G6LyY5yaZDvOQ?=
+ =?us-ascii?Q?8/TeIExzgohx/8fm2IwrsP3QElgJEzHa+9sr0a+IcptYN/bOLfsxpovIVH7d?=
+ =?us-ascii?Q?3z1iQB71aLoVK2MpWfnwybJmP2XPiO5yE/LYijVuWUbFwnX1lxEA0c3qPKPf?=
+ =?us-ascii?Q?RmQkaZyQ9zZ9DxvIN3jSv/lOQtik5hf5QqXFy3LSrXwIK3qynQwwmwfnn+hw?=
+ =?us-ascii?Q?uCZwfQRjwf/gM1XOcPDCZyJrks4KaaHAlglkutFqSjZ3NodsB8ChSm16kZ6A?=
+ =?us-ascii?Q?TSKnyblcKpJvfClmSlmw27BSzqBv+5SPg+n/Ci0x4rTpManDAGHRKXEJeg/8?=
+ =?us-ascii?Q?9pDJubthWYnoiz9ulmDHDQpmExaBQroRlZioEkpB/AgLZt3qY0CEleQ0BjpV?=
+ =?us-ascii?Q?VOiko42CufS8mk7Tq2qROnmFKnfsEZ411dB393Lhn45NAKOblCUP8MPNUQMm?=
+ =?us-ascii?Q?++hQ0mZMA7y5Gqq6YS7CrJmxPxt0HGj3o8aDfyZwTkT8+fqfWqWzfYfekPx0?=
+ =?us-ascii?Q?NGZBvLe4XVHcgUoLLgpI0bbZMWyZn6lYoFK4raHHSNoJiyglL6DvCIcpRj7c?=
+ =?us-ascii?Q?JGlshCsAiklJUy3xq49OZ6IXf8hNvrZtpZ9srFJEuB66UVAIVLcjQgAD9tcE?=
+ =?us-ascii?Q?TxS90/62BSyhUaKDlB2Y/CFniW/sXGXyVX253W0spA/L?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6ae21bca-303b-4fd6-cab5-08dbefec839f
+X-MS-Exchange-CrossTenant-Network-Message-Id: d074516f-7629-4b76-c7af-08dbefec8549
 X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB9638.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 08:32:10.3930
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 08:32:13.1838
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: I9/GbXSUhmRKx/7wiSCcG4MyDVptcj6oEQrj0a0PjqsUsjHv/EoIXJ7igd4JZcgTmQo9RbMd87FsgcNyVDiAeQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: uaTcqgVVLDFEcdYyDJux7VHZkEvWo8d+CJ98GVmZl08PLlK5oM1Tp1a/kep9sqYnZPB3g6qfjLuj5Ku6xeGo4g==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8653
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -115,201 +115,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If host mlme is enabled, event EVENT_LINK_LOST must be handled with
-sending deauthentication to upper layers.
-
-Without this patch, if AP is leaving and station won't receive
-deauthentication from AP, station won't reconnect to AP again.
+Without this patch, station can't connect to AP if host mlme is
+disabled.
 
 Signed-off-by: David Lin <yu-hao.lin@nxp.com>
 ---
- .../net/wireless/marvell/mwifiex/cfg80211.c   |  3 +-
- drivers/net/wireless/marvell/mwifiex/init.c   |  2 +
- drivers/net/wireless/marvell/mwifiex/main.c   | 56 +++++++++++++++++--
- drivers/net/wireless/marvell/mwifiex/main.h   |  4 ++
- .../net/wireless/marvell/mwifiex/sta_event.c  | 18 +++++-
- 5 files changed, 73 insertions(+), 10 deletions(-)
+ .../net/wireless/marvell/mwifiex/cfg80211.c   | 25 ++++++++++++-------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/net/wireless/marvell/mwifiex/cfg80211.c b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-index 40ab3e8d0c1c..588a500fe1b9 100644
+index 588a500fe1b9..2792996e027f 100644
 --- a/drivers/net/wireless/marvell/mwifiex/cfg80211.c
 +++ b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-@@ -4556,7 +4556,8 @@ mwifiex_cfg80211_associate(struct wiphy *wiphy, struct net_device *dev,
- 	if (priv->assoc_rsp_size) {
- 		priv->req_bss = req->bss;
- 		adapter->assoc_resp_received = true;
--		queue_work(adapter->workqueue, &adapter->main_work);
-+		queue_work(adapter->host_mlme_workqueue,
-+			   &adapter->host_mlme_work);
+@@ -1761,7 +1761,7 @@ static const u32 mwifiex_cipher_suites[] = {
+ };
+ 
+ /* Supported mgmt frame types to be advertised to cfg80211 */
+-static const struct ieee80211_txrx_stypes
++static struct ieee80211_txrx_stypes
+ mwifiex_mgmt_stypes[NUM_NL80211_IFTYPES] = {
+ 	[NL80211_IFTYPE_STATION] = {
+ 		.tx = BIT(IEEE80211_STYPE_ACTION >> 4) |
+@@ -1770,14 +1770,10 @@ mwifiex_mgmt_stypes[NUM_NL80211_IFTYPES] = {
+ 		      BIT(IEEE80211_STYPE_PROBE_REQ >> 4),
+ 	},
+ 	[NL80211_IFTYPE_AP] = {
+-		.tx = 0xffff,
+-		.rx = BIT(IEEE80211_STYPE_ASSOC_REQ >> 4) |
+-		      BIT(IEEE80211_STYPE_REASSOC_REQ >> 4) |
+-		      BIT(IEEE80211_STYPE_PROBE_REQ >> 4) |
+-		      BIT(IEEE80211_STYPE_DISASSOC >> 4) |
+-		      BIT(IEEE80211_STYPE_AUTH >> 4) |
+-		      BIT(IEEE80211_STYPE_DEAUTH >> 4) |
+-		      BIT(IEEE80211_STYPE_ACTION >> 4),
++		.tx = BIT(IEEE80211_STYPE_ACTION >> 4) |
++		      BIT(IEEE80211_STYPE_PROBE_RESP >> 4),
++		.rx = BIT(IEEE80211_STYPE_ACTION >> 4) |
++		      BIT(IEEE80211_STYPE_PROBE_REQ >> 4),
+ 	},
+ 	[NL80211_IFTYPE_P2P_CLIENT] = {
+ 		.tx = BIT(IEEE80211_STYPE_ACTION >> 4) |
+@@ -4751,6 +4747,17 @@ int mwifiex_register_cfg80211(struct mwifiex_adapter *adapter)
  	}
- 
- 	cfg80211_put_bss(priv->adapter->wiphy, req->bss);
-diff --git a/drivers/net/wireless/marvell/mwifiex/init.c b/drivers/net/wireless/marvell/mwifiex/init.c
-index 4326e03a66d3..87121018abc6 100644
---- a/drivers/net/wireless/marvell/mwifiex/init.c
-+++ b/drivers/net/wireless/marvell/mwifiex/init.c
-@@ -224,6 +224,8 @@ static void mwifiex_init_adapter(struct mwifiex_adapter *adapter)
- 	adapter->event_received = false;
- 	adapter->data_received = false;
- 	adapter->assoc_resp_received = false;
-+	adapter->priv_link_lost = NULL;
-+	adapter->host_mlme_link_lost = false;
- 
- 	clear_bit(MWIFIEX_SURPRISE_REMOVED, &adapter->work_flags);
- 
-diff --git a/drivers/net/wireless/marvell/mwifiex/main.c b/drivers/net/wireless/marvell/mwifiex/main.c
-index 1dac77946813..f8cef2673502 100644
---- a/drivers/net/wireless/marvell/mwifiex/main.c
-+++ b/drivers/net/wireless/marvell/mwifiex/main.c
-@@ -365,12 +365,6 @@ int mwifiex_main_process(struct mwifiex_adapter *adapter)
- 			}
- 		}
- 
--		/* Chekc for Assoc Resp */
--		if (adapter->assoc_resp_received) {
--			adapter->assoc_resp_received = false;
--			mwifiex_process_assoc_resp(adapter);
--		}
--
- 		/* Check if we need to confirm Sleep Request
- 		   received previously */
- 		if (adapter->ps_state == PS_STATE_PRE_SLEEP)
-@@ -536,6 +530,11 @@ static void mwifiex_terminate_workqueue(struct mwifiex_adapter *adapter)
- 		destroy_workqueue(adapter->rx_workqueue);
- 		adapter->rx_workqueue = NULL;
- 	}
-+
-+	if (adapter->host_mlme_workqueue) {
-+		destroy_workqueue(adapter->host_mlme_workqueue);
-+		adapter->host_mlme_workqueue = NULL;
+ 	wiphy->max_scan_ssids = MWIFIEX_MAX_SSID_LIST_LENGTH;
+ 	wiphy->max_scan_ie_len = MWIFIEX_MAX_VSIE_LEN;
++	if (adapter->host_mlme) {
++		mwifiex_mgmt_stypes[NL80211_IFTYPE_AP].tx = 0xffff;
++		mwifiex_mgmt_stypes[NL80211_IFTYPE_AP].rx =
++			BIT(IEEE80211_STYPE_ASSOC_REQ >> 4) |
++			BIT(IEEE80211_STYPE_REASSOC_REQ >> 4) |
++			BIT(IEEE80211_STYPE_PROBE_REQ >> 4) |
++			BIT(IEEE80211_STYPE_DISASSOC >> 4) |
++			BIT(IEEE80211_STYPE_AUTH >> 4) |
++			BIT(IEEE80211_STYPE_DEAUTH >> 4) |
++			BIT(IEEE80211_STYPE_ACTION >> 4);
 +	}
- }
- 
- /*
-@@ -1394,6 +1393,35 @@ int is_command_pending(struct mwifiex_adapter *adapter)
- 	return !is_cmd_pend_q_empty;
- }
- 
-+/* This is the host mlme work queue function.
-+ * It handles the host mlme operations.
-+ */
-+static void mwifiex_host_mlme_work_queue(struct work_struct *work)
-+{
-+	struct mwifiex_adapter *adapter =
-+		container_of(work, struct mwifiex_adapter, host_mlme_work);
-+
-+	if (test_bit(MWIFIEX_SURPRISE_REMOVED, &adapter->work_flags))
-+		return;
-+
-+	/* Check for host mlme disconnection */
-+	if (adapter->host_mlme_link_lost) {
-+		if (adapter->priv_link_lost) {
-+			mwifiex_reset_connect_state(adapter->priv_link_lost,
-+						    WLAN_REASON_DEAUTH_LEAVING,
-+						    true);
-+			adapter->priv_link_lost = NULL;
-+		}
-+		adapter->host_mlme_link_lost = false;
-+	}
-+
-+	/* Check for host mlme Assoc Resp */
-+	if (adapter->assoc_resp_received) {
-+		mwifiex_process_assoc_resp(adapter);
-+		adapter->assoc_resp_received = false;
-+	}
-+}
-+
- /*
-  * This is the RX work queue function.
-  *
-@@ -1568,6 +1596,14 @@ mwifiex_reinit_sw(struct mwifiex_adapter *adapter)
- 		INIT_WORK(&adapter->rx_work, mwifiex_rx_work_queue);
- 	}
- 
-+	adapter->host_mlme_workqueue =
-+		alloc_workqueue("MWIFIEX_HOST_MLME_WORK_QUEUE",
-+				WQ_HIGHPRI | WQ_MEM_RECLAIM | WQ_UNBOUND, 1);
-+	if (!adapter->host_mlme_workqueue)
-+		goto err_kmalloc;
-+
-+	INIT_WORK(&adapter->host_mlme_work, mwifiex_host_mlme_work_queue);
-+
- 	/* Register the device. Fill up the private data structure with
- 	 * relevant information from the card. Some code extracted from
- 	 * mwifiex_register_dev()
-@@ -1724,6 +1760,14 @@ mwifiex_add_card(void *card, struct completion *fw_done,
- 		INIT_WORK(&adapter->rx_work, mwifiex_rx_work_queue);
- 	}
- 
-+	adapter->host_mlme_workqueue =
-+		alloc_workqueue("MWIFIEX_HOST_MLME_WORK_QUEUE",
-+				WQ_HIGHPRI | WQ_MEM_RECLAIM | WQ_UNBOUND, 1);
-+	if (!adapter->host_mlme_workqueue)
-+		goto err_kmalloc;
-+
-+	INIT_WORK(&adapter->host_mlme_work, mwifiex_host_mlme_work_queue);
-+
- 	/* Register the device. Fill up the private data structure with relevant
- 	   information from the card. */
- 	if (adapter->if_ops.register_dev(adapter)) {
-diff --git a/drivers/net/wireless/marvell/mwifiex/main.h b/drivers/net/wireless/marvell/mwifiex/main.h
-index ae4b44ad6c50..f0158d217bb8 100644
---- a/drivers/net/wireless/marvell/mwifiex/main.h
-+++ b/drivers/net/wireless/marvell/mwifiex/main.h
-@@ -885,6 +885,8 @@ struct mwifiex_adapter {
- 	struct work_struct main_work;
- 	struct workqueue_struct *rx_workqueue;
- 	struct work_struct rx_work;
-+	struct workqueue_struct *host_mlme_workqueue;
-+	struct work_struct host_mlme_work;
- 	bool rx_work_enabled;
- 	bool rx_processing;
- 	bool delay_main_work;
-@@ -917,6 +919,8 @@ struct mwifiex_adapter {
- 	u8 event_received;
- 	u8 data_received;
- 	u8 assoc_resp_received;
-+	struct mwifiex_private *priv_link_lost;
-+	u8 host_mlme_link_lost;
- 	u16 seq_num;
- 	struct cmd_ctrl_node *cmd_pool;
- 	struct cmd_ctrl_node *curr_cmd;
-diff --git a/drivers/net/wireless/marvell/mwifiex/sta_event.c b/drivers/net/wireless/marvell/mwifiex/sta_event.c
-index 69426ddd9c3a..9c6fac91204c 100644
---- a/drivers/net/wireless/marvell/mwifiex/sta_event.c
-+++ b/drivers/net/wireless/marvell/mwifiex/sta_event.c
-@@ -225,8 +225,12 @@ void mwifiex_reset_connect_state(struct mwifiex_private *priv, u16 reason_code,
- 		    priv->cfg_bssid, reason_code);
- 	if (priv->bss_mode == NL80211_IFTYPE_STATION ||
- 	    priv->bss_mode == NL80211_IFTYPE_P2P_CLIENT) {
--		cfg80211_disconnected(priv->netdev, reason_code, NULL, 0,
--				      !from_ap, GFP_KERNEL);
-+		if (adapter->host_mlme && adapter->host_mlme_link_lost)
-+			mwifiex_host_mlme_disconnect(adapter->priv_link_lost,
-+						     reason_code, NULL);
-+		else
-+			cfg80211_disconnected(priv->netdev, reason_code, NULL,
-+					      0, !from_ap, GFP_KERNEL);
- 	}
- 	eth_zero_addr(priv->cfg_bssid);
- 
-@@ -749,7 +753,15 @@ int mwifiex_process_sta_event(struct mwifiex_private *priv)
- 		if (priv->media_connected) {
- 			reason_code =
- 				get_unaligned_le16(adapter->event_body);
--			mwifiex_reset_connect_state(priv, reason_code, true);
-+			if (adapter->host_mlme) {
-+				adapter->priv_link_lost = priv;
-+				adapter->host_mlme_link_lost = true;
-+				queue_work(adapter->host_mlme_workqueue,
-+					   &adapter->host_mlme_work);
-+			} else {
-+				mwifiex_reset_connect_state(priv, reason_code,
-+							    true);
-+			}
- 		}
- 		break;
- 
+ 	wiphy->mgmt_stypes = mwifiex_mgmt_stypes;
+ 	wiphy->max_remain_on_channel_duration = 5000;
+ 	wiphy->interface_modes = BIT(NL80211_IFTYPE_STATION) |
 -- 
 2.25.1
 
