@@ -2,78 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DEBA7FB679
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:59:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA8C7FB67A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:00:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233020AbjK1J7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 04:59:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52666 "EHLO
+        id S1343899AbjK1KAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 05:00:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjK1J7l (ORCPT
+        with ESMTP id S229513AbjK1KAE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 04:59:41 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A48A10E
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:59:47 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 8CF5E2198B;
-        Tue, 28 Nov 2023 09:59:46 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 738901343E;
-        Tue, 28 Nov 2023 09:59:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id 5OouGRK6ZWWZaAAAD6G6ig
-        (envelope-from <mhocko@suse.com>); Tue, 28 Nov 2023 09:59:46 +0000
-Date:   Tue, 28 Nov 2023 10:59:45 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/7] shrinker debugging improvements
-Message-ID: <ZWW6Efq6QAEQwsnl@tiehlicka>
-References: <20231122232515.177833-1-kent.overstreet@linux.dev>
+        Tue, 28 Nov 2023 05:00:04 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14C0DD
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:00:10 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F81AC433C8;
+        Tue, 28 Nov 2023 10:00:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701165610;
+        bh=0XDd4GId1RUumC+pfTyLbSLBfY6q4ATklJ1bRPcr5kY=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=dBFf0MSsT0mRWp7hxYHFsMt2/EA775dXxS2oMfXUDMyXCZFvT1qOdNv8cfXNwvxZD
+         jIlUWD2celdR/K6UjdwDHOx6d9+sHP/E/MldfD4Wrf4VvACja4WJdDsODA+OqsYjCS
+         3MVHOJfdctK3Jwwu6fr+ejd5c38zdD+DyUpGPtcObT2+CDmmKUeWEb+BCW79gQQwYo
+         t8p2RHeLgH1PL6WRsK74WALbcNqERGjXmS51cDajN++v8DlPzpL/QpsPs9ZDEpX2/N
+         lJAtNWhfaGOLT1BwgwSJTXD4ojAou7/aVP3mkTMxJ36LfQxoQBlVCGG+KZF9yJu84M
+         y/ylJO4XKr5ww==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     linux-sound@vger.kernel.org,
+        Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org,
+        pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
+In-Reply-To: <20231127124405.2080431-1-yung-chuan.liao@linux.intel.com>
+References: <20231127124405.2080431-1-yung-chuan.liao@linux.intel.com>
+Subject: Re: [PATCH] soundwire: generic_bandwidth_allocation use
+ bus->params.max_dr_freq
+Message-Id: <170116560796.73868.7251028532785421026.b4-ty@kernel.org>
+Date:   Tue, 28 Nov 2023 15:30:07 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231122232515.177833-1-kent.overstreet@linux.dev>
-X-Spamd-Bar: +++++++++++++++
-Authentication-Results: smtp-out1.suse.de;
-        dkim=none;
-        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
-        spf=fail (smtp-out1.suse.de: domain of mhocko@suse.com does not designate 2a07:de40:b281:104:10:150:64:97 as permitted sender) smtp.mailfrom=mhocko@suse.com
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [15.00 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-         TO_DN_SOME(0.00)[];
-         RCVD_COUNT_THREE(0.00)[3];
-         MX_GOOD(-0.01)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         R_DKIM_NA(2.20)[];
-         MIME_TRACE(0.00)[0:+];
-         BAYES_HAM(-0.00)[26.61%];
-         ARC_NA(0.00)[];
-         R_SPF_FAIL(1.00)[-all];
-         FROM_HAS_DN(0.00)[];
-         RCPT_COUNT_THREE(0.00)[3];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-0.98)[-0.980];
-         MIME_GOOD(-0.10)[text/plain];
-         DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: 15.00
-X-Rspamd-Queue-Id: 8CF5E2198B
-X-Spam: Yes
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -82,29 +52,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 22-11-23 18:25:05, Kent Overstreet wrote:
-> This patchset does a few things to aid in OOM debugging, in particular
-> when shrinkers are involved:
-> 
->  - improves the show_mem OOM report: it now reports on shrinkers, and
->    for both shrinkers and slab we only report the top 10 entries,
->    sorted, not the full list
-> 
->  - add shrinker_to_text(), for the show_mem report and debugfs, and a
->    an optional shrinker.to_text() callback to report extra
->    driver-specific information
-> 
->  - add extra counters for the shrinker_to_text() report
-> 
->  - implement shrinker.to_text() for bcachefs, giving an example of how
->    to use the callbacks
 
-Could you expand some more about all these? What is the additional
-information you can get and how usable that is? Some examples would be
-really useful in the cover letter to establish grounds for the
-discussion.
+On Mon, 27 Nov 2023 20:44:05 +0800, Bard Liao wrote:
+> bus->params.max_dr_freq is calculated and set in sdw_bus_master_add().
+> We can use it directly instead of calculating it again.
+> 
+> 
 
-/me is looking at patches to find out more.
+Applied, thanks!
+
+[1/1] soundwire: generic_bandwidth_allocation use bus->params.max_dr_freq
+      commit: 55d50ace6b88eb273a10963160cadbadccfcdd64
+
+Best regards,
 -- 
-Michal Hocko
-SUSE Labs
+~Vinod
+
+
