@@ -2,70 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA0777FC29D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D17B17FC14D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345855AbjK1On1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 09:43:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38150 "EHLO
+        id S1346315AbjK1Ooq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 09:44:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345831AbjK1On0 (ORCPT
+        with ESMTP id S1345841AbjK1Ooo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 09:43:26 -0500
-Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E53CAA
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:43:33 -0800 (PST)
-Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-1fa1c3755afso1503850fac.1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:43:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1701182613; x=1701787413; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=r02Q3LT4ApLAWvQfkMOWe99neSPOd4I55ym4hWDwTwM=;
-        b=eeptNz/yqLlmZinSJD88UN8c3j8nHbrVLFOletvoc16m7J6YDnY5MeKGXAxA9k+nsV
-         CemGXhRcaFXrjkh6DAqVphA3BUrdrR+pqAkKa8ReEXUGM7K8r2oYrcThekW1/FfDGLt6
-         6BsKzxKy5RsMctKU66n57Mpy90Rx5XksIwXxjYJkWtZKQFOKZ0Pui9EwrAED3qM4zAI6
-         +AYIKFJlmk9QfurLVvQsn6zEa2fFp7MvBOzqkrfTOzJRUn2rtg0efjswQwlewQ49jKoq
-         gsRD7/dGsL2A5arkaPyEhdwjYWZ6m8zaAFJc8cIjn6WgfPsPYlzakP1CjlneNn2FK7+R
-         mKCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701182613; x=1701787413;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r02Q3LT4ApLAWvQfkMOWe99neSPOd4I55ym4hWDwTwM=;
-        b=S5xRmpnlzmw4rL2R2mJCOVYqDNd48W4qfG1q+HhTqfcSpI+MZFTTDt6ym79BnVQTyd
-         1ngcCqvAZn9Omi2dTAB2k4M/XkMSzfNMe2CVwZfaiqe4DZUjIFuuObqk+W4DtHvxqhcs
-         Vbn7WJVYak8rQ5rW8yUG0L0NH2kicfAi+YrDW4gvj3lfjJTp+pdS9E27nbutucw1kval
-         6789FHcu6Ovn+wF65eSSJcgGMANbEzJTlUWVoy8/qgVqf12qDF3j4Ie92/PwkNOzyNgl
-         YgDpG2KkOU2Df+6C+x5OFoww/lhC8hYiO4TE81Pr0HRKUw+llghguNbD1lvvTS2i/myK
-         nCDQ==
-X-Gm-Message-State: AOJu0YxXLVf6hwuvBlMIcgpehc+NIxzDF3LWrlEwnRZpesdPLRzJIgyU
-        IwiP+cgkVFvQ60m/PmqKhJIa8A==
-X-Google-Smtp-Source: AGHT+IHnS66hwzm6D5SdY1R1ksKrFCGar0o/ls3QzwYp8zGmlj8+lnENkfGjgSJcZzjB2dlgKhp5AA==
-X-Received: by 2002:a05:6870:f111:b0:1fa:3d07:89ea with SMTP id k17-20020a056870f11100b001fa3d0789eamr3764684oac.22.1701182612829;
-        Tue, 28 Nov 2023 06:43:32 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
-        by smtp.gmail.com with ESMTPSA id mp24-20020a056871329800b001f9f60859e5sm2339636oac.44.2023.11.28.06.43.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 06:43:32 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1r7zJD-0050Au-DQ;
-        Tue, 28 Nov 2023 10:43:31 -0400
-Date:   Tue, 28 Nov 2023 10:43:31 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     joro@8bytes.org, kevin.tian@intel.com, will@kernel.org,
-        iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] iommufd/selftest: Use a fwnode to distinguish devices
-Message-ID: <20231128144331.GA1191405@ziepe.ca>
-References: <cover.1701165201.git.robin.murphy@arm.com>
- <e365c08b21a8d0b60e6f5d1411be6701c1a06a53.1701165201.git.robin.murphy@arm.com>
+        Tue, 28 Nov 2023 09:44:44 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 775D88E;
+        Tue, 28 Nov 2023 06:44:51 -0800 (PST)
+Received: from notapiano (cola.collaboradmins.com [IPv6:2a01:4f8:1c1c:5717::1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: nfraprado)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 8FC1F66072A7;
+        Tue, 28 Nov 2023 14:44:47 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701182690;
+        bh=Og082W+PSa4+5mTtMkeABO/eaXozRb0GXaqspZ1T4tk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YM44BhIk4AoBxZhrTRTnU7Agoo7aoXPbUC+kkVuglrVw1oxHaC3sN8xCREdcJsw06
+         nkr38YpWD1IqnnPUZg0U1xrL42f2YkAagOaXzZbmapAdkdOOKx72TS7W6/NKBrQdGi
+         pSdVYBGbsAOUQmzKiYu686WEzswrT9EmB4QGR734x0tqIM5IVwVMJkIlN9wWe8M1Zf
+         QUEA1zCVt8AMmHKT4XbcFIJlEqyaQI+ygZlTOWLpatmlemGPx8hz/ZtFkBWT4zx/FP
+         k+trbQUknlfB3LDKn9G2JLuIf7r5XxE8bJy3BSPLEmHviNzpgOMQZ1rYkKOJOV5FUA
+         SSysqpsfwHfrA==
+Date:   Tue, 28 Nov 2023 09:43:53 -0500
+From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
+        <nfraprado@collabora.com>
+To:     "Bird, Tim" <Tim.Bird@sony.com>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "kernelci@lists.linux.dev" <kernelci@lists.linux.dev>,
+        David Gow <davidgow@google.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "kernel@collabora.com" <kernel@collabora.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        Doug Anderson <dianders@chromium.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v2 2/2] kselftest: devices: Add sample board file for
+ google,spherion
+Message-ID: <ee913bc5-c752-4da7-a140-7492f429c2cb@notapiano>
+References: <20231127233558.868365-1-nfraprado@collabora.com>
+ <20231127233558.868365-3-nfraprado@collabora.com>
+ <BN8PR13MB27384F089C7DAAF06DF9DDECFDBCA@BN8PR13MB2738.namprd13.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <e365c08b21a8d0b60e6f5d1411be6701c1a06a53.1701165201.git.robin.murphy@arm.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BN8PR13MB27384F089C7DAAF06DF9DDECFDBCA@BN8PR13MB2738.namprd13.prod.outlook.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -76,45 +73,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 10:42:11AM +0000, Robin Murphy wrote:
-> With bus ops gone, the trick of registering against a specific bus no
-> longer really works, and we start getting given devices from other buses
-> to probe,
+On Tue, Nov 28, 2023 at 12:10:46AM +0000, Bird, Tim wrote:
+> > -----Original Message-----
+> > From: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> > Add a sample board file describing the file's format and with the list
+> > of devices expected to be probed on the google,spherion machine as an
+> > example.
+> > 
+> > Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> > ---
+> > 
+> > (no changes since v1)
+> > 
+> >  .../testing/selftests/devices/boards/google,spherion | 12 ++++++++++++
+> 
+> Overall, while trying to maintain a comprehensive set of board definitions
+> seems hard, I think having a few as examples is useful.
+> 
+> I'm not a big fan of naming these with a comma in the name.  Is there a reason
+> you are not using dash or underscore?
 
-Make sense
+I'm using the name that we get from the DT compatible, so the right file can be
+automatically selected by the test.
 
-> which leads to spurious groups for devices with no IOMMU on
-> arm64, 
+> 
+> Do you anticipate a convention of  <producer> <board-or-product-name> tuples for
+> the filename?
 
-I'm not sure I'm fully understanding what this means?
+I'd just stick to the DT compatible as it's the simplest option and should work
+just the same, assuming I understood correctly what you mean.
 
-I guess that the mock driver is matching random things once it starts
-being called all the time because this is missing:
-
- static struct iommu_device *mock_probe_device(struct device *dev)
- {
-+       if (dev->bus != &iommufd_mock_bus_type)
-+               return -ENODEV;
-        return &mock_iommu_device;
- }
-
-Is that sufficient to solve the problem?
-
-> but may inadvertently steal devices from the real IOMMU on Intel,
-> AMD or S390. 
-
-AMD/Intel/S390 drivers already reject bus's they don't understand.
-
-Intel's device_to_iommu() will fail because
-for_each_active_dev_scope() will never match the mock device.
-
-amd fails because check_device() -> get_device_sbdf_id() fails due to
-no PCI and not get_acpihid_device_id().
-
-s390 fails because !dev_is_pci(dev).
-
-The fwspec drivers should all fail if they don't have a fwspec, and
-they shouldn't for mock bus devices since it doesn't implement
-dma_configure.
-
-Jason
+Thanks,
+Nícolas
