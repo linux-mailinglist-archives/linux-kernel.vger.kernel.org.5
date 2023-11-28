@@ -2,217 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 431457FAF1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 01:36:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C3C7FAEE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 01:11:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234242AbjK1Ag2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 19:36:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59114 "EHLO
+        id S234052AbjK1AL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 19:11:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231391AbjK1Ag0 (ORCPT
+        with ESMTP id S229637AbjK1ALZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 19:36:26 -0500
-X-Greylist: delayed 1507 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 27 Nov 2023 16:36:32 PST
-Received: from mx08-001d1705.pphosted.com (mx08-001d1705.pphosted.com [185.183.30.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B24341A2;
-        Mon, 27 Nov 2023 16:36:32 -0800 (PST)
-Received: from pps.filterd (m0209318.ppops.net [127.0.0.1])
-        by mx08-001d1705.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARMDE4j025363;
-        Tue, 28 Nov 2023 00:10:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sony.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : mime-version :
- content-type : content-transfer-encoding; s=S1;
- bh=MRn2eyz7OH/SrlGvAzHCG56tDOQonGKFHRM+I5MFfuo=;
- b=A4OvNYtL+Gh0zcFCcPKRte3Pmtr6oTI5GhJzBXzZKKT3W0UDQ27VUYmrIeGDPS74sTFy
- dEgojgMZlRNU1+sy8mCiv5ry5G668YfV57i+67vgai+Iaqg/HIlA4CotstXLHuDrc8lO
- hZPMLnAZsb8fGke347LJ+HE7A/hvXcT7GQ6PjIeRqthg3XemM8hQE5Oyr12sGMO+2LL9
- IgQdTZrUAuKz9xuoWBzmAcEKtYHndkEFet/rnn9je+9kR3SvMaJVj62rghmqJgBDQ6IY
- wEz5BtPCtIuvhqBXfzFFAcEmVBi8h7m6IXlBpn26aOYXiCzYEL/eWGFz8vVnyo7pGEYB 0Q== 
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2168.outbound.protection.outlook.com [104.47.56.168])
-        by mx08-001d1705.pphosted.com (PPS) with ESMTPS id 3uk7g6a76w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 28 Nov 2023 00:10:52 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LrhV2mi+mbraYuK+mbX5NHKQ808t0isya3WEVTtUgUk23s7K5Ydl4QAQw2+WcUJn2SUSCRIIFpvUxQ7dhb7AJhHdWCQoDMukoSn3oJdJrsdEKabTJsrz6F8GJ4+yptBEV5ve1KbgtVKoSEJ8350hV37NM47qiw0+SQqYZfzplx3qEfs0gLQ7ayjeArtCfD3/JW4WgqpD7WKB1IfNMhR+f3cuOGhs4kZDlriZlKOJZyaqO7OyvKI5rDvm18GAgU118dEHMX6FwCILquq0+BFbE0CNLms21/72BTH/W35yVjo1uOseIB44CLhkVS6o/J7vhrXq+Fc/1tQwAn7wu6oWWg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MRn2eyz7OH/SrlGvAzHCG56tDOQonGKFHRM+I5MFfuo=;
- b=UWa4JE2T8j4REB90dBqR4WFA3xPrm2Z4nY8QCgNvDr5rjmUU/yqAP5F/lMJ2qydPFJJQzAjoHjiuOk82FaLEv8iA0jG+DpIce9V3n3m5jW4ljGgSQHgZYk+RKYE3VVQAtTqQfwDHUa/HwvziZV1JX03mybfcj45OiigITzi4eRGobNDUyVA9j2KX8e1Z8FCp65MNBkVpHNAnXf/SVW3msLUWzkoqtAmxABsH9xF755tV5luslkOeqNQcuGxEzAL07NeVH7sfb77j1oVK+YjPOuOxrl9UQ6Jli+2JCWOj+AJsO7mQ6cML8bOPssKlfEt3HIfDWdXh0SJmZjE8Sg+cqA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=sony.com; dmarc=pass action=none header.from=sony.com;
- dkim=pass header.d=sony.com; arc=none
-Received: from BN8PR13MB2738.namprd13.prod.outlook.com (2603:10b6:408:8d::28)
- by PH7PR13MB5913.namprd13.prod.outlook.com (2603:10b6:510:158::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Tue, 28 Nov
- 2023 00:10:47 +0000
-Received: from BN8PR13MB2738.namprd13.prod.outlook.com
- ([fe80::58b:bf63:b6b:706c]) by BN8PR13MB2738.namprd13.prod.outlook.com
- ([fe80::58b:bf63:b6b:706c%6]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
- 00:10:46 +0000
-From:   "Bird, Tim" <Tim.Bird@sony.com>
-To:     =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
-        <nfraprado@collabora.com>, Shuah Khan <shuah@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-CC:     Saravana Kannan <saravanak@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "kernelci@lists.linux.dev" <kernelci@lists.linux.dev>,
-        David Gow <davidgow@google.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "kernel@collabora.com" <kernel@collabora.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        Doug Anderson <dianders@chromium.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC PATCH v2 2/2] kselftest: devices: Add sample board file for
- google,spherion
-Thread-Topic: [RFC PATCH v2 2/2] kselftest: devices: Add sample board file for
- google,spherion
-Thread-Index: AQHaIYqHCCVqMV2IwESZQPAOrwlnnbCO2peQ
-Date:   Tue, 28 Nov 2023 00:10:46 +0000
-Message-ID: <BN8PR13MB27384F089C7DAAF06DF9DDECFDBCA@BN8PR13MB2738.namprd13.prod.outlook.com>
-References: <20231127233558.868365-1-nfraprado@collabora.com>
- <20231127233558.868365-3-nfraprado@collabora.com>
-In-Reply-To: <20231127233558.868365-3-nfraprado@collabora.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN8PR13MB2738:EE_|PH7PR13MB5913:EE_
-x-ms-office365-filtering-correlation-id: a7793d92-7404-420c-8442-08dbefa6780f
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5NS1h0s93VHnvAG+jqQnDOpnQ6VkFsjtp/xxGq1M1M1YQU5z5Utcw/0YXxChNSnpS1nplPL7cMwqkiydP95jmLbtB2O4nc/jYZwoBhhHdJwM3vRI2bGpwG+2/mbt8on4oHipVBwZumePvw+qeeNlKZZFxUAyC3WBZExqhVeR5K7SbhgBVDvW9tfjz7Dl48cjtNvcku9qUz6V3o5gGDbJfniXMhitk7K9+9WcHXhCAM9SKYgyVxQ+iTwSSh24XcozYl2JqQIhYuumQiX7yPLR0zSs8ye3sw5OO6pzk3z5+npOuh/edkBrAtwiYZNcqJA/p6X1E2HLfzbGvkU9PLBFh+BFFEsveYWEjRNOQen2eYEsbeD+AYfRk53vCx5ZJM61Od5lqG8BgpiHVhu1+Yo3gF77B4ahDKAfUZzvvrCdvpq6ey5o9Rsh0TUwSQECuZbGZv1k7NCHlYIdjm0CTu+4zIULy9ZXceqx+vdITnzKwgFXXNlSbrneu5/VDyFglQyLFk+Zd53/R3meqKusI305jXiiFGJOQTFXw4tLgo5WakdSzWHqmGlp1hWZnLaXVLO8D2HFexfprSOCxQcw25I6bUA6y+a54TKrBRuUbSivVBAdRnbHCs1/vZG3Q5CJ8FCBiE9TbmAzKxfKIkplxNEHXCRH6/7rzhSjA/M1sNsbN5E=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR13MB2738.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(136003)(39860400002)(346002)(376002)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(52536014)(8936002)(8676002)(4326008)(9686003)(71200400001)(6506007)(7696005)(64756008)(54906003)(110136005)(66556008)(66476007)(76116006)(66946007)(316002)(478600001)(66446008)(122000001)(55016003)(41300700001)(38100700002)(38070700009)(33656002)(86362001)(26005)(2906002)(83380400001)(7416002)(5660300002)(82960400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?K1Vxd2pDUU9NN3JUaVoxNHdGVktpWW9Yb0hrbWN5MEFTcklzajRsNXFQaURC?=
- =?utf-8?B?RU9uVjRSNm9OdjREM1owMlhRdDhKNE1EaGxWQk43STVtSjBzNVRRRDBpUFB5?=
- =?utf-8?B?Q2hkcS9lUk5tK3NNSFU3ZmE5cC9tbWt0SDFwa2p1bWpGTU5CS0R2eWRpSVZp?=
- =?utf-8?B?K0h0QXQ1QVJzSHY0bmlUaG5IOUtSbDhIaHR5TThrV3Rlam1pZmJQblZib0d2?=
- =?utf-8?B?a2I4RXRPVFRIT2JZTjk5TjBzMDBXRnhndDd6NEhqWmRpOFBmRTFyTEtHVUw5?=
- =?utf-8?B?eU5WbkE2K2ZZWVZBZEZZelp3MVhiZER0V05VYk5VNFg2UWZSdy9nVkM0V0lw?=
- =?utf-8?B?QWJwSzliaDBHeGdVNTBEaWx4Vyt4aGtnVmppUHFSR2FReU1TVW1RZmJtSG1B?=
- =?utf-8?B?b0g5cW1oRjBINXFzMmtJZ2ZWT3BDRTNhaVhCTjVnU3JxcE9KZHozdGg5cG1J?=
- =?utf-8?B?UHJzb25EZUNzMUdnU25MQjlJYnhNcS9XcWoxa0dpLzU4SjdoVE1rY1gyc0sy?=
- =?utf-8?B?OEpXdHpqTkV3TDBibHQ3MXFOVzYyazhuQVpPN1hsNzRpTFlYazVFZ2JUaC9B?=
- =?utf-8?B?blRKc1JZcVdhdUhKWHpRYVlDTVRYZmdCQjBJNVNuZVZOaDQzNWU2cG9EVUdL?=
- =?utf-8?B?YnpKUDdEeGRFVnNrcDZFc3oxRFZpbXhaSlVBa09vVDN4Vmp6TWY4TnpKcXFi?=
- =?utf-8?B?b0dkeWYrcjJZRHhETHY4aFpTQldINVdZT2trdG5pNUlONjlqMnBkWVFXWnJX?=
- =?utf-8?B?ZkxwUGF6Yk1nandrbEFObkxXWUU1aWlWQU9uQ2lqSHNxZkRGdnRRZXdNRXlz?=
- =?utf-8?B?dENIeHBGMkRlUmVqZWV1NUhDYUd4Sm5LTnFDWnBKblByYlpkY3dZVEJXelRK?=
- =?utf-8?B?blJYZ2ZhZzY5cXRJOTN0ZVhKNERGR0xtci9zOXhacUhYY1BrRllpa1JIYVM4?=
- =?utf-8?B?VlFxendNc1BLSTcvdmhod3hiY0VrcUV5MkVibENISC9HN2dqY0hBZUg3Q0l6?=
- =?utf-8?B?Y3B3RU5ydFludVdsdVkwU1hrM2V6Rm5wQ1dBVTdmbzhTbG1Ic0p2amNGd3Ir?=
- =?utf-8?B?MEl1dzdYQWpnTVJ4VHdzQklZdk9WWXAyVWp5cnlQd1BkTUVGUlg5SjVwNWl1?=
- =?utf-8?B?S1lHSk5GSnNRMHREVC9JNmpYUFY0YWhZQ2IzNXJwYXZPSFAwZGN1U015Umtk?=
- =?utf-8?B?cDJBNjA3Tk85R1BRM3VyRG1NMkwvTlFHSFJ6anlKRE1uK1VzbmFLN2Z6aGVF?=
- =?utf-8?B?SW5TYlVQYXdrRERxK0FJWkQwWHg3L0pmZ3Rvc1ZnUGFLS21jZ2g3MmFpQU5D?=
- =?utf-8?B?YnNXNTFJTDZFdlgrK1hTMjJaRklZVVZOci9RU2dSVXBqSlJYaXYxQ2s0cXNx?=
- =?utf-8?B?T05PK1JXaDJwVWpFM0NHYW81Q2t1Rk1vV2x1NlIya0RqbUhoUklLdUNFVmpX?=
- =?utf-8?B?RDdLYjJoZmIvWXRVK292MDN4MjMyUU9IQWNzTjFpaFAzOFFaVld0YVNpNi84?=
- =?utf-8?B?V1Zha25iNU9FR1ZKeTVYUUxIYUg3QnNwQm9qZU1yWENlazRyL1pPZ2ZyZy95?=
- =?utf-8?B?cnVRcjlYdkZtb3JZU2h0NXlzS1k1Z2Q5bG55Z0FKZnZSdWVZSUxyMHMydFhJ?=
- =?utf-8?B?VEc0c3ZNYWpMaVBldllmK2VpeFVrclZIdzNqWkhwOXEzWk4wVzN4ZjlVTjZU?=
- =?utf-8?B?eXpvVkExT1loVXlyNmFzYjlSSndtQ1lXZG52b0RlMXFqempYMUVFZ3lOY2dk?=
- =?utf-8?B?UTRJa09neG9VR3ZDTDQ2NjZTTjB4dW96b3JWZ0lzaEFaWW4zRS9XR1ZuS0pM?=
- =?utf-8?B?dHMwWnBqZ3kyc2NjOFl6NTd6dENJam9oakx2L0UxRHBscWhFeE1Za0xiamVX?=
- =?utf-8?B?ZEtTQW4rQjJBc0RnSEs2NEY0VjF4WHVvKy9rQTlNd1JWVmpjOFRLQzJ4dWhm?=
- =?utf-8?B?SFBVMlRnME9EcnB5cUhIUUdKSTRPUnV3L3Nsbk1PSnFLOFRObXA5UmFUYjE2?=
- =?utf-8?B?ZEtPby9IMzVLYUtkTEIwWnlXVEdsM0JJMkZXUzBxVVVFWjV1NVNWVEZERlZW?=
- =?utf-8?B?c25CK044MkprdmsxQllYZUJlY2hja1loQUFhNWFJSTNlTUZieWpnWE9IeE1I?=
- =?utf-8?Q?z3N0=3D?=
+        Mon, 27 Nov 2023 19:11:25 -0500
+Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB9A8191
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 16:11:31 -0800 (PST)
+Received: by mail-ua1-x92b.google.com with SMTP id a1e0cc1a2514c-7b9c8706fc1so1181114241.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 16:11:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701130291; x=1701735091; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hLPwMqJishFcOcomBEvrOdMlrWf+v3GiVQnwOo3w4A0=;
+        b=NjxANURHu7lJHewk5I2AuzvPfYJmLODVdNfj3bf1S41mrRZD/3obWns6QX4GHouUA8
+         axakrnI1SQzdyq6kpxjwMJlUakZis0fsfRkZwx35UpjTOmebyLImN7Xhl0tG5QYLxqPd
+         Z/NIpypiLV+lN+jq3+z5wy9f5yiYcfUXlq6fUfWsw2mXUMjQl9rR419IdlhQA1VJg7iq
+         715yyJ1si/b2RRDjvjyPinhDMjvqeEsByvMlomYG+DYxvLQB2jc3/a7wVF9s2OvzEMBz
+         1l8ZQqaElPGQ1koG9jvC8SUHsVcT1oyrkqkXodg+NxRBHD5h6CZQQMkmXzRkHJGM5wIy
+         l1YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701130291; x=1701735091;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hLPwMqJishFcOcomBEvrOdMlrWf+v3GiVQnwOo3w4A0=;
+        b=xSuHq2x2jCD2DyTEd/Q0d36IJzueg1ZuT7hpmoTG5yE4S8L3jbfPGf+I4jq/kwWpvs
+         YH4nix46cuSgTONSKsr/lHrMa+Q5GAf6SiQPACYYCVz1BkXDUnWa8gOpYoxUVJObp7AE
+         +q24BfV60I9h9KMJsEo+NYbhx7XwL0JCTEXL4p7irKPZrKmm8M1pFMFmhzHjFe9IN3H1
+         7Mzu4ACp7oPFu708Bz5EaunxlrecG4mE3v9BFigsjAZRM7Fn4h0RWTDvU2h1sGM4+v3V
+         1uoiKuqoPORTv0WGS4uA6Z9GE57YFu6s8tnhP+4TRma/IdZ7TrT8r2cfY7+RyZBLMkXS
+         4CCA==
+X-Gm-Message-State: AOJu0Ywt6wlZmQB+JVAxJ10+z4BB1CbBRz71i7NMfnMiq273gvAsgww+
+        i6BlWOt1RXX/GK0Ktthx/9Ms2jdztc3CIlMvFbA=
+X-Google-Smtp-Source: AGHT+IGu7la2NIj9H3ri3a5UzeqzTVlJJ6Ex6kMGy2z00l2RQXwr+JP0sF+ttbzxDwb7DmwDrrh7D+hgIffFXLQun4E=
+X-Received: by 2002:a05:6122:1d45:b0:49c:b45:6cba with SMTP id
+ gd5-20020a0561221d4500b0049c0b456cbamr13788833vkb.12.1701130290684; Mon, 27
+ Nov 2023 16:11:30 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?RUdsaUxZS0M1TFdaTjJYQkJwN3YwWW9mQVVDTC9TUmRoVmdITFRkRlJCV3RV?=
- =?utf-8?B?RkpuN3NvOEZtMTA3d3ppWUhvNU5TTndUMlJWT2xwckVPZ2xqTU9Jb3k4Mmtp?=
- =?utf-8?B?aytvMm5wbit1L2R0K1ZtQ3doWTd1MDFyR21KODFzYTFZT0sxT0ZFbE4rRENP?=
- =?utf-8?B?TmpUVjd1cFFka09VbCtvRGhoM3lFQlJmdkIxTFYzUDQ2eUxBNENJWjFqUlpO?=
- =?utf-8?B?U2lGTllzQU41RExvOW91UmMxVUtLUnNFb2tKMTNOVndrY0g4YjhZQ1FrNTc4?=
- =?utf-8?B?OFZqTW9oYlBXR2JOYmVPMXphZmhXbWt4UElTM1dBbWhUcEZzVXhXZ3UzQ1hw?=
- =?utf-8?B?NlZLUVVqNDhrOE9DU2szdmk3RC9VYnFPVS9PN1dKZ0VlN0hxVGZWdHZrcUFW?=
- =?utf-8?B?TUc3K3pGaHhPbTdxSFpoTW5KaVF2ZTFqcTA3cEhvbmxPZFhSM3A5SnF1TzhW?=
- =?utf-8?B?alkveUJES1Y3RGRrR3U3K2RYUXdBUVUrR015dVJwa2dQN2V3dkNUZTdEMXJL?=
- =?utf-8?B?RVpTVUdsRndIQkprLzJNd0k1eGZzbzFCVDhyYy9aU2xGYTZqam90QTlXWm9W?=
- =?utf-8?B?ZHJkM1cxWlVXaFFCYWNoM1o1RjV4UnRDc3V6TmQ5Y2NaSEZRZ2dzNHZuSzVF?=
- =?utf-8?B?aXl0VG1mREpub3M5ZUpOeWpxSEswMXB3NkpueGJWRGhnSmRrd240T1JJMDRq?=
- =?utf-8?B?MnRXUHk3Q3lrcUtnTVlHTGJYamtPUlVSQWFvVzdMaUg5b3R5dG42MENObEdU?=
- =?utf-8?B?bnBrSmlZUGoxeHVMRUM0czJJVzBudzJZM0F4UEtwdUtSSlpmUnpjakw4WkJv?=
- =?utf-8?B?UmF4TU1iVklGNHN1dDZtWjBWWXBBTU14Z2hUcWtXREIzZVk3Y3dGOFhjN0w0?=
- =?utf-8?B?TlkzQjJXWDJmYitjUkR6alMrYkJMbGh1Z0NsN0h4cHR0TjN1VXJRTThLUDJZ?=
- =?utf-8?B?R1Ira05pcnUvV2todksyMkR1Y3JsTER0M24wRlh2OUpHRzZRa3Y1OTAvK0pn?=
- =?utf-8?B?RFJGeHVGSkFJMWIzSHhRaWJscVlaeTlaRUlnWXZ1VEVDSDI4Y0kwMjdrVXRL?=
- =?utf-8?B?V0lIRWtkZWNrczNEYTMzcmc1UElML1VEd0tEbjBUUjIzL2hZUkJVV21uZzFZ?=
- =?utf-8?B?d01uV3loRktXTWJCQ2JTUE1lTHdrL3ZCUzB2d2tzdnZtWG1uUHRqNDk1bHFZ?=
- =?utf-8?B?S0pGUkh5V1BVclZ6TlJHbjViZ290UmN0NXZJRXE4ZVdRT0ZIdjNNOVFSUFEz?=
- =?utf-8?B?c3ZpMnFwUmUzWXUybW9rajFGRnlpRWJteVZPY1dTblR2cFk0dFBZM3JoUUxB?=
- =?utf-8?B?amVnQ05obFA0akZoeWo5ZC9pVVViRVlCUTlNY1Z1cXVPK3FMSUI4MFlPTTNH?=
- =?utf-8?Q?Iv0U0NkTTamqSTmgS0cbFLaCSaMQBwi8=3D?=
-X-OriginatorOrg: sony.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR13MB2738.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a7793d92-7404-420c-8442-08dbefa6780f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Nov 2023 00:10:46.0795
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 66c65d8a-9158-4521-a2d8-664963db48e4
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jMqKYkqqSznhw4GAJbSZOvIzrN9HYBbhNpWeA6wBVj4SLjLTcUEBfWSrN4b74FcwCb9J1+2n6o3ahsLbF6WfxA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR13MB5913
-X-Proofpoint-GUID: fWru3I_Sx1KzvcOT8X9kr-CHOAyX7H9-
-X-Proofpoint-ORIG-GUID: fWru3I_Sx1KzvcOT8X9kr-CHOAyX7H9-
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-X-Sony-Outbound-GUID: fWru3I_Sx1KzvcOT8X9kr-CHOAyX7H9-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-27_20,2023-11-27_01,2023-05-22_02
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231115163018.1303287-2-ryan.roberts@arm.com>
+ <20231127055414.9015-1-v-songbaohua@oppo.com> <755343a1-ce94-4d38-8317-0925e2dae3bc@arm.com>
+In-Reply-To: <755343a1-ce94-4d38-8317-0925e2dae3bc@arm.com>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Tue, 28 Nov 2023 13:11:19 +1300
+Message-ID: <CAGsJ_4z_ftxvG-EcTe=X+Te8fNSShhVHHPvbEgAa1rQXgO5XCA@mail.gmail.com>
+Subject: Re: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     akpm@linux-foundation.org, andreyknvl@gmail.com,
+        anshuman.khandual@arm.com, ardb@kernel.org,
+        catalin.marinas@arm.com, david@redhat.com, dvyukov@google.com,
+        glider@google.com, james.morse@arm.com, jhubbard@nvidia.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mark.rutland@arm.com, maz@kernel.org,
+        oliver.upton@linux.dev, ryabinin.a.a@gmail.com,
+        suzuki.poulose@arm.com, vincenzo.frascino@arm.com,
+        wangkefeng.wang@huawei.com, will@kernel.org, willy@infradead.org,
+        yuzenghui@huawei.com, yuzhao@google.com, ziy@nvidia.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBOw61jb2xhcyBGLiBSLiBBLiBQ
-cmFkbyA8bmZyYXByYWRvQGNvbGxhYm9yYS5jb20+DQo+IEFkZCBhIHNhbXBsZSBib2FyZCBmaWxl
-IGRlc2NyaWJpbmcgdGhlIGZpbGUncyBmb3JtYXQgYW5kIHdpdGggdGhlIGxpc3QNCj4gb2YgZGV2
-aWNlcyBleHBlY3RlZCB0byBiZSBwcm9iZWQgb24gdGhlIGdvb2dsZSxzcGhlcmlvbiBtYWNoaW5l
-IGFzIGFuDQo+IGV4YW1wbGUuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBOw61jb2xhcyBGLiBSLiBB
-LiBQcmFkbyA8bmZyYXByYWRvQGNvbGxhYm9yYS5jb20+DQo+IC0tLQ0KPiANCj4gKG5vIGNoYW5n
-ZXMgc2luY2UgdjEpDQo+IA0KPiAgLi4uL3Rlc3Rpbmcvc2VsZnRlc3RzL2RldmljZXMvYm9hcmRz
-L2dvb2dsZSxzcGhlcmlvbiB8IDEyICsrKysrKysrKysrKw0KDQpPdmVyYWxsLCB3aGlsZSB0cnlp
-bmcgdG8gbWFpbnRhaW4gYSBjb21wcmVoZW5zaXZlIHNldCBvZiBib2FyZCBkZWZpbml0aW9ucw0K
-c2VlbXMgaGFyZCwgSSB0aGluayBoYXZpbmcgYSBmZXcgYXMgZXhhbXBsZXMgaXMgdXNlZnVsLg0K
-DQpJJ20gbm90IGEgYmlnIGZhbiBvZiBuYW1pbmcgdGhlc2Ugd2l0aCBhIGNvbW1hIGluIHRoZSBu
-YW1lLiAgSXMgdGhlcmUgYSByZWFzb24NCnlvdSBhcmUgbm90IHVzaW5nIGRhc2ggb3IgdW5kZXJz
-Y29yZT8NCg0KRG8geW91IGFudGljaXBhdGUgYSBjb252ZW50aW9uIG9mICA8cHJvZHVjZXI+IDxi
-b2FyZC1vci1wcm9kdWN0LW5hbWU+IHR1cGxlcyBmb3INCnRoZSBmaWxlbmFtZT8NCiAtLSBUaW0N
-Cg0KPiAgMSBmaWxlIGNoYW5nZWQsIDEyIGluc2VydGlvbnMoKykNCj4gIGNyZWF0ZSBtb2RlIDEw
-MDY0NCB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9kZXZpY2VzL2JvYXJkcy9nb29nbGUsc3BoZXJp
-b24NCj4gDQo+IGRpZmYgLS1naXQgYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9kZXZpY2VzL2Jv
-YXJkcy9nb29nbGUsc3BoZXJpb24gYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9kZXZpY2VzL2Jv
-YXJkcy9nb29nbGUsc3BoZXJpb24NCj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gaW5kZXggMDAw
-MDAwMDAwMDAwLi5kYjlhMTdjY2NkMDMNCj4gLS0tIC9kZXYvbnVsbA0KPiArKysgYi90b29scy90
-ZXN0aW5nL3NlbGZ0ZXN0cy9kZXZpY2VzL2JvYXJkcy9nb29nbGUsc3BoZXJpb24NCj4gQEAgLTAs
-MCArMSwxMiBAQA0KPiArIyBFeGFtcGxlIHRlc3QgZGVmaW5pdGlvbiBmb3IgR29vZ2xlIFNwaGVy
-aW9uIENocm9tZWJvb2sNCj4gKyMNCj4gKyMgRm9ybWF0Og0KPiArIyAgIHVzYnxwY2kgdGVzdF9u
-YW1lIG51bWJlcl9vZl9tYXRjaGVzIGZpZWxkPXZhbHVlIFsgZmllbGQ9dmFsdWUgLi4uIF0NCj4g
-KyMNCj4gKyMgVGhlIGF2YWlsYWJsZSBtYXRjaCBmaWVsZHMgdmFyeSBieSBidXMuIFRoZSBmaWVs
-ZC12YWx1ZSBtYXRjaCBwYWlycyBmb3IgYQ0KPiArIyBkZXZpY2UgY2FuIGJlIHJldHJpZXZlZCBm
-cm9tIHRoZSBkZXZpY2UncyBtb2RhbGlhcyBhdHRyaWJ1dGUgaW4gc3lzZnMuIEENCj4gKyMgc3Vi
-c2V0IG9mIHRoZSBmaWVsZHMgbWF5IGJlIHVzZWQgdG8gbWFrZSB0aGUgbWF0Y2ggbW9yZSBnZW5l
-cmljIHNvIGl0IGNhbiB3b3JrDQo+ICsjIHdpdGggdGhlIGRpZmZlcmVudCBoYXJkd2FyZSB2YXJp
-YW50cyBvZiBhIGRldmljZSBvbiB0aGUgbWFjaGluZS4NCj4gK3VzYiBjYW1lcmEgMSBpYz0wZSBp
-c2M9MDEgaXA9MDANCj4gK3VzYiBibHVldG9vdGggMSBpYz1lMCBpc2M9MDEgaXA9MDEgaW49MDAN
-Cj4gK3BjaSB3aWZpIDEgdj0xNGMzIGQ9Nzk2MQ0KPiAtLQ0KPiAyLjQyLjENCg0K
+On Mon, Nov 27, 2023 at 10:24=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.com=
+> wrote:
+>
+> On 27/11/2023 05:54, Barry Song wrote:
+> >> +copy_present_ptes(struct vm_area_struct *dst_vma, struct vm_area_stru=
+ct *src_vma,
+> >> +              pte_t *dst_pte, pte_t *src_pte,
+> >> +              unsigned long addr, unsigned long end,
+> >> +              int *rss, struct folio **prealloc)
+> >>  {
+> >>      struct mm_struct *src_mm =3D src_vma->vm_mm;
+> >>      unsigned long vm_flags =3D src_vma->vm_flags;
+> >>      pte_t pte =3D ptep_get(src_pte);
+> >>      struct page *page;
+> >>      struct folio *folio;
+> >> +    int nr =3D 1;
+> >> +    bool anon;
+> >> +    bool any_dirty =3D pte_dirty(pte);
+> >> +    int i;
+> >>
+> >>      page =3D vm_normal_page(src_vma, addr, pte);
+> >> -    if (page)
+> >> +    if (page) {
+> >>              folio =3D page_folio(page);
+> >> -    if (page && folio_test_anon(folio)) {
+> >> -            /*
+> >> -             * If this page may have been pinned by the parent proces=
+s,
+> >> -             * copy the page immediately for the child so that we'll =
+always
+> >> -             * guarantee the pinned page won't be randomly replaced i=
+n the
+> >> -             * future.
+> >> -             */
+> >> -            folio_get(folio);
+> >> -            if (unlikely(page_try_dup_anon_rmap(page, false, src_vma)=
+)) {
+> >> -                    /* Page may be pinned, we have to copy. */
+> >> -                    folio_put(folio);
+> >> -                    return copy_present_page(dst_vma, src_vma, dst_pt=
+e, src_pte,
+> >> -                                             addr, rss, prealloc, pag=
+e);
+> >> +            anon =3D folio_test_anon(folio);
+> >> +            nr =3D folio_nr_pages_cont_mapped(folio, page, src_pte, a=
+ddr,
+> >> +                                            end, pte, &any_dirty);
+> >
+> > in case we have a large folio with 16 CONTPTE basepages, and userspace
+> > do madvise(addr + 4KB * 5, DONTNEED);
+>
+> nit: if you are offsetting by 5 pages from addr, then below I think you m=
+ean
+> page0~page4 and page6~15?
+>
+> >
+> > thus, the 4th basepage of PTE becomes PTE_NONE and folio_nr_pages_cont_=
+mapped()
+> > will return 15. in this case, we should copy page0~page3 and page5~page=
+15.
+>
+> No I don't think folio_nr_pages_cont_mapped() will return 15; that's cert=
+ainly
+> not how its intended to work. The function is scanning forwards from the =
+current
+> pte until it finds the first pte that does not fit in the batch - either =
+because
+> it maps a PFN that is not contiguous, or because the permissions are diff=
+erent
+> (although this is being relaxed a bit; see conversation with DavidH again=
+st this
+> same patch).
+>
+> So the first time through this loop, folio_nr_pages_cont_mapped() will re=
+turn 5,
+> (page0~page4) then the next time through the loop we will go through the
+> !present path and process the single swap marker. Then the 3rd time throu=
+gh the
+> loop folio_nr_pages_cont_mapped() will return 10.
+
+one case we have met by running hundreds of real phones is as below,
+
+
+static int
+copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_v=
+ma,
+               pmd_t *dst_pmd, pmd_t *src_pmd, unsigned long addr,
+               unsigned long end)
+{
+        ...
+        dst_pte =3D pte_alloc_map_lock(dst_mm, dst_pmd, addr, &dst_ptl);
+        if (!dst_pte) {
+                ret =3D -ENOMEM;
+                goto out;
+        }
+        src_pte =3D pte_offset_map_nolock(src_mm, src_pmd, addr, &src_ptl);
+        if (!src_pte) {
+                pte_unmap_unlock(dst_pte, dst_ptl);
+                /* ret =3D=3D 0 */
+                goto out;
+        }
+        spin_lock_nested(src_ptl, SINGLE_DEPTH_NESTING);
+        orig_src_pte =3D src_pte;
+        orig_dst_pte =3D dst_pte;
+        arch_enter_lazy_mmu_mode();
+
+        do {
+                /*
+                 * We are holding two locks at this point - either of them
+                 * could generate latencies in another task on another CPU.
+                 */
+                if (progress >=3D 32) {
+                        progress =3D 0;
+                        if (need_resched() ||
+                            spin_needbreak(src_ptl) || spin_needbreak(dst_p=
+tl))
+                                break;
+                }
+                ptent =3D ptep_get(src_pte);
+                if (pte_none(ptent)) {
+                        progress++;
+                        continue;
+                }
+
+the above iteration can break when progress > =3D32. for example, at the
+beginning,
+if all PTEs are none, we break when progress >=3D32, and we break when we
+are in the 8th pte of 16PTEs which might become CONTPTE after we release
+PTL.
+
+since we are releasing PTLs, next time when we get PTL, those pte_none() mi=
+ght
+become pte_cont(), then are you going to copy CONTPTE from 8th pte,
+thus, immediately
+break the consistent CONPTEs rule of hardware?
+
+pte0 - pte_none
+pte1 - pte_none
+...
+pte7 - pte_none
+
+pte8 - pte_cont
+...
+pte15 - pte_cont
+
+so we did some modification to avoid a break in the middle of PTEs
+which can potentially
+become CONTPE.
+do {
+                /*
+                * We are holding two locks at this point - either of them
+                * could generate latencies in another task on another CPU.
+                */
+                if (progress >=3D 32) {
+                                progress =3D 0;
+#ifdef CONFIG_CONT_PTE_HUGEPAGE
+                /*
+                * XXX: don't release ptl at an unligned address as
+cont_pte might form while
+                * ptl is released, this causes double-map
+                */
+                if (!vma_is_chp_anonymous(src_vma) ||
+                   (vma_is_chp_anonymous(src_vma) && IS_ALIGNED(addr,
+HPAGE_CONT_PTE_SIZE)))
+#endif
+                if (need_resched() ||
+                   spin_needbreak(src_ptl) || spin_needbreak(dst_ptl))
+                                break;
+}
+
+We could only reproduce the above issue by running thousands of phones.
+
+Does your code survive from this problem?
+
+>
+> Thanks,
+> Ryan
+>
+> >
+> > but the current code is copying page0~page14, right? unless we are imme=
+diatly
+> > split_folio to basepages in zap_pte_range(), we will have problems?
+> >
+> >> +
+> >> +            for (i =3D 0; i < nr; i++, page++) {
+> >> +                    if (anon) {
+> >> +                            /*
+> >> +                             * If this page may have been pinned by t=
+he
+> >> +                             * parent process, copy the page immediat=
+ely for
+> >> +                             * the child so that we'll always guarant=
+ee the
+> >> +                             * pinned page won't be randomly replaced=
+ in the
+> >> +                             * future.
+> >> +                             */
+> >> +                            if (unlikely(page_try_dup_anon_rmap(
+> >> +                                            page, false, src_vma))) {
+> >> +                                    if (i !=3D 0)
+> >> +                                            break;
+> >> +                                    /* Page may be pinned, we have to=
+ copy. */
+> >> +                                    return copy_present_page(
+> >> +                                            dst_vma, src_vma, dst_pte=
+,
+> >> +                                            src_pte, addr, rss, preal=
+loc,
+> >> +                                            page);
+> >> +                            }
+> >> +                            rss[MM_ANONPAGES]++;
+> >> +                            VM_BUG_ON(PageAnonExclusive(page));
+> >> +                    } else {
+> >> +                            page_dup_file_rmap(page, false);
+> >> +                            rss[mm_counter_file(page)]++;
+> >> +                    }
+> >
+
+Thanks
+Barry
