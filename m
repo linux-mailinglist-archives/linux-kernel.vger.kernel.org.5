@@ -2,85 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DDA57FB368
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:59:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE897FB369
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:59:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343904AbjK1H7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 02:59:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58900 "EHLO
+        id S1343942AbjK1H7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 02:59:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjK1H7F (ORCPT
+        with ESMTP id S230353AbjK1H7S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 02:59:05 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7DEC98;
-        Mon, 27 Nov 2023 23:59:11 -0800 (PST)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AS6GqE8001089;
-        Tue, 28 Nov 2023 07:58:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=iP4D1xc8qjOBWc18n0ipl4FCtPM7EFhZSPIDx8Ekxhk=;
- b=BDiPfUU2RMhctcIXaJbw5B2AMsTuGrtKM7+UiQz3hViKlg0ktB63NNVNVDGgn33ApBT2
- 1fDEdK7mTUhEH4ImeVBFqgLLzraMRlHw6UT2TNX4JgfN+eY14SB3eEYYKThU/GwbgfNe
- 50WVPCTw5U9OuDkeTGbJamnxc9siBc6BDIBjhqJodAs1/EGZJBKg8hYj5mptB0VelLLX
- jPU1/t75DS/ljMLwjc46d5d2YpR17PBrxW7i+KMO1nBHmWiKGPTri9qGxbrAddHEmjWV
- 2OXAFjrq8noGCDXyoqceKcNk8xyHrZuOSDdlV7r2PShly/4be8i/QPtvjRcD4EoldG0z vw== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3umt4qjrwr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Nov 2023 07:58:49 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AS7wmWH023979
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Nov 2023 07:58:48 GMT
-Received: from [10.253.11.37] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 27 Nov
- 2023 23:58:45 -0800
-Message-ID: <d198f09b-6b5f-42de-9331-30c6d2a12b67@quicinc.com>
-Date:   Tue, 28 Nov 2023 15:58:42 +0800
+        Tue, 28 Nov 2023 02:59:18 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC3210A;
+        Mon, 27 Nov 2023 23:59:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701158364; x=1732694364;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=eH8K0Rq16QUjtscu5lkGKQW6/VMHMllPbrirgbRjrcQ=;
+  b=e/wc1yI3NoRwywNF6JsynvxzgN0vyGBHzNqZYjlP0wbA5iTJjO/4Lg69
+   HZTf0C7fscIh56Jx5tN2m0+ssIObaJExv6M8y2zY/9Ny6x64SEXmnTQHT
+   yX00eZJlfww5T93WO2FvVUhiaFUQOQwj9/a92T0IYy2Mld5krB4P96Ubx
+   0nc34o/odqAUnhJY9evAxewcY2S+HpQphy0ulc5YQ3krh/mFrpeJRJ/z6
+   RifJIeVq14HnQBSbTAxLTm1bT94KeSNKfKLAnOVO12+SmMInlvJC2KXGh
+   eyRumbv4lCvpkWyosLd23UC5LPbzV7AoZoCaTuH7CayO7Hl3V6qBZOWwM
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="391745240"
+X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
+   d="scan'208";a="391745240"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 23:59:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="768441744"
+X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
+   d="scan'208";a="768441744"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by orsmga002.jf.intel.com with SMTP; 27 Nov 2023 23:59:21 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 28 Nov 2023 09:59:20 +0200
+Date:   Tue, 28 Nov 2023 09:59:20 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     RD Babiera <rdbabiera@google.com>
+Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        badhri@google.com
+Subject: Re: [PATCH v1 2/2] usb: typec: tcpci: add vconn over current fault
+ handling to maxim_core
+Message-ID: <ZWWd2AU+rJOWzzvx@kuha.fi.intel.com>
+References: <20231121203845.170234-4-rdbabiera@google.com>
+ <20231121203845.170234-6-rdbabiera@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 07/10] scsi: ufs: ufs-qcom: Set initial PHY gear to max
- HS gear for HW ver 5 and newer
-Content-Language: en-US
-To:     Manivannan Sadhasivam <mani@kernel.org>
-CC:     <bvanassche@acm.org>, <adrian.hunter@intel.com>,
-        <beanhuo@micron.com>, <avri.altman@wdc.com>,
-        <junwoo80.lee@samsung.com>, <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1700729190-17268-1-git-send-email-quic_cang@quicinc.com>
- <1700729190-17268-8-git-send-email-quic_cang@quicinc.com>
- <20231128060046.GH3088@thinkpad>
-From:   Can Guo <quic_cang@quicinc.com>
-In-Reply-To: <20231128060046.GH3088@thinkpad>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 9qe8RAQpKU5XAiM3wLaKj1tHqJi6QOzm
-X-Proofpoint-GUID: 9qe8RAQpKU5XAiM3wLaKj1tHqJi6QOzm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-28_06,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 malwarescore=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- phishscore=0 adultscore=0 spamscore=0 lowpriorityscore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311280061
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121203845.170234-6-rdbabiera@google.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,88 +65,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mani,
+On Tue, Nov 21, 2023 at 08:38:48PM +0000, RD Babiera wrote:
+> Add TCPC_FAULT_STATUS_VCONN_OC constant and corresponding mask definition.
+> Maxim TCPC is capable of detecting VConn over current faults, so add
+> fault to alert mask. When a Vconn over current fault is triggered, put the
+> port in an error recovery state via tcpm_port_error_recovery.
+> 
+> Signed-off-by: RD Babiera <rdbabiera@google.com>
 
-On 11/28/2023 2:00 PM, Manivannan Sadhasivam wrote:
-> On Thu, Nov 23, 2023 at 12:46:27AM -0800, Can Guo wrote:
->> Set the initial PHY gear to max HS gear for hosts with HW ver 5 and newer.
->>
-> 
-> MAX_GEAR will be used for hosts with hw_ver.major >= 4
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-I put it > 5 because I am not intent to touch any old targets which has 
-proven working fine with starting with PHY gear HS_G2. If I put it >= 4, 
-there would be many targets impacted by this change. I need to go back 
-and test those platforms (HW ver == 4).
+> ---
+>  drivers/usb/typec/tcpm/tcpci_maxim_core.c | 20 +++++++++++++++++++-
+>  include/linux/usb/tcpci.h                 |  5 ++++-
+>  2 files changed, 23 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpci_maxim_core.c b/drivers/usb/typec/tcpm/tcpci_maxim_core.c
+> index 9454b12a073c..7fb966fd639b 100644
+> --- a/drivers/usb/typec/tcpm/tcpci_maxim_core.c
+> +++ b/drivers/usb/typec/tcpm/tcpci_maxim_core.c
+> @@ -92,11 +92,16 @@ static void max_tcpci_init_regs(struct max_tcpci_chip *chip)
+>  		return;
+>  	}
+>  
+> +	/* Vconn Over Current Protection */
+> +	ret = max_tcpci_write8(chip, TCPC_FAULT_STATUS_MASK, TCPC_FAULT_STATUS_MASK_VCONN_OC);
+> +	if (ret < 0)
+> +		return;
+> +
+>  	alert_mask = TCPC_ALERT_TX_SUCCESS | TCPC_ALERT_TX_DISCARDED | TCPC_ALERT_TX_FAILED |
+>  		TCPC_ALERT_RX_HARD_RST | TCPC_ALERT_RX_STATUS | TCPC_ALERT_CC_STATUS |
+>  		TCPC_ALERT_VBUS_DISCNCT | TCPC_ALERT_RX_BUF_OVF | TCPC_ALERT_POWER_STATUS |
+>  		/* Enable Extended alert for detecting Fast Role Swap Signal */
+> -		TCPC_ALERT_EXTND | TCPC_ALERT_EXTENDED_STATUS;
+> +		TCPC_ALERT_EXTND | TCPC_ALERT_EXTENDED_STATUS | TCPC_ALERT_FAULT;
+>  
+>  	ret = max_tcpci_write16(chip, TCPC_ALERT_MASK, alert_mask);
+>  	if (ret < 0) {
+> @@ -295,6 +300,19 @@ static irqreturn_t _max_tcpci_irq(struct max_tcpci_chip *chip, u16 status)
+>  		}
+>  	}
+>  
+> +	if (status & TCPC_ALERT_FAULT) {
+> +		ret = max_tcpci_read8(chip, TCPC_FAULT_STATUS, &reg_status);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		ret = max_tcpci_write8(chip, TCPC_FAULT_STATUS, reg_status);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		if (reg_status & TCPC_FAULT_STATUS_VCONN_OC)
+> +			tcpm_port_error_recovery(chip->port);
+> +	}
+> +
+>  	if (status & TCPC_ALERT_EXTND) {
+>  		ret = max_tcpci_read8(chip, TCPC_ALERT_EXTENDED, &reg_status);
+>  		if (ret < 0)
+> diff --git a/include/linux/usb/tcpci.h b/include/linux/usb/tcpci.h
+> index 83376473ac76..467e8045e9f8 100644
+> --- a/include/linux/usb/tcpci.h
+> +++ b/include/linux/usb/tcpci.h
+> @@ -36,7 +36,9 @@
+>  
+>  #define TCPC_ALERT_MASK			0x12
+>  #define TCPC_POWER_STATUS_MASK		0x14
+> -#define TCPC_FAULT_STATUS_MASK		0x15
+> +
+> +#define TCPC_FAULT_STATUS_MASK			0x15
+> +#define TCPC_FAULT_STATUS_MASK_VCONN_OC		BIT(1)
+>  
+>  #define TCPC_EXTENDED_STATUS_MASK		0x16
+>  #define TCPC_EXTENDED_STATUS_MASK_VSAFE0V	BIT(0)
+> @@ -104,6 +106,7 @@
+>  
+>  #define TCPC_FAULT_STATUS		0x1f
+>  #define TCPC_FAULT_STATUS_ALL_REG_RST_TO_DEFAULT BIT(7)
+> +#define TCPC_FAULT_STATUS_VCONN_OC	BIT(1)
+>  
+>  #define TCPC_ALERT_EXTENDED		0x21
+>  
+> -- 
+> 2.43.0.rc1.413.gea7ed67945-goog
 
-Thanks,
-Can Guo.
-
-> 
->> This patch is not changing any functionalities or logic but only a
->> preparation patch for the next patch in this series.
->>
->> Signed-off-by: Can Guo <quic_cang@quicinc.com>
->> ---
->>   drivers/ufs/host/ufs-qcom.c | 21 +++++++++++++++------
->>   1 file changed, 15 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
->> index 6756f8d..7bbccf4 100644
->> --- a/drivers/ufs/host/ufs-qcom.c
->> +++ b/drivers/ufs/host/ufs-qcom.c
->> @@ -1067,6 +1067,20 @@ static void ufs_qcom_advertise_quirks(struct ufs_hba *hba)
->>   		hba->quirks |= UFSHCD_QUIRK_REINIT_AFTER_MAX_GEAR_SWITCH;
->>   }
->>   
->> +static void ufs_qcom_set_phy_gear(struct ufs_qcom_host *host)
->> +{
->> +	struct ufs_host_params *host_params = &host->host_params;
->> +
->> +	host->phy_gear = host_params->hs_tx_gear;
->> +
->> +	/*
->> +	 * Power up the PHY using the minimum supported gear (UFS_HS_G2).
->> +	 * Switching to max gear will be performed during reinit if supported.
-> 
-> You need to reword this comment too.
-> 
->> +	 */
->> +	if (host->hw_ver.major < 0x5)
-> 
-> As I mentioned above, MAX_GEAR will be used if hw_ver.major is >=4 in
-> ufs_qcom_get_hs_gear(). So this check should be (< 0x4).
-> 
-> - Mani
-> 
->> +		host->phy_gear = UFS_HS_G2;
->> +}
->> +
->>   static void ufs_qcom_set_host_params(struct ufs_hba *hba)
->>   {
->>   	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
->> @@ -1303,6 +1317,7 @@ static int ufs_qcom_init(struct ufs_hba *hba)
->>   	ufs_qcom_set_caps(hba);
->>   	ufs_qcom_advertise_quirks(hba);
->>   	ufs_qcom_set_host_params(hba);
->> +	ufs_qcom_set_phy_gear(host);
->>   
->>   	err = ufs_qcom_ice_init(host);
->>   	if (err)
->> @@ -1320,12 +1335,6 @@ static int ufs_qcom_init(struct ufs_hba *hba)
->>   		dev_warn(dev, "%s: failed to configure the testbus %d\n",
->>   				__func__, err);
->>   
->> -	/*
->> -	 * Power up the PHY using the minimum supported gear (UFS_HS_G2).
->> -	 * Switching to max gear will be performed during reinit if supported.
->> -	 */
->> -	host->phy_gear = UFS_HS_G2;
->> -
->>   	return 0;
->>   
->>   out_variant_clear:
->> -- 
->> 2.7.4
->>
-> 
+-- 
+heikki
