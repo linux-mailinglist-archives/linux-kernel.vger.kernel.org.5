@@ -2,104 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E88807FB292
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA937FB293
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:21:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343821AbjK1HVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 02:21:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40390 "EHLO
+        id S1343825AbjK1HVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 02:21:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343790AbjK1HVE (ORCPT
+        with ESMTP id S1343790AbjK1HVo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 02:21:04 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC27DB7
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:21:10 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA6FFC433C8;
-        Tue, 28 Nov 2023 07:21:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701156070;
-        bh=E1l+1Z+uwwMLqKabp03y/RSp8HfubdSHT+S8B/r9/TM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=avPsvg7DKMIft1TwQpgYOGOHZEaxcPA5nhrl6HNbW4Bb6YM49BC8LAB7jWfsimVZ7
-         koRhOHEQymZ9wEjRnc+AExFYAqjechxXv2pbukIcYbcoZnXnwcEkElJy5+Q2mZ69oT
-         LfSLCJY8O6PAYHVC4Cq/OFhU1sX7CFQVu0wvipCxtD79q0sJ3ttFvof1wntZzCZfXr
-         k/o+xQLx1/FKHr4xBsRShFag+YGumZ01cSDSztHh/M6KTYzG6RbIggxrpLqMmeyD6P
-         bvdFzue6a5IXfH82ZPONB5QX/hnm/cm5ymV1UAhiPR37b8DLVJ654OmrjvGAD5OQg9
-         LTL01I8IODHKA==
-Message-ID: <d6dd14c2-f662-4b82-bc96-7e161cb721c9@kernel.org>
-Date:   Tue, 28 Nov 2023 08:21:06 +0100
+        Tue, 28 Nov 2023 02:21:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5B811BD
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:21:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701156110;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rE1VEO/P4SWtiM2JUk8giEN5tkTYagzMpscsqMITB5w=;
+        b=dTq7W7F0wgXAwm9/L3Fv2RvpTIWXw8EkTTqIMeaYFeRe2HUwaDrAE/QLlRH84HWmXLcpf/
+        tKDWSpSQJNOlGVb9k9tpB77xM8ffas9qDDNmAGDs4uVtm3MMXNdTZsThPhQIxvg0YL2Qm2
+        vm7oUaAMdQIetBwhhrppMF5KssYp2rc=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-639-hg5Au1ruMFOVU9fj-ET19g-1; Tue, 28 Nov 2023 02:21:48 -0500
+X-MC-Unique: hg5Au1ruMFOVU9fj-ET19g-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-40b3dbe99d9so20559175e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:21:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701156107; x=1701760907;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rE1VEO/P4SWtiM2JUk8giEN5tkTYagzMpscsqMITB5w=;
+        b=HRHAW9ib1DdCeiAnbDFDw7JYFL3gdlOf/t6DtuN+AiyRLtzehNbq5IOlPmqNHWJ26+
+         +h4+zzVYr00chsq9lS2LrrtzuZQbLuttkouOTysUqyibU7keY2nTeJBPXCs/9E2AtOYC
+         4U+PEFvDFDM5x9KoIm+5a32CsSQNcnk4FXH+gUhZ8NLHnD0LoJ6IwpkHomUcEXaMk6JA
+         gog5WLLVwSDds8x4JUn8IHfXVREJp2RO3hQyzTbLx850G4Vsyt/77y7F4JIzYxzU36J+
+         JHtSI4PsrED0GF0jiRSUwnhPOd7DOS13h9yLvhOE6VghdWhohM/2dRLHuNL6Nrv1vBmi
+         ftNA==
+X-Gm-Message-State: AOJu0YxGV49yLLxa8oUOzhxm4jrhVsH2ZNxQyykgc5R/HOYVDU1eL6NP
+        b8mJX1UeY12aMiM7cvprh6sVnvLcz99Giv2Yrs1vT4AeDPSZqdU6KtdZicO86wYI01VlNjJgYkd
+        d/H4ersvdCrYoz3BdL+LUR6Av
+X-Received: by 2002:a05:600c:450b:b0:40a:20f3:d127 with SMTP id t11-20020a05600c450b00b0040a20f3d127mr10318546wmo.35.1701156107369;
+        Mon, 27 Nov 2023 23:21:47 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFfRAqrROjHJ1qTtcsKosFtEkpI+uCXd2x8KsHl5ZzJYdXsn5YxcHbf1j1XUd/tosccrg8O+Q==
+X-Received: by 2002:a05:600c:450b:b0:40a:20f3:d127 with SMTP id t11-20020a05600c450b00b0040a20f3d127mr10318535wmo.35.1701156107013;
+        Mon, 27 Nov 2023 23:21:47 -0800 (PST)
+Received: from starship ([77.137.131.4])
+        by smtp.gmail.com with ESMTPSA id o7-20020a05600c510700b0040b36ad5413sm16255957wms.46.2023.11.27.23.21.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 23:21:46 -0800 (PST)
+Message-ID: <b11d9a96cf1b49eea92a8f3eec31272d47c82fb8.camel@redhat.com>
+Subject: Re: [RFC 08/33] KVM: x86: Don't use hv_timer if CAP_HYPERV_VSM
+ enabled
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Nicolas Saenz Julienne <nsaenz@amazon.com>, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        anelkz@amazon.com, graf@amazon.com, dwmw@amazon.co.uk,
+        jgowans@amazon.com, corbert@lwn.net, kys@microsoft.com,
+        haiyangz@microsoft.com, decui@microsoft.com, x86@kernel.org,
+        linux-doc@vger.kernel.org
+Date:   Tue, 28 Nov 2023 09:21:44 +0200
+In-Reply-To: <20231108111806.92604-9-nsaenz@amazon.com>
+References: <20231108111806.92604-1-nsaenz@amazon.com>
+         <20231108111806.92604-9-nsaenz@amazon.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6/7] serial: xilinx_uartps: Add new compatible string for
- StarFive
-Content-Language: en-US
-To:     JeeHeng Sia <jeeheng.sia@starfivetech.com>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "conor@kernel.org" <conor@kernel.org>,
-        "kernel@esmil.dk" <kernel@esmil.dk>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "emil.renner.berthing@canonical.com" 
-        <emil.renner.berthing@canonical.com>
-Cc:     "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>
-References: <20231127013602.253835-1-jeeheng.sia@starfivetech.com>
- <20231127013602.253835-7-jeeheng.sia@starfivetech.com>
- <07fc5ebe-47b2-4843-ad49-36e6686e5a9a@kernel.org>
- <b423574c710b44aabb36cd434693b3e2@EXMBX066.cuchost.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzSVLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnprQGtlcm5lbC5vcmc+wsGVBBMBCgA/AhsDBgsJCAcDAgYVCAIJCgsE
- FgIDAQIeAQIXgBYhBJvQfg4MUfjVlne3VBuTQ307QWKbBQJgPO8PBQkUX63hAAoJEBuTQ307
- QWKbBn8P+QFxwl7pDsAKR1InemMAmuykCHl+XgC0LDqrsWhAH5TYeTVXGSyDsuZjHvj+FRP+
- gZaEIYSw2Yf0e91U9HXo3RYhEwSmxUQ4Fjhc9qAwGKVPQf6YuQ5yy6pzI8brcKmHHOGrB3tP
- /MODPt81M1zpograAC2WTDzkICfHKj8LpXp45PylD99J9q0Y+gb04CG5/wXs+1hJy/dz0tYy
- iua4nCuSRbxnSHKBS5vvjosWWjWQXsRKd+zzXp6kfRHHpzJkhRwF6ArXi4XnQ+REnoTfM5Fk
- VmVmSQ3yFKKePEzoIriT1b2sXO0g5QXOAvFqB65LZjXG9jGJoVG6ZJrUV1MVK8vamKoVbUEe
- 0NlLl/tX96HLowHHoKhxEsbFzGzKiFLh7hyboTpy2whdonkDxpnv/H8wE9M3VW/fPgnL2nPe
- xaBLqyHxy9hA9JrZvxg3IQ61x7rtBWBUQPmEaK0azW+l3ysiNpBhISkZrsW3ZUdknWu87nh6
- eTB7mR7xBcVxnomxWwJI4B0wuMwCPdgbV6YDUKCuSgRMUEiVry10xd9KLypR9Vfyn1AhROrq
- AubRPVeJBf9zR5UW1trJNfwVt3XmbHX50HCcHdEdCKiT9O+FiEcahIaWh9lihvO0ci0TtVGZ
- MCEtaCE80Q3Ma9RdHYB3uVF930jwquplFLNF+IBCn5JRzsFNBFVDXDQBEADNkrQYSREUL4D3
- Gws46JEoZ9HEQOKtkrwjrzlw/tCmqVzERRPvz2Xg8n7+HRCrgqnodIYoUh5WsU84N03KlLue
- MNsWLJBvBaubYN4JuJIdRr4dS4oyF1/fQAQPHh8Thpiz0SAZFx6iWKB7Qrz3OrGCjTPcW6ei
- OMheesVS5hxietSmlin+SilmIAPZHx7n242u6kdHOh+/SyLImKn/dh9RzatVpUKbv34eP1wA
- GldWsRxbf3WP9pFNObSzI/Bo3kA89Xx2rO2roC+Gq4LeHvo7ptzcLcrqaHUAcZ3CgFG88CnA
- 6z6lBZn0WyewEcPOPdcUB2Q7D/NiUY+HDiV99rAYPJztjeTrBSTnHeSBPb+qn5ZZGQwIdUW9
- YegxWKvXXHTwB5eMzo/RB6vffwqcnHDoe0q7VgzRRZJwpi6aMIXLfeWZ5Wrwaw2zldFuO4Dt
- 91pFzBSOIpeMtfgb/Pfe/a1WJ/GgaIRIBE+NUqckM+3zJHGmVPqJP/h2Iwv6nw8U+7Yyl6gU
- BLHFTg2hYnLFJI4Xjg+AX1hHFVKmvl3VBHIsBv0oDcsQWXqY+NaFahT0lRPjYtrTa1v3tem/
- JoFzZ4B0p27K+qQCF2R96hVvuEyjzBmdq2esyE6zIqftdo4MOJho8uctOiWbwNNq2U9pPWmu
- 4vXVFBYIGmpyNPYzRm0QPwARAQABwsF8BBgBCgAmAhsMFiEEm9B+DgxR+NWWd7dUG5NDfTtB
- YpsFAmA872oFCRRflLYACgkQG5NDfTtBYpvScw/9GrqBrVLuJoJ52qBBKUBDo4E+5fU1bjt0
- Gv0nh/hNJuecuRY6aemU6HOPNc2t8QHMSvwbSF+Vp9ZkOvrM36yUOufctoqON+wXrliEY0J4
- ksR89ZILRRAold9Mh0YDqEJc1HmuxYLJ7lnbLYH1oui8bLbMBM8S2Uo9RKqV2GROLi44enVt
- vdrDvo+CxKj2K+d4cleCNiz5qbTxPUW/cgkwG0lJc4I4sso7l4XMDKn95c7JtNsuzqKvhEVS
- oic5by3fbUnuI0cemeizF4QdtX2uQxrP7RwHFBd+YUia7zCcz0//rv6FZmAxWZGy5arNl6Vm
- lQqNo7/Poh8WWfRS+xegBxc6hBXahpyUKphAKYkah+m+I0QToCfnGKnPqyYIMDEHCS/RfqA5
- t8F+O56+oyLBAeWX7XcmyM6TGeVfb+OZVMJnZzK0s2VYAuI0Rl87FBFYgULdgqKV7R7WHzwD
- uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
- 7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
- 5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <b423574c710b44aabb36cd434693b3e2@EXMBX066.cuchost.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -107,57 +86,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/11/2023 06:25, JeeHeng Sia wrote:
+On Wed, 2023-11-08 at 11:17 +0000, Nicolas Saenz Julienne wrote:
+> VSM's VTLs are modeled by using a distinct vCPU per VTL. While one VTL
+> is running the rest of vCPUs are left idle. This doesn't play well with
+> the approach of tracking emulated timer expiration by using the VMX
+> preemption timer. Inactive VTL's timers are still meant to run and
+> inject interrupts regardless of their runstate.
 > 
+> Signed-off-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
+> ---
+>  arch/x86/kvm/lapic.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 > 
->> -----Original Message-----
->> From: Krzysztof Kozlowski <krzk@kernel.org>
->> Sent: Monday, November 27, 2023 4:49 PM
->> To: JeeHeng Sia <jeeheng.sia@starfivetech.com>; paul.walmsley@sifive.com; palmer@dabbelt.com; aou@eecs.berkeley.edu;
->> conor@kernel.org; kernel@esmil.dk; robh+dt@kernel.org; emil.renner.berthing@canonical.com
->> Cc: linux-riscv@lists.infradead.org; linux-kernel@vger.kernel.org; Leyfoon Tan <leyfoon.tan@starfivetech.com>
->> Subject: Re: [PATCH 6/7] serial: xilinx_uartps: Add new compatible string for StarFive
->>
->> On 27/11/2023 02:36, Sia Jee Heng wrote:
->>> This patch adds the new compatible string for StarFive JH8100 SoC
->>>
->>> Signed-off-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
->>> Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
->>> ---
->>>  drivers/tty/serial/xilinx_uartps.c | 3 ++-
->>>  1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xilinx_uartps.c
->>> index 66a45a634158..170901c143c2 100644
->>> --- a/drivers/tty/serial/xilinx_uartps.c
->>> +++ b/drivers/tty/serial/xilinx_uartps.c
->>> @@ -1210,7 +1210,7 @@ OF_EARLYCON_DECLARE(cdns, "xlnx,xuartps", cdns_early_console_setup);
->>>  OF_EARLYCON_DECLARE(cdns, "cdns,uart-r1p8", cdns_early_console_setup);
->>>  OF_EARLYCON_DECLARE(cdns, "cdns,uart-r1p12", cdns_early_console_setup);
->>>  OF_EARLYCON_DECLARE(cdns, "xlnx,zynqmp-uart", cdns_early_console_setup);
->>> -
->>> +OF_EARLYCON_DECLARE(cdns, "starfive,jh8100-uart", cdns_early_console_setup);
->>>
->>>  /* Static pointer to console port */
->>>  static struct uart_port *console_port;
->>> @@ -1448,6 +1448,7 @@ static const struct of_device_id cdns_uart_of_match[] = {
->>>  	{ .compatible = "cdns,uart-r1p8", },
->>>  	{ .compatible = "cdns,uart-r1p12", .data = &zynqmp_uart_def },
->>>  	{ .compatible = "xlnx,zynqmp-uart", .data = &zynqmp_uart_def },
->>> +	{ .compatible = "starfive,jh8100-uart", },
->>
->> Why you do not express compatibility in your bindings? Skip this driver
->> change.
-> The compatibility string was added to the binding in the 5th patch. We need to add this compatibility string to the driver, as the other compatibilities were used for other SoCs.
+> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+> index f55d216cb2a0..8cc75b24381b 100644
+> --- a/arch/x86/kvm/lapic.c
+> +++ b/arch/x86/kvm/lapic.c
+> @@ -152,9 +152,10 @@ static bool kvm_can_post_timer_interrupt(struct kvm_vcpu *vcpu)
+>  
+>  bool kvm_can_use_hv_timer(struct kvm_vcpu *vcpu)
+>  {
+> -	return kvm_x86_ops.set_hv_timer
+> -	       && !(kvm_mwait_in_guest(vcpu->kvm) ||
+> -		    kvm_can_post_timer_interrupt(vcpu));
+> +	return kvm_x86_ops.set_hv_timer &&
+> +	       !(kvm_mwait_in_guest(vcpu->kvm) ||
+> +		 kvm_can_post_timer_interrupt(vcpu)) &&
+> +	       !(kvm_hv_vsm_enabled(vcpu->kvm));
+>  }
 
-You did not add "compatibility string" but compatible. I am asking why
-you are not expressing in your bindings the compatibility between this
-and other devices.
+This has to be fixed this way or another.
 
-And no, you do not need driver change for compatible devices, so again:
-skip this driver change.
+One idea is to introduce new MP state (KVM_MP_STATE_HALTED_USERSPACE), which will be set
+on vCPUs that belong to inactive VTLs, and then userspace will do KVM_RUN which will block
+as if it were for halted state but as soon as vCPU becomes unhalted, it will return to
+the userspace instead of running again.
 
+If we go with the approach of using polling on the inactive VTL's vcpus, then we can switch to a 
+software timer just before we start polling.
+
+Also note that AVIC/APICv and their IOMMU's have to be treated the same way. 
+
+It is disabled during vCPU blocking due to the same reasons of vCPU not 
+being assigned a physical CPU.
+
+Currently it happens to work because you disable APIC accelerated map, which in turn disables (inhibits)
+the APICv/AVIC.
+
+Once again if we go with the approach of polling, we should ensure that polling does more or less
+the same things as kvm_vcpu_block does (we should try to share as much code as possible as well).
 
 Best regards,
-Krzysztof
+	Maxim Levitsky
+
+
+
+
+
+
+>  
+>  static bool kvm_use_posted_timer_interrupt(struct kvm_vcpu *vcpu)
+
+
+
 
