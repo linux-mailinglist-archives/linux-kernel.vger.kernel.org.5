@@ -2,45 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4CE7FC8D1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:53:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFFA97FC8B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:53:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376382AbjK1VIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 16:08:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59816 "EHLO
+        id S1376430AbjK1VIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 16:08:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376336AbjK1VHx (ORCPT
+        with ESMTP id S1376428AbjK1VH5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 16:07:53 -0500
+        Tue, 28 Nov 2023 16:07:57 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC8A271C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:07:11 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19C50C433CA;
-        Tue, 28 Nov 2023 21:07:09 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FD1273E
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:07:13 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94768C43397;
+        Tue, 28 Nov 2023 21:07:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701205631;
-        bh=WC3ZNUMc0KkG5elTrcbpJ6cdL4mgiViegpDo+7f1EXs=;
+        s=k20201202; t=1701205632;
+        bh=zSwLFu7OtLy2Zn+0zDwtDj7975oDWp+IIFJU4t6gJi4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KZJQ5F91PLk6eUEWuGCwlzTMAENuJOuXGC0uW05U53XKkjO+sm23IyxEHbHp6k+Cs
-         tknxXMIXkrkHv5oHLvr+ajdz3pystdtsYbr++/EI9yb7mo0axZYoMMbFE1wmd7QGOq
-         Vr8y9K7R1rMCUjgreeV0w1GaLUuTlKiG4IxRkWFViIt1ayQK1h9HeGnw1wi8U73+1Y
-         paUPSRBPl5sVnvUZr2/3hliy1l5I5sRTTUjrxfGHbQYXhON4cjJKuHDDf/7OD7/i7q
-         tde3Y+rjpKd/14YpwNYQm+U6OBAOWIx60kVNwODj+4/tb3IPxAF6KnKxHLpsyIbtbh
-         jknyedAt8iA/A==
+        b=PnMytZHvCr046sPZV/Y2WsMB7FJdpb/F4EwXyCQRUqcRQccW0b8mNvZ2nzl2rO+Bt
+         oPpieRlrle8WpZ/GilYTj7wbWCKcO5UX1vpFM1+hK8EO/TtU0h3UUcrKUnqpOZPxaE
+         yJZIsEFoMJLX3K4oA0LiroZO0aLcaW+a/X1A6kYAkwJCb2Kq3iUusVuiGK7mUhYhS0
+         Bv2OtKie7kPygmsU1r+haDIyExlbm/sjEiAP+Qg/K5xy0/iyTPypR8BwIs5eSSrpws
+         ASINNpw/Qd4bAzU5JzCPSy4TZHjQpLBiqoEuvUy/MmSXYbHucKkVztRSbvwwLZ1GK4
+         Eu5xoFQnjjNQw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bibo Mao <maobibo@loongson.cn>, WANG Xuerui <git@xen0n.name>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Sasha Levin <sashal@kernel.org>, chenhuacai@kernel.org,
-        yangtiezhu@loongson.cn, peterz@infradead.org,
-        loongarch@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.6 22/40] LoongArch: Implement constant timer shutdown interface
-Date:   Tue, 28 Nov 2023 16:05:28 -0500
-Message-ID: <20231128210615.875085-22-sashal@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        kernel test robot <lkp@intel.com>,
+        Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>, david.e.box@linux.intel.com,
+        hdegoede@redhat.com, platform-driver-x86@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 23/40] platform/x86: intel_telemetry: Fix kernel doc descriptions
+Date:   Tue, 28 Nov 2023 16:05:29 -0500
+Message-ID: <20231128210615.875085-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231128210615.875085-1-sashal@kernel.org>
 References: <20231128210615.875085-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.3
@@ -55,92 +57,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bibo Mao <maobibo@loongson.cn>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit d43f37b73468c172bc89ac4824a1511b411f0778 ]
+[ Upstream commit a6584711e64d9d12ab79a450ec3628fd35e4f476 ]
 
-When a cpu is hot-unplugged, it is put in idle state and the function
-arch_cpu_idle_dead() is called. The timer interrupt for this processor
-should be disabled, otherwise there will be pending timer interrupt for
-the unplugged cpu, so that vcpu is prevented from giving up scheduling
-when system is running in vm mode.
+LKP found issues with a kernel doc in the driver:
 
-This patch implements the timer shutdown interface so that the constant
-timer will be properly disabled when a CPU is hot-unplugged.
+core.c:116: warning: Function parameter or member 'ioss_evtconfig' not described in 'telemetry_update_events'
+core.c:188: warning: Function parameter or member 'ioss_evtconfig' not described in 'telemetry_get_eventconfig'
 
-Reviewed-by: WANG Xuerui <git@xen0n.name>
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+It looks like it were copy'n'paste typos when these descriptions
+had been introduced. Fix the typos.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202310070743.WALmRGSY-lkp@intel.com/
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20231120150756.1661425-1-andriy.shevchenko@linux.intel.com
+Reviewed-by: Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/loongarch/kernel/time.c | 23 +++++++++--------------
- 1 file changed, 9 insertions(+), 14 deletions(-)
+ drivers/platform/x86/intel/telemetry/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/loongarch/kernel/time.c b/arch/loongarch/kernel/time.c
-index 3064af94db9c2..e7015f7b70e37 100644
---- a/arch/loongarch/kernel/time.c
-+++ b/arch/loongarch/kernel/time.c
-@@ -58,14 +58,16 @@ static int constant_set_state_oneshot(struct clock_event_device *evt)
- 	return 0;
- }
- 
--static int constant_set_state_oneshot_stopped(struct clock_event_device *evt)
-+static int constant_set_state_periodic(struct clock_event_device *evt)
- {
-+	unsigned long period;
- 	unsigned long timer_config;
- 
- 	raw_spin_lock(&state_lock);
- 
--	timer_config = csr_read64(LOONGARCH_CSR_TCFG);
--	timer_config &= ~CSR_TCFG_EN;
-+	period = const_clock_freq / HZ;
-+	timer_config = period & CSR_TCFG_VAL;
-+	timer_config |= (CSR_TCFG_PERIOD | CSR_TCFG_EN);
- 	csr_write64(timer_config, LOONGARCH_CSR_TCFG);
- 
- 	raw_spin_unlock(&state_lock);
-@@ -73,16 +75,14 @@ static int constant_set_state_oneshot_stopped(struct clock_event_device *evt)
- 	return 0;
- }
- 
--static int constant_set_state_periodic(struct clock_event_device *evt)
-+static int constant_set_state_shutdown(struct clock_event_device *evt)
- {
--	unsigned long period;
- 	unsigned long timer_config;
- 
- 	raw_spin_lock(&state_lock);
- 
--	period = const_clock_freq / HZ;
--	timer_config = period & CSR_TCFG_VAL;
--	timer_config |= (CSR_TCFG_PERIOD | CSR_TCFG_EN);
-+	timer_config = csr_read64(LOONGARCH_CSR_TCFG);
-+	timer_config &= ~CSR_TCFG_EN;
- 	csr_write64(timer_config, LOONGARCH_CSR_TCFG);
- 
- 	raw_spin_unlock(&state_lock);
-@@ -90,11 +90,6 @@ static int constant_set_state_periodic(struct clock_event_device *evt)
- 	return 0;
- }
- 
--static int constant_set_state_shutdown(struct clock_event_device *evt)
--{
--	return 0;
--}
--
- static int constant_timer_next_event(unsigned long delta, struct clock_event_device *evt)
- {
- 	unsigned long timer_config;
-@@ -161,7 +156,7 @@ int constant_clockevent_init(void)
- 	cd->rating = 320;
- 	cd->cpumask = cpumask_of(cpu);
- 	cd->set_state_oneshot = constant_set_state_oneshot;
--	cd->set_state_oneshot_stopped = constant_set_state_oneshot_stopped;
-+	cd->set_state_oneshot_stopped = constant_set_state_shutdown;
- 	cd->set_state_periodic = constant_set_state_periodic;
- 	cd->set_state_shutdown = constant_set_state_shutdown;
- 	cd->set_next_event = constant_timer_next_event;
+diff --git a/drivers/platform/x86/intel/telemetry/core.c b/drivers/platform/x86/intel/telemetry/core.c
+index fdf55b5d69480..e4be40f73eebf 100644
+--- a/drivers/platform/x86/intel/telemetry/core.c
++++ b/drivers/platform/x86/intel/telemetry/core.c
+@@ -102,7 +102,7 @@ static const struct telemetry_core_ops telm_defpltops = {
+ /**
+  * telemetry_update_events() - Update telemetry Configuration
+  * @pss_evtconfig: PSS related config. No change if num_evts = 0.
+- * @pss_evtconfig: IOSS related config. No change if num_evts = 0.
++ * @ioss_evtconfig: IOSS related config. No change if num_evts = 0.
+  *
+  * This API updates the IOSS & PSS Telemetry configuration. Old config
+  * is overwritten. Call telemetry_reset_events when logging is over
+@@ -176,7 +176,7 @@ EXPORT_SYMBOL_GPL(telemetry_reset_events);
+ /**
+  * telemetry_get_eventconfig() - Returns the pss and ioss events enabled
+  * @pss_evtconfig: Pointer to PSS related configuration.
+- * @pss_evtconfig: Pointer to IOSS related configuration.
++ * @ioss_evtconfig: Pointer to IOSS related configuration.
+  * @pss_len:	   Number of u32 elements allocated for pss_evtconfig array
+  * @ioss_len:	   Number of u32 elements allocated for ioss_evtconfig array
+  *
 -- 
 2.42.0
 
