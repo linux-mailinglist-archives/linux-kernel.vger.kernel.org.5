@@ -2,293 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BDC77FC248
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C31A7FC266
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345483AbjK1SH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 13:07:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55092 "EHLO
+        id S1345576AbjK1SIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 13:08:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345310AbjK1SH6 (ORCPT
+        with ESMTP id S1345623AbjK1SIH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 13:07:58 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E3E0B7
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 10:08:04 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CADF9C433CD;
-        Tue, 28 Nov 2023 18:08:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701194883;
-        bh=4DwB38wbaKFqe7hUkjoK0KTOX2HU0BmeTqXJcyORlu4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=XWiG9o0Dtq787TusZ2eK1KJKrxDR6ZWsvWOUs1UhQwi/EqTGjSVzPy1M+BcivIXz8
-         nKM4NnDzVmlPy4d56Q2UCesllUtMPZGL/0QkX7IMNeaphkjFm2UDe7x33QM08aSyNg
-         HT+7MRyZ5Ty1ggpvUZ0/+5D4vejZIgr5QVPyS7fPyIAE7W8mxdCvLJL9bT57/U9ZSM
-         5KfMaTnpcjctst3YM+476nbFzErxYqznvVsXBJ+2Ovg6wsBotr7yBLXpwoWP9LvQci
-         glX1WDuLypxtZc6NAtIkU+q16SZ7p4PwqSyOVYlSslQcaGx7xyqM26ZGNPB+3i2to5
-         XGQqVb9QkNvWQ==
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2c9b8363683so9606181fa.3;
-        Tue, 28 Nov 2023 10:08:03 -0800 (PST)
-X-Gm-Message-State: AOJu0YykdBSVQZeJ/uQbgEdgEgpTbvgOz+fxikU1OYw7/ewtiK8U7EUo
-        0Rm4X68zssgfIvKV8SzzOjwwz8QJ5jE4w3mIjgY=
-X-Google-Smtp-Source: AGHT+IEMmvfyq0v5/2oBeBE/oqLc1Eu+CJpsjOxQOhU1mp+t/ys+FzWHNt4xUEoc92KVGBiOkt8B0IacbD0oqbAchGI=
-X-Received: by 2002:a2e:b0e1:0:b0:2c9:b9db:73 with SMTP id h1-20020a2eb0e1000000b002c9b9db0073mr988987ljl.20.1701194881929;
- Tue, 28 Nov 2023 10:08:01 -0800 (PST)
+        Tue, 28 Nov 2023 13:08:07 -0500
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11olkn2010.outbound.protection.outlook.com [40.92.20.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73A5F91;
+        Tue, 28 Nov 2023 10:08:12 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MA1BRXU+4Y3mxAV68TzDV74m6f9riimOYg0Ic5qO7CCtJd55pRM9CupkafU21uWn/Gsg4TfZTW+UEzgAQpQxuQGCQBmK3MAc9Yt8QhgBwWeFUHE6acqmbXCWjRI6oD1RNUjjRvI5eTU7C1qqyK2G+9sP8c7i3j1e6KVKDLkvVsU03Y0wzd0eS1dgw7rvO5UTpcKVyPJ+THKVyhSy6kFl01csBzigPX/udQpOix9ur03qdF2x9gMAgbvW9cR9iR2qCbLjbZlwyoL4UenRzIC7x8gnnn4vbz3EnIOehYGVS1bOJF0tSlGQIXnLSa1+gJfwaJx/BF7KtCHhb3vhqV5aeA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OS7GszjJid4705Wyzr9egtKKq3ZfMCiLvVwRi7M4Krk=;
+ b=X+BzBqAH2V1bosYIDRr6BlccZ+4p6A+W3mdEmiq89rcOCcAxCv6tpZlnAMYScbRDbGzN+TqpqYE7FXpTlnNKKJ54ND6zdK4nKRkfky2Uca+7ICXGoizh0Ja/BKbwsGgkr8mMh21tF3Jz9ZQKRdomRcKFaSQXrHO6SxyZ+CloMLQhIYHQrXaMUUo26BL+xZIQWiAVQf0be7CfH/GOKajsmKJA56MEOrQEKQlbWcEeLNDPNAu7rAlgIxPN+21h2c2ehewNs25RhOf6RDycfbybhJs8ADlY3oZLw4lpni0uL4GxvEC6CzbWdJ8Q+X6hMED8UsPhzep82DVrpQRSBAcw6Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OS7GszjJid4705Wyzr9egtKKq3ZfMCiLvVwRi7M4Krk=;
+ b=a9gfbNZkfZlpm+p9RYBP67VvMLc40QbcU4ONCd9egdEMbwM+PpgvCJ/GvV9lcbEaxGrc3T6TAuqDOZDV3TGVtlAyHzEH8/1JnppQgqhwGNvy8GCHoaKrUNoZa26gK620/gJIA8MQC5OBV9pOZG6IfiupPKRLeII148c/F2tnfkHqZMjSZ1fAfGPWPvN9adFCczTGUYHn1cNxyWz0ye6t6h/HQweb9lFsZLbTUMtQnQKwWPVEk14KxKsfFriJCQmnaJJeBgdWVVxLPXuyeNPBrKK9YOjU7eBg0oN2MkkWA3/6Chc0tuUqoi2blG9NrBwC1tNyl10362rSeuABhHjtHw==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by CO1PR02MB8620.namprd02.prod.outlook.com (2603:10b6:303:15f::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Tue, 28 Nov
+ 2023 18:08:08 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::54e5:928f:135c:6190]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::54e5:928f:135c:6190%7]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
+ 18:08:08 +0000
+From:   Michael Kelley <mhklinux@outlook.com>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kys@microsoft.com" <kys@microsoft.com>,
+        "Cui, Dexuan" <decui@microsoft.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "urezki@gmail.com" <urezki@gmail.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>, "Rodel, Jorg" <jroedel@suse.de>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "lstoakes@gmail.com" <lstoakes@gmail.com>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: RE: [PATCH v2 4/8] x86/sev: Enable PVALIDATE for PFNs without a valid
+ virtual address
+Thread-Topic: [PATCH v2 4/8] x86/sev: Enable PVALIDATE for PFNs without a
+ valid virtual address
+Thread-Index: AQHaHMCfDTF3xlWByUOaPO0cv8EgVLCOur+AgAFOhjA=
+Date:   Tue, 28 Nov 2023 18:08:08 +0000
+Message-ID: <SN6PR02MB4157A935C8B8F9DBB30F9512D4BCA@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20231121212016.1154303-1-mhklinux@outlook.com>
+         <20231121212016.1154303-5-mhklinux@outlook.com>
+ <3ddcad72637dece4bd3ecb7c49b8ad0e5bd233c0.camel@intel.com>
+In-Reply-To: <3ddcad72637dece4bd3ecb7c49b8ad0e5bd233c0.camel@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-tmn:  [LVaDBOhpdIfGg+C2cuRGrSkyJisCi2HI]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|CO1PR02MB8620:EE_
+x-ms-office365-filtering-correlation-id: d096d65e-a7ab-4fab-5e22-08dbf03cf9ec
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: mGwbDTrKIcivDO9T4hs1IOErOrE+SZIXyG546wv3PhOsCT79RdkRP+TVSXB9yKjNLkWVZZ1ePhEG7fGZuOW0cP0hkNPEiaIyoIPjrHlXeFdFAoUCm4+P5rxCfj7zXgJo3XIoQM/zTakHvi/7RkWrf5Z+jlyj7ujyGkazCT6XOQpGsiMjq63qF2bnK1UFyaBvSFiESheR3Y+57/e34VT00SKufPNsWGAq/qFwL2gFUK60p1eMr1OiN1M2l1Y6+ycBMPLECOBF4zasEuS9zzVRc/k7lygj/8OLf+4DIPWo8ACQYwmcY7rgQDC9YCSS6WwoWhtB7iMvke1g1T6QX6pBE5rIP7n3cknVKGkpUuyWcBQld930iy6CvqwelgAlHSrKxWTTNO2zBzudG5BXFKwsW+wNEJBF7zrscx0NoKHwqp8pVbhyDKSPfSpfxMlrrxjXDNavShgnbMHaH5Sft8emiWJum+h6WFMEK/Y1ID2BEpFZExg+mUU+0pyEuk2HWRvzMDB8cWzTu8YZg6L8Ob4ARGERB342/dQ8VSJ151ghp2Y4Y+g6o2zhBKo5Uz2klHPw
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?b1NHdmJOTnViZ2V0TEROSGs3S0J4c1pGblBkK040cGVOaWh4Z2ppaHNRZVo5?=
+ =?utf-8?B?NkxMcFJoSGtYVldKUitNRktLNDNRUFVCcnUvZFRpN1dPemVyclRxbUwwZVBi?=
+ =?utf-8?B?Mmw3UlUyNktpdTNDUk9SZjBVMytzajFRRGIwL3VkMVAwcS96STZKbDU3c0Yv?=
+ =?utf-8?B?bURMQVhLVUQ5Z0lZU1pQSWk1MEJkUUJGZm40bHhXZFNrNmV2SmNPSEdEcUNI?=
+ =?utf-8?B?VlIvWGFmUGtibHNvTDllWU5POVFwWGVjZThVcklsYUVBdWFDcmIvYThiS1Iv?=
+ =?utf-8?B?ZmRvYlk3enpPSE04NldhNHR0MlhlSnFac05PZmtFTTZyUmw5dXJLaURDQUNI?=
+ =?utf-8?B?WUl0WHRxU0lQRm5vZUlXVkxLTmVhVmpwRUVQR2J6LzRrN2J4d3BjQzVlMXBQ?=
+ =?utf-8?B?QWx3bTdGaHBQV1lnWE43K25sNmd5S2lJMU9abThzcVBLZ1ZGWEtIdk9ERzZs?=
+ =?utf-8?B?ZkVpbGQ1dE9vZGxQc0NtS0UyQi9oUStJUDBYY1I3ZHhKcnluSHp2YmdlT3cw?=
+ =?utf-8?B?dkgramhXYmlscXlvTnJYSzJLb2tQNnNpdzJESDlOVjZNc1IySnZXU1luUHVv?=
+ =?utf-8?B?ODVFQjB6ZE1vK1ovNndOWUlnSXRWZXExNlplT0N3em04WW01RnFmbW95NDhD?=
+ =?utf-8?B?UEhTL3BLWFloQkgrU0ZaMFNmUGh0NExjRHBPNEtDeVhMQ0JkOGdyM2xZV09o?=
+ =?utf-8?B?SnhTWll5RWpLNXA2NHVVUzZTNkI4UzBSOFJHcmpjeG56eklrRmtqc3o1bGMx?=
+ =?utf-8?B?OFQxcjdLdnpYQlVFNjNyd2tML0tVNldEeFJHdHNuc0crOTBCTXh4SmxyY2ls?=
+ =?utf-8?B?dnlpWGMzT2tFalBGM3ZsTVpkay9lNjBHaVNvcXpwWGVHNzdMOVp4bkRUUVlQ?=
+ =?utf-8?B?MEtpL09RSlM4QTU1dm50ZnV2bjV3QWU3eFRuZFFhWks4ZUZDSms5ZGdvMWhU?=
+ =?utf-8?B?aTJvNkQ1RjY0OGFVTDRNRXVjWnpEWnNaeHRHVng3R1gvU1NXUTlHVTZKb0J4?=
+ =?utf-8?B?b0ZiRjF0T3I2VjZkenhpd1NGa2szOU9HMkxXVXZjS1RZQjF5ck1pNzkxcXFG?=
+ =?utf-8?B?WjRMcW8zYVEwN1h6bkZ2ME5pYmZ4eFdkUGd4Tms4cFpMcUM2c3lNWkpnTHpq?=
+ =?utf-8?B?NlpyV0d1clRsOW9FRE1KZjJFR1owZm5iOWFwK0tLRGFuMXpWblRYNUIvVGcv?=
+ =?utf-8?B?N1pIbkZqRWplM1I2cDRMNHBGRkRoZm0ycEh0a3NEVjN3RXJERW4xTUU0Nlhj?=
+ =?utf-8?B?WnFOeFF6cW5IelVWaUozTXpKL2Q3S1ZOeTVIeFl5aVJveWI1bDhveGlhSDZv?=
+ =?utf-8?B?SHF1MWFZUE5LT2JDTkU4SDBhbXNOdUJDRjlGdEZCMk9RNGo5clhmZEFCTmk2?=
+ =?utf-8?B?U3pMbUw2WkRYN1RqUXFUOHhUU1R0ZExQZTVteXJVbXV3bUFDeXhjcHFLb1Nk?=
+ =?utf-8?B?d3hEOTRyYTQ0a3hlbEptQ3V3WGxVM2NTdWZrcG9NeW9yeitMYmVjNGZDTzZ3?=
+ =?utf-8?B?WkhNR2lmWmtoU1RNNTJOdnN0cmFWQVFyYWV2bksydVNScTByRUJPSURQS1JT?=
+ =?utf-8?Q?LBWqQYqXRAqq0tehp+p7ihWgl1mTiJqFFfHe7D25QM0M0U?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20230926194242.2732127-1-sjg@chromium.org> <20230926194242.2732127-2-sjg@chromium.org>
- <BN9PR11MB5483FF3039913334C7EA83E1E6AEA@BN9PR11MB5483.namprd11.prod.outlook.com>
- <CAMj1kXFG92NpL7T7YocOup0xLKyopt3MnSCp0RL8cLzozzJz7A@mail.gmail.com>
- <BN9PR11MB548303B09536EB1577472029E6B3A@BN9PR11MB5483.namprd11.prod.outlook.com>
- <CAPnjgZ36t8g7E=0MSJyaV8-QKv9RVYe47Jd5E=NU-mFM4LWBQA@mail.gmail.com>
- <CAMj1kXHAEeK7x2f13k_JV3Xcw61nNLasyvXQf+mKwKekQ48EpQ@mail.gmail.com>
- <BN9PR11MB548334E0DA6495C438FBFDE1E6BBA@BN9PR11MB5483.namprd11.prod.outlook.com>
- <BN9PR11MB548314DDE8D4C9503103D51CE6BBA@BN9PR11MB5483.namprd11.prod.outlook.com>
-In-Reply-To: <BN9PR11MB548314DDE8D4C9503103D51CE6BBA@BN9PR11MB5483.namprd11.prod.outlook.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 28 Nov 2023 19:07:50 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXHbM+ArLgNZgnmiok4gOfv6QLYxzyB9OCwfhEkJ2xGK_g@mail.gmail.com>
-Message-ID: <CAMj1kXHbM+ArLgNZgnmiok4gOfv6QLYxzyB9OCwfhEkJ2xGK_g@mail.gmail.com>
-Subject: Re: [PATCH v7 2/2] schemas: Add some common reserved-memory usages
-To:     "Chiu, Chasel" <chasel.chiu@intel.com>
-Cc:     Simon Glass <sjg@chromium.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        "Tan, Lean Sheng" <sheng.tan@9elements.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Dhaval Sharma <dhaval@rivosinc.com>,
-        "Brune, Maximilian" <maximilian.brune@9elements.com>,
-        Yunhui Cui <cuiyunhui@bytedance.com>,
-        "Dong, Guo" <guo.dong@intel.com>, Tom Rini <trini@konsulko.com>,
-        ron minnich <rminnich@gmail.com>,
-        "Guo, Gua" <gua.guo@intel.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        U-Boot Mailing List <u-boot@lists.denx.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: d096d65e-a7ab-4fab-5e22-08dbf03cf9ec
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Nov 2023 18:08:08.4526
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR02MB8620
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-You are referring to a 2000 line patch so it is not 100% clear where
-to look tbh.
-
-
-On Tue, 21 Nov 2023 at 19:37, Chiu, Chasel <chasel.chiu@intel.com> wrote:
->
->
-> In PR, UefiPayloadPkg/Library/FdtParserLib/FdtParserLib.c, line 268 is for related example code.
->
-
-That refers to a 'memory-allocation' node, right? How does that relate
-to the 'reserved-memory' node?
-
-And crucially, how does this clarify in which way "runtime-code" and
-"runtime-data" reservations are being used?
-
-Since the very beginning of this discussion, I have been asking
-repeatedly for examples that describe the wider context in which these
-reservations are used. The "runtime" into runtime-code and
-runtime-data means that these regions have a special significance to
-the operating system, not just to the next bootloader stage. So I want
-to understand exactly why it is necessary to describe these regions in
-a way where the operating system might be expected to interpret this
-information and act upon it.
-
-
->
-> > -----Original Message-----
-> > From: Chiu, Chasel
-> > Sent: Tuesday, November 21, 2023 10:34 AM
-> > To: Ard Biesheuvel <ardb@kernel.org>; Simon Glass <sjg@chromium.org>
-> > Cc: devicetree@vger.kernel.org; Mark Rutland <mark.rutland@arm.com>; Rob
-> > Herring <robh@kernel.org>; Tan, Lean Sheng <sheng.tan@9elements.com>; lkml
-> > <linux-kernel@vger.kernel.org>; Dhaval Sharma <dhaval@rivosinc.com>; Brune,
-> > Maximilian <maximilian.brune@9elements.com>; Yunhui Cui
-> > <cuiyunhui@bytedance.com>; Dong, Guo <guo.dong@intel.com>; Tom Rini
-> > <trini@konsulko.com>; ron minnich <rminnich@gmail.com>; Guo, Gua
-> > <gua.guo@intel.com>; linux-acpi@vger.kernel.org; U-Boot Mailing List <u-
-> > boot@lists.denx.de>; Chiu, Chasel <chasel.chiu@intel.com>
-> > Subject: RE: [PATCH v7 2/2] schemas: Add some common reserved-memory
-> > usages
-> >
-> >
-> > Hi Ard,
-> >
-> > Here is the POC PR for your reference:
-> > https://github.com/tianocore/edk2/pull/4969/files#diff-
-> > ccebabae5274b21634723a2111ee0de11bed6cfe8cb206ef9e263d9c5f926a9cR26
-> > 8
-> > Please note that this PR is still in early phase and expected to have significant
-> > changes.
-> >
-> > The idea is that payload entry will create gEfiMemoryTypeInformationGuid HOB
-> > with payload default memory types and allow FDT to override if correspond node
-> > present.
-> > Please let me know if you have questions or suggestions.
-> >
-> > Thanks,
-> > Chasel
-> >
-> >
-> > > -----Original Message-----
-> > > From: Ard Biesheuvel <ardb@kernel.org>
-> > > Sent: Tuesday, November 21, 2023 8:42 AM
-> > > To: Simon Glass <sjg@chromium.org>
-> > > Cc: Chiu, Chasel <chasel.chiu@intel.com>; devicetree@vger.kernel.org;
-> > > Mark Rutland <mark.rutland@arm.com>; Rob Herring <robh@kernel.org>;
-> > > Tan, Lean Sheng <sheng.tan@9elements.com>; lkml
-> > > <linux-kernel@vger.kernel.org>; Dhaval Sharma <dhaval@rivosinc.com>;
-> > > Brune, Maximilian <maximilian.brune@9elements.com>; Yunhui Cui
-> > > <cuiyunhui@bytedance.com>; Dong, Guo <guo.dong@intel.com>; Tom Rini
-> > > <trini@konsulko.com>; ron minnich <rminnich@gmail.com>; Guo, Gua
-> > > <gua.guo@intel.com>; linux- acpi@vger.kernel.org; U-Boot Mailing List
-> > > <u-boot@lists.denx.de>
-> > > Subject: Re: [PATCH v7 2/2] schemas: Add some common reserved-memory
-> > > usages
-> > >
-> > > On Mon, 20 Nov 2023 at 21:12, Simon Glass <sjg@chromium.org> wrote:
-> > > >
-> > > > Hi,
-> > > >
-> > > > On Mon, 13 Nov 2023 at 11:09, Chiu, Chasel <chasel.chiu@intel.com> wrote:
-> > > > >
-> > > > >
-> > > > > Hi Ard,
-> > > > >
-> > > > > Please see my reply below inline.
-> > > > >
-> > > > > Thanks,
-> > > > > Chasel
-> > > > >
-> > > > >
-> > > > > > -----Original Message-----
-> > > > > > From: Ard Biesheuvel <ardb@kernel.org>
-> > > > > > Sent: Saturday, November 11, 2023 3:04 AM
-> > > > > > To: Chiu, Chasel <chasel.chiu@intel.com>
-> > > > > > Cc: Simon Glass <sjg@chromium.org>; devicetree@vger.kernel.org;
-> > > > > > Mark Rutland <mark.rutland@arm.com>; Rob Herring
-> > > > > > <robh@kernel.org>; Tan, Lean Sheng <sheng.tan@9elements.com>;
-> > > > > > lkml <linux-kernel@vger.kernel.org>; Dhaval Sharma
-> > > > > > <dhaval@rivosinc.com>; Brune, Maximilian
-> > > > > > <maximilian.brune@9elements.com>; Yunhui Cui
-> > > > > > <cuiyunhui@bytedance.com>; Dong, Guo <guo.dong@intel.com>; Tom
-> > > > > > Rini <trini@konsulko.com>; ron minnich <rminnich@gmail.com>;
-> > > > > > Guo, Gua <gua.guo@intel.com>; linux- acpi@vger.kernel.org;
-> > > > > > U-Boot Mailing List <u-boot@lists.denx.de>
-> > > > > > Subject: Re: [PATCH v7 2/2] schemas: Add some common
-> > > > > > reserved-memory usages
-> > > > > >
-> > > > > > On Sat, 11 Nov 2023 at 04:20, Chiu, Chasel <chasel.chiu@intel.com>
-> > wrote:
-> > > > > > >
-> > > > > > >
-> > > > > > > Just sharing some usage examples from UEFI/EDK2 scenario.
-> > > > > > > To support ACPI S4/Hibernation, memory map must be consistent
-> > > > > > > before entering and after resuming from S4, in this case
-> > > > > > > payload may need to know previous memory map from bootloader
-> > > > > > > (currently generic payload cannot access platform/bootloader
-> > > > > > > specific non-volatile data, thus could not save/restore memory
-> > > > > > > map
-> > > > > > > information)
-> > > > > >
-> > > > > > So how would EDK2 reconstruct the entire EFI memory map from
-> > > > > > just these unannotated /reserved-memory nodes? The EFI memory
-> > > > > > map contains much more information than that, and all of it has
-> > > > > > to match the pre-hibernate situation, right? Can you given an example?
-> > > > >
-> > > > >
-> > > > > Here we listed only typically memory types that may change cross
-> > > > > different
-> > > platforms.
-> > > > > Reserved memory type already can be handled by reserved-memory
-> > > > > node,
-> > > and rest of the types usually no need to change cross platforms thus
-> > > currently we could rely on default in generic payload.
-> > > > > In the future if we see a need to add new memory types we will
-> > > > > discuss and
-> > > add it to FDT schema.
-> > > > >
-> > > > >
-> > > > >
-> > > > > >
-> > > > > > > Another usage is to support binary model which generic payload
-> > > > > > > is a prebuilt
-> > > > > > binary compatible for all platforms/configurations, however the
-> > > > > > payload default memory map might not always work for all the
-> > > > > > configurations and we want to allow bootloader to override
-> > > > > > payload default
-> > > memory map without recompiling.
-> > > > > > >
-> > > > > >
-> > > > > > Agreed. But can you explain how a EDK2 payload might make
-> > > > > > meaningful use of 'runtime-code' regions provided via DT  by the
-> > > > > > non-EDK2 platform init? Can you give an example?
-> > > > >
-> > > > >
-> > > > > Runtime-code/data is used by UEFI payload for booting UEFI OS
-> > > > > which
-> > > required UEFI runtime services.
-> > > > > Platform Init will select some regions from the usable memory and
-> > > > > assign it to
-> > > runtime-code/data for UPL to consume. Or assign same runtime-code/data
-> > > from previous boot.
-> > > > > If UEFI OS is not supported, PlatformInit may not need to provide
-> > > > > runtime-code/data regions to payload. (always providing
-> > > > > runtime-code/data should be supported too)
-> > > > >
-> > > > >
-> > > > > >
-> > > > > > > Under below assumption:
-> > > > > > >         FDT OS impact has been evaluated and taken care by
-> > > > > > > relevant
-> > > > > > experts/stakeholders.
-> > > > > > > Reviewed-by: Chasel Chiu <chasel.chiu@intel.com>
-> > > > > > >
-> > > > > >
-> > > > > > I am sorry but I don't know what 'FDT OS impact' means. We are
-> > > > > > talking about a firmware-to-firmware abstraction that has the
-> > > > > > potential to leak into the OS visible interface.
-> > > > > >
-> > > > > > I am a maintainer in the Tianocore project myself, so it would
-> > > > > > help if you could explain who these relevant experts and
-> > > > > > stakeholders are. Was this discussed on the edk2-devel mailing
-> > > > > > list? If so, apologies for missing it but I may not have been cc'ed perhaps?
-> > > > >
-> > > > >
-> > > > >
-> > > > >
-> > > > > I'm not familiar with FDT OS, also I do not know if who from
-> > > > > edk2-devel were
-> > > supporting FDT OS, I think Simon might be able to connect FDT OS
-> > > experts/stakeholders.
-> > > > > We are mostly focusing on payload firmware phase implementation in
-> > > > > edk2 (and other payloads too), however, since we have aligned the
-> > > > > payload FDT and OS FDT months ago, I'm assuming FDT OS impact must
-> > > > > be there and we need (or already done?) FDT OS experts to support
-> > > > > it. (again, maybe Simon could share more information about FDT OS)
-> > > > >
-> > > > > In edk2 such FDT schema is UefiPayloadPkg internal usage only and
-> > > > > payload
-> > > entry will convert FDT into HOB thus we expected the most of the edk2
-> > > generic code are no-touch/no impact, that's why we only had small
-> > > group
-> > > (UefiPayloadPkg) discussion.
-> > > > > Ard, if you are aware of any edk2 code that's for supporting FDT
-> > > > > OS, please let
-> > > us know and we can discuss if those code were impacted or not.
-> > > >
-> > > > We discussed this and just to clarify, 'FDT OS' is not a special OS,
-> > > > it is just Linux.
-> > > >
-> > > > So, with the above, are we all on the same page? Can the patch be
-> > > > applied, perhaps? If not, what other discussion is needed?
-> > > >
-> > >
-> > > An example of how a platform-init/payload combination would make
-> > > meaningful use of such runtime-code/data regions.
+RnJvbTogRWRnZWNvbWJlLCBSaWNrIFAgPHJpY2sucC5lZGdlY29tYmVAaW50ZWwuY29tPiBTZW50
+OiBNb25kYXksIE5vdmVtYmVyIDI3LCAyMDIzIDE6MzkgUE0NCj4gDQo+IE9uIFR1ZSwgMjAyMy0x
+MS0yMSBhdCAxMzoyMCAtMDgwMCwgbWhrZWxsZXk1OEBnbWFpbC5jb20gd3JvdGU6DQo+ID4gK3N0
+YXRpYyBpbnQgcHZhbGlkYXRlX3Bmbih1bnNpZ25lZCBsb25nIHZhZGRyLCB1bnNpZ25lZCBpbnQg
+c2l6ZSwNCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCB1bnNpZ25lZCBsb25nIHBmbiwgYm9vbCB2YWxpZGF0ZSwgaW50ICpyYzIpDQo+ID4gK3sNCj4g
+PiArwqDCoMKgwqDCoMKgwqBpbnQgcmM7DQo+ID4gK8KgwqDCoMKgwqDCoMKgc3RydWN0IHBhZ2Ug
+KnBhZ2UgPSBwZm5fdG9fcGFnZShwZm4pOw0KPiA+ICsNCj4gPiArwqDCoMKgwqDCoMKgwqAqcmMy
+ID0gdm1hcF9wYWdlc19yYW5nZSh2YWRkciwgdmFkZHIgKyBQQUdFX1NJWkUsDQo+ID4gK8KgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBQQUdFX0tFUk5FTCwgJnBh
+Z2UsIFBBR0VfU0hJRlQpOw0KPiANCj4gQ2FuJ3QgdGhpcyBmYWlsIGFuZCB0aGVuIHRoZSBwdmFs
+aWRhdGUgYmVsb3cgd291bGQgZW5jb3VudGVyIHRyb3VibGU/DQoNClllcy4gIE15IGludGVudCB3
+YXMgdG8ganVzdCBsZXQgdGhlIFBWQUxJREFURSBmYWlsIGJlY2F1c2Ugb2Ygb3BlcmF0aW5nDQpv
+biBhIHZhZGRyIHRoYXQncyBpbnZhbGlkLiAgQnV0IHRoYXQgd291bGQgYmUgd29ydGggYSBjb21t
+ZW50Lg0KDQo+IA0KPiBTb3J0IG9mIHNlcGFyYXRlbHksIGlmIHRob3NlIHZtYWxsb2Mgb2JqZWN0
+aW9ucyBjYW4ndCBiZSB3b3JrZWQNCj4gdGhyb3VnaCwgZGlkIHlvdSBjb25zaWRlciBkb2luZyBz
+b21ldGhpbmcgbGlrZSB0ZXh0X3Bva2UoKSBkb2VzIChjcmVhdGUNCj4gdGhlIHRlbXBvcmFyeSBt
+YXBwaW5nIGluIGEgdGVtcG9yYXJ5IE1NKSBmb3IgcHZhbGlkYXRlIHB1cnBvc2VzPyBJDQo+IGRv
+bid0IGtub3cgZW5vdWdoIGFib3V0IHdoYXQga2luZCBvZiBzcGVjaWFsIGV4Y2VwdGlvbnMgbWln
+aHQgcG9wdXANCj4gZHVyaW5nIHRoYXQgb3BlcmF0aW9uIHRob3VnaCwgbWlnaHQgYmUgcGxheWlu
+ZyB3aXRoIGZpcmUuLi4NCg0KSW50ZXJlc3RpbmcgaWRlYS4gIEJ1dCBmcm9tIGEgcXVpY2sgZ2xh
+bmNlIGF0IHRoZSB0ZXh0X3Bva2UoKSBjb2RlLA0Kc3VjaCBhbiBhcHByb2FjaCBzZWVtcyBzb21l
+d2hhdCBjb21wbGV4LCBhbmQgSSBzdXNwZWN0IGl0IHdpbGwgaGF2ZSANCnRoZSBzYW1lIHBlcmYg
+aXNzdWVzIChvciB3b3JzZSkgYXMgY3JlYXRpbmcgYSBuZXcgdm1hbGxvYyBhcmVhIGZvcg0KZWFj
+aCBQVkFMSURBVEUgaW52b2NhdGlvbi4NCg0KQXQgdGhpcyBwb2ludCwgdGhlIGNvbXBsZXhpdHkg
+b2YgY3JlYXRpbmcgdGhlIHRlbXAgbWFwcGluZyBmb3INClBWQUxJREFURSBpcyBzZWVtaW5nIGV4
+Y2Vzc2l2ZS4gIE9uIGJhbGFuY2UgaXQgc2VlbXMgc2ltcGxlciB0bw0KcmV2ZXJ0IHRvIGFuIGFw
+cHJvYWNoIHdoZXJlIHRoZSB1c2Ugb2Ygc2V0X21lbW9yeV9ucCgpIGFuZA0Kc2V0X21lbW9yeV9w
+KCkgaXMgY29uZGl0aW9uYWwuICBJdCB3b3VsZCBiZSBuZWNlc3Nhcnkgd2hlbiAjVkMNCmFuZCAj
+VkUgZXhjZXB0aW9ucyBhcmUgZGlyZWN0ZWQgdG8gYSBwYXJhdmlzb3IuICAoVGhpcyBhc3N1bWVz
+IHRoZQ0KcGFyYXZpc29yIGludGVyZmFjZSBpbiB0aGUgaHlwZXJ2aXNvciBjYWxsYmFja3MgZG9l
+cyB0aGUgbmF0dXJhbCB0aGluZw0Kb2Ygd29ya2luZyB3aXRoIHBoeXNpY2FsIGFkZHJlc3Nlcywg
+c28gdGhlcmUncyBubyBuZWVkIGZvciBhIHRlbXANCm1hcHBpbmcuKQ0KDQpPcHRpb25hbGx5LCB0
+aGUgc2V0X21lbW9yeV9ucCgpL3NldF9tZW1vcnlfcCgpIGFwcHJvYWNoIGNvdWxkDQpiZSB1c2Vk
+IGluIG90aGVyIGNhc2VzIHdoZXJlIHRoZSBoeXBlcnZpc29yIGNhbGxiYWNrcyB3b3JrIHdpdGgN
+CnBoeXNpY2FsIGFkZHJlc3Nlcy4gIEJ1dCBpdCBjYW4ndCBiZSB1c2VkIHdpdGggY2FzZXMgd2hl
+cmUgdGhlIGh5cGVydmlzb3INCmNhbGxiYWNrcyBuZWVkIHZhbGlkIHZpcnR1YWwgYWRkcmVzc2Vz
+Lg0KDQpTbyBvbiBuZXQsIHNldF9tZW1vcnlfbnAoKS9zZXRfbWVtb3J5X3AoKSB3b3VsZCBiZSB1
+c2VkIGluDQp0aGUgSHlwZXItViBjYXNlcyBvZiBURFggYW5kIFNFVi1TTlAgd2l0aCBhIHBhcmF2
+aXNvci4gICBJdCBjb3VsZA0Kb3B0aW9uYWxseSBiZSB1c2VkIHdpdGggVERYIHdpdGggbm8gcGFy
+YXZpc29yLCBidXQgbXkgc2Vuc2UgaXMNCnRoYXQgS2lyaWxsIHdhbnRzIHRvIGtlZXAgVERYICJh
+cyBpcyIgYW5kIGxldCB0aGUgZXhjZXB0aW9uIGhhbmRsZXJzDQpkbyB0aGUgbG9hZF91bmFsaWdu
+ZWRfemVyb3BhZCgpIGZpeHVwLg0KDQpJdCBjb3VsZCBub3QgYmUgdXNlZCB3aXRoIFNFVi1TTlAg
+d2l0aCBubyBwYXJhdmlzb3IuICAgQWRkaXRpb25hbCBmaXhlcw0KbWF5IGJlIG5lZWRlZCBvbiB0
+aGUgU0VWLVNOUCBzaWRlIHRvIHByb3Blcmx5IGZpeHVwDQpsb2FkX3VuYWxpZ25lZF96ZXJvcGFk
+KCkgYWNjZXNzZXMgdG8gYSBwYWdlIHRoYXQncyBpbiB0cmFuc2l0aW9uDQpiZXR3ZWVuIGVuY3J5
+cHRlZCBhbmQgZGVjcnlwdGVkLg0KDQpJJ2xsIHdvcmsgb24gYSBwYXRjaCBzZXJpZXMgdGhhdCB0
+YWtlcyB0aGUgY29uZGl0aW9uYWwgYXBwcm9hY2guDQoNCk1pY2hhZWwNCg0KPiANCj4gPiArwqDC
+oMKgwqDCoMKgwqByYyA9IHB2YWxpZGF0ZSh2YWRkciwgc2l6ZSwgdmFsaWRhdGUpOw0KPiA+ICvC
+oMKgwqDCoMKgwqDCoHZ1bm1hcF9yYW5nZSh2YWRkciwgdmFkZHIgKyBQQUdFX1NJWkUpOw0KPiA+
+ICsNCj4gPiArwqDCoMKgwqDCoMKgwqByZXR1cm4gcmM7DQo+ID4gK30NCg0K
