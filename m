@@ -2,186 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E0CA7FC99A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:37:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA427FC99E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344375AbjK1WhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 17:37:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55240 "EHLO
+        id S1346709AbjK1Wha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 17:37:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjK1WhM (ORCPT
+        with ESMTP id S1344653AbjK1Wh2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 17:37:12 -0500
-Received: from w4.tutanota.de (w4.tutanota.de [81.3.6.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9B71710;
-        Tue, 28 Nov 2023 14:37:17 -0800 (PST)
-Received: from tutadb.w10.tutanota.de (unknown [192.168.1.10])
-        by w4.tutanota.de (Postfix) with ESMTP id 8AD961060166;
-        Tue, 28 Nov 2023 22:37:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1701211036;
-        s=s1; d=well-founded.dev;
-        h=From:From:To:To:Subject:Subject:Content-Description:Content-ID:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Cc:Cc:Date:Date:In-Reply-To:In-Reply-To:MIME-Version:MIME-Version:Message-ID:Message-ID:Reply-To:References:References:Sender;
-        bh=d8Q7hAqIb/PUzl9v9MP4WxmBc/5Ztd5hTU3n2F9SrU4=;
-        b=crzWIkssbFPdgDuNJyelgjAS9CjAQ/1t9Vc1TFighEL+yJw4TuRyxo+2wwXMqy7B
-        uahN7RZur6/+rz7zRH9lJhXOBkE+IdfMpj5ckxQDGO0e85v7lQHvF0cZn1T+pJ792Iq
-        jxwhep8PYsd5u1YUkIoLHrLXCu/LA4V9nSNc74+Lnl2g2JkLj8pKLn3nQHTytg7yF1P
-        35CJ462ZS8pJGtfUCIQNAMvy4z1CP7osOBBRDA1/+usgWSwN8EsaO6f+OE1H3N/vagG
-        5YAvbd/WyYh1NTZTfxtjIRQMOCdoEKv7opUfl4We0+t3mL8EuAdo1mSg/8LSq7dwyyC
-        s8TRmMeS4Q==
-Date:   Tue, 28 Nov 2023 23:37:16 +0100 (CET)
-From:   Ramses <ramses@well-founded.dev>
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Power Management <linux-pm@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Yu Chen <yu.c.chen@intel.com>
-Message-ID: <NkN44cg--3-9@well-founded.dev>
-In-Reply-To: <b2b9121c6d2003b45f7fde6a97bb479a1ed634c7.camel@linux.intel.com>
-References: <01df8329-06d7-4fd1-9c7a-05296f33231e@gmail.com> <b2b9121c6d2003b45f7fde6a97bb479a1ed634c7.camel@linux.intel.com>
-Subject: Re: Fwd: Intel hybrid CPU scheduler always prefers E cores
+        Tue, 28 Nov 2023 17:37:28 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925B91998
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 14:37:33 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6c398717726so5138842b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 14:37:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701211053; x=1701815853; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=A2AafIo5QVv/abJyPMu6Yqz0MbRVWfdchikKuUJez54=;
+        b=RP3zeivu/gmiDVIvkcCDfyAJNHmYr/+5LYfLHUSPk5NHvtkxJpGZ9tC8zFGZdV50nP
+         zD14LYVW2jd8iqEgHhsUDQ7hFDFZ29OzZl5bB4Plw4Ou9fUUi2Coskpsla7PYCahV6SM
+         R2Fl9aTsM28psnNjPsjDGzVDnyApOzzyi2H55ch+U0YoUKLffwcOpOzrXyGAmrEqNNmb
+         hoNXpbs+tuytg7L5AdcDbKnfs10aBILqaUU6mW564TObQfXhuGWwfF/fx43g6Isimcd8
+         v0iKATzLzuZ+Ly//rJSDaH3JEVWPd2snhy5DYPK48N86BHWgSVYOCAP6agtcCQqi9sNe
+         mG1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701211053; x=1701815853;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=A2AafIo5QVv/abJyPMu6Yqz0MbRVWfdchikKuUJez54=;
+        b=ezSeaFy/BqdIYT6hayPn1ciIDLHUFynkRONqXUaz5qooqnt2XjbfJ4cBLwiaYzXQMu
+         3+E8Wtd9kI8zFyW49L436sgJdUlLCoiWfeK6MRws49gRAGYPNeHeffteDtGGHE72yz5p
+         yPbFSn4A+1GFN4s1eRDfDIFM9GYz+GvbBew6uSgSO+yDe+7wkO81s08Qrnmlmx1QsLLM
+         yrkKUnXvkndS77e2sjJvYtfVhpewa7M7UgAGdU/6VGqfz+cRQzO6+IDBgynsc/BPhPrH
+         qquuac08M9Xx6Wc7gzSG8EaTY6Qdlkn2NGbvNGjCNvJWF13BHRleKACEUR88wDuPBFGG
+         xKdw==
+X-Gm-Message-State: AOJu0YzoTBrRHzL/AbhivGoMjcqSQpndFa9ciMgNhdpp+7sPeWQdHtCJ
+        EHeLqRkXG4A7S/v4dgOT1kI=
+X-Google-Smtp-Source: AGHT+IF5LKYG5wWLL23x6Qo8kVxiGHz9+o5SWD7Gsfczr/JsiHvaa/wL1My767AMj+AHMfmdtL1GLQ==
+X-Received: by 2002:a05:6a00:3989:b0:6c3:1b90:8552 with SMTP id fi9-20020a056a00398900b006c31b908552mr17819915pfb.17.1701211052890;
+        Tue, 28 Nov 2023 14:37:32 -0800 (PST)
+Received: from google.com ([2620:0:1000:8411:8fd0:78d2:c604:3ac8])
+        by smtp.gmail.com with ESMTPSA id t20-20020aa79394000000b006cdc6b9f0ecsm263540pfe.81.2023.11.28.14.37.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 14:37:31 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Tue, 28 Nov 2023 14:37:28 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Chris Li <chriscli@google.com>, Michal Hocko <mhocko@suse.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sachin Sant <sachinp@linux.ibm.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v10] mm: vmscan: try to reclaim swapcache pages if no
+ swap space
+Message-ID: <ZWZrqFC-Wc92UBou@google.com>
+References: <ZV3_6UH28KMt0ZDb@tiehlicka>
+ <87msv58068.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <ZWDPuR5Ssx07nBHb@tiehlicka>
+ <87h6l77wl5.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <CAF8kJuOcMDpqZV+9+QjK-hsoJLGhoBzBOczAc7+UMypVJresSw@mail.gmail.com>
+ <87bkbf7gz6.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <CAF8kJuNKH_vcF-=6nw3zP5cMaZHLudHZfxNDtHm0K2BXJ+EAgA@mail.gmail.com>
+ <ZWUKziMl6cFV2uWN@google.com>
+ <CAJD7tkZNa_3mWYeix_Xc-BFRNVMkBF3uzL0JCkZOYw5ubAaj9w@mail.gmail.com>
+ <87msuy5zuv.fsf@yhuang6-desk2.ccr.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87msuy5zuv.fsf@yhuang6-desk2.ccr.corp.intel.com>
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        FSL_HELO_FAKE,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(Sending again since I accidentally sent my last mail as HTML.)
+On Tue, Nov 28, 2023 at 11:19:20AM +0800, Huang, Ying wrote:
+> Yosry Ahmed <yosryahmed@google.com> writes:
+> 
+> > On Mon, Nov 27, 2023 at 1:32 PM Minchan Kim <minchan@kernel.org> wrote:
+> >>
+> >> On Mon, Nov 27, 2023 at 12:22:59AM -0800, Chris Li wrote:
+> >> > On Mon, Nov 27, 2023 at 12:14 AM Huang, Ying <ying.huang@intel.com> wrote:
+> >> > > >  I agree with Ying that anonymous pages typically have different page
+> >> > > > access patterns than file pages, so we might want to treat them
+> >> > > > differently to reclaim them effectively.
+> >> > > > One random idea:
+> >> > > > How about we put the anonymous page in a swap cache in a different LRU
+> >> > > > than the rest of the anonymous pages. Then shrinking against those
+> >> > > > pages in the swap cache would be more effective.Instead of having
+> >> > > > [anon, file] LRU, now we have [anon not in swap cache, anon in swap
+> >> > > > cache, file] LRU
+> >> > >
+> >> > > I don't think that it is necessary.  The patch is only for a special use
+> >> > > case.  Where the swap device is used up while some pages are in swap
+> >> > > cache.  The patch will kill performance, but it is used to avoid OOM
+> >> > > only, not to improve performance.  Per my understanding, we will not use
+> >> > > up swap device space in most cases.  This may be true for ZRAM, but will
+> >> > > we keep pages in swap cache for long when we use ZRAM?
+> >> >
+> >> > I ask the question regarding how many pages can be freed by this patch
+> >> > in this email thread as well, but haven't got the answer from the
+> >> > author yet. That is one important aspect to evaluate how valuable is
+> >> > that patch.
+> >>
+> >> Exactly. Since swap cache has different life time with page cache, they
+> >> would be usually dropped when pages are unmapped(unless they are shared
+> >> with others but anon is usually exclusive private) so I wonder how much
+> >> memory we can save.
+> >
+> > I think the point of this patch is not saving memory, but rather
+> > avoiding an OOM condition that will happen if we have no swap space
+> > left, but some pages left in the swap cache. Of course, the OOM
+> > avoidance will come at the cost of extra work in reclaim to swap those
+> > pages out.
+> >
+> > The only case where I think this might be harmful is if there's plenty
+> > of pages to reclaim on the file LRU, and instead we opt to chase down
+> > the few swap cache pages. So perhaps we can add a check to only set
+> > sc->swapcache_only if the number of pages in the swap cache is more
+> > than the number of pages on the file LRU or similar? Just make sure we
+> > don't chase the swapcache pages down if there's plenty to scan on the
+> > file LRU?
+> 
+> The swap cache pages can be divided to 3 groups.
+> 
+> - group 1: pages have been written out, at the tail of inactive LRU, but
+>   not reclaimed yet.
+> 
+> - group 2: pages have been written out, but were failed to be reclaimed
+>   (e.g., were accessed before reclaiming)
+> 
+> - group 3: pages have been swapped in, but were kept in swap cache.  The
+>   pages may be in active LRU.
+> 
+> The main target of the original patch should be group 1.  And the pages
+> may be cheaper to reclaim than file pages.
 
-I applied the patch on top of 6.6.2, but unfortunately I see more or less the same behaviour as before, with single-threaded CPU-bound tasks running almost exclusively on E cores.
+Yeah, that's common for asynchronous swap devices and that's popular. Then,
+How about freeing those memory as soon as the writeback is done instead of
+keep adding more tricks to solve the issue?
 
-Ramses
+https://lkml.kernel.org/linux-mm/1368411048-3753-1-git-send-email-minchan@kernel.org/
 
+I remember it's under softIRQ context so there were some issues to change
+locking rules for memcg and swap. And there was some concern to increase
+softirq latency due to page freeing but both were not the main obstacle to
+be fixed.
 
-Nov 28, 2023, 18:39 by tim.c.chen@linux.intel.com:
+> 
+> Group 2 are hard to be reclaimed if swap_count() isn't 0.
 
-> On Tue, 2023-11-28 at 20:22 +0700, Bagas Sanjaya wrote:
->
->> Hi,
->>
->> I come across an interesting bug report on Bugzilla [1]. The reporter
->> wrote:
->>
->> > I am running an intel alder lake system (Core i7-1260P), with a mix of P and E cores.
->> > 
->> > Since Linux 6.6, and also on the current 6.7 RC, the scheduler seems to have a strong preference for the E cores, and single threaded workloads are consistently scheduled on one of the E cores.
->> > 
->> > With Linux 6.4 and before, when I ran a single threaded CPU-bound process, it was scheduled on a P core. With 6.5, it seems that the choice of P or E seemed rather random.
->> > 
->> > I tested these by running "stress" with different amounts of threads. With a single thread on Linux 6.6 and 6.7, I always have an E core at 100% and no load on the P cores. Starting from 3 threads I get some load on the P cores as well, but the E cores stay more heavily loaded.
->> > With "taskset" I can force a process to run on a P core, but clearly it's not very practical to have to do CPU scheduling manually.
->> > 
->> > This severely affects single-threaded performance of my CPU since the E cores are considerably slower. Several of my workflows are now a lot slower due to them being single-threaded and heavily CPU-bound and being scheduled on E cores whereas they would run on P cores before.
->> > 
->> > I am not sure what the exact desired behaviour is here, to balance power consumption and performance, but currently my P cores are barely used for single-threaded workloads.
->> > 
->> > Is this intended behaviour or is this indeed a regression? Or is there perhaps any configuration that I should have done from my side? Is there any further info that I can provide to help you figure out what's going on?
->>
->> PM and scheduler people, is this a regression or works as intended?
->>
->> Thanks.
->>
->> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=218195
->>
->
-> I have noticed that the current code sometimes is quite trigger happy
-> moving tasks off P-core, whenever there are more than 2 tasks on a core.
-> Sometimes, Short running house keeping tasks
-> could disturb the running task on P-core as a result.
->
-> Can you try the following patch?  On my Alder Lake system, I see as I add single
-> threaded tasks, they first run on P-cores, then followed by E-cores with this
-> patch on 6.6.
->
-> Tim
->
-> From 68a15ef01803c252261ebb47d86dfc1f2c68ae1e Mon Sep 17 00:00:00 2001
-> From: Tim Chen <tim.c.chen@linux.intel.com>
-> Date: Fri, 6 Oct 2023 15:58:56 -0700
-> Subject: [PATCH] sched/fair: Don't force smt balancing when CPU has spare
->  capacity
->
-> Currently group_smt_balance is picked whenever there are more
-> than two tasks on a core with two SMT.  However, the utilization
-> of those tasks may be low and do not warrant a task
-> migration to a CPU of lower priority.
->
-> Adjust sched group clssification and sibling_imbalance()
-> to reflect this consideration.  Use sibling_imbalance() to
-> compute imbalance in calculate_imbalance() for the group_smt_balance
-> case.
->
-> Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
->
-> ---
->  kernel/sched/fair.c | 23 +++++++++++------------
->  1 file changed, 11 insertions(+), 12 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index ef7490c4b8b4..7dd7c2d2367a 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -9460,14 +9460,15 @@ group_type group_classify(unsigned int imbalance_pct,
->  if (sgs->group_asym_packing)
->  return group_asym_packing;
->  
-> -	if (sgs->group_smt_balance)
-> -		return group_smt_balance;
-> -
->  if (sgs->group_misfit_task_load)
->  return group_misfit_task;
->  
-> -	if (!group_has_capacity(imbalance_pct, sgs))
-> -		return group_fully_busy;
-> +	if (!group_has_capacity(imbalance_pct, sgs)) {
-> +		if (sgs->group_smt_balance)
-> +			return group_smt_balance;
-> +		else
-> +			return group_fully_busy;
-> +	}
->  
->  return group_has_spare;
->  }
-> @@ -9573,6 +9574,11 @@ static inline long sibling_imbalance(struct lb_env *env,
->  if (env->idle == CPU_NOT_IDLE || !busiest->sum_nr_running)
->  return 0;
->  
-> +	/* Do not pull tasks off preferred group with spare capacity */
-> +	if (busiest->group_type == group_has_spare &&
-> +	    sched_asym_prefer(sds->busiest->asym_prefer_cpu, env->dst_cpu))
-> +		return 0;
-> +
->  ncores_busiest = sds->busiest->cores;
->  ncores_local = sds->local->cores;
->  
-> @@ -10411,13 +10417,6 @@ static inline void calculate_imbalance(struct lb_env *env, struct sd_lb_stats *s
->  return;
->  }
->  
-> -	if (busiest->group_type == group_smt_balance) {
-> -		/* Reduce number of tasks sharing CPU capacity */
-> -		env->migration_type = migrate_task;
-> -		env->imbalance = 1;
-> -		return;
-> -	}
-> -
->  if (busiest->group_type == group_imbalanced) {
->  /*
->  * In the group_imb case we cannot rely on group-wide averages
-> -- 
-> 2.32.0
->
+"were accessed before reclaiming" would be rare.
 
+> 
+> Group 3 should be reclaimed in theory, but the overhead may be high.
+> And we may need to reclaim the swap entries instead of pages if the pages
+> are hot.  But we can start to reclaim the swap entries before the swap
+> space is run out.
+
+I thought the swap-in path will reclaim the swap slots once it detects
+swapspace wasn't enough(e.g., vm_swap_full or mem_cgroup_swap-full)?
+
+> 
+> So, if we can count group 1, we may use that as indicator to scan anon
+> pages.  And we may add code to reclaim group 3 earlier.
