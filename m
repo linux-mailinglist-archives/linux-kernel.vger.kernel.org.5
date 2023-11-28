@@ -2,167 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B55C37FB6A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:04:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5ED7FB6AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:05:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232885AbjK1KEl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 28 Nov 2023 05:04:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42890 "EHLO
+        id S1343909AbjK1KFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 05:05:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234660AbjK1KEh (ORCPT
+        with ESMTP id S234660AbjK1KFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 05:04:37 -0500
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0E7BF;
-        Tue, 28 Nov 2023 02:04:43 -0800 (PST)
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5cfa65de9ecso24784107b3.2;
-        Tue, 28 Nov 2023 02:04:43 -0800 (PST)
+        Tue, 28 Nov 2023 05:05:30 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD6D113
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:05:33 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3316bb1303bso3263250f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:05:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=citrix.com; s=google; t=1701165931; x=1701770731; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ZKJsy/O9sQNKnNFyRJVuTOt01SElG6aFkPQ2+Lfq3iI=;
+        b=ajmIPgE3cf4/VQcKecwZurNFwBZ7fhShFWpQSsfDV0gtymPBLKvL5H3127D9k1L6dp
+         hX+TAPJ6uHosbFCDtux+M7ll0rT1Bey3JLg8DNYEpumCySiJ7nd6xroxIcltB8532kPn
+         gu41KkYYBNQIm56IEzzrBy+Y2oWQCUj/A3o20=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701165882; x=1701770682;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sVYbGk8nOx+pxSV84i/1qbnW/GNJF1Gu7ctCWCcQoto=;
-        b=PUNDoxt4Wa3zrwvorqri5wSiNSH7dPvWRtOea1zXbR6peQndf/fDbZ2mSJjbalDd4f
-         viLh5oz9C527J16XMoGtMg4TP3YQR7t/2ypPMNFQb/E4Bmr9zUoOlDbRiQwkihAaG5UD
-         5maWMXOZjmHYmKgDSSTKJQEIVYyLJeG+lq13F2/8OqPok1g+ObUt4RHJWflwLlRuCDJy
-         hISnQ8zmkNKdU0zKddH/wY1ZOYP9pXaO9v1ngsd8ncKVo5e8w+5KkGNS2bnhZwJ4A2Tq
-         35gjJNJCji+RPgfQGTBBXM3IiVxu4zjUwZE5xp8vybKvzkK+tbsQSk6aUVoIB4kuf1VA
-         sCMQ==
-X-Gm-Message-State: AOJu0YxaQhoKjLZeKeBsanqyXFXRTjwbah3l/Te5N+Wp/uGKDq64AKxZ
-        9XvH17slCL7V00fzuMkey1R4A8vlAjJIxw==
-X-Google-Smtp-Source: AGHT+IGsl0Nq/1I/eqdAItPwveGjeqEE+qndQzI59+8BTNdccZZr+25bYc5HBBBFaXSVkjnq/uCQvA==
-X-Received: by 2002:a0d:f281:0:b0:5d1:1bab:5902 with SMTP id b123-20020a0df281000000b005d11bab5902mr3955847ywf.15.1701165882596;
-        Tue, 28 Nov 2023 02:04:42 -0800 (PST)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
-        by smtp.gmail.com with ESMTPSA id w2-20020a816202000000b005cc916956d5sm3856505ywb.145.2023.11.28.02.04.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Nov 2023 02:04:41 -0800 (PST)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5cfa65de9ecso24783787b3.2;
-        Tue, 28 Nov 2023 02:04:41 -0800 (PST)
-X-Received: by 2002:a81:9282:0:b0:5a7:afcc:80fe with SMTP id
- j124-20020a819282000000b005a7afcc80femr9012513ywg.3.1701165881168; Tue, 28
- Nov 2023 02:04:41 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701165931; x=1701770731;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZKJsy/O9sQNKnNFyRJVuTOt01SElG6aFkPQ2+Lfq3iI=;
+        b=Rvihym9EiUFbC4+3HDm16wEbYisLwtO/LqulihqaSg05NWuZaE++NWhgZn57NRPF7J
+         Z69YnQ6anPbWGUb0Gt/vw6vdi50jEu1qHYTGa8oGbI1WCyHVztYYmmhxZ5+hOUaudhkK
+         vArz7ihY3JRvEml/0lWMC2sxv5t5l26CkDcH1fHzK5o+pjnNC7xdZCYo9g8kHzQsZp/y
+         TtaQJcjEKiB2GwQU49KBOo5hQ74R2JeuSd8Dg4unAqpyTiiVt+ukf083c8vSDpcJScxr
+         E1YC/l4KmyS5GyVcf3ab1JCkCtIE4C2Cm4hR+JjDB/nHXWKQ4ntv21lxcg03QnfjxJ1x
+         AIwQ==
+X-Gm-Message-State: AOJu0YxWGwuGG3g7ccsyuyl3ipiO/1WQ30SUNugmRsxVJSWZMug/mg/D
+        JZ57uOWINK6drpcyHnqBWcHPNw==
+X-Google-Smtp-Source: AGHT+IHso67qiRejATVe+y4q8GA8WkjBME6ZXNG2nx2AvipjQBf9Fe7u/GIhGV/RuBTAoKaGDDxyQg==
+X-Received: by 2002:a5d:4bcf:0:b0:332:f81d:8dac with SMTP id l15-20020a5d4bcf000000b00332f81d8dacmr6833150wrt.67.1701165931581;
+        Tue, 28 Nov 2023 02:05:31 -0800 (PST)
+Received: from localhost ([213.195.113.99])
+        by smtp.gmail.com with ESMTPSA id l10-20020a5d674a000000b00332eef1ca7asm9779426wrw.80.2023.11.28.02.05.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 02:05:31 -0800 (PST)
+Date:   Tue, 28 Nov 2023 11:05:30 +0100
+From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To:     Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     hch@infradead.org, ming.lei@redhat.com, axboe@kernel.dk,
+        colyli@suse.de, kent.overstreet@gmail.com, joern@lazybastard.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+        nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
+        konishi.ryusuke@gmail.com, dchinner@redhat.com,
+        linux@weissschuh.net, min15.li@samsung.com, yukuai3@huawei.com,
+        dlemoal@kernel.org, willy@infradead.org, akpm@linux-foundation.org,
+        hare@suse.de, p.raghav@samsung.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
+        linux-ext4@vger.kernel.org, gfs2@lists.linux.dev,
+        linux-nilfs@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com
+Subject: Re: [PATCH block/for-next v2 02/16] xen/blkback: use new helper to
+ get inode from block_device
+Message-ID: <ZWW7ag6vIhc_Skh5@macbook>
+References: <20231127062116.2355129-1-yukuai1@huaweicloud.com>
+ <20231127062116.2355129-3-yukuai1@huaweicloud.com>
 MIME-Version: 1.0
-References: <20231122112930.5e7c7bcd@canb.auug.org.au>
-In-Reply-To: <20231122112930.5e7c7bcd@canb.auug.org.au>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 28 Nov 2023 11:04:30 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdW_6rU3uVuBBKh2nMWPC0tPOpxhf9xhD2L6T5frsF=q3w@mail.gmail.com>
-Message-ID: <CAMuHMdW_6rU3uVuBBKh2nMWPC0tPOpxhf9xhD2L6T5frsF=q3w@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the drm tree with the drm-misc-fixes tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Dave Airlie <airlied@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Andrzej Kacprowski <andrzej.kacprowski@linux.intel.com>,
-        Jacek Lawrynowicz <jacek.lawrynowicz@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231127062116.2355129-3-yukuai1@huaweicloud.com>
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+On Mon, Nov 27, 2023 at 02:21:02PM +0800, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
+> 
+> Which is more efficiency, and also prepare to remove the field
+> 'bd_inode' from block_device.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-On Wed, Nov 22, 2023 at 1:29 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> Today's linux-next merge of the drm tree got a conflict in:
->
->   drivers/accel/ivpu/ivpu_hw_37xx.c
->
-> between commit:
->
->   3f7c0634926d ("accel/ivpu/37xx: Fix hangs related to MMIO reset")
->
-> from the drm-misc-fixes tree and commits:
->
->   3de6d9597892 ("accel/ivpu: Pass D0i3 residency time to the VPU firmware")
->   cc19fedab8bd ("accel/ivpu/37xx: Print warning when VPUIP is not idle during power down")
->
-> from the drm tree.
->
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+Acked-by: Roger Pau Monné <roger.pau@citrix.com>
 
-Thanks for your resolution!
-
-> --- a/drivers/accel/ivpu/ivpu_hw_37xx.c
-> +++ b/drivers/accel/ivpu/ivpu_hw_37xx.c
-> @@@ -720,14 -731,19 +733,14 @@@ static int ivpu_hw_37xx_power_down(stru
->   {
->         int ret = 0;
->
-> -       if (!ivpu_hw_37xx_is_idle(vdev))
-> -               ivpu_warn(vdev, "VPU not idle during power down\n");
-> +       ivpu_hw_37xx_save_d0i3_entry_timestamp(vdev);
->
-> -       if (ivpu_hw_37xx_reset(vdev)) {
-> -               ivpu_err(vdev, "Failed to reset VPU\n");
-> -               ret = -EIO;
-> +       if (!ivpu_hw_37xx_is_idle(vdev)) {
-> +               ivpu_warn(vdev, "VPU not idle during power down\n");
-> +               if (ivpu_hw_37xx_reset(vdev))
-> +                       ivpu_warn(vdev, "Failed to reset the VPU\n");
->         }
->
->  -      if (ivpu_pll_disable(vdev)) {
->  -              ivpu_err(vdev, "Failed to disable PLL\n");
->  -              ret = -EIO;
->  -      }
->  -
->         if (ivpu_hw_37xx_d0i3_enable(vdev)) {
->                 ivpu_err(vdev, "Failed to enter D0I3\n");
->                 ret = -EIO;
-
-I've just run into the same conflict, and I think you lost the split
-into two if-statements in the last hunk of commit 3f7c0634926d
-("accel/ivpu/37xx: Fix hangs related to MMIO reset")?
-
-My resolution is:
-
---- a/drivers/accel/ivpu/ivpu_hw_37xx.c
-+++ b/drivers/accel/ivpu/ivpu_hw_37xx.c
-@@@ -720,11 -731,16 +733,13 @@@ static int ivpu_hw_37xx_power_down(stru
-  {
-        int ret = 0;
-
-+       ivpu_hw_37xx_save_d0i3_entry_timestamp(vdev);
-+
- -      if (!ivpu_hw_37xx_is_idle(vdev)) {
- +      if (!ivpu_hw_37xx_is_idle(vdev))
-                ivpu_warn(vdev, "VPU not idle during power down\n");
- -              if (ivpu_hw_37xx_reset(vdev))
- -                      ivpu_warn(vdev, "Failed to reset the VPU\n");
- -      }
-
- -      if (ivpu_pll_disable(vdev)) {
- -              ivpu_err(vdev, "Failed to disable PLL\n");
- +      if (ivpu_hw_37xx_reset(vdev)) {
- +              ivpu_err(vdev, "Failed to reset VPU\n");
-                ret = -EIO;
-        }
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks, Roger.
