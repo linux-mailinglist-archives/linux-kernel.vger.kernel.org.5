@@ -2,193 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F2A7FB6DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:13:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC3B7FB6FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:18:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344098AbjK1KMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 05:12:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36828 "EHLO
+        id S1344102AbjK1KSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 05:18:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234773AbjK1KKo (ORCPT
+        with ESMTP id S229714AbjK1KSm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 05:10:44 -0500
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEB7610A;
-        Tue, 28 Nov 2023 02:10:49 -0800 (PST)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3ASAAdIT130530;
-        Tue, 28 Nov 2023 04:10:39 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1701166239;
-        bh=Q9GfHFzHUPAETZ8jhp2saTZ+Xv19cmZBETN28QC0nhk=;
-        h=From:Date:Subject:References:In-Reply-To:To:CC;
-        b=Ky7vmDyr0Rl5xR8C6Yz7BBRmhmaPC2+tCN8b1Y/VX+tDj9YGnqVVJBt49Vua/nc1E
-         +2xv/n8U3+ahFkFkdAOUV/e6f4qnfu4KrLrbpixc7IctGT2iAVrCeW2bnYSniSmqtj
-         TYNhVm9urTZzABO/cvIQUfHRlgJZE+7L4tJoC5R8=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3ASAAdDJ017691
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 28 Nov 2023 04:10:39 -0600
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 28
- Nov 2023 04:10:39 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 28 Nov 2023 04:10:38 -0600
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3ASAAbHL125525;
-        Tue, 28 Nov 2023 04:10:38 -0600
-From:   Jai Luthra <j-luthra@ti.com>
-Date:   Tue, 28 Nov 2023 15:39:51 +0530
-Subject: [PATCH v3 9/9] arm64: dts: ti: Use OF_ALL_DTBS for combined blobs
+        Tue, 28 Nov 2023 05:18:42 -0500
+X-Greylist: delayed 389 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 28 Nov 2023 02:18:47 PST
+Received: from mail-m12829.netease.com (mail-m12829.netease.com [103.209.128.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27403E1;
+        Tue, 28 Nov 2023 02:18:46 -0800 (PST)
+DKIM-Signature: a=rsa-sha256;
+        b=Kv4h4ezaY2IFPxMQ+PRFA0A72grSJmM3w9FxR0roZprWLmUgFKpm/R54b+N4A7P3UXL1BDBEAIoumNnhy3BSfMQHcC5IlOVVfibR78U7QcFV4n+X+t2l1sb+p8Pu6xfoyaahKOdYogpIhPfkJASrjlzP8R6qs3H4ma/pQsuMFT0=;
+        s=default; c=relaxed/relaxed; d=rock-chips.com; v=1;
+        bh=7JTD2+HcWsQ2R6pCShDzTLWMGQXPh84DvuG0l3o9KdE=;
+        h=date:mime-version:subject:message-id:from;
+Received: from [172.16.12.141] (unknown [58.22.7.114])
+        by mail-m12762.qiye.163.com (Hmail) with ESMTPA id E7F885C0306;
+        Tue, 28 Nov 2023 18:11:46 +0800 (CST)
+Message-ID: <16644455-d7a1-445e-8b48-ae22577a2627@rock-chips.com>
+Date:   Tue, 28 Nov 2023 18:11:46 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20231128-csi_dts-v3-9-0bb11cfa9d43@ti.com>
-References: <20231128-csi_dts-v3-0-0bb11cfa9d43@ti.com>
-In-Reply-To: <20231128-csi_dts-v3-0-0bb11cfa9d43@ti.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Aradhya Bhatia <a-bhatia1@ti.com>,
-        Devarsh Thakkar <devarsht@ti.com>,
-        Vaishnav Achath <vaishnav.a@ti.com>,
-        Julien Massot <julien.massot@collabora.com>,
-        Martyn Welch <martyn.welch@collabora.com>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        Jai Luthra <j-luthra@ti.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4271; i=j-luthra@ti.com;
- h=from:subject:message-id; bh=DBLMWQAFX1Tzf8/HJoNJY/8QVwt817bQEtms+t6sTDU=;
- b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBlZbyF3IhjJ5X3bCjqBnxoMzIQ3GkrVHXZZTfdw
- mBdnqbSjByJAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZWW8hQAKCRBD3pH5JJpx
- Rar8EADPpaRLtsJQXmGW8Q+gW34blRbguI8y54fZpqg6z9AnFvQ7Hpf4eYUdQ6fgBKf4r4aM4vo
- 8mRuCSI9CUHtUpLoHKwqNQT2S12B457mJdMcGDaVTDf0TW2/AipMUvisWVCSAGFMmyaV7b35AAi
- +REdYwk5cfZ/Ly5Bh2gCPSYD1MZOrMOrGo6jJRaac2ZbnGFU9Br48yEz1uNo6xnLerojvSCDy6v
- ZgCThKkYYFczxReGKEtEVI13KOevXxZ+yFd/Y3Fc8prxKWCW6p4dtVBaCgv18u14/i41N/O3YJJ
- HvZlwApWsLhd3Hc7aLEplz5iUbZqyErW+b+ZhbLMDKbL8i+gnUNfGZ+ngG3l5vnJZ47B9zNr0dk
- n9FoXQ39dcT4D0k/0rvUsrCJSnX9npMIU4NQ3IcPBrP+BVtE8ucUJ6UVBBbsV6uuwv8nPpcPXRk
- tgxezeBvl3NAHZ1pEnbq+J9jS05AemG/IOl22Hg9Z+Ys2ApiyDe+BM1UNlUynuOttylEV3KDd8h
- cjddZd119hMut/0A4QSvXGCiGd8wZEoMu5UxXaxsXcHqb2AM6ftg8j4vJXfmdI8Et5mZHLVgJkg
- teXlQAuyeJPLjdO+Abp7/J45o+DgDP1/2OfbG+AywcOkrYVi9FUB0WwwmynhDgg5Oxet334zUfQ
- 9JgP/VjLLNYwncw==
-X-Developer-Key: i=j-luthra@ti.com; a=openpgp;
- fpr=4DE0D818E5D575E8D45AAFC543DE91F9249A7145
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 10/12] drm/rockchip: vop2: Add support for rk3588
+Content-Language: en-US
+To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        Andy Yan <andyshrk@163.com>
+Cc:     hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
+        kever.yang@rock-chips.com, chris.obbard@collabora.com,
+        s.hauer@pengutronix.de
+References: <20231122125316.3454268-1-andyshrk@163.com>
+ <4788319.uZKlY2gecq@diego>
+ <f179e9ae-b2cd-4f6c-badc-4d76d8a3ba0d@rock-chips.com>
+ <4339687.HovnAMPojK@diego>
+From:   Andy Yan <andy.yan@rock-chips.com>
+In-Reply-To: <4339687.HovnAMPojK@diego>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGhgdTFYaSkJMT0seGkNPSh9VEwETFh
+        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk1PSU5JVUpLS1VKQl
+        kG
+X-HM-Tid: 0a8c1569d7d1b229kuuue7f885c0306
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6M006Aww5Czw8Gh4WCCMOMioQ
+        HwpPCipVSlVKTEtKSk1NSEtMQktJVTMWGhIXVRoVHwJVAhoVOwkUGBBWGBMSCwhVGBQWRVlXWRIL
+        WUFZTkNVSUlVTFVKSk9ZV1kIAVlBQ0hKTDcG
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Combined dtb builds are only useful for making sure that the overlay
-applies cleanly on the base dtb.
+Hi Heiko:
 
-So we move all such combined blobs under a `dtb- +=` section that is
-only built when OF_ALL_DTBS config is enabled.
+On 11/28/23 17:44, Heiko Stübner wrote:
+> Hi Andy,
+>
+> Am Dienstag, 28. November 2023, 10:32:55 CET schrieb Andy Yan:
+>> On 11/27/23 23:29, Heiko Stübner wrote:
+>>> Am Mittwoch, 22. November 2023, 13:55:44 CET schrieb Andy Yan:
+>>>> From: Andy Yan <andy.yan@rock-chips.com>
+>>>>
+>>>> VOP2 on rk3588:
+>>>>
+>>>> Four video ports:
+>>>> VP0 Max 4096x2160
+>>>> VP1 Max 4096x2160
+>>>> VP2 Max 4096x2160
+>>>> VP3 Max 2048x1080
+>>>>
+>>>> 4 4K Cluster windows with AFBC/line RGB and AFBC-only YUV support
+>>>> 4 4K Esmart windows with line RGB/YUV support
+>>>>
+>>>> Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+>>>>
+>>>> ---
+>>>>
+>>>> Changes in v2:
+>>>> - add rk3588_ prefix for functions which are rk3588 only
+>>>> - make some calculation as fixed value and keep calculation formula as
+>>>>     comment
+>>>> - check return value for some cru calculation functions.
+>>>> - check return value for syscon_regmap_lookup_by_phandle
+>>>> - add NV20/NV30 for esmart plane
+>>>>
+>>>>    drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 381 ++++++++++++++++++-
+>>>>    drivers/gpu/drm/rockchip/rockchip_drm_vop2.h |  66 ++++
+>>>>    drivers/gpu/drm/rockchip/rockchip_vop2_reg.c | 221 +++++++++++
+>>>>    3 files changed, 660 insertions(+), 8 deletions(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+>>>> index 4bcc405bcf11..9eecbe1f71f9 100644
+>>>> --- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+>>>> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
+>>>> @@ -271,9 +282,12 @@ static bool vop2_cluster_window(const struct vop2_win *win)
+>>>>    static void vop2_cfg_done(struct vop2_video_port *vp)
+>>>>    {
+>>>>    	struct vop2 *vop2 = vp->vop2;
+>>>> +	u32 val;
+>>>> +
+>>>> +	val = BIT(vp->id) | (BIT(vp->id) << 16) |
+>>>> +		RK3568_REG_CFG_DONE__GLB_CFG_DONE_EN;
+>>>>    
+>>>> -	regmap_set_bits(vop2->map, RK3568_REG_CFG_DONE,
+>>>> -			BIT(vp->id) | RK3568_REG_CFG_DONE__GLB_CFG_DONE_EN);
+>>>> +	regmap_set_bits(vop2->map, RK3568_REG_CFG_DONE, val);
+>>> I don't fully understand that code:
+>>> (1) the write mask is also present on the rk3568, so should this change
+>>>       be a separate patch with a fixes tag?
+>> The write mask of VP config done on rk356x is missing, that means
+>> you can write the corresponding mask bit, but it has no effect.
+>>
+>> I once considered making it a separate patch,  I can split it as a separate patch if
+>> you like.
+> I think I'd like it to be a separate patch please.
+>
+>
+>>> (2) RK3568_REG_CFG_DONE__GLB_CFG_DONE_EN does not contain the part for
+>>>       the write-mask
+>>>
+>>> 	#define RK3568_REG_CFG_DONE__GLB_CFG_DONE_EN     BIT(15)
+>>>
+>>>       why is this working then?
+>>
+>> Actually this bit has no write-mask bit. 🙂
+> when doing that separate patch mentioned above, could you also add a
+> comment to the code stating that RK3568_REG_CFG_DONE__GLB_CFG_DONE_EN
+> doesn't have a write mask bit please?
+>
+> Because the TRM is not clear and ideally I'd not forget this fact for
+> the future :-) .
+>
 
-Signed-off-by: Jai Luthra <j-luthra@ti.com>
----
- arch/arm64/boot/dts/ti/Makefile | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
+Okay, will do both above.
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index fd9166497c32..5ef49b02c71f 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -9,8 +9,6 @@
- # alphabetically.
- 
- # Boards with AM62x SoC
--k3-am625-sk-hdmi-audio-dtbs := k3-am625-sk.dtb k3-am62x-sk-hdmi-audio.dtbo
--k3-am62-lp-sk-hdmi-audio-dtbs := k3-am62-lp-sk.dtb k3-am62x-sk-hdmi-audio.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-am625-beagleplay.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am625-beagleplay-csi2-ov5640.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-am625-beagleplay-csi2-tevi-ov5640.dtbo
-@@ -23,8 +21,6 @@ dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-dahlia.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-dev.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-wifi-yavia.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am62-lp-sk.dtb
--dtb-$(CONFIG_ARCH_K3) += k3-am625-sk-hdmi-audio.dtb
--dtb-$(CONFIG_ARCH_K3) += k3-am62-lp-sk-hdmi-audio.dtb
- 
- # Boards with AM62Ax SoC
- dtb-$(CONFIG_ARCH_K3) += k3-am62a7-sk.dtb
-@@ -36,20 +32,15 @@ dtb-$(CONFIG_ARCH_K3) += k3-am62p5-sk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am62x-sk-csi2-ov5640.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-am62x-sk-csi2-tevi-ov5640.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-am62x-sk-csi2-imx219.dtbo
-+dtb-$(CONFIG_ARCH_K3) += k3-am62x-sk-hdmi-audio.dtbo
- 
- # Boards with AM64x SoC
- dtb-$(CONFIG_ARCH_K3) += k3-am642-evm.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-phyboard-electra-rdk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-sk.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl.dtb
--
--k3-am642-tqma64xxl-mbax4xxl-sdcard-dtbs := \
--	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
--k3-am642-tqma64xxl-mbax4xxl-wlan-dtbs := \
--	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-wlan.dtbo
--
--dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl-sdcard.dtb
--dtb-$(CONFIG_ARCH_K3) += k3-am642-tqma64xxl-mbax4xxl-wlan.dtb
-+dtb-$(CONFIG_ARCH_K3) += k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
-+dtb-$(CONFIG_ARCH_K3) += k3-am64-tqma64xxl-mbax4xxl-wlan.dtbo
- 
- # Boards with AM65x SoC
- k3-am654-gp-evm-dtbs := k3-am654-base-board.dtb k3-am654-base-board-rocktech-rk101-panel.dtbo
-@@ -98,26 +89,36 @@ k3-am625-sk-csi2-ov5640-dtbs := k3-am625-sk.dtb \
- 	k3-am62x-sk-csi2-ov5640.dtbo
- k3-am625-sk-csi2-tevi-ov5640-dtbs := k3-am625-sk.dtb \
- 	k3-am62x-sk-csi2-tevi-ov5640.dtbo
-+k3-am625-sk-hdmi-audio-dtbs := k3-am625-sk.dtb k3-am62x-sk-hdmi-audio.dtbo
-+k3-am62-lp-sk-hdmi-audio-dtbs := k3-am62-lp-sk.dtb k3-am62x-sk-hdmi-audio.dtbo
- k3-am62a7-sk-csi2-imx219-dtbs := k3-am62a7-sk.dtb \
- 	k3-am62x-sk-csi2-imx219.dtbo
- k3-am62a7-sk-csi2-ov5640-dtbs := k3-am62a7-sk.dtb \
- 	k3-am62x-sk-csi2-ov5640.dtbo
- k3-am62a7-sk-csi2-tevi-ov5640-dtbs := k3-am62a7-sk.dtb \
- 	k3-am62x-sk-csi2-tevi-ov5640.dtbo
-+k3-am642-tqma64xxl-mbax4xxl-sdcard-dtbs := \
-+	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-sdcard.dtbo
-+k3-am642-tqma64xxl-mbax4xxl-wlan-dtbs := \
-+	k3-am642-tqma64xxl-mbax4xxl.dtb k3-am64-tqma64xxl-mbax4xxl-wlan.dtbo
- dtb- += k3-am625-beagleplay-csi2-ov5640.dtb \
- 	k3-am625-beagleplay-csi2-tevi-ov5640.dtb \
- 	k3-am625-sk-csi2-imx219.dtb \
- 	k3-am625-sk-csi2-ov5640.dtb \
- 	k3-am625-sk-csi2-tevi-ov5640.dtb \
-+	k3-am625-sk-hdmi-audio.dtb \
-+	k3-am62-lp-sk-hdmi-audio.dtb \
- 	k3-am62a7-sk-csi2-imx219.dtb \
- 	k3-am62a7-sk-csi2-ov5640.dtb \
--	k3-am62a7-sk-csi2-tevi-ov5640.dtb
-+	k3-am642-tqma64xxl-mbax4xxl-sdcard.dtb \
-+	k3-am642-tqma64xxl-mbax4xxl-wlan.dtb
- 
- # Enable support for device-tree overlays
- DTC_FLAGS_k3-am625-beagleplay += -@
- DTC_FLAGS_k3-am625-sk += -@
- DTC_FLAGS_k3-am62-lp-sk += -@
- DTC_FLAGS_k3-am62a7-sk += -@
-+DTC_FLAGS_k3-am642-tqma64xxl-mbax4xxl += -@
- DTC_FLAGS_k3-am6548-iot2050-advanced-m2 += -@
- DTC_FLAGS_k3-j721e-common-proc-board += -@
- DTC_FLAGS_k3-j721s2-common-proc-board += -@
+>>>>    }
+>>>>    
+>>>>    static void vop2_win_disable(struct vop2_win *win)
+>>> [...]
+>>>
+>>>> @@ -1298,7 +1346,11 @@ static void vop2_plane_atomic_update(struct drm_plane *plane,
+>>>>    			vop2_win_write(win, VOP2_WIN_AFBC_ENABLE, 1);
+>>>>    		vop2_win_write(win, VOP2_WIN_AFBC_FORMAT, afbc_format);
+>>>>    		vop2_win_write(win, VOP2_WIN_AFBC_UV_SWAP, uv_swap);
+>>>> -		vop2_win_write(win, VOP2_WIN_AFBC_AUTO_GATING_EN, 0);
+>>>> +		if (vop2->data->soc_id == 3566 || vop2->data->soc_id == 3568)
+>>>> +			vop2_win_write(win, VOP2_WIN_AFBC_AUTO_GATING_EN, 0);
+>>>> +		else
+>>>> +			vop2_win_write(win, VOP2_WIN_AFBC_AUTO_GATING_EN, 1);
+>>>> +
+>>> I think this at least warrants a comment, what is happening here. Also,
+>>> can you already see how future vop2-users are behaving - aka are all new
+>>> socs in the "else" part of the conditional, or would a switch-case better
+>>> represent future socs?
+>>
+>> On rk356x, this bit is auto gating enable, but this function is not work well so
+>> we need to disable this function.
+>> On rk3588, and the following new soc(rk3528/rk3576), this bit is gating disable,
+>> we should write 1 to disable gating when enable a cluster window.
+>>
+>>
+>> Maybe i add some comments in next version ?
+> Yep that comment would be helpful. And with your explanation the code
+> itself can stay as it is :-)
 
--- 
-2.42.1
 
+will do.
+
+> Thanks
+> Heiko
+>
+>
+>>>>    		vop2_win_write(win, VOP2_WIN_AFBC_BLOCK_SPLIT_EN, 0);
+>>>>    		transform_offset = vop2_afbc_transform_offset(pstate, half_block_en);
+>>>>    		vop2_win_write(win, VOP2_WIN_AFBC_HDR_PTR, yrgb_mst);
+>>>> @@ -1627,9 +1937,17 @@ static void vop2_crtc_atomic_enable(struct drm_crtc *crtc,
+>>>>    	drm_for_each_encoder_mask(encoder, crtc->dev, crtc_state->encoder_mask) {
+>>>>    		struct rockchip_encoder *rkencoder = to_rockchip_encoder(encoder);
+>>>>    
+>>>> -		rk3568_set_intf_mux(vp, rkencoder->crtc_endpoint_id, polflags);
+>>>> +		/*
+>>>> +		 * for drive a high resolution(4KP120, 8K), vop on rk3588/rk3576 need
+>>>> +		 * process multi(1/2/4/8) pixels per cycle, so the dclk feed by the
+>>>> +		 * system cru may be the 1/2 or 1/4 of mode->clock.
+>>>> +		 */
+>>>> +		clock = vop2_set_intf_mux(vp, rkencoder->crtc_endpoint_id, polflags);
+>>>>    	}
+>>>>    
+>>>> +	if (!clock)
+>>>> +		return;
+>>>> +
+>>> hmm, shouldn't the check for the validity of a mode happen before
+>>> atomic_enable is run? So this shouldn't error out in the middle of the
+>>> function?
+
+
+Actually it is a check like the check of clk_prepares_enable at the beginning,
+
+maybe one place can do this is at crtc_atomic_check ? But we really don't need to
+
+do the calculate and enable the related interface at every frame commit.
+
+with a grep i can find many platforms do this kind of check in crtc_atomic_enable(ade/meson/vc4/omap/malidp/tidss_crtc_atomic_enable, etc...)
+
+so maybe just let it as it is now?
+
+>>>
+>>>
+>>>>    	if (vcstate->output_mode == ROCKCHIP_OUT_MODE_AAAA &&
+>>>>    	    !(vp_data->feature & VOP_FEATURE_OUTPUT_10BIT))
+>>>>    		out_mode = ROCKCHIP_OUT_MODE_P888;
+>>> Thanks
+>>> Heiko
+>>>
+>>>
+>>>
+>>> _______________________________________________
+>>> Linux-rockchip mailing list
+>>> Linux-rockchip@lists.infradead.org
+>>> http://lists.infradead.org/mailman/listinfo/linux-rockchip
+>
+>
+>
