@@ -2,97 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 078A97FC9F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:52:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A76FA7FC9FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:53:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbjK1WwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 17:52:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51234 "EHLO
+        id S1345421AbjK1WxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 17:53:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230521AbjK1WwF (ORCPT
+        with ESMTP id S229930AbjK1WxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 17:52:05 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3649F19B0;
-        Tue, 28 Nov 2023 14:52:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701211932; x=1732747932;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9i5I5hBO0MDHcxfVOfR0DRKjy4DDVCbRXS2YCjyFpTU=;
-  b=SgcZk9sWKnu5HotPuxjFJ/KZ8EO2MVGOurcMJIuW6lDnzsAX9OBRQhmW
-   y1lPdnGAsV6VzEhRJAMJ3RSAnBXfgVUHTHisQ2ZKM02twniyDodeuCZvS
-   174Vdxx7/y6vgHsCrI8S+gHHLys+yahc+whfJ48FdP+JKymP9uS22UpD/
-   jvuYHT2UVIU/IHxKykZWtQs7FrWPoHIVZU6chdQbPeECJP73dg7R75SKI
-   N5QfRBTH+ZO8nhA1XNmTs+roVuybf5aehyPxiSQ5tWusDfpFhCAxSX/Yl
-   77XzWHFh0a13aeLAzPWOB1GbvKxE5jLXw/Ok8Iggbnx7NsqQsS7WR1qjx
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="392797314"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="392797314"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 14:52:11 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="797718500"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="797718500"
-Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 28 Nov 2023 14:52:10 -0800
-Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r86w3-0008EK-2a;
-        Tue, 28 Nov 2023 22:52:07 +0000
-Date:   Wed, 29 Nov 2023 06:51:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Wujie Duan <wjduan@linx-info.com>, tsbogend@alpha.franken.de
-Cc:     oe-kbuild-all@lists.linux.dev, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Wujie Duan <wjduan@linx-info.com>
-Subject: Re: [PATCH] Mark symbols static where possible for mips/kernel
-Message-ID: <202311290441.DFJp34W7-lkp@intel.com>
-References: <20231128071225.801111-1-wjduan@linx-info.com>
+        Tue, 28 Nov 2023 17:53:08 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 91D9B8F;
+        Tue, 28 Nov 2023 14:53:14 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8943E2F4;
+        Tue, 28 Nov 2023 14:54:01 -0800 (PST)
+Received: from [10.57.71.132] (unknown [10.57.71.132])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 723B13F6C4;
+        Tue, 28 Nov 2023 14:53:06 -0800 (PST)
+Message-ID: <1c6156de-c6c7-43a7-8c34-8239abee3978@arm.com>
+Date:   Tue, 28 Nov 2023 22:53:04 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231128071225.801111-1-wjduan@linx-info.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 08/16] iommu/fsl: use page allocation function provided by
+ iommu-pages.h
+Content-Language: en-GB
+To:     Pasha Tatashin <pasha.tatashin@soleen.com>,
+        akpm@linux-foundation.org, alex.williamson@redhat.com,
+        alim.akhtar@samsung.com, alyssa@rosenzweig.io,
+        asahi@lists.linux.dev, baolu.lu@linux.intel.com,
+        bhelgaas@google.com, cgroups@vger.kernel.org, corbet@lwn.net,
+        david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org,
+        heiko@sntech.de, iommu@lists.linux.dev, jasowang@redhat.com,
+        jernej.skrabec@gmail.com, jgg@ziepe.ca, jonathanh@nvidia.com,
+        joro@8bytes.org, kevin.tian@intel.com,
+        krzysztof.kozlowski@linaro.org, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
+        marcan@marcan.st, mhiramat@kernel.org, mst@redhat.com,
+        m.szyprowski@samsung.com, netdev@vger.kernel.org,
+        paulmck@kernel.org, rdunlap@infradead.org, samuel@sholland.org,
+        suravee.suthikulpanit@amd.com, sven@svenpeter.dev,
+        thierry.reding@gmail.com, tj@kernel.org, tomas.mudrunka@gmail.com,
+        vdumpa@nvidia.com, virtualization@lists.linux.dev, wens@csie.org,
+        will@kernel.org, yu-cheng.yu@intel.com
+References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
+ <20231128204938.1453583-9-pasha.tatashin@soleen.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20231128204938.1453583-9-pasha.tatashin@soleen.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wujie,
+On 2023-11-28 8:49 pm, Pasha Tatashin wrote:
+> Convert iommu/fsl_pamu.c to use the new page allocation functions
+> provided in iommu-pages.h.
 
-kernel test robot noticed the following build errors:
+Again, this is not a pagetable. This thing doesn't even *have* pagetables.
 
-[auto build test ERROR on linus/master]
-[also build test ERROR on v6.7-rc3 next-20231128]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Similar to patches #1 and #2 where you're lumping in configuration 
+tables which belong to the IOMMU driver itself, as opposed to pagetables 
+which effectively belong to an IOMMU domain's user. But then there are 
+still drivers where you're *not* accounting similar configuration 
+structures, so I really struggle to see how this metric is useful when 
+it's so completely inconsistent in what it's counting :/
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Wujie-Duan/Mark-symbols-static-where-possible-for-mips-kernel/20231128-152256
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20231128071225.801111-1-wjduan%40linx-info.com
-patch subject: [PATCH] Mark symbols static where possible for mips/kernel
-config: mips-fuloong2e_defconfig (https://download.01.org/0day-ci/archive/20231129/202311290441.DFJp34W7-lkp@intel.com/config)
-compiler: mips64el-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231129/202311290441.DFJp34W7-lkp@intel.com/reproduce)
+Thanks,
+Robin.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311290441.DFJp34W7-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   mips64el-linux-ld: arch/mips/kernel/signal_n32.o: in function `setup_rt_frame_n32':
->> signal_n32.c:(.text+0xe0): undefined reference to `setup_sigcontext'
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+> ---
+>   drivers/iommu/fsl_pamu.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iommu/fsl_pamu.c b/drivers/iommu/fsl_pamu.c
+> index f37d3b044131..7bfb49940f0c 100644
+> --- a/drivers/iommu/fsl_pamu.c
+> +++ b/drivers/iommu/fsl_pamu.c
+> @@ -16,6 +16,7 @@
+>   #include <linux/platform_device.h>
+>   
+>   #include <asm/mpc85xx.h>
+> +#include "iommu-pages.h"
+>   
+>   /* define indexes for each operation mapping scenario */
+>   #define OMI_QMAN        0x00
+> @@ -828,7 +829,7 @@ static int fsl_pamu_probe(struct platform_device *pdev)
+>   		(PAGE_SIZE << get_order(OMT_SIZE));
+>   	order = get_order(mem_size);
+>   
+> -	p = alloc_pages(GFP_KERNEL | __GFP_ZERO, order);
+> +	p = __iommu_alloc_pages(GFP_KERNEL, order);
+>   	if (!p) {
+>   		dev_err(dev, "unable to allocate PAACT/SPAACT/OMT block\n");
+>   		ret = -ENOMEM;
+> @@ -916,7 +917,7 @@ static int fsl_pamu_probe(struct platform_device *pdev)
+>   		iounmap(guts_regs);
+>   
+>   	if (ppaact)
+> -		free_pages((unsigned long)ppaact, order);
+> +		iommu_free_pages(ppaact, order);
+>   
+>   	ppaact = NULL;
+>   
