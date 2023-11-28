@@ -2,100 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 727557FBA93
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:55:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 218567FBA98
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344761AbjK1Myv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 07:54:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36716 "EHLO
+        id S1344544AbjK1M4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 07:56:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344757AbjK1Myt (ORCPT
+        with ESMTP id S234660AbjK1M4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 07:54:49 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0642A10D8;
-        Tue, 28 Nov 2023 04:54:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701176096; x=1732712096;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=dVu4q/x1civBTJPwWNdWPRxz+AZouCiyXKEZvCfSL7A=;
-  b=b0yuf6ygaLe+2qq4qfP2Yw6KCWtZ9pZyHu5EvPYJTt4wJiV8fljZgzoU
-   lt0oi1nTpPtkIxQO3GNDicmfL57hwVTErGlFPhniErPzInWDQwWokeXFd
-   7rf9UW+AhDg0VoU0BeC6d7oJwQzVXPmJ4MrDjAHWR+7GE0ag8JiyFwIKB
-   M5qv4NYE/x7GrgxTzt0Q+fSYIbaDjtCkYzC6gnGcCBqJxd8xIvobSTcVZ
-   /dePggJQQnSVna6R37JCYzP3QaFBiLCDwf3XsI5BGeiZl5FXZedIS0gNL
-   N5OL9sW0qeURP1lTata7rnqeA45u0OVzUHM80Qqm+9Gi0LN3NpYqD9QfI
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="6116070"
-X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
-   d="scan'208";a="6116070"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 04:54:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="892073899"
-X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
-   d="scan'208";a="892073899"
-Received: from haslam-mobl1.ger.corp.intel.com ([10.252.43.79])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 04:54:50 -0800
-Date:   Tue, 28 Nov 2023 14:54:48 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Henry Shi <henryshi2018@gmail.com>
-cc:     hbshi69@hotmail.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, Hans de Goede <hdegoede@redhat.com>,
-        markgross@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
-        LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        hb_shi2003@yahoo.com, henrys@silicom-usa.com, wenw@silicom-usa.com,
-        =?ISO-8859-2?Q?Barnab=E1s_P=F5cze?= <pobrn@protonmail.com>
-Subject: Re: [PATCH v15] platform/x86: Add Silicom Platform Driver
-In-Reply-To: <20231124200334.5318-1-henryshi2018@gmail.com>
-Message-ID: <b9e2321c-7dfb-d2d5-6cb-e3fa1ded1422@linux.intel.com>
-References: <20231124200334.5318-1-henryshi2018@gmail.com>
+        Tue, 28 Nov 2023 07:56:49 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B227D51
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 04:56:56 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA23FC433C8;
+        Tue, 28 Nov 2023 12:56:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701176216;
+        bh=hKHaJ8sHOi5d/nae+CksoGF2YrFTwPKeiImXwy1CbcA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=suRWt3rkU4bFv+rCEf4KZ8VphF9jns7IdIZjFj4SWTxc3ruyjfGa20ZZQbMdpt1rv
+         6SHkme8ylhuhhz9/uDA2lTLToaUTczmO1MHNDxxpzDS2rHbn0zVN4KVHTLA/X74SBh
+         q/IXZ1ts897FtyqfWHRdvZFgiGZUaUQiawvjFIRVB3f7UqEbgfK+b6Ce6pxGPL2L91
+         0UBU85XL/GV/+J1vEqtiA0FaMMQkm73kMKdWZ5dSAh9JFmhdvrlTrAcjYtP0qHw2wr
+         RwjKfr8omqpG9koNe73qHtzIWvE0Hb/pWk0129nNQkM6f+CB1D0rS9Podqk9TOcngD
+         SeuUgYH3PbC/g==
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Guillem Jover <guillem@debian.org>,
+        Ben Hutchings <ben@decadent.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] kbuild: deb-pkg: remove the fakeroot builds support
+Date:   Tue, 28 Nov 2023 21:56:42 +0900
+Message-Id: <20231128125642.24931-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323329-1963003203-1701175569=:1797"
-Content-ID: <e8e7589-3b28-421d-5a5e-9b5531705bfc@linux.intel.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+In 2017, the dpkg suite added the rootless builds support with the
+following commits:
 
---8323329-1963003203-1701175569=:1797
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
-Content-ID: <53551940-6a3b-3470-c377-42fbfd0fa7@linux.intel.com>
+  - 2436807c87b0 ("dpkg-deb: Add support for rootless builds")
+  - fca1bfe84068 ("dpkg-buildpackage: Add support for rootless builds")
 
-On Fri, 24 Nov 2023, Henry Shi wrote:
+It is supported by the default dpkg on Debian 10 and Ubuntu 20.04.
 
-> platform/x86: Add Silicom Platform Driver
-> 
-> Add Silicom platform (silicom-platform) Linux driver for Swisscom
-> Business Box (Swisscom BB) as well as Cordoba family products.
-> 
-> This platform driver provides support for various functions via
-> the Linux LED framework, GPIO framework, Hardware Monitoring (HWMON)
-> and device attributes.
-> 
-> Signed-off-by: Henry Shi <henryshi2018@gmail.com>
+Remove the old method.
 
-As far as I'm concerned, this seems to be okay shape now:
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+ scripts/Makefile.package | 4 +---
+ scripts/package/builddeb | 8 +-------
+ 2 files changed, 2 insertions(+), 10 deletions(-)
 
-It would be good for somebody to check if the devicename part of the led 
-.name is correct (as I cannot even myself figure out what exactly is 
-expected there).
-
-
+diff --git a/scripts/Makefile.package b/scripts/Makefile.package
+index 0c3adc48dfe8..a81dfb1f5181 100644
+--- a/scripts/Makefile.package
++++ b/scripts/Makefile.package
+@@ -109,8 +109,6 @@ debian-orig: linux.tar$(debian-orig-suffix) debian
+ 		cp $< ../$(orig-name); \
+ 	fi
+ 
+-KBUILD_PKG_ROOTCMD ?= 'fakeroot -u'
+-
+ PHONY += deb-pkg srcdeb-pkg bindeb-pkg
+ 
+ deb-pkg:    private build-type := source,binary
+@@ -125,7 +123,7 @@ deb-pkg srcdeb-pkg bindeb-pkg:
+ 	$(if $(findstring source, $(build-type)), \
+ 		--unsigned-source --compression=$(KDEB_SOURCE_COMPRESS)) \
+ 	$(if $(findstring binary, $(build-type)), \
+-		-R'$(MAKE) -f debian/rules' -j1 -r$(KBUILD_PKG_ROOTCMD) -a$$(cat debian/arch), \
++		-R'$(MAKE) -f debian/rules' -j1 -a$$(cat debian/arch), \
+ 		--no-check-builddeps) \
+ 	$(DPKG_FLAGS))
+ 
+diff --git a/scripts/package/builddeb b/scripts/package/builddeb
+index d7dd0d04c70c..2fe51e6919da 100755
+--- a/scripts/package/builddeb
++++ b/scripts/package/builddeb
+@@ -36,19 +36,13 @@ create_package() {
+ 	sh -c "cd '$pdir'; find . -type f ! -path './DEBIAN/*' -printf '%P\0' \
+ 		| xargs -r0 md5sum > DEBIAN/md5sums"
+ 
+-	# Fix ownership and permissions
+-	if [ "$DEB_RULES_REQUIRES_ROOT" = "no" ]; then
+-		dpkg_deb_opts="--root-owner-group"
+-	else
+-		chown -R root:root "$pdir"
+-	fi
+ 	# a+rX in case we are in a restrictive umask environment like 0077
+ 	# ug-s in case we build in a setuid/setgid directory
+ 	chmod -R go-w,a+rX,ug-s "$pdir"
+ 
+ 	# Create the package
+ 	dpkg-gencontrol -p$pname -P"$pdir"
+-	dpkg-deb $dpkg_deb_opts ${KDEB_COMPRESS:+-Z$KDEB_COMPRESS} --build "$pdir" ..
++	dpkg-deb --root-owner-group ${KDEB_COMPRESS:+-Z$KDEB_COMPRESS} --build "$pdir" ..
+ }
+ 
+ install_linux_image () {
 -- 
- i.
---8323329-1963003203-1701175569=:1797--
+2.40.1
+
