@@ -2,102 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 228697FB25C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:09:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E77B87FB25E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:09:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343712AbjK1HJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 02:09:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58408 "EHLO
+        id S1343714AbjK1HJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 02:09:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343699AbjK1HJI (ORCPT
+        with ESMTP id S1343699AbjK1HJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 02:09:08 -0500
-Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB835182
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:09:14 -0800 (PST)
-Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-58d54612d9cso1546069eaf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:09:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701155354; x=1701760154; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3DfVtya4RBsfO21aPZQimz87Ty2xKQDd/O6zJS+ytuc=;
-        b=BrkX1gFFbVKElH0gabTl1nw2cvkPGbYPoO0dTp39wLntPiyY/Xi1yew3opTJe5gQSl
-         prN3QNlqBWAv1rPjoVsFHKS6Oqvn6ttSfEvsN0zN6fomGBRdulnfGHcYuc7Sr+xGpscN
-         H5siQDf6kJ5YQa3D1VXRlpNs8hGc+kv7Q7wn2UGmI1P8opQWUtZNi1pqHh0KfCrJnzE/
-         JDhmQa6gKg/UczkneuvHC80zEjF3gQIWTRI71N7oa+ADOEDbC4WyjqiY92ipLUpoVllh
-         lQZ/YGVUBECVbtItcf8g1I0F88rtK8t6Z9Wb8GyjH7Vpku7U4wqZGW6De/jHUariA5+q
-         vQLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701155354; x=1701760154;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3DfVtya4RBsfO21aPZQimz87Ty2xKQDd/O6zJS+ytuc=;
-        b=vvJiQztWOwwgD5XNLjwPN6EF6Y2RP9KP/76pBCrEhdxeUsl3680l4Jgk7+8A7CjRVW
-         RIX/FaH4wZFvjkDfWHdnXdcg89o6g5XpiNBetLN3VcTJ98A4ZxpOSPF7KGUvsLHQvH7j
-         Af6StH5rGnGql4ZhXr1RoSXmeWWD0kRqI/CiMc79Prg1jDm0d9YvbshVW3x1/uLVYgBn
-         ML0Hzg0rs7YQBQ6RgBOgOcllpndcU4w8lFS5779TjGpZ6lS1pOHw6MIr3DDJsA34coQ9
-         HcCQIT4bgWgtuSHmJpUhFQnxgbxsbhHzxXpL2N257qIEsFGN97k8+jxxvNd0wCI55jqm
-         KWPQ==
-X-Gm-Message-State: AOJu0YwesOh3sCz2AT8kyI5ndvefZOhSr+nBhRzcyAZ/U/EpZQouY7jB
-        SfaQ1/iKIPsICDXpjXV7pyAxeQ==
-X-Google-Smtp-Source: AGHT+IH7FQgKd0fBaTnW20DKZfN/lO92e7D73F9a16o4SUVO0itFXdjiYg1ryLnRHh7o+XxouhfCAg==
-X-Received: by 2002:a05:6820:60a:b0:58d:9c58:428e with SMTP id e10-20020a056820060a00b0058d9c58428emr4726750oow.5.1701155353956;
-        Mon, 27 Nov 2023 23:09:13 -0800 (PST)
-Received: from localhost ([122.172.82.6])
-        by smtp.gmail.com with ESMTPSA id o18-20020a63e352000000b005b1bf3a200fsm9070147pgj.1.2023.11.27.23.09.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 23:09:13 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] OPP: Check for invalid OPP in dev_pm_opp_find_level_ceil()
-Date:   Tue, 28 Nov 2023 12:39:06 +0530
-Message-Id: <51b7d5dec3d4f3a677b355b12fac9dcac63828cf.1701155328.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
+        Tue, 28 Nov 2023 02:09:42 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2696F197;
+        Mon, 27 Nov 2023 23:09:48 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5F9F5C15;
+        Mon, 27 Nov 2023 23:10:35 -0800 (PST)
+Received: from [10.163.33.60] (unknown [10.163.33.60])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5221B3F5A1;
+        Mon, 27 Nov 2023 23:09:44 -0800 (PST)
+Message-ID: <8305dee1-6668-4011-aaf7-68d072a1251c@arm.com>
+Date:   Tue, 28 Nov 2023 12:39:42 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/7] coresight: tmc: Move ACPI support from AMBA driver to
+ platform driver
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org,
+        linux-stm32@st-md-mailman.stormreply.com
+References: <20231027072943.3418997-1-anshuman.khandual@arm.com>
+ <20231027072943.3418997-6-anshuman.khandual@arm.com> <ZV40itsgT5OSJmdC@bogus>
+Content-Language: en-US
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <ZV40itsgT5OSJmdC@bogus>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-_find_key_ceil() may return an error and that must be checked before
-passing the same to dev_pm_opp_put().
 
-Fixes: 41907aa4ae37 ("OPP: Level zero is valid")
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/opp/core.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index 4f1ca84d9ed0..c022d548067d 100644
---- a/drivers/opp/core.c
-+++ b/drivers/opp/core.c
-@@ -808,6 +808,8 @@ struct dev_pm_opp *dev_pm_opp_find_level_ceil(struct device *dev,
- 	struct dev_pm_opp *opp;
- 
- 	opp = _find_key_ceil(dev, &temp, 0, true, _read_level, NULL);
-+	if (IS_ERR(opp))
-+		return opp;
- 
- 	/* False match */
- 	if (temp == OPP_LEVEL_UNSET) {
--- 
-2.31.1.272.g89b43f80a514
+On 11/22/23 22:34, Sudeep Holla wrote:
+> On Fri, Oct 27, 2023 at 12:59:41PM +0530, Anshuman Khandual wrote:
+>> Add support for the tmc devices in the platform driver, which can then be
+>> used on ACPI based platforms. This change would now allow runtime power
+>> management for ACPI based systems. The driver would try to enable the APB
+>> clock if available.
+>>
+>> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
+>> Cc: Sudeep Holla <sudeep.holla@arm.com>
+>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: James Clark <james.clark@arm.com>
+>> Cc: linux-acpi@vger.kernel.org
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Cc: coresight@lists.linaro.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>>  drivers/acpi/arm64/amba.c                     |   2 -
+>>  .../hwtracing/coresight/coresight-tmc-core.c  | 127 +++++++++++++++---
+>>  drivers/hwtracing/coresight/coresight-tmc.h   |   1 +
+>>  3 files changed, 113 insertions(+), 17 deletions(-)
+> 
+> [...]
+> 
+>> diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
+>> index 7ec5365e2b64..618bc0b7a1a5 100644
+>> --- a/drivers/hwtracing/coresight/coresight-tmc-core.c
+>> +++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
+> 
+> [...]
+> 
+>> @@ -573,9 +579,9 @@ static void tmc_shutdown(struct amba_device *adev)
+>>  	spin_unlock_irqrestore(&drvdata->spinlock, flags);
+>>  }
+>>  
+>> -static void tmc_remove(struct amba_device *adev)
+>> +static void __tmc_remove(struct device *dev)
+>>  {
+>> -	struct tmc_drvdata *drvdata = dev_get_drvdata(&adev->dev);
+>> +	struct tmc_drvdata *drvdata = dev_get_drvdata(dev);
+>>  
+>>  	/*
+>>  	 * Since misc_open() holds a refcount on the f_ops, which is
+>> @@ -586,6 +592,11 @@ static void tmc_remove(struct amba_device *adev)
+>>  	coresight_unregister(drvdata->csdev);
+>>  }
+>>  
+>> +static void tmc_remove(struct amba_device *adev)
+>> +{
+>> +	__tmc_remove(&adev->dev);
+>> +}
+>> +
+>>  static const struct amba_id tmc_ids[] = {
+>>  	CS_AMBA_ID(0x000bb961),
+>>  	/* Coresight SoC 600 TMC-ETR/ETS */
+>> @@ -613,6 +624,92 @@ static struct amba_driver tmc_driver = {
+>>  
+>>  module_amba_driver(tmc_driver);
+>>  
+>> +static int tmc_platform_probe(struct platform_device *pdev)
+>> +{
+>> +	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +	struct tmc_drvdata *drvdata;
+>> +	int ret = 0;
+>> +
+>> +	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
+>> +	if (!drvdata)
+>> +		return -ENOMEM;
+>> +
+>> +	drvdata->pclk = coresight_get_enable_apb_pclk(&pdev->dev);
+>> +	if (IS_ERR(drvdata->pclk))
+>> +		return -ENODEV;
+>> +
+> 
+> --->8
+>> +	if (res) {
+>> +		drvdata->base = devm_ioremap_resource(&pdev->dev, res);
+>> +		if (IS_ERR(drvdata->base)) {
+>> +			clk_put(drvdata->pclk);
+>> +			return PTR_ERR(drvdata->base);
+>> +		}
+>> +	}
+>> +
+> ---
+> 
+> You need drop the above hunk as _tmc_probe() already takes care of that.
 
+Dropped.
+
+> This is the root cause for the issue I reported in the other thread. Also
+> sorry for the confusion, I had to refer to coresight-tmc-core.c and post
+> the patch to unify module_init/exit but completely mixed up the file/patch
+> and referred coresight-tpiu-core.c instead as that patch was dealing with
+> it.
+> 
