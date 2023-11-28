@@ -2,106 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1457FAECC
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 01:00:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98FBC7FAECD
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 01:01:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233936AbjK1AAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 19:00:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47774 "EHLO
+        id S234046AbjK1ABJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 19:01:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233937AbjK1AAp (ORCPT
+        with ESMTP id S229879AbjK1ABF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 19:00:45 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B980B101
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 16:00:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701129651; x=1732665651;
-  h=message-id:date:mime-version:from:subject:to:cc:
-   content-transfer-encoding;
-  bh=fE5k4OyTHeqif50mQLLwEfNfbGdlH+/E+HWnDkCX2bE=;
-  b=GQbex7z2dYOV7L1RGl+ZZLio7GdyhSenMvtiaY8qKCIXTdSaCdy1qKg9
-   FBrbhsng7JT+HGpWyAMWVKtT1wPRvfQ9qGSPIxSahrow1vYwD9H+NmISQ
-   jb4+kJb4E+9jBAG3V+CiIM3I73kaaaTmFWkEI4G7tvFGT3cDhO/IAeYvQ
-   nJCNBIOMUCwrAzLGqKkl3VnV+BX7ojSx9W7ZTinPsd5gabRIzXuy7P6aV
-   igYa3F5ldhoeY2GIhTgetGsTXZksroU/T8K+RBMUfLhprmF2ZAyw+pP58
-   iXsZ6E5x7JEamStAy7jyGmoHX6aJfGlqdaW44KZ6kIMO1QhYw01hkwBWQ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="383199764"
-X-IronPort-AV: E=Sophos;i="6.04,232,1695711600"; 
-   d="scan'208";a="383199764"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 16:00:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="761774988"
-X-IronPort-AV: E=Sophos;i="6.04,232,1695711600"; 
-   d="scan'208";a="761774988"
-Received: from noramoha-mobl.amr.corp.intel.com (HELO [10.209.55.253]) ([10.209.55.253])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 16:00:50 -0800
-Message-ID: <82b2e0d5-edcc-44f3-b759-d6b8c8788ea6@intel.com>
-Date:   Mon, 27 Nov 2023 16:00:50 -0800
+        Mon, 27 Nov 2023 19:01:05 -0500
+Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com [66.111.4.229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1824101;
+        Mon, 27 Nov 2023 16:01:10 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 6ACEB580979;
+        Mon, 27 Nov 2023 19:01:07 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Mon, 27 Nov 2023 19:01:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+        1701129667; x=1701136867; bh=OSQtcO0pegrxarZcG5C5VOBtpHVJhZcct9m
+        oQPXmvT4=; b=h0vUhgD60RYO7nCWRGpot3ijJG19C3YfA4IIwFyt5kXWyvb9puA
+        AWklEiuo9lkbPYgqPBm+2ytpwqLWv92V3IFFRnw6+Rix78s95QWtzD2eNtSNh9MU
+        KAx7SQ36fYiuB2pu6ZIn6I5UzbWhCYN0C+vkTtYL4/oR9sB5wZETNiHhRqQLNPIb
+        NPIGXPvNNH6fAgi1IztrtsLv7z/FkVWLs49gojsQCNR8ouH2JHr+RY0kd5rtvxZL
+        tJ6nE1jzcThqBubP7Llz+8WPQ0SNyce3wca8453C24xAH2Jh6tzGjvihH/Ab+VU/
+        sPti/9X12x1it+XA/cy54WoIimh/YQVFKUg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1701129667; x=1701136867; bh=OSQtcO0pegrxarZcG5C5VOBtpHVJhZcct9m
+        oQPXmvT4=; b=awkJk73X+I1uiAWNEQNYVfVRIMq1ZItqrORBmTZep8lSK1xxZkY
+        DtfTBYj+ETVL2WGPowa6TQNRc0pr+lBFrUNDwhYtfWy68hW5yvbWFDUDpLg6GHDt
+        QyYDf0s0B6Yh5NzguaHrASuO91Eek9LcP1FfwggGl9oE7l6l8KxQKyGMQ2c+ViWD
+        aNRW9/AokxHlC4Y8eahUqlQMmwwyfkkjjpEQTD8bAAPIl20seqA5fkxm1VAewsJK
+        0ims1oXiSYZjbRadYrgAKD3+t2JUpSZtzOV3eyy0+11wNgve47OuUJKVQqOuphDU
+        hR6w3hI5ilKBqyo4usayhnAerJpaKSJIkgw==
+X-ME-Sender: <xms:wS1lZVNjk5J9DyJX2P6YmrMiP6c0IX9o4-SWgScUp8iL4Wod9Ms5PA>
+    <xme:wS1lZX_4d6aXQX2n04miga8vf0Cixzw6Zm5zfP5cvJ2KztEFddxIUCLcVgqCKKYKF
+    yr3XNjhfO9a-Yk3rw>
+X-ME-Received: <xmr:wS1lZURAy9jMPGoMfF26znWE7bQ1hyeHMnwrfM5nEPhiEcXISryDbBmOxL7zx9ZgzmXeJmcZtcSRuahiwgwndR0kWnWLZGjW3AzJSeDE4qD6kEXSiTtju2xs21I>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeivddgudejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhfgggtugfgjgestheksfdt
+    tddtudenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
+    enucggtffrrghtthgvrhhnpeehteelgfffiedtledulefgteejhedufeehuefhvefhhfff
+    hfekhfefkefhkeegudenucffohhmrghinhepugiguhhuuhdrgiihiienucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdig
+    hiii
+X-ME-Proxy: <xmx:wi1lZRvh2mX76SoCmDnz2VUJdkbcWfB2EPb-TbIcqCuiC3W1k_xsbQ>
+    <xmx:wi1lZdfely_9ITCr7XGzR6-e6lXE5Hn1tzwI2rfWH5UWxkhmPMyvhA>
+    <xmx:wi1lZd2n-RYWze-qa67kob1sGvPedOBU5Ci5c8tkWoC1sLB2EHbSdw>
+    <xmx:wy1lZT_Mhk3mz2Zi4Uj1Nt66u5V5I4EIZ-k2l2d-vaNb0HVRA7-06w>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 27 Nov 2023 19:01:04 -0500 (EST)
+Date:   Mon, 27 Nov 2023 18:01:03 -0600
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     Yonghong Song <yonghong.song@linux.dev>
+Cc:     Eduard Zingerman <eddyz87@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        antony.antony@secunet.com, Mykola Lysenko <mykolal@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, devel@linux-ipsec.org,
+        Network Development <netdev@vger.kernel.org>
+Subject: Re: [PATCH ipsec-next v1 6/7] bpf: selftests: test_tunnel: Disable
+ CO-RE relocations
+Message-ID: <53jaqi72ef4gynyafxidl5veb54kfs7dttxezkarwg75t7szd4@cvfg5pc7pyum>
+References: <391d524c496acc97a8801d8bea80976f58485810.1700676682.git.dxu@dxuuu.xyz>
+ <0f210cef-c6e9-41c1-9ba8-225f046435e5@linux.dev>
+ <CAADnVQ+sEsUyNYPeZyOf2PcCnxOvOqw4bUuAuMofCU14szTGvg@mail.gmail.com>
+ <3ec6c068-7f95-419a-a0ae-a901f95e4838@linux.dev>
+ <18e43cdf65e7ba0d8f6912364fbc5b08a6928b35.camel@gmail.com>
+ <uc5fv3keghefszuvono7aclgtjtgjnnia3i54ynejmyrs42ser@bwdpq5gmuvub>
+ <0535eb913f1a0c2d3c291478fde07e0aa2b333f1.camel@gmail.com>
+ <42f9bf0d-695a-412d-bea5-cb7036fa7418@linux.dev>
+ <a5a84482-13ef-47d8-bf07-8017060a5d64@linux.dev>
+ <xehp2qvy5cyaairbnfhem4hvbsl26blo4zzu7z6ywbp26jcwyn@hgp3v2q4ud7o>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Dave Hansen <dave.hansen@intel.com>
-Subject: AMD Memory encryption vs. kexec
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "Shutemov, Kirill" <kirill.shutemov@intel.com>,
-        Ashish Kalra <ashish.kalra@amd.com>,
-        Kai Huang <kai.huang@intel.com>
-Content-Language: en-US
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <xehp2qvy5cyaairbnfhem4hvbsl26blo4zzu7z6ywbp26jcwyn@hgp3v2q4ud7o>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -109,42 +114,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-... actually cc'd the mailing lists and x86@ exploder on this one.
-Please reply here.
+On Mon, Nov 27, 2023 at 02:45:11PM -0600, Daniel Xu wrote:
+> On Sun, Nov 26, 2023 at 09:53:04PM -0800, Yonghong Song wrote:
+> > 
+> > On 11/27/23 12:44 AM, Yonghong Song wrote:
+> > > 
+> > > On 11/26/23 8:52 PM, Eduard Zingerman wrote:
+> > > > On Sun, 2023-11-26 at 18:04 -0600, Daniel Xu wrote:
+> > > > [...]
+> > > > > > Tbh I'm not sure. This test passes with preserve_static_offset
+> > > > > > because it suppresses preserve_access_index. In general clang
+> > > > > > translates bitfield access to a set of IR statements like:
+> > > > > > 
+> > > > > >    C:
+> > > > > >      struct foo {
+> > > > > >        unsigned _;
+> > > > > >        unsigned a:1;
+> > > > > >        ...
+> > > > > >      };
+> > > > > >      ... foo->a ...
+> > > > > > 
+> > > > > >    IR:
+> > > > > >      %a = getelementptr inbounds %struct.foo, ptr %0, i32 0, i32 1
+> > > > > >      %bf.load = load i8, ptr %a, align 4
+> > > > > >      %bf.clear = and i8 %bf.load, 1
+> > > > > >      %bf.cast = zext i8 %bf.clear to i32
+> > > > > > 
+> > > > > > With preserve_static_offset the getelementptr+load are replaced by a
+> > > > > > single statement which is preserved as-is till code generation,
+> > > > > > thus load with align 4 is preserved.
+> > > > > > 
+> > > > > > On the other hand, I'm not sure that clang guarantees that load or
+> > > > > > stores used for bitfield access would be always aligned according to
+> > > > > > verifier expectations.
+> > > > > > 
+> > > > > > I think we should check if there are some clang knobs that prevent
+> > > > > > generation of unaligned memory access. I'll take a look.
+> > > > > Is there a reason to prefer fixing in compiler? I'm not opposed to it,
+> > > > > but the downside to compiler fix is it takes years to propagate and
+> > > > > sprinkles ifdefs into the code.
+> > > > > 
+> > > > > Would it be possible to have an analogue of BPF_CORE_READ_BITFIELD()?
+> > > > Well, the contraption below passes verification, tunnel selftest
+> > > > appears to work. I might have messed up some shifts in the macro,
+> > > > though.
+> > > 
+> > > I didn't test it. But from high level it should work.
+> > > 
+> > > > 
+> > > > Still, if clang would peek unlucky BYTE_{OFFSET,SIZE} for a particular
+> > > > field access might be unaligned.
+> > > 
+> > > clang should pick a sensible BYTE_SIZE/BYTE_OFFSET to meet
+> > > alignment requirement. This is also required for BPF_CORE_READ_BITFIELD.
+> > > 
+> > > > 
+> > > > ---
+> > > > 
+> > > > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > index 3065a716544d..41cd913ac7ff 100644
+> > > > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > @@ -9,6 +9,7 @@
+> > > >   #include "vmlinux.h"
+> > > >   #include <bpf/bpf_helpers.h>
+> > > >   #include <bpf/bpf_endian.h>
+> > > > +#include <bpf/bpf_core_read.h>
+> > > >   #include "bpf_kfuncs.h"
+> > > >   #include "bpf_tracing_net.h"
+> > > >   @@ -144,6 +145,38 @@ int ip6gretap_get_tunnel(struct __sk_buff *skb)
+> > > >       return TC_ACT_OK;
+> > > >   }
+> > > >   +#define BPF_CORE_WRITE_BITFIELD(s, field, new_val) ({            \
+> > > > +    void *p = (void *)s + __CORE_RELO(s, field, BYTE_OFFSET);    \
+> > > > +    unsigned byte_size = __CORE_RELO(s, field, BYTE_SIZE);        \
+> > > > +    unsigned lshift = __CORE_RELO(s, field, LSHIFT_U64); \
+> > > > +    unsigned rshift = __CORE_RELO(s, field, RSHIFT_U64); \
+> > > > +    unsigned bit_size = (rshift - lshift);                \
+> > > > +    unsigned long long nval, val, hi, lo;                \
+> > > > +                                    \
+> > > > +    asm volatile("" : "=r"(p) : "0"(p));                \
+> > > 
+> > > Use asm volatile("" : "+r"(p)) ?
+> > > 
+> > > > +                                    \
+> > > > +    switch (byte_size) {                        \
+> > > > +    case 1: val = *(unsigned char *)p; break;            \
+> > > > +    case 2: val = *(unsigned short *)p; break;            \
+> > > > +    case 4: val = *(unsigned int *)p; break;            \
+> > > > +    case 8: val = *(unsigned long long *)p; break;            \
+> > > > +    }                                \
+> > > > +    hi = val >> (bit_size + rshift);                \
+> > > > +    hi <<= bit_size + rshift;                    \
+> > > > +    lo = val << (bit_size + lshift);                \
+> > > > +    lo >>= bit_size + lshift;                    \
+> > > > +    nval = new_val;                            \
+> > > > +    nval <<= lshift;                        \
+> > > > +    nval >>= rshift;                        \
+> > > > +    val = hi | nval | lo;                        \
+> > > > +    switch (byte_size) {                        \
+> > > > +    case 1: *(unsigned char *)p      = val; break;            \
+> > > > +    case 2: *(unsigned short *)p     = val; break;            \
+> > > > +    case 4: *(unsigned int *)p       = val; break;            \
+> > > > +    case 8: *(unsigned long long *)p = val; break;            \
+> > > > +    }                                \
+> > > > +})
+> > > 
+> > > I think this should be put in libbpf public header files but not sure
+> > > where to put it. bpf_core_read.h although it is core write?
+> > > 
+> > > But on the other hand, this is a uapi struct bitfield write,
+> > > strictly speaking, CORE write is really unnecessary here. It
+> > > would be great if we can relieve users from dealing with
+> > > such unnecessary CORE writes. In that sense, for this particular
+> > > case, I would prefer rewriting the code by using byte-level
+> > > stores...
+> > or preserve_static_offset to clearly mean to undo bitfield CORE ...
+> 
+> Ok, I will do byte-level rewrite for next revision.
 
----
+[...]
 
-There are two kexec-related wbinvd's:
+This patch seems to work: https://pastes.dxuuu.xyz/0glrf9 .
 
-One for the kexec boot CPU in relocate_kernel() which is driven by
-CC_ATTR_HOST_MEM_ENCRYPT:
+But I don't think it's very pretty. Also I'm seeing on the internet that
+people are saying the exact layout of bitfields is compiler dependent.
+So I am wondering if these byte sized writes are correct. For that
+matter, I am wondering how the GCC generated bitfield accesses line up
+with clang generated BPF bytecode. Or why uapi contains a bitfield.
 
->         image->start = relocate_kernel((unsigned long)image->head,
->                                        (unsigned long)page_list,
->                                        image->start,
->                                        image->preserve_context,
->                                        cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT));
+WDYT, should I send up v2 with this or should I do one of the other
+approaches in this thread?
 
-the other is for non-boot CPUs in stop_this_cpu():
+I am ok with any of the approaches.
 
->         if (c->extended_cpuid_level >= 0x8000001f && (cpuid_eax(0x8000001f) & BIT(0)))
->                 native_wbinvd();
-
-By my reading, the CC_ATTR_HOST_MEM_ENCRYPT is basically a check for
-whether the current kernel has enabled SME but not SEV while the
-stop_this_cpu() site is driven purely by whether the hardware *supports*
-SME.
-
-The whole supposed reason stop_this_cpu() checks CPUID directly is that
-the current kernel SME/SEV enabling might not match the _next_ kernel's
-enabling choices.
-
-So, why is a _current_ kernel check OK for relocate_kernel(), but not OK
-for stop_this_cpu()?
-
-It seems to me like both sites might need to use the
-stop_this_cpu()-style "raw" hardware support checks.
-
-Why do I care?  TDX potentially needs wbinvd at the same two spots.  It
-would be nice to have a common cc_attr for both sites, but I need to
-reconcile the apparently disparate AMD uses first.
+Thanks,
+Daniel
