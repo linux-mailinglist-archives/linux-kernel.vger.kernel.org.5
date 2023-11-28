@@ -2,177 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 655BC7FB96A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:27:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6ED57FB96D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:29:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344544AbjK1L1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 06:27:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52496 "EHLO
+        id S1344296AbjK1L3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 06:29:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234733AbjK1L1g (ORCPT
+        with ESMTP id S234638AbjK1L31 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 06:27:36 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75AE31A2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 03:27:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8835C433C7;
-        Tue, 28 Nov 2023 11:27:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701170861;
-        bh=B/yIJwxLaAT5R+A6b54U5ynQZIauIfWW6wfH2GeGYOQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AQ9fog7fgQPvyo6YamBdjTQIaFyIbBgPOndM0nhoIRfGIiMmC8WrLEhQvhnCS0QN2
-         QSm3tH0BUAoZ/L99xiBkw4FurCM3Hzqa7BmV8TvAbgVUBa0Co10LGM8UrQ7sRGH9NK
-         W6pszD10ZSyu3bmUx06Lm7rRLpd43MxyYFttVQ+mKq7EtBa4pxDTrXQkVJiYTO9EfN
-         XgIoEBd7Ih0And8QXM4ursYTyw0wENYnqw0JwgXOZjv7La5tnJ/B4G6ZKWgy7gPLvW
-         a2fO87YUdYPYAH18baKyMhpmdPhzrQJE0y4O/ldjFDHfvHdFoXsGlYkyUvyAOFeJ6N
-         pWJgn0s4iP15w==
-Date:   Tue, 28 Nov 2023 16:57:31 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Ziqi Chen <quic_ziqichen@quicinc.com>
-Cc:     Can Guo <quic_cang@quicinc.com>, quic_asutoshd@quicinc.com,
-        bvanassche@acm.org, beanhuo@micron.com, avri.altman@wdc.com,
-        junwoo80.lee@samsung.com, martin.petersen@oracle.com,
-        quic_nguyenb@quicinc.com, quic_nitirawa@quicinc.com,
-        quic_rampraka@quicinc.com, linux-scsi@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] scsi: ufs: qcom: move ufs_qcom_host_reset() to
- ufs_qcom_device_reset()
-Message-ID: <20231128112731.GV3088@thinkpad>
-References: <1698145815-17396-1-git-send-email-quic_ziqichen@quicinc.com>
- <20231025074128.GA3648@thinkpad>
- <85d7a1ef-92c4-49ae-afe0-727c1b446f55@quicinc.com>
- <c6a72c38-aa63-79b8-c784-d753749f7272@quicinc.com>
+        Tue, 28 Nov 2023 06:29:27 -0500
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3063DE;
+        Tue, 28 Nov 2023 03:29:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1701170973; x=1732706973;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=JxYcsvcr1ILzJwMkDRbf/mn7s1U+mPLMXFdP1+XMCd8=;
+  b=PUfBwiHr9wKOuCSDc3C0HKhaLOETHaH5IC5gUiazJg4Iw+Qx0/nz8Ks8
+   iRTUkc/5BLXv71LvmFqwYFEk4+SE0fv7wuScLrXr5DVew/r3n5KxogBhl
+   9s0yhTOlWOa7bJ5nDzHwSCMYW3IkvwcUkM3lgq5YBM1IFsXu05vD5++Ey
+   mmna2SpL6ynMmTbXc3czKjT0sRHfZPdvCA3DnGKvyTQPPpUm7+xh8j4TH
+   zOrNsW11rxfCBoSl/4vSKs+NLC/C3yKhW0kM+f1PolTRkBNkA9ZnwjOVR
+   8d7StfWyHH7m+Il51U+U3iD6nRG0H2EndqY37lWdOKb24xrInfMEqR+Ux
+   A==;
+X-CSE-ConnectionGUID: /CdIFC7uRNmtXXO6CQIf3A==
+X-CSE-MsgGUID: gx+mIcNVSyu/cf3cym1HaA==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
+   d="scan'208";a="13173219"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 28 Nov 2023 04:29:33 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Tue, 28 Nov 2023 04:29:14 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (10.10.215.250)
+ by email.microchip.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21 via Frontend Transport; Tue, 28 Nov 2023 04:29:14 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lczJu4p/Uzg4UHRWwESedvqj6hP4yCyTdUfhOdSpNTBBENNNPplgyWzhSvO1kSAVwzflYKnDv36ea3sMJ8wnLJr2IYYuntYmuXB7LNDdnCl+ZH33kBr7KCQXpAjVJ/vrVhQu/CGX3PJKGo0LolpeGv+C19EiFGOcHOWa7KeIGfCJAPf+Cn/5Bjr0YeyfyNH0FmrZc2x4eaisMTNLxp7CHLbG5r8ffKAU8wUucp5YuQUmohpUr1rE6mv8jy8A2+bFVUeyLapIwu5R0BexuPBzTCU8MSSc5KuPioFSRc1mPdf2wc4EHX+PMQRH2Cri+H2QwFLY0YUi/GRTCc4xhK17pA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8ZmJyHhYpktdVJ44+bI13v7J/s/GboZBMl9zLmMLOzQ=;
+ b=CDT5Bp19QJI6It/0UKm0+VeaGpYnHr9EBazAMIMe/oZcm01CLRhgsMLv1DYB+RBVR/AYPavwiTrRZW1ex6R5Ly42HxNpQXLH9hObl/6tw3LiHR1hhxoXAD+1G8eoGmrOX2/zgwNtb6ZPqQcXjvO4mETrQkl0Bry+rHBOw+Yl91DbjpLJF/ufdB09z7mfyaSxdgNNywq0kn3vOmJmRdwl8DI+DTBRwjRvqayn6YPnPvnWCx1sQ6ZT+W/dOwj3zgoL2y0oGEk92Ju9A1/E0WVN2PibSRvDRd+FOX+jVz8RIBsXhXxbkSJhUOt0b7Tkn09oNjoLTSfSyzgFDadMiWGAeQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8ZmJyHhYpktdVJ44+bI13v7J/s/GboZBMl9zLmMLOzQ=;
+ b=NZ+TH5RPOccKEcMJ1f13/Ih07XXpaKD6HUX42LWp0RvkQOHg0yvsP873kS4bzq35F27UjvJy3znW3JGE8XfKBZPXuDvFufhCDvWXAdw4IlqBYXbJnIachcXgg6mEcNkLy4Om/A3+o6afobaSh7rGkOfgAFknwixBArGWbGOEoYtqppqcWR2ngNi9UZ7P3u2pGjk5x8EGFwIKgJBaBH+YcyghPHtzhUXcy1mWrg8LaYMWXzELXI2gdS0yaYdKYcQJihHIsCFjJt4R176RNSTNykLccxg8Ep+DjoVrRZBazTYwsWS7Vu+CkScwhUI3qiF7N8AWiF3eFT7ayIEyhX9uMQ==
+Received: from PH0PR11MB5611.namprd11.prod.outlook.com (2603:10b6:510:ed::9)
+ by SJ0PR11MB4815.namprd11.prod.outlook.com (2603:10b6:a03:2dd::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.28; Tue, 28 Nov
+ 2023 11:29:12 +0000
+Received: from PH0PR11MB5611.namprd11.prod.outlook.com
+ ([fe80::447:632:a9ce:152f]) by PH0PR11MB5611.namprd11.prod.outlook.com
+ ([fe80::447:632:a9ce:152f%4]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
+ 11:29:12 +0000
+From:   <Shravan.Chippa@microchip.com>
+To:     <vkoul@kernel.org>
+CC:     <green.wan@sifive.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <palmer@dabbelt.com>,
+        <paul.walmsley@sifive.com>, <conor+dt@kernel.org>,
+        <dmaengine@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <Nagasuresh.Relli@microchip.com>, <Praveen.Kumar@microchip.com>,
+        <emil.renner.berthing@canonical.com>
+Subject: RE: [PATCH v4 3/4] dmaengine: sf-pdma: add mpfs-pdma compatible name
+Thread-Topic: [PATCH v4 3/4] dmaengine: sf-pdma: add mpfs-pdma compatible name
+Thread-Index: AQHaC7rsFK61Gcrk5UGSzfsdrL5RtLCJh0cAgAY9ATA=
+Date:   Tue, 28 Nov 2023 11:29:12 +0000
+Message-ID: <PH0PR11MB5611079D8DA8B6F389BE187E81BCA@PH0PR11MB5611.namprd11.prod.outlook.com>
+References: <20231031052753.3430169-1-shravan.chippa@microchip.com>
+ <20231031052753.3430169-4-shravan.chippa@microchip.com>
+ <ZWCS+ECGTgwVPR1u@matsya>
+In-Reply-To: <ZWCS+ECGTgwVPR1u@matsya>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR11MB5611:EE_|SJ0PR11MB4815:EE_
+x-ms-office365-filtering-correlation-id: 3fb850ad-972d-402b-2a84-08dbf0053ef6
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /hbRkjT5UjMYzXsb65AmLdSN4jTLZ6iLGkyDPHIxU25koI8gjYpUXF7apiWLHURiost9PUONaOFQH/Ryw20zy856tWfclvKRZVRZlSPehBGIlnPmJUN1T3CfAwJxZFyGpyWAJIDlk4trgn3pq/Z5HBdM0NEJ17SD2YFd1SShEei736zdfn7TUPqYTfJ4sUqWbYPWOy4fhvpj1BaVjobo9kwTX6Fx/pAEOZ0M68Q/rQliT30keOb+WIAqpvUVtHr+PegFv5VFhXDdWG2GAW4Br3VdgfeDzZFZ5OysW6dM2z2l7OZHFhNrbnGuDz/z2soDsKsRp6wNU6Zlund4gTed3WAZM5sk6lzWcgp3NrOr12Hcm0kGpCW/4F0hCYHEhsJ2oV5iI2or23km8lFWNymdCIgXFDp8SGmqo2hxxq2Kym7EZ3csHMc+fhc+pvBh5kWSTqCZ3/+Nld3/4mk0SQOnpDaAnV0pyUhr4Br6OTe5UevAM86RKPtbF44GDAgQE7aOdotGoW2RhLIczCzdMtNRqH2qREQOnE8QmsuVejpQ4wG7vmzY6SNkjIq2mZ4UXiV8iM9zofr+dMaQJqo8bQ8noyK6MYNIqoM8uEVVHKi9UtHX7JxblpbYLqNnntTFl3Vvyzr2XdN83Lhb8Dj4WFrckxyFHJi4/E23I5rLVtQQ3us=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5611.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(396003)(136003)(39860400002)(366004)(230273577357003)(230922051799003)(230173577357003)(451199024)(186009)(1800799012)(64100799003)(41300700001)(55016003)(26005)(966005)(53546011)(9686003)(7696005)(478600001)(6506007)(71200400001)(38100700002)(86362001)(38070700009)(33656002)(122000001)(7416002)(2906002)(76116006)(66946007)(5660300002)(83380400001)(6916009)(64756008)(66476007)(66556008)(66446008)(8936002)(54906003)(52536014)(316002)(8676002)(4326008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?rg4klz71oCrE/MjMDbrzjkOsdquSdIZrfVnhz8P01WXt7j1yyES5XPcqXFkU?=
+ =?us-ascii?Q?Gao+4vPfA/Cfsqmey0n2fJn2FaZStCpeSki+kS/1Ln9JOnCZmNbxiNf9Z3KY?=
+ =?us-ascii?Q?Hogw5ItWjcix0K/jzHSes59h0LRCjkXroY0eFSgsPe3EXXGwbWFywmNJKIqQ?=
+ =?us-ascii?Q?WskiOQGm2HWOINpdI9+7jPbzc7gWbJVNEcy5r1rGgOcijqayN5VXie2Lq0TY?=
+ =?us-ascii?Q?TgRN07RtmZjv7aVwb+kgYuwI9djLE+uHCT5AYoYcJyIoV8mIVEZj9c4Bmeb/?=
+ =?us-ascii?Q?S/gucKe5CuLTLaiL1jmh5TyEqepxUy2yNznudrhjuY+dC25riEFwmv8X65FM?=
+ =?us-ascii?Q?HobjXrFsWWgcJuas2UfWr8yQLdLVNqTXt9/UXW8nSJNAG1Hjn7k6C/SUrOJd?=
+ =?us-ascii?Q?7fKahuPv0vqTMQ+0inobdi50toyIT721DUuXQcOT+NJ05Nmy/9kLhdljN+Y4?=
+ =?us-ascii?Q?RHygC4glJIW4WgBpW/j/y8L8kkZoAZX1zRHuqXbL870lI0r8iVnCbWd3Ue3B?=
+ =?us-ascii?Q?WcyLFcyVMXdgmImupFZ/vy0dYDENDf9ziswUq5ChGSxeNRZla4f+n8KmDTI3?=
+ =?us-ascii?Q?6eFyJy/vU1axAbnEckgFnNbTqsUQjs/4HBkwMd0c3GwX4H9DQWI7k2H0I/bG?=
+ =?us-ascii?Q?AxTnrwLyeYyYUGFNATbvc7sWJAgL0ZQQ5im4aJObIuZ0Vg7UkVNbWSRaznEC?=
+ =?us-ascii?Q?+NkmfzN5tL6IAQOXSzNi4r2GnqeZnJzDLBGtkbeEDonO7l5Q19jqcbww60KK?=
+ =?us-ascii?Q?DQ4d3GYNNDDCnodyThz8tzA3hJ16iCERrrl2TB2ZW/M3yRfXxDEDjz0Dh7SO?=
+ =?us-ascii?Q?ZH7OoGPO1CQS3yCscFh0iRbSrIIpt9Cf+WMQNGlqXWZyghH/NEihZjinLVfz?=
+ =?us-ascii?Q?+fmVV6u6rth1nOp1thAkEhIO5ZiyMDA8OMh1ZrNU8y0VnbH+L0NKsxmQaOWC?=
+ =?us-ascii?Q?8tvgSKDD7NQ4cCxl5gzk/vmobQ7YA5ykcmMaVEwrjJ+P8Hd198TP6Sam2pED?=
+ =?us-ascii?Q?naWTvxstPX89KyPDiF+pMM+Y2dC5cj1NndIS2F5tB63fDq+eKY5my7ceruit?=
+ =?us-ascii?Q?Nhw3fJ0moMyh/wNzq39VmsVH/iNN6KNa3o8QwGSK6X3mYUITxX4uBEar9eMu?=
+ =?us-ascii?Q?A+c2c6JgO5bPbXm0tHKPfiXhDtRW8BqEhjf7e1+jbCpTD1Vt8FWFJv3fT9iw?=
+ =?us-ascii?Q?PDdhysirZUXwZZ9SPnr5LoaZFR0e9/LCeUTO2wwR9kg1z6GW+0kzsrxfW/XU?=
+ =?us-ascii?Q?+enrhEQLv3pZheMVB8h0YmqeDUGFZo0zgUkgUl2PHJ/FfVdrKdzuTENFD5xy?=
+ =?us-ascii?Q?LM8maQlCZ4rAwTUzvvf+mWVWw21KvY8KkPuewb1M+U60FUVGTo+WI8w2EzHc?=
+ =?us-ascii?Q?W4jcPa+QcgadAbKsAZLkimKFGuncA6775Jl/xeB0Gr+c042DGrG8ESA1UfXN?=
+ =?us-ascii?Q?mNyoGrrNMEjc8MGYV95qoZCV9o5/TAdlRm88CeR3mFp2ZtO01Q8gB8IgBZaS?=
+ =?us-ascii?Q?04D4QNQAdbHPpwBnfudRm2a1yiwWCaQws3/6VNrFcPqkve8ZcNu21UwBfH5c?=
+ =?us-ascii?Q?jPmnV4P0XXG5j6tR8sRH7W7LAncNSl9bZWkW2cfZeIAJfQU4YYuSLhCAo810?=
+ =?us-ascii?Q?EA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c6a72c38-aa63-79b8-c784-d753749f7272@quicinc.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5611.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3fb850ad-972d-402b-2a84-08dbf0053ef6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Nov 2023 11:29:12.4698
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: NZ/YKEUPu9SvvyYHMyySujPWAAez7dXQ8HD6yGxIkhUx285xiDdNNRdaFIES4RXq/EcMTmOQxNT4XmAC/NeTHg9poRz7VBasBZ1MTph9vzk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4815
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 03:40:57AM +0800, Ziqi Chen wrote:
-> 
-> 
-> On 11/22/2023 2:14 PM, Can Guo wrote:
-> > 
-> > 
-> > On 10/25/2023 3:41 PM, Manivannan Sadhasivam wrote:
-> > > On Tue, Oct 24, 2023 at 07:10:15PM +0800, Ziqi Chen wrote:
-> > > > During PISI test, we found the issue that host Tx still bursting after
-> > > 
-> > > What is PISI test?
-> 
-> SI measurement.
-> 
+Hi Vinod,
 
-Please expand it in the patch description.
+> -----Original Message-----
+> From: Vinod Koul <vkoul@kernel.org>
+> Sent: Friday, November 24, 2023 5:42 PM
+> To: shravan Chippa - I35088 <Shravan.Chippa@microchip.com>
+> Cc: green.wan@sifive.com; robh+dt@kernel.org;
+> krzysztof.kozlowski+dt@linaro.org; palmer@dabbelt.com;
+> paul.walmsley@sifive.com; conor+dt@kernel.org;
+> dmaengine@vger.kernel.org; devicetree@vger.kernel.org; linux-
+> riscv@lists.infradead.org; linux-kernel@vger.kernel.org; Nagasuresh Relli=
+ -
+> I67208 <Nagasuresh.Relli@microchip.com>; Praveen Kumar - I30718
+> <Praveen.Kumar@microchip.com>; Emil Renner Berthing
+> <emil.renner.berthing@canonical.com>
+> Subject: Re: [PATCH v4 3/4] dmaengine: sf-pdma: add mpfs-pdma compatible
+> name
+>=20
+> [Some people who received this message don't often get email from
+> vkoul@kernel.org. Learn why this is important at
+> https://aka.ms/LearnAboutSenderIdentification ]
+>=20
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know th=
+e
+> content is safe
+>=20
+> On 31-10-23, 10:57, shravan chippa wrote:
+> > From: Shravan Chippa <shravan.chippa@microchip.com>
+> >
+> > Sifive platform dma does not allow out-of-order transfers, Add a
+> > PolarFire SoC specific compatible and code to support for out-of-order
+> > dma transfers
+>=20
+> By default dma xtions are not supposed to be out of order, so why does it
+> make sense specifying that here?
 
-> > > 
-> > > > H/W reset. Move ufs_qcom_host_reset() to ufs_qcom_device_reset() and
-> > > > reset host before device reset to stop tx burst.
-> > > > 
-> > > 
-> > > device_reset() callback is supposed to reset only the device and not
-> > > the host.
-> > > So NACK for this patch.
-> > 
-> > Agree, the change should come in a more reasonable way.
-> > 
-> > Actually, similar code is already there in ufs_mtk_device_reset() in
-> > ufs-mediatek.c, I guess here is trying to mimic that fashion.
-> > 
-> > This change, from its functionality point of view, we do need it,
-> > because I occasionally (2 out of 10) hit PHY error on lane 0 during
-> > reboot test (in my case, I tried SM8350, SM8450 and SM8550， all same).
-> > 
-> > [    1.911188] [DEBUG]ufshcd_update_uic_error: UECPA:0x80000002
-> > [    1.922843] [DEBUG]ufshcd_update_uic_error: UECDL:0x80004000
-> > [    1.934473] [DEBUG]ufshcd_update_uic_error: UECN:0x0
-> > [    1.944688] [DEBUG]ufshcd_update_uic_error: UECT:0x0
-> > [    1.954901] [DEBUG]ufshcd_update_uic_error: UECDME:0x0
-> > 
-> > I found out that the PHY error pops out right after UFS device gets
-> > reset in the 2nd init. After having this change in place, the PA/DL
-> > errors are gone.
-> 
-> Hi Mani,
-> 
-> There is another way that adding a new vops that call XXX_host_reset() from
-> soc vendor driver. in this way, we can call this vops in core layer without
-> the dependency of device reset.
-> due to we already observed such error and received many same reports from
-> different OEMs, we need to fix it in some way.
-> if you think above way is available, I will update new patch in soon. Or
-> could you give us other suggestion?
-> 
+All the DMA transfers are mostly in-order; however, sf-pdma IP has programa=
+ble configuration:
+we can select the transfer type either in-order or out-of-order.
+=20
+Sf-pdam IP will only support mem-to-mem transfers.=20
+=20
+We got better throughput in the PolarFire SoC platform if we use out-of-ord=
+er DMA transfers type, instead of in-order configuration in the sf-pdma IP.
+=20
+test results for in-order:
+- moved 16 MB from 0x89000000 using pdmacpy to 0x88000000 (chan: 0) in 0.06=
+8962 secs (232.012 MB per sec)
+=20
+test results for out-of-order:
+- moved 16 MB from 0x89000000 using pdmacpy to 0x88000000 (chan: 0) in 0.03=
+7020 secs (432.199 MB per sec)
 
-First, please describe the issue in detail. How the issue is getting triggered
-and then justify your change. I do not have access to the bug reports that you
-received.
+Thanks,
+Shravan
 
-- Mani
-
-> -Ziqi
-> 
-> > 
-> > Thanks,
-> > Can Guo.
-> > > 
-> > > - Mani
-> > > 
-> > > > Signed-off-by: Ziqi Chen <quic_ziqichen@quicinc.com>
-> > > > ---
-> > > >   drivers/ufs/host/ufs-qcom.c | 13 +++++++------
-> > > >   1 file changed, 7 insertions(+), 6 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> > > > index 96cb8b5..43163d3 100644
-> > > > --- a/drivers/ufs/host/ufs-qcom.c
-> > > > +++ b/drivers/ufs/host/ufs-qcom.c
-> > > > @@ -445,12 +445,6 @@ static int
-> > > > ufs_qcom_power_up_sequence(struct ufs_hba *hba)
-> > > >       struct phy *phy = host->generic_phy;
-> > > >       int ret;
-> > > > -    /* Reset UFS Host Controller and PHY */
-> > > > -    ret = ufs_qcom_host_reset(hba);
-> > > > -    if (ret)
-> > > > -        dev_warn(hba->dev, "%s: host reset returned %d\n",
-> > > > -                  __func__, ret);
-> > > > -
-> > > >       /* phy initialization - calibrate the phy */
-> > > >       ret = phy_init(phy);
-> > > >       if (ret) {
-> > > > @@ -1709,6 +1703,13 @@ static void ufs_qcom_dump_dbg_regs(struct
-> > > > ufs_hba *hba)
-> > > >   static int ufs_qcom_device_reset(struct ufs_hba *hba)
-> > > >   {
-> > > >       struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> > > > +    int ret = 0;
-> > > > +
-> > > > +    /* Reset UFS Host Controller and PHY */
-> > > > +    ret = ufs_qcom_host_reset(hba);
-> > > > +    if (ret)
-> > > > +        dev_warn(hba->dev, "%s: host reset returned %d\n",
-> > > > +                  __func__, ret);
-> > > >       /* reset gpio is optional */
-> > > >       if (!host->device_reset)
-> > > > -- 
-> > > > 2.7.4
-> > > > 
-> > > 
-
--- 
-மணிவண்ணன் சதாசிவம்
+>=20
+> >
+> > Reviewed-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+> > Signed-off-by: Shravan Chippa <shravan.chippa@microchip.com>
+> > ---
+> >  drivers/dma/sf-pdma/sf-pdma.c | 27 ++++++++++++++++++++++++---
+> > drivers/dma/sf-pdma/sf-pdma.h |  8 +++++++-
+> >  2 files changed, 31 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/dma/sf-pdma/sf-pdma.c
+> > b/drivers/dma/sf-pdma/sf-pdma.c index 4c456bdef882..82ab12c40743
+> > 100644
+> > --- a/drivers/dma/sf-pdma/sf-pdma.c
+> > +++ b/drivers/dma/sf-pdma/sf-pdma.c
+> > @@ -25,6 +25,8 @@
+> >
+> >  #include "sf-pdma.h"
+> >
+> > +#define PDMA_QUIRK_NO_STRICT_ORDERING   BIT(0)
+> > +
+> >  #ifndef readq
+> >  static inline unsigned long long readq(void __iomem *addr)  { @@
+> > -66,7 +68,7 @@ static struct sf_pdma_desc *sf_pdma_alloc_desc(struct
+> > sf_pdma_chan *chan)  static void sf_pdma_fill_desc(struct sf_pdma_desc
+> *desc,
+> >                             u64 dst, u64 src, u64 size)  {
+> > -     desc->xfer_type =3D PDMA_FULL_SPEED;
+> > +     desc->xfer_type =3D  desc->chan->pdma->transfer_type;
+> >       desc->xfer_size =3D size;
+> >       desc->dst_addr =3D dst;
+> >       desc->src_addr =3D src;
+> > @@ -520,6 +522,7 @@ static struct dma_chan *sf_pdma_of_xlate(struct
+> > of_phandle_args *dma_spec,
+> >
+> >  static int sf_pdma_probe(struct platform_device *pdev)  {
+> > +     const struct sf_pdma_driver_platdata *ddata;
+> >       struct sf_pdma *pdma;
+> >       int ret, n_chans;
+> >       const enum dma_slave_buswidth widths =3D @@ -545,6 +548,14 @@
+> > static int sf_pdma_probe(struct platform_device *pdev)
+> >
+> >       pdma->n_chans =3D n_chans;
+> >
+> > +     pdma->transfer_type =3D PDMA_FULL_SPEED | PDMA_STRICT_ORDERING;
+> > +
+> > +     ddata  =3D device_get_match_data(&pdev->dev);
+> > +     if (ddata) {
+> > +             if (ddata->quirks & PDMA_QUIRK_NO_STRICT_ORDERING)
+> > +                     pdma->transfer_type &=3D ~PDMA_STRICT_ORDERING;
+> > +     }
+> > +
+> >       pdma->membase =3D devm_platform_ioremap_resource(pdev, 0);
+> >       if (IS_ERR(pdma->membase))
+> >               return PTR_ERR(pdma->membase); @@ -632,9 +643,19 @@
+> > static int sf_pdma_remove(struct platform_device *pdev)
+> >       return 0;
+> >  }
+> >
+> > +static const struct sf_pdma_driver_platdata mpfs_pdma =3D {
+> > +     .quirks =3D PDMA_QUIRK_NO_STRICT_ORDERING, };
+> > +
+> >  static const struct of_device_id sf_pdma_dt_ids[] =3D {
+> > -     { .compatible =3D "sifive,fu540-c000-pdma" },
+> > -     { .compatible =3D "sifive,pdma0" },
+> > +     {
+> > +             .compatible =3D "sifive,fu540-c000-pdma",
+> > +     }, {
+> > +             .compatible =3D "sifive,pdma0",
+> > +     }, {
+> > +             .compatible =3D "microchip,mpfs-pdma",
+> > +             .data       =3D &mpfs_pdma,
+> > +     },
+> >       {},
+> >  };
+> >  MODULE_DEVICE_TABLE(of, sf_pdma_dt_ids); diff --git
+> > a/drivers/dma/sf-pdma/sf-pdma.h b/drivers/dma/sf-pdma/sf-pdma.h
+> index
+> > 5c398a83b491..267e79a5e0a5 100644
+> > --- a/drivers/dma/sf-pdma/sf-pdma.h
+> > +++ b/drivers/dma/sf-pdma/sf-pdma.h
+> > @@ -48,7 +48,8 @@
+> >  #define PDMA_ERR_STATUS_MASK                         GENMASK(31, 31)
+> >
+> >  /* Transfer Type */
+> > -#define PDMA_FULL_SPEED                                      0xFF00000=
+8
+> > +#define PDMA_FULL_SPEED                                      0xFF00000=
+0
+> > +#define PDMA_STRICT_ORDERING                         BIT(3)
+> >
+> >  /* Error Recovery */
+> >  #define MAX_RETRY                                    1
+> > @@ -112,8 +113,13 @@ struct sf_pdma {
+> >       struct dma_device       dma_dev;
+> >       void __iomem            *membase;
+> >       void __iomem            *mappedbase;
+> > +     u32                     transfer_type;
+> >       u32                     n_chans;
+> >       struct sf_pdma_chan     chans[];
+> >  };
+> >
+> > +struct sf_pdma_driver_platdata {
+> > +     u32 quirks;
+> > +};
+> > +
+> >  #endif /* _SF_PDMA_H */
+> > --
+> > 2.34.1
+>=20
+> --
+> ~Vinod
