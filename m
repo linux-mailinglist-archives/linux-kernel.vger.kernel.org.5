@@ -2,61 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57CB57FBA10
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:27:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 128127FBA16
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:29:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344658AbjK1M1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 07:27:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46526 "EHLO
+        id S1344661AbjK1M3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 07:29:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344474AbjK1M1i (ORCPT
+        with ESMTP id S1344474AbjK1M3P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 07:27:38 -0500
+        Tue, 28 Nov 2023 07:29:15 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09506B8
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 04:27:44 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20155C433C7;
-        Tue, 28 Nov 2023 12:27:43 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915261BE
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 04:29:20 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED0C7C433C8;
+        Tue, 28 Nov 2023 12:29:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701174464;
-        bh=sHN5DUzA9WDMlesWzeiZfM5tcjVwnkARW3rvZFj4VB0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Dwid6/ANmSyWzankZlLq0FaeLraVTfRHxGQgU0aOg2hLP3VYUCooi5WYwXJPW6DrR
-         76ZsdlCGMscQrRutkD5WvhpVd7xZ+9JI3WdPQstHCp1Rszqw+ND9pPM32I+VOOoHMG
-         zMokN//59HNiKvzFUCYEw36r4DPef9SN1bCvx9pHD7mEeOQqiGwTJjn6lMdlhHsz4J
-         vp9uwpiHdp10Iez0dZVdvZ9G8W2E3MT9tWGl7HZ49pUgRK+RaQjU9XmYIZYqD+wUlu
-         paMVbg0oh7CHxIKk7/IQArep1kTnRl2JXEyFDblnDZUVtCqSn8LAc2tMazILkYsNvl
-         UzH8hzCp7k1oA==
-Date:   Tue, 28 Nov 2023 13:27:42 +0100
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Liu Ying <victor.liu@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: (subset) [PATCH 0/3] Revert panel fixes and original buggy patch
-Message-ID: <hkdisfcld7ogf2fjxyfewztirgs3vrshoaq2psbdo7qttlxjhu@nbhhij4elyp7>
-References: <20231128-revert-panel-fix-v1-0-69bb05048dae@linaro.org>
- <170116632194.2250210.1478661000647719120.b4-ty@linaro.org>
- <b6d79cad-a545-48cb-a0e4-e9fdc457bec3@linaro.org>
- <CACRpkdaAFoMnjha0+yWPDhj=RGyP3tzFOq5+bp7Uv8H2bkFW1w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="3a7ne4j6smq2zo5r"
-Content-Disposition: inline
-In-Reply-To: <CACRpkdaAFoMnjha0+yWPDhj=RGyP3tzFOq5+bp7Uv8H2bkFW1w@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        s=k20201202; t=1701174560;
+        bh=v96cDEV9MbfByYb9NPNlCmqYfiufZsErCbYgMwu2BUQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=bYIpG9V/nf16+T5XBA728TfpOgEY1YAkYZ5VUPY0UvOjZgEP1I1LSurFgUEOq+uNf
+         TSw1sGxFTlz5qx5gDhX04GcZYad2N+h50lL+nJDgWSxo74WFVsV1D+gI4UjPh9+8Dc
+         V6hWK+c2zLUEj+PbtFCu8M1AFHhF8G+3fexrvWHW8AWj0U++JyQipVEail4tbp9fRY
+         i75kHG9Qc1KhG9z1PVSFw0pxST3jPz5cHqRi+QA5JWmdcsov6YkVJmwhtZCjjkC1Uh
+         7nQpVHVLfSzTnyY8VNa1qESRGpLHdFTG5sN9NLhXEd9y5n6o3MgpKbDGdUXEdsfpxY
+         sbhHZAbdFH2VA==
+Date:   Tue, 28 Nov 2023 21:29:15 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Cc:     kernel test robot <lkp@intel.com>,
+        linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        oe-kbuild-all@lists.linux.dev, JP Kobryn <inwardvessel@gmail.com>,
+        bpf@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org,
+        peterz@infradead.org
+Subject: Re: [PATCH] rethook: Use __rcu pointer for rethook::handler
+Message-Id: <20231128212915.75a0b550c34d5094894d8cb2@kernel.org>
+In-Reply-To: <20231128080223.2c0bfdbe0738983b38250333@kernel.org>
+References: <170078778632.209874.7893551840863388753.stgit@devnote2>
+        <202311241808.rv9ceuAh-lkp@intel.com>
+        <20231128080223.2c0bfdbe0738983b38250333@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -65,57 +55,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 28 Nov 2023 08:02:23 +0900
+Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 
---3a7ne4j6smq2zo5r
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Fri, 24 Nov 2023 23:40:57 +0800
+> kernel test robot <lkp@intel.com> wrote:
+> 
+> > Hi Masami,
+> > 
+> > kernel test robot noticed the following build warnings:
+> > 
+> > [auto build test WARNING on linus/master]
+> > [also build test WARNING on v6.7-rc2 next-20231124]
+> > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > And when submitting patch, we suggest to use '--base' as documented in
+> > https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> > 
+> > url:    https://github.com/intel-lab-lkp/linux/commits/Masami-Hiramatsu-Google/rethook-Use-__rcu-pointer-for-rethook-handler/20231124-090634
+> > base:   linus/master
+> > patch link:    https://lore.kernel.org/r/170078778632.209874.7893551840863388753.stgit%40devnote2
+> > patch subject: [PATCH] rethook: Use __rcu pointer for rethook::handler
+> > config: x86_64-randconfig-r113-20231124 (https://download.01.org/0day-ci/archive/20231124/202311241808.rv9ceuAh-lkp@intel.com/config)
+> > compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+> > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231124/202311241808.rv9ceuAh-lkp@intel.com/reproduce)
+> 
+> Let me fix this issue. It seems that sparse with function pointer
+> needs a special care.
 
-On Tue, Nov 28, 2023 at 11:16:23AM +0100, Linus Walleij wrote:
-> On Tue, Nov 28, 2023 at 11:13=E2=80=AFAM Neil Armstrong
-> <neil.armstrong@linaro.org> wrote:
-> > On 28/11/2023 11:12, Neil Armstrong wrote:
-> > > Hi,
-> > >
-> > > On Tue, 28 Nov 2023 00:10:18 +0100, Linus Walleij wrote:
-> > >> This series reverts the attempts to fix the bug that went
-> > >> into v6.7-rc1 in commit 199cf07ebd2b
-> > >> "drm/bridge: panel: Add a device link between drm device and panel d=
-evice"
-> > >> and then it reverts that patch as well.
-> > >>
-> > >>
-> > >
-> > > Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.g=
-it (drm-misc-fixes)
-> > >
-> > > [3/3] Revert "drm/bridge: panel: Add a device link between drm device=
- and panel device"
-> > >        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=3D9b6a59e=
-5db87c2c6b3ca0391176ed4358623d5e4
-> > >
-> >
-> > b4 got really confused that I picked the patches in the wrong order, bu=
-t I applied
-> > the 3 patched in the 2, 1, 3 order.
->=20
-> Special mistakes requires special fixes, sorry for the mess :(
->
-> Thanks a lot Neil!
+Hmm, I think we need to ignore some warnings from sparse for function pointer.
 
-Thanks to both of you for the quick handling :)
+struct rethook {
+	rethook_handler_t __rcu handler;
+};
 
-Maxime
+This doesn't work because the handler is not a pointer but a value type from
+the sparse point of view(?)
 
---3a7ne4j6smq2zo5r
-Content-Type: application/pgp-signature; name="signature.asc"
+So if we change the rethook_handler_t as below, most of the sparse warnings
+are gone.
 
------BEGIN PGP SIGNATURE-----
+typedef void (__rcu *rethook_handler_t) (struct rethook_node *, void *, unsigned long, struct pt_regs *);
+                  ^^^^^^
 
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZWXcvgAKCRDj7w1vZxhR
-xXf0AQDKb6cFSIUIWhbnqDwuRMw4+ApwwvI4BezyrWMCccrjggD/c3YL6vy/nhBJ
-qyqVXHKmmOpoL7dVOd8icq9z7iNpkQc=
-=LICq
------END PGP SIGNATURE-----
+However, I found that this causes another warnings on the init function call
+which requires rethook_handler_t as a parameter.
 
---3a7ne4j6smq2zo5r--
+kernel/trace/fprobe.c:209:49: warning: incorrect type in argument 2 (different address spaces)
+kernel/trace/fprobe.c:209:49:    expected void ( [noderef] __rcu *[usertype] handler )( ... )
+kernel/trace/fprobe.c:209:49:    got void ( * )( ... )
+
+        fp->rethook = rethook_alloc((void *)fp, fprobe_exit_handler,
+							      ^^^^^^^^^^^^^^^^^^^^^^^^^
+                                sizeof(struct fprobe_rethook_node), size);
+
+Why? because fprobe_exit_handler() has no "__rcu"! Of course we can fix this
+warning with force casting, e.g.
+
+        fp->rethook = rethook_alloc((void *)fp, (rethook_handler_t)fprobe_exit_handler,
+
+But this is totally wrong because it disables the compiler's type check!
+
+One possible solution is to use a raw function pointer type for the
+rethook_alloc() but that will be redundant or, just ignore
+the sparse warnings as Documentation/RCU/rcu_dereference.rst said.
+
+(Another tricky hack is to use a union just for rcu_assign_pointer/rcu_derefernce)
+
+Thank you,
+
+
+> 
+> Thank you,
+> 
+> > 
+> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > the same patch/commit), kindly add following tags
+> > | Reported-by: kernel test robot <lkp@intel.com>
+> > | Closes: https://lore.kernel.org/oe-kbuild-all/202311241808.rv9ceuAh-lkp@intel.com/
+> > 
+> > sparse warnings: (new ones prefixed by >>)
+> > >> kernel/trace/rethook.c:51:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+> > >> kernel/trace/rethook.c:51:9: sparse:    void ( [noderef] __rcu * )( ... )
+> > >> kernel/trace/rethook.c:51:9: sparse:    void ( * )( ... )
+> >    kernel/trace/rethook.c:66:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+> >    kernel/trace/rethook.c:66:9: sparse:    void ( [noderef] __rcu * )( ... )
+> >    kernel/trace/rethook.c:66:9: sparse:    void ( * )( ... )
+> >    kernel/trace/rethook.c:110:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
+> >    kernel/trace/rethook.c:110:9: sparse:    void ( [noderef] __rcu * )( ... )
+> >    kernel/trace/rethook.c:110:9: sparse:    void ( * )( ... )
+> >    kernel/trace/rethook.c:140:19: sparse: sparse: incompatible types in comparison expression (different address spaces):
+> >    kernel/trace/rethook.c:140:19: sparse:    void ( [noderef] __rcu * )( ... )
+> >    kernel/trace/rethook.c:140:19: sparse:    void ( * )( ... )
+> >    kernel/trace/rethook.c:161:19: sparse: sparse: incompatible types in comparison expression (different address spaces):
+> >    kernel/trace/rethook.c:161:19: sparse:    void ( [noderef] __rcu * )( ... )
+> >    kernel/trace/rethook.c:161:19: sparse:    void ( * )( ... )
+> >    kernel/trace/rethook.c:305:27: sparse: sparse: incompatible types in comparison expression (different address spaces):
+> >    kernel/trace/rethook.c:305:27: sparse:    void ( [noderef] __rcu * )( ... )
+> >    kernel/trace/rethook.c:305:27: sparse:    void ( * )( ... )
+> > 
+> > vim +51 kernel/trace/rethook.c
+> > 
+> >     40	
+> >     41	/**
+> >     42	 * rethook_stop() - Stop using a rethook.
+> >     43	 * @rh: the struct rethook to stop.
+> >     44	 *
+> >     45	 * Stop using a rethook to prepare for freeing it. If you want to wait for
+> >     46	 * all running rethook handler before calling rethook_free(), you need to
+> >     47	 * call this first and wait RCU, and call rethook_free().
+> >     48	 */
+> >     49	void rethook_stop(struct rethook *rh)
+> >     50	{
+> >   > 51		rcu_assign_pointer(rh->handler, NULL);
+> >     52	}
+> >     53	
+> > 
+> > -- 
+> > 0-DAY CI Kernel Test Service
+> > https://github.com/intel/lkp-tests/wiki
+> 
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
