@@ -2,47 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 054807FC3D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:58:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8C27FC3DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:59:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346308AbjK1S55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 13:57:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57020 "EHLO
+        id S1376269AbjK1S7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 13:59:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346422AbjK1S5o (ORCPT
+        with ESMTP id S1376260AbjK1S7c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 13:57:44 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692E41701
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 10:57:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 821E4C433C7;
-        Tue, 28 Nov 2023 18:57:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701197862;
-        bh=KIRVGvgTEo6MU+1ULyVc42k3ON+LvmquMKcr6ZnGB3k=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j8HREUCGIlGLBK181OWcIiiwNM7az5F2/keOGgEmCp1N5CBiZzZbIyXGkTl6cDRpZ
-         h8Mi1fpXus+5yAlhYTVVXAYfH7HJLlst3bzpeA3U7tcnwQIWVrBMSr/Usib3aA94xe
-         43YUMNYUrAwk4y4uxr79scpnrC7f104NNqHAMUDt/XVR2L/xJtvhva7P0D98UW/nDH
-         XT4K889yFY1VzQ73VM0o4ScUzCecJhELMaZk/1t/YMFcn+jE+hNAbqtpGWR00D9pxS
-         iRXFetT1MZuufpT4Lb20BBecXM40n0krFVJFr/EoSATB0SBnyhdV7Qg8SY/BcvhZIn
-         D93uAYnLbXatQ==
-From:   SeongJae Park <sj@kernel.org>
-To:     cuiyangpei <cuiyangpei@gmail.com>
-Cc:     sj@kernel.org, akpm@linux-foundation.org, damon@lists.linux.dev,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cuiyangpei <cuiyangpei@xiaomi.com>
-Subject: Re: [PATCH 1/2] mm/damon/sysfs: Implement recording feature
-Date:   Tue, 28 Nov 2023 18:57:39 +0000
-Message-Id: <20231128185739.47916-1-sj@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231128073440.11894-1-cuiyangpei@xiaomi.com>
-References: 
+        Tue, 28 Nov 2023 13:59:32 -0500
+Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89436D63;
+        Tue, 28 Nov 2023 10:59:36 -0800 (PST)
+Received: from [127.0.0.1] ([98.35.210.218])
+        (authenticated bits=0)
+        by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 3ASIwqLV616002
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Tue, 28 Nov 2023 10:58:52 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 3ASIwqLV616002
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2023111101; t=1701197933;
+        bh=74Rbbp6WmPGdUYvYwxbnx3GlgDUb6hVq+tbhktrir44=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=11Iza6/qBiVUooTKd04zGe3+wGNKZVtkyP1VW7naU9P22AgKrZowrwJtcMKq3USBK
+         0lE8KKp0aSf0L7vG6wMYqj3GBFBG4Z+IyjuorpigOVR+bZGRipokdFZpAHxsKxJVsJ
+         eXJ+JD+99XTQDzX1is23XA0HmvT2kbL85O4HuT09syHKKptCBqObIMJ1kEJAvGPIrT
+         Te5AF0KD+nO8MMWUcEFZ5cOMcsuvCtml6Q1SjlKD/yPKStgz2z/rfZFPbT9QhXqSv3
+         0Q4y+BTl1dMGW1ncv4Yl5PW3gnAB2+y+WTENs06cntMqYcI+tLMnha0J9K8iGZB7yh
+         4oXasKaWj6nVA==
+Date:   Tue, 28 Nov 2023 10:58:50 -0800
+From:   "H. Peter Anvin" <hpa@zytor.com>
+To:     "Li, Xin3" <xin3.li@intel.com>, Borislav Petkov <bp@alien8.de>
+CC:     "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "Gross, Jurgen" <jgross@suse.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "mhiramat@kernel.org" <mhiramat@kernel.org>,
+        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
+        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
+        "nik.borisov@suse.com" <nik.borisov@suse.com>
+Subject: =?US-ASCII?Q?RE=3A_=5BPATCH_v12_24/37=5D_x86/idtentry=3A_Incorporat?= =?US-ASCII?Q?e_definitions/declarations_of_the_FRED_entries?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <SA1PR11MB6734A1E439870989C7006166A8BCA@SA1PR11MB6734.namprd11.prod.outlook.com>
+References: <20231003062458.23552-1-xin3.li@intel.com> <20231003062458.23552-25-xin3.li@intel.com> <20231128100910.GSZWW8RnyhX0YQjwDm@fat_crate.local> <SA1PR11MB6734A1E439870989C7006166A8BCA@SA1PR11MB6734.namprd11.prod.outlook.com>
+Message-ID: <EE769C0F-FA81-49AD-A90B-F0E5D2A1DA7B@zytor.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,58 +73,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cuiyanpei,
+On November 28, 2023 10:39:01 AM PST, "Li, Xin3" <xin3=2Eli@intel=2Ecom> wr=
+ote:
+>> > FRED and IDT can share most of the definitions and declarations so
+>> > that in the majority of cases the actual handler implementation is th=
+e
+>> > same=2E
+>> >
+>> > The differences are the exceptions where FRED stores exception relate=
+d
+>> > information on the stack and the sysvec implementations as FRED can
+>> > handle irqentry/exit() in the dispatcher instead of having it in each
+>> > handler=2E
+>> >
+>> > Also add stub defines for vectors which are not used due to Kconfig
+>> > decisions to spare the ifdeffery in the actual FRED dispatch code=2E
+>> >
+>> > Tested-by: Shan Kang <shan=2Ekang@intel=2Ecom>
+>> > Signed-off-by: Thomas Gleixner <tglx@linutronix=2Ede>
+>> > Signed-off-by: Xin Li <xin3=2Eli@intel=2Ecom>
+>>=20
+>> This makes me wonder too who the author is=2E The commit message text s=
+ounds
+>> like tglx=2E :)
+>
+>You have a very good sense =F0=9F=98=8A
+>
+>This is mostly from his review comments and suggestions on my original
+>changes to IDTENTRY=2E  So probably I should put a "Suggested-by" instead
+>of "Signed-off-by" as HPA pointed out!
+>
+>Thanks!
+>    Xin
+>
 
-
-Thank you for this nice patchset.
-
-On Tue, 28 Nov 2023 15:34:39 +0800 cuiyangpei <cuiyangpei@gmail.com> wrote:
-
-> The user space users can control DAMON and get the monitoring results
-> via implements 'recording' feature in 'damon-sysfs'.  The feature
-> can be used via 'record' and 'state' file in the '<sysfs>/kernel/mm/
-> damon/admin/kdamonds/N/' directory.
-> 
-> The file allows users to record monitored access patterns in a text
-> file. Firstly, users set the size of the buffer and the path of the
-> result file by writing to the ``record`` file. Then the recorded
-> results are first written in an in-memory buffer and flushed the
-> recorded results to a file in batch by writing 'record' to the
-> ``state`` file.
-> 
-> For example, below commands set the buffer to be 4 KiB and the result
-> to be saved in ``/damon.txt``. ::
-> 
->     # cd <sysfs>/kernel/mm/damon/admin/kdamonds/N
->     # echo "4096 /damon.txt" > record
->     # echo "record" > state
-
-This reminds me the record feature of DAMON debugfs interface[1], which still
-not merged in the mainline.  I deprioritized the patchset to have a better
-answer to Andrew's questions on the discussion (nice definition of the binary
-format and quatization of the benefit), and later I realized I don't have real
-use case that this makes real benefit, so I'm no more aiming to make this
-merged into the mainline.
-
-More specifically, I'm now thinking the feature is not really needed since
-trace event based recording works, and we found no problem so far.  The DAMON
-user-space tool (damo)[2] also dropped support of the in-kernel record feature,
-but we received no problem report.
-
-Also, I believe DAMOS tried regions like feature could provide some level of
-information, since it provides snapshot of the monitoring result, which
-contains a time data, namely 'age'.
-
-Could you please further elaborate your aimed use case of this feature and the
-advantage compared to other alternatives (tracepoint-based recording or DAMOS
-tried regions based snapshot collecting) I mentioned above?
-
-[1] https://lore.kernel.org/linux-mm/20211011093057.30790-1-sj@kernel.org/
-[2] https://github.com/awslabs/damo
-
-
-Thanks,
-SJ
-
-> 
-> Signed-off-by: cuiyangpei <cuiyangpei@xiaomi.com>
+Remember that Signed-off-by: relates to the *patch flow*=2E
