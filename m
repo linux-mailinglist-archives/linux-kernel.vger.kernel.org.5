@@ -2,107 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16C9E7FC270
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 782A37FC27A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345378AbjK1RSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 12:18:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55448 "EHLO
+        id S1345352AbjK1RTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 12:19:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbjK1RSB (ORCPT
+        with ESMTP id S229928AbjK1RTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 12:18:01 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7074710EB;
-        Tue, 28 Nov 2023 09:18:07 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9871BC15;
-        Tue, 28 Nov 2023 09:18:54 -0800 (PST)
-Received: from raptor (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4C82A3F6C4;
-        Tue, 28 Nov 2023 09:18:02 -0800 (PST)
-Date:   Tue, 28 Nov 2023 17:17:59 +0000
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
-        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
-        rppt@kernel.org, hughd@google.com, pcc@google.com,
-        steven.price@arm.com, anshuman.khandual@arm.com,
-        vincenzo.frascino@arm.com, eugenis@google.com, kcc@google.com,
-        hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC v2 06/27] mm: page_alloc: Allow an arch to hook early
- into free_pages_prepare()
-Message-ID: <ZWYgx28LB28x5Pkb@raptor>
-References: <20231119165721.9849-1-alexandru.elisei@arm.com>
- <20231119165721.9849-7-alexandru.elisei@arm.com>
- <45466b05-d620-41e5-8a2b-05c420b8fa7b@redhat.com>
- <ZWSTiCghf8nMFy4G@raptor>
- <2e2d3f51-34e3-4982-b982-ab7b555cba21@redhat.com>
+        Tue, 28 Nov 2023 12:19:10 -0500
+Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8F410CB;
+        Tue, 28 Nov 2023 09:19:17 -0800 (PST)
+Received: from [127.0.0.1] ([98.35.210.218])
+        (authenticated bits=0)
+        by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 3ASHIMck585558
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Tue, 28 Nov 2023 09:18:23 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 3ASHIMck585558
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2023111101; t=1701191904;
+        bh=f6l68iGv5eAcjwGj55E8OL6CF5X9iU8J74t2PrTG5YA=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=6XE+gwUSIscmXlxZmR/obyqPnRdyFc9SgOdDhOLZ5zIn1Qj3I3XIlJN7R91edhLqJ
+         3ATaGYKTRv7hC69ocMawcn/GiY4V77tWz594FEnWHS1T/g+UF3/dc6k9z0gaybTIHl
+         sdQV9dZqS9FscMeWhYHdMnochTHoBUVyrWGiTY2zNzeuYMHsP9gBs5xV7h8+eLlOz8
+         5O5NkXqRyj9mjLrHrEoT9mG7b2dvs/x/bc4pP1UavUy6IAgToEPxAtQdtXqZvS6W9m
+         YOJM6Xe1gTSAM8HoXUXn+o/WwGXl2uufOA2uqrbGW6boguYBo3j4/dND+m2saj1FAf
+         JdMK7bWrvWlow==
+Date:   Tue, 28 Nov 2023 09:18:21 -0800
+From:   "H. Peter Anvin" <hpa@zytor.com>
+To:     Borislav Petkov <bp@alien8.de>, Xin Li <xin3.li@intel.com>
+CC:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+        x86@kernel.org, luto@kernel.org, pbonzini@redhat.com,
+        seanjc@google.com, peterz@infradead.org, jgross@suse.com,
+        ravi.v.shankar@intel.com, mhiramat@kernel.org,
+        andrew.cooper3@citrix.com, jiangshanlai@gmail.com,
+        nik.borisov@suse.com
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v12_16/37=5D_x86/ptrace=3A_Add_FRED_ad?= =?US-ASCII?Q?ditional_information_to_the_pt=5Fregs_structure?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20231128085122.GPZWWqCrPYnzB8BqFB@fat_crate.local>
+References: <20231003062458.23552-1-xin3.li@intel.com> <20231003062458.23552-17-xin3.li@intel.com> <20231128085122.GPZWWqCrPYnzB8BqFB@fat_crate.local>
+Message-ID: <E5913DD8-7C41-4658-9E42-63C01E2209B2@zytor.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2e2d3f51-34e3-4982-b982-ab7b555cba21@redhat.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On November 28, 2023 12:51:22 AM PST, Borislav Petkov <bp@alien8=2Ede> wrot=
+e:
+>On Mon, Oct 02, 2023 at 11:24:37PM -0700, Xin Li wrote:
+>> FRED defines additional information in the upper 48 bits of cs/ss
+>> fields=2E Therefore add the information definitions into the pt_regs
+>> structure=2E
+>>=20
+>> Specially introduce a new structure fred_ss to denote the FRED flags
+>> above SS selector, which avoids FRED_SSX_ macros and makes the code
+>> simpler and easier to read=2E
+>>=20
+>> Signed-off-by: H=2E Peter Anvin (Intel) <hpa@zytor=2Ecom>
+>
+>You and hpa need to go through all the patches and figure out who's the
+>author that's going to land in git=2E
+>
+>Because this and others have hpa's SOB first, suggesting he's the
+>author=2E However, the mail doesn't start with
+>
+>From: H=2E Peter Anvin (Intel) <hpa@zytor=2Ecom>
+>
+>and then git will make *you* the author=2E
+>
+>> Tested-by: Shan Kang <shan=2Ekang@intel=2Ecom>
+>> Signed-off-by: Thomas Gleixner <tglx@linutronix=2Ede>
+>> Signed-off-by: Xin Li <xin3=2Eli@intel=2Ecom>
+>
+>=2E=2E=2E
+>
+>>  	union {
+>> -		u64	ssx;	// The full 64-bit data slot containing SS
+>> -		u16	ss;	// SS selector
+>> +		/* SS selector */
+>> +		u16		ss;
+>> +		/* The extended 64-bit data slot containing SS */
+>> +		u64		ssx;
+>> +		/* The FRED SS extension */
+>> +		struct fred_ss	fred_ss;
+>
+>Aha, sanity about the right comments has come to your mind in this next
+>patch=2E :-P
+>
+>Just do them right in the previous one=2E
+>
+>>  	/*
+>> -	 * Top of stack on IDT systems=2E
+>> +	 * Top of stack on IDT systems, while FRED systems have extra fields
+>> +	 * defined above for storing exception related information, e=2Eg=2E =
+CR2 or
+>> +	 * DR6=2E
+>
+>Btw, I really appreciate the good commenting - thanks for that!
+>
 
-On Tue, Nov 28, 2023 at 05:58:55PM +0100, David Hildenbrand wrote:
-> On 27.11.23 14:03, Alexandru Elisei wrote:
-> > Hi,
-> > 
-> > On Fri, Nov 24, 2023 at 08:36:52PM +0100, David Hildenbrand wrote:
-> > > On 19.11.23 17:57, Alexandru Elisei wrote:
-> > > > Add arch_free_pages_prepare() hook that is called before that page flags
-> > > > are cleared. This will be used by arm64 when explicit management of tag
-> > > > storage pages is enabled.
-> > > 
-> > > Can you elaborate a bit what exactly will be done by that code with that
-> > > information?
-> > 
-> > Of course.
-> > 
-> > The MTE code that is in the kernel today uses the PG_arch_2 page flag, which it
-> > renames to PG_mte_tagged, to track if a page has been mapped with tagging
-> > enabled. That flag is cleared by free_pages_prepare() when it does:
-> > 
-> > 	page->flags &= ~PAGE_FLAGS_CHECK_AT_PREP;
-> > 
-> > When tag storage management is enabled, tag storage is reserved for a page if
-> > and only if the page is mapped as tagged. When a page is freed, the code looks
-> > at the PG_mte_tagged flag to determine if the page was mapped as tagged, and
-> > therefore has tag storage reserved, to determine if the corresponding tag
-> > storage should also be freed.
-> > 
-> > I have considered using arch_free_page(), but free_pages_prepare() calls the
-> > function after the flags are cleared.
-> > 
-> > Does that answer your question?
-> 
-> Yes, please add some of that to the patch description!
+For Xin, mainly:
 
-Will do!
+Standard practice is:
 
-Thanks,
-Alex
+1=2E For a patch with relatively small modifications, or where the changes=
+ are mainly in comments or the patch message:
 
-> 
-> -- 
-> Cheers,
-> 
-> David / dhildenb
-> 
+Keep the authorship, but put a description of what you have changed in bra=
+ckets with your username at the bottom of the description, immediately befo=
+re Signed-off-by:
+
+[ xin: changed foo, bar, baz ]
+
+
+2=2E For a patch with major rewrites:
+
+Take authorship on the From: line, but have an Originally-by: tag (rather =
+than a Signed-off-by: by the original author):
+
+Originally-by: Someone Else <someone@elsewhere=2Edom>
+
+
+3=2E For a patch which is fully or nearly fully your own work (a total rew=
+rite, or based on a concept idea rather than actual code), credit the origi=
+nal in the patch comment:
+
+Based on an idea by Someone Else <someone@elsewhere=2Edom> (optional link =
+to lore=2Ekernel=2Eorg)=2E
