@@ -2,51 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EA27FC132
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0BF7FC243
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232908AbjK1RSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 12:18:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49226 "EHLO
+        id S1345919AbjK1RU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 12:20:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230430AbjK1RSU (ORCPT
+        with ESMTP id S1345663AbjK1RUv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 12:18:20 -0500
+        Tue, 28 Nov 2023 12:20:51 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5361FD6
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:18:26 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7251DC433C7;
-        Tue, 28 Nov 2023 17:18:25 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477B912C
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:20:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D412CC433C8;
+        Tue, 28 Nov 2023 17:20:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701191905;
-        bh=V7IKAf0Hbu6oP2LSWp5l10ZwtBSliEPvVOx9m0gWfYQ=;
+        s=k20201202; t=1701192057;
+        bh=puusfip924NnsGJF8uNMJlJWB/vurJEyppEM+n1Lj8k=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DTHgE9PPklBAMdua0Gq+s/PRw++bw+Gj2frl4hyn3VWGoVDnO+zsrE+nNNl9kJCnm
-         Aif6OPqLGkuMeO87bQeZNkZxecGgE35op+PwvNVEC2SVi6UE42oxDvc1NCf0whVyze
-         u8jJwbYkbzVJX9f4i+TBbmFu3kC7Li++6kX/8uQ9anTcQ4LX74JdAzadEKlFWGdl5W
-         h4rVFVKK67H6Cj6TLoi6TfcG2mi/7B1FgCnuhoSHVgdEqmLzIa4r2Lgph6KRcxAgDc
-         GLP7RCT6Ldry21zdNGa0876otyOA+nuP48lukN/ibWTlhZV9gY3exB+auhSbDec+Yn
-         v/iSmyghEjysQ==
-Date:   Tue, 28 Nov 2023 09:18:23 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Sergei Shtepa <sergei.shtepa@linux.dev>
-Cc:     axboe@kernel.dk, hch@infradead.org, corbet@lwn.net,
-        snitzer@kernel.org, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Sergei Shtepa <sergei.shtepa@veeam.com>
-Subject: Re: [PATCH v6 11/11] blksnap: prevents using devices with data
- integrity or inline encryption
-Message-ID: <20231128171823.GA1148@sol.localdomain>
-References: <20231124165933.27580-1-sergei.shtepa@linux.dev>
- <20231124165933.27580-12-sergei.shtepa@linux.dev>
- <20231127224719.GD1463@sol.localdomain>
- <6cabaa42-c366-4928-8294-ad261dae0043@linux.dev>
+        b=tcMRcUo3ib8lMWDBEiKlESJpOBqLmCMzpGbDnyYHxYJiJVVG6EO9LB+uIsMNP6riu
+         yorYOJJEnjNEGL+E7gIqFRLj+pagLLcb/GTBSlAtxMk1xiFU4lXGf1WSlHjn4GHR2L
+         BP3z/4Urpe631EF7o8pKT2NYTcGKvnNNHQkW20MC/6AnyA4S4pcUkQwhP5URZbEWIv
+         7VZcnvkisjHDfggVetzKkTGOGJpQEL1F2qu0EY7vq+4yNrDM5i4BsdgiPkESRTzwxS
+         U7s+VyKoIBxJE8kh7FK9LA5aK+DxXeSZZAq3ER+G88Aq/F7gRTpSljY3zx7ugE314m
+         2kWTYk0Nscnpw==
+Date:   Tue, 28 Nov 2023 17:20:53 +0000
+From:   Simon Horman <horms@kernel.org>
+To:     Subbaraya Sundeep <sbhatta@marvell.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
+        edumazet@google.com, sgoutham@marvell.com, gakula@marvell.com,
+        hkelam@marvell.com
+Subject: Re: [PATCH net] octeontx2-pf: Add missing mutex lock in
+ otx2_get_pauseparam
+Message-ID: <20231128172053.GA43811@kernel.org>
+References: <1700930141-5568-1-git-send-email-sbhatta@marvell.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6cabaa42-c366-4928-8294-ad261dae0043@linux.dev>
+In-Reply-To: <1700930141-5568-1-git-send-email-sbhatta@marvell.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -57,29 +52,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 12:00:17PM +0100, Sergei Shtepa wrote:
-> But I haven't tested the code on a device where hardware inline encryption is
-> available. I would be glad if anyone could help with this.
-> > 
-> > Anyway, this patch is better than ignoring the problem.  It's worth noting,
-> > though, that this patch does not prevent blksnap from being set up on a block
-> > device on which blk-crypto-fallback is already being used (or will be used).
-> > When that happens, I/O will suddenly start failing.  For usability reasons,
-> > ideally that would be prevented somehow.
+On Sat, Nov 25, 2023 at 10:05:41PM +0530, Subbaraya Sundeep wrote:
+> All the mailbox messages sent to AF needs to be guarded
+> by mutex lock. Add the missing lock in otx2_get_pauseparam
+> function.
 > 
-> I didn't observe any failures during testing. It's just that the snapshot
-> image shows files with encrypted names and data. Backup in this case is
-> useless. Unfortunately, there is no way to detect a blk-crypto-fallback on
-> the block device filter level.
+> Fixes: 75f36270990c ("octeontx2-pf: Support to enable/disable pause frames via ethtool")
+> Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
 
-Huh, I thought that this patch is supposed to exclude blk-crypto-fallback too.
-__submit_bio() calls bio->bi_bdev->bd_filter->ops->submit_bio(bio) before
-blk_crypto_bio_prep(), so doesn't your check of ->bi_crypt_context exclude
-blk-crypto-fallback?
+Hi,
 
-I think you're right that it might actually be fine to use blksnap with
-blk-crypto-fallback, provided that the encryption is done first.  I would like
-to see a proper explanation of that, though.  And we still have this patch which
-claims that it doesn't work, which is confusing.
+I am wondering if the call to otx2_nix_config_bp()
+in otx2_dcbnl_ieee_setpfc() also needs to be protected by mbox.lock.
 
-- Eric
+And although not strictly related to this patch, while looking over this, I
+noticed that in otx2_init_hw_resources() it appears that &mbox->lock may be
+unlocked twice in some error paths.
+
+e.g.
+	/* Init Auras and pools used by NIX RQ, for free buffer ptrs */
+	err = otx2_rq_aura_pool_init(pf);
+	if (err) {
+		mutex_unlock(&mbox->lock);
+		goto err_free_nix_lf;
+	}
+	...
+err_free_nix_lf:
+	mutex_lock(&mbox->lock);
+	...
+
+...
