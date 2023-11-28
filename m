@@ -2,121 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E15B7FB2BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:29:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B6E7FB2C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:31:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343724AbjK1H33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 02:29:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38574 "EHLO
+        id S1343729AbjK1Ha5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 02:30:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230316AbjK1H31 (ORCPT
+        with ESMTP id S231858AbjK1Hay (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 02:29:27 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 222A6197
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:29:34 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-54b0073d50fso4826331a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:29:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701156572; x=1701761372; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8HhAg3HGx+dCrzaldRtNF0z0A4KKZODNNDBUQrJGE4c=;
-        b=Ftkc4t92tNZTjjfCaIPy6RUhSL7NDdPSJrrcgA7rPQka9gqNbGJVO0jdUNENbl3JkX
-         l2HzCA5Bib0evleN68sijzITuEUU3sYMjekU5oXN/AJpPKQh64k4kCwnecOlmk6Fl3PX
-         sIBgYQnvKexmET9f55zDZyewItOo+tSjThZ91LKiKMuF3gu3wRhLl08ImxDPyl27SZnw
-         GdFpSaocp4HJssYENRtpYha5iU1xpNDcQiQYtdQ/vFrxDppB6YV81FM3izRNhm2pjEdt
-         1dYHQbGNgJS3XIHVNdsWAwjwZndEfnb61vXpGaMj3S5ihUE8iXU58g5Ot2oEyucMwNFM
-         FaiA==
+        Tue, 28 Nov 2023 02:30:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A2BA1AE
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:30:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701156658;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QJw7klMuwiJlKB6SVmymnlH6vaoxDAKmhu1Kr42WXFE=;
+        b=jI/IoI2iepXACcMUeBeO97Jg3JKQ+73ba6T4BzaL45L0AA3/NTpgn/x5C3ho6SFeFEsRPs
+        k4y/hdAD1h9p0i0Yb4480UDl9Fzr5TENAkRepRkkovjV3PtKzsc4t1FnbXNpb/mtLu7Uwi
+        AiDzRSOq4d+WcfUtJlcV9hymsujf74A=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-644-zTJEV6zGPOCYxDUh6afdBA-1; Tue, 28 Nov 2023 02:30:57 -0500
+X-MC-Unique: zTJEV6zGPOCYxDUh6afdBA-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-333120f8976so20406f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:30:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701156572; x=1701761372;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8HhAg3HGx+dCrzaldRtNF0z0A4KKZODNNDBUQrJGE4c=;
-        b=CQjsqZC2TOA9SQI30RQUSvfbCvYhQdeUU6EqkjaRU5a8jhpsfznrkqSMsA4E45+gZ3
-         wJXnW7se/P7ygdW+wSQpUi1WfSdpFWiixLBP2nbmTPSxynYqgC/2Ti+TaWzCDTWRjkRL
-         OS6y12buv45TG9r44HiXoznUyiTdNTrxfMc8hdKmW6VtEG8K5EAKUBLN+0h1fuNkhxAb
-         4DTzRbwomXJysp2Bvp7VLR4JSPcxK+h379pNKsVa/5WBEPxrpfyKpXnqC9+jUd0hbpdG
-         k9OBbX/ydvvjisRoQJ2Hzk38NzDh6UIvggWooGLgB88XuSOqAYjptkuUn+qAvzUW55P8
-         LqUQ==
-X-Gm-Message-State: AOJu0YzLeYJZMWw9UBvwm0MjrEaisb1Jt6BrMwOKk/8ti+DqNvJxzHah
-        6oxCBzNdBdTqk4ucZh8WiWdVTg==
-X-Google-Smtp-Source: AGHT+IHDTd+j++C59qIQGKF0egEm45p5caSoaodLsq6Y3IPB41RPjR1l++I/9svYgkhuhB3ehzoAXw==
-X-Received: by 2002:a50:8d03:0:b0:548:656c:5371 with SMTP id s3-20020a508d03000000b00548656c5371mr12508831eds.16.1701156572583;
-        Mon, 27 Nov 2023 23:29:32 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id b9-20020a056402350900b0054b7e312b97sm1432048edd.38.2023.11.27.23.29.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Nov 2023 23:29:32 -0800 (PST)
-Message-ID: <1fd55b36-0837-4bf7-9fde-e573d6cb214a@linaro.org>
-Date:   Tue, 28 Nov 2023 08:29:30 +0100
+        d=1e100.net; s=20230601; t=1701156656; x=1701761456;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QJw7klMuwiJlKB6SVmymnlH6vaoxDAKmhu1Kr42WXFE=;
+        b=cFO1T8OtxvBvOOOVd1utToMsMZyd0CrRGhJxT8jPkQb4NopmdzYp2Sh3F7wWK6hgz0
+         SZB32HdPW07tzyP51XBw1g0jWK9arEGHS+7n8/wS0n5L2jc8keDjo6WIGkbqbXX7ZxJT
+         jJL3TKkxIPlg24tuG+qYEAXfFspd0iqhWUc6RJQanrTkL6eaDD1BEoqCsPHvr3rIqch9
+         KboBFmpqAQJx0EPPO+QWEi+1oNUz+pMPNcmt0ZPD/3qXF5YcAovy+T/w+NH6+uPaVQ7s
+         iW0O1AGKbT3Pu1DaYWSsDzCOxU+ILtwP6eGh+bbkoIBjClf5BiOb0wRMKqHsOjQzeEB7
+         WJYg==
+X-Gm-Message-State: AOJu0Yxg2FVOggX03pCMUEPj/XOZ/7jVGZAiLsZ/xHaHaSKsK3Zlpxbh
+        Je1yFRUYIht08HZ/+quA3e1yxLP8MfX+1QV7dgouhloxE0tST8kAQgD062/2MU+xr3BAUgJ/nPM
+        a48NbbyWk96TreGYEXAUPwC3l
+X-Received: by 2002:adf:a348:0:b0:32f:7a1a:6b21 with SMTP id d8-20020adfa348000000b0032f7a1a6b21mr11000207wrb.50.1701156655944;
+        Mon, 27 Nov 2023 23:30:55 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHa/sbmHoE/nFo4mc0n2d5RiJbrsqpbqyRnjeQE775RHciBXztaU2w+eG0rGex2i3mWrn1uWA==
+X-Received: by 2002:adf:a348:0:b0:32f:7a1a:6b21 with SMTP id d8-20020adfa348000000b0032f7a1a6b21mr11000186wrb.50.1701156655574;
+        Mon, 27 Nov 2023 23:30:55 -0800 (PST)
+Received: from starship ([77.137.131.4])
+        by smtp.gmail.com with ESMTPSA id z11-20020a05600c0a0b00b00405c7591b09sm16480293wmp.35.2023.11.27.23.30.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 23:30:55 -0800 (PST)
+Message-ID: <433aa3b530bcf92b4b843153d6e3919cdb623308.camel@redhat.com>
+Subject: Re: [RFC 13/33] KVM: Allow polling vCPUs for events
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Nicolas Saenz Julienne <nsaenz@amazon.com>, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        anelkz@amazon.com, graf@amazon.com, dwmw@amazon.co.uk,
+        jgowans@amazon.com, corbert@lwn.net, kys@microsoft.com,
+        haiyangz@microsoft.com, decui@microsoft.com, x86@kernel.org,
+        linux-doc@vger.kernel.org
+Date:   Tue, 28 Nov 2023 09:30:53 +0200
+In-Reply-To: <20231108111806.92604-14-nsaenz@amazon.com>
+References: <20231108111806.92604-1-nsaenz@amazon.com>
+         <20231108111806.92604-14-nsaenz@amazon.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] pinctrl: samsung: add irq_set_affinity() for non wake
- up external gpio interrupt
-Content-Language: en-US
-To:     Youngmin Nam <youngmin.nam@samsung.com>
-Cc:     tomasz.figa@gmail.com, s.nawrocki@samsung.com,
-        alim.akhtar@samsung.com, linus.walleij@linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, semen.protsenko@linaro.org
-References: <CGME20231126091120epcas2p4a1320e3b0f9be8f8a0f575a322981d38@epcas2p4.samsung.com>
- <20231126094618.2545116-1-youngmin.nam@samsung.com>
- <bb738a6b-815d-4fad-b73f-559f1ba8cd68@linaro.org> <ZWU75VtJ/mXpMyQr@perf>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ZWU75VtJ/mXpMyQr@perf>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -124,62 +85,168 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/11/2023 02:01, Youngmin Nam wrote:
-> On Mon, Nov 27, 2023 at 10:54:56AM +0100, Krzysztof Kozlowski wrote:
->> On 26/11/2023 10:46, Youngmin Nam wrote:
->>> To support affinity setting for non wake up external gpio interrupt,
->>> add irq_set_affinity callback using irq number from pinctrl driver data.
->>>
->>> Before this patch, changing the irq affinity of gpio interrupt is not possible:
->>>
->>>     # cat /proc/irq/418/smp_affinity
->>>     3ff
->>>     # echo 00f > /proc/irq/418/smp_affinity
->>
->> Does this command succeed on your board?
->>
-> Yes.
+On Wed, 2023-11-08 at 11:17 +0000, Nicolas Saenz Julienne wrote:
+> A number of use cases have surfaced where it'd be beneficial to have a
+> vCPU stop its execution in user-space, as opposed to having it sleep
+> in-kernel. Be it in order to make better use of the pCPU's time while
+> the vCPU is halted, or to implement security features like Hyper-V's
+> VSM.
 
-Hm, fails all the time one mine.
 
 > 
->>>     # cat /proc/irq/418/smp_affinity
->>>     3ff
->>>     # cat /proc/interrupts
->>>                CPU0       CPU1       CPU2       CPU3    ...
->>>     418:       3631          0          0          0    ...
->>>
->>> With this patch applied, it's possible to change irq affinity of gpio interrupt:
->>
->> ...
->>
->> On which board did you test it?
->>
->>
-> I tested on S5E9945 ERD(Exynos Reference Development) board.
-
-There is no such board upstream. How can we reproduce this issue? I am
-afraid we cannot test neither the bug nor the fix.
-
+> A problem with this approach is that user-space has no way of knowing
+> whether the vCPU has pending events (interrupts, timers, etc...), so we
+> need a new interface to query if they are. poll() turned out to be a
+> very good fit.
 > 
->>> +	if (parent)
->>> +		return parent->chip->irq_set_affinity(parent, dest, force);
->>> +
->>
->> I think there is a  helper for it: irq_chip_set_affinity_parent().
->>
->>
+> So enable polling vCPUs. The poll() interface considers a vCPU has a
+> pending event if it didn't enter the guest since being kicked by an
+> event source (being kicked forces a guest exit). Kicking a vCPU that has
+> pollers wakes up the polling threads.
 > 
-> The irq_chip_set_affinity_parent() requires parent_data of irq_data.
-
-Hm, so now I wonder why do we not have parent_data...
-
-> But when I tested as below, exynos's irqd->parent_data was null.
-> So we should use irqchip's affinity function instead of the helper function.
+> NOTES:
+>  - There is a race between the 'vcpu->kicked' check in the polling
+>    thread and the vCPU thread re-entering the guest. This hardly affects
+>    the use-cases stated above, but needs to be fixed.
 > 
+>  - This was tested alongside a WIP Hyper-V Virtual Trust Level
+>    implementation which makes ample use of the poll() interface.
+> 
+> Signed-off-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
+> ---
+>  arch/x86/kvm/x86.c       |  2 ++
+>  include/linux/kvm_host.h |  2 ++
+>  virt/kvm/kvm_main.c      | 30 ++++++++++++++++++++++++++++++
+>  3 files changed, 34 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 57f9c58e1e32..bf4891bc044e 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -10788,6 +10788,8 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>  		goto cancel_injection;
+>  	}
+>  
+> +	WRITE_ONCE(vcpu->kicked, false);
+> +
+>  	if (req_immediate_exit) {
+>  		kvm_make_request(KVM_REQ_EVENT, vcpu);
+>  		static_call(kvm_x86_request_immediate_exit)(vcpu);
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index 687589ce9f63..71e1e8cf8936 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -336,6 +336,7 @@ struct kvm_vcpu {
+>  #endif
+>  	int mode;
+>  	u64 requests;
+> +	bool kicked;
+>  	unsigned long guest_debug;
+>  
+>  	struct mutex mutex;
+> @@ -395,6 +396,7 @@ struct kvm_vcpu {
+>  	 */
+>  	struct kvm_memory_slot *last_used_slot;
+>  	u64 last_used_slot_gen;
+> +	wait_queue_head_t wqh;
+>  };
+>  
+>  /*
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index ad9aab898a0c..fde004a0ac46 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -497,12 +497,14 @@ static void kvm_vcpu_init(struct kvm_vcpu *vcpu, struct kvm *kvm, unsigned id)
+>  	kvm_vcpu_set_dy_eligible(vcpu, false);
+>  	vcpu->preempted = false;
+>  	vcpu->ready = false;
+> +	vcpu->kicked = false;
+>  	preempt_notifier_init(&vcpu->preempt_notifier, &kvm_preempt_ops);
+>  	vcpu->last_used_slot = NULL;
+>  
+>  	/* Fill the stats id string for the vcpu */
+>  	snprintf(vcpu->stats_id, sizeof(vcpu->stats_id), "kvm-%d/vcpu-%d",
+>  		 task_pid_nr(current), id);
+> +	init_waitqueue_head(&vcpu->wqh);
+>  }
+>  
+>  static void kvm_vcpu_destroy(struct kvm_vcpu *vcpu)
+> @@ -3970,6 +3972,10 @@ void kvm_vcpu_kick(struct kvm_vcpu *vcpu)
+>  		if (cpu != me && (unsigned)cpu < nr_cpu_ids && cpu_online(cpu))
+>  			smp_send_reschedule(cpu);
+>  	}
+> +
+> +	if (!cmpxchg(&vcpu->kicked, false, true))
+> +		wake_up_interruptible(&vcpu->wqh);
+> +
+>  out:
+>  	put_cpu();
+>  }
+> @@ -4174,6 +4180,29 @@ static int kvm_vcpu_mmap(struct file *file, struct vm_area_struct *vma)
+>  	return 0;
+>  }
+>  
+> +static __poll_t kvm_vcpu_poll(struct file *file, poll_table *wait)
+> +{
+> +	struct kvm_vcpu *vcpu = file->private_data;
+> +
+> +	poll_wait(file, &vcpu->wqh, wait);
+> +
+> +	/*
+> +	 * Make sure we read vcpu->kicked after adding the vcpu into
+> +	 * the waitqueue list. Otherwise we might have the following race:
+> +	 *
+> +	 *   READ_ONCE(vcpu->kicked)
+> +	 *					cmpxchg(&vcpu->kicked, false, true))
+> +	 *					wake_up_interruptible(&vcpu->wqh)
+> +	 *   list_add_tail(wait, &vcpu->wqh)
+> +	 */
+> +	smp_mb();
+> +	if (READ_ONCE(vcpu->kicked)) {
+> +		return EPOLLIN;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int kvm_vcpu_release(struct inode *inode, struct file *filp)
+>  {
+>  	struct kvm_vcpu *vcpu = filp->private_data;
+> @@ -4186,6 +4215,7 @@ static const struct file_operations kvm_vcpu_fops = {
+>  	.release        = kvm_vcpu_release,
+>  	.unlocked_ioctl = kvm_vcpu_ioctl,
+>  	.mmap           = kvm_vcpu_mmap,
+> +	.poll		= kvm_vcpu_poll,
+>  	.llseek		= noop_llseek,
+>  	KVM_COMPAT(kvm_vcpu_compat_ioctl),
+>  };
 
+
+
+A few ideas on the design:
+
+I think that we can do this in a simpler way.
+
+
+I am thinking about the following API:
+
+-> vCPU does vtlcall and KVM exits to the userspace.
+
+-> The userspace sets the vCPU to the new MP runstate (KVM_MP_STATE_HALTED_USERSPACE) which is just like regular halt
+but once vCPU is ready to run, the KVM instead exits to userspace.
+
+
+-> The userspace does another KVM_RUN which blocks till an event comes and exits back to userspace.
+
+-> The userspace can now decide what to do, and it might for example send signal to vCPU thread which runs VTL0,
+to kick it out of the guest mode, and resume the VTL1 vCPU.
 
 
 Best regards,
-Krzysztof
+	Maxim Levitsky 
+
+
+
+
+
 
