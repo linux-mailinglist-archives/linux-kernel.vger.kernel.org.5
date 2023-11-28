@@ -2,69 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3834A7FAEE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 01:12:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCB67FAEE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 01:16:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234063AbjK1AL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 19:11:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57178 "EHLO
+        id S234046AbjK1AQL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 27 Nov 2023 19:16:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233953AbjK1ALz (ORCPT
+        with ESMTP id S233895AbjK1AQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 19:11:55 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D14771B1;
-        Mon, 27 Nov 2023 16:12:01 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1cf974e87d9so7042725ad.1;
-        Mon, 27 Nov 2023 16:12:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701130321; x=1701735121; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=v2cp0hCV3ukeXzrGKrc9yDyHnZlZPc+ZpdONAR2TiuI=;
-        b=Yf7EBsopxpGqYHff2Y9+XDRga7aTmDoGrmfLWjiml81uwsKH3XeGP5uYwTVbdzjyFm
-         DjRkBonS+qNUmBWEdpH2ItHsfXYy6y8GtrhHpTWps2jL7QN0v+j85zrvOk019ZQ2uDnZ
-         Or1I8Wo5TQhF1nlgrCKddy5MfV8wGyKaGh9YQXiaSjkcGSn7KgSNZxr1EDVIPfL8Mi0r
-         ftqP06WCf7cF4t1Pl3VuaJU8Ner2MSrphvhN4wHVwVVq64Y3dnWbrMRErPWTjcgezQtj
-         sZznPjmwZUtWGkCoKRMZNXDtljgYCG3Fx6pcvSuIzCtjvHbHj8Ba6S49JK6yKXm2h58j
-         j1Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701130321; x=1701735121;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v2cp0hCV3ukeXzrGKrc9yDyHnZlZPc+ZpdONAR2TiuI=;
-        b=d2YRu2vrMkhJvvkkRpljW3TSdDNI/B4P3/HgQuYuC3CcUsiUKVc5UjgzgvKSD2RJRJ
-         GvYdxtx/5LHv33x8IC4shG/qkhWKolcE9feSXIoVwuxVxZs587BTH899sFenQxfjhg/1
-         Sj7ObikQgvUragcNqD3xG1IhbhEajir6zurswxTMVlytRSGR5sIdJrdMx+P6p0yms0x3
-         qqI6od6aSZWf1aZ7kTvHIoIBfUdZigVpexL2H2GizL1jZmaFMQm8gckU/a1yOXVNRdIz
-         qvKi2Kb+gVGGa8YwbZJzWxeZRfNCM1myrA5RA7kpSrANbzE42EBXhXHkYFzmy6JM0sPy
-         1vbw==
-X-Gm-Message-State: AOJu0YwVucrjwP3AuOyGmlq1gHDw14PSIQN4hwVciY+oPdYWJe4QXUAe
-        UduiKPKdlnMfBWoiRJAesog=
-X-Google-Smtp-Source: AGHT+IHwEE6OZJkKu6cjd4labT8nhAMbaFsJBc/61pTVrwTlM5Oo8b5TPo9PljIBG5q1IjiUNainmA==
-X-Received: by 2002:a17:902:f683:b0:1cf:c680:f37f with SMTP id l3-20020a170902f68300b001cfc680f37fmr6781580plg.2.1701130321121;
-        Mon, 27 Nov 2023 16:12:01 -0800 (PST)
-Received: from hoboy.vegasvil.org ([2601:640:8000:54:e2d5:5eff:fea5:802f])
-        by smtp.gmail.com with ESMTPSA id x5-20020a170902ec8500b001cfa718039bsm6739204plg.216.2023.11.27.16.12.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 16:12:00 -0800 (PST)
-Date:   Mon, 27 Nov 2023 16:11:58 -0800
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Sagi Maimon <maimon.sagi@gmail.com>
-Cc:     reibax@gmail.com, davem@davemloft.net, rrameshbabu@nvidia.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        maheshb@google.com, Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <jstultz@google.com>
-Subject: Re: [PATCH v2] posix-timers: add multi_clock_gettime system call
-Message-ID: <ZWUwTnWEHipJqHnk@hoboy.vegasvil.org>
-References: <20231127153901.6399-1-maimon.sagi@gmail.com>
+        Mon, 27 Nov 2023 19:16:10 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B562192;
+        Mon, 27 Nov 2023 16:16:16 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 08EC121940;
+        Tue, 28 Nov 2023 00:16:15 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6E086136C7;
+        Tue, 28 Nov 2023 00:16:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id it1xB0oxZWXoWwAAD6G6ig
+        (envelope-from <neilb@suse.de>); Tue, 28 Nov 2023 00:16:10 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231127153901.6399-1-maimon.sagi@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+From:   "NeilBrown" <neilb@suse.de>
+To:     "Chuck Lever" <chuck.lever@oracle.com>
+Cc:     "Al Viro" <viro@zeniv.linux.org.uk>,
+        "Christian Brauner" <brauner@kernel.org>,
+        "Jens Axboe" <axboe@kernel.dk>, "Oleg Nesterov" <oleg@redhat.com>,
+        "Jeff Layton" <jlayton@kernel.org>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        "Juri Lelli" <juri.lelli@redhat.com>,
+        "Vincent Guittot" <vincent.guittot@linaro.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH/RFC] core/nfsd: allow kernel threads to use task_work.
+In-reply-to: <ZWUfNyO6OG/+aFuo@tissot.1015granger.net>
+References: <170112272125.7109.6245462722883333440@noble.neil.brown.name>,
+ <ZWUfNyO6OG/+aFuo@tissot.1015granger.net>
+Date:   Tue, 28 Nov 2023 11:16:06 +1100
+Message-id: <170113056683.7109.13851405274459689039@noble.neil.brown.name>
+X-Spamd-Bar: ++++++
+Authentication-Results: smtp-out1.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.de (policy=none);
+        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of neilb@suse.de) smtp.mailfrom=neilb@suse.de
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [6.49 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(4.60)[~all:c];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         NEURAL_SPAM_LONG(2.70)[0.771];
+         RCPT_COUNT_TWELVE(0.00)[13];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         DMARC_POLICY_SOFTFAIL(0.10)[suse.de : No valid SPF, No valid DKIM,none]
+X-Spam-Score: 6.49
+X-Rspamd-Queue-Id: 08EC121940
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -73,227 +89,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 05:39:01PM +0200, Sagi Maimon wrote:
->  Some user space applications need to read some clocks.
->  Each read requires moving from user space to kernel space.
->  This asymmetry causes the measured offset to have a significant error.
+On Tue, 28 Nov 2023, Chuck Lever wrote:
+> On Tue, Nov 28, 2023 at 09:05:21AM +1100, NeilBrown wrote:
+> > 
+> > I have evidence from a customer site of 256 nfsd threads adding files to
+> > delayed_fput_lists nearly twice as fast they are retired by a single
+> > work-queue thread running delayed_fput().  As you might imagine this
+> > does not end well (20 million files in the queue at the time a snapshot
+> > was taken for analysis).
+> > 
+> > While this might point to a problem with the filesystem not handling the
+> > final close efficiently, such problems should only hurt throughput, not
+> > lead to memory exhaustion.
+> 
+> I have this patch queued for v6.8:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git/commit/?h=nfsd-next&id=c42661ffa58acfeaf73b932dec1e6f04ce8a98c0
+> 
 
-Adding time/clock gurus (jstultz, tglx) on CC for visibility...
+Thanks....
+I think that change is good, but I don't think it addresses the problem
+mentioned in the description, and it is not directly relevant to the
+problem I saw ... though it is complicated.
+
+The problem "workqueue ...  hogged cpu..." probably means that
+nfsd_file_dispose_list() needs a cond_resched() call in the loop.
+That will stop it from hogging the CPU whether it is tied to one CPU or
+free to roam.
+
+Also that work is calling filp_close() which primarily calls
+filp_flush().
+It also calls fput() but that does minimal work.  If there is much work
+to do then that is offloaded to another work-item.  *That* is the
+workitem that I had problems with.
+
+The problem I saw was with an older kernel which didn't have the nfsd
+file cache and so probably is calling filp_close more often.  So maybe
+my patch isn't so important now.  Particularly as nfsd now isn't closing
+most files in-task but instead offloads that to another task.  So the
+final fput will not be handled by the nfsd task either.
+
+But I think there is room for improvement.  Gathering lots of files
+together into a list and closing them sequentially is not going to be as
+efficient as closing them in parallel.
+
+> 
+> > For normal threads, the thread that closes the file also calls the
+> > final fput so there is natural rate limiting preventing excessive growth
+> > in the list of delayed fputs.  For kernel threads, and particularly for
+> > nfsd, delayed in the final fput do not impose any throttling to prevent
+> > the thread from closing more files.
+> 
+> I don't think we want to block nfsd threads waiting for files to
+> close. Won't that be a potential denial of service?
+
+Not as much as the denial of service caused by memory exhaustion due to
+an indefinitely growing list of files waiting to be closed by a single
+thread of workqueue.
+
+I think it is perfectly reasonable that when handling an NFSv4 CLOSE,
+the nfsd thread should completely handle that request including all the
+flush and ->release etc.  If that causes any denial of service, then
+simple increase the number of nfsd threads.
+
+For NFSv3 it is more complex.  On the kernel where I saw a problem the
+filp_close happen after each READ or WRITE (though I think the customer
+was using NFSv4...).  With the file cache there is no thread that is
+obviously responsible for the close.
+To get the sort of throttling that I think is need, we could possibly
+have each "nfsd_open" check if there are pending closes, and to wait for
+some small amount of progress.
+
+But don't think it is reasonable for the nfsd threads to take none of
+the burden of closing files as that can result in imbalance.
+
+I'll need to give this more thought.
 
 Thanks,
-Richard
+NeilBrown
 
-
-> 
->  Introduce a new system call multi_clock_gettime, which can be used to measure
->  the offset between multiple clocks, from variety of types: PHC, virtual PHC
->  and various system clocks (CLOCK_REALTIME, CLOCK_MONOTONIC, etc).
->  The offset includes the total time that the driver needs to read the clock
->  timestamp.
-> 
->  New system call allows the reading of a list of clocks - up to PTP_MAX_CLOCKS.
->  Supported clocks IDs: PHC, virtual PHC and various system clocks.
->  Up to PTP_MAX_SAMPLES times (per clock) in a single system call read.
->  The system call returns n_clocks timestamps for each measurement:
->  - clock 0 timestamp
->  - ...
->  - clock n timestamp
-> 
-> Signed-off-by: Sagi Maimon <maimon.sagi@gmail.com>
-> ---
->  Addressed comments from:
->  - Richard Cochran : https://www.spinics.net/lists/netdev/msg951723.html
->           
->  Changes since version 1:
->  - Change multi PHC ioctl implamantation into systemcall.
->  
->  arch/x86/entry/syscalls/syscall_32.tbl |  1 +
->  arch/x86/entry/syscalls/syscall_64.tbl |  1 +
->  include/linux/posix-timers.h           | 24 ++++++++++
->  include/linux/syscalls.h               |  3 +-
->  include/uapi/asm-generic/unistd.h      | 12 ++++-
->  kernel/sys_ni.c                        |  1 +
->  kernel/time/posix-timers.c             | 62 ++++++++++++++++++++++++++
->  7 files changed, 102 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
-> index c8fac5205803..070efd266e7e 100644
-> --- a/arch/x86/entry/syscalls/syscall_32.tbl
-> +++ b/arch/x86/entry/syscalls/syscall_32.tbl
-> @@ -461,3 +461,4 @@
->  454	i386	futex_wake		sys_futex_wake
->  455	i386	futex_wait		sys_futex_wait
->  456	i386	futex_requeue		sys_futex_requeue
-> +457	i386	multi_clock_gettime		sys_multi_clock_gettime32
-> \ No newline at end of file
-> diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
-> index 8cb8bf68721c..f790330244bb 100644
-> --- a/arch/x86/entry/syscalls/syscall_64.tbl
-> +++ b/arch/x86/entry/syscalls/syscall_64.tbl
-> @@ -378,6 +378,7 @@
->  454	common	futex_wake		sys_futex_wake
->  455	common	futex_wait		sys_futex_wait
->  456	common	futex_requeue		sys_futex_requeue
-> +457	common	multi_clock_gettime		sys_multi_clock_gettime
->  
->  #
->  # Due to a historical design error, certain syscalls are numbered differently
-> diff --git a/include/linux/posix-timers.h b/include/linux/posix-timers.h
-> index d607f51404fc..426a45441ab5 100644
-> --- a/include/linux/posix-timers.h
-> +++ b/include/linux/posix-timers.h
-> @@ -260,4 +260,28 @@ void set_process_cpu_timer(struct task_struct *task, unsigned int clock_idx,
->  int update_rlimit_cpu(struct task_struct *task, unsigned long rlim_new);
->  
->  void posixtimer_rearm(struct kernel_siginfo *info);
-> +
-> +#define MULTI_PTP_MAX_CLOCKS 12 /* Max number of clocks */
-> +#define MULTI_PTP_MAX_SAMPLES 10 /* Max allowed offset measurement samples. */
-> +
-> +struct __ptp_multi_clock_get {
-> +	unsigned int n_clocks; /* Desired number of clocks. */
-> +	unsigned int n_samples; /* Desired number of measurements per clock. */
-> +	const clockid_t clkid_arr[MULTI_PTP_MAX_CLOCKS]; /* list of clock IDs */
-> +	/*
-> +	 * Array of list of n_clocks clocks time samples n_samples times.
-> +	 */
-> +	struct  __kernel_timespec ts[MULTI_PTP_MAX_SAMPLES][MULTI_PTP_MAX_CLOCKS];
-> +};
-> +
-> +struct __ptp_multi_clock_get32 {
-> +	unsigned int n_clocks; /* Desired number of clocks. */
-> +	unsigned int n_samples; /* Desired number of measurements per clock. */
-> +	const clockid_t clkid_arr[MULTI_PTP_MAX_CLOCKS]; /* list of clock IDs */
-> +	/*
-> +	 * Array of list of n_clocks clocks time samples n_samples times.
-> +	 */
-> +	struct  old_timespec32 ts[MULTI_PTP_MAX_SAMPLES][MULTI_PTP_MAX_CLOCKS];
-> +};
-> +
->  #endif
-> diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-> index fd9d12de7e92..afcf68e83d63 100644
-> --- a/include/linux/syscalls.h
-> +++ b/include/linux/syscalls.h
-> @@ -1161,7 +1161,8 @@ asmlinkage long sys_mmap_pgoff(unsigned long addr, unsigned long len,
->  			unsigned long prot, unsigned long flags,
->  			unsigned long fd, unsigned long pgoff);
->  asmlinkage long sys_old_mmap(struct mmap_arg_struct __user *arg);
-> -
-> +asmlinkage long sys_multi_clock_gettime(struct __ptp_multi_clock_get __user * ptp_multi_clk_get);
-> +asmlinkage long sys_multi_clock_gettime32(struct __ptp_multi_clock_get32 __user * ptp_multi_clk_get);
->  
->  /*
->   * Not a real system call, but a placeholder for syscalls which are
-> diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
-> index 756b013fb832..3ebcaa052650 100644
-> --- a/include/uapi/asm-generic/unistd.h
-> +++ b/include/uapi/asm-generic/unistd.h
-> @@ -829,8 +829,18 @@ __SYSCALL(__NR_futex_wait, sys_futex_wait)
->  #define __NR_futex_requeue 456
->  __SYSCALL(__NR_futex_requeue, sys_futex_requeue)
->  
-> +#if defined(__ARCH_WANT_TIME32_SYSCALLS) || __BITS_PER_LONG != 32
-> +#define __NR_multi_clock_gettime 457
-> +__SC_3264(__NR_multi_clock_gettime, sys_multi_clock_gettime32, sys_multi_clock_gettime)
-> +#endif
-> +
-> +#if defined(__SYSCALL_COMPAT) || __BITS_PER_LONG == 32
-> +#define __NR_multi_clock_gettime64 458
-> +__SYSCALL(__NR_multi_clock_gettime64, sys_multi_clock_gettime)
-> +#endif
-> +
->  #undef __NR_syscalls
-> -#define __NR_syscalls 457
-> +#define __NR_syscalls 459
->  
->  /*
->   * 32 bit systems traditionally used different
-> diff --git a/kernel/sys_ni.c b/kernel/sys_ni.c
-> index e1a6e3c675c0..8ed1c22f40ac 100644
-> --- a/kernel/sys_ni.c
-> +++ b/kernel/sys_ni.c
-> @@ -335,6 +335,7 @@ COND_SYSCALL(ppoll_time32);
->  COND_SYSCALL_COMPAT(ppoll_time32);
->  COND_SYSCALL(utimensat_time32);
->  COND_SYSCALL(clock_adjtime32);
-> +COND_SYSCALL(multi_clock_gettime32);
->  
->  /*
->   * The syscalls below are not found in include/uapi/asm-generic/unistd.h
-> diff --git a/kernel/time/posix-timers.c b/kernel/time/posix-timers.c
-> index b924f0f096fa..517558af2479 100644
-> --- a/kernel/time/posix-timers.c
-> +++ b/kernel/time/posix-timers.c
-> @@ -1426,6 +1426,68 @@ SYSCALL_DEFINE4(clock_nanosleep_time32, clockid_t, which_clock, int, flags,
->  
->  #endif
->  
-> +SYSCALL_DEFINE1(multi_clock_gettime, struct __ptp_multi_clock_get __user *, ptp_multi_clk_get)
-> +{
-> +	const struct k_clock *kc;
-> +	struct timespec64 kernel_tp;
-> +	struct __ptp_multi_clock_get multi_clk_get;
-> +	int error;
-> +	unsigned int i, j;
-> +
-> +	if (copy_from_user(&multi_clk_get, ptp_multi_clk_get, sizeof(multi_clk_get)))
-> +		return -EFAULT;
-> +
-> +	if (multi_clk_get.n_samples > MULTI_PTP_MAX_SAMPLES)
-> +		return -EINVAL;
-> +	if (multi_clk_get.n_clocks > MULTI_PTP_MAX_CLOCKS)
-> +		return -EINVAL;
-> +
-> +	for (j = 0; j < multi_clk_get.n_samples; j++) {
-> +		for (i = 0; i < multi_clk_get.n_clocks; i++) {
-> +			kc = clockid_to_kclock(multi_clk_get.clkid_arr[i]);
-> +			if (!kc)
-> +				return -EINVAL;
-> +			error = kc->clock_get_timespec(multi_clk_get.clkid_arr[i], &kernel_tp);
-> +			if (!error && put_timespec64(&kernel_tp, (struct __kernel_timespec __user *)
-> +						     &ptp_multi_clk_get->ts[j][i]))
-> +				error = -EFAULT;
-> +		}
-> +	}
-> +
-> +	return error;
-> +}
-> +
-> +SYSCALL_DEFINE1(multi_clock_gettime32, struct __ptp_multi_clock_get32 __user *, ptp_multi_clk_get)
-> +{
-> +	const struct k_clock *kc;
-> +	struct timespec64 kernel_tp;
-> +	struct __ptp_multi_clock_get multi_clk_get;
-> +	int error;
-> +	unsigned int i, j;
-> +
-> +	if (copy_from_user(&multi_clk_get, ptp_multi_clk_get, sizeof(multi_clk_get)))
-> +		return -EFAULT;
-> +
-> +	if (multi_clk_get.n_samples > MULTI_PTP_MAX_SAMPLES)
-> +		return -EINVAL;
-> +	if (multi_clk_get.n_clocks > MULTI_PTP_MAX_CLOCKS)
-> +		return -EINVAL;
-> +
-> +	for (j = 0; j < multi_clk_get.n_samples; j++) {
-> +		for (i = 0; i < multi_clk_get.n_clocks; i++) {
-> +			kc = clockid_to_kclock(multi_clk_get.clkid_arr[i]);
-> +			if (!kc)
-> +				return -EINVAL;
-> +			error = kc->clock_get_timespec(multi_clk_get.clkid_arr[i], &kernel_tp);
-> +			if (!error && put_old_timespec32(&kernel_tp, (struct old_timespec32 __user *)
-> +							&ptp_multi_clk_get->ts[j][i]))
-> +				error = -EFAULT;
-> +		}
-> +	}
-> +
-> +	return error;
-> +}
-> +
->  static const struct k_clock clock_realtime = {
->  	.clock_getres		= posix_get_hrtimer_res,
->  	.clock_get_timespec	= posix_get_realtime_timespec,
-> -- 
-> 2.26.3
-> 
