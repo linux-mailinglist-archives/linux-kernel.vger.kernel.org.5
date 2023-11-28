@@ -2,238 +2,345 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 443827FB9E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:08:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4197FB9EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344547AbjK1MI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 07:08:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56296 "EHLO
+        id S1344610AbjK1MJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 07:09:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344610AbjK1MI1 (ORCPT
+        with ESMTP id S1344527AbjK1MJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 07:08:27 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 19449182
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 04:08:33 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ACCCFC15;
-        Tue, 28 Nov 2023 04:09:19 -0800 (PST)
-Received: from [10.1.33.188] (XHFQ2J9959.cambridge.arm.com [10.1.33.188])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 031113F73F;
-        Tue, 28 Nov 2023 04:08:24 -0800 (PST)
-Message-ID: <3e61d181-5e8d-4103-8dee-e18e493bc125@arm.com>
-Date:   Tue, 28 Nov 2023 12:08:22 +0000
+        Tue, 28 Nov 2023 07:09:47 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E8BD59;
+        Tue, 28 Nov 2023 04:09:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701173393; x=1732709393;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mtIu5f1hDVaKzrp3gZyRN6bomQimaf0cxFp5LllKoNg=;
+  b=UxZhaiDK4zs6A/BpUWP+RqLVQoFykZWA4dqfeUaxIBZGmbfwCTW81cx3
+   9f2Duj0JEEGUm7ddoTq4JaQ6e5RWXZYx4WeOMjyBx1FrfkPxsuYIE46dH
+   N+Gd+BLRAkzu2AanFwBXmcPq/e9xzF7kN7H/CNF2/S247tBL8kqtY48+S
+   Uk3e9deLVI7ABb0v02V6OtezUd/uZS1bYQ0BBDpACdQN06Zs4oSVJgP7O
+   ec6tkCY5ShnkXixO4egn2dqMg72zMafP2vdx95lNlL2w93R5m/ObJ9Flf
+   GN4MvGxNJRvrvdQq1P2VJaDZ2wqgN+a9KJIA70ocrTaVRDehtU2jLpG+x
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="391783864"
+X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
+   d="scan'208";a="391783864"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 04:09:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="772294330"
+X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
+   d="scan'208";a="772294330"
+Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 28 Nov 2023 04:09:47 -0800
+Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r7wuP-0007Xk-0i;
+        Tue, 28 Nov 2023 12:09:45 +0000
+Date:   Tue, 28 Nov 2023 20:08:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, Dave Chinner <dchinner@redhat.com>,
+        Allison Henderson <allison.henderson@oracle.com>,
+        Zhang Tianci <zhangtianci.1997@bytedance.com>,
+        Brian Foster <bfoster@redhat.com>, Ben Myers <bpm@sgi.com>,
+        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xieyongji@bytedance.com, me@jcix.top
+Subject: Re: [PATCH 2/2] xfs: update dir3 leaf block metadata after swap
+Message-ID: <202311281904.r45MkLJq-lkp@intel.com>
+References: <20231128053202.29007-3-zhangjiachen.jaycee@bytedance.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 00/14] Transparent Contiguous PTEs for User Mappings
-Content-Language: en-GB
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     akpm@linux-foundation.org, andreyknvl@gmail.com,
-        anshuman.khandual@arm.com, ardb@kernel.org,
-        catalin.marinas@arm.com, david@redhat.com, dvyukov@google.com,
-        glider@google.com, james.morse@arm.com, jhubbard@nvidia.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mark.rutland@arm.com, maz@kernel.org,
-        oliver.upton@linux.dev, ryabinin.a.a@gmail.com,
-        suzuki.poulose@arm.com, vincenzo.frascino@arm.com,
-        wangkefeng.wang@huawei.com, will@kernel.org, willy@infradead.org,
-        yuzenghui@huawei.com, yuzhao@google.com, ziy@nvidia.com
-References: <20231115163018.1303287-1-ryan.roberts@arm.com>
- <20231127031813.5576-1-v-songbaohua@oppo.com>
- <234021ba-73c2-474a-82f9-91e1604d5bb5@arm.com>
- <CAGsJ_4wTtwAMydZMzWFQghN+3xGcw3fa6iCfQpPRoqP-Tjf5dA@mail.gmail.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAGsJ_4wTtwAMydZMzWFQghN+3xGcw3fa6iCfQpPRoqP-Tjf5dA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231128053202.29007-3-zhangjiachen.jaycee@bytedance.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/11/2023 05:49, Barry Song wrote:
-> On Mon, Nov 27, 2023 at 5:15 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> On 27/11/2023 03:18, Barry Song wrote:
->>>> Ryan Roberts (14):
->>>>   mm: Batch-copy PTE ranges during fork()
->>>>   arm64/mm: set_pte(): New layer to manage contig bit
->>>>   arm64/mm: set_ptes()/set_pte_at(): New layer to manage contig bit
->>>>   arm64/mm: pte_clear(): New layer to manage contig bit
->>>>   arm64/mm: ptep_get_and_clear(): New layer to manage contig bit
->>>>   arm64/mm: ptep_test_and_clear_young(): New layer to manage contig bit
->>>>   arm64/mm: ptep_clear_flush_young(): New layer to manage contig bit
->>>>   arm64/mm: ptep_set_wrprotect(): New layer to manage contig bit
->>>>   arm64/mm: ptep_set_access_flags(): New layer to manage contig bit
->>>>   arm64/mm: ptep_get(): New layer to manage contig bit
->>>>   arm64/mm: Split __flush_tlb_range() to elide trailing DSB
->>>>   arm64/mm: Wire up PTE_CONT for user mappings
->>>>   arm64/mm: Implement ptep_set_wrprotects() to optimize fork()
->>>>   arm64/mm: Add ptep_get_and_clear_full() to optimize process teardown
->>>
->>> Hi Ryan,
->>> Not quite sure if I missed something, are we splitting/unfolding CONTPTES
->>> in the below cases
->>
->> The general idea is that the core-mm sets the individual ptes (one at a time if
->> it likes with set_pte_at(), or in a block with set_ptes()), modifies its
->> permissions (ptep_set_wrprotect(), ptep_set_access_flags()) and clears them
->> (ptep_clear(), etc); This is exactly the same interface as previously.
->>
->> BUT, the arm64 implementation of those interfaces will now detect when a set of
->> adjacent PTEs (a contpte block - so 16 naturally aligned entries when using 4K
->> base pages) are all appropriate for having the CONT_PTE bit set; in this case
->> the block is "folded". And it will detect when the first PTE in the block
->> changes such that the CONT_PTE bit must now be unset ("unfolded"). One of the
->> requirements for folding a contpte block is that all the pages must belong to
->> the *same* folio (that means its safe to only track access/dirty for thecontpte
->> block as a whole rather than for each individual pte).
->>
->> (there are a couple of optimizations that make the reality slightly more
->> complicated than what I've just explained, but you get the idea).
->>
->> On that basis, I believe all the specific cases you describe below are all
->> covered and safe - please let me know if you think there is a hole here!
->>
->>>
->>> 1. madvise(MADV_DONTNEED) on a part of basepages on a CONTPTE large folio
->>
->> The page will first be unmapped (e.g. ptep_clear() or ptep_get_and_clear(), or
->> whatever). The implementation of that will cause an unfold and the CONT_PTE bit
->> is removed from the whole contpte block. If there is then a subsequent
->> set_pte_at() to set a swap entry, the implementation will see that its not
->> appropriate to re-fold, so the range will remain unfolded.
->>
->>>
->>> 2. vma split in a large folio due to various reasons such as mprotect,
->>> munmap, mlock etc.
->>
->> I'm not sure if PTEs are explicitly unmapped/remapped when splitting a VMA? I
->> suspect not, so if the VMA is split in the middle of a currently folded contpte
->> block, it will remain folded. But this is safe and continues to work correctly.
->> The VMA arrangement is not important; it is just important that a single folio
->> is mapped contiguously across the whole block.
->>
->>>
->>> 3. try_to_unmap_one() to reclaim a folio, ptes are scanned one by one
->>> rather than being as a whole.
->>
->> Yes, as per 1; the arm64 implementation will notice when the first entry is
->> cleared and unfold the contpte block.
->>
->>>
->>> In hardware, we need to make sure CONTPTE follow the rule - always 16
->>> contiguous physical address with CONTPTE set. if one of them run away
->>> from the 16 ptes group and PTEs become unconsistent, some terrible
->>> errors/faults can happen in HW. for example
->>
->> Yes, the implementation obeys all these rules; see contpte_try_fold() and
->> contpte_try_unfold(). the fold/unfold operation is only done when all
->> requirements are met, and we perform it in a manner that is conformant to the
->> architecture requirements (see contpte_fold() - being renamed to
->> contpte_convert() in the next version).
-> 
-> Hi Ryan,
-> 
-> sorry for too many comments, I remembered another case
-> 
-> 4. mremap
-> 
-> a CONTPTE might be remapped to another address which might not be
-> aligned with 16*basepage. thus, in move_ptes(), we are copying CONPTEs
-> from src to dst.
-> static int move_ptes(struct vm_area_struct *vma, pmd_t *old_pmd,
->                 unsigned long old_addr, unsigned long old_end,
->                 struct vm_area_struct *new_vma, pmd_t *new_pmd,
->                 unsigned long new_addr, bool need_rmap_locks)
-> {
->         struct mm_struct *mm = vma->vm_mm;
->         pte_t *old_pte, *new_pte, pte;
->         ...
-> 
->         /*
->          * We don't have to worry about the ordering of src and dst
->          * pte locks because exclusive mmap_lock prevents deadlock.
->          */
->         old_pte = pte_offset_map_lock(mm, old_pmd, old_addr, &old_ptl);
->         if (!old_pte) {
->                 err = -EAGAIN;
->                 goto out;
->         }
->         new_pte = pte_offset_map_nolock(mm, new_pmd, new_addr, &new_ptl);
->         if (!new_pte) {
->                 pte_unmap_unlock(old_pte, old_ptl);
->                 err = -EAGAIN;
->                 goto out;
->         }
->         if (new_ptl != old_ptl)
->                 spin_lock_nested(new_ptl, SINGLE_DEPTH_NESTING);
->         flush_tlb_batched_pending(vma->vm_mm);
->         arch_enter_lazy_mmu_mode();
-> 
->         for (; old_addr < old_end; old_pte++, old_addr += PAGE_SIZE,
->                                    new_pte++, new_addr += PAGE_SIZE) {
->                 if (pte_none(ptep_get(old_pte)))
->                         continue;
-> 
->                 pte = ptep_get_and_clear(mm, old_addr, old_pte);
->        ....
-> }
-> 
-> This has two possibilities
-> 1. new_pte is aligned with CONT_PTES, we can still keep CONTPTE;
-> 2. new_pte is not aligned with CONT_PTES, we should drop CONTPTE
-> while copying.
-> 
-> does your code also handle this properly？
+Hi Jiachen,
 
-Yes; same mechanism - the arm64 arch code does the CONT_PTE bit management and
-folds/unfolds as neccessary.
+kernel test robot noticed the following build errors:
 
-Admittedly this may be non-optimal because we are iterating a single PTE at a
-time. When we clear the first pte of a contpte block in the source, the block
-will be unfolded. When we set the last pte of the contpte block in the dest, the
-block will be folded. If we had a batching mechanism, we could just clear the
-whole source contpte block in one hit (no need to unfold first) and we could
-just set the dest contpte block in one hit (no need to fold at the end).
+[auto build test ERROR on xfs-linux/for-next]
+[also build test ERROR on linus/master v6.7-rc3 next-20231128]
+[cannot apply to djwong-xfs/djwong-devel]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-I haven't personally seen this as a hotspot though; I don't know if you have any
-data to the contrary? I've followed this type of batching technique for the fork
-case (patch 13). We could do a similar thing in theory, but its a bit more
-complex because of the ptep_get_and_clear() return value; you would need to
-return all ptes for the cleared range, or somehow collapse the actual info that
-the caller requires (presumably access/dirty info).
+url:    https://github.com/intel-lab-lkp/linux/commits/Jiachen-Zhang/xfs-ensure-tmp_logflags-is-initialized-in-xfs_bmap_del_extent_real/20231128-135955
+base:   https://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git for-next
+patch link:    https://lore.kernel.org/r/20231128053202.29007-3-zhangjiachen.jaycee%40bytedance.com
+patch subject: [PATCH 2/2] xfs: update dir3 leaf block metadata after swap
+config: i386-randconfig-141-20231128 (https://download.01.org/0day-ci/archive/20231128/202311281904.r45MkLJq-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231128/202311281904.r45MkLJq-lkp@intel.com/reproduce)
 
-> 
->>
->> Thanks for the review!
->>
->> Thanks,
->> Ryan
->>
->>>
->>> case0:
->>> addr0 PTE - has no CONTPE
->>> addr0+4kb PTE - has CONTPTE
->>> ....
->>> addr0+60kb PTE - has CONTPTE
->>>
->>> case 1:
->>> addr0 PTE - has no CONTPE
->>> addr0+4kb PTE - has CONTPTE
->>> ....
->>> addr0+60kb PTE - has swap
->>>
->>> Unconsistent 16 PTEs will lead to crash even in the firmware based on
->>> our observation.
->>>
->>> Thanks
->>> Barry
-> 
-> Thanks
-> Barry
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311281904.r45MkLJq-lkp@intel.com/
 
+All errors (new ones prefixed by >>):
+
+>> fs/xfs/libxfs/xfs_da_btree.c:2330:38: error: no member named 'b_bn' in 'struct xfs_buf'
+                   dap->blkno = cpu_to_be64(dead_buf->b_bn);
+                                            ~~~~~~~~  ^
+   include/linux/byteorder/generic.h:92:21: note: expanded from macro 'cpu_to_be64'
+   #define cpu_to_be64 __cpu_to_be64
+                       ^
+   include/uapi/linux/byteorder/little_endian.h:38:53: note: expanded from macro '__cpu_to_be64'
+   #define __cpu_to_be64(x) ((__force __be64)__swab64((x)))
+                                                       ^
+   include/uapi/linux/swab.h:128:54: note: expanded from macro '__swab64'
+   #define __swab64(x) (__u64)__builtin_bswap64((__u64)(x))
+                                                        ^
+   1 error generated.
+
+
+vim +2330 fs/xfs/libxfs/xfs_da_btree.c
+
+  2254	
+  2255	/*
+  2256	 * Ick.  We need to always be able to remove a btree block, even
+  2257	 * if there's no space reservation because the filesystem is full.
+  2258	 * This is called if xfs_bunmapi on a btree block fails due to ENOSPC.
+  2259	 * It swaps the target block with the last block in the file.  The
+  2260	 * last block in the file can always be removed since it can't cause
+  2261	 * a bmap btree split to do that.
+  2262	 */
+  2263	STATIC int
+  2264	xfs_da3_swap_lastblock(
+  2265		struct xfs_da_args	*args,
+  2266		xfs_dablk_t		*dead_blknop,
+  2267		struct xfs_buf		**dead_bufp)
+  2268	{
+  2269		struct xfs_da_blkinfo	*dead_info;
+  2270		struct xfs_da_blkinfo	*sib_info;
+  2271		struct xfs_da_intnode	*par_node;
+  2272		struct xfs_da_intnode	*dead_node;
+  2273		struct xfs_dir2_leaf	*dead_leaf2;
+  2274		struct xfs_da_node_entry *btree;
+  2275		struct xfs_da3_icnode_hdr par_hdr;
+  2276		struct xfs_inode	*dp;
+  2277		struct xfs_trans	*tp;
+  2278		struct xfs_mount	*mp;
+  2279		struct xfs_buf		*dead_buf;
+  2280		struct xfs_buf		*last_buf;
+  2281		struct xfs_buf		*sib_buf;
+  2282		struct xfs_buf		*par_buf;
+  2283		xfs_dahash_t		dead_hash;
+  2284		xfs_fileoff_t		lastoff;
+  2285		xfs_dablk_t		dead_blkno;
+  2286		xfs_dablk_t		last_blkno;
+  2287		xfs_dablk_t		sib_blkno;
+  2288		xfs_dablk_t		par_blkno;
+  2289		int			error;
+  2290		int			w;
+  2291		int			entno;
+  2292		int			level;
+  2293		int			dead_level;
+  2294	
+  2295		trace_xfs_da_swap_lastblock(args);
+  2296	
+  2297		dead_buf = *dead_bufp;
+  2298		dead_blkno = *dead_blknop;
+  2299		tp = args->trans;
+  2300		dp = args->dp;
+  2301		w = args->whichfork;
+  2302		ASSERT(w == XFS_DATA_FORK);
+  2303		mp = dp->i_mount;
+  2304		lastoff = args->geo->freeblk;
+  2305		error = xfs_bmap_last_before(tp, dp, &lastoff, w);
+  2306		if (error)
+  2307			return error;
+  2308		if (XFS_IS_CORRUPT(mp, lastoff == 0))
+  2309			return -EFSCORRUPTED;
+  2310		/*
+  2311		 * Read the last block in the btree space.
+  2312		 */
+  2313		last_blkno = (xfs_dablk_t)lastoff - args->geo->fsbcount;
+  2314		error = xfs_da3_node_read(tp, dp, last_blkno, &last_buf, w);
+  2315		if (error)
+  2316			return error;
+  2317		/*
+  2318		 * Copy the last block into the dead buffer and log it.
+  2319		 */
+  2320		memcpy(dead_buf->b_addr, last_buf->b_addr, args->geo->blksize);
+  2321		dead_info = dead_buf->b_addr;
+  2322		/*
+  2323		 * Update the moved block's blkno if it's a dir3 leaf block
+  2324		 */
+  2325		if (dead_info->magic == cpu_to_be16(XFS_DIR3_LEAF1_MAGIC) ||
+  2326		    dead_info->magic == cpu_to_be16(XFS_DIR3_LEAFN_MAGIC) ||
+  2327		    dead_info->magic == cpu_to_be16(XFS_ATTR3_LEAF_MAGIC)) {
+  2328			struct xfs_da3_blkinfo *dap = (struct xfs_da3_blkinfo *)dead_info;
+  2329	
+> 2330			dap->blkno = cpu_to_be64(dead_buf->b_bn);
+  2331		}
+  2332		xfs_trans_log_buf(tp, dead_buf, 0, args->geo->blksize - 1);
+  2333		/*
+  2334		 * Get values from the moved block.
+  2335		 */
+  2336		if (dead_info->magic == cpu_to_be16(XFS_DIR2_LEAFN_MAGIC) ||
+  2337		    dead_info->magic == cpu_to_be16(XFS_DIR3_LEAFN_MAGIC)) {
+  2338			struct xfs_dir3_icleaf_hdr leafhdr;
+  2339			struct xfs_dir2_leaf_entry *ents;
+  2340	
+  2341			dead_leaf2 = (xfs_dir2_leaf_t *)dead_info;
+  2342			xfs_dir2_leaf_hdr_from_disk(dp->i_mount, &leafhdr,
+  2343						    dead_leaf2);
+  2344			ents = leafhdr.ents;
+  2345			dead_level = 0;
+  2346			dead_hash = be32_to_cpu(ents[leafhdr.count - 1].hashval);
+  2347		} else {
+  2348			struct xfs_da3_icnode_hdr deadhdr;
+  2349	
+  2350			dead_node = (xfs_da_intnode_t *)dead_info;
+  2351			xfs_da3_node_hdr_from_disk(dp->i_mount, &deadhdr, dead_node);
+  2352			btree = deadhdr.btree;
+  2353			dead_level = deadhdr.level;
+  2354			dead_hash = be32_to_cpu(btree[deadhdr.count - 1].hashval);
+  2355		}
+  2356		sib_buf = par_buf = NULL;
+  2357		/*
+  2358		 * If the moved block has a left sibling, fix up the pointers.
+  2359		 */
+  2360		if ((sib_blkno = be32_to_cpu(dead_info->back))) {
+  2361			error = xfs_da3_node_read(tp, dp, sib_blkno, &sib_buf, w);
+  2362			if (error)
+  2363				goto done;
+  2364			sib_info = sib_buf->b_addr;
+  2365			if (XFS_IS_CORRUPT(mp,
+  2366					   be32_to_cpu(sib_info->forw) != last_blkno ||
+  2367					   sib_info->magic != dead_info->magic)) {
+  2368				error = -EFSCORRUPTED;
+  2369				goto done;
+  2370			}
+  2371			sib_info->forw = cpu_to_be32(dead_blkno);
+  2372			xfs_trans_log_buf(tp, sib_buf,
+  2373				XFS_DA_LOGRANGE(sib_info, &sib_info->forw,
+  2374						sizeof(sib_info->forw)));
+  2375			sib_buf = NULL;
+  2376		}
+  2377		/*
+  2378		 * If the moved block has a right sibling, fix up the pointers.
+  2379		 */
+  2380		if ((sib_blkno = be32_to_cpu(dead_info->forw))) {
+  2381			error = xfs_da3_node_read(tp, dp, sib_blkno, &sib_buf, w);
+  2382			if (error)
+  2383				goto done;
+  2384			sib_info = sib_buf->b_addr;
+  2385			if (XFS_IS_CORRUPT(mp,
+  2386					   be32_to_cpu(sib_info->back) != last_blkno ||
+  2387					   sib_info->magic != dead_info->magic)) {
+  2388				error = -EFSCORRUPTED;
+  2389				goto done;
+  2390			}
+  2391			sib_info->back = cpu_to_be32(dead_blkno);
+  2392			xfs_trans_log_buf(tp, sib_buf,
+  2393				XFS_DA_LOGRANGE(sib_info, &sib_info->back,
+  2394						sizeof(sib_info->back)));
+  2395			sib_buf = NULL;
+  2396		}
+  2397		par_blkno = args->geo->leafblk;
+  2398		level = -1;
+  2399		/*
+  2400		 * Walk down the tree looking for the parent of the moved block.
+  2401		 */
+  2402		for (;;) {
+  2403			error = xfs_da3_node_read(tp, dp, par_blkno, &par_buf, w);
+  2404			if (error)
+  2405				goto done;
+  2406			par_node = par_buf->b_addr;
+  2407			xfs_da3_node_hdr_from_disk(dp->i_mount, &par_hdr, par_node);
+  2408			if (XFS_IS_CORRUPT(mp,
+  2409					   level >= 0 && level != par_hdr.level + 1)) {
+  2410				error = -EFSCORRUPTED;
+  2411				goto done;
+  2412			}
+  2413			level = par_hdr.level;
+  2414			btree = par_hdr.btree;
+  2415			for (entno = 0;
+  2416			     entno < par_hdr.count &&
+  2417			     be32_to_cpu(btree[entno].hashval) < dead_hash;
+  2418			     entno++)
+  2419				continue;
+  2420			if (XFS_IS_CORRUPT(mp, entno == par_hdr.count)) {
+  2421				error = -EFSCORRUPTED;
+  2422				goto done;
+  2423			}
+  2424			par_blkno = be32_to_cpu(btree[entno].before);
+  2425			if (level == dead_level + 1)
+  2426				break;
+  2427			xfs_trans_brelse(tp, par_buf);
+  2428			par_buf = NULL;
+  2429		}
+  2430		/*
+  2431		 * We're in the right parent block.
+  2432		 * Look for the right entry.
+  2433		 */
+  2434		for (;;) {
+  2435			for (;
+  2436			     entno < par_hdr.count &&
+  2437			     be32_to_cpu(btree[entno].before) != last_blkno;
+  2438			     entno++)
+  2439				continue;
+  2440			if (entno < par_hdr.count)
+  2441				break;
+  2442			par_blkno = par_hdr.forw;
+  2443			xfs_trans_brelse(tp, par_buf);
+  2444			par_buf = NULL;
+  2445			if (XFS_IS_CORRUPT(mp, par_blkno == 0)) {
+  2446				error = -EFSCORRUPTED;
+  2447				goto done;
+  2448			}
+  2449			error = xfs_da3_node_read(tp, dp, par_blkno, &par_buf, w);
+  2450			if (error)
+  2451				goto done;
+  2452			par_node = par_buf->b_addr;
+  2453			xfs_da3_node_hdr_from_disk(dp->i_mount, &par_hdr, par_node);
+  2454			if (XFS_IS_CORRUPT(mp, par_hdr.level != level)) {
+  2455				error = -EFSCORRUPTED;
+  2456				goto done;
+  2457			}
+  2458			btree = par_hdr.btree;
+  2459			entno = 0;
+  2460		}
+  2461		/*
+  2462		 * Update the parent entry pointing to the moved block.
+  2463		 */
+  2464		btree[entno].before = cpu_to_be32(dead_blkno);
+  2465		xfs_trans_log_buf(tp, par_buf,
+  2466			XFS_DA_LOGRANGE(par_node, &btree[entno].before,
+  2467					sizeof(btree[entno].before)));
+  2468		*dead_blknop = last_blkno;
+  2469		*dead_bufp = last_buf;
+  2470		return 0;
+  2471	done:
+  2472		if (par_buf)
+  2473			xfs_trans_brelse(tp, par_buf);
+  2474		if (sib_buf)
+  2475			xfs_trans_brelse(tp, sib_buf);
+  2476		xfs_trans_brelse(tp, last_buf);
+  2477		return error;
+  2478	}
+  2479	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
