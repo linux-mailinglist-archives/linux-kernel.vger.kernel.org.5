@@ -2,280 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3FA7FC1EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A427FC262
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345993AbjK1PKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 10:10:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52674 "EHLO
+        id S1346582AbjK1PLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 10:11:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346681AbjK1PKo (ORCPT
+        with ESMTP id S1346666AbjK1PLB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 10:10:44 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A02D63
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 07:10:50 -0800 (PST)
-Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id E08E966072A7;
-        Tue, 28 Nov 2023 15:10:47 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701184249;
-        bh=P0zKHqNYhlsO/fSoMbalAnUND4Va3nLOgJIguSGs5CM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=e4y0V+bdZCUfsXGIZzAkBSHHMLTaoV/jQtYsjSFQ7cHARcCeouJ3ZNzeUjFsoLXNE
-         //GMl2ICcM/PVoazcqe/kfQXYHzx2E2FFwvt/17AkkibTJRwJEuxf8M+kExkJyQ45c
-         UbfQx9RoQt7utdPlLDneh8w7lUAXJZdM/tqWSkcJoJQwGgym95DkiHn+hRpq2WYBab
-         kv9428UmTIxmQNQ6N32tf4YABolijHA7mU992B6+BkEgFKkT/A/juMgKZWBOfgIqow
-         JzH3v07UpZG1OgD6BUgIo8WS1Slo7QmI3tqFdm4dN1QYtzGp/qMTbPYhql0zAnFHwm
-         5d0EhHXvZf5sg==
-Message-ID: <f5208c45-54c7-4030-9985-cb7c8f1d6466@collabora.com>
-Date:   Tue, 28 Nov 2023 16:10:45 +0100
+        Tue, 28 Nov 2023 10:11:01 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA1B10E6;
+        Tue, 28 Nov 2023 07:11:08 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6cbda959062so4887307b3a.1;
+        Tue, 28 Nov 2023 07:11:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701184267; x=1701789067; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=O/wZZsUIDaRDxiRotGIrauQpDcJ1B8wta7UrRDoHoxA=;
+        b=Q1USgUUx+V67zkeDZhlUVV54IvbmUY7hiJu0QuiHATXzZW8E9fsgjdK8MjJ8hx/wJ3
+         psTGT41vRZ2TUuDGkUSR4xhJBHeBGfbYBGeTT2BqLVDRBwJn3Pdc24HieMRvjM1jEPpA
+         O0JdU9z9+rt6bRXqAEU524j5pJA3wca0+EYJQkPkGE56llw6nfPDidEIz86OyN6KDwS3
+         Pt/t3TGF4Drk5MzWgTcvV6PmkJi/egWfd3sEy51RYpQf1gqET+uz3FIPKZ05AdmKuvKs
+         xXpXgBNmx/OU++CbdrSaIb0Cl+mUfj3C9XK8vl/i5b9YTlBA2iCviWRXV7c8wAB5xABN
+         RDFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701184267; x=1701789067;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=O/wZZsUIDaRDxiRotGIrauQpDcJ1B8wta7UrRDoHoxA=;
+        b=vQkH/sAebW/lTDASPRTASG48rbrF//8rIljqn1aTzo1hNemQEoFEeOZCquhlcB8oEf
+         uJpvXyR/i75St6WZjrntmaqcTCb32onrYMgNk4PFy/PScq2iqbLg0MHUX9fV6mtK203l
+         vaIlrI4qoXkN1VQGm8e85yLs5p22BWtOsX7w0ooI8X7uFlmFlkyCRqIvcpKkzlXAtIMC
+         Wk75kcJ7PdQLBeqyyiY4uPDUUF1RuP8sDx67o8nyfuf6ts/y3v3b7piKreMP9jgFvC6B
+         JiT3t3kWoaysapu5vj0AqnKwbE3KYm/NgdJ46uK9oWGF50lIwIVgKqWDA5/l+YcGtaJT
+         e0FA==
+X-Gm-Message-State: AOJu0YyE36kJ18QC1Wdeo5e2LG5OxbPKZpsPc7dnopJ7vXKPDSwuQOSe
+        0j4+j1RtEAAEQvQQbGnxNZk=
+X-Google-Smtp-Source: AGHT+IHpKcgc68RoDJtqlWaxAU3zEngXwIbGmWP9LWGUWMv+viF9007hlDgXDwAPe9lj+WTw+eLfdg==
+X-Received: by 2002:a05:6a21:3116:b0:187:8bd4:e1b6 with SMTP id yz22-20020a056a21311600b001878bd4e1b6mr15452488pzb.31.1701184267591;
+        Tue, 28 Nov 2023 07:11:07 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id bm6-20020a656e86000000b005c1ae0b5440sm8387318pgb.74.2023.11.28.07.11.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Nov 2023 07:11:07 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <cec8454e-4eb9-4b98-975f-100b5503b073@roeck-us.net>
+Date:   Tue, 28 Nov 2023 07:11:06 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] drm/panfrost: Synchronize and disable interrupts
- before powering off
+Subject: Re: [PATCH v1 2/2] usb: typec: tcpci: add vconn over current fault
+ handling to maxim_core
 Content-Language: en-US
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     robh@kernel.org, steven.price@arm.com,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, m.szyprowski@samsung.com,
-        krzysztof.kozlowski@linaro.org
-References: <20231128124510.391007-1-angelogioacchino.delregno@collabora.com>
- <20231128124510.391007-4-angelogioacchino.delregno@collabora.com>
- <20231128145712.3f4d3f74@collabora.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231128145712.3f4d3f74@collabora.com>
+To:     RD Babiera <rdbabiera@google.com>, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        badhri@google.com
+References: <20231121203845.170234-4-rdbabiera@google.com>
+ <20231121203845.170234-6-rdbabiera@google.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20231121203845.170234-6-rdbabiera@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 28/11/23 14:57, Boris Brezillon ha scritto:
-> On Tue, 28 Nov 2023 13:45:10 +0100
-> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> wrote:
+On 11/21/23 12:38, RD Babiera wrote:
+> Add TCPC_FAULT_STATUS_VCONN_OC constant and corresponding mask definition.
+> Maxim TCPC is capable of detecting VConn over current faults, so add
+> fault to alert mask. When a Vconn over current fault is triggered, put the
+> port in an error recovery state via tcpm_port_error_recovery.
 > 
->> To make sure that we don't unintentionally perform any unclocked and/or
->> unpowered R/W operation on GPU registers, before turning off clocks and
->> regulators we must make sure that no GPU, JOB or MMU ISR execution is
->> pending: doing that required to add a mechanism to synchronize the
->> interrupts on suspend.
->>
->> Add functions panfrost_{gpu,job,mmu}_suspend_irq() which will perform
->> interrupts masking and ISR execution synchronization, and then call
->> those in the panfrost_device_runtime_suspend() handler in the exact
->> sequence of job (may require mmu!) -> mmu -> gpu.
->>
->> As a side note, JOB and MMU suspend_irq functions needed some special
->> treatment: as their interrupt handlers will unmask interrupts, it was
->> necessary to add a bitmap for "is_suspending" which is used to address
->> the possible corner case of unintentional IRQ unmasking because of ISR
->> execution after a call to synchronize_irq().
->>
->> Of course, unmasking the interrupts is being done as part of the reset
->> happening during runtime_resume(): since we're anyway resuming all of
->> GPU, JOB, MMU, the only additional action is to zero out the newly
->> introduced `is_suspending` bitmap directly in the resume handler, as
->> to avoid adding panfrost_{job,mmu}_resume_irq() function just for
->> clearing own bits, especially because it currently makes way more sense
->> to just zero out the bitmap.
->>
->> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
->> ---
->>   drivers/gpu/drm/panfrost/panfrost_device.c |  4 ++++
->>   drivers/gpu/drm/panfrost/panfrost_device.h |  7 +++++++
->>   drivers/gpu/drm/panfrost/panfrost_gpu.c    |  7 +++++++
->>   drivers/gpu/drm/panfrost/panfrost_gpu.h    |  1 +
->>   drivers/gpu/drm/panfrost/panfrost_job.c    | 18 +++++++++++++++---
->>   drivers/gpu/drm/panfrost/panfrost_job.h    |  1 +
->>   drivers/gpu/drm/panfrost/panfrost_mmu.c    | 17 ++++++++++++++---
->>   drivers/gpu/drm/panfrost/panfrost_mmu.h    |  1 +
->>   8 files changed, 50 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
->> index c90ad5ee34e7..ed34aa55a7da 100644
->> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
->> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
->> @@ -407,6 +407,7 @@ static int panfrost_device_runtime_resume(struct device *dev)
->>   {
->>   	struct panfrost_device *pfdev = dev_get_drvdata(dev);
->>   
->> +	bitmap_zero(pfdev->is_suspending, PANFROST_COMP_BIT_MAX);
->>   	panfrost_device_reset(pfdev);
->>   	panfrost_devfreq_resume(pfdev);
->>   
->> @@ -421,6 +422,9 @@ static int panfrost_device_runtime_suspend(struct device *dev)
->>   		return -EBUSY;
->>   
->>   	panfrost_devfreq_suspend(pfdev);
->> +	panfrost_job_suspend_irq(pfdev);
->> +	panfrost_mmu_suspend_irq(pfdev);
->> +	panfrost_gpu_suspend_irq(pfdev);
->>   	panfrost_gpu_power_off(pfdev);
->>   
->>   	return 0;
->> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
->> index 54a8aad54259..29f89f2d3679 100644
->> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
->> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
->> @@ -25,6 +25,12 @@ struct panfrost_perfcnt;
->>   #define NUM_JOB_SLOTS 3
->>   #define MAX_PM_DOMAINS 5
->>   
->> +enum panfrost_drv_comp_bits {
->> +	PANFROST_COMP_BIT_MMU,
->> +	PANFROST_COMP_BIT_JOB,
->> +	PANFROST_COMP_BIT_MAX
->> +};
->> +
->>   /**
->>    * enum panfrost_gpu_pm - Supported kernel power management features
->>    * @GPU_PM_CLK_DIS:  Allow disabling clocks during system suspend
->> @@ -109,6 +115,7 @@ struct panfrost_device {
->>   
->>   	struct panfrost_features features;
->>   	const struct panfrost_compatible *comp;
->> +	DECLARE_BITMAP(is_suspending, PANFROST_COMP_BIT_MAX);
->>   
->>   	spinlock_t as_lock;
->>   	unsigned long as_in_use_mask;
->> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
->> index 7adc4441fa14..2bf645993ab4 100644
->> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
->> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
->> @@ -452,6 +452,13 @@ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
->>   		dev_err(pfdev->dev, "l2 power transition timeout");
->>   }
->>   
->> +void panfrost_gpu_suspend_irq(struct panfrost_device *pfdev)
->> +{
->> +	gpu_write(pfdev, GPU_INT_MASK, 0);
->> +	gpu_write(pfdev, GPU_INT_CLEAR, GPU_IRQ_MASK_ALL);
-> 
-> Shouldn't the synchronize_irq() guarantee that all monitored interrupts
-> are cleared before you return?
-> 
+> Signed-off-by: RD Babiera <rdbabiera@google.com>
 
-Yeah, right - even though we're writing GPU_INT_STAT in CLEAR, there's no reason
-why INT_STAT would "contain less bits" than the ones that we *want to* clear.
-
-Effectively, I can remove that INT_CLEAR write, as it makes little sense - thanks
-for catching that!
-
->> +	synchronize_irq(pfdev->gpu_irq);
->> +}
->> +
->>   int panfrost_gpu_init(struct panfrost_device *pfdev)
->>   {
->>   	int err;
->> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.h b/drivers/gpu/drm/panfrost/panfrost_gpu.h
->> index 876fdad9f721..d841b86504ea 100644
->> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.h
->> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.h
->> @@ -15,6 +15,7 @@ u32 panfrost_gpu_get_latest_flush_id(struct panfrost_device *pfdev);
->>   int panfrost_gpu_soft_reset(struct panfrost_device *pfdev);
->>   void panfrost_gpu_power_on(struct panfrost_device *pfdev);
->>   void panfrost_gpu_power_off(struct panfrost_device *pfdev);
->> +void panfrost_gpu_suspend_irq(struct panfrost_device *pfdev);
->>   
->>   void panfrost_cycle_counter_get(struct panfrost_device *pfdev);
->>   void panfrost_cycle_counter_put(struct panfrost_device *pfdev);
->> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
->> index f9446e197428..e8de44cc56e2 100644
->> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
->> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
->> @@ -413,6 +413,14 @@ void panfrost_job_enable_interrupts(struct panfrost_device *pfdev)
->>   	job_write(pfdev, JOB_INT_MASK, irq_mask);
->>   }
->>   
->> +void panfrost_job_suspend_irq(struct panfrost_device *pfdev)
->> +{
->> +	set_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspending);
->> +
->> +	job_write(pfdev, JOB_INT_MASK, 0);
->> +	synchronize_irq(pfdev->js->irq);
->> +}
->> +
->>   static void panfrost_job_handle_err(struct panfrost_device *pfdev,
->>   				    struct panfrost_job *job,
->>   				    unsigned int js)
->> @@ -792,9 +800,13 @@ static irqreturn_t panfrost_job_irq_handler_thread(int irq, void *data)
->>   	struct panfrost_device *pfdev = data;
->>   
->>   	panfrost_job_handle_irqs(pfdev);
->> -	job_write(pfdev, JOB_INT_MASK,
->> -		  GENMASK(16 + NUM_JOB_SLOTS - 1, 16) |
->> -		  GENMASK(NUM_JOB_SLOTS - 1, 0));
->> +
->> +	/* Enable interrupts only if we're not about to get suspended */
->> +	if (!test_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspending))
-> 
-> The irq-line is requested with IRQF_SHARED, meaning the line might be
-> shared between all three GPU IRQs, but also with other devices. I think
-> if we want to be totally safe, we need to also check this is_suspending
-> field in the hard irq handlers before accessing the xxx_INT_yyy
-> registers.
-> 
-
-This would mean that we would have to force canceling jobs in the suspend
-handler, but if the IRQ never fired, would we still be able to find the
-right bits flipped in JOB_INT_RAWSTAT?
-
- From what I understand, are you suggesting to call, in job_suspend_irq()
-something like
-
-void panfrost_job_suspend_irq(struct panfrost_device *pfdev)
-{
-         u32 status;
-
-	set_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspending);
-
-	job_write(pfdev, JOB_INT_MASK, 0);
-	synchronize_irq(pfdev->js->irq);
-
-	status = job_read(pfdev, JOB_INT_STAT);
-	if (status)
-		panfrost_job_irq_handler_thread(pfdev->js->irq, (void*)pfdev);
-}
-
-and then while still retaining the check in the IRQ thread handler, also
-check it in the hardirq handler like
-
-static irqreturn_t panfrost_job_irq_handler(int irq, void *data)
-{
-	struct panfrost_device *pfdev = data;
-	u32 status;
-
-	if (!test_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspending))
-		return IRQ_NONE;
-
-	status = job_read(pfdev, JOB_INT_STAT);
-	if (!status)
-	        return IRQ_NONE;
-
-	job_write(pfdev, JOB_INT_MASK, 0);
-	return IRQ_WAKE_THREAD;
-}
-
-(rinse and repeat for panfrost_mmu)
-
-..or am I misunderstanding you?
-
-Cheers,
-Angelo
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
 
