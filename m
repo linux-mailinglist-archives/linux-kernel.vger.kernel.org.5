@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2A37FB1CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 07:11:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC1F7FB1D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 07:11:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343641AbjK1GL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 01:11:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57382 "EHLO
+        id S1343661AbjK1GLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 01:11:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232615AbjK1GL0 (ORCPT
+        with ESMTP id S1343645AbjK1GLa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 01:11:26 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB3B5C4;
-        Mon, 27 Nov 2023 22:11:31 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1cfd04a6e49so13865965ad.0;
-        Mon, 27 Nov 2023 22:11:31 -0800 (PST)
+        Tue, 28 Nov 2023 01:11:30 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F32FDD6D;
+        Mon, 27 Nov 2023 22:11:34 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1cfc985c92dso16924065ad.0;
+        Mon, 27 Nov 2023 22:11:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701151891; x=1701756691; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701151894; x=1701756694; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eWEx14nSnyx/YDeqC2ntKmMHgViFP0zdeOQ1ewPeigA=;
-        b=CywTtCxWmHXmTcXJjQb7qpIVaGvx5N15PJezt7gl9NYKzsWMeNMZUfYUOMV1d2KFiV
-         5pZJrNM2yExxVwyqXPxW+DMpdF9ftavUf2B61waNTuY8UPi6kAwjJnsxqJ1roxc6cRjL
-         VorgVi9hLxonDfmYvliOb0wrkQVsZag7beKNeSjnXsIrKhzdgZgN91ocX7oIW2SIuzUc
-         +clBQcBTd9HUw0wMElDrG2n/dwm47VYGt7P2d23oETs8irVq2WIQpH70PNYWgwXg08ay
-         6dtVGc7zDFX7Uj64oG5BAFHIxtA4Il1JPjDyjoHVLOwYcM2VGY6GM3w4uwNA9FA1N0Ip
-         wSbw==
+        bh=pRa17WZLUC24HKUHdpci3trSEQpdoaDeITWDqryGqws=;
+        b=l7ZhPC+xFQVqGlJNJGgpQfLz+IliTfFEF0h+aBdAT1RAzfCz5/O6buoMhyONx//UZF
+         HmYYM83iP8ORzfmXheYumb6N5aZFMxPF0lM7n5o8PT1AGSPWjsZx4cziDu1WmUDZz852
+         nwIqnR0WRcDyfeRkyYapgvWBf29qLUEncKsD4p3cM1F4d48ZoDPVia8xZVYSiw+guqjv
+         78PWdMrdRNXbHvTccB4UbJ14cWqoHPCXGQ3KOvqlaacpkxMT2UvmShvKitMPCuE4qaF6
+         HLx9z753iIEnHBZGI5g6A8S1spP5yctaTLgCB9NX8bnMTOU3WuBtoqo2v0VIPffHgunu
+         RkkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701151891; x=1701756691;
+        d=1e100.net; s=20230601; t=1701151894; x=1701756694;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=eWEx14nSnyx/YDeqC2ntKmMHgViFP0zdeOQ1ewPeigA=;
-        b=NKrLcVI5oclMPUXaQ7wCsay5jtGsKHl4uRJu9Y6nNivkVLEOimFh9hqPFmXvEyXGRa
-         8ARfFUyZeo4Nc9bV4nT7ay1Ojze3s2eqe6jKGd+M2zsVYN7AlBHgTz/ChgEKIov7+u2X
-         jrW+W7QmBrr0gmqFNCOhr+NGCEgf5p1XxXrthZu5yHMp8Jy5YlbKZ4cUeHuTI2Aevd1H
-         S4h99viDH82onUdE8ZjFH/nHNjDH4s4EEJ7w0n5Ye7MI+dAM9bELS35Y0fnZ0k9n2KV5
-         gKcYVyW6EwOI3kkntFMfyDaJLpnOPSy0Yf68F9gDA344pwF9/+Cy2BQ3wxDt6cJSnV+U
-         jVqw==
-X-Gm-Message-State: AOJu0Yxewpii0DZHlxOWVbOl8jQSoh5nu7iwlH2n7KdkiQ42DbGULMRz
-        eEgQJJ0Ph1YZ9KF4xOjs/Ew=
-X-Google-Smtp-Source: AGHT+IH7ag2S2wngHFv7/AJe6FNw+rLlusmt8OHOQUw0XND4pJaHj8gdgD0y+78p3rQ7LUFQcpcTIA==
-X-Received: by 2002:a17:902:da92:b0:1c5:cf7c:4d50 with SMTP id j18-20020a170902da9200b001c5cf7c4d50mr17775153plx.18.1701151891222;
-        Mon, 27 Nov 2023 22:11:31 -0800 (PST)
+        bh=pRa17WZLUC24HKUHdpci3trSEQpdoaDeITWDqryGqws=;
+        b=uEoCHBgg/UZyyr7oWeHLF9QXsHZqZdQHwlsAlXsFPLgSIU+YGrZo/9jtUihUkSYtMz
+         yjbxtP20Ws9Qs4yx+Xmqex76dQd63Ws7INBI+S0oRJo3klfKPd50O5uk0QYOSEDEWq05
+         PJjgOlMDFKaiZpj9pf1y9J4EHcp/rUsiZh+ml4u3eViFTL0pF8I5cwghTKwJmCNxdnjK
+         Uk0RhwYMknSuzsdzxjyJkR+lkJduIueqpITpbZoPm9II7+D+wRy4fRCPbZeHnYL0GYMg
+         wm1nfM8oiETqZcZKxlbArN5x5KuwRvoEdHbqhFSJNtqq8VT3pNMKdFj1g7l35wczX2Su
+         hIYg==
+X-Gm-Message-State: AOJu0YwT0iVaeGtSFQXF43u2PdPa2bdD3tK0d8w+WL0JewKruXNeuMF2
+        ML5Uq/EUJMfRr8qfKAL+10REM14f67A=
+X-Google-Smtp-Source: AGHT+IHoiYPYg6iAPX5ChbAKJpgZ8WtKV9FhnGebbhnizcIF1wyG1g8oRNFiSSYZCcEBTBLztGJKHQ==
+X-Received: by 2002:a17:902:d2c5:b0:1cf:cd73:557 with SMTP id n5-20020a170902d2c500b001cfcd730557mr6221600plc.14.1701151894222;
+        Mon, 27 Nov 2023 22:11:34 -0800 (PST)
 Received: from a28aa0606c51.. (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
-        by smtp.gmail.com with ESMTPSA id jj14-20020a170903048e00b001c73f3a9b7fsm9402694plb.185.2023.11.27.22.11.28
+        by smtp.gmail.com with ESMTPSA id jj14-20020a170903048e00b001c73f3a9b7fsm9402694plb.185.2023.11.27.22.11.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 22:11:30 -0800 (PST)
+        Mon, 27 Nov 2023 22:11:33 -0800 (PST)
 From:   Jacky Huang <ychuang570808@gmail.com>
 To:     linus.walleij@linaro.org, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
@@ -57,9 +57,9 @@ To:     linus.walleij@linaro.org, robh+dt@kernel.org,
 Cc:     linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         ychuang3@nuvoton.com, schung@nuvoton.com
-Subject: [PATCH v2 2/4] dt-bindings: pinctrl: Document nuvoton ma35d1 pin control
-Date:   Tue, 28 Nov 2023 06:11:16 +0000
-Message-Id: <20231128061118.575847-3-ychuang570808@gmail.com>
+Subject: [PATCH v2 3/4] arm64: dts: nuvoton: Add pinctrl support for ma35d1
+Date:   Tue, 28 Nov 2023 06:11:17 +0000
+Message-Id: <20231128061118.575847-4-ychuang570808@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231128061118.575847-1-ychuang570808@gmail.com>
 References: <20231128061118.575847-1-ychuang570808@gmail.com>
@@ -77,209 +77,390 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jacky Huang <ychuang3@nuvoton.com>
 
-Add documentation to describe nuvoton ma35d1 pin control and GPIO.
+Add 'pinctrl' node and 'gpioa' ~ 'gpion' nodes to the dtsi of ma35d1
+SoC and describe default pin configurations.
+
+Enable all UART nodes presented on som and iot boards, and add pinctrl
+function settings to these nodes.
 
 Signed-off-by: Jacky Huang <ychuang3@nuvoton.com>
 ---
- .../pinctrl/nuvoton,ma35d1-pinctrl.yaml       | 189 ++++++++++++++++++
- 1 file changed, 189 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/pinctrl/nuvoton,ma35d1-pinctrl.yaml
+ .../boot/dts/nuvoton/ma35d1-iot-512m.dts      |  70 +++++++-
+ .../boot/dts/nuvoton/ma35d1-som-256m.dts      |  73 +++++++-
+ arch/arm64/boot/dts/nuvoton/ma35d1.dtsi       | 159 +++++++++++++++++-
+ 3 files changed, 293 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/nuvoton,ma35d1-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/nuvoton,ma35d1-pinctrl.yaml
-new file mode 100644
-index 000000000000..84287293a726
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pinctrl/nuvoton,ma35d1-pinctrl.yaml
-@@ -0,0 +1,189 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/pinctrl/nuvoton,ma35d1-pinctrl.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/arch/arm64/boot/dts/nuvoton/ma35d1-iot-512m.dts b/arch/arm64/boot/dts/nuvoton/ma35d1-iot-512m.dts
+index b89e2be6abae..74a85c23c26b 100644
+--- a/arch/arm64/boot/dts/nuvoton/ma35d1-iot-512m.dts
++++ b/arch/arm64/boot/dts/nuvoton/ma35d1-iot-512m.dts
+@@ -14,6 +14,10 @@ / {
+ 
+ 	aliases {
+ 		serial0 = &uart0;
++		serial10 = &uart10;
++		serial12 = &uart12;
++		serial13 = &uart13;
++		serial14 = &uart14;
+ 	};
+ 
+ 	chosen {
+@@ -33,10 +37,6 @@ clk_hxt: clock-hxt {
+ 	};
+ };
+ 
+-&uart0 {
+-	status = "okay";
+-};
+-
+ &clk {
+ 	assigned-clocks = <&clk CAPLL>,
+ 			  <&clk DDRPLL>,
+@@ -54,3 +54,65 @@ &clk {
+ 			   "integer",
+ 			   "integer";
+ };
 +
-+title: Nuvoton MA35D1 pin control and GPIO
++&pinctrl {
++	uart-grp {
++		pinctrl_uart0: uart0-pins {
++			nuvoton,pins = <4 14 1 &pcfg_default>,
++				       <4 15 1 &pcfg_default>;
++		};
 +
-+maintainers:
-+  - Shan-Chun Hung <schung@nuvoton.com>
++		pinctrl_uart10: uart10-pins {
++			nuvoton,pins = <7 4 2 &pcfg_default>,
++				       <7 5 2 &pcfg_default>,
++				       <7 6 2 &pcfg_default>,
++				       <7 7 2 &pcfg_default>;
++		};
 +
-+properties:
-+  compatible:
-+    enum:
-+      - nuvoton,ma35d1-pinctrl
++		pinctrl_uart12: uart12-pins {
++			nuvoton,pins = <2 13 2 &pcfg_default>,
++				       <2 14 2 &pcfg_default>,
++				       <2 15 2 &pcfg_default>;
++		};
 +
-+  '#address-cells':
-+    const: 1
++		pinctrl_uart13: uart13-pins {
++			nuvoton,pins = <7 12 3 &pcfg_default>,
++				       <7 13 3 &pcfg_default>;
++		};
 +
-+  '#size-cells':
-+    const: 1
++		pinctrl_uart14: uart14-pins {
++			nuvoton,pins = <7 14 2 &pcfg_default>,
++				       <7 15 2 &pcfg_default>;
++		};
++	};
++};
 +
-+  nuvoton,sys:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      phandle of the system-management node.
++&uart0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart0>;
++	status = "okay";
++};
 +
-+  ranges: true
++&uart10 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart10>;
++	status = "okay";
++};
 +
-+allOf:
-+  - $ref: pinctrl.yaml#
++&uart12 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart12>;
++	status = "okay";
++};
 +
-+required:
-+  - compatible
-+  - nuvoton,sys
++&uart13 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart13>;
++	status = "okay";
++};
 +
-+patternProperties:
-+  "^gpio@[0-9a-f]+$":
-+    type: object
-+    additionalProperties: false
-+    properties:
-+      gpio-controller: true
++&uart14 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart14>;
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/nuvoton/ma35d1-som-256m.dts b/arch/arm64/boot/dts/nuvoton/ma35d1-som-256m.dts
+index a1ebddecb7f8..2cd11e2b2067 100644
+--- a/arch/arm64/boot/dts/nuvoton/ma35d1-som-256m.dts
++++ b/arch/arm64/boot/dts/nuvoton/ma35d1-som-256m.dts
+@@ -14,6 +14,10 @@ / {
+ 
+ 	aliases {
+ 		serial0 = &uart0;
++		serial11 = &uart11;
++		serial12 = &uart12;
++		serial14 = &uart14;
++		serial16 = &uart16;
+ 	};
+ 
+ 	chosen {
+@@ -33,10 +37,6 @@ clk_hxt: clock-hxt {
+ 	};
+ };
+ 
+-&uart0 {
+-	status = "okay";
+-};
+-
+ &clk {
+ 	assigned-clocks = <&clk CAPLL>,
+ 			  <&clk DDRPLL>,
+@@ -54,3 +54,68 @@ &clk {
+ 			   "integer",
+ 			   "integer";
+ };
 +
-+      '#gpio-cells':
-+        const: 2
++&pinctrl {
++	uart-grp {
++		pinctrl_uart0: uart0-pins {
++			nuvoton,pins = <4 14 1 &pcfg_default>,
++				       <4 15 1 &pcfg_default>;
++		};
 +
-+      reg:
-+        maxItems: 1
++		pinctrl_uart11: uart11-pins {
++			nuvoton,pins = <11 0 2 &pcfg_default>,
++				       <11 1 2 &pcfg_default>,
++				       <11 2 2 &pcfg_default>,
++				       <11 3 2 &pcfg_default>;
++		};
 +
-+      clocks:
-+        maxItems: 1
++		pinctrl_uart12: uart12-pins {
++			nuvoton,pins = <8 1 2 &pcfg_default>,
++				       <8 2 2 &pcfg_default>,
++				       <8 3 2 &pcfg_default>;
++		};
 +
-+      interrupt-controller: true
++		pinctrl_uart14: uart14-pins {
++			nuvoton,pins = <8 5 2 &pcfg_default>,
++				       <8 6 2 &pcfg_default>,
++				       <8 7 2 &pcfg_default>;
++		};
 +
-+      '#interrupt-cells':
-+        const: 2
++		pinctrl_uart16: uart16-pins {
++			nuvoton,pins = <10 0 2 &pcfg_default>,
++				       <10 1 2 &pcfg_default>,
++				       <10 2 2 &pcfg_default>,
++				       <10 3 2 &pcfg_default>;
++		};
++	};
++};
 +
-+      interrupts:
-+        description:
-+          The interrupt outputs to sysirq.
-+        maxItems: 1
++&uart0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart0>;
++	status = "okay";
++};
 +
-+    required:
-+      - gpio-controller
-+      - '#gpio-cells'
-+      - reg
-+      - clocks
-+      - interrupt-controller
-+      - '#interrupt-cells'
-+      - interrupts
++&uart11 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart11>;
++	status = "okay";
++};
 +
-+  "^pin-[a-z0-9]+$":
-+    type: object
-+    description:
-+      A pinctrl node should contain at least one subnodes representing the
-+      pinctrl groups available on the machine. Each subnode will list the
-+      pins it needs, and how they should be configured, with regard to muxer
-+      configuration, pullups, drive strength, input enable/disable and input
-+      schmitt.
++&uart12 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart12>;
++	status = "okay";
++};
 +
-+    allOf:
-+      - $ref: pincfg-node.yaml#
++&uart14 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart14>;
++	status = "okay";
++};
 +
-+    properties:
-+      bias-disable: true
++&uart16 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart16>;
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/nuvoton/ma35d1.dtsi b/arch/arm64/boot/dts/nuvoton/ma35d1.dtsi
+index 781cdae566a0..a93bce545f5f 100644
+--- a/arch/arm64/boot/dts/nuvoton/ma35d1.dtsi
++++ b/arch/arm64/boot/dts/nuvoton/ma35d1.dtsi
+@@ -10,6 +10,7 @@
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/clock/nuvoton,ma35d1-clk.h>
+ #include <dt-bindings/reset/nuvoton,ma35d1-reset.h>
++#include <dt-bindings/pinctrl/ma35d1-pinfunc.h>
+ 
+ / {
+ 	compatible = "nuvoton,ma35d1";
+@@ -83,7 +84,7 @@ soc {
+ 		ranges;
+ 
+ 		sys: system-management@40460000 {
+-			compatible = "nuvoton,ma35d1-reset";
++			compatible = "nuvoton,ma35d1-reset", "syscon";
+ 			reg = <0x0 0x40460000 0x0 0x200>;
+ 			#reset-cells = <1>;
+ 		};
+@@ -95,6 +96,162 @@ clk: clock-controller@40460200 {
+ 			clocks = <&clk_hxt>;
+ 		};
+ 
++		pinctrl: pinctrl@40040000 {
++			compatible = "nuvoton,ma35d1-pinctrl";
++			#address-cells = <1>;
++			#size-cells = <1>;
++			nuvoton,sys = <&sys>;
++			ranges = <0x0 0x0 0x40040000 0xc00>;
 +
-+      bias-pull-down: true
++			gpioa: gpio@40040000 {
++				reg = <0x0 0x40>;
++				interrupts = <GIC_SPI  14 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk GPA_GATE>;
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++			};
 +
-+      bias-pull-up: true
++			gpiob: gpio@40040040 {
++				reg = <0x40 0x40>;
++				interrupts = <GIC_SPI  15 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk GPB_GATE>;
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++			};
 +
-+      power-source:
-+        description: |
-+          Valid arguments are described as below:
-+          0: power supply of 1.8V
-+          1: power supply of 3.3V
-+        enum: [0, 1]
++			gpioc: gpio@40040080 {
++				reg = <0x80 0x40>;
++				interrupts = <GIC_SPI  16 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk GPC_GATE>;
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++			};
 +
-+      drive-strength-microamp:
-+        oneOf:
-+          - enum: [ 2900, 4400, 5800, 7300, 8600, 10100, 11500, 13000 ]
-+            description: 1.8V I/O driving strength
-+          - enum: [ 17100, 25600, 34100, 42800, 48000, 56000, 77000, 82000 ]
-+            description: 3.3V I/O driving strength
++			gpiod: gpio@400400c0 {
++				reg = <0xc0 0x40>;
++				interrupts = <GIC_SPI  17 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk GPD_GATE>;
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++			};
 +
-+      input-enable: true
++			gpioe: gpio@40040100 {
++				reg = <0x100 0x40>;
++				interrupts = <GIC_SPI  73 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk GPE_GATE>;
++				#gpio-cells = <2>;
++				gpio-controller;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++			};
 +
-+      input-schmitt-enable: true
++			gpiof: gpio@40040140 {
++				reg = <0x140 0x40>;
++				interrupts = <GIC_SPI  74 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk GPF_GATE>;
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++			};
 +
-+    unevaluatedProperties: false
++			gpiog: gpio@40040180 {
++				reg = <0x180 0x40>;
++				interrupts = <GIC_SPI  75 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk GPG_GATE>;
++				#gpio-cells = <2>;
++				gpio-controller;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++			};
 +
-+  "-grp$":
-+    type: object
-+    description:
-+      Pinctrl node's client devices use subnodes for desired pin configuration.
-+      Client device subnodes use below standard properties.
-+    properties:
-+      nuvoton,pins:
-+        description:
-+          Each entry consists of 4 parameters and represents the mux and config
-+          setting for one pin.
-+        $ref: /schemas/types.yaml#/definitions/uint32-matrix
-+        minItems: 1
-+        items:
-+          items:
-+            - minimum: 0
-+              maximum: 13
-+              description:
-+                Pin bank.
-+            - minimum: 0
-+              maximum: 15
-+              description:
-+                Pin bank index.
-+            - minimum: 0
-+              maximum: 15
-+              description:
-+                Mux 0 means GPIO and mux 1 to 15 means the specific device function.
-+            - description:
-+                The phandle of a node contains the generic pinconfig options
-+                to use as described in pinctrl-bindings.txt.
++			gpioh: gpio@400401c0 {
++				reg = <0x1c0 0x40>;
++				interrupts = <GIC_SPI  76 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk GPH_GATE>;
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++			};
 +
-+additionalProperties: false
++			gpioi: gpio@40040200 {
++				reg = <0x200 0x40>;
++				interrupts = <GIC_SPI  77 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk GPI_GATE>;
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++			};
 +
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/clock/nuvoton,ma35d1-clk.h>
-+    #include <dt-bindings/pinctrl/ma35d1-pinfunc.h>
++			gpioj: gpio@40040240 {
++				reg = <0x240 0x40>;
++				interrupts = <GIC_SPI  78 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk GPJ_GATE>;
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++			};
 +
-+    pinctrl@40040000 {
-+        compatible = "nuvoton,ma35d1-pinctrl";
-+        #address-cells = <1>;
-+        #size-cells = <1>;
-+        nuvoton,sys = <&sys>;
-+        ranges = <0 0x40040000 0xc00>;
++			gpiok: gpio@40040280 {
++				reg = <0x280 0x40>;
++				interrupts = <GIC_SPI  102 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk GPK_GATE>;
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++			};
 +
-+        gpio@40040000 {
-+            reg = <0x0 0x40>;
-+            interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
-+            clocks = <&clk GPA_GATE>;
-+            gpio-controller;
-+            #gpio-cells = <2>;
-+            interrupt-controller;
-+            #interrupt-cells = <2>;
-+        };
++			gpiol: gpio@400402c0 {
++				reg = <0x2c0 0x40>;
++				interrupts = <GIC_SPI  103 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk GPL_GATE>;
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++			};
 +
-+        pcfg_default: pin-default {
-+            slew-rate = <0>;
-+            input-schmitt-disable;
-+            bias-disable;
-+            power-source = <1>;
-+            drive-strength-microamp = <17100>;
-+        };
++			gpiom: gpio@40040300 {
++				reg = <0x300 0x40>;
++				interrupts = <GIC_SPI  104 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk GPM_GATE>;
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++			};
 +
-+        uart-grp {
-+            uart11-pins {
-+                nuvoton,pins = <11 0 2 &pcfg_default>,
-+                               <11 1 2 &pcfg_default>,
-+                               <11 2 2 &pcfg_default>,
-+                               <11 3 2 &pcfg_default>;
-+            };
++			gpion: gpio@40040340 {
++				reg = <0x340 0x40>;
++				interrupts = <GIC_SPI  105 IRQ_TYPE_LEVEL_HIGH>;
++				clocks = <&clk GPN_GATE>;
++				gpio-controller;
++				#gpio-cells = <2>;
++				interrupt-controller;
++				#interrupt-cells = <2>;
++			};
 +
-+            uart12-pins {
-+                nuvoton,pins = <8 1 2 &pcfg_default>,
-+                               <8 2 2 &pcfg_default>,
-+                               <8 3 2 &pcfg_default>;
-+            };
-+        };
-+    };
++			pcfg_default: pin-default {
++				slew-rate = <0>;
++				input-schmitt-disable;
++				bias-disable;
++				power-source = <1>;
++				drive-strength = <17100>;
++			};
++		};
++
+ 		uart0: serial@40700000 {
+ 			compatible = "nuvoton,ma35d1-uart";
+ 			reg = <0x0 0x40700000 0x0 0x100>;
 -- 
 2.34.1
 
