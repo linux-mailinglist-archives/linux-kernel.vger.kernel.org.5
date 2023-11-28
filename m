@@ -2,234 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C08817FAFD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 03:00:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C844E7FAFE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 03:10:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234404AbjK1B7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 20:59:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33732 "EHLO
+        id S234276AbjK1CHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 21:07:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231954AbjK1B7w (ORCPT
+        with ESMTP id S231623AbjK1CHG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 20:59:52 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EBBE1AA
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 17:59:57 -0800 (PST)
-Received: from dggpemd200004.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SfQX920j6zShKJ;
-        Tue, 28 Nov 2023 09:55:37 +0800 (CST)
-Received: from [10.174.179.24] (10.174.179.24) by
- dggpemd200004.china.huawei.com (7.185.36.141) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.28; Tue, 28 Nov 2023 09:59:54 +0800
-Subject: Re: [PATCH v10] mm: vmscan: try to reclaim swapcache pages if no swap
- space
-To:     Chris Li <chrisl@kernel.org>
-References: <20231121090624.1814733-1-liushixin2@huawei.com>
- <CAF8kJuPPk0nPMyp+pjOdN0sJ4StL63MF+haXJYBTRki2uLywyQ@mail.gmail.com>
-CC:     Yu Zhao <yuzhao@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Sachin Sant <sachinp@linux.ibm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-From:   Liu Shixin <liushixin2@huawei.com>
-Message-ID: <f30c160c-eb74-0c7c-9341-59774dfe5fc1@huawei.com>
-Date:   Tue, 28 Nov 2023 09:59:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Mon, 27 Nov 2023 21:07:06 -0500
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C79AC3;
+        Mon, 27 Nov 2023 18:07:12 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SfQnR392mz4f3kFZ;
+        Tue, 28 Nov 2023 10:07:07 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+        by mail.maildlp.com (Postfix) with ESMTP id 523E21A085D;
+        Tue, 28 Nov 2023 10:07:09 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP1 (Coremail) with SMTP id cCh0CgDHyhBMS2VlsMmJCA--.64884S3;
+        Tue, 28 Nov 2023 10:07:09 +0800 (CST)
+Subject: Re: [PATCH v2 1/6] md: fix missing flush of sync_work
+To:     Song Liu <song@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     xni@redhat.com, linux-kernel@vger.kernel.org,
+        linux-raid@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20231124075953.1932764-1-yukuai1@huaweicloud.com>
+ <20231124075953.1932764-2-yukuai1@huaweicloud.com>
+ <CAPhsuW5mjvpMmEN5g_-ADQgJKZ1=QyNxxSw-7kq-W2jww09Aag@mail.gmail.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <e3b8298c-1154-c5ce-d025-b9346a6cd2ab@huaweicloud.com>
+Date:   Tue, 28 Nov 2023 10:07:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAF8kJuPPk0nPMyp+pjOdN0sJ4StL63MF+haXJYBTRki2uLywyQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <CAPhsuW5mjvpMmEN5g_-ADQgJKZ1=QyNxxSw-7kq-W2jww09Aag@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.24]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemd200004.china.huawei.com (7.185.36.141)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-CM-TRANSID: cCh0CgDHyhBMS2VlsMmJCA--.64884S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zw1kAFykWF1fur4UuFWDtwb_yoW8ZFy3p3
+        ySq3W5ArW8AayUtw47KFyq9FyFgw10qrZrKrW3uw1rJFn8Jr15G3WruF1YvFy8Ar93Cwnx
+        Za18ta9xu3W0vr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
+        IcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUF9a9DU
+        UUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/24 1:19, Chris Li wrote:
-> Hi Shixin,
->
-> On Tue, Nov 21, 2023 at 12:08 AM Liu Shixin <liushixin2@huawei.com> wrote:
->> When spaces of swap devices are exhausted, only file pages can be
->> reclaimed.  But there are still some swapcache pages in anon lru list.
->> This can lead to a premature out-of-memory.
+Hi,
+
+在 2023/11/28 8:02, Song Liu 写道:
+> On Fri, Nov 24, 2023 at 12:00 AM Yu Kuai <yukuai1@huaweicloud.com> wrote:
 >>
->> The problem is found with such step:
+>> From: Yu Kuai <yukuai3@huawei.com>
 >>
->>  Firstly, set a 9MB disk swap space, then create a cgroup with 10MB
->>  memory limit, then runs an program to allocates about 15MB memory.
+>> Commit ac619781967b ("md: use separate work_struct for md_start_sync()")
+>> use a new sync_work to replace del_work, however, stop_sync_thread() and
+>> __md_stop_writes() was trying to wait for sync_thread to be done, hence
+>> they should switch to use sync_work as well.
 >>
->> The problem occurs occasionally, which may need about 100 times [1].
-> Just out of my curiosity, in your usage case, how much additional
-> memory in terms of pages or MB can be freed by this patch, using
-> current code as base line?
-My testcase is in a memory cgroup with memory limit of 10MB, the memory can
-be freed is only about 5MB.
-> Does the swap cache page reclaimed in swapcache_only mode, all swap
-> count drop to zero, and the only reason to stay in swap cache is to
-> void page IO write if we need to swap that page out again?
-Yes.
->
->> Fix it by checking number of swapcache pages in can_reclaim_anon_pages().
->> If the number is not zero, return true and set swapcache_only to 1.
->> When scan anon lru list in swapcache_only mode, non-swapcache pages will
->> be skipped to isolate in order to accelerate reclaim efficiency.
-> Here you said non-swapcache will be skipped if swapcache_only == 1
->
->> However, in swapcache_only mode, the scan count still increased when scan
->> non-swapcache pages because there are large number of non-swapcache pages
->> and rare swapcache pages in swapcache_only mode, and if the non-swapcache
-> Here you suggest non-swapcache pages will also be scanned even when
-> swapcache_only == 1. It seems to contradict what you said above. I
-> feel that I am missing something here.
-The swapcache pages and non-swapcache pages are both in anon lru. So when scan
-anon pages, then non-swapcache pages will also be scanned. In isolate_lru_folios(),
-if we select to put non-swapcache pages in folios_skipped list, the scan of anon list
-will running until finding enough swapcache pages, this will waste too much time.
-To avoid such problem, after we scan enough anon pages, even if we don't isolate
-enough swapcache pages, we have to stop.
->
->> is skipped and do not count, the scan of pages in isolate_lru_folios() can
-> Can you clarify which "scan of pages", are those pages swapcache pages
-> or non-swapcache pages?
-I mean scan of anon pages, include both swapcache pages and non-swpacache pages.
->
->> eventually lead to hung task, just as Sachin reported [2].
+>> Noted that md_start_sync() from sync_work will grab 'reconfig_mutex',
+>> hence other contex can't held the same lock to flush work, and this will
+>> be fixed in later patches.
 >>
->> By the way, since there are enough times of memory reclaim before OOM, it
->> is not need to isolate too much swapcache pages in one times.
->>
->> [1]. https://lore.kernel.org/lkml/CAJD7tkZAfgncV+KbKr36=eDzMnT=9dZOT0dpMWcurHLr6Do+GA@mail.gmail.com/
->> [2]. https://lore.kernel.org/linux-mm/CAJD7tkafz_2XAuqE8tGLPEcpLngewhUo=5US14PAtSM9tLBUQg@mail.gmail.com/
->>
->> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
->> Tested-by: Yosry Ahmed <yosryahmed@google.com>
->> Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
->> Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
+>> Fixes: ac619781967b ("md: use separate work_struct for md_start_sync()")
+> 
+> This fix should go via md-fixes branch. Please send it separately.
+
+This patch alone is not good, there are follow up problems to be fixed
+completely after patch 5. Can this patchset applied to md-fixes?
+
+Or I can split patch 1,4 and 5 for md-fixes, and keep others to md-next.
+
+Thanks,
+Kuai
+
+> 
+> Thanks,
+> Song
+> 
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 >> ---
->> v9->v10: Use per-node swapcache suggested by Yu Zhao.
->> v8->v9: Move the swapcache check after can_demote() and refector
->>         can_reclaim_anon_pages() a bit.
->> v7->v8: Reset swapcache_only at the beginning of can_reclaim_anon_pages().
->> v6->v7: Reset swapcache_only to zero after there are swap spaces.
->> v5->v6: Fix NULL pointing derefence and hung task problem reported by Sachin.
+>>   drivers/md/md.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
 >>
->>  mm/vmscan.c | 50 +++++++++++++++++++++++++++++++++++++++++++++++++-
->>  1 file changed, 49 insertions(+), 1 deletion(-)
+>> diff --git a/drivers/md/md.c b/drivers/md/md.c
+>> index 09686d8db983..1701e2fb219f 100644
+>> --- a/drivers/md/md.c
+>> +++ b/drivers/md/md.c
+>> @@ -4865,7 +4865,7 @@ static void stop_sync_thread(struct mddev *mddev)
+>>                  return;
+>>          }
 >>
->> diff --git a/mm/vmscan.c b/mm/vmscan.c
->> index 506f8220c5fe..1fcc94717370 100644
->> --- a/mm/vmscan.c
->> +++ b/mm/vmscan.c
->> @@ -136,6 +136,9 @@ struct scan_control {
->>         /* Always discard instead of demoting to lower tier memory */
->>         unsigned int no_demotion:1;
+>> -       if (work_pending(&mddev->del_work))
+>> +       if (work_pending(&mddev->sync_work))
+>>                  flush_workqueue(md_misc_wq);
 >>
->> +       /* Swap space is exhausted, only reclaim swapcache for anon LRU */
->> +       unsigned int swapcache_only:1;
->> +
->>         /* Allocation order */
->>         s8 order;
->>
->> @@ -308,10 +311,36 @@ static bool can_demote(int nid, struct scan_control *sc)
->>         return true;
->>  }
->>
->> +#ifdef CONFIG_SWAP
->> +static bool can_reclaim_swapcache(struct mem_cgroup *memcg, int nid)
->> +{
->> +       struct pglist_data *pgdat = NODE_DATA(nid);
->> +       unsigned long nr_swapcache;
->> +
->> +       if (!memcg) {
->> +               nr_swapcache = node_page_state(pgdat, NR_SWAPCACHE);
->> +       } else {
->> +               struct lruvec *lruvec = mem_cgroup_lruvec(memcg, pgdat);
->> +
->> +               nr_swapcache = lruvec_page_state_local(lruvec, NR_SWAPCACHE);
->> +       }
->> +
->> +       return nr_swapcache > 0;
->> +}
->> +#else
->> +static bool can_reclaim_swapcache(struct mem_cgroup *memcg, int nid)
->> +{
->> +       return false;
->> +}
->> +#endif
->> +
->>  static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
->>                                           int nid,
->>                                           struct scan_control *sc)
->>  {
->> +       if (sc)
->> +               sc->swapcache_only = 0;
->> +
-> Minor nitpick. The sc->swapcache_only is first set to 0 then later set
-> to 1. Better use a local variable then write to sc->swapcache_only in
-> one go. If the scan_control has more than one thread accessing it, the
-> threads can see the flicker of 0->1 change.  I don't think that is the
-> case in our current code, sc is created on stack. There are other
-> minor benefits as The "if (sc) test" only needs to be done once, one
-> store instruction.
->
-> Chris
-Thanks for your advice. If finally decide to use this patch, I will revise it.
->>         if (memcg == NULL) {
->>                 /*
->>                  * For non-memcg reclaim, is there
->> @@ -330,7 +359,17 @@ static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
->>          *
->>          * Can it be reclaimed from this node via demotion?
->>          */
->> -       return can_demote(nid, sc);
->> +       if (can_demote(nid, sc))
->> +               return true;
->> +
->> +       /* Is there any swapcache pages to reclaim in this node? */
->> +       if (can_reclaim_swapcache(memcg, nid)) {
->> +               if (sc)
->> +                       sc->swapcache_only = 1;
->> +               return true;
->> +       }
->> +
->> +       return false;
->>  }
->>
->>  /*
->> @@ -1642,6 +1681,15 @@ static unsigned long isolate_lru_folios(unsigned long nr_to_scan,
->>                  */
->>                 scan += nr_pages;
->>
->> +               /*
->> +                * Count non-swapcache too because the swapcache pages may
->> +                * be rare and it takes too much times here if not count
->> +                * the non-swapcache pages.
->> +                */
->> +               if (unlikely(sc->swapcache_only && !is_file_lru(lru) &&
->> +                   !folio_test_swapcache(folio)))
->> +                       goto move;
->> +
->>                 if (!folio_test_lru(folio))
->>                         goto move;
->>                 if (!sc->may_unmap && folio_mapped(folio))
+>>          set_bit(MD_RECOVERY_INTR, &mddev->recovery);
+>> @@ -6273,7 +6273,7 @@ static void md_clean(struct mddev *mddev)
+>>   static void __md_stop_writes(struct mddev *mddev)
+>>   {
+>>          set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+>> -       if (work_pending(&mddev->del_work))
+>> +       if (work_pending(&mddev->sync_work))
+>>                  flush_workqueue(md_misc_wq);
+>>          if (mddev->sync_thread) {
+>>                  set_bit(MD_RECOVERY_INTR, &mddev->recovery);
 >> --
->> 2.25.1
->>
+>> 2.39.2
 >>
 > .
->
+> 
 
