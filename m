@@ -2,136 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D767FB8A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:52:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A15FA7FB8A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:53:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344006AbjK1Kwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 05:52:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56262 "EHLO
+        id S1344082AbjK1Kxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 05:53:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232885AbjK1Kwk (ORCPT
+        with ESMTP id S1344188AbjK1Kxg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 05:52:40 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A3B131
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:52:47 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 402F4C433C8;
-        Tue, 28 Nov 2023 10:52:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701168767;
-        bh=/v/TekrawXBxNqJ4z8fVdeZyoZpdaNxoKbb7QLJXi0M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CoeOaxErGH7BJSs4bhLqZ4xnsNHBEmRQS+6GfstHE6EgOWHaar9277nvGH06RaE1j
-         ko8r1whckT92D8rW382KULkcZHlMoROZT7by4ea5cykyfMzeMiHl7D5K/LY5CDNgQI
-         9SprFFjrFZROPcRiteft4hdlK/K8bWXGytz5VMSNEZ0TeDDHToDysfq2o4KZF6NNzC
-         w4ft0lMCg3lX41s8st6+2qsUcmC2Emgd4XvW81mqtTabOUjK6vyNHkOI+8xjfWt0w8
-         tG4qbz4nI8oHXCmra1/DtP7ZfhW0ufOAY+IF5IgyrYdhDCe6L/Qki65ZbtB4X1bwVZ
-         ThNvnQgrEG1wQ==
-Date:   Tue, 28 Nov 2023 16:22:37 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Can Guo <quic_cang@quicinc.com>
-Cc:     Manivannan Sadhasivam <mani@kernel.org>, bvanassche@acm.org,
-        adrian.hunter@intel.com, beanhuo@micron.com, avri.altman@wdc.com,
-        junwoo80.lee@samsung.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 04/10] scsi: ufs: ufs-qcom: Limit negotiated gear to
- selected PHY gear
-Message-ID: <20231128105237.GN3088@thinkpad>
-References: <1700729190-17268-1-git-send-email-quic_cang@quicinc.com>
- <1700729190-17268-5-git-send-email-quic_cang@quicinc.com>
- <20231128054522.GF3088@thinkpad>
- <bc69d9ef-6ddc-4389-8bf0-9405385a494b@quicinc.com>
+        Tue, 28 Nov 2023 05:53:36 -0500
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A0A3D4B;
+        Tue, 28 Nov 2023 02:53:42 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 303F03200AD4;
+        Tue, 28 Nov 2023 05:53:37 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 28 Nov 2023 05:53:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1701168816; x=1701255216; bh=de
+        ujBW49xIg4FWRLoDbae8+tD+YBI5tyJUGVOFWc1Ks=; b=uQI6GapiQMe6Hnopgt
+        8Kiup3r0xYvvDKyg3h3msdwC7QtfVjT7XDt3ddURo2LC79JmY0UZTph10T6qGT14
+        N1ZjqJBM1jrNf54paVb/bzomh11XPcCGnMnNB9g1VB8ZLQxg6WCbRmpKlYPMrHJf
+        ng8Vtpes1lJrhaOcNKlnR+K7woG3NlD5lkL7IvwPU3/rtAGufpzgzUCCwGJTglSe
+        4HzBBSS7cSIluloTD9cYleiGsjSgu+5X6srfs+JJx6MRkxi3N8oG1bugQC6vrQKu
+        nisMZAbaQvRPIuu8upJMcqxnPjonshhu5m2mSiTO6V5D9LYyUtKrIhwG3A44aCBJ
+        pC4A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1701168816; x=1701255216; bh=deujBW49xIg4F
+        WRLoDbae8+tD+YBI5tyJUGVOFWc1Ks=; b=As1CexskTDECzC0Lps503ToibCtw1
+        ltQ3h0imB92EL2eCy/4DcT+pv4u96loKTX4IWW/m4jBslNtxIpPCLjtyL83P2u0c
+        R2UrSdzgg3eZIZRTS+whhau0y+OlLM2SL29rYe/l2iLAfxmQnq9WdQ7LZqCXQlpg
+        exwn3luBvwWZK94rxquByyto5Nedta52+VVoNMEZTZ8uM7u50K5AAk3QctxyB88l
+        ipbHWuFbw846X4e3LcnbCena6lDhAT/SlcWAcVxiqTNWWmtbpqmY5fHedwE0oQyW
+        VioKwD9wfG7U6HtpJWdgAmDXEWTPgEg61PmGbGva7NCPuKaVCVcfyhfGw==
+X-ME-Sender: <xms:r8ZlZQgHSqwGKPKL3nhFGAhcam4JDzWlYnWeZBJwjU-0OiBs0qFDFA>
+    <xme:r8ZlZZBKLJHErSyWAhsFIdhrvlegSaibzuNe0YdZJX0s47m-Embfkbcdh5p0t1g-E
+    xvG2SR2cm8u4wptHhY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeifedgvdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:r8ZlZYF3-S4aGYw5_oR6ptcl8S0cfvVvehTktk7VC-yaRZZpL6ZLXw>
+    <xmx:r8ZlZRQ0ZW8fwQVk8HpoKhiRMSilB2AFQ6toxEsMylcZxWjbnhlinw>
+    <xmx:r8ZlZdzolPGJ86UeZt76v8-9ylhuY1zMoRJBgGEiR6ljdm53ccVUoQ>
+    <xmx:sMZlZVBycdOU7JeGfOzCzonwWbarikrNKQrBbOzKo6IIjNsX3jduIA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 37DA4B60089; Tue, 28 Nov 2023 05:53:35 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1234-gac66594aae-fm-20231122.001-gac66594a
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bc69d9ef-6ddc-4389-8bf0-9405385a494b@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Message-Id: <cf23b3a9-54cb-4c48-923e-8a05a8d4bc27@app.fastmail.com>
+In-Reply-To: <23011695aafca595c3c8722fda2a8e194c5318df.camel@pengutronix.de>
+References: <20231121091101.5540-1-jyanchou@realtek.com>
+ <20231121091101.5540-3-jyanchou@realtek.com>
+ <23011695aafca595c3c8722fda2a8e194c5318df.camel@pengutronix.de>
+Date:   Tue, 28 Nov 2023 11:53:13 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Philipp Zabel" <p.zabel@pengutronix.de>,
+        "Jyan Chou" <jyanchou@realtek.com>,
+        "Ulf Hansson" <ulf.hansson@linaro.org>,
+        "Adrian Hunter" <adrian.hunter@intel.com>, jh80.chung@samsung.com,
+        riteshh@codeaurora.org, "Rob Herring" <robh+dt@kernel.org>,
+        krzysztof.kozlowski+dt@linaro.org
+Cc:     "Conor Dooley" <conor+dt@kernel.org>, asutoshd@codeaurora.org,
+        "linux-mmc @ vger . kernel . org" <linux-mmc@vger.kernel.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Brian Norris" <briannorris@chromium.org>,
+        "Doug Brown" <doug@schmorgal.com>,
+        "Tony Huang" <tonyhuang.sunplus@gmail.com>,
+        "Abel Vesa" <abel.vesa@linaro.org>, william.qiu@starfivetech.com
+Subject: Re: [PATCH v7][2/4] mmc: Add Synopsys DesignWare mmc cmdq host driver
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 04:05:59PM +0800, Can Guo wrote:
-> Hi Mani,
-> 
-> On 11/28/2023 1:45 PM, Manivannan Sadhasivam wrote:
-> > On Thu, Nov 23, 2023 at 12:46:24AM -0800, Can Guo wrote:
-> > > In the dual init scenario, the initial PHY gear is set to HS-G2, and the
-> > > first Power Mode Change (PMC) is meant to find the best matching PHY gear
-> > > for the 2nd init. However, for the first PMC, if the negotiated gear (say
-> > > HS-G4) is higher than the initial PHY gear, we cannot go ahead let PMC to
-> > > the negotiated gear happen, because the programmed UFS PHY settings may not
-> > > support the negotiated gear. Fix it by overwriting the negotiated gear with
-> > > the PHY gear.
-> > > 
-> > 
-> > I don't quite understand this patch. If the phy_gear is G2 initially and the
-> > negotiated gear is G4, then as per this change,
-> > 
-> > phy_gear = G4;
-> > negotiated gear = G2;
-> > 
-> > Could you please explain how this make sense?
-> 
-> phy_gear was G2 (in the beginning) and just now changed to G4, but the PHY
-> settings programmed in the beginning can only support no-G4 (not G4).
-> Without this change, as the negotiated gear is G4, the power mode change is
-> going to put UFS at HS-G4 mode, but the PHY settings programmed is no-G4.
+On Mon, Nov 27, 2023, at 13:51, Philipp Zabel wrote:
+> On Di, 2023-11-21 at 17:10 +0800, Jyan Chou wrote:
+>> diff --git a/drivers/mmc/host/dw_mmc_cqe.c b/drivers/mmc/host/dw_mmc_cqe.c
+>> new file mode 100644
+>> index 000000000000..eb00d6a474b2
+>> --- /dev/null
+>> +++ b/drivers/mmc/host/dw_mmc_cqe.c
+>> @@ -0,0 +1,1467 @@
+> [...]
+>> +#ifdef CONFIG_OF
+>> +static struct dw_mci_board *dw_mci_cqe_parse_dt(struct dw_mci *host)
+>> +{
+>> +	struct dw_mci_board *pdata;
+>> +	struct device *dev = host->dev;
+>> +	const struct dw_mci_drv_data *drv_data = host->drv_data;
+>> +	int ret;
+>> +
+>> +	pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
+>> +	if (!pdata)
+>> +		return ERR_PTR(-ENOMEM);
+>> +
+>
+> There is no reason to hide device tree parsing errors here, and I'd
+> argue pdata should not be returned with rstc set to an error value.
+> devm_reset_control_get_optional_exclusive() returns NULL if there are
+> no errors and no reset is specified in the device tree.
+>
+> Then you can just use dev_err_probe() at the call site in
+> dw_mci_cqe_probe().
 
-But we are going to reinit the PHY anyway, isn't it?
+I think ideally the dw_mci_board should be merged into the dw_mci
+structure, avoiding the extra kzalloc() step. Having separate
+structures here is likely an artifact from an old version of the
+driver that predates the use of devicetree, but since everything
+now uses DT, there is no point in the extra abstraction.
 
-> This change is to limit the negotiated gear to HS-G2 for the 1st init. In
-> the 2nd init, as the new PHY gear is G4, G4 PHY settings would be
-> programmed, it'd be safe to put the UFS at HS-G4 mode.
-> 
-
-Why do we need to limit it since we already have the logic in place to set
-whatever gear mode applicable for 1st init?
-
-- Mani
-
-> Thanks,
-> Can Guo.
-> > 
-> > - Mani
-> > 
-> > > Signed-off-by: Can Guo <quic_cang@quicinc.com>
-> > > ---
-> > >   drivers/ufs/host/ufs-qcom.c | 7 ++++++-
-> > >   1 file changed, 6 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> > > index cc0eb37..d4edf58 100644
-> > > --- a/drivers/ufs/host/ufs-qcom.c
-> > > +++ b/drivers/ufs/host/ufs-qcom.c
-> > > @@ -920,8 +920,13 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
-> > >   		 * because, the PHY gear settings are backwards compatible and we only need to
-> > >   		 * change the PHY gear settings while scaling to higher gears.
-> > >   		 */
-> > > -		if (dev_req_params->gear_tx > host->phy_gear)
-> > > +		if (dev_req_params->gear_tx > host->phy_gear) {
-> > > +			u32 old_phy_gear = host->phy_gear;
-> > > +
-> > >   			host->phy_gear = dev_req_params->gear_tx;
-> > > +			dev_req_params->gear_tx = old_phy_gear;
-> > > +			dev_req_params->gear_rx = old_phy_gear;
-> > > +		}
-> > >   		/* enable the device ref clock before changing to HS mode */
-> > >   		if (!ufshcd_is_hs_mode(&hba->pwr_info) &&
-> > > -- 
-> > > 2.7.4
-> > > 
-> > 
-
--- 
-மணிவண்ணன் சதாசிவம்
+     Arnd
