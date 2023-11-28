@@ -2,73 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CDE37FC1D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD3C7FC271
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345084AbjK1N7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 08:59:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39692 "EHLO
+        id S1345318AbjK1OBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 09:01:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343981AbjK1N7g (ORCPT
+        with ESMTP id S1345294AbjK1OBL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 08:59:36 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F227B5
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 05:59:42 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-50aab0ca90aso7890598e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 05:59:42 -0800 (PST)
+        Tue, 28 Nov 2023 09:01:11 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C8781BE
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:01:16 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9fa45e75ed9so751634566b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:01:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701179980; x=1701784780; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=+mkha0IAGj2KB0F4H6bacXlhgX/QEw7yYVbprPdEXMU=;
-        b=FEzXdTT9uSM8IoFrpiomJSu85j/LOacN5x5HMkb9XkM0P5/01m791xHQ+iTPp/+qfj
-         zQh93vrc5dtxba11mpMq2QMtIIzwUjNr5SoeOzOGrZjGcjvWMHPjJdiOzKrNO+5X09GN
-         spTMrOMOcyeZhiZJu0uVF5kL9cLEKl6PvWCbvd4N9LocF8ECdHXRaCWSxwMVKecP3Rx6
-         K2L8Q36SWWdddJBv7o6+lOil1kRP9kC5ze8K05KkY9WoczCblCor/QqHvxMoClNTMl8S
-         Eis14WzV7LYirKrLXkxb7pDdJXwrkByzjwQOZeb0Gg74WSl0YgoSqcviKJXQfv0l+Teb
-         8TZA==
+        d=linaro.org; s=google; t=1701180075; x=1701784875; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=J8O6nPdgp77Ha5oQtP71MkxQpqaYfWS5iS2ThHn17jE=;
+        b=Fg8m6pLiqkOypLqvATzWhw7B+6LCxam1CgURqBzrjLsH+b+ioPzp4UdWfNIu/YNDc0
+         akNCkOthDp//lRLSWoNM11F7bP8l0u8msppQ6rS8ArQ/DWOlbD2wshDHWASwiTwqR4bS
+         O/RyH+sdVjXBNQ50zh7fCgQe/xoJSC6JlIQPDsenHen2GMSDFQHzWm59KQz4tdo/Elqs
+         DXVLyD2pmTvXyk7r6D566JS4/WZHpUikRh7DL3gELrdeay5GLXmZ+q6YEPmgH6yn4/+B
+         Qb0lcn1i1q8HuqwJCIWz3RnMv5EBMBgcopNKm4ZRVjsub5UETML9d5BeJRDU1iYWvMAB
+         prgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701179980; x=1701784780;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+mkha0IAGj2KB0F4H6bacXlhgX/QEw7yYVbprPdEXMU=;
-        b=qoRovl9GBI0fiwgknhcxvK9e/RGKflymcXzXgYbVhMCx+39pL9xXoy9/jXdUrFkXjf
-         HNROQl4G1lm/amGVcrhJTxwuiW6OykRxqmRghfCKjkeGIUbNi6YzrCAP9GNAzIqZPnci
-         3WVYZayT3mP7OBxZ5FUUZc+6j0zAzUC6DIFmAeZ/k1E73FJAdVibFpwq4gibr3U6F5VD
-         vEXRFzP3HdJ64te8NH9eAdjlQnw8/hPOyTQKFokd/0F9CZEhG8X2N8Mm0cHsGMr4oqc3
-         DHN/P3IPamQOrjjnqLgr9ZOgCkLik2q7KovexjGv2YQ+vGc7fPvEDkky+nRoMxh9qDeV
-         oixw==
-X-Gm-Message-State: AOJu0Yx5VUxZ2ZZuFWvbXwbMSO7mLwXg8vwV7oL33sReTU2QPd25YrTx
-        4kgrxQ9CsJrrvVaIM2306qTVyQ==
-X-Google-Smtp-Source: AGHT+IFcaI+Etx2eE8pIwnwY1Yr68cYvKSIiTgHJQs8Rwl/uuciWGJdvx/6mE4KVicdEHR/SqC6mDA==
-X-Received: by 2002:a19:4f0b:0:b0:507:a229:f53e with SMTP id d11-20020a194f0b000000b00507a229f53emr6874521lfb.24.1701179980579;
-        Tue, 28 Nov 2023 05:59:40 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701180075; x=1701784875;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=J8O6nPdgp77Ha5oQtP71MkxQpqaYfWS5iS2ThHn17jE=;
+        b=BjuZtr8FAwhOAhnxJZL0vuXMLUH4HZ9M3M3k92JDFGd2oQ8yYbUmd6EjZGKGw9DTmO
+         AlTd+zQ9sQVsPM+SzUJxAkcceiYHaycCzNn3L5OK0GFG30o5J09llMx5BwvuPtGNg4w7
+         o69tKHCQ9Teht3Qxpm2qCFJGK8FInjxBv09/+EKG50mSgUOYrbbgqP3v7H0/xjgfdT3m
+         uA0+cJGYJosm3qPlErgf28QCUTs+vF5EaebGk34vJj2A7IrC131oZNX8DXz/eUwiJss8
+         CQOhtuzomtxuTLXJkyDhzzFiSrkSo6IbMtCebIZEu+V9Ufn54zQB5najRNuWTOA0bRvL
+         DPPw==
+X-Gm-Message-State: AOJu0YzZLVvZfzlu6zalMuOOgzVc4/mAAE9hQs2ly68XwXfNh+M+eoK5
+        iBHbUNFSsoP1f8qC3u6dqMb3NQ==
+X-Google-Smtp-Source: AGHT+IHQEHZ1np1OwZ6LDhGAPAswOtYaDcxZs2yD0Jb/iMLMD3RXrIOZNuFkKUONlSNzb5jWLFpNUw==
+X-Received: by 2002:a17:906:2dd2:b0:9ce:24d0:8a01 with SMTP id h18-20020a1709062dd200b009ce24d08a01mr10691625eji.60.1701180075039;
+        Tue, 28 Nov 2023 06:01:15 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id pw11-20020a17090720ab00b00a0f1025b17asm2545133ejb.130.2023.11.28.05.59.39
+        by smtp.gmail.com with ESMTPSA id pw11-20020a17090720ab00b00a0f1025b17asm2545133ejb.130.2023.11.28.06.01.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Nov 2023 05:59:40 -0800 (PST)
-Message-ID: <438768a3-c50c-46f1-8a4e-2233c7545453@linaro.org>
-Date:   Tue, 28 Nov 2023 14:59:37 +0100
+        Tue, 28 Nov 2023 06:01:14 -0800 (PST)
+Message-ID: <0acdc122-b7fa-4bb4-b838-6420cd43d0e0@linaro.org>
+Date:   Tue, 28 Nov 2023 15:01:12 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] rtc: add rtc controller support for Sophgo CV1800B
- SoC
-To:     jingbao qiu <qiujingbao.dlmu@gmail.com>
-Cc:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
-        krzysztof.kozlowski+dt@linaro.org, chao.wei@sophgo.com,
-        unicorn_wang@outlook.com, conor+dt@kernel.org, robh+dt@kernel.org,
-        conor@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, linux-rtc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231121094642.2973795-1-qiujingbao.dlmu@gmail.com>
- <20231121094642.2973795-3-qiujingbao.dlmu@gmail.com>
- <09b29f1f-a42b-49f7-afca-f82357acd4c8@linaro.org>
- <CAJRtX8TU9Z3OXL1zw9+mGNhxugp_C2jo40k-s9V2byNCQeBoLQ@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] arm64: dts: qcom: ipq9574: Fix USB
+ 'vdda-pll-supply'
 Content-Language: en-US
+To:     Varadarajan Narayanan <quic_varada@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org,
+        dmitry.baryshkov@linaro.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1701160842.git.varada@hu-varada-blr.qualcomm.com>
+ <f98bbf0a515236709d999010f08c8f2470a31209.1701160842.git.varada@hu-varada-blr.qualcomm.com>
+ <832a6d4f-f561-4cf5-b1cb-7e4b2d4d50b4@linaro.org>
+ <ZWW9oF24YUGfev+2@hu-varada-blr.qualcomm.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -114,11 +112,11 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAJRtX8TU9Z3OXL1zw9+mGNhxugp_C2jo40k-s9V2byNCQeBoLQ@mail.gmail.com>
+In-Reply-To: <ZWW9oF24YUGfev+2@hu-varada-blr.qualcomm.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -127,50 +125,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/11/2023 14:22, jingbao qiu wrote:
->>> +     if (ret)
->>> +             goto err;
->>> +
->>> +     rtc->clk = devm_clk_get(&pdev->dev, NULL);
->>> +     if (IS_ERR(rtc->clk)) {
->>> +             dev_err(&pdev->dev, "no clock");
+On 28/11/2023 11:14, Varadarajan Narayanan wrote:
+> On Tue, Nov 28, 2023 at 09:51:50AM +0100, Krzysztof Kozlowski wrote:
+>> On 28/11/2023 09:46, Varadarajan Narayanan wrote:
+>>> From: Varadarajan Narayanan <quic_varada@quicinc.com>
+>>>
+>>> The earlier patch ec4f047679d5, incorrectly used 'l2'
+>>> as the vdda-pll-supply. However, 'l5' is the correct
+>>> ldo that supplies power to the USB PHY.
+>>>
+>>> Fixes: ec4f047679d5 ("arm64: dts: qcom: ipq9574: Enable USB")
 >>
->> This code is not ready for upstream. There are multiple things wrong here.
->>
->> First, syntax is return dev_err_probe.
->>
->> Second, you do not have clocks and you do not allow them! Just open your
->> binding.
+>> Doesn't this depend on the driver change?
 > 
-> I'm not fully understanding here, can you elaborate more?
+> Yes, will mention in the cover letter.
 
-That the syntax is dev_err_probe() or that you do not have clocks?
+This commit should have it in its changelog ---
 
+> 
+>> It affects both existing
+>> kernel and backports which you claim here should happen.
+> 
+> Ok. Will include stable@vger.kernel.org in the next revision.
 
-> as there is clocks info like this in the dt-bindings:
->  clocks = <&osc>;
-
-Really?
-
-Point me to the line in your patch:
-
-+properties:
-+  compatible:
-+    enum:
-+      - sophgo,cv1800b-rtc
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-
-Where are the clocks?
-
+I wasn't speaking about Cc. You indicated this should be backported.
+Then please backport it, without previous commit, and check the result.
+Is stable tree working correctly or not?
 
 Best regards,
 Krzysztof
