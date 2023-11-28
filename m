@@ -2,51 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C51C97FB0C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 04:58:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8427D7FB0C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 05:00:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234528AbjK1D6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 22:58:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44718 "EHLO
+        id S234489AbjK1EA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 23:00:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbjK1D6K (ORCPT
+        with ESMTP id S229789AbjK1EA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 22:58:10 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 440DAC1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 19:58:17 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 808A6C433C9;
-        Tue, 28 Nov 2023 03:58:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701143896;
-        bh=klY2qd5BBTUFI2nKApEyF/o8Si9A4Wtb/ZgzMzwBObU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SzevbdpqhmhpmwTwMiKkHq1bskohNUwuQfXQeOf7Ch/TVNVhZeVRK1CT1GjSQOmoF
-         C6bhekI0ZJVb1FVTvBskim8XI7ZODFyyf8iuS9eeCnyBMmkcu6VE3HnRAoAE2TH7UZ
-         KI7oVZ+kXnp8gby6MaWucK8q7ZgmwCim2keIlGrl1Dsknz9XJTTDbEJ7gWc/puMijd
-         9q4ekHg9SVrHHlIiSPuty/WEaZ94iY0t6L7lU3fe+8Bfkn6FnNxVFpZKnpXnbDh2Q/
-         4W0BjIlI4QU7x0Mt+wRtDzeFPZ8ka7d7mEsacC6BpgevdejvAbOXC9Kheb/q5UpD2O
-         LQi7JQFnaXHAw==
-Date:   Mon, 27 Nov 2023 19:58:14 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jerry Shih <jerry.shih@sifive.com>
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, herbert@gondor.apana.org.au,
-        davem@davemloft.net, conor.dooley@microchip.com, ardb@kernel.org,
-        heiko@sntech.de, phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Subject: Re: [PATCH v2 05/13] crypto: simd - Update `walksize` in simd
- skcipher
-Message-ID: <20231128035814.GH1463@sol.localdomain>
-References: <20231127070703.1697-1-jerry.shih@sifive.com>
- <20231127070703.1697-6-jerry.shih@sifive.com>
+        Mon, 27 Nov 2023 23:00:26 -0500
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A17D7C1;
+        Mon, 27 Nov 2023 20:00:31 -0800 (PST)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96.2)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1r7pGf-0002hW-02;
+        Tue, 28 Nov 2023 04:00:14 +0000
+Date:   Tue, 28 Nov 2023 04:00:10 +0000
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Li Zetao <lizetao1@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org
+Subject: [PATCH v3 1/2] leds: trigger: netdev: extend speeds up to 10G
+Message-ID: <99e7d3304c6bba7f4863a4a80764a869855f2085.1701143925.git.daniel@makrotopia.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231127070703.1697-6-jerry.shih@sifive.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,40 +45,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 03:06:55PM +0800, Jerry Shih wrote:
-> The `walksize` assignment is missed in simd skcipher.
-> 
-> Signed-off-by: Jerry Shih <jerry.shih@sifive.com>
-> ---
->  crypto/cryptd.c | 1 +
->  crypto/simd.c   | 1 +
->  2 files changed, 2 insertions(+)
-> 
-> diff --git a/crypto/cryptd.c b/crypto/cryptd.c
-> index bbcc368b6a55..253d13504ccb 100644
-> --- a/crypto/cryptd.c
-> +++ b/crypto/cryptd.c
-> @@ -405,6 +405,7 @@ static int cryptd_create_skcipher(struct crypto_template *tmpl,
->  		(alg->base.cra_flags & CRYPTO_ALG_INTERNAL);
->  	inst->alg.ivsize = crypto_skcipher_alg_ivsize(alg);
->  	inst->alg.chunksize = crypto_skcipher_alg_chunksize(alg);
-> +	inst->alg.walksize = crypto_skcipher_alg_walksize(alg);
->  	inst->alg.min_keysize = crypto_skcipher_alg_min_keysize(alg);
->  	inst->alg.max_keysize = crypto_skcipher_alg_max_keysize(alg);
->  
-> diff --git a/crypto/simd.c b/crypto/simd.c
-> index edaa479a1ec5..ea0caabf90f1 100644
-> --- a/crypto/simd.c
-> +++ b/crypto/simd.c
-> @@ -181,6 +181,7 @@ struct simd_skcipher_alg *simd_skcipher_create_compat(const char *algname,
->  
->  	alg->ivsize = ialg->ivsize;
->  	alg->chunksize = ialg->chunksize;
-> +	alg->walksize = ialg->walksize;
->  	alg->min_keysize = ialg->min_keysize;
->  	alg->max_keysize = ialg->max_keysize;
+Add 2.5G, 5G and 10G as available speeds to the netdev LED trigger.
 
-What are the consequences of this bug?  I wonder if it actually matters?  The
-"inner" algorithm is the one that actually gets used for the "walk", right?
+Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+---
+v3: no changes
+v2: add missing sysfs entries
 
-- Eric
+ drivers/leds/trigger/ledtrig-netdev.c | 32 ++++++++++++++++++++++++++-
+ include/linux/leds.h                  |  3 +++
+ 2 files changed, 34 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/leds/trigger/ledtrig-netdev.c b/drivers/leds/trigger/ledtrig-netdev.c
+index e358e77e4b38f..bd68da15c723e 100644
+--- a/drivers/leds/trigger/ledtrig-netdev.c
++++ b/drivers/leds/trigger/ledtrig-netdev.c
+@@ -99,6 +99,18 @@ static void set_baseline_state(struct led_netdev_data *trigger_data)
+ 		    trigger_data->link_speed == SPEED_1000)
+ 			blink_on = true;
+ 
++		if (test_bit(TRIGGER_NETDEV_LINK_2500, &trigger_data->mode) &&
++		    trigger_data->link_speed == SPEED_2500)
++			blink_on = true;
++
++		if (test_bit(TRIGGER_NETDEV_LINK_5000, &trigger_data->mode) &&
++		    trigger_data->link_speed == SPEED_5000)
++			blink_on = true;
++
++		if (test_bit(TRIGGER_NETDEV_LINK_10000, &trigger_data->mode) &&
++		    trigger_data->link_speed == SPEED_10000)
++			blink_on = true;
++
+ 		if (test_bit(TRIGGER_NETDEV_HALF_DUPLEX, &trigger_data->mode) &&
+ 		    trigger_data->duplex == DUPLEX_HALF)
+ 			blink_on = true;
+@@ -286,6 +298,9 @@ static ssize_t netdev_led_attr_show(struct device *dev, char *buf,
+ 	case TRIGGER_NETDEV_LINK_10:
+ 	case TRIGGER_NETDEV_LINK_100:
+ 	case TRIGGER_NETDEV_LINK_1000:
++	case TRIGGER_NETDEV_LINK_2500:
++	case TRIGGER_NETDEV_LINK_5000:
++	case TRIGGER_NETDEV_LINK_10000:
+ 	case TRIGGER_NETDEV_HALF_DUPLEX:
+ 	case TRIGGER_NETDEV_FULL_DUPLEX:
+ 	case TRIGGER_NETDEV_TX:
+@@ -316,6 +331,9 @@ static ssize_t netdev_led_attr_store(struct device *dev, const char *buf,
+ 	case TRIGGER_NETDEV_LINK_10:
+ 	case TRIGGER_NETDEV_LINK_100:
+ 	case TRIGGER_NETDEV_LINK_1000:
++	case TRIGGER_NETDEV_LINK_2500:
++	case TRIGGER_NETDEV_LINK_5000:
++	case TRIGGER_NETDEV_LINK_10000:
+ 	case TRIGGER_NETDEV_HALF_DUPLEX:
+ 	case TRIGGER_NETDEV_FULL_DUPLEX:
+ 	case TRIGGER_NETDEV_TX:
+@@ -334,7 +352,10 @@ static ssize_t netdev_led_attr_store(struct device *dev, const char *buf,
+ 	if (test_bit(TRIGGER_NETDEV_LINK, &mode) &&
+ 	    (test_bit(TRIGGER_NETDEV_LINK_10, &mode) ||
+ 	     test_bit(TRIGGER_NETDEV_LINK_100, &mode) ||
+-	     test_bit(TRIGGER_NETDEV_LINK_1000, &mode)))
++	     test_bit(TRIGGER_NETDEV_LINK_1000, &mode) ||
++	     test_bit(TRIGGER_NETDEV_LINK_2500, &mode) ||
++	     test_bit(TRIGGER_NETDEV_LINK_5000, &mode) ||
++	     test_bit(TRIGGER_NETDEV_LINK_10000, &mode)))
+ 		return -EINVAL;
+ 
+ 	cancel_delayed_work_sync(&trigger_data->work);
+@@ -364,6 +385,9 @@ DEFINE_NETDEV_TRIGGER(link, TRIGGER_NETDEV_LINK);
+ DEFINE_NETDEV_TRIGGER(link_10, TRIGGER_NETDEV_LINK_10);
+ DEFINE_NETDEV_TRIGGER(link_100, TRIGGER_NETDEV_LINK_100);
+ DEFINE_NETDEV_TRIGGER(link_1000, TRIGGER_NETDEV_LINK_1000);
++DEFINE_NETDEV_TRIGGER(link_2500, TRIGGER_NETDEV_LINK_2500);
++DEFINE_NETDEV_TRIGGER(link_5000, TRIGGER_NETDEV_LINK_5000);
++DEFINE_NETDEV_TRIGGER(link_10000, TRIGGER_NETDEV_LINK_10000);
+ DEFINE_NETDEV_TRIGGER(half_duplex, TRIGGER_NETDEV_HALF_DUPLEX);
+ DEFINE_NETDEV_TRIGGER(full_duplex, TRIGGER_NETDEV_FULL_DUPLEX);
+ DEFINE_NETDEV_TRIGGER(tx, TRIGGER_NETDEV_TX);
+@@ -422,6 +446,9 @@ static struct attribute *netdev_trig_attrs[] = {
+ 	&dev_attr_link_10.attr,
+ 	&dev_attr_link_100.attr,
+ 	&dev_attr_link_1000.attr,
++	&dev_attr_link_2500.attr,
++	&dev_attr_link_5000.attr,
++	&dev_attr_link_10000.attr,
+ 	&dev_attr_full_duplex.attr,
+ 	&dev_attr_half_duplex.attr,
+ 	&dev_attr_rx.attr,
+@@ -519,6 +546,9 @@ static void netdev_trig_work(struct work_struct *work)
+ 			 test_bit(TRIGGER_NETDEV_LINK_10, &trigger_data->mode) ||
+ 			 test_bit(TRIGGER_NETDEV_LINK_100, &trigger_data->mode) ||
+ 			 test_bit(TRIGGER_NETDEV_LINK_1000, &trigger_data->mode) ||
++			 test_bit(TRIGGER_NETDEV_LINK_2500, &trigger_data->mode) ||
++			 test_bit(TRIGGER_NETDEV_LINK_5000, &trigger_data->mode) ||
++			 test_bit(TRIGGER_NETDEV_LINK_10000, &trigger_data->mode) ||
+ 			 test_bit(TRIGGER_NETDEV_HALF_DUPLEX, &trigger_data->mode) ||
+ 			 test_bit(TRIGGER_NETDEV_FULL_DUPLEX, &trigger_data->mode);
+ 		interval = jiffies_to_msecs(
+diff --git a/include/linux/leds.h b/include/linux/leds.h
+index aa16dc2a8230f..1bdf7f5a0d7c0 100644
+--- a/include/linux/leds.h
++++ b/include/linux/leds.h
+@@ -588,6 +588,9 @@ enum led_trigger_netdev_modes {
+ 	TRIGGER_NETDEV_LINK_10,
+ 	TRIGGER_NETDEV_LINK_100,
+ 	TRIGGER_NETDEV_LINK_1000,
++	TRIGGER_NETDEV_LINK_2500,
++	TRIGGER_NETDEV_LINK_5000,
++	TRIGGER_NETDEV_LINK_10000,
+ 	TRIGGER_NETDEV_HALF_DUPLEX,
+ 	TRIGGER_NETDEV_FULL_DUPLEX,
+ 	TRIGGER_NETDEV_TX,
+-- 
+2.43.0
