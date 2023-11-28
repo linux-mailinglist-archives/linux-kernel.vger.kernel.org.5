@@ -2,150 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B657FB12D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 06:24:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 647CF7FB130
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 06:24:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343526AbjK1FY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 00:24:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47960 "EHLO
+        id S1343547AbjK1FYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 00:24:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232810AbjK1FY1 (ORCPT
+        with ESMTP id S1343531AbjK1FYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 00:24:27 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90CF6194
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 21:24:33 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7EA5C433C8;
-        Tue, 28 Nov 2023 05:24:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701149073;
-        bh=sIsBjrpSot3b7HbeiDj1WiAo9EQ85x5QrsxcU8uxZBM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PZYM5gfYm03LDxKFecMOeBwx5JVe8LekM4ojSyc/OpPTl0GC+2gZ5BUpizpddey6O
-         tzf44X/apOlirmH6b4SEvA5GYkdU/d/q38hLR3FwgtFiL6sNHDzlHPnMghA4BWVBTe
-         X3HHej83UxkZt2xlvM8qVSj4I5wGIjT7iJA0qypU25hZangjbevvoqc3Ysxxn5UR0L
-         QTSvPSTuWuUIxoCcQCnCBnOv2cmJjbVTvOvFxT3gilEk22daPjLZbJHre9b4YN7KDW
-         V1VWL+9WqpOjcGG8sMTRvt3wY2ggcQX+INb4THk9xDeUU0IC3Jnk1hU9+A0BQba4DJ
-         YmN9VAmYitnog==
-Date:   Tue, 28 Nov 2023 10:54:18 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Can Guo <quic_cang@quicinc.com>
-Cc:     bvanassche@acm.org, adrian.hunter@intel.com, beanhuo@micron.com,
-        avri.altman@wdc.com, junwoo80.lee@samsung.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        "Bao D . Nguyen" <quic_nguyenb@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 03/10] scsi: ufs: ufs-qcom: Setup host power mode
- during init
-Message-ID: <20231128052418.GD3088@thinkpad>
-References: <1700729190-17268-1-git-send-email-quic_cang@quicinc.com>
- <1700729190-17268-4-git-send-email-quic_cang@quicinc.com>
+        Tue, 28 Nov 2023 00:24:32 -0500
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59F03E1;
+        Mon, 27 Nov 2023 21:24:37 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id B38AA5C0258;
+        Tue, 28 Nov 2023 00:24:34 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Tue, 28 Nov 2023 00:24:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+         h=cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1701149074; x=1701235474; bh=j/
+        kPqcYndSCOmoY28HkcVqru2o7xDw2fZ6FyDxPFLZg=; b=MWN6zfzTaULv/jcTpx
+        dairjdgFtFGa75C9rjV2ckBz5kqPTkDzqm4XQKhJL1CQrIOtmTA2OKH7FuLctEX1
+        gltak6Ez/Zdc+iyMaJ3CwIJmX4qEpKYScMKrKyFkI8zpcI03vKDOWjVg7OS6qmsC
+        NKzRVZap0L3OxgckOrzv1n4Yp6glV7TnmTnbPn2C8KfLvQOYUxcz6Gt8pSh7m8lv
+        F+OFb7MVg/LoSUrqQoynyJUzAiLQkzdjApYoApkkS2DbFkJqlY9T+qro92tynOYT
+        cIUi/YELsmwu2ImWotKqZlOfPL6EFzfVW/0QcNuS+2M8Dmv6oXfE+GHx0G4r/SLC
+        nJLQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1701149074; x=1701235474; bh=j/kPqcYndSCOm
+        oY28HkcVqru2o7xDw2fZ6FyDxPFLZg=; b=dT8V0GJS0WHv9GGOln6Khl1VBwp31
+        acwT1UCRc+C48u8fX6OXvEOcwcTGpXFZvMYQuJdFezZ+IALpa1/Vf5iCOMISvoWm
+        qx4/xU05wT/DJduJ/4EGJjLU5d9NlVu8Ed4qBEtwp2DkZJggoyM7dsUyOSuK4CGn
+        9LBAowjyw27Nd8VNrQPjDijv0lxca6TKQCJV/c+Czs/ntQkhS3VXdjaJaFaEttJ5
+        fJyCy69Izucuh0CuVcbt7WoMpP90UZquaXZOMUFUFQoOloqqOQUG2a+BTJDe2BFv
+        aElAlxc/ITxzs1FDJnNMbd1c7pUb3VstKM+u7/jqg2jasBbbUYt+vR+bw==
+X-ME-Sender: <xms:knllZeMOqMlz_TFsaZ6BSlKNN9tAuee8Y8EwtYNh69rWGRmK4pOMjg>
+    <xme:knllZc9kKLW1h_xvXBJAMzpqEDdGXWRI8hvENVIWL_JkEZunzE-HSGynKSkQPUZUU
+    php4aZHLZhm7IRO1xM>
+X-ME-Received: <xmr:knllZVQ--dRPX38-Dwik5lOApcXH_dAdM4zjVB4I7WZC9XE2dHklte8QCSFNZfMMBIG_KZh5X1U4-D7CAh_Q4INtQxEVOPvdKQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeivddgkeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvrghkrghs
+    hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
+    hpqeenucggtffrrghtthgvrhhnpeejueevkefggfevgfffffehueeuhedvgeekkeefgeei
+    jeduvddvffejkeevvdffveenucffohhmrghinheptddqfeejqdhgvghnvghrihgtrdhith
+    dpkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
+    rghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:knllZettci65TzbvQv07YpQLBMpXSkmK6N1YEI1RUX2zkZvg-XMeKg>
+    <xmx:knllZWezYfCXZRolVqAqvyI7yeSvKTwLtq5MFQWvVo966vyMxrXPiA>
+    <xmx:knllZS2Jolb1Q5eHiK2-f1X1-rJ2u1h3_MjwgAkRP1_RhDOOoY_70g>
+    <xmx:knllZcvAQJBj25g2F2A764WAqIrkFASghJspcTZwT45X9vyhpZSqYg>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 28 Nov 2023 00:24:32 -0500 (EST)
+Date:   Tue, 28 Nov 2023 14:24:29 +0900
+From:   Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To:     Mario Limonciello <mario.limonciello@amd.com>,
+        Linux kernel regressions list <regressions@lists.linux.dev>,
+        a.mark.broadworth@gmail.com, matthias.schrumpf@freenet.de,
+        LKML <linux-kernel@vger.kernel.org>, aros@gmx.com,
+        bagasdotme@gmail.com,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: Regression from dcadfd7f7c74ef9ee415e072a19bdf6c085159eb
+Message-ID: <20231128052429.GA25379@workstation.local>
+Mail-Followup-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Linux kernel regressions list <regressions@lists.linux.dev>,
+        a.mark.broadworth@gmail.com, matthias.schrumpf@freenet.de,
+        LKML <linux-kernel@vger.kernel.org>, aros@gmx.com,
+        bagasdotme@gmail.com,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+References: <f878b188-3fe4-420c-9bcb-b431ac6088dd@amd.com>
+ <20231107121756.GA168964@workstation.local>
+ <318cc8da-f8d2-4307-866e-8c302dacf094@amd.com>
+ <20231108051638.GA194133@workstation.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1700729190-17268-4-git-send-email-quic_cang@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231108051638.GA194133@workstation.local>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 12:46:23AM -0800, Can Guo wrote:
-> Setup host power mode and its limitations during UFS host driver init to
-> avoid repetitive work during every power mode change.
+Hi Mario
+
+Following up on our last conversation, I purchase some hardware to
+attempt to retrieve outputs from serial port. Finally, I bought another
+mother board in used market which provides serial port from Super I/O
+chip (ASUS TUF Gaming X570-Plus). However, I have retrieved no helpful
+outputs yet when encountering the system reboot.
+
+As you mentioned, I check whether PCIe AER is enabled or not in the
+running kernel (Ubuntu 23.04 linux-image-6.2.0-37-generic). It is
+certainly enabled, however I can see nothing in the output as I noted.
+
+I experienced extra troubles relevant to AMD Ryzen machine and the issued
+PCIe device:
+
+* ASRock X570 Phantom Gaming 4 with AMD Ryzen 5 3600X does not detect
+  the card. We can see no corresponding entry in lspci.
+* After associating the card to vfio-pci, lspci command can reboot the
+  system even if firewire-ohci driver is not loaded. I can regenerate it
+  in both Gigabyte AX370-Gaming 5/ASUS TUF Gaming X570-plus with AMD
+  Ryzen 2400G.
+
+I'm plreased to see if you have extra ideas to get helpful output from
+the system. But I guess that I should start finding some workaround to
+avoid the issued access to register instead of investigating the reboot
+mechanism, sigh...
+
+Anyway, thanks for your help.
+
+
+Takashi Sakamoto
+
+On Wed, Nov 08, 2023 at 02:16:44PM +0900, Takashi Sakamoto wrote:
+> Hi Mario,
 > 
-> Acked-by: Andrew Halaney <ahalaney@redhat.com>
-> Co-developed-by: Bao D. Nguyen <quic_nguyenb@quicinc.com>
-> Signed-off-by: Bao D. Nguyen <quic_nguyenb@quicinc.com>
-> Signed-off-by: Can Guo <quic_cang@quicinc.com>
-
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-- Mani
-
-> ---
->  drivers/ufs/host/ufs-qcom.c | 21 ++++++++++++++-------
->  drivers/ufs/host/ufs-qcom.h |  1 +
->  2 files changed, 15 insertions(+), 7 deletions(-)
+> On Tue, Nov 07, 2023 at 03:27:08PM -0600, Mario Limonciello wrote:
+> > +linux-pci / Bjorn
+> > On 11/7/2023 06:17, Takashi Sakamoto wrote:
+> > > Hi Mario,
+> > > 
+> > > Thanks for the report.
+> > > 
+> > > I apologize for the inconvenience you and your reporter facing, however
+> > > I can not avoid to say that the problem appears to be specific to the AMD
+> > > Ryzen machines.
+> > 
+> > Unfortunately I don't have this 1394 hardware myself.  I was just looking at
+> > another completely unrelated issue on Bugzilla and noticed the report come
+> > up in my search and wanted to ensure it's on your radar already as the
+> > author as it's lingered a while.
 > 
-> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-> index cc30ad9..cc0eb37 100644
-> --- a/drivers/ufs/host/ufs-qcom.c
-> +++ b/drivers/ufs/host/ufs-qcom.c
-> @@ -898,7 +898,7 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
->  				struct ufs_pa_layer_attr *dev_req_params)
->  {
->  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> -	struct ufs_host_params host_params;
-> +	struct ufs_host_params *host_params = &host->host_params;
->  	int ret = 0;
->  
->  	if (!dev_req_params) {
-> @@ -908,12 +908,7 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
->  
->  	switch (status) {
->  	case PRE_CHANGE:
-> -		ufshcd_init_host_param(&host_params);
-> -
-> -		/* This driver only supports symmetic gear setting i.e., hs_tx_gear == hs_rx_gear */
-> -		host_params.hs_tx_gear = host_params.hs_rx_gear = ufs_qcom_get_hs_gear(hba);
-> -
-> -		ret = ufshcd_negotiate_pwr_param(&host_params, dev_max_params, dev_req_params);
-> +		ret = ufshcd_negotiate_pwr_param(host_params, dev_max_params, dev_req_params);
->  		if (ret) {
->  			dev_err(hba->dev, "%s: failed to determine capabilities\n",
->  					__func__);
-> @@ -1048,6 +1043,17 @@ static void ufs_qcom_advertise_quirks(struct ufs_hba *hba)
->  		hba->quirks |= UFSHCD_QUIRK_REINIT_AFTER_MAX_GEAR_SWITCH;
->  }
->  
-> +static void ufs_qcom_set_host_params(struct ufs_hba *hba)
-> +{
-> +	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> +	struct ufs_host_params *host_params = &host->host_params;
-> +
-> +	ufshcd_init_host_param(host_params);
-> +
-> +	/* This driver only supports symmetic gear setting i.e., hs_tx_gear == hs_rx_gear */
-> +	host_params->hs_tx_gear = host_params->hs_rx_gear = ufs_qcom_get_hs_gear(hba);
-> +}
-> +
->  static void ufs_qcom_set_caps(struct ufs_hba *hba)
->  {
->  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-> @@ -1272,6 +1278,7 @@ static int ufs_qcom_init(struct ufs_hba *hba)
->  
->  	ufs_qcom_set_caps(hba);
->  	ufs_qcom_advertise_quirks(hba);
-> +	ufs_qcom_set_host_params(hba);
->  
->  	err = ufs_qcom_ice_init(host);
->  	if (err)
-> diff --git a/drivers/ufs/host/ufs-qcom.h b/drivers/ufs/host/ufs-qcom.h
-> index 82cd143..11419eb 100644
-> --- a/drivers/ufs/host/ufs-qcom.h
-> +++ b/drivers/ufs/host/ufs-qcom.h
-> @@ -238,6 +238,7 @@ struct ufs_qcom_host {
->  
->  	struct gpio_desc *device_reset;
->  
-> +	struct ufs_host_params host_params;
->  	u32 phy_gear;
->  
->  	bool esi_enabled;
-> -- 
-> 2.7.4
+> It is your misfortune to face this kind of machine trouble.
 > 
-
--- 
-மணிவண்ணன் சதாசிவம்
+> In the report[1], Matthias Schrumpf and Mark Broadworth noted to use AMD
+> Ryzen 7 5800X on B550/X570 chipsets, and insert VT6307 in their PCIe bus.
+> I guess that the device attends PCI bridge (ASM1083) since VT6307 has PCI
+> interface only.
+> 
+> We can see MCE error in another report[2]. Unfortunately, the reporter,
+> Ian Donnelly, have less suspiction about machine architecture, and never
+> provides hardware information. But I believe that it comes from AMD Ryzen
+> machine. I transcribe the error here:
+> 
+> ```
+> [    0.860834] mce: [Hardware Error]: Machine check events logged
+> [    0.860834] microcode: CPU20: patch_level=0x0a201025
+> [    0.860835] microcode: CPU21: patch_level=0x0a201025
+> [    0.860836] microcode: CPU23: patch_level=0x0a201025
+> [    0.860836] microcode: CPU22: patch_level=0x0a201025
+> [    0.860837] mce: [Hardware Error]: CPU 17: Machine Check: 0 Bank 0: bc00080001010135
+> [    0.860845] fbcon: Taking over console
+> [    0.860847] mce: [Hardware Error]: TSC 0 ADDR fca000f0 MISC d012000000000000 IPID 1000b000000000 
+> [    0.860854] mce: [Hardware Error]: PROCESSOR 2:a20f10 TIME 1696955537 SOCKET 0 APIC b microcode a201025
+> [    0.860860] microcode: CPU0: patch_level=0x0a201025
+> [    0.861676] microcode: Microcode Update Driver: v2.2.
+> ```
+> 
+> Additionally, as I note in the PR[3], I observed cache-coherence failure
+> over memory dedicated for DMA transmission. The mapping is created by
+> `dmam_alloc_coherent()` and no need to have extra care such as streaming
+> API. However, the combination of ASM1083 and VT6307 provides me bogus
+> values from the memory in AMD Ryzen machine, and I can see no issue in
+> Intel machines.
+> 
+> Essentially, the host system reboots when firewire-ohci module in guest
+> system probes the PCI device for 1394 OHCI hardware provided by PCI
+> pass-though[4].
+> 
+> > > I've already received the similar report[1], and have been
+> > > investigating it in the last few weeks, then got the insight. Please take
+> > > a look at my short report about it in PR to Linus for 6.7-rc1:
+> > > https://lore.kernel.org/lkml/20231105144852.GA165906@workstation.local/
+> > > 
+> > > I can confirm that I have been abe to reproduce the problem on AMD Ryzen
+> > > machine. However, it's important to note that I have not observed the
+> > > problem on the following systems:
+> > 
+> > Any chance you (or anyone with the issue) has a serial output available?
+> > I think it would be really good to look at the circumstances surrounding the
+> > reboot.
+> >
+> > > 
+> > > * Intel machine (Sandy Bridge and Skylake generations)
+> > > * AMD machines predating Ryzen (Sempron 145)
+> > > * Machines using different 1394 OHCI hardware from other vendors such as
+> > >    TI
+> > > * VIA VT6307 connected directly to PCI slot (i.e. without the issued
+> > >    PCIe/PCI bridge)
+> > > 
+> > > Currently, I have not been able to obtain any useful debug output from
+> > > the Linux system or any hardware error reports when the system reboots.
+> > > It seems that the system reboots spontaneously. My assumption at this
+> > > point is that AMD Ryzen machines detect a specific hardware error
+> > > triggered by Ryzen machine quirk related to the combination of the Asmedia
+> > > ASM1083/1085 and VIA VT6306/6307/6308, leading to power reset.
+> > > 
+> > 
+> > Recent kernels have enabled PCI AER.  Could that be factoring in perhaps?
+> 
+> I ordered equipments for the workflow, and waiting for shipping, since
+> my motherboard has no interface for serial output.
+> 
+> (However, I predict that we can no helpful output via the interface.)
+> 
+> > > I genuinely appreciate your assistance in debugging this elusive
+> > > hardware issue. If any workaround specific to AMD Ryzen machine quirk is
+> > > required in PCI driver for 1394 OHCI hardware, I'm willing to apply it.
+> > > However, it is preferable to figure out the reboot mechanism at first,
+> > > I think.
+> > 
+> > Does the BIOS on these machines enable a watchdog timer?  If so, I'd suggest
+> > disabling that for a starting point.
+>  
+> For consumer use, the machine has no such function, I think. For
+> your information, this is the machine information I used:
+> 
+> * Ryzen 5 2400G
+> * Gigabyte Technology Co., Ltd. AX370-Gaming 5/AX370-Gaming 5
+>     * BIOS F51h 02/09/2023
+> 
+> > How about if you compile as a module and then modprobe.blacklist the module
+> > on kernel command line and load it later.  Can you trigger the fault/reboot
+> > this way?  If so, it at least rules out some conditions that happen during a
+> > race at boot.
+> 
+> Nowadays FireWire software stack is optional in the most of
+> distributions. I can encounter the same issue at deferred probing enough
+> after booting up, even if the load of system is very low.
+> 
+> > Looking more closely at the change, I would guess the fault is specifically
+> > in get_cycle_time().  I can see that the VIA devices do set
+> > QUIRK_CYCLE_TIMER which will cause additional reads.
+> 
+> I've already tested with the driver compiled without these codes, but the
+> system reboots again.
+> 
+> > Another guesses worth looking at is to see if iommu=pt or amd_iommu=off
+> > help.
+> > 
+> > If either of those help it could point at being a problem with
+> > get_cycle_time() and IOMMU.  The older systems you mentioned working
+> > probably didn't enable IOMMU by default but most AMD Ryzen systems do.
+> 
+> I already suspect platform IOMMU and kernel implementation, however it
+> is helpless to disable AMD SVM and IOMMU in BIOS settings. Of course, it
+> is helpless as well to provide any options to iommu in kernel command line.
+> 
+> If I had any opportunity to access to AMD machines for enterprise-grade
+> usage somehow, I would have done it. However, I am a private-time
+> contributor and what I can access to is the ones for consumer use
+> without any hardware support for RAS reporting.
+> 
+> 
+> [1] https://bugzilla.kernel.org/show_bug.cgi?id=217993
+> [2] https://bugzilla.kernel.org/show_bug.cgi?id=217994
+> [3] https://lore.kernel.org/lkml/20231105144852.GA165906@workstation.local/
+> [4] https://lore.kernel.org/lkml/20231016155657.GA7904@workstation.local/
+> 
+> Thanks
+> 
+> Takashi Sakamoto
