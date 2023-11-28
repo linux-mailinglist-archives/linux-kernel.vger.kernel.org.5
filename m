@@ -2,437 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F897FC23E
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC9F7FC23D
 	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346192AbjK1OJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 09:09:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37912 "EHLO
+        id S1345516AbjK1OH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 09:07:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346011AbjK1OJm (ORCPT
+        with ESMTP id S1345463AbjK1OHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 09:09:42 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBD291727
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:09:11 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-54b7ef7f4d5so2560546a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:09:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1701180550; x=1701785350; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=BjV3ZpluMSAVGQFB9cPNT2RxzFgFRhSQqvx9TZHEPH4=;
-        b=bY4tmeELKQ7HC6ZxG7RuOdPC8er3GV/EIvKCm7d5mGKDvjhES7zQOgMh8/o5GFZISf
-         fPwhZXU8s3PbMf8JV5wtkG98vuK/zB/lrLBs4sV8iakPrI4vZianGFOb6SKnjembcUcs
-         oU5OHT/m0K8mYcfS1ihZsNNPa2MyPFUKXkzFClfIqc7YppbBWVwbFYYO3x5u/gyNv/DO
-         S6jD8ZlOdDVDjz6vTb6R8dR26Q4gDATR/mYN/H/J7WSDZ68GYdsEKKEflpfQeB9qyFKn
-         caW/MF39mxusVsdTgQX9hOuOk1zl4k8YkUdCwK/sEu6b01TmMwVHns6DowFm+ko/Bk2z
-         n81Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701180550; x=1701785350;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BjV3ZpluMSAVGQFB9cPNT2RxzFgFRhSQqvx9TZHEPH4=;
-        b=K4bocTcQkVtnr2Udz02sAUSk8ln7BSn7GaXa8A7mFCBWOLHF7N+U4IpxmjO9+JBW1C
-         EVVCWvSyd2+7pa0wku0W2g67FMoCNh7pbyL1Y0a5GLPmAd6ONDHdyFSlJt4Jjo2WdiLY
-         qyydz5hPL6+RFlYStyYG4dhJkRqah7G9wMnc2/glRlmWKVVjOfXZxnZEEyEQBZ9q/IGR
-         qktvK8BZk3d0MhtAnnDIRX6twD379IBQl15EYcPd9KDvOEdISo8xBNFGFNOcuM00UvCj
-         JGTf/BH0a30xMgGSumT1Xl8J7la5UFCtVbTYHtx7XYOARqr0ZuhKi1D7L/nmLZC3ThmQ
-         Pk3Q==
-X-Gm-Message-State: AOJu0YyvFf+JhSf5gxJzy5hmWP8PjnIHAz0WB/LuwG15DV3HvOkDbas/
-        7pCvlIOqssUk3qliU+V4cAJrDg==
-X-Google-Smtp-Source: AGHT+IEAXchVtZYdjscX++YPGPNJsZu1H+5r0Dds70g5pOXcok4pxS/G993mwo5cEZ3zkwh2WBNWFQ==
-X-Received: by 2002:a50:baee:0:b0:54b:29f4:e22c with SMTP id x101-20020a50baee000000b0054b29f4e22cmr7107952ede.20.1701180549956;
-        Tue, 28 Nov 2023 06:09:09 -0800 (PST)
-Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
-        by smtp.gmail.com with ESMTPSA id c70-20020a509fcc000000b0054b3ead7c5dsm3262226edf.76.2023.11.28.06.09.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 06:09:09 -0800 (PST)
-From:   Naresh Solanki <naresh.solanki@9elements.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Naresh Solanki <naresh.solanki@9elements.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] regulator: event: Add regulator netlink event support
-Date:   Tue, 28 Nov 2023 14:07:16 +0000
-Message-ID: <20231128140718.3866978-1-naresh.solanki@9elements.com>
-X-Mailer: git-send-email 2.41.0
+        Tue, 28 Nov 2023 09:07:24 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D5E7B5;
+        Tue, 28 Nov 2023 06:07:31 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 8B5A721992;
+        Tue, 28 Nov 2023 14:07:29 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 696C11343E;
+        Tue, 28 Nov 2023 14:07:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id 5JUxFyH0ZWXyNgAAD6G6ig
+        (envelope-from <mhocko@suse.com>); Tue, 28 Nov 2023 14:07:29 +0000
+Date:   Tue, 28 Nov 2023 15:07:28 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Gregory Price <gourry.memverge@gmail.com>
+Cc:     linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, arnd@arndb.de, tglx@linutronix.de,
+        luto@kernel.org, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        tj@kernel.org, ying.huang@intel.com,
+        Gregory Price <gregory.price@memverge.com>
+Subject: Re: [RFC PATCH 04/11] mm/mempolicy: modify get_mempolicy call stack
+ to take a task argument
+Message-ID: <ZWX0IMfR3S3rRzen@tiehlicka>
+References: <20231122211200.31620-1-gregory.price@memverge.com>
+ <20231122211200.31620-5-gregory.price@memverge.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231122211200.31620-5-gregory.price@memverge.com>
+X-Spamd-Bar: +++++++++++++++
+X-Spam-Score: 15.00
+X-Rspamd-Server: rspamd1
+Authentication-Results: smtp-out1.suse.de;
+        dkim=none;
+        spf=fail (smtp-out1.suse.de: domain of mhocko@suse.com does not designate 2a07:de40:b281:104:10:150:64:97 as permitted sender) smtp.mailfrom=mhocko@suse.com;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine)
+X-Rspamd-Queue-Id: 8B5A721992
+X-Spamd-Result: default: False [15.00 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         R_SPF_FAIL(1.00)[-all];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
+         BAYES_HAM(-0.00)[23.75%];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+         RCVD_COUNT_THREE(0.00)[3];
+         MID_RHS_NOT_FQDN(0.50)[];
+         MX_GOOD(-0.01)[];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[19];
+         FREEMAIL_TO(0.00)[gmail.com];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam: Yes
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit introduces netlink event support to the regulator subsystem.
+On Wed 22-11-23 16:11:53, Gregory Price wrote:
+[...]
+> @@ -928,7 +929,16 @@ static long do_get_mempolicy(int *policy, nodemask_t *nmask,
+>  		 * vma/shared policy at addr is NULL.  We
+>  		 * want to return MPOL_DEFAULT in this case.
+>  		 */
+> -		mm = current->mm;
+> +		if (task == current) {
+> +			/*
+> +			 * original behavior allows a kernel task changing its
+> +			 * own policy to avoid the condition in get_task_mm,
+> +			 * so we'll directly access
+> +			 */
+> +			mm = task->mm;
+> +			mmget(mm);
 
-Changes:
-- Introduce event.c and regnl.h for netlink event handling.
-- Implement reg_generate_netlink_event to broadcast regulator events.
-- Update Makefile to include the new event.c file.
+Do we actually have any kernel thread that would call this? Does it
+actually make sense to support?
 
-Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+> +		} else
+> +			mm = get_task_mm(task);
+>  		mmap_read_lock(mm);
+>  		vma = vma_lookup(mm, addr);
+>  		if (!vma) {
+> @@ -947,8 +957,10 @@ static long do_get_mempolicy(int *policy, nodemask_t *nmask,
+>  		return -EINVAL;
+>  	else {
+>  		/* take a reference of the task policy now */
+> -		pol = current->mempolicy;
+> +		task_lock(task);
+> +		pol = task->mempolicy;
+>  		mpol_get(pol);
+> +		task_unlock(task);
+>  	}
+>  
+>  	if (!pol) {
+> @@ -962,12 +974,13 @@ static long do_get_mempolicy(int *policy, nodemask_t *nmask,
+>  			vma = NULL;
+>  			mmap_read_unlock(mm);
+>  			err = lookup_node(mm, addr);
+> +			mmput(mm);
+>  			if (err < 0)
+>  				goto out;
+>  			*policy = err;
+> -		} else if (pol == current->mempolicy &&
+> +		} else if (pol == task->mempolicy &&
+>  				pol->mode == MPOL_INTERLEAVE) {
+> -			*policy = next_node_in(current->il_prev, pol->nodes);
+> +			*policy = next_node_in(task->il_prev, pol->nodes);
 
----
-Chagnes in V3:
-- Add Kconfig option REGULATOR_NETLINK_EVENTS for regulator netlink
-  support
-- Add mechanism to avoid regulator name duplication
-- Add UAPI header for regulator with define's for regulator events &
-  netlink.
----
- drivers/regulator/Kconfig          | 10 ++++
- drivers/regulator/Makefile         |  1 +
- drivers/regulator/core.c           | 19 ++++++-
- drivers/regulator/event.c          | 86 ++++++++++++++++++++++++++++++
- drivers/regulator/regnl.h          |  8 +++
- include/linux/regulator/consumer.h | 47 +---------------
- include/uapi/regulator/regulator.h | 85 +++++++++++++++++++++++++++++
- 7 files changed, 209 insertions(+), 47 deletions(-)
- create mode 100644 drivers/regulator/event.c
- create mode 100644 drivers/regulator/regnl.h
- create mode 100644 include/uapi/regulator/regulator.h
+This is racy without task_lock which I do not think is helde but it also
+seems this is not a big deal. pol is ref. counted so it won't go away
+and if the task->mempolicy changes then the return value could be bogus
+but this seems acceptable. It would be good to put a comment here that
+this is actually deliberate.
 
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index f3ec24691378..00d3898ee599 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -56,6 +56,16 @@ config REGULATOR_USERSPACE_CONSUMER
- 
- 	  If unsure, say no.
- 
-+config REGULATOR_NETLINK_EVENTS
-+	tristate "Enable support for receiving regulator events via netlink"
-+	depends on NET
-+	help
-+	  Enabling this option allows the kernel to broadcast regulator events using
-+	  the netlink mechanism. User-space applications can subscribe to these events
-+	  for real-time updates on various regulator events.
-+
-+	  If unsure, say no.
-+
- config REGULATOR_88PG86X
- 	tristate "Marvell 88PG86X voltage regulators"
- 	depends on I2C
-diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
-index b2b059b5ee56..46fb569e6be8 100644
---- a/drivers/regulator/Makefile
-+++ b/drivers/regulator/Makefile
-@@ -5,6 +5,7 @@
- 
- 
- obj-$(CONFIG_REGULATOR) += core.o dummy.o fixed-helper.o helpers.o devres.o irq_helpers.o
-+obj-$(CONFIG_REGULATOR_NETLINK_EVENTS) += event.o
- obj-$(CONFIG_OF) += of_regulator.o
- obj-$(CONFIG_REGULATOR_FIXED_VOLTAGE) += fixed.o
- obj-$(CONFIG_REGULATOR_VIRTUAL_CONSUMER) += virtual.o
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index 4aa9ec8c22f3..a968dabb48f5 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -33,6 +33,7 @@
- 
- #include "dummy.h"
- #include "internal.h"
-+#include "regnl.h"
- 
- static DEFINE_WW_CLASS(regulator_ww_class);
- static DEFINE_MUTEX(regulator_nesting_mutex);
-@@ -4854,7 +4855,23 @@ static int _notifier_call_chain(struct regulator_dev *rdev,
- 				  unsigned long event, void *data)
- {
- 	/* call rdev chain first */
--	return blocking_notifier_call_chain(&rdev->notifier, event, data);
-+	int ret =  blocking_notifier_call_chain(&rdev->notifier, event, data);
-+
-+	if (IS_REACHABLE(CONFIG_REGULATOR_NETLINK_EVENTS)) {
-+		struct device *parent = rdev->dev.parent;
-+		const char *rname = rdev_get_name(rdev);
-+		char name[32];
-+
-+		/* Avoid duplicate debugfs directory names */
-+		if (parent && rname == rdev->desc->name) {
-+			snprintf(name, sizeof(name), "%s-%s", dev_name(parent),
-+				 rname);
-+			rname = name;
-+		}
-+		reg_generate_netlink_event(rname, event);
-+	}
-+
-+	return ret;
- }
- 
- int _regulator_bulk_get(struct device *dev, int num_consumers,
-diff --git a/drivers/regulator/event.c b/drivers/regulator/event.c
-new file mode 100644
-index 000000000000..77286b419f71
---- /dev/null
-+++ b/drivers/regulator/event.c
-@@ -0,0 +1,86 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <regulator/regulator.h>
-+#include <net/netlink.h>
-+#include <net/genetlink.h>
-+
-+#include "regnl.h"
-+
-+static unsigned int reg_event_seqnum;
-+
-+static const struct genl_multicast_group reg_event_mcgrps[] = {
-+	{ .name = REG_GENL_MCAST_GROUP_NAME, },
-+};
-+
-+static struct genl_family reg_event_genl_family __ro_after_init = {
-+	.module = THIS_MODULE,
-+	.name = REG_GENL_FAMILY_NAME,
-+	.version = REG_GENL_VERSION,
-+	.maxattr = REG_GENL_ATTR_MAX,
-+	.mcgrps = reg_event_mcgrps,
-+	.n_mcgrps = ARRAY_SIZE(reg_event_mcgrps),
-+};
-+
-+int reg_generate_netlink_event(const char *reg_name, u64 event)
-+{
-+	struct sk_buff *skb;
-+	struct nlattr *attr;
-+	struct reg_genl_event *edata;
-+	void *msg_header;
-+	int size;
-+
-+	/* allocate memory */
-+	size = nla_total_size(sizeof(struct reg_genl_event)) +
-+	    nla_total_size(0);
-+
-+	skb = genlmsg_new(size, GFP_ATOMIC);
-+	if (!skb)
-+		return -ENOMEM;
-+
-+	/* add the genetlink message header */
-+	msg_header = genlmsg_put(skb, 0, reg_event_seqnum++,
-+				 &reg_event_genl_family, 0,
-+				 REG_GENL_CMD_EVENT);
-+	if (!msg_header) {
-+		nlmsg_free(skb);
-+		return -ENOMEM;
-+	}
-+
-+	/* fill the data */
-+	attr = nla_reserve(skb, REG_GENL_ATTR_EVENT, sizeof(struct reg_genl_event));
-+	if (!attr) {
-+		nlmsg_free(skb);
-+		return -EINVAL;
-+	}
-+
-+	edata = nla_data(attr);
-+	memset(edata, 0, sizeof(struct reg_genl_event));
-+
-+	strscpy(edata->reg_name, reg_name, sizeof(edata->reg_name));
-+	edata->event = event;
-+
-+	/* send multicast genetlink message */
-+	genlmsg_end(skb, msg_header);
-+	size = genlmsg_multicast(&reg_event_genl_family, skb, 0, 0, GFP_ATOMIC);
-+
-+	return size;
-+}
-+
-+static int __init reg_event_genetlink_init(void)
-+{
-+	return genl_register_family(&reg_event_genl_family);
-+}
-+
-+static int __init reg_event_init(void)
-+{
-+	int error;
-+
-+	/* create genetlink for acpi event */
-+	error = reg_event_genetlink_init();
-+	if (error)
-+		pr_warn("Failed to create genetlink family for reg event\n");
-+
-+	return 0;
-+}
-+
-+fs_initcall(reg_event_init);
-diff --git a/drivers/regulator/regnl.h b/drivers/regulator/regnl.h
-new file mode 100644
-index 000000000000..0b27972bd523
---- /dev/null
-+++ b/drivers/regulator/regnl.h
-@@ -0,0 +1,8 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+
-+#ifndef __REGULATOR_EVENT_H
-+#define __REGULATOR_EVENT_H
-+
-+int reg_generate_netlink_event(const char *reg_name, u64 event);
-+
-+#endif
-diff --git a/include/linux/regulator/consumer.h b/include/linux/regulator/consumer.h
-index 39b666b40ea6..4660582a3302 100644
---- a/include/linux/regulator/consumer.h
-+++ b/include/linux/regulator/consumer.h
-@@ -33,6 +33,7 @@
- 
- #include <linux/err.h>
- #include <linux/suspend.h>
-+#include <regulator/regulator.h>
- 
- struct device;
- struct notifier_block;
-@@ -84,52 +85,6 @@ struct regulator_dev;
- #define REGULATOR_MODE_IDLE			0x4
- #define REGULATOR_MODE_STANDBY			0x8
- 
--/*
-- * Regulator notifier events.
-- *
-- * UNDER_VOLTAGE  Regulator output is under voltage.
-- * OVER_CURRENT   Regulator output current is too high.
-- * REGULATION_OUT Regulator output is out of regulation.
-- * FAIL           Regulator output has failed.
-- * OVER_TEMP      Regulator over temp.
-- * FORCE_DISABLE  Regulator forcibly shut down by software.
-- * VOLTAGE_CHANGE Regulator voltage changed.
-- *                Data passed is old voltage cast to (void *).
-- * DISABLE        Regulator was disabled.
-- * PRE_VOLTAGE_CHANGE   Regulator is about to have voltage changed.
-- *                      Data passed is "struct pre_voltage_change_data"
-- * ABORT_VOLTAGE_CHANGE Regulator voltage change failed for some reason.
-- *                      Data passed is old voltage cast to (void *).
-- * PRE_DISABLE    Regulator is about to be disabled
-- * ABORT_DISABLE  Regulator disable failed for some reason
-- *
-- * NOTE: These events can be OR'ed together when passed into handler.
-- */
--
--#define REGULATOR_EVENT_UNDER_VOLTAGE		0x01
--#define REGULATOR_EVENT_OVER_CURRENT		0x02
--#define REGULATOR_EVENT_REGULATION_OUT		0x04
--#define REGULATOR_EVENT_FAIL			0x08
--#define REGULATOR_EVENT_OVER_TEMP		0x10
--#define REGULATOR_EVENT_FORCE_DISABLE		0x20
--#define REGULATOR_EVENT_VOLTAGE_CHANGE		0x40
--#define REGULATOR_EVENT_DISABLE			0x80
--#define REGULATOR_EVENT_PRE_VOLTAGE_CHANGE	0x100
--#define REGULATOR_EVENT_ABORT_VOLTAGE_CHANGE	0x200
--#define REGULATOR_EVENT_PRE_DISABLE		0x400
--#define REGULATOR_EVENT_ABORT_DISABLE		0x800
--#define REGULATOR_EVENT_ENABLE			0x1000
--/*
-- * Following notifications should be emitted only if detected condition
-- * is such that the HW is likely to still be working but consumers should
-- * take a recovery action to prevent problems esacalating into errors.
-- */
--#define REGULATOR_EVENT_UNDER_VOLTAGE_WARN	0x2000
--#define REGULATOR_EVENT_OVER_CURRENT_WARN	0x4000
--#define REGULATOR_EVENT_OVER_VOLTAGE_WARN	0x8000
--#define REGULATOR_EVENT_OVER_TEMP_WARN		0x10000
--#define REGULATOR_EVENT_WARN_MASK		0x1E000
--
- /*
-  * Regulator errors that can be queried using regulator_get_error_flags
-  *
-diff --git a/include/uapi/regulator/regulator.h b/include/uapi/regulator/regulator.h
-new file mode 100644
-index 000000000000..8f6b78a6fa26
---- /dev/null
-+++ b/include/uapi/regulator/regulator.h
-@@ -0,0 +1,85 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+
-+#ifndef _UAPI_REGULATOR_H
-+#define _UAPI_REGULATOR_H
-+
-+#ifdef __KERNEL__
-+#include <linux/types.h>
-+#else
-+#include <stdint.h>
-+#endif
-+
-+/*
-+ * Regulator notifier events.
-+ *
-+ * UNDER_VOLTAGE  Regulator output is under voltage.
-+ * OVER_CURRENT   Regulator output current is too high.
-+ * REGULATION_OUT Regulator output is out of regulation.
-+ * FAIL           Regulator output has failed.
-+ * OVER_TEMP      Regulator over temp.
-+ * FORCE_DISABLE  Regulator forcibly shut down by software.
-+ * VOLTAGE_CHANGE Regulator voltage changed.
-+ *                Data passed is old voltage cast to (void *).
-+ * DISABLE        Regulator was disabled.
-+ * PRE_VOLTAGE_CHANGE   Regulator is about to have voltage changed.
-+ *                      Data passed is "struct pre_voltage_change_data"
-+ * ABORT_VOLTAGE_CHANGE Regulator voltage change failed for some reason.
-+ *                      Data passed is old voltage cast to (void *).
-+ * PRE_DISABLE    Regulator is about to be disabled
-+ * ABORT_DISABLE  Regulator disable failed for some reason
-+ *
-+ * NOTE: These events can be OR'ed together when passed into handler.
-+ */
-+
-+#define REGULATOR_EVENT_UNDER_VOLTAGE		0x01
-+#define REGULATOR_EVENT_OVER_CURRENT		0x02
-+#define REGULATOR_EVENT_REGULATION_OUT		0x04
-+#define REGULATOR_EVENT_FAIL			0x08
-+#define REGULATOR_EVENT_OVER_TEMP		0x10
-+#define REGULATOR_EVENT_FORCE_DISABLE		0x20
-+#define REGULATOR_EVENT_VOLTAGE_CHANGE		0x40
-+#define REGULATOR_EVENT_DISABLE			0x80
-+#define REGULATOR_EVENT_PRE_VOLTAGE_CHANGE	0x100
-+#define REGULATOR_EVENT_ABORT_VOLTAGE_CHANGE	0x200
-+#define REGULATOR_EVENT_PRE_DISABLE		0x400
-+#define REGULATOR_EVENT_ABORT_DISABLE		0x800
-+#define REGULATOR_EVENT_ENABLE			0x1000
-+/*
-+ * Following notifications should be emitted only if detected condition
-+ * is such that the HW is likely to still be working but consumers should
-+ * take a recovery action to prevent problems esacalating into errors.
-+ */
-+#define REGULATOR_EVENT_UNDER_VOLTAGE_WARN	0x2000
-+#define REGULATOR_EVENT_OVER_CURRENT_WARN	0x4000
-+#define REGULATOR_EVENT_OVER_VOLTAGE_WARN	0x8000
-+#define REGULATOR_EVENT_OVER_TEMP_WARN		0x10000
-+#define REGULATOR_EVENT_WARN_MASK		0x1E000
-+
-+struct reg_genl_event {
-+	char reg_name[32];
-+	uint64_t event;
-+};
-+
-+/* attributes of reg_genl_family */
-+enum {
-+	REG_GENL_ATTR_UNSPEC,
-+	REG_GENL_ATTR_EVENT,	/* reg event info needed by user space */
-+	__REG_GENL_ATTR_MAX,
-+};
-+
-+#define REG_GENL_ATTR_MAX (__REG_GENL_ATTR_MAX - 1)
-+
-+/* commands supported by the reg_genl_family */
-+enum {
-+	REG_GENL_CMD_UNSPEC,
-+	REG_GENL_CMD_EVENT,	/* kernel->user notifications for reg events */
-+	__REG_GENL_CMD_MAX,
-+};
-+
-+#define REG_GENL_CMD_MAX (__REG_GENL_CMD_MAX - 1)
-+
-+#define REG_GENL_FAMILY_NAME		"reg_event"
-+#define REG_GENL_VERSION		0x01
-+#define REG_GENL_MCAST_GROUP_NAME	"reg_mc_group"
-+
-+#endif /* _UAPI_REGULATOR_H */
-
-base-commit: 753e4d5c433da57da75dd4c3e1aececc8e874a62
 -- 
-2.41.0
-
+Michal Hocko
+SUSE Labs
