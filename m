@@ -2,122 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B337E7FB219
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 07:49:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B548E7FB21A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 07:50:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343662AbjK1Gtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 01:49:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39076 "EHLO
+        id S1343661AbjK1GuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 01:50:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbjK1Gtm (ORCPT
+        with ESMTP id S231540AbjK1GuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 01:49:42 -0500
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 119BBE1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 22:49:46 -0800 (PST)
-Received: from dlp.unisoc.com ([10.29.3.86])
-        by SHSQR01.spreadtrum.com with ESMTP id 3AS6mhXG087957;
-        Tue, 28 Nov 2023 14:48:43 +0800 (+08)
-        (envelope-from Zhiguo.Niu@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
-        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4SfXvy5tlyz2K1r9S;
-        Tue, 28 Nov 2023 14:43:10 +0800 (CST)
-Received: from bj08434pcu.spreadtrum.com (10.0.73.87) by
- BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Tue, 28 Nov 2023 14:48:41 +0800
-From:   Zhiguo Niu <zhiguo.niu@unisoc.com>
-To:     <jaegeuk@kernel.org>, <chao@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <niuzhiguo84@gmail.com>,
-        <zhiguo.niu@unisoc.com>, <hongyu.jin@unisoc.com>
-Subject: [PATCH V2] f2fs: show more discard status by sysfs
-Date:   Tue, 28 Nov 2023 14:48:16 +0800
-Message-ID: <1701154096-23883-1-git-send-email-zhiguo.niu@unisoc.com>
-X-Mailer: git-send-email 1.9.1
+        Tue, 28 Nov 2023 01:50:08 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 464D2E1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 22:50:15 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3030C433C7;
+        Tue, 28 Nov 2023 06:50:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701154214;
+        bh=BijUODoSlZIznO9rdGnXggiSdi32BpO3PHuXhYrN1B8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=if9fM89P+gYlCDnvkkF1Yr+BLEwcjrzHNVmL7eGBgP+mcsTCAA44Zo/jA2dVG0hka
+         h/LUzMc86Pns899eb+eBzUHUyopA70K0VId+L6bo9UvWEtksLRnYfQgsCIcyFXTmsA
+         StTDz/fcXiBOKdqidbSxUBOYr9dC1xwA/C8VFRnyTj6XuPag4Tu8h7UGU8HWcwBG9+
+         1fH3R1gOS/OEy8/WIfOf04Wk3ofHB909dr1lvVQRSa/GLjFVYWIitbmdb/iG2c0hqj
+         gI9GkHgvnjBOAPs5NT6aeOVlwPQnvsC/4BEjUwfK4dSUKeT8i6bctj0fIX1Dbg8u2L
+         G9GIlEM7e/Y1Q==
+Date:   Tue, 28 Nov 2023 08:49:57 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Alexandru Elisei <alexandru.elisei@arm.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
+        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
+        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
+        hughd@google.com, pcc@google.com, steven.price@arm.com,
+        anshuman.khandual@arm.com, vincenzo.frascino@arm.com,
+        david@redhat.com, eugenis@google.com, kcc@google.com,
+        hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC v2 04/27] mm: migrate/mempolicy: Add hook to modify
+ migration target gfp
+Message-ID: <20231128064957.GI636165@kernel.org>
+References: <20231119165721.9849-1-alexandru.elisei@arm.com>
+ <20231119165721.9849-5-alexandru.elisei@arm.com>
+ <20231125100322.GH636165@kernel.org>
+ <ZWSDGGJDWDtY0G35@raptor>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.0.73.87]
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- BJMBX02.spreadtrum.com (10.0.64.8)
-X-MAIL: SHSQR01.spreadtrum.com 3AS6mhXG087957
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWSDGGJDWDtY0G35@raptor>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current pending_discard attr just only shows the discard_cmd_cnt
-information. More discard status can be shown so that we can check
-them through sysfs when needed.
+On Mon, Nov 27, 2023 at 11:52:56AM +0000, Alexandru Elisei wrote:
+> Hi Mike,
+> 
+> I really appreciate you having a look!
+> 
+> On Sat, Nov 25, 2023 at 12:03:22PM +0200, Mike Rapoport wrote:
+> > On Sun, Nov 19, 2023 at 04:56:58PM +0000, Alexandru Elisei wrote:
+> > > It might be desirable for an architecture to modify the gfp flags used to
+> > > allocate the destination page for migration based on the page that it is
+> > > being replaced. For example, if an architectures has metadata associated
+> > > with a page (like arm64, when the memory tagging extension is implemented),
+> > > it can request that the destination page similarly has storage for tags
+> > > already allocated.
+> > > 
+> > > No functional change.
+> > > 
+> > > Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> > > ---
+> > >  include/linux/migrate.h | 4 ++++
+> > >  mm/mempolicy.c          | 2 ++
+> > >  mm/migrate.c            | 3 +++
+> > >  3 files changed, 9 insertions(+)
+> > > 
+> > > diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+> > > index 2ce13e8a309b..0acef592043c 100644
+> > > --- a/include/linux/migrate.h
+> > > +++ b/include/linux/migrate.h
+> > > @@ -60,6 +60,10 @@ struct movable_operations {
+> > >  /* Defined in mm/debug.c: */
+> > >  extern const char *migrate_reason_names[MR_TYPES];
+> > >  
+> > > +#ifndef arch_migration_target_gfp
+> > > +#define arch_migration_target_gfp(src, gfp) 0
+> > > +#endif
+> > > +
+> > >  #ifdef CONFIG_MIGRATION
+> > >  
+> > >  void putback_movable_pages(struct list_head *l);
+> > > diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> > > index 10a590ee1c89..50bc43ab50d6 100644
+> > > --- a/mm/mempolicy.c
+> > > +++ b/mm/mempolicy.c
+> > > @@ -1182,6 +1182,7 @@ static struct folio *alloc_migration_target_by_mpol(struct folio *src,
+> > >  
+> > >  		h = folio_hstate(src);
+> > >  		gfp = htlb_alloc_mask(h);
+> > > +		gfp |= arch_migration_target_gfp(src, gfp);
+> > 
+> > I think it'll be more robust to have arch_migration_target_gfp() to modify
+> > the flags and return the new mask with added (or potentially removed)
+> > flags.
+> 
+> I did it this way so an arch won't be able to remove flags set by the MM code.
+> There's a similar pattern in do_mmap() -> calc_vm_flag_bits() ->
+> arch_calc_vm_flag_bits().
 
-Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
----
-changes of v2: Improve the patch according to Chao's suggestions.
----
----
- Documentation/ABI/testing/sysfs-fs-f2fs |  6 ++++++
- fs/f2fs/sysfs.c                         | 18 ++++++++++++++++++
- 2 files changed, 24 insertions(+)
+Ok, just add a sentence about it to the commit message.
+ 
+> Thanks,
+> Alex
+> 
+> > 
+> > >  		nodemask = policy_nodemask(gfp, pol, ilx, &nid);
+> > >  		return alloc_hugetlb_folio_nodemask(h, nid, nodemask, gfp);
+> > >  	}
+> > > @@ -1190,6 +1191,7 @@ static struct folio *alloc_migration_target_by_mpol(struct folio *src,
+> > >  		gfp = GFP_TRANSHUGE;
+> > >  	else
+> > >  		gfp = GFP_HIGHUSER_MOVABLE | __GFP_RETRY_MAYFAIL | __GFP_COMP;
+> > > +	gfp |= arch_migration_target_gfp(src, gfp);
+> > >  
+> > >  	page = alloc_pages_mpol(gfp, order, pol, ilx, nid);
+> > >  	return page_rmappable_folio(page);
+> > 
+> > -- 
+> > Sincerely yours,
+> > Mike.
+> > 
 
-diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
-index 36c3cb5..c6970e5 100644
---- a/Documentation/ABI/testing/sysfs-fs-f2fs
-+++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-@@ -498,6 +498,12 @@ Description:	Show status of f2fs checkpoint in real time.
- 		CP_RESIZEFS_FLAG		0x00004000
- 		=============================== ==============================
- 
-+What:		/sys/fs/f2fs/<disk>/stat/discard_status
-+Date:		November 2023
-+Contact:	"Zhiguo Niu" <zhiguo.niu@unisoc.com>
-+Description:	Show status of f2fs discard in real time, including
-+		"issued discard","queued discard" and "undiscard blocks".
-+
- What:		/sys/fs/f2fs/<disk>/ckpt_thread_ioprio
- Date:		January 2021
- Contact:	"Daeho Jeong" <daehojeong@google.com>
-diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-index 417fae96..2b80116 100644
---- a/fs/f2fs/sysfs.c
-+++ b/fs/f2fs/sysfs.c
-@@ -134,6 +134,22 @@ static ssize_t cp_status_show(struct f2fs_attr *a,
- 	return sysfs_emit(buf, "%x\n", le32_to_cpu(F2FS_CKPT(sbi)->ckpt_flags));
- }
- 
-+static ssize_t discard_status_show(struct f2fs_attr *a,
-+		struct f2fs_sb_info *sbi, char *buf)
-+{
-+	struct discard_cmd_control *dcc = SM_I(sbi)->dcc_info;
-+
-+	if (!dcc)
-+		return -EINVAL;
-+
-+	return sysfs_emit(buf, "%llu, %llu, %u\n",
-+			(unsigned long long)atomic_read(
-+				&dcc->issued_discard),
-+			(unsigned long long)atomic_read(
-+				&dcc->queued_discard),
-+			dcc->undiscard_blks);
-+}
-+
- static ssize_t pending_discard_show(struct f2fs_attr *a,
- 		struct f2fs_sb_info *sbi, char *buf)
- {
-@@ -1197,9 +1213,11 @@ static ssize_t f2fs_sb_feature_show(struct f2fs_attr *a,
- 
- F2FS_GENERAL_RO_ATTR(sb_status);
- F2FS_GENERAL_RO_ATTR(cp_status);
-+F2FS_GENERAL_RO_ATTR(discard_status);
- static struct attribute *f2fs_stat_attrs[] = {
- 	ATTR_LIST(sb_status),
- 	ATTR_LIST(cp_status),
-+	ATTR_LIST(discard_status),
- 	NULL,
- };
- ATTRIBUTE_GROUPS(f2fs_stat);
 -- 
-1.9.1
-
+Sincerely yours,
+Mike.
