@@ -2,267 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 360757FC2B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF087FC242
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346235AbjK1QCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 11:02:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39162 "EHLO
+        id S1346456AbjK1QCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:02:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344653AbjK1QCj (ORCPT
+        with ESMTP id S1346092AbjK1QCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 11:02:39 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492258E;
-        Tue, 28 Nov 2023 08:02:45 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50aab20e828so7983526e87.2;
-        Tue, 28 Nov 2023 08:02:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701187363; x=1701792163; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ADK4UzT2nKfv38QmGQVpz2/R0ySW0ULt4MZjYJMnC70=;
-        b=KinhKpEt/BKSYRhPKaeFuJVjyTcrx5BMwKbwYVZPke8vtYmJBsFEST+ciR0G1+xA++
-         r2NiOGgAoussGTAZqnkzTOQ78EAXzHby2aUHoerxMofnNwsGMCFaKUYpBqbC2KxBxJFr
-         QoHE+drn5y94clRbk/kbbcbL6xfkbfIWqtZuDA7k8OtWPZZG4ACWjd74IT83EjhoTovG
-         XjrymeT82p3Hx58H4vcf+F+RzkO9eSSdATY9Q0v07wLFsvYNihzPmj111kTCYY5oVYzT
-         1iFLmBTt1zcfzmlXnSZoOIXvmKuCVG18CPspFpcO4ryp/LsxdroluAqJD/j7E73PyZo4
-         D43A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701187363; x=1701792163;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ADK4UzT2nKfv38QmGQVpz2/R0ySW0ULt4MZjYJMnC70=;
-        b=oO/lzZnWbVEcVyPO0Z4++6Ff0DqDP1YON/cpUMi1nPp9oT0L0YJ4XgeL7yeGBCb7Eh
-         0C+TEu/izIqJYQ1ySuJFSu8SZqazoVga/ASJCA1+DGfzrpJBO00cCYgooiqLz+++jUbG
-         ICfUm4xC9+LMUSBNmxAzSZt+ltz/KWMYwKF2ht1BalBVOCh9ZKI1RTCchfQwXNakmLLC
-         ge9kx47zKjefaxRU5PP1hZRBRbpYB0AcFVUEsUlno5f3y9KJEHj4NGm9Dkm7/zjIu1B/
-         xIJErGsc0BBjbb2oIMmmgfu4cAWk4t/86RlQExf7XocrT9oWP2unHcDMU/sYv0ZB+wM3
-         tRww==
-X-Gm-Message-State: AOJu0YzT4SPrm03vxf28Vsmp9yoBFRT7F6ryxncTc1iGyVb0p0JhRueW
-        BgTcRaWRIpWD5oRZWMfhmFMSgI29w+sfiQIx1OjSH71X
-X-Google-Smtp-Source: AGHT+IHVpBNXzWxOGjaZ+/ar7Exoa9BOXEqnHi4S3/80jkowAyPk5R1/bxAelfcY283RguuSs3LmPvtidVja3NbmfKo=
-X-Received: by 2002:ac2:58f8:0:b0:4fa:f96c:745f with SMTP id
- v24-20020ac258f8000000b004faf96c745fmr9014758lfo.38.1701187362785; Tue, 28
- Nov 2023 08:02:42 -0800 (PST)
+        Tue, 28 Nov 2023 11:02:41 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 61CD719A
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:02:47 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8F0B4C15;
+        Tue, 28 Nov 2023 08:03:34 -0800 (PST)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5A77E3F6C4;
+        Tue, 28 Nov 2023 08:02:46 -0800 (PST)
+Message-ID: <69db9205-cb9a-425a-a48e-6d68d1f900f1@arm.com>
+Date:   Tue, 28 Nov 2023 16:02:42 +0000
 MIME-Version: 1.0
-References: <391d524c496acc97a8801d8bea80976f58485810.1700676682.git.dxu@dxuuu.xyz>
- <0f210cef-c6e9-41c1-9ba8-225f046435e5@linux.dev> <CAADnVQ+sEsUyNYPeZyOf2PcCnxOvOqw4bUuAuMofCU14szTGvg@mail.gmail.com>
- <3ec6c068-7f95-419a-a0ae-a901f95e4838@linux.dev> <18e43cdf65e7ba0d8f6912364fbc5b08a6928b35.camel@gmail.com>
- <uc5fv3keghefszuvono7aclgtjtgjnnia3i54ynejmyrs42ser@bwdpq5gmuvub>
- <0535eb913f1a0c2d3c291478fde07e0aa2b333f1.camel@gmail.com>
- <42f9bf0d-695a-412d-bea5-cb7036fa7418@linux.dev> <a5a84482-13ef-47d8-bf07-8017060a5d64@linux.dev>
- <xehp2qvy5cyaairbnfhem4hvbsl26blo4zzu7z6ywbp26jcwyn@hgp3v2q4ud7o>
- <53jaqi72ef4gynyafxidl5veb54kfs7dttxezkarwg75t7szd4@cvfg5pc7pyum> <f68c01d6-bf6b-4b76-8b20-53e9f4a61fcd@linux.dev>
-In-Reply-To: <f68c01d6-bf6b-4b76-8b20-53e9f4a61fcd@linux.dev>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 28 Nov 2023 08:02:30 -0800
-Message-ID: <CAEf4BzaUSBGQ3cWcAR7R3UNUrPOq6VrPA=p8G9oiCttBcQNQEw@mail.gmail.com>
-Subject: Re: [PATCH ipsec-next v1 6/7] bpf: selftests: test_tunnel: Disable
- CO-RE relocations
-To:     Yonghong Song <yonghong.song@linux.dev>
-Cc:     Daniel Xu <dxu@dxuuu.xyz>, Eduard Zingerman <eddyz87@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        antony.antony@secunet.com, Mykola Lysenko <mykolal@fb.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, devel@linux-ipsec.org,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] iommufd/selftest: Use a fwnode to distinguish devices
+Content-Language: en-GB
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     joro@8bytes.org, kevin.tian@intel.com, will@kernel.org,
+        iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <cover.1701165201.git.robin.murphy@arm.com>
+ <e365c08b21a8d0b60e6f5d1411be6701c1a06a53.1701165201.git.robin.murphy@arm.com>
+ <20231128144331.GA1191405@ziepe.ca>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20231128144331.GA1191405@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 8:06=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
->
->
-> On 11/27/23 7:01 PM, Daniel Xu wrote:
-> > On Mon, Nov 27, 2023 at 02:45:11PM -0600, Daniel Xu wrote:
-> >> On Sun, Nov 26, 2023 at 09:53:04PM -0800, Yonghong Song wrote:
-> >>> On 11/27/23 12:44 AM, Yonghong Song wrote:
-> >>>> On 11/26/23 8:52 PM, Eduard Zingerman wrote:
-> >>>>> On Sun, 2023-11-26 at 18:04 -0600, Daniel Xu wrote:
-> >>>>> [...]
-> >>>>>>> Tbh I'm not sure. This test passes with preserve_static_offset
-> >>>>>>> because it suppresses preserve_access_index. In general clang
-> >>>>>>> translates bitfield access to a set of IR statements like:
-> >>>>>>>
-> >>>>>>>     C:
-> >>>>>>>       struct foo {
-> >>>>>>>         unsigned _;
-> >>>>>>>         unsigned a:1;
-> >>>>>>>         ...
-> >>>>>>>       };
-> >>>>>>>       ... foo->a ...
-> >>>>>>>
-> >>>>>>>     IR:
-> >>>>>>>       %a =3D getelementptr inbounds %struct.foo, ptr %0, i32 0, i=
-32 1
-> >>>>>>>       %bf.load =3D load i8, ptr %a, align 4
-> >>>>>>>       %bf.clear =3D and i8 %bf.load, 1
-> >>>>>>>       %bf.cast =3D zext i8 %bf.clear to i32
-> >>>>>>>
-> >>>>>>> With preserve_static_offset the getelementptr+load are replaced b=
-y a
-> >>>>>>> single statement which is preserved as-is till code generation,
-> >>>>>>> thus load with align 4 is preserved.
-> >>>>>>>
-> >>>>>>> On the other hand, I'm not sure that clang guarantees that load o=
-r
-> >>>>>>> stores used for bitfield access would be always aligned according=
- to
-> >>>>>>> verifier expectations.
-> >>>>>>>
-> >>>>>>> I think we should check if there are some clang knobs that preven=
-t
-> >>>>>>> generation of unaligned memory access. I'll take a look.
-> >>>>>> Is there a reason to prefer fixing in compiler? I'm not opposed to=
- it,
-> >>>>>> but the downside to compiler fix is it takes years to propagate an=
-d
-> >>>>>> sprinkles ifdefs into the code.
-> >>>>>>
-> >>>>>> Would it be possible to have an analogue of BPF_CORE_READ_BITFIELD=
-()?
-> >>>>> Well, the contraption below passes verification, tunnel selftest
-> >>>>> appears to work. I might have messed up some shifts in the macro,
-> >>>>> though.
-> >>>> I didn't test it. But from high level it should work.
-> >>>>
-> >>>>> Still, if clang would peek unlucky BYTE_{OFFSET,SIZE} for a particu=
-lar
-> >>>>> field access might be unaligned.
-> >>>> clang should pick a sensible BYTE_SIZE/BYTE_OFFSET to meet
-> >>>> alignment requirement. This is also required for BPF_CORE_READ_BITFI=
-ELD.
-> >>>>
-> >>>>> ---
-> >>>>>
-> >>>>> diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> >>>>> b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> >>>>> index 3065a716544d..41cd913ac7ff 100644
-> >>>>> --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> >>>>> +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> >>>>> @@ -9,6 +9,7 @@
-> >>>>>    #include "vmlinux.h"
-> >>>>>    #include <bpf/bpf_helpers.h>
-> >>>>>    #include <bpf/bpf_endian.h>
-> >>>>> +#include <bpf/bpf_core_read.h>
-> >>>>>    #include "bpf_kfuncs.h"
-> >>>>>    #include "bpf_tracing_net.h"
-> >>>>>    @@ -144,6 +145,38 @@ int ip6gretap_get_tunnel(struct __sk_buff *=
-skb)
-> >>>>>        return TC_ACT_OK;
-> >>>>>    }
-> >>>>>    +#define BPF_CORE_WRITE_BITFIELD(s, field, new_val) ({          =
-  \
-> >>>>> +    void *p =3D (void *)s + __CORE_RELO(s, field, BYTE_OFFSET);   =
- \
-> >>>>> +    unsigned byte_size =3D __CORE_RELO(s, field, BYTE_SIZE);      =
-  \
-> >>>>> +    unsigned lshift =3D __CORE_RELO(s, field, LSHIFT_U64); \
-> >>>>> +    unsigned rshift =3D __CORE_RELO(s, field, RSHIFT_U64); \
-> >>>>> +    unsigned bit_size =3D (rshift - lshift);                \
-> >>>>> +    unsigned long long nval, val, hi, lo;                \
-> >>>>> +                                    \
-> >>>>> +    asm volatile("" : "=3Dr"(p) : "0"(p));                \
-> >>>> Use asm volatile("" : "+r"(p)) ?
-> >>>>
-> >>>>> +                                    \
-> >>>>> +    switch (byte_size) {                        \
-> >>>>> +    case 1: val =3D *(unsigned char *)p; break;            \
-> >>>>> +    case 2: val =3D *(unsigned short *)p; break;            \
-> >>>>> +    case 4: val =3D *(unsigned int *)p; break;            \
-> >>>>> +    case 8: val =3D *(unsigned long long *)p; break;            \
-> >>>>> +    }                                \
-> >>>>> +    hi =3D val >> (bit_size + rshift);                \
-> >>>>> +    hi <<=3D bit_size + rshift;                    \
-> >>>>> +    lo =3D val << (bit_size + lshift);                \
-> >>>>> +    lo >>=3D bit_size + lshift;                    \
-> >>>>> +    nval =3D new_val;                            \
-> >>>>> +    nval <<=3D lshift;                        \
-> >>>>> +    nval >>=3D rshift;                        \
-> >>>>> +    val =3D hi | nval | lo;                        \
-> >>>>> +    switch (byte_size) {                        \
-> >>>>> +    case 1: *(unsigned char *)p      =3D val; break;            \
-> >>>>> +    case 2: *(unsigned short *)p     =3D val; break;            \
-> >>>>> +    case 4: *(unsigned int *)p       =3D val; break;            \
-> >>>>> +    case 8: *(unsigned long long *)p =3D val; break;            \
-> >>>>> +    }                                \
-> >>>>> +})
-> >>>> I think this should be put in libbpf public header files but not sur=
-e
-> >>>> where to put it. bpf_core_read.h although it is core write?
-> >>>>
-> >>>> But on the other hand, this is a uapi struct bitfield write,
-> >>>> strictly speaking, CORE write is really unnecessary here. It
-> >>>> would be great if we can relieve users from dealing with
-> >>>> such unnecessary CORE writes. In that sense, for this particular
-> >>>> case, I would prefer rewriting the code by using byte-level
-> >>>> stores...
-> >>> or preserve_static_offset to clearly mean to undo bitfield CORE ...
-> >> Ok, I will do byte-level rewrite for next revision.
-> > [...]
-> >
-> > This patch seems to work: https://pastes.dxuuu.xyz/0glrf9 .
-> >
-> > But I don't think it's very pretty. Also I'm seeing on the internet tha=
-t
-> > people are saying the exact layout of bitfields is compiler dependent.
->
-> Any reference for this (exact layout of bitfields is compiler dependent)?
->
-> > So I am wondering if these byte sized writes are correct. For that
-> > matter, I am wondering how the GCC generated bitfield accesses line up
-> > with clang generated BPF bytecode. Or why uapi contains a bitfield.
->
-> One thing for sure is memory layout of bitfields should be the same
-> for both clang and gcc as it is determined by C standard. Register
-> representation and how to manipulate could be different for different
-> compilers.
->
-> >
-> > WDYT, should I send up v2 with this or should I do one of the other
-> > approaches in this thread?
->
-> Daniel, look at your patch, since we need to do CORE_READ for
-> those bitfields any way, I think Eduard's patch with
-> BPF_CORE_WRITE_BITFIELD does make sense and it also makes code
-> easy to understand. Could you take Eduard's patch for now?
-> Whether and where to put BPF_CORE_WRITE_BITFIELD macros
-> can be decided later.
+On 28/11/2023 2:43 pm, Jason Gunthorpe wrote:
+> On Tue, Nov 28, 2023 at 10:42:11AM +0000, Robin Murphy wrote:
+>> With bus ops gone, the trick of registering against a specific bus no
+>> longer really works, and we start getting given devices from other buses
+>> to probe,
+> 
+> Make sense
+> 
+>> which leads to spurious groups for devices with no IOMMU on
+>> arm64,
+> 
+> I'm not sure I'm fully understanding what this means?
 
-bpf_core_read.h name is... let's say "historical" and was never meant
-to limit stuff there to read-only or anything like that. Think about
-it as just bpf_core.h where all the CO-RE-related stuff goes. So
-please put BPF_CORE_WRITE_BITFIELD there.
+It means on my arm64 ACPI system, random platform devices which are 
+created after iommufd_test_init() has run get successfully probed by the 
+mock driver, unexpectedly:
 
->
-> >
-> > I am ok with any of the approaches.
-> >
-> > Thanks,
-> > Daniel
-> >
+root@crazy-taxi:~# ls /sys/kernel/iommu_groups/*/devices
+/sys/kernel/iommu_groups/0/devices:
+0000:07:00.0
+
+/sys/kernel/iommu_groups/1/devices:
+'Fixed MDIO bus.0'
+
+/sys/kernel/iommu_groups/10/devices:
+0001:00:00.0
+
+/sys/kernel/iommu_groups/2/devices:
+0000:04:05.0
+
+/sys/kernel/iommu_groups/3/devices:
+0000:08:00.0
+
+/sys/kernel/iommu_groups/4/devices:
+0000:09:00.0
+
+/sys/kernel/iommu_groups/5/devices:
+0001:01:00.0
+
+/sys/kernel/iommu_groups/6/devices:
+alarmtimer.2.auto
+
+/sys/kernel/iommu_groups/7/devices:
+psci-cpuidle
+
+/sys/kernel/iommu_groups/8/devices:
+snd-soc-dummy
+
+/sys/kernel/iommu_groups/9/devices:
+0000:00:00.0  0000:01:00.0  0000:02:08.0  0000:02:10.0  0000:02:11.0 
+0000:02:12.0  0000:02:13.0  0000:02:14.0  0000:03:00.0
+root@crazy-taxi:~# cat /sys/kernel/iommu_groups/*/type
+DMA
+blocked
+DMA
+DMA
+DMA
+DMA
+DMA
+blocked
+blocked
+blocked
+DMA
+
+> I guess that the mock driver is matching random things once it starts
+> being called all the time because this is missing:
+> 
+>   static struct iommu_device *mock_probe_device(struct device *dev)
+>   {
+> +       if (dev->bus != &iommufd_mock_bus_type)
+> +               return -ENODEV;
+>          return &mock_iommu_device;
+>   }
+> 
+> Is that sufficient to solve the problem?
+
+Unfortunately not...
+
+>> but may inadvertently steal devices from the real IOMMU on Intel,
+>> AMD or S390.
+> 
+> AMD/Intel/S390 drivers already reject bus's they don't understand.
+> 
+> Intel's device_to_iommu() will fail because
+> for_each_active_dev_scope() will never match the mock device.
+> 
+> amd fails because check_device() -> get_device_sbdf_id() fails due to
+> no PCI and not get_acpihid_device_id().
+> 
+> s390 fails because !dev_is_pci(dev).
+
+Indeed, but then when such probes do fail, they've failed for good. We 
+don't have any way to somehow dig up the mock driver's ops and try 
+again, so the selftest ends up broken (i.e. the real driver "steals" the 
+mock devices, in the inverse of the case I was concerned about if the 
+mock driver somehow manages to register first).
+
+The assumption was as commented in the code, that there would only ever 
+be one driver per system *not* using fwnodes, but as I say I missed the 
+mock driver when considering that. To be fair, I'm not sure it even 
+existed when I *first* wrote that code :)
+
+I did intend coexistence to work on x86 too, where the "other" driver 
+would be virtio-iommu using fwnodes, so aligning the mock driver that 
+way seemed far neater than any more special-case hacks in core code.
+
+> The fwspec drivers should all fail if they don't have a fwspec, and
+> they shouldn't for mock bus devices since it doesn't implement
+> dma_configure.
+
+Right, the selftests still work fine on my arm64 system (and the 
+spurious groups happen to be benign since those aren't real DMA-capable 
+device anyway), but I expect they're busted on x86/s390 with today's -next.
+
+Thanks,
+Robin.
