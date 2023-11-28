@@ -2,85 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0EA87FC16B
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8499C7FC1EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344439AbjK1QLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 11:11:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51608 "EHLO
+        id S229763AbjK1QLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:11:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbjK1QLO (ORCPT
+        with ESMTP id S229595AbjK1QLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 11:11:14 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B06C5DA;
-        Tue, 28 Nov 2023 08:11:20 -0800 (PST)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ASBliTK019059;
-        Tue, 28 Nov 2023 16:11:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=iqbAdlkzfpJ3QRXcSlzFEiRtZrwRPJqcPLYmnFK9te4=;
- b=H9Bn+40scZaA7X7DxIujXYibiSOUDsAMQErDQ2lE7xZ9WQdn30fiajQGldjhRBHGJwN3
- N216pFNn0Z7YBUfWmLk1a7tS1oWUYUdQZRwr9xSVu1fUH4SUNw/Ln+Oa7dDLpTH9Aktb
- Fzp85jTQ3Nd9VFliUO/8oScKD5u2pIp0pH0FHtQ1E9KGGkavvvOtryun3AaFHUcVwmjX
- 10Fg4bx4L/8VBCIzaVjhVGPo/86OVLC7zJXi1qf/JQ8vH1umzOZaQa3R8lxCr+O3XPPn
- 9WGu+ql+IGJ9pmNxN/WIvpPCU5Iyd16hRC/skT4aBS0nyiG0zfKNSyhp5vJDlqu/mseJ Mw== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3unfn4rv2u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Nov 2023 16:11:16 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ASGBF1g003718
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Nov 2023 16:11:15 GMT
-Received: from [10.216.35.46] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 28 Nov
- 2023 08:11:10 -0800
-Message-ID: <26b69814-201b-8d07-d844-27e804aa3016@quicinc.com>
-Date:   Tue, 28 Nov 2023 21:41:06 +0530
+        Tue, 28 Nov 2023 11:11:42 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7944131
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:11:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701187909; x=1732723909;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=rzhcoBiNb5sbw/XALIsMKDW7hxWSx0E3Q5HsqhBi5L8=;
+  b=n4QgqJiZ1HcjpVza9bn2YysyaMi2SYDi9qwbFTjZ7LYHBtNV+Tv/2f9+
+   6Z6cucwDa32s94Z0HOpqFsIUoyEXfwkeUYiikMex4b52JchFtad74tLsO
+   vCmlwQmOTbTgZmenGGJcbqHeY3IZD0FHV49kySA/ASYvOERR0y53FIqN6
+   A1B9JnU2X1uMMzHjeP8lMp2tZTHrYvSBKxpm5piwgNpIqKnVSsnTgTt9v
+   YzRgHB2QRv3R89AZ3YKQ2BLtC9LfI1vD7EZjpzilOJp/iAgfxGOYflq4N
+   zMGB4suTi9ncb4Ap/vMg6Yu0ku8zZBsWdQ86f7zwprUBL4fP5VyVbNWq3
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="11649516"
+X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
+   d="scan'208";a="11649516"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 08:11:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="941971415"
+X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
+   d="scan'208";a="941971415"
+Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 28 Nov 2023 08:11:45 -0800
+Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r80gZ-0007ik-1R;
+        Tue, 28 Nov 2023 16:11:43 +0000
+Date:   Wed, 29 Nov 2023 00:11:07 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     cuiyangpei <cuiyangpei@gmail.com>, sj@kernel.org,
+        akpm@linux-foundation.org, damon@lists.linux.dev,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        cuiyangpei <cuiyangpei@xiaomi.com>
+Subject: Re: [PATCH 1/2] mm/damon/sysfs: Implement recording feature
+Message-ID: <202311290004.B2GD9Xbd-lkp@intel.com>
+References: <20231128073440.11894-1-cuiyangpei@xiaomi.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH V2 0/4] Add runtime PM support for videocc on SM8150
-Content-Language: en-US
-To:     Konrad Dybcio <konradybcio@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-References: <20231118123944.2202630-1-quic_skakitap@quicinc.com>
- <47925f9e-32aa-4762-a4ec-aa559e18ff12@kernel.org>
-From:   "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>
-In-Reply-To: <47925f9e-32aa-4762-a4ec-aa559e18ff12@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: st3HThTTRbxcV2U3hW0UrJWTCjJP1TlH
-X-Proofpoint-GUID: st3HThTTRbxcV2U3hW0UrJWTCjJP1TlH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-28_18,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- impostorscore=0 adultscore=0 clxscore=1011 suspectscore=0
- priorityscore=1501 mlxscore=0 bulkscore=0 mlxlogscore=983 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311280129
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231128073440.11894-1-cuiyangpei@xiaomi.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,28 +67,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi cuiyangpei,
 
-On 11/20/2023 5:18 PM, Konrad Dybcio wrote:
-> On 18.11.2023 13:39, Satya Priya Kakitapalli wrote:
->> Add runtime support for videocc on SM8150 and update the resets
->> and video_pll0_config configuration.
->>
->> Satya Priya Kakitapalli (4):
->>    dt-bindings: clock: Update the videocc resets for sm8150
->>    clk: qcom: videocc-sm8150: Update the videocc resets
->>    clk: qcom: videocc-sm8150: Add missing PLL config properties
->>    clk: qcom: videocc-sm8150: Add runtime PM support
-> Hi, it's good practive to include a link to the previous revision
-> and a summary of changes.
->
-> The b4 tool [1] does that for you, please consider using it.
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on akpm-mm/mm-everything]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/cuiyangpei/mm-damon-core-add-sysfs-nodes-to-set-last_nr_accesses-weight/20231128-194153
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20231128073440.11894-1-cuiyangpei%40xiaomi.com
+patch subject: [PATCH 1/2] mm/damon/sysfs: Implement recording feature
+config: i386-buildonly-randconfig-002-20231128 (https://download.01.org/0day-ci/archive/20231129/202311290004.B2GD9Xbd-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231129/202311290004.B2GD9Xbd-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311290004.B2GD9Xbd-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> mm/damon/sysfs.c:1415:6: warning: variable 'count' set but not used [-Wunused-but-set-variable]
+           int count = 0;
+               ^
+   1 warning generated.
 
 
-Hi, I have installed b4 and followed all the steps, but it doesn't 
-populate my cover letter with change log and previous series link, do i 
-need to use some option for that?
+vim +/count +1415 mm/damon/sysfs.c
 
+  1410	
+  1411	static unsigned int nr_damon_targets(struct damon_ctx *ctx)
+  1412	{
+  1413		struct damon_target *t;
+  1414		unsigned int nr_targets = 0;
+> 1415		int count = 0;
+  1416	
+  1417		damon_for_each_target(t, ctx) {
+  1418			count++;
+  1419			nr_targets++;
+  1420		}
+  1421	
+  1422		return nr_targets;
+  1423	}
+  1424	
 
-> Konrad
->
-> [1] https://b4.docs.kernel.org/en/latest/index.html
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
