@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A84CD7FC883
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:52:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E497FC863
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:52:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376367AbjK1VGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 16:06:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59776 "EHLO
+        id S1376362AbjK1VGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 16:06:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376282AbjK1VGa (ORCPT
+        with ESMTP id S1376320AbjK1VGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 28 Nov 2023 16:06:30 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC35019BE
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:06:32 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F7A2C433C8;
-        Tue, 28 Nov 2023 21:06:31 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 554261BC3
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:06:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D266BC433CB;
+        Tue, 28 Nov 2023 21:06:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701205592;
-        bh=KGfSThXDevwKbHM3csqMv1gTtgdsTvDa1oqCSxDbcAM=;
+        s=k20201202; t=1701205594;
+        bh=2rhaJ0HB8GuEVIPSqohYD64j1QFkH4NYFmviT6cUuCg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EQ1Sq0YAkCOPWXWgq2w+l63cgir2Gpv84IWXRu7qI1sch/n0RkrAvVixLNP6sWJVW
-         QWlxxjPrRaxHSByv+AZc6XkvOCPEy6DJuNFg5y6CkHrTOp8TF2uvhLqXcRcwcV5AcX
-         Az+kzAtHY2FJzjBvWfETWybjkQHaRugMC0Hnfhvh7sezAVbkfikQAziPt6XyB5Lc5D
-         XJtmrzVltAjj+YE0BxVrai0wmezayb/tk+I6ftmVT5zPc/cQ/JBbkU7vMiz7bMqFnP
-         AFienukWGLhnZsB1rTaXoOUJGf1jMqWHdl2ojCg1kC6Cger0xmKKsHnNOrg8ArZAwI
-         UTpm5vTnFEJzQ==
+        b=gs1hUyiuwXOqPwB7fodgDLUW/na3yIWw4AvVZQuqfvACFlEThVDiyYtVjj+wsqmIn
+         6HUlFDVKOVs3P83Kzg1OJhjEhiJT4fV1cxEssmJKqHNDPEKBnTUwsJsj1Yb1biO173
+         LCO6FBWA07e9YzCiZRs49PZ3vJG1tDANI6+jwQqLEjl/ed4heXA2zq3MyrZX9ZTC/S
+         AEBu/E0MjyyYZ6vgXnyV3U9cFykhKC+39GJjpBS8kx/dZL+BiAQPFCL3YMA9/70Oaq
+         E43l5W0GJtoC4kJEHM1fRveplAbgIh1wlPEQsHOr0GR5ngDDHCYuxAz5aqLVzRTjgd
+         /jNBSZ8JB06iw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Coly Li <colyli@suse.de>,
-        Andrea Tomassetti <andrea.tomassetti-opensource@devo.com>,
-        Eric Wheeler <bcache@lists.ewheeler.net>,
+Cc:     Colin Ian King <colin.i.king@gmail.com>, Coly Li <colyli@suse.de>,
         Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        kent.overstreet@gmail.com, linux-bcache@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 07/40] bcache: avoid oversize memory allocation by small stripe_size
-Date:   Tue, 28 Nov 2023 16:05:13 -0500
-Message-ID: <20231128210615.875085-7-sashal@kernel.org>
+        kent.overstreet@gmail.com, nathan@kernel.org,
+        ndesaulniers@google.com, linux-bcache@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.6 08/40] bcache: remove redundant assignment to variable cur_idx
+Date:   Tue, 28 Nov 2023 16:05:14 -0500
+Message-ID: <20231128210615.875085-8-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231128210615.875085-1-sashal@kernel.org>
 References: <20231128210615.875085-1-sashal@kernel.org>
@@ -55,88 +55,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Coly Li <colyli@suse.de>
+From: Colin Ian King <colin.i.king@gmail.com>
 
-[ Upstream commit baf8fb7e0e5ec54ea0839f0c534f2cdcd79bea9c ]
+[ Upstream commit be93825f0e6428c2d3f03a6e4d447dc48d33d7ff ]
 
-Arraies bcache->stripe_sectors_dirty and bcache->full_dirty_stripes are
-used for dirty data writeback, their sizes are decided by backing device
-capacity and stripe size. Larger backing device capacity or smaller
-stripe size make these two arraies occupies more dynamic memory space.
+Variable cur_idx is being initialized with a value that is never read,
+it is being re-assigned later in a while-loop. Remove the redundant
+assignment. Cleans up clang scan build warning:
 
-Currently bcache->stripe_size is directly inherited from
-queue->limits.io_opt of underlying storage device. For normal hard
-drives, its limits.io_opt is 0, and bcache sets the corresponding
-stripe_size to 1TB (1<<31 sectors), it works fine 10+ years. But for
-devices do declare value for queue->limits.io_opt, small stripe_size
-(comparing to 1TB) becomes an issue for oversize memory allocations of
-bcache->stripe_sectors_dirty and bcache->full_dirty_stripes, while the
-capacity of hard drives gets much larger in recent decade.
+drivers/md/bcache/writeback.c:916:2: warning: Value stored to 'cur_idx'
+is never read [deadcode.DeadStores]
 
-For example a raid5 array assembled by three 20TB hardrives, the raid
-device capacity is 40TB with typical 512KB limits.io_opt. After the math
-calculation in bcache code, these two arraies will occupy 400MB dynamic
-memory. Even worse Andrea Tomassetti reports that a 4KB limits.io_opt is
-declared on a new 2TB hard drive, then these two arraies request 2GB and
-512MB dynamic memory from kzalloc(). The result is that bcache device
-always fails to initialize on his system.
-
-To avoid the oversize memory allocation, bcache->stripe_size should not
-directly inherited by queue->limits.io_opt from the underlying device.
-This patch defines BCH_MIN_STRIPE_SZ (4MB) as minimal bcache stripe size
-and set bcache device's stripe size against the declared limits.io_opt
-value from the underlying storage device,
-- If the declared limits.io_opt > BCH_MIN_STRIPE_SZ, bcache device will
-  set its stripe size directly by this limits.io_opt value.
-- If the declared limits.io_opt < BCH_MIN_STRIPE_SZ, bcache device will
-  set its stripe size by a value multiplying limits.io_opt and euqal or
-  large than BCH_MIN_STRIPE_SZ.
-
-Then the minimal stripe size of a bcache device will always be >= 4MB.
-For a 40TB raid5 device with 512KB limits.io_opt, memory occupied by
-bcache->stripe_sectors_dirty and bcache->full_dirty_stripes will be 50MB
-in total. For a 2TB hard drive with 4KB limits.io_opt, memory occupied
-by these two arraies will be 2.5MB in total.
-
-Such mount of memory allocated for bcache->stripe_sectors_dirty and
-bcache->full_dirty_stripes is reasonable for most of storage devices.
-
-Reported-by: Andrea Tomassetti <andrea.tomassetti-opensource@devo.com>
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+Reviewed-by: Coly Li <colyli@suse.de>
 Signed-off-by: Coly Li <colyli@suse.de>
-Reviewed-by: Eric Wheeler <bcache@lists.ewheeler.net>
-Link: https://lore.kernel.org/r/20231120052503.6122-2-colyli@suse.de
+Link: https://lore.kernel.org/r/20231120052503.6122-4-colyli@suse.de
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/bcache/bcache.h | 1 +
- drivers/md/bcache/super.c  | 2 ++
- 2 files changed, 3 insertions(+)
+ drivers/md/bcache/writeback.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/md/bcache/bcache.h b/drivers/md/bcache/bcache.h
-index 5a79bb3c272f1..83eb7f27db3d4 100644
---- a/drivers/md/bcache/bcache.h
-+++ b/drivers/md/bcache/bcache.h
-@@ -265,6 +265,7 @@ struct bcache_device {
- #define BCACHE_DEV_WB_RUNNING		3
- #define BCACHE_DEV_RATE_DW_RUNNING	4
- 	int			nr_stripes;
-+#define BCH_MIN_STRIPE_SZ		((4 << 20) >> SECTOR_SHIFT)
- 	unsigned int		stripe_size;
- 	atomic_t		*stripe_sectors_dirty;
- 	unsigned long		*full_dirty_stripes;
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index 0ae2b36762930..93791e46b1e8f 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -905,6 +905,8 @@ static int bcache_device_init(struct bcache_device *d, unsigned int block_size,
+diff --git a/drivers/md/bcache/writeback.c b/drivers/md/bcache/writeback.c
+index 24c049067f61a..c3e872e0a6f2c 100644
+--- a/drivers/md/bcache/writeback.c
++++ b/drivers/md/bcache/writeback.c
+@@ -913,7 +913,7 @@ static int bch_dirty_init_thread(void *arg)
+ 	int cur_idx, prev_idx, skip_nr;
  
- 	if (!d->stripe_size)
- 		d->stripe_size = 1 << 31;
-+	else if (d->stripe_size < BCH_MIN_STRIPE_SZ)
-+		d->stripe_size = roundup(BCH_MIN_STRIPE_SZ, d->stripe_size);
+ 	k = p = NULL;
+-	cur_idx = prev_idx = 0;
++	prev_idx = 0;
  
- 	n = DIV_ROUND_UP_ULL(sectors, d->stripe_size);
- 	if (!n || n > max_stripes) {
+ 	bch_btree_iter_init(&c->root->keys, &iter, NULL);
+ 	k = bch_btree_iter_next_filter(&iter, &c->root->keys, bch_ptr_bad);
 -- 
 2.42.0
 
