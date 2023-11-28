@@ -2,133 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80AD87FBBA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 14:33:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A597FBBA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 14:33:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345263AbjK1Ncy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 08:32:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40156 "EHLO
+        id S1345396AbjK1Nds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 08:33:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344120AbjK1Ncx (ORCPT
+        with ESMTP id S1344120AbjK1Ndr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 08:32:53 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF94A0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 05:33:00 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4029EC433C8;
-        Tue, 28 Nov 2023 13:32:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701178379;
-        bh=rVPeT5nmw8qQQiIaFmZSBajpfC/FLGYEM+kVR8C6eHI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OfuRN5v73BRdDwtDvjVqEUkAx+rPfYn3oODDhKDz0wCkZ0zFl69z2eutxwvQFVs7C
-         Mv92SCFYOLddDui4lzfsEeyOftKENRBdUN/xgoOPwAjXkXW9UevjxziO30/4cYKAu8
-         GcblBt8q280nOqbtevoOV4V5uK8jq4C/hOPK230N/19LtVMBZmoe/XcXHsSGSCRXLZ
-         E6uFiToI0W+CqdbJzCH4LyDd389+WqEBgRJiJyLKFMyzylCPIIiHqSjTb6MZkPgn8z
-         OjMr5p9S3dCjdjlnifW/BrSMLWBxwf9zIAkTOAi8BcmMLPRSHEKNbtsMrBWYevmcyp
-         oulf8qynZq4mw==
-Date:   Tue, 28 Nov 2023 19:02:52 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Qiang Yu <quic_qianyu@quicinc.com>
-Cc:     quic_jhugo@quicinc.com, mhi@lists.linux.dev,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_cang@quicinc.com, quic_mrana@quicinc.com
-Subject: Re: [PATCH v4 2/4] bus: mhi: host: Drop chan lock before queuing
- buffers
-Message-ID: <20231128133252.GX3088@thinkpad>
-References: <1699939661-7385-1-git-send-email-quic_qianyu@quicinc.com>
- <1699939661-7385-3-git-send-email-quic_qianyu@quicinc.com>
- <20231124100403.GA4536@thinkpad>
- <639d6008-bdfa-4b6e-b622-e916003ec908@quicinc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        Tue, 28 Nov 2023 08:33:47 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2319A0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 05:33:53 -0800 (PST)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ASC5h0j014950;
+        Tue, 28 Nov 2023 13:33:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=hESqDSNNAellCERePN1U2wbTqOxBU+IMLun7hwIqHyg=;
+ b=NL2dLL0DvdyQbKVJzt3NHj5PJ9gGnO1k9a82DcytKAZzRtDLWurxJYITVo6WjkVE+Wg0
+ I40u0JcmSVgyiOHhkvMRH4xxDLmZh98yuOZyihcGmIZiBmWUI5rmSZ7KG0R5kuFUlknC
+ UqvHn6cJU+7IM4tqxkFc+Am4XM/rQMnWqDv4kzZa+fo4stgYmPeVBO6QlF76PNCl4cQE
+ ftFCt5AQr0ztwCWyOftS7igiz5VbmiMibqztBYaUfD5qnI/tRoggKb72l0O5Fyvt57Hz
+ KvrjTt4gt+fWE1tr1YUDuskc0QXmbGbczyyt9duV8Le7aoA3AC4j5Aop01aZ8EBZ1mMa rg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3unfbg36fx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Nov 2023 13:33:45 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ASDULbd024505;
+        Tue, 28 Nov 2023 13:33:44 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3unfbg36f1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Nov 2023 13:33:44 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ASDTCMj027610;
+        Tue, 28 Nov 2023 13:33:43 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3ukumyg2xs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Nov 2023 13:33:43 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ASDXfEe30147138
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Nov 2023 13:33:41 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2CC5920049;
+        Tue, 28 Nov 2023 13:33:41 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6138820040;
+        Tue, 28 Nov 2023 13:33:40 +0000 (GMT)
+Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.44.4])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Tue, 28 Nov 2023 13:33:40 +0000 (GMT)
+Date:   Tue, 28 Nov 2023 14:33:38 +0100
+From:   Alexander Gordeev <agordeev@linux.ibm.com>
+To:     Baoquan He <bhe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, akpm@linux-foundation.org,
+        ignat@cloudflare.com, eric_devolder@yahoo.com
+Subject: Re: [PATCH v2] kernel/Kconfig.kexec: drop select of KEXEC for
+ CRASH_DUMP
+Message-ID: <ZWXsMvkf8vvRUpYR@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
+References: <20231128054457.659452-1-bhe@redhat.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <639d6008-bdfa-4b6e-b622-e916003ec908@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231128054457.659452-1-bhe@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 64QzWJwVKOLBFlmU1jABrlIZ9QsGVZuR
+X-Proofpoint-ORIG-GUID: ktx8MhTbS_gn0F1YuN7_xjpJHLKBDBPx
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-28_14,2023-11-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ impostorscore=0 mlxscore=0 suspectscore=0 mlxlogscore=921 spamscore=0
+ malwarescore=0 phishscore=0 priorityscore=1501 lowpriorityscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311280108
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 03:13:55PM +0800, Qiang Yu wrote:
+On Tue, Nov 28, 2023 at 01:44:57PM +0800, Baoquan He wrote:
+> Ignat Korchagin complained that a potential config regression was
+> introduced by commit 89cde455915f ("kexec: consolidate kexec and
+> crash options into kernel/Kconfig.kexec"). Before the commit,
+> CONFIG_CRASH_DUMP has no dependency on CONFIG_KEXEC. After the commit,
+> CRASH_DUMP selects KEXEC. That enforces system to have CONFIG_KEXEC=y
+> as long as CONFIG_CRASH_DUMP=Y which people may not want.
 > 
-> On 11/24/2023 6:04 PM, Manivannan Sadhasivam wrote:
-> > On Tue, Nov 14, 2023 at 01:27:39PM +0800, Qiang Yu wrote:
-> > > Ensure read and write locks for the channel are not taken in succession by
-> > > dropping the read lock from parse_xfer_event() such that a callback given
-> > > to client can potentially queue buffers and acquire the write lock in that
-> > > process. Any queueing of buffers should be done without channel read lock
-> > > acquired as it can result in multiple locks and a soft lockup.
-> > > 
-> > Is this patch trying to fix an existing issue in client drivers or a potential
-> > issue in the future drivers?
-> > 
-> > Even if you take care of disabled channels, "mhi_event->lock" acquired during
-> > mhi_mark_stale_events() can cause deadlock, since event lock is already held by
-> > mhi_ev_task().
-> > 
-> > I'd prefer not to open the window unless this patch is fixing a real issue.
-> > 
-> > - Mani
-> In [PATCH v4 1/4] bus: mhi: host: Add spinlock to protect WP access when
-> queueing
-> TREs,  we add
-> write_lock_bh(&mhi_chan->lock)/write_unlock_bh(&mhi_chan->lock)
-> in mhi_gen_tre, which may be invoked as part of mhi_queue in client xfer
-> callback,
-> so we have to use read_unlock_bh(&mhi_chan->lock) here to avoid acquiring
-> mhi_chan->lock
-> twice.
+> In Ignat's case, he sets CONFIG_CRASH_DUMP=y, CONFIG_KEXEC_FILE=y and
+> CONFIG_KEXEC=n because kexec_load interface could have security issue if
+> kernel/initrd has no chance to be signed and verified.
 > 
-> Sorry for confusing you. Do you think we need to sqush this two patch into
-> one?
-
-Well, if patch 1 is introducing a potential deadlock, then we should fix patch
-1 itself and not introduce a follow up patch.
-
-But there is one more issue that I pointed out in my previous reply.
-
-Also, I'm planning to cleanup the locking mess within MHI in the coming days.
-Perhaps we can revisit this series at that point of time. Will that be OK for
-you?
-
-- Mani
-
-> > > Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
-> > > ---
-> > >   drivers/bus/mhi/host/main.c | 4 ++++
-> > >   1 file changed, 4 insertions(+)
-> > > 
-> > > diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
-> > > index 6c6d253..c4215b0 100644
-> > > --- a/drivers/bus/mhi/host/main.c
-> > > +++ b/drivers/bus/mhi/host/main.c
-> > > @@ -642,6 +642,8 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
-> > >   			mhi_del_ring_element(mhi_cntrl, tre_ring);
-> > >   			local_rp = tre_ring->rp;
-> > > +			read_unlock_bh(&mhi_chan->lock);
-> > > +
-> > >   			/* notify client */
-> > >   			mhi_chan->xfer_cb(mhi_chan->mhi_dev, &result);
-> > > @@ -667,6 +669,8 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
-> > >   					kfree(buf_info->cb_buf);
-> > >   				}
-> > >   			}
-> > > +
-> > > +			read_lock_bh(&mhi_chan->lock);
-> > >   		}
-> > >   		break;
-> > >   	} /* CC_EOT */
-> > > -- 
-> > > 2.7.4
-> > > 
-> > > 
+> CRASH_DUMP has select of KEXEC because Eric, author of above commit,
+> met a LKP report of build failure when posting patch of earlier version.
+> Please see below link to get detail of the LKP report:
 > 
+>     https://lore.kernel.org/all/3e8eecd1-a277-2cfb-690e-5de2eb7b988e@oracle.com/T/#u
+> 
+> In fact, that LKP report is triggered because arm's <asm/kexec.h> is
+> wrapped in CONFIG_KEXEC ifdeffery scope. That is wrong. CONFIG_KEXEC
+> controls the enabling/disabling of kexec_load interface, but not kexec
+> feature. Removing the wrongly added CONFIG_KEXEC ifdeffery scope in
+> <asm/kexec.h> of arm allows us to drop the select KEXEC for CRASH_DUMP.
+> Meanwhile, change arch/arm/kernel/Makefile to let machine_kexec.o
+> relocate_kernel.o depend on KEXEC_CORE.
+> 
+> Fixes: commit 89cde455915f ("kexec: consolidate kexec and crash options into kernel/Kconfig.kexec")
+> Reported-by: Ignat Korchagin <ignat@cloudflare.com>
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+> ---
+>  arch/arm/include/asm/kexec.h | 4 ----
+>  arch/arm/kernel/Makefile     | 2 +-
+>  kernel/Kconfig.kexec         | 1 -
+>  3 files changed, 1 insertion(+), 6 deletions(-)
 
--- 
-மணிவண்ணன் சதாசிவம்
+On s390:
+Tested-by: Alexander Gordeev <agordeev@linux.ibm.com>
+
+Thanks!
