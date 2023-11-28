@@ -2,99 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA0447FC170
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E407FC2DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346219AbjK1Rua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 12:50:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47616 "EHLO
+        id S1344927AbjK1Ruq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 12:50:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346449AbjK1Ru1 (ORCPT
+        with ESMTP id S1346475AbjK1Ruj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 12:50:27 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F008DC;
-        Tue, 28 Nov 2023 09:50:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701193834; x=1732729834;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=FHQ7x5YlyO03fAtFmbz0hZlnhaEwXt8ecRdrQKklMuw=;
-  b=EbnNwH/XsmAQUFrBIPW5kc8LTTxAJO3intXbKWOu5Qd6lXuqyE2IWJ4l
-   zR+cLxFkKl7ClD1Ut1tMT0Xc1y0eeR2cpXWx2YmRHfLqeReJsqcU/r++S
-   bo22+X9/dfqFL7I2xqbdsc6HNgbflxrCoWxZVU+ElH1dlHd44HTzwou5B
-   y0XhUw5I/ARyTy+ERkisty1IR3+1P50B3iJAaq9iCTkAMu43cGeH/UIE9
-   tAzhK/w4JnWtEsHUfV3Q9kePjK+UysgSk6uM6Oz0hiGKgeSHT/13nLY0P
-   8OKlSpt/75BhwXqBbB34IO/MXznVb4SFyoD6J25oPWLimo/Z2phI559ej
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="372352359"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="372352359"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 09:50:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="744972833"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="744972833"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga006.jf.intel.com with ESMTP; 28 Nov 2023 09:50:30 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id E33F723E; Tue, 28 Nov 2023 19:50:28 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH net-next v1 1/1] net: dsa: sja1105: Use units.h instead of the copy of a definition
-Date:   Tue, 28 Nov 2023 19:50:27 +0200
-Message-ID: <20231128175027.394754-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+        Tue, 28 Nov 2023 12:50:39 -0500
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E4A010CB;
+        Tue, 28 Nov 2023 09:50:46 -0800 (PST)
+Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6ce353df504so3567957a34.3;
+        Tue, 28 Nov 2023 09:50:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701193845; x=1701798645;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pNiHiA6wSmKNmRriIDAMYJotOGbcur5RnZmpYezuUUg=;
+        b=tFjFEReNcjMz+GQPjpkEP3R1k/+Spz6kX0LRbQq/YiOmf3ewY6JMvNTcOUjTulOeKd
+         s7HEWkrH39TjcKQG6/DHrzwNbOjfqIAJWu+3chW17+6dXuJP1nP8HFUdRgT6Ot57MdMu
+         rvxHV5hPUEhwloJVWNPf1NqZxd6wYX64K2lmIatsMd1jG/7ZkmbRG4rTqvKHYD6OWNnU
+         Cc0Z177IemOvvgEC3a/AdEZeMVuVJmoG3EI4RVTevtcEEh0XY9VdSxITfRX1dgZvE3Nu
+         QBkn6xAjLMCEE/11R+hYl7UnqXmd3O68UCIpj0nxBlztJ460VUOQRFWVl3X7CPjchlGi
+         dHtw==
+X-Gm-Message-State: AOJu0Yz6NL98yf3YZd9QwjFw9KbvqEQvuch3APgwfylDmimGXg7QCTSJ
+        /KKvg3iJbEMb1+nTa6LBdPbXOvYroA==
+X-Google-Smtp-Source: AGHT+IEjDCvt0vi7M2D0Vgdb1l1lflZgZ7cf7adlM1nWVNj8pKpbDYpnNuo5F79frDyWtoGy7D2zpw==
+X-Received: by 2002:a9d:6449:0:b0:6d6:490f:f027 with SMTP id m9-20020a9d6449000000b006d6490ff027mr16049889otl.37.1701193845338;
+        Tue, 28 Nov 2023 09:50:45 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id s2-20020a0568301e0200b006d646763942sm1717051otr.23.2023.11.28.09.50.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 09:50:44 -0800 (PST)
+Received: (nullmailer pid 3558114 invoked by uid 1000);
+        Tue, 28 Nov 2023 17:50:43 -0000
+Date:   Tue, 28 Nov 2023 11:50:43 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+        linux-i2c@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Wolfram Sang <wsa@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: i2c: qcom,i2c-qup: Document
+ power-domains
+Message-ID: <170119384299.3558042.16570050685219683863.robh@kernel.org>
+References: <20231128-i2c-qup-dvfs-v1-0-59a0e3039111@kernkonzept.com>
+ <20231128-i2c-qup-dvfs-v1-1-59a0e3039111@kernkonzept.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231128-i2c-qup-dvfs-v1-1-59a0e3039111@kernkonzept.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BYTES_PER_KBIT is defined in units.h, use that definition.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/net/dsa/sja1105/sja1105_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+On Tue, 28 Nov 2023 10:48:35 +0100, Stephan Gerhold wrote:
+> Similar to qcom,geni-i2c, for i2c-qup we need to vote for performance
+> states on the VDDCX power domain to ensure that required clock rates
+> can be generated correctly.
+> 
+> I2C is typically used with a fixed clock rate, so a single required-opp
+> is sufficient without a full OPP table (unlike spi-qup for example).
+> 
+> Signed-off-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
+> ---
+>  Documentation/devicetree/bindings/i2c/qcom,i2c-qup.yaml | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
 
-diff --git a/drivers/net/dsa/sja1105/sja1105_main.c b/drivers/net/dsa/sja1105/sja1105_main.c
-index 74cee39d73df..6646f7fb0f90 100644
---- a/drivers/net/dsa/sja1105/sja1105_main.c
-+++ b/drivers/net/dsa/sja1105/sja1105_main.c
-@@ -21,6 +21,8 @@
- #include <linux/if_bridge.h>
- #include <linux/if_ether.h>
- #include <linux/dsa/8021q.h>
-+#include <linux/units.h>
-+
- #include "sja1105.h"
- #include "sja1105_tas.h"
- 
-@@ -2138,7 +2140,6 @@ static void sja1105_bridge_leave(struct dsa_switch *ds, int port,
- 	sja1105_bridge_member(ds, port, bridge, false);
- }
- 
--#define BYTES_PER_KBIT (1000LL / 8)
- /* Port 0 (the uC port) does not have CBS shapers */
- #define SJA1110_FIXED_CBS(port, prio) ((((port) - 1) * SJA1105_NUM_TC) + (prio))
- 
--- 
-2.43.0.rc1.1.gbec44491f096
+Reviewed-by: Rob Herring <robh@kernel.org>
 
