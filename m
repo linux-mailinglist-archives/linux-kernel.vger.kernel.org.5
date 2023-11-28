@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CED557FB28F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:20:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E88807FB292
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:21:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343812AbjK1HT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 02:19:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54742 "EHLO
+        id S1343821AbjK1HVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 02:21:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343790AbjK1HTz (ORCPT
+        with ESMTP id S1343790AbjK1HVE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 02:19:55 -0500
+        Tue, 28 Nov 2023 02:21:04 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B05C6B7
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:20:01 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDFE8C433C8;
-        Tue, 28 Nov 2023 07:19:56 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC27DB7
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:21:10 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA6FFC433C8;
+        Tue, 28 Nov 2023 07:21:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701156001;
-        bh=1vLHWvsk352nK70Ozlgc+kzwZuGs8qN2ZJtFDtyaFms=;
+        s=k20201202; t=1701156070;
+        bh=E1l+1Z+uwwMLqKabp03y/RSp8HfubdSHT+S8B/r9/TM=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=LfQliYZYQAdz/IO2rlMbVOt/pyqoyUth6GB/BIEc9R6bBR34lLdjZUiVEyYjaXk+W
-         Dnn0NEssXSepWnhA6f58qrmWXd6U8cWE1uHBuOg3DQUf0I8Iqi53p3NaAGZxsErW+C
-         2UVRP1FfrqM/JIuHDv0Djy4bmjH8yIJ0rPrCIDq/YFqqD4juSqXfHGtV0ig+VQCWME
-         RE1HXt7tIpM6E+tDMXjEeP4QRKbdD7f/dwfBJI6ab3JLuwk1XI3lGNKfn3i9w8vp7C
-         vc9EulFFaVMZnaoCd7MJNu2voJDC2VX22mnTjVedG3KLvCwXD6Dt+ITNPSI58L2cD7
-         uRUAUKe8G011A==
-Message-ID: <5820442a-7819-488f-b389-8385531b510f@kernel.org>
-Date:   Tue, 28 Nov 2023 08:19:51 +0100
+        b=avPsvg7DKMIft1TwQpgYOGOHZEaxcPA5nhrl6HNbW4Bb6YM49BC8LAB7jWfsimVZ7
+         koRhOHEQymZ9wEjRnc+AExFYAqjechxXv2pbukIcYbcoZnXnwcEkElJy5+Q2mZ69oT
+         LfSLCJY8O6PAYHVC4Cq/OFhU1sX7CFQVu0wvipCxtD79q0sJ3ttFvof1wntZzCZfXr
+         k/o+xQLx1/FKHr4xBsRShFag+YGumZ01cSDSztHh/M6KTYzG6RbIggxrpLqMmeyD6P
+         bvdFzue6a5IXfH82ZPONB5QX/hnm/cm5ymV1UAhiPR37b8DLVJ654OmrjvGAD5OQg9
+         LTL01I8IODHKA==
+Message-ID: <d6dd14c2-f662-4b82-bc96-7e161cb721c9@kernel.org>
+Date:   Tue, 28 Nov 2023 08:21:06 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/7] dt-bindings: timer: Add StarFive JH8100 clint
+Subject: Re: [PATCH 6/7] serial: xilinx_uartps: Add new compatible string for
+ StarFive
+Content-Language: en-US
 To:     JeeHeng Sia <jeeheng.sia@starfivetech.com>,
         "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
         "palmer@dabbelt.com" <palmer@dabbelt.com>,
@@ -45,10 +47,9 @@ Cc:     "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         Leyfoon Tan <leyfoon.tan@starfivetech.com>
 References: <20231127013602.253835-1-jeeheng.sia@starfivetech.com>
- <20231127013602.253835-4-jeeheng.sia@starfivetech.com>
- <93526583-ab8f-4ddb-9846-41e4d1834847@kernel.org>
- <d72d6fa58309438385e14c3713918654@EXMBX066.cuchost.com>
-Content-Language: en-US
+ <20231127013602.253835-7-jeeheng.sia@starfivetech.com>
+ <07fc5ebe-47b2-4843-ad49-36e6686e5a9a@kernel.org>
+ <b423574c710b44aabb36cd434693b3e2@EXMBX066.cuchost.com>
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -93,7 +94,7 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <d72d6fa58309438385e14c3713918654@EXMBX066.cuchost.com>
+In-Reply-To: <b423574c710b44aabb36cd434693b3e2@EXMBX066.cuchost.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -106,38 +107,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/11/2023 06:24, JeeHeng Sia wrote:
+On 28/11/2023 06:25, JeeHeng Sia wrote:
 > 
 > 
 >> -----Original Message-----
 >> From: Krzysztof Kozlowski <krzk@kernel.org>
->> Sent: Monday, November 27, 2023 4:48 PM
+>> Sent: Monday, November 27, 2023 4:49 PM
 >> To: JeeHeng Sia <jeeheng.sia@starfivetech.com>; paul.walmsley@sifive.com; palmer@dabbelt.com; aou@eecs.berkeley.edu;
 >> conor@kernel.org; kernel@esmil.dk; robh+dt@kernel.org; emil.renner.berthing@canonical.com
 >> Cc: linux-riscv@lists.infradead.org; linux-kernel@vger.kernel.org; Leyfoon Tan <leyfoon.tan@starfivetech.com>
->> Subject: Re: [PATCH 3/7] dt-bindings: timer: Add StarFive JH8100 clint
+>> Subject: Re: [PATCH 6/7] serial: xilinx_uartps: Add new compatible string for StarFive
 >>
->> On 27/11/2023 02:35, Sia Jee Heng wrote:
->>> Add compatible string for the StarFive JH8100 clint
+>> On 27/11/2023 02:36, Sia Jee Heng wrote:
+>>> This patch adds the new compatible string for StarFive JH8100 SoC
 >>>
 >>> Signed-off-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
 >>> Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
 >>> ---
+>>>  drivers/tty/serial/xilinx_uartps.c | 3 ++-
+>>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xilinx_uartps.c
+>>> index 66a45a634158..170901c143c2 100644
+>>> --- a/drivers/tty/serial/xilinx_uartps.c
+>>> +++ b/drivers/tty/serial/xilinx_uartps.c
+>>> @@ -1210,7 +1210,7 @@ OF_EARLYCON_DECLARE(cdns, "xlnx,xuartps", cdns_early_console_setup);
+>>>  OF_EARLYCON_DECLARE(cdns, "cdns,uart-r1p8", cdns_early_console_setup);
+>>>  OF_EARLYCON_DECLARE(cdns, "cdns,uart-r1p12", cdns_early_console_setup);
+>>>  OF_EARLYCON_DECLARE(cdns, "xlnx,zynqmp-uart", cdns_early_console_setup);
+>>> -
+>>> +OF_EARLYCON_DECLARE(cdns, "starfive,jh8100-uart", cdns_early_console_setup);
+>>>
+>>>  /* Static pointer to console port */
+>>>  static struct uart_port *console_port;
+>>> @@ -1448,6 +1448,7 @@ static const struct of_device_id cdns_uart_of_match[] = {
+>>>  	{ .compatible = "cdns,uart-r1p8", },
+>>>  	{ .compatible = "cdns,uart-r1p12", .data = &zynqmp_uart_def },
+>>>  	{ .compatible = "xlnx,zynqmp-uart", .data = &zynqmp_uart_def },
+>>> +	{ .compatible = "starfive,jh8100-uart", },
 >>
->> Please use scripts/get_maintainers.pl to get a list of necessary people
->> and lists to CC. It might happen, that command when run on an older
->> kernel, gives you outdated entries. Therefore please be sure you base
->> your patches on recent Linux kernel.
->>
->> You missed at least devicetree list (maybe more), so this won't be
->> tested by automated tooling. Performing review on untested code might be
->> a waste of time, thus I will skip this patch entirely till you follow
->> the process allowing the patch to be tested.
->>
->> Please kindly resend and include all necessary To/Cc entries.
-> Noted. Should I resend the patches with the V1 tag and with addressed comments?
+>> Why you do not express compatibility in your bindings? Skip this driver
+>> change.
+> The compatibility string was added to the binding in the 5th patch. We need to add this compatibility string to the driver, as the other compatibilities were used for other SoCs.
 
-This was v1. Next one is v2.
+You did not add "compatibility string" but compatible. I am asking why
+you are not expressing in your bindings the compatibility between this
+and other devices.
+
+And no, you do not need driver change for compatible devices, so again:
+skip this driver change.
+
 
 Best regards,
 Krzysztof
