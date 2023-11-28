@@ -2,106 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6503F7FBA5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:42:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 363037FBA5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:42:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234810AbjK1MmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 07:42:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46314 "EHLO
+        id S234808AbjK1MmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 07:42:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234821AbjK1MmJ (ORCPT
+        with ESMTP id S234708AbjK1Ml7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 07:42:09 -0500
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 440C010DC;
-        Tue, 28 Nov 2023 04:42:15 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id 830725C015A;
-        Tue, 28 Nov 2023 07:42:14 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 28 Nov 2023 07:42:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1701175334; x=1701261734; bh=Ue6oReQLoZ5Oz8hCPsHTLUlG6EjRwmqut/I
-        46LFQnpk=; b=xv5DXXzqPoGR20U+yXYQPN2++85NxKAgeM/vF6pFQNuDkC0wBPW
-        Yq+pnW45hZjQNbnyE3nOdKIjoJCsgR4QBn+d/+GuuoR/pts468sgBSCvVl8906d+
-        3CbPa0sVI5a54PaRKBeCTzWUekfNbx60CnuWd3CyoLf8ROv5lxj/WsfKJPbkI4YQ
-        YLwmpTUM5MIPqj8FvkwNr2WR4a9wLw2dKdRl8p84/B3he+JfKBpR5OVjxbQNnuYR
-        MubfJCxk5BfCzy1E7+uLPh8fsfk08vRc65I+4ZzLYySiSjiwFgee4hebHLNL575i
-        HegOUsGzTU/2ZUoxf2nCE89p/oZ4P/RcgwA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1701175334; x=1701261734; bh=Ue6oReQLoZ5Oz8hCPsHTLUlG6EjRwmqut/I
-        46LFQnpk=; b=CS+dsxwk8PJI5KpTR1LLt4P/a76kqkvG6LmdCkVC5ME7ucKQcAy
-        IATnEs5LUhkc/SYVEIxJAc0eM8nNuw9TH99tr3Q8XcLK3aoeR9t9/fXzZYnyUcRA
-        ld3ic+aTVTaU4MVdm6yXNjCyjS+LjCfrOdjhr4KlcyPVshu3QfkdhZNu7uWm5gVR
-        0j2SUbPzHhLoXU6OytgZbfxWAwuYCEEDeLxEn2XMMNZdxYYNF7YDjOQLfSHdOOWB
-        WxwPIaiMmFLJL+HLagGVv+BPT7E/PLkaOj7WlIliaWvV2z3cEF4989wULiAHDDAl
-        HR0SiqzCTWoO5LPO7D0VaFpiOBnSu3tjgtQ==
-X-ME-Sender: <xms:JOBlZUbsAsiYofOGBUmO3Hlz87VtnWvlpN8So4SDnbOXnqK9GUpd1g>
-    <xme:JOBlZfaZA5Z1_sNrISFrPCtovu1EJzw-tdcx4l-15zoY-_nqsEuYQLOO0E7A_dYRM
-    Rix7xq5vLnJG0CLBU8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeifedggedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
-    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:JOBlZe_pA1ZeeH9E0uiSNI7FpTJLDLKOLwTCVAfXmhr9mX5DwnktkQ>
-    <xmx:JOBlZerADlPP31FQjRkZnDTBGXVDHP3mUT5iLlJt4VhtMb_s_ev1qA>
-    <xmx:JOBlZfojlp7_Au0EjMcJ2m3c-28RIQ0hkwP7Q89TpQ7_PbRIidtgLQ>
-    <xmx:JuBlZfbdil0sdfTt-NP-8WB-demoaN5LJ7X6DOP7yOuH_Ijd_8TZlw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 96C34B6008D; Tue, 28 Nov 2023 07:42:12 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1234-gac66594aae-fm-20231122.001-gac66594a
+        Tue, 28 Nov 2023 07:41:59 -0500
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A00D59;
+        Tue, 28 Nov 2023 04:42:04 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1701175322; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=oAvSZlvrEVIFs9exHkMFKW3+YoVO7gKmlBuHFpcNlEYCkX8wijvmUZ6aq12dEMxX3v
+    NoCrZkl8asmN0fmCMXalhhEK8NROcPAIIlybnUkAmEmogZMhrQZSboXHXDRUbEr4Nhxg
+    KO2BAom4A+6hhtG9Rzy9E1iFaZBeDOM+XkZY0PY34IDu6KA+QJIoGActSU2bMxCkvAvO
+    1u00QefNwyafrSgoWQrjlWxVHueUdn4CLFuq8WlyLjIZ+CENqBrDIELTym02Ho5XA1iV
+    s+sdwH1oRZ9x0IzTaYbIBUCT2a4IMOlq+3CzlHeUlorxSEFNyqBd5q4N8QM0HCoU79XC
+    2m8g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1701175322;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=TS8/WXeqr+m6rKcDo8NKgNdTMbcPnyKqnODnr8gI8hs=;
+    b=Q/gfLd4L4xzjF91QdYPUPNqocXqvunJdg0rPc6CGdR4QHAk6lK13LNbUEs30P5UljZ
+    uqMP0xqu8kNAAsbjud2bppeY+OiRyzvFXyp/xoH8WBeiq9CAFFroU131wUeVnioI/3sU
+    JW3EGTpFTqwRozdUuuDMf+LWeto4maffmGJDcHr5NFQTeGsQRGOKCf3vXBoab2GXhbw/
+    frYcQ1R9zxQrFLvy9ReG/r9oDdawP2YVJRsg0Y9HLWo82uveDMihRKR/sxVeB1rFExSZ
+    yEt0zrzQkvTIRmcEVh09m4BNoNkBJDu3k3htMkvXUiY1CLyrRSxzKHXGqYZbC1XrRKxK
+    Zo7w==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1701175322;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=TS8/WXeqr+m6rKcDo8NKgNdTMbcPnyKqnODnr8gI8hs=;
+    b=BoO+G5sWWQNmY/5dRxdbHlFH9pxjZj/RYZ+xf6VhQtMHgqcbFe/9c9gPyYE3FSRSE6
+    A8eiahSXghyaNtt7r+MuCCsvUpskPODuvMlhNYVHD8oHqJWX+yFbaYeYODXe+nDxsZ3B
+    k1/pJO3FnDZNzqM/V4th58pz2ndK2JKLGsW5dPNB+EHfO/1Efhn9JGVG+0dXY0N+VRVY
+    7okcarziiU+RFwm2Wb9xiS1HB0Pnh3/kL0hRS3YhUMumJRXd7eJExn/ePak+73LnJm/y
+    U3+KX8iscb7leQ6/euMwW3vTEWYF0UmmJXHHNPa/T8r0/KNrI24n2sKB44xpf0ewzD4k
+    83ug==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1701175322;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=TS8/WXeqr+m6rKcDo8NKgNdTMbcPnyKqnODnr8gI8hs=;
+    b=IzmrX3mfqfsZT9NHUBJSSsUiqhdkaXvkf/Rj4TM1Kqski1PWl9IFsvBLubhdi5REoE
+    Wl7Ma/qr7iuT6izExVBg==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA8paF1A=="
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 49.9.1 DYNA|AUTH)
+    with ESMTPSA id t3efe7zASCg2mDV
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Tue, 28 Nov 2023 13:42:02 +0100 (CET)
+Date:   Tue, 28 Nov 2023 13:41:56 +0100
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Ilia Lin <ilia.lin@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 1/4] cpufreq: qcom-nvmem: Handling multiple power domains
+Message-ID: <ZWXgFNKgm9QaFuzx@gerhold.net>
+References: <20230912-msm8909-cpufreq-v1-0-767ce66b544b@kernkonzept.com>
+ <20230912-msm8909-cpufreq-v1-1-767ce66b544b@kernkonzept.com>
+ <CAPDyKFq6U-MR4Bd+GmixYseRECDh142RhydtKbiPd3NHV2g6aw@mail.gmail.com>
+ <ZQGqfMigCFZP_HLA@gerhold.net>
+ <CAPDyKFppdXe1AZo1jm2Bc_ZR18hw5Bmh1x+2P7Obhb_rJ2gc4Q@mail.gmail.com>
+ <ZRcC2IRRv6dtKY65@gerhold.net>
+ <CAPDyKFoiup8KNv=1LFGKDdDLA1pHsdJUgTTWMdgxnikEmReXzg@mail.gmail.com>
+ <ZSg-XtwMxg3_fWxc@gerhold.net>
+ <CAPDyKFoH5EOvRRKy-Bgp_B9B3rf=PUKK5N45s5PNgfBi55PaOQ@mail.gmail.com>
 MIME-Version: 1.0
-Message-Id: <c1c0a409-902e-4609-ae84-8939226b4fa0@app.fastmail.com>
-In-Reply-To: <ysij22pivneyg7tk3bv3hti3tsgbzglb6pin3my7r3bokzxjj6@jrjmu45gbupr>
-References: <20231122182419.30633-2-fancer.lancer@gmail.com>
- <b996b542-4cd3-4f9d-b221-00b2d5ef224e@app.fastmail.com>
- <c7cuvhuu6py5vxhhvkhekv6ned5sro4a3wzzn7v45oahfw42ud@gyqmucagt5e2>
- <8ca730b9-fa8c-46ea-bdc5-158da0f29c3a@app.fastmail.com>
- <ZV9Fq1ihUm1Rn6yO@alpha.franken.de>
- <d6d7e27a-b1a1-48af-be6c-aa9097c48992@app.fastmail.com>
- <ZV94rifAIF2p9Nej@alpha.franken.de>
- <245d3985-9085-4be0-8c74-d95d06334584@app.fastmail.com>
- <3iksuovvsln3cw3xpmjd7f7xixfvwaneu4ok56fnookvyolpco@wrxxew3thgnq>
- <dfda70b6-3291-462f-bc87-06dcc87bd068@app.fastmail.com>
- <ysij22pivneyg7tk3bv3hti3tsgbzglb6pin3my7r3bokzxjj6@jrjmu45gbupr>
-Date:   Tue, 28 Nov 2023 13:41:51 +0100
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Serge Semin" <fancer.lancer@gmail.com>,
-        "Jiaxun Yang" <jiaxun.yang@flygoat.com>
-Cc:     "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Mike Rapoport" <rppt@kernel.org>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        "Tiezhu Yang" <yangtiezhu@loongson.cn>,
-        "Huacai Chen" <chenhuacai@kernel.org>,
-        "Yinglu Yang" <yangyinglu@loongson.cn>,
-        "Alexey Malahov" <Alexey.Malahov@baikalelectronics.ru>,
-        "Aleksandar Rikalo" <aleksandar.rikalo@syrmia.com>,
-        "Aleksandar Rikalo" <arikalo@gmail.com>,
-        "Dragan Mladjenovic" <dragan.mladjenovic@syrmia.com>,
-        "Chao-ying Fu" <cfu@wavecomp.com>, "Marc Zyngier" <maz@kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/7] mips: dmi: Fix early remap on MIPS32
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPDyKFoH5EOvRRKy-Bgp_B9B3rf=PUKK5N45s5PNgfBi55PaOQ@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -109,90 +104,348 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023, at 17:23, Serge Semin wrote:
-> On Fri, Nov 24, 2023 at 10:03:49PM +0000, Jiaxun Yang wrote:
->> =E5=9C=A82023=E5=B9=B411=E6=9C=8824=E6=97=A5=E5=8D=81=E4=B8=80=E6=9C=88=
- =E4=B8=8B=E5=8D=886:52=EF=BC=8CSerge Semin=E5=86=99=E9=81=93=EF=BC=9A
->> > On Thu, Nov 23, 2023 at 05:33:31PM +0000, Jiaxun Yang wrote:
->> >>=20
->> [...]
->> >> Actually dmi_setup() is called before cpu_cache_init().
->> >
->> > To preliminary sum the discussion, indeed there can be issues on the
->> > platforms which have DMI initialized on the cached region. Here are
->> > several solutions and additional difficulties I think may be caused=
- by
->> > implementing them:
->>=20
->> Thanks for such detailed conclusion!
->> I'd prefer go solution 1, with comments below.
->> >
->> > 1. Use unmapped cached region utilization in the MIPS32 ioremap_pro=
-t()
->> > method.
->> > This solution a bit clumsy than it looks on the first glance.
->> > ioremap_prot() can be used for various types of the cachability
->> > mapping. Currently it's a default-cacheable CA preserved in the
->> > _page_cachable_default variable and Write-combined CA saved in
->> > boot_cpu_data.writecombine. Based on that we would have needed to u=
-se
->> > the unmapped cached region utilized for the IO-remaps called with t=
-he
->> > "_page_cachable_default" mapping flags passed only. The rest of the=
- IO
->> > range mappings, including the write-combined ones, would have been
->> > handled by VM means. This would have made the ioremap_prot() a bit
->> > less maintainable, but still won't be that hard to implement (unles=
-s I
->> > miss something):
->> > --- a/arch/mips/mm/ioremap.c
->> > +++ b/arch/mips/mm/ioremap.c
->> >         /*
->> > -        * Map uncached objects in the low 512mb of address space u=
-sing KSEG1,
->> > -        * otherwise map using page tables.
->> > +        * Map uncached/default-cached objects in the low 512mb of =
-address
->> > +        * space using KSEG1/KSEG0, otherwise map using page tables.
->> >          */
->> > -       if (IS_LOW512(phys_addr) && IS_LOW512(last_addr) &&
->> > -           flags =3D=3D _CACHE_UNCACHED)
->> > -               return (void __iomem *) CKSEG1ADDR(phys_addr);
->> > +       if (IS_LOW512(phys_addr) && IS_LOW512(last_addr)) {
->> > +               if (flags =3D=3D _CACHE_UNCACHED)
->> > +                       return (void __iomem *) CKSEG1ADDR(phys_add=
-r);
->> > +               else if (flags =3D=3D _page_cachable_default)
->> > +                       return (void __iomem *) CKSEG0ADDR(phys_add=
-r);
->> > +       }
->> >
->> > Currently I can't figure out what obvious problems it may cause. But
->> > It seems suspicious that the cacheable IO-mapping hasn't been
->> > implemented by the unmapped cacheable region in the first place. In
->> > anyway this solution looks more dangerous than solution 2. because =
-it
->> > affects all the MIPS32 platforms at once.
->>=20
->> I just made a quick grep in tree, and it seems like we don't have much
->> user of ioremap_cache (as well as ioremap_uc/wc) here so I think it is
->> a safe assumption.
->
-> I wouldn't say there aren't much users. ioremap_wc() and it's
-> devm-version is widely utilized in the GPU and network and some other
-> subsystems. ioremap_cache() isn't widespread indeed. In anyway even a
-> single user must be supported in safely calling the method if it's
-> provided by the arch-code, otherwise the method could be considered as
-> just a bogus stub to have the kernel successfully built. I bet you'll
-> agree with that. But that's not the point in this case.
+Hi Uffe,
 
-ioremap_wc() is useful for mapping PCI attached memory such as frame
-buffers, but ioremap_cache() is generally underspecified because the
-resulting pointer is neither safe to dereference nor to pass into
-readl()/writel()/memcpy_fromio() on all architectures.
+On Mon, Oct 16, 2023 at 04:47:52PM +0200, Ulf Hansson wrote:
+> [...]
+> > > >   - MSM8916 (CPR+RPMPD):
+> > > >     https://github.com/msm8916-mainline/linux/commit/8880f39108206d7a60a0a8351c0373bddf58657c
+> > >
+> > > This looks a bit odd to me. Does a CPU really have four different
+> > > power-domains, where three of them are performance-domains?
+> > >
+> >
+> > Good question. I think we're largely entering "uncharted territory" with
+> > these questions, I can just try to answer it the best I can from the
+> > limited documentation and knowledge I have. :)
+> >
+> > The CPU does indeed use four different power domains. There also seem to
+> > be additional power switches that gate power for some components without
+> > having to turn off the entire supply.
+> >
+> > I'll list them twice from two points of view: Once mapping component ->
+> > power domain, then again showing each power domain separately to make it
+> > more clear. At the end I also want to make clear that MSM8909 (with the
+> > "single" power domain) is actually exactly the same SoC design, just
+> > with different regulators supplying the power domains.
+> >
+> > It's totally fine if you just skim over it. I'm listing it in detail
+> > also as reference for myself. :D
+> >
+> > # Components
+> >  - SoC
+> >    - CPU subsystem ("APPS")
+> >      - CPU cluster
+> >        - 4x CPU core (logic and L1 cache) -> VDD_APC
+> >        - Shared L2 cache
+> >          - Logic -> VDD_APC
+> >          - Memory -> VDD_MX
+> >      - CPU clock controller (logic) -> VDD_CX
+> >        - Provides CPU frequency from different clock sources
+> >        - L2 cache runs at 1/2 of CPU frequency
+> >        => Both VDD_APC and VDD_MX must be scaled based on frequency
+> >      - CPU PLL clock source
+> >        - Generates the higher (GHz) CPU frequencies
+> >        - Logic (?, unsure) -> VDD_CX
+> >        - ??? -> VDD_SR2_APPS_PLL
+> >        => VDD_CX must be scaled based on PLL frequency
+> >
+> > # Power Domains
+> > ## VDD_APC
+> >  - dedicated for CPU
+> >  - powered off completely in deepest cluster cpuidle state
+> >
+> >  - per-core power switch (per-core cpuidle)
+> >    - CPU logic
+> >    - L1 cache controller/logic and maybe memory(?, unsure)
+> >  - shared L2 cache controller/logic
+> >
+> >  => must be scaled based on CPU frequency
+> >
+> > ## VDD_MX
+> >  - global SoC power domain for "on-chip memories"
+> >  - always on, reduced to minimal voltage when entire SoC is idle
+> >
+> >  - power switch (controlled by deepest cluster cpuidle state?, unsure)
+> >    - L2 cache memory
+> >
+> >  => must be scaled based on L2 frequency (=> 1/2 CPU frequency)
+> >
+> > ## VDD_CX
+> >  - global SoC power domain for "digital logic"
+> >  - always on, reduced to minimal voltage when entire SoC is idle
+> >  - voting for VDD_CX in the RPM firmware also affects VDD_MX performance
+> >    state (firmware implicitly sets VDD_MX >= VDD_CX)
+> >
+> >  - CPU clock controller logic, CPU PLL logic(?, unsure)
+> >
+> >  => must be scaled based on CPU PLL frequency
+> >
+> > ## VDD_SR2_APPS_PLL
+> >  - global SoC power domain for CPU clock PLLs
+> >  - on MSM8916: always on with constant voltage
+> >
+> >  => ignored in Linux at the moment
+> >
+> > # Power Domain Regulators
+> > These power domains are literally input pins on the SoC chip. In theory
+> > one could connect any suitable regulator to each of those. In practice
+> > there are just a couple of standard reference designs that everyone
+> > uses:
+> >
+> > ## MSM8916 (SoC) + PM8916 (PMIC)
+> > We need to scale 3 power domains together with cpufreq:
+> >
+> >  - VDD_APC (CPU logic) = &pm8916_spmi_s2 (via CPR)
+> >  - VDD_MX  (L2 memory) = &pm8916_l3 (via RPMPD: MSM8916_VDDMX)
+> >  - VDD_CX  (CPU PLL)   = &pm8916_s1 (via RPMPD: MSM8916_VDDCX)
+> >
+> > ## MSM8909 (SoC) + PM8909 (PMIC)
+> > We need to scale 1 power domain together with cpufreq:
+> >
+> >  - VDD_APC = VDD_CX    = &pm8909_s1 (via RPMPD: MSM8909_VDDCX)
+> >    (CPU logic, L2 logic and CPU PLL)
+> > (- VDD_MX  (L2 memory) = &pm8909_l3 (RPM firmware enforces VDD_MX >= VDD_CX))
+> >
+> > There is implicit magic in the RPM firmware here that saves us from
+> > scaling VDD_MX. VDD_CX/APC are the same power rail.
+> >
+> > ## MSM8909 (SoC) + PM8916 (PMIC)
+> > When MSM8909 is paired with PM8916 instead of PM8909, the setup is
+> > identical to MSM8916+PM8916. We need to scale 3 power domains.
+> >
+> > > In a way it sounds like an option could be to hook up the cpr to the
+> > > rpmpd:s instead (possibly even set it as a child-domains to the
+> > > rpmpd:s), assuming that is a better description of the HW, which it
+> > > may not be, of course.
+> >
+> > Hm. It's definitely an option. I must admit I haven't really looked
+> > much at child-domains so far, so spontaneously I'm not sure about
+> > the implications, for both the abstract hardware description and
+> > the implementation.
+> >
+> > There seems to be indeed some kind of relation between MX <=> CX/APC:
+> >
+> >  - When voting for CX in the RPM firmware, it will always implicitly
+> >    adjust the MX performance state to be MX >= CX.
+> >
+> >  - When scaling APC up, we must increase MX before APC.
+> >  - When scaling APC down, we must decrease MX after APC.
+> >  => Clearly MX >= APC. Not in terms of raw voltage, but at least for the
+> >     abstract performance state.
+> >
+> > Is this some kind of parent-child relationship between MX <=> CX and
+> > MX <=> APC?
+> 
+> Thanks for sharing the above. Yes, to me, it looks like there is a
+> parent/child-domain relationship that could be worth describing/using.
+> 
+> >
+> > If yes, maybe we could indeed bind MX to the CPR genpd somehow. They use
+> > different performance state numbering, so we need some kind of
+> > translation. I'm not entirely sure how that would be described.
+> 
+> Both the power-domain and the required-opps DT bindings
+> (Documentation/devicetree/bindings/opp/opp-v2-base.yaml) are already
+> allowing us to describe these kinds of hierarchical
+> dependencies/layouts.
+> 
+> In other words, to scale performance for a child domain, the child may
+> rely on that we scale performance for the parent domain too. This is
+> already supported by genpd and through the opp library - so it should
+> just work. :-)
+> 
 
-There was an effort to convert the remaining ioremap_cache() calls
-into memremap() a few years ago, not sure if that's still being worked
-on but it would be the right thing to do.
+I'm getting back to the "multiple power domains" case of MSM8916 now, as
+discussed above. I've tried modelling MX as parent genpd of CPR, to
+avoid having to scale multiple power domains as part of cpufreq.
 
-     Arnd
+Basically, it looks like the following:
+
+	cpr: power-controller@b018000 {
+		compatible = "qcom,msm8916-cpr", "qcom,cpr";
+		reg = <0x0b018000 0x1000>;
+		/* ... */
+		#power-domain-cells = <0>;
+		operating-points-v2 = <&cpr_opp_table>;
+		/* Supposed to be parent domain, not consumer */
+		power-domains = <&rpmpd MSM8916_VDDMX_AO>;
+
+		cpr_opp_table: opp-table {
+			compatible = "operating-points-v2-qcom-level";
+
+			cpr_opp1: opp1 {
+				opp-level = <1>;
+				qcom,opp-fuse-level = <1>;
+				required-opps = <&rpmpd_opp_svs_soc>;
+			};
+			cpr_opp2: opp2 {
+				opp-level = <2>;
+				qcom,opp-fuse-level = <2>;
+				required-opps = <&rpmpd_opp_nom>;
+			};
+			cpr_opp3: opp3 {
+				opp-level = <3>;
+				qcom,opp-fuse-level = <3>;
+				required-opps = <&rpmpd_opp_super_turbo>;
+			};
+		};
+	};
+
+As already discussed [1] it's a bit annoying that the genpd core
+attaches the power domain as consumer by default, but I work around this
+by calling of_genpd_add_subdomain() followed by dev_pm_domain_detach()
+in the CPR driver.
+
+The actual scaling works fine, performance states of the MX power domain
+are updated when CPR performance state. I added some debug prints and it
+looks e.g. as follows (CPR is the power-controller@):
+
+    [   24.498218] PM: mx_ao set performance state 6
+    [   24.498788] PM: power-controller@b018000 set performance state 3
+    [   24.511025] PM: mx_ao set performance state 3
+    [   24.511526] PM: power-controller@b018000 set performance state 1
+    [   24.521189] PM: mx_ao set performance state 4
+    [   24.521660] PM: power-controller@b018000 set performance state 2
+    [   24.533183] PM: mx_ao set performance state 6
+    [   24.533535] PM: power-controller@b018000 set performance state 3
+
+There is one remaining problem here: Consider e.g. the switch from CPR
+performance state 3 -> 1. In both cases the parent genpd state is set
+*before* the child genpd. When scaling down, the parent genpd state must
+be reduced *after* the child genpd. Otherwise, we can't guarantee that
+the parent genpd state is always >= of the child state.
+
+In the OPP core, the order of such operations is always chosen based on
+whether we are scaling up or down. When scaling up, power domain states
+are set before the frequency is changed, and the other way around for
+scaling down.
+
+Is this something you could imagine changing in the GENPD core, either
+unconditionally for everyone, or as an option?
+
+I tried to hack this in for a quick test and came up with the following
+(the diff is unreadable so I'll just post the entire changed
+(_genpd_set_performance_state() function). Admittedly it's a bit ugly.
+
+With these changes the sequence from above looks more like:
+
+    [   22.374555] PM: mx_ao set performance state 6
+    [   22.375175] PM: power-controller@b018000 set performance state 3
+    [   22.424661] PM: power-controller@b018000 set performance state 1
+    [   22.425169] PM: mx_ao set performance state 3
+    [   22.434932] PM: mx_ao set performance state 4
+    [   22.435331] PM: power-controller@b018000 set performance state 2
+    [   22.461197] PM: mx_ao set performance state 6
+    [   22.461968] PM: power-controller@b018000 set performance state 3
+
+Which is correct now.
+
+Let me know if you have any thoughts about this. :-)
+
+Thanks for taking the time to discuss this!
+Stephan
+
+[1]: https://lore.kernel.org/linux-pm/CAPDyKFq+zsoeF-4h5TfT4Z+S46a501_pUq8y2c1x==Tt6EKBGA@mail.gmail.com/
+
+static int _genpd_set_performance_state(struct generic_pm_domain *genpd,
+					unsigned int state, int depth);
+
+static void _genpd_rollback_parent_state(struct gpd_link *link, int depth)
+{
+	struct generic_pm_domain *parent = link->parent;
+	int parent_state;
+
+	genpd_lock_nested(parent, depth + 1);
+
+	parent_state = link->prev_performance_state;
+	link->performance_state = parent_state;
+
+	parent_state = _genpd_reeval_performance_state(parent, parent_state);
+	if (_genpd_set_performance_state(parent, parent_state, depth + 1)) {
+		pr_err("%s: Failed to roll back to %d performance state\n",
+		       parent->name, parent_state);
+	}
+
+	genpd_unlock(parent);
+}
+
+static int _genpd_set_parent_state(struct generic_pm_domain *genpd,
+				   struct gpd_link *link,
+				   unsigned int state, int depth)
+{
+	struct generic_pm_domain *parent = link->parent;
+	int parent_state, ret;
+
+	/* Find parent's performance state */
+	ret = genpd_xlate_performance_state(genpd, parent, state);
+	if (unlikely(ret < 0))
+		return ret;
+
+	parent_state = ret;
+
+	genpd_lock_nested(parent, depth + 1);
+
+	link->prev_performance_state = link->performance_state;
+	link->performance_state = parent_state;
+	parent_state = _genpd_reeval_performance_state(parent,
+						parent_state);
+	ret = _genpd_set_performance_state(parent, parent_state, depth + 1);
+	if (ret)
+		link->performance_state = link->prev_performance_state;
+
+	genpd_unlock(parent);
+
+	return ret;
+}
+
+static int _genpd_set_performance_state(struct generic_pm_domain *genpd,
+					unsigned int state, int depth)
+{
+	struct gpd_link *link = NULL;
+	int ret;
+
+	if (state == genpd->performance_state)
+		return 0;
+
+	/* When scaling up, propagate to parents first in normal order */
+	if (state > genpd->performance_state) {
+		list_for_each_entry(link, &genpd->child_links, child_node) {
+			ret = _genpd_set_parent_state(genpd, link, state, depth);
+			if (ret)
+				goto rollback_parents_up;
+		}
+	}
+
+	if (genpd->set_performance_state) {
+		pr_err("%s set performance state %d\n", genpd->name, state);
+		ret = genpd->set_performance_state(genpd, state);
+		if (ret) {
+			if (link)
+				goto rollback_parents_up;
+			return ret;
+		}
+	}
+
+	/* When scaling down, propagate to parents after in reverse order */
+	if (state < genpd->performance_state) {
+		list_for_each_entry_reverse(link, &genpd->child_links, child_node) {
+			ret = _genpd_set_parent_state(genpd, link, state, depth);
+			if (ret)
+				goto rollback_parents_down;
+		}
+	}
+
+	genpd->performance_state = state;
+	return 0;
+
+rollback_parents_up:
+	list_for_each_entry_continue_reverse(link, &genpd->child_links, child_node)
+		_genpd_rollback_parent_state(link, depth);
+	return ret;
+rollback_parents_down:
+	list_for_each_entry_continue(link, &genpd->child_links, child_node)
+		_genpd_rollback_parent_state(link, depth);
+	return ret;
+}
+
