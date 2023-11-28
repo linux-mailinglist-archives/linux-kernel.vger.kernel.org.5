@@ -2,183 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC517FB54D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:12:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 017007FB54B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:12:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234358AbjK1JMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 04:12:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46230 "EHLO
+        id S232697AbjK1JMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 04:12:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234733AbjK1JMc (ORCPT
+        with ESMTP id S230506AbjK1JMW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 04:12:32 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E7BD4C;
-        Tue, 28 Nov 2023 01:12:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701162758; x=1732698758;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=HJCBhWau23olURkNwP9LFY4MkHCSEIKKCHNz47W5Qp0=;
-  b=OqTJ36RpaCe2ZK29RYBUFXX//WogFC71/dr6kYDi3RX91TDyHYcbjIEW
-   8+jQi+B1M/KYjj4O/PrmOrhD9K/tjBa8GQXHk79woKFP+3nwodSYpbdZH
-   3Gg3ATFz07QxG1xwZ7XClEsVVt1iS3RDnr538clxGhTu0NYo8Poml69sa
-   vw5vk4rxr44Rskf2oElkSxCr7fuzoWPIrw+QltE3wgtbez2eGwkFzPyrI
-   mcjGJq0dXpPBWt+CAIlt/XQbxEfgy2FEzycXvQucw0t6QZFwYwv2XPWYd
-   J+1badW9/62FwwcTk7tAp+5roH76rJrY2VxzbB7RJSGAuAUEYeYlKuc8B
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="373053554"
-X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
-   d="scan'208";a="373053554"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 01:11:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="1100025863"
-X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
-   d="scan'208";a="1100025863"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.221.84])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 01:11:27 -0800
-Message-ID: <228dab31-8073-44f5-98ac-35aedb508e04@intel.com>
-Date:   Tue, 28 Nov 2023 11:11:23 +0200
+        Tue, 28 Nov 2023 04:12:22 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 672D7AB;
+        Tue, 28 Nov 2023 01:12:28 -0800 (PST)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AS8xC52028057;
+        Tue, 28 Nov 2023 09:12:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=AqfsZhfJIV0ah8Mcq2ahxjWlSq2ikPRbgAL9ct0yCb4=;
+ b=BytLajBiDBIkAvT8ar4pqExWzyliSVFA3VGWJxDU4m9cU+4SbYWXcviucRqHk/riR+w/
+ jR+/9kGqB6jRDAoElZba5BzEeN+gGU4yWTQgI8WqW3hhN085W+pJMYwFznMl0UL77LUh
+ woPZ/eMIe4IeKetBDYAa/Ze48iCGFmvfZwqiJNAYhlv/tQMr82k3EoxybJCzlYQYSIa6
+ +8A5s4rN9xGhEyJM/TR62PaTZUsRp/M6n3X3OwTTatpjzQe1Cq5BybMk46WjC14b1kD5
+ L5k9dlz02k3IfsSQNcCI65PD7ecEJzX7yFG75WBglE7q/9Y0uI/NLwxU2Zq9wjMVH9zG yg== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3umt4qjx6h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Nov 2023 09:12:06 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AS9C5Dd016438
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Nov 2023 09:12:05 GMT
+Received: from [10.239.133.73] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 28 Nov
+ 2023 01:12:03 -0800
+Message-ID: <a86228f5-c1ae-4afe-87bd-5144633a9601@quicinc.com>
+Date:   Tue, 28 Nov 2023 17:12:00 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V13 11/21] mmc: sdhci-uhs2: add reset function and
- uhs2_mode function
-Content-Language: en-US
-To:     Victor Shih <victorshihgli@gmail.com>, ulf.hansson@linaro.org
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        benchuanggli@gmail.com, HL.Liu@genesyslogic.com.tw,
-        Greg.tu@genesyslogic.com.tw, takahiro.akashi@linaro.org,
-        dlunev@chromium.org, Victor Shih <victor.shih@genesyslogic.com.tw>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>
-References: <20231117113149.9069-1-victorshihgli@gmail.com>
- <20231117113149.9069-12-victorshihgli@gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20231117113149.9069-12-victorshihgli@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH 0/2] freezer,sched: do not restore saved_state of a thawed
+ task
+To:     Elliot Berman <quic_eberman@quicinc.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>, Ingo Molnar <mingo@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+CC:     <linux-arm-msm@vger.kernel.org>,
+        Pavan Kondeti <quic_pkondeti@quicinc.com>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Abhijeet Dharmapurikar <quic_adharmap@quicinc.com>
+References: <20231120-freezer-state-multiple-thaws-v1-0-f2e1dd7ce5a2@quicinc.com>
+From:   "Aiqun(Maria) Yu" <quic_aiquny@quicinc.com>
+In-Reply-To: <20231120-freezer-state-multiple-thaws-v1-0-f2e1dd7ce5a2@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: tb538e39X4vhm4jHaQHO2TqEhx3aRRHW
+X-Proofpoint-GUID: tb538e39X4vhm4jHaQHO2TqEhx3aRRHW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-28_08,2023-11-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ priorityscore=1501 malwarescore=0 bulkscore=0 mlxlogscore=831 mlxscore=0
+ phishscore=0 adultscore=0 spamscore=0 lowpriorityscore=0 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311280071
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/11/23 13:31, Victor Shih wrote:
-> From: Victor Shih <victor.shih@genesyslogic.com.tw>
+On 11/21/2023 1:36 AM, Elliot Berman wrote:
+> This series applies couple fixes to commit 8f0eed4a78a8 ("freezer,sched:
+> Use saved_state to reduce some spurious wakeups") which was found while
+> testing with legacy cgroup freezer. My original testing was only with
+> system-wide freezer. We found that thaw_task could be called on a task
+> which was already frozen. Prior to commit 8f0eed4a78a8 ("freezer,sched:
+> Use saved_state to reduce some spurious wakeups"), this wasn't an issue
+> as kernel would try to wake up TASK_FROZEN, which wouldn't match the
+> thawed task state, and no harm done to task. After commit 8f0eed4a78a8
+> ("freezer,sched: Use saved_state to reduce some spurious wakeups"), it
+> was possible to overwrite the state of thawed task.
 > 
-> Sdhci_uhs2_reset() does a UHS-II specific reset operation.
+> To: Rafael J. Wysocki <rafael@kernel.org>
+> To: Pavel Machek <pavel@ucw.cz>
+> To: Ingo Molnar <mingo@kernel.org>
+> To: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Cc:  <linux-arm-msm@vger.kernel.org>
+> Cc: Pavan Kondeti <quic_pkondeti@quicinc.com>
+> Cc: Aiqun Yu (Maria) <quic_aiquny@quicinc.com>
+> Cc:  <linux-pm@vger.kernel.org>
+> Cc:  <linux-kernel@vger.kernel.org>
+> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+Shall we add Fixed tag and Cc: stable@vger.kernel.org ?
+Since it is fixing a stable user thread hung issue.
 > 
-> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw>
+> Originally sent to only linux-arm-msm, resending to correct authors.
+> - Link to v1: https://lore.kernel.org/r/20231120-freezer-state-multiple-thaws-v1-0-a4c453f50745@quicinc.com
+> 
 > ---
+> Elliot Berman (2):
+>        freezer,sched: do not restore saved_state of a thawed task
+>        freezer,sched: clean saved_state when restoring it during thaw
 > 
-> Updates in V13:
->  - Use ios timing to stead MMC_UHS2_SUPPORT for indicate the UHS2 mode.
-> 
-> Updates in V8:
->  - Adjust the position of matching brackets.
-> 
-> Updates in V6:
->  - Remove unnecessary functions and simplify code.
-> 
+>   kernel/freezer.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 > ---
+> base-commit: 6d7e4782bcf549221b4ccfffec2cf4d1a473f1a3
+> change-id: 20231108-freezer-state-multiple-thaws-7a3a8d9dadb3
 > 
->  drivers/mmc/host/sdhci-uhs2.c | 45 +++++++++++++++++++++++++++++++++++
->  drivers/mmc/host/sdhci-uhs2.h |  2 ++
->  2 files changed, 47 insertions(+)
-> 
-> diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sdhci-uhs2.c
-> index e339821d3504..ef6f02583d61 100644
-> --- a/drivers/mmc/host/sdhci-uhs2.c
-> +++ b/drivers/mmc/host/sdhci-uhs2.c
-> @@ -10,7 +10,9 @@
->   *  Author: AKASHI Takahiro <takahiro.akashi@linaro.org>
->   */
->  
-> +#include <linux/delay.h>
->  #include <linux/module.h>
-> +#include <linux/iopoll.h>
->  
->  #include "sdhci.h"
->  #include "sdhci-uhs2.h"
-> @@ -21,6 +23,8 @@
->  #define SDHCI_UHS2_DUMP(f, x...) \
->  	pr_err("%s: " DRIVER_NAME ": " f, mmc_hostname(host->mmc), ## x)
->  
-> +#define UHS2_RESET_TIMEOUT_100MS		100000
-> +
->  void sdhci_uhs2_dump_regs(struct sdhci_host *host)
->  {
->  	if (!(sdhci_uhs2_mode(host)))
-> @@ -49,6 +53,47 @@ void sdhci_uhs2_dump_regs(struct sdhci_host *host)
->  }
->  EXPORT_SYMBOL_GPL(sdhci_uhs2_dump_regs);
->  
-> +/*****************************************************************************\
-> + *                                                                           *
-> + * Low level functions                                                       *
-> + *                                                                           *
-> +\*****************************************************************************/
-> +
-> +bool sdhci_uhs2_mode(struct sdhci_host *host)
-> +{
-> +	return	host->mmc->ios.timing == MMC_TIMING_UHS2_SPEED_A ||
-> +		host->mmc->ios.timing == MMC_TIMING_UHS2_SPEED_B ||
-> +		host->mmc->ios.timing == MMC_TIMING_UHS2_SPEED_A_HD ||
-> +		host->mmc->ios.timing == MMC_TIMING_UHS2_SPEED_B_HD;
-> +}
+> Best regards,
 
-This is the same as mmc_card_uhs2(host->mmc)
-
-> +
-> +/**
-> + * sdhci_uhs2_reset - invoke SW reset
-> + * @host: SDHCI host
-> + * @mask: Control mask
-> + *
-> + * Invoke SW reset, depending on a bit in @mask and wait for completion.
-> + */
-> +void sdhci_uhs2_reset(struct sdhci_host *host, u16 mask)
-> +{
-> +	u32 val;
-> +
-> +	sdhci_writew(host, mask, SDHCI_UHS2_SW_RESET);
-> +
-> +	if (mask & SDHCI_UHS2_SW_RESET_FULL)
-> +		host->clock = 0;
-> +
-> +	/* hw clears the bit when it's done */
-> +	if (read_poll_timeout_atomic(sdhci_readw, val, !(val & mask), 10,
-> +				     UHS2_RESET_TIMEOUT_100MS, true, host, SDHCI_UHS2_SW_RESET)) {
-> +		pr_warn("%s: %s: Reset 0x%x never completed. %s: clean reset bit.\n", __func__,
-> +			mmc_hostname(host->mmc), (int)mask, mmc_hostname(host->mmc));
-> +		sdhci_writeb(host, 0, SDHCI_UHS2_SW_RESET);
-> +		return;
-> +	}
-> +}
-> +EXPORT_SYMBOL_GPL(sdhci_uhs2_reset);
-> +
->  /*****************************************************************************\
->   *                                                                           *
->   * Driver init/exit                                                          *
-> diff --git a/drivers/mmc/host/sdhci-uhs2.h b/drivers/mmc/host/sdhci-uhs2.h
-> index 2bfe18d29bca..8253d50f7852 100644
-> --- a/drivers/mmc/host/sdhci-uhs2.h
-> +++ b/drivers/mmc/host/sdhci-uhs2.h
-> @@ -177,5 +177,7 @@
->  struct sdhci_host;
->  
->  void sdhci_uhs2_dump_regs(struct sdhci_host *host);
-> +bool sdhci_uhs2_mode(struct sdhci_host *host);
-> +void sdhci_uhs2_reset(struct sdhci_host *host, u16 mask);
->  
->  #endif /* __SDHCI_UHS2_H */
+-- 
+Thx and BRs,
+Aiqun(Maria) Yu
 
