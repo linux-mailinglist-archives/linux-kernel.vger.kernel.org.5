@@ -2,100 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 066E47FAF09
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 01:29:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 637037FAF0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 01:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234157AbjK1A3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 19:29:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42998 "EHLO
+        id S234186AbjK1AaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 19:30:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231391AbjK1A3V (ORCPT
+        with ESMTP id S231391AbjK1AaL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 19:29:21 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84BC01A2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 16:29:27 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1cfb4d28c43so20468155ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 16:29:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701131367; x=1701736167; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zBhH3SH8gSBwN/mjOaVSdplaO4ytPruThkgoguaYPkk=;
-        b=PyEgxNWLeJ3KP8hUS7Ok5YSMoLLYB/ml3itP1fDeV5zzMq6GeWq7Yk+5qYJFlWMz3N
-         M2hG48me0XDZH/2YaYA5EuA2ZUobganXhFT3/he5pdHZkDEvHVXNsvUG/6vZqdcAiPmu
-         s5ehbXKbSfdq40VxQneA98J3UKPHGyCYYXQcI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701131367; x=1701736167;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zBhH3SH8gSBwN/mjOaVSdplaO4ytPruThkgoguaYPkk=;
-        b=EuFVttVybywenb4HOCJ8NZTItCU242w4rvQ2iGTI1FnlkmiTKwNSGoROhQtQYz0XMG
-         X4i9djR1J2M5QRS49lwcXv10u2j1H1uhNvsAjz253M15pdzaQuKezdPBDC/uwt08QUUA
-         zHPbASEUK3w4KymMnJlGmfTEUdxD8aAt/IKwpe+8o9g9C41UIe3xmJzAtJ/75nvOu/hx
-         Hlwmzd6BKzGNN+kU2ujrLxOG1a5YqV2IFDwwISyySFYUP2gSjL5wfwcDf6pu5PUzD0Cl
-         sAKrVtF3bv4LkCEanDiMv/LFK3UHoH9GCdAMIK5RA34kaCd7smaqbuukQWrVidd0wcfE
-         dIBg==
-X-Gm-Message-State: AOJu0Yze+NkT77df3NsUV5oB4FNva2+ncYitQXobtia1ol6LMrkzuCKk
-        G0pI4/zmvd8YIp9ViLtslxwlQw==
-X-Google-Smtp-Source: AGHT+IHfOT26JhpsCCRBM96VOFEk0SgWcQnWOKyzAiCxrKsjcBUu975ao2LlZFeKW0Hd0NQIfUCkxA==
-X-Received: by 2002:a17:903:22d2:b0:1cc:c273:603 with SMTP id y18-20020a17090322d200b001ccc2730603mr14361492plg.42.1701131366965;
-        Mon, 27 Nov 2023 16:29:26 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id h7-20020a170902b94700b001cc2ebd2c2csm8824250pls.256.2023.11.27.16.29.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 16:29:26 -0800 (PST)
-Date:   Mon, 27 Nov 2023 16:29:25 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Joey Gouly <joey.gouly@arm.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Mon, 27 Nov 2023 19:30:11 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE251A2;
+        Mon, 27 Nov 2023 16:30:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=RXJUdpNEWT2fSRqZk39lN7kLn1cO7XXum10Kr+b8hjY=; b=bbRTvQC+J9K35PMLvA3Fco0upj
+        MXvAojVmeMrAECfyRQc8vr4zJyenwbw1Aq9RVLf+xuTx1nDokvAvv+jB4Q+m1xMBedxW2YYu/gD+O
+        bg8gkORBNviUZkOVH9FgDPBXzSSfTkta8T90HtZC9wcOFK4jLQb1Da3edMOC6eLS64kc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r7lzM-001Ou7-Jn; Tue, 28 Nov 2023 01:30:08 +0100
+Date:   Tue, 28 Nov 2023 01:30:08 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Bill Wendling <morbo@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] neighbour: Fix __randomize_layout crash in struct
- neighbour
-Message-ID: <202311271628.E5EED48@keescook>
-References: <ZWJoRsJGnCPdJ3+2@work>
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [net-next PATCH RFC v3 6/8] dt-bindings: net: Document Qcom
+ QCA807x PHY package
+Message-ID: <19605736-0f67-4593-a9ae-0e5c4578648f@lunn.ch>
+References: <20231126015346.25208-1-ansuelsmth@gmail.com>
+ <20231126015346.25208-7-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZWJoRsJGnCPdJ3+2@work>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20231126015346.25208-7-ansuelsmth@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 25, 2023 at 03:33:58PM -0600, Gustavo A. R. Silva wrote:
-> Previously, one-element and zero-length arrays were treated as true
-> flexible arrays, even though they are actually "fake" flex arrays.
-> The __randomize_layout would leave them untouched at the end of the
-> struct, similarly to proper C99 flex-array members.
-> 
-> However, this approach changed with commit 1ee60356c2dc ("gcc-plugins:
-> randstruct: Only warn about true flexible arrays"). Now, only C99
-> flexible-array members will remain untouched at the end of the struct,
-> while one-element and zero-length arrays will be subject to randomization.
-> 
-> Fix a `__randomize_layout` crash in `struct neighbour` by transforming
-> zero-length array `primary_key` into a proper C99 flexible-array member.
-> 
-> Fixes: 1ee60356c2dc ("gcc-plugins: randstruct: Only warn about true flexible arrays")
-> Closes: https://lore.kernel.org/linux-hardening/20231124102458.GB1503258@e124191.cambridge.arm.com/
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> +$ref: ethernet-phy-package.yaml#
+> +
+> +properties:
+> +  qcom,package-mode:
+> +    enum:
+> +      - qsgmii
+> +      - psgmii
+> +
+> +  qcom,tx-driver-strength:
+> +    description: set the TX Amplifier value in mv.
+> +      If not defined, 600mw is set by default.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [140, 160, 180, 200, 220,
+> +           240, 260, 280, 300, 320,
+> +           400, 500, 600]
 
-Yes, please. Do we have any other 0-sized arrays hiding out in the
-kernel? We need to get these all cleared...
+This is O.K, you are describing package properties, even if i don't
+agree about qcom,package-mode.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+> +patternProperties:
+> +  ^ethernet-phy(@[a-f0-9]+)?$:
+> +    $ref: ethernet-phy.yaml#
+> +
+> +    properties:
+> +      gpio-controller:
+> +        description: set the output lines as GPIO instead of LEDs
+> +        type: boolean
+> +
+> +      '#gpio-cells':
+> +        description: number of GPIO cells for the PHY
+> +        const: 2
 
--- 
-Kees Cook
+But now you are describing PHY properties. These belong on a .yaml of
+its own, just like qca,ar803x.yaml defines properties for the AR803x
+PHY.
+
+	Andrew
