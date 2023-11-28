@@ -2,135 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 057C17FC20E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E62DC7FC137
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346198AbjK1Oe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 09:34:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42778 "EHLO
+        id S1346211AbjK1OfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 09:35:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344927AbjK1Oe2 (ORCPT
+        with ESMTP id S1344927AbjK1OfE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 09:34:28 -0500
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6704E18D;
-        Tue, 28 Nov 2023 06:34:34 -0800 (PST)
-Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-58d98188dc0so944735eaf.3;
-        Tue, 28 Nov 2023 06:34:34 -0800 (PST)
+        Tue, 28 Nov 2023 09:35:04 -0500
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA08A18D
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:35:10 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-3b5714439b3so2695687b6e.3
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:35:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701182073; x=1701786873; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bMG48SwBK5UHsAZmvVGge+eO1O9aG82zKUQLg7KuJ3A=;
-        b=TrAkaISaDFsf9QTCF4R7EN8cSm7eMOAYjOFBXxrz9YTAtDFlnukVJoXLhlcFqGX8xQ
-         BzkToS8U/L0ZpYEuu6MTd9Gs+U1bM5iW3wbSpz6mjov3p+gnXvNSXViHO3XoJ2uhU3Cq
-         wDhzVr2/essS5hMZXW8vcV8m4lpT8ToH9Uz8aZ+hqAMPQfyvJgoFoqoFYOJIdAea4Uvl
-         CcAjhdgfB9DBCSuvBzqOiLscbKOoEd2SYjpuDbHHvmahW+90TA4iYpbZuSAf+PQnTFUx
-         Jx0mVwBTVRR/dbNWaKX2MbrW66BH9T3H6eaXqdiA1xJ3hZ5leWikInFNdFMH6HXcm5ce
-         Ul0g==
+        d=ziepe.ca; s=google; t=1701182110; x=1701786910; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mU0p6xbpFTkyXWGjYVAfm5sm2ySxTisEI49QmB0GvUc=;
+        b=hOiGLRDcgVEooWxK05RJriPyfNoByBeF07a8RKbWpZe46og4WdCniAs5qyauKOastH
+         Kc2sZK/fFSbjiJsptKX/Mo2R9lB3vJKvY09pRGscOzGt5zEkjJvYBjWgcvFsV4IgqpGs
+         I5AsOW92WvGKwHH5kCCi7ZGXBCFphPZHdOPd7ZPHsOPaXxVkhxFAm92krtLkaWJeJJ5R
+         ZUtN+shGqMLRdCmGoULJ9/nMl+UWzebtwH2ApQNSSE5JdvtmApirb9ScGRK4eEiU6Ci5
+         0XnoFdb30qMNOU41TfOiURRoY03RaAUnuzHUHPw6eB///W0vab9tR1D4cS/o22/U7ah5
+         Ofng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701182073; x=1701786873;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bMG48SwBK5UHsAZmvVGge+eO1O9aG82zKUQLg7KuJ3A=;
-        b=ERQnmb23A4yC8DDE8TxrUdGVe8jdyTYaVn954Edu+/98fzdBEmKEeoVeZysvJb+1B3
-         wv+6RNfG24F61f39iptATcPRO4Q1MBhPe/c6sAIK4qgQtojVLma/EotJGE892SzuXAYn
-         6/DZzq2tuzmPPrE7zAW0n2m/JQaIpmSCJDTErkoMkrHAj12u+qmN/opFzbDGHj7ItL2X
-         XpaTVB3Vce2oQeogC7MKq3tOsth27daj8Py0dFEh4ETTR/XTmlPODoxiVKK8UXxibzcj
-         rOgho+B52JGR2Kf6Z/TobJfSR80b87+2eAmx+uVu0ZC8EQM8xyWAgc7i59lQsI/rpDxJ
-         1eGw==
-X-Gm-Message-State: AOJu0YxVOfGinY7WQis2wQTX4gx0/fmUGGsfdP6kSEUYSDr9jUPVH1/H
-        8R757AGbw8FI8GUgSbd+sSeWkyDF63crMZE8qSs=
-X-Google-Smtp-Source: AGHT+IHzPkygydR5FCKAGeIxu2k+cpNdyTREovFpmnR+IYF8jBCyYIDp1Zft+jE6Elx/jhXtXOz/zAXUZQqbC70bm0c=
-X-Received: by 2002:a4a:e559:0:b0:58d:bfab:f5f with SMTP id
- s25-20020a4ae559000000b0058dbfab0f5fmr454326oot.1.1701182073588; Tue, 28 Nov
- 2023 06:34:33 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701182110; x=1701786910;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mU0p6xbpFTkyXWGjYVAfm5sm2ySxTisEI49QmB0GvUc=;
+        b=RTQpsM5stFZkR+OLnp8f5srJZLlujZkJ+9uR8fdPxJxMAan812thbYQsOepx52qg6S
+         bAQoCZhvtYTRDBUHUMnQKufBeSIF1xCa0zQMCy4XmVZ4vlsHrYn5p7ikhbsApTij+0qM
+         jfSWWiXr17PJj9HlpKD07qfuc8PLjhATB7h7B40Mgx/4Bl98Ejvj2Ed8MJGklwP1qcoT
+         +8DFcdtcXiZnBC0JyXQe4/kK6GdRtbU/jwNFfr7YlXIh0Q8q2diEBsA5WbALs0miwh5+
+         K/RpLqDi/yikR6RxcZ861LzD7ujYxYKCFnGWHH8oFDFMss6P2nhoeTkx6mIUsyORQMYe
+         vHDg==
+X-Gm-Message-State: AOJu0YwMgCZ7OBYr4q5S8KXEzMYMcCJqusSzxvMsNtFMYLaaVmsqU4EG
+        RISLgMNX/DjyRauKNAtcIV1XAA==
+X-Google-Smtp-Source: AGHT+IFm85sCZM9GYbWWTfuyl1YQC+tIFaoEBfBmtndKobcL5DQyqd+aQPTs84SPfYUybfqBkHyxrg==
+X-Received: by 2002:a05:6870:be8b:b0:1ea:2447:5181 with SMTP id nx11-20020a056870be8b00b001ea24475181mr18982913oab.9.1701182110147;
+        Tue, 28 Nov 2023 06:35:10 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
+        by smtp.gmail.com with ESMTPSA id sc14-20020a056871220e00b001fa8e52eb41sm111367oab.25.2023.11.28.06.35.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 06:35:09 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1r7zB6-00506g-UN;
+        Tue, 28 Nov 2023 10:35:08 -0400
+Date:   Tue, 28 Nov 2023 10:35:08 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     joro@8bytes.org, kevin.tian@intel.com, will@kernel.org,
+        iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] iommufd/selftest: Use normal IOMMU registration
+Message-ID: <20231128143508.GG432016@ziepe.ca>
+References: <cover.1701165201.git.robin.murphy@arm.com>
+ <44ee6854da69e86b208f49752f60a4c18205c32a.1701165201.git.robin.murphy@arm.com>
 MIME-Version: 1.0
-References: <20231121094642.2973795-1-qiujingbao.dlmu@gmail.com>
- <20231121094642.2973795-3-qiujingbao.dlmu@gmail.com> <09b29f1f-a42b-49f7-afca-f82357acd4c8@linaro.org>
- <CAJRtX8TU9Z3OXL1zw9+mGNhxugp_C2jo40k-s9V2byNCQeBoLQ@mail.gmail.com> <438768a3-c50c-46f1-8a4e-2233c7545453@linaro.org>
-In-Reply-To: <438768a3-c50c-46f1-8a4e-2233c7545453@linaro.org>
-From:   jingbao qiu <qiujingbao.dlmu@gmail.com>
-Date:   Tue, 28 Nov 2023 22:34:22 +0800
-Message-ID: <CAJRtX8QkUFLnrGXHNH_StQeYy3cJZ6svcO4yz+cTC5x4D88mGg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] rtc: add rtc controller support for Sophgo CV1800B SoC
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
-        krzysztof.kozlowski+dt@linaro.org, chao.wei@sophgo.com,
-        unicorn_wang@outlook.com, conor+dt@kernel.org, robh+dt@kernel.org,
-        conor@kernel.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, linux-rtc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <44ee6854da69e86b208f49752f60a4c18205c32a.1701165201.git.robin.murphy@arm.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 9:59=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 28/11/2023 14:22, jingbao qiu wrote:
-> >>> +     if (ret)
-> >>> +             goto err;
-> >>> +
-> >>> +     rtc->clk =3D devm_clk_get(&pdev->dev, NULL);
-> >>> +     if (IS_ERR(rtc->clk)) {
-> >>> +             dev_err(&pdev->dev, "no clock");
-> >>
-> >> This code is not ready for upstream. There are multiple things wrong h=
-ere.
-> >>
-> >> First, syntax is return dev_err_probe.
-> >>
-> >> Second, you do not have clocks and you do not allow them! Just open yo=
-ur
-> >> binding.
-> >
-> > I'm not fully understanding here, can you elaborate more?
->
-> That the syntax is dev_err_probe() or that you do not have clocks?
->
->
-> > as there is clocks info like this in the dt-bindings:
-> >  clocks =3D <&osc>;
->
-> Really?
->
-> Point me to the line in your patch:
->
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - sophgo,cv1800b-rtc
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
->
-> Where are the clocks?
+On Tue, Nov 28, 2023 at 10:42:12AM +0000, Robin Murphy wrote:
+> The IOMMU core now supports coexistence of fwspec-based drivers, which
+> the mock driver now is, so let's bring the mock bus into iommu_buses,
+> drop the special interface, and use the normal registration flow. The
+> one concession we have to make is to ensure that the mock bus is
+> registered early enough so that bus_for_each_dev() doesn't error out
+> for other IOMMU drivers registering before iommufd_test_init() runs.
 
-I will fix properties.
+This makes iommufd non-modular which becomes a total PITA for development :(
 
->
->
-> Best regards,
-> Krzysztof
->
-
-Best regards,
-Jingbao Qiu
+Jason
