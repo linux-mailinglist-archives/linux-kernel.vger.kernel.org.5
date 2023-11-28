@@ -2,105 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BABD87FC410
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 20:12:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBF997FC40F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 20:12:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376305AbjK1TMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 14:12:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34192 "EHLO
+        id S1376296AbjK1TMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 14:12:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345286AbjK1TMc (ORCPT
+        with ESMTP id S230050AbjK1TMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 14:12:32 -0500
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEA031988
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 11:12:38 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id BFE7B40E01A5;
-        Tue, 28 Nov 2023 19:12:36 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
-        reason="fail (body has been altered)" header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id DOsTME6jvWU0; Tue, 28 Nov 2023 19:12:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1701198751; bh=S1yFySh0fGHIs/7UN//rzspDxtpRP6EaFnY0h1+BSNg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TaRE+7JfwCF+PVjYAq1ES04OkDsU4YIV/20aXXYOkck+SGBMWQiJw/aqriEGlIeO5
-         mTdUQMCCNgTbrICti24Vd4Uyc8da8NqJyrFeiHnH3ajQJtvx5lA7bEF+LRvNr5F4Ko
-         QSBEeKHeItGPoh6ABadpIWAse0OKba5ZsPgeFCKKG7d8Am32vQPm0e3Q7QDANDoRNW
-         1NGt69cYH61wJ9jZ571aXkMtLcEhOqqCf7aBPzxqTJdFEsqbMC3C9jaIoYs9pG6sAJ
-         xQZc822h9irM0+4af4KJnF/ckqW/J/OyzdTDV6IeHc/Fw3R+1TU3SJTb/Dwr1vMW1P
-         NxZqYzGF1cVa7uatUaPCfmrGo0mIPKaxVXkgLFcYJF0gM9K/5Vl2MvW7DvdOwjudAX
-         wGkLDI4anAOKRsI3foxBO2bC8LJSlg5Bjzxlyoqg3Bf1amxIQjMwWh6rtZMYa3wJok
-         ZSmR2fL++peudeaN6IIDq33FCFkR5hrvaQmvB006YdrakJPy/GcuQHtUoZ0Ep3srV0
-         hc3ApB4G6GIGARXhs5BmfAtjclfGkRdCt45oXadBXbLj2swb4UYCpbdkh38Mriw5RX
-         2PaODXezDzd7aCdj6ivtE4WsIdQbef9Eo0BhnxNvExcnjxQiEBPhBj3QPL3YwcIP6u
-         LIISpzGwhUmh+kUe9TeJTgG4=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D723840E014B;
-        Tue, 28 Nov 2023 19:12:23 +0000 (UTC)
-Date:   Tue, 28 Nov 2023 20:12:17 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/cpu: Update power flags
-Message-ID: <20231128191217.GDZWY7kYC9bE9Qkg25@fat_crate.local>
-References: <20231128-powerflags-v1-1-87e8fe020a3d@weissschuh.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231128-powerflags-v1-1-87e8fe020a3d@weissschuh.net>
+        Tue, 28 Nov 2023 14:12:30 -0500
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12olkn2087.outbound.protection.outlook.com [40.92.21.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB08A1707;
+        Tue, 28 Nov 2023 11:12:36 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IzVfgAcwbE6aSrDnMb74dxCNJFntWzNeH7SZ1SDz1UH3RISx3qBZpxHMe0CPWdOi8IgsM8deOC4J9+I7Xidru4xgmTYuYOSgp+t3UxiRQO01V3cI08wifA9wU1VU07BACYfAZc871okhu1ei7xFZ/tsaeGA8L8bROTAswTEWl5vmFmAdnnLe0VuI3JZfowxCjwcXrMH88b+tZ4j5Eh6PjrjXQDUGfCGQ+s1jUMNymWs66DDHoMBGf6yec22tojDSkVFUo9TpiqtUy5zgte2nCvifZlYn27N/izZ1stpLbBlQZgozGbbzFEJSn9BvLWkRtq6T2hGqU4YlRbkSnKG/pg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KKsGGv7KIpMrwwkHZcgPzPyNczYPg6IxevN9YGYU2Uo=;
+ b=NtFbG6YgIb+gcFkWY/CpzwiBleFYIq0R4LwIO+P9EO7HAj9HKKR56CzHM7UdCkKfZKYUEgdHjP7CO/rFDVB3bkm3sErg1TurSjVTqgtv/+ce4DpjBfAHeTF47axfqlHDnf2B7QmzMyn9HJudBtgRhuvhoUVrxzonqBPP6nbLUUlFtW7Bo/yboFagdgsW3rGiO/UX7+ZcS0f3bHUzbmkBR/m2aQIzOhLkkxunk+gaMK9nh8PAAAENKAO1PRlF8FttuiWM4JDTQr94zMevtsYNfommQQrifrw/gEk990bUg90v5sOc59bPtHIkjqGl4SWbH5cyFtTQBpc+fIZYCplehQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KKsGGv7KIpMrwwkHZcgPzPyNczYPg6IxevN9YGYU2Uo=;
+ b=I5luXcq12rzBPiEpAIxt0GTFTMJu94yo1/IvcFkU+9YbtKOeHepikzWIGTO7go585Txm1GSEZJu9uD7VDBTU8cr9a7aiARkwNNYoASSsUryHZ5rNVngAa/0VP3grnkdYCmmbNpXoZfZtCfUdcomgd6/Yb2NjQzIBY+iVRKzxeLCYbMrcPEmRSDPRaOaC8Ioi3J7iLM1KKwraBcYcFoJqSNFBvMTQVuNcMpVtIczfQ4sv5IHHaX0IC7ytZptXhPVSEW/jQ0X821Xxw4m1PBG39tAZ3KB4aMv/+0p8o1vhexAi3UBFUlowGWMOsJosLiT0KZhnJYjbuV2E+N/fC/PIOg==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by DM3PR02MB10207.namprd02.prod.outlook.com (2603:10b6:0:1e::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.22; Tue, 28 Nov
+ 2023 19:12:34 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::54e5:928f:135c:6190]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::54e5:928f:135c:6190%7]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
+ 19:12:34 +0000
+From:   Michael Kelley <mhklinux@outlook.com>
+To:     "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
+CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
+        "kys@microsoft.com" <kys@microsoft.com>,
+        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "decui@microsoft.com" <decui@microsoft.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "urezki@gmail.com" <urezki@gmail.com>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "lstoakes@gmail.com" <lstoakes@gmail.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "jroedel@suse.de" <jroedel@suse.de>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: RE: [PATCH v2 0/8] x86/coco: Mark CoCo VM pages not present when
+ changing encrypted state
+Thread-Topic: [PATCH v2 0/8] x86/coco: Mark CoCo VM pages not present when
+ changing encrypted state
+Thread-Index: AQHaHMCVvp/6+xDImEK+4X8HvaXRwbCJQkWAgAbY+vA=
+Date:   Tue, 28 Nov 2023 19:12:33 +0000
+Message-ID: <SN6PR02MB415717E09C249A31F2A4E229D4BCA@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20231121212016.1154303-1-mhklinux@outlook.com>
+ <20231124100627.avltdnuhminwuzax@box>
+In-Reply-To: <20231124100627.avltdnuhminwuzax@box>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-tmn:  [J/wGVSpGYeRz3Rj6poBi8W9Icwyhmj64]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|DM3PR02MB10207:EE_
+x-ms-office365-filtering-correlation-id: 963872c1-4437-4ef8-e68d-08dbf045f9fe
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: LBwc96x5VDZSRmK7/vQXWkByGAbOAa3X0xbw8i2nPy3hvPGHIFouK/GxCbMxOHCmIsGAjOVs7yrGLY4NsQeYyJebqUFPJMOk9ooCj+bnMUSbAKfbR0PFzPd/+oSU3jFcfnImkuIWuhM/zOjDlbEViJfH9aDUQhaZxaimJFGB9pQogLEY9gjHWNs+lL1/byKHnFsRJ8nAuiAk2L2yBg5LWrLGESHkGNv/YN1V7sUvY4RCSEJUTQjZXbUBFADmlcaBlrZwF3Qri73T8KKpAoZOPCzdrhkpdpdZEX3dE+h742ayXpF6h+wmd61rvz1FUiXIyrKfNrP7er0UNTU1ncH0GKtPwEcPdVpj4e8AVFLEN4pZwxKr8FIL0uCR8z7dHOSNohsXdBH1hqcBTrWGBgSOq4OI44BgAnHmCItNxkUBndCZMGaPYfS6qbsMnuHBzYDRHE3b2g0km7tiAFYhP0XTKtfaLP5SfMjd3mzXjYsvyLklh4CCBcEe8PGR5WFHEtAnXl9ylyV6aAGI/ITLAXtuVal4R1kW3xy6k4d6K6Qj8yG+4Gd3DDIwK/NFwi2JvfE4
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?NCjh7/kvtj3FIm3YxOaghhhUa1UnjjqBnsiTH3Y7Lk7EAM2nNAqNzOarG2Q3?=
+ =?us-ascii?Q?Ie8l7MJvNeMsJIiOGgMTWvREBEiPJN89YYLPjdDGPyRsdaHvgTesn5Qd3Nd3?=
+ =?us-ascii?Q?oNPS1PfjPMjjOADL82M2K4mWamQDNL9a/TznvohiwlDnE8ON3H0Pz41QFH65?=
+ =?us-ascii?Q?SwnMlw6+25HulG5g573Z2kOyxGSqKSfLlCCKFU2o57DbmrDxjiFQsPcmQwTS?=
+ =?us-ascii?Q?QFv2P99kcFxSVYedAKKfpNLNQWJGzBbxAbWNbzANCHHW3yCAf1koZ7/Jen14?=
+ =?us-ascii?Q?i1TfYNc69TSCjDoWESGDISpHMEJcqDiDQ3+HK9IDn+ugkBA+qYAvqLGDXYSy?=
+ =?us-ascii?Q?co9KMzO9DTFYEf5iJt2jt/i7Ux5z494E58gOe5s6v7QifxDtstBXiFhWYUX1?=
+ =?us-ascii?Q?DTGZ68TxsCNV9bUcUwn2B5BZMhUmWp7F9oDL39KpARTfF1Pgdbbj2+5kgffY?=
+ =?us-ascii?Q?b9wIwrdqEGLoXVIk6GIx9tKRTU2t1Yt0od2si5R/W6XkeEcqVhwE+TQ+s6OA?=
+ =?us-ascii?Q?aNrADg37GHycCJuJVdxvz3Io/JaMv/7tXd8V66syh+HjSk/SKn1+7bXaA5rY?=
+ =?us-ascii?Q?z1ECp8YWNhGQYtCjLChFx8zsGNtTwaLPoDeRf5vvOaYQR5QCD9FpW4bqU9kT?=
+ =?us-ascii?Q?BAWtWSxgbr3CoHqEoSp8t4S/V+44YIF2zarFmLc6Yq6Xk4TzfWUaQxpxoMq0?=
+ =?us-ascii?Q?g9SXM+a8JJ3vARnh/irZQrte3la9N4L8t9rVzw4+no8TRgm0QgHtIGHYgqgB?=
+ =?us-ascii?Q?MbkDjrP8DBt8C+m0YRBHDeR0SyLpydnAWybPxYM7w52b/BzzUhhiX0CoFEfI?=
+ =?us-ascii?Q?3Y4qHoM9ItV4B0dh+Idw4VQOuWd4o9V3QHNjua3RxH0Hlyn741wDHfScdUpD?=
+ =?us-ascii?Q?F1f3yfEiO1T3SfF8MgsR+YaGYcAELXeswOnfqFePHZm1PetqMTPiWZVjeGRc?=
+ =?us-ascii?Q?sfwPV1dTjq5C1Bpw/kIucVIVQjxnpLzrQ6BeMdAkjqZZ8DurIztDJbcLOZ9D?=
+ =?us-ascii?Q?MZCLADz9eGTiOb1KfQ/3zW4N+erZ/wYaMHOxrulL+F1IVTqwJS8KPgs6+vyg?=
+ =?us-ascii?Q?Ivp3rgKA5ph+HW/4SMVLD8c176cL8n8HQNO4P6PKR4ZBGE9GdbKlarceCJ6o?=
+ =?us-ascii?Q?z/Y3DVo4X8FShA3ooTJKSHr3qZyerkUS3kblOZ8uyIgpSm4yWnEtgQSgMNPQ?=
+ =?us-ascii?Q?qmdHjpJgvymdybJv?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 963872c1-4437-4ef8-e68d-08dbf045f9fe
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Nov 2023 19:12:34.0150
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PR02MB10207
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 07:54:54PM +0100, Thomas Wei=C3=9Fschuh wrote:
-> As described on page 99 of
-> "Processing Programming Reference (PPR) for AMD Family 19h Model 61h, R=
-evision B1 Processor".
-> (AMD Documentation Hub Document 56713)
+From: kirill.shutemov@linux.intel.com <kirill.shutemov@linux.intel.com> Sen=
+t: Friday, November 24, 2023 2:06 AM
 >=20
-> Tested on an "AMD Ryzen 7 7840U w/ Radeon  780M Graphics".
+> On Tue, Nov 21, 2023 at 01:20:08PM -0800, mhkelley58@gmail.com wrote:
+> > From: Michael Kelley <mhklinux@outlook.com>
+> >
+> > In a CoCo VM when a page transitions from encrypted to decrypted, or vi=
+ce
+> > versa, attributes in the PTE must be updated *and* the hypervisor must
+> > be notified of the change.
 >=20
-> Signed-off-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
-> ---
->  arch/x86/kernel/cpu/powerflags.c | 3 +++
->  1 file changed, 3 insertions(+)
+> Strictly speaking it is not true for TDX. Conversion to shared can be
+> implicit: set shared bit and touch the page will do the conversion. MapGP=
+A
+> is optional.
+
+Interesting.  Given that, is there a reason to use the explicit
+hypervisor callbacks in for private->shared transitions in=20
+__set_mem_enc_pgtable()?   It probably doesn't have direct relevance
+to this patch series, but I'm just trying to understand the tradeoffs of
+the implicit vs. explicit approach.  And am I correct that
+shared->private transitions must use the explicit approach?
+
 >=20
-> diff --git a/arch/x86/kernel/cpu/powerflags.c b/arch/x86/kernel/cpu/pow=
-erflags.c
-> index fd6ec2aa0303..0c98405aeae2 100644
-> --- a/arch/x86/kernel/cpu/powerflags.c
-> +++ b/arch/x86/kernel/cpu/powerflags.c
-> @@ -21,4 +21,7 @@ const char *const x86_power_flags[32] =3D {
->  	"eff_freq_ro", /* Readonly aperf/mperf */
->  	"proc_feedback", /* processor feedback interface */
->  	"acc_power", /* accumulated power mechanism */
-> +	"connected_standby", /* connected standby */
-> +	"rapl", /* running average power limit */
-> +	"fast_cppc", /* fast collaborative processor performance control */
+> > Because there are two separate steps, there's
+> > a window where the settings are inconsistent.  Normally the code that
+> > initiates the transition (via set_memory_decrypted() or
+> > set_memory_encrypted()) ensures that the memory is not being accessed
+> > during a transition, so the window of inconsistency is not a problem.
+> > However, the load_unaligned_zeropad() function can read arbitrary memor=
+y
+> > pages at arbitrary times, which could read a transitioning page during
+> > the window.  In such a case, CoCo VM specific exceptions are taken
+> > (depending on the CoCo architecture in use).  Current code in those
+> > exception handlers recovers and does "fixup" on the result returned by
+> > load_unaligned_zeropad().  Unfortunately, this exception handling can't
+> > work in paravisor scenarios (TDX Paritioning and SEV-SNP in vTOM mode)
+> > if the exceptions are routed to the paravisor.  The paravisor can't
+> > do load_unaligned_zeropad() fixup, so the exceptions would need to
+> > be forwarded from the paravisor to the Linux guest, but there are
+> > no architectural specs for how to do that.
+>=20
+> Hm. Can't we inject #PF (or #GP) into L2 if #VE/#VC handler in L1 sees
+> cross-page access to shared memory while no fixup entry for the page in
+> L1. It would give L2 chance to handle the situation in a transparent way.
+>=20
+> Maybe I miss something, I donno.
 
-No need.
+I'm recounting what the Hyper-V paravisor folks say without knowing all the
+details. :-(   But it seems like any kind of forwarding scheme needs to be =
+a
+well-defined contract that would work for both TDX and SEV-SNP.   The
+paravisor in L1 might or might not be Linux-based, so the contract must be =
+OS
+independent.  And the L2 guest might or might not be Linux, so there's
+potential for some other kind of error to be confused with a Linux
+load_unaligned_zeropad() reference.
 
-The beginning of Documentation/arch/x86/cpuinfo.rst tries to explain
-why.
+Maybe all that could be sorted out, but I come back to believing that it's
+better now and in the long run to just avoid all this complexity by decoupl=
+ing
+private-shared page transitions and Linux load_unaligned_zeropad().
+Unfortunately that decoupling hasn't been as simple as I first envisioned
+because of SEV-SNP PVALIDATE needing a virtual address.  But doing the
+decoupling only in the paravisor case still seems like the simpler approach=
+.
 
---=20
-Regards/Gruss,
-    Boris.
+Michael
 
-https://people.kernel.org/tglx/notes-about-netiquette
+>=20
+> --
+>   Kiryl Shutsemau / Kirill A. Shutemov
