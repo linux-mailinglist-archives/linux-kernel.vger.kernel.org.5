@@ -2,170 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED8D7FC1C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B90037FC2EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345310AbjK1SKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 13:10:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57674 "EHLO
+        id S1345467AbjK1SRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 13:17:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344975AbjK1SKS (ORCPT
+        with ESMTP id S229921AbjK1SRQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 13:10:18 -0500
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E562B7
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 10:10:23 -0800 (PST)
-Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-6cbb6ff734dso6254009b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 10:10:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701195022; x=1701799822; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DOiYrhTklrC540+t5ukqyApuT4wG0jpTJi3hI0UhfFQ=;
-        b=VGgjns+B3qlLDQMqpsTGbuGiYSuUeEej/LMCPGNVZ5XMofihHWB9bKjmePABcYmYou
-         DMrFObCtH1YlAZ7ff0a1qxN1UylInoucoX9jpwEdhA6/V4pwpO0iOLIdKZPdp5TcP75g
-         UcVL7ALaXACBNQ0nUTEsLsDLPIfyupuRU+Ftbsna5ZzIPzdn6wE6hlP+6rPaHkv/GQ2/
-         JMFP4xlx4u+fVBxdFQIShuc9FLCWKhbCoz9bb9w2Ob4D4BqhuIXK2mRBxQvP3WQPDxtH
-         f8AMwWq7ngg2lRazCMFGaei8dBvpxaYqvPE/Ga9gNO+ZuroNNtK05WBb162TKF5BzDAL
-         mpEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701195022; x=1701799822;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=DOiYrhTklrC540+t5ukqyApuT4wG0jpTJi3hI0UhfFQ=;
-        b=E8X8htckU/eN0PEPCXqAG70ILhuxZt9My1XEpvpB+Dk81qJLnSp++Q6WrwcMfM58iL
-         sWQdWbm1Du4sxUebZ8d7xVQMUXtB2vHjyau0wjruc0FgxuH6Ablk50eNCGF6Ptyya6jh
-         VXKvhm7BFe/Yfzv7aoJfLn6IMUPg49mZjp8VGmmgl4AnereV7M+P452fmvNm+1z4qP6G
-         Fm9s/UabOfy2VqNxxievOKL/lI8SEwHFT+oPAtBnFccTA5/6aV023Y0moYIQHLwJ+axK
-         yuqqAwOGoDKAO5RSPzU9NfiyoeKpQ98Wyjv/C0xGIerg+Vz6e3sqmTsw2RixFEqXrTg/
-         cYxA==
-X-Gm-Message-State: AOJu0YwV8f0/rVPYNpkt2OxoT9BTzawuvvaH8EG14ya2jzfm+rLm4bE6
-        HqHT0KDJXnccrg5VbPoprmwDdM2a7XA=
-X-Google-Smtp-Source: AGHT+IHjIqdyme5cvmE+9a3rDtzHZcM7efoox+2SRXJe1b9Npk04rYqTs+Clo/bMnXFYVjpUy9ZwguCYWsc=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:1908:b0:690:d251:28b9 with SMTP id
- y8-20020a056a00190800b00690d25128b9mr3953437pfi.4.1701195022550; Tue, 28 Nov
- 2023 10:10:22 -0800 (PST)
-Date:   Tue, 28 Nov 2023 10:10:20 -0800
-In-Reply-To: <CAJhGHyBtis3SkNZP8RSX5nKFcnQ4qvUrfTMD2RPc+w+Rzf30Zw@mail.gmail.com>
-Mime-Version: 1.0
-References: <20231107202002.667900-1-aghulati@google.com> <CAJhGHyBtis3SkNZP8RSX5nKFcnQ4qvUrfTMD2RPc+w+Rzf30Zw@mail.gmail.com>
-Message-ID: <ZWYtDGH5p4RpGYBw@google.com>
-Subject: Re: [RFC PATCH 00/14] Support multiple KVM modules on the same host
-From:   Sean Christopherson <seanjc@google.com>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     Anish Ghulati <aghulati@google.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        hpa@zytor.com, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        peterz@infradead.org, paulmck@kernel.org,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 28 Nov 2023 13:17:16 -0500
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D0F171D
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 10:17:22 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id D8B355C0206;
+        Tue, 28 Nov 2023 13:17:21 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Tue, 28 Nov 2023 13:17:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
+        cc:cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm1; t=1701195441; x=1701281841; bh=iuMysMVGg8
+        PJ26JKT0z4QtNuMFMPdYynoB7Q9nJhvPE=; b=SiXPgcEEeg5u0Wdwq+4s/ASRVX
+        tCYN7/g8QJZnOX3hszxjP7NAWa03sl2vvSi2MaoMX738V3nqb1+baiIVZuxyYUuZ
+        blddL1TQI1QxnvWsOo6y9tLQ0CwV+FmXpKKzkdDMw5MRmXNW1x9ffrOHbbxFYHn+
+        GOTP5X1vGMtS3p65WUWFq2qzZrDQVDCVLtQq8MvblXhgr6SmN4MUxSP9QXGFCHBl
+        M1aR208jGwokdMs4cpOvm6FrKvUQ1ZjNjfauCia56Ule27aso+ZjG3kK6bL9r95T
+        3VZt3dxexAZnJ51mEuVwYYDwQfQlnMqmx8vYFIFXjzrErIu8QIxDgDyfvjmg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1701195441; x=1701281841; bh=iuMysMVGg8PJ2
+        6JKT0z4QtNuMFMPdYynoB7Q9nJhvPE=; b=Oc1aRgNCBne59AmE42OSBzJWoz+ow
+        O5czAK/+QAWF8TF3yyD2MoCX8nXv1yNd65fLtzU5v/llXgxbaa+/xYSG3wBggWN0
+        pI1/tkq7E0G3PwrKennvGeTZNPdCnT5c0Lgq0qYsWFVUxIZiTiYiGnVNYXuNJySz
+        JjUbfsjV1MOK33R7h1czmpRYuZNkVz3HVvSThAaL5zO80KMoAwgGAg6SUoAZEnjV
+        AGNVJRXTkHCmOdsXlPH5W6gYdIkE4eqEebrh/0NXUle/1gAQq0hLUnHMUMSzQ8m5
+        lsaeRjWbSYTfeau9WiEynPWA6An7bFD3kp6Q0JHScojpwf4ZiUWAJAr/Q==
+X-ME-Sender: <xms:sS5mZS1p9-eoX9F4KgQuDjirDfAVOG5d1aeN-03auB5Abqtbh-79Sw>
+    <xme:sS5mZVFSSFBpWOJcdgJ9QNLPyA2Pgat7iuyAOV91GLSoIBOl3OE5O3xBBJTGjO3hH
+    qKDo8XLs4A-fmKprqQ>
+X-ME-Received: <xmr:sS5mZa4qzEDUWFDzir1u6OOK8S3tl9-KMW_CN43r9Ak3jm56LBr1Okpn5odUdMHmqe0A_MUORXT_3s3IBcu10WY4YTAuRiQbG3sHELsv7LE2>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeifedguddtlecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekre
+    dtredttdenucfhrhhomhepifgrrhihucftohhokhgrrhguuceoghgrrhihrhhoohhkrghr
+    ugesfhgrshhtmhgrihhlrdhorhhgqeenucggtffrrghtthgvrhhnpeelgefffffghefhje
+    egjeehiedvgfelfeehueeuteektdffiefhveelhfegvedvveenucevlhhushhtvghrufhi
+    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrghrhihrohhokhgrrhgusehfrg
+    hsthhmrghilhdrohhrgh
+X-ME-Proxy: <xmx:sS5mZT3skYZODA5XaommfwTKoTZG83kPxRbfhS_9aq8oq6ww4SjtGA>
+    <xmx:sS5mZVEo4FDymjIFx57iOlJ02hsZJmcGQdxdf8DNJM2irb3lxiz6TQ>
+    <xmx:sS5mZc-MPL1K-IhiqgBDAdq9mdczBre4EQWxReBqyoJG2-0xkaPmFQ>
+    <xmx:sS5mZVAd1tCX1iM05QCFU4-fznv9_qm-dySDGy1tovD_pvp_HQ_dBg>
+Feedback-ID: ifd194980:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 28 Nov 2023 13:17:21 -0500 (EST)
+From:   Gary Rookard <garyrookard@fastmail.org>
+To:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Gary Rookard <garyrookard@fastmail.org>
+Subject: [PATCH v3 0/3] staging: rtl8192e: patch series renames (3) different variables
+Date:   Tue, 28 Nov 2023 13:17:24 -0500
+Message-ID: <20231128181727.19504-1-garyrookard@fastmail.org>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 17, 2023, Lai Jiangshan wrote:
-> On Wed, Nov 8, 2023 at 4:20=E2=80=AFAM Anish Ghulati <aghulati@google.com=
-> wrote:
-> >
-> > This series is a rough, PoC-quality RFC to allow (un)loading and runnin=
-g
-> > multiple KVM modules simultaneously on a single host, e.g. to deploy
-> > fixes, mitigations, and/or new features without having to drain all VMs
-> > from the host. Multi-KVM will also allow running the "same" KVM module
-> > with different params, e.g. to run trusted VMs with different mitigatio=
-ns.
-> >
-> > The goal of this RFC is to get feedback on the idea itself and the
-> > high-level approach.  In particular, we're looking for input on:
-> >
-> >  - Combining kvm_intel.ko and kvm_amd.ko into kvm.ko
-> >  - Exposing multiple /dev/kvmX devices via Kconfig
-> >  - The name and prefix of the new base module
-> >
-> > Feedback on individual patches is also welcome, but please keep in mind
-> > that this is very much a work in-progress
->=20
-> Hello Anish
->=20
-> Scarce effort on multi-KVM can be seen in the mail list albeit many
-> companies enable multi-KVM internally.
->=20
-> I'm glad that you took a big step in upstreaming it.  And I hope it
-> can be materialized soon.
->=20
->=20
-> >
-> >  - Move system-wide virtualization resource management to a new base
-> >    module to avoid collisions between different KVM modules, e.g. VPIDs
-> >    and ASIDs need to be unique per VM, and callbacks from IRQ handlers =
-need
-> >    to be mediated so that things like PMIs get to the right KVM instanc=
-e.
->=20
-> perf_register_guest_info_callbacks() also accesses to system-wide resourc=
-es,
-> but I don't see its relating code including kvm_guest_cbs being moved to =
-AVC.
+Hi,
 
-Yeah, that's on the TODO list.  IIRC, the plan is to have VAC register a si=
-ngle
-callback with perf, and then have VAC deal with invoking the callback(s) fo=
-r the
-correct KVM instance.
+This [v3]  patch series renames 3 different variables
+and improves the commit message style.
+[v2] Style issues, redo.
+[v1] Style issues, redo.
 
-> >  - Refactor KVM to make all upgradable assets visible only to KVM, i.e.
-> >    make KVM a black box, so that the layout/size of things like "struct
-> >    kvm_vcpu" isn't exposed to the kernel at-large.
-> >
-> >  - Fold kvm_intel.ko and kvm_amd.ko into kvm.ko to avoid complications
-> >    having to generate unique symbols for every symbol exported by kvm.k=
-o.
->=20
-> The sizes of kvm_intel.ko and kvm_amd.ko are big, and there
-> is only 1G in the kernel available for modules. So I don't think folding
-> two vendors' code into kvm.ko is a good idea.
->=20
-> Since the symbols in the new module are invisible outside, I recommend:
-> new kvm_intel.ko =3D kvm_intel.ko + kvm.ko
-> new kvm_amd.ko =3D kvm_amd.ko + kvm.ko
+Patch 1/3) Coding style issue, checkpatch Avoid CamelCase,
+rename it nMcsRate -> mcs_rate.
 
-Yeah, Paolo also suggested this at LPC.
+Patch 2/3) Coding style issue, checkpatch Avoid CamelCase,
+rename it bCurBW40MHz -> cur_bw_40mhz.
 
-> >  - Add a Kconfig string to allow defining a device and module postfix a=
-t
-> >    build time, e.g. to create kvmX.ko and /dev/kvmX.
-> >
-> > The proposed name of the new base module is vac.ko, a.k.a.
-> > Virtualization Acceleration Code (Unupgradable Units Module). Childish
-> > humor aside, "vac" is a unique name in the kernel and hopefully in x86
-> > and hardware terminology, is a unique name in the kernel and hopefully
-> > in x86 and hardware terminology, e.g. `git grep vac_` yields no hits in
-> > the kernel. It also has the same number of characters as "kvm", e.g.
-> > the namespace can be modified without needing whitespace adjustment if
-> > we want to go that route.
->=20
-> How about the name kvm_base.ko?
->=20
-> And the variable/function name in it can still be kvm_foo (other than
-> kvm_base_foo).
+Patch 3/3) Coding style issue, checkpatch Avoid CamelCase,
+rename it nDateRate -> data_rate.
 
-My preference is to have a unique name that allows us to differentitate bet=
-ween
-the "base" module/code and KVM code.  Verbal conversations about all of thi=
-s get
-quite confusing because it's not always clear whether "base KVM" refers to =
-what
-is currently kvm.ko, or what would become kvm_base.ko/vac.ko.
+Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
+
+Gary Rookard (3):
+  staging: rtl8192e: renamed variable nMcsRate
+  staging: rtl8192e: renamed variable bCurBW40MHz
+  staging: rtl8192e: renamed variable nDataRate
+
+ drivers/staging/rtl8192e/rtl819x_HT.h        |  2 +-
+ drivers/staging/rtl8192e/rtl819x_HTProc.c    | 36 ++++++++++----------
+ drivers/staging/rtl8192e/rtllib_softmac_wx.c |  4 +--
+ drivers/staging/rtl8192e/rtllib_tx.c         | 10 +++---
+ 4 files changed, 26 insertions(+), 26 deletions(-)
+
+-- 
+2.41.0
+
