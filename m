@@ -2,106 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 517707FC20C
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F7F7FC13D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346265AbjK1ObC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 09:31:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60148 "EHLO
+        id S1346149AbjK1OVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 09:21:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345709AbjK1OU0 (ORCPT
+        with ESMTP id S1346072AbjK1OVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 09:20:26 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5216F18E
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:20:33 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB959C433CA;
-        Tue, 28 Nov 2023 14:20:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701181233;
-        bh=ZafUz/tBS+WxAqK8BrScQ+1PsQuHRQibBxd+i4NeQAw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=EAz96Pu6G54eCNjLGpnYue2Jz1H9mdLT4rjwuXrUj0KySio0zBUS7XM7HRTG+sOvN
-         cvJ68LcObTkorl4drW5GvgnCEKDjLmL44N67bRd9kZ0PgU1IGmvZpWzImwyk5XuYxV
-         f5287dK2msj8dmtzGr3kfnPjZyMn+TRaz9VTdY5x+pTwtzrYxfhdrg+eYDANWTuE8V
-         bGz9zZGsmEPYOOZzavIorjgLbtJEjQl9XGpVYWpA1sizGKGPC8OkAe4/GJaGl91bK4
-         v0Y21NdmUGsZX79qBi7+kYe1JsWl9n7lilP5OLHQpQaqqgEJ3iZrerkmU0/W67fyks
-         1x+RbAEz8KxSw==
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-1fa1c3755afso1491258fac.1;
-        Tue, 28 Nov 2023 06:20:32 -0800 (PST)
-X-Gm-Message-State: AOJu0YxRhQlsbPhL65I9cOuQe8Iu7JbM+nqoHwfmAZeNmRHi9Sb/T+pC
-        UPG65Dy/nlNyRlhfeWmmb+UjR75yXmv2aXICWBU=
-X-Google-Smtp-Source: AGHT+IHswiwugmGVsE4mtflYbXoTA6rzhNrpmURMsGKRXV46JcUiWdu8Hu3GnToiEji2taygrJwe0QnQUJlToz83FGA=
-X-Received: by 2002:a05:6871:454:b0:1f9:f54a:f5ef with SMTP id
- e20-20020a056871045400b001f9f54af5efmr6192409oag.19.1701181232316; Tue, 28
- Nov 2023 06:20:32 -0800 (PST)
+        Tue, 28 Nov 2023 09:21:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55A81B5
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:21:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701181289;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6PBOG7uTuPrKERcez1Y3MMxHTda3oU4ZYJf1T2X8ASo=;
+        b=XvuxHCy+TcgAe4LyHA8vGqbjNSBR625pXASXwgmTRVT448Kzdi68S21bz6+KaZ2UYRFjOZ
+        PxrJrY5qB+uskGYfkz2ZoTEhmxm5Gy+R/Q5+OXC4x5GvWlcW0/7WS6bQEXk2wSFYkYCRpq
+        s/m0O/AxQbOj3TKYiwJ/txjUSH783MQ=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-249-u32DRhyoNDeiqwLc2n0fEg-1; Tue,
+ 28 Nov 2023 09:21:27 -0500
+X-MC-Unique: u32DRhyoNDeiqwLc2n0fEg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C48511C060D1;
+        Tue, 28 Nov 2023 14:21:26 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.14])
+        by smtp.corp.redhat.com (Postfix) with SMTP id E36FD5028;
+        Tue, 28 Nov 2023 14:21:23 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue, 28 Nov 2023 15:20:21 +0100 (CET)
+Date:   Tue, 28 Nov 2023 15:20:18 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     NeilBrown <neilb@suse.de>, Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH/RFC] core/nfsd: allow kernel threads to use task_work.
+Message-ID: <20231128142018.GA24108@redhat.com>
+References: <170112272125.7109.6245462722883333440@noble.neil.brown.name>
+ <20231128140156.GC22743@redhat.com>
 MIME-Version: 1.0
-References: <20231122034753.1446513-1-senozhatsky@chromium.org> <20231128053443.GA6525@google.com>
-In-Reply-To: <20231128053443.GA6525@google.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 28 Nov 2023 23:19:55 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAT_Z4TeNzngMskEoNdSTWUH5gGzYm5MfO6C_H8rFcF6ng@mail.gmail.com>
-Message-ID: <CAK7LNAT_Z4TeNzngMskEoNdSTWUH5gGzYm5MfO6C_H8rFcF6ng@mail.gmail.com>
-Subject: Re: [PATCH] kconfig: WERROR unmet symbol dependency
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Patrick Georgi <pgeorgi@google.com>, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Stefan Reinauer <reinauer@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231128140156.GC22743@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 2:34=E2=80=AFPM Sergey Senozhatsky
-<senozhatsky@chromium.org> wrote:
+On 11/28, Oleg Nesterov wrote:
 >
-> On (23/11/22 12:47), Sergey Senozhatsky wrote:
-> > When KCONFIG_WERROR env variable is set treat unmet direct
-> > symbol dependency as a terminal condition (error).
-> >
-> > Suggested-by: Stefan Reinauer <reinauer@google.com>
-> > Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> On a related note... Neil, Al, et al, can you look at
 >
-> Gentle ping.
+> 	[PATCH 1/3] fput: don't abuse task_work_add() when possible
+> 	https://lore.kernel.org/all/20150908171446.GA14589@redhat.com/
 
+Cough... Now that I look at this 8 years old patch again I think
+it is wrong, fput() can race with task_work_cancel() so it is not
+safe to dereference the first pending work in theory :/
 
-I believe you know this patch is too cheesy to be accepted.
+Oleg.
 
-
-
-KCONFIG_WERROR is meant to turn all warnings
-to errors.
-
-I do not see getenv("KCONFIG_WERROR")
-sprinkled everywhere in Kconfig.
-
-
-
-One more thing, you cannot directly exit(1)
-from sym_calc_value().
-
-Curses programs (menuconfig / nconfig),
-must call endwin() before exiting.
-
-Otherwise, the terminal will not come back
-to the canonical mode.
-
-
-You do not need to fix it, though.
-
-
-
-
-
-
-
-
---
-Best Regards
-Masahiro Yamada
