@@ -2,161 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 621137FB57E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:19:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A8E57FB581
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:19:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234785AbjK1JTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 04:19:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56040 "EHLO
+        id S234795AbjK1JTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 04:19:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbjK1JTJ (ORCPT
+        with ESMTP id S230044AbjK1JTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 04:19:09 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926D8D4C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:19:15 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-332e3664665so3130607f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:19:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701163154; x=1701767954; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BJ3V0q0kN4dcJ19Ow1ceuBEQfKiUYtgJ8KZQRLu90zA=;
-        b=Ll1tKu3b9mBSOigmYdrVu9XXX0V5bFef3nrRDHyct+FCyFypmRHJpA1Ay18kQj36RN
-         3uXBTSdfsyxJmveFi06DvIc/YOoaasYqpXnW5QmTucfVCXRVA84B7vcyHEl5/CPe3Wdx
-         zMOog2MkfCeIRdRVNyUe6+yWKEsWVnI/DiAkVvqLLbs0Jh1XuRlmO2tkp/vf3InKUvgb
-         M0lZMVuRIdTjobpQxQj93QAk6DuMjFj+TtyiAYWMWwJMMc7JUH4pT2Kk6u6llky6Q3vW
-         R9hkQLy+rB3ZHUbop36UIAxwNkI9qX44wCi2EjbbVDJ1k2mexc2lpMHT/v70YvIy8qRo
-         3CUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701163154; x=1701767954;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=BJ3V0q0kN4dcJ19Ow1ceuBEQfKiUYtgJ8KZQRLu90zA=;
-        b=AayafBt6x/oKv3wYLD87ndhdu27A2ozQ2jv4wCuxJCSYTLTNRW0F9JQ2skZ+ZAFsfb
-         dzRyVI2IrnPv9Bj5MEZj1Z69WkiXMZO77xXRY1qqY4KiESBMw3QvXCI3fya1J9x1WYkV
-         /WrvNeiHU45ZbRew+Kf/j498Ws/1XghQ7Ze+p3Yq0y9+HOlrnG0MRavGxhbscvyt7u7+
-         0qI+sw2sQh94p84wzZnMdj2bu8DAqn1T4pkCvb4X2b4bzRFO4iRrbZeXaR2yB+0Uy5X5
-         4sRNXa0CYVhLwTnosi7ygL76LpmoZCninXHgJOGPt/C9Ex+kMX6ezIu3vznycEvWwerI
-         JllA==
-X-Gm-Message-State: AOJu0YwAAMoxB+9i+uicaJAUcRREFO4Id8i/HH9HN0JP/uMiVpge/jNC
-        6lxh+N6tfxn487fJkygCcyt5Tg==
-X-Google-Smtp-Source: AGHT+IHOfqxAei4iLmLAMcsBFKePLmqMHOvd2JuyfofyNDEoVDltsc/kP1OjmEoERRPKcIoS7BlNaQ==
-X-Received: by 2002:adf:f387:0:b0:332:e61d:4b84 with SMTP id m7-20020adff387000000b00332e61d4b84mr7953763wro.21.1701163153992;
-        Tue, 28 Nov 2023 01:19:13 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:eada:f40e:7ab3:2afe? ([2a01:e0a:982:cbb0:eada:f40e:7ab3:2afe])
-        by smtp.gmail.com with ESMTPSA id d15-20020adff84f000000b00333097fc050sm1872064wrq.1.2023.11.28.01.19.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Nov 2023 01:19:13 -0800 (PST)
-Message-ID: <4729f36a-2cf8-423d-87e1-1733a9062bd4@linaro.org>
-Date:   Tue, 28 Nov 2023 10:19:12 +0100
+        Tue, 28 Nov 2023 04:19:30 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9826E1;
+        Tue, 28 Nov 2023 01:19:36 -0800 (PST)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AS4BIhO006171;
+        Tue, 28 Nov 2023 09:19:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=7BcvtQ0HZFKwS99/IcmgO/OjeLrfYs6tVrBivrmKnAM=;
+ b=TvPV2e5Ob0GFkkITj4nOXUtsKoY7WZNCF/pIza+wqeAbN3qTLOddPdXSgvhI+KutdzhG
+ 8613h3mfo/+DM1dx87V1LPKVHA7L1dmxgEnizBViyv2RxONXNaWzRL9tYyl8CHawtKJb
+ 5b0AClm5+3gI7YxG3sx10eKlKJKjpRqthQ4QyV7BKvujg5V49YRGrIO3yZE/vMo6PP51
+ ayKfywJ9X20Gwf57AIGeFpZ+R2Wr9SA1TkVEiorRfWA5DK4gTZOLsoTmVtiTqIK6Y1hb
+ 4aqJRuE01P3iHCwJ9Z6HaZV9yTrCpgwkxHywqG1MkLJdnt9gmN1OpVmf5oH5YmVGKWrH cg== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3un04bhqy0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Nov 2023 09:19:30 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AS9JTKM020843
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 28 Nov 2023 09:19:29 GMT
+Received: from [10.218.41.203] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 28 Nov
+ 2023 01:19:22 -0800
+Message-ID: <24fae40a-453b-b14c-923f-88758a246aa7@quicinc.com>
+Date:   Tue, 28 Nov 2023 14:49:18 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 2/5] ASoC: dt-bindings: document WCD939x Audio Codec
-Content-Language: en-US, fr
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH v3 1/3] dt-bindings: phy: qcom,qmp: Add PCIe
+ qcom,refclk-always-on property
+Content-Language: en-US
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
         Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        "Kishon Vijay Abraham I" <kishon@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231123-topic-sm8650-upstream-wcd939x-codec-v1-0-21d4ad9276de@linaro.org>
- <20231123-topic-sm8650-upstream-wcd939x-codec-v1-2-21d4ad9276de@linaro.org>
- <160fc6c4-b07d-49c5-976b-aa0fa35e4f0f@linaro.org>
- <b637c287-93e5-4214-9275-80fac3c6181b@linaro.org>
- <60c9ba5d-a2b8-43cd-8b8d-2c709b8e5d04@linaro.org>
- <752f5347-703a-4b38-b2b1-3493d270389c@linaro.org>
- <91528bf4-c971-415e-afb4-51791c6dfc91@linaro.org>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <91528bf4-c971-415e-afb4-51791c6dfc91@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_vbadigan@quicinc.com>, <quic_ramkri@quicinc.com>,
+        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
+        <quic_vpernami@quicinc.com>, <quic_parass@quicinc.com>
+References: <20231127-refclk_always_on-v3-0-26d969fa8f1d@quicinc.com>
+ <20231127-refclk_always_on-v3-1-26d969fa8f1d@quicinc.com>
+ <78815f1b-7390-40de-8afd-ac71806f4051@linaro.org>
+From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+In-Reply-To: <78815f1b-7390-40de-8afd-ac71806f4051@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: u8tJCKhYA5lhUjkKFGoRTkfPNXg5OIOt
+X-Proofpoint-GUID: u8tJCKhYA5lhUjkKFGoRTkfPNXg5OIOt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-28_08,2023-11-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1015 suspectscore=0 priorityscore=1501 malwarescore=0 mlxscore=0
+ mlxlogscore=961 bulkscore=0 spamscore=0 adultscore=0 impostorscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311280073
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/11/2023 10:17, Krzysztof Kozlowski wrote:
-> On 28/11/2023 10:14, neil.armstrong@linaro.org wrote:
->>>
->>> Here the device exposes its version in registers, so you can easily rely
->>> on the compatibility. That's also the case multiple times talked on the
->>> mailing lists.
->>
->> ... you're right here version can be determined at runtime.
->>
->> But, since both are compatible, there's no primary part number, right?
->>
->> so why use "qcom,wcd9395-codec", "qcom,wcd9390-codec"
-> 
-> This one, please.
 
-Ok
+On 11/28/2023 2:26 PM, Krzysztof Kozlowski wrote:
+> On 27/11/2023 13:13, Krishna chaitanya chundru wrote:
+>> Document qcom,refclk-always-on property which is needed in some platforms
+>> to supply refclk even in PCIe low power states.
+>>
+>> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+>> ---
+>>   .../devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml        | 7 +++++++
+>>   1 file changed, 7 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
+>> index 2c3d6553a7ba..c747c9f35795 100644
+>> --- a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
+>> +++ b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
+>> @@ -93,6 +93,13 @@ properties:
+>>     "#phy-cells":
+>>       const: 0
+>>   
+>> +  qcom,refclk-always-on:
+>> +    type: boolean
+>> +    description: In some platform where PCIe switch is connected, pcie switch due to some design
+> You received a comment to use proper wrapping: 80. Please implement it.
+I will update this.
+>> +      limitation fails to propage clkreq signal to the host and due to that host will not send
+>> +      refclk, which  results in linkdown in L1.2 or L1.1 exit initiated by EP.
+>> +      This property if set keeps refclk always on even in Low power states.
+> The property name suggests that's the state of hardware - refclk is
+> always on. Description suggests you want to instruct OS to do something.
+>
+> Again, third time (once from Bjorn, once from Dmitry), rephrase property
+> name and description to describe the hardware issue. I see description
+> improved, but not the property name. Again in the end of description you
 
-> 
->> when "qcom,wcd9390-codec", "qcom,wcd9395-codec" should
->> also be valid, so in this can why not use :
-> 
-> Could be valid, sure, but we are humans and we treat higher number as
-> something newer or bigger, thus previous one feels more natural. There
-> are examples of this way, though.
-> 
-> 
->> "qcom,wcd9390-codec", "qcom,wcd939x-codec"
->> or
->> "qcom,wcd9395-codec", "qcom,wcd939x-codec"
-> 
-> This not, because wildcards are not allowed in the compatibles. In the
-> past there were examples how a wildcard stopped being wild, so guideline
-> is: just don't use them.
-> 
+Both bjorn and Dmitry gave comments to change the description only, and 
+not the property name,
+
+correct if I am wrong.
+
+> say what Linux should do. Bindings do not describe Linux OS.
+
+I will remove the last line in the next patch.
+
+- Krishna Chaitanya.
+
+>
 > Best regards,
 > Krzysztof
-> 
-
-Thanks,
-Neil
