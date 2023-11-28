@@ -2,258 +2,358 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D5B7FB937
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:16:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 756DE7FB94E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 12:20:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344443AbjK1LQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 06:16:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53478 "EHLO
+        id S1344274AbjK1LUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 06:20:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344124AbjK1LQQ (ORCPT
+        with ESMTP id S1344168AbjK1LUJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 06:16:16 -0500
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B69D6;
-        Tue, 28 Nov 2023 03:16:20 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1701170177; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=EZUjOS8CVjo+FKaqJuD/a9DCglOaWeb2zwpKo10hEPcPMG+OXTX5i+T3NqVLLUKYuM
-    FkzlY7UFeXuEFC4+D1259tUsMsRBGe4oon2/MkdO/12VMNAYb998ZrHbL6FToXR+nIfd
-    CPtahqf54N0Ih8nA83eIoWDx0m9qVQ+zL6JtxO5QpDiahhHIGfekQ3GKKa+kpgqewlCA
-    eGnJRSBhEQrQWsjnSy6+0KG3i6ZuuahdRXg2sQCpjhrTELoDspGFe1PlOROPoZQNOd/c
-    VxXrnF1KeJBdFtOqUab8qHVvVYwTXjzNe8D9X7lIoHS5Qzi6nD6hcIfOKdMaWS0hKE1a
-    OTlg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1701170177;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=+x5mzkgJdHdY5sgqZaJ2j6SzsEzsF/GGqVmkNqn5SdE=;
-    b=d1b3UU4iiqpt/OG+fJnkaXwCSNVh6o8oLCQs1n9VaaI6o7w2g/74pWPJcES5+/Ih2p
-    OMDYoff7G8Gr233XJn5KtI7bJt+lC6redqj1tNrFVqX2Hf1tZzjkuevo097J4LeBnj0b
-    aeKevUTrNNQvLrI4arydJpjZdbVWcNwc4/az9BoODD1CLMZBFYf8Jolhqatc7cflRs1y
-    Wjc80iLreyzQ8Bhs1HPd+MSZSkQEzAgC+yWsER1dfv1sKxC1njN+J5hBsS2QTfqDSAK3
-    8JRcfShR62IgPJxoAUfvHIdoVgrS0N4ZcrIqGmWwnONKoDVRjxwMrFSjTxoEexc0TUjn
-    FySw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1701170177;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=+x5mzkgJdHdY5sgqZaJ2j6SzsEzsF/GGqVmkNqn5SdE=;
-    b=l5UdB6LjVzzwHxTDciJ+4+G6b/VMi9dUGicW7QDJ0NEkzNK7Qwaak0rPsXlueJ9ILz
-    0RjvjizIyoOZv88kyeh/CXV1DiOtpPMd75HDVMClZP0Nk4FQlAWtRPdWGqN2m4a3L/1K
-    veSCvPJIkcGsU+l0XFOH4asIA+x3VfOtSBWneKNmJILjdqmwTNvz58S13D7bvHS34z3p
-    aiDgy/wt4dRsnyCNnXFXP4zelHI1LAnPMZNKDUKQ3iAlsXFe22hh9JpuDnuAvS3uAGOH
-    Xr5yS+ZFvR/cq/GQ+gZZfZBHHUWvVtUsamUgb66/SgrKoZ/5cNsD8H6sxleycNfRS7C2
-    hLcA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1701170177;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=+x5mzkgJdHdY5sgqZaJ2j6SzsEzsF/GGqVmkNqn5SdE=;
-    b=cvtpWXAuny8zip5VDrpRZSJIFLVpsFXIM705/Jx9exlp7ETkYvQAtYkSTCqWjjNcEk
-    RfxSrRhubqY64mJB14CQ==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA8paF1A=="
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 49.9.1 DYNA|AUTH)
-    with ESMTPSA id t3efe7zASBGGlnd
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 28 Nov 2023 12:16:16 +0100 (CET)
-Date:   Tue, 28 Nov 2023 12:16:11 +0100
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Neil Armstrong <neil.armstrong@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/8] arm64: dts: qcom: add initial SM8650 dtsi
-Message-ID: <ZWXL-5OomtzRJCIj@gerhold.net>
-References: <20231124-topic-sm8650-upstream-dt-v4-0-e402e73cc5f0@linaro.org>
- <20231124-topic-sm8650-upstream-dt-v4-2-e402e73cc5f0@linaro.org>
- <ZWWse_i-wjSTH8O4@gerhold.net>
- <fbbed866-fc43-4f30-94a1-942d38103e51@linaro.org>
+        Tue, 28 Nov 2023 06:20:09 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63EAAD6;
+        Tue, 28 Nov 2023 03:20:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701170415; x=1732706415;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=qSaDzPStYpOmYXay6eUAmLjv4q2mpAbM97NA9jiSQlw=;
+  b=HcpUwaH94P4VmivoQgTJ+/ZNzBRDDIyHhp4Oz3i+tGRZ4NOKLDhefbZ1
+   hjcxmZ5/JxcIoXrzz3TtjTOlMwBZstC8t0CElTFFKjmjVQ95lgP4BFr6D
+   MzSM7VIAfeF2CjpEfeHzGGQU4EyKdaACwhyGsbhWsCMB8be8e6Sjwa9Ua
+   119TNsDrv6QYTfQ1j6QB8W66GzjvofpJrbw03gCGnvMw2GCgX2r25m4kc
+   WJH1MJetWiYU5V11DgQW4HUvWgL4YFp9Gv+SJtk3DnJ8SjaX0by1Au3gT
+   fZaHSOeT72OUGLcTLAlJME7JSCGW5XF8PSSPdR+cJ6/vmmvrgFAt2qILk
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="390055267"
+X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
+   d="scan'208";a="390055267"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 03:19:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="772274033"
+X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
+   d="scan'208";a="772274033"
+Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 28 Nov 2023 03:19:40 -0800
+Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r7w7t-0007TE-39;
+        Tue, 28 Nov 2023 11:19:37 +0000
+Date:   Tue, 28 Nov 2023 19:18:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, Dave Chinner <dchinner@redhat.com>,
+        Allison Henderson <allison.henderson@oracle.com>,
+        Zhang Tianci <zhangtianci.1997@bytedance.com>,
+        Brian Foster <bfoster@redhat.com>, Ben Myers <bpm@sgi.com>,
+        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xieyongji@bytedance.com, me@jcix.top
+Subject: Re: [PATCH 2/2] xfs: update dir3 leaf block metadata after swap
+Message-ID: <202311281800.GTI1cgFY-lkp@intel.com>
+References: <20231128053202.29007-3-zhangjiachen.jaycee@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fbbed866-fc43-4f30-94a1-942d38103e51@linaro.org>
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231128053202.29007-3-zhangjiachen.jaycee@bytedance.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 11:00:36AM +0100, Neil Armstrong wrote:
-> On 28/11/2023 10:01, Stephan Gerhold wrote:
-> > On Fri, Nov 24, 2023 at 10:20:39AM +0100, Neil Armstrong wrote:
-> > > Add initial DTSI for the Qualcomm SM8650 platform,
-> > > only contains nodes which doesn't depend on interconnect.
-> > > 
-> > > Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> > > Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> > > ---
-> > >   arch/arm64/boot/dts/qcom/sm8650.dtsi | 2439 ++++++++++++++++++++++++++++++++++
-> > >   1 file changed, 2439 insertions(+)
-> > > 
-> > > diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-> > > new file mode 100644
-> > > index 000000000000..b0a9ca53d58e
-> > > --- /dev/null
-> > > +++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-> > > @@ -0,0 +1,2439 @@
-> > > +[...]
-> > > +		timer@17420000 {
-> > > +			compatible = "arm,armv7-timer-mem";
-> > > +			reg = <0 0x17420000 0 0x1000>;
-> > > +
-> > > +			ranges = <0 0 0 0x20000000>;
-> > > +			#address-cells = <1>;
-> > > +			#size-cells = <1>;
-> > > +
-> > > +			frame@17421000 {
-> > > +				reg = <0x17421000 0x1000>,
-> > > +				      <0x17422000 0x1000>;
-> > > +
-> > > +				interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
-> > > +					     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
-> > > +
-> > > +				frame-number = <0>;
-> > > +			};
-> > > +
-> > > +			frame@17423000 {
-> > > +				reg = <0x17423000 0x1000>;
-> > > +
-> > > +				interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
-> > > +
-> > > +				frame-number = <1>;
-> > > +
-> > > +				status = "disabled";
-> > > +			};
-> > > +
-> > > +			frame@17425000 {
-> > > +				reg = <0x17425000 0x1000>;
-> > > +
-> > > +				interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
-> > > +
-> > > +				frame-number = <2>;
-> > > +
-> > > +				status = "disabled";
-> > > +			};
-> > > +
-> > > +			frame@17427000 {
-> > > +				reg = <0x17427000 0x1000>;
-> > > +
-> > > +				interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
-> > > +
-> > > +				frame-number = <3>;
-> > > +
-> > > +				status = "disabled";
-> > > +			};
-> > > +
-> > > +			frame@17429000 {
-> > > +				reg = <0x17429000 0x1000>;
-> > > +
-> > > +				interrupts = <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
-> > > +
-> > > +				frame-number = <4>;
-> > > +
-> > > +				status = "disabled";
-> > > +			};
-> > > +
-> > > +			frame@1742b000 {
-> > > +				reg = <0x1742b000 0x1000>;
-> > > +
-> > > +				interrupts = <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
-> > > +
-> > > +				frame-number = <5>;
-> > > +
-> > > +				status = "disabled";
-> > > +			};
-> > > +
-> > > +			frame@1742d000 {
-> > > +				reg = <0x1742d000 0x1000>;
-> > > +
-> > > +				interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
-> > > +
-> > > +				frame-number = <6>;
-> > > +
-> > > +				status = "disabled";
-> > > +			};
-> > > +		};
-> > 
-> > Nitpick: Personally I feel the empty lines between each property here
-> > are a bit overly verbose. It would be better readable without them.
-> > Might be personal preference though :-)
-> 
-> I tried to maintain a coherent style across the document, so it would break it...
-> 
+Hi Jiachen,
 
-OK, no problem :-)
+kernel test robot noticed the following build errors:
 
-> > 
-> > > +[...]
-> > > +	timer {
-> > > +		compatible = "arm,armv8-timer";
-> > > +
-> > > +		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
-> > > +			     <GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
-> > > +			     <GIC_PPI 11 (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>,
-> > > +			     <GIC_PPI 10 (GIC_CPU_MASK_SIMPLE(8) | IRQ_TYPE_LEVEL_LOW)>;
-> > 
-> > I'm pretty sure GIC_CPU_MASK_SIMPLE() is only valid & used on GICv2.
-> > Unlike arm,gic.yaml, arm,gic-v3.yaml doesn't mention "bits[15:8] PPI
-> > interrupt cpu mask". Also see e.g. commit 4a92b6d75bab ("arm64: dts:
-> > msm8996: Fix wrong use of GIC_CPU_MASK_SIMPLE()").
-> > 
-> > Would be also good to check if any existing DTs have introduced this
-> > incorrectly again since then.
-> 
-> All those platforms using GICv3 still use GIC_CPU_MASK_SIMPLE():
-> 
-> arch/arm64/boot/dts/qcom/qcm2290.dtsi
-> arch/arm64/boot/dts/qcom/qdu1000.dtsi
-> arch/arm64/boot/dts/qcom/sa8775p.dtsi
-> arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-> arch/arm64/boot/dts/qcom/sdx75.dtsi
-> arch/arm64/boot/dts/qcom/sm4450.dtsi
-> arch/arm64/boot/dts/qcom/sm6115.dtsi
-> arch/arm64/boot/dts/qcom/sm6350.dtsi
-> arch/arm64/boot/dts/qcom/sm6375.dtsi
-> arch/arm64/boot/dts/qcom/sm8250.dtsi
-> arch/arm64/boot/dts/qcom/sm8350.dtsi
-> arch/arm64/boot/dts/qcom/sm8450.dtsi
-> arch/arm64/boot/dts/qcom/sm8550.dtsi
-> 
+[auto build test ERROR on xfs-linux/for-next]
+[also build test ERROR on linus/master v6.7-rc3 next-20231128]
+[cannot apply to djwong-xfs/djwong-devel]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Heh, so we managed to omit it for msm8996, msm8998, sdm845, sm8150 and
-then someone reintroduced it for sm8250 and the following. :-)
+url:    https://github.com/intel-lab-lkp/linux/commits/Jiachen-Zhang/xfs-ensure-tmp_logflags-is-initialized-in-xfs_bmap_del_extent_real/20231128-135955
+base:   https://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git for-next
+patch link:    https://lore.kernel.org/r/20231128053202.29007-3-zhangjiachen.jaycee%40bytedance.com
+patch subject: [PATCH 2/2] xfs: update dir3 leaf block metadata after swap
+config: powerpc64-randconfig-r081-20231128 (https://download.01.org/0day-ci/archive/20231128/202311281800.GTI1cgFY-lkp@intel.com/config)
+compiler: powerpc64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231128/202311281800.GTI1cgFY-lkp@intel.com/reproduce)
 
-> I'm sure you're right, and indeed the PPI affinity can be specified in an optional
-> 4th cell, but I'll need another confirmation I can safely remove it here.
-> 
-> Since it's harmless, it could be cleaned up later on over all the qcom DT.
-> 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311281800.GTI1cgFY-lkp@intel.com/
 
-Please don't introduce new device trees with known mistakes, at least if
-it's trivial to fix. This will just increase the likelihood that someone
-will accidentally copy from the commit and make the same mistake again.
+All errors (new ones prefixed by >>):
 
-This is effectively comparable to a dtbs_check failure (except that the
-tooling can't check for this automatically at the moment). Either the
-binding or the DT should be fixed. It's most definitely the DT in this
-case. :-)
+   In file included from include/linux/byteorder/big_endian.h:5,
+                    from arch/powerpc/include/uapi/asm/byteorder.h:14,
+                    from arch/powerpc/include/asm/qspinlock_types.h:6,
+                    from arch/powerpc/include/asm/spinlock_types.h:10,
+                    from include/linux/spinlock_types_raw.h:7,
+                    from include/linux/ratelimit_types.h:7,
+                    from include/linux/printk.h:9,
+                    from include/asm-generic/bug.h:22,
+                    from arch/powerpc/include/asm/bug.h:116,
+                    from include/linux/bug.h:5,
+                    from include/linux/fortify-string.h:5,
+                    from include/linux/string.h:295,
+                    from include/linux/uuid.h:11,
+                    from fs/xfs/xfs_linux.h:10,
+                    from fs/xfs/xfs.h:22,
+                    from fs/xfs/libxfs/xfs_da_btree.c:7:
+   fs/xfs/libxfs/xfs_da_btree.c: In function 'xfs_da3_swap_lastblock':
+>> fs/xfs/libxfs/xfs_da_btree.c:2330:50: error: 'struct xfs_buf' has no member named 'b_bn'
+    2330 |                 dap->blkno = cpu_to_be64(dead_buf->b_bn);
+         |                                                  ^~
+   include/uapi/linux/byteorder/big_endian.h:38:51: note: in definition of macro '__cpu_to_be64'
+      38 | #define __cpu_to_be64(x) ((__force __be64)(__u64)(x))
+         |                                                   ^
+   fs/xfs/libxfs/xfs_da_btree.c:2330:30: note: in expansion of macro 'cpu_to_be64'
+    2330 |                 dap->blkno = cpu_to_be64(dead_buf->b_bn);
+         |                              ^~~~~~~~~~~
 
-Thanks,
-Stephan
+
+vim +2330 fs/xfs/libxfs/xfs_da_btree.c
+
+  2254	
+  2255	/*
+  2256	 * Ick.  We need to always be able to remove a btree block, even
+  2257	 * if there's no space reservation because the filesystem is full.
+  2258	 * This is called if xfs_bunmapi on a btree block fails due to ENOSPC.
+  2259	 * It swaps the target block with the last block in the file.  The
+  2260	 * last block in the file can always be removed since it can't cause
+  2261	 * a bmap btree split to do that.
+  2262	 */
+  2263	STATIC int
+  2264	xfs_da3_swap_lastblock(
+  2265		struct xfs_da_args	*args,
+  2266		xfs_dablk_t		*dead_blknop,
+  2267		struct xfs_buf		**dead_bufp)
+  2268	{
+  2269		struct xfs_da_blkinfo	*dead_info;
+  2270		struct xfs_da_blkinfo	*sib_info;
+  2271		struct xfs_da_intnode	*par_node;
+  2272		struct xfs_da_intnode	*dead_node;
+  2273		struct xfs_dir2_leaf	*dead_leaf2;
+  2274		struct xfs_da_node_entry *btree;
+  2275		struct xfs_da3_icnode_hdr par_hdr;
+  2276		struct xfs_inode	*dp;
+  2277		struct xfs_trans	*tp;
+  2278		struct xfs_mount	*mp;
+  2279		struct xfs_buf		*dead_buf;
+  2280		struct xfs_buf		*last_buf;
+  2281		struct xfs_buf		*sib_buf;
+  2282		struct xfs_buf		*par_buf;
+  2283		xfs_dahash_t		dead_hash;
+  2284		xfs_fileoff_t		lastoff;
+  2285		xfs_dablk_t		dead_blkno;
+  2286		xfs_dablk_t		last_blkno;
+  2287		xfs_dablk_t		sib_blkno;
+  2288		xfs_dablk_t		par_blkno;
+  2289		int			error;
+  2290		int			w;
+  2291		int			entno;
+  2292		int			level;
+  2293		int			dead_level;
+  2294	
+  2295		trace_xfs_da_swap_lastblock(args);
+  2296	
+  2297		dead_buf = *dead_bufp;
+  2298		dead_blkno = *dead_blknop;
+  2299		tp = args->trans;
+  2300		dp = args->dp;
+  2301		w = args->whichfork;
+  2302		ASSERT(w == XFS_DATA_FORK);
+  2303		mp = dp->i_mount;
+  2304		lastoff = args->geo->freeblk;
+  2305		error = xfs_bmap_last_before(tp, dp, &lastoff, w);
+  2306		if (error)
+  2307			return error;
+  2308		if (XFS_IS_CORRUPT(mp, lastoff == 0))
+  2309			return -EFSCORRUPTED;
+  2310		/*
+  2311		 * Read the last block in the btree space.
+  2312		 */
+  2313		last_blkno = (xfs_dablk_t)lastoff - args->geo->fsbcount;
+  2314		error = xfs_da3_node_read(tp, dp, last_blkno, &last_buf, w);
+  2315		if (error)
+  2316			return error;
+  2317		/*
+  2318		 * Copy the last block into the dead buffer and log it.
+  2319		 */
+  2320		memcpy(dead_buf->b_addr, last_buf->b_addr, args->geo->blksize);
+  2321		dead_info = dead_buf->b_addr;
+  2322		/*
+  2323		 * Update the moved block's blkno if it's a dir3 leaf block
+  2324		 */
+  2325		if (dead_info->magic == cpu_to_be16(XFS_DIR3_LEAF1_MAGIC) ||
+  2326		    dead_info->magic == cpu_to_be16(XFS_DIR3_LEAFN_MAGIC) ||
+  2327		    dead_info->magic == cpu_to_be16(XFS_ATTR3_LEAF_MAGIC)) {
+  2328			struct xfs_da3_blkinfo *dap = (struct xfs_da3_blkinfo *)dead_info;
+  2329	
+> 2330			dap->blkno = cpu_to_be64(dead_buf->b_bn);
+  2331		}
+  2332		xfs_trans_log_buf(tp, dead_buf, 0, args->geo->blksize - 1);
+  2333		/*
+  2334		 * Get values from the moved block.
+  2335		 */
+  2336		if (dead_info->magic == cpu_to_be16(XFS_DIR2_LEAFN_MAGIC) ||
+  2337		    dead_info->magic == cpu_to_be16(XFS_DIR3_LEAFN_MAGIC)) {
+  2338			struct xfs_dir3_icleaf_hdr leafhdr;
+  2339			struct xfs_dir2_leaf_entry *ents;
+  2340	
+  2341			dead_leaf2 = (xfs_dir2_leaf_t *)dead_info;
+  2342			xfs_dir2_leaf_hdr_from_disk(dp->i_mount, &leafhdr,
+  2343						    dead_leaf2);
+  2344			ents = leafhdr.ents;
+  2345			dead_level = 0;
+  2346			dead_hash = be32_to_cpu(ents[leafhdr.count - 1].hashval);
+  2347		} else {
+  2348			struct xfs_da3_icnode_hdr deadhdr;
+  2349	
+  2350			dead_node = (xfs_da_intnode_t *)dead_info;
+  2351			xfs_da3_node_hdr_from_disk(dp->i_mount, &deadhdr, dead_node);
+  2352			btree = deadhdr.btree;
+  2353			dead_level = deadhdr.level;
+  2354			dead_hash = be32_to_cpu(btree[deadhdr.count - 1].hashval);
+  2355		}
+  2356		sib_buf = par_buf = NULL;
+  2357		/*
+  2358		 * If the moved block has a left sibling, fix up the pointers.
+  2359		 */
+  2360		if ((sib_blkno = be32_to_cpu(dead_info->back))) {
+  2361			error = xfs_da3_node_read(tp, dp, sib_blkno, &sib_buf, w);
+  2362			if (error)
+  2363				goto done;
+  2364			sib_info = sib_buf->b_addr;
+  2365			if (XFS_IS_CORRUPT(mp,
+  2366					   be32_to_cpu(sib_info->forw) != last_blkno ||
+  2367					   sib_info->magic != dead_info->magic)) {
+  2368				error = -EFSCORRUPTED;
+  2369				goto done;
+  2370			}
+  2371			sib_info->forw = cpu_to_be32(dead_blkno);
+  2372			xfs_trans_log_buf(tp, sib_buf,
+  2373				XFS_DA_LOGRANGE(sib_info, &sib_info->forw,
+  2374						sizeof(sib_info->forw)));
+  2375			sib_buf = NULL;
+  2376		}
+  2377		/*
+  2378		 * If the moved block has a right sibling, fix up the pointers.
+  2379		 */
+  2380		if ((sib_blkno = be32_to_cpu(dead_info->forw))) {
+  2381			error = xfs_da3_node_read(tp, dp, sib_blkno, &sib_buf, w);
+  2382			if (error)
+  2383				goto done;
+  2384			sib_info = sib_buf->b_addr;
+  2385			if (XFS_IS_CORRUPT(mp,
+  2386					   be32_to_cpu(sib_info->back) != last_blkno ||
+  2387					   sib_info->magic != dead_info->magic)) {
+  2388				error = -EFSCORRUPTED;
+  2389				goto done;
+  2390			}
+  2391			sib_info->back = cpu_to_be32(dead_blkno);
+  2392			xfs_trans_log_buf(tp, sib_buf,
+  2393				XFS_DA_LOGRANGE(sib_info, &sib_info->back,
+  2394						sizeof(sib_info->back)));
+  2395			sib_buf = NULL;
+  2396		}
+  2397		par_blkno = args->geo->leafblk;
+  2398		level = -1;
+  2399		/*
+  2400		 * Walk down the tree looking for the parent of the moved block.
+  2401		 */
+  2402		for (;;) {
+  2403			error = xfs_da3_node_read(tp, dp, par_blkno, &par_buf, w);
+  2404			if (error)
+  2405				goto done;
+  2406			par_node = par_buf->b_addr;
+  2407			xfs_da3_node_hdr_from_disk(dp->i_mount, &par_hdr, par_node);
+  2408			if (XFS_IS_CORRUPT(mp,
+  2409					   level >= 0 && level != par_hdr.level + 1)) {
+  2410				error = -EFSCORRUPTED;
+  2411				goto done;
+  2412			}
+  2413			level = par_hdr.level;
+  2414			btree = par_hdr.btree;
+  2415			for (entno = 0;
+  2416			     entno < par_hdr.count &&
+  2417			     be32_to_cpu(btree[entno].hashval) < dead_hash;
+  2418			     entno++)
+  2419				continue;
+  2420			if (XFS_IS_CORRUPT(mp, entno == par_hdr.count)) {
+  2421				error = -EFSCORRUPTED;
+  2422				goto done;
+  2423			}
+  2424			par_blkno = be32_to_cpu(btree[entno].before);
+  2425			if (level == dead_level + 1)
+  2426				break;
+  2427			xfs_trans_brelse(tp, par_buf);
+  2428			par_buf = NULL;
+  2429		}
+  2430		/*
+  2431		 * We're in the right parent block.
+  2432		 * Look for the right entry.
+  2433		 */
+  2434		for (;;) {
+  2435			for (;
+  2436			     entno < par_hdr.count &&
+  2437			     be32_to_cpu(btree[entno].before) != last_blkno;
+  2438			     entno++)
+  2439				continue;
+  2440			if (entno < par_hdr.count)
+  2441				break;
+  2442			par_blkno = par_hdr.forw;
+  2443			xfs_trans_brelse(tp, par_buf);
+  2444			par_buf = NULL;
+  2445			if (XFS_IS_CORRUPT(mp, par_blkno == 0)) {
+  2446				error = -EFSCORRUPTED;
+  2447				goto done;
+  2448			}
+  2449			error = xfs_da3_node_read(tp, dp, par_blkno, &par_buf, w);
+  2450			if (error)
+  2451				goto done;
+  2452			par_node = par_buf->b_addr;
+  2453			xfs_da3_node_hdr_from_disk(dp->i_mount, &par_hdr, par_node);
+  2454			if (XFS_IS_CORRUPT(mp, par_hdr.level != level)) {
+  2455				error = -EFSCORRUPTED;
+  2456				goto done;
+  2457			}
+  2458			btree = par_hdr.btree;
+  2459			entno = 0;
+  2460		}
+  2461		/*
+  2462		 * Update the parent entry pointing to the moved block.
+  2463		 */
+  2464		btree[entno].before = cpu_to_be32(dead_blkno);
+  2465		xfs_trans_log_buf(tp, par_buf,
+  2466			XFS_DA_LOGRANGE(par_node, &btree[entno].before,
+  2467					sizeof(btree[entno].before)));
+  2468		*dead_blknop = last_blkno;
+  2469		*dead_bufp = last_buf;
+  2470		return 0;
+  2471	done:
+  2472		if (par_buf)
+  2473			xfs_trans_brelse(tp, par_buf);
+  2474		if (sib_buf)
+  2475			xfs_trans_brelse(tp, sib_buf);
+  2476		xfs_trans_brelse(tp, last_buf);
+  2477		return error;
+  2478	}
+  2479	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
