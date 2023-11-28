@@ -2,55 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 009937FC1B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 639D87FC18B
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344793AbjK1OAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 09:00:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36866 "EHLO
+        id S1345025AbjK1N6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 08:58:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345480AbjK1Nzq (ORCPT
+        with ESMTP id S1344474AbjK1N6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 08:55:46 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30CFEB5
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 05:55:53 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BFA6C433C7;
-        Tue, 28 Nov 2023 13:55:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701179752;
-        bh=lFIEgWDg6ujlYIK15c4mSDxbSIcEHaZgX85DXfe9QGA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KLzSKVhXkLTg7AQ9TpKMI2z9nmc3YqIzV83md6KCBEuHklxpnZWradeRC1PKSkX5R
-         r8tBhqET9GhRVQxrlYxBTQ3+diBm4t6hXOFFPcx63yswQKRUFYFqNV9iY8BLDb7gzy
-         LJm1WRtwyrYXPOmBLSd5MjocUqZpBSNrEeXDrNn0PLr4vuekk3Bj9eUG0AbtmrCe3G
-         kx3fqKgLAbOfHmqJNCAkTe4pg9ZIWFcd7YXeOLoP5ZJaSCzJfloEs8hiTk4AHGiOOP
-         ZWhPHaGiHpNsRADieRWYOajseQJ2Wl2NG4WhUMpaP5UFnTgltkof4OCSqdQ6YNNl8z
-         z52r+DJmYbxww==
-Date:   Tue, 28 Nov 2023 13:55:49 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "debug@rivosinc.com" <debug@rivosinc.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        "Pandey, Sunil K" <sunil.k.pandey@intel.com>,
-        "szabolcs.nagy@arm.com" <szabolcs.nagy@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-        "kito.cheng@sifive.com" <kito.cheng@sifive.com>
-Subject: Re: Shadow stack enabling from dynamic loader v/s kernel on exec
-Message-ID: <ZWXxZYm/t69afFJZ@finisterre.sirena.org.uk>
-References: <CAKC1njRkpaqbAFWrZpz75u4M-T8mniY2QHVZEENameqnHOOGPg@mail.gmail.com>
- <ZWHcBq0bJ+15eeKs@finisterre.sirena.org.uk>
- <b2498b8097da6223f54aebd80f2e3f0b06fe47e2.camel@intel.com>
+        Tue, 28 Nov 2023 08:58:38 -0500
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A553E4;
+        Tue, 28 Nov 2023 05:58:44 -0800 (PST)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id 5b5066b47abefa04; Tue, 28 Nov 2023 14:58:42 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by cloudserver094114.home.pl (Postfix) with ESMTPSA id 9293766856C;
+        Tue, 28 Nov 2023 14:58:41 +0100 (CET)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>
+Subject: [PATCH v2 1/2] thermal: trip: Drop a redundant check from thermal_zone_set_trip()
+Date:   Tue, 28 Nov 2023 14:56:06 +0100
+Message-ID: <4544904.LvFx2qVVIh@kreacher>
+In-Reply-To: <6010559.lOV4Wx5bFT@kreacher>
+References: <6010559.lOV4Wx5bFT@kreacher>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="RHQr7V8m/3wCdFHK"
-Content-Disposition: inline
-In-Reply-To: <b2498b8097da6223f54aebd80f2e3f0b06fe47e2.camel@intel.com>
-X-Cookie: Slow day.  Practice crawling.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrudeifedgheejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepiedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgv
+ lhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,55 +54,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
---RHQr7V8m/3wCdFHK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+After recent changes in the thermal framework, a trip points array is
+required for registering a thermal zone that is not tripless, so the
+tz->trips pointer in thermal_zone_set_trip() is never NULL and the
+check involving it is redundant.  Drop that check.
 
-On Mon, Nov 27, 2023 at 05:32:24PM +0000, Edgecombe, Rick P wrote:
+No functional impact.
 
-> security focused runtime environment. So a seccomp mode starts to seem
-> like a separate enabling mode with it's own rules, in which case it
-> could be left for the future.
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-My understanding is that seccomp is generic enough to allow you to write
-filters without any specific shadow stack support, though I'm not sure
-about handling for arch_prctl() so perhaps it's harder on x86.
+New patch in v2.
 
-> I don't think doing exec based enabling will impact the app developers
-> expectations, because it should be confined to the loader. So it's fine
-> either way from my perspective.
+---
+ drivers/thermal/thermal_trip.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
-Yes, I don't think there's an issue for apps either way - it's more an
-issue for people doing system level security.
+Index: linux-pm/drivers/thermal/thermal_trip.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_trip.c
++++ linux-pm/drivers/thermal/thermal_trip.c
+@@ -153,9 +153,6 @@ int thermal_zone_set_trip(struct thermal
+ 	struct thermal_trip t;
+ 	int ret;
+ 
+-	if (!tz->ops->set_trip_temp && !tz->ops->set_trip_hyst && !tz->trips)
+-		return -EINVAL;
+-
+ 	ret = __thermal_zone_get_trip(tz, trip_id, &t);
+ 	if (ret)
+ 		return ret;
 
-> > On arm64 there would be the potential for disrupting some limited and
-> > theoretical use cases where GCS is enabled even though some libraries
-> > do
-> > not support it
 
-> On x86 we see this case already in testing. Why do you think it is
-> theoretical?
 
-Right, it's fairly easy to add something not flagged as GCS compatible
-at runtime through dlopen().  I think I was thinking of the case where
-the program is not marked as supporting GCS but enables GCS usage
-selectively at runtime, it wouldn't be able to do that for the main
-thread since we don't allow reenabling.
-
---RHQr7V8m/3wCdFHK
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVl8WQACgkQJNaLcl1U
-h9AyFAf5AfIg+BaZjkXaiSmsN4zgQJ5QAmBA/ntx6Z7SGGIRRRLSfISISp7SLGcW
-+KbkP9KTgt1G9Aku7ycNS6tckK26J+cJLw5n+7Q1Vzdr88dLMQ+a5Jsnznb9J4EC
-8FbqdGBj+biihnELtiQJ4xTW00nH3XDRDZyYdZDZuLx1YfWBRojSn6rvazJCAiMH
-Hw80cAZAoNLOvrdbLKbmoif0JTfWj1LSCm+M4FnvOBD75W+eWgwDhnW5DHqtJ7Ov
-f8U9Gb3yhJBL1sVjZq/bzygUiPb92/e1OBz5K37iAscmjs1CMeR5ALXJhgW2Wsb0
-1OAcbg9DTrAjMOeW/83EQGmvdLtmGA==
-=9qsU
------END PGP SIGNATURE-----
-
---RHQr7V8m/3wCdFHK--
