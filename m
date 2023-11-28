@@ -2,120 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B467A7FB273
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:16:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 249AC7FB270
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:16:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343785AbjK1HQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 02:16:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60628 "EHLO
+        id S1343783AbjK1HQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 02:16:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343794AbjK1HQ0 (ORCPT
+        with ESMTP id S1343778AbjK1HQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 02:16:26 -0500
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2076.outbound.protection.outlook.com [40.107.243.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3FECD41;
-        Mon, 27 Nov 2023 23:16:32 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FmRxdm1kotJW/w0um6hMlXNtqVDhQOGptkW/l2z6ZoEZuvTpDO43i7TyhFGRX56INXqzFE5Z4ja7tNgLzP79rAinFZBb0NncDHzpTg3ftUuemqYWOoeB5ErOgOjEXnBjqcKw9ZJOO+ocvSvLdu2g9yZsDVM+z1WZzJD9HVbRqb7c3AeiH1L02v4tsuTJO227gBTgvRRUSaItQ0mSqMSeFdFQmGh/+DVtviD/TfRkriL7rWIpf3fbvY1T2SRaEV+jmgAlt3N707wHWJhxS5gBMfKEGL6HTpKanDSK0kbTsDr668eqfJmvZpJ7NU3kO0589JJkRfuvgkUYJYsEVHBdgg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=t3KQXlpi54W4lYTL0TH4pmkDKa6qxHZ9Uc6hxiVOVRU=;
- b=VkUT+A9q4Imnb+4DTJtavSQhiNhDaPzLygcR+I8lu0czMtssgvZ3SUkrkHGgSkv7nGjdXLMyxrkhogTzGD2CRkrsb0MrwTlQ9tcjyHn+hy66O0V35Q7+1t49i/XIoEpeyfoBh2XuhZ1L9LjsRhrH6RW8vc24869rE1Ex3F/Gye7clQq/H8TgVrP11ixcG5HDRce8hfQPpDAA2iqxdV75sFhQuQfE5hWi9C0p0Z8YlGqqHotys8B4BI74h0ADNrR/nKIolm5bUhNQq1ZbuqVpmAYh7ypLYn1XAr2XafMWUG2IyHI2sco7p/eStBkESUVhDGjwztL7RH+SQyCC3wjHNA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=t3KQXlpi54W4lYTL0TH4pmkDKa6qxHZ9Uc6hxiVOVRU=;
- b=eq/PBK0daIlz4yOhK++SOOXI4zlZLl42LhtUgBSVZF9XcaTK92zwrbKwSrtDk/bscKigJDWuSmMLQhhxIaNa0rHiiC2xf1MtVcpsRMzOm6axclNT7jVZTiJc1oLyxNV/2ELb7DJ20waYxe/UbasN94Hcf0Q8U/gal+3LS+OKZZBRGdNCRy2cZ6AgwUQx1gp/qzlgaSszz5ptb28/cIt1WDUE2CKBHB1Ild/2UDzOYIELcFseRIExjCT7lrSfdhUkRb2yHz0K+WJ/2EE9rhrsCg8aZqh9oPY4CCuip8DDCR2CAalCOnFH7cVJk+c4/5XjM+QHzRQP0yKYUEPXoOnpfw==
-Received: from MW4PR03CA0074.namprd03.prod.outlook.com (2603:10b6:303:b6::19)
- by SA0PR12MB7075.namprd12.prod.outlook.com (2603:10b6:806:2d5::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Tue, 28 Nov
- 2023 07:16:30 +0000
-Received: from CO1PEPF000044F6.namprd21.prod.outlook.com
- (2603:10b6:303:b6:cafe::a9) by MW4PR03CA0074.outlook.office365.com
- (2603:10b6:303:b6::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29 via Frontend
- Transport; Tue, 28 Nov 2023 07:16:30 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- CO1PEPF000044F6.mail.protection.outlook.com (10.167.241.196) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7068.1 via Frontend Transport; Tue, 28 Nov 2023 07:16:29 +0000
-Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 27 Nov
- 2023 23:16:25 -0800
-Received: from drhqmail201.nvidia.com (10.126.190.180) by
- drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Mon, 27 Nov 2023 23:16:25 -0800
-Received: from mkumard.nvidia.com (10.127.8.13) by mail.nvidia.com
- (10.126.190.180) with Microsoft SMTP Server id 15.2.986.41 via Frontend
- Transport; Mon, 27 Nov 2023 23:16:22 -0800
-From:   Mohan Kumar <mkumard@nvidia.com>
-To:     <vkoul@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <dmaengine@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Mohan Kumar <mkumard@nvidia.com>
-Subject: [RESEND PATCH V2 0/2] Support dma channel mask
-Date:   Tue, 28 Nov 2023 12:46:13 +0530
-Message-ID: <20231128071615.31447-1-mkumard@nvidia.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 28 Nov 2023 02:16:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F22D197
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:16:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701155779;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+wPQpfAGbhR2fcRE9CwV+QhwuDv286D2znD8D3G529g=;
+        b=B20RADcpmy/+II5C76Ld4M3+ErJ+GcIaQ/C3K+U/1xhsArGU+/eEjBvyUxTscaqLiMYJj3
+        1yWz+45f81vWhKQCL2mnS+xproQu80rHy3SuMQvB5b7O2lyxHa5/zcSYvOJ3dESsZbHcvg
+        kZwZSQGKjD/BPiAUVfzVSv83lFQR8L8=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-532-f0FjTuqZMXOuOcX4we9nwg-1; Tue, 28 Nov 2023 02:16:17 -0500
+X-MC-Unique: f0FjTuqZMXOuOcX4we9nwg-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4083717431eso29701765e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:16:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701155776; x=1701760576;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+wPQpfAGbhR2fcRE9CwV+QhwuDv286D2znD8D3G529g=;
+        b=VfMDyLszTw/QuZFZL6LVqxYXxqjzV+XFqywVflGospRgrXcKZsGXb+fk7Tdek3lAZc
+         CYB85zVbKQ4ODLLV1ANZeeQ+ThZDzCMCtTvpIpslZ3WksptD+ne9fAGjPUi4toLyM6+C
+         lsQ83zMv+g0AIi2F+O6aQMp8SRX9CVwdmKn7YEWQIYHzhcpbY8GIPyzHUVYS3qHCcEoS
+         XXK9IgrrtKB1zPabykTL/rsn+uxXFPLNEHwe5mZOgnymv82vdjmnNNDsvHeK2+vobg33
+         XhanJ3ONbPIkEXX6Ule02cPlCwkR0xRBdGJLPj51P71LYdW/JSiKdNgvW4V6J0sIB2o5
+         OhHw==
+X-Gm-Message-State: AOJu0YwkUehmIA/55fMlcL4h3x8z9oBDeIR5dG3l+hozs/BYDtgqq4Xs
+        ZFDOWizoxhRZ1WwV3YnbrnBG8KFszkdSs9nBCRW9D9j06JKvQwALxjDAoF37igrokoLs9l8DqXR
+        8YbFtNhLUgiQxyoYlqUyOoSzDS5kqrvgN
+X-Received: by 2002:a05:600c:4ecb:b0:40b:4b29:aa1c with SMTP id g11-20020a05600c4ecb00b0040b4b29aa1cmr1045339wmq.30.1701155776328;
+        Mon, 27 Nov 2023 23:16:16 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHWP9ONc9tOktke0kByXQi1XOIYmIVsWXsJAFkQI6HA50Moog1GCqH/U1U/uYGzT3LG1oIEyA==
+X-Received: by 2002:a05:600c:4ecb:b0:40b:4b29:aa1c with SMTP id g11-20020a05600c4ecb00b0040b4b29aa1cmr1045311wmq.30.1701155775947;
+        Mon, 27 Nov 2023 23:16:15 -0800 (PST)
+Received: from starship ([77.137.131.4])
+        by smtp.gmail.com with ESMTPSA id m8-20020a05600c4f4800b0040b347d90d0sm16983794wmq.12.2023.11.27.23.16.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 23:16:15 -0800 (PST)
+Message-ID: <fcd7567a1b45c6779882f696fe2fdac8c6702b3b.camel@redhat.com>
+Subject: Re: [RFC 07/33] KVM: x86: hyper-v: Introduce KVM_CAP_HYPERV_VSM
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Nicolas Saenz Julienne <nsaenz@amazon.com>, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        anelkz@amazon.com, graf@amazon.com, dwmw@amazon.co.uk,
+        jgowans@amazon.com, corbert@lwn.net, kys@microsoft.com,
+        haiyangz@microsoft.com, decui@microsoft.com, x86@kernel.org,
+        linux-doc@vger.kernel.org
+Date:   Tue, 28 Nov 2023 09:16:13 +0200
+In-Reply-To: <20231108111806.92604-8-nsaenz@amazon.com>
+References: <20231108111806.92604-1-nsaenz@amazon.com>
+         <20231108111806.92604-8-nsaenz@amazon.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044F6:EE_|SA0PR12MB7075:EE_
-X-MS-Office365-Filtering-Correlation-Id: c4c56db5-9fec-4e75-bf57-08dbefe1f168
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OnrGHZXs/+ZWc/tRSVtSHvaqlW4AGbZfrKhEi92RQ9x1VOfa8PzkmraAVpOgpYyzjK71nlSZC/kCLv+CEDcmRmEduvs6R5mVl/mdxBcN9tCw54Cdqz9MA4ng7Dla05ouTBM3m4cHTlhc0bebT8rr6yCTqcrDiZc3GllTnsyiPlSf1ANqgGm1XHWeDyy2DOOlmSo1xctEuxyVozx/kjENUPritb7c2kwLxdNMiitYOhz4gFc7Uim4Fxei+rz2juaa7msCFGxw59X6xqJYR8+KuWeID0oDvRrMavJb5HgSmcJJs1MrgGioLSvkEkjE8Mr1VBljw+v8KcnoyMcm71FGiz7VDjLWJ6nyFyTRlvHBaZvZDNfy3Pg+WqqtPlzJidTL9O8/GnWdo28ZVxBzLlnGq9mu4TnKuosnq2oAaAP4BdeDeHYzswWBAYX+66tpeLhRn0ufz3AFvCATCHnkaTdi8aup9zGCFak/OlNwWQf2VRF0yvSs1hRWOfYwVPwdrj9QS4cIXzMVtWY9/fqyaNz2qExBcsNa0dLQ+VAyWwPPBmA1SYLxhMZ3ZWnmcYd30ANH/Zfpj5LGk9HouAJKhPsm9xQTcwpJ7Y2ZVuqAiCGLnc96T4b6PbgLfiIC6OH/bnmLVHBboivuB8DsxfFnaIVMKzD43oyzAKEeHLNRfK+r2K6DcFK/3K+VriupXtjdiIYr51TvZ4z6NbTz6OGs/J0ZssN78NaY+ndHkKdIL+OWKT1WcSWA/D3wtgHN1K1jBNn4
-X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(346002)(396003)(39860400002)(230922051799003)(451199024)(1800799012)(82310400011)(186009)(64100799003)(36840700001)(46966006)(40470700004)(83380400001)(40480700001)(47076005)(356005)(7636003)(336012)(4326008)(82740400003)(70206006)(8936002)(426003)(7696005)(5660300002)(54906003)(316002)(70586007)(110136005)(8676002)(36860700001)(478600001)(86362001)(41300700001)(2906002)(4744005)(36756003)(6666004)(26005)(107886003)(1076003)(2616005)(40460700003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 07:16:29.8973
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c4c56db5-9fec-4e75-bf57-08dbefe1f168
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044F6.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB7075
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To reserve the dma channel using dma-channel-mask property for Tegra
-platforms.
+On Wed, 2023-11-08 at 11:17 +0000, Nicolas Saenz Julienne wrote:
+> Introduce a new capability to enable Hyper-V Virtual Secure Mode (VSM)
+> emulation support.
+> 
+> Signed-off-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h | 2 ++
+>  arch/x86/kvm/hyperv.h           | 5 +++++
+>  arch/x86/kvm/x86.c              | 5 +++++
+>  include/uapi/linux/kvm.h        | 1 +
+>  4 files changed, 13 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 00cd21b09f8c..7712e31b7537 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1118,6 +1118,8 @@ struct kvm_hv {
+>  
+>  	struct hv_partition_assist_pg *hv_pa_pg;
+>  	struct kvm_hv_syndbg hv_syndbg;
+> +
+> +	bool hv_enable_vsm;
+>  };
+>  
+>  struct msr_bitmap_range {
+> diff --git a/arch/x86/kvm/hyperv.h b/arch/x86/kvm/hyperv.h
+> index f83b8db72b11..2bfed69ba0db 100644
+> --- a/arch/x86/kvm/hyperv.h
+> +++ b/arch/x86/kvm/hyperv.h
+> @@ -238,4 +238,9 @@ static inline int kvm_hv_verify_vp_assist(struct kvm_vcpu *vcpu)
+>  
+>  int kvm_hv_vcpu_flush_tlb(struct kvm_vcpu *vcpu);
+>  
+> +static inline bool kvm_hv_vsm_enabled(struct kvm *kvm)
+> +{
+> +       return kvm->arch.hyperv.hv_enable_vsm;
+> +}
+> +
+>  #endif
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 4cd3f00475c1..b0512e433032 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -4485,6 +4485,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>  	case KVM_CAP_HYPERV_CPUID:
+>  	case KVM_CAP_HYPERV_ENFORCE_CPUID:
+>  	case KVM_CAP_SYS_HYPERV_CPUID:
+> +	case KVM_CAP_HYPERV_VSM:
+>  	case KVM_CAP_PCI_SEGMENT:
+>  	case KVM_CAP_DEBUGREGS:
+>  	case KVM_CAP_X86_ROBUST_SINGLESTEP:
+> @@ -6519,6 +6520,10 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
+>  		}
+>  		mutex_unlock(&kvm->lock);
+>  		break;
+> +	case KVM_CAP_HYPERV_VSM:
+> +		kvm->arch.hyperv.hv_enable_vsm = true;
+> +		r = 0;
+> +		break;
+>  	default:
+>  		r = -EINVAL;
+>  		break;
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index 5ce06a1eee2b..168b6ac6ebe5 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -1226,6 +1226,7 @@ struct kvm_ppc_resize_hpt {
+>  #define KVM_CAP_GUEST_MEMFD 233
+>  #define KVM_CAP_VM_TYPES 234
+>  #define KVM_CAP_APIC_ID_GROUPS 235
+> +#define KVM_CAP_HYPERV_VSM 237
+>  
+>  #ifdef KVM_CAP_IRQ_ROUTING
+>  
 
-Mohan Kumar (2):
-  dt-bindings: dma: Add dma-channel-mask to nvidia,tegra210-adma
-  dmaengine: tegra210-adma: Support dma-channel-mask property
+Do we actually need this? Can we detect if the userspace wants VSM using
+guest CPUID?
 
- .../bindings/dma/nvidia,tegra210-adma.yaml    |  3 ++
- drivers/dma/tegra210-adma.c                   | 35 +++++++++++++++++--
- 2 files changed, 36 insertions(+), 2 deletions(-)
+Of course if we need to add a new ioctl or something it will have to be
+done together with a new capability, and since we will need at least to
+know a vCPU's VTL, we will probably need this capability.
 
--- 
-2.17.1
+Best regards,
+	Maxim Levitsky
+
+
 
