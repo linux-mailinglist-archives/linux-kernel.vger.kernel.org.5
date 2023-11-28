@@ -2,70 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A85A7FC2BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 846DB7FC1AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346248AbjK1Rt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 12:49:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39332 "EHLO
+        id S1346300AbjK1Rt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 12:49:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345727AbjK1Rt0 (ORCPT
+        with ESMTP id S1345727AbjK1Rt1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 12:49:26 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8C20B4;
-        Tue, 28 Nov 2023 09:49:32 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9e1021dbd28so783093666b.3;
-        Tue, 28 Nov 2023 09:49:32 -0800 (PST)
+        Tue, 28 Nov 2023 12:49:27 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AFBC93;
+        Tue, 28 Nov 2023 09:49:34 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a03a900956dso2375566b.1;
+        Tue, 28 Nov 2023 09:49:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701193770; x=1701798570; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701193772; x=1701798572; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hYAdPXYjdtJoSjhwdnkJc5M1Ql6U3jFAivs3ToBpO7o=;
-        b=geWxiC9xIbMsM6p30SwbUXcsxQNYa3QbEBydxeuRnPy1O3LJzo/+5yDQm3g7yBCKlM
-         ySCkbFNvJzsd8ik+Oe7EgIP9NBzpIkzl/4bm3ccix8oe3Rmbl58h7wad54UWbQERwMRx
-         +lZdH4+1cQ2YSkR1WYskYUVkUqvjTt1vTkcUXubEsoZh6QOuC1wrWl6VxArLz2NUaPA/
-         +2uWZkexO/YVWXgjas/NhXf3l5S1ls204G6MQTFY5IAE1JAr05i1fC388veD/DCXlVcE
-         fUTzDCzrWLH4d3N0u4yrlCE9gEH8zCoQkOO0JfDBclIdDf1njw2ChnuYO7qM2MUg92q9
-         HynQ==
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2Q6ar52kT12/oSOUgsQunGkK9992ePoRC0ssPbZWDgw=;
+        b=i6b5JWm/Osc81en8u5MDun6d2WX3T2lgYcXr6EDNsslp3MsrN9UGO1lIuwIsO8uelE
+         p7Ye+IxD1z8eu+soCqNKCvxuiMg8DllwymR/KoOEKthKXtgoLUaBz2EkJzUncZEgPqFL
+         Sl39VY27IQ2XgIsnnv5bBiV3NTmtWd22L6x+vDxo25aqiZ/dJiKEQjHIx8DLvZ1GOJL0
+         E0BI49DiZI7AczT8S3AbawIwwQ3LFiZg4c6AAtvQw9pQ63NPrCVpj4Qp4tP9PG8+mSg4
+         BW92EwaV8iwL+5vZsnTx7LFjyRcjZq/MTgzCBKw7Wg1PkCPsS416mBpjXwM/yqiHoGTN
+         iQ2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701193770; x=1701798570;
+        d=1e100.net; s=20230601; t=1701193772; x=1701798572;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hYAdPXYjdtJoSjhwdnkJc5M1Ql6U3jFAivs3ToBpO7o=;
-        b=ph/dNyozTXql2XUwHWwtZPG5Wh1lV1u8SxCbszzh/MRm6f6sjzeTTVyAtkWdO6ajKn
-         s9b29/Hoq46LjcbF2vPi1FahUHEnhs2UnAGW3N+sRL9XXk0145msAGfNMPawyRJT8FBF
-         XP80uRGgsWrGFXFVNLA96O1V59eis9YkeX1nmWpTpEFc3JbeM0DElti/Qb50eE1Aa7J3
-         UMMlel1ao/RNHSYPTBqYZ9TjFoCttZ7vZap1CuzaOeHQv65AynX1Eoelh/XWElFGMc43
-         nRGxnFZCV//nsum5TDGOG/FWzBYXZtHy/sdL+CzSJfnPjAdPvl99GwIDGG7mvg1ZtE+f
-         XFzQ==
-X-Gm-Message-State: AOJu0YzRQ2P7WN9a5xMifPJXE2zHxMrw93uk4nRk0FaLxIbfzcFwKq4v
-        2HqndQu9m/HKPZF3Iki8dwoA6wlZqaA=
-X-Google-Smtp-Source: AGHT+IE0MVWhM0Bx9N8hq2qRd878OFql+KxCK2r0PUI37wCSSMvW1rr+kvejleXHjv0eakxQYRO0UQ==
-X-Received: by 2002:a17:906:5352:b0:a0d:d73d:1542 with SMTP id j18-20020a170906535200b00a0dd73d1542mr5581642ejo.20.1701193770276;
-        Tue, 28 Nov 2023 09:49:30 -0800 (PST)
+        bh=2Q6ar52kT12/oSOUgsQunGkK9992ePoRC0ssPbZWDgw=;
+        b=HSCHEJ9tx9fP3ac938yQCRyALwwkzSgU0NA2XKhLkTPBVT3SLcKA2SbDQdCiDA3ElQ
+         J6+1QM5AWhrwExibRUh94ftYAxKvkuWiqSTx+zCP25csTHSYn6Wl1MrWH3vT8Fus4w3q
+         I/d6URFXxgD8O3EU+pqxuMsF5TEyjahKkqBaN9jsrXL4gjKUD7B1ABiaXZO1blaWMm03
+         VYFK4x3mz0mkuQAcxy8HV9KEYEonaw/EiSfw3jw9qoZ04X/EoXy9YobU32SAWL++n5JW
+         ZIQtYZlesTy9mhmt1n9HztfNMSd0FOnE6JKa7KoEHYwe9NA1ldHsEbTUPwZ+g88AvhvB
+         uXCw==
+X-Gm-Message-State: AOJu0YyaouNdzjWolwYz7jj15SqcjG2MMD4Fv1ZHSLwK/6dsL6J+y662
+        coBwelqbex2xOQwHLA83h/8=
+X-Google-Smtp-Source: AGHT+IFegfjLsT1XNjq4u1dJkNE5gSVojRjltbsyE47RsYa/oKV+OirEmiPZK9QlSr1+eKKQQmVk8w==
+X-Received: by 2002:a17:906:f811:b0:a0f:1882:d5e with SMTP id kh17-20020a170906f81100b00a0f18820d5emr5384410ejb.37.1701193772296;
+        Tue, 28 Nov 2023 09:49:32 -0800 (PST)
 Received: from localhost (p200300e41f0fa600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f0f:a600:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id lv23-20020a170906bc9700b009f28db2b702sm6981520ejb.209.2023.11.28.09.49.29
+        by smtp.gmail.com with ESMTPSA id cm26-20020a0564020c9a00b0054ae75dcd6bsm5742280edb.95.2023.11.28.09.49.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 09:49:29 -0800 (PST)
+        Tue, 28 Nov 2023 09:49:30 -0800 (PST)
 From:   Thierry Reding <thierry.reding@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        Florian Fainelli <florian.fainelli@broadcom.com>
-Cc:     =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>, linux-pwm@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] pwm: bcm2835: Fix NPD in suspend/resume
-Date:   Tue, 28 Nov 2023 18:49:22 +0100
-Message-ID: <170119374441.445690.2721498852495955001.b4-ty@gmail.com>
+To:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Lee Jones <lee@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Sam Protsenko <semen.protsenko@linaro.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: (subset) [PATCH 00/17] dt-bindings: samsung: add specific compatibles for existing SoC
+Date:   Tue, 28 Nov 2023 18:49:23 +0100
+Message-ID: <170119374454.445690.515311393756577368.b4-ty@gmail.com>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231113164632.2439400-1-florian.fainelli@broadcom.com>
-References: <20231113164632.2439400-1-florian.fainelli@broadcom.com>
+In-Reply-To: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
+References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -80,22 +105,26 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Mon, 13 Nov 2023 08:46:32 -0800, Florian Fainelli wrote:
-> When 119a508c4dc9 ("pwm: bcm2835: Add support for suspend/resume") was
-> sent out on October 11th,, there was still a call to
-> platform_set_drvdata() which would ensure that the driver private data
-> structure could be used in bcm2835_pwm_{suspend,resume}.
-> 
-> A cleanup now merged as commit commit 2ce7b7f6704c ("pwm: bcm2835:
-> Simplify using devm functions") removed that call which would now cause
-> a NPD in bcm2835_pwm_{suspend,resume} as a consequence.
+On Wed, 08 Nov 2023 11:43:26 +0100, Krzysztof Kozlowski wrote:
+> Merging
+> =======
+> I propose to take entire patchset through my tree (Samsung SoC), because:
+> 1. Next cycle two new SoCs will be coming (Google GS101 and ExynosAutov920), so
+>    they will touch the same lines in some of the DT bindings (not all, though).
+>    It is reasonable for me to take the bindings for the new SoCs, to have clean
+>    `make dtbs_check` on the new DTS.
+> 2. Having it together helps me to have clean `make dtbs_check` within my tree
+>    on the existing DTS.
+> 3. No drivers are affected by this change.
+> 4. I plan to do the same for Tesla FSD and Exynos ARM32 SoCs, thus expect
+>    follow up patchsets.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] pwm: bcm2835: Fix NPD in suspend/resume
-      commit: fba7e9f839d7fcb0888094697da45c5668226455
+[12/17] dt-bindings: pwm: samsung: add specific compatibles for existing SoC
+        commit: 5d67b8f81b9d598599366214e3b2eb5f84003c9f
 
 Best regards,
 -- 
