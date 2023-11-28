@@ -2,131 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF527FC140
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D73B7FC1F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346196AbjK1P56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 10:57:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40624 "EHLO
+        id S1346246AbjK1P6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 10:58:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346083AbjK1P54 (ORCPT
+        with ESMTP id S1346083AbjK1P6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 10:57:56 -0500
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8301F90
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 07:58:02 -0800 (PST)
-Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-35c9cba4fa6so1226525ab.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 07:58:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1701187082; x=1701791882; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4wAhSwnTXqPL8DFCSCSo1D+1BXr5do7lM46ckR+Mmfg=;
-        b=w560LjwhUX847ndgWUlE7dC7Sx2B8QfuSv/C5KGtQBSlhiHZBsCc+tF1BdqwvE7oBW
-         /VJVpDkgzCLomZ4ZfkpYqXrhQ92kuu/iy4Yv8jNXxAgjiJIdN6fyvGlaHbdxu3wC/4we
-         d0CEihulT7PVByudMvknrWh7MPI0QYeHe7FjGaQ4Oz+UPs0F0cn3jJsXTC7IdygdBF/k
-         8zB6R4SpwBcXyivykIJkdbMZDvEEqB0r0PpnIZ2FChOt97ROk4NIov/VW5GHPM2kkMrB
-         fg5hH2E7/D9vVuuWtlPm4OyH9jnKbDwLg1+IWP8PNU1MBxoDO0FEg+Wngu/4TWfK2VIu
-         MKcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701187082; x=1701791882;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4wAhSwnTXqPL8DFCSCSo1D+1BXr5do7lM46ckR+Mmfg=;
-        b=qvDzafCttc4E6xcKN1ccZHT6vv0ZT7K4/O05gsYAf9Y1X4UlkniddnBLA8aAjiYoN/
-         UVPHHQEycN6wTeeBmlc+YgRblVDxFovmZ2z6WYq8PLNZqeOlSipcnW9uWdX08etHfD8D
-         LGauzWR0Re4bZo2Mpa0jxFQO9Sb80GM7oOUBvs/EON0QcRmKT8mGtx+czazsZeBQB42P
-         oGTZUCqJuyVapYmX5GpslgMMGwGnvtrGTfZFcihpeqhp/kTXdSmjN1Wjv95QTHLGnR5I
-         /euAJvGcfdZyqJYKk59z/q6mIicM1V0RCdDrvJo/o+AqpvNSZBLyBmusBvO/m+hIhBXM
-         6CFg==
-X-Gm-Message-State: AOJu0YwyAi4E5xW0FtP0RnCdUzaRlqLubj23voDOZabDbgGPkzI2UNcI
-        DJA/q1uaAK1loIVke0ttxXRjAQ==
-X-Google-Smtp-Source: AGHT+IFBeeo2doFndHrPVDZookEKt3a/Tb9fkWQtqkqlsaYVIjsLN8dT70/m7FwLRu/1b65C5DqogA==
-X-Received: by 2002:a6b:7a07:0:b0:7b3:92ea:3438 with SMTP id h7-20020a6b7a07000000b007b392ea3438mr9084569iom.2.1701187081825;
-        Tue, 28 Nov 2023 07:58:01 -0800 (PST)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id dp21-20020a056602069500b007b39447e11fsm452312iob.21.2023.11.28.07.58.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Nov 2023 07:58:01 -0800 (PST)
-Message-ID: <fadbb6b5-a288-40e2-9bb8-7299ea14f0a7@kernel.dk>
-Date:   Tue, 28 Nov 2023 08:58:00 -0700
+        Tue, 28 Nov 2023 10:58:39 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C088690
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 07:58:45 -0800 (PST)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A4FAF66072A4;
+        Tue, 28 Nov 2023 15:58:43 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701187124;
+        bh=qKg+0kItlTCpweu6Y5xQqPzAWvuJlNaeaejzIKJ28Dg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XWVg3YkGDfWrtWOdFm/SBJQ4e9Qp5Z8kOC5dkCJ3pSk1k5+4/qjGrEu8kUYLMvh4l
+         xv3hlcuKNsQvQjZW3WFQhVia8GKQdfFgWcu0Hd3ld0y61X8+EFoGkgPWPdTq71Wd+r
+         4YadFR2odKA8nfENYJmP1JpQX2FmbN4BVXqfF5swc2lRYxzLikCACP2/T03Vk9jc/c
+         KqGyz7kF+EiclMThelviUAbk34kJpibaONcWXPTM15xD+03OIo2WmxOLkKPYn62+sc
+         NL5CtL2r9R38d0/CxcUcR/yJlKzgqyym/2CFlksa0RDupXu3xffXoGpmYYPZkILnSF
+         CYn+HU4rVLG9A==
+Date:   Tue, 28 Nov 2023 16:58:40 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     robh@kernel.org, steven.price@arm.com,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, m.szyprowski@samsung.com,
+        krzysztof.kozlowski@linaro.org
+Subject: Re: [PATCH v2 3/3] drm/panfrost: Synchronize and disable interrupts
+ before powering off
+Message-ID: <20231128165840.383b30c2@collabora.com>
+In-Reply-To: <34b7ae7d-c4d3-4d94-a1e9-62d3d4fc6b9a@collabora.com>
+References: <20231128124510.391007-1-angelogioacchino.delregno@collabora.com>
+        <20231128124510.391007-4-angelogioacchino.delregno@collabora.com>
+        <20231128150612.17f6a095@collabora.com>
+        <6c14d90f-f9e1-4af7-877e-f000b7fa1e08@collabora.com>
+        <20231128163808.094a8afa@collabora.com>
+        <34b7ae7d-c4d3-4d94-a1e9-62d3d4fc6b9a@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: io_uring: risky use of task work, especially wrt fdget()
-Content-Language: en-US
-To:     Jann Horn <jannh@google.com>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Cc:     io-uring <io-uring@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-References: <CAG48ez1htVSO3TqmrF8QcX2WFuYTRM-VZ_N10i-VZgbtg=NNqw@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <CAG48ez1htVSO3TqmrF8QcX2WFuYTRM-VZ_N10i-VZgbtg=NNqw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/23 2:53 PM, Jann Horn wrote:
-> Hi!
-> 
-> I noticed something that I think does not currently cause any
-> significant security issues, but could be problematic in the future:
-> 
-> io_uring sometimes processes task work in the middle of syscalls,
-> including between fdget() and fdput(). My understanding of task work
-> is that it is expected to run in a context similar to directly at
-> syscall entry/exit: task context, no locks held, sleeping is okay, and
-> it doesn't execute in the middle of some syscall that expects private
-> state of the task_struct to stay the same.
-> 
-> An example of another user of task work is the keyring subsystem,
-> which does task_work_add() in keyctl_session_to_parent() to change the
-> cred pointers of another task.
-> 
-> Several places in io_uring process task work while holding an fdget()
-> reference to some file descriptor. For example, the io_uring_enter
-> syscall handler calls io_iopoll_check() while the io_ring_ctx is only
-> referenced via fdget(). This means that if there were another kernel
-> subsystem that uses task work to close file descriptors, io_uring
-> would become unsafe. And io_uring does _almost_ that itself, I think:
-> io_queue_worker_create() can be run on a workqueue, and uses task work
-> to launch a worker thread from the context of a userspace thread; and
-> this worker thread can then accept commands to close file descriptors.
-> Except it doesn't accept commands to close io_uring file descriptors.
-> 
-> A closer miss might be io_sync_cancel(), which holds a reference to
-> some normal file with fdget()/fdput() while calling into
-> io_run_task_work_sig(). However, from what I can tell, the only things
-> that are actually done with this file pointer are pointer comparisons,
-> so this also shouldn't have significant security impact.
-> 
-> Would it make sense to use fget()/fput() instead of fdget()/fdput() in
-> io_sync_cancel(), io_uring_enter and io_uring_register? These
-> functions probably usually run in multithreaded environments anyway
-> (thanks to the io_uring worker threads), so I would think fdget()
-> shouldn't bring significant performance savings here?
+On Tue, 28 Nov 2023 16:42:25 +0100
+AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+wrote:
 
-Let me run some testing on that. It's a mistake to think that it's
-usually multithreaded, generally if you end up using io-wq then it's not
-a fast path. A fast networked setup, for example, would never touch the
-threads and hence no threading would be implied by using io_uring. Ditto
-on the storage front, if you're just reading/writing or eg doing polled
-IO. That said, those workloads are generally threaded _anyway_ - not
-because of io_uring, but because that's how these kinds of workloads are
-written to begin with.
+> >>  
+> >>>>    	panfrost_device_reset(pfdev);
+> >>>>    	panfrost_devfreq_resume(pfdev);
+> >>>>    
+> >>>> @@ -421,6 +422,9 @@ static int panfrost_device_runtime_suspend(struct device *dev)
+> >>>>    		return -EBUSY;
+> >>>>    
+> >>>>    	panfrost_devfreq_suspend(pfdev);
+> >>>> +	panfrost_job_suspend_irq(pfdev);
+> >>>> +	panfrost_mmu_suspend_irq(pfdev);
+> >>>> +	panfrost_gpu_suspend_irq(pfdev);
+> >>>>    	panfrost_gpu_power_off(pfdev);
+> >>>>    
+> >>>>    	return 0;
+> >>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
+> >>>> index 54a8aad54259..29f89f2d3679 100644
+> >>>> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
+> >>>> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
+> >>>> @@ -25,6 +25,12 @@ struct panfrost_perfcnt;
+> >>>>    #define NUM_JOB_SLOTS 3
+> >>>>    #define MAX_PM_DOMAINS 5
+> >>>>    
+> >>>> +enum panfrost_drv_comp_bits {
+> >>>> +	PANFROST_COMP_BIT_MMU,
+> >>>> +	PANFROST_COMP_BIT_JOB,
+> >>>> +	PANFROST_COMP_BIT_MAX
+> >>>> +};
+> >>>> +
+> >>>>    /**
+> >>>>     * enum panfrost_gpu_pm - Supported kernel power management features
+> >>>>     * @GPU_PM_CLK_DIS:  Allow disabling clocks during system suspend
+> >>>> @@ -109,6 +115,7 @@ struct panfrost_device {
+> >>>>    
+> >>>>    	struct panfrost_features features;
+> >>>>    	const struct panfrost_compatible *comp;
+> >>>> +	DECLARE_BITMAP(is_suspending, PANFROST_COMP_BIT_MAX);  
+> >>>
+> >>> nit: Maybe s/is_suspending/suspended_irqs/, given the state remains
+> >>> until the device is resumed.  
+> >>
+> >> If we keep the `is_suspending` name, we can use this one more generically in
+> >> case we ever need to, what do you think?  
+> > 
+> > I'm lost. Why would we want to reserve a name for something we don't
+> > know about? My comment was mostly relating to the fact this bitmap
+> > doesn't reflect the is_suspending state, but rather is_suspended,
+> > because it remains set until the device is resumed. And we actually want
+> > it to reflect the is_suspended state, so we can catch interrupts that
+> > are not for us without reading regs in the hard irq handler, when the
+> > GPU is suspended.  
+> 
+> `is_suspended` (fun story: that's the first name I gave it) looks good to me,
+> the doubt I raised was about calling it `suspended_irqs` instead, as I would
+> prefer to keep names "more generic", but that's just personal preference at
+> this point anyway.
 
-So probably won't be much of a concern to do the swap. The only
-"interesting" part of the above mix of cancel/register/enter is
-obviously the enter part. The rest are not really fast path.
-
--- 
-Jens Axboe
+Ah, sure, is_suspended is fine.
 
