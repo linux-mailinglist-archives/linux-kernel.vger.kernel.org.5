@@ -2,118 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B776A7FC287
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95BEA7FC229
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbjK1Qng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 11:43:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47034 "EHLO
+        id S229916AbjK1QoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:44:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjK1Qnf (ORCPT
+        with ESMTP id S229567AbjK1QoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 11:43:35 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95DBBD6;
-        Tue, 28 Nov 2023 08:43:41 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1cf8e569c35so37395465ad.0;
-        Tue, 28 Nov 2023 08:43:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701189821; x=1701794621; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=t1G9rYIEZ34mJXbbwuA3/PHTXFDOWuxrzGTb7P8Akig=;
-        b=Knq0k55bN+diKYC8OTzPLGcLkogD7/+w3N+s1CQTqx23Amwx3SmaaIE2QosSSqZRr+
-         951Q0y7gTQwMR+CsJG2rinb+js3gDzDLkVozFAu1ediF8JJVJqifwHyrzQcHlW9fImks
-         YCbvXv7gDQnEHk4e5pRHnYtz8JeKnYoco6lALft/Ft47XmDKsUrHOvWYCuruBMXtFp7k
-         5x16746SqkUrhjaYpuhRWZPcqwLKWhTcP4xYQa8W8AVYaEF/CKCdgoaIBE2TjLlgroHu
-         BYdKm7c28ElmbkCMy6L8+VydJ0ICaqNY2kKc/gmGObGq3v45tiuzyV3sVt2NICtEZKL4
-         OGbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701189821; x=1701794621;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=t1G9rYIEZ34mJXbbwuA3/PHTXFDOWuxrzGTb7P8Akig=;
-        b=LBUvmr4mJTVa51uyitvov/AYNA6whXTakK4T4n533lMj2S+ETyR5GCInSnLK7XHX/f
-         JWdzEincfyKP+XbqTTvJ5BjDLEoARgagq3ttj6lie8p5aFcQ/Tgoz6L+FW0PHtSojMdY
-         c3IUTguz5BZlhlzQ4k8rYI0WKXhZNgT3mhSZUbDD5thF7Fdb8GbgQWcXqNqIetUSU3GV
-         /csFr2uJik6+9U6Ih+dR+lBBzaYWDVNUM2iZCp7zoM+I5bouEXK/OA4SZ3bO0jCBkGMd
-         6vrsA95Zjoz0xFXEm0tY+QgddP+U4Dc8lUfJSME00fqB+pn+Us3LrNumu7ijNj6jefuY
-         b48A==
-X-Gm-Message-State: AOJu0YwC+TKSqTdppFmVA0sF3DVihfTnD8MtXEC7gRZrw1wjJgwJLCPL
-        IN1L6S8P49l7ygOtNI/9Ot8=
-X-Google-Smtp-Source: AGHT+IGaOXiY5snwKYq8K0A1rJzX5WiJvhSjBS9hO5FOrASiq5XeF3YfPC//rHJ44BHfXGJa51RGUA==
-X-Received: by 2002:a17:902:c10d:b0:1cf:cd2d:e296 with SMTP id 13-20020a170902c10d00b001cfcd2de296mr6915216pli.37.1701189820925;
-        Tue, 28 Nov 2023 08:43:40 -0800 (PST)
-Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
-        by smtp.gmail.com with ESMTPSA id c6-20020a170902c1c600b001cfd0ed1604sm3930815plc.87.2023.11.28.08.43.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 08:43:40 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 28 Nov 2023 06:43:38 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Joe Mario <jmario@redhat.com>,
-        Sebastian Jug <sejug@redhat.com>,
-        Yosry Ahmed <yosryahmed@google.com>
-Subject: Re: [PATCH v4 2/3] cgroup/rstat: Optimize cgroup_rstat_updated_list()
-Message-ID: <ZWYYrJVMUOrl9r2g@slm.duckdns.org>
-References: <20231106210543.717486-1-longman@redhat.com>
- <20231106210543.717486-3-longman@redhat.com>
- <a9aa2809-95f5-4f60-b936-0d857c971fea@redhat.com>
+        Tue, 28 Nov 2023 11:44:16 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19BC4D6
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:44:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3042EC433C8;
+        Tue, 28 Nov 2023 16:44:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701189862;
+        bh=VXBxDQYXemPJD2OWSBAxs4OdN3/5YPb2d7fGJc3c0so=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=feZ0lBAvj+a8TYsX0HsEYspGxzNhQjd6bEAOt8m5Y2IcAG55AsIPeHaUle7U62GiO
+         h6bD/CDMiYE5nH++594r6bvD4651o+5eOZUkkxaf1mTVfcOeMKagIeWuNp7ry4a+aP
+         kR/BMdqQUQlxXYpbF+mYE3UxVeSFzdfYIHGkHvkxdFVc0iX1/uVM2HGWVJIZIBBcYF
+         kVAk7n+2kd+6S+YoOSLe69xs2K092B6hR7i/LjHE+QbDWDt7mdsFuBIVtvb3hFUiDi
+         Yhrmq6M3ibZqPQRlbZhnBqWyBSlxQOdD7uoDG63X+LMzX3gfrCNqCRvnIzwXgWlwdf
+         ai8Pvb1JYmpDQ==
+Date:   Tue, 28 Nov 2023 08:44:21 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     David Ahern <dsahern@kernel.org>,
+        Saeed Mahameed <saeed@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jiri Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>,
+        Itay Avraham <itayavr@nvidia.com>,
+        linux-kernel@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH V3 2/5] misc: mlx5ctl: Add mlx5ctl misc driver
+Message-ID: <20231128084421.6321b9b2@kernel.org>
+In-Reply-To: <20231128162413.GP436702@nvidia.com>
+References: <20231121070619.9836-3-saeed@kernel.org>
+        <2023112702-postal-rumbling-003f@gregkh>
+        <20231127144017.GK436702@nvidia.com>
+        <2023112752-pastel-unholy-c63d@gregkh>
+        <20231127161732.GL436702@nvidia.com>
+        <2023112707-feline-unselect-692f@gregkh>
+        <ZWTtTjgBrNxpd9IO@x130>
+        <20231127160719.4a8b2ad1@kernel.org>
+        <20231128044628.GA8901@u2004-local>
+        <20231128065321.53d4d5bb@kernel.org>
+        <20231128162413.GP436702@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a9aa2809-95f5-4f60-b936-0d857c971fea@redhat.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 11:01:22PM -0500, Waiman Long wrote:
-...
-> > + * Recursively traverse down the cgroup_rstat_cpu updated tree and push
-> > + * parent first before its children into a singly linked list built from
-> > + * the tail backward like "pushing" cgroups into a stack. The parent is
-> > + * pushed by the caller. The recursion depth is the depth of the current
-> > + * updated subtree.
-> > + */
-> > +static struct cgroup *cgroup_rstat_push_children(struct cgroup *head,
-> > +				struct cgroup_rstat_cpu *prstatc, int cpu)
-> > +{
-> > +	struct cgroup *child, *parent;
-> > +	struct cgroup_rstat_cpu *crstatc;
-> > +
-> > +	parent = head;
-> > +	child = prstatc->updated_children;
-> > +	prstatc->updated_children = parent;
-> > +
-> > +	/* updated_next is parent cgroup terminated */
-> > +	while (child != parent) {
-> > +		child->rstat_flush_next = head;
-> > +		head = child;
-> > +		crstatc = cgroup_rstat_cpu(child, cpu);
-> > +		if (crstatc->updated_children != child)
-> > +			head = cgroup_rstat_push_children(head, crstatc, cpu);
-> > +		child = crstatc->updated_next;
-> > +		crstatc->updated_next = NULL;
-> > +	}
-> > +	return head;
+On Tue, 28 Nov 2023 12:24:13 -0400 Jason Gunthorpe wrote:
+> You said you already rejected it at the very start of this discussion
+> and linked to the video recording of the rejection discussion:
+> 
+> https://lore.kernel.org/all/20231019165055.GT3952@nvidia.com/
+> 
+> This session was specifically on the 600 FW configuration parameters
+> that mlx5 has. This is something that is done today on non-secure boot
+> systems with direct PCI access on sysfs and would be absorbed into
+> this driver on secure-boot systems. Ie nothing really changes from the
+> broader ecosystem perspective.
 
-The recursion bothers me. We don't really have a hard limit on nesting
-depth. We might need to add another pointer field but can make this
-iterative, right?
+The question at LPC was about making devlink params completely
+transparent to the kernel. Basically added directly from FW.
+That what I was not happy about.
 
-Thanks.
+You can add as many params at the driver level as you want.
+In fact I asked Saeed repeatedly to start posting all those
+params instead of complaining.
 
--- 
-tejun
+> I second Dave's question - if you do not like mlx5ctl, then what is
+> your vision to solve all these user problems?
+
+Let the users complain about the user problems. Also something
+I repeatedly told Saeed. His response was something along the lines
+of users are secret, they can't post on the list, blah, blah.
+
+You know one user who is participating in this thread?
+*ME*
+While the lot of you work for vendors.
