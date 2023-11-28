@@ -2,132 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 670C97FCAF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 00:42:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D83427FCAF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 00:45:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376623AbjK1Xmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 18:42:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42706 "EHLO
+        id S1346642AbjK1XpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 18:45:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjK1Xmh (ORCPT
+        with ESMTP id S229543AbjK1XpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 18:42:37 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF294197
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 15:42:43 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5d1ed4b268dso13765087b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 15:42:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701214963; x=1701819763; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iZUCKF6M2pncs6ikf31MzfqFi00tloLxxIfq7BGycqs=;
-        b=mgCxOmkNpxwd+gH23CfHATU5w412/KoL2bkNEmfm8tQEHy1pX1BQ1MpQTT8/2cuurN
-         wDXW1T6h+i8y9Vnw+jND4/qaZqhPnpfbYfaJQISN2ZwW/wLGc2G/zTJ1pPkKL5glYecG
-         PwQ2PeB5miNMDqC1MYxkloGGIm7iE4ERjFsPdXPQdcNu3nTGLCoObiAhc9sbrzs97Mn0
-         Q+AltMl+D7fjVamHpXeWKymopzA8rUVEtiDNjUz0u0RahvMHb0dfioUFoVfK/tQrEBAf
-         Dh/q8BBgp1F26kqCO0i5RROLftd0lWh7O3l2m0IFl0SOm2N+LopfM55pQQrsmsKBsyNA
-         JghQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701214963; x=1701819763;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iZUCKF6M2pncs6ikf31MzfqFi00tloLxxIfq7BGycqs=;
-        b=RX2jl1i2ehalAqmnCJ50faG+tc3hfgJzPXf2/XNjvl/M8JnkOE7+MIjtI094BJ+K3o
-         yjkSMaHoxLEarBG1Sm01cr+TIH5+NxV2zdTNjN8xnxPH9IsdwovKhuMyQM0ok+VJ76tk
-         s6uY+LRZ/+zzaafUrQSAT4JzDGZzHHPHzJEqobikC1TgNdriDVhNFu81MAhKpTXmxW3d
-         IPyLaUItZx52J+cvcWsm2phqGD9lYmEJXNVLeV8ZEYyKQrO/l+K41wbsL18dvjXJxbco
-         yPQEcUheI9xY3PN/Wcd1I807zzYlOl5+I4sLeqdlzb34OoXu6dpxotDpmKFFbFtSZDVy
-         0SsA==
-X-Gm-Message-State: AOJu0YyBg+3/evA/SJiUZtcuwBBMZGdMlX4bGVdQ9NQfhAabV1hdMqJp
-        Z5sJt2KP4mPJk61GMmIJ045v7DRmicg=
-X-Google-Smtp-Source: AGHT+IHpFOEL1gyxHa1zaN2y8eJYkQ1EOMhY3SOo4hd+HFqQ1xE2I6Dg0+o7NSgCjsfpJ/RwcscFOhGbDwU=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:ae56:0:b0:5cb:4e0e:59c1 with SMTP id
- g22-20020a81ae56000000b005cb4e0e59c1mr474555ywk.1.1701214962937; Tue, 28 Nov
- 2023 15:42:42 -0800 (PST)
-Date:   Tue, 28 Nov 2023 15:42:41 -0800
-In-Reply-To: <edaa230f-37c1-498c-8ff1-a9a238ed0cd7@maciej.szmigiero.name>
-Mime-Version: 1.0
-References: <c858817d3e3be246a1a2278e3b42d06284e615e5.1700766316.git.maciej.szmigiero@oracle.com>
- <ZWTQuRpwPkutHY-D@google.com> <50076263-8b4f-4167-8419-e8baede7e9b0@maciej.szmigiero.name>
- <ZWYZ1ldqQ1Q-7Jk0@google.com> <edaa230f-37c1-498c-8ff1-a9a238ed0cd7@maciej.szmigiero.name>
-Message-ID: <ZWZ68SXyh_RpHRB9@google.com>
-Subject: Re: [PATCH] KVM: x86: Allow XSAVES on CPUs where host doesn't use it
- due to an errata
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        Tue, 28 Nov 2023 18:45:17 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE0341727
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 15:45:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A00EC433C8
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 23:45:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701215123;
+        bh=c5hTYvlFDuS4/yvEogM5PHkabW5ZbLst+WDDOGe66dM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=STWGDOJUdWImIIAGbydMmvu7UrSSvfqbPgqrcwG8dQ3DTs89x2eZ7B6zKI/kKlQm8
+         kg5VXvo7DPGTMOBrMjEHhNTA/qMlAkEDqnjTMJ4BvuWI5jrR3mbRzizbUmT91w71z5
+         5+bXkAE13ICYnsOW1oEAvjhNqg7TxhL7LLCLyeDTLv7+fwjk9KOZ8VyZ9U+zp8X1JU
+         le6oU5utYcsvTm7YrnUSXEaePNmAlFVXNxIPHKmZUq03ztL5eR1B++nuW/a59Bs+0r
+         GboszV29DlZi7Kx5FJUtkFhs2d4/ihBDMACP6F0aLYxFrJyE7moMzO2dITnCVeIA38
+         ryvBiqlUleweg==
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-285be6134ecso2370405a91.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 15:45:23 -0800 (PST)
+X-Gm-Message-State: AOJu0YwWOrTupCFyQ5AzvT+TFC7Xc+rO0GcDM9c1kZ9bkhBBe0na1xfZ
+        TckW8slLcPHR92DZ9t37//XQcnLCMaDMq8i7l4inzg==
+X-Google-Smtp-Source: AGHT+IGdFS8Bsul2mdGiC/tCtB+HU6iOQ3kNjL4sxTCJdac4jDtFdDYLq7mNaL4RD3laDYaf1g/6TFKZQKUwwYafFDU=
+X-Received: by 2002:a17:90b:1e44:b0:285:b019:1505 with SMTP id
+ pi4-20020a17090b1e4400b00285b0191505mr11406711pjb.45.1701215122938; Tue, 28
+ Nov 2023 15:45:22 -0800 (PST)
+MIME-Version: 1.0
+References: <ZV3BWZ4ZaD5Rj_HS@tiehlicka> <ZV3TQCElHpcp0h0V@tiehlicka>
+ <CAJD7tka0=JR1s0OzQ0+H8ksFhvB2aBHXx_2-hVc97Enah9DqGQ@mail.gmail.com>
+ <ZV3_6UH28KMt0ZDb@tiehlicka> <87msv58068.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <ZWDPuR5Ssx07nBHb@tiehlicka> <87h6l77wl5.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <CAF8kJuOcMDpqZV+9+QjK-hsoJLGhoBzBOczAc7+UMypVJresSw@mail.gmail.com>
+ <87bkbf7gz6.fsf@yhuang6-desk2.ccr.corp.intel.com> <CAF8kJuNKH_vcF-=6nw3zP5cMaZHLudHZfxNDtHm0K2BXJ+EAgA@mail.gmail.com>
+ <ZWUKziMl6cFV2uWN@google.com> <CAJD7tkZNa_3mWYeix_Xc-BFRNVMkBF3uzL0JCkZOYw5ubAaj9w@mail.gmail.com>
+In-Reply-To: <CAJD7tkZNa_3mWYeix_Xc-BFRNVMkBF3uzL0JCkZOYw5ubAaj9w@mail.gmail.com>
+From:   Chris Li <chrisl@kernel.org>
+Date:   Tue, 28 Nov 2023 15:45:11 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuObOEdK1vdSSmBGqYnQi3a77hC28O_f+yudiAmwOAm-gg@mail.gmail.com>
+Message-ID: <CAF8kJuObOEdK1vdSSmBGqYnQi3a77hC28O_f+yudiAmwOAm-gg@mail.gmail.com>
+Subject: Re: [PATCH v10] mm: vmscan: try to reclaim swapcache pages if no swap space
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Minchan Kim <minchan@kernel.org>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sachin Sant <sachinp@linux.ibm.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023, Maciej S. Szmigiero wrote:
-> On 28.11.2023 17:48, Sean Christopherson wrote:
-> > On Mon, Nov 27, 2023, Maciej S. Szmigiero wrote:
-> > > On 27.11.2023 18:24, Sean Christopherson wrote:
-> > > > On Thu, Nov 23, 2023, Maciej S. Szmigiero wrote:
-> > > > > From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
-> > > > > 
-> > > > > Since commit b0563468eeac ("x86/CPU/AMD: Disable XSAVES on AMD family 0x17")
-> > > > > kernel unconditionally clears the XSAVES CPU feature bit on Zen1/2 CPUs.
-> > > > > 
-> > > > > Since KVM CPU caps are initialized from the kernel boot CPU features this
-> > > > > makes the XSAVES feature also unavailable for KVM guests in this case, even
-> > > > > though they might want to decide on their own whether they are affected by
-> > > > > this errata.
-> > > > > 
-> > > > > Allow KVM guests to make such decision by setting the XSAVES KVM CPU
-> > > > > capability bit based on the actual CPU capability
-> > > > 
-> > > > This is not generally safe, as the guest can make such a decision if and only if
-> > > > the Family/Model/Stepping information is reasonably accurate.
-> > > 
-> > > If one lies to the guest about the CPU it is running on then obviously
-> > > things may work non-optimally.
-> > 
-> > But this isn't about running optimally, it's about functional correctness.  And
-> > "lying" to the guest about F/M/S is extremely common.
-> > 
-> > > > > This fixes booting Hyper-V enabled Windows Server 2016 VMs with more than
-> > > > > one vCPU on Zen1/2 CPUs.
-> > > > 
-> > > > How/why does lack of XSAVES break a multi-vCPU setup?  Is Windows blindly doing
-> > > > XSAVES based on FMS?
-> > > 
-> > > The hypercall from L2 Windows to L1 Hyper-V asking to boot the first AP
-> > > returns HV_STATUS_CPUID_XSAVE_FEATURE_VALIDATION_ERROR.
-> > 
-> > If it's just about CPUID enumeration, then userspace can simply stuff the XSAVES
-> > feature flag.  This is not something that belongs in KVM, because this is safe if
-> > and only if F/M/S is accurate and the guest is actually aware of the erratum (or
-> > will not actually use XSAVES for other reasons), neither of which KVM can guarantee.
-> 
-> In other words, your suggestion is that QEMU (or other VMM) not KVM
-> should be the one setting the XSAVES CPUID bit back, correct?
-> 
-> I don't think this would work with the current KVM code since it seems
-> to make various decisions depending on presence of XSAVES bit in KVM
-> caps rather than the guest CPUID and on boot_cpu_has(XSAVES) - one of
-> such code blocks was even modified by this patch.
-> 
-> It even says in the comment above that code that it is not possible to
-> actually disable XSAVES without disabling all other variants on SVM so
-> this has to be enabled if CPU supports it to switch the XSS MSR at
-> guest entry/exit (in this case it looks harmless since Zen1/2
-> supposedly don't support any supervisor extended states).
-> 
-> So it looks like we would need changes to *both* KVM and QEMU to
-> restore the XSAVES support this way.
+On Mon, Nov 27, 2023 at 1:57=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
 
-I'm not suggesting we restore XSAVES support, I'm suggesting that _if_ someone
-wants to hack their setup to let the guest use broken hardware, then they should
-do that in userspace or in an a private kernel, not in upstream KVM.
+> >
+> > Exactly. Since swap cache has different life time with page cache, they
+> > would be usually dropped when pages are unmapped(unless they are shared
+> > with others but anon is usually exclusive private) so I wonder how much
+> > memory we can save.
+>
+> I think the point of this patch is not saving memory, but rather
+> avoiding an OOM condition that will happen if we have no swap space
+> left, but some pages left in the swap cache. Of course, the OOM
+> avoidance will come at the cost of extra work in reclaim to swap those
+> pages out.
+
+You are discussing how to use the memory that got freed. e.g. using
+other apps so avoid OOM.
+I am asking how much memory can be freed by this patch. That number is
+still useful to understand how effective the patch is.  Does it
+justify the additional complexity?
+
+> The only case where I think this might be harmful is if there's plenty
+> of pages to reclaim on the file LRU, and instead we opt to chase down
+> the few swap cache pages. So perhaps we can add a check to only set
+> sc->swapcache_only if the number of pages in the swap cache is more
+> than the number of pages on the file LRU or similar? Just make sure we
+> don't chase the swapcache pages down if there's plenty to scan on the
+> file LRU?
+
+One idea is that we need to measure how effective the reclaim was
+toward the swap cache. If we do a lot of work but are not able to
+reclaim much from the swap cache, then additional reclaim work on swap
+cache is not going to be effective.
+MGLRU has a PID controller to adjust the reclaim ratio between the
+file and anonymous LRU. That is one way of measuring the effectiveness
+of the reclaim. Use the feedback to adjust the follow up reclaim work.
+I kind of wish we could have some feedback machine like this for the
+swap cache reclaim as well. Not sure how complicated it is to
+implement one.
+
+Chris
