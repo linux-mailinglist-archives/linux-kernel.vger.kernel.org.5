@@ -2,456 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CAE07FB557
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19CA37FB559
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:14:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232195AbjK1JOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 04:14:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43994 "EHLO
+        id S234756AbjK1JOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 04:14:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230195AbjK1JOT (ORCPT
+        with ESMTP id S234759AbjK1JO1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 04:14:19 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 202D2AB
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:14:24 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 57CBBC15;
-        Tue, 28 Nov 2023 01:15:11 -0800 (PST)
-Received: from [10.57.73.192] (unknown [10.57.73.192])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 33A823F73F;
-        Tue, 28 Nov 2023 01:14:19 -0800 (PST)
-Message-ID: <7c4c8ab2-8eb2-472d-ad8d-9d6c20b2191c@arm.com>
-Date:   Tue, 28 Nov 2023 09:14:17 +0000
+        Tue, 28 Nov 2023 04:14:27 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80FEBD59
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:14:32 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-332eeb16e39so2062432f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:14:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701162871; x=1701767671; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2Kjtii/FN0kaVr+RySKyiRhJOaMJhIbqBNo40CkvcnQ=;
+        b=Feb9gHUnxF5TWgegOkqpzm7vTG611/aHD6XL5WWKMVxJOZRkAZL3Ja99GmKpGyahHO
+         fPG0WhLmeCc91jECktBjGkTiNRvwdTU2ztOF59Q+eabZ2+6yYddP8REfcRGZ4fpCb2bX
+         KXv/V1X5Akq1yorHZG+MBukLRQHZ5ZRUPxzB1I+CpFN6Z5UaIMHqlE82Z97EsjYHxXx+
+         wFarlUq42OC8J1K82YOMI6M9bbnyZZVYKOOQI3emB/k0z5PoyiQNe4WD5SzrQoAkrKcW
+         Y3m8RH0q5YUu1YPWbTnoeDzvF1kH5RJ1lEguv0MFkCjMw6HQ7H29zDI9hsDOchfJBASr
+         5fpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701162871; x=1701767671;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2Kjtii/FN0kaVr+RySKyiRhJOaMJhIbqBNo40CkvcnQ=;
+        b=RyknYeS/cu2+Gel//4fdkiHr0LOq+F7hQKjC7QtnV5ZbQIyJdAOvnhOwqvpYmlSoA5
+         7mVwtPo4qEI/sqK8wdIGtmjpigDCavq7cKLZ0hdmOYzXRgB5Qa8PjE9AptnLy2fcR+WT
+         mObK7gbS7TEEQC6kn0TcpWQH5qy4wbgjzT61gq63xJIiImLky/NAyiZOxd6Fd0mwt51H
+         SyMfgJyL3igPM+olSfjni1YWtHbBC53MSRoBRRbj7SvWj7RGVP5vEbPpVDX3ZOf3Jj+Z
+         REL2rRIq3JOViTz/H6hEEsJSod6P+5mVI/GlLs5BehOM16iG03qUzUr/sVLtgNwOv4zp
+         qc6w==
+X-Gm-Message-State: AOJu0YzkU/IL+BXzJvsyY8QcbjSe1uwrU5Yla9wvTS4h6D5YFAfyG1pv
+        b7nkZZVblRAE+u/pUtQE0UJmcg==
+X-Google-Smtp-Source: AGHT+IEQUMczIYX8hA+zLKx022wQyd14G8CqIVm0T/Hdr+d/ZVMnwjy4MFWloEOBHn7FeV7wpwnPnA==
+X-Received: by 2002:a5d:49d1:0:b0:32d:9d99:d0a5 with SMTP id t17-20020a5d49d1000000b0032d9d99d0a5mr9526680wrs.5.1701162870857;
+        Tue, 28 Nov 2023 01:14:30 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:eada:f40e:7ab3:2afe? ([2a01:e0a:982:cbb0:eada:f40e:7ab3:2afe])
+        by smtp.gmail.com with ESMTPSA id l15-20020a5d560f000000b00332f8f4960fsm7891464wrv.0.2023.11.28.01.14.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Nov 2023 01:14:30 -0800 (PST)
+Message-ID: <752f5347-703a-4b38-b2b1-3493d270389c@linaro.org>
+Date:   Tue, 28 Nov 2023 10:14:29 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
-Content-Language: en-GB
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     david@redhat.com, akpm@linux-foundation.org, andreyknvl@gmail.com,
-        anshuman.khandual@arm.com, ardb@kernel.org,
-        catalin.marinas@arm.com, dvyukov@google.com, glider@google.com,
-        james.morse@arm.com, jhubbard@nvidia.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mark.rutland@arm.com, maz@kernel.org,
-        oliver.upton@linux.dev, ryabinin.a.a@gmail.com,
-        suzuki.poulose@arm.com, vincenzo.frascino@arm.com,
-        wangkefeng.wang@huawei.com, will@kernel.org, willy@infradead.org,
-        yuzenghui@huawei.com, yuzhao@google.com, ziy@nvidia.com
-References: <271f1e98-6217-4b40-bae0-0ac9fe5851cb@redhat.com>
- <20231127084217.13110-1-v-songbaohua@oppo.com>
- <bfebd80b-b60d-48e2-b350-7c0ac0299cda@arm.com>
- <CAGsJ_4zMwxNw76bweq-23x5ibpWnERCCwg_kz3zn1pjzeY0qXw@mail.gmail.com>
- <c359a8a6-8221-4d83-a945-580039042056@arm.com>
- <CAGsJ_4zbB5QHu=x9U2-QNFi7SPJkw0hTE+jQoLPcq2rCMC9ArA@mail.gmail.com>
- <d55e534d-c822-448e-92e0-a4e43122ce88@arm.com>
- <CAGsJ_4yto+q=PmzOVTu=ELPQjMAcjVi3qvg=1K3++nbSpcK+XQ@mail.gmail.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAGsJ_4yto+q=PmzOVTu=ELPQjMAcjVi3qvg=1K3++nbSpcK+XQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH 2/5] ASoC: dt-bindings: document WCD939x Audio Codec
+Content-Language: en-US, fr
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231123-topic-sm8650-upstream-wcd939x-codec-v1-0-21d4ad9276de@linaro.org>
+ <20231123-topic-sm8650-upstream-wcd939x-codec-v1-2-21d4ad9276de@linaro.org>
+ <160fc6c4-b07d-49c5-976b-aa0fa35e4f0f@linaro.org>
+ <b637c287-93e5-4214-9275-80fac3c6181b@linaro.org>
+ <60c9ba5d-a2b8-43cd-8b8d-2c709b8e5d04@linaro.org>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <60c9ba5d-a2b8-43cd-8b8d-2c709b8e5d04@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/11/2023 20:34, Barry Song wrote:
-> On Tue, Nov 28, 2023 at 12:07 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> On 27/11/2023 10:28, Barry Song wrote:
->>> On Mon, Nov 27, 2023 at 11:11 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>
->>>> On 27/11/2023 09:59, Barry Song wrote:
->>>>> On Mon, Nov 27, 2023 at 10:35 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>>>
->>>>>> On 27/11/2023 08:42, Barry Song wrote:
->>>>>>>>> +           for (i = 0; i < nr; i++, page++) {
->>>>>>>>> +                   if (anon) {
->>>>>>>>> +                           /*
->>>>>>>>> +                            * If this page may have been pinned by the
->>>>>>>>> +                            * parent process, copy the page immediately for
->>>>>>>>> +                            * the child so that we'll always guarantee the
->>>>>>>>> +                            * pinned page won't be randomly replaced in the
->>>>>>>>> +                            * future.
->>>>>>>>> +                            */
->>>>>>>>> +                           if (unlikely(page_try_dup_anon_rmap(
->>>>>>>>> +                                           page, false, src_vma))) {
->>>>>>>>> +                                   if (i != 0)
->>>>>>>>> +                                           break;
->>>>>>>>> +                                   /* Page may be pinned, we have to copy. */
->>>>>>>>> +                                   return copy_present_page(
->>>>>>>>> +                                           dst_vma, src_vma, dst_pte,
->>>>>>>>> +                                           src_pte, addr, rss, prealloc,
->>>>>>>>> +                                           page);
->>>>>>>>> +                           }
->>>>>>>>> +                           rss[MM_ANONPAGES]++;
->>>>>>>>> +                           VM_BUG_ON(PageAnonExclusive(page));
->>>>>>>>> +                   } else {
->>>>>>>>> +                           page_dup_file_rmap(page, false);
->>>>>>>>> +                           rss[mm_counter_file(page)]++;
->>>>>>>>> +                   }
->>>>>>>>>             }
->>>>>>>>> -           rss[MM_ANONPAGES]++;
->>>>>>>>> -   } else if (page) {
->>>>>>>>> -           folio_get(folio);
->>>>>>>>> -           page_dup_file_rmap(page, false);
->>>>>>>>> -           rss[mm_counter_file(page)]++;
->>>>>>>>> +
->>>>>>>>> +           nr = i;
->>>>>>>>> +           folio_ref_add(folio, nr);
->>>>>>>>
->>>>>>>> You're changing the order of mapcount vs. refcount increment. Don't.
->>>>>>>> Make sure your refcount >= mapcount.
->>>>>>>>
->>>>>>>> You can do that easily by doing the folio_ref_add(folio, nr) first and
->>>>>>>> then decrementing in case of error accordingly. Errors due to pinned
->>>>>>>> pages are the corner case.
->>>>>>>>
->>>>>>>> I'll note that it will make a lot of sense to have batch variants of
->>>>>>>> page_try_dup_anon_rmap() and page_dup_file_rmap().
->>>>>>>>
->>>>>>>
->>>>>>> i still don't understand why it is not a entire map+1, but an increment
->>>>>>> in each basepage.
->>>>>>
->>>>>> Because we are PTE-mapping the folio, we have to account each individual page.
->>>>>> If we accounted the entire folio, where would we unaccount it? Each page can be
->>>>>> unmapped individually (e.g. munmap() part of the folio) so need to account each
->>>>>> page. When PMD mapping, the whole thing is either mapped or unmapped, and its
->>>>>> atomic, so we can account the entire thing.
->>>>>
->>>>> Hi Ryan,
->>>>>
->>>>> There is no problem. for example, a large folio is entirely mapped in
->>>>> process A with CONPTE,
->>>>> and only page2 is mapped in process B.
->>>>> then we will have
->>>>>
->>>>> entire_map = 0
->>>>> page0.map = -1
->>>>> page1.map = -1
->>>>> page2.map = 0
->>>>> page3.map = -1
->>>>> ....
->>>>>
->>>>>>
->>>>>>>
->>>>>>> as long as it is a CONTPTE large folio, there is no much difference with
->>>>>>> PMD-mapped large folio. it has all the chance to be DoubleMap and need
->>>>>>> split.
->>>>>>>
->>>>>>> When A and B share a CONTPTE large folio, we do madvise(DONTNEED) or any
->>>>>>> similar things on a part of the large folio in process A,
->>>>>>>
->>>>>>> this large folio will have partially mapped subpage in A (all CONTPE bits
->>>>>>> in all subpages need to be removed though we only unmap a part of the
->>>>>>> large folioas HW requires consistent CONTPTEs); and it has entire map in
->>>>>>> process B(all PTEs are still CONPTES in process B).
->>>>>>>
->>>>>>> isn't it more sensible for this large folios to have entire_map = 0(for
->>>>>>> process B), and subpages which are still mapped in process A has map_count
->>>>>>> =0? (start from -1).
->>>>>>>
->>>>>>>> Especially, the batch variant of page_try_dup_anon_rmap() would only
->>>>>>>> check once if the folio maybe pinned, and in that case, you can simply
->>>>>>>> drop all references again. So you either have all or no ptes to process,
->>>>>>>> which makes that code easier.
->>>>>>
->>>>>> I'm afraid this doesn't make sense to me. Perhaps I've misunderstood. But
->>>>>> fundamentally you can only use entire_mapcount if its only possible to map and
->>>>>> unmap the whole folio atomically.
->>>>>
->>>>>
->>>>>
->>>>> My point is that CONTPEs should either all-set in all 16 PTEs or all are dropped
->>>>> in 16 PTEs. if all PTEs have CONT, it is entirely mapped; otherwise,
->>>>> it is partially
->>>>> mapped. if a large folio is mapped in one processes with all CONTPTEs
->>>>> and meanwhile in another process with partial mapping(w/o CONTPTE), it is
->>>>> DoubleMapped.
->>>>
->>>> There are 2 problems with your proposal, as I see it;
->>>>
->>>> 1) the core-mm is not enlightened for CONTPTE mappings. As far as it is
->>>> concerned, its just mapping a bunch of PTEs. So it has no hook to inc/dec
->>>> entire_mapcount. The arch code is opportunistically and *transparently* managing
->>>> the CONT_PTE bit.
->>>>
->>>> 2) There is nothing to say a folio isn't *bigger* than the contpte block; it may
->>>> be 128K and be mapped with 2 contpte blocks. Or even a PTE-mapped THP (2M) and
->>>> be mapped with 32 contpte blocks. So you can't say it is entirely mapped
->>>> unless/until ALL of those blocks are set up. And then of course each block could
->>>> be unmapped unatomically.
->>>>
->>>> For the PMD case there are actually 2 properties that allow using the
->>>> entire_mapcount optimization; It's atomically mapped/unmapped through the PMD
->>>> and we know that the folio is exactly PMD sized (since it must be at least PMD
->>>> sized to be able to map it with the PMD, and we don't allocate THPs any bigger
->>>> than PMD size). So one PMD map or unmap operation corresponds to exactly one
->>>> *entire* map or unmap. That is not true when we are PTE mapping.
+On 28/11/2023 10:04, Krzysztof Kozlowski wrote:
+> On 28/11/2023 09:59, Neil Armstrong wrote:
+>> On 24/11/2023 09:33, Krzysztof Kozlowski wrote:
+>>> On 23/11/2023 15:49, Neil Armstrong wrote:
 >>>
->>> well. Thanks for clarification. based on the above description, i agree the
->>> current code might make more sense by always using mapcount in subpage.
+>>>> +  Qualcomm WCD9390/WCD9395 Codec is a standalone Hi-Fi audio codec IC.
+>>>> +  It has RX and TX Soundwire slave devices.
+>>>> +  The WCD9390/WCD9395 IC has a functionally separate USB-C Mux subsystem
+>>>> +  accessible over an I2C interface.
+>>>> +  The Audio Headphone and Microphone data path between the Codec and the USB-C Mux
+>>>> +  subsystems are external to the IC, thus requiring DT port-endpoint graph description
+>>>> +  to handle USB-C altmode & orientation switching for Audio Accessory Mode.
+>>>> +
+>>>> +allOf:
+>>>> +  - $ref: dai-common.yaml#
+>>>> +  - $ref: qcom,wcd93xx-common.yaml#
+>>>> +
+>>>> +properties:
+>>>> +  compatible:
+>>>> +    enum:
+>>>> +      - qcom,wcd9390-codec
+>>>> +      - qcom,wcd9395-codec
 >>>
->>> I gave my proposals as  I thought we were always CONTPTE size for small-THP
->>> then we could drop the loop to iterate 16 times rmap. if we do it
->>> entirely, we only
->>> need to do dup rmap once for all 16 PTEs by increasing entire_map.
+>>> 9395 should be compatible with 9390, so please express it with a list
+>>> using fallback. I know that earlier wcd93xx do not follow that concept,
+>>> but maybe we will fix them some point as well.
 >>
->> Well its always good to have the discussion - so thanks for the ideas. I think
->> there is a bigger question lurking here; should we be exposing the concept of
->> contpte mappings to the core-mm rather than burying it in the arm64 arch code?
->> I'm confident that would be a huge amount of effort and the end result would be
->> similar performace to what this approach gives. One potential benefit of letting
->> core-mm control it is that it would also give control to core-mm over the
->> granularity of access/dirty reporting (my approach implicitly ties it to the
->> folio). Having sub-folio access tracking _could_ potentially help with future
->> work to make THP size selection automatic, but we are not there yet, and I think
->> there are other (simpler) ways to achieve the same thing. So my view is that
->> _not_ exposing it to core-mm is the right way for now.
-> 
-> Hi Ryan,
-> 
-> We(OPPO) started a similar project like you even before folio was imported to
-> mainline, we have deployed the dynamic hugepage(that is how we name it)
-> on millions of mobile phones on real products and kernels before 5.16,  making
-> a huge success on performance improvement. for example, you may
-> find the out-of-tree 5.15 source code here
-
-Oh wow, thanks for reaching out and explaining this - I have to admit I feel
-embarrassed that I clearly didn't do enough research on the prior art because I
-wasn't aware of your work. So sorry about that.
-
-I sensed that you had a different model for how this should work vs what I've
-implemented and now I understand why :). I'll review your stuff and I'm sure
-I'll have questions. I'm sure each solution has pros and cons.
-
-
-> 
-> https://github.com/OnePlusOSS/android_kernel_oneplus_sm8550/tree/oneplus/sm8550_u_14.0.0_oneplus11
-> 
-> Our modification might not be so clean and has lots of workarounds
-> just for the stability of products
-> 
-> We mainly have
-> 
-> 1. https://github.com/OnePlusOSS/android_kernel_oneplus_sm8550/blob/oneplus/sm8550_u_14.0.0_oneplus11/mm/cont_pte_hugepage.c
-> 
-> some CONTPTE helpers
-> 
-> 2.https://github.com/OnePlusOSS/android_kernel_oneplus_sm8550/blob/oneplus/sm8550_u_14.0.0_oneplus11/include/linux/mm.h
-> 
-> some Dynamic Hugepage APIs
-> 
-> 3. https://github.com/OnePlusOSS/android_kernel_oneplus_sm8550/blob/oneplus/sm8550_u_14.0.0_oneplus11/mm/memory.c
-> 
-> modified all page faults to support
->      (1). allocation of hugepage of 64KB in do_anon_page
-
-My Small-Sized THP patch set is handling the equivalent of this.
-
->      (2). CoW hugepage in do_wp_page
-
-This isn't handled yet in my patch set; the original RFC implemented it but I
-removed it in order to strip back to the essential complexity for the initial
-submission. DavidH has been working on a precise shared vs exclusive map
-tracking mechanism - if that goes in, it will make CoWing large folios simpler.
-Out of interest, what workloads benefit most from this?
-
->      (3). copy CONPTEs in copy_pte_range
-
-As discussed this is done as part of the contpte patch set, but its not just a
-simple copy; the arch code will notice and set the CONT_PTE bit as needed.
-
->      (4). allocate and swap-in Hugepage as a whole in do_swap_page
-
-This is going to be a problem but I haven't even looked at this properly yet.
-The advice so far has been to continue to swap-in small pages only, but improve
-khugepaged to collapse to small-sized THP. I'll take a look at your code to
-understand how you did this.
-
-> 
-> 4. https://github.com/OnePlusOSS/android_kernel_oneplus_sm8550/blob/oneplus/sm8550_u_14.0.0_oneplus11/mm/vmscan.c
-> https://github.com/OnePlusOSS/android_kernel_oneplus_sm8550/blob/oneplus/sm8550_u_14.0.0_oneplus11/mm/rmap.c
-> 
-> reclaim hugepage as a whole and LRU optimization for 64KB dynamic hugepage.
-
-I think this is all naturally handled by the folio code that exists in modern
-kernels?
-
-> 
-> So we are 100% interested in your patchset and hope it can find a way
-> to land on the
-> mainline, thus decreasing all the cost we have to maintain out-of-tree
-> code from a
-> kernel to another kernel version which we have done on a couple of
-> kernel versions
-> before 5.16. Firmly, we are 100% supportive of large anon folios
-> things you are leading.
-
-That's great to hear! Of course Reviewed-By's and Tested-By's will all help move
-it closer :). If you had any ability to do any A/B performance testing, it would
-be very interesting to see how this stacks up against your solution - if there
-are gaps it would be good to know where and develop a plan to plug the gap.
-
-> 
-> A big pain was we found lots of races especially on CONTPTE unfolding
-> and especially a part
-> of basepages ran away from the 16 CONPTEs group since userspace is
-> always working
-> on basepages, having no idea of small-THP.  We ran our code on millions of
-> real phones, and now we have got them fixed (or maybe "can't reproduce"),
-> no outstanding issue.
-
-I'm going to be brave and say that my solution shouldn't suffer from these
-problems; but of course the proof is only in the testing. I did a lot of work
-with our architecture group and micro architects to determine exactly what is
-and isn't safe; We even tightened the Arm ARM spec very subtlely to allow the
-optimization in patch 13 (see the commit log for details). Of course this has
-all been checked with partners and we are confident that all existing
-implementations conform to the modified wording.
-
-> 
-> Particularly for the rmap issue we are discussing, our out-of-tree is
-> using the entire_map for
-> CONTPTE in the way I sent to you. But I guess we can learn from you to decouple
-> CONTPTE from mm-core.
-> 
-> We are doing this in mm/memory.c
-> 
-> copy_present_cont_pte(struct vm_area_struct *dst_vma, struct
-> vm_area_struct *src_vma,
-> pte_t *dst_pte, pte_t *src_pte, unsigned long addr, int *rss,
-> struct page **prealloc)
-> {
->       struct mm_struct *src_mm = src_vma->vm_mm;
->       unsigned long vm_flags = src_vma->vm_flags;
->       pte_t pte = *src_pte;
->       struct page *page;
-> 
->        page = vm_normal_page(src_vma, addr, pte);
->       ...
-> 
->      get_page(page);
->      page_dup_rmap(page, true);   // an entire dup_rmap as you can
-> see.............
->      rss[mm_counter(page)] += HPAGE_CONT_PTE_NR;
-> }
-> 
-> and we have a split in mm/cont_pte_hugepage.c to handle partially unmap,
-> 
-> static void __split_huge_cont_pte_locked(struct vm_area_struct *vma, pte_t *pte,
-> unsigned long haddr, bool freeze)
-> {
-> ...
->            if (compound_mapcount(head) > 1 && !TestSetPageDoubleMap(head)) {
->                   for (i = 0; i < HPAGE_CONT_PTE_NR; i++)
->                            atomic_inc(&head[i]._mapcount);
->                  atomic_long_inc(&cont_pte_double_map_count);
->            }
-> 
-> 
->             if (atomic_add_negative(-1, compound_mapcount_ptr(head))) {
->               ...
-> }
-> 
-> I am not selling our solution any more, but just showing you some differences we
-> have :-)
-
-OK, I understand what you were saying now. I'm currently struggling to see how
-this could fit into my model. Do you have any workloads and numbers on perf
-improvement of using entire_mapcount?
-
-> 
+>> I don't get why this would be needed, yes their are compatible but still
+>> two separate ICs with different internal capabilities.
 >>
->>>
->>> BTW, I have concerns that a variable small-THP size will really work
->>> as userspace
->>> is probably friendly to only one fixed size. for example, userspace
->>> heap management
->>> might be optimized to a size for freeing memory to the kernel. it is
->>> very difficult
->>> for the heap to adapt to various sizes at the same time. frequent unmap/free
->>> size not equal with, and particularly smaller than small-THP size will
->>> defeat all
->>> efforts to use small-THP.
->>
->> I'll admit to not knowing a huge amount about user space allocators. But I will
->> say that as currently defined, the small-sized THP interface to user space
->> allows a sysadmin to specifically enable the set of sizes that they want; so a
->> single size can be enabled. I'm diliberately punting that decision away from the
->> kernel for now.
+>> It the first time I get such request for new documentation
 > 
-> Basically, userspace heap library has a PAGESIZE setting and allows users
-> to allocate/free all kinds of small objects such as 16,32,64,128,256,512 etc.
-> The default size is for sure equal to the basepage SIZE. once some objects are
-> freed by free() and libc get a free "page", userspace heap libraries might free
-> the PAGESIZE page to kernel by things like MADV_DONTNEED, then zap_pte_range().
-> it is quite similar with kernel slab.
-> 
-> so imagine we have small-THP now, but userspace libraries have *NO*
-> idea at all,  so it can frequently cause unfolding.
-> 
->>
->> FWIW, My experience with the Speedometer/JavaScript use case is that performance
->> is a little bit better when enabling 64+32+16K vs just 64K THP.
->>
->> Functionally, it will not matter if the allocator is not enlightened for the THP
->> size; it can continue to free, and if a partial folio is unmapped it is put on
->> the deferred split list, then under memory pressure it is split and the unused
->> pages are reclaimed. I guess this is the bit you are concerned about having a
->> performance impact?
-> 
-> right. If this is happening on the majority of small-THP folios, we
-> don't have performance
-> improvement, and probably regression instead. This is really true on
-> real workloads!!
-> 
-> So that is why we really love a per-VMA hint to enable small-THP but
-> obviously you
-> have already supported it now by
-> mm: thp: Introduce per-size thp sysfs interface
-> https://lore.kernel.org/linux-mm/20231122162950.3854897-4-ryan.roberts@arm.com/
-> 
-> we can use MADVISE rather than ALWAYS and set fixed size like 64KB, so userspace
-> can set the VMA flag when it is quite sure this VMA is working with
-> the alignment
-> of 64KB?
+> Maybe it is first time for you, but I ask about this all the time. What
+> is important is whether the programming model or how the OS uses the
+> device is the same.
 
-Yes, that all exists in the series today. We have also discussed the possibility
-of adding a new madvise_process() call that would take the set of THP sizes that
-should be considered. Then you can set different VMAs to use different sizes;
-the plan was to layer that on top if/when a workload was identified. Sounds like
-you might be able to help there?
+I agree for new version of HW, anyway..
 
 > 
->>
->> Regardless, it would be good to move this conversation to the small-sized THP
->> patch series since this is all independent of contpte mappings.
->>
->>>
->>>>
->>>>>
->>>>> Since we always hold ptl to set or drop CONTPTE bits, set/drop is
->>>>> still atomic in a
->>>>> spinlock area.
->>>>>
->>>>>>
->>>>>>>>
->>>>>>>> But that can be added on top, and I'll happily do that.
->>>>>>>>
->>>>>>>> --
->>>>>>>> Cheers,
->>>>>>>>
->>>>>>>> David / dhildenb
->>>>>>>
->>>>>
->>>
+> Here the device exposes its version in registers, so you can easily rely
+> on the compatibility. That's also the case multiple times talked on the
+> mailing lists.
+
+... you're right here version can be determined at runtime.
+
+But, since both are compatible, there's no primary part number, right?
+
+so why use "qcom,wcd9395-codec", "qcom,wcd9390-codec"
+when "qcom,wcd9390-codec", "qcom,wcd9395-codec" should
+also be valid, so in this can why not use :
+"qcom,wcd9390-codec", "qcom,wcd939x-codec"
+or
+"qcom,wcd9395-codec", "qcom,wcd939x-codec"
+
+?
+
 > 
-> Thanks
-> Barry
+> Best regards,
+> Krzysztof
+> 
 
