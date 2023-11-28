@@ -2,124 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 163577FB58D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:22:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42FA57FB596
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:23:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234808AbjK1JW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 04:22:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52878 "EHLO
+        id S234805AbjK1JXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 04:23:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234798AbjK1JW0 (ORCPT
+        with ESMTP id S230506AbjK1JXM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 04:22:26 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9618ED5A
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:22:31 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-54b7ef7f4d5so2134200a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:22:31 -0800 (PST)
+        Tue, 28 Nov 2023 04:23:12 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AB67C9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:23:18 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40b4a8db314so5990335e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:23:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701163350; x=1701768150; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=tuxon.dev; s=google; t=1701163397; x=1701768197; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=hB9o41t1tX+4KHXiuYHkWwi2ucgZXMemCHEH1qy8li4=;
-        b=buaE4AGwPOmz8Ari/VT6pm2PGnSKyXcpDEwwEzgxQEWVFV6QQe4236sdFoIAMYzQE4
-         EkI5vWvUb15TTJc6ky9zTBzNxKGaE6/64vPH7qYHCIk2Be1/IZrR9r+gG8jbqM0kySL4
-         9Z4+7S/qAjaQmHmcdSOyK/DjoEPWM8Y7+URbswVDjwYogWf6hRpUMqzYIBQBdq/rg8X7
-         KdNEhAce4+cF1AdqMhiZdoGM6OaUlNgryjllsjzoGWI7zNPTH8nXw7sUyH3E4RsmGWJL
-         zunYwMwxcCHYTOFXVfx9g02e9B3oF3DDr/y6c1xV4k0joLF5RIOfyIOCWy3UCHC+YX6i
-         BWWg==
+        bh=/eenye9HdwTQxcArWUErxKolkkutscBR5gpaggr02P4=;
+        b=GnGkZbtiheroQobMSUxq7dUvI00AKEHIchWrvd3HEctrXtCg+trXbZRnN3I228o7lQ
+         8qDfKZ6gkD2c3VSTW0p/PXS9qknyyVFmzAIOSFYPyuxtgYsh7BhQVhcfKu0BdAZPaG5o
+         ehgj6tWDrt/C173tX2+PvMHhyX1+oc988kXd2h329RWxndmHzpxnj41MstDiXQgiw1zj
+         i0tnspF7c4R3iny7iHx8YE5Wh08OKfwf1lH2ODFbOEhK6DZxRTYRbCY/ObIfHWFVxy1d
+         1TONFb57q6prPv48+q+jh325hWSpbs3rtETVHB977/4mZqOc5tNIVL5DEYLkirj/wouY
+         9zcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701163350; x=1701768150;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1701163397; x=1701768197;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hB9o41t1tX+4KHXiuYHkWwi2ucgZXMemCHEH1qy8li4=;
-        b=o35TqYtGK0lCOQD83XaSPxpf+/Ib17yEE6tr0Xun8DyaM1nbonCiv5zgvUQ7TbJubD
-         P9RMn55lBsdg6zVi8dJHwm6YCYV8ID6TOYGpL16+feniUjp5tVtFfnFff7mRam+np8hw
-         vBWLJlNhG1f3HZTAMOfVEE3j1G4fSB4SgEr8SCMkTAJBRiU7xtA+esfFqYIJivAjEZYZ
-         MNZn+zUitsnF9yS0OtKSwAdLuLU6Wo3rfswipqM1INuQh+M3PcCX3XZM0P1LiHOwo5/I
-         zJuTsMs7yqoROOwoX2nngL6xjtwTVjpA7UWsi3mbp5OYetMTjiVzmeYlEN6mU8z6/YQt
-         DFng==
-X-Gm-Message-State: AOJu0YwyzAa2yToTR1+ckreMwi7MiZlNugvtdwDPW9Iev2KEFN8TOGDI
-        yO+Q28YA4kQdAY0UkY/LBCqjlg==
-X-Google-Smtp-Source: AGHT+IE0yQ2l7PFMA9F7a3sh3n9dQwVRQ5dOru11vlnHuBFuVmSerlmFMDKzPmc9b6SIsZyr6AwGbg==
-X-Received: by 2002:a50:a444:0:b0:548:586e:f7b0 with SMTP id v4-20020a50a444000000b00548586ef7b0mr8264908edb.35.1701163350040;
-        Tue, 28 Nov 2023 01:22:30 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id bt16-20020a0564020a5000b00548e4c5220csm6133776edb.26.2023.11.28.01.22.28
+        bh=/eenye9HdwTQxcArWUErxKolkkutscBR5gpaggr02P4=;
+        b=CCyK97VTU+XMgK8D6EvWhjgqH+1PE5/vsqOSytNWZZksihP4mF7y9p4rDq3EMyqedO
+         kULxVV8Mx+wx1rQrVH/KNwrahPSAxP/ikKX/TzQSANVRoMt2vtThMC8GKwm1wMc0mKCd
+         Mulp/bBilPrKnuD8afmLfNfDCySYKZOajSt6jFsqk1BWp0koU+MG/V9X92w57im+mBEH
+         CayjBOrr5wnUZ6Q5kz+uw6bfhUX07AVWjpAALcgbhbTOQwZU+dgLcQlHt5DbW1J22hkj
+         HntvJdb2zoMYcafSj3o/g3W4MDm7DmFpGg25ANKRlG4omlxlpSlx7ZnBf15CVNu+nAEb
+         Nj9Q==
+X-Gm-Message-State: AOJu0YzVDm9bWaSr2Tauxr/gogAWCtVDydscNF3m/LXeCS+xpI1I0OPp
+        /MjjByxXe2YMpreOdcleLOvwkg==
+X-Google-Smtp-Source: AGHT+IGibnyWd1w48I6Ajmwf/X3NGYilAHusSAq4LrFN1+MyJ4arDz0Y2YD15SvgxvKbXqE/SQ790g==
+X-Received: by 2002:a05:600c:3595:b0:409:7d0:d20b with SMTP id p21-20020a05600c359500b0040907d0d20bmr10879906wmq.24.1701163396780;
+        Tue, 28 Nov 2023 01:23:16 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.125])
+        by smtp.gmail.com with ESMTPSA id fl8-20020a05600c0b8800b004030e8ff964sm17602133wmb.34.2023.11.28.01.23.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Nov 2023 01:22:29 -0800 (PST)
-Message-ID: <729e43fb-bc01-4d68-ba1c-5874b5428b63@linaro.org>
-Date:   Tue, 28 Nov 2023 10:22:27 +0100
+        Tue, 28 Nov 2023 01:23:16 -0800 (PST)
+Message-ID: <6bcc69b6-d198-4185-aaab-b9ab9aa09c87@tuxon.dev>
+Date:   Tue, 28 Nov 2023 11:23:14 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] dt-bindings: input: touchscreen: goodix: clarify
- irq-gpios misleading text
+Subject: Re: [PATCH 13/13] net: ravb: Add runtime PM support
 Content-Language: en-US
-To:     Luca Ceresoli <luca.ceresoli@bootlin.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Jeff LaBundy <jeff@labundy.com>, devicetree@vger.kernel.org,
-        Conor Dooley <conor+dt@kernel.org>
-References: <20230925032208.11698-1-luca.ceresoli@bootlin.com>
- <169565910910.1468857.379234431707593994.robh@kernel.org>
- <20231128102105.4d901b3a@booty>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231128102105.4d901b3a@booty>
+From:   claudiu beznea <claudiu.beznea@tuxon.dev>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Sergey Shtylyov <s.shtylyov@omp.ru>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        p.zabel@pengutronix.de, yoshihiro.shimoda.uh@renesas.com,
+        wsa+renesas@sang-engineering.com, biju.das.jz@bp.renesas.com,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        sergei.shtylyov@cogentembedded.com,
+        mitsuhiro.kimura.kc@renesas.com, masaru.nagai.vx@renesas.com,
+        netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20231120084606.4083194-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231120084606.4083194-14-claudiu.beznea.uj@bp.renesas.com>
+ <04cb07fe-cccc-774a-f14d-763ce7ae7b07@omp.ru>
+ <b3456a4d-336c-434d-9fd5-4c87582443cb@tuxon.dev>
+ <9af21eb9-6fe1-de3a-f2eb-4493778ebb32@omp.ru>
+ <e35882ea-c325-4039-bb84-c18b0244dbe0@tuxon.dev>
+ <CAMuHMdVCRXYKtcwaC=v-HhJW-PLV-zhj_3GmeU6Vu1JOK_eu0Q@mail.gmail.com>
+ <ece2601d-9311-462b-8687-c241d889ec16@tuxon.dev>
+In-Reply-To: <ece2601d-9311-462b-8687-c241d889ec16@tuxon.dev>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -127,20 +89,220 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/11/2023 10:21, Luca Ceresoli wrote:
-> Hello Rob,
-> 
-> On Mon, 25 Sep 2023 11:25:09 -0500
-> Rob Herring <robh@kernel.org> wrote:
-> 
->> Acked-by: Rob Herring <robh@kernel.org>
-> 
-> I can't find this patch in your for-next, is there any blocker I should
-> handle?
+Hi, Geert,
 
-This was an Ack, not applied from Rob. Intention is that bindings go via
-subsystem maintainer (here: Dmitry).
+On 27.11.2023 16:46, claudiu beznea wrote:
+> Hi, Geert,
+> 
+> On 27.11.2023 16:05, Geert Uytterhoeven wrote:
+>> Hi Claudiu,
+>>
+>> On Sat, Nov 25, 2023 at 12:00 AM claudiu beznea
+>> <claudiu.beznea@tuxon.dev> wrote:
+>>> On 23.11.2023 21:19, Sergey Shtylyov wrote:
+>>>> On 11/23/23 8:04 PM, claudiu beznea wrote:
+>>>>>>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>>>>>
+>>>>>>> RZ/G3S supports enabling/disabling clocks for its modules (including
+>>>>>>> Ethernet module). For this commit adds runtime PM support which
+>>>>>>> relies on PM domain to enable/disable Ethernet clocks.
+>>>>>>
+>>>>>>    That's not exactly something new in RZ/G3S. The ravb driver has unconditional
+>>>>>> RPM calls already in the probe() and remove() methods...
+>>>>>> And the sh_eth driver
+>>>>>> has RPM support since 2009...
+>>>>>>
+>>>>>>> At the end of probe ravb_pm_runtime_put() is called which will turn
+>>>>>>
+>>>>>>    I'd suggest a shorter name, like ravb_rpm_put() but (looking at this function)
+>>>>>>> off the Ethernet clocks (if no other request arrives at the driver).
+>>>>>>> After that if the interface is brought up (though ravb_open()) then
+>>>>>>> the clocks remain enabled until interface is brought down (operation
+>>>>>>> done though ravb_close()).
+>>>>>>>
+>>>>>>> If any request arrives to the driver while the interface is down the
+>>>>>>> clocks are enabled to serve the request and then disabled.
+>>>>>>>
+>>>>>>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>>>>>>> --- a/drivers/net/ethernet/renesas/ravb.h
+>>>>>>> +++ b/drivers/net/ethernet/renesas/ravb.h
+>>>>>>> @@ -1044,6 +1044,7 @@ struct ravb_hw_info {
+>>>>>>>    unsigned magic_pkt:1;           /* E-MAC supports magic packet detection */
+>>>>>>>    unsigned half_duplex:1;         /* E-MAC supports half duplex mode */
+>>>>>>>    unsigned refclk_in_pd:1;        /* Reference clock is part of a power domain. */
+>>>>>>> +  unsigned rpm:1;                 /* Runtime PM available. */
+>>>>>>
+>>>>>>    No, I don't think this flag makes any sense. We should support RPM
+>>>>>> unconditionally...
+>>>>
+>>>>    If RPM calls work in the probe()/remove() methods, they should work
+>>>> in the ndo_{open|stop}() methods, right?
+>>>
+>>> It might depend on hardware support... E.g.
+>>>
+>>> I debugged it further the issue I had with this implementation on other
+>>> SoCs and it seems we cannot do RPM for those w/o reworking way the driver
+>>> is configured.
+>>>
+>>> I wiped out the RPM code from this patch and just called:
+>>>
+>>> pm_runtime_put_sync();          // [1]
+>>> usleep_range(300000, 400000);   // [2]
+>>> pm_runtime_get_sync();          // [3]
+>>>
+>>> at the end of ravb_probe(); with this the interfaces fails to work. I
+>>> continue debugging it and interrogated CSR and this returns RESET after
+>>> [3]. I tried to switched it back to configuration mode after [3] but fails
+>>> to restore to a proper working state.
+>>>
+>>> Then continued to debug it further to see what happens on the clock driver.
+>>> The clk enable/disable reaches function at [4] which sets control_regs[reg]
+>>> which is one of the System module stop control registers. Setting this
+>>> activates module standby (AFICT). Switch to reset state on Ethernet IP
+>>> might be backed by note (2) on "Operating Mode Transitions Due to Hardware"
+>>> chapter of the G1H HW manual (which I don't fully understand).
+>>
+>> You mean 37A.3.1.3 (2) "Transition during power-off by module standby"?
+> 
+> Yes!
+> 
+>>
+>>     The AVB-DMAC completes the bus master access in progress,
+>>     and then shifts to reset mode. At this time, the operating mode
+>>     configuration bits in the AVB-DMAC mode register (CCC.OPC) are
+>>     set to B'00.
+>>
+>> "reset mode" could be interpreted as "register contents are reset (lost)".
+>> However, the R-Car Gen3 documentation contains the same paragraph,
+>> and register contents are known not to be lost...
+> 
+> I remember (from the debugging session I've run few weeks ago) that I
+> checked on G1H an Ethernet register before point [1] and after point [3]
+> and the values were the same (but I may be wrong, I need to double check it).
 
-Best regards,
-Krzysztof
+I checked again DBAT before point [1] and after point [3]. Before point [1]
+DBAT=0x6c040000, after point [3] DBAT=0x00000000.
 
+However, if all the register settings done before point [1] are re-executed
+after point [3] the Ethernet connection seems usable. I tried the above
+settings after point [3] to confirm this:
+
+        ravb_set_config_mode(ndev);
+
+        usleep_range(1000, 2000);
+
+        pr_err("%s(): 2: mode=%08x\n", __func__, ravb_read(ndev, CSR));
+
+
+
+        if (info->gptp || info->ccc_gac) {
+
+                /* Set GTI value */
+
+                error = ravb_set_gti(ndev);
+
+                if (error)
+
+                        goto out_disable_refclk;
+
+
+
+                /* Request GTI loading */
+
+                ravb_modify(ndev, GCCR, GCCR_LTI, GCCR_LTI);
+
+        }
+
+
+
+        if (info->internal_delay) {
+
+                ravb_parse_delay_mode(np, ndev);
+
+                ravb_set_delay_mode(ndev);
+
+        }
+
+
+
+        ravb_write(ndev, priv->desc_bat_dma, DBAT);
+
+
+
+        /* Initialise PTP Clock driver */
+
+        ravb_wait(ndev, GCCR, GCCR_TCR, GCCR_TCR_NOREQ);
+
+        ravb_modify(ndev, GCCR, GCCR_TCSS, GCCR_TCSS_ADJGPTP);
+
+
+However, I don't have a PTP setup to check.
+
+> 
+> I will double check also the value of MSTOP for Ethernet on RZ/G3S (though
+> I checked that this worked on my code), maybe RZ/G3S doesn't go to standby,
+> I have a bug in my code and that's why it works for RZ/G3S...
+
+All is good in RZ/G3S. MSTOP is set accordingly and no issues.
+
+Thank you,
+Claudiu Beznea
+
+> 
+> Also, I see that the STANDBY state is missing from CCC.OPC documentation
+> (chapter "37A.3.1 AVB-DMAC Operating Modes" on RZ/G1H vs "31.5.1 DMAC
+> Operating Modes" on RZ/G3S).
+> 
+>>
+>> 37.7.2 for Ether ("sh-eth") states:
+>>
+>>     After returning from the standby state, the ether should be reset
+>> and initialized.
+> 
+> Ok, I found that one in my G1H manual. It is not available on RZ/G3S
+> manual, though.
+> 
+>>
+>> Sergey: does sh_eth.c really reinitialize the hardware completely after
+>> pm_runtime_get_sync()?
+>>
+>>> Also, the manual of G1H states from some IPs that register state is
+>>> preserved in standby mode but not for AVB.
+>>
+>> Indeed, AFAIK all modules on SH/R-Mobile, R-Car, and RZ/G SoCs keep
+>> their register contents when in standby-mode (module standby enabled).
+>> On modules in a (not always-on) power area (e.g. SH/R-Mobile), register
+>> contents are lost when the power area is powered down.
+>> So I'd be surprised if EtherAVB behaves differently.  Of course that
+>> is still possible, there are big difference between EtherAVB in R-Car
+>> Gen2 and RZ/G1, and the revision found in later SoC families.
+>>
+>>>>> The reasons I've limited only to RZ/G3S are:
+>>>>> 1/ I don't have all the platforms to test it
+>>>>
+>>>>    That's a usual problem with the kernel development...
+>>>>
+>>>>> 2/ on G1H this doesn't work. I tried to debugged it but I don't have a
+>>>>>    platform at hand, only remotely, and is hardly to debug once the
+>>>>>    ethernet fails to work: probe is working(), open is executed, PHY is
+>>>>>    initialized and then TX/RX is not working... don't know why ATM.
+>>>>
+>>>>    That's why we have the long bug fixing period after -rc1...
+>>>
+>>> I prefer to not introduce any bug by intention.
+>>
+>> Iff register contents are lost on RZ/G1H, I'd rather add
+>> an extra clk_prepare_enable(priv->clk) to ravb_probe() on
+>> "renesas,etheravb-rcar-gen2"....
+> 
+> This should work, though I would go with a pm_runtime_put_noidle().
+> 
+> Thank you,
+> Claudiu Beznea
+> 
+>>
+>> Gr{oetje,eeting}s,
+>>
+>>                         Geert
+>>
