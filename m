@@ -2,80 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B9C7FC2C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EFE57FC235
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346330AbjK1Rtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 12:49:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39354 "EHLO
+        id S1346328AbjK1RuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 12:50:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346305AbjK1Rt3 (ORCPT
+        with ESMTP id S234638AbjK1Rt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 12:49:29 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85C1B4;
-        Tue, 28 Nov 2023 09:49:35 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-a132acb67b5so166595666b.3;
-        Tue, 28 Nov 2023 09:49:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701193774; x=1701798574; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cCwKOOcvZG227KNZBJVAw0tdRH4yoYqx+lNqD4UHuvE=;
-        b=m7lo0+LQJ49D2oDFm6/sdfAXemmUzWYnb+CS3EM7iL5+KVGRmmKNfoNAhexAwaOIw1
-         RoqUqtxDKaoXnvk2urTi+MN8EJ6A59xy46Mb4hY5glAzSF0enzX4qyRrPwM6niie6JrN
-         QzKEYBCoeD/j8/YeLqWWLT6lwV7bWevEfoqYVXtS/i3ccj3pVHDkXvG0CytibgDSgIIV
-         YUXbuYb7AVIHVPyTRDTbvREeJMC0lCLmZUFJBBrGAfeTcXY63NbN1yVeDot5+BXzryZP
-         kYbHd0Ajha6Ua3R4IYt+JhW7Vx6b5emLfMwOlz5E4QIfCS3GcKDwZg4KI8pvuuQSCbZM
-         kIhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701193774; x=1701798574;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cCwKOOcvZG227KNZBJVAw0tdRH4yoYqx+lNqD4UHuvE=;
-        b=YqOfvNwGm7oASKIJUGEPYVYlPMsmdwnGikVO8e8UOgDSozk2f90NDNvGSNLNIOneP2
-         QQz/6zJVQEBtYP87wBfJds3/YMSKM75zAGLLsGbF7/IXolK59YDk8+Fj/LUzzRCwid6l
-         5J0CbSLFiRlze2dTYWIGRjNGmdaYrvO0lOhrIO+D1Y6HvgmQNfOAohIkb9iQNNzP0YAC
-         apTWKx7sv+dOqg6zxTldGvgrk254KHTMhH2LI/Kgl4Xp3MVc3zTJuu8frD3M2OnMu/SC
-         S8U/vM8pe5+KgAPAICOG3C0c63ozN3hJ3/fJAN06OzxDBA/ZyjxX4FnWbRq3ZVv7m+Pa
-         Z8ag==
-X-Gm-Message-State: AOJu0Ywo/JTJ4D+JpnhopSGv7srnRxL4i8Qvh0e04+o2EY5bziPk9flE
-        O/ZRRjeVRLuBWDEg3GPUO1E=
-X-Google-Smtp-Source: AGHT+IFv+IODDHV2aUyGCP25pWGTd1fOh8jm9JfU859xNG4T5EWQ0fud734+4RsoprcqhFPRy7x98g==
-X-Received: by 2002:a17:906:3a45:b0:a04:edd6:dea7 with SMTP id a5-20020a1709063a4500b00a04edd6dea7mr9353671ejf.7.1701193774209;
-        Tue, 28 Nov 2023 09:49:34 -0800 (PST)
-Received: from localhost (p200300e41f0fa600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f0f:a600:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id kh4-20020a170906f80400b00a0ad10b3f68sm4836490ejb.205.2023.11.28.09.49.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 09:49:33 -0800 (PST)
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Jitao Shi <jitao.shi@mediatek.com>,
-        Michael Walle <mwalle@kernel.org>
-Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] dt-bindings: pwm: remove Xinlei's mail
-Date:   Tue, 28 Nov 2023 18:49:24 +0100
-Message-ID: <170119374438.445690.8441934091500162620.b4-ty@gmail.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231123134716.2033769-1-mwalle@kernel.org>
-References: <20231123134716.2033769-1-mwalle@kernel.org>
+        Tue, 28 Nov 2023 12:49:57 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E97AD63
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:50:03 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r82DD-0008Kh-R5; Tue, 28 Nov 2023 18:49:31 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r82DA-00CEE8-AI; Tue, 28 Nov 2023 18:49:28 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r82DA-00AItg-0H; Tue, 28 Nov 2023 18:49:28 +0100
+Date:   Tue, 28 Nov 2023 18:49:27 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Arnd Bergmann <arnd@arndb.de>, soc@kernel.org
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Tony Lindgren <tony@atomide.com>,
+        Yuan Can <yuancan@huawei.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Chen-Yu Tsai <wens@csie.org>, Andy Gross <agross@kernel.org>,
+        linux-sunxi@lists.linux.dev, Nick Alcock <nick.alcock@oracle.com>,
+        Yangtao Li <frank.li@vivo.com>, Liu Ying <victor.liu@nxp.com>,
+        linux-arm-msm@vger.kernel.org, Jay Fang <f.fangjian@huawei.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        linux-tegra@vger.kernel.org,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        "Sicelo A. Mhlongo" <absicsz@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+Subject: [PULL v2] bus: Convert to platform remove callback returning void
+Message-ID: <20231128174927.m46dgp4juig2omci@pengutronix.de>
+References: <20231109202830.4124591-1-u.kleine-koenig@pengutronix.de>
+ <1e5e1008-707b-449a-9dbf-48324eb2b248@app.fastmail.com>
+ <20231116115307.32rovgcej2s5pe4r@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="53zsv2odqs745utj"
+Content-Disposition: inline
+In-Reply-To: <20231116115307.32rovgcej2s5pe4r@pengutronix.de>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -83,22 +79,128 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Thu, 23 Nov 2023 14:47:16 +0100, Michael Walle wrote:
-> Xinlei Lee's mail is bouncing:
-> 
-> <xinlei.lee@mediatek.com>: host mailgw02.mediatek.com[216.200.240.185] said:
->     550 Relaying mail to xinlei.lee@mediatek.com is not allowed (in reply to
->     RCPT TO command)
-> 
-> Remove it.
-> 
-> [...]
+--53zsv2odqs745utj
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Applied, thanks!
+Hello Arnd,
 
-[1/1] dt-bindings: pwm: remove Xinlei's mail
-      commit: c7861b3ffaba39021968505bd6807bf4fa7148c9
+On Thu, Nov 16, 2023 at 12:53:07PM +0100, Uwe Kleine-K=F6nig wrote:
+> On Fri, Nov 10, 2023 at 07:32:01AM +0100, Arnd Bergmann wrote:
+> > On Thu, Nov 9, 2023, at 21:28, Uwe Kleine-K=F6nig wrote:
+> > > this series converts all drivers below drivers/bus to struct
+> > > platform_driver::remove_new(). See commit 5c5a7680e67b ("platform:
+> > > Provide a remove callback that returns no value") for an extended
+> > > explanation and the eventual goal.
+> > >
+> > > drivers/bus/fsl-mc was already addressed earlier with a separate
+> > > series[1].
+> > >
+> > > All conversations are trivial, because all .remove() callbacks return=
+ed
+> > > zero unconditionally.
+> > >
+> > > Some of the drivers touched here don't have a maintainer and there is=
+ no
+> > > maintainer for all of drivers/bus. It would be great if someone could=
+ pick up
+> > > the whole series, maybe Arnd might do that?
+> >=20
+> > Sure, please send a pull request to soc@kernel.org if there
+> > are no further comments.
+>=20
+> here it comes:
+>=20
+> The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa=
+86:
+>=20
+>   Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
 
-Best regards,
--- 
-Thierry Reding <thierry.reding@gmail.com>
+Here comes an updated PR. The only change is that it also includes two
+Reviewed-by tags for Jernej Skrabec that came in after I sent the PR.
+Obviously that changed the commit hash which made it necessary to redo
+the PR. I hope it doesn't disturb your tooling that there are now two
+similar pull requests.
+
+Best regards
+Uwe
+
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+
+are available in the Git repository at:
+
+  https://git.pengutronix.de/git/ukl/linux tags/bus-platform-remove-void
+
+for you to fetch changes up to fc540426f7baa0c7d4b477e80435d075659092a2:
+
+  bus: ts-nbus: Convert to platform remove callback returning void (2023-11=
+-28 18:43:27 +0100)
+
+----------------------------------------------------------------
+This series converts all drivers below drivers/bus to struct
+platform_driver::remove_new(). See commit 5c5a7680e67b ("platform:
+Provide a remove callback that returns no value") for an extended
+explanation and the eventual goal.
+
+After the initial simplification in commit 864acca58000 ("bus: fsl-mc:
+Drop if block with always false condition") all conversations are
+trivial because the remove callbacks all return zero unconditionally.
+
+----------------------------------------------------------------
+Uwe Kleine-K=F6nig (14):
+      bus: fsl-mc: Drop if block with always false condition
+      bus: fsl-mc: Convert to platform remove callback returning void
+      bus: hisi_lpc: Convert to platform remove callback returning void
+      bus: omap-ocp2scp: Convert to platform remove callback returning void
+      bus: omap_l3_smx: Convert to platform remove callback returning void
+      bus: qcom-ssc-block-bus: Convert to platform remove callback returnin=
+g void
+      bus: simple-pm-bus: Convert to platform remove callback returning void
+      bus: sun50i-de2: Convert to platform remove callback returning void
+      bus: sunxi-rsb: Convert to platform remove callback returning void
+      bus: tegra-aconnect: Convert to platform remove callback returning vo=
+id
+      bus: tegra-gmi: Convert to platform remove callback returning void
+      bus: ti-pwmss: Convert to platform remove callback returning void
+      bus: ti-sysc: Convert to platform remove callback returning void
+      bus: ts-nbus: Convert to platform remove callback returning void
+
+ drivers/bus/fsl-mc/fsl-mc-bus.c  | 16 +++-------------
+ drivers/bus/hisi_lpc.c           |  6 ++----
+ drivers/bus/omap-ocp2scp.c       |  6 ++----
+ drivers/bus/omap_l3_smx.c        |  6 ++----
+ drivers/bus/qcom-ssc-block-bus.c |  6 ++----
+ drivers/bus/simple-pm-bus.c      |  7 +++----
+ drivers/bus/sun50i-de2.c         |  5 ++---
+ drivers/bus/sunxi-rsb.c          |  6 ++----
+ drivers/bus/tegra-aconnect.c     |  6 ++----
+ drivers/bus/tegra-gmi.c          |  6 ++----
+ drivers/bus/ti-pwmss.c           |  5 ++---
+ drivers/bus/ti-sysc.c            |  6 ++----
+ drivers/bus/ts-nbus.c            |  6 ++----
+ 13 files changed, 28 insertions(+), 59 deletions(-)
+
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--53zsv2odqs745utj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVmKCcACgkQj4D7WH0S
+/k66uAf+KEj6yCYL/fZUMESxp+ruHd0CIqqyeqoXs8QJkSZpBYf6q/1nJvHP8UV8
+uwqqXDJ+/qN0XvfzFFY8sBUbw8aZhyPKUsrdXsauHjCYGMwjVDB2fWrmchk8J2cN
+6yS1cKfZjexAhBrZm/02p1b6zTV6AMj3HYKEmTsFmZ3G9FcANo/zOro3prS0M4W6
+79xe6KqnjNr0MCIHeBnnig/94vz408lqk+ebBS25Fy7JIkfsNTGrntTrQ/zbyQ/T
+Oaegx6m+33HBtpLeK/L+dOLBzdSblKXZpSbbKD1NVT1q0aDcfnlXU8CHp080y0u/
+Ppx52VMZg3hOXuwZtKcIZA1COE/NyA==
+=jxQg
+-----END PGP SIGNATURE-----
+
+--53zsv2odqs745utj--
