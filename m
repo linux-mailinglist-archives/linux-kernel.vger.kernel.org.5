@@ -2,111 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 620AA7FC212
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D36B7FC14C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343651AbjK1QRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 11:17:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36240 "EHLO
+        id S1344042AbjK1QSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:18:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjK1QRu (ORCPT
+        with ESMTP id S229567AbjK1QSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 11:17:50 -0500
-Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com [66.111.4.230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3436182;
-        Tue, 28 Nov 2023 08:17:56 -0800 (PST)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 516DA580855;
-        Tue, 28 Nov 2023 11:17:56 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Tue, 28 Nov 2023 11:17:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1701188276; x=1701195476; bh=GZ5L0AMTLI05H5bqiQnQyltqp4P9zp6XIYx
-        LYjP5ZtA=; b=o7xF4oy4c3SxLmp5JIOOCX58qCpUsPD4N74ZCiJ3dFmRQjueNTk
-        XNE6hqR3GvcpzANiIPoJt0VZYAKXRw/9uD7FXeg/TlRiUC1uxjoNSd3pcKVRDRf3
-        oaDGA/Vn5cr5MmPWN35HSOoswwD3HsA8b+N3VSeeF6T59Hm8hlGTcqNF6blVNqZd
-        usaUnWCd4ZI/P4N1leCwfFYZ5BPfcLgCbI3mALFWmo7/ZpX76UC2XExQLcmUf3VB
-        lCllqFWn8FgIZvwuG6pL9gdlGyB6owoAhM4kBY0ZCtBnC46/35ni/wZ/gutfBzc9
-        L2q7C5nTHWCBWqUBVqC/Y7bSUwQZiva7QyQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1701188276; x=1701195476; bh=GZ5L0AMTLI05H5bqiQnQyltqp4P9zp6XIYx
-        LYjP5ZtA=; b=nm4kC8Dy6SVhN6AJoRCe0Y7Gira86b2rfiGTtPYUhHi76WZ42/p
-        CDV39H4wZ5maA+nySZXj9/urDVUvS3i1YNigtwXy0etS3laluMwp4zPvgYqDMv8U
-        oaKqwI31TGKT4RiHfKvfBCa6Bj6FEkMnUJP/b4ETlK1r9mYGpr5qnhfrCDVVEykU
-        Yk6eHS8XUoVlViEgRQJ2Zlm8XQHZStUHUAjvaXZt8KZXaA+0hImcVfSBE9oEABDl
-        z1/NYfchHUsbMtZrjF+QIlEOL5DtopQEFQJTvpcGpIlH5FTTjm7xgEO5WnfvJuGT
-        7ywpRSBDCp7r7eScKu10Vt5GEvc8GbbXWsg==
-X-ME-Sender: <xms:tBJmZeYfifIX3DjAmZfQ1ktIZLfYTWDERMXGCYQQNFw_Ps0xT6TxYw>
-    <xme:tBJmZRZVCZtFgsR1VLRu5-e5loRvWPss_S-C8OfnhoDF6Kxr2SOU-bSjhchdN3g-Y
-    jmqk30xJADjVNPBGA>
-X-ME-Received: <xmr:tBJmZY9WE-Ex3D32OD7SktHZZ15dm4abwsijvx4e-lb8xBQ3iJmmbx6ZG7NzaMS8yxzGO213yx1PFl_hyt5KXw4--fDjPaWXSRSvNMKt>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeifedgkeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdlvdefmdenucfjughrpeffhffvvefukfhfgggtugfgjgestheksfdt
-    tddtudenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
-    enucggtffrrghtthgvrhhnpeelieeljeefgffgteehfeevgffgieeukeetveduteeuvdff
-    kedufeegvdeuvdejfeenucffohhmrghinhepugiguhhuuhdrgiihiidpghhithhhuhgsrd
-    gtohhmpdifihhkihhpvgguihgrrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfr
-    rghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:tBJmZQrBt0ceS7yRJ1pxBI5zT4Xl_FHvNuqOYHhTgcP3UbsWS006XA>
-    <xmx:tBJmZZrxJ35Z1foPCfRjYYf9jDp7Up9ulfndumAqSXk1X0siOt3SHA>
-    <xmx:tBJmZeTW8GDJ_PxxQa31Dx0BfW_V6Nm9Ix1wokaFqeOqhnULoVALHQ>
-    <xmx:tBJmZVrNyU2mO4zMijwe-79kbR0LBneVL4ErdeUXtU81lgqrgP2Wuw>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 28 Nov 2023 11:17:53 -0500 (EST)
-Date:   Tue, 28 Nov 2023 10:17:51 -0600
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     Yonghong Song <yonghong.song@linux.dev>
-Cc:     Eduard Zingerman <eddyz87@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        antony.antony@secunet.com, Mykola Lysenko <mykolal@fb.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, devel@linux-ipsec.org,
-        Network Development <netdev@vger.kernel.org>
-Subject: Re: [PATCH ipsec-next v1 6/7] bpf: selftests: test_tunnel: Disable
- CO-RE relocations
-Message-ID: <idvgqkzzlq7lcnx52wzi5o2los2wcvwgt2qtpvko3go3kaggnk@s55os4akwb7d>
-References: <3ec6c068-7f95-419a-a0ae-a901f95e4838@linux.dev>
- <18e43cdf65e7ba0d8f6912364fbc5b08a6928b35.camel@gmail.com>
- <uc5fv3keghefszuvono7aclgtjtgjnnia3i54ynejmyrs42ser@bwdpq5gmuvub>
- <0535eb913f1a0c2d3c291478fde07e0aa2b333f1.camel@gmail.com>
- <42f9bf0d-695a-412d-bea5-cb7036fa7418@linux.dev>
- <a5a84482-13ef-47d8-bf07-8017060a5d64@linux.dev>
- <xehp2qvy5cyaairbnfhem4hvbsl26blo4zzu7z6ywbp26jcwyn@hgp3v2q4ud7o>
- <53jaqi72ef4gynyafxidl5veb54kfs7dttxezkarwg75t7szd4@cvfg5pc7pyum>
- <f68c01d6-bf6b-4b76-8b20-53e9f4a61fcd@linux.dev>
- <p6qdiwnuglz7ry6hsssruf3w6n3tnavglya3iampors7eb4ac6@nonyetjx2zvc>
+        Tue, 28 Nov 2023 11:18:38 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B2C1B5;
+        Tue, 28 Nov 2023 08:18:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=V1WnKx0mNAa03IEWmc37OFz377UE9cZb+Km5Xefp1Ig=; b=C0ZRrpJq0LDHq8RIXd2ExZ4sXy
+        O4mtpphrw9MK6ViAUZRvrozzydvNCAmGRiumtJyRQNviWjfkPMwyQQfakMUA38LhkgB/UxZqnImF3
+        io4KzM/7/83HA1vaVEttoBiBf493QjtIpP4xpe93W9zDwDpur+G9lczCYuy56CEZZQ4PawPtwngWt
+        L+nBUP0Y5Q4a+J0O/2v1bfRfljRxCcEMKGfeWL6fH0XQKDCQ6WDVKKVLCMGHaXL8Fcx64O8LrlTQo
+        faaxFY8sxQ1040mnwdteL++9kk0t1EjmCLgvPp2OcBlgZloMvzt2nbGOttTVeCXKNjnDpj4ZWN0HK
+        hXzye7AA==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r80nH-005nLP-2m;
+        Tue, 28 Nov 2023 16:18:39 +0000
+Message-ID: <0e7941d8-d9b2-4253-9ad5-0f7806e45e2e@infradead.org>
+Date:   Tue, 28 Nov 2023 08:18:37 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <p6qdiwnuglz7ry6hsssruf3w6n3tnavglya3iampors7eb4ac6@nonyetjx2zvc>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Took care of some grammatical mistakes
+Content-Language: en-US
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     attreyee-muk <tintinm2017@gmail.com>, jpoimboe@kernel.org,
+        jikos@kernel.org, mbenes@suse.cz, pmladek@suse.com,
+        joe.lawrence@redhat.com, corbet@lwn.net,
+        live-patching@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231127155758.33070-1-tintinm2017@gmail.com>
+ <202dbdf5-1adf-4ffa-a50d-0424967286ba@infradead.org>
+ <ZWX1ZB5p5Vhz7WD2@casper.infradead.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <ZWX1ZB5p5Vhz7WD2@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -114,150 +58,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 10:13:50AM -0600, Daniel Xu wrote:
-> On Mon, Nov 27, 2023 at 08:06:01PM -0800, Yonghong Song wrote:
-> > 
-> > On 11/27/23 7:01 PM, Daniel Xu wrote:
-> > > On Mon, Nov 27, 2023 at 02:45:11PM -0600, Daniel Xu wrote:
-> > > > On Sun, Nov 26, 2023 at 09:53:04PM -0800, Yonghong Song wrote:
-> > > > > On 11/27/23 12:44 AM, Yonghong Song wrote:
-> > > > > > On 11/26/23 8:52 PM, Eduard Zingerman wrote:
-> > > > > > > On Sun, 2023-11-26 at 18:04 -0600, Daniel Xu wrote:
-> > > > > > > [...]
-> > > > > > > > > Tbh I'm not sure. This test passes with preserve_static_offset
-> > > > > > > > > because it suppresses preserve_access_index. In general clang
-> > > > > > > > > translates bitfield access to a set of IR statements like:
-> > > > > > > > > 
-> > > > > > > > >     C:
-> > > > > > > > >       struct foo {
-> > > > > > > > >         unsigned _;
-> > > > > > > > >         unsigned a:1;
-> > > > > > > > >         ...
-> > > > > > > > >       };
-> > > > > > > > >       ... foo->a ...
-> > > > > > > > > 
-> > > > > > > > >     IR:
-> > > > > > > > >       %a = getelementptr inbounds %struct.foo, ptr %0, i32 0, i32 1
-> > > > > > > > >       %bf.load = load i8, ptr %a, align 4
-> > > > > > > > >       %bf.clear = and i8 %bf.load, 1
-> > > > > > > > >       %bf.cast = zext i8 %bf.clear to i32
-> > > > > > > > > 
-> > > > > > > > > With preserve_static_offset the getelementptr+load are replaced by a
-> > > > > > > > > single statement which is preserved as-is till code generation,
-> > > > > > > > > thus load with align 4 is preserved.
-> > > > > > > > > 
-> > > > > > > > > On the other hand, I'm not sure that clang guarantees that load or
-> > > > > > > > > stores used for bitfield access would be always aligned according to
-> > > > > > > > > verifier expectations.
-> > > > > > > > > 
-> > > > > > > > > I think we should check if there are some clang knobs that prevent
-> > > > > > > > > generation of unaligned memory access. I'll take a look.
-> > > > > > > > Is there a reason to prefer fixing in compiler? I'm not opposed to it,
-> > > > > > > > but the downside to compiler fix is it takes years to propagate and
-> > > > > > > > sprinkles ifdefs into the code.
-> > > > > > > > 
-> > > > > > > > Would it be possible to have an analogue of BPF_CORE_READ_BITFIELD()?
-> > > > > > > Well, the contraption below passes verification, tunnel selftest
-> > > > > > > appears to work. I might have messed up some shifts in the macro,
-> > > > > > > though.
-> > > > > > I didn't test it. But from high level it should work.
-> > > > > > 
-> > > > > > > Still, if clang would peek unlucky BYTE_{OFFSET,SIZE} for a particular
-> > > > > > > field access might be unaligned.
-> > > > > > clang should pick a sensible BYTE_SIZE/BYTE_OFFSET to meet
-> > > > > > alignment requirement. This is also required for BPF_CORE_READ_BITFIELD.
-> > > > > > 
-> > > > > > > ---
-> > > > > > > 
-> > > > > > > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > > > > b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > > > > index 3065a716544d..41cd913ac7ff 100644
-> > > > > > > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > > > > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > > > > @@ -9,6 +9,7 @@
-> > > > > > >    #include "vmlinux.h"
-> > > > > > >    #include <bpf/bpf_helpers.h>
-> > > > > > >    #include <bpf/bpf_endian.h>
-> > > > > > > +#include <bpf/bpf_core_read.h>
-> > > > > > >    #include "bpf_kfuncs.h"
-> > > > > > >    #include "bpf_tracing_net.h"
-> > > > > > >    @@ -144,6 +145,38 @@ int ip6gretap_get_tunnel(struct __sk_buff *skb)
-> > > > > > >        return TC_ACT_OK;
-> > > > > > >    }
-> > > > > > >    +#define BPF_CORE_WRITE_BITFIELD(s, field, new_val) ({            \
-> > > > > > > +    void *p = (void *)s + __CORE_RELO(s, field, BYTE_OFFSET);    \
-> > > > > > > +    unsigned byte_size = __CORE_RELO(s, field, BYTE_SIZE);        \
-> > > > > > > +    unsigned lshift = __CORE_RELO(s, field, LSHIFT_U64); \
-> > > > > > > +    unsigned rshift = __CORE_RELO(s, field, RSHIFT_U64); \
-> > > > > > > +    unsigned bit_size = (rshift - lshift);                \
-> > > > > > > +    unsigned long long nval, val, hi, lo;                \
-> > > > > > > +                                    \
-> > > > > > > +    asm volatile("" : "=r"(p) : "0"(p));                \
-> > > > > > Use asm volatile("" : "+r"(p)) ?
-> > > > > > 
-> > > > > > > +                                    \
-> > > > > > > +    switch (byte_size) {                        \
-> > > > > > > +    case 1: val = *(unsigned char *)p; break;            \
-> > > > > > > +    case 2: val = *(unsigned short *)p; break;            \
-> > > > > > > +    case 4: val = *(unsigned int *)p; break;            \
-> > > > > > > +    case 8: val = *(unsigned long long *)p; break;            \
-> > > > > > > +    }                                \
-> > > > > > > +    hi = val >> (bit_size + rshift);                \
-> > > > > > > +    hi <<= bit_size + rshift;                    \
-> > > > > > > +    lo = val << (bit_size + lshift);                \
-> > > > > > > +    lo >>= bit_size + lshift;                    \
-> > > > > > > +    nval = new_val;                            \
-> > > > > > > +    nval <<= lshift;                        \
-> > > > > > > +    nval >>= rshift;                        \
-> > > > > > > +    val = hi | nval | lo;                        \
-> > > > > > > +    switch (byte_size) {                        \
-> > > > > > > +    case 1: *(unsigned char *)p      = val; break;            \
-> > > > > > > +    case 2: *(unsigned short *)p     = val; break;            \
-> > > > > > > +    case 4: *(unsigned int *)p       = val; break;            \
-> > > > > > > +    case 8: *(unsigned long long *)p = val; break;            \
-> > > > > > > +    }                                \
-> > > > > > > +})
-> > > > > > I think this should be put in libbpf public header files but not sure
-> > > > > > where to put it. bpf_core_read.h although it is core write?
-> > > > > > 
-> > > > > > But on the other hand, this is a uapi struct bitfield write,
-> > > > > > strictly speaking, CORE write is really unnecessary here. It
-> > > > > > would be great if we can relieve users from dealing with
-> > > > > > such unnecessary CORE writes. In that sense, for this particular
-> > > > > > case, I would prefer rewriting the code by using byte-level
-> > > > > > stores...
-> > > > > or preserve_static_offset to clearly mean to undo bitfield CORE ...
-> > > > Ok, I will do byte-level rewrite for next revision.
-> > > [...]
-> > > 
-> > > This patch seems to work: https://pastes.dxuuu.xyz/0glrf9 .
-> > > 
-> > > But I don't think it's very pretty. Also I'm seeing on the internet that
-> > > people are saying the exact layout of bitfields is compiler dependent.
-> > 
-> > Any reference for this (exact layout of bitfields is compiler dependent)?
-> > 
-> > > So I am wondering if these byte sized writes are correct. For that
-> > > matter, I am wondering how the GCC generated bitfield accesses line up
-> > > with clang generated BPF bytecode. Or why uapi contains a bitfield.
-> > 
-> > One thing for sure is memory layout of bitfields should be the same
-> > for both clang and gcc as it is determined by C standard. Register
-> > representation and how to manipulate could be different for different
-> > compilers.
+
+
+On 11/28/23 06:12, Matthew Wilcox wrote:
+> On Mon, Nov 27, 2023 at 11:41:31AM -0800, Randy Dunlap wrote:
+>> Hi,
+>>
+>> On 11/27/23 07:57, attreyee-muk wrote:
+>>> Respected Maintainers, 
+>>>
+>>> I have made some grammatical changes in the livepatch.rst file where I
+>>> felt that the sentence would have sounded more correct and would have become easy for
+>>> beginners to understand by reading. 
+>>> Requesting review of my proposed changes from the mainatiners. 
+>>>
+>>> Thank You
+>>> Attreyee Mukherjee
+>>>
+>>> Signed-off-by: attreyee-muk <tintinm2017@gmail.com>
+>>> ---
+>>>  Documentation/livepatch/livepatch.rst | 8 ++++----
+>>>  1 file changed, 4 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/Documentation/livepatch/livepatch.rst b/Documentation/livepatch/livepatch.rst
+>>> index 68e3651e8af9..a2d2317b7d6b 100644
+>>> --- a/Documentation/livepatch/livepatch.rst
+>>> +++ b/Documentation/livepatch/livepatch.rst
+>>> @@ -35,11 +35,11 @@ and livepatching:
+>>>  
+>>>  All three approaches need to modify the existing code at runtime. Therefore
+>>> -they need to be aware of each other and not step over each other's toes.
+>>> +they need to be aware of each other and not step over each others' toes.
+>>
+>> I've never seen that written like that, so I disagree here. FWIW.
 > 
-> I was reading this thread:
-> https://github.com/Lora-net/LoRaMac-node/issues/697. It's obviously not
-> authoritative, but they sure sound confident!
-> 
-> I think I've also heard it before a long time ago when I was working on
-> adding bitfield support to bpftrace.
+> "Step over" is new to me too.  I see "step on" much more often.
 
-Wikipedia [0] also claims this:
+Agreed.
 
-        The layout of bit fields in a C struct is
-        implementation-defined. For behavior that remains predictable
-        across compilers, it may be preferable to emulate bit fields
-        with a primitive and bit operators:  
+> As far as placement of the apostrophe,
+> https://ludwig.guru/s/step+on+each+others+toes
+> suggests either omitting the apostrophe or placing it after the s,
+> as attreyee-muk has done is most common.
 
-[0]: https://en.wikipedia.org/wiki/Bit_field#C_programming_language
+Apparently you can find anything on the internet.  :)
+
+Here's the other side:
+
+https://jakubmarian.com/each-others-vs-each-others-in-english/
+
+
+-- 
+~Randy
