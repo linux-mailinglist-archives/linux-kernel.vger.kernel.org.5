@@ -2,65 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 223DE7FC192
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CCC07FC1AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345285AbjK1N4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 08:56:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43376 "EHLO
+        id S1344921AbjK1N6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 08:58:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344924AbjK1N4a (ORCPT
+        with ESMTP id S1344544AbjK1N6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 08:56:30 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87D6E4;
-        Tue, 28 Nov 2023 05:56:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701179796; x=1732715796;
-  h=message-id:date:mime-version:to:cc:references:from:
-   subject:in-reply-to:content-transfer-encoding;
-  bh=eKZ+oHzdq5IQfs4rf63+PspJWcdVwCcylQSqi2BI0ZU=;
-  b=IbbUREWs5B0ZVr5HJXHTkTy7xqRR3vljPBah0jG3aMMkm9aM7O2mIkpH
-   c1Zp8x2EBwyd/EOzGTGhJRa+v5CK6+E2BwuifSbyvJ7XEKxO3e/1pih2F
-   18sk9dhOaFCWjA2+x1XjBV8RIpXQ823Ud9lyZDTVJrkeuUt0fHH632Y3X
-   xtTfeddk+13k/QH5e5C/K75bZlRdpbHP/IM4k1kBhqxgTBX1MH/1JzsPB
-   0P1ybvVkR/QKbKq8VIZg7HSiS4CDsbBWwWyy1Pm6WtjwWACXHe1FRMgjb
-   gb+APc9gfZ7Oy/c7UZcP1KGMVAxGYB0w18RiSOEceSRMeoApeVIAev9CU
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="479124872"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="479124872"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 05:56:36 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="797596580"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="797596580"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
-  by orsmga008.jf.intel.com with ESMTP; 28 Nov 2023 05:56:34 -0800
-Message-ID: <51b8fc3d-25ef-1ab3-d744-8d851a133828@linux.intel.com>
-Date:   Tue, 28 Nov 2023 15:57:51 +0200
+        Tue, 28 Nov 2023 08:58:38 -0500
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69861B5;
+        Tue, 28 Nov 2023 05:58:44 -0800 (PST)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id 5f96e9c6928b5baa; Tue, 28 Nov 2023 14:58:41 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by cloudserver094114.home.pl (Postfix) with ESMTPSA id D9CAB66856C;
+        Tue, 28 Nov 2023 14:58:40 +0100 (CET)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>
+Subject: [PATCH v2 2/2] thermal: trip: Rework thermal_zone_set_trip() and its callers
+Date:   Tue, 28 Nov 2023 14:58:30 +0100
+Message-ID: <1887866.tdWV9SEqCh@kreacher>
+In-Reply-To: <6010559.lOV4Wx5bFT@kreacher>
+References: <6010559.lOV4Wx5bFT@kreacher>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Content-Language: en-US
-To:     Kuen-Han Tsai <khtsai@google.com>
-Cc:     mathias.nyman@intel.com, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alan Stern <stern@rowland.harvard.edu>
-References: <20231117072131.2886406-1-khtsai@google.com>
- <a4a129a3-e271-acbb-949c-534a8e1627ee@linux.intel.com>
- <CAKzKK0rnx+tSFAj6N-U_vcAZ_5P=Hx_Kb97NFkdPMHs8dR3Ukw@mail.gmail.com>
- <a970f296-da67-9a80-ab2f-a94fd16e0fd9@linux.intel.com>
-From:   Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: Re: [PATCH] xhci: fix null pointer deref for xhci_urb_enqueue
-In-Reply-To: <a970f296-da67-9a80-ab2f-a94fd16e0fd9@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrudeifedgheejucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepiedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgv
+ lhdrtghomhdprhgtphhtthhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtoheplhhukhgrshiirdhluhgsrgesrghrmhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,49 +54,237 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.11.2023 17.33, Mathias Nyman wrote:
-> On 18.11.2023 12.19, Kuen-Han Tsai wrote:
->> Hi Mathias
->>
->>>>        if (usb_endpoint_xfer_isoc(&urb->ep->desc))
->>>> @@ -1552,8 +1561,10 @@ static int xhci_urb_enqueue(struct usb_hcd *hcd, struct urb *urb, gfp_t mem_flag
->>>>                num_tds = 1;
->>>>
->>>>        urb_priv = kzalloc(struct_size(urb_priv, td, num_tds), mem_flags);
->>> kzalloc with spinlock held, should preferably be moved outside lock, otherwise should use GFP_ATOMIC
->>
->> Thanks for pointing this out. I realize this patch is incorrect and it
->> is non-ideal to include many codes unrelated to xhci->devs[slot_id]
->> within the lock.
->>
->>> xhci_check_maxpacket() called here can't be called with spinlock held
->>
->> It appears that xhci_check_maxpacket() might potentially lead to a
->> deadlock later if a spinlock is held. Is this the concern you were
->> referring to? If not, please let me know if there are any other
->> potential issues that I may have missed, thanks!
-> 
-> xhci_check_maxpacket() will allocate memory, wait for completion, and use the same lock,
-> so there are several issues here.
-> 
-> I actually think we shouldn't call xhci_check_maxpacket() at all while queuing urbs.
-> 
-> usb core knows when there was max packet size mismatch during enumeration.
-> I think we should add a hook to the hcd that usb core can call in these cases
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-I moved the max packet checks away from xhci_urb_enqueue() and fixed up the locking.
+Both trip_point_temp_store() and trip_point_hyst_store() use
+thermal_zone_set_trip() to update a given trip point, but none of them
+actually needs to change more than one field in struct thermal_trip
+representing it.  However, each of them effectively calls
+__thermal_zone_get_trip() twice in a row for the same trip index value,
+once directly and once via thermal_zone_set_trip(), which is not
+particularly efficient, and the way in which thermal_zone_set_trip()
+carries out the update is not particularly straightforward.
 
-I can't trigger the original issue, but I tested it by setting incorrect initial max packet
-size values.
+Moreover, some checks done by them both need not go under the thermal
+zone lock and code duplication between them can be reduced quite a bit
+by moving the majority of logic into thermal_zone_set_trip().
 
-If you have the chance to test this with your setup I'd appreciate it.
+Rework all of the above functions to address the above.
 
-patches found here:
-git://git.kernel.org/pub/scm/linux/kernel/git/mnyman/xhci.git fix_urb_enqueue_locking
-https://git.kernel.org/pub/scm/linux/kernel/git/mnyman/xhci.git/log/?h=fix_urb_enqueue_locking
+No intentional functional impact.
 
-I'll add them to this thread as well
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-thanks
-Mathias
+v1 -> v2:
+   * Fix 2 typos in the changelog (Lukasz).
+   * Split one change into the [1/2].
+
+---
+ drivers/thermal/thermal_core.h  |    9 ++++++
+ drivers/thermal/thermal_sysfs.c |   52 ++++++++--------------------------
+ drivers/thermal/thermal_trip.c  |   60 +++++++++++++++++++++++++++-------------
+ include/linux/thermal.h         |    3 --
+ 4 files changed, 62 insertions(+), 62 deletions(-)
+
+Index: linux-pm/drivers/thermal/thermal_core.h
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_core.h
++++ linux-pm/drivers/thermal/thermal_core.h
+@@ -122,6 +122,15 @@ void __thermal_zone_device_update(struct
+ void __thermal_zone_set_trips(struct thermal_zone_device *tz);
+ int __thermal_zone_get_trip(struct thermal_zone_device *tz, int trip_id,
+ 			    struct thermal_trip *trip);
++
++enum thermal_set_trip_target {
++	THERMAL_TRIP_SET_TEMP,
++	THERMAL_TRIP_SET_HYST,
++};
++
++int thermal_zone_set_trip(struct thermal_zone_device *tz, int trip_id,
++			  enum thermal_set_trip_target what, const char *buf);
++
+ int thermal_zone_trip_id(struct thermal_zone_device *tz,
+ 			 const struct thermal_trip *trip);
+ int __thermal_zone_get_temp(struct thermal_zone_device *tz, int *temp);
+Index: linux-pm/drivers/thermal/thermal_sysfs.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_sysfs.c
++++ linux-pm/drivers/thermal/thermal_sysfs.c
+@@ -120,31 +120,17 @@ trip_point_temp_store(struct device *dev
+ 		      const char *buf, size_t count)
+ {
+ 	struct thermal_zone_device *tz = to_thermal_zone(dev);
+-	struct thermal_trip trip;
+-	int trip_id, ret;
++	int trip_id;
++	int ret;
++
++	if (!device_is_registered(dev))
++		return -ENODEV;
+ 
+ 	if (sscanf(attr->attr.name, "trip_point_%d_temp", &trip_id) != 1)
+ 		return -EINVAL;
+ 
+-	mutex_lock(&tz->lock);
+-
+-	if (!device_is_registered(dev)) {
+-		ret = -ENODEV;
+-		goto unlock;
+-	}
+-
+-	ret = __thermal_zone_get_trip(tz, trip_id, &trip);
+-	if (ret)
+-		goto unlock;
+-
+-	ret = kstrtoint(buf, 10, &trip.temperature);
+-	if (ret)
+-		goto unlock;
++	ret = thermal_zone_set_trip(tz, trip_id, THERMAL_TRIP_SET_TEMP, buf);
+ 
+-	ret = thermal_zone_set_trip(tz, trip_id, &trip);
+-unlock:
+-	mutex_unlock(&tz->lock);
+-	
+ 	return ret ? ret : count;
+ }
+ 
+@@ -179,30 +165,16 @@ trip_point_hyst_store(struct device *dev
+ 		      const char *buf, size_t count)
+ {
+ 	struct thermal_zone_device *tz = to_thermal_zone(dev);
+-	struct thermal_trip trip;
+-	int trip_id, ret;
++	int trip_id;
++	int ret;
++
++	if (!device_is_registered(dev))
++		return -ENODEV;
+ 
+ 	if (sscanf(attr->attr.name, "trip_point_%d_hyst", &trip_id) != 1)
+ 		return -EINVAL;
+ 
+-	mutex_lock(&tz->lock);
+-
+-	if (!device_is_registered(dev)) {
+-		ret = -ENODEV;
+-		goto unlock;
+-	}
+-
+-	ret = __thermal_zone_get_trip(tz, trip_id, &trip);
+-	if (ret)
+-		goto unlock;
+-
+-	ret = kstrtoint(buf, 10, &trip.hysteresis);
+-	if (ret)
+-		goto unlock;
+-
+-	ret = thermal_zone_set_trip(tz, trip_id, &trip);
+-unlock:
+-	mutex_unlock(&tz->lock);
++	ret = thermal_zone_set_trip(tz, trip_id, THERMAL_TRIP_SET_HYST, buf);
+ 
+ 	return ret ? ret : count;
+ }
+Index: linux-pm/drivers/thermal/thermal_trip.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/thermal_trip.c
++++ linux-pm/drivers/thermal/thermal_trip.c
+@@ -148,39 +148,61 @@ int thermal_zone_get_trip(struct thermal
+ EXPORT_SYMBOL_GPL(thermal_zone_get_trip);
+ 
+ int thermal_zone_set_trip(struct thermal_zone_device *tz, int trip_id,
+-			  const struct thermal_trip *trip)
++			  enum thermal_set_trip_target what, const char *buf)
+ {
+-	struct thermal_trip t;
+-	int ret;
++	struct thermal_trip *trip;
++	int val, ret = 0;
+ 
+-	ret = __thermal_zone_get_trip(tz, trip_id, &t);
++	if (trip_id < 0 || trip_id >= tz->num_trips)
++		ret = -EINVAL;
++
++	ret = kstrtoint(buf, 10, &val);
+ 	if (ret)
+ 		return ret;
+ 
+-	if (t.type != trip->type)
+-		return -EINVAL;
++	mutex_lock(&tz->lock);
+ 
+-	if (t.temperature != trip->temperature && tz->ops->set_trip_temp) {
+-		ret = tz->ops->set_trip_temp(tz, trip_id, trip->temperature);
+-		if (ret)
+-			return ret;
+-	}
++	trip = &tz->trips[trip_id];
+ 
+-	if (t.hysteresis != trip->hysteresis && tz->ops->set_trip_hyst) {
+-		ret = tz->ops->set_trip_hyst(tz, trip_id, trip->hysteresis);
+-		if (ret)
+-			return ret;
++	switch (what) {
++	case THERMAL_TRIP_SET_TEMP:
++		if (val == trip->temperature)
++			goto unlock;
++
++		if (tz->ops->set_trip_temp) {
++			ret = tz->ops->set_trip_temp(tz, trip_id, val);
++			if (ret)
++				goto unlock;
++		}
++		trip->temperature = val;
++		break;
++
++	case THERMAL_TRIP_SET_HYST:
++		if (val == trip->hysteresis)
++			goto unlock;
++
++		if (tz->ops->set_trip_hyst) {
++			ret = tz->ops->set_trip_hyst(tz, trip_id, val);
++			if (ret)
++				goto unlock;
++		}
++		trip->hysteresis = val;
++		break;
++
++	default:
++		ret = -EINVAL;
++		goto unlock;
+ 	}
+ 
+-	if (tz->trips && (t.temperature != trip->temperature || t.hysteresis != trip->hysteresis))
+-		tz->trips[trip_id] = *trip;
+-
+ 	thermal_notify_tz_trip_change(tz->id, trip_id, trip->type,
+ 				      trip->temperature, trip->hysteresis);
+ 
+ 	__thermal_zone_device_update(tz, THERMAL_TRIP_CHANGED);
+ 
+-	return 0;
++unlock:
++	mutex_unlock(&tz->lock);
++
++	return ret;
+ }
+ 
+ int thermal_zone_trip_id(struct thermal_zone_device *tz,
+Index: linux-pm/include/linux/thermal.h
+===================================================================
+--- linux-pm.orig/include/linux/thermal.h
++++ linux-pm/include/linux/thermal.h
+@@ -283,9 +283,6 @@ int __thermal_zone_get_trip(struct therm
+ int thermal_zone_get_trip(struct thermal_zone_device *tz, int trip_id,
+ 			  struct thermal_trip *trip);
+ 
+-int thermal_zone_set_trip(struct thermal_zone_device *tz, int trip_id,
+-			  const struct thermal_trip *trip);
+-
+ int for_each_thermal_trip(struct thermal_zone_device *tz,
+ 			  int (*cb)(struct thermal_trip *, void *),
+ 			  void *data);
+
+
 
