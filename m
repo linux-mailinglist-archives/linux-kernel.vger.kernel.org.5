@@ -2,188 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 973D77FB9E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:09:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B10237FB9EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:11:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344622AbjK1MJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 07:09:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40458 "EHLO
+        id S1344527AbjK1MLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 07:11:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344381AbjK1MJW (ORCPT
+        with ESMTP id S1344302AbjK1MK6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 07:09:22 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E3E7182;
-        Tue, 28 Nov 2023 04:09:28 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40b397793aaso24700815e9.0;
-        Tue, 28 Nov 2023 04:09:28 -0800 (PST)
+        Tue, 28 Nov 2023 07:10:58 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38C0182;
+        Tue, 28 Nov 2023 04:11:04 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-332fd81fc8dso1702541f8f.3;
+        Tue, 28 Nov 2023 04:11:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701173367; x=1701778167; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701173463; x=1701778263; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:subject:cc
          :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=oGZ/AOFCUofp/Ip1CkJeKXSMao5eFIWJrE7N8FH5Dk4=;
-        b=h3usQyvEcDxiGMbYnhFh+sY19pffIWnIa6aEI/xTNJnxg/Egci3WGZbeSz9AOc2G2Q
-         HlTHrsYtapKcN6ZyPIu95Ry/1U81k2qNcwQ7fJxaptB2AS1wmthWrB3Kpib9pLdEvV3S
-         vSMyFh6wF6xbh/4XVPt0lvnW4b1WH6P2sxuZfpMeP8IIe2jWcX7Vy7+2IG1ZdVK9YKkk
-         64IcsrkDcizWVuwSj0/wX/5wkd/RENMSTQSDmKuQ4e1EauJgcCXUbfe/QLXAaJpVfzE+
-         qSXs+Ef73UgJlKkFgwS5f4CRZsfrxQtopywGWYH/7AnAOGZ+2/7HKamZ6QdyqlBPPT3l
-         EWtg==
+        bh=HJdSIDCxSEvtc8ZvR5XfMxZE4GiAmSPMLyCTMUELYDk=;
+        b=nolgIYQavzigaMj4HTRgH5sV2sj2W0EdROUq791Qhu5yaAMriEq+gjqCcE9oWWPr/S
+         nyVrtNjU+1O9JoYHRBzpNpfkcS6xeeboTT6H50lSFIwgr0W5MriWG+CU3+PzYmULPWHb
+         sc+t/OoUO9OshZrlME0T5eH6AcyH8/splDDF8Flvz+IwX4QTI986QR5bzjRyb0Br3Tij
+         0m+3psKYk/w8J928kIp+C/pMpiOBvtYIWpkoc+g2+ytrY0gSv71o+piZr3hgDY1Xhuvr
+         6TnFfJUrWqZzEQ+ChAanHXHFNHYo05zVRt3T9oP3MxoBppkH0O7C0N63UevSq4Kkwb2n
+         aYyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701173367; x=1701778167;
+        d=1e100.net; s=20230601; t=1701173463; x=1701778263;
         h=in-reply-to:content-disposition:mime-version:references:subject:cc
          :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oGZ/AOFCUofp/Ip1CkJeKXSMao5eFIWJrE7N8FH5Dk4=;
-        b=iEyUdBfNC/5u+mejT0SLZ5qbCk88mAHXJ6Q5rSAj29Ar6bzyJsV3D6+sdjIJUkglRc
-         T46Z9ybhG0flYJy/941dj7Ys5Tuo4RR438Cn/3o4QIEjmhrnTFQdj65ammu1Zm0ru5od
-         sAdatcfVqV92QFL0kXaZoTL+G7ItrkCkm4ntohaSTVdf/PKjzG5Z90RCxyOGvJSw43Kl
-         /Tlv2wBL/9HUdZlgOGqeNO/Ff1WEvGxDg83NDFVDRk2GC5GA2fIEtfWJ1Gup50eH3/JE
-         1B7nFJ4Gykb13r22UQ/lWrENOLtce7i4KGLYDDSq3l5jqxxWRvA4TuQ3rUvvYClpZ4DB
-         QD1g==
-X-Gm-Message-State: AOJu0YzqPwsO7f5l2/lm9EddLmhydonjEaLF+jXxKPq4N5X1XpScBk3x
-        IkvGwGHuyoQOBqeF2N1e61I=
-X-Google-Smtp-Source: AGHT+IGbBBv6SLNWzhb+OGjrpkkr9ufbL/wiM7k+E/3ue7yfq8P984X8hsnAh2R7HaBI8aT4sqQLDQ==
-X-Received: by 2002:a05:600c:5124:b0:40b:2ad8:579f with SMTP id o36-20020a05600c512400b0040b2ad8579fmr15342645wms.3.1701173366197;
-        Tue, 28 Nov 2023 04:09:26 -0800 (PST)
+        bh=HJdSIDCxSEvtc8ZvR5XfMxZE4GiAmSPMLyCTMUELYDk=;
+        b=xVc1hg/GAh3a/f9hOMTanRsR66yhOVc7epELMuon0WAM1sVYw0Jblhy0sDimi9XZvT
+         gPVqCXhpQtbRCGpvA/2GCiBWlIPvn+D0+ZUgQ0ZhOQEoAD4GbLZFRa8q4aCdGc5zKnmM
+         1EFwwwZ7NHES/KYK84qP1jidSJN0MTyMvBgvj8WqEj/0ito3V2Yuz0xrfyrs4T3ygTH4
+         /mkEfnGvkTi5JJeq+v4+6m3CQ2q2MROJFW817Byr5+6jgUjVQTSbGLpN3bHaML4I0Vuq
+         q5OUl3uyRo+H9avWPr20G+gDCcpwzeyfEaRaZpzxhJBtqIgCBS6A2ipCoDCyGXYwHwyI
+         Sskw==
+X-Gm-Message-State: AOJu0YyCtlDSgmAtoAOjQGOppJSr92wQ2WYCz88c5rhjUnr1XPCrbv6F
+        vrYkeERdsToq+73oFpWiuwY=
+X-Google-Smtp-Source: AGHT+IGcuds64zZU5GSlQaktzAPSJ0XvT5T6vmTEYD7+PSEklEmXzr/hUvLxM0lcVF7awEmMamWYQQ==
+X-Received: by 2002:adf:a49b:0:b0:32d:9395:dec6 with SMTP id g27-20020adfa49b000000b0032d9395dec6mr9246805wrb.67.1701173462996;
+        Tue, 28 Nov 2023 04:11:02 -0800 (PST)
 Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id n19-20020a05600c501300b0040b4c26d2dasm2231768wmr.32.2023.11.28.04.09.24
+        by smtp.gmail.com with ESMTPSA id c11-20020a5d4f0b000000b00332e67d6564sm13472891wru.67.2023.11.28.04.11.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 04:09:25 -0800 (PST)
-Message-ID: <6565d875.050a0220.d709d.658b@mx.google.com>
-X-Google-Original-Message-ID: <ZWXYcwbGdFX0vGMD@Ansuel-xps.>
-Date:   Tue, 28 Nov 2023 13:09:23 +0100
+        Tue, 28 Nov 2023 04:11:02 -0800 (PST)
+Message-ID: <6565d8d6.5d0a0220.5f8f1.b9d7@mx.google.com>
+X-Google-Original-Message-ID: <ZWXY1O0fHIS4tBo-@Ansuel-xps.>
+Date:   Tue, 28 Nov 2023 13:11:00 +0100
 From:   Christian Marangi <ansuelsmth@gmail.com>
 To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Robert Marko <robert.marko@sartura.hr>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [net-next PATCH RFC v3 2/8] net: phy: add initial support for
- PHY package in DT
-References: <20231126015346.25208-1-ansuelsmth@gmail.com>
- <20231126015346.25208-3-ansuelsmth@gmail.com>
- <b28b5d10-08cd-4e30-9909-f37834d80c81@lunn.ch>
+        Vladimir Oltean <olteanv@gmail.com>,
+        David Epping <david.epping@missinglinkelectronics.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Harini Katakam <harini.katakam@amd.com>,
+        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH v2 3/4] net: phy: restructure
+ __phy_write/read_mmd to helper and phydev user
+References: <20231126235141.17996-1-ansuelsmth@gmail.com>
+ <20231126235141.17996-3-ansuelsmth@gmail.com>
+ <d3747eda-7109-4d53-82fa-9df3f8d71f62@lunn.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b28b5d10-08cd-4e30-9909-f37834d80c81@lunn.ch>
+In-Reply-To: <d3747eda-7109-4d53-82fa-9df3f8d71f62@lunn.ch>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        WEIRD_QUOTING autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 01:39:02AM +0100, Andrew Lunn wrote:
-> > +static int of_phy_package(struct phy_device *phydev)
-> > +{
-> > +	struct device_node *node = phydev->mdio.dev.of_node;
-> > +	struct device_node *package_node;
-> > +	u32 base_addr;
-> > +	int ret;
-> > +
-> > +	if (!node)
-> > +		return 0;
-> > +
-> > +	package_node = of_get_parent(node);
-> > +	if (!package_node)
-> > +		return 0;
-> > +
-> > +	if (!of_device_is_compatible(package_node, "ethernet-phy-package"))
-> > +		return 0;
-> > +
-> > +	if (of_property_read_u32(package_node, "reg", &base_addr))
-> > +		return -EINVAL;
-> > +
-> > +	ret = devm_phy_package_join(&phydev->mdio.dev, phydev,
-> > +				    base_addr, 0);
+On Tue, Nov 28, 2023 at 01:46:10AM +0100, Andrew Lunn wrote:
+> On Mon, Nov 27, 2023 at 12:51:40AM +0100, Christian Marangi wrote:
+> > Restructure phy_write_mmd and phy_read_mmd to implement generic helper
+> > for direct mdiobus access for mmd and use these helper for phydev user.
+> > 
+> > This is needed in preparation of PHY package API that requires generic
+> > access to the mdiobus and are deatched from phydev struct but instead
+> > access them based on PHY package base_addr and offsets.
 > 
-> No don't do this. It is just going to lead to errors. The PHY driver
-> knows how many PHYs are in the package. So it can figure out what the
-> base address is and create the package. It can add each PHY as they
-> probe. That cannot go wrong.
+> Why is this all going into the header file?
 >
 
-No it can't and we experiment this with a funny implementation on the
-QSDK. Maybe I'm confused?
+Was following the pattern done by phy_package_read/write.
 
-Example on QSDK they were all based on a value first_phy_addr. This was
-filled with the first phy addr found (for the package).
+Considering those API are not single function call... I wonder if those
+should be moved in phy_core.c instead of static inline them in the
+header.
 
-All OEM followed a template with declaring all sort of bloat and they
-probably have no idea what they are actually putting in DT. We reverse
-all the properties and we gave a meaning to all the values...
-
-We quikly notice that the parsing was very fragile and on some strange
-device (an example a Xiaomi 36000) the first PHY for the package was
-actually not attached to anything. Resulting in all this logic of
-"first_phy_addr" failing as by removing the first PHY, the value was set
-to a wrong addr resulting in all sort of problems.
-
-This changed a lot (the original series used a more robust way with
-phandle, but it was asked to use base_addr and use offset in the PHY
-addr, less robust still OK)
-
-If we revert to PHY driver making the PHY package then we lose all kind
-of ""automation"" of having a correct base addr. In PHY driver we would
-have to manually parse with parent (as we do here) and check the value?
-
-Why not do the thing directly on PHY core?
-
-By making the PHY driver creating the package, we are back on all kind
-of bloat in the PHY driver doing the same thing (parsing package nodes,
-probe_once check, config_once check) instead of handling them directly
-in PHY core.
-
-Also just to point out, the way the current PHY driver derive the base
-addr is problematic. All of them use special regs to find the base one
-but I can totally see a PHY driver in the future assuming the first PHY
-being the first in the package to be probed, set the base addr on the
-first PHY and also assuming that it's always define in DT.
-
-If we really don't want the OF parsing in PHY core and autojoin them,
-is at least OK to introduce an helper to get the base addr from a PHY
-package node structure? (to at least try to minimaze the bloat that PHY
-driver will have?)
-
-Also with the OF support dropped, I guess also the added API in this
-series has to be dropped. (as they would be called after the first PHY
-probe and that is problematic if for some reason only one PHY of the
-package is declared in DT) (an alternative might be moving the
-probe_once after the PHY is probed as we expect the phy_package_join
-call done in the PHY probe call)
-
-> If you create the package based on DT you have to validate that the DT
-> is correct. You need the same information, the base address, how many
-> packages are in the PHY, etc. So DT gains your nothing except more
-> potential to get it wrong.
-> 
-
-For the sake of package join, only the reg has to be validated and the
-validation is just if addrs makes sense. Everything else can be done by
-PHY package probe once.
-
-> Please use DT just for properties for the package, nothing else.
-> 
+What do you think?
 
 -- 
 	Ansuel
