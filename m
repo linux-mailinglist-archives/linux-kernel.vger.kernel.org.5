@@ -2,74 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 891277FB40E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:27:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FD1D7FB412
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:29:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344029AbjK1I1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 03:27:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58626 "EHLO
+        id S1344038AbjK1I3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 03:29:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjK1I1h (ORCPT
+        with ESMTP id S232697AbjK1I3L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 03:27:37 -0500
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6444B91
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:27:42 -0800 (PST)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id C5FE0240103
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:27:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1701160059; bh=s126nyyeqAhDr0wZnrkk/1Osln9ka5MImtMch8+JwkM=;
-        h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:
-         Content-Disposition:From;
-        b=IYe0JnYyQ02t/4R4+25zF1oQujUUwJQTcTd1mny7PWZZ/qaxsIwx0dW00TY6HIhR6
-         BsXJMOdHmX+WsS3SwhZatheLnLav9jcREISi/Qko8x0n34aPEHOjzDa4YAQs5j7cCV
-         aSucv1OjuN3/qbD3Iyx+M4y1yw7PChPi1i7lMCoMkYEm4aXYCC0xk1MwepSbhnTr2/
-         JRqYNCdwM3zmvtom8GSEBR80eBZzkifZomWqsR67mAjvAqlwclztkOI8n7sruMDUeS
-         3J+kHyGRRZra8xe1wGSp2TTq4fm8EBrwF2lfPnuRApZwwS9uNgfYml0qVfxX3fNxil
-         BNSXiULjCOzWg==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4SfbDW113Bz6twS;
-        Tue, 28 Nov 2023 09:27:39 +0100 (CET)
-Date:   Tue, 28 Nov 2023 08:27:37 +0000
-From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH] lib: kstrtox: fix typo in comment
-Message-ID: <ZWWkeVTvDBQDA_SF@monster.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 28 Nov 2023 03:29:11 -0500
+Received: from zju.edu.cn (mail.zju.edu.cn [61.164.42.155])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BB767100
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:29:15 -0800 (PST)
+Received: from localhost.localdomain (unknown [10.190.69.212])
+        by mail-app3 (Coremail) with SMTP id cC_KCgDX33OjpGVlGlw0AA--.115S4;
+        Tue, 28 Nov 2023 16:28:26 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Zhengchao Shao <shaozhengchao@huawei.com>,
+        Rahul Rameshbabu <rrameshbabu@nvidia.com>,
+        Simon Horman <horms@kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>, Aya Levin <ayal@nvidia.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] net/mlx5e: fix a potential double-free in fs_any_create_groups
+Date:   Tue, 28 Nov 2023 16:28:09 +0800
+Message-Id: <20231128082812.24483-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgDX33OjpGVlGlw0AA--.115S4
+X-Coremail-Antispam: 1UD129KBjvdXoWrKrWxAr45WrW7CF4rZFW3trb_yoWkKFc_C3
+        4Iq3Z5JayYqr4rKw13WrW5GrWI9r4q9rn3AFZIgFZ8t347uF4UJ34fZFy3CFn3uFyUCr90
+        qr42qF47C34UtjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbskFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
+        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
+        0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
+        87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73Uj
+        IFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgsIBmVfIgMaAQAbsc
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Delete one of the double f's in "iff".
+When kcalloc() for ft->g succeeds but kvzalloc() for in fails,
+fs_any_create_groups() will free ft->g. However, its caller
+fs_any_create_table() will free ft->g again through calling
+mlx5e_destroy_flow_table(), which will lead to a double-free.
+Fix this by removing the kfree(ft->g) in fs_any_create_groups().
 
-Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
+Fixes: 0f575c20bf06 ("net/mlx5e: Introduce Flow Steering ANY API")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 ---
- lib/kstrtox.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/lib/kstrtox.c b/lib/kstrtox.c
-index d586e6af5e5a..b0a9fdce15b3 100644
---- a/lib/kstrtox.c
-+++ b/lib/kstrtox.c
-@@ -340,7 +340,7 @@ EXPORT_SYMBOL(kstrtos8);
-  * @s: input string
-  * @res: result
-  *
-- * This routine returns 0 iff the first character is one of 'YyTt1NnFf0', or
-+ * This routine returns 0 if the first character is one of 'YyTt1NnFf0', or
-  * [oO][NnFf] for "on" and "off". Otherwise it will return -EINVAL.  Value
-  * pointed to by res is updated upon finding a match.
-  */
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c b/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
+index be83ad9db82a..b222d23bfb9a 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/fs_tt_redirect.c
+@@ -434,7 +434,6 @@ static int fs_any_create_groups(struct mlx5e_flow_table *ft)
+ 	ft->g = kcalloc(MLX5E_FS_UDP_NUM_GROUPS, sizeof(*ft->g), GFP_KERNEL);
+ 	in = kvzalloc(inlen, GFP_KERNEL);
+ 	if  (!in || !ft->g) {
+-		kfree(ft->g);
+ 		kvfree(in);
+ 		return -ENOMEM;
+ 	}
 -- 
-2.43.0
+2.17.1
 
