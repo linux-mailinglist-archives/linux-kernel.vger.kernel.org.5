@@ -2,160 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D147FC899
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:53:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A277FC848
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:52:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346293AbjK1VgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 16:36:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46776 "EHLO
+        id S1345964AbjK1Vg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 16:36:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234863AbjK1VgD (ORCPT
+        with ESMTP id S1345696AbjK1VgM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 16:36:03 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E15E2D60
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:36:05 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5c60026e8dbso213903a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:36:05 -0800 (PST)
+        Tue, 28 Nov 2023 16:36:12 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 406282D56;
+        Tue, 28 Nov 2023 13:36:18 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-77d708e4916so314314085a.3;
+        Tue, 28 Nov 2023 13:36:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701207365; x=1701812165; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oTVlLTZZmikOeFqoqYLREHBTF55+gG2wuAmC6HPrHN4=;
-        b=kuDwZIASyagCsGZh2bDS2mH2gp0JyH33VXzAd9Rm35vw2Ra5iIGviyl+nJZvg7oHVg
-         kN2ccJKravFu28T/akIlvY2W9+Ag1AETWWBSP6gg3B7HC8JRt4/THHUXANXZJYedS53R
-         cx4MBxmEpR821F4t1/DmZzOyVAYbxxBQvKGwbwPI6B+YJQiShzoffkyHskkRlSSmp5PK
-         alIirvakrTNByJ0sLqMwC5WOq2TmE27QQYpizSznyZ8+CKLvHRzWWoX3msnQWZR02JOZ
-         0NlA+jrfoCTW6Y3ULy0bxebdmJYzOlxP+cCYWvPiGSUer2QtB9N2vCRqNSp2HvfHg+Gu
-         bkZw==
+        d=gmail.com; s=20230601; t=1701207377; x=1701812177; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9+7egZpgbxWlQy7x1pNLLDFc7cb12zF09MZ6gXGVBBI=;
+        b=bCtp6mL1ul/UWguDZAwtY/6sx3jH4/Ej34/IZyhHTEd0nU2A7WGCyP5nl0Nuue9vx4
+         KMRTMPJbTGptvB4OAcVDFwmcfEPJy3iCUaMbns2ibPDoCNPVRWz9LGXbp3ZTqlQkkake
+         NM3cOHK+NJKBmVgm64Bgxxfyx/QuL+Op+53EhhAOh/k1SnKdIFrj6SYTczalDF1RWRQy
+         oLnzSPoAIJ466rr44DGTMGB3Tr08kkO08L5vAySj84XaVrmKGgJDQtAXdl/VeNRcez0g
+         dXpn2s72HUXzn402sHv/jc4FLVAmvBUBA31aSGI3p+1rUNoZJkkRrbC6zfVXZupCvLMY
+         9W7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701207365; x=1701812165;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oTVlLTZZmikOeFqoqYLREHBTF55+gG2wuAmC6HPrHN4=;
-        b=ejm0LM5NO6PesF5PDmFJ521gKo0mFfL9QFNKfj0oAeGIWOr7ky8/5NqaLcteUJFiSa
-         A2j+/cAICXY3cW+SC/fRoQEahs1cybl3HcnJabmJ0E91xBSFgEJbRiCkc/Ka1FBQ58Ue
-         Xv/YyghmA0MZeI1jdEJNwj56JgvbQ7s5Gd/rQ8FNnHDiU0nA02AXqT1Ie6g6LSfRYH0S
-         5PqwOwla+7h9pY0sx7Q6uEg5V8ou2fkxKoSoH0vQYZ7YA9eF3lPRE2/cV4XTcamAvsW+
-         WtvNnmbJf5lW/7OIKkxyC86Vxy3m7Cep6I1psyOPGEnnJEQGVSNJvxZ6piJ9UAceUUws
-         /DLA==
-X-Gm-Message-State: AOJu0YyRZqp4yLRbLa6928sTHLAHxY4eu8y7pNPL6XHt0aysSkxNBi16
-        4QFPU/NtC3+hyrDMheLVCzqn666vY0HBpEbQTecWGA==
-X-Google-Smtp-Source: AGHT+IHnu+R39CMW8bY/8u262kP5zKg3VQ/mjN6LJEe4dATUMhYEKF46M96JeCHr013bip0jw7vCgK8zjEoEnqa15VE=
-X-Received: by 2002:a17:90b:390d:b0:285:da91:69a2 with SMTP id
- ob13-20020a17090b390d00b00285da9169a2mr7861663pjb.31.1701207364753; Tue, 28
- Nov 2023 13:36:04 -0800 (PST)
-MIME-Version: 1.0
-References: <CGME20231126091120epcas2p4a1320e3b0f9be8f8a0f575a322981d38@epcas2p4.samsung.com>
- <20231126094618.2545116-1-youngmin.nam@samsung.com> <bb738a6b-815d-4fad-b73f-559f1ba8cd68@linaro.org>
- <ZWU75VtJ/mXpMyQr@perf> <1fd55b36-0837-4bf7-9fde-e573d6cb214a@linaro.org>
-In-Reply-To: <1fd55b36-0837-4bf7-9fde-e573d6cb214a@linaro.org>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Tue, 28 Nov 2023 15:35:53 -0600
-Message-ID: <CAPLW+4n0SAOTb6wocY-WjkxgSFMbx+nVuqdaPcNYVDsbfg+EfA@mail.gmail.com>
-Subject: Re: [PATCH v2] pinctrl: samsung: add irq_set_affinity() for non wake
- up external gpio interrupt
-To:     Youngmin Nam <youngmin.nam@samsung.com>
-Cc:     tomasz.figa@gmail.com, s.nawrocki@samsung.com,
-        alim.akhtar@samsung.com, linus.walleij@linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        d=1e100.net; s=20230601; t=1701207377; x=1701812177;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9+7egZpgbxWlQy7x1pNLLDFc7cb12zF09MZ6gXGVBBI=;
+        b=HER3tA758eiCu+RcOoilS9pmPVay/QDLYIxc3vo0yzNAH89qsdfbutu+Hd5sC7eZeJ
+         w5DIzeJLnlcxBwty9SxV5qzGcm23HY6S60cuWy2NEnXJzsYOp9aSulQpV8kEHESpcKcP
+         aF9zysrcO6DK4GG76LGdm308kUN5wlLu4qrZAWrsa/7o7Sru9vMQ9czAAhSVzCkS8+fv
+         wxas+67ZcPbXAiKq0weuJDDVsW0nz6Bo1DiXy8cuRi0Dh/xEvmlQB5rsaSqkcO1L6NGU
+         pZ4S1wlySoK1i85vNp6b3t2XgMU3jKF0BuJrU7QsQlHbhFNdUeL6QsbjFrw65DFS98VN
+         PS3A==
+X-Gm-Message-State: AOJu0YykKIgbyZD1GKTWvjpSx6ye6o/rFVPJcLZ3PY/g4SivJuKA2M7B
+        2WEx+dxGjBje/sJJcS74BhDeAcqfsU4pbQ==
+X-Google-Smtp-Source: AGHT+IGezPzPpBB7DD09TuoxH+6HfyyvNO4ke1lW5qOxroc6VuYdtXuB6VytQfYAYI66586Qug016w==
+X-Received: by 2002:a05:620a:852f:b0:778:9156:3f07 with SMTP id pe47-20020a05620a852f00b0077891563f07mr16334065qkn.24.1701207377382;
+        Tue, 28 Nov 2023 13:36:17 -0800 (PST)
+Received: from angquan-linux.. ([72.36.119.4])
+        by smtp.gmail.com with ESMTPSA id q5-20020a05620a0c8500b00775bb02893esm4819851qki.96.2023.11.28.13.36.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 13:36:17 -0800 (PST)
+From:   angquan yu <angquan21@gmail.com>
+X-Google-Original-From: angquan yu
+To:     skhan@linuxfoundation.org
+Cc:     shuah@kernel.org, linux-kselftest@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        angquan yu <angquan21@gmail.com>
+Subject: [PATCH] Fix Format String Warning in breakpoint_test
+Date:   Tue, 28 Nov 2023 15:36:07 -0600
+Message-Id: <20231128213607.59587-1-angquan21@gmail.com>
+X-Mailer: git-send-email 2.39.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 1:29=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 28/11/2023 02:01, Youngmin Nam wrote:
-> > On Mon, Nov 27, 2023 at 10:54:56AM +0100, Krzysztof Kozlowski wrote:
-> >> On 26/11/2023 10:46, Youngmin Nam wrote:
-> >>> To support affinity setting for non wake up external gpio interrupt,
-> >>> add irq_set_affinity callback using irq number from pinctrl driver da=
-ta.
-> >>>
-> >>> Before this patch, changing the irq affinity of gpio interrupt is not=
- possible:
-> >>>
-> >>>     # cat /proc/irq/418/smp_affinity
-> >>>     3ff
-> >>>     # echo 00f > /proc/irq/418/smp_affinity
-> >>
-> >> Does this command succeed on your board?
-> >>
-> > Yes.
->
-> Hm, fails all the time one mine.
->
+From: angquan yu <angquan21@gmail.com>
 
-I tried to test this patch on E850-96, and an attempt to write into
-smp_affinity (for some GPIO irq) also fails for me:
+This commit resolves a compiler warning regardingthe
+use of non-literal format strings in breakpoint_test.c.
 
-    # echo f0 > smp_affinity
-    -bash: echo: write error: Input/output error
+The functions `ksft_test_result_pass` and `ksft_test_result_fail`
+were previously called with a variable `msg` directly, which could
+potentially lead to format string vulnerabilities.
 
-When I add some pr_err() to exynos_irq_set_affinity(), I can't see
-those printed in dmesg. So I guess exynos_irq_set_affinity() doesn't
-get called at all. So the error probably happens before
-.irq_set_affinity callback gets called.
+Changes made:
+- Modified the calls to `ksft_test_result_pass` and `ksft_test_result_fail`
+by adding a "%s" format specifier. This explicitly declares `msg` as a
+string argument, adhering to safer coding practices and resolving
+the compiler warning.
 
-Youngmin, can you please try and test this patch on E850-96? This
-board is already supported in upstream kernel. For example you can use
-"Volume Up" interrupt for the test, which is GPIO irq.
+This change does not affect the functional behavior of the code but ensures
+better code safety and compliance with recommended C programming standards.
 
-> >
-> >>>     # cat /proc/irq/418/smp_affinity
-> >>>     3ff
-> >>>     # cat /proc/interrupts
-> >>>                CPU0       CPU1       CPU2       CPU3    ...
-> >>>     418:       3631          0          0          0    ...
-> >>>
-> >>> With this patch applied, it's possible to change irq affinity of gpio=
- interrupt:
-> >>
-> >> ...
-> >>
-> >> On which board did you test it?
-> >>
-> >>
-> > I tested on S5E9945 ERD(Exynos Reference Development) board.
->
-> There is no such board upstream. How can we reproduce this issue? I am
-> afraid we cannot test neither the bug nor the fix.
->
-> >
-> >>> +   if (parent)
-> >>> +           return parent->chip->irq_set_affinity(parent, dest, force=
-);
-> >>> +
-> >>
-> >> I think there is a  helper for it: irq_chip_set_affinity_parent().
-> >>
-> >>
-> >
-> > The irq_chip_set_affinity_parent() requires parent_data of irq_data.
->
-> Hm, so now I wonder why do we not have parent_data...
->
-> > But when I tested as below, exynos's irqd->parent_data was null.
-> > So we should use irqchip's affinity function instead of the helper func=
-tion.
-> >
->
->
->
-> Best regards,
-> Krzysztof
->
+The previous warning is "breakpoint_test.c:287:17:
+warning: format not a string literal and no format arguments
+[-Wformat-security]
+  287 |                 ksft_test_result_pass(msg);
+      |                 ^~~~~~~~~~~~~~~~~~~~~
+breakpoint_test.c:289:17: warning: format not a string literal
+and no format arguments [-Wformat-security]
+  289 |                 ksft_test_result_fail(msg);
+      |    "
+
+Signed-off-by: angquan yu <angquan21@gmail.com>
+---
+ tools/testing/selftests/breakpoints/breakpoint_test.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/breakpoints/breakpoint_test.c b/tools/testing/selftests/breakpoints/breakpoint_test.c
+index 3266cc929..d46962a24 100644
+--- a/tools/testing/selftests/breakpoints/breakpoint_test.c
++++ b/tools/testing/selftests/breakpoints/breakpoint_test.c
+@@ -284,9 +284,9 @@ static void check_success(const char *msg)
+ 	nr_tests++;
+ 
+ 	if (ret)
+-		ksft_test_result_pass(msg);
++		ksft_test_result_pass("%s", msg);
+ 	else
+-		ksft_test_result_fail(msg);
++		ksft_test_result_fail("%s", msg);
+ }
+ 
+ static void launch_instruction_breakpoints(char *buf, int local, int global)
+-- 
+2.39.2
+
