@@ -2,209 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F397FC95F
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:21:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0CEF7FC959
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:20:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346667AbjK1WVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 17:21:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51906 "EHLO
+        id S1376517AbjK1WUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 17:20:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346689AbjK1WU4 (ORCPT
+        with ESMTP id S1346632AbjK1WUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 17:20:56 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449BB10D1;
-        Tue, 28 Nov 2023 14:21:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701210062; x=1732746062;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=sbgnAbkOe0wuAoGs85gVt0eG8dmT/kTdaKgF6duRm+U=;
-  b=ZRPdnyQvBao+yAnCnbkTbo9pIkSOf1fCu9AjgVuRKgZqdIune2OPD3gi
-   OUJKvaK4uIvBbpKI4WOkLziX0JKYyVHPer2Moh2oUt4PG2hreeFcgdIyp
-   jwBRmiCY3IVUfHZdofdmrOJKkmNHG/B6lPfyxshz+6RqfGr1LIViE2chc
-   Mh8+jnfE/4A+ah9zJ1/NxN+dCMTqbne0Yo+g6Go3Ubw49edBpizycB6MB
-   49BjQhQBZIlsk5SbOlacGBLWKiuz09UFPbNj/EjSk7L7YfsEuF1+xwaVh
-   zdMMMXBGsW6gX1g9/n1H3uiRu6AwtuObbMmyWg0CCgXETLHevPZ0YP0l6
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="459544619"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="459544619"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 14:21:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="912607573"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="912607573"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Nov 2023 14:20:57 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 28 Nov 2023 14:20:57 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 28 Nov 2023 14:20:13 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Tue, 28 Nov 2023 14:20:13 -0800
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.169)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Tue, 28 Nov 2023 14:19:55 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FhCpTY6k12h4bxZYEW1sgE87bboM/21zB4R/d6bO19nMciE+GznA79fn7hig16NAdUcCWaeuF5N9+rUr80vzsONzIwD6g8Wej/AItmIhXffXLaZGO85Rt8BsDKHm+wqegxchYR8FOhb9K3HSGFzdlSg0pD8bpiBWx2puyyR2PexJhNgdXvGgTcG4pT0q05d2GPBae55jptrGw5Mr4Tp+2zjbu6roG+sBpCbE9KzXyb0ka/qRsveXNp0h192cbGqLdCEx2p3QE8nIzUQiQlyZc2vokxfTcgZkccXXBcmfWZdLac/lVvAjtLpL0eSoCLGvmCCy9ayXyxBuTaIMORInsQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=c5zHamoMILYWTWIFADcdQlccWRwYqykp2LBcy6tN0dU=;
- b=WHN/1woHzIyVyhhUJgki1tvEBG6RU8kBkSyjTtOZ6epK+vFMcNrdWN0s5gHajcE6gI6hq3EE8a05/ybacUJF49sK1G4bcTM5L6eIrzRNVW9YOZzGgiw5rgbqpjR3Hj9pompN0JF32zpHfAfJ64bEF5NTyVAB7RTqC5r+sEGX5PnPgQk0xb9J0qVSgkbEzE86KYESRR0leJ4lH4bisv3AoEzHsnTfTyFU52d0TIskEdIr8sy1iEUEGX+Ni5uJKb6LqLleldSFqbrRgPWfV+VSunE94EBfEQofJDhfrENtr+nIlPw/YtPhGAuty4e9d5ChLTRgMlKkxfpw9PvZSGIEFw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by SA3PR11MB8024.namprd11.prod.outlook.com (2603:10b6:806:300::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Tue, 28 Nov
- 2023 22:19:40 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::6710:537d:b74:f1e5]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::6710:537d:b74:f1e5%5]) with mapi id 15.20.7025.022; Tue, 28 Nov 2023
- 22:19:40 +0000
-Message-ID: <c79d7d60-e922-4ca1-bf83-4c4ed739da62@intel.com>
-Date:   Tue, 28 Nov 2023 14:19:40 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 22/26] selftests/resctrl: Pass write_schemata()
- resource instead of test name
-Content-Language: en-US
-To:     =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        "Shaopeng Tan" <tan.shaopeng@jp.fujitsu.com>,
-        =?UTF-8?Q?Maciej_Wiecz=C3=B3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>
-CC:     <linux-kernel@vger.kernel.org>
-References: <20231120111340.7805-1-ilpo.jarvinen@linux.intel.com>
- <20231120111340.7805-23-ilpo.jarvinen@linux.intel.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <20231120111340.7805-23-ilpo.jarvinen@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MW4PR04CA0192.namprd04.prod.outlook.com
- (2603:10b6:303:86::17) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+        Tue, 28 Nov 2023 17:20:03 -0500
+Received: from mail.3ffe.de (0001.3ffe.de [159.69.201.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B6BD42
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 14:20:08 -0800 (PST)
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.3ffe.de (Postfix) with ESMTPSA id C6D4D323;
+        Tue, 28 Nov 2023 23:20:06 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+        t=1701210006;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CAhOARmmFIxR/7vfxpNQzi/gksLmIWRxnp/mV78NkOY=;
+        b=y9z7I1r89PEvv8K1QY9l1riaX3zGYgIH11IFbg6n600hOOTUVRCGBLkWg6ASyeF0Zxnix7
+        RdJ6lL3qhWn/R/f6d5ZsLjguB8gg8GamTVvfOGUB9F6jAv3qwccpms68k0M9zx4oZE2kFm
+        /D3KdAbdtlrRbQpl0IRWO47jGxnLAZ50QPGWKRbfTjyeSj8UaspqqnB6uLC3NQNa2bxg4n
+        BVzwleYlKT3mjFGTADsL/COYr0nOxs/xDDfOgHP1nQXMFmKSZ9ZlfAk0fhALX8G9FswAHw
+        vQOIZer5vMBr1k30MVkgBBM7FM9y7YzvmNxVEyRHlE1Ai1sIlt8a4XGGqAlVYA==
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|SA3PR11MB8024:EE_
-X-MS-Office365-Filtering-Correlation-Id: fae8cbda-190f-490c-8d54-08dbf0601d9a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EIRHmhBdhZ+NBk1jkVho0oHqn+JrueZo49yFYwXfe0BoXqh2xK5aAgEdI+18/5IhHRHgkCGsPRMFzwST90/5wZutBgPizbJ6VD1A5DPlh/j3kkX9iJfcWS0jiyqK8yQ4MjBLPO+kTgjyz+Ak0NIyz26Zxkdn8VS2aXyC7oFsIqoom83m+tJ9bXUAy5EzYUpYbLGCFZNIYdQqq6ED3pC2qb0TU35K3A52eM9nt6+DH/jitOJEgKGgkvbH5w7Y8aFr6rHXL+r3jkpHBum970J0ztlntCTZYPP21OYnGkCPHC7Ufehg2+C3Dj0juc02gnDs1bvatqwquE+bqKjkO1JIDw+duS28LCrQXlp6EZmYgIWqzQuhaq1XnXQ01by5WDZmT5hTssiEPECGF1GxZ5UXRsBYs5fLmhuK8w6w+6LBdihMVXq5er3e66H8mcWIhQDPTdpSq7HQr+fRogUHjCbT3h6dKHITIHS/6OHVtk7yIWAl71A4PYe5d+PNNYOC6hyXwgbaVjMhQSy9e3eZxHx96AAEVE3Pykpk4Xj/1gOVH735vNLSzEVYsvHdcdrbQsLF1X8gBK3xEaA0zgBu0OYH+Eow5hiEMU4/bhXH5GByjtWohI0h//kKlgHAKGT5zmM+SMaruwgZZ2I/Mo3bb0Y4CA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(39860400002)(136003)(376002)(346002)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(38100700002)(41300700001)(36756003)(31686004)(83380400001)(5660300002)(82960400001)(66574015)(26005)(86362001)(2616005)(2906002)(44832011)(6512007)(6506007)(53546011)(8936002)(4326008)(31696002)(8676002)(6486002)(478600001)(316002)(66476007)(66556008)(66946007)(110136005)(6636002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UEFhNHpVNGR6SWdwUHJJUXlyQVR2UjkwRExMLzV5dThHcjJzd3oza3ZRcUJO?=
- =?utf-8?B?a2dEUE1rdmJnUklDMnFaTi9mQ1pIb1pqd2NXSmdVRDFLWExWYzhibyszSGd3?=
- =?utf-8?B?YkU5UmtXVVFOTVV1VzJqeVdHYTlpYWR4Q0IybnY2bldhQ2NtUkxtdWJiTDJr?=
- =?utf-8?B?VlR5MlM1VFRlczNsR05GMkdOdXBnZy9ub0V5eHVWT2NGMnlxS0ZkZEl4bnBt?=
- =?utf-8?B?bVFra2EyOWN2V3JVbW04N0JZaXBCR2pleXdMbHlBMVlHczBtNmQrd1RTUTBR?=
- =?utf-8?B?dU9VcFJ3UUZPWTVCQ01EVG11Qm04eC8wMDdrZHBFemtFaktnU0RSK2FpVGdL?=
- =?utf-8?B?NVpxdjRhaWxJaUVjb1ZEN3dsT0ZxQWY2VTRiMW5aVHFicjlWdHBMaGhaTzNB?=
- =?utf-8?B?TUZGNUZIK2gwc0ZVTms2MzhPa0NxLzFvN3hVYkZFSmpJWkh4V0w0VFJKTnN3?=
- =?utf-8?B?UmxyVFJxQ1BiY3RnRWtsdExyQTdVcm5LaitrUGZ6cUlFRzhwWUV2cVphdVl1?=
- =?utf-8?B?R3YybnNWd3AyRUFCRUpJRTgxU2xJSVBtdFRsZDhydCtDUk12SDQvbWRtV1NW?=
- =?utf-8?B?bU1hRFdMZ2RSNWhhYVMwWHM1TUorN1BqRVYyNUlaYWRMcGNtSVh6SVNzWUp3?=
- =?utf-8?B?SE44b0VGRndPZXYrUnlFcVhFTGlwcDdBcFBMNzdpek5ueUg0NUpSTmRwWnM2?=
- =?utf-8?B?c09Ha3l4Y1FGaVlNc0VmblVFajRIeUFlZUJaaHZUUWt3V0ZtSVdLUFFXcXRa?=
- =?utf-8?B?aEZTdjBXR1hFVis2RmM4S2xibjdIYTRnMGJZODV1VmpzSDFyTC9FaEZhVXJP?=
- =?utf-8?B?VXFaQVpCaU9oS24zWWowVGRzNWdmRTRucXE5YkpaSUsraGJacnpwUXEwY2Rh?=
- =?utf-8?B?VDA5b1Y0M0ZrU3A0bzVxMlBuZ3IrdCtiMWtGWDVlcGg1SWdxaHNjNEZvSnFx?=
- =?utf-8?B?TWhWajNXZi9PWWpWbGpVUTAzRnl0YVdJTGRYcHNyemJkYWhHSFJOY1MrWFRj?=
- =?utf-8?B?YVc4WjNuWEYvWHJIUlJwRSs1V1pkMlFRVG4yM0ZUN2tlM3dYTldRNWN1bmhv?=
- =?utf-8?B?aS9TTUZFaHlLejA5cjZ0NDRzNlZ3aUswNmtrSXhQZzRmaUREY0lUdGpaK3NF?=
- =?utf-8?B?c3V4Z21iZU1RNGsvYWFsbmU5a2x0NWcwTjFCN0UwcGJPeDBRRFBCRW5LWnFo?=
- =?utf-8?B?MzE5b3BVM3BnZ2EyZWo2SVByQ3FWRjhCVVZ0RjVVOFpYUEUrN1hMbk1ndmwy?=
- =?utf-8?B?WGVSVDhZaU1VNmdVaTZUQkpzREN5MlhONW1ULzJ6N0k4MCt0eDNHNVREYU1E?=
- =?utf-8?B?cjBsMUJhOU95V1NucVkrUXNZRzl2NnBDd2N0U2NUeTZVOFNRclJHU1p5Um5q?=
- =?utf-8?B?Y2E2L01Jb2JNQnl6S0lad0ZOTmxGSnFDWGtsbFFsU0NUUGFjWnZZZ0FvWG00?=
- =?utf-8?B?M1FyRm1YSVVMcGlUTUZYby84YytsYS9TanI0eHdaa0lJV1JqUmFPK0hIWVBh?=
- =?utf-8?B?emNvTWdRR3h4Q29BWmFjaTcvY3Y5c0NNQTZ2NkRHZDVMSTBkblhPeVg4b0Jp?=
- =?utf-8?B?dGlxYytVeUJWZDFmSTZPcDdLWkFwM3hDNjlzOEpVeGlEUCtjbmREczFuaExl?=
- =?utf-8?B?b24wdFBpM3p4SXp2SURZZkZaVE1BMHdHcDdYaEtIYU9EdnhiK2x2bVU4dnR3?=
- =?utf-8?B?TTY4dFVSbmlMK3p0VVlJVFF5YmYraHpNMUoxamFQSXNielhhMU0wWXRrMUVp?=
- =?utf-8?B?WStrSDZnVHl3UXFOQ1I3S1UvYW5Banpsd3dabE04K3NmQUZKTHFoSXhxSDlE?=
- =?utf-8?B?ai9zZ3l2S0V2WkhIVzNCWHBmUG1MalpGWE00YzNDNGFGYkNSSURqQWlJSGIv?=
- =?utf-8?B?NTFzc3gxN2crTHNyMS9wWGpJTEh0VGRyU0QxcUNWczU5ajNyc0lXMG1zNkF0?=
- =?utf-8?B?L0w1VnI0akt5b3V0VUdZWEhodDVFVkd2V1YrdnllOTRMdGVtQWpoVnN5ZXh4?=
- =?utf-8?B?VEwwRTBsYXZScDJwS3ZBOTRyc2VPb1lUeHhSZE9nUjhIeVpnRW85cjZyQTFW?=
- =?utf-8?B?SEdTT2k5Zk5LbnlLczhmWUlBT05LdjFya0V6SnJ0a2NxbVRwc0ZhTnNwRFdL?=
- =?utf-8?B?NUZjOVJrL2NCSDR3U091TjJGRFJ0Y0huN0o0REI1R0h3MEtKWmVxR1phaFNQ?=
- =?utf-8?B?Z0E9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: fae8cbda-190f-490c-8d54-08dbf0601d9a
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 22:19:40.8176
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: V0SMWUiLpLnVQOs1jDzypPA43Omb+fTVLRBVnFk8Is082HsXXafN1xOghlL+tn+VH3gCy5/ixFNZEhkKvgRbdevn1XpV1MxOUOZAeC0luG4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR11MB8024
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Date:   Tue, 28 Nov 2023 23:20:06 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Michael Walle <mwalle@kernel.org>,
+        Laurent.pinchart@ideasonboard.com, andrzej.hajda@intel.com,
+        dave.stevenson@raspberrypi.com, dianders@chromium.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        jernej.skrabec@gmail.com, jonas@kwiboo.se,
+        konrad.dybcio@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, marex@denx.de,
+        marijn.suijten@somainline.org, mripard@kernel.org,
+        neil.armstrong@linaro.org, quic_abhinavk@quicinc.com,
+        quic_jesszhan@quicinc.com, rfoss@kernel.org, sean@poorly.run,
+        tzimmermann@suse.de, tony@atomide.com,
+        alexander.stein@ew.tq-group.com
+Subject: Re: [RFC PATCH 03/10] drm/mipi-dsi: add API for manual control over
+ the DSI link power state
+In-Reply-To: <CAA8EJpoYkH-0onMmNRk1iO5YeLN+5hpZMsfvtNo-7p6y2mjZwg@mail.gmail.com>
+References: <CAA8EJpozZkEswnioKjRCqBg4fcjVHFwGivoFNTNHVwyocKprQw@mail.gmail.com>
+ <20231127160658.2164612-1-mwalle@kernel.org>
+ <CAA8EJpphwXoKnzDkY3cBqzsDZwdw+nze-Ev2toPBJm-2VJvY_g@mail.gmail.com>
+ <dce76a6e1321a6374ad39125bead56b3@kernel.org>
+ <CAA8EJpr9PDgSrTpP2-joQ09fxmJKZB1B+ESbDbMjkLNiqZ1m3A@mail.gmail.com>
+ <14D9F495-425D-47FA-AD0D-F7299285936F@walle.cc>
+ <CAA8EJpoYkH-0onMmNRk1iO5YeLN+5hpZMsfvtNo-7p6y2mjZwg@mail.gmail.com>
+Message-ID: <5eeade839ad3f71e8976965ce6cf3ed2@walle.cc>
+X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ilpo,
+[sorry I fat fingered my former reply and converted all CCs to BCCs..]
 
-On 11/20/2023 3:13 AM, Ilpo Järvinen wrote:
-> write_schemata() takes the test name as an argument and determines the
-> relevant resource based on the test name. Such mapping from name to
-> resource does not really belong to resctrlfs.c that should provide
-> only generic, test-independent functions.
+>> >> >> > DSI device lifetime has three different stages:
+>> >> >> > 1. before the DSI link being powered up and clocking,
+>> >> >> > 2. when the DSI link is in LP state (for the purpose of this question,
+>> >> >> > this is the time between the DSI link being powered up and the video
+>> >> >> > stream start)
+>> >> >> > 3. when the DSI link is in HS state (while streaming the video).
+>> >> >>
+>> >> >> It's not clear to me what (2) is. What is the state of the clock and
+>> >> >> data lanes?
+>> >> >
+>> >> > Clk an Data0 should be in the LP mode, ready for LP Data Transfer.
+>> >>
+>> >> Then this is somehow missing
+>> >> https://docs.kernel.org/gpu/drm-kms-helpers.html#mipi-dsi-bridge-operation
+>> >>
+>> >>    A DSI host should keep the PHY powered down until the pre_enable
+>> >> operation
+>> >>    is called. All lanes are in an undefined idle state up to this point,
+>> >> and
+>> >>    it must not be assumed that it is LP-11. pre_enable should initialise
+>> >> the
+>> >>    PHY, set the data lanes to LP-11, and the clock lane to either LP-11
+>> >> or HS
+>> >>    depending on the mode_flag MIPI_DSI_CLOCK_NON_CONTINUOUS.
+>> >>
+>> >> So I don't think these three states are sufficient, see below, that
+>> >> there
+>> >> should be at least four.
+>> >
+>> >Which one is #4?
+>> 
+>> enabled clock lane (HS mode), data lanes in LP-11
 > 
-> Pass the resource stored in the test information structure to
-> write_schemata() instead of the test name. The new API is also more
-> flexible as it enables to use write_schemata() for more than one
-> resource within a test.
-> 
-> While touching the sprintf(), move the unnecessary %c that is always
-> '=' directly into the format string.
-> 
-> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> ---
+> What is the purpose of such a mode?
 
-...
+To repeat my first mail:
 
->  			break;
-> diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
-> index b711326b2141..fda5ad812faa 100644
-> --- a/tools/testing/selftests/resctrl/resctrlfs.c
-> +++ b/tools/testing/selftests/resctrl/resctrlfs.c
-> @@ -502,23 +502,17 @@ int write_bm_pid_to_resctrl(pid_t bm_pid, char *ctrlgrp, char *mongrp,
->   * @ctrlgrp:		Name of the con_mon grp
->   * @schemata:		Schemata that should be updated to
->   * @cpu_no:		CPU number that the benchmark PID is binded to
-> - * @resctrl_val:	Resctrl feature (Eg: mbm, mba.. etc)
-> + * @resource:		Resctrl resource (Eg: MB, L3, L2, etc.)
->   *
->   * Update schemata of a con_mon grp *only* if requested resctrl feature is
->   * allocation type
->   *
+I'm facing similar issues with the tc358775 bridge. This bridge needs
+to release its reset while both clock and data lanes are in LP-11
+mode.
+But then it needs to be configured (via I2C) while the clock lane is
+in enabled (HS mode), but the data lanes are still in LP-11 mode.
 
-Note above there remains a usage of "feature" that has just been changed to "resource".
+Therefore, for the correct init sequence is:
+(1) dsi host enables lanes, that is clock and data are in lp-11
+(2) dsi bridge driver releases reset of the bridge
+(3) dsi host enables clock lane, leaves data lanes in lp-11
+(4) dsi bridge driver configures the bridge
+(5) dsi host enables the video stream
+(6) dsi bridge enables the output port of the bridge
 
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+-michael
 
-Reinette
+>> >> > I don't think we support ULPS currently.
+>> >> >
+>> >> >
+>> >> >>
+>> >> >> I'm facing similar issues with the tc358775 bridge. This bridge needs
+>> >> >> to release its reset while both clock and data lanes are in LP-11
+>> >> >> mode.
+>> >> >> But then it needs to be configured (via I2C) while the clock lane is
+>> >> >> in enabled (HS mode), but the data lanes are still in LP-11 mode.
+>> >> >>
+>> >> >> To me it looks like there is a fouth case then:
+>> >> >> 1. unpowered
+>> >> >> 2. DSI clock and data are in LP-11
+>> >> >> 3. DSI clock is in HS and data are in LP-11
+>> >> >> 4. DSI clock is in HS and data is in HS
+>> >> >>
+>> >> >> (And of course the bridge needs continuous clock mode).
+>> >> >>
+>> >> >> > Different DSI bridges have different requirements with respect to the
+>> >> >> > code being executed at stages 1 and 2. For example several DSI-to-eDP
+>> >> >> > bridges (ps8640, tc358767 require for the link to be quiet during
+>> >> >> > reset time.
+>> >> >> > The DSI-controlled bridges and DSI panels need to send some commands
+>> >> >> > in stage 2, before starting up video
+>> >> >> >
+>> >> >> > In the DRM subsystem stage 3 naturally maps to the
+>> >> >> > drm_bridge_funcs::enable, stage 1 also naturally maps to the
+>> >> >> > drm_bridge_funcs::pre_enable. Stage 2 doesn't have its own place in
+>> >> >> > the DRM call chain.
+>> >> >> > Earlier we attempted to solve that using the pre_enable_prev_first,
+>> >> >> > which remapped pre-enable callback execution order. However it has led
+>> >> >> > us to the two issues. First, at the DSI host driver we do not know
+>> >> >> > whether the panel / bridge were updated to use pre_enable_prev_first
+>> >> >> > or not. Second, if the bridge has to perform steps during both stages
+>> >> >> > 1 and 2, it can not do that.
+>> >> >> >
+>> >> >> > I'm trying to find a way to express the difference between stages 1
+>> >> >> > and 2 in the generic code, so that we do not to worry about particular
+>> >> >> > DSI host and DSI bridge / panel peculiarities when implementing the
+>> >> >> > DSI host and/or DSI panel driver.
+>> >> >>
+>> >> >> For now, I have a rather hacky ".dsi_lp11_notify" callback in
+>> >> >> drm_bridge_funcs which is supposed to be called by the DSI host while
+>> >> >> the
+>> >> >> clock and data lanes are in LP-11 mode. But that is rather an RFC and
+>> >> >> me
+>> >> >> needing something to get the driver for this bridge working. Because
+>> >> >> it's
+>> >> >> badly broken. FWIW, you can find my work-in-progress patches at
+>> >> >> https://github.com/mwalle/linux/tree/feature-tc358775-fixes
+>> >> >>
+>> >> >> -michael
+>> >> >>
+>> >> >
+>> >> >
+>> >> > --
+>> >> > With best wishes
+>> >> > Dmitry
+>> >
+>> >
+>> >
+>> 
