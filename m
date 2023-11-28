@@ -2,53 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD7487FAF83
+	by mail.lfdr.de (Postfix) with ESMTP id 876BB7FAF82
 	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 02:27:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232415AbjK1B05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 20:26:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45648 "EHLO
+        id S230377AbjK1B0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 20:26:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231979AbjK1B0x (ORCPT
+        with ESMTP id S231410AbjK1B0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 27 Nov 2023 20:26:53 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5BDF137
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C89BB1B8
         for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 17:26:57 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 51EFCC433C7;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 67C51C433C8;
         Tue, 28 Nov 2023 01:26:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1701134817;
-        bh=304OXdRp3q77PbuDSglYezsNDo3afMy2fuAaYHSgFIU=;
+        bh=tnxFaU5digXS9w+34jo2ANB8bDJ9CQjVLsvQcCUdALU=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=dyy1imTO+Qo374XYNns7SMw+1yrw8plCJY11CrJsTr9SLP0P3nRe+NoTJkGBfhbkh
-         GK+gYj8Ff7+t863IkTftbHLdM0buKAXo+JzgO2rIPHOpQxfL9Zvo0M802RrZhattup
-         25LIg331+A/IGyVMVZjrbhuHLh6EOhm7AS/bGVawa/72GOBg2UE5dwW8SbPTaduNyM
-         9ATcZfIisUKNrmRK1qAit0oHplwccnma9mKnb6UtwhmJiwNZN98qmFarJZv0PC5miC
-         mMqMw0AEVgg+WPaQMj5jNFM5DKGhzam3siYV8si7S9rHF0/A1/AuLrKODD8DM0uXCg
-         Q41YIFyB6NYUA==
+        b=Ye+CPAJd/eZNY+l7e3I9kIoyyWZQXGZBtY/xNGnLyKiWzN64ev0+GBq5OCxRAufxC
+         axwLHYn9OMqZq+nezcLMZcXQfTW0uhkvgjCks0peXDJBeeXRWGhDEj0GaS8Pc2fG/u
+         DLk60fmTLn0/SpeNJpQL3qsexHsY5xDQPAwRnhyO3Z4QT9pvJveFFRiRJ3pyMJ0ZpY
+         FDeYFH84zAjLTfSWxZFouMwHwDSrlFUlv/Nv3ONe8s38q9Fo4HaZbzmy72I4JTtKyA
+         6vLQuZDzK2rfeC8MKFp7N0qe83tEYmytcSyZ7YeMRebP2Wdoa7IEk63gLaCLLvGB1h
+         qh0s8hkHOOLww==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 38013E00090;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4D1DCE00092;
         Tue, 28 Nov 2023 01:26:57 +0000 (UTC)
-Subject: Re: [GIT PULL for v6.7-rc3] media fixes
+Subject: Re: [GIT PULL] ksmbd server fixes
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20231127181013.7fdc3484@coco.lan>
-References: <20231127181013.7fdc3484@coco.lan>
+In-Reply-To: <CAH2r5mvMv=F2JpZNW=t03TY+1H7W+6eJtNDE+f838wsS+r8BfA@mail.gmail.com>
+References: <CAH2r5mvMv=F2JpZNW=t03TY+1H7W+6eJtNDE+f838wsS+r8BfA@mail.gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20231127181013.7fdc3484@coco.lan>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v6.7-2
-X-PR-Tracked-Commit-Id: 32138be394e5d32c095a413949e6ab4875b2aec0
+X-PR-Tracked-Message-Id: <CAH2r5mvMv=F2JpZNW=t03TY+1H7W+6eJtNDE+f838wsS+r8BfA@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.samba.org/ksmbd.git tags/6.7-rc3-smb3-server-fixes
+X-PR-Tracked-Commit-Id: cd80ce7e68f1624ac29cd0a6b057789d1236641e
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d095b18f3e22257ab5fb0d1eae76bf1c0f5260f8
-Message-Id: <170113481721.2219.11433428833454711228.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: df60cee26a2e3d937a319229e335cb3f9c1f16d2
+Message-Id: <170113481731.2219.4184290566110950813.pr-tracker-bot@kernel.org>
 Date:   Tue, 28 Nov 2023 01:26:57 +0000
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Steve French <smfrench@gmail.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        LKML <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        Namjae Jeon <linkinjeon@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -59,12 +58,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 27 Nov 2023 18:10:13 +0100:
+The pull request you sent on Mon, 27 Nov 2023 15:00:59 -0600:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v6.7-2
+> git://git.samba.org/ksmbd.git tags/6.7-rc3-smb3-server-fixes
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d095b18f3e22257ab5fb0d1eae76bf1c0f5260f8
+https://git.kernel.org/torvalds/c/df60cee26a2e3d937a319229e335cb3f9c1f16d2
 
 Thank you!
 
