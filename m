@@ -2,133 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E0977FC1E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 572EC7FC13E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344305AbjK1QTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 11:19:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41132 "EHLO
+        id S1344234AbjK1QWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:22:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344234AbjK1QTM (ORCPT
+        with ESMTP id S229826AbjK1QWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 11:19:12 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D4B182;
-        Tue, 28 Nov 2023 08:19:18 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-5079f6efd64so7633953e87.2;
-        Tue, 28 Nov 2023 08:19:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701188356; x=1701793156; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=AeC86zbCGJVSk79IhGKH9GShZbi811qqEA24Z7ghM0M=;
-        b=Uu4ot+Y+/yr6anfulEW9FJBZ/sZefqjz76MNgQ7GsoYMn6wK3Lzb7+gP4b/4RopvHv
-         +bTQLNod+CC2soIujByj+Q54uSjmZXqU59jubqO8XxeDkq3/iKXDTsjUDrHRepgmfafp
-         m6czn/C0LdooY3a93n0yMIB+HEzddn3bPn5jZcM46EnyGg4F1MRI9wddH46Z+F2CpaZ1
-         O0gLL9O9LQOQq6vMDSeTNHuojKk+F0Pd9VZn9CFXudT0fTa+MZh+vsbXZU4V06kIQuIx
-         GZMvoBrNolhhsLzzGbCQhyfn36BViO5bRtD19ydnD8H1aNLaJDSl2taJ9gngN3zcVx7r
-         p6ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701188356; x=1701793156;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AeC86zbCGJVSk79IhGKH9GShZbi811qqEA24Z7ghM0M=;
-        b=kRLnyB2vxbeW/RHNzNmruPnnD4oFXgHBigfM6egHn3+Io07nn0SixvEhHZ53E3LsdJ
-         LRXgKJEKpLdY8ZYvzQA+OMA2vjLBEVi5MhFQlQ0DiQsqrocNb2NJ7pFe1L9n/WuIpK6b
-         9DApDp125KMbyrrJsl5tzhcFmWBWEA3aJBvbSSTIlWoo/28Qv/yYT6uc75S7ikP0vsVI
-         YBFkQ/cu8v5jDFEJRSsUoyLh5AFQ55/pZTMNIyCBccVBOBHc8gfy2Pd46Br2G54xoVSe
-         R+EF/7MnNzhAML+L91qCaVCLF9dN3G/7CYTce9kZn3AXu5qqOU7a9Nv/c64AM5o6PrX5
-         Lrkw==
-X-Gm-Message-State: AOJu0Yz2aDtlqozyIoQpfhkaicNPF0/bXqeyaKn2hGrXq6EIE17fD1bQ
-        Nv+euAhf/Rq/w9flCqhpYsU=
-X-Google-Smtp-Source: AGHT+IGMma2vgs85Y0T7461/0MipHE1/19RTn/0fiyXlqiyumPPE/1qzpnDwgkRnEwkYX001zMdDPQ==
-X-Received: by 2002:a05:6512:2245:b0:50a:40b6:2d37 with SMTP id i5-20020a056512224500b0050a40b62d37mr13159186lfu.40.1701188356322;
-        Tue, 28 Nov 2023 08:19:16 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id i14-20020a05640200ce00b0054866f0c1b8sm6386704edu.69.2023.11.28.08.19.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 08:19:15 -0800 (PST)
-Message-ID: <b9f63218d934b8048ccdafa8e2c27f9929e344a6.camel@gmail.com>
-Subject: Re: [PATCH ipsec-next v1 6/7] bpf: selftests: test_tunnel: Disable
- CO-RE relocations
-From:   Eduard Zingerman <eddyz87@gmail.com>
-To:     Daniel Xu <dxu@dxuuu.xyz>, Yonghong Song <yonghong.song@linux.dev>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        antony.antony@secunet.com, Mykola Lysenko <mykolal@fb.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, devel@linux-ipsec.org,
-        Network Development <netdev@vger.kernel.org>
-Date:   Tue, 28 Nov 2023 18:19:08 +0200
-In-Reply-To: <p6qdiwnuglz7ry6hsssruf3w6n3tnavglya3iampors7eb4ac6@nonyetjx2zvc>
-References: <CAADnVQ+sEsUyNYPeZyOf2PcCnxOvOqw4bUuAuMofCU14szTGvg@mail.gmail.com>
-         <3ec6c068-7f95-419a-a0ae-a901f95e4838@linux.dev>
-         <18e43cdf65e7ba0d8f6912364fbc5b08a6928b35.camel@gmail.com>
-         <uc5fv3keghefszuvono7aclgtjtgjnnia3i54ynejmyrs42ser@bwdpq5gmuvub>
-         <0535eb913f1a0c2d3c291478fde07e0aa2b333f1.camel@gmail.com>
-         <42f9bf0d-695a-412d-bea5-cb7036fa7418@linux.dev>
-         <a5a84482-13ef-47d8-bf07-8017060a5d64@linux.dev>
-         <xehp2qvy5cyaairbnfhem4hvbsl26blo4zzu7z6ywbp26jcwyn@hgp3v2q4ud7o>
-         <53jaqi72ef4gynyafxidl5veb54kfs7dttxezkarwg75t7szd4@cvfg5pc7pyum>
-         <f68c01d6-bf6b-4b76-8b20-53e9f4a61fcd@linux.dev>
-         <p6qdiwnuglz7ry6hsssruf3w6n3tnavglya3iampors7eb4ac6@nonyetjx2zvc>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 
+        Tue, 28 Nov 2023 11:22:01 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A18B7131
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:22:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701188527; x=1732724527;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Kkj3XaIBhumPeERmIo13qRy1gqgQbcz4xJqxHlZYauY=;
+  b=h9G4v0F6IFllldsbe/TTRRUBNhD2afIYxTc0t5GAwbCQURl1L97WJh0e
+   N+oICluR0C1basV/PcwWDoBMf0TXWqM0ePYDEHLJIvYd7JlpCBMAR6qnU
+   4FE5HeMulKKjxfKlW+0WfrKjWTP2wIIqO1V1cwNuSSn+GK7x0IlNEBq1A
+   BoJ76V0tFLlZ1Mvj3WcI6oL7sw4ESR7U2Rr4MV66k2LnXzBXHp53t1qQo
+   gHPaue/vk5LKrbGblQqo6PSznGskO+PDN5HeE0zFKBLl0koxRHyjlqofe
+   b7E0FHBjt0g98lRdgD/DPxjiSAzuS87sKi9EKsIQKjCkk53uhsWgFqAjN
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="14519050"
+X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
+   d="scan'208";a="14519050"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 08:22:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="718433083"
+X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
+   d="scan'208";a="718433083"
+Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 28 Nov 2023 08:22:04 -0800
+Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r80qY-0007jD-0a;
+        Tue, 28 Nov 2023 16:22:02 +0000
+Date:   Wed, 29 Nov 2023 00:21:33 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     cuiyangpei <cuiyangpei@gmail.com>, sj@kernel.org,
+        akpm@linux-foundation.org, damon@lists.linux.dev,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        cuiyangpei <cuiyangpei@xiaomi.com>
+Subject: Re: [PATCH 1/2] mm/damon/sysfs: Implement recording feature
+Message-ID: <202311290021.Jo3VlA8D-lkp@intel.com>
+References: <20231128073440.11894-1-cuiyangpei@xiaomi.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231128073440.11894-1-cuiyangpei@xiaomi.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-11-28 at 10:13 -0600, Daniel Xu wrote:
-[...]
-> > One thing for sure is memory layout of bitfields should be the same
-> > for both clang and gcc as it is determined by C standard. Register
-> > representation and how to manipulate could be different for different
-> > compilers.
->=20
-> I was reading this thread:
-> https://github.com/Lora-net/LoRaMac-node/issues/697. It's obviously not
-> authoritative, but they sure sound confident!
->=20
-> I think I've also heard it before a long time ago when I was working on
-> adding bitfield support to bpftrace.
->=20
->=20
-> [...]
+Hi cuiyangpei,
 
-Here is a citation from ISO/IEC 9899:201x (C11 standard) =C2=A76.7.2.1
-(Structure and union specifiers), paragraph 11 (page 114 in my pdf):
+kernel test robot noticed the following build errors:
 
-> An implementation may allocate any addressable storage unit large
-> enough to hold a bit- field. If enough space remains, a bit-field
-> that immediately follows another bit-field in a structure shall be
-> packed into adjacent bits of the same unit. If insufficient space
-> remains, whether a bit-field that does not fit is put into the next
-> unit or overlaps adjacent units is implementation-defined. The order
-> of allocation of bit-fields within a unit (high-order to low-order
-> or low-order to high-order) is implementation-defined. The alignment
-> of the addressable storage unit is unspecified.
+[auto build test ERROR on akpm-mm/mm-everything]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/cuiyangpei/mm-damon-core-add-sysfs-nodes-to-set-last_nr_accesses-weight/20231128-194153
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20231128073440.11894-1-cuiyangpei%40xiaomi.com
+patch subject: [PATCH 1/2] mm/damon/sysfs: Implement recording feature
+config: i386-buildonly-randconfig-001-20231128 (https://download.01.org/0day-ci/archive/20231129/202311290021.Jo3VlA8D-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231129/202311290021.Jo3VlA8D-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311290021.Jo3VlA8D-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   mm/damon/sysfs.c:1415:6: warning: variable 'count' set but not used [-Wunused-but-set-variable]
+           int count = 0;
+               ^
+   In file included from mm/damon/sysfs.c:2139:
+>> mm/damon/sysfs-test.h:15:21: error: redefinition of 'nr_damon_targets'
+   static unsigned int nr_damon_targets(struct damon_ctx *ctx)
+                       ^
+   mm/damon/sysfs.c:1411:21: note: previous definition is here
+   static unsigned int nr_damon_targets(struct damon_ctx *ctx)
+                       ^
+   1 warning and 1 error generated.
+
+
+vim +/nr_damon_targets +15 mm/damon/sysfs-test.h
+
+b8ee5575f763c2 SeongJae Park 2023-10-22  14  
+b8ee5575f763c2 SeongJae Park 2023-10-22 @15  static unsigned int nr_damon_targets(struct damon_ctx *ctx)
+b8ee5575f763c2 SeongJae Park 2023-10-22  16  {
+b8ee5575f763c2 SeongJae Park 2023-10-22  17  	struct damon_target *t;
+b8ee5575f763c2 SeongJae Park 2023-10-22  18  	unsigned int nr_targets = 0;
+b8ee5575f763c2 SeongJae Park 2023-10-22  19  
+b8ee5575f763c2 SeongJae Park 2023-10-22  20  	damon_for_each_target(t, ctx)
+b8ee5575f763c2 SeongJae Park 2023-10-22  21  		nr_targets++;
+b8ee5575f763c2 SeongJae Park 2023-10-22  22  
+b8ee5575f763c2 SeongJae Park 2023-10-22  23  	return nr_targets;
+b8ee5575f763c2 SeongJae Park 2023-10-22  24  }
+b8ee5575f763c2 SeongJae Park 2023-10-22  25  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
