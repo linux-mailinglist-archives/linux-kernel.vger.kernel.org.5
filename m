@@ -2,178 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09CD57FBA06
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:25:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F2A7FBA0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:26:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344602AbjK1MZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 07:25:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53078 "EHLO
+        id S1344655AbjK1M0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 07:26:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344474AbjK1MZR (ORCPT
+        with ESMTP id S1344627AbjK1M0A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 07:25:17 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9904FD5B;
-        Tue, 28 Nov 2023 04:25:23 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1cfb30ce241so27371795ad.0;
-        Tue, 28 Nov 2023 04:25:23 -0800 (PST)
+        Tue, 28 Nov 2023 07:26:00 -0500
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C323ED5B
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 04:26:03 -0800 (PST)
+Received: by mail-vs1-xe2f.google.com with SMTP id ada2fe7eead31-462f98044b4so618568137.3
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 04:26:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701174323; x=1701779123; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FpZMH9jqBR7iLcAB8dXkkbG1VWWxWtCIiGpAgogjkdw=;
-        b=BnXhwdQPUO1WRphA7Nx1Q7PcxJYbajIJld44sWCz71kbdlP0v6dQJfoHI2qNfp1UF3
-         0Y+0WDItCGbIMLlNIFslTFgHcgwv7q3AiKYECDOx8Ss9NuesZIlm/SomgQoIp2rVJBnk
-         svf+S42JznityHKXiUJ+dZoeyWXrO00Sp5HG6Km0cu5Ss3TZYb2qleyah0feek4eRkFt
-         DN7q1Cg1AOYvYDRkeyW6mj7G4D0rsoX85K88aWC/eX/YEdamhLaZUrnDFFUruFD31EwZ
-         Q/IOGy94ACkUzuUYi1U5TYCAXkp+Aa1DOFHOUGsVuPQpfZoDH6IGOAsk7c5EpbPtx6pY
-         pYQg==
+        d=linaro.org; s=google; t=1701174362; x=1701779162; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=zWjEZ/SUQrSUmyqfWuq2eTx6HkHasTKwK0H9S4JJ4Io=;
+        b=lWcy7SBow1DtRWWJqH1Kfbp66ON0TDBk0q1ARXZMBJrFRp4KuD566mXnp/mq7+CtQA
+         kHR68ejp8ulUGkpOIoKtQuZLH2gyf58AIfGFxDuc3DSyaAs0sEy1AdpUGX0NKvipbe4w
+         lesS2ShGh7zb20S4wIN2UmjzAgowOLrXzrcKA3Yjb8Cj7o4IDWbcXN/L2ORdQ1wlxytR
+         Cj7GNYCI2tdYbQgDQgY17dyRpSICz1JlmTGNjVg37Dk1XZGd+i+dYkwJUvHiL311MH5g
+         mM1dTHWAcyxUPblVzOHM8LNqYnxG6HbtSOIY8ULBzY+Mv6MAWCk+NvGW/VLQ08XFuXE/
+         C4vA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701174323; x=1701779123;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FpZMH9jqBR7iLcAB8dXkkbG1VWWxWtCIiGpAgogjkdw=;
-        b=Adn+HFfptGm0qXwej/Ukvz47+IkZTmgQUO0UlGdhkNVKgyWqGurlByo1LqDr9SWR+3
-         8NPH//l6SsmMg3fPDUvUxvOh/w0/kQEAUcMQVqMkFizgMelTu1FElNRoIF3LGLvlarzD
-         Bbvz9OPhcAoKk3Ew9Viztgys4GHOZrS6egqHrVDx1uGsw4VgGec6YQ9Tuu4uNp36b7TH
-         KCWnQwUc+3w+XKlkpmPad70MRvUh8+MHhYWC4ga5bmq7cNHawGrOGyrTr8Kcj+xL201U
-         xSLUX50OWOWxz3C75LRkJglxLMEhqjvvLEmzd35XvOt83QZ8SvpA7ZDTKmefpZup3pQz
-         3NlQ==
-X-Gm-Message-State: AOJu0Ywkojbnyg5yo9wZSMjqGai49dtTqpTNjjZ8G6LqlXOHG7Rs1rn3
-        LIHCfEGSK/kIEjWOlhq9BkhPDn1ain46lUgRtwXqdOxbC/Q=
-X-Google-Smtp-Source: AGHT+IEncS9KAPArxVtfBqiUQpZTa6Fa44Km3nsDxBpEXJqvkVttbxmetcS4gSR0rmf239ATBFkw//MalFkIAgy8PtE=
-X-Received: by 2002:a17:90a:f2d2:b0:27d:348:94a8 with SMTP id
- gt18-20020a17090af2d200b0027d034894a8mr15336036pjb.6.1701174323063; Tue, 28
- Nov 2023 04:25:23 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701174362; x=1701779162;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zWjEZ/SUQrSUmyqfWuq2eTx6HkHasTKwK0H9S4JJ4Io=;
+        b=Ict/TSYmv91GoBdKU2SlKqPq/ezxyN6k0mVCwAteIqdF7r3DP/KYWdSgSE9PWIXrbB
+         zLuquT+/bl//kYHL8HH5ayOYU0Y70YyJmXEA55L2ZEdPAkgtL4/06tROF1mU/6rAiD6X
+         tBmv1+G1EXVj6OUSJxpx/wNN0QZYLirZ99rE4S7fceFPeGPFxT5QRRBwR7C9bS+VbDDE
+         5+MEUrvrEEg0QHxyDAlNcOz81pgvnFoRrxIj2/QF9TpgvhDTwIDydXCNcr0xCAWxP4Wv
+         JB7t1zUIep3aUo91g2wDxGSkvccQsnv3/Gs0AWnNErhqVItwwcjWC6D4MiM5plAQcGQy
+         H8Jw==
+X-Gm-Message-State: AOJu0YzKn+VkpVzR28IXE+Yl6lNo335YBjiEc8pkdeFpqgF4ZnNX+hwy
+        NfCtAx1qrsRt8Tw4JYaww/SQrkkN32h0Q+6/4fz3qXvgzbVaIfrfN+U=
+X-Google-Smtp-Source: AGHT+IExkbIGK+yxz9Y8kDkIjRByaumTYqTMVx/OaGjw1A52Cq9j2XTHa5tlKE7tPXxeoL5sSv1H+Ge/FeZLf+VtD3c=
+X-Received: by 2002:a67:efcf:0:b0:462:a31c:78c3 with SMTP id
+ s15-20020a67efcf000000b00462a31c78c3mr13888950vsp.20.1701174362355; Tue, 28
+ Nov 2023 04:26:02 -0800 (PST)
 MIME-Version: 1.0
-References: <20231025104457.628109-1-robimarko@gmail.com> <20231025104457.628109-2-robimarko@gmail.com>
- <CAOX2RU4MBvDZZ767RPS9XKj0U2L3gviVG5cyR8NKyO4LD+sfYQ@mail.gmail.com>
- <20c8cfde-3f55-45c5-bc23-21979ac9680d@linaro.org> <CAOX2RU5-XFZhGzjigNtu-qFnPWDd2XkpGpY=HXWigRa5SXw4TA@mail.gmail.com>
- <ef377506-4132-4805-a76e-18f241afe319@linaro.org> <CAOX2RU4K67evm10giQvF1rcfqTfR+e--KQT3ZePoHQoqASv_fg@mail.gmail.com>
- <bdf6be0b-c137-48ce-8a3f-ab74bced6f87@linaro.org> <CAOX2RU4z1Dcs7ct0BAaS7wicYVmQEiSe74=w_grFDKQv22uoFg@mail.gmail.com>
- <4243a841-5509-4d04-8ec7-191f2ba5677a@linaro.org> <CAOX2RU73n4JUTxGGgN7YOEqjj-1_=n=UZ99xsZ8Easp6O-D_yA@mail.gmail.com>
- <1f7674ea-ed79-48b1-b577-1596e6fe57d2@linaro.org>
-In-Reply-To: <1f7674ea-ed79-48b1-b577-1596e6fe57d2@linaro.org>
-From:   Robert Marko <robimarko@gmail.com>
-Date:   Tue, 28 Nov 2023 13:25:11 +0100
-Message-ID: <CAOX2RU67BHtiQf1HbZMTUUSMckY7J8kbKR6LeLuDKKAaGS0r-A@mail.gmail.com>
-Subject: Re: [PATCH 2/3] clk: qcom: ipq6018: add USB GDSCs
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     agross@kernel.org, andersson@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 28 Nov 2023 17:55:51 +0530
+Message-ID: <CA+G9fYvbCBUCkt-NdJ7HCETCFrzMWGnjnRBjCsw39Z_aUOaTDQ@mail.gmail.com>
+Subject: btrfs: super.c:416:25: error: 'ret' undeclared (first use in this
+ function); did you mean 'net'?
+To:     open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, regressions@lists.linux.dev,
+        linux-btrfs@vger.kernel.org,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Nov 2023 at 17:22, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
->
->
->
-> On 11/13/23 13:50, Robert Marko wrote:
-> > On Mon, 13 Nov 2023 at 12:58, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
-> >>
-> >> On 11.11.2023 12:28, Robert Marko wrote:
-> >>> On Tue, 7 Nov 2023 at 22:51, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
-> >>>>
-> >>>>
-> >>>>
-> >>>> On 10/31/23 10:01, Robert Marko wrote:
-> >>>>> On Mon, 30 Oct 2023 at 22:12, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
-> >>>>>>
-> >>>>>> On 30.10.2023 21:37, Robert Marko wrote:
-> >>>>>>> On Mon, 30 Oct 2023 at 20:37, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
-> >>>>>>>>
-> >>>>>>>> On 29.10.2023 12:04, Robert Marko wrote:
-> >>>>>>>>> On Wed, 25 Oct 2023 at 12:45, Robert Marko <robimarko@gmail.com> wrote:
-> >>>>>>>>>>
-> >>>>>>>>>> IPQ6018 has GDSC-s for each of the USB ports, so lets define them as such
-> >>>>>>>>>> and drop the curent code that is de-asserting the USB GDSC-s as part of
-> >>>>>>>>>> the GCC probe.
-> >>>>>>>>>>
-> >>>>>>>>>> Signed-off-by: Robert Marko <robimarko@gmail.com>
-> >>>>>>>>>
-> >>>>>>>>> Unfortunately, after testing on multiple devices I hit the same GDSC
-> >>>>>>>>> issue I had a long time ago
-> >>>>>>>>> that was the reason I did not send this upstream.
-> >>>>>>>>> It seems that USB3 port GDSC (USB0 GDSC in code) works just fine,
-> >>>>>>>>> however the USB2 one
-> >>>>>>>>> (USB1 GDSC in code) it is stuck off and USB2 port will fail due to this:
-> >>>>>>>>>       1.607531] ------------[ cut here ]------------
-> >>>>>>>>> [    1.607559] usb1_gdsc status stuck at 'off'
-> >>>>>>>>> [    1.607592] WARNING: CPU: 0 PID: 35 at gdsc_toggle_logic+0x16c/0x174
-> >>>>>>>>> [    1.615120] Modules linked in:
-> >>>>>>>> Can you dump GDSCR (the entire 32-bit register) at boot and when toggling?
-> >>>>>>>
-> >>>>>>> Sure, here it is:
-> >>>>>>> [    0.023760] qcom,gcc-ipq6018 1800000.gcc: reg: 0x3e078 val: 0x8222004 init
-> >>>>>>> [    0.023782] qcom,gcc-ipq6018 1800000.gcc: reg: 0x3f078 val: 0x8222004 init
-> >>>>>>> [    0.988626] qcom,gcc-ipq6018 1800000.gcc: reg: 0x3f078 val:
-> >>>>>>> 0x8282000 before toggle
-> >>>>>>> [    1.202506] qcom,gcc-ipq6018 1800000.gcc: reg: 0x3f078 val:
-> >>>>>>> 0x8282000 after toggle
-> >>>>>>> [    1.207208] qcom,gcc-ipq6018 1800000.gcc: reg: 0x3e078 val:
-> >>>>>>> 0xa0282000 before toggle
-> >>>>>> Any chance
-> >>>>>>
-> >>>>>> .en_few_wait_val = 0x2
-> >>>>>>
-> >>>>>> (turning BIT(19) into BIT(17))
-> >>>>>>
-> >>>>>> will make a difference?
-> >>>>>
-> >>>>> Sadly, it makes no difference and GDSC status bit newer comes up which is
-> >>>>> rather weird as USB0 one seems to work just fine.
-> >>>> What if you add clk_ignore_unused?
-> >>>
-> >>> To the USB1 master clock or?
-> >> That's a command line parameter, effectively setting it on all clks.
-> >
-> > Oh that, I understand now.
-> >
-> >>
-> >>>
-> >>> There is definitively something broken regarding the GDSC as
-> >>> GDSC_STATE bits (30-27)
-> >>> change from 0 to something on the USB0 GDSC but on GDSC1 they are 0 even after
-> >>> SW_OVERRIDE BIT(2) is set to 1, and the POWER BIT(31) newer changes to 1.
-> >>>
-> >>> However, if you manually set BIT(2) to 1 then the USB1 master clock
-> >>> can come up so
-> >>> GDSC seems to work.
-> >>> USB1 (The USB2.0 HS) port is still broken after this if USB mass storage is used
-> >>> but that was present before the GDSC changes as well and I still need
-> >>> to figure out
-> >>> which quirk is missing for this.
-> >> Please try clk_ignore_unused and see if toggling the GDSC is still broken.
-> >
-> > Sadly, passing clk_ignore_unused in the bootargs doesn't help, GDSC is
-> > still stuck off.
-> Hm, so it looks like there's no clock dependency for this GDSC..
->
-> Maybe some regulator needs to be turned on?
->
-> Can you try to add regulator-always-on to all vregs and retry?
-> (and keep clk_ignore_unused to be sure)
+Following x86 and i386 build regressions noticed on Linux next-20231128 tag.
 
-Sorry for the ultra late reply, currently there is just CPU regulator described
-via RPM.
+Build log:
+-----------
+fs/btrfs/super.c: In function 'btrfs_parse_param':
+fs/btrfs/super.c:416:25: error: 'ret' undeclared (first use in this
+function); did you mean 'net'?
+  416 |                         ret = -EINVAL;
+      |                         ^~~
+      |                         net
+fs/btrfs/super.c:416:25: note: each undeclared identifier is reported
+only once for each function it appears in
+fs/btrfs/super.c:417:25: error: label 'out' used but not defined
+  417 |                         goto out;
+      |                         ^~~~
+make[5]: *** [scripts/Makefile.build:243: fs/btrfs/super.o] Error 1
 
-I will look into describing the VQMMC and others I can find but I doubt
-it will change anything as no regulators are getting disabled currently.
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Regards,
-Robert
->
-> Konrad
+Links:
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20231128/testrun/21349057/suite/build/test/gcc-13-lkftconfig-kselftest/log
+
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20231128/testrun/21349057/suite/build/test/gcc-13-lkftconfig-kselftest/details/
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2Ymoxor9n54ID51BFjRBS06YQ3U/
+- https://storage.tuxsuite.com/public/linaro/lkft/builds/2Ymoxor9n54ID51BFjRBS06YQ3U/config
+
+--
+Linaro LKFT
+https://lkft.linaro.org
