@@ -2,134 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD2C7FC205
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC4A7FC25F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344885AbjK1RNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 12:13:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43586 "EHLO
+        id S1345244AbjK1RNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 12:13:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229928AbjK1RNH (ORCPT
+        with ESMTP id S229519AbjK1RNv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 12:13:07 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E8D12C
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:13:13 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40b4fac45dbso34615e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:13:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701191592; x=1701796392; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Iu2vtiWbBmtYlN1qlS9uatfpZo9be+0wU6twFhuZRYg=;
-        b=YgJ3R/fD373W5NlIq7+374JDbN3vBwPvGVXFhSJ+D8fKnJpZ9hDmepjUWCLKHSyLXJ
-         dEpxkPXjwl/nm+G8shunf2ht2TrkimUpq/TgK+0QM01A2inxKsf4ovPw/qZU2sQFApiI
-         Cpg5CljT84hyP0f1a3dilEIkNs5rV/xzFe5C2reXm4vsxonPaBv4i93xlimksuQGOb8i
-         stCQ2DoTRBlCak4ZLCg+ljUt5u2pPBhCGGbCFhb/iCZhuT9zm7NajG2skgf1U06EH64y
-         tdXj3An5C+VG6kj00rAKX7i8zahILZTwJAcAORs4c3WtV9I8KfEzXn/02OQuRpTvK5cR
-         /yfQ==
+        Tue, 28 Nov 2023 12:13:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BAE210EB
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:13:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701191637;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Vm0O4QHg+NgUnD86syn9qOPr1P8d6e7mjB/3wAPf3vo=;
+        b=JG0Zn4aBuxFq1uUDjYuPSrafcxfJRm4wKeipRGudSYbEtFbJv801lwNuv/o7/hqTBOI8Ww
+        NND5dgq+Jbf4WdNpscj8SA+vv+nVnuMOS4Gjouv/7E3NAevDtC2qTOPEBsZdqivGxDCE42
+        vrXRM5UUkS+d/dVQanKjX0ebTFIdJqE=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-462-xA7U8tPxO_uCsCFdLPY08Q-1; Tue, 28 Nov 2023 12:13:56 -0500
+X-MC-Unique: xA7U8tPxO_uCsCFdLPY08Q-1
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-67a1f38b735so9823546d6.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:13:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701191592; x=1701796392;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Iu2vtiWbBmtYlN1qlS9uatfpZo9be+0wU6twFhuZRYg=;
-        b=cqBT682l/QmnQgCk4XU9aN9Yuc3YRn3+ZlzaeM854JKGDgTXyJbHX/DDf5pYx0JmC2
-         BFD9u70HN882nUF14yvV/GivWVzvA3f0ptB1YAUePxiLj9d8N6S7JxOq3ovrJ/ru9xq1
-         FNDtmVvWekXC+PYPQRc2I+TKlwazhg4Xx2YDWIOYcJS0sKTHUbNUFY1M2tdgJIv6TXoi
-         p64A+bt3MsQyX7ScWSX7B6HQeYsveAZoZc10ydOrI1gpjhH260lc0Seu++f6YwEngrfu
-         U1m0x/CIeTrzTrMkONstgpyZEzVQc7uEjcVsCKAr0NY3FnIL8bhMlthZrw+tyFF49sQi
-         Jo1g==
-X-Gm-Message-State: AOJu0Yw8JTr+MSOdhUSnNnZ4eHzxDnzzHPjvBLfORrqsPJpVfuAWLwiK
-        1qfP374Abd5vGayYG75MuF2AVe7A4LaerO9LzUH0ng==
-X-Google-Smtp-Source: AGHT+IHCtOOW44lgBxMOpE8JHTAO2pi3pR4+1Uvu8reVO/53lVh4n24a6hyUhjW9yxt9ErpNWU8RpT6YYxwXhstBOVc=
-X-Received: by 2002:a05:600c:218f:b0:40b:43f4:df9e with SMTP id
- e15-20020a05600c218f00b0040b43f4df9emr346794wme.2.1701191592062; Tue, 28 Nov
- 2023 09:13:12 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701191635; x=1701796435;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Vm0O4QHg+NgUnD86syn9qOPr1P8d6e7mjB/3wAPf3vo=;
+        b=h09tIaWOxciFxUBUR2HKqQxscboEXeQFe85FLK1wfL/A3JPJOCMhKV2TaOli1Nuaf5
+         UrW9E2MTy6quypCUCShrD86vdQg+OORqGT1PZebl0jRBxYRh5A0QVAwi9o0UUsU+0upn
+         5n9I2kS7pDmAnXJx0OPZ6XET+rh4/HRlQKHhbiupW35Az1ka19ygymga2LNtKczHoKI/
+         Nxj716IlDb+n/5XV6i/7PGuC8GHU16GLirJMikXMk6dqHFoRtO8rq5lTCzHUnd2QnclF
+         R9mzzdt8Ufn+/qoDqHC8ldVFhoZFtkrrD9eWEE5I1iuJXA9FFVOjP9GNp2H/G2Qk6jbY
+         mPnw==
+X-Gm-Message-State: AOJu0YxhYgF7o4a81BEscZpjzzj+UIdS2F0kRJV3S03dq9vv20dwx6PI
+        DAxUgDdDdLCoEUdEPVsNnNXxQlEQw3CT2wLRzEuv56ntiNh6tYI126pfESWuoV7uLa6AYNipnoT
+        yNn8TX8ntgcfTH1MCgHow2TsM3vDIJFso
+X-Received: by 2002:ad4:4982:0:b0:67a:14fe:f3b0 with SMTP id u2-20020ad44982000000b0067a14fef3b0mr15322577qvx.0.1701191635461;
+        Tue, 28 Nov 2023 09:13:55 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFJRvkNDdU6zlDl3D0OUvysyyYQUO1Hv+GVAM1w4yF9cirbcHTWlpqNkLPcp5RbuilymG8ckQ==
+X-Received: by 2002:ad4:4982:0:b0:67a:14fe:f3b0 with SMTP id u2-20020ad44982000000b0067a14fef3b0mr15322557qvx.0.1701191635195;
+        Tue, 28 Nov 2023 09:13:55 -0800 (PST)
+Received: from x1n (cpe688f2e2cb7c3-cm688f2e2cb7c0.cpe.net.cable.rogers.com. [99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id w6-20020a0cfc46000000b0067a3f82c44fsm2265033qvp.138.2023.11.28.09.13.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 09:13:54 -0800 (PST)
+Date:   Tue, 28 Nov 2023 12:13:53 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>
+Subject: Re: [PATCH v1 2/5] mm/rmap: introduce and use hugetlb_remove_rmap()
+Message-ID: <ZWYf0ZNF9OJgt-mt@x1n>
+References: <20231128145205.215026-1-david@redhat.com>
+ <20231128145205.215026-3-david@redhat.com>
+ <ZWYQeW1dqK6xM1T9@x1n>
+ <f1b52042-646d-4679-b375-7550973701f5@redhat.com>
 MIME-Version: 1.0
-References: <20231122022154.12772-1-CruzZhao@linux.alibaba.com>
- <CAM9d7chVZRKUSmXmZS4OyokKfLKp4h8K8RLWehYRpAs5Z4jsbg@mail.gmail.com> <5ab76c0c-6333-4452-ae51-9193926c802c@linux.alibaba.com>
-In-Reply-To: <5ab76c0c-6333-4452-ae51-9193926c802c@linux.alibaba.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 28 Nov 2023 09:12:57 -0800
-Message-ID: <CAP-5=fW31eiy8ke0hc_YwCffFRW4PNOUnsN89N_goQq5hgHmJw@mail.gmail.com>
-Subject: Re: [PATCH] perf: ignore exited thread when synthesize thread map
-To:     cruzzhao <cruzzhao@linux.alibaba.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>, mingo@redhat.com,
-        peterz@infradead.org, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        adrian.hunter@intel.com, kprateek.nayak@amd.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f1b52042-646d-4679-b375-7550973701f5@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 10:23=E2=80=AFPM cruzzhao <cruzzhao@linux.alibaba.c=
-om> wrote:
->
->
->
-> =E5=9C=A8 2023/11/23 =E4=B8=8A=E5=8D=885:05, Namhyung Kim =E5=86=99=E9=81=
-=93:
-> > Hello,
-> >
-> > On Tue, Nov 21, 2023 at 6:22=E2=80=AFPM Cruz Zhao <CruzZhao@linux.aliba=
-ba.com> wrote:
-> >>
-> >> When synthesize thread map, some threads in thread map may have
-> >> already exited, so that __event__synthesize_thread() returns -1
-> >> and the synthesis breaks. However, It will not have any effect
-> >> if we just ignore the exited thread. So just ignore it and continue.
-> >
-> > Looks ok.  But I guess you want to do the same for the leader
-> > thread below as well.
-> >
-> > Thanks,
-> > Namhyung
-> >
->
-> With my testcase, no error is returned even if we don't do the same for
-> the leader thread blow. Well, I'll check whether the logic is still
-> correct if we do so.
->
-> Many thanks for reviewing.
+On Tue, Nov 28, 2023 at 05:39:35PM +0100, David Hildenbrand wrote:
+> Quoting from the cover letter:
+> 
+> "We have hugetlb special-casing/checks in the callers in all cases either
+> way already in place: it doesn't make too much sense to call generic-looking
+> functions that end up doing hugetlb specific things from hugetlb
+> special-cases."
 
-Thanks for looking at this. Could you share the test? It looks like
-the thread be removed from the thread map to avoid potential future
-broken accesses like below:
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/tools/perf/util/synthetic-events.c?h=3Dperf-tools-next#n887
+I'll take this one as an example: I think one goal (of my understanding of
+the mm community) is to make the generic looking functions keep being
+generic, dropping any function named as "*hugetlb*" if possible one day
+within that generic implementation.  I said that in my previous reply.
 
-Some of the race will hopefully get narrowed by switching to a less
-memory intense readdir:
-https://lore.kernel.org/lkml/20231127220902.1315692-7-irogers@google.com/
+Having that "*hugetlb*" code already in the code base may or may not be a
+good reason to further move it upward the stack.
 
-Threads racing is an issue in this example:
-```
-$ sudo perf top --stdio -u `whoami`
-Error:
-The sys_perf_event_open() syscall returned with 3 (No such process)
-for event (cycles:P).
-/bin/dmesg | grep -i perf may provide additional information.
-```
-
-Generally the races are covered by the dummy event that gathers
-sideband data like thread creation and exits, which is created prior
-to synthesis. It would be nice to have a better threading abstraction
-to avoid these races.
+Strong feelings?  No, I don't have.  I'm not knowledged enough to do so.
 
 Thanks,
-Ian
 
-> Best,
-> Cruz Zhao
+-- 
+Peter Xu
+
