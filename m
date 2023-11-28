@@ -2,96 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BBCF7FC11A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:14:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED8D7FC1C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345572AbjK1SKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 13:10:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54688 "EHLO
+        id S1345310AbjK1SKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 13:10:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233170AbjK1SKG (ORCPT
+        with ESMTP id S1344975AbjK1SKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 13:10:06 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B61B7
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 10:10:13 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-423d9d508d1so5678721cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 10:10:13 -0800 (PST)
+        Tue, 28 Nov 2023 13:10:18 -0500
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E562B7
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 10:10:23 -0800 (PST)
+Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-6cbb6ff734dso6254009b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 10:10:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701195012; x=1701799812; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=f2GMrLcGcuPvxGptutNWB7kt5k9GOKF04a50so4967s=;
-        b=Thc7w8AxMhkvw1AgQt2C6X/i5Fxlz7UPepSBc5NHpyXfhDLfoxuO/MLLXXI0Vl61qt
-         gsoxwR1PNM5WFUv1PV3ViisDy65V5Uv889ktHMQu5B0WuwWNYeMa7ehNoXzDPB3B1x6v
-         VjuTFtMDzXVVqIxJosMtvgq/CFJ2UjblHTqZJ1FtJLUCZ+TDrHHdoLMM8R8mIlEbykOV
-         Va0Evs3OODqMGj8IByH0YLHqHCob3VkfNusz0M7ho3vfDtj/l08lwJy0PJigqRvqhcQS
-         3YcmG70SJP0iL25XTZ9wjJBufB5Mv8nfgV/1ux/EiKe/gc/c9FtCZadNnym8OwhgV8fW
-         mDhg==
+        d=google.com; s=20230601; t=1701195022; x=1701799822; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DOiYrhTklrC540+t5ukqyApuT4wG0jpTJi3hI0UhfFQ=;
+        b=VGgjns+B3qlLDQMqpsTGbuGiYSuUeEej/LMCPGNVZ5XMofihHWB9bKjmePABcYmYou
+         DMrFObCtH1YlAZ7ff0a1qxN1UylInoucoX9jpwEdhA6/V4pwpO0iOLIdKZPdp5TcP75g
+         UcVL7ALaXACBNQ0nUTEsLsDLPIfyupuRU+Ftbsna5ZzIPzdn6wE6hlP+6rPaHkv/GQ2/
+         JMFP4xlx4u+fVBxdFQIShuc9FLCWKhbCoz9bb9w2Ob4D4BqhuIXK2mRBxQvP3WQPDxtH
+         f8AMwWq7ngg2lRazCMFGaei8dBvpxaYqvPE/Ga9gNO+ZuroNNtK05WBb162TKF5BzDAL
+         mpEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701195012; x=1701799812;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=f2GMrLcGcuPvxGptutNWB7kt5k9GOKF04a50so4967s=;
-        b=sTJ5FKCp1aSgqXZ+DEB0XhJoxZEAuwesxAI65FRNxvfGbkHoys+sojmvoVDZfRrMQu
-         J7Xf2LFHfSkJZgDangY++e193Z6W2Ken7P23+Su9ggGdNmmJOxtg5VXuk8/xt55Sch5A
-         GF78k8uiH4LsYNyUOu1k66Rm6T3QHDMPdpvfSynS3QtYZfVV0BhSxKGgGcHBFAJE0rmX
-         xgUp11zSleuK+LyWuL629TAQT+18QHEbSexKELYR6khR2D0m1TFtXieP5g4prF9vNKf9
-         Whw9QjRpgfg8XumGoYfroFZhSLSshrLjR106anJI7zC58nYTUkBt3uJHnGLiYfO/KULu
-         O2Ig==
-X-Gm-Message-State: AOJu0YwZRqT3yXsxC58GAgPML/EM+HUwgfgwGjazld/PDGmbzeFuf/HT
-        0U2ig6ePhjRSBS+m9vcyIN3SqQ==
-X-Google-Smtp-Source: AGHT+IEcJ1uAsb80kR1B3aJuT1IUjjgas87J8p1OJjPxsDlwIaK05wTXQ3zKeNcgXFK4baOeAFiQ6A==
-X-Received: by 2002:a0c:ec4d:0:b0:67a:3efd:d6f6 with SMTP id n13-20020a0cec4d000000b0067a3efdd6f6mr8466084qvq.50.1701195012288;
-        Tue, 28 Nov 2023 10:10:12 -0800 (PST)
-Received: from aspen.lan ([209.120.180.235])
-        by smtp.gmail.com with ESMTPSA id t15-20020a05621421af00b0067a4452d459sm2164807qvc.116.2023.11.28.10.10.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 10:10:11 -0800 (PST)
-Date:   Tue, 28 Nov 2023 13:10:07 -0500
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Flavio Suligoi <f.suligoi@asem.it>
-Cc:     Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] backlight: mp3309c: fix uninitialized local variable
-Message-ID: <20231128181007.GA4431@aspen.lan>
-References: <20231128150839.2605003-1-f.suligoi@asem.it>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231128150839.2605003-1-f.suligoi@asem.it>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1701195022; x=1701799822;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=DOiYrhTklrC540+t5ukqyApuT4wG0jpTJi3hI0UhfFQ=;
+        b=E8X8htckU/eN0PEPCXqAG70ILhuxZt9My1XEpvpB+Dk81qJLnSp++Q6WrwcMfM58iL
+         sWQdWbm1Du4sxUebZ8d7xVQMUXtB2vHjyau0wjruc0FgxuH6Ablk50eNCGF6Ptyya6jh
+         VXKvhm7BFe/Yfzv7aoJfLn6IMUPg49mZjp8VGmmgl4AnereV7M+P452fmvNm+1z4qP6G
+         Fm9s/UabOfy2VqNxxievOKL/lI8SEwHFT+oPAtBnFccTA5/6aV023Y0moYIQHLwJ+axK
+         yuqqAwOGoDKAO5RSPzU9NfiyoeKpQ98Wyjv/C0xGIerg+Vz6e3sqmTsw2RixFEqXrTg/
+         cYxA==
+X-Gm-Message-State: AOJu0YwV8f0/rVPYNpkt2OxoT9BTzawuvvaH8EG14ya2jzfm+rLm4bE6
+        HqHT0KDJXnccrg5VbPoprmwDdM2a7XA=
+X-Google-Smtp-Source: AGHT+IHjIqdyme5cvmE+9a3rDtzHZcM7efoox+2SRXJe1b9Npk04rYqTs+Clo/bMnXFYVjpUy9ZwguCYWsc=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:1908:b0:690:d251:28b9 with SMTP id
+ y8-20020a056a00190800b00690d25128b9mr3953437pfi.4.1701195022550; Tue, 28 Nov
+ 2023 10:10:22 -0800 (PST)
+Date:   Tue, 28 Nov 2023 10:10:20 -0800
+In-Reply-To: <CAJhGHyBtis3SkNZP8RSX5nKFcnQ4qvUrfTMD2RPc+w+Rzf30Zw@mail.gmail.com>
+Mime-Version: 1.0
+References: <20231107202002.667900-1-aghulati@google.com> <CAJhGHyBtis3SkNZP8RSX5nKFcnQ4qvUrfTMD2RPc+w+Rzf30Zw@mail.gmail.com>
+Message-ID: <ZWYtDGH5p4RpGYBw@google.com>
+Subject: Re: [RFC PATCH 00/14] Support multiple KVM modules on the same host
+From:   Sean Christopherson <seanjc@google.com>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     Anish Ghulati <aghulati@google.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        hpa@zytor.com, Vitaly Kuznetsov <vkuznets@redhat.com>,
+        peterz@infradead.org, paulmck@kernel.org,
+        Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 04:08:39PM +0100, Flavio Suligoi wrote:
-> In the function "pm3309c_parse_dt_node", when the dimming analog control
-> mode (by I2C messages) is enabled, the local variable "prop_levels" is
-> tested without any initialization, as indicated by the following smatch
-> warning (thanks to Dan Carpenter for the report):
+On Fri, Nov 17, 2023, Lai Jiangshan wrote:
+> On Wed, Nov 8, 2023 at 4:20=E2=80=AFAM Anish Ghulati <aghulati@google.com=
+> wrote:
+> >
+> > This series is a rough, PoC-quality RFC to allow (un)loading and runnin=
+g
+> > multiple KVM modules simultaneously on a single host, e.g. to deploy
+> > fixes, mitigations, and/or new features without having to drain all VMs
+> > from the host. Multi-KVM will also allow running the "same" KVM module
+> > with different params, e.g. to run trusted VMs with different mitigatio=
+ns.
+> >
+> > The goal of this RFC is to get feedback on the idea itself and the
+> > high-level approach.  In particular, we're looking for input on:
+> >
+> >  - Combining kvm_intel.ko and kvm_amd.ko into kvm.ko
+> >  - Exposing multiple /dev/kvmX devices via Kconfig
+> >  - The name and prefix of the new base module
+> >
+> > Feedback on individual patches is also welcome, but please keep in mind
+> > that this is very much a work in-progress
+>=20
+> Hello Anish
+>=20
+> Scarce effort on multi-KVM can be seen in the mail list albeit many
+> companies enable multi-KVM internally.
+>=20
+> I'm glad that you took a big step in upstreaming it.  And I hope it
+> can be materialized soon.
+>=20
+>=20
+> >
+> >  - Move system-wide virtualization resource management to a new base
+> >    module to avoid collisions between different KVM modules, e.g. VPIDs
+> >    and ASIDs need to be unique per VM, and callbacks from IRQ handlers =
+need
+> >    to be mediated so that things like PMIs get to the right KVM instanc=
+e.
+>=20
+> perf_register_guest_info_callbacks() also accesses to system-wide resourc=
+es,
+> but I don't see its relating code including kvm_guest_cbs being moved to =
+AVC.
 
-Good to see credit for the reporter but please use a "Reported-by:" tag
-for that. There should probably be a "Fixed:" tag too.
+Yeah, that's on the TODO list.  IIRC, the plan is to have VAC register a si=
+ngle
+callback with perf, and then have VAC deal with invoking the callback(s) fo=
+r the
+correct KVM instance.
 
+> >  - Refactor KVM to make all upgradable assets visible only to KVM, i.e.
+> >    make KVM a black box, so that the layout/size of things like "struct
+> >    kvm_vcpu" isn't exposed to the kernel at-large.
+> >
+> >  - Fold kvm_intel.ko and kvm_amd.ko into kvm.ko to avoid complications
+> >    having to generate unique symbols for every symbol exported by kvm.k=
+o.
+>=20
+> The sizes of kvm_intel.ko and kvm_amd.ko are big, and there
+> is only 1G in the kernel available for modules. So I don't think folding
+> two vendors' code into kvm.ko is a good idea.
+>=20
+> Since the symbols in the new module are invisible outside, I recommend:
+> new kvm_intel.ko =3D kvm_intel.ko + kvm.ko
+> new kvm_amd.ko =3D kvm_amd.ko + kvm.ko
 
-> drivers/video/backlight/mp3309c.c:279 pm3309c_parse_dt_node() error: uninitialized symbol 'prop_levels'.
->
-> To avoid any problem in case of undefined behavior, we need to initialize
-> it to "NULL".
-> For consistency, I also initialize the other similar variable
-> "prop_pwms" in the same way.
+Yeah, Paolo also suggested this at LPC.
 
-I don't love redundant initializations... but I can live with it ;-) .
+> >  - Add a Kconfig string to allow defining a device and module postfix a=
+t
+> >    build time, e.g. to create kvmX.ko and /dev/kvmX.
+> >
+> > The proposed name of the new base module is vac.ko, a.k.a.
+> > Virtualization Acceleration Code (Unupgradable Units Module). Childish
+> > humor aside, "vac" is a unique name in the kernel and hopefully in x86
+> > and hardware terminology, is a unique name in the kernel and hopefully
+> > in x86 and hardware terminology, e.g. `git grep vac_` yields no hits in
+> > the kernel. It also has the same number of characters as "kvm", e.g.
+> > the namespace can be modified without needing whitespace adjustment if
+> > we want to go that route.
+>=20
+> How about the name kvm_base.ko?
+>=20
+> And the variable/function name in it can still be kvm_foo (other than
+> kvm_base_foo).
 
-
-Daniel.
+My preference is to have a unique name that allows us to differentitate bet=
+ween
+the "base" module/code and KVM code.  Verbal conversations about all of thi=
+s get
+quite confusing because it's not always clear whether "base KVM" refers to =
+what
+is currently kvm.ko, or what would become kvm_base.ko/vac.ko.
