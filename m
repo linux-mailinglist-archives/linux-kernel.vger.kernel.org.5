@@ -2,84 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D1A7FB6A3
+	by mail.lfdr.de (Postfix) with ESMTP id 7651B7FB6A4
 	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234138AbjK1KE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 05:04:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47800 "EHLO
+        id S1343949AbjK1KE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 05:04:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbjK1KEY (ORCPT
+        with ESMTP id S230105AbjK1KEY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 28 Nov 2023 05:04:24 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96C2BDD;
-        Tue, 28 Nov 2023 02:04:30 -0800 (PST)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AS9CPVK030785;
-        Tue, 28 Nov 2023 10:04:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=vpTPxQ+fdoF6wnOYXP6scd3ZnbO2OTplcLMU91k9FQU=;
- b=YpUkbCE7GYXiSeRSEKzhX2LjR+WXvN7VczVySWwSJdU3V6YPUxB8LuAhzkgNDH0d8QwH
- Yo3dWhG8hDbDUKcZusTly7QAtUew4q25x4bCQZwaJT5lyLBhfHwpTfeyyHFSYRmmz8mG
- sTaa3IYcKpS0ZxN+aJdNM9WSUW8ZkCCogS/UEPhgHQuHPGqTp6JV/NUFlAWgMZHbm3gC
- vsPm8hWSO8RNOUuLVEThzbZyuB/SFHT5y+zhJlIMuLN0lR1hbAs/oS4fVWOd1xiiiXnB
- dBdM+SV6iu2zQ7fnf40i0HOQIH/a6pG+s8wbgCHt4CqhOJB3hrQi9YO+eUOJdK59Cbwj +w== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3undc583hw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Nov 2023 10:04:16 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ASA3t15024268
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 28 Nov 2023 10:03:55 GMT
-Received: from [10.253.11.37] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 28 Nov
- 2023 02:03:51 -0800
-Message-ID: <4038b408-838d-4804-8866-cc8471749daa@quicinc.com>
-Date:   Tue, 28 Nov 2023 18:03:49 +0800
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A413BDE
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:04:30 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2c897ba4057so63458351fa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:04:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701165869; x=1701770669; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uqZNlYO+4fXm1Z4ILbIvuuTtMTy9j6l7hH3PusjR6BQ=;
+        b=zY03bC59vAxcqGDsj1IWehPDQHJxf7bYxfftwLJjGWqMDQpbZCRYYyOviNmwRjZ4NR
+         FN+r0ewhrQQp3wvy29uvTaz6izw0XqPuQpi4+YFtMI8sBZGNwpcuyHNdWrV8xM6DxfoK
+         MJCAh8LXJh6OLeZOvZ1Y7+2JdF63whRqRsfCTl+PlNt5v4+1bQ7g1Dy2H0tNlVuYka4c
+         L6qnGMSSd8DxbWb6WgSuA2gJ6KGwAptEt6Dd4vSb+mL1ELGFSCaQ6cH6Islmqdpn9EP9
+         gMQ/LQhz7yx83rjFMdVmcibmbKeAxCOSuAiIgSefwzAD7gmYnN2X3jNnc12ohAl0uTji
+         Kl7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701165869; x=1701770669;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=uqZNlYO+4fXm1Z4ILbIvuuTtMTy9j6l7hH3PusjR6BQ=;
+        b=YXY1/vmhK63PXziILx00JSoKjCJ81UTyE0fnbP/GSXwdNUG13kq55iMnja5vH1SpQ4
+         sxO3+h+jHfrJizMb9oNgpCJYjj9BYyg62b0LWd4ZxBhRY4cZWAjEp9q9YZS3fQM1dc0Z
+         JTX/0pmlY1QVdatoO6XAw78IcDL3VBQJ7HKeVCW0L56PN2eiwiveKyrL/qyESDdROGbJ
+         Ah9oU+LXSdvgdzlFrYiemQuGL3mOFhOFGggTamZRE8F01T1HsNdPCFb4tFEFIHPWRffL
+         870TXsJJEBBIm4xcenD401BMxhC0dS7xbxtVI+t2HTJrGD3Z8fPy1mFwttfsyyTKHk36
+         M0oA==
+X-Gm-Message-State: AOJu0YxyL7fYxb7m4gDCqS9BSrtIifZQympTXHXb8P2uSl8s26pZc4+2
+        qNcgi5bxhL0Shuy84PydQj43Uw==
+X-Google-Smtp-Source: AGHT+IEtwDkK+p/g3380X9UdQJDrGWwB3mLB36GDGD9BTyNpm+IlezcMvViInhOwqMgnmPIm1BWDQg==
+X-Received: by 2002:a2e:a48b:0:b0:2c9:a0c8:b688 with SMTP id h11-20020a2ea48b000000b002c9a0c8b688mr4227270lji.26.1701165868753;
+        Tue, 28 Nov 2023 02:04:28 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:eada:f40e:7ab3:2afe? ([2a01:e0a:982:cbb0:eada:f40e:7ab3:2afe])
+        by smtp.gmail.com with ESMTPSA id e15-20020a05600c4e4f00b0040b40e3f877sm10329497wmq.6.2023.11.28.02.04.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Nov 2023 02:04:28 -0800 (PST)
+Message-ID: <4e7ff29e-3cac-429b-932e-c9c79a319d4b@linaro.org>
+Date:   Tue, 28 Nov 2023 11:04:26 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 09/10] phy: qualcomm: phy-qcom-qmp-ufs: Add High Speed
- Gear 5 support for SM8550
-Content-Language: en-US
-To:     <neil.armstrong@linaro.org>, <bvanassche@acm.org>,
-        <mani@kernel.org>, <adrian.hunter@intel.com>, <beanhuo@micron.com>,
-        <avri.altman@wdc.com>, <junwoo80.lee@samsung.com>,
-        <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        "open list:GENERIC PHY FRAMEWORK" <linux-phy@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1700729190-17268-1-git-send-email-quic_cang@quicinc.com>
- <1700729190-17268-10-git-send-email-quic_cang@quicinc.com>
- <0d8fe915-4d53-414b-b145-231fe913474d@linaro.org>
-From:   Can Guo <quic_cang@quicinc.com>
-In-Reply-To: <0d8fe915-4d53-414b-b145-231fe913474d@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: v4UaJZUiA_8JVfm66l1wLIT-EEmzcPj7
-X-Proofpoint-ORIG-GUID: v4UaJZUiA_8JVfm66l1wLIT-EEmzcPj7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-28_09,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- impostorscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0 spamscore=0
- priorityscore=1501 mlxlogscore=999 mlxscore=0 suspectscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311280079
+From:   neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH 0/3] Revert panel fixes and original buggy patch
+Content-Language: en-US, fr
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Liu Ying <victor.liu@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Robert Foss <rfoss@kernel.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+References: <20231128-revert-panel-fix-v1-0-69bb05048dae@linaro.org>
+ <20231127232542.GB25590@pendragon.ideasonboard.com>
+ <CACRpkdYWjHbgWQc46hGM3bg+5nf4NiveEZJmHrnx0X-=XsUDLA@mail.gmail.com>
+ <80be087e-0341-487f-b6d9-8772d7c6128a@linaro.org>
+ <CACRpkdZmowhDhCgnEYokjQC8T0930ZKEr18f5ZsM=ZmD0PDGig@mail.gmail.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <CACRpkdZmowhDhCgnEYokjQC8T0930ZKEr18f5ZsM=ZmD0PDGig@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -90,51 +118,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Neil,
-
-On 11/28/2023 5:59 PM, neil.armstrong@linaro.org wrote:
-> Hi,
+On 28/11/2023 10:34, Linus Walleij wrote:
+> On Tue, Nov 28, 2023 at 9:30 AM Neil Armstrong
+> <neil.armstrong@linaro.org> wrote:
 > 
-> On 23/11/2023 09:46, Can Guo wrote:
->> On SM8550, two sets of UFS PHY settings are provided, one set is to 
->> support
->> HS-G5, another set is to support HS-G4 and lower gears. The two sets 
->> of PHY
->> settings are programming different values to different registers, mixing
->> the two sets and/or overwriting one set with another set is definitely 
->> not
->> blessed by UFS PHY designers.
->>
->> To add HS-G5 support for SM8550, split the two sets of PHY settings into
->> their dedicated overlay tables, only the common parts of the two sets of
->> PHY settings are left in the .tbls.
->>
->> Consider we are going to add even higher gear support in future, to avoid
->> adding more tables with different names, rename the .tbls_hs_g4 and 
->> make it
->> an array, a size of 2 is enough as of now.
->>
->> In this case, .tbls alone is not a complete set of PHY settings, so 
->> either
->> tbls_hs_overlay[0] or tbls_hs_overlay[1] must be applied on top of the
->> .tbls to become a complete set of PHY settings.
->>
->> Signed-off-by: Can Guo <quic_cang@quicinc.com>
+>> You can apply them now, or tell me if you want me to apply them.
 > 
-> Since Vinod has already merged SM8650 UFS PHY support, I'm afraid this
-> serie will break UFS if the SM8650 UFS tables aren't updated aswell.
-> 
-> Could you confirm if this will be the case ?
+> Please apply them Neil (to drm-misc-fixes) order 2, 1, 3 for bisectability.
 
-Because this change modifies data struct, it would be caught during 
-compiliation stage even if this change applies cleanly, hence it won't 
-break UFS.
+Sure, doing it right now.
 
-Thanks,
-Can Guo.
+Neil
 
 > 
-> Thanks,
-> Neil
-> 
-> 
+> Yours,
+> Linus Walleij
+
