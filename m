@@ -2,89 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC5697FC2D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5BC47FC19F
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346381AbjK1P66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 10:58:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55254 "EHLO
+        id S1346425AbjK1QAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:00:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346239AbjK1P6z (ORCPT
+        with ESMTP id S1346239AbjK1P76 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 10:58:55 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21DB190;
-        Tue, 28 Nov 2023 07:59:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701187142; x=1732723142;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=aFGhnhLBctAxdXmqRzubiIeJfbC6+H1rRvtasuLMDp8=;
-  b=SU5xqc/tolCPmRhRaW+96fpfD4SZJfmY05hz8cmwIwmXLRjJrI+3oif4
-   bd3FfCIFqnlyEyrqjKoIt6umUz+GAy8VY86w4UJQ83CzenYSuZ1Q6fraA
-   C4K0CmlR/QdCAXv0+/L0i9Mh+57wCmY5cCvIEbTlqhXy9q5YtgBM6Thd2
-   FH2gqVYAUr4pVDNWebe292PrTG0txN0+GChhC0BCvNlN0xpDzxpR9kM0b
-   xlK4Qe6OxyJUVu0nHj1nYjelSWnL/dpDbmwtzhSHfsY/k1kt8X563JI/b
-   TzpXu/Y6XXOcZ4uqXjtOkqwW7n7E5sbY4od2P7qRyfkRmxu7isRs/Jmg/
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="372324490"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="372324490"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 07:59:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="802984915"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="802984915"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 07:58:53 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1r80U5-00000000Cdt-1MWE;
-        Tue, 28 Nov 2023 17:58:49 +0200
-Date:   Tue, 28 Nov 2023 17:58:49 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        Jianlong Huang <jianlong.huang@starfivetech.com>,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        oe-kbuild-all@lists.linux.dev, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sean Wang <sean.wang@kernel.org>
-Subject: Re: [PATCH v2 12/21] pinctrl: core: Embed struct pingroup into
- struct group_desc
-Message-ID: <ZWYOOW0KojJSTROj@smile.fi.intel.com>
-References: <20231123193355.3400852-13-andriy.shevchenko@linux.intel.com>
- <202311250448.uz5Yom3N-lkp@intel.com>
- <ZWYM8Pjl-S-8CMPu@smile.fi.intel.com>
+        Tue, 28 Nov 2023 10:59:58 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 426A395;
+        Tue, 28 Nov 2023 08:00:05 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5472A169E;
+        Tue, 28 Nov 2023 08:00:52 -0800 (PST)
+Received: from localhost (ionvoi01-desktop.cambridge.arm.com [10.2.78.69])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7E1E43F6C4;
+        Tue, 28 Nov 2023 08:00:04 -0800 (PST)
+Date:   Tue, 28 Nov 2023 16:00:03 +0000
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        viresh.kumar@linaro.org, lenb@kernel.org, robert.moore@intel.com,
+        lukasz.luba@arm.com, pierre.gondois@arm.com,
+        beata.michalska@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-pm@vger.kernel.org, linux-acpi@vger.kernel.org,
+        conor.dooley@microchip.com, suagrfillet@gmail.com,
+        ajones@ventanamicro.com, lftan@kernel.org
+Subject: Re: [PATCH v6 1/7] topology: Add a new arch_scale_freq_reference
+Message-ID: <ZWYOg1gIIgI1qXn7@arm.com>
+References: <20231109101438.1139696-1-vincent.guittot@linaro.org>
+ <20231109101438.1139696-2-vincent.guittot@linaro.org>
+ <ZWYM0hn28RHjAalh@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZWYM8Pjl-S-8CMPu@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+In-Reply-To: <ZWYM0hn28RHjAalh@arm.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -93,23 +56,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 05:53:21PM +0200, Andy Shevchenko wrote:
-> On Sat, Nov 25, 2023 at 07:39:02AM +0800, kernel test robot wrote:
-> > Hi Andy,
-> > 
-> > kernel test robot noticed the following build errors:
+On Tuesday 28 Nov 2023 at 15:52:52 (+0000), Ionela Voinescu wrote:
+> Hi Vincent,
 > 
-> > [also build test ERROR on linusw-pinctrl/for-next next-20231124]
+> I have a small request on this patch, which is useful for [1].
+> I'll detail what is needed lower in the code.
 > 
-> Hmm... I have compiled tested on Linux Next it several times, I can't reproduce
-> this neither with GCC nor with LLVM.
+> [1] https://lore.kernel.org/lkml/ZWYDr6JJJzBvsqf0@arm.com/
+> 
+> On Thursday 09 Nov 2023 at 11:14:32 (+0100), Vincent Guittot wrote:
+> > @@ -279,13 +278,13 @@ void topology_normalize_cpu_scale(void)
+> >  
+> >  	capacity_scale = 1;
+> >  	for_each_possible_cpu(cpu) {
+> > -		capacity = raw_capacity[cpu] * per_cpu(freq_factor, cpu);
+> > +		capacity = raw_capacity[cpu] * per_cpu(capacity_freq_ref, cpu);
+> 
+> The only affected code that I could find is here and below.
+> 
+> The above line would have to change to:
+> capacity = raw_capacity[cpu] * per_cpu(capacity_freq_ref, cpu) ?: 1;
+> 
+> >  		capacity_scale = max(capacity, capacity_scale);
+> >  	}
+> >  
+> >  	pr_debug("cpu_capacity: capacity_scale=%llu\n", capacity_scale);
+> >  	for_each_possible_cpu(cpu) {
+> > -		capacity = raw_capacity[cpu] * per_cpu(freq_factor, cpu);
+> > +		capacity = raw_capacity[cpu] * per_cpu(capacity_freq_ref, cpu);
+> 
+> and here:
+> capacity = raw_capacity[cpu] * per_cpu(capacity_freq_ref, cpu) ?: 1;
+> 
+> I think it's nicer to start with capacity_freq_ref as 0 and compensate here
+> for uninitialized capacity_freq_ref.
+> 
+> Let me know if this is alright of if you'd prefer us to make this change
+> in a separate patch.
+> 
+> Thanks,
+> Ionela.
+> 
 
-Actually it rings a bell that some versions of GCC have a bug (?) that they may
-not identify initializations like this to be converted to constants as we are
-using compound literal it should make no difference.
+Correction - both will need to be:
+capacity = raw_capacity[cpu] * (per_cpu(capacity_freq_ref, cpu) ?: 1);
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks,
+Ionela.
