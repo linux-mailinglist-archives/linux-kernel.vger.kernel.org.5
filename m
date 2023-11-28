@@ -2,141 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F392D7FC479
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 20:53:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 033EE7FC47C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 20:55:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234810AbjK1Tw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 14:52:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58736 "EHLO
+        id S234835AbjK1TzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 14:55:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbjK1Twz (ORCPT
+        with ESMTP id S229586AbjK1TzD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 14:52:55 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252CA10F0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 11:53:02 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40b35199f94so14685e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 11:53:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701201180; x=1701805980; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FJlmh/i6qVPUaDygU94gf+uv5HBKAGsVKHkcxOTWzPw=;
-        b=D6WVDhZdyFuWFsItxe+rLnU+/h7OL9ScLjV3QoLEJS2zl/W4YKUN6vNSxM48Obl032
-         BRpaGex874kNPRpSa7gLSOZ/xADTmAhyX/xkl9EXj94EKU3Hf7C81kMLl0P1ZKARfN3G
-         OIfxN+NVNoApTKf5MZ7OOWewIuvc7TYlqQYVJs/0eCxmxVf3Tx9Qt5chvcEs2UlIFg0/
-         ugqQ9kvHVDy5RBFr1K8BPoE5pQsdSQTlZoRGDQj+qiCb7QDLC6AhVDNWh4sywh3Mjs+v
-         NOFCMElwm8+cd8OB302ThXEOSE1+Q3JPYfhKkjM/Dp2ZvS212qpHxQuoXkpeCqnpzTAb
-         FG0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701201180; x=1701805980;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FJlmh/i6qVPUaDygU94gf+uv5HBKAGsVKHkcxOTWzPw=;
-        b=bsMGYo3NhNtOI/aq1PzeolW70WbjWAKgnppmtM8l42M9BHYtbPhoLqdqMZLK5DMDC6
-         qSCO58MmRwxlIvKmqeFzdbktuh91utizBQ+LAsE2PEkYb2WkbGY4S+yT3rgtawJGLb+u
-         ilwSMJ2fl0epoIYsxCSLx6BGsaI9dMWVXGjADAvqmgDT499b41MAa533DKL6xjXxp86D
-         LA5BfCPY1VzD6fKIwOg+tBdMj7IZFcH27/hVEPY+b48lTL27N4xUzvInyRr5wrPMr3IM
-         vxvSM2xZWJafGjV7DinOgaVTy9IhnIMDMVchfMEA689exihzoRxfPEo65uxS7u0TfMbA
-         ZFEQ==
-X-Gm-Message-State: AOJu0YxvHVb7FSHSOeCthIc1jS95fkI306v6ZQBXkV9J34roMKqUrXff
-        dLaxHSjeRkdet19A0G3QBPq0+WzfXcxYaCzKkxnr7w==
-X-Google-Smtp-Source: AGHT+IEQfi+QzKUnAqeWsz9lr40ibLF4p1ARvSOw+YdoP9hX2ZpiwRTrHllEGn3tRE77i+Up4Q8IBFCdLkQMafbwufs=
-X-Received: by 2002:a05:600c:45cc:b0:40b:3d89:ba70 with SMTP id
- s12-20020a05600c45cc00b0040b3d89ba70mr504824wmo.7.1701201180449; Tue, 28 Nov
- 2023 11:53:00 -0800 (PST)
+        Tue, 28 Nov 2023 14:55:03 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D80201988
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 11:55:09 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BC72C433C8;
+        Tue, 28 Nov 2023 19:55:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701201309;
+        bh=5LQk5ImQ+S0EdzXUNz2TE2xX76Eio/cuwNPaZkJSEFs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FAjA5ugSe9IcBuB/IU5z6ShxwEe07xfPz/iMcuMVpB5wIcfwrKo0Mpqz1wkBSHNTQ
+         uT533Hcikc1sWkuv181w8/kBvN9kK/oJHg2gOeifJ+U6LNuJrD7MwZFH0MpfxYOWZO
+         9khJZ4loo6kJLf7WoSXiVUhyHBpbY2M5J+mGhmW0wtteIFhKctR9BrbBHArjSO9Tis
+         Zor3Sn3ofiSqE4VUW16NqlGgyk1b6SMZWiUv+k1w8ENw2w4CJktYycuB+Z7gaZijuc
+         t0J4fou9R31yxvm1FNafqQ3j9xVeLJqF1c2MqzKqkcysFvKlF81GzZjzRn/Y2fidpi
+         +tk0iNoasZ0cw==
+Date:   Tue, 28 Nov 2023 11:55:07 -0800
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, David Ahern <dsahern@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jiri Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>,
+        Itay Avraham <itayavr@nvidia.com>,
+        linux-kernel@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH V3 2/5] misc: mlx5ctl: Add mlx5ctl misc driver
+Message-ID: <ZWZFm2qqhV1wKKCV@x130>
+References: <20231127161732.GL436702@nvidia.com>
+ <2023112707-feline-unselect-692f@gregkh>
+ <ZWTtTjgBrNxpd9IO@x130>
+ <20231127160719.4a8b2ad1@kernel.org>
+ <20231128044628.GA8901@u2004-local>
+ <20231128065321.53d4d5bb@kernel.org>
+ <20231128162413.GP436702@nvidia.com>
+ <20231128084421.6321b9b2@kernel.org>
+ <20231128175224.GR436702@nvidia.com>
+ <20231128103304.25c2c642@kernel.org>
 MIME-Version: 1.0
-References: <20231123121851.10826-1-adrian.hunter@intel.com>
-In-Reply-To: <20231123121851.10826-1-adrian.hunter@intel.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 28 Nov 2023 11:52:49 -0800
-Message-ID: <CAP-5=fXXrfOyNKrP8xu8+c5Wq1L=YgiEGuv6qC5XP5m+8ie9_w@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/3] perf/core: Add ability for an event to "pause" or
- "resume" AUX area tracing
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Hendrik Brueckner <brueckner@linux.ibm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20231128103304.25c2c642@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 23, 2023 at 4:19=E2=80=AFAM Adrian Hunter <adrian.hunter@intel.=
-com> wrote:
+On 28 Nov 10:33, Jakub Kicinski wrote:
+>On Tue, 28 Nov 2023 13:52:24 -0400 Jason Gunthorpe wrote:
+>> > The question at LPC was about making devlink params completely
+>> > transparent to the kernel. Basically added directly from FW.
+>> > That what I was not happy about.
+>>
+>> It is creating a back-porting nightmare for all the enterprise
+>> distributions.
 >
-> Hi
+>We don't care about enterprise distros, Jason, or stable kernel APIs.
 >
-> Hardware traces, such as instruction traces, can produce a vast amount of
-> trace data, so being able to reduce tracing to more specific circumstance=
-s
-> can be useful.
+>> > You can add as many params at the driver level as you want.
+>> > In fact I asked Saeed repeatedly to start posting all those
+>> > params instead of complaining.
+>>
+>> That really isn't what you said in the video.
+>>
+>> Regardless, configurables are only one part of what mlx5ctl addresses,
+>> we still have all the debugability problems, which are arguably more
+>> important.
 >
-> The ability to pause or resume tracing when another event happens, can do
-> that.
+>Read-only debug interfaces are "do whatever you want" in netdev.
+>Params controlling them (ie. writing stuff) need to be reviewed
+>but are also allowed.
 >
-> These patches add such a facilty and show how it would work for Intel
-> Processor Trace.
+>Doesn't mlx5 have a pile of stuff in debugfs already?
 >
-> Maintainers of other AUX area tracing implementations are requested to
-> consider if this is something they might employ and then whether or not
-> the ABI would work for them.
->
-> Changes to perf tools are not fleshed out yet.
 
-This looks good to me but the perf tools parsing changes I'm not sure
-on. It would be nice to have a test case, likely a shell test or
-change to the intel-pt shell test, to show how they work.
+not enough, not scalable and it's a backporting and maintenance nightmare
+as Jason already showed.
 
-Thanks,
-Ian
+mlx5 supports creating millions of objects, tools need to selectively
+pick which objects to dump for a specific use case, if it's ok with you to
+do this in debugfs, then ioctl is much cleaner .. so what's your problem
+with mlx5ctl?
 
-> Adrian Hunter (3):
->       perf/core: Add aux_pause, aux_resume, aux_start_paused
->       perf/x86/intel/pt: Add support for pause_resume()
->       perf tools: Add support for AUX area pause_resume()
+
+>Nobody bothered to answer my "are you not going support mstreg over
+>this" question (arbitrary register writes).
 >
->  arch/x86/events/intel/pt.c                | 12 ++++++
->  include/linux/perf_event.h                |  9 +++++
->  include/uapi/linux/perf_event.h           | 13 ++++++-
->  kernel/events/core.c                      | 65 +++++++++++++++++++++++++=
-++++--
->  kernel/events/internal.h                  |  1 +
->  tools/include/uapi/linux/perf_event.h     | 13 ++++++-
->  tools/perf/util/auxtrace.c                |  4 ++
->  tools/perf/util/evsel.c                   |  9 +++++
->  tools/perf/util/evsel_config.h            |  6 +++
->  tools/perf/util/parse-events.c            | 33 ++++++++++++++++
->  tools/perf/util/parse-events.h            |  3 ++
->  tools/perf/util/parse-events.l            |  3 ++
->  tools/perf/util/perf_event_attr_fprintf.c |  3 ++
->  13 files changed, 167 insertions(+), 7 deletions(-)
+>> > Let the users complain about the user problems. Also something
+>> > I repeatedly told Saeed. His response was something along the lines
+>> > of users are secret, they can't post on the list, blah, blah.
+>>
+>> You mean like the S390 team at IBM did in the video?
+>>
+>> This is not a reasonable position. One of the jobs of the vendors is
+>> to aggregate the user requests. Even the giant hyperscale customers
+>> that do have the capacity to come on this list prefer to delegate
+>> these things to us.
+>>
+>> If you want to get a direct user forum the kernel mailing list is not
+>> an appropriate place to do it.
 >
+>Agree to disagree.
 >
-> Regards
-> Adrian
+>> > You know one user who is participating in this thread?
+>> > *ME*
+>> > While the lot of you work for vendors.
+>>
+>> I'm sick of this vendor bashing. You work for *one* user. You know who
+>> talks to *every* user out there? *ME*.
+>>
+>> User and vendors need debugging of this complex HW. I don't need to
+>> bring a parade of a dozen users to this thread to re-enforce that
+>> obvious truth. Indeed when debugging is required the vendor usually
+>> has to do it, so we are the user in this discussion.
+>>
+>> You didn't answer the question, what is your alternative debug-ability
+>> vision here?
+>
+>Covered above. And it's been discussed multiple times.
+>
+>Honestly I don't want to spend any more time discussing this.
+>Once you're ready to work together in good faith let me know.
+>
+>On future revisions of this series please carry:
+>
+>Nacked-by: Jakub Kicinski <kuba@kernel.org>
+
+I asked before and I never got a technical answer, based on what?
+
+All we got is just political views and complaints against vendors.
+What is your proposal for accessing every possible debug information from a
+vendor specific device ? devlink X Y Z, debugfs?  won't work, sorry.
+
+And I can't accept "do it out of tree" as an answer from a well
+established linux maintainer, the whole point of this is to have this
+available in every linux box with any mlx5 configuration (not only netdev)
+so we can start debugging on the spot.
+
+For your claims that we need this for setting device parameters, it
+is simply not true, because we don't need this driver to do that,
+so please go back and read the cover-letter and code, and let me know what
+is wrong with our approach to get access to our device's debug info.
+
+  
