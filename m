@@ -2,113 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26ECA7FB1EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 07:31:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57C407FB210
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 07:47:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343644AbjK1GZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 01:25:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36846 "EHLO
+        id S232489AbjK1GkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 01:40:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232892AbjK1GZJ (ORCPT
+        with ESMTP id S231540AbjK1GkC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 01:25:09 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 981AC1A2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 22:25:15 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40b4744d603so12379325e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 22:25:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701152714; x=1701757514; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AztDr/PX7XV6GxnUCezhc7mi8f7rsQ2h0k5PO8WzIi4=;
-        b=Ro1Ze+sGCBVGhMJwMqy/xKq+Kafz7vjlA+VCuRTR4kSquzfSXbx04vXgPFFbO2gH1U
-         C7T9yAIfjc+WhXiEustA2JubGxvcIULMHZSOhA6QvZ9p8T4gxSQR12WhESbGUcWQf+Ho
-         lzSwwekq1xs/1BgIZRGxzNlQLuQ8Rp6i60DcFhxNDArgXUUPffw1V9qKtlH6miV/ZrxA
-         gEBGxUUDgY64u4I2TK2FX73ZSfu4OyZanlhUt1mkmKKZHGYlH+7BIrZjvsa8QW3+MSuW
-         ge0p0CHP1Hp9ZXqZQ8I7L5pYsroMBu9esO4Hr5xVlw8xYrqqVN8ZRq8nrYjGGa1x/c7l
-         jvow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701152714; x=1701757514;
-        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AztDr/PX7XV6GxnUCezhc7mi8f7rsQ2h0k5PO8WzIi4=;
-        b=U7lt/mER9yRE8QcT0ppUTF89vBG31U2pTa6Cs4qaRLVHvDsGwvdG63JwYufJO0bwA3
-         G+4IQfD91/dDeyjAvu/hO09W3CWIHd/RybPlEatww0ukRP1meMGD4cBkWURNRO/PrcJH
-         hqBpiOb17rsLbb/kfxB1aPKPCU+C/q/kxuPHpthkOl4R4XmD1AR1yYLrcNj1YLYS+2AD
-         ZdMR0CMlFDGH7PtrtBXtA4Lw5rU2ixiUrCXnF492YgoaGv5Ywon0RDRDbdLPaKe+UmbU
-         tMj7+tLlgQ+4VDE9Yr8JlDhnh/Zv5lN0yiOwlRPKqF9ghwlJfdwASjTV+EXdk8zYAbQv
-         C80A==
-X-Gm-Message-State: AOJu0Yy2b6s6U4/1Pkz349N9CmR+snJXFSbIRbTE5KWx+RE1iiED1EdP
-        cxRuvK/PH5lrB3Uv0l4u1h3VHA==
-X-Google-Smtp-Source: AGHT+IGZRRriVRMB0blg2rSEXFK0La4zXTF63IwPjb70QBHHyJE0DxMzqh4VW8kV8N+ek/nNlAFikg==
-X-Received: by 2002:a5d:44cd:0:b0:332:ead6:3596 with SMTP id z13-20020a5d44cd000000b00332ead63596mr8309050wrr.45.1701152714078;
-        Mon, 27 Nov 2023 22:25:14 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id o10-20020adfcf0a000000b00332cda91c85sm13879380wrj.12.2023.11.27.22.25.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 22:25:13 -0800 (PST)
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-X-Google-Original-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date:   Tue, 28 Nov 2023 09:25:11 +0300
-To:     oe-kbuild@lists.linux.dev,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: drivers/crypto/stm32/stm32-crc32.c:108 stm32_crc_get_next_crc()
- warn: can 'crc' even be NULL?
-Message-ID: <9661b53b-8853-4994-94be-9549278a2aac@suswa.mountain>
+        Tue, 28 Nov 2023 01:40:02 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C51B194;
+        Mon, 27 Nov 2023 22:40:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701153608; x=1732689608;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=lH2TN34CUFQU5hAf3pr7Vjg8a3BXiSZCqeRM4bcgPlw=;
+  b=K3v9Mp2RfbVSebX3npUkcoyYcNZ5hzycE1SSy+SfnIGRbqPpJ26qx7Pl
+   6dFtIuGJqD8q64tmiudxJqGo3gWRNhIyshrQhLpMkV2PAI7iUj7EPu2aV
+   KEb9XG+KzpFI64GbnUa8IRYhw/Hh4hMTiSklFc3MLb8ERmpwnyOxS3Mkh
+   PIL0nyyoLZ1u5l4Lxg7JxJY0zpSksnm5syxPfeLulXjgsspMKEqE/ndBc
+   FxQFDaV4uluzJ5IUTvEQaKbQlmKkQ0FkIuZQOam/JeMvFKTfO3DiC9FB9
+   Ifq/SZD4q6qOoJ21fg2wf8haWC48OfpyXTbdChmUYQF5r2Td4cUs45a1b
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="373031922"
+X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
+   d="scan'208";a="373031922"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 22:40:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="718288182"
+X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
+   d="scan'208";a="718288182"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 22:40:05 -0800
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+        by kekkonen.fi.intel.com (Postfix) with SMTP id 9768C11F76A;
+        Tue, 28 Nov 2023 08:40:02 +0200 (EET)
+Date:   Tue, 28 Nov 2023 06:40:02 +0000
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Alain Volmat <alain.volmat@foss.st.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+        Sylvain Petinot <sylvain.petinot@foss.st.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/7] media: i2c: st-mipid02: use active state to store
+ pad formats
+Message-ID: <ZWWLQkjvovzJMc73@kekkonen.localdomain>
+References: <20231125182057.1379357-1-alain.volmat@foss.st.com>
+ <20231125182057.1379357-5-alain.volmat@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231125182057.1379357-5-alain.volmat@foss.st.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   df60cee26a2e3d937a319229e335cb3f9c1f16d2
-commit: 9e4e24414cc6b45bd887d746a59691e295431ddf arm64: introduce STM32 family on Armv8 architecture
-config: arm64-randconfig-r081-20231127 (https://download.01.org/0day-ci/archive/20231128/202311281111.ou2oUL2i-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce: (https://download.01.org/0day-ci/archive/20231128/202311281111.ou2oUL2i-lkp@intel.com/reproduce)
+On Sat, Nov 25, 2023 at 07:20:52PM +0100, Alain Volmat wrote:
+> Store formats information within pad allowing to simplify further more
+> the driver (mutex / format store within the driver structure no more
+> necessary).
+> 
+> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <error27@gmail.com>
-| Closes: https://lore.kernel.org/r/202311281111.ou2oUL2i-lkp@intel.com/
+Applied with the following diff:
 
-smatch warnings:
-drivers/crypto/stm32/stm32-crc32.c:108 stm32_crc_get_next_crc() warn: can 'crc' even be NULL?
-drivers/crypto/stm32/stm32-hash.c:1168 stm32_hash_irq_thread() warn: inconsistent indenting
-
-vim +/crc +108 drivers/crypto/stm32/stm32-crc32.c
-
-10b89c43a64eb0 drivers/crypto/stm32/stm32-crc32.c Nicolas Toromanoff 2020-05-12  102  static struct stm32_crc *stm32_crc_get_next_crc(void)
-b51dbe90912a0c drivers/crypto/stm32/stm32_crc32.c Fabien DESSENNE    2017-03-21  103  {
-b51dbe90912a0c drivers/crypto/stm32/stm32_crc32.c Fabien DESSENNE    2017-03-21  104  	struct stm32_crc *crc;
-b51dbe90912a0c drivers/crypto/stm32/stm32_crc32.c Fabien DESSENNE    2017-03-21  105  
-b51dbe90912a0c drivers/crypto/stm32/stm32_crc32.c Fabien DESSENNE    2017-03-21  106  	spin_lock_bh(&crc_list.lock);
-49c2c082e00e0b drivers/crypto/stm32/stm32-crc32.c Nicolas Toromanoff 2020-05-12  107  	crc = list_first_entry(&crc_list.dev_list, struct stm32_crc, list);
-10b89c43a64eb0 drivers/crypto/stm32/stm32-crc32.c Nicolas Toromanoff 2020-05-12 @108  	if (crc)
-
-list_first_entry() always returns non-NULL but if the list is empty then
-the pointer is invalid (but still non-NULL).  Did you mean
-list_first_entry_or_null()?
-
-10b89c43a64eb0 drivers/crypto/stm32/stm32-crc32.c Nicolas Toromanoff 2020-05-12  109  		list_move_tail(&crc->list, &crc_list.dev_list);
-b51dbe90912a0c drivers/crypto/stm32/stm32_crc32.c Fabien DESSENNE    2017-03-21  110  	spin_unlock_bh(&crc_list.lock);
-b51dbe90912a0c drivers/crypto/stm32/stm32_crc32.c Fabien DESSENNE    2017-03-21  111  
-10b89c43a64eb0 drivers/crypto/stm32/stm32-crc32.c Nicolas Toromanoff 2020-05-12  112  	return crc;
-10b89c43a64eb0 drivers/crypto/stm32/stm32-crc32.c Nicolas Toromanoff 2020-05-12  113  }
+diff --git a/drivers/media/i2c/st-mipid02.c b/drivers/media/i2c/st-mipid02.c
+index 7af209905d7b..2cc07b3ed0da 100644
+--- a/drivers/media/i2c/st-mipid02.c
++++ b/drivers/media/i2c/st-mipid02.c
+@@ -563,8 +563,8 @@ static const struct v4l2_mbus_framefmt default_fmt = {
+ 	.height = 480,
+ };
+ 
+-static int mipid02_init_cfg(struct v4l2_subdev *sd,
+-			    struct v4l2_subdev_state *state)
++static int mipid02_init_state(struct v4l2_subdev *sd,
++			      struct v4l2_subdev_state *state)
+ {
+ 	*v4l2_subdev_state_get_format(state, MIPID02_SINK_0) = default_fmt;
+ 	/* MIPID02_SINK_1 isn't supported yet */
+@@ -642,7 +642,6 @@ static const struct v4l2_subdev_video_ops mipid02_video_ops = {
+ };
+ 
+ static const struct v4l2_subdev_pad_ops mipid02_pad_ops = {
+-	.init_cfg = mipid02_init_cfg,
+ 	.enum_mbus_code = mipid02_enum_mbus_code,
+ 	.get_fmt = v4l2_subdev_get_fmt,
+ 	.set_fmt = mipid02_set_fmt,
+@@ -653,6 +652,10 @@ static const struct v4l2_subdev_ops mipid02_subdev_ops = {
+ 	.pad = &mipid02_pad_ops,
+ };
+ 
++static const struct v4l2_subdev_internal_ops mipid02_subdev_internal_ops = {
++	.init_state = mipid02_init_state,
++};
++
+ static const struct media_entity_operations mipid02_subdev_entity_ops = {
+ 	.link_validate = v4l2_subdev_link_validate,
+ };
+@@ -851,6 +854,7 @@ static int mipid02_probe(struct i2c_client *client)
+ 
+ 	bridge->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE;
+ 	bridge->sd.entity.function = MEDIA_ENT_F_VID_IF_BRIDGE;
++	bridge->sd.internal_ops = &mipid02_subdev_internal_ops;
+ 	bridge->sd.entity.ops = &mipid02_subdev_entity_ops;
+ 	bridge->pad[0].flags = MEDIA_PAD_FL_SINK;
+ 	bridge->pad[1].flags = MEDIA_PAD_FL_SINK;
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+Sakari Ailus
