@@ -2,298 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5284B7FC15D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF45D7FC2BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346833AbjK1Pcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 10:32:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50760 "EHLO
+        id S1346794AbjK1PcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 10:32:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346002AbjK1Pc3 (ORCPT
+        with ESMTP id S1346002AbjK1PcH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 10:32:29 -0500
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3719810DF
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 07:32:35 -0800 (PST)
-Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-423a125d23cso201511cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 07:32:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701185554; x=1701790354; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4FQpu+gQGZx/HUmnzdPKYwdFMcPz6/CXU+VJJ2AKNog=;
-        b=wNgPvYp0QvFO4cQ1PTqJHfGSO31VOQwr8tsapTgvc+d3qu2fUFfY3fhvBN3/0LAjU5
-         tKaR0ffU8mpm50VGLwpufzzvW78p97M4i/j+MfstT/VZebm5ubPzuos8sSd3JTPDUgcR
-         cPEsq9N5y+//AXZtJf4rkw7606bALeBV78RZzM6uhtLaXjeSAnPvB7c/7KDBcuciatwu
-         CQiXQWoS0klpSOCaLJdO8uhse90u193vL9jpY+fMJ2LrXZclUchzt3y8TJK5v5grT4Iv
-         A+sXI4uiQjL1Jp1FNKbUgPD4K7VD0tphUwllOya0R2OErfICzg+VBX+ZFVEoSwO5BI6X
-         +7XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701185554; x=1701790354;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4FQpu+gQGZx/HUmnzdPKYwdFMcPz6/CXU+VJJ2AKNog=;
-        b=BMXuoiT9F9J3t5wm/bjBhN5BTLAUc1jNSdfd0Yr6IYAy5C18t9OOx9Mn/4xHImjoRJ
-         qMMIEzTcL22fSR+OPRD389GLnJRkGRytpQ/AfdfLvEtCbZE9Hq5rmsOieycvq8+RitHh
-         2O7Wv8xGPrw6V0O+6hg3h4JBNlWg9RkhzammL0VM0U95rBkLf4uByBE/OobUtfeufLY5
-         WAQMgprsPxX3KHK681/MpZogvh5cRaeDdJkvyXeE3gEj0BrpVpEJ/B9O6vy97+HwjB0z
-         aVOQFJQwcRi8s7wYENh/3JX2PBMq4kcD7J/v3oo5gorWFGBw1o6z9mJwW7G7lMlnShLl
-         L0Aw==
-X-Gm-Message-State: AOJu0YxqRR4KXUpu31UKy1v2wOpHEPcei5gd7rKbtZMwvMCLvEgbOAyE
-        1O5ItDzlDhV4LhKZ/ZrBqY1/hojC4MZAsZkwUkx12/5vcPRIzXxZvem32Q==
-X-Google-Smtp-Source: AGHT+IHscMFMe234fY0HQueauYIa+yDhMXOf0niJQDE8hcYfUvRc0/0ycpTEyPOovwN/+jV6JBKsgXaJikkB2AE8wTw=
-X-Received: by 2002:ac8:7f44:0:b0:420:e564:2fc7 with SMTP id
- g4-20020ac87f44000000b00420e5642fc7mr1233005qtk.7.1701185553980; Tue, 28 Nov
- 2023 07:32:33 -0800 (PST)
+        Tue, 28 Nov 2023 10:32:07 -0500
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2040.outbound.protection.outlook.com [40.107.92.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDEC510DF;
+        Tue, 28 Nov 2023 07:32:13 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cXLV28lfN6NmYCf0xXqZQpBnq7dn1/0CIxRsB7Ma+qxjhsf3qme0yUkJTSC2X9EIUMefFHjsogYQlgm1vYc2+qTUX4SHL8iYPTEzkRUxnrvvnpkuEH39mrruazDTTlEdK3wxc74wDWbwrfyzFktVSwDpoLejW8Y+SI1YTZlIjpGrEO1lJBr5E9DJHBT7HedguQYpqKV5y6u89QEU9ouCgR/E7nQEQxelyLjUk/yjXHRknOq3xSn6eL2N6n9JXDPYESML1oYundBQlOrNj+yv0aykFUWONOJQosd1KDNQjH0cFVtvMDyBWFRZHBUvUAuppdXvCgHYM5z8ylxzgBUzow==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sB2e4M8QACtP5WLdv5mq79IxX3VIbmeBUEG6yKMzcgM=;
+ b=EyZfexGF3LuIsj08UrQjb0ST4iEbJqE0YfOAOpMYjqbGc8/u1AKCm++3oL/88W40FRV+50kuskw6AAUbK7yiJRiYWuaSUggE1HJGhgv8OCP9MDQWzn+w/NUOE/E+brgYBEDwl62LlLeWQyY/KzXAfwpNXu0o2DBr6TaV5VSmMccg2jH0qCbJ48bUZc68j/u6/admbseTFWm7ARMLu8a9e43cAiDlUKy3gXMtX/jdMp8EghyUqsCvLA+ec3spZjqKBjH9yc4qEPd0jCKKwYJ9kZLCr6Aj7fRuHFAb2WReB9yTIAw80DD+EYSbgTfuRt34paWFdlGbFtQnuUCY1gINGQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sB2e4M8QACtP5WLdv5mq79IxX3VIbmeBUEG6yKMzcgM=;
+ b=E+ula4NvEB0H498vs6YPBMZAzoF6S8QBzOewJ7/osSqWT2aIiw7BPp+8yYq5RiJQlvCxDvCQaP1aNUy/85p8SqAeoLLTqIAKDzjxgYw4xpiB7NIYr9kaFWApmx1E2KomITtSGCcnzPvPSl5UzJF+aXEocKyHQudN7PYYwN4g2DI=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
+ by BL1PR12MB5030.namprd12.prod.outlook.com (2603:10b6:208:313::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.28; Tue, 28 Nov
+ 2023 15:32:10 +0000
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::a9cf:f8b8:27bd:74d0]) by BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::a9cf:f8b8:27bd:74d0%3]) with mapi id 15.20.7046.015; Tue, 28 Nov 2023
+ 15:32:10 +0000
+Message-ID: <addebe1d-c08a-434e-9146-b6c10418a9d2@amd.com>
+Date:   Tue, 28 Nov 2023 10:32:08 -0500
+User-Agent: Mozilla Thunderbird
+Cc:     yazen.ghannam@amd.com, Smita.KoralahalliChannabasappa@amd.com,
+        dave.hansen@linux.intel.com, x86@kernel.org,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        patches@lists.linux.dev
+Subject: Re: [PATCH v9 2/3] x86/mce: Add per-bank CMCI storm mitigation
+Content-Language: en-US
+To:     Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>
+References: <20230929181626.210782-1-tony.luck@intel.com>
+ <20231004183623.17067-1-tony.luck@intel.com>
+ <20231004183623.17067-3-tony.luck@intel.com>
+ <20231019151211.GHZTFHS3osBIL1IJbF@fat_crate.local>
+ <ZTa37L2nlnbok8dz@agluck-desk3>
+ <20231114192324.GAZVPJLGZmfJBS181/@fat_crate.local>
+ <ZVPu/hX9b7lUkrBY@agluck-desk3>
+ <20231121115448.GCZVyaiNkNvb4t2NxB@fat_crate.local>
+ <ZWTzAujHdrJ950F3@agluck-desk3> <ZWT4pAJ6g0i78wec@agluck-desk3>
+ <ZWU3WkmUMz3Wk9wT@agluck-desk3>
+From:   Yazen Ghannam <yazen.ghannam@amd.com>
+In-Reply-To: <ZWU3WkmUMz3Wk9wT@agluck-desk3>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BN9PR03CA0440.namprd03.prod.outlook.com
+ (2603:10b6:408:113::25) To BN8PR12MB3108.namprd12.prod.outlook.com
+ (2603:10b6:408:40::20)
 MIME-Version: 1.0
-References: <51b8fc3d-25ef-1ab3-d744-8d851a133828@linux.intel.com> <20231128140141.1161490-1-mathias.nyman@linux.intel.com>
-In-Reply-To: <20231128140141.1161490-1-mathias.nyman@linux.intel.com>
-From:   Kuen-Han Tsai <khtsai@google.com>
-Date:   Tue, 28 Nov 2023 23:32:06 +0800
-Message-ID: <CAKzKK0psOFJdBsPkqdRi4_5V=5z9XMnFPCYbcE1Nj6A1zj8Gmw@mail.gmail.com>
-Subject: Re: [RFT PATCH 1/2] xhci: Reconfigure endpoint 0 max packet size only
- during endpoint reset
-To:     Mathias Nyman <mathias.nyman@linux.intel.com>
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stern@rowland.harvard.edu
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3108:EE_|BL1PR12MB5030:EE_
+X-MS-Office365-Filtering-Correlation-Id: 81c8d6ed-a32f-48ee-5b03-08dbf027300e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hh6c7TyXGL44uU1iVwwEQ1X1K2gmYDItTe9WCSgVEOn0qlW9wHVsLCYY/QseUUFKHB8nPFthoTl4BuB4z1ZYv4K97/hkYzFueKTrD4vWaXntfh+toy1Dr4CBaiAvrF+OLbF/g+R6MvQstyBFigCQ4UofcfHosbF7DqNeZpW7JUE/hD8fxjsxMYuF9+m7BNkL6OJv3DLfiIqYFJjd6X0e3XOpD0NqSnqjlXp8mFEYDNKgnHIOmYFXAyi4/2uSft0yc+Sv08fZIll602hZGb85WjoKtl7X6V4BeP6kWY4XvXdyTn4aN16rEaqIpalL00e6v7yUXVs25xrymQ+5Gel9aMz0AV49CR7penuL7REW07nXYKEiz1b0fxcj9j2x5Nm/MACNF5bc5xen/Wz6jqyvi1melPVU8ftHcVrp5fA8UxGtwdubBwQf+8uY5WrILoGRQcRdSvhL/beR0TBXqg+DHqlaTTv0FcdVC1orBjxCQlU0PQoQoWcNgT7/Tvn1VU1oWJwM/A18DMSFNHY8p0+BoJIFFfuct4WdaN+V0i0v8UVcrny5n25c4hkkC1kBvUcwYaubVOCxOtXQIsL0NKIVi5PsJE4euv4gEPOdJVoUO5Tqe8p9q2l6nqEf73RxbuOn3w+b4dPmpDSsRQjZ+TRzlw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(396003)(376002)(136003)(346002)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(2616005)(8936002)(6506007)(6512007)(66946007)(4326008)(8676002)(478600001)(44832011)(5660300002)(15650500001)(31696002)(86362001)(6486002)(110136005)(66556008)(316002)(53546011)(66476007)(38100700002)(26005)(83380400001)(31686004)(41300700001)(2906002)(4744005)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?azJpM21SRUtCWmdIdkdZTUZUSGEvWitrbEFOODR5elFVR0t0VGMzaGc0YndW?=
+ =?utf-8?B?c2RDTWdiSDc4NG90bk5vYWtCVU01MDFpb3RxUWpMbXZJU0R5b0xWR3VRR2ti?=
+ =?utf-8?B?VGkxZDhZb05rcDVzUU5aWlNuMmNiaWtZNVFDZDVTSEpLN0o2eDg2UHZJdnVj?=
+ =?utf-8?B?R1NQbjBDWEJVSTBDT25RVGk2eWlkUmg3NWUxUVF1MXMyMnkvUnkyam9lekVO?=
+ =?utf-8?B?T01EcUZFSlpmcit4TVJybzEzenFaYlROeGtRZEg1aEdKaXl5SkRKMVNQV1h2?=
+ =?utf-8?B?R3o3NU4wOXF4QjR2TjhYdnlQKytwTWx4QzlzaUMyRjJ0TytKcFpSbXpkeDFF?=
+ =?utf-8?B?NU5JRlNRZXd1azJScGU2blVHYmhrVnpvTDZtc2JoRE9XRmZNejh1OFVsKzQ4?=
+ =?utf-8?B?TFllVFN3RXBUZVlWUGVpd1FNemZwRitzbGtyU2ZGYll2ZFgwb3p6ZjV4WjJJ?=
+ =?utf-8?B?TTRZWldTbFQwV0s5Z25YbXlodEh1ZUR1dmU5T2hwcmFrTjFWYTY4eFJPb2ti?=
+ =?utf-8?B?WkFVVnJVaU5GRnUyRDNNQ3ZsNmtmWkkwMXNuTnF5Qm9jNk9DRlR3ZWpCNnBO?=
+ =?utf-8?B?enI0WFZBQkUrUjVNMTFKdFN2OFNRTUh0TWwvRlFXTStXVUZ3TU1pYndxMnNI?=
+ =?utf-8?B?aEpVOGMwR2Izb3NzalBXTnBOQlJZQ0RzdGp4TkF4VXdvdm5zR3RYa2FIYjFF?=
+ =?utf-8?B?QUFrSkFqbDVjemgvWDlUeXhrdmZuWXBKVmkrTllXOEx6aHhPTjBIRkNucTFk?=
+ =?utf-8?B?dWhMQUtRNE02bElaYmtjeW9MZWY0dXphakRzYzVPUjEzcWtlektRZlhrYUJZ?=
+ =?utf-8?B?RGJZUnNxckp4SzdvUkJ5eVMvL3M3emovWnEvR1g5OGhGbExhbzBOYUl1R1F1?=
+ =?utf-8?B?WWtOWXBPYjRsd2tNeDBrM0JZY3R4NnljVktKVXhScENmWWRCSy9MbnBrOXNz?=
+ =?utf-8?B?dmxENmdlRFBOQlpkTHU1dFE5QTJoeE9COGE5SS9qUlhsbUZ3KysvRXZCVWNG?=
+ =?utf-8?B?eG41dS9JaVJ5N3ZZL0IzdVN5ZFJ0M09uQVFoVk9vNUNHYmRjZDhkbU9KcXl3?=
+ =?utf-8?B?dW5MZ2p1Smw1TUVMUTdBSEFYQmg1ekQ3b1FENTlhUFU0Yy9NczZDWjRBQ0Zp?=
+ =?utf-8?B?UmpnTjdaTlMrQXI1RDVLTWVCNGhaUzhBbW85NXlvSmkwS1l6U3VkcmY5OVYw?=
+ =?utf-8?B?QmloaFpjZHJtS05CTVdweG1LRC9IWEpQZVNHamRDbWhRSkgrcVh1OTAwVHVq?=
+ =?utf-8?B?ZG1hNzdUVkRjSDg3cUVja0M0b1lTdkNZRWo4YkRqWjkzZmp3QkpzTXNldzdS?=
+ =?utf-8?B?cFArcHV5UlZnTW5RZEtUV1lJRTRjTlpHTzN3S3VseC9tajBKSldjR2NvYllo?=
+ =?utf-8?B?ekNFV0EyTEFuTUhsWjJKN2IxTTAvaW1zQlppaTI4bEZSM05kY2RoZWdVNHl3?=
+ =?utf-8?B?Z2VCUmhtQjloc3dDR3E3d0RsOHUrNHRleCtDcWtRWndMRDdBNUFZOEc2ekZr?=
+ =?utf-8?B?ZFF3aDdWajZqMm1RdnhjYi94VWVpcklGNTYzQUR3TC9rRTROS2s2VFJjbmJr?=
+ =?utf-8?B?N25zTHdVNmFyRVlteVBCTlkxYkRNV1RpNUFPMnk5WUt1Lzc3azd4cEpKSEt6?=
+ =?utf-8?B?WmxIMlJKajFmMW0veDRNUHhWZWRPaEwxbE5zS3VjMTVZYXcvdTA4eThkWW03?=
+ =?utf-8?B?WngrZGtwK3RCZi9Qb3lQS3RjWDhqS09lSkZoUmdyaU5jNExVYkhsZVg3Wjdk?=
+ =?utf-8?B?cURCaGwyeTVOemRjWUxldkhBVG1pZlpiTEVrYnNuNFl5dGlJS2ZYdWk5UlA0?=
+ =?utf-8?B?WGQ4bU9ac3RSbjc0R21xemZpZWxvRGF6TisrYjNOZ05vZjgxVEpqTW1qNEtV?=
+ =?utf-8?B?OW9ZZmpWcEVNdFNlUzZYSCtYQjE2K0hMdTFreW9NZEpPcXBNa3ZQTW1KdHpq?=
+ =?utf-8?B?MGQrL29JRXNJeGFoOWN0cFBiejJwYzE2UHFsYlBwcVNYREQ3b1RRNWN0L3B1?=
+ =?utf-8?B?c2RnKzUydkN1UEtvbGVQUnZTZGhpVk1Wd294TFkyUGF1YXB2MHhVTjlMVVZM?=
+ =?utf-8?B?Z1E3ZmxZWFhmYTRvRFFTdnQ0L1FmVmloQTRvZjVlZFF2ZXpuLzk2UksvTmNB?=
+ =?utf-8?Q?+b8350ErmcvcqMbB2ys+tluYi?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 81c8d6ed-a32f-48ee-5b03-08dbf027300e
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2023 15:32:10.4776
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: F81mPL2qVXqTHusNj07gmQQjrn5MyEvfE6dmR9KhrgX5lFFknwQKHqI06C5LsHKchj8qqsukXgXGjMApgCcpWQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5030
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 10:00=E2=80=AFPM Mathias Nyman
-<mathias.nyman@linux.intel.com> wrote:
->
-> The max packet size for full speed control endpoint 0 may vary. It is
-> defined in the device descriptor, which is read using the same endpoint.
-> Usb core sets a temporary max packet size value until the real value is
-> read.
->
-> xhci driver needs to reconfigure the endpoint context seen by the
-> controller if the max packet size changes.
-> It makes more sense to do this reconfiguration in xhci_endpoint_reset()
-> instead of urb enqueue as usb core will call endpoint reset during
-> enumeration if the max packet values differ.
-> Max packet size adjustment for endpoinr 0 can only happen once per
-> device enumeration.
+On 11/27/2023 7:42 PM, Tony Luck wrote:
+> On Mon, Nov 27, 2023 at 12:14:28PM -0800, Tony Luck wrote:
+>> On Mon, Nov 27, 2023 at 11:50:26AM -0800, Tony Luck wrote:
+>>> On Tue, Nov 21, 2023 at 12:54:48PM +0100, Borislav Petkov wrote:
+>>>> On Tue, Nov 14, 2023 at 02:04:46PM -0800, Tony Luck wrote:
+>>> But it isn't doing the same thing.  The timer calls:
+>>>
+>>> 	machine_check_poll(0, this_cpu_ptr(&mce_poll_banks));
+>>>
+>>> and cmci_mc_poll_banks() calls:
+>>>
+>>> 	machine_check_poll(0, this_cpu_ptr(&mce_poll_banks));
+> 
+>          machine_check_poll(0, this_cpu_ptr(&mce_banks_owned));
+> 
+>>
+>> Bah ... I've cut & pasted the same thing ... but I think there
+>> are separate bit maps ... maybe I'm wrong. Will go back and
+>> look again.
+>>
 
-s/endpoinr/endpoint
+This mutually exclusive behavior is not enforced on AMD systems. A bank 
+can be polled and signaled using hardware interrupts.
 
->
-> Previously the max packet size was checked during every urb enqueue.
-> This is an additional check for every enqueued urb, and also turned out
-> to have locking issues as urbs may be queued in any context while xhci
-> max packet size reconfiguration requires memory allocation, locking, and
-> sleeping.
->
-> Tested with a full speed device using both old and new scheme enumeration
-> and a intentionally incorrect preliminary max packet size value.
+I've been thinking to change this in order to save polling cycles. Now 
+it seems there's another reason. :)
 
-s/a intentionally/an intentionally
+Thanks,
+Yazen
 
->
-> Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-> ---
->  drivers/usb/host/xhci.c | 85 ++++++++++++++++++++---------------------
->  1 file changed, 42 insertions(+), 43 deletions(-)
->
-> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-> index 884b0898d9c9..df31d44498d6 100644
-> --- a/drivers/usb/host/xhci.c
-> +++ b/drivers/usb/host/xhci.c
-> @@ -1438,10 +1438,8 @@ static int xhci_configure_endpoint(struct xhci_hcd=
- *xhci,
->   * descriptor.  If the usb_device's max packet size changes after that p=
-oint,
->   * we need to issue an evaluate context command and wait on it.
->   */
-> -static int xhci_check_maxpacket(struct xhci_hcd *xhci, unsigned int slot=
-_id,
-> -               unsigned int ep_index, struct urb *urb, gfp_t mem_flags)
-> +static int xhci_check_ep0_maxpacket(struct xhci_hcd *xhci, struct xhci_v=
-irt_device *vdev)
->  {
-> -       struct xhci_container_ctx *out_ctx;
->         struct xhci_input_control_ctx *ctrl_ctx;
->         struct xhci_ep_ctx *ep_ctx;
->         struct xhci_command *command;
-> @@ -1449,11 +1447,15 @@ static int xhci_check_maxpacket(struct xhci_hcd *=
-xhci, unsigned int slot_id,
->         int hw_max_packet_size;
->         int ret =3D 0;
->
-> -       out_ctx =3D xhci->devs[slot_id]->out_ctx;
-> -       ep_ctx =3D xhci_get_ep_ctx(xhci, out_ctx, ep_index);
-> +       ep_ctx =3D xhci_get_ep_ctx(xhci, vdev->out_ctx, 0);
->         hw_max_packet_size =3D MAX_PACKET_DECODED(le32_to_cpu(ep_ctx->ep_=
-info2));
-> -       max_packet_size =3D usb_endpoint_maxp(&urb->dev->ep0.desc);
-> -       if (hw_max_packet_size !=3D max_packet_size) {
-> +       max_packet_size =3D usb_endpoint_maxp(&vdev->udev->ep0.desc);
-> +
-> +       if (hw_max_packet_size =3D=3D max_packet_size)
-> +               return 0;
-> +
-> +       switch (max_packet_size) {
-> +       case 8: case 16: case 32: case 64: case 9:
->                 xhci_dbg_trace(xhci,  trace_xhci_dbg_context_change,
->                                 "Max Packet Size for ep 0 changed.");
->                 xhci_dbg_trace(xhci,  trace_xhci_dbg_context_change,
-> @@ -1465,28 +1467,22 @@ static int xhci_check_maxpacket(struct xhci_hcd *=
-xhci, unsigned int slot_id,
->                 xhci_dbg_trace(xhci,  trace_xhci_dbg_context_change,
->                                 "Issuing evaluate context command.");
->
-> -               /* Set up the input context flags for the command */
-> -               /* FIXME: This won't work if a non-default control endpoi=
-nt
-> -                * changes max packet sizes.
-> -                */
-> -
-> -               command =3D xhci_alloc_command(xhci, true, mem_flags);
-> +               command =3D xhci_alloc_command(xhci, true, GFP_KERNEL);
->                 if (!command)
->                         return -ENOMEM;
->
-> -               command->in_ctx =3D xhci->devs[slot_id]->in_ctx;
-> +               command->in_ctx =3D vdev->in_ctx;
->                 ctrl_ctx =3D xhci_get_input_control_ctx(command->in_ctx);
->                 if (!ctrl_ctx) {
->                         xhci_warn(xhci, "%s: Could not get input context,=
- bad type.\n",
->                                         __func__);
->                         ret =3D -ENOMEM;
-> -                       goto command_cleanup;
-> +                       break;
->                 }
->                 /* Set up the modified control endpoint 0 */
-> -               xhci_endpoint_copy(xhci, xhci->devs[slot_id]->in_ctx,
-> -                               xhci->devs[slot_id]->out_ctx, ep_index);
-> +               xhci_endpoint_copy(xhci, vdev->in_ctx, vdev->out_ctx, 0);
->
-> -               ep_ctx =3D xhci_get_ep_ctx(xhci, command->in_ctx, ep_inde=
-x);
-> +               ep_ctx =3D xhci_get_ep_ctx(xhci, command->in_ctx, 0);
->                 ep_ctx->ep_info &=3D cpu_to_le32(~EP_STATE_MASK);/* must =
-clear */
->                 ep_ctx->ep_info2 &=3D cpu_to_le32(~MAX_PACKET_MASK);
->                 ep_ctx->ep_info2 |=3D cpu_to_le32(MAX_PACKET(max_packet_s=
-ize));
-> @@ -1494,17 +1490,20 @@ static int xhci_check_maxpacket(struct xhci_hcd *=
-xhci, unsigned int slot_id,
->                 ctrl_ctx->add_flags =3D cpu_to_le32(EP0_FLAG);
->                 ctrl_ctx->drop_flags =3D 0;
->
-> -               ret =3D xhci_configure_endpoint(xhci, urb->dev, command,
-> -                               true, false);
-> -
-> -               /* Clean up the input context for later use by bandwidth
-> -                * functions.
-> -                */
-> +               ret =3D xhci_configure_endpoint(xhci, vdev->udev, command=
-,
-> +                                             true, false);
-> +               /* Clean up the input context for later use by bandwidth =
-functions */
->                 ctrl_ctx->add_flags =3D cpu_to_le32(SLOT_FLAG);
-> -command_cleanup:
-> -               kfree(command->completion);
-> -               kfree(command);
-> +               break;
-> +       default:
-> +               dev_dbg(&vdev->udev->dev, "incorrect max packet size %d f=
-or ep0\n",
-> +                       max_packet_size);
-> +               return -EINVAL;
->         }
-> +
-> +       kfree(command->completion);
-> +       kfree(command);
-> +
->         return ret;
->  }
->
-> @@ -1561,21 +1560,6 @@ static int xhci_urb_enqueue(struct usb_hcd *hcd, s=
-truct urb *urb, gfp_t mem_flag
->
->         trace_xhci_urb_enqueue(urb);
->
-> -       if (usb_endpoint_xfer_control(&urb->ep->desc)) {
-> -               /* Check to see if the max packet size for the default co=
-ntrol
-> -                * endpoint changed during FS device enumeration
-> -                */
-> -               if (urb->dev->speed =3D=3D USB_SPEED_FULL) {
-> -                       ret =3D xhci_check_maxpacket(xhci, slot_id,
-> -                                       ep_index, urb, mem_flags);
-> -                       if (ret < 0) {
-> -                               xhci_urb_free_priv(urb_priv);
-> -                               urb->hcpriv =3D NULL;
-> -                               return ret;
-> -                       }
-> -               }
-> -       }
-> -
->         spin_lock_irqsave(&xhci->lock, flags);
->
->         if (xhci->xhc_state & XHCI_STATE_DYING) {
-> @@ -3104,6 +3088,21 @@ static void xhci_endpoint_reset(struct usb_hcd *hc=
-d,
->         int err;
->
->         xhci =3D hcd_to_xhci(hcd);
-> +       ep_index =3D xhci_get_endpoint_index(&host_ep->desc);
-> +
-> +       /*
-> +        * Usb core assumes a max packet value for ep0 on FS devices unti=
-l the
-> +        * real value is read from the descriptor. Core resets Ep0 if val=
-ues
-> +        * mismatch. Reconfigure the xhci ep0 endpoint context here in th=
-at case
-> +        */
-> +       if (usb_endpoint_xfer_control(&host_ep->desc) && ep_index =3D=3D =
-0) {
-> +               udev =3D container_of(host_ep, struct usb_device, ep0);
-> +               if (udev->speed =3D=3D USB_SPEED_FULL)
-> +                       xhci_check_ep0_maxpacket(xhci, xhci->devs[udev->s=
-lot_id]);
-> +               /* Nothing else should be done here for ep0 during ep res=
-et */
-> +               return;
-> +       }
-> +
-
-Could there be a race condition between the xhci_endpoint_reset() and
-xhci_free_dev() functions, resulting in the xhci->devs[udev->slot_id]
-becoming null?
-If so, a null pointer dereference will happen in
-xhci_check_ep0_maxpacket() when accessing vdev->out_ctx.
-
->         if (!host_ep->hcpriv)
->                 return;
->         udev =3D (struct usb_device *) host_ep->hcpriv;
-> @@ -3116,7 +3115,7 @@ static void xhci_endpoint_reset(struct usb_hcd *hcd=
-,
->          */
->         if (!udev->slot_id || !vdev)
->                 return;
-> -       ep_index =3D xhci_get_endpoint_index(&host_ep->desc);
-> +
->         ep =3D &vdev->eps[ep_index];
->
->         /* Bail out if toggle is already being cleared by a endpoint rese=
-t */
-> --
-> 2.25.1
->
