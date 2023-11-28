@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8FD37FB3F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:23:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33DBC7FB3FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 09:23:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344090AbjK1IXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 03:23:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34834 "EHLO
+        id S1344096AbjK1IXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 03:23:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjK1IXD (ORCPT
+        with ESMTP id S229737AbjK1IXm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 03:23:03 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E9095
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:23:09 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-54af2498e85so5338971a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:23:09 -0800 (PST)
+        Tue, 28 Nov 2023 03:23:42 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ACA8E1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:23:48 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-54b0c7987easo4459075a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 00:23:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701159788; x=1701764588; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701159827; x=1701764627; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=coVxxRvKmyhaCH6G8RxJ1YJH2PseX2AUV8csYjv/pKg=;
-        b=sjS4NsDIZHjOM5N15ZV7sABQZQ8gtT7W7mu6SFQotEzL18nqyrZFFPR8Zw5y89Jfyd
-         iYciezR0fAKIsbWoSChS4ddHZ3h5AiHGWe6G5ES+mWwD0fqiM3SD6lJ5LoLTfhz02hQR
-         yVO36FzskL4qYWyqhim0DqkCpY2TwisYwjJsOGZDIyRfgO2cwJlrcwFq/C06gcS80egB
-         qN8re6DP2fUqSeMkr7L2CiGToEXMPMrDKFx2mTcIwBF5z83ABRpF2fnZYWcLfMO7lNAm
-         DYYSbeF0L6efsNfr+OeBcH0WJbtdQ87AGQJrwPHE811vuYI4RezLYwXILcuaUvc+5e3x
-         0UDg==
+        bh=1UOlh2DBPRlglTZsxnljR4k/aNf8IkPiVHCesZDf2rE=;
+        b=JO38VfZHNED7W57A5XEiewGldQ3v8+aA81xO1gn2VvIqp2ogIBWLJEeFOktHYYvl/e
+         NOtMraWDaJk7NSy4GEwwZsod9Aac9k0n18e0Gv/3VEjbmGjS+13hPRPWEkKLjHiUQ9T5
+         tpg2DxoM25M/EeUcuTUf8sD8/mLzkM/qxEwV+9DtADJoEgTlfT5CG3TRM57JahHGZErY
+         jpq3olRyuxwE0Ps2UFBohHAmnuv/UPvbyJf+Iew88ZihGGZzxbVoGV+rKfeBeVpca5yd
+         CqxPAsn5tIsV2QTFZXS99R251vpqAkegBb6S5MGPXSokn3nUa6LWyP13TAx154hl0LLe
+         99mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701159788; x=1701764588;
+        d=1e100.net; s=20230601; t=1701159827; x=1701764627;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=coVxxRvKmyhaCH6G8RxJ1YJH2PseX2AUV8csYjv/pKg=;
-        b=YIT9kDJjsyf2vys6zXebZmX1ot8UFmGO9R/50PGFcuY9HMH6vrV79LljSn/dlKzQtX
-         zLU6V6+ak2Ot9VaKyhuZj1rxN0zSrIImrBVAZaHClaxetz8iyIIz+12m0rl+U/lW+0sl
-         +xi2exNwckddktFvvVxz056NCMz8/aZ7TF3T7H1zRmXAqsmMWK+qSsT7wE5+YxutPgxu
-         GjuB+Zhf28HtcWQ/TKepzu2e3iw6s/0Wac9AIBatJLD3qL3ryqpMYVHmtKirk97RS0bB
-         rKOPWM2ywrV0hXe8SDHAgKgaYdwpZbUsfXktUB4YD1C/7d3n7f1iJqqyLtFaCD7H8O2+
-         VJrQ==
-X-Gm-Message-State: AOJu0YyFekv2WPevSJVlBfndmdGRIA1y5i5p66nxWlqEmYmqRKSfIlCq
-        ax9Re9hWLa8CYKV/k8m+SB6UpQ==
-X-Google-Smtp-Source: AGHT+IEgMh/OBItu88G3t9aQ2Zwzb8hKRW87qL5/jTOsepyznXcGoQuNepBzzWmCjKnpVCRBxkGYaQ==
-X-Received: by 2002:a50:cd15:0:b0:54b:20a7:cf82 with SMTP id z21-20020a50cd15000000b0054b20a7cf82mr8455451edi.24.1701159787840;
-        Tue, 28 Nov 2023 00:23:07 -0800 (PST)
+        bh=1UOlh2DBPRlglTZsxnljR4k/aNf8IkPiVHCesZDf2rE=;
+        b=YRddZHsoyyW4y40bji5Go3KihA+eXQCGPCQDX2Gr1oXZ3HHMpKVtNrrGzMDy1AS16c
+         xpWKbojcz9w9R0c4nMzHGI+9yOu2olqsMOTqFtjdYLqbV2eyrFdUBIJhiqGRY5d0no93
+         5wfQN0XDBVF+bpCm36cFeuCSWJgceEAlBeiskuQ65+iorRFty4o038SuHKtCzirBWS8P
+         +bpP+JtFMo1dtRNvjiRxL4Lkf2L3Ppj08o0WwJK2ZS+DTpxuvBo2sXsmurKf8Od0DQKa
+         1kV14VV34glux8jx4HuoUmQBBICCycRINTdfFtESexDV81qGGfa/FbiSI2YF7RP1pvmn
+         j06g==
+X-Gm-Message-State: AOJu0YxM57GhAfgBMToIalvSqMrZDJWldl5f9I0Pyj1ngYJSGlaKemsX
+        4y3Q4ll4CWbyAv28iX/Z8pF6kQ==
+X-Google-Smtp-Source: AGHT+IEWSLfSH2rm0ZeDonvf6plZljG4gTf78THbXKuJ5NkitUThcGz4eAHzdOYzRW5mLVZYsC0kWQ==
+X-Received: by 2002:a05:6402:42c5:b0:54a:ed2a:fa7e with SMTP id i5-20020a05640242c500b0054aed2afa7emr13330706edc.24.1701159827034;
+        Tue, 28 Nov 2023 00:23:47 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id x1-20020aa7d381000000b00548ab1abc75sm6180302edq.51.2023.11.28.00.23.04
+        by smtp.gmail.com with ESMTPSA id x1-20020aa7d381000000b00548ab1abc75sm6180302edq.51.2023.11.28.00.23.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Nov 2023 00:23:07 -0800 (PST)
-Message-ID: <2164e693-875a-44c1-9bf5-9fa192dc589a@linaro.org>
-Date:   Tue, 28 Nov 2023 09:23:03 +0100
+        Tue, 28 Nov 2023 00:23:46 -0800 (PST)
+Message-ID: <79916a3e-70c2-4eaa-b4eb-9375c859f53e@linaro.org>
+Date:   Tue, 28 Nov 2023 09:23:43 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/12] dt-bindings: display: msm: qcm2290-mdss: Use the
- non-deprecated DSI compat
+Subject: Re: [PATCH v2 02/12] dt-bindings: display: msm: Add reg bus and
+ rotator interconnects
 Content-Language: en-US
 To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
         Rob Clark <robdclark@gmail.com>,
@@ -88,7 +88,7 @@ Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
         linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         iommu@lists.linux.dev
 References: <20231125-topic-rb1_feat-v2-0-979b28f35e4a@linaro.org>
- <20231125-topic-rb1_feat-v2-1-979b28f35e4a@linaro.org>
+ <20231125-topic-rb1_feat-v2-2-979b28f35e4a@linaro.org>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -134,7 +134,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231125-topic-rb1_feat-v2-1-979b28f35e4a@linaro.org>
+In-Reply-To: <20231125-topic-rb1_feat-v2-2-979b28f35e4a@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -148,11 +148,23 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 27/11/2023 16:28, Konrad Dybcio wrote:
-> The "qcom,dsi-ctrl-6g-qcm2290" has been deprecated in commit 0c0f65c6dd44
-> ("dt-bindings: msm: dsi-controller-main: Add compatible strings for every
-> current SoC"), but the example hasn't been updated to reflect that.
+> Apart from the already handled data bus (MAS_MDP_Pn<->DDR), there are
+> other connection paths:
+> - a path that connects rotator block to the DDR.
+> - a path that needs to be handled to ensure MDSS register access
+>   functions properly, namely the "reg bus", a.k.a the CPU-MDSS CFG
+>   interconnect.
 > 
-> Fix that.
+> Describe these paths to allow using them in device trees and in the
+> driver.
+> 
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> [Konrad: rework for one vs two MDP paths, update examples]
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+
+Thanks, looks good.
+
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
