@@ -2,109 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4057FC18D
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D50167FC27E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345421AbjK1OlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 09:41:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56610 "EHLO
+        id S1345845AbjK1OlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 09:41:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345064AbjK1Ok4 (ORCPT
+        with ESMTP id S1345741AbjK1OlI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 09:40:56 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB8AD60;
-        Tue, 28 Nov 2023 06:41:02 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SflQ45R4nz6J6v1;
-        Tue, 28 Nov 2023 22:36:28 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-        by mail.maildlp.com (Postfix) with ESMTPS id E3876140682;
-        Tue, 28 Nov 2023 22:41:00 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 28 Nov
- 2023 14:41:00 +0000
-Date:   Tue, 28 Nov 2023 14:40:59 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Russell King <rmk+kernel@armlinux.org.uk>
-CC:     <linux-pm@vger.kernel.org>, <loongarch@lists.linux.dev>,
-        <linux-acpi@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-riscv@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-        <x86@kernel.org>, <linux-csky@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-ia64@vger.kernel.org>,
-        <linux-parisc@vger.kernel.org>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        <jianyong.wu@arm.com>, <justin.he@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH RFC 02/22] x86: intel_epb: Don't rely on link order
-Message-ID: <20231128144059.000042c8@Huawei.com>
-In-Reply-To: <E1r0JKq-00CTwZ-Mh@rmk-PC.armlinux.org.uk>
-References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
-        <E1r0JKq-00CTwZ-Mh@rmk-PC.armlinux.org.uk>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Tue, 28 Nov 2023 09:41:08 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA211B5
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:41:15 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 210BAC433C8;
+        Tue, 28 Nov 2023 14:41:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701182474;
+        bh=U2H+GaDgE1dc4siI/syiwRHS98L9I2baF5G5hcg3p/U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=W6TNTicPVl5nDAiXtQpSjzw2y84+MOfRlm6UC9/qN7eRwrjnuN2a19WAxn+wjIcf7
+         7iq/UQgsK5YE6QI8tBvpEJ1NnnAo7sZo7T5/g3CsHzZWP1TLHQ3bOGyvBbTdL0f+Lh
+         FxWq+10RM8IKbgIwNGU8Z4cagslUoY/dUrFeQcKtcM7eCR1ftEYXP2gDRfsGvK2pWS
+         2MtslNlOaWBkWIEkgyGwAqGkafxaPh+px9YFtpCjEAqGQqTB5rHVkdKZXjWrRg1akB
+         kM06/0FWFkd2rDyFKtH9UZS4No8lm5rQo62Y6uG4aQym5TLE1sNWG3k5BOzXK+YQzl
+         oyxyn2KBV1q3A==
+Date:   Tue, 28 Nov 2023 14:41:08 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Herve Codina <herve.codina@bootlin.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 0/5] Add support for framer infrastructure and PEF2256
+ framer
+Message-ID: <511c83d1-d77f-4ac0-927e-91070787bc34@sirena.org.uk>
+References: <20231128132534.258459-1-herve.codina@bootlin.com>
+ <17b2f126-f6a4-431c-9e72-56a9c2932a88@sirena.org.uk>
+ <CACRpkda5VMuXccwSBd-DBkM4W7A1E+UfZwBxWqtqxZzKjrqY4A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="S3M3tGRsMZ5+00g1"
+Content-Disposition: inline
+In-Reply-To: <CACRpkda5VMuXccwSBd-DBkM4W7A1E+UfZwBxWqtqxZzKjrqY4A@mail.gmail.com>
+X-Cookie: Must be over 21.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 07 Nov 2023 10:29:28 +0000
-Russell King <rmk+kernel@armlinux.org.uk> wrote:
 
-> From: James Morse <james.morse@arm.com>
-> 
-> intel_epb_init() is called as a subsys_initcall() to register cpuhp
-> callbacks. The callbacks make use of get_cpu_device() which will return
-> NULL unless register_cpu() has been called. register_cpu() is called
-> from topology_init(), which is also a subsys_initcall().
-> 
-> This is fragile. Moving the register_cpu() to a different
-> subsys_initcall()  leads to a NULL dereference during boot.
-> 
-> Make intel_epb_init() a late_initcall(), user-space can't provide a
-> policy before this point anyway.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+--S3M3tGRsMZ5+00g1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Seems reasonable. FWIW
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+On Tue, Nov 28, 2023 at 03:26:56PM +0100, Linus Walleij wrote:
+> On Tue, Nov 28, 2023 at 3:03=E2=80=AFPM Mark Brown <broonie@kernel.org> w=
+rote:
 
-> ---
-> subsys_initcall_sync() would be an option, but moving the register_cpu()
-> calls into ACPI also means adding a safety net for CPUs that are online
-> but not described properly by firmware. This lives in subsys_initcall_sync().
-> ---
->  arch/x86/kernel/cpu/intel_epb.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/intel_epb.c b/arch/x86/kernel/cpu/intel_epb.c
-> index e4c3ba91321c..f18d35fe27a9 100644
-> --- a/arch/x86/kernel/cpu/intel_epb.c
-> +++ b/arch/x86/kernel/cpu/intel_epb.c
-> @@ -237,4 +237,4 @@ static __init int intel_epb_init(void)
->  	cpuhp_remove_state(CPUHP_AP_X86_INTEL_EPB_ONLINE);
->  	return ret;
->  }
-> -subsys_initcall(intel_epb_init);
-> +late_initcall(intel_epb_init);
+> > If this gets applied it'd be good to get a signed tag based off Linus'
+> > tree so things that depend on it can be pulled into other trees (eg, the
+> > ASoC mapping for the framer).
 
+> Do you mean my pin control tree or the big penguins tree? :D
+> (I'm guessing mine.)
+
+I actually meant mainline there.
+
+> I thought this thing would be merged primarily into the networking
+> tree, and I don't know if they do signed tags, I usually create an
+> immutable branch but that should work just as fine I guess.
+
+Right, I'd expect a signed tag on the immutable branch - it's generally
+helpful to avoid confusion about the branch actually being immutable.
+
+--S3M3tGRsMZ5+00g1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVl/AMACgkQJNaLcl1U
+h9C9eQf/R1llySAg9H/iM2wmZyiHeAxLfrwmt4OWBoTpGBRwWcNPKExSnleKXm5l
+czCL9LeGlT5a11xDPjoV4DRh3ehaYuj1FN3Pq5JS0VoG0c9orw1oqLQuU7RJlGqd
+ajTjDRie+pJ+pOEVsLF3pS+h8KwbPhaoJEorU1acAZTXrsYlAQKJNQTcTzYg8KAi
+9LSrm+69xcNmsvM2zIFXzDsbYnzDiwqdT3VPYyqtUA7JAlkFpqk8cCO//b3fhdmo
+hG0x321MSxK4T7K2v5FVRISIznHqZjCLnyE1kknSYR3T8ki84tMtMFf3GgOr7Nyp
+bN2bP8drVCn3NNx1eU+MPKhNrKMfLA==
+=mwLw
+-----END PGP SIGNATURE-----
+
+--S3M3tGRsMZ5+00g1--
