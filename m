@@ -2,96 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B39777FB2A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:24:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 653F57FB2A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 08:25:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343855AbjK1HYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 02:24:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47396 "EHLO
+        id S1343865AbjK1HZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 02:25:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343835AbjK1HY0 (ORCPT
+        with ESMTP id S1343911AbjK1HZI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 02:24:26 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F7A182
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:24:33 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10D15C433C8;
-        Tue, 28 Nov 2023 07:24:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701156273;
-        bh=wHLpDRtlsJs4HepAIlsqx4TqaV8tZMOkNBJ09guFv/o=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=sto11whmosIJgJVF6UpSCqU4GgxplcN17T6I2Ft75kYbSXXtcT4NIBqYeG/k9dh7l
-         0wJo5AePlq8xtkKemVs8rjk/QRgAWOrjgOC23mk/ptrJy5cxa/99YoPJ5tTB3n/sen
-         WFRcPMedsenOOAYtlRhul94JxbjLCSrqVlBjNo6c8K4uHSY7JtrMuUct/gJlNVP676
-         LcIvA5Sdh01VCtjrIEhqnX8bK40MSI3nwLlxJ3jcgPw4C9K1Gz2JK1PVElXuEV/bF1
-         ck6rCI4ZWmWbUAhN01r6kgRypuZ2uRqG+j8oq1Uc9NjXCe3Y7W9iq5tg91I9e7pxxH
-         vpTaVkee3uqXQ==
-Message-ID: <dae38777-0ac3-4881-a566-a0a8fce5e6ed@kernel.org>
-Date:   Tue, 28 Nov 2023 08:24:27 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: dtbs_check:
- Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml:
- properties:honeywell,pmin-pascal: '$ref' should not be valid under {'const':
- '$ref'}
-Content-Language: en-US
-To:     kernel test robot <lkp@intel.com>,
-        Andreas Klinger <ak@it-klinger.de>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Tue, 28 Nov 2023 02:25:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72FC0137
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:25:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701156311;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iANepy4LcEVc0PFmyCqY5MwriaBXl1P+qYoxDZZLGVY=;
+        b=MV6Zcbo97EGBOiAUYD5mOluyifyrUXrfFxeZUNEK9UfEMOJc/buBb5J32SmxsLt2dZGqIA
+        1dEj4TU7Jit0Ohnmb8d1QHhhRAjwuXz1mDEIPgICVnqEld4ullaO5AuSfPZdnEK+OAajFf
+        T9NBiXPrCSfk80EV+omvFXNlso97QyM=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-163-62nFpD1EMOKz0ml8vVNqXQ-1; Tue, 28 Nov 2023 02:25:06 -0500
+X-MC-Unique: 62nFpD1EMOKz0ml8vVNqXQ-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-332ee6c2a1aso2558776f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 23:25:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701156306; x=1701761106;
+        h=content-transfer-encoding:mime-version:user-agent:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iANepy4LcEVc0PFmyCqY5MwriaBXl1P+qYoxDZZLGVY=;
+        b=j/w3SzSZdZME6T2micJINOV+CQn9Sm/eTHPN17oBvV3h1IqBsEnFrYoVqnXgmEBvMo
+         2WeRziEVgLA0VyfioDm2iGEu5RkCbv7hzrxHD9XLkPDL4iZUBM46Q9UTxyMeOV8rTAYA
+         eTxZmzKAG8w64bkFN1v4+jOZKb5TUN3eNUyECKjx/l0Vlu5IkImKRuecNgDxDKIOf5HU
+         SNJpgeoY0k/8cWyEQbBUPE7Vlh4pGRiD9ki5C0xZ+PxGQGtUp2c/sQGy7TWRyhxR19vZ
+         XSVXsq3RXZ+rg2e9KH9Au8d6zPLxPBUipMfTfu18gwPJSsYISxGUeBHgltKUEO2WHTHt
+         Visw==
+X-Gm-Message-State: AOJu0YzNe+HixoLTfvV0scbKCm4fBFXuBCVvInpx7l6cQ6QFCMwTcD3v
+        v1jzmnkNjITQbYu4h0UHD1pJToMm5/aqwEvMEWvvDuW5ySDuIssFBJ9rclkcNEfSG9f1/BRR3C/
+        LLEHTzy/0/qBMVZkVpPbhiKm7
+X-Received: by 2002:a5d:464f:0:b0:32d:bb4a:525c with SMTP id j15-20020a5d464f000000b0032dbb4a525cmr10101807wrs.14.1701156305898;
+        Mon, 27 Nov 2023 23:25:05 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE0QQYA/ChFd9v/3X2VV1Y1Nh7hNFAIVNaVFuTH1R2mIuDpnEA9cp9CcfXyFdGFcLHjPhMM+Q==
+X-Received: by 2002:a5d:464f:0:b0:32d:bb4a:525c with SMTP id j15-20020a5d464f000000b0032dbb4a525cmr10101791wrs.14.1701156305564;
+        Mon, 27 Nov 2023 23:25:05 -0800 (PST)
+Received: from starship ([77.137.131.4])
+        by smtp.gmail.com with ESMTPSA id d21-20020adf9b95000000b003316ad360c1sm14269010wrc.24.2023.11.27.23.25.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 23:25:05 -0800 (PST)
+Message-ID: <c9d68c7f42a5ea936179b676bdf0970062d4f3a7.camel@redhat.com>
+Subject: Re: [RFC 09/33] KVM: x86: hyper-v: Introduce per-VTL vcpu helpers
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Nicolas Saenz Julienne <nsaenz@amazon.com>, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        anelkz@amazon.com, graf@amazon.com, dwmw@amazon.co.uk,
+        jgowans@amazon.com, corbert@lwn.net, kys@microsoft.com,
+        haiyangz@microsoft.com, decui@microsoft.com, x86@kernel.org,
         linux-doc@vger.kernel.org
-References: <202311280502.L6YVZhv5-lkp@intel.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <202311280502.L6YVZhv5-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 28 Nov 2023 09:25:03 +0200
+In-Reply-To: <20231108111806.92604-10-nsaenz@amazon.com>
+References: <20231108111806.92604-1-nsaenz@amazon.com>
+         <20231108111806.92604-10-nsaenz@amazon.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -99,25 +85,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/11/2023 01:19, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   2cc14f52aeb78ce3f29677c2de1f06c0e91471ab
-> commit: a765c985e69671054f397046b1d94d8c6e34149e dt-bindings: iio: pressure: Support Honeywell mprls0025pa sensor
-> date:   6 months ago
-> compiler: loongarch64-linux-gcc (GCC) 13.2.0
-> reproduce: (https://download.01.org/0day-ci/archive/20231128/202311280502.L6YVZhv5-lkp@intel.com/reproduce)
+On Wed, 2023-11-08 at 11:17 +0000, Nicolas Saenz Julienne wrote:
+> Introduce two helper functions. The first one queries a vCPU's VTL
+> level, the second one, given a struct kvm_vcpu and VTL pair, returns the
+> corresponding 'sibling' struct kvm_vcpu at the right VTL.
 > 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202311280502.L6YVZhv5-lkp@intel.com/
+> We keep track of each VTL's state by having a distinct struct kvm_vpcu
+> for each level. VTL-vCPUs that belong to the same guest CPU share the
+> same physical APIC id, but belong to different APIC groups where the
+> apic group represents the vCPU's VTL.
 > 
+> Signed-off-by: Nicolas Saenz Julienne <nsaenz@amazon.com>
+> ---
+>  arch/x86/kvm/hyperv.h | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/hyperv.h b/arch/x86/kvm/hyperv.h
+> index 2bfed69ba0db..5433107e7cc8 100644
+> --- a/arch/x86/kvm/hyperv.h
+> +++ b/arch/x86/kvm/hyperv.h
+> @@ -23,6 +23,7 @@
+>  
+>  #include <linux/kvm_host.h>
+>  #include "x86.h"
+> +#include "lapic.h"
+>  
+>  /* "Hv#1" signature */
+>  #define HYPERV_CPUID_SIGNATURE_EAX 0x31237648
+> @@ -83,6 +84,23 @@ static inline struct kvm_hv_syndbg *to_hv_syndbg(struct kvm_vcpu *vcpu)
+>  	return &vcpu->kvm->arch.hyperv.hv_syndbg;
+>  }
+>  
+> +static inline struct kvm_vcpu *kvm_hv_get_vtl_vcpu(struct kvm_vcpu *vcpu, int vtl)
+> +{
+> +	struct kvm *kvm = vcpu->kvm;
+> +	u32 target_id = kvm_apic_id(vcpu);
+> +
+> +	kvm_apic_id_set_group(kvm, vtl, &target_id);
+> +	if (vcpu->vcpu_id == target_id)
+> +		return vcpu;
+> +
+> +	return kvm_get_vcpu_by_id(kvm, target_id);
+> +}
 
-Entire report looks like result of running newer dtschema on old commit.
-That's not good approach, because we add new checks to dtschema, so such
-failures are expected (for 6 month old commit!). LKP should probably not
-test old commits with dtschema.
+> +
+> +static inline u8 kvm_hv_get_active_vtl(struct kvm_vcpu *vcpu)
+> +{
+> +	return kvm_apic_group(vcpu);
+> +}
+> +
+>  static inline u32 kvm_hv_get_vpindex(struct kvm_vcpu *vcpu)
+>  {
+>  	struct kvm_vcpu_hv *hv_vcpu = to_hv_vcpu(vcpu);
+
+
+Ideally I'll prefer the kernel to not know the VTL mapping at all but rather,
+that each vCPU be assigned to an apic group / namespace and has its assigned VTL.
+
+Then the kernel works in this way:
+
+* Regular APIC IPI -> send it to the apic namespace to which the sender belongs or if we go with the idea of using
+  multiple VMs, then this will work unmodified.
+
+* Hardware interrupt -> send it to the vCPU/VM which userspace configured it to send via GSI mappings.
+
+* HyperV IPI -> if same VTL as the vCPU assigned VTL -> deal with it the same as with regular IPI
+             -> otherwise exit to the userspace.
+
+* Page fault -> if related to violation of current VTL protection,
+  exit to userspace, and the userspace can then queue the SynIC message, and wakeup the higher VTL.
+
 
 Best regards,
-Krzysztof
+	Maxim Levitsky
+
+
 
