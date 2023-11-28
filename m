@@ -2,199 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC7037FB530
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:06:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E31687FB53D
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 10:09:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234726AbjK1JGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 04:06:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42224 "EHLO
+        id S234729AbjK1JJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 04:09:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbjK1JGU (ORCPT
+        with ESMTP id S231488AbjK1JJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 04:06:20 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C6DF1B6;
-        Tue, 28 Nov 2023 01:06:26 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50bba1dd05fso553180e87.0;
-        Tue, 28 Nov 2023 01:06:26 -0800 (PST)
+        Tue, 28 Nov 2023 04:09:27 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21B6299
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:09:33 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-332ed1bd4cbso2239809f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 01:09:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701162384; x=1701767184; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=2RW99vE38PIc6SpTpGSG9Fw0ojZLVZidXqTc1Mj5whQ=;
-        b=O+Pgi2FMtzQMj5pHCz8zWS/AuLC94Zq8vDcgWtweRAm5gAGShhFPeoKAo62Bjb2GK4
-         rG2FsD4VYsLKcddRFQ5ZFVUnEAbvFQsPDJQ5HIrwhidZyThguWkUxtErDWFRTbRby3+Q
-         Q5DsMUg3urDR88ZaSX5F/HPflf9tjINyCwEBKOHA2oj8g1B/b1MUP+XkEy6QCacQQdAV
-         DDuAZ6sM6Dzt4GX6sMqwqE28oXl0+Q4PhyoXZLcOsdqlTeeKqYXP01K0TwxCpheZuhK8
-         FSJ/xmibWPl7RMCJTWildhn4ZA8aqMjdgJ4xqncgTvOoC23CdilW4hKu3zZZp556lMgx
-         zzdw==
+        d=linaro.org; s=google; t=1701162571; x=1701767371; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ruBsZSrQwJWh8DMQKbh5iJ2P0cf6QJW5qv9vaOwvUVQ=;
+        b=StSWHPxlD8xl1n8zHQSoJ05SBS2PVfTXqBTQiCoHMEp6QVWWjLwmt4uGDRrXbtypv3
+         cpUS3aspuWjOqmapMSqpqISj5lExge3Cvhs11caNLgZTSjfEiTxirSKxgmynFBHM/q3b
+         EU2VXWWxkLa5kRt50v0lfC9mnRil/PFjR9jzl7MORTI12yxrVw/LiD9oS116UTNtWuke
+         KZUru+13JFaXvChyc992I+kI9e+FWwl0v9isURkyU5fuTCELDgnagdNZo/5fvh9wqg3g
+         nh7lUD1wl0Un5gwQuXTSduDkULhn03IGiGx3DbWPdGRRbJQuCs1PI2RNRV3FfTHzeOPo
+         d0NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701162384; x=1701767184;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2RW99vE38PIc6SpTpGSG9Fw0ojZLVZidXqTc1Mj5whQ=;
-        b=oHw5Bn5GUhHR663/W03EsaevFt5b+KKqPtfsv5i6pU3KknxGmGIESSnrPOvJGB1ESE
-         muYZMNo81EOG5UzVDKiNm7/MRw+Eg4Vt/SF06TdSnKoYgI8HW3SuwYGDFhX3RbqKknZl
-         GcX7SDom/AO4iWxKyav71TOMKvjf0Eo0TyinyenUKhoAYiLbqseAnXGSvSurSmPuHbEc
-         2TY5BNwFgA8vhYlbDfN5oNzB9ELjNyASR7o9xyvCT6er6sQ8hkEXSOHi7S2ov5DUEvda
-         46szgt4h189y+XMVFQzXqkWrE4OVAWkhhUNBbknUm2rmJO+hsgz2YYwaqQR8/M9k+IOY
-         qxzw==
-X-Gm-Message-State: AOJu0YyyO4q4b+MILcQkbl6sBYkoRFvTFbTPcjenqDqIgYSkVP7sX0vg
-        ltDCLi2e5YD84IkR/a8qfyk=
-X-Google-Smtp-Source: AGHT+IGbOBovg6fWIgafLZ3Jq8EYazhSCYX3LZlT85DjVqFn5+rmPXoZQRKL/M9Ab3jAoYVa+3ahvg==
-X-Received: by 2002:ac2:52af:0:b0:50b:bfd6:dd7d with SMTP id r15-20020ac252af000000b0050bbfd6dd7dmr174275lfm.20.1701162384217;
-        Tue, 28 Nov 2023 01:06:24 -0800 (PST)
-Received: from ?IPv6:2003:f6:ef1b:2000:4423:d503:bf11:e8c6? (p200300f6ef1b20004423d503bf11e8c6.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:4423:d503:bf11:e8c6])
-        by smtp.gmail.com with ESMTPSA id f8-20020adff988000000b00332e75eae4asm12398149wrr.85.2023.11.28.01.06.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 01:06:23 -0800 (PST)
-Message-ID: <f40f9c163f094a60443516f1744c8d09b4dc10ca.camel@gmail.com>
-Subject: Re: [PATCH net-next] net: phy: adin: allow control of Fast Link Down
-From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Michael Hennerich <michael.hennerich@analog.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@axis.com
-Date:   Tue, 28 Nov 2023 10:09:24 +0100
-In-Reply-To: <20231127-adin-fld-v1-1-797f6423fd48@axis.com>
-References: <20231127-adin-fld-v1-1-797f6423fd48@axis.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 
+        d=1e100.net; s=20230601; t=1701162571; x=1701767371;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ruBsZSrQwJWh8DMQKbh5iJ2P0cf6QJW5qv9vaOwvUVQ=;
+        b=X39FOq+p/GkVusB7X/EPRyIdn3fqzqpqG1cSWbj8Hi0ZARf/T7VQ3FBaXscgBOMe/G
+         2hOdLzo5zZAn2rrMzvIiMuS0BMarBQPldf954RWDp+LYCzi+tGmLYX/R/pINFBmyukJi
+         POWV5IQ5tXKshENBMjAohL1uqyO65/TRBCEUr101SmNTLxiH8ctbEJzosy3cBNpl8xGr
+         UF/EcfmKr1ZsxAbbIDsVsFUT8Ie6RXtTwioB2P9xZtEEA7YFZ4tv19+nzAUUpRzyKbb+
+         3Yc85iRCqRKDMa0G4E7ZlLo3aopSl3RnImajwIOF57disRziZw0H1oTg0FNDINGksMOf
+         Qh1A==
+X-Gm-Message-State: AOJu0YzwsbcOaxiA+rObNIJX/CwVcQIcjPsOUm5J3Q7Wwbc1RTyuaXAA
+        pmck2sz0Xss5QyUFNYLp/jdAVSwzk+EjS9miI3nczoiW
+X-Google-Smtp-Source: AGHT+IF6HJ4YuzplSZALPIeQl8QyI70POmJ3I9zmAHJ1JutBV7HT0g8vyHKladOrQSsRpog4FtczQw==
+X-Received: by 2002:adf:e282:0:b0:333:829:e55c with SMTP id v2-20020adfe282000000b003330829e55cmr2436057wri.10.1701162571548;
+        Tue, 28 Nov 2023 01:09:31 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:eada:f40e:7ab3:2afe? ([2a01:e0a:982:cbb0:eada:f40e:7ab3:2afe])
+        by smtp.gmail.com with ESMTPSA id e2-20020a5d4e82000000b0032d893d8dc8sm14369433wru.2.2023.11.28.01.09.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Nov 2023 01:09:31 -0800 (PST)
+Message-ID: <ee3baf94-4158-4440-8d89-de39fe0aa2f3@linaro.org>
+Date:   Tue, 28 Nov 2023 10:09:29 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH 4/5] ASoC: codecs: Add WCD939x Soundwire slave driver
+Content-Language: en-US, fr
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231123-topic-sm8650-upstream-wcd939x-codec-v1-0-21d4ad9276de@linaro.org>
+ <20231123-topic-sm8650-upstream-wcd939x-codec-v1-4-21d4ad9276de@linaro.org>
+ <ZV+PTynfbRmF0trU@finisterre.sirena.org.uk>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <ZV+PTynfbRmF0trU@finisterre.sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-11-27 at 16:31 +0100, Vincent Whitchurch wrote:
-> Add support to allow Fast Link Down (aka "Enhanced link detection") to
-> be controlled via the ETHTOOL_PHY_FAST_LINK_DOWN tunable.=C2=A0 These PHY=
-s
-> have this feature enabled by default.
->=20
-> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-> ---
+Hi,
 
-LGTM,
+On 23/11/2023 18:43, Mark Brown wrote:
+> On Thu, Nov 23, 2023 at 03:49:14PM +0100, Neil Armstrong wrote:
+>> Add Soundwire Slave driver for the WCD9390/WCD9395 Audio Codec.
+> 
+>> The WCD9390/WCD9395 Soundwire Slaves will be used by the
+> 
+> Please avoid using outdated terminology, "device" is probably a good
+> alternative here.  There are some usages in APIs that need to be updated
+> but still, good to avoid where possible.
 
-Acked-by: Nuno Sa <nuno.sa@analog.com>
+Sure, I simply kept the current Soundwire kernel terminologies,
+I'll change it to Device.
 
-Thanks!
-- Nuno S=C3=A1
+> 
+>> +static struct wcd939x_sdw_ch_info wcd939x_sdw_tx_ch_info[] = {
+>> +	WCD_SDW_CH(WCD939X_ADC1, WCD939X_ADC_1_4_PORT, BIT(0)),
+>> +	WCD_SDW_CH(WCD939X_ADC2, WCD939X_ADC_1_4_PORT, BIT(1)),
+>> +	WCD_SDW_CH(WCD939X_ADC3, WCD939X_ADC_1_4_PORT, BIT(2)),
+>> +	WCD_SDW_CH(WCD939X_ADC4, WCD939X_ADC_1_4_PORT, BIT(3)),
+>> +	// TOFIX support ADC3/4 & DMIC0/1 on port 2
+>> +	//WCD_SDW_CH(WCD939X_ADC3, WCD939X_ADC_DMIC_1_2_PORT, BIT(0)),
+>> +	//WCD_SDW_CH(WCD939X_ADC4, WCD939X_ADC_DMIC_1_2_PORT, BIT(1)),
+>> +	//WCD_SDW_CH(WCD939X_DMIC0, WCD939X_ADC_DMIC_1_2_PORT, BIT(2)),
+>> +	//WCD_SDW_CH(WCD939X_DMIC1, WCD939X_ADC_DMIC_1_2_PORT, BIT(3)),
+> 
+> Why are these commented out?
 
-> =C2=A0drivers/net/phy/adin.c | 53
-> ++++++++++++++++++++++++++++++++++++++++++++++++++
-> =C2=A01 file changed, 53 insertions(+)
->=20
-> diff --git a/drivers/net/phy/adin.c b/drivers/net/phy/adin.c
-> index 134637584a83..2e1a46e121d9 100644
-> --- a/drivers/net/phy/adin.c
-> +++ b/drivers/net/phy/adin.c
-> @@ -68,6 +68,24 @@
-> =C2=A0#define ADIN1300_EEE_CAP_REG			0x8000
-> =C2=A0#define ADIN1300_EEE_ADV_REG			0x8001
-> =C2=A0#define ADIN1300_EEE_LPABLE_REG			0x8002
-> +
-> +#define ADIN1300_FLD_EN_REG			0x8E27
-> +#define=C2=A0=C2=A0 ADIN1300_FLD_PCS_ERR_100_EN		BIT(7)
-> +#define=C2=A0=C2=A0 ADIN1300_FLD_PCS_ERR_1000_EN		BIT(6)
-> +#define=C2=A0=C2=A0 ADIN1300_FLD_SLCR_OUT_STUCK_100_EN	BIT(5)
-> +#define=C2=A0=C2=A0 ADIN1300_FLD_SLCR_OUT_STUCK_1000_EN	BIT(4)
-> +#define=C2=A0=C2=A0 ADIN1300_FLD_SLCR_IN_ZDET_100_EN	BIT(3)
-> +#define=C2=A0=C2=A0 ADIN1300_FLD_SLCR_IN_ZDET_1000_EN	BIT(2)
-> +#define=C2=A0=C2=A0 ADIN1300_FLD_SLCR_IN_INVLD_100_EN	BIT(1)
-> +#define=C2=A0=C2=A0 ADIN1300_FLD_SLCR_IN_INVLD_1000_EN	BIT(0)
-> +/* These bits are the ones which are enabled by default. */
-> +#define ADIN1300_FLD_EN_ON	\
-> +	(ADIN1300_FLD_SLCR_OUT_STUCK_100_EN | \
-> +	 ADIN1300_FLD_SLCR_OUT_STUCK_1000_EN | \
-> +	 ADIN1300_FLD_SLCR_IN_ZDET_100_EN | \
-> +	 ADIN1300_FLD_SLCR_IN_ZDET_1000_EN | \
-> +	 ADIN1300_FLD_SLCR_IN_INVLD_1000_EN)
-> +
-> =C2=A0#define ADIN1300_CLOCK_STOP_REG			0x9400
-> =C2=A0#define ADIN1300_LPI_WAKE_ERR_CNT_REG		0xa000
-> =C2=A0
-> @@ -416,6 +434,37 @@ static int adin_set_edpd(struct phy_device *phydev, =
-u16
-> tx_interval)
-> =C2=A0			=C2=A0 val);
-> =C2=A0}
-> =C2=A0
-> +static int adin_get_fast_down(struct phy_device *phydev, u8 *msecs)
-> +{
-> +	int reg;
-> +
-> +	reg =3D phy_read_mmd(phydev, MDIO_MMD_VEND1, ADIN1300_FLD_EN_REG);
-> +	if (reg < 0)
-> +		return reg;
-> +
-> +	if (reg & ADIN1300_FLD_EN_ON)
-> +		*msecs =3D ETHTOOL_PHY_FAST_LINK_DOWN_ON;
-> +	else
-> +		*msecs =3D ETHTOOL_PHY_FAST_LINK_DOWN_OFF;
-> +
-> +	return 0;
-> +}
-> +
-> +static int adin_set_fast_down(struct phy_device *phydev, const u8 *msecs=
-)
-> +{
-> +	if (*msecs =3D=3D ETHTOOL_PHY_FAST_LINK_DOWN_ON)
-> +		return phy_set_bits_mmd(phydev, MDIO_MMD_VEND1,
-> +					ADIN1300_FLD_EN_REG,
-> +					ADIN1300_FLD_EN_ON);
-> +
-> +	if (*msecs =3D=3D ETHTOOL_PHY_FAST_LINK_DOWN_OFF)
-> +		return phy_clear_bits_mmd(phydev, MDIO_MMD_VEND1,
-> +					=C2=A0 ADIN1300_FLD_EN_REG,
-> +					=C2=A0 ADIN1300_FLD_EN_ON);
-> +
-> +	return -EINVAL;
-> +}
-> +
-> =C2=A0static int adin_get_tunable(struct phy_device *phydev,
-> =C2=A0			=C2=A0=C2=A0=C2=A0 struct ethtool_tunable *tuna, void *data)
-> =C2=A0{
-> @@ -424,6 +473,8 @@ static int adin_get_tunable(struct phy_device *phydev=
-,
-> =C2=A0		return adin_get_downshift(phydev, data);
-> =C2=A0	case ETHTOOL_PHY_EDPD:
-> =C2=A0		return adin_get_edpd(phydev, data);
-> +	case ETHTOOL_PHY_FAST_LINK_DOWN:
-> +		return adin_get_fast_down(phydev, data);
-> =C2=A0	default:
-> =C2=A0		return -EOPNOTSUPP;
-> =C2=A0	}
-> @@ -437,6 +488,8 @@ static int adin_set_tunable(struct phy_device *phydev=
-,
-> =C2=A0		return adin_set_downshift(phydev, *(const u8 *)data);
-> =C2=A0	case ETHTOOL_PHY_EDPD:
-> =C2=A0		return adin_set_edpd(phydev, *(const u16 *)data);
-> +	case ETHTOOL_PHY_FAST_LINK_DOWN:
-> +		return adin_set_fast_down(phydev, data);
-> =C2=A0	default:
-> =C2=A0		return -EOPNOTSUPP;
-> =C2=A0	}
->=20
-> ---
-> base-commit: e1df5202e879bce09845ac62bae30206e1edfb80
-> change-id: 20231127-adin-fld-c072c3b79a5a
->=20
-> Best regards,
+Future feature support, will remove and add those on my internal TODO list...
+
+> 
+>> +static int wcd9390_interrupt_callback(struct sdw_slave *slave,
+>> +				      struct sdw_slave_intr_status *status)
+>> +{
+>> +	struct wcd939x_sdw_priv *wcd = dev_get_drvdata(&slave->dev);
+>> +	struct irq_domain *slave_irq = wcd->slave_irq;
+>> +	u32 sts1, sts2, sts3;
+>> +
+>> +	do {
+>> +		handle_nested_irq(irq_find_mapping(slave_irq, 0));
+>> +		regmap_read(wcd->regmap, WCD939X_DIGITAL_INTR_STATUS_0, &sts1);
+>> +		regmap_read(wcd->regmap, WCD939X_DIGITAL_INTR_STATUS_1, &sts2);
+>> +		regmap_read(wcd->regmap, WCD939X_DIGITAL_INTR_STATUS_2, &sts3);
+>> +
+>> +	} while (sts1 || sts2 || sts3);
+>> +
+>> +	return IRQ_HANDLED;
+>> +}
+> 
+> We do this in the other Qualcomm drivers but it doesn't seem ideal to
+> just ignore the interrupts.
+
+It seems we simply ignore IRQs that are not mapped in the regmap_irq,
+what would be the ideal way to handle this ?
+
+> 
+>> +static int wcd939x_sdw_component_bind(struct device *dev, struct device *master,
+>> +				      void *data)
+>> +{
+>> +	return 0;
+>> +}
+>> +
+>> +static void wcd939x_sdw_component_unbind(struct device *dev,
+>> +					 struct device *master, void *data)
+>> +{
+>> +}
+>> +
+>> +static const struct component_ops wcd939x_sdw_component_ops = {
+>> +	.bind = wcd939x_sdw_component_bind,
+>> +	.unbind = wcd939x_sdw_component_unbind,
+>> +};
+> 
+> Do these need to be provided if they can legitimately be empty?
+
+AFAIK yes, component code will crash if those are not defined.
+I'll add a comment explaining whey they are no-op.
+
+Thanks,
+Neil
 
