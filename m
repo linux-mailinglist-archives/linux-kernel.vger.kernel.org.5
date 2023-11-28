@@ -2,100 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F2A7FBA0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:26:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CB57FBA10
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 13:27:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344655AbjK1M0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 07:26:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59280 "EHLO
+        id S1344658AbjK1M1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 07:27:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344627AbjK1M0A (ORCPT
+        with ESMTP id S1344474AbjK1M1i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 07:26:00 -0500
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C323ED5B
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 04:26:03 -0800 (PST)
-Received: by mail-vs1-xe2f.google.com with SMTP id ada2fe7eead31-462f98044b4so618568137.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 04:26:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701174362; x=1701779162; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=zWjEZ/SUQrSUmyqfWuq2eTx6HkHasTKwK0H9S4JJ4Io=;
-        b=lWcy7SBow1DtRWWJqH1Kfbp66ON0TDBk0q1ARXZMBJrFRp4KuD566mXnp/mq7+CtQA
-         kHR68ejp8ulUGkpOIoKtQuZLH2gyf58AIfGFxDuc3DSyaAs0sEy1AdpUGX0NKvipbe4w
-         lesS2ShGh7zb20S4wIN2UmjzAgowOLrXzrcKA3Yjb8Cj7o4IDWbcXN/L2ORdQ1wlxytR
-         Cj7GNYCI2tdYbQgDQgY17dyRpSICz1JlmTGNjVg37Dk1XZGd+i+dYkwJUvHiL311MH5g
-         mM1dTHWAcyxUPblVzOHM8LNqYnxG6HbtSOIY8ULBzY+Mv6MAWCk+NvGW/VLQ08XFuXE/
-         C4vA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701174362; x=1701779162;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zWjEZ/SUQrSUmyqfWuq2eTx6HkHasTKwK0H9S4JJ4Io=;
-        b=Ict/TSYmv91GoBdKU2SlKqPq/ezxyN6k0mVCwAteIqdF7r3DP/KYWdSgSE9PWIXrbB
-         zLuquT+/bl//kYHL8HH5ayOYU0Y70YyJmXEA55L2ZEdPAkgtL4/06tROF1mU/6rAiD6X
-         tBmv1+G1EXVj6OUSJxpx/wNN0QZYLirZ99rE4S7fceFPeGPFxT5QRRBwR7C9bS+VbDDE
-         5+MEUrvrEEg0QHxyDAlNcOz81pgvnFoRrxIj2/QF9TpgvhDTwIDydXCNcr0xCAWxP4Wv
-         JB7t1zUIep3aUo91g2wDxGSkvccQsnv3/Gs0AWnNErhqVItwwcjWC6D4MiM5plAQcGQy
-         H8Jw==
-X-Gm-Message-State: AOJu0YzKn+VkpVzR28IXE+Yl6lNo335YBjiEc8pkdeFpqgF4ZnNX+hwy
-        NfCtAx1qrsRt8Tw4JYaww/SQrkkN32h0Q+6/4fz3qXvgzbVaIfrfN+U=
-X-Google-Smtp-Source: AGHT+IExkbIGK+yxz9Y8kDkIjRByaumTYqTMVx/OaGjw1A52Cq9j2XTHa5tlKE7tPXxeoL5sSv1H+Ge/FeZLf+VtD3c=
-X-Received: by 2002:a67:efcf:0:b0:462:a31c:78c3 with SMTP id
- s15-20020a67efcf000000b00462a31c78c3mr13888950vsp.20.1701174362355; Tue, 28
- Nov 2023 04:26:02 -0800 (PST)
+        Tue, 28 Nov 2023 07:27:38 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09506B8
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 04:27:44 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20155C433C7;
+        Tue, 28 Nov 2023 12:27:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701174464;
+        bh=sHN5DUzA9WDMlesWzeiZfM5tcjVwnkARW3rvZFj4VB0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Dwid6/ANmSyWzankZlLq0FaeLraVTfRHxGQgU0aOg2hLP3VYUCooi5WYwXJPW6DrR
+         76ZsdlCGMscQrRutkD5WvhpVd7xZ+9JI3WdPQstHCp1Rszqw+ND9pPM32I+VOOoHMG
+         zMokN//59HNiKvzFUCYEw36r4DPef9SN1bCvx9pHD7mEeOQqiGwTJjn6lMdlhHsz4J
+         vp9uwpiHdp10Iez0dZVdvZ9G8W2E3MT9tWGl7HZ49pUgRK+RaQjU9XmYIZYqD+wUlu
+         paMVbg0oh7CHxIKk7/IQArep1kTnRl2JXEyFDblnDZUVtCqSn8LAc2tMazILkYsNvl
+         UzH8hzCp7k1oA==
+Date:   Tue, 28 Nov 2023 13:27:42 +0100
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Liu Ying <victor.liu@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: (subset) [PATCH 0/3] Revert panel fixes and original buggy patch
+Message-ID: <hkdisfcld7ogf2fjxyfewztirgs3vrshoaq2psbdo7qttlxjhu@nbhhij4elyp7>
+References: <20231128-revert-panel-fix-v1-0-69bb05048dae@linaro.org>
+ <170116632194.2250210.1478661000647719120.b4-ty@linaro.org>
+ <b6d79cad-a545-48cb-a0e4-e9fdc457bec3@linaro.org>
+ <CACRpkdaAFoMnjha0+yWPDhj=RGyP3tzFOq5+bp7Uv8H2bkFW1w@mail.gmail.com>
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 28 Nov 2023 17:55:51 +0530
-Message-ID: <CA+G9fYvbCBUCkt-NdJ7HCETCFrzMWGnjnRBjCsw39Z_aUOaTDQ@mail.gmail.com>
-Subject: btrfs: super.c:416:25: error: 'ret' undeclared (first use in this
- function); did you mean 'net'?
-To:     open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, regressions@lists.linux.dev,
-        linux-btrfs@vger.kernel.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3a7ne4j6smq2zo5r"
+Content-Disposition: inline
+In-Reply-To: <CACRpkdaAFoMnjha0+yWPDhj=RGyP3tzFOq5+bp7Uv8H2bkFW1w@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Following x86 and i386 build regressions noticed on Linux next-20231128 tag.
 
-Build log:
------------
-fs/btrfs/super.c: In function 'btrfs_parse_param':
-fs/btrfs/super.c:416:25: error: 'ret' undeclared (first use in this
-function); did you mean 'net'?
-  416 |                         ret = -EINVAL;
-      |                         ^~~
-      |                         net
-fs/btrfs/super.c:416:25: note: each undeclared identifier is reported
-only once for each function it appears in
-fs/btrfs/super.c:417:25: error: label 'out' used but not defined
-  417 |                         goto out;
-      |                         ^~~~
-make[5]: *** [scripts/Makefile.build:243: fs/btrfs/super.o] Error 1
+--3a7ne4j6smq2zo5r
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+On Tue, Nov 28, 2023 at 11:16:23AM +0100, Linus Walleij wrote:
+> On Tue, Nov 28, 2023 at 11:13=E2=80=AFAM Neil Armstrong
+> <neil.armstrong@linaro.org> wrote:
+> > On 28/11/2023 11:12, Neil Armstrong wrote:
+> > > Hi,
+> > >
+> > > On Tue, 28 Nov 2023 00:10:18 +0100, Linus Walleij wrote:
+> > >> This series reverts the attempts to fix the bug that went
+> > >> into v6.7-rc1 in commit 199cf07ebd2b
+> > >> "drm/bridge: panel: Add a device link between drm device and panel d=
+evice"
+> > >> and then it reverts that patch as well.
+> > >>
+> > >>
+> > >
+> > > Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.g=
+it (drm-misc-fixes)
+> > >
+> > > [3/3] Revert "drm/bridge: panel: Add a device link between drm device=
+ and panel device"
+> > >        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=3D9b6a59e=
+5db87c2c6b3ca0391176ed4358623d5e4
+> > >
+> >
+> > b4 got really confused that I picked the patches in the wrong order, bu=
+t I applied
+> > the 3 patched in the 2, 1, 3 order.
+>=20
+> Special mistakes requires special fixes, sorry for the mess :(
+>
+> Thanks a lot Neil!
 
-Links:
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20231128/testrun/21349057/suite/build/test/gcc-13-lkftconfig-kselftest/log
+Thanks to both of you for the quick handling :)
 
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20231128/testrun/21349057/suite/build/test/gcc-13-lkftconfig-kselftest/details/
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2Ymoxor9n54ID51BFjRBS06YQ3U/
-- https://storage.tuxsuite.com/public/linaro/lkft/builds/2Ymoxor9n54ID51BFjRBS06YQ3U/config
+Maxime
 
---
-Linaro LKFT
-https://lkft.linaro.org
+--3a7ne4j6smq2zo5r
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZWXcvgAKCRDj7w1vZxhR
+xXf0AQDKb6cFSIUIWhbnqDwuRMw4+ApwwvI4BezyrWMCccrjggD/c3YL6vy/nhBJ
+qyqVXHKmmOpoL7dVOd8icq9z7iNpkQc=
+=LICq
+-----END PGP SIGNATURE-----
+
+--3a7ne4j6smq2zo5r--
