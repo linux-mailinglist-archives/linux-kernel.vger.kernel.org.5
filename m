@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 530ED7FC8D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:53:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 244837FC8A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 22:53:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376447AbjK1VKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 16:10:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59766 "EHLO
+        id S1376308AbjK1VOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 16:14:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346905AbjK1VJu (ORCPT
+        with ESMTP id S1346908AbjK1VNz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 16:09:50 -0500
+        Tue, 28 Nov 2023 16:13:55 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72513C25
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:08:01 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF5BAC43397;
-        Tue, 28 Nov 2023 21:08:00 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338F31BE1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 13:08:03 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BC66C433CA;
+        Tue, 28 Nov 2023 21:08:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701205681;
-        bh=02A/pt0jlQKBJvA66EUJWQd5GpOAbf2oDomvdzkTPvE=;
+        s=k20201202; t=1701205683;
+        bh=B6jdAq523tUTjoQ/nCF3xKon70u7LX+Geuk+Zb+g6Ek=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cMrcS4CseiI8bT1AhHBhA0C3Fk2htzksSo1GGO29bf1hUeVWxKqXY7Rq6snSQKThp
-         lyAV+flonifENCYW46hbeLu7YWmQpgYqSv+mgpNz4+UYKhlCRh2d8qqrHvGndkFM61
-         d/rFnVWHFpeZ56wxJ2cvF3etXN+3/ISfXW128Eiqd5RF5UzzoEOWnL1YHLTCAzOrMq
-         VB80az/9KmELiKz8m/TAWtdlveUHCxo0khKAxsngS1pi66VVT3hZ3p4xWaupM4JGlg
-         UKBMTGXJ2zJ8oQtrQKIjUCGuk/AdrSRuKQmziB02g9l5VUUhdgevYVwoHFOzu5n3xw
-         slLGRkNKlOtrA==
+        b=IqV0e0Z6x5uPyZ+oCWXC3AwUalzh4Q1FYVS1NrD4Oar2zOBmB851+5Q6twvWjulCv
+         +OnN5Pjvb1l1aUMyC6mibXOsgwlIUj46oaHdy+U74fT9TnVGTEjLyfCBNLzDWb6uER
+         DzM2q1302mUKkA8qq9oGBt6ODZt2rEaoh0H5Ff2ozWjauxzOIH1CAMFcEGlKzSKm+q
+         aCtysG2bSLFOK13or5NH5BsjWySadT/zzGm/trKN1+CuvqPNuqCeLuQ2lPSv4aE0o7
+         5aXWSa5s/NmCw4wqHD2T/CbFBeDhLVaUiiYKmiWD0U23pM1E7FHWQE5dIkF+dUfLzf
+         C269ev8dJE91w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ming Lei <ming.lei@redhat.com>, Changhui Zhong <czhong@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        tj@kernel.org, josef@toxicpanda.com, cgroups@vger.kernel.org,
+Cc:     Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Sasha Levin <sashal@kernel.org>, tj@kernel.org,
+        josef@toxicpanda.com, cgroups@vger.kernel.org,
         linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 04/25] blk-throttle: fix lockdep warning of "cgroup_mutex or RCU read lock required!"
-Date:   Tue, 28 Nov 2023 16:07:20 -0500
-Message-ID: <20231128210750.875945-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 05/25] blk-cgroup: bypass blkcg_deactivate_policy after destroying
+Date:   Tue, 28 Nov 2023 16:07:21 -0500
+Message-ID: <20231128210750.875945-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231128210750.875945-1-sashal@kernel.org>
 References: <20231128210750.875945-1-sashal@kernel.org>
@@ -56,44 +56,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ming Lei <ming.lei@redhat.com>
 
-[ Upstream commit 27b13e209ddca5979847a1b57890e0372c1edcee ]
+[ Upstream commit e63a57303599b17290cd8bc48e6f20b24289a8bc ]
 
-Inside blkg_for_each_descendant_pre(), both
-css_for_each_descendant_pre() and blkg_lookup() requires RCU read lock,
-and either cgroup_assert_mutex_or_rcu_locked() or rcu_read_lock_held()
-is called.
+blkcg_deactivate_policy() can be called after blkg_destroy_all()
+returns, and it isn't necessary since blkg_destroy_all has covered
+policy deactivation.
 
-Fix the warning by adding rcu read lock.
-
-Reported-by: Changhui Zhong <czhong@redhat.com>
 Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Link: https://lore.kernel.org/r/20231117023527.3188627-2-ming.lei@redhat.com
+Link: https://lore.kernel.org/r/20231117023527.3188627-4-ming.lei@redhat.com
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-throttle.c | 2 ++
- 1 file changed, 2 insertions(+)
+ block/blk-cgroup.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 009b0d76bf036..62a3f62316df1 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -1333,6 +1333,7 @@ static void tg_conf_updated(struct throtl_grp *tg, bool global)
- 		   tg_bps_limit(tg, READ), tg_bps_limit(tg, WRITE),
- 		   tg_iops_limit(tg, READ), tg_iops_limit(tg, WRITE));
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 60f366f98fa2b..1b7fd1fc2f337 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -462,6 +462,7 @@ static void blkg_destroy_all(struct gendisk *disk)
+ 	struct request_queue *q = disk->queue;
+ 	struct blkcg_gq *blkg, *n;
+ 	int count = BLKG_DESTROY_BATCH_SIZE;
++	int i;
  
-+	rcu_read_lock();
- 	/*
- 	 * Update has_rules[] flags for the updated tg's subtree.  A tg is
- 	 * considered to have rules if either the tg itself or any of its
-@@ -1360,6 +1361,7 @@ static void tg_conf_updated(struct throtl_grp *tg, bool global)
- 		this_tg->latency_target = max(this_tg->latency_target,
- 				parent_tg->latency_target);
+ restart:
+ 	spin_lock_irq(&q->queue_lock);
+@@ -487,6 +488,18 @@ static void blkg_destroy_all(struct gendisk *disk)
+ 		}
  	}
-+	rcu_read_unlock();
  
- 	/*
- 	 * We're already holding queue_lock and know @tg is valid.  Let's
++	/*
++	 * Mark policy deactivated since policy offline has been done, and
++	 * the free is scheduled, so future blkcg_deactivate_policy() can
++	 * be bypassed
++	 */
++	for (i = 0; i < BLKCG_MAX_POLS; i++) {
++		struct blkcg_policy *pol = blkcg_policy[i];
++
++		if (pol)
++			__clear_bit(pol->plid, q->blkcg_pols);
++	}
++
+ 	q->root_blkg = NULL;
+ 	spin_unlock_irq(&q->queue_lock);
+ }
 -- 
 2.42.0
 
