@@ -2,93 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 543847FB6EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:16:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0A87FB6F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:16:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231744AbjK1KQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 05:16:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34534 "EHLO
+        id S234638AbjK1KQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 05:16:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbjK1KQA (ORCPT
+        with ESMTP id S230371AbjK1KQ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 05:16:00 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26C7CDE
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:16:07 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 950931F74C;
-        Tue, 28 Nov 2023 10:16:05 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 69BB51343E;
-        Tue, 28 Nov 2023 10:16:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id n6+UFeW9ZWW0bQAAD6G6ig
-        (envelope-from <mhocko@suse.com>); Tue, 28 Nov 2023 10:16:05 +0000
-Date:   Tue, 28 Nov 2023 11:16:04 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sachin Sant <sachinp@linux.ibm.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10] mm: vmscan: try to reclaim swapcache pages if no
- swap space
-Message-ID: <ZWW95JPQ1B0cVPY-@tiehlicka>
-References: <CAJD7tkbC=Z6qAE+b6Ch5eVxNY7k0p98i_=RY0m4_3yg5C_zv+A@mail.gmail.com>
- <ZV3BWZ4ZaD5Rj_HS@tiehlicka>
- <ZV3TQCElHpcp0h0V@tiehlicka>
- <CAJD7tka0=JR1s0OzQ0+H8ksFhvB2aBHXx_2-hVc97Enah9DqGQ@mail.gmail.com>
- <ZV3_6UH28KMt0ZDb@tiehlicka>
- <87msv58068.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <ZWDPuR5Ssx07nBHb@tiehlicka>
- <87h6l77wl5.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <ZWRdG49vlGzSY_Uj@tiehlicka>
- <87r0ka64v9.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        Tue, 28 Nov 2023 05:16:29 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B466DC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:16:36 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-db4050e68f3so4961294276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:16:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701166595; x=1701771395; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=az09m0h7jONXF1DY571MoHHhddA+pAfUddfadnw5xbM=;
+        b=MV7wVq4ZEB2qMptb6ELTkzUUjSBxrowseRSn1jmi/6yaZER/oGBEk8nKwDz6LJSOGk
+         DaQSUZWtMGQ6oq555hIbd73Ia6VpywHV9zbtN2ain5YvfrXSkfvrhxUsQD5EZHJcSyAM
+         DCJAKSaitFbKfnxnn4pnhBZRaPiUD8Sr+B/L1agng1wcqh1eHFxljovVnkxQuLxljB67
+         fSpYr+VBnTta6Mz+6+gHnfQqu/GYzWhHdoeDROxOGt92lyLSeSmJqFJiNmNVYA25QpBm
+         0hfdyQYYUH9EterTsO8nMD0pgnEsaa94dCCGn81ITmxtEvZ0I8lB1nrj5OH27v7g6QHQ
+         Yujg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701166595; x=1701771395;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=az09m0h7jONXF1DY571MoHHhddA+pAfUddfadnw5xbM=;
+        b=a7uiPtrVHHm+WgajjQ4wWIN9m+mVqz/7pwt8ZqfppRcDcUHIHQFIYkLaJxL8DJ05Rt
+         vsNyT+aE84TLylToN0tpjBKCVC3rL1S8Vh5I2pd70y71fBr5MJj40a5MSWoPJhUezO1h
+         tgZefGgUujc+WMUko4QCuAZxqXNanlU15spsSzwmHtddkmtaHD3INGf3yVxuKT0nhfjv
+         zafkKHlWGad5FalsU22OAh8OEES8JJtddG005ZVozrUpjqCl+oO8AESFAmjNrjnzB3JI
+         jPeip6Cj0rFPY7aVjoUgV8ej4mB9vbx5cLWxau9Vn7Q3tHnTqWPQyT+UxB2ARK1RGgrI
+         HwEg==
+X-Gm-Message-State: AOJu0Yzw2J3fJA/I6uyJrJdVr3XWhEeQduIA8zQPEfJ0Z4ePXzPUdCJW
+        M0xhJzN3IB94/1wVoHay/OhEBklL16/VBX/GtSINOg==
+X-Google-Smtp-Source: AGHT+IEKfi0a8Ktnneb/ArA2n6UZ+H0NiLFIih34xe+5JdldBuidRBT70xvjvMtby6rJJlfMfCIcVYNAtUFQSGFfyGk=
+X-Received: by 2002:a25:870b:0:b0:da0:c887:36cb with SMTP id
+ a11-20020a25870b000000b00da0c88736cbmr13361932ybl.45.1701166595298; Tue, 28
+ Nov 2023 02:16:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87r0ka64v9.fsf@yhuang6-desk2.ccr.corp.intel.com>
-X-Spam-Level: 
-X-Rspamd-Server: rspamd1
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Rspamd-Queue-Id: 950931F74C
-X-Spam-Score: -4.00
-X-Spamd-Result: default: False [-4.00 / 50.00];
-         REPLY(-4.00)[]
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231128-revert-panel-fix-v1-0-69bb05048dae@linaro.org>
+ <170116632194.2250210.1478661000647719120.b4-ty@linaro.org> <b6d79cad-a545-48cb-a0e4-e9fdc457bec3@linaro.org>
+In-Reply-To: <b6d79cad-a545-48cb-a0e4-e9fdc457bec3@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 28 Nov 2023 11:16:23 +0100
+Message-ID: <CACRpkdaAFoMnjha0+yWPDhj=RGyP3tzFOq5+bp7Uv8H2bkFW1w@mail.gmail.com>
+Subject: Re: (subset) [PATCH 0/3] Revert panel fixes and original buggy patch
+To:     Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     Liu Ying <victor.liu@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 28-11-23 09:31:06, Huang, Ying wrote:
-> Michal Hocko <mhocko@suse.com> writes:
-[...]
-> > Right. On the other hand we could be more aggressive when dropping the
-> > swapcache. Is there any actual reason why we cannot try to folio_free_swap
-> > even when mem_cgroup_swap_full == F?
-> 
-> If there are plenty free space in swap device, why not take advantage of
-> it?
+On Tue, Nov 28, 2023 at 11:13=E2=80=AFAM Neil Armstrong
+<neil.armstrong@linaro.org> wrote:
+> On 28/11/2023 11:12, Neil Armstrong wrote:
+> > Hi,
+> >
+> > On Tue, 28 Nov 2023 00:10:18 +0100, Linus Walleij wrote:
+> >> This series reverts the attempts to fix the bug that went
+> >> into v6.7-rc1 in commit 199cf07ebd2b
+> >> "drm/bridge: panel: Add a device link between drm device and panel dev=
+ice"
+> >> and then it reverts that patch as well.
+> >>
+> >>
+> >
+> > Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git=
+ (drm-misc-fixes)
+> >
+> > [3/3] Revert "drm/bridge: panel: Add a device link between drm device a=
+nd panel device"
+> >        https://cgit.freedesktop.org/drm/drm-misc/commit/?id=3D9b6a59e5d=
+b87c2c6b3ca0391176ed4358623d5e4
+> >
+>
+> b4 got really confused that I picked the patches in the wrong order, but =
+I applied
+> the 3 patched in the 2, 1, 3 order.
 
-Maybe a stupid question but what is the advantage of keeping around in
-the swap cache?
+Special mistakes requires special fixes, sorry for the mess :(
 
--- 
-Michal Hocko
-SUSE Labs
+Thanks a lot Neil!
+
+Yours,
+Linus Walleij
