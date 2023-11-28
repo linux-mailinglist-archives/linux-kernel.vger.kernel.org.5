@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA137FC4CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 21:05:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 713707FC4CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 21:05:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229595AbjK1UFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 15:05:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43314 "EHLO
+        id S1344843AbjK1UF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 15:05:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230358AbjK1UFJ (ORCPT
+        with ESMTP id S1344879AbjK1UFQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 15:05:09 -0500
+        Tue, 28 Nov 2023 15:05:16 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 022391BCE;
-        Tue, 28 Nov 2023 12:05:07 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E0371BFA;
+        Tue, 28 Nov 2023 12:05:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701201908; x=1732737908;
+  t=1701201915; x=1732737915;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=AdFjMuClohqBUYL/nDsewEobDAXp1hIEsDTJLpD8JyY=;
-  b=iVPOYKfE527c+MclXuHNLO+hUlodwmRGRwnlS5NVLJ1I97q4aRYcEVX9
-   k6ZaQQf8gjVM8X7JsQj4aXwe1FnFu32a/KLHCHBo+hFclkwygUPpHnUXP
-   4r1Sr/N/kDj8XCp1C28r7p13RFlc8aEsxgcNckX6CXhfp6aXvNqoCHRDG
-   vDtgkS+WpbRBJwYlnbQ7eoIheNfyAwBGw1qer//KR6oeMpVwb3W8ld8R+
-   E6pClUTpybbVE+/nAw1qvs5wOUEU0cujlSX/HDTb+e7TzeOuopdFMVTGF
-   R+8k4GIpCGbLZj4Fw/Me1/GZXN6pdVNqGrWabBrdkCEvACUu1d+Jh+39k
+  bh=k/CuwaYQabHIX2TTMtkxSjWVlEzJjCHclcddt/a9src=;
+  b=EU09Xl5tFewiveUy2PR9ouFCgfHyAiQ81zUWBLBdjHZofG+B6/szTOu7
+   SKiSqlCpdHco8OaocsqUJfnYpSKzg0+SNPsOLF5N4e8Yay3vLx8G6qtR6
+   hMckZZo0HYbl5hyD8EU3ivF3R1QquW69xl9HqU4ad4u3KJAzW0nHp17Zf
+   nq9pwQdMi79N9D9RPVwMA/GCom0itR7onGdJ2UHV+/N2jK2S4SuVEkdHy
+   c3przJ65gfYePMquIW1u6NK9pkW/D9voaGWDapIfyz2LTdqj2RDQ9Etu0
+   LXUB4nmNBwHqAAnT0U6y9pMyL1ICtXqMqoN774DIJ/p1VTQEC9ew0R5yJ
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="6218031"
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="6218059"
 X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="6218031"
+   d="scan'208";a="6218059"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 12:02:27 -0800
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 12:02:28 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="797687956"
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="797687961"
 X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="797687956"
+   d="scan'208";a="797687961"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga008.jf.intel.com with ESMTP; 28 Nov 2023 12:02:18 -0800
+  by orsmga008.jf.intel.com with ESMTP; 28 Nov 2023 12:02:19 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 5E208A9A; Tue, 28 Nov 2023 22:01:58 +0200 (EET)
+        id 6C2C6AA2; Tue, 28 Nov 2023 22:01:58 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
@@ -75,9 +75,9 @@ Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
         Emil Renner Berthing <kernel@esmil.dk>,
         Hal Feng <hal.feng@starfivetech.com>
-Subject: [PATCH v3 10/22] pinctrl: core: Add a convenient define PINCTRL_GROUP_DESC()
-Date:   Tue, 28 Nov 2023 21:56:59 +0200
-Message-ID: <20231128200155.438722-11-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v3 11/22] pinctrl: ingenic: Make use of PINCTRL_GROUP_DESC()
+Date:   Tue, 28 Nov 2023 21:57:00 +0200
+Message-ID: <20231128200155.438722-12-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20231128200155.438722-1-andriy.shevchenko@linux.intel.com>
 References: <20231128200155.438722-1-andriy.shevchenko@linux.intel.com>
@@ -93,50 +93,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add PINCTRL_GROUP_DESC() macro for inline use.
+Make use of PINCTRL_GROUP_DESC() instead of open coding it.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/pinctrl/core.c | 5 +----
- drivers/pinctrl/core.h | 9 +++++++++
- 2 files changed, 10 insertions(+), 4 deletions(-)
+ drivers/pinctrl/pinctrl-ingenic.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
-index d20e3aad923e..3f1fd50fbb10 100644
---- a/drivers/pinctrl/core.c
-+++ b/drivers/pinctrl/core.c
-@@ -660,10 +660,7 @@ int pinctrl_generic_add_group(struct pinctrl_dev *pctldev, const char *name,
- 	if (!group)
- 		return -ENOMEM;
+diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinctrl-ingenic.c
+index ee718f6e2556..393873de910a 100644
+--- a/drivers/pinctrl/pinctrl-ingenic.c
++++ b/drivers/pinctrl/pinctrl-ingenic.c
+@@ -83,15 +83,10 @@
+ #define JZ4730_PINS_PER_PAIRED_REG	16
  
--	group->name = name;
--	group->pins = pins;
--	group->num_pins = num_pins;
--	group->data = data;
-+	*group = PINCTRL_GROUP_DESC(name, pins, num_pins, data);
+ #define INGENIC_PIN_GROUP_FUNCS(name, id, funcs)		\
+-	{						\
+-		name,					\
+-		id##_pins,				\
+-		ARRAY_SIZE(id##_pins),			\
+-		funcs,					\
+-	}
++	PINCTRL_GROUP_DESC(name, id##_pins, ARRAY_SIZE(id##_pins), funcs)
  
- 	error = radix_tree_insert(&pctldev->pin_group_tree, selector, group);
- 	if (error)
-diff --git a/drivers/pinctrl/core.h b/drivers/pinctrl/core.h
-index 01ea1ce99fe8..276a631fd49c 100644
---- a/drivers/pinctrl/core.h
-+++ b/drivers/pinctrl/core.h
-@@ -208,6 +208,15 @@ struct group_desc {
- 	void *data;
- };
+ #define INGENIC_PIN_GROUP(name, id, func)		\
+-	INGENIC_PIN_GROUP_FUNCS(name, id, (void *)(func))
++	PINCTRL_GROUP_DESC(name, id##_pins, ARRAY_SIZE(id##_pins), (void *)(func))
  
-+/* Convenience macro to define a generic pin group descriptor */
-+#define PINCTRL_GROUP_DESC(_name, _pins, _num_pins, _data)	\
-+(struct group_desc) {						\
-+	.name = _name,						\
-+	.pins = _pins,						\
-+	.num_pins = _num_pins,					\
-+	.data = _data,						\
-+}
-+
- int pinctrl_generic_get_group_count(struct pinctrl_dev *pctldev);
- 
- const char *pinctrl_generic_get_group_name(struct pinctrl_dev *pctldev,
+ enum jz_version {
+ 	ID_JZ4730,
 -- 
 2.43.0.rc1.1.gbec44491f096
 
