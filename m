@@ -2,106 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AAE47FAEF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 01:21:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B842B7FAEF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 01:22:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234116AbjK1AUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 27 Nov 2023 19:20:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34528 "EHLO
+        id S234121AbjK1AWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 27 Nov 2023 19:22:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234104AbjK1AUt (ORCPT
+        with ESMTP id S233895AbjK1AWG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 27 Nov 2023 19:20:49 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05BA41B8
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 16:20:55 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1ce28faa92dso37136415ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 16:20:55 -0800 (PST)
+        Mon, 27 Nov 2023 19:22:06 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFAEBC1
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 16:22:12 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6cb4d366248so4076877b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 16:22:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701130854; x=1701735654; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=b9LcCMDmTSdehjuq3j0tEJnIQIb6+TDJYhvhvJwU+wo=;
-        b=j0HaNRlM9mX4bZwsZGFVAiz0eTkwB/pdJTDOabkRfx0fXjD+BG8NEjs+UgHvBdx9p8
-         SZUt107ra1xcyurkJA4DZwHGWm3OG5s2lXKYeoM+M6wy12DdKJuRDLngUnCBOQwt2njK
-         etgNzmp1epSToBuG6kIer8nyHFs7tD6fboSXo=
+        d=chromium.org; s=google; t=1701130932; x=1701735732; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FcF7EbG17wMf5A1vywn815C2rgzGBSTBqW3p8rKvm+Q=;
+        b=gHW7zeIRSF2utN8brgCdiO6Rlba0fYGpE5dOK8IlsXWocIGrDthTK5MYK0qlDsXkw7
+         gFpNyvoRmnbTa9zIL+TKPdtU+tCYSBjZCzJl7etvG6bAJe4ozoVqClXacnhoUodVz1en
+         hBAKMVsquMEFYQFKpaTNhfdkxzuY5rGCExqIQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701130854; x=1701735654;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=b9LcCMDmTSdehjuq3j0tEJnIQIb6+TDJYhvhvJwU+wo=;
-        b=UPueqrqo6fYriFcMLnLbHnpHlC5Dx0M1l89kKuWAf8nHHBfBguFAHVrHA4jgY72hr9
-         wtsWx8EL0jG1afmu0IDpST23TETppkBhHwLs3Q8VqlbWEDOudxnWXiu0rPIIwS0WzIxw
-         JBg41R2d/5hnBNF/6/33SZyZKdXJWbCvOUWGApLPmGX9GKZjI/DreoMUCggsjcymfP9U
-         P2d39nMzP8G5g+SMuFkaKEP+QoboMdZqtveWzaXCMIdtqjgdBdHdhH/dRTcdGaOxkXX8
-         gplp21D9YmDm/vMOMtt0zXEs6hsI4CRP9Km8o1kDvsgrUoXHl1QtbGywG8ApfOuxfeTt
-         1osA==
-X-Gm-Message-State: AOJu0YyhEFa2g08bClYvaj7RZQl1woVa7UePZOoRb6KhYpEZMm98mvdu
-        zDgcs8r/ewN5XVbSPhwqp0lO3A==
-X-Google-Smtp-Source: AGHT+IGFzSIOfg8sKm6Au/0ACHEqu0Oge23/jZd49oSPNDz1XcwfEzxfUkI9Gck94hxyHvZcKR6OQQ==
-X-Received: by 2002:a17:902:d303:b0:1cc:2f70:4865 with SMTP id b3-20020a170902d30300b001cc2f704865mr12921138plc.26.1701130854419;
-        Mon, 27 Nov 2023 16:20:54 -0800 (PST)
-Received: from smtp.gmail.com ([2620:15c:11a:201:6438:b5d1:198e:8bb0])
-        by smtp.gmail.com with ESMTPSA id c5-20020a170902d90500b001c60c3f9508sm8878786plz.230.2023.11.27.16.20.53
+        d=1e100.net; s=20230601; t=1701130932; x=1701735732;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FcF7EbG17wMf5A1vywn815C2rgzGBSTBqW3p8rKvm+Q=;
+        b=jqkYhLlUFbF0R+9YgexiEcYnMaF94mm7oAFzPvbThAookNPXymhKtDQJSRzLrXewbl
+         7fe3t1u/xVb29QjskRsDIBO293WCae3l/VaPT9VjqTKwSCv4LQwcbkEhywVTaoJWZE45
+         nMWxDAtKDcF6aYV9YnwMGAtND/jhTO68JeEchoRH3um0b8mP2sSutGsZi4OcmOwf5kT2
+         Ro4jG6RmXoZSvplK2YRIefy6SPKDmFFLfTfJhDO/44Bx+CbVTm9o8d1RXJtgKseDegCn
+         wIwPanq8JoAiJzJ0YMFcqzyGnh0ON2VSVNZEIT+kxaqzF+gvdyCcZ+EJUv/bP0cMnn32
+         v/sg==
+X-Gm-Message-State: AOJu0Yy2WB4BFKXqtsAVvXORNi2//fnl3LoEhdO+GpGi7UgtRxhJ10nw
+        10vuJmCsBFH5KGRpkoJAqKZ/Hg==
+X-Google-Smtp-Source: AGHT+IGUgQLH74WqDwY1dXBnMXs3poKbhgyhnJWjJs8YpFTvm4lBIManweCNuXmLfe1LHnljM+TKyg==
+X-Received: by 2002:a05:6a00:88f:b0:6b3:f29c:dde1 with SMTP id q15-20020a056a00088f00b006b3f29cdde1mr14055045pfj.21.1701130932417;
+        Mon, 27 Nov 2023 16:22:12 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id fh23-20020a056a00391700b006cc02a6d18asm4752811pfb.61.2023.11.27.16.22.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 16:20:54 -0800 (PST)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        devicetree@vger.kernel.org,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Douglas Anderson <dianders@chromium.org>
-Subject: [PATCH] dt-bindings: arm: qcom: Fix html link
-Date:   Mon, 27 Nov 2023 16:20:51 -0800
-Message-ID: <20231128002052.2520402-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
+        Mon, 27 Nov 2023 16:22:11 -0800 (PST)
+Date:   Mon, 27 Nov 2023 16:22:11 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Dmitry Antipov <dmantipov@yandex.ru>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Will Deacon <will@kernel.org>, Kalle Valo <kvalo@kernel.org>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] uapi: propagate __struct_group() attributes to the
+ container union
+Message-ID: <202311271620.B0CB21B@keescook>
+References: <20231120110607.98956-1-dmantipov@yandex.ru>
+ <f0bebfe0f7e02bb51676d8f6a80be0444e2b8662.camel@sipsolutions.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f0bebfe0f7e02bb51676d8f6a80be0444e2b8662.camel@sipsolutions.net>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This link got broken by commit e790a4ce5290 ("arm: docs: Move Arm
-documentation to Documentation/arch/") when the doc moved from arm/ to
-arch/arm/. Fix the link so that it can continue to be followed.
+On Fri, Nov 24, 2023 at 06:37:14PM +0100, Johannes Berg wrote:
+> On Mon, 2023-11-20 at 14:05 +0300, Dmitry Antipov wrote:
+> > Recently the kernel test robot has reported an ARM-specific BUILD_BUG_ON()
+> > in an old and unmaintained wil6210 wireless driver.
+> > 
+> 
+> Heh. I guess it wasn't unmaintained enough for someone to touch it and
+> add struct_group() to it...
 
-Fixes: e790a4ce5290 ("arm: docs: Move Arm documentation to Documentation/arch/")
-Cc: Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Cc: Yanteng Si <siyanteng@loongson.cn>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Bjorn Andersson <andersson@kernel.org>
-Cc: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- Documentation/devicetree/bindings/arm/qcom.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It needed it since it was using memcpy across fields. But it's been a
+while since that change happened, so finding this bug now is pretty
+impressive. :)
 
-diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
-index 7f80f48a0954..8a6466d1fc4e 100644
---- a/Documentation/devicetree/bindings/arm/qcom.yaml
-+++ b/Documentation/devicetree/bindings/arm/qcom.yaml
-@@ -138,7 +138,7 @@ description: |
-   There are many devices in the list below that run the standard ChromeOS
-   bootloader setup and use the open source depthcharge bootloader to boot the
-   OS. These devices do not use the scheme described above. For details, see:
--  https://docs.kernel.org/arm/google/chromebook-boot-flow.html
-+  https://docs.kernel.org/arch/arm/google/chromebook-boot-flow.html
- 
- properties:
-   $nodename:
+> 
+> >  include/uapi/linux/stddef.h | 2 +-
+> > 
+> 
+> No idea what tree this should go through, but I guess wireless isn't
+> appropriate.
 
-base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+I'll take it; thanks for the find Dmitry!
+
 -- 
-https://chromeos.dev
-
+Kees Cook
