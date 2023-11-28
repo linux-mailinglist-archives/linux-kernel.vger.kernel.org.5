@@ -2,69 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3E8F7FC2C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DEE57FC238
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346155AbjK1Oai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 09:30:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56416 "EHLO
+        id S1346182AbjK1OcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 09:32:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344930AbjK1Oaf (ORCPT
+        with ESMTP id S1346279AbjK1OcD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 09:30:35 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08C1218D
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:30:42 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40b3e7f2fd9so27106285e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:30:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701181840; x=1701786640; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JLEYkHRJMT3OqT04CWYEA703zQvHqSolyT21WNnk3PQ=;
-        b=kk1oN1+bs1cG4aqWZBjIaf9UKfbUiexxIfb2ZQ2mAoKzfFeUbmFTOeQcykTgA3EtDA
-         LjyxCgdmwLXtCilDCcCD0EdMkNV60NYErRuSgrOLbGZ5WeISjHyUsOMkkCY/LuCahNjY
-         LKK9wnkvL0fOL4Qw16UN9rFPWWB7aNW33vyi91Q03CYmlNN2zncAvRkBEVl+ewk10sfq
-         DgY59bJkmsyDQsLikBhcStJuyJpR9yhTxyaTBgkO1M8HFt5vojON8ZPRznlQTM1ygc4W
-         02CQJHwjYFbPNVWbGjViFZBBTe8YKBxeaZjMzPPvhJ7gU1KmakyMbGFBDPkpUAFJEHTG
-         7FxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701181840; x=1701786640;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JLEYkHRJMT3OqT04CWYEA703zQvHqSolyT21WNnk3PQ=;
-        b=vJ4sKSqvP6tshqGY2pqaQdDvA+aSwlAub0vSZ/kaOT4UEHowj9g7R399XYk2zapA50
-         lSeY43O0sFf96X7Cch/YbbIkHMLPEHcZ8n80zx4U5Rz9GiKo7pxy3gKJkhNzVI/3ZpdF
-         GsuAKF4zfDU3Itq2iw2IOSUDdUuj0e60PGKoHdbzsK/Og4hR2pTaiQ+rEA9TWu9ZMfzP
-         pRjN8HVP98U7lY7xEvHO5gLsInPqdbkWIyZhlo8mL4O1/B3DFskWJZtlX2li/dOagyeD
-         9JYy4uem9XvAQ5lUpvtwu9vxRfmgfM0Mzdc1sssYL+BOcgVYcWTuSRZBYsQXj5TWlHO8
-         xEow==
-X-Gm-Message-State: AOJu0Yw7TCz0AsEAz95YY6s8hDS8ygQbryuiERwqXSCNbSpMnWGgc0ql
-        xiqXEEjxhnaCP0ngoZfQz2LELw==
-X-Google-Smtp-Source: AGHT+IFRSBdeNgBVBzXbX04M5CydoBRX/3/68FCyYlI2YkiakrnnEFYTLggv//rdjN95vH2IOP4Azw==
-X-Received: by 2002:a05:6000:543:b0:333:875:27f6 with SMTP id b3-20020a056000054300b00333087527f6mr2795165wrf.60.1701181840487;
-        Tue, 28 Nov 2023 06:30:40 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id f10-20020a5d568a000000b00332f95ab451sm8493636wrv.58.2023.11.28.06.30.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 06:30:40 -0800 (PST)
-Date:   Tue, 28 Nov 2023 17:30:36 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Gary Rookard <garyrookard@fastmail.org>
-Cc:     gregkh@linuxfoundation.org, philipp.g.hortmann@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] staging: rtl8192e: renamed variable nMcsRate
-Message-ID: <acc04154-6604-4cd1-a6cf-58d89d6798e0@suswa.mountain>
-References: <20231128142027.15617-1-garyrookard@fastmail.org>
- <20231128142027.15617-2-garyrookard@fastmail.org>
+        Tue, 28 Nov 2023 09:32:03 -0500
+Received: from mail.subdimension.ro (unknown [IPv6:2a01:7e01:e001:1d1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D4281702;
+        Tue, 28 Nov 2023 06:32:09 -0800 (PST)
+Received: from sunspire (unknown [188.24.94.216])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by mail.subdimension.ro (Postfix) with ESMTPSA id E682828EE6F;
+        Tue, 28 Nov 2023 14:32:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
+        s=skycaves; t=1701181928;
+        bh=R7gI18pL+5FP+C77LHDW4m+kGE5GKSW9p/MbTSMPxI0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=pner+R5ZzBoF4d9Im0tnCFaHXFemE3NLZugvt6BTLBsbq+nEmE+d8OWHqYX6etZtR
+         I0uyGZv6XPkDpb+sLwoq/J/d1I0a2BbaM0rcreOYouaxG3pKaeBs/rXriI5X74FKnL
+         +hHYIUY9db+j06v8q0rGNGM4uxyLyOKoI+3yjtCk=
+Date:   Tue, 28 Nov 2023 16:32:06 +0200
+From:   Petre Rodan <petre.rodan@subdimension.ro>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Angel Iglesias <ang.iglesiasg@gmail.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Andreas Klinger <ak@it-klinger.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Subject: Re: [PATCH v3 2/2] iio: pressure: driver for Honeywell HSC/SSC
+ series pressure sensors
+Message-ID: <ZWX55o_-WT5BQlo-@sunspire>
+References: <20231126102721.15322-1-petre.rodan@subdimension.ro>
+ <20231126183334.625d2d8b@jic23-huawei>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231128142027.15617-2-garyrookard@fastmail.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20231126183334.625d2d8b@jic23-huawei>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,38 +58,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 09:20:25AM -0500, Gary Rookard wrote:
-> v2: Renamed from CamelCase to Snake case the variable nMcsRate, and
-  ^^^^
 
-> additionally removed the Hungarian notation of (n) that [v1] did not.
-                                                           ^^^
-Delete this stuff.  We are not going to merge v1 so we don't want to
-mention it in the permanent git log.
+Hello!
 
-> nMcsRate -> mcs_rate
+On Sun, Nov 26, 2023 at 06:33:34PM +0000, Jonathan Cameron wrote:
+> On Sun, 26 Nov 2023 12:27:17 +0200
+> Petre Rodan <petre.rodan@subdimension.ro> wrote:
 > 
-> Linux kernel coding style (cleanup), checkpatch Avoid CamelCase.
-> Driver/module rtl8192e compiles.
-  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-This is taken as a given.  Don't put this in the commit message.
-
+> > Adds driver for digital Honeywell TruStability HSC and SSC series
+> > pressure and temperature sensors. 
+>
+> Hi Petre
 > 
-> Signed-off-by: Gary Rookard <garyrookard@fastmail.org>
+> A quick end of day review.
+> 
+> Jonathan
 
-This commit message is kind of bad.  A better commit message would be:
+welcome back.
+amazing how you were able to review so many code sets in one day.
+thank you for your input.
 
-"Checkpatch complains about the "nMcsRate" variable because it is
-CamelCase.  Rename it to "mcs_rate"".
+> > +#define     HSC_PRESSURE_TRIPLET_LEN  6
+> 
+> Can you make this length based on something like a structure length, or number
+> of registers?  That would make it self documenting which is always nice to have.
 
-There are a bunch of ways you could write the commit message but my
-proposal is acceptable.  If you want to mention Hungarian notation you
-can.  "Plus it's Hungarian notation and Hungarian notation is rubbish."
-but that's not necessary.  If you're going to rename the variable then
-we just consider that you're going to look at the context and the
-surrounding code and pick a good consistent variable.
+I added a comment in V4, this length is simply based on the string used by
+honeywell to differentiate these chips based on their pressura range, 
+measurement unit and sensor type. see the first column in Table 8, 9, 10 in [1]
 
-regards,
-dan carpenter
+[1] https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf
 
+> > +struct hsc_data {
+> > +	void *client;
+> > +	const struct hsc_chip_data *chip;
+> > +	struct mutex lock;
+> > +	int (*xfer)(struct hsc_data *data);
+> > +	bool is_valid;
+> > +	u8 buffer[HSC_REG_MEASUREMENT_RD_SIZE];
+> 
+> This is used for SPI transfers so should be DMA safe. It's not currently.
+> Look at how IIO_DMA_MINALIGN is used in other drivers to ensure there is
+> no unsafe sharing of cachelines.
+> 
+> On some architectures this is fixed by the stuff that bounces all small transfers
+> but I don't think that is universal yet.  If you want more info find the talk
+> by Wolfram Sang from a few years ago an ELCE on I2C DMA safe buffers.
+
+that was a nice rabbit hole, thanks for the pointer.
+
+now, based on [2] I will skip explicit i2c dma-related code since my requests
+are 4 bytes long. according to the document, any i2c xfer below 8bytes is not
+worth the overhead.
+
+[2] https://www.kernel.org/doc/html/latest/i2c/dma-considerations.html
+
+> > +static int hsc_spi_probe(struct spi_device *spi)
+> > +{
+> > +	struct iio_dev *indio_dev;
+> > +	struct hsc_data *hsc;
+> > +	struct device *dev = &spi->dev;
+> > +
+> > +	indio_dev = devm_iio_device_alloc(dev, sizeof(*hsc));
+> > +	if (!indio_dev)
+> > +		return -ENOMEM;
+> > +
+> > +	hsc = iio_priv(indio_dev);
+> > +	hsc->xfer = hsc_spi_xfer;
+> 
+> Also, pass the callback and spi->dev into hsc probe. Easy to use
+> a container_of() to get back to the struct spi_device *spi
+
+I'd rather simply pass along the client struct.
+
+> > +	hsc->client = spi;
+> > +
+> > +	return hsc_probe(indio_dev, &spi->dev, spi_get_device_id(spi)->name,
+> > +			 spi_get_device_id(spi)->driver_data);
+> Don't use anything form spi_get_device_id()
+> 
+> Name is a fixed string currently so pass that directly.
+> For driver data, there isn't any yet but if there were use
+> spi_get_device_match_data() and make sure to provide the data in all the
+> id tables.  That function will search the firmware ones first then call
+> back to the spi specific varient.
+
+along the way driver_data became redundant, so it was removed from the function
+prototype.
+
+best regards,
+peter
 
