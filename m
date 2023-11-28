@@ -2,112 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9A57FC9CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:45:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 540E87FC9D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 23:45:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345404AbjK1WpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 17:45:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51570 "EHLO
+        id S1376390AbjK1WpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 17:45:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbjK1WpG (ORCPT
+        with ESMTP id S229709AbjK1WpJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 17:45:06 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 073181990
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 14:45:13 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1cfae5ca719so33804995ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 14:45:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701211512; x=1701816312; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yIxntpUV6An9T30/OVvCRNL5HGOjDnXv5bkE+BdjPrw=;
-        b=Vfim6XvYZDA7AzQGfMvJ5knZHhX+viyOQ3XAOs95Q4yqtyMCcySt/Y1KH0SlFdP+Q9
-         1M8QG0ql2JWiG/FtfaMIpPwe95u2UDRwVrHxA3+6T5a5rORJXJI5vIjIg/wwFUbBKOqI
-         arA5KUaE1Px/q44krDUE9PQOFe6KVazDUFmZs+noYVMSJBcPSzNQVyGNLeEro/AkifnZ
-         ZQ4BwqgRY9QxcwSLvlKQ6Kci1N/4coRXFoggWJl6E3qlYyCtOP2jKgBCwlRND3ZoL8SX
-         4rdqOZVZ1OI1po6UVLs7hbAS04CyRYxOHA18UlTG41JZbvwOuOXIcP6aULYNcq51KwWu
-         dwjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701211512; x=1701816312;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yIxntpUV6An9T30/OVvCRNL5HGOjDnXv5bkE+BdjPrw=;
-        b=qYdjxWA8SXHK2poSKSUwF8W2cqb5qxjJ6hxPArihAIBdOCq1TcZqRLun1NY419ejRv
-         N5y8YDFfgldUcn7lRV91I8UWtSjYtMEsSG1eMRgWA5dCu2vDE7zr1Q0vSSOdFNdYNEnS
-         zQbn9dVJZFLxfqN23kC9gyfdgW34zBvqRwlHrkpIJi9fTj6tq7dXP7QaiYvX2KL7Fnpq
-         z5ErT6hx4n7NzmaDadozpKxMAY8p546iC7o1WpLhKebJYcU01csRhdgBShECa0EPq8wJ
-         FzHcEnuzKVuJ+F/FAyIZIKU8AyAfpKbZtyjRItoQI2YWTZ0TkCyez/henVnHc8dF4E5b
-         qklg==
-X-Gm-Message-State: AOJu0YyAl6/k8z5wXT2oiQ/ONdOMOdTglkwQ0qHVvzcRpoexxv7fYfWt
-        4Zqi79ou23sGO+aWVUXSCsI=
-X-Google-Smtp-Source: AGHT+IGuuDxxp7Ov3KXDosfMOFDGyGkjXizTw+RX6QX20TDHGdgGTkoHhVlYYP1Jr+XANX7w9ORROQ==
-X-Received: by 2002:a17:903:2345:b0:1cf:d8c5:2288 with SMTP id c5-20020a170903234500b001cfd8c52288mr7795170plh.41.1701211512355;
-        Tue, 28 Nov 2023 14:45:12 -0800 (PST)
-Received: from google.com ([2620:0:1000:8411:8fd0:78d2:c604:3ac8])
-        by smtp.gmail.com with ESMTPSA id f11-20020a170902ce8b00b001cfb971edf3sm6679898plg.8.2023.11.28.14.45.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 14:45:11 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Tue, 28 Nov 2023 14:45:09 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     "Huang, Ying" <ying.huang@intel.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sachin Sant <sachinp@linux.ibm.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v10] mm: vmscan: try to reclaim swapcache pages if no
- swap space
-Message-ID: <ZWZtdQKSSnLC8kZ6@google.com>
-References: <ZV3BWZ4ZaD5Rj_HS@tiehlicka>
- <ZV3TQCElHpcp0h0V@tiehlicka>
- <CAJD7tka0=JR1s0OzQ0+H8ksFhvB2aBHXx_2-hVc97Enah9DqGQ@mail.gmail.com>
- <ZV3_6UH28KMt0ZDb@tiehlicka>
- <87msv58068.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <ZWDPuR5Ssx07nBHb@tiehlicka>
- <87h6l77wl5.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <ZWRdG49vlGzSY_Uj@tiehlicka>
- <87r0ka64v9.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <ZWW95JPQ1B0cVPY-@tiehlicka>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWW95JPQ1B0cVPY-@tiehlicka>
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        FSL_HELO_FAKE,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+        Tue, 28 Nov 2023 17:45:09 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79FF983
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 14:45:15 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E311BC433C8;
+        Tue, 28 Nov 2023 22:45:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1701211515;
+        bh=rGFxfOF2I+tYipglEif1ZyDYoJ7doqD6mUgYvsipiC4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Q5glqAHKFkGi9sRnBMO3YNLxYRFTnHNXRKe3ghaF+iftOpitpHLKGeLFNnGQ2pF6m
+         MtEUxt1ZoVQ+a1hxARc4eOEd2RWefBEhCphbwiZof0+mRlZMbq2kWeOHiLWLzlStIX
+         eDQS6nciHT89vwoHkE6pBtY4YlTSI9nsC96DVaOM=
+Date:   Tue, 28 Nov 2023 14:45:14 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Dmitry Rokosov <ddrokosov@salutedevices.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the mm tree
+Message-Id: <20231128144514.aa04099199dc13f52374e2b2@linux-foundation.org>
+In-Reply-To: <20231129084547.79c27d63@canb.auug.org.au>
+References: <20231129084547.79c27d63@canb.auug.org.au>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 11:16:04AM +0100, Michal Hocko wrote:
-> On Tue 28-11-23 09:31:06, Huang, Ying wrote:
-> > Michal Hocko <mhocko@suse.com> writes:
-> [...]
-> > > Right. On the other hand we could be more aggressive when dropping the
-> > > swapcache. Is there any actual reason why we cannot try to folio_free_swap
-> > > even when mem_cgroup_swap_full == F?
-> > 
-> > If there are plenty free space in swap device, why not take advantage of
-> > it?
+On Wed, 29 Nov 2023 08:45:47 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+
+> Hi all,
 > 
-> Maybe a stupid question but what is the advantage of keeping around in
-> the swap cache?
+> After merging the mm tree, today's linux-next build (x86_64 allmodconfig)
+> failed like this:
+> 
+> make[5]: *** No rule to make target 'samples/cgroup/cgroup_event_listener.c', needed by 'samples/cgroup/cgroup_event_listener'.  Stop.
+> 
+> Caused by commit
+> 
+>   fc2cf253aaec ("samples: introduce new samples subdir for cgroup")
+> 
+> I have reverted that commit (and the following one) for today.
 
-If the page is shared, we avoids addtional IO to bring them back so
-swap cache.
-
-If the page is still clean on reclaim moment since swap-in, VM doesn't
-need to write them out to the swap disk since original data is already
-there.
+Thanks, my rename detector broke.  Fixed.
