@@ -2,54 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2633D7FB7F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:35:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C9D7FB801
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:36:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344160AbjK1Kez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 05:34:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40742 "EHLO
+        id S1344281AbjK1Kgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 05:36:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234887AbjK1Kei (ORCPT
+        with ESMTP id S234895AbjK1KgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 05:34:38 -0500
-Received: from mx.kernkonzept.com (serv1.kernkonzept.com [IPv6:2a01:4f8:1c1c:b490::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7920F5B8A;
-        Tue, 28 Nov 2023 02:29:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kernkonzept.com; s=mx1; h=In-Reply-To:Content-Type:MIME-Version:References:
-        Message-ID:Subject:Cc:To:From:Date:Content-Transfer-Encoding:Reply-To:
-        Content-ID:Content-Description;
-        bh=EpPTjdpeYg0w4loH5/do8EUAnKxDsHXE57/3N6Z68X8=; b=aLdRprn3bm9/VdAqUWI8sZMDGy
-        4Ueng9SKAuU2e4Wskgkno4UbZJlnpP1eXl7/6jV83jVYOdflrys0QAs5XEyLEhJAVz+3zfCG1nQ/K
-        UsECCbRLlUpCwUYGqIKNij7GFXm/zEzzUhop4GmiIe29IczYFLyBNWr6ND5nCi5U6/EY5SEBMYaVG
-        Ts4FZFbJTzvcmHSneNFdPCkUT/xUVlPJDP46mN09+1yQnBgpvVdEKHDorkkVgSkg3hTloxLFZUcgX
-        Ae1wbZ+mlHK2lNlDk6tFANDHpBn6pf2/rXnN5qDETiZmVfpSq4NOfeer3tEfxtBlRYoeTXdMjxUek
-        /R1p8+7w==;
-Received: from [10.22.3.24] (helo=kernkonzept.com)
-        by mx.kernkonzept.com with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.96)
-        id 1r7vLD-008QQS-33;
-        Tue, 28 Nov 2023 11:29:19 +0100
-Date:   Tue, 28 Nov 2023 11:29:11 +0100
-From:   Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>, Nishanth Menon <nm@ti.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>, linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 0/3]  OPP: Simplify required-opp handling
-Message-ID: <ZWXA9_VDRKzMA9Nj@kernkonzept.com>
-References: <cover.1700131353.git.viresh.kumar@linaro.org>
+        Tue, 28 Nov 2023 05:36:24 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E210335BB;
+        Tue, 28 Nov 2023 02:31:12 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 42A93BB2;
+        Tue, 28 Nov 2023 11:30:36 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1701167436;
+        bh=OXd6WFN+hXV6bAu/T8kro/U446h2pL6QGhhs60nEIi4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rrlqwtw2gOQQrNMKVW//q6jy+QDsES4uivGL0gr+shfBzULUgf8EIPHup52837x6M
+         lkjEvjo+r5i+ErgPYmnwxd9IEVaCbbtjkecd0f/jixfjw9p22lRsstRNb28SEuU2fe
+         uiM/3GmHY9w/a0YXrbP6QkaEtxAR6gre/elYP32E=
+Date:   Tue, 28 Nov 2023 12:31:17 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        hverkuil@xs4all.nl, mchehab@kernel.org, m.szyprowski@samsung.com,
+        matt.ranostay@konsulko.com, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+Subject: Re: [PATCH 07/55] media: imx8-isi: Stop abusing of
+ min_buffers_needed field
+Message-ID: <20231128103117.GF31314@pendragon.ideasonboard.com>
+References: <20231127165454.166373-1-benjamin.gaignard@collabora.com>
+ <20231127165454.166373-8-benjamin.gaignard@collabora.com>
+ <20231127170700.GC31314@pendragon.ideasonboard.com>
+ <6fa1ec09-3e30-475e-9718-29d23586753e@collabora.com>
+ <CAAFQd5DCVTLpPoKSp_OA6fe_Hqt-oV7=AsCZWSmkJORvLSgUiw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <cover.1700131353.git.viresh.kumar@linaro.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAFQd5DCVTLpPoKSp_OA6fe_Hqt-oV7=AsCZWSmkJORvLSgUiw@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,68 +60,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 16, 2023 at 04:13:04PM +0530, Viresh Kumar wrote:
-> Configuring the required OPP was never properly implemented, we just
-> took an exception for genpds and configured them directly, while leaving
-> out all other required OPP types.
+On Tue, Nov 28, 2023 at 06:35:51PM +0900, Tomasz Figa wrote:
+> On Tue, Nov 28, 2023 at 6:31 PM Benjamin Gaignard wrote:
+> > Le 27/11/2023 à 18:07, Laurent Pinchart a écrit :
+> > > Hi Benjamin,
+> > >
+> > > Thank you for the patch.
+> > >
+> > > On Mon, Nov 27, 2023 at 05:54:06PM +0100, Benjamin Gaignard wrote:
+> > >> 'min_buffers_needed' is suppose to be used to indicate the number
+> > >> of buffers needed by DMA engine to start streaming.
+> > >> imx8-isi driver doesn't use DMA engine and just want to specify
+> > > What do you mean, "doesn't use DMA engine" ? The ISI surely has DMA
+> > > engines :-)
+> >
+> > I have done assumption on drivers given if they use or dma_* functions.
 > 
-> Now that a standard call to dev_pm_opp_set_opp() takes care of
-> configuring the opp->level too, the special handling for genpds can be
-> avoided by simply calling dev_pm_opp_set_opp() for the required OPPs,
-> which shall eventually configure the corresponding level for genpds.
-> 
-> This also makes it possible for us to configure other type of required
-> OPPs (no concrete users yet though), via the same path. This is how
-> other frameworks take care of parent nodes, like clock, regulators, etc,
-> where we recursively call the same helper.
-> 
-> Pushed here:
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/vireshk/pm.git opp/required-opps
-> 
+> I suspect the use of vb2_dma_sg_plane_desc() and
+> vb2_dma_contig_plane_dma_addr() may be more correlated to whether
+> there is a DMA involved or not. Usually V4L2 drivers don't really have
+> to deal with the DMA API explicitly, because the vb2 framework handles
+> most of the work.
 
-Sorry for the delay. I tested the "opp/linux-next" branch (which seems
-to contain the changes in this series already now) with the following
-configurations:
+And this is anyway not related to DMA at all, but to the logic each
+driver implements when it deals with buffers. There's a lower chance a
+USB driver driver will have a hard requirement for more than one buffer
+compared to an AMBA/platform/PCI device driver, but at the end of the
+day, each driver needs to be analyzed individually to check what they
+require. Benjamin, I think you'll have some more homework to do :-)
 
- - Single genpd used for cpufreq (MSM8909): Works
- - Multiple genpd used for cpufreq (MSM8916): Works
- - Single genpd used for cpufreq + parent genpd (MSM8916): Works, warning gone
-
-Thanks for fixing this! :-)
-
-I guess I'm too late now but FWIW:
-
-Tested-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-
-> V2->V3:
-> - Dropped patch 1/3, merged.
-> - Added a new commit to avoid propagation and a WARN() for parent genpd case.
-> 
-> V1->V2:
-> - Support opp-level 0, drop vote i.e..
-> - Fix OPP pointer while calling dev_pm_opp_set_opp() recursively.
-> - Minor checks and fixes.
-> - Add Reviewed-by from Ulf.
-> 
-> --
-> Viresh
-> 
-> Viresh Kumar (3):
->   OPP: Use _set_opp_level() for single genpd case
->   OPP: Call dev_pm_opp_set_opp() for required OPPs
->   OPP: Don't set OPP recursively for a parent genpd
-> 
->  drivers/opp/core.c     | 180 ++++++++++++++++++++++-------------------
->  drivers/opp/of.c       |  49 ++++++++---
->  drivers/opp/opp.h      |   8 +-
->  include/linux/pm_opp.h |   7 +-
->  4 files changed, 144 insertions(+), 100 deletions(-)
-> 
-> -- 
-> 2.31.1.272.g89b43f80a514
-> 
+> > I have considers that all PCI drivers are using DMA engine and
+> > I don't know the design for each drivers so I hope to get this information
+> > from maintainers and fix that in v2.
+> > If imx8-isi driver needs a minimum number of buffers before start streaming
+> > I will do a v2 and use min_dma_buffers_needed instead.
+> >
+> > >> the minimum number of buffers to allocate when calling VIDIOC_REQBUFS.
+> > >> That 'min_reqbufs_allocation' field purpose so use it.
+> > >>
+> > >> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> > >> CC: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > >> CC: Mauro Carvalho Chehab <mchehab@kernel.org>
+> > >> CC: Shawn Guo <shawnguo@kernel.org>
+> > >> CC: Sascha Hauer <s.hauer@pengutronix.de>
+> > >> CC: Pengutronix Kernel Team <kernel@pengutronix.de>
+> > >> CC: Fabio Estevam <festevam@gmail.com>
+> > >> CC: NXP Linux Team <linux-imx@nxp.com>
+> > >> ---
+> > >>   drivers/media/platform/nxp/imx8-isi/imx8-isi-video.c | 2 +-
+> > >>   1 file changed, 1 insertion(+), 1 deletion(-)
+> > >>
+> > >> diff --git a/drivers/media/platform/nxp/imx8-isi/imx8-isi-video.c b/drivers/media/platform/nxp/imx8-isi/imx8-isi-video.c
+> > >> index 49bca2b01cc6..81673ff9084b 100644
+> > >> --- a/drivers/media/platform/nxp/imx8-isi/imx8-isi-video.c
+> > >> +++ b/drivers/media/platform/nxp/imx8-isi/imx8-isi-video.c
+> > >> @@ -1453,7 +1453,7 @@ int mxc_isi_video_register(struct mxc_isi_pipe *pipe,
+> > >>      q->mem_ops = &vb2_dma_contig_memops;
+> > >>      q->buf_struct_size = sizeof(struct mxc_isi_buffer);
+> > >>      q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+> > >> -    q->min_buffers_needed = 2;
+> > >> +    q->min_reqbufs_allocation = 2;
+> > >>      q->lock = &video->lock;
+> > >>      q->dev = pipe->isi->dev;
+> > >>
 
 -- 
-Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-Kernkonzept GmbH at Dresden, Germany, HRB 31129, CEO Dr.-Ing. Michael Hohmuth
+Regards,
+
+Laurent Pinchart
