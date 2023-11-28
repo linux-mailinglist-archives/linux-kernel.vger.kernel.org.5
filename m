@@ -2,159 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 053FA7FC26A
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA7BA7FC127
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345589AbjK1OHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 09:07:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36932 "EHLO
+        id S1345558AbjK1OIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 09:08:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345558AbjK1OHo (ORCPT
+        with ESMTP id S1345538AbjK1OIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 09:07:44 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57396D53;
-        Tue, 28 Nov 2023 06:07:50 -0800 (PST)
-Received: from relay2.suse.de (unknown [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 0799F2199D;
-        Tue, 28 Nov 2023 14:07:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1701180468; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Szd0kfLvWrSYQ3QHqmPI1rgK3WdJ32bLnGKR57G4N6w=;
-        b=T6qJw7ISXA7Fi4iKSgAIz3Ci3iO4Hj5dsdiOgi/iNjyE2l49xviNFjkJbyvwWJqBPV0TQj
-        ucjBzs5PCwMb0LE/FC9ZrB/jEgLhJLFQ5yjPSkdON+6JAzmGsS2+s+ToTdB34n3Wv8cMKL
-        kQb+PuFAw5fQHCwHaszJUvKiMw0Ob1o=
-Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 24C2F2C153;
-        Tue, 28 Nov 2023 14:07:43 +0000 (UTC)
-Date:   Tue, 28 Nov 2023 15:07:43 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     j.granados@samsung.com
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
-        josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <jstultz@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 07/10] printk: Remove the now superfluous sentinel
- elements from ctl_table array
-Message-ID: <ZWX0L4lV8TWOgcpv@alley>
-References: <20231107-jag-sysctl_remove_empty_elem_kernel-v1-0-e4ce1388dfa0@samsung.com>
- <20231107-jag-sysctl_remove_empty_elem_kernel-v1-7-e4ce1388dfa0@samsung.com>
+        Tue, 28 Nov 2023 09:08:18 -0500
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59870D6D
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 06:08:24 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPA id 7055560008;
+        Tue, 28 Nov 2023 14:08:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1701180503;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=i7q8w6Mxbljh5af2HafEdvKbBOFPqmcN00tNKcl/Whw=;
+        b=PDZiuP0iwt4HL5jAwOQe9/6sbhDuSvjOtiIVK89XjGPO9jvEVdXxLM1wLaXX628wjWek58
+        VAuVOZzrZBHvLipMSyQz8uNDHSVCveYdH6w18M65MklIYK7qTRUilNJ8aYB07tFDST4OVf
+        FDIZsZyBia9NFT5qbAm1DlknmHUqV8LCWnHAsM3Q+7n9QkmpXWkZhxbkMafTMeUTIp+W87
+        h1QUpv4cAasc+n92FMUTw2DAAoNgneH4AQt68WJ84ID0WMQPV8SYGXFZ9FCA89jIKyrLB3
+        2nLMEpVVVJOpLQ3GYUO9O0VTqemAY1R0XfuIHmgjLyEb0eN5znOYjUojFdsHLA==
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Herve Codina <herve.codina@bootlin.com>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH 00/17] Prepare the PowerQUICC QMC and TSA for the HDLC QMC driver
+Date:   Tue, 28 Nov 2023 15:07:59 +0100
+Message-ID: <20231128140818.261541-1-herve.codina@bootlin.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231107-jag-sysctl_remove_empty_elem_kernel-v1-7-e4ce1388dfa0@samsung.com>
-X-Spamd-Bar: +++++++++++++++++++++++++
-X-Spam-Score: 26.00
-X-Rspamd-Server: rspamd1
-Authentication-Results: smtp-out1.suse.de;
-        dkim=none;
-        spf=fail (smtp-out1.suse.de: domain of pmladek@suse.com does not designate 149.44.160.134 as permitted sender) smtp.mailfrom=pmladek@suse.com;
-        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine)
-X-Rspamd-Queue-Id: 0799F2199D
-X-Spamd-Result: default: False [26.00 / 50.00];
-         RDNS_NONE(1.00)[];
-         SPAMHAUS_XBL(0.00)[149.44.160.134:from];
-         TO_DN_SOME(0.00)[];
-         RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
-         HFILTER_HELO_IP_A(1.00)[relay2.suse.de];
-         HFILTER_HELO_NORES_A_OR_MX(0.30)[relay2.suse.de];
-         R_RATELIMIT(0.00)[rip(RLa6h5sh378tcam5q78u)];
-         MX_GOOD(-0.01)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         R_DKIM_NA(2.20)[];
-         MIME_TRACE(0.00)[0:+];
-         FORGED_RECIPIENTS(2.00)[m:mgorman@suse.de,s:mgorman@imap.suse.de];
-         BAYES_HAM(-0.00)[29.52%];
-         RDNS_DNSFAIL(0.00)[];
-         ARC_NA(0.00)[];
-         R_SPF_FAIL(1.00)[-all];
-         FROM_HAS_DN(0.00)[];
-         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         NEURAL_SPAM_SHORT(3.00)[1.000];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         TO_MATCH_ENVRCPT_SOME(0.00)[];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         VIOLATED_DIRECT_SPF(3.50)[];
-         NEURAL_SPAM_LONG(3.50)[1.000];
-         RCPT_COUNT_TWELVE(0.00)[46];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         MID_RHS_NOT_FQDN(0.50)[];
-         FREEMAIL_CC(0.00)[kernel.org,infradead.org,joshtriplett.org,chromium.org,xmission.com,google.com,goodmis.org,arm.com,linutronix.de,amacapital.net,redhat.com,linaro.org,suse.de,linux.ibm.com,intel.com,davemloft.net,gmail.com,iogearbox.net,linux.dev,vger.kernel.org,lists.infradead.org];
-         HFILTER_HOSTNAME_UNKNOWN(2.50)[];
-         SUSPICIOUS_RECIPS(1.50)[];
-         RCVD_COUNT_TWO(0.00)[2]
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2023-11-07 14:45:07, Joel Granados via B4 Relay wrote:
-> From: Joel Granados <j.granados@samsung.com>
-> 
-> This commit comes at the tail end of a greater effort to remove the
-> empty elements at the end of the ctl_table arrays (sentinels) which
-> will reduce the overall build time size of the kernel and run time
-> memory bloat by ~64 bytes per sentinel (further information Link :
-> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
-> 
-> rm sentinel element from printk_sysctls
-> 
-> Signed-off-by: Joel Granados <j.granados@samsung.com>
+Hi,
 
-I am a bit sceptical if the size and time reduction is worth the
-effort. I feel that this change makes the access a bit less secure.
+This series updates PowerQUICC QMC and TSA drivers to prepare the
+support for the QMC HDLC driver.
 
-Well, almost all arrays are static so that it should just work.
-The patch does what it says. Feel free to use:
+Patches were previously sent as part of a full feature series:
+"Add support for QMC HDLC, framer infrastructure and PEF2256 framer" [1]
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
+The full feature series reached the v9 iteration.
+The v1 was sent the 07/25/2023 followed by the other iterations
+(07/26/2023, 08/09/2023, 08/18/2023, 09/12/2023, 09/22/2023, 09/28/2023,
+10/11/23, 11/15/2023) and was ready to be merged in its v8.
+  https://lore.kernel.org/linux-kernel/20231025123215.5caca7d4@kernel.org/
 
-Best Regards,
-Petr
+The lack of feedback from the Freescale SoC and the Quicc Engine
+maintainers (i.e. drivers/soc/fsl/qe/ to which the QMC and TSA drivers
+belong) blocks the entire full feature series.
+These patches are fixes and improvements to TSA and QMC drivers.
+These drivers were previously acked by Li Yang but without any feedback
+from Li Yang nor Qiang Zhao the series cannot move forward.
+
+In order to ease the review/merge, the full feature series has been
+split and this series contains patches related to the PowerQUICC SoC
+part (QMC and TSA).
+ - Perform some fixes (patches 1 to 5)
+ - Add support for child devices (patch 6)
+ - Add QMC dynamic timeslot support (patches 7 to 17)
+
+From the original full feature series, a patches extraction without any
+modification was done.
+
+Best regards,
+Hervé
+
+[1]: https://lore.kernel.org/linux-kernel/20231115144007.478111-1-herve.codina@bootlin.com/
+
+Patches extracted:
+  - Patch 1..6 : full feature series patch 1..6
+  - Patch 7..17 : full feature series patch 9..19
+
+Herve Codina (17):
+  soc: fsl: cpm1: tsa: Fix __iomem addresses declaration
+  soc: fsl: cpm1: qmc: Fix __iomem addresses declaration
+  soc: fsl: cpm1: qmc: Fix rx channel reset
+  soc: fsl: cpm1: qmc: Extend the API to provide Rx status
+  soc: fsl: cpm1: qmc: Remove inline function specifiers
+  soc: fsl: cpm1: qmc: Add support for child devices
+  soc: fsl: cpm1: qmc: Introduce available timeslots masks
+  soc: fsl: cpm1: qmc: Rename qmc_setup_tsa* to qmc_init_tsa*
+  soc: fsl: cpm1: qmc: Introduce qmc_chan_setup_tsa*
+  soc: fsl: cpm1: qmc: Remove no more needed checks from
+    qmc_check_chans()
+  soc: fsl: cpm1: qmc: Check available timeslots in qmc_check_chans()
+  soc: fsl: cpm1: qmc: Add support for disabling channel TSA entries
+  soc: fsl: cpm1: qmc: Split Tx and Rx TSA entries setup
+  soc: fsl: cpm1: qmc: Introduce is_tsa_64rxtx flag
+  soc: fsl: cpm1: qmc: Handle timeslot entries at channel start() and
+    stop()
+  soc: fsl: cpm1: qmc: Remove timeslots handling from setup_chan()
+  soc: fsl: cpm1: qmc: Introduce functions to change timeslots at
+    runtime
+
+ drivers/soc/fsl/qe/qmc.c      | 592 +++++++++++++++++++++++++++-------
+ drivers/soc/fsl/qe/tsa.c      |  22 +-
+ include/soc/fsl/qe/qmc.h      |  27 +-
+ sound/soc/fsl/fsl_qmc_audio.c |   2 +-
+ 4 files changed, 506 insertions(+), 137 deletions(-)
+
+-- 
+2.42.0
+
