@@ -2,128 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFAF07FC146
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C36ED7FC178
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344778AbjK1Ntb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 08:49:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55882 "EHLO
+        id S1344810AbjK1Nvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 08:51:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344720AbjK1Nta (ORCPT
+        with ESMTP id S1344720AbjK1Nvv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 08:49:30 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 982391BB;
-        Tue, 28 Nov 2023 05:49:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701179376; x=1732715376;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=ho8ya67y0bcAC8iRE41B+MB3YSCUZNByqFAIWF4TZg8=;
-  b=HPGndlVuHasbVuRsfz4yI9RO89sry5KLzLp2AkdsjazcIgwsgjFtzv6O
-   oa1F/rZYDpgA04yo57DUT3vhQ5UucrlAk2jQuC772WTFjs1jA/RiqrhDt
-   Ei1R0mWvvHeuJtQtn6OdGrlWa39/mycnacPbKL59QRq+wcHFn/ePFk8Be
-   MWSaW6ZFPz5c4aENMcrB6Enov2Q64uC2m5jPB2em6et9RtSJvpSjkyx9C
-   AmJ1JUb+Jsfr+vuLRgIK6wOOTzBi3J+Y+V/4u3fnKf2/BBeBE+hQe2IdJ
-   g/SV5HFIp198uQO7G+sFzEf8hbWFxWx5M1pncDmtQD+k0by75r7ZxqE1/
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="392676347"
-X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
-   d="scan'208";a="392676347"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 05:49:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="761938211"
-X-IronPort-AV: E=Sophos;i="6.04,233,1695711600"; 
-   d="scan'208";a="761938211"
-Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
-  by orsmga007.jf.intel.com with SMTP; 28 Nov 2023 05:49:08 -0800
-Received: by stinkbox (sSMTP sendmail emulation); Tue, 28 Nov 2023 15:49:08 +0200
-Date:   Tue, 28 Nov 2023 15:49:08 +0200
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Emma Anholt <emma@anholt.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
-        Samuel Holland <samuel@sholland.org>,
-        Sandy Huang <hjc@rock-chips.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        linux-doc@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>,
-        linux-rockchip@lists.infradead.org, Chen-Yu Tsai <wens@csie.org>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 05/45] drm/connector: Check drm_connector_init
- pointers arguments
-Message-ID: <ZWXv1Oi_sH0BRWao@intel.com>
-References: <20231128-kms-hdmi-connector-state-v4-0-c7602158306e@kernel.org>
- <20231128-kms-hdmi-connector-state-v4-5-c7602158306e@kernel.org>
- <87h6l66nth.fsf@intel.com>
- <v3hplco5fdedv6bnc6mwx2zhhw4xxdiekha26ykhc5cmy7ol77@2irk3w4hmabw>
+        Tue, 28 Nov 2023 08:51:51 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B44A1B9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 05:51:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9031C433C7;
+        Tue, 28 Nov 2023 13:51:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701179517;
+        bh=rRHGMp9xXOAGGVSwGEsG0ggDC2+rM4ak/KiHR+RJz6k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OGHKluY9aEh9DLcNCDsk9AcqCzGUsloN7wkWESGS0oUMS7ZhqFgbIoY8awX6Z0xIv
+         tq1mFJnetfJHZlM1woL46zq7RxuTtTEfABXMq0wX4k7zNK4wxxYIZXHJptmN5/P96S
+         K7Bl37s9DDkpYp6LsfZuY7w0XBkx2d8BbkUl+l+Y0dWJaqTtolv3oAmr56X8YkOE5l
+         7dAutAj0ljiaezGnoGbcWOKC6K7fD+MCK4QAvI9FeEXD5wkiU60gVDgz5TNUfnvJEy
+         yN6LpP3zYTBTPeglF0ci0ZRg0gQb7X/Y76N//J3s9HxuteiEVwJBuW693R5Gx3Tz02
+         3AFAMQXy/5kKA==
+Date:   Tue, 28 Nov 2023 14:51:52 +0100
+From:   Christian Brauner <brauner@kernel.org>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH/RFC] core/nfsd: allow kernel threads to use task_work.
+Message-ID: <20231128-blumig-anreichern-b9d8d1dc49b3@brauner>
+References: <170112272125.7109.6245462722883333440@noble.neil.brown.name>
+ <ZWUfNyO6OG/+aFuo@tissot.1015granger.net>
+ <170113056683.7109.13851405274459689039@noble.neil.brown.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <v3hplco5fdedv6bnc6mwx2zhhw4xxdiekha26ykhc5cmy7ol77@2irk3w4hmabw>
-X-Patchwork-Hint: comment
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <170113056683.7109.13851405274459689039@noble.neil.brown.name>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 02:29:40PM +0100, Maxime Ripard wrote:
-> Hi Jani,
-> 
-> On Tue, Nov 28, 2023 at 02:54:02PM +0200, Jani Nikula wrote:
-> > On Tue, 28 Nov 2023, Maxime Ripard <mripard@kernel.org> wrote:
-> > > All the drm_connector_init variants take at least a pointer to the
-> > > device, connector and hooks implementation.
-> > >
-> > > However, none of them check their value before dereferencing those
-> > > pointers which can lead to a NULL-pointer dereference if the author
-> > > isn't careful.
+[Reusing the trimmed Cc]
+
+On Tue, Nov 28, 2023 at 11:16:06AM +1100, NeilBrown wrote:
+> On Tue, 28 Nov 2023, Chuck Lever wrote:
+> > On Tue, Nov 28, 2023 at 09:05:21AM +1100, NeilBrown wrote:
+> > > 
+> > > I have evidence from a customer site of 256 nfsd threads adding files to
+> > > delayed_fput_lists nearly twice as fast they are retired by a single
+> > > work-queue thread running delayed_fput().  As you might imagine this
+> > > does not end well (20 million files in the queue at the time a snapshot
+> > > was taken for analysis).
+> > > 
+> > > While this might point to a problem with the filesystem not handling the
+> > > final close efficiently, such problems should only hurt throughput, not
+> > > lead to memory exhaustion.
 > > 
-> > Arguably oopsing on the spot is preferrable when this can't be caused by
-> > user input. It's always a mistake that should be caught early during
-> > development.
+> > I have this patch queued for v6.8:
 > > 
-> > Not everyone checks the return value of drm_connector_init and friends,
-> > so those cases will lead to more mysterious bugs later. And probably
-> > oopses as well.
+> > https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git/commit/?h=nfsd-next&id=c42661ffa58acfeaf73b932dec1e6f04ce8a98c0
+> > 
 > 
-> So maybe we can do both then, with something like
+> Thanks....
+> I think that change is good, but I don't think it addresses the problem
+> mentioned in the description, and it is not directly relevant to the
+> problem I saw ... though it is complicated.
 > 
-> if (WARN_ON(!dev))
->    return -EINVAL
+> The problem "workqueue ...  hogged cpu..." probably means that
+> nfsd_file_dispose_list() needs a cond_resched() call in the loop.
+> That will stop it from hogging the CPU whether it is tied to one CPU or
+> free to roam.
 > 
-> if (drm_WARN_ON(dev, !connector || !funcs))
->    return -EINVAL;
+> Also that work is calling filp_close() which primarily calls
+> filp_flush().
+> It also calls fput() but that does minimal work.  If there is much work
+> to do then that is offloaded to another work-item.  *That* is the
+> workitem that I had problems with.
 > 
-> I'd still like to check for this, so we can have proper testing, and we
-> already check for those pointers in some places (like funcs in
-> drm_connector_init), so if we don't cover everything we're inconsistent.
+> The problem I saw was with an older kernel which didn't have the nfsd
+> file cache and so probably is calling filp_close more often.  So maybe
+> my patch isn't so important now.  Particularly as nfsd now isn't closing
+> most files in-task but instead offloads that to another task.  So the
+> final fput will not be handled by the nfsd task either.
+> 
+> But I think there is room for improvement.  Gathering lots of files
+> together into a list and closing them sequentially is not going to be as
+> efficient as closing them in parallel.
+> 
+> > 
+> > > For normal threads, the thread that closes the file also calls the
+> > > final fput so there is natural rate limiting preventing excessive growth
+> > > in the list of delayed fputs.  For kernel threads, and particularly for
+> > > nfsd, delayed in the final fput do not impose any throttling to prevent
+> > > the thread from closing more files.
+> > 
+> > I don't think we want to block nfsd threads waiting for files to
+> > close. Won't that be a potential denial of service?
+> 
+> Not as much as the denial of service caused by memory exhaustion due to
+> an indefinitely growing list of files waiting to be closed by a single
+> thread of workqueue.
 
-People will invariably cargo-cult this kind of stuff absolutely
-everywhere and then all your functions will have tons of dead
-code to check their arguments. I'd prefer not to go there
-usually.
+It seems less likely that you run into memory exhausting than a DOS
+because nfsd() is busy closing fds. Especially because you default to
+single nfsd thread afaict.
 
-Should we perhaps start to use the (arguably hideous)
- - void f(struct foo *bar)
- + void f(struct foo bar[static 1])
-syntax to tell the compiler we don't accept NULL pointers?
+> I think it is perfectly reasonable that when handling an NFSv4 CLOSE,
+> the nfsd thread should completely handle that request including all the
+> flush and ->release etc.  If that causes any denial of service, then
+> simple increase the number of nfsd threads.
 
-Hmm. Apparently that has the same problem as using any
-other kind of array syntax in the prototype. That is,
-the compiler demands to know the definition of 'struct foo'
-even though we're passing in effectively a pointer. Sigh.
+But isn't that a significant behavioral change? So I would expect to
+make this at configurable via a module- or Kconfig option?
 
--- 
-Ville Syrjälä
-Intel
+> For NFSv3 it is more complex.  On the kernel where I saw a problem the
+> filp_close happen after each READ or WRITE (though I think the customer
+> was using NFSv4...).  With the file cache there is no thread that is
+> obviously responsible for the close.
+> To get the sort of throttling that I think is need, we could possibly
+> have each "nfsd_open" check if there are pending closes, and to wait for
+> some small amount of progress.
+> 
+> But don't think it is reasonable for the nfsd threads to take none of
+> the burden of closing files as that can result in imbalance.
+
+It feels that this really needs to be tested under a similar workload in
+question to see whether this is a viable solution.
