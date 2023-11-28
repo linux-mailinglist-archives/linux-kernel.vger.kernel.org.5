@@ -2,77 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 360607FC1A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3152F7FC16C
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344864AbjK1N4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 08:56:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43532 "EHLO
+        id S1344826AbjK1N5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 08:57:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344863AbjK1N4T (ORCPT
+        with ESMTP id S1344544AbjK1N5M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 08:56:19 -0500
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89F58D1;
-        Tue, 28 Nov 2023 05:56:25 -0800 (PST)
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id E6897227A87; Tue, 28 Nov 2023 14:56:19 +0100 (CET)
-Date:   Tue, 28 Nov 2023 14:56:19 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     John Garry <john.g.garry@oracle.com>
-Cc:     Christoph Hellwig <hch@lst.de>, axboe@kernel.dk, kbusch@kernel.org,
-        sagi@grimberg.me, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        djwong@kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chandan.babu@oracle.com, dchinner@redhat.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-        linux-api@vger.kernel.org
-Subject: Re: [PATCH 17/21] fs: xfs: iomap atomic write support
-Message-ID: <20231128135619.GA12202@lst.de>
-References: <20230929102726.2985188-1-john.g.garry@oracle.com> <20230929102726.2985188-18-john.g.garry@oracle.com> <20231109152615.GB1521@lst.de> <a50a16ca-d4b9-a4d8-4230-833d82752bd2@oracle.com> <c78bcca7-8f09-41c7-adf0-03b42cde70d6@oracle.com>
+        Tue, 28 Nov 2023 08:57:12 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AAA685
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 05:57:18 -0800 (PST)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 13F3F660170E;
+        Tue, 28 Nov 2023 13:57:16 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701179836;
+        bh=YBejDDHKEDVBfhOMZMTFCHvjiKJ4YtU6R+59KN5Lhso=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Ifvu1sBXRfOVDqtFeoaurwYscT3GBNkVLBaQZ7gMyKfViosvIqDqwaWq4dUXLEM0S
+         IZtqZ6e+IoPUNbQzMPkdXNh6ULC2ekeEHJP1CMzgm8XuMgSfJOSzrkuklHl052FpoY
+         ZVt+LHVikKMyBhdV8m9CCnbxRuyahgVbNpchAyTtLHN/bjoY0fvYiDzFpprGSd029h
+         IauvEINCdfE/vVkno49YjLNZh8slO0L68qaEJFfCGHEIOEM0zb+vi6jfT7/wi+Rdft
+         JHw+GSrWO+ODtcM6LqH8tACgf97nDi1xWL88145+5EBZoeAhVY4/7L3arFfKYkyzjU
+         CK+1DTDFRnLiA==
+Date:   Tue, 28 Nov 2023 14:57:12 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     robh@kernel.org, steven.price@arm.com,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, m.szyprowski@samsung.com,
+        krzysztof.kozlowski@linaro.org
+Subject: Re: [PATCH v2 3/3] drm/panfrost: Synchronize and disable interrupts
+ before powering off
+Message-ID: <20231128145712.3f4d3f74@collabora.com>
+In-Reply-To: <20231128124510.391007-4-angelogioacchino.delregno@collabora.com>
+References: <20231128124510.391007-1-angelogioacchino.delregno@collabora.com>
+        <20231128124510.391007-4-angelogioacchino.delregno@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c78bcca7-8f09-41c7-adf0-03b42cde70d6@oracle.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 08:56:37AM +0000, John Garry wrote:
-> Are you suggesting some sort of hybrid between the atomic write series you 
-> had a few years ago and this solution?
+On Tue, 28 Nov 2023 13:45:10 +0100
+AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+wrote:
 
-Very roughly, yes.
+> To make sure that we don't unintentionally perform any unclocked and/or
+> unpowered R/W operation on GPU registers, before turning off clocks and
+> regulators we must make sure that no GPU, JOB or MMU ISR execution is
+> pending: doing that required to add a mechanism to synchronize the
+> interrupts on suspend.
+> 
+> Add functions panfrost_{gpu,job,mmu}_suspend_irq() which will perform
+> interrupts masking and ISR execution synchronization, and then call
+> those in the panfrost_device_runtime_suspend() handler in the exact
+> sequence of job (may require mmu!) -> mmu -> gpu.
+> 
+> As a side note, JOB and MMU suspend_irq functions needed some special
+> treatment: as their interrupt handlers will unmask interrupts, it was
+> necessary to add a bitmap for "is_suspending" which is used to address
+> the possible corner case of unintentional IRQ unmasking because of ISR
+> execution after a call to synchronize_irq().
+> 
+> Of course, unmasking the interrupts is being done as part of the reset
+> happening during runtime_resume(): since we're anyway resuming all of
+> GPU, JOB, MMU, the only additional action is to zero out the newly
+> introduced `is_suspending` bitmap directly in the resume handler, as
+> to avoid adding panfrost_{job,mmu}_resume_irq() function just for
+> clearing own bits, especially because it currently makes way more sense
+> to just zero out the bitmap.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> ---
+>  drivers/gpu/drm/panfrost/panfrost_device.c |  4 ++++
+>  drivers/gpu/drm/panfrost/panfrost_device.h |  7 +++++++
+>  drivers/gpu/drm/panfrost/panfrost_gpu.c    |  7 +++++++
+>  drivers/gpu/drm/panfrost/panfrost_gpu.h    |  1 +
+>  drivers/gpu/drm/panfrost/panfrost_job.c    | 18 +++++++++++++++---
+>  drivers/gpu/drm/panfrost/panfrost_job.h    |  1 +
+>  drivers/gpu/drm/panfrost/panfrost_mmu.c    | 17 ++++++++++++++---
+>  drivers/gpu/drm/panfrost/panfrost_mmu.h    |  1 +
+>  8 files changed, 50 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
+> index c90ad5ee34e7..ed34aa55a7da 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
+> @@ -407,6 +407,7 @@ static int panfrost_device_runtime_resume(struct device *dev)
+>  {
+>  	struct panfrost_device *pfdev = dev_get_drvdata(dev);
+>  
+> +	bitmap_zero(pfdev->is_suspending, PANFROST_COMP_BIT_MAX);
+>  	panfrost_device_reset(pfdev);
+>  	panfrost_devfreq_resume(pfdev);
+>  
+> @@ -421,6 +422,9 @@ static int panfrost_device_runtime_suspend(struct device *dev)
+>  		return -EBUSY;
+>  
+>  	panfrost_devfreq_suspend(pfdev);
+> +	panfrost_job_suspend_irq(pfdev);
+> +	panfrost_mmu_suspend_irq(pfdev);
+> +	panfrost_gpu_suspend_irq(pfdev);
+>  	panfrost_gpu_power_off(pfdev);
+>  
+>  	return 0;
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
+> index 54a8aad54259..29f89f2d3679 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
+> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
+> @@ -25,6 +25,12 @@ struct panfrost_perfcnt;
+>  #define NUM_JOB_SLOTS 3
+>  #define MAX_PM_DOMAINS 5
+>  
+> +enum panfrost_drv_comp_bits {
+> +	PANFROST_COMP_BIT_MMU,
+> +	PANFROST_COMP_BIT_JOB,
+> +	PANFROST_COMP_BIT_MAX
+> +};
+> +
+>  /**
+>   * enum panfrost_gpu_pm - Supported kernel power management features
+>   * @GPU_PM_CLK_DIS:  Allow disabling clocks during system suspend
+> @@ -109,6 +115,7 @@ struct panfrost_device {
+>  
+>  	struct panfrost_features features;
+>  	const struct panfrost_compatible *comp;
+> +	DECLARE_BITMAP(is_suspending, PANFROST_COMP_BIT_MAX);
+>  
+>  	spinlock_t as_lock;
+>  	unsigned long as_in_use_mask;
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+> index 7adc4441fa14..2bf645993ab4 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+> @@ -452,6 +452,13 @@ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
+>  		dev_err(pfdev->dev, "l2 power transition timeout");
+>  }
+>  
+> +void panfrost_gpu_suspend_irq(struct panfrost_device *pfdev)
+> +{
+> +	gpu_write(pfdev, GPU_INT_MASK, 0);
+> +	gpu_write(pfdev, GPU_INT_CLEAR, GPU_IRQ_MASK_ALL);
 
-> To me that would be continuing with the following:
-> - per-IO RWF_ATOMIC (and not O_ATOMIC semantics of nothing is written until 
-> some data sync)
+Shouldn't the synchronize_irq() guarantee that all monitored interrupts
+are cleared before you return?
 
-Yes.
+> +	synchronize_irq(pfdev->gpu_irq);
+> +}
+> +
+>  int panfrost_gpu_init(struct panfrost_device *pfdev)
+>  {
+>  	int err;
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.h b/drivers/gpu/drm/panfrost/panfrost_gpu.h
+> index 876fdad9f721..d841b86504ea 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_gpu.h
+> +++ b/drivers/gpu/drm/panfrost/panfrost_gpu.h
+> @@ -15,6 +15,7 @@ u32 panfrost_gpu_get_latest_flush_id(struct panfrost_device *pfdev);
+>  int panfrost_gpu_soft_reset(struct panfrost_device *pfdev);
+>  void panfrost_gpu_power_on(struct panfrost_device *pfdev);
+>  void panfrost_gpu_power_off(struct panfrost_device *pfdev);
+> +void panfrost_gpu_suspend_irq(struct panfrost_device *pfdev);
+>  
+>  void panfrost_cycle_counter_get(struct panfrost_device *pfdev);
+>  void panfrost_cycle_counter_put(struct panfrost_device *pfdev);
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
+> index f9446e197428..e8de44cc56e2 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_job.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
+> @@ -413,6 +413,14 @@ void panfrost_job_enable_interrupts(struct panfrost_device *pfdev)
+>  	job_write(pfdev, JOB_INT_MASK, irq_mask);
+>  }
+>  
+> +void panfrost_job_suspend_irq(struct panfrost_device *pfdev)
+> +{
+> +	set_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspending);
+> +
+> +	job_write(pfdev, JOB_INT_MASK, 0);
+> +	synchronize_irq(pfdev->js->irq);
+> +}
+> +
+>  static void panfrost_job_handle_err(struct panfrost_device *pfdev,
+>  				    struct panfrost_job *job,
+>  				    unsigned int js)
+> @@ -792,9 +800,13 @@ static irqreturn_t panfrost_job_irq_handler_thread(int irq, void *data)
+>  	struct panfrost_device *pfdev = data;
+>  
+>  	panfrost_job_handle_irqs(pfdev);
+> -	job_write(pfdev, JOB_INT_MASK,
+> -		  GENMASK(16 + NUM_JOB_SLOTS - 1, 16) |
+> -		  GENMASK(NUM_JOB_SLOTS - 1, 0));
+> +
+> +	/* Enable interrupts only if we're not about to get suspended */
+> +	if (!test_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspending))
 
-> - writes must be a power-of-two and at a naturally-aligned offset
+The irq-line is requested with IRQF_SHARED, meaning the line might be
+shared between all three GPU IRQs, but also with other devices. I think
+if we want to be totally safe, we need to also check this is_suspending
+field in the hard irq handlers before accessing the xxx_INT_yyy
+registers.
 
-Where offset is offset in the file?  It would not require it.  You
-probably want to do it for optimal performance, but requiring it
-feeels rather limited.
+> +		job_write(pfdev, JOB_INT_MASK,
+> +			  GENMASK(16 + NUM_JOB_SLOTS - 1, 16) |
+> +			  GENMASK(NUM_JOB_SLOTS - 1, 0));
+> +
+>  	return IRQ_HANDLED;
+>  }
+>  
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.h b/drivers/gpu/drm/panfrost/panfrost_job.h
+> index 17ff808dba07..ec581b97852b 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_job.h
+> +++ b/drivers/gpu/drm/panfrost/panfrost_job.h
+> @@ -47,6 +47,7 @@ int panfrost_job_get_slot(struct panfrost_job *job);
+>  int panfrost_job_push(struct panfrost_job *job);
+>  void panfrost_job_put(struct panfrost_job *job);
+>  void panfrost_job_enable_interrupts(struct panfrost_device *pfdev);
+> +void panfrost_job_suspend_irq(struct panfrost_device *pfdev);
+>  int panfrost_job_is_idle(struct panfrost_device *pfdev);
+>  
+>  #endif
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+> index ac4296c1e54b..6ccf0a65b8fb 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+> @@ -744,9 +744,12 @@ static irqreturn_t panfrost_mmu_irq_handler_thread(int irq, void *data)
+>  			status = mmu_read(pfdev, MMU_INT_RAWSTAT) & ~pfdev->as_faulty_mask;
+>  	}
+>  
+> -	spin_lock(&pfdev->as_lock);
+> -	mmu_write(pfdev, MMU_INT_MASK, ~pfdev->as_faulty_mask);
+> -	spin_unlock(&pfdev->as_lock);
+> +	/* Enable interrupts only if we're not about to get suspended */
+> +	if (!test_bit(PANFROST_COMP_BIT_MMU, pfdev->is_suspending)) {
+> +		spin_lock(&pfdev->as_lock);
+> +		mmu_write(pfdev, MMU_INT_MASK, ~pfdev->as_faulty_mask);
+> +		spin_unlock(&pfdev->as_lock);
+> +	}
+>  
+>  	return IRQ_HANDLED;
+>  };
+> @@ -777,3 +780,11 @@ void panfrost_mmu_fini(struct panfrost_device *pfdev)
+>  {
+>  	mmu_write(pfdev, MMU_INT_MASK, 0);
+>  }
+> +
+> +void panfrost_mmu_suspend_irq(struct panfrost_device *pfdev)
+> +{
+> +	set_bit(PANFROST_COMP_BIT_MMU, pfdev->is_suspending);
+> +
+> +	mmu_write(pfdev, MMU_INT_MASK, 0);
+> +	synchronize_irq(pfdev->mmu_irq);
+> +}
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.h b/drivers/gpu/drm/panfrost/panfrost_mmu.h
+> index cc2a0d307feb..022a9a74a114 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.h
+> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.h
+> @@ -14,6 +14,7 @@ void panfrost_mmu_unmap(struct panfrost_gem_mapping *mapping);
+>  int panfrost_mmu_init(struct panfrost_device *pfdev);
+>  void panfrost_mmu_fini(struct panfrost_device *pfdev);
+>  void panfrost_mmu_reset(struct panfrost_device *pfdev);
+> +void panfrost_mmu_suspend_irq(struct panfrost_device *pfdev);
+>  
+>  u32 panfrost_mmu_as_get(struct panfrost_device *pfdev, struct panfrost_mmu *mmu);
+>  void panfrost_mmu_as_put(struct panfrost_device *pfdev, struct panfrost_mmu *mmu);
 
-> - relying on atomic write HW support always
-
-And I think that's where we have different opinions.  I think the hw
-offload is a nice optimization and we should use it wherever we can.
-But building the entire userspace API around it feels like a mistake.
-
-> BTW, we also have rtvol support which does not use forcealign as it already 
-> can guarantee alignment, but still does rely on the same principle of 
-> requiring alignment - would you want CoW support there also?
-
-Upstream doesn't have out of place write support for the RT subvolume
-yet.  But Darrick has a series for it and we're actively working on
-upstreaming it.
