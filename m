@@ -2,64 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0847FB1F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 07:31:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE2F7FB1F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 07:31:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343633AbjK1GXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 01:23:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34590 "EHLO
+        id S1343638AbjK1GX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 01:23:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234629AbjK1GWu (ORCPT
+        with ESMTP id S232892AbjK1GX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 01:22:50 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B37319D
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 22:22:55 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-332e56363adso3099644f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 22:22:55 -0800 (PST)
+        Tue, 28 Nov 2023 01:23:56 -0500
+Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 999DE183
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 22:23:42 -0800 (PST)
+Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-1f9f23b4fa2so1038919fac.0
+        for <linux-kernel@vger.kernel.org>; Mon, 27 Nov 2023 22:23:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701152574; x=1701757374; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
+        d=bytedance.com; s=google; t=1701152622; x=1701757422; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=hPtGbvFvbBhWiAO0KqjHdk9TS5G0CVYCi0szrUGqbGw=;
-        b=GFdNKytJ32SXuTHgVN8KQcJsP1Y/ePVMtS1MZWmeOEhvfMv8KYn/YaUnlZwbHpDX22
-         20P7WyoPChwgwbjZ3v+8RpcoM/pkBNndHWYQZvuRjgrt1P4Emq0lxwRtlPmfGoVMCNhk
-         j9AGnIZxZB+3bvwgRziAFH2ZacVwrDDclYRREu+zxeDt5XpAJ2SEGdbITclIoqvEEpOl
-         ovPVr+hEr3z0Ojsft3nTUvuYHX5PJ/jVL8d+/2pr77YbCYnBcflal3Z4akL7IQRGGaUn
-         CQBPJcP6MttTtG6ERrSWmnjW/HDSE1/sGiRzHLwmU7GhjTxt4iSGuzQ5c3Sae3vYFDkc
-         b5pw==
+        bh=LbwrnUh6cvf5haA/BX0nPLmj+8uunF8iu3+nmhJrr78=;
+        b=eqg4cHZBkRVQFJQxJk0tiMAtrX8JxIV0TxYsm88yvGpba3WT3PllaIUyu1jSfPRxtG
+         nIuCRfgZEn4rdpvSU00CXxdEQdeZ2M/wdPxM5PreKc5VxixU6PinzwaZNGRRXkQlEUE+
+         49hN8/1p9dSJl+jeiGOR+BeLy5vNvtTRQYvyBpA6ldrKyZ+8dvQPPadt96aT0Q0uVISb
+         NO43D/ZR23y54UmLw6HeyEmLWXyZbXjXYw+w4yGEte1MYdRvS1DocmtTnpvYA4hsXrk6
+         hRBQENeTp0rYzcyCACTbG7COuYAw4CsPXMxCWMBnZZMYijiEdL+uWpmnAZbHHFnMcmBh
+         L0Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701152574; x=1701757374;
-        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
+        d=1e100.net; s=20230601; t=1701152622; x=1701757422;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hPtGbvFvbBhWiAO0KqjHdk9TS5G0CVYCi0szrUGqbGw=;
-        b=aHRuHrNDmNyiUVf+Pl9NGluN2le7uzsmeKM4Yr7MWlaT7AHa/pMiebe9iU+dMh2dqO
-         WGfqXB6izILLx1IlXrDjW7S1ulxdV/0ciw+0sQb3t1TZl7aljpyE0W1nuih+oSnHO4f0
-         e8AHh/IRlAIWzcuxxs9UYPHbjQZ3RjphMkPzY8y4Z3EuG0OuBdSDUtcOwC2IxbT/B2Ns
-         1xqb8gS/uniUp9G+oJ39TewBxDFqZ4YFvbqGlqGqit09MvKn88xzTq2llAYyTJD4C9Hr
-         gcnAqPGnvTJsQHLelvbst5azCo3x2uFTqQyetkJkBsf3e8g0ypOFhH1tD5ORD4QN/9Gy
-         lw+g==
-X-Gm-Message-State: AOJu0Yz/PsgNFe1TYEm62+/kZZswjv8b5B1H0ZFYDBamErsR3yQNTpM4
-        5E7+lFfHheHbdBNAhUMSDPOxow==
-X-Google-Smtp-Source: AGHT+IGRijsPwnlyl6qa4iz/DeWVhs98fC2QMwxlyhHJ3pF2UrZX/B6n/FQm2E9DtShpemgAFYyWOQ==
-X-Received: by 2002:adf:f503:0:b0:332:fa75:a8ee with SMTP id q3-20020adff503000000b00332fa75a8eemr5275830wro.33.1701152573933;
-        Mon, 27 Nov 2023 22:22:53 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id e5-20020adfe7c5000000b0033307ffb193sm2760534wrn.29.2023.11.27.22.22.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Nov 2023 22:22:53 -0800 (PST)
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-X-Google-Original-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date:   Tue, 28 Nov 2023 09:22:50 +0300
-To:     oe-kbuild@lists.linux.dev, Vineet Gupta <vgupta@kernel.org>
-Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org
-Subject: arch/arc/kernel/setup.c:203 arcv2_mumbojumbo() error: uninitialized
- symbol 'release'.
-Message-ID: <c2148229-bea9-40ef-bbf3-6019555f3f1a@suswa.mountain>
+        bh=LbwrnUh6cvf5haA/BX0nPLmj+8uunF8iu3+nmhJrr78=;
+        b=V6knGSvH9RmJaUxbjs8Wr2A2QDyWmtuwsaUnDf1/YxTY+XwjtKtOhtIpfbHB21uoZk
+         Iw4KFJA0bkIKMVuzWzTsYdReaWLnAo1ViAp+AZfxopjpF/wZcxnSfN8g/EjWI+KZFxIW
+         XOXYJhyH6HeIjojZQZ/n/3I4/aOz7zPRIa+BBP6j2WlydXdM7BTp4RVYSUUqcqHjmaSC
+         n5YRn3ggYmIy93W76fHLOXRtV+T7FSyjakMtAXYIjQHfyqHyj0yTpPnpwYbOfkYVsw9Z
+         zYrW/knglD3okyIyQ/iIQZ7SrkbKbUz2RIxyJa9rlbRsLbASoaoODE/GKJqcg8Kn9tAm
+         H4tg==
+X-Gm-Message-State: AOJu0YwuZv2ZQzzPBLBR2lGRwvDDvq1QOYWvDZP/7Mqhl5525hU3SpuM
+        UqWT9i+0t9kFZPnMo0egQJifVfTYqMFQojoxI+k=
+X-Google-Smtp-Source: AGHT+IG21+YPnBYYcWldFBAfFUJzLBR599msydhlLhyRFGBkuPTAG6cPeRBkjASPTWXnwyDxBVGb2g==
+X-Received: by 2002:a05:6870:64a2:b0:1fa:138f:5419 with SMTP id cz34-20020a05687064a200b001fa138f5419mr14947863oab.0.1701152621834;
+        Mon, 27 Nov 2023 22:23:41 -0800 (PST)
+Received: from [10.84.152.29] ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id f11-20020aa78b0b000000b006c31c0dfb69sm8227059pfd.188.2023.11.27.22.23.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Nov 2023 22:23:41 -0800 (PST)
+Message-ID: <abd0ddd6-389c-43dc-b18f-aa5e3a4fcf5a@bytedance.com>
+Date:   Tue, 28 Nov 2023 14:23:36 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/7] mm: shrinker: Add a .to_text() method for shrinkers
+Content-Language: en-US
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Muchun Song <muchun.song@linux.dev>, Linux-MM <linux-mm@kvack.org>,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Dave Chinner <david@fromorbit.com>,
+        Michal Hocko <mhocko@suse.com>
+References: <20231122232515.177833-1-kent.overstreet@linux.dev>
+ <20231122232515.177833-3-kent.overstreet@linux.dev>
+ <deed9bb1-02b9-4e89-895b-38a84e5a9408@gmail.com>
+ <20231123212411.s6r5ekvkklvhwfra@moria.home.lan>
+ <4caadff7-1df0-45cc-9d43-e616f9e4ddb3@bytedance.com>
+ <20231125003009.tbaxuquny43uwei3@moria.home.lan>
+ <76A1EE85-B62C-49B3-889C-80F9A2A88040@linux.dev>
+ <20231128035345.5c7yc7jnautjpfoc@moria.home.lan>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+In-Reply-To: <20231128035345.5c7yc7jnautjpfoc@moria.home.lan>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -70,89 +85,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   2cc14f52aeb78ce3f29677c2de1f06c0e91471ab
-commit: fad84e39f116035ae8d550c6020107b8ac113b45 ARC: boot log: eliminate struct cpuinfo_arc #4: boot log per ISA
-config: arc-randconfig-r071-20231128 (https://download.01.org/0day-ci/archive/20231128/202311280906.VAIwEAfT-lkp@intel.com/config)
-compiler: arceb-elf-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231128/202311280906.VAIwEAfT-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <error27@gmail.com>
-| Closes: https://lore.kernel.org/r/202311280906.VAIwEAfT-lkp@intel.com/
 
-New smatch warnings:
-arch/arc/kernel/setup.c:203 arcv2_mumbojumbo() error: uninitialized symbol 'release'.
+On 2023/11/28 11:53, Kent Overstreet wrote:
+> On Tue, Nov 28, 2023 at 11:27:11AM +0800, Muchun Song wrote:
+>>
+>>
+>>> On Nov 25, 2023, at 08:30, Kent Overstreet <kent.overstreet@linux.dev> wrote:
+>>>
+>>> On Fri, Nov 24, 2023 at 11:08:11AM +0800, Qi Zheng wrote:
+>>>> Hi Kent,
+>>>>
+>>>> On 2023/11/24 05:24, Kent Overstreet wrote:
+>>>>> On Thu, Nov 23, 2023 at 11:32:59AM +0800, Qi Zheng wrote:
+>>>>>>> + void (*to_text)(struct seq_buf *, struct shrinker *);
+>>>>>>
+>>>>>> The "to_text" looks a little strange, how about naming it
+>>>>>> "stat_objects"?
+>>>>>
+>>>>> The convention I've been using heavily in bcachefs is
+>>>>> typename_to_text(), or type.to_text(), for debug reports. The
+>>>>
+>>>> OK.
+>>>>
+>>>>> consistency is nice.
+>>>>
+>>>> However, this is inconsistent with the name style of other
+>>>> shrinker callbacks. Please use the "objects" suffix. As for
+>>>> bcachefs's own callback function, you can use typename_to_text()
+>>>> to ensure consistency.
+>>>
+>>> That would be inconsistent with introducing a convention to the wider
+>>> kernel.
+>>>
+>>
+>> I don not think .to_text is a good name. I really do not know what it means
+>> when I first look at this name. I knew you want to report the objects of
+>> shrinks, so why not use .report_objects or stat_objects proposed by Qi.
+>> Although .to_text is only used by bcachefs now, shrinker is a general module
+>> which is not only serving the bcachefs itself. I think it should be better
+>> to use a more straightforward name.
+> 
+> No, .report_objects or .stat_objects would be wrong; this isn't
+> generating a report on the objects owned by the shrinker, it's just a
+> report on the statistics of the shrinker itself.
 
-Old smatch warnings:
-arch/arc/include/asm/thread_info.h:62 current_thread_info() error: uninitialized symbol 'sp'.
+Now I think adding this method might not be a good idea. If we allow
+shrinkers to report thier own private information, OOM logs may become
+cluttered. Most people only care about some general information when
+troubleshooting OOM problem, but not the private information of a
+shrinker.
 
-vim +/release +203 arch/arc/kernel/setup.c
+So I thought maybe we could add some general statistics to the shrinker,
+but adding private ".to_text" method is not necessary.
 
-fad84e39f11603 Vineet Gupta 2020-06-11  150  static int arcv2_mumbojumbo(int c, struct cpuinfo_arc *info, char *buf, int len)
-fad84e39f11603 Vineet Gupta 2020-06-11  151  {
-fad84e39f11603 Vineet Gupta 2020-06-11  152  	int n = 0;
-fad84e39f11603 Vineet Gupta 2020-06-11  153  #ifdef CONFIG_ISA_ARCV2
-fad84e39f11603 Vineet Gupta 2020-06-11  154  	const char *release, *cpu_nm, *isa_nm = "ARCv2";
-fad84e39f11603 Vineet Gupta 2020-06-11  155  	int dual_issue = 0, dual_enb = 0, mpy_opt, present;
-fad84e39f11603 Vineet Gupta 2020-06-11  156  	int bpu_full, bpu_cache, bpu_pred, bpu_ret_stk;
-fad84e39f11603 Vineet Gupta 2020-06-11  157  	char mpy_nm[16], lpb_nm[32];
-fad84e39f11603 Vineet Gupta 2020-06-11  158  	struct bcr_isa_arcv2 isa;
-fad84e39f11603 Vineet Gupta 2020-06-11  159  	struct bcr_mpy mpy;
-fad84e39f11603 Vineet Gupta 2020-06-11  160  	struct bcr_fp_arcv2 fpu;
-fad84e39f11603 Vineet Gupta 2020-06-11  161  	struct bcr_bpu_arcv2 bpu;
-fad84e39f11603 Vineet Gupta 2020-06-11  162  	struct bcr_lpb lpb;
-fad84e39f11603 Vineet Gupta 2020-06-11  163  	struct bcr_iccm_arcv2 iccm;
-fad84e39f11603 Vineet Gupta 2020-06-11  164  	struct bcr_dccm_arcv2 dccm;
-fad84e39f11603 Vineet Gupta 2020-06-11  165  	struct bcr_erp erp;
-00a4ae65cc600b Vineet Gupta 2019-02-25  166  
-00a4ae65cc600b Vineet Gupta 2019-02-25  167  	/*
-97d0b5d0b5a998 Vineet Gupta 2020-06-10  168  	 * Initial HS cores bumped AUX IDENTITY.ARCVER for each release until
-97d0b5d0b5a998 Vineet Gupta 2020-06-10  169  	 * ARCVER 0x54 which introduced AUX MICRO_ARCH_BUILD and subsequent
-97d0b5d0b5a998 Vineet Gupta 2020-06-10  170  	 * releases only update it.
-00a4ae65cc600b Vineet Gupta 2019-02-25  171  	 */
-00a4ae65cc600b Vineet Gupta 2019-02-25  172  
-fad84e39f11603 Vineet Gupta 2020-06-11  173  	cpu_nm = "HS38";
-00a4ae65cc600b Vineet Gupta 2019-02-25  174  
-fad84e39f11603 Vineet Gupta 2020-06-11  175  	if (info->arcver > 0x50 && info->arcver <= 0x53) {
-fad84e39f11603 Vineet Gupta 2020-06-11  176  		release = arc_hs_rel[info->arcver - 0x51].str;
-00a4ae65cc600b Vineet Gupta 2019-02-25  177  	} else {
-fad84e39f11603 Vineet Gupta 2020-06-11  178  		const struct id_to_str *tbl;
-fad84e39f11603 Vineet Gupta 2020-06-11  179  		struct bcr_uarch_build uarch;
-fad84e39f11603 Vineet Gupta 2020-06-11  180  
-fad84e39f11603 Vineet Gupta 2020-06-11  181  		READ_BCR(ARC_REG_MICRO_ARCH_BCR, uarch);
-00a4ae65cc600b Vineet Gupta 2019-02-25  182  
-97d0b5d0b5a998 Vineet Gupta 2020-06-10  183  		for (tbl = &arc_hs_ver54_rel[0]; tbl->id != 0xFF; tbl++) {
-00a4ae65cc600b Vineet Gupta 2019-02-25  184  			if (uarch.maj == tbl->id) {
-fad84e39f11603 Vineet Gupta 2020-06-11  185  				release = tbl->str;
+Also +CC Michal, who is reviwing OOM related patches recently.
 
-Will we always hit this assignment?
+Thanks,
+Qi
 
-d975cbc8acb6f4 Vineet Gupta 2016-10-27  186  				break;
-d975cbc8acb6f4 Vineet Gupta 2016-10-27  187  			}
-00a4ae65cc600b Vineet Gupta 2019-02-25  188  		}
-fad84e39f11603 Vineet Gupta 2020-06-11  189  		if (uarch.prod == 4) {
-fad84e39f11603 Vineet Gupta 2020-06-11  190  			unsigned int exec_ctrl;
-00a4ae65cc600b Vineet Gupta 2019-02-25  191  
-fad84e39f11603 Vineet Gupta 2020-06-11  192  			cpu_nm = "HS48";
-fad84e39f11603 Vineet Gupta 2020-06-11  193  			dual_issue = 1;
-fad84e39f11603 Vineet Gupta 2020-06-11  194  			/* if dual issue hardware, is it enabled ? */
-fad84e39f11603 Vineet Gupta 2020-06-11  195  			READ_BCR(AUX_EXEC_CTRL, exec_ctrl);
-fad84e39f11603 Vineet Gupta 2020-06-11  196  			dual_enb = !(exec_ctrl & 1);
-fad84e39f11603 Vineet Gupta 2020-06-11  197  		}
-fad84e39f11603 Vineet Gupta 2020-06-11  198  	}
-73e284d2572581 Vineet Gupta 2016-10-20  199  
-fad84e39f11603 Vineet Gupta 2020-06-11  200  	READ_BCR(ARC_REG_ISA_CFG_BCR, isa);
-b89bd1f4fbaeca Vineet Gupta 2016-01-22  201  
-fad84e39f11603 Vineet Gupta 2020-06-11  202  	n += scnprintf(buf + n, len - n, "processor [%d]\t: %s %s (%s ISA) %s%s%s\n",
-fad84e39f11603 Vineet Gupta 2020-06-11 @203  		       c, cpu_nm, release, isa_nm,
-fad84e39f11603 Vineet Gupta 2020-06-11  204  		       IS_AVAIL1(isa.be, "[Big-Endian]"),
-fad84e39f11603 Vineet Gupta 2020-06-11  205  		       IS_AVAIL3(dual_issue, dual_enb, " Dual-Issue "));
-af61742813aa9d Vineet Gupta 2013-01-18  206  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+> 
+> That's why the convention is typename_to_text() - generate a text
+> representation of an object of that type.
