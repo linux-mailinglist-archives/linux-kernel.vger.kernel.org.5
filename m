@@ -2,209 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E38A37FC168
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E797FC218
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:16:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344333AbjK1QJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 11:09:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33422 "EHLO
+        id S1343899AbjK1QKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 11:10:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232357AbjK1QJk (ORCPT
+        with ESMTP id S232712AbjK1QKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 11:09:40 -0500
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD4DE127
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:09:45 -0800 (PST)
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com [209.85.219.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Tue, 28 Nov 2023 11:10:17 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6506ED53
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:10:22 -0800 (PST)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 4E25B4443D
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 16:09:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1701187784;
-        bh=pEKPe8cq8iCO+hKEkwpNbBcU/bv+bYZjuOAiUbbFTmw=;
-        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=GhasgKWyW7fhGu/IKEgFYSNL+npeH4JsKBaXgYMyhS5xtNAlmr4CGgcZRzugMpDI9
-         vEtY4xkrwYvqVNalqMSaJ+kLFgtD3/v2+UZhGXn+tIIbab5kpMmljRg/N2SEQaDLyN
-         Z7lr5v3AHdr19YpYCtqd1fGuLL5Uubdj12CLSc4wB3VjoB+GZp8RCWIfjHdBR5H4kS
-         jtZk6IYFVnB5ZtSA3Xbowj1AOOxxQRrDH3CJPdgzFkhT6+mBuw95BeDrFiy7B2LABv
-         Rr8KoUYcNf2rIMj6hZ1ZXPDPwH2YIREaCjmTjpWMC5YYnb5PIzi7KJ+nd9oOYxKV7e
-         wImOHw7xLoC4w==
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-67a238351b7so41950496d6.2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 08:09:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701187782; x=1701792582;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pEKPe8cq8iCO+hKEkwpNbBcU/bv+bYZjuOAiUbbFTmw=;
-        b=TIzCFpQT50yqeRHTkK6ri86P2YBeb0IUbrRq+NxzSv9t9wj0W00mRPPXDzoMk0w8RE
-         aKr5zM2juUgkU7LcxECyYn+vXwZVqyGjftQJATPdRgR+QJlFAPb5f4gqdWWa06wdfqF7
-         tqMezYti89Sgb9fNoXfLxRHHzUs4Oyqu4NiaOVP2wRxVp0BIi3rHy6fhlA6y2wujP91y
-         2iUNjAVmib1NBoB/pM3Az9TGVRQloLI2ULLxL8IYoDmj6tV2npbgrBBjHmus112supxP
-         TPos7SOneDGjdPEUEGXxMx7jJM7VHupqgE7gO2Euky1Ibs3gJ6hqX1E/iKN27ohCcGTS
-         wNag==
-X-Gm-Message-State: AOJu0YzAKH2VQLmos3IhIx9uiwGNdl32RbBeJukuWFDYSiB+OaepSB1/
-        lUBNjNpSVp2vKYUIEdqCl2u5YLkzY7FopKm8s21USIg1sAsyOgaAxKgZmC9Q5fo2bZQ05w7nK62
-        YLrBl5KYmf2geIb3I4O/VaCciu3YrZSxq7YkwtcmZRLyMtuy0IdXCJ0pi6A==
-X-Received: by 2002:ad4:5144:0:b0:67a:3863:d126 with SMTP id g4-20020ad45144000000b0067a3863d126mr10046201qvq.44.1701187782197;
-        Tue, 28 Nov 2023 08:09:42 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGBKpSSFbtesM/25uZwKIDezsMT1jPt3i9azPNVI4N4TMfmDOkXhoCn8EiGeenreU73yagsK6uZPTXiBRU8kPg=
-X-Received: by 2002:ad4:5144:0:b0:67a:3863:d126 with SMTP id
- g4-20020ad45144000000b0067a3863d126mr10046174qvq.44.1701187781933; Tue, 28
- Nov 2023 08:09:41 -0800 (PST)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 28 Nov 2023 17:09:41 +0100
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <054bbf2a-e7ba-40bf-8f8b-f0e0e9b396c6@collabora.com>
-References: <20231029042712.520010-1-cristian.ciocaltea@collabora.com>
- <20231029042712.520010-13-cristian.ciocaltea@collabora.com>
- <CAJM55Z9e=vjGKNnmURN15mvXo2bVd3igBA-3puF9q7eh5hiP+A@mail.gmail.com>
- <2f06ce36-0dc1-495e-b6a6-318951a53e8d@collabora.com> <CAJM55Z8vkMbqXY5sS2o4cLi8ow-JQTcXU9=uYMBSykwd4ppExw@mail.gmail.com>
- <054bbf2a-e7ba-40bf-8f8b-f0e0e9b396c6@collabora.com>
-Mime-Version: 1.0
-Date:   Tue, 28 Nov 2023 17:09:41 +0100
-Message-ID: <CAJM55Z9+j6CmfjNkPLCk1DR3EBuEMspsRtNvygDbPWJDCytQpw@mail.gmail.com>
-Subject: Re: [PATCH v2 12/12] [UNTESTED] riscv: dts: starfive:
- beaglev-starlight: Enable gmac
-To:     Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Samin Guo <samin.guo@starfivetech.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0B60F66072E7;
+        Tue, 28 Nov 2023 16:10:19 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701187821;
+        bh=kMG1I4O6N/0qm/ZYve1cd6mlTUjtXKzKNM/ZG43+6KU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=YemsDFnnTQUsBpAb9E2CaJU7elx0nqKjHIYUM51KCCqPgKzNBsWYeeed0CE8ygw8M
+         60n/aAXkCdZe9q6+D4/n03AEMQiDs0B+54FOpdWn3zRzr523+X/y4AfTUne+x7VhZY
+         Y22xIe89OS0xHE7pa/tU6lg7QGSnAyo5Q634QLH9/Whx3h2KzQDe8Upnk4y3qiuDWv
+         NGUpdrMqZ7wV//dcRX6LIpt0TfFWwBk1PS1A9E07s7wTPr8hWzArBisN8CeyHklX5P
+         TgyrF5+7GI2N6H9n8hJOkHBDUKFyNndXZ27CD8Wxcz6sJF/+nznhY7S/VgfPHBPh6U
+         +UQE+jaqh6bHA==
+Message-ID: <5f45485a-fee6-4ab9-9894-6da4491a985c@collabora.com>
+Date:   Tue, 28 Nov 2023 17:10:17 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] drm/panfrost: Synchronize and disable interrupts
+ before powering off
+Content-Language: en-US
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     robh@kernel.org, steven.price@arm.com,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, m.szyprowski@samsung.com,
+        krzysztof.kozlowski@linaro.org
+References: <20231128124510.391007-1-angelogioacchino.delregno@collabora.com>
+ <20231128124510.391007-4-angelogioacchino.delregno@collabora.com>
+ <20231128145712.3f4d3f74@collabora.com>
+ <f5208c45-54c7-4030-9985-cb7c8f1d6466@collabora.com>
+ <20231128165357.2c9bfdf1@collabora.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231128165357.2c9bfdf1@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cristian Ciocaltea wrote:
-> On 11/28/23 14:08, Emil Renner Berthing wrote:
-> > Cristian Ciocaltea wrote:
-> >> On 11/26/23 23:10, Emil Renner Berthing wrote:
-> >>> Cristian Ciocaltea wrote:
-> >>>> The BeagleV Starlight SBC uses a Microchip KSZ9031RNXCA PHY supporting
-> >>>> RGMII-ID.
-> >>>>
-> >>>> TODO: Verify if manual adjustment of the RX internal delay is needed. If
-> >>>> yes, add the mdio & phy sub-nodes.
-> >>>
-> >>> Sorry for being late here. I've tested that removing the mdio and phy nodes on
-> >>> the the Starlight board works fine, but the rx-internal-delay-ps = <900>
-> >>> property not needed on any of my VisionFive V1 boards either.
-> >>
-> >> No problem, thanks a lot for taking the time to help with the testing!
-> >>
-> >>> So I wonder why you need that on your board
-> >>
-> >> I noticed you have a patch 70ca054e82b5 ("net: phy: motorcomm: Disable
-> >> rgmii rx delay") in your tree, hence I you please confirm the tests were
-> >> done with that commit reverted?
-> >>
-> >>> Also in the driver patch you add support for phy-mode = "rgmii-txid", but here
-> >>> you still set it to "rgmii-id", so which is it?
-> >>
-> >> Please try with "rgmii-id" first. I added "rgmii-txid" to have a
-> >> fallback solution in case the former cannot be used.
-> >
-> > Ah, I see. Sorry I should have read up on the whole thread. Yes, the Starlight
-> > board with the Microchip phy works with "rgmii-id" as is. And you're right,
-> > with "rgmii-id" my VF1 needs the rx-internal-delay-ps = <900> property too.
->
-> That's great, we have now a pretty clear indication that this uncommon behavior
-> stems from the Motorcomm PHY, and *not* from GMAC.
->
-> >>
-> >>> You've alse removed the phy reset gpio on the Starlight board:
-> >>>
-> >>>   snps,reset-gpios = <&gpio 63 GPIO_ACTIVE_LOW>
-> >>>
-> >>> Why?
-> >>
-> >> I missed this in v1 as the gmac handling was done exclusively in
-> >> jh7100-common. Thanks for noticing!
-> >>
-> >>>>
-> >>>> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-> >>>> ---
-> >>>>  arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dts | 5 +++++
-> >>>>  1 file changed, 5 insertions(+)
-> >>>>
-> >>>> diff --git a/arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dts b/arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dts
-> >>>> index 7cda3a89020a..d3f4c99d98da 100644
-> >>>> --- a/arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dts
-> >>>> +++ b/arch/riscv/boot/dts/starfive/jh7100-beaglev-starlight.dts
-> >>>> @@ -11,3 +11,8 @@ / {
-> >>>>  	model = "BeagleV Starlight Beta";
-> >>>>  	compatible = "beagle,beaglev-starlight-jh7100-r0", "starfive,jh7100";
-> >>>>  };
-> >>>> +
-> >>>> +&gmac {
-> >>>> +	phy-mode = "rgmii-id";
-> >>>> +	status = "okay";
-> >>>> +};
-> >>>
-> >>> Lastly the phy-mode and status are the same for the VF1 and Starlight boards,
-> >>> so why can't these be set in the jh7100-common.dtsi?
-> >>
-> >> I wasn't sure "rgmii-id" can be used for both boards and I didn't want
-> >> to unconditionally enable gmac on Starlight before getting a
-> >> confirmation that this actually works.
-> >>
-> >> If there is no way to make it working with "rgmii-id" (w/ or w/o
-> >> adjusting rx-internal-delay-ps), than we should switch to "rgmii-txid".
-> >
-> > Yeah, I don't exactly know the difference, but both boards seem to work fine
-> > with "rgmii-id", so if that is somehow better and/or more correct let's just go
-> > with that.
->
-> As Andrew already pointed out, going with "rgmii-id" would be the recommended
-> approach, as this passes the responsibility of adding both TX and RX delays to
-> the PHY.  "rgmii-txid" requires the MAC to handle the RX delay, which might
-> break the boards having a conformant (aka well-behaving) PHY.  For some reason
-> the Microchip PHY seems to work fine in both cases, but that's most likely an
-> exception, as other PHYs might expose a totally different and undesired
-> behavior.
->
-> I will prepare a v3 soon, and will drop the patches you have already submitted
-> as part of [1].
+Il 28/11/23 16:53, Boris Brezillon ha scritto:
+> On Tue, 28 Nov 2023 16:10:45 +0100
+> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> wrote:
+> 
+>>>>    static void panfrost_job_handle_err(struct panfrost_device *pfdev,
+>>>>    				    struct panfrost_job *job,
+>>>>    				    unsigned int js)
+>>>> @@ -792,9 +800,13 @@ static irqreturn_t panfrost_job_irq_handler_thread(int irq, void *data)
+>>>>    	struct panfrost_device *pfdev = data;
+>>>>    
+>>>>    	panfrost_job_handle_irqs(pfdev);
+>>>> -	job_write(pfdev, JOB_INT_MASK,
+>>>> -		  GENMASK(16 + NUM_JOB_SLOTS - 1, 16) |
+>>>> -		  GENMASK(NUM_JOB_SLOTS - 1, 0));
+>>>> +
+>>>> +	/* Enable interrupts only if we're not about to get suspended */
+>>>> +	if (!test_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspending))
+>>>
+>>> The irq-line is requested with IRQF_SHARED, meaning the line might be
+>>> shared between all three GPU IRQs, but also with other devices. I think
+>>> if we want to be totally safe, we need to also check this is_suspending
+>>> field in the hard irq handlers before accessing the xxx_INT_yyy
+>>> registers.
+>>>    
+>>
+>> This would mean that we would have to force canceling jobs in the suspend
+>> handler, but if the IRQ never fired, would we still be able to find the
+>> right bits flipped in JOB_INT_RAWSTAT?
+> 
+> There should be no jobs left if we enter suspend. If there is, that's a
+> bug we should fix, but I'm digressing.
+> 
+>>
+>>   From what I understand, are you suggesting to call, in job_suspend_irq()
+>> something like
+>>
+>> void panfrost_job_suspend_irq(struct panfrost_device *pfdev)
+>> {
+>>           u32 status;
+>>
+>> 	set_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspending);
+>>
+>> 	job_write(pfdev, JOB_INT_MASK, 0);
+>> 	synchronize_irq(pfdev->js->irq);
+>>
+>> 	status = job_read(pfdev, JOB_INT_STAT);
+> 
+> I guess you meant _RAWSTAT. _STAT should always be zero after we've
+> written 0 to _INT_MASK.
+> 
 
-Sounds good. Then what's missing for ethernet to work is just the clock patches:
-https://github.com/esmil/linux/commit/b5abe1cb3815765739aff7949deed6f65b952c4a
-https://github.com/esmil/linux/commit/3a7a423b15a9f796586cbbdc37010d2b83ff2367
+Whoops! Yes, as I wrote up there, I meant _RAWSTAT, sorry! :-)
 
-You can either include those as part of your patch series enabling ethernet, or
-they can be submitted separately with the audio clocks. Either way is
-fine by me.
+>> 	if (status)
+>> 		panfrost_job_irq_handler_thread(pfdev->js->irq, (void*)pfdev);
+> 
+> Nope, we don't need to read the STAT reg and forcibly call the threaded
+> handler if it's != 0. The synchronize_irq() call should do exactly that
+> (make sure all pending interrupts are processed before returning), and
+> our previous job_write(pfdev, JOB_INT_MASK, 0) guarantees that no new
+> interrupts will kick in after that point.
+> 
 
-/Emil
+Unless we synchronize_irq() *before* masking all interrupts (which would be
+wrong, as some interrupt could still fire after execution of the ISR), we get
+*either of* two scenarios:
 
->
-> Thanks again for your support,
-> Cristian
->
-> [1]: https://lore.kernel.org/all/20231126232746.264302-1-emil.renner.berthing@canonical.com/
+  - COMP_BIT_JOB is not set, softirq thread unmasks some interrupts by
+    writing to JOB_INT_MASK; or
+  - COMP_BIT_JOB is set, hardirq handler returns IRQ_NONE, the threaded
+    interrupt handler doesn't get executed, jobs are not canceled.
+
+So if we don't forbicly call the threaded handler if RAWSTAT != 0 in there,
+and if the extra check is present in the hardirq handler, and if the hardirq
+handler wasn't executed already before our synchronize_irq() call (so: if the
+hardirq execution has to be done to synchronize irqs), we are not guaranteeing
+that jobs cancellation/dequeuing/removal/whatever-handling is done before
+entering suspend.
+
+That, unless the suggestion was to call panfrost_job_handle_irqs() instead of
+the handler thread like that (because reading it back, it makes sense to do so).
+
+Cheers!
+
+>> }
+>>
+>> and then while still retaining the check in the IRQ thread handler, also
+>> check it in the hardirq handler like
+>>
+>> static irqreturn_t panfrost_job_irq_handler(int irq, void *data)
+>> {
+>> 	struct panfrost_device *pfdev = data;
+>> 	u32 status;
+>>
+>> 	if (!test_bit(PANFROST_COMP_BIT_JOB, pfdev->is_suspending))
+>> 		return IRQ_NONE;
+> 
+> Yes, that's the extra check I was talking about, and that's also the
+> very reason I'm suggesting to call this field suspended_irqs instead of
+> is_suspending. Ultimately, each bit in this bitmap encodes the status
+> of a specific IRQ, not the transition from active-to-suspended,
+> otherwise we'd be clearing the bit at the end of
+> panfrost_job_suspend_irq(), right after the synchronize_irq(). But if
+> we were doing that, our hard IRQ handler could be called because other
+> devices raised an interrupt on the very same IRQ line while we are
+> suspended, and we'd be doing an invalid GPU reg read while the
+> clks/power-domains are off.
+> 
+>>
+>> 	status = job_read(pfdev, JOB_INT_STAT);
+>> 	if (!status)
+>> 	        return IRQ_NONE;
+>>
+>> 	job_write(pfdev, JOB_INT_MASK, 0);
+>> 	return IRQ_WAKE_THREAD;
+>> }
+>>
+>> (rinse and repeat for panfrost_mmu)
+>>
+>> ..or am I misunderstanding you?
+>>
+>> Cheers,
+>> Angelo
+>>
+>>
+> 
+
