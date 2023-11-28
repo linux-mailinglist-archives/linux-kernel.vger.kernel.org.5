@@ -2,266 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E747FC155
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C397FC149
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345691AbjK1Rhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 12:37:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42176 "EHLO
+        id S1345977AbjK1RiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 12:38:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345554AbjK1Rhh (ORCPT
+        with ESMTP id S1345467AbjK1RiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 12:37:37 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0571C18E
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:37:43 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 799691F898;
-        Tue, 28 Nov 2023 17:37:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1701193062; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a+i5r2yvkp2KHtyBUrIaJjpJl5CnUbwkzKW05rea7ko=;
-        b=ab6DbNmgVBMW3eV//yivo3/keAC9735txBK7u92TwnRnmTmKewU8dQr3MiwQ5B1RauIJY/
-        08xL76q52zCBsRiJR4EqPWrQplbxo5VCmpSi7CVBddDz22aC4gLeeaHc/6a330SYuNKYVM
-        jU4dWX2/KZHlzCVT58tpWu//PQKaAVQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1701193062;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a+i5r2yvkp2KHtyBUrIaJjpJl5CnUbwkzKW05rea7ko=;
-        b=aqjk3GPtzHIzOIwcRoG0lszJaX1TyWWg0ZKXlPB4e5/pWtknVgriH2HvR7OOzl/5Pf/Ffa
-        MBmXNwlrPx0WJHCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5B3B41343E;
-        Tue, 28 Nov 2023 17:37:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id VaO3FWYlZmWAdwAAD6G6ig
-        (envelope-from <vbabka@suse.cz>); Tue, 28 Nov 2023 17:37:42 +0000
-Message-ID: <077e8e97-e88f-0b8e-2788-4031458be090@suse.cz>
-Date:   Tue, 28 Nov 2023 18:37:41 +0100
+        Tue, 28 Nov 2023 12:38:06 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23C858F
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 09:38:12 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 595FFC433C8;
+        Tue, 28 Nov 2023 17:38:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701193091;
+        bh=RNOf8IUGxxmeyuakZPDZPc9mbJAGG9faA4v5329Ernw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Bz4SkCebOTVMTP6Qa7rIp0+bVTQpj0o9TlcZB74as2jAGtg3bYSAUF7Xbs9XhxoJf
+         i3H5zpbjrNdQ0Z9wMVcezaM/z7GU0TOr0qLMPnsQHNFvlCAYh21X/M/GwZDZ2cMuNS
+         ywI6hyORJRnNNuxwrqFV/iY/q6YIFxsVh636iQ8iMZiOr/H/fHWb2yBdMuXvHDJOaI
+         bUg+40VS2I1a6IlJhSAD/b2Qa312hcR4XAFBnd6vJV5JxOcGhl68xRcr9OrasJeocY
+         hWqHXmTy+C5hSwokkLdo9b29Af/tfyOqn+D3oAYRsNuJJB+Eilv9ooTrdP7wvKVtgl
+         CDs1Pb8P4o1vg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 0EDFA40094; Tue, 28 Nov 2023 14:38:09 -0300 (-03)
+Date:   Tue, 28 Nov 2023 14:38:08 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        "Steinar H. Gunderson" <sesse@google.com>,
+        Liam Howlett <liam.howlett@oracle.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Dmitrii Dolgov <9erthalion6@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Ming Wang <wangming01@loongson.cn>,
+        James Clark <james.clark@arm.com>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        German Gomez <german.gomez@arm.com>,
+        Changbin Du <changbin.du@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, Li Dong <lidong@vivo.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        liuwenyu <liuwenyu7@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v4 04/53] perf mmap: Lazily initialize zstd streams
+Message-ID: <ZWYlgPwGmAEUKIsE@kernel.org>
+References: <20231102175735.2272696-1-irogers@google.com>
+ <20231102175735.2272696-5-irogers@google.com>
+ <ZWURZvDA2L4Mr3HR@kernel.org>
+ <ZWYf+Sy6JKd7CYlN@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RFC v2 2/7] mm, slub: add opt-in slub_percpu_array
-Content-Language: en-US
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev
-References: <20230810163627.6206-9-vbabka@suse.cz>
- <20230810163627.6206-11-vbabka@suse.cz>
- <CAB=+i9TSMVURktFvr7sAt4T2BdaUvsWFapAjTZNtk0AKS01O9A@mail.gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <CAB=+i9TSMVURktFvr7sAt4T2BdaUvsWFapAjTZNtk0AKS01O9A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         BAYES_HAM(-3.00)[100.00%];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         RCPT_COUNT_TWELVE(0.00)[12];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
-         FREEMAIL_TO(0.00)[gmail.com];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -2.80
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWYf+Sy6JKd7CYlN@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/21/23 16:57, Hyeonggon Yoo wrote:
-> Hi,
+Em Tue, Nov 28, 2023 at 02:14:33PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Mon, Nov 27, 2023 at 07:00:06PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Thu, Nov 02, 2023 at 10:56:46AM -0700, Ian Rogers escreveu:
+> > > Zstd streams create dictionaries that can require significant RAM,
+> > > especially when there is one per-CPU. Tools like perf record won't use
+> > > the streams without the -z option, and so the creation of the streams
+> > > is pure overhead. Switch to creating the streams on first use.
+
+> > > Signed-off-by: Ian Rogers <irogers@google.com>
+
+> > Thanks, applied to perf-tools-next.
+
+> Trying to fix this now:
 > 
-> On Fri, Aug 11, 2023 at 1:36 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>   6    20.59 alpine:3.18                   : FAIL gcc version 12.2.1 20220924 (Alpine 12.2.1_git20220924-r10)
+>     In file included from util/zstd.c:5:
+>     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:1: error: unknown type name 'ssize_t'; did you mean 'size_t'?
 
-Oops, looks like I forgot reply, sorry (preparing v3 now).
+So the problem was really the one above, that got fixed with the patch
+below, that is what 'man size_t' documents on my fedora:38 system.
 
->>
->> kmem_cache_setup_percpu_array() will allocate a per-cpu array for
->> caching alloc/free objects of given size for the cache. The cache
->> has to be created with SLAB_NO_MERGE flag.
->>
->> The array is filled by freeing. When empty for alloc or full for
->> freeing, it's simply bypassed by the operation, there's currently no
->> batch freeing/allocations.
->>
->> The locking is copied from the page allocator's pcplists, based on
->> embedded spin locks. Interrupts are not disabled, only preemption (cpu
->> migration on RT). Trylock is attempted to avoid deadlock due to
->> an intnerrupt, trylock failure means the array is bypassed.
-> 
-> nit: s/intnerrupt/interrupt/
+- Arnaldo
 
-Thanks.
+diff --git a/tools/perf/util/compress.h b/tools/perf/util/compress.h
+index 9eb6eb5bf038ce54..b29109cd36095c4f 100644
+--- a/tools/perf/util/compress.h
++++ b/tools/perf/util/compress.h
+@@ -3,7 +3,8 @@
+ #define PERF_COMPRESS_H
+ 
+ #include <stdbool.h>
+-#include <stdlib.h>
++#include <stddef.h>
++#include <sys/types.h>
+ #ifdef HAVE_ZSTD_SUPPORT
+ #include <zstd.h>
+ #endif
 
-> 
->>  /*
->>   * Inlined fastpath so that allocation functions (kmalloc, kmem_cache_alloc)
->>   * have the fastpath folded into their functions. So no function call
->> @@ -3465,7 +3564,11 @@ static __fastpath_inline void *slab_alloc_node(struct kmem_cache *s, struct list
->>         if (unlikely(object))
->>                 goto out;
->>
->> -       object = __slab_alloc_node(s, gfpflags, node, addr, orig_size);
->> +       if (s->cpu_array)
->> +               object = alloc_from_pca(s);
->> +
->> +       if (!object)
->> +               object = __slab_alloc_node(s, gfpflags, node, addr, orig_size);
->>
->>         maybe_wipe_obj_freeptr(s, object);
->>         init = slab_want_init_on_alloc(gfpflags, s);
->> @@ -3715,6 +3818,34 @@ static void __slab_free(struct kmem_cache *s, struct slab *slab,
->>         discard_slab(s, slab);
->>  }
-> 
->>  #ifndef CONFIG_SLUB_TINY
->>  /*
->>   * Fastpath with forced inlining to produce a kfree and kmem_cache_free that
->> @@ -3740,6 +3871,11 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
->>         unsigned long tid;
->>         void **freelist;
->>
->> +       if (s->cpu_array && cnt == 1) {
->> +               if (free_to_pca(s, head))
->> +                       return;
->> +       }
->> +
->>  redo:
->>         /*
->>          * Determine the currently cpus per cpu slab.
->> @@ -3793,6 +3929,11 @@ static void do_slab_free(struct kmem_cache *s,
->>  {
->>         void *tail_obj = tail ? : head;
->>
->> +       if (s->cpu_array && cnt == 1) {
->> +               if (free_to_pca(s, head))
->> +                       return;
->> +       }
->> +
->>         __slab_free(s, slab, head, tail_obj, cnt, addr);
->>  }
->>  #endif /* CONFIG_SLUB_TINY */
-> 
-> Is this functionality needed for SLUB_TINY?
-
-Due to the prefill semantics, I think it has to be be even in TINY, or we
-risk running out of memory reserves. Also later I want to investigate
-extending this approach for supporting allocations in very constrained
-contexts (NMI) so e.g. bpf doesn't have to reimplement the slab allocator,
-and that would also not be good to limit to !SLUB_TINY.
-
->> @@ -4060,6 +4201,45 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
->>  }
->>  EXPORT_SYMBOL(kmem_cache_alloc_bulk);
->>
->> +int kmem_cache_prefill_percpu_array(struct kmem_cache *s, unsigned int count,
->> +               gfp_t gfp)
->> +{
->> +       struct slub_percpu_array *pca;
->> +       void *objects[32];
->> +       unsigned int used;
->> +       unsigned int allocated;
->> +
->> +       if (!s->cpu_array)
->> +               return -EINVAL;
->> +
->> +       /* racy but we don't care */
->> +       pca = raw_cpu_ptr(s->cpu_array);
->> +
->> +       used = READ_ONCE(pca->used);
-> 
-> Hmm for the prefill to be meaningful,
-> remote allocation should be possible, right?
-
-Remote in what sense?
-
-> Otherwise it only prefills for the CPU that requested it.
-
-If there's a cpu migration between the prefill and usage, it might run out
-of the cached array, but assumption is to be rare enough to become an issue.
-
->> +       if (used >= count)
->> +               return 0;
->> +
->> +       if (pca->count < count)
->> +               return -EINVAL;
->> +
->> +       count -= used;
->> +
->> +       /* TODO fix later */
->> +       if (count > 32)
->> +               count = 32;
->> +
->> +       for (int i = 0; i < count; i++)
->> +               objects[i] = NULL;
->> +       allocated = kmem_cache_alloc_bulk(s, gfp, count, &objects[0]);
->> +
->> +       for (int i = 0; i < count; i++) {
->> +               if (objects[i]) {
->> +                       kmem_cache_free(s, objects[i]);
->> +               }
->> +       }
-> 
-> nit: why not
-> 
-> for (int i = 0; i < allocated; i++) {
->     kmem_cache_free(s, objects[i]);
-> }
-> 
-> and skip objects[i] = NULL
+>        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *data, void *dst, size_t dst_size,
+>           | ^~~~~~~
+>           | size_t
+>     util/zstd.c:31:9: error: conflicting types for 'zstd_compress_stream_to_records'; have 'ssize_t(struct zstd_data *, void *, size_t,  void *, size_t,  size_t,  size_t (*)(void *, size_t))' {aka 'long int(struct zstd_data *, void *, long unsigned int,  void *, long unsigned int,  long unsigned int,  long unsigned int (*)(void *, long unsigned int))'}
+>        31 | ssize_t zstd_compress_stream_to_records(struct zstd_data *data, void *dst, size_t dst_size,
+>           |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:9: note: previous declaration of 'zstd_compress_stream_to_records' with type 'int(struct zstd_data *, void *, size_t,  void *, size_t,  size_t,  size_t (*)(void *, size_t))' {aka 'int(struct zstd_data *, void *, long unsigned int,  void *, long unsigned int,  long unsigned int,  long unsigned int (*)(void *, long unsigned int))'}
+>        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *data, void *dst, size_t dst_size,
+>           |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>     make[3]: *** [/git/perf-6.6.0-rc1/tools/build/Makefile.build:158: util] Error 2
+>       CC      /tmp/build/perf/util/zstd.o
+>       CC      /tmp/build/perf/util/cap.o
+>       CXX     /tmp/build/perf/util/demangle-cxx.o
+>       CC      /tmp/build/perf/util/demangle-ocaml.o
+>     In file included from util/zstd.c:5:
+>     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:1: error: unknown type name 'ssize_t'; did you mean 'size_t'?
+>        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *data, void *dst, size_t dst_size,
+>           | ^~~~~~~
+>           | size_t
+>       CC      /tmp/build/perf/util/demangle-java.o
+>     util/zstd.c:31:9: error: conflicting types for 'zstd_compress_stream_to_records'; have 'ssize_t(struct zstd_data *, void *, size_t,  void *, size_t,  size_t,  size_t (*)(void *, size_t))' {aka 'long int(struct zstd_data *, void *, long unsigned int,  void *, long unsigned int,  long unsigned int,  long unsigned int (*)(void *, long unsigned int))'}
+>        31 | ssize_t zstd_compress_stream_to_records(struct zstd_data *data, void *dst, size_t dst_size,
+>           |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:9: note: previous declaration of 'zstd_compress_stream_to_records' with type 'int(struct zstd_data *, void *, size_t,  void *, size_t,  size_t,  size_t (*)(void *, size_t))' {aka 'int(struct zstd_data *, void *, long unsigned int,  void *, long unsigned int,  long unsigned int,  long unsigned int (*)(void *, long unsigned int))'}
+>        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *data, void *dst, size_t dst_size,
+>    7    21.14 alpine:edge                   : FAIL gcc version 13.1.1 20230722 (Alpine 13.1.1_git20230722)
+>     In file included from util/zstd.c:5:
+>     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:1: error: unknown type name 'ssize_t'; did you mean 'size_t'?
+>        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *data, void *dst, size_t dst_size,
+>           | ^~~~~~~
+>           | size_t
+>     util/zstd.c:31:9: error: conflicting types for 'zstd_compress_stream_to_records'; have 'ssize_t(struct zstd_data *, void *, size_t,  void *, size_t,  size_t,  size_t (*)(void *, size_t))' {aka 'long int(struct zstd_data *, void *, long unsigned int,  void *, long unsigned int,  long unsigned int,  long unsigned int (*)(void *, long unsigned int))'}
+>        31 | ssize_t zstd_compress_stream_to_records(struct zstd_data *data, void *dst, size_t dst_size,
+>           |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:9: note: previous declaration of 'zstd_compress_stream_to_records' with type 'int(struct zstd_data *, void *, size_t,  void *, size_t,  size_t,  size_t (*)(void *, size_t))' {aka 'int(struct zstd_data *, void *, long unsigned int,  void *, long unsigned int,  long unsigned int,  long unsigned int (*)(void *, long unsigned int))'}
+>        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *data, void *dst, size_t dst_size,
+>           |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>     make[3]: *** [/git/perf-6.6.0-rc1/tools/build/Makefile.build:158: util] Error 2
+>       CC      /tmp/build/perf/util/cap.o
+>       CXX     /tmp/build/perf/util/demangle-cxx.o
+>       CC      /tmp/build/perf/util/demangle-ocaml.o
+>       CC      /tmp/build/perf/util/demangle-java.o
+>     In file included from util/zstd.c:5:
+>     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:1: error: unknown type name 'ssize_t'; did you mean 'size_t'?
+>        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *data, void *dst, size_t dst_size,
+>           | ^~~~~~~
+>           | size_t
+>     util/zstd.c:31:9: error: conflicting types for 'zstd_compress_stream_to_records'; have 'ssize_t(struct zstd_data *, void *, size_t,  void *, size_t,  size_t,  size_t (*)(void *, size_t))' {aka 'long int(struct zstd_data *, void *, long unsigned int,  void *, long unsigned int,  long unsigned int,  long unsigned int (*)(void *, long unsigned int))'}
+>        31 | ssize_t zstd_compress_stream_to_records(struct zstd_data *data, void *dst, size_t dst_size,
+>           |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>     /git/perf-6.6.0-rc1/tools/perf/util/compress.h:34:9: note: previous declaration of 'zstd_compress_stream_to_records' with type 'int(struct zstd_data *, void *, size_t,  void *, size_t,  size_t,  size_t (*)(void *, size_t))' {aka 'int(struct zstd_data *, void *, long unsigned int,  void *, long unsigned int,  long unsigned int,  long unsigned int (*)(void *, long unsigned int))'}
+>        34 | ssize_t zstd_compress_stream_to_records(struct zstd_data *data, void *dst, size_t dst_size,
+>           |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 > 
 
-This is rewritten significantly in v3 so I think it doesn't apply anymore.
-
->> +       return allocated;
->> +}
-> 
-> And a question:
-> Does SLUB still need to maintain per-cpu partial slab lists even when
-> an opt-in percpu array is used?
-
-Good question :) didn't investigate it yet. We can, once this settles.
-
-Thanks.
+-- 
