@@ -2,135 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8397FB6BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47A677FB6BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 11:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343988AbjK1KHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 05:07:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46498 "EHLO
+        id S1344044AbjK1KJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 05:09:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343991AbjK1KHO (ORCPT
+        with ESMTP id S1343969AbjK1KJc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 05:07:14 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D8231B8
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 02:07:20 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        Tue, 28 Nov 2023 05:09:32 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D418DC;
+        Tue, 28 Nov 2023 02:09:39 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 882A740E01B1;
+        Tue, 28 Nov 2023 10:09:36 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id n6vaYX6mQPGx; Tue, 28 Nov 2023 10:09:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1701166173; bh=ZbOAIQjytTHlygvBJZdtmYHZgd+py/hKn6bkyMaazjs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WqvcBgi4X9QIQCMq9rbbSQ5yckzcUFi2nYsW5MeInmATYRTahKqBugagSn2r6mcCf
+         0OKLl1fUw7IGcqogaH5K60o9MnxTMAwqVZcoLJj+TMs/KT0za6Zq7t1tW2/Ky9ATC4
+         pMaezQt2tstNf5o+V8MgG9hsMUIkDdRe8+AHDweomKer8/hpIZOyUDVdCsCvQm3EJp
+         R8fH+CyGxdZZedQ8ges+Y8u0LMmQYV3AqbrSkYKdbd1u6YGggNSvJV8KIpYwS/MrtT
+         8NLKg58ZHCK194AabA4fUcsX2l5x6TPCAG6E8WunhkXo7OyDI18O5HIsYKRlEnF2xz
+         DK+vBY+Etna4jLAt3huPcAlHSrV/TsprLkW+MM74k+XziphA6FKIN0HOJarlWLhol2
+         K0F1NhYJ5bIokwuhXGJqZ0FXH/v94Ul/8v435Jva0XF3m/skw6ISeuyDuv7kpDbOhT
+         fXNefHnI2Dc5iXbQpfiCXIb74g9FH7zPTXzsEMG2ez0G3YN8cMrrFRtDqZT7WQJUuc
+         CX3jZGcfJrp5UiW8OoFEM4FajOlEuVTcNzPYei0+052dHmkxO7AbDriA2oZOklc953
+         dej16pz5yYo1mdKVZaGNo/ODqFn8nXdYtyFEtOfQEi8eCl0wau/qz0RlzdveGBe5Mv
+         d2OWeQiMp1IFOzr8SWk0eIUk=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0C9862198D;
-        Tue, 28 Nov 2023 10:07:19 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E3AD51343E;
-        Tue, 28 Nov 2023 10:07:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id zBOZNNa7ZWXyagAAD6G6ig
-        (envelope-from <mhocko@suse.com>); Tue, 28 Nov 2023 10:07:18 +0000
-Date:   Tue, 28 Nov 2023 11:07:18 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>
-Subject: Re: [PATCH 4/7] mm: Centralize & improve oom reporting in show_mem.c
-Message-ID: <ZWW71lfACwiHw3zk@tiehlicka>
-References: <20231122232515.177833-1-kent.overstreet@linux.dev>
- <20231122232515.177833-5-kent.overstreet@linux.dev>
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8B4B840E01A5;
+        Tue, 28 Nov 2023 10:09:11 +0000 (UTC)
+Date:   Tue, 28 Nov 2023 11:09:10 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Xin Li <xin3.li@intel.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, luto@kernel.org,
+        pbonzini@redhat.com, seanjc@google.com, peterz@infradead.org,
+        jgross@suse.com, ravi.v.shankar@intel.com, mhiramat@kernel.org,
+        andrew.cooper3@citrix.com, jiangshanlai@gmail.com,
+        nik.borisov@suse.com
+Subject: Re: [PATCH v12 24/37] x86/idtentry: Incorporate
+ definitions/declarations of the FRED entries
+Message-ID: <20231128100910.GSZWW8RnyhX0YQjwDm@fat_crate.local>
+References: <20231003062458.23552-1-xin3.li@intel.com>
+ <20231003062458.23552-25-xin3.li@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231122232515.177833-5-kent.overstreet@linux.dev>
-X-Spamd-Bar: +++++++++++++++
-Authentication-Results: smtp-out1.suse.de;
-        dkim=none;
-        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
-        spf=fail (smtp-out1.suse.de: domain of mhocko@suse.com does not designate 2a07:de40:b281:104:10:150:64:97 as permitted sender) smtp.mailfrom=mhocko@suse.com
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [15.00 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         R_SPF_FAIL(1.00)[-all];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-0.99)[-0.987];
-         MIME_GOOD(-0.10)[text/plain];
-         MID_RHS_NOT_FQDN(0.50)[];
-         DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-         RCPT_COUNT_FIVE(0.00)[6];
-         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-         RCVD_COUNT_THREE(0.00)[3];
-         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
-         MX_GOOD(-0.01)[];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         R_DKIM_NA(2.20)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-0.10)[65.54%]
-X-Spam-Score: 15.00
-X-Rspamd-Queue-Id: 0C9862198D
-X-Spam: Yes
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231003062458.23552-25-xin3.li@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 22-11-23 18:25:09, Kent Overstreet wrote:
-[...]
-> 00177 Shrinkers:
-> 00177 super_cache_scan: objects: 127
-> 00177 super_cache_scan: objects: 106
-> 00177 jbd2_journal_shrink_scan: objects: 32
-> 00177 ext4_es_scan: objects: 32
-> 00177 bch2_btree_cache_scan: objects: 8
-> 00177   nr nodes:          24
-> 00177   nr dirty:          0
-> 00177   cannibalize lock:  0000000000000000
-> 00177
-> 00177 super_cache_scan: objects: 8
-> 00177 super_cache_scan: objects: 1
+On Mon, Oct 02, 2023 at 11:24:45PM -0700, Xin Li wrote:
+> FRED and IDT can share most of the definitions and declarations so
+> that in the majority of cases the actual handler implementation is the
+> same.
+> 
+> The differences are the exceptions where FRED stores exception related
+> information on the stack and the sysvec implementations as FRED can
+> handle irqentry/exit() in the dispatcher instead of having it in each
+> handler.
+> 
+> Also add stub defines for vectors which are not used due to Kconfig
+> decisions to spare the ifdeffery in the actual FRED dispatch code.
+> 
+> Tested-by: Shan Kang <shan.kang@intel.com>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Xin Li <xin3.li@intel.com>
 
-It would be really great to provide an example on how these numbers are
-useful for the oom evaluation.
+This makes me wonder too who the author is. The commit message text
+sounds like tglx. :)
 
-[...]
-> @@ -423,4 +426,21 @@ void __show_mem(unsigned int filter, nodemask_t *nodemask, int max_zone_idx)
->  #ifdef CONFIG_MEMORY_FAILURE
->  	printk("%lu pages hwpoisoned\n", atomic_long_read(&num_poisoned_pages));
->  #endif
-> +
-> +	buf = kmalloc(4096, GFP_ATOMIC);
+> @@ -137,6 +141,17 @@ static __always_inline void __##func(struct pt_regs *regs,		\
+>  #define DEFINE_IDTENTRY_RAW(func)					\
+>  __visible noinstr void func(struct pt_regs *regs)
+>  
+> +/**
+> + * DEFINE_FREDENTRY_RAW - Emit code for raw FRED entry points
 
-I really do not think we want to allow allocations from the OOM context.
-Is there any reason why this cannot be a statically allocated buffer?
+LOL, "FREDENTRY"
 
-> +	if (buf) {
-> +		struct seq_buf s;
-> +
-> +		printk("Unreclaimable slab info:\n");
-> +		seq_buf_init(&s, buf, 4096);
-> +		dump_unreclaimable_slab(&s);
-> +		printk("%s", seq_buf_str(&s));
-> +
-> +		printk("Shrinkers:\n");
-> +		seq_buf_init(&s, buf, 4096);
-> +		shrinkers_to_text(&s);
-> +		printk("%s", seq_buf_str(&s));
-> +
-> +		kfree(buf);
-> +	}
->  }
+...
+
 -- 
-Michal Hocko
-SUSE Labs
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
