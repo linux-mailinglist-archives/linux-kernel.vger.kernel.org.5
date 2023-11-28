@@ -2,70 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD667FC15E
-	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A80587FC18E
+	for <lists+linux-kernel@lfdr.de>; Tue, 28 Nov 2023 19:15:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346046AbjK1PmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 10:42:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40492 "EHLO
+        id S1346129AbjK1Pm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 10:42:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345899AbjK1PmV (ORCPT
+        with ESMTP id S1345899AbjK1PmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 10:42:21 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416D612A;
-        Tue, 28 Nov 2023 07:42:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=IMKJEnNn+G4rdqFGH3iRHztZa/N2RADNEAueBo8O0cY=; b=z16DHxP08aFFFJ47LD9uxtJpsn
-        +t0RB0TyQ2KyCYVbEMXvvjymQCwHExD6/vKRXzXzkjojJ7IP2XE8qmxVC8cAHrtCd0+IIrVCm7qdN
-        ZdkxE7l6xOULssxdV73BHOuaELu62t9SvZuDP9ZN1aCfYYnQMrGlQxH4qVoIMelPnGvcPnaF38Pkr
-        h5A/PWeMHMTxSr3BM1Zuta51o2q+gTVoiMVbBs0Dc0KEwgofXauGinHENQ/qNDFrdL2D7Y0vYeL4i
-        sMNspndTH56fozoySkkm+Xwt+BdU09U7Sw0FK8bN/SgdK1YxaDQXRaJcCIRC8UP2EoMRf9O+b1H83
-        t070MZQg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54994)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1r80E9-0007Xq-1d;
-        Tue, 28 Nov 2023 15:42:21 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1r80EA-00034k-5Y; Tue, 28 Nov 2023 15:42:22 +0000
-Date:   Tue, 28 Nov 2023 15:42:22 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, linux-csky@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com,
-        James Morse <james.morse@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH RFC 02/22] x86: intel_epb: Don't rely on link order
-Message-ID: <ZWYKXvbAck9kQ+iy@shell.armlinux.org.uk>
-References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
- <E1r0JKq-00CTwZ-Mh@rmk-PC.armlinux.org.uk>
- <20231128144059.000042c8@Huawei.com>
+        Tue, 28 Nov 2023 10:42:25 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D6D3D4F
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 07:42:30 -0800 (PST)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id EAA8966072A4;
+        Tue, 28 Nov 2023 15:42:27 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701186149;
+        bh=8chB7Hf/7fvnKT3TALs/wJ17MCLdyGBUU/ypcCPLzg4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=HeN9ra9Pi/G1Hcx6jSHDWUVSotuMs4/OcI5uZ1J3b74RroJB2xtAAmeXZyflFwzrL
+         Tz3KeKogPKEGq0wUjLRd4yS/26o7MiV5WnvY0Rnqp7h9nVKfhby+pKzj0PXRsDjMuB
+         qoeKwDIJQq6w4Bjnj1fi0Rs5hqF8GTYEgY+LUDLaELyt+r6wPhhNobDIk08+TH+qvW
+         DfrRKk9+hYZF3twU67aNyck/7WObsTCMnOQm3lKrXjRB8hONicXo3xLudASy4jEbJB
+         BAO9pLuJEqn0oHLekgJeHnsx2oiGX0pqEd5adn2wD5fM5r54Exn/0Jw4Ztn514stpB
+         dd9M9OuTz7L0A==
+Message-ID: <34b7ae7d-c4d3-4d94-a1e9-62d3d4fc6b9a@collabora.com>
+Date:   Tue, 28 Nov 2023 16:42:25 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231128144059.000042c8@Huawei.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] drm/panfrost: Synchronize and disable interrupts
+ before powering off
+Content-Language: en-US
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     robh@kernel.org, steven.price@arm.com,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, m.szyprowski@samsung.com,
+        krzysztof.kozlowski@linaro.org
+References: <20231128124510.391007-1-angelogioacchino.delregno@collabora.com>
+ <20231128124510.391007-4-angelogioacchino.delregno@collabora.com>
+ <20231128150612.17f6a095@collabora.com>
+ <6c14d90f-f9e1-4af7-877e-f000b7fa1e08@collabora.com>
+ <20231128163808.094a8afa@collabora.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20231128163808.094a8afa@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,32 +66,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 02:40:59PM +0000, Jonathan Cameron wrote:
-> On Tue, 07 Nov 2023 10:29:28 +0000
-> Russell King <rmk+kernel@armlinux.org.uk> wrote:
+Il 28/11/23 16:38, Boris Brezillon ha scritto:
+> On Tue, 28 Nov 2023 16:10:43 +0100
+> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> wrote:
 > 
-> > From: James Morse <james.morse@arm.com>
-> > 
-> > intel_epb_init() is called as a subsys_initcall() to register cpuhp
-> > callbacks. The callbacks make use of get_cpu_device() which will return
-> > NULL unless register_cpu() has been called. register_cpu() is called
-> > from topology_init(), which is also a subsys_initcall().
-> > 
-> > This is fragile. Moving the register_cpu() to a different
-> > subsys_initcall()  leads to a NULL dereference during boot.
-> > 
-> > Make intel_epb_init() a late_initcall(), user-space can't provide a
-> > policy before this point anyway.
-> > 
-> > Signed-off-by: James Morse <james.morse@arm.com>
-> > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+>> Il 28/11/23 15:06, Boris Brezillon ha scritto:
+>>> On Tue, 28 Nov 2023 13:45:10 +0100
+>>> AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>>> wrote:
+>>>    
+>>>> To make sure that we don't unintentionally perform any unclocked and/or
+>>>> unpowered R/W operation on GPU registers, before turning off clocks and
+>>>> regulators we must make sure that no GPU, JOB or MMU ISR execution is
+>>>> pending: doing that required to add a mechanism to synchronize the
+>>>> interrupts on suspend.
+>>>>
+>>>> Add functions panfrost_{gpu,job,mmu}_suspend_irq() which will perform
+>>>> interrupts masking and ISR execution synchronization, and then call
+>>>> those in the panfrost_device_runtime_suspend() handler in the exact
+>>>> sequence of job (may require mmu!) -> mmu -> gpu.
+>>>>
+>>>> As a side note, JOB and MMU suspend_irq functions needed some special
+>>>> treatment: as their interrupt handlers will unmask interrupts, it was
+>>>> necessary to add a bitmap for "is_suspending" which is used to address
+>>>> the possible corner case of unintentional IRQ unmasking because of ISR
+>>>> execution after a call to synchronize_irq().
+>>>>
+>>>> Of course, unmasking the interrupts is being done as part of the reset
+>>>> happening during runtime_resume(): since we're anyway resuming all of
+>>>> GPU, JOB, MMU, the only additional action is to zero out the newly
+>>>> introduced `is_suspending` bitmap directly in the resume handler, as
+>>>> to avoid adding panfrost_{job,mmu}_resume_irq() function just for
+>>>> clearing own bits, especially because it currently makes way more sense
+>>>> to just zero out the bitmap.
+>>>>
+>>>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>>>> ---
+>>>>    drivers/gpu/drm/panfrost/panfrost_device.c |  4 ++++
+>>>>    drivers/gpu/drm/panfrost/panfrost_device.h |  7 +++++++
+>>>>    drivers/gpu/drm/panfrost/panfrost_gpu.c    |  7 +++++++
+>>>>    drivers/gpu/drm/panfrost/panfrost_gpu.h    |  1 +
+>>>>    drivers/gpu/drm/panfrost/panfrost_job.c    | 18 +++++++++++++++---
+>>>>    drivers/gpu/drm/panfrost/panfrost_job.h    |  1 +
+>>>>    drivers/gpu/drm/panfrost/panfrost_mmu.c    | 17 ++++++++++++++---
+>>>>    drivers/gpu/drm/panfrost/panfrost_mmu.h    |  1 +
+>>>>    8 files changed, 50 insertions(+), 6 deletions(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
+>>>> index c90ad5ee34e7..ed34aa55a7da 100644
+>>>> --- a/drivers/gpu/drm/panfrost/panfrost_device.c
+>>>> +++ b/drivers/gpu/drm/panfrost/panfrost_device.c
+>>>> @@ -407,6 +407,7 @@ static int panfrost_device_runtime_resume(struct device *dev)
+>>>>    {
+>>>>    	struct panfrost_device *pfdev = dev_get_drvdata(dev);
+>>>>    
+>>>> +	bitmap_zero(pfdev->is_suspending, PANFROST_COMP_BIT_MAX);
+>>>
+>>> I would let each sub-block clear their bit in the reset path, since
+>>> that's where the IRQs are effectively unmasked.
+>>>    
+>>
+>>
+>> Honestly I wouldn't like seeing that: the reason is that this is something that
+>> is done *for* suspend/resume and only for that, while reset may be called out of
+>> the suspend/resume handlers.
+>>
+>> I find clearing the suspend bits in the HW reset path a bit confusing, especially
+>> when it is possible to avoid doing it there...
 > 
-> Seems reasonable. FWIW
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Well, I do think it's preferable to keep the irq_is_no_longer_suspended
+> state update where the interrupt is effectively unmasked. Note that
+> when you do a reset, the IRQ is silently suspended just after the
+> reset happens, because the xxx_INT_MASKs are restored to their default
+> value, so I do consider that clearing this bit in the reset path makes
+> sense.
+> 
 
-Thanks, however this has already been merged into the tip tree since
-Rafael suggested sending it separately.
+Okay then, I can move it, no problem.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+>>
+>>>>    	panfrost_device_reset(pfdev);
+>>>>    	panfrost_devfreq_resume(pfdev);
+>>>>    
+>>>> @@ -421,6 +422,9 @@ static int panfrost_device_runtime_suspend(struct device *dev)
+>>>>    		return -EBUSY;
+>>>>    
+>>>>    	panfrost_devfreq_suspend(pfdev);
+>>>> +	panfrost_job_suspend_irq(pfdev);
+>>>> +	panfrost_mmu_suspend_irq(pfdev);
+>>>> +	panfrost_gpu_suspend_irq(pfdev);
+>>>>    	panfrost_gpu_power_off(pfdev);
+>>>>    
+>>>>    	return 0;
+>>>> diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
+>>>> index 54a8aad54259..29f89f2d3679 100644
+>>>> --- a/drivers/gpu/drm/panfrost/panfrost_device.h
+>>>> +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
+>>>> @@ -25,6 +25,12 @@ struct panfrost_perfcnt;
+>>>>    #define NUM_JOB_SLOTS 3
+>>>>    #define MAX_PM_DOMAINS 5
+>>>>    
+>>>> +enum panfrost_drv_comp_bits {
+>>>> +	PANFROST_COMP_BIT_MMU,
+>>>> +	PANFROST_COMP_BIT_JOB,
+>>>> +	PANFROST_COMP_BIT_MAX
+>>>> +};
+>>>> +
+>>>>    /**
+>>>>     * enum panfrost_gpu_pm - Supported kernel power management features
+>>>>     * @GPU_PM_CLK_DIS:  Allow disabling clocks during system suspend
+>>>> @@ -109,6 +115,7 @@ struct panfrost_device {
+>>>>    
+>>>>    	struct panfrost_features features;
+>>>>    	const struct panfrost_compatible *comp;
+>>>> +	DECLARE_BITMAP(is_suspending, PANFROST_COMP_BIT_MAX);
+>>>
+>>> nit: Maybe s/is_suspending/suspended_irqs/, given the state remains
+>>> until the device is resumed.
+>>
+>> If we keep the `is_suspending` name, we can use this one more generically in
+>> case we ever need to, what do you think?
+> 
+> I'm lost. Why would we want to reserve a name for something we don't
+> know about? My comment was mostly relating to the fact this bitmap
+> doesn't reflect the is_suspending state, but rather is_suspended,
+> because it remains set until the device is resumed. And we actually want
+> it to reflect the is_suspended state, so we can catch interrupts that
+> are not for us without reading regs in the hard irq handler, when the
+> GPU is suspended.
+
+`is_suspended` (fun story: that's the first name I gave it) looks good to me,
+the doubt I raised was about calling it `suspended_irqs` instead, as I would
+prefer to keep names "more generic", but that's just personal preference at
+this point anyway.
+
+Cheers,
+Angelo
+
