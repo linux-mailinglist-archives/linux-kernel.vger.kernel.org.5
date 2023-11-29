@@ -2,109 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F637FD4A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:46:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D0C7FD497
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:44:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbjK2KqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 05:46:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41952 "EHLO
+        id S229941AbjK2Kob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 05:44:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230302AbjK2KqC (ORCPT
+        with ESMTP id S229509AbjK2Koa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 05:46:02 -0500
-X-Greylist: delayed 61 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 29 Nov 2023 02:46:06 PST
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2773E10C4
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:46:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701254766; x=1732790766;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=tAA3JyoOSCo+TNAdr+NmsuknLSEqhg5tDenfDzhMgHs=;
-  b=GAPqjh1RAaije5PwTqSzzY7A721NWyt0F5BKyyiu3/CUp9oOdZW7FUzP
-   kH2ERWOqXBns9Ptc0Ox917GMJUivn4l2qod4d0n5tlKeY0ufmnnA/i9/9
-   LdmsJ4VDozsmhfqNRydJkaLWtRXADZqZqRG7IylkP/8cI/e//3YJSEGZR
-   alZ87y5tbZZdAYfSEvM/4u8loooteRf0awFh1g/VrVBxzS3G7xzDmJZ5R
-   iBaM6wY8SA9faohvelCSH0i5RoSYaW/0p5bxOtULruMZeVQBCcwZId4f9
-   Ul3lKEip+BB2tXLbuUZljHjZHUIVDisn+poFNZNRrXWQRIIHhtQ7MnGCY
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="29530"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="29530"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 02:45:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="834969699"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="834969699"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 29 Nov 2023 02:45:02 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r8I3w-00006G-0l;
-        Wed, 29 Nov 2023 10:45:00 +0000
-Date:   Wed, 29 Nov 2023 18:44:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Subject: drivers/remoteproc/stm32_rproc.c:139:20: sparse: sparse: incorrect
- type in argument 1 (different address spaces)
-Message-ID: <202311291623.yfI5obiT-lkp@intel.com>
+        Wed, 29 Nov 2023 05:44:30 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DF7D5DC;
+        Wed, 29 Nov 2023 02:44:35 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BB5532F4;
+        Wed, 29 Nov 2023 02:45:22 -0800 (PST)
+Received: from raptor (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5B7453F5A1;
+        Wed, 29 Nov 2023 02:44:30 -0800 (PST)
+Date:   Wed, 29 Nov 2023 10:44:27 +0000
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
+        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
+        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
+        rppt@kernel.org, hughd@google.com, pcc@google.com,
+        steven.price@arm.com, anshuman.khandual@arm.com,
+        vincenzo.frascino@arm.com, eugenis@google.com, kcc@google.com,
+        hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC v2 12/27] arm64: mte: Add tag storage pages to the
+ MIGRATE_CMA migratetype
+Message-ID: <ZWcWC5x4mYpov1SL@raptor>
+References: <20231119165721.9849-1-alexandru.elisei@arm.com>
+ <20231119165721.9849-13-alexandru.elisei@arm.com>
+ <c49cd89d-41cf-495b-9b96-4434ab407967@redhat.com>
+ <ZWSvMYMjFLFZ-abv@raptor>
+ <2aafd53f-af1f-45f3-a08c-d11962254315@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <2aafd53f-af1f-45f3-a08c-d11962254315@redhat.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   18d46e76d7c2eedd8577fae67e3f1d4db25018b0
-commit: 03bd158e1535e68bcd2b1e095b0ebcad7c84bd20 remoteproc: stm32: use correct format strings on 64-bit
-date:   5 months ago
-config: microblaze-randconfig-r034-20230909 (https://download.01.org/0day-ci/archive/20231129/202311291623.yfI5obiT-lkp@intel.com/config)
-compiler: microblaze-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20231129/202311291623.yfI5obiT-lkp@intel.com/reproduce)
+Hi,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311291623.yfI5obiT-lkp@intel.com/
+On Tue, Nov 28, 2023 at 06:03:52PM +0100, David Hildenbrand wrote:
+> On 27.11.23 16:01, Alexandru Elisei wrote:
+> > Hi David,
+> > 
+> > On Fri, Nov 24, 2023 at 08:40:55PM +0100, David Hildenbrand wrote:
+> > > On 19.11.23 17:57, Alexandru Elisei wrote:
+> > > > Add the MTE tag storage pages to the MIGRATE_CMA migratetype, which allows
+> > > > the page allocator to manage them like regular pages.
+> > > > 
+> > > > Ths migratype lends the pages some very desirable properties:
+> > > > 
+> > > > * They cannot be longterm pinned, meaning they will always be migratable.
+> > > > 
+> > > > * The pages can be allocated explicitely by using their PFN (with
+> > > >     alloc_contig_range()) when they are needed to store tags.
+> > > > 
+> > > > Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> > > > ---
+> > > >    arch/arm64/Kconfig                  |  1 +
+> > > >    arch/arm64/kernel/mte_tag_storage.c | 68 +++++++++++++++++++++++++++++
+> > > >    include/linux/mmzone.h              |  5 +++
+> > > >    mm/internal.h                       |  3 --
+> > > >    4 files changed, 74 insertions(+), 3 deletions(-)
+> > > > 
+> > > > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> > > > index fe8276fdc7a8..047487046e8f 100644
+> > > > --- a/arch/arm64/Kconfig
+> > > > +++ b/arch/arm64/Kconfig
+> > > > @@ -2065,6 +2065,7 @@ config ARM64_MTE
+> > > >    if ARM64_MTE
+> > > >    config ARM64_MTE_TAG_STORAGE
+> > > >    	bool "Dynamic MTE tag storage management"
+> > > > +	select CONFIG_CMA
+> > > >    	help
+> > > >    	  Adds support for dynamic management of the memory used by the hardware
+> > > >    	  for storing MTE tags. This memory, unlike normal memory, cannot be
+> > > > diff --git a/arch/arm64/kernel/mte_tag_storage.c b/arch/arm64/kernel/mte_tag_storage.c
+> > > > index fa6267ef8392..427f4f1909f3 100644
+> > > > --- a/arch/arm64/kernel/mte_tag_storage.c
+> > > > +++ b/arch/arm64/kernel/mte_tag_storage.c
+> > > > @@ -5,10 +5,12 @@
+> > > >     * Copyright (C) 2023 ARM Ltd.
+> > > >     */
+> > > > +#include <linux/cma.h>
+> > > >    #include <linux/memblock.h>
+> > > >    #include <linux/mm.h>
+> > > >    #include <linux/of_device.h>
+> > > >    #include <linux/of_fdt.h>
+> > > > +#include <linux/pageblock-flags.h>
+> > > >    #include <linux/range.h>
+> > > >    #include <linux/string.h>
+> > > >    #include <linux/xarray.h>
+> > > > @@ -189,6 +191,14 @@ static int __init fdt_init_tag_storage(unsigned long node, const char *uname,
+> > > >    		return ret;
+> > > >    	}
+> > > > +	/* Pages are managed in pageblock_nr_pages chunks */
+> > > > +	if (!IS_ALIGNED(tag_range->start | range_len(tag_range), pageblock_nr_pages)) {
+> > > > +		pr_err("Tag storage region 0x%llx-0x%llx not aligned to pageblock size 0x%llx",
+> > > > +		       PFN_PHYS(tag_range->start), PFN_PHYS(tag_range->end),
+> > > > +		       PFN_PHYS(pageblock_nr_pages));
+> > > > +		return -EINVAL;
+> > > > +	}
+> > > > +
+> > > >    	ret = tag_storage_get_memory_node(node, &mem_node);
+> > > >    	if (ret)
+> > > >    		return ret;
+> > > > @@ -254,3 +264,61 @@ void __init mte_tag_storage_init(void)
+> > > >    		pr_info("MTE tag storage region management disabled");
+> > > >    	}
+> > > >    }
+> > > > +
+> > > > +static int __init mte_tag_storage_activate_regions(void)
+> > > > +{
+> > > > +	phys_addr_t dram_start, dram_end;
+> > > > +	struct range *tag_range;
+> > > > +	unsigned long pfn;
+> > > > +	int i, ret;
+> > > > +
+> > > > +	if (num_tag_regions == 0)
+> > > > +		return 0;
+> > > > +
+> > > > +	dram_start = memblock_start_of_DRAM();
+> > > > +	dram_end = memblock_end_of_DRAM();
+> > > > +
+> > > > +	for (i = 0; i < num_tag_regions; i++) {
+> > > > +		tag_range = &tag_regions[i].tag_range;
+> > > > +		/*
+> > > > +		 * Tag storage region was clipped by arm64_bootmem_init()
+> > > > +		 * enforcing addressing limits.
+> > > > +		 */
+> > > > +		if (PFN_PHYS(tag_range->start) < dram_start ||
+> > > > +				PFN_PHYS(tag_range->end) >= dram_end) {
+> > > > +			pr_err("Tag storage region 0x%llx-0x%llx outside addressable memory",
+> > > > +			       PFN_PHYS(tag_range->start), PFN_PHYS(tag_range->end));
+> > > > +			ret = -EINVAL;
+> > > > +			goto out_disabled;
+> > > > +		}
+> > > > +	}
+> > > > +
+> > > > +	/*
+> > > > +	 * MTE disabled, tag storage pages can be used like any other pages. The
+> > > > +	 * only restriction is that the pages cannot be used by kexec because
+> > > > +	 * the memory remains marked as reserved in the memblock allocator.
+> > > > +	 */
+> > > > +	if (!system_supports_mte()) {
+> > > > +		for (i = 0; i< num_tag_regions; i++) {
+> > > > +			tag_range = &tag_regions[i].tag_range;
+> > > > +			for (pfn = tag_range->start; pfn <= tag_range->end; pfn++)
+> > > > +				free_reserved_page(pfn_to_page(pfn));
+> > > > +		}
+> > > > +		ret = 0;
+> > > > +		goto out_disabled;
+> > > > +	}
+> > > > +
+> > > > +	for (i = 0; i < num_tag_regions; i++) {
+> > > > +		tag_range = &tag_regions[i].tag_range;
+> > > > +		for (pfn = tag_range->start; pfn <= tag_range->end; pfn += pageblock_nr_pages)
+> > > > +			init_cma_reserved_pageblock(pfn_to_page(pfn));
+> > > > +		totalcma_pages += range_len(tag_range);
+> > > > +	}
+> > > 
+> > > You shouldn't be doing that manually in arm code. Likely you want some cma.c
+> > > helper for something like that.
+> > 
+> > If you referring to the last loop (the one that does
+> > ini_cma_reserved_pageblock()), indeed, there's already a function which
+> > does that, cma_init_reserved_areas() -> cma_activate_area().
+> > 
+> > > 
+> > > But, can you elaborate on why you took this hacky (sorry) approach as
+> > > documented in the cover letter:
+> > 
+> > No worries, it is indeed a bit hacky :)
+> > 
+> > > 
+> > > "The arm64 code manages this memory directly instead of using
+> > > cma_declare_contiguous/cma_alloc for performance reasons."
+> > > 
+> > > What is the exact problem?
+> > 
+> > I am referring to the performance degredation that is fixed in patch #26,
+> > "arm64: mte: Fast track reserving tag storage when the block is free" [1].
+> > The issue is that alloc_contig_range() -> __alloc_contig_migrate_range()
+> > calls lru_cache_disable(), which IPIs all the CPUs in the system, and that
+> > leads to a 10-20% performance degradation on Chrome. It has been observed
+> > that most of the time the tag storage pages are free, and the
+> > lru_cache_disable() calls are unnecessary.
+> 
+> This sounds like something eventually worth integrating into
+> CMA/alloc_contig_range(). Like, a fast path to check if we are only
+> allocating something small (e.g., falls within a single pageblock), and if
+> the page is free.
+> 
+> > 
+> > The performance degradation is almost entirely eliminated by having the code
+> > take the tag storage page directly from the free list if it's free, instead
+> > of calling alloc_contig_range().
+> > 
+> > Do you believe it would be better to use the cma code, and modify it to use
+> > this fast path to take the page drectly from the buddy allocator?
+> 
+> That sounds reasonable yes. Do you see any blockers for that?
 
-sparse warnings: (new ones prefixed by >>)
-   drivers/remoteproc/stm32_rproc.c:122:12: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *va @@     got void [noderef] __iomem * @@
-   drivers/remoteproc/stm32_rproc.c:122:12: sparse:     expected void *va
-   drivers/remoteproc/stm32_rproc.c:122:12: sparse:     got void [noderef] __iomem *
->> drivers/remoteproc/stm32_rproc.c:139:20: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got void *va @@
-   drivers/remoteproc/stm32_rproc.c:139:20: sparse:     expected void volatile [noderef] __iomem *addr
-   drivers/remoteproc/stm32_rproc.c:139:20: sparse:     got void *va
-   drivers/remoteproc/stm32_rproc.c:644:17: sparse: sparse: cast removes address space '__iomem' of expression
+I have been looking at the CMA code, and nothing stands out. I'll try changing
+the code to use cma_alloc/cma_release for the next iteration.
 
-vim +139 drivers/remoteproc/stm32_rproc.c
+> 
+> > 
+> > I can definitely try to integrate the code with cma_alloc(), but I think
+> > keeping the fast path for reserving tag storage is extremely desirable,
+> > since it makes such a huge difference to performance.
+> 
+> Yes, but let's try finding a way to optimize common code, to eventually
+> improve some CMA cases as well? :)
 
-13140de09cc2dd Fabien Dessenne 2019-05-14  134  
-13140de09cc2dd Fabien Dessenne 2019-05-14  135  static int stm32_rproc_mem_release(struct rproc *rproc,
-13140de09cc2dd Fabien Dessenne 2019-05-14  136  				   struct rproc_mem_entry *mem)
-13140de09cc2dd Fabien Dessenne 2019-05-14  137  {
-13140de09cc2dd Fabien Dessenne 2019-05-14  138  	dev_dbg(rproc->dev.parent, "unmap memory: %pa\n", &mem->dma);
-13140de09cc2dd Fabien Dessenne 2019-05-14 @139  	iounmap(mem->va);
-13140de09cc2dd Fabien Dessenne 2019-05-14  140  
-13140de09cc2dd Fabien Dessenne 2019-05-14  141  	return 0;
-13140de09cc2dd Fabien Dessenne 2019-05-14  142  }
-13140de09cc2dd Fabien Dessenne 2019-05-14  143  
+Sounds good, I'll try to integrate the fast path code to cma_alloc(), that way
+existing callers can benefit from it immediately.
 
-:::::: The code at line 139 was first introduced by commit
-:::::: 13140de09cc2dd5e5166ad42292bb82af4e23cef remoteproc: stm32: add an ST stm32_rproc driver
+Thanks,
+Alex
 
-:::::: TO: Fabien Dessenne <fabien.dessenne@st.com>
-:::::: CC: Bjorn Andersson <bjorn.andersson@linaro.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> 
+> -- 
+> Cheers,
+> 
+> David / dhildenb
+> 
