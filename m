@@ -2,218 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9859C7FDF36
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 19:20:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A0D7FDF38
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 19:22:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbjK2SUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 13:20:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47298 "EHLO
+        id S231453AbjK2SVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 13:21:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230317AbjK2SUc (ORCPT
+        with ESMTP id S230081AbjK2SVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 13:20:32 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2FBEB6
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 10:20:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701282039; x=1732818039;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=sTyMsbuQ29XuFRsmsh7TyABKr/lHGBDM3cuS7bGFH/w=;
-  b=RCcDDE4dbYVlvKgENGc+qaNCTqkL8HySCpZIX9veo7XHJ8XgH9Eqn+6x
-   LKsV+GJBcDb2xA0zi0kyCgoLsF2HsUssxjbOACDJamneWVeelY2Bpr7SP
-   dLRNft+QV6hRcsw3ZAZdgV5UrjEBldUUXLoJMJ4OBuiruLdYJLN/wSW60
-   G2R3WUSKNYuazQkj5qF14JQ+Jv8RFgnI2xBfUxOtsvP9uwHbQihb/YriZ
-   1d7SXNTPaeLdkFVgkN5Jqa9ok1qvOfpknCZzaO9ZoKATw6ggfWfGOE5XD
-   i+lmD3O1AMy9kaMzJXwmFmlIOFmrTJO5YpVbAdm3NHNt9pj3pEcfyw06c
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="189978"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="189978"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 10:20:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="772769076"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="772769076"
-Received: from npandey-mobl.amr.corp.intel.com (HELO [10.212.143.94]) ([10.212.143.94])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 10:20:31 -0800
-Message-ID: <4afd33ba-6b7c-415f-b9ef-964a2fc840d8@intel.com>
-Date:   Wed, 29 Nov 2023 10:20:31 -0800
+        Wed, 29 Nov 2023 13:21:50 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D96A6B6
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 10:21:56 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-5098e423ba2so147770e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 10:21:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701282115; x=1701886915; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nNuPgKhDMKw80uiT85WqUBhO+7U/KHdwtlx8g1D/Ez4=;
+        b=dzj/PVR31C56wdQYnpVQY+D9JI3CkomWOw7np5QUwh7e8U0cE7N12Bs0znvHINPuXy
+         yUIw14gd1iN08xRSe93PZxvgIzqZi1kB1WWh691jm+5vfi1BNN/kRpvNQTrOmRXGHbxB
+         aplVpvtDGi9WXzZW47vK2hLnZIOtlcDrED4idJQHl8CNEMstLUdjD6zlDByuGQ3n35Kr
+         DH9FB6S7Zm6znBoVq3vmA7xH/Cn8JAtM3iRaqBzOMVlkqM4xT4uaJdn0OmQyCQruWcOK
+         a362eC0mf0BpHs5C5iZo1GQJzBqjy7pVxGQSYF8kqRLDRJpwl34woQqKSjzZkGSRtZ0a
+         uJ0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701282115; x=1701886915;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nNuPgKhDMKw80uiT85WqUBhO+7U/KHdwtlx8g1D/Ez4=;
+        b=jPhgVEGhePvaUzW9On8UwL/VlQ7b9athyfCl+OdDTezou+7iblEQ99Kk4LbEqv+08r
+         25gz86G2NzWeCwXEFMYnnIEDtE26RChqqDZzMCMz7yifO3LQz3PUQNk0sCRRzBwG4qek
+         qp048TbSgeA7o1tNDWItkRDfyp3JnH+Jj03zvI5tUa8E6F66zw8PfgGlazi8MxDXsiCX
+         pwieWhAN3hg2RrYHmzROg9bdKPbBL6YSUUCf1aqqQN8AGs7A3ZGsm0q//GTDzcJu0kz7
+         QKn7Wtn26ienpM3x2mFGRyfdCvTQqe8Y3deBpnLToZEiyHOnRd0l8crYQuh+pn5XnSv/
+         kiAg==
+X-Gm-Message-State: AOJu0Yzlsp1dMIodzFaw64i/PQ0Fjcj+LQ0op3egMooyu2kTjEJDPYtO
+        ELVt4CdZaSbEU9sxZ55+mM2A1g==
+X-Google-Smtp-Source: AGHT+IFqkXir0yMNo4WlvHXSFsKouuLysrWRfeYdK/tqF7ZvNNadMknVBKVHogi0sZlUOEooHchfbg==
+X-Received: by 2002:ac2:4887:0:b0:50b:c970:cc9b with SMTP id x7-20020ac24887000000b0050bc970cc9bmr653271lfc.61.1701282114687;
+        Wed, 29 Nov 2023 10:21:54 -0800 (PST)
+Received: from [192.168.209.83] (178235187166.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.166])
+        by smtp.gmail.com with ESMTPSA id sd22-20020a170906ce3600b009fc576e26e6sm8119002ejb.80.2023.11.29.10.21.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Nov 2023 10:21:54 -0800 (PST)
+Message-ID: <791d7271-87a4-4ce9-9beb-e8c3ef235737@linaro.org>
+Date:   Wed, 29 Nov 2023 19:21:51 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Documentation/x86: Document what /proc/cpuinfo is for
+Subject: Re: [PATCH 5/5] ASoC: codecs: Add WCD939x Codec driver
 Content-Language: en-US
-To:     Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-References: <20231129101700.28482-1-bp@alien8.de>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <20231129101700.28482-1-bp@alien8.de>
+To:     neil.armstrong@linaro.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231123-topic-sm8650-upstream-wcd939x-codec-v1-0-21d4ad9276de@linaro.org>
+ <20231123-topic-sm8650-upstream-wcd939x-codec-v1-5-21d4ad9276de@linaro.org>
+ <ad9a7c4b-82f4-4347-b4dd-a394e4ba95f0@linaro.org>
+ <42a6f6e0-2846-4cdc-8702-493fadbafb98@linaro.org>
+ <eaa034cb-06e8-4204-befa-4389bcb7d9e8@linaro.org>
+ <0140f49d-c463-4011-8159-f4e56466e6bd@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <0140f49d-c463-4011-8159-f4e56466e6bd@linaro.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/29/23 02:17, Borislav Petkov wrote:
-> From: "Borislav Petkov (AMD)" <bp@alien8.de>
+On 29.11.2023 16:12, neil.armstrong@linaro.org wrote:
+> On 29/11/2023 14:46, Konrad Dybcio wrote:
+>> On 28.11.2023 16:01, Neil Armstrong wrote:
+>>> On 25/11/2023 13:07, Konrad Dybcio wrote:
+>>>
+>>> <snip>
+>>>
+>>>>> +
+>>>>> +static int wcd939x_io_init(struct snd_soc_component *component)
+>>>>> +{
+>>>>> +    snd_soc_component_write_field(component, WCD939X_ANA_BIAS,
+>>>>> +                      WCD939X_BIAS_ANALOG_BIAS_EN, 1);
+>>>> All of these values are BIT()s or 2-4 ORed BIT()s, can you check what they
+>>>> mean?
+>>>>
+>>>> Same for almost all other snd_soc_component_ write/modify functions
+>>>
+>>> It uses snd_soc_component_write_field() with is the same as
+>>> regmap_write_bits(REGISTER, REGISTER_MASK,
+>>>                    FIELD_PREP(REGISTER_MASK, value);
+>>>
+>>> So the 1 mean write in enable mask in this case, and mask is single bit,
+>>> read it exactly like if it was using FIELD_PREP(), but even for BITs.
+>>>
+>>> I did check every single snd_soc_component_write_field() so far to check
+>>> it matches.
+>>>
+>>> Or it's another question ?
+>> What I wanted to ask is whether it's possible to #define these magic
+>> values within these fields
 > 
-> This has been long overdue. Write down what x86's version of
-> /proc/cpuinfo is and should be used for.
+> OK, so most of writes are to boolean enable bits, I can use true/false
+> instead of 0 & 1 for those, would it be more readable ?
+Yes, I think that would convey their meaning quite well
+
 > 
-> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-> ---
->  Documentation/arch/x86/cpuinfo.rst | 79 ++++++++++++++++++++++--------
->  1 file changed, 58 insertions(+), 21 deletions(-)
+> For the rest, those a integer values to a field, those are not bitmasks
+> and I do not have the definition of the values.
 > 
-> diff --git a/Documentation/arch/x86/cpuinfo.rst b/Documentation/arch/x86/cpuinfo.rst
-> index 08246e8ac835..cede6aad27c0 100644
-> --- a/Documentation/arch/x86/cpuinfo.rst
-> +++ b/Documentation/arch/x86/cpuinfo.rst
-> @@ -7,27 +7,64 @@ x86 Feature Flags
->  Introduction
->  ============
->  
-> -On x86, flags appearing in /proc/cpuinfo have an X86_FEATURE definition
-> -in arch/x86/include/asm/cpufeatures.h. If the kernel cares about a feature
-> -or KVM want to expose the feature to a KVM guest, it can and should have
-> -an X86_FEATURE_* defined. These flags represent hardware features as
-> -well as software features.
-> -
-> -If users want to know if a feature is available on a given system, they
-> -try to find the flag in /proc/cpuinfo. If a given flag is present, it
-> -means that the kernel supports it and is currently making it available.
-> -If such flag represents a hardware feature, it also means that the
-> -hardware supports it.
-> -
-> -If the expected flag does not appear in /proc/cpuinfo, things are murkier.
-> -Users need to find out the reason why the flag is missing and find the way
-> -how to enable it, which is not always easy. There are several factors that
-> -can explain missing flags: the expected feature failed to enable, the feature
-> -is missing in hardware, platform firmware did not enable it, the feature is
-> -disabled at build or run time, an old kernel is in use, or the kernel does
-> -not support the feature and thus has not enabled it. In general, /proc/cpuinfo
-> -shows features which the kernel supports. For a full list of CPUID flags
-> -which the CPU supports, use tools/arch/x86/kcpuid.
-> +The list of feature flags in /proc/cpuinfo is not complete and
-> +represents an ill-fated attempt from long time ago to put feature flags
-> +in an easy to find place for userspace.
-> +
-> +However, the amount of feature flags is growing by the CPU generation,
-> +leading to unparseable and unwieldy /proc/cpuinfo.
-> +
-> +What is more, those feature flags do not even need to be in that file
-> +because userspace doesn't care about them - glibc et al already use
-> +CPUID to find out what the target machine supports and what not.
-> +
-> +And even if it doesn't show a particular feature flag - although the CPU
-> +still does have support for the respective hardware functionality and
-> +said CPU supports CPUID faulting - userspace can simply probe for the
-> +feature and figure out if it is supported or not, regardless of whether
-> +it is being advertized somewhere.
+> I did a full cleanup and tried to define as much as possible,
+> there were still lot of places where not defined bitmasks we used,
+> but there's still some integer values, but I think it's acceptable.
+No worries, what you say already sounds very cool!
 
-		^ advertised
-
-> +Furthermore, those flag strings become an ABI the moment they appear
-> +there and maintaining them forever when nothing even uses them is a lot
-> +of wasted effort.
-> +
-> +So, the current use of /proc/cpuinfo is to show features which the
-> +kernel has *enabled* and supports. As in: the CPUID feature flag is
-> +there, there's an additional setup which the kernel has done while
-> +booting and the functionality is there and ready to use. A perfect
-> +example for that is "user_shstk" where additional code enablement is
-> +present in the kernel to support shadow stack for user programs.
-> +
-> +So, if users want to know if a feature is available on a given system,
-> +they try to find the flag in /proc/cpuinfo. If a given flag is present,
-> +it means
-
-Just rephrasing the meanings, I think I'd say that it means:
-
-all of the following:
-
- * The kernel knows about the feature enough to have an X86_FEATURE_ bit
- * The kernel supports it and is currently making it available either to
-   userspace or some other part of the kernel
- * If the flag represents a hardware feature the hardware supports it
-
-> +If the expected flag does not appear in /proc/cpuinfo, things are
-> +murkier.  Users need to find out the reason why the flag is missing and
-> +find the way how to enable it, which is not always easy.
-> +
-> +There are several factors that can explain missing flags: the expected
-> +feature failed to enable, the feature is missing in hardware, platform
-> +firmware did not enable it, the feature is disabled at build or run
-> +time, an old kernel is in use, or the kernel does not support the
-> +feature and thus has not enabled it. In general, /proc/cpuinfo shows
-> +features which the kernel supports. For a full list of CPUID flags which
-> +the CPU supports, use tools/arch/x86/kcpuid.
-
-Could we trim this down a bit?  Maybe concentrate on one example and
-then just jump to the takeaway:
-
-The absence of a flag in /proc/cpuinfo by itself means almost nothing to
-an end user.  A feature like "vaes" might be fully available to user
-applications on an kernel that has not defined X86_FEATURE_VAES and thus
-there is no "vaes" in /proc/cpuinfo.
-
-On the other hand, a new kernel running on non-VAES hardware would also
-have no "vaes" in /proc/cpuinfo.  There's no way for an application or
-user to tell the difference.
-
-The end result is that the flags field in /proc/cpuinfo is marginally
-useful for kernel debugging, but not really for anything else.
-Applications should instead use things like the glibc facilities for
-querying CPU support.  Users should rely on tools like
-tools/arch/x86/kcpuid and cpuid(1).
+Konrad
