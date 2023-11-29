@@ -2,164 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD647FD539
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:14:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10AE07FD538
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:14:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232447AbjK2LN6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Nov 2023 06:13:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37072 "EHLO
+        id S231948AbjK2LNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 06:13:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232801AbjK2LNk (ORCPT
+        with ESMTP id S232799AbjK2LNj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 06:13:40 -0500
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C9BD271D;
-        Wed, 29 Nov 2023 03:10:50 -0800 (PST)
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5c08c47c055so65164407b3.1;
-        Wed, 29 Nov 2023 03:10:50 -0800 (PST)
+        Wed, 29 Nov 2023 06:13:39 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D493344AA
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 03:10:46 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-507a29c7eefso8650298e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 03:10:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701256245; x=1701861045; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5n2a/2E5KdJNNYUo3GWmeCj+sTZDQr2kUzeB2+OZTGU=;
+        b=dGQrJDgpaL22J1na3wRLlX1pr8VzAIXggNbC9cJZCd9kzsqLUG8kCNwSPkCOItlVl9
+         VySV9p76yHHZ2unRrq5zCZZOL6bckBu7ScruYpSC3wx1xKpcOtxdaJ7tpwOPa2IJvkF/
+         quizStJCPUqy8n/Bhffvqks3jQBD6LUB0ZdJS8IOI7WSDGicG9K6ty/Tbb2c5NYqlcyX
+         peIgBQ3wjel1QLpgB0UV4eo2HDVmprK13Aa7WP5iiJdBC/2xBmVHxXC/3R4FY2NmQg2z
+         yRi7ahvs+rhHh+eXOmrmb2CCqtPeoKbEjV4OBC9Sje1RWO/C9wf3KbxQqPb1f4gRb/gA
+         +zxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701256248; x=1701861048;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CIg/lVR/UB6jNsuQOE2z1pZZGLYqtdqMUy/N5XrA7+s=;
-        b=j+nbdeiOc68h3LVA3Aoy2C4hsk4nNwNLPR0NNmEmeCvLKu6rHi+Xq0Q1lALUmg9sZG
-         4ZjlzEcDkfxRprrK50DTrXKBHyNTEcLjsNnQ07zOkUh1zyL7Cl0D55RMsji2TsZfPaWp
-         9tcgDCdnyqU76l5RVXGnHGvfAaz/OYSNipC0xgWxw8n12rkJZwY2D+R/km4DsTJ9BT0S
-         jlNn/SmRcH2TCKJXC70vwxYzJ7jROxi/+m0gFLsW8TdqRlPHeGfkGArdjbUru23XqwGW
-         QVWpH2jrrt3NVj2s3KbL86ryfhMfXMrRXU+SujiahWGXKJkhaTTtVZnDOCXssyrrDznR
-         rH9w==
-X-Gm-Message-State: AOJu0YwBeWSFzRXuoEPp1qM71DVXkEAyKJDzNjCxTE9VncZPtoZqVZmE
-        BYAX4deyGpJSIMjPzvjmzN01xfvtx/6Gjw==
-X-Google-Smtp-Source: AGHT+IGobGQMHmqiy2cLdoyY99eiWypJdrD0bQrkSVLPAPEh8boWvFdsGyiVjYCXdWVZROMHHs/0CQ==
-X-Received: by 2002:a05:690c:2a93:b0:5ce:a930:d641 with SMTP id ek19-20020a05690c2a9300b005cea930d641mr14096395ywb.4.1701256248544;
-        Wed, 29 Nov 2023 03:10:48 -0800 (PST)
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
-        by smtp.gmail.com with ESMTPSA id t5-20020a0dd105000000b0057087e7691bsm4486383ywd.56.2023.11.29.03.10.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 03:10:47 -0800 (PST)
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-db40898721fso6138611276.3;
-        Wed, 29 Nov 2023 03:10:47 -0800 (PST)
-X-Received: by 2002:a05:6902:566:b0:d7b:90c6:683c with SMTP id
- a6-20020a056902056600b00d7b90c6683cmr19865805ybt.26.1701256247010; Wed, 29
- Nov 2023 03:10:47 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701256245; x=1701861045;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5n2a/2E5KdJNNYUo3GWmeCj+sTZDQr2kUzeB2+OZTGU=;
+        b=WLWr9xaCjRdx2zlskGkiWtBdXoEcbSnqpE99pGbNfguO59fcmJ38GuR5cqansd2lVY
+         gqkPEq+0BKNBL/ZsVTAEG5i4hHJiSKl/H7SKd2dWIhwbW0PTxgZFBJl7gVGl6upG7OKq
+         0FuGgNXN8F+BDS8/415WvMHAaiBhFadpkKUazbNiMvuHtRBppwuLJKQBegaTjj+NMOT0
+         Xfs51ZQL1QO94h6ZlKi5JUcGXRzNRb4LCHChn/PQFu+x40o1oz/1FbQMuYyMgdnRR1He
+         42Xi7UPtHHy0dxEHqpRkJq1yUgmBHQkh3/fOSCtjjYW7sQzM3W2i9E0jqtTKLYFtK9GF
+         rKJg==
+X-Gm-Message-State: AOJu0YypHyy/ZnbAAewNiAs4TaKgHB3Ixa6sD4Ks7tIIJKH2m075vrMb
+        WfmtDUh609ONQF1H4HHjBow5OQ==
+X-Google-Smtp-Source: AGHT+IFvq19Y8Thc5/IZy2Hl2YGExKF/UoiKpuXNEbxp8HskowSiNp0PsyIJIm+yqWMlWo/ngW8FKA==
+X-Received: by 2002:a05:6512:2186:b0:508:268b:b087 with SMTP id b6-20020a056512218600b00508268bb087mr9510426lft.26.1701256245015;
+        Wed, 29 Nov 2023 03:10:45 -0800 (PST)
+Received: from krzk-bin.. ([178.197.223.109])
+        by smtp.gmail.com with ESMTPSA id x13-20020a170906710d00b009b2ca104988sm7823719ejj.98.2023.11.29.03.10.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 03:10:44 -0800 (PST)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Andreas Klinger <ak@it-klinger.de>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] dt-bindings: iio: honeywell,mprls0025pa: drop ref from pressure properties
+Date:   Wed, 29 Nov 2023 12:10:41 +0100
+Message-Id: <20231129111041.26782-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231128200155.438722-1-andriy.shevchenko@linux.intel.com> <20231128200155.438722-21-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20231128200155.438722-21-andriy.shevchenko@linux.intel.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 29 Nov 2023 12:10:35 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXPPHN=G8Ej0apBch4hFWic+jWBBt1SWjgz0xD_wFw=Gw@mail.gmail.com>
-Message-ID: <CAMuHMdXPPHN=G8Ej0apBch4hFWic+jWBBt1SWjgz0xD_wFw=Gw@mail.gmail.com>
-Subject: Re: [PATCH v3 20/22] pinctrl: renesas: Convert to use grp member
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        Jianlong Huang <jianlong.huang@starfivetech.com>,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Hal Feng <hal.feng@starfivetech.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+The dtschema treats now properties with '-pascal' suffix as standard one
+and already defines $ref for them, thus the $ref should be dropped from
+the bindings.
 
-On Tue, Nov 28, 2023 at 9:04 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> Convert drivers to use grp member embedded in struct group_desc.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Thanks for your patch!
+---
 
-> --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> @@ -273,7 +273,7 @@ static int rzg2l_pinctrl_set_mux(struct pinctrl_dev *pctldev,
->         struct function_desc *func;
->         unsigned int i, *psel_val;
->         struct group_desc *group;
-> -       int *pins;
-> +       const int *pins;
+dtschema change was merged:
+https://github.com/devicetree-org/dt-schema/commit/2a1708dcf4ff0b25c4ec46304d6d6cc655c3e635
+but not yet released as new dtschema version.
 
-unsigned, as this no longer signed.
+This change should be applied once new dtschema version is released or
+Rob says otherwise.
+---
+ .../devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml | 2 --
+ 1 file changed, 2 deletions(-)
 
->
->         func = pinmux_generic_get_function(pctldev, func_selector);
->         if (!func)
-> @@ -283,9 +283,9 @@ static int rzg2l_pinctrl_set_mux(struct pinctrl_dev *pctldev,
->                 return -EINVAL;
->
->         psel_val = func->data;
-> -       pins = group->pins;
-> +       pins = group->grp.pins;
-
-> --- a/drivers/pinctrl/renesas/pinctrl-rzv2m.c
-> +++ b/drivers/pinctrl/renesas/pinctrl-rzv2m.c
-> @@ -165,7 +165,7 @@ static int rzv2m_pinctrl_set_mux(struct pinctrl_dev *pctldev,
->         struct function_desc *func;
->         unsigned int i, *psel_val;
->         struct group_desc *group;
-> -       int *pins;
-> +       const int *pins;
-
-unsigned
-
->
->         func = pinmux_generic_get_function(pctldev, func_selector);
->         if (!func)
-> @@ -175,9 +175,9 @@ static int rzv2m_pinctrl_set_mux(struct pinctrl_dev *pctldev,
->                 return -EINVAL;
->
->         psel_val = func->data;
-> -       pins = group->pins;
-> +       pins = group->grp.pins;
-
-With the above fixed:
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml b/Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml
+index b31f8120f14e..d9e903fbfd99 100644
+--- a/Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml
++++ b/Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml
+@@ -53,12 +53,10 @@ properties:
+   honeywell,pmin-pascal:
+     description:
+       Minimum pressure value the sensor can measure in pascal.
+-    $ref: /schemas/types.yaml#/definitions/uint32
+ 
+   honeywell,pmax-pascal:
+     description:
+       Maximum pressure value the sensor can measure in pascal.
+-    $ref: /schemas/types.yaml#/definitions/uint32
+ 
+   honeywell,transfer-function:
+     description: |
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.34.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
