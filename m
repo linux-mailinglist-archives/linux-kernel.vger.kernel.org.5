@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6D07FCF9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 07:59:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 339D67FCFA1
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 08:00:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229713AbjK2G7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 01:59:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55784 "EHLO
+        id S233927AbjK2HAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 02:00:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233339AbjK2G6w (ORCPT
+        with ESMTP id S235028AbjK2G7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 01:58:52 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAEE31FDA;
-        Tue, 28 Nov 2023 22:58:51 -0800 (PST)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AT5tsdS011930;
-        Wed, 29 Nov 2023 06:58:48 GMT
+        Wed, 29 Nov 2023 01:59:43 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A24B1BC1;
+        Tue, 28 Nov 2023 22:59:36 -0800 (PST)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AT4pAvj006778;
+        Wed, 29 Nov 2023 06:59:32 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=qcppdkim1;
- bh=Q2Kq8q6gh7P2DebT7nwv4Nw8XpZ3IBF8CvrvZhe2p2s=;
- b=QHp2L2AOB4u83zCVulXId9+r7tF1XZV1F3WTEqI4GQe3lj5Iioi3wOOoEpcnIK5WBDZ2
- yfHzDRLHa62PMyf12uwTvmKqgZcE8rUK04odRnJ4knMl1Yov63BJ2vhDvPuzwOMpx/K+
- 8KrXDjTQ/KgfLiffe3sRJ64AlUueI4xjpuMHGZbh6p+8dgD0Z9TxoO9VJJy5/nAuXhiy
- G6cXCUtoELM9K+oYtEKfBgnu0j25PMfXC3B1lRoV6SahRLvNjlWVnVMSEP982SphQbhO
- 380PqokGVuoZHPYuAovnGmsdeovrU1eJfpQt0MA9Te5FhI696DEMv2at3yj+FT4W9V3A gw== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3unjdtj3av-1
+ bh=ch99cehDNHS9jBL8kgejbMfo5tor6nyCu8rUMD7i18U=;
+ b=MbknvEfS66U5mokrDDmvIdOrsENH7+wfas+wuxGSEOJR4XZHlylCTp+mSfHtre8DMSYl
+ /1R9WXi2xWTscOj9GzK2qIacw4Oy1+FVwww6OWrz3EOfW3dcWp/oGaSO8SbEUlfKueer
+ mY8NTpbOmH3RILEaOeqW1J754MBOst56hmQ7bfqA5UD6CpoaJrMM58lfPV3ws9Lw3uLM
+ wKySOqJRneXVHVtp7nrAqA4wqDrF9IQvsdNQij+ceJHN6mo8jJ0GDrtxCSYKTwgphNbG
+ IjBS4185RElCzSGHJv+axiFwnlXnCVnNHrdjOuh+PHLweNT5bncwcyO0inC5OCd3R6kk bg== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3unje1a2jg-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Nov 2023 06:58:47 +0000
+        Wed, 29 Nov 2023 06:59:31 +0000
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AT6wk1Z017068
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AT6wqVd021731
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Nov 2023 06:58:46 GMT
+        Wed, 29 Nov 2023 06:58:52 GMT
 Received: from hu-kbajaj-hyd.qualcomm.com (10.80.80.8) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 28 Nov 2023 22:58:42 -0800
+ 15.2.1118.40; Tue, 28 Nov 2023 22:58:47 -0800
 From:   Komal Bajaj <quic_kbajaj@quicinc.com>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -49,10 +49,11 @@ To:     Andy Gross <agross@kernel.org>,
 CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>,
         Komal Bajaj <quic_kbajaj@quicinc.com>,
-        "Caleb Connolly" <caleb.connolly@linaro.org>
-Subject: [PATCH v7 2/3] arm64: dts: qcom: Add base qcm6490 idp board dts
-Date:   Wed, 29 Nov 2023 12:28:15 +0530
-Message-ID: <20231129065816.26409-3-quic_kbajaj@quicinc.com>
+        "Naina Mehta" <quic_nainmeht@quicinc.com>,
+        Caleb Connolly <caleb.connolly@linaro.org>
+Subject: [PATCH v7 3/3] arm64: dts: qcom: Add base qcs6490-rb3gen2 board dts
+Date:   Wed, 29 Nov 2023 12:28:16 +0530
+Message-ID: <20231129065816.26409-4-quic_kbajaj@quicinc.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231129065816.26409-1-quic_kbajaj@quicinc.com>
 References: <20231129065816.26409-1-quic_kbajaj@quicinc.com>
@@ -64,56 +65,59 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01b.na.qualcomm.com (10.47.209.197)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: ___upEBiRlHIcWfmmqT1mMOidl_3r7oQ
-X-Proofpoint-ORIG-GUID: ___upEBiRlHIcWfmmqT1mMOidl_3r7oQ
+X-Proofpoint-GUID: 0HiWjyrEA3BvRBRh_qnErCeuYa2Z2Z13
+X-Proofpoint-ORIG-GUID: 0HiWjyrEA3BvRBRh_qnErCeuYa2Z2Z13
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-29_03,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- lowpriorityscore=0 suspectscore=0 spamscore=0 mlxscore=0 mlxlogscore=930
- impostorscore=0 priorityscore=1501 clxscore=1015 malwarescore=0
- phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311290049
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+ definitions=2023-11-29_04,2023-11-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ phishscore=0 adultscore=0 priorityscore=1501 bulkscore=0 clxscore=1015
+ mlxscore=0 mlxlogscore=999 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311290050
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DTS for Qualcomm IDP platform using QCM6490 SoC.
-This adds debug uart, eMMC and usb support along with
-regulators found on this board.
+Add DTS for Qualcomm qcs6490-rb3gen2 board which uses
+QCS6490 SoC. This adds debug uart and usb support along
+with regulators found on this board.
 
+Co-developed-by: Naina Mehta <quic_nainmeht@quicinc.com>
+Signed-off-by: Naina Mehta <quic_nainmeht@quicinc.com>
 Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
 Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 Reviewed-by: Caleb Connolly <caleb.connolly@linaro.org>
 ---
- arch/arm64/boot/dts/qcom/Makefile        |   1 +
- arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 465 +++++++++++++++++++++++
- 2 files changed, 466 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+ arch/arm64/boot/dts/qcom/Makefile            |   1 +
+ arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 452 +++++++++++++++++++
+ 2 files changed, 453 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
 
 diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index d6cb840b7050..77babebe4904 100644
+index 77babebe4904..4c0f9e4a2e5b 100644
 --- a/arch/arm64/boot/dts/qcom/Makefile
 +++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -87,6 +87,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-sony-xperia-yoshino-maple.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-sony-xperia-yoshino-poplar.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-xiaomi-sagit.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= qcm6490-fairphone-fp5.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= qcm6490-idp.dtb
+@@ -90,6 +90,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= qcm6490-fairphone-fp5.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= qcm6490-idp.dtb
  dtb-$(CONFIG_ARCH_QCOM)	+= qcs404-evb-1000.dtb
  dtb-$(CONFIG_ARCH_QCOM)	+= qcs404-evb-4000.dtb
++dtb-$(CONFIG_ARCH_QCOM)	+= qcs6490-rb3gen2.dtb
  dtb-$(CONFIG_ARCH_QCOM)	+= qdu1000-idp.dtb
-diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+ dtb-$(CONFIG_ARCH_QCOM)	+= qrb2210-rb1.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= qrb4210-rb2.dtb
+diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
 new file mode 100644
-index 000000000000..2a5631b0fa40
+index 000000000000..0beab54c051e
 --- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-@@ -0,0 +1,465 @@
++++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
+@@ -0,0 +1,452 @@
 +// SPDX-License-Identifier: BSD-3-Clause
 +/*
 + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
@@ -121,21 +125,27 @@ index 000000000000..2a5631b0fa40
 +
 +/dts-v1/;
 +
++/* PM7250B is configured to use SID8/9 */
++#define PM7250B_SID 8
++#define PM7250B_SID1 9
++
 +#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
 +#include "sc7280.dtsi"
++#include "pm7250b.dtsi"
 +#include "pm7325.dtsi"
 +#include "pm8350c.dtsi"
 +#include "pmk8350.dtsi"
 +
 +/delete-node/ &ipa_fw_mem;
++/delete-node/ &remoteproc_mpss;
 +/delete-node/ &rmtfs_mem;
 +/delete-node/ &video_mem;
 +/delete-node/ &wlan_ce_mem;
 +/delete-node/ &xbl_mem;
 +
 +/ {
-+	model = "Qualcomm Technologies, Inc. QCM6490 IDP";
-+	compatible = "qcom,qcm6490-idp", "qcom,qcm6490";
++	model = "Qualcomm Technologies, Inc. Robotics RB3gen2";
++	compatible = "qcom,qcs6490-rb3gen2", "qcom,qcm6490";
 +	chassis-type = "embedded";
 +
 +	aliases {
@@ -199,11 +209,6 @@ index 000000000000..2a5631b0fa40
 +
 +		gpu_microcode_mem: gpu-microcode@8b31a000 {
 +			reg = <0x0 0x8b31a000 0x0 0x2000>;
-+			no-map;
-+		};
-+
-+		mpss_mem: mpss@8b800000 {
-+			reg = <0x0 0x8b800000 0x0 0xf600000>;
 +			no-map;
 +		};
 +
@@ -391,9 +396,6 @@ index 000000000000..2a5631b0fa40
 +			regulator-min-microvolt = <1800000>;
 +			regulator-max-microvolt = <2000000>;
 +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+			regulator-allow-set-load;
-+			regulator-allowed-modes = <RPMH_REGULATOR_MODE_LPM
-+						   RPMH_REGULATOR_MODE_HPM>;
 +		};
 +	};
 +
@@ -529,17 +531,6 @@ index 000000000000..2a5631b0fa40
 +};
 +
 +&qupv3_id_0 {
-+	status = "okay";
-+};
-+
-+&sdhc_1 {
-+	non-removable;
-+	no-sd;
-+	no-sdio;
-+
-+	vmmc-supply = <&vreg_l7b_2p952>;
-+	vqmmc-supply = <&vreg_l19b_1p8>;
-+
 +	status = "okay";
 +};
 +
