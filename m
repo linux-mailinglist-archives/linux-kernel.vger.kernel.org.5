@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E749E7FDCC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:17:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3BE37FDCC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:16:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbjK2QRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 11:17:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36468 "EHLO
+        id S234014AbjK2QQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 11:16:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234391AbjK2QQl (ORCPT
+        with ESMTP id S234131AbjK2QQB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 11:16:41 -0500
+        Wed, 29 Nov 2023 11:16:01 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B81071FEF;
-        Wed, 29 Nov 2023 08:15:49 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB451986;
+        Wed, 29 Nov 2023 08:15:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701274551; x=1732810551;
+  t=1701274538; x=1732810538;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=sVrQMG6+2GAUAidaCzSxGKkLGLuxJJfZImVu6UcJOZo=;
-  b=FvpRglM/dN514zPcJPN7+P6tO8Kaf3jrZ3PkLEI2S9u7ycWnNMXeW7fI
-   Swbe0RyEcz/cAEI6GDscOuvm639qb3f1cQaVmpeYl6PYrDQhkuLf2cPsU
-   ZjJzFKLrHnFO7/d/i2rnFkYptDVRLr008sWGB1euG07HzRO+QvR7SV2qp
-   /mBBMJVEbIv11tZXILqQupLTs5H+fyoIUL4Uj1rNmfIPA5z5jafVpxLmP
-   CFCyh7nng599U48C7cXbaKRKvd+CmM0KadtO5IHe+n2MlyZcvD6MFkuhw
-   61ZpCdxys5bKDb8/KKFW717G5WkPCgOmOkuyNP5dguLwd1OQ3viGNsRMv
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="373372933"
+  bh=liPHDLuYbD94sAXW+HKE2PmyEtAsJEMqj1/hueiHOBE=;
+  b=irpitN9hP/LcIQCvmN+DWrudovIY1cGJWPDK0y3qCv0PCy69Votd+cMI
+   8fk+jLZyyK4QvD4dPRH0eFxgjX4kpyV2ioCZtoZULx1U9/MQMJ63QkozS
+   27kfMsd4e87Y//cdzMvRekUYKvlXPhKzhdzXVDEa6kmK//3qx2LUHt7G+
+   PYRurQbLTkVCLanH9eLbBusKMcBF9QFCvbzKwkWeQbDmNqzsZH+ctlny3
+   4GPfbuY7yj5q3Q5lJrMLiPBEKhHj1eY4ec3JJD1II0fvz2K3l+OK9WVTT
+   NwIzGEQi/negP5RRbe6ci+l8ae0TZmIzmPkU2d6J2YeLCpZNZv0ys3RjJ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="373372902"
 X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="373372933"
+   d="scan'208";a="373372902"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
   by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 08:15:32 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="892498914"
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="892498910"
 X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="892498914"
+   d="scan'208";a="892498910"
 Received: from black.fi.intel.com ([10.237.72.28])
   by orsmga004.jf.intel.com with ESMTP; 29 Nov 2023 08:15:21 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 41FFCBD5; Wed, 29 Nov 2023 18:15:02 +0200 (EET)
+        id 50423BFC; Wed, 29 Nov 2023 18:15:02 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
@@ -75,9 +75,9 @@ Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
         Emil Renner Berthing <kernel@esmil.dk>,
         Hal Feng <hal.feng@starfivetech.com>
-Subject: [PATCH v4 18/23] pinctrl: keembay: Convert to use grp member
-Date:   Wed, 29 Nov 2023 18:06:41 +0200
-Message-ID: <20231129161459.1002323-19-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v4 19/23] pinctrl: mediatek: Convert to use grp member
+Date:   Wed, 29 Nov 2023 18:06:42 +0200
+Message-ID: <20231129161459.1002323-20-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20231129161459.1002323-1-andriy.shevchenko@linux.intel.com>
 References: <20231129161459.1002323-1-andriy.shevchenko@linux.intel.com>
@@ -97,22 +97,46 @@ Convert drivers to use grp member embedded in struct group_desc.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/pinctrl/pinctrl-keembay.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pinctrl/mediatek/pinctrl-moore.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/pinctrl/pinctrl-keembay.c b/drivers/pinctrl/pinctrl-keembay.c
-index 87d328853ae4..b1349ee22799 100644
---- a/drivers/pinctrl/pinctrl-keembay.c
-+++ b/drivers/pinctrl/pinctrl-keembay.c
-@@ -945,7 +945,7 @@ static int keembay_set_mux(struct pinctrl_dev *pctldev, unsigned int fun_sel,
+diff --git a/drivers/pinctrl/mediatek/pinctrl-moore.c b/drivers/pinctrl/mediatek/pinctrl-moore.c
+index c3d59eddd994..d972584c0519 100644
+--- a/drivers/pinctrl/mediatek/pinctrl-moore.c
++++ b/drivers/pinctrl/mediatek/pinctrl-moore.c
+@@ -56,12 +56,12 @@ static int mtk_pinmux_set_mux(struct pinctrl_dev *pctldev,
  		return -EINVAL;
  
- 	/* Change modes for pins in the selected group */
--	pin = *grp->pins;
-+	pin = *grp->grp.pins;
- 	pin_mode = *(u8 *)(func->data);
+ 	dev_dbg(pctldev->dev, "enable function %s group %s\n",
+-		func->name, grp->name);
++		func->name, grp->grp.name);
  
- 	val = keembay_read_reg(kpc->base1 + KEEMBAY_GPIO_MODE, pin);
+-	for (i = 0; i < grp->num_pins; i++) {
++	for (i = 0; i < grp->grp.npins; i++) {
+ 		const struct mtk_pin_desc *desc;
+ 		int *pin_modes = grp->data;
+-		int pin = grp->pins[i];
++		int pin = grp->grp.pins[i];
+ 
+ 		desc = (const struct mtk_pin_desc *)&hw->soc->pins[pin];
+ 		if (!desc->name)
+@@ -602,13 +602,12 @@ static int mtk_build_groups(struct mtk_pinctrl *hw)
+ 
+ 	for (i = 0; i < hw->soc->ngrps; i++) {
+ 		const struct group_desc *group = hw->soc->grps + i;
++		const struct pingroup *grp = &group->grp;
+ 
+-		err = pinctrl_generic_add_group(hw->pctrl, group->name,
+-						group->pins, group->num_pins,
++		err = pinctrl_generic_add_group(hw->pctrl, grp->name, grp->pins, grp->npins,
+ 						group->data);
+ 		if (err < 0) {
+-			dev_err(hw->dev, "Failed to register group %s\n",
+-				group->name);
++			dev_err(hw->dev, "Failed to register group %s\n", grp->name);
+ 			return err;
+ 		}
+ 	}
 -- 
 2.43.0.rc1.1.gbec44491f096
 
