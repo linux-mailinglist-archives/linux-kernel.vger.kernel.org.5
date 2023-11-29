@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 515267FCB66
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 01:34:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94DD37FCB6C
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 01:35:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376679AbjK2Aeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 19:34:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55706 "EHLO
+        id S1376698AbjK2Afn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 19:35:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbjK2Aeo (ORCPT
+        with ESMTP id S1376683AbjK2Afk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 19:34:44 -0500
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C5319A6
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 16:34:51 -0800 (PST)
-Date:   Tue, 28 Nov 2023 16:34:35 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1701218089;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=eCG5NdHCzdxGKVLi7pGKuTOz+k6jebi5zet5ZX/JZ48=;
-        b=hCs4fXYaAgMAWKjmXvNJIPSN4wz1/xn8Hyz7XcidRcR5ozIfrhEmkmovPoPbatOFeyi0sR
-        f5cLYwhH4ikIcioHBYBkI7vKoibpemOsxn9lz03kIJKOsQT9Qe4lcri3b5Zvuiw3zpxZSV
-        NMtLh8oxUJgEibrBLVOJwAD1owi6AO8=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Qi Zheng <zhengqi.arch@bytedance.com>
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Linux-MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH 2/7] mm: shrinker: Add a .to_text() method for shrinkers
-Message-ID: <ZWaHG09fY2BYjyGD@P9FQF9L96D.corp.robot.car>
-References: <20231122232515.177833-1-kent.overstreet@linux.dev>
- <20231122232515.177833-3-kent.overstreet@linux.dev>
- <deed9bb1-02b9-4e89-895b-38a84e5a9408@gmail.com>
- <20231123212411.s6r5ekvkklvhwfra@moria.home.lan>
- <4caadff7-1df0-45cc-9d43-e616f9e4ddb3@bytedance.com>
- <20231125003009.tbaxuquny43uwei3@moria.home.lan>
- <76A1EE85-B62C-49B3-889C-80F9A2A88040@linux.dev>
- <20231128035345.5c7yc7jnautjpfoc@moria.home.lan>
- <abd0ddd6-389c-43dc-b18f-aa5e3a4fcf5a@bytedance.com>
+        Tue, 28 Nov 2023 19:35:40 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C0B19A6
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 16:35:46 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FD2CC433C8;
+        Wed, 29 Nov 2023 00:35:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701218146;
+        bh=CEyKgl9exP4XEknYN9UDsJmLxQMgn2xe10MjBsA+2Rk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ujwKHO23grlfzlnd0pvsWiou2vfCGyav3Rf2RrCygDfh2jSoPPcv9jNDzJRo9tP3S
+         H/Om4NjxC0ZIYNEmNoJSXekdmoT9sno3LV82jwmo3Wm4MnLi/14WEzzDq8Z1A+Gr3B
+         4GhSvp3i7COC2HRpAXHDGwrkyMPM5p6jOfewEyRPPgbloX4NRFp+ZOsnTfHiI2DzCK
+         TX05jGApV4o6HvJPeU3nJsrycy/4lreBoQf7OM+nVtsmSxC2RCBrBypqXEuh4XhPJX
+         Vt2iZ6WMcKqAA2hlgoWhnYZ/OgLsv1iGofep+vnd5mt5jMePKIHY/H8hat/HJ76GgK
+         Of3wVqe1InEjw==
+Date:   Wed, 29 Nov 2023 01:35:42 +0100
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Quan Nguyen <quan@os.amperecomputing.com>
+Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@codeconstruct.com.au>,
+        Wolfram Sang <wsa@kernel.org>,
+        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
+        Guenter Roeck <linux@roeck-us.net>, linux-i2c@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Cosmo Chou <chou.cosmo@gmail.com>,
+        Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
+Subject: Re: [PATCH v2 RESEND 1/2] i2c: aspeed: Fix unhandled Tx done with NAK
+Message-ID: <20231129003542.jfhhotebweb3uwyb@zenone.zhora.eu>
+References: <20231128075236.2724038-1-quan@os.amperecomputing.com>
+ <20231128075236.2724038-2-quan@os.amperecomputing.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <abd0ddd6-389c-43dc-b18f-aa5e3a4fcf5a@bytedance.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231128075236.2724038-2-quan@os.amperecomputing.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,67 +62,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 02:23:36PM +0800, Qi Zheng wrote:
+Hi Quan,
+
+On Tue, Nov 28, 2023 at 02:52:35PM +0700, Quan Nguyen wrote:
+> Under normal conditions, after the last byte is sent by the Slave, the
+> TX_NAK interrupt is raised.  However, it is also observed that
+> sometimes the Master issues the next transaction too quickly while the
+> Slave IRQ handler is not yet invoked and the TX_NAK interrupt for the
+> last byte of the previous READ_PROCESSED state has not been ack’ed.
+> This TX_NAK interrupt is then raised together with SLAVE_MATCH interrupt
+> and RX_DONE interrupt of the next coming transaction from Master. The
+> Slave IRQ handler currently handles the SLAVE_MATCH and RX_DONE, but
+> ignores the TX_NAK, causing complaints such as
+> "aspeed-i2c-bus 1e78a040.i2c-bus: irq handled != irq. Expected
+> 0x00000086, but was 0x00000084"
 > 
+> This commit adds code to handle this case by emitting a SLAVE_STOP event
+> for the TX_NAK before processing the RX_DONE for the coming transaction
+> from the Master.
 > 
-> On 2023/11/28 11:53, Kent Overstreet wrote:
-> > On Tue, Nov 28, 2023 at 11:27:11AM +0800, Muchun Song wrote:
-> > > 
-> > > 
-> > > > On Nov 25, 2023, at 08:30, Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> > > > 
-> > > > On Fri, Nov 24, 2023 at 11:08:11AM +0800, Qi Zheng wrote:
-> > > > > Hi Kent,
-> > > > > 
-> > > > > On 2023/11/24 05:24, Kent Overstreet wrote:
-> > > > > > On Thu, Nov 23, 2023 at 11:32:59AM +0800, Qi Zheng wrote:
-> > > > > > > > + void (*to_text)(struct seq_buf *, struct shrinker *);
-> > > > > > > 
-> > > > > > > The "to_text" looks a little strange, how about naming it
-> > > > > > > "stat_objects"?
-> > > > > > 
-> > > > > > The convention I've been using heavily in bcachefs is
-> > > > > > typename_to_text(), or type.to_text(), for debug reports. The
-> > > > > 
-> > > > > OK.
-> > > > > 
-> > > > > > consistency is nice.
-> > > > > 
-> > > > > However, this is inconsistent with the name style of other
-> > > > > shrinker callbacks. Please use the "objects" suffix. As for
-> > > > > bcachefs's own callback function, you can use typename_to_text()
-> > > > > to ensure consistency.
-> > > > 
-> > > > That would be inconsistent with introducing a convention to the wider
-> > > > kernel.
-> > > > 
-> > > 
-> > > I don not think .to_text is a good name. I really do not know what it means
-> > > when I first look at this name. I knew you want to report the objects of
-> > > shrinks, so why not use .report_objects or stat_objects proposed by Qi.
-> > > Although .to_text is only used by bcachefs now, shrinker is a general module
-> > > which is not only serving the bcachefs itself. I think it should be better
-> > > to use a more straightforward name.
-> > 
-> > No, .report_objects or .stat_objects would be wrong; this isn't
-> > generating a report on the objects owned by the shrinker, it's just a
-> > report on the statistics of the shrinker itself.
+> Fixes: f9eb91350bb2 ("i2c: aspeed: added slave support for Aspeed I2C driver")
+> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
+> ---
+> v2:
+>   + Split to separate series [Joel]
+>   + Added the Fixes line [Joel]
+>   + Revised commit message [Quan]
 > 
-> Now I think adding this method might not be a good idea. If we allow
-> shrinkers to report thier own private information, OOM logs may become
-> cluttered. Most people only care about some general information when
-> troubleshooting OOM problem, but not the private information of a
-> shrinker.
+> v1:
+>   + First introduced in
+> https://lore.kernel.org/all/20210519074934.20712-1-quan@os.amperecomputing.com/
+> ---
+>  drivers/i2c/busses/i2c-aspeed.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
+> index 28e2a5fc4528..79476b46285b 100644
+> --- a/drivers/i2c/busses/i2c-aspeed.c
+> +++ b/drivers/i2c/busses/i2c-aspeed.c
+> @@ -253,6 +253,11 @@ static u32 aspeed_i2c_slave_irq(struct aspeed_i2c_bus *bus, u32 irq_status)
+>  
+>  	/* Slave was requested, restart state machine. */
+>  	if (irq_status & ASPEED_I2CD_INTR_SLAVE_MATCH) {
+> +		if (irq_status & ASPEED_I2CD_INTR_TX_NAK &&
+> +		    bus->slave_state == ASPEED_I2C_SLAVE_READ_PROCESSED) {
+> +			irq_handled |= ASPEED_I2CD_INTR_TX_NAK;
+> +			i2c_slave_event(slave, I2C_SLAVE_STOP, &value);
+> +		}
 
-I agree with that.
+this is a duplicate of a later "if (...)" satement. What is the
+need for having them both?
 
-It seems that the feature is mostly useful for kernel developers and it's easily
-achievable by attaching a bpf program to the oom handler. If it requires a bit
-of work on the bpf side, we can do that instead, but probably not. And this
-solution can potentially provide way more information in a more flexible way.
+Andi
 
-So I'm not convinced it's a good idea to make the generic oom handling code
-more complicated and fragile for everybody, as well as making oom reports differ
-more between kernel versions and configurations.
-
-Thanks!
+>  		irq_handled |= ASPEED_I2CD_INTR_SLAVE_MATCH;
+>  		bus->slave_state = ASPEED_I2C_SLAVE_START;
+>  	}
+> -- 
+> 2.35.1
+> 
