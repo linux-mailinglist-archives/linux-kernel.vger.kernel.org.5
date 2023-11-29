@@ -2,46 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F9CA7FD331
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:48:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 649E57FD308
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:44:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbjK2Jsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 04:48:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40308 "EHLO
+        id S229887AbjK2Joo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 04:44:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbjK2JsG (ORCPT
+        with ESMTP id S229601AbjK2Jon (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 04:48:06 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C719719BC;
-        Wed, 29 Nov 2023 01:48:11 -0800 (PST)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SgDsL5CSTzMnVg;
-        Wed, 29 Nov 2023 17:43:18 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 29 Nov 2023 17:48:09 +0800
-From:   Junxian Huang <huangjunxian6@hisilicon.com>
-To:     <jgg@ziepe.ca>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH for-rc 6/6] RDMA/hns: Improve the readability of free mr uninit
-Date:   Wed, 29 Nov 2023 17:44:34 +0800
-Message-ID: <20231129094434.134528-7-huangjunxian6@hisilicon.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20231129094434.134528-1-huangjunxian6@hisilicon.com>
-References: <20231129094434.134528-1-huangjunxian6@hisilicon.com>
+        Wed, 29 Nov 2023 04:44:43 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04AC21999;
+        Wed, 29 Nov 2023 01:44:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=CcnSaaDv4e59225OcHBi5h8IpHBaUHCJu6uN+JWRhkM=; b=iKqMrL15Y3c+chBt6nYsXTVcVy
+        4TcIIrbTBlb/UxAuXv28YY5wPkSJca2gHJmFe71z1dtzk34Wr1ms4I50bp2aLYGw4eQXPGzJo8TVH
+        oHdwoN4c+Q/UTBkXdVYF4hbxHGlXt9mrFrt6Bi7OpKw/9wpsi/54lvn1CLySRpqpQqkcBeoGIJFRH
+        tU+8BJ7ruy69dOisq3q62FUMQK4r/S2t5XitNGR0gHDnHrTgi1X4myBTqNL3suKLPCrknbgYuk/we
+        HmazE4S5uCTluc8o8nFR8b/zgXr0Yazzb5B2pQLCieA2LyYlffTopd20vJfQJydxlxGZ47lMhCNge
+        k7oKz+wQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53222)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1r8H7Y-00004y-17;
+        Wed, 29 Nov 2023 09:44:40 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1r8H7a-0003sr-EX; Wed, 29 Nov 2023 09:44:42 +0000
+Date:   Wed, 29 Nov 2023 09:44:42 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [net-next PATCH 10/14] net: phy: at803x: drop usless probe for
+ qca8081 PHY
+Message-ID: <ZWcICtVc0dBDi3pA@shell.armlinux.org.uk>
+References: <20231129021219.20914-1-ansuelsmth@gmail.com>
+ <20231129021219.20914-11-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.2]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500006.china.huawei.com (7.221.188.68)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231129021219.20914-11-ansuelsmth@gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,133 +70,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chengchang Tang <tangchengchang@huawei.com>
+On Wed, Nov 29, 2023 at 03:12:15AM +0100, Christian Marangi wrote:
+> Drop useless probe for qca8081 PHY. The specific functions and the
+> generic ones doesn't use any of allocated variables of the at803x_priv
+> struct and doesn't support any of the properties used for at803x PHYs.
 
-Extract uninit functions of free mr qp, cq and pd to improve
-readability.
+So now we have two different structures in ->priv _and_ ->priv can be
+NULL all in the same driver.
 
-Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
-Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 73 ++++++++++++++--------
- 1 file changed, 47 insertions(+), 26 deletions(-)
+This is getting rediculous.
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 538f3e8949fc..be02034a8818 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -2573,6 +2573,19 @@ static struct ib_pd *free_mr_init_pd(struct hns_roce_dev *hr_dev)
- 	return pd;
- }
- 
-+static void free_mr_uninit_pd(struct hns_roce_dev *hr_dev)
-+{
-+	struct hns_roce_v2_priv *priv = hr_dev->priv;
-+	struct hns_roce_v2_free_mr *free_mr = &priv->free_mr;
-+
-+	if (!free_mr->rsv_pd)
-+		return;
-+
-+	hns_roce_dealloc_pd(&free_mr->rsv_pd->ibpd, NULL);
-+	kfree(free_mr->rsv_pd);
-+	free_mr->rsv_pd = NULL;
-+}
-+
- static struct ib_cq *free_mr_init_cq(struct hns_roce_dev *hr_dev)
- {
- 	struct hns_roce_v2_priv *priv = hr_dev->priv;
-@@ -2607,6 +2620,19 @@ static struct ib_cq *free_mr_init_cq(struct hns_roce_dev *hr_dev)
- 	return cq;
- }
- 
-+static void free_mr_uninit_cq(struct hns_roce_dev *hr_dev)
-+{
-+	struct hns_roce_v2_priv *priv = hr_dev->priv;
-+	struct hns_roce_v2_free_mr *free_mr = &priv->free_mr;
-+
-+	if (!free_mr->rsv_cq)
-+		return;
-+
-+	hns_roce_destroy_cq(&free_mr->rsv_cq->ib_cq, NULL);
-+	kfree(free_mr->rsv_cq);
-+	free_mr->rsv_cq = NULL;
-+}
-+
- static int free_mr_init_qp(struct hns_roce_dev *hr_dev, struct ib_cq *cq,
- 			   struct ib_qp_init_attr *init_attr, int i)
- {
-@@ -2638,6 +2664,19 @@ static int free_mr_init_qp(struct hns_roce_dev *hr_dev, struct ib_cq *cq,
- 	return 0;
- }
- 
-+static void free_mr_uninit_qp(struct hns_roce_dev *hr_dev, int i)
-+{
-+	struct hns_roce_v2_priv *priv = hr_dev->priv;
-+	struct hns_roce_v2_free_mr *free_mr = &priv->free_mr;
-+
-+	if (!free_mr->rsv_qp[i])
-+		return;
-+
-+	hns_roce_v2_destroy_qp(&free_mr->rsv_qp[i]->ibqp, NULL);
-+	kfree(free_mr->rsv_qp[i]);
-+	free_mr->rsv_qp[i] = NULL;
-+}
-+
- static void free_mr_exit(struct hns_roce_dev *hr_dev)
- {
- 	struct hns_roce_v2_priv *priv = hr_dev->priv;
-@@ -2645,26 +2684,12 @@ static void free_mr_exit(struct hns_roce_dev *hr_dev)
- 	struct ib_qp *qp;
- 	int i;
- 
--	for (i = 0; i < ARRAY_SIZE(free_mr->rsv_qp); i++) {
--		if (free_mr->rsv_qp[i]) {
--			qp = &free_mr->rsv_qp[i]->ibqp;
--			hns_roce_v2_destroy_qp(qp, NULL);
--			kfree(free_mr->rsv_qp[i]);
--			free_mr->rsv_qp[i] = NULL;
--		}
--	}
-+	for (i = 0; i < ARRAY_SIZE(free_mr->rsv_qp); i++)
-+		free_mr_uninit_qp(hr_dev, i);
- 
--	if (free_mr->rsv_cq) {
--		hns_roce_destroy_cq(&free_mr->rsv_cq->ib_cq, NULL);
--		kfree(free_mr->rsv_cq);
--		free_mr->rsv_cq = NULL;
--	}
-+	free_mr_uninit_cq(hr_dev);
- 
--	if (free_mr->rsv_pd) {
--		hns_roce_dealloc_pd(&free_mr->rsv_pd->ibpd, NULL);
--		kfree(free_mr->rsv_pd);
--		free_mr->rsv_pd = NULL;
--	}
-+	free_mr_uninit_pd(hr_dev);
- }
- 
- static int free_mr_alloc_res(struct hns_roce_dev *hr_dev)
-@@ -2705,16 +2730,12 @@ static int free_mr_alloc_res(struct hns_roce_dev *hr_dev)
- 	return 0;
- 
- create_failed_qp:
--	for (i--; i >= 0; i--) {
--		hns_roce_v2_destroy_qp(&free_mr->rsv_qp[i]->ibqp, NULL);
--		kfree(free_mr->rsv_qp[i]);
--	}
--	hns_roce_destroy_cq(cq, NULL);
--	kfree(cq);
-+	for (i--; i >= 0; i--)
-+		free_mr_uninit_qp(hr_dev, i);
-+	free_mr_uninit_cq(hr_dev);
- 
- create_failed_cq:
--	hns_roce_dealloc_pd(pd, NULL);
--	kfree(pd);
-+	free_mr_uninit_pd(hr_dev);
- 
- 	return ret;
- }
 -- 
-2.30.0
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
