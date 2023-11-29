@@ -2,116 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D24C7FD10B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:38:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9046E7FD10F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:39:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231803AbjK2IKy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Nov 2023 03:10:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49822 "EHLO
+        id S229683AbjK2Iit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 03:38:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231596AbjK2IKu (ORCPT
+        with ESMTP id S232038AbjK2ILA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 03:10:50 -0500
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381FF19BA;
-        Wed, 29 Nov 2023 00:10:55 -0800 (PST)
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-5d28f5bbd6cso1597817b3.1;
-        Wed, 29 Nov 2023 00:10:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701245454; x=1701850254;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i5ZLV3/lGWkTPqqCKMiKC0kF/REvnd+ju384kw/YGc8=;
-        b=fLq8nWa8ilZOs7/AkxKRSE/qxC0qD0nb6hfh4qKIfjKYkPLlsuOOyB2tWFIrOuSEXe
-         YcaITg3xM0VgdBu4HRobXIosDb0z2bZTBvKrpkcJvQwhcHj5Atb7s1JnT5cVD1WvGCIq
-         XJjXWRCKOwTPx0i5zdla53C+F+L+BSAUR6cA9jia4H5Gj+VsusVYdWbvCr5S2xprdPMv
-         XlaTHrlxjZdwXW735o6cQxFl4cXxH758CcCWfPiwgo8yKuhWIWyINRuZ9uXGzTRIHt7r
-         TG2ftUZgs6NYQURHKQjdYY52WKlXBQQzLHFA3cueeWvBQwPYpB9vnW9GKOUPIAYcE+nm
-         iEYg==
-X-Gm-Message-State: AOJu0Ywv1VzXjn39cmvOg+MkfNCEqeQETkjkOgviVUweThornzgQhk+d
-        gJDHmE9fNWA/kKY5kYWGjNlPiP19fQcNgw==
-X-Google-Smtp-Source: AGHT+IGMYbVrTIlxa75g2TVGETubvmsLNN44F+a96invX5n8gNv1JzROcfp/1gpg/yyPV6bMUbWOCA==
-X-Received: by 2002:a81:5f03:0:b0:5b3:3eb5:6624 with SMTP id t3-20020a815f03000000b005b33eb56624mr16210277ywb.46.1701245454188;
-        Wed, 29 Nov 2023 00:10:54 -0800 (PST)
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com. [209.85.128.179])
-        by smtp.gmail.com with ESMTPSA id g184-20020a0dc4c1000000b0059b17647dcbsm4374185ywd.69.2023.11.29.00.10.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 00:10:53 -0800 (PST)
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5cc86fcea4fso54302467b3.3;
-        Wed, 29 Nov 2023 00:10:53 -0800 (PST)
-X-Received: by 2002:a05:690c:4805:b0:5cf:806f:49fd with SMTP id
- hc5-20020a05690c480500b005cf806f49fdmr11825321ywb.44.1701245453396; Wed, 29
- Nov 2023 00:10:53 -0800 (PST)
-MIME-Version: 1.0
-References: <20231129063730.31184-1-liuhaoran14@163.com>
-In-Reply-To: <20231129063730.31184-1-liuhaoran14@163.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 29 Nov 2023 09:10:41 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVw1oT7L7G5wQUtYK0qAdQ1VayL-DNi=jtGdQ1KER9Ygg@mail.gmail.com>
-Message-ID: <CAMuHMdVw1oT7L7G5wQUtYK0qAdQ1VayL-DNi=jtGdQ1KER9Ygg@mail.gmail.com>
-Subject: Re: [PATCH] [sh/highlander] psw: Add error handling in psw_irq_handler
-To:     Haoran Liu <liuhaoran14@163.com>
-Cc:     ysato@users.sourceforge.jp, dalias@libc.org,
-        glaubitz@physik.fu-berlin.de, linux-sh@vger.kernel.org,
+        Wed, 29 Nov 2023 03:11:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94C071735
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:11:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701245464;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BC4uggJfBcsQ9J288hcUReQwagRBB7yxUyX9PfI8YC4=;
+        b=Q6OhDV4JCMvODO9U6UeYpY7t+ReGX6ehjLtordP9WvO8bWIm292x2PFH91NlfPLUap7Xy/
+        SYYDi8Qsra8XKHYUbH2akm631jI47rV9L7QqrCXgXd4eP8Sf2oKtKbnkxPa+omYFtaLVHJ
+        POINE4e5+bpXsksexe7T62bACZMIfMg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-350-Di-Svtm0OSiYAyIeYfDUdQ-1; Wed, 29 Nov 2023 03:11:00 -0500
+X-MC-Unique: Di-Svtm0OSiYAyIeYfDUdQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 103B18058EE;
+        Wed, 29 Nov 2023 08:11:00 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.30])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5857D1C060AE;
+        Wed, 29 Nov 2023 08:10:59 +0000 (UTC)
+Date:   Wed, 29 Nov 2023 16:10:55 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Michal Hocko <mhocko@suse.com>, ddutile@redhat.com
+Cc:     Jiri Bohac <jbohac@suse.cz>, Pingfan Liu <piliu@redhat.com>,
+        Tao Liu <ltao@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 0/4] kdump: crashkernel reservation from CMA
+Message-ID: <ZWbyDx3TJ7zo3jCw@MiWiFi-R3L-srv>
+References: <ZWD_fAPqEWkFlEkM@dwarf.suse.cz>
+ <CAO7dBbUVQn8xzPZQhhw1XqF+sQT0c6phk4sda+X=MrR6RmPE0A@mail.gmail.com>
+ <ZWJllXCN0SDIELrX@dwarf.suse.cz>
+ <CAO7dBbVJ=ytRra_77VRZ8ud1wVkP9fub=Vj6cfTkx=CnYg5J2A@mail.gmail.com>
+ <ZWVMUxmi66xLZPsr@MiWiFi-R3L-srv>
+ <ZWWuBSiZZdF2W12j@tiehlicka>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWWuBSiZZdF2W12j@tiehlicka>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Haoran,
+On 11/28/23 at 10:08am, Michal Hocko wrote:
+> On Tue 28-11-23 10:11:31, Baoquan He wrote:
+> > On 11/28/23 at 09:12am, Tao Liu wrote:
+> [...]
+> > Thanks for the effort to bring this up, Jiri.
+> > 
+> > I am wondering how you will use this crashkernel=,cma parameter. I mean
+> > the scenario of crashkernel=,cma. Asking this because I don't know how
+> > SUSE deploy kdump in SUSE distros. In SUSE distros, kdump kernel's
+> > driver will be filter out? If latter case, It's possibly having the
+> > on-flight DMA issue, e.g NIC has DMA buffer in the CMA area, but not
+> > reset during kdump bootup because the NIC driver is not loaded in to
+> > initialize. Not sure if this is 100%, possible in theory?
+> 
+> NIC drivers do not allocation from movable zones (that includes CMA
+> zone). In fact kernel doesn't use GFP_MOVABLE for non-user requests.
+> RDMA drivers might and do transfer from user backed memory but for that
+> purpose they should be pinning memory (have a look at
+> __gup_longterm_locked and its callers) and that will migrate away from
+> the any zone.
 
-On Wed, Nov 29, 2023 at 7:38 AM Haoran Liu <liuhaoran14@163.com> wrote:
-> This patch adds error handling for the platform_get_drvdata call
-> within the psw_irq_handler function in
-> arch/sh/boards/mach-highlander/psw.c. Previously, the absence of
-> error checking could lead to unexpected behavior if
-> platform_get_drvdata returned a null pointer.
->
-> Signed-off-by: Haoran Liu <liuhaoran14@163.com>
+Add Don in this thread.
 
-Thanks for your patch!
+I am not familiar with RDMA. If we reserve a range of 1G meory as cma in
+1st kernel, and RDMA or any other user space tools could use it. When
+corruption happened with any cause, that 1G cma memory will be reused as
+available MOVABLE memory of kdump kernel. If no risk at all, I mean 100%
+safe from RDMA, that would be great.
 
-> --- a/arch/sh/boards/mach-highlander/psw.c
-> +++ b/arch/sh/boards/mach-highlander/psw.c
-> @@ -21,6 +21,12 @@ static irqreturn_t psw_irq_handler(int irq, void *arg)
->         unsigned int l, mask;
->         int ret = 0;
->
-> +       if (!psw) {
-> +               pr_err("psw_irq_handler: No push_switch data associated
-> +                       with platform_device\n");
-> +               return IRQ_NONE;
-> +       }
-> +
->         l = __raw_readw(PA_DBSW);
->
->         /* Nothing to do if there's no state change */
+>  
+> [...]
+> > The crashkernel=,cma requires no userspace data dumping, from our
+> > support engineers' feedback, customer never express they don't need to
+> > dump user space data. Assume a server with huge databse deployed, and
+> > the database often collapsed recently and database provider claimed that
+> > it's not database's fault, OS need prove their innocence. What will you
+> > do?
+> 
+> Don't use CMA backed crash memory then? This is an optional feature.
+>  
+> > So this looks like a nice to have to me. At least in fedora/rhel's
+> > usage, we may only back port this patch, and add one sentence in our
+> > user guide saying "there's a crashkernel=,cma added, can be used with
+> > crashkernel= to save memory. Please feel free to try if you like".
+> > Unless SUSE or other distros decides to use it as default config or
+> > something like that. Please correct me if I missed anything or took
+> > anything wrong.
+> 
+> Jiri will know better than me but for us a proper crash memory
+> configuration has become a real nut. You do not want to reserve too much
+> because it is effectively cutting of the usable memory and we regularly
+> hit into "not enough memory" if we tried to be savvy. The more tight you
+> try to configure the easier to fail that is. Even worse any in kernel
+> memory consumer can increase its memory demand and get the overall
+> consumption off the cliff. So this is not an easy to maintain solution.
+> CMA backed crash memory can be much more generous while still usable.
+> -- 
+> Michal Hocko
+> SUSE Labs
+> 
 
-This means the button is pressed, and the interrupt fired, in
-between the calls to request_irq() and platform_set_drvdata() in
-arch/sh/drivers/push-switch.c:switch_drv_probe()?
-
-The same issue can happen with arch/sh/boards/mach-landisk/psw.c.
-I think the proper solution is to fix this inside the push switch
-driver, by moving the call to request_irq() after the call to
-platform_set_drvdata() (and doing the reverse in switch_drv_remove()).
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
