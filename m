@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE1A7FE2DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 23:18:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7437FE2FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 23:22:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343493AbjK2WSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 17:18:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53464 "EHLO
+        id S234924AbjK2WVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 17:21:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234811AbjK2WRy (ORCPT
+        with ESMTP id S234859AbjK2WVd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 17:17:54 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7508FA3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:18:00 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A9A3C433C8;
-        Wed, 29 Nov 2023 22:17:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701296280;
-        bh=x4TBp4Z9XhIDLhh0xttndJ/PopPagvhZ0Lb2IMMCW4U=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=DgKRw0WcZAGYG6wH2WUqROmzHkf+woNvutMXXI8fghOo3fmrd7MvoqIFR1ntnbhRe
-         438ZPSoguk3VbBFQkIvvNb4oG4jexfiXAZ9X9DRnPUGSs+WG5muABqId2ZOhJFXMZx
-         V2NAQk+g+qfLPher6FKc1PoxXkDsnqxD2+fwKsZLvDDmi9XOVW6cU0Yk8SuT+NTn3s
-         OAnjn8KhEjzc+i1z1aT/iWJkguGGrFd/JAXR72xCt/vpRBuY7cVoP4XaUn0tJPcqXX
-         uZ8ujdu1DtAGZR9DPDKHd7xFEk6LaliHetyFbSEZKp+NipFuwvlRu98bwI6DvASNED
-         IIWikr5ga4PiQ==
-From:   Nathan Chancellor <nathan@kernel.org>
-Date:   Wed, 29 Nov 2023 15:17:43 -0700
-Subject: [PATCH v3 3/3] x86/tools: Remove chkobjdump.awk
+        Wed, 29 Nov 2023 17:21:33 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39EB4A3;
+        Wed, 29 Nov 2023 14:21:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701296500; x=1732832500;
+  h=from:to:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Z/lRb6jOKcLVvakdgQeZU82qUclb1WEH9r84F28valY=;
+  b=II4ttN9EUOYaQmBOD2V6Q30RFJsJ+ytTATYUt46B7GcOOjZAH2Ti/RE7
+   xiKVT7lsuogEMW58yN3fEq5xvT5WuxkpCMY4MKxe9ABuTJegZziXjvRZR
+   1lP+JQHcJw6TT2o4AOBhz94Kdq/riJP4G/gOCm31z/5wgvgoNF0A3Ly0s
+   ubmXMkAL/IHQVaoIiVBWSYR3RHuZZxFFYKSoz1wDyssz2tRkwPHNMtwi/
+   TBBw17m8jv+u9vtiuwcZcq3kg+D1RmLLC5Hhe87hgA05AAFgSetzIXZKY
+   x/VJTDpYAcPQA0+MsSjxSv93k1WjwhSEiK79VpAlIM/I274KmmhB3IjIp
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="11936992"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="11936992"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 14:21:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="798070406"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="798070406"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 14:21:32 -0800
+Received: from debox1-desk4.lan (unknown [10.209.108.167])
+        by linux.intel.com (Postfix) with ESMTP id 8D51B5807E2;
+        Wed, 29 Nov 2023 14:21:32 -0800 (PST)
+From:   "David E. Box" <david.e.box@linux.intel.com>
+To:     linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        ilpo.jarvinen@linux.intel.com, rajvi.jingar@linux.intel.com
+Subject: [PATCH V6 00/20] intel_pmc: Add telemetry API to read counters
+Date:   Wed, 29 Nov 2023 14:21:12 -0800
+Message-Id: <20231129222132.2331261-1-david.e.box@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231129-objdump-reformat-llvm-v3-3-0d855e79314d@kernel.org>
-References: <20231129-objdump-reformat-llvm-v3-0-0d855e79314d@kernel.org>
-In-Reply-To: <20231129-objdump-reformat-llvm-v3-0-0d855e79314d@kernel.org>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com
-Cc:     x86@kernel.org, ndesaulniers@google.com, keescook@chromium.org,
-        samuelzeter@gmail.com, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        patches@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>
-X-Mailer: b4 0.13-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2562; i=nathan@kernel.org;
- h=from:subject:message-id; bh=x4TBp4Z9XhIDLhh0xttndJ/PopPagvhZ0Lb2IMMCW4U=;
- b=owGbwMvMwCUmm602sfCA1DTG02pJDKnpO6acFV/52cUv7O85hTX/f2uwvFNNe1awYMVhnWQ91
- wOZGkpTO0pZGMS4GGTFFFmqH6seNzScc5bxxqlJMHNYmUCGMHBxCsBEZA0Z/see2H/ywST2UN5r
- Suy9ctuEt148t0Fjl2C976+3H1Ll5n9j+CvI0Zbz5dC3TNHZVe2NCtdyly570pC7bvPN1ut9jpF
- bn/MBAA==
-X-Developer-Key: i=nathan@kernel.org; a=openpgp;
- fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,76 +62,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This check is superfluous now that the minimum version of binutils to
-build the kernel is 2.25. This also fixes an error seen with
-llvm-objdump because it does not support '-v' prior to LLVM 13:
+On newer Intel silicon, more IP counters are being added in Intel Platform
+Monitoring Technology (PMT) telemetry spaces hosted in MMIO.  There is a
+need for the intel_pmc_core driver and other drivers to access PMT hosted
+telemetry in the kernel using an API. This patchset adds driver APIs to
+allow registering and reading telemetry entries. It makes changes to the
+intel_pmc_core driver to use these interfaces to access the low power mode
+counters that are now exclusively available from PMT.
 
-  llvm-objdump: error: unknown argument '-v'
+David E. Box (15):
+  platform/x86/intel/vsec: Fix xa_alloc memory leak
+  platform/x86/intel/vsec: Remove unnecessary return
+  platform/x86/intel/vsec: Move structures to header
+  platform/x86/intel/vsec: remove platform_info from vsec device
+    structure
+  platform/x86/intel/vsec: Use cleanup.h
+  platform/x86/intel/vsec: Assign auxdev parent by argument
+  platform/x86/intel/vsec: Add base address field
+  platform/x86/intel/pmt: Add header to struct intel_pmt_entry
+  platform/x86/intel/pmt: telemetry: Export API to read telemetry
+  platform/x86/intel/pmc: Allow pmc_core_ssram_init to fail
+  platform/x86/intel/pmc: Cleanup SSRAM discovery
+  platform/x86/intel/pmc/mtl: Use return value from
+    pmc_core_ssram_init()
+  platform/x86/intel/pmc: Find and register PMC telemetry entries
+  platform/x86/intel/pmc: Add debug attribute for Die C6 counter
+  platform/x86/intel/pmc: Show Die C6 counter on Meteor Lake
 
-Closes: https://github.com/ClangBuiltLinux/linux/issues/1362
-Link: https://github.com/llvm/llvm-project/commit/dde24a87c55f82d8c7b3bf3eafb10f2b9b2b9a01
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Tested-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- arch/x86/tools/Makefile       |  2 +-
- arch/x86/tools/chkobjdump.awk | 34 ----------------------------------
- 2 files changed, 1 insertion(+), 35 deletions(-)
+Gayatri Kammela (1):
+  platform/x86/intel/vsec: Add intel_vsec_register
 
-diff --git a/arch/x86/tools/Makefile b/arch/x86/tools/Makefile
-index 90e820ac9771..7278e2545c35 100644
---- a/arch/x86/tools/Makefile
-+++ b/arch/x86/tools/Makefile
-@@ -17,7 +17,7 @@ reformatter = $(srctree)/arch/x86/tools/objdump_reformat.awk
- chkobjdump = $(srctree)/arch/x86/tools/chkobjdump.awk
- 
- quiet_cmd_posttest = TEST    $@
--      cmd_posttest = ($(OBJDUMP) -v | $(AWK) -f $(chkobjdump)) || $(OBJDUMP) -d -j .text $(objtree)/vmlinux | $(AWK) -f $(reformatter) | $(obj)/insn_decoder_test $(posttest_64bit) $(posttest_verbose)
-+      cmd_posttest = $(OBJDUMP) -d -j .text $(objtree)/vmlinux | $(AWK) -f $(reformatter) | $(obj)/insn_decoder_test $(posttest_64bit) $(posttest_verbose)
- 
- quiet_cmd_sanitytest = TEST    $@
-       cmd_sanitytest = $(obj)/insn_sanity $(posttest_64bit) -m 1000000
-diff --git a/arch/x86/tools/chkobjdump.awk b/arch/x86/tools/chkobjdump.awk
-deleted file mode 100644
-index a4cf678cf5c8..000000000000
---- a/arch/x86/tools/chkobjdump.awk
-+++ /dev/null
-@@ -1,34 +0,0 @@
--# GNU objdump version checker
--#
--# Usage:
--# objdump -v | awk -f chkobjdump.awk
--BEGIN {
--	# objdump version 2.19 or later is OK for the test.
--	od_ver = 2;
--	od_sver = 19;
--}
--
--/^GNU objdump/ {
--	verstr = ""
--	gsub(/\(.*\)/, "");
--	for (i = 3; i <= NF; i++)
--		if (match($(i), "^[0-9]")) {
--			verstr = $(i);
--			break;
--		}
--	if (verstr == "") {
--		printf("Warning: Failed to find objdump version number.\n");
--		exit 0;
--	}
--	split(verstr, ver, ".");
--	if (ver[1] > od_ver ||
--	    (ver[1] == od_ver && ver[2] >= od_sver)) {
--		exit 1;
--	} else {
--		printf("Warning: objdump version %s is older than %d.%d\n",
--		       verstr, od_ver, od_sver);
--		print("Warning: Skipping posttest.");
--		# Logic is inverted, because we just skip test without error.
--		exit 0;
--	}
--}
+Rajvi Jingar (1):
+  platform/x86/intel/pmc: Display LPM requirements for multiple PMCs
 
+Xi Pardee (3):
+  platform/x86:intel/pmc: Call pmc_get_low_power_modes from platform
+    init
+  platform/x86/intel/pmc: Retrieve LPM information using Intel PMT
+  platform/x86/intel/pmc: Read low power mode requirements for MTL-M and
+    MTL-P
+
+ drivers/platform/x86/intel/pmc/Kconfig      |   1 +
+ drivers/platform/x86/intel/pmc/adl.c        |   2 +
+ drivers/platform/x86/intel/pmc/cnp.c        |   2 +
+ drivers/platform/x86/intel/pmc/core.c       | 185 +++++++++-----
+ drivers/platform/x86/intel/pmc/core.h       |  10 +-
+ drivers/platform/x86/intel/pmc/core_ssram.c | 265 +++++++++++++++++---
+ drivers/platform/x86/intel/pmc/icl.c        |  10 +-
+ drivers/platform/x86/intel/pmc/mtl.c        |  87 ++++++-
+ drivers/platform/x86/intel/pmc/spt.c        |  10 +-
+ drivers/platform/x86/intel/pmc/tgl.c        |   1 +
+ drivers/platform/x86/intel/pmt/class.c      |  43 +++-
+ drivers/platform/x86/intel/pmt/class.h      |  30 ++-
+ drivers/platform/x86/intel/pmt/crashlog.c   |   2 +-
+ drivers/platform/x86/intel/pmt/telemetry.c  | 193 +++++++++++++-
+ drivers/platform/x86/intel/pmt/telemetry.h  | 126 ++++++++++
+ drivers/platform/x86/intel/vsec.c           | 131 +++++-----
+ drivers/platform/x86/intel/vsec.h           |  45 +++-
+ 17 files changed, 939 insertions(+), 204 deletions(-)
+ create mode 100644 drivers/platform/x86/intel/pmt/telemetry.h
+
+
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
 -- 
-2.43.0
+2.34.1
 
