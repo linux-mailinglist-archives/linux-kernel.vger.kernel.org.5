@@ -2,45 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 370FD7FD9DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:42:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 502AD7FD9FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:44:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234395AbjK2OmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 09:42:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39920 "EHLO
+        id S234603AbjK2OoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 09:44:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231133AbjK2OmW (ORCPT
+        with ESMTP id S234643AbjK2OoP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 09:42:22 -0500
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A0EA130;
-        Wed, 29 Nov 2023 06:42:27 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VxOO2AH_1701268943;
-Received: from 30.39.190.97(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VxOO2AH_1701268943)
-          by smtp.aliyun-inc.com;
-          Wed, 29 Nov 2023 22:42:24 +0800
-Message-ID: <aa83bf32-789f-fec2-ea42-74b0ae05426e@linux.alibaba.com>
-Date:   Wed, 29 Nov 2023 22:42:23 +0800
+        Wed, 29 Nov 2023 09:44:15 -0500
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD2ED7D;
+        Wed, 29 Nov 2023 06:44:22 -0800 (PST)
+Received: by mail-ua1-x92d.google.com with SMTP id a1e0cc1a2514c-7c51dd41046so385998241.2;
+        Wed, 29 Nov 2023 06:44:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701269061; x=1701873861; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BTV80m9sniZZhV3ayqmHUOTEjpARmiBjH4lGv1FbT5I=;
+        b=dx0z/LVUZd0Ry64k8tKwDlJhhalxoWYDRFnNJW0j+dv3Xj8KMA1GX0D5fWFuZszdPE
+         bAuIJn4G+Slp99uQ2mQ4bDrvBkidXDXpFoslmJRJAuxHh7QBX4hgO9kj/Cq8CAYrTVEp
+         uD1i/u3qTa2OSGgQLjEvU0GC8Ob5wFddEK7jR8EMcsh5UlrZVAnjn1zj7GOr0ZzLP92N
+         pgZdMVayhoS1UI+68RvgMRXsfY5M4POnj6K3LAi4fCn5Cyp9pL66WP+FAWn8SNmfds57
+         Vbn48UJo9nppZfivnjEIYvSfxE712PHPRYps5/qgff6oKZGNqPjGj9rOR3g8W+Wqyqg9
+         LSUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701269061; x=1701873861;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BTV80m9sniZZhV3ayqmHUOTEjpARmiBjH4lGv1FbT5I=;
+        b=hFGCOAUdj59BYF5YU/6CU7w12fNmJzSRQClsKf4O1PJG/2WP3T/eav6ZLMs32IStbJ
+         BkrM33RhAhq939OTrOUHG4vsshdBdfyX2Bl5/LpCwLbpkAif2xPkXMAbfAFiawf/2Ujl
+         SvkqOIkd+srwid/X2vlAnYqnZhFrxV+ET28ELsJWALoAcqcdHj4MkYYPNZVoLNzWzQmt
+         24gjYebGBa1jN8+qx0TeNegz0MdE+M2cac/5qhNHwR1wUvr4LDzWHMmc7Yc1+Rwv8ndy
+         xFU3VCO90KeAscRpkXeYediMvi5ug4boc5cpKAzfdlidSXvkgJzpGyymkjxMsRbeO4IN
+         55Ag==
+X-Gm-Message-State: AOJu0YwAO292AwQVD+JpQgjwFl50l80q3EbduzCMW/Jqq+AB3sI5gxka
+        Fu8oymZCtytO//Nd4CEQ4Bwx95twgveovZDqPhE=
+X-Google-Smtp-Source: AGHT+IGCDZngG6ZtwGuhcqjwolhGC3Bvfp2wdcOUa92UIOUe7pr+Bgg29exfKB/1In2II5AeSFKMuEaLbCW3MxZjhBs=
+X-Received: by 2002:a05:6122:da5:b0:4ac:5a8:f45b with SMTP id
+ bc37-20020a0561220da500b004ac05a8f45bmr21359729vkb.5.1701269061166; Wed, 29
+ Nov 2023 06:44:21 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH net] net/netfilter: bpf: avoid leakage of skb
-Content-Language: en-US
-To:     Florian Westphal <fw@strlen.de>
-Cc:     pablo@netfilter.org, kadlec@netfilter.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        coreteam@netfilter.org, netfilter-devel@vger.kernel.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, ast@kernel.org
-References: <1701252962-63418-1-git-send-email-alibuda@linux.alibaba.com>
- <20231129131846.GC27744@breakpoint.cc>
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <20231129131846.GC27744@breakpoint.cc>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-12.1 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+References: <20231017104638.201260-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20231017104638.201260-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Wed, 29 Nov 2023 14:43:32 +0000
+Message-ID: <CA+V-a8t3sGn83vpgjECf5dw=bbz2yPXpnn+v2Dx2q3yJRPsKgA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] Add missing port pins for RZ/Five SoC
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,68 +77,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Geert,
 
-
-On 11/29/23 9:18 PM, Florian Westphal wrote:
-> D. Wythe <alibuda@linux.alibaba.com> wrote:
->> From: "D. Wythe" <alibuda@linux.alibaba.com>
->>
->> A malicious eBPF program can interrupt the subsequent processing of
->> a skb by returning an exceptional retval, and no one will be responsible
->> for releasing the very skb.
-> How?  The bpf verifier is supposed to reject nf bpf programs that
-> return a value other than accept or drop.
+On Tue, Oct 17, 2023 at 11:47=E2=80=AFAM Prabhakar <prabhakar.csengg@gmail.=
+com> wrote:
 >
-> If this is a real bug, please also figure out why
-> 006c0e44ed92 ("selftests/bpf: add missing netfilter return value and ctx access tests")
-> failed to catch it.
-
-Hi Florian,
-
-You are right, i make a mistake.. , it's not a bug..
-
-And my origin intention was to allow ebpf progs to return NF_STOLEN, we 
-are trying to modify some netfilter modules via ebpf,
-and some scenarios require the use of NF_STOLEN, but from your 
-description, it seems that at least currently,
-you do not want to return NF_STOLEN, until there is a helper for 
-sonsume_skb(), right ?
-
-Again, very sorry to bother you.
-
-Best wishes,
-D. Wythe.
-
->> Moreover, normal programs can also have the demand to return NF_STOLEN,
-> No, this should be disallowed already.
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 >
->>   net/netfilter/nf_bpf_link.c | 19 ++++++++++++++++++-
->>   1 file changed, 18 insertions(+), 1 deletion(-)
->>
->> diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
->> index e502ec0..03c47d6 100644
->> --- a/net/netfilter/nf_bpf_link.c
->> +++ b/net/netfilter/nf_bpf_link.c
->> @@ -12,12 +12,29 @@ static unsigned int nf_hook_run_bpf(void *bpf_prog, struct sk_buff *skb,
->>   				    const struct nf_hook_state *s)
->>   {
->>   	const struct bpf_prog *prog = bpf_prog;
->> +	unsigned int verdict;
->>   	struct bpf_nf_ctx ctx = {
->>   		.state = s,
->>   		.skb = skb,
->>   	};
->>   
->> -	return bpf_prog_run(prog, &ctx);
->> +	verdict = bpf_prog_run(prog, &ctx);
->> +	switch (verdict) {
->> +	case NF_STOLEN:
->> +		consume_skb(skb);
->> +		fallthrough;
-> This can't be right.  STOLEN really means STOLEN (free'd,
-> redirected, etc, "skb" MUST be "leaked".
+> Hi Geert,
 >
-> Which is also why the bpf program is not allowed to return it.
+> This patch series intends to incorporate the absent port pins P19 to P28,
+> which are exclusively available on the RZ/Five SoC.
+>
+> Cheers,
+> Prabhakar
+>
+> RFC -> v2:
+> * Fixed review comments pointed by Geert & Biju
+>
+> RFC: https://lore.kernel.org/lkml/20230630120433.49529-3-prabhakar.mahade=
+v-lad.rj@bp.renesas.com/T/
+>
+> Lad Prabhakar (3):
+>   pinctrl: renesas: rzg2l: Include pinmap in RZG2L_GPIO_PORT_PACK()
+>     macro
+>   pinctrl: renesas: pinctrl-rzg2l: Add the missing port pins P19 to P28
+>   riscv: dts: renesas: r9a07g043f: Update gpio-ranges property
+>
+>  arch/riscv/boot/dts/renesas/r9a07g043f.dtsi |   4 +
+>  drivers/pinctrl/renesas/pinctrl-rzg2l.c     | 263 ++++++++++++++++++--
+>  2 files changed, 242 insertions(+), 25 deletions(-)
+>
+Gentle ping.
 
-
-
+Cheers,
+Prabhakar
