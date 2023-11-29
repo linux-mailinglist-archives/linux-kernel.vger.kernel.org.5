@@ -2,180 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 480527FE377
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 23:45:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 931CA7FE38E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 23:48:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231506AbjK2Wow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 17:44:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33826 "EHLO
+        id S231228AbjK2WsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 17:48:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjK2Wou (ORCPT
+        with ESMTP id S229575AbjK2WsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 17:44:50 -0500
-Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39FA4122;
-        Wed, 29 Nov 2023 14:44:50 -0800 (PST)
-Received: from [192.168.68.112] (ppp118-210-131-38.adl-adc-lon-bras33.tpg.internode.on.net [118.210.131.38])
-        by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 2A2642014A;
-        Thu, 30 Nov 2023 06:44:38 +0800 (AWST)
+        Wed, 29 Nov 2023 17:48:02 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 947BCF4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:48:08 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-77dd4952308so25471185a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:48:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=codeconstruct.com.au; s=2022a; t=1701297884;
-        bh=3/RdWbl1/Y7109L7deJTqux8rPtQXt1q7C4U6mcb2AM=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=HKhhAUwUL/rIv0NFaMEyE2NscNboxbaKpc7q+jumnKREr/4dyPS0lTIGAoUtjzfqI
-         +ZJn2JIvPHsZz3k7RVK6CUo9GZENgHOgcOzuUx0XI0hQoafGnNX/xgV265OxHK35Ir
-         SQi66MjFYqk027UQfs8101rerH89LCnVaUhBb+qM6yr6n0RZp5Xqkebh4Nc7oxpyJX
-         G5xKKjNRd9fVJgifEa1f2Tc3PxXfHtWCmoGpnBbOtowN/T/Ia0sZSkFnn28f3bkOlP
-         sP5IWPBvU3wOQ+wjR/7Jt0CmAIBwT0bpO7DypAUHs/f0z2F6k3adv4wQTGKzhrr1ah
-         ck2dkrKQPNUQQ==
-Message-ID: <cb6043dfa13a269eb287a38521dc1b7722a237cc.camel@codeconstruct.com.au>
-Subject: Re: [PATCH v2 RESEND 2/2] i2c: aspeed: Acknowledge Tx done with and
- without ACK irq late
-From:   Andrew Jeffery <andrew@codeconstruct.com.au>
-To:     Quan Nguyen <quan@os.amperecomputing.com>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-i2c@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     Cosmo Chou <chou.cosmo@gmail.com>,
-        Open Source Submission <patches@amperecomputing.com>,
-        Phong Vo <phong@os.amperecomputing.com>,
-        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
-Date:   Thu, 30 Nov 2023 09:14:37 +1030
-In-Reply-To: <66dcea57-db0b-4686-9eaf-746db637f31c@os.amperecomputing.com>
-References: <20231128075236.2724038-1-quan@os.amperecomputing.com>
-         <20231128075236.2724038-3-quan@os.amperecomputing.com>
-         <2186c3b9ac92f03c68e8a2dd9fda871f80a6d664.camel@codeconstruct.com.au>
-         <66dcea57-db0b-4686-9eaf-746db637f31c@os.amperecomputing.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+        d=gmail.com; s=20230601; t=1701298086; x=1701902886; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Wuev4zb80Ov60ZVj1spuY8t1xp8xmjlvL54C02XOAGI=;
+        b=eqVj5SNO8e21bNsuAyfF23gTW0qohOPojsKAkbPmNR2+zgfENNBmciIHS1tX+7gahf
+         n4J/dH1FCN8tr2ZuMtIp6eccNm8MTFcbQ7Y0EPv/Ew/1F4FAPy5uMpzaVrnNuPoA7pcw
+         /YrUPTn0S5nKF7QWuRQttcfpf+M0GYLO8jSCYRqxzu+mzJoOys2thK/ZcNupZlbsJCJT
+         nER/7GQqEVe/ORd8z+sa4UhMqO5MOXr5bOmLQ/iptXb6oRPp7Yrzh5pisjEPt2wgNSkK
+         CODPTWo/roXqyiD4NQeRxrZnWHtbNrSGr///q5Ojkd4vQGpg6xFaw8ga4LRDOrmHkryz
+         Df4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701298086; x=1701902886;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Wuev4zb80Ov60ZVj1spuY8t1xp8xmjlvL54C02XOAGI=;
+        b=xSjJpwFcpN/mZdszZWzgmcLVxUQB+LX368rPPSGjnnXHnaHt67RS5M6kRIcU/qqQFI
+         C0dKGMst3wvxnifJ03Dzes41lH/4NtBDKb2a3xsx89wHTUipwnBN3Q7XbPjUKmoS2sPR
+         xottIlaUDdSxlu3KQfxGy+QvIMBvoPf1tzlPyK4t4/8vqQjNc1F2ju7+xVl+qJqs2nKQ
+         o+aAEWABaR0xj98mjuqLCR5n/W8OHvubiCQl5I7eINdA2u5M5vG/OOJyLPaIWTh6lLni
+         aApDpDyhvNdxM32zGGQCRKTqt0p7tbYTG4IHc+ZISbxOK6GYW8Vg0dov2Omz6NQq1zcz
+         1eJw==
+X-Gm-Message-State: AOJu0YxyTC1G7PzR72CXnnFh52jxLU7Qmuu90Smv/KTHdFuyEuOjr1iM
+        ParVM72A7NGbCzVAp5we2iesuH+NJYs=
+X-Google-Smtp-Source: AGHT+IEb5EwGEUxR8zD9cpH/oyYNe0zJ1XUGBrXDLycUzZDkj8sJyA6G8Z6K0FBQITGldBo2hK8EbQ==
+X-Received: by 2002:a05:620a:1725:b0:77d:855d:1b09 with SMTP id az37-20020a05620a172500b0077d855d1b09mr28851392qkb.0.1701298085468;
+        Wed, 29 Nov 2023 14:48:05 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id bj27-20020a05620a191b00b0077d660ac1b6sm5767414qkb.21.2023.11.29.14.48.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Nov 2023 14:48:04 -0800 (PST)
+Message-ID: <cfc3aa17-0f1b-4ffc-b848-33baa51b1196@gmail.com>
+Date:   Wed, 29 Nov 2023 14:48:02 -0800
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Kieran Bingham <kbingham@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shanker Donthineni <sdonthineni@nvidia.com>,
+        Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Subject: No care given to GDB scripts..
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-11-29 at 16:02 +0700, Quan Nguyen wrote:
->=20
-> On 29/11/2023 07:33, Andrew Jeffery wrote:
-> > On Tue, 2023-11-28 at 14:52 +0700, Quan Nguyen wrote:
-> > > diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c=
--aspeed.c
-> > > index 79476b46285b..3231f430e335 100644
-> > > --- a/drivers/i2c/busses/i2c-aspeed.c
-> > > +++ b/drivers/i2c/busses/i2c-aspeed.c
-> > > @@ -611,8 +611,9 @@ static irqreturn_t aspeed_i2c_bus_irq(int irq, vo=
-id *dev_id)
-> > >  =20
-> > >   	spin_lock(&bus->lock);
-> > >   	irq_received =3D readl(bus->base + ASPEED_I2C_INTR_STS_REG);
-> > > -	/* Ack all interrupts except for Rx done */
-> > > -	writel(irq_received & ~ASPEED_I2CD_INTR_RX_DONE,
-> > > +	/* Ack all interrupts except for Rx done and Tx done with/without A=
-CK */
-> >=20
-> > I'm not a huge fan of this comment, it just says what the code does. It
-> > would be much better to explain *why* the code does what it does.
-> >=20
-> > I realise describing what the code does was already the gist of the
-> > comment and that you're just updating it to match the change to the
-> > code, but that's my entire problem with it. We'd be better off deleting
-> > it if we're not going to explain why the masking is necessary.
-> >=20
->=20
-> Thanks for the comment Andrew.
->=20
-> I would prefer to delete it.
->=20
-> But if to put some comment, how about:
->=20
-> /* Early ack INTR_RX_DONE, INTR_TX_[ACK|NAK] would indicate HW to start=
-=20
-> receiving/sending new data and may cause a race condition as irq handler=
-=20
-> not yet to handle these irqs but being acked. Let ack them late in the=
-=20
-> end of irq handler when those are truly processed */
+Hello,
 
-Please update the patch with this comment. It at least goes some way to
-explain why.
+It is quite clear that there are zero cares being given to making sure 
+that GDB scripts continue to work after making changes to core kernel 
+code, and why would you, because you probably did not know those 
+existed, but they do and they are used, and useful.
 
->=20
-> > > +	writel(irq_received &
-> > > +	       ~(ASPEED_I2CD_INTR_RX_DONE | ASPEED_I2CD_INTR_TX_ACK | ASPEE=
-D_I2CD_INTR_TX_NAK),
-> > >   	       bus->base + ASPEED_I2C_INTR_STS_REG);
-> > >   	readl(bus->base + ASPEED_I2C_INTR_STS_REG);
-> > >   	irq_received &=3D ASPEED_I2CD_INTR_RECV_MASK;
-> > > @@ -657,12 +658,12 @@ static irqreturn_t aspeed_i2c_bus_irq(int irq, =
-void *dev_id)
-> > >   			"irq handled !=3D irq. expected 0x%08x, but was 0x%08x\n",
-> > >   			irq_received, irq_handled);
-> > >  =20
-> > > -	/* Ack Rx done */
-> > > -	if (irq_received & ASPEED_I2CD_INTR_RX_DONE) {
-> > > -		writel(ASPEED_I2CD_INTR_RX_DONE,
-> > > -		       bus->base + ASPEED_I2C_INTR_STS_REG);
-> > > -		readl(bus->base + ASPEED_I2C_INTR_STS_REG);
-> > > -	}
-> > > +	/* Ack Rx done and Tx done with/without ACK */
-> > > +	writel(irq_received &
-> > > +	       (ASPEED_I2CD_INTR_RX_DONE | ASPEED_I2CD_INTR_TX_ACK | ASPEED=
-_I2CD_INTR_TX_NAK),
-> > > +	       bus->base + ASPEED_I2C_INTR_STS_REG);
-> > > +	readl(bus->base + ASPEED_I2C_INTR_STS_REG);
-> >=20
-> > I'm not sure why the write was conditional, but I'm not sure that
-> > making it unconditional is valid either? Why the change? Why not add
-> > the extra interrupt bits to the condition in addition to the value mask
-> > for the write?
-> >=20
->=20
-> In original code, only INTR_RX_DONE was acked late. So the check=20
-> (irq_received & ASPEED_I2CD_INTR_RX_DONE) is need and that help to save=
-=20
-> one write() then read() if there was no such irq.
->=20
-> In the new code, there is no such check and the drawback is that there=
-=20
-> always be one write() and one read() for all cases, include the case=20
-> where there is no irq at all, ie writing 0 into ASPEED_I2C_INTR_STS_REG.
->=20
-> And yes, your concern maybe right, we can not say of writing 0 into=20
-> ASPEED_I2C_INTR_STS_REG is good or not.
->=20
-> I checked back my debug log and seeing that irq always come with at=20
-> least one of INTR_RX_DONE BIT(2), INTR_TX_ACK BIT(0), INTR_TX_NAK BIT(1)=
-=20
-> raised. So it seems like the case of writing 0 into=20
-> ASPEED_I2C_INTR_STS_REG is indeed rarely to happen.
->=20
-> Do you think we should change it to:
->=20
-> if (irq_received & (INTR_RX_DONE | INTR_TX_ACK | INTR_TX_NAK)) {
-> 	writel( irq_received & (INTR_RX_DONE| INTR_TX_ACK| INTR_TX_NAK),
-> 		bus->base + ASPEED_I2C_INTR_STS_REG);
-> 	readl(bus->base + ASPEED_I2C_INTR_STS_REG);
-> }
+A recent example that was fixed by Kuan-Ying is this:
 
-This is less different from the existing strategy and doesn't require
-any explanation beyond what you're already trying to achieve in the
-patch, so I think you should switch to this approach.
+and now of course, "lx-interupts" also stopped working altogether after 
+this change:
 
-If someone wants to work out why it was done conditionally and argue
-for its removal then they can do that separately.
+https://lore.kernel.org/r/20230519134902.1495562-4-sdonthineni@nvidia.com
 
-Cheers,
+and who knows what else I could not test that is also broken.
 
-Andrew
+We really need to find a better way to stop breaking GDB scripts, they 
+break way too often to be even remotely usable, and this is really sad.
+
+It is also quite clear that we do not have enough continuous integration 
+and regression testing to ensure those breakages are caught ahead of time...
+
+</rant>
+-- 
+Florian
