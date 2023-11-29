@@ -2,132 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04EDA7FE040
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 20:22:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6743E7FE043
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 20:24:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232938AbjK2TWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 14:22:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50006 "EHLO
+        id S232531AbjK2TYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 14:24:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231494AbjK2TWH (ORCPT
+        with ESMTP id S229741AbjK2TYD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 14:22:07 -0500
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39CE7D5E
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 11:22:12 -0800 (PST)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5c5fe3b00f6so93756a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 11:22:12 -0800 (PST)
+        Wed, 29 Nov 2023 14:24:03 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74D9DD5E
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 11:24:10 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5cd1172b815so1364027b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 11:24:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701285731; x=1701890531; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zm+VmJgtsDhhnZtgTitQtOHEZp/dUiGbrU1wdemhaX4=;
-        b=VvkVbyMZpBIEHXoL/pz/DHyw9r5iis0kPlBeiktc/qjUOAquMjPHnDDW0h3+A1HlId
-         Qvg8IT6YTjCsMbAi/0jFCzTFE/Yav5PcHo4MketSk+ZVMrFHEO/d0GYwwlKgyXGCTo9V
-         v/B/U8rnd80ng3HIeewZOyyk+bkB5eTUuCyKXWq6Rf9lu+m53FE8q5rLXxyjKXIFDo65
-         WHL1iDw1SgCveKuL8Tg7YPSvU1mf/5seObuRHPAnxxCumnj6NNX0WJac1I3VB4UrLkrB
-         bbaEEUBDGdSlZECaiqZTlkhUlugC1jgUufGDEUVA1/cBCMw8SgocvYS22IijyKcT8Int
-         RYfQ==
+        d=google.com; s=20230601; t=1701285849; x=1701890649; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=nbRm4suVWbGsrLER/c9C6n/j7Z59bcCi6w3YIA8nGRc=;
+        b=2J163aE8jjyj0sr3zrcjukKraBevaXgTTOisII0DUqXCwcJgbVAm8Id2McJt+QKNEe
+         3AxNz/xo1ka2x9YeOuuYZaaFxaqBePbRHqvTek4BRjbsrJkW1lOAaMZEsu2mrJsqh+NL
+         o6orkRdif1g2GtDdSLZINZHBKr2f3mRBs7Xz06ALgQdsr7Sv7jWIQrU2kJq14Mkga1pA
+         Cs9PTMwspjScCZRQ9cq15byNA8tXAmhZKoqR32QEPTifByqKBxXt0tGjzOPcSfYsZQQI
+         YZlFgwsOS76aEnXGW9c1JemvAl9pxjRqzC28Q/NjpkBouoyJdGB5wWvC0x7/AQorfs5X
+         0z8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701285731; x=1701890531;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zm+VmJgtsDhhnZtgTitQtOHEZp/dUiGbrU1wdemhaX4=;
-        b=YDoPIP7JMNFg5FuCkR7SNSsU0BgqPq8V5ymLrRWpmVp9JkgL+JqlUkiJYR7bjxOWHf
-         vNAvNKyKlFi3QzVOpgXQxRaNFrwwNEFQt1CJuz8Cl/D/mXLTXLP7rJnlmrCcrXWJKMnc
-         DJz7RcrX4QdlvkxnAmHI1r4qR4qsFkoWs2ahMkgTBIoKvmb9qw2Wz6bsCp7D2X9aLz/H
-         OmKiFh41I2/Iyu275r4SSuB40am4yoX5a9xQnkN7x9u+mMhVih4EEfEeDa3qqg13ox3T
-         5UMwoMzUPC/ryI0zmAULK4IKxYb3AhELRnY5vM3oIzhllObH6mgL6DAhbNfPOA6JRduy
-         Slqg==
-X-Gm-Message-State: AOJu0YzRuvw5BnMyie0lU5mjiju44VEOTJLzt36orcVCP8hM5pmL5zxl
-        yKGp635cTtd+R6yhBFfotDLDRLmSArk=
-X-Google-Smtp-Source: AGHT+IFbnamXd5HIGOk9ycysykN0hM1eotS+NZRkIrasluqPuu9nCw73/x2uc9oduuUnuHto7tym2AJtkoA=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:ef09:0:b0:5be:71:f35d with SMTP id
- u9-20020a63ef09000000b005be0071f35dmr3359653pgh.1.1701285731587; Wed, 29 Nov
- 2023 11:22:11 -0800 (PST)
-Date:   Wed, 29 Nov 2023 11:22:10 -0800
-In-Reply-To: <22c602c9-4943-4a16-a12e-ffc5db29daa1@intel.com>
+        d=1e100.net; s=20230601; t=1701285849; x=1701890649;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=nbRm4suVWbGsrLER/c9C6n/j7Z59bcCi6w3YIA8nGRc=;
+        b=LiHBpY+unW8MkOrFnZgcYIQtsigvdet6Sv7lu35KxmAKrgpmsOWO5D6Uq2vIt51Zi8
+         FBzP+RRb7GDAv1d+3GeJZbSihjKdjQX1N6cLyw3v29juceO8nK/N3BLD/z32IpI9ORww
+         sQ/WgYUzn8SkWL2fhQ+2T0sIFrh4HLYyQR6I7dWOONPRwMcB/DmU2/JbiO7jqTWADpht
+         hdxfS+1KXCyP8AJzY7/GVzsazmG2eJ6F7xy3WXJnpUEsJqhwZAlnvsntyXg0neHf7lJ2
+         QYAZhQe41YTecOP04fyUypoHcKizZMwp9PV0Men7gJbNARcrZeYv4kcezNOfsqE4xF3/
+         krIA==
+X-Gm-Message-State: AOJu0YwSN1Tx0DFrTVgxVGfapr3Nx0DWejfr4/J8WyUwoq1y6OFPld9d
+        iOc49od1IuTfyBF/KJMwJGDQzIWKFwbXD58=
+X-Google-Smtp-Source: AGHT+IGUV2ky/TT9mGRYJ5pFVrh0jASDhJCBwvPWpjpt765Xg0YWTSmEZ4rYKzsMus2sqZK7XZEPar97Iz/z6uI=
+X-Received: from rdbabiera.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:18a8])
+ (user=rdbabiera job=sendgmr) by 2002:a81:fe03:0:b0:5c1:4b36:85bf with SMTP id
+ j3-20020a81fe03000000b005c14b3685bfmr805785ywn.1.1701285849740; Wed, 29 Nov
+ 2023 11:24:09 -0800 (PST)
+Date:   Wed, 29 Nov 2023 19:23:50 +0000
 Mime-Version: 1.0
-References: <20231108010953.560824-1-seanjc@google.com> <20231108010953.560824-3-seanjc@google.com>
- <0ee32216-e285-406f-b20d-dd193b791d2b@intel.com> <ZUuyVfdKZG44T1ba@google.com>
- <22c602c9-4943-4a16-a12e-ffc5db29daa1@intel.com>
-Message-ID: <ZWePYnuK65GCOGYU@google.com>
-Subject: Re: [PATCH v2 2/2] KVM: selftests: Add logic to detect if ioctl()
- failed because VM was killed
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Michal Luczaj <mhal@rbox.co>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Colton Lewis <coltonlewis@google.com>
-Content-Type: text/plain; charset="us-ascii"
+X-Developer-Key: i=rdbabiera@google.com; a=openpgp; fpr=639A331F1A21D691815CE090416E17CA2BBBD5C8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1907; i=rdbabiera@google.com;
+ h=from:subject; bh=zyy9vTRp0NQrUD3/z05jR9WXsk12rtwCGm6eizGKGaM=;
+ b=owGbwMvMwCFW0bfok0KS4TbG02pJDKnp/Uf1mm2Z7pxYbhr7MqNxfdfdL3POX+H3rL4WuD7xY
+ dyinDSXjlIWBjEOBlkxRRZd/zyDG1dSt8zhrDGGmcPKBDKEgYtTACbi5szI8GjjmS8hl0J9volM
+ 2PR14dd95032SSRde1B8kPne2XkeOg2MDNNsjjJniLzf01z3UYYv1vV86+uJ+Z6xUbJ1/CueHA8 NYwMA
+X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
+Message-ID: <20231129192349.1773623-2-rdbabiera@google.com>
+Subject: [PATCH v3] usb: typec: class: fix typec_altmode_put_partner to put plugs
+From:   RD Babiera <rdbabiera@google.com>
+To:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        badhri@google.com, RD Babiera <rdbabiera@google.com>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023, Xiaoyao Li wrote:
-> On 11/9/2023 12:07 AM, Sean Christopherson wrote:
-> > On Wed, Nov 08, 2023, Xiaoyao Li wrote:
-> > > On 11/8/2023 9:09 AM, Sean Christopherson wrote:
-> > > > Add yet another macro to the VM/vCPU ioctl() framework to detect when an
-> > > > ioctl() failed because KVM killed/bugged the VM, i.e. when there was
-> > > > nothing wrong with the ioctl() itself.  If KVM kills a VM, e.g. by way of
-> > > > a failed KVM_BUG_ON(), all subsequent VM and vCPU ioctl()s will fail with
-> > > > -EIO, which can be quite misleading and ultimately waste user/developer
-> > > > time.
-> > > > 
-> > > > Use KVM_CHECK_EXTENSION on KVM_CAP_USER_MEMORY to detect if the VM is
-> > > > dead and/or bug, as KVM doesn't provide a dedicated ioctl().  Using a
-> > > > heuristic is obviously less than ideal, but practically speaking the logic
-> > > > is bulletproof barring a KVM change, and any such change would arguably
-> > > > break userspace, e.g. if KVM returns something other than -EIO.
-> > > 
-> > > We hit similar issue when testing TDX VMs. Most failure of SEMCALL is
-> > > handled with a KVM_BUG_ON(), which leads to vm dead. Then the following
-> > > IOCTL from userspace (QEMU) and gets -EIO.
-> > > 
-> > > Can we return a new KVM_EXIT_VM_DEAD on KVM_REQ_VM_DEAD?
-> > 
-> > Why?  Even if KVM_EXIT_VM_DEAD somehow provided enough information to be useful
-> > from an automation perspective, the VM is obviously dead.  I don't see how the
-> > VMM can do anything but log the error and tear down the VM.  KVM_BUG_ON() comes
-> > with a WARN, which will be far more helpful for a human debugger, e.g. because
-> > all vCPUs would exit with KVM_EXIT_VM_DEAD, it wouldn't even identify which vCPU
-> > initially triggered the issue.
-> 
-> It's not about providing more helpful debugging info, but to provide a
-> dedicated notification for VMM that "the VM is dead, all the following
-> command may not response". With it, VMM can get rid of the tricky detection
-> like this patch.
+When typec_altmode_put_partner is called by a plug altmode upon release,
+the port altmode the plug belongs to will not remove its reference to the
+plug. The check to see if the altmode being released evaluates against the
+released altmode's partner instead of the calling altmode itself, so change
+adev in typec_altmode_put_partner to properly refer to the altmode being
+released.
 
-But a VMM doesn't need this tricky detection, because this tricky detections isn't
-about detecting that the VM is dead, it's all about helping a human debug why a
-test failed.
+typec_altmode_set_partner is not run for port altmodes, so also add a check
+in typec_altmode_release to prevent typec_altmode_put_partner() calls on
+port altmode release.
 
--EIO already effectively says "the VM is dead", e.g. QEMU isn't going to keep trying
-to run vCPUs.  Similarly, selftests assert either way, the goal is purely to print
-out a unique error message to minimize the chances of confusing the human running
-the test (or looking at results).
+Fixes: 8a37d87d72f0 ("usb: typec: Bus type for alternate modes")
+Cc: stable@vger.kernel.org
+Signed-off-by: RD Babiera <rdbabiera@google.com>
+---
+Changes since v2:
+* Moved changelog under "Signed-off-by" tag
 
-> > Definitely a "no" on this one.  As has been established by the guest_memfd series,
-> > it's ok to return -1/errno with a valid exit_reason.
-> > 
-> > > But I'm wondering if any userspace relies on -EIO behavior for VM DEAD case.
-> > 
-> > I doubt userspace relies on -EIO, but userpsace definitely relies on -1/errno being
-> > returned when a fatal error.
-> 
-> what about KVM_EXIT_SHUTDOWN? Or KVM_EXIT_INTERNAL_ERROR?
+Changes since v1:
+* Changed commit message for clarity
+* Added check to typec_altmode_release to only call put_partner if altmode
+belongs to port partner or plug
+---
+ drivers/usb/typec/class.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-I don't follow, those are vcpu_run.exit_reason values, not errno values.  Returning
-any flavor of KVM_EXIT_*, which are positive values, would break userspace, e.g.
-QEMU explicitly looks for "ret < 0", and glibc only treats small-ish negative
-values as errors, i.e. a postive return value will be propagated verbatim up to
-QEMU.
+diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+index 2e0451bd336e..16a670828dde 100644
+--- a/drivers/usb/typec/class.c
++++ b/drivers/usb/typec/class.c
+@@ -267,7 +267,7 @@ static void typec_altmode_put_partner(struct altmode *altmode)
+ 	if (!partner)
+ 		return;
+ 
+-	adev = &partner->adev;
++	adev = &altmode->adev;
+ 
+ 	if (is_typec_plug(adev->dev.parent)) {
+ 		struct typec_plug *plug = to_typec_plug(adev->dev.parent);
+@@ -497,7 +497,8 @@ static void typec_altmode_release(struct device *dev)
+ {
+ 	struct altmode *alt = to_altmode(to_typec_altmode(dev));
+ 
+-	typec_altmode_put_partner(alt);
++	if (!is_typec_port(dev->parent))
++		typec_altmode_put_partner(alt);
+ 
+ 	altmode_id_remove(alt->adev.dev.parent, alt->id);
+ 	kfree(alt);
+
+base-commit: 24af68a0ed53629bdde7b53ef8c2be72580d293b
+-- 
+2.43.0.rc1.413.gea7ed67945-goog
+
