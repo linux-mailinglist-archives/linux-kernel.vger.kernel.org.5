@@ -2,101 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B641F7FE13C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:40:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A6617FE13E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:42:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234092AbjK2Ukk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 15:40:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45780 "EHLO
+        id S234032AbjK2UmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 15:42:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233983AbjK2Ukj (ORCPT
+        with ESMTP id S231549AbjK2UmK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 15:40:39 -0500
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5CC3D6E
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:40:44 -0800 (PST)
-Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6ce322b62aeso150325a34.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:40:44 -0800 (PST)
+        Wed, 29 Nov 2023 15:42:10 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D20CAD67
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:42:16 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c50fbc218bso2893241fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:42:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1701290444; x=1701895244; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=i4is+UaFXgNmfUwcjSjgaiG0RVAiB9ug48COJL1kEfc=;
-        b=FPRXhtOrAV5xg2ep6+npC90ZSnpQalIGR2w53QMKa3XLO/hG0KmMCeIAEJYG9nBJWa
-         /XyyUlxnf8qxAxQaWmKVhby4s5m9Ta/R4x8QhtH8YfdNzl+p6aeapMOLXIPz8RLo/pjh
-         IOpI2VD/QnYVyMPPrxjtdK9wv8Otlic/ctIvKNQMpTzekcCTjVogfQF4jR5thhHXsjCs
-         XONtlIfvzyaZj/K/WAsdq3tTQWkbny+MdS0Xc+CJBzPOQ/LHxjv7V0aeigbx0nYcDG9u
-         Gawbifm5xn+KRSCUaJc1fnk6/rBRvV8nKVVLyaEi4QZnJFHIJEs+ftWuSwbPhkVly6xB
-         Ux/g==
+        d=chromium.org; s=google; t=1701290535; x=1701895335; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SjyD2uy7rhiIwUguKMOS6O61vfhptuzTgpHO35Q0vkM=;
+        b=eGs95RLOGruwTbMSTqo73RrVdIvHASzU+mtaPm12UPVwwBpCy4NnDgxxgB8Ld6YnsE
+         iIvVLvBnyLGc3R9MoKjPxe9bbVDNScQm2pio82wb/OOXWJxBFfstAiFAkt1hakxfg/pY
+         1BK1A9ycFaMtDNqyhDxXY1rV5kZp/+JSz64J8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701290444; x=1701895244;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1701290535; x=1701895335;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=i4is+UaFXgNmfUwcjSjgaiG0RVAiB9ug48COJL1kEfc=;
-        b=dN8vtvpEdV48ZDr6LWRrKYrTHzydt5mycSQNVLGtpbsz9rAL33jR27N4rY1YbhYYD0
-         y13XdQFscxcrtaEMWVCJ9AwF6fC3LeV1k4OnwUfufOwKZ8yHS8lJ2djrhOMwwID9ExRT
-         V6f8nj47bBxKlqDlLanzF8AYIfpIXyt4S3xHwJ02fLsdsQVcRQN4/Yv2LnAvpakwdzLf
-         5f7CH2Y+C/bVHhjW6OuElVa/PbDsSXAL1tdH8DNzX4NLW6TrepQhJRVgqWKP5vzpu/sP
-         Hn1v3OtO1TFp1JrWHR7J5geNk/I54+Yo09h053v+Pm65NMOJ5FMr/LP34oTIWbDlSjek
-         qS5g==
-X-Gm-Message-State: AOJu0Yz5qwQwBKVe6F7jucNAbcxi3uQ/chFqjXU2+8Zr+xEChLNiAgbV
-        Ge6ZO9bmcjisGQm6Entdh+XQLg==
-X-Google-Smtp-Source: AGHT+IEnrq+40pWqc9tikvXUqS6Y6R2hs7giuPFXyADBt3dDnfao9L3w+T91fxfG4h2rkEvYDjFXYw==
-X-Received: by 2002:a05:6830:1d41:b0:6d6:3ff8:aab7 with SMTP id p1-20020a0568301d4100b006d63ff8aab7mr19895331oth.1.1701290444152;
-        Wed, 29 Nov 2023 12:40:44 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
-        by smtp.gmail.com with ESMTPSA id e11-20020a9d560b000000b006d3161e612dsm2113398oti.30.2023.11.29.12.40.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 12:40:43 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1r8RMQ-005pfu-R5;
-        Wed, 29 Nov 2023 16:40:42 -0400
-Date:   Wed, 29 Nov 2023 16:40:42 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Christoph Hellwig <hch@lst.de>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-acpi@vger.kernel.org, iommu@lists.linux.dev,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 4/7] dma-mapping: Add helpers for dma_range_map bounds
-Message-ID: <20231129204042.GP1312390@ziepe.ca>
-References: <cover.1701268753.git.robin.murphy@arm.com>
- <b6626985d97ddc33a23b4b9fafa881b35001547e.1701268753.git.robin.murphy@arm.com>
+        bh=SjyD2uy7rhiIwUguKMOS6O61vfhptuzTgpHO35Q0vkM=;
+        b=nYBZPxM+uMRGsyqxikVGjz7DKxwcxSpHsnWCBrZtNdyROc40J2BecqaKItaR6F3UUP
+         IaxmAYbXN8NEaSH1x3kGbsYW4Q5GUYyTFzc1fdQi+K0s0LaE8NTTOExuRy+fr0o6kwfh
+         DKHNdXNiWObI4nUsZTtfy4Yt8m7LUMP8oplzE+a88YtRp1YVJiBasLeZZCw6nH0Msf8s
+         rmtMvIVpUDo51C2tps3yYq6uytonvxwNlxHcQKvYz5fuOUqqgG2XmdA5MUbyHh/9fdop
+         8xhVlnQ6qLAbwYJHExESSM4hFx36m9F/wtguGZn5O7a7Mpi2/GXHS8Gul37EwCrVgxER
+         mjsA==
+X-Gm-Message-State: AOJu0YwRPV4fm6MiUHQEQRxhqhfW5CHjQcqmsbQFhWpgKkwKzb+D17bM
+        +rkw4peOqA10Q2q1Yf2rZMwEb1SpMuMYnVzdI0D8UQ==
+X-Google-Smtp-Source: AGHT+IGLtBi/LhsApUdsOPv/Q/7AseQ1qifIjVFc58wVFu+pFHvSnzJz7JInqQ9Npx4mSLCP14BLJFdwCOSfEaqh9eA=
+X-Received: by 2002:a2e:9d8e:0:b0:2c9:c22e:31eb with SMTP id
+ c14-20020a2e9d8e000000b002c9c22e31ebmr1958958ljj.22.1701290534275; Wed, 29
+ Nov 2023 12:42:14 -0800 (PST)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 29 Nov 2023 12:42:13 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b6626985d97ddc33a23b4b9fafa881b35001547e.1701268753.git.robin.murphy@arm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+In-Reply-To: <202311291219.A6E3E58@keescook>
+References: <20231127234946.2514120-1-swboyd@chromium.org> <202311291219.A6E3E58@keescook>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.10
+Date:   Wed, 29 Nov 2023 12:42:13 -0800
+Message-ID: <CAE-0n53x8AXUPaq5_TaqF6PN5u5J6g5RYoNWALN-MnEJBa5syA@mail.gmail.com>
+Subject: Re: [PATCH] lkdtm: Add kfence read after free crash type
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -104,18 +73,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 05:43:01PM +0000, Robin Murphy wrote:
-> Several places want to compute the lower and/or upper bounds of a
-> dma_range_map, so let's factor that out into reusable helpers.
-> 
-> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-> ---
->  arch/loongarch/kernel/dma.c |  9 ++-------
->  drivers/acpi/arm64/dma.c    |  8 +-------
->  drivers/of/device.c         | 11 ++---------
->  include/linux/dma-direct.h  | 18 ++++++++++++++++++
->  4 files changed, 23 insertions(+), 23 deletions(-)
+Adding kfence folks (will add on v2).
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+Quoting Kees Cook (2023-11-29 12:22:27)
+> On Mon, Nov 27, 2023 at 03:49:45PM -0800, Stephen Boyd wrote:
+> > Add the ability to allocate memory from kfence and trigger a read after
+> > free on that memory to validate that kfence is working properly. This is
+> > used by ChromeOS integration tests to validate that kfence errors can be
+> > collected on user devices and parsed properly.
+>
+> This looks really good; thanks for adding this!
+>
+> >
+> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> > ---
+> >  drivers/misc/lkdtm/heap.c | 64 +++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 64 insertions(+)
+> >
+> > diff --git a/drivers/misc/lkdtm/heap.c b/drivers/misc/lkdtm/heap.c
+> > index 0ce4cbf6abda..608872bcc7e0 100644
+> > --- a/drivers/misc/lkdtm/heap.c
+> > +++ b/drivers/misc/lkdtm/heap.c
+> > @@ -4,6 +4,7 @@
+> >   * page allocation and slab allocations.
+> >   */
+> >  #include "lkdtm.h"
+> > +#include <linux/kfence.h>
+> >  #include <linux/slab.h>
+> >  #include <linux/vmalloc.h>
+> >  #include <linux/sched.h>
+> > @@ -132,6 +133,66 @@ static void lkdtm_READ_AFTER_FREE(void)
+> >       kfree(val);
+> >  }
+> >
+> > +#if IS_ENABLED(CONFIG_KFENCE)
+>
+> I really try hard to avoid having tests disappear depending on configs,
+> and instead report the expected failure case (as you have). Can this be
+> built without the IS_ENABLED() tests?
+>
 
-Jason
+We need IS_ENABLED() for the kfence_sample_interval variable. I suppose
+if the config isn't set that variable can be assumed as zero and then
+the timeout would hit immediately. We can either define the name
+'kfence_sample_interval' as 0 in the header, or put an ifdef in the
+function.
+
+---8<---
+diff --git a/drivers/misc/lkdtm/heap.c b/drivers/misc/lkdtm/heap.c
+index 4f467d3972a6..574d0aa726dc 100644
+--- a/drivers/misc/lkdtm/heap.c
++++ b/drivers/misc/lkdtm/heap.c
+@@ -138,6 +138,14 @@ static void lkdtm_KFENCE_READ_AFTER_FREE(void)
+ 	int *base, val, saw;
+ 	unsigned long timeout, resched_after;
+ 	size_t len = 1024;
++	unsigned long interval;
++
++#ifdef CONFIG_KFENCE
++	interval = kfence_sample_interval;
++#else
++	interval = 0;
++#endif
++
+ 	/*
+ 	 * The slub allocator will use the either the first word or
+ 	 * the middle of the allocation to store the free pointer,
+@@ -150,13 +158,13 @@ static void lkdtm_KFENCE_READ_AFTER_FREE(void)
+ 	 * 100x the sample interval should be more than enough to ensure we get
+ 	 * a KFENCE allocation eventually.
+ 	 */
+-	timeout = jiffies + msecs_to_jiffies(100 * kfence_sample_interval);
++	timeout = jiffies + msecs_to_jiffies(100 * interval);
+ 	/*
+ 	 * Especially for non-preemption kernels, ensure the allocation-gate
+ 	 * timer can catch up: after @resched_after, every failed allocation
+ 	 * attempt yields, to ensure the allocation-gate timer is scheduled.
+ 	 */
+-	resched_after = jiffies + msecs_to_jiffies(kfence_sample_interval);
++	resched_after = jiffies + msecs_to_jiffies(interval);
+ 	do {
+ 		base = kmalloc(len, GFP_KERNEL);
+ 		if (!base) {
+
+---8<----
+diff --git a/include/linux/kfence.h b/include/linux/kfence.h
+index 401af4757514..88100cc9caba 100644
+--- a/include/linux/kfence.h
++++ b/include/linux/kfence.h
+@@ -223,6 +223,8 @@ bool __kfence_obj_info(struct kmem_obj_info *kpp,
+void *object, struct slab *sla
+
+ #else /* CONFIG_KFENCE */
+
++#define kfence_sample_interval	(0)
++
+ static inline bool is_kfence_address(const void *addr) { return false; }
+ static inline void kfence_alloc_pool_and_metadata(void) { }
+ static inline void kfence_init(void) { }
