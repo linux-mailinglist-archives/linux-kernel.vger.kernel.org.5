@@ -2,122 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE1C37FD4CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BEC77FD4CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:00:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbjK2K7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 05:59:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53652 "EHLO
+        id S230094AbjK2LAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 06:00:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjK2K7V (ORCPT
+        with ESMTP id S229477AbjK2LAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 05:59:21 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286D295;
-        Wed, 29 Nov 2023 02:59:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=KigNA1TZVqFp7ATaA0tVgaRfg+vW2ATtcc+1Uw9papU=; b=Q2NbVUFMfdymSbxHURADyz+2dQ
-        gbloL7jZqkpqjodYwok3ql66wYy7cdufNcJCC2EZfTYZLQyR/x16CzXMCFWFAQ3xgYLkmVqdyBUVL
-        SD/WEF1Px2v/ctRMyjh4QZt853ckle8P++uVw2YAyyTUTNP5IwmiX0ev188ZEFO1lJtV6566KeSGu
-        azaZQxJrOH6ovUcIMOTCL4Me2IJuKOJxtMyQroIbFOezolfDgAK2wHEhkImI+LwO3rXB5XBgHi7tU
-        EGgIQAFXLUKMXOUSyXIwwYAspPX0mlLRGJs0LSa0MlK/S9XbzLVn6AUhHZ0SfWb53PlCWcSCwHUBa
-        Bz6/9MZA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r8IH7-000Jr8-0G;
-        Wed, 29 Nov 2023 10:58:38 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B7D0B300487; Wed, 29 Nov 2023 11:58:36 +0100 (CET)
-Date:   Wed, 29 Nov 2023 11:58:36 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Hendrik Brueckner <brueckner@linux.ibm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH RFC 2/3] perf/x86/intel/pt: Add support for pause_resume()
-Message-ID: <20231129105836.GF30650@noisy.programming.kicks-ass.net>
-References: <20231123121851.10826-1-adrian.hunter@intel.com>
- <20231123121851.10826-3-adrian.hunter@intel.com>
- <c63808b2-2049-da18-f0af-5dff2bc87cd2@arm.com>
+        Wed, 29 Nov 2023 06:00:44 -0500
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86CDCC1;
+        Wed, 29 Nov 2023 03:00:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1701255649; x=1732791649;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=AKWihbdXdCcaNBGqaq4ELo/HAUelGjMVnoaPK9rZFRY=;
+  b=Y2nXMf8qz7iv74FRlpkGf6UHMtTrHPdsioMcyEGc+oIWudKGRwHUgl/i
+   I8pDFD1OQXXdaxsZHWfnFtYK776scUC/z/FN4Ibb5b4RJp1wB3IMbcjP7
+   meejqPy358ez+Dvh7zCnb/Iv/8FgqCXpk4lrE5M5w8fFc65wM+2PQ5LUG
+   zJzJfwoSXaYlcclo7IL3CRAeyGfL0C4cbrF2W4e1aC/Emy2pqMs9e/7pu
+   Acfr24jD1J3K7pMeFIz5wkKlyp3ZX4sm2Sqtqep2oWcbVrdou3CWDA04i
+   3U+30M8spdV6S5neQ3ED8wRYBIuQ5SJWqKWI8eUaZCjcanwXCqBsj3ssx
+   w==;
+X-IronPort-AV: E=Sophos;i="6.04,235,1695679200"; 
+   d="scan'208";a="34235388"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 29 Nov 2023 12:00:47 +0100
+Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.18])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id B349B280075;
+        Wed, 29 Nov 2023 12:00:47 +0100 (CET)
+From:   Alexander Stein <alexander.stein@ew.tq-group.com>
+To:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        Paul Elder <paul.elder@ideasonboard.com>
+Cc:     kieran.bingham@ideasonboard.com, tomi.valkeinen@ideasonboard.com,
+        umang.jain@ideasonboard.com,
+        Paul Elder <paul.elder@ideasonboard.com>,
+        Dafna Hirschfeld <dafna@fastmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        "moderated list:ARM/Rockchip SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/3] media: rkisp1: debug: Add register dump for IS
+Date:   Wed, 29 Nov 2023 12:00:47 +0100
+Message-ID: <5541424.44csPzL39Z@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <20231129092956.250129-3-paul.elder@ideasonboard.com>
+References: <20231129092956.250129-1-paul.elder@ideasonboard.com> <20231129092956.250129-3-paul.elder@ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c63808b2-2049-da18-f0af-5dff2bc87cd2@arm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 09:53:39AM +0000, James Clark wrote:
-> On 23/11/2023 12:18, Adrian Hunter wrote:
+Hi Paul,
 
-> > +static void pt_event_pause_resume(struct perf_event *event)
-> > +{
-> > +	if (event->aux_paused)
-> > +		pt_config_stop(event);
-> > +	else if (!event->hw.state)
-> > +		pt_config_start(event);
-> > +}
-> 
-> It seems like having a single pause/resume callback rather than separate
-> pause and resume ones pushes some of the event state management into the
-> individual drivers and would be prone to code duplication and divergent
-> behavior.
-> 
-> Would it be possible to move the conditions from here into the core code
-> and call separate functions instead?
-> 
-> > +
-> >  static void pt_event_start(struct perf_event *event, int mode)
-> >  {
-> >  	struct hw_perf_event *hwc = &event->hw;
-> > @@ -1798,6 +1809,7 @@ static __init int pt_init(void)
-> >  	pt_pmu.pmu.del			 = pt_event_del;
-> >  	pt_pmu.pmu.start		 = pt_event_start;
-> >  	pt_pmu.pmu.stop			 = pt_event_stop;
-> > +	pt_pmu.pmu.pause_resume		 = pt_event_pause_resume;
-> 
-> The general idea seems ok to me. Is there a reason to not use the
-> existing start() stop() callbacks, rather than adding a new one?
-> 
-> I assume it's intended to be something like an optimisation where you
-> can turn it on and off without having to do the full setup, teardown and
-> emit an AUX record because you know the process being traced never gets
-> switched out?
+thanks for the patch.
 
-So the actual scheduling uses ->add() / ->del(), the ->start() /
-->stop() methods are something that can be used after ->add() and before
-->del() to 'temporarily' pause things.
+Am Mittwoch, 29. November 2023, 10:29:55 CET schrieb Paul Elder:
+> Add register dump for the image stabilizer module to debugfs.
+>=20
+> Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
 
-Pretty much exactly what is required here I think. We currently use this
-for PMI throttling and adaptive frequency stuff, but there is no reason
-it could not also be used for this.
+Tested with a 1080p and 720p stream, without offsets.
+Tested-by: Alexander Stein <alexander.stein@ew.tq-group.com>
 
-As is, we don't track the paused state across ->del() / ->add(), but
-perhaps that can be fixed. We can easily add more PERF_EF_ / PERF_HES_
-bits to manage things.
+> ---
+>  .../platform/rockchip/rkisp1/rkisp1-debug.c    | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+>=20
+> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c
+> b/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c index
+> 71df3dc95e6f..f66b9754472e 100644
+> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c
+> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c
+> @@ -139,6 +139,21 @@ static int rkisp1_debug_dump_mi_mp_show(struct seq_f=
+ile
+> *m, void *p) }
+>  DEFINE_SHOW_ATTRIBUTE(rkisp1_debug_dump_mi_mp);
+>=20
+> +static int rkisp1_debug_dump_is_show(struct seq_file *m, void *p)
+> +{
+> +	static const struct rkisp1_debug_register registers[] =3D {
+> +		RKISP1_DEBUG_SHD_REG(ISP_IS_H_OFFS),
+> +		RKISP1_DEBUG_SHD_REG(ISP_IS_V_OFFS),
+> +		RKISP1_DEBUG_SHD_REG(ISP_IS_H_SIZE),
+> +		RKISP1_DEBUG_SHD_REG(ISP_IS_V_SIZE),
+> +		{ /* Sentinel */ },
+> +	};
+> +	struct rkisp1_device *rkisp1 =3D m->private;
+> +
+> +	return rkisp1_debug_dump_regs(rkisp1, m, 0, registers);
+> +}
+> +DEFINE_SHOW_ATTRIBUTE(rkisp1_debug_dump_is);
+> +
+>  #define RKISP1_DEBUG_DATA_COUNT_BINS	32
+>  #define RKISP1_DEBUG_DATA_COUNT_STEP	(4096 / RKISP1_DEBUG_DATA_COUNT_BIN=
+S)
+>=20
+> @@ -235,6 +250,9 @@ void rkisp1_debug_init(struct rkisp1_device *rkisp1)
+>=20
+>  	debugfs_create_file("mi_mp", 0444, regs_dir, rkisp1,
+>  			    &rkisp1_debug_dump_mi_mp_fops);
+> +
+> +	debugfs_create_file("is", 0444, regs_dir, rkisp1,
+> +			    &rkisp1_debug_dump_is_fops);
+>  }
+>=20
+>  void rkisp1_debug_cleanup(struct rkisp1_device *rkisp1)
+
+
+=2D-=20
+TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht M=FCnchen, HRB 105018
+Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+http://www.tq-group.com/
 
 
