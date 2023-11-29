@@ -2,321 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 953247FDB56
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:26:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E020E7FDB4D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:25:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344062AbjK2P0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 10:26:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45866 "EHLO
+        id S234915AbjK2PZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 10:25:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235072AbjK2PZm (ORCPT
+        with ESMTP id S234919AbjK2PZF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 10:25:42 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF1C10EA
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:25:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52208C433CC;
-        Wed, 29 Nov 2023 15:25:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701271524;
-        bh=atlZM4BJ8KQy+D392AjQoHShz//qiSp1cvnKJCX3Ivs=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=ed7X4MpL7h2Q0Nb/a0ndUZr30juQivEfGEe6E21vXmMTPGZ2xplKy4MaLCYkCxZU+
-         gnH35MT9kzRGFlDeWXhU2/CVsR4nk5Z4ck4wmy6gLw/oOs9ot6Q1K9BtjOZCd9onzd
-         X/ohJXRAH6CZ8GfmWJnJpxXRq1LWaxTwVsNtamisj/dGW9ueqEBoqQqtdKBVZA2TrF
-         xZsUbZAdKs3uYvkg9uvsIDPnSZHBrm+8i03t+HSMxRxv5yN5kVy2jy+rUBesHG9TzZ
-         uEG3GJEmJo7urvpgAUzWJd5f+dg494BQ7fAwKe+gaG0EEpgHh6vO8NjfK0xGbVoF9y
-         A1RQSbr7fdKVw==
-From:   Benjamin Tissoires <bentiss@kernel.org>
-Date:   Wed, 29 Nov 2023 16:24:37 +0100
-Subject: [PATCH 12/12] selftests/hid: tablets: be stricter for some
- transitions
+        Wed, 29 Nov 2023 10:25:05 -0500
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E5CD6E
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:25:11 -0800 (PST)
+Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-423a459d616so24912421cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:25:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1701271511; x=1701876311; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9ggscuLXdkbtAnynY3GdTzeA07chUPA8WGR1vy9vM7w=;
+        b=cH3ZXWk2/oyUnIX75QcNokzfI3D4H2OzhpG16aUIyRI1ilDvEcXdf02UICEXQNmIUI
+         FWxTLLy3hDpaNy+ClQPKo1xMP3VkQolaiKPK5mRLtzfT9fTtgk1fGwBlymMihVNujVN2
+         nrNVvRotEGDL9/Cpf/fpIa+FVp0Xd1Vfo2Fzm7256RPvBmK2cX8AIYD2XZBx0bmWLlfD
+         pZsE2fBA7lh/epk+zywODUzH0FQELz/sMfnyICM5RuebgTeIB0xeIGB61JJttvJ/y6V9
+         SQL+AqIZNS/aWObRe9LZONObWrppjFF91e3V+kMNWvpzrOL3uobeg7BCzbxO9OACqYJm
+         toXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701271511; x=1701876311;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9ggscuLXdkbtAnynY3GdTzeA07chUPA8WGR1vy9vM7w=;
+        b=HcBidEqnfTxdtghh5aU2pR9ICBcIAeWlSqB/wy2Rci8GiOnGMs8jBBrN7B2Qq8K5vt
+         UfFCi78lMtgcuge8Zg7O/37nWP2yHsa5XbYY5ulJD6g5x33VQhXIVA/3zVN6TbveaFYY
+         fy/gn4yHCdSMVgNAMMnM3+muDzd/ru1XoJaNfZYL7S1FhH0aVjuF0+4Mt4RLE0APd2Hd
+         /XLD8xvwSnG4fg4tQC4DIQQlJQSSduffnktOKvEfVM0Pt0vzu9smBa2NbubYzU07qq7M
+         DeYts1ygxBe+VzvnrfpP/XU7Ma/vT+CYUYSZbyuUO7qKeN6Fung15t+pwdntXKsN2RT/
+         7jaQ==
+X-Gm-Message-State: AOJu0YyS5HA4Om00GYzTVTMaR4kJ3dDyWIqoF3nqQ8/7S3qTxaIm2es4
+        Jj/HvjaVgm8C6CXSqtGka998/w==
+X-Google-Smtp-Source: AGHT+IERC5rUROsi60YXkNf8/r1k/+JDGDC0OGY/HyxD3a7Iu2Iwryw3L5ZWy48uExK2aTbpmhx8CQ==
+X-Received: by 2002:ac8:60b:0:b0:423:b632:eaea with SMTP id d11-20020ac8060b000000b00423b632eaeamr11778830qth.8.1701271510969;
+        Wed, 29 Nov 2023 07:25:10 -0800 (PST)
+Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id t22-20020ac86a16000000b004196d75d79csm5633606qtr.46.2023.11.29.07.25.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 07:25:10 -0800 (PST)
+Date:   Wed, 29 Nov 2023 10:25:09 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Nhat Pham <nphamcs@gmail.com>
+Cc:     akpm@linux-foundation.org, cerasuolodomenico@gmail.com,
+        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
+        vitaly.wool@konsulko.com, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
+        kernel-team@meta.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org
+Subject: Re: [PATCH v7 4/6] mm: memcg: add per-memcg zswap writeback stat
+Message-ID: <20231129152509.GD135852@cmpxchg.org>
+References: <20231127234600.2971029-1-nphamcs@gmail.com>
+ <20231127234600.2971029-5-nphamcs@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231129-wip-selftests-v1-12-ba15a1fe1b0d@kernel.org>
-References: <20231129-wip-selftests-v1-0-ba15a1fe1b0d@kernel.org>
-In-Reply-To: <20231129-wip-selftests-v1-0-ba15a1fe1b0d@kernel.org>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Peter Hutterer <peter.hutterer@who-t.net>
-Cc:     linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Benjamin Tissoires <bentiss@kernel.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1701271499; l=11244;
- i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
- bh=atlZM4BJ8KQy+D392AjQoHShz//qiSp1cvnKJCX3Ivs=;
- b=fU6Sr1TqdI77cJF2Qb3FLZAa85LpecFESZGpPsUjHNBON0dpLDRrEuBbVN+unTfuN8vAUY9a/
- kxSicQAgrhGBSQtF+XeAGGGd1zoz2UgjRXX/FCy6I9ZCMg2vcK3nbQY
-X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
- pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231127234600.2971029-5-nphamcs@gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To accommodate for legacy devices, we rely on the last state of a
-transition to be valid:
-for example when we test PEN_IS_OUT_OF_RANGE to PEN_IS_IN_CONTACT,
-any "normal" device that reports an InRange bit would insert a
-PEN_IS_IN_RANGE state between the 2.
+On Mon, Nov 27, 2023 at 03:45:58PM -0800, Nhat Pham wrote:
+> From: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+> 
+> Since zswap now writes back pages from memcg-specific LRUs, we now need a
+> new stat to show writebacks count for each memcg.
+> 
+> Suggested-by: Nhat Pham <nphamcs@gmail.com>
+> Signed-off-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
+> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+> ---
+>  include/linux/vm_event_item.h | 1 +
+>  mm/memcontrol.c               | 1 +
+>  mm/vmstat.c                   | 1 +
+>  mm/zswap.c                    | 3 +++
+>  4 files changed, 6 insertions(+)
+> 
+> diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
+> index d1b847502f09..f4569ad98edf 100644
+> --- a/include/linux/vm_event_item.h
+> +++ b/include/linux/vm_event_item.h
+> @@ -142,6 +142,7 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
+>  #ifdef CONFIG_ZSWAP
+>  		ZSWPIN,
+>  		ZSWPOUT,
+> +		ZSWP_WB,
+>  #endif
+>  #ifdef CONFIG_X86
+>  		DIRECT_MAP_LEVEL2_SPLIT,
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 8c0f3f971179..f88c8fd03689 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -703,6 +703,7 @@ static const unsigned int memcg_vm_event_stat[] = {
+>  #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
+>  	ZSWPIN,
+>  	ZSWPOUT,
+> +	ZSWP_WB,
+>  #endif
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>  	THP_FAULT_ALLOC,
+> diff --git a/mm/vmstat.c b/mm/vmstat.c
+> index afa5a38fcc9c..2249f85e4a87 100644
+> --- a/mm/vmstat.c
+> +++ b/mm/vmstat.c
+> @@ -1401,6 +1401,7 @@ const char * const vmstat_text[] = {
+>  #ifdef CONFIG_ZSWAP
+>  	"zswpin",
+>  	"zswpout",
+> +	"zswp_wb",
 
-This is of course valid, but this solution prevents to detect false
-releases emitted by some firmware:
-when pressing an "eraser mode" button, they might send an extra
-PEN_IS_OUT_OF_RANGE that we may want to filter.
+ZSWPWB and "zswpwb" would match the existing naming scheme a bit
+better.
 
-So define 2 sets of transitions: one that is the ideal behavior, and
-one that is OK, it won't break user space, but we have serious doubts
-if we are doing the right thing. And depending on the test, either
-ask only for valid transitions, or tolerate weird ones.
+>  #endif
+>  #ifdef CONFIG_X86
+>  	"direct_map_level2_splits",
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index 5e397fc1f375..6a761753f979 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -754,6 +754,9 @@ static enum lru_status shrink_memcg_cb(struct list_head *item, struct list_lru_o
+>  	}
+>  	zswap_written_back_pages++;
+>  
+> +	if (entry->objcg)
+> +		count_objcg_event(entry->objcg, ZSWP_WB);
+> +
 
-Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
----
- tools/testing/selftests/hid/tests/test_tablet.py | 122 +++++++++++++++++++----
- 1 file changed, 104 insertions(+), 18 deletions(-)
-
-diff --git a/tools/testing/selftests/hid/tests/test_tablet.py b/tools/testing/selftests/hid/tests/test_tablet.py
-index f24cf2e168a4..625dd9dcb935 100644
---- a/tools/testing/selftests/hid/tests/test_tablet.py
-+++ b/tools/testing/selftests/hid/tests/test_tablet.py
-@@ -109,7 +109,7 @@ class PenState(Enum):
- 
-         return cls((touch, tool, button))
- 
--    def apply(self, events) -> "PenState":
-+    def apply(self, events, strict) -> "PenState":
-         if libevdev.EV_SYN.SYN_REPORT in events:
-             raise ValueError("EV_SYN is in the event sequence")
-         touch = self.touch
-@@ -148,13 +148,97 @@ class PenState(Enum):
-             button = None
- 
-         new_state = PenState((touch, tool, button))
--        assert (
--            new_state in self.valid_transitions()
--        ), f"moving from {self} to {new_state} is forbidden"
-+        if strict:
-+            assert (
-+                new_state in self.valid_transitions()
-+            ), f"moving from {self} to {new_state} is forbidden"
-+        else:
-+            assert (
-+                new_state in self.historical_tolerated_transitions()
-+            ), f"moving from {self} to {new_state} is forbidden"
- 
-         return new_state
- 
-     def valid_transitions(self) -> Tuple["PenState", ...]:
-+        """Following the state machine in the URL above.
-+
-+        Note that those transitions are from the evdev point of view, not HID"""
-+        if self == PenState.PEN_IS_OUT_OF_RANGE:
-+            return (
-+                PenState.PEN_IS_OUT_OF_RANGE,
-+                PenState.PEN_IS_IN_RANGE,
-+                PenState.PEN_IS_IN_RANGE_WITH_BUTTON,
-+                PenState.PEN_IS_IN_RANGE_WITH_SECOND_BUTTON,
-+                PenState.PEN_IS_IN_RANGE_WITH_ERASING_INTENT,
-+                PenState.PEN_IS_IN_CONTACT,
-+                PenState.PEN_IS_IN_CONTACT_WITH_BUTTON,
-+                PenState.PEN_IS_IN_CONTACT_WITH_SECOND_BUTTON,
-+                PenState.PEN_IS_ERASING,
-+            )
-+
-+        if self == PenState.PEN_IS_IN_RANGE:
-+            return (
-+                PenState.PEN_IS_IN_RANGE,
-+                PenState.PEN_IS_IN_RANGE_WITH_BUTTON,
-+                PenState.PEN_IS_IN_RANGE_WITH_SECOND_BUTTON,
-+                PenState.PEN_IS_OUT_OF_RANGE,
-+                PenState.PEN_IS_IN_CONTACT,
-+            )
-+
-+        if self == PenState.PEN_IS_IN_CONTACT:
-+            return (
-+                PenState.PEN_IS_IN_CONTACT,
-+                PenState.PEN_IS_IN_CONTACT_WITH_BUTTON,
-+                PenState.PEN_IS_IN_CONTACT_WITH_SECOND_BUTTON,
-+                PenState.PEN_IS_IN_RANGE,
-+            )
-+
-+        if self == PenState.PEN_IS_IN_RANGE_WITH_ERASING_INTENT:
-+            return (
-+                PenState.PEN_IS_IN_RANGE_WITH_ERASING_INTENT,
-+                PenState.PEN_IS_OUT_OF_RANGE,
-+                PenState.PEN_IS_ERASING,
-+            )
-+
-+        if self == PenState.PEN_IS_ERASING:
-+            return (
-+                PenState.PEN_IS_ERASING,
-+                PenState.PEN_IS_IN_RANGE_WITH_ERASING_INTENT,
-+            )
-+
-+        if self == PenState.PEN_IS_IN_RANGE_WITH_BUTTON:
-+            return (
-+                PenState.PEN_IS_IN_RANGE_WITH_BUTTON,
-+                PenState.PEN_IS_IN_RANGE,
-+                PenState.PEN_IS_OUT_OF_RANGE,
-+                PenState.PEN_IS_IN_CONTACT_WITH_BUTTON,
-+            )
-+
-+        if self == PenState.PEN_IS_IN_CONTACT_WITH_BUTTON:
-+            return (
-+                PenState.PEN_IS_IN_CONTACT_WITH_BUTTON,
-+                PenState.PEN_IS_IN_CONTACT,
-+                PenState.PEN_IS_IN_RANGE_WITH_BUTTON,
-+            )
-+
-+        if self == PenState.PEN_IS_IN_RANGE_WITH_SECOND_BUTTON:
-+            return (
-+                PenState.PEN_IS_IN_RANGE_WITH_SECOND_BUTTON,
-+                PenState.PEN_IS_IN_RANGE,
-+                PenState.PEN_IS_OUT_OF_RANGE,
-+                PenState.PEN_IS_IN_CONTACT_WITH_SECOND_BUTTON,
-+            )
-+
-+        if self == PenState.PEN_IS_IN_CONTACT_WITH_SECOND_BUTTON:
-+            return (
-+                PenState.PEN_IS_IN_CONTACT_WITH_SECOND_BUTTON,
-+                PenState.PEN_IS_IN_CONTACT,
-+                PenState.PEN_IS_IN_RANGE_WITH_SECOND_BUTTON,
-+            )
-+
-+        return tuple()
-+
-+    def historical_tolerated_transitions(self) -> Tuple["PenState", ...]:
-         """Following the state machine in the URL above, with a couple of addition
-         for skipping the in-range state, due to historical reasons.
- 
-@@ -678,10 +762,12 @@ class BaseTest:
-             self.debug_reports(r, uhdev, events)
-             return events
- 
--        def validate_transitions(self, from_state, pen, evdev, events):
-+        def validate_transitions(self, from_state, pen, evdev, events, allow_intermediate_states):
-             # check that the final state is correct
-             pen.assert_expected_input_events(evdev)
- 
-+            state = from_state
-+
-             # check that the transitions are valid
-             sync_events = []
-             while libevdev.InputEvent(libevdev.EV_SYN.SYN_REPORT) in events:
-@@ -691,12 +777,12 @@ class BaseTest:
-                 events = events[idx + 1 :]
- 
-                 # now check for a valid transition
--                from_state = from_state.apply(sync_events)
-+                state = state.apply(sync_events, not allow_intermediate_states)
- 
-             if events:
--                from_state = from_state.apply(sync_events)
-+                state = state.apply(sync_events, not allow_intermediate_states)
- 
--        def _test_states(self, state_list, scribble):
-+        def _test_states(self, state_list, scribble, allow_intermediate_states):
-             """Internal method to test against a list of
-             transition between states.
-             state_list is a list of PenState objects
-@@ -711,7 +797,7 @@ class BaseTest:
-             p = Pen(50, 60)
-             uhdev.move_to(p, PenState.PEN_IS_OUT_OF_RANGE)
-             events = self.post(uhdev, p)
--            self.validate_transitions(cur_state, p, evdev, events)
-+            self.validate_transitions(cur_state, p, evdev, events, allow_intermediate_states)
- 
-             cur_state = p.current_state
- 
-@@ -720,14 +806,14 @@ class BaseTest:
-                     p.x += 1
-                     p.y -= 1
-                     events = self.post(uhdev, p)
--                    self.validate_transitions(cur_state, p, evdev, events)
-+                    self.validate_transitions(cur_state, p, evdev, events, allow_intermediate_states)
-                     assert len(events) >= 3  # X, Y, SYN
-                 uhdev.move_to(p, state)
-                 if scribble and state != PenState.PEN_IS_OUT_OF_RANGE:
-                     p.x += 1
-                     p.y -= 1
-                 events = self.post(uhdev, p)
--                self.validate_transitions(cur_state, p, evdev, events)
-+                self.validate_transitions(cur_state, p, evdev, events, allow_intermediate_states)
-                 cur_state = p.current_state
- 
-         @pytest.mark.parametrize("scribble", [True, False], ids=["scribble", "static"])
-@@ -740,7 +826,7 @@ class BaseTest:
-             we don't have Invert nor Erase bits, so just move in/out-of-range or proximity.
-             https://docs.microsoft.com/en-us/windows-hardware/design/component-guidelines/windows-pen-states
-             """
--            self._test_states(state_list, scribble)
-+            self._test_states(state_list, scribble, False)
- 
-         @pytest.mark.parametrize("scribble", [True, False], ids=["scribble", "static"])
-         @pytest.mark.parametrize(
-@@ -754,7 +840,7 @@ class BaseTest:
-             """This is not adhering to the Windows Pen Implementation state machine
-             but we should expect the kernel to behave properly, mostly for historical
-             reasons."""
--            self._test_states(state_list, scribble)
-+            self._test_states(state_list, scribble, True)
- 
-         @pytest.mark.skip_if_uhdev(
-             lambda uhdev: "Barrel Switch" not in uhdev.fields,
-@@ -770,7 +856,7 @@ class BaseTest:
-         )
-         def test_valid_primary_button_pen_states(self, state_list, scribble):
-             """Rework the transition state machine by adding the primary button."""
--            self._test_states(state_list, scribble)
-+            self._test_states(state_list, scribble, False)
- 
-         @pytest.mark.skip_if_uhdev(
-             lambda uhdev: "Secondary Barrel Switch" not in uhdev.fields,
-@@ -786,7 +872,7 @@ class BaseTest:
-         )
-         def test_valid_secondary_button_pen_states(self, state_list, scribble):
-             """Rework the transition state machine by adding the secondary button."""
--            self._test_states(state_list, scribble)
-+            self._test_states(state_list, scribble, False)
- 
-         @pytest.mark.skip_if_uhdev(
-             lambda uhdev: "Invert" not in uhdev.fields,
-@@ -806,7 +892,7 @@ class BaseTest:
-             to erase.
-             https://docs.microsoft.com/en-us/windows-hardware/design/component-guidelines/windows-pen-states
-             """
--            self._test_states(state_list, scribble)
-+            self._test_states(state_list, scribble, False)
- 
-         @pytest.mark.skip_if_uhdev(
-             lambda uhdev: "Invert" not in uhdev.fields,
-@@ -826,7 +912,7 @@ class BaseTest:
-             to erase.
-             https://docs.microsoft.com/en-us/windows-hardware/design/component-guidelines/windows-pen-states
-             """
--            self._test_states(state_list, scribble)
-+            self._test_states(state_list, scribble, True)
- 
-         @pytest.mark.skip_if_uhdev(
-             lambda uhdev: "Invert" not in uhdev.fields,
-@@ -843,7 +929,7 @@ class BaseTest:
-             For example, a pen that has the eraser button might wobble between
-             touching and erasing if the tablet doesn't enforce the Windows
-             state machine."""
--            self._test_states(state_list, scribble)
-+            self._test_states(state_list, scribble, True)
- 
- 
- class GXTP_pen(PenDigitizer):
-
--- 
-2.41.0
-
+You need to call count_vm_event() as well, otherwise the /proc/vmstat
+counter will stay zero.
