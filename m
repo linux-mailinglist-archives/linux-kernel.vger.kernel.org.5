@@ -2,77 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A597FD758
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:01:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4217FD759
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:01:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233595AbjK2NA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 08:00:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57550 "EHLO
+        id S233602AbjK2NBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 08:01:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232918AbjK2NA4 (ORCPT
+        with ESMTP id S232918AbjK2NBe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 08:00:56 -0500
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2020D10DD
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:01:01 -0800 (PST)
-Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-58d564b98c9so2550816eaf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:01:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701262860; x=1701867660; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m/osv4SLAGF8T9TC0aSRSSvUZ8FSv958TpMtRqbGApY=;
-        b=Z/SUYm/nPa2H7M6zZecH3LOZSox+0QiGwaTFifkl6jOHoDTZ89L/I+NAqQUSbhRRjx
-         8QIxKIJ43++hsipEeCO5tCWh9DM+4PWDTQtrODMZVtpRbZmu/snligbTYoP1b07pZCym
-         PBQQLKpt/raSf6y9gcrxYd1enWOoa0pgyT+A54PY9eRfsHtH2a2qRMhpJpiXJ5yzkTgE
-         2BU3KEQlZh/N0NXr5cpw90iz2nfZrYetWsIpy8GqZcky7Q6FkwzDZ+cgh0/extjJ3wAL
-         P4OH19w8qgskCzq9eBllnanBUvsFgTcfnH40nktQSJ/DH2oh2IZYmXQuRx1PwrEiX9C2
-         tQEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701262860; x=1701867660;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m/osv4SLAGF8T9TC0aSRSSvUZ8FSv958TpMtRqbGApY=;
-        b=FgUFADDa2D0V9VyLJrmgosJgHkYuyr/pv5v6PKNJEDEvrOIkG9WqnsaW/o4o9vfJex
-         90p0ddkIGOJgDpwucSaL5f1iwGaXzxXZLiysBzKaTysxaqW5YCVqR6UkWRn5630VX3uc
-         gtuU5fBItyTRIDvaaR+g3M4VsFr1PNgcT7PYGWDMSj7d2yZSCRzarRG5czp3xIWqcTOm
-         1lhyJ4s3xnZoD+6X3ksCw7VWYlRFRyyfPVEnxHfRKOTiAhLmzHCzsJMedPlH7IsyAgmo
-         O4hcLwg4drKuogtptVLN92pFBZ7kwR2ly22eKlqJ+gqDOFjEyFdnI4dsunmn/iNq7U/R
-         CW9w==
-X-Gm-Message-State: AOJu0YxFEuBpVOKupGImxshLGdo9QRbm8a3fOVXLG7VxKyXuSfHyNCOh
-        nKu4Wmd7lMO3k09hwx8IwMxm0LvikFtahGz/MP8=
-X-Google-Smtp-Source: AGHT+IHV7hXN1le//YwsM4l6fLO7Z4m5WvSTTnBAZ76/cObJRjkfBgZYGIraeXELf7u5iivLpQCUMhFdRZanzY3+pjk=
-X-Received: by 2002:a05:6358:9043:b0:16c:499:bbbd with SMTP id
- f3-20020a056358904300b0016c0499bbbdmr18906311rwf.21.1701262860141; Wed, 29
- Nov 2023 05:01:00 -0800 (PST)
+        Wed, 29 Nov 2023 08:01:34 -0500
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2099.outbound.protection.outlook.com [40.107.215.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BE0FC4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:01:39 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jfTvXOz0t/J9qagO8Whe1qUVv3Lim7NHSkOClBxZx0nKeQcIEpomAetJYcWSW5AaARhZ/vJYVV70UjFeCbnMEokxIxPStHYmhj8rWqdQMloGjvkRFZFhcaOli82RffWiliIeByS5UdvBetOJTebSK4Kog+VEXxxse16oqV0dQXBHl2QdZRU0w8ikOYYI0UhfvrH4sS3O8dgv5lKxwX9+9rAXH+7l43fNNxZU7zQ0VVZpkD68n7FcXU3jAMO71c+tTCe3Y0req0Vp7gk1/uJgRoafHf7DWGqDpfTrivR92SBitt7d7phLUzFXJcbhxiYtbZ+GLKiNzz8e9lcBA2WCOA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Cvm/ujxTwXGNHT39TGAcjZCTuY6kyPGesTONZlmbL/k=;
+ b=YdY2fVmYb+4EZCkAZvJ2MJnqNQCjgKkrwH2r/PJIJo+JfothO7LTB4N5S1qajzvY/EokKWTCHA1SiyWnV8eaCTUUneFAt6BEnoRCyXLonFBJBF9XpuPu6QZi+tfuEnuTusrqrABfXL5fYHBZ2o6w5mfhr/cbfYC8X8rKyXPOxa2AwtHLHR8c5TIziPCHo4UcZawiVVhiqZ5QjrN2G6iWX/oufOFmm25UY6NzgRaM75RFa17nrPHDShNiReM5u4K6UeV50AFjCHry1cFoW/edHKSQBUwiHUsMbASmdDlPblVhGBU+39DfTJaLeQKLo6EEXPJIswofWi+NVRN2Pm6/SQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Cvm/ujxTwXGNHT39TGAcjZCTuY6kyPGesTONZlmbL/k=;
+ b=kbv0u1pGsZgmQ9K9xqfpWSfKhLr6NbFPFUe9IL96FJY1Xx/gec+CmCGbmZMn+PWRhpWXFv9CInK3667YFx3IyKxxb5u707DdVxK/UrcvXkvm+sJ6qCaZ6Dkj0N8QA6v4eGbtHKJoRO4TAtqSylPD+rs7DcO9Fkmgbt3rbkJyz8sjQmFGIpUqIA6GoEoa7jmlRG/VdUQOzvzpq6T/1thZo4xKda99uyYlN/gxEtB6+WzOVnXA5GYAYax506w9Zv+M8lGnyeX74WQW+8GO5OIyh1DM/wmUWnBOSpXo12wOxlK4UOyyiifEP+p6coQVprjRs9nO23rDcQxre7tCYMMugQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from JH0PR06MB6849.apcprd06.prod.outlook.com (2603:1096:990:47::12)
+ by JH0PR06MB6850.apcprd06.prod.outlook.com (2603:1096:990:4d::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27; Wed, 29 Nov
+ 2023 13:01:35 +0000
+Received: from JH0PR06MB6849.apcprd06.prod.outlook.com
+ ([fe80::1be0:ebf0:eb04:6bd3]) by JH0PR06MB6849.apcprd06.prod.outlook.com
+ ([fe80::1be0:ebf0:eb04:6bd3%4]) with mapi id 15.20.7046.015; Wed, 29 Nov 2023
+ 13:01:35 +0000
+From:   Zhiguo Jiang <justinjiang@vivo.com>
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com, Zhiguo Jiang <justinjiang@vivo.com>
+Subject: [PATCH] mm:vmscan: fix shrink sc->nr counter values issue
+Date:   Wed, 29 Nov 2023 21:01:26 +0800
+Message-ID: <20231129130126.2130-1-justinjiang@vivo.com>
+X-Mailer: git-send-email 2.41.0.windows.3
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SI2PR02CA0017.apcprd02.prod.outlook.com
+ (2603:1096:4:194::17) To JH0PR06MB6849.apcprd06.prod.outlook.com
+ (2603:1096:990:47::12)
 MIME-Version: 1.0
-References: <20231115163018.1303287-15-ryan.roberts@arm.com>
- <20231128081742.39204-1-v-songbaohua@oppo.com> <207de995-6d48-41ea-8373-2f9caad9b9c3@arm.com>
- <CAGsJ_4wV-z7u5N3oLM-3kONHe0fmQwO7CSWQk9w0u0EhMroXAA@mail.gmail.com> <34da1e06-74da-4e45-b0b5-9c93d64eb64e@arm.com>
-In-Reply-To: <34da1e06-74da-4e45-b0b5-9c93d64eb64e@arm.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Thu, 30 Nov 2023 02:00:48 +1300
-Message-ID: <CAGsJ_4xLiRWyopZGe+v7RLTMajjtoSYixq_wTxuEr1W8rWsS7w@mail.gmail.com>
-Subject: Re: [PATCH v2 14/14] arm64/mm: Add ptep_get_and_clear_full() to
- optimize process teardown
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     akpm@linux-foundation.org, andreyknvl@gmail.com,
-        anshuman.khandual@arm.com, ardb@kernel.org,
-        catalin.marinas@arm.com, david@redhat.com, dvyukov@google.com,
-        glider@google.com, james.morse@arm.com, jhubbard@nvidia.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mark.rutland@arm.com, maz@kernel.org,
-        oliver.upton@linux.dev, ryabinin.a.a@gmail.com,
-        suzuki.poulose@arm.com, vincenzo.frascino@arm.com,
-        wangkefeng.wang@huawei.com, will@kernel.org, willy@infradead.org,
-        yuzenghui@huawei.com, yuzhao@google.com, ziy@nvidia.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: JH0PR06MB6849:EE_|JH0PR06MB6850:EE_
+X-MS-Office365-Filtering-Correlation-Id: cff08565-5a1e-4c42-584d-08dbf0db50b8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: sCgwqDNBlrDPF7IjORd248yOKjvF4wR4ZTXnFzSlEQbHha0B+Tg+rKGDnap9fP0Z8gseipc6d4C5entAiUKfQNJYWZHhDheQG/6R08kMA8Vaa5/ZZupSDgc70zzUM58fCqJUe8GxOy3XK4din/PslOLsvsbeRHJylEvaNaAXogyce/7UQq3D8iGv5RDQybEVo55q/zeE81nmo6uLubs9zpELrFNFifUd7Ho6novFBgpfaI1eYY5r1lQTW5sugE00h8E5oWqyAD4JicFSnzKI2bSWAgVSLoLsvOcOc2YloboEQqhW45NESyRlYZ9Yh8V4ikAi9inl9qNXinXVZbaq1zyk9l98TTOo9hIRJFJbbZX9Xl5w7Rx3pGE8f75zJZDP5WFTdzgrMkklSmjm4Fa6zwnkwynTGi6zFyzLuRMEdhGReQhSIFYmTS/sSuuYBGgk/Tv32aVYfheIU4JaPE8ih+2sW/SnSSafT8sIOhsPXIEufc2mC94Oa37fCk33fwLdgeCkf0y3WYgeIBDoSArB2l6DYDAMVp14deqAO0v7wbzY0nWSd4S8IkEG7A1VA3N0n3m+/Q5R0vrZIp+huL57cpz3mLWzhowfO2bYqmxZ/YiKmPf5IpgvJl26heoElbGY
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:JH0PR06MB6849.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(39860400002)(376002)(346002)(396003)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(38100700002)(83380400001)(4326008)(8936002)(6506007)(8676002)(66946007)(66476007)(316002)(66556008)(5660300002)(86362001)(478600001)(6486002)(2906002)(36756003)(41300700001)(38350700005)(52116002)(6512007)(6666004)(1076003)(107886003)(2616005)(26005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?fq9IPqsy7Gsmpjp4z7baQtUHspAplg3LAYIBt1d02S7Cew5/vZOe3mNyMdX6?=
+ =?us-ascii?Q?c+lw8mx6KqXuUH5lC18GMrzgYuI6VIWOOlfG/QcfOEzZBYe6tp6vNgTo7MyC?=
+ =?us-ascii?Q?YwGxXR5ar/RASQw9sXaOehTEYS48bKXWJzoOTH0yEZDKh43Pn3bdqWk3fqfJ?=
+ =?us-ascii?Q?W9qzKtCCNBA/Z2wPihMKLiqsyA3GDXL0wWGjzpwTz+jhiLL93S0MYeAsXYmf?=
+ =?us-ascii?Q?5j0zEluTy4BC2WgeleApQfl1BnVhP0muh8/fcnh2fmmj/+U+zm5+R5Kk7NIi?=
+ =?us-ascii?Q?65HtgH3l1UUJkMSJKS7jsgJRC13Na6mplvBGS81SFdt9Id6QvCkPw/hONrPH?=
+ =?us-ascii?Q?ainGva0P89DjA7mG6qARResJtrpkYVcR5y4yB2o976sw+DrQoALBcwRFtxvo?=
+ =?us-ascii?Q?2B3mtRzlkJDDCy5P8wh+hfh6ERwThVY7XdAjviXjwFAN6D9foNGpNFXG2EnZ?=
+ =?us-ascii?Q?eN3sP57nGjdolA0PKnUKhyvbQSJMbiMqrRQCPUsIzlQzpvdF/zvjntV1yXy5?=
+ =?us-ascii?Q?W0x96WtiZlS9WDagNNI/xyFuTQsqdEOhEoQ+V4tSBH65JiK0o8Xav4KlnTQU?=
+ =?us-ascii?Q?zIRVT+lND3Cxx1MKVTKtN7QA7EwN35I3F4+0zUZ/e1eBvBFar9yhGwYZQ0Nu?=
+ =?us-ascii?Q?hXYQpHxbLFhcfSwWF972xQW89MFNsuQnJfoFQxhcR0SsZFjp8FUqo5PvmVWV?=
+ =?us-ascii?Q?btT45Ql+CZSq00sXodItTn9H/2/K6TpSeHmCBsSuUnHzrpb2gvQBSU4PzzLG?=
+ =?us-ascii?Q?5GynP4mMGSjaUMOvhMY7r59kHU3kThbljOLuM/C/X2nvgG3zpzcW1M17lhGH?=
+ =?us-ascii?Q?ydCdoXvMM4FMaET4i6gZ6RAQUPYOdQ9NOPpGejWWyTuS6MUBQACNiHB7D8oN?=
+ =?us-ascii?Q?R3wLQVpxjNJxhFdfBYH/LX0dqS74G6jibEWSXNwo34n43lmAkbg1Td5HD6Im?=
+ =?us-ascii?Q?aa82w8DavavusnoollDF7SrtIMPvVQ9O/A7ERlcDRppVTyW76b4qZIWDwEi+?=
+ =?us-ascii?Q?Db3F4cq3Y/297jvZPo0i7vDhgp0oN7CmjwpK8oZn5i5Rpu4djTOoSyAzEQ07?=
+ =?us-ascii?Q?05qv3Pdf0Ft6reyQim0ubQ2AbFmRVEEzcbjwXzDC3HGp7/sBWNvDr8ExurGY?=
+ =?us-ascii?Q?D6A0x5PwdHDzw+LpngLTWGEJf7l4eSMfKdyco+QpLIaIYBfU6hcE/Fi6XKr7?=
+ =?us-ascii?Q?DLSZVpYMyhoUI18TzQDCAEaByu273CN4HfFgCZgA7LApb/cPxmBke/Sizbph?=
+ =?us-ascii?Q?EDQ1KuRcQSRHpS+9uJiR+EqoPf3ZzXQrZaB3fyGWTHWSXdhe8p2tP83QTUYL?=
+ =?us-ascii?Q?zCOWkJntBLWyCj2WNWVrJ8AWUO8ODrglKfWZ4SFaO24MqDXdiktG/AB2QGID?=
+ =?us-ascii?Q?pu30NUQvMudYi2PTrWgWOeneu8umFM8r+T9HmMsEp2XVv3t1gR6uOpS6+b4U?=
+ =?us-ascii?Q?3x0FYcebGArwKNUPq6kLdxNu/jkG9360ztwYFDADtVdDxt/+1v0GL/CWY1vM?=
+ =?us-ascii?Q?QhbFwvqAX1cu6tU6aGtz7Gk8QgkzpMbyH9llyskUy5X9x1UZxYT6An2Pz6uO?=
+ =?us-ascii?Q?DRpVd6WME+XgN13cqKNQcI1xo7r30JGy00SxDFxq?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cff08565-5a1e-4c42-584d-08dbf0db50b8
+X-MS-Exchange-CrossTenant-AuthSource: JH0PR06MB6849.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 13:01:34.7044
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CKNs+wwByg0UKvMcDYEzE6sKq23/QOTu2mCVBA6jKRfShKJ7sTWfIhawpWdStMW/fNW2a5e9GnBACh5WR9I4QA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR06MB6850
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,362 +111,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 30, 2023 at 1:43=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com>=
- wrote:
->
-> On 28/11/2023 20:23, Barry Song wrote:
-> > On Wed, Nov 29, 2023 at 12:49=E2=80=AFAM Ryan Roberts <ryan.roberts@arm=
-.com> wrote:
-> >>
-> >> On 28/11/2023 08:17, Barry Song wrote:
-> >>>> +pte_t contpte_ptep_get_and_clear_full(struct mm_struct *mm,
-> >>>> +                                    unsigned long addr, pte_t *ptep=
-)
-> >>>> +{
-> >>>> +    /*
-> >>>> +     * When doing a full address space teardown, we can avoid unfol=
-ding the
-> >>>> +     * contiguous range, and therefore avoid the associated tlbi. I=
-nstead,
-> >>>> +     * just get and clear the pte. The caller is promising to call =
-us for
-> >>>> +     * every pte, so every pte in the range will be cleared by the =
-time the
-> >>>> +     * tlbi is issued.
-> >>>> +     *
-> >>>> +     * This approach is not perfect though, as for the duration bet=
-ween
-> >>>> +     * returning from the first call to ptep_get_and_clear_full() a=
-nd making
-> >>>> +     * the final call, the contpte block in an intermediate state, =
-where
-> >>>> +     * some ptes are cleared and others are still set with the PTE_=
-CONT bit.
-> >>>> +     * If any other APIs are called for the ptes in the contpte blo=
-ck during
-> >>>> +     * that time, we have to be very careful. The core code current=
-ly
-> >>>> +     * interleaves calls to ptep_get_and_clear_full() with ptep_get=
-() and so
-> >>>> +     * ptep_get() must be careful to ignore the cleared entries whe=
-n
-> >>>> +     * accumulating the access and dirty bits - the same goes for
-> >>>> +     * ptep_get_lockless(). The only other calls we might resonably=
- expect
-> >>>> +     * are to set markers in the previously cleared ptes. (We shoul=
-dn't see
-> >>>> +     * valid entries being set until after the tlbi, at which point=
- we are
-> >>>> +     * no longer in the intermediate state). Since markers are not =
-valid,
-> >>>> +     * this is safe; set_ptes() will see the old, invalid entry and=
- will not
-> >>>> +     * attempt to unfold. And the new pte is also invalid so it won=
-'t
-> >>>> +     * attempt to fold. We shouldn't see this for the 'full' case a=
-nyway.
-> >>>> +     *
-> >>>> +     * The last remaining issue is returning the access/dirty bits.=
- That
-> >>>> +     * info could be present in any of the ptes in the contpte bloc=
-k.
-> >>>> +     * ptep_get() will gather those bits from across the contpte bl=
-ock. We
-> >>>> +     * don't bother doing that here, because we know that the infor=
-mation is
-> >>>> +     * used by the core-mm to mark the underlying folio as accessed=
-/dirty.
-> >>>> +     * And since the same folio must be underpinning the whole bloc=
-k (that
-> >>>> +     * was a requirement for folding in the first place), that info=
-rmation
-> >>>> +     * will make it to the folio eventually once all the ptes have =
-been
-> >>>> +     * cleared. This approach means we don't have to play games wit=
-h
-> >>>> +     * accumulating and storing the bits. It does mean that any int=
-erleaved
-> >>>> +     * calls to ptep_get() may lack correct access/dirty informatio=
-n if we
-> >>>> +     * have already cleared the pte that happened to store it. The =
-core code
-> >>>> +     * does not rely on this though.
-> >>>
-> >>> even without any other threads running and touching those PTEs, this =
-won't survive
-> >>> on some hardware. we expose inconsistent CONTPTEs to hardware, this m=
-ight result
-> >>
-> >> No that's not the case; if you read the Arm ARM, the page table is onl=
-y
-> >> considered "misgrogrammed" when *valid* entries within the same contpt=
-e block
-> >> have different values for the contiguous bit. We are clearing the ptes=
- to zero
-> >> here, which is an *invalid* entry. So if the TLB entry somehow gets in=
-validated
-> >> (either due to explicit tlbi as you point out below, or due to a concu=
-rrent TLB
-> >> miss which selects our entry for removal to make space for the new inc=
-omming
-> >> entry), then it gets an access request for an address in our partially=
- cleared
-> >> contpte block the address will either be:
-> >>
-> >> A) an address for a pte entry we have already cleared, so its invalid =
-and it
-> >> will fault (and get serialized behind the PTL).
-> >>
-> >> or
-> >>
-> >> B) an address for a pte entry we haven't yet cleared, so it will refor=
-m a TLB
-> >> entry for the contpte block. But that's ok because the memory still ex=
-ists
-> >> because we haven't yet finished clearing the page table and have not y=
-et issued
-> >> the final tlbi.
-> >>
-> >>
-> >>> in crashed firmware even in trustzone, strange&unknown faults to trus=
-tzone we have
-> >>> seen on Qualcomm, but for MTK, it seems fine. when you do tlbi on a p=
-art of PTEs
-> >>> with dropped CONT but still some other PTEs have CONT, we make hardwa=
-re totally
-> >>> confused.
-> >>
-> >> I suspect this is because in your case you are "misprogramming" the co=
-ntpte
-> >> block; there are *valid* pte entries within the block that disagree ab=
-out the
-> >> contiguous bit or about various other fields. In this case some HW TLB=
- designs
-> >> can do weird things. I suspect in your case, that's resulting in acces=
-sing bad
-> >> memory space and causing an SError, which is trapped by EL3, and the F=
-W is
-> >> probably just panicking at that point.
-> >
-> > you are probably right. as we met the SError, we became very very
-> > cautious. so anytime
-> > when we flush tlb for a CONTPTE, we strictly do it by
-> > 1. set all 16 ptes to zero
-> > 2. flush the whole 16 ptes
->
-> But my point is that this sequence doesn't guarrantee that the TLB doesn'=
-t read
-> the page table half way through the SW clearing the 16 entries; a TLB ent=
-ry can
-> be ejected for other reasons than just issuing a TLBI. So in that case th=
-ese 2
-> flows can be equivalent. Its the fact that we are unsetting the valid bit=
- when
-> clearing each pte that guarantees this to be safe.
->
-> >
-> > in your case, it can be:
-> > 1. set pte0 to zero
-> > 2. flush pte0
-> >
-> > TBH, i have never tried this. but it might be safe according to your
-> > description.
-> >
-> >>
-> >>>
-> >>> zap_pte_range() has a force_flush when tlbbatch is full:
-> >>>
-> >>>                         if (unlikely(__tlb_remove_page(tlb, page, del=
-ay_rmap))) {
-> >>>                                 force_flush =3D 1;
-> >>>                                 addr +=3D PAGE_SIZE;
-> >>>                                 break;
-> >>>                         }
-> >>>
-> >>> this means you can expose partial tlbi/flush directly to hardware whi=
-le some
-> >>> other PTEs are still CONT.
-> >>
-> >> Yes, but that's also possible even if we have a tight loop that clears=
- down the
-> >> contpte block; there could still be another core that issues a tlbi wh=
-ile you're
-> >> halfway through that loop, or the HW could happen to evict due to TLB =
-pressure
-> >> at any time. The point is, it's safe if you are clearing the pte to an=
- *invalid*
-> >> entry.
-> >>
-> >>>
-> >>> on the other hand, contpte_ptep_get_and_clear_full() doesn't need to =
-depend
-> >>> on fullmm, as long as zap range covers a large folio, we can flush tl=
-bi for
-> >>> those CONTPTEs all together in your contpte_ptep_get_and_clear_full()=
- rather
-> >>> than clearing one PTE.
-> >>>
-> >>> Our approach in [1] is we do a flush for all CONTPTEs and go directly=
- to the end
-> >>> of the large folio:
-> >>>
-> >>> #ifdef CONFIG_CONT_PTE_HUGEPAGE
-> >>>                       if (pte_cont(ptent)) {
-> >>>                               unsigned long next =3D pte_cont_addr_en=
-d(addr, end);
-> >>>
-> >>>                               if (next - addr !=3D HPAGE_CONT_PTE_SIZ=
-E) {
-> >>>                                       __split_huge_cont_pte(vma, pte,=
- addr, false, NULL, ptl);
-> >>>                                       /*
-> >>>                                        * After splitting cont-pte
-> >>>                                        * we need to process pte again=
-.
-> >>>                                        */
-> >>>                                       goto again_pte;
-> >>>                               } else {
-> >>>                                       cont_pte_huge_ptep_get_and_clea=
-r(mm, addr, pte);
-> >>>
-> >>>                                       tlb_remove_cont_pte_tlb_entry(t=
-lb, pte, addr);
-> >>>                                       if (unlikely(!page))
-> >>>                                               continue;
-> >>>
-> >>>                                       if (is_huge_zero_page(page)) {
-> >>>                                               tlb_remove_page_size(tl=
-b, page, HPAGE_CONT_PTE_SIZE);
-> >>>                                               goto cont_next;
-> >>>                                       }
-> >>>
-> >>>                                       rss[mm_counter(page)] -=3D HPAG=
-E_CONT_PTE_NR;
-> >>>                                       page_remove_rmap(page, true);
-> >>>                                       if (unlikely(page_mapcount(page=
-) < 0))
-> >>>                                               print_bad_pte(vma, addr=
-, ptent, page);
-> >>>
-> >>>                                       tlb_remove_page_size(tlb, page,=
- HPAGE_CONT_PTE_SIZE);
-> >>>                               }
-> >>> cont_next:
-> >>>                               /* "do while()" will do "pte++" and "ad=
-dr + PAGE_SIZE" */
-> >>>                               pte +=3D (next - PAGE_SIZE - (addr & PA=
-GE_MASK))/PAGE_SIZE;
-> >>>                               addr =3D next - PAGE_SIZE;
-> >>>                               continue;
-> >>>                       }
-> >>> #endif
-> >>>
-> >>> this is our "full" counterpart, which clear_flush CONT_PTES pages dir=
-ectly, and
-> >>> it never requires tlb->fullmm at all.
-> >>
-> >> Yes, but you are benefitting from the fact that contpte is exposed to =
-core-mm
-> >> and it is special-casing them at this level. I'm trying to avoid that.
-> >
-> > I am thinking we can even do this while we don't expose CONTPTE.
-> > if zap_pte_range meets a large folio and the zap_range covers the whole
-> > folio, we can flush all ptes in this folio and jump to the end of this =
-folio?
-> > i mean
-> >
-> > if (folio head && range_end > folio_end) {
-> >          nr =3D folio_nr_page(folio);
-> >          full_flush_nr_ptes()
-> >          pte +=3D nr -1;
-> >          addr +=3D (nr - 1) * basepage size
-> > }
->
-> Just because you found a pte that maps a page from a large folio, that do=
-esn't
-> mean that all pages from the folio are mapped, and it doesn't mean they a=
-re
-> mapped contiguously. We have to deal with partial munmap(), partial mrema=
-p()
-> etc. We could split in these cases (and in future it might be sensible to=
- try),
-> but that can fail (due to GUP). So we still have to handle the corner cas=
-e.
+It is needed to ensure sc->nr.unqueued_dirty > 0, which can avoid to
+set PGDAT_DIRTY flag when sc->nr.unqueued_dirty and sc->nr.file_taken
+are both zero at the same time.
 
-maybe we can check ptes and find they are all mapped (pte_present),
-then do a flush_range.
-This is actually the most common case. the majority of madv(DONTNEED)
-will benefit from
-it. if the condition is false, we fallback to your current code.
-zap_pte_range always sets present ptes to 0, but swap entry is really
-quite different.
+It can't be guaranteed for the PGDAT_WRITEBACK flag that only pages
+marked for immediate reclaim are on evictable LRUs in other following
+shrink processes of the same kswapd shrink recycling. So when both a
+small amount of pages marked for immediate reclaim and a large amount
+of pages marked for non-immediate reclaim are on evictable LRUs at the
+same time, if it's only determined that there is at least a page marked
+for immediate reclaim on evictable LRUs, kswapd shrink is throttled to
+sleep, which will increase kswapd process consumption.
 
->
-> But I can imagine doing a batched version of ptep_get_and_clear(), like I=
- did
-> for ptep_set_wrprotects(). And I think this would be an improvement.
->
-> The reason I haven't done that so far, is because ptep_get_and_clear() re=
-turns
-> the pte value when it was cleared and that's hard to do if batching due t=
-o the
-> storage requirement. But perhaps you could just return the logical OR of =
-the
-> dirty and young bits across all ptes in the batch. The caller should be a=
-ble to
-> reconstitute the rest if it needs it?
->
-> What do you think?
->
-> >
-> > zap_pte_range is the most frequent behaviour from userspace libc heap
-> > as i explained
-> > before. libc can call madvise(DONTNEED) the most often. It is crucial
-> > to performance.
-> >
-> > and this way can also help drop your full version by moving to full
-> > flushing the whole
-> > large folios? and we don't need to depend on fullmm any more?
-> >
-> >>
-> >> I don't think there is any correctness issue here. But there is a prob=
-lem with
-> >> fragility, as raised by Alistair. I have some ideas on potentially how=
- to solve
-> >> that. I'm going to try to work on it this afternoon and will post if I=
- get some
-> >> confidence that it is a real solution.
-> >>
-> >> Thanks,
-> >> Ryan
-> >>
-> >>>
-> >>> static inline pte_t __cont_pte_huge_ptep_get_and_clear_flush(struct m=
-m_struct *mm,
-> >>>                                      unsigned long addr,
-> >>>                                      pte_t *ptep,
-> >>>                                      bool flush)
-> >>> {
-> >>>       pte_t orig_pte =3D ptep_get(ptep);
-> >>>
-> >>>       CHP_BUG_ON(!pte_cont(orig_pte));
-> >>>       CHP_BUG_ON(!IS_ALIGNED(addr, HPAGE_CONT_PTE_SIZE));
-> >>>       CHP_BUG_ON(!IS_ALIGNED(pte_pfn(orig_pte), HPAGE_CONT_PTE_NR));
-> >>>
-> >>>       return get_clear_flush(mm, addr, ptep, PAGE_SIZE, CONT_PTES, fl=
-ush);
-> >>> }
-> >>>
-> >>> [1] https://github.com/OnePlusOSS/android_kernel_oneplus_sm8550/blob/=
-oneplus/sm8550_u_14.0.0_oneplus11/mm/memory.c#L1539
-> >>>
-> >>>> +     */
-> >>>> +
-> >>>> +    return __ptep_get_and_clear(mm, addr, ptep);
-> >>>> +}
-> >>>> +EXPORT_SYMBOL(contpte_ptep_get_and_clear_full);
-> >>>> +
-> >>>
-> >
-Thanks
-Barry
+It can be fixed to throttle kswapd shrink when sc->nr.immediate is equal
+to sc->nr.file_taken.
+
+Signed-off-by: Zhiguo Jiang <justinjiang@vivo.com>
+---
+ mm/vmscan.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+ mode change 100644 => 100755 mm/vmscan.c
+
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index d8c3338fee0f..5723672bbdc2
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -5915,17 +5915,17 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+ 			set_bit(PGDAT_WRITEBACK, &pgdat->flags);
+ 
+ 		/* Allow kswapd to start writing pages during reclaim.*/
+-		if (sc->nr.unqueued_dirty == sc->nr.file_taken)
++		if (sc->nr.unqueued_dirty && sc->nr.unqueued_dirty == sc->nr.file_taken)
+ 			set_bit(PGDAT_DIRTY, &pgdat->flags);
+ 
+ 		/*
+-		 * If kswapd scans pages marked for immediate
++		 * If kswapd scans massive pages marked for immediate
+ 		 * reclaim and under writeback (nr_immediate), it
+ 		 * implies that pages are cycling through the LRU
+ 		 * faster than they are written so forcibly stall
+ 		 * until some pages complete writeback.
+ 		 */
+-		if (sc->nr.immediate)
++		if (sc->nr.immediate && sc->nr.immediate == sc->nr.file_taken)
+ 			reclaim_throttle(pgdat, VMSCAN_THROTTLE_WRITEBACK);
+ 	}
+ 
+-- 
+2.39.0
+
