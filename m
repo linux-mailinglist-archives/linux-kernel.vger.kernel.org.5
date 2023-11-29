@@ -2,222 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 324947FE441
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 00:44:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 167C47FE44F
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 00:48:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343679AbjK2Xor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 18:44:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51532 "EHLO
+        id S231474AbjK2Xsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 18:48:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbjK2Xop (ORCPT
+        with ESMTP id S229575AbjK2Xsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 18:44:45 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1308E10A;
-        Wed, 29 Nov 2023 15:44:51 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7b350130c3fso5786139f.3;
-        Wed, 29 Nov 2023 15:44:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701301490; x=1701906290; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/tOCbkwNSpvGdMwE6tBYjY/uOZ+dKCwcjhdWtFECtR0=;
-        b=jLHBOu9NYC+a1uQERP5D+q5+PW2S4rhxggPMBGeTHmDpLmU7ICkZaq2Nz9yTuav1vY
-         V+9rtul+fHeULsZIAbw7UZpxlev7WR6kZTWkfGWKnLHw9hfihl4V+TmBV2kcQ+7fWiwB
-         ofMLdA29LKMLrfXcx5jx98MiXEIJa3Ka7qyv7Rp1Rc0Rd5dTuaTOdSfeX83aFlj020af
-         MZ9hx2b3Vtfj8Gwf/TVCCmclDyZC42s71ks9Zuf1/mYhX7Rn7O4M5XEmb4m4oYt3ABH7
-         7/KCwb2nwtfo3qix9fZ4KR1QbN/C2V7o51ybqdFh6nrxsAt+YlLKCBzfZLw5usihbGS/
-         FUXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701301490; x=1701906290;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/tOCbkwNSpvGdMwE6tBYjY/uOZ+dKCwcjhdWtFECtR0=;
-        b=Ec6nOsOMvDCRiWMNGXuA8c/ak5vUY2bf0+MhfN21TZBvjw68Fr/RkOHbOHRK4vO/Mf
-         oB1a2nXjM8hn47fOAdvUpdj+ewsN5mGiBrZEu4cfip0LA4jmcDYXuY6vuDWle23kAbh1
-         momQNBWA/fT76YxcXUatbMUBz0XBlG4eIS73umhX/cevzITvcAZzNl+9bJZr5wJqNRUG
-         ahOfzW9M3FLsI5Rs2h3mrNALoQxu8mDdD3stBZSCzJ0oy6erpO66+GsUqC9kh7am+Kob
-         wbakivZL4kg4yVAIbc8JWPkGRlELnjeydzodArYfYmKDgUx+s4RGHficwQtxSwyUFNV0
-         3I1g==
-X-Gm-Message-State: AOJu0Yzr7hrUVOORIvXJjC8ghnH7i0KDQEnTd1huPQhwtt7q+ysl0x3P
-        l7sNTXmxQp+peynYXDIiv4uy7G8SyR8YVootuws=
-X-Google-Smtp-Source: AGHT+IGFNz6rJ8Zwwfjam9HG7pnWig/mfdY7gdfMqsdCEgtQ8yI+OeC+UmHiGEV3ZBiGcHyD0PvT+3wrYnMZtGMlXNU=
-X-Received: by 2002:a05:6e02:eca:b0:35d:fd2:6b3 with SMTP id
- i10-20020a056e020eca00b0035d0fd206b3mr7641812ilk.26.1701301490262; Wed, 29
- Nov 2023 15:44:50 -0800 (PST)
-MIME-Version: 1.0
-References: <20231127234600.2971029-1-nphamcs@gmail.com> <20231127234600.2971029-7-nphamcs@gmail.com>
- <20231129162150.GE135852@cmpxchg.org>
-In-Reply-To: <20231129162150.GE135852@cmpxchg.org>
-From:   Nhat Pham <nphamcs@gmail.com>
-Date:   Wed, 29 Nov 2023 15:44:39 -0800
-Message-ID: <CAKEwX=M_4W6OhsW-z4GQEAp9bSx9QsFgvv8ngwLB-VRpuetv1Q@mail.gmail.com>
-Subject: Re: [PATCH v7 6/6] zswap: shrinks zswap pool based on memory pressure
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     akpm@linux-foundation.org, cerasuolodomenico@gmail.com,
-        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
-        vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
-        kernel-team@meta.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org
+        Wed, 29 Nov 2023 18:48:38 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE2F984;
+        Wed, 29 Nov 2023 15:48:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701301725; x=1732837725;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=05R7zsqi5TVrKsOIHC51wgUGqcwA987haiF8IJX3zrw=;
+  b=ZZfP9glXyiKUY0Mlpjlm5XidgAqaMc2Wn38cc+lkyZXOPFSL5idNBKhV
+   W76BQyP5xYRyabqOe9IdAz4zs9GT8iBitaLCDWQGZXf7z+7Ra0It03OCP
+   OaN79rvPpY95Dkn5YGz0/zt3ns87p8AdPuhIovQIz5OTt64ZULoHMMjAZ
+   XhXH5MpnV/gfR3dqbnPc0DBO7hoESXQyAaNKPLvHzpAmthOtd84eJlJP5
+   WOZdVObCJgNX27buyw5TO6+xcGlsz/HNF3byE671BerBQ0ZsiFFgdyW0P
+   13QA0vPkpxPdhg5EbfbXICbtL3NTXZdJXqK4w8Z5pc/SJmoact8UDFukC
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="14799173"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="14799173"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 15:48:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="942509622"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="942509622"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Nov 2023 15:48:43 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Wed, 29 Nov 2023 15:48:43 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Wed, 29 Nov 2023 15:48:42 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Wed, 29 Nov 2023 15:48:42 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Wed, 29 Nov 2023 15:48:42 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B0l0rGnmSeWuyFbQiIe9X+Izq15F10FosgruNVwhvfXGjEzjTRTUG5Nj9xxjSsTYHLke59Iwp2Zyu4ef3+fj5h8BzyFNu+KxTOeaKxmwxR1nCPDt7zxdIbootcoyUQjGrgxB1ApfjobRfsOw8kxhZI1Ii9y0bpvUlqXHbZWK+DCwB+fYqrkuuTn+lvBX9hTYhctMPISG4uqDWmAsLswgzqDVRID3PT5Su7Jq7Svzs7D59d476L00eCIIb2GUgeVE0Y8LNZWGFwY1Wdz2jscvM+b4ZXd9BkyHiG1fnYkJUSkMRjNxD+DVAZXYreDXpn8k3Edv0QC//G0hOAs0dLj3ng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PAPSmR4RCDbK3BXHfFxRVOQlaaSTlY/Rvt2Y2t9xtww=;
+ b=UhzNo+d6cGj1gfO0vWWTrGfGGVFSnJKIivCHtmVnkJI30LEylQp4qdOF9iSir3RIpfKTGEceknuRWBOlRRNkocm8hgWiradLoW5sk53Bml0cRC6kEz22X6q4jdEdj1mMXWCIF0ppehbzb/YoZ4tFQT0Xl7WcV6g0hUYNADktSYBcThfYQYYCGZup5J4fD9feEwjidvw57yuaRo+A6jIVyhXAdIppi6xa5Kn8vefpiZdXCyP4gbG9lQtrtzIgYRrb83sasr80NRwSXRVYpxFVFeRvWUS3H6pRzs9BXNbJ2zMkwhhHMfBCClJ0I77v+iusdIcNpUY4P9eRde4wIOvjhw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by DS0PR11MB7334.namprd11.prod.outlook.com (2603:10b6:8:11d::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.28; Wed, 29 Nov
+ 2023 23:48:40 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::6710:537d:b74:f1e5%5]) with mapi id 15.20.7025.022; Wed, 29 Nov 2023
+ 23:48:40 +0000
+Message-ID: <95a21b05-1838-4098-854f-f60f82f26f5f@intel.com>
+Date:   Wed, 29 Nov 2023 15:48:37 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] x86/resctrl: Add mount option to pick total MBM event
+Content-Language: en-US
+To:     Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>,
+        "Peter Newman" <peternewman@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Shuah Khan" <skhan@linuxfoundation.org>, <x86@kernel.org>
+CC:     Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <patches@lists.linux.dev>
+References: <20231026200214.16017-1-tony.luck@intel.com>
+ <20231128231439.81691-1-tony.luck@intel.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <20231128231439.81691-1-tony.luck@intel.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR03CA0310.namprd03.prod.outlook.com
+ (2603:10b6:303:dd::15) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|DS0PR11MB7334:EE_
+X-MS-Office365-Filtering-Correlation-Id: b5752ccb-499a-49d3-7e47-08dbf135b66f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RUB99JPz9uUKuGVkGEsw+6Pu80OOVQFcr04vURE2Wi9NU8CWcvGjTzEn4WVtxVg+uZMi+8tFRQ5DGPcfi8s56G+MBxP40odyS+HZwTu3ulIw60wZUNWmDyfvQzXvktg3lWrk+ddPuPCOYUGbuR/82PPhQqTxh2hAi1+LlHLInuXg4Pvk4/vO59IkFoFaT/YrVvL/5110RFEepfsfQ8anKMl2Y4l9sQJv52TpbsNxkPbSJzTk0324ed/F4TgREYx9EJNzdD0hr2m1F9SBawD2jRMsMyZK2+NrBDgp3RwcxNIbgM1rglgvZYTRi99qDnr85oFZcAteLEcObCf2DPrMdcg9+SmSmDpoYApJPmnzzSHKJHaQrr3Sk4boV77+/BMySOfFfek0Ig8/0Loww/XwHQzmFxDR/Q2osCvgLNWYehr3q7t490nvf/9KU2KN6DsNg+n8wORMmO9+chVrstEBwEhZnvHAV+Mw6Jv5q9WK/9AzWPcNXjlAD1FBQrGeiMzIa+j/rbG1PZR1Kro3go96P62ixz68+/dK7Cbyf6pea0f3RSg+cT+21sdsgVpPbO8eqBOvxup4KewU12xNc4DkOIF3Kp3xAaf/CdZce/ySrTa4HU4o9Y0s6JUdReyKVkBOKDWZCwBV0njCZErgAgmBCCpoREQY4rNoNyKLyjD8/phumcYp5O5/P3poRja+Yf+d
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(376002)(346002)(136003)(366004)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(5660300002)(7416002)(31696002)(6666004)(2906002)(86362001)(8676002)(38100700002)(66556008)(316002)(66946007)(66476007)(54906003)(4326008)(26005)(2616005)(6512007)(6486002)(110136005)(966005)(8936002)(6506007)(478600001)(82960400001)(36756003)(83380400001)(53546011)(44832011)(31686004)(202311291699003)(41300700001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WDVPSkYrMC9URDlTS3VzNi94L29rbEIwemdhYzRCR3BYRklUd0FwMmo5dmRw?=
+ =?utf-8?B?VnVaSFdiY2F5UGQ2NCtBUk5VTDJHd056dEFhTnpmVlowTUV0WitSY0VBaEQ0?=
+ =?utf-8?B?QkljTVY5V2hLS2tOZk94a2crRlc4bmUzWFBYL0RjRG1TNlFVRkNnNUpUTkJJ?=
+ =?utf-8?B?RGVYODAzK0FQSXNDRWZNL0pQWmFnWXNDZFY3bVdtOXNNUkYydEl6cEdXcUlS?=
+ =?utf-8?B?aDA4eVFVMzBFL01MekxBd2d1NTlyVm9ucUs3dkZjYmNVN29zZStVeXp2QUVl?=
+ =?utf-8?B?cGJHK2wweHQ2RGlrZWhmNmJ2LzZxSit1VFdJdGpFa0lKbjV3djVGK1JlOUMr?=
+ =?utf-8?B?ZXU4d1BRSTF2WXB6VzdjRU1RU0NCSFpLSHh0bmJ3M1FxR0VyQzVUeFZxZHBJ?=
+ =?utf-8?B?SHhCWXBHbHRINXY5N2VyWEZybW9LOFowczd5QmkxZ3VkbGxITlNVdW9sN2FB?=
+ =?utf-8?B?S054TStLd0QzcVBJL240M3lPcGhZc3IxZzZDelUxZXN3dnNNcEZNME1GRU5z?=
+ =?utf-8?B?THpiSWpnN0ZwV05PR0R4S3pkaVNuSGhZbU1NY0VsOGdDamNVd2RUN3AwaVl1?=
+ =?utf-8?B?eW1vcUtxVlVXRGsrM3NqMGVxNXRhMEJrWmczY1NuQzUwVDJxU01IRmxwTzRy?=
+ =?utf-8?B?MXR5TVYwQ0VkTUlGdmdUSUx6cTMwSkZSNmdxejR6RkpVTktmWnp5SlIwV1BZ?=
+ =?utf-8?B?b0hJRGNxaXBUUE5yV245aTVwUmtHZ2xyNTc1czVrQ29VSmdZUWV6TVl4aHhx?=
+ =?utf-8?B?dmp3RDBOT1RZYkxZZmFISm1BSjJDT3phT29JazBIOXZ0TXYvZThDMGwrd0Fh?=
+ =?utf-8?B?ZkRpQWQ0VU8yN0xnSEtBUEtCdzFzVXdNQXJ3SDRod283UmdwcU5iWFI4WFlW?=
+ =?utf-8?B?QUgwNCtiTUdLdXg0M0RUSzlIU3E5NzFtMlNkdHo5ajh4T25jNmNLZXc3NkUy?=
+ =?utf-8?B?T29WV1Y5T1VhN2k0bHoyZkI2TlAvRlFQbkNXK1gzSkJ3elhCRDVoL25RcXpq?=
+ =?utf-8?B?anBudEIxSUJzR1FxRUg5Zlh2U2NtUXEzTEk5TkNLSjlvdlhET0RzNTRDTW5T?=
+ =?utf-8?B?YXY1QUFmTytxZ2lzUmdUWnl3RFF6WXMxbng0TmpsRGxvZHFTV0N4VldFL09I?=
+ =?utf-8?B?YWJiUEJnOTNoZGxwdjYzWTBXQ1V0RzArTHY4d2duZ0YrT2VPZXFMc0l6UDBN?=
+ =?utf-8?B?ZU5KejdrV2JzWXFoeFdydE9lakN5cFVpU2EvdFl1M294clFwOCtMQXhJajlu?=
+ =?utf-8?B?alBPT0tYWCtiTTh1WmxmSWdqL09ycmVUd3pwNWMzVHVQYUptUCtBczRJZ1g5?=
+ =?utf-8?B?VGszOVNScE04V0lDdzM1cDVKOFRucUdQMllVRlh5ck1PWDdqZFJnSE5qMnlr?=
+ =?utf-8?B?M21yZC95L1Bsc3VVZ2kySTEvNkw3d1lDTmd1WkdXWFRFUXJDWGdsZmdjYmRw?=
+ =?utf-8?B?U3NwTk1JOFFLRkhwVTJPeGQ2KzNJclp3c2oxNmhuU2RCQVU3WVNFa1JPQlI3?=
+ =?utf-8?B?NnlIcDcrY08zeDBDYmk0SlZ3OUsrTUpsc3ZLVjNQNUwrTmFtZTFxTkd3S29U?=
+ =?utf-8?B?VW40M1VkcnJ1aTB5aFNUeWl3d2N4aUo4cUluVE1MeWxUK0NqMW16L3B1dDVI?=
+ =?utf-8?B?aUV0dndJenVneGlBd0Zydkt6U2RaN29lbEt1cmNVZEdrL0dkUU9wcDdHOGo5?=
+ =?utf-8?B?VXUwKzhFc3dCeUxWOHpLL2pLdHlhTm00eHE1b3F0Qy9zNnpzaXNHbE5HWnhJ?=
+ =?utf-8?B?a001dFVlcFZsVlZBWmQ2WVIvbHR3VkYwZTBLNmREek0wb1QzeExrbWZTSUkv?=
+ =?utf-8?B?dndBeFVsdmNtaFVFcXV0TjRxWUxINDJBMG0rK3N6UDlyWUZnVkpEbEQwVmFs?=
+ =?utf-8?B?clVBTElSR2hqdVJwS2FnNk4zelBoTEJnUDVtdzlFWDdtMnloR0pvMFAvMGht?=
+ =?utf-8?B?MUhGY3FQMWpMaFpSbTVwMEhmQnFpMjc2aE5RMmI2WVJkWkZqMnZyaTBHQ3dE?=
+ =?utf-8?B?TkowU0FXU3RjYndJNmNqQksrdlBrYzhadWhBd3hWd3N3NWR0UkxUMWVNQ1dW?=
+ =?utf-8?B?UVJoRmkzdHEyZHhubExmSFpSNVduZ042MC8vZlBzVko5bWhGMFBQWDN3VFE0?=
+ =?utf-8?B?R2kwY2ZYMjI2YlBZWC9PbHJzdVFIMWdsTGk1VTlHRjlyanVQWjVtcDdLb2xT?=
+ =?utf-8?B?anc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b5752ccb-499a-49d3-7e47-08dbf135b66f
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 23:48:40.0939
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: D7jBfkveaYLDgiiMuFH6GsqUX4R5suGBBhe1pqWT4inFrHsijPpRtFIF/sumCxJd9ducv2hn4LAjOG+0dx+I/587v/GLwWQa2dmaasOJl7Y=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7334
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 8:21=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> On Mon, Nov 27, 2023 at 03:46:00PM -0800, Nhat Pham wrote:
-> > Currently, we only shrink the zswap pool when the user-defined limit is
-> > hit. This means that if we set the limit too high, cold data that are
-> > unlikely to be used again will reside in the pool, wasting precious
-> > memory. It is hard to predict how much zswap space will be needed ahead
-> > of time, as this depends on the workload (specifically, on factors such
-> > as memory access patterns and compressibility of the memory pages).
-> >
-> > This patch implements a memcg- and NUMA-aware shrinker for zswap, that
-> > is initiated when there is memory pressure. The shrinker does not
-> > have any parameter that must be tuned by the user, and can be opted in
-> > or out on a per-memcg basis.
-> >
-> > Furthermore, to make it more robust for many workloads and prevent
-> > overshrinking (i.e evicting warm pages that might be refaulted into
-> > memory), we build in the following heuristics:
-> >
-> > * Estimate the number of warm pages residing in zswap, and attempt to
-> >   protect this region of the zswap LRU.
-> > * Scale the number of freeable objects by an estimate of the memory
-> >   saving factor. The better zswap compresses the data, the fewer pages
-> >   we will evict to swap (as we will otherwise incur IO for relatively
-> >   small memory saving).
-> > * During reclaim, if the shrinker encounters a page that is also being
-> >   brought into memory, the shrinker will cautiously terminate its
-> >   shrinking action, as this is a sign that it is touching the warmer
-> >   region of the zswap LRU.
-> >
-> > As a proof of concept, we ran the following synthetic benchmark:
-> > build the linux kernel in a memory-limited cgroup, and allocate some
-> > cold data in tmpfs to see if the shrinker could write them out and
-> > improved the overall performance. Depending on the amount of cold data
-> > generated, we observe from 14% to 35% reduction in kernel CPU time used
-> > in the kernel builds.
->
-> I think this is a really important piece of functionality for zswap.
->
-> Memory compression has been around and in use for a long time, but the
-> question of zswap vs swap sizing has been in the room since the hybrid
-> mode was first proposed. Because depending on the reuse patterns,
-> putting zswap with a static size limit in front of an existing swap
-> file can be a net negative for performance as it consumes more memory.
->
-> It's great to finally see a solution to this which makes zswap *much*
-> more general purpose. And something that distributions might want to
-> turn on per default when swap is configured.
->
-> Actually to the point where I think there should be a config option to
-> enable the shrinker per default. Maybe not right away, but in a few
-> releases when this feature has racked up some more production time.
+Hi Tony,
 
-Sure thingy - how does everyone feel about this?
+On 11/28/2023 3:14 PM, Tony Luck wrote:
+> Add a "total" mount option to be used in conjunction with "mba_MBps"
+> to request use of the total memory bandwidth event as the feedback
+> input to the control loop.
 
->
-> > @@ -687,6 +687,7 @@ struct page *swap_cluster_readahead(swp_entry_t ent=
-ry, gfp_t gfp_mask,
-> >                                       &page_allocated, false);
-> >       if (unlikely(page_allocated))
-> >               swap_readpage(page, false, NULL);
-> > +     zswap_lruvec_swapin(page);
->
-> The "lruvec" in the name vs the page parameter is a bit odd.
-> zswap_page_swapin() would be slightly better, but it still also sounds
-> like it would cause an actual swapin of some sort.
->
-> zswap_record_swapin()?
+"total" is very generic. It is also not clear to me why users
+would need to use two mount options. What if the new mount option
+is "mba_MBps_total" instead, without user needing to also provide
+"mba_MBps"? 
 
-Hmm that sounds good to me. I'm not very good with naming, if that's
-not already evident :)
+> 
+> Also fall back to using the total event if the local event is not
+> supported by the CPU.
+> 
+> Update the once-per-second polling code to use the event (local
+> or total memory bandwidth).
 
->
-> > @@ -520,6 +575,95 @@ static struct zswap_entry *zswap_entry_find_get(st=
-ruct rb_root *root,
-> >       return entry;
-> >  }
-> >
-> > +/*********************************
-> > +* shrinker functions
-> > +**********************************/
-> > +static enum lru_status shrink_memcg_cb(struct list_head *item, struct =
-list_lru_one *l,
-> > +                                    spinlock_t *lock, void *arg);
-> > +
-> > +static unsigned long zswap_shrinker_scan(struct shrinker *shrinker,
-> > +             struct shrink_control *sc)
-> > +{
-> > +     struct lruvec *lruvec =3D mem_cgroup_lruvec(sc->memcg, NODE_DATA(=
-sc->nid));
-> > +     unsigned long shrink_ret, nr_protected, lru_size;
-> > +     struct zswap_pool *pool =3D shrinker->private_data;
-> > +     bool encountered_page_in_swapcache =3D false;
-> > +
-> > +     nr_protected =3D
-> > +             atomic_long_read(&lruvec->zswap_lruvec_state.nr_zswap_pro=
-tected);
-> > +     lru_size =3D list_lru_shrink_count(&pool->list_lru, sc);
-> > +
-> > +     /*
-> > +      * Abort if the shrinker is disabled or if we are shrinking into =
-the
-> > +      * protected region.
-> > +      */
-> > +     if (!zswap_shrinker_enabled || nr_protected >=3D lru_size - sc->n=
-r_to_scan) {
-> > +             sc->nr_scanned =3D 0;
-> > +             return SHRINK_STOP;
-> > +     }
->
-> I'm scratching my head at the protection check. zswap_shrinker_count()
-> already factors protection into account, so sc->nr_to_scan should only
-> be what is left on the list after excluding the protected area.
->
-> Do we even get here if the whole list is protected? Is this to protect
-> against concurrent shrinking of the list through multiple shrinkers or
-> swapins? If so, a comment would be nice :)
+Please take care to describe why this change is needed, not just
+what it does. This is required by x86. For confirmation:
+https://lore.kernel.org/lkml/20231009172517.GRZSQ3fT05LGgpcW35@fat_crate.local/
 
-Yep, this is mostly for concurrent shrinkers. Please fact-check me,
-but IIUC if we have too many reclaimers all calling upon the zswap
-shrinker (before any of them can make substantial progress), we can
-have a situation where the total number of objects freed by the
-reclaimers will eat into the protection area of the zswap LRU (even if
-the number of freeable objects is scaled down by the compression
-ratio, and further scaled down internally in the shrinker/vmscan
-code). I've observed this tendency when there is a) a lot of worker
-threads in my benchmark and b) memory pressure.  This is a crude/racy
-way to alleviate the issue.
+> 
+> Signed-off-by: Tony Luck <tony.luck@intel.com>
+> ---
+> 
+> Changes since v3:
+> 
+> Reinette suggested that users might like the option to use the total
+> memory bandwidth event. I tried out some code to make the event runtime
+> selectable via a r/w file in the resctrl/info directories. But that
+> got complicated because of the amount of state that needs to be updated
+> when switching events. Since there isn't a firm use case for user
+> selectable event, this latest version falls back to the far simpler
+> case of using a mount option.
 
-I think this is actually a wider problem than just zswap and zswap
-shrinker - we need better reclaimer throttling logic IMO. Perhaps this
-check should be done higher up the stack - something along the lines
-of having each reclaimer "register" its intention (number of objects
-it wants to reclaim) to a particular shrinker, allowing the shrinker
-to deny a reclaimer if there is already a strong reclaim driving
-force. Or some other throttling heuristics based on the number of
-freeable objects and the reclaimer registration data.
+(I did not realize that that discussion was over.)
 
->
-> Otherwise, this looks great to me!
->
-> Just nitpicks, no show stoppers:
->
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> 
+>  Documentation/arch/x86/resctrl.rst     |  3 +++
+>  arch/x86/kernel/cpu/resctrl/internal.h |  3 +++
+>  arch/x86/kernel/cpu/resctrl/monitor.c  | 20 +++++++++-----------
+>  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 15 ++++++++++++++-
+>  4 files changed, 29 insertions(+), 12 deletions(-)
+> 
+> diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x86/resctrl.rst
+> index a6279df64a9d..29c3e7137eb8 100644
+> --- a/Documentation/arch/x86/resctrl.rst
+> +++ b/Documentation/arch/x86/resctrl.rst
+> @@ -46,6 +46,9 @@ mount options are:
+>  "mba_MBps":
+>  	Enable the MBA Software Controller(mba_sc) to specify MBA
+>  	bandwidth in MBps
+> +"total":
+> +	Use total instead of local memory bandwidth to drive the
+> +	MBA Software Controller
+>  "debug":
+>  	Make debug files accessible. Available debug files are annotated with
+>  	"Available only with debug option".
+> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+> index a4f1aa15f0a2..f98fc9adc2da 100644
+> --- a/arch/x86/kernel/cpu/resctrl/internal.h
+> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
+> @@ -59,6 +59,7 @@ struct rdt_fs_context {
+>  	bool				enable_cdpl2;
+>  	bool				enable_cdpl3;
+>  	bool				enable_mba_mbps;
+> +	bool				use_mbm_total;
+>  	bool				enable_debug;
+>  };
+
+Why did you choose new member to not follow existing custom of having
+an enable_ prefix?
+
+>  
+> @@ -428,6 +429,8 @@ extern struct rdt_hw_resource rdt_resources_all[];
+>  extern struct rdtgroup rdtgroup_default;
+>  DECLARE_STATIC_KEY_FALSE(rdt_alloc_enable_key);
+>  
+> +extern enum resctrl_event_id mba_mbps_evt_id;
+> +
+
+This global seems unnecessary. struct resctrl_membw.mba_sc indicates if
+the software controller is enabled. Creating this global fragments
+related information.
+
+One option could be to change the type of struct resctrl_membw.mba_sc to
+enum resctrl_event_id. I assume that 0 would never be a valid event ID and
+can thus be used to know if the software controller is disabled. If this
+is done then enum resctrl_event_id's documentation should be updated
+with this assumption/usage.
+
+Reinette
