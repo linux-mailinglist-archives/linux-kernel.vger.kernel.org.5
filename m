@@ -2,307 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B12217FD5C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:32:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE5A7FD5E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:38:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232336AbjK2Lci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 06:32:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36520 "EHLO
+        id S233062AbjK2Li1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 06:38:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231561AbjK2Lcg (ORCPT
+        with ESMTP id S232223AbjK2Li0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 06:32:36 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0DD2183
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 03:32:41 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40a4848c6e1so47345585e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 03:32:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=riscv-rocks.de; s=google; t=1701257560; x=1701862360; darn=vger.kernel.org;
-        h=organization:user-agent:in-reply-to:content-disposition
-         :mime-version:references:mail-followup-to:reply-to:message-id
-         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=a3wihwtEZEcQic8fAy6oscvXB1XyE3Q5FK63++zKt7s=;
-        b=UBhodju+NjvuBL2QydEM+gh9NTr6Y//JMK+CK2o9SAKoaLUF9PjjwoiWmfa23qILq6
-         ecjxmZXdj/sWnFBJRWcEDfhd/llZ8nwNJ2u3pGxuGA0r8jzhXt6ajybs8Zcp4+5q2/Un
-         q4FfnSClQC3nVR1+uTL0/vUTJwaJiZDtudxvgJpcVc0tdEKG3u0Q4j3nYtQS170AnEiZ
-         dC2jwDLGOAHXn/N/d2Jn2ZJ4MApig3nd3gwws9PNstos103c6zfj3NwSGOPHN5bBRnpO
-         TinjZoUzIrvp7P6Dpmem/El1ywIpKY9A362XFqvyJNe+h+yAkEOUFfI21ri6isjyh9cq
-         cGwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701257560; x=1701862360;
-        h=organization:user-agent:in-reply-to:content-disposition
-         :mime-version:references:mail-followup-to:reply-to:message-id
-         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a3wihwtEZEcQic8fAy6oscvXB1XyE3Q5FK63++zKt7s=;
-        b=DY9Pzxmsid408Jk+oyVJwiZCxkl3dYIEs6h0Cs2xHx3KS35v8CTLrM5gcCNQwB2IUm
-         cENNEOKvgHjHQAsBxmDZ6F7XtDF0fbqEYs5gOKUkNPGdwGa6KS4ekCjLqydC45drkeP8
-         SyBUbB6DE5QfDIZc/SjC3WysuY+/yW7iF9+GIrnpsMAP9HyXR8uls9fHTDRmrDHOTQaK
-         BLwxgoYG9sCnGwlanOlNAXIAbdDVCipPe7ycuA3KfYo+TcDUlJY+PDfQ88JEhlHK8qDt
-         rFP+M0Cptyjv/8dlnPf6msyThh8isNok2aNi5ElIYZodLZ663eg13IVmWOejaCGSewDP
-         6BNg==
-X-Gm-Message-State: AOJu0YwFq/ROn+X1rA5Twr5+6KzRMkhNkqVHIQKUiOTj25fO0tvuxn2K
-        /+2LUJAsSVX+qxWEZkFx4Y19eA==
-X-Google-Smtp-Source: AGHT+IEPwF5I5I8IeqxqyBVD4TJA5mQxitfD+r8idkEx+R8ZloKXHj5KBhPIHcrs7GgoBtsEkPE7QQ==
-X-Received: by 2002:a05:600c:1546:b0:40b:4da2:d2b5 with SMTP id f6-20020a05600c154600b0040b4da2d2b5mr3879059wmg.3.1701257559971;
-        Wed, 29 Nov 2023 03:32:39 -0800 (PST)
-Received: from fedora.fritz.box (p549451cc.dip0.t-ipconnect.de. [84.148.81.204])
-        by smtp.gmail.com with ESMTPSA id az17-20020a05600c601100b004063c9f68f2sm1897283wmb.26.2023.11.29.03.32.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 03:32:39 -0800 (PST)
-Date:   Wed, 29 Nov 2023 12:32:37 +0100
-From:   Damian Tometzki <damian@riscv-rocks.de>
-To:     Minda Chen <minda.chen@starfivetech.com>,
-        Conor Dooley <conor@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-Subject: Re: [PATCH v11 0/20] Refactoring Microchip PCIe driver and add
- StarFive PCIe
-Message-ID: <ZWchVSO6iQbCFwkp@fedora.fritz.box>
-Reply-To: Damian Tometzki <damian@riscv-rocks.de>
-Mail-Followup-To: Minda Chen <minda.chen@starfivetech.com>,
-        Conor Dooley <conor@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Kevin Xie <kevin.xie@starfivetech.com>
-References: <20231115114912.71448-1-minda.chen@starfivetech.com>
- <ZWbcjKiSfvp-74CL@fedora.fritz.box>
+        Wed, 29 Nov 2023 06:38:26 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7851C84
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 03:38:32 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16BDCC433C7;
+        Wed, 29 Nov 2023 11:38:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701257912;
+        bh=MaraAAbR77wuMHigpLQ9a033vE+F6BEBFhIO1I4KWAY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=VSoB2KAVDCk+9Fcrt6jgLi/HJKmeNyRK92hzWpS/g4wFGrOytNtwdVOzYm6HedTDU
+         uZhxrUOBcYPPS5TN1jBAVH97NeymLIGQPH5RysCgf3kZjNhjoTcJDXlm1/Mb28ixle
+         mkOhxosewvvccPKOanB6sOWYyHr1eWf2n8Az4JEsWfO2VE0Q/+uxC5bmy4A1CrtIOL
+         vboj7S5a45n253tiJsOxczk3znUpF4ab3V9zbTeTgGrxjt1yR9EmnpEUCV5RSWRwp0
+         f9shJH9pZ5eIx5IWYyYU/xcwfznxVONhQHb5whxWDUrxvVN7axzGbOlNfpVppLQQWG
+         GRd4kxYI30/rA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Frank Binns <frank.binns@imgtec.com>,
+        Donald Robson <donald.robson@imgtec.com>,
+        Matt Coster <matt.coster@imgtec.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sarah Walker <sarah.walker@imgtec.com>,
+        Danilo Krummrich <dakr@redhat.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] drm/imagination: avoid -Wmissing-prototype warnings
+Date:   Wed, 29 Nov 2023 12:33:07 +0100
+Message-Id: <20231129113825.2961913-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWbcjKiSfvp-74CL@fedora.fritz.box>
-User-Agent: Mutt
-X-Operating-System: Linux Fedora release 39 (Thirty Nine) (Kernel 6.7.0-rc3)
-Organization: Linux hacker
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29. Nov 07:39, Damian Tometzki wrote:
-> Hello Minda,
-> 
-> i tried this Patchset on Linux-6.6.3 but boot with nvme doesnt work. Linux doesnt find
-> /root partition /dev/nvme0n1p4. 
-> I dont know if it has anything to do with this patchset ?
-> Best regards
-> Damian
-Hi,
-some additional information: 
-Begin: Running /scripts/local-block ... done.
-Begin: Running /scripts/local-block ... done.
-[   11.097653] /soc/pcie@940000000: Failed to get clk index: 1 ret: -517
-[   11.104147] pcie-starfive 940000000.pcie: error -ENODEV: failed to get pcie clocks
-[   11.111981] /soc/pcie@9c0000000: Failed to get clk index: 1 ret: -517
-[   11.118451] pcie-starfive 9c0000000.pcie: error -ENODEV: failed to get pcie clocks
-[   11.126371] platform 17020000.pinctrl: deferred probe pending
-[   11.132145] platform 16010000.mmc: deferred probe pending
-Begin: Running /scripts/local-block ... done.
-Begin: Running /scripts/local-block ... done.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Damian
+This warning option is now enabled by default, causing a few build regressions
+in combination with the newly added pvr driver:
 
-> 
-> On Wed, 15. Nov 19:48, Minda Chen wrote:
-> > This patchset final purpose is add PCIe driver for StarFive JH7110 SoC.
-> > JH7110 using PLDA XpressRICH PCIe IP. Microchip PolarFire Using the
-> > same IP and have commit their codes, which are mixed with PLDA
-> > controller codes and Microchip platform codes.
-> > 
-> > For re-use the PLDA controller codes, I request refactoring microchip
-> > codes, move PLDA common codes to PLDA files.
-> > Desigware and Cadence is good example for refactoring codes.
-> > 
-> > ----------------------------------------------------------
-> > The refactoring patches total number is 16,(patch 1-16)
-> > which do NOT contain changing logic of codes.
-> > 
-> > These patches just contain three type basic operations.
-> > (rename, modify codes to support starfive platform, and moving to common file)
-> > If these patched are all be reviewed. They can be accepted first.
-> > 
-> > Refactoring patches can be devided to different groups
-> > 1. (patch 1- 3 is the prepare work of refactoring)
-> > patch1 is move PLDA XpressRICH PCIe host common properties dt-binding
-> >        docs from microchip,pcie-host.yaml
-> > patch2 is move PolarFire codes to PLDA directory.
-> > patch3 is move PLDA IP register macros to plda-pcie.h
-> > 
-> > 2. (patch4 - 6 is processing and re-use PCIe host instance)
-> > patch4 is add bridge_addr field to PCIe host instance.
-> > patch5 is rename data structure in microchip codes.
-> > patch6 is moving two data structures to head file
-> > 
-> > 3. (patch 7 - 9 are for re-use two PCIe setup function)
-> > patch7 is rename two setup functions in microchip codes, prepare to move
-> > to common file.
-> > patch8 is change the arguments of plda_pcie_setup_iomems()
-> > patch9 is move the two setup functions to common file pcie-plda-host.c
-> > 
-> > 4.(patch 10 - 16 are for re-use interupt processing codes)
-> > patch10 is rename the IRQ related functions, prepare to move to
-> > pcie-plda-host.c
-> > patch 11 - 15 is modify the interrupt event codes, preparing for support starfive
-> > and microchip two platforms.
-> > patch16 is move IRQ related functions to pcie-plda-host.c
-> > 
-> > ------------------------------------------------------------
-> > The remainder patches (patch 17 -20) are not refactoring patch.
-> > They are for adding StarFive codes and dont modify the microchip's
-> > codes.
-> > 
-> > patch17 is Add PLDA event interrupt codes and host init/deinit functions.
-> > patch18 is add StarFive JH7110 PCIe dt-binding doc.
-> > patch19 is add StarFive JH7110 Soc PCIe codes.
-> > patch20 is Starfive dts config
-> > 
-> > This patchset is base on v6.7-rc1
-> > 
-> > previous version:
-> > v6:https://patchwork.kernel.org/project/linux-pci/cover/20230915102243.59775-1-minda.chen@starfivetech.com/
-> > v7:https://patchwork.kernel.org/project/linux-pci/cover/20230927100802.46620-1-minda.chen@starfivetech.com/
-> > v8:https://patchwork.kernel.org/project/linux-pci/cover/20231011110514.107528-1-minda.chen@starfivetech.com/
-> > v9:https://patchwork.kernel.org/project/linux-pci/cover/20231020104341.63157-1-minda.chen@starfivetech.com/
-> > v10:https://patchwork.kernel.org/project/linux-pci/cover/20231031115430.113586-1-minda.chen@starfivetech.com/
-> > 
-> > change:
-> >   v11:
-> >      check and modify some commit messages again.
-> >      All the codes are the same with v10.   
-> > 
-> >   v10:
-> >    All the commit message set to fit in 75 columns.
-> >    All the codes fit in less than 80 colunms.
-> >    patch 14: 
-> > 	Commit message changes suggested by Conor.
-> >    patch 19:
-> >         Add 100 ms delay macro to pci.h
-> > 	generic phy pointer related codes moving to pcie-starfive.c
-> > 	This patch Change pcie-starfive only, bus_ops move to patch 16.
-> > 	Some Codes changes suggested by Bjorn.
-> > 
-> >   v9:
-> >    v8 patch 10 squash to v9 patch 12, v8 patch 18 squash to v9 patch 16.
-> >    patch 4 - 16: Add new review tags and add more accurate commit messages.
-> >    patch 17: move the plda_pcie_host_init/deinit from patch 19. Make
-> >              plda driver become to whole driver.
-> > 
-> >   v8:
-> >     The patch description in cover-letter has been changed.
-> > 
-> >     v7 patch 4 split to v8 patch 4 - 6.
-> >         (It is patches about re-use pcie host data structure, new patches just contain one
-> > 	function modification. It is more reguluar and easier to review).
-> > 
-> >     patch 7- 9: modify the commit messages and add reason of
-> > 		modifcation.
-> >     patch10- 16 :
-> >              Add review tag and add more commit messages to declear the
-> > 	     reason of modifying the codes.
-> >     patch17: plda_handle_events() using bit mask macro. The function are
-> > 	     easier to read.
-> > 
-> >   v7:
-> >     patch17: fix the build warning.
-> >     patch19: Some format changes (Emil's comment)
-> >     patch20: change the pcie node sequences by alphabetical
-> >              delete the "interupt-parent" in pcie node.
-> > 
-> >   v6:
-> >     v5 patch 4 split to patch 4 -9. New patches just contain one function modification. It is more reguluar.
-> > 
-> >     patch 9: Just move the two setup functions only
-> >     patch 19 : draw a graph of PLDA local register, make it easier to
-> >                review the codes.
-> >     v5 patch 7 split to patch 10- 16. Each patch just contain one
-> >                 function modification. It is more regular.
-> >     patch 10: rename IRQ related functions.
-> >     patch 11 - 15 : modify the events codes, total five patch.
-> >     patch 16: move IRQ related functions to pcie-plda-host.c
-> >     patch 19- 20 using "linux,pci-domain" dts setting.
-> > 
-> > Minda Chen (20):
-> >   dt-bindings: PCI: Add PLDA XpressRICH PCIe host common properties
-> >   PCI: microchip: Move pcie-microchip-host.c to plda directory
-> >   PCI: microchip: Move PLDA IP register macros to pcie-plda.h
-> >   PCI: microchip: Add bridge_addr field to struct mc_pcie
-> >   PCI: microchip: Rename two PCIe data structures
-> >   PCI: microchip: Move PCIe host data structures to plda-pcie.h
-> >   PCI: microchip: Rename two setup functions
-> >   PCI: microchip: Change the argument of plda_pcie_setup_iomems()
-> >   PCI: microchip: Move setup functions to pcie-plda-host.c
-> >   PCI: microchip: Rename interrupt related functions
-> >   PCI: microchip: Add num_events field to struct plda_pcie_rp
-> >   PCI: microchip: Add request_event_irq() callback function
-> >   PCI: microchip: Add INTx and MSI event num to struct plda_event
-> >   PCI: microchip: Add get_events() callback function
-> >   PCI: microchip: Add event IRQ domain ops to struct plda_event
-> >   PCI: microchip: Move IRQ functions to pcie-plda-host.c
-> >   PCI: plda: Add event interrupt codes and host init/deinit functions
-> >   dt-bindings: PCI: Add StarFive JH7110 PCIe controller
-> >   PCI: starfive: Add JH7110 PCIe controller
-> >   riscv: dts: starfive: add PCIe dts configuration for JH7110
-> > 
-> >  .../bindings/pci/microchip,pcie-host.yaml     |  55 +-
-> >  .../pci/plda,xpressrich3-axi-common.yaml      |  75 ++
-> >  .../bindings/pci/starfive,jh7110-pcie.yaml    | 120 ++++
-> >  MAINTAINERS                                   |  19 +-
-> >  .../jh7110-starfive-visionfive-2.dtsi         |  64 ++
-> >  arch/riscv/boot/dts/starfive/jh7110.dtsi      |  86 +++
-> >  drivers/pci/controller/Kconfig                |   9 +-
-> >  drivers/pci/controller/Makefile               |   2 +-
-> >  drivers/pci/controller/plda/Kconfig           |  29 +
-> >  drivers/pci/controller/plda/Makefile          |   4 +
-> >  .../{ => plda}/pcie-microchip-host.c          | 602 ++--------------
-> >  drivers/pci/controller/plda/pcie-plda-host.c  | 657 ++++++++++++++++++
-> >  drivers/pci/controller/plda/pcie-plda.h       | 266 +++++++
-> >  drivers/pci/controller/plda/pcie-starfive.c   | 460 ++++++++++++
-> >  drivers/pci/pci.h                             |   7 +
-> >  15 files changed, 1851 insertions(+), 604 deletions(-)
-> >  create mode 100644 Documentation/devicetree/bindings/pci/plda,xpressrich3-axi-common.yaml
-> >  create mode 100644 Documentation/devicetree/bindings/pci/starfive,jh7110-pcie.yaml
-> >  create mode 100644 drivers/pci/controller/plda/Kconfig
-> >  create mode 100644 drivers/pci/controller/plda/Makefile
-> >  rename drivers/pci/controller/{ => plda}/pcie-microchip-host.c (54%)
-> >  create mode 100644 drivers/pci/controller/plda/pcie-plda-host.c
-> >  create mode 100644 drivers/pci/controller/plda/pcie-plda.h
-> >  create mode 100644 drivers/pci/controller/plda/pcie-starfive.c
-> > 
-> > 
-> > base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
-> > -- 
-> > 2.17.1
-> > 
+drivers/gpu/drm/imagination/pvr_device.c:130:6: error: no previous prototype for 'pvr_device_process_active_queues' [-Werror=missing-prototypes]
+  130 | void pvr_device_process_active_queues(struct pvr_device *pvr_dev)
+      |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/gpu/drm/imagination/pvr_fw_meta.c:33:1: error: no previous prototype for 'pvr_meta_cr_read32' [-Werror=missing-prototypes]
+   33 | pvr_meta_cr_read32(struct pvr_device *pvr_dev, u32 reg_addr, u32 *reg_value_out)
+      | ^~~~~~~~~~~~~~~~~~
+drivers/gpu/drm/imagination/pvr_vm.c:542:6: error: no previous prototype for 'pvr_gpuvm_free' [-Werror=missing-prototypes]
+  542 | void pvr_gpuvm_free(struct drm_gpuvm *gpuvm)
+
+Mark pvr_device_process_active_queues and pvr_gpuvm_free static as they are only used
+in the file they are defined in, and include the correct header for the pvr_meta_cr_read32
+declaration.
+
+Fixes: eaf01ee5ba28 ("drm/imagination: Implement job submission and scheduling")
+Fixes: cc1aeedb98ad ("drm/imagination: Implement firmware infrastructure and META FW support")
+Fixes: ff5f643de0bf ("drm/imagination: Add GEM and VM related code")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/gpu/drm/imagination/pvr_device.c  | 2 +-
+ drivers/gpu/drm/imagination/pvr_fw_meta.c | 1 +
+ drivers/gpu/drm/imagination/pvr_vm.c      | 2 +-
+ 3 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/imagination/pvr_device.c b/drivers/gpu/drm/imagination/pvr_device.c
+index 8499becf4fbb..048eba776cf2 100644
+--- a/drivers/gpu/drm/imagination/pvr_device.c
++++ b/drivers/gpu/drm/imagination/pvr_device.c
+@@ -127,7 +127,7 @@ static int pvr_device_clk_init(struct pvr_device *pvr_dev)
+  * This is called any time we receive a FW event. It iterates over all
+  * active queues and calls pvr_queue_process() on them.
+  */
+-void pvr_device_process_active_queues(struct pvr_device *pvr_dev)
++static void pvr_device_process_active_queues(struct pvr_device *pvr_dev)
+ {
+ 	struct pvr_queue *queue, *tmp_queue;
+ 	LIST_HEAD(active_queues);
+diff --git a/drivers/gpu/drm/imagination/pvr_fw_meta.c b/drivers/gpu/drm/imagination/pvr_fw_meta.c
+index 119934c36184..c39beb70c317 100644
+--- a/drivers/gpu/drm/imagination/pvr_fw_meta.c
++++ b/drivers/gpu/drm/imagination/pvr_fw_meta.c
+@@ -4,6 +4,7 @@
+ #include "pvr_device.h"
+ #include "pvr_fw.h"
+ #include "pvr_fw_info.h"
++#include "pvr_fw_meta.h"
+ #include "pvr_gem.h"
+ #include "pvr_rogue_cr_defs.h"
+ #include "pvr_rogue_meta.h"
+diff --git a/drivers/gpu/drm/imagination/pvr_vm.c b/drivers/gpu/drm/imagination/pvr_vm.c
+index 2aab53594a77..30ecd7d7052e 100644
+--- a/drivers/gpu/drm/imagination/pvr_vm.c
++++ b/drivers/gpu/drm/imagination/pvr_vm.c
+@@ -539,7 +539,7 @@ pvr_device_addr_and_size_are_valid(struct pvr_vm_context *vm_ctx,
+ 	       (device_addr + size <= PVR_PAGE_TABLE_ADDR_SPACE_SIZE);
+ }
+ 
+-void pvr_gpuvm_free(struct drm_gpuvm *gpuvm)
++static void pvr_gpuvm_free(struct drm_gpuvm *gpuvm)
+ {
+ 	kfree(to_pvr_vm_context(gpuvm));
+ }
+-- 
+2.39.2
+
