@@ -2,92 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C81037FE143
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:43:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D137FE147
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234114AbjK2Uns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 15:43:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49348 "EHLO
+        id S234127AbjK2Uo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 15:44:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231549AbjK2Unr (ORCPT
+        with ESMTP id S231549AbjK2Uo6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 15:43:47 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E305D6E;
-        Wed, 29 Nov 2023 12:43:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1701290632;
-        bh=4A+EQlBvhHEH1wU+lqUotRj9vZzPseWpql+yOOtqe7k=;
-        h=Date:From:To:Cc:Subject:From;
-        b=UtKhshi9n3fzS0PBm8X6g398BMZzdQ/i0JtM4zzzwg2YbaCZ+opbhR57zvWEpB/od
-         PpWH60J069O0JezBZS1yolwa+JNqSYlqnjEkIxdkNca/lArck9PHDKKHTY3beCf5wG
-         L0c16a6zzC5opo+nxUt9OmPOigmDGluwe94U+UVVmrvvTjP/877sSkZipmWxli3Y0H
-         zHV6HKi+ylk2doYszTbC4MGkolUj/hNrLP606w75AN7/l8r4bJavUAKU6bMAyVe/47
-         BeqWcsaG1nrCbFCthp3oKW3z44Qi4pRxvkmdCnByJCeJm9ufbXE0OMxv+xlc2Drkva
-         xyVxDtSeWD0fg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SgWWW5yl9z4xT0;
-        Thu, 30 Nov 2023 07:43:51 +1100 (AEDT)
-Date:   Thu, 30 Nov 2023 07:43:50 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Baoquan He <bhe@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the mm-hotfixes tree
-Message-ID: <20231130074350.7c758662@canb.auug.org.au>
+        Wed, 29 Nov 2023 15:44:58 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA22D7F
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:45:02 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50bbfad8758so331686e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:45:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google; t=1701290700; x=1701895500; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tlZYiStM5KCC7J/v+177rjHqt9KWJCfJWFMkelab9t4=;
+        b=FdbZffxY5wQE+/0cxXCbRI/zPDDidiVXjjUtYaRCjcBeQNV8h6tZEhOFNmoiYL7FiG
+         h1K6pRO8QjrrRpKLtVPO4KusIRh7cFjdTbXZrtnRwsrN9zOW761HtsD0DnDQGZcBO4B4
+         zZlRZaXN56UCW9RjgD3piveQC/RlmHoA707iaWD4ZKMsSGCKKX0wS590lk9hL1bOd4IZ
+         7f3rTyKVruPGPNdmdliTvnn9TTnMX3gBAn3rgBg3AHi7tU6xptVxJXv22YHnauF+xp/J
+         vi7OWlea2BYfXpETx4UFSoOwGVhEA35lLfaJJPqVDZIFT4A3eDZKoi2IYAMKrMsVwmSJ
+         8bzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701290700; x=1701895500;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tlZYiStM5KCC7J/v+177rjHqt9KWJCfJWFMkelab9t4=;
+        b=CJTQ8WmkQWN2RmP+TVyLaHTMfdGalrdfbjJMhRaay15rOznEgtH6lX3djHtyM8nUEW
+         BH68WG0yo50bj8NslwXYLXOma5gfnvDdCt/g97BfdGGxh0qy90iSLpUOIpMRNmIxOVgZ
+         urDfioNtxb11r9ZvjTOrY9y8JZmKsUUyczc1ZupC+LIaIh+sUWnb02sRhEg8m4KY9wO4
+         z+kb9uNuCu5e/ZByY9m8WJdw4Cpkn29Fde6JqHjVyJmD36UYlRv+h7/rWFJG34+GPKje
+         hL0/UwI+VKBJLwFos8otVS/bzFVrPTPHDvlrLIF1tVlCQX6Kvp6fjuwDW++tr6XprCM6
+         PO1g==
+X-Gm-Message-State: AOJu0YxI0enJ4wk8MY8QVZuXApS0B6hYeyzQ5yXfJyVZwuubnKOuYQ61
+        5NSRFCkaKvHBdqySWcPiSKTeTTjlno3HtD+swjxAyg==
+X-Google-Smtp-Source: AGHT+IGMB2fUN71OTthlqnqBV10GCXDIRhuYgMFmlKYXWcCU4XgzYTup+BcRc5IJEjmMB4Fgw8Ibq0j5FX6Di+vVaiM=
+X-Received: by 2002:ac2:4a6f:0:b0:50b:cb50:401 with SMTP id
+ q15-20020ac24a6f000000b0050bcb500401mr153882lfp.34.1701290700342; Wed, 29 Nov
+ 2023 12:45:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/npWNOH8tExtNS7Z1/PGPmKG";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
+ <20231128204938.1453583-9-pasha.tatashin@soleen.com> <1c6156de-c6c7-43a7-8c34-8239abee3978@arm.com>
+ <CA+CK2bCOtwZxTUS60PHOQ3szXdCzau7OpopgFEbbC6a9Frxafg@mail.gmail.com>
+ <20231128235037.GC1312390@ziepe.ca> <52de3aca-41b1-471e-8f87-1a77de547510@arm.com>
+ <CA+CK2bCcfS1Fo8RvTeGXj_ejPRX9--sh5Jz8nzhkZnut4juDmg@mail.gmail.com> <20231129200305.GI1312390@ziepe.ca>
+In-Reply-To: <20231129200305.GI1312390@ziepe.ca>
+From:   Pasha Tatashin <pasha.tatashin@soleen.com>
+Date:   Wed, 29 Nov 2023 15:44:21 -0500
+Message-ID: <CA+CK2bA05Bh+H4qsP7ZM6ZcnBXu64frEfpCDYZuLOQ4UxJC4EA@mail.gmail.com>
+Subject: Re: [PATCH 08/16] iommu/fsl: use page allocation function provided by iommu-pages.h
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Robin Murphy <robin.murphy@arm.com>, akpm@linux-foundation.org,
+        alex.williamson@redhat.com, alim.akhtar@samsung.com,
+        alyssa@rosenzweig.io, asahi@lists.linux.dev,
+        baolu.lu@linux.intel.com, bhelgaas@google.com,
+        cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com,
+        dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de,
+        iommu@lists.linux.dev, jasowang@redhat.com,
+        jernej.skrabec@gmail.com, jonathanh@nvidia.com, joro@8bytes.org,
+        kevin.tian@intel.com, krzysztof.kozlowski@linaro.org,
+        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
+        marcan@marcan.st, mhiramat@kernel.org, mst@redhat.com,
+        m.szyprowski@samsung.com, netdev@vger.kernel.org,
+        paulmck@kernel.org, rdunlap@infradead.org, samuel@sholland.org,
+        suravee.suthikulpanit@amd.com, sven@svenpeter.dev,
+        thierry.reding@gmail.com, tj@kernel.org, tomas.mudrunka@gmail.com,
+        vdumpa@nvidia.com, virtualization@lists.linux.dev, wens@csie.org,
+        will@kernel.org, yu-cheng.yu@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/npWNOH8tExtNS7Z1/PGPmKG
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Nov 29, 2023 at 3:03=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> wrot=
+e:
+>
+> On Wed, Nov 29, 2023 at 02:45:03PM -0500, Pasha Tatashin wrote:
+>
+> > > same kind of big systems where IOMMU pagetables would be of any conce=
+rn.
+> > > I believe some of the some of the "serious" NICs can easily run up
+> > > hundreds of megabytes if not gigabytes worth of queues, SKB pools, et=
+c.
+> > > - would you propose accounting those too?
+> >
+> > Yes. Any kind of kernel memory that is proportional to the workload
+> > should be accountable. Someone is using those resources compared to
+> > the idling system, and that someone should be charged.
+>
+> There is a difference between charged and accounted
+>
+> You should be running around adding GFP_KERNEL_ACCOUNT, yes. I already
+> did a bunch of that work. Split that out from this series and send it
+> to the right maintainers.
 
-Hi all,
+I will do that.
 
-In commit
+>
+> Adding a counter for allocations and showing in procfs is a very
+> different question. IMHO that should not be done in micro, the
+> threshold to add a new counter should be high.
 
-  f8ff23429c62 ("kernel/Kconfig.kexec: drop select of KEXEC for CRASH_DUMP")
+I agree, /proc/meminfo, should not include everything, however overall
+network consumption that includes memory allocated by network driver
+would be useful to have, may be it should be exported by device
+drivers and added to the protocol memory. We already have network
+protocol memory consumption in procfs:
 
-Fixes tag
+# awk '{printf "%-10s %s\n", $1, $4}' /proc/net/protocols | grep  -v '\-1'
+protocol   memory
+UDPv6      22673
+TCPv6      16961
 
-  Fixes: commit 89cde455915f ("kexec: consolidate kexec and crash options i=
-nto kernel/Kconfig.kexec")
-
-has these problem(s):
-
-  - leading word 'commit' unexpected
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/npWNOH8tExtNS7Z1/PGPmKG
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVnooYACgkQAVBC80lX
-0Gz64wf8DabkCNeRjVazT75wni8IK2iYXMvNDPE88bcNCfoxdktn5nSPSnwSK4wn
-Pd0txfPeVa5VaWFRcOPlhzxlM/X4WnyRhSsPd3zMqNpkqqxVhwNlglPtbfVsFiLw
-96NEZCEPFprNf7i3zhob9AhEpC+auZRFYxVhc6wkXBqDHHWeoeAJT8YHHF179EEt
-6iKfPVYkLFKXT9f66ynThfcr57IvsjggAFC3hGStBeLsZULOpNy+9WlsGW+rXCKN
-VCpBL21PeFkj2zo2SFdRbHkp9VD1wCpZT5zCs90G8/wKfNla/jQowEAE1eDDZwso
-7HDupjgYOWGjjNI8KS1kRGgYy9dJ1g==
-=kNpD
------END PGP SIGNATURE-----
-
---Sig_/npWNOH8tExtNS7Z1/PGPmKG--
+> There is definately room for a generic debugging feature to break down
+> GFP_KERNEL_ACCOUNT by owernship somehow. Maybe it can already be done
+> with BPF. IDK
