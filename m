@@ -2,118 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5617FDBB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:42:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 226577FDBB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:42:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343814AbjK2Plw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 10:41:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34034 "EHLO
+        id S1343816AbjK2Plz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 10:41:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234904AbjK2Plv (ORCPT
+        with ESMTP id S1343525AbjK2Plw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 10:41:51 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC105D46;
-        Wed, 29 Nov 2023 07:41:57 -0800 (PST)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ATFABW7011752;
-        Wed, 29 Nov 2023 07:41:41 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=uDTkRMfs9Qm60lNSIgRLVb/C/VJq9P7BSiKI4joTZxw=;
- b=FFNQH6HwumzIcB+CJRj8YrHOdbcvWMk5hBRq4wKCrom8ecjKU2FKo23miePA5XHuqNxa
- y7wuZcEiphVBoS7lCPvnZRlXDXhL3t7oslfkNq2lcp11GW8jeTnKE2qtRra5rD3WQjGE
- JDevQTKMrCbW2sCqO6TrgjvM1FFS3Q4A8ZrWH6u5D8ul+YISw5/5OcNoiBZ2MMuQNWuS
- DZjevm+DwV6sKBcG9Tvyq8O7MVIKomJcV81GVb88lKF5jnUsFcEanr/+wu9yefRrF6Jd
- LlJ1c6ENkMJgkYbbTqY0U5B/YpqccdKXQmVRFmXFqTFjmFH2p6imBkSpQjMJoiHrdkvp PA== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3up4x195e0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 29 Nov 2023 07:41:40 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Wed, 29 Nov
- 2023 07:41:39 -0800
-Received: from bharat-OptiPlex-3070.marvell.com (10.69.176.80) by
- DC5-EXCH02.marvell.com (10.69.176.39) with Microsoft SMTP Server id
- 15.0.1497.48 via Frontend Transport; Wed, 29 Nov 2023 07:41:35 -0800
-From:   Bharat Bhushan <bbhushan2@marvell.com>
-To:     <bbrezillon@kernel.org>, <arno@natisbad.org>,
-        <schalla@marvell.com>, <herbert@gondor.apana.org.au>,
-        <davem@davemloft.net>, <alobakin@pm.me>, <tj@kernel.org>,
-        <masahiroy@kernel.org>, <linux-crypto@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Bharat Bhushan <bbhushan2@marvell.com>
-Subject: [PATCH] crypto/octeontx2: By default allocate one CPT LF per CPT VF
-Date:   Wed, 29 Nov 2023 21:11:33 +0530
-Message-ID: <20231129154133.1529898-1-bbhushan2@marvell.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 29 Nov 2023 10:41:52 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D665BD48
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:41:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2037C433C7;
+        Wed, 29 Nov 2023 15:41:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1701272518;
+        bh=I0q1v9bTrML80ulyQEMrxjRfQVCMCsDWuy/OAJgwr14=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CmfAEXxApvLS9zisQRc2UEwCdAKwaGApUmoUpGZBIBcZwqMeFwloflFMG+V4tzXs9
+         IYPlb1H6ghk4xFDyb+yNNwkdE9UYh5aCZGY3tHJT0ChBnKfGJxr1cUPFWLmPaoLc9P
+         D12BdnNjOkJ1asrWz+QjUl0KojS/I309PlYs9IBE=
+Date:   Wed, 29 Nov 2023 15:41:54 +0000
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jiri Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>,
+        Itay Avraham <itayavr@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH V3 2/5] misc: mlx5ctl: Add mlx5ctl misc driver
+Message-ID: <2023112951-civil-risotto-50dc@gregkh>
+References: <20231121070619.9836-1-saeed@kernel.org>
+ <20231121070619.9836-3-saeed@kernel.org>
+ <2023112727-caddie-eardrum-efe8@gregkh>
+ <ZWb_l7rC4QK8duU3@x130>
+ <2023112938-unhook-defiance-75ed@gregkh>
+ <20231129130200.GV436702@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: zbAX0USzo1Ti34vsFOnbJWog6Q7QpWXx
-X-Proofpoint-ORIG-GUID: zbAX0USzo1Ti34vsFOnbJWog6Q7QpWXx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-29_13,2023-11-29_01,2023-05-22_02
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231129130200.GV436702@nvidia.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are limited number CPT LFs (example 64 LFs on cn10k) and
-these LFs are allocated/attached to CPT VF on its creation.
-cptpf sysfs parameter "kvf_limits" defines number of CPT LFs
-per CPT VF. Default "kvf_limits" is initialized to zero and if
-kvf_limits is zero then number of LF allocated are equal to
-online cpus in system.
+On Wed, Nov 29, 2023 at 09:02:00AM -0400, Jason Gunthorpe wrote:
+> On Wed, Nov 29, 2023 at 09:20:32AM +0000, Greg Kroah-Hartman wrote:
+> > On Wed, Nov 29, 2023 at 01:08:39AM -0800, Saeed Mahameed wrote:
+> > > On 27 Nov 18:59, Greg Kroah-Hartman wrote:
+> > > > On Mon, Nov 20, 2023 at 11:06:16PM -0800, Saeed Mahameed wrote:
+> > > > > +struct mlx5ctl_dev {
+> > > > > +	struct mlx5_core_dev *mdev;
+> > > > > +	struct miscdevice miscdev;
+> > > > > +	struct auxiliary_device *adev;
+> > > > > +	struct list_head fd_list;
+> > > > > +	spinlock_t fd_list_lock; /* protect list add/del */
+> > > > > +	struct rw_semaphore rw_lock;
+> > > > > +	struct kref refcount;
+> > > > 
+> > > > You now have 2 different things that control the lifespan of this
+> > > > structure.  We really need some way to automatically check this so that
+> > > > people don't keep making this same mistake, it happens all the time :(
+> > > > 
+> > > > Please pick one structure (miscdevice) or the other (kref) to control
+> > > > the lifespan, having 2 will just not work.
+> > > > 
+> > > 
+> > > miscdevice doesn't handle the lifespan, open files will remain open even
+> > > after the miscdevice was unregistered, hence we use the kref to defer the
+> > > kfree until the last open file is closed.
+> > 
+> > miscdevice has a reference counter and a lifecycle, you can not have two
+> > reference counted objects in the same structure and expect things to
+> > work well.
+> 
+> This second refcount is hidden well:
+> 
+> struct miscdevice {
+> 	int minor;
+> 	const char *name;
+> 	const struct file_operations *fops;
+> 	struct list_head list;
+> 	struct device *parent;
+> 	struct device *this_device;
+> 	const struct attribute_group **groups;
+> 	const char *nodename;
+> 	umode_t mode;
+> };
 
-For example on 24 core system, 24 CPT LFs will be attached per VF.
-That means no CPT LF available when creating more than 2 CPT VFs
-on system which have total 64 LFs. Although VFs gets created but
-no LF attached to it.
+Ugh, you are right, I was wrong, there is no reference count here, using
+a miscdevice _requires_ you to have a separate reference count, like you
+all did.  My fault.
 
-There seems no reason to default allocate as many LFs as many
-online cpus in system. This patch initializes "kvf_limits" to
-one to limit one LF allocated per CPT VF. "kvf_limits" can
-be changed in range of 1 to number-of-online-cpus via sysfs.
+> > > write_lock() : only on mlx5_ctl remove and mark the device is down
+> > > via assigning NULL to mcdev->dev, to let all new readers abort and to wait
+> > > for current readers to finish their task.
+> > > 
+> > > read_lock(): used in all fops and ioctls, to make sure underlaying
+> > > mlx5_core device is still active, and to prevent open files to access the
+> > > device when miscdevice was already unregistered.
+> > > 
+> > > I agree, this should've been documented in the code, I will add
+> > > documentation.
+> > 
+> > Just make it simple and use a normal mutex please.
+> 
+> A normal mutex would make the entire ioctl interface single threaded,
+> this is not desirable.
 
-Signed-off-by: Bharat Bhushan <bbhushan2@marvell.com>
----
- drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c | 1 +
- drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c | 3 +--
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Why not?  It's an ioctl for a single device, surely this isn't
+performance criticial.  And then only grab it when needed, on
+read/write/ioctl path it shouldn't be needed at all due to the proper
+reference counting of the structures.  Only on open/close, right?
 
-diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c b/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c
-index e34223daa327..b13df6a49644 100644
---- a/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c
-+++ b/drivers/crypto/marvell/octeontx2/otx2_cptpf_main.c
-@@ -797,6 +797,7 @@ static int otx2_cptpf_probe(struct pci_dev *pdev,
- 		goto destroy_afpf_mbox;
- 
- 	cptpf->max_vfs = pci_sriov_get_totalvfs(pdev);
-+	cptpf->kvf_limits = 1;
- 
- 	err = cn10k_cptpf_lmtst_init(cptpf);
- 	if (err)
-diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c b/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
-index bac729c885f9..69a447d3702c 100644
---- a/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
-+++ b/drivers/crypto/marvell/octeontx2/otx2_cptvf_main.c
-@@ -277,8 +277,7 @@ static int cptvf_lf_init(struct otx2_cptvf_dev *cptvf)
- 	if (ret)
- 		return ret;
- 
--	lfs_num = cptvf->lfs.kvf_limits ? cptvf->lfs.kvf_limits :
--		  num_online_cpus();
-+	lfs_num = cptvf->lfs.kvf_limits;
- 
- 	otx2_cptlf_set_dev_info(lfs, cptvf->pdev, cptvf->reg_base,
- 				&cptvf->pfvf_mbox, cptvf->blkaddr);
--- 
-2.34.1
+And again, for a rw semaphore, benchmarks matter, often, if not almost
+always, a normal mutex is faster for stuff like this.  If not, then a
+benchmark will show it.
 
+> > But before you do that, please see my other email about why not using
+> > devlink for all of this instead.
+> 
+> We've been over this already, the devlink discussion is about some
+> configuration stuff.
+
+It was?  I see device-specific diagonostic data for the mlx5 driver
+being exported through devlink today, that's not configuration.  Why not
+just add more?
+
+> It has never been suggested to cover the debug interface. This series
+> is primarily about debug, the devlink thing is a distraction to main
+> point.
+
+For me it is the main point at the moment.  Please explain why devlink
+does not work for the information that you have created a misc device
+where you want an ioctl api instead, as I honestly do not understand.
+
+thanks,
+
+greg k-h
