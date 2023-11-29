@@ -2,47 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6378C7FD6AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 13:25:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77BC57FD6B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 13:26:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233522AbjK2MZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 07:25:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33572 "EHLO
+        id S230405AbjK2MZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 07:25:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232806AbjK2MZQ (ORCPT
+        with ESMTP id S233705AbjK2MZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 07:25:16 -0500
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D47FED7E
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 04:25:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=jEObS/HV3KnbOlieZh
-        /QleucJWKx0CNHN/jOSzwsRpg=; b=oQL6dXI+6gZ1aQHVYvEjghiPQ4KsT8RutW
-        g/sqFKeQ1Q10Wf7wkObC3BHUZX3sjDSQEgph+d4jjLqHeY/9NwxsPf7JJMpjzTq/
-        Y2TOLs7Eg0VFgj1zAi8nIkYgQ/yHJoKq1O7o5bh7bpm5pO+KFQOZEXZNBKzIbMuH
-        NtlsBhYTQ=
-Received: from localhost.localdomain (unknown [39.144.190.126])
-        by zwqz-smtp-mta-g1-1 (Coremail) with SMTP id _____wAnhjmaLWdl6JhZCQ--.40944S2;
-        Wed, 29 Nov 2023 20:24:59 +0800 (CST)
-From:   Haoran Liu <liuhaoran14@163.com>
-To:     vkoul@kernel.org
-Cc:     kishon@kernel.org, robh@kernel.org, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Haoran Liu <liuhaoran14@163.com>
-Subject: [PATCH] [phy/marvell] phy-pxa-28nm-usb2: Add error handling
-Date:   Wed, 29 Nov 2023 04:24:57 -0800
-Message-Id: <20231129122457.33413-1-liuhaoran14@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: _____wAnhjmaLWdl6JhZCQ--.40944S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrur4fAw4xXw4DuF4DZr45Awb_yoWDuFcEgr
-        1UJr97Xr4DZwsFy34UKw15Ja429ryfZa4rWFyIqrWFyFZrJ3ZI93yDZFs3A3s8Gw42kr9r
-        tw45Zr47Ar13WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRKpB-UUUUUU==
-X-Originating-IP: [39.144.190.126]
-X-CM-SenderInfo: xolxxtxrud0iqu6rljoofrz/1tbiwgA3glc661zDHQAAsz
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Wed, 29 Nov 2023 07:25:54 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C810D48;
+        Wed, 29 Nov 2023 04:26:00 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a0b65cbf096so590787566b.1;
+        Wed, 29 Nov 2023 04:26:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701260759; x=1701865559; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=P9viodrxXNdj6asj6Vfl3mqqfWCQOtvTzy3eNWtRL9A=;
+        b=PcvSGuGRu6sFiAPRQw6vLr/QVEujyUaj7EqIVSbM3k4W9HIXYsiJCieSF5QpsGrXHQ
+         kS01Ih3lNWCXGN1AifGlewO3+7Tb1e4uFXc6uINqvvFoDpq5B1qA9q060HD8Xr4PemlJ
+         oZZqYcUKKH/wdbbbT3m5vuJOIdrVq0o1HjujdfZbrAl6b0v9kqZLGdblPyH5mL7ygB67
+         lJaZCpItwZIs4x/fvJvtlb6+C4r0HTKjNTsp8FheD6fcCOvQcTmdw5xHgr126TwS0aCq
+         +fjmYC+rytda+v52mfB6oIm8cQ94rE7C8pZfOgIYH0X7j+qrNtcj/ZL6bn0uoX2CCK+k
+         EgIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701260759; x=1701865559;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=P9viodrxXNdj6asj6Vfl3mqqfWCQOtvTzy3eNWtRL9A=;
+        b=sGjTAFMWRqYlpWI2FlCkeO/mnT5ztPYdm5be1qdgIz/6qD6d5qvPIF5dYJ/Hj+Ng6T
+         QrUViHpw1OCgdnyy1SpY9Z+SUflOhlEhSOP49HjLtPNUD++M2Amua23yTwaN5noKVkaD
+         VP7m9gUw/a8NsF3ec7x2XRVDAw3WYWbnJLPaOubW6Um38CayJAY2ji7iihf095BqDsET
+         X2nE1+7xGM0eE/AXrR0oYR54LWnjq4P5KTeZpoPC9X0PIMwSz3PeZsA/9V9fzNemvNHl
+         flSkLr+aJtWmDvzPFtJwmK+HNbZXWNJ8aDZPYcLccZ+H3GfC2drEgPCrXd8Fty1/c5O1
+         9/1A==
+X-Gm-Message-State: AOJu0Ywt+2oR+w0aKuYvXPSnuJhvsgB7zsS7/jK1etssO3p38PxcU/ZU
+        55RCPm+oadvMwuOI+a99UXU=
+X-Google-Smtp-Source: AGHT+IEBEwayUX3L1ODBT+6O5vVXOFdRqoNGbEWVmreIV4DlK+MXeF07PXVsw0SwKDECv7o5u5qYTg==
+X-Received: by 2002:a17:906:6d8b:b0:a00:b4ab:cb6d with SMTP id h11-20020a1709066d8b00b00a00b4abcb6dmr10449582ejt.69.1701260758454;
+        Wed, 29 Nov 2023 04:25:58 -0800 (PST)
+Received: from localhost (p200300e41f0fa600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f0f:a600:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id t18-20020a1709064f1200b00a173547a28dsm642734eju.195.2023.11.29.04.25.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 04:25:57 -0800 (PST)
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     linux-pwm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        kernel@pengutronix.de, Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH] pwm: Update kernel doc for struct pwm_chip
+Date:   Wed, 29 Nov 2023 13:25:52 +0100
+Message-ID: <170126072780.448555.17859780866289805734.b4-ty@gmail.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231129101831.908952-2-u.kleine-koenig@pengutronix.de>
+References: <20231129125826.08d7d178@canb.auug.org.au> <20231129101831.908952-2-u.kleine-koenig@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,34 +76,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds error handling to the mv_usb2_phy_28nm_init
-function in drivers/phy/marvell/phy-pxa-28nm-usb2.c. The
-function previously did not handle the potential failure of
-the clk_prepare_enable call, which could result in unexpected
-behavior if clock preparation failed.
 
-Signed-off-by: Haoran Liu <liuhaoran14@163.com>
----
- drivers/phy/marvell/phy-pxa-28nm-usb2.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+On Wed, 29 Nov 2023 11:18:32 +0100, Uwe Kleine-König wrote:
+> Commit c572f3b9c8b7 ("pwm: Replace PWM chip unique base by unique ID")
+> changed the members of struct pwm_chip, but failed to update the
+> documentation accordingly. Catch up and document the new member and drop
+> description for the two removed ones.
+> 
+> 
 
-diff --git a/drivers/phy/marvell/phy-pxa-28nm-usb2.c b/drivers/phy/marvell/phy-pxa-28nm-usb2.c
-index 64afb82cf70e..93fea4f246a2 100644
---- a/drivers/phy/marvell/phy-pxa-28nm-usb2.c
-+++ b/drivers/phy/marvell/phy-pxa-28nm-usb2.c
-@@ -154,7 +154,11 @@ static int mv_usb2_phy_28nm_init(struct phy *phy)
- 	u32 reg;
- 	int ret;
- 
--	clk_prepare_enable(mv_phy->clk);
-+	ret = clk_prepare_enable(mv_phy->clk);
-+	if (ret) {
-+		dev_err(&phy->dev, "Failed to enable clock: %d\n", ret);
-+		return ret;
-+	}
- 
- 	/* PHY_28NM_PLL_REG0 */
- 	reg = readl(base + PHY_28NM_PLL_REG0) &
+Applied, thanks!
+
+[1/1] pwm: Update kernel doc for struct pwm_chip
+      commit: 53a2eaaf19c4e652ac53b5b2441582a555768516
+
+Best regards,
 -- 
-2.17.1
-
+Thierry Reding <thierry.reding@gmail.com>
