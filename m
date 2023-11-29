@@ -2,144 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B714D7FD39B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:10:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 332367FD3A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:11:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbjK2KJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 05:09:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42362 "EHLO
+        id S229711AbjK2KLB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Nov 2023 05:11:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjK2KJy (ORCPT
+        with ESMTP id S229488AbjK2KK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 05:09:54 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 676B6E1;
-        Wed, 29 Nov 2023 02:10:00 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-da37522a363so6117726276.0;
-        Wed, 29 Nov 2023 02:10:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701252599; x=1701857399; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=11gO8SgbQj4fdCNrsT7TiPo7u2IjmF6eevG42IvsRSM=;
-        b=gD9xgGfa1nhSE1fTGyYS+2Ke3MudRLuWlgMtZUUvUXahd8Ohaf2CoIa4A5GN4exgAH
-         LN76bOLS0zLP1bU05SmQ3VsIvCuAzSqcbBcaG5qMEqZXjUCLfTP2ZOiggSXTRp33LtUD
-         4xMGnpcy71d5GB9cT6/vT6388iYh1TQZ1TIp1TPLVqCpsrJ0mGd7KV07LPcNmuq1XIhY
-         SjhXIunwyfbIbFFCuEKTM1gdSZsIhzd3QKDPTwrpx2nN0AvwscfCgCS9JpVNHf47JXKP
-         eKc5bOUKaYlOaUqWmhPXjXGbMlOdcivh54GqrR7qWc8z+XOGnkqjONhzxY2atIAvWvQ0
-         AvWA==
+        Wed, 29 Nov 2023 05:10:59 -0500
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1FE4E1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:11:05 -0800 (PST)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-db498e1132bso3737755276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:11:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701252599; x=1701857399;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=11gO8SgbQj4fdCNrsT7TiPo7u2IjmF6eevG42IvsRSM=;
-        b=Aio4I9BqkmLipIdINaGCE3iZHVgMmo+ql5qiwlMvxB+NxhGCk0nn1Yt1LDVcgc29ol
-         5zj0Xt6s+QWUUDrB1EAOC/bAtaEcELVkXj/kotG2DJJCtFAt1gPwdN42abWvfXa4r8nA
-         l8826Vf4z3ioyb7sWZQ0PgKUzB/eyO9r5HYo03ZMKO/PKbnK1WTxcXMXaOb9dPFcon8I
-         /D5hC9mIEAVKSWaqemnrWYQLMIBNnNDyDI16pmLY5PaStoP4bWq/dzZF3RdOdDCt5oYt
-         XyLQurXbeMnI6jDrfBufuGFpgwIgrhU+2WB1IUx1z2AY8XG0EfsHpWeWf+54p6ZI2ZFQ
-         Fm2g==
-X-Gm-Message-State: AOJu0Yy8YE9G3qj1jCnfp9NG5W54M5vzY0ehQMH++vOpz0toR1QaVBDD
-        EAW3j/XioxdafBi2mNlNkec=
-X-Google-Smtp-Source: AGHT+IHcuevKlD173p6VD/EwXmSKKTLMuUCitNteEbY7uJePXtNhhdHSs2NQVaKH3lVhmxpJmK8Udg==
-X-Received: by 2002:a05:6902:3cd:b0:dae:e8f2:b7dd with SMTP id g13-20020a05690203cd00b00daee8f2b7ddmr19125498ybs.13.1701252599530;
-        Wed, 29 Nov 2023 02:09:59 -0800 (PST)
-Received: from errol.ini.cmu.edu ([72.95.245.133])
-        by smtp.gmail.com with ESMTPSA id ec12-20020ad44e6c000000b0067a2b09278esm4110035qvb.7.2023.11.29.02.09.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 02:09:59 -0800 (PST)
-Date:   Wed, 29 Nov 2023 05:09:57 -0500
-From:   "Gabriel L. Somlo" <gsomlo@gmail.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Lee Jones <lee@kernel.org>,
-        Dmitry Osipenko <dmitry.osipenko@collabora.com>,
-        Andrew Davis <afd@ti.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: (subset) [PATCH RFC 0/5] Deprecate register_restart_handler()
-Message-ID: <ZWcN9RNlk4+SB7CO@errol.ini.cmu.edu>
+        d=1e100.net; s=20230601; t=1701252665; x=1701857465;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Pi3TJMcpykPrfIGwW4UJ8iDsoGVZIjDe1r3vVrq4QfQ=;
+        b=SGjWUg3WHXt6d1HuJd52o2aMjsEPtgl+7akDn+1LHJtjbKx82s+gjRU7km8iWZKJ5B
+         ABFvGq0UBlMggPxFPvWMShVxw8CnDNngtEY/wU6cfwB0vczdaPDpOGXOGeK+tavj6URX
+         Y72ZdpkrWGAX+teCA0vRvmI+aThXs0dDIgcXVCfE66iQXEkLDdN3WFsd6GnfP0cItLA7
+         v//mMcv5Qc1BBzWcHqI8eq8+AG9i1If9h7gauynJBh+uU8yj1fHqBPiFAaodBq9oavU6
+         MckdiOZyBV3ZePP5kfMfCzd97JnuRgSutHlHIC32g3UoFEtbzNaXpZga+RwP+dYlQ6/T
+         iKRw==
+X-Gm-Message-State: AOJu0YzAulns8MyxvpuTk6gNL/aBqi+vqh8nkNUvJhh5P0KfXEzVBx9v
+        9iOiNUsAjIq/VhDOUpdyI+XRKg4F3omR1Q==
+X-Google-Smtp-Source: AGHT+IGf2/CHqWferqNR6u6kyus1U97xKkHQhBJCjUhE7IKjnQ+B2ocQDPqfbR/tUXLKSpMsTuRF0w==
+X-Received: by 2002:a25:7453:0:b0:d9a:5666:7ab5 with SMTP id p80-20020a257453000000b00d9a56667ab5mr20144516ybc.10.1701252664844;
+        Wed, 29 Nov 2023 02:11:04 -0800 (PST)
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
+        by smtp.gmail.com with ESMTPSA id e141-20020a256993000000b00da02a2ef6afsm4134599ybc.30.2023.11.29.02.11.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Nov 2023 02:11:03 -0800 (PST)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5c08c47c055so64622617b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:11:03 -0800 (PST)
+X-Received: by 2002:a0d:c985:0:b0:5cd:6d0e:5369 with SMTP id
+ l127-20020a0dc985000000b005cd6d0e5369mr20729304ywd.34.1701252662656; Wed, 29
+ Nov 2023 02:11:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <170110370952.2695179.559211126183016709.b4-ty@kernel.org>
-X-Clacks-Overhead: GNU Terry Pratchett
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <b9360c2044a1001b9a5bcb5914611711d040d4fe.1701196029.git.geert+renesas@glider.be>
+ <87o7fdbszs.fsf@minerva.mail-host-address-is-not-set> <CAMuHMdUhuO++ZSxh+_TX_6DHHxjPYY20jTppbNZ4FnuBvxxinQ@mail.gmail.com>
+ <7hee65pmdl5pajm2kgqld22xfi4iox4s2psswu2mdlfk6u6f7x@w4ecogdx6uj6>
+ <CAMuHMdVTZ8LT1yU3e1bbJODecy96TaMX1hq_swqmT6L+mbH3aQ@mail.gmail.com> <sw5e3mdtbmywbeo6sok4ul5qe72bb5ltsg5ago2vliqxlahvpl@rcivlupw77a5>
+In-Reply-To: <sw5e3mdtbmywbeo6sok4ul5qe72bb5ltsg5ago2vliqxlahvpl@rcivlupw77a5>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 29 Nov 2023 11:10:51 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVVb2VfEAgh+59juyTH28EvRMPHEsxT-MUiEQcmJHTD+Q@mail.gmail.com>
+Message-ID: <CAMuHMdVVb2VfEAgh+59juyTH28EvRMPHEsxT-MUiEQcmJHTD+Q@mail.gmail.com>
+Subject: Re: [PATCH] drm/imagination: DRM_POWERVR should depend on ARCH_K3
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        Frank Binns <frank.binns@imgtec.com>,
+        Donald Robson <donald.robson@imgtec.com>,
+        Matt Coster <matt.coster@imgtec.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sarah Walker <sarah.walker@imgtec.com>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+Hi Maxime,
 
-On Mon, Nov 27, 2023 at 04:48:29PM +0000, Mark Brown wrote:
-> On Fri, 17 Nov 2023 10:10:01 -0600, Andrew Davis wrote:
-> > Explanation is in patch #1.
-> > 
-> > The rest of this series is a set of representative examples of converting
-> > away from the old API. They should be valid and can be taken by their
-> > respective maintainers even if patch #1 doesn't find acceptance.
-> > 
-> > Thanks,
-> > Andrew
-> > 
-> > [...]
-> 
-> Applied to
-> 
->    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-> 
-> Thanks!
-> 
-> [4/5] spi: sprd: adi: Use devm_register_restart_handler()
->       commit: 8e6a43961f24cf841d3c0d199521d0b284d948b9
+On Wed, Nov 29, 2023 at 10:23 AM Maxime Ripard <mripard@kernel.org> wrote:
+> On Wed, Nov 29, 2023 at 09:58:12AM +0100, Geert Uytterhoeven wrote:
+> > On Wed, Nov 29, 2023 at 9:35 AM Maxime Ripard <mripard@kernel.org> wrote:
+> > > On Tue, Nov 28, 2023 at 08:16:18PM +0100, Geert Uytterhoeven wrote:
+> > > > On Tue, Nov 28, 2023 at 8:03 PM Javier Martinez Canillas
+> > > > <javierm@redhat.com> wrote:
+> > > > > Geert Uytterhoeven <geert+renesas@glider.be> writes:
+> > > > > > The Imagination Technologies PowerVR Series 6 GPU is currently only
+> > > > > > supported on Texas Instruments K3 AM62x SoCs.  Hence add a dependency on
+> > > > > > ARCH_K3, to prevent asking the user about this driver when configuring a
+> > > > > > kernel without Texas Instruments K3 Multicore SoC support.
+> > > > > >
+> > > > > > Fixes: 4babef0708656c54 ("drm/imagination: Add skeleton PowerVR driver")
+> > > > > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> >
+> > > > > In any case, I agree with you that restricting to only K3 makes sense.
+> > > >
+> > > > I am looking forward to adding || SOC_AM33XX || ARCH_RENESAS || ...,
+> > > > eventually ;-)
+> > >
+> > > I disagree. This is to handle a generic IP, just like panfrost, lima, or
+> > > etnaviv, and we certaintly don't want to maintain the Kconfig list of
+> > > every possible architecture and SoC family it might or might not be
+> > > found.
+> >
+> > While PowerVR is a generic IP, I believe it needs a non-generic
+> > firmware, which is currently only available for AM62x SoCs.
+>
+> I'm not sure it's actually true, but let's consider it is. Then what? If
+> the firmware isn't there and/or the DT bits too, then nothing will
+> happen. We would have wasted a couple of 100kB on a system that is
+> taking somewhere in the 100MB-10GB range, and that's pretty much it.
 
-Any chance you can also pick up
+I am talking about posing the question to the user to enable the driver
+or not.  Which applies to everyone who configures a kernel.
 
-[2/5] drivers/soc/litex: Use devm_register_restart_handler()
+> If you have we take that patch in though, we have:
+>
+>   - To keep merging patches as firmwares become available.
 
-from this series?
+You need to keep merging patches to update DT bindings, DTS,
+SoC-specific drivers, the DRM driver itself, ... too.
 
-I'm maintaining the LiteX (FPGA SoC) related drivers, but we don't as of
-yet have a dedicated "path to upstream" of our own -- we've been mostly
-going through specific subsystem trees (e.g. mmc, block, networking, etc.),
-for mostly device drivers, up until now...
+>   - If we update linux-firmware only, then the driver is still not
+>     loading even though it could.
+>
+>   - If we have gotten our firmware through some other mean, then the
+>     driver is still not loading even though it could.
 
-If not, no worries, I need to dedicate some time to figuring this out
-eventually anyway :)
+You will still need to update parts of the kernel, too.
+As long as none of that has happened, asking about the PowerVR driver
+on non-AM62x hardware is futile...
 
-Thanks much,
---Gabriel
+> It makes life harder for everyone: maintainers, users, devs, based on
+> the state of some external project that might or might not be updated in
+> sync.
+>
+> > Once it becomes truly generic, I'm happy to drop all platform
+> > dependencies.  Until then, there is no point in asking everyone who
+> > configures an arm64 kernel about this driver, unless they also enabled
+> > K3 support.
+>
+> Whether it's truly generic, whatever that means, is irrelevant here.
 
-> All being well this means that it will be integrated into the linux-next
-> tree (usually sometime in the next 24 hours) and sent to Linus during
-> the next merge window (or sooner if it is a bug fix), however if
-> problems are discovered then the patch may be dropped or reverted.
-> 
-> You may get further e-mails resulting from automated or manual testing
-> and review of the tree, please engage with people reporting problems and
-> send followup patches addressing any issues that are reported if needed.
-> 
-> If any updates are required or you are submitting further changes they
-> should be sent as incremental updates against current git, existing
-> patches will not be replaced.
-> 
-> Please add any relevant lists and maintainers to the CCs when replying
-> to this mail.
-> 
-> Thanks,
-> Mark
-> 
+It is.
+
+BTW, playing the devil's advocate: why is there a dependency on ARM64?
+PowerVR GPUs are also present on (at least) arm32 and Intel?
+Oh, dropping that would expose this question to Linus, causing his
+wrath to come down on you... ;-)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
