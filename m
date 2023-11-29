@@ -2,174 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7FFD7FD08A
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:19:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 366B07FD089
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231653AbjK2ITZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 03:19:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42396 "EHLO
+        id S231540AbjK2ITR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 03:19:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231545AbjK2ITS (ORCPT
+        with ESMTP id S229487AbjK2ITM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 03:19:18 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 668FC1735;
-        Wed, 29 Nov 2023 00:19:24 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1cfc2bcffc7so26117455ad.1;
-        Wed, 29 Nov 2023 00:19:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701245964; x=1701850764; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pitQD+gW5dzBAjSz8pHlIhLJL8YzOCm583XKc/zjIKE=;
-        b=iLyQ+KVRM9VTloiu9AfhrVbVZPaV/ZByzozTri2/QEh66YuXYeIomCGC/b+/38SrZg
-         DxTOwu7XoCpX7b6S7tbgsbt+gcbEFTIA4f03MIm/jW9ENCS2zW0XILhVIoZPeOGt3yhb
-         rpGA/XNrg+Sk9iGOe1pvL9i3Cp9CndfNGfw1LTrH7Uli7i2NyMZzC6sFEAAowt5E1Ib8
-         CJtcFxPQaAcToN81mNWUkXMNzoBhXz/RG8hq9wlGpTdcVgxoQOcHLOQxMunYKpNmU5+6
-         0FU/Gz10h0FbTRE609AS2NZGefmKT6k8SP9BHJ1c9GfwpF2NOgG0OEp4DpvK0YoMHXK0
-         aIyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701245964; x=1701850764;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pitQD+gW5dzBAjSz8pHlIhLJL8YzOCm583XKc/zjIKE=;
-        b=JhyWNZxLUd3LLGEuNUmDMvVcBsGItxZcxumv3kpXEGthNyW0NJhJ28MmJPKOlMDWSa
-         2RQLN3SViRRGRdRC1Bh8oljE8RlESvuOdBPkAD4fd5310YzfDl1/1AcqrJEZswjOUOWw
-         y3VciuRMEuzBxae8zI3Au1RbFx3/OBT9oKJ4PTjzgp5mVJ2TcJQIkx33OJzmEuPe4pqK
-         Q7P7qweCWpw7ALgRJlyThkp+8Ikg645t3sIFUCaItlPsNDp5kivsMebFxi/Is3654ypo
-         PjymTp94tpDrcqKEvGfqUOCrVWioV/Mn9ziMtOfzhDudUNvOY5kP541dQTYD3mDQB5h3
-         nbXw==
-X-Gm-Message-State: AOJu0YxOxC3xrE6BAs1G2hwv5kZgJvccRY0ansib0Qma3vYQSuNLrrhO
-        3qlGrZA3N0eTSxJz5UCdWTo=
-X-Google-Smtp-Source: AGHT+IHnwCpZL6ALoY5W5b8E7P3Bbp+sX02k5cXjC692O8hzZh0gkO3k4cS7ftIWftUNaMVcH9dodQ==
-X-Received: by 2002:a17:902:dac7:b0:1cf:c397:8f09 with SMTP id q7-20020a170902dac700b001cfc3978f09mr13907496plx.55.1701245963796;
-        Wed, 29 Nov 2023 00:19:23 -0800 (PST)
-Received: from localhost.localdomain ([154.85.51.139])
-        by smtp.gmail.com with ESMTPSA id x10-20020a170902ea8a00b001cfcd2fb7b0sm5470932plb.285.2023.11.29.00.19.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 00:19:23 -0800 (PST)
-From:   Yusong Gao <a869920004@gmail.com>
-To:     jarkko@kernel.org, davem@davemloft.net, dhowells@redhat.com,
-        dwmw2@infradead.org, juergh@proton.me, zohar@linux.ibm.com,
-        herbert@gondor.apana.org.au, lists@sapience.com,
-        dimitri.ledkov@canonical.com, a869920004@gmail.com
-Cc:     keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Subject: Re: [PATCH v5] sign-file: Fix incorrect return values check
-Date:   Wed, 29 Nov 2023 08:19:06 +0000
-Message-Id: <20231129081906.504149-1-a869920004@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231129080033.12c4efe3@smeagol>
-References: <20231129080033.12c4efe3@smeagol>
+        Wed, 29 Nov 2023 03:19:12 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333D4172E;
+        Wed, 29 Nov 2023 00:19:18 -0800 (PST)
+Date:   Wed, 29 Nov 2023 08:19:14 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1701245955;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=djJIouf8+bc7HXwkPpIknHpsufJGCMre9By1TQ0TV1g=;
+        b=d/2cgVkErIPrs8IkbHo/Qjqebq+mDIIatPvNZEMu63PaLoJ9JzDVROnERW8tfZAC8kgGiw
+        mcPIIM9VZ9yIMco2kroGISUptcNK8Pl3ZTM9dTTNzTeJcpjG3weQ5vm756/eJrVDPdPLx3
+        I6cX5FanDzpZ8qN/wPF6PFuKme5k36Y/mb1A47E7D4e0Wqt3fIpujozxei9vN0LwecRFNJ
+        +ndR8mMYLjmyp4v0KQkZGfXt/mRZEhXi3qVRd7vREyLlIqRFgBx+4v+s2DBRuN6aUrpQ5y
+        P/KPRzGvltUOkOJfM5NAjwBFSMnKof3xZG10IJNYaVktugUZCoYW7vXvzs3vNw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1701245955;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=djJIouf8+bc7HXwkPpIknHpsufJGCMre9By1TQ0TV1g=;
+        b=acsEVxjPvjymkYNTy4NejBBNFYI33bDmkDenK/emb5cshgk577bBFedrp7pgzTd1KAD8Ro
+        rmVnpQO2JGdV5lCg==
+From:   "tip-bot2 for Kan Liang" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf/x86/intel/uncore: Support Sierra Forest and Grand Ridge
+Cc:     Kan Liang <kan.liang@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ammy Yi <ammy.yi@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20231117163939.2468007-5-kan.liang@linux.intel.com>
+References: <20231117163939.2468007-5-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <170124595458.398.7592569170434852439.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the perf/core branch of tip:
 
+Commit-ID:     cb4a6ccf35839895da63fcf6134d6fbd13224805
+Gitweb:        https://git.kernel.org/tip/cb4a6ccf35839895da63fcf6134d6fbd13224805
+Author:        Kan Liang <kan.liang@linux.intel.com>
+AuthorDate:    Fri, 17 Nov 2023 08:39:39 -08:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Fri, 24 Nov 2023 20:25:03 +01:00
 
-On Wed, Nov 29, 2023 at 3:00 PM Juerg Haefliger <juergh@proton.me>
-wrote:
->
-> On Mon, 27 Nov 2023 03:34:56 +0000
-> "Yusong Gao" <a869920004@gmail.com> wrote:
->
-> > There are some wrong return values check in sign-file when call
-> > OpenSSL
-> > API. The ERR() check cond is wrong because of the program only check
-> > the
-> > return value is < 0 which ignored the return val is 0. For example:
-> > 1. CMS_final() return 1 for success or 0 for failure.
-> > 2. i2d_CMS_bio_stream() returns 1 for success or 0 for failure.
-> > 3. i2d_TYPEbio() return 1 for success and 0 for failure.
-> > 4. BIO_free() return 1 for success and 0 for failure.
-> >
-> > Link: https://www.openssl.org/docs/manmaster/man3/
-> > Fixes: e5a2e3c84782 ("scripts/sign-file.c: Add support for signing
-> > with a raw signature")
-> > Signed-off-by: Yusong Gao <a869920004@gmail.com>
-> > ---
-> > V1, V2: Clarify the description of git message.
-> > V3: Removed redundant empty line.
-> > V4: Change to more strict check mode.
-> > ---
-> >  scripts/sign-file.c | 12 ++++++------
-> >  1 file changed, 6 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/scripts/sign-file.c b/scripts/sign-file.c
-> > index 598ef5465f82..3edb156ae52c 100644
-> > --- a/scripts/sign-file.c
-> > +++ b/scripts/sign-file.c
-> > @@ -322,7 +322,7 @@ int main(int argc, char **argv)
-> >                                    CMS_NOSMIMECAP | use_keyid |
-> >                                    use_signed_attrs),
-> >                   "CMS_add1_signer");
-> > -             ERR(CMS_final(cms, bm, NULL, CMS_NOCERTS | CMS_BINARY)
-> > < 0,
-> > +             ERR(CMS_final(cms, bm, NULL, CMS_NOCERTS | CMS_BINARY)
-> > != 1,
-> >                   "CMS_final");
-> >
-> >  #else
-> > @@ -341,10 +341,10 @@ int main(int argc, char **argv)
-> >                       b = BIO_new_file(sig_file_name, "wb");
-> >                       ERR(!b, "%s", sig_file_name);
-> >  #ifndef USE_PKCS7
-> > -                     ERR(i2d_CMS_bio_stream(b, cms, NULL, 0) < 0,
-> > +                     ERR(i2d_CMS_bio_stream(b, cms, NULL, 0) != 1,
-> >                           "%s", sig_file_name);
-> >  #else
-> > -                     ERR(i2d_PKCS7_bio(b, pkcs7) < 0,
-> > +                     ERR(i2d_PKCS7_bio(b, pkcs7) != 1,
-> >                           "%s", sig_file_name);
-> >  #endif
-> >                       BIO_free(b);
-> > @@ -374,9 +374,9 @@ int main(int argc, char **argv)
-> >
-> >       if (!raw_sig) {
-> >  #ifndef USE_PKCS7
-> > -             ERR(i2d_CMS_bio_stream(bd, cms, NULL, 0) < 0, "%s",
-> > dest_name);
-> > +             ERR(i2d_CMS_bio_stream(bd, cms, NULL, 0) != 1, "%s",
-> > dest_name);
-> >  #else
-> > -             ERR(i2d_PKCS7_bio(bd, pkcs7) < 0, "%s", dest_name);
-> > +             ERR(i2d_PKCS7_bio(bd, pkcs7) != 1, "%s", dest_name);
-> >  #endif
-> >       } else {
-> >               BIO *b;
-> > @@ -396,7 +396,7 @@ int main(int argc, char **argv)
-> >       ERR(BIO_write(bd, &sig_info, sizeof(sig_info)) < 0, "%s",
-> >       dest_name);
-> >       ERR(BIO_write(bd, magic_number, sizeof(magic_number) - 1) < 0,
-> >       "%s", dest_name);
-> >
-> > -     ERR(BIO_free(bd) < 0, "%s", dest_name);
-> > +     ERR(BIO_free(bd) != 1, "%s", dest_name);
-> >
-> >       /* Finally, if we're signing in place, replace the original.
-> >       */
-> >       if (replace_orig)
-> > --
-> > 2.34.1
-> >
->
-> Nit: v5 in the email subject should be v4.
+perf/x86/intel/uncore: Support Sierra Forest and Grand Ridge
 
-Yeah, thanks for point out, I get it. 
+The same as Granite Rapids, the Sierra Forest and Grand Ridge also
+supports the discovery table feature and the same type of the uncore
+units. The difference of the available units and counters can be
+retrieved from the discovery table automatically.
+Just add the CPU model ID.
 
->
-> Reviewed-by: Juerg Haefliger <juerg.haefliger@canonical.com>
->
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Tested-by: Ammy Yi <ammy.yi@intel.com>
+Link: https://lore.kernel.org/r/20231117163939.2468007-5-kan.liang@linux.intel.com
+---
+ arch/x86/events/intel/uncore.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-
-BR, Yusong Gao
+diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
+index 7fb1c54..7927c0b 100644
+--- a/arch/x86/events/intel/uncore.c
++++ b/arch/x86/events/intel/uncore.c
+@@ -1877,6 +1877,8 @@ static const struct x86_cpu_id intel_uncore_match[] __initconst = {
+ 	X86_MATCH_INTEL_FAM6_MODEL(GRANITERAPIDS_D,	&gnr_uncore_init),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT_D,	&snr_uncore_init),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GRACEMONT,	&adl_uncore_init),
++	X86_MATCH_INTEL_FAM6_MODEL(ATOM_CRESTMONT_X,	&gnr_uncore_init),
++	X86_MATCH_INTEL_FAM6_MODEL(ATOM_CRESTMONT,	&gnr_uncore_init),
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(x86cpu, intel_uncore_match);
