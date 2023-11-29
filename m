@@ -2,307 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F707FD79D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:13:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE3A7FD847
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:36:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233837AbjK2NMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 08:12:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53576 "EHLO
+        id S233879AbjK2NNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 08:13:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233898AbjK2NMv (ORCPT
+        with ESMTP id S232906AbjK2NNP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 08:12:51 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 935D610E6
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:12:56 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5d1ed4b268dso23166947b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:12:56 -0800 (PST)
+        Wed, 29 Nov 2023 08:13:15 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86F38B2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:13:21 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1cfae5ca719so38989515ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:13:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701263576; x=1701868376; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2TJvklCbtLuSIRISVkztiSuoID32+GR+rmccCeVWR2o=;
-        b=yyMkw3fs3nCpiUgL74Y5jRHnMmomVutRby/ghwGhq4Gkw58skLQ2rwODjfxuzvjtxh
-         /2+HUkKnPrkRmID8QX1DwCt8V/cY9JbQ0Ph1RwgZovVr7lP6nI0POj1QE+I5jT/g1G1a
-         NBHcsUxNDf4K3XTI2csPy9HAAM/AslnjR/oulmSMCgXSuGouEhH9kWrylmhTrAlZ6ruX
-         EH9XVi7fXiJdWeAnipKR2gab60D+JdT94gMB8odYLEh+rRU/qhMR/g8r888tRgyzS7VS
-         mDu46XfM4iE2cRImj/kH09pa5S3hBZU+fw0q+R9zqI3hPM9bXZdbH1UDJl7nIWOw1GDC
-         tkCA==
+        d=gmail.com; s=20230601; t=1701263601; x=1701868401; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y1YT23JDUOStR2+efKckGHd7K0OmUB2BTaDMNtRq3C4=;
+        b=noIFt1XuihCqMvzlia4Du1WijnMNoagvKL+9spJ+7paz8Mp1QhBZozw24iTOnNR2R0
+         lYjeis4DDeeHLf5bNe5XNDaOaCBrH6NwuEMFitrd/+M/UZYLFCBK5jbmVkfJUe9hZmk2
+         4Nx7f5St4MUxB3gQP5Vp7MXt9c0XYOXyZbm8Xj2vltdQVOol3yGrtpCIk48vnzaz9f44
+         /YBMRdqInxxGqdfstAFI96DrWDmEM221NAF8UzfL91Mb/sf2VqVaKUT/u3nBI0wzxZj6
+         WEeAX9Pqlzm576Vs3HjF3RrTnGeo+ccz4Xmi6jDQ+fr4HlNxJ695oGWb5SN+TufAq27Q
+         shvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701263576; x=1701868376;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2TJvklCbtLuSIRISVkztiSuoID32+GR+rmccCeVWR2o=;
-        b=qbjt/AamO96flBYFN4lk9cPJJiHdJWkgEn4VgEo1BXq7ldxodR1s/R8nH1arhmw6Z8
-         HXut4HUsLlpPUPCEABXv/d5tRgObPhR6iQdL/qqYdOdWoblcKdSl+ie2+sblDF0jpjF5
-         OF0j5NSNdVEVoAL6zZHEKXxme6qf47IocgohwAPWNL/xj7Ym3qBKNwVvErILz7F/ks3M
-         THE1ykdLAujflpu2xJG0dHpcgf1Pdc34MnJIcfxOv3FqWp7Zdot8jWzGasAlE3j3el+i
-         nOlZIJ6nvv+5E5qhLfdYk+wW+9A0UAylA84sAQXlZlAOHalsZNzJ6tq86ytKTdDoMPWl
-         Ebkw==
-X-Gm-Message-State: AOJu0Yz1U+ZvrP6RwGm73E8civSC/6UA6pVIEeipbx+zAJr0XUT2WRLx
-        uxcog3aI0bSGG12D4/iob8cxU19DuXgCYgI=
-X-Google-Smtp-Source: AGHT+IHUFKaHKKii09g7HUyZ+EjCiaihzyYW1lpvxVTE4olOwMBv+jZ8c8SCt3BB6Rr4low3G2iWwC8XUzaw9rs=
-X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a05:690c:2e8a:b0:5ce:dff:f7a1 with SMTP
- id eu10-20020a05690c2e8a00b005ce0dfff7a1mr500330ywb.9.1701263575877; Wed, 29
- Nov 2023 05:12:55 -0800 (PST)
-Date:   Wed, 29 Nov 2023 13:12:51 +0000
-In-Reply-To: <20231129-alice-file-v1-0-f81afe8c7261@google.com>
-Mime-Version: 1.0
-References: <20231129-alice-file-v1-0-f81afe8c7261@google.com>
-X-Developer-Key: i=aliceryhl@google.com; a=openpgp; fpr=49F6C1FAA74960F43A5B86A1EE7A392FDE96209F
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7830; i=aliceryhl@google.com;
- h=from:subject:message-id; bh=Gna2rPaAZxwA3tXNNtoQj3C864OEwyg6zxPLG5MwViQ=;
- b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBlZzMyNVW1q4O9x1ivonWXMf7fKKfIjphoYoxIq
- mVR7gYG5H6JAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZWczMgAKCRAEWL7uWMY5
- RsYmEACB9dMvCwDxJCJalR1hGrue8xlQCBRcKrXTmHgBJhJdUEPuY8WwazY0nvqF41fdD1T0Feh
- fBnee05Jy/wyLTSgeHvIKz4HU6SEaP4f2yOQQVd4twNWC+VWA9GIHMZ52S1MbruEK8Q7HZeuCdD
- hbJX1NSY0BVN9gudouy7gUMq6m3zTyaEaZRoB1/AbeQlfljl0rUy9kpTjIsXnrvuTw4qVdQBR2H
- ExFbiPpchpnXUe+fJrEDMvUnDtsGeStmEZ3EcxLJlzEMWNsqyanO0J1z0ZabT4QMlYl9w47mvzD
- IaOLMoJyN3PtTvaQKVmuWwO04xL7zmGXfqBbWAmOOWIuk5fu589MQ9qHjkTMB3ADt7U1BDICsgc
- rVNhfCSct2b7x8NAJ2WAJoqPmtDqBhYGcGCBduAVMmMwvRuP9Fx3ak9Grxjh1kpweqX8zD+qLEo
- fZK3w/eO4d3bWoNMfM320BDi3SFnrseBsjhDLaHjcyVSW8VQrzRUVFSYCvagYx81Xxl6vBHVRhW
- G842WeGHLaauNvonNZDijcHR9UoTiIKGSXcNCzyKo5Fmwv6onzWjh56nAb03cyW7zJv6X9F8l+Z
- dXrsL+OkE25KjYX/wY2Ff/v9EmLtEJ1uwrL5PbRh+zAguNPIAQtlyiV9DMqhPEWpXnYwXCALXpn 8YEVL4srVGhjErQ==
-X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-Message-ID: <20231129-alice-file-v1-7-f81afe8c7261@google.com>
-Subject: [PATCH 7/7] rust: file: add abstraction for `poll_table`
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        "=?utf-8?q?Bj=C3=B6rn_Roy_Baron?=" <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "=?utf-8?q?Arve_Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>
-Cc:     Alice Ryhl <aliceryhl@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20230601; t=1701263601; x=1701868401;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=y1YT23JDUOStR2+efKckGHd7K0OmUB2BTaDMNtRq3C4=;
+        b=n6N1odPTyQhYKpo+tDCCBX73V6SERHBe8BMxVW3JfsVNDZMhPKSHvkj0Qi8orerKL1
+         CMUQR7ddCC1VUPp9H5h1VGCBkVw4i7516VklGNLahXoV+HcnwpgU2igGlD/zx7Nw+hDQ
+         jdzg4qlgA50M1D8Sm4s1udlhTTxuOptCLtcUWeNxVbOIsK8khzwNC1xlZOctl14V//DX
+         KH4WdAHymFPeghhp//BqYn4jiFXzeQUOz5qQHT9vZsDnTE6hBkwmDCiDjxpfp0f9MGfv
+         hOgvtZPBJkPsr7VFCjzLyjVmepmz5j5yTikJoAttZyEaG0he87pK/GPcHw7hzwvtRi7V
+         Vwfg==
+X-Gm-Message-State: AOJu0YxT69b10Ab6QpXaaO5jdksIH+tWFP3wrGpyGi5SYik5HyZRk5ay
+        AFkdAiizxFQfBzlOc7kP1oI=
+X-Google-Smtp-Source: AGHT+IFXMxElkHGt+LImGYb5PKuu4f0cgQnpCZoBKnnVa9EEfjK0Xu8vKDp4M5bqcmmcons7LMjGXw==
+X-Received: by 2002:a17:902:b194:b0:1cf:f359:ce37 with SMTP id s20-20020a170902b19400b001cff359ce37mr5474542plr.2.1701263600844;
+        Wed, 29 Nov 2023 05:13:20 -0800 (PST)
+Received: from cuiyangpei ([43.224.245.227])
+        by smtp.gmail.com with ESMTPSA id 13-20020a170902e9cd00b001cfca7b8ec4sm6314215plk.101.2023.11.29.05.13.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 29 Nov 2023 05:13:20 -0800 (PST)
+Date:   Wed, 29 Nov 2023 21:13:15 +0800
+From:   cuiyangpei <cuiyangpei@gmail.com>
+To:     SeongJae Park <sj@kernel.org>, akpm@linux-foundation.org,
+        damon@lists.linux.dev, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     xiongping1@xiaomi.com
+Subject: Re: [PATCH 1/2] mm/damon/sysfs: Implement recording feature
+Message-ID: <20231129131315.GB12957@cuiyangpei>
+References: <20231128073440.11894-1-cuiyangpei@xiaomi.com>
+ <20231128185739.47916-1-sj@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231128185739.47916-1-sj@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The existing `CondVar` abstraction is a wrapper around `wait_list`, but
-it does not support all use-cases of the C `wait_list` type. To be
-specific, a `CondVar` cannot be registered with a `struct poll_table`.
-This limitation has the advantage that you do not need to call
-`synchronize_rcu` when destroying a `CondVar`.
+Hi SeongJae,
 
-However, we need the ability to register a `poll_table` with a
-`wait_list` in Rust Binder. To enable this, introduce a type called
-`PollCondVar`, which is like `CondVar` except that you can register a
-`poll_table`. We also introduce `PollTable`, which is a safe wrapper
-around `poll_table` that is intended to be used with `PollCondVar`.
+We are using damon on the Android operating system. It starts monitoring
+when app comes to the foreground, stops monitoring and save the
+monitoring results when app goes to the background.
 
-The destructor of `PollCondVar` unconditionally calls `synchronize_rcu`
-to ensure that the removal of epoll waiters has fully completed before
-the `wait_list` is destroyed.
+The two methods that you mentioned,
 
-Signed-off-by: Alice Ryhl <aliceryhl@google.com>
----
-That said, `synchronize_rcu` is rather expensive and is not needed in
-all cases: If we have never registered a `poll_table` with the
-`wait_list`, then we don't need to call `synchronize_rcu`. (And this is
-a common case in Binder - not all processes use Binder with epoll.) The
-current implementation does not account for this, but we could change it
-to store a boolean next to the `wait_list` to keep track of whether a
-`poll_table` has ever been registered. It is up to discussion whether
-this is desireable.
+1.tracepoint events
+This method requires opening the tracepoint event and using the
+'perf-record' tool to generate the perf.data file. Then parsing the
+perf.data file. However, the user's phone is not enabled tracepoint
+events. Additionally, the generated file is quite complex, and we only
+need memory addresses and access frequency informations.
 
-It is not clear to me whether we can implement the above without storing
-an extra boolean. We could check whether the `wait_list` is empty, but
-it is not clear that this is sufficient. Perhaps someone knows the
-answer? If a `poll_table` has previously been registered with a
-`wait_list`, is it the case that we can kfree the `wait_list` after
-observing that the `wait_list` is empty without waiting for an rcu grace
-period?
+2. damos
+There is no direct Python runtime environment on android phones.
 
- rust/bindings/bindings_helper.h |  2 +
- rust/bindings/lib.rs            |  1 +
- rust/kernel/file.rs             |  3 ++
- rust/kernel/file/poll_table.rs  | 97 +++++++++++++++++++++++++++++++++++++++++
- rust/kernel/sync/condvar.rs     |  2 +-
- 5 files changed, 104 insertions(+), 1 deletion(-)
+Both of these methods provide results that are not very intuitive and
+require complex parsing. We save the results in the format of starting
+address, region size, and access frequency. When the available memory
+reaches a threshold, the user space reclaim memory with low access
+frequency by calling 'process_madvise' function.
 
-diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_helper.h
-index c8daee341df6..14f84aeef62d 100644
---- a/rust/bindings/bindings_helper.h
-+++ b/rust/bindings/bindings_helper.h
-@@ -13,6 +13,7 @@
- #include <linux/file.h>
- #include <linux/fs.h>
- #include <linux/pid_namespace.h>
-+#include <linux/poll.h>
- #include <linux/security.h>
- #include <linux/slab.h>
- #include <linux/refcount.h>
-@@ -25,3 +26,4 @@
- const size_t BINDINGS_ARCH_SLAB_MINALIGN = ARCH_SLAB_MINALIGN;
- const gfp_t BINDINGS_GFP_KERNEL = GFP_KERNEL;
- const gfp_t BINDINGS___GFP_ZERO = __GFP_ZERO;
-+const __poll_t BINDINGS_POLLFREE = POLLFREE;
-diff --git a/rust/bindings/lib.rs b/rust/bindings/lib.rs
-index 9bcbea04dac3..eeb291cc60db 100644
---- a/rust/bindings/lib.rs
-+++ b/rust/bindings/lib.rs
-@@ -51,3 +51,4 @@ mod bindings_helper {
- 
- pub const GFP_KERNEL: gfp_t = BINDINGS_GFP_KERNEL;
- pub const __GFP_ZERO: gfp_t = BINDINGS___GFP_ZERO;
-+pub const POLLFREE: __poll_t = BINDINGS_POLLFREE;
-diff --git a/rust/kernel/file.rs b/rust/kernel/file.rs
-index 578ee307093f..35576678c993 100644
---- a/rust/kernel/file.rs
-+++ b/rust/kernel/file.rs
-@@ -14,6 +14,9 @@
- use alloc::boxed::Box;
- use core::{alloc::AllocError, marker::PhantomData, mem, ptr};
- 
-+mod poll_table;
-+pub use self::poll_table::{PollCondVar, PollTable};
-+
- /// Flags associated with a [`File`].
- pub mod flags {
-     /// File is opened in append mode.
-diff --git a/rust/kernel/file/poll_table.rs b/rust/kernel/file/poll_table.rs
-new file mode 100644
-index 000000000000..a26b64df0106
---- /dev/null
-+++ b/rust/kernel/file/poll_table.rs
-@@ -0,0 +1,97 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+//! Utilities for working with `struct poll_table`.
-+
-+use crate::{
-+    bindings,
-+    file::File,
-+    prelude::*,
-+    sync::{CondVar, LockClassKey},
-+    types::Opaque,
-+};
-+use core::ops::Deref;
-+
-+/// Creates a [`PollCondVar`] initialiser with the given name and a newly-created lock class.
-+#[macro_export]
-+macro_rules! new_poll_condvar {
-+    ($($name:literal)?) => {
-+        $crate::file::PollCondVar::new($crate::optional_name!($($name)?), $crate::static_lock_class!())
-+    };
-+}
-+
-+/// Wraps the kernel's `struct poll_table`.
-+#[repr(transparent)]
-+pub struct PollTable(Opaque<bindings::poll_table>);
-+
-+impl PollTable {
-+    /// Creates a reference to a [`PollTable`] from a valid pointer.
-+    ///
-+    /// # Safety
-+    ///
-+    /// The caller must ensure that for the duration of 'a, the pointer will point at a valid poll
-+    /// table, and that it is only accessed via the returned reference.
-+    pub unsafe fn from_ptr<'a>(ptr: *mut bindings::poll_table) -> &'a mut PollTable {
-+        // SAFETY: The safety requirements guarantee the validity of the dereference, while the
-+        // `PollTable` type being transparent makes the cast ok.
-+        unsafe { &mut *ptr.cast() }
-+    }
-+
-+    fn get_qproc(&self) -> bindings::poll_queue_proc {
-+        let ptr = self.0.get();
-+        // SAFETY: The `ptr` is valid because it originates from a reference, and the `_qproc`
-+        // field is not modified concurrently with this call.
-+        unsafe { (*ptr)._qproc }
-+    }
-+
-+    /// Register this [`PollTable`] with the provided [`PollCondVar`], so that it can be notified
-+    /// using the condition variable.
-+    pub fn register_wait(&mut self, file: &File, cv: &PollCondVar) {
-+        if let Some(qproc) = self.get_qproc() {
-+            // SAFETY: The pointers to `self` and `file` are valid because they are references.
-+            //
-+            // Before the wait list is destroyed, the destructor of `PollCondVar` will clear
-+            // everything in the wait list, so the wait list is not used after it is freed.
-+            unsafe { qproc(file.0.get() as _, cv.wait_list.get(), self.0.get()) };
-+        }
-+    }
-+}
-+
-+/// A wrapper around [`CondVar`] that makes it usable with [`PollTable`].
-+///
-+/// [`CondVar`]: crate::sync::CondVar
-+#[pin_data(PinnedDrop)]
-+pub struct PollCondVar {
-+    #[pin]
-+    inner: CondVar,
-+}
-+
-+impl PollCondVar {
-+    /// Constructs a new condvar initialiser.
-+    #[allow(clippy::new_ret_no_self)]
-+    pub fn new(name: &'static CStr, key: &'static LockClassKey) -> impl PinInit<Self> {
-+        pin_init!(Self {
-+            inner <- CondVar::new(name, key),
-+        })
-+    }
-+}
-+
-+// Make the `CondVar` methods callable on `PollCondVar`.
-+impl Deref for PollCondVar {
-+    type Target = CondVar;
-+
-+    fn deref(&self) -> &CondVar {
-+        &self.inner
-+    }
-+}
-+
-+#[pinned_drop]
-+impl PinnedDrop for PollCondVar {
-+    fn drop(self: Pin<&mut Self>) {
-+        // Clear anything registered using `register_wait`.
-+        self.inner.notify(1, bindings::POLLHUP | bindings::POLLFREE);
-+        // Wait for epoll items to be properly removed.
-+        //
-+        // SAFETY: Just an FFI call.
-+        unsafe { bindings::synchronize_rcu() };
-+    }
-+}
-diff --git a/rust/kernel/sync/condvar.rs b/rust/kernel/sync/condvar.rs
-index b679b6f6dbeb..2d276a013ec8 100644
---- a/rust/kernel/sync/condvar.rs
-+++ b/rust/kernel/sync/condvar.rs
-@@ -143,7 +143,7 @@ pub fn wait_uninterruptible<T: ?Sized, B: Backend>(&self, guard: &mut Guard<'_,
-     }
- 
-     /// Calls the kernel function to notify the appropriate number of threads with the given flags.
--    fn notify(&self, count: i32, flags: u32) {
-+    pub(crate) fn notify(&self, count: i32, flags: u32) {
-         // SAFETY: `wait_list` points to valid memory.
-         unsafe {
-             bindings::__wake_up(
+Thanks.
 
--- 
-2.43.0.rc1.413.gea7ed67945-goog
-
+On Tue, Nov 28, 2023 at 06:57:39PM +0000, SeongJae Park wrote:
+> Hi Cuiyanpei,
+> 
+> 
+> Thank you for this nice patchset.
+> 
+> On Tue, 28 Nov 2023 15:34:39 +0800 cuiyangpei <cuiyangpei@gmail.com> wrote:
+> 
+> > The user space users can control DAMON and get the monitoring results
+> > via implements 'recording' feature in 'damon-sysfs'.  The feature
+> > can be used via 'record' and 'state' file in the '<sysfs>/kernel/mm/
+> > damon/admin/kdamonds/N/' directory.
+> > 
+> > The file allows users to record monitored access patterns in a text
+> > file. Firstly, users set the size of the buffer and the path of the
+> > result file by writing to the ``record`` file. Then the recorded
+> > results are first written in an in-memory buffer and flushed the
+> > recorded results to a file in batch by writing 'record' to the
+> > ``state`` file.
+> > 
+> > For example, below commands set the buffer to be 4 KiB and the result
+> > to be saved in ``/damon.txt``. ::
+> > 
+> >     # cd <sysfs>/kernel/mm/damon/admin/kdamonds/N
+> >     # echo "4096 /damon.txt" > record
+> >     # echo "record" > state
+> 
+> This reminds me the record feature of DAMON debugfs interface[1], which still
+> not merged in the mainline.  I deprioritized the patchset to have a better
+> answer to Andrew's questions on the discussion (nice definition of the binary
+> format and quatization of the benefit), and later I realized I don't have real
+> use case that this makes real benefit, so I'm no more aiming to make this
+> merged into the mainline.
+> 
+> More specifically, I'm now thinking the feature is not really needed since
+> trace event based recording works, and we found no problem so far.  The DAMON
+> user-space tool (damo)[2] also dropped support of the in-kernel record feature,
+> but we received no problem report.
+> 
+> Also, I believe DAMOS tried regions like feature could provide some level of
+> information, since it provides snapshot of the monitoring result, which
+> contains a time data, namely 'age'.
+> 
+> Could you please further elaborate your aimed use case of this feature and the
+> advantage compared to other alternatives (tracepoint-based recording or DAMOS
+> tried regions based snapshot collecting) I mentioned above?
+> 
+> [1] https://lore.kernel.org/linux-mm/20211011093057.30790-1-sj@kernel.org/
+> [2] https://github.com/awslabs/damo
+> 
+> 
+> Thanks,
+> SJ
+> 
+> > 
+> > Signed-off-by: cuiyangpei <cuiyangpei@xiaomi.com>
