@@ -2,135 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC2C7FD242
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:19:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 724CB7FD246
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:20:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229453AbjK2JSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 04:18:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49962 "EHLO
+        id S229519AbjK2JUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 04:20:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjK2JSu (ORCPT
+        with ESMTP id S229477AbjK2JUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 04:18:50 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB951BC2;
-        Wed, 29 Nov 2023 01:18:56 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 41A881F898;
-        Wed, 29 Nov 2023 09:18:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1701249535; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gFnuBA9yIUylMwMyyAsH56skdpfLwIzJlMW0SKtsi6g=;
-        b=Ysd/KVdqX42jUhsPekseKBmF8aHmcw1IWa4erQtjmW8eLxS/MvhD4vacDqBv9Hd1uLPKj4
-        3Ff7DbSPNnpMvKZiqauXOW7vLPZppySJ1Su5QAOrUUD0Ii0TzM6i+CGQmleFMJxejCLFom
-        3cpR0HNQwxD3VRNnLO8KhoctTZJV/MM=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1533A13637;
-        Wed, 29 Nov 2023 09:18:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id 53ZsAv8BZ2XkcgAAD6G6ig
-        (envelope-from <mhocko@suse.com>); Wed, 29 Nov 2023 09:18:55 +0000
-Date:   Wed, 29 Nov 2023 10:18:54 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
-        cerasuolodomenico@gmail.com, yosryahmed@google.com,
-        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
-        kernel-team@meta.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org
-Subject: Re: [PATCH v6 2/6] memcontrol: allows mem_cgroup_iter() to check for
- onlineness
-Message-ID: <ZWcB_r8ywytCFR8B@tiehlicka>
-References: <20231127193703.1980089-1-nphamcs@gmail.com>
- <20231127193703.1980089-3-nphamcs@gmail.com>
- <ZWW1IG0Mv3r0m4mp@tiehlicka>
- <CAKEwX=OGtkqWys9VM9EBScoCdAjSdfPjEkvoY7_u9udDZBFFpw@mail.gmail.com>
+        Wed, 29 Nov 2023 04:20:03 -0500
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B7A6F4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 01:20:09 -0800 (PST)
+Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-67a16594723so32411306d6.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 01:20:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701249608; x=1701854408; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=q6jgX+fdtw/9pVukVvzlC00W/od07a5izGjIu/hs4qE=;
+        b=XToJ42kYKxo9SJQeysuJw7T93iaB5H7pjuRFx9qFaPChG//ulhnvlopmgkdORtWyk/
+         diiXCKJ/nzMHh1ljQTTbGx1aSf1T9kJNNANOgNeHhpEpbqQAdTHWFskLMv/OtBKwfWb/
+         IffMjHq4RLsr1rnkBk9p6reCiukLr/wZKWAfcIyZmjHPg2BJZhvEf7Jim58/w291dLaR
+         jSFhOz82tdRL3h5Ne7W1xrM/MwBT5erbBKZwpK9aTHzmW1X1DWS7urZROV2gnWeqnnhq
+         m3aPOG214rsMR3wknEqtO3/qPloB4WtPkJgD7AyqlnkK0HpeamFlE9GWqizF8oBjeUb4
+         Jb8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701249608; x=1701854408;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=q6jgX+fdtw/9pVukVvzlC00W/od07a5izGjIu/hs4qE=;
+        b=s8iGHbHwCZZxOFFQrhU4XkqHq8SzyPQl3cwuSmhxYClVt1EaXq7eTft6bAk6LnARQF
+         zm7/wTj0g/IaTL2QI79ApzwLFVTjgk4joN18Fgai3SO+rNv6zXiplssucOOXt3jnKm2j
+         uSWVuiP8hW4uolrlI1DJGAL1G5Xf7vK+sooeS7OoK1LWYzrKM1u1jy3lZRmmqW6WP+8d
+         mbXi8CbEcePPgN02Fj0p4a7exFSQLcg88K130xGo9xUmQMlrGBn4gEukwGgTGRDshKBq
+         KGvj99pxXyC4e4upEYjFLaM6CB3+KKShC07WDLJjKYMLwIEeTbIcQERwzfJ8fmyZREJQ
+         j8ow==
+X-Gm-Message-State: AOJu0Yx09AIoyDgzLk3Oj5Cewu2Y0fBXrjEy5zb98tX1mnljidWlD0yA
+        WB8YoNtn28rOmIJZ73hiLs7XZ5mhO9rrYDDqcnw+BA==
+X-Google-Smtp-Source: AGHT+IHqiXE0zJisfc2kGLRsSrhk09nD6kqfJtIYT5sewkmbb0V0LnYF/lh61UmHuguBtkr3GCLsTIMLQyCS24iqQho=
+X-Received: by 2002:a0c:fccc:0:b0:67a:492b:6cbd with SMTP id
+ i12-20020a0cfccc000000b0067a492b6cbdmr8165414qvq.6.1701249608288; Wed, 29 Nov
+ 2023 01:20:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKEwX=OGtkqWys9VM9EBScoCdAjSdfPjEkvoY7_u9udDZBFFpw@mail.gmail.com>
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spamd-Result: default: False [-0.80 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         TO_DN_SOME(0.00)[];
-         RCVD_COUNT_THREE(0.00)[3];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         FREEMAIL_TO(0.00)[gmail.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         BAYES_HAM(-0.00)[34.72%];
-         ARC_NA(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         RCPT_COUNT_TWELVE(0.00)[19];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         MID_RHS_NOT_FQDN(0.50)[];
-         FREEMAIL_CC(0.00)[linux-foundation.org,cmpxchg.org,gmail.com,google.com,redhat.com,ieee.org,konsulko.com,linux.dev,kernel.org,kvack.org,meta.com,vger.kernel.org];
-         RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -0.80
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231121220155.1217090-1-iii@linux.ibm.com> <20231121220155.1217090-34-iii@linux.ibm.com>
+In-Reply-To: <20231121220155.1217090-34-iii@linux.ibm.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Wed, 29 Nov 2023 10:19:29 +0100
+Message-ID: <CAG_fn=XCeE7JF5hbpzXu2A0Cae3R16_hnDwF0==oJMX320wBHQ@mail.gmail.com>
+Subject: Re: [PATCH v2 33/33] kmsan: Enable on s390
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Marco Elver <elver@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-s390@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Sven Schnelle <svens@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 28-11-23 08:53:56, Nhat Pham wrote:
-> On Tue, Nov 28, 2023 at 1:38 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Mon 27-11-23 11:36:59, Nhat Pham wrote:
-> > > The new zswap writeback scheme requires an online-only memcg hierarchy
-> > > traversal. Add a new parameter to mem_cgroup_iter() to check for
-> > > onlineness before returning.
-> >
-> > Why is this needed?
-> 
-> For context, in patch 3 of this series, Domenico and I are adding
-> cgroup-aware LRU to zswap, so that we can perform workload-specific
-> zswap writeback. When the reclaim happens due to the global zswap
-> limit being hit, a cgroup is selected by the mem_cgroup_iter(), and
-> the last one selected is saved in the zswap pool (so that the
-> iteration can follow from there next time the limit is hit).
-> 
-> However, one problem with this scheme is we will be pinning the
-> reference to that saved memcg until the next global reclaim attempt,
-> which could prevent it from being killed for quite some time after it
-> has been offlined. Johannes, Yosry, and I discussed a couple of
-> approaches for a while, and decided to add a callback that would
-> release the reference held by the zswap pool when the memcg is
-> offlined, and the zswap pool will obtain the reference to the next
-> online memcg in the traversal (or at least one that has not had the
-> zswap-memcg-release-callback run on it yet).
+Hi Ilya,
 
-This should be a part of the changelog along with an explanation why
-this cannot be handled on the caller level? You have a pin on the memcg,
-you can check it is online and scratch it if not, right? Why do we need
-to make a rather convoluted iterator interface more complex when most
-users simply do not require that?
-
--- 
-Michal Hocko
-SUSE Labs
+Sorry for this taking so long, I'll probably take a closer look next week.
+Overall, the s390 part looks good to me, but I wanted to check the x86
+behavior once again (and perhaps figure out how to avoid introducing
+another way to disable KMSAN).
+Do you happen to have a Git repo with your patches somewhere?
