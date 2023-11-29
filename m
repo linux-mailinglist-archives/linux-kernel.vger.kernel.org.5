@@ -2,115 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6FB97FE0C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:06:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E41F7FE0C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:08:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233681AbjK2UGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 15:06:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52762 "EHLO
+        id S233663AbjK2UIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 15:08:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231171AbjK2UGq (ORCPT
+        with ESMTP id S229941AbjK2UIa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 15:06:46 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F80FD69;
-        Wed, 29 Nov 2023 12:06:52 -0800 (PST)
-Received: from pendragon.ideasonboard.com (aztw-30-b2-v4wan-166917-cust845.vm26.cable.virginm.net [82.37.23.78])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5F8556F0;
-        Wed, 29 Nov 2023 21:06:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1701288375;
-        bh=pr+DI5rX3G04hdirVZl6BkJQ1CLmT65yZtHt6DXjLiQ=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=VL05jxidfay1sFOSzYKbcy2FZEW1U8kscMsQ8whITFDm3SfVNs5cKFR7evcrNSPhR
-         ID63lSLDWx5GiIxP4UAeBXndZgTHzGth7c2fg1EKtEd+zDlMwV1zJWVD542Bw+TAXk
-         I1wr5C5rutATEIoNtXji7z4ziw6/lhFH/+D1DkT4=
-Content-Type: text/plain; charset="utf-8"
+        Wed, 29 Nov 2023 15:08:30 -0500
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 353CBD54
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:08:36 -0800 (PST)
+Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-58dd3528497so127620eaf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:08:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1701288515; x=1701893315; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xsP0DQHpiXNbk6VOGkakvcLwir1Z3HAMieU28c9jQgE=;
+        b=hNr1qyKa3IFDg7glTtTQHcMwoUzqhXiXqoEj/yHOcapeWNqfVhWM7rKQSIkKXu32/T
+         /bCegjz1uT35GQP3wJWwoj6qINesXPRMBz+thHeVswKvOsadxlDIeMPfFR8FxVimo5PD
+         jBmRBXl4mWD9SelWLpovv2FhwFrQ0KF5BENaDf54hUrbdgNCNpxa7HiJer5kNnLFm2X1
+         7ZZoW1FWDdsD4oYKs78/MYCgvoNXAM+wknsL6oyDUaPZYqLD97vQSiQSETEmaSBdL76E
+         WZ/1ckx9NKsppI2SN+DazJA7cbwWy4hCgWlovX9CetXKcft3cQa5ImYO+A6YhFPWntR/
+         9SCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701288515; x=1701893315;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xsP0DQHpiXNbk6VOGkakvcLwir1Z3HAMieU28c9jQgE=;
+        b=neu673Mlncu/cTrcEJtmhCt3MyQz5iPhDE6GSQSi8NG1DHz0/Nskkw9MuUKcy1G4e+
+         drOg7Doa9w0QFEkFjyhe0htdwI0Hnj6JACQ+VzUorD4N63+6C4ovL2iUKY1m4UTrsm8Y
+         JS1EQa1b6NtuKyPqWz55Skl7YKVWbo0L3s6eEcLoqckz4yCPs6nt8h2PobgKswJ9qx9N
+         LuTSgxvuCDdJzd39NY3oZdv5pOhfl+FgmxeDGmIiI4yFeeiim37nqqLga5P4Yw/q+zho
+         kVoWDsmCRpEvRWHnIgD7H/E4tU7caHoHV5HF07waeiEv+k0l3cyKXEAJp+VXnl/z0tpi
+         aIZA==
+X-Gm-Message-State: AOJu0YyRS2RBdj1x/HTum9Qbv4G5NmErqVUdauElL8/7uZJ7HPml7hfl
+        P9r7no0uMXZIKBtEeHmsru5+hQ==
+X-Google-Smtp-Source: AGHT+IF2DmngnaCYi3zuAHFgnZ3DUfiOj93dwxgBEsP3uuFuleePYML8J8jh4Z0n1YU6yjF7zHrasQ==
+X-Received: by 2002:a05:6820:1506:b0:589:db63:bfd1 with SMTP id ay6-20020a056820150600b00589db63bfd1mr27351574oob.8.1701288515551;
+        Wed, 29 Nov 2023 12:08:35 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
+        by smtp.gmail.com with ESMTPSA id y9-20020a4aaa49000000b0058a0809ea25sm2352146oom.21.2023.11.29.12.08.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 12:08:35 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1r8QrK-005pQ9-1x;
+        Wed, 29 Nov 2023 16:08:34 -0400
+Date:   Wed, 29 Nov 2023 16:08:34 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kevin Tian <kevin.tian@intel.com>, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] iommu/vt-d: Support enforce_cache_coherency only for
+ empty domains
+Message-ID: <20231129200834.GJ1312390@ziepe.ca>
+References: <20231114011036.70142-1-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20231129092956.250129-4-paul.elder@ideasonboard.com>
-References: <20231129092956.250129-1-paul.elder@ideasonboard.com> <20231129092956.250129-4-paul.elder@ideasonboard.com>
-Subject: Re: [PATCH 3/3] media: rkisp1: debug: Count completed frame interrupts
-From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc:     tomi.valkeinen@ideasonboard.com, umang.jain@ideasonboard.com,
-        Paul Elder <paul.elder@ideasonboard.com>,
-        Dafna Hirschfeld <dafna@fastmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-To:     Paul Elder <paul.elder@ideasonboard.com>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org
-Date:   Wed, 29 Nov 2023 20:06:48 +0000
-Message-ID: <170128840893.3048548.12921821466589985052@ping.linuxembedded.co.uk>
-User-Agent: alot/0.10
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231114011036.70142-1-baolu.lu@linux.intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Paul Elder (2023-11-29 09:29:56)
-> Add a counter to debugfs to count the number of frame-end interrupts.
->=20
+On Tue, Nov 14, 2023 at 09:10:33AM +0800, Lu Baolu wrote:
+> diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
+> index 65d37a138c75..ce030c5b5772 100644
+> --- a/drivers/iommu/intel/iommu.h
+> +++ b/drivers/iommu/intel/iommu.h
+> @@ -602,6 +602,9 @@ struct dmar_domain {
+>  					 */
+>  	u8 dirty_tracking:1;		/* Dirty tracking is enabled */
+>  	u8 nested_parent:1;		/* Has other domains nested on it */
+> +	u8 has_mappings:1;		/* Has mappings configured through
+> +					 * iommu_map() interface.
+> +					 */
 
-And I alway like having counters for debug ... so I like this.
+Is it racey?
 
+The other option is to make iommfd do this and forbid it from
+switching the enforce_cache_coherency if the IOAS has any maps
+attached. We can get the correct locking at that point.
 
-Reviewed-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+AMD has the same issue if it ever wants to implement its per-PTE bit
 
-> Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
-> ---
->  drivers/media/platform/rockchip/rkisp1/rkisp1-common.h | 1 +
->  drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c  | 2 ++
->  drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c    | 2 ++
->  3 files changed, 5 insertions(+)
->=20
-> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h b/dri=
-vers/media/platform/rockchip/rkisp1/rkisp1-common.h
-> index 1e7cea1bea5e..be69173958a4 100644
-> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-> @@ -417,6 +417,7 @@ struct rkisp1_debug {
->         unsigned long stats_error;
->         unsigned long stop_timeout[2];
->         unsigned long frame_drop[2];
-> +       unsigned long complete_frames;
->  };
-> =20
->  /*
-> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c b/driv=
-ers/media/platform/rockchip/rkisp1/rkisp1-debug.c
-> index f66b9754472e..1b1edfd3ab6c 100644
-> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c
-> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c
-> @@ -232,6 +232,8 @@ void rkisp1_debug_init(struct rkisp1_device *rkisp1)
->                              &debug->frame_drop[RKISP1_MAINPATH]);
->         debugfs_create_ulong("sp_frame_drop", 0444, debug->debugfs_dir,
->                              &debug->frame_drop[RKISP1_SELFPATH]);
-> +       debugfs_create_ulong("complete_frames", 0444, debug->debugfs_dir,
-> +                            &debug->complete_frames);
->         debugfs_create_file("input_status", 0444, debug->debugfs_dir, rki=
-sp1,
->                             &rkisp1_debug_input_status_fops);
-> =20
-> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c b/driver=
-s/media/platform/rockchip/rkisp1/rkisp1-isp.c
-> index 64a956b9f2d0..06cdb4edf19c 100644
-> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
-> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-isp.c
-> @@ -991,6 +991,8 @@ irqreturn_t rkisp1_isp_isr(int irq, void *ctx)
->         if (status & RKISP1_CIF_ISP_FRAME) {
->                 u32 isp_ris;
-> =20
-> +               rkisp1->debug.complete_frames++;
-> +
->                 /* New frame from the sensor received */
->                 isp_ris =3D rkisp1_read(rkisp1, RKISP1_CIF_ISP_RIS);
->                 if (isp_ris & RKISP1_STATS_MEAS_MASK)
-> --=20
-> 2.39.2
->
+Jason
