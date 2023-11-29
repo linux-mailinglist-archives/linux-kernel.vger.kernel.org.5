@@ -2,51 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A28107FD5F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:43:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C41B37FD5F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:45:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233130AbjK2Lnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 06:43:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35414 "EHLO
+        id S233369AbjK2LpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 06:45:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230219AbjK2Lne (ORCPT
+        with ESMTP id S230219AbjK2Lo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 06:43:34 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDFBCBA
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 03:43:40 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0DB2C433C8;
-        Wed, 29 Nov 2023 11:43:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701258220;
-        bh=6hxakAmZIQItNkD76sjQSF/47UpUdJ+ouDdRtONsXGU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eOggLRELEWXcQMxKJNdbflVMplqVs1d4oSFZVtSvmNNvSIFVTXoEb7tMaarWGgp5n
-         SQvQ0XbsjD/9KVI6qacU5DD0JTLkFSmOnHtYDCv91tsumKeJ9kZbdPMqxEgdvYZydf
-         TIdUDPKMmjNry2UBwuyoaNuPkkRN0hcNFttoEp8AqxMQAGMB0szOe8vPvuShf0nxCx
-         2tqlvm6XWQYYNZrxVdd34UPB+Zt6057uBH88fQzfG3jBIz8CzkI+XjpyJKgqdTpeZx
-         QoJfoWXJaxoYtjQbKJXh2WZRTfC+CrQlmAdQlAyuuGt5soT3PtwC5+5ogURFuOxBpV
-         weh+Z4iphCbEg==
-Date:   Wed, 29 Nov 2023 12:43:36 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Jeff Layton <jlayton@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org
-Subject: Re: [PATCH/RFC] core/nfsd: allow kernel threads to use task_work.
-Message-ID: <20231129-querschnitt-urfassung-3ebd703c345a@brauner>
-References: <170112272125.7109.6245462722883333440@noble.neil.brown.name>
- <ZWUfNyO6OG/+aFuo@tissot.1015granger.net>
- <170113056683.7109.13851405274459689039@noble.neil.brown.name>
- <20231128-blumig-anreichern-b9d8d1dc49b3@brauner>
- <170121362397.7109.17858114692838122621@noble.neil.brown.name>
+        Wed, 29 Nov 2023 06:44:59 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A94784
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 03:45:05 -0800 (PST)
+Received: from dude05.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::54])
+        by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1r8J04-0005eN-3N; Wed, 29 Nov 2023 12:45:04 +0100
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Andi Shyti <andi.shyti@kernel.org>
+In-Reply-To: <20230810091300.70197-1-krzysztof.kozlowski@linaro.org>
+References: <20230810091300.70197-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH net-next] reset: hisilicon: hi6220: fix
+ Wvoid-pointer-to-enum-cast warning
+Message-Id: <170125830393.1526904.6100965191694710794.b4-ty@pengutronix.de>
+Date:   Wed, 29 Nov 2023 12:45:03 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <170121362397.7109.17858114692838122621@noble.neil.brown.name>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-5c066
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:1101:1d::54
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,23 +46,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> If an nfsd thread only completes the close that it initiated the close
-> on (which is what I am currently proposing) then there would be at most
-> one, or maybe 2, fds to close after handling each request.  While that
-> is certainly a non-zero burden, I can't see how it can realistically be
-> called a DOS.
-
-The 10s of millions of files is what makes me curious. Because that's
-the workload that'd be interesting.
-
-> > It feels that this really needs to be tested under a similar workload in
-> > question to see whether this is a viable solution.
-> > 
+On Thu, 10 Aug 2023 11:13:00 +0200, Krzysztof Kozlowski wrote:
+> 'type' is an enum, thus cast of pointer on 64-bit compile test with W=1
+> causes:
 > 
-> Creating that workload might be a challenge.  I know it involved
-> accessing 10s of millions of files with a server that was somewhat
-> memory constrained.  I don't know anything about the access pattern.
+>   hi6220_reset.c:166:9: error: cast to smaller integer type 'enum hi6220_reset_ctrl_type' from 'const void *' [-Werror,-Wvoid-pointer-to-enum-cast]
 > 
-> Certainly I'll try to reproduce something similar by inserting delays in
-> suitable places.  This will help exercise the code, but won't really
-> replicate the actual workload.
+> 
+
+Applied to reset/fixes, thanks!
+
+[1/1] reset: hisilicon: hi6220: fix Wvoid-pointer-to-enum-cast warning
+      https://git.pengutronix.de/cgit/pza/linux/commit/?id=b5ec29447279
+
+regards
+Philipp
+
