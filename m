@@ -2,116 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55CC27FE36F
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 23:43:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 480527FE377
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 23:45:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229959AbjK2Wng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 17:43:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52066 "EHLO
+        id S231506AbjK2Wow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 17:44:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbjK2Wne (ORCPT
+        with ESMTP id S229658AbjK2Wou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 17:43:34 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3528C1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:43:40 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40b27726369so2368285e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:43:40 -0800 (PST)
+        Wed, 29 Nov 2023 17:44:50 -0500
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39FA4122;
+        Wed, 29 Nov 2023 14:44:50 -0800 (PST)
+Received: from [192.168.68.112] (ppp118-210-131-38.adl-adc-lon-bras33.tpg.internode.on.net [118.210.131.38])
+        by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 2A2642014A;
+        Thu, 30 Nov 2023 06:44:38 +0800 (AWST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701297819; x=1701902619; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DPlSYieAKeZ1ZlgSPfXPoqg/eW8uKpsVlCNZ8IU+hBA=;
-        b=D2aGmlP1LvAyjmxatkr2rxYMqVgc0mJgJuyD/NiwRF0VfQFsYcuu4triQGSuLB0MOC
-         k6Rpi/FqLU/RfuaUpVOO8Ng3PR8Rp3/Ps3kCdD2f1QvM91FiCchEj9EE09ZwFrp5X1gE
-         MVWFi7fp0DZQ2Yn9ijonFDNZNATqshGXITzE9OuDB4leErbQeDgYIm7exp4Wdo8NLewt
-         xOqF3nfhBHU3Qo25vfjqP2lO+rc1W/yHIAm28jGonLCz6vvkTkj7w+ZPChpvIultMcBS
-         4oZLU6rX79k1g5uJXo8VeWjvvdahO+k0++YrqGDH9wp8p/AoOQYaROeKoR08cwrhrOJ9
-         zYrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701297819; x=1701902619;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DPlSYieAKeZ1ZlgSPfXPoqg/eW8uKpsVlCNZ8IU+hBA=;
-        b=R4qLvf4pdq3in+c1gDMiUhpUi2dFj2WvZdk+DjCuPUrkZTLLVZoUENZWzGSwYWOSX0
-         FK50u1xUnFk38YAGwr/rMuI5ziz3AkuhxbxTEJXDuwFn+SdKdJCqvfOnbgTGH57af5Gd
-         /bDYQF+Andaj6Nbo7Ka2m7JtbrmURNbKPsmpfWpsyP6ffvD9eJu4f17CpGgsHA4HTdRJ
-         8i/7m1k7U75QKp4oioiuUA7PPjc3iE4aCORXFL113qSljwCgck5SUz/2QrspFfXV1HhM
-         Qe0qhrEBQhzT3TVKYc4zFBbVTMrkoFaawh/xtveJJeubOHw9VQxvE9js6zyroeU9z9Um
-         +ChQ==
-X-Gm-Message-State: AOJu0YyhYSNs0p5HTiF1fMKtjlhqsadKoUXvYhc003/p61L471zYpCnk
-        Ols0Tf+y5ldwV87ynaKSVLk=
-X-Google-Smtp-Source: AGHT+IEUxdkYKt7NZdrpshbCMEE1jShiqAxqEFI/E6ZthNf7BgkK1wK8sSTJSHAgD288i8OAdBQ1Kg==
-X-Received: by 2002:a5d:4d01:0:b0:333:f03:4640 with SMTP id z1-20020a5d4d01000000b003330f034640mr4906914wrt.1.1701297819067;
-        Wed, 29 Nov 2023 14:43:39 -0800 (PST)
-Received: from andrea ([31.189.63.178])
-        by smtp.gmail.com with ESMTPSA id l9-20020adffe89000000b003330a1d35a8sm6287307wrr.43.2023.11.29.14.43.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 14:43:38 -0800 (PST)
-Date:   Wed, 29 Nov 2023 23:43:34 +0100
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     paulmck@kernel.org, palmer@dabbelt.com, paul.walmsley@sifive.com,
-        aou@eecs.berkeley.edu, mmaas@google.com, hboehm@google.com,
-        striker@us.ibm.com, charlie@rivosinc.com, rehn@rivosinc.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] membarrier: riscv: Provide core serializing command
-Message-ID: <ZWe+ljzCUQQVu7oD@andrea>
-References: <20231127103235.28442-1-parri.andrea@gmail.com>
- <20231127103235.28442-3-parri.andrea@gmail.com>
- <91ab0210-07f9-42c4-af7f-a98799250cf7@efficios.com>
- <ZWYDtB/otYvTMZWd@andrea>
- <0a84c0e0-2571-4c7f-82ae-a429f467a16b@efficios.com>
- <ZWeDF0eHyOc/b9UJ@andrea>
- <53aac2ac-46ae-46b8-9fdf-34527b79a63b@efficios.com>
- <ZWesWCRAPV3rZlx9@andrea>
- <041c83e6-1ca5-4953-bcec-03571135165d@efficios.com>
+        d=codeconstruct.com.au; s=2022a; t=1701297884;
+        bh=3/RdWbl1/Y7109L7deJTqux8rPtQXt1q7C4U6mcb2AM=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=HKhhAUwUL/rIv0NFaMEyE2NscNboxbaKpc7q+jumnKREr/4dyPS0lTIGAoUtjzfqI
+         +ZJn2JIvPHsZz3k7RVK6CUo9GZENgHOgcOzuUx0XI0hQoafGnNX/xgV265OxHK35Ir
+         SQi66MjFYqk027UQfs8101rerH89LCnVaUhBb+qM6yr6n0RZp5Xqkebh4Nc7oxpyJX
+         G5xKKjNRd9fVJgifEa1f2Tc3PxXfHtWCmoGpnBbOtowN/T/Ia0sZSkFnn28f3bkOlP
+         sP5IWPBvU3wOQ+wjR/7Jt0CmAIBwT0bpO7DypAUHs/f0z2F6k3adv4wQTGKzhrr1ah
+         ck2dkrKQPNUQQ==
+Message-ID: <cb6043dfa13a269eb287a38521dc1b7722a237cc.camel@codeconstruct.com.au>
+Subject: Re: [PATCH v2 RESEND 2/2] i2c: aspeed: Acknowledge Tx done with and
+ without ACK irq late
+From:   Andrew Jeffery <andrew@codeconstruct.com.au>
+To:     Quan Nguyen <quan@os.amperecomputing.com>,
+        Brendan Higgins <brendan.higgins@linux.dev>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
+        Guenter Roeck <linux@roeck-us.net>, linux-i2c@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     Cosmo Chou <chou.cosmo@gmail.com>,
+        Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
+Date:   Thu, 30 Nov 2023 09:14:37 +1030
+In-Reply-To: <66dcea57-db0b-4686-9eaf-746db637f31c@os.amperecomputing.com>
+References: <20231128075236.2724038-1-quan@os.amperecomputing.com>
+         <20231128075236.2724038-3-quan@os.amperecomputing.com>
+         <2186c3b9ac92f03c68e8a2dd9fda871f80a6d664.camel@codeconstruct.com.au>
+         <66dcea57-db0b-4686-9eaf-746db637f31c@os.amperecomputing.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <041c83e6-1ca5-4953-bcec-03571135165d@efficios.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > So I should probably stick to 93917ad50972, which apparently selected
-> > CONFIG_MEMBARRIER on RISC-V, for the Fixes: tag in question.
-> 
-> I think it goes further than that, because you can explicitly
-> CONFIG_MEMBARRIER=y, see init/Kconfig:
-> 
-> config MEMBARRIER
->         bool "Enable membarrier() system call" if EXPERT
->         default y
->         help
->           Enable the membarrier() system call that allows issuing memory
->           barriers across all running threads, which can be used to distribute
->           the cost of user-space memory barriers asymmetrically by transforming
->           pairs of memory barriers into pairs consisting of membarrier() and a
->           compiler barrier.
-> 
->           If unsure, say Y.
-> 
-> Before 1464d00b27b2, riscv just happened to set it to =n in the defconfig.
-> 
-> I suspect the initial port of riscv merged after v4.14 was already broken.
+On Wed, 2023-11-29 at 16:02 +0700, Quan Nguyen wrote:
+>=20
+> On 29/11/2023 07:33, Andrew Jeffery wrote:
+> > On Tue, 2023-11-28 at 14:52 +0700, Quan Nguyen wrote:
+> > > diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c=
+-aspeed.c
+> > > index 79476b46285b..3231f430e335 100644
+> > > --- a/drivers/i2c/busses/i2c-aspeed.c
+> > > +++ b/drivers/i2c/busses/i2c-aspeed.c
+> > > @@ -611,8 +611,9 @@ static irqreturn_t aspeed_i2c_bus_irq(int irq, vo=
+id *dev_id)
+> > >  =20
+> > >   	spin_lock(&bus->lock);
+> > >   	irq_received =3D readl(bus->base + ASPEED_I2C_INTR_STS_REG);
+> > > -	/* Ack all interrupts except for Rx done */
+> > > -	writel(irq_received & ~ASPEED_I2CD_INTR_RX_DONE,
+> > > +	/* Ack all interrupts except for Rx done and Tx done with/without A=
+CK */
+> >=20
+> > I'm not a huge fan of this comment, it just says what the code does. It
+> > would be much better to explain *why* the code does what it does.
+> >=20
+> > I realise describing what the code does was already the gist of the
+> > comment and that you're just updating it to match the change to the
+> > code, but that's my entire problem with it. We'd be better off deleting
+> > it if we're not going to explain why the masking is necessary.
+> >=20
+>=20
+> Thanks for the comment Andrew.
+>=20
+> I would prefer to delete it.
+>=20
+> But if to put some comment, how about:
+>=20
+> /* Early ack INTR_RX_DONE, INTR_TX_[ACK|NAK] would indicate HW to start=
+=20
+> receiving/sending new data and may cause a race condition as irq handler=
+=20
+> not yet to handle these irqs but being acked. Let ack them late in the=
+=20
+> end of irq handler when those are truly processed */
 
-I see.  Oh well, guess I'll have to leave this up to the maintainers then
-(I believe I've never managed to build riscv that far), Palmer?
+Please update the patch with this comment. It at least goes some way to
+explain why.
 
+>=20
+> > > +	writel(irq_received &
+> > > +	       ~(ASPEED_I2CD_INTR_RX_DONE | ASPEED_I2CD_INTR_TX_ACK | ASPEE=
+D_I2CD_INTR_TX_NAK),
+> > >   	       bus->base + ASPEED_I2C_INTR_STS_REG);
+> > >   	readl(bus->base + ASPEED_I2C_INTR_STS_REG);
+> > >   	irq_received &=3D ASPEED_I2CD_INTR_RECV_MASK;
+> > > @@ -657,12 +658,12 @@ static irqreturn_t aspeed_i2c_bus_irq(int irq, =
+void *dev_id)
+> > >   			"irq handled !=3D irq. expected 0x%08x, but was 0x%08x\n",
+> > >   			irq_received, irq_handled);
+> > >  =20
+> > > -	/* Ack Rx done */
+> > > -	if (irq_received & ASPEED_I2CD_INTR_RX_DONE) {
+> > > -		writel(ASPEED_I2CD_INTR_RX_DONE,
+> > > -		       bus->base + ASPEED_I2C_INTR_STS_REG);
+> > > -		readl(bus->base + ASPEED_I2C_INTR_STS_REG);
+> > > -	}
+> > > +	/* Ack Rx done and Tx done with/without ACK */
+> > > +	writel(irq_received &
+> > > +	       (ASPEED_I2CD_INTR_RX_DONE | ASPEED_I2CD_INTR_TX_ACK | ASPEED=
+_I2CD_INTR_TX_NAK),
+> > > +	       bus->base + ASPEED_I2C_INTR_STS_REG);
+> > > +	readl(bus->base + ASPEED_I2C_INTR_STS_REG);
+> >=20
+> > I'm not sure why the write was conditional, but I'm not sure that
+> > making it unconditional is valid either? Why the change? Why not add
+> > the extra interrupt bits to the condition in addition to the value mask
+> > for the write?
+> >=20
+>=20
+> In original code, only INTR_RX_DONE was acked late. So the check=20
+> (irq_received & ASPEED_I2CD_INTR_RX_DONE) is need and that help to save=
+=20
+> one write() then read() if there was no such irq.
+>=20
+> In the new code, there is no such check and the drawback is that there=
+=20
+> always be one write() and one read() for all cases, include the case=20
+> where there is no irq at all, ie writing 0 into ASPEED_I2C_INTR_STS_REG.
+>=20
+> And yes, your concern maybe right, we can not say of writing 0 into=20
+> ASPEED_I2C_INTR_STS_REG is good or not.
+>=20
+> I checked back my debug log and seeing that irq always come with at=20
+> least one of INTR_RX_DONE BIT(2), INTR_TX_ACK BIT(0), INTR_TX_NAK BIT(1)=
+=20
+> raised. So it seems like the case of writing 0 into=20
+> ASPEED_I2C_INTR_STS_REG is indeed rarely to happen.
+>=20
+> Do you think we should change it to:
+>=20
+> if (irq_received & (INTR_RX_DONE | INTR_TX_ACK | INTR_TX_NAK)) {
+> 	writel( irq_received & (INTR_RX_DONE| INTR_TX_ACK| INTR_TX_NAK),
+> 		bus->base + ASPEED_I2C_INTR_STS_REG);
+> 	readl(bus->base + ASPEED_I2C_INTR_STS_REG);
+> }
 
-> > I'll look into adding the membarrier feature you mention (as a final/
-> > follow-up patch), unless you or someone else want to take care of it.
-> 
-> I'll be happy to review it :)
+This is less different from the existing strategy and doesn't require
+any explanation beyond what you're already trying to achieve in the
+patch, so I think you should switch to this approach.
 
-Sweet!  :-)
+If someone wants to work out why it was done conditionally and argue
+for its removal then they can do that separately.
 
-  Andrea
+Cheers,
+
+Andrew
