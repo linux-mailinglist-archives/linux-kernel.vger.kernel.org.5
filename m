@@ -2,90 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D117FCC76
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 02:58:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3EEF7FCC77
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 02:59:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbjK2B6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 20:58:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41274 "EHLO
+        id S1376730AbjK2B7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 20:59:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjK2B6X (ORCPT
+        with ESMTP id S229526AbjK2B7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 20:58:23 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E33C810E2;
-        Tue, 28 Nov 2023 17:58:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1701223107;
-        bh=KTkRAxQEjyPl5jlXQA3vSJp+2tyKvgM6H5lB1U5MB1s=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Ez2eEtX2z0QWAPcG0tIu676o5KeoreIHy+fbWPGfoSFV0T02Byib5Rp+/jBhvlW++
-         +h+8bXlKLJ3edK2NcgeEnr3XKaDVaH7d0mB54fEKLXpQDq9GOzoorUjX9J8AaCs3Y2
-         DvWe8JjZ7aFYgwmg4TatuDG5pcCo1QBUJDPSOtpZqtiCrOMRPz9R/9woRXYMd1LZGD
-         EiNufjivHrVVWk8QlPR372rIcpFs+jFA8nH4ThIMIaomDivKXrOYD9tCt8QxlhS8Ex
-         oomJubsSh2v5uE0mznJtqD27NKU1PFqguyp1vTJxwuIsPFhNSeQlAxI9nciSY4udBn
-         99bdGWZ72xXUQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Sg2Xz1NYnz4wx5;
-        Wed, 29 Nov 2023 12:58:27 +1100 (AEDT)
-Date:   Wed, 29 Nov 2023 12:58:26 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the pwm tree
-Message-ID: <20231129125826.08d7d178@canb.auug.org.au>
+        Tue, 28 Nov 2023 20:59:34 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15FAB10E2
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 17:59:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=8glzdTPYgTI0y+U4Mt5JkgK5DlQNn3/9kenL4aSzC2Q=; b=g7/UMnMDYMPQbMuEylC0HwcoPZ
+        5PVoHxbeURq/j2DZkokv87c3jKDFwpnYu9TELW2Sik57k3Enn2PACp7NrIByjCDNxdzQop5kQAqXf
+        23jPOJIEGMHpsfFeridvDfDpr4cf61PnrkMSooJSQU9n+9Sr3As9MSRGsIeP0RfyTI2+0tIBC/gJa
+        iXIeUE2FrYNjq3/X8ys4BSags01ktKKf2nmd79l/F++eNuo/TTCyJLRXRtMnhNUUjqw1U87dEOuYZ
+        HpJOGBu93SPwiu/WWooLIS9WOqMFIacd8wJjhJ7ZJlypSa/5oL0142JfFU84AdHMieOTWLeJO0xOW
+        O2Y11XJg==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r89rL-006o7L-14;
+        Wed, 29 Nov 2023 01:59:28 +0000
+Message-ID: <57aa904f-ee17-419a-9e4c-f0297da73629@infradead.org>
+Date:   Tue, 28 Nov 2023 17:59:26 -0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/9l/B7hyCt9u=elJ63TYlxsy";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mfd: fix comment typos
+Content-Language: en-US
+To:     zhongkaihua <zhongkaihua@kylinos.cn>, cw00.choi@samsung.com,
+        krzysztof.kozlowski@linaro.org, lee@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     huangwei@kylinos.cn, zhang.chen@cs2c.com.cn,
+        k2ci <kernel-bot@kylinos.cn>
+References: <20231129015526.3302865-1-zhongkaihua@kylinos.cn>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20231129015526.3302865-1-zhongkaihua@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/9l/B7hyCt9u=elJ63TYlxsy
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-After merging the pwm tree, today's linux-next build (htmldocs) produced
-this warning:
+On 11/28/23 17:55, zhongkaihua wrote:
+> From: Kaihua Zhong <zhongkaihua@kylinos.cn>
+> 
+> Fix four comment typos in mfd pmic header files.
+> 
+> Reported-by: k2ci <kernel-bot@kylinos.cn>
+> Signed-off-by: Kaihua Zhong <zhongkaihua@kylinos.cn>
 
-include/linux/pwm.h:304: warning: Function parameter or member 'id' not des=
-cribed in 'pwm_chip'
 
-Introduced by commit
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-  c572f3b9c8b7 ("pwm: Replace PWM chip unique base by unique ID")
+Thanks.
 
---=20
-Cheers,
-Stephen Rothwell
+> ---
+>  include/linux/mfd/max77693-private.h | 2 +-
+>  include/linux/mfd/max77843-private.h | 2 +-
+>  include/linux/mfd/si476x-platform.h  | 2 +-
+>  include/linux/mfd/tps65910.h         | 2 +-
+>  4 files changed, 4 insertions(+), 4 deletions(-)
+> 
 
---Sig_/9l/B7hyCt9u=elJ63TYlxsy
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVmmsIACgkQAVBC80lX
-0GxHIwf/fVBbAvvYCncIufkKbQFacKc6xyIgd05waO3RuEFiKP1p6RkLJIAnA+SX
-BHvhd3FQp3akwVxw1pX4uk/e1Q/AmxFADDoJyD1qLiGJoPePKOs0Un8neGwmnbiA
-LMLuIcDnQBOfCfXKTNWPUiFMQU4Ys8kQAYNuGUAvJAA3NTlKVTRPULI03lh+RFHG
-ZkjgCo3p/EAYEbd2xRmjV5Xazw8BwYmKLx1uVSlzOpZ9TatwSNtkeD9pU6d2qCkz
-gcumrLp+U30UkBeYOcsHLyDRj9OfCSlwaUpnJRGKItIygXdbMprokTrV1ARsDJU2
-QVrdOXFAf+TxHj2/ksJTKVd+qpn2FQ==
-=8f+g
------END PGP SIGNATURE-----
-
---Sig_/9l/B7hyCt9u=elJ63TYlxsy--
+-- 
+~Randy
