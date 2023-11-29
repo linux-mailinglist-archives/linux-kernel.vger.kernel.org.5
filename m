@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEDF87FDCC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5BC97FDCC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:16:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234333AbjK2QQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 11:16:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34324 "EHLO
+        id S234011AbjK2QQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 11:16:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233723AbjK2QPk (ORCPT
+        with ESMTP id S233778AbjK2QPl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 11:15:40 -0500
+        Wed, 29 Nov 2023 11:15:41 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC1231700;
-        Wed, 29 Nov 2023 08:15:32 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 378511708;
+        Wed, 29 Nov 2023 08:15:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1701274533; x=1732810533;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=PGY8MTlj1zxv8/c+SyAmL9CgRA2hWCcICDO7OAfEpv4=;
-  b=MimJe7e3NLl4bjcuPToQlbyMlDFRgwgzur394C+9f40WYUVrbEV3GfoF
-   gU3pGr6+2d2OsosCiDiUl2F0yBXSSCqRkbpWbaZB2IHg7a7q1fs5sdPCk
-   4ZsBjfG3qiX9YTEPUGjTbc/8cCXqMXqbxdjRPqWR7oBce9ExojgijbqUc
-   1g+1FlwbYypGMw5dO5BlWDAtiv+4bc5XONRkE9IfPit36kFjUMmXcGhpu
-   W/K7tbo6TuzzflrFrQFxyjjkdCAGH9rc70u6WCaWHElKhYHWtfL0mpI92
-   xno3j9bE2Ezs1A0VBVlcr6lVpM8ckZlFhQ6uR0QZpF76gDHha27eDWbo/
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="373372786"
+  bh=ZXNseCzCX59DRyElbG0P8ucEc1mUIlOwlzrkpPXSCdM=;
+  b=TdJyb+ZD3MTWJK+4akcQ8FUp4BSG80bhHW/E8IreVq7pGRlw8yH4hBfC
+   dzmYgEriI+U9qqE1u0/O8xE22gFwB3fk/TsCqouv4wY8o2Lc9vUM3RPdA
+   jJU8ubzGb6tXtlH4ja0uJR7KxQnL12/bX+UPgQaqlOauuh9YNuonwGvS5
+   Kd5K4fiurtosGNVjms+n/cIiM/EzOQYAIF9feEawhEl5ssKDdmRajdwOY
+   qFGFaGlrxE1UPEVNszmLj8IaF/EOtAH7Ecsjbl0fI8Z+5MxrE+YvRGZUG
+   j5extuemQlUe0j2pkBlsUt6IXnFe6jlbZQ3ft2IVmFDXr9dVPYbjgBFTZ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="373372818"
 X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="373372786"
+   d="scan'208";a="373372818"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
   by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 08:15:31 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="892498903"
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="892498904"
 X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="892498903"
+   d="scan'208";a="892498904"
 Received: from black.fi.intel.com ([10.237.72.28])
   by orsmga004.jf.intel.com with ESMTP; 29 Nov 2023 08:15:21 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 17ACBB48; Wed, 29 Nov 2023 18:15:02 +0200 (EET)
+        id 2567FB66; Wed, 29 Nov 2023 18:15:02 +0200 (EET)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
@@ -75,9 +75,9 @@ Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
         Emil Renner Berthing <kernel@esmil.dk>,
         Hal Feng <hal.feng@starfivetech.com>
-Subject: [PATCH v4 15/23] pinctrl: equilibrium: Convert to use grp member
-Date:   Wed, 29 Nov 2023 18:06:38 +0200
-Message-ID: <20231129161459.1002323-16-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v4 16/23] pinctrl: imx: Convert to use grp member
+Date:   Wed, 29 Nov 2023 18:06:39 +0200
+Message-ID: <20231129161459.1002323-17-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20231129161459.1002323-1-andriy.shevchenko@linux.intel.com>
 References: <20231129161459.1002323-1-andriy.shevchenko@linux.intel.com>
@@ -97,24 +97,109 @@ Convert drivers to use grp member embedded in struct group_desc.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/pinctrl/pinctrl-equilibrium.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/pinctrl/freescale/pinctrl-imx.c | 31 +++++++++++--------------
+ 1 file changed, 14 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/pinctrl/pinctrl-equilibrium.c b/drivers/pinctrl/pinctrl-equilibrium.c
-index 4ebae516d1b1..6e1be38865c3 100644
---- a/drivers/pinctrl/pinctrl-equilibrium.c
-+++ b/drivers/pinctrl/pinctrl-equilibrium.c
-@@ -331,8 +331,8 @@ static int eqbr_pinmux_set_mux(struct pinctrl_dev *pctldev,
+diff --git a/drivers/pinctrl/freescale/pinctrl-imx.c b/drivers/pinctrl/freescale/pinctrl-imx.c
+index 28164b04b1be..2d3d80921c0d 100644
+--- a/drivers/pinctrl/freescale/pinctrl-imx.c
++++ b/drivers/pinctrl/freescale/pinctrl-imx.c
+@@ -42,7 +42,7 @@ static inline const struct group_desc *imx_pinctrl_find_group_by_name(
+ 
+ 	for (i = 0; i < pctldev->num_groups; i++) {
+ 		grp = pinctrl_generic_get_group(pctldev, i);
+-		if (grp && !strcmp(grp->name, name))
++		if (grp && !strcmp(grp->grp.name, name))
+ 			break;
+ 	}
+ 
+@@ -79,9 +79,9 @@ static int imx_dt_node_to_map(struct pinctrl_dev *pctldev,
+ 	}
+ 
+ 	if (info->flags & IMX_USE_SCU) {
+-		map_num += grp->num_pins;
++		map_num += grp->grp.npins;
+ 	} else {
+-		for (i = 0; i < grp->num_pins; i++) {
++		for (i = 0; i < grp->grp.npins; i++) {
+ 			pin = &((struct imx_pin *)(grp->data))[i];
+ 			if (!(pin->conf.mmio.config & IMX_NO_PAD_CTL))
+ 				map_num++;
+@@ -109,7 +109,7 @@ static int imx_dt_node_to_map(struct pinctrl_dev *pctldev,
+ 
+ 	/* create config map */
+ 	new_map++;
+-	for (i = j = 0; i < grp->num_pins; i++) {
++	for (i = j = 0; i < grp->grp.npins; i++) {
+ 		pin = &((struct imx_pin *)(grp->data))[i];
+ 
+ 		/*
+@@ -263,10 +263,10 @@ static int imx_pmx_set(struct pinctrl_dev *pctldev, unsigned selector,
+ 	if (!func)
  		return -EINVAL;
  
- 	pinmux = grp->data;
--	for (i = 0; i < grp->num_pins; i++)
--		eqbr_set_pin_mux(pctl, pinmux[i], grp->pins[i]);
-+	for (i = 0; i < grp->grp.npins; i++)
-+		eqbr_set_pin_mux(pctl, pinmux[i], grp->grp.pins[i]);
+-	npins = grp->num_pins;
++	npins = grp->grp.npins;
  
- 	return 0;
- }
+ 	dev_dbg(ipctl->dev, "enable function %s group %s\n",
+-		func->name, grp->name);
++		func->name, grp->grp.name);
+ 
+ 	for (i = 0; i < npins; i++) {
+ 		/*
+@@ -423,7 +423,7 @@ static void imx_pinconf_group_dbg_show(struct pinctrl_dev *pctldev,
+ 	if (!grp)
+ 		return;
+ 
+-	for (i = 0; i < grp->num_pins; i++) {
++	for (i = 0; i < grp->grp.npins; i++) {
+ 		struct imx_pin *pin = &((struct imx_pin *)(grp->data))[i];
+ 
+ 		name = pin_get_name(pctldev, pin->pin);
+@@ -526,7 +526,7 @@ static int imx_pinctrl_parse_groups(struct device_node *np,
+ 		pin_size = FSL_PIN_SIZE;
+ 
+ 	/* Initialise group */
+-	grp->name = np->name;
++	grp->grp.name = np->name;
+ 
+ 	/*
+ 	 * the binding format is fsl,pins = <PIN_FUNC_ID CONFIG ...>,
+@@ -554,19 +554,17 @@ static int imx_pinctrl_parse_groups(struct device_node *np,
+ 		return -EINVAL;
+ 	}
+ 
+-	grp->num_pins = size / pin_size;
+-	grp->data = devm_kcalloc(ipctl->dev,
+-				 grp->num_pins, sizeof(struct imx_pin),
+-				 GFP_KERNEL);
++	grp->grp.npins = size / pin_size;
++	grp->data = devm_kcalloc(ipctl->dev, grp->grp.npins, sizeof(*pin), GFP_KERNEL);
+ 	if (!grp->data)
+ 		return -ENOMEM;
+ 
+-	pins = devm_kcalloc(ipctl->dev, grp->num_pins, sizeof(*pins), GFP_KERNEL);
++	pins = devm_kcalloc(ipctl->dev, grp->grp.npins, sizeof(*pins), GFP_KERNEL);
+ 	if (!pins)
+ 		return -ENOMEM;
+-	grp->pins = pins;
++	grp->grp.pins = pins;
+ 
+-	for (i = 0; i < grp->num_pins; i++) {
++	for (i = 0; i < grp->grp.npins; i++) {
+ 		pin = &((struct imx_pin *)(grp->data))[i];
+ 		if (info->flags & IMX_USE_SCU)
+ 			info->imx_pinctrl_parse_pin(ipctl, &pins[i], pin, &list);
+@@ -613,8 +611,7 @@ static int imx_pinctrl_parse_functions(struct device_node *np,
+ 
+ 	i = 0;
+ 	for_each_child_of_node(np, child) {
+-		grp = devm_kzalloc(ipctl->dev, sizeof(struct group_desc),
+-				   GFP_KERNEL);
++		grp = devm_kzalloc(ipctl->dev, sizeof(*grp), GFP_KERNEL);
+ 		if (!grp) {
+ 			of_node_put(child);
+ 			return -ENOMEM;
 -- 
 2.43.0.rc1.1.gbec44491f096
 
