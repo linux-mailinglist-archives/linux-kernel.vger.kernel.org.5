@@ -2,88 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD8357FCDD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 05:19:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E97C97FCDDE
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 05:22:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376893AbjK2ETa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 23:19:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33616 "EHLO
+        id S1376897AbjK2EWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 23:22:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231288AbjK2ET1 (ORCPT
+        with ESMTP id S230198AbjK2EWM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 23:19:27 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B856E1AE
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 20:19:31 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-5c19a328797so4512275a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 20:19:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701231571; x=1701836371; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8sF8sEE2ZTc9ObiMO1OzkZ6Z6YbCekFkAXIm79+6W8w=;
-        b=B9HAq6lN0gqBdKxxHzl+TumZYBizeRB4Y+R95Z4D9KVI0E93DusuRsTkn6MqqXJtMS
-         vQHlMKtoJ6vMvgoAvxPlrJOwDbETcHzxkqmLpPLG7YMc4JUBjxylAjr4/440smXLwcK1
-         90fdEhqowCCAqWxaikGJMxYrhyxEOk9gF6tL4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701231571; x=1701836371;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8sF8sEE2ZTc9ObiMO1OzkZ6Z6YbCekFkAXIm79+6W8w=;
-        b=NCC93SZUiFdeZEY6B+cXd14vQJ+VjHrA98E+lXUOB1JKPXf66DonUDg0/Q7p9NUM6m
-         IyHpom4PxGkRZn4WzLzbPE5dk2T3gNItNKIptnzseHW3fIchaqvUEjMyM2OC0NJf7wlN
-         eszdvhYRIPyJr1x2mqWzg76lYaZ6puZUtoPBE3c5h9wTzt8+EWtQ8ePcoe2fxbEC6OG1
-         VKJby9Qn8GyMER40+BTSLYzDn0F1Wd3YPG9LnneH94YV0ngkapN8YAbpM09ax9744rAa
-         k2N66eAgh5eO3/CCA0zSckxYvICsg9JV21pyS4nkH7nP2zsTEhcy4HywKDlZ3l+vtZEe
-         BGtQ==
-X-Gm-Message-State: AOJu0YyaUsqZOOonaykgVOkXYKhMcQE6jGzLOWXYrrtzcWeVwrdazqP6
-        BitUnaWw1xhlmZL/ZW4SvjkMLw==
-X-Google-Smtp-Source: AGHT+IGVsQS2WwOQK7A6U+gxRY2q9is6X8IKCeex3/lpav2fyxkdHoMlkRmgWIkOH2QxX/hvMIDhKA==
-X-Received: by 2002:a05:6a21:7886:b0:17f:d42e:202c with SMTP id bf6-20020a056a21788600b0017fd42e202cmr19782814pzc.49.1701231571187;
-        Tue, 28 Nov 2023 20:19:31 -0800 (PST)
-Received: from google.com (KD124209171220.ppp-bb.dion.ne.jp. [124.209.171.220])
-        by smtp.gmail.com with ESMTPSA id q2-20020a170902edc200b001cfb573674fsm7337050plk.30.2023.11.28.20.19.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 20:19:30 -0800 (PST)
-Date:   Wed, 29 Nov 2023 13:19:26 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: [PATCH] zram: Use kmap_local_page()
-Message-ID: <20231129041926.GC6525@google.com>
-References: <20231128083845.848008-1-senozhatsky@chromium.org>
- <ZWZ_W3tkw9tBqdvE@google.com>
+        Tue, 28 Nov 2023 23:22:12 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C7E1710;
+        Tue, 28 Nov 2023 20:22:18 -0800 (PST)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AT3LoTh026472;
+        Wed, 29 Nov 2023 04:22:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=5GPHYWNLlw5rUJSjPsApRdIgwkJG6a4bhZxOWXdiWCM=;
+ b=X7xXVYwS21iJ6zBE+7BhDLSuL7pjydLeECqInL8N5jiqWffbJ3Ivu/KWNGW3Xs0jdqIE
+ 1EVYovBsewFOeF73shW+aGRbaTDQRu/FPHDnCKCoVZz35fFTAztoZ30wuqCsCuJCLAUt
+ AflgekSW+sUJqUJRMn0N4TZo6u8a/UyecgQd3HhuvPcvc+Opsu1MQaE9t9Gjz+VQVXSP
+ meKSaxP0ALMrJvS2MWAz/eIDpo4MXkejs3XazcNBQtielw8hQZCyYHtWJMoAYTEeZvA5
+ OSqnGTRsCG8Q71O/SARc3O5RxBf/Q5hsWBXwaFdPLNQHkhTnMdHSGaOrrpzikUvUHjPd tA== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3unekyjh06-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Nov 2023 04:22:12 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AT4MBs7021674
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Nov 2023 04:22:11 GMT
+Received: from [10.239.154.73] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 28 Nov
+ 2023 20:22:08 -0800
+Message-ID: <bf772476-79a1-4a52-a8e3-54709adf4673@quicinc.com>
+Date:   Wed, 29 Nov 2023 12:22:06 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWZ_W3tkw9tBqdvE@google.com>
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND v7 0/3] Add support for vibrator in multiple PMICs
+Content-Language: en-US
+To:     <linux-arm-msm@vger.kernel.org>, Andy Gross <agross@kernel.org>,
+        "Bjorn Andersson" <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+CC:     <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <quic_collinsd@quicinc.com>,
+        <quic_subbaram@quicinc.com>, <quic_kamalw@quicinc.com>,
+        <jestar@qti.qualcomm.com>, Luca Weiss <luca.weiss@fairphone.com>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>
+References: <20231108-pm8xxx-vibrator-v7-0-632c731d25a8@quicinc.com>
+From:   Fenglin Wu <quic_fenglinw@quicinc.com>
+In-Reply-To: <20231108-pm8xxx-vibrator-v7-0-632c731d25a8@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: NsV8g-GEnr5H-cqykFoC4HzDLpvgYYw9
+X-Proofpoint-ORIG-GUID: NsV8g-GEnr5H-cqykFoC4HzDLpvgYYw9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-29_01,2023-11-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
+ mlxscore=0 suspectscore=0 priorityscore=1501 malwarescore=0
+ lowpriorityscore=0 impostorscore=0 bulkscore=0 clxscore=1011 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311290032
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (23/11/28 16:01), Minchan Kim wrote:
-> On Tue, Nov 28, 2023 at 05:22:07PM +0900, Sergey Senozhatsky wrote:
-> > Use kmap_local_page() instead of kmap_atomic() which has been
-> > deprecated.
-> > 
-> > Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> Acked-by: Minchan Kim <minchan@kernel.org>
+Hi Dmitry Torokhov,
 
-Thanks.
+Can you help to review the series of the changes?
+I knew that you left comment in patch V6 about moving shift and mask 
+into a chip-specific data structure to avoid defining 'hw_type'. 
+Actually 'hw_type' is added here to differentiate the SSBI vibrator 
+module which doesn't need to read the base address from the DT and add 
+it up in register read/write access, while SPMI vibrators in different 
+PMICs may be the same HW but just with different base address, and we 
+can use device compatibles instead of adding the chip-specific data 
+structure for each of them by just updating the base address. See 
+discussion here for more details:
+https://lore.kernel.org/linux-arm-msm/20230718062639.2339589-3-quic_fenglinw@quicinc.com/
 
-> I didn't know that the kmap_atomic was deprecated.
+I also responded here that having 'hw_type' would help us with a cleaner 
+code logic instead of checking specific reg/mask for particular 
+operations: 
+https://lore.kernel.org/linux-arm-msm/8697d115-9aa7-2a1c-4d96-25b15adb5cca@quicinc.com/
 
-Me neither, figured it out recently (via checkpatch warning).
-https://lore.kernel.org/all/20220813220034.806698-1-ira.weiny@intel.com/
+Let me know what's your final suggestion, if you insist that I should 
+move the reg/mask/shift in the chip-specific data structure, I can 
+update it even it won't be as clean as what it looks right now.
+Thanks
 
-We need to take a look at zsmalloc, the conversion can be a little more
-difficult than zram's.
+Fenglin
+
+On 11/8/2023 3:36 PM, Fenglin Wu via B4 Relay wrote:
+> Add SW support for the vibrator module inside PMI632, PM7250B, PM7325B, PM7550BA.
+> It is very similar to the vibrator module inside PM8916 which is supported in
+> pm8xxx-vib driver but just the drive amplitude is controlled with 2 registers,
+> and the register base offset in each PMIC is different.
+> 
+> Changes in v7;
+>    1. Fix a typo: SSBL_VIB_DRV_REG --> SSBI_VIB_DRV_REG
+>    2. Move the hw_type switch case in pm8xxx_vib_set() to the refactoring
+>       change.
+> 
+> Changes in v6:
+>    1. Add "qcom,pmi632-vib" as a standalone compatible string.
+> 
+> Changes in v5:
+>    1. Drop "qcom,spmi-vib-gen2" generic compatible string as requested
+>       and use device specific compatible strings only.
+> 
+> Changes in v4:
+>    1. Update to use the combination of the HW type and register offset
+>       as the constant match data, the register base address defined in
+>       'reg' property will be added when accessing SPMI registers using
+>       regmap APIs.
+>    2. Remove 'qcom,spmi-vib-gen1' generic compatible string.
+> 
+> Changes in v3:
+>    1. Refactor the driver to support different type of the vibrators with
+>      better flexibility by introducing the HW type with corresponding
+>      register fields definitions.
+>    2. Add 'qcom,spmi-vib-gen1' and 'qcom,spmi-vib-gen2' compatible
+>      strings, and add PMI632, PM7250B, PM7325B, PM7550BA as compatbile as
+>      spmi-vib-gen2.
+> 
+> Changes in v2:
+>    Remove the "pm7550ba-vib" compatible string as it's compatible with pm7325b.
+> 
+> Fenglin Wu (3):
+>    input: pm8xxx-vib: refactor to easily support new SPMI vibrator
+>    dt-bindings: input: qcom,pm8xxx-vib: add new SPMI vibrator module
+>    input: pm8xxx-vibrator: add new SPMI vibrator support
+> 
+>   .../bindings/input/qcom,pm8xxx-vib.yaml       |  16 +-
+>   drivers/input/misc/pm8xxx-vibrator.c          | 171 ++++++++++++------
+>   2 files changed, 132 insertions(+), 55 deletions(-)
+> 
+> --
+> 2.25.1
+> 
+> ---
+> Fenglin Wu (3):
+>        input: pm8xxx-vib: refactor to easily support new SPMI vibrator
+>        dt-bindings: input: qcom,pm8xxx-vib: add new SPMI vibrator module
+>        input: pm8xxx-vibrator: add new SPMI vibrator support
+> 
+>   .../devicetree/bindings/input/qcom,pm8xxx-vib.yaml |  16 +-
+>   drivers/input/misc/pm8xxx-vibrator.c               | 170 ++++++++++++++-------
+>   2 files changed, 131 insertions(+), 55 deletions(-)
+> ---
+> base-commit: 650cda2ce25f08e8fae391b3ba6be27e7296c6a5
+> change-id: 20230925-pm8xxx-vibrator-62df3df46a6c
+> 
+> Best regards,
