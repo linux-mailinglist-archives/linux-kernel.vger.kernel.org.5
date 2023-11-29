@@ -2,107 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C0D7FDE01
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:11:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7367FDE0C
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:13:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbjK2RK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 12:10:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35722 "EHLO
+        id S231406AbjK2RNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 12:13:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230511AbjK2RKz (ORCPT
+        with ESMTP id S229509AbjK2RM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 12:10:55 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B4ABE
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 09:11:01 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95CC7C433C7;
-        Wed, 29 Nov 2023 17:11:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701277861;
-        bh=yIXGLLFPFr7RBt5CQB+D2IWUlHsvbAOtG6RShF9Nrwk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ju5lIPl8700Nv3qzxPV7UcGNDOgnOBw10xs3PDmKLU1N19XY2sCB2JL7mMotDL7cE
-         76TEzHH0dlmdSiTQgo/3ILWaYuAFX9ttFRDZbIftUv/iOiOKQTM2ZhqtWAoPseuTVo
-         gZlhtiNJYxUHAplk4TLz/36JxT5YKuaNStiIUn6Zqg+yg1pAx877b2uJMs8NnwfZe5
-         664nYl7NrhLEMW4j+FNEa+EGi7LXf/1dROyqciMLLQEIAN+X2Dofctl/M9+B/SfnZD
-         iepu33luDFkkXwGNuA4FAtX7cH+ehzAmqlD3Zc4s1pn6TQBwgwOrVb+y45Of+AFXkb
-         OxVaUdOX+uZ0w==
-From:   SeongJae Park <sj@kernel.org>
-To:     cuiyangpei <cuiyangpei@gmail.com>
-Cc:     SeongJae Park <sj@kernel.org>, akpm@linux-foundation.org,
-        damon@lists.linux.dev, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, xiongping1@xiaomi.com
-Subject: Re: [PATCH 1/2] mm/damon/sysfs: Implement recording feature
-Date:   Wed, 29 Nov 2023 17:10:58 +0000
-Message-Id: <20231129171058.50270-1-sj@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231129131315.GB12957@cuiyangpei>
-References: 
+        Wed, 29 Nov 2023 12:12:57 -0500
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2064.outbound.protection.outlook.com [40.107.243.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8BF0BE;
+        Wed, 29 Nov 2023 09:13:01 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WBR7WY7MyaCJ8wGiLUr9EXOmne+7uSGfpg50V7I87IR5zwsa2Hd+fv8EwK1/MU9xyVTAPjetBOGHvq0BorblIx+cHS9t3C14EOGXCNwKdrFIJEnDIHR2yCg4D3yOeU9s/c0K1vbXIshziot10RDz65T26klzV6NUKfI9PwKvBAzkI3Ei3KcBuzmBzh0XIFlXO8h5yRl/+iTvwwVKbtV+6IFaTIO5jAaqZ5WrOhSK+ynXBKNNVZDK/QqyuRP7GP+/7gJ4zZIhpBe2deGUMBJaaVveqAE+tEdBtSU3GJbLmYEXM0tftQE0lVvm7oLt6XIvigh4w+e8lRQPSrdvRD24HA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qZnN9SNB4n7/VcY1jqeLLDYrEV1CGi1GOwI5nZNECkA=;
+ b=SUxCsHxedZ8rjzb0CImggPFf9o8Bu6qbLEO6LOaAOzyCYupWEAg1A5vzgxEwpGW+/ZaqV+Z5jQMrfuURKOpdxOGDISpXZMZaxFiOp99dF0Ae39aCFst5Lo/RNDLMxvyjIgZxdiRg8rh7c3Xbf2MHb3Eo3o4jeP1bd764ChxcpCK8W9QjQIDO+htEJ6JT7HHdkUoeqrptYiTBoSSf6HQGmlqOu8Pmjiglp7fN8PMtie9d4C8CHe0ggf0Co/hGEkxk1TuJ+qK9BFyHNeiJ05KUeJVbA/KbEiu/+G3xLKB6aPWF3Xe5jPGhWYH9ge/YgAB5Vh/90RwpoGVqJ2FaJIBwRA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qZnN9SNB4n7/VcY1jqeLLDYrEV1CGi1GOwI5nZNECkA=;
+ b=LXnuKl866btKOkE0su+BTEeoAnE2N0U4fPeImPFLbylGcvnQrfUAX/Yh3pAkhPySzybgS93Qt1piAG6ye7g7ziPunUpN9NYOWaiWKKxfKNyiViatdm86ZogQkWBFbDxnLU40U6w2hDeOna/EsSK/nQUAHaNXZzLnKlMF5ZTbI+0=
+Received: from CYZPR14CA0046.namprd14.prod.outlook.com (2603:10b6:930:a0::14)
+ by BL1PR12MB5238.namprd12.prod.outlook.com (2603:10b6:208:31e::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.23; Wed, 29 Nov
+ 2023 17:12:57 +0000
+Received: from CY4PEPF0000E9D4.namprd03.prod.outlook.com
+ (2603:10b6:930:a0:cafe::3c) by CYZPR14CA0046.outlook.office365.com
+ (2603:10b6:930:a0::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.23 via Frontend
+ Transport; Wed, 29 Nov 2023 17:12:56 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ CY4PEPF0000E9D4.mail.protection.outlook.com (10.167.241.147) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7046.17 via Frontend Transport; Wed, 29 Nov 2023 17:12:56 +0000
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 29 Nov
+ 2023 11:12:54 -0600
+Received: from xsjlizhih40.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.34 via Frontend
+ Transport; Wed, 29 Nov 2023 11:12:54 -0600
+From:   Lizhi Hou <lizhi.hou@amd.com>
+To:     <vkoul@kernel.org>, <dmaengine@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Lizhi Hou <lizhi.hou@amd.com>, <nishad.saraf@amd.com>,
+        <sonal.santan@amd.com>, <max.zhen@amd.com>
+Subject: [RESEND PATCH V7 0/2] AMD QDMA driver
+Date:   Wed, 29 Nov 2023 09:12:18 -0800
+Message-ID: <1701277940-25645-1-git-send-email-lizhi.hou@amd.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D4:EE_|BL1PR12MB5238:EE_
+X-MS-Office365-Filtering-Correlation-Id: f89f03b4-30b2-4ecb-a65e-08dbf0fe6e6b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: crdvj0VSZqG+NAYjufi2xxV14Pghl73DCnIucYyqLBggFL0p4PblEB1GDqH8qPX6Vxe9ISANVY2pfmfYyhZIu+KmOXweOkMkY6zfxTEbUGnaMr4Xuml1Vt0dlmfpyyqwQrScf2zC9H0NGpIeZecMY0XRg3s5lSrud96DKNSY4K9gAYkJpSPSS/yGplyUX/pgoXlpEybqshbe/oo10oYne6sbp+WhBql4MzNt5RUlADqi8w7jbuMHQ1KC5fn01HUOHBkiaj8HqVLG7TrLavDUTiWuHpJqjvkkTRf7QxmQMuCabucP/azeViXlN+817hub9T657F0fQi3Seq+WIT7idDctJ2jD+VjWE99e2DFgVYm9wBi9/KqTZevN2Fs9JJMe0LNYClwiiGEkHt1S3Ge6U98sCe50A3PQYqgh2tSyRaaECuHn1t3HB297JXCSWW43MNqn9iyfdyhLLlVvRil0/xpK+soBIBcsTu8PgTA6Y4Qyc2B/vxs+lppPjL/O3uPy7yKcYIlUYKpr3ziGgDPKNX2CCNoYT8mm7QZAR4ODD1lzDmBsIjqD5K+TbxFcJMYi0DLs0A8MH86aL91n/TN94+CP6seAQYwsQsKS8rhlytDiETkFS4FRBFa+uStkGsbPz1yBAIIj4RcW/jrOa9LRw363gg0jNwFro5AqbLIJhOdSMKu589Zkhofa6Ku1CMQSkK1FX2IISJty4SmJ7jpYnfIA05WW+mNL9o9CDBRe7ty+kWIt8dctMAd9xfkuuLoi86rlsdYHh09QyH+bjI1Ocvwz0o60+SPQ5FWUl1IDiQIJQ3V7N2F/x0ECdzvpwiXn9vIXl3Po4qU1bPtkOA2A0Q==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(136003)(39860400002)(376002)(230273577357003)(230173577357003)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(82310400011)(36840700001)(46966006)(40470700004)(82740400003)(336012)(426003)(36860700001)(40480700001)(81166007)(40460700003)(83380400001)(47076005)(356005)(2906002)(110136005)(86362001)(44832011)(5660300002)(8936002)(8676002)(4326008)(316002)(70586007)(54906003)(70206006)(966005)(478600001)(6666004)(41300700001)(36756003)(26005)(2616005)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 17:12:56.6871
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f89f03b4-30b2-4ecb-a65e-08dbf0fe6e6b
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D4.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5238
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cuiyangpei,
+Hello,
 
-On Wed, 29 Nov 2023 21:13:15 +0800 cuiyangpei <cuiyangpei@gmail.com> wrote:
+The QDMA subsystem is used in conjunction with the PCI Express IP block
+to provide high performance data transfer between host memory and the
+card's DMA subsystem.
 
-> Hi SeongJae,
-> 
-> We are using damon on the Android operating system. It starts monitoring
-> when app comes to the foreground, stops monitoring and save the
-> monitoring results when app goes to the background.
+            +-------+       +-------+       +-----------+
+   PCIe     |       |       |       |       |           |
+   Tx/Rx    |       |       |       |  AXI  |           |
+ <=======>  | PCIE  | <===> | QDMA  | <====>| User Logic|
+            |       |       |       |       |           |
+            +-------+       +-------+       +-----------+
 
-Thank you so much for sharing this detailed use case.  This will be very
-helpful for us at understanding real usage of DAMON and making it better for
-that together.
+Comparing to AMD/Xilinx XDMA subsystem,
+    https://lore.kernel.org/lkml/Y+XeKt5yPr1nGGaq@matsya/
+the QDMA subsystem is a queue based, configurable scatter-gather DMA
+implementation which provides thousands of queues, support for multiple
+physical/virtual functions with single-root I/O virtualization (SR-IOV),
+and advanced interrupt support. In this mode the IP provides AXI4-MM and
+AXI4-Stream user interfaces which may be configured on a per-queue basis.
 
-> 
-> The two methods that you mentioned,
-> 
-> 1.tracepoint events
-> This method requires opening the tracepoint event and using the
-> 'perf-record' tool to generate the perf.data file. Then parsing the
-> perf.data file. However, the user's phone is not enabled tracepoint
-> events. Additionally, the generated file is quite complex, and we only
-> need memory addresses and access frequency informations.
+The QDMA has been used for Xilinx Alveo PCIe devices.
+    https://www.xilinx.com/applications/data-center/v70.html
 
-That's fair points, thank you for kindly explaining this.
+This patch series is to provide the platform driver for AMD QDMA subsystem
+to support AXI4-MM DMA transfers. More functions, such as AXI4-Stream
+and SR-IOV, will be supported by future patches.
 
-> 
-> 2. damos
-> There is no direct Python runtime environment on android phones.
-> 
-> Both of these methods provide results that are not very intuitive and
-> require complex parsing. We save the results in the format of starting
-> address, region size, and access frequency. When the available memory
-> reaches a threshold, the user space reclaim memory with low access
-> frequency by calling 'process_madvise' function.
+The device driver for any FPGA based PCIe device which leverages QDMA can
+call the standard dmaengine APIs to discover and use the QDMA subsystem
+without duplicating the QDMA driver code in its own driver.
 
-Again, very fair points.  So, if I understood correctly, you want to reclaim
-cold pages proactively when the available memory reaches a threshold, right?
-DAMON could do that directly instead of you[1].  Using that, you don't need to
-save the access pattern and parse but just ask DAMON to find memory regions of
-specific access frequency range and reclaim.  Have you also considered using
-that but found some problems?
+Changes since v6:
+- Added a patch to create amd/ and empty Kconfig/Makefile for AMD drivers
+- Moved source code under amd/qdma/
+- Minor changes for code review comments
 
-I understand the feature may not perfectly fit for your use case, and I want to
-learn from you how it could be better.
+Changes since v5:
+- Add more in patch description.
 
-[1] https://docs.kernel.org/mm/damon/design.html#operation-schemes
+Changes since v4:
+- Convert to use platform driver callback .remove_new()
 
+Changes since v3:
+- Minor changes in Kconfig description.
 
-Thanks,
-SJ
+Changes since v2:
+- A minor change from code review comments.
 
-> 
-> Thanks.
-> 
-[...]
+Changes since v1:
+- Minor changes from code review comments.
+- Fixed kernel robot warning.
+
+Lizhi Hou (2):
+  dmaengine: amd: Add empty Kconfig and Makefile for AMD drivers
+  dmaengine: amd: qdma: Add AMD QDMA driver
+
+ MAINTAINERS                            |    8 +
+ drivers/dma/Kconfig                    |    2 +
+ drivers/dma/Makefile                   |    1 +
+ drivers/dma/amd/Kconfig                |   14 +
+ drivers/dma/amd/Makefile               |    6 +
+ drivers/dma/amd/qdma/Makefile          |    8 +
+ drivers/dma/amd/qdma/qdma-comm-regs.c  |   64 ++
+ drivers/dma/amd/qdma/qdma.c            | 1185 ++++++++++++++++++++++++
+ drivers/dma/amd/qdma/qdma.h            |  265 ++++++
+ include/linux/platform_data/amd_qdma.h |   36 +
+ 10 files changed, 1589 insertions(+)
+ create mode 100644 drivers/dma/amd/Kconfig
+ create mode 100644 drivers/dma/amd/Makefile
+ create mode 100644 drivers/dma/amd/qdma/Makefile
+ create mode 100644 drivers/dma/amd/qdma/qdma-comm-regs.c
+ create mode 100644 drivers/dma/amd/qdma/qdma.c
+ create mode 100644 drivers/dma/amd/qdma/qdma.h
+ create mode 100644 include/linux/platform_data/amd_qdma.h
+
+-- 
+2.34.1
+
