@@ -2,122 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 866977FDDD8
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:01:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B937FDDDE
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:02:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbjK2RAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 12:00:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49954 "EHLO
+        id S232977AbjK2RCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 12:02:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231292AbjK2RAw (ORCPT
+        with ESMTP id S232543AbjK2RCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 12:00:52 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E39A2BC;
-        Wed, 29 Nov 2023 09:00:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701277259; x=1732813259;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=M9ssJjd+HXfjISSW4felR1dBwTKed2/2pddd3sy0Bbo=;
-  b=jH/cOi2DhbplREYyau/uulKgPb29GyxMO0+sLryLdtpYT7PbOKSRO70r
-   OVR57oZ+TNqUoexs4teS3mTrYKpMLXJflcvImsU0bKtmBHfDTko1uo1IV
-   4wj1hR5wFN2ccKSauYX44vgPpmhxhfInnSGax/fJ0jw+LnbWrXUEVPvGm
-   3bQjP8GQlPLsIPE+05O6CTLAYygngUc7aZvMav3r4h6PZ3WDbNrZzV9OD
-   7B1vSx8cMVnL+WsohoIpc0Ft5GIWEqe0OUuXXCBbLkyVBPzm72jFRDbrp
-   /yqQaFj/hUhx4xd3XMhTdb6Kp3JD2tWRuO164VBSv3ijEenDlj9VHt+HR
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="6405651"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="6405651"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 09:00:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="942389594"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="942389594"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 09:00:49 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1r8NvY-00000000Usn-3nmv;
-        Wed, 29 Nov 2023 19:00:44 +0200
-Date:   Wed, 29 Nov 2023 19:00:44 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        Jianlong Huang <jianlong.huang@starfivetech.com>,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Hal Feng <hal.feng@starfivetech.com>
-Subject: Re: [PATCH v4 16/23] pinctrl: imx: Convert to use grp member
-Message-ID: <ZWduPKmBWkaIdLhi@smile.fi.intel.com>
-References: <20231129161459.1002323-1-andriy.shevchenko@linux.intel.com>
- <20231129161459.1002323-17-andriy.shevchenko@linux.intel.com>
- <CAOMZO5CZpQjWKimNReUkwHOc-mF8vWoq2HDhjGKSu6E3g5-aVw@mail.gmail.com>
+        Wed, 29 Nov 2023 12:02:13 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 723E6BC
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 09:02:19 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40b367a0a12so70855e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 09:02:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701277338; x=1701882138; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gLapLfMiK02kYDh1bquJqUL8gsBXcNy1X+KHQGHXYD0=;
+        b=wAb8pb0xsD//iIrmeWbbXmp2q9DzNfsuu/lcvy8xzxcNGgm1rSpIQY9pCQCSBrG5nQ
+         rp0QwEpP/kteaC6dyvu7F26mTSmrs6itvFzrtGstmpWaQikLZf/EWtY2bf79v+xnXIbk
+         cohBUH9Fp8XNxTJVZbEI9VLyE6iNlTyLVSLjjisUa0OZL905jR6Hp97HYPWL4BT82rxw
+         j2S6AbmKDlGKp+WNDcZHRpjuGUaOMN2MIQdBobC4mL4xTBmFd57QLuKczRSRTVLpdXu9
+         kTDc+xtvutNX5uPKkFw0tz6HJjxOcdaediU0qNDp8kSoNg3qtwG6NUx3rl9HV4S3Fbob
+         LaWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701277338; x=1701882138;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gLapLfMiK02kYDh1bquJqUL8gsBXcNy1X+KHQGHXYD0=;
+        b=ljyGZ93KuVoCpCxVcEhXfeiw8kzwxzA4ugzsMCs7nkS8N/J5ceqBVSyFCz0wBL5wWY
+         Wtj1jsXrttizjxmYzBa+zrO8CRs9F+5SAbuYDvCvTTAcxic0/uluSHe6mZvgj8m4NcWr
+         ZJ0ypWQh3l7wOM3sCAtWZEEpLXTKqJnWwK0LCNF8QA5Mu9MEvHchUREg4Ii3aQNtb3iO
+         8GYMpbubBZfo7LknRTocsql+/h3HE/tVCh3Vad0aFgnZGYuEyCdqv7qSwuYK0mHSQ4Q4
+         G1Houb52W61P5HslSGUN7ikSYGWuoDjHAUkksyX5FkpMxJKk+W5KW25qcemuX8tl/lps
+         tFgA==
+X-Gm-Message-State: AOJu0Yzh0Z5JG6O8dnkhforHVcW/vp7OLBdZF807UVvqQ0Vma1xlR5Uk
+        9Fxpn9o2Hy4I92GLFX0TAeJm1j7CWi7nXBmu9hYYAg==
+X-Google-Smtp-Source: AGHT+IFBkpteu493p6KGhPWnWumYPbA4E84jTO/ph6gkjrWloQemnVn+ZZ7IdYxics91NQxE3ePslWlS5OqrF/dxV1k=
+X-Received: by 2002:a05:600c:3c83:b0:3f4:fb7:48d4 with SMTP id
+ bg3-20020a05600c3c8300b003f40fb748d4mr949555wmb.3.1701277337573; Wed, 29 Nov
+ 2023 09:02:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOMZO5CZpQjWKimNReUkwHOc-mF8vWoq2HDhjGKSu6E3g5-aVw@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231129165721.337302-1-dima@arista.com> <20231129165721.337302-3-dima@arista.com>
+In-Reply-To: <20231129165721.337302-3-dima@arista.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 29 Nov 2023 18:02:03 +0100
+Message-ID: <CANn89iLr53_W2183MU97Eqd9A4sZp7M_kEB79sLp+1pPa7pFcA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/7] net/tcp: Consistently align TCP-AO option in the header
+To:     Dmitry Safonov <dima@arista.com>
+Cc:     David Ahern <dsahern@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Francesco Ruggeri <fruggeri05@gmail.com>,
+        Salam Noureddine <noureddine@arista.com>,
+        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 01:36:49PM -0300, Fabio Estevam wrote:
-> Hi Andy,
-> 
-> On Wed, Nov 29, 2023 at 1:15 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > Convert drivers to use grp member embedded in struct group_desc.
-> 
-> You explained what you did, but you did not explain the reason.
+On Wed, Nov 29, 2023 at 5:57=E2=80=AFPM Dmitry Safonov <dima@arista.com> wr=
+ote:
+>
+> Currently functions that pre-calculate TCP header options length use
+> unaligned TCP-AO header + MAC-length for skb reservation.
+> And the functions that actually write TCP-AO options into skb do align
+> the header. Nothing good can come out of this for ((maclen % 4) !=3D 0).
+>
+> Provide tcp_ao_len_aligned() helper and use it everywhere for TCP
+> header options space calculations.
+>
+> Fixes: 1e03d32bea8e ("net/tcp: Add TCP-AO sign to outgoing packets")
+> Signed-off-by: Dmitry Safonov <dima@arista.com>
 
-It's explained in the first paragraph in the cover letter. Do you
-want to copy this into each commit message?
-
-Note, `b4 shazam ...` has an ability to consider patch series as Git PR,
-where the cover letter goes as template for the merge commit message.
-That's how I plan to merge it to my tree.
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Reviewed-by: Eric Dumazet <edumazet@google.com>
