@@ -2,121 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3190F7FDC52
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:14:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 924587FDCCE
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:17:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230337AbjK2QOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 11:14:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35902 "EHLO
+        id S232772AbjK2QRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 11:17:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbjK2QOd (ORCPT
+        with ESMTP id S234526AbjK2QR2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 11:14:33 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72622D69;
-        Wed, 29 Nov 2023 08:14:39 -0800 (PST)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ATGE5GO022031;
-        Wed, 29 Nov 2023 16:14:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=orzbsyYc+22SoXDoqw2ebK3y4KFZaFz5xvaffogBFu0=;
- b=MZwnqYOPX7LnHRqC70tCh1aL9Bx8JdIHKcb2Wy6m5ZNojozYyvqYdEg7EjdlOtjPeu2h
- nhEl6HC23hnXOSfv9dCx+pILYjNsHs3PdqTKTu0QDl3OKLJGSIw3TkJ36rHpoU/q9Kft
- 5kHvj6Zcus/CgH6r2BiozRouvxfYpmgChEwM+LjjBtXs4Z5Td/aZB32AlFgmw7UHpAdG
- QbvrW54hoZXOWGmqOlIkKzKlcJHqgqUJI92dP107186KroX2H6aiXqiLEmWo64cc8wkV
- bb16lA2zqwZbXW50mCPveXv5Oeqcvn7wx4QlgPLKBzKFKc8Wj8kCqlaU54b8zK47mt3Q sQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3up8mw81j7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Nov 2023 16:14:35 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ATGEVoT024555;
-        Wed, 29 Nov 2023 16:14:31 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3up8mw81bk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Nov 2023 16:14:30 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ATE6QJP004403;
-        Wed, 29 Nov 2023 16:14:28 GMT
-Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ukwy1yrr5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Nov 2023 16:14:28 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-        by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ATGERaJ46269124
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Nov 2023 16:14:27 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 74AE35805D;
-        Wed, 29 Nov 2023 16:14:27 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7170858058;
-        Wed, 29 Nov 2023 16:14:26 +0000 (GMT)
-Received: from lingrow.int.hansenpartnership.com (unknown [9.67.129.184])
-        by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 29 Nov 2023 16:14:26 +0000 (GMT)
-Message-ID: <fe077251fea010af59214049eea9681b8008852a.camel@linux.ibm.com>
-Subject: Re: [PATCH] [scsi] lasi700: Add error handling in lasi700_probe
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Haoran Liu <liuhaoran14@163.com>
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 29 Nov 2023 11:14:24 -0500
-In-Reply-To: <20231129145200.34596-1-liuhaoran14@163.com>
-References: <20231129145200.34596-1-liuhaoran14@163.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        Wed, 29 Nov 2023 11:17:28 -0500
+Received: from imap4.hz.codethink.co.uk (imap4.hz.codethink.co.uk [188.40.203.114])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B3E526AA
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:16:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=codethink.co.uk; s=imap4-20230908; h=Sender:Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=9nN6oik6II8sOQ1UNPbsvRq7CVPCG/jUOq68+fl6qwM=; b=V8YbwTrXLLXE+TGQ0d0I8cNmMt
+        AaCeij18XBV3+sVLGacs0vxyfJnG5e17jBufvLrO93KC2Qx9SY4ijOTl2K4BAECoUBh0qKwz0MtZY
+        ZkzeKo3mjzP22OV9UPX36IZRsWOQ64sg/fP371OBe6mT6oPFvr901y59c3HAMdw2vG0Y7OFZpcBsl
+        e7cld42tos2Mp2N2+tDHZuNB/BbzbL39pViVrNv+iU0Evc0FYr8Y2f9ABYheEoRHnfaBBw9W3jWwF
+        xeZA+KSqORU4+OvFoWt5jiD7Vpo7y8lZoiTdbzA2x/yz4tlBE1JLFdCCBe/HF6nH88h+grVWFhhah
+        9cHt7dUw==;
+Received: from [63.135.74.212] (helo=[192.168.1.184])
+        by imap4.hz.codethink.co.uk with esmtpsa  (Exim 4.94.2 #2 (Debian))
+        id 1r8NEA-007yrK-97; Wed, 29 Nov 2023 16:15:55 +0000
+Message-ID: <2feb3ff4-3d26-41f7-83f5-6440393d6e43@codethink.co.uk>
+Date:   Wed, 29 Nov 2023 16:15:53 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: IM1anRz5JwQFzhidCrx6Rsg9M2enZcXE
-X-Proofpoint-ORIG-GUID: V3aNp1G5ZhCENU3RYpeY5njxywsC3WIe
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-29_14,2023-11-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- spamscore=0 mlxscore=0 malwarescore=0 phishscore=0 lowpriorityscore=0
- clxscore=1011 impostorscore=0 priorityscore=1501 mlxlogscore=823
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311290123
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] RISC-V: Implement archrandom when Zkr is available
+Content-Language: en-GB
+To:     =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Samuel Ortiz <sameo@rivosinc.com>,
+        Conor Dooley <conor.dooley@microchip.com>
+References: <20231129160325.1119803-1-cleger@rivosinc.com>
+From:   Ben Dooks <ben.dooks@codethink.co.uk>
+Organization: Codethink Limited.
+In-Reply-To: <20231129160325.1119803-1-cleger@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Sender: ben.dooks@codethink.co.uk
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-11-29 at 06:52 -0800, Haoran Liu wrote:
-> This patch introduces improved error handling for the dma_set_mask
-> and ioremap calls in the lasi700_probe function within
-> drivers/scsi/lasi700.c. Previously, the function did not properly
-> handle the potential failure of these calls, which could lead to
-> improper device initialization and unpredictable behavior.
+On 29/11/2023 16:03, Clément Léger wrote:
+> From: Samuel Ortiz <sameo@rivosinc.com>
+> 
+> From: Samuel Ortiz <sameo@rivosinc.com>
+> 
+> The Zkr extension is ratified and provides 16 bits of entropy seed when
+> reading the SEED CSR.
+> 
+> We can implement arch_get_random_seed_longs() by doing multiple csrrw to
+> that CSR and filling an unsigned long with valid entropy bits.
+> 
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> Signed-off-by: Samuel Ortiz <sameo@rivosinc.com>
+> Signed-off-by: Clément Léger <cleger@rivosinc.com>
+> 
+> ---
+> 
+> This series depends on "riscv: report more ISA extensions through
+> hwprobe" series [1].
+> 
+> Link: https://lore.kernel.org/lkml/20231114141256.126749-1-cleger@rivosinc.com/ [1]
+> ---
+>   arch/riscv/include/asm/archrandom.h | 69 +++++++++++++++++++++++++++++
+>   arch/riscv/include/asm/csr.h        |  9 ++++
+>   2 files changed, 78 insertions(+)
+>   create mode 100644 arch/riscv/include/asm/archrandom.h
+> 
+> diff --git a/arch/riscv/include/asm/archrandom.h b/arch/riscv/include/asm/archrandom.h
+> new file mode 100644
+> index 000000000000..795837ccb583
+> --- /dev/null
+> +++ b/arch/riscv/include/asm/archrandom.h
+> @@ -0,0 +1,69 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Kernel interface for the RISCV arch_random_* functions
+> + *
+> + * Copyright (c) 2023 by Rivos Inc.
+> + *
+> + */
+> +
+> +#ifndef ASM_RISCV_ARCHRANDOM_H
+> +#define ASM_RISCV_ARCHRANDOM_H
+> +
+> +#include <asm/csr.h>
+> +
+> +#define SEED_RETRY_LOOPS 100
+> +
+> +static inline bool __must_check csr_seed_long(unsigned long *v)
+> +{
+> +	unsigned int retry = SEED_RETRY_LOOPS, valid_seeds = 0;
+> +	const int needed_seeds = sizeof(long) / sizeof(u16);
+> +	u16 *entropy = (u16 *)v;
+> +
+> +	do {
+> +		/*
+> +		 * The SEED CSR must be accessed with a read-write instruction.
+> +		 */
+> +		unsigned long csr_seed = csr_swap(CSR_SEED, 0);
+> +
+> +		switch (csr_seed & SEED_OPST_MASK) {
+> +		case SEED_OPST_ES16:
+> +			entropy[valid_seeds++] = csr_seed & SEED_ENTROPY_MASK;
+> +			if (valid_seeds == needed_seeds)
+> +				return true;
+> +			break;
+> +
+> +		case SEED_OPST_DEAD:
+> +			pr_err_once("archrandom: Unrecoverable error\n");
+> +			return false;
+> +
+> +		case SEED_OPST_BIST:
+> +		case SEED_OPST_WAIT:
+> +		default:
+> +			continue;
 
-I have to ask what the point of this is?  There was once an
-architecture that couldn't support 32 bit DMA masks (the altix), but
-it's long gone.  The structural assumption is that a 32 bit DMA mask
-can always be set, so drivers with simple DMA requirements (32 or 64
-bit) usually only check 64 and assume they can fallback to 32.
+is it worth adding a cpu_relax() here?
 
-> Although the error addressed by this patch may not occur in the
-> current environment, I still suggest implementing these error
-> handling routines if the function is not highly time-sensitive. As
-> the environment evolves or the code gets reused in different
-> contexts, there's a possibility that these errors might occur.
-> Addressing them now can prevent potential debugging efforts in the
-> future, which could be quite resource-intensive.
+> +		}
+> +	} while (--retry);
+> +
+> +	return false;
+> +}
+> +
+> +static inline size_t __must_check arch_get_random_longs(unsigned long *v, size_t max_longs)
+> +{
+> +	return 0;
+> +}
+> +
+> +static inline size_t __must_check arch_get_random_seed_longs(unsigned long *v, size_t max_longs)
+> +{
+> +	if (!max_longs)
+> +		return 0;
+> +
+> +	/*
+> +	 * If Zkr is supported and csr_seed_long succeeds, we return one long
+> +	 * worth of entropy.
+> +	 */
+> +	if (riscv_has_extension_likely(RISCV_ISA_EXT_ZKR) && csr_seed_long(v))
+> +		return 1;
 
-This particular operation can never fail on the PA-RISC GSC device,
-which is the only one this driver supports, so the driver currently has
-no error handling because this is something that can't happen.
+I'm assuming the code will retry if max_longs > 1 ?
 
-James
+
+
+> +	return 0;
+> +}
+> +
+> +#endif /* ASM_RISCV_ARCHRANDOM_H */
+> diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
+> index 306a19a5509c..510014051f5d 100644
+> --- a/arch/riscv/include/asm/csr.h
+> +++ b/arch/riscv/include/asm/csr.h
+> @@ -411,6 +411,15 @@
+>   #define CSR_VTYPE		0xc21
+>   #define CSR_VLENB		0xc22
+>   
+> +/* Scalar Crypto Extension - Entropy */
+> +#define CSR_SEED		0x015
+> +#define SEED_OPST_MASK		_AC(0xC0000000, UL)
+> +#define SEED_OPST_BIST		_AC(0x00000000, UL)
+> +#define SEED_OPST_WAIT		_AC(0x40000000, UL)
+> +#define SEED_OPST_ES16		_AC(0x80000000, UL)
+> +#define SEED_OPST_DEAD		_AC(0xC0000000, UL)
+> +#define SEED_ENTROPY_MASK	_AC(0xFFFF, UL)
+> +
+>   #ifdef CONFIG_RISCV_M_MODE
+>   # define CSR_STATUS	CSR_MSTATUS
+>   # define CSR_IE		CSR_MIE
+
+-- 
+Ben Dooks				http://www.codethink.co.uk/
+Senior Engineer				Codethink - Providing Genius
+
+https://www.codethink.co.uk/privacy.html
 
