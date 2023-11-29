@@ -2,133 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F137FD1C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:09:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEC87FD1A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:05:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232589AbjK2JJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 04:09:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45198 "EHLO
+        id S232582AbjK2JFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 04:05:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232622AbjK2JJJ (ORCPT
+        with ESMTP id S230046AbjK2JFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 04:09:09 -0500
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2099CE;
-        Wed, 29 Nov 2023 01:09:14 -0800 (PST)
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231129090912epoutp01287576b4930785cf93f93eaf7e5d2749~cDOimonBM2915529155epoutp01w;
-        Wed, 29 Nov 2023 09:09:12 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231129090912epoutp01287576b4930785cf93f93eaf7e5d2749~cDOimonBM2915529155epoutp01w
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1701248952;
-        bh=ZovzIa/x7gESvqlSt8MTyDv+8XkVhK5BFR8JU7cv8uw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JnK7IdlgxOc9Q23X7OMVPrBpysSJuuZERBFjBVVsNR1Ki2/vkhpVx085zB6ppDDZw
-         /pUN5ZpaFMOFM/R1nEpwrDc7MAYwwyEU3+7oXO4tctXaMuauYkwzh9R1Cuv0C3yZKX
-         WHCnm6JqybyD9SMyp7yZYsGfEuiBRC8erjh9zg2Q=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20231129090912epcas2p2022764258f6b5627e95e97dacfaa473f~cDOiKk8hU2271922719epcas2p29;
-        Wed, 29 Nov 2023 09:09:12 +0000 (GMT)
-Received: from epsmgec2p1.samsung.com (unknown [182.195.36.99]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4SgD5z40H5z4x9QB; Wed, 29 Nov
-        2023 09:09:11 +0000 (GMT)
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmgec2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A4.A1.08648.7BFF6656; Wed, 29 Nov 2023 18:09:11 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
-        20231129090909epcas2p1b9a5283b915463941307500ce254b49e~cDOgJSMXm1798617986epcas2p1J;
-        Wed, 29 Nov 2023 09:09:09 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231129090909epsmtrp2c29e7c26044fa606af3f3071461ca416~cDOgHm9OJ1714217142epsmtrp2W;
-        Wed, 29 Nov 2023 09:09:09 +0000 (GMT)
-X-AuditID: b6c32a43-4b3ff700000021c8-73-6566ffb7b3d9
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        E2.41.08755.5BFF6656; Wed, 29 Nov 2023 18:09:09 +0900 (KST)
-Received: from tiffany (unknown [10.229.95.142]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231129090909epsmtip1474006a48ac17df56754960badb5b878~cDOfv9b6c1613516135epsmtip1D;
-        Wed, 29 Nov 2023 09:09:09 +0000 (GMT)
-Date:   Wed, 29 Nov 2023 17:57:44 +0900
-From:   Hyesoo Yu <hyesoo.yu@samsung.com>
-To:     Alexandru Elisei <alexandru.elisei@arm.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
-        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
-        rppt@kernel.org, hughd@google.com, pcc@google.com,
-        steven.price@arm.com, anshuman.khandual@arm.com,
-        vincenzo.frascino@arm.com, david@redhat.com, eugenis@google.com,
-        kcc@google.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
-        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC v2 15/27] arm64: mte: Check that tag storage blocks
- are in the same zone
-Message-ID: <20231129085744.GB2988384@tiffany>
+        Wed, 29 Nov 2023 04:05:05 -0500
+X-Greylist: delayed 63 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 29 Nov 2023 01:05:11 PST
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 540C818D;
+        Wed, 29 Nov 2023 01:05:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701248711; x=1732784711;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=woZ8E+l0CNEPRBPUKxmoG/NfRBBDwznN1n7mx/aFQJ4=;
+  b=IMYbGbEkuHyASOA3qPIgCXATXSKhRqMzsO9DtW+LdrRjgonxEvYLiNaJ
+   Z8aEa9vpSicr8dABhsp/dXjMxuaX7MO/9RTc3JlOZnB0ljR7dthUA7E6P
+   NUnnijU/dRi5KWTQvhfb4nKOlnSb9Bt/xL/nwHA2z8vZ2p4xsFJ3+Y0ES
+   wYWIxt4V9wngovhlFtsmWhr3pIFQJU15vrwUsTMryNU4Wu5rk+6LbcilG
+   NEZoD1/FOM0izxsUF5ZLxbfp1YueyPQBXF3Gdkifzjx8DRpuOHh+RBO+k
+   huKT7bgWzMSkNEHJ+WCKZ2PCZ4BxwaCYMD7JST8N/DRYWeOi4qM3lOTGb
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="25403"
+X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
+   d="scan'208";a="25403"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 01:04:08 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="718678539"
+X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
+   d="scan'208";a="718678539"
+Received: from hongyuni-mobl.ccr.corp.intel.com (HELO [10.238.2.21]) ([10.238.2.21])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 01:04:04 -0800
+Message-ID: <647701d8-c99b-4ca8-9817-137eaefda237@linux.intel.com>
+Date:   Wed, 29 Nov 2023 17:03:50 +0800
 MIME-Version: 1.0
-In-Reply-To: <20231119165721.9849-16-alexandru.elisei@arm.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Tf0xTVxTHve+9vlaW6ltBd8uIYSVuEy20SOGygHPqyMvQhU2XJWYJ1vaN
-        Ekpb26IOVMrCFNkEhLABMoHwaypY0vJLEGT8GD+E4XBoJqAEZmUoRUBwKMJaHy7+9znnfL/3
-        3HtOLg8X3OC686I0RkavkatFpAtR07opUFy7/DUjedAgRHnmchL9dOEmiZo6FehFxm9c1D82
-        4Ej9k0igqdIfAJozP8PR/fRqHP1aYCfQ/ZlUAt1rKsPQcFoWgWptkxiaqGolUHL9HIEsY7c4
-        6GpjF4Fu1ueR6G75Mge1mXsJdCWvi4My7TaAisreRf3NBRjKWnhEorSh2yTqONOMoabkEcyh
-        rcVQYtsUiXIGBwFKbpvHUePSAoGq259yUdKQDP1VUsndvpEuP18O6OfPMgCd1HSHSxdYYumk
-        tkkObf3Fm7ZcPE3SlpkMLj106ypJd2Y/J+hCUxZOW4sT6HFrDqCnmgZI2no9np61bAin9kcH
-        qxi5ktF7MhqFVhmliQwRhe2N2BkhC5BIxdIgFCjy1MhjmBDRrt3h4tAotWOYIs/DcnWsIxUu
-        NxhEvtuC9dpYI+Op0hqMISJGp1TrAnU+BnmMIVYT6aNhjB9IJRI/mUN4IFrVlWQGugHXowWP
-        fgcmMLY2BazmQcof1nxrIVKAC09A1QF46eH8SjAD4ESNlcsG8wCmLl/nvLL0NQ9ibKERwJwr
-        vSvBfQDvtI6AFMDjEdRGOJC+3WkgqfdgZ1UpcLIb5QtHqyeAU49T3SQcPteDOQuu1EF4yvzk
-        pYhP+cDFjkUuy2/Crpy/CeeZq6ltsNCEO72QSnGB/Q2LGHujXbA8f4rLsiuc6KhaYXc4a28k
-        WY6Gw9PpK2yEl3tMK5qtMNd26mVfnFLBwspG3NkLUl6w7Q7BptfA5NYXXDbNh8knBazTC14r
-        PU+wLISjFac4rISGC9+r2Ym0Afhjw2MsHWzIfe0xua81Y3kLLGiYIXMddpx6G5Yt8VjcBM31
-        vgWAcxGsZ3SGmEhG4aeT/r9fhTbGAl5+Le+ddeDP/CWfFoDxQAuAPFzkxveZVjACvlL+TRyj
-        10boY9WMoQXIHJs5i7uvU2gdf1NjjJD6B0n8AwKkgX4ySaDoLf7d735WCqhIuZGJZhgdo3/l
-        w3ir3U0YMerpF0Z5XI1yCbd0ZQd6m0eUfzwd5luDdbYDu+czbWT+lD4I23wsPn7Nkebjggf8
-        w9OrNKlexzhxwoX4T+Y/9Vmf89H45Wcn6WhFXfdW7NbcgfH9vand06aufRVxo2tVFYf3xg61
-        S8o1Z+ThNdMn/lV6lHY/LB1JsB40FFWuLRa8n+Hfm1jXWUZkCh9vl60qOlE6V9nRXn10j8HX
-        NyH0K4Vwse/GOpd24T37h1fwyUuHVDs+PlLpMZvxKPdLPuyrz9pjfGf97Um1fXnL5mKZ2+nj
-        fWKx97l9I2HkIZKXrXlSEnDhjF3c0sOZCRWb3d6wlWDTlGHH59cuFHV+keb2WWKDiDCo5FJv
-        XG+Q/wdLqxP94wQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUxTZxiG857z9vTQrcuxuPAKiVm6qLObLc0kvD8cuMxtZ1mcEr8SRKHS
-        YyUrpWvpBi5xMLtZBwrWNdqOmLo5ENZZ1wJVgaaDCnRscaMBNloH4StIlA8ZagFhlGaZ/67c
-        z309z5+HJkVf8xLpPE0hp9Mo1GJKABvbxOu3NCwf5ZLHLVJc5XRQ+EJtkMLezlz81NzOx93D
-        PSvRvVKIp6rLAZ5zzpN4tLKBxD/bJyEefXgW4gFvDYHvVlgg9ow9IPBEfRvEpltzELuGe3m4
-        uSUAcfBWFYX/dizzsN/5G8Q3qwI8fH5yDODvajbibp+dwJbIfQpXhPso3HHGR2CvaZBY6XoI
-        XOqforA1FALY5H9E4palCMQNtx/zsTGcgv/6/jp/+wbWcckB2IV5M2CN3n4+a3cZWKP/AY91
-        X5WwrrrTFOt6aOaz4d5miu28uADZyyUWknVf+Ywdd1sBO+XtoVh316fsrGv9biZTsE3JqfM+
-        5nSytBzBsfaZCNRa1hSZy3z8EtAs/ArE0YjZiu74QkSURUwTQFZPcSxfh2yzASLG8WjA6OfF
-        OsMAGRtXmKYhswH1VG6PxhSzCXXWV4Mor2VkaKhhYoUFNMn8SqGzP9hW3XjmCDrl/Ge1JGSk
-        aLFjkR/b6QfI5DgUy9eggHUERplkJOjPpXtE9BbJJKGaJTqKcUwaulxCVgLG9oxge0aw/S/Y
-        AVkH1nFafb4qXy/XyjXcJ1K9Il9v0KikuQX5LrD6OJLNN4CnblraCggatAJEk+K1QulMLicS
-        KhXFxzldQbbOoOb0rSCJhuIEYcL4GaWIUSkKuQ85Tsvp/psSdFxiCfHHiT4v/MAy+zbcJdK0
-        nJzJko0Vce6Zb0aSA5vTn9hTKrLeNd8p/za+PKMja0d6TcFo+Pq+yMbn6d/ntKbDl67s8S/y
-        +oPlJ/tfJedT2lUvHpQlf15IXryrzEgt27t/y4+CwYS+xyRvLLJb6U7e+cW+0izjqRyBvHeu
-        T563M+WX1MZC5skR4/kFQ2Z9y1unrR+9JsssWl6qHQnVnpPZs4snjz/KttbnvInMal/qdKir
-        zJm9J+GdbR5r69WtTVOJezXTO4JNE+8NZhwdunbg5ftWScaJTYdfL8h0vfHlAdU5WST40zTR
-        9X53kfrgS9Vpt59Tpk+8onrBGt4/1DbwdJfdwCbViqH+mEIuIXV6xb8/ir1dpwMAAA==
-X-CMS-MailID: 20231129090909epcas2p1b9a5283b915463941307500ce254b49e
-X-Msg-Generator: CA
-Content-Type: multipart/mixed;
-        boundary="----OVq5TT9zsDSQAN86dWjJc6zPY8CEKIwxCZDtRM.ioT5ZEg4T=_379e7_"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231119165900epcas2p3efd0f3ac19b7bcf7883e8d3945e63326
-References: <20231119165721.9849-1-alexandru.elisei@arm.com>
-        <CGME20231119165900epcas2p3efd0f3ac19b7bcf7883e8d3945e63326@epcas2p3.samsung.com>
-        <20231119165721.9849-16-alexandru.elisei@arm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [GIT PULL] virtio: features
+To:     "Michael S. Tsirkin" <mst@redhat.com>, xuanzhuo@linux.alibaba.com
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        eperezma@redhat.com, jasowang@redhat.com, shannon.nelson@amd.com,
+        yuanyaogoog@chromium.org, yuehaibing@huawei.com,
+        kirill.shutemov@linux.intel.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com,
+        alexander.shishkin@linux.intel.com
+References: <20230903181338-mutt-send-email-mst@kernel.org>
+Content-Language: en-US
+From:   "Ning, Hongyu" <hongyu.ning@linux.intel.com>
+In-Reply-To: <20230903181338-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -136,87 +70,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-------OVq5TT9zsDSQAN86dWjJc6zPY8CEKIwxCZDtRM.ioT5ZEg4T=_379e7_
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
 
-On Sun, Nov 19, 2023 at 04:57:09PM +0000, Alexandru Elisei wrote:
-> alloc_contig_range() requires that the requested pages are in the same
-> zone. Check that this is indeed the case before initializing the tag
-> storage blocks.
+
+On 2023/9/4 6:13, Michael S. Tsirkin wrote:
+> The following changes since commit 2dde18cd1d8fac735875f2e4987f11817cc0bc2c:
 > 
-> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
-> ---
->  arch/arm64/kernel/mte_tag_storage.c | 33 +++++++++++++++++++++++++++++
->  1 file changed, 33 insertions(+)
+>    Linux 6.5 (2023-08-27 14:49:51 -0700)
 > 
-> diff --git a/arch/arm64/kernel/mte_tag_storage.c b/arch/arm64/kernel/mte_tag_storage.c
-> index 8b9bedf7575d..fd63430d4dc0 100644
-> --- a/arch/arm64/kernel/mte_tag_storage.c
-> +++ b/arch/arm64/kernel/mte_tag_storage.c
-> @@ -265,6 +265,35 @@ void __init mte_tag_storage_init(void)
->  	}
->  }
->  
-> +/* alloc_contig_range() requires all pages to be in the same zone. */
-> +static int __init mte_tag_storage_check_zone(void)
-> +{
-> +	struct range *tag_range;
-> +	struct zone *zone;
-> +	unsigned long pfn;
-> +	u32 block_size;
-> +	int i, j;
-> +
-> +	for (i = 0; i < num_tag_regions; i++) {
-> +		block_size = tag_regions[i].block_size;
-> +		if (block_size == 1)
-> +			continue;
-> +
-> +		tag_range = &tag_regions[i].tag_range;
-> +		for (pfn = tag_range->start; pfn <= tag_range->end; pfn += block_size) {
-> +			zone = page_zone(pfn_to_page(pfn));
-
-Hello.
-
-Since the blocks within the tag_range must all be in the same zone, can we move the "page_zone"
-out of the loop ?
-
-Thanks,
-Regards.
-
-> +			for (j = 1; j < block_size; j++) {
-> +				if (page_zone(pfn_to_page(pfn + j)) != zone) {
-> +					pr_err("Tag storage block pages in different zones");
-> +					return -EINVAL;
-> +				}
-> +			}
-> +		}
-> +	}
-> +
-> +	 return 0;
-> +}
-> +
->  static int __init mte_tag_storage_activate_regions(void)
->  {
->  	phys_addr_t dram_start, dram_end;
-> @@ -321,6 +350,10 @@ static int __init mte_tag_storage_activate_regions(void)
->  		goto out_disabled;
->  	}
->  
-> +	ret = mte_tag_storage_check_zone();
-> +	if (ret)
-> +		goto out_disabled;
-> +
->  	for (i = 0; i < num_tag_regions; i++) {
->  		tag_range = &tag_regions[i].tag_range;
->  		for (pfn = tag_range->start; pfn <= tag_range->end; pfn += pageblock_nr_pages)
-> -- 
-> 2.42.1
+> are available in the Git repository at:
 > 
+>    https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
 > 
+> for you to fetch changes up to 1acfe2c1225899eab5ab724c91b7e1eb2881b9ab:
+> 
+>    virtio_ring: fix avail_wrap_counter in virtqueue_add_packed (2023-09-03 18:10:24 -0400)
+> 
+> ----------------------------------------------------------------
+> virtio: features
+> 
+> a small pull request this time around, mostly because the
+> vduse network got postponed to next relase so we can be sure
+> we got the security store right.
+> 
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> 
+> ----------------------------------------------------------------
+> Eugenio Pérez (4):
+>        vdpa: add VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK flag
+>        vdpa: accept VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK backend feature
+>        vdpa: add get_backend_features vdpa operation
+>        vdpa_sim: offer VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK
+> 
+> Jason Wang (1):
+>        virtio_vdpa: build affinity masks conditionally
+> 
+> Xuan Zhuo (12):
+>        virtio_ring: check use_dma_api before unmap desc for indirect
+>        virtio_ring: put mapping error check in vring_map_one_sg
+>        virtio_ring: introduce virtqueue_set_dma_premapped()
+>        virtio_ring: support add premapped buf
+>        virtio_ring: introduce virtqueue_dma_dev()
+>        virtio_ring: skip unmap for premapped
+>        virtio_ring: correct the expression of the description of virtqueue_resize()
+>        virtio_ring: separate the logic of reset/enable from virtqueue_resize
+>        virtio_ring: introduce virtqueue_reset()
+>        virtio_ring: introduce dma map api for virtqueue
+>        virtio_ring: introduce dma sync api for virtqueue
+>        virtio_net: merge dma operations when filling mergeable buffers
 
-------OVq5TT9zsDSQAN86dWjJc6zPY8CEKIwxCZDtRM.ioT5ZEg4T=_379e7_
-Content-Type: text/plain; charset="utf-8"
+Hi,
+above patch (upstream commit 295525e29a5b) seems causing a virtnet 
+related Call Trace after WARNING from kernel/dma/debug.c.
 
+details (log and test setup) tracked in 
+https://bugzilla.kernel.org/show_bug.cgi?id=218204
 
-------OVq5TT9zsDSQAN86dWjJc6zPY8CEKIwxCZDtRM.ioT5ZEg4T=_379e7_--
+it's recently noticed in a TDX guest testing since v6.6.0 release cycle 
+and can still be reproduced in latest v6.7.0-rc3.
+
+as local bisects results show, above WARNING and Call Trace is linked 
+with this patch, do you mind to take a look?
+
+> 
+> Yuan Yao (1):
+>        virtio_ring: fix avail_wrap_counter in virtqueue_add_packed
+> 
+> Yue Haibing (1):
+>        vdpa/mlx5: Remove unused function declarations
+> 
+>   drivers/net/virtio_net.c           | 230 ++++++++++++++++++---
+>   drivers/vdpa/mlx5/core/mlx5_vdpa.h |   3 -
+>   drivers/vdpa/vdpa_sim/vdpa_sim.c   |   8 +
+>   drivers/vhost/vdpa.c               |  15 +-
+>   drivers/virtio/virtio_ring.c       | 412 ++++++++++++++++++++++++++++++++-----
+>   drivers/virtio/virtio_vdpa.c       |  17 +-
+>   include/linux/vdpa.h               |   4 +
+>   include/linux/virtio.h             |  22 ++
+>   include/uapi/linux/vhost_types.h   |   4 +
+>   9 files changed, 625 insertions(+), 90 deletions(-)
+> 
