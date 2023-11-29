@@ -2,190 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF8817FD271
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D18737FD274
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:26:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229588AbjK2J0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 04:26:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39690 "EHLO
+        id S229722AbjK2J00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 04:26:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjK2J0E (ORCPT
+        with ESMTP id S229498AbjK2J0Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 04:26:04 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AAEFB9;
-        Wed, 29 Nov 2023 01:26:10 -0800 (PST)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AT6TU8W029933;
-        Wed, 29 Nov 2023 09:25:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=7R1kbCVA6UYn66gQXAAcWAa9/+nx41Cmcr+zfZ67Fkk=;
- b=kepG/xR/E5etU7XUaBqrwL8BTp/D9vf/qQo3dN4ulfPOszvVIKmu5IrEvA7usVaNNay4
- OFSNc3ENPHQjcQT1AhtJGNRgu29uQRQvZgT+hph8D43Ursjnn/894+HdlRMTUQRWm7ay
- t50jm2CIAZvBPPzNWm4Ek+sBzHyqL5soMHTJ34JsAMeqTMG1BPaPzchpTCqp1+5iRNn1
- muNYW27HIb0dY0XMr0AhmBbp8QQnw9Ct0JJNJQ3BTFSdAhE/MAouFArK8xre1lTVErGD
- tRIDEjEnWwJxwhdOifYIq66c9HTFALh2Cj4iRHYiIQ/Vmjoqbs8kExpjGbUdD06oUNPw nA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3up02xrf1m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Nov 2023 09:25:51 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AT9Polr032404
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Nov 2023 09:25:50 GMT
-Received: from [10.131.33.37] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 29 Nov
- 2023 01:25:44 -0800
-Message-ID: <3dd41426-c026-a832-0a6b-0aabfaec2a8c@quicinc.com>
-Date:   Wed, 29 Nov 2023 14:55:40 +0530
+        Wed, 29 Nov 2023 04:26:25 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0DE1A5
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 01:26:30 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-409299277bbso49245525e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 01:26:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701249989; x=1701854789; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z8O/nuwsdKGU52NreHcZxhpgEp8dykxw7lGHzNqJuX8=;
+        b=rRMQV7eM2OlagwsQhRE63Fg5wggExEpVYFU0cReIMYyZvq2JVmpejeQiviLOvkjqlG
+         OKj1Q0tEiUIzJ2+ld8psMTJUyv30dcQM9G5pxkxs3vaw9tc2eGPK++2NBPb/LR1alYpP
+         aBMIROERsi0xB/suS1/RiBpPzyaSoz2UGHGILhUF8xAmHRwdCmEhhBvvskB1bGUsfrE8
+         /MAzTSdwt+9JNRIP20D/IV3LHlhjYIwes93+cgr5VLDjpp45Rw373eylujkE2iaBv0VS
+         hhWyk/XWGuec9grTKmVjm/00xTsl6ZNnSMmFQcIMPu2jj5uEeZ5roFM9+xB9wB1EjosE
+         TwbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701249989; x=1701854789;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z8O/nuwsdKGU52NreHcZxhpgEp8dykxw7lGHzNqJuX8=;
+        b=kY5bEmnKPaxInpQXCavxOh9pEurUpdrmy/YlrsAsC+EYfpUoV/VQ4imBFz1n6jc6iq
+         OqE1Y4sFD/8Ecs0YXJyhVoOo2VKemLL//0/WSLZ0AFFsMLOJmGvQIgoHUh3zmDU2x98A
+         6FEIoNs8eHUcK8wQpbVBpr66Cm5sE6aKNVCj7B69T4zDrfQ5qN4C6BcOtCrmp0Uro8MV
+         WU/UCGxBqCHAM/sXoQLav9YFi9NVgNwMg0+nJmPe/PfXQMRRhqqc/QXvtO2dUzDl0TFh
+         +Wf/gmJjpUvCcbc/ulOsZD10Hb3GqUow6ft69mYmgaJishX6juiAb4MHM4BaObFT1JkA
+         B9pQ==
+X-Gm-Message-State: AOJu0YxTVlUgzou9KTNW6xS0v85/sEV5EYTi1jE45X4X7CpRcejyTrlA
+        PUCcG+bcZS2PFScvUopEozQihQ==
+X-Google-Smtp-Source: AGHT+IHkcagKEtwdXNV8l2UAjzC9Tph2HoH0JeWCCI53NSslDZsHp7jzdeo924Ha5Yxg7Zszd9hFuQ==
+X-Received: by 2002:a05:600c:4f16:b0:40a:20f3:d126 with SMTP id l22-20020a05600c4f1600b0040a20f3d126mr11812689wmq.6.1701249989220;
+        Wed, 29 Nov 2023 01:26:29 -0800 (PST)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id t8-20020a5d42c8000000b00332fa6cc8acsm10098442wrr.87.2023.11.29.01.26.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 01:26:28 -0800 (PST)
+Date:   Wed, 29 Nov 2023 12:26:24 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Nitesh Shetty <nj.shetty@samsung.com>
+Cc:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        James Smart <james.smart@broadcom.com>,
+        Chaitanya Kulkarni <kch@nvidia.com>, error27@gmail.com,
+        gost.dev@samsung.com, nitheshshetty@gmail.com,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] nvme: Update type from size_t to u16 for
+ opts->queue_size
+Message-ID: <0cd6862e-8037-40b3-9fde-b7f10d66e31c@suswa.mountain>
+References: <CGME20231128123622epcas5p4940679fbbafdf0da802deea3e531f850@epcas5p4.samsung.com>
+ <20231128122958.2235-1-nj.shetty@samsung.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH V2 3/5] arm64: dts: qcom: Add base X1E80100 dtsi and the
- QCP dts
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <andersson@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <catalin.marinas@arm.com>, <ulf.hansson@linaro.org>
-CC:     <agross@kernel.org>, <conor+dt@kernel.org>,
-        <ayan.kumar.halder@amd.com>, <j@jannau.net>,
-        <dmitry.baryshkov@linaro.org>, <nfraprado@collabora.com>,
-        <m.szyprowski@samsung.com>, <u-kumar1@ti.com>, <peng.fan@nxp.com>,
-        <lpieralisi@kernel.org>, <quic_rjendra@quicinc.com>,
-        <abel.vesa@linaro.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <quic_tsoni@quicinc.com>,
-        <neil.armstrong@linaro.org>
-References: <20231117113931.26660-1-quic_sibis@quicinc.com>
- <20231117113931.26660-4-quic_sibis@quicinc.com>
- <918ff1f5-ce01-43ea-b034-e69fbb31f495@linaro.org>
-From:   Sibi Sankar <quic_sibis@quicinc.com>
-In-Reply-To: <918ff1f5-ce01-43ea-b034-e69fbb31f495@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: FtYYxaln7cyVjFWbjwltIs7dEvDSRTbl
-X-Proofpoint-GUID: FtYYxaln7cyVjFWbjwltIs7dEvDSRTbl
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-29_06,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- suspectscore=0 phishscore=0 adultscore=0 lowpriorityscore=0 spamscore=0
- priorityscore=1501 impostorscore=0 mlxlogscore=943 clxscore=1015
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311290069
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231128122958.2235-1-nj.shetty@samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/18/23 06:36, Konrad Dybcio wrote:
-> On 17.11.2023 12:39, Sibi Sankar wrote:
->> From: Rajendra Nayak <quic_rjendra@quicinc.com>
->>
->> Add base dtsi and QCP board (Qualcomm Compute Platform) dts file for
->> X1E80100 SoC, describing the CPUs, GCC and RPMHCC clock controllers,
->> geni UART, interrupt controller, TLMM, reserved memory, interconnects,
->> SMMU and LLCC nodes.
->>
->> Co-developed-by: Abel Vesa <abel.vesa@linaro.org>
->> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
->> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
->> Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
->> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
->> ---
-> [...]
+On Tue, Nov 28, 2023 at 05:59:56PM +0530, Nitesh Shetty wrote:
+> This fixes the smatch warning, "nvme_loop_create_ctrl() warn:
+> 'opts->queue_size - 1' 18446744073709551615 can't fit into 65535
+> 'ctrl->ctrl.sqsize'"
+> We don't need size_t for queue_size, u16 should serve the purpose,
+> as max size is limited to NVMF_DEF_QUEUE_SIZE(1024).
 > 
->> +&tlmm {
->> +	gpio-reserved-ranges = <33 3>, <44 4>, /* SPI (TPM) */
-> Surely SPI doesn't use 7 wires! :D
+> Signed-off-by: Nitesh Shetty <nj.shetty@samsung.com>
 
-yeah, they are just secure reserved unused gpios.
+Huh...  I'm sorry I wasn't necessarily aware that I had published this
+Smatch warning.  I feel like it has a high rate of false positives.
 
-> 
-> [...]
-> 
->> +			L2_0: l2-cache-0 {
-> the cache device is distinguishable by its parent, so "l2-cache" is enough
+Generally with Smatch warnings, I'm not going to try silence every
+false positive.  And I had one complaint recently that I was too focused
+on silencing false positives instead of discovering new bugs...
 
-thanks will fix ^^
+The other thing about static analysis is that static checker developers
+want 0% false positives and kernel developers want 100% false positives.
+I'm a kernel developer so in code that I have looked at the rate of
+false positives is very close to 100%.  Only new code has valid
+warnings.
 
-> 
-> 
->> +				compatible = "cache";
->> +				cache-level = <2>;
->> +				cache-unified;
->> +			};
->> +		};
->> +
-> [...]
-> 
->> +		idle-states {
->> +			entry-method = "psci";
->> +
->> +			CLUSTER_C4: cpu-sleep-0 {
->> +				compatible = "arm,idle-state";
->> +				idle-state-name = "ret";
->> +				arm,psci-suspend-param = <0x00000004>;
-> These suspend parameters look funky.. is this just a PSCI sleep
-> implementation that strays far away from Arm's suggested guidelines?
+Here is what this code looks like:
 
-not really! it's just that 30th bit is set according to spec i.e
-it's marked as a retention state.
+drivers/nvme/target/loop.c
+   573          if (opts->queue_size > ctrl->ctrl.maxcmd) {
+   574                  /* warn if maxcmd is lower than queue_size */
+   575                  dev_warn(ctrl->ctrl.device,
+   576                          "queue_size %zu > ctrl maxcmd %u, clamping down\n",
+   577                          opts->queue_size, ctrl->ctrl.maxcmd);
+   578                  opts->queue_size = ctrl->ctrl.maxcmd;
+   579          }
+   580          ctrl->ctrl.sqsize = opts->queue_size - 1;
 
-> 
-> [...]
-> 
-> 
->> +		CPU_PD11: power-domain-cpu11 {
->> +			#power-domain-cells = <0>;
->> +			power-domains = <&CLUSTER_PD>;
->> +		};
->> +
->> +		CLUSTER_PD: power-domain-cpu-cluster {
->> +			#power-domain-cells = <0>;
->> +			domain-idle-states = <&CLUSTER_CL4>, <&CLUSTER_CL5>;
->> +		};
-> So, can the 3 clusters not shut down their L2 and PLLs (if separate?)
-> on their own?
+Smatch thinks that opts->queue_size is a value that comes from the user
+in the 16-47 range.  But the bug is that Smatch thinks that
+ctrl->ctrl.maxcmd is zero.  16 is greater than zero so we do the
+opts->queue_size = ctrl->ctrl.maxcmd; assignment.  Then zero minus one
+is ULONG_MAX so that's a very high number.
 
-on CL5 the clusters are expected to shutdown their l2 and PLL on their
-own.
+Smatch is just wrong in this case.  Let me try figure out what went
+wrong.  The ctrl->ctrl.maxcmd = 0 comes from:
 
-> 
->> +	};
->> +
->> +	reserved-memory {
->> +		#address-cells = <2>;
->> +		#size-cells = <2>;
->> +		ranges;
->> +
->> +		gunyah_hyp_mem: gunyah-hyp@80000000 {
->> +			reg = <0x0 0x80000000 0x0 0x800000>;
->> +			no-map;
->> +		};
->> +
->> +		hyp_elf_package_mem: hyp-elf_package@80800000 {
-> no underscores in node names, use hyphens
+	ctrl = kzalloc(sizeof(*ctrl), GFP_KERNEL);
 
-ack
+It's supposed to get set to unknown in nvme_loop_configure_admin_queue().
+The database has the correct data.
 
--Sibi
-> 
-> The rest looks OK I think
-> 
-> Konrad
+$ smdb.py return_states nvme_loop_configure_admin_queue | grep maxcmd
+drivers/nvme/target/loop.c | nvme_loop_configure_admin_queue | 229 |             0|       PARAM_SET |  0 |       $->ctrl.maxcmd |             0-u16max |
+drivers/nvme/target/loop.c | nvme_loop_configure_admin_queue | 231 | s32min-(-1),1-s32max|       PARAM_ADD |  0 |       $->ctrl.maxcmd |             0-u16max |
+
+But the issue is that Smatch thinks that nvme_loop_configure_admin_queue()
+always fails with -12.  The reason for that is because Smatch thinks
+that ctrl->ctrl.ops is NULL but the function can only succeed when it's
+non-NULL.
+
+The ctrl->ops assignment happens in nvme_init_ctrl() and it should have
+been easy to track.  I am not sure what went wrong there.  I'll take a
+look at that and fix it.
+
+regards,
+dan carpenter
+
