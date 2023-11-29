@@ -2,45 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D71207FCD7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 04:29:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72AF77FCD7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 04:29:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbjK2D2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 22:28:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38164 "EHLO
+        id S230187AbjK2D3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 22:29:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbjK2D2t (ORCPT
+        with ESMTP id S230479AbjK2D3N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 22:28:49 -0500
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 734BE1AD
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 19:28:48 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R501e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VxMeem7_1701228524;
-Received: from 30.178.67.199(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0VxMeem7_1701228524)
-          by smtp.aliyun-inc.com;
-          Wed, 29 Nov 2023 11:28:46 +0800
-Message-ID: <bd4340ab-566f-986a-afa9-8c6627ea632e@linux.alibaba.com>
-Date:   Wed, 29 Nov 2023 11:28:40 +0800
+        Tue, 28 Nov 2023 22:29:13 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C49491AD;
+        Tue, 28 Nov 2023 19:29:19 -0800 (PST)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AT0dJBl004234;
+        Wed, 29 Nov 2023 03:29:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=+boRo36HQaqSkzRXdCK64bpQqb4ilPayZOqyrR6e6H4=;
+ b=TDCarUw2BcjyceRxg2VVTav/9LVa4DtuuffDOrT7QRqwlMni/ZgPyXDMyyMWVsUaEeXB
+ VqLVkonNT7Y7A1jUqXjJRddoRPAOkvodFz58/Gb/ml+EbYARnGb1R4YWgttxpdc8xXCV
+ ff8ImCJKanVcwywgVi3qv0C1xfm1orEcutY0ZFLq49l45K08xC3hxl1VD4XYa2fKbsPB
+ 1PFpKgKW4DOCh6ratZkTk35450n1DCrz0KLhCEOdH07HV5HltxgGqNr+QYfXbVvBt2cl
+ fwwFSctu3ZNitrJSoz8uZlHPEirVIQW1Ya9gRkBe8sKbgtoVsceTh6tq+q7XeQ7RjD0g 1g== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3unhrpsqe2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Nov 2023 03:29:13 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AT3TCZE028581
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Nov 2023 03:29:12 GMT
+Received: from [10.253.36.238] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 28 Nov
+ 2023 19:29:09 -0800
+Message-ID: <5eb0a521-0b72-4d15-9a65-429c4c123833@quicinc.com>
+Date:   Wed, 29 Nov 2023 11:29:07 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH] nvme: fix deadlock between reset and scan
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/4] bus: mhi: host: Drop chan lock before queuing
+ buffers
 Content-Language: en-US
-To:     Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>
-Cc:     axboe@kernel.dk, hch@lst.de, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kanie@linux.alibaba.com
-References: <1700737213-110685-1-git-send-email-yaoma@linux.alibaba.com>
- <ZWTa0DJmcLKHRWWC@kbusch-mbp.dhcp.thefacebook.com>
- <65b0c372-b308-46dd-c2f2-a5ddb50adb10@linux.alibaba.com>
- <c47a0edd-7437-4c21-b7cf-f969ff85bf78@grimberg.me>
-From:   yaoma <yaoma@linux.alibaba.com>
-In-Reply-To: <c47a0edd-7437-4c21-b7cf-f969ff85bf78@grimberg.me>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.3 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+To:     Manivannan Sadhasivam <mani@kernel.org>
+CC:     <quic_jhugo@quicinc.com>, <mhi@lists.linux.dev>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_cang@quicinc.com>, <quic_mrana@quicinc.com>
+References: <1699939661-7385-1-git-send-email-quic_qianyu@quicinc.com>
+ <1699939661-7385-3-git-send-email-quic_qianyu@quicinc.com>
+ <20231124100403.GA4536@thinkpad>
+ <639d6008-bdfa-4b6e-b622-e916003ec908@quicinc.com>
+ <20231128133252.GX3088@thinkpad>
+From:   Qiang Yu <quic_qianyu@quicinc.com>
+In-Reply-To: <20231128133252.GX3088@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: d7CXt-DTp8ER7QHhB7t0eHlK45p4PFy_
+X-Proofpoint-ORIG-GUID: d7CXt-DTp8ER7QHhB7t0eHlK45p4PFy_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-28_27,2023-11-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 clxscore=1011 bulkscore=0 suspectscore=0 impostorscore=0
+ phishscore=0 lowpriorityscore=0 malwarescore=0 mlxlogscore=587 spamscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311290024
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -48,36 +84,79 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 2023/11/28 18:13, Sagi Grimberg wrote:
-> 
-> 
-> On 11/28/23 08:22, yaoma wrote:
->> Hi Keith Busch
+On 11/28/2023 9:32 PM, Manivannan Sadhasivam wrote:
+> On Mon, Nov 27, 2023 at 03:13:55PM +0800, Qiang Yu wrote:
+>> On 11/24/2023 6:04 PM, Manivannan Sadhasivam wrote:
+>>> On Tue, Nov 14, 2023 at 01:27:39PM +0800, Qiang Yu wrote:
+>>>> Ensure read and write locks for the channel are not taken in succession by
+>>>> dropping the read lock from parse_xfer_event() such that a callback given
+>>>> to client can potentially queue buffers and acquire the write lock in that
+>>>> process. Any queueing of buffers should be done without channel read lock
+>>>> acquired as it can result in multiple locks and a soft lockup.
+>>>>
+>>> Is this patch trying to fix an existing issue in client drivers or a potential
+>>> issue in the future drivers?
+>>>
+>>> Even if you take care of disabled channels, "mhi_event->lock" acquired during
+>>> mhi_mark_stale_events() can cause deadlock, since event lock is already held by
+>>> mhi_ev_task().
+>>>
+>>> I'd prefer not to open the window unless this patch is fixing a real issue.
+>>>
+>>> - Mani
+>> In [PATCH v4 1/4] bus: mhi: host: Add spinlock to protect WP access when
+>> queueing
+>> TREs,  we add
+>> write_lock_bh(&mhi_chan->lock)/write_unlock_bh(&mhi_chan->lock)
+>> in mhi_gen_tre, which may be invoked as part of mhi_queue in client xfer
+>> callback,
+>> so we have to use read_unlock_bh(&mhi_chan->lock) here to avoid acquiring
+>> mhi_chan->lock
+>> twice.
 >>
->> Thanks for your reply.
->>
->> The idea to avoid such a deadlock between nvme_reset and nvme_scan is 
->> to ensure that no namespace can be added to ctrl->namespaces after 
->> nvme_start_freeze has already been called. We can achieve this goal by 
->> assessing the ctrl->state after we have already acquired the 
->> ctrl->namespaces_rwsem lock, to decide whether to add the namespace to 
->> the list or not.
->> 1. After we determine that ctrl->state is LIVE, it may be immediately 
->> changed to another state. However, since we have already acquired the 
->> lock, other tasks cannot access ctrl->namespace, so we can still 
->> safely add the namespace to the list. After acquiring the lock, 
->> nvme_start_freeze will freeze all ns->q in the list, including any 
->> newly added namespaces.
->> 2. Before the completion of nvme_reset, ctrl->state will not be 
->> changed to LIVE, so we will not add any more namespaces to the list. 
->> All ns->q in the list is frozen, so nvme_wait_freeze can exit normally.
-> 
-> I agree with the analysis, there is a hole between start_freeze and
-> freeze_wait that a scan may add a ns to the ctrl ns list.
-> 
-I think your proposal is nice, and I will test it.
-> However the fix should be to mark the ctrl with say NVME_CTRL_FROZEN
-> flag set in nvme_freeze_start and cleared in nvme_unfreeze (similar
-> to what we did with quiesce). Then the scan can check it before adding
-> the new namespace (under the namespaces_rwsem).
+>> Sorry for confusing you. Do you think we need to sqush this two patch into
+>> one?
+> Well, if patch 1 is introducing a potential deadlock, then we should fix patch
+> 1 itself and not introduce a follow up patch.
+>
+> But there is one more issue that I pointed out in my previous reply.
+Sorry, I can not understand why "mhi_event->lock" acquired during
+mhi_mark_stale_events() can cause deadlock. In mhi_ev_task(), we will
+not invoke mhi_mark_stale_events(). Can you provide some interpretation?
+>
+> Also, I'm planning to cleanup the locking mess within MHI in the coming days.
+> Perhaps we can revisit this series at that point of time. Will that be OK for
+> you?
+Sure, that will be great.
+>
+> - Mani
+>
+>>>> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
+>>>> ---
+>>>>    drivers/bus/mhi/host/main.c | 4 ++++
+>>>>    1 file changed, 4 insertions(+)
+>>>>
+>>>> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+>>>> index 6c6d253..c4215b0 100644
+>>>> --- a/drivers/bus/mhi/host/main.c
+>>>> +++ b/drivers/bus/mhi/host/main.c
+>>>> @@ -642,6 +642,8 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
+>>>>    			mhi_del_ring_element(mhi_cntrl, tre_ring);
+>>>>    			local_rp = tre_ring->rp;
+>>>> +			read_unlock_bh(&mhi_chan->lock);
+>>>> +
+>>>>    			/* notify client */
+>>>>    			mhi_chan->xfer_cb(mhi_chan->mhi_dev, &result);
+>>>> @@ -667,6 +669,8 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
+>>>>    					kfree(buf_info->cb_buf);
+>>>>    				}
+>>>>    			}
+>>>> +
+>>>> +			read_lock_bh(&mhi_chan->lock);
+>>>>    		}
+>>>>    		break;
+>>>>    	} /* CC_EOT */
+>>>> -- 
+>>>> 2.7.4
+>>>>
+>>>>
