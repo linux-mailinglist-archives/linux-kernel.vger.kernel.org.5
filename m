@@ -2,62 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0165B7FE316
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 23:25:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 495727FE31A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 23:25:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234892AbjK2WZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 17:25:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
+        id S1343584AbjK2WZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 17:25:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234805AbjK2WZB (ORCPT
+        with ESMTP id S1343571AbjK2WZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 17:25:01 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729752137
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:24:30 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4025EC433C8;
-        Wed, 29 Nov 2023 22:23:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1701296627;
-        bh=fEXq9E8HmJBtiL8syNoj8Vbn8l4dQ40YP+5YhnLV0Ug=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=p85de6TjKrzSuMxCk7vCrt0nm7vVwuO17usm2SverDaBt/fW0T0gQ+I34dSYpgWk4
-         cxlL1oAEbTUUu6md7D41xK215v7YgzhPYGmgZPhiGVKsHo/lY2HCn7DlxkJl+kLSfH
-         Rt61YCWDZtqg4yTn5/ZLBnL2lSPWdQdgqeXnlorE=
-Date:   Wed, 29 Nov 2023 14:23:46 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Ignat Korchagin <ignat@cloudflare.com>
-Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, eric_devolder@yahoo.com,
-        agordeev@linux.ibm.com, bhe@redhat.com, kernel-team@cloudflare.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] kexec: drop dependency on ARCH_SUPPORTS_KEXEC from
- CRASH_DUMP
-Message-Id: <20231129142346.594069e784d20b3ffb610467@linux-foundation.org>
-In-Reply-To: <20231129220409.55006-1-ignat@cloudflare.com>
-References: <20231129220409.55006-1-ignat@cloudflare.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 29 Nov 2023 17:25:15 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 831A12110;
+        Wed, 29 Nov 2023 14:24:33 -0800 (PST)
+Received: by linux.microsoft.com (Postfix, from userid 1099)
+        id 9588F20B74C0; Wed, 29 Nov 2023 14:24:09 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9588F20B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1701296649;
+        bh=N2gdfXEtDL56X5KE/D0j4gq3nXY5wXUdieLJyNGatYw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XWLmTpVLwaymFnm+nj/NzdoCTbgU5Yq4t++iTerQS4gun/c9T2VPZXRe4B8ZSmTnx
+         jEzZbHrFONut7aDGdNfuCN1ofKSWm62bYhihGrf99LULdc263L9iqfX/rYK4m6qrQR
+         uSU8pIMgHSWdL9HQef+Nisw4YQOeUkHEuXu1Z4aw=
+Date:   Wed, 29 Nov 2023 14:24:09 -0800
+From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Souradeep Chakrabarti <schakrabarti@microsoft.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        Long Li <longli@microsoft.com>,
+        "sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
+        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Paul Rosswurm <paulros@microsoft.com>
+Subject: Re: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning IRQ
+ affinity on HT cores
+Message-ID: <20231129222409.GB20858@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1700574877-6037-1-git-send-email-schakrabarti@linux.microsoft.com>
+ <20231121154841.7fc019c8@kernel.org>
+ <PUZP153MB0788476CD22D5AA2ECDC11ABCCBDA@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
+ <44a4e759-02fc-4015-90a8-c41eb7cb3dc1@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <44a4e759-02fc-4015-90a8-c41eb7cb3dc1@gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Nov 2023 22:04:09 +0000 Ignat Korchagin <ignat@cloudflare.com> wrote:
-
-> Fixes: 91506f7e5d21 ("arm64/kexec: refactor for kernel/Kconfig.kexec")
-> Cc: stable@vger.kernel.org # 6.6+: f8ff234: kernel/Kconfig.kexec: drop select of KEXEC for CRASH_DUMP
-> Cc: stable@vger.kernel.org # 6.6+
-
-I doubt if anyone knows what the two above lines mean.  What are your
-recommendations for the merging of this patch?
-
-> Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
-
+On Mon, Nov 27, 2023 at 11:07:31AM -0800, Florian Fainelli wrote:
+> On 11/27/23 01:36, Souradeep Chakrabarti wrote:
+> >
+> >
+> >>-----Original Message-----
+> >>From: Jakub Kicinski <kuba@kernel.org>
+> >>Sent: Wednesday, November 22, 2023 5:19 AM
+> >>To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+> >>Cc: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
+> >><haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
+> >><decui@microsoft.com>; davem@davemloft.net; edumazet@google.com;
+> >>pabeni@redhat.com; Long Li <longli@microsoft.com>;
+> >>sharmaajay@microsoft.com; leon@kernel.org; cai.huoqing@linux.dev;
+> >>ssengar@linux.microsoft.com; vkuznets@redhat.com; tglx@linutronix.de; linux-
+> >>hyperv@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
+> >>linux-rdma@vger.kernel.org; Souradeep Chakrabarti
+> >><schakrabarti@microsoft.com>; Paul Rosswurm <paulros@microsoft.com>
+> >>Subject: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning IRQ affinity on
+> >>HT cores
+> >>
+> >>On Tue, 21 Nov 2023 05:54:37 -0800 Souradeep Chakrabarti wrote:
+> >>>Existing MANA design assigns IRQ to every CPUs, including sibling
+> >>>hyper-threads in a core. This causes multiple IRQs to work on same CPU
+> >>>and may reduce the network performance with RSS.
+> >>>
+> >>>Improve the performance by adhering the configuration for RSS, which
+> >>>assigns IRQ on HT cores.
+> >>
+> >>Drivers should not have to carry 120 LoC for something as basic as spreading IRQs.
+> >>Please take a look at include/linux/topology.h and if there's nothing that fits your
+> >>needs there - add it. That way other drivers can reuse it.
+> >Because of the current design idea, it is easier to keep things inside
+> >the mana driver code here. As the idea of IRQ distribution here is :
+> >1)Loop through interrupts to assign CPU
+> >2)Find non sibling online CPU from local NUMA and assign the IRQs
+> >on them.
+> >3)If number of IRQs is more than number of non-sibling CPU in that
+> >NUMA node, then assign on sibling CPU of that node.
+> >4)Keep doing it till all the online CPUs are used or no more IRQs.
+> >5)If all CPUs in that node are used, goto next NUMA node with CPU.
+> >Keep doing 2 and 3.
+> >6) If all CPUs in all NUMA nodes are used, but still there are IRQs
+> >then wrap over from first local NUMA node and continue
+> >doing 2, 3 4 till all IRQs are assigned.
+> 
+> You are describing the logic of what is done by the driver which is
+> not responding to Jakub's comment. His request is to consider coming
+> up with at least a somewhat usable and generic helper for other
+> drivers to use.
+> 
+> This also begs the obvious question: why is all of this in the
+> kernel in the first place? What could not be accomplished by an
+> initramfs/ramdisk with minimal user-space responsible for parsing
+> the system node(s) topology and CPU and assign interrupts
+> accordingly?
+> 
+> We all like when things "automagically" work but this is conflating
+> mechanism (supporting interrupt affinities) with policy (assigning
+> affinities based upon work load) and that never flies really well.
+> -- 
+> Florian
+I have shared a proposed patch in my previous reply to put some
+part in topology.h. 
+Regarding why we want to have this change in kernel rather than in user-space
+is because most user in Azure expects things to just work out of the box.
+It becomes difficult in Azure to adopt scripts in thousand of images in
+short time. To avoid such problems for customers, we try to have this
+changes in kernel.
