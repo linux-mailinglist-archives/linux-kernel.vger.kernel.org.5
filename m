@@ -2,156 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 836097FD2AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:29:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BDCE7FD28D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230192AbjK2J30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 04:29:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55420 "EHLO
+        id S230171AbjK2J2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 04:28:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231190AbjK2J3A (ORCPT
+        with ESMTP id S231134AbjK2J17 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 04:29:00 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD4DA2108;
-        Wed, 29 Nov 2023 01:28:50 -0800 (PST)
-Received: from pyrite.hamster-moth.ts.net (h175-177-049-135.catv02.itscom.jp [175.177.49.135])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A74A32B6;
-        Wed, 29 Nov 2023 10:28:07 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1701250093;
-        bh=yeDPN9oGkesAazzCi9HQ+rTaGgXNlCyocQHZh8/QGks=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sTT5MvtAsPer5EX+3DkssuQuiTyU6eu29lIu1aDBXh/yy6n0fSxV0CHbx8t7O4as9
-         65Yg3jCqiXBAhMGTGLzOfFFA+E2bsegjSjdwiqXuv9QH0VIAFAZgbxuMi2D4S8I87z
-         sZJUzhRebfJVrM6T8OkUQGQ8vGG0/aAnENdEPqHg=
-From:   Paul Elder <paul.elder@ideasonboard.com>
-To:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org
-Cc:     kieran.bingham@ideasonboard.com, tomi.valkeinen@ideasonboard.com,
-        umang.jain@ideasonboard.com, aford173@gmail.com,
-        Paul Elder <paul.elder@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Rob Herring <robh@kernel.org>,
-        Dafna Hirschfeld <dafna@fastmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Helen Koike <helen.koike@collabora.com>,
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Rockchip SoC
-        support), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v4 06/11] dt-bindings: media: rkisp1: Add i.MX8MP ISP to compatible
-Date:   Wed, 29 Nov 2023 18:27:54 +0900
-Message-Id: <20231129092759.242641-7-paul.elder@ideasonboard.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231129092759.242641-1-paul.elder@ideasonboard.com>
-References: <20231129092759.242641-1-paul.elder@ideasonboard.com>
+        Wed, 29 Nov 2023 04:27:59 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 211AC1FDB;
+        Wed, 29 Nov 2023 01:27:58 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0746E2F4;
+        Wed, 29 Nov 2023 01:28:45 -0800 (PST)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A2A93F6C4;
+        Wed, 29 Nov 2023 01:27:56 -0800 (PST)
+Message-ID: <03b314c6-ed6d-ae17-5bc5-0170139f7feb@arm.com>
+Date:   Wed, 29 Nov 2023 09:27:55 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v1 2/2] perf test: Add basic list test
+Content-Language: en-US
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+References: <20231129081004.1918096-1-irogers@google.com>
+ <20231129081004.1918096-2-irogers@google.com>
+ <a54d0a93-aacd-4c69-a34c-8628b0e18ee7@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <a54d0a93-aacd-4c69-a34c-8628b0e18ee7@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The i.MX8MP ISP is compatbile with the rkisp1 driver. Add it to the list
-of compatible strings. While at it, expand on the description of the
-clocks to make it clear which clock in the i.MX8MP ISP they map to,
-based on the names from the datasheet (which are confusing).
 
-Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
-Changes since v1:
 
-- Add fsl,blk-ctrl property
-- Make iommus, phys and phy-names conditional on compatible
+On 29/11/2023 09:00, Adrian Hunter wrote:
+> On 29/11/23 10:10, Ian Rogers wrote:
+>> Test that json output produces valid json.
+>>
+>> Signed-off-by: Ian Rogers <irogers@google.com>
+>> ---
+>>  tools/perf/tests/shell/list.sh | 29 +++++++++++++++++++++++++++++
+>>  1 file changed, 29 insertions(+)
+>>  create mode 100755 tools/perf/tests/shell/list.sh
+>>
+>> diff --git a/tools/perf/tests/shell/list.sh b/tools/perf/tests/shell/list.sh
+>> new file mode 100755
+>> index 000000000000..286879a9837a
+>> --- /dev/null
+>> +++ b/tools/perf/tests/shell/list.sh
+>> @@ -0,0 +1,29 @@
+>> +#!/bin/sh
+>> +# perf list tests
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +
+>> +set -e
+>> +err=0
+>> +
+>> +if [ "x$PYTHON" == "x" ]
+>> +then
+>> +	if which python3 > /dev/null
+> 
+> 'which' isn't always present.  Maybe
+> 
+> python3 --version >/dev/null 2>&1 && PYTHON=python3
+> 
 
- .../bindings/media/rockchip-isp1.yaml         | 37 ++++++++++++++++---
- 1 file changed, 31 insertions(+), 6 deletions(-)
+Now that we have shellcheck integrated into the build, we could enable
+the POSIX mode test which would warn against this usage of which and
+suggest the alternative.
 
-diff --git a/Documentation/devicetree/bindings/media/rockchip-isp1.yaml b/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
-index e466dff8286d..b9c812b81389 100644
---- a/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
-+++ b/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
-@@ -16,6 +16,7 @@ description: |
- properties:
-   compatible:
-     enum:
-+      - fsl,imx8mp-isp
-       - rockchip,px30-cif-isp
-       - rockchip,rk3399-cif-isp
- 
-@@ -36,9 +37,9 @@ properties:
-     minItems: 3
-     items:
-       # isp0 and isp1
--      - description: ISP clock
--      - description: ISP AXI clock
--      - description: ISP AHB clock
-+      - description: ISP clock (for imx8mp, clk)
-+      - description: ISP AXI clock (for imx8mp, m_hclk)
-+      - description: ISP AHB clock (for imx8mp, hclk)
-       # only for isp1
-       - description: ISP Pixel clock
- 
-@@ -52,6 +53,13 @@ properties:
-       # only for isp1
-       - const: pclk
- 
-+  fsl,blk-ctrl:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    maxItems: 1
-+    description:
-+      A phandle to the media block control for the ISP, followed by a cell
-+      containing the index of the gasket.
-+
-   iommus:
-     maxItems: 1
- 
-@@ -112,9 +120,6 @@ required:
-   - interrupts
-   - clocks
-   - clock-names
--  - iommus
--  - phys
--  - phy-names
-   - power-domains
-   - ports
- 
-@@ -142,6 +147,26 @@ allOf:
-       required:
-         - interrupt-names
- 
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: fsl,imx8mp-isp
-+    then:
-+      properties:
-+        iommus: false
-+        phys: false
-+        phy-names: false
-+      required:
-+        - fsl,blk-ctrl
-+    else:
-+      properties:
-+        fsl,blk-ctrl: false
-+      required:
-+        - iommus
-+        - phys
-+        - phy-names
-+
- additionalProperties: false
- 
- examples:
--- 
-2.39.2
+At the moment though there are several other usages of which already in
+the tests. And probably enabling POSIX mode would come with hundreds of
+other warnings to fix.
 
+I'm not saying we shouldn't change this instance though, just adding the
+info for the discussion.
+
+>> +	then
+>> +		PYTHON=python3
+>> +	elif which python > /dev/null
+>> +	then
+>> +		PYTHON=python
+>> +	else
+>> +		echo Skipping test, python not detected please set environment variable PYTHON.
+>> +		exit 2
+>> +	fi
+>> +fi
+>> +
+>> +test_list_json() {
+>> +  echo "Json output test"
+>> +  perf list -j | $PYTHON -m json.tool
+>> +  echo "Json output test [Success]"
+>> +}
+>> +
+>> +test_list_json
+>> +exit $err
+> 
+> 
