@@ -2,181 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F20BF7FD3E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:17:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6694A7FD3EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:18:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232984AbjK2KRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 05:17:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54410 "EHLO
+        id S230377AbjK2KSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 05:18:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbjK2KRn (ORCPT
+        with ESMTP id S229513AbjK2KSo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 05:17:43 -0500
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 203A619BC;
-        Wed, 29 Nov 2023 02:17:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1701253068; x=1732789068;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=FTnVkFfWKUdm2qh0fpbqtR+pAnlFpnKuhuB2nJV91Uk=;
-  b=kYIGOJf7h1YkACgM02M2DRcQ0n7aQuPxJSbW7SFNmf1/CzLtYm8NBW0H
-   uq1hxYymdDKnw6/tGDYrH14k2MNqyRBRxvpeu1LWYrDFyCN7EcVvdYyTd
-   tzfv51wGXeDinukyqXj7+WTTTvDf7SBdhK6iFhaMR5guIxtbFHXiXddUg
-   rqO/ECqD/jTG/8+2V89wgjCpjjQv9dFDlwy1+yH0qkBIDSMRNdEyAx9A7
-   SOpQGX/4JqmCCy1zV8PV3B491ojnwrIN6ajDMrR/X4LErHfIXheZR6iNP
-   jm5T+rNJR32TPxR52ePKLaMwBeXM5KYvBenGKdHMn60z28Vv8qyPAnIq6
-   w==;
-X-IronPort-AV: E=Sophos;i="6.04,235,1695679200"; 
-   d="scan'208";a="34234189"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 29 Nov 2023 11:17:45 +0100
-Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.18])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 6612D280075;
-        Wed, 29 Nov 2023 11:17:45 +0100 (CET)
-From:   Alexander Stein <alexander.stein@ew.tq-group.com>
-To:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        Paul Elder <paul.elder@ideasonboard.com>
-Cc:     kieran.bingham@ideasonboard.com, tomi.valkeinen@ideasonboard.com,
-        umang.jain@ideasonboard.com,
-        Paul Elder <paul.elder@ideasonboard.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Marek Vasut <marex@denx.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Adam Ford <aford173@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Frank Li <Frank.Li@nxp.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] arm64: dts: imx8mp: Add DT nodes for the two ISPs
-Date:   Wed, 29 Nov 2023 11:17:44 +0100
-Message-ID: <7150709.31r3eYUQgx@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <20231129093113.255161-2-paul.elder@ideasonboard.com>
-References: <20231129093113.255161-1-paul.elder@ideasonboard.com> <20231129093113.255161-2-paul.elder@ideasonboard.com>
+        Wed, 29 Nov 2023 05:18:44 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D6FBA
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:18:49 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r8HeZ-0001Po-Mm; Wed, 29 Nov 2023 11:18:47 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r8HeY-00CNjm-Ht; Wed, 29 Nov 2023 11:18:46 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r8HeY-00Ale9-8p; Wed, 29 Nov 2023 11:18:46 +0100
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        kernel@pengutronix.de, Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH] pwm: Update kernel doc for struct pwm_chip
+Date:   Wed, 29 Nov 2023 11:18:32 +0100
+Message-ID: <20231129101831.908952-2-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231129125826.08d7d178@canb.auug.org.au>
+References: <20231129125826.08d7d178@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1267; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=tsm5bQuNyv52mW3JCZFnEoHg3N8bF61pCfqHO/cC8NI=; b=owGbwMvMwMXY3/A7olbonx/jabUkhtR0/u+Mqf8zDFjjK5dfypiXkJPIMPW4cszLzKot06655 Zgxr7rVyWjMwsDIxSArpshi37gm06pKLrJz7b/LMINYmUCmMHBxCsBElFrY/1cnzPxU7ffF0jbg WZ6EZooIB49T/aO1AVe7rFvuTJ9W2pD4xKtxneh0o5cCP7jcVpk7fmXnXCPLflDih4+Upc4zZ6f GaUWHbH6J7XZPnrQ46dwcPZlVOQH7j9znFV4aVfRVd9PJfW/9HXJ1XgS8uqetF1f9WGrv+1NdS7 19rV/2exulf3Zd4K8VmGQ7qaSae479uVSPoInuFjdunf+mYNnNbCmT+rKmInrCC3W2kyoVgt0i9 gd6Jfcz1J7VOmpT8pqJ0ab7iTRv835raV/dMs9FLGc+97sFx/79+Eng72u7t+aXWROvmxUmsylt 28iol7io9Jjz8U+XmZJnRm6YuO2V2KNtU07su7HAXLsGAA==
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+Commit c572f3b9c8b7 ("pwm: Replace PWM chip unique base by unique ID")
+changed the members of struct pwm_chip, but failed to update the
+documentation accordingly. Catch up and document the new member and drop
+description for the two removed ones.
 
-Am Mittwoch, 29. November 2023, 10:31:12 CET schrieb Paul Elder:
-> The ISP supports both CSI and parallel interfaces, where port 0
-> corresponds to the former and port 1 corresponds to the latter. Since
-> the i.MX8MP's ISPs are connected by the parallel interface to the CSI
-> receiver, set them both to port 1.
->=20
-> Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ include/linux/pwm.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Thanks for the patch. I'm running with for a while now.
-Reviewed-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+diff --git a/include/linux/pwm.h b/include/linux/pwm.h
+index c27a4bb76012..f87655c06c82 100644
+--- a/include/linux/pwm.h
++++ b/include/linux/pwm.h
+@@ -281,11 +281,10 @@ struct pwm_ops {
+  * @dev: device providing the PWMs
+  * @ops: callbacks for this PWM controller
+  * @owner: module providing this chip
+- * @base: number of first PWM controlled by this chip
++ * @id: unique number of this PWM chip
+  * @npwm: number of PWMs controlled by this chip
+  * @of_xlate: request a PWM device given a device tree PWM specifier
+  * @of_pwm_n_cells: number of cells expected in the device tree PWM specifier
+- * @list: list node for internal use
+  * @pwms: array of PWM devices allocated by the framework
+  */
+ struct pwm_chip {
 
-> ---
->  arch/arm64/boot/dts/freescale/imx8mp.dtsi | 50 +++++++++++++++++++++++
->  1 file changed, 50 insertions(+)
->=20
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> b/arch/arm64/boot/dts/freescale/imx8mp.dtsi index
-> c9a610ba4836..25579d4c58f2 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> @@ -1604,6 +1604,56 @@ isi_in_1: endpoint {
->  				};
->  			};
->=20
-> +			isp_0: isp@32e10000 {
-> +				compatible =3D "fsl,imx8mp-isp";
-> +				reg =3D <0x32e10000 0x10000>;
-> +				interrupts =3D <GIC_SPI 74=20
-IRQ_TYPE_LEVEL_HIGH>;
-> +				clocks =3D <&clk=20
-IMX8MP_CLK_MEDIA_ISP_ROOT>,
-> +					 <&clk=20
-IMX8MP_CLK_MEDIA_AXI_ROOT>,
-> +					 <&clk=20
-IMX8MP_CLK_MEDIA_APB_ROOT>;
-> +				clock-names =3D "isp", "aclk", "hclk";
-> +				assigned-clocks =3D <&clk=20
-IMX8MP_CLK_MEDIA_ISP>;
-> +				assigned-clock-parents =3D <&clk=20
-IMX8MP_SYS_PLL2_500M>;
-> +				assigned-clock-rates =3D <500000000>;
-> +				power-domains =3D <&media_blk_ctrl=20
-IMX8MP_MEDIABLK_PD_ISP>;
-> +				fsl,blk-ctrl =3D <&media_blk_ctrl 0>;
-> +				status =3D "disabled";
-> +
-> +				ports {
-> +					#address-cells =3D <1>;
-> +					#size-cells =3D <0>;
-> +
-> +					port@1 {
-> +						reg =3D <1>;
-> +					};
-> +				};
-> +			};
-> +
-> +			isp_1: isp@32e20000 {
-> +				compatible =3D "fsl,imx8mp-isp";
-> +				reg =3D <0x32e20000 0x10000>;
-> +				interrupts =3D <GIC_SPI 75=20
-IRQ_TYPE_LEVEL_HIGH>;
-> +				clocks =3D <&clk=20
-IMX8MP_CLK_MEDIA_ISP_ROOT>,
-> +					 <&clk=20
-IMX8MP_CLK_MEDIA_AXI_ROOT>,
-> +					 <&clk=20
-IMX8MP_CLK_MEDIA_APB_ROOT>;
-> +				clock-names =3D "isp", "aclk", "hclk";
-> +				assigned-clocks =3D <&clk=20
-IMX8MP_CLK_MEDIA_ISP>;
-> +				assigned-clock-parents =3D <&clk=20
-IMX8MP_SYS_PLL2_500M>;
-> +				assigned-clock-rates =3D <500000000>;
-> +				power-domains =3D <&media_blk_ctrl=20
-IMX8MP_MEDIABLK_PD_ISP>;
-> +				fsl,blk-ctrl =3D <&media_blk_ctrl 1>;
-> +				status =3D "disabled";
-> +
-> +				ports {
-> +					#address-cells =3D <1>;
-> +					#size-cells =3D <0>;
-> +
-> +					port@1 {
-> +						reg =3D <1>;
-> +					};
-> +				};
-> +			};
-> +
->  			dewarp: dwe@32e30000 {
->  				compatible =3D "nxp,imx8mp-dw100";
->  				reg =3D <0x32e30000 0x10000>;
-
-
-=2D-=20
-TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht M=FCnchen, HRB 105018
-Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
-http://www.tq-group.com/
-
+base-commit: 5d67b8f81b9d598599366214e3b2eb5f84003c9f
+-- 
+2.42.0
 
