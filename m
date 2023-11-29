@@ -2,103 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 445117FD0EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:33:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BEA57FD103
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:35:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231504AbjK2Ida (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 03:33:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45750 "EHLO
+        id S229864AbjK2IfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 03:35:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjK2Id2 (ORCPT
+        with ESMTP id S229488AbjK2IfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 03:33:28 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5102019B0;
-        Wed, 29 Nov 2023 00:33:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=iL44Hr2Utbt8Rb40hYFfR3Yl3GOU2Y+nYu/SSloZ/X0=;
-        t=1701246814; x=1702456414; b=B6n9/g6ITd6f4HA4PHYrxMnsj2Jr5FKm/W9Cex+mkmirzZ6
-        uZl0WTaT89gHVqDfVVo/byLg2puPHaSGr793dffsGjLjYBakFj7KH9T93ptI1EH56KVrQgFlLK6wq
-        wmGi3QAThBm5SngEVMB1HZ1+gVa5VnZKAQsWxZtj6MVwVLptm1c8nT9Qpd+v6cp3FL50UGl1rS7LH
-        B7rYzsXfjXYt1ZuhCuIkebZxFf2+waQSSbCCFyQnVBEuVnVBTvH5v3d4vq1PP938eiU7Gji5/Jz1H
-        sBrpKW0xu2EdKeeF+xzqe1jVYRgvFLV9T93FDiEfl9+a6aGUXB2WPi28w5ZyICAQ==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.97)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1r8G0b-00000008abj-0RXH;
-        Wed, 29 Nov 2023 09:33:25 +0100
-Message-ID: <56d8b3b9099d3935a7b53e976fa998f06fbfd9a5.camel@sipsolutions.net>
-Subject: Re: [PATCH] wifi: mac80211: sband's null check should precede params
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Edward Adam Davis <eadavis@qq.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzbot+62d7eef57b09bfebcd84@syzkaller.appspotmail.com,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com
-Date:   Wed, 29 Nov 2023 09:33:23 +0100
-In-Reply-To: <tencent_DE78F66DB82F496F9894B8E826EC8ACE0C0A@qq.com>
-References: <6c7765f13b715e67637438c6dffaa5a369758519.camel@sipsolutions.net>
-         <tencent_DE78F66DB82F496F9894B8E826EC8ACE0C0A@qq.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Wed, 29 Nov 2023 03:35:20 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 877B4C1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:35:26 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C97AC433C8;
+        Wed, 29 Nov 2023 08:35:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701246926;
+        bh=UyWVj6bbpMmgMhEJPGFtZp+drl9Kr0KS/AbbpRwNBTs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QNT3LWMCxoKcbCmQvEchFQWIOvU1Jm4SCQYnCDeefZD7g6sO1bHr9rNGbKeewfuCg
+         TfbOV8W4DCwZFd1pZyfX0hc+YKzvVas5N/P6RPIdkWDWen5pW57yQ5D815dqZZqSsS
+         ptq49cTrMR8QGvp6gEmUJG6uwmFMeKH7BmL33BAVaVQuFSWkZ/fXHJgq1I8B7FDqrB
+         P/F27eJt3Ui0RSaWTw8LEySbvNwTU41Bmoj8XroISmKurYBrHrVQ3Hw3iKghpoArU7
+         MYJGZoUfN6sPFG8n6dnLfIIearJsr1sdefwnKeLXQHeBu8o/mTuG4HlVunXKi5wbxa
+         nboghSzhIJ9qQ==
+Date:   Wed, 29 Nov 2023 09:35:23 +0100
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        Frank Binns <frank.binns@imgtec.com>,
+        Donald Robson <donald.robson@imgtec.com>,
+        Matt Coster <matt.coster@imgtec.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sarah Walker <sarah.walker@imgtec.com>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] drm/imagination: DRM_POWERVR should depend on ARCH_K3
+Message-ID: <7hee65pmdl5pajm2kgqld22xfi4iox4s2psswu2mdlfk6u6f7x@w4ecogdx6uj6>
+References: <b9360c2044a1001b9a5bcb5914611711d040d4fe.1701196029.git.geert+renesas@glider.be>
+ <87o7fdbszs.fsf@minerva.mail-host-address-is-not-set>
+ <CAMuHMdUhuO++ZSxh+_TX_6DHHxjPYY20jTppbNZ4FnuBvxxinQ@mail.gmail.com>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="753wc6rfmeqxfjjh"
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdUhuO++ZSxh+_TX_6DHHxjPYY20jTppbNZ4FnuBvxxinQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-11-29 at 16:18 +0800, Edward Adam Davis wrote:
-> On Wed, 29 Nov 2023 07:57:07 +0100, Johannes Berg wrote:
-> > > [Analysis]
-> > > When ieee80211_get_link_sband() fails to find a valid sband and first=
- checks
-> > > for params in sta_link_apply_parameters(), it will return 0 due to ne=
-w_link
-> > > being 0, which will lead to an incorrect process after sta_apply_para=
-meters().
-> > >=20
-> > > [Fix]
-> > > First obtain sband and perform a non null check before checking the p=
-arams.
-> >=20
-> > Not sure I can even disagree with that analysis, it seems right, but ..=
-.
-> >=20
-> > > +	if (!link || !link_sta)
-> > > +		return -EINVAL;
-> > > +
-> > > +	sband =3D ieee80211_get_link_sband(link);
-> > > +	if (!sband)
-> > > +		return -EINVAL;
-> > > +
-> > >  	/*
-> > >  	 * If there are no changes, then accept a link that doesn't exist,
-> > >  	 * unless it's a new link.
-> >=20
-> > There's a comment here which is clearly not true after this change,
-> > since you've already returned for !link_sta?
-> No, after applying my patch, it will return due to !sband.
+
+--753wc6rfmeqxfjjh
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Tue, Nov 28, 2023 at 08:16:18PM +0100, Geert Uytterhoeven wrote:
+> On Tue, Nov 28, 2023 at 8:03=E2=80=AFPM Javier Martinez Canillas
+> <javierm@redhat.com> wrote:
+> > Geert Uytterhoeven <geert+renesas@glider.be> writes:
+> > > The Imagination Technologies PowerVR Series 6 GPU is currently only
+> > > supported on Texas Instruments K3 AM62x SoCs.  Hence add a dependency=
+ on
+> > > ARCH_K3, to prevent asking the user about this driver when configurin=
+g a
+> > > kernel without Texas Instruments K3 Multicore SoC support.
+> > >
+> > > Fixes: 4babef0708656c54 ("drm/imagination: Add skeleton PowerVR drive=
+r")
+> > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > > ---
+> >
+> > Indeed. Although I wonder what is the supposed policy since for example
+> > the DRM_PANFROST symbol only depends on ARM || ARM64 and others such as
 >=20
+> I think ARM Mali is sufficiently ubiquitous on ARM/ARM64 systems to
+> have just an ARM/ARM64 dependency...
+>=20
+> > DRM_ETNAVIV don't even have an SoC or architecture dependency.
+>=20
+> Vivante GPUs are found in DTS files on at least 4 architectures.
+> Might be worthwhile to add some dependencies, though...
+>=20
+> > In any case, I agree with you that restricting to only K3 makes sense.
+>=20
+> I am looking forward to adding || SOC_AM33XX || ARCH_RENESAS || ...,
+> eventually ;-)
 
-Right, OK, but the way I read the comment (now) is that it wanted to
-accept it in that case?
+I disagree. This is to handle a generic IP, just like panfrost, lima, or
+etnaviv, and we certaintly don't want to maintain the Kconfig list of
+every possible architecture and SoC family it might or might not be
+found.
 
-That said, I just threw the patch into our internal testing machinery
-quickly (probably has more MLO tests than upstream hostap for now), and
-it worked just fine ...
+GPUs supposed to be handled are spread across 4 architectures (x86,
+riscv, arm, arm64, mips?), and in arm/arm64 alone we have at least 5
+platforms that might use it (allwinner, ti, mediatek, renesas, rockchip)
 
-Maybe we should just remove the comment?
+It didn't make sense for panfrost, or etnaviv. It doesn't make sense for
+that driver either. Especially for something that olddefconfig can
+handle just fine.
 
-johannes
+Maxime
+
+--753wc6rfmeqxfjjh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZWb3ygAKCRDj7w1vZxhR
+xSzQAP9lznhhHr2F5gTKfl3cW+5jN5/LKK8tc/SurLuznqLJ1wD/fcF+ZyviLO/O
+xBOmROvOixmLQ2KcKiTO1gbodbPMqQE=
+=7EPk
+-----END PGP SIGNATURE-----
+
+--753wc6rfmeqxfjjh--
