@@ -2,150 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76F507FCFC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 08:17:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5427FCFC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 08:21:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229776AbjK2HRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 02:17:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38754 "EHLO
+        id S229658AbjK2HVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 02:21:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjK2HRp (ORCPT
+        with ESMTP id S229464AbjK2HVE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 02:17:45 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758BBDA
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 23:17:51 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7BCEC433C7;
-        Wed, 29 Nov 2023 07:17:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701242270;
-        bh=O9sdQCSFc9y3ALYHb16O8SDK2d52tGC21IOhoEe+Fho=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EGy9LaOSfrmpEi4Q3rzQZepSDb9x4u1k9kHXm4RCN1Gm1hoO2k5OfA46YbaUMPDaI
-         rdqe9R6FZnaL8+K7lHVZuZ/FbpkOG4KPYf1l9i7NFcWGQpugL2xrC2+/thS32mK+7p
-         RoC3Ahu8ALonzMHJwQguvv50LDt/5cNoITd/k9pCjo2StiVGCZHBsUMM1u6h6qPMKI
-         U9Vp5MP4SvCXFmVrbJBjDwcZ6LMtFxvq3YVuhIbhbv+yJQ7REmEL3WTvToPHoHU00p
-         3RI5w/+jyJInGwwmckJLPXBQhRgMWVXwMs+EKNcelgLzwS5O/L6NIvjudq3xlDBCyD
-         +D15a+PAqES/w==
-Date:   Tue, 28 Nov 2023 23:17:50 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Documentation <linux-doc@vger.kernel.org>,
-        Linux XFS <linux-xfs@vger.kernel.org>,
-        Linux Kernel Workflows <workflows@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Dave Chinner <dchinner@redhat.com>,
-        Steve French <stfrench@microsoft.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Allison Henderson <allison.henderson@oracle.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Charles Han <hanchunchao@inspur.com>,
-        Vegard Nossum <vegard.nossum@oracle.com>
-Subject: Re: [PATCH RESEND v2] Documentation: xfs: consolidate XFS docs into
- its own subdirectory
-Message-ID: <20231129071750.GU36211@frogsfrogsfrogs>
-References: <20231128124522.28499-1-bagasdotme@gmail.com>
- <20231128163255.GV2766956@frogsfrogsfrogs>
- <20231129052400.GS4167244@frogsfrogsfrogs>
- <ZWbkbfjyDJS7jxDg@archie.me>
+        Wed, 29 Nov 2023 02:21:04 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15D7EC9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 23:21:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=KJyCwhlrvWaEhgruRo4W/7mjtjSOMpqD1BDi17senR0=; b=t6j8ktw+Jjw0AtWOFHMkzQQnok
+        y/KGID8uwIvLLrWnUReTh1EmkahvEdd15PbekECh+vmyr/Vtj6BDnKpeItET8aDOD/W3dKCJq930s
+        J804AGsi0js2yIbkHQEVv17upDoHYcNH9CatjtiIJQCzKM0VCRp/Jwh9EwLlzlrEEjj0lty3GO9vY
+        gPJJ5hzpoMArIh4mg6ogUT+4k49IIxj2w6F6e6kkKNnmTbr98SSJW22vjJe5P39sfd10X68VMj04K
+        jpQGSmMa69vtk6Z3l63DCXnjocaZ8SjjSd3jeGztAw586xhkjbqrtgYeQBneVTPglApYZrFrR2VyD
+        9Nv2QbHw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r8EsQ-00D9W3-Rl; Wed, 29 Nov 2023 07:20:54 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 881703002F1; Wed, 29 Nov 2023 08:20:53 +0100 (CET)
+Date:   Wed, 29 Nov 2023 08:20:53 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [RFC] x86/kvm/emulate: Avoid RET for fastops
+Message-ID: <20231129072053.GA30650@noisy.programming.kicks-ass.net>
+References: <20231112201205.GB9987@noisy.programming.kicks-ass.net>
+ <ZWaV8H9e8ubhFgWJ@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZWbkbfjyDJS7jxDg@archie.me>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZWaV8H9e8ubhFgWJ@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 02:12:45PM +0700, Bagas Sanjaya wrote:
-> On Tue, Nov 28, 2023 at 09:24:00PM -0800, Darrick J. Wong wrote:
-> > On Tue, Nov 28, 2023 at 08:32:55AM -0800, Darrick J. Wong wrote:
-> > > On Tue, Nov 28, 2023 at 07:45:22PM +0700, Bagas Sanjaya wrote:
-> > > > XFS docs are currently in upper-level Documentation/filesystems.
-> > > > Although these are currently 4 docs, they are already outstanding as
-> > > > a group and can be moved to its own subdirectory.
-> > > > 
-> > > > Consolidate them into Documentation/filesystems/xfs/.
-> > > > 
-> > > > Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
-> > > > ---
-> > > > Changes since v1 [1]:
-> > > > 
-> > > >   * Also update references to old doc path to address kernel test robot
-> > > >     warnings [2].
-> > > > 
-> > > > [1]: https://lore.kernel.org/linux-doc/20231121095658.28254-1-bagasdotme@gmail.com/
-> > > > [2]: https://lore.kernel.org/linux-doc/a9abc5ec-f3cd-4a1a-81b9-a6900124d38b@gmail.com/
-> > > > 
-> > > >  Documentation/filesystems/index.rst                |  5 +----
-> > > >  Documentation/filesystems/xfs/index.rst            | 14 ++++++++++++++
-> > > >  .../{ => xfs}/xfs-delayed-logging-design.rst       |  0
-> > > >  .../{ => xfs}/xfs-maintainer-entry-profile.rst     |  0
-> > > >  .../{ => xfs}/xfs-online-fsck-design.rst           |  2 +-
-> > > >  .../{ => xfs}/xfs-self-describing-metadata.rst     |  0
-> > > >  .../maintainer/maintainer-entry-profile.rst        |  2 +-
-> > > >  MAINTAINERS                                        |  4 ++--
-> > > >  8 files changed, 19 insertions(+), 8 deletions(-)
-> > > >  create mode 100644 Documentation/filesystems/xfs/index.rst
-> > > >  rename Documentation/filesystems/{ => xfs}/xfs-delayed-logging-design.rst (100%)
-> > > >  rename Documentation/filesystems/{ => xfs}/xfs-maintainer-entry-profile.rst (100%)
-> > > >  rename Documentation/filesystems/{ => xfs}/xfs-online-fsck-design.rst (99%)
-> > > >  rename Documentation/filesystems/{ => xfs}/xfs-self-describing-metadata.rst (100%)
-> > > 
-> > > I think the rst filename should drop the 'xfs-' prefix, e.g.
-> > > 
-> > > 	Documentation/filesystems/xfs/delayed-logging-design.rst
-> > > 
-> > > since that seems to be what most filesystems do:
+On Tue, Nov 28, 2023 at 05:37:52PM -0800, Sean Christopherson wrote:
+> On Sun, Nov 12, 2023, Peter Zijlstra wrote:
+> > Hi,
 > > 
-> > Actually, ignore this suggestion.  I forgot that I have vim paths
-> > trained on the Documentation/filesystems/ directory, which means I'll
-> > lose the ability to
+> > Inspired by the likes of ba5ca5e5e6a1 ("x86/retpoline: Don't clobber
+> > RFLAGS during srso_safe_ret()") I had it on my TODO to look at this,
+> > because the call-depth-tracking rethunk definitely also clobbers flags
+> > and that's a ton harder to fix.
 > > 
-> > :f xfs-online-fsck-design.rst
+> > Looking at this recently I noticed that there's really only one callsite
+> > (twice, the testcc thing is basically separate from the rest of the
+> > fastop stuff) and thus CALL+RET is totally silly, we can JMP+JMP.
 > > 
-> > and pop it open.  Not that I expect many more filesystems to grow online
-> > fsck capabilities, but you get the point...
+> > The below implements this, and aside from objtool going apeshit (it
+> > fails to recognise the fastop JMP_NOSPEC as a jump-table and instead
+> > classifies it as a tail-call), it actually builds and the asm looks
+> > good sensible enough.
+> > 
+> > I've not yet figured out how to test this stuff, but does something like
+> > this look sane to you guys?
 > 
-> So is it OK to just move the the docs and keeping their basename intact (as I
-> did here)?
+> Yes?  The idea seems sound, but I haven't thought _that_ hard about whether or not
+> there's any possible gotchas.   I did a quick test and nothing exploded (and
+> usually when this code breaks, it breaks spectacularly).
 
-Correct.
+That's encouraging..
 
-> > > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > > index ea790149af7951..fd288ac57e19fb 100644
-> > > > --- a/MAINTAINERS
-> > > > +++ b/MAINTAINERS
-> > > > @@ -23893,10 +23893,10 @@ S:	Supported
-> > > >  W:	http://xfs.org/
-> > > >  C:	irc://irc.oftc.net/xfs
-> > > >  T:	git git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git
-> > > > -P:	Documentation/filesystems/xfs-maintainer-entry-profile.rst
-> > > > +P:	Documentation/filesystems/xfs/xfs-maintainer-entry-profile.rst
-> > > >  F:	Documentation/ABI/testing/sysfs-fs-xfs
-> > > >  F:	Documentation/admin-guide/xfs.rst
-> > > > -F:	Documentation/filesystems/xfs-*
-> > > > +F:	Documentation/filesystems/xfs/xfs-*
-> > > 
-> > > Shouldn't this be "Documentation/filesystems/xfs/*" ?
+> > Given that rethunks are quite fat and slow, this could be sold as a
+> > performance optimization I suppose.
 > > 
-> > ...though this suggestion remains standing.
+> > ---
+> > 
+> > diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
+> > index f93e9b96927a..2cd3b5a46e7a 100644
+> > --- a/arch/x86/include/asm/nospec-branch.h
+> > +++ b/arch/x86/include/asm/nospec-branch.h
+> > @@ -412,6 +412,17 @@ static inline void call_depth_return_thunk(void) {}
+> >  	"call *%[thunk_target]\n",				\
+> >  	X86_FEATURE_RETPOLINE_LFENCE)
+> >  
+> > +# define JMP_NOSPEC						\
+> > +	ALTERNATIVE_2(						\
+> > +	ANNOTATE_RETPOLINE_SAFE					\
+> > +	"jmp *%[thunk_target]\n",				\
+> > +	"jmp __x86_indirect_thunk_%V[thunk_target]\n",		\
+> > +	X86_FEATURE_RETPOLINE,					\
+> > +	"lfence;\n"						\
+> > +	ANNOTATE_RETPOLINE_SAFE					\
+> > +	"jmp *%[thunk_target]\n",				\
+> > +	X86_FEATURE_RETPOLINE_LFENCE)
 > 
-> OK, will fix it up in v3.
+> There needs a 32-bit version (eww) and a CONFIG_RETPOLINE=n version. :-/
 
-Ok, thanks!
-
---D
-
-> -- 
-> An old man doll... just what I always wanted! - Clara
-
-
+I'll go make that happen. Thanks!
