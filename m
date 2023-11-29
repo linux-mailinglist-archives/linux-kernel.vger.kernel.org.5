@@ -2,119 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B92CA7FD883
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:46:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EECBA7FD887
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:46:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233868AbjK2NqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 08:46:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59964 "EHLO
+        id S234406AbjK2NqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 08:46:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232012AbjK2NqB (ORCPT
+        with ESMTP id S234426AbjK2NqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 08:46:01 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE9FFDD
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:46:07 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-a02ba1f500fso967158966b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:46:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701265566; x=1701870366; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cBSFdLwbP6iBVNXIZiTcHgh2DF6/dUUBZvh33dWqRVw=;
-        b=ndQqp4EqJFuOHsJ4UojbzmjlRhGVkSvuzKjpuFiK7LrqFkR/6/n1PVRyXDoQdVzx8r
-         WfkWSjp4b3M9Zrrm+2qSJ4sMdCp8eqp41yxs7saqytWR6FvUudYF6v+1wb518DTsorjI
-         Jb8QFMQybb15c+rT11lD2xZ329VZHeise3w9BDwiyhMjwp31ZUx4w4SUUKFG/T0OAtDq
-         UMWUO9VVuZmcw/Kjto6WYU8ef8g5Y3ppcyNXshGIwZoU6f/+3f9cZCiWuXHQrJPvD2Kx
-         YiMEvW3Dg/te7F32vy4S5PJ7yH86DFTRhxInQ+5ybz+K+JZ7r0mLswlru0JgmfWVXltB
-         gBgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701265566; x=1701870366;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cBSFdLwbP6iBVNXIZiTcHgh2DF6/dUUBZvh33dWqRVw=;
-        b=q0hXNbHXwI1f8B9mw47Irt9oVzJV34QzVdSS9wQEwXwEjH26RMxMr4Dpva3mjo9ZiO
-         R34woLZwyd9UfDnlkxVzM4LS5R/m9j57SQUADbE7BHn1bga1E5gKogDiFPJ1U16Ul0og
-         GEMI6eK1mCVnoi5DPi5pKmp1A2Nc/2ObNbKXR1hIjWeBmyTw2y3C4t+isG5aArA3AFic
-         D67yxsOfZCUxDWnk+5TMHx0cSCtpYoUGzZRNFTwMwUShZJSmw5K/bl6AhyrN0w4js1zd
-         6KCj26uIQ+J9/yZZsYnGe7V4djy8/5UlDpsrd/Wvg1cjCsh/vezumyKiJZYv536Q8Lv7
-         0AOA==
-X-Gm-Message-State: AOJu0YyatGDNnDyBLFeriUmG5RkQeYyaVfy1PZNeLvh5vGDi1Tfesy0+
-        voSYWZaE4TNeKP1bFo7PEn+bdg==
-X-Google-Smtp-Source: AGHT+IEDLfeyaa/cILOO4tDHn+EEvUTwqz2+8nc3XcAYN2nENkKkAzsj23smEfgm2ZV7pfSa8xuUOQ==
-X-Received: by 2002:a17:906:b299:b0:a03:ad29:a00b with SMTP id q25-20020a170906b29900b00a03ad29a00bmr15555698ejz.36.1701265566229;
-        Wed, 29 Nov 2023 05:46:06 -0800 (PST)
-Received: from [192.168.209.173] (178235187166.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.166])
-        by smtp.gmail.com with ESMTPSA id f8-20020a17090624c800b009fd77d78f7fsm7910195ejb.116.2023.11.29.05.46.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 05:46:05 -0800 (PST)
-Message-ID: <eaa034cb-06e8-4204-befa-4389bcb7d9e8@linaro.org>
-Date:   Wed, 29 Nov 2023 14:46:04 +0100
+        Wed, 29 Nov 2023 08:46:09 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F32B71A8
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:46:14 -0800 (PST)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 8F4F96602F2A;
+        Wed, 29 Nov 2023 13:46:12 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701265573;
+        bh=cPrdHiYFM6hWb9ovweIlhFYJQT5IeERY0rZ3lJOJTdI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AZLgQ56oeWFfTMEJAqzBGdw1QGd8KK96rkEqcbEe4trdn7Thr5oXG8Z8qHYVDZmAi
+         3MBMxJNUN7QwJXWBYAO664A7Vwq0jD6rA1MmHtk+TRWCHaXA0lAUaurZZ3apSpRzUr
+         I+J4gx5wXcZWHgCGBwLgWw1FDBAd3AhLRHJ/zthC+ef5/dvhw0A97tTg7SXyAVHrWG
+         VFERw1C71DayL5JOrmQZEi9ngMZiOwT8iy69rXsm9oNyrMxrQgbFGADdfNTlE02cxu
+         X4NOWc3raSu3iRIGepfYoQtiRB5k4/bGt8irN9Pa72PglH4Ay8VTPjmrqeIDQ0cqlh
+         HyVuNUKZ8Nqgg==
+Date:   Wed, 29 Nov 2023 14:46:09 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+        David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v18 04/26] drm/shmem-helper: Refactor locked/unlocked
+ functions
+Message-ID: <20231129144609.7544e773@collabora.com>
+In-Reply-To: <ioqghyaeftyo7tuyfecn252ykxwgltrkhh2pwktjejqhewntbb@bym3rsjxnxfp>
+References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
+        <20231029230205.93277-5-dmitry.osipenko@collabora.com>
+        <wboljiwogeus7pwgaqzxaltt3xdavy2dzisygn6pdpoiwlnwgc@mwaiukjguzat>
+        <20231124115911.79ab24af@collabora.com>
+        <kw5bho3jx73d3glvtewmjvqt4qty4khju6dcwypuh25ya3gi4b@7slmijjqdi4p>
+        <20231128133712.53a6f6cb@collabora.com>
+        <37208c72-7908-0a78-fc89-2fa9b8d756a5@collabora.com>
+        <20231129085330.7ccb35d3@collabora.com>
+        <ioqghyaeftyo7tuyfecn252ykxwgltrkhh2pwktjejqhewntbb@bym3rsjxnxfp>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/5] ASoC: codecs: Add WCD939x Codec driver
-Content-Language: en-US
-To:     neil.armstrong@linaro.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231123-topic-sm8650-upstream-wcd939x-codec-v1-0-21d4ad9276de@linaro.org>
- <20231123-topic-sm8650-upstream-wcd939x-codec-v1-5-21d4ad9276de@linaro.org>
- <ad9a7c4b-82f4-4347-b4dd-a394e4ba95f0@linaro.org>
- <42a6f6e0-2846-4cdc-8702-493fadbafb98@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <42a6f6e0-2846-4cdc-8702-493fadbafb98@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -123,33 +76,181 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.11.2023 16:01, Neil Armstrong wrote:
-> On 25/11/2023 13:07, Konrad Dybcio wrote:
-> 
-> <snip>
-> 
->>> +
->>> +static int wcd939x_io_init(struct snd_soc_component *component)
->>> +{
->>> +    snd_soc_component_write_field(component, WCD939X_ANA_BIAS,
->>> +                      WCD939X_BIAS_ANALOG_BIAS_EN, 1);
->> All of these values are BIT()s or 2-4 ORed BIT()s, can you check what they
->> mean?
->>
->> Same for almost all other snd_soc_component_ write/modify functions
-> 
-> It uses snd_soc_component_write_field() with is the same as
-> regmap_write_bits(REGISTER, REGISTER_MASK,
->                   FIELD_PREP(REGISTER_MASK, value);
-> 
-> So the 1 mean write in enable mask in this case, and mask is single bit,
-> read it exactly like if it was using FIELD_PREP(), but even for BITs.
-> 
-> I did check every single snd_soc_component_write_field() so far to check
-> it matches.
-> 
-> Or it's another question ?
-What I wanted to ask is whether it's possible to #define these magic
-values within these fields
+On Wed, 29 Nov 2023 14:09:47 +0100
+Maxime Ripard <mripard@kernel.org> wrote:
 
-Konrad
+> On Wed, Nov 29, 2023 at 08:53:30AM +0100, Boris Brezillon wrote:
+> > On Wed, 29 Nov 2023 01:05:14 +0300
+> > Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+> >   
+> > > On 11/28/23 15:37, Boris Brezillon wrote:  
+> > > > On Tue, 28 Nov 2023 12:14:42 +0100
+> > > > Maxime Ripard <mripard@kernel.org> wrote:
+> > > >     
+> > > >> Hi,
+> > > >>
+> > > >> On Fri, Nov 24, 2023 at 11:59:11AM +0100, Boris Brezillon wrote:    
+> > > >>> On Fri, 24 Nov 2023 11:40:06 +0100
+> > > >>> Maxime Ripard <mripard@kernel.org> wrote:
+> > > >>>       
+> > > >>>> On Mon, Oct 30, 2023 at 02:01:43AM +0300, Dmitry Osipenko wrote:      
+> > > >>>>> Add locked and remove unlocked postfixes from drm-shmem function names,
+> > > >>>>> making names consistent with the drm/gem core code.
+> > > >>>>>
+> > > >>>>> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+> > > >>>>> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
+> > > >>>>> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>        
+> > > >>>>
+> > > >>>> This contradicts my earlier ack on a patch but...
+> > > >>>>       
+> > > >>>>> ---
+> > > >>>>>  drivers/gpu/drm/drm_gem_shmem_helper.c        | 64 +++++++++----------
+> > > >>>>>  drivers/gpu/drm/lima/lima_gem.c               |  8 +--
+> > > >>>>>  drivers/gpu/drm/panfrost/panfrost_drv.c       |  2 +-
+> > > >>>>>  drivers/gpu/drm/panfrost/panfrost_gem.c       |  6 +-
+> > > >>>>>  .../gpu/drm/panfrost/panfrost_gem_shrinker.c  |  2 +-
+> > > >>>>>  drivers/gpu/drm/panfrost/panfrost_mmu.c       |  2 +-
+> > > >>>>>  drivers/gpu/drm/v3d/v3d_bo.c                  |  4 +-
+> > > >>>>>  drivers/gpu/drm/virtio/virtgpu_object.c       |  4 +-
+> > > >>>>>  include/drm/drm_gem_shmem_helper.h            | 36 +++++------
+> > > >>>>>  9 files changed, 64 insertions(+), 64 deletions(-)
+> > > >>>>>
+> > > >>>>> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> > > >>>>> index 0d61f2b3e213..154585ddae08 100644
+> > > >>>>> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+> > > >>>>> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> > > >>>>> @@ -43,8 +43,8 @@ static const struct drm_gem_object_funcs drm_gem_shmem_funcs = {
+> > > >>>>>  	.pin = drm_gem_shmem_object_pin,
+> > > >>>>>  	.unpin = drm_gem_shmem_object_unpin,
+> > > >>>>>  	.get_sg_table = drm_gem_shmem_object_get_sg_table,
+> > > >>>>> -	.vmap = drm_gem_shmem_object_vmap,
+> > > >>>>> -	.vunmap = drm_gem_shmem_object_vunmap,
+> > > >>>>> +	.vmap = drm_gem_shmem_object_vmap_locked,
+> > > >>>>> +	.vunmap = drm_gem_shmem_object_vunmap_locked,        
+> > > >>>>
+> > > >>>> While I think we should indeed be consistent with the names, I would
+> > > >>>> also expect helpers to get the locking right by default.      
+> > > >>>
+> > > >>> Wait, actually I think this patch does what you suggest already. The
+> > > >>> _locked() prefix tells the caller: "you should take care of the locking,
+> > > >>> I expect the lock to be held when this is hook/function is called". So
+> > > >>> helpers without the _locked() prefix take care of the locking (which I
+> > > >>> guess matches your 'helpers get the locking right' expectation), and
+> > > >>> those with the _locked() prefix don't.      
+> > > >>
+> > > >> What I meant by "getting the locking right" is indeed a bit ambiguous,
+> > > >> sorry. What I'm trying to say I guess is that, in this particular case,
+> > > >> I don't think you can expect the vmap implementation to be called with
+> > > >> or without the locks held. The doc for that function will say that it's
+> > > >> either one or the other, but not both.
+> > > >>
+> > > >> So helpers should follow what is needed to provide a default vmap/vunmap
+> > > >> implementation, including what locking is expected from a vmap/vunmap
+> > > >> implementation.    
+> > > > 
+> > > > Hm, yeah, I think that's a matter of taste. When locking is often
+> > > > deferrable, like it is in DRM, I find it beneficial for funcions and
+> > > > function pointers to reflect the locking scheme, rather than relying on
+> > > > people properly reading the doc, especially when this is the only
+> > > > outlier in the group of drm_gem_object_funcs we already have, and it's
+> > > > not event documented at the drm_gem_object_funcs level [1] :P.
+> > > >     
+> > > >>
+> > > >> If that means that vmap is always called with the locks taken, then
+> > > >> drm_gem_shmem_object_vmap can just assume that it will be called with
+> > > >> the locks taken and there's no need to mention it in the name (and you
+> > > >> can probably sprinkle a couple of lockdep assertion to make sure the
+> > > >> locking is indeed consistent).    
+> > > > 
+> > > > Things get very confusing when you end up having drm_gem_shmem helpers
+> > > > that are suffixed with _locked() to encode the fact locking is the
+> > > > caller's responsibility and no suffix for the
+> > > > callee-takes-care-of-the-locking semantics, while other helpers that are
+> > > > not suffixed at all actually implement the
+> > > > caller-should-take-care-of-the-locking semantics.
+> > > >     
+> > > >>    
+> > > >>>> I'm not sure how reasonable it is, but I think I'd prefer to turn this
+> > > >>>> around and keep the drm_gem_shmem_object_vmap/unmap helpers name, and
+> > > >>>> convert whatever function needs to be converted to the unlock suffix so
+> > > >>>> we get a consistent naming.      
+> > > >>>
+> > > >>> That would be an _unlocked() prefix if we do it the other way around. I
+> > > >>> think the main confusion comes from the names of the hooks in
+> > > >>> drm_gem_shmem_funcs. Some of them, like drm_gem_shmem_funcs::v[un]map()
+> > > >>> are called with the GEM resv lock held, and locking is handled by the
+> > > >>> core, others, like drm_gem_shmem_funcs::[un]pin() are called
+> > > >>> without the GEM resv lock held, and locking is deferred to the
+> > > >>> implementation. As I said, I don't mind prefixing hooks/helpers with
+> > > >>> _unlocked() for those that take care of the locking, and no prefix for
+> > > >>> those that expects locks to be held, as long as it's consistent, but I
+> > > >>> just wanted to make sure we're on the same page :-).      
+> > > >>
+> > > >> What about _nolock then? It's the same number of characters than
+> > > >> _locked, plus it expresses what the function is (not) doing, not what
+> > > >> context it's supposed to be called in?    
+> > > > 
+> > > > Just did a quick
+> > > > 
+> > > >   git grep _nolock drivers/gpu/drm
+> > > > 
+> > > > and it returns zero result, where the _locked/_unlocked pattern seems
+> > > > to already be widely used. Not saying we shouldn't change that, but it
+> > > > doesn't feel like a change we should do as part of this series.
+> > > > 
+> > > > Regards,
+> > > > 
+> > > > Boris
+> > > > 
+> > > > [1]https://elixir.bootlin.com/linux/v6.7-rc3/source/include/drm/drm_gem.h#L155    
+> > > 
+> > > I'm fine with dropping the _locked() postfix from the common GEM helpers
+> > > and documenting the locking rule in drm_gem. Thank you all for the
+> > > suggestions :)  
+> > 
+> > Sorry to disagree, but I think a proper function name/suffix is
+> > sometimes worth a few lines of doc. Not saying we should do one or the
+> > other, I think we should do both. But when I see a function suffixed
+> > _locked, _unlocked or _nolock, I can immediately tell if this function
+> > defers the locking to the caller or not, and then go check which lock
+> > in the function doc.
+> > 
+> > And the second thing I'm not happy with, is the fact we go back to an
+> > inconsistent naming in drm_gem_shmem_helper.c, where some functions
+> > deferring the locking to the caller are suffixed _locked and others are
+> > not, because ultimately, you need a different name when you expose the
+> > two variants...  
+> 
+> I guess one of the point I was trying to make was also: why do you need
+> both?
+> 
+> If one is better than the other (whatever better means here), then all
+> drivers should use it.
+> 
+> The counterpart being that if provided a choice, you can be sure that a
+> lot of people will get it wrong. The one example I have in mind for
+> example was the drm_atomic_helper_commit_tail vs
+> drm_atomic_helper_commit_tail_rpm. The latter is now widely used, and
+> most of it is cargo-cult.
+> 
+> I think you were referring to the locks being deferred vs taken right
+> now before, why do we need to have the choice between the two?
+
+Because DRM locking is complex, and you sometimes have to call some
+helpers in a context where you already hold the GEM dma_resv lock.
+That's not the case for _v[un]map(), because the core always takes the
+lock for us if we call drm_gem_vmap_unlocked(). Now, let's assume we
+drop the _locked() suffix on drm_gem_shmem_v[un]map(), but keep it on
+other helpers that need both variants. This results in an inconsistent
+naming scheme inside the same source file, which I find utterly
+confusing.
+
+Note that the initial reason I asked Dmitry if he could add the
+_locked suffix to drm_gem_shmem_vmap() is because I started using
+drm_gem_shmem_vmap() in powervr, before realizing this version wasn't
+taking the lock, and I should have used drm_gem_vmap_unlocked()
+instead, so this is not something I'm making up. Not saying the
+confusion only comes from the naming, because the various layers of
+indirection we have clearly don't help, but having a name reflecting
+the fact the locking is deferred to the caller would have helped, I
+think.
