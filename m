@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C45CD7FD4D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:03:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4EE7FD4DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:04:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbjK2LDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 06:03:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48848 "EHLO
+        id S230265AbjK2LEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 06:04:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230111AbjK2LDO (ORCPT
+        with ESMTP id S230299AbjK2LED (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 06:03:14 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6136D1735;
-        Wed, 29 Nov 2023 03:03:19 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40b54261442so3080915e9.1;
-        Wed, 29 Nov 2023 03:03:19 -0800 (PST)
+        Wed, 29 Nov 2023 06:04:03 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C2E95;
+        Wed, 29 Nov 2023 03:04:09 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40b4f6006d5so11968395e9.1;
+        Wed, 29 Nov 2023 03:04:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701255798; x=1701860598; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701255848; x=1701860648; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:subject:cc
          :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=QMxehpC8EcuIJbWBwswqF2Dwh3OOypWDdlXDrbz4QBI=;
-        b=ZYOly5dITMyhdDJw6OKwXl1f1bC/wMorfz0vUf+7sOvzhIaJ8hqueQt/k66AAKtk/x
-         67yqO7bOZOQPJvYwSDRJjlsepLGRV51oFdTCwtWxlZykTj4Y3wo3WCEkXM0xKboAGbP6
-         uAnF0R9HdDj8YId2VCjO6byAtNRmnez4N3OpaTtyxTvwdcUqEoz+KeydeOJXzAr630/K
-         tiT7+VXQqO0cN1i5w/U4HeZfY7pwXTkr3h8yzpB3YLyILh8HDhEWw1OS4Ky6lOjmpGf9
-         4eulIRU/O1tRNYyP4xQdTLSpwGrlAUKcdpIGYcgo1O/rBjBhbto04pSVp63nN5ntAvj5
-         nUHw==
+        bh=Rjk+/1D9AF+cQ5xDbcmA1MBP/vuhlv65HDhCtKVSoZk=;
+        b=PqNEvVpW911WnIT3JULjB3wgDwpK5ePh+wNSB/GmLnEWH5osYydhpBvsbQ7/Xz5ocH
+         dc1pRYehdHP34IIxLKWnIdSZQvpF5/k9/9LizgWR/vCDrynO0khPxNsOvtB5FavVVXxn
+         QCaav1jar7DjpwuVnqW4zHZJ8QqG6xX3KUvI44aWStupV1hpXK7hXkf78Dnk5hj6qW+u
+         MEX2nw/5mB9MYjLyyeDNaUwzJbdBg1Wa0QkEEEWcy4twANRwlDTCSsr0ugk7MWyIz9dS
+         /96OyLGVbvRQJjYMNhb8v2EaLvkKYAKz914EBjUYoTRdJzmLjQc+YqHpJ81clQWLwUHh
+         4N3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701255798; x=1701860598;
+        d=1e100.net; s=20230601; t=1701255848; x=1701860648;
         h=in-reply-to:content-disposition:mime-version:references:subject:cc
          :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QMxehpC8EcuIJbWBwswqF2Dwh3OOypWDdlXDrbz4QBI=;
-        b=IVWOS9jrXNi9RXxI9lSCVv9Z3Wdk2k6aUiWMz+3N/H4afD9XvDwBsch/Ie5tl2ax0x
-         x88x8LISfH8JrelERYRHw3CGe2Mi3XPpmug7lx86CtSH/P73oldhOLwrmHgF0RTaDcEJ
-         orvpvvxClqJMAbqAXjCOLiwXN2OamlJJGsmFc1vrYfUede0lLNy+MSCjqKI3RW2Y+kw9
-         PeI3PaKsNz6y0usQxOPiVQt8+Ru+6bFEq+UC6hsfTjJPt+7831cbsP1dl1UHNBFD2qBd
-         OYj30EW6GKj8xTYpOMHazH1fXDcjIBrWdhTGqoiUbd/INLUi2SivxpnbEm9e/QZXNLDB
-         To5Q==
-X-Gm-Message-State: AOJu0YwXQqUL1rfLhFIA+Fo1qy7Jtn70NN7BpbdK+CqNSxN2B0lK9iUR
-        4xVR+L/voMn4aZyt3/3FtO9n4lJng5I=
-X-Google-Smtp-Source: AGHT+IHXmUsA5GkX9ZFmTSFKPgouXi5Igc81oQtBTJedALRexDwQXJ3mzReej+Jx9VCOszaSKN+fmw==
-X-Received: by 2002:a05:600c:5118:b0:3f6:9634:c8d6 with SMTP id o24-20020a05600c511800b003f69634c8d6mr13234227wms.18.1701255797411;
-        Wed, 29 Nov 2023 03:03:17 -0800 (PST)
+        bh=Rjk+/1D9AF+cQ5xDbcmA1MBP/vuhlv65HDhCtKVSoZk=;
+        b=CZdtv/P88MJHWt3eFVf4ghsBXNWjcrtDB3gKuTxGh1bWsfb17P0r8/unxqooJGPoJY
+         TxPksoLVzXrVexAqAkAQUerf9odN1TjCHSK9DPv7TwypeWtyhmKDRKq26IQ8ehvdvcp8
+         vUiTlUL/IAzoizPfeNussjbdWvCOqyWR8jsJJZvSZA6uMsSjRqf8FOr6ViWgLJ5JFfsq
+         +joKQ2ypCoTkhOQalpDvBe2sGPDe3GidY1eArPseQ0BIfcTmVBSoXA+uYJRbFuFJkvsf
+         BrxeqB0QuRfMC7Z2W4UGYP9v3vXt6hYAJb5gcgO11bMUI8uh3UQZu/tKaqvPIV60vgnz
+         e2Iw==
+X-Gm-Message-State: AOJu0YyNS4pJo5Y2TfDg4Nf78oaqnuhx92Wdl5GAfosgR58LQy6z+IxB
+        fsA2gnWtehnFHDUD/gRqtXg=
+X-Google-Smtp-Source: AGHT+IEBAvm1wqVWEUe9pB+o21b32WHVSL4QBMcx54XwI8du9Wk6l+5lAsEg+hPmovN1+6jfSLOv/g==
+X-Received: by 2002:a05:600c:5125:b0:40b:3dae:1ff6 with SMTP id o37-20020a05600c512500b0040b3dae1ff6mr8791416wms.14.1701255847651;
+        Wed, 29 Nov 2023 03:04:07 -0800 (PST)
 Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id q17-20020a05600c46d100b0040836519dd9sm1816416wmo.25.2023.11.29.03.03.16
+        by smtp.gmail.com with ESMTPSA id q4-20020adfea04000000b003296b488961sm17464741wrm.31.2023.11.29.03.04.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 03:03:17 -0800 (PST)
-Message-ID: <65671a75.050a0220.53874.4dd1@mx.google.com>
-X-Google-Original-Message-ID: <ZWcaclzv1RMqDxAe@Ansuel-xps.>
-Date:   Wed, 29 Nov 2023 12:03:14 +0100
+        Wed, 29 Nov 2023 03:04:07 -0800 (PST)
+Message-ID: <65671aa7.df0a0220.2a628.a3b9@mx.google.com>
+X-Google-Original-Message-ID: <ZWcapJKrMLLmIVZS@Ansuel-xps.>
+Date:   Wed, 29 Nov 2023 12:04:04 +0100
 From:   Christian Marangi <ansuelsmth@gmail.com>
 To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
 Cc:     Andrew Lunn <andrew@lunn.ch>,
@@ -65,20 +65,20 @@ Cc:     Andrew Lunn <andrew@lunn.ch>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         linux-arm-msm@vger.kernel.org
-Subject: Re: [net-next PATCH 02/14] net: phy: at803x: move disable WOL for
- 8031 from probe to config
+Subject: Re: [net-next PATCH 08/14] net: phy: at803x: drop specific PHY id
+ check from cable test functions
 References: <20231129021219.20914-1-ansuelsmth@gmail.com>
- <20231129021219.20914-3-ansuelsmth@gmail.com>
- <ZWcDUJY8rM6uApO1@shell.armlinux.org.uk>
- <65670622.050a0220.4c0d0.3ee9@mx.google.com>
- <ZWcWN4kRRPBA9ZG6@shell.armlinux.org.uk>
+ <20231129021219.20914-9-ansuelsmth@gmail.com>
+ <ZWcGn7KVSpsN/1Ee@shell.armlinux.org.uk>
+ <656708a8.df0a0220.28d76.9307@mx.google.com>
+ <ZWcZGO1HWxJnzPrk@shell.armlinux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZWcWN4kRRPBA9ZG6@shell.armlinux.org.uk>
+In-Reply-To: <ZWcZGO1HWxJnzPrk@shell.armlinux.org.uk>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,97 +86,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 10:45:11AM +0000, Russell King (Oracle) wrote:
-> On Wed, Nov 29, 2023 at 10:36:31AM +0100, Christian Marangi wrote:
-> > On Wed, Nov 29, 2023 at 09:24:32AM +0000, Russell King (Oracle) wrote:
-> > > On Wed, Nov 29, 2023 at 03:12:07AM +0100, Christian Marangi wrote:
-> > > > Probe should be used only for DT parsing and allocate required priv, it
-> > > > shouldn't touch regs, there is config_init for that.
+On Wed, Nov 29, 2023 at 10:57:28AM +0000, Russell King (Oracle) wrote:
+> On Wed, Nov 29, 2023 at 10:47:18AM +0100, Christian Marangi wrote:
+> > On Wed, Nov 29, 2023 at 09:38:39AM +0000, Russell King (Oracle) wrote:
+> > > On Wed, Nov 29, 2023 at 03:12:13AM +0100, Christian Marangi wrote:
+> > > > @@ -1310,10 +1302,6 @@ static int at803x_cable_test_start(struct phy_device *phydev)
+> > > >  	 */
+> > > >  	phy_write(phydev, MII_BMCR, BMCR_ANENABLE);
+> > > >  	phy_write(phydev, MII_ADVERTISE, ADVERTISE_CSMA);
+> > > > -	if (phydev->phy_id != ATH9331_PHY_ID &&
+> > > > -	    phydev->phy_id != ATH8032_PHY_ID &&
+> > > > -	    phydev->phy_id != QCA9561_PHY_ID)
+> > > > -		phy_write(phydev, MII_CTRL1000, 0);
+> > > ...
+> > > > +static int at8031_cable_test_start(struct phy_device *phydev)
+> > > > +{
+> > > > +	at803x_cable_test_start(phydev);
+> > > > +	phy_write(phydev, MII_CTRL1000, 0);
 > > > 
-> > > I'm not sure where you get that idea from. PHY driver probe() functions
-> > > are permitted to access registers to do any setup that they wish to.
-> > > 
-> > > config_init() is to configure the PHY for use with the network
-> > > interface.
-> > > 
-> > > I think this patch is just noise rather than a cleanup.
+> > > I don't think this is a safe change - same reasons as given on a
+> > > previous patch. You can't randomly reorder register writes like this.
 > > >
 > > 
-> > I got it from here [1]
-> > 
-> > Also on every other driver probe was always used for allocation and
-> > parsing so why deviates from this pattern here?
+> > Actually for this the order is keeped. Generic function is called and
+> > for at8031 MII_CTRL1000 is called on top of that.
 > 
-> Untrue.
+> Okay, but I don't like it. I would prefer this to be:
 > 
-> bcm54140_enable_monitoring() is called from bcm54140_probe_once()
-> which in turn is called from bcm54140_probe().
+> static void at803x_cable_test_autoneg(struct phy_device *phydev)
+> {
+> 	phy_write(phydev, MII_BMCR, BMCR_ANENABLE);
+> 	phy_write(phydev, MII_ADVERTISE, ADVERTISE_CSMA);
+> }
 > 
-> dp83869_probe() calls dp83869_config_init(), rightly or wrongly.
+> static int at803x_cable_test_start(struct phy_device *phydev)
+> {
+> 	at803x_cable_test_autoneg(phydev);
+> 	return 0;
+> }
 > 
-> lxt973_probe() fixes up the BMCR.
+> static int at8031_cable_test_start(struct phy_device *phydev)
+> {
+> 	at803x_cable_test_autoneg(phydev);
+> 	phy_write(phydev, MII_CTRL1000, 0);
+> 	return 0;
+> }
 > 
-> mv3310_probe() configures power-down modes, modifying registers.
-> 
-> mt7988_phy_probe() calls mt7988_phy_fix_leds_polarities() which
-> modifies registers.
-> 
-> lan8814_probe() calls lan8814_ptp_init() which does a whole load of
-> register writes.
-> 
-> lan88xx_probe() configures LEDs via register writes.
-> 
-> yt8521_probe() configures clocks via register modification.
-> 
-> I'm afraid this means your comment is demonstrably false.
+> which makes it more explicit what is going on here. Also a comment
+> above the function stating that it's for AR8031 _and_ AR8035 would
+> be useful.
 >
 
-Don't want to start a discussion and thanks a lot for pointing this
-out. This is really to talk about this and not contradict you.
-
-Yes it's not true, and I was wrong but still I watch other driver
-outside PHY and normally probe should not do that kind of stuff.
-(even the comments describing the use in phy.h doesn't say that it
-should be used for configuring the PHY only once on discovery)
-
-Watching some of the thing, I feel all of this is done in probe as it's
-not called again on software reset (as it will call config_init again).
-
-This looks like there is a missing feature here and maybe a chance to
-improve this?
-
-Wonder if adding an additional OP would be beneficial to this?
-Was thinking to something like
-
-.config_once ?
-
-And add some comments that it's called only on PHY discovery?
-It would be put right after the probe call in phy_core.
-
-> > Also I think it was wrong from the start as on reset I think WoL is
-> > not disabled again. (probe is not called)
-> 
-> On hardware reset, the 1588 register will re-enable the WoL pin, but
-> that needs a hardware reset of the PHY to happen after probe() is
-> called.
-> 
-> However, phy_probe() will only assert the reset signal _if_ an error
-> occured during probing, not if probing was successful. So, a successful
-> probe of this driver will not cause a hardware reset.
-> 
-> Also, hardware reset is optional. Do you know whether the platforms
-> that use the separate WoL pin which this 1588 register controls also
-> wire the reset signal such that it can be controlled by Linux?
-> Probably not.
-> 
-> So, this register write will not be cleared by a hardware reset after
-> a successful probe.
->
-
-I just checked Datasheet, on HW reset it's enabled again and on SW reset
-value is retained. So yes it must stay in probe as it will cause side
-effect if WoL get enabled after... Really hope the config_once thing is
-OK since it will make things much cleaner.
+Much cleaner thanks for the hint!
 
 -- 
 	Ansuel
