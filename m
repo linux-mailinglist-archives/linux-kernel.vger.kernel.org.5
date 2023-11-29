@@ -2,120 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC847FDD79
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:42:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A547FDD7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:43:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230472AbjK2Qmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 11:42:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33338 "EHLO
+        id S230518AbjK2Qnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 11:43:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjK2Qms (ORCPT
+        with ESMTP id S229518AbjK2Qns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 11:42:48 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12ED3A8
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:42:55 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5cd573c2cccso8903377b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:42:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701276174; x=1701880974; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=w6FX0CURCIc5lUI0TKDm4VLrqOeB/l4oPqjqbRob5JI=;
-        b=0qtm/rwqKLTmg0uBNQ9djLMO6ApmdUrjMGiRlrpLewmfrf3TZZUqhWrJ63TpMrYpLv
-         8jk82dh0sU0R+h2DBJMDlKkm/SM+DpZh89w37LUl5HhqyE3BvBG/ycaq+yrRgpTqL6P9
-         bdHrJd6+VWH5ykdRlJLW97xm5zDsRLPzhC5rC5Asz+KL8Yk79mVTC/cQ9wbw0tcBvUxP
-         vqoINIY2SxecDWX5l2I/aV/TSmRcQidN2Ytvi9gWIKZntlFUvsKTP54kZXUjzNgZK8DB
-         gXhKlJj0cSD7y3Z43c9DAesajp2xZkc9lX1I2qoqy42jOSE0Wg2JjKgiOyaw4hQLZdzx
-         a8gg==
+        Wed, 29 Nov 2023 11:43:48 -0500
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D2EAB0;
+        Wed, 29 Nov 2023 08:43:55 -0800 (PST)
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-58d9dcdf201so1621562eaf.2;
+        Wed, 29 Nov 2023 08:43:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701276174; x=1701880974;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=w6FX0CURCIc5lUI0TKDm4VLrqOeB/l4oPqjqbRob5JI=;
-        b=TebVWONFPQqmZVuoFJPqzkcr0q3MviBS4Cw4lid0XCOcNponyhY5G0MW2TFgLS6nz2
-         1JyX7GYVCk8kUUfAIfoBEb8EIroPSs8N4GiXfzoY354F+0QdY3YdP8oAlzM4rY5pv+Je
-         lkgeY3LrGFTT7MjhAUaRrt+PT2BgtkhAyvRCUywz+M8GNww4eqj7vhzyWk1BKJc+KHwh
-         cETD/x4wLVdq/5xK+BfulzuVEBrEP1h61P/BhXh8UN9LLUpvETULm3TPzrd0KWWDG1mr
-         31AY3FZ7E1Q3UP+K+0nBErBADO3bwleCHy47kPRVgIXDf2s/SdJI7FWRhKJGb0cjuxUg
-         VWYg==
-X-Gm-Message-State: AOJu0YzeUSIsAWq8cy7+BISKtU1sEq4iF51yE9v0IEekgXpJjYeqjibl
-        gk4TGeo8hWvVd0nGPzWcGBmiIzWJJsSxCmA=
-X-Google-Smtp-Source: AGHT+IG9EmNIc3OuwDA74YbdStAfXrBUfbJ95Q586QG4aQVL4yTAR1zwO9YqpQL6NoY8TPSZ1RUBLbuCg1uwCvE=
-X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a05:690c:2b82:b0:5cb:ed68:a256 with SMTP
- id en2-20020a05690c2b8200b005cbed68a256mr609870ywb.4.1701276174047; Wed, 29
- Nov 2023 08:42:54 -0800 (PST)
-Date:   Wed, 29 Nov 2023 16:42:51 +0000
-In-Reply-To: <ZWdVEk4QjbpTfnbn@casper.infradead.org>
-Mime-Version: 1.0
-References: <ZWdVEk4QjbpTfnbn@casper.infradead.org>
-X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-Message-ID: <20231129164251.3475162-1-aliceryhl@google.com>
-Subject: Re: [PATCH 1/7] rust: file: add Rust abstraction for `struct file`
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     willy@infradead.org
-Cc:     a.hindborg@samsung.com, alex.gaynor@gmail.com,
-        aliceryhl@google.com, arve@android.com, benno.lossin@proton.me,
-        bjorn3_gh@protonmail.com, boqun.feng@gmail.com, brauner@kernel.org,
-        cmllamas@google.com, dan.j.williams@intel.com, dxu@dxuuu.xyz,
-        gary@garyguo.net, gregkh@linuxfoundation.org,
-        joel@joelfernandes.org, keescook@chromium.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        maco@android.com, ojeda@kernel.org, peterz@infradead.org,
-        rust-for-linux@vger.kernel.org, surenb@google.com,
-        tglx@linutronix.de, tkjos@android.com, viro@zeniv.linux.org.uk,
-        wedsonaf@gmail.com
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20230601; t=1701276234; x=1701881034;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WbKmjK5aYlNvI/2G0s2AcBaMpjvp1DkcAwiIdV5vRGY=;
+        b=aDHt3M/4JyN6qBsJFjkZX5UxNSSeYML3gxCzqx6TLHmkzNS+4ZRsX5Cjetp+dHXL2W
+         qYh+wnSHpWlcbifSI/t9pTOXEsNhePA7v5mOzlv2kAYcvqJtHCsWxSkq038NdvulCAt9
+         dN9cceERh3T/8Ggu24EivLLczIdZhOeSWygFoJYNn8I7ujT1TE8JurhN17/KEmBM50S/
+         PTlsw2Wbx6VPIxxyWkbBW9GyKHIjKGoFVlqTnJ/OCfWDUUQLQVUpBjbqVr3UQcSTkQgQ
+         YB9Ix3TLEJMRPrGJa8gKw2EFEJfeazZfMM5xnLTHDD96oi5rO3aNaMrdWjH0Gip6qjRv
+         MUaA==
+X-Gm-Message-State: AOJu0YxcMAMJTkPIwixxc1rq6epWWWJolqrjlg2v2sIop0xuVnVIRoRs
+        DL9JdHgH9s5eqH30czMleg==
+X-Google-Smtp-Source: AGHT+IGDuhcW/C5uUvHy5z8/jHFZ6ZXPTUVzm1aN0tHX0RbQUR91g7dUq4iuDM++fYQzrsVvP/hwyw==
+X-Received: by 2002:a05:6820:294:b0:58d:c250:cb1d with SMTP id q20-20020a056820029400b0058dc250cb1dmr3473695ood.2.1701276231495;
+        Wed, 29 Nov 2023 08:43:51 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id cz9-20020a056820268900b00584078d1e17sm2309837oob.45.2023.11.29.08.43.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 08:43:50 -0800 (PST)
+Received: (nullmailer pid 2664302 invoked by uid 1000);
+        Wed, 29 Nov 2023 16:43:48 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Shawn Guo <shawnguo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] of: Stop circularly including of_device.h and of_platform.h
+Date:   Wed, 29 Nov 2023 10:43:16 -0600
+Message-ID: <20231129164316.2663565-1-robh@kernel.org>
+X-Mailer: git-send-email 2.42.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org>
-> I haven't looked at how Rust-for-Linux handles errors yet, but it's
-> disappointing to see that it doesn't do something like the PTR_ERR /
-> ERR_PTR / IS_ERR C thing under the hood.
+The DT of_device.h and of_platform.h headers date back to the separate
+of_platform_bus_type before it was merged into the regular platform bus.
+As part of that merge prepping Arm DT support 13 years ago, they
+"temporarily" include each other. The headers also include
+platform_device.h and of.h. The result was lots of drivers relied on
+these implicit includes.
 
-It would be cool to do that, but we haven't written the infrastructure
-to do that yet. (Note that in this particular case, the C function also
-returns the error as a null pointer.)
+Now the entire tree has been fixed over the last couple of cycles to
+explicitly include the necessary headers instead of relying on
+of_device.h and/or of_platform.h implicit includes, so the implicit and
+circular includes can finally be removed.
 
->> @@ -157,6 +158,12 @@ void rust_helper_init_work_with_key(struct work_struct *work, work_func_t func,
->>  }
->>  EXPORT_SYMBOL_GPL(rust_helper_init_work_with_key);
->>  
->> +struct file *rust_helper_get_file(struct file *f)
->> +{
->> +	return get_file(f);
->> +}
->> +EXPORT_SYMBOL_GPL(rust_helper_get_file);
-> 
-> This is ridiculous.  A function call instead of doing the
-> atomic_long_inc() in Rust?
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+There are still a few dependencies which have not been applied. If you
+are on the To list, one of them applies to you:
 
-I think there are two factors to consider here:
+https://lore.kernel.org/all/20231122180140.1432025-1-robh@kernel.org/
+https://lore.kernel.org/all/20231115210245.3744589-1-robh@kernel.org/
+https://lore.kernel.org/all/20231115205828.3732207-1-robh@kernel.org/
+https://lore.kernel.org/all/20231115210319.3747145-1-robh@kernel.org/
+https://lore.kernel.org/all/20231115210258.3744896-1-robh@kernel.org/
+---
+ include/linux/of_device.h   | 5 +----
+ include/linux/of_platform.h | 4 ++--
+ 2 files changed, 3 insertions(+), 6 deletions(-)
 
-First, doing the atomic increment from Rust currently runs into the
-memory model split between the C++ and LKMM memory models. It would be
-like using the C11 atomic_fetch_add instead of the one that the Kernel
-defines for LKMM using inline assembly. When I discussed this with Paul
-McKenney, we were advised that its best to avoid mixing the memory
-models.
+diff --git a/include/linux/of_device.h b/include/linux/of_device.h
+index 2c7a3d4bc775..b59165b28fd7 100644
+--- a/include/linux/of_device.h
++++ b/include/linux/of_device.h
+@@ -2,10 +2,7 @@
+ #ifndef _LINUX_OF_DEVICE_H
+ #define _LINUX_OF_DEVICE_H
+ 
+-#include <linux/platform_device.h>
+-#include <linux/of_platform.h> /* temporary until merge */
+-
+-#include <linux/of.h>
++#include <linux/device/driver.h>
+ 
+ struct device;
+ struct of_device_id;
+diff --git a/include/linux/of_platform.h b/include/linux/of_platform.h
+index fadfea575485..a2ff1ad48f7f 100644
+--- a/include/linux/of_platform.h
++++ b/include/linux/of_platform.h
+@@ -7,11 +7,11 @@
+  */
+ 
+ #include <linux/mod_devicetable.h>
+-#include <linux/of_device.h>
+-#include <linux/platform_device.h>
+ 
+ struct device;
++struct device_node;
+ struct of_device_id;
++struct platform_device;
+ 
+ /**
+  * struct of_dev_auxdata - lookup table entry for device names & platform_data
+-- 
+2.42.0
 
-Avoiding this would require that we replicate the inline assembly that C
-uses to define its atomic operations on the Rust side. This is something
-that I think should be done, but it hasn't been done yet.
-
-
-Second, there's potentially an increased maintenance burden when C
-methods are reimplemented in Rust. Any change to the implementation on
-the C side would have to be reflected on the Rust side.
-
-Alice
