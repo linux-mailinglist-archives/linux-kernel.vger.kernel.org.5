@@ -2,69 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBDC7FD0E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:32:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3187FD0E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:32:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232848AbjK2IcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 03:32:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35638 "EHLO
+        id S232459AbjK2IcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 03:32:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232608AbjK2Ibx (ORCPT
+        with ESMTP id S232463AbjK2Ib7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 03:31:53 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1A71BD4
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:30:26 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-54b0073d50fso6505457a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:30:26 -0800 (PST)
+        Wed, 29 Nov 2023 03:31:59 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6042135
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:31:00 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-54b8276361cso3462332a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:31:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701246624; x=1701851424; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701246659; x=1701851459; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=lejQuHQubNzpQo0iMNt5Jkv1iFKF5LFtQJcWLVi9cGc=;
-        b=cZPB+QjisZsyklKzjGs0sFgdcHaD9XjpppPhu0Cs8j7deme0KykkoXkzUhwqR/vZKy
-         RXJyS2hRhysMdY7sI3PlyvJmnpLRWP9B4Dqe1ZysedIxqBaBbyQqld+pKeV11gO17hVf
-         qJ4z/MNeVkEkrctwojMejvYonmZiWmQ+O1d08JZTd0BhrlrYvtSobwjL8c2aoq3DFgR2
-         RvPcxwUdRJMBOxSqzW/eU6qmwckRax+v09tHGCHuNnz/tdT+wJ317m6KlkRzfrPgM8J0
-         QeeUJAe8mT6ZPVGtRc2009XjKRR4ccof5TZ5vCtmBYYEzZxrmMPGyaKaegaRhICmhKLg
-         43vg==
+        bh=lLcARgNXWLshgrpkp/S+MhgkNopD1zpmMo4PWSTyMEg=;
+        b=x+ER/EVMlDe30Q8pCxhEal1LxK1RzJvftvKH7M7VV5y/sououtHhT6BTjARY+RhYYP
+         PHIDpKCz+djSLuGLKShij/SW2RwnO4ZMWgY79CA0T00jZ4FzwBDnVr1jSOCgcNIi9ik8
+         JUl/VLO5PwCCPemcRy3KkSKhZG2c3bSuwtTIvGPCSxhH7aiN9spb3hPoULhV/QefLj4j
+         By2dEqfwGBsaeNRKZpAFZau0XL8C1ePC+lFpNC/v//mU3kSkeL89y/HGJZfkitv2nZyK
+         wZxU/MaQVrkLOlZ+v2IgV10tTUjBY5c1jLfgEB0Gm5YUjviLwqpp3GGb8xs2PaGH4+hk
+         6X0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701246624; x=1701851424;
+        d=1e100.net; s=20230601; t=1701246659; x=1701851459;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lejQuHQubNzpQo0iMNt5Jkv1iFKF5LFtQJcWLVi9cGc=;
-        b=vAQKgrfio1wKDEWOU+FgKQLjIG7pGrvjWWipcfQcqyL0SdxqtHCYBBfJxuKQmUFxIx
-         O+/SqTj+S2bSQDxPqdbmWQW6vZHKmx0q2mKvF1lja4H9PB04TweNToKdzZHVyxJJ8FPv
-         Gzs65gPySZd7Lun3fZh0I1VCm1nTGq9Hfq16MTHGe2FSoNpmR+uCCD78Q6pwwogkUo4h
-         ismYShmXhR/G2aJ/060i5nbV3zES+meg9IDx1B69qDPY8pMZ19x5rQV+xfRnS0LtwdI7
-         Mm1gAQ1ylU01xudh+04WmOJov594HYg2QGDgHX14Ck7CW5CXKMrctxvM8Y8iwuJskpms
-         6GFg==
-X-Gm-Message-State: AOJu0YzGhxbmnKUw2wRxi/DbLjxygjVAICgKny1n6dXiqHFg5agb006y
-        zJYo3a/N4GDuqXSqkyDjn0jlEg==
-X-Google-Smtp-Source: AGHT+IFvfMCzJ8aLPor0BE5CSEL29kYANC1oPbU546udiufEyvjAbkzdYP4qHL0ms2/sePH5aj5Ypg==
-X-Received: by 2002:a05:6402:175c:b0:54a:f8d9:52fc with SMTP id v28-20020a056402175c00b0054af8d952fcmr11675326edx.31.1701246624720;
-        Wed, 29 Nov 2023 00:30:24 -0800 (PST)
+        bh=lLcARgNXWLshgrpkp/S+MhgkNopD1zpmMo4PWSTyMEg=;
+        b=im94J6bXo9144B1Bi35lQ/S4m/oIJwOdykWw7I93hVerhKBH9f3xc30ysaZY+gCPKn
+         7bdV1bX21GHIS954uPQLKfeKEIoq508e5+bYlMaJb+EkoL+uyv92P4CCGvJfR6AJ7uL+
+         JmYi/wx1/rF0pHvh+ykT4m4OANhFlA3fnVyaqsAfTdZudkmc0OmqzJcwJ7gdSZo4sdCq
+         tWBY2NdxVHLZ+GygFoyyMAaoIEsdERJktNCmzFZCg1J6lk079ZXgqGwv84SX924q7m1V
+         xQZNMGgK5G/Pei4Yb1l6dAEB8FA5uw0ZsiPRJvcsePSX/yRMdPSkla1bmlQbR9XsVskq
+         f8/A==
+X-Gm-Message-State: AOJu0YwTF4DBCEVwUO3OvWtgq5duzdmbS0AlE/W9C5rB5p33NMkf2mED
+        GjpDl5HVradsI2tcSm2/4d77/Q==
+X-Google-Smtp-Source: AGHT+IHu0sGX+4sFVrTiCj0U941WlQnSSg22e1TE4LaGX8GzrERrbwKALrfTOhMc74Xh6vzdiPkWNg==
+X-Received: by 2002:a05:6402:5d82:b0:54b:1865:be25 with SMTP id if2-20020a0564025d8200b0054b1865be25mr9848574edb.20.1701246659178;
+        Wed, 29 Nov 2023 00:30:59 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id b9-20020a056402350900b0054b7e312b97sm2519566edd.38.2023.11.29.00.30.23
+        by smtp.gmail.com with ESMTPSA id b9-20020a056402350900b0054b7e312b97sm2519566edd.38.2023.11.29.00.30.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 00:30:24 -0800 (PST)
-Message-ID: <87771c1f-17fd-4895-aafc-4fe0c38a59ee@linaro.org>
-Date:   Wed, 29 Nov 2023 09:30:23 +0100
+        Wed, 29 Nov 2023 00:30:58 -0800 (PST)
+Message-ID: <8f39b628-06c1-426d-ab4d-247dbc911704@linaro.org>
+Date:   Wed, 29 Nov 2023 09:30:57 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: iio/adc: ti,palmas-gpadc: Drop incomplete
- example
+Subject: Re: [PATCH] dt-bindings: reset: hisilicon,hi3660-reset: Drop
+ providers and consumers from example
 Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>, Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
+To:     Rob Herring <robh@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Tony Lindgren <tony@atomide.com>
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231128214803.3975542-1-robh@kernel.org>
+        Wei Xu <xuwei5@hisilicon.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231128214759.3975428-1-robh@kernel.org>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -110,7 +109,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231128214803.3975542-1-robh@kernel.org>
+In-Reply-To: <20231128214759.3975428-1-robh@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -123,14 +122,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/11/2023 22:48, Rob Herring wrote:
-> The example for the TI Palmas ADC is incomplete as the binding is the
-> full PMIC, not just the sub-functions. It is preferred for MFD examples
-> to be complete in the top-level MFD device binding rather than piecemeal
-> in each sub-function binding.
+On 28/11/2023 22:47, Rob Herring wrote:
+> Binding examples should generally only cover what the binding covers. A
+> provider binding doesn't need to show consumers and vice-versa. The
+> hisilicon,hi3660-reset binding example has both, so let's drop them.
 > 
 > This also fixes an undocumented (by schema) compatible warning for
-> '"ti,twl6035-pmic", "ti,palmas-pmic"'.
+> "hisilicon,hi3660-iomcu".
 > 
 > Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
