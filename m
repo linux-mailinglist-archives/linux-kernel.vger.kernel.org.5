@@ -2,102 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 087F07FCE40
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 06:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B19177FCE42
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 06:29:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbjK2F2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 00:28:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48964 "EHLO
+        id S1376927AbjK2F3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 00:29:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjK2F2b (ORCPT
+        with ESMTP id S229563AbjK2F3E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 00:28:31 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A91B19A;
-        Tue, 28 Nov 2023 21:28:37 -0800 (PST)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ASIdt6r021079;
-        Tue, 28 Nov 2023 21:28:32 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=1ewM6MqFrt1Nn4jz3SiK0ncDnmr3if++qJDwehzsdVs=;
- b=inLIu5x8poU/JJLW8MF6VMpPAhEVAc1dA1pmaMD4j3wgFnzAheO27nqm+sT8Nt9OYLDW
- nWnWmu0A96+ebIq9CKQ6dJRcfLQ24oyT8Mfc9IlFxAnpfEOf2KaHNQaRJskEdNOIkJRH
- UsA2io64e2X/80Oklb/uHHTbp28tGJJ6mvA9oqJuODZIHJaVve0QsRWwmn6S7iZoTRTV
- C3SPDGfENuJnnVchZ/qpDqb93qfwPHa8/xCfjPt1n2JFDUmamXRJfGpQasPHYY4VsSMH
- N65MuBjMLlGBbnwhTZjtp6JQ1hjIbvdQVvRQg9CYMPRoT0ujnls1DUynRHUuFDVmGxBi nw== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3unn86a1jc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 28 Nov 2023 21:28:31 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 28 Nov
- 2023 21:28:30 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Tue, 28 Nov 2023 21:28:30 -0800
-Received: from hyd1358.marvell.com (unknown [10.29.37.11])
-        by maili.marvell.com (Postfix) with ESMTP id 1BE3D3F7043;
-        Tue, 28 Nov 2023 21:28:25 -0800 (PST)
-From:   Subbaraya Sundeep <sbhatta@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <kuba@kernel.org>, <davem@davemloft.net>, <pabeni@redhat.com>,
-        <edumazet@google.com>, <sgoutham@marvell.com>,
-        <gakula@marvell.com>, <hkelam@marvell.com>, <lcherian@marvell.com>,
-        <jerinj@marvell.com>, <naveenm@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>
-Subject: [PATCH v2 net] octeontx2-af: Check return value of nix_get_nixlf before using nixlf
-Date:   Wed, 29 Nov 2023 10:58:23 +0530
-Message-ID: <1701235703-22690-1-git-send-email-sbhatta@marvell.com>
-X-Mailer: git-send-email 2.7.4
+        Wed, 29 Nov 2023 00:29:04 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2503019A;
+        Tue, 28 Nov 2023 21:29:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1701235743;
+        bh=GFT7EAkVpEquWEJU6kXdzQ2WWWjUfAfDnDgiMdjjeQ0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=VHRce5Yd2nHOqIegCPxwoQ5yPwiG4xdQX1p7X5l43N9KxbNOnaesBwvs5SIN2D5Qq
+         xUQm1SRPSqpEKXwQ1WyogPbdNZ4UWX4A4I+b5Kdqf8TLgAvS3Fx3xf5lKvFq3cvMay
+         kXHv1FaMOnSv8RmXb/GbQVMrKhqsZx/RkMUmRZViv7K/gEco/cWA4lldpyaD5U0ZoV
+         X4yk3Z1cMsmGYULy42scb/DriRqDNhgG6ef5ZzChaQ1BT4iv1zHmxA+oGSDVAIsVEC
+         Nrn307lKTkGIDfzwG1L/SSPPzJAtFD3x1Qt1XOm13iFsJ20rxHL0pg57rTC+/VEGzL
+         TMmRu80pHLdGw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Sg7Cx6LhMz4xQZ;
+        Wed, 29 Nov 2023 16:29:01 +1100 (AEDT)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Zhao Ke =?utf-8?B?6LW1IOWPrw==?= <ke.zhao@shingroup.cn>,
+        npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        fbarrat@linux.ibm.com, ajd@linux.ibm.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, shenghui.qu@shingroup.cn,
+        luming.yu@shingroup.cn, dawei.li@shingroup.cn
+Subject: Re: [PATCH] powerpc: Add PVN support for HeXin C2000 processor
+In-Reply-To: <52743BC52E07B486+dcb66331-0993-462b-ac03-6de69a3e1fac@shingroup.cn>
+References: <20231117075215.647-1-ke.zhao@shingroup.cn>
+ <87sf4yk19w.fsf@mail.lhotse>
+ <52743BC52E07B486+dcb66331-0993-462b-ac03-6de69a3e1fac@shingroup.cn>
+Date:   Wed, 29 Nov 2023 16:28:56 +1100
+Message-ID: <878r6h2kmf.fsf@mail.lhotse>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: pdscyTL9rRvbjJzcLYViIVRJFf9LGElg
-X-Proofpoint-GUID: pdscyTL9rRvbjJzcLYViIVRJFf9LGElg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-29_02,2023-11-27_01,2023-05-22_02
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a NIXLF is not attached to a PF/VF device then
-nix_get_nixlf function fails and returns proper error
-code. But npc_get_default_entry_action does not check it
-and uses garbage value in subsequent calls. Fix this
-by cheking the return value of nix_get_nixlf.
+Zhao Ke =E8=B5=B5 =E5=8F=AF <ke.zhao@shingroup.cn> writes:
+> On 2023/11/22 9:46, Michael Ellerman wrote:
+>> Zhao Ke <ke.zhao@shingroup.cn> writes:
+>>> HeXin Tech Co. has applied for a new PVN from the OpenPower Community
+>>> for its new processor C2000. The OpenPower has assigned a new PVN
+>>> and this newly assigned PVN is 0x0066, add pvr register related
+>>> support for this PVN.
+>>>
+>>> Signed-off-by: Zhao Ke <ke.zhao@shingroup.cn>
+>>> Link: https://discuss.openpower.foundation/t/how-to-get-a-new-pvr-for-p=
+rocessors-follow-power-isa/477/10
+>>=20=20=20
+>> Hi Zhao Ke,
+>>
+>> Thanks for the patch. Just a few questions.
+>>
+>> Are you able to provide any further detail on the processor?
+>>
+>> Your cputable entry claims that it's identical to the original Power8
+>> core, can you comment at all on how true that is in practice?
+>
+> Basically, we made lots of design change for the new processor.
+>
+> For example:
+>
+>  =C2=A0=C2=A0=C2=A0 1. redesign the interconnect of the fabric, from cros=
+sbar to mesh
+>
+>  =C2=A0=C2=A0=C2=A0 2. redesign the memory subsystem, including the modif=
+ication of L2=20
+> and L3 architecture
+>
+>  =C2=A0=C2=A0=C2=A0 3. redesign the SMP bus
+>
+>  =C2=A0=C2=A0=C2=A0 4. upgrade PCIe to gen5 and increase the number of la=
+nes
+>
+>  =C2=A0=C2=A0=C2=A0 5. upgrade ddr to DDR5, dimm direct connected, and th=
+e number of=20
+> channels
+>
+>  =C2=A0=C2=A0=C2=A0 6. redesign the pervasive architecture, including deb=
+ug/trace,=20
+> clock&power management, etc.
 
-Fixes: 967db3529eca ("octeontx2-af: add support for multicast/promisc packet replication feature")
-Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
----
- drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+OK thanks for the detail.
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-index 16cfc80..f658058 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc.c
-@@ -389,7 +389,13 @@ static u64 npc_get_default_entry_action(struct rvu *rvu, struct npc_mcam *mcam,
- 	int bank, nixlf, index;
- 
- 	/* get ucast entry rule entry index */
--	nix_get_nixlf(rvu, pf_func, &nixlf, NULL);
-+	if (nix_get_nixlf(rvu, pf_func, &nixlf, NULL)) {
-+		dev_err(rvu->dev, "%s: nixlf not attached to pcifunc:0x%x\n",
-+			__func__, pf_func);
-+		/* Action 0 is drop */
-+		return 0;
-+	}
-+
- 	index = npc_get_nixlf_mcam_index(mcam, pf_func, nixlf,
- 					 NIXLF_UCAST_ENTRY);
- 	bank = npc_get_bank(mcam, index);
--- 
-2.7.4
+Given all those changes I think you should not use "Power8" as the CPU
+name. Whatever the lineage of the core design is, it's no longer a
+literal "Power8", not even the same design using a different process
+node.
 
+So I think you should call it "HeXin C2000" or similar.
+
+cheers
