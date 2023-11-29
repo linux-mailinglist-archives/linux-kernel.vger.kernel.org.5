@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDAFB7FD351
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:54:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A07F17FD352
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:54:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbjK2Jy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 04:54:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34000 "EHLO
+        id S231601AbjK2Jye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 04:54:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231270AbjK2Jxx (ORCPT
+        with ESMTP id S231274AbjK2Jxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 04:53:53 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55D22680
+        Wed, 29 Nov 2023 04:53:54 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E584E2681
         for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 01:53:39 -0800 (PST)
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E3FEA21990;
-        Wed, 29 Nov 2023 09:53:36 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0AF1221991;
+        Wed, 29 Nov 2023 09:53:37 +0000 (UTC)
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C819013A96;
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E23D613A97;
         Wed, 29 Nov 2023 09:53:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
         by imap1.dmz-prg2.suse.org with ESMTPSA
-        id wISPMCAKZ2UrfQAAD6G6ig
+        id AGjyNiAKZ2UrfQAAD6G6ig
         (envelope-from <vbabka@suse.cz>); Wed, 29 Nov 2023 09:53:36 +0000
 From:   Vlastimil Babka <vbabka@suse.cz>
-Date:   Wed, 29 Nov 2023 10:53:26 +0100
-Subject: [PATCH RFC v3 1/9] mm/slub: fix bulk alloc and free stats
+Date:   Wed, 29 Nov 2023 10:53:27 +0100
+Subject: [PATCH RFC v3 2/9] mm/slub: introduce __kmem_cache_free_bulk()
+ without free hooks
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231129-slub-percpu-caches-v3-1-6bcf536772bc@suse.cz>
+Message-Id: <20231129-slub-percpu-caches-v3-2-6bcf536772bc@suse.cz>
 References: <20231129-slub-percpu-caches-v3-0-6bcf536772bc@suse.cz>
 In-Reply-To: <20231129-slub-percpu-caches-v3-0-6bcf536772bc@suse.cz>
 To:     Christoph Lameter <cl@linux.com>,
@@ -55,20 +56,20 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-kernel@vger.kernel.org, maple-tree@lists.infradead.org,
         kasan-dev@googlegroups.com, Vlastimil Babka <vbabka@suse.cz>
 X-Mailer: b4 0.12.4
-X-Spamd-Bar: ++++++++++++
-X-Spam-Score: 12.03
+X-Spamd-Bar: +++++++++++++++++
+X-Spam-Score: 17.13
 X-Rspamd-Server: rspamd1
 Authentication-Results: smtp-out1.suse.de;
         dkim=none;
         spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of vbabka@suse.cz) smtp.mailfrom=vbabka@suse.cz;
         dmarc=none
-X-Rspamd-Queue-Id: E3FEA21990
-X-Spamd-Result: default: False [12.03 / 50.00];
+X-Rspamd-Queue-Id: 0AF1221991
+X-Spamd-Result: default: False [17.13 / 50.00];
          RCVD_VIA_SMTP_AUTH(0.00)[];
-         BAYES_SPAM(0.00)[18.74%];
+         BAYES_SPAM(5.09)[99.98%];
          SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
          TO_DN_SOME(0.00)[];
-         R_SPF_SOFTFAIL(4.60)[~all];
+         R_SPF_SOFTFAIL(4.60)[~all:c];
          RCVD_COUNT_THREE(0.00)[3];
          MX_GOOD(-0.01)[];
          NEURAL_HAM_SHORT(-0.20)[-1.000];
@@ -83,7 +84,7 @@ X-Spamd-Result: default: False [12.03 / 50.00];
          TAGGED_RCPT(0.00)[];
          MIME_GOOD(-0.10)[text/plain];
          DMARC_NA(1.20)[suse.cz];
-         NEURAL_SPAM_LONG(2.84)[0.812];
+         NEURAL_SPAM_LONG(2.85)[0.813];
          RCPT_COUNT_TWELVE(0.00)[17];
          DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
          FUZZY_BLOCKED(0.00)[rspamd.com];
@@ -99,56 +100,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SLUB sysfs stats enabled CONFIG_SLUB_STATS have two deficiencies
-identified wrt bulk alloc/free operations:
+Currently, when __kmem_cache_alloc_bulk() fails, it frees back the
+objects that were allocated before the failure, using
+kmem_cache_free_bulk(). Because kmem_cache_free_bulk() calls the free
+hooks (kasan etc.) and those expect objects processed by the post alloc
+hooks, slab_post_alloc_hook() is called before kmem_cache_free_bulk().
 
-- Bulk allocations from cpu freelist are not counted. Add the
-  ALLOC_FASTPATH counter there.
+This is wasteful, although not a big concern in practice for the very
+rare error path. But in order to efficiently handle percpu array batch
+refill and free in the following patch, we will also need a variant of
+kmem_cache_free_bulk() that avoids the free hooks. So introduce it first
+and use it in the error path too.
 
-- Bulk fastpath freeing will count a list of multiple objects with a
-  single FREE_FASTPATH inc. Add a stat_add() variant to count them all.
+As a consequence, __kmem_cache_alloc_bulk() no longer needs the objcg
+parameter, remove it.
 
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slub.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ mm/slub.c | 33 ++++++++++++++++++++++++++-------
+ 1 file changed, 26 insertions(+), 7 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index 63d281dfacdb..f0cd55bb4e11 100644
+index f0cd55bb4e11..16748aeada8f 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -341,6 +341,14 @@ static inline void stat(const struct kmem_cache *s, enum stat_item si)
- #endif
+@@ -3919,6 +3919,27 @@ int build_detached_freelist(struct kmem_cache *s, size_t size,
+ 	return same;
  }
  
-+static inline void stat_add(const struct kmem_cache *s, enum stat_item si, int v)
++/*
++ * Internal bulk free of objects that were not initialised by the post alloc
++ * hooks and thus should not be processed by the free hooks
++ */
++static void __kmem_cache_free_bulk(struct kmem_cache *s, size_t size, void **p)
 +{
-+#ifdef CONFIG_SLUB_STATS
-+	raw_cpu_add(s->cpu_slab->stat[si], v);
-+#endif
++	if (!size)
++		return;
++
++	do {
++		struct detached_freelist df;
++
++		size = build_detached_freelist(s, size, p, &df);
++		if (!df.slab)
++			continue;
++
++		do_slab_free(df.s, df.slab, df.freelist, df.tail, df.cnt,
++			     _RET_IP_);
++	} while (likely(size));
 +}
 +
-+
- /*
-  * Tracks for which NUMA nodes we have kmem_cache_nodes allocated.
-  * Corresponds to node_state[N_NORMAL_MEMORY], but can temporarily
-@@ -3784,7 +3792,7 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
+ /* Note that interrupts must be enabled when calling this function. */
+ void kmem_cache_free_bulk(struct kmem_cache *s, size_t size, void **p)
+ {
+@@ -3940,7 +3961,7 @@ EXPORT_SYMBOL(kmem_cache_free_bulk);
  
- 		local_unlock(&s->cpu_slab->lock);
- 	}
--	stat(s, FREE_FASTPATH);
-+	stat_add(s, FREE_FASTPATH, cnt);
+ #ifndef CONFIG_SLUB_TINY
+ static inline int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
+-			size_t size, void **p, struct obj_cgroup *objcg)
++					  size_t size, void **p)
+ {
+ 	struct kmem_cache_cpu *c;
+ 	unsigned long irqflags;
+@@ -4004,14 +4025,13 @@ static inline int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
+ 
+ error:
+ 	slub_put_cpu_ptr(s->cpu_slab);
+-	slab_post_alloc_hook(s, objcg, flags, i, p, false, s->object_size);
+-	kmem_cache_free_bulk(s, i, p);
++	__kmem_cache_free_bulk(s, i, p);
+ 	return 0;
+ 
  }
  #else /* CONFIG_SLUB_TINY */
- static void do_slab_free(struct kmem_cache *s,
-@@ -3986,6 +3994,7 @@ static inline int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
- 		c->freelist = get_freepointer(s, object);
- 		p[i] = object;
- 		maybe_wipe_obj_freeptr(s, p[i]);
-+		stat(s, ALLOC_FASTPATH);
- 	}
- 	c->tid = next_tid(c->tid);
- 	local_unlock_irqrestore(&s->cpu_slab->lock, irqflags);
+ static int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
+-			size_t size, void **p, struct obj_cgroup *objcg)
++				   size_t size, void **p)
+ {
+ 	int i;
+ 
+@@ -4034,8 +4054,7 @@ static int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags,
+ 	return i;
+ 
+ error:
+-	slab_post_alloc_hook(s, objcg, flags, i, p, false, s->object_size);
+-	kmem_cache_free_bulk(s, i, p);
++	__kmem_cache_free_bulk(s, i, p);
+ 	return 0;
+ }
+ #endif /* CONFIG_SLUB_TINY */
+@@ -4055,7 +4074,7 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
+ 	if (unlikely(!s))
+ 		return 0;
+ 
+-	i = __kmem_cache_alloc_bulk(s, flags, size, p, objcg);
++	i = __kmem_cache_alloc_bulk(s, flags, size, p);
+ 
+ 	/*
+ 	 * memcg and kmem_cache debug support and memory initialization.
 
 -- 
 2.43.0
