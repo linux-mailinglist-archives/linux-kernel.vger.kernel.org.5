@@ -2,71 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C06E87FD020
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 08:53:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8A27FD030
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 08:56:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229656AbjK2Hxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 02:53:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38330 "EHLO
+        id S229567AbjK2H4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 02:56:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjK2Hxd (ORCPT
+        with ESMTP id S229464AbjK2H4k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 02:53:33 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B0911710
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 23:53:38 -0800 (PST)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        Wed, 29 Nov 2023 02:56:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F08CE1710
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 23:56:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701244605;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1XVJzeZJEEP99YOFg+7LBm3jmK+UXJ6uuy5vlWFPjto=;
+        b=ULPuEbG+c6I7GBxd0qMZz1pNHne17c6kbmTf0H01kUp97YP4TXm/LyOMG83vYl84Qb3/yk
+        YeK9iooH5IgUcB9WK2gpNRqU3jfjPxI0Y/NSJh8q59t+ZirHOhpf9/6FH7ztdWlJy/BrCt
+        aIhsIiOryYBaSbiZDneFFd1L5V7DEjM=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-655-q1J4E3tAN_qM_svTR0TLDg-1; Wed,
+ 29 Nov 2023 02:56:42 -0500
+X-MC-Unique: q1J4E3tAN_qM_svTR0TLDg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 74A4E66072B4;
-        Wed, 29 Nov 2023 07:53:34 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701244415;
-        bh=XkmLRTHhwkpDeiBdgys6ZY0vdei/VhUADifyqniIuRA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NfoE20/0jqky+pPakm5WtafclQpN+6ZbId1ksG7Pg2dJ8d6O4I//CKyRi514MvpyA
-         bP23X0xkwZV84YDilQeh1f5d95KpvaYywuEAN0lw+wYyJAbjAOb5+F7wmpJ6/HRw3X
-         ytEo370hP9Eq+Vd02/0R930dVjhXWA29q25v98RpmeTJajnw7ERQY3uegUbIZeIwYD
-         De6zGsKH4kLJ2k/PIfl3ekhe8kW/ylmlMwV1lxJt2L8qP6si8Ny+VnQ9Y+QLk3Lozi
-         3kLS9O/fDrPntLtlaPteOTQuEzbobQuXt5g+rYr9EzvHPusPTZy+NgKh1Xf3GYzOpT
-         Aqkcv+j05BJwQ==
-Date:   Wed, 29 Nov 2023 08:53:30 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v18 04/26] drm/shmem-helper: Refactor locked/unlocked
- functions
-Message-ID: <20231129085330.7ccb35d3@collabora.com>
-In-Reply-To: <37208c72-7908-0a78-fc89-2fa9b8d756a5@collabora.com>
-References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
-        <20231029230205.93277-5-dmitry.osipenko@collabora.com>
-        <wboljiwogeus7pwgaqzxaltt3xdavy2dzisygn6pdpoiwlnwgc@mwaiukjguzat>
-        <20231124115911.79ab24af@collabora.com>
-        <kw5bho3jx73d3glvtewmjvqt4qty4khju6dcwypuh25ya3gi4b@7slmijjqdi4p>
-        <20231128133712.53a6f6cb@collabora.com>
-        <37208c72-7908-0a78-fc89-2fa9b8d756a5@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 889D91C05137;
+        Wed, 29 Nov 2023 07:56:41 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.14])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 5A8EC2166B26;
+        Wed, 29 Nov 2023 07:56:38 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Wed, 29 Nov 2023 08:55:36 +0100 (CET)
+Date:   Wed, 29 Nov 2023 08:55:32 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH/RFC] core/nfsd: allow kernel threads to use task_work.
+Message-ID: <20231129075532.GE22743@redhat.com>
+References: <170112272125.7109.6245462722883333440@noble.neil.brown.name>
+ <20231128140156.GC22743@redhat.com>
+ <170121686264.7109.13475581089284671405@noble.neil.brown.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <170121686264.7109.13475581089284671405@noble.neil.brown.name>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,144 +76,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Nov 2023 01:05:14 +0300
-Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+On 11/29, NeilBrown wrote:
+>
+> On Wed, 29 Nov 2023, Oleg Nesterov wrote:
+> > On 11/28, NeilBrown wrote:
+> > >
+> > > I have evidence from a customer site of 256 nfsd threads adding files to
+> > > delayed_fput_lists nearly twice as fast they are retired by a single
+> > > work-queue thread running delayed_fput().  As you might imagine this
+> > > does not end well (20 million files in the queue at the time a snapshot
+> > > was taken for analysis).
+> >
+> > On a related note... Neil, Al, et al, can you look at
+> >
+> > 	[PATCH 1/3] fput: don't abuse task_work_add() when possible
+> > 	https://lore.kernel.org/all/20150908171446.GA14589@redhat.com/
+> >
+>
+> Would it make sense to create a separate task_struct->delayed_fput
+> llist?
 
-> On 11/28/23 15:37, Boris Brezillon wrote:
-> > On Tue, 28 Nov 2023 12:14:42 +0100
-> > Maxime Ripard <mripard@kernel.org> wrote:
-> >   
-> >> Hi,
-> >>
-> >> On Fri, Nov 24, 2023 at 11:59:11AM +0100, Boris Brezillon wrote:  
-> >>> On Fri, 24 Nov 2023 11:40:06 +0100
-> >>> Maxime Ripard <mripard@kernel.org> wrote:
-> >>>     
-> >>>> On Mon, Oct 30, 2023 at 02:01:43AM +0300, Dmitry Osipenko wrote:    
-> >>>>> Add locked and remove unlocked postfixes from drm-shmem function names,
-> >>>>> making names consistent with the drm/gem core code.
-> >>>>>
-> >>>>> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-> >>>>> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
-> >>>>> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>      
-> >>>>
-> >>>> This contradicts my earlier ack on a patch but...
-> >>>>     
-> >>>>> ---
-> >>>>>  drivers/gpu/drm/drm_gem_shmem_helper.c        | 64 +++++++++----------
-> >>>>>  drivers/gpu/drm/lima/lima_gem.c               |  8 +--
-> >>>>>  drivers/gpu/drm/panfrost/panfrost_drv.c       |  2 +-
-> >>>>>  drivers/gpu/drm/panfrost/panfrost_gem.c       |  6 +-
-> >>>>>  .../gpu/drm/panfrost/panfrost_gem_shrinker.c  |  2 +-
-> >>>>>  drivers/gpu/drm/panfrost/panfrost_mmu.c       |  2 +-
-> >>>>>  drivers/gpu/drm/v3d/v3d_bo.c                  |  4 +-
-> >>>>>  drivers/gpu/drm/virtio/virtgpu_object.c       |  4 +-
-> >>>>>  include/drm/drm_gem_shmem_helper.h            | 36 +++++------
-> >>>>>  9 files changed, 64 insertions(+), 64 deletions(-)
-> >>>>>
-> >>>>> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> >>>>> index 0d61f2b3e213..154585ddae08 100644
-> >>>>> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-> >>>>> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> >>>>> @@ -43,8 +43,8 @@ static const struct drm_gem_object_funcs drm_gem_shmem_funcs = {
-> >>>>>  	.pin = drm_gem_shmem_object_pin,
-> >>>>>  	.unpin = drm_gem_shmem_object_unpin,
-> >>>>>  	.get_sg_table = drm_gem_shmem_object_get_sg_table,
-> >>>>> -	.vmap = drm_gem_shmem_object_vmap,
-> >>>>> -	.vunmap = drm_gem_shmem_object_vunmap,
-> >>>>> +	.vmap = drm_gem_shmem_object_vmap_locked,
-> >>>>> +	.vunmap = drm_gem_shmem_object_vunmap_locked,      
-> >>>>
-> >>>> While I think we should indeed be consistent with the names, I would
-> >>>> also expect helpers to get the locking right by default.    
-> >>>
-> >>> Wait, actually I think this patch does what you suggest already. The
-> >>> _locked() prefix tells the caller: "you should take care of the locking,
-> >>> I expect the lock to be held when this is hook/function is called". So
-> >>> helpers without the _locked() prefix take care of the locking (which I
-> >>> guess matches your 'helpers get the locking right' expectation), and
-> >>> those with the _locked() prefix don't.    
-> >>
-> >> What I meant by "getting the locking right" is indeed a bit ambiguous,
-> >> sorry. What I'm trying to say I guess is that, in this particular case,
-> >> I don't think you can expect the vmap implementation to be called with
-> >> or without the locks held. The doc for that function will say that it's
-> >> either one or the other, but not both.
-> >>
-> >> So helpers should follow what is needed to provide a default vmap/vunmap
-> >> implementation, including what locking is expected from a vmap/vunmap
-> >> implementation.  
-> > 
-> > Hm, yeah, I think that's a matter of taste. When locking is often
-> > deferrable, like it is in DRM, I find it beneficial for funcions and
-> > function pointers to reflect the locking scheme, rather than relying on
-> > people properly reading the doc, especially when this is the only
-> > outlier in the group of drm_gem_object_funcs we already have, and it's
-> > not event documented at the drm_gem_object_funcs level [1] :P.
-> >   
-> >>
-> >> If that means that vmap is always called with the locks taken, then
-> >> drm_gem_shmem_object_vmap can just assume that it will be called with
-> >> the locks taken and there's no need to mention it in the name (and you
-> >> can probably sprinkle a couple of lockdep assertion to make sure the
-> >> locking is indeed consistent).  
-> > 
-> > Things get very confusing when you end up having drm_gem_shmem helpers
-> > that are suffixed with _locked() to encode the fact locking is the
-> > caller's responsibility and no suffix for the
-> > callee-takes-care-of-the-locking semantics, while other helpers that are
-> > not suffixed at all actually implement the
-> > caller-should-take-care-of-the-locking semantics.
-> >   
-> >>  
-> >>>> I'm not sure how reasonable it is, but I think I'd prefer to turn this
-> >>>> around and keep the drm_gem_shmem_object_vmap/unmap helpers name, and
-> >>>> convert whatever function needs to be converted to the unlock suffix so
-> >>>> we get a consistent naming.    
-> >>>
-> >>> That would be an _unlocked() prefix if we do it the other way around. I
-> >>> think the main confusion comes from the names of the hooks in
-> >>> drm_gem_shmem_funcs. Some of them, like drm_gem_shmem_funcs::v[un]map()
-> >>> are called with the GEM resv lock held, and locking is handled by the
-> >>> core, others, like drm_gem_shmem_funcs::[un]pin() are called
-> >>> without the GEM resv lock held, and locking is deferred to the
-> >>> implementation. As I said, I don't mind prefixing hooks/helpers with
-> >>> _unlocked() for those that take care of the locking, and no prefix for
-> >>> those that expects locks to be held, as long as it's consistent, but I
-> >>> just wanted to make sure we're on the same page :-).    
-> >>
-> >> What about _nolock then? It's the same number of characters than
-> >> _locked, plus it expresses what the function is (not) doing, not what
-> >> context it's supposed to be called in?  
-> > 
-> > Just did a quick
-> > 
-> >   git grep _nolock drivers/gpu/drm
-> > 
-> > and it returns zero result, where the _locked/_unlocked pattern seems
-> > to already be widely used. Not saying we shouldn't change that, but it
-> > doesn't feel like a change we should do as part of this series.
-> > 
-> > Regards,
-> > 
-> > Boris
-> > 
-> > [1]https://elixir.bootlin.com/linux/v6.7-rc3/source/include/drm/drm_gem.h#L155  
-> 
-> I'm fine with dropping the _locked() postfix from the common GEM helpers
-> and documenting the locking rule in drm_gem. Thank you all for the
-> suggestions :)
+Sure, I too thought about this,
 
-Sorry to disagree, but I think a proper function name/suffix is
-sometimes worth a few lines of doc. Not saying we should do one or the
-other, I think we should do both. But when I see a function suffixed
-_locked, _unlocked or _nolock, I can immediately tell if this function
-defers the locking to the caller or not, and then go check which lock
-in the function doc.
+> fput() adds the file to this llist and if it was the first item on the
+> list, it then adds the task_work.  That would probably request adding a
+> callback_head to struct task_struct as well.
 
-And the second thing I'm not happy with, is the fact we go back to an
-inconsistent naming in drm_gem_shmem_helper.c, where some functions
-deferring the locking to the caller are suffixed _locked and others are
-not, because ultimately, you need a different name when you expose the
-two variants...
+Even simpler, but perhaps I missed something...
+
+We can add a "struct file *fput_xxx" into task_struct and f_fput_xxx into
+the f_llist/f_rcuhead union in the struct file.
+
+fput:
+
+	if (task->fput_xxx) {
+		file->f_fput_xxx = task->fput_xxx;
+		task->fput_xxx = file;
+	} else {
+		task_work_add(...);
+		// XXX: file->f_fput_xxx != NULL
+		task->fput_xxx = file;
+	}
+
+____fput:
+
+	struct file *file = task->fput_xxx;
+	struct file *tail = container_of(work, ...);
+	// see XXX in fput()
+	tail->f_fput_xxx = NULL;
+	current->fput_xxx = NULL;
+
+	do {
+		next = READ_ONCE(file->f_fput_xxx);
+		__fput(file);
+		file = next;
+		
+	} while (file);
+	
+Again, quite possibly I missed something, but something like this should work.
+
+But I am still trying to find a simpler solution which doesn't need another
+member in task_struct...
+
+Oleg.
 
