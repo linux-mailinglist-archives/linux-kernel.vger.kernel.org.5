@@ -2,112 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C20E87FE2CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 23:13:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E71807FE2D1
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 23:14:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235015AbjK2WNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 17:13:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49214 "EHLO
+        id S234576AbjK2WO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 17:14:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234950AbjK2WNG (ORCPT
+        with ESMTP id S229658AbjK2WO0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 17:13:06 -0500
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2054.outbound.protection.outlook.com [40.107.14.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94A5172D
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:13:04 -0800 (PST)
+        Wed, 29 Nov 2023 17:14:26 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5B2A3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:14:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701296073; x=1732832073;
+  h=from:to:cc:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=PNTCXipTZKu7TlhAPFJ72vBS4tMF6WeHCPQIRaENK34=;
+  b=BLflA+qeA2DB7Os0RmeDH1/HZ5xj6aOZb9v3MuOmHE4sx+CiR1InO+SK
+   egnUf6npofNpaHKTFuYBJ74p5DX82OkBDtzo5ha5fIneTPgsoyU3t7v6T
+   2GmYPOpIhHozyo1GzkXkdTPQC75dS3Z5ryPyZ21apcngc8RdTDdjCCpQh
+   nw0beBKYE4KuZh1SBQNxpMb1xQVzOw9pIzd/xK3POyqYF44n+5wPjqXVw
+   pRbmVBUObHV1Bwq6tfiVlVwx6y/G53SK5hFFyiG2nPErRBUB1w0jr14LE
+   Q7Q+N5sPaOCaBkYxlN/piRi1RoQqAoYJktDUZkyJH5zQk2yjp41Dls6wV
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="11935197"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="11935197"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 14:14:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="912984067"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="912984067"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Nov 2023 14:14:31 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Wed, 29 Nov 2023 14:14:31 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Wed, 29 Nov 2023 14:14:31 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Wed, 29 Nov 2023 14:14:31 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hOcinrE5Q2bcnp1WngSndbSfwXsvOt0k35uVVAfQkVPm8lq4Y3SbmNkpY8s0OpfDl4Ldyz0aQaz6vrFn8vPEcUaX9O86GFuwO+Urvu2pSe/n6yz6WIcsoCh+mPKUJN+KeS5mrueIWGFHqz9ISJvLYhWU5nVqgIGVV5IzIU7sQMT2nC0ICn6I0Sw2n/TGp2WiRR523QiDF9KxpbDinPGobGyagHh5ESvBR4JGGcd4XivtZKWysGoNJhKqQiiOVcgekoeXQL1e5TgoNxB4sVPwSCZA70ZIE9FAU4/98vEH4LuHwMEKKsDJfLZg/UtBwyver/yyE3T/xEFymDNosHXGVA==
+ b=MgFEt0I+nR93Ju4Su0A8Hf+oa7rFT5S7XZT11DpVx12AkHbX/+U19jLhfrq1WDU7ZurZMThQ+JfIE5MEFnUYQBFB/f5BpvQVq/EuMEDG2xGnZrUm5etORxLihe1UuC/sY7B5JO8n0q+M9maJ1MYzTZABorrd7FNn8Q17qRfwO+zM+UrYL22bspS21djhKX8ITDSM+ejxAD4rEIgLfTCIwqiqklHU/wzu0XnLGz1g292LcfNlItRuSRieL9GeFyGxOKuYo28nSQdj+7ME2pAdvSbrB/Gk9BdT+2xtq6a95UhCZ2rUTKJKFJ07J8+dd/XHsjEOfM/zLx7F1Cl7PjNi6Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pPWQn2l7iuQDprEGwbhMq6laPM8yM/hxK/Z8Bbastmc=;
- b=McfJWlnwxlJWIHhz6TKUDUd8yiuZ/1JY5B7VK4mva0/XpMOF+XMhZlGcCIq0h/4XCG3a0nfZcQXavO6qTGvaBDyg54Zl6IjC2OKOCIiJDouGgNFKE6yRsRcAsWzzlJmg6XfF2JRA89mn3J7/g+NjKK1VKNOk0VZwcXlsa9MobqSkoyy+qZOjx5sVa/bitbcPZL76Kg4akSjJvmpSELxGDY2yiavnb5SwLINDQ5TMWh+Vu/TQb9CkUpuhKleaSIkqrEpO3d5EZAaoiK5nWE8HeeG57DgM+3zg1m+ToOqvv0aHDshfhjL6uF2s3x3jMeElnTMWe+UbJ48hjjW3HIaqZg==
+ bh=nUxbC840QJZwzqjaVtD+y/vWh9daMYyj/GRc15uUAUA=;
+ b=R9KQwd6RTClAIcB88+oW3vTBnlR9Ym2tXksr3sBkvVuX25mkiZy5zk2MPkwIrtpC/jNrwU8Qw8cB5LTcHQmYj+lJaUPRvGy/BgkbzvtMAf4TLO+rJAraTO+ItX9jCDtXAGKvtm7vSp1UmobTCtyd/G9QJV3IajtD9b3k5RGUT8v2K+BQDIbUmaaH1BsKWA5yDHvcxOtdhkiaOCupjl4JC+tZZZJ1zqq2gOAWHj2Np/bTRWNh5fNlHNYnXFfESZTu68MdgHK+Kh8tBYPHZbeGTYyqFT2ve4N0bByn3OcUMq24R0TXTuRma20R599qT8gKrM1IQOnH0vwPWY6uwwFoNw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pPWQn2l7iuQDprEGwbhMq6laPM8yM/hxK/Z8Bbastmc=;
- b=oIUt/M1U63K5xrZjQ9nJOrsJEz/2zh05RrJVADZfc4ANyTBHncU6phspWaIN8qOeAaQgchzS5iMM8A1O0r8kh1QqK5y6KpIinWFIZL+BOLa8dF8x6sXeOUPYDhSKuunIIYReCWSDwGyuMgTdtTBZgRDv9K7fL4/DiMhysZtZ5U4=
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by DB9PR04MB9578.eurprd04.prod.outlook.com (2603:10a6:10:305::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.21; Wed, 29 Nov
- 2023 22:12:59 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::95f5:5118:258f:ee40]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::95f5:5118:258f:ee40%6]) with mapi id 15.20.7046.015; Wed, 29 Nov 2023
- 22:12:59 +0000
-From:   Frank Li <Frank.Li@nxp.com>
-To:     alexandre.belloni@bootlin.com
-Cc:     Frank.li@nxp.com, conor.culhane@silvaco.com, imx@lists.linux.dev,
-        joe@perches.com, linux-i3c@lists.infradead.org,
-        linux-kernel@vger.kernel.org, miquel.raynal@bootlin.com,
-        zbigniew.lukwinski@linux.intel.com
-Subject: [PATCH v4 6/6] i3c: add API i3c_dev_gettstatus_format1() to get target device status
-Date:   Wed, 29 Nov 2023 17:12:25 -0500
-Message-Id: <20231129221225.387952-7-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231129221225.387952-1-Frank.Li@nxp.com>
-References: <20231129221225.387952-1-Frank.Li@nxp.com>
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB5373.namprd11.prod.outlook.com (2603:10b6:5:394::7) by
+ CY8PR11MB6914.namprd11.prod.outlook.com (2603:10b6:930:5a::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7002.27; Wed, 29 Nov 2023 22:14:28 +0000
+Received: from DM4PR11MB5373.namprd11.prod.outlook.com
+ ([fe80::f105:47dd:6794:6821]) by DM4PR11MB5373.namprd11.prod.outlook.com
+ ([fe80::f105:47dd:6794:6821%4]) with mapi id 15.20.7046.015; Wed, 29 Nov 2023
+ 22:14:28 +0000
+From:   =?UTF-8?q?Micha=C5=82=20Winiarski?= <michal.winiarski@intel.com>
+To:     <intel-xe@lists.freedesktop.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+CC:     Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Michal Wajdeczko <michal.wajdeczko@intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        =?UTF-8?q?Ma=C3=ADra=20Canal?= <mcanal@igalia.com>,
+        =?UTF-8?q?Micha=C5=82=20Winiarski?= <michal.winiarski@intel.com>
+Subject: [PATCH 0/2] drm/managed: Add drmm_release_action
+Date:   Wed, 29 Nov 2023 23:14:10 +0100
+Message-ID: <20231129221412.1180549-1-michal.winiarski@intel.com>
+X-Mailer: git-send-email 2.43.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR04CA0003.namprd04.prod.outlook.com
- (2603:10b6:a03:40::16) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+X-ClientProxiedBy: WA1P291CA0022.POLP291.PROD.OUTLOOK.COM
+ (2603:10a6:1d0:19::29) To DM4PR11MB5373.namprd11.prod.outlook.com
+ (2603:10b6:5:394::7)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|DB9PR04MB9578:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8ec119a3-88e5-43cf-9742-08dbf12858c1
+X-MS-TrafficTypeDiagnostic: DM4PR11MB5373:EE_|CY8PR11MB6914:EE_
+X-MS-Office365-Filtering-Correlation-Id: e11285ba-29cc-4439-58ba-08dbf1288dc9
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fRxqB7tA6jyw0QU+IMByfrrbJz2pUDseokMYLhf4DLjtJeQRDDYv56osvP+iRyr/udM8mXnrV6H8zUxyU8ZtV+rVOxT9ZqHiUOtVwmmEkRy40Aon+O4N5/z5VrZ8lE7MnGI/GB+Z3u24J/W/OnfM9X6jlgbOfxj9wVZry/bMHGuNk/Ibx7J9FBfuN5ZzBBfQKr+jSDNPIHLib8RAn/5DzhI9Grcki7up8Fl1h8bWmZx0rKDatkwDXEPpNQLJsKFvAMoqXtIEJvEwX4CK/O+EgokPZNIvwQBM4t6kB59pCpkVZI8eCLnbBRfpY/P3VpQiHBF10Z/VqweGsoY2nzuc2rS6glW5KShLwSCvhAU/IUAtbR4D/0OjVZFCW4cfNMpEuA5a9BaDbGnB7YRqkZNPnmYq4HJ709IrJiPl2MGAHZD6GqLyujalGlh+/pRCZZ1jqKA2zsaJDP54W+FZdKXe4ypKq9kxEK1iQIJXBJn5Uqbn6maLBW6JALXpuEMMji2MxSjoVtZ+ecKuHUuawFITJjwQSgLUEZ2eHMLBi5Fa/4ui2+F4xLmmdU2yOvjohOXCi9Tw2FcVys1pjlCXu0mA5pGKhJDVaq9TOteuwIWcsOWDbmDdU4W5qnTo6dk3kBuMQgSxPlUccmAGaMOde0k0QKQ9QzuWM5P2NBMUoITfqfs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(136003)(346002)(376002)(396003)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(202311291699003)(38350700005)(36756003)(2906002)(41300700001)(5660300002)(86362001)(6666004)(6512007)(52116002)(83380400001)(2616005)(1076003)(38100700002)(6506007)(26005)(316002)(66476007)(478600001)(6486002)(8936002)(66946007)(8676002)(66556008)(4326008)(6916009);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: W4/CrxrzGzdP2HPS6gWZbmbdRQ6jzG+ZklUY1d+zrL/ZtlHEfzM6okGqP5N9z2GYxqNH0YRsSQOlc40o/5czseONQITAhyTQO2WQYeOYEr5d2E/1pQal/tHdDoYMdNgIfpqO2ycaz0yiSyD7Yo0JgMzsOWWbVNHxjNOIM4uiH2pyRIZannbO3fndcfOxneFm5IlhkvffiodCg/328VFCWAywpzTyzDfEQuVg8s2FEAtmtdEnoI4XJWelpnrKokNhr1P6WOa5ILN1+Ofz0MPaX2cOKy4v0aHtX9JUzt+/VLs3yYZqMOpYuzDPWxwW/v0A8E3wg1LC5oVpbMSjICX2g51bMgGO0AufYRDWAQWT/Pzd83eQpyX1yIoo05vR6lFyKykFL9Z0Xnz4U8PcVbcYg9KBG/mb9hx8wSaJq9uNPDzZmSF0lWz8LeHwz+Sik7mfluT2gWNdISZpt2+2GDw73VgKXxXAFCiCIYc0djtITA72Fv/0XDo/+pX1ZXGUa+N4xAyKQ98PapE8v0wnWPaZrVUCopsSV2mY7R5wRBlfAjAU7vm6nY6wkC7FCIAz1WF094R1Ek3gTM4C08wG9aE8yJnnRBX1EZH56p034VDzfJ/owocHARpFZwOcKQkdrPHQ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5373.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(376002)(366004)(39860400002)(346002)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(2906002)(4744005)(7416002)(5660300002)(4326008)(38100700002)(86362001)(82960400001)(36756003)(8676002)(8936002)(202311291699003)(41300700001)(66476007)(54906003)(2616005)(478600001)(66946007)(316002)(66556008)(1076003)(26005)(83380400001)(6666004)(6512007)(6486002)(6506007);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vAC3A2Bdrm5/uqw3WZVDX1nE87b6iXtQ4yoZ2jfMWsVRGhxQ18D+s9tefKn4?=
- =?us-ascii?Q?j9XSp3cOwxbsFKIOJbr2HWte7pXZFHm+QhUkOQdF8r5ISYI0jFQdHyG56Mri?=
- =?us-ascii?Q?o68FtEgOa9F1DYcGbyEnAXxOtP2klDFEJJOfGolA/SGeRIVDPd5JhIwI+A3k?=
- =?us-ascii?Q?A8VpH36GgH1+s1mjkvDSZl5iJ75RRVRmDEhvrV4VDOA/TPrN+xVj/c1kLFDs?=
- =?us-ascii?Q?HUUvHdfyM5uBPPMxildLQwB3iEIPe5qqI7bwQz6ATMAon/fAbyHTV6HBzhQ8?=
- =?us-ascii?Q?S+DihUnolZIOi+HvcgjoT95N8x5zHr0ZaTU5UjXubjJaPdLsqaDnIZcAHg0S?=
- =?us-ascii?Q?te0Nm+u/O+ZBwCcyEKVBJhK6Z8ps6XY0/MPWO6uXFZS13PWkHObJNMUNHp6K?=
- =?us-ascii?Q?c2G9rQUEfUsECXfM3GlOqQ8ZOLU5RCJSqB3vF86RaCuF/0YCGvEW403eCQ+P?=
- =?us-ascii?Q?zzcTpMFPAb8++OCGqqnj7qFPamafxoU+kT+M8moMu3r895kVLJo9My2Imzes?=
- =?us-ascii?Q?y9qc0T5BtyfM2vage4f1zHj93EVCmH18GtNIuE1y0/cDweZNrfb73kG1JRzd?=
- =?us-ascii?Q?tFf2YA9+BynmJMQRUXH5oRmlZO72owjEZO23g3uDaA2CO6NpCjwJP+6k0Ip1?=
- =?us-ascii?Q?Arp6nkLkTsisQYEFVFSQnA64z6HMRlr6XLY5OltOzGoLrxjVHOMlEWpRqQ1Z?=
- =?us-ascii?Q?M7OUjv7VhJ8VoYI52fzo27vjmU6QRKxlw96LefAct3smUEiwcHuB7MLrSzZi?=
- =?us-ascii?Q?jXekxo09HeQLBxqB8TaU+S+V9pWlPtsJP9/Y51/M5tFW2z8GjGkUuX/ppgGA?=
- =?us-ascii?Q?qQhH7p1nuk6n4deMXVQVoTTNWgAy7GnqYRZk68ZxzLUsPTjf5eLXQoDWIAVa?=
- =?us-ascii?Q?7GChc7j6saBf6AhuVidHYQdDI9P1EUenHWM8wbYJJbFr3hqch0TnQW7/HiN5?=
- =?us-ascii?Q?PRKdXLunOfgRJDNC3J45vFD/tmdxhdKyJni7OS2V+VhMS2LvhZDDNPgX25eV?=
- =?us-ascii?Q?AtPhe9wP0ezTSd4+LUUzwL37TTHgYjgNIKnVNnX5jca0BZdIe2WtdxfWJm8k?=
- =?us-ascii?Q?LBtyM8IvSdUV14Y8PVAiWL2ygutV3qCgf8UprgdWE3/w3NJcb7fBQJXNdtLD?=
- =?us-ascii?Q?iTh1237QjGG7H3rk26CHibA5MpgWmGYEWbm4PJxM2n1AtHd1UuzG1FFvuQF/?=
- =?us-ascii?Q?BbUqKAxeporlf30Pgd/VelEFOKJPajmoy28WDBoQm39zKrMhoH2p62uTxOye?=
- =?us-ascii?Q?GZxwJrLtE7CuacKNKyrgdmW31g2qWqXtciqKqQUSenvJeTYDWsJYMaa9eH/5?=
- =?us-ascii?Q?3+KkuUbKIvaf5FUrdUNkYkmuPiOzr5JVY1wXIv2SRDlVzTbRZoN08w8Omn/n?=
- =?us-ascii?Q?xCvcPnkFFF+Mh2aH51urh4EJOCM5pAlwyer8EP9f6PfjMGc33rH7IegsVUfe?=
- =?us-ascii?Q?MyTGaOQMSBXUjoeqfzjQyRIPlKxI1lumibzJK3SS1+CAHpvjy6veq65ySHhK?=
- =?us-ascii?Q?rvuQB+SnUKNbwseg1nZLvlESHkUXv936BemHCvgPOOYLK6oEaAB7wtBJOv0n?=
- =?us-ascii?Q?3utgJ9Ne04jWh3F6XOmc4wAc/71fGXiALBhh7MEA?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8ec119a3-88e5-43cf-9742-08dbf12858c1
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZzFyZ2VwTzFWU0lOT0RtREx1MTgya0VvVVFKRE0zZWUvaTJPUGNIajlvVGtI?=
+ =?utf-8?B?dXJPdWg4QStyQytRQmNRb29RUUtLc0YvcEU4aEFxYTlHZTZmRXlxTnljMy9h?=
+ =?utf-8?B?RzhvMVdzWGk5aTI2cy9LdjBFNnZEZXVaMHUxUWwrak5GM1NLay9JaWRXeGpU?=
+ =?utf-8?B?VE9BdjVTV3h0MEVwcTkzRHhpWm5GcDZWTzNKNGlJMENzdC9FWFRTbmFJOEww?=
+ =?utf-8?B?SnJWZnhpbXZoTlI2c3dtLzMrSk9nNnhhMUhhM0FkSHVYcHhwZUJONENtTHAr?=
+ =?utf-8?B?UVJLTENZT2pyWjhmSFRWYUp2WFBhVXU3YVVEUDd2UWtPOHJxRFMxTHRvdndv?=
+ =?utf-8?B?QlM1ZUg3RHA3aTY0NEJ4bDFLbTNodVFac0ZGWWNjcGljNWNDZ0JCMVNHdk9R?=
+ =?utf-8?B?czBIcHZYeFBYam4yYURlNWJ6MDR1MXhFWUs1RHNsdVFoTTJtKzVXRkRuRWoy?=
+ =?utf-8?B?b3dnRWtnSEtwV3VNKzFKcEoxVTVhbmZyQll4RDdkR205MWkrdzhScUl4YXds?=
+ =?utf-8?B?UFdpVTc2dXN4dVhib3hValljeDZaUytFQi8rZllJNzZMcXo1TU9TZEJwZEZw?=
+ =?utf-8?B?ZDNEMmVFcmlCN0ZuVXhxRjBtRWRPS1YyeUYvUy9aS2JQZS9EdGlJbXVyVFE1?=
+ =?utf-8?B?Wmcvdm5icEJsM2dUOEZ5RlJaZzBBUHo3VGIvZWRxekNXOWxMQ3hGVlVWWnQv?=
+ =?utf-8?B?MElKSklPWjZucUhmMDc0eWtFZmk0UVZJWWJJS1drMVZqcnVQOFNqT2tmcWVT?=
+ =?utf-8?B?bk1GMGRhVm5iQ3FYYVNtbk9SakZpOVBYdVBiQ3Z6ODk1OUZoMVFQZ3RydGdY?=
+ =?utf-8?B?ZTBDdCtIN2cyVVVVek9SOGdzMjEyQzgwV3lGWEQvcHlDaU52VDUrMm43QUdR?=
+ =?utf-8?B?c3NIS1VwWnRjNVR4bTk3VFJ5VUc4eWlvRWcrODJGOGZDbDd1QmQrQXV3WDQ5?=
+ =?utf-8?B?bDN2OVpLbnVVbExlSjN2YWNlY1B0enNJZWxiRjRrdnBnMjVMbTNXbzIzNU04?=
+ =?utf-8?B?SkNLTkhERDZJNFRQVmlPK1Q3aWtPUEtIUWJwd0dQYnJQQkVmaHduTnphNHoz?=
+ =?utf-8?B?U25sMEQwMDBJWDJGVHdZU0xiL0REMWREczVFWVdzcWw2NmdqSXpHNjJwbEFL?=
+ =?utf-8?B?MjhWRnd6dFpXL0N0eDlxcnNISVNwMHY2Kzh2YWhPQjJocE5GVDFVMFVVZWll?=
+ =?utf-8?B?VWhhelpidktYOThNVDhaOEVjUzZQUDY4YmEvZVcwaVIvZXh2bkl3SzNPb1Nk?=
+ =?utf-8?B?anpYWHk5am02TlBIbjdFcm16Rm9CRXkyOGVXUDczQy9TTDNScTU2RytvSHVK?=
+ =?utf-8?B?OXgyWFRZeGVZT2tiOFZ2aFZZeGRnK04wK1I0REVXRldpVkpUdkFkY0g4SENj?=
+ =?utf-8?B?QmYxdnNSVFhISHhVcnkxWEFsU1gzdmxpWFgycFFWQytSOWhwWE9NM3ZoeTlT?=
+ =?utf-8?B?cmU3aVoyaU9YUm52eCt2RjJSWGR2SGFoZXoxMWpKSHVHWjRQaGd2aFFkUHls?=
+ =?utf-8?B?aXFvNWkwQ0ptU0hwMXc1ZVNvNGhOYldpVnFkZnBvWjM4VVh1QWZTaHlQVnlU?=
+ =?utf-8?B?WlZlcUlEdXp6VHB2TllQeDFSWU82LzR2RUgvNUJIMTBUUVJPbWJXWktNOUpO?=
+ =?utf-8?B?enlsZHo5M0s2VVpkWFptcjR6b0d1RVRHV3JFMWtaODE5OU9qZ3JXU0VONWYw?=
+ =?utf-8?B?eFJzdlBGa0QxZVU4WFBxTXZ4NmFkdVlmZ0lkM0tjYW90M29kcGlOK2hYbnlT?=
+ =?utf-8?B?NzQ1OFB0eEJkeEtGNzM0eXJoTWw1OWxRMzlKRXRxZnJBcjgyMGsrMUR5MmlU?=
+ =?utf-8?B?SjU4YTBuRkpoZU1MVytLa2RWc290ekJFZGtsYXBic2xXb2NJcmk4em14ZkxG?=
+ =?utf-8?B?R08yYkVPbDBabnJaYi9aQUhILy91dFJFR09KWVF6Tnk2WUkxRzJYcDFnbzVU?=
+ =?utf-8?B?MURNODdtQ0tqbkxMZlExdnNYYzhja0xaTm1oYnJ6U1NsVzArTFAwblZkWitW?=
+ =?utf-8?B?ZzVyMWVvOUF0cnYxMys4T0p0akRmdTNXdkhDKyt1T3RKZFl0UVptUDdJc0NW?=
+ =?utf-8?B?anhoWVRKU2pGZjFSSTNNakxtcUp3dmVNMlE3VHBNZzlheGh6b2M1TGE4ZCt2?=
+ =?utf-8?B?UW9LVzUrT2pKc1JCZWNJdFllOER3YTZxeitCRUIvVGhPQ1BUVklJUUc4OW5j?=
+ =?utf-8?B?VFE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e11285ba-29cc-4439-58ba-08dbf1288dc9
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5373.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 22:12:59.4434
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 22:14:28.4169
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZAlhJh+/uo36cs6bdEyPr0f6EauS45hPjoVWfFZv6ZQdLGH1lR4e4MvG1626woOvut3efu7Gh0conSjqJOZtSg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9578
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-MS-Exchange-CrossTenant-UserPrincipalName: PNJBm0A2y4ljJGZxfUk5UUHW1B2hYkztSOszFPsCGPg3iqjJNcqe3bjDN/nNOjDuRopz2wZj3NRhYAvWRDKbQ2qB7XxFXtEbgObD/CP5HRE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB6914
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -115,111 +161,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I3C standard 5.1.9.3.15 Get Device Status (GETSTATUS):
-Get request for one I3C Target Device to return its current status.
+Upcoming Intel Xe driver will need to have a more fine-grained control
+over DRM managed actions - namely, the ability to release a given
+action, triggering it manually at a different point in time than the
+final drm_dev_put().
+This series adds a drmm_release_action function (which is similar to
+devres devm_release_action) and a simple test that uses it.
 
-Add API to fetch it with format1.
+Michał Winiarski (2):
+  drm/managed: Add drmm_release_action
+  drm/tests: managed: Add a simple test for drmm_managed_release
 
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
----
- drivers/i3c/device.c       | 24 ++++++++++++++++++++++++
- drivers/i3c/internals.h    |  1 +
- drivers/i3c/master.c       | 26 ++++++++++++++++++++++++++
- include/linux/i3c/device.h |  1 +
- 4 files changed, 52 insertions(+)
+ drivers/gpu/drm/drm_managed.c            | 39 ++++++++++++++
+ drivers/gpu/drm/tests/drm_managed_test.c | 65 ++++++++++++++++++------
+ include/drm/drm_managed.h                |  4 ++
+ 3 files changed, 93 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/i3c/device.c b/drivers/i3c/device.c
-index 1a6a8703dbc3a..aa26cf50ab9c6 100644
---- a/drivers/i3c/device.c
-+++ b/drivers/i3c/device.c
-@@ -196,6 +196,30 @@ void i3c_device_free_ibi(struct i3c_device *dev)
- }
- EXPORT_SYMBOL_GPL(i3c_device_free_ibi);
- 
-+/**
-+ * i3c_device_getstatus_format1() - Get device status with format 1.
-+ * @dev: device for which you want to get status.
-+ * @status: I3C status format 1
-+ *
-+ * Return: 0 in case of success, a negative error core otherwise.
-+ */
-+int i3c_device_getstatus_format1(struct i3c_device *dev, u16 *status)
-+{
-+	int ret = -EINVAL;
-+
-+	if (!status)
-+		return -EINVAL;
-+
-+	i3c_bus_normaluse_lock(dev->bus);
-+	if (dev->desc)
-+		ret = i3c_dev_getstatus_format1_locked(dev->desc, status);
-+
-+	i3c_bus_normaluse_unlock(dev->bus);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(i3c_device_getstatus_format1);
-+
- /**
-  * i3cdev_to_dev() - Returns the device embedded in @i3cdev
-  * @i3cdev: I3C device
-diff --git a/drivers/i3c/internals.h b/drivers/i3c/internals.h
-index 908a807badaf9..976ad26ca79c2 100644
---- a/drivers/i3c/internals.h
-+++ b/drivers/i3c/internals.h
-@@ -24,4 +24,5 @@ int i3c_dev_enable_ibi_locked(struct i3c_dev_desc *dev);
- int i3c_dev_request_ibi_locked(struct i3c_dev_desc *dev,
- 			       const struct i3c_ibi_setup *req);
- void i3c_dev_free_ibi_locked(struct i3c_dev_desc *dev);
-+int i3c_dev_getstatus_format1_locked(struct i3c_dev_desc *dev, u16 *status);
- #endif /* I3C_INTERNAL_H */
-diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
-index ed5e27cd20811..6a16ebdd180b5 100644
---- a/drivers/i3c/master.c
-+++ b/drivers/i3c/master.c
-@@ -2924,6 +2924,32 @@ void i3c_dev_free_ibi_locked(struct i3c_dev_desc *dev)
- 	dev->ibi = NULL;
- }
- 
-+int i3c_dev_getstatus_format1_locked(struct i3c_dev_desc *dev, u16 *status)
-+{
-+	struct i3c_master_controller *master = i3c_dev_get_master(dev);
-+	struct i3c_ccc_getstatus *format1;
-+	struct i3c_ccc_cmd_dest dest;
-+	struct i3c_ccc_cmd cmd;
-+	int ret;
-+
-+	format1 = i3c_ccc_cmd_dest_init(&dest, dev->info.dyn_addr, sizeof(*format1));
-+	if (!format1)
-+		return -ENOMEM;
-+
-+	i3c_ccc_cmd_init(&cmd, true, I3C_CCC_GETSTATUS, &dest, 1);
-+
-+	ret = i3c_master_send_ccc_cmd_locked(master, &cmd);
-+	if (ret)
-+		goto out;
-+
-+	*status = be16_to_cpu(format1->status);
-+
-+out:
-+	i3c_ccc_cmd_dest_cleanup(&dest);
-+
-+	return ret;
-+}
-+
- static int __init i3c_init(void)
- {
- 	int res;
-diff --git a/include/linux/i3c/device.h b/include/linux/i3c/device.h
-index ef6217da8253b..5f511bd400f11 100644
---- a/include/linux/i3c/device.h
-+++ b/include/linux/i3c/device.h
-@@ -345,4 +345,5 @@ void i3c_device_free_ibi(struct i3c_device *dev);
- int i3c_device_enable_ibi(struct i3c_device *dev);
- int i3c_device_disable_ibi(struct i3c_device *dev);
- 
-+int i3c_device_getstatus_format1(struct i3c_device *dev, u16 *status);
- #endif /* I3C_DEV_H */
 -- 
-2.34.1
+2.43.0
 
