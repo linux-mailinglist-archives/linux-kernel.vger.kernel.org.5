@@ -2,52 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5290B7FDABF
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:05:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA627FDAC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:05:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234981AbjK2PFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 10:05:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39892 "EHLO
+        id S234958AbjK2PFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 10:05:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234966AbjK2PFC (ORCPT
+        with ESMTP id S234721AbjK2PFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 10:05:02 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4667BE
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:05:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xYpfXEr5oDF3xuFrNicRikWRVjqbNinwQMUs2imXNvE=; b=TsB4JoQ/6oi3l4cnLJt98OtFhx
-        /xNBHHdGETsIrLLT56aCF+xABHaGjBiGmOZG3/lX+j4VDGLotfgj7he5duDtSdXoZQBw6WnFYb1HH
-        JE3FvCIE5Wmyk+sHq2FPUY8bto6ZHMJvzip3xYGvWga9JWmkRKQ+uB9HePv9EKG6oFC1v75kWeZJc
-        vCXiW4pWwebguyDxOlgIB2L95ePzXGh+cYMU2KrvsEKfDlWeXZqAB/szWei7GgCW5t1NUEPkLmwtt
-        RrHmL6zlb2+cwj4IsJi06w0K7cgELqULxcEMlsjw1wYFxawun5vo+lJrJ340+NuxsoiRXnMbVSWsY
-        IR6uvX0Q==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r8M7S-000OVM-1b;
-        Wed, 29 Nov 2023 15:04:55 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6310130017D; Wed, 29 Nov 2023 16:04:53 +0100 (CET)
-Date:   Wed, 29 Nov 2023 16:04:53 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Re: [RFC] x86/kvm/emulate: Avoid RET for fastops
-Message-ID: <20231129150453.GA23596@noisy.programming.kicks-ass.net>
-References: <20231112201205.GB9987@noisy.programming.kicks-ass.net>
- <ZWaV8H9e8ubhFgWJ@google.com>
+        Wed, 29 Nov 2023 10:05:39 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CDF7D66;
+        Wed, 29 Nov 2023 07:05:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701270345; x=1732806345;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=fuBRJoZc8zYA4dA1/vrdLgmtDN9b8lrYs3XPfP7VKUY=;
+  b=JMY33eFMy0Rhe4IsJiRejHdrcz5bdURd+g2rKsypW/bMw5Gh1Ke/Jn12
+   j/LeT/+cahKQUVc+5AJ4tHDblsFxlGoIIVnswi7VMt0fKdYN0Tl3ZCZET
+   wrdm16ju23cFbkSbxEMwO/gFj3TtWkmUqxTIUUX8dxDMFsUs1CsXOZAX8
+   hBKqz8ff4TzZ2W5jlOhEesL8ipvYb6yoWeikqyVIcFYSh/JNSvhRenDhQ
+   wTCGi4G0WL35Hu5Z2gRdL9Cg+7VAO/JenixsjPboEeBBh8ztpZehSgZnE
+   RhoYHt5dJPzelbBg402P8UNJJwDpoTm1qWnZ3N0OQLBvAjHfAwW2eByjS
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="378207311"
+X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
+   d="scan'208";a="378207311"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 07:05:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="892479673"
+X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
+   d="scan'208";a="892479673"
+Received: from besamani-mobl2.amr.corp.intel.com (HELO [10.212.113.90]) ([10.212.113.90])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 07:05:43 -0800
+Message-ID: <a106fb4733d0a3f0d6d5792705cdb5cee13731f8.camel@linux.intel.com>
+Subject: Re: Fwd: Intel hybrid CPU scheduler always prefers E cores
+From:   srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Tim Chen <tim.c.chen@linux.intel.com>,
+        Ramses <ramses@well-founded.dev>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Power Management <linux-pm@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Yu Chen <yu.c.chen@intel.com>
+Date:   Wed, 29 Nov 2023 10:05:42 -0500
+In-Reply-To: <c2a9ceb3d7b1f384ad94d10b7058bb1cebea3d07.camel@linux.intel.com>
+References: <01df8329-06d7-4fd1-9c7a-05296f33231e@gmail.com>
+         <b2b9121c6d2003b45f7fde6a97bb479a1ed634c7.camel@linux.intel.com>
+         <NkN3JYx--3-9@well-founded.dev>
+         <c2a9ceb3d7b1f384ad94d10b7058bb1cebea3d07.camel@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWaV8H9e8ubhFgWJ@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,143 +75,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 05:37:52PM -0800, Sean Christopherson wrote:
-> On Sun, Nov 12, 2023, Peter Zijlstra wrote:
-> > Hi,
-> > 
-> > Inspired by the likes of ba5ca5e5e6a1 ("x86/retpoline: Don't clobber
-> > RFLAGS during srso_safe_ret()") I had it on my TODO to look at this,
-> > because the call-depth-tracking rethunk definitely also clobbers flags
-> > and that's a ton harder to fix.
-> > 
-> > Looking at this recently I noticed that there's really only one callsite
-> > (twice, the testcc thing is basically separate from the rest of the
-> > fastop stuff) and thus CALL+RET is totally silly, we can JMP+JMP.
-> > 
-> > The below implements this, and aside from objtool going apeshit (it
-> > fails to recognise the fastop JMP_NOSPEC as a jump-table and instead
-> > classifies it as a tail-call), it actually builds and the asm looks
-> > good sensible enough.
-> > 
-> > I've not yet figured out how to test this stuff, but does something like
-> > this look sane to you guys?
-> 
-> Yes?  The idea seems sound, but I haven't thought _that_ hard about whether or not
-> there's any possible gotchas.   I did a quick test and nothing exploded (and
-> usually when this code breaks, it breaks spectacularly).
+On Tue, 2023-11-28 at 15:10 -0800, Tim Chen wrote:
+> On Tue, 2023-11-28 at 23:33 +0100, Ramses wrote:
+>=20
+> > I applied the patch on top of 6.6.2, but unfortunately I see more
+> > or less the same behaviour as before, with single-threaded CPU-
+> > bound tasks running almost exclusively on E cores.
+> >=20
+> > Ramses
+>=20
+> I suspect that you may have other issues. I wonder if CPU priorities
+> are getting
+> assigned properly on your system.
+>=20
+> Saw in the original bugzilla=20
+> https://bugzilla.kernel.org/show_bug.cgi?id=3D218195
+> that you don't see /proc/sys/kernel/sched_itmt_enabled which
+> may be a symptom of such a problem.
+>=20
+> +Srinivas, is there something Ramses can do to help
+> find out if there are issues with cppc?
+I have updated the bugzilla with the findings. The ACPI config on this
+system is telling us that CPPC v2 is not supported. Current
+implementation depends on CPPC v2.
 
-Looking at this more, I was wondering if there is something magical
-about test_cc(). Both naming and purpose seems to be testing the flags,
-but it has a side effect of actually setting the flags too, does
-anything rely on that?
+Even in 6.4 kernel, ITMT is not enabled.
 
-That is, we already have code that emulates the condition-codes, might
-as well use it here and avoid a bunch of dodgy asm, no?
+Thanks,
+Srinivas
 
----
- arch/x86/include/asm/text-patching.h | 20 +++++++++++++-------
- arch/x86/kvm/emulate.c               | 34 ++--------------------------------
- 2 files changed, 15 insertions(+), 39 deletions(-)
 
-diff --git a/arch/x86/include/asm/text-patching.h b/arch/x86/include/asm/text-patching.h
-index 29832c338cdc..7b9d7fe0ab64 100644
---- a/arch/x86/include/asm/text-patching.h
-+++ b/arch/x86/include/asm/text-patching.h
-@@ -186,9 +186,9 @@ void int3_emulate_ret(struct pt_regs *regs)
- }
- 
- static __always_inline
--void int3_emulate_jcc(struct pt_regs *regs, u8 cc, unsigned long ip, unsigned long disp)
-+bool __emulate_cc(unsigned long flags, u8 cc)
- {
--	static const unsigned long jcc_mask[6] = {
-+	static const unsigned long cc_mask[6] = {
- 		[0] = X86_EFLAGS_OF,
- 		[1] = X86_EFLAGS_CF,
- 		[2] = X86_EFLAGS_ZF,
-@@ -201,15 +201,21 @@ void int3_emulate_jcc(struct pt_regs *regs, u8 cc, unsigned long ip, unsigned lo
- 	bool match;
- 
- 	if (cc < 0xc) {
--		match = regs->flags & jcc_mask[cc >> 1];
-+		match = flags & cc_mask[cc >> 1];
- 	} else {
--		match = ((regs->flags & X86_EFLAGS_SF) >> X86_EFLAGS_SF_BIT) ^
--			((regs->flags & X86_EFLAGS_OF) >> X86_EFLAGS_OF_BIT);
-+		match = ((flags & X86_EFLAGS_SF) >> X86_EFLAGS_SF_BIT) ^
-+			((flags & X86_EFLAGS_OF) >> X86_EFLAGS_OF_BIT);
- 		if (cc >= 0xe)
--			match = match || (regs->flags & X86_EFLAGS_ZF);
-+			match = match || (flags & X86_EFLAGS_ZF);
- 	}
- 
--	if ((match && !invert) || (!match && invert))
-+	return (match && !invert) || (!match && invert);
-+}
-+
-+static __always_inline
-+void int3_emulate_jcc(struct pt_regs *regs, u8 cc, unsigned long ip, unsigned long disp)
-+{
-+	if (__emulate_cc(regs->flags, cc))
- 		ip += disp;
- 
- 	int3_emulate_jmp(regs, ip);
-diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-index 2673cd5c46cb..0e971222c1f4 100644
---- a/arch/x86/kvm/emulate.c
-+++ b/arch/x86/kvm/emulate.c
-@@ -26,6 +26,7 @@
- #include <asm/debugreg.h>
- #include <asm/nospec-branch.h>
- #include <asm/ibt.h>
-+#include <asm/text-patching.h>
- 
- #include "x86.h"
- #include "tss.h"
-@@ -416,31 +417,6 @@ static int fastop(struct x86_emulate_ctxt *ctxt, fastop_t fop);
- 	ON64(FOP3E(op##q, rax, rdx, cl)) \
- 	FOP_END
- 
--/* Special case for SETcc - 1 instruction per cc */
--#define FOP_SETCC(op) \
--	FOP_FUNC(op) \
--	#op " %al \n\t" \
--	FOP_RET(op)
--
--FOP_START(setcc)
--FOP_SETCC(seto)
--FOP_SETCC(setno)
--FOP_SETCC(setc)
--FOP_SETCC(setnc)
--FOP_SETCC(setz)
--FOP_SETCC(setnz)
--FOP_SETCC(setbe)
--FOP_SETCC(setnbe)
--FOP_SETCC(sets)
--FOP_SETCC(setns)
--FOP_SETCC(setp)
--FOP_SETCC(setnp)
--FOP_SETCC(setl)
--FOP_SETCC(setnl)
--FOP_SETCC(setle)
--FOP_SETCC(setnle)
--FOP_END;
--
- FOP_START(salc)
- FOP_FUNC(salc)
- "pushf; sbb %al, %al; popf \n\t"
-@@ -1063,13 +1039,7 @@ static int em_bsr_c(struct x86_emulate_ctxt *ctxt)
- 
- static __always_inline u8 test_cc(unsigned int condition, unsigned long flags)
- {
--	u8 rc;
--	void (*fop)(void) = (void *)em_setcc + FASTOP_SIZE * (condition & 0xf);
--
--	flags = (flags & EFLAGS_MASK) | X86_EFLAGS_IF;
--	asm("push %[flags]; popf; " CALL_NOSPEC
--	    : "=a"(rc) : [thunk_target]"r"(fop), [flags]"r"(flags));
--	return rc;
-+	return __emulate_cc(flags, condition & 0xf);
- }
- 
- static void fetch_register_operand(struct operand *op)
+>=20
+> Tim
+>=20
+
