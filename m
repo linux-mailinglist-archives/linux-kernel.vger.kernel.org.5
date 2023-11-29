@@ -2,165 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFB927FE03F
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 20:22:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04EDA7FE040
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 20:22:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231304AbjK2TWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 14:22:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55098 "EHLO
+        id S232938AbjK2TWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 14:22:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjK2TWA (ORCPT
+        with ESMTP id S231494AbjK2TWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 14:22:00 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D61E61A8;
-        Wed, 29 Nov 2023 11:22:02 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-6cbd24d9557so103063b3a.1;
-        Wed, 29 Nov 2023 11:22:02 -0800 (PST)
+        Wed, 29 Nov 2023 14:22:07 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39CE7D5E
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 11:22:12 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5c5fe3b00f6so93756a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 11:22:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701285722; x=1701890522; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=XJAENFh/MmUTKzAnQ+33gujVhhNm0oQkxcdUhTqEisg=;
-        b=F+egvpstqBgYoc92Fyn/eeKpj4nvQsREcvs3ObKQ/OIuqtZLJaoI+4Xa9q8sWU5UtS
-         R8GeKHY97l6a0/ohjTGlTScT3GrqstR00IlbdlU3QWDIox2E2v/lp3llKetFC+OCvLZy
-         pSH1GCvL8NiPPX/bvI6V2Ie20fMvQnHMc+pmMd05lfC7e8Z+/ATywqk0NgvkvWdZMZe6
-         TVh+St9lqFiBZvhrl9WH02WXuPK3BbqoMLBb55wjX4izv11Cpq0q5YbNuAwII+pw5n4W
-         +icOtATRcoqOUB0BrJmYEBU5DDdXyui6wdsMopMK8VsUzlb2REiuAY8Ad7LRy7CpTgXS
-         /GQA==
+        d=google.com; s=20230601; t=1701285731; x=1701890531; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zm+VmJgtsDhhnZtgTitQtOHEZp/dUiGbrU1wdemhaX4=;
+        b=VvkVbyMZpBIEHXoL/pz/DHyw9r5iis0kPlBeiktc/qjUOAquMjPHnDDW0h3+A1HlId
+         Qvg8IT6YTjCsMbAi/0jFCzTFE/Yav5PcHo4MketSk+ZVMrFHEO/d0GYwwlKgyXGCTo9V
+         v/B/U8rnd80ng3HIeewZOyyk+bkB5eTUuCyKXWq6Rf9lu+m53FE8q5rLXxyjKXIFDo65
+         WHL1iDw1SgCveKuL8Tg7YPSvU1mf/5seObuRHPAnxxCumnj6NNX0WJac1I3VB4UrLkrB
+         bbaEEUBDGdSlZECaiqZTlkhUlugC1jgUufGDEUVA1/cBCMw8SgocvYS22IijyKcT8Int
+         RYfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701285722; x=1701890522;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XJAENFh/MmUTKzAnQ+33gujVhhNm0oQkxcdUhTqEisg=;
-        b=DxgltfwFmJtRvooNkED07XOsSLJ2z0E6FT9EC8dBLDCnXLcS8LyzO6Mxz/rqOjWAQs
-         7tlEnQXFFfZT78tbK1mXefreUuiK5U7V1/yY/2ZIpWG9L0GDwn4IqHJRjsPqvG9P+eTo
-         Alx/LfdpBA2KzXX8OFZoHMwgOdGMhtfjKg66PkxcPuxkLO1eG4rvtlWgPLMXZdPM6mYP
-         3kgPCQZXkD2CW2OZvnY4MD1LTiSvOowlEVrvCIcpqaqtzgxobERUF3chVL8ZssAuct51
-         Knj2D1pUmClyZMP+gNC5+0wbvmyVXeJFXsHE9B92SxSls/Bg6FFvSN3kJ0CVGGVYWBR/
-         S8/Q==
-X-Gm-Message-State: AOJu0YzpiH2XcRvIvIHoQ88VyTCypSHeMApZdmB3UMe7oWvl++eWR8Nz
-        Ny4Ee/7qmIJmx6JL89VWynQ=
-X-Google-Smtp-Source: AGHT+IEgE9s0HMGzZrE63UWaEvHBNOnpr5Wl7XwgReRkmaQuCOe8bxI6dDd1v6nW3SO5fE/jGZWDFQ==
-X-Received: by 2002:a05:6a00:17a1:b0:6cd:dc48:1fff with SMTP id s33-20020a056a0017a100b006cddc481fffmr2613129pfg.0.1701285722116;
-        Wed, 29 Nov 2023 11:22:02 -0800 (PST)
-Received: from moohyul.svl.corp.google.com ([2620:15c:2a3:200:cd6b:329c:a3c7:d0d0])
-        by smtp.gmail.com with ESMTPSA id p6-20020a056a000a0600b006c0685422e0sm11069955pfh.214.2023.11.29.11.22.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 11:22:01 -0800 (PST)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Subject: [GIT PULL] perf tools fixes for v6.7: 1st batch
-Date:   Wed, 29 Nov 2023 11:21:58 -0800
-Message-ID: <20231129192158.1026606-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20230601; t=1701285731; x=1701890531;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zm+VmJgtsDhhnZtgTitQtOHEZp/dUiGbrU1wdemhaX4=;
+        b=YDoPIP7JMNFg5FuCkR7SNSsU0BgqPq8V5ymLrRWpmVp9JkgL+JqlUkiJYR7bjxOWHf
+         vNAvNKyKlFi3QzVOpgXQxRaNFrwwNEFQt1CJuz8Cl/D/mXLTXLP7rJnlmrCcrXWJKMnc
+         DJz7RcrX4QdlvkxnAmHI1r4qR4qsFkoWs2ahMkgTBIoKvmb9qw2Wz6bsCp7D2X9aLz/H
+         OmKiFh41I2/Iyu275r4SSuB40am4yoX5a9xQnkN7x9u+mMhVih4EEfEeDa3qqg13ox3T
+         5UMwoMzUPC/ryI0zmAULK4IKxYb3AhELRnY5vM3oIzhllObH6mgL6DAhbNfPOA6JRduy
+         Slqg==
+X-Gm-Message-State: AOJu0YzRuvw5BnMyie0lU5mjiju44VEOTJLzt36orcVCP8hM5pmL5zxl
+        yKGp635cTtd+R6yhBFfotDLDRLmSArk=
+X-Google-Smtp-Source: AGHT+IFbnamXd5HIGOk9ycysykN0hM1eotS+NZRkIrasluqPuu9nCw73/x2uc9oduuUnuHto7tym2AJtkoA=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:ef09:0:b0:5be:71:f35d with SMTP id
+ u9-20020a63ef09000000b005be0071f35dmr3359653pgh.1.1701285731587; Wed, 29 Nov
+ 2023 11:22:11 -0800 (PST)
+Date:   Wed, 29 Nov 2023 11:22:10 -0800
+In-Reply-To: <22c602c9-4943-4a16-a12e-ffc5db29daa1@intel.com>
+Mime-Version: 1.0
+References: <20231108010953.560824-1-seanjc@google.com> <20231108010953.560824-3-seanjc@google.com>
+ <0ee32216-e285-406f-b20d-dd193b791d2b@intel.com> <ZUuyVfdKZG44T1ba@google.com>
+ <22c602c9-4943-4a16-a12e-ffc5db29daa1@intel.com>
+Message-ID: <ZWePYnuK65GCOGYU@google.com>
+Subject: Re: [PATCH v2 2/2] KVM: selftests: Add logic to detect if ioctl()
+ failed because VM was killed
+From:   Sean Christopherson <seanjc@google.com>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Michal Luczaj <mhal@rbox.co>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Colton Lewis <coltonlewis@google.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Mon, Nov 13, 2023, Xiaoyao Li wrote:
+> On 11/9/2023 12:07 AM, Sean Christopherson wrote:
+> > On Wed, Nov 08, 2023, Xiaoyao Li wrote:
+> > > On 11/8/2023 9:09 AM, Sean Christopherson wrote:
+> > > > Add yet another macro to the VM/vCPU ioctl() framework to detect when an
+> > > > ioctl() failed because KVM killed/bugged the VM, i.e. when there was
+> > > > nothing wrong with the ioctl() itself.  If KVM kills a VM, e.g. by way of
+> > > > a failed KVM_BUG_ON(), all subsequent VM and vCPU ioctl()s will fail with
+> > > > -EIO, which can be quite misleading and ultimately waste user/developer
+> > > > time.
+> > > > 
+> > > > Use KVM_CHECK_EXTENSION on KVM_CAP_USER_MEMORY to detect if the VM is
+> > > > dead and/or bug, as KVM doesn't provide a dedicated ioctl().  Using a
+> > > > heuristic is obviously less than ideal, but practically speaking the logic
+> > > > is bulletproof barring a KVM change, and any such change would arguably
+> > > > break userspace, e.g. if KVM returns something other than -EIO.
+> > > 
+> > > We hit similar issue when testing TDX VMs. Most failure of SEMCALL is
+> > > handled with a KVM_BUG_ON(), which leads to vm dead. Then the following
+> > > IOCTL from userspace (QEMU) and gets -EIO.
+> > > 
+> > > Can we return a new KVM_EXIT_VM_DEAD on KVM_REQ_VM_DEAD?
+> > 
+> > Why?  Even if KVM_EXIT_VM_DEAD somehow provided enough information to be useful
+> > from an automation perspective, the VM is obviously dead.  I don't see how the
+> > VMM can do anything but log the error and tear down the VM.  KVM_BUG_ON() comes
+> > with a WARN, which will be far more helpful for a human debugger, e.g. because
+> > all vCPUs would exit with KVM_EXIT_VM_DEAD, it wouldn't even identify which vCPU
+> > initially triggered the issue.
+> 
+> It's not about providing more helpful debugging info, but to provide a
+> dedicated notification for VMM that "the VM is dead, all the following
+> command may not response". With it, VMM can get rid of the tricky detection
+> like this patch.
 
-Please consider pulling the following fixes for the perf tools.
+But a VMM doesn't need this tricky detection, because this tricky detections isn't
+about detecting that the VM is dead, it's all about helping a human debug why a
+test failed.
 
-Thanks
-Namhyung
+-EIO already effectively says "the VM is dead", e.g. QEMU isn't going to keep trying
+to run vCPUs.  Similarly, selftests assert either way, the goal is purely to print
+out a unique error message to minimize the chances of confusing the human running
+the test (or looking at results).
 
+> > Definitely a "no" on this one.  As has been established by the guest_memfd series,
+> > it's ok to return -1/errno with a valid exit_reason.
+> > 
+> > > But I'm wondering if any userspace relies on -EIO behavior for VM DEAD case.
+> > 
+> > I doubt userspace relies on -EIO, but userpsace definitely relies on -1/errno being
+> > returned when a fatal error.
+> 
+> what about KVM_EXIT_SHUTDOWN? Or KVM_EXIT_INTERNAL_ERROR?
 
-The following changes since commit 98b1cc82c4affc16f5598d4fa14b1858671b2263:
-
-  Linux 6.7-rc2 (2023-11-19 15:02:14 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools.git tags/perf-tools-fixes-for-v6.7-1-2023-11-29
-
-for you to fetch changes up to 57686a72da08ae555d93148aa8756b16417a6aff:
-
-  tools: Disable __packed attribute compiler warning due to -Werror=attributes (2023-11-22 12:23:27 -0800)
-
-----------------------------------------------------------------
-perf tools fixes for v6.7: 1st batch
-
-Assorted build fixes including:
-- fix compile errors in printf() with u64 on 32-bit systesm
-- sync kernel headers to the tool copies
-- update arm64 sysreg generation for tarballs
-- disable compile warnings on __packed attribute
-
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-
-----------------------------------------------------------------
-Arnaldo Carvalho de Melo (1):
-      tools: Disable __packed attribute compiler warning due to -Werror=attributes
-
-Namhyung Kim (14):
-      tools headers UAPI: Update tools's copy of drm headers
-      tools headers UAPI: Update tools's copy of fscrypt.h header
-      tools headers UAPI: Update tools's copy of kvm.h header
-      tools headers UAPI: Update tools's copy of mount.h header
-      tools headers UAPI: Update tools's copy of vhost.h header
-      tools headers UAPI: Update tools's copy of unistd.h header
-      tools headers: Update tools's copy of socket.h header
-      tools headers: Update tools's copy of x86/asm headers
-      tools headers: Update tools's copy of arm64/asm headers
-      tools headers: Update tools's copy of s390/asm headers
-      tools/perf: Update tools's copy of x86 syscall table
-      tools/perf: Update tools's copy of powerpc syscall table
-      tools/perf: Update tools's copy of s390 syscall table
-      tools/perf: Update tools's copy of mips syscall table
-
-Oliver Upton (2):
-      tools perf: Add arm64 sysreg files to MANIFEST
-      perf build: Ensure sysreg-defs Makefile respects output dir
-
-Yang Jihong (2):
-      perf kwork: Fix a build error on 32-bit
-      perf lock contention: Fix a build error on 32-bit
-
- tools/arch/arm64/include/asm/cputype.h             |  5 +++-
- tools/arch/arm64/include/uapi/asm/kvm.h            | 32 ++++++++++++++++++++++
- tools/arch/arm64/include/uapi/asm/perf_regs.h      | 10 ++++---
- tools/arch/arm64/tools/Makefile                    |  2 +-
- tools/arch/s390/include/uapi/asm/kvm.h             | 16 +++++++++++
- tools/arch/x86/include/asm/cpufeatures.h           | 16 ++++++++++-
- tools/arch/x86/include/asm/disabled-features.h     | 16 +++++++++--
- tools/arch/x86/include/asm/msr-index.h             | 23 +++++++++++++---
- tools/arch/x86/include/uapi/asm/prctl.h            | 12 ++++++++
- tools/include/asm-generic/unaligned.h              |  1 +
- tools/include/uapi/asm-generic/unistd.h            | 12 ++++++--
- tools/include/uapi/drm/drm.h                       | 20 ++++++++++++++
- tools/include/uapi/drm/i915_drm.h                  |  8 +++---
- tools/include/uapi/linux/fscrypt.h                 |  3 +-
- tools/include/uapi/linux/kvm.h                     | 24 ++++++++++++++--
- tools/include/uapi/linux/mount.h                   |  3 +-
- tools/include/uapi/linux/vhost.h                   |  8 ++++++
- tools/perf/MANIFEST                                |  2 ++
- tools/perf/Makefile.perf                           | 24 ++++++++++------
- .../perf/arch/mips/entry/syscalls/syscall_n64.tbl  |  4 +++
- tools/perf/arch/powerpc/entry/syscalls/syscall.tbl |  4 +++
- tools/perf/arch/s390/entry/syscalls/syscall.tbl    |  4 +++
- tools/perf/arch/x86/entry/syscalls/syscall_64.tbl  |  3 ++
- tools/perf/builtin-kwork.c                         |  2 +-
- tools/perf/trace/beauty/include/linux/socket.h     |  1 +
- tools/perf/util/Build                              |  2 +-
- tools/perf/util/bpf_lock_contention.c              |  3 +-
- tools/testing/selftests/kvm/Makefile               |  5 ++--
- 28 files changed, 226 insertions(+), 39 deletions(-)
+I don't follow, those are vcpu_run.exit_reason values, not errno values.  Returning
+any flavor of KVM_EXIT_*, which are positive values, would break userspace, e.g.
+QEMU explicitly looks for "ret < 0", and glibc only treats small-ish negative
+values as errors, i.e. a postive return value will be propagated verbatim up to
+QEMU.
