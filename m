@@ -2,75 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E59B37FDDC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:58:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 376407FDDCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:58:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233279AbjK2Q5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 11:57:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44228 "EHLO
+        id S229498AbjK2Q60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 11:58:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233580AbjK2Q5j (ORCPT
+        with ESMTP id S233878AbjK2Q6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 11:57:39 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D09710A
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:57:41 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40b34563987so7493325e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:57:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1701277059; x=1701881859; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qmBiYbeRYeqEOWnh9NtuJRqQCUW1g+S+1n2KtbA3qWw=;
-        b=juLZN//eJC4/L99bKGgH+oz2FiN/OPF3a/iY4L8LvQGOR/ENQGU/lcPdW5yKVKMluA
-         Fj1MZdjLhZY95jErYdmBYafCI6DT9utdwSHoaPrMMajdo/z6UQlKffaK+nq6jTf+BOgo
-         ErWGYkJe9SGK1XBj7Ref24A4SR0ej/hkOsr3E9FSnyP6iYrdCXDgjoYK0p6NQ/QP+PdX
-         OlWbKhWUHPXhkUJwcT+wfDBxlBVL9Yr+oHYJt7tdTF917xqYCcwfRqTYEy9QbYwOwXgF
-         Xmbm4JTBhHAtCDWKsMZJkUqOnJomcpt3whwu2lG/+yCRFGir2X8dpBLAgPzp7bUjNm/0
-         y6fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701277059; x=1701881859;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qmBiYbeRYeqEOWnh9NtuJRqQCUW1g+S+1n2KtbA3qWw=;
-        b=fjHJs0SGFfEgnz6JYHY++oPyRk3m2heJ3ZSSFJS5K+021Soj0v1TC59NNbXLKrDwoN
-         WIm9EniFMZNjRd8d8+k18YR6gBJD9mbVO6uxzlbCDWYXwr2cTMLQFAtjAGAKkgeDxcsr
-         OVMmIOaEwpv8xbZoyaJks4ElnXY0xMSX+6lqlurkZFvKvF0TPxuBQ0GjZBmk3RlzYS6Q
-         00WFdVu5pOWU9AqLJ1Z5BHGcGDrcMH1bgxwolvfqhcap/V+JnQTVdXYXB4IW396RRfrV
-         MjbYODIbnEa78EuxaUjD5ymCo48vG1F8lww9AWb8N7N9mIalHrXCXTIjWfJAx0FudZqS
-         sMxA==
-X-Gm-Message-State: AOJu0YxnWdNDCkH+wLCGTkD1AO0xyUFX1rfgabLThXGcu4fqiQnOdoU9
-        WUm3pEtEa2Xkvj+8+JERpF0a6g==
-X-Google-Smtp-Source: AGHT+IG3m8FsQjSYSIjukTgNd4NpOUwy+N8TV/YPwCpLFnzlNQFr5Ua7TZrb+VA7k+5VV4xMsElbdg==
-X-Received: by 2002:a05:600c:3003:b0:407:73fc:6818 with SMTP id j3-20020a05600c300300b0040773fc6818mr19316555wmh.2.1701277059584;
-        Wed, 29 Nov 2023 08:57:39 -0800 (PST)
-Received: from Mindolluin.ire.aristanetworks.com ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id s20-20020a05600c45d400b003fe1fe56202sm2876823wmo.33.2023.11.29.08.57.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 08:57:38 -0800 (PST)
-From:   Dmitry Safonov <dima@arista.com>
-To:     David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     linux-kernel@vger.kernel.org, Dmitry Safonov <dima@arista.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Francesco Ruggeri <fruggeri05@gmail.com>,
-        Salam Noureddine <noureddine@arista.com>,
-        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH v4 7/7] net/tcp: Don't store TCP-AO maclen on reqsk
-Date:   Wed, 29 Nov 2023 16:57:21 +0000
-Message-ID: <20231129165721.337302-8-dima@arista.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231129165721.337302-1-dima@arista.com>
-References: <20231129165721.337302-1-dima@arista.com>
+        Wed, 29 Nov 2023 11:58:07 -0500
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B670D6E;
+        Wed, 29 Nov 2023 08:57:55 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id D921512000B;
+        Wed, 29 Nov 2023 19:57:52 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru D921512000B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1701277072;
+        bh=upFUqpfrDquVThehPQDeK2Tu8Ir/v12aprC4JpKU8g8=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+        b=QyEeJHDyMXu3Q+rlfWn4C2wnOcfgs5R9+/8V5/w7GE8JbjSqUchhlkwfgYa8X7vt0
+         QU5j3vJciChTqH9yqdDdTyhBzZhWl2sfX4f3UNBrSLnt0woaXc/i9ISrlj5i7Yk1gu
+         VuB+0bZjvyEowbIpCyi8Ghq8X+I1diR+JfYzzv5Xaz4BUBMehQZbDR6iFPfUwRK2U2
+         5xYjvU7x/If4jFf7xqkvQ8ROrC8Z61gdDhTskFDJhEt2zuztgu4xto9WND+WOSqwPP
+         qoaRD5b22jczH3m5D0MqzXw8IB196L7wEx/ia6A8QM1OqfOGEMvAjZ065aZOHBEKXd
+         YGaRAbUe7ZaGQ==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Wed, 29 Nov 2023 19:57:52 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 29 Nov
+ 2023 19:57:52 +0300
+Date:   Wed, 29 Nov 2023 19:57:52 +0300
+From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
+To:     Michal Hocko <mhocko@suse.com>, <akpm@linux-foundation.org>
+CC:     <rostedt@goodmis.org>, <mhiramat@kernel.org>, <hannes@cmpxchg.org>,
+        <roman.gushchin@linux.dev>, <shakeelb@google.com>,
+        <muchun.song@linux.dev>, <akpm@linux-foundation.org>,
+        <kernel@sberdevices.ru>, <rockosov@gmail.com>,
+        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] mm: memcg: introduce new event to trace
+ shrink_memcg
+Message-ID: <20231129165752.7r4o3jylbxrj7inb@CAB-WSD-L081021>
+References: <20231123193937.11628-1-ddrokosov@salutedevices.com>
+ <20231123193937.11628-3-ddrokosov@salutedevices.com>
+ <ZWRifQgRR0570oDY@tiehlicka>
+ <20231127113644.btg2xrcpjhq4cdgu@CAB-WSD-L081021>
+ <ZWSQji7UDSYa1m5M@tiehlicka>
+ <20231127161637.5eqxk7xjhhyr5tj4@CAB-WSD-L081021>
+ <ZWWzwhWnW1_iX0FP@tiehlicka>
+ <20231129152057.x7fhbcvwtsmkbdpb@CAB-WSD-L081021>
+ <ZWdhjYPjbsoUE_mI@tiehlicka>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZWdhjYPjbsoUE_mI@tiehlicka>
+User-Agent: NeoMutt/20220415
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181706 [Nov 29 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 5 0.3.5 98d108ddd984cca1d7e65e595eac546a62b0144b, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;salutedevices.com:7.1.1;100.64.160.123:7.1.2;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/29 12:04:00 #22572143
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,123 +93,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This extra check doesn't work for a handshake when SYN segment has
-(current_key.maclen != rnext_key.maclen). It could be amended to
-preserve rnext_key.maclen instead of current_key.maclen, but that
-requires a lookup on listen socket.
+On Wed, Nov 29, 2023 at 05:06:37PM +0100, Michal Hocko wrote:
+> On Wed 29-11-23 18:20:57, Dmitry Rokosov wrote:
+> > On Tue, Nov 28, 2023 at 10:32:50AM +0100, Michal Hocko wrote:
+> > > On Mon 27-11-23 19:16:37, Dmitry Rokosov wrote:
+> [...]
+> > > > 2) With this approach, we will not have the ability to trace a situation
+> > > > where the kernel is requesting reclaim for a specific memcg, but due to
+> > > > limits issues, we are unable to run it.
+> > > 
+> > > I do not follow. Could you be more specific please?
+> > > 
+> > 
+> > I'm referring to a situation where kswapd() or another kernel mm code
+> > requests some reclaim pages from memcg, but memcg rejects it due to
+> > limits checkers. This occurs in the shrink_node_memcgs() function.
+> 
+> Ohh, you mean reclaim protection
+> 
+> > ===
+> > 		mem_cgroup_calculate_protection(target_memcg, memcg);
+> > 
+> > 		if (mem_cgroup_below_min(target_memcg, memcg)) {
+> > 			/*
+> > 			 * Hard protection.
+> > 			 * If there is no reclaimable memory, OOM.
+> > 			 */
+> > 			continue;
+> > 		} else if (mem_cgroup_below_low(target_memcg, memcg)) {
+> > 			/*
+> > 			 * Soft protection.
+> > 			 * Respect the protection only as long as
+> > 			 * there is an unprotected supply
+> > 			 * of reclaimable memory from other cgroups.
+> > 			 */
+> > 			if (!sc->memcg_low_reclaim) {
+> > 				sc->memcg_low_skipped = 1;
+> > 				continue;
+> > 			}
+> > 			memcg_memory_event(memcg, MEMCG_LOW);
+> > 		}
+> > ===
+> > 
+> > With separate shrink begin()/end() tracepoints we can detect such
+> > problem.
+> 
+> How? You are only reporting the number of reclaimed pages and no
+> reclaimed pages could be not just because of low/min limits but
+> generally because of other reasons. You would need to report also the
+> number of scanned/isolated pages.
+>  
 
-Originally, this extra maclen check was introduced just because it was
-cheap. Drop it and convert tcp_request_sock::maclen into boolean
-tcp_request_sock::used_tcp_ao.
+From my perspective, if memory control group (memcg) protection
+restrictions occur, we can identify them by the absence of the end()
+pair of begin(). Other reasons will have both tracepoints raised.
 
-Fixes: 06b22ef29591 ("net/tcp: Wire TCP-AO to request sockets")
-Signed-off-by: Dmitry Safonov <dima@arista.com>
----
- include/linux/tcp.h   | 8 ++------
- net/ipv4/tcp_ao.c     | 4 ++--
- net/ipv4/tcp_input.c  | 5 +++--
- net/ipv4/tcp_output.c | 9 +++------
- 4 files changed, 10 insertions(+), 16 deletions(-)
+> > > > 3) LRU and SLAB shrinkers are too common places to handle memcg-related
+> > > > tasks. Additionally, memcg can be disabled in the kernel configuration.
+> > > 
+> > > Right. This could be all hidden in the tracing code. You simply do not
+> > > print memcg id when the controller is disabled. Or just simply print 0.
+> > > I do not really see any major problems with that.
+> > > 
+> > > I would really prefer to focus on that direction rather than adding
+> > > another begin/end tracepoint which overalaps with existing begin/end
+> > > traces and provides much more limited information because I would bet we
+> > > will have somebody complaining that mere nr_reclaimed is not sufficient.
+> > 
+> > Okay, I will try to prepare a new patch version with memcg printing from
+> > lruvec and slab tracepoints.
+> > 
+> > Then Andrew should drop the previous patchsets, I suppose. Please advise
+> > on the correct workflow steps here.
+> 
+> Andrew usually just drops the patch from his tree and it will disappaer
+> from the linux-next as well.
 
-diff --git a/include/linux/tcp.h b/include/linux/tcp.h
-index 68f3d315d2e1..b646b574b060 100644
---- a/include/linux/tcp.h
-+++ b/include/linux/tcp.h
-@@ -169,7 +169,7 @@ struct tcp_request_sock {
- #ifdef CONFIG_TCP_AO
- 	u8				ao_keyid;
- 	u8				ao_rcv_next;
--	u8				maclen;
-+	bool				used_tcp_ao;
- #endif
- };
- 
-@@ -180,14 +180,10 @@ static inline struct tcp_request_sock *tcp_rsk(const struct request_sock *req)
- 
- static inline bool tcp_rsk_used_ao(const struct request_sock *req)
- {
--	/* The real length of MAC is saved in the request socket,
--	 * signing anything with zero-length makes no sense, so here is
--	 * a little hack..
--	 */
- #ifndef CONFIG_TCP_AO
- 	return false;
- #else
--	return tcp_rsk(req)->maclen != 0;
-+	return tcp_rsk(req)->used_tcp_ao;
- #endif
- }
- 
-diff --git a/net/ipv4/tcp_ao.c b/net/ipv4/tcp_ao.c
-index 25fbb1e0a0ad..dbfea165ff44 100644
---- a/net/ipv4/tcp_ao.c
-+++ b/net/ipv4/tcp_ao.c
-@@ -846,7 +846,7 @@ void tcp_ao_syncookie(struct sock *sk, const struct sk_buff *skb,
- 	const struct tcp_ao_hdr *aoh;
- 	struct tcp_ao_key *key;
- 
--	treq->maclen = 0;
-+	treq->used_tcp_ao = false;
- 
- 	if (tcp_parse_auth_options(th, NULL, &aoh) || !aoh)
- 		return;
-@@ -858,7 +858,7 @@ void tcp_ao_syncookie(struct sock *sk, const struct sk_buff *skb,
- 
- 	treq->ao_rcv_next = aoh->keyid;
- 	treq->ao_keyid = aoh->rnext_keyid;
--	treq->maclen = tcp_ao_maclen(key);
-+	treq->used_tcp_ao = true;
- }
- 
- static enum skb_drop_reason
-diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index 0a58447c33b1..9bcbde89ab5c 100644
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -7187,11 +7187,12 @@ int tcp_conn_request(struct request_sock_ops *rsk_ops,
- 	if (tcp_parse_auth_options(tcp_hdr(skb), NULL, &aoh))
- 		goto drop_and_release; /* Invalid TCP options */
- 	if (aoh) {
--		tcp_rsk(req)->maclen = aoh->length - sizeof(struct tcp_ao_hdr);
-+		tcp_rsk(req)->used_tcp_ao = true;
- 		tcp_rsk(req)->ao_rcv_next = aoh->keyid;
- 		tcp_rsk(req)->ao_keyid = aoh->rnext_keyid;
-+
- 	} else {
--		tcp_rsk(req)->maclen = 0;
-+		tcp_rsk(req)->used_tcp_ao = false;
- 	}
- #endif
- 	tcp_rsk(req)->snt_isn = isn;
-diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-index 3ddd057fb6f7..335ab90afe65 100644
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -3720,7 +3720,6 @@ struct sk_buff *tcp_make_synack(const struct sock *sk, struct dst_entry *dst,
- 	if (tcp_rsk_used_ao(req)) {
- #ifdef CONFIG_TCP_AO
- 		struct tcp_ao_key *ao_key = NULL;
--		u8 maclen = tcp_rsk(req)->maclen;
- 		u8 keyid = tcp_rsk(req)->ao_keyid;
- 
- 		ao_key = tcp_sk(sk)->af_specific->ao_lookup(sk, req_to_sk(req),
-@@ -3730,13 +3729,11 @@ struct sk_buff *tcp_make_synack(const struct sock *sk, struct dst_entry *dst,
- 		 * for another peer-matching key, but the peer has requested
- 		 * ao_keyid (RFC5925 RNextKeyID), so let's keep it simple here.
- 		 */
--		if (unlikely(!ao_key || tcp_ao_maclen(ao_key) != maclen)) {
--			u8 key_maclen = ao_key ? tcp_ao_maclen(ao_key) : 0;
--
-+		if (unlikely(!ao_key)) {
- 			rcu_read_unlock();
- 			kfree_skb(skb);
--			net_warn_ratelimited("TCP-AO: the keyid %u with maclen %u|%u from SYN packet is not present - not sending SYNACK\n",
--					     keyid, maclen, key_maclen);
-+			net_warn_ratelimited("TCP-AO: the keyid %u from SYN packet is not present - not sending SYNACK\n",
-+					     keyid);
- 			return NULL;
- 		}
- 		key.ao_key = ao_key;
+Okay, I understand, thank you!
+
+Andrew, could you please take a look? I am planning to prepare a new
+patch version based on Michal's suggestion, so previous one should be
+dropped.
+
 -- 
-2.43.0
-
+Thank you,
+Dmitry
