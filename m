@@ -2,106 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EDBE7FDB05
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:20:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB787FDB00
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234743AbjK2PUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 10:20:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51186 "EHLO
+        id S234805AbjK2PTb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Nov 2023 10:19:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233426AbjK2PUP (ORCPT
+        with ESMTP id S234739AbjK2PTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 10:20:15 -0500
-X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 29 Nov 2023 07:20:20 PST
-Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D9584;
-        Wed, 29 Nov 2023 07:20:20 -0800 (PST)
-Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
- (195.54.195.159) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 29 Nov
- 2023 18:19:14 +0300
-Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 29 Nov
- 2023 18:19:14 +0300
-From:   Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-To:     Antoine Tenart <atenart@kernel.org>
-CC:     Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: crypto: safexcel - Add error handling for dma_map_sg() calls
-Date:   Wed, 29 Nov 2023 07:19:04 -0800
-Message-ID: <20231129151904.7693-1-n.zhandarovich@fintech.ru>
-X-Mailer: git-send-email 2.25.1
+        Wed, 29 Nov 2023 10:19:30 -0500
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B2184;
+        Wed, 29 Nov 2023 07:19:37 -0800 (PST)
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-58ddc32f43fso45357eaf.1;
+        Wed, 29 Nov 2023 07:19:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701271176; x=1701875976;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=B32ouiV8wszxl16Z6gCKREM70b4o5qFAT461SnSNo7o=;
+        b=TlxHxhAIwdNEuZYUWHvIZE2VZ00NMBWcoXu6+bV0nF/qF9UpyatLDo7NbbU/OsiQrS
+         hnUlHkkKAaVBcB745QZXUXU28ffYOzoIkovcDkxFSmP3sjcSnE3DeLKnNXLd/oTwq+u2
+         HgwiuDciP7G1tiQBX/aFt8IaiA3gkNrUG5uZ+17tQa1qalULuN14hlpWdKi0lSlgfVNE
+         CyfLUT/qtDlj7SvrdBvVbreuamUGxFHSqVUA2Fx4Edf6t4JfEAOkKAR7S3JMgsyxcT8J
+         gNJFpk0TXEaZoS/PRjqbiJBHPmfaGJGXtQz/sFKtAUisBO6KQAjocaa9BeuSSi6dqB6P
+         mZIw==
+X-Gm-Message-State: AOJu0Yz0iKDb0PS4A/KAZamSbq9qXJviewsiSM0pBb0IAN0/JtSAXfyV
+        RcWUHeWytBpsPp3BSqKy5gEeMtSj1DcxfGJm67/hJScw
+X-Google-Smtp-Source: AGHT+IFa8cTbrlNJ3lT+phgQUqELtwivOPydjg9FhDEZN5wTKs8RyH7qoecg8XkV6fJiNp3gFg71oWlIV0SmOvSa7RE=
+X-Received: by 2002:a05:6820:34b:b0:58d:a761:5f88 with SMTP id
+ m11-20020a056820034b00b0058da7615f88mr6729983ooe.0.1701271176098; Wed, 29 Nov
+ 2023 07:19:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.0.253.138]
-X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
- (10.0.10.18)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231129143132.32155-1-jiangyihe042@gmail.com>
+In-Reply-To: <20231129143132.32155-1-jiangyihe042@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 29 Nov 2023 16:19:25 +0100
+Message-ID: <CAJZ5v0jfEsNVu=fg+Xa118F=hCGGB33U5SbiqWeCMaVMqNpUEA@mail.gmail.com>
+Subject: Re: [PATCH] intel_idle: add Cometlake support
+To:     Jiang Yihe <jiangyihe042@gmail.com>
+Cc:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Len Brown <lenb@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, "Zhang, Rui" <rui.zhang@intel.com>,
+        Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Macro dma_map_sg() may return 0 on error. This patch enables
-checks in case of the macro failure and ensures unmapping of
-previously mapped buffers with dma_unmap_sg().
++Rui and Artem
 
-Found by Linux Verification Center (linuxtesting.org) with static
-analysis tool SVACE.
-
-Fixes: 49186a7d9e46 ("crypto: inside_secure - Avoid dma map if size is zero")
-Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
-
- drivers/crypto/inside-secure/safexcel_cipher.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/crypto/inside-secure/safexcel_cipher.c b/drivers/crypto/inside-secure/safexcel_cipher.c
-index 272c28b5a088..ca660f31c15f 100644
---- a/drivers/crypto/inside-secure/safexcel_cipher.c
-+++ b/drivers/crypto/inside-secure/safexcel_cipher.c
-@@ -742,9 +742,9 @@ static int safexcel_send_req(struct crypto_async_request *base, int ring,
- 				max(totlen_src, totlen_dst));
- 			return -EINVAL;
- 		}
--		if (sreq->nr_src > 0)
--			dma_map_sg(priv->dev, src, sreq->nr_src,
--				   DMA_BIDIRECTIONAL);
-+		if ((sreq->nr_src > 0) &&
-+		    (!dma_map_sg(priv->dev, src, sreq->nr_src, DMA_BIDIRECTIONAL)))
-+			return -ENOMEM;
- 	} else {
- 		if (unlikely(totlen_src && (sreq->nr_src <= 0))) {
- 			dev_err(priv->dev, "Source buffer not large enough (need %d bytes)!",
-@@ -752,8 +752,9 @@ static int safexcel_send_req(struct crypto_async_request *base, int ring,
- 			return -EINVAL;
- 		}
- 
--		if (sreq->nr_src > 0)
--			dma_map_sg(priv->dev, src, sreq->nr_src, DMA_TO_DEVICE);
-+		if ((sreq->nr_src > 0) &&
-+		    (!dma_map_sg(priv->dev, src, sreq->nr_src, DMA_TO_DEVICE)))
-+			return -ENOMEM;
- 
- 		if (unlikely(totlen_dst && (sreq->nr_dst <= 0))) {
- 			dev_err(priv->dev, "Dest buffer not large enough (need %d bytes)!",
-@@ -762,9 +763,11 @@ static int safexcel_send_req(struct crypto_async_request *base, int ring,
- 			goto unmap;
- 		}
- 
--		if (sreq->nr_dst > 0)
--			dma_map_sg(priv->dev, dst, sreq->nr_dst,
--				   DMA_FROM_DEVICE);
-+		if ((sreq->nr_dst > 0) &&
-+		    (!dma_map_sg(priv->dev, dst, sreq->nr_dst, DMA_FROM_DEVICE))) {
-+			ret = -ENOMEM;
-+			goto unmap;
-+		}
- 	}
- 
- 	memcpy(ctx->base.ctxr->data, ctx->key, ctx->key_len);
+On Wed, Nov 29, 2023 at 3:32 PM Jiang Yihe <jiangyihe042@gmail.com> wrote:
+>
+> Since the Cometlake C-State is supported, support for Cometlake should
+> be added to intel_idle. Just use Kabylake C-State table for Cometlake
+> because they share the same table in intel_cstate.
+>
+> Signed-off-by: Jiang Yihe <jiangyihe042@gmail.com>
+> ---
+>  drivers/idle/intel_idle.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
+> index dcda0afec..f83f78037 100644
+> --- a/drivers/idle/intel_idle.c
+> +++ b/drivers/idle/intel_idle.c
+> @@ -1418,6 +1418,8 @@ static const struct x86_cpu_id intel_idle_ids[] __initconst = {
+>         X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE,             &idle_cpu_skl),
+>         X86_MATCH_INTEL_FAM6_MODEL(KABYLAKE_L,          &idle_cpu_skl),
+>         X86_MATCH_INTEL_FAM6_MODEL(KABYLAKE,            &idle_cpu_skl),
+> +       X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE_L,         &idle_cpu_skl),
+> +       X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE,           &idle_cpu_skl),
+>         X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_X,           &idle_cpu_skx),
+>         X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,           &idle_cpu_icx),
+>         X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_D,           &idle_cpu_icx),
+> --
