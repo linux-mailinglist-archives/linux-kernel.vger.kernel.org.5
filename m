@@ -2,71 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D68297FD0E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:31:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DBDC7FD0E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:32:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232607AbjK2Ibe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 03:31:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41904 "EHLO
+        id S232848AbjK2IcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 03:32:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232814AbjK2IbK (ORCPT
+        with ESMTP id S232608AbjK2Ibx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 03:31:10 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DF1130F3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:30:06 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-54af0eca12dso7054418a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:30:06 -0800 (PST)
+        Wed, 29 Nov 2023 03:31:53 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1A71BD4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:30:26 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-54b0073d50fso6505457a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:30:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701246604; x=1701851404; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701246624; x=1701851424; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=cIkKt9PK0AODZiRUbqHHzxny5OFXvxPC67ADE16OqfU=;
-        b=LLh2RVO/lV7RNvQo+Mfh4fZM104AdQWLRe85LWfUX8tjgl+k5tGLGMUCGhGXMMxbf4
-         IOS3y+fS1uGXtBjJVxwi+LVzxv+l+mr5t6kHTLqBcD2xS7jTbocNsgy3FemBSRvcFjGp
-         Ini9rFFYahT18f7zETPiAY+b6hjtcZPkC/5LE03ZI13oJK0uzosI7TnuNbF0Ok49RlHP
-         XiNpFAnpRwGGc6ePgpbIfhPpWEoA4UVDI2hB1XLJlb7DByySLbWkOaDxgk8mPuHXhRdl
-         mWUSdT1h7QpdfsyXsTSERZvh4qYmkRfkUYAWPv5/4hDHm4PS8gqrqdzA8FKeX71NE1li
-         YHWw==
+        bh=lejQuHQubNzpQo0iMNt5Jkv1iFKF5LFtQJcWLVi9cGc=;
+        b=cZPB+QjisZsyklKzjGs0sFgdcHaD9XjpppPhu0Cs8j7deme0KykkoXkzUhwqR/vZKy
+         RXJyS2hRhysMdY7sI3PlyvJmnpLRWP9B4Dqe1ZysedIxqBaBbyQqld+pKeV11gO17hVf
+         qJ4z/MNeVkEkrctwojMejvYonmZiWmQ+O1d08JZTd0BhrlrYvtSobwjL8c2aoq3DFgR2
+         RvPcxwUdRJMBOxSqzW/eU6qmwckRax+v09tHGCHuNnz/tdT+wJ317m6KlkRzfrPgM8J0
+         QeeUJAe8mT6ZPVGtRc2009XjKRR4ccof5TZ5vCtmBYYEzZxrmMPGyaKaegaRhICmhKLg
+         43vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701246604; x=1701851404;
+        d=1e100.net; s=20230601; t=1701246624; x=1701851424;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cIkKt9PK0AODZiRUbqHHzxny5OFXvxPC67ADE16OqfU=;
-        b=PWupKry/pO7OhhsbOPH1vO1cKIUz/c4FwLekCjZ1N9WWCjMQOn69PDTR5hG1cCjHKZ
-         5sSSNMnix/7iW6T9nUfEvDQMMZLrLHHjNwankgwAijDAhlSoDIgaE3PZ9x+ipaMYgx1y
-         18VdnmrvB5GASfJF6hgsWMAp/9pbX1k2hAigOT3OoetY464M0KMQibif/eyt2T95KSrD
-         /L2Htjrz9sCHfEXNhVIcK3f9Xenkamg9NRq7DQIk22tLvhrURrdQBdMuCSZgzTt7gib6
-         nCkGyw5KiHHe7HtAF4ENASQwYk/yHhGavCngESBMlg66zjlKvdXpCRjy0sOPt22+UoTG
-         fHOw==
-X-Gm-Message-State: AOJu0YxPhDdNz7l/Yp+y47uzIVw7NxAKCO1Nu2fD9WJdbCW0b64y+I/j
-        +hrv51if08gRKKkxMahZ1TQN9g==
-X-Google-Smtp-Source: AGHT+IGllvGedGMRk4HyrzVz4iCL3jN/Uw9BUuNQNRJKHZDIycDMuR8lTfMv9uj1z4vwQ7gQLYK7HA==
-X-Received: by 2002:a50:c102:0:b0:54b:2af0:dee2 with SMTP id l2-20020a50c102000000b0054b2af0dee2mr9339750edf.4.1701246604323;
-        Wed, 29 Nov 2023 00:30:04 -0800 (PST)
+        bh=lejQuHQubNzpQo0iMNt5Jkv1iFKF5LFtQJcWLVi9cGc=;
+        b=vAQKgrfio1wKDEWOU+FgKQLjIG7pGrvjWWipcfQcqyL0SdxqtHCYBBfJxuKQmUFxIx
+         O+/SqTj+S2bSQDxPqdbmWQW6vZHKmx0q2mKvF1lja4H9PB04TweNToKdzZHVyxJJ8FPv
+         Gzs65gPySZd7Lun3fZh0I1VCm1nTGq9Hfq16MTHGe2FSoNpmR+uCCD78Q6pwwogkUo4h
+         ismYShmXhR/G2aJ/060i5nbV3zES+meg9IDx1B69qDPY8pMZ19x5rQV+xfRnS0LtwdI7
+         Mm1gAQ1ylU01xudh+04WmOJov594HYg2QGDgHX14Ck7CW5CXKMrctxvM8Y8iwuJskpms
+         6GFg==
+X-Gm-Message-State: AOJu0YzGhxbmnKUw2wRxi/DbLjxygjVAICgKny1n6dXiqHFg5agb006y
+        zJYo3a/N4GDuqXSqkyDjn0jlEg==
+X-Google-Smtp-Source: AGHT+IFvfMCzJ8aLPor0BE5CSEL29kYANC1oPbU546udiufEyvjAbkzdYP4qHL0ms2/sePH5aj5Ypg==
+X-Received: by 2002:a05:6402:175c:b0:54a:f8d9:52fc with SMTP id v28-20020a056402175c00b0054af8d952fcmr11675326edx.31.1701246624720;
+        Wed, 29 Nov 2023 00:30:24 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id b9-20020a056402350900b0054b7e312b97sm2519566edd.38.2023.11.29.00.30.02
+        by smtp.gmail.com with ESMTPSA id b9-20020a056402350900b0054b7e312b97sm2519566edd.38.2023.11.29.00.30.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 00:30:03 -0800 (PST)
-Message-ID: <416c49da-aa19-4329-be28-6544bb9a1738@linaro.org>
-Date:   Wed, 29 Nov 2023 09:30:02 +0100
+        Wed, 29 Nov 2023 00:30:24 -0800 (PST)
+Message-ID: <87771c1f-17fd-4895-aafc-4fe0c38a59ee@linaro.org>
+Date:   Wed, 29 Nov 2023 09:30:23 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: input: sprd,sc27xx-vibrator: Drop incomplete
+Subject: Re: [PATCH] dt-bindings: iio/adc: ti,palmas-gpadc: Drop incomplete
  example
 Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+To:     Rob Herring <robh@kernel.org>, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        Tony Lindgren <tony@atomide.com>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20231128214809.3975719-1-robh@kernel.org>
+References: <20231128214803.3975542-1-robh@kernel.org>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -112,12 +110,12 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231128214809.3975719-1-robh@kernel.org>
+In-Reply-To: <20231128214803.3975542-1-robh@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -126,13 +124,13 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 28/11/2023 22:48, Rob Herring wrote:
-> The example for the Spreadtrum SC27xx PMIC vibrator is incomplete as the
-> binding is the full PMIC, not just the sub-functions. It is preferred
-> for MFD examples to be complete in the top-level MFD device binding
-> rather than piecemeal in each sub-function binding.
+> The example for the TI Palmas ADC is incomplete as the binding is the
+> full PMIC, not just the sub-functions. It is preferred for MFD examples
+> to be complete in the top-level MFD device binding rather than piecemeal
+> in each sub-function binding.
 > 
 > This also fixes an undocumented (by schema) compatible warning for
-> "sprd,sc2731".
+> '"ti,twl6035-pmic", "ti,palmas-pmic"'.
 > 
 > Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
