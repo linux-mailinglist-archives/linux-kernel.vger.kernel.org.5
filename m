@@ -2,84 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F22EF7FCB23
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 00:57:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E037FCB32
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 01:01:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376658AbjK1X5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 18:57:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48514 "EHLO
+        id S1376661AbjK2AB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 19:01:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345005AbjK1X47 (ORCPT
+        with ESMTP id S1345005AbjK2AB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 18:56:59 -0500
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64695198D
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 15:57:05 -0800 (PST)
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1cfc42c748eso33125805ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 15:57:05 -0800 (PST)
+        Tue, 28 Nov 2023 19:01:28 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6605198D;
+        Tue, 28 Nov 2023 16:01:34 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-6cd97c135e8so2157231b3a.0;
+        Tue, 28 Nov 2023 16:01:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701216094; x=1701820894; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CfAthndQOUsLyhwyhNqOrHqgkV99kYZqSodLMH4soJY=;
+        b=KNwv7jRIBMeJwXwqBci1Cp4o7U7OUFu/p4BEXtpdJmLb48H1/JefDmoBdWJA8P1As6
+         cw2FnVlFtovtbbJQt4npVbQ9N2mCi3PV/FElIfFNXJOG4WAnnWDpxq7mHF40TPn6Hn+I
+         VjzoRMnpBghNFSRxx3uG3FfVXzW3QlvFpxBCOC1FHjqDBtMsT3fTpZdorDLsn86zuXT8
+         KK3Ip02p8Wlw1KPOmJtBRFoacnX+0hVqON2m8Y/zMy5ILYXEIRWgZamqCQE8HCK+yyqN
+         S3VfrWhK7egRegvMmx1I7LNPVwbp+EubKzGAyM7/S//2nmv6URRiALn3OfYuN6ZVh7ZP
+         bIZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701215825; x=1701820625;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vN2Ir+Y4JmS/bZdrwe9hRvn9LSobTrbuzI+1V9ZVUoI=;
-        b=MlEtP165QUTa+Vqv4TOkdX8Yy6y4s535BWvPvhtZzY8TE2MfbDXyZJKXHt26T3Awc9
-         66Q64TjpEuNajUeOOxtaeBK0re4V4/id9FrHg/+axkVlq5UaDnBpJJuE1A2dcsWpbdK9
-         /ETzzfRIolln7TKyCD3vZp9iWVb3PuP6++Ib+r/xDXZrg20J3cuw4Mmnckj6M2GENFXA
-         qi0voGc7Lpli4X73f1ARkcIBkq2h4JQaInCPEVyaPYGBY7S8tNGufNpWf/yz2KwFq4FZ
-         NHigVXlAjXQdeQ7MUTViu+aH6x0jQE7VO/Ybs1VWmepVD6Gfi3eL6s1yKcwZtza1kfJg
-         TV+Q==
-X-Gm-Message-State: AOJu0YxGPQZ7WsO0SlC2ZYngWwluJlsFXPLbSaWzpo3zd93ikLSI04nB
-        tNzjv268lZZzmAqPrvK4rLoqfcw3EdFIKGj21avpkGgasEnS
-X-Google-Smtp-Source: AGHT+IEBmKxuYKtQ/S0w/Sxr+C51n7BNjuA3UdTFIXPrhy6pf4y+36y7PctlYRTxRWgVazDQbWRHjB0qaDOjWNcdvHmORUl52cwI
+        d=1e100.net; s=20230601; t=1701216094; x=1701820894;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CfAthndQOUsLyhwyhNqOrHqgkV99kYZqSodLMH4soJY=;
+        b=YZGUVYgE9rul7BcTUD+KYslnswM7GxlR6ANyjcX08tuPJVaBtXPmUPYoJXKtqKc3vX
+         4iBDOAgby2eiM/8pIWg94Cj+CuNdYiNPN0dG4T2YCAtENtgULUOf4b8vvYVCyeW2sQ8n
+         Fn++6l7Fls0XvjUHgGFSZ+dNwFXmcMPaZplVHGm/Yh9gkgcSpmfhTmkBNN2ciJSEd6zZ
+         DGFV152rz72Kt3L5XgjaWMv/He7L21Eix9BMr0g1DxoKD6Hv9an/ORHjXOrPFuygaqKw
+         cOfUIJvMGhg8xFW7no0vlB3sqJJIpVyD9ENkI4Lf0ViPwlnchUTw+p4S5gJ+MVhPJLyc
+         7Odg==
+X-Gm-Message-State: AOJu0Yy7Rm6mYZwo8G1fyq23gTR8bpCUeB/WJUrtmXCRRCr1LZo7xyqH
+        pG1ZXHr6zqD0EYXluphh3dU=
+X-Google-Smtp-Source: AGHT+IG/dFzo3MqKKbmx14o+jvcSHc2Qq74jjY1Ok5XP+dY64ErqjX9OqfHPkqBlzUh6ePnOuyJevA==
+X-Received: by 2002:a05:6a20:428b:b0:18c:ae67:c202 with SMTP id o11-20020a056a20428b00b0018cae67c202mr8744798pzj.37.1701216094154;
+        Tue, 28 Nov 2023 16:01:34 -0800 (PST)
+Received: from google.com ([2620:0:1000:8411:8fd0:78d2:c604:3ac8])
+        by smtp.gmail.com with ESMTPSA id t8-20020a1709027fc800b001cfca7b8ee7sm5047038plb.99.2023.11.28.16.01.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 16:01:33 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Tue, 28 Nov 2023 16:01:31 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [PATCH] zram: Use kmap_local_page()
+Message-ID: <ZWZ_W3tkw9tBqdvE@google.com>
+References: <20231128083845.848008-1-senozhatsky@chromium.org>
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:4282:b0:1cc:2f2a:7d33 with SMTP id
- ju2-20020a170903428200b001cc2f2a7d33mr3456055plb.2.1701215825023; Tue, 28 Nov
- 2023 15:57:05 -0800 (PST)
-Date:   Tue, 28 Nov 2023 15:57:04 -0800
-In-Reply-To: <000000000000efc64705ff8286a1@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000efd864060b3f2cf0@google.com>
-Subject: Re: [syzbot] [wireless?] WARNING in rate_control_rate_init (2)
-From:   syzbot <syzbot+62d7eef57b09bfebcd84@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, edumazet@google.com, johannes.berg@intel.com,
-        johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=2.3 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SORTED_RECIPS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: **
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231128083845.848008-1-senozhatsky@chromium.org>
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        FSL_HELO_FAKE,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Tue, Nov 28, 2023 at 05:22:07PM +0900, Sergey Senozhatsky wrote:
+> Use kmap_local_page() instead of kmap_atomic() which has been
+> deprecated.
+> 
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Acked-by: Minchan Kim <minchan@kernel.org>
 
-commit b303835dabe0340f932ebb4e260d2229f79b0684
-Author: Johannes Berg <johannes.berg@intel.com>
-Date:   Sat Jul 23 20:08:49 2022 +0000
+I didn't know that the kmap_atomic was deprecated.
 
-    wifi: mac80211: accept STA changes without link changes
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=125a86dce80000
-start commit:   a214724554ae Merge tag 'wireless-next-2023-11-27' of git:/..
-git tree:       net-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=115a86dce80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=165a86dce80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=abf6d5a82dab01fe
-dashboard link: https://syzkaller.appspot.com/bug?extid=62d7eef57b09bfebcd84
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10a4fc64e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1363b22ce80000
-
-Reported-by: syzbot+62d7eef57b09bfebcd84@syzkaller.appspotmail.com
-Fixes: b303835dabe0 ("wifi: mac80211: accept STA changes without link changes")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Thanks.
