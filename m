@@ -2,193 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B183A7FDC14
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:58:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D487FDC1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:01:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343591AbjK2P6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 10:58:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56400 "EHLO
+        id S1343584AbjK2QBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 11:01:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232910AbjK2P6V (ORCPT
+        with ESMTP id S232910AbjK2QBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 10:58:21 -0500
-Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19543D46
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:58:28 -0800 (PST)
-Received: by mail-ua1-x92f.google.com with SMTP id a1e0cc1a2514c-7c4ed6740c7so812212241.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:58:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701273507; x=1701878307; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZvIYvtqU0arhalNfrboD1I7LGBKoYlMorHiQQOVTcUQ=;
-        b=X7XvcuMpH1ZOeG0fWD5oMSEMpTMUWsxICTFeRVqKgsbWmeSybyTZrUHFjJRN/ZPc6s
-         MkGlX8Iv+tvF5ouPC8vBS4MpDEm2G5DZFa/VyOse+D6c+//0HzP8D7218trWH6nIv8WG
-         j2xg/3Cnb1xOojrwK5Jrp6kUESmJr7GpO/pw3dppjhSS3i1H6WcztbF8ZNtGIfsik6Dm
-         l42bwebvrNOPKDM4Pp2FfGSPtBd1c7FVUBVi5FHIlNBviLbOqCHygNAwbCMj1DN6mh5f
-         c2HhhSbMwx1DUtfeRKCpLkv6gTgynuyiIXHPctzvytVWR7/hY5QeppSiiqx4NuJo1diP
-         eQfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701273507; x=1701878307;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZvIYvtqU0arhalNfrboD1I7LGBKoYlMorHiQQOVTcUQ=;
-        b=eKEdG1adGJ8tABdnmmjrm023hxByyQbbkJpZh8UAqaxC1ZzX4hacZZGyaHEJIx0H2y
-         EVNDp9FwzC49Ap+Q+Nl/hZFv9iEp7QcRthWdqZzrsk1RQZ0nNlVzITOgBejh8rLlvsG7
-         n92rF+BPjovUhKp7JAWpxDq4DqNl6T7X7YEsMDGBAHDSgW1Gq1cOKbIQiVP2ANvAd87a
-         7u/rxpSrtAWPuIEUfDYTpcl02cbp638/ioksDGWXp0iUvvyZLBrHX6f3hToc8ZFaFmBV
-         9BwbOjnjK/hI+vm9jw9O/YQBNvrfJTmi7g4CM7gJV3jKuiSqGCizM8CxH78ZSzNHkfvY
-         7H/A==
-X-Gm-Message-State: AOJu0YxladM5kfUVwtuvPrzrLW97upLOMfrRTgfm68Z0jNgCVGV2ZONY
-        UkuqaLCtd3JliVfWURukZeGt3eWUas1JnUDH+U+i1w==
-X-Google-Smtp-Source: AGHT+IFrFNrDFwV2WBYvXYmyAqhDBak35lw7vEiNQv6Jt04vbkDAAJiX/LMh2CynijscTm1lgV09PDrBEeBNFwC9GNk=
-X-Received: by 2002:a05:6102:2fa:b0:464:4c9d:6f1d with SMTP id
- j26-20020a05610202fa00b004644c9d6f1dmr1575751vsj.23.1701273506271; Wed, 29
- Nov 2023 07:58:26 -0800 (PST)
+        Wed, 29 Nov 2023 11:01:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA279D5C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:01:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701273672;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8tNd18nd+bxJ1BZqHDEg4dU9YjfOiYLR5XBMfKbMPiU=;
+        b=GPvIzOjCAuZ/tXt2/skzU+WTeQ+mdCBM8sWxAWfUXUPdrNy8tGLo+5NQUOwBGICfMSzmRK
+        clB8K+5tPtYEDz3U1AzTX0/pYYdbZ+JGD0QlkPaWLto20q3wDYstyPB7zSWmo7Da0FVYyE
+        7sTuLaH3TFaCVKW/S1J7zJQABuNScYU=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-344-3O6M-KuyMKW4NpqGVr1ctA-1; Wed,
+ 29 Nov 2023 11:01:06 -0500
+X-MC-Unique: 3O6M-KuyMKW4NpqGVr1ctA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CCDBA3C0C119;
+        Wed, 29 Nov 2023 16:01:05 +0000 (UTC)
+Received: from [10.22.34.102] (unknown [10.22.34.102])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 145FAC1596F;
+        Wed, 29 Nov 2023 16:01:05 +0000 (UTC)
+Message-ID: <b6f88157-cf5e-4c7b-99f3-1944b4e7ebde@redhat.com>
+Date:   Wed, 29 Nov 2023 11:01:04 -0500
 MIME-Version: 1.0
-References: <20231129154718.326330-1-acme@kernel.org> <20231129154718.326330-3-acme@kernel.org>
-In-Reply-To: <20231129154718.326330-3-acme@kernel.org>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 29 Nov 2023 16:57:47 +0100
-Message-ID: <CANpmjNMftTuqPwmujNx5e+ajgdYtik9uL6dt62Ucotc7oz-uUw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] perf tests sigtrap: Skip if running on a kernel with
- sleepable spinlocks
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Kate Carcia <kcarcia@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mike Galbraith <efault@gmx.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH-cgroup 2/2] cgroup/cpuset: Include isolated cpuset CPUs in
+ cpu_is_isolated() check
+Content-Language: en-US
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mrunal Patel <mpatel@redhat.com>,
+        Ryan Phillips <rphillips@redhat.com>,
+        Brent Rowsell <browsell@redhat.com>,
+        Peter Hunt <pehunt@redhat.com>
+References: <20231127041956.266026-1-longman@redhat.com>
+ <20231127041956.266026-3-longman@redhat.com>
+ <ZWYbqNnnt6gQOssK@slm.duckdns.org>
+ <8de482b5-1942-4312-8de4-6f54565ab517@redhat.com>
+ <ZWZl0uvqeZ-fR1O9@slm.duckdns.org>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <ZWZl0uvqeZ-fR1O9@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Nov 2023 at 16:47, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
->
-> From: Arnaldo Carvalho de Melo <acme@redhat.com>
->
-> There are issues as reported that need some more investigation on the
-> RT kernel front, till that is addressed, skip this test.
->
-> This test is already skipped for multiple hardware architectures where
-> the tested kernel feature is not supported.
->
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Clark Williams <williams@redhat.com>
-> Cc: Ian Rogers <irogers@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Marco Elver <elver@google.com>
-> Cc: Mike Galbraith <efault@gmx.de>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Link: https://lore.kernel.org/all/e368f2c848d77fbc8d259f44e2055fe469c219cf.camel@gmx.de/
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-Acked-by: Marco Elver <elver@google.com>
+On 11/28/23 17:12, Tejun Heo wrote:
+> Hello,
+>
+> On Tue, Nov 28, 2023 at 01:32:53PM -0500, Waiman Long wrote:
+>> On 11/28/23 11:56, Tejun Heo wrote:
+>>> Hello,
+>>>
+>>> On Sun, Nov 26, 2023 at 11:19:56PM -0500, Waiman Long wrote:
+>>>> +bool cpuset_cpu_is_isolated(int cpu)
+>>>> +{
+>>>> +	unsigned int seq;
+>>>> +	bool ret;
+>>>> +
+>>>> +	do {
+>>>> +		seq = read_seqcount_begin(&isolcpus_seq);
+>>>> +		ret = cpumask_test_cpu(cpu, isolated_cpus);
+>>>> +	} while (read_seqcount_retry(&isolcpus_seq, seq));
+>>>> +	return ret;
+>>>> +}
+>>>> +EXPORT_SYMBOL_GPL(cpuset_cpu_is_isolated);
+>>> We're testing a bit in a bitmask. I don't think we need to worry about value
+>>> integrity from RMW updates being broken up. ie. We can just test the bit
+>>> without seqlock and drop the first patch?
+>> My concern is that if we have an isolated partition with a set of isolated
+>> CPUs (say 2-4), I don't want any addition, deletion of changes made to
+>> another isolated partition affects the test of the pre-existing one. Testing
+>> result of the partition being change is fair game.
+>>
+>> Depending on how the cpumask operators are implemented, we may not have a
+>> guarantee that testing CPU 2, for instance, will always return true. That is
+> Can you please elaborate this part a bit? I'm having a difficult time
+> imagining the sequence of operations where this would matter but that could
+> easily be me not being familiar with the details.
 
-> ---
->  tools/perf/tests/sigtrap.c | 46 ++++++++++++++++++++++++++++++++++++--
->  1 file changed, 44 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/perf/tests/sigtrap.c b/tools/perf/tests/sigtrap.c
-> index a1bc7c776254ed2f..e6fd934b027a3d0c 100644
-> --- a/tools/perf/tests/sigtrap.c
-> +++ b/tools/perf/tests/sigtrap.c
-> @@ -103,6 +103,34 @@ static bool attr_has_sigtrap(void)
->
->         return __btf_type__find_member_by_name(id, "sigtrap") != NULL;
->  }
-> +
-> +static bool kernel_with_sleepable_spinlocks(void)
-> +{
-> +       const struct btf_member *member;
-> +       const struct btf_type *type;
-> +       const char *type_name;
-> +       int id;
-> +
-> +       if (!btf__available())
-> +               return false;
-> +
-> +       id = btf__find_by_name_kind(btf, "spinlock", BTF_KIND_STRUCT);
-> +       if (id < 0)
-> +               return false;
-> +
-> +       // Only RT has a "lock" member for "struct spinlock"
-> +       member = __btf_type__find_member_by_name(id, "lock");
-> +       if (member == NULL)
-> +               return false;
-> +
-> +       // But check its type as well
-> +       type = btf__type_by_id(btf, member->type);
-> +       if (!type || !btf_is_struct(type))
-> +               return false;
-> +
-> +       type_name = btf__name_by_offset(btf, type->name_off);
-> +       return type_name && !strcmp(type_name, "rt_mutex_base");
-> +}
->  #else  /* !HAVE_BPF_SKEL */
->  static bool attr_has_sigtrap(void)
->  {
-> @@ -125,6 +153,11 @@ static bool attr_has_sigtrap(void)
->         return ret;
->  }
->
-> +static bool kernel_with_sleepable_spinlocks(void)
-> +{
-> +       return false;
-> +}
-> +
->  static void btf__exit(void)
->  {
->  }
-> @@ -166,7 +199,7 @@ static int run_test_threads(pthread_t *threads, pthread_barrier_t *barrier)
->
->  static int run_stress_test(int fd, pthread_t *threads, pthread_barrier_t *barrier)
->  {
-> -       int ret;
-> +       int ret, expected_sigtraps;
->
->         ctx.iterate_on = 3000;
->
-> @@ -175,7 +208,16 @@ static int run_stress_test(int fd, pthread_t *threads, pthread_barrier_t *barrie
->         ret = run_test_threads(threads, barrier);
->         TEST_ASSERT_EQUAL("disable failed", ioctl(fd, PERF_EVENT_IOC_DISABLE, 0), 0);
->
-> -       TEST_ASSERT_EQUAL("unexpected sigtraps", ctx.signal_count, NUM_THREADS * ctx.iterate_on);
-> +       expected_sigtraps = NUM_THREADS * ctx.iterate_on;
-> +
-> +       if (ctx.signal_count < expected_sigtraps && kernel_with_sleepable_spinlocks()) {
-> +               pr_debug("Expected %d sigtraps, got %d, running on a kernel with sleepable spinlocks.\n",
-> +                        expected_sigtraps, ctx.signal_count);
-> +               pr_debug("See https://lore.kernel.org/all/e368f2c848d77fbc8d259f44e2055fe469c219cf.camel@gmx.de/\n");
+I may be a bit paranoid about incorrect result due to racing as I had 
+been burned before. Just testing a bit in the bitmask may probably be 
+OK. I don't think it will be a problem for x86, but I am less certain 
+about other more exotic architectures like arm64 or PPC which I am less 
+familiar about. I add a seqcount for synchronization just for the peace 
+of mind. I can take the seqcount out if you don't it is necessary.
 
-No changes from the RT side since? A fix exists, but apparently not
-good enough... Sigh.
+I have also been thinking about an alternative helper that returns the 
+whole isolated cpumask since in both cases where cpu_is_isolated() is 
+used, we will have to iterate all the possible CPUs anyway, it will be 
+more efficient to have the whole cpumask available. In that case, we may 
+want to have a seqcount to avoid returning an intermediate result. 
+Anyway, this is just a thought for now, I am not planning to do that at 
+the moment.
 
-> +               return TEST_SKIP;
-> +       } else
-> +               TEST_ASSERT_EQUAL("unexpected sigtraps", ctx.signal_count, expected_sigtraps);
-> +
->         TEST_ASSERT_EQUAL("missing signals or incorrectly delivered", ctx.tids_want_signal, 0);
->         TEST_ASSERT_VAL("unexpected si_addr", ctx.first_siginfo.si_addr == &ctx.iterate_on);
->  #if 0 /* FIXME: enable when libc's signal.h has si_perf_{type,data} */
-> --
-> 2.41.0
->
+Cheers,
+Longman
+
