@@ -2,192 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB89E7FDF47
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 19:25:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 744757FDF4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 19:29:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232010AbjK2SZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 13:25:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35642 "EHLO
+        id S230094AbjK2S3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 13:29:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230389AbjK2SZ0 (ORCPT
+        with ESMTP id S229509AbjK2S3S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 13:25:26 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04930122
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 10:25:32 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1cfc42c3786so1181925ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 10:25:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701282331; x=1701887131; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=u4fWnS8KCc7MNvbU8xpMSjs/sidzZbsAjD36ZdMftP0=;
-        b=gAgzZ6gRAXEtCjf3h8++bsepTJSayLwbPIITAx4f9U+360/8obVhpxnVDSe2LnRPWG
-         XgsK87v1UeCrv+FKHYeKQDRL6mM1hidpCfOmoCD3Qqf1W7OrQA4coFN5NfM3ti2ydTiq
-         Oa6M34bU9L0co198PlU7HA4Q4yH+ft+dhh9yW1ma+0VnyUuDWwas4myAWYiAN0jJ2d7h
-         cgZc+QjDFeeRP0DXvN1kHFjqNN7yux09HDIohtYRr4/Q5AabWgwoiCJZkZFhOC34DIEz
-         jQeN0j31qiQb9vysP/fVi5dbJetOL/Vnubj7c5+Hw/reIoWyp/jnC2PvOyJ2/kRM9qKy
-         IxYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701282331; x=1701887131;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=u4fWnS8KCc7MNvbU8xpMSjs/sidzZbsAjD36ZdMftP0=;
-        b=NO9pnwjMY0eGQgkcxA2/vQyZjgVfO0qcQZolxw5epRNN3gFN/UVl6qdGgR1HX5daG3
-         V9aGYehGh4QIEa0I42RAm0ZIvZ7YK17hE9gEuP2kViuooLAVu3PMb77uSDcDl5Fk0EWM
-         GxVP2be0M5alb3Sj7XQz7seFXSB3xQvpXUeMIA6erpp/I9qjSy1HysGkf+StwmEPFwun
-         TxLcypaLE9UxjtVrVDB4GYpYXc8wmCgMFpFZHGPFAoNwburPX0AysBEej0IgRuPW4gYJ
-         k7vOBurqSH6Y1aAQQyDUC3wAzb0Mq4TsWk9yunDzBQOqDHYYFPSWTJKXD/dmU1Bcck5t
-         8HjQ==
-X-Gm-Message-State: AOJu0YzbF+hUoFRaCG0NB2uW+B6QvEV9MTt6hrHZerNe9eqqNIZnO4LQ
-        l9ZyiG6FtcWI8iT8H1+bPwKtf3MUcAY=
-X-Google-Smtp-Source: AGHT+IGrxf40BQP7nniTAO79iKHLuD08KvDSxknYYYp6NltQ6nf9nJ8IH7FCZ/mjwcc3S3BbIHJ2rpL9t5Q=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:11d1:b0:1cf:5d59:8ecc with SMTP id
- q17-20020a17090311d100b001cf5d598eccmr4755463plh.5.1701282331465; Wed, 29 Nov
- 2023 10:25:31 -0800 (PST)
-Date:   Wed, 29 Nov 2023 10:25:29 -0800
-In-Reply-To: <bcbc9d0f-8b52-468b-8c69-0e09ec168a39@gmail.com>
-Mime-Version: 1.0
-References: <20231123075818.12521-1-likexu@tencent.com> <ZWVCwvoETD_NVOFG@google.com>
- <bcbc9d0f-8b52-468b-8c69-0e09ec168a39@gmail.com>
-Message-ID: <ZWeB_nfLPmyRnbAs@google.com>
-Subject: Re: [PATCH] KVM: x86: Use get_cpl directly in case of vcpu_load to
- improve accuracy
-From:   Sean Christopherson <seanjc@google.com>
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Wed, 29 Nov 2023 13:29:18 -0500
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2048.outbound.protection.outlook.com [40.107.237.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF6A3111;
+        Wed, 29 Nov 2023 10:29:23 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kmy6V29JecQjH9DUbBWLFUwI3+XBmYzjrGy3y1Ky0E9q0h6k5QXPDqW4jfiUxsGpXnDTybllGXDXXKGjfkUsRGCOrA4tiK4AqkyoV1sC8k+acX24QtUU3cuLeYTFBnLJonK2gReadiqwfGIWkx5We//Ha9dDsUrddVSZcT2IuWOx/5iSd9RknPXjGzJ8bPQiN2oeK61CruxypRTBJedekLi9jZ7dyw8FguYlaWRysLMgC1Ou0/skz7E9F3s+BjTlxw18vBgIQU8NWWuKzAVfxGUtL23PjefMhsutO5vB6k4L8nygq+eYuYGkWqUKcZj0Maij7GPN/pPAQC/r6xuILw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OAj9A0pS/RN3NxF/wWzy6OWBsZQlJ6qt/eNQBJIg5go=;
+ b=GV8QzsJZkj+9yjPtq22V1yM8B50SrMQMBJp4OTjexP8NlHG2mXeDsA0gDCmN51UI07HyBurtsucneNnrRs05NJ1nf9eDJuQD0gB9NiPr4NczdFemHHTlsFAldt+a+IuvCQI7hqPS4FoqhGEcpYTfFQ8llxeWzy/oau1D0HTlyF7ANxgSC0tQbeCeBTJAoscg2ee6yRj67ZqSZpomAYRoaDmwbAQyYkSVlRT8CP5zM47AcKox/61Mopt/JpWXeSXMNpJ+nJxbvC2fiV4UrBZ4DGqci6ztdPXFo1MHz9zA/nCUd18FF4SQD3BS36Oib54+IcCRco7OJNTlHrpHXNxFTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OAj9A0pS/RN3NxF/wWzy6OWBsZQlJ6qt/eNQBJIg5go=;
+ b=qEQRHdvtGQzVBIpT0zDdsx5wHi9QpjH3a1KYz0VLT1rNneRhyJplrrum9LiSK9ShCBpZdrGm5BACOTrGpoKHavaKbSRyzvLb3paE2476J49g8TMIzU0bqYtqbTxfpEOTtV1b+s2bBoYS2xuBDPrSnB5VHHxeDVxQyHdXg3J8QpY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CH3PR12MB8403.namprd12.prod.outlook.com (2603:10b6:610:133::14)
+ by SA1PR12MB7295.namprd12.prod.outlook.com (2603:10b6:806:2b6::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Wed, 29 Nov
+ 2023 18:29:18 +0000
+Received: from CH3PR12MB8403.namprd12.prod.outlook.com
+ ([fe80::e2:9f06:b82e:9a0f]) by CH3PR12MB8403.namprd12.prod.outlook.com
+ ([fe80::e2:9f06:b82e:9a0f%3]) with mapi id 15.20.7025.022; Wed, 29 Nov 2023
+ 18:29:18 +0000
+Message-ID: <c09243d9-b725-49b0-a6ac-163d015ff441@amd.com>
+Date:   Wed, 29 Nov 2023 12:29:16 -0600
+User-Agent: Mozilla Thunderbird
+Subject: [RESEND v2] ACPI: APEI: Skip initialization of GHES_ASSIST structures
+ for Machine Check Architecture
+Content-Language: en-US
+To:     linux-acpi@vger.kernel.org
+Cc:     rafael@kernel.org, lenb@kernel.org, james.morse@arm.com,
+        tony.luck@intel.com, bp@alien8.de, linux-kernel@vger.kernel.org,
+        yazen.ghannam@amd.com, Avadhut Naik <avadhut.naik@amd.com>
+References: <20231106201340.434878-1-avadhut.naik@amd.com>
+From:   Avadhut Naik <avadnaik@amd.com>
+In-Reply-To: <20231106201340.434878-1-avadhut.naik@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DM5PR08CA0041.namprd08.prod.outlook.com
+ (2603:10b6:4:60::30) To CH3PR12MB8403.namprd12.prod.outlook.com
+ (2603:10b6:610:133::14)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR12MB8403:EE_|SA1PR12MB7295:EE_
+X-MS-Office365-Filtering-Correlation-Id: 44b90468-465e-4fad-b8a8-08dbf10918ea
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pX5a8qrz9Twf0A3Ea6zhYuS9LCnLUtKhz0kuM66sCjNdCC2V/bEpsIB9Htq9fkehWEi125PVbQ4LKW/xppaAzrp69qWsUiasQFYYPPFnSQVnqDHHX7fFZmLWpvw9xjd9JF5EfsmRg/87krvqPRFeBTy8OHL8XCf+r6r3ahMTRXWiirroDqkF5ZbM9nx0q5UmN0Ob8OzG6ST50IhwAJBsPMuHCTTP6Sf8gR4oTE+FHTLmuyY7bHLsKt9mUmnHOUdEGQfP8lBw2XTtDGet6LYcM9KKmKXg8c4jeFiZmdmr7WwOB2ei02HMJ8pCC9eRPL/HNK3tomIey82Pk4gZFOPI+6fR8grsjdVs9kQCwC7BMIssjbDEvOUdcb3/8yI+T+DCra5lX9/cOZ5nwepJvMwoERxz4VhMWRNk+MJzW3iOlWMX0ehbPNI0V2oBtgtg55WtvygOwNxJXypOFJmuxOxzluRXDLN2EOdAXfmKdZKyPP4PfCAKegZRggTwjQMPd7ZHI9HHbzNe19LXCVbiUjlUjzAo3WCa3ne+chpHPmZnucUz+UzofuDcJDV+bM08ZSSFnHfERu92TkzkhuY+recLU0p5f1S0uSCjzhMQY/6sRnhhl34Wogd5u9Q+5QEkpurY1u6usBbFcvQz1oiWNxuphBS0d0YjgmI2t/FJqre1TGdwP4oIDo8Kp6kvgXKg5K9OcAmU6pI3tVZDOpkucRf1WA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8403.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(136003)(366004)(39860400002)(396003)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(31686004)(478600001)(2616005)(26005)(6512007)(38100700002)(36756003)(31696002)(83380400001)(41300700001)(2906002)(53546011)(5660300002)(6506007)(66556008)(66476007)(316002)(4326008)(6916009)(8676002)(66946007)(8936002)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZkkrM2p4ejJXS0p5bUxLZzlEczk5QlRsT3h5U3dGOFlNWVNGWk5Gc2JHaW9r?=
+ =?utf-8?B?Z1JVcmpCSnlOWExna3ZWVHdXU1dNUk9mNFFPMzZ2REdaa1QyL1ZFZE1oYmR5?=
+ =?utf-8?B?NUhCSHQ4NU5RVFppYTU5VUthV2duSDN2N21Bd2hZRDVTcWYrVDZXTVozVDFj?=
+ =?utf-8?B?ZnVSQWRjWUFwMVhlZFREOTgrcGRnOC9qUkdUZDdEb3lXdFU5MnhGMnkyUEts?=
+ =?utf-8?B?QjY0ZHBsZDNLUGxCaGNYdVJVdysyVlFRRFZBR3k0L0Izc0NqQjdabi9oalRZ?=
+ =?utf-8?B?ZjRnV2MzM2JiejNHSFJsOUFzZ1FhNmdTR0twbWhaMFhsOXRvcmpVSGRXZnVu?=
+ =?utf-8?B?bE1nd09VWGhKdmhKNnNpUGJhZGhJcGFRUzhkbjdZc2krMFhCNFlUS28zUXhy?=
+ =?utf-8?B?cFhyVnZyd3Z1YzRmb3A5dXM1Ym5hdWtWMUwyUFprdjVSWWJVeEF2eXcxUTlT?=
+ =?utf-8?B?eXI4Qlp0b3FDMHVqeHF5UEFISEo4bnpHbzl6OHZEYW1YOStKMndpODdUaytK?=
+ =?utf-8?B?d1ZRUTh4UmtwUGFqcUhlZTVpaXduTnFCblFRSVNGY0VTUUt3M29vK3ZmNnpO?=
+ =?utf-8?B?eXFHV3NlNCtTZ0d1eVN1NVNMNU00NHl5MEFyQ3ZCL1JlTktSc01pODYwTkMw?=
+ =?utf-8?B?ejhlTVhtMWVXQTM3Y0VkUEd3OHNlbU1YeHNQV1pXNmNPUjdlYUJIcnU3eVM0?=
+ =?utf-8?B?ellGVlFHSTZBNEhjUWJCOWV1UExsOXpVUmkwaEVSMFg2T3dPVFZWbzgrOVMz?=
+ =?utf-8?B?OFBDRXV3K3RYaGhBMkxGVk9GS2JoK1U3UXBmNFI0NGZiMFZLWTV5SWIyYm02?=
+ =?utf-8?B?L2g2bjlpa05GNkc4cnowcUw0VkdXL0NvZXdZMjlNNG1Pdk5sbmNLWjlPV0dv?=
+ =?utf-8?B?MDkrK0hBK2hoS1VkbU1DZm16T1ZGYTE2RVYzMng0TzRDWGhkdk9KQnE5YzZL?=
+ =?utf-8?B?Yi9hNEdmWEhiYUIyeTA4OHJnKzI3RWV5U28xMUpzajNQNm5jL0ttTzJTZDNH?=
+ =?utf-8?B?TUY1ZVNCdVpWdFpabEJONnB6V0MxNWtrTjVLT2psVDIzN3JqT2NPWmVscjhp?=
+ =?utf-8?B?a1ZsS1h5VkdVckl3bWFmVVQwdHRwV3lxSEk0YWh6VkpxNHpOU0Z1MVJYS01n?=
+ =?utf-8?B?SHI0b0FMbXluU1RMS2VpdHZLd1ZManUyOWVSdlpLLzdJZzRyWWo3MGtILy91?=
+ =?utf-8?B?REFHRzZKNGdoMnFIOE5GTTRDUk10bU9KUnhaVFQzU2daTEsyWVpqdnRFOFpC?=
+ =?utf-8?B?dWN6K1hGUldtMjI5REVncmpJZkJCSjA0OWVmYTd3MmlDR3hnRGhvZkIvRUY2?=
+ =?utf-8?B?K2E2RU5YbmhVaXVIeERUTURzeHQ3RWoyS2h2SzNnZzExeG05aFNINmtiRENF?=
+ =?utf-8?B?WWRsbXdlVkpjdkgyUFlzQ1k2b3UwRlNMaDR0dFV1cmVUV2E1bU83NVh0V0NF?=
+ =?utf-8?B?NEMrdGp3Mzk0a0tySGpJTGhWZncwbURQczMxbXVieGcvNmE3MjQvakFHN20z?=
+ =?utf-8?B?NVVXWEJVRnBzR1kwQ1BwcXpTcFBqTi93TjhVZ0VPamdyWFkyNTQrTGVCZWNq?=
+ =?utf-8?B?VDJKeWU1VG8veFlFMm83eXB3ZHJmS1B0MGowbmdTUVJtL0xzVVdUOFBkeFhl?=
+ =?utf-8?B?aDhiK0g5SzVWUEQ5MitRZzJObHRtenJLME1BYkI5dnRobWwvb3dUWE5TSnBK?=
+ =?utf-8?B?Y3FzYVdGalk5alZ6dTgvMmw4K1NCT2NNQ2t3U0N4YzBQeGpUUEExQmtrOGlF?=
+ =?utf-8?B?WmRtVHlUd3NmYnA3aFJEWkZwbWlNMzliMnY3bHFYMXFTeG1aN1ZCb2FiVFcz?=
+ =?utf-8?B?dmZQeHF3U0F4UHVPNE9xOEhCOUtaczYybjliVnZxSHFnVm9RSkQ5QXhOcnpU?=
+ =?utf-8?B?SGRkNDhLeTFOVU5LamdvQnJTdTUrQ0NndmFVUWhNTUNxek9lZEgvajJ3Nkoy?=
+ =?utf-8?B?TXpDYWFIaGZlSUVFRThqTmRUV29ZZkF2UEhjUEtKR2VDeU5uaGZEWjMwUFhL?=
+ =?utf-8?B?aEJIc3kxamc3WFpEcjJzM2EvNG4wbUlQaHpyT2Uvd284OUdRbys0V3l2eGJT?=
+ =?utf-8?B?cU5OdGFQbWJNNW1EdXhPeGtxRUJzNUp4ZWtBalpuWXRDaitjWUdBVUVqWTl3?=
+ =?utf-8?Q?xRT7+O3Rv7Mi1NxcThXstIVnX?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 44b90468-465e-4fad-b8a8-08dbf10918ea
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8403.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 18:29:17.9553
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vVeGyhoOKaVuMEj+aoHJ2qX5gZHC59b5lxFq9a/tM7x8cOOC3TBUjtlm8gUyem5I6ejLOHErrvgTCMVYscVKcw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7295
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023, Like Xu wrote:
-> > Rather than fudge around that ugliness with a kvm_get_running_vcpu() check, what
-> > if we instead repurpose kvm_arch_dy_has_pending_interrupt(), which is effectively
-> > x86 specific, to deal with not being able to read the current CPL for a vCPU that
-> > is (possibly) not "loaded", which AFAICT is also x86 specific (or rather, Intel/VMX
-> > specific).
+Hi,
+
+Any further feedback on this patch?
+
+On 11/6/2023 14:13, Avadhut Naik wrote:
+> To support GHES_ASSIST on Machine Check Architecture (MCA) error sources,
+> a set of GHES structures is provided by the system firmware for each MCA
+> error source. Each of these sets consists of a GHES structure for each MCA
+> bank on each logical CPU, with all structures of a set sharing a common
+> Related Source ID, equal to the Source ID of one of the MCA error source
+> structures.[1] On SOCs with large core counts, this typically equates to
+> tens of thousands of GHES_ASSIST structures for MCA under
+> "/sys/bus/platform/drivers/GHES".
 > 
-> I'd break it into two parts, the first step applying this simpler, more
-> straightforward fix (which is backport friendly compared to the diff below),
-> and the second step applying your insight for more decoupling and cleanup.
+> Support for GHES_ASSIST however, hasn't been implemented in the kernel. As
+> such, the information provided through these structures is not consumed by
+> Linux. Moreover, these GHES_ASSIST structures for MCA, which are supposed
+> to provide supplemental information in context of an error reported by
+> hardware, are setup as independent error sources by the kernel during HEST
+> initialization.
 > 
-> You'd prefer one move to fix it, right ?
-
-Yeah, I'll apply your patch first, though if you don't object I'd like to reword
-the shortlog+changelog to make it explicitly clear that this is a correctness fix,
-that the preemption case really needs to have a separate API, and that checking
-for vcpu->preempted isn't safe.
-
-I've applied it to kvm-x86/fixes with the below changelog, holler if you want to
-change anything.
-
-[1/1] KVM: x86: Get CPL directly when checking if loaded vCPU is in kernel mode
-      https://github.com/kvm-x86/linux/commit/8eedf4177184
-
-    KVM: x86: Get CPL directly when checking if loaded vCPU is in kernel mode
-    
-    When querying whether or not a vCPU "is" running in kernel mode, directly
-    get the CPL if the vCPU is the currently loaded vCPU.  In scenarios where
-    a guest is profiled via perf-kvm, querying vcpu->arch.preempted_in_kernel
-    from kvm_guest_state() is wrong the vCPU is actively running, i.e. hasn't
-    been preempted and so preempted_in_kernel is stale.
-    
-    This affects perf/core's ability to accurately tag guest RIP with
-    PERF_RECORD_MISC_GUEST_{KERNEL|USER} and record it in the sample.  This
-    causes perf/tool to fail to connect the vCPU RIPs to the guest kernel
-    space symbols when parsing these samples due to incorrect PERF_RECORD_MISC
-    flags:
-    
-       Before (perf-report of a cpu-cycles sample):
-          1.23%  :58945   [unknown]         [u] 0xffffffff818012e0
-    
-       After:
-          1.35%  :60703   [kernel.vmlinux]  [g] asm_exc_page_fault
-    
-    Note, checking preempted_in_kernel in kvm_arch_vcpu_in_kernel() is awful
-    as nothing in the API's suggests that it's safe to use if and only if the
-    vCPU was preempted.  That can be cleaned up in the future, for now just
-    fix the glaring correctness bug.
-    
-    Note #2, checking vcpu->preempted is NOT safe, as getting the CPL on VMX
-    requires VMREAD, i.e. is correct if and only if the vCPU is loaded.  If
-    the target vCPU *was* preempted, then it can be scheduled back in after
-    the check on vcpu->preempted in kvm_vcpu_on_spin(), i.e. KVM could end up
-    trying to do VMREAD on a VMCS that isn't loaded on the current pCPU.
-    
-    Signed-off-by: Like Xu <likexu@tencent.com>
-    Fixes: e1bfc24577cc ("KVM: Move x86's perf guest info callbacks to generic KVM")
-    Link: https://lore.kernel.org/r/20231123075818.12521-1-likexu@tencent.com
-    [sean: massage changelong, add Fixes]
-    Signed-off-by: Sean Christopherson <seanjc@google.com>
-
-> > And if getting the CPL for a vCPU that may not be loaded is problematic for other
-> > architectures, then I think the correct fix is to move preempted_in_kernel into
-> > common code and check it directly in kvm_vcpu_on_spin().
+> Additionally, if the Type field of the Notification structure, associated
+> with these GHES_ASSIST structures for MCA, is set to Polled, the kernel
+> sets up a timer for each individual structure. The duration of the timer
+> is derived from the Poll Interval field of the Notification structure. On
+> SOCs with high core counts, this will result in tens of thousands of
+> timers expiring periodically causing unnecessary preemptions and wastage
+> of CPU cycles. The problem will particularly intensify if Poll Interval
+> duration is not sufficiently high.
 > 
-> Not sure which tests would cover this part of the change.
-
-It'd likely require a human to look at results, i.e. as you did.
-
-> > +bool kvm_arch_vcpu_preempted_in_kernel(struct kvm_vcpu *vcpu)
-> > +{
-> > +	/*
-> > +	 * Treat the vCPU as being in-kernel if it has a pending interrupt, as
-> > +	 * the vCPU trying to yield may be spinning on IPI delivery, i.e. the
-> > +	 * the target vCPU is in-kernel for the purposes of directed yield.
+> Since GHES_ASSIST support is not present in kernel, skip initialization
+> of GHES_ASSIST structures for MCA to eliminate their performance impact.
 > 
-> How about the case "vcpu->arch.guest_state_protected == true" ?
-
-Ah, right, the existing code considers vCPUs to always be in-kernel for preemption
-checks.
-
-> > +	return vcpu->arch.preempted_in_kernel ||
-> > +	       kvm_dy_has_pending_interrupt(vcpu);
-> >   }
-> >   bool kvm_arch_dy_runnable(struct kvm_vcpu *vcpu)
-> > @@ -13043,7 +13051,7 @@ bool kvm_arch_dy_runnable(struct kvm_vcpu *vcpu)
-> >   		 kvm_test_request(KVM_REQ_EVENT, vcpu))
-> >   		return true;
-> > -	return kvm_arch_dy_has_pending_interrupt(vcpu);
-> > +	return kvm_dy_has_pending_interrupt(vcpu);
-> >   }
-> >   bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu)
-> > @@ -13051,7 +13059,7 @@ bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu)
-> >   	if (vcpu->arch.guest_state_protected)
-> >   		return true;
-> > -	return vcpu->arch.preempted_in_kernel;
-> > +	return static_call(kvm_x86_get_cpl)(vcpu);
+> [1] ACPI specification 6.5, section 18.7
 > 
-> We need "return static_call(kvm_x86_get_cpl)(vcpu) == 0;" here.
-
-Doh, I had fixed this locally but forgot to refresh the copy+paste with the updated
-diff.
-
-> > -bool __weak kvm_arch_dy_has_pending_interrupt(struct kvm_vcpu *vcpu)
-> > +bool __weak kvm_arch_vcpu_preempted_in_kernel(struct kvm_vcpu *vcpu)
-> >   {
-> > -	return false;
-> > +	return kvm_arch_vcpu_in_kernel(vcpu);
-> >   }
-> >   void kvm_vcpu_on_spin(struct kvm_vcpu *me, bool yield_to_kernel_mode)
-> > @@ -4086,8 +4086,7 @@ void kvm_vcpu_on_spin(struct kvm_vcpu *me, bool yield_to_kernel_mode)
-> >   			if (kvm_vcpu_is_blocking(vcpu) && !vcpu_dy_runnable(vcpu))
-> >   				continue;
-> >   			if (READ_ONCE(vcpu->preempted) && yield_to_kernel_mode &&
-> > -			    !kvm_arch_dy_has_pending_interrupt(vcpu) &&
-> > -			    !kvm_arch_vcpu_in_kernel(vcpu))
-> > +			    kvm_arch_vcpu_preempted_in_kernel(vcpu))
+> Signed-off-by: Avadhut Naik <avadhut.naik@amd.com>
+> Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
+> ---
+> Changes in v2:
+> 1.	Since is_ghes_assist_struct() returns if any of the conditions is hit
+> if-else-if chain is redundant. Replace it with just if statements.
+> 2.	Fix formatting errors.
+> 3.	Add Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
+> ---
+>  drivers/acpi/apei/hest.c | 51 ++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 51 insertions(+)
 > 
-> Use !kvm_arch_vcpu_preempted_in_kernel(vcpu) ?
+> diff --git a/drivers/acpi/apei/hest.c b/drivers/acpi/apei/hest.c
+> index 6aef1ee5e1bd..99db7621adb7 100644
+> --- a/drivers/acpi/apei/hest.c
+> +++ b/drivers/acpi/apei/hest.c
+> @@ -37,6 +37,20 @@ EXPORT_SYMBOL_GPL(hest_disable);
+>  
+>  static struct acpi_table_hest *__read_mostly hest_tab;
+>  
+> +/*
+> + * Since GHES_ASSIST is not supported, skip initialization
+> + * of GHES_ASSIST structures for MCA.
+> + * During HEST parsing, detected MCA error sources are cached.
+> + * Flags and Source Id fields from these cached values are
+> + * then referred to determine if the encountered GHES_ASSIST
+> + * structure should be initialized.
+> + */
+> +static struct {
+> +	struct acpi_hest_ia_corrected *cmc;
+> +	struct acpi_hest_ia_machine_check *mc;
+> +	struct acpi_hest_ia_deferred_check *dmc;
+> +} mces;
+> +
+>  static const int hest_esrc_len_tab[ACPI_HEST_TYPE_RESERVED] = {
+>  	[ACPI_HEST_TYPE_IA32_CHECK] = -1,	/* need further calculation */
+>  	[ACPI_HEST_TYPE_IA32_CORRECTED_CHECK] = -1,
+> @@ -70,22 +84,54 @@ static int hest_esrc_len(struct acpi_hest_header *hest_hdr)
+>  		cmc = (struct acpi_hest_ia_corrected *)hest_hdr;
+>  		len = sizeof(*cmc) + cmc->num_hardware_banks *
+>  			sizeof(struct acpi_hest_ia_error_bank);
+> +		mces.cmc = cmc;
+>  	} else if (hest_type == ACPI_HEST_TYPE_IA32_CHECK) {
+>  		struct acpi_hest_ia_machine_check *mc;
+>  		mc = (struct acpi_hest_ia_machine_check *)hest_hdr;
+>  		len = sizeof(*mc) + mc->num_hardware_banks *
+>  			sizeof(struct acpi_hest_ia_error_bank);
+> +		mces.mc = mc;
+>  	} else if (hest_type == ACPI_HEST_TYPE_IA32_DEFERRED_CHECK) {
+>  		struct acpi_hest_ia_deferred_check *mc;
+>  		mc = (struct acpi_hest_ia_deferred_check *)hest_hdr;
+>  		len = sizeof(*mc) + mc->num_hardware_banks *
+>  			sizeof(struct acpi_hest_ia_error_bank);
+> +		mces.dmc = mc;
+>  	}
+>  	BUG_ON(len == -1);
+>  
+>  	return len;
+>  };
+>  
+> +/*
+> + * GHES and GHESv2 structures share the same format, starting from
+> + * Source Id and ending in Error Status Block Length (inclusive).
+> + */
+> +static bool is_ghes_assist_struct(struct acpi_hest_header *hest_hdr)
+> +{
+> +	struct acpi_hest_generic *ghes;
+> +	u16 related_source_id;
+> +
+> +	if (hest_hdr->type != ACPI_HEST_TYPE_GENERIC_ERROR &&
+> +	    hest_hdr->type != ACPI_HEST_TYPE_GENERIC_ERROR_V2)
+> +		return false;
+> +
+> +	ghes = (struct acpi_hest_generic *)hest_hdr;
+> +	related_source_id = ghes->related_source_id;
+> +
+> +	if (mces.cmc && mces.cmc->flags & ACPI_HEST_GHES_ASSIST &&
+> +	    related_source_id == mces.cmc->header.source_id)
+> +		return true;
+> +	if (mces.mc && mces.mc->flags & ACPI_HEST_GHES_ASSIST &&
+> +	    related_source_id == mces.mc->header.source_id)
+> +		return true;
+> +	if (mces.dmc && mces.dmc->flags & ACPI_HEST_GHES_ASSIST &&
+> +	    related_source_id == mces.dmc->header.source_id)
+> +		return true;
+> +
+> +	return false;
+> +}
+> +
+>  typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void *data);
+>  
+>  static int apei_hest_parse(apei_hest_func_t func, void *data)
+> @@ -114,6 +160,11 @@ static int apei_hest_parse(apei_hest_func_t func, void *data)
+>  			return -EINVAL;
+>  		}
+>  
+> +		if (is_ghes_assist_struct(hest_hdr)) {
+> +			hest_hdr = (void *)hest_hdr + len;
+> +			continue;
+> +		}
+> +
+>  		rc = func(hest_hdr, data);
+>  		if (rc)
+>  			return rc;
 
-Double doh.  Yeah, this is inverted.
+-- 
+Thanks,
+Avadhut Naik
