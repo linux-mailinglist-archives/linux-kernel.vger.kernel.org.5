@@ -2,50 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5EE27FDE1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:16:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0260F7FDE23
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:18:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230511AbjK2RPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 12:15:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47228 "EHLO
+        id S231383AbjK2RRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 12:17:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbjK2RPv (ORCPT
+        with ESMTP id S229509AbjK2RRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 12:15:51 -0500
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E3DFBC;
-        Wed, 29 Nov 2023 09:15:57 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5C662E0004;
-        Wed, 29 Nov 2023 17:15:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1701278156;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fi6pfw/YrdlpRPQlqpuxTgYt0q8n78JWGSCcDcbp5EI=;
-        b=i4pse/XMReNnftJ2DWqBLM7jpvYxZPwRWmWUEakFhPmk2HCamL/ds+2m58H3Ce/FcdkE+f
-        S+20MoxlcdoyCAIf6H1l6po+cFGyUk/3AOpPXeLp4PPTay1ItCwJ9O0H1SA5KJ7WUl5isz
-        21iBx0ds/o/eeE2p2AX9bKDkREHNqrbHXhmKfEgcs+3MdPFfxHCHYneAAX8kFuikjYjhxA
-        Mo2YrbnP/BnbOxS9xf41dmjT3mDAwRmeI8CG7DT+Dt2sJcTpJV0Kw/r/We9vnPGLKlXdmt
-        x6ZWVhtk0y8ydlfh9qUfIYLqU/enO6Nw/n3iD3xVle2Md8ZJIWq2oyiuH0anig==
-Date:   Wed, 29 Nov 2023 18:15:55 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Haoran Liu <liuhaoran14@163.com>
-Cc:     claudiu.beznea@tuxon.dev, sre@kernel.org,
-        nicolas.ferre@microchip.com, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [power/reset] at91-sama5d2: Add error handling in
- at91_shdwc_probe
-Message-ID: <20231129171555abae472b@mail.local>
-References: <20231129132939.34047-1-liuhaoran14@163.com>
+        Wed, 29 Nov 2023 12:17:53 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7266ABE;
+        Wed, 29 Nov 2023 09:17:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701278280; x=1732814280;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=185ZvfFqRVD2szICsAQ0eMSsZWL3PXBLr3ZpOvwJGm4=;
+  b=CxGIUk+RcFYcqiK6GcDsqZCvWx6kHZxBKRwAMQpIFBUkQIhgIlWJ0U5p
+   RF0RfmIaCkxjnH8zjPS/fMKDwS9rx0BFhJkzFR6I2dzFN0q16cbKNJHMj
+   0DbUtTZTQ7b2odh7sMk4iU64dc8+jsjVuNRR6ecaNQE0BP4sYgX3cliYG
+   sNAbhYWIWs4WiO4qDjhc0RLh5kNsP10J6FYcKH/LTuUT4u1WpjAQ+zDjC
+   +uH382AGUykNYaT6Y7g2ZLMF/v9R7iB6W2JT17p5/Oq6vCWNjJ47B/Zrb
+   mY4GLXOfSTY/QJvNtbspG2qgYYg9RnAv1dxYFMyo1/wRf/nRwL7VshalL
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="11896970"
+X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
+   d="scan'208";a="11896970"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 09:17:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="912914094"
+X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
+   d="scan'208";a="912914094"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 09:17:50 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1r8OC2-00000000VEs-1I2z;
+        Wed, 29 Nov 2023 19:17:46 +0200
+Date:   Wed, 29 Nov 2023 19:17:45 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Jianlong Huang <jianlong.huang@starfivetech.com>,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Hal Feng <hal.feng@starfivetech.com>
+Subject: Re: [PATCH v4 16/23] pinctrl: imx: Convert to use grp member
+Message-ID: <ZWdyOc3pCoNihDtD@smile.fi.intel.com>
+References: <20231129161459.1002323-1-andriy.shevchenko@linux.intel.com>
+ <20231129161459.1002323-17-andriy.shevchenko@linux.intel.com>
+ <CAOMZO5CZpQjWKimNReUkwHOc-mF8vWoq2HDhjGKSu6E3g5-aVw@mail.gmail.com>
+ <ZWduPKmBWkaIdLhi@smile.fi.intel.com>
+ <CAOMZO5C_dhvx70nk1HOSZdw8hMMmED69tdsXgydXdpnxHTJ58Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231129132939.34047-1-liuhaoran14@163.com>
-X-GND-Sasl: alexandre.belloni@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOMZO5C_dhvx70nk1HOSZdw8hMMmED69tdsXgydXdpnxHTJ58Q@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,42 +101,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/11/2023 05:29:39-0800, Haoran Liu wrote:
-> This patch adds error handling to the at91_shdwc_probe function
-> in drivers/power/reset/at91-sama5d2_shdwc.c. The function
-> previously did not handle the case where of_match_node could fail,
-> potentially leading to unexpected behavior if the device tree match
-> was unsuccessful.
+On Wed, Nov 29, 2023 at 02:08:38PM -0300, Fabio Estevam wrote:
+> On Wed, Nov 29, 2023 at 2:01 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > It's explained in the first paragraph in the cover letter. Do you
+> > want to copy this into each commit message?
 > 
-> Signed-off-by: Haoran Liu <liuhaoran14@163.com>
-> ---
->  drivers/power/reset/at91-sama5d2_shdwc.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/power/reset/at91-sama5d2_shdwc.c b/drivers/power/reset/at91-sama5d2_shdwc.c
-> index e76b102b57b1..2ac566c83aec 100644
-> --- a/drivers/power/reset/at91-sama5d2_shdwc.c
-> +++ b/drivers/power/reset/at91-sama5d2_shdwc.c
-> @@ -353,6 +353,11 @@ static int __init at91_shdwc_probe(struct platform_device *pdev)
->  		return PTR_ERR(at91_shdwc->shdwc_base);
->  
->  	match = of_match_node(at91_shdwc_of_match, pdev->dev.of_node);
-> +	if (!match) {
+> Yes, much better to have the information into each commit message.
 
-Can you elaborate how this will ever happen?
+Here it would be like
+"Because other members will be removed to avoid duplication and
+desynchronisation of the generic pin group description."
 
-> +		dev_err(&pdev->dev, "No matching device found\n");
-> +		return -ENODEV;
-> +	}
-> +
->  	at91_shdwc->rcfg = match->data;
->  
->  	at91_shdwc->sclk = devm_clk_get(&pdev->dev, NULL);
-> -- 
-> 2.17.1
-> 
+Linus, what do you think about this?
 
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+With Best Regards,
+Andy Shevchenko
+
+
