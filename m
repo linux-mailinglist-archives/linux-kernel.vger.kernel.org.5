@@ -2,127 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4D07FCD72
+	by mail.lfdr.de (Postfix) with ESMTP id 566D17FCD71
 	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 04:23:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376776AbjK2DXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 22:23:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37734 "EHLO
+        id S234807AbjK2DXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 22:23:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234951AbjK2DXH (ORCPT
+        with ESMTP id S230469AbjK2DXM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 22:23:07 -0500
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA7341BC2
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 19:23:10 -0800 (PST)
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5c203dd04a3so6715227a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 19:23:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701228190; x=1701832990;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PZyoptvVxCiQzznnPfm+uF6aP+ODFuU4ZDNXr4urBoY=;
-        b=kpRi02rOGlYSY03uG/GQnNLT96CVVpOm+dYJlU4vld9HymNvL+Blnd7mZfeJpCnbJr
-         h/y95osf0Qm1r0EfI5cQWAgqr4xKdqCDfT9wNrtMVCIWJWjYh63KjAdJ3UkrcVnY0f8T
-         6kONWb4Qg4M8cP35aTI51GmdYp8azwh5fMOB7+6fKJlwC+QC1OOSgpK/QEY/EPzljJVk
-         ICa6OJ2tQ4m2I0zFKzykZgQDmiesFlK5qrh7800c+mWfXvB5Tw1RtWxgS1XMpantyTOl
-         GLdpsDPnka/zxT5yJc5KWRIgctB3kBeqRBRn6Y3srsBWyZ1X/VYA/8gAg4c9ZbT19FgP
-         XYtA==
-X-Gm-Message-State: AOJu0Yz3eedt2aVlYocqLEQe4xBgL4o9A0rsJ+gxCkhe0HDbxiiGldSh
-        Q7FBkejy3Ic/Lq6NBwTVpCLOgva4GtAFc+ow4oouD4YrWi0V
-X-Google-Smtp-Source: AGHT+IGJFOfIAM68a8NGIFUwKdmNj6f6N3sI05HIR2F0ufbk83Xu9kgXMgPFkoc0CiB8JpfPDrWnyMiG36wX7SQF0KAR3XEJSOgA
+        Tue, 28 Nov 2023 22:23:12 -0500
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A6A1BD0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 19:23:18 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R781e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VxMecw4_1701228195;
+Received: from 30.178.67.199(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0VxMecw4_1701228195)
+          by smtp.aliyun-inc.com;
+          Wed, 29 Nov 2023 11:23:16 +0800
+Message-ID: <6430641c-0db3-d9c2-4b75-51c179c52e8d@linux.alibaba.com>
+Date:   Wed, 29 Nov 2023 11:23:13 +0800
 MIME-Version: 1.0
-X-Received: by 2002:a63:1921:0:b0:5be:2139:5e72 with SMTP id
- z33-20020a631921000000b005be21395e72mr2902401pgl.3.1701228190222; Tue, 28 Nov
- 2023 19:23:10 -0800 (PST)
-Date:   Tue, 28 Nov 2023 19:23:10 -0800
-In-Reply-To: <tencent_DB6F26C7B37BA362296123A96443F7759705@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f5d076060b420d1f@google.com>
-Subject: Re: [syzbot] [crypto?] INFO: task hung in hwrng_fillfn
-From:   syzbot <syzbot+c52ab18308964d248092@syzkaller.appspotmail.com>
-To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH] nvme: fix deadlock between reset and scan
+Content-Language: en-US
+To:     Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>
+Cc:     axboe@kernel.dk, hch@lst.de, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kanie@linux.alibaba.com
+References: <1700737213-110685-1-git-send-email-yaoma@linux.alibaba.com>
+ <ZWTa0DJmcLKHRWWC@kbusch-mbp.dhcp.thefacebook.com>
+ <65b0c372-b308-46dd-c2f2-a5ddb50adb10@linux.alibaba.com>
+ <c47a0edd-7437-4c21-b7cf-f969ff85bf78@grimberg.me>
+ <ZWYqvo86PI6iHoXV@kbusch-mbp.dhcp.thefacebook.com>
+From:   yaoma <yaoma@linux.alibaba.com>
+In-Reply-To: <ZWYqvo86PI6iHoXV@kbusch-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-11.3 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+I have previously tried the method that you proposed, and it could solve 
+the deadlock issue. My worry is that if an I/O timeout occurs during the 
+scan, it will trigger a reset. However, the reset will wait for the scan 
+to end, which could introduce a new risk of deadlock.
+I agree with the suggestion made by Sagi Grimberg that this approach 
+does not introduce new problems.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-INFO: task hung in hwrng_fillfn
-
-INFO: task hwrng:729 blocked for more than 143 seconds.
-      Not tainted 6.4.0-syzkaller-01647-g6e2332e0ab53-dirty #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:hwrng           state:D stack:29760 pid:729   ppid:2      flags:0x00004000
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5381 [inline]
- __schedule+0xeda/0x5b60 kernel/sched/core.c:6710
- schedule+0xe7/0x1b0 kernel/sched/core.c:6786
- schedule_preempt_disabled+0x13/0x20 kernel/sched/core.c:6845
- __mutex_lock_common kernel/locking/mutex.c:679 [inline]
- __mutex_lock+0x5b4/0x990 kernel/locking/mutex.c:747
- hwrng_fillfn+0x145/0x430 drivers/char/hw_random/core.c:505
- kthread+0x2c4/0x3a0 kernel/kthread.c:389
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
- </TASK>
-
-Showing all locks held in the system:
-1 lock held by rcu_tasks_kthre/13:
- #0: ffffffff8c9996f0 (rcu_tasks.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x2c/0xe30 kernel/rcu/tasks.h:522
-1 lock held by rcu_tasks_trace/14:
- #0: ffffffff8c9993f0 (rcu_tasks_trace.tasks_gp_mutex){+.+.}-{3:3}, at: rcu_tasks_one_gp+0x2c/0xe30 kernel/rcu/tasks.h:522
-1 lock held by khungtaskd/28:
- #0: ffffffff8c99a300 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x340 kernel/locking/lockdep.c:6615
-1 lock held by hwrng/729:
- #0: ffffffff8d4887a8 (reading_mutex){+.+.}-{3:3}, at: hwrng_fillfn+0x145/0x430 drivers/char/hw_random/core.c:505
-2 locks held by getty/4749:
- #0: ffff8880287f3098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x24/0x80 drivers/tty/tty_ldisc.c:243
- #1: ffffc900015b02f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0xfc5/0x1460 drivers/tty/n_tty.c:2176
-1 lock held by syz-executor.0/5449:
-2 locks held by syz-executor.0/5450:
-1 lock held by syz-executor.0/5744:
-1 lock held by syz-executor.0/5762:
-
-=============================================
-
-NMI backtrace for cpu 1
-CPU: 1 PID: 28 Comm: khungtaskd Not tainted 6.4.0-syzkaller-01647-g6e2332e0ab53-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- nmi_cpu_backtrace+0x277/0x390 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x2ac/0x310 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:148 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
- watchdog+0xf29/0x11b0 kernel/hung_task.c:379
- kthread+0x2c4/0x3a0 kernel/kthread.c:389
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
- </TASK>
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 5744 Comm: syz-executor.0 Not tainted 6.4.0-syzkaller-01647-g6e2332e0ab53-dirty #0
-
-
-Tested on:
-
-commit:         6e2332e0 Merge tag 'cgroup-for-6.5' of git://git.kerne..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1271b7ece80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=102b18358d5797d8
-dashboard link: https://syzkaller.appspot.com/bug?extid=c52ab18308964d248092
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=147cc8b4e80000
-
+On 2023/11/29 02:00, Keith Busch wrote:
+> On Tue, Nov 28, 2023 at 12:13:59PM +0200, Sagi Grimberg wrote:
+>>
+>>
+>> On 11/28/23 08:22, yaoma wrote:
+>>> Hi Keith Busch
+>>>
+>>> Thanks for your reply.
+>>>
+>>> The idea to avoid such a deadlock between nvme_reset and nvme_scan is to
+>>> ensure that no namespace can be added to ctrl->namespaces after
+>>> nvme_start_freeze has already been called. We can achieve this goal by
+>>> assessing the ctrl->state after we have already acquired the
+>>> ctrl->namespaces_rwsem lock, to decide whether to add the namespace to
+>>> the list or not.
+>>> 1. After we determine that ctrl->state is LIVE, it may be immediately
+>>> changed to another state. However, since we have already acquired the
+>>> lock, other tasks cannot access ctrl->namespace, so we can still safely
+>>> add the namespace to the list. After acquiring the lock,
+>>> nvme_start_freeze will freeze all ns->q in the list, including any newly
+>>> added namespaces.
+>>> 2. Before the completion of nvme_reset, ctrl->state will not be changed
+>>> to LIVE, so we will not add any more namespaces to the list. All ns->q
+>>> in the list is frozen, so nvme_wait_freeze can exit normally.
+>>
+>> I agree with the analysis, there is a hole between start_freeze and
+>> freeze_wait that a scan may add a ns to the ctrl ns list.
+>>
+>> However the fix should be to mark the ctrl with say NVME_CTRL_FROZEN
+>> flag set in nvme_freeze_start and cleared in nvme_unfreeze (similar
+>> to what we did with quiesce). Then the scan can check it before adding
+>> the new namespace (under the namespaces_rwsem).
+> 
+> Could we just make sure that scan_work isn't running? If we reset a live
+> controller, then we're not depending on reset_work to unblock scan_work,
+> and can let scan_work end gracefully. The scan_work can't be rescheduled
+> again while in the resetting state.
+> 
+> ---
+> diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+> index fad4cccce745c..5d6305475bad5 100644
+> --- a/drivers/nvme/host/pci.c
+> +++ b/drivers/nvme/host/pci.c
+> @@ -2701,8 +2701,10 @@ static void nvme_reset_work(struct work_struct *work)
+>           * If we're called to reset a live controller first shut it down before
+>           * moving on.
+>           */
+> -       if (dev->ctrl.ctrl_config & NVME_CC_ENABLE)
+> +       if (dev->ctrl.ctrl_config & NVME_CC_ENABLE) {
+> +               flush_work(&dev->ctrl.scan_work);
+>                  nvme_dev_disable(dev, false);
+> +       }
+>          nvme_sync_queues(&dev->ctrl);
+> 
+>          mutex_lock(&dev->shutdown_lock);
+> --
