@@ -2,110 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A0C7FDA8D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:56:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC9437FDA8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:56:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234743AbjK2Oz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 09:55:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46470 "EHLO
+        id S234746AbjK2O4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 09:56:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234966AbjK2Ozv (ORCPT
+        with ESMTP id S234239AbjK2O4K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 09:55:51 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE19D5E;
-        Wed, 29 Nov 2023 06:55:57 -0800 (PST)
-Date:   Wed, 29 Nov 2023 14:55:55 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701269756;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MLbikOtVJDhPJBfsK4WcWQ/4AM6wkB1f7QXWa/N/ZQw=;
-        b=yid6oUJkHcYXRz3rztYDdSTogDbw2haTPKwU2WIusiyMeKNGDYF0k6lJaPQuHnnm81J/fl
-        JMOHgvKFQqrmp+0vBNkPdITF/HYVvGJgN6WfAHkxNNbkgpaxuF3EwpqOjRW1W/3s6w8MMQ
-        pZmw+rhjd+7yqJvGVMRryQkM0F4ViX6NEOtbagTx+MGsSu3G1rjqJAjQE5bm8H1zmQ3ByN
-        BHwIGLvHATUYeJx4kUU0QHKQv4nNFKCoWDOG50Pk64Ugzu4xJQKTdQQB+V27BPix5HIGuB
-        5RseIfxRC5ieK0Wsq8I5v8XEJSbyUoc/bphOVp8zPfwFcWipbNl6nFUHgdxCGA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701269756;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MLbikOtVJDhPJBfsK4WcWQ/4AM6wkB1f7QXWa/N/ZQw=;
-        b=pinjTksFVPwufqzimrubx9ROVEhd8rpem3qJyZB+y0Golgkvd5w1S6fVPe7S/bMB8sg1FF
-        XwQlg1OJC2CDE7Cg==
-From:   "tip-bot2 for Frederic Weisbecker" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/core] x86: Add a comment about the "magic" behind shadow
- sti before mwait
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231115151325.6262-2-frederic@kernel.org>
-References: <20231115151325.6262-2-frederic@kernel.org>
+        Wed, 29 Nov 2023 09:56:10 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D59F1D5D
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 06:56:16 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-54b18dbf148so6236142a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 06:56:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1701269775; x=1701874575; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0w8sJtJNe2IFo+5hrLPBLvXQAClmsdeJBw/l2nW104w=;
+        b=aZT8slYsbXPfZY3WPMsOz5lRFOZjmHHG7Ilgpc1fnw1/LdWAkMPG8APO5OL+1QQLI/
+         PckV1qC74bpQ88v6sxwdOcieExvAN2OvGrYhLBpa8UjN4nRIgdr9OtLsD/CDKv5hCdOd
+         qv2571loHJcsTt8Bs4RT1BFmAncKIdCzXlP1M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701269775; x=1701874575;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0w8sJtJNe2IFo+5hrLPBLvXQAClmsdeJBw/l2nW104w=;
+        b=ei+SylIaSZ+fyG9kJvsseN2A7AuQB9mjmFNPBHCecQzdytTU/67MpsqOazn9K1xhhe
+         762G5C9HPj/Re4GzPI4ZtK4HXVCLwQHxB7l0/PgHU8f73ojcG60RCPz77dyczixGHKGG
+         djOHx8SgT+596gdIhQEaeJu/KvPe9XdtHDvxPK/JEFMSHoJQHHw2De9eHVxI3C/bsZAs
+         2nTJqpLp4GqAru9tl7Kjip/3z531cD1tJNKbe+HUrscSzjzk6WwngSMZFOsWW82fKPkl
+         vQ7ebrjb4Xz6Tw+os09L4xUg4pxqImCK4I/6dxtCqK+EBNTlPQ4h8NjmOHrhw591WlGe
+         Lygg==
+X-Gm-Message-State: AOJu0YyD/WIWW3elX4/3+TN9nQkGWgIWfs53MzRi1tHrHCi4knLrPMjp
+        z94mxPjr9Zz36s/SBN+dAyZNWws7v3ps9gOBSeV1mGy9
+X-Google-Smtp-Source: AGHT+IFAWNwJw0xGu2Ph24BombpMOYFEQrhnG3po1DUO5MQo8gD7CyMOUiMdyXKVP6j2/6ZQ0vlelA==
+X-Received: by 2002:a05:6402:3455:b0:54b:179e:eb14 with SMTP id l21-20020a056402345500b0054b179eeb14mr10349822edc.27.1701269775034;
+        Wed, 29 Nov 2023 06:56:15 -0800 (PST)
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com. [209.85.208.42])
+        by smtp.gmail.com with ESMTPSA id cx15-20020a05640222af00b0054b6259b44asm3509298edb.83.2023.11.29.06.56.14
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Nov 2023 06:56:14 -0800 (PST)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-54afd43c83cso7317715a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 06:56:14 -0800 (PST)
+X-Received: by 2002:a05:6402:483:b0:54b:5b14:e77e with SMTP id
+ k3-20020a056402048300b0054b5b14e77emr7070909edv.21.1701269773930; Wed, 29 Nov
+ 2023 06:56:13 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <170126975575.398.1797223222857571697.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <CACRpkdZtVNZFWSUgb4=gUE2mQRb=aT_3=zRv1U71Vsq0Mm34eg@mail.gmail.com>
+In-Reply-To: <CACRpkdZtVNZFWSUgb4=gUE2mQRb=aT_3=zRv1U71Vsq0Mm34eg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 29 Nov 2023 06:55:57 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whk4oNQazgpzkujc2=ntVQMhU5ko7Canp2Uuq6CpyGzmA@mail.gmail.com>
+Message-ID: <CAHk-=whk4oNQazgpzkujc2=ntVQMhU5ko7Canp2Uuq6CpyGzmA@mail.gmail.com>
+Subject: Re: [GIT PULL] Pin control fixes for v6.7
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Maria Yu <quic_aiquny@quicinc.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Chester Lin <clin@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/core branch of tip:
+On Wed, 29 Nov 2023 at 04:09, Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> The most interesting patch is the list iterator fix in the core by Maria
+> Yu, it took a while for me to realize what was going on there.
 
-Commit-ID:     7d09a052a3bdb62de9a86d43359d6c22eeaf105a
-Gitweb:        https://git.kernel.org/tip/7d09a052a3bdb62de9a86d43359d6c22eeaf105a
-Author:        Frederic Weisbecker <frederic@kernel.org>
-AuthorDate:    Wed, 15 Nov 2023 10:13:22 -05:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 29 Nov 2023 15:44:01 +01:00
+That commit message still doesn't explain what the problem was.
 
-x86: Add a comment about the "magic" behind shadow sti before mwait
+Why is p->state volatile there? It seems to be a serious locking bug
+if p->state can randomly change there, and the READ_ONCE() looks like
+a "this hides the problem" rather than an actual real fix.
 
-Add a note to make sure we never miss and break the requirements behind
-it.
-
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Rafael J. Wysocki <rafael@kernel.org>
-Link: https://lkml.kernel.org/r/20231115151325.6262-2-frederic@kernel.org
----
- arch/x86/include/asm/mwait.h |  9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/arch/x86/include/asm/mwait.h b/arch/x86/include/asm/mwait.h
-index 778df05..341ee4f 100644
---- a/arch/x86/include/asm/mwait.h
-+++ b/arch/x86/include/asm/mwait.h
-@@ -87,6 +87,15 @@ static __always_inline void __mwaitx(unsigned long eax, unsigned long ebx,
- 		     :: "a" (eax), "b" (ebx), "c" (ecx));
- }
- 
-+/*
-+ * Re-enable interrupts right upon calling mwait in such a way that
-+ * no interrupt can fire _before_ the execution of mwait, ie: no
-+ * instruction must be placed between "sti" and "mwait".
-+ *
-+ * This is necessary because if an interrupt queues a timer before
-+ * executing mwait, it would otherwise go unnoticed and the next tick
-+ * would not be reprogrammed accordingly before mwait ever wakes up.
-+ */
- static __always_inline void __sti_mwait(unsigned long eax, unsigned long ecx)
- {
- 	mds_idle_clear_cpu_buffers();
+                   Linus
