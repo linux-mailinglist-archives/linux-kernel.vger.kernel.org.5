@@ -2,132 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1743C7FE1BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 22:25:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 935C17FE1BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 22:26:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230053AbjK2VZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 16:25:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52450 "EHLO
+        id S231566AbjK2VZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 16:25:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjK2VZq (ORCPT
+        with ESMTP id S229658AbjK2VZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 16:25:46 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194A0D67
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:25:52 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40b4f6006d5so1775495e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:25:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701293150; x=1701897950; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mTMzjE/bDrmBMPdnzKtm66VHkni1QoAV3st9513yBEk=;
-        b=R+j0WY281cHaGIfZMFQ7aRReaX7KkfsAIQM6EVfzUJXVWqUfZ2KZIaq9NL20PxyqVb
-         YIKRJzE6oOsp7K3FO8r/h9Of8Aj/ry7qZJ9kLXIhUnkXL/NzQjbOeeH5vPHBJxleJIiF
-         WzLQLTpIl64w6yHM+QdF6G1hRDVMDkdqdi+g0uP3YmVq6oryAmQjNgdO0IgI/DG2kKwE
-         OXK0n/AZyQGcWmfoZPGFKgSluFww4TQv9pb3F1hciqc0hIDTJr9aFbUzTHV53MjMW6E5
-         PyCXYfMmp15tfHUepLnFrEf465lqZQi97okCT/tubwb+ned5Vu7rnhaskWx0q9vvFrEH
-         rixA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701293150; x=1701897950;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mTMzjE/bDrmBMPdnzKtm66VHkni1QoAV3st9513yBEk=;
-        b=B0m778HvSKvj5Pci3MLNMhzGbBej28ytZTHck8djQ4ubmVQPu8EOj8mCCacuxZGF6Z
-         k7AoVNUp4djXUQLu8aNsTeaNM5LnqWFdJU0cMHs6TiNlcnT2LDTJJyqbHeXILNy+72nG
-         e8ab8oEl0JwtXzWa1VAL41dlY+Mm9+vO1wrmvrqkOA2/9rNykWq+VQRcXbUAMy3E3mHi
-         Edy3o1bDNlRq/VsevU9+M8XrJpA49Tq5y+go+SQJKq8zLm5IPo2FkD3hw0LYLr6pjJw1
-         SVnaZSNKANGI0WjlV8Z6vDmUlGuRcEqMfWqyRMWQ0CyDAZHKTW06XDbQKqw4LxT99jd9
-         woYA==
-X-Gm-Message-State: AOJu0Yz+VniJvulYIdg2L19Ez1GO5qS4WHmqgdh5jyxE3s45br3J3T07
-        wkXb95KmGssylQQE9A8F8q4=
-X-Google-Smtp-Source: AGHT+IE+EmxWqIy+5n9+9PMwi5GnrH95AFgkASnDZh/3Csqh+4tOrWDSiqppGP+0YILlGYONVBNNkw==
-X-Received: by 2002:a05:600c:1d1d:b0:40b:5008:9c0 with SMTP id l29-20020a05600c1d1d00b0040b500809c0mr3786010wms.9.1701293150284;
-        Wed, 29 Nov 2023 13:25:50 -0800 (PST)
-Received: from andrea ([31.189.63.178])
-        by smtp.gmail.com with ESMTPSA id f15-20020a05600c4e8f00b0040b3632e993sm3442383wmq.46.2023.11.29.13.25.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 13:25:49 -0800 (PST)
-Date:   Wed, 29 Nov 2023 22:25:44 +0100
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     paulmck@kernel.org, palmer@dabbelt.com, paul.walmsley@sifive.com,
-        aou@eecs.berkeley.edu, mmaas@google.com, hboehm@google.com,
-        striker@us.ibm.com, charlie@rivosinc.com, rehn@rivosinc.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] membarrier: riscv: Provide core serializing command
-Message-ID: <ZWesWCRAPV3rZlx9@andrea>
-References: <20231127103235.28442-1-parri.andrea@gmail.com>
- <20231127103235.28442-3-parri.andrea@gmail.com>
- <91ab0210-07f9-42c4-af7f-a98799250cf7@efficios.com>
- <ZWYDtB/otYvTMZWd@andrea>
- <0a84c0e0-2571-4c7f-82ae-a429f467a16b@efficios.com>
- <ZWeDF0eHyOc/b9UJ@andrea>
- <53aac2ac-46ae-46b8-9fdf-34527b79a63b@efficios.com>
+        Wed, 29 Nov 2023 16:25:52 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F2FD7D
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:25:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2B7FC433C9;
+        Wed, 29 Nov 2023 21:25:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701293157;
+        bh=ROdIinNcMbpv2zZ2WaGDF27TbBat2/HH4ZUHKaYavi8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mshk4Wxw0C1PuUEdL/SVD29XR2CpunRcEl044qrZlvwrelLuUEoLjXeN6ti/tyo/9
+         Ky+KTExJRiau+jLK89jsO6WBTmbXzwQgbSRj6S1CK6+QYZ0EeE73VQlaSrAt3bCo1f
+         ORXWcVaZDQYQiHKjd8iTCMrVsS5Ig4nwpLiEoQSMDTq+f1aiN19H+/Ecq/QU9pQC9q
+         zuroMJSqsObhFl5qqBNsD1tS/1aA6Rykyf+huvAqqgJLoO4eyNfK4MDrq3BqfzO7cO
+         wrY/9U9Te1p8F/MfxFpKSpqzRyQ4ND7qSWKb4t3arWQk7kNbnXOQ2guOdBMm5HSo9f
+         XvyTCYszIFwog==
+Date:   Wed, 29 Nov 2023 22:25:52 +0100
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Quan Nguyen <quan@os.amperecomputing.com>
+Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@codeconstruct.com.au>,
+        Wolfram Sang <wsa@kernel.org>,
+        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>,
+        Guenter Roeck <linux@roeck-us.net>, linux-i2c@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Cosmo Chou <chou.cosmo@gmail.com>,
+        Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>
+Subject: Re: [PATCH v2 RESEND 1/2] i2c: aspeed: Fix unhandled Tx done with NAK
+Message-ID: <20231129212552.3uy7oqm5fz5h2m6b@zenone.zhora.eu>
+References: <20231128075236.2724038-1-quan@os.amperecomputing.com>
+ <20231128075236.2724038-2-quan@os.amperecomputing.com>
+ <20231129003542.jfhhotebweb3uwyb@zenone.zhora.eu>
+ <3f37c359-1c71-421f-b7d9-054696735adc@os.amperecomputing.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <53aac2ac-46ae-46b8-9fdf-34527b79a63b@efficios.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3f37c359-1c71-421f-b7d9-054696735adc@os.amperecomputing.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > As regards the Fixes: tag, I guess it boils down to what we want or we
-> > need to take for commit "riscv: Support membarrier private cmd".  :-)
-> 
-> I'm not seeing this commit in the Linux master branch, am I missing
-> something ?
+Hi Quan,
 
-I don't think you're missing something: I was wondering "what/where is
-this commit"?  Sorry for the confusion.
-
-
-> > FWIW, a quick git-log search confirmed that MEMBARRIER has been around
-> > for quite some time in the RISC-V world (though I'm not familiar with
-> > any of its mainstream uses): commit 1464d00b27b2 says (at least) since
-> > 93917ad50972 ("RISC-V: Add support for restartable sequence").  I am
-> > currently inclined to pick the latter commit (and check it w/ Palmer),
-> > but other suggestions are welcome.
+> On 29/11/2023 07:35, Andi Shyti wrote:
+> > Hi Quan,
+> > 
+> > On Tue, Nov 28, 2023 at 02:52:35PM +0700, Quan Nguyen wrote:
+> > > Under normal conditions, after the last byte is sent by the Slave, the
+> > > TX_NAK interrupt is raised.  However, it is also observed that
+> > > sometimes the Master issues the next transaction too quickly while the
+> > > Slave IRQ handler is not yet invoked and the TX_NAK interrupt for the
+> > > last byte of the previous READ_PROCESSED state has not been ack’ed.
+> > > This TX_NAK interrupt is then raised together with SLAVE_MATCH interrupt
+> > > and RX_DONE interrupt of the next coming transaction from Master. The
+> > > Slave IRQ handler currently handles the SLAVE_MATCH and RX_DONE, but
+> > > ignores the TX_NAK, causing complaints such as
+> > > "aspeed-i2c-bus 1e78a040.i2c-bus: irq handled != irq. Expected
+> > > 0x00000086, but was 0x00000084"
+> > > 
+> > > This commit adds code to handle this case by emitting a SLAVE_STOP event
+> > > for the TX_NAK before processing the RX_DONE for the coming transaction
+> > > from the Master.
+> > > 
+> > > Fixes: f9eb91350bb2 ("i2c: aspeed: added slave support for Aspeed I2C driver")
+> > > Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
+> > > ---
+> > > v2:
+> > >    + Split to separate series [Joel]
+> > >    + Added the Fixes line [Joel]
+> > >    + Revised commit message [Quan]
+> > > 
+> > > v1:
+> > >    + First introduced in
+> > > https://lore.kernel.org/all/20210519074934.20712-1-quan@os.amperecomputing.com/
+> > > ---
+> > >   drivers/i2c/busses/i2c-aspeed.c | 5 +++++
+> > >   1 file changed, 5 insertions(+)
+> > > 
+> > > diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
+> > > index 28e2a5fc4528..79476b46285b 100644
+> > > --- a/drivers/i2c/busses/i2c-aspeed.c
+> > > +++ b/drivers/i2c/busses/i2c-aspeed.c
+> > > @@ -253,6 +253,11 @@ static u32 aspeed_i2c_slave_irq(struct aspeed_i2c_bus *bus, u32 irq_status)
+> > >   	/* Slave was requested, restart state machine. */
+> > >   	if (irq_status & ASPEED_I2CD_INTR_SLAVE_MATCH) {
+> > > +		if (irq_status & ASPEED_I2CD_INTR_TX_NAK &&
+> > > +		    bus->slave_state == ASPEED_I2C_SLAVE_READ_PROCESSED) {
+> > > +			irq_handled |= ASPEED_I2CD_INTR_TX_NAK;
+> > > +			i2c_slave_event(slave, I2C_SLAVE_STOP, &value);
+> > > +		}
+> > 
+> > this is a duplicate of a later "if (...)" satement. What is the
+> > need for having them both?
+> > 
+> Thanks Andi for the review.
 > 
-> Supporting membarrier private expedited is not optional since Linux 4.14:
+> I assumed the if statement you mentioned is here in [1]. If so, then that is
+> not duplicate.
 > 
-> see kernel/sched/core.c:
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/i2c/busses/i2c-aspeed.c?h=v6.7-rc3#n287
 > 
->                 membarrier_switch_mm(rq, prev->active_mm, next->mm);
->                 /*
->                  * sys_membarrier() requires an smp_mb() between setting
->                  * rq->curr / membarrier_switch_mm() and returning to userspace.
->                  *
->                  * The below provides this either through switch_mm(), or in
->                  * case 'prev->active_mm == next->mm' through
->                  * finish_task_switch()'s mmdrop().
->                  */
->                 switch_mm_irqs_off(prev->active_mm, next->mm, next);
 > 
-> Failure to provide the required barrier is a bug in the architecture's
-> switch_mm implementation when CONFIG_MEMBARRIER=y.
+> The if statement is to process the case when Slave sending data to Master
+> but being NAK, the I2C_SLAVE_STOP event will emit later in switch-case
+> statement. But it is only for the case INTR_TX_NAK without INTR_SLAVE_MATCH.
 > 
-> We should probably introduce a new
-> Documentation/features/sched/membarrier/arch-support.txt
-> to clarify this requirement.
+> The new code is for the case of INTR_TX_NAK with INTR_SLAVE_MATCH. What it
+> does is to detect if there is a mix of INTR_TX_NAK of previous i2c
+> transaction and the start of new i2c transaction, indicate by
+> INTR_SLAVE_MATCH which is only raised when Slave found its address matched
+> on the first byte it received. If so, the new code will try to emit the
+> I2C_SLAVE_STOP first to complete the previous transaction and process the
+> rest as a new request.
 > 
-> Userspace code such as liburcu [1] heavily relies on membarrier private
-> expedited (when available) to speed up RCU read-side critical sections.
-> Various DNS servers, including BIND 9, use liburcu.
+> So if this was the case (with INTR_SLAVE_MATCH), the INTR_RX_DONE should
+> always raise with INTR_SLAVE_MATCH because Slave did receive the data which
+> matched with its Slave address. And this will be translated into either
+> I2C_SLAVE_[READ|WRITE]_REQUESTED and that make the if statement you
+> mentioned [1] evaluate to false and skip.
+> 
+> So, in short, the new code is trying to handle the case of INTR_TX_NAK with
+> INTR_SLAVE_MATCH first before let the rest process as normal.
 
-Thanks for the information.
+yes, I saw that, but wasn't it easier to do something like this:
 
-So I should probably stick to 93917ad50972, which apparently selected
-CONFIG_MEMBARRIER on RISC-V, for the Fixes: tag in question.
+	if (irq_status & ASPEED_I2CD_INTR_TX_NAK &&
+	    bus->slave_state == ASPEED_I2C_SLAVE_READ_PROCESSED) {
+		irq_handled |= ASPEED_I2CD_INTR_TX_NAK;
+		bus->slave_state = ASPEED_I2C_SLAVE_STOP;
 
-I'll look into adding the membarrier feature you mention (as a final/
-follow-up patch), unless you or someone else want to take care of it.
+		if (irq_status & ASPEED_I2CD_INTR_SLAVE_MATCH)
+			i2c_slave_event(slave, I2C_SLAVE_STOP, &value);
 
-  Andrea
+	}
+
+But I see that Andrew has done some similar comment, also for
+patch 2. You can answer both in the same mail, not to duplicate
+the answer :-)
+
+We can wait for him to reply.
+
+Andi
