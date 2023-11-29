@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A62197FE007
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 20:00:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2DA7FE008
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 20:01:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233877AbjK2TAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 14:00:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41774 "EHLO
+        id S232997AbjK2TAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 14:00:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234061AbjK2TAL (ORCPT
+        with ESMTP id S234115AbjK2TAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 14:00:11 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39D7A1704
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 10:59:53 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-54a94e68fb1so2432543a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 10:59:53 -0800 (PST)
+        Wed, 29 Nov 2023 14:00:13 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E751BF0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 10:59:54 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-548ce39b101so167801a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 10:59:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701284391; x=1701889191; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701284393; x=1701889193; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=BktGLjoUT+jQ2CjJ/2G7lqXMu8u/231fO4pfm8kXOFs=;
-        b=T4T8COiWVK7oLrZ/wGWlf8ddzINpOj2gRnX/jP3iDHZlCjzCMfPWZQP5M8koGLUnoU
-         hjdcmL2tXoO+iWt9XKee/xn/2eAGFjO4Yh7ArYww/5PaHi4aUlSi1CfRYSbqkzKgLT/a
-         jgqjMVR9xu6ESdp3+Jzg6qwc3/nbuPrcFKy12rX/5pyBnR0rCA6TUnUL5CaH7+ZmN8JE
-         QSq9BBJIZ7q4LgcvE0i9gMp0PtPq5F0ZhSHCH3YbEFooeuBa9baU5LkFzswaawwTUMLc
-         3YBfZo76W7VBQZFO88LYJY05qI9fsv5X+zib68ppL5E8dw5bG/Lwe/exT1g7JDKKKdJc
-         iQmQ==
+        bh=J4ii9nB0ErmXn2KODC7R6V48jENPZfDAwImjQKSTU3A=;
+        b=V9+pQ2NMkuxQYdVvTWgPhsW4LUUotYYFqs7FwvklFPAR4MPbwrAY3uTTMHGDhFNFHH
+         fktV3lgN2FQhzco3a4LZWqgoZ3K7TOwn+TRDuD9cNXPbulYGKufaFpURKPA3kVDc9omB
+         Czdfe/5Q6IwKXboNg4hW2TSz8v5oJnNtruq/kxFan/olXyhNE/qTeHG74abDEf3vsVPU
+         wT6YX2sAe6gVVCbP5ARMci2EaZCcelc7Cd9MTd+7cXJuJYh8wXZ74hBD66akjC4cGMne
+         r8Dab2qo9gJAKQ+A7RtJmzLljA/pUzrSjdDua8tH3DdN6fBrlI3KBsHk03LJIf820PX+
+         nVuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701284391; x=1701889191;
+        d=1e100.net; s=20230601; t=1701284393; x=1701889193;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BktGLjoUT+jQ2CjJ/2G7lqXMu8u/231fO4pfm8kXOFs=;
-        b=cd0SGGRs3WfevhMXGQhDNPNyxJunv1cUfPug3JUjoOPTdmBm0jfkSMbwuWvUrt5JSy
-         F8ED+RETjxytYzQWdNzhKTuhS67UgGxeK8i1kTzKatOkmNQAHgJyFocuN3tEhrKTThOs
-         1hOYIrYWyRejFzxDKOrcxAfE2vGrTifAMjXy30CbhzAAoy3AvQGQTJq+0fpp0T1kxnD3
-         v0/WNs6fJTHcMt4CyoFViRl2Q5qkAsZQ844zlhRabYBLVxZpo/6kVkj+lAcgoHvcSwL8
-         qXvYNrKuTOSRCA0a1T5EagapCNHKStk04EVkAbbGL0LCSkvoDrCn+fFb7/bVbN6JpLHF
-         hDmg==
-X-Gm-Message-State: AOJu0YyYO1SjaGFB740NMCbGLxAf2KvkfWKmJSMLlslQlNxN2yQuE12D
-        Ymm5oyTsnTbV85KUik7uNmmspg==
-X-Google-Smtp-Source: AGHT+IE4r0HSgszDAQ4bpN2R1WCQzA3fr+igrHgM9qdfErHjEMPn9P2EJTofVtTmHgo/hR5F825hEQ==
-X-Received: by 2002:a17:906:2a4f:b0:9ef:e6fd:fdbf with SMTP id k15-20020a1709062a4f00b009efe6fdfdbfmr15963293eje.20.1701284391193;
-        Wed, 29 Nov 2023 10:59:51 -0800 (PST)
+        bh=J4ii9nB0ErmXn2KODC7R6V48jENPZfDAwImjQKSTU3A=;
+        b=JXBQjNsO7DmURuqXInnJgQ9orNAa/KnTXF/PNgvVjO1FhYo1NcgM2QicVENmMkNDv0
+         lwYNIC7sY25vb5B++z9vaaUu1YeqBomRA3fZ2dSFWKGTU9YTJMInIFHZE5WKul84bYYI
+         +1HFu+F6VtYxDq/Ad45BPyIJTPwTh8WKQuFkeYaHugtoixiwffF5mnDejL7iM9lKHMa8
+         8uZh1vD9sW5Oj2G+9OYGEcI5TrW5o9/ru8jNH9I4mfwOZyBDK5JLXT1wXEqSlfOe5b/k
+         J9Mp4R8B/PhgaHVs/EOgNv/IT9FogPpyNL/B5cR0mRY9kJx+EvDCduXhMw2VLMnM/czr
+         iUxg==
+X-Gm-Message-State: AOJu0Yz+EHOGdvArRPzX+xSFiw9Er2497ebsnOH97Ub7ELrf/dPhpPSe
+        Z2auBBbIT7CoP6WHAp1xfn1YuA==
+X-Google-Smtp-Source: AGHT+IFLeQnvRIS+r/1dK/xhN6DpgvYxGQeVp1B8bbLaDgTIFJsEC+Ip5tJcKd5AgN5Qtig5plLMJg==
+X-Received: by 2002:a17:906:2c4d:b0:9bf:b022:dc7 with SMTP id f13-20020a1709062c4d00b009bfb0220dc7mr14250083ejh.48.1701284392924;
+        Wed, 29 Nov 2023 10:59:52 -0800 (PST)
 Received: from [10.167.154.1] (178235187166.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.166])
-        by smtp.gmail.com with ESMTPSA id o11-20020a1709061d4b00b009faca59cf38sm8160232ejh.182.2023.11.29.10.59.50
+        by smtp.gmail.com with ESMTPSA id o11-20020a1709061d4b00b009faca59cf38sm8160232ejh.182.2023.11.29.10.59.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 10:59:50 -0800 (PST)
+        Wed, 29 Nov 2023 10:59:52 -0800 (PST)
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Wed, 29 Nov 2023 19:59:33 +0100
-Subject: [PATCH v2 14/15] arm64: dts: qcom: sm6115: Add VDD_CX to GCC
+Date:   Wed, 29 Nov 2023 19:59:34 +0100
+Subject: [PATCH v2 15/15] arm64: dts: qcom: sm6115: Add VDD_CX to GPU_CC
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230717-topic-branch_aon_cleanup-v2-14-2a583460ef26@linaro.org>
+Message-Id: <20230717-topic-branch_aon_cleanup-v2-15-2a583460ef26@linaro.org>
 References: <20230717-topic-branch_aon_cleanup-v2-0-2a583460ef26@linaro.org>
 In-Reply-To: <20230717-topic-branch_aon_cleanup-v2-0-2a583460ef26@linaro.org>
 To:     Bjorn Andersson <andersson@kernel.org>,
@@ -71,15 +71,15 @@ Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         Konrad Dybcio <konrad.dybcio@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1701284367; l=758;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1701284367; l=911;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=yowVSKW8+Oglx4OMpqJQ+Rw3KKYznjolCl6js+fkR+s=;
- b=vWt4jqPTrA91YGDo5lpBs7EDmMGIlJupgtH/hpPeRbIfWERwhvYAfiR5PZT8a0Kw1FQ5Uvv6i
- bfGEd2Mdp9ND7alhI8nMAbxAHBiBwYo7ooN3SM+bIdFPIZehHQD70XA
+ bh=BH4GhoJ2luOm/yEgTY6YbdfpMwm4FAVH7lxzWBafJRY=;
+ b=sxfubn9p6AvpZf1s4Og8CFO93otX1/zFCaT7/7QoHV3HKzBvwUxgYUgII5dqxN+mU9aR0EvsC
+ RA2sksOWtpeD7PeaE0vw1Pc1Mj8WdkkJjIzsW55tBorUngx3f3RC7vp
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -88,22 +88,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The GCC block is mainly powered by VDD_CX. Describe that.
+The GPU_CC block is powered by VDD_CX. Link the power domain and
+provide a reasonable minimum vote (lowest available on the platform)
+to ensure the registers within are accessible.
 
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- arch/arm64/boot/dts/qcom/sm6115.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/qcom/sm6115.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/qcom/sm6115.dtsi b/arch/arm64/boot/dts/qcom/sm6115.dtsi
-index 839c60351240..29b5b388cd94 100644
+index 29b5b388cd94..bfaaa1801a4d 100644
 --- a/arch/arm64/boot/dts/qcom/sm6115.dtsi
 +++ b/arch/arm64/boot/dts/qcom/sm6115.dtsi
-@@ -784,6 +784,7 @@ gcc: clock-controller@1400000 {
- 			reg = <0x0 0x01400000 0x0 0x1f0000>;
- 			clocks = <&rpmcc RPM_SMD_XO_CLK_SRC>, <&sleep_clk>;
- 			clock-names = "bi_tcxo", "sleep_clk";
+@@ -1430,6 +1430,8 @@ gpucc: clock-controller@5990000 {
+ 			clocks = <&rpmcc RPM_SMD_XO_CLK_SRC>,
+ 				 <&gcc GCC_GPU_GPLL0_CLK_SRC>,
+ 				 <&gcc GCC_GPU_GPLL0_DIV_CLK_SRC>;
 +			power-domains = <&rpmpd SM6115_VDDCX>;
++			required-opps = <&rpmpd_opp_low_svs>;
  			#clock-cells = <1>;
  			#reset-cells = <1>;
  			#power-domain-cells = <1>;
