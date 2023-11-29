@@ -2,172 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6617FE13E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:42:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C92AD7FE13F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:42:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234032AbjK2UmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 15:42:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55620 "EHLO
+        id S234100AbjK2Uma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 15:42:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231549AbjK2UmK (ORCPT
+        with ESMTP id S234061AbjK2Um2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 15:42:10 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D20CAD67
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:42:16 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c50fbc218bso2893241fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:42:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701290535; x=1701895335; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SjyD2uy7rhiIwUguKMOS6O61vfhptuzTgpHO35Q0vkM=;
-        b=eGs95RLOGruwTbMSTqo73RrVdIvHASzU+mtaPm12UPVwwBpCy4NnDgxxgB8Ld6YnsE
-         iIvVLvBnyLGc3R9MoKjPxe9bbVDNScQm2pio82wb/OOXWJxBFfstAiFAkt1hakxfg/pY
-         1BK1A9ycFaMtDNqyhDxXY1rV5kZp/+JSz64J8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701290535; x=1701895335;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SjyD2uy7rhiIwUguKMOS6O61vfhptuzTgpHO35Q0vkM=;
-        b=nYBZPxM+uMRGsyqxikVGjz7DKxwcxSpHsnWCBrZtNdyROc40J2BecqaKItaR6F3UUP
-         IaxmAYbXN8NEaSH1x3kGbsYW4Q5GUYyTFzc1fdQi+K0s0LaE8NTTOExuRy+fr0o6kwfh
-         DKHNdXNiWObI4nUsZTtfy4Yt8m7LUMP8oplzE+a88YtRp1YVJiBasLeZZCw6nH0Msf8s
-         rmtMvIVpUDo51C2tps3yYq6uytonvxwNlxHcQKvYz5fuOUqqgG2XmdA5MUbyHh/9fdop
-         8xhVlnQ6qLAbwYJHExESSM4hFx36m9F/wtguGZn5O7a7Mpi2/GXHS8Gul37EwCrVgxER
-         mjsA==
-X-Gm-Message-State: AOJu0YwRPV4fm6MiUHQEQRxhqhfW5CHjQcqmsbQFhWpgKkwKzb+D17bM
-        +rkw4peOqA10Q2q1Yf2rZMwEb1SpMuMYnVzdI0D8UQ==
-X-Google-Smtp-Source: AGHT+IGLtBi/LhsApUdsOPv/Q/7AseQ1qifIjVFc58wVFu+pFHvSnzJz7JInqQ9Npx4mSLCP14BLJFdwCOSfEaqh9eA=
-X-Received: by 2002:a2e:9d8e:0:b0:2c9:c22e:31eb with SMTP id
- c14-20020a2e9d8e000000b002c9c22e31ebmr1958958ljj.22.1701290534275; Wed, 29
- Nov 2023 12:42:14 -0800 (PST)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 29 Nov 2023 12:42:13 -0800
+        Wed, 29 Nov 2023 15:42:28 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F114810D3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:42:34 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 368CDC433C7;
+        Wed, 29 Nov 2023 20:42:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701290554;
+        bh=SVwxP2iECxaAaRjYUKPB82HlCDKzRNHkS7oX5cfLIpY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pPSumhXDPf7c9ZaH+q/FapiH1qxgvEOa0nbUmSonZSmjynUdRasBZwEqPlUu7kFMF
+         iLyu2IR0PQsJ6o783VcalcOg+SRkyDziKkYHtTjyXoxlV/znSUzeoKfsf+L1JEokI5
+         ivZq+YFCXv3Cx2tlcHkm6510QGQWz6gftbrz3BhKvDFuZhFnFFXRJBA8K/srsTkHbA
+         bUjD0+eyjZECITggCAWXwnGfjziVMy8WELteQz01tsJOM0N73sD0njCv3o8r9U67sC
+         awYW8Mkgt4/1h2M/DUB7U443SN5jhAy7pn3gT/wyiSUt+skAAHxBPBlkqx6llDG7fx
+         h02R34ql7pGEQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 02DD240094; Wed, 29 Nov 2023 17:42:30 -0300 (-03)
+Date:   Wed, 29 Nov 2023 17:42:30 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Clark Williams <williams@redhat.com>,
+        Kate Carcia <kcarcia@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mike Galbraith <efault@gmx.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 2/2] perf tests sigtrap: Skip if running on a kernel with
+ sleepable spinlocks
+Message-ID: <ZWeiNj7B+5dJosE9@kernel.org>
+References: <20231129154718.326330-1-acme@kernel.org>
+ <20231129154718.326330-3-acme@kernel.org>
+ <CANpmjNMftTuqPwmujNx5e+ajgdYtik9uL6dt62Ucotc7oz-uUw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <202311291219.A6E3E58@keescook>
-References: <20231127234946.2514120-1-swboyd@chromium.org> <202311291219.A6E3E58@keescook>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.10
-Date:   Wed, 29 Nov 2023 12:42:13 -0800
-Message-ID: <CAE-0n53x8AXUPaq5_TaqF6PN5u5J6g5RYoNWALN-MnEJBa5syA@mail.gmail.com>
-Subject: Re: [PATCH] lkdtm: Add kfence read after free crash type
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNMftTuqPwmujNx5e+ajgdYtik9uL6dt62Ucotc7oz-uUw@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding kfence folks (will add on v2).
-
-Quoting Kees Cook (2023-11-29 12:22:27)
-> On Mon, Nov 27, 2023 at 03:49:45PM -0800, Stephen Boyd wrote:
-> > Add the ability to allocate memory from kfence and trigger a read after
-> > free on that memory to validate that kfence is working properly. This is
-> > used by ChromeOS integration tests to validate that kfence errors can be
-> > collected on user devices and parsed properly.
->
-> This looks really good; thanks for adding this!
->
+Em Wed, Nov 29, 2023 at 04:57:47PM +0100, Marco Elver escreveu:
+> On Wed, 29 Nov 2023 at 16:47, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
 > >
-> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> > From: Arnaldo Carvalho de Melo <acme@redhat.com>
+> >
+> > There are issues as reported that need some more investigation on the
+> > RT kernel front, till that is addressed, skip this test.
+> >
+> > This test is already skipped for multiple hardware architectures where
+> > the tested kernel feature is not supported.
+> >
+> > Cc: Adrian Hunter <adrian.hunter@intel.com>
+> > Cc: Clark Williams <williams@redhat.com>
+> > Cc: Ian Rogers <irogers@google.com>
+> > Cc: Jiri Olsa <jolsa@kernel.org>
+> > Cc: Juri Lelli <juri.lelli@redhat.com>
+> > Cc: Marco Elver <elver@google.com>
+> > Cc: Mike Galbraith <efault@gmx.de>
+> > Cc: Namhyung Kim <namhyung@kernel.org>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Link: https://lore.kernel.org/all/e368f2c848d77fbc8d259f44e2055fe469c219cf.camel@gmx.de/
+> > Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> 
+> Acked-by: Marco Elver <elver@google.com>
+> 
 > > ---
-> >  drivers/misc/lkdtm/heap.c | 64 +++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 64 insertions(+)
+> >  tools/perf/tests/sigtrap.c | 46 ++++++++++++++++++++++++++++++++++++--
+> >  1 file changed, 44 insertions(+), 2 deletions(-)
 > >
-> > diff --git a/drivers/misc/lkdtm/heap.c b/drivers/misc/lkdtm/heap.c
-> > index 0ce4cbf6abda..608872bcc7e0 100644
-> > --- a/drivers/misc/lkdtm/heap.c
-> > +++ b/drivers/misc/lkdtm/heap.c
-> > @@ -4,6 +4,7 @@
-> >   * page allocation and slab allocations.
-> >   */
-> >  #include "lkdtm.h"
-> > +#include <linux/kfence.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/vmalloc.h>
-> >  #include <linux/sched.h>
-> > @@ -132,6 +133,66 @@ static void lkdtm_READ_AFTER_FREE(void)
-> >       kfree(val);
+> > diff --git a/tools/perf/tests/sigtrap.c b/tools/perf/tests/sigtrap.c
+> > index a1bc7c776254ed2f..e6fd934b027a3d0c 100644
+> > --- a/tools/perf/tests/sigtrap.c
+> > +++ b/tools/perf/tests/sigtrap.c
+> > @@ -103,6 +103,34 @@ static bool attr_has_sigtrap(void)
+> >
+> >         return __btf_type__find_member_by_name(id, "sigtrap") != NULL;
+> >  }
+> > +
+> > +static bool kernel_with_sleepable_spinlocks(void)
+> > +{
+> > +       const struct btf_member *member;
+> > +       const struct btf_type *type;
+> > +       const char *type_name;
+> > +       int id;
+> > +
+> > +       if (!btf__available())
+> > +               return false;
+> > +
+> > +       id = btf__find_by_name_kind(btf, "spinlock", BTF_KIND_STRUCT);
+> > +       if (id < 0)
+> > +               return false;
+> > +
+> > +       // Only RT has a "lock" member for "struct spinlock"
+> > +       member = __btf_type__find_member_by_name(id, "lock");
+> > +       if (member == NULL)
+> > +               return false;
+> > +
+> > +       // But check its type as well
+> > +       type = btf__type_by_id(btf, member->type);
+> > +       if (!type || !btf_is_struct(type))
+> > +               return false;
+> > +
+> > +       type_name = btf__name_by_offset(btf, type->name_off);
+> > +       return type_name && !strcmp(type_name, "rt_mutex_base");
+> > +}
+> >  #else  /* !HAVE_BPF_SKEL */
+> >  static bool attr_has_sigtrap(void)
+> >  {
+> > @@ -125,6 +153,11 @@ static bool attr_has_sigtrap(void)
+> >         return ret;
 > >  }
 > >
-> > +#if IS_ENABLED(CONFIG_KFENCE)
->
-> I really try hard to avoid having tests disappear depending on configs,
-> and instead report the expected failure case (as you have). Can this be
-> built without the IS_ENABLED() tests?
->
+> > +static bool kernel_with_sleepable_spinlocks(void)
+> > +{
+> > +       return false;
+> > +}
+> > +
+> >  static void btf__exit(void)
+> >  {
+> >  }
+> > @@ -166,7 +199,7 @@ static int run_test_threads(pthread_t *threads, pthread_barrier_t *barrier)
+> >
+> >  static int run_stress_test(int fd, pthread_t *threads, pthread_barrier_t *barrier)
+> >  {
+> > -       int ret;
+> > +       int ret, expected_sigtraps;
+> >
+> >         ctx.iterate_on = 3000;
+> >
+> > @@ -175,7 +208,16 @@ static int run_stress_test(int fd, pthread_t *threads, pthread_barrier_t *barrie
+> >         ret = run_test_threads(threads, barrier);
+> >         TEST_ASSERT_EQUAL("disable failed", ioctl(fd, PERF_EVENT_IOC_DISABLE, 0), 0);
+> >
+> > -       TEST_ASSERT_EQUAL("unexpected sigtraps", ctx.signal_count, NUM_THREADS * ctx.iterate_on);
+> > +       expected_sigtraps = NUM_THREADS * ctx.iterate_on;
+> > +
+> > +       if (ctx.signal_count < expected_sigtraps && kernel_with_sleepable_spinlocks()) {
+> > +               pr_debug("Expected %d sigtraps, got %d, running on a kernel with sleepable spinlocks.\n",
+> > +                        expected_sigtraps, ctx.signal_count);
+> > +               pr_debug("See https://lore.kernel.org/all/e368f2c848d77fbc8d259f44e2055fe469c219cf.camel@gmx.de/\n");
+> 
+> No changes from the RT side since? A fix exists, but apparently not
+> good enough... Sigh.
 
-We need IS_ENABLED() for the kfence_sample_interval variable. I suppose
-if the config isn't set that variable can be assumed as zero and then
-the timeout would hit immediately. We can either define the name
-'kfence_sample_interval' as 0 in the header, or put an ifdef in the
-function.
+Yeah, my impression, and first attempt at writing that patch wast that
+no sigtraps were being sent, but then when I tried with a random, more
+recent machine in the Red Hat labs, I got some signals, way less than
+the expected ones, but some, maybe this is an interesting data point?
 
----8<---
-diff --git a/drivers/misc/lkdtm/heap.c b/drivers/misc/lkdtm/heap.c
-index 4f467d3972a6..574d0aa726dc 100644
---- a/drivers/misc/lkdtm/heap.c
-+++ b/drivers/misc/lkdtm/heap.c
-@@ -138,6 +138,14 @@ static void lkdtm_KFENCE_READ_AFTER_FREE(void)
- 	int *base, val, saw;
- 	unsigned long timeout, resched_after;
- 	size_t len = 1024;
-+	unsigned long interval;
-+
-+#ifdef CONFIG_KFENCE
-+	interval = kfence_sample_interval;
-+#else
-+	interval = 0;
-+#endif
-+
- 	/*
- 	 * The slub allocator will use the either the first word or
- 	 * the middle of the allocation to store the free pointer,
-@@ -150,13 +158,13 @@ static void lkdtm_KFENCE_READ_AFTER_FREE(void)
- 	 * 100x the sample interval should be more than enough to ensure we get
- 	 * a KFENCE allocation eventually.
- 	 */
--	timeout = jiffies + msecs_to_jiffies(100 * kfence_sample_interval);
-+	timeout = jiffies + msecs_to_jiffies(100 * interval);
- 	/*
- 	 * Especially for non-preemption kernels, ensure the allocation-gate
- 	 * timer can catch up: after @resched_after, every failed allocation
- 	 * attempt yields, to ensure the allocation-gate timer is scheduled.
- 	 */
--	resched_after = jiffies + msecs_to_jiffies(kfence_sample_interval);
-+	resched_after = jiffies + msecs_to_jiffies(interval);
- 	do {
- 		base = kmalloc(len, GFP_KERNEL);
- 		if (!base) {
+I'll try again to reproduce in the local machine, old i7 lenovo notebook
+and at the newer machine, a Xeon(R) Silver 4216, 32 cpu and report here.
 
----8<----
-diff --git a/include/linux/kfence.h b/include/linux/kfence.h
-index 401af4757514..88100cc9caba 100644
---- a/include/linux/kfence.h
-+++ b/include/linux/kfence.h
-@@ -223,6 +223,8 @@ bool __kfence_obj_info(struct kmem_obj_info *kpp,
-void *object, struct slab *sla
-
- #else /* CONFIG_KFENCE */
-
-+#define kfence_sample_interval	(0)
-+
- static inline bool is_kfence_address(const void *addr) { return false; }
- static inline void kfence_alloc_pool_and_metadata(void) { }
- static inline void kfence_init(void) { }
+- Arnaldo
