@@ -2,139 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7427C7FDCD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:20:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC10C7FDCD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:21:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbjK2QUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 11:20:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36468 "EHLO
+        id S230299AbjK2QUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 11:20:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233664AbjK2QTu (ORCPT
+        with ESMTP id S229542AbjK2QUt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 11:19:50 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6DB31996;
-        Wed, 29 Nov 2023 08:18:42 -0800 (PST)
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ATG3SlX002432;
-        Wed, 29 Nov 2023 16:18:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=7Al7YW5EcJe38iOapGOTryhpkSoVdc5WNB+0kfMZscs=;
- b=D39fFs1jfE9PV+ZUVYROUdIZNqpcTFHOCkdcthGOaQOgwvPQ8FkyzN4UwwPTIcSv3ktB
- WdR0ck/mo+954QbNd9Z23tOZ+AWk3zSGQBLjXrX47ssgMlI4TkcoDOkAH/dh1o8qzW5B
- E1FLhiu/Or8d6aBoA9BtsoPsEXDppLwqF7Vjs1QTTafkxP8ZAYasMJ6qYRUa5bLJhHE5
- n7w9cP3bM4ZIlhR1qZx7bQqUkx21P4/knMZO8pvd9LOM3BaXd2njEV8T1hasQtLJ+5YN
- r0GfCNV/7i1Xm7bN5GGkEmIZrZxdLznCMl8cuao4hUdkRV2mqyASar+9N1MuK+04VCeY AQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3up8g28sqq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Nov 2023 16:18:32 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ATGHCkB032409;
-        Wed, 29 Nov 2023 16:18:31 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3up8g28spd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Nov 2023 16:18:31 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ATE7cAJ025719;
-        Wed, 29 Nov 2023 16:18:30 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ukwfk7xxw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Nov 2023 16:18:30 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ATGIRbt47907102
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Nov 2023 16:18:27 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3BB6720043;
-        Wed, 29 Nov 2023 16:18:27 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F2F9620040;
-        Wed, 29 Nov 2023 16:18:26 +0000 (GMT)
-Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.155.204.135])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Wed, 29 Nov 2023 16:18:26 +0000 (GMT)
-Date:   Wed, 29 Nov 2023 17:18:25 +0100
-From:   Alexander Gordeev <agordeev@linux.ibm.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        linux-mm <linux-mm@kvack.org>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 0/5] implement "memmap on memory" feature on s390
-Message-ID: <ZWdkUURRCu6s11Rf@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-References: <20231128155227.1315063-1-sumanthk@linux.ibm.com>
- <20231128155634.9c325682d2cf87d0a6d48728@linux-foundation.org>
+        Wed, 29 Nov 2023 11:20:49 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E98E6D5E
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:20:54 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40b54261534so5933665e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:20:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701274853; x=1701879653; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QQ2BW9Ne27jP4rV4wTRrZBadP+T5Osn/uqKd59KU9Sc=;
+        b=QBO+J3LKNFtchlIs7AYGgYZ6fOpu2tyEJAiP8tYWUl5mJXgEfaTA8c+fRKXSl4yRVR
+         PP5gH2wuUvx6gZSUcHzT0Ppyu6AJ0LbkLETv0l4DGMiF2rOYBJSsnqhUZ7rD5Ft8uhc0
+         JOvGES4Wcmjj+ghFvcfDzGId6XTZCY4Xs4LE0mXqNZon8wOz7O2iujRtsn7Sn0ocnK2u
+         qXJvge4mstD8L+2ywqNyvJ2VRqv3agzlfWfWTtxtxYzRuPmFYDE5gtz7GOQ7amqeUfW0
+         rtrFxq38KnIThG/NZrHTr5kEqbkRBRh/gpYpUPF47Hxdj+eG+ApRNYvxDdBDpDIgpqcD
+         VdZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701274853; x=1701879653;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=QQ2BW9Ne27jP4rV4wTRrZBadP+T5Osn/uqKd59KU9Sc=;
+        b=NKSKHwb3hXrZFYL8/MkVKhVxzw1naZkBfScv8q5NZxdqh+B8XoT+uzaYSQcep22JBe
+         7I6jkVY9QvTKLhKXdN1IzmIQv5WQKqRB3by5DDfDBIuGSRGfQFIMBRDXD+VZhbVSRnLc
+         1Q7dwUjUEtOJ6RQslgNktO2PdRtoMJytAkFgXiuoj+/mz4Zni2xzQrkzzKlg1+2um80n
+         73UTAHM2qj35Wy55KnKLVZIogHERwurIgeCGeOtyhF0H/btoIPn2O7TC4mSE/4i6gBEM
+         7LwEexpKt3cVMWr4Ar5cEgvCPfAOpwBK67uw0xFYTWE+HcLNhQT0/ovJKK/eAEqG2O/B
+         WjrA==
+X-Gm-Message-State: AOJu0YyPrnSf0E42+Y8ddd+GjZiOl/Crdovhl8oEAk0MbmTgNZIk1Ey1
+        TyqUmruY1TY1dOTj+7c0iu7ZcQ==
+X-Google-Smtp-Source: AGHT+IGFWp1TdKCXBzP96cPKz+0h9MtjB6+Fi3czSnC4Bm7cqbOWb/xMeV9euB3WYMxArtUa9wZbIg==
+X-Received: by 2002:a05:600c:450b:b0:402:ee71:29 with SMTP id t11-20020a05600c450b00b00402ee710029mr13260348wmo.10.1701274853233;
+        Wed, 29 Nov 2023 08:20:53 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:31d3:eea3:8f97:6a2c? ([2a01:e0a:982:cbb0:31d3:eea3:8f97:6a2c])
+        by smtp.gmail.com with ESMTPSA id d21-20020adf9b95000000b003316ad360c1sm18579106wrc.24.2023.11.29.08.20.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Nov 2023 08:20:52 -0800 (PST)
+Message-ID: <8e78be99-3d4d-4f79-9791-404e60bcb67c@linaro.org>
+Date:   Wed, 29 Nov 2023 17:20:51 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231128155634.9c325682d2cf87d0a6d48728@linux-foundation.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: qTrVLAn3wiWvCXazFliWEEALVKCXkl3I
-X-Proofpoint-GUID: WN159P1Dg67ethR_7bWb_C68SBNQbkzl
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-29_14,2023-11-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
- suspectscore=0 bulkscore=0 adultscore=0 priorityscore=1501 phishscore=0
- spamscore=0 mlxscore=0 lowpriorityscore=0 mlxlogscore=480 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311290124
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v3 2/4] dt-bindings: pwm: amlogic: add new compatible for
+ meson8 pwm type
+Content-Language: en-US, fr
+To:     Jerome Brunet <jbrunet@baylibre.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Kevin Hilman <khilman@baylibre.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-pwm@vger.kernel.org, JunYi Zhao <junyi.zhao@amlogic.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+References: <20231129134004.3642121-1-jbrunet@baylibre.com>
+ <20231129134004.3642121-3-jbrunet@baylibre.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20231129134004.3642121-3-jbrunet@baylibre.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 03:56:34PM -0800, Andrew Morton wrote:
+Hi,
 
-Hi Andrew,
-
-> The cover letter doesn't acutally have a description of what "memmap on
-> memory" *is*.  A nice overview to help readers understand what they're
-> about to look at.  A description of what value this feature brings to
-> our users.  Use-cases.  That sort of thing.
+On 29/11/2023 14:39, Jerome Brunet wrote:
+> Add a new compatible for the pwm found in the meson8 to sm1 Amlogic SoCs,
+> dealing with clocks differently. This does not enable new HW. It is meant
+> to fix a bad DT ABI for the currently supported HW.
 > 
-> I guess the [1/N] changelog covers it, but it's hard to tell.  It isn't
-> exactly broad-sweep overview.
+> The original clock bindings describe which input the PWM channel
+> multiplexer should pick among its possible parents, which are
+> hard-coded in the driver. As such, it is a setting tied to the driver
+> implementation and does not describe the HW.
 > 
-> Probably something short would suffice.  There are plenty of examples
-> on the mailing list, please take a look and send us something?
+> The new bindings introduce here describe the clocks input of the PWM block
+> as they exist.
+> 
+> The old compatible is deprecated but kept to maintain ABI compatibility.
+> 
+> The SoC specific compatibles introduced match the SoC families supported
+> by the original bindings.
+> 
+> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+> ---
+>   .../devicetree/bindings/pwm/pwm-amlogic.yaml  | 52 ++++++++++++++++---
+>   1 file changed, 46 insertions(+), 6 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml b/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
+> index 387976ed36d5..eece390114a3 100644
+> --- a/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
+> +++ b/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
+> @@ -21,23 +21,35 @@ properties:
+>             - amlogic,meson-g12a-ee-pwm
+>             - amlogic,meson-g12a-ao-pwm-ab
+>             - amlogic,meson-g12a-ao-pwm-cd
+> -          - amlogic,meson-s4-pwm
+> +        deprecated: true
+>         - items:
+>             - const: amlogic,meson-gx-pwm
+>             - const: amlogic,meson-gxbb-pwm
+> +        deprecated: true
+>         - items:
+>             - const: amlogic,meson-gx-ao-pwm
+>             - const: amlogic,meson-gxbb-ao-pwm
+> +        deprecated: true
+>         - items:
+>             - const: amlogic,meson8-pwm
+>             - const: amlogic,meson8b-pwm
+> +        deprecated: true
 
-Sumanth is on vacation, I will try to answer.
+I think deprecated should be moved in a third patch
 
-This series brings "memmap on memory" support to s390 platform.
-That is - allocate 'struct pages' array describing a memory block
-being onlined not from available system memory, but from the
-memory block itself.
+> +      - const: amlogic,meson8-pwm-v2
+> +      - items:
+> +          - enum:
+> +              - amlogic,meson8b-pwm-v2
+> +              - amlogic,meson-gxbb-pwm-v2
+> +              - amlogic,meson-axg-pwm-v2
+> +              - amlogic,meson-g12-pwm-v2
+> +          - const: amlogic,meson8-pwm-v2
+> +      - const: amlogic,meson-s4-pwm
+>   
+>     reg:
+>       maxItems: 1
+>   
+>     clocks:
+>       minItems: 1
+> -    maxItems: 2
+> +    maxItems: 4
+>   
+>     clock-names:
+>       minItems: 1
+> @@ -58,7 +70,6 @@ allOf:
+>           compatible:
+>             contains:
+>               enum:
+> -              - amlogic,meson8-pwm
+>                 - amlogic,meson8b-pwm
+>                 - amlogic,meson-gxbb-pwm
+>                 - amlogic,meson-gxbb-ao-pwm
+> @@ -67,14 +78,15 @@ allOf:
+>                 - amlogic,meson-g12a-ee-pwm
+>                 - amlogic,meson-g12a-ao-pwm-ab
+>                 - amlogic,meson-g12a-ao-pwm-cd
+> -              - amlogic,meson-gx-pwm
+> -              - amlogic,meson-gx-ao-pwm
 
-This improves the current situation on s390, where struct pages
-for all memory that potentially can be added to the system, is
-preallocated, so that memory online will always succeed but at
-the cost of significant memory consumption.
+I don't understand why those entries are removed
 
-Unlike other architectures, the challenge s390 faces is the memory
-block being onlined is not accessible at the time of hotplug event.
-To make it physically accessible two new MEM_PREPARE_ONLINE and
-MEM_FINISH_OFFLINE memory notifiers are added. That allows to succeed
-"memmap on memory" initialization.
+>       then:
+> -      # Historic bindings tied to the driver implementation
+> +      # Obsolete historic bindings tied to the driver implementation
+>         # The clocks provided here are meant to be matched with the input
+>         # known (hard-coded) in the driver and used to select pwm clock
+>         # source. Currently, the linux driver ignores this.
+> +      # This is kept to maintain ABI backward compatibility.
 
-For the existing architectures the two new notifiers are unknown
-and they are not affected in any way.
+Same here, this should go in a third patch
 
-Thanks!
+>         properties:
+> +        clocks:
+> +          maxItems: 2
+>           clock-names:
+>             oneOf:
+>               - items:
+> @@ -83,6 +95,27 @@ allOf:
+>                   - const: clkin0
+>                   - const: clkin1
+>   
+> +  # Newer binding where clock describe the actual clock inputs of the pwm
+> +  # block. These are necessary but some inputs may be grounded.
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - amlogic,meson8-pwm-v2
+> +    then:
+> +      properties:
+> +        clocks:
+> +          minItems: 1
+> +          items:
+> +            - description: input clock 0 of the pwm block
+> +            - description: input clock 1 of the pwm block
+> +            - description: input clock 2 of the pwm block
+> +            - description: input clock 3 of the pwm block
+> +        clock-names: false
+> +      required:
+> +        - clocks
+> +
+>     # Newer IP block take a single input per channel, instead of 4 inputs
+>     # for both channels
+>     - if:
+> @@ -112,6 +145,13 @@ examples:
+>         clock-names = "clkin0", "clkin1";
+>         #pwm-cells = <3>;
+>       };
+> +  - |
+> +    pwm@2000 {
+> +      compatible = "amlogic,meson8-pwm-v2";
+> +      reg = <0x1000 0x10>;
+> +      clocks = <&xtal>, <0>, <&fdiv4>, <&fdiv5>;
+> +      #pwm-cells = <3>;
+> +    };
+>     - |
+>       pwm@1000 {
+>         compatible = "amlogic,meson-s4-pwm";
+
+Neil
