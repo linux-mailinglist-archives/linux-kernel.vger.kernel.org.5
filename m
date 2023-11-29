@@ -2,65 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA92E7FE0EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 605BB7FE0EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:24:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233754AbjK2UWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 15:22:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52028 "EHLO
+        id S233831AbjK2UYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 15:24:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjK2UWW (ORCPT
+        with ESMTP id S229556AbjK2UYC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 15:22:22 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE300D67
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:22:28 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1cff3a03dfaso1690945ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:22:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701289348; x=1701894148; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=itd9NKciBX2zxONHPt0DHyuGmDjJYND+/iJlNldlRJY=;
-        b=J2uCbEYniFfeHnsTSieSAHMJp/FLKUj9FTHyIB1u0gepIhVTQhx65G60GQO7E8OIcI
-         wXp6RutoHOcsXZSS49Cxh7mhLjl3x7ZGZT9wz3Dv1g3y8L5egorFCJD3+NPBEC7nnf6U
-         FfvPNp6ie/s+Y5fsR5AxQ9c9EhPhdJt+NUm1A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701289348; x=1701894148;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=itd9NKciBX2zxONHPt0DHyuGmDjJYND+/iJlNldlRJY=;
-        b=wNjsR5rPXQSgHsb56MoSgsg6+la01i9R4bBSV5zaXH2V88JDAwfinT6TUv7haT+Uyq
-         8tbLjJMZffeInOlE+q4uuISkkYJhMgNjNS/HGGTrGDGun05XMf6XpMRmzYx7oqydxR6+
-         GFErKAz5dB58yW4h3QyaF5uULVyZdjqtbtfRuDBbVHU2vK3/lxM1ssGl8GcPN1YvD7PO
-         9b1pHAbzVIS/SuqfEuD9DzUe86FwabkELXPOZjPLcnjQu/mhKPB3AgiP2h1yXMbwwdxM
-         uPyRGX21lhpDqgzCE1cCeDIgzhel1gAGzkWwCUpHkF59YADkpCx8Y4kB33arz2Y6rO/m
-         8GAA==
-X-Gm-Message-State: AOJu0YwROJpDPaXUJ6XSQhuys4d+bDaVPHSoEOUuduKnePtQuxMhHTBZ
-        NLmfzs2nni6NyHTZjW/KhQUN6EoBG06maVUEFtc=
-X-Google-Smtp-Source: AGHT+IGy4I6YEv72N7gHiWShs+tJ4XFlnr2sELy4UZbWmy+HzCFRKq117eRrCVzUM7vWcNMg7dhwJA==
-X-Received: by 2002:a17:902:ce8c:b0:1cf:c3f7:7d4d with SMTP id f12-20020a170902ce8c00b001cfc3f77d4dmr16221436plg.67.1701289348165;
-        Wed, 29 Nov 2023 12:22:28 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id ij30-20020a170902ab5e00b001cc3a6813f8sm12975074plb.154.2023.11.29.12.22.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 12:22:27 -0800 (PST)
-Date:   Wed, 29 Nov 2023 12:22:27 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] lkdtm: Add kfence read after free crash type
-Message-ID: <202311291219.A6E3E58@keescook>
-References: <20231127234946.2514120-1-swboyd@chromium.org>
+        Wed, 29 Nov 2023 15:24:02 -0500
+Received: from vps.thesusis.net (vps.thesusis.net [34.202.238.73])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13FAAD67
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:24:09 -0800 (PST)
+Received: by vps.thesusis.net (Postfix, from userid 1000)
+        id B5BDB14B27C; Wed, 29 Nov 2023 15:24:06 -0500 (EST)
+From:   Phillip Susi <phill@thesusis.net>
+To:     Luben Tuikov <ltuikov89@gmail.com>,
+        Alex Deucher <alexdeucher@gmail.com>
+Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
+        Christian =?utf-8?Q?K=C3=B6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>, linux-kernel@vger.kernel.org,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        dri-devel@lists.freedesktop.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?utf-8?Q?K=C3=B6nig?= <christian.koenig@amd.com>,
+        Danilo Krummrich <dakr@redhat.com>
+Subject: Re: Radeon regression in 6.6 kernel
+In-Reply-To: <05007cb0-871e-4dc7-af58-1351f4ba43e2@gmail.com>
+References: <87edgv4x3i.fsf@vps.thesusis.net>
+ <559d0fa5-953a-4a97-b03b-5eb1287c83d8@leemhuis.info>
+ <CAPM=9tw-8pQWFso0zuLqpsqd5BSHWtc4As9ttdjY-DDr70EMqQ@mail.gmail.com>
+ <bdb238b6-60c7-4f26-81d0-9e62cd5dd326@gmail.com>
+ <CADnq5_NVGS1XykxGxpcu_bpPbzboCUJQkcCF3r+0N9a23KUgiQ@mail.gmail.com>
+ <96e2e13c-f01c-4baf-a9a3-cbaa48fb10c7@amd.com>
+ <CADnq5_NBfeAXEyQw0gnSd67=tR-bUKg8w=10+4z9pGGuRnP9uw@mail.gmail.com>
+ <87jzq2ixtm.fsf@vps.thesusis.net>
+ <CADnq5_Ou-MVVm0rdWDmDnJNLkWUayXzO26uCEtz3ucNa4Ghy2w@mail.gmail.com>
+ <95fe9b5b-05ce-4462-9973-9aca306bc44f@gmail.com>
+ <CADnq5_MYEWx=e1LBLeVs0UbR5_xEScjDyw_-75mLe8RAMnqh6g@mail.gmail.com>
+ <05007cb0-871e-4dc7-af58-1351f4ba43e2@gmail.com>
+Date:   Wed, 29 Nov 2023 15:24:06 -0500
+Message-ID: <87wmu0ux3t.fsf@vps.thesusis.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231127234946.2514120-1-swboyd@chromium.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -69,41 +55,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 03:49:45PM -0800, Stephen Boyd wrote:
-> Add the ability to allocate memory from kfence and trigger a read after
-> free on that memory to validate that kfence is working properly. This is
-> used by ChromeOS integration tests to validate that kfence errors can be
-> collected on user devices and parsed properly.
+Luben Tuikov <ltuikov89@gmail.com> writes:
 
-This looks really good; thanks for adding this!
+> I remember that the problem was really that amdgpu called drm_sched_entity_init(),
+> in amdgpu_ttm_set_buffer_funcs_status() without actually having initialized the scheduler
+> used therein. For instance, the code before commit b70438004a14f4, looked like this:
+>
 
-> 
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->  drivers/misc/lkdtm/heap.c | 64 +++++++++++++++++++++++++++++++++++++++
->  1 file changed, 64 insertions(+)
-> 
-> diff --git a/drivers/misc/lkdtm/heap.c b/drivers/misc/lkdtm/heap.c
-> index 0ce4cbf6abda..608872bcc7e0 100644
-> --- a/drivers/misc/lkdtm/heap.c
-> +++ b/drivers/misc/lkdtm/heap.c
-> @@ -4,6 +4,7 @@
->   * page allocation and slab allocations.
->   */
->  #include "lkdtm.h"
-> +#include <linux/kfence.h>
->  #include <linux/slab.h>
->  #include <linux/vmalloc.h>
->  #include <linux/sched.h>
-> @@ -132,6 +133,66 @@ static void lkdtm_READ_AFTER_FREE(void)
->  	kfree(val);
->  }
->  
-> +#if IS_ENABLED(CONFIG_KFENCE)
+<snip>
 
-I really try hard to avoid having tests disappear depending on configs,
-and instead report the expected failure case (as you have). Can this be
-built without the IS_ENABLED() tests?
+> 		sched = &ring->sched;                             <-- LT: No one has initialized this scheduler
+>	        r = drm_sched_entity_init(&adev->mman.entity,     <-- Oopses, now that sched->sched_rq is not
 
--- 
-Kees Cook
+<snip>
+
+> Before commit 56e449603f0ac5, amdgpu was getting away with this, because the sched->sched_rq
+> was a static array.
+>
+> Ideally, amdgpu code would be fixed.
+
+This sounds like an initilization problem that resulted in an OOPS at
+boot time, but I don't remember seeing that.  I just get a failure on
+system suspend.
