@@ -2,143 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB977FCE81
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 06:46:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7227FCE82
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 06:46:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376959AbjK2FqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 00:46:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50768 "EHLO
+        id S231270AbjK2Fqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 00:46:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229766AbjK2FqV (ORCPT
+        with ESMTP id S231217AbjK2Fqq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 00:46:21 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD38E1AE;
-        Tue, 28 Nov 2023 21:46:27 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a03a900956dso100378666b.1;
-        Tue, 28 Nov 2023 21:46:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701236786; x=1701841586; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ueXoKt71z3XuYUBIRdhazyfZxt2NDv9TI5Vbp/wAPOE=;
-        b=RuNuh1zfM82ZNwMY3BcThel4suOHA66vhNXDWJxJJAOmVsT7SiRE3fmQBw2Nv5Z+uH
-         R0QvuB0Y6JgMCW0vb0SqpJ1z+gAH4+0hF3/nZ9yZdAYFc5hHAuak9onBpfgakLoJ9vQh
-         pO0ssZE0LOXsm5AgJs9P8MJ+L48Ef48DL8kiLN0montLyOkMVVWwx2aNe8Qi9tMqw70i
-         fwCe5nk4LPy04CKUZSGWDFlJHgLoimXmxuxqfEnmM/1eDV7PJFHBUGPeKglnjVyxHAmf
-         V6JWVQp8wCtV0kMvb/6T554Ad5AHqEV+vanPXjwYC7qFF06SAPBYKAEHr0Vrgv+h/Aru
-         zt+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701236786; x=1701841586;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ueXoKt71z3XuYUBIRdhazyfZxt2NDv9TI5Vbp/wAPOE=;
-        b=h3SBdHarS5sJ/GoLH9sj3xlE98Niz3CKw1g1+PCGYY+vUWzhZo/T/Zu01s+/X7//uy
-         0iw6u8J4ybw2lCFf/NckLJ0vxHYp9T3Sqc65GI1MO1X/qgLFPocZOLicFSo2HaAprA2N
-         5O+Rtd6fg6abEIpIGQcN+03Z4SkYdum7icspeLjs2Di3Agbqg+GaU9a0X7cR2FLEnbNi
-         MfduBClmh6kDzgdHhnnAFm/bIsRthu+cR/NYE5BwTqcRgGNvX+AJsNzQFdtOb4/0XOjY
-         qf1/97HS+0AIlC2e/HNW0oGYELrNTQOdCanldJVn6d56GhtdzQPzqG942XH1dRGfy4J5
-         Vudg==
-X-Gm-Message-State: AOJu0YxvpRPv8Ucd93aTHU1TeD+ucEzzFV+mL6wcR9Os+AQRu9L4zDXd
-        dirDqM832+W1b4M/qieoPoOclRXI35jwo3hZhKs=
-X-Google-Smtp-Source: AGHT+IGE+KzPojjTp4Kh+YKhE2d7vQEA73S1tl+4mJLqh6RfLpPO3Xn8jNYQ6NfTYgY+GbROxETn0GD3WWTmxhKNkzM=
-X-Received: by 2002:a17:906:2bd1:b0:9e8:2441:5cd4 with SMTP id
- n17-20020a1709062bd100b009e824415cd4mr12413558ejg.17.1701236785791; Tue, 28
- Nov 2023 21:46:25 -0800 (PST)
+        Wed, 29 Nov 2023 00:46:46 -0500
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315B219BF;
+        Tue, 28 Nov 2023 21:46:50 -0800 (PST)
+X-UUID: 7e2607461db54185a99458ffd65c0cda-20231129
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.33,REQID:96c9410c-7117-4f93-86ca-159676c708da,IP:20,
+        URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+        ON:release,TS:5
+X-CID-INFO: VERSION:1.1.33,REQID:96c9410c-7117-4f93-86ca-159676c708da,IP:20,UR
+        L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+        :release,TS:5
+X-CID-META: VersionHash:364b77b,CLOUDID:e3253273-1bd3-4f48-b671-ada88705968c,B
+        ulkID:2311291131566H9M43EO,BulkQuantity:6,Recheck:0,SF:64|66|24|17|19|44|1
+        02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:40,QS:nil,BEC:nil,COL
+        :0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 7e2607461db54185a99458ffd65c0cda-20231129
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+        (envelope-from <zhouzongmin@kylinos.cn>)
+        (Generic MTA)
+        with ESMTP id 1982014254; Wed, 29 Nov 2023 13:46:36 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+        by mail.kylinos.cn (NSMail) with SMTP id BB3B5E0080FF;
+        Wed, 29 Nov 2023 13:46:36 +0800 (CST)
+X-ns-mid: postfix-6566D03C-69019454
+Received: from [172.20.12.156] (unknown [172.20.12.156])
+        by mail.kylinos.cn (NSMail) with ESMTPA id 85AABE0080FF;
+        Wed, 29 Nov 2023 13:46:35 +0800 (CST)
+Message-ID: <a0ecf982-2205-48d0-9774-9edb88133821@kylinos.cn>
+Date:   Wed, 29 Nov 2023 13:46:35 +0800
 MIME-Version: 1.0
-References: <CACkBjsZ-M=1Yj2PQZM7JN4=9rnDLP36fVO35o9fuAvAMKe=9Nw@mail.gmail.com>
-In-Reply-To: <CACkBjsZ-M=1Yj2PQZM7JN4=9rnDLP36fVO35o9fuAvAMKe=9Nw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 28 Nov 2023 21:46:14 -0800
-Message-ID: <CAEf4BzYkc-4kk6gVJPY50txLV_5keNkOruJREKMbew7+Qp71YA@mail.gmail.com>
-Subject: Re: [Bug Report] bpf: reg invariant voilation after JSET
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ksmbd: initialize ar to NULL
+To:     Namjae Jeon <linkinjeon@kernel.org>
+Cc:     sfrench@samba.org, senozhatsky@chromium.org, tom@talpey.com,
+        linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231120023950.667246-1-zhouzongmin@kylinos.cn>
+ <328ad7a1-7c54-4028-ae79-eb25c8c7399b@kylinos.cn>
+ <CAKYAXd_FtiMghZ=LCLmOmJer8dHQS-unnVH5cG+75dnAGjmVqA@mail.gmail.com>
+Content-Language: en-US
+From:   Zongmin Zhou <zhouzongmin@kylinos.cn>
+In-Reply-To: <CAKYAXd_FtiMghZ=LCLmOmJer8dHQS-unnVH5cG+75dnAGjmVqA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 21, 2023 at 4:57=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> wrote=
-:
->
-> Hi,
->
-> The following program (reduced) breaks reg invariant:
->
-> C Repro: https://pastebin.com/raw/FmM9q9D4
->
-> -------- Verifier Log --------
-> func#0 @0
-> 0: R1=3Dctx() R10=3Dfp0
-> 0: (18) r8 =3D 0x3d                     ; R8_w=3D61
-> 2: (85) call bpf_ktime_get_ns#5       ; R0_w=3Dscalar()
-> 3: (ce) if w8 s< w0 goto pc+1         ; R0_w=3Dscalar(smax32=3D61) R8_w=
-=3D61
-> 4: (95) exit
->
-> from 3 to 5: R0_w=3Dscalar(smin=3D0x800000000000003e,smax=3D0x7fffffff7ff=
-fffff,umin=3Dsmin32=3Dumin32=3D62,umax=3D0xffffffff7fffffff,umax32=3D0x7fff=
-ffff,var_off=3D(0x0;
-> 0xffffffff7fffffff)) R8_w=3D61 R10=3Dfp0
-> 5: R0_w=3Dscalar(smin=3D0x800000000000003e,smax=3D0x7fffffff7fffffff,umin=
-=3Dsmin32=3Dumin32=3D62,umax=3D0xffffffff7fffffff,umax32=3D0x7fffffff,var_o=
-ff=3D(0x0;
-> 0xffffffff7fffffff)) R8_w=3D61 R10=3Dfp0
-> 5: (45) if r0 & 0xfffffff7 goto pc+2
-> REG INVARIANTS VIOLATION (false_reg1): range bounds violation
-> u64=3D[0x3e, 0x8] s64=3D[0x3e, 0x8] u32=3D[0x3e, 0x8] s32=3D[0x3e, 0x8]
-> var_off=3D(0x0, 0x8)
-> 5: R0_w=3Dscalar(var_off=3D(0x0; 0x8))
-> 6: (dd) if r0 s<=3D r8 goto pc+1
-> REG INVARIANTS VIOLATION (false_reg1): range bounds violation
-> u64=3D[0x0, 0x8] s64=3D[0x3e, 0x8] u32=3D[0x0, 0x8] s32=3D[0x0, 0x8]
-> var_off=3D(0x0, 0x8)
-> 6: R0_w=3Dscalar(var_off=3D(0x0; 0x8)) R8_w=3D61
-> 7: (bc) w1 =3D w0                       ; R0=3Dscalar(var_off=3D(0x0; 0x8=
-))
-> R1=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D8,var_off=
-=3D(0x0; 0x8))
-> 8: (95) exit
->
-> from 6 to 8: safe
->
-> from 5 to 8: safe
-> processed 10 insns (limit 1000000) max_states_per_insn 0 total_states
-> 1 peak_states 1 mark_read 1
->
-> The tnum after #5 is correct, but the ranges are incorrect, which seems a=
- bug in
-> reg_bounds_sync().  Thoughts?
->
+Okay,got it.
 
-It would be great if in addition to reporting the bug and repro
-program, you could also try to analyse why this is happening and
-suggest fixes in the verifier.
+Thanks
 
-As I mentioned in another email, when we see REG INVARIANTS VIOLATION,
-verifier reverts to conservative unknown scalar register state. We
-should try to avoid this pessimistic outcome, but generally speaking
-it should not be a critical bug.
-
-> Best
-> Hao Sun
+On 2023/11/29 12:47, Namjae Jeon wrote:
+> 2023-11-29 12:31 GMT+09:00, Zongmin Zhou <zhouzongmin@kylinos.cn>:
+>> Friendly ping. I think this patch was forgotten.
+> Sorry for not sharing it, I have merged it into another patch from
+> you("ksmbd: prevent memory leak on error return").
+>
+> Thanks.
+>> Best regards!
+>>
+>> On 2023/11/20 10:39, Zongmin Zhou wrote:
+>>> Initialize ar to NULL to avoid the case of aux_size will be false,
+>>> and kfree(ar) without ar been initialized will be unsafe.
+>>> But kfree(NULL) is safe.
+>>>
+>>> Signed-off-by: Zongmin Zhou<zhouzongmin@kylinos.cn>
+>>> Acked-by: Namjae Jeon <linkinjeon@kernel.org>
+>>> ---
+>>>    fs/smb/server/ksmbd_work.c | 2 +-
+>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/fs/smb/server/ksmbd_work.c b/fs/smb/server/ksmbd_work.c
+>>> index 44bce4c56daf..2510b9f3c8c1 100644
+>>> --- a/fs/smb/server/ksmbd_work.c
+>>> +++ b/fs/smb/server/ksmbd_work.c
+>>> @@ -106,7 +106,7 @@ static inline void __ksmbd_iov_pin(struct ksmbd_work
+>>> *work, void *ib,
+>>>    static int __ksmbd_iov_pin_rsp(struct ksmbd_work *work, void *ib, int
+>>> len,
+>>>    			       void *aux_buf, unsigned int aux_size)
+>>>    {
+>>> -	struct aux_read *ar;
+>>> +	struct aux_read *ar = NULL;
+>>>    	int need_iov_cnt = 1;
+>>>
+>>>    	if (aux_size) {
+>>
