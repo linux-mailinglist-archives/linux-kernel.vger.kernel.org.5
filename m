@@ -2,52 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E657FD7C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:18:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED967FD7C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:19:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233940AbjK2NSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 08:18:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54534 "EHLO
+        id S233920AbjK2NSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 08:18:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233911AbjK2NS3 (ORCPT
+        with ESMTP id S233935AbjK2NSr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 08:18:29 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5466885
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:18:36 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38BCCC433C7;
-        Wed, 29 Nov 2023 13:18:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701263915;
-        bh=CH4bkKpxHIWHSdFzklA5WiWWU65t0PzVjUEFdnbKQgg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ri0kKaOP/wr7YbGajgN2fILimAXlnGJSp4VVVU3zg0NXB5O5EWDJNUWsB3hOY9dSg
-         xcr+MsEeeCNlzPCd9YTlnCVs3ATRz+FStcpvccI+Gxy9F9rj9ZU9wa7f+k719NHOLm
-         1bjSvrSC5k7lSwBkZBa1HHmIlTpZ3+/pm1f5sjguyi5PYyUNOPW4iuwOKcgzYPSYcz
-         8+MdhdAJZ9DBt72pMGKfBSZP3J7KNK+3xhMkWrzMr3YdkeOlwu7RsBy3knsuyJ13RS
-         1+tvBg15Ey/g761GLH7MlaFSwIIm/Y6WLZVQJQJHXbgBzUS4AhFuVOWQkTPtert4yz
-         Edm7cTjiy7oTQ==
-Date:   Wed, 29 Nov 2023 22:18:30 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        suleiman@google.com, briannorris@google.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v5] PM: sleep: Expose last succeeded resumed timestamp
- in sysfs
-Message-Id: <20231129221830.05ee995bfd0f5337dd0fb4d1@kernel.org>
-In-Reply-To: <6e664be1-dc6b-461e-b75d-2be49641402c@infradead.org>
-References: <170108151076.780347.2482745314490930894.stgit@mhiramat.roam.corp.google.com>
-        <170108152012.780347.6355289232990337333.stgit@mhiramat.roam.corp.google.com>
-        <6e664be1-dc6b-461e-b75d-2be49641402c@infradead.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Wed, 29 Nov 2023 08:18:47 -0500
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AABDA8;
+        Wed, 29 Nov 2023 05:18:52 -0800 (PST)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1r8KSk-0006M6-D7; Wed, 29 Nov 2023 14:18:46 +0100
+Date:   Wed, 29 Nov 2023 14:18:46 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     "D. Wythe" <alibuda@linux.alibaba.com>
+Cc:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, coreteam@netfilter.org,
+        netfilter-devel@vger.kernel.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        ast@kernel.org
+Subject: Re: [PATCH net] net/netfilter: bpf: avoid leakage of skb
+Message-ID: <20231129131846.GC27744@breakpoint.cc>
+References: <1701252962-63418-1-git-send-email-alibuda@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1701252962-63418-1-git-send-email-alibuda@linux.alibaba.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,47 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
-
-On Mon, 27 Nov 2023 15:47:01 -0800
-Randy Dunlap <rdunlap@infradead.org> wrote:
-
-> Hi--
+D. Wythe <alibuda@linux.alibaba.com> wrote:
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
 > 
-> 
-> On 11/27/23 02:38, Masami Hiramatsu (Google) wrote:
-> > From: Masami Hiramatsu <mhiramat@kernel.org>
-> > 
-> 
-> > diff --git a/kernel/power/main.c b/kernel/power/main.c
-> > index f6425ae3e8b0..2ab23fd3daac 100644
-> > --- a/kernel/power/main.c
-> > +++ b/kernel/power/main.c
-> 
-> > @@ -514,6 +526,9 @@ static int suspend_stats_show(struct seq_file *s, void *unused)
-> >  			suspend_step_name(
-> >  				suspend_stats.failed_steps[index]));
-> >  	}
-> > +	seq_printf(s,	"last_success_resume_time:\t%-llu.%llu\n",
-> 
-> The <TAB> after "s," is a bit odd IMO, but I don't see a need to resend it
-> just for that.
+> A malicious eBPF program can interrupt the subsequent processing of
+> a skb by returning an exceptional retval, and no one will be responsible
+> for releasing the very skb.
 
-Yeah, this might be a cosmetic tab. You can see the other seq_prints()
-in the same function also have the same <TAB>. I don't want to break it.
+How?  The bpf verifier is supposed to reject nf bpf programs that
+return a value other than accept or drop.
 
-Thank you,
+If this is a real bug, please also figure out why
+006c0e44ed92 ("selftests/bpf: add missing netfilter return value and ctx access tests")
+failed to catch it.
 
+> Moreover, normal programs can also have the demand to return NF_STOLEN,
+
+No, this should be disallowed already.
+
+>  net/netfilter/nf_bpf_link.c | 19 ++++++++++++++++++-
+>  1 file changed, 18 insertions(+), 1 deletion(-)
 > 
-> > +		   (unsigned long long)suspend_stats.last_success_resume_time.tv_sec,
-> > +		   (unsigned long long)suspend_stats.last_success_resume_time.tv_nsec);
-> >  
-> >  	return 0;
-> >  }
-> 
-> -- 
-> ~Randy
+> diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
+> index e502ec0..03c47d6 100644
+> --- a/net/netfilter/nf_bpf_link.c
+> +++ b/net/netfilter/nf_bpf_link.c
+> @@ -12,12 +12,29 @@ static unsigned int nf_hook_run_bpf(void *bpf_prog, struct sk_buff *skb,
+>  				    const struct nf_hook_state *s)
+>  {
+>  	const struct bpf_prog *prog = bpf_prog;
+> +	unsigned int verdict;
+>  	struct bpf_nf_ctx ctx = {
+>  		.state = s,
+>  		.skb = skb,
+>  	};
+>  
+> -	return bpf_prog_run(prog, &ctx);
+> +	verdict = bpf_prog_run(prog, &ctx);
+> +	switch (verdict) {
+> +	case NF_STOLEN:
+> +		consume_skb(skb);
+> +		fallthrough;
 
+This can't be right.  STOLEN really means STOLEN (free'd,
+redirected, etc, "skb" MUST be "leaked".
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Which is also why the bpf program is not allowed to return it.
