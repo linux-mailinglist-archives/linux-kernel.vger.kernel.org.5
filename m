@@ -2,62 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BEA57FD103
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:35:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 946097FD111
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:39:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbjK2IfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 03:35:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37030 "EHLO
+        id S230194AbjK2Ii7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 03:38:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjK2IfU (ORCPT
+        with ESMTP id S229650AbjK2Iiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 03:35:20 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 877B4C1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:35:26 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C97AC433C8;
-        Wed, 29 Nov 2023 08:35:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701246926;
-        bh=UyWVj6bbpMmgMhEJPGFtZp+drl9Kr0KS/AbbpRwNBTs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QNT3LWMCxoKcbCmQvEchFQWIOvU1Jm4SCQYnCDeefZD7g6sO1bHr9rNGbKeewfuCg
-         TfbOV8W4DCwZFd1pZyfX0hc+YKzvVas5N/P6RPIdkWDWen5pW57yQ5D815dqZZqSsS
-         ptq49cTrMR8QGvp6gEmUJG6uwmFMeKH7BmL33BAVaVQuFSWkZ/fXHJgq1I8B7FDqrB
-         P/F27eJt3Ui0RSaWTw8LEySbvNwTU41Bmoj8XroISmKurYBrHrVQ3Hw3iKghpoArU7
-         MYJGZoUfN6sPFG8n6dnLfIIearJsr1sdefwnKeLXQHeBu8o/mTuG4HlVunXKi5wbxa
-         nboghSzhIJ9qQ==
-Date:   Wed, 29 Nov 2023 09:35:23 +0100
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Javier Martinez Canillas <javierm@redhat.com>,
-        Frank Binns <frank.binns@imgtec.com>,
-        Donald Robson <donald.robson@imgtec.com>,
-        Matt Coster <matt.coster@imgtec.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sarah Walker <sarah.walker@imgtec.com>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] drm/imagination: DRM_POWERVR should depend on ARCH_K3
-Message-ID: <7hee65pmdl5pajm2kgqld22xfi4iox4s2psswu2mdlfk6u6f7x@w4ecogdx6uj6>
-References: <b9360c2044a1001b9a5bcb5914611711d040d4fe.1701196029.git.geert+renesas@glider.be>
- <87o7fdbszs.fsf@minerva.mail-host-address-is-not-set>
- <CAMuHMdUhuO++ZSxh+_TX_6DHHxjPYY20jTppbNZ4FnuBvxxinQ@mail.gmail.com>
+        Wed, 29 Nov 2023 03:38:54 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E274AF;
+        Wed, 29 Nov 2023 00:38:57 -0800 (PST)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AT3IZJR023797;
+        Wed, 29 Nov 2023 08:38:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=8hNsqrcucfaRbaEy3r+FknKId6ZfrP9jn3JDUL3i7j4=;
+ b=ZDmMX2DSc06YI/X4RVC/3Un1/zbcH/r5sQP/TlT2F4tvF0t3NnVdOaRIQuZAnnwKq/xM
+ Hu9L/SQf/xmoClWzJb5WKKsLRUufOeN+ANxSeLUCwuVMqT0yxGF0rfOL7TiFU4dLAam+
+ gwEIVFdC6lA7wI8PW60ZJqLBMWuNhGb727pB17wKFoRq0lK0Olyu8kAld61fywoL3k5P
+ Fxoa87O6hOBmyarhrv/hCBrQNXlLELaxPVliV72chYx0cT3N8GhFhWvDi+7pkQj9EA2z
+ RuLon/94GYug3SqG+9IDYAQ3hwIUKDlhajy6fxuzepEbLq11dRJYGYCAhvkdxXbzRwmo FQ== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3unkent466-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Nov 2023 08:38:43 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AT8cgnl001314
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Nov 2023 08:38:42 GMT
+Received: from [10.218.45.181] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 29 Nov
+ 2023 00:38:37 -0800
+Message-ID: <25cdc471-fe0e-3e87-0e41-bc3b7f7d2ade@quicinc.com>
+Date:   Wed, 29 Nov 2023 14:08:34 +0530
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="753wc6rfmeqxfjjh"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdUhuO++ZSxh+_TX_6DHHxjPYY20jTppbNZ4FnuBvxxinQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.2
+Subject: Re: [PATCH v6 09/10] scsi: ufs: ufs-qcom: Check return value of
+ phy_set_mode_ext()
+Content-Language: en-US
+To:     Can Guo <quic_cang@quicinc.com>, <bvanassche@acm.org>,
+        <mani@kernel.org>, <adrian.hunter@intel.com>, <cmd4@qualcomm.com>,
+        <beanhuo@micron.com>, <avri.altman@wdc.com>,
+        <junwoo80.lee@samsung.com>, <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "open list" <linux-kernel@vger.kernel.org>
+References: <1701246516-11626-1-git-send-email-quic_cang@quicinc.com>
+ <1701246516-11626-10-git-send-email-quic_cang@quicinc.com>
+From:   Nitin Rawat <quic_nitirawa@quicinc.com>
+In-Reply-To: <1701246516-11626-10-git-send-email-quic_cang@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: I3c3AWMSl6_pcOjyWbJK5jN_WXmn-O2c
+X-Proofpoint-ORIG-GUID: I3c3AWMSl6_pcOjyWbJK5jN_WXmn-O2c
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-29_06,2023-11-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ impostorscore=0 mlxscore=0 phishscore=0 spamscore=0 priorityscore=1501
+ bulkscore=0 mlxlogscore=999 lowpriorityscore=0 adultscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311290063
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -65,69 +89,33 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---753wc6rfmeqxfjjh
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On 11/29/2023 1:58 PM, Can Guo wrote:
+> In ufs_qcom_power_up_sequence(), check return value of phy_set_mode_ext()
+> and stop proceeding if phy_set_mode_ext() fails.
+> 
+> Signed-off-by: Can Guo <quic_cang@quicinc.com>
+> ---
+>   drivers/ufs/host/ufs-qcom.c | 7 ++++++-
+>   1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> index 30f4ca6..9c0ebbc 100644
+> --- a/drivers/ufs/host/ufs-qcom.c
+> +++ b/drivers/ufs/host/ufs-qcom.c
+> @@ -475,7 +475,12 @@ static int ufs_qcom_power_up_sequence(struct ufs_hba *hba)
+>   		return ret;
+>   	}
+>   
+> -	phy_set_mode_ext(phy, mode, host->phy_gear);
+> +	ret = phy_set_mode_ext(phy, mode, host->phy_gear);
+> +	if (ret) {
+> +		dev_err(hba->dev, "%s: phy set mode failed, ret = %d\n",
+> +			__func__, ret);
+> +		goto out_disable_phy;
+> +	}
+>   
+>   	/* power on phy - start serdes and phy's power and clocks */
+>   	ret = phy_power_on(phy);
 
-On Tue, Nov 28, 2023 at 08:16:18PM +0100, Geert Uytterhoeven wrote:
-> On Tue, Nov 28, 2023 at 8:03=E2=80=AFPM Javier Martinez Canillas
-> <javierm@redhat.com> wrote:
-> > Geert Uytterhoeven <geert+renesas@glider.be> writes:
-> > > The Imagination Technologies PowerVR Series 6 GPU is currently only
-> > > supported on Texas Instruments K3 AM62x SoCs.  Hence add a dependency=
- on
-> > > ARCH_K3, to prevent asking the user about this driver when configurin=
-g a
-> > > kernel without Texas Instruments K3 Multicore SoC support.
-> > >
-> > > Fixes: 4babef0708656c54 ("drm/imagination: Add skeleton PowerVR drive=
-r")
-> > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > > ---
-> >
-> > Indeed. Although I wonder what is the supposed policy since for example
-> > the DRM_PANFROST symbol only depends on ARM || ARM64 and others such as
->=20
-> I think ARM Mali is sufficiently ubiquitous on ARM/ARM64 systems to
-> have just an ARM/ARM64 dependency...
->=20
-> > DRM_ETNAVIV don't even have an SoC or architecture dependency.
->=20
-> Vivante GPUs are found in DTS files on at least 4 architectures.
-> Might be worthwhile to add some dependencies, though...
->=20
-> > In any case, I agree with you that restricting to only K3 makes sense.
->=20
-> I am looking forward to adding || SOC_AM33XX || ARCH_RENESAS || ...,
-> eventually ;-)
-
-I disagree. This is to handle a generic IP, just like panfrost, lima, or
-etnaviv, and we certaintly don't want to maintain the Kconfig list of
-every possible architecture and SoC family it might or might not be
-found.
-
-GPUs supposed to be handled are spread across 4 architectures (x86,
-riscv, arm, arm64, mips?), and in arm/arm64 alone we have at least 5
-platforms that might use it (allwinner, ti, mediatek, renesas, rockchip)
-
-It didn't make sense for panfrost, or etnaviv. It doesn't make sense for
-that driver either. Especially for something that olddefconfig can
-handle just fine.
-
-Maxime
-
---753wc6rfmeqxfjjh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZWb3ygAKCRDj7w1vZxhR
-xSzQAP9lznhhHr2F5gTKfl3cW+5jN5/LKK8tc/SurLuznqLJ1wD/fcF+ZyviLO/O
-xBOmROvOixmLQ2KcKiTO1gbodbPMqQE=
-=7EPk
------END PGP SIGNATURE-----
-
---753wc6rfmeqxfjjh--
+Reviewed-by: Nitin Rawat <quic_nitirawa@quicinc.com>
