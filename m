@@ -2,117 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 847E47FD926
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:20:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E59A7FD92C
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:23:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233884AbjK2OUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 09:20:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48588 "EHLO
+        id S231256AbjK2OXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 09:23:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233108AbjK2OUk (ORCPT
+        with ESMTP id S230467AbjK2OXV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 09:20:40 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFBB6D1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 06:20:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BD0BC433C8;
-        Wed, 29 Nov 2023 14:20:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701267645;
-        bh=ilqRE+p2fOw9a0JlFxXvmLieJ549kSYDkFaGPRRW8oQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=usQAeTppBB5TlyqxaUvm+41VSl5IEzYDcwModnXtK+ilMiYYiZNMrGCbjgRdZXH/p
-         7dbuv2jwzNtp5Du9YUsXip+eBl0GMPECNrAzKSBpNPdrJYpApOeTO4Yk6eYGfiCG5Z
-         U5F4XF3VeQXjWf3HSVlVEs4AdNgM6M0FS1acS3in6ezgGKlmMHXPUcU+DJsbfJufr6
-         TzeJkANcn3GU2M7GZiXB8s1i73Lx36tezfKVwFBWdIYfixNZTpARyWIZ4XoMoy8ixh
-         3I84Uyv8YYD3+0pUHFFXCaKPdBuTF30Tu7TxB8uOBSzdACibLuOQpvE0nzEdwkoAHZ
-         HLnyY+98+UN1w==
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50bbfad8758so2243772e87.3;
-        Wed, 29 Nov 2023 06:20:45 -0800 (PST)
-X-Gm-Message-State: AOJu0YxMIn8A116RYvHh6I4XaAKjyUuECqakwDgeOn8TAJ8A8/2dV8sV
-        MIDEqIAfYuuLBOmvXHsfROXWxVpAelh5QPMTDw==
-X-Google-Smtp-Source: AGHT+IGQ6dT1phTdaBB2cnieLq1FHpCwg9+LMFYxy4gEJXci5LIhzhHGeiWIcYiUZnTGssn08SW/cPnCLwYi8FMKZP4=
-X-Received: by 2002:a05:6512:114d:b0:509:4599:12d9 with SMTP id
- m13-20020a056512114d00b00509459912d9mr16626681lfg.6.1701267643713; Wed, 29
- Nov 2023 06:20:43 -0800 (PST)
+        Wed, 29 Nov 2023 09:23:21 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A13BF;
+        Wed, 29 Nov 2023 06:23:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701267806; x=1732803806;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=i+nKxtVOoA7/2O3dUI5Zs5QSN68782gToG5E1Dn3b/0=;
+  b=BMam2tcOO7h7oYN+AXqv09Imrcb5qRWJip2vCyzoFbrkdf0dOZ57fhyi
+   qOYejD14LUMrcAoBtfPyB/68/9onfdmk1F7r5stuyYmWz0ywSCQS/ZghT
+   EFrPb16XGVADMEYh3/5D9xjsBp645I3ManhdfYu50JAKrID3v483lbLJn
+   CG8rxV4i8IhKsvkMxY5cknnQVPOKDlZIv6KaZxPgrR2pDi8Fv0BIuVWtm
+   PApNeYFyMEH7AkacJmC6TY8C423Yq30UyA9zDoQreAwD3vDAkXzvzzxMp
+   rrf7JC0u90sNWSJ7OqK/+kkFm0sJo9XEocyuFajzGXl8cnBmgfP8TmPWL
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="424313715"
+X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
+   d="scan'208";a="424313715"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 06:23:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="1100543308"
+X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
+   d="scan'208";a="1100543308"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 06:23:17 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1r8LT7-00000000SaA-0d82;
+        Wed, 29 Nov 2023 16:23:13 +0200
+Date:   Wed, 29 Nov 2023 16:23:12 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Jianlong Huang <jianlong.huang@starfivetech.com>,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Hal Feng <hal.feng@starfivetech.com>
+Subject: Re: [PATCH v3 06/22] pinctrl: core: Make pins const in struct
+ group_desc
+Message-ID: <ZWdJUBNMYj9qvCf2@smile.fi.intel.com>
+References: <20231128200155.438722-1-andriy.shevchenko@linux.intel.com>
+ <20231128200155.438722-7-andriy.shevchenko@linux.intel.com>
+ <CAMuHMdWt0qq-Umd8udb7fxpNVZ=X9O9eZGMVGFSGRO_d9UkgNw@mail.gmail.com>
+ <ZWc_o4Dcsb0v5TGB@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <20231129111041.26782-1-krzysztof.kozlowski@linaro.org>
- <170126087595.1991744.9053853140300681368.robh@kernel.org> <3df72c05-7b79-4804-a220-5e342d6e5dd2@linaro.org>
-In-Reply-To: <3df72c05-7b79-4804-a220-5e342d6e5dd2@linaro.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 29 Nov 2023 08:20:31 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKhAX0vQ6LPN9ZfO4R44HZ3qrfb0oN9A9jo9+Jd2ePFLw@mail.gmail.com>
-Message-ID: <CAL_JsqKhAX0vQ6LPN9ZfO4R44HZ3qrfb0oN9A9jo9+Jd2ePFLw@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: iio: honeywell,mprls0025pa: drop ref from
- pressure properties
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     devicetree@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, Andreas Klinger <ak@it-klinger.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-iio@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZWc_o4Dcsb0v5TGB@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 6:29=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 29/11/2023 13:27, Rob Herring wrote:
-> >
-> > On Wed, 29 Nov 2023 12:10:41 +0100, Krzysztof Kozlowski wrote:
-> >> The dtschema treats now properties with '-pascal' suffix as standard o=
-ne
-> >> and already defines $ref for them, thus the $ref should be dropped fro=
-m
-> >> the bindings.
-> >>
-> >> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> >>
-> >> ---
-> >>
-> >> dtschema change was merged:
-> >> https://github.com/devicetree-org/dt-schema/commit/2a1708dcf4ff0b25c4e=
-c46304d6d6cc655c3e635
-> >> but not yet released as new dtschema version.
-> >>
-> >> This change should be applied once new dtschema version is released or
-> >> Rob says otherwise.
-> >> ---
-> >>  .../devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml | 2 -=
--
-> >>  1 file changed, 2 deletions(-)
-> >>
-> >
-> > My bot found errors running 'make DT_CHECKER_FLAGS=3D-m dt_binding_chec=
-k'
-> > on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> >
-> > yamllint warnings/errors:
-> >
-> > dtschema/dtc warnings/errors:
-> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings=
-/iio/pressure/honeywell,mprls0025pa.yaml: honeywell,pmin-pascal: missing ty=
-pe definition
-> > /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings=
-/iio/pressure/honeywell,mprls0025pa.yaml: honeywell,pmax-pascal: missing ty=
-pe definition
-> >
->
-> That's expected, depends on the dtschema change.
+On Wed, Nov 29, 2023 at 03:41:55PM +0200, Andy Shevchenko wrote:
+> On Wed, Nov 29, 2023 at 12:21:45PM +0100, Geert Uytterhoeven wrote:
+> > On Tue, Nov 28, 2023 at 9:04 PM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > > It's unclear why it's not a const from day 1. Make the pins member
+> > > const in struct group_desc. Update necessary APIs.
 
-Well, it wasn't because dtschema version used is git tree. However,
-the CI job was using master rather than main branch. master falls
-behind when I use the web interface... Now fixed the CI job to use
-main.
+...
 
-Rob
+> > >  int pinctrl_generic_add_group(struct pinctrl_dev *pctldev, const char *name,
+> > > -                             int *gpins, int ngpins, void *data);
+> > > +                             const int *pins, int num_pins, void *data);
+> > >
+> > >  int pinctrl_generic_remove_group(struct pinctrl_dev *pctldev,
+> > >                                  unsigned int group_selector);
+> > 
+> > Probably this is also the right moment to change all of these to arrays
+> > of unsigned ints?  Else you will have mixed int/unsigned int after
+> > "[PATCH v3 13/22] pinctrl: core: Embed struct pingroup into struct
+> > group_desc", and purely unsigned int after "[PATCH v3 22/22] pinctrl:
+> > core: Remove unused members from struct group_desc".
+> 
+> Hmm... Can it be done later?
+> 
+> I can, of course try to change the parameter here to be unsigned, but it most
+> likely fail the build for those drivers means need more patches, more delay to
+> this series.
+> 
+> Linus?
+
+On the first glance updating API here does not fail the build.
+Lemme incorporate this into v4.
+
+Meanwhile the drivers I left untouched, it might be separate changes
+to convert from int to const unsigned int.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
