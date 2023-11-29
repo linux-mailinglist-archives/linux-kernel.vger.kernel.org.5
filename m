@@ -2,127 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F1487FDE80
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:37:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7E97FDE85
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:38:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231883AbjK2RhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 12:37:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
+        id S232038AbjK2Rhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 12:37:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjK2RhV (ORCPT
+        with ESMTP id S229509AbjK2Rhu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 12:37:21 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6AE3C1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 09:37:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701279447; x=1732815447;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=un2pqzgXqiJEa07g1HptOb4P01cfdzdlVQihNRd8ix8=;
-  b=Mi6w/xWpsm6EahzLuiy95Zac0KbSB2YpZ6piDZJ5mv27MC06nL0UrU7o
-   lnnti/zg45uRzxtyknjjd8JKd28uoX8nvhhuJUtZQZYXjm8X+T8DT6NzQ
-   nyFiqyeZuBbpoDeIDY6KCy1T5PyGzKAEpmQqTGmi0YwlK2kByLoYchlXq
-   RrxJAJ17zgmwbMMvw+b8nR9UYSJn3NwMVdWsuj9W/K5vtUM63hDuS28Jj
-   fVw+8YGOqa63NIoC53WZ5nZe4O3gOhbnns9hl+8JVU2OAulwp7n86OWz8
-   3ncR+J3Va5efdn18EmAS4h/ZfPqYayIfvz5E8PmpCEg3xnkNtma+xBrt4
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="390361314"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="390361314"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 09:37:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="942401674"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="942401674"
-Received: from dstavrak-mobl.ger.corp.intel.com (HELO localhost) ([10.252.60.61])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 09:37:20 -0800
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     =?utf-8?B?5L2V5pWP57qi?= <heminhong@kylinos.cn>,
-        "ville.syrjala" <ville.syrjala@linux.intel.com>,
-        "uma.shankar" <uma.shankar@intel.com>
-Cc:     airlied <airlied@gmail.com>,
-        "animesh.manna" <animesh.manna@intel.com>,
-        "ankit.k.nautiyal" <ankit.k.nautiyal@intel.com>,
-        daniel <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        "joonas.lahtinen" <joonas.lahtinen@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "rodrigo.vivi" <rodrigo.vivi@intel.com>,
-        "tvrtko.ursulin" <tvrtko.ursulin@linux.intel.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: =?utf-8?B?5Zue5aSNOg==?= [PATCH v2] drm/i915: correct the input
- parameter on
- _intel_dsb_commit()
-In-Reply-To: <1lagfvi0ner-1laizr4ur2c@nsmail7.0.0--kylin--1>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <1lagfvi0ner-1laizr4ur2c@nsmail7.0.0--kylin--1>
-Date:   Wed, 29 Nov 2023 19:37:17 +0200
-Message-ID: <87cyvs5ulu.fsf@intel.com>
+        Wed, 29 Nov 2023 12:37:50 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CCBF4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 09:37:56 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79736C433C8;
+        Wed, 29 Nov 2023 17:37:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701279476;
+        bh=lJyy3cA15cbgMVL8KhADRDQs1MK00XO4WULr9ZayULc=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=bhfR2UoUKb5fr2G4p6VFK2S1Ppt0/o9rie3j3bZVYpyR2uZ46MOtrpChm5gG/YHeY
+         d4e84r9qTNpZf6MFWEQLfje1QtIJNTswysbw6//VOLD7l+9lm24649zNRlptTpLij6
+         nDSqQWc7EEPJxL3z6dUS49Kc3apEOlwMi8328GYBhLyjX2DoqmLM6PET9Kv32emYCb
+         lj0Syp2wSuClxWEMtnsRaZbZlOaaparuflWmh9lkxNjGMOzpMVf1BkWN+9I8H5SMaC
+         yGUOEvtTWKPjdjkXdEO1e9GZcEC8GXaT3XH+S2PXNhJmVOafj6LF1zEgwjSnP3+UyC
+         S+ivGMiHIwnJA==
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 5BA0727C0054;
+        Wed, 29 Nov 2023 12:37:54 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 29 Nov 2023 12:37:54 -0500
+X-ME-Sender: <xms:8HZnZZElDIQDSLi7Mq1xJtCymGQrfYQfR9wKeMxn576aXU_tb6NLmg>
+    <xme:8HZnZeVgjsoLjlGeZyQw93qSys0lXSNDkjUlQK8NwlKYY0somz3rXxPor1fgjUECd
+    9VTw3eQLjeImgiEHgo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeihedguddtudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
+    tehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusehkvghrnhgvlhdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepvddttdffjeefgeeggfelfefggefhheeffefftefggfelgeduveev
+    tefhfeejveeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homheprghrnhguodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduvdekhedu
+    jedtvdegqddvkeejtddtvdeigedqrghrnhgupeepkhgvrhhnvghlrdhorhhgsegrrhhnug
+    gsrdguvg
+X-ME-Proxy: <xmx:8HZnZbJXKQprg0QjyS75x0AA7yYiwGz99Z0wzuR6RN9_u88W9gVMQA>
+    <xmx:8HZnZfGuX_GtAPjfjkfQuh2kRE0rSCD9Kvu-_04ibDCJqtOCex1usA>
+    <xmx:8HZnZfXGWT1nGTDMDYes3r89jPHyPVFrG9owBcGla_gdsDjcgA2qbg>
+    <xmx:8nZnZc3HqRhbtNP9wyAqHqeB7JkWLgYZhY4ha-GuJU26ugLMV7JoZrTteO0>
+Feedback-ID: i36794607:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 3F299B60089; Wed, 29 Nov 2023 12:37:52 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1234-gac66594aae-fm-20231122.001-gac66594a
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Message-Id: <8c45a36e-60f9-49ee-aa77-aaba8ac5e62f@app.fastmail.com>
+In-Reply-To: <b13191e7a5ad63de23adb8ec3f8a3699a0dd236e.camel@redhat.com>
+References: <20231120215945.52027-2-pstanner@redhat.com>
+ <20231120215945.52027-6-pstanner@redhat.com>
+ <a9ab9976-c1e0-4f91-b17f-e5bbbf21def3@app.fastmail.com>
+ <a6ef92ae-0747-435b-822d-d0229da4683c@redhat.com>
+ <b13191e7a5ad63de23adb8ec3f8a3699a0dd236e.camel@redhat.com>
+Date:   Wed, 29 Nov 2023 18:37:25 +0100
+From:   "Arnd Bergmann" <arnd@kernel.org>
+To:     "Philipp Stanner" <pstanner@redhat.com>,
+        "Danilo Krummrich" <dakr@redhat.com>,
+        "Bjorn Helgaas" <bhelgaas@google.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Randy Dunlap" <rdunlap@infradead.org>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>,
+        "Eric Auger" <eric.auger@redhat.com>,
+        "Kent Overstreet" <kent.overstreet@gmail.com>,
+        "Niklas Schnelle" <schnelle@linux.ibm.com>,
+        "Neil Brown" <neilb@suse.de>, "John Sanpe" <sanpeqf@gmail.com>,
+        "Dave Jiang" <dave.jiang@intel.com>,
+        "Yury Norov" <yury.norov@gmail.com>,
+        "Kees Cook" <keescook@chromium.org>,
+        "Masami Hiramatsu" <mhiramat@kernel.org>,
+        "David Gow" <davidgow@google.com>,
+        "Herbert Xu" <herbert@gondor.apana.org.au>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
+        "Jason Baron" <jbaron@akamai.com>,
+        "Ben Dooks" <ben.dooks@codethink.co.uk>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH 4/4] lib/iomap.c: improve comment about pci anomaly
+Content-Type: text/plain;charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Nov 2023, =E4=BD=95=E6=95=8F=E7=BA=A2 <heminhong@kylinos.cn> wro=
-te:
-> Friendly ping. I think this patch was forgotten.
+On Wed, Nov 29, 2023, at 11:16, Philipp Stanner wrote:
+> On Fri, 2023-11-24 at 20:08 +0100, Danilo Krummrich wrote:
+>>
+>> lib/pci_iomap.c contains another definition of pci_iounmap() which is
+>> guarded by ARCH_WANTS_GENERIC_PCI_IOUNMAP to prevent multiple
+>> definitions
+>> in case either GENERIC_IOMAP is set or the architecture already
+>> defined
+>> pci_iounmap().
+>
+> To clarify that, here's the relevant excerpt from include/asm-
+> generic/io.h:
+>
+> #ifndef CONFIG_GENERIC_IOMAP
+> #ifndef pci_iounmap
+> #define ARCH_WANTS_GENERIC_PCI_IOUNMAP
+> #endif
+> #endif
 
-Pushed, thanks for the patch.
+Right, this was added fairly recently in an effort to
+unify the architectures that can share a simple implementation
+based on the way that modern PCI host bridges on non-x86
+work.
 
+>> What's the purpose of not having set ARCH_HAS_GENERIC_IOPORT_MAP
+>> producing
+>> an empty definition of pci_iounmap() though [1]?
+>>=20
+>> And more generally, is there any other (subtle) logic behind this?
 >
-> ----
+> That's indeed also very hard to understand for me, because you'd expect
+> that if pci_iomap() exists (and does something), pci_iounmap() should
+> also exist and, of course, unmapp the memory again.
+
+Right, I think that was a leak introduced in 316e8d79a095
+("pci_iounmap'2: Electric Boogaloo: try to make sense of
+it all") that should be fixed like
+
+--- a/lib/pci_iomap.c
++++ b/lib/pci_iomap.c
+@@ -170,8 +170,8 @@ void pci_iounmap(struct pci_dev *dev, void __iomem *=
+p)
+=20
+        if (addr >=3D start && addr < start + IO_SPACE_LIMIT)
+                return;
+-       iounmap(p);
+ #endif
++       iounmap(p);
+ }
+ EXPORT_SYMBOL(pci_iounmap);
+
+i.e. architectures without port I/O just call iounmap() but those
+that support the normal ioport_map() have to skip iounmap()
+for ports in that special PIO range.
+
+> Regarding the last point, a number of architectures define their own
+> ioport_map():
 >
-> =E4=B8=BB=E3=80=80=E9=A2=98=EF=BC=9A[PATCH v2] drm/i915: correct the inpu=
-t parameter on _intel_dsb_commit()=20
-> =E6=97=A5=E3=80=80=E6=9C=9F=EF=BC=9A2023-11-14 10:43=20
-> =E5=8F=91=E4=BB=B6=E4=BA=BA=EF=BC=9A=E4=BD=95=E6=95=8F=E7=BA=A2=20
-> =E6=94=B6=E4=BB=B6=E4=BA=BA=EF=BC=9A=E4=BD=95=E6=95=8F=E7=BA=A2;
+> arch/alpha/kernel/io.c, line 684 (as a function)
+> arch/arc/include/asm/io.h, line 27 (as a function)
+> arch/arm/mm/iomap.c, line 19 (as a function)
+> arch/m68k/include/asm/kmap.h, line 60 (as a function)
+> arch/parisc/lib/iomap.c, line 504 (as a function)
+> arch/powerpc/kernel/iomap.c, line 14 (as a function)
+> arch/s390/include/asm/io.h, line 38 (as a function)
+> arch/sh/kernel/ioport.c, line 24 (as a function)
+> arch/sparc/lib/iomap.c, line 10 (as a function)
 >
-> Current, the dewake_scanline variable is defined as unsigned int,
-> an unsigned int variable that is always greater than or equal to 0.
-> when _intel_dsb_commit function is called by intel_dsb_commit function,
-> the dewake_scanline variable may have an int value.
-> So the dewake_scanline variable is necessary to defined as an int.
+> I grepped through those archs and as I see it, none of those specify an
+> empty pci_iomap() that could be a counterpart to the potentially empty
+> pci_iounmap() in lib/pci_iomap.c
+
+I'm trying to unwind what you are saying here, and there are
+two separate issues:
+
+- an empty unmap() function still makes sense if the map() function
+  just returns a usable pointer like the asm-generic version
+  of ioport_map(), it only has to be non-empty if the map function
+  allocates a resource that has to be freed later, like the
+  page table entries for most ioremap() implementations.
+
+- pci_iounmap() in lib/pci_iomap.c being empty is probably
+  just a bug
+
+>> From what I can tell looking at the header, I think we can
+>> just remove the "#elif defined(CONFIG_GENERIC_PCI_IOMAP)"
+>> bit entirely, as it no longer serves the purpose it originally
+>> had.
 >
-> Fixes: f83b94d23770 ("drm/i915/dsb: Use DEwake to combat PkgC latency")
-> Reported-by: kernel test robot=20
-> Closes: https://lore.kernel.org/oe-kbuild-all/202310052201.AnVbpgPr-lkp@i=
-ntel.com/
-> Cc: Ville Syrj=C3=A4l=C3=A4=20
-> Cc: Uma Shankar=20
+> So it seems that the empty unmap-function in pci_iomap.c is the left-
+> over counterpart of those mapping functions always returning NULL.
+
+no
+
+> @Arnd:
+> Your code draft
 >
-> Signed-off-by: heminhong=20
-> ---
-> drivers/gpu/drm/i915/display/intel_dsb.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/i915/display/intel_dsb.c b/drivers/gpu/drm/i=
-915/display/intel_dsb.c
-> index 78b6fe24dcd8..7fd6280c54a7 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dsb.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dsb.c
-> @@ -340,7 +340,7 @@ static int intel_dsb_dewake_scanline(const struct int=
-el_crtc_state *crtc_state)
+> void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
+> {
+> #ifdef CONFIG_HAS_IOPORT
+> if (iomem_is_ioport(addr)) {
+> ioport_unmap(addr);
+> return;
+> }
+> #endif
+> iounmap(addr)
 > }
 >
-> static void _intel_dsb_commit(struct intel_dsb *dsb, u32 ctrl,
-> - unsigned int dewake_scanline)
-> + int dewake_scanline)
-> {
-> struct intel_crtc *crtc =3D dsb->crtc;
-> struct drm_i915_private *dev_priv =3D to_i915(crtc->base.dev);
+> seems to agree with that: There will never be the need for an empty
+> function that does nothing. Correct?
 
---=20
-Jani Nikula, Intel
+Agreed, while arch/sparc/ currently has an empty pci_iounmap(),
+that is just because the normal iounmap() on that architecture
+is also empty, given that all MMIO memory is always mapped.
+
+>> > {
+>> > #ifdef CONFIG_HAS_IOPORT
+>> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (iomem_is_ioport(addr=
+)) {
+>> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 ioport_unmap(addr);
+>> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 return;
+>> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> > #endif
+>> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iounmap(addr)
+>> > }
+>> >=20
+>> > and then define iomem_is_ioport() in lib/iomap.c for x86,
+>> > while defining it in asm-generic/io.h for the rest,
+>> > with an override in asm/io.h for those architectures
+>> > that need a custom inb().
+>>=20
+>> So, that would be similar to IO_COND(), right? What would we need
+>> inb() for in this context?
+
+In general, any architecture that has a custom inb() also
+needs a custom ioport_map() and iomem_is_ioport() in this
+scheme, while the "normal" architectures like arm/arm64 and
+riscv should be able to just use the asm-generic version.
+
+IO_COND() is really specific to those architectures that
+rely on the rather misnamed GENERIC_IOMAP for implementing
+ioport_map().
+
+     Arnd
