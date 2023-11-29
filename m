@@ -2,120 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A58547FD317
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:47:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41C5D7FD318
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:47:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229720AbjK2Jq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 04:46:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43238 "EHLO
+        id S229848AbjK2JrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 04:47:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjK2Jq4 (ORCPT
+        with ESMTP id S229485AbjK2JrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 04:46:56 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8ACD6C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 01:47:01 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9fd0059a967so133449566b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 01:47:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701251220; x=1701856020; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lkr8t9D0wxE4Z/I0QJxL5c6oDaDd0nklY7ppqyjUFtU=;
-        b=TQOiyCcjRGJnksqRkRqvqZhFDoqO4X5Wbg5ae7dhUUNBbwWrHggXVkOf9QYRCMUuPM
-         nbcQ7V1JswKA78uXIVIkk56nqdxqFmoXhqr3AuZ3IwmzKjrmHfj9BdGewo6dEYhy2b3y
-         oKwAGw/WhzvSK1uMLkZrLQuZtIbsyOjnwsEiTQDM4utvPwYaCQBuQ3HsrADM3fnQ6kCk
-         Bb429IpiJYOHGMlwd3uj8wrkJHou7rRsJkDGNsFOW4tAgIe7Qgidnk4RRR7X81wXiiI1
-         ZZGuaIs9kPsHef9s9pOyvQvZcZs4/NnOnepMVFtyxmEgrCI7RLdiUtp6rTPvyXCqys2K
-         ZVoQ==
+        Wed, 29 Nov 2023 04:47:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1197219BB
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 01:47:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701251236;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8FUL7xaq2WNQBPHMTY8ZTJkkLmUhL7UnsbnYobOmCzM=;
+        b=cF23uCnbDgtBVu/PFjh4DnfmKASshe8nXxLYBnt49brIdjx1mpRO8XsQ5JU9hk6zk1DC+z
+        QDQzqCRUbBOooxBkQmXJDgBQ507MCo0KE3fB/HlsNX71mAbyu8ljKscxUr5X2ci8jEDb94
+        bPZTxEFX9/tNzcRBfXaBGkUPwBuevZw=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-260-ehgvcEH5Nvy-vKQH6U5XAg-1; Wed, 29 Nov 2023 04:47:14 -0500
+X-MC-Unique: ehgvcEH5Nvy-vKQH6U5XAg-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9fffa4c4f28so489684166b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 01:47:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701251220; x=1701856020;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1701251233; x=1701856033;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lkr8t9D0wxE4Z/I0QJxL5c6oDaDd0nklY7ppqyjUFtU=;
-        b=u2maBBXo/buIpUZ9zaYvtaLeQADv6zPTOnmWbMmetOhRsJtzHi9X7t73rL8rAvWIrn
-         OfUCTr3Tep7OGZGOkXqp+si9OWkhUnb+7ODOpUOI3nWlTDuzG9/nneJklhtpYUdiokrZ
-         hdTcCGB3mW6XsFesmZ8G++IiEc9US1PeUahUb7FssplP5Bq8I+LUe4yreKJO3J+PsqSo
-         lZcQrDQ6LM5kAgmO9eavdC4YRB7vqQSPDoJEkjsoniBuIbcqJ4/v8ENFspp044OkTOh5
-         qdbiXXd28WIEDVsXNqX9BjSt92ZSep2CSaOt0hK3jUmONstamC7owlslBhWOt4at54jW
-         MC8A==
-X-Gm-Message-State: AOJu0YxHkTc+xrQl9Tf2iDCcT8g3cBZMphslIoyCss4cMxnUUD5p75R3
-        2feU/UlGWfsPZ8FpZTFk8RNhtrAiaw==
-X-Google-Smtp-Source: AGHT+IH98tZUFJa7BN8QJdTW8Oa0vn2A1pJ5nvg6eWzJQF6TMyuXtFYt87/j86uYPcMRBoLqozruVA==
-X-Received: by 2002:a17:906:100e:b0:a0e:7e2:1b1e with SMTP id 14-20020a170906100e00b00a0e07e21b1emr10029624ejm.23.1701251219936;
-        Wed, 29 Nov 2023 01:46:59 -0800 (PST)
-Received: from p183 ([46.53.250.67])
-        by smtp.gmail.com with ESMTPSA id 9-20020a170906218900b00a0988d69549sm6192529eju.189.2023.11.29.01.46.59
+        bh=8FUL7xaq2WNQBPHMTY8ZTJkkLmUhL7UnsbnYobOmCzM=;
+        b=gZ0T6Yzm8k2RFLfXrzFtU6BnqGMUVshQ0ujiP5N//JLYZQH8PjEEK3Km/U2kGapoTg
+         0GV/dbrBio7OyaNsXwz+aSRR+DCkSf/oSjAQ2XedJ2D2H4ZhnbKSdfBnFyhVtN3nw90O
+         mhyi7JLkz5ieRY0Iz/PoK2lgCtLVL7KDEgTtQiOpYIRxs6UlERhSMNJgZ8z0bedbuWGM
+         t+5lV2FzqvRLsS8xfKzBHoainz6Z+F4R4sZnqp7tQ0QWruvzcSxrRmD+OLmz/uD9rm/d
+         aUnet5qrQZ2MMdeHJk61Is8m+uYnCIllZ6B7XTzsVnq5n9LdGy1eLFpJ1XcB1g0X/yFr
+         W6pg==
+X-Gm-Message-State: AOJu0YyBdCZVi29yVNq3sW3+jdkqtJaKZMnlftnO5DZUCJNapRtpR1oR
+        urLq8knYokmemNiPJ3az8Bf+cELLTxJBawIAU664WbslOnFep3UtdWyXfcLM5/G/H0V8L5yflif
+        R5VQx90PWUzhiK05W8lxNkn/E
+X-Received: by 2002:a17:906:5349:b0:a0a:391d:2dad with SMTP id j9-20020a170906534900b00a0a391d2dadmr13424741ejo.75.1701251233274;
+        Wed, 29 Nov 2023 01:47:13 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEcdjDb3B9JI1PiGSAemY+jsGIUrA/1PnJLVzsoGUWFBHqpyAnt/MTb5gBPxFzfJMBSJ9M+Hw==
+X-Received: by 2002:a17:906:5349:b0:a0a:391d:2dad with SMTP id j9-20020a170906534900b00a0a391d2dadmr13424728ejo.75.1701251232928;
+        Wed, 29 Nov 2023 01:47:12 -0800 (PST)
+Received: from redhat.com ([2.55.57.48])
+        by smtp.gmail.com with ESMTPSA id s8-20020a170906454800b00997d7aa59fasm7810806ejq.14.2023.11.29.01.47.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 01:46:59 -0800 (PST)
-Date:   Wed, 29 Nov 2023 12:46:57 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] proc: make struct proc_dir_entry::name const
-Message-ID: <d724d33e-7c0d-422b-8d23-3d677cc414fe@p183>
+        Wed, 29 Nov 2023 01:47:12 -0800 (PST)
+Date:   Wed, 29 Nov 2023 04:47:08 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     "Ning, Hongyu" <hongyu.ning@linux.intel.com>
+Cc:     xuanzhuo@linux.alibaba.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        eperezma@redhat.com, jasowang@redhat.com, shannon.nelson@amd.com,
+        yuanyaogoog@chromium.org, yuehaibing@huawei.com,
+        kirill.shutemov@linux.intel.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com,
+        alexander.shishkin@linux.intel.com
+Subject: Re: [GIT PULL] virtio: features
+Message-ID: <20231129044651-mutt-send-email-mst@kernel.org>
+References: <20230903181338-mutt-send-email-mst@kernel.org>
+ <647701d8-c99b-4ca8-9817-137eaefda237@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <647701d8-c99b-4ca8-9817-137eaefda237@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Multiply ::name into "mut_name" and "name" which is "const char*".
+On Wed, Nov 29, 2023 at 05:03:50PM +0800, Ning, Hongyu wrote:
+> 
+> 
+> On 2023/9/4 6:13, Michael S. Tsirkin wrote:
+> > The following changes since commit 2dde18cd1d8fac735875f2e4987f11817cc0bc2c:
+> > 
+> >    Linux 6.5 (2023-08-27 14:49:51 -0700)
+> > 
+> > are available in the Git repository at:
+> > 
+> >    https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+> > 
+> > for you to fetch changes up to 1acfe2c1225899eab5ab724c91b7e1eb2881b9ab:
+> > 
+> >    virtio_ring: fix avail_wrap_counter in virtqueue_add_packed (2023-09-03 18:10:24 -0400)
+> > 
+> > ----------------------------------------------------------------
+> > virtio: features
+> > 
+> > a small pull request this time around, mostly because the
+> > vduse network got postponed to next relase so we can be sure
+> > we got the security store right.
+> > 
+> > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> > 
+> > ----------------------------------------------------------------
+> > Eugenio Pérez (4):
+> >        vdpa: add VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK flag
+> >        vdpa: accept VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK backend feature
+> >        vdpa: add get_backend_features vdpa operation
+> >        vdpa_sim: offer VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK
+> > 
+> > Jason Wang (1):
+> >        virtio_vdpa: build affinity masks conditionally
+> > 
+> > Xuan Zhuo (12):
+> >        virtio_ring: check use_dma_api before unmap desc for indirect
+> >        virtio_ring: put mapping error check in vring_map_one_sg
+> >        virtio_ring: introduce virtqueue_set_dma_premapped()
+> >        virtio_ring: support add premapped buf
+> >        virtio_ring: introduce virtqueue_dma_dev()
+> >        virtio_ring: skip unmap for premapped
+> >        virtio_ring: correct the expression of the description of virtqueue_resize()
+> >        virtio_ring: separate the logic of reset/enable from virtqueue_resize
+> >        virtio_ring: introduce virtqueue_reset()
+> >        virtio_ring: introduce dma map api for virtqueue
+> >        virtio_ring: introduce dma sync api for virtqueue
+> >        virtio_net: merge dma operations when filling mergeable buffers
+> 
+> Hi,
+> above patch (upstream commit 295525e29a5b) seems causing a virtnet related
+> Call Trace after WARNING from kernel/dma/debug.c.
+> 
+> details (log and test setup) tracked in
+> https://bugzilla.kernel.org/show_bug.cgi?id=218204
+> 
+> it's recently noticed in a TDX guest testing since v6.6.0 release cycle and
+> can still be reproduced in latest v6.7.0-rc3.
+> 
+> as local bisects results show, above WARNING and Call Trace is linked with
+> this patch, do you mind to take a look?
 
-PDE's name must not be mutated on live PDE, hint modules they should not
-do it.
+Does your testing tree include the fixup
+5720c43d5216b5dbd9ab25595f7c61e55d36d4fc ?
 
-Many other members must not be mutated live as well, but start with
-obvious one.
+> > 
+> > Yuan Yao (1):
+> >        virtio_ring: fix avail_wrap_counter in virtqueue_add_packed
+> > 
+> > Yue Haibing (1):
+> >        vdpa/mlx5: Remove unused function declarations
+> > 
+> >   drivers/net/virtio_net.c           | 230 ++++++++++++++++++---
+> >   drivers/vdpa/mlx5/core/mlx5_vdpa.h |   3 -
+> >   drivers/vdpa/vdpa_sim/vdpa_sim.c   |   8 +
+> >   drivers/vhost/vdpa.c               |  15 +-
+> >   drivers/virtio/virtio_ring.c       | 412 ++++++++++++++++++++++++++++++++-----
+> >   drivers/virtio/virtio_vdpa.c       |  17 +-
+> >   include/linux/vdpa.h               |   4 +
+> >   include/linux/virtio.h             |  22 ++
+> >   include/uapi/linux/vhost_types.h   |   4 +
+> >   9 files changed, 625 insertions(+), 90 deletions(-)
+> > 
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
-
- fs/proc/generic.c  |    2 +-
- fs/proc/internal.h |    5 ++++-
- fs/proc/proc_net.c |    2 +-
- 3 files changed, 6 insertions(+), 3 deletions(-)
-
---- a/fs/proc/generic.c
-+++ b/fs/proc/generic.c
-@@ -436,7 +436,7 @@ static struct proc_dir_entry *__proc_create(struct proc_dir_entry **parent,
- 		}
- 	}
- 
--	memcpy(ent->name, fn, qstr.len + 1);
-+	memcpy(ent->mut_name, fn, qstr.len + 1);
- 	ent->namelen = qstr.len;
- 	ent->mode = mode;
- 	ent->nlink = nlink;
---- a/fs/proc/internal.h
-+++ b/fs/proc/internal.h
-@@ -59,7 +59,10 @@ struct proc_dir_entry {
- 	struct proc_dir_entry *parent;
- 	struct rb_root subdir;
- 	struct rb_node subdir_node;
--	char *name;
-+	union {
-+		const char *name;
-+		char *mut_name;
-+	};
- 	umode_t mode;
- 	u8 flags;
- 	u8 namelen;
---- a/fs/proc/proc_net.c
-+++ b/fs/proc/proc_net.c
-@@ -368,7 +368,7 @@ static __net_init int proc_net_ns_init(struct net *net)
- 	netd->namelen = 3;
- 	netd->parent = &proc_root;
- 	netd->name = netd->inline_name;
--	memcpy(netd->name, "net", 4);
-+	memcpy(netd->mut_name, "net", 4);
- 
- 	uid = make_kuid(net->user_ns, 0);
- 	if (!uid_valid(uid))
