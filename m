@@ -2,55 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6522C7FD6CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 13:32:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B067FD6D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 13:34:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233670AbjK2Mcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 07:32:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38540 "EHLO
+        id S231883AbjK2Mdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 07:33:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231883AbjK2Mco (ORCPT
+        with ESMTP id S229485AbjK2Mdv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 07:32:44 -0500
+        Wed, 29 Nov 2023 07:33:51 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 050538F
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 04:32:51 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CF37C433C9;
-        Wed, 29 Nov 2023 12:32:49 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 133F88F
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 04:33:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCF62C433C7;
+        Wed, 29 Nov 2023 12:33:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701261170;
-        bh=3rg6InLFJYoj0t56EbSzonGCmEtUIs3+UyoC8G9109k=;
+        s=k20201202; t=1701261237;
+        bh=rcKNM4SrzvOTPOMTTnNAkDwa6umDcm/Z1HWPpEbPqyA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vJlY2rBoX/wUunC8QosbeZWCaearH7/13ya1mqQXLqYSRWaNk6vTPX37FlaTuOvQw
-         pJmuZ46UWl8lXat1EEuUg7gYCOJSdxSTEvbZyk8s/mD0FiuGmP0Bor0304jfbMox+M
-         BbU7LXd/o7peBNq++BKgkUhipr1dnlmBktw89Ba8mbX2AJqgKTh1udfDED5bjSVao4
-         /qD84HoSYXilbTniRywx3EEd2Tz21kPJqDwKgQu9pF47KtIGyGkoV4m+XL9SNfk9a5
-         RVn+4Sa+xqJM4IPKiFenquD5EbVP1r9VAMex54H7sCexwXz9sTTmGBxa5/cL1AwEPF
-         Q2tzV0QoCberA==
-Date:   Wed, 29 Nov 2023 13:32:48 +0100
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Linus Walleij <linus.walleij@linaro.org>, daniel@ffwll.ch
-Cc:     Liu Ying <victor.liu@nxp.com>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-next@vger.kernel.org,
-        sfr@canb.auug.org.au, gregkh@linuxfoundation.org,
-        rafael@kernel.org, andrzej.hajda@intel.com,
-        neil.armstrong@linaro.org, rfoss@kernel.org,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@gmail.com, maarten.lankhorst@linux.intel.com,
-        tzimmermann@suse.de, airlied@gmail.com,
-        angelogioacchino.delregno@collabora.com, ulf.hansson@linaro.org
-Subject: Re: [PATCH v2 0/2] drm/bridge: panel: Check device dependency before
- managing device link
-Message-ID: <d33ovl3ox2u74jbik2bcraeqiqplqoc57p4quapdyydqlyzrf5@vlhszortxfio>
-References: <20231127051414.3783108-1-victor.liu@nxp.com>
- <CACRpkdZAtxh5muhbPKvmUQGtQogs3UhGxNZqnSGWoWQNUL7=9g@mail.gmail.com>
- <k65hxlckssjd46nsrlly6vjrr5nnkrakouzw5pmxgbf6ui3mdl@5ny7j7blkwyj>
- <CACRpkdbKwycpjuhMfnriqMUcbmwCTb3vJzgzCF7+ARax54q7WQ@mail.gmail.com>
+        b=tjRhol3cWY3zuGru3VVvU0O2nvIZ1iroKFgUGd5udxtr1+fOZwwjI4yf34DDZBv6e
+         3prqd/wUw5nFVikChUwzQVlOj3jKDgliaH6N/gbEFyGYqMRPILgkTeJgSOPo6go4Ru
+         QA0lsDQ1IkYy0myr5ssNkCMZE4Fye5x+f/6igxF5houf7db1oPc0rp0j7PyJpwicjP
+         dnGM+Ga37Jy74eyQgKrb/5PqccEYDaKnLbwudYSK4RJ+LSyr3qDaXHuk+396BqI0ae
+         ZJRjIlDqvg/ucpgMXN/p3WqucvWHyOw6mCXMInn8nuHvw2Wfvi4HdmHJxvZUsU5dII
+         SB0+fpQJHj75w==
+Date:   Wed, 29 Nov 2023 12:33:46 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Yu-Chien Peter Lin <peterlin@andestech.com>
+Cc:     Conor Dooley <conor.dooley@microchip.com>, acme@kernel.org,
+        adrian.hunter@intel.com, ajones@ventanamicro.com,
+        alexander.shishkin@linux.intel.com, andre.przywara@arm.com,
+        anup@brainfault.org, aou@eecs.berkeley.edu, atishp@atishpatra.org,
+        conor+dt@kernel.org, devicetree@vger.kernel.org,
+        dminus@andestech.com, evan@rivosinc.com, geert+renesas@glider.be,
+        guoren@kernel.org, heiko@sntech.de, irogers@google.com,
+        jernej.skrabec@gmail.com, jolsa@kernel.org, jszhang@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, locus84@andestech.com,
+        magnus.damm@gmail.com, mark.rutland@arm.com, mingo@redhat.com,
+        n.shubin@yadro.com, namhyung@kernel.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, peterz@infradead.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com, rdunlap@infradead.org,
+        robh+dt@kernel.org, samuel@sholland.org, sunilvl@ventanamicro.com,
+        tglx@linutronix.de, tim609@andestech.com, uwu@icenowy.me,
+        wens@csie.org, will@kernel.org, ycliang@andestech.com,
+        inochiama@outlook.com
+Subject: Re: [PATCH v4 09/13] dt-bindings: riscv: Add T-Head PMU extension
+ description
+Message-ID: <20231129-curvature-stainable-bf77c735438f@spud>
+References: <20231122121235.827122-1-peterlin@andestech.com>
+ <20231122121235.827122-10-peterlin@andestech.com>
+ <20231123-obscurity-copied-7a7bcc66d69d@wendy>
+ <ZWb6qqaNzzNUJ7aX@APC323>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yrzhzqk3x47g4p6g"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Utvw2SdgzW4fg31u"
 Content-Disposition: inline
-In-Reply-To: <CACRpkdbKwycpjuhMfnriqMUcbmwCTb3vJzgzCF7+ARax54q7WQ@mail.gmail.com>
+In-Reply-To: <ZWb6qqaNzzNUJ7aX@APC323>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -62,67 +74,66 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---yrzhzqk3x47g4p6g
-Content-Type: text/plain; charset=utf-8
+--Utvw2SdgzW4fg31u
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
-
-On Mon, Nov 27, 2023 at 11:13:31PM +0100, Linus Walleij wrote:
-> On Mon, Nov 27, 2023 at 5:29=E2=80=AFPM Maxime Ripard <mripard@kernel.org=
-> wrote:
-> > On Mon, Nov 27, 2023 at 05:03:53PM +0100, Linus Walleij wrote:
+On Wed, Nov 29, 2023 at 04:47:38PM +0800, Yu-Chien Peter Lin wrote:
+> Hi Conor,
 >=20
-> > > > Liu Ying (2):
-> > > >   driver core: Export device_is_dependent() to modules
-> > > >   drm/bridge: panel: Check device dependency before managing device=
- link
-> > >
-> > > I just applied patch 1 directly to the drm-misc-fixes so we don't hav=
-e to
-> > > revert and then re-apply patches, because that is a bigger evil. (We =
-can't
-> > > rebase these branches...)
-> >
-> > Erm, you did wait for GKH or Rafael's ACK to do that, right?
+> On Thu, Nov 23, 2023 at 02:48:20PM +0000, Conor Dooley wrote:
+> > On Wed, Nov 22, 2023 at 08:12:31PM +0800, Yu Chien Peter Lin wrote:
+> > > Document the ISA string for T-Head performance monitor extension
+> > > which provides counter overflow interrupt mechanism.
+> > >=20
+> > > Signed-off-by: Yu Chien Peter Lin <peterlin@andestech.com>
+> > > ---
+> > > Changes v2 -> v3:
+> > >   - New patch
+> > > Changes v3 -> v4:
+> > >   - No change
+> > > ---
+> > >  Documentation/devicetree/bindings/riscv/extensions.yaml | 6 ++++++
+> > >  1 file changed, 6 insertions(+)
+> > >=20
+> > > diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml =
+b/Documentation/devicetree/bindings/riscv/extensions.yaml
+> > > index c91ab0e46648..694efaea8fce 100644
+> > > --- a/Documentation/devicetree/bindings/riscv/extensions.yaml
+> > > +++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
+> > > @@ -258,5 +258,11 @@ properties:
+> > >              in commit 2e5236 ("Ztso is now ratified.") of the
+> > >              riscv-isa-manual.
+> > > =20
+> > > +        - const: xtheadpmu
+> > > +          description:
+> > > +            The T-Head performance monitor extension for counter ove=
+rflow. For more
+> > > +            details, see the chapter 12 in the Xuantie C906 user man=
+ual.
+> > > +            https://github.com/T-head-Semi/openc906/tree/main/doc
+> >=20
+> > I'm pretty sure that I asked on the previous revision for you to
+> > identify a specific revision of this document.
 >=20
-> No.
->=20
-> It is a bigger evil to leave the tree broken than to enforce formal proce=
-ss,
-> and it is pretty self-evident. If any of them get annoyed about it we can
-> revert the patch, or both.
+> Sorry, I'm still searching for it.
 
-Yeah, I definitely understand why you did it, but I don't think it's
-something we would encourage in drm-misc.
+Identifying a specific commit from that repo as the revision would be
+okay. Follow the format used elsewhere for the standard extensions.
 
-We've discussed it with Sima yesterday, and I think we would even need
-the extra check in dim to make sure that a committer shouldn't do that
-without dim complaining.
+Cheers,
+Conor.
 
-Sima played a bit with it, and it should be doable to get something
-fairly reliable if you use get_maintainers.pl to retrieve the git tree
-(through scripts/get_maintainer.pl --no-email --no-l --scm) and figuring
-out if only drm.git, drm-intel.git or drm-misc.git is involved.
-
-If it isn't, then we should check that there's the ack of one of the
-maintainers.
-
-Could you write a patch to do so?
-
-Thanks!
-Maxime
-
---yrzhzqk3x47g4p6g
+--Utvw2SdgzW4fg31u
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZWcvbwAKCRDj7w1vZxhR
-xXfXAQD+NPkwoY0m8+ozRhmrZbtB+qRlugYpDd5BPUriECj8VgEAk7LOfR+2wGYS
-hf8XQcHi0BQQjrr2sfXIgq5DKevijgI=
-=CWHT
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWcvqgAKCRB4tDGHoIJi
+0pQuAQDZZfwrh03OUXbGE0xwEKsxZcfxxPGdlMVElJGo9ksISAD+KCK6j7yitR3a
+gkIK95gOtiUMn/8ZposqtImCwROI7gg=
+=RvjF
 -----END PGP SIGNATURE-----
 
---yrzhzqk3x47g4p6g--
+--Utvw2SdgzW4fg31u--
