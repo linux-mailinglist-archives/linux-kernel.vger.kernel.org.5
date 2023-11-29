@@ -2,172 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DE7C7FDC97
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:15:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F35047FDC30
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:07:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233203AbjK2QPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 11:15:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46356 "EHLO
+        id S230146AbjK2QGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 11:06:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232190AbjK2QPV (ORCPT
+        with ESMTP id S230081AbjK2QGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 11:15:21 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B066C10D3;
-        Wed, 29 Nov 2023 08:15:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701274527; x=1732810527;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=0ew6/t0UEwPzn9UjBTyFzaXdzqbyMpMMwp+mPlvH8ac=;
-  b=ShpG3O3s1dvFPcvrWyZnrgs48rkzVp1uZQe1inqUDQw4Oq1LUmZ0MJ/+
-   6s8383zNZwR1TQvKhCoGSNsUZHLgolLt4sWLYsTa4MQGmnKWfysZBsZyE
-   /Hrp74F+F3OP5gKgzmtoeg5AcxNwBN6zETZF9urgLZP1v/8K/dCClz/+R
-   b5OqISgHWhbIw923uXAmRJpWEjsklQ/le8DGnkN963FIDCHQysZHhmKcc
-   fBiHYzAaZmIOkdukG4i9jDUSI3ZYU11kv9hyVAHmgujmESzrXIBqNgClu
-   FEMMy8DddIMKQcKzE3PoAmiygz5txfcXbnfIn0AewlbVQq//JS2pjLQ96
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="373372737"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="373372737"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 08:15:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="892498880"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="892498880"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga004.jf.intel.com with ESMTP; 29 Nov 2023 08:15:12 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id EBB35B11; Wed, 29 Nov 2023 18:15:01 +0200 (EET)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        Jianlong Huang <jianlong.huang@starfivetech.com>,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Hal Feng <hal.feng@starfivetech.com>
-Subject: [PATCH v4 13/23] pinctrl: core: Embed struct pingroup into struct group_desc
-Date:   Wed, 29 Nov 2023 18:06:36 +0200
-Message-ID: <20231129161459.1002323-14-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
-In-Reply-To: <20231129161459.1002323-1-andriy.shevchenko@linux.intel.com>
-References: <20231129161459.1002323-1-andriy.shevchenko@linux.intel.com>
+        Wed, 29 Nov 2023 11:06:49 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47692BF;
+        Wed, 29 Nov 2023 08:06:55 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id AB71D1FB40;
+        Wed, 29 Nov 2023 16:06:53 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 86CD61388B;
+        Wed, 29 Nov 2023 16:06:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+        by imap1.dmz-prg2.suse.org with ESMTPSA
+        id P5KmHZ1hZ2VffAAAD6G6ig
+        (envelope-from <mhocko@suse.com>); Wed, 29 Nov 2023 16:06:53 +0000
+Date:   Wed, 29 Nov 2023 17:06:37 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc:     rostedt@goodmis.org, mhiramat@kernel.org, hannes@cmpxchg.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, akpm@linux-foundation.org,
+        kernel@sberdevices.ru, rockosov@gmail.com, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] mm: memcg: introduce new event to trace
+ shrink_memcg
+Message-ID: <ZWdhjYPjbsoUE_mI@tiehlicka>
+References: <20231123193937.11628-1-ddrokosov@salutedevices.com>
+ <20231123193937.11628-3-ddrokosov@salutedevices.com>
+ <ZWRifQgRR0570oDY@tiehlicka>
+ <20231127113644.btg2xrcpjhq4cdgu@CAB-WSD-L081021>
+ <ZWSQji7UDSYa1m5M@tiehlicka>
+ <20231127161637.5eqxk7xjhhyr5tj4@CAB-WSD-L081021>
+ <ZWWzwhWnW1_iX0FP@tiehlicka>
+ <20231129152057.x7fhbcvwtsmkbdpb@CAB-WSD-L081021>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231129152057.x7fhbcvwtsmkbdpb@CAB-WSD-L081021>
+X-Spamd-Bar: +++++++++++++++
+Authentication-Results: smtp-out2.suse.de;
+        dkim=none;
+        dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
+        spf=fail (smtp-out2.suse.de: domain of mhocko@suse.com does not designate 2a07:de40:b281:104:10:150:64:97 as permitted sender) smtp.mailfrom=mhocko@suse.com
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [15.00 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         R_SPF_FAIL(1.00)[-all];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         MIME_GOOD(-0.10)[text/plain];
+         MID_RHS_NOT_FQDN(0.50)[];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
+         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+         RCVD_COUNT_THREE(0.00)[3];
+         MX_GOOD(-0.01)[];
+         RCPT_COUNT_TWELVE(0.00)[14];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         R_DKIM_NA(2.20)[];
+         MIME_TRACE(0.00)[0:+];
+         FREEMAIL_CC(0.00)[goodmis.org,kernel.org,cmpxchg.org,linux.dev,google.com,linux-foundation.org,sberdevices.ru,gmail.com,vger.kernel.org,kvack.org];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-3.00)[100.00%]
+X-Spam-Score: 15.00
+X-Rspamd-Queue-Id: AB71D1FB40
+X-Spam: Yes
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct group_desc is a particular version of the struct pingroup
-with associated opaque data. Start switching pin control core and
-drivers to use it explicitly.
+On Wed 29-11-23 18:20:57, Dmitry Rokosov wrote:
+> On Tue, Nov 28, 2023 at 10:32:50AM +0100, Michal Hocko wrote:
+> > On Mon 27-11-23 19:16:37, Dmitry Rokosov wrote:
+[...]
+> > > 2) With this approach, we will not have the ability to trace a situation
+> > > where the kernel is requesting reclaim for a specific memcg, but due to
+> > > limits issues, we are unable to run it.
+> > 
+> > I do not follow. Could you be more specific please?
+> > 
+> 
+> I'm referring to a situation where kswapd() or another kernel mm code
+> requests some reclaim pages from memcg, but memcg rejects it due to
+> limits checkers. This occurs in the shrink_node_memcgs() function.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/pinctrl/core.c | 15 ++++++++++++---
- drivers/pinctrl/core.h |  5 +++++
- 2 files changed, 17 insertions(+), 3 deletions(-)
+Ohh, you mean reclaim protection
 
-diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
-index 1e44682db355..744f03edbdb2 100644
---- a/drivers/pinctrl/core.c
-+++ b/drivers/pinctrl/core.c
-@@ -557,7 +557,10 @@ const char *pinctrl_generic_get_group_name(struct pinctrl_dev *pctldev,
- 	if (!group)
- 		return NULL;
+> ===
+> 		mem_cgroup_calculate_protection(target_memcg, memcg);
+> 
+> 		if (mem_cgroup_below_min(target_memcg, memcg)) {
+> 			/*
+> 			 * Hard protection.
+> 			 * If there is no reclaimable memory, OOM.
+> 			 */
+> 			continue;
+> 		} else if (mem_cgroup_below_low(target_memcg, memcg)) {
+> 			/*
+> 			 * Soft protection.
+> 			 * Respect the protection only as long as
+> 			 * there is an unprotected supply
+> 			 * of reclaimable memory from other cgroups.
+> 			 */
+> 			if (!sc->memcg_low_reclaim) {
+> 				sc->memcg_low_skipped = 1;
+> 				continue;
+> 			}
+> 			memcg_memory_event(memcg, MEMCG_LOW);
+> 		}
+> ===
+> 
+> With separate shrink begin()/end() tracepoints we can detect such
+> problem.
+
+How? You are only reporting the number of reclaimed pages and no
+reclaimed pages could be not just because of low/min limits but
+generally because of other reasons. You would need to report also the
+number of scanned/isolated pages.
  
--	return group->name;
-+	if (group->name)
-+		return group->name;
-+
-+	return group->grp.name;
- }
- EXPORT_SYMBOL_GPL(pinctrl_generic_get_group_name);
- 
-@@ -583,8 +586,14 @@ int pinctrl_generic_get_group_pins(struct pinctrl_dev *pctldev,
- 		return -EINVAL;
- 	}
- 
--	*pins = group->pins;
--	*num_pins = group->num_pins;
-+	if (group->pins) {
-+		*pins = group->pins;
-+		*num_pins = group->num_pins;
-+		return 0;
-+	}
-+
-+	*pins = group->grp.pins;
-+	*num_pins = group->grp.npins;
- 
- 	return 0;
- }
-diff --git a/drivers/pinctrl/core.h b/drivers/pinctrl/core.h
-index 4689b24e40f0..60892950bbab 100644
---- a/drivers/pinctrl/core.h
-+++ b/drivers/pinctrl/core.h
-@@ -194,14 +194,18 @@ struct pinctrl_maps {
- 
- #ifdef CONFIG_GENERIC_PINCTRL_GROUPS
- 
-+#include <linux/pinctrl/pinctrl.h>
-+
- /**
-  * struct group_desc - generic pin group descriptor
-+ * @grp: generic data of the pin group (name and pins)
-  * @name: name of the pin group
-  * @pins: array of pins that belong to the group
-  * @num_pins: number of pins in the group
-  * @data: pin controller driver specific data
-  */
- struct group_desc {
-+	struct pingroup grp;
- 	const char *name;
- 	const unsigned int *pins;
- 	int num_pins;
-@@ -211,6 +215,7 @@ struct group_desc {
- /* Convenience macro to define a generic pin group descriptor */
- #define PINCTRL_GROUP_DESC(_name, _pins, _num_pins, _data)	\
- (struct group_desc) {						\
-+	.grp = PINCTRL_PINGROUP(_name, _pins, _num_pins),	\
- 	.name = _name,						\
- 	.pins = _pins,						\
- 	.num_pins = _num_pins,					\
+> > > 3) LRU and SLAB shrinkers are too common places to handle memcg-related
+> > > tasks. Additionally, memcg can be disabled in the kernel configuration.
+> > 
+> > Right. This could be all hidden in the tracing code. You simply do not
+> > print memcg id when the controller is disabled. Or just simply print 0.
+> > I do not really see any major problems with that.
+> > 
+> > I would really prefer to focus on that direction rather than adding
+> > another begin/end tracepoint which overalaps with existing begin/end
+> > traces and provides much more limited information because I would bet we
+> > will have somebody complaining that mere nr_reclaimed is not sufficient.
+> 
+> Okay, I will try to prepare a new patch version with memcg printing from
+> lruvec and slab tracepoints.
+> 
+> Then Andrew should drop the previous patchsets, I suppose. Please advise
+> on the correct workflow steps here.
+
+Andrew usually just drops the patch from his tree and it will disappaer
+from the linux-next as well.
 -- 
-2.43.0.rc1.1.gbec44491f096
-
+Michal Hocko
+SUSE Labs
