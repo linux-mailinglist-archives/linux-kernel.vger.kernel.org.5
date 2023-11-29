@@ -2,93 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A91E67FDE13
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:13:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C84E7FDE1B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:14:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231693AbjK2RNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 12:13:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32960 "EHLO
+        id S231161AbjK2ROc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 12:14:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231709AbjK2RNJ (ORCPT
+        with ESMTP id S229501AbjK2ROb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 12:13:09 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEB8CBC;
-        Wed, 29 Nov 2023 09:13:08 -0800 (PST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ATH70Ur005040;
-        Wed, 29 Nov 2023 17:13:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=azPyXhZAO1/LTSGf53Txxbl0DE8jhzL3YiN2cyuqFac=;
- b=l0EVZnTSphWZ1qGZL+Sqz4tnQM9yZR09wdUK+E/dG2wKs9vTkJooo71/xSntJIGEswgw
- xkD04Q1WWcWns82lyQ6G0XHQVkmqf2QyVJ8mrk/nAUu1uufgXFrXpC3Evnz6LVHquNVt
- Ajlbd+JzBPw5rFF6L1ypJdHRG2vbeydfcI1O5ryMvfa47Vkl0fJIFNDYg9ZzK7XWqLiY
- zCd4jqnpRd4GZ9NO1dPSHQe2f0EMRIlRp1JDhLC4daFIew7PpMZpYpddahkvHgd+32H4
- zfawTDpKw666S9YilKWp9jqVI3j2NrSNiPKNqVCoRDrY5nLBwCXYwIkedVP188nL532p xg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3up9ds07hj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Nov 2023 17:13:04 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ATH75Ha005199;
-        Wed, 29 Nov 2023 17:12:50 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3up9ds06hv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Nov 2023 17:12:50 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ATGnLc7011187;
-        Wed, 29 Nov 2023 17:12:38 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ukwy2041w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Nov 2023 17:12:38 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ATHCZdT12845702
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Nov 2023 17:12:35 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1673020043;
-        Wed, 29 Nov 2023 17:12:35 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8178420040;
-        Wed, 29 Nov 2023 17:12:34 +0000 (GMT)
-Received: from [9.179.21.219] (unknown [9.179.21.219])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 29 Nov 2023 17:12:34 +0000 (GMT)
-Message-ID: <b43414ef-7aa4-9e5c-a706-41861f0d346c@linux.ibm.com>
-Date:   Wed, 29 Nov 2023 18:12:34 +0100
+        Wed, 29 Nov 2023 12:14:31 -0500
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B646DBE
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 09:14:36 -0800 (PST)
+Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-589d4033e84so20889eaf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 09:14:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701278076; x=1701882876; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MVsHkDnPJv0j8Tyw7llEjBSU+xBdT2jqqtQEJ/0zHok=;
+        b=OtYewhT3wmSbRL7ryhSGj0r15FYQ7Y7RS8yNJv7JnCy4UbHx0U7mQ1W7jo42tx/M2Y
+         Ie28l5Km/fGm/OXKTp8I1lnDi/dR2KHFAS9SjNa3PO3eaMczQaaTNcZlxArvnQR5ARr0
+         3vAHzm98zbFAy1f+GzAeAcbIbkVvE8JUnRKm+9dlQG5sk7iFVKK2fjpod9ihR03+qKHG
+         1EzJ0YCnPlPl/4ktMeFqXBZAud3heEanQVCwXxYviq/7OMVwQ18LYXlE/Xd8ELI/MYVM
+         DTnJmS1UQyrFlFcrXPPJiucu40+KtOKlvl9Dv9r/kwF4kUsIJNvAHlUG5ruPOlrnExgS
+         BmWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701278076; x=1701882876;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MVsHkDnPJv0j8Tyw7llEjBSU+xBdT2jqqtQEJ/0zHok=;
+        b=ZrQmdagTT3sip06xQUFhtRexhgKydWfpQ4RJaOP/Ro3Q6akM0OI5khAnyZWaYhzANa
+         e6B1leVCJbmvoH4oUX9ekO5ICy3LAo1YkNduIhkPsN4IOygz6x5iwIfX2ONha/AnBzY1
+         R7fCjJok4XtyPJ184jmfhIZEeFplW9QVuvMQtgTFjpWt8D64T12fjzC/3r+8+PTLOnYy
+         MurV/J/aJ9ht1TJPGcYTn9aLcsJb3zhPLsOgIZQSe5NQgsSohDXnUbEoKJSaReDhCvci
+         ey5QtHvrq3d9qa09Y/eVMVGMdNZQXWZwvNTai0uFtO2ceRbtip7xlZwRMjyYKcwL89Cz
+         eTig==
+X-Gm-Message-State: AOJu0Yy2AOggUfT7HnQykdsJS/HJ/qV5++iLcNPblUJcLKrOvi+gVy31
+        zHX6WEaSyaUxaC69Ou3g+LU/SpJVL6hdm4L+j3O6Zg==
+X-Google-Smtp-Source: AGHT+IG/Y/jre/2EQ/tO3gsWKMCBwDqTqTUvW8ZnVpGn4c1xWujT3jYFmjBsMcCjYyA3TQyN5J0+PC1fAeByipFxMuM=
+X-Received: by 2002:a05:6358:9998:b0:16b:fbd7:e34a with SMTP id
+ j24-20020a056358999800b0016bfbd7e34amr20723935rwb.5.1701278075870; Wed, 29
+ Nov 2023 09:14:35 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] s390/vfio-ap: handle response code 01 on queue reset
-Content-Language: en-US
-To:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     jjherne@linux.ibm.com, pasic@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, imbrenda@linux.ibm.com, david@redhat.com
-References: <20231129143529.260264-1-akrowiak@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@linux.ibm.com>
-In-Reply-To: <20231129143529.260264-1-akrowiak@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: c0zicIJzmU0dgoEO2gJEoy8knN0XQPTy
-X-Proofpoint-GUID: MlZMYa1VOAevDuZn0VXzPwp02-1s7FQk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-29_15,2023-11-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
- malwarescore=0 impostorscore=0 spamscore=0 mlxlogscore=999 suspectscore=0
- priorityscore=1501 lowpriorityscore=0 bulkscore=0 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311290131
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20231129-zwiespalt-exakt-f1446d88a62a@brauner> <20231129165551.3476910-1-aliceryhl@google.com>
+In-Reply-To: <20231129165551.3476910-1-aliceryhl@google.com>
+From:   Alice Ryhl <aliceryhl@google.com>
+Date:   Wed, 29 Nov 2023 18:14:24 +0100
+Message-ID: <CAH5fLgi6n6WiueLkzvZ7ywt5hXWAJFAyseRr3O=KRAHUQ=hNrQ@mail.gmail.com>
+Subject: Re: [PATCH 4/7] rust: file: add `FileDescriptorReservation`
+To:     brauner@kernel.org
+Cc:     a.hindborg@samsung.com, alex.gaynor@gmail.com, arve@android.com,
+        benno.lossin@proton.me, bjorn3_gh@protonmail.com,
+        boqun.feng@gmail.com, cmllamas@google.com,
+        dan.j.williams@intel.com, dxu@dxuuu.xyz, gary@garyguo.net,
+        gregkh@linuxfoundation.org, joel@joelfernandes.org,
+        keescook@chromium.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, maco@android.com, ojeda@kernel.org,
+        peterz@infradead.org, rust-for-linux@vger.kernel.org,
+        surenb@google.com, tglx@linutronix.de, tkjos@android.com,
+        viro@zeniv.linux.org.uk, wedsonaf@gmail.com, willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -96,75 +78,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 29.11.23 um 15:35 schrieb Tony Krowiak:
-> In the current implementation, response code 01 (AP queue number not valid)
-> is handled as a default case along with other response codes returned from
-> a queue reset operation that are not handled specifically. Barring a bug,
-> response code 01 will occur only when a queue has been externally removed
-> from the host's AP configuration; nn this case, the queue must
-> be reset by the machine in order to avoid leaking crypto data if/when the
-> queue is returned to the host's configuration. The response code 01 case
-> will be handled specifically by logging a WARN message followed by cleaning
-> up the IRQ resources.
-> 
+On Wed, Nov 29, 2023 at 5:55=E2=80=AFPM Alice Ryhl <aliceryhl@google.com> w=
+rote:
 
-To me it looks like this can be triggered by the LPAR admin, correct? So it
-is not desireable but possible.
-In that case I prefer to not use WARN, maybe use dev_warn or dev_err instead.
-WARN can be a disruptive event if panic_on_warn is set.
+> >> +    pub fn commit(self, file: ARef<File>) {
+> >> +        // SAFETY: `self.fd` was previously returned by `get_unused_f=
+d_flags`, and `file.ptr` is
+> >> +        // guaranteed to have an owned ref count by its type invarian=
+ts.
+> >> +        unsafe { bindings::fd_install(self.fd, file.0.get()) };
+> >
+> > Why file.0.get()? Where did that come from?
+>
+> This gets a raw pointer to the C type.
+>
+> The `.0` part is a field access. `ARef` struct is a tuple struct, so its
+> fields are unnamed. However, the fields can still be accessed by index.
 
+Oh, sorry, this is wrong. Let me try again:
 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> ---
->   drivers/s390/crypto/vfio_ap_ops.c | 31 +++++++++++++++++++++++++++++++
->   1 file changed, 31 insertions(+)
-> 
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> index 4db538a55192..91d6334574d8 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -1652,6 +1652,21 @@ static int apq_status_check(int apqn, struct ap_queue_status *status)
->   		 * a value indicating a reset needs to be performed again.
->   		 */
->   		return -EAGAIN;
-> +	case AP_RESPONSE_Q_NOT_AVAIL:
-> +		/*
-> +		 * This response code indicates the queue is not available.
-> +		 * Barring a bug, response code 01 will occur only when a queue
-> +		 * has been externally removed from the host's AP configuration;
-> +		 * in which case, the queue must be reset by the machine in
-> +		 * order to avoid leaking crypto data if/when the queue is
-> +		 * returned to the host's configuration. In this case, let's go
-> +		 * ahead and log a warning message and return 0 so the AQIC
-> +		 * resources get cleaned up by the caller.
-> +		 */
-> +		WARN(true,
-> +		     "Unable to reset queue %02x.%04x: not in host AP configuration\n",
-> +		     AP_QID_CARD(apqn), AP_QID_QUEUE(apqn));
-> +			return 0;
->   	default:
->   		WARN(true,
->   		     "failed to verify reset of queue %02x.%04x: TAPQ rc=%u\n",
-> @@ -1736,6 +1751,22 @@ static void vfio_ap_mdev_reset_queue(struct vfio_ap_queue *q)
->   		q->reset_status.response_code = 0;
->   		vfio_ap_free_aqic_resources(q);
->   		break;
-> +	case AP_RESPONSE_Q_NOT_AVAIL:
-> +		/*
-> +		 * This response code indicates the queue is not available.
-> +		 * Barring a bug, response code 01 will occur only when a queue
-> +		 * has been externally removed from the host's AP configuration;
-> +		 * in which case, the queue must be reset by the machine in
-> +		 * order to avoid leaking crypto data if/when the queue is
-> +		 * returned to the host's configuration. In this case, let's go
-> +		 * ahead and log a warning message then clean up the AQIC
-> +		 * resources.
-> +		 */
-> +		WARN(true,
-> +		     "Unable to reset queue %02x.%04x: not in host AP configuration\n",
-> +		     AP_QID_CARD(q->apqn), AP_QID_QUEUE(q->apqn));
-> +		vfio_ap_free_aqic_resources(q);
-> +		break;
->   	default:
->   		WARN(true,
->   		     "PQAP/ZAPQ for %02x.%04x failed with invalid rc=%u\n",
+This gets a raw pointer to the C type. The `.0` part accesses the
+field of type `Opaque<bindings::file>` in the Rust wrapper. Recall
+that File is defined like this:
+
+pub struct File(Opaque<bindings::file>);
+
+The above syntax defines a tuple struct, which means that the fields
+are unnamed. The `.0` syntax accesses the first field of a tuple
+struct [1].
+
+The `.get()` method is from the `Opaque` struct, which returns a raw
+pointer to the C type being wrapped.
+
+Alice
+
+[1]: https://doc.rust-lang.org/std/keyword.struct.html#:~:text=3DTuple%20st=
+ructs%20are%20similar%20to,with%20regular%20tuples%2C%20namely%20foo.
