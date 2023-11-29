@@ -2,67 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E407FDC51
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3190F7FDC52
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:14:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229668AbjK2QOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 11:14:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44110 "EHLO
+        id S230337AbjK2QOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 11:14:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjK2QOR (ORCPT
+        with ESMTP id S229887AbjK2QOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 11:14:17 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1EA2BF
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:14:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7ED8FC433C8;
-        Wed, 29 Nov 2023 16:14:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701274463;
-        bh=uvJU3eH/XxZmi3lj0tA86wCTtEJNJwwsP4sFPa3oUOk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WhSCVNXGfk+Gcu/2TcZA43P3knbqsOAUiyui6bornKk0YxSWSG4rUYcUvaON/TQJ7
-         Ryh6FIcINp/e/9AODJttOsGnqP43WiV7ioP/w0m9OwNEBUnrr/zCAtIDPQF1Tsx60s
-         Zs/WRYlRItAyazwSoLQauC2onfOzqd3T3JlMjuLyMzwEDELNE+oUvE1NmkBapjA+bh
-         XzBTiv/W7gj9TbM4c/XAdDMLsDkInVVKt6OR/kyTzE+gMt98My/0vmS3V2SbQSnRQq
-         WnhDEgPflGwhxjk+PtuI510+uUe3zwTvpE2KZ/H22RFLJdyex+uTma+2RdoMqoMbRT
-         BbNMB0zeOxD8g==
-Date:   Wed, 29 Nov 2023 17:14:14 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     Alice Ryhl <aliceryhl@google.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?utf-8?B?QmrDtnJu?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
-        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 4/7] rust: file: add `FileDescriptorReservation`
-Message-ID: <20231129-zwiespalt-exakt-f1446d88a62a@brauner>
-References: <20231129-alice-file-v1-0-f81afe8c7261@google.com>
- <20231129-alice-file-v1-4-f81afe8c7261@google.com>
+        Wed, 29 Nov 2023 11:14:33 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72622D69;
+        Wed, 29 Nov 2023 08:14:39 -0800 (PST)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ATGE5GO022031;
+        Wed, 29 Nov 2023 16:14:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : reply-to : to : cc : date : in-reply-to : references : content-type
+ : mime-version : content-transfer-encoding; s=pp1;
+ bh=orzbsyYc+22SoXDoqw2ebK3y4KFZaFz5xvaffogBFu0=;
+ b=MZwnqYOPX7LnHRqC70tCh1aL9Bx8JdIHKcb2Wy6m5ZNojozYyvqYdEg7EjdlOtjPeu2h
+ nhEl6HC23hnXOSfv9dCx+pILYjNsHs3PdqTKTu0QDl3OKLJGSIw3TkJ36rHpoU/q9Kft
+ 5kHvj6Zcus/CgH6r2BiozRouvxfYpmgChEwM+LjjBtXs4Z5Td/aZB32AlFgmw7UHpAdG
+ QbvrW54hoZXOWGmqOlIkKzKlcJHqgqUJI92dP107186KroX2H6aiXqiLEmWo64cc8wkV
+ bb16lA2zqwZbXW50mCPveXv5Oeqcvn7wx4QlgPLKBzKFKc8Wj8kCqlaU54b8zK47mt3Q sQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3up8mw81j7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Nov 2023 16:14:35 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ATGEVoT024555;
+        Wed, 29 Nov 2023 16:14:31 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3up8mw81bk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Nov 2023 16:14:30 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ATE6QJP004403;
+        Wed, 29 Nov 2023 16:14:28 GMT
+Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
+        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ukwy1yrr5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Nov 2023 16:14:28 +0000
+Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
+        by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ATGERaJ46269124
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 29 Nov 2023 16:14:27 GMT
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 74AE35805D;
+        Wed, 29 Nov 2023 16:14:27 +0000 (GMT)
+Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7170858058;
+        Wed, 29 Nov 2023 16:14:26 +0000 (GMT)
+Received: from lingrow.int.hansenpartnership.com (unknown [9.67.129.184])
+        by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 29 Nov 2023 16:14:26 +0000 (GMT)
+Message-ID: <fe077251fea010af59214049eea9681b8008852a.camel@linux.ibm.com>
+Subject: Re: [PATCH] [scsi] lasi700: Add error handling in lasi700_probe
+From:   James Bottomley <jejb@linux.ibm.com>
+Reply-To: jejb@linux.ibm.com
+To:     Haoran Liu <liuhaoran14@163.com>
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 29 Nov 2023 11:14:24 -0500
+In-Reply-To: <20231129145200.34596-1-liuhaoran14@163.com>
+References: <20231129145200.34596-1-liuhaoran14@163.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231129-alice-file-v1-4-f81afe8c7261@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: IM1anRz5JwQFzhidCrx6Rsg9M2enZcXE
+X-Proofpoint-ORIG-GUID: V3aNp1G5ZhCENU3RYpeY5njxywsC3WIe
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-29_14,2023-11-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ spamscore=0 mlxscore=0 malwarescore=0 phishscore=0 lowpriorityscore=0
+ clxscore=1011 impostorscore=0 priorityscore=1501 mlxlogscore=823
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311290123
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,137 +93,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 01:11:56PM +0000, Alice Ryhl wrote:
-> From: Wedson Almeida Filho <wedsonaf@gmail.com>
-> 
-> Allow for the creation of a file descriptor in two steps: first, we
-> reserve a slot for it, then we commit or drop the reservation. The first
-> step may fail (e.g., the current process ran out of available slots),
-> but commit and drop never fail (and are mutually exclusive).
-> 
-> This is needed by Rust Binder when fds are sent from one process to
-> another. It has to be a two-step process to properly handle the case
-> where multiple fds are sent: The operation must fail or succeed
-> atomically, which we achieve by first reserving the fds we need, and
-> only installing the files once we have reserved enough fds to send the
-> files.
-> 
-> Fd reservations assume that the value of `current` does not change
-> between the call to get_unused_fd_flags and the call to fd_install (or
-> put_unused_fd). By not implementing the Send trait, this abstraction
-> ensures that the `FileDescriptorReservation` cannot be moved into a
-> different process.
-> 
-> Signed-off-by: Wedson Almeida Filho <wedsonaf@gmail.com>
-> Co-developed-by: Alice Ryhl <aliceryhl@google.com>
-> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
-> ---
->  rust/kernel/file.rs | 64 ++++++++++++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 63 insertions(+), 1 deletion(-)
-> 
-> diff --git a/rust/kernel/file.rs b/rust/kernel/file.rs
-> index f1f71c3d97e2..2186a6ea3f2f 100644
-> --- a/rust/kernel/file.rs
-> +++ b/rust/kernel/file.rs
-> @@ -11,7 +11,7 @@
->      error::{code::*, Error, Result},
->      types::{ARef, AlwaysRefCounted, Opaque},
->  };
-> -use core::ptr;
-> +use core::{marker::PhantomData, ptr};
->  
->  /// Flags associated with a [`File`].
->  pub mod flags {
-> @@ -180,6 +180,68 @@ unsafe fn dec_ref(obj: ptr::NonNull<Self>) {
->      }
->  }
->  
-> +/// A file descriptor reservation.
-> +///
-> +/// This allows the creation of a file descriptor in two steps: first, we reserve a slot for it,
-> +/// then we commit or drop the reservation. The first step may fail (e.g., the current process ran
-> +/// out of available slots), but commit and drop never fail (and are mutually exclusive).
-> +///
-> +/// Dropping the reservation happens in the destructor of this type.
-> +///
-> +/// # Invariants
-> +///
-> +/// The fd stored in this struct must correspond to a reserved file descriptor of the current task.
-> +pub struct FileDescriptorReservation {
+On Wed, 2023-11-29 at 06:52 -0800, Haoran Liu wrote:
+> This patch introduces improved error handling for the dma_set_mask
+> and ioremap calls in the lasi700_probe function within
+> drivers/scsi/lasi700.c. Previously, the function did not properly
+> handle the potential failure of these calls, which could lead to
+> improper device initialization and unpredictable behavior.
 
-Can we follow the traditional file terminology, i.e.,
-get_unused_fd_flags() and fd_install()? At least at the beginning this
-might be quite helpful instead of having to mentally map new() and
-commit() onto the C functions.
+I have to ask what the point of this is?  There was once an
+architecture that couldn't support 32 bit DMA masks (the altix), but
+it's long gone.  The structural assumption is that a 32 bit DMA mask
+can always be set, so drivers with simple DMA requirements (32 or 64
+bit) usually only check 64 and assume they can fallback to 32.
 
-> +    fd: u32,
-> +    /// Prevent values of this type from being moved to a different task.
-> +    ///
-> +    /// This is necessary because the C FFI calls assume that `current` is set to the task that
-> +    /// owns the fd in question.
-> +    _not_send_sync: PhantomData<*mut ()>,
+> Although the error addressed by this patch may not occur in the
+> current environment, I still suggest implementing these error
+> handling routines if the function is not highly time-sensitive. As
+> the environment evolves or the code gets reused in different
+> contexts, there's a possibility that these errors might occur.
+> Addressing them now can prevent potential debugging efforts in the
+> future, which could be quite resource-intensive.
 
-I don't fully understand this. Can you explain in a little more detail
-what you mean by this and how this works?
+This particular operation can never fail on the PA-RISC GSC device,
+which is the only one this driver supports, so the driver currently has
+no error handling because this is something that can't happen.
 
-> +}
-> +
-> +impl FileDescriptorReservation {
-> +    /// Creates a new file descriptor reservation.
-> +    pub fn new(flags: u32) -> Result<Self> {
-> +        // SAFETY: FFI call, there are no safety requirements on `flags`.
-> +        let fd: i32 = unsafe { bindings::get_unused_fd_flags(flags) };
-> +        if fd < 0 {
-> +            return Err(Error::from_errno(fd));
-> +        }
-> +        Ok(Self {
-> +            fd: fd as _,
+James
 
-This is a cast to a u32?
-
-> +            _not_send_sync: PhantomData,
-
-Can you please draft a quick example how that return value would be
-expected to be used by a caller? It's really not clear 
-
-> +        })
-> +    }
-> +
-> +    /// Returns the file descriptor number that was reserved.
-> +    pub fn reserved_fd(&self) -> u32 {
-> +        self.fd
-> +    }
-> +
-> +    /// Commits the reservation.
-> +    ///
-> +    /// The previously reserved file descriptor is bound to `file`. This method consumes the
-> +    /// [`FileDescriptorReservation`], so it will not be usable after this call.
-> +    pub fn commit(self, file: ARef<File>) {
-> +        // SAFETY: `self.fd` was previously returned by `get_unused_fd_flags`, and `file.ptr` is
-> +        // guaranteed to have an owned ref count by its type invariants.
-> +        unsafe { bindings::fd_install(self.fd, file.0.get()) };
-
-Why file.0.get()? Where did that come from?
-
-> +
-> +        // `fd_install` consumes both the file descriptor and the file reference, so we cannot run
-> +        // the destructors.
-> +        core::mem::forget(self);
-> +        core::mem::forget(file);
-> +    }
-> +}
-> +
-> +impl Drop for FileDescriptorReservation {
-> +    fn drop(&mut self) {
-> +        // SAFETY: `self.fd` was returned by a previous call to `get_unused_fd_flags`.
-> +        unsafe { bindings::put_unused_fd(self.fd) };
-> +    }
-> +}
-> +
->  /// Represents the `EBADF` error code.
->  ///
->  /// Used for methods that can only fail with `EBADF`.
-> 
-> -- 
-> 2.43.0.rc1.413.gea7ed67945-goog
-> 
