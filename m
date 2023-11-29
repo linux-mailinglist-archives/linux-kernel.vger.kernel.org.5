@@ -2,147 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A26B07FCF7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 07:56:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D6B7FCF7E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 07:57:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235035AbjK2G4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 01:56:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53008 "EHLO
+        id S230204AbjK2G5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 01:57:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234906AbjK2Gzs (ORCPT
+        with ESMTP id S229498AbjK2G5M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 01:55:48 -0500
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2071.outbound.protection.outlook.com [40.107.243.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB722106;
-        Tue, 28 Nov 2023 22:55:43 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=O7ErRTO/sW5GqWbtJGh1hrZwg5IvSVRpKNxlEVxZ77wllrf2QqhayEN/m9qYlTkgzFqIB4KwYOMbl8uzsGf+XfEyo1GlXUGwmdF6wM3WtJsM+fr0NlWAVai8l6xvOL7g9V9vzn0uQYk8veSIFCK9Ochmb6QvwAPtzahGAEIa6yK8Nfw9Zv4hBVC2EnnD7hmXNb8p50eMj7nZPm6oOza/bvcqwiu6SShNiftUZnV17A9MrWYtVURi2855aMBEWd05gzixnymqV5Bp4ic9TGcq/GESGaYRbNzhIJ+TREF7jv0zXa9LV9LrBHS47zzLgldkg4B3Q2KR/gX9FYoIPQqluA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iKc1dIPsjE9yGYtF4kKEBsXDZo1NDaqtRaV3fani9k4=;
- b=D6ydXa8dvTdJcUiI5Iis5HEslGuBUgb8e79BJid87aLuauOl6QBRBBmel28D3I0j8bvH0jaqqHHOhNEkfGunfq5TluEFZhf9Fr/GiE62D5BERUA4xj6eipquoMn1ZVSVLqirim6C8DZx7bwzk+Dqop979A1tBK4opifRULK4xGX3sIYAmUo4tno33De4i1qojU/E41tjEmdeAcD+8DJ6t67Y3ED4u1t4p7yG8Z/qXlpf+sRzotvqhEfccx4mEKWXFNXCiU4X/yb+MS+I5NFGbXFZtT3QsjPTQHkxoXcyKNVu/XYJ8i44tDywFCIrqRbAY8w/f8ALEGT0HGVbxPgAHg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iKc1dIPsjE9yGYtF4kKEBsXDZo1NDaqtRaV3fani9k4=;
- b=h8FVn1gD7J/aYM1TTtvx+NdHO01BChCiIcde0v99jjGc7dkjv8k4x07S7vPIgxERc5n6xHGz4/w3FJUfYyElDHo1e3iggqqDfjxa48hooCPL6AsaFnd5GUPlKX0uLSwSQ1oBLytwt5pGdPK367j20CWOfzUE6lX1a24LcAuL0ao=
-Received: from PR3P192CA0020.EURP192.PROD.OUTLOOK.COM (2603:10a6:102:56::25)
- by PH7PR12MB7162.namprd12.prod.outlook.com (2603:10b6:510:201::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Wed, 29 Nov
- 2023 06:55:41 +0000
-Received: from SN1PEPF0002BA52.namprd03.prod.outlook.com
- (2603:10a6:102:56:cafe::36) by PR3P192CA0020.outlook.office365.com
- (2603:10a6:102:56::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.28 via Frontend
- Transport; Wed, 29 Nov 2023 06:55:40 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SN1PEPF0002BA52.mail.protection.outlook.com (10.167.242.75) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7046.17 via Frontend Transport; Wed, 29 Nov 2023 06:55:40 +0000
-Received: from jasmine-meng.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 29 Nov
- 2023 00:55:33 -0600
-From:   Meng Li <li.meng@amd.com>
-To:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Huang Rui <ray.huang@amd.com>
-CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <x86@kernel.org>, <linux-acpi@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        <linux-kselftest@vger.kernel.org>,
-        "Nathan Fontenot" <nathan.fontenot@amd.com>,
-        Deepak Sharma <deepak.sharma@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Shimmer Huang <shimmer.huang@amd.com>,
-        "Perry Yuan" <Perry.Yuan@amd.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "Oleksandr Natalenko" <oleksandr@natalenko.name>,
-        Meng Li <li.meng@amd.com>, Wyes Karny <wyes.karny@amd.com>
-Subject: [PATCH V11 7/7] Documentation: introduce amd-pstate preferrd core mode kernel command line options
-Date:   Wed, 29 Nov 2023 14:54:37 +0800
-Message-ID: <20231129065437.290183-8-li.meng@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231129065437.290183-1-li.meng@amd.com>
-References: <20231129065437.290183-1-li.meng@amd.com>
+        Wed, 29 Nov 2023 01:57:12 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B460A170B;
+        Tue, 28 Nov 2023 22:57:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=o+ruwW4g+vXqotGBgvYVAqikIMr9ZibjwJBBiNvt/1o=;
+        t=1701241037; x=1702450637; b=g7e52XAcp8k3t9kvrSac43LUO1SRdqmfhXd72w+/xEuTcHk
+        pzwfKFwWO0FN0B7iYep1cUzxkAV8nm/sEpC3FX5tjfgPPn5oKr8zWt3VVzH0GiVqO+8ZZtL41jC4x
+        d1s5BdS0JuhTy7pVOOskemXDdO/vN8VsFDZxvZXR/0yAhEI7zEcW1kWccZ5X1+U4PSMo0zTByVBya
+        0oGWhMloJS3dfwff4+rrn6DUUq0dqv39gU5CRukXazfErw5/mrm45UuCjfkjEEPgUrQWPn47P8vzn
+        vulqDmIXftJK3p7dp0VD/m4Cjxpz8UtNZcPTtgI/vyp/Z+WLn4bVB0TY/YMyVDCQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.97)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1r8EVQ-00000008Y6r-2148;
+        Wed, 29 Nov 2023 07:57:08 +0100
+Message-ID: <6c7765f13b715e67637438c6dffaa5a369758519.camel@sipsolutions.net>
+Subject: Re: [PATCH] wifi: mac80211: sband's null check should precede params
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Edward Adam Davis <eadavis@qq.com>,
+        syzbot+62d7eef57b09bfebcd84@syzkaller.appspotmail.com
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com
+Date:   Wed, 29 Nov 2023 07:57:07 +0100
+In-Reply-To: <tencent_0CCA1979CFA30DC8A5CF8DDC92365DCE5D07@qq.com>
+References: <000000000000efc64705ff8286a1@google.com>
+         <tencent_0CCA1979CFA30DC8A5CF8DDC92365DCE5D07@qq.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002BA52:EE_|PH7PR12MB7162:EE_
-X-MS-Office365-Filtering-Correlation-Id: 083529a5-eb54-4c17-065c-08dbf0a832e4
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Kpz4ZUufly4qa3LqPwBfJ5kZFMYUwC6MA1wONlLmUFanJzPOhSSSzZfoxs4eeuPc672yrUaD8L/Xf2Xe2Tp/ctuNapU8BnAgNEDrcUu5Kz8CekY3gyEwysJfR3qTQf6+DX8JkPnW7ucQzV97vLW95WOniLmECzvXBSUmODNYQJygQqCQNHMoKDAXr8QI3yM/mfK75vOKG3/GiU6oSh1b5/7jO46mdrRGQmlLClUvJRB5DXupo8LWWvVdrlZln+fmnA4ceMmI3mWlJxu0JECFx22Y0KRI1KhV3gDFE3Hb0639eK7ERTBCJCRsOFjbSs0ifgpkmPMpusJFd0LkzJ+0MnxDbDyEWdI7EjBvbZr5r6Dd9rNRScnBcjROV+1GSOn3L2Wyq/rI5uMZkLNWi48+YME+wr+kAlYqrnbZ9g96v+HczPutoAmQzL4m24HpIIWMTMGmmZLt8kQ8eynbE0ylkANq3PhIgFGDemTACXrUCRfZJeXhfWwVtsZv8E919oMgpDqvM2vzW+MP7mH6xTQUp/U6BxUdUGSaJJsBrErW2rk+C2YMo0lbcAHOtqkYWbTYH52t+iLePMEBnarmnFCm+xRH0y0gx2jGnHgXaNeC73NLDKM4bwOlifxn/C5b5qMT/ZeY3df6KhcFTItMx5mcvshxYv21i04SLgwvBrRfKuAyqcYLvJ36gYc3CVgE8qgIkc7EMqQgVu9fuleF6LMmM6xC6WHE0hDGhUGW3FAqQCok52zQPWb2BMIx5WY/wQ3IWNp9BM2rGeSN8s1fHaujtL4rNLJHI3pg9xn/CVP9j3imGvrk2LwVK211OkBysV7f
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(39860400002)(136003)(376002)(230922051799003)(451199024)(82310400011)(186009)(64100799003)(1800799012)(40470700004)(36840700001)(46966006)(40480700001)(41300700001)(2906002)(40460700003)(7416002)(86362001)(5660300002)(356005)(81166007)(83380400001)(70586007)(6636002)(70206006)(8936002)(4326008)(8676002)(336012)(110136005)(54906003)(16526019)(7696005)(82740400003)(2616005)(316002)(1076003)(26005)(36756003)(426003)(478600001)(47076005)(36860700001)(36900700001)(14943795004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 06:55:40.1408
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 083529a5-eb54-4c17-065c-08dbf0a832e4
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF0002BA52.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7162
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-malware-bazaar: not-scanned
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-amd-pstate driver support enable/disable preferred core.
-Default enabled on platforms supporting amd-pstate preferred core.
-Disable amd-pstate preferred core with
-"amd_prefcore=disable" added to the kernel command line.
+On Wed, 2023-11-29 at 13:48 +0800, Edward Adam Davis wrote:
+>=20
+> [Analysis]
+> When ieee80211_get_link_sband() fails to find a valid sband and first che=
+cks=20
+> for params in sta_link_apply_parameters(), it will return 0 due to new_li=
+nk=20
+> being 0, which will lead to an incorrect process after sta_apply_paramete=
+rs().
+>=20
+> [Fix]
+> First obtain sband and perform a non null check before checking the param=
+s.
 
-Signed-off-by: Meng Li <li.meng@amd.com>
-Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
-Reviewed-by: Wyes Karny <wyes.karny@amd.com>
-Reviewed-by: Huang Rui <ray.huang@amd.com>
-Tested-by: Oleksandr Natalenko <oleksandr@natalenko.name>
----
- Documentation/admin-guide/kernel-parameters.txt | 5 +++++
- 1 file changed, 5 insertions(+)
+Not sure I can even disagree with that analysis, it seems right, but ...
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 758bb25ea3e6..008bdfd63c22 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -363,6 +363,11 @@
- 			  selects a performance level in this range and appropriate
- 			  to the current workload.
- 
-+	amd_prefcore=
-+			[X86]
-+			disable
-+			  Disable amd-pstate preferred core.
-+
- 	amijoy.map=	[HW,JOY] Amiga joystick support
- 			Map of devices attached to JOY0DAT and JOY1DAT
- 			Format: <a>,<b>
--- 
-2.34.1
+> +	if (!link || !link_sta)
+> +		return -EINVAL;
+> +
+> +	sband =3D ieee80211_get_link_sband(link);
+> +	if (!sband)
+> +		return -EINVAL;
+> +
+>  	/*
+>  	 * If there are no changes, then accept a link that doesn't exist,
+>  	 * unless it's a new link.
 
+There's a comment here which is clearly not true after this change,
+since you've already returned for !link_sta?
+
+johannes
