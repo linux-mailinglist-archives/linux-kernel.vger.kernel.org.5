@@ -2,141 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9975E7FD03A
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 08:59:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6CD7FD04D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:04:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbjK2H7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 02:59:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34454 "EHLO
+        id S230072AbjK2IES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 03:04:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjK2H7k (ORCPT
+        with ESMTP id S229464AbjK2IEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 02:59:40 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7EF61A5
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 23:59:46 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-5c229dabbb6so4289709a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 23:59:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1701244786; x=1701849586; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZGwa/klWYWx3gVbFO7UV3sjDmi0cMp8GGfC8jWdaqOs=;
-        b=U4fxZJjrLknoM74F9M5SQZuwCbht/oZCeNcVFO/UDjyCFXMQKykI6sSpbuXLh8qpzS
-         17GlZkRmkQguChrXSjd3Bs+dPa/n3ZZTsFlykxwXvMxQ9F/nu7QAsWbDLIdA1KiVV0TO
-         KXKxM5xQ0uXs+2UGmvFvFP7ywILl9QWIRH1J4TVOXM4Z2Jbn9qMayUhlQIJ26B58yNeP
-         JmAQTz8P4eTyEDtxOWrZd27YKWYjMqJkZhmtBcGBRwJo5faoBKYwJ0Sizh13q177vE+L
-         W/72gQsZwBRSGbg0mmN5VRUp48zW/V+ZRhypeBeo9QrxDQvskk4xxBFXuAaBFD9lD/3R
-         0y1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701244786; x=1701849586;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZGwa/klWYWx3gVbFO7UV3sjDmi0cMp8GGfC8jWdaqOs=;
-        b=uA91jtsxjCP+ZjN6gBt8FE0yKxa6fubQDG3yAJaltSC0AeC0uk361xDCKpHxy6HZUk
-         lENuek5ZFBJ7LiE1s3C3u2yl8+buG181dH247EjZMYTFno+bh4sjfqNdykvxXx3PUKsq
-         Dh0eutOo1M3S2Vqqk0QVkjOStraTfHUo5aCK7fXD8UPDIxiKs0QOO4/ouYgepBTwj9n+
-         GoaFJ0lJv/mFLlimazeft0V7ykgniKJdfqzFCwuZ8Bp9DmU14cCA3JO21+2hRLERApJ8
-         AoLNQtEdizLBi53epoZjD1U1gGIm7FFT2YI5WVN2vYIqOI9HWQ0P4QuTryljrZTuK5zK
-         yEUA==
-X-Gm-Message-State: AOJu0YxtXk3abOPR6fhbuIMkhCjg0TBtjXR1EdL7ML6Oh2CmxGmeWBLi
-        +W9mTrdMk3qdoz/72PFu5iw4Aw==
-X-Google-Smtp-Source: AGHT+IEW7RY6rW1xN0SZYk2KmfKRhGALSQC7dhZKn7nt9rZPJDObYoCq4CCKaltza5Ttsehw10eh9Q==
-X-Received: by 2002:a05:6a20:6a0e:b0:18b:8158:b115 with SMTP id p14-20020a056a206a0e00b0018b8158b115mr20395186pzk.56.1701244786219;
-        Tue, 28 Nov 2023 23:59:46 -0800 (PST)
-Received: from localhost.localdomain ([61.213.176.9])
-        by smtp.gmail.com with ESMTPSA id s17-20020a170902989100b001cfd0ddc5d3sm4979419plp.277.2023.11.28.23.59.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 23:59:45 -0800 (PST)
-From:   Jiachen Zhang <zhangjiachen.jaycee@bytedance.com>
-To:     Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Dave Chinner <dchinner@redhat.com>,
-        Allison Henderson <allison.henderson@oracle.com>,
-        Zhang Tianci <zhangtianci.1997@bytedance.com>,
-        Brian Foster <bfoster@redhat.com>, Ben Myers <bpm@sgi.com>,
-        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xieyongji@bytedance.com, me@jcix.top,
-        Dave Chinner <david@fromorbit.com>
-Subject: [PATCH v2 2/2] xfs: update dir3 leaf block metadata after swap
-Date:   Wed, 29 Nov 2023 15:58:32 +0800
-Message-Id: <20231129075832.73600-3-zhangjiachen.jaycee@bytedance.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20231129075832.73600-1-zhangjiachen.jaycee@bytedance.com>
-References: <20231129075832.73600-1-zhangjiachen.jaycee@bytedance.com>
+        Wed, 29 Nov 2023 03:04:14 -0500
+X-Greylist: delayed 282 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 29 Nov 2023 00:04:18 PST
+Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.233.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E93710F0;
+        Wed, 29 Nov 2023 00:04:17 -0800 (PST)
+X-QQ-mid: bizesmtp64t1701244736ta8gixpe
+Received: from HX01040049.powercore.com.cn ( [125.94.202.196])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Wed, 29 Nov 2023 15:58:49 +0800 (CST)
+X-QQ-SSF: 01400000000000708000000A0000000
+X-QQ-FEAT: gBprNiU+WNeRCxd1mFC0ek6Tr9pLWM0mTZ8midTMAGSwDIo4FTOPE7P8jVK5u
+        +jS+f0RV5CzN/+0yORbfyySXnusFmiK22mABedLLcYzyGgYY1frZEeKnDSQl8zoRdx90QJy
+        G/zOe6wfeheY/JSBeS+SmYGCxZbkSJiYeEiOkibXu9AaKfnYNSd1J1SqscQdVLaFoTCA9zN
+        9atgjRdl4GsXTkWfml6gExxq80YpEp/8gdZoGjwNktkdkCZumWt9uN3nEUQR7BV4w2x6Jh/
+        mf0OcdUJoF4M7awpTHrY26mXg61djVAzY/+1VZVZq0WhonU6SAilF4v3uT/9rDfTcR/FFNy
+        HF+Gvi4Z452yTWE5KoCxtLfp6j8ZTNwd9Qc0tkxi3r0bu7Gwd66E2IHEsFZsHIUX9Dd6g+2
+        Xiks/CqNkxmvGl6iz5vOGnr6Rlpn7cwC
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 3565711899021422489
+From:   Zhao Ke <ke.zhao@shingroup.cn>
+To:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        fbarrat@linux.ibm.com, ajd@linux.ibm.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, shenghui.qu@shingroup.cn,
+        luming.yu@shingroup.cn, dawei.li@shingroup.cn,
+        Zhao Ke <ke.zhao@shingroup.cn>
+Subject: [PATCH v2] powerpc: Add PVN support for HeXin C2000 processor
+Date:   Wed, 29 Nov 2023 15:58:45 +0800
+Message-Id: <20231129075845.57976-1-ke.zhao@shingroup.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrsz:qybglogicsvrsz3a-0
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Tianci <zhangtianci.1997@bytedance.com>
+HeXin Tech Co. has applied for a new PVN from the OpenPower Community
+for its new processor C2000. The OpenPower has assigned a new PVN
+and this newly assigned PVN is 0x0066, add pvr register related
+support for this PVN.
 
-xfs_da3_swap_lastblock() copy the last block content to the dead block,
-but do not update the metadata in it. We need update some metadata
-for some kinds of type block, such as dir3 leafn block records its
-blkno, we shall update it to the dead block blkno. Otherwise,
-before write the xfs_buf to disk, the verify_write() will fail in
-blk_hdr->blkno != xfs_buf->b_bn, then xfs will be shutdown.
-
-We will get this warning:
-
-  XFS (dm-0): Metadata corruption detected at xfs_dir3_leaf_verify+0xa8/0xe0 [xfs], xfs_dir3_leafn block 0x178
-  XFS (dm-0): Unmount and run xfs_repair
-  XFS (dm-0): First 128 bytes of corrupted metadata buffer:
-  00000000e80f1917: 00 80 00 0b 00 80 00 07 3d ff 00 00 00 00 00 00  ........=.......
-  000000009604c005: 00 00 00 00 00 00 01 a0 00 00 00 00 00 00 00 00  ................
-  000000006b6fb2bf: e4 44 e3 97 b5 64 44 41 8b 84 60 0e 50 43 d9 bf  .D...dDA..`.PC..
-  00000000678978a2: 00 00 00 00 00 00 00 83 01 73 00 93 00 00 00 00  .........s......
-  00000000b28b247c: 99 29 1d 38 00 00 00 00 99 29 1d 40 00 00 00 00  .).8.....).@....
-  000000002b2a662c: 99 29 1d 48 00 00 00 00 99 49 11 00 00 00 00 00  .).H.....I......
-  00000000ea2ffbb8: 99 49 11 08 00 00 45 25 99 49 11 10 00 00 48 fe  .I....E%.I....H.
-  0000000069e86440: 99 49 11 18 00 00 4c 6b 99 49 11 20 00 00 4d 97  .I....Lk.I. ..M.
-  XFS (dm-0): xfs_do_force_shutdown(0x8) called from line 1423 of file fs/xfs/xfs_buf.c.  Return address = 00000000c0ff63c1
-  XFS (dm-0): Corruption of in-memory data detected.  Shutting down filesystem
-  XFS (dm-0): Please umount the filesystem and rectify the problem(s)
-
-From the log above, we know xfs_buf->b_no is 0x178, but the block's hdr record
-its blkno is 0x1a0.
-
-Fixes: 24df33b45ecf ("xfs: add CRC checking to dir2 leaf blocks")
-Signed-off-by: Zhang Tianci <zhangtianci.1997@bytedance.com>
-Suggested-by: Dave Chinner <david@fromorbit.com>
+Signed-off-by: Zhao Ke <ke.zhao@shingroup.cn>
+Link: https://discuss.openpower.foundation/t/how-to-get-a-new-pvr-for-processors-follow-power-isa/477/10
 ---
- fs/xfs/libxfs/xfs_da_btree.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+	v1 -> v2:
+	- Fix pvr_mask and cpu_name
+	- Fix alignment pattern to match other lines
+	v0 -> v1:
+	- Fix .cpu_name with the correct description
+---
+---
+ arch/powerpc/include/asm/reg.h            |  1 +
+ arch/powerpc/kernel/cpu_specs_book3s_64.h | 15 +++++++++++++++
+ arch/powerpc/kvm/book3s_pr.c              |  1 +
+ arch/powerpc/mm/book3s64/pkeys.c          |  3 ++-
+ arch/powerpc/platforms/powernv/subcore.c  |  3 ++-
+ drivers/misc/cxl/cxl.h                    |  3 ++-
+ 6 files changed, 23 insertions(+), 3 deletions(-)
 
-diff --git a/fs/xfs/libxfs/xfs_da_btree.c b/fs/xfs/libxfs/xfs_da_btree.c
-index e576560b46e9..d11e6286e466 100644
---- a/fs/xfs/libxfs/xfs_da_btree.c
-+++ b/fs/xfs/libxfs/xfs_da_btree.c
-@@ -2318,8 +2318,17 @@ xfs_da3_swap_lastblock(
- 	 * Copy the last block into the dead buffer and log it.
- 	 */
- 	memcpy(dead_buf->b_addr, last_buf->b_addr, args->geo->blksize);
--	xfs_trans_log_buf(tp, dead_buf, 0, args->geo->blksize - 1);
- 	dead_info = dead_buf->b_addr;
-+	/*
-+	 * If xfs enable crc, the node/leaf block records its blkno, we
-+	 * must update it.
-+	 */
-+	if (xfs_has_crc(mp)) {
-+		struct xfs_da3_blkinfo *da3 = container_of(dead_info, struct xfs_da3_blkinfo, hdr);
-+
-+		da3->blkno = cpu_to_be64(xfs_buf_daddr(dead_buf));
-+	}
-+	xfs_trans_log_buf(tp, dead_buf, 0, args->geo->blksize - 1);
+diff --git a/arch/powerpc/include/asm/reg.h b/arch/powerpc/include/asm/reg.h
+index 4ae4ab9090a2..7fd09f25452d 100644
+--- a/arch/powerpc/include/asm/reg.h
++++ b/arch/powerpc/include/asm/reg.h
+@@ -1361,6 +1361,7 @@
+ #define PVR_POWER8E	0x004B
+ #define PVR_POWER8NVL	0x004C
+ #define PVR_POWER8	0x004D
++#define PVR_HX_C2000	0x0066
+ #define PVR_POWER9	0x004E
+ #define PVR_POWER10	0x0080
+ #define PVR_BE		0x0070
+diff --git a/arch/powerpc/kernel/cpu_specs_book3s_64.h b/arch/powerpc/kernel/cpu_specs_book3s_64.h
+index c370c1b804a9..3ff9757df4c0 100644
+--- a/arch/powerpc/kernel/cpu_specs_book3s_64.h
++++ b/arch/powerpc/kernel/cpu_specs_book3s_64.h
+@@ -238,6 +238,21 @@ static struct cpu_spec cpu_specs[] __initdata = {
+ 		.machine_check_early	= __machine_check_early_realmode_p8,
+ 		.platform		= "power8",
+ 	},
++	{	/* 2.07-compliant processor, HeXin C2000 processor */
++		.pvr_mask		= 0xffff0000,
++		.pvr_value		= 0x00660000,
++		.cpu_name		= "HX-C2000",
++		.cpu_features		= CPU_FTRS_POWER8,
++		.cpu_user_features	= COMMON_USER_POWER8,
++		.cpu_user_features2	= COMMON_USER2_POWER8,
++		.mmu_features		= MMU_FTRS_POWER8,
++		.icache_bsize		= 128,
++		.dcache_bsize		= 128,
++		.cpu_setup		= __setup_cpu_power8,
++		.cpu_restore		= __restore_cpu_power8,
++		.machine_check_early	= __machine_check_early_realmode_p8,
++		.platform		= "power8",
++	},
+ 	{	/* 3.00-compliant processor, i.e. Power9 "architected" mode */
+ 		.pvr_mask		= 0xffffffff,
+ 		.pvr_value		= 0x0f000005,
+diff --git a/arch/powerpc/kvm/book3s_pr.c b/arch/powerpc/kvm/book3s_pr.c
+index 9118242063fb..5b92619a05fd 100644
+--- a/arch/powerpc/kvm/book3s_pr.c
++++ b/arch/powerpc/kvm/book3s_pr.c
+@@ -604,6 +604,7 @@ static void kvmppc_set_pvr_pr(struct kvm_vcpu *vcpu, u32 pvr)
+ 	case PVR_POWER8:
+ 	case PVR_POWER8E:
+ 	case PVR_POWER8NVL:
++	case PVR_HX_C2000:
+ 	case PVR_POWER9:
+ 		vcpu->arch.hflags |= BOOK3S_HFLAG_MULTI_PGSIZE |
+ 			BOOK3S_HFLAG_NEW_TLBIE;
+diff --git a/arch/powerpc/mm/book3s64/pkeys.c b/arch/powerpc/mm/book3s64/pkeys.c
+index 125733962033..a974baf8f327 100644
+--- a/arch/powerpc/mm/book3s64/pkeys.c
++++ b/arch/powerpc/mm/book3s64/pkeys.c
+@@ -89,7 +89,8 @@ static int __init scan_pkey_feature(void)
+ 			unsigned long pvr = mfspr(SPRN_PVR);
+ 
+ 			if (PVR_VER(pvr) == PVR_POWER8 || PVR_VER(pvr) == PVR_POWER8E ||
+-			    PVR_VER(pvr) == PVR_POWER8NVL || PVR_VER(pvr) == PVR_POWER9)
++			    PVR_VER(pvr) == PVR_POWER8NVL || PVR_VER(pvr) == PVR_POWER9 ||
++			    PVR_VER(pvr) == PVR_HX_C2000)
+ 				pkeys_total = 32;
+ 		}
+ 	}
+diff --git a/arch/powerpc/platforms/powernv/subcore.c b/arch/powerpc/platforms/powernv/subcore.c
+index 191424468f10..393e747541fb 100644
+--- a/arch/powerpc/platforms/powernv/subcore.c
++++ b/arch/powerpc/platforms/powernv/subcore.c
+@@ -425,7 +425,8 @@ static int subcore_init(void)
+ 
+ 	if (pvr_ver != PVR_POWER8 &&
+ 	    pvr_ver != PVR_POWER8E &&
+-	    pvr_ver != PVR_POWER8NVL)
++	    pvr_ver != PVR_POWER8NVL &&
++	    pvr_ver != PVR_HX_C2000)
+ 		return 0;
+ 
  	/*
- 	 * Get values from the moved block.
- 	 */
+diff --git a/drivers/misc/cxl/cxl.h b/drivers/misc/cxl/cxl.h
+index 0562071cdd4a..6ad0ab892675 100644
+--- a/drivers/misc/cxl/cxl.h
++++ b/drivers/misc/cxl/cxl.h
+@@ -836,7 +836,8 @@ static inline bool cxl_is_power8(void)
+ {
+ 	if ((pvr_version_is(PVR_POWER8E)) ||
+ 	    (pvr_version_is(PVR_POWER8NVL)) ||
+-	    (pvr_version_is(PVR_POWER8)))
++	    (pvr_version_is(PVR_POWER8)) ||
++	    (pvr_version_is(PVR_HX_C2000)))
+ 		return true;
+ 	return false;
+ }
 -- 
-2.20.1
-
+2.34.1
