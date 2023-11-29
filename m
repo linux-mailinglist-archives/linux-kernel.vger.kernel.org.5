@@ -2,170 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C498E7FD14C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:48:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8DB7FD151
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:48:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231179AbjK2Irv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Nov 2023 03:47:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51118 "EHLO
+        id S232055AbjK2Ir7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 03:47:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjK2Irt (ORCPT
+        with ESMTP id S229453AbjK2Ir4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 03:47:49 -0500
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E53B0;
-        Wed, 29 Nov 2023 00:47:55 -0800 (PST)
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5cbcfdeaff3so66495557b3.0;
-        Wed, 29 Nov 2023 00:47:55 -0800 (PST)
+        Wed, 29 Nov 2023 03:47:56 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4405D1BC0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:48:02 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50aab0ca90aso9379663e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:48:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701247680; x=1701852480; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DvctPZavU2KZfcRobOchdxWlog3GI1zxhlXL8bThhuI=;
+        b=CpnrZ+ALoijrGwEDVUFAtOcO4z0oZ2Efk092bHyswFnLB5IFJtBtM6TVoTxsc1L3N1
+         lCMTvOnW1dqLh9F+sDM82IUuY1CV8NzB+REZYoMBWvXaPg3APTlkm9pEDPBFblZ7vMTS
+         RV7ppFU13plUtxZYUl3/CLGlNjg0hJ52w0vDDc3ycUars+L0LHhuHyMWbqX0Fg9VBpa2
+         phDlGxwhUP0R4/Q5p9mNc2yN/x0t1YshDBzzsnz6Gi6RjMn/0q4ronmJ5nJV9MPcRG9G
+         iHxvbs35iQcOSCGPnxvNU7TDagzWHfDu5k8nrXalqoSF8qDc4oK5BR3Yq8S7664RsbEu
+         6rUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701247675; x=1701852475;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mLerLul424y9KF+UL/6zr3ivEhD1RgHSR/3xjytvLS8=;
-        b=ZkemoQjO/bBTd8d+LsdUMD4ToLFvR20uTycUuPxASEp1Wv2jracDpJVgxuRhBKgrEe
-         Dv8UdOCyYtn4jolKAK4sP6RSsPGdC2iMkUPZ0S5x5T3GOJUs4mGd0o+GP3c0bN61YS+v
-         reWI8SIzVw3ops8uEEJRZuKt+F021WhZYGbnzgWtzawtgIzARNp5p2IpIdcWRxPw1inS
-         KX4TqE7nxu4NOKRYqZzv7i4LINXvhKAjvbWkAOH0idqiR1rbe5WeryFNRl3ruKGmXupS
-         XotY6M5C+57zYE9/5WtXUVdimrFItNhI8//XtzhFOi2crDcWuQgN+HmH5Zy2mNAS+S/g
-         RlDA==
-X-Gm-Message-State: AOJu0YwhAMu2qlqPqdc4Z90/V5/ZBk4IYYMRuHFYGGJUPwSY2LlQlfYj
-        1fLzznAmzfiVy805JgkGlhzy5QFijUR+NA==
-X-Google-Smtp-Source: AGHT+IHIJ2CnpACRf14tRnG90JPNWlW5HmFEZrLCws+3jYIXscmZFWQC37s6lXP2Vkxf3COSceFtOw==
-X-Received: by 2002:a0d:cbd0:0:b0:5ce:9d68:2b81 with SMTP id n199-20020a0dcbd0000000b005ce9d682b81mr14200254ywd.28.1701247674706;
-        Wed, 29 Nov 2023 00:47:54 -0800 (PST)
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
-        by smtp.gmail.com with ESMTPSA id t184-20020a8183c1000000b005cb7fccffe2sm4409502ywf.126.2023.11.29.00.47.54
+        d=1e100.net; s=20230601; t=1701247680; x=1701852480;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DvctPZavU2KZfcRobOchdxWlog3GI1zxhlXL8bThhuI=;
+        b=HrU117OJVHa/IQ7nUoNmj4x8wN9v/B1aB5hhrv8Q77TgSE9p+d3DspxYpd4IbPWUI9
+         uMxovKzKgftAfclrSFwDpwSGZDpiABpFYICczgLSgmkVstK5PL2ctdcz1nN68/rDgokF
+         E9PqBxgf9kq47bt4zs2PPYRF4tlCi5iD8DqBbmr82jzuwJnm8lZi1ZpjvBr27A/c+Q6F
+         6WMNw94rJfUapYLnOseHdwcPRdYvdlKsnwohNXqUKYmwfZk6vdgZ4hH22ls813W4UyKy
+         NFmCMVpQXFaW7uBsNIdyMmbLxAyPRoCVH+ivqzHHXGin3zYBYIrQ65qfJ1juNd4BAswd
+         mP3A==
+X-Gm-Message-State: AOJu0Yz5dY/KuVWTP+AokfxmyDyMIx+mEup4CGxlGQ93GwVqJJG6TJ6K
+        SfAJaKY09WwPrpKzEP0SnyuGw7JRwTYqw90w9+w=
+X-Google-Smtp-Source: AGHT+IFN0bGTR/Y6UyrE9ORzYy0H1RWmBnK2oInazwYR6yplKi11iIMwXEfk84wE6N47jxoGg9kFxw==
+X-Received: by 2002:a05:6512:20c2:b0:507:b911:6706 with SMTP id u2-20020a05651220c200b00507b9116706mr9138066lfr.25.1701247680365;
+        Wed, 29 Nov 2023 00:48:00 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.109])
+        by smtp.gmail.com with ESMTPSA id t6-20020ac24c06000000b0050bc097b6b1sm325677lfq.179.2023.11.29.00.47.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 00:47:54 -0800 (PST)
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-db49ab94768so3541001276.2;
-        Wed, 29 Nov 2023 00:47:54 -0800 (PST)
-X-Received: by 2002:a25:3d1:0:b0:db4:47e1:407d with SMTP id
- 200-20020a2503d1000000b00db447e1407dmr16074846ybd.60.1701247673674; Wed, 29
- Nov 2023 00:47:53 -0800 (PST)
+        Wed, 29 Nov 2023 00:47:59 -0800 (PST)
+Message-ID: <99e89fb4-e99e-4a0f-8058-0ef6f04d61d8@linaro.org>
+Date:   Wed, 29 Nov 2023 09:47:57 +0100
 MIME-Version: 1.0
-References: <20231125184422.12315-1-krzysztof.kozlowski@linaro.org> <ZWboWqELHbIrblnz@francesco-nb.int.toradex.com>
-In-Reply-To: <ZWboWqELHbIrblnz@francesco-nb.int.toradex.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 29 Nov 2023 09:47:42 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVSAgihFAuPecyrR+Wvzqr58z_fkWkShOSu+HnHzZnW2g@mail.gmail.com>
-Message-ID: <CAMuHMdVSAgihFAuPecyrR+Wvzqr58z_fkWkShOSu+HnHzZnW2g@mail.gmail.com>
-Subject: Re: [PATCH v3] docs: dt-bindings: add DTS Coding Style document
-To:     Francesco Dolcini <francesco@dolcini.it>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/2] dt-bindings: iio: pressure: add honeywell,hsc030
+Content-Language: en-US
+To:     Petre Rodan <petre.rodan@subdimension.ro>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Andrew Davis <afd@ti.com>,
-        Andrew Lunn <andrew@lunn.ch>, Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Chen-Yu Tsai <wens@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michal Simek <michal.simek@amd.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        workflows@vger.kernel.org, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Jonathan Cameron <jic23@kernel.org>
+References: <20231129070432.1437-1-petre.rodan@subdimension.ro>
+ <adf1e932-a201-475e-a562-4e35954159ee@linaro.org> <ZWb59iEftxX6mQdJ@sunspire>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <ZWb59iEftxX6mQdJ@sunspire>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Francesco,
+On 29/11/2023 09:44, Petre Rodan wrote:
+> 
+> hi,
+> 
+> On Wed, Nov 29, 2023 at 09:04:17AM +0100, Krzysztof Kozlowski wrote:
+>> On 29/11/2023 08:04, Petre Rodan wrote:
+>>> Adds binding for digital Honeywell TruStability HSC and SSC series
+>>> pressure and temperature sensors.
+>>> Communication is one way. The sensor only requires 4 bytes worth of
+>>> clock pulses on both i2c and spi in order to push the data out.
+>>> The i2c address is hardcoded and depends on the part number.
+>>> There is no additional GPIO control.
+>>
+>> Your threading is broken (not existing) since v4, making it difficult to
+>> apply the patchset. Please fix it when sending v6.
+> 
+> I'm confused.
+> 
+> you mean the lack of 'In-Reply-To' and 'References' headers in the emails
+> `git send-email` is generating?
+> I've added them for v2, but was told that was a mistake [1]
+> 
+> [1] https://lore.kernel.org/lkml/20231125191915.7f1f2dc4@jic23-huawei/
+> 
+> I'm probably misunderstanding something.
+> also, I hope v5 is flawless enough.
 
-On Wed, Nov 29, 2023 at 8:29 AM Francesco Dolcini <francesco@dolcini.it> wrote:
-> On Sat, Nov 25, 2023 at 07:44:22PM +0100, Krzysztof Kozlowski wrote:
-> > Document preferred coding style for Devicetree sources (DTS and DTSI),
-> > to bring consistency among all (sub)architectures and ease in reviews.
->
-> Thank Krzysztof, we had most of this collected as BKM in some internal
-> documents and it's great to see the effort to consolidate this and add
-> it to the kernel documentation.
->
-> > ---
-> > +Following order of properties in device nodes is preferred:
-> > +
-> > +1. compatible
-> > +2. reg
-> > +3. ranges
-> > +4. Standard/common properties (defined by common bindings, e.g. without
-> > +   vendor-prefixes)
-> > +5. Vendor-specific properties
-> > +6. status (if applicable)
-> > +7. Child nodes, where each node is preceded with a blank line
->
-> On point 4, do you have a more explicit way to define what is an actual
-> standard/common property? You mention the vendor-prefixes as an example,
-> is this just an example or this is the whole definition?
+No, v5 is still wrong. Patchset should be threaded. Open lore.kernel.org
+and look how patchsets are organized and how your patchset is done.
 
-I think there are three classes of standard properties:
-  1. Device Tree Specification (from devicetree.org)
-  2. dt-schema
-  3. Common subsystem bindings (Documentation/devicetree/bindings/)
-     (may be moved to 2).
+It is as simple as:
+git format-patch -v6 -2
+scripts/get_maintainers.pl
+git send-email v6*
 
-> What would be the order for this for example (from an existing DTS file)?
->
->         reg_sdhc1_vmmc: regulator-sdhci1 {
->                 compatible = "regulator-fixed";
->                 pinctrl-names = "default";
->                 pinctrl-0 = <&pinctrl_sd1_pwr_en>;
->                 enable-active-high;
->                 gpio = <&main_gpio0 29 GPIO_ACTIVE_HIGH>;
->                 off-on-delay-us = <100000>;
->                 regulator-max-microvolt = <3300000>;
->                 regulator-min-microvolt = <3300000>;
->                 regulator-name = "+V3.3_SD";
->                 startup-delay-us = <2000>;
->         };
->
-> I guess the point that is not obvious to me here is where do we want
-> pinctrl. I like it at position between 3 and 4, the rationale is that is
-> a very frequent property and this way it will be in a similar place for
-> every node.
+(I combine the last two steps, so I don't even bother with
+script/maintainers:
+https://github.com/krzk/tools/blob/master/linux/.bash_aliases_linux#L91 )
 
-The pinctrl properties are only present in board DTS files, not in
-SoC DTSi files.  There are two classes of them:
-  1. Extension of on-SoC devices, where they are added to already
-     existing nodes, defined in the SoC DTSi files, e.g. (from the same
-     existing DTS file):
+But actually you should use b4, which also does this job correctly for you.
 
-         &cpsw3g {
-                 pinctrl-names = "default";
-                 pinctrl-0 = <&pinctrl_rgmii1>;
-                 status = "disabled";
-         };
+Best regards,
+Krzysztof
 
-  2. Pure board devices, in new nodes (e.g. your regulator example).
-     These are less common, so I don't even know from the top of my
-     mind when I last added one, and where ;-)
-     I'd guess after all standard properties?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
