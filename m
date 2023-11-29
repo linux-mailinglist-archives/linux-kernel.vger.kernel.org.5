@@ -2,150 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 226577FDBB8
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:42:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 649597FDBBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:42:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343816AbjK2Plz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 10:41:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36068 "EHLO
+        id S1343809AbjK2Pma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 10:42:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343525AbjK2Plw (ORCPT
+        with ESMTP id S1343823AbjK2Pm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 10:41:52 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D665BD48
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:41:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2037C433C7;
-        Wed, 29 Nov 2023 15:41:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1701272518;
-        bh=I0q1v9bTrML80ulyQEMrxjRfQVCMCsDWuy/OAJgwr14=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CmfAEXxApvLS9zisQRc2UEwCdAKwaGApUmoUpGZBIBcZwqMeFwloflFMG+V4tzXs9
-         IYPlb1H6ghk4xFDyb+yNNwkdE9UYh5aCZGY3tHJT0ChBnKfGJxr1cUPFWLmPaoLc9P
-         D12BdnNjOkJ1asrWz+QjUl0KojS/I309PlYs9IBE=
-Date:   Wed, 29 Nov 2023 15:41:54 +0000
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>,
-        Itay Avraham <itayavr@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH V3 2/5] misc: mlx5ctl: Add mlx5ctl misc driver
-Message-ID: <2023112951-civil-risotto-50dc@gregkh>
-References: <20231121070619.9836-1-saeed@kernel.org>
- <20231121070619.9836-3-saeed@kernel.org>
- <2023112727-caddie-eardrum-efe8@gregkh>
- <ZWb_l7rC4QK8duU3@x130>
- <2023112938-unhook-defiance-75ed@gregkh>
- <20231129130200.GV436702@nvidia.com>
+        Wed, 29 Nov 2023 10:42:28 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E043A10C0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:42:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701272553; x=1732808553;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=APaWSwz5I7OxVC+NmWSeIaqYRiFHKuAnOFaJzL8Exw0=;
+  b=RQS8UR8lK5by1ppU0MhKAHRv12VpnFHLEFBYTEnjnuM5w9H5zxT3hI9v
+   GHA7mGb7tMKec6PQ+eOcKLGsPl9RK1a0kMPI1H+kExc4x2Bt6VxQC31HF
+   LBsM8pp7YSl5qtZiS5iGtXB8jL68SOcKby+kFcbKwu6ruwqQiAELVyiGB
+   biOzwwCh/dbr9wr6fHn1dUr0AncTzUr10ABhTG55w3Mt1cC+XVfQ8Eovk
+   REsy+WJTNC0cjmpmQYiWF+Dwu+i+rWv9ToD5pfYjbYoB3VPJdVK2eVuxL
+   FCvQzWquRfk3OqhPmO2A1GRN/hKSx9epPJJp7+KiYbczqpl5fm4bmoeJ9
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="424331091"
+X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
+   d="scan'208";a="424331091"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 07:42:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="718788658"
+X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
+   d="scan'208";a="718788658"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 29 Nov 2023 07:42:31 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r8Mhk-0000Od-0s;
+        Wed, 29 Nov 2023 15:42:26 +0000
+Date:   Wed, 29 Nov 2023 23:42:01 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Huacai Chen <chenhuacai@loongson.cn>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Jun Yi <yijun@loongson.cn>
+Subject: kernel/fork.c:1647:36: sparse: sparse: incorrect type in argument 2
+ (different address spaces)
+Message-ID: <202311292218.LfF2vCN0-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231129130200.GV436702@nvidia.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 09:02:00AM -0400, Jason Gunthorpe wrote:
-> On Wed, Nov 29, 2023 at 09:20:32AM +0000, Greg Kroah-Hartman wrote:
-> > On Wed, Nov 29, 2023 at 01:08:39AM -0800, Saeed Mahameed wrote:
-> > > On 27 Nov 18:59, Greg Kroah-Hartman wrote:
-> > > > On Mon, Nov 20, 2023 at 11:06:16PM -0800, Saeed Mahameed wrote:
-> > > > > +struct mlx5ctl_dev {
-> > > > > +	struct mlx5_core_dev *mdev;
-> > > > > +	struct miscdevice miscdev;
-> > > > > +	struct auxiliary_device *adev;
-> > > > > +	struct list_head fd_list;
-> > > > > +	spinlock_t fd_list_lock; /* protect list add/del */
-> > > > > +	struct rw_semaphore rw_lock;
-> > > > > +	struct kref refcount;
-> > > > 
-> > > > You now have 2 different things that control the lifespan of this
-> > > > structure.  We really need some way to automatically check this so that
-> > > > people don't keep making this same mistake, it happens all the time :(
-> > > > 
-> > > > Please pick one structure (miscdevice) or the other (kref) to control
-> > > > the lifespan, having 2 will just not work.
-> > > > 
-> > > 
-> > > miscdevice doesn't handle the lifespan, open files will remain open even
-> > > after the miscdevice was unregistered, hence we use the kref to defer the
-> > > kfree until the last open file is closed.
-> > 
-> > miscdevice has a reference counter and a lifecycle, you can not have two
-> > reference counted objects in the same structure and expect things to
-> > work well.
-> 
-> This second refcount is hidden well:
-> 
-> struct miscdevice {
-> 	int minor;
-> 	const char *name;
-> 	const struct file_operations *fops;
-> 	struct list_head list;
-> 	struct device *parent;
-> 	struct device *this_device;
-> 	const struct attribute_group **groups;
-> 	const char *nodename;
-> 	umode_t mode;
-> };
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   18d46e76d7c2eedd8577fae67e3f1d4db25018b0
+commit: a275a82dcd4024c75337db15d59ed039c31e21da LoongArch: Use alternative to optimize libraries
+date:   12 months ago
+config: loongarch-randconfig-r034-20230511 (https://download.01.org/0day-ci/archive/20231129/202311292218.LfF2vCN0-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20231129/202311292218.LfF2vCN0-lkp@intel.com/reproduce)
 
-Ugh, you are right, I was wrong, there is no reference count here, using
-a miscdevice _requires_ you to have a separate reference count, like you
-all did.  My fault.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311292218.LfF2vCN0-lkp@intel.com/
 
-> > > write_lock() : only on mlx5_ctl remove and mark the device is down
-> > > via assigning NULL to mcdev->dev, to let all new readers abort and to wait
-> > > for current readers to finish their task.
-> > > 
-> > > read_lock(): used in all fops and ioctls, to make sure underlaying
-> > > mlx5_core device is still active, and to prevent open files to access the
-> > > device when miscdevice was already unregistered.
-> > > 
-> > > I agree, this should've been documented in the code, I will add
-> > > documentation.
-> > 
-> > Just make it simple and use a normal mutex please.
-> 
-> A normal mutex would make the entire ioctl interface single threaded,
-> this is not desirable.
+sparse warnings: (new ones prefixed by >>)
+   kernel/fork.c:1310:22: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct file *[assigned] old_exe_file @@     got struct file [noderef] __rcu *[assigned] __res @@
+   kernel/fork.c:1310:22: sparse:     expected struct file *[assigned] old_exe_file
+   kernel/fork.c:1310:22: sparse:     got struct file [noderef] __rcu *[assigned] __res
+   kernel/fork.c:1637:38: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct refcount_struct [usertype] *r @@     got struct refcount_struct [noderef] __rcu * @@
+   kernel/fork.c:1637:38: sparse:     expected struct refcount_struct [usertype] *r
+   kernel/fork.c:1637:38: sparse:     got struct refcount_struct [noderef] __rcu *
+   kernel/fork.c:1646:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:1646:31: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:1646:31: sparse:     got struct spinlock [noderef] __rcu *
+>> kernel/fork.c:1647:36: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const *__from @@     got struct k_sigaction [noderef] __rcu * @@
+   kernel/fork.c:1647:36: sparse:     expected void const *__from
+   kernel/fork.c:1647:36: sparse:     got struct k_sigaction [noderef] __rcu *
+   kernel/fork.c:1648:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:1648:33: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:1648:33: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2074:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2074:31: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2074:31: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2078:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2078:33: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2078:33: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2109:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   kernel/fork.c:2109:9: sparse:     expected void *ptr
+   kernel/fork.c:2109:9: sparse:     got unsigned int [noderef] __percpu *
+   kernel/fork.c:2109:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   kernel/fork.c:2109:9: sparse:     expected void *ptr
+   kernel/fork.c:2109:9: sparse:     got unsigned int [noderef] __percpu *
+   kernel/fork.c:2109:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   kernel/fork.c:2109:9: sparse:     expected void *ptr
+   kernel/fork.c:2109:9: sparse:     got unsigned int [noderef] __percpu *
+   kernel/fork.c:2109:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
+   kernel/fork.c:2109:9: sparse:     expected void *ptr
+   kernel/fork.c:2109:9: sparse:     got unsigned int [noderef] __percpu *
+   kernel/fork.c:2109:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   kernel/fork.c:2109:9: sparse:     expected void *ptr
+   kernel/fork.c:2109:9: sparse:     got int [noderef] __percpu *
+   kernel/fork.c:2109:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   kernel/fork.c:2109:9: sparse:     expected void *ptr
+   kernel/fork.c:2109:9: sparse:     got int [noderef] __percpu *
+   kernel/fork.c:2109:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   kernel/fork.c:2109:9: sparse:     expected void *ptr
+   kernel/fork.c:2109:9: sparse:     got int [noderef] __percpu *
+   kernel/fork.c:2109:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
+   kernel/fork.c:2109:9: sparse:     expected void *ptr
+   kernel/fork.c:2109:9: sparse:     got int [noderef] __percpu *
+   kernel/fork.c:2398:32: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct [noderef] __rcu *real_parent @@     got struct task_struct *task @@
+   kernel/fork.c:2398:32: sparse:     expected struct task_struct [noderef] __rcu *real_parent
+   kernel/fork.c:2398:32: sparse:     got struct task_struct *task
+   kernel/fork.c:2407:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2407:27: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2407:27: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2454:54: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct list_head *head @@     got struct list_head [noderef] __rcu * @@
+   kernel/fork.c:2454:54: sparse:     expected struct list_head *head
+   kernel/fork.c:2454:54: sparse:     got struct list_head [noderef] __rcu *
+   kernel/fork.c:2476:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2476:29: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2476:29: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2497:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2497:29: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2497:29: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2524:28: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sighand_struct *sighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
+   kernel/fork.c:2524:28: sparse:     expected struct sighand_struct *sighand
+   kernel/fork.c:2524:28: sparse:     got struct sighand_struct [noderef] __rcu *sighand
+   kernel/fork.c:2553:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2553:31: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2553:31: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2555:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2555:33: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2555:33: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2998:24: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct *[assigned] parent @@     got struct task_struct [noderef] __rcu *real_parent @@
+   kernel/fork.c:2998:24: sparse:     expected struct task_struct *[assigned] parent
+   kernel/fork.c:2998:24: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   kernel/fork.c:3079:43: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct refcount_struct const [usertype] *r @@     got struct refcount_struct [noderef] __rcu * @@
+   kernel/fork.c:3079:43: sparse:     expected struct refcount_struct const [usertype] *r
+   kernel/fork.c:3079:43: sparse:     got struct refcount_struct [noderef] __rcu *
+   kernel/fork.c:2119:22: sparse: sparse: dereference of noderef expression
+   kernel/fork.c: note: in included file (through arch/loongarch/include/uapi/asm/bpf_perf_event.h, include/uapi/linux/bpf_perf_event.h, ...):
+   include/linux/ptrace.h:210:45: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *new_parent @@     got struct task_struct [noderef] __rcu *parent @@
+   include/linux/ptrace.h:210:45: sparse:     expected struct task_struct *new_parent
+   include/linux/ptrace.h:210:45: sparse:     got struct task_struct [noderef] __rcu *parent
+   include/linux/ptrace.h:210:62: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected struct cred const *ptracer_cred @@     got struct cred const [noderef] __rcu *ptracer_cred @@
+   include/linux/ptrace.h:210:62: sparse:     expected struct cred const *ptracer_cred
+   include/linux/ptrace.h:210:62: sparse:     got struct cred const [noderef] __rcu *ptracer_cred
+   kernel/fork.c:2452:59: sparse: sparse: dereference of noderef expression
+   kernel/fork.c:2453:59: sparse: sparse: dereference of noderef expression
 
-Why not?  It's an ioctl for a single device, surely this isn't
-performance criticial.  And then only grab it when needed, on
-read/write/ioctl path it shouldn't be needed at all due to the proper
-reference counting of the structures.  Only on open/close, right?
+vim +1647 kernel/fork.c
 
-And again, for a rw semaphore, benchmarks matter, often, if not almost
-always, a normal mutex is faster for stuff like this.  If not, then a
-benchmark will show it.
+a016f3389c0660 JANAK DESAI        2006-02-07  1631  
+a39bc51691a0c8 Alexey Dobriyan    2007-10-18  1632  static int copy_sighand(unsigned long clone_flags, struct task_struct *tsk)
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1633  {
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1634  	struct sighand_struct *sig;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1635  
+60348802e9cb13 Zhaolei            2009-01-06  1636  	if (clone_flags & CLONE_SIGHAND) {
+d036bda7d0e726 Elena Reshetova    2019-01-18  1637  		refcount_inc(&current->sighand->count);
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1638  		return 0;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1639  	}
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1640  	sig = kmem_cache_alloc(sighand_cachep, GFP_KERNEL);
+0c282b068eb26d Madhuparna Bhowmik 2020-01-27  1641  	RCU_INIT_POINTER(tsk->sighand, sig);
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1642  	if (!sig)
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1643  		return -ENOMEM;
+9d7fb04276481c Peter Zijlstra     2015-06-30  1644  
+d036bda7d0e726 Elena Reshetova    2019-01-18  1645  	refcount_set(&sig->count, 1);
+06e62a46bbba20 Jann Horn          2018-08-21  1646  	spin_lock_irq(&current->sighand->siglock);
+^1da177e4c3f41 Linus Torvalds     2005-04-16 @1647  	memcpy(sig->action, current->sighand->action, sizeof(sig->action));
+06e62a46bbba20 Jann Horn          2018-08-21  1648  	spin_unlock_irq(&current->sighand->siglock);
+b612e5df4587c9 Christian Brauner  2019-10-14  1649  
+b612e5df4587c9 Christian Brauner  2019-10-14  1650  	/* Reset all signal handler not set to SIG_IGN to SIG_DFL. */
+b612e5df4587c9 Christian Brauner  2019-10-14  1651  	if (clone_flags & CLONE_CLEAR_SIGHAND)
+b612e5df4587c9 Christian Brauner  2019-10-14  1652  		flush_signal_handlers(tsk, 0);
+b612e5df4587c9 Christian Brauner  2019-10-14  1653  
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1654  	return 0;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1655  }
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1656  
 
-> > But before you do that, please see my other email about why not using
-> > devlink for all of this instead.
-> 
-> We've been over this already, the devlink discussion is about some
-> configuration stuff.
+:::::: The code at line 1647 was first introduced by commit
+:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
 
-It was?  I see device-specific diagonostic data for the mlx5 driver
-being exported through devlink today, that's not configuration.  Why not
-just add more?
+:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
+:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
 
-> It has never been suggested to cover the debug interface. This series
-> is primarily about debug, the devlink thing is a distraction to main
-> point.
-
-For me it is the main point at the moment.  Please explain why devlink
-does not work for the information that you have created a misc device
-where you want an ioctl api instead, as I honestly do not understand.
-
-thanks,
-
-greg k-h
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
