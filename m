@@ -2,69 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF527FD363
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:58:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 884AB7FD38E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:06:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbjK2J6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 04:58:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55068 "EHLO
+        id S232582AbjK2KF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 05:05:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjK2J6i (ORCPT
+        with ESMTP id S232903AbjK2KF1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 04:58:38 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E26421AD;
-        Wed, 29 Nov 2023 01:58:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701251925; x=1732787925;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=KucyGOqn1JyY5SGZU0/6/92QdqJqjUgPNGv4D39cu0s=;
-  b=GC2U2U9inwPhS8hiZZKKEXCAF306qghe0/6TiJj+iTfgSFeNPy7QIUKa
-   7+GQznJgKFDlDMlSXqKS5bngfUWAgq3OVpR1c8SR42h6MAmZZscABVmye
-   +vgXfBCBKSfZF0YE8aXkW/EXaaHi4UkrKEOhAbqOF+xGhxPjE6N2q2D/d
-   V76nEHmQqjVpZSN/HgYHmoZuJJW8MHgXavSS+wm/FhHWBFInESNiXfNfI
-   S2AM3weLY0tLsERBqCusKJ3RwFqqbThCtWDWRwaohzEcR9xlqubSm6gu7
-   sGKKCkHyKMlYhuXU+TzSXH7YhA0adxLdPnO89PrC7c4nrefguY9shxhDG
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="383530941"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="383530941"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 01:58:36 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="10276578"
-Received: from hongyuni-mobl.ccr.corp.intel.com (HELO [10.238.2.21]) ([10.238.2.21])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 01:58:32 -0800
-Message-ID: <6d3e9993-4d5a-47fc-aef5-d6c14dee4621@linux.intel.com>
-Date:   Wed, 29 Nov 2023 17:58:20 +0800
+        Wed, 29 Nov 2023 05:05:27 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D861FE5;
+        Wed, 29 Nov 2023 02:05:28 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1d011cdf562so6730985ad.2;
+        Wed, 29 Nov 2023 02:05:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701252328; x=1701857128; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MpQndnRiODx+tos8fdE4dhL+06RTmhorpUhO5hT0DMc=;
+        b=dPw/5QnshuN0bjj9rRxZozm2OjLoTv3+NhOC3Y6n69Li/cGVn85hxrdeq9OM9qsxvE
+         EaGdtdr+4R+9l6hcYFeDwo9/VKsxlGTCKoCb3tpMGeZbiU5Ebf3PkvibHHQj/A3tQXdW
+         6ZANj429WFzckS+yyOQPIaVtN7dCaGKkXQ5R5OYkN+a6OcTOT645WowvsvDKQjrCyKXw
+         4UamErNBaBPU1k2Fq2xIIFzL/IcuJxJDsKdZQjp6FEVApD7BUlg9xLjn2ZGT109/hy9J
+         nFd1JeK/mChUPI2wlsuvzvMxfRue80texMI/XFbM9CVB67v/cQMe+auUA/ix1ahBtR02
+         j0bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701252328; x=1701857128;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MpQndnRiODx+tos8fdE4dhL+06RTmhorpUhO5hT0DMc=;
+        b=Eyw4K0ZdPEbX6dRD8Uhr+OYvMP+xEnSM7Lkq0gZWEDRe+t0/oeh7MzSoDZWS2jgEqU
+         poIkOCXOJwF3pCCnppP2G6Wy5UzffGAoDNUfIb6NVoUoW8Q/fEm3PCoUaGfhlCgBuzg2
+         Pn7YNTf0siYJFWWY5Cp1rE3ruP0IHbwB6ua52TbLTqxjzh1ybzUGy79eT6YGbhflWrd3
+         rfr8gOx8pwToJXBDTROM1G4ISOCqqc0zdNCSbCko5fziwsqPj3obefhxd4y0wxhMEExG
+         ydbzaf4TtKBvX9jcMI3O0knSsdlhHmKlszVkBCsFOnwvuaUVEgn10a1vmaf8+7/OK7AA
+         6pAA==
+X-Gm-Message-State: AOJu0Yz5Tnam9oXeT8OfVfeK7/BL1uh0EZo8HNbUm4jW5tYUAnwbP8HG
+        4mdBJyy4EtDuFf3QrsTxi4U=
+X-Google-Smtp-Source: AGHT+IFHz1EOBr29DpBEQyHQO01oqfVMNvqkP1ezQq262jWCjWECYCTqM2o+9jGXSDx+XO+Xey/PSw==
+X-Received: by 2002:a17:902:f687:b0:1d0:e37:8c14 with SMTP id l7-20020a170902f68700b001d00e378c14mr3871818plg.34.1701252328212;
+        Wed, 29 Nov 2023 02:05:28 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id t8-20020a170902bc4800b001cc131c65besm11862520plz.168.2023.11.29.02.05.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 02:05:27 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+        id C6DF71140D81A; Wed, 29 Nov 2023 16:58:36 +0700 (WIB)
+Date:   Wed, 29 Nov 2023 16:58:36 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: btrfs: super.c:416:25: error: 'ret' undeclared (first use in
+ this function); did you mean 'net'?
+Message-ID: <ZWcLTJB8wrLUwuVf@archie.me>
+References: <CA+G9fYvbCBUCkt-NdJ7HCETCFrzMWGnjnRBjCsw39Z_aUOaTDQ@mail.gmail.com>
+ <ZWbjXV85zDXen_YH@archie.me>
+ <CA+G9fYtByCCzrbM-a4du2b5rJVn_UaCz1HaMZMcBAcfyUBXPSA@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [GIT PULL] virtio: features
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     xuanzhuo@linux.alibaba.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        eperezma@redhat.com, jasowang@redhat.com, shannon.nelson@amd.com,
-        yuanyaogoog@chromium.org, yuehaibing@huawei.com,
-        kirill.shutemov@linux.intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com,
-        alexander.shishkin@linux.intel.com
-References: <20230903181338-mutt-send-email-mst@kernel.org>
- <647701d8-c99b-4ca8-9817-137eaefda237@linux.intel.com>
- <20231129044651-mutt-send-email-mst@kernel.org>
-Content-Language: en-US
-From:   "Ning, Hongyu" <hongyu.ning@linux.intel.com>
-In-Reply-To: <20231129044651-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="8g5cYfr1bA2m8oZD"
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYtByCCzrbM-a4du2b5rJVn_UaCz1HaMZMcBAcfyUBXPSA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -72,92 +85,82 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2023/11/29 17:47, Michael S. Tsirkin wrote:
-> On Wed, Nov 29, 2023 at 05:03:50PM +0800, Ning, Hongyu wrote:
->>
->>
->> On 2023/9/4 6:13, Michael S. Tsirkin wrote:
->>> The following changes since commit 2dde18cd1d8fac735875f2e4987f11817cc0bc2c:
->>>
->>>     Linux 6.5 (2023-08-27 14:49:51 -0700)
->>>
->>> are available in the Git repository at:
->>>
->>>     https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
->>>
->>> for you to fetch changes up to 1acfe2c1225899eab5ab724c91b7e1eb2881b9ab:
->>>
->>>     virtio_ring: fix avail_wrap_counter in virtqueue_add_packed (2023-09-03 18:10:24 -0400)
->>>
->>> ----------------------------------------------------------------
->>> virtio: features
->>>
->>> a small pull request this time around, mostly because the
->>> vduse network got postponed to next relase so we can be sure
->>> we got the security store right.
->>>
->>> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
->>>
->>> ----------------------------------------------------------------
->>> Eugenio Pérez (4):
->>>         vdpa: add VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK flag
->>>         vdpa: accept VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK backend feature
->>>         vdpa: add get_backend_features vdpa operation
->>>         vdpa_sim: offer VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK
->>>
->>> Jason Wang (1):
->>>         virtio_vdpa: build affinity masks conditionally
->>>
->>> Xuan Zhuo (12):
->>>         virtio_ring: check use_dma_api before unmap desc for indirect
->>>         virtio_ring: put mapping error check in vring_map_one_sg
->>>         virtio_ring: introduce virtqueue_set_dma_premapped()
->>>         virtio_ring: support add premapped buf
->>>         virtio_ring: introduce virtqueue_dma_dev()
->>>         virtio_ring: skip unmap for premapped
->>>         virtio_ring: correct the expression of the description of virtqueue_resize()
->>>         virtio_ring: separate the logic of reset/enable from virtqueue_resize
->>>         virtio_ring: introduce virtqueue_reset()
->>>         virtio_ring: introduce dma map api for virtqueue
->>>         virtio_ring: introduce dma sync api for virtqueue
->>>         virtio_net: merge dma operations when filling mergeable buffers
->>
->> Hi,
->> above patch (upstream commit 295525e29a5b) seems causing a virtnet related
->> Call Trace after WARNING from kernel/dma/debug.c.
->>
->> details (log and test setup) tracked in
->> https://bugzilla.kernel.org/show_bug.cgi?id=218204
->>
->> it's recently noticed in a TDX guest testing since v6.6.0 release cycle and
->> can still be reproduced in latest v6.7.0-rc3.
->>
->> as local bisects results show, above WARNING and Call Trace is linked with
->> this patch, do you mind to take a look?
-> 
-> Does your testing tree include the fixup
-> 5720c43d5216b5dbd9ab25595f7c61e55d36d4fc ?
-> 
+--8g5cYfr1bA2m8oZD
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-yes, it's included:
-5720c43d5216 virtio_net: fix the missing of the dma cpu sync
+On Wed, Nov 29, 2023 at 02:29:42PM +0530, Naresh Kamboju wrote:
+> On Wed, 29 Nov 2023 at 12:38, Bagas Sanjaya <bagasdotme@gmail.com> wrote:
+> >
+> > On Tue, Nov 28, 2023 at 05:55:51PM +0530, Naresh Kamboju wrote:
+> > > Following x86 and i386 build regressions noticed on Linux next-202311=
+28 tag.
+> > >
+> > > Build log:
+> > > -----------
+> > > fs/btrfs/super.c: In function 'btrfs_parse_param':
+> > > fs/btrfs/super.c:416:25: error: 'ret' undeclared (first use in this
+> > > function); did you mean 'net'?
+> > >   416 |                         ret =3D -EINVAL;
+> > >       |                         ^~~
+> > >       |                         net
+> > > fs/btrfs/super.c:416:25: note: each undeclared identifier is reported
+> > > only once for each function it appears in
+> > > fs/btrfs/super.c:417:25: error: label 'out' used but not defined
+> > >   417 |                         goto out;
+> > >       |                         ^~~~
+> > > make[5]: *** [scripts/Makefile.build:243: fs/btrfs/super.o] Error 1
+> > >
+> > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > >
+> > > Links:
+> > >  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20=
+231128/testrun/21349057/suite/build/test/gcc-13-lkftconfig-kselftest/log
+> > >
+> > >  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20=
+231128/testrun/21349057/suite/build/test/gcc-13-lkftconfig-kselftest/detail=
+s/
+> > >  - https://storage.tuxsuite.com/public/linaro/lkft/builds/2Ymoxor9n54=
+ID51BFjRBS06YQ3U/
+> > > - https://storage.tuxsuite.com/public/linaro/lkft/builds/2Ymoxor9n54I=
+D51BFjRBS06YQ3U/config
+> > >
+> >
+> > Is it W=3D1 build? I can't reproduce on btrfs tree with
+> > CONFIG_BTRFS_FS_POSIX_ACL=3Dy and without W=3D1.
+>=20
+> My config did not set this
+> # CONFIG_BTRFS_FS_POSIX_ACL is not set
 
->>>
->>> Yuan Yao (1):
->>>         virtio_ring: fix avail_wrap_counter in virtqueue_add_packed
->>>
->>> Yue Haibing (1):
->>>         vdpa/mlx5: Remove unused function declarations
->>>
->>>    drivers/net/virtio_net.c           | 230 ++++++++++++++++++---
->>>    drivers/vdpa/mlx5/core/mlx5_vdpa.h |   3 -
->>>    drivers/vdpa/vdpa_sim/vdpa_sim.c   |   8 +
->>>    drivers/vhost/vdpa.c               |  15 +-
->>>    drivers/virtio/virtio_ring.c       | 412 ++++++++++++++++++++++++++++++++-----
->>>    drivers/virtio/virtio_vdpa.c       |  17 +-
->>>    include/linux/vdpa.h               |   4 +
->>>    include/linux/virtio.h             |  22 ++
->>>    include/uapi/linux/vhost_types.h   |   4 +
->>>    9 files changed, 625 insertions(+), 90 deletions(-)
->>>
-> 
+OK.
+
+>=20
+> Do you think the system should auto select the above config as default wh=
+en
+> following config gets enabled ?
+>=20
+> CONFIG_BTRFS_FS=3Dm
+> (or)
+> CONFIG_BTRFS_FS=3Dy
+>=20
+
+Nope, leave it as is.
+
+Thanks.
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--8g5cYfr1bA2m8oZD
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZWcLQQAKCRD2uYlJVVFO
+oz05AQDW4tcs+qseWAL5BBtuPRoexDBDprBofv0Ia95ssWcdqgD/Y3FQpjWSjs8q
+d7X5Lsdki4Ydbwkio5K/IdQJQ6O8qAE=
+=xISu
+-----END PGP SIGNATURE-----
+
+--8g5cYfr1bA2m8oZD--
