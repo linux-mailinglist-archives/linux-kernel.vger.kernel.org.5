@@ -2,88 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46BCA7FE0E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:18:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA92E7FE0EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:22:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231523AbjK2USf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 15:18:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48864 "EHLO
+        id S233754AbjK2UWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 15:22:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjK2USe (ORCPT
+        with ESMTP id S229556AbjK2UWW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 15:18:34 -0500
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E95A5D67
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:18:40 -0800 (PST)
-Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3b83ed78a91so106358b6e.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:18:40 -0800 (PST)
+        Wed, 29 Nov 2023 15:22:22 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE300D67
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:22:28 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1cff3a03dfaso1690945ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:22:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1701289120; x=1701893920; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1701289348; x=1701894148; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0Lp53QluNv4WhhdcXZkD4YoVlGdIpJB4VhJ1Lx/HjyA=;
-        b=ZMkuqEdhdBnajAZ80cMj30hgdtfUvcBCH1ra697mDkBeNucu9ddv5IlVJXy+/mvSGL
-         R/2fOzZ01p6R4hQYKOl0jIMO7zuqzTxfFpenYSfNQDCCdF1+IZ4x84KYuEqbFxXw98el
-         5qLL3q9ay6XFigl3nUMbkYJ9yHJpHlyfuVP9lwKLJZVxaIoxqOTPG3K20fWKI5rPDuLm
-         bu3klCuqm7OqRNCHi/Ye+qfq1euaklh5PhCezvbApRVsGZd3EvNw0vyxwpEIXPteiir9
-         5VXcwScTMDMEso+kbUIuJT6n6bUZpjKkRr6nBqpLvN/AeNb46OX34Lt2mGDpE29kE504
-         nvVw==
+        bh=itd9NKciBX2zxONHPt0DHyuGmDjJYND+/iJlNldlRJY=;
+        b=J2uCbEYniFfeHnsTSieSAHMJp/FLKUj9FTHyIB1u0gepIhVTQhx65G60GQO7E8OIcI
+         wXp6RutoHOcsXZSS49Cxh7mhLjl3x7ZGZT9wz3Dv1g3y8L5egorFCJD3+NPBEC7nnf6U
+         FfvPNp6ie/s+Y5fsR5AxQ9c9EhPhdJt+NUm1A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701289120; x=1701893920;
+        d=1e100.net; s=20230601; t=1701289348; x=1701894148;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0Lp53QluNv4WhhdcXZkD4YoVlGdIpJB4VhJ1Lx/HjyA=;
-        b=NzM8Ph0/Hwcik/4JOysZnxMwVICnQQ6PXtO7IuAs3BDbbmokPZNnHQh+uxjkQ3mgWu
-         oTwW8uP9V8InN779cq036iXh46sw3pHvL1YfCQpvbWjwLnLMHnAamy2mIvpNZGufIlSr
-         zyn0khhIB15qiefDkJfyFmX490KjCN+5I5Awn7N7Wd5cn4hGdE2tmsNr+9hmw83XhxfS
-         kwXHAa9E7hROdHHz0X6RjDiFOBccf6NJGBiCrYKCrY1uORPt0ogTrRUSC3YsOtqsRjYc
-         EhjE5hW/jj9wCRIRTzYta90FoSQDJqQpaRsrI8f/Mw5PcRPT548DBsq5xd4mwTitNlFw
-         CusA==
-X-Gm-Message-State: AOJu0YykBi1oOGqB+Quo7az6f02qqEdtkduiTuQTpyry+0MU6b6BO1er
-        5BvPV1ULcBoHdc70tILw3tk66g==
-X-Google-Smtp-Source: AGHT+IERXfBnQQiRryRCqi6gVZlah11bhAemTbrIbuIkAC7r69cFrbq/dBpIPM2clwdqrYccLzDwHQ==
-X-Received: by 2002:a05:6808:1645:b0:3b8:3e7c:f827 with SMTP id az5-20020a056808164500b003b83e7cf827mr22187927oib.14.1701289120221;
-        Wed, 29 Nov 2023 12:18:40 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
-        by smtp.gmail.com with ESMTPSA id m6-20020a0568080f0600b003b8459f2ec5sm2354758oiw.55.2023.11.29.12.18.39
+        bh=itd9NKciBX2zxONHPt0DHyuGmDjJYND+/iJlNldlRJY=;
+        b=wNjsR5rPXQSgHsb56MoSgsg6+la01i9R4bBSV5zaXH2V88JDAwfinT6TUv7haT+Uyq
+         8tbLjJMZffeInOlE+q4uuISkkYJhMgNjNS/HGGTrGDGun05XMf6XpMRmzYx7oqydxR6+
+         GFErKAz5dB58yW4h3QyaF5uULVyZdjqtbtfRuDBbVHU2vK3/lxM1ssGl8GcPN1YvD7PO
+         9b1pHAbzVIS/SuqfEuD9DzUe86FwabkELXPOZjPLcnjQu/mhKPB3AgiP2h1yXMbwwdxM
+         uPyRGX21lhpDqgzCE1cCeDIgzhel1gAGzkWwCUpHkF59YADkpCx8Y4kB33arz2Y6rO/m
+         8GAA==
+X-Gm-Message-State: AOJu0YwROJpDPaXUJ6XSQhuys4d+bDaVPHSoEOUuduKnePtQuxMhHTBZ
+        NLmfzs2nni6NyHTZjW/KhQUN6EoBG06maVUEFtc=
+X-Google-Smtp-Source: AGHT+IGy4I6YEv72N7gHiWShs+tJ4XFlnr2sELy4UZbWmy+HzCFRKq117eRrCVzUM7vWcNMg7dhwJA==
+X-Received: by 2002:a17:902:ce8c:b0:1cf:c3f7:7d4d with SMTP id f12-20020a170902ce8c00b001cfc3f77d4dmr16221436plg.67.1701289348165;
+        Wed, 29 Nov 2023 12:22:28 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id ij30-20020a170902ab5e00b001cc3a6813f8sm12975074plb.154.2023.11.29.12.22.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 12:18:39 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1r8R14-005pWb-UE;
-        Wed, 29 Nov 2023 16:18:38 -0400
-Date:   Wed, 29 Nov 2023 16:18:38 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Brett Creeley <brett.creeley@amd.com>
-Cc:     yishaih@nvidia.com, shameerali.kolothum.thodi@huawei.com,
-        kevin.tian@intel.com, alex.williamson@redhat.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shannon.nelson@amd.com
-Subject: Re: [PATCH v2 vfio 0/6] vfio/pds: Clean-ups and multi-region support
-Message-ID: <20231129201838.GM1312390@ziepe.ca>
-References: <20231117001207.2793-1-brett.creeley@amd.com>
+        Wed, 29 Nov 2023 12:22:27 -0800 (PST)
+Date:   Wed, 29 Nov 2023 12:22:27 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] lkdtm: Add kfence read after free crash type
+Message-ID: <202311291219.A6E3E58@keescook>
+References: <20231127234946.2514120-1-swboyd@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231117001207.2793-1-brett.creeley@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231127234946.2514120-1-swboyd@chromium.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 16, 2023 at 04:12:01PM -0800, Brett Creeley wrote:
-> This series contains various clean-ups, improvements, and support
-> for multiple dirty tracking regions. The majority of clean-up and
-> improvements are in preparation for the last patch in the series,
-> which adds support for multiple dirty tracking regions.
+On Mon, Nov 27, 2023 at 03:49:45PM -0800, Stephen Boyd wrote:
+> Add the ability to allocate memory from kfence and trigger a read after
+> free on that memory to validate that kfence is working properly. This is
+> used by ChromeOS integration tests to validate that kfence errors can be
+> collected on user devices and parsed properly.
 
-I did not look closely at every line but this looked Ok to me
+This looks really good; thanks for adding this!
 
-Thanks,
-Jason
+> 
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>  drivers/misc/lkdtm/heap.c | 64 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 64 insertions(+)
+> 
+> diff --git a/drivers/misc/lkdtm/heap.c b/drivers/misc/lkdtm/heap.c
+> index 0ce4cbf6abda..608872bcc7e0 100644
+> --- a/drivers/misc/lkdtm/heap.c
+> +++ b/drivers/misc/lkdtm/heap.c
+> @@ -4,6 +4,7 @@
+>   * page allocation and slab allocations.
+>   */
+>  #include "lkdtm.h"
+> +#include <linux/kfence.h>
+>  #include <linux/slab.h>
+>  #include <linux/vmalloc.h>
+>  #include <linux/sched.h>
+> @@ -132,6 +133,66 @@ static void lkdtm_READ_AFTER_FREE(void)
+>  	kfree(val);
+>  }
+>  
+> +#if IS_ENABLED(CONFIG_KFENCE)
+
+I really try hard to avoid having tests disappear depending on configs,
+and instead report the expected failure case (as you have). Can this be
+built without the IS_ENABLED() tests?
+
+-- 
+Kees Cook
