@@ -2,110 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5427FCFC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 08:21:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC5C7FCFC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 08:24:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbjK2HVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 02:21:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52330 "EHLO
+        id S229561AbjK2HY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 02:24:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjK2HVE (ORCPT
+        with ESMTP id S229464AbjK2HYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 02:21:04 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15D7EC9
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 23:21:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=KJyCwhlrvWaEhgruRo4W/7mjtjSOMpqD1BDi17senR0=; b=t6j8ktw+Jjw0AtWOFHMkzQQnok
-        y/KGID8uwIvLLrWnUReTh1EmkahvEdd15PbekECh+vmyr/Vtj6BDnKpeItET8aDOD/W3dKCJq930s
-        J804AGsi0js2yIbkHQEVv17upDoHYcNH9CatjtiIJQCzKM0VCRp/Jwh9EwLlzlrEEjj0lty3GO9vY
-        gPJJ5hzpoMArIh4mg6ogUT+4k49IIxj2w6F6e6kkKNnmTbr98SSJW22vjJe5P39sfd10X68VMj04K
-        jpQGSmMa69vtk6Z3l63DCXnjocaZ8SjjSd3jeGztAw586xhkjbqrtgYeQBneVTPglApYZrFrR2VyD
-        9Nv2QbHw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r8EsQ-00D9W3-Rl; Wed, 29 Nov 2023 07:20:54 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 881703002F1; Wed, 29 Nov 2023 08:20:53 +0100 (CET)
-Date:   Wed, 29 Nov 2023 08:20:53 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Re: [RFC] x86/kvm/emulate: Avoid RET for fastops
-Message-ID: <20231129072053.GA30650@noisy.programming.kicks-ass.net>
-References: <20231112201205.GB9987@noisy.programming.kicks-ass.net>
- <ZWaV8H9e8ubhFgWJ@google.com>
+        Wed, 29 Nov 2023 02:24:25 -0500
+Received: from mx2.zhaoxin.com (mx2.zhaoxin.com [203.110.167.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB99C9
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 23:24:30 -0800 (PST)
+X-ASG-Debug-ID: 1701242666-1eb14e538b24120001-xx1T2L
+Received: from ZXSHMBX1.zhaoxin.com (ZXSHMBX1.zhaoxin.com [10.28.252.163]) by mx2.zhaoxin.com with ESMTP id twgbnlQnld3dfeFl (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Wed, 29 Nov 2023 15:24:26 +0800 (CST)
+X-Barracuda-Envelope-From: LeoLiu-oc@zhaoxin.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
+Received: from ZXBJMBX03.zhaoxin.com (10.29.252.7) by ZXSHMBX1.zhaoxin.com
+ (10.28.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 29 Nov
+ 2023 15:24:26 +0800
+Received: from [192.168.1.204] (125.76.214.122) by ZXBJMBX03.zhaoxin.com
+ (10.29.252.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 29 Nov
+ 2023 15:24:24 +0800
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
+Message-ID: <8c2cca04-140a-4b0c-b478-5bdc437b5413@zhaoxin.com>
+X-Barracuda-RBL-Trusted-Forwarder: 192.168.1.204
+Date:   Wed, 29 Nov 2023 15:24:23 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWaV8H9e8ubhFgWJ@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] crypto: x86/sm2 -add Zhaoxin SM2 algorithm
+ implementation
+To:     Dave Hansen <dave.hansen@intel.com>, <herbert@gondor.apana.org.au>,
+        <davem@davemloft.net>, <tglx@linutronix.de>, <mingo@redhat.com>,
+        <bp@alien8.de>, <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+        <hpa@zytor.com>, <seanjc@google.com>, <kim.phillips@amd.com>,
+        <pbonzini@redhat.com>, <babu.moger@amd.com>,
+        <jiaxi.chen@linux.intel.com>, <jmattson@google.com>,
+        <pawan.kumar.gupta@linux.intel.com>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+X-ASG-Orig-Subj: Re: [PATCH v3] crypto: x86/sm2 -add Zhaoxin SM2 algorithm
+ implementation
+CC:     <CobeChen@zhaoxin.com>, <TonyWWang@zhaoxin.com>,
+        <YunShen@zhaoxin.com>, <Leoliu@zhaoxin.com>
+References: <20231109094744.545887-1-LeoLiu-oc@zhaoxin.com>
+ <20231122064355.638946-1-LeoLiu-oc@zhaoxin.com>
+ <aa7bbecc-dcd5-4757-8f8a-1eb2ab0d529b@intel.com>
+From:   LeoLiu-oc <leoliu-oc@zhaoxin.com>
+In-Reply-To: <aa7bbecc-dcd5-4757-8f8a-1eb2ab0d529b@intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [125.76.214.122]
+X-ClientProxiedBy: ZXSHCAS1.zhaoxin.com (10.28.252.161) To
+ ZXBJMBX03.zhaoxin.com (10.29.252.7)
+X-Barracuda-Connect: ZXSHMBX1.zhaoxin.com[10.28.252.163]
+X-Barracuda-Start-Time: 1701242666
+X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
+X-Barracuda-URL: https://10.28.252.36:4443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at zhaoxin.com
+X-Barracuda-Scan-Msg-Size: 745
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
+X-Barracuda-Spam-Score: -2.02
+X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.117408
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------------------------
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 05:37:52PM -0800, Sean Christopherson wrote:
-> On Sun, Nov 12, 2023, Peter Zijlstra wrote:
-> > Hi,
-> > 
-> > Inspired by the likes of ba5ca5e5e6a1 ("x86/retpoline: Don't clobber
-> > RFLAGS during srso_safe_ret()") I had it on my TODO to look at this,
-> > because the call-depth-tracking rethunk definitely also clobbers flags
-> > and that's a ton harder to fix.
-> > 
-> > Looking at this recently I noticed that there's really only one callsite
-> > (twice, the testcc thing is basically separate from the rest of the
-> > fastop stuff) and thus CALL+RET is totally silly, we can JMP+JMP.
-> > 
-> > The below implements this, and aside from objtool going apeshit (it
-> > fails to recognise the fastop JMP_NOSPEC as a jump-table and instead
-> > classifies it as a tail-call), it actually builds and the asm looks
-> > good sensible enough.
-> > 
-> > I've not yet figured out how to test this stuff, but does something like
-> > this look sane to you guys?
+
+
+在 2023/11/22 22:26, Dave Hansen 写道:
+>> +/* Zhaoxin sm2 verify function */
+>> +static inline size_t zhaoxin_gmi_sm2_verify(unsigned char *key, unsigned char *hash,
+>> +				unsigned char *sig, unsigned char *scratch)
+>> +{
+>> +	size_t result;
+>> +
+>> +	asm volatile(
+>> +		".byte 0xf2, 0x0f, 0xa6, 0xc0"
+>> +		:"=c"(result)
+>> +		:"a"(hash), "b"(key), "d"(SM2_CWORD_VERIFY), "S"(scratch), "D"(sig)
+>> +		:"memory");
+>> +
+>> +	return result;
+>> +}
 > 
-> Yes?  The idea seems sound, but I haven't thought _that_ hard about whether or not
-> there's any possible gotchas.   I did a quick test and nothing exploded (and
-> usually when this code breaks, it breaks spectacularly).
-
-That's encouraging..
-
-> > Given that rethunks are quite fat and slow, this could be sold as a
-> > performance optimization I suppose.
-> > 
-> > ---
-> > 
-> > diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-> > index f93e9b96927a..2cd3b5a46e7a 100644
-> > --- a/arch/x86/include/asm/nospec-branch.h
-> > +++ b/arch/x86/include/asm/nospec-branch.h
-> > @@ -412,6 +412,17 @@ static inline void call_depth_return_thunk(void) {}
-> >  	"call *%[thunk_target]\n",				\
-> >  	X86_FEATURE_RETPOLINE_LFENCE)
-> >  
-> > +# define JMP_NOSPEC						\
-> > +	ALTERNATIVE_2(						\
-> > +	ANNOTATE_RETPOLINE_SAFE					\
-> > +	"jmp *%[thunk_target]\n",				\
-> > +	"jmp __x86_indirect_thunk_%V[thunk_target]\n",		\
-> > +	X86_FEATURE_RETPOLINE,					\
-> > +	"lfence;\n"						\
-> > +	ANNOTATE_RETPOLINE_SAFE					\
-> > +	"jmp *%[thunk_target]\n",				\
-> > +	X86_FEATURE_RETPOLINE_LFENCE)
+> What version of binutils supports this new instruction?
 > 
-> There needs a 32-bit version (eww) and a CONFIG_RETPOLINE=n version. :-/
 
-I'll go make that happen. Thanks!
+The instruction has not yet been submitted to binutils. It will only be 
+used in the Zhaoxin-rng driver, and we are evaluating the necessity of 
+submitting it to binutils.
+
+Yours sincerely,
+Leoliu-oc
