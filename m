@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1C77FD9F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:44:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 648B67FDA01
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:44:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234639AbjK2OoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 09:44:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35806 "EHLO
+        id S234581AbjK2OoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 09:44:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234466AbjK2OoN (ORCPT
+        with ESMTP id S234613AbjK2OoQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 09:44:13 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A94E1D5E
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 06:44:19 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9ffb5a4f622so937255266b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 06:44:19 -0800 (PST)
+        Wed, 29 Nov 2023 09:44:16 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA0F110CB
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 06:44:22 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-a0064353af8so192856766b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 06:44:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701269058; x=1701873858; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701269061; x=1701873861; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=qhPk3gIHMkcRIIJu/Q2shfUhw94w8SwgcuUapNUkT6Q=;
-        b=jNw6hCbMo7j8pPJEpXruQdZQaHZYFY7MQguBXH978sX0H+kN6Y7JbSmN5b/i/Hl3hZ
-         aWdZxo7Z8KwGay2yvgjFxfD8gIufntT9pNlxixbn2NotPZIs2Zsoi32NFST1g740wkFU
-         ACtGJjcoV3GKXba4qiDsoExH1zOMBtlDVoEE/vmQvFxdgkyPG34QHQL9T3Xjt8bJQJz1
-         G1nBHcxMY17BLvE78u8WgzTiqGVTElaTcJNpmhynahpqnTxf2CUZ2XPzsLxOsJcL9oYl
-         bl/QoqySxYcimXZpLsxpwzrfOOu90iv6rCQ3/DFtzAmzM57aftZbhLghajj7Db6sA0Px
-         v1Dg==
+        bh=Dsjff4lo1TEsrq1gFW/fhWlByzdhetZPF5yWDTWUZEA=;
+        b=OfJoOzH5gIscy+ZAbv2JaHsuaw1ty3jXmtwZV/+/v8MmNICNBFvbz/shNyzuMh4U35
+         awYo1KMnnmdW0L4eUvfp9BxTCwA3WxSQP2yb47La/N8qG0RogmCL/1MxuFkmfAXbR3Ly
+         +LknmvUGb2MwK+1HK4eD0D+l9qL5hhuYyQpcMvLMpVayHZ24D7PEZIk4I7vaXWeJCyAf
+         FVHWo7HH+fYfgcXykYfwLN07jEEqO01XRJQGV2anNeo2McpXkUQSXchCMiSUv749g0+b
+         V9isoU+ruxDA0jcxwUxHtEMyl6b21RqYyoM/WlK4PFRMNddBIokvAb1jVhVDaY2+DOh6
+         RfcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701269058; x=1701873858;
+        d=1e100.net; s=20230601; t=1701269061; x=1701873861;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qhPk3gIHMkcRIIJu/Q2shfUhw94w8SwgcuUapNUkT6Q=;
-        b=eJTWPPZ0q0H3KG+Zry2TVMOI4e4dBHhQHrs74sY6fXNz7wX5oEuBQiBPNQCxbdYvM7
-         oLWirX5uHo52XnAh0gtwnWxhy213zTJJzLyJuqXhjVP1rwJvk78gCih4oKOawIXTF900
-         uBHxWGnmFgTCVaM4f2aLbpCPRj757U1VL4vJZOMVKo8UkUMGkRFS9eoBdo3V4QDUa22Q
-         QHR3xihi9cf6L1bN2geH/6vix+AVE/h7AgfIRuJNuV9HzpbsO8J7qHzkVosseN5qC2pL
-         E2UhYEZPhw9jLb8c5lkAokpoxabHgi/gtsJ6OGxw31AnBTfS8IJJ3rZIB4Br47ya305R
-         vcwQ==
-X-Gm-Message-State: AOJu0YxjSPKV8YZF2623nf0Pvp/7KccM4xUBkKHIB+I7G0poVQtwLaPT
-        fHLHwl/5gTQE0F2PmKtJ8BDPpA==
-X-Google-Smtp-Source: AGHT+IELUKZHQLPVXvrqWTCWTWyQ1q5ziCaTJA9OZKmwCNLvITVZ5WvOUuMIs3bTAJCDlyB/ZXSxCA==
-X-Received: by 2002:a17:906:e0d3:b0:9fd:3ba:ddcb with SMTP id gl19-20020a170906e0d300b009fd03baddcbmr13503603ejb.29.1701269058026;
-        Wed, 29 Nov 2023 06:44:18 -0800 (PST)
+        bh=Dsjff4lo1TEsrq1gFW/fhWlByzdhetZPF5yWDTWUZEA=;
+        b=iBhVliCOcT96TWTqbtbziHLv/s8WD7rgVdGEu7exCHf37d8py2OnOlyv2zW3Rniew8
+         v/2Cm7nsNrdFXxiTB42h30mzbuObGKEn4APvWDtU0oPBbeDvAHvMerJjKq29W+VmHGjX
+         bQGIhJFM36FiBjFmav8ePe50Plf1ASJp+Dz/Z6D6BRUN79EqUL1oOQQWr2dcor5+ywZn
+         f7Cx6Zs3lrfaYYXZnDvMNRVssZD95ooOBb8Th7ywgkQKkD7ZiIveyMorcYiyyyr1QZeD
+         q3qL1HszOLNwjLDF+EAPe+FY9lbvExSQgrz6GQFCufkqoh5gStJ4vS7FmcpemmndS1U3
+         uOKA==
+X-Gm-Message-State: AOJu0YwggDZyoH63PFsON25gNaYKNoD5attQ4GAzA5AsMOkpKm7WIJ1e
+        W2d8V716WVc6gQ1juOXQTX+XSw==
+X-Google-Smtp-Source: AGHT+IHImPQ0Kwr3vcyT4G4Q+oZKLib09Ofr5KqKmrosaTuVEe7JUhtFqqgVl+qKUMGIXXd3C0/kEQ==
+X-Received: by 2002:a17:906:2c0f:b0:a04:837e:87ad with SMTP id e15-20020a1709062c0f00b00a04837e87admr19485534ejh.16.1701269061261;
+        Wed, 29 Nov 2023 06:44:21 -0800 (PST)
 Received: from [10.167.154.1] (178235187166.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.166])
-        by smtp.gmail.com with ESMTPSA id e27-20020a1709062c1b00b009fda627abd9sm7913738ejh.79.2023.11.29.06.44.14
+        by smtp.gmail.com with ESMTPSA id e27-20020a1709062c1b00b009fda627abd9sm7913738ejh.79.2023.11.29.06.44.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 06:44:17 -0800 (PST)
+        Wed, 29 Nov 2023 06:44:20 -0800 (PST)
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Wed, 29 Nov 2023 15:44:00 +0100
-Subject: [PATCH v3 03/12] dt-bindings: interconnect: qcom,msm8998-bwmon:
- Add QCM2290 bwmon instance
+Date:   Wed, 29 Nov 2023 15:44:01 +0100
+Subject: [PATCH v3 04/12] dt-bindings: firmware: qcom,scm: Allow
+ interconnect for everyone
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231125-topic-rb1_feat-v3-3-4cbb567743bb@linaro.org>
+Message-Id: <20231125-topic-rb1_feat-v3-4-4cbb567743bb@linaro.org>
 References: <20231125-topic-rb1_feat-v3-0-4cbb567743bb@linaro.org>
 In-Reply-To: <20231125-topic-rb1_feat-v3-0-4cbb567743bb@linaro.org>
 To:     Rob Clark <robdclark@gmail.com>,
@@ -91,16 +91,16 @@ Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
         linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         iommu@lists.linux.dev, Konrad Dybcio <konrad.dybcio@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1701269042; l=959;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1701269042; l=1156;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=1AOnfLSu9gHpTFJJhxoEDrJmbQSA5ACPtQkIorVkBaU=;
- b=Bttpjh5YDu8RJ2oiG0axvEhFefhRGDd512/Kb/Ls46aYSNJYNXnDWH6qSWS8RcmRTRCivj3fj
- 7wcKLyJ1Ot8Bx4Wi3/Cp5wx9Q0m0AaDIIXjigS8cH3/dBs+PrrTzSLx
+ bh=ATWzTDawV1rfiW1Rmh2AEVyFtBtlEoO5VeMvQ1CdaLU=;
+ b=gCLbtSj3IXRE7+/if0uqlBv010cshUZDoa+DZ7Wgb9Nh9NbRTbzIuCXjHUUX/zxf3B95x8WDA
+ mNJxa3PkIHpBoWKs0PxWFtCyzT3RZAqByn3YHBkdxhtCsWXsnLGEY7l
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -108,26 +108,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QCM2290 has a single BWMONv4 intance for CPU. Document it.
+Every Qualcomm SoC physically has a "CRYPTO0<->DDR" interconnect lane.
+Allow this property to be present, no matter the SoC.
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- Documentation/devicetree/bindings/interconnect/qcom,msm8998-bwmon.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/devicetree/bindings/firmware/qcom,scm.yaml | 15 ---------------
+ 1 file changed, 15 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/interconnect/qcom,msm8998-bwmon.yaml b/Documentation/devicetree/bindings/interconnect/qcom,msm8998-bwmon.yaml
-index 7cb8df757477..a88cea732370 100644
---- a/Documentation/devicetree/bindings/interconnect/qcom,msm8998-bwmon.yaml
-+++ b/Documentation/devicetree/bindings/interconnect/qcom,msm8998-bwmon.yaml
-@@ -25,6 +25,7 @@ properties:
-       - const: qcom,msm8998-bwmon       # BWMON v4
-       - items:
-           - enum:
-+              - qcom,qcm2290-cpu-bwmon
-               - qcom,sc7180-cpu-bwmon
-               - qcom,sc7280-cpu-bwmon
-               - qcom,sc8280xp-cpu-bwmon
+diff --git a/Documentation/devicetree/bindings/firmware/qcom,scm.yaml b/Documentation/devicetree/bindings/firmware/qcom,scm.yaml
+index 0613a37a851a..f3a87a8426d0 100644
+--- a/Documentation/devicetree/bindings/firmware/qcom,scm.yaml
++++ b/Documentation/devicetree/bindings/firmware/qcom,scm.yaml
+@@ -178,21 +178,6 @@ allOf:
+           minItems: 3
+           maxItems: 3
+ 
+-  # Interconnects
+-  - if:
+-      not:
+-        properties:
+-          compatible:
+-            contains:
+-              enum:
+-                - qcom,scm-qdu1000
+-                - qcom,scm-sc8280xp
+-                - qcom,scm-sm8450
+-                - qcom,scm-sm8550
+-    then:
+-      properties:
+-        interconnects: false
+-
+   # Interrupts
+   - if:
+       not:
 
 -- 
 2.43.0
