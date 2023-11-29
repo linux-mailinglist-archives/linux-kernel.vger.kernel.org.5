@@ -2,174 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 741C87FDBEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB99D7FDC00
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:54:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343949AbjK2Pss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 10:48:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47244 "EHLO
+        id S1343956AbjK2Py1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 10:54:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343982AbjK2Psq (ORCPT
+        with ESMTP id S1343532AbjK2Py0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 10:48:46 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B8410C2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:48:51 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1cfaf05db73so223435ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:48:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701272931; x=1701877731; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xM0ns9BHLxfZ/kvsUGXQ6Hha2VKvW6930nLCCEsmbw0=;
-        b=dsXFE1HF+tnRbe8kxB/4j8ADBKyQvtGzf8auD+wki3fGX2MH7Y7jN+0hmvvq7UEAQC
-         b9Jta6K2ryBSsohUDXskRjdUk8InkB7WATEeXGVKEfPuWH+8UcORLcYFSyI+nnxoMDPQ
-         G0imeYp510JBhTmL6zguQ75rrRDvBEwdfMtMByAyGloYln+Y71ddoqdc7xBwuGpgK53h
-         jUJCpItseH+cl2/ytfYQMQkYs0Q4Jx4cCDzYngVkxA1LeYhBbSWHKifdVeRFRFGUreKe
-         FFk6gh4eYybWXupYTtzsHkuhSdEww5Vm/hACTX9IDtitRfnkYJzlnWYgKCKuBxQqKqLU
-         Caow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701272931; x=1701877731;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xM0ns9BHLxfZ/kvsUGXQ6Hha2VKvW6930nLCCEsmbw0=;
-        b=eM2ek5xQfMtHaMHoaFEqD+tx+EGumV1XYyaS8waAKFo3csoDhI9e/iNb9/1RROuo2N
-         6I/OaHe948NqkSu3NAvsAq6y5dd23MgA73R5Av1kNM2C6TF065YQHLArFY8udwYdHf6I
-         vw6QyWa+nGk4blemojlX9croXljFpTn4UzlqOP2Kne+49dHx+gnokJKMFF0q+mvnzI/q
-         pT2CxcPvFPQPZlLi1Y1rUGfkH/uFNBts/EDNloQzmNhvU3xzJInm/PVVG4sPF1ofztk8
-         HSgpo8ZW6SQuSM2n4W+eOwQy5J1kMNfwzfcq4wrK+4f975154mcD9kzkbdLxssZ/noPW
-         g7+Q==
-X-Gm-Message-State: AOJu0YzrB/sD/gxeRkTC633bYMv8DB5qHiGamGQ+OQ4glIAvUSPl/aCa
-        oq2q2fzQ4IRX/OWpv07rxwPLxtgSf9gQdvtrHb4bPg==
-X-Google-Smtp-Source: AGHT+IH7JoIl0dQ2yWOCAKQ8Oz6I5g2Tk3T/hoJUVzuZ2b+DJk+w8YGHIO2L0XM4tgMET2E7FfrpHfQa/Rz6UqJ6Nfs=
-X-Received: by 2002:a17:902:c18b:b0:1cf:b2a9:fbf0 with SMTP id
- d11-20020a170902c18b00b001cfb2a9fbf0mr1030887pld.0.1701272929581; Wed, 29 Nov
- 2023 07:48:49 -0800 (PST)
+        Wed, 29 Nov 2023 10:54:26 -0500
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 293549D;
+        Wed, 29 Nov 2023 07:54:31 -0800 (PST)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3ATFs8Bu92837864, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3ATFs8Bu92837864
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 29 Nov 2023 23:54:08 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Wed, 29 Nov 2023 23:54:09 +0800
+Received: from Test06-PC.realtek.com.tw (172.22.228.55) by
+ RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Wed, 29 Nov 2023 23:54:07 +0800
+From:   ChunHao Lin <hau@realtek.com>
+To:     <hkallweit1@gmail.com>
+CC:     <nic_swsd@realtek.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <grundler@chromium.org>, ChunHao Lin <hau@realtek.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH net v2] r8169: fix rtl8125b PAUSE frames blasting when suspended
+Date:   Wed, 29 Nov 2023 23:53:50 +0800
+Message-ID: <20231129155350.5843-1-hau@realtek.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-References: <0000000000009401fb060b28a2e1@google.com> <CAKYAXd-WLUQcyMAWd_R4PKRcciRh=faNnixv38abWmj7V=To9Q@mail.gmail.com>
-In-Reply-To: <CAKYAXd-WLUQcyMAWd_R4PKRcciRh=faNnixv38abWmj7V=To9Q@mail.gmail.com>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Wed, 29 Nov 2023 16:48:35 +0100
-Message-ID: <CANp29Y5e755ag+PFfqQZKrXozwF4dM_zo8fi_eNkNypeU_h1_w@mail.gmail.com>
-Subject: Re: [syzbot] Monthly exfat report (Nov 2023)
-To:     Namjae Jeon <linkinjeon@kernel.org>
-Cc:     syzbot <syzbot+listb51f932ee38ecac1b05d@syzkaller.appspotmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sj1557.seo@samsung.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.22.228.55]
+X-ClientProxiedBy: RTEXH36505.realtek.com.tw (172.21.6.25) To
+ RTEXMBS04.realtek.com.tw (172.21.6.97)
+X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+When FIFO reaches near full state, device will issue pause frame.
+If pause slot is enabled(set to 1), in this time, device will issue
+pause frame only once. But if pause slot is disabled(set to 0), device
+will keep sending pause frames until FIFO reaches near empty state.
 
-Thank you very much for taking a look at this report!
+When pause slot is disabled, if there is no one to handle receive
+packets, device FIFO will reach near full state and keep sending
+pause frames. That will impact entire local area network.
 
-On Wed, Nov 29, 2023 at 3:10=E2=80=AFPM Namjae Jeon <linkinjeon@kernel.org>=
- wrote:
->
-> 2023-11-28 6:03 GMT+09:00, syzbot
-> <syzbot+listb51f932ee38ecac1b05d@syzkaller.appspotmail.com>:
-> > Hello exfat maintainers/developers,
-> Hi,
-> >
-> > This is a 31-day syzbot report for the exfat subsystem.
-> > All related reports/information can be found at:
-> > https://syzkaller.appspot.com/upstream/s/exfat
-> >
-> > During the period, 1 new issues were detected and 0 were fixed.
-> > In total, 7 issues are still open and 12 have been fixed so far.
-> >
-> > Some of the still happening issues:
-> >
-> > Ref Crashes Repro Title
-> > <1> 225     No    INFO: task hung in path_openat (7)
-> There is no reproducer and I couldn't find where it is connected to exfat=
-.
-> >
-> > https://syzkaller.appspot.com/bug?extid=3D950a0cdaa2fdd14f5bdc
+This issue can be reproduced in Chromebox (not Chromebook) in
+developer mode running a test image (and v5.10 kernel):
+1) ping -f $CHROMEBOX (from workstation on same local network)
+2) run "powerd_dbus_suspend" from command line on the $CHROMEBOX
+3) ping $ROUTER (wait until ping fails from workstation)
 
-Syzbot assigned exfat because of this report:
-https://syzkaller.appspot.com/text?tag=3DCrashReport&x=3D10e02711680000
+Takes about ~20-30 seconds after step 2 for the local network to
+stop working.
 
-But it indeed does look like a false positive, let's update the subsystem.
+Fix this issue by enabling pause slot to only send pause frame once
+when FIFO reaches near full state.
 
-#syz set <1> subsystems: fs
+Fixes: f1bce4ad2f1c ("r8169: add support for RTL8125")
+Reported-by: Grant Grundler <grundler@chromium.org>
+Tested-by: Grant Grundler <grundler@chromium.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: ChunHao Lin <hau@realtek.com>
+---
+v2:
+- update comment and title.
+---
+ drivers/net/ethernet/realtek/r8169_main.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-> > <2> 150     No    INFO: task hung in exfat_sync_fs
-> There is no reproducer... Let me know how to reproduce it.
+diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+index 62cabeeb842a..bb787a52bc75 100644
+--- a/drivers/net/ethernet/realtek/r8169_main.c
++++ b/drivers/net/ethernet/realtek/r8169_main.c
+@@ -196,6 +196,7 @@ enum rtl_registers {
+ 					/* No threshold before first PCI xfer */
+ #define	RX_FIFO_THRESH			(7 << RXCFG_FIFO_SHIFT)
+ #define	RX_EARLY_OFF			(1 << 11)
++#define	RX_PAUSE_SLOT_ON		(1 << 11)	/* 8125b and later */
+ #define	RXCFG_DMA_SHIFT			8
+ 					/* Unlimited maximum PCI burst. */
+ #define	RX_DMA_BURST			(7 << RXCFG_DMA_SHIFT)
+@@ -2306,9 +2307,13 @@ static void rtl_init_rxcfg(struct rtl8169_private *tp)
+ 	case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_53:
+ 		RTL_W32(tp, RxConfig, RX128_INT_EN | RX_MULTI_EN | RX_DMA_BURST | RX_EARLY_OFF);
+ 		break;
+-	case RTL_GIGA_MAC_VER_61 ... RTL_GIGA_MAC_VER_63:
++	case RTL_GIGA_MAC_VER_61:
+ 		RTL_W32(tp, RxConfig, RX_FETCH_DFLT_8125 | RX_DMA_BURST);
+ 		break;
++	case RTL_GIGA_MAC_VER_63:
++		RTL_W32(tp, RxConfig, RX_FETCH_DFLT_8125 | RX_DMA_BURST |
++			RX_PAUSE_SLOT_ON);
++		break;
+ 	default:
+ 		RTL_W32(tp, RxConfig, RX128_INT_EN | RX_DMA_BURST);
+ 		break;
+-- 
+2.39.2
 
-Syzbot has not yet found a reproducer for it, even though it does not
-seem to be very rare (there've been already >150 such crashes).
-There's a command to hide the finding from monthly reports if you
-believe this is not actionable for you anyway.
-
-> This can happen when disk speed is very low and a lot of writes occur.
-> Is that so?
->
-> >
-> > https://syzkaller.appspot.com/bug?extid=3D205c2644abdff9d3f9fc
-> > <3> 119     Yes   WARNING in drop_nlink (2)
-> I'm curious how this issue was classified as an exfat issue.
-> When looking at the backtrace, this issue appears to be an hfsplus issue.
->
->  hfsplus_unlink+0x3fe/0x790 fs/hfsplus/dir.c:381
->  hfsplus_rename+0xc8/0x1c0 fs/hfsplus/dir.c:547
->  vfs_rename+0xaba/0xde0 fs/namei.c:4844
-> >
-> > https://syzkaller.appspot.com/bug?extid=3D651ca866e5e2b4b5095b
-
-This is triggered by both hfsplus and exfat mounts. See e.g. the crash
-at "2023/06/20 03:21":
-https://syzkaller.appspot.com/text?tag=3DCrashReport&x=3D1248deff280000
-
-> > <4> 38      Yes   INFO: task hung in exfat_write_inode
-> I could not reproduce this by using C reproducer provided by you.
-> Can you confirm that this really cannot be reproduced using it?
->
-> >
-> > https://syzkaller.appspot.com/bug?extid=3D2f73ed585f115e98aee8
-
-I've followed the guide at [1] and the C reproducer crashed the VM in
-~420 seconds with exactly the same output as on sykaller.appspot.com.
-
-[1] https://github.com/google/syzkaller/blob/master/docs/syzbot_assets.md#r=
-un-a-c-reproducer
-
-> > <5> 1       No    UBSAN: shift-out-of-bounds in exfat_fill_super (2)
-> This is false alarm. ->sect_size_bits could not be greater than 12 by
-> the check below.
->
->         /*
->          * sect_size_bits could be at least 9 and at most 12.
->          */
->         if (p_boot->sect_size_bits < EXFAT_MIN_SECT_SIZE_BITS ||
->             p_boot->sect_size_bits > EXFAT_MAX_SECT_SIZE_BITS) {
->                 exfat_err(sb, "bogus sector size bits : %u",
->                                 p_boot->sect_size_bits);
->                 return -EINVAL;
->         }
-> >
-> > https://syzkaller.appspot.com/bug?extid=3Dd33808a177641a02213e
-
-Maybe something corrupts it in between the check and the use?
-Syzkaller may generate a lot of situations when mount and other
-operations on the same block device happen simultaneously.
-
-There's a patch series[2] that helps prohibit this, but it has not yet
-reached all trees we fuzz.
-
-[2] https://lore.kernel.org/all/20231101173542.23597-1-jack@suse.cz/
-
---=20
-Aleksandr
