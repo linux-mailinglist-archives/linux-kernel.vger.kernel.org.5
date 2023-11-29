@@ -2,117 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 822907FD52C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:11:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C59B7FD553
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:16:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231797AbjK2LLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 06:11:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50946 "EHLO
+        id S232712AbjK2LQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 06:16:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232223AbjK2LKK (ORCPT
+        with ESMTP id S232694AbjK2LKC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 06:10:10 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5031E1FE1;
-        Wed, 29 Nov 2023 03:09:01 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 35F6E2F4;
-        Wed, 29 Nov 2023 03:09:48 -0800 (PST)
-Received: from e129166.arm.com (unknown [10.57.4.241])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 9E0913F5A1;
-        Wed, 29 Nov 2023 03:08:58 -0800 (PST)
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        rafael@kernel.org
-Cc:     lukasz.luba@arm.com, dietmar.eggemann@arm.com, rui.zhang@intel.com,
-        amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
-        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
-        len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org,
-        qyousef@layalina.io, wvw@google.com
-Subject: [PATCH v5 22/23] PM: EM: Add em_dev_compute_costs() as API for device drivers
-Date:   Wed, 29 Nov 2023 11:08:52 +0000
-Message-Id: <20231129110853.94344-23-lukasz.luba@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231129110853.94344-1-lukasz.luba@arm.com>
-References: <20231129110853.94344-1-lukasz.luba@arm.com>
+        Wed, 29 Nov 2023 06:10:02 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 728451999;
+        Wed, 29 Nov 2023 03:08:57 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40b4c2ef584so15059795e9.3;
+        Wed, 29 Nov 2023 03:08:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701256136; x=1701860936; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=TXoWjQC2UWKNPcPefB1OgmDGBq/ISO9jtkQUDslrPEk=;
+        b=inHOuUAHtYRE4PthoG239jN0rmTWOzXMfnJoePFi0BXzzoNWiET5KZhdAIG5HdIM6c
+         3L/C03BiOIwbDRThqJCqfCIBusn/7tuS7cVNr/fiwO/3KxsF268YA9YLECBledZy+ZOU
+         n5yDt74x3juXc0mumNyN8+s6nI9xmslLXrTENQ+24VhSYGB/8oaGMZtvOYSfjZ5NacB+
+         ceGdTG8f6L7p7HSgphtKo4q+V4IrilwJ5GUj/axPYb0BH9Pszh7useIQ/qqyv0ZF8Lky
+         nxZZt3e8Bdy50KsOxG/UQIZ08onJPYiaKL222+pVc30lT/Xx73BeGI7Op5yY6f9AsqP+
+         T7dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701256136; x=1701860936;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TXoWjQC2UWKNPcPefB1OgmDGBq/ISO9jtkQUDslrPEk=;
+        b=Dm3IE1fwnivzqJke3zxc7wei4YZTyRYx40nOlBxz8GkcpxhXYrTxSNmo11rMixJrxB
+         ozgeV+dakIUorOhWtdWEDsTYwBmG5m+BdpswCR1RpJIX8I+0BKV3hUNGHNE+SelHvchr
+         kza9XyXAMa+t++nDfl1Bx2VR9Vt0Zvt3CXlcJmmWdGiaK8D8wgXchTtHDM9JEujmKagO
+         Kei5IV+7cx7gUDPILS01JkoPTrSgNzvY5svHJAsmjqOohlrMXTZyxTcGNUDD5JIwh9Gv
+         tA2QVrmpGdHofbkP990jMJHmdNSjAgCLbKJaR+beYaorB9O93wCd6nU/fUgRaPMiq6S7
+         YFXQ==
+X-Gm-Message-State: AOJu0YwmYg482q4xqooQf0gceCsOmkQto6tyIDUuHM4RPCdr6fHX/ws7
+        FaXotlNwIbt3iLxg17v5R2E=
+X-Google-Smtp-Source: AGHT+IFbkxnXnBir5EmXVLk2Ghp/juup515fcZSoe3s9fFLvexV/K2xPgHIZdasPh3uh2Wi9TrGWRg==
+X-Received: by 2002:a05:600c:290:b0:40b:377a:2ac1 with SMTP id 16-20020a05600c029000b0040b377a2ac1mr12898477wmk.20.1701256135472;
+        Wed, 29 Nov 2023 03:08:55 -0800 (PST)
+Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.gmail.com with ESMTPSA id jg28-20020a05600ca01c00b0040841e79715sm1811020wmb.27.2023.11.29.03.08.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 03:08:55 -0800 (PST)
+Message-ID: <65671bc7.050a0220.35082.4ae4@mx.google.com>
+X-Google-Original-Message-ID: <ZWcbxIJfa6pxtoOb@Ansuel-xps.>
+Date:   Wed, 29 Nov 2023 12:08:52 +0100
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [net-next PATCH 06/14] net: phy: at803x: move at8031 specific
+ data out of generic at803x_priv
+References: <20231129021219.20914-1-ansuelsmth@gmail.com>
+ <20231129021219.20914-7-ansuelsmth@gmail.com>
+ <ZWcF6b/Py2gMmwmZ@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWcF6b/Py2gMmwmZ@shell.armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device drivers can modify EM at runtime by providing a new EM table.
-The EM is used by the EAS and the em_perf_state::cost stores
-pre-calculated value to avoid overhead. This patch provides the API for
-device drivers to calculate the cost values properly (and not duplicate
-the same code).
+On Wed, Nov 29, 2023 at 09:35:37AM +0000, Russell King (Oracle) wrote:
+> On Wed, Nov 29, 2023 at 03:12:11AM +0100, Christian Marangi wrote:
+> > Rework everything related to specific at8031 function to specific
+> > function and allocate the 2 bool, is_1000basex and is_fiber and the
+> > regulator structs to a dedicated qca8031_data struct.
+> > 
+> > This is needed to keep at803x functions more generic and detach them
+> > from specific check of at8031/33 PHY.
+> > 
+> > Out of all the reworked functions, only config_aneg required some code
+> > duplication with how the mdix config is handled.
+> > 
+> > This also reduces the generic at803x_priv struct by removing variables
+> > only used by at8031 PHY.
+> 
+> You are changing the order that register writes happen, e.g. for the
+> set_wol() method. at803x_set_wol() very clearly does stuff like
+> configuring the ethernet MAC address _before_ enabling WoL, and that
+> can fail. Your new code enables WoL and then calls at803x_set_wol().
+> If at803x_set_wol() fails (e.g. because of an invalid MAC address)
+> you leave WoL enabled. This is a change of behaviour.
+>
 
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
----
- include/linux/energy_model.h |  8 ++++++++
- kernel/power/energy_model.c  | 18 ++++++++++++++++++
- 2 files changed, 26 insertions(+)
+Have to think about it, changing the order of the WoL module enable and
+setting the MAC should not change anything as the real enablement is the
+WoL interrupt. (I guess this is why the WoL module is enabled by default
+as the interrupt is disabled by default resulting in the module doing
+nothing)
 
-diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
-index 9c47388482a0..836622b1a0a1 100644
---- a/include/linux/energy_model.h
-+++ b/include/linux/energy_model.h
-@@ -170,6 +170,8 @@ int em_dev_register_perf_domain(struct device *dev, unsigned int nr_states,
- void em_dev_unregister_perf_domain(struct device *dev);
- struct em_perf_table __rcu *em_allocate_table(struct em_perf_domain *pd);
- void em_free_table(struct em_perf_table __rcu *table);
-+int em_dev_compute_costs(struct device *dev, struct em_perf_state *table,
-+			 int nr_states);
- 
- /**
-  * em_pd_get_efficient_state() - Get an efficient performance state from the EM
-@@ -355,6 +357,12 @@ static inline struct em_perf_state *em_get_table(struct em_perf_domain *pd)
- 	return NULL;
- }
- static inline void em_put_table(void) {}
-+static inline
-+int em_dev_compute_costs(struct device *dev, struct em_perf_state *table,
-+			 int nr_states)
-+{
-+	return -EINVAL;
-+}
- #endif
- 
- #endif
-diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
-index 234823c0e59d..fadfdefbe5f0 100644
---- a/kernel/power/energy_model.c
-+++ b/kernel/power/energy_model.c
-@@ -286,6 +286,24 @@ static int em_compute_costs(struct device *dev, struct em_perf_state *table,
- 	return 0;
- }
- 
-+/**
-+ * em_dev_compute_costs() - Calculate cost values for new runtime EM table
-+ * @dev		: Device for which the EM table is to be updated
-+ * @table	: The new EM table that is going to get the costs calculated
-+ *
-+ * Calculate the em_perf_state::cost values for new runtime EM table. The
-+ * values are used for EAS during task placement. It also calculates and sets
-+ * the efficiency flag for each performance state. When the function finish
-+ * successfully the EM table is ready to be updated and used by EAS.
-+ *
-+ * Return 0 on success or a proper error in case of failure.
-+ */
-+int em_dev_compute_costs(struct device *dev, struct em_perf_state *table,
-+			 int nr_states)
-+{
-+	return em_compute_costs(dev, table, NULL, nr_states, 0);
-+}
-+
- /**
-  * em_dev_update_perf_domain() - Update runtime EM table for a device
-  * @dev		: Device for which the EM is to be updated
+> I haven't checked anything else, but given the above, I think you
+> need to think more about how you make this change, and check
+> whether there are any other similar issues.
+> 
+
+Would it be better to split this in more smaller commit? One for moving
+the at8031 function and the other for refactor of some function? 
+
 -- 
-2.25.1
-
+	Ansuel
