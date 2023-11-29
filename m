@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 544207FD2AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:29:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 836097FD2AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:29:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231634AbjK2J3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 04:29:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52172 "EHLO
+        id S230192AbjK2J30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 04:29:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjK2J2x (ORCPT
+        with ESMTP id S231190AbjK2J3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 04:28:53 -0500
+        Wed, 29 Nov 2023 04:29:00 -0500
 Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C231FFA;
-        Wed, 29 Nov 2023 01:28:43 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD4DA2108;
+        Wed, 29 Nov 2023 01:28:50 -0800 (PST)
 Received: from pyrite.hamster-moth.ts.net (h175-177-049-135.catv02.itscom.jp [175.177.49.135])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 26B69F02;
-        Wed, 29 Nov 2023 10:28:01 +0100 (CET)
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A74A32B6;
+        Wed, 29 Nov 2023 10:28:07 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1701250086;
-        bh=Edrymv5691+fMNHomNnzzNr4DmSpwPe97XaFQm/kkW8=;
+        s=mail; t=1701250093;
+        bh=yeDPN9oGkesAazzCi9HQ+rTaGgXNlCyocQHZh8/QGks=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aDXlrcTI9ujlwLviFejRx+86njHF7zKPxbHPS3bIt9iAygP67XR5zGuBFoQe1SA9e
-         ZgPxXYj9EnTmQtlN79OzIdjLjKkQd6Mk8icNqxbC93QIk02+bRGHIgU62RWfXvOQyv
-         GbugVP2iLOawbOF5UGjvLr9+d/B4iGThKrlyq7aM=
+        b=sTT5MvtAsPer5EX+3DkssuQuiTyU6eu29lIu1aDBXh/yy6n0fSxV0CHbx8t7O4as9
+         65Yg3jCqiXBAhMGTGLzOfFFA+E2bsegjSjdwiqXuv9QH0VIAFAZgbxuMi2D4S8I87z
+         sZJUzhRebfJVrM6T8OkUQGQ8vGG0/aAnENdEPqHg=
 From:   Paul Elder <paul.elder@ideasonboard.com>
 To:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
         devicetree@vger.kernel.org
@@ -32,14 +32,19 @@ Cc:     kieran.bingham@ideasonboard.com, tomi.valkeinen@ideasonboard.com,
         umang.jain@ideasonboard.com, aford173@gmail.com,
         Paul Elder <paul.elder@ideasonboard.com>,
         Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Rob Herring <robh@kernel.org>,
         Dafna Hirschfeld <dafna@fastmail.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
         Heiko Stuebner <heiko@sntech.de>,
+        Helen Koike <helen.koike@collabora.com>,
         linux-arm-kernel@lists.infradead.org (moderated list:ARM/Rockchip SoC
         support), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v4 05/11] media: rkisp1: Fix RSZ_CTRL bits for i.MX8MP
-Date:   Wed, 29 Nov 2023 18:27:53 +0900
-Message-Id: <20231129092759.242641-6-paul.elder@ideasonboard.com>
+Subject: [PATCH v4 06/11] dt-bindings: media: rkisp1: Add i.MX8MP ISP to compatible
+Date:   Wed, 29 Nov 2023 18:27:54 +0900
+Message-Id: <20231129092759.242641-7-paul.elder@ideasonboard.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231129092759.242641-1-paul.elder@ideasonboard.com>
 References: <20231129092759.242641-1-paul.elder@ideasonboard.com>
@@ -54,77 +59,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ISP8000Nano, found in the i.MX8MP, has a different architecture to
-crop at the resizer input. Instead of the "dual crop" block between the
-ISP and the resizers found in the RK3399, cropping has been moved to the
-input of the resizer blocks. As a result, the resizer CFG_UPD and
-CFG_UPD_AUTO bits have been moved to make space for a new CROP_ENABLE
-bit.
-
-Fix the resizer shadow update accordingly, using the DUAL_CROP feature
-to infer whether or not the resizer implements cropping. Support for
-resizer cropping itself will be added in a subsequent commit.
+The i.MX8MP ISP is compatbile with the rkisp1 driver. Add it to the list
+of compatible strings. While at it, expand on the description of the
+clocks to make it clear which clock in the i.MX8MP ISP they map to,
+based on the names from the datasheet (which are confusing).
 
 Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
-Changes since v3:
+Changes since v1:
 
-- Condition on RKISP1_FEATURE_DUAL_CROP feature
-- Update commit message
+- Add fsl,blk-ctrl property
+- Make iommus, phys and phy-names conditional on compatible
 
-Changes since v2:
+ .../bindings/media/rockchip-isp1.yaml         | 37 ++++++++++++++++---
+ 1 file changed, 31 insertions(+), 6 deletions(-)
 
-- Condition on RKISP1_FEATURE_RSZ_CROP feature
-- Rename bits
-- Use the rkisp1_has_feature() macro
-
- .../media/platform/rockchip/rkisp1/rkisp1-regs.h  |  5 +++++
- .../platform/rockchip/rkisp1/rkisp1-resizer.c     | 15 +++++++++++----
- 2 files changed, 16 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h b/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h
-index 3b19c8411360..95646b45f28b 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h
-@@ -168,6 +168,11 @@
- #define RKISP1_CIF_RSZ_CTRL_CFG_UPD_AUTO		BIT(9)
- #define RKISP1_CIF_RSZ_SCALER_FACTOR			BIT(16)
+diff --git a/Documentation/devicetree/bindings/media/rockchip-isp1.yaml b/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
+index e466dff8286d..b9c812b81389 100644
+--- a/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
++++ b/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
+@@ -16,6 +16,7 @@ description: |
+ properties:
+   compatible:
+     enum:
++      - fsl,imx8mp-isp
+       - rockchip,px30-cif-isp
+       - rockchip,rk3399-cif-isp
  
-+/* For resizer instances that support cropping */
-+#define RKISP1_CIF_RSZ_CTRL_CROP_ENABLE			BIT(8)
-+#define RKISP1_CIF_RSZ_CTRL_CROP_CFG_UPD		BIT(9)
-+#define RKISP1_CIF_RSZ_CTRL_CROP_CFG_UPD_AUTO		BIT(10)
+@@ -36,9 +37,9 @@ properties:
+     minItems: 3
+     items:
+       # isp0 and isp1
+-      - description: ISP clock
+-      - description: ISP AXI clock
+-      - description: ISP AHB clock
++      - description: ISP clock (for imx8mp, clk)
++      - description: ISP AXI clock (for imx8mp, m_hclk)
++      - description: ISP AHB clock (for imx8mp, hclk)
+       # only for isp1
+       - description: ISP Pixel clock
+ 
+@@ -52,6 +53,13 @@ properties:
+       # only for isp1
+       - const: pclk
+ 
++  fsl,blk-ctrl:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    maxItems: 1
++    description:
++      A phandle to the media block control for the ISP, followed by a cell
++      containing the index of the gasket.
 +
- /* MI_IMSC - MI_MIS - MI_RIS - MI_ICR - MI_ISR */
- #define RKISP1_CIF_MI_FRAME(stream)			BIT((stream)->id)
- #define RKISP1_CIF_MI_MBLK_LINE				BIT(2)
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-resizer.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-resizer.c
-index c1aaeed58acc..6d6ebc53c6e5 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-resizer.c
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-resizer.c
-@@ -178,10 +178,17 @@ static void rkisp1_rsz_update_shadow(struct rkisp1_resizer *rsz,
- {
- 	u32 ctrl_cfg = rkisp1_rsz_read(rsz, RKISP1_CIF_RSZ_CTRL);
+   iommus:
+     maxItems: 1
  
--	if (when == RKISP1_SHADOW_REGS_ASYNC)
--		ctrl_cfg |= RKISP1_CIF_RSZ_CTRL_CFG_UPD_AUTO;
--	else
--		ctrl_cfg |= RKISP1_CIF_RSZ_CTRL_CFG_UPD;
-+	if (when == RKISP1_SHADOW_REGS_ASYNC) {
-+		if (rkisp1_has_feature(rsz->rkisp1, DUAL_CROP))
-+			ctrl_cfg |= RKISP1_CIF_RSZ_CTRL_CFG_UPD_AUTO;
-+		else
-+			ctrl_cfg |= RKISP1_CIF_RSZ_CTRL_CROP_CFG_UPD_AUTO;
-+	} else {
-+		if (rkisp1_has_feature(rsz->rkisp1, DUAL_CROP))
-+			ctrl_cfg |= RKISP1_CIF_RSZ_CTRL_CFG_UPD;
-+		else
-+			ctrl_cfg |= RKISP1_CIF_RSZ_CTRL_CROP_CFG_UPD;
-+	}
+@@ -112,9 +120,6 @@ required:
+   - interrupts
+   - clocks
+   - clock-names
+-  - iommus
+-  - phys
+-  - phy-names
+   - power-domains
+   - ports
  
- 	rkisp1_rsz_write(rsz, RKISP1_CIF_RSZ_CTRL, ctrl_cfg);
- }
+@@ -142,6 +147,26 @@ allOf:
+       required:
+         - interrupt-names
+ 
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: fsl,imx8mp-isp
++    then:
++      properties:
++        iommus: false
++        phys: false
++        phy-names: false
++      required:
++        - fsl,blk-ctrl
++    else:
++      properties:
++        fsl,blk-ctrl: false
++      required:
++        - iommus
++        - phys
++        - phy-names
++
+ additionalProperties: false
+ 
+ examples:
 -- 
 2.39.2
 
