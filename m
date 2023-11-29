@@ -2,263 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07FB47FDF34
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 19:20:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9859C7FDF36
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 19:20:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231421AbjK2ST6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 13:19:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47116 "EHLO
+        id S230479AbjK2SUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 13:20:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjK2ST4 (ORCPT
+        with ESMTP id S230317AbjK2SUc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 13:19:56 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66280A3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 10:20:02 -0800 (PST)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ATFme9s031484;
-        Wed, 29 Nov 2023 18:19:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2023-11-20;
- bh=BvLXcIhYzYqa7Gs9WyLjXSGdjRauOsEmT8F/05xG+wY=;
- b=kxToQIHCdCmBJ7UKRLzPlybXYwkkmeZuqWRr6n6Y7iV+w5YlrkFxvwIC23MxJPZLYlvx
- rDn3VUqxSnSKzSweqBJB5ovJMnN+eG4DOq0Hq/nBrVZlkPLLzV5SqItrQoVkKydpDfqp
- lhPkmGsJxBzLuF9ACY+isI11PK1VbYOVfj0QI7d5h+ID9MOB5W7De+QmEx3fMYreDpM8
- 51ZJKX345oqS3jFAAj4xv9K2A59mj5n8M5pwDlngJOBaUrUOy17DHcUHp4THkCuf8yBA
- UhXzzEluVzqJVXB0eUm1m6NoW8FJzfS5iS2ypqoijWUgm0Ap3MB1W0TWXymF/TW0laRu eQ== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uk8yd9q7e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Nov 2023 18:19:05 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3ATI5trj014116;
-        Wed, 29 Nov 2023 18:19:04 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uk7cerya7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Nov 2023 18:19:04 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LSBk2utf7kYlFbMfOeweAZTZl7qYV97hy4C1S0z4cmKVbroOWXG6Dj2DKd8cFs9f3KmPrILrePHLdO0vsXyhwANQIYVHhQzl6Kxm0A1xzpALETDvbjfslctK1Hznc4fB4lAN9KWpRN59/MDnBF3gwA/7mvjM/SmPv63wwlG1iTuoKO+nj406PcgALp0tUu24v4M+P0DmTaUMFrNJOwa7h0a2bwXs1c8tgDZZTsH0zmI8KQklF/bwI580ARDSYNt/H2t5yNCLMlWhlFsD34j9hLLg2ETXebhXUYfiQkFa16eCpC7LfbM+PmFcoz4XztuyG0Qvntf5ynq3FjmUnkgNLQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BvLXcIhYzYqa7Gs9WyLjXSGdjRauOsEmT8F/05xG+wY=;
- b=MlhLpv9IDsTrWx6qtdOtXPEnDF0/rTtF4gg3AKujBYa/pYT2LYmXUeDdd+07PycCJX3jiZAZD+j+P1CQTOjk1oTjoNMr+r14MR9Y/qkWrDp4lhZGVmOAUIWLT4V2pbjoda1eXhhY34/E9Y9ji1xEFnYCzEC4LRSPaNSP2kVPWH65d7TEv8fJ0yw0771Jdg7UuzAzATSMjAOn5rirBYA1asTeHWjJbp+/mgvMWDcbRNDJMBL80HJvll+jDnpp00xORgCkc0MrJtt5Xg/4aDb4pabc2XhI1EhBQALYpboZzW8wuFnaeHg6/odSc8Er6bd6kRnMAMS+RxJCtOMy4msNBw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BvLXcIhYzYqa7Gs9WyLjXSGdjRauOsEmT8F/05xG+wY=;
- b=qgMbhNKuzyFopLpc1o+bvTB7bB41LKZeeamFpImpw1FMJERbvVt5qPyPv0L3ZYaihF1/yE1xswu8o134fNCJk3kaHL2ziJhhWIOrKQlyXxKvbHUbMGz08WlvcKy/ega8lr9csM0GDeC65m4wCKag50w6KqV70VUoYS+PinO7JBU=
-Received: from SN6PR10MB3022.namprd10.prod.outlook.com (2603:10b6:805:d8::25)
- by SJ0PR10MB4414.namprd10.prod.outlook.com (2603:10b6:a03:2d0::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.22; Wed, 29 Nov
- 2023 18:19:01 +0000
-Received: from SN6PR10MB3022.namprd10.prod.outlook.com
- ([fe80::a5de:b1cb:9ae1:d0cc]) by SN6PR10MB3022.namprd10.prod.outlook.com
- ([fe80::a5de:b1cb:9ae1:d0cc%7]) with mapi id 15.20.7025.022; Wed, 29 Nov 2023
- 18:19:01 +0000
-Date:   Wed, 29 Nov 2023 13:18:58 -0500
-From:   "Liam R. Howlett" <Liam.Howlett@Oracle.com>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     Peng Zhang <zhangpeng.00@bytedance.com>, oe-lkp@lists.linux.dev,
-        lkp@intel.com, Linux Memory Management List <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mateusz Guzik <mjguzik@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        linux-kernel@vger.kernel.org, ying.huang@intel.com,
-        feng.tang@intel.com, fengwei.yin@intel.com
-Subject: Re: [linux-next:master] [fork]  6e553c6bcb:
- will-it-scale.per_process_ops 94.7% improvement
-Message-ID: <20231129181858.qccz6m2id4bcog73@revolver>
-Mail-Followup-To: "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        Peng Zhang <zhangpeng.00@bytedance.com>, oe-lkp@lists.linux.dev,
-        lkp@intel.com, Linux Memory Management List <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, Mateusz Guzik <mjguzik@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        linux-kernel@vger.kernel.org, ying.huang@intel.com,
-        feng.tang@intel.com, fengwei.yin@intel.com
-References: <202311282145.ff13737b-oliver.sang@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202311282145.ff13737b-oliver.sang@intel.com>
-User-Agent: NeoMutt/20220429
-X-ClientProxiedBy: YT4PR01CA0119.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:d7::13) To SN6PR10MB3022.namprd10.prod.outlook.com
- (2603:10b6:805:d8::25)
+        Wed, 29 Nov 2023 13:20:32 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2FBEB6
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 10:20:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701282039; x=1732818039;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=sTyMsbuQ29XuFRsmsh7TyABKr/lHGBDM3cuS7bGFH/w=;
+  b=RCcDDE4dbYVlvKgENGc+qaNCTqkL8HySCpZIX9veo7XHJ8XgH9Eqn+6x
+   LKsV+GJBcDb2xA0zi0kyCgoLsF2HsUssxjbOACDJamneWVeelY2Bpr7SP
+   dLRNft+QV6hRcsw3ZAZdgV5UrjEBldUUXLoJMJ4OBuiruLdYJLN/wSW60
+   G2R3WUSKNYuazQkj5qF14JQ+Jv8RFgnI2xBfUxOtsvP9uwHbQihb/YriZ
+   1d7SXNTPaeLdkFVgkN5Jqa9ok1qvOfpknCZzaO9ZoKATw6ggfWfGOE5XD
+   i+lmD3O1AMy9kaMzJXwmFmlIOFmrTJO5YpVbAdm3NHNt9pj3pEcfyw06c
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="189978"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="189978"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 10:20:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="772769076"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="772769076"
+Received: from npandey-mobl.amr.corp.intel.com (HELO [10.212.143.94]) ([10.212.143.94])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 10:20:31 -0800
+Message-ID: <4afd33ba-6b7c-415f-b9ef-964a2fc840d8@intel.com>
+Date:   Wed, 29 Nov 2023 10:20:31 -0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR10MB3022:EE_|SJ0PR10MB4414:EE_
-X-MS-Office365-Filtering-Correlation-Id: 812938e8-dd80-489c-1f40-08dbf107a99b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5H7v3edL1DW7Pqi7lHvUth/HZ4FA0wfOcQv17w+CK2pI8C/e1WRgbu36DzNo+f+POrdVKxYbeRdYh52TjDD/lWiZpJch01+MadEaNZ9LvcD0eekqAXA8L8MEPZbZvx6pQ1A92BhH4E1SnwFYb+tnhcjmjCw9CAqwZVhb8Zk1nHsq+2ZaFZoiQy80a9BXW3PLhTa9Ab+HVD0LaYvbO2F3SiL+VEOAPpqSCDL+ngtMnCYOsxeRdstAB1NALcnA5KsKEimC0A0KVpM35IQsfiCxjvG6DHdg1zNSuhzh3kfhblD7IKcOhVN5jVjaSmtsq9Tksu6H7+ORvthE87AjMw9U6v3+A/ac9ual+RGoM0woq5CdtR2yLRvlYnG8x15Kkbi+DTqkvOPvNTeVOmn1S4Dkrt+2++NT5/q+AQXEBxN5zH6/SB0KbEjNUZjC2nehB/eahM22Igmts0EvH20D9lmFtuL/7fRX1OzP+OHdGKSnxcmDRT20Tqo45gidPS0Wl0TN2MQREvVAV+1rUQKYL9QAQoe63EPLHfzifofleOmIG3oZRImk24kkpRVsYOl+auNgWT0XW6DUclC0GfHlN3qN5w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR10MB3022.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(366004)(136003)(346002)(396003)(39860400002)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(83380400001)(66899024)(316002)(26005)(1076003)(33716001)(66476007)(66946007)(54906003)(66556008)(6916009)(7416002)(2906002)(4326008)(8676002)(8936002)(86362001)(5660300002)(6506007)(41300700001)(6666004)(9686003)(6512007)(478600001)(966005)(6486002)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?AsUzjWC1vqii9IHeno51p0XUoivAFjWAZgRPft9MqmWsZ0jp3dccv6ZeKgq2?=
- =?us-ascii?Q?ZFpIStep2ZU7S88CoxQYpyZk2EVoQR9NbrksFyCk3vNlbK3S45JRk2CJ1Otn?=
- =?us-ascii?Q?qUfItZlFjj0aa8Cpyk9ousr/0F4zvJZfhEBdT0N+WwsbTmdCnqWbMdizRcab?=
- =?us-ascii?Q?fNVymchHLCSM7FQD70ERE8FG8NhEQDxV/4+H2tXLffSrGF6E0nRAwr+IEQNm?=
- =?us-ascii?Q?+6O3oeg1TzVgu2iEJX4PHrd9XzDb894U+4qcF4N9JRKKnbiFi5klcTrYa/dd?=
- =?us-ascii?Q?LWIT9uACbSRvpf1byNP3/WFlxJShRFTqR/OBbvoj3KWmvmpInq1DX+4NNr8E?=
- =?us-ascii?Q?PeIwVAlMy2Ash9+i67Xa/MaywaK8vC9j6ONNXQZNgEGYXUmF5AUyk4eOSx0c?=
- =?us-ascii?Q?DU6thRqqeyyYzv4rdOq12zP9EAQ38UXNLLkWYVNsaNiQupMHxQgLf0sN2VDI?=
- =?us-ascii?Q?zivkjCAYVBFAWkG5sYDiw+cMiCwOrFS7Y04TLYKJGGgcGlycHoZs2UerGDpj?=
- =?us-ascii?Q?DZTij17/7VqR0mPAXuPg+76+CQkqqC+u+tIx8V98VCehuMsn2AcCuMqHk17o?=
- =?us-ascii?Q?w0rxBl4gqy0ti424tVLRRF2USv6bTu/ZDGFNVbBL18/o2GiIaws8T0mtMAS+?=
- =?us-ascii?Q?d5qdqgd0dpsqSyaBWwohyG5xZI2G9u2BEM+f0hycenpSlW6YWHZZvikdW0VS?=
- =?us-ascii?Q?rypeTluhBNNBh+5X5/jWCk1gt0/qlcBOswH8+LOYX9je/JU/zNmVU0ZSaiVG?=
- =?us-ascii?Q?4OLUKdLo/clLBkJZTcakrDad/4XcmgwUQF/zJWwg2Gaumw8L7Xj6OM0p07Er?=
- =?us-ascii?Q?BNp59J8NJ8VXPePECc1Cvk3GxnQUAPkISvHmQ8FLPHiLJXZGNNg62L4PVP18?=
- =?us-ascii?Q?vDjMf4Uc3BhAZAYDaliBrDwAz9SUDgAfAYdKREXJwpWhQpTZSfIBuRW+Gy8N?=
- =?us-ascii?Q?KR+ZZFnqPZErDIUCYAnxoTYQ5o/J3hLRrp5YNw9j2WHqXdYVNkd0HXIeWqty?=
- =?us-ascii?Q?5+2sFXUHzs0GeY7zbXYrm8q/Zolk2LizGyD1EdRisgp8tObLnQBQCn/ID/IK?=
- =?us-ascii?Q?iUquRm7+R1ImKm/fzFDAptH3M7J3lEJBRW9rV1Iafp4Feailth25KgANbIQR?=
- =?us-ascii?Q?7BJbCbDPsz7pQ/05YepRIGYyP1aquPoSRyAyvyqT+1uYCcfSCXXdCCWsAZfn?=
- =?us-ascii?Q?xwhdgJnsCdv/qcyMW/fxnX3GRey96QTUhGOHEkGa0AN+6tSslgiCeNoos2ea?=
- =?us-ascii?Q?GZxfGQatFXVS97SEoBvDq8M/JdrA+TSZV5PjjKcWFnHThQER4WJWEtxfyFul?=
- =?us-ascii?Q?eNDuVyg1vdGlwuTRuN7BrEDwoXUfH4dm9Xe9CPbd3Cb9yIHLQ3nkFs1uKvWz?=
- =?us-ascii?Q?oYPVIt9+k1fuMvYItTMNbVBu8ATYSvqpsKoNw4FgQdKhAVdpZ80xWrRAyS/x?=
- =?us-ascii?Q?jYqt1Zftj89q7OvdbTt/4JLIH9Iw3u17dwbA0o01+HUELgLmHOlmoiEnNhfc?=
- =?us-ascii?Q?82uIpfmI+kc+bQyLWz3Zd1LQgkSedTdAeh3lfVflBkxocfHSxZaXiNCco3Qx?=
- =?us-ascii?Q?LB3cSkuER738mUS7bO7UaWcQCCLEnn+aoEcHLP2S?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?lk6/EDfGaSxCkmlpYsb+lZdeQhQ+gu+KFfUhO45cPuuv3OFzeUIjDIiqmtRD?=
- =?us-ascii?Q?Z1MLP9taQBHKxeCr0qx8/0WiFogfQ2gcgbBwyLtn+yAXyKdFQwH7SwWl+NfC?=
- =?us-ascii?Q?++yjq00J7AZCFRY/14j2a14JygOHzHKKEusafI4F+VDZy4yL3mURGch30tDK?=
- =?us-ascii?Q?FaT6atWRLZ5lKWo7jB9ExUQ1dklaFZYNWiS83fWNVkru6lgcoNW1MTHxQtq3?=
- =?us-ascii?Q?8pDHVP+/X9siVBi9LonLuhha2lwcnmlUWCSivLaLlWudCY/G2F4kYbSNg7nL?=
- =?us-ascii?Q?NdU+Z5ezMYSh3+b0hF8kQtYNtHHWYMgb3+1mX3qnelys5vcsHEpqLXD/VMDh?=
- =?us-ascii?Q?0Ak/JbNyPdms425u6LPniT1Nd5eTW59KGWddpos7VfBwLJYF4G4aAhOShUGQ?=
- =?us-ascii?Q?w2JLeYDj6vFCau5RyFNm3YOjhKG8Nuo2LyS+T4YzzxoSzdAqpMRi/eViNXK0?=
- =?us-ascii?Q?Q1xfuF3UuZhmLyX6OYC2Aw/zjlM7L6jYR7OPQ+II0IZ3Inp0vsS8HnDt1o2N?=
- =?us-ascii?Q?hOFas6qp5gZ2Iw77Z1ZABOi8fpjIyD1V3ubMMcBi1SHyqJ1lGhvSzpiMzxha?=
- =?us-ascii?Q?Wp9iexOCJ8nVoChZf0QIvXbldGkfZv27dmvf8EtwZDNqUZnaq2AvwhC31TU0?=
- =?us-ascii?Q?MLvMyU/gPTHP+6JJBE+xjkbxSytVHJUvNJoZDzkEoU3SDEHQtZxkpT86n4T6?=
- =?us-ascii?Q?n0lpFMRWu0GIVl/d8+HDNV5ro5h33PagjcR6JtObT2EuiU1hDAeSMe8YqDRS?=
- =?us-ascii?Q?QbkHe7GHygUWIPdDUSJodf3ks2dopl2CtdFJChdJt+O5iriKUPHdFmwkGPgN?=
- =?us-ascii?Q?rT0Wb5CaapYZEU5vEy8qwkIR80nywX8zVZocjvvC/wK7g405a3tV7yjkNudp?=
- =?us-ascii?Q?Sabcox2rih4greBDyFfmnGf14wP3cvOz1RfictZiuJJIv0nmNeRIiu5q9pxN?=
- =?us-ascii?Q?JOP7cv3oLFz427touaM4ajrmYhrmOJnade9oiWkx+HgfqVezebEhdsbasIe6?=
- =?us-ascii?Q?dVS8B84exzIg0J3RTVeArqPVxCZEg2mLmUJ8SUidLHDGcpCdCZvFVjbMM1Se?=
- =?us-ascii?Q?23xL8uEiQWTJ/nJyos/uuUVxT3wMk8AO+R7eDTPdoSbpDOPoRCes5OmAGxph?=
- =?us-ascii?Q?3HTe1C5b3tKFQ3Gkd2WNgkWFr/E43YgppQ=3D=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 812938e8-dd80-489c-1f40-08dbf107a99b
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR10MB3022.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 18:19:01.7200
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IURnKzKEAtp3INSGdtELDtjq1YzZJFCPAO+hbb3oyjR+8MhpHFIcG60U1RjfzDhUpWMe/1igYkXcD3Qf4z5TwA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4414
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-29_16,2023-11-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 mlxscore=0
- malwarescore=0 adultscore=0 suspectscore=0 spamscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311290140
-X-Proofpoint-ORIG-GUID: o5RQzi2ldkvCAhQZz6Eb609ZE_AMLhqD
-X-Proofpoint-GUID: o5RQzi2ldkvCAhQZz6Eb609ZE_AMLhqD
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Documentation/x86: Document what /proc/cpuinfo is for
+Content-Language: en-US
+To:     Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+References: <20231129101700.28482-1-bp@alien8.de>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20231129101700.28482-1-bp@alien8.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* kernel test robot <oliver.sang@intel.com> [231128 08:56]:
+On 11/29/23 02:17, Borislav Petkov wrote:
+> From: "Borislav Petkov (AMD)" <bp@alien8.de>
 > 
+> This has been long overdue. Write down what x86's version of
+> /proc/cpuinfo is and should be used for.
 > 
-> Hello,
+> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+> ---
+>  Documentation/arch/x86/cpuinfo.rst | 79 ++++++++++++++++++++++--------
+>  1 file changed, 58 insertions(+), 21 deletions(-)
 > 
-> kernel test robot noticed a 94.7% improvement of will-it-scale.per_process_ops on:
+> diff --git a/Documentation/arch/x86/cpuinfo.rst b/Documentation/arch/x86/cpuinfo.rst
+> index 08246e8ac835..cede6aad27c0 100644
+> --- a/Documentation/arch/x86/cpuinfo.rst
+> +++ b/Documentation/arch/x86/cpuinfo.rst
+> @@ -7,27 +7,64 @@ x86 Feature Flags
+>  Introduction
+>  ============
+>  
+> -On x86, flags appearing in /proc/cpuinfo have an X86_FEATURE definition
+> -in arch/x86/include/asm/cpufeatures.h. If the kernel cares about a feature
+> -or KVM want to expose the feature to a KVM guest, it can and should have
+> -an X86_FEATURE_* defined. These flags represent hardware features as
+> -well as software features.
+> -
+> -If users want to know if a feature is available on a given system, they
+> -try to find the flag in /proc/cpuinfo. If a given flag is present, it
+> -means that the kernel supports it and is currently making it available.
+> -If such flag represents a hardware feature, it also means that the
+> -hardware supports it.
+> -
+> -If the expected flag does not appear in /proc/cpuinfo, things are murkier.
+> -Users need to find out the reason why the flag is missing and find the way
+> -how to enable it, which is not always easy. There are several factors that
+> -can explain missing flags: the expected feature failed to enable, the feature
+> -is missing in hardware, platform firmware did not enable it, the feature is
+> -disabled at build or run time, an old kernel is in use, or the kernel does
+> -not support the feature and thus has not enabled it. In general, /proc/cpuinfo
+> -shows features which the kernel supports. For a full list of CPUID flags
+> -which the CPU supports, use tools/arch/x86/kcpuid.
+> +The list of feature flags in /proc/cpuinfo is not complete and
+> +represents an ill-fated attempt from long time ago to put feature flags
+> +in an easy to find place for userspace.
+> +
+> +However, the amount of feature flags is growing by the CPU generation,
+> +leading to unparseable and unwieldy /proc/cpuinfo.
+> +
+> +What is more, those feature flags do not even need to be in that file
+> +because userspace doesn't care about them - glibc et al already use
+> +CPUID to find out what the target machine supports and what not.
+> +
+> +And even if it doesn't show a particular feature flag - although the CPU
+> +still does have support for the respective hardware functionality and
+> +said CPU supports CPUID faulting - userspace can simply probe for the
+> +feature and figure out if it is supported or not, regardless of whether
+> +it is being advertized somewhere.
 
-Okay, this *seems* awesome.  I expected to see results in
-micro-benchmarks from Peng's patches - but not in this area.
+		^ advertised
 
-> 
-> 
-> commit: 6e553c6bcb7746abad29ce63e0cb7a18348e88fb ("fork: use __mt_dup() to duplicate maple tree in dup_mmap()")
-> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
-> 
-> testcase: will-it-scale
-> test machine: 104 threads 2 sockets (Skylake) with 192G memory
-> parameters:
-> 
-> 	nr_task: 100%
-> 	mode: process
-> 	test: brk2
-> 	cpufreq_governor: performance
-> 
-> 
-> 
-> 
-> 
-> 
-> Details are as below:
-> -------------------------------------------------------------------------------------------------->
-> 
-> 
-> The kernel config and materials to reproduce are available at:
-> https://download.01.org/0day-ci/archive/20231128/202311282145.ff13737b-oliver.sang@intel.com
-> 
-> =========================================================================================
-> compiler/cpufreq_governor/kconfig/mode/nr_task/rootfs/tbox_group/test/testcase:
->   gcc-12/performance/x86_64-rhel-8.3/process/100%/debian-11.1-x86_64-20220510.cgz/lkp-skl-fpga01/brk2/will-it-scale
+> +Furthermore, those flag strings become an ABI the moment they appear
+> +there and maintaining them forever when nothing even uses them is a lot
+> +of wasted effort.
+> +
+> +So, the current use of /proc/cpuinfo is to show features which the
+> +kernel has *enabled* and supports. As in: the CPUID feature flag is
+> +there, there's an additional setup which the kernel has done while
+> +booting and the functionality is there and ready to use. A perfect
+> +example for that is "user_shstk" where additional code enablement is
+> +present in the kernel to support shadow stack for user programs.
+> +
+> +So, if users want to know if a feature is available on a given system,
+> +they try to find the flag in /proc/cpuinfo. If a given flag is present,
+> +it means
 
-This test was written by willy to improve on the less-than-ideal bkr1;
-forking has nothing to do with this test.  It is expanding and
-contracting a VMA (as apposed to adding and removing a new VMA in brk1).
-[1]
+Just rephrasing the meanings, I think I'd say that it means:
 
-The forking changes should have zero effects on this test.  Does anyone
-have an insight as to why we would see any change (let alone 94.7%)?
+all of the following:
 
-I would think that maybe the start-up time would change, but that should
-be a very small amount of the tests overall time.
+ * The kernel knows about the feature enough to have an X86_FEATURE_ bit
+ * The kernel supports it and is currently making it available either to
+   userspace or some other part of the kernel
+ * If the flag represents a hardware feature the hardware supports it
 
-> 
-> commit: 
->   ec81deb6b7 ("maple_tree: preserve the tree attributes when destroying maple tree")
+> +If the expected flag does not appear in /proc/cpuinfo, things are
+> +murkier.  Users need to find out the reason why the flag is missing and
+> +find the way how to enable it, which is not always easy.
+> +
+> +There are several factors that can explain missing flags: the expected
+> +feature failed to enable, the feature is missing in hardware, platform
+> +firmware did not enable it, the feature is disabled at build or run
+> +time, an old kernel is in use, or the kernel does not support the
+> +feature and thus has not enabled it. In general, /proc/cpuinfo shows
+> +features which the kernel supports. For a full list of CPUID flags which
+> +the CPU supports, use tools/arch/x86/kcpuid.
 
-The tree isn't destroyed in this test.
+Could we trim this down a bit?  Maybe concentrate on one example and
+then just jump to the takeaway:
 
->   6e553c6bcb ("fork: use __mt_dup() to duplicate maple tree in dup_mmap()")
+The absence of a flag in /proc/cpuinfo by itself means almost nothing to
+an end user.  A feature like "vaes" might be fully available to user
+applications on an kernel that has not defined X86_FEATURE_VAES and thus
+there is no "vaes" in /proc/cpuinfo.
 
-The process isn't forking in the loop.
+On the other hand, a new kernel running on non-VAES hardware would also
+have no "vaes" in /proc/cpuinfo.  There's no way for an application or
+user to tell the difference.
 
-...
-
-1. https://github.com/antonblanchard/will-it-scale/blame/master/tests/brk2.c
-
-Thanks,
-Liam
+The end result is that the flags field in /proc/cpuinfo is marginally
+useful for kernel debugging, but not really for anything else.
+Applications should instead use things like the glibc facilities for
+querying CPU support.  Users should rely on tools like
+tools/arch/x86/kcpuid and cpuid(1).
