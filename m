@@ -2,68 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E70D7FD6A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 13:24:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E082E7FD6AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 13:24:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233420AbjK2MXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 07:23:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50042 "EHLO
+        id S233283AbjK2MYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 07:24:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232806AbjK2MXx (ORCPT
+        with ESMTP id S233339AbjK2MYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 07:23:53 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7DFBD48;
-        Wed, 29 Nov 2023 04:23:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=pNYBN4X8Pb/Yx1Vd4NeSsqJHNsCvDKBkPdpgHN9QiTY=; b=c03Ofld+THOSR45IGAoDp8+pt+
-        UkfL9dRdtWJkl7qb6AU+5c+x7KX6JkdgemiwCTtdFLtC8j3nqM8IVqnrXMofOelxpK29X8uF5ZtqK
-        2psuTW1FBHw7w+hCAukfMR+AbdMf4DY/XhmeCl29l+MfJN1SJ1PJx8jAD2H7bBe/pj7nl2oALLxTQ
-        /Wq9rmsH7ut3/zJvmxsteA+NWfhM0iTJv5+2fIYirsXNN2z3k3oqWVXNW+EmUuRGCbVR2gZ+vinsR
-        mMtyscTw9AeKHR2Ata9aGOkAtE7CW4vS+gUvFOQgZD958IO8eheGXfLqbaFjb9TAuhe82KOK/eFx7
-        PW7yzbiQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r8Jb8-00DNTe-4M; Wed, 29 Nov 2023 12:23:22 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DAA0B30017D; Wed, 29 Nov 2023 13:23:20 +0100 (CET)
-Date:   Wed, 29 Nov 2023 13:23:20 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     James Clark <james.clark@arm.com>, Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Hendrik Brueckner <brueckner@linux.ibm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH RFC 2/3] perf/x86/intel/pt: Add support for pause_resume()
-Message-ID: <20231129122320.GH30650@noisy.programming.kicks-ass.net>
-References: <20231123121851.10826-1-adrian.hunter@intel.com>
- <20231123121851.10826-3-adrian.hunter@intel.com>
- <c63808b2-2049-da18-f0af-5dff2bc87cd2@arm.com>
- <20231129105836.GF30650@noisy.programming.kicks-ass.net>
- <842ce784-fbd2-4667-a5f7-aaa10a1108dc@intel.com>
+        Wed, 29 Nov 2023 07:24:21 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 447B810C3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 04:24:27 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17CC2C433C7;
+        Wed, 29 Nov 2023 12:24:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701260666;
+        bh=pVxX22NcIZDiGGyTbgEa33EVYfiXBcfDYNXnVa+7dGc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=AlWI7sd4vmwOo8FmdPCGDYirpxABK+7KUbEJLQung3kr0McXo6UnqnuMY6NtocJch
+         6NyJvRyL88RgRazKLcDwbP+f9Higl00DECJ/TIFKr4MqIggXvpEJRl+uhEJ/FxtZ4u
+         RvnDbuXn39pEbnylQnlddcGjAI8+3hxdt/IzPM9WJySYMezXZhdq/z7zVLRphojM0N
+         2sRHFjLcQmiPhLEKpKhXjckbAvfV2wgWkbvYl4irf7utQpeX6ZA6vxcH9BKrgybFH3
+         /zxTXvxy6a2zSN8/Jy48XK8OVrC5RgtC5aWkyxGLCfTahW3U2IX4g57ZvyQnPLOKtG
+         4xrDqsiFirpqw==
+From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To:     linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     JP Kobryn <inwardvessel@gmail.com>, bpf@vger.kernel.org,
+        kernel-team@meta.com, rostedt@goodmis.org, peterz@infradead.org
+Subject: [PATCH v2] rethook: Use __rcu pointer for rethook::handler
+Date:   Wed, 29 Nov 2023 21:24:22 +0900
+Message-Id: <170126066201.398836.837498688669005979.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <842ce784-fbd2-4667-a5f7-aaa10a1108dc@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,95 +49,138 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 01:15:43PM +0200, Adrian Hunter wrote:
-> On 29/11/23 12:58, Peter Zijlstra wrote:
-> > On Wed, Nov 29, 2023 at 09:53:39AM +0000, James Clark wrote:
-> >> On 23/11/2023 12:18, Adrian Hunter wrote:
-> > 
-> >>> +static void pt_event_pause_resume(struct perf_event *event)
-> >>> +{
-> >>> +	if (event->aux_paused)
-> >>> +		pt_config_stop(event);
-> >>> +	else if (!event->hw.state)
-> >>> +		pt_config_start(event);
-> >>> +}
-> >>
-> >> It seems like having a single pause/resume callback rather than separate
-> >> pause and resume ones pushes some of the event state management into the
-> >> individual drivers and would be prone to code duplication and divergent
-> >> behavior.
-> >>
-> >> Would it be possible to move the conditions from here into the core code
-> >> and call separate functions instead?
-> >>
-> >>> +
-> >>>  static void pt_event_start(struct perf_event *event, int mode)
-> >>>  {
-> >>>  	struct hw_perf_event *hwc = &event->hw;
-> >>> @@ -1798,6 +1809,7 @@ static __init int pt_init(void)
-> >>>  	pt_pmu.pmu.del			 = pt_event_del;
-> >>>  	pt_pmu.pmu.start		 = pt_event_start;
-> >>>  	pt_pmu.pmu.stop			 = pt_event_stop;
-> >>> +	pt_pmu.pmu.pause_resume		 = pt_event_pause_resume;
-> >>
-> >> The general idea seems ok to me. Is there a reason to not use the
-> >> existing start() stop() callbacks, rather than adding a new one?
-> >>
-> >> I assume it's intended to be something like an optimisation where you
-> >> can turn it on and off without having to do the full setup, teardown and
-> >> emit an AUX record because you know the process being traced never gets
-> >> switched out?
-> > 
-> > So the actual scheduling uses ->add() / ->del(), the ->start() /
-> > ->stop() methods are something that can be used after ->add() and before
-> > ->del() to 'temporarily' pause things.
-> > 
-> > Pretty much exactly what is required here I think. We currently use this
-> > for PMI throttling and adaptive frequency stuff, but there is no reason
-> > it could not also be used for this.
-> > 
-> > As is, we don't track the paused state across ->del() / ->add(), but
-> > perhaps that can be fixed. We can easily add more PERF_EF_ / PERF_HES_
-> > bits to manage things.
-> > 
-> > 
-> 
-> I am not sure stop / start play nice with NMI's from other events e.g.
-> 
-> PMC NMI wants to pause or resume AUX but what if AUX event is currently
-> being processed in ->stop() or ->start()?  Or maybe that can't happen?
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-I think that can happen, and pt_event_stop() can actually handle some of
-that, while your pause_resume() thing, which uses pt_config_stop() does
-not.
+Since the rethook::handler is an RCU-maganged pointer so that it will
+notice readers the rethook is stopped (unregistered) or not, it should
+be an __rcu pointer and use appropriate functions to be accessed. This
+will use appropriate memory barrier when accessing it. OTOH,
+rethook::data is never changed, so we don't need to check it in
+get_kretprobe().
 
-But yes, I think that if you add pt_event_{stop,start}() calls from
-*other* events their PMI, then you get to deal with more 'fun'.
+NOTE: To avoid sparse warning, rethook::handler is defined by a raw
+function pointer type with __rcu instead of rethook_handler_t.
 
-Something like:
+Fixes: 54ecbe6f1ed5 ("rethook: Add a generic return hook")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202311241808.rv9ceuAh-lkp@intel.com/
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+---
+ include/linux/kprobes.h |    6 ++----
+ include/linux/rethook.h |    7 ++++++-
+ kernel/trace/rethook.c  |   23 ++++++++++++++---------
+ 3 files changed, 22 insertions(+), 14 deletions(-)
 
-  perf_addr_filters_adjust()
-    __perf_addr_filters_adjust()
-      perf_event_stop()
-        __perf_event_stop()
-	  event->pmu->stop()
-	  <NMI>
-	    ...
-	    perf_event_overflow()
-	      pt_event->pmu->stop()
-	  </NMI>
-	  event->pmu->start() // whoopsie!
-
-Should now be possible.
-
-I think what you want to do is rename pt->handle_nmi into pt->stop_count
-and make it a counter, then ->stop() increments it, and ->start()
-decrements it and everybody ensures the thing doesn't get restart while
-!0 etc..
-
-I suspect you need to guard the generic part of this feature with a new
-PERF_PMU_CAP_ flag and then have the coresight/etc. people opt-in once
-they've audited things.
-
-James, does that work for you?
+diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+index 64672bace560..0ff44d6633e3 100644
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -197,10 +197,8 @@ extern int arch_trampoline_kprobe(struct kprobe *p);
+ #ifdef CONFIG_KRETPROBE_ON_RETHOOK
+ static nokprobe_inline struct kretprobe *get_kretprobe(struct kretprobe_instance *ri)
+ {
+-	RCU_LOCKDEP_WARN(!rcu_read_lock_any_held(),
+-		"Kretprobe is accessed from instance under preemptive context");
+-
+-	return (struct kretprobe *)READ_ONCE(ri->node.rethook->data);
++	/* rethook::data is non-changed field, so that you can access it freely. */
++	return (struct kretprobe *)ri->node.rethook->data;
+ }
+ static nokprobe_inline unsigned long get_kretprobe_retaddr(struct kretprobe_instance *ri)
+ {
+diff --git a/include/linux/rethook.h b/include/linux/rethook.h
+index ce69b2b7bc35..ba60962805f6 100644
+--- a/include/linux/rethook.h
++++ b/include/linux/rethook.h
+@@ -28,7 +28,12 @@ typedef void (*rethook_handler_t) (struct rethook_node *, void *, unsigned long,
+  */
+ struct rethook {
+ 	void			*data;
+-	rethook_handler_t	handler;
++	/*
++	 * To avoid sparse warnings, this uses a raw function pointer with
++	 * __rcu, instead of rethook_handler_t. But this must be same as
++	 * rethook_handler_t.
++	 */
++	void (__rcu *handler) (struct rethook_node *, void *, unsigned long, struct pt_regs *);
+ 	struct objpool_head	pool;
+ 	struct rcu_head		rcu;
+ };
+diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
+index 6fd7d4ecbbc6..fa03094e9e69 100644
+--- a/kernel/trace/rethook.c
++++ b/kernel/trace/rethook.c
+@@ -48,7 +48,7 @@ static void rethook_free_rcu(struct rcu_head *head)
+  */
+ void rethook_stop(struct rethook *rh)
+ {
+-	WRITE_ONCE(rh->handler, NULL);
++	rcu_assign_pointer(rh->handler, NULL);
+ }
+ 
+ /**
+@@ -63,7 +63,7 @@ void rethook_stop(struct rethook *rh)
+  */
+ void rethook_free(struct rethook *rh)
+ {
+-	WRITE_ONCE(rh->handler, NULL);
++	rethook_stop(rh);
+ 
+ 	call_rcu(&rh->rcu, rethook_free_rcu);
+ }
+@@ -82,6 +82,12 @@ static int rethook_fini_pool(struct objpool_head *head, void *context)
+ 	return 0;
+ }
+ 
++static inline rethook_handler_t rethook_get_handler(struct rethook *rh)
++{
++	return (rethook_handler_t)rcu_dereference_check(rh->handler,
++							rcu_read_lock_any_held());
++}
++
+ /**
+  * rethook_alloc() - Allocate struct rethook.
+  * @data: a data to pass the @handler when hooking the return.
+@@ -107,7 +113,7 @@ struct rethook *rethook_alloc(void *data, rethook_handler_t handler,
+ 		return ERR_PTR(-ENOMEM);
+ 
+ 	rh->data = data;
+-	rh->handler = handler;
++	rcu_assign_pointer(rh->handler, handler);
+ 
+ 	/* initialize the objpool for rethook nodes */
+ 	if (objpool_init(&rh->pool, num, size, GFP_KERNEL, rh,
+@@ -135,9 +141,10 @@ static void free_rethook_node_rcu(struct rcu_head *head)
+  */
+ void rethook_recycle(struct rethook_node *node)
+ {
+-	lockdep_assert_preemption_disabled();
++	rethook_handler_t handler;
+ 
+-	if (likely(READ_ONCE(node->rethook->handler)))
++	handler = rethook_get_handler(node->rethook);
++	if (likely(handler))
+ 		objpool_push(node, &node->rethook->pool);
+ 	else
+ 		call_rcu(&node->rcu, free_rethook_node_rcu);
+@@ -153,9 +160,7 @@ NOKPROBE_SYMBOL(rethook_recycle);
+  */
+ struct rethook_node *rethook_try_get(struct rethook *rh)
+ {
+-	rethook_handler_t handler = READ_ONCE(rh->handler);
+-
+-	lockdep_assert_preemption_disabled();
++	rethook_handler_t handler = rethook_get_handler(rh);
+ 
+ 	/* Check whether @rh is going to be freed. */
+ 	if (unlikely(!handler))
+@@ -300,7 +305,7 @@ unsigned long rethook_trampoline_handler(struct pt_regs *regs,
+ 		rhn = container_of(first, struct rethook_node, llist);
+ 		if (WARN_ON_ONCE(rhn->frame != frame))
+ 			break;
+-		handler = READ_ONCE(rhn->rethook->handler);
++		handler = rethook_get_handler(rhn->rethook);
+ 		if (handler)
+ 			handler(rhn, rhn->rethook->data,
+ 				correct_ret_addr, regs);
 
