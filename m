@@ -2,294 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1DE67FE208
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 22:33:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D8D7FE1C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 22:26:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234538AbjK2Vdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 16:33:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59236 "EHLO
+        id S234415AbjK2V0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 16:26:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234382AbjK2Vd1 (ORCPT
+        with ESMTP id S229847AbjK2V0S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 16:33:27 -0500
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2320F10D3;
-        Wed, 29 Nov 2023 13:33:31 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id AEF42100013;
-        Thu, 30 Nov 2023 00:33:29 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru AEF42100013
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1701293609;
-        bh=bLw/FHfqEfJzRK6jzSf4GnWy/cAn2FZc8a/X9moPiBs=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=oihcbjWwydIlLacQLGrImlS38MKvFQ5rrNXVM6q7DwogawrMpIi/Gn+sFlaWu4OJe
-         CqQ18fsKtc2TqQs9qZk7YEAB73OsaW/VU/GMMRzrH4OisX3b7gj2oZ0VORUBRreWlC
-         wDuAyxr4vHM6B0/75nb5VsGsqFWi4o7AYBIKw/JCgo98W+2WZ+8j9Ky/12BcEmCX6l
-         NftgBCV71KPJIverWi9KPRLQxLXAxwsnvafI+EYlrPZ1dzG8XvxT8Otes3esV/lRRE
-         Gkh5df7EVuZWzqvZvZg93V0cEA25p7LGCYGOiiUGHF1css1q9qSPF8S51IHsQWXoCt
-         DldDwWkN/QBEQ==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Thu, 30 Nov 2023 00:33:29 +0300 (MSK)
-Received: from localhost.localdomain (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 30 Nov 2023 00:33:29 +0300
-From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Wed, 29 Nov 2023 16:26:18 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE06D7D
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:26:22 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-5c27ee9c36bso213679a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:26:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701293182; x=1701897982; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XNCUzlT66xSSzQeRG+3/Vjdg0+tkFMt3clYOj0yBxCw=;
+        b=ZPvbimEBh8xSzwTEtOWWe8MrLkwmup8mXmlIf/LDDw3wIQZtQKqvu4z4cZG3icQ545
+         xazyz2ORF4ObT7bM6rXCBKc1U1zseYGa29BjCouutJ6/+yohq4zgKUds36bgl4iOPy6B
+         4+ds8kxiTIR0fxRSi5Pz+t2uldV7nCBzVbQk4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701293182; x=1701897982;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XNCUzlT66xSSzQeRG+3/Vjdg0+tkFMt3clYOj0yBxCw=;
+        b=AqFbuVF0nS9hdTWqMCYjmYATGcY1QmevrFn6KxhljFvi/UXqDCRofcLegg5/6Z/Y9y
+         eK0Vv0y9ZDBhoFFIgrAbblXVsMIx6Pk3Z78aanGtq/fjsJ8L16sWRdP7bdrOgjinvM4L
+         qB4mzxbhMJ6OPcoR3QAEIBZUbnbkJ2BDlhqtBssa/yxSkT9bwanFPXblbQYkDPVqn4fk
+         aWUqiQS46wu7bT0AfrHr37Rf6XvsqTcRf5CCCIhOIu1PK90/LKL/Z66ozXP1r8olB0Q+
+         pOE57N6Lbx8qNYVbJD4d6lGTcQYJ233yCN7Ls+psIS0BPW82LdH0wPWOJYCVhRYOHvQI
+         FTIQ==
+X-Gm-Message-State: AOJu0Yx5EHanU/w1UXeJNP0apJ2ZDDVzslZ0Q5An1NruOUBCBPss850f
+        qZQYHNQLgLB/0qwe+jsfXnbATg==
+X-Google-Smtp-Source: AGHT+IGOwv+JMe9LhytdON3udR8lCNrEUEhKRkteEYEJXfm1i3wfjX3UCluoIHcPnUFu32ZmHv+K/A==
+X-Received: by 2002:a05:6a20:244b:b0:18c:fa:17f7 with SMTP id t11-20020a056a20244b00b0018c00fa17f7mr24241206pzc.46.1701293181673;
+        Wed, 29 Nov 2023 13:26:21 -0800 (PST)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:dcf:15e4:5f50:e692])
+        by smtp.gmail.com with ESMTPSA id t22-20020a634616000000b005c215baacc1sm11816336pga.70.2023.11.29.13.26.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 13:26:21 -0800 (PST)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Hayes Wang <hayeswang@realtek.com>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     linux-usb@vger.kernel.org, Grant Grundler <grundler@chromium.org>,
+        Laura Nao <laura.nao@collabora.com>,
+        Edward Hill <ecgh@chromium.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Simon Horman <horms@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
         Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>
-CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>,
-        <avkrasnov@salutedevices.com>
-Subject: [RFC PATCH v4 3/3] vsock/test: SO_RCVLOWAT + deferred credit update test
-Date:   Thu, 30 Nov 2023 00:25:19 +0300
-Message-ID: <20231129212519.2938875-4-avkrasnov@salutedevices.com>
-X-Mailer: git-send-email 2.35.0
-In-Reply-To: <20231129212519.2938875-1-avkrasnov@salutedevices.com>
-References: <20231129212519.2938875-1-avkrasnov@salutedevices.com>
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH net v3 1/5] r8152: Hold the rtnl_lock for all of reset
+Date:   Wed, 29 Nov 2023 13:25:20 -0800
+Message-ID: <20231129132521.net.v3.1.I77097aa9ec01aeca1b3c75fde4ba5007a17fdf76@changeid>
+X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181714 [Nov 29 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 5 0.3.5 98d108ddd984cca1d7e65e595eac546a62b0144b, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/29 19:17:00 #22574327
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Test which checks, that updating SO_RCVLOWAT value also sends credit
-update message. Otherwise mutual hungup may happen when receiver didn't
-send credit update and then calls 'poll()' with non default SO_RCVLOWAT
-value (e.g. waiting enough bytes to read), while sender waits for free
-space at receiver's side. Important thing is that this test relies on
-kernel's define for maximum packet size for virtio transport and this
-value is not exported to user: VIRTIO_VSOCK_MAX_PKT_BUF_SIZE (this
-define is used to control moment when to send credit update message).
-If this value or its usage will be changed in kernel - this test may
-become useless/broken.
+As of commit d9962b0d4202 ("r8152: Block future register access if
+register access fails") there is a race condition that can happen
+between the USB device reset thread and napi_enable() (not) getting
+called during rtl8152_open(). Specifically:
+* While rtl8152_open() is running we get a register access error
+  that's _not_ -ENODEV and queue up a USB reset.
+* rtl8152_open() exits before calling napi_enable() due to any reason
+  (including usb_submit_urb() returning an error).
 
-Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+In that case:
+* Since the USB reset is perform in a separate thread asynchronously,
+  it can run at anytime USB device lock is not held - even before
+  rtl8152_open() has exited with an error and caused __dev_open() to
+  clear the __LINK_STATE_START bit.
+* The rtl8152_pre_reset() will notice that the netif_running() returns
+  true (since __LINK_STATE_START wasn't cleared) so it won't exit
+  early.
+* rtl8152_pre_reset() will then hang in napi_disable() because
+  napi_enable() was never called.
+
+We can fix the race by making sure that the r8152 reset routines don't
+run at the same time as we're opening the device. Specifically we need
+the reset routines in their entirety rely on the return value of
+netif_running(). The only way to reliably depend on that is for them
+to hold the rntl_lock() mutex for the duration of reset.
+
+Grabbing the rntl_lock() mutex for the duration of reset seems like a
+long time, but reset is not expected to be common and the rtnl_lock()
+mutex is already held for long durations since the core grabs it
+around the open/close calls.
+
+Fixes: d9962b0d4202 ("r8152: Block future register access if register access fails")
+Reviewed-by: Grant Grundler <grundler@chromium.org>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
- Changelog:
- v1 -> v2:
-  * Update commit message by removing 'This patch adds XXX' manner.
-  * Update commit message by adding details about dependency for this
-    test from kernel internal define VIRTIO_VSOCK_MAX_PKT_BUF_SIZE.
-  * Add comment for this dependency in 'vsock_test.c' where this define
-    is duplicated.
- v2 -> v3:
-  * Replace synchronization based on control TCP socket with vsock
-    data socket - this is needed to allow sender transmit data only
-    when new buffer size of receiver is visible to sender. Otherwise
-    there is race and test fails sometimes.
- v3 -> v4:
-  * Replace 'recv_buf()' to 'recv(MSG_DONTWAIT)' in last read operation
-    in server part. This is needed to ensure that 'poll()' wake up us
-    when number of bytes ready to read is equal to SO_RCVLOWAT value.
+In response to v1 Paolo questioned the wisdom of grabbing the
+rtnl_lock in the USB pre_reset() and releasing it in the USB
+post_reset() [1]. While his concern is a legitimate one because this
+looks a bit fragile, I'm still of the belief that the current patch is
+the best solution.
 
- tools/testing/vsock/vsock_test.c | 149 +++++++++++++++++++++++++++++++
- 1 file changed, 149 insertions(+)
+This patch has been tested with lockdep and I saw no splats about
+it. I've also read through the usb core code twice and I don't see any
+way that post_reset() won't be called if pre_reset() was called,
+assuming that the pre_reset() doesn't return an error (we never return
+an error from pre_reset()).
 
-diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
-index 01fa816868bc..68f7037834db 100644
---- a/tools/testing/vsock/vsock_test.c
-+++ b/tools/testing/vsock/vsock_test.c
-@@ -1232,6 +1232,150 @@ static void test_double_bind_connect_client(const struct test_opts *opts)
- 	}
+If folks have some example of something that's broken by the current
+rtnl_lock strategy used by this patch (or if folks feel very strongly
+that it needs to be changed) then I can spin another version. ...but
+as per my reply to Paolo [2] I think that does have some minor
+downsides.
+
+[1] https://lore.kernel.org/r/f8c1979e2c71d871998aec0126dd87adb5e76cce.camel@redhat.com
+[2] https://lore.kernel.org/r/CAD=FV=VqZq33eLiFPNiZCJmewQ1hxECmUnwbjVbvdJiDkQMAJA@mail.gmail.com
+
+(no changes since v2)
+
+Changes in v2:
+- Added "after the cut" notes about rtnl lock strategy.
+
+ drivers/net/usb/r8152.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
+index 2c5c1e91ded6..d6edf0254599 100644
+--- a/drivers/net/usb/r8152.c
++++ b/drivers/net/usb/r8152.c
+@@ -8397,6 +8397,8 @@ static int rtl8152_pre_reset(struct usb_interface *intf)
+ 	struct r8152 *tp = usb_get_intfdata(intf);
+ 	struct net_device *netdev;
+ 
++	rtnl_lock();
++
+ 	if (!tp || !test_bit(PROBED_WITH_NO_ERRORS, &tp->flags))
+ 		return 0;
+ 
+@@ -8428,20 +8430,17 @@ static int rtl8152_post_reset(struct usb_interface *intf)
+ 	struct sockaddr sa;
+ 
+ 	if (!tp || !test_bit(PROBED_WITH_NO_ERRORS, &tp->flags))
+-		return 0;
++		goto exit;
+ 
+ 	rtl_set_accessible(tp);
+ 
+ 	/* reset the MAC address in case of policy change */
+-	if (determine_ethernet_addr(tp, &sa) >= 0) {
+-		rtnl_lock();
++	if (determine_ethernet_addr(tp, &sa) >= 0)
+ 		dev_set_mac_address (tp->netdev, &sa, NULL);
+-		rtnl_unlock();
+-	}
+ 
+ 	netdev = tp->netdev;
+ 	if (!netif_running(netdev))
+-		return 0;
++		goto exit;
+ 
+ 	set_bit(WORK_ENABLE, &tp->flags);
+ 	if (netif_carrier_ok(netdev)) {
+@@ -8460,6 +8459,8 @@ static int rtl8152_post_reset(struct usb_interface *intf)
+ 	if (!list_empty(&tp->rx_done))
+ 		napi_schedule(&tp->napi);
+ 
++exit:
++	rtnl_unlock();
+ 	return 0;
  }
  
-+#define RCVLOWAT_CREDIT_UPD_BUF_SIZE	(1024 * 128)
-+/* This define is the same as in 'include/linux/virtio_vsock.h':
-+ * it is used to decide when to send credit update message during
-+ * reading from rx queue of a socket. Value and its usage in
-+ * kernel is important for this test.
-+ */
-+#define VIRTIO_VSOCK_MAX_PKT_BUF_SIZE	(1024 * 64)
-+
-+static void test_stream_rcvlowat_def_cred_upd_client(const struct test_opts *opts)
-+{
-+	size_t buf_size;
-+	void *buf;
-+	int fd;
-+
-+	fd = vsock_stream_connect(opts->peer_cid, 1234);
-+	if (fd < 0) {
-+		perror("connect");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	/* Send 1 byte more than peer's buffer size. */
-+	buf_size = RCVLOWAT_CREDIT_UPD_BUF_SIZE + 1;
-+
-+	buf = malloc(buf_size);
-+	if (!buf) {
-+		perror("malloc");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	/* Wait until peer sets needed buffer size. */
-+	recv_byte(fd, 1, 0);
-+
-+	if (send(fd, buf, buf_size, 0) != buf_size) {
-+		perror("send failed");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	free(buf);
-+	close(fd);
-+}
-+
-+static void test_stream_rcvlowat_def_cred_upd_server(const struct test_opts *opts)
-+{
-+	size_t recv_buf_size;
-+	struct pollfd fds;
-+	size_t buf_size;
-+	void *buf;
-+	int fd;
-+
-+	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
-+	if (fd < 0) {
-+		perror("accept");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	buf_size = RCVLOWAT_CREDIT_UPD_BUF_SIZE;
-+
-+	if (setsockopt(fd, AF_VSOCK, SO_VM_SOCKETS_BUFFER_SIZE,
-+		       &buf_size, sizeof(buf_size))) {
-+		perror("setsockopt(SO_VM_SOCKETS_BUFFER_SIZE)");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	/* Send one dummy byte here, because 'setsockopt()' above also
-+	 * sends special packet which tells sender to update our buffer
-+	 * size. This 'send_byte()' will serialize such packet with data
-+	 * reads in a loop below. Sender starts transmission only when
-+	 * it receives this single byte.
-+	 */
-+	send_byte(fd, 1, 0);
-+
-+	buf = malloc(buf_size);
-+	if (!buf) {
-+		perror("malloc");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	/* Wait until there will be 128KB of data in rx queue. */
-+	while (1) {
-+		ssize_t res;
-+
-+		res = recv(fd, buf, buf_size, MSG_PEEK);
-+		if (res == buf_size)
-+			break;
-+
-+		if (res <= 0) {
-+			fprintf(stderr, "unexpected 'recv()' return: %zi\n", res);
-+			exit(EXIT_FAILURE);
-+		}
-+	}
-+
-+	/* There is 128KB of data in the socket's rx queue,
-+	 * dequeue first 64KB, credit update is not sent.
-+	 */
-+	recv_buf_size = VIRTIO_VSOCK_MAX_PKT_BUF_SIZE;
-+	recv_buf(fd, buf, recv_buf_size, 0, recv_buf_size);
-+	recv_buf_size++;
-+
-+	/* Updating SO_RCVLOWAT will send credit update. */
-+	if (setsockopt(fd, SOL_SOCKET, SO_RCVLOWAT,
-+		       &recv_buf_size, sizeof(recv_buf_size))) {
-+		perror("setsockopt(SO_RCVLOWAT)");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	memset(&fds, 0, sizeof(fds));
-+	fds.fd = fd;
-+	fds.events = POLLIN | POLLRDNORM | POLLERR |
-+		     POLLRDHUP | POLLHUP;
-+
-+	/* This 'poll()' will return once we receive last byte
-+	 * sent by client.
-+	 */
-+	if (poll(&fds, 1, -1) < 0) {
-+		perror("poll");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	if (fds.revents & POLLERR) {
-+		fprintf(stderr, "'poll()' error\n");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	if (fds.revents & (POLLIN | POLLRDNORM)) {
-+		ssize_t res;
-+
-+		res = recv(fd, buf, recv_buf_size, MSG_DONTWAIT);
-+		if (res != recv_buf_size) {
-+			fprintf(stderr, "recv(2), expected %zu, got %zu\n",
-+				recv_buf_size, res);
-+			exit(EXIT_FAILURE);
-+		}
-+	} else {
-+		/* These flags must be set, as there is at
-+		 * least 64KB of data ready to read.
-+		 */
-+		fprintf(stderr, "POLLIN | POLLRDNORM expected\n");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	free(buf);
-+	close(fd);
-+}
-+
- static struct test_case test_cases[] = {
- 	{
- 		.name = "SOCK_STREAM connection reset",
-@@ -1342,6 +1486,11 @@ static struct test_case test_cases[] = {
- 		.run_client = test_double_bind_connect_client,
- 		.run_server = test_double_bind_connect_server,
- 	},
-+	{
-+		.name = "SOCK_STREAM virtio SO_RCVLOWAT + deferred cred update",
-+		.run_client = test_stream_rcvlowat_def_cred_upd_client,
-+		.run_server = test_stream_rcvlowat_def_cred_upd_server,
-+	},
- 	{},
- };
- 
 -- 
-2.25.1
+2.43.0.rc1.413.gea7ed67945-goog
 
