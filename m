@@ -2,56 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F395E7FE15C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:50:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D10B7FE15F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:51:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234135AbjK2Uuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 15:50:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52248 "EHLO
+        id S234172AbjK2Uuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 15:50:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233983AbjK2Uu3 (ORCPT
+        with ESMTP id S234149AbjK2Uup (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 15:50:29 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 043DB10C8;
-        Wed, 29 Nov 2023 12:50:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1701291023;
-        bh=sbuX3N7oxvepbGzhXGjYp8FuqlFjbX1ICGKiB2uKdQM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hCS/nb5+wogn0WYNS2HUBNEUkUL9whGvBLA5iv8ppEx7N2O1KzaYsrzEnezZT64Sp
-         64BuWyKwxnbVfFNt3OVMXPjTgiPPVqlTkZvDBJQFBDJ02NnnGKeORgXJF2chxyxlb7
-         /Ddk4Vufx1GvXyXLUgFdnqazCKXjOFP2wcusfHO6dnycyDN0fno2ElhK+Didq/V06C
-         sQl3lzgeYUivxjjS6mkYiT3lZqzmspD79OSQ0cpA9mOj4/t79VSepzW+YiA01tfNWe
-         lZiDkdQGw1T1R/GndS03cC+0Lf+bA9BtqL0Jsr0I8kwW/TpG/SWqEkley2JP35PjyH
-         EDpqkVnlHPE/A==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SgWg23273z4xT0;
-        Thu, 30 Nov 2023 07:50:22 +1100 (AEDT)
-Date:   Thu, 30 Nov 2023 07:50:21 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jan Kara <jack@suse.cz>, Nathan Chancellor <nathan@kernel.org>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        David Sterba <dsterba@suse.cz>,
-        David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the vfs-brauner tree with the btrfs
- tree
-Message-ID: <20231130075021.27851843@canb.auug.org.au>
-In-Reply-To: <20231129110930.qncvzm63xjg4ucky@quack3>
-References: <20231127092001.54a021e8@canb.auug.org.au>
-        <20231128213344.GA3423530@dev-arch.thelio-3990X>
-        <20231129110930.qncvzm63xjg4ucky@quack3>
+        Wed, 29 Nov 2023 15:50:45 -0500
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 161FF10CB
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:50:51 -0800 (PST)
+Received: by mail-vs1-xe33.google.com with SMTP id ada2fe7eead31-46447559b88so40884137.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:50:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701291050; x=1701895850; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qRudQj2Sfvl8763B7G4OIzr5GVWbGpaCjlcn22UtovM=;
+        b=l5F9ChCjm23piNt+umQ8fYdqmWhckcLh5uaAl586gQNpYCRu/+z1fHBe63t+OpzApB
+         8IrYs97p3At1xY8KK588yTWTojFmXlw/AgcWSDiX7cHFov4N7LW2k/6nsJT/2eaaOmbW
+         vOOGxaf0BF/B65lwC44ZAlyPhv++D5baI1fiBthGtcnIRmODwSrv7fevIAvuSyam+3yw
+         aPqVG8bchiCzvl51qmKIsB/lABt6rhlED4HRfYZP5pT0mOHxf+a8GzjGciuRUWz3g6tm
+         05yWBJ3lAAHs9nR7gjYtrXiBuW/irlfSLafs/AKV0mUdyKKbheqLM2edld9qn8DBpUbT
+         H/rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701291050; x=1701895850;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qRudQj2Sfvl8763B7G4OIzr5GVWbGpaCjlcn22UtovM=;
+        b=lXSGIT27+VS1eTuPVxDrrFZY6hr04viOrf6hA+ocaZD2Wk2n5qIQxvW+6v+bdMWU8C
+         /H/D3lQDehw8QmbXk8/AZBTUD/LP2VUKKzaK3uOLnb1tKtpnNXOarABnd8LxwOaqTj8K
+         7Z0k7lqz0q8LVBbRTkf/bDnWgdubwFcVweEVZousqoTb05vs8RXFoSaWEvT61aJ+AmuT
+         nHJ1z/+duFxXIHnACXvcGAd/k3Nc2bWOgNwpT4D8C30iL1adBIys03T1SeLcB7ep+d6S
+         Gan+8mia0zFEotB7AeNV5vbdW0oQY0FWkBqy29yVySxj79qIi206h+cLVmTrxMnqEIH6
+         BcfQ==
+X-Gm-Message-State: AOJu0YzD//tcibOBuqc4PRCrhh6on0m5CaoDzqHOnaYWGYrGi5zROwDj
+        ZSpdl1zkTwYj91BxuHWRptnUuGwlCDMBauJuZ7quTQ==
+X-Google-Smtp-Source: AGHT+IFD0eT1lvn2YTfiznalgCyAUE9zsky5MpegMQkPYxHXziqnBprEE1cMdMhM3zu84Hx1Vg83n8wmZOOLG6XvBq8=
+X-Received: by 2002:a67:eb52:0:b0:464:4f42:c195 with SMTP id
+ x18-20020a67eb52000000b004644f42c195mr2247378vso.8.1701291050105; Wed, 29 Nov
+ 2023 12:50:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/znoGVz9k4TY6QKX8yOkCQ_s";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+References: <20231115165915.2936349-1-brgl@bgdev.pl> <CAMRc=MfoE93Aum4s-pweeb_idqYgUG-DBpXnhT5UW_WhVkLwHw@mail.gmail.com>
+ <ZWeXqtqJLKB02LWU@yury-ThinkPad>
+In-Reply-To: <ZWeXqtqJLKB02LWU@yury-ThinkPad>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 29 Nov 2023 21:50:39 +0100
+Message-ID: <CAMRc=MdjoYjFzwoDhywx45asun+AyUho_U+cgZoETVP+VuvmBA@mail.gmail.com>
+Subject: Re: [RESEND PATCH v2 0/4] genirq/irq_sim: misc updates
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,116 +74,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/znoGVz9k4TY6QKX8yOkCQ_s
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Wed, 29 Nov 2023 12:09:30 +0100 Jan Kara <jack@suse.cz> wrote:
+On Wed, Nov 29, 2023 at 8:59=E2=80=AFPM Yury Norov <yury.norov@gmail.com> w=
+rote:
 >
-> On Tue 28-11-23 14:33:44, Nathan Chancellor wrote:
-> > Hi Stephen (and other maintainers),
-> >=20
-> > On Mon, Nov 27, 2023 at 09:20:01AM +1100, Stephen Rothwell wrote: =20
-> > > Hi all,
-> > >=20
-> > > Today's linux-next merge of the vfs-brauner tree got a conflict in:
-> > >=20
-> > >   fs/btrfs/super.c
-> > >=20
-> > > between commit:
-> > >=20
-> > >   2f2cfead5107 ("btrfs: remove old mount API code")
-> > >=20
-> > > from the btrfs tree and commit:
-> > >=20
-> > >   ead622674df5 ("btrfs: Do not restrict writes to btrfs devices")
-> > >=20
-> > > from the vfs-brauner tree.
-> > >=20
-> > > I fixed it up (the former removed the funtion updated by the latter, =
-but
-> > > a further fix may be required to implement the intent of the latter?)=
- =20
-> >=20
-> > Yes, the lack of ead622674df5 appears to cause issues with mounting
-> > btrfs volumes on at least next-20231128 due to the presence of commit
-> > 6f861765464f ("fs: Block writes to mounted block devices"). In QEMU, I
-> > can see:
-> >=20
-> >   :: running early hook [udev]
-> >   Warning: /lib/modules/6.7.0-rc3-next-20231128/modules.devname not fou=
-nd - ignoring
-> >   Starting systemd-udevd version 252.5-1-arch
-> >   :: running hook [udev]
-> >   :: Triggering uevents...
-> >   :: running hook [keymap]
-> >   :: Loading keymap...kbd_mode: KDSKBMODE: Inappropriate ioctl for devi=
-ce
-> >   done.
-> >   :: performing fsck on '/dev/vda2'
-> >   :: mounting '/dev/vda2' on real root
-> >   mount: /new_root: wrong fs type, bad option, bad superblock on /dev/v=
-da2, missing codepage or helper program, or other error.
-> >          dmesg(1) may have more information after failed mount system c=
-all.
-> >   You are now being dropped into an emergency shell.
-> >   sh: can't access tty; job control turned off
-> >   [rootfs ]#
-> >=20
-> > The following diff allows my VM to boot properly but I am not sure if
-> > there is a better or more proper fix (I am already out of my element
-> > heh). If a proper merge solution cannot be found quickly, can
-> > 6f861765464f be reverted in the meantime so that all my machines with
-> > btrfs can boot properly? :)
-> >=20
-> > diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> > index 99d10a25a579..23db0306b8ef 100644
-> > --- a/fs/btrfs/super.c
-> > +++ b/fs/btrfs/super.c
-> > @@ -299,6 +299,7 @@ static int btrfs_parse_param(struct fs_context *fc,
-> >  	case Opt_device: {
-> >  		struct btrfs_device *device;
-> >  		blk_mode_t mode =3D sb_open_mode(fc->sb_flags);
-> > +		mode &=3D ~BLK_OPEN_RESTRICT_WRITES;
-> > =20
-> >  		mutex_lock(&uuid_mutex);
-> >  		device =3D btrfs_scan_one_device(param->string, mode, false);
-> > @@ -1801,6 +1802,8 @@ static int btrfs_get_tree_super(struct fs_context=
- *fc)
-> >  	blk_mode_t mode =3D sb_open_mode(fc->sb_flags);
-> >  	int ret;
-> > =20
-> > +	mode &=3D ~BLK_OPEN_RESTRICT_WRITES;
-> > +
-> >  	btrfs_ctx_to_info(fs_info, ctx);
-> >  	mutex_lock(&uuid_mutex); =20
->=20
-> This looks like the proper resolution. Basically btrfs needs to strip
-> BLK_OPEN_RESTRICT_WRITES from the mode provided by sb_open_mode(). Thanks
-> for writing it!
+> On Wed, Nov 29, 2023 at 10:18:15AM +0100, Bartosz Golaszewski wrote:
+> > On Wed, Nov 15, 2023 at 5:59=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev=
+.pl> wrote:
+> > >
+> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > >
+> > > Here are a couple of updates to the interrupt simulator. Two are mino=
+r:
+> > > remove an unused field and reorder includes for readability. The thir=
+d
+> > > one simplifies the error paths by using new cleanup macros. To that e=
+nd
+> > > we also add a cleanup definition for dynamic bitmaps.
+> > >
+> > > Resending rebased on top of v6.7-rc1 and with tags collected.
+> > >
+> > > v1 -> v2:
+> > > - add a NULL-pointer check to the bitmap cleanup macro as advised by
+> > >   Peter Zijlstra
+> > > - initialize managed pointers when declaring them to create a clear p=
+airing
+> > >   between the type and the cleanup action
+> > >
+> > > Bartosz Golaszewski (4):
+> > >   bitmap: define a cleanup function for bitmaps
+> > >   genirq/irq_sim: remove unused field from struct irq_sim_irq_ctx
+> > >   genirq/irq_sim: order headers alphabetically
+> > >   genirq/irq_sim: shrink code by using cleanup helpers
+> > >
+> > >  include/linux/bitmap.h |  3 +++
+> > >  kernel/irq/irq_sim.c   | 30 ++++++++++++------------------
+> > >  2 files changed, 15 insertions(+), 18 deletions(-)
+> > >
+> > > --
+> > > 2.40.1
+> > >
+> >
+> > It's been two weeks since this submission and ~2.5 months since the
+> > first one so I guess, a gentle ping is in order. This is not a very
+> > controversial series - can this be applied?
+>
+> Hi Bartosz,
+>
+> I'm the first in the list for this series, but really only 1st patch
+> is related to bitmaps, and I already acked it. If you prefer that, I
+> can pull it in the bitmap tree.
+>
+> Thanks,
+> Yury
 
-I have added this patch as a merge fix from today.
+If there's a risk it will conflict then you can apply it and provide
+Thomas with an immutable branch against the irq tree, otherwise I
+think Thomas can pick up all the patches.
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/znoGVz9k4TY6QKX8yOkCQ_s
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVnpA0ACgkQAVBC80lX
-0Gyexgf9GCadScaPjjCMOiwzGUV4KztmJNnhRpqGDaZ7sMkRarqx8xE/Kr9YwfQR
-zb6XNdkl/o0YgSoWBXuhXPkhZCOFC4CfmiYNHHFJNxCwq3AUMsfRZfBf0meL32RH
-81QZRcuDFvg39qsRS6GgWE2fsB+CNmuwH4G5eQOzAM5ehvw+hGro1qfYUsncHHzp
-73oLhlCCTsweQ7TYdJPDGhFrz/er1LUuM0ugHGEOdfuUf2EJFde+7Bo8VllcFzQK
-K3+nxkR4NovIbimlsIbWRAPEJrptQJUSRB9+AZHiqQZvA71wC/BR30l1gxO0XnDV
-uoaIM+cpesjbhBgGf1JmcS/crzU8bg==
-=cIWP
------END PGP SIGNATURE-----
-
---Sig_/znoGVz9k4TY6QKX8yOkCQ_s--
+Bartosz
