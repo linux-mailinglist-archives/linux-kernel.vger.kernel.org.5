@@ -2,235 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7B27FD387
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:05:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4F7A7FD2C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:31:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231776AbjK2KFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 05:05:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42256 "EHLO
+        id S229535AbjK2Jaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 04:30:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231394AbjK2KEw (ORCPT
+        with ESMTP id S230163AbjK2Jab (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 05:04:52 -0500
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23375D66
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:04:58 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-548c6efc020so10576a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:04:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701252296; x=1701857096; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=swaxqzVnWqGyjLOql3dgeNSaHkk6fmtsxd2+zTz+o1c=;
-        b=v0NC3kFYhY6bVlFHmjQiDDENAPtu4DcqDCQ4dXjXIOjFpPDBQiGwe5XXQJCA13qqi+
-         Ajmbfw5z42UnzueQs6xCGYOAqB0GiJDa89NJhgPLX39LHRv3BhONKfb6nv6maZUAfy2c
-         QocDAmVc+OXkKJ6PurTXj1OkvVWUA1MEnYKKDoyavpqrGVNswSFeoQ2BOqaE+H5yLitM
-         f6WGPjXlmWZJPvhUpTo9dpMaBmAFW/JVCnNtieaNFUrJJ1GdsW8awZoSvx+IdbZCidUz
-         IJi1DLeuE81ypEnn2qiCLlxdZwQJBSllzzJWgwctFyzJ9Z6UiTXuSD97DzNsw6i7WmNB
-         Aj5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701252296; x=1701857096;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=swaxqzVnWqGyjLOql3dgeNSaHkk6fmtsxd2+zTz+o1c=;
-        b=s4BjQYoSQjgZ22BBO5fce3VHWJf3TzyXNXfQgiN1wrx45bxYgxc566mWuxfYBKwT5m
-         6iMGokCssiSJHykdU59suM2VCDiF+06GfcehBIUYYjIO5IrYd999wvfzjn2GxzUf55a5
-         jPWwPiY+UTSQ5NXwzVYU7KD9wDddSmZUTTCV2dxSlWmoWoeyzLk4FV5uPwtSnjEDeriq
-         nuSEG7x0mNJHkZD/yeOMkZKjy4nXExqYpFCafDTdxl15s4gwIcxE7fYhaqmXgX+tUfUm
-         pyMW2Oqe7QJzun52i89Xt36NKmJWljgSMHdZvu28BkiXXui19PkdlIx7/m6bTJv6JgM8
-         4cjw==
-X-Gm-Message-State: AOJu0YzKFze4m0QBX1cz71ubeNF/q1Y+2oztP+9wj2AaMkyaiW9YyCFa
-        F5JpvNqgk3F1TFbtmzv8gQjDf+n1EJK5bTj5LrvgvQ==
-X-Google-Smtp-Source: AGHT+IHLAAeS0RulPxNYAbgsuX91KIaF2yspSDeHUqste1rIxKou+4LDgbXikNvgACEQ8phetg3Jfo/i5RFnXegISr8=
-X-Received: by 2002:a05:6402:2215:b0:54b:81ba:93b2 with SMTP id
- cq21-20020a056402221500b0054b81ba93b2mr401323edb.2.1701252296304; Wed, 29 Nov
- 2023 02:04:56 -0800 (PST)
+        Wed, 29 Nov 2023 04:30:31 -0500
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915962D75
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 01:29:46 -0800 (PST)
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20231129092944epoutp04f2ed96aa64e3eb848f235c9bc218d1a2~cDgd_nOLL3171731717epoutp04-
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 09:29:44 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20231129092944epoutp04f2ed96aa64e3eb848f235c9bc218d1a2~cDgd_nOLL3171731717epoutp04-
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1701250184;
+        bh=FHvSR/hYOGJJkx3HUz9cuc3ozsOZ6u4idcxy8RtY3ek=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Uv56qPD+l3e2Z5W0lKtubPM87dE3u4JY363KS2Q0qL/6WR4tvLEHlumasMHg9UxDL
+         +LLwe2PVcxGusEiZwfOReufcbTKXV7EpO1uvDwQ7xvG+sA/XCmiBTYZCZGW8XrA0eU
+         B2zEhnmsbXZB4NgKLXm3swnSBXn1BbA9rVf826MY=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20231129092944epcas2p48dd26563bb461298f3467b73415a494e~cDgdlzJnu1311413114epcas2p4Z;
+        Wed, 29 Nov 2023 09:29:44 +0000 (GMT)
+Received: from epsmgec2p1.samsung.com (unknown [182.195.36.69]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4SgDYg3rW4z4x9Pt; Wed, 29 Nov
+        2023 09:29:43 +0000 (GMT)
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmgec2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        35.78.08648.78407656; Wed, 29 Nov 2023 18:29:43 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
+        20231129092942epcas2p1c4305207c4c3d3701e7ff6757f7a2b4f~cDgcJFYlJ0737107371epcas2p1g;
+        Wed, 29 Nov 2023 09:29:42 +0000 (GMT)
+Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231129092942epsmtrp13fa7b91dd84632b400609f49cb4e84bd~cDgcII0pu3031930319epsmtrp1k;
+        Wed, 29 Nov 2023 09:29:42 +0000 (GMT)
+X-AuditID: b6c32a43-4b3ff700000021c8-23-6567048740ae
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        1A.EE.07368.68407656; Wed, 29 Nov 2023 18:29:42 +0900 (KST)
+Received: from perf (unknown [10.229.95.91]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20231129092942epsmtip233070651858a9e02b1227e78ed12d3f1~cDgb3wbsf0969709697epsmtip2i;
+        Wed, 29 Nov 2023 09:29:42 +0000 (GMT)
+Date:   Wed, 29 Nov 2023 19:04:47 +0900
+From:   Youngmin Nam <youngmin.nam@samsung.com>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     tomasz.figa@gmail.com, s.nawrocki@samsung.com,
+        alim.akhtar@samsung.com, linus.walleij@linaro.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, semen.protsenko@linaro.org
+Subject: Re: [PATCH v2] pinctrl: samsung: add irq_set_affinity() for non
+ wake up external gpio interrupt
+Message-ID: <ZWcMv8Bg12vqBCUm@perf>
 MIME-Version: 1.0
-References: <0000000000001fc0bf060b479b58@google.com>
-In-Reply-To: <0000000000001fc0bf060b479b58@google.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 29 Nov 2023 11:04:42 +0100
-Message-ID: <CANn89iJveDLca46gC8ND8Ym6Le1FUr0mPzAAYDh_6-1N5uEj6A@mail.gmail.com>
-Subject: Re: [syzbot] [net?] KMSAN: uninit-value in ipgre_xmit
-To:     syzbot <syzbot+2cb7b1bd08dc77ae7f89@syzkaller.appspotmail.com>,
-        Shigeru Yoshida <syoshida@redhat.com>
-Cc:     davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+In-Reply-To: <f814a1f4-2e3d-4946-949a-8ddac5e30d5f@kernel.org>
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprHJsWRmVeSWpSXmKPExsWy7bCmhW47S3qqwba5MhYP5m1jszh/fgO7
+        xZQ/y5ksNj2+xmqxef4fRovLu+awWcw4v4/J4vCbdlaL531A1qpdfxgduDx2zrrL7rFpVSeb
+        x51re9g8Ni+p9+jbsorR4/MmuQC2qGybjNTElNQihdS85PyUzLx0WyXv4HjneFMzA0NdQ0sL
+        cyWFvMTcVFslF58AXbfMHKDLlBTKEnNKgUIBicXFSvp2NkX5pSWpChn5xSW2SqkFKTkF5gV6
+        xYm5xaV56Xp5qSVWhgYGRqZAhQnZGSc+nWQpOCpUceywUwPjN74uRk4OCQETiRMvz7N0MXJx
+        CAnsYJS4d/okG4TziVHiyoWPTBDON0aJO08OscC0tN+7CdWyl1Hi5qz9zBDOQ0aJ/vkX2EGq
+        WARUJWZfvgHWwSagK7HtxD9GEFtEQFPi+t/vrCANzAKdTBLTt89kBUkIC2RJ3NnYDdbAK6As
+        8XfnOXYIW1Di5MwnQHEODk4BO4nJ8+pBeiUEOjkkFu6ZzwhxkovEue8roc4Tlnh1fAs7hC0l
+        8bK/DcrOllj96xKUXQH0Qg8zhG0sMetZO9gcZoEMiQ1HJrGC7JIAuuHILRaIMJ9Ex+G/7BBh
+        XomONiGITjWJX1M2QF0gI7F78QqoiR4SzyZvYocGI7PEnFt32Ccwys1C8s0sJNsgbB2JBbs/
+        sc0CWsEsIC2x/B8HhKkpsX6X/gJG1lWMYqkFxbnpqclGBYbwCE7Oz93ECE6oWs47GK/M/6d3
+        iJGJg/EQowQHs5IIr97H5FQh3pTEyqrUovz4otKc1OJDjKbAuJnILCWanA9M6Xkl8YYmlgYm
+        ZmaG5kamBuZK4rz3WuemCAmkJ5akZqemFqQWwfQxcXBKNTCFN/IuC6i9+c30MsflY2q8266L
+        Zf/656b50Clj243XpybN+yjgcXeJ2C7lmSt33LCJ+F2/9PIcG23rCwv8LnL0FeRaBNxQn/U9
+        ONheOvjGpNDjPpKqhrX8Zfb+Sg2zzL/3Hr/guj7MnXmPeYCE/3ppje0mp497VGqxHVu0fdrR
+        WUmKJexXVRXNmPY1HnyZn8KbtvDTs8554XHT1845W1Xd6uijHvbo6oQnX9b8jEwU4rRZ8mZe
+        byazyeaTR/k1DkZKTI6XFVp73e/sZC8LJtdE+Y0HhH4m1c3cea9n+wOvz1w6x001+nqSv0k0
+        Ta7ptO96o3p+anTUs1QlOVn+SfcKVtS2+ZS26fBqKKfGhSuxFGckGmoxFxUnAgBvbNQXMQQA
+        AA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrCLMWRmVeSWpSXmKPExsWy7bCSvG4bS3qqwfp3UhYP5m1jszh/fgO7
+        xZQ/y5ksNj2+xmqxef4fRovLu+awWcw4v4/J4vCbdlaL531A1qpdfxgduDx2zrrL7rFpVSeb
+        x51re9g8Ni+p9+jbsorR4/MmuQC2KC6blNSczLLUIn27BK6Mc39YC1oFKpb8esHWwHiep4uR
+        k0NCwESi/d5Nli5GLg4hgd2MEgunPmODSMhI3F55mRXCFpa433KEFaLoPqPEibVv2UESLAKq
+        ErMv32ABsdkEdCW2nfjHCGKLCGhKXP/7HayBWaCTSWL69plgk4QFsiQePjwPtoFXQFni785z
+        7BBTfzBLLFy9jAkiIShxcuYTsKnMAloSN/69BIpzANnSEsv/cYCYnAJ2EpPn1U9gFJiFpGEW
+        koZZCA0LGJlXMUqmFhTnpucmGxYY5qWW6xUn5haX5qXrJefnbmIER4SWxg7Ge/P/6R1iZOJg
+        PMQowcGsJMKr9zE5VYg3JbGyKrUoP76oNCe1+BCjNAeLkjiv4YzZKUIC6YklqdmpqQWpRTBZ
+        Jg5OqQam5OcuL9IX+13LSta7HLnn9leL2IgNSX1PC+qs3v9nWHL0pOS/qzln5XYJR2x/PitH
+        ZYL74xrz5iWHlrtI/vqasbT9iS/3p/wjOgXMs06se5OcME2olTdsb3XJuerQ/Qzq97T95txT
+        e3/4ZqXYulah1P2VwkmHWzqypi6z4z315H15TBDDtjVr2281rhXxZTrEVhgvL7Vc6ttMqwvT
+        r7nn5P+JY9hrvOxz56rbm4JMf81acND+eUJ5xS8rEZ2Atom3XqyrqxUqtE5eojzfe/Fu3QCt
+        l9W5XvevnzXanSbwaXFMPPfMa5daVijrHT/Sl3VrvZqzoKT9qw81fF0M3p7iN+3DFmVzLk2c
+        Uv+004xXiaU4I9FQi7moOBEA0CLvT/cCAAA=
+X-CMS-MailID: 20231129092942epcas2p1c4305207c4c3d3701e7ff6757f7a2b4f
+X-Msg-Generator: CA
+Content-Type: multipart/mixed;
+        boundary="----beKDcrNeaD4oBIFRuchmvdVAwfnDGI5TYPt7fforSuRq9wgD=_37ba7_"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231126091120epcas2p4a1320e3b0f9be8f8a0f575a322981d38
+References: <CGME20231126091120epcas2p4a1320e3b0f9be8f8a0f575a322981d38@epcas2p4.samsung.com>
+        <20231126094618.2545116-1-youngmin.nam@samsung.com>
+        <bb738a6b-815d-4fad-b73f-559f1ba8cd68@linaro.org> <ZWU75VtJ/mXpMyQr@perf>
+        <1fd55b36-0837-4bf7-9fde-e573d6cb214a@linaro.org>
+        <CAPLW+4n0SAOTb6wocY-WjkxgSFMbx+nVuqdaPcNYVDsbfg+EfA@mail.gmail.com>
+        <ZWbjPIydJRrPnuDy@perf> <a0ac295b-ea96-475c-acde-5a61de8ca170@linaro.org>
+        <ZWb6cyTgyEcee7DZ@perf> <f814a1f4-2e3d-4946-949a-8ddac5e30d5f@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 11:00=E2=80=AFAM syzbot
-<syzbot+2cb7b1bd08dc77ae7f89@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    18d46e76d7c2 Merge tag 'for-6.7-rc3-tag' of git://git.ker=
-n..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D1412e7e8e8000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Df711bc2a7eb1d=
-b25
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D2cb7b1bd08dc77a=
-e7f89
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Deb=
-ian) 2.40
-> userspace arch: i386
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/cb96093de792/dis=
-k-18d46e76.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/630ca4e2d778/vmlinu=
-x-18d46e76.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/65573a727973/b=
-zImage-18d46e76.xz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+2cb7b1bd08dc77ae7f89@syzkaller.appspotmail.com
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-> BUG: KMSAN: uninit-value in __gre_xmit net/ipv4/ip_gre.c:469 [inline]
-> BUG: KMSAN: uninit-value in ipgre_xmit+0xdc2/0xe20 net/ipv4/ip_gre.c:662
->  __gre_xmit net/ipv4/ip_gre.c:469 [inline]
->  ipgre_xmit+0xdc2/0xe20 net/ipv4/ip_gre.c:662
->  __netdev_start_xmit include/linux/netdevice.h:4940 [inline]
->  netdev_start_xmit include/linux/netdevice.h:4954 [inline]
->  xmit_one net/core/dev.c:3545 [inline]
->  dev_hard_start_xmit+0x247/0xa10 net/core/dev.c:3561
->  __dev_queue_xmit+0x33b8/0x5130 net/core/dev.c:4346
->  dev_queue_xmit include/linux/netdevice.h:3134 [inline]
->  __bpf_tx_skb net/core/filter.c:2133 [inline]
->  __bpf_redirect_no_mac net/core/filter.c:2163 [inline]
->  __bpf_redirect+0xdd7/0x1600 net/core/filter.c:2186
->  ____bpf_clone_redirect net/core/filter.c:2457 [inline]
->  bpf_clone_redirect+0x328/0x470 net/core/filter.c:2429
->  ___bpf_prog_run+0x2180/0xdb80 kernel/bpf/core.c:1958
->  __bpf_prog_run512+0xb5/0xe0 kernel/bpf/core.c:2199
->  bpf_dispatcher_nop_func include/linux/bpf.h:1196 [inline]
->  __bpf_prog_run include/linux/filter.h:651 [inline]
->  bpf_prog_run include/linux/filter.h:658 [inline]
->  bpf_test_run+0x482/0xb00 net/bpf/test_run.c:423
->  bpf_prog_test_run_skb+0x14e5/0x1f20 net/bpf/test_run.c:1045
->  bpf_prog_test_run+0x6af/0xac0 kernel/bpf/syscall.c:4040
->  __sys_bpf+0x649/0xd60 kernel/bpf/syscall.c:5401
->  __do_sys_bpf kernel/bpf/syscall.c:5487 [inline]
->  __se_sys_bpf kernel/bpf/syscall.c:5485 [inline]
->  __ia32_sys_bpf+0xa0/0xe0 kernel/bpf/syscall.c:5485
->  do_syscall_32_irqs_on arch/x86/entry/common.c:164 [inline]
->  __do_fast_syscall_32+0xa2/0x100 arch/x86/entry/common.c:230
->  do_fast_syscall_32+0x37/0x70 arch/x86/entry/common.c:255
->  do_SYSENTER_32+0x1f/0x30 arch/x86/entry/common.c:293
->  entry_SYSENTER_compat_after_hwframe+0x70/0x7a
->
-> Uninit was created at:
->  slab_post_alloc_hook+0x129/0xa70 mm/slab.h:768
->  slab_alloc_node mm/slub.c:3478 [inline]
->  kmem_cache_alloc_node+0x5e9/0xb10 mm/slub.c:3523
->  kmalloc_reserve+0x13d/0x4a0 net/core/skbuff.c:560
->  pskb_expand_head+0x226/0x1a00 net/core/skbuff.c:2098
->  skb_ensure_writable+0x3d3/0x460 net/core/skbuff.c:5958
->  __bpf_try_make_writable net/core/filter.c:1662 [inline]
->  bpf_try_make_writable net/core/filter.c:1668 [inline]
->  bpf_try_make_head_writable net/core/filter.c:1676 [inline]
->  ____bpf_clone_redirect net/core/filter.c:2451 [inline]
->  bpf_clone_redirect+0x17f/0x470 net/core/filter.c:2429
->  ___bpf_prog_run+0x2180/0xdb80 kernel/bpf/core.c:1958
->  __bpf_prog_run512+0xb5/0xe0 kernel/bpf/core.c:2199
->  bpf_dispatcher_nop_func include/linux/bpf.h:1196 [inline]
->  __bpf_prog_run include/linux/filter.h:651 [inline]
->  bpf_prog_run include/linux/filter.h:658 [inline]
->  bpf_test_run+0x482/0xb00 net/bpf/test_run.c:423
->  bpf_prog_test_run_skb+0x14e5/0x1f20 net/bpf/test_run.c:1045
->  bpf_prog_test_run+0x6af/0xac0 kernel/bpf/syscall.c:4040
->  __sys_bpf+0x649/0xd60 kernel/bpf/syscall.c:5401
->  __do_sys_bpf kernel/bpf/syscall.c:5487 [inline]
->  __se_sys_bpf kernel/bpf/syscall.c:5485 [inline]
->  __ia32_sys_bpf+0xa0/0xe0 kernel/bpf/syscall.c:5485
->  do_syscall_32_irqs_on arch/x86/entry/common.c:164 [inline]
->  __do_fast_syscall_32+0xa2/0x100 arch/x86/entry/common.c:230
->  do_fast_syscall_32+0x37/0x70 arch/x86/entry/common.c:255
->  do_SYSENTER_32+0x1f/0x30 arch/x86/entry/common.c:293
->  entry_SYSENTER_compat_after_hwframe+0x70/0x7a
->
-> CPU: 1 PID: 8859 Comm: syz-executor.2 Not tainted 6.7.0-rc3-syzkaller-000=
-24-g18d46e76d7c2 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
-oogle 11/10/2023
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
->
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
->
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
->
-> If you want to undo deduplication, reply with:
-> #syz undup
+------beKDcrNeaD4oBIFRuchmvdVAwfnDGI5TYPt7fforSuRq9wgD=_37ba7_
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
 
-Fix under discussion would be:
+On Wed, Nov 29, 2023 at 09:39:45AM +0100, Krzysztof Kozlowski wrote:
+> On 29/11/2023 09:46, Youngmin Nam wrote:
+> >>> I couldn't find out a pin for the test on E850-96 board yet.
+> >>> We can test if there is a usage of *Non" Wake up External Interrupt of GPIO
+> >>> on E850-96 board.
+> >>>
+> >>> Do you have any idea ?
+> >>
+> >> Please test on any upstream platform or upstream your existing platform.
+> >> I hesitate to take this change because I don't trust Samsung that this
+> >> was tested on mainline kernel. OK, for sure 100% it was not tested on
+> >> mainline, but I am afraid that differences were far beyond just missing
+> >> platforms. Therefore the issue might or might not exist at all. Maybe
+> >> issue is caused by other Samsung non-upstreamed code.
+> >>
+> >> Best regards,
+> >> Krzysztof
+> > 
+> > Sure. Let me find how to test on upstreamed device like E850-96 board.
+> 
+> There are many reasons why companies using Linux for their products
+> should be involved in upstreaming their devices.
+> 
+> The one visible from this conversation: Whatever technical debt you
+> have, it will be only growing because upstream might not even take
+> simple patches from you, until you start contributing with the rest.
+> Samsung's out-of-tree kernels are so far away from the upstream, that
+> basically we might feel that contributions from Samsung are not
+> addressing real problems. This will affect your Android trees due to GKI.
+> 
+> That's one more argument to talk to with your managers why staying away
+> from the upstream is not the best idea.
+> 
+> Second argument is look at your competitor: Qualcomm, one of the most
+> active upstreamers of SoC code doing awesome job.
+> 
+> Best regards,
+> Krzysztof
 
-diff --git a/net/ipv4/ip_gre.c b/net/ipv4/ip_gre.c
-index 22a26d1d29a09d234f18ce3b0f329e5047c0c046..5169c3c72cffe49cef613e69889=
-d139db867ff74
-100644
---- a/net/ipv4/ip_gre.c
-+++ b/net/ipv4/ip_gre.c
-@@ -635,15 +635,18 @@ static netdev_tx_t ipgre_xmit(struct sk_buff *skb,
-        }
+Thank you for your opinion.
+By the way, this patch is not related with GKI and I just thought this work
+would be helpful to all exynos platform.
 
-        if (dev->header_ops) {
-+               int pull_len =3D tunnel->hlen + sizeof(struct iphdr);
-+
-                if (skb_cow_head(skb, 0))
-                        goto free_skb;
+But it seems that changing affinity of any irqs including gpio is not allowed
+on exynos platform. So we need to debug by adding some logs.
 
-                tnl_params =3D (const struct iphdr *)skb->data;
+> 
+> 
 
--               /* Pull skb since ip_tunnel_xmit() needs skb->data pointing
--                * to gre header.
--                */
--               skb_pull(skb, tunnel->hlen + sizeof(struct iphdr));
-+               if (!pskb_network_may_pull(skb, pull_len))
-+                       goto free_skb;
-+
-+               /* ip_tunnel_xmit() needs skb->data pointing to gre header.=
- */
-+               skb_pull(skb, pull_len);
-                skb_reset_mac_header(skb);
+------beKDcrNeaD4oBIFRuchmvdVAwfnDGI5TYPt7fforSuRq9wgD=_37ba7_
+Content-Type: text/plain; charset="utf-8"
 
-                if (skb->ip_summed =3D=3D CHECKSUM_PARTIAL &&
+
+------beKDcrNeaD4oBIFRuchmvdVAwfnDGI5TYPt7fforSuRq9wgD=_37ba7_--
