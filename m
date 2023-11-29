@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D9F7FE1C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 22:26:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B83D7FE1C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 22:26:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234361AbjK2V01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 16:26:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54746 "EHLO
+        id S234547AbjK2V0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 16:26:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234427AbjK2V0W (ORCPT
+        with ESMTP id S234456AbjK2V0Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 16:26:22 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD8C10DB
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:26:28 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6cde104293fso261549b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:26:28 -0800 (PST)
+        Wed, 29 Nov 2023 16:26:24 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1136510C0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:26:30 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-5c18a3387f5so199689a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:26:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701293188; x=1701897988; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1701293189; x=1701897989; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YbdqD7No7SCueAxJzZPzHLsBDwHJFNtjAFZMErwtoME=;
-        b=LKw4kFTKjkUYR/kWCjARKDyu5veQQCEcUP2K1je3QBwvmlW6e6ceZ67Rf0IGyDpAly
-         ByojlZg1en/fr8ZOPzWdq7gyZeS3/iHEW54WLHwxVcE41eTkpRYGlcrkoqYbfkZLVVx4
-         IHfOJsXjCA74y9yYlzAJ8KoHaGlVN7fflVfgg=
+        bh=MOZ1iLO8KtuEsZF7yZy5/8QOIlpTKo1m7A68f7ka2pI=;
+        b=MJHG3FeNRJCV08bAES4RXwkf/jmlD7P+a2DJaKxg4x3vMs+05LcH+QtFy6akdFQxNB
+         GAiYp/SgiSOcPphniGk4d5fikI0D3hXbOwqQqZ6fEN+PsdOdJ9QFKYkGgjSE5/FljEDN
+         5YZqk667LykslGSxFsmP6n2C6HeqJDnuk3XsQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701293188; x=1701897988;
+        d=1e100.net; s=20230601; t=1701293189; x=1701897989;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YbdqD7No7SCueAxJzZPzHLsBDwHJFNtjAFZMErwtoME=;
-        b=PCdIekZ8JRJz77J6gR2RHwkweSlKve2Zn3c7jV5+zn4Jl+D0H4YTm60j2lURhddG/3
-         U9ZWkajxDy9RPyth4x6QmgmNcNELt3g8BVcW8VF5TnFzJYiNMNNDf3q1KNXvzukXBTf6
-         DHPEKAn2i06oM+Ife7kfgJaB6M5DNKAbaYBFbBMXKCowr/cC33FOXJSi3EbxUmFXKG52
-         rwhiBs3N/h2AQhjYHzm2jZzLP5zpgfEFs6JjGjbcX7lE2fb5jIjZ0uVcZRBxe+az+zHf
-         /rNrITEQNJtPImZory7eVBUn47L1VTK4+0NwGAIi1fQAMRnsnGdyoXIb4zpEmzh6E2VK
-         X8uQ==
-X-Gm-Message-State: AOJu0YwRza+fVSY71AqJQyEvVb8GRFGSDYNRUu6eU84KqR9/WPEJ1ujf
-        WB5/l3RLGuDsp3K4ptyeM7EekA==
-X-Google-Smtp-Source: AGHT+IFXh72Ob5MZoR1IO4drHKAFb3RU/RoEmTYcsZkGZDGolKQYx2LRSlR1gen1SPs2SxAZlWPErQ==
-X-Received: by 2002:a05:6a20:1581:b0:18c:c37:35fb with SMTP id h1-20020a056a20158100b0018c0c3735fbmr19950181pzj.40.1701293187747;
-        Wed, 29 Nov 2023 13:26:27 -0800 (PST)
+        bh=MOZ1iLO8KtuEsZF7yZy5/8QOIlpTKo1m7A68f7ka2pI=;
+        b=VrrWqGyWAK76LYkUKgqnT7ybSoPCduPaPA8NsZBz/K6Y/7AGf2n99x/FUzfbWDdcCI
+         rre5p42Q++Mm2jUXtGE31H/0jaCuzl+geT5Ls46DC8IA3WLOS1wmwo2nfZ1FZaEfQpAF
+         nteETSVVcDT1boglVvHBbVMKa37KeivbpzztEHveG6PNiE8UPvdLtHHO2zg0IS16yYdZ
+         mV2TlL6L6ghyzyoU1pJmBHEYi3Ez0UpTrnNcWNv8yeYS89e0Y0xKkMwi/21JYITZBEDG
+         cMgmnjdYdB8RzZGALpZ72iAl152NnSQzEFB1/i1hdRT+dU/egT+q0IvPm/NtxZk3acK1
+         6EJg==
+X-Gm-Message-State: AOJu0YwmPts4070BqyXJpclz0BVFW0Uq42wuXDtz2OalrRxIrxIiHMXL
+        z99afX5Rr4fdXaMOvJUokUZnjw==
+X-Google-Smtp-Source: AGHT+IEhYjXD7fB92XlW1tMK7UHu4TadS7/wiHBovCTqBhKemR/gkXXjTAQ9pSQRYbjR1uPPeh5LiA==
+X-Received: by 2002:a05:6a20:9698:b0:18b:4dc2:a4e1 with SMTP id hp24-20020a056a20969800b0018b4dc2a4e1mr18432953pzc.55.1701293189548;
+        Wed, 29 Nov 2023 13:26:29 -0800 (PST)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:dcf:15e4:5f50:e692])
-        by smtp.gmail.com with ESMTPSA id t22-20020a634616000000b005c215baacc1sm11816336pga.70.2023.11.29.13.26.26
+        by smtp.gmail.com with ESMTPSA id t22-20020a634616000000b005c215baacc1sm11816336pga.70.2023.11.29.13.26.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 13:26:27 -0800 (PST)
+        Wed, 29 Nov 2023 13:26:29 -0800 (PST)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Jakub Kicinski <kuba@kernel.org>,
         Hayes Wang <hayeswang@realtek.com>,
@@ -59,12 +59,11 @@ Cc:     linux-usb@vger.kernel.org, Grant Grundler <grundler@chromium.org>,
         Douglas Anderson <dianders@chromium.org>,
         =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
         Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH net v3 4/5] r8152: Add RTL8152_INACCESSIBLE to r8153_pre_firmware_1()
-Date:   Wed, 29 Nov 2023 13:25:23 -0800
-Message-ID: <20231129132521.net.v3.4.I9c7bfe6fb76850f0323b3996e25a10ef0281fb7a@changeid>
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH net v3 5/5] r8152: Add RTL8152_INACCESSIBLE to r8153_aldps_en()
+Date:   Wed, 29 Nov 2023 13:25:24 -0800
+Message-ID: <20231129132521.net.v3.5.I1306b6432228404d6e61b2d43c2f71885292e972@changeid>
 X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
 In-Reply-To: <20231129132521.net.v3.1.I77097aa9ec01aeca1b3c75fde4ba5007a17fdf76@changeid>
 References: <20231129132521.net.v3.1.I77097aa9ec01aeca1b3c75fde4ba5007a17fdf76@changeid>
@@ -82,9 +81,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Delay loops in r8152 should break out if RTL8152_INACCESSIBLE is set
 so that they don't delay too long if the device becomes
-inaccessible. Add the break to the loop in r8153_pre_firmware_1().
+inaccessible. Add the break to the loop in r8153_aldps_en().
 
-Fixes: 9370f2d05a2a ("r8152: support request_firmware for RTL8153")
+Fixes: 4214cc550bf9 ("r8152: check if disabling ALDPS is finished")
 Reviewed-by: Grant Grundler <grundler@chromium.org>
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
@@ -99,18 +98,18 @@ Changes in v2:
  1 file changed, 2 insertions(+)
 
 diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
-index c4dd81e2421f..3958eb622d47 100644
+index 3958eb622d47..fcdc9ba0f826 100644
 --- a/drivers/net/usb/r8152.c
 +++ b/drivers/net/usb/r8152.c
-@@ -5645,6 +5645,8 @@ static int r8153_pre_firmware_1(struct r8152 *tp)
- 	for (i = 0; i < 104; i++) {
- 		u32 ocp_data = ocp_read_byte(tp, MCU_TYPE_USB, USB_WDT1_CTRL);
- 
-+		if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
-+			return -ENODEV;
- 		if (!(ocp_data & WTD1_EN))
- 			break;
- 		usleep_range(1000, 2000);
+@@ -5803,6 +5803,8 @@ static void r8153_aldps_en(struct r8152 *tp, bool enable)
+ 		data &= ~EN_ALDPS;
+ 		ocp_reg_write(tp, OCP_POWER_CFG, data);
+ 		for (i = 0; i < 20; i++) {
++			if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
++				return;
+ 			usleep_range(1000, 2000);
+ 			if (ocp_read_word(tp, MCU_TYPE_PLA, 0xe000) & 0x0100)
+ 				break;
 -- 
 2.43.0.rc1.413.gea7ed67945-goog
 
