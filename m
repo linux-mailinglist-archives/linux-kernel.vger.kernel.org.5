@@ -2,61 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA7F7FDC22
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:02:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 523757FDC23
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:03:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343596AbjK2QCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 11:02:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43634 "EHLO
+        id S234975AbjK2QDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 11:03:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230389AbjK2QCf (ORCPT
+        with ESMTP id S229941AbjK2QDM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 11:02:35 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A91BF
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:02:42 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B72421F8D7;
-        Wed, 29 Nov 2023 16:02:40 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9A8F71388B;
-        Wed, 29 Nov 2023 16:02:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id Nzq8IqBgZ2UWewAAD6G6ig
-        (envelope-from <mhocko@suse.com>); Wed, 29 Nov 2023 16:02:40 +0000
-Date:   Wed, 29 Nov 2023 17:02:35 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Kent Overstreet <kent.overstreet@linux.dev>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Qi Zheng <zhengqi.arch@bytedance.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>
-Subject: Re: [PATCH 2/7] mm: shrinker: Add a .to_text() method for shrinkers
-Message-ID: <ZWdgm2I3tF0zvHG9@tiehlicka>
-References: <20231122232515.177833-1-kent.overstreet@linux.dev>
- <20231122232515.177833-3-kent.overstreet@linux.dev>
- <ZWW6bInvMA2x3mHC@tiehlicka>
- <20231128174853.vdpwullepoxg5blo@moria.home.lan>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231128174853.vdpwullepoxg5blo@moria.home.lan>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [-4.00 / 50.00];
-         REPLY(-4.00)[]
-X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: B72421F8D7
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        Wed, 29 Nov 2023 11:03:12 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AEF4BF;
+        Wed, 29 Nov 2023 08:03:18 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-a013d22effcso935082166b.2;
+        Wed, 29 Nov 2023 08:03:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701273797; x=1701878597; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p0ai8ILE74HcwdOUqvcTpl9qjFRf+Vf4A3Z9OcifiLY=;
+        b=d2xIBMS50Dd47pj3uwPWU91qG6MkJQgowYrsyTgYmhTWzpZgQCBgvz85++iaDiR1/Q
+         RDf534I25mMPqyrzUUyl0yd5SORtKnNPk7nrvOWU/aUvtmERIKmoM902sTuvaZKfdfP2
+         0WOdxiVZ7BrQ0HliVNInZ6e1qr5bBxaM0/nNlGVa92mzq1srmoKMsqW1UNwLyBLVesw3
+         E3YWgvI6uL9woY9DtfBLo8ypfHzQWs4F4QClLRhTUlpJvRQxxQPd5TBzxXcAcXv/RqD1
+         iKnLdo6MEREN0eTCi6y0SOEn2tHHlwjzlHkTsRjMcT8l7zZFRxKLbsMZJbY22Yz3yMZG
+         UUXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701273797; x=1701878597;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=p0ai8ILE74HcwdOUqvcTpl9qjFRf+Vf4A3Z9OcifiLY=;
+        b=sVeiOFA5V4VKw9wjAwM/MTJ/9C0geSltvZ6hd9wu56WtMFhvn3wZrX+Jxw73YK5RzR
+         DnpbkHHbnJ4mLROmCs6Pg6FO08Uc98R970ycyeXDHIbzirJWFwIr8CmzJvtRFL81nMUf
+         9lh2IqHPyV6NRrUaR+0YuwUWs4tvVIz3BFY4gxF811gwbaXAEULdfy6BcMAmphHh7QEY
+         toofiJjftJ8BjDB/bMMZ+foKVLov/5vxJzVBn9bu2AJL2nWYZ3BDkqwxafGVsmK2Kos/
+         dY55CMRbFcigAbRk3GWwdxp9+UjttLJ+WJMTGR+n3Jj6PqSIU3e2WyuXYYX1MIxmJLXA
+         NQyQ==
+X-Gm-Message-State: AOJu0YxRdvY3MbVY8SBLrJk6whHA+tEhSyUOQt9mapCkv7Ga6EmvqG09
+        IcIhRTx572BZck4pR2Z7KRC8y0HuvxI=
+X-Google-Smtp-Source: AGHT+IFZVdYm5uGTUWgukbhvvqVrPFRUit9xzFKUvmv5eU26LhTvANp9htEXiGH1vrlI6oIoceMNRA==
+X-Received: by 2002:a17:906:5302:b0:a0c:5bf7:c675 with SMTP id h2-20020a170906530200b00a0c5bf7c675mr8264434ejo.40.1701273796612;
+        Wed, 29 Nov 2023 08:03:16 -0800 (PST)
+Received: from felia.fritz.box ([2a02:810d:7e40:14b0:2564:b975:71ee:2d88])
+        by smtp.gmail.com with ESMTPSA id oq14-20020a170906cc8e00b009fdcc65d720sm8023872ejb.72.2023.11.29.08.03.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 08:03:15 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Nas Chung <nas.chung@chipsnmedia.com>,
+        Jackson Lee <jackson.lee@chipsnmedia.com>,
+        linux-media@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] media: MAINTAINERS: correct file entry in WAVE5 VPU CODEC DRIVER
+Date:   Wed, 29 Nov 2023 17:03:13 +0100
+Message-Id: <20231129160313.12093-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -65,41 +68,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 28-11-23 12:48:53, Kent Overstreet wrote:
-> On Tue, Nov 28, 2023 at 11:01:16AM +0100, Michal Hocko wrote:
-> > On Wed 22-11-23 18:25:07, Kent Overstreet wrote:
-> > [...]
-> > > +void shrinkers_to_text(struct seq_buf *out)
-> > > +{
-> > > +	struct shrinker *shrinker;
-> > > +	struct shrinker_by_mem {
-> > > +		struct shrinker	*shrinker;
-> > > +		unsigned long	mem;
-> > > +	} shrinkers_by_mem[10];
-> > > +	int i, nr = 0;
-> > > +
-> > > +	if (!mutex_trylock(&shrinker_mutex)) {
-> > > +		seq_buf_puts(out, "(couldn't take shrinker lock)");
-> > > +		return;
-> > > +	}
-> > > +
-> > > +	list_for_each_entry(shrinker, &shrinker_list, list) {
-> > > +		struct shrink_control sc = { .gfp_mask = GFP_KERNEL, };
-> > 
-> > This seems to be global reclaim specific. What about memcg reclaim?
-> 
-> I have no fsckin idea how memcg reclaim works - and, for that matter,
-> the recent lockless shrinking work seems to have neglected to write even
-> an iterator macro, leaving _that_ a nasty mess so I'm not touching that
-> either.
+Commit 26dde1beb359 ("media: chips-media: wave5: Add wave5 driver to
+maintainers file") adds the MAINTAINERS section WAVE5 VPU CODEC DRIVER
+referring to the 'cnm,wave5.yaml' media devicetree binding, but the file
+actually added in the commit de4b9f7e371a ("dt-bindings: media: wave5: add
+yaml devicetree bindings") is named 'cnm,wave521c.yaml'.
 
-OK, you could have made it more clearly that all of this is aiming at
-the global OOM handling. With an outlook on what should be done if this
-was ever required.
+Correct the file entry in WAVE5 VPU CODEC DRIVER.
 
-Another thing you want to look into is a NUMA constrained OOM (mbind,
-cpuset) where this output could be actively misleading.
+Fixes: 26dde1beb359 ("media: chips-media: wave5: Add wave5 driver to maintainers file")
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 8b108946b00d..31baa4bf525b 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -23485,7 +23485,7 @@ M:	Nas Chung <nas.chung@chipsnmedia.com>
+ M:	Jackson Lee <jackson.lee@chipsnmedia.com>
+ L:	linux-media@vger.kernel.org
+ S:	Maintained
+-F:	Documentation/devicetree/bindings/media/cnm,wave5.yaml
++F:	Documentation/devicetree/bindings/media/cnm,wave521c.yaml
+ F:	drivers/media/platform/chips-media/wave5/
+ 
+ WHISKEYCOVE PMIC GPIO DRIVER
 -- 
-Michal Hocko
-SUSE Labs
+2.17.1
+
