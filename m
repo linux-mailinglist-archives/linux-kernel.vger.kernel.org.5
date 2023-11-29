@@ -2,92 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE807FCC4F
+	by mail.lfdr.de (Postfix) with ESMTP id 072307FCC4E
 	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 02:25:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230041AbjK2BWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 20:22:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56422 "EHLO
+        id S1376707AbjK2BYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 20:24:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjK2BWd (ORCPT
+        with ESMTP id S229526AbjK2BYG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 20:22:33 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41E3E10C0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 17:22:40 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67609C433C8;
-        Wed, 29 Nov 2023 01:22:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1701220959;
-        bh=FBEAIzoLgu9Zkuu5c9UADybKG5tCWoq0pA1ohTQwa20=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=HTEloEWxitIAf4LrB+uGaCeVqy52QvkDsiW2ua5f4z/AKXmiI4hBsmwz7PT6WTZ1s
-         Wxwfavqo2J72G1RZWH7aANFIO7lWJsNGHPpk1qGbaREMhcIco32+aA0fD6htjwWtLz
-         m3FgVonjktFJ978Fuc/dQrQaVIQfLkN/ghI7VTIk=
-Date:   Tue, 28 Nov 2023 17:22:38 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Haibo Li <haibo.li@mediatek.com>
-Cc:     <linux-kernel@vger.kernel.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <xiaoming.yu@mediatek.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] fix comparison of unsigned expression < 0
-Message-Id: <20231128172238.f80ed8dd74ab2a13eba33091@linux-foundation.org>
-In-Reply-To: <20231128075532.110251-1-haibo.li@mediatek.com>
-References: <20231128075532.110251-1-haibo.li@mediatek.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 28 Nov 2023 20:24:06 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0E5EF5;
+        Tue, 28 Nov 2023 17:24:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1701221048;
+        bh=QFeXnaUEntX6sP5PG4BuqjYMFylnyscfrlT0xNz8UpM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=oCG4vxwqncgmdGMjTZONLfbuI5aFzjaMonWMZjwsp3EOZ0VYpdbkl7D/7HDH7V+6W
+         JUU8ERnXEAJYUfgMqsnCIwiHXhmzhfox/OXxZxb5+Js5URZJ2QfdUG62sJdKFtyoGF
+         0YwJooY+jdZk4DfoRqQaGOBLhTLPK8S64jfqYPHEOhJXMvkF/EuVZbV2IllXfXy++W
+         CEjxLbd++OmZkCalBMe9c3uyABTDK+GHtYRZWPb3XAo1xHlXucyFJn9sB2jMwKi6ad
+         SjxnrVQYHe+92VvDkN09Hd1HMRBXqFS3xUDyuwSR8qZtmZp99vN9e6BmNXkY7PR4Gz
+         Fu8/f19T8qyEA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Sg1nM1lbQz4wcX;
+        Wed, 29 Nov 2023 12:24:06 +1100 (AEDT)
+Date:   Wed, 29 Nov 2023 12:24:05 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patches in the char-misc tree
+Message-ID: <20231129122405.27a5e54a@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/KaQD./.8r_dPiczMNRr44Tg";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Nov 2023 15:55:32 +0800 Haibo Li <haibo.li@mediatek.com> wrote:
+--Sig_/KaQD./.8r_dPiczMNRr44Tg
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-> Kernel test robot reported:
-> 
-> '''
-> mm/kasan/report.c:637 kasan_non_canonical_hook() warn:
-> unsigned 'addr' is never less than zero.
-> '''
-> The KASAN_SHADOW_OFFSET is 0 on loongarch64.
-> 
-> To fix it,check the KASAN_SHADOW_OFFSET before do comparison.
-> 
-> --- a/mm/kasan/report.c
-> +++ b/mm/kasan/report.c
-> @@ -634,10 +634,10 @@ void kasan_non_canonical_hook(unsigned long addr)
->  {
->  	unsigned long orig_addr;
->  	const char *bug_type;
-> -
-> +#if KASAN_SHADOW_OFFSET > 0
->  	if (addr < KASAN_SHADOW_OFFSET)
->  		return;
-> -
-> +#endif
+Hi all,
 
-We'd rather not add ugly ifdefs for a simple test like this.  If we
-replace "<" with "<=", does it fix?  I suspect that's wrong.
+The following commits are also in the powerpc tree as different commits
+(but the same patches):
 
-But really, some hardwired comparison with an absolute address seems
-lazy.  If KASAN_SHADOW_OFFSET is variable on a per-architecture basis
-then the expression which checks the validity of an arbitrary address
-should also be per-architecture.
+  bc1183a63057 ("misc: ocxl: main: Remove unnecessary =E2=80=980=E2=80=99 v=
+alues from rc")
+  29eb0dc7bd1e ("misc: ocxl: link: Remove unnecessary (void*) conversions")
+  0e425d703c30 ("misc: ocxl: afu_irq: Remove unnecessary (void*) conversion=
+s")
+  62df29a542f9 ("misc: ocxl: context: Remove unnecessary (void*) conversion=
+s")
 
+These are commits
+
+  29685ea5754f ("misc: ocxl: main: Remove unnecessary =E2=80=980=E2=80=99 v=
+alues from rc")
+  220f3ced8e42 ("misc: ocxl: link: Remove unnecessary (void*) conversions")
+  84ba5d3675e2 ("misc: ocxl: afu_irq: Remove unnecessary (void*) conversion=
+s")
+  82d30723d58f ("misc: ocxl: context: Remove unnecessary (void*) conversion=
+s")
+
+in the powerpc tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/KaQD./.8r_dPiczMNRr44Tg
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVmkrUACgkQAVBC80lX
+0Gy7rAf+L57K1PG/ZKUrhjtQoptSZBtEuopxNd5wmdeSNpwwjHpzGZaN3+dFezNX
+o+ow6HdZ+5LDWM05IKRObZoEsqksqasPTRHuN9rx/+S+tTfICiyulZ/zOIwYjYlr
+YR7pJelrlWtQcsq5vuPNbayFWKL4NC+WrtT2o/mHdHB8+A5zyqngcgrZIgMWzJaW
+F5OVfP8vwpajmm7q7qdAp8DYYulNvgK9jyhkLGNUqyX18dlANkh1wRkEcYIuO48w
+EU7KZDGkJnvhLc3VTSRu6/iX7owSIfmR5irkR6M6gzqtj32eIuCOgQODd0tAlif3
+uQDUs7mksdZnkpRnir+de1yeZztGIA==
+=awk6
+-----END PGP SIGNATURE-----
+
+--Sig_/KaQD./.8r_dPiczMNRr44Tg--
