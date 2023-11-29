@@ -2,66 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEEE27FCE56
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 06:35:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 020E67FCE5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 06:39:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376945AbjK2Ff0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 00:35:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38546 "EHLO
+        id S1376941AbjK2FjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 00:39:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376940AbjK2FfV (ORCPT
+        with ESMTP id S229563AbjK2FjX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 00:35:21 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA38919B7
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 21:35:27 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-5c604b092a6so281324a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 21:35:27 -0800 (PST)
+        Wed, 29 Nov 2023 00:39:23 -0500
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912B51AE
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 21:39:29 -0800 (PST)
+Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3b843b61d8aso3686251b6e.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 21:39:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701236127; x=1701840927; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701236369; x=1701841169; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HgQkKxfbfB1dQHkl0UdeF9VBFXfuQafglyd43X0xZ5I=;
-        b=Q9HJgTB+Qa/OGdbAEZsVhwmNvI14FI/T9fVPN41e/7gGqf7yKeczk8BukkVYr7wUp6
-         RKVNsKy6d9qIpHTKbooiYxonlv5mV5X5r/lx9zNUG7qeT2vE9Y+frRy65/S/cBD62e8O
-         kQ2uOx+Zx0EmTI2yTA2RV15aVgIeYigI3hohnt89ieaor5YY6hk+jOnktfbDJl0hwcvk
-         SYlVU7oHaDHI19DC66kGxZ82yI4QDjdS4VVqt6qe1eLsuEnhu4Aa0tR+blr7CmX1qe9F
-         0lPcD4TZmtTT0HJueIWczp0qwVdmTDlkmssIKEPKp6JNj2rUFsFKeXqKdmFh3fJPQgCz
-         ldtw==
+        bh=odzHaB82SZdpybaH4ujfpl6ch16xiqGdapqSSbgzBkI=;
+        b=QretI651Qf08cNQqngzC7X6bUaikX+PMnjGxcqAXOxIA6dJLaB7OicrNcG8FpEd8n7
+         Szrm2AUdOhifL7g6JsbiFH09B+BOG5WBAYo23Yw+pJdSRjI63iKG5FGiyvrZEIi2NYhY
+         t1xwcLuLm+lRoYD1jvtJOSFiBXMOKh/Ui7P02A0P7yOb2WvXFY4WrlvOghWJDeajkhpa
+         6ZuljVPzUY9jSD3xp1PlurNHCjxmwmi6Vnn9YclV3ignftEHjl/0pMFvmAC+F3SvFdz+
+         6Oh/jmwd0A22SVo2bWBeHgoSX4EiWZprLW7DjSuy6SrcjO1dFAz3nidggV6fT2JqhVbJ
+         5Lpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701236127; x=1701840927;
+        d=1e100.net; s=20230601; t=1701236369; x=1701841169;
         h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HgQkKxfbfB1dQHkl0UdeF9VBFXfuQafglyd43X0xZ5I=;
-        b=EYVrl/ANCZu7TE4+QERgHQ1Rz12sZqs/58YDyrQu3gYTRZbd0+K7ioPGhKkVc6X1m7
-         eNovZ1m4WvqOWO4rpWVAn4deEyGRj8cwKVSWJxd2pvMklfK91zNp2F1NfBvBpDs1FGxP
-         HJn+A5d4A5Wyt22Hzt4RypuaPzTE6UCQKdRC60sjzYs4s34mscA4uoPLeiWZIZKp6BAb
-         2+Vwl9SdoaRXLpY8rRJ9w+pSCovIAHI8CW9OvcVRsg9PftCQIdwveLzqEDqvE69OuEw0
-         FxemoNUjI8pCc7Vnr7JRte4PqXXnpT+/Szgv8r7+d0g2LVm64R8ZqxegkH1hn+drqAz+
-         /xNA==
-X-Gm-Message-State: AOJu0YyPAnoRjcIHKkVw9z8kfzELgTqtGgoBQfREFhCdiEC3LkAzZvl9
-        Ck71Y1jMOiHo8KFdrSdIDTAbfR2kYTEbcg==
-X-Google-Smtp-Source: AGHT+IHqVK+ATOxjmy6GWlz6Ri5iiOxE7mucUIAdlzFeplutaG34BDnZ2MJ4pcBj87Fcy3mZca+Dqw==
-X-Received: by 2002:a17:90a:d482:b0:280:4af4:1a41 with SMTP id s2-20020a17090ad48200b002804af41a41mr30356151pju.15.1701236127124;
-        Tue, 28 Nov 2023 21:35:27 -0800 (PST)
-Received: from ubuntu.. ([43.132.98.44])
-        by smtp.googlemail.com with ESMTPSA id gj6-20020a17090b108600b00285a2d14184sm660717pjb.0.2023.11.28.21.35.25
+        bh=odzHaB82SZdpybaH4ujfpl6ch16xiqGdapqSSbgzBkI=;
+        b=CVn3HIcz7YDNoV92/YgjGa/mw/ojuoqLTyqPvDz/LugRX2YWE6tk7XLqS6sngM7faW
+         W0LUGOlFVKZu5j1o4aypzrZJWkgqNmX4IezUiO+bc1Va9vDetTjjw7K72ZOdk3wWjFFT
+         XX9wdG9+uYt/po6K2s4HfbdEWuNNUBzTIl5uwpXCXnvW+HQauGa8663aGA4VvbqmTC8I
+         W3csgWD6aCr0Fvmj9aAeACFCjhYfFT9lpYKp+ypIT/GHjjbvejgA7bEWdmKVuf5tbZ/H
+         5fshqge0TnFU3wJg4bRb6RuDmkH31aP5c/RLDg52VtaV+SPIZTTujwp4urw2RKqcYB8F
+         wfKg==
+X-Gm-Message-State: AOJu0YywkJXbLkTU6n3vGh6B+4LtiSEZ+qSgdBBnK0+8DNveF6v//qPZ
+        QVS0XsydyWnvtgfUYKoQ+R0fhNhhQJM=
+X-Google-Smtp-Source: AGHT+IGz8aGZVmu36Kmt61oqFIQCLjCV8dVstGF4hdOcUUg0GDOBZZrghen2rAaIuIBCohBpFEg9pg==
+X-Received: by 2002:a05:6808:4342:b0:3b8:8db8:d8b5 with SMTP id dx2-20020a056808434200b003b88db8d8b5mr2218303oib.58.1701236368872;
+        Tue, 28 Nov 2023 21:39:28 -0800 (PST)
+Received: from localhost ([156.236.96.172])
+        by smtp.gmail.com with ESMTPSA id e13-20020a631e0d000000b0057c44503835sm10337143pge.65.2023.11.28.21.39.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 21:35:26 -0800 (PST)
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     keescook@chromium.org, luto@amacapital.net, wad@chromium.org,
-        alexyonghe@tencent.com, hengqi.chen@gmail.com
-Subject: [PATCH v3 3/3] selftests/seccomp: Test seccomp filter load and attach
-Date:   Wed, 29 Nov 2023 05:34:40 +0000
-Message-Id: <20231129053440.41522-4-hengqi.chen@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231129053440.41522-1-hengqi.chen@gmail.com>
-References: <20231129053440.41522-1-hengqi.chen@gmail.com>
+        Tue, 28 Nov 2023 21:39:28 -0800 (PST)
+Date:   Wed, 29 Nov 2023 13:39:23 +0800
+From:   Yue Hu <zbestahu@gmail.com>
+To:     Gao Xiang <hsiangkao@linux.alibaba.com>
+Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
+        huyue2@coolpad.com
+Subject: Re: [PATCH v2] erofs: fix memory leak on short-lived bounced pages
+Message-ID: <20231129133923.00005957.zbestahu@gmail.com>
+In-Reply-To: <20231128180431.4116991-1-hsiangkao@linux.alibaba.com>
+References: <20231128175810.4105671-1-hsiangkao@linux.alibaba.com>
+        <20231128180431.4116991-1-hsiangkao@linux.alibaba.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -72,96 +74,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add testcases to exercise the newly added seccomp filter
-load and attach functionalities.
+On Wed, 29 Nov 2023 02:04:31 +0800
+Gao Xiang <hsiangkao@linux.alibaba.com> wrote:
 
-Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
----
- tools/testing/selftests/seccomp/seccomp_bpf.c | 71 +++++++++++++++++++
- 1 file changed, 71 insertions(+)
+> Both MicroLZMA and DEFLATE algorithms can use short-lived pages on
+> demand for overlap inplace I/O decompression.
+> 
+> However, those short-lived pages are actually added to
+> `be->compressed_pages`.  Thus, it should be checked instead of
+> `pcl->compressed_bvecs`.
+> 
+> The LZ4 algorithm doesn't work like this, so it won't be impacted.
+> 
+> Fixes: 67139e36d970 ("erofs: introduce `z_erofs_parse_in_bvecs'")
+> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-index 38f651469968..66eb72e6c1a3 100644
---- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-+++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-@@ -4735,6 +4735,77 @@ TEST(user_notification_wait_killable_fatal)
- 	EXPECT_EQ(SIGTERM, WTERMSIG(status));
- }
- 
-+TEST(seccomp_filter_load_and_attach)
-+{
-+	struct sock_filter filter[] = {
-+		BPF_STMT(BPF_RET|BPF_K, SECCOMP_RET_ALLOW),
-+	};
-+	struct sock_fprog prog = {
-+		.len = (unsigned short)ARRAY_SIZE(filter),
-+		.filter = filter,
-+	};
-+	int fd, ret, flags;
-+
-+	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
-+	ASSERT_EQ(0, ret)
-+	{
-+		TH_LOG("Kernel does not support PR_SET_NO_NEW_PRIVS!");
-+	}
-+
-+	flags = 0;
-+	fd = seccomp(SECCOMP_LOAD_FILTER, flags, &prog);
-+	ASSERT_GT(fd, -1);
-+
-+	flags = SECCOMP_FILTER_FLAG_FILTER_FD;
-+	ret = seccomp(SECCOMP_SET_MODE_FILTER, flags, &fd);
-+	ASSERT_EQ(ret, 0);
-+
-+	flags = SECCOMP_FILTER_FLAG_FILTER_FD;
-+	ret = seccomp(SECCOMP_SET_MODE_FILTER, flags, &fd);
-+	ASSERT_EQ(ret, -1);
-+	ASSERT_EQ(errno, EEXIST);
-+
-+	flags = 0;
-+	ret = seccomp(SECCOMP_SET_MODE_FILTER, flags, &prog);
-+	ASSERT_EQ(ret, 0);
-+
-+	close(fd);
-+}
-+
-+TEST(seccomp_attach_fd_failed)
-+{
-+	int fd, ret, flags;
-+
-+	ret = prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0);
-+	ASSERT_EQ(0, ret)
-+	{
-+		TH_LOG("Kernel does not support PR_SET_NO_NEW_PRIVS!");
-+	}
-+
-+	fd = socket(AF_UNIX, SOCK_STREAM, 0);
-+	ASSERT_GT(fd, -1);
-+
-+	/* copy a sock_fprog from a fd */
-+	flags = 0;
-+	ret = seccomp(SECCOMP_SET_MODE_FILTER, flags, &fd);
-+	ASSERT_EQ(ret, -1);
-+	ASSERT_EQ(errno, EFAULT);
-+
-+	/* pass a non seccomp filter fd */
-+	flags = SECCOMP_FILTER_FLAG_FILTER_FD;
-+	ret = seccomp(SECCOMP_SET_MODE_FILTER, flags, &fd);
-+	ASSERT_EQ(ret, -1);
-+	ASSERT_EQ(errno, EINVAL);
-+	close(fd);
-+
-+	/* pass a invalid fd */
-+	fd = -1;
-+	flags = SECCOMP_FILTER_FLAG_FILTER_FD;
-+	ret = seccomp(SECCOMP_SET_MODE_FILTER, flags, &fd);
-+	ASSERT_EQ(ret, -1);
-+	ASSERT_EQ(errno, EBADF);
-+}
-+
- /*
-  * TODO:
-  * - expand NNP testing
--- 
-2.34.1
-
+Reviewed-by: Yue Hu <huyue2@coolpad.com>
