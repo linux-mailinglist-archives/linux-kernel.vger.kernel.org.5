@@ -2,155 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B4F7FD445
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:34:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9EFB7FD43A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:33:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233279AbjK2Kei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 05:34:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40018 "EHLO
+        id S232887AbjK2KdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 05:33:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233176AbjK2Kee (ORCPT
+        with ESMTP id S229513AbjK2KdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 05:34:34 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E3410C0;
-        Wed, 29 Nov 2023 02:34:40 -0800 (PST)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AT4dNVZ024965;
-        Wed, 29 Nov 2023 10:34:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=nhIIT2kzeEZlo4CsbgL/7pZZITzSXD1n/q6MZPjPdKU=;
- b=fPfXNA3OlD3DOsMmZkrtZufTEutJHelIn7UFskM/E3IzqjxKEmJsEA3MfvYWvmFu95OX
- FNVpvuJaV+ElgFJnMEFnQhfgtj6Mveug8JzhL402Yx8RH6FiPCutqiAYSi279N7GF4vC
- wtW9gHOdFavztCCttEEWwQ16ZJNviK7THmGx4xg0yHcpNAAz3uBz5YEYULpQ3QvKYIKR
- JOPMOp0dEoEXuL4tBquKnGWOWjZT1KBwrjsziLZcS5OZb6BpwgA2iHf3xDokkr9+IsSg
- GSykZfQbcW7vAl8UnEG2o+YKcHWXue6CtcDUszFNQ4DyalOhEpWTC+bRwAasqVNy/SdF AQ== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3unjdtjmqv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Nov 2023 10:34:37 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ATAYamb029468
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Nov 2023 10:34:36 GMT
-Received: from tengfan2-gv.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 29 Nov 2023 02:34:30 -0800
-From:   Tengfei Fan <quic_tengfan@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
-        Ajit Pandey <quic_ajipan@quicinc.com>,
-        Tengfei Fan <quic_tengfan@quicinc.com>
-Subject: [PATCH v7 1/6] arm64: dts: qcom: sm4450: Add apps_rsc and cmd_db node
-Date:   Wed, 29 Nov 2023 18:33:20 +0800
-Message-ID: <20231129103325.24854-2-quic_tengfan@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231129103325.24854-1-quic_tengfan@quicinc.com>
-References: <20231129103325.24854-1-quic_tengfan@quicinc.com>
+        Wed, 29 Nov 2023 05:33:19 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A04D54;
+        Wed, 29 Nov 2023 02:33:24 -0800 (PST)
+Date:   Wed, 29 Nov 2023 10:33:20 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1701254001;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SCrcajcmWao+TZklXlucMF71m1PrDnK6AQeOVls3bYc=;
+        b=Ea3DqpAw0QWS/QerrwDvBT8Fa0mJ3/5LPVbBc66hO7sEHw+YnDFZ+rntHv4/7fohyAGLFD
+        3Gf/UcPXNroNBAGCwEUrPJk44N5q17hO7VFUGZG58xm6oSzPszoDLJZR39tS8Iw2GJdgH4
+        blOAKbIGJLsCnNSnUKfpebIbxmqe6GsMdo8VdlLaoYt99xVCJCLgv7GNHZGQPiHmrUjP7h
+        0za7FFjQIPkvWQmasRyfR49u5r7acuDbXc7oLfbFrX59hZcpyW88RJCIZvGpno9dMMBrxs
+        nTrP2lREtQQKStd9KUVgShpgy5GKPwOprUghesMtMyqVmjWhv0BWC2oRP7vSQw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1701254001;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SCrcajcmWao+TZklXlucMF71m1PrDnK6AQeOVls3bYc=;
+        b=2G04Gbj6JHW+8G7xOd8NSAbdi4Jny0Q9Pjh5RciT5gf4zfJ80yO+3WiYXcxH431cvhdM6d
+        kRS3dlYfioPrr3CQ==
+From:   "tip-bot2 for Muralidhara M K" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: ras/core] x86/MCE/AMD: Add new MA_LLC, USR_DP, and USR_CP bank types
+Cc:     Muralidhara M K <muralidhara.mk@amd.com>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20231102114225.2006878-3-muralimk@amd.com>
+References: <20231102114225.2006878-3-muralimk@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: mZpzMnn2MHQo1lRbYaQWfKliVz19tVn7
-X-Proofpoint-ORIG-GUID: mZpzMnn2MHQo1lRbYaQWfKliVz19tVn7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-29_07,2023-11-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- lowpriorityscore=0 suspectscore=0 spamscore=0 mlxscore=0 mlxlogscore=849
- impostorscore=0 priorityscore=1501 clxscore=1015 malwarescore=0
- phishscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311290078
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-ID: <170125400052.398.8408207092730391634.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ajit Pandey <quic_ajipan@quicinc.com>
+The following commit has been merged into the ras/core branch of tip:
 
-Add apps_rsc node and cmd_db memory region for sm4450.
+Commit-ID:     47b744ea5e3cf855087951a74ba9f89180fa1ba5
+Gitweb:        https://git.kernel.org/tip/47b744ea5e3cf855087951a74ba9f89180fa1ba5
+Author:        Muralidhara M K <muralidhara.mk@amd.com>
+AuthorDate:    Thu, 02 Nov 2023 11:42:23 
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Tue, 28 Nov 2023 16:26:55 +01:00
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Signed-off-by: Ajit Pandey <quic_ajipan@quicinc.com>
-Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+x86/MCE/AMD: Add new MA_LLC, USR_DP, and USR_CP bank types
+
+Add HWID and McaType values for new SMCA bank types.
+
+Signed-off-by: Muralidhara M K <muralidhara.mk@amd.com>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20231102114225.2006878-3-muralimk@amd.com
 ---
- arch/arm64/boot/dts/qcom/sm4450.dtsi | 35 ++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+ arch/x86/include/asm/mce.h    | 3 +++
+ arch/x86/kernel/cpu/mce/amd.c | 6 ++++++
+ 2 files changed, 9 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm4450.dtsi b/arch/arm64/boot/dts/qcom/sm4450.dtsi
-index c4e5b33f5169..5e09880f4218 100644
---- a/arch/arm64/boot/dts/qcom/sm4450.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm4450.dtsi
-@@ -5,6 +5,7 @@
+diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
+index 4ad49af..de31183 100644
+--- a/arch/x86/include/asm/mce.h
++++ b/arch/x86/include/asm/mce.h
+@@ -311,6 +311,7 @@ enum smca_bank_types {
+ 	SMCA_PIE,	/* Power, Interrupts, etc. */
+ 	SMCA_UMC,	/* Unified Memory Controller */
+ 	SMCA_UMC_V2,
++	SMCA_MA_LLC,	/* Memory Attached Last Level Cache */
+ 	SMCA_PB,	/* Parameter Block */
+ 	SMCA_PSP,	/* Platform Security Processor */
+ 	SMCA_PSP_V2,
+@@ -326,6 +327,8 @@ enum smca_bank_types {
+ 	SMCA_SHUB,	/* System HUB Unit */
+ 	SMCA_SATA,	/* SATA Unit */
+ 	SMCA_USB,	/* USB Unit */
++	SMCA_USR_DP,	/* Ultra Short Reach Data Plane Controller */
++	SMCA_USR_CP,	/* Ultra Short Reach Control Plane Controller */
+ 	SMCA_GMI_PCS,	/* GMI PCS Unit */
+ 	SMCA_XGMI_PHY,	/* xGMI PHY Unit */
+ 	SMCA_WAFL_PHY,	/* WAFL PHY Unit */
+diff --git a/arch/x86/kernel/cpu/mce/amd.c b/arch/x86/kernel/cpu/mce/amd.c
+index f6c6c1e..2b46eb0 100644
+--- a/arch/x86/kernel/cpu/mce/amd.c
++++ b/arch/x86/kernel/cpu/mce/amd.c
+@@ -102,6 +102,7 @@ static const char * const smca_names[] = {
+ 	/* UMC v2 is separate because both of them can exist in a single system. */
+ 	[SMCA_UMC]			= "umc",
+ 	[SMCA_UMC_V2]			= "umc_v2",
++	[SMCA_MA_LLC]			= "ma_llc",
+ 	[SMCA_PB]			= "param_block",
+ 	[SMCA_PSP ... SMCA_PSP_V2]	= "psp",
+ 	[SMCA_SMU ... SMCA_SMU_V2]	= "smu",
+@@ -114,6 +115,8 @@ static const char * const smca_names[] = {
+ 	[SMCA_SHUB]			= "shub",
+ 	[SMCA_SATA]			= "sata",
+ 	[SMCA_USB]			= "usb",
++	[SMCA_USR_DP]			= "usr_dp",
++	[SMCA_USR_CP]			= "usr_cp",
+ 	[SMCA_GMI_PCS]			= "gmi_pcs",
+ 	[SMCA_XGMI_PHY]			= "xgmi_phy",
+ 	[SMCA_WAFL_PHY]			= "wafl_phy",
+@@ -164,6 +167,7 @@ static const struct smca_hwid smca_hwid_mcatypes[] = {
+ 	{ SMCA_CS,	 HWID_MCATYPE(0x2E, 0x0)	},
+ 	{ SMCA_PIE,	 HWID_MCATYPE(0x2E, 0x1)	},
+ 	{ SMCA_CS_V2,	 HWID_MCATYPE(0x2E, 0x2)	},
++	{ SMCA_MA_LLC,	 HWID_MCATYPE(0x2E, 0x4)	},
  
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/soc/qcom,rpmh-rsc.h>
- 
- / {
- 	interrupt-parent = <&intc>;
-@@ -328,6 +329,18 @@
- 		};
- 	};
- 
-+	reserved_memory: reserved-memory {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		aop_cmd_db_mem: cmd-db@80860000 {
-+			compatible = "qcom,cmd-db";
-+			reg = <0x0 0x80860000 0x0 0x20000>;
-+			no-map;
-+		};
-+	};
-+
- 	soc: soc@0 {
- 		#address-cells = <2>;
- 		#size-cells = <2>;
-@@ -419,6 +432,28 @@
- 				status = "disabled";
- 			};
- 		};
-+
-+		apps_rsc: rsc@17a00000 {
-+			compatible = "qcom,rpmh-rsc";
-+			reg = <0x0 0x17a00000 0x0 0x10000>,
-+			      <0x0 0x17a10000 0x0 0x10000>,
-+			      <0x0 0x17a20000 0x0 0x10000>;
-+			reg-names = "drv-0", "drv-1", "drv-2";
-+			interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
-+			label = "apps_rsc";
-+			qcom,tcs-offset = <0xd00>;
-+			qcom,drv-id = <2>;
-+			qcom,tcs-config = <ACTIVE_TCS    2>, <SLEEP_TCS     3>,
-+					  <WAKE_TCS      3>, <CONTROL_TCS   0>;
-+			power-domains = <&CLUSTER_PD>;
-+
-+			apps_bcm_voter: bcm-voter {
-+				compatible = "qcom,bcm-voter";
-+			};
-+		};
-+
- 	};
- 
- 	timer {
--- 
-2.17.1
-
+ 	/* Unified Memory Controller MCA type */
+ 	{ SMCA_UMC,	 HWID_MCATYPE(0x96, 0x0)	},
+@@ -198,6 +202,8 @@ static const struct smca_hwid smca_hwid_mcatypes[] = {
+ 	{ SMCA_SHUB,	 HWID_MCATYPE(0x80, 0x0)	},
+ 	{ SMCA_SATA,	 HWID_MCATYPE(0xA8, 0x0)	},
+ 	{ SMCA_USB,	 HWID_MCATYPE(0xAA, 0x0)	},
++	{ SMCA_USR_DP,	 HWID_MCATYPE(0x170, 0x0)	},
++	{ SMCA_USR_CP,	 HWID_MCATYPE(0x180, 0x0)	},
+ 	{ SMCA_GMI_PCS,  HWID_MCATYPE(0x241, 0x0)	},
+ 	{ SMCA_XGMI_PHY, HWID_MCATYPE(0x259, 0x0)	},
+ 	{ SMCA_WAFL_PHY, HWID_MCATYPE(0x267, 0x0)	},
