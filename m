@@ -2,188 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 891AF7FCFA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 08:03:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6257FCF66
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 07:55:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229942AbjK2HDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 02:03:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33440 "EHLO
+        id S1344796AbjK2GzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 01:55:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjK2HDM (ORCPT
+        with ESMTP id S231393AbjK2GzA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 02:03:12 -0500
-X-Greylist: delayed 561 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 28 Nov 2023 23:03:17 PST
-Received: from mail-m12793.qiye.163.com (mail-m12793.qiye.163.com [115.236.127.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06713DC;
-        Tue, 28 Nov 2023 23:03:16 -0800 (PST)
-DKIM-Signature: a=rsa-sha256;
-        b=BGYVZATQB6lTahhv420xh9G/Uxq5CQrrNTWhRt7vbpKAoczsUpZwYQ2N3vDEJfKqV+pdvlC4UKyIcyrtTnmPT+It97feALmocPJgXkwViY181JJaSyFTMPC0hsdWUkvPucVkNtKCK5HnVeGe2DiByNVJDQ7dl3NAXjCfcOBeYdM=;
-        c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
-        bh=Kp7KhheW6iIZn3I5ex3GwoD360GOF4bAbDlX84aX464=;
-        h=date:mime-version:subject:message-id:from;
-Received: from [172.16.12.141] (unknown [58.22.7.114])
-        by mail-m12779.qiye.163.com (Hmail) with ESMTPA id 0F87B780201;
-        Wed, 29 Nov 2023 14:52:56 +0800 (CST)
-Message-ID: <9cdedbb6-67c0-4c43-9f82-629504aae933@rock-chips.com>
-Date:   Wed, 29 Nov 2023 14:52:55 +0800
+        Wed, 29 Nov 2023 01:55:00 -0500
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 945D3170B;
+        Tue, 28 Nov 2023 22:55:06 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KIQbIqTYWSVSec0VsnT6QhJPTZqCSIWR8kpGO/172YGV9NlX0IQrbgDDMRQSMYJL5FJARHqHbsb072uEyJ3OGEt1dMM4AD2alu2O0Oys5dhvyoU/88HiA3JsxjceO6u4Lf41FS2YpYl/KS/V9E8pHUZ6J6Lp57hMoj6/kD4V6MHT8bYZ3COh8hvQ7DZ7A6tCwBOgluUSte29ZMs7Y83J0Gw6MC/YV8H5S/xaHTuQsysMKqQK93gnWgJ5ZQvtnqIB8qxgbdBb8FioTqiDqTY2NCg+Uie2HELaCrIzt/KBIYIULwzw9Z58VOgWS7kjscnxm5ZJ4BXrDQUDiJVcJy0GWA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RWl/tvKCUGPPwMLXwkXZfnSLt4Ct+NNkFb6YW2X/jGM=;
+ b=ds7ko7xn/MbhDtz4UuF1zIrzh8w4tSTB7UC4dLS67q+84o+ayrtQV6v6vkVI9qfwch9UmsgaMbiheyJKuHSwENIytkdyV2Ho7MLPRjDxrxzVSAtkiF26tCCFdFaCTHsFqBOHTNS79sWOVBlG5hf5jGmt0DORcn7X2fwk06EGe7Up7tCkrPaNdRYrY7LZWGWmOulk1Ara/wLpIdVivCQ2LsYXVurXmo5griEBOPJ4+lNi1acJdkMufoDSHRHtLhrelHvPZj2To+Jq6arCYHvoo5SHCGEVsUMlYl/S4CYXgd0MCWJjJilpH6OZk6ZVjQWAZHXfWEjZ+YPyzpqhoKASZw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RWl/tvKCUGPPwMLXwkXZfnSLt4Ct+NNkFb6YW2X/jGM=;
+ b=S6TF5ScoIRiQzm8ZQx0JaHkaYa5e+xhwX7WB6EGY1f+SWBlqqH/SDIYuyV9sYS3V81UXOUOBeVhbGXXLVvTSR67or54o/oeCA12yFoaZivU7a5wPN80YLPkMpID1l6KOOp29b66sgOrOVVQQtWTE+8ZQq1ykFPVNmUS+gfLuhWg=
+Received: from PR3P192CA0024.EURP192.PROD.OUTLOOK.COM (2603:10a6:102:56::29)
+ by MW4PR12MB6950.namprd12.prod.outlook.com (2603:10b6:303:207::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.28; Wed, 29 Nov
+ 2023 06:55:03 +0000
+Received: from SN1PEPF0002BA51.namprd03.prod.outlook.com
+ (2603:10a6:102:56:cafe::2) by PR3P192CA0024.outlook.office365.com
+ (2603:10a6:102:56::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27 via Frontend
+ Transport; Wed, 29 Nov 2023 06:55:02 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SN1PEPF0002BA51.mail.protection.outlook.com (10.167.242.74) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7046.17 via Frontend Transport; Wed, 29 Nov 2023 06:55:01 +0000
+Received: from jasmine-meng.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 29 Nov
+ 2023 00:54:55 -0600
+From:   Meng Li <li.meng@amd.com>
+To:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Huang Rui <ray.huang@amd.com>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <x86@kernel.org>, <linux-acpi@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        <linux-kselftest@vger.kernel.org>,
+        "Nathan Fontenot" <nathan.fontenot@amd.com>,
+        Deepak Sharma <deepak.sharma@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Shimmer Huang <shimmer.huang@amd.com>,
+        "Perry Yuan" <Perry.Yuan@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "Oleksandr Natalenko" <oleksandr@natalenko.name>,
+        Meng Li <li.meng@amd.com>
+Subject: [PATCH V11 0/7] amd-pstate preferred core
+Date:   Wed, 29 Nov 2023 14:54:30 +0800
+Message-ID: <20231129065437.290183-1-li.meng@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 05/12] drm/rockchip: vop2: Set YUV/RGB overlay mode
-Content-Language: en-US
-To:     Sascha Hauer <s.hauer@pengutronix.de>, Andy Yan <andyshrk@163.com>
-Cc:     heiko@sntech.de, hjc@rock-chips.com,
-        dri-devel@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
-        kever.yang@rock-chips.com, chris.obbard@collabora.com
-References: <20231122125316.3454268-1-andyshrk@163.com>
- <20231122125438.3454608-1-andyshrk@163.com>
- <20231127141632.GF977968@pengutronix.de>
-From:   Andy Yan <andy.yan@rock-chips.com>
-In-Reply-To: <20231127141632.GF977968@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGRkYQlZLHU5KTENDTR8ZShhVEwETFh
-        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk1PSU5JVUpLS1VKQl
-        kG
-X-HM-Tid: 0a8c19da26c7b24fkuuu0f87b780201
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6ME06PDo4CDwxSxw8HRcKODoL
-        HQgaCjxVSlVKTEtKSU9LTExNQkJOVTMWGhIXVRoVHwJVAhoVOwkUGBBWGBMSCwhVGBQWRVlXWRIL
-        WUFZTkNVSUlVTFVKSk9ZV1kIAVlBTUpOQzcG
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF0002BA51:EE_|MW4PR12MB6950:EE_
+X-MS-Office365-Filtering-Correlation-Id: 77946fd5-45f9-4d34-e90b-08dbf0a81c1e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: juMCpmu6LcviVCIXhcFwH2DoRtRAFxtQ1nsKvhxJd4GJbuboc0qklW+PgXOIEKR5jz8URiES1ZPU3an27UO3suRl/2sVuKwjpPZS90pWW+lHzsFtw/tctdsFTo0ek6Xdc/WRPFMRZJcrsdIc1q7ye0MXF7NxBI0br6dFz8eyw7QJv640qmL1QWD8Eh8Luoxe76HYhxw0gO46tKJHcTnzi23N7P2ehlP0JdOkdfMkN5qYu+/FhL+65eS0tUve2z6mF8DCEAg6umJTO5mkTiUGDg0JiNUvhnfSNyXz7GcwbFBv/Qc/TVOl4ccDJaueCRGt5u6AVw+KDV+jxsf4B/kWwv953nkrxhuO7G4iBYcjrrHoxdl549AywC6Vgnzu0SZkHO2Sh6UqmQhygi7b+i+aM7vrOv09Oq9od7eqQ9g9x/w+b1563qZm1w6JZJ+cENZzdgOy+d5tdJUpSQzZ3pijNKvoSAs4On9LHDfy6R4rcw64RHQNoNOQVDbLinKn3KxmjTgc4L68j96gnEIP269ubpVvRDlsEoods3B/vNryXTxgqk0lLPo9GsB8JSUoDoFfhj1IdsSHL13enNDN/oacptTxYGRItZebMWvASyWuyvrnXOaVT/sE+83l/QoFtYaw6fMe9GIwI+lpmPsVXrMUB2zpQ/Es+9+2vy5MOBItGYPQ65eMoihYwpaHPorppIvokOmgUMqMTUR4EA2i0z74Ziq8lIm1MS1ctec8glTY/D7JkhWbpE9auD8Cc3281Vkre5VnsQAQ0U+FM9Xn9j2nrukNMFpwA+ypLWACVwYhZDzAbPMLA0/lbBhED/V4Wvab
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(136003)(346002)(39860400002)(230922051799003)(230273577357003)(230173577357003)(64100799003)(1800799012)(451199024)(186009)(82310400011)(46966006)(36840700001)(40470700004)(5660300002)(7416002)(2906002)(8936002)(4326008)(8676002)(70586007)(54906003)(110136005)(40480700001)(16526019)(26005)(478600001)(6666004)(2616005)(1076003)(316002)(7696005)(83380400001)(41300700001)(70206006)(426003)(336012)(6636002)(40460700003)(47076005)(36860700001)(86362001)(81166007)(356005)(36756003)(82740400003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 06:55:01.9391
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 77946fd5-45f9-4d34-e90b-08dbf0a81c1e
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF0002BA51.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB6950
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sasha:
+Hi all:
 
-On 11/27/23 22:16, Sascha Hauer wrote:
-> On Wed, Nov 22, 2023 at 08:54:38PM +0800, Andy Yan wrote:
->> From: Andy Yan <andy.yan@rock-chips.com>
->>
->> Set overlay mode register according to the
->> output mode is yuv or rgb.
->>
->> Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
->> ---
->>
->> (no changes since v1)
->>
->>   drivers/gpu/drm/rockchip/rockchip_drm_drv.h  |  1 +
->>   drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 19 ++++++++++++++++---
->>   2 files changed, 17 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_drv.h b/drivers/gpu/drm/rockchip/rockchip_drm_drv.h
->> index 3d8ab2defa1b..7a58c5c9d4ec 100644
->> --- a/drivers/gpu/drm/rockchip/rockchip_drm_drv.h
->> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_drv.h
->> @@ -51,6 +51,7 @@ struct rockchip_crtc_state {
->>   	u32 bus_format;
->>   	u32 bus_flags;
->>   	int color_space;
->> +	bool yuv_overlay;
-> This struct already contains a bool type variable. Please add this one
-> next to it to keep the struct size smaller.
+The core frequency is subjected to the process variation in semiconductors.
+Not all cores are able to reach the maximum frequency respecting the
+infrastructure limits. Consequently, AMD has redefined the concept of
+maximum frequency of a part. This means that a fraction of cores can reach
+maximum frequency. To find the best process scheduling policy for a given
+scenario, OS needs to know the core ordering informed by the platform through
+highest performance capability register of the CPPC interface.
 
+Earlier implementations of amd-pstate preferred core only support a static
+core ranking and targeted performance. Now it has the ability to dynamically
+change the preferred core based on the workload and platform conditions and
+accounting for thermals and aging.
 
-Okay, will do.
+Amd-pstate driver utilizes the functions and data structures provided by
+the ITMT architecture to enable the scheduler to favor scheduling on cores
+which can be get a higher frequency with lower voltage.
+We call it amd-pstate preferred core.
 
->
->>   };
->>   #define to_rockchip_crtc_state(s) \
->>   		container_of(s, struct rockchip_crtc_state, base)
->> diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
->> index a019cc9bbd54..b32a291c5caa 100644
->> --- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
->> +++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
->> @@ -1612,6 +1612,8 @@ static void vop2_crtc_atomic_enable(struct drm_crtc *crtc,
->>   
->>   	vop2->enable_count++;
->>   
->> +	vcstate->yuv_overlay = is_yuv_output(vcstate->bus_format);
->> +
->>   	vop2_crtc_enable_irq(vp, VP_INT_POST_BUF_EMPTY);
->>   
->>   	polflags = 0;
->> @@ -1639,7 +1641,7 @@ static void vop2_crtc_atomic_enable(struct drm_crtc *crtc,
->>   	if (vop2_output_uv_swap(vcstate->bus_format, vcstate->output_mode))
->>   		dsp_ctrl |= RK3568_VP_DSP_CTRL__DSP_RB_SWAP;
->>   
->> -	if (is_yuv_output(vcstate->bus_format))
->> +	if (vcstate->yuv_overlay)
->>   		dsp_ctrl |= RK3568_VP_DSP_CTRL__POST_DSP_OUT_R2Y;
->>   
->>   	vop2_dither_setup(crtc, &dsp_ctrl);
->> @@ -1948,10 +1950,12 @@ static void vop2_setup_layer_mixer(struct vop2_video_port *vp)
->>   	u16 hdisplay;
->>   	u32 bg_dly;
->>   	u32 pre_scan_dly;
->> +	u32 ovl_ctrl;
->>   	int i;
->>   	struct vop2_video_port *vp0 = &vop2->vps[0];
->>   	struct vop2_video_port *vp1 = &vop2->vps[1];
->>   	struct vop2_video_port *vp2 = &vop2->vps[2];
->> +	struct rockchip_crtc_state *vcstate = to_rockchip_crtc_state(vp->crtc.state);
->>   
->>   	adjusted_mode = &vp->crtc.state->adjusted_mode;
->>   	hsync_len = adjusted_mode->crtc_hsync_end - adjusted_mode->crtc_hsync_start;
->> @@ -1964,7 +1968,14 @@ static void vop2_setup_layer_mixer(struct vop2_video_port *vp)
->>   	pre_scan_dly = ((bg_dly + (hdisplay >> 1) - 1) << 16) | hsync_len;
->>   	vop2_vp_write(vp, RK3568_VP_PRE_SCAN_HTIMING, pre_scan_dly);
->>   
->> -	vop2_writel(vop2, RK3568_OVL_CTRL, 0);
->> +	ovl_ctrl = vop2_readl(vop2, RK3568_OVL_CTRL);
->> +	if (vcstate->yuv_overlay)
->> +		ovl_ctrl |= BIT(vp->id);
->> +	else
->> +		ovl_ctrl &= ~BIT(vp->id);
-> Some
->
-> #define RK3568_OVL_CTRL__YUV_MODE(vp)	BIT(vp)
->
-> Would be nice.
+Here sched_set_itmt_core_prio() is called to set priorities and
+sched_set_itmt_support() is called to enable ITMT feature.
+Amd-pstate driver uses the highest performance value to indicate
+the priority of CPU. The higher value has a higher priority.
 
+Amd-pstate driver will provide an initial core ordering at boot time.
+It relies on the CPPC interface to communicate the core ranking to the
+operating system and scheduler to make sure that OS is choosing the cores
+with highest performance firstly for scheduling the process. When amd-pstate
+driver receives a message with the highest performance change, it will
+update the core ranking.
 
-Okay, will do.
+Changes from V10->V11:
+- cpufreq: amd-pstate:
+- - according Perry's commnts, I replace the string with str_enabled_disable().
 
->> +
->> +	vop2_writel(vop2, RK3568_OVL_CTRL, ovl_ctrl);
-> Is it necessary to write this register twice?
+Changes from V9->V10:
+- cpufreq: amd-pstate:
+- - add judgement for highest_perf. When it is less than 255, the
+  preferred core feature is enabled. And it will set the priority.
+- - deleset "static u32 max_highest_perf" etc, because amd p-state
+  perferred coe does not require specail process for hotpulg.
 
-I don't think so. Just follow the original code write it here.
+Changes form V8->V9:
+- all:
+- - pick up Tested-By flag added by Oleksandr.
+- cpufreq: amd-pstate:
+- - pick up Review-By flag added by Wyes.
+- - ignore modification of bug.
+- - add a attribute of prefcore_ranking.
+- - modify data type conversion from u32 to int.
+- Documentation: amd-pstate:
+- - pick up Review-By flag added by Wyes.
 
-Anyway, I will just write once in next version.
+Changes form V7->V8:
+- all:
+- - pick up Review-By flag added by Mario and Ray.
+- cpufreq: amd-pstate:
+- - use hw_prefcore embeds into cpudata structure.
+- - delete preferred core init from cpu online/off.
 
+Changes form V6->V7:
+- x86:
+- - Modify kconfig about X86_AMD_PSTATE.
+- cpufreq: amd-pstate:
+- - modify incorrect comments about scheduler_work().
+- - convert highest_perf data type.
+- - modify preferred core init when cpu init and online.
+- acpi: cppc:
+- - modify link of CPPC highest performance.
+- cpufreq:
+- - modify link of CPPC highest performance changed.
 
-And would you please check my response about debugfs patch[0] when it is convenient for you?
+Changes form V5->V6:
+- cpufreq: amd-pstate:
+- - modify the wrong tag order.
+- - modify warning about hw_prefcore sysfs attribute.
+- - delete duplicate comments.
+- - modify the variable name cppc_highest_perf to prefcore_ranking.
+- - modify judgment conditions for setting highest_perf.
+- - modify sysfs attribute for CPPC highest perf to pr_debug message.
+- Documentation: amd-pstate:
+- - modify warning: title underline too short.
 
-I want to know what you think, and prepare the next version.
+Changes form V4->V5:
+- cpufreq: amd-pstate:
+- - modify sysfs attribute for CPPC highest perf.
+- - modify warning about comments
+- - rebase linux-next
+- cpufreq: 
+- - Moidfy warning about function declarations.
+- Documentation: amd-pstate:
+- - align with ``amd-pstat``
 
+Changes form V3->V4:
+- Documentation: amd-pstate:
+- - Modify inappropriate descriptions.
 
-[0]https://patchwork.kernel.org/project/dri-devel/patch/20231122125601.3455031-1-andyshrk@163.com/
+Changes form V2->V3:
+- x86:
+- - Modify kconfig and description.
+- cpufreq: amd-pstate: 
+- - Add Co-developed-by tag in commit message.
+- cpufreq:
+- - Modify commit message.
+- Documentation: amd-pstate:
+- - Modify inappropriate descriptions.
 
->
->> +
->>   	port_sel = vop2_readl(vop2, RK3568_OVL_PORT_SEL);
->>   	port_sel &= RK3568_OVL_PORT_SEL__SEL_PORT;
->>   
->> @@ -2036,9 +2047,11 @@ static void vop2_setup_layer_mixer(struct vop2_video_port *vp)
->>   		layer_sel |= RK3568_OVL_LAYER_SEL__LAYER(nlayer + ofs, 5);
->>   	}
->>   
->> +	ovl_ctrl |= RK3568_OVL_CTRL__LAYERSEL_REGDONE_IMD;
->> +
->>   	vop2_writel(vop2, RK3568_OVL_LAYER_SEL, layer_sel);
->>   	vop2_writel(vop2, RK3568_OVL_PORT_SEL, port_sel);
->> -	vop2_writel(vop2, RK3568_OVL_CTRL, RK3568_OVL_CTRL__LAYERSEL_REGDONE_IMD);
->> +	vop2_writel(vop2, RK3568_OVL_CTRL, ovl_ctrl);
-> Sascha
->
+Changes form V1->V2:
+- acpi: cppc:
+- - Add reference link.
+- cpufreq:
+- - Moidfy link error.
+- cpufreq: amd-pstate: 
+- - Init the priorities of all online CPUs
+- - Use a single variable to represent the status of preferred core.
+- Documentation:
+- - Default enabled preferred core.
+- Documentation: amd-pstate: 
+- - Modify inappropriate descriptions.
+- - Default enabled preferred core.
+- - Use a single variable to represent the status of preferred core.
+
+Meng Li (7):
+  x86: Drop CPU_SUP_INTEL from SCHED_MC_PRIO for the expansion.
+  acpi: cppc: Add get the highest performance cppc control
+  cpufreq: amd-pstate: Enable amd-pstate preferred core supporting.
+  cpufreq: Add a notification message that the highest perf has changed
+  cpufreq: amd-pstate: Update amd-pstate preferred core ranking
+    dynamically
+  Documentation: amd-pstate: introduce amd-pstate preferred core
+  Documentation: introduce amd-pstate preferrd core mode kernel command
+    line options
+
+ .../admin-guide/kernel-parameters.txt         |   5 +
+ Documentation/admin-guide/pm/amd-pstate.rst   |  59 +++++-
+ arch/x86/Kconfig                              |   5 +-
+ drivers/acpi/cppc_acpi.c                      |  13 ++
+ drivers/acpi/processor_driver.c               |   6 +
+ drivers/cpufreq/amd-pstate.c                  | 187 ++++++++++++++++--
+ drivers/cpufreq/cpufreq.c                     |  13 ++
+ include/acpi/cppc_acpi.h                      |   5 +
+ include/linux/amd-pstate.h                    |  10 +
+ include/linux/cpufreq.h                       |   5 +
+ 10 files changed, 288 insertions(+), 20 deletions(-)
+
+-- 
+2.34.1
+
