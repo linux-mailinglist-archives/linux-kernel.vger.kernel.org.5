@@ -2,182 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BCD97FE431
-	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 00:38:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1ED7FE433
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 00:41:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343639AbjK2Xi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 18:38:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44054 "EHLO
+        id S231555AbjK2XlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 18:41:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjK2XiX (ORCPT
+        with ESMTP id S229677AbjK2XlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 18:38:23 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B238D7F
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 15:38:29 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B10D0C433C7;
-        Wed, 29 Nov 2023 23:38:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701301108;
-        bh=UuAe5E2gYe6tWeYVM+NbO91LQq7MdsluQ0lAhxbAHcI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Qq3gGhSSfOYJw7os6lAJ1rNSOmIowKfDUaSmvVB4ZxCr0A884muIxuunyDHgYFqks
-         aDTl5PR4+djQlr5Jqv267EzhATzaLy7Ov8/JBnruxpEKrHAzIJNV7O9m2JEUrhq8gK
-         ZFb4k9oaT9I/rjo4eoqut+XlPHpL2RcVyxaP0HXeTTaobkyDh3zyUyXV0oLPAxsECP
-         ZlULOQ1nBJw8ZhNhXT6gK1/XoGfBX1C4nXChDL4o2yqDwFzHvaI2f8uNIUQ+EtxEWR
-         +7ceEWfIgL+1EUIxfAb6T3CR9PlSvM+a/+MWvppLTNI+lxoENYIGrMi34WMrFcurz1
-         /rcaFFkW/XXTg==
-Date:   Wed, 29 Nov 2023 17:38:27 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, Wasim Khan <wasim.khan@nxp.com>,
-        Wei Fang <wei.fang@nxp.com>,
-        Clark Wang <xiaoning.wang@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH pci] PCI: remove the PCI_VENDOR_ID_NXP alias
-Message-ID: <20231129233827.GA444332@bhelgaas>
+        Wed, 29 Nov 2023 18:41:02 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC61410C2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 15:41:07 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1cc79f73e58so31645ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 15:41:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1701301267; x=1701906067; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vAafIotfNLeEwiBYbu95S1M0tQmMdEiW9EUaH/ugkoU=;
+        b=U/zRtwo+aQZrG+nwhUiUjVwBkM8E6E7anILz6pLZnjg3APyoMCqXtnjs3EjorKRqEG
+         mq+DG/zr2BC83zA+M1FiFfb7nDYv4Y+ae1HlVdYrDp6B+eadXhrrqreb5twL3l4w402f
+         ez4U71mypQC0n4seK/fW9eNEicCBJPlz+iOJk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701301267; x=1701906067;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vAafIotfNLeEwiBYbu95S1M0tQmMdEiW9EUaH/ugkoU=;
+        b=ZtElmAqc/3AvS1gsPQ0VUh/U19n+gpb6v6WBLMaobTFncznx9AgBx+/fhZEBVxFPpk
+         HRthcrRtDs94oYHZPtAo5XoUBOwE6+Ct/tTycp1wzFV6HWbFvCYSuzaIE/Zr5+CKUGzI
+         LH66ytTUSoiuW9R92H2q4FoivvclmbLnD/CftfPyS2nD1UBivUD7mEk58JXCZp8lL/e+
+         Gw+SbBExhYRWcxx0Xrb4wg9e2HDe6eM2B8tZyvQ/yz4R4nOl3DdfCJ5T+DIUlOu2vmbR
+         4dPXH7nxOJktEP1j8CzTqdh87r+PJ3x4BbHljWlQhSFQ5965HqGZE9ZbTtIP+9eveDFe
+         emyA==
+X-Gm-Message-State: AOJu0YzDKun0BX2preqmbw/9inGGOhMI+BHb+Mmb5Y03J7RFzlvkgYmN
+        3pgmCWNByN36HWRhwoXAy7aYO5/7tzTm1QOBEL/tj0uw/OHowiJ9DnfzpA==
+X-Google-Smtp-Source: AGHT+IE1XSh+nbdNnRVKnLfSK/CPmIMOuq4e8h34HbM9E0oL/vYe5Unt0pVpjf63jESDwVXLVbmvwh3w0v7G4uQZ93o=
+X-Received: by 2002:a17:903:5c5:b0:1cf:c366:9921 with SMTP id
+ kf5-20020a17090305c500b001cfc3669921mr32999plb.9.1701301266715; Wed, 29 Nov
+ 2023 15:41:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231122154241.1371647-1-vladimir.oltean@nxp.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231129155350.5843-1-hau@realtek.com> <4aeebf95-cf12-4462-80c7-dd1dafddb611@intel.com>
+In-Reply-To: <4aeebf95-cf12-4462-80c7-dd1dafddb611@intel.com>
+From:   Grant Grundler <grundler@chromium.org>
+Date:   Wed, 29 Nov 2023 15:40:50 -0800
+Message-ID: <CANEJEGs9r0vq9QkGTcLryPnviMPgztJDsFjHqnRH65KbCqeF7g@mail.gmail.com>
+Subject: Re: [PATCH net v2] r8169: fix rtl8125b PAUSE frames blasting when suspended
+To:     Jacob Keller <jacob.e.keller@intel.com>
+Cc:     ChunHao Lin <hau@realtek.com>, hkallweit1@gmail.com,
+        nic_swsd@realtek.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, grundler@chromium.org,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Greg because these mergers & spinoffs happen all the time, and
-pci_ids.h doesn't necessarily need to keep up, so maybe there's
-precedent for what to do here]
+On Wed, Nov 29, 2023 at 3:05=E2=80=AFPM Jacob Keller <jacob.e.keller@intel.=
+com> wrote:
+> On 11/29/2023 7:53 AM, ChunHao Lin wrote:
+> > When FIFO reaches near full state, device will issue pause frame.
+> > If pause slot is enabled(set to 1), in this time, device will issue
+> > pause frame only once. But if pause slot is disabled(set to 0), device
+> > will keep sending pause frames until FIFO reaches near empty state.
+> >
+> > When pause slot is disabled, if there is no one to handle receive
+> > packets, device FIFO will reach near full state and keep sending
+> > pause frames. That will impact entire local area network.
+> >
+> > This issue can be reproduced in Chromebox (not Chromebook) in
+> > developer mode running a test image (and v5.10 kernel):
+> > 1) ping -f $CHROMEBOX (from workstation on same local network)
+> > 2) run "powerd_dbus_suspend" from command line on the $CHROMEBOX
+> > 3) ping $ROUTER (wait until ping fails from workstation)
+> >
+> > Takes about ~20-30 seconds after step 2 for the local network to
+> > stop working.
+> >
+> > Fix this issue by enabling pause slot to only send pause frame once
+> > when FIFO reaches near full state.
+> >
+>
+> Makes sense. Avoiding the spam is good.  The naming is a bit confusing
+> but I guess that comes from realtek datasheet?
 
-On Wed, Nov 22, 2023 at 05:42:41PM +0200, Vladimir Oltean wrote:
-> What is today NXP is the result of some mergers (with Freescale) and
-> spin-offs (from Philips).
-> 
-> New NXP hardware (for example NETC version 4.1 of the NXP i.MX95
-> SoC) uses PCI_VENDOR_ID_PHILIPS. And some older hardware uses
-> PCI_VENDOR_ID_FREESCALE.
-> 
-> If we have PCI_VENDOR_ID_NXP as an alias for PCI_VENDOR_ID_FREESCALE,
-> we end up needing something like a PCI_VENDOR_ID_NXP2 alias for
-> PCI_VENDOR_ID_PHILIPS. I think this is more confusing than just spelling
-> out the vendor ID of the original company that claimed it.
-> 
-> FWIW, the pci.ids repository as of today has:
-> 1131  Philips Semiconductors
-> 1957  Freescale Semiconductor Inc
-> 
-> so this makes the kernel code consistent with that, and with what
-> "lspci" prints.
+I don't know. It doesn't matter to me what it's called since I don't
+have access to the data sheet anyway. :/
 
-Hmm.  I can't find the 0x1957 Vendor ID here:
-https://pcisig.com/membership/member-companies, which is supposed to
-be the authoritative source AFAICS.
+> > Fixes: f1bce4ad2f1c ("r8169: add support for RTL8125")
+> > Reported-by: Grant Grundler <grundler@chromium.org>
+> > Tested-by: Grant Grundler <grundler@chromium.org>
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: ChunHao Lin <hau@realtek.com>
+> > ---
+> > v2:
+> > - update comment and title.
+> > ---
+> >  drivers/net/ethernet/realtek/r8169_main.c | 7 ++++++-
+> >  1 file changed, 6 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/et=
+hernet/realtek/r8169_main.c
+> > index 62cabeeb842a..bb787a52bc75 100644
+> > --- a/drivers/net/ethernet/realtek/r8169_main.c
+> > +++ b/drivers/net/ethernet/realtek/r8169_main.c
+> > @@ -196,6 +196,7 @@ enum rtl_registers {
+> >                                       /* No threshold before first PCI =
+xfer */
+> >  #define      RX_FIFO_THRESH                  (7 << RXCFG_FIFO_SHIFT)
+> >  #define      RX_EARLY_OFF                    (1 << 11)
+> > +#define      RX_PAUSE_SLOT_ON                (1 << 11)       /* 8125b =
+and later */
+>
+> This confuses me though: RX_EARLY_OFF is (1 << 11) as well.. Is that
+> from a different set of devices?
 
-Also, that page lists 0x1131 as "NXP Semiconductors".
+Yes, for a different HW version of the device.
 
-There's a contact email on that page if it needs updates.
+> We're writing to the same register
+> RxConfig here I think in both cases?
 
-I don't quite understand the goal here.  The company is now called
-"NXP", and this patch removes PCI_VENDOR_ID_NXP (the only instance of
-"NXP" in pci_ids.h) and uses PCI_VENDOR_ID_FREESCALE (which apparently
-does not exist any more)?
+Yes. But to different versions of the HW which use this bit
+differently. Ergo the comment about "8125b and later".
 
-Why would we remove name of the current company and use the name of a
-company that doesn't exist any more?
+> Can you clarify if these are supposed to be the same bit?
 
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> ---
->  drivers/pci/quirks.c    | 50 ++++++++++++++++++++---------------------
->  include/linux/pci_ids.h |  1 -
->  2 files changed, 25 insertions(+), 26 deletions(-)
-> 
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index d208047d1b8f..c95701e36d58 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -5092,39 +5092,39 @@ static const struct pci_dev_acs_enabled {
->  	{ PCI_VENDOR_ID_ZHAOXIN, 0x3038, pci_quirk_mf_endpoint_acs },
->  	{ PCI_VENDOR_ID_ZHAOXIN, 0x3104, pci_quirk_mf_endpoint_acs },
->  	{ PCI_VENDOR_ID_ZHAOXIN, 0x9083, pci_quirk_mf_endpoint_acs },
-> -	/* NXP root ports, xx=16, 12, or 08 cores */
-> +	/* Freescale/NXP root ports, xx=16, 12, or 08 cores */
->  	/* LX2xx0A : without security features + CAN-FD */
-> -	{ PCI_VENDOR_ID_NXP, 0x8d81, pci_quirk_nxp_rp_acs },
-> -	{ PCI_VENDOR_ID_NXP, 0x8da1, pci_quirk_nxp_rp_acs },
-> -	{ PCI_VENDOR_ID_NXP, 0x8d83, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8d81, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8da1, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8d83, pci_quirk_nxp_rp_acs },
->  	/* LX2xx0C : security features + CAN-FD */
-> -	{ PCI_VENDOR_ID_NXP, 0x8d80, pci_quirk_nxp_rp_acs },
-> -	{ PCI_VENDOR_ID_NXP, 0x8da0, pci_quirk_nxp_rp_acs },
-> -	{ PCI_VENDOR_ID_NXP, 0x8d82, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8d80, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8da0, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8d82, pci_quirk_nxp_rp_acs },
->  	/* LX2xx0E : security features + CAN */
-> -	{ PCI_VENDOR_ID_NXP, 0x8d90, pci_quirk_nxp_rp_acs },
-> -	{ PCI_VENDOR_ID_NXP, 0x8db0, pci_quirk_nxp_rp_acs },
-> -	{ PCI_VENDOR_ID_NXP, 0x8d92, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8d90, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8db0, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8d92, pci_quirk_nxp_rp_acs },
->  	/* LX2xx0N : without security features + CAN */
-> -	{ PCI_VENDOR_ID_NXP, 0x8d91, pci_quirk_nxp_rp_acs },
-> -	{ PCI_VENDOR_ID_NXP, 0x8db1, pci_quirk_nxp_rp_acs },
-> -	{ PCI_VENDOR_ID_NXP, 0x8d93, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8d91, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8db1, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8d93, pci_quirk_nxp_rp_acs },
->  	/* LX2xx2A : without security features + CAN-FD */
-> -	{ PCI_VENDOR_ID_NXP, 0x8d89, pci_quirk_nxp_rp_acs },
-> -	{ PCI_VENDOR_ID_NXP, 0x8da9, pci_quirk_nxp_rp_acs },
-> -	{ PCI_VENDOR_ID_NXP, 0x8d8b, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8d89, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8da9, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8d8b, pci_quirk_nxp_rp_acs },
->  	/* LX2xx2C : security features + CAN-FD */
-> -	{ PCI_VENDOR_ID_NXP, 0x8d88, pci_quirk_nxp_rp_acs },
-> -	{ PCI_VENDOR_ID_NXP, 0x8da8, pci_quirk_nxp_rp_acs },
-> -	{ PCI_VENDOR_ID_NXP, 0x8d8a, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8d88, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8da8, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8d8a, pci_quirk_nxp_rp_acs },
->  	/* LX2xx2E : security features + CAN */
-> -	{ PCI_VENDOR_ID_NXP, 0x8d98, pci_quirk_nxp_rp_acs },
-> -	{ PCI_VENDOR_ID_NXP, 0x8db8, pci_quirk_nxp_rp_acs },
-> -	{ PCI_VENDOR_ID_NXP, 0x8d9a, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8d98, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8db8, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8d9a, pci_quirk_nxp_rp_acs },
->  	/* LX2xx2N : without security features + CAN */
-> -	{ PCI_VENDOR_ID_NXP, 0x8d99, pci_quirk_nxp_rp_acs },
-> -	{ PCI_VENDOR_ID_NXP, 0x8db9, pci_quirk_nxp_rp_acs },
-> -	{ PCI_VENDOR_ID_NXP, 0x8d9b, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8d99, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8db9, pci_quirk_nxp_rp_acs },
-> +	{ PCI_VENDOR_ID_FREESCALE, 0x8d9b, pci_quirk_nxp_rp_acs },
->  	/* Zhaoxin Root/Downstream Ports */
->  	{ PCI_VENDOR_ID_ZHAOXIN, PCI_ANY_ID, pci_quirk_zhaoxin_pcie_ports_acs },
->  	/* Wangxun nics */
-> diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-> index 275799b5f535..f837ff427b85 100644
-> --- a/include/linux/pci_ids.h
-> +++ b/include/linux/pci_ids.h
-> @@ -2469,7 +2469,6 @@
->  #define PCI_DEVICE_ID_TDI_EHCI          0x0101
->  
->  #define PCI_VENDOR_ID_FREESCALE		0x1957	/* duplicate: NXP */
-> -#define PCI_VENDOR_ID_NXP		0x1957	/* duplicate: FREESCALE */
->  #define PCI_DEVICE_ID_MPC8308		0xc006
->  #define PCI_DEVICE_ID_MPC8315E		0x00b4
->  #define PCI_DEVICE_ID_MPC8315		0x00b5
-> -- 
-> 2.34.1
-> 
+Yes, they are the same bit - but different versions of HW use BIT(11)
+differently.
+
+>
+> >  #define      RXCFG_DMA_SHIFT                 8
+> >                                       /* Unlimited maximum PCI burst. *=
+/
+> >  #define      RX_DMA_BURST                    (7 << RXCFG_DMA_SHIFT)
+> > @@ -2306,9 +2307,13 @@ static void rtl_init_rxcfg(struct rtl8169_privat=
+e *tp)
+> >       case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_53:
+> >               RTL_W32(tp, RxConfig, RX128_INT_EN | RX_MULTI_EN | RX_DMA=
+_BURST | RX_EARLY_OFF);
+> >               break;
+> > -     case RTL_GIGA_MAC_VER_61 ... RTL_GIGA_MAC_VER_63:
+> > +     case RTL_GIGA_MAC_VER_61:
+> >               RTL_W32(tp, RxConfig, RX_FETCH_DFLT_8125 | RX_DMA_BURST);
+> >               break;
+>
+> I assume there isn't a VER_62 between these?
+
+Correct. My clue is this code near the top of this file:
+
+ 149         [RTL_GIGA_MAC_VER_61] =3D {"RTL8125A",            FIRMWARE_812=
+5A_3},
+ 150         /* reserve 62 for CFG_METHOD_4 in the vendor driver */
+ 151         [RTL_GIGA_MAC_VER_63] =3D {"RTL8125B",            FIRMWARE_812=
+5B_2},
+
+>
+> > +     case RTL_GIGA_MAC_VER_63:
+> > +             RTL_W32(tp, RxConfig, RX_FETCH_DFLT_8125 | RX_DMA_BURST |
+> > +                     RX_PAUSE_SLOT_ON);
+>
+> We add RX_PAUSE_SLOT_ON now for RTL_GIGA_MAC_VER_63 in addition. Makes
+> sense.
+
+Exactly.
+
+thanks for reviewing!
+
+cheers,
+grant
+
+> > +             break;
+> >       default:
+> >               RTL_W32(tp, RxConfig, RX128_INT_EN | RX_DMA_BURST);
+> >               break;
