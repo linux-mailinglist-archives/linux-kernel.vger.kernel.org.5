@@ -2,180 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED4E17FD972
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:33:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B386B7FD97E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:34:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234305AbjK2OdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 09:33:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53508 "EHLO
+        id S234343AbjK2Oej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 09:34:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231195AbjK2OdC (ORCPT
+        with ESMTP id S231195AbjK2Oeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 09:33:02 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01826DD
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 06:33:08 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8878EC433C8;
-        Wed, 29 Nov 2023 14:33:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701268388;
-        bh=nCUBip91VJPgVyaRslm47tg3WMaKjh0DptQ7V1+aaG8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gKvcWnywP2uOCwGWoh/fP1tY3br+768+t7iK5/AZ4GIT9leS8LhJRzql7QKALNfgu
-         RpMq1oALiCXCTkejzxvkSrRJQOXq0zFSK4VPIaje+KdTwntmUubIdIAUb/nRPVyo0p
-         8QPYGbx3Q5TSc5ADZ2ylf2mOuQ3hP5EeFXfdpAhA+U/fQlrZ4RYWTt1J+DUrdXGBjT
-         w5OwbXD+MRpy5MgC4KnKWrnbkW1p8+XXefb+Jc+qpKSB5yO5dFUAyDWV7tw2Jj/Gym
-         +uQOWJuzDC9xhl8mCQEMU4yyTZSKba4BLEC86SIpz2m2yjOv1UtByqawi80aBojCUa
-         tOM1QGWgSP2Cw==
-Date:   Wed, 29 Nov 2023 14:33:03 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     William Qiu <william.qiu@starfivetech.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-pwm@vger.kernel.org,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Hal Feng <hal.feng@starfivetech.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Subject: Re: [PATCH v8 1/4] dt-bindings: pwm: Add bindings for OpenCores PWM
- Controller
-Message-ID: <20231129-chaplain-unseeing-e433ec830946@spud>
-References: <20231129092732.43387-1-william.qiu@starfivetech.com>
- <20231129092732.43387-2-william.qiu@starfivetech.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="sVewkJ1jWgEyqNJ1"
-Content-Disposition: inline
-In-Reply-To: <20231129092732.43387-2-william.qiu@starfivetech.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 29 Nov 2023 09:34:36 -0500
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D6D5219A;
+        Wed, 29 Nov 2023 06:34:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=5srYGa010zaXPgeYMU
+        4ezpiryKXspoRb2NGozsAbp6M=; b=RixMxYKO/qJUdWCkylWy7m/RrTLJBq9eJj
+        aXSL4WVeIjysSLrAZh0qTpmO7IaUu5XXTf3QFwR+I/QRqkbaPGmz4M76jKReCB8p
+        cmynjGx3JagnSaslOPwFtPxDC7zAG8R2VbdXD89oPT5LcPDDf39X+t1ABWBztoFb
+        SlWR2Kygg=
+Received: from localhost.localdomain (unknown [39.144.190.126])
+        by zwqz-smtp-mta-g1-2 (Coremail) with SMTP id _____wCn7274S2dl2svTAQ--.48522S2;
+        Wed, 29 Nov 2023 22:34:34 +0800 (CST)
+From:   Haoran Liu <liuhaoran14@163.com>
+To:     geert+renesas@glider.be
+Cc:     magnus.damm@gmail.com, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Haoran Liu <liuhaoran14@163.com>
+Subject: [PATCH] [soc/renesas] renesas-soc: Add error handling in renesas_soc_init
+Date:   Wed, 29 Nov 2023 06:34:31 -0800
+Message-Id: <20231129143431.34459-1-liuhaoran14@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: _____wCn7274S2dl2svTAQ--.48522S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7KF17KFy8ZrW7GryfKr4DJwb_yoW8WFWrpa
+        1kCws8AryUG3WxZ39xGa1xZ3WSya18KrWSkr1DKwn7u3WrXFyUtF12vFyY9r1UWFWv93WY
+        qF4Uu345Ar1UCFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pR9a9xUUUUU=
+X-Originating-IP: [39.144.190.126]
+X-CM-SenderInfo: xolxxtxrud0iqu6rljoofrz/xtbBcgM3gletj5Wr-wAAsw
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch enhances the renesas_soc_init function in
+drivers/soc/renesas/renesas-soc.c by adding error handling for the
+of_property_read_string call. Previously, the function did not check
+for failure cases of of_property_read_string, which could lead to
+improper behavior if the required device tree properties were missing
+or incorrect.
 
---sVewkJ1jWgEyqNJ1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Although the error addressed by this patch may not occur in the current
+environment, I still suggest implementing these error handling routines
+if the function is not highly time-sensitive. As the environment evolves
+or the code gets reused in different contexts, there's a possibility that
+these errors might occur. Addressing them now can prevent potential
+debugging efforts in the future, which could be quite resource-intensive.
 
-On Wed, Nov 29, 2023 at 05:27:29PM +0800, William Qiu wrote:
-> Add bindings for OpenCores PWM Controller.
->=20
-> Signed-off-by: William Qiu <william.qiu@starfivetech.com>
-> Reviewed-by: Hal Feng <hal.feng@starfivetech.com>
-> ---
->  .../bindings/pwm/opencores,pwm.yaml           | 56 +++++++++++++++++++
->  1 file changed, 56 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pwm/opencores,pwm.y=
-aml
->=20
-> diff --git a/Documentation/devicetree/bindings/pwm/opencores,pwm.yaml b/D=
-ocumentation/devicetree/bindings/pwm/opencores,pwm.yaml
-> new file mode 100644
-> index 000000000000..133f2cd417f0
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pwm/opencores,pwm.yaml
-> @@ -0,0 +1,56 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/pwm/opencores,pwm.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: OpenCores PWM controller
-> +
-> +maintainers:
-> +  - William Qiu <william.qiu@starfivetech.com>
-> +
-> +description:
-> +  OpenCores PTC ip core contains a PWM controller. When operating in PWM=
- mode,
+Signed-off-by: Haoran Liu <liuhaoran14@163.com>
+---
+ drivers/soc/renesas/renesas-soc.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-nit: "The OpenCores PTC IP core"
+diff --git a/drivers/soc/renesas/renesas-soc.c b/drivers/soc/renesas/renesas-soc.c
+index c732d4a5b26a..7a5f5c426118 100644
+--- a/drivers/soc/renesas/renesas-soc.c
++++ b/drivers/soc/renesas/renesas-soc.c
+@@ -487,7 +487,13 @@ static int __init renesas_soc_init(void)
+ 	}
+ 
+ 	np = of_find_node_by_path("/");
+-	of_property_read_string(np, "model", &soc_dev_attr->machine);
++	ret = of_property_read_string(np, "model", &soc_dev_attr->machine);
++	if (ret) {
++		dev_err(dev, "Failed to read model property: %d\n", ret);
++		kfree(soc_dev_attr);
++		return ret;
++	}
++
+ 	of_node_put(np);
+ 
+ 	soc_dev_attr->family = kstrdup_const(family->name, GFP_KERNEL);
+-- 
+2.17.1
 
-> +  the PTC core generates binary signal with user-programmable low and hi=
-gh
-> +  periods. All PTC counters and registers are 32-bit.
-> +
-> +allOf:
-> +  - $ref: pwm.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - starfive,jh7100-pwm
-> +              - starfive,jh7110-pwm
-> +          - const: opencores,pwm-v1
-
-properties:
-  compatible:
-    items:
-      - enum:
-          - starfive,jh7100-pwm
-          - starfive,jh7110-pwm
-      - const: opencores,pwm-v1
-
-Please use this form here instead.
-
-Otherwise, this looks good to me now.
-
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  resets:
-> +    maxItems: 1
-> +
-> +  "#pwm-cells":
-> +    const: 3
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    pwm@12490000 {
-> +        compatible =3D "starfive,jh7110-pwm", "opencores,pwm-v1";
-> +        reg =3D <0x12490000 0x10000>;
-> +        clocks =3D <&clkgen 181>;
-> +        resets =3D <&rstgen 109>;
-> +        #pwm-cells =3D <3>;
-> +    };
-> --=20
-> 2.34.1
->=20
->=20
-
---sVewkJ1jWgEyqNJ1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZWdLnwAKCRB4tDGHoIJi
-0vPNAP4lxb47TExjCroRAbRfe1Mqkn9kvWfUqdQghEp5AktsygD/V4IHEgg4y71a
-Q6fQO+IQS9o36EIZJ2aOmiys/FLW0gw=
-=TUhN
------END PGP SIGNATURE-----
-
---sVewkJ1jWgEyqNJ1--
