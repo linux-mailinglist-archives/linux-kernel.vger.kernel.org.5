@@ -2,393 +2,624 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E4CB7FD4D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:02:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 775BA7FD4D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:03:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbjK2LCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 06:02:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41272 "EHLO
+        id S230219AbjK2LDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 06:03:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjK2LCJ (ORCPT
+        with ESMTP id S229477AbjK2LDF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 06:02:09 -0500
-Received: from mail-m118211.qiye.163.com (mail-m118211.qiye.163.com [115.236.118.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42CD9C1;
-        Wed, 29 Nov 2023 03:02:14 -0800 (PST)
-DKIM-Signature: a=rsa-sha256;
-        b=a9ITbs8TfaeIhTYttP9xzfL8ZO9RQ0QXTF9ludK6vwEfB1Sit32UEtAF4UhpPuHR9CRLNF4DWcRoCu97mg6/FKIoZrEnlUSX+jLsOe0jOAimEWCpi8juoWTTeIEuMvWvGYw/JMWyL9d6f5xddxJ4mT0TWn+ACq2WP5BlWRp+Ajk=;
-        c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
-        bh=qloskjrwtuPE6VP0GC2+1BXZ0ggKNy5+XtXZM5+19pE=;
-        h=date:mime-version:subject:message-id:from;
-Received: from [172.16.12.141] (unknown [58.22.7.114])
-        by mail-m12779.qiye.163.com (Hmail) with ESMTPA id 50CCE780223;
-        Wed, 29 Nov 2023 19:01:38 +0800 (CST)
-Message-ID: <13a58162-6708-498c-84bd-68a1e814f30b@rock-chips.com>
-Date:   Wed, 29 Nov 2023 19:01:37 +0800
+        Wed, 29 Nov 2023 06:03:05 -0500
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29F295;
+        Wed, 29 Nov 2023 03:03:10 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SgGbd2SXHz6K94L;
+        Wed, 29 Nov 2023 19:01:33 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+        by mail.maildlp.com (Postfix) with ESMTPS id 3114D140F33;
+        Wed, 29 Nov 2023 19:02:53 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 29 Nov
+ 2023 11:02:39 +0000
+Date:   Wed, 29 Nov 2023 11:02:38 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+CC:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 1/2] perf: starfive: Add StarLink PMU support
+Message-ID: <20231129110238.000060f7@Huawei.com>
+In-Reply-To: <20231116162330.1144983-2-jisheng.teoh@starfivetech.com>
+References: <20231116162330.1144983-1-jisheng.teoh@starfivetech.com>
+        <20231116162330.1144983-2-jisheng.teoh@starfivetech.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 11/12] drm/rockchip: vop2: Add debugfs support
-To:     Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Andy Yan <andyshrk@163.com>, heiko@sntech.de, hjc@rock-chips.com,
-        dri-devel@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, sebastian.reichel@collabora.com,
-        kever.yang@rock-chips.com, chris.obbard@collabora.com
-References: <20231122125316.3454268-1-andyshrk@163.com>
- <20231122125601.3455031-1-andyshrk@163.com>
- <20231127101337.GU3359458@pengutronix.de>
- <ea24a638-d10f-4f58-9992-1c80bafdd6d4@rock-chips.com>
- <20231129085229.GC963049@pengutronix.de>
-Content-Language: en-US
-From:   Andy Yan <andy.yan@rock-chips.com>
-In-Reply-To: <20231129085229.GC963049@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZQx1PTVZCTk9MTh1MGUNNHUxVEwETFh
-        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk5MSUpJVUpLS1VKQl
-        kG
-X-HM-Tid: 0a8c1abdd8cab24fkuuu50cce780223
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MSo6CBw6KDw1LBMQHxRLAgE5
-        DytPCiNVSlVKTEtKSU5OTUJCSExJVTMWGhIXVRoVHwJVAhoVOwkUGBBWGBMSCwhVGBQWRVlXWRIL
-        WUFZTkNVSUlVTFVKSk9ZV1kIAVlBSk5JQ0w3Bg++
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sascha:
+On Fri, 17 Nov 2023 00:23:29 +0800
+Ji Sheng Teoh <jisheng.teoh@starfivetech.com> wrote:
 
-
-
-On 11/29/23 16:52, Sascha Hauer wrote:
-> On Mon, Nov 27, 2023 at 06:56:34PM +0800, Andy Yan wrote:
->>     Hi Sascha:
->>
->>     thanks for you review.
->>
->>     On 11/27/23 18:13, Sascha Hauer wrote:
->>
->>   On Wed, Nov 22, 2023 at 08:56:01PM +0800, Andy Yan wrote:
->>
->>   From: Andy Yan [1]<andy.yan@rock-chips.com>
->>
->>   /sys/kernel/debug/dri/vop2/summary:  dump vop display state
->>   /sys/kernel/debug/dri/vop2/regs: dump whole vop registers
->>   /sys/kernel/debug/dri/vop2/active_regs: only dump the registers of
->>   activated modules
->>
->>   Signed-off-by: Andy Yan [2]<andy.yan@rock-chips.com>
->>   ---
->>
->>   (no changes since v1)
->>
->>    drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 399 +++++++++++++++++++
->>    1 file changed, 399 insertions(+)
->>
->>   diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
->>   index 9eecbe1f71f9..4a2342209c15 100644
->>   --- a/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
->>   +++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop2.c
->>   @@ -27,6 +27,7 @@
->>    #include <drm/drm_debugfs.h>
->>    #include <drm/drm_flip_work.h>
->>    #include <drm/drm_framebuffer.h>
->>   +#include <drm/drm_gem_framebuffer_helper.h>
->>    #include <drm/drm_probe_helper.h>
->>    #include <drm/drm_vblank.h>
->>
->>   @@ -187,6 +188,7 @@ struct vop2 {
->>            */
->>           u32 registered_num_wins;
->>
->>   +       struct resource *res;
->>           void __iomem *regs;
->>           struct regmap *map;
->>
->>   @@ -228,6 +230,44 @@ struct vop2 {
->>    #define vop2_output_if_is_lvds(x)      (x == ROCKCHIP_VOP2_EP_LVDS0 || x == ROCKCHIP_VOP2_EP_LVDS1)
->>    #define vop2_output_if_is_dpi(x)       (x == ROCKCHIP_VOP2_EP_RGB0)
->>
->>   +struct vop2_regs_dump {
->>   +       const char *name;
->>   +       u32 base;
->>   +       u32 en_reg;
->>   +       u32 en_val;
->>   +       u32 en_mask;
->>   +};
->>   +
->>   +/*
->>   + * bus-format types.
->>   + */
->>   +struct drm_bus_format_enum_list {
->>   +       int type;
->>   +       const char *name;
->>   +};
->>   +
->>   +static const struct drm_bus_format_enum_list drm_bus_format_enum_list[] = {
->>   +       { DRM_MODE_CONNECTOR_Unknown, "Unknown" },
->>   +       { MEDIA_BUS_FMT_RGB565_1X16, "RGB565_1X16" },
->>   +       { MEDIA_BUS_FMT_RGB666_1X18, "RGB666_1X18" },
->>   +       { MEDIA_BUS_FMT_RGB666_1X24_CPADHI, "RGB666_1X24_CPADHI" },
->>   +       { MEDIA_BUS_FMT_RGB666_1X7X3_SPWG, "RGB666_1X7X3_SPWG" },
->>   +       { MEDIA_BUS_FMT_YUV8_1X24, "YUV8_1X24" },
->>   +       { MEDIA_BUS_FMT_UYYVYY8_0_5X24, "UYYVYY8_0_5X24" },
->>   +       { MEDIA_BUS_FMT_YUV10_1X30, "YUV10_1X30" },
->>   +       { MEDIA_BUS_FMT_UYYVYY10_0_5X30, "UYYVYY10_0_5X30" },
->>   +       { MEDIA_BUS_FMT_RGB888_3X8, "RGB888_3X8" },
->>   +       { MEDIA_BUS_FMT_RGB888_1X24, "RGB888_1X24" },
->>   +       { MEDIA_BUS_FMT_RGB888_1X7X4_SPWG, "RGB888_1X7X4_SPWG" },
->>   +       { MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA, "RGB888_1X7X4_JEIDA" },
->>   +       { MEDIA_BUS_FMT_UYVY8_2X8, "UYVY8_2X8" },
->>   +       { MEDIA_BUS_FMT_YUYV8_1X16, "YUYV8_1X16" },
->>   +       { MEDIA_BUS_FMT_UYVY8_1X16, "UYVY8_1X16" },
->>   +       { MEDIA_BUS_FMT_RGB101010_1X30, "RGB101010_1X30" },
->>   +       { MEDIA_BUS_FMT_YUYV10_1X20, "YUYV10_1X20" },
->>   +};
->>   +static DRM_ENUM_NAME_FN(drm_get_bus_format_name, drm_bus_format_enum_list)
->>   +
->>    static const struct regmap_config vop2_regmap_config;
->>
->>    static struct vop2_video_port *to_vop2_video_port(struct drm_crtc *crtc)
->>   @@ -2487,6 +2527,363 @@ static const struct drm_crtc_helper_funcs vop2_crtc_helper_funcs = {
->>           .atomic_disable = vop2_crtc_atomic_disable,
->>    };
->>
->>   +static void vop2_dump_connector_on_crtc(struct drm_crtc *crtc, struct seq_file *s)
->>   +{
->>   +       struct drm_connector_list_iter conn_iter;
->>   +       struct drm_connector *connector;
->>   +
->>   +       drm_connector_list_iter_begin(crtc->dev, &conn_iter);
->>   +       drm_for_each_connector_iter(connector, &conn_iter) {
->>   +               if (crtc->state->connector_mask & drm_connector_mask(connector))
->>   +                       seq_printf(s, "    Connector: %s\n", connector->name);
->>   +
->>   +       }
->>   +       drm_connector_list_iter_end(&conn_iter);
->>   +}
->>   +
->>   +static int vop2_plane_state_dump(struct seq_file *s, struct drm_plane *plane)
->>   +{
->>   +       struct vop2_win *win = to_vop2_win(plane);
->>   +       struct drm_plane_state *pstate = plane->state;
->>   +       struct drm_rect *src, *dst;
->>   +       struct drm_framebuffer *fb;
->>   +       struct drm_gem_object *obj;
->>   +       struct rockchip_gem_object *rk_obj;
->>   +       bool xmirror;
->>   +       bool ymirror;
->>   +       bool rotate_270;
->>   +       bool rotate_90;
->>   +       dma_addr_t fb_addr;
->>   +       int i;
->>   +
->>   +       seq_printf(s, "    %s: %s\n", win->data->name, pstate->crtc ? "ACTIVE" : "DISABLED");
->>   +       if (!pstate || !pstate->fb)
->>   +               return 0;
->>   +
->>   +       fb = pstate->fb;
->>   +       src = &pstate->src;
->>   +       dst = &pstate->dst;
->>   +       xmirror = pstate->rotation & DRM_MODE_REFLECT_X ? true : false;
->>   +       ymirror = pstate->rotation & DRM_MODE_REFLECT_Y ? true : false;
->>   +       rotate_270 = pstate->rotation & DRM_MODE_ROTATE_270;
->>   +       rotate_90 = pstate->rotation & DRM_MODE_ROTATE_90;
->>   +
->>   +       seq_printf(s, "\twin_id: %d\n", win->win_id);
->>   +
->>   +       seq_printf(s, "\tformat: %p4cc%s glb_alpha[0x%x]\n",
->>   +                  &fb->format->format,
->>   +                  drm_is_afbc(fb->modifier) ? "[AFBC]" : "",
->>   +                  pstate->alpha >> 8);
->>   +       seq_printf(s, "\trotate: xmirror: %d ymirror: %d rotate_90: %d rotate_270: %d\n",
->>   +                  xmirror, ymirror, rotate_90, rotate_270);
->>   +       seq_printf(s, "\tzpos: %d\n", pstate->normalized_zpos);
->>   +       seq_printf(s, "\tsrc: pos[%d, %d] rect[%d x %d]\n", src->x1 >> 16,
->>   +                  src->y1 >> 16, drm_rect_width(src) >> 16,
->>   +                  drm_rect_height(src) >> 16);
->>   +       seq_printf(s, "\tdst: pos[%d, %d] rect[%d x %d]\n", dst->x1, dst->y1,
->>   +                  drm_rect_width(dst), drm_rect_height(dst));
->>   +
->>   +       for (i = 0; i < fb->format->num_planes; i++) {
->>   +               obj = fb->obj[0];
->>   +               rk_obj = to_rockchip_obj(obj);
->>   +               fb_addr = rk_obj->dma_addr + fb->offsets[0];
->>   +
->>   +               seq_printf(s, "\tbuf[%d]: addr: %pad pitch: %d offset: %d\n",
->>   +                          i, &fb_addr, fb->pitches[i], fb->offsets[i]);
->>   +       }
->>   +
->>   +       return 0;
->>   +}
->>   +
->>   +static int vop2_crtc_state_dump(struct drm_crtc *crtc, struct seq_file *s)
->>   +{
->>   +       struct vop2_video_port *vp = to_vop2_video_port(crtc);
->>   +       struct drm_crtc_state *cstate = crtc->state;
->>   +       struct rockchip_crtc_state *vcstate;
->>   +       struct drm_display_mode *mode;
->>   +       struct drm_plane *plane;
->>   +       bool interlaced;
->>   +
->>   +       seq_printf(s, "Video Port%d: %s\n", vp->id, !cstate ?
->>   +                  "DISABLED" : cstate->active ? "ACTIVE" : "DISABLED");
->>   +
->>   +       if (!cstate || !cstate->active)
->>   +               return 0;
->>   +
->>   +       mode = &crtc->state->adjusted_mode;
->>   +       vcstate = to_rockchip_crtc_state(cstate);
->>   +       interlaced = !!(mode->flags & DRM_MODE_FLAG_INTERLACE);
->>   +
->>   +       vop2_dump_connector_on_crtc(crtc, s);
->>   +       seq_printf(s, "\tbus_format[%x]: %s\n", vcstate->bus_format,
->>   +                   drm_get_bus_format_name(vcstate->bus_format));
->>   +       seq_printf(s, "\toutput_mode[%x]", vcstate->output_mode);
->>   +       seq_printf(s, " color_space[%d]\n", vcstate->color_space);
->>   +       seq_printf(s, "    Display mode: %dx%d%s%d\n",
->>   +                   mode->hdisplay, mode->vdisplay, interlaced ? "i" : "p",
->>   +                   drm_mode_vrefresh(mode));
->>   +       seq_printf(s, "\tclk[%d] real_clk[%d] type[%x] flag[%x]\n",
->>   +                   mode->clock, mode->crtc_clock, mode->type, mode->flags);
->>   +       seq_printf(s, "\tH: %d %d %d %d\n", mode->hdisplay, mode->hsync_start,
->>   +                   mode->hsync_end, mode->htotal);
->>   +       seq_printf(s, "\tV: %d %d %d %d\n", mode->vdisplay, mode->vsync_start,
->>   +                   mode->vsync_end, mode->vtotal);
->>   +
->>   +       drm_atomic_crtc_for_each_plane(plane, crtc) {
->>   +               vop2_plane_state_dump(s, plane);
->>   +       }
->>   +
->>   +       return 0;
->>   +}
->>   +
->>   +static int vop2_summary_show(struct seq_file *s, void *data)
->>   +{
->>   +       struct drm_info_node *node = s->private;
->>   +       struct drm_minor *minor = node->minor;
->>   +       struct drm_device *drm_dev = minor->dev;
->>   +       struct drm_crtc *crtc;
->>   +
->>   +       drm_modeset_lock_all(drm_dev);
->>   +       drm_for_each_crtc(crtc, drm_dev) {
->>   +               vop2_crtc_state_dump(crtc, s);
->>   +       }
->>   +       drm_modeset_unlock_all(drm_dev);
->>   +
->>   +       return 0;
->>   +}
->>   +
->>   +static void vop2_regs_print(struct vop2 *vop2, struct seq_file *s, struct vop2_regs_dump *dump)
->>   +{
->>   +       resource_size_t start;
->>   +       const int reg_num = 0x110 / 4;
->>
->>   If I'm not mistaken this prints a register space of 0x110 bytes.
->>   Shouldn't it be 0x100 bytes instead?
->>
->>   Also, are all these register spaces really have the same size? Does it
->>   make sense to add the size to struct vop2_regs_dump?
->>
->>     In fact, most used registers of the most blocks are not more than 100, but
->>     for Cluster windows,
->>
->>     there is a CLUSTER_CTRL register sting at 0x100.
->>
->>     I think i should add the size to struct vop2_regs_dump.
->>
->>
->>   +       u32 val;
->>   +       int i;
->>   +
->>   +       if (dump->en_mask) {
->>   +               val = vop2_readl(vop2, dump->base + dump->en_reg);
->>   +               if ((val & dump->en_mask) != dump->en_val)
->>   +                       return;
->>   +       }
->>   +       seq_printf(s, "\n%s:\n", dump->name);
->>   +
->>   +       start = vop2->res->start + dump->base;
->>   +       for (i = 0; i < reg_num;) {
->>   +               seq_printf(s, "%08x:  %08x %08x %08x %08x\n", (u32)start + i * 4,
->>   +                          vop2_readl(vop2, dump->base + (4 * i)),
->>   +                          vop2_readl(vop2, dump->base + (4 * (i + 1))),
->>   +                          vop2_readl(vop2, dump->base + (4 * (i + 2))),
->>   +                          vop2_readl(vop2, dump->base + (4 * (i + 3))));
->>   +               i += 4;
->>   +       }
->>   +
->>   +}
->>   +
->>   +static int vop2_regs_show(struct seq_file *s, void *arg)
->>   +{
->>   +       struct drm_info_node *node = s->private;
->>   +       struct vop2 *vop2 = (struct vop2 *)node->info_ent->data;
->>   +       struct drm_minor *minor = node->minor;
->>   +       struct drm_device *drm_dev = minor->dev;
->>   +
->>   +       struct vop2_regs_dump dump;
->>   +
->>   +       drm_modeset_lock_all(drm_dev);
->>   +
->>   +       if (vop2->enable_count) {
->>   +               dump.en_mask = 0;
->>   +
->>   +               dump.name = "SYS";
->>   +               dump.base = RK3568_REG_CFG_DONE;
->>   +               vop2_regs_print(vop2, s, &dump);
->>
->>   Can you create a statically initialized array of struct vop2_regs_dump
->>   and iterate over it?
->>   You would need an additional present_in_soc_xy flag in struct
->>   vop2_regs_dump, but other than that I don't see a problem and the result
->>   might look better.
->>
->>   For the windows it might also be an option to iterate over
->>   vop2->data->win instead. This array already contains the register base
->>   addresses and window names.
->>
->>     In fact, we have a dump_regs  arrar in vop2_data per soc in our bsp
->>     kernel[0],
->>
->>     do you like something like that?
->>
->>     [0]
->>     [3]https://github.com/armbian/linux-rockchip/blob/rk-5.10-rkr6/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c#L3684
+> This patch adds support for StarFive's StarLink PMU (Performance
+> Monitor Unit). StarLink PMU integrates one or more CPU cores with
+> a shared L3 memory system. The PMU supports overflow interrupt,
+> up to 16 programmable 64bit event counters, and an independent
+> 64bit cycle counter. StarLink PMU is accessed via MMIO.
 > 
-> This looks good from a first glance. I would suggest using C99
-> initializers though.
+> Example Perf stat output:
+> [root@user]# perf stat -a -e /starfive_starlink_pmu/cycles/ \
+> 	-e /starfive_starlink_pmu/read_miss/ \
+> 	-e /starfive_starlink_pmu/read_hit/ \
+> 	-e /starfive_starlink_pmu/release_request/  \
+> 	-e /starfive_starlink_pmu/write_hit/ \
+> 	-e /starfive_starlink_pmu/write_miss/ \
+> 	-e /starfive_starlink_pmu/write_request/ \
+> 	-e /starfive_starlink_pmu/writeback/ \
+> 	-e /starfive_starlink_pmu/read_request/ \
+> 	-- openssl speed rsa2048
+> Doing 2048 bits private rsa's for 10s: 5 2048 bits private RSA's in
+> 2.84s
+> Doing 2048 bits public rsa's for 10s: 169 2048 bits public RSA's in
+> 2.42s
+> version: 3.0.11
+> built on: Tue Sep 19 13:02:31 2023 UTC
+> options: bn(64,64)
+> CPUINFO: N/A
+>                   sign    verify    sign/s verify/s
+> rsa 2048 bits 0.568000s 0.014320s      1.8     69.8
+> /////////
+>  Performance counter stats for 'system wide':
+> 
+>          649991998      starfive_starlink_pmu/cycles/
+>            1009690      starfive_starlink_pmu/read_miss/
+>            1079750      starfive_starlink_pmu/read_hit/
+>            2089405      starfive_starlink_pmu/release_request/
+>                129      starfive_starlink_pmu/write_hit/
+>                 70      starfive_starlink_pmu/write_miss/
+>                194      starfive_starlink_pmu/write_request/
+>             150080      starfive_starlink_pmu/writeback/
+>            2089423      starfive_starlink_pmu/read_request/
+> 
+>       27.062755678 seconds time elapsed
+> 
+> Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+Hi. Some drive by comments inline.
+
+Mostly concern being consistent with error handling.
+
+Documentation needed.
+Documentation/admin-guide/perf
+
+Note I've not looked at perf state machine as would need to remind myself
+how that stuff works.  So this is all generic driver handling stuff rather
+than perf specific.
+
+Thanks,
+
+Jonathan
+
+> ---
+> diff --git a/drivers/perf/starfive_starlink_pmu.c b/drivers/perf/starfive_starlink_pmu.c
+> new file mode 100644
+> index 000000000000..272896ab1ade
+> --- /dev/null
+> +++ b/drivers/perf/starfive_starlink_pmu.c
+> @@ -0,0 +1,654 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * StarFive's StarLink PMU driver
+> + *
+> + * Copyright (C) 2023 StarFive Technology Co., Ltd.
+> + *
+> + * Author: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+> + *
+> + */
+> +
+> +#define STARLINK_PMU_PDEV_NAME	"starfive_starlink_pmu"
+> +#define pr_fmt(fmt)	STARLINK_PMU_PDEV_NAME ": " fmt
+> +
+> +#include <linux/bitmap.h>
+> +#include <linux/cpu_pm.h>
+> +#include <linux/io.h>
+> +#include <linux/irq.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of_device.h>
+
+Why?  Probably want mod_devicetable.h
+
+> +#include <linux/perf_event.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/sysfs.h>
+> +
+> +#define STARLINK_PMU_MAX_COUNTERS			64
+> +#define STARLINK_PMU_NUM_COUNTERS			16
+> +#define STARLINK_PMU_IDX_CYCLE_COUNTER			63
+> +
+> +#define STARLINK_PMU_EVENT_SELECT			0x060
+> +#define STARLINK_PMU_EVENT_COUNTER			0x160
+> +#define STARLINK_PMU_COUNTER_MASK			GENMASK_ULL(63, 0)
+> +#define STARLINK_PMU_CYCLE_COUNTER			0x058
+> +
+> +#define STARLINK_PMU_CONTROL				0x040
+> +#define STARLINK_PMU_GLOBAL_ENABLE			BIT(0)
+> +
+> +#define STARLINK_PMU_INTERRUPT_ENABLE			0x050
+> +#define STARLINK_PMU_COUNTER_OVERFLOW_STATUS		0x048
+> +#define STARLINK_PMU_CYCLE_OVERFLOW_MASK		BIT(63)
+> +
+> +#define CYCLES					0x058
+
+Prefix these.  Highly likely to have namespace clashes.
+	STARLINK_CYCLES etc
+
+> +#define CACHE_READ_REQUEST			0x04000701
+> +#define CACHE_WRITE_REQUEST			0x03000001
+> +#define CACHE_RELEASE_REQUEST			0x0003e001
+> +#define CACHE_READ_HIT				0x00901202
+> +#define CACHE_READ_MISS				0x04008002
+> +#define CACHE_WRITE_HIT				0x006c0002
+> +#define CACHE_WRITE_MISS			0x03000002
+> +#define CACHE_WRITEBACK				0x00000403
+> +
+> +#define to_starlink_pmu(p) (container_of(p, struct starlink_pmu, pmu))
+> +
+> +#define STARLINK_FORMAT_ATTR(_name, _config)				      \
+> +	(&((struct dev_ext_attribute[]) {				      \
+> +		{ .attr = __ATTR(_name, 0444, starlink_pmu_sysfs_format_show, NULL), \
+> +		  .var = (void *)_config, }				      \
+> +	})[0].attr.attr)
+> +
+> +#define STARLINK_EVENT_ATTR(_name, _id)					     \
+> +	PMU_EVENT_ATTR_ID(_name, starlink_pmu_sysfs_event_show, _id)
+> +
+> +#define BIT_IS_SET(nr, bit) (((nr) >> (bit)) & 0x1)
+
+Not sure this macro is worth having.  Mostly used as boolean, so
+nr & BIT(bit) inline would do the job.
+
+> +
+> +struct starlink_hw_events {
+> +	struct perf_event	*events[STARLINK_PMU_MAX_COUNTERS];
+> +	DECLARE_BITMAP(used_mask, STARLINK_PMU_MAX_COUNTERS);
+> +};
+> +
+> +struct starlink_pmu {
+> +	struct pmu					pmu;
+> +	struct starlink_hw_events			__percpu *hw_events;
+> +	struct hlist_node				node;
+> +	struct notifier_block				starlink_pmu_pm_nb;
+> +	void __iomem					*pmu_base;
+> +	cpumask_t					cpumask;
+> +	int						irq;
+> +};
+> +
+> +/* Formats Attr */
+> +static ssize_t
+> +starlink_pmu_sysfs_format_show(struct device *dev,
+> +			       struct device_attribute *attr,
+> +			       char *buf)
+> +{
+> +	struct dev_ext_attribute *eattr = container_of(attr,
+> +						       struct dev_ext_attribute, attr);
+> +
+> +	return sysfs_emit(buf, "%s\n", (char *)eattr->var);
+> +}
+> +
+> +static struct attribute *starlink_pmu_format_attrs[] = {
+> +	STARLINK_FORMAT_ATTR(event, "config:0-31"),
+> +	NULL,
+As below.
+
+> +};
+> +
+> +static const struct attribute_group starlink_pmu_format_attr_group = {
+> +	.name = "format",
+> +	.attrs = starlink_pmu_format_attrs,
+> +};
+> +
+> +/* Events Attr */
+
+These comments don't really add much given that's easy to see from code.
+It's rare that 'structure' comments describing where things are in code
+are actually useful in kernel drivers.  They tend to be there in example
+code to indicate what is needed, but don't keep them!
 
 
-Thanks for your reply, but am not quiet claer about the C99 initializers, would you plase make it more specific,
-or give some example ?
+> +static ssize_t
+> +starlink_pmu_sysfs_event_show(struct device *dev,
+> +			      struct device_attribute *attr,
+> +			      char *buf)
+> +{
+> +	struct perf_pmu_events_attr *eattr = container_of(attr,
+> +							  struct perf_pmu_events_attr, attr);
+> +
+> +	return sysfs_emit(buf, "event=0x%02llx\n", eattr->id);
+> +}
+> +
+> +static struct attribute *starlink_pmu_event_attrs[] = {
+> +	STARLINK_EVENT_ATTR(cycles, CYCLES),
+> +	STARLINK_EVENT_ATTR(read_request, CACHE_READ_REQUEST),
+> +	STARLINK_EVENT_ATTR(write_request, CACHE_WRITE_REQUEST),
+> +	STARLINK_EVENT_ATTR(release_request, CACHE_RELEASE_REQUEST),
+> +	STARLINK_EVENT_ATTR(read_hit, CACHE_READ_HIT),
+> +	STARLINK_EVENT_ATTR(read_miss, CACHE_READ_MISS),
+> +	STARLINK_EVENT_ATTR(write_hit, CACHE_WRITE_HIT),
+> +	STARLINK_EVENT_ATTR(write_miss, CACHE_WRITE_MISS),
+> +	STARLINK_EVENT_ATTR(writeback, CACHE_WRITEBACK),
+> +	NULL,
+
+As below.
+
+> +};
+> +
+> +static const struct attribute_group starlink_pmu_events_attr_group = {
+> +	.name = "events",
+> +	.attrs = starlink_pmu_event_attrs,
+> +};
+> +
+> +/* Cpumask Attr */
+> +static ssize_t
+> +cpumask_show(struct device *dev, struct device_attribute *attr, char *buf)
+> +{
+> +	struct starlink_pmu *starlink_pmu = to_starlink_pmu(dev_get_drvdata(dev));
+> +
+> +	return cpumap_print_to_pagebuf(true, buf, &starlink_pmu->cpumask);
+> +}
+> +
+> +static DEVICE_ATTR_RO(cpumask);
+> +
+> +static struct attribute *starlink_pmu_cpumask_attrs[] = {
+> +	&dev_attr_cpumask.attr,
+> +	NULL,
+
+As below.
+
+> +};
+> +
+> +static const struct attribute_group starlink_pmu_cpumask_attr_group = {
+> +	.attrs = starlink_pmu_cpumask_attrs,
+> +};
+> +
+> +static const struct attribute_group *starlink_pmu_attr_groups[] = {
+> +	&starlink_pmu_format_attr_group,
+> +	&starlink_pmu_events_attr_group,
+> +	&starlink_pmu_cpumask_attr_group,
+> +	NULL,
+
+No comma after NULL terminator as we can't add anything there anyway.
+
+> +};
 
 
-> 
->>   Not sure if we really need an additional debugfs entry to print only the
->>   active entities, but if we do then we could avoid a bit of code
->>   duplication by adding creating a common register dump function called
->>   from vop2_regs_show() and vop2_active_regs_show() which takes an
->>   additional ignore_disabled argument.
->>
->>     As the whole vop2 registers block is very large, so some times only dump
->>
->>     active modules make we dig bugs easier.
->>
->>     It seems that if we  "initialized array of struct vop2_regs_dump" as you
->>     said befor, we can avoid
->>
->>     some duplication code here?
-> 
-> Yes.
-> 
-> Sascha
-> 
+> +
+> +static void starlink_pmu_counter_stop(struct perf_event *event,
+> +				      struct starlink_pmu *starlink_pmu)
+> +{
+> +	struct hw_perf_event *hwc = &event->hw;
+> +	int idx = event->hw.idx;
+> +	u64 val;
+> +
+> +	/* Stop counter */
+
+Pretty obvious that clearing global enable stops the counter.
+Perhaps review comments and remove any that are obvious from the code.
+Such comments add little value and can be a maintenance problem.
+
+> +	val = readq(starlink_pmu->pmu_base + STARLINK_PMU_CONTROL);
+> +	val &= ~STARLINK_PMU_GLOBAL_ENABLE;
+> +	writeq(val, starlink_pmu->pmu_base + STARLINK_PMU_CONTROL);
+> +
+> +	/* Disable counter overflow interrupt */
+> +	val = readq(starlink_pmu->pmu_base + STARLINK_PMU_INTERRUPT_ENABLE);
+> +	if (hwc->config == CYCLES)
+> +		val &= ~STARLINK_PMU_CYCLE_OVERFLOW_MASK;
+> +	else
+> +		val &= ~(1 << idx);
+> +
+> +	writeq(val, starlink_pmu->pmu_base + STARLINK_PMU_INTERRUPT_ENABLE);
+> +}
+
+
+
+> +static bool starlink_pmu_validate_event_group(struct perf_event *event)
+> +{
+> +	struct perf_event *leader = event->group_leader;
+> +	struct perf_event *sibling;
+> +	int counter = 1;
+> +
+> +	/*
+> +	 * Ensure hardware events in the group are on the same PMU,
+> +	 * software events are acceptable.
+> +	 */
+> +	if (event->group_leader->pmu != event->pmu &&
+> +	    !is_software_event(event->group_leader))
+> +		return false;
+> +
+> +	for_each_sibling_event(sibling, leader) {
+> +		if (sibling->pmu != event->pmu && !is_software_event(sibling))
+> +			return false;
+> +
+> +		counter += 1;
+
+counter++;
+
+> +	}
+> +	/*
+> +	 * Limit the number of requested counter to
+> +	 * counter available on the HW.
+> +	 */
+> +	return counter <= STARLINK_PMU_NUM_COUNTERS;
+> +}
+> +
+
+...
+
+> +
+> +static irqreturn_t starlink_pmu_handle_irq(int irq_num, void *data)
+> +{
+> +	struct starlink_pmu *starlink_pmu = data;
+> +	struct starlink_hw_events *hw_events =
+> +					this_cpu_ptr(starlink_pmu->hw_events);
+
+Odd alignment.  I'd put it one tab more than struct.
+
+> +	bool handled = false;
+> +	int idx;
+> +	u64 overflow_status;
+> +
+> +	for (idx = 0; idx < STARLINK_PMU_MAX_COUNTERS; idx++) {
+> +		struct perf_event *event = hw_events->events[idx];
+> +
+> +		overflow_status = readq(starlink_pmu->pmu_base +
+> +					STARLINK_PMU_COUNTER_OVERFLOW_STATUS);
+> +		if (!BIT_IS_SET(overflow_status, idx))
+> +			continue;
+> +
+> +		/* Clear event counter overflow interrupt */
+> +		writeq(1 << idx, starlink_pmu->pmu_base +
+> +		       STARLINK_PMU_COUNTER_OVERFLOW_STATUS);
+> +
+> +		if (!event)
+> +			continue;
+If you get here and !event. Is it a bug, or something valid?
+Maybe a comment if it's valid.  Otherwise an error print might make sense.
+
+> +
+> +		starlink_pmu_update(event);
+> +		starlink_pmu_set_event_period(event);
+> +		handled = true;
+> +	}
+> +	return IRQ_RETVAL(handled);
+> +}
+> +
+> +static int starlink_setup_irqs(struct starlink_pmu *starlink_pmu,
+> +			       struct platform_device *pdev)
+> +{
+> +	int ret, irq;
+> +
+> +	irq = platform_get_irq(pdev, 0);
+> +	if (irq < 0)
+> +		return -EINVAL;
+> +
+> +	ret = devm_request_irq(&pdev->dev, irq, starlink_pmu_handle_irq,
+> +			       0, STARLINK_PMU_PDEV_NAME, starlink_pmu);
+> +	if (ret) {
+> +		dev_warn(&pdev->dev, "Failed to request IRQ %d\n", irq);
+> +		return ret;
+
+		return dev_err_probe(...)
+
+> +	}
+> +
+> +	starlink_pmu->irq = irq;
+> +
+> +	return 0;
+> +}
+> +
+> +#ifdef CONFIG_CPU_PM
+> +static int starlink_pmu_pm_notify(struct notifier_block *b,
+> +				  unsigned long cmd, void *v)
+> +{
+> +	struct starlink_pmu *starlink_pmu = container_of(b, struct starlink_pmu,
+> +							 starlink_pmu_pm_nb);
+
+Compiler can probably figure out this isn't used. But if not
+if (!IS_ENABLED(CONFIG_CPU_PM))
+	return 0;
+
+will allow the compiler to definitely remove the code.
+
+> +	struct starlink_hw_events *hw_events =
+> +					this_cpu_ptr(starlink_pmu->hw_events);
+> +	int enabled = bitmap_weight(hw_events->used_mask,
+> +				    STARLINK_PMU_MAX_COUNTERS);
+> +	struct perf_event *event;
+> +	int idx;
+> +
+> +	if (!enabled)
+> +		return NOTIFY_OK;
+> +
+> +	for (idx = 0; idx < STARLINK_PMU_MAX_COUNTERS; idx++) {
+> +		event = hw_events->events[idx];
+> +		if (!event)
+> +			continue;
+> +
+> +		switch (cmd) {
+> +		case CPU_PM_ENTER:
+> +			/* Stop and update the counter */
+> +			starlink_pmu_stop(event, PERF_EF_UPDATE);
+> +			break;
+> +		case CPU_PM_EXIT:
+> +		case CPU_PM_ENTER_FAILED:
+> +			/* Restore and enable the counter */
+> +			starlink_pmu_start(event, PERF_EF_RELOAD);
+> +			break;
+> +		default:
+> +			break;
+> +		}
+> +	}
+> +
+> +	return NOTIFY_OK;
+> +}
+> +
+> +static int starlink_pmu_pm_register(struct starlink_pmu *starlink_pmu)
+> +{
+> +	starlink_pmu->starlink_pmu_pm_nb.notifier_call = starlink_pmu_pm_notify;
+> +	return cpu_pm_register_notifier(&starlink_pmu->starlink_pmu_pm_nb);
+Stubbed out as below.
+
+> +}
+> +
+> +static void starlink_pmu_pm_unregister(struct starlink_pmu *starlink_pmu)
+> +{
+> +	cpu_pm_unregister_notifier(&starlink_pmu->starlink_pmu_pm_nb);
+
+stubbed out in header so no need to protect with ifdef.
+Compiler will probably remove it anyway.
+
+> +}
+> +#else
+> +static inline int
+> +starlink_pmu_pm_register(struct starlink_pmu *starlink_pmu) { return 0; }
+> +static inline void
+> +starlink_pmu_pm_unregister(struct starlink_pmu *starlink_pmu) { }
+> +#endif
+> +
+> +static void starlink_pmu_destroy(struct starlink_pmu *starlink_pmu)
+> +{
+> +	starlink_pmu_pm_unregister(starlink_pmu);
+> +	cpuhp_state_remove_instance(CPUHP_AP_PERF_RISCV_STARFIVE_STARLINK_ONLINE,
+> +				    &starlink_pmu->node);
+> +}
+> +
+> +static int starlink_pmu_probe(struct platform_device *pdev)
+> +{
+> +	struct starlink_pmu *starlink_pmu;
+> +	struct starlink_hw_events *hw_events;
+> +	struct resource *res;
+> +	int cpuid, i, ret;
+> +
+> +	starlink_pmu = devm_kzalloc(&pdev->dev, sizeof(*starlink_pmu), GFP_KERNEL);
+> +	if (!starlink_pmu)
+> +		return -ENOMEM;
+> +
+> +	starlink_pmu->pmu_base =
+> +			devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+> +	if (IS_ERR(starlink_pmu->pmu_base))
+> +		return PTR_ERR(starlink_pmu->pmu_base);
+> +
+> +	ret = starlink_setup_irqs(starlink_pmu, pdev);
+
+Handle ret  You are printing a warning so I'd assume it's a failure to probe
+case, not something ignored.
+
+
+> +
+> +	ret = cpuhp_state_add_instance(CPUHP_AP_PERF_RISCV_STARFIVE_STARLINK_ONLINE,
+> +				       &starlink_pmu->node);
+> +	if (ret)
+
+Not dropped in error paths.
+
+> +		return ret;
+> +
+> +	ret = starlink_pmu_pm_register(starlink_pmu);
+> +	if (ret)
+> +		starlink_pmu_destroy(starlink_pmu);
+
+This calls starlink_pmu_pm_unregister()
+That should not be necessary as every function should be designed to have no side effects
+on error return.
+
+> +
+> +	starlink_pmu->hw_events = alloc_percpu_gfp(struct starlink_hw_events,
+> +						   GFP_KERNEL);
+> +	if (!starlink_pmu->hw_events) {
+> +		pr_info("Failed to allocate per-cpu PMU data.\n");
+> +		kfree(starlink_pmu);
+
+Inconsistent error handling.  Before and aftre this you call starlink_pmu_destroy()
+but not here.
+
+> +		return -ENOMEM;
+> +	}
+> +
+> +	for_each_possible_cpu(cpuid) {
+> +		hw_events = per_cpu_ptr(starlink_pmu->hw_events, cpuid);
+> +		for (i = 0; i < STARLINK_PMU_MAX_COUNTERS; i++)
+> +			hw_events->events[i] = NULL;
+> +	}
+> +
+> +	starlink_pmu->pmu = (struct pmu) {
+> +		.task_ctx_nr	= perf_invalid_context,
+> +		.event_init	= starlink_pmu_event_init,
+> +		.add		= starlink_pmu_add,
+> +		.del		= starlink_pmu_del,
+> +		.start		= starlink_pmu_start,
+> +		.stop		= starlink_pmu_stop,
+> +		.read		= starlink_pmu_update,
+> +		.attr_groups	= starlink_pmu_attr_groups,
+> +	};
+> +
+> +	ret = perf_pmu_register(&starlink_pmu->pmu, STARLINK_PMU_PDEV_NAME, -1);
+> +	if (ret)
+> +		starlink_pmu_destroy(starlink_pmu);
+> +
+> +	dev_info(&pdev->dev, "Registered StarFive's StarLink PMU\n");
+
+Noise.  Don't print to the log when there are many other ways to find this out.
+
+> +
+> +	return ret;
+> +}
+> +
+> +static const struct of_device_id starlink_pmu_of_match[] = {
+> +	{ .compatible = "starfive,jh8100-starlink-pmu", },
+> +	{},
+
+No need for comma after a 'terminator' as nothing can come after it.
+
+> +};
+> +MODULE_DEVICE_TABLE(of, starlink_pmu_of_match);
+
+> +device_initcall(starlink_pmu_init);
+> diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+> index d305db70674b..6d9eb70c13d4 100644
+> --- a/include/linux/cpuhotplug.h
+> +++ b/include/linux/cpuhotplug.h
+> @@ -219,6 +219,7 @@ enum cpuhp_state {
+>  	CPUHP_AP_PERF_X86_CQM_ONLINE,
+>  	CPUHP_AP_PERF_X86_CSTATE_ONLINE,
+>  	CPUHP_AP_PERF_X86_IDXD_ONLINE,
+> +	CPUHP_AP_PERF_RISCV_STARFIVE_STARLINK_ONLINE,
+Can you use CPUHP_AP_ONLINE_DYN?
+
+Moves it a bit later in the sequence but it often works for perf drivers.
+
+>  	CPUHP_AP_PERF_S390_CF_ONLINE,
+>  	CPUHP_AP_PERF_S390_SF_ONLINE,
+>  	CPUHP_AP_PERF_ARM_CCI_ONLINE,
+
