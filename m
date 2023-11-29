@@ -2,159 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7B37FCEE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 07:14:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7DF7FCEEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 07:15:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230269AbjK2GOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 01:14:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43024 "EHLO
+        id S1346734AbjK2GPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 01:15:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjK2GOJ (ORCPT
+        with ESMTP id S229563AbjK2GPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 01:14:09 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 003F691
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 22:14:15 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0297C433C8;
-        Wed, 29 Nov 2023 06:14:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701238455;
-        bh=mbLTAPRYp1W0J/xE4UKIoyZfhh5JrrZ9nLLWrbqDiA4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ua/fyBsYPFCKRU+n9gjojfDPPjZolZkL02LLa3ytNKIjFIkedHYw6ztgGaRgfSbQp
-         bd4jeL9XWjrHuz5oP2XwJOvq+/jaVEESUMnno0wWNxF/qWY+DKY3+OIjl2mzTAPhQC
-         BNo/MwzRd7g7F4Yj4R0sg28dD+532FAS/7fxleaiJK42hw8yaeWGFddIyb2p2RSdnw
-         tWscpglgRN2p1s4mjGQKCGgMq34Vw5CVS3itPdDAwP6OSxGl3bX0WPNsOvmuGUdjGu
-         wn92Acg55YqavKhcOdB7lQYkqGFFjVHIdQR5el2X/Jb+mYKiNtYPCue5w658OP2e8b
-         FGSihS5oElpnw==
-Date:   Wed, 29 Nov 2023 08:14:00 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Aleksandar Rikalo <aleksandar.rikalo@syrmia.com>,
-        Aleksandar Rikalo <arikalo@gmail.com>,
-        Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>,
-        Chao-ying Fu <cfu@wavecomp.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Yinglu Yang <yangyinglu@loongson.cn>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Marc Zyngier <maz@kernel.org>, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/7] mm/mm_init.c: Extend init unavailable range doc info
-Message-ID: <20231129061400.GK636165@kernel.org>
-References: <20231122182419.30633-1-fancer.lancer@gmail.com>
- <20231122182419.30633-6-fancer.lancer@gmail.com>
- <20231123101854.GF636165@kernel.org>
- <ehlzzv37o4exdn4smmu653wzjdotzdv3dhr3bduvemxssp37ro@sgegnyprquk4>
- <20231124081900.GG636165@kernel.org>
- <h3g6ynqem6h6hefmdawzaspvzf4u5fwfh7rken3ogy5ucr5z5t@d5gagi2ql4ee>
- <20231128071339.GJ636165@kernel.org>
- <z6r4jvuo63deg5ezzrxiewuzgdfwvcluzp45r4gmu7vwx6fmlm@d5r6phck2ovh>
+        Wed, 29 Nov 2023 01:15:17 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD442B0;
+        Tue, 28 Nov 2023 22:15:22 -0800 (PST)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AT4dpr8028631;
+        Wed, 29 Nov 2023 06:14:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=yrBWEX2HQ+kskdGGVrGhtux9ivj/AH3ovrf63KZChR4=;
+ b=ogZ//AFpz8t8Fj6Wzz+TNkGeqICmeZcud0FsjAgfN4h3Jb0y0PnzZUdm8BK2nhjsa1Hp
+ OUwOadL23R/X5jX4HF3CpLQXw0+Qw7H7RLjphwJWTeq4s4ccmixxHLIhSGw1DknjONfP
+ B1x3l7y4fjXPFQsP8u29OaUxe1+l1GDkG2Ypj40S1W8xth0dXWSmpAatbAWs62+8Xpsw
+ e1hf9WVqolxOMhHpIw4yfEjWipaU+DeHhN3hVlF8KMGY0FrxJV35VmJxyAVVEUjJBekW
+ Dd5GogmEmtaoTN7f2bNh42NHfdPwdFXUJy4JoqRK1+PMEV6MlWZ/iwS4t+GuUp3OoIYJ SA== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3unvetrf6w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Nov 2023 06:14:58 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AT6EvGu022001
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Nov 2023 06:14:57 GMT
+Received: from [10.214.66.253] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 28 Nov
+ 2023 22:14:51 -0800
+Message-ID: <7df38308-872b-4bae-9fb0-5075611290d9@quicinc.com>
+Date:   Wed, 29 Nov 2023 11:44:38 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <z6r4jvuo63deg5ezzrxiewuzgdfwvcluzp45r4gmu7vwx6fmlm@d5r6phck2ovh>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/4] iommu/arm-smmu: add ACTLR data and support for
+ SC7280
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <will@kernel.org>,
+        <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <dmitry.baryshkov@linaro.org>, <a39.skl@gmail.com>,
+        <quic_bjorande@quicinc.com>, <mani@kernel.org>,
+        <quic_eberman@quicinc.com>, <robdclark@chromium.org>,
+        <u.kleine-koenig@pengutronix.de>, <robh@kernel.org>,
+        <vladimir.oltean@nxp.com>, <quic_pkondeti@quicinc.com>,
+        <quic_molvera@quicinc.com>
+CC:     <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <qipl.kernel.upstream@quicinc.com>
+References: <20231127145412.3981-1-quic_bibekkum@quicinc.com>
+ <20231127145412.3981-4-quic_bibekkum@quicinc.com>
+ <ec4b7dfa-6fcf-4ccc-8857-d99573349599@linaro.org>
+From:   Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+In-Reply-To: <ec4b7dfa-6fcf-4ccc-8857-d99573349599@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: b20UzmWvZjZ6T6Mgl-0gOa1_D0N0XlOc
+X-Proofpoint-ORIG-GUID: b20UzmWvZjZ6T6Mgl-0gOa1_D0N0XlOc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-29_03,2023-11-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ spamscore=0 mlxscore=0 impostorscore=0 phishscore=0 mlxlogscore=999
+ bulkscore=0 priorityscore=1501 clxscore=1015 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311290043
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 01:51:32PM +0300, Serge Semin wrote:
-> On Tue, Nov 28, 2023 at 09:13:39AM +0200, Mike Rapoport wrote:
-> > On Fri, Nov 24, 2023 at 02:18:44PM +0300, Serge Semin wrote:
-> 
-> > Do you mind posting your physical memory layout?
-> 
-> I actually already did in response to the last part of your previous
-> message. You must have missed it. Here is the copy of the message:
- 
-Sorry, for some reason I didn't scroll down your previous mail :)
 
-> > On Fri, Nov 24, 2023 at 02:18:44PM +0300, Serge Semin wrote:
-> > > On Fri, Nov 24, 2023 at 10:19:00AM +0200, Mike Rapoport wrote:
-> > > ...
-> > > > 
-> > > > My guess is that your system has a hole in the physical memory mappings and
-> > > > with FLATMEM that hole will have essentially unused struct pages, which are
-> > > > initialized by init_unavailable_range().  But from mm perspective this is
-> > > > still a hole even though there's some MMIO ranges in that hole.
-> > > 
-> > > Absolutely right. Here is the physical memory layout in my system.
-> > > 0     - 128MB: RAM
-> > > 128MB - 512MB: Memory mapped IO
-> > > 512MB - 768MB..8.256GB: RAM
-> > > 
-> > > > 
-> > > > Now, if that hole is large you are wasting memory for unused memory map and
-> > > > it maybe worth considering using SPARSEMEM.
-> > > 
-> > > Do you think it's worth to move to the sparse memory configuration in
-> > > order to save the 384MB of mapping with the 16K page model? AFAIU flat
-> > > memory config is more performant. Performance is critical on the most
-> > > of the SoC applications especially when using the 10G ethernet or
-> > > the high-speed PCIe devices.
+
+On 11/27/2023 9:05 PM, Konrad Dybcio wrote:
+> On 27.11.2023 15:54, Bibek Kumar Patro wrote:
+>> Add ACTLR data table for SC7280 along with support for
+>> same including SC7280 specific implementation operations.
+>>
+>> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+>> ---
+>>   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 25 +++++++++++++++++++++-
+>>   1 file changed, 24 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>> index 247eaa194129..f0ad09f9a974 100644
+>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>> @@ -27,6 +27,20 @@ struct actlr_config {
+>>   #define CPRE			BIT(1)		/* Enable context caching in the prefetch buffer */
+>>   #define CMTLB			BIT(0)		/* Enable context caching in the macro TLB */
+>>
+>> +static const struct actlr_config sc7280_apps_actlr_cfg[] = {
+>> +	{ 0x0800, 0x24E1, PREFETCH_DISABLE | CMTLB },
+> hex should be lowercase
+Noted,thanks for pointing this out will take care of this in next
+version.
 > 
-> Could you also answer to my question above regarding using the
-> sparsemem instead on my hw memory layout?
- 
-Currently MIPS defines section size to 256MB, so with your memory layout
-with SPARSMEM there will be two sections of 256MB, at 0 and at 512MB, so
-you'll save memory map for 256M which is roughly 1M with 16k pages.
-
-It's possible 
-
-With SPARSEMEM the pfn_to_page() and page_to_pfn() are a bit longer in
-terms of assembly instructions, but I really doubt you'll notice any
-performance difference in real world applications.
-
-> > With FLATMEM the memory map exists for that
-> > hole and hence pfn_valid() returns 1 for the MMIO range as well. That makes
-> > __update_cache() to check folio state and that check would fail if the memory
-> > map contained garbage. But since the hole in the memory map is initialized
-> > with init_unavailable_range() you get a valid struct page/struct folio and
-> > everything is fine.
+>> +	{ 0x2000, 0x0163, PREFETCH_DISABLE | CMTLB },
+>> +	{ 0x2080, 0x0461, PREFETCH_DISABLE | CMTLB },
+>> +	{ 0x2100, 0x0161, PREFETCH_DISABLE | CMTLB },
+>> +	{ 0x0900, 0x0407, PREFETCH_SHALLOW | CPRE | CMTLB },
+>> +	{ 0x2180, 0x0027, PREFETCH_SHALLOW | CPRE | CMTLB },
+>> +	{ 0x1000, 0x07ff, PREFETCH_DEEP | CPRE | CMTLB },
+>> +};
+> Any reason this list is so much smaller than 8550's? Is it complete?
+Yes it's complete only. This list varies targetwise actually so we just 
+fill it referring the hardware settings reference document. So size of 
+the list might vary as per target.
 > 
-> Right. That's what currently happens on MIPS32 and that's what I had
-> to fix in the framework of this series by the next patch:
-> Link: https://lore.kernel.org/linux-mips/20231122182419.30633-4-fancer.lancer@gmail.com/
-> flatmem version of the pfn_valid() method has been broken due to
-> max_mapnr being uninitialized before mem_init() is called. So
-> init_unavailable_range() didn't initialize the pages on the early
-> bootup stage. Thus afterwards, when max_mapnr has finally got a valid
-> value any attempts to call the __update_cache() method on the MMIO
-> memory hole caused the unaligned access crash.
+> Konrad
 
-The fix for max_mapnr makes pfn_valid()==1 for the entire memory map and
-this fixes up the struct pages in the hole.
- 
-> > 
-> > With that, the init_unavailable_range() docs need not mention IO space at
-> > all, they should mention holes within FLATMEM memory map.
-> 
-> Ok. I'll resend the patch with mentioning flatmem holes instead of
-> mentioning the IO-spaces.
-> 
-> > 
-> > As for SPARSEMEM, if the hole does not belong to any section, pfn_valid()
-> > will be false for it and __update_cache() won't try to access memory map.
-> 
-> Ah, I see. In case of the SPARSEMEM config an another version of
-> pfn_valid() will be called. It's defined in the include/linux/mmzone.h
-> header file. Right? If so then no problem there indeed.
- 
-Yes, SPARSMEM uses pfn_valid() defined in include/linux/mmzone.h
-
-> -Serge(y)
-
--- 
-Sincerely yours,
-Mike.
+Thanks & regards,
+Bibek
