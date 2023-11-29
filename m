@@ -2,133 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E74547FDEE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:53:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4788A7FDEE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:53:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231277AbjK2Rxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 12:53:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36792 "EHLO
+        id S231256AbjK2RxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 12:53:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjK2Rxd (ORCPT
+        with ESMTP id S229509AbjK2RxY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 12:53:33 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4372C95
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 09:53:39 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-548c6efc020so451a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 09:53:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701280418; x=1701885218; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nolkjQeTKUPpQU0aMQBGDG9EPk/umeej7VkDw1waIR8=;
-        b=NyNO2pnGt3/BL7hYXF9eBUkgH9vSo4B+3yM3JGVs3nUTp2jvSViBFJ4kRP/8miKJ14
-         KZQa2q+jWYsZVWWSloxgAeprUeJm4WDC8wpEoHRYQtM9sr5pstOpBObLldRuV4CToM2V
-         fnbgyO6g1jtIuN0YSEt7XLsJr+fXNiQhK4F8M5HVg8TJsCWzdNMsPpnKlGjOLPkE1wiV
-         CJbmOta+QrN4rfZgHHnnQ4bu7aclpLy1kP9ZzFfbvoR6sLdqON6ufrmQ6Ev2ClIEvgK2
-         l0Q4qgilABvyPcxtIwwbAO6CrptTOvw5sslreynqesIYm5gC2aMShJ7KXHZxf8SUt8wS
-         oz6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701280418; x=1701885218;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nolkjQeTKUPpQU0aMQBGDG9EPk/umeej7VkDw1waIR8=;
-        b=VcLXF+nUezqWl8jVfxL8qT1/1LDy/JXGwHasMrDgMyTu8EEhf/Tqo+oIzICuOMXFg5
-         jCb83+ZuKOTTK5v/ADousy0HIL57HSVZt9pbsaNz4VhpgaKLI1jS6YBgKMKX0TtQt8oh
-         JDTU1YH6Ydh6LTll5cvS2HC+J3l9z9ul7YmbvqjJBZmH2KkpmKqiMIVT/CZVpTbCz0E3
-         QK8k/rybCwrRPbbdT9TJr/Me4SSGDu+31iUv+QPS3TyMVSwnyi6WXPzo7Hq4wDRGWivw
-         uhyjDEGGnppGgIyMnUgP2PVC+kQFTSQRSAFuYM8/kUwASAf0ouDzxuzBfDUdxnOZm/X1
-         8CFQ==
-X-Gm-Message-State: AOJu0YyRJyiBzeQd0jDZnlsrY3/Xe25DpOjmBAG7PxFOOtXmG31WFHcO
-        /j1H9Icc7buOS+RGJuColFgJPAIr5gUkpr/BK7Ppew==
-X-Google-Smtp-Source: AGHT+IGZcOv7ZQLL12mB+17qgert2qyz+y6OZwNvXyJtI5UtexLrW6LRiiAPvulcoSl1BmeutGldHuWTQhcIW9ifMFY=
-X-Received: by 2002:a05:6402:430e:b0:54b:67da:b2f with SMTP id
- m14-20020a056402430e00b0054b67da0b2fmr630112edc.7.1701280417472; Wed, 29 Nov
- 2023 09:53:37 -0800 (PST)
+        Wed, 29 Nov 2023 12:53:24 -0500
+Received: from s1.sapience.com (s1.sapience.com [72.84.236.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2579E8F;
+        Wed, 29 Nov 2023 09:53:31 -0800 (PST)
+Authentication-Results: dkim-srvy7; dkim=pass (Good ed25519-sha256 
+   signature) header.d=sapience.com header.i=@sapience.com 
+   header.a=ed25519-sha256; dkim=pass (Good 2048 bit rsa-sha256 signature) 
+   header.d=sapience.com header.i=@sapience.com header.a=rsa-sha256
+Received: from srv8.prv.sapience.com (srv8.prv.sapience.com [x.x.x.x])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+        (No client certificate requested)
+        by s1.sapience.com (Postfix) with ESMTPS id 554F8480A86;
+        Wed, 29 Nov 2023 12:53:29 -0500 (EST)
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=sapience.com;
+ i=@sapience.com; q=dns/txt; s=dk-ed25519-220413; t=1701280409;
+ h=message-id : date : mime-version : subject : from : to : cc :
+ references : in-reply-to : content-type : content-transfer-encoding :
+ from; bh=6+Ojpcb+Wse384xeZGnnHJV8BbY5iiqktcSBQCCmkBQ=;
+ b=QMINgx4YuStDwIUwKAGB1eNdY3BiPLPMrXnhCLkR3b3+/lAbNuD+ePoNdCGMShFySkYm/
+ TbHHteD51Anw5SWDA==
+ARC-Seal: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412; t=1701280409;
+        cv=none; b=cvrKAL/1EzuglKy41A0UsjZ//eTlZ6EBgR944Cs3Ez2YKxhfTxDf3K/xJP0ODL/0RWOVo4XBqEUgR7+qqPTTzj5ds9P22ueigiB4H5R3fvj50JAOpp1zl544qfunr2vZNLmmRWSzSX10QfdYhN0SoIaE2SDSwL7HaIRBRLztS4+EDSEXS+2Zz/9amu/aN6fMeOjAtTM+BuLVUxxF+GqCd94NotWsOeOUBgLy3Crrz4Hv/3DM3/wcUgCdK+B07R6oKFFJ7M5Xwe/qfs70BeeLWfoKjxNeO9TJ9DrL3NZdU3BJwqkBmnqQGPYEpo0MKA7IUvrezUgyO1usTnqqMnoJaQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412;
+        t=1701280409; c=relaxed/simple;
+        bh=90HoYer8zpjhGw2nVpjHPxToGqj12SWVsujnAUANBKE=;
+        h=DKIM-Signature:DKIM-Signature:Message-ID:Date:MIME-Version:
+         User-Agent:Subject:Content-Language:From:To:Cc:References:
+         In-Reply-To:Content-Type:Content-Transfer-Encoding; b=wL7fzyIdCzw1DElUOTdwON/1F7FwG96pBd3qIaMBdxSzZGxZyciQpUqllx6Bp3Tjuyt3S0bDoEqX7B1qz23XU/thKapzzy85qmucMXu/nCV1LYoE8dIxMT9RklGT5v8R43d8VDe+54fdvkf9aEaZxsFGKz5LNTqPLM/EqqyKpIwrLgS26XJ3VILS5GW8DugvGJyOaYjiODI/OFqbhof9I8OjBJow1RTDp3+eQsk9EI6iHb1IBjNev64rSkE5pH18+iPwatBQk7ooOyaoQVpisRO+S5gYAPMx+N9J1YZNK8SG06b33bGBMjr/NCuKCZ43n6Z+mfbvMCSK6H+oVK2oig==
+ARC-Authentication-Results: i=1; arc-srv8.sapience.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sapience.com;
+ i=@sapience.com; q=dns/txt; s=dk-rsa-220413; t=1701280409;
+ h=message-id : date : mime-version : subject : from : to : cc :
+ references : in-reply-to : content-type : content-transfer-encoding :
+ from; bh=6+Ojpcb+Wse384xeZGnnHJV8BbY5iiqktcSBQCCmkBQ=;
+ b=IQeYAn+O9BNhmRfBf+F6t5ROSgM76eKB7kUnG4XWuiVdEZAs30gpmRQ6peaAZaHtkDBhs
+ bnBRnQ2OtPpjYq4qkqBakeI1F3jFY82JUFB+MYt/a9E/uQ9oN+tsFo3t9yZiwPTbL3rCRmW
+ 2fr3YbEYbGyRsvDqW5v+j4gKgoRKaHAHkBGwa3IUyPRoKE5gpiTgTHd95XsRToIEgii8lXP
+ WUjJxb9UE3nTgfNcehI9EsB3wbMnmcnlU4PVFluHf8AcWHgbcy+om8YkdLp6/5ezaX1Cj3+
+ 3tv0ZuyJ8bom1v6wJ+8BZCzMJh/M9BPAYErqOapDtLISy7n2yFoG3bsNhzDA==
+Message-ID: <2ce6a24f-fc9b-45d2-8a11-73a3e69ffa13@sapience.com>
+Date:   Wed, 29 Nov 2023 12:53:28 -0500
 MIME-Version: 1.0
-References: <20231129165721.337302-1-dima@arista.com> <20231129165721.337302-5-dima@arista.com>
-In-Reply-To: <20231129165721.337302-5-dima@arista.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 29 Nov 2023 18:53:26 +0100
-Message-ID: <CANn89i+Ln+d6fci8T1MWwACZGS-RE+DfOvQ1kvejGowtiYhofw@mail.gmail.com>
-Subject: Re: [PATCH v4 4/7] net/tcp: Allow removing current/rnext TCP-AO keys
- on TCP_LISTEN sockets
-To:     Dmitry Safonov <dima@arista.com>
-Cc:     David Ahern <dsahern@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Francesco Ruggeri <fruggeri05@gmail.com>,
-        Salam Noureddine <noureddine@arista.com>,
-        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: crash with 6.7 rc2 and rc3
+Content-Language: en-US
+From:   Genes Lists <lists@sapience.com>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>, tglx@linutronix.de,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        gregory.greenman@intel.com, kvalo@kernel.org,
+        Linux Wireless <linux-wireless@vger.kernel.org>
+Cc:     Linux Regressions <regressions@lists.linux.dev>
+References: <c46a6462-8263-455c-a6ea-1860020f5fab@sapience.com>
+ <ZWV7JworMrjHJHsO@archie.me>
+ <cf2dcc97-845d-4860-be4d-5822d2ebbfca@sapience.com>
+ <022c67aa-b90a-4756-8725-5f7fba7dc780@sapience.com>
+In-Reply-To: <022c67aa-b90a-4756-8725-5f7fba7dc780@sapience.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 5:57=E2=80=AFPM Dmitry Safonov <dima@arista.com> wr=
-ote:
->
-> TCP_LISTEN sockets are not connected to any peer, so having
-> current_key/rnext_key doesn't make sense.
+On 11/28/23 14:56, Genes Lists wrote:
+> On 11/28/23 05:39, Genes Lists wrote:
+>> On 11/28/23 00:31, Bagas Sanjaya wrote:
+>>> On Mon, Nov 27, 2023 at 03:55:37PM -0500, Genes Lists wrote:
+>>>>
+>>>> lenovo laptop boots fine under 6.7rc1 and older including 6.6.2 stable.
+>>>> but not for 6.7 rc2 or rc3.
+>>>>
+>>>> ...
+> 
+> 
 
-I do not understand this patch.
+This appears to be build related. Starting from scratch with builds and 
+they are now working fine.
 
-This seems that the clearing should happen at disconnect time, from
-tcp_disconnect() ?
+My sincere apologies - please ignore/close this as (silly) user error.
 
-Why forcing user to set a socket option to clear these fields ?
+thanks
 
->
-> The userspace may falter over this issue by setting current or rnext
-> TCP-AO key before listen() syscall. setsockopt(TCP_AO_DEL_KEY) doesn't
-> allow removing a key that is in use (in accordance to RFC 5925), so
-> it might be inconvenient to have keys that can be destroyed only with
-> listener socket.
->
-> Fixes: 4954f17ddefc ("net/tcp: Introduce TCP_AO setsockopt()s")
-> Signed-off-by: Dmitry Safonov <dima@arista.com>
-> ---
->  net/ipv4/tcp_ao.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
->
-> diff --git a/net/ipv4/tcp_ao.c b/net/ipv4/tcp_ao.c
-> index c8be1d526eac..bf41be6d4721 100644
-> --- a/net/ipv4/tcp_ao.c
-> +++ b/net/ipv4/tcp_ao.c
-> @@ -1818,8 +1818,16 @@ static int tcp_ao_del_cmd(struct sock *sk, unsigne=
-d short int family,
->                 if (!new_rnext)
->                         return -ENOENT;
->         }
-> -       if (cmd.del_async && sk->sk_state !=3D TCP_LISTEN)
-> -               return -EINVAL;
-> +       if (sk->sk_state =3D=3D TCP_LISTEN) {
-> +               /* Cleaning up possible "stale" current/rnext keys state,
-> +                * that may have preserved from TCP_CLOSE, before sys_lis=
-ten()
-> +                */
-> +               ao_info->current_key =3D NULL;
-> +               ao_info->rnext_key =3D NULL;
-> +       } else {
-> +               if (cmd.del_async)
-> +                       return -EINVAL;
-> +       }
->
->         if (family =3D=3D AF_INET) {
->                 struct sockaddr_in *sin =3D (struct sockaddr_in *)&cmd.ad=
-dr;
-> --
-> 2.43.0
->
+gene
+
