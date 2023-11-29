@@ -2,127 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 301357FD4BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:55:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C53967FD4C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:57:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231162AbjK2Kyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 05:54:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53088 "EHLO
+        id S230017AbjK2K5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 05:57:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjK2Kyx (ORCPT
+        with ESMTP id S229477AbjK2K5B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 05:54:53 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD0C8E
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:54:59 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a00a9c6f1e9so937641666b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:54:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701255297; x=1701860097; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WaNT7WYUOm/G392OKMIh9XdJ8gT35U7w8c6/M00Pcos=;
-        b=sRcQ/pkTsaL+f+b8oRn1brF5RNpGOSxNPEDw9qUKByYEn4wZDVJPUg2cVM87RvMZ49
-         ae7EZgUNicobf7E+AcZH4lDpNI+0/yg3YGCC0jJ06xouz1MTLc+R4UVOyzOxJ6Rfe+xz
-         IJiS6QQWriBGjqXwe95uFzrcUZfH/rE1sV/GqgcsbjOCQRCgyPS72dqK2jApsEGR+Fj3
-         LvvAyJuso+RXHtHvzI6qkwSp3/OdShOMf9pxVNRAc5J7cfFoYvOZsl3E+QIiFcTw2iI1
-         OesivpsimuowSVH34qhrpbUYkbQnW3wVnXJMFpsbj3BWW1PTjM5TyIeAs9Ghyou3h/0b
-         jjNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701255297; x=1701860097;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WaNT7WYUOm/G392OKMIh9XdJ8gT35U7w8c6/M00Pcos=;
-        b=DxYF0hy91L9coUni6J2C9ww+bg8/o0uTbKfy6dAA5vpaJzP8Gz/kVK7IA+UoRRBGkI
-         MYLd2fNWRXBbGCL3zOlkuB7jCOCHJKuPiLWCNDestU3bKru/PHjE3Pa222ErQJBo8awc
-         A+n2fdGQoV1grt9O48QbQUoK+dQRdfcfirDdoD+xuWxQ4xAzZXmMdVBqda5K0tmH6E2s
-         p5LGM+E5uqW+Od+2xiSVNzDBwd6KySsp9bc4HCXpfhTocYCHxUz5f8bokg4A5jWagSFJ
-         POWLgdnCoCmG+Hnu15i4UvE4zxURqAbtak/25pCfvXVA24lpxXcjklIAsxzTN86KzPcl
-         NBpA==
-X-Gm-Message-State: AOJu0YxJ6XijpPILuU6WvYv4pyUGBI90Dgl+BMdvsA0mpv53E+noKd0l
-        HFYBSxMtfdlBIq/RsioyOen/0g==
-X-Google-Smtp-Source: AGHT+IEiWyZ9udu+TEmnkAnknsXruKGeWNOjB4HCrQJ1VzfuSdWgVckZxNsxVMGWur3FPBGnvfDaiA==
-X-Received: by 2002:a17:906:cec7:b0:a10:8db4:bcf3 with SMTP id si7-20020a170906cec700b00a108db4bcf3mr6616764ejb.9.1701255297573;
-        Wed, 29 Nov 2023 02:54:57 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id k7-20020a17090627c700b009e50ea0a05asm7814793ejc.99.2023.11.29.02.54.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 02:54:57 -0800 (PST)
-Message-ID: <e3bc24d6-d9ef-4705-8de7-05460f915b17@linaro.org>
-Date:   Wed, 29 Nov 2023 11:54:56 +0100
+        Wed, 29 Nov 2023 05:57:01 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 563E78E
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:57:07 -0800 (PST)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A53B16602F27;
+        Wed, 29 Nov 2023 10:57:04 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701255425;
+        bh=5Im7hg+4XRMgfVUnaf7izj5Cdq+UGY/dtd2TmetyDkY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UOx+AWJ1KQy5vsukQ0TrSPt+LnAVlTctT9Aj4wV74xlbogZHip8fyvNTXkhS9fveS
+         xVh382KKGh0NSam5aTiJa0MMtFWC6x0uwpi5IAgYCxJi74t8Wub6HqMnedm6fCMv2p
+         85j+3wFUK2oXLAplw8iEHeDWxT090AKqHUIo7QPmOFlNZe3YaUC+GM6sfZFT3eb6cd
+         e7bE6P8IvAeEjekwzIF5RjZvxBOfEpE4cCtuK8oizaMmMjKxS44sE2ah9JixbPpOVh
+         N6/KEX7NndHRfvLmR9PTAmK2AzmMOmeiYjfaufW8cfFvqDxezRy5G/ZAZ50sK9apuS
+         KeGk4NTpJeQjQ==
+Date:   Wed, 29 Nov 2023 11:57:01 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v18 04/26] drm/shmem-helper: Refactor locked/unlocked
+ functions
+Message-ID: <20231129115701.6d672ae3@collabora.com>
+In-Reply-To: <bcc8013d-d107-934f-71fa-98ab2e0275ee@collabora.com>
+References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
+        <20231029230205.93277-5-dmitry.osipenko@collabora.com>
+        <wboljiwogeus7pwgaqzxaltt3xdavy2dzisygn6pdpoiwlnwgc@mwaiukjguzat>
+        <20231124115911.79ab24af@collabora.com>
+        <kw5bho3jx73d3glvtewmjvqt4qty4khju6dcwypuh25ya3gi4b@7slmijjqdi4p>
+        <20231128133712.53a6f6cb@collabora.com>
+        <37208c72-7908-0a78-fc89-2fa9b8d756a5@collabora.com>
+        <20231129085330.7ccb35d3@collabora.com>
+        <bcc8013d-d107-934f-71fa-98ab2e0275ee@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/4] arm64: dts: nuvoton: Add pinctrl support for
- ma35d1
-Content-Language: en-US
-To:     Jacky Huang <ychuang570808@gmail.com>, linus.walleij@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, p.zabel@pengutronix.de, j.neuschaefer@gmx.net
-Cc:     linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ychuang3@nuvoton.com, schung@nuvoton.com
-References: <20231128061118.575847-1-ychuang570808@gmail.com>
- <20231128061118.575847-4-ychuang570808@gmail.com>
- <7edda3ca-b98a-4125-979f-3ee7ac718a9a@linaro.org>
- <a0be9aaa-290d-450e-b0b8-d87453bcaaa0@gmail.com>
- <7fed5d90-da04-40fb-8677-b807b6f51cc9@linaro.org>
- <8663d26e-32b8-4f2b-b497-9efa7440f070@gmail.com>
- <2fab32e6-23a4-41bb-b47b-4f993fc590dc@linaro.org>
- <ff83f0f2-541a-4677-a247-5f47fdcca3f1@gmail.com>
- <db3ede63-8708-469f-8e7b-aca798ed50e0@linaro.org>
- <4b00c41c-7751-40ca-bf2d-53f1179772d4@gmail.com>
- <9ec2dd42-5173-40df-8e6b-9c09f2d77f67@linaro.org>
- <6d511cc4-f22c-4c8f-a1ea-a8d99be95157@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <6d511cc4-f22c-4c8f-a1ea-a8d99be95157@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -133,96 +76,158 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/11/2023 11:14, Jacky Huang wrote:
+On Wed, 29 Nov 2023 13:47:21 +0300
+Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+
+> On 11/29/23 10:53, Boris Brezillon wrote:
+> > On Wed, 29 Nov 2023 01:05:14 +0300
+> > Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+> >   
+> >> On 11/28/23 15:37, Boris Brezillon wrote:  
+> >>> On Tue, 28 Nov 2023 12:14:42 +0100
+> >>> Maxime Ripard <mripard@kernel.org> wrote:
+> >>>     
+> >>>> Hi,
+> >>>>
+> >>>> On Fri, Nov 24, 2023 at 11:59:11AM +0100, Boris Brezillon wrote:    
+> >>>>> On Fri, 24 Nov 2023 11:40:06 +0100
+> >>>>> Maxime Ripard <mripard@kernel.org> wrote:
+> >>>>>       
+> >>>>>> On Mon, Oct 30, 2023 at 02:01:43AM +0300, Dmitry Osipenko wrote:      
+> >>>>>>> Add locked and remove unlocked postfixes from drm-shmem function names,
+> >>>>>>> making names consistent with the drm/gem core code.
+> >>>>>>>
+> >>>>>>> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+> >>>>>>> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
+> >>>>>>> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>        
+> >>>>>>
+> >>>>>> This contradicts my earlier ack on a patch but...
+> >>>>>>       
+> >>>>>>> ---
+> >>>>>>>  drivers/gpu/drm/drm_gem_shmem_helper.c        | 64 +++++++++----------
+> >>>>>>>  drivers/gpu/drm/lima/lima_gem.c               |  8 +--
+> >>>>>>>  drivers/gpu/drm/panfrost/panfrost_drv.c       |  2 +-
+> >>>>>>>  drivers/gpu/drm/panfrost/panfrost_gem.c       |  6 +-
+> >>>>>>>  .../gpu/drm/panfrost/panfrost_gem_shrinker.c  |  2 +-
+> >>>>>>>  drivers/gpu/drm/panfrost/panfrost_mmu.c       |  2 +-
+> >>>>>>>  drivers/gpu/drm/v3d/v3d_bo.c                  |  4 +-
+> >>>>>>>  drivers/gpu/drm/virtio/virtgpu_object.c       |  4 +-
+> >>>>>>>  include/drm/drm_gem_shmem_helper.h            | 36 +++++------
+> >>>>>>>  9 files changed, 64 insertions(+), 64 deletions(-)
+> >>>>>>>
+> >>>>>>> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> >>>>>>> index 0d61f2b3e213..154585ddae08 100644
+> >>>>>>> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+> >>>>>>> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> >>>>>>> @@ -43,8 +43,8 @@ static const struct drm_gem_object_funcs drm_gem_shmem_funcs = {
+> >>>>>>>  	.pin = drm_gem_shmem_object_pin,
+> >>>>>>>  	.unpin = drm_gem_shmem_object_unpin,
+> >>>>>>>  	.get_sg_table = drm_gem_shmem_object_get_sg_table,
+> >>>>>>> -	.vmap = drm_gem_shmem_object_vmap,
+> >>>>>>> -	.vunmap = drm_gem_shmem_object_vunmap,
+> >>>>>>> +	.vmap = drm_gem_shmem_object_vmap_locked,
+> >>>>>>> +	.vunmap = drm_gem_shmem_object_vunmap_locked,        
+> >>>>>>
+> >>>>>> While I think we should indeed be consistent with the names, I would
+> >>>>>> also expect helpers to get the locking right by default.      
+> >>>>>
+> >>>>> Wait, actually I think this patch does what you suggest already. The
+> >>>>> _locked() prefix tells the caller: "you should take care of the locking,
+> >>>>> I expect the lock to be held when this is hook/function is called". So
+> >>>>> helpers without the _locked() prefix take care of the locking (which I
+> >>>>> guess matches your 'helpers get the locking right' expectation), and
+> >>>>> those with the _locked() prefix don't.      
+> >>>>
+> >>>> What I meant by "getting the locking right" is indeed a bit ambiguous,
+> >>>> sorry. What I'm trying to say I guess is that, in this particular case,
+> >>>> I don't think you can expect the vmap implementation to be called with
+> >>>> or without the locks held. The doc for that function will say that it's
+> >>>> either one or the other, but not both.
+> >>>>
+> >>>> So helpers should follow what is needed to provide a default vmap/vunmap
+> >>>> implementation, including what locking is expected from a vmap/vunmap
+> >>>> implementation.    
+> >>>
+> >>> Hm, yeah, I think that's a matter of taste. When locking is often
+> >>> deferrable, like it is in DRM, I find it beneficial for funcions and
+> >>> function pointers to reflect the locking scheme, rather than relying on
+> >>> people properly reading the doc, especially when this is the only
+> >>> outlier in the group of drm_gem_object_funcs we already have, and it's
+> >>> not event documented at the drm_gem_object_funcs level [1] :P.
+> >>>     
+> >>>>
+> >>>> If that means that vmap is always called with the locks taken, then
+> >>>> drm_gem_shmem_object_vmap can just assume that it will be called with
+> >>>> the locks taken and there's no need to mention it in the name (and you
+> >>>> can probably sprinkle a couple of lockdep assertion to make sure the
+> >>>> locking is indeed consistent).    
+> >>>
+> >>> Things get very confusing when you end up having drm_gem_shmem helpers
+> >>> that are suffixed with _locked() to encode the fact locking is the
+> >>> caller's responsibility and no suffix for the
+> >>> callee-takes-care-of-the-locking semantics, while other helpers that are
+> >>> not suffixed at all actually implement the
+> >>> caller-should-take-care-of-the-locking semantics.
+> >>>     
+> >>>>    
+> >>>>>> I'm not sure how reasonable it is, but I think I'd prefer to turn this
+> >>>>>> around and keep the drm_gem_shmem_object_vmap/unmap helpers name, and
+> >>>>>> convert whatever function needs to be converted to the unlock suffix so
+> >>>>>> we get a consistent naming.      
+> >>>>>
+> >>>>> That would be an _unlocked() prefix if we do it the other way around. I
+> >>>>> think the main confusion comes from the names of the hooks in
+> >>>>> drm_gem_shmem_funcs. Some of them, like drm_gem_shmem_funcs::v[un]map()
+> >>>>> are called with the GEM resv lock held, and locking is handled by the
+> >>>>> core, others, like drm_gem_shmem_funcs::[un]pin() are called
+> >>>>> without the GEM resv lock held, and locking is deferred to the
+> >>>>> implementation. As I said, I don't mind prefixing hooks/helpers with
+> >>>>> _unlocked() for those that take care of the locking, and no prefix for
+> >>>>> those that expects locks to be held, as long as it's consistent, but I
+> >>>>> just wanted to make sure we're on the same page :-).      
+> >>>>
+> >>>> What about _nolock then? It's the same number of characters than
+> >>>> _locked, plus it expresses what the function is (not) doing, not what
+> >>>> context it's supposed to be called in?    
+> >>>
+> >>> Just did a quick
+> >>>
+> >>>   git grep _nolock drivers/gpu/drm
+> >>>
+> >>> and it returns zero result, where the _locked/_unlocked pattern seems
+> >>> to already be widely used. Not saying we shouldn't change that, but it
+> >>> doesn't feel like a change we should do as part of this series.
+> >>>
+> >>> Regards,
+> >>>
+> >>> Boris
+> >>>
+> >>> [1]https://elixir.bootlin.com/linux/v6.7-rc3/source/include/drm/drm_gem.h#L155    
+> >>
+> >> I'm fine with dropping the _locked() postfix from the common GEM helpers
+> >> and documenting the locking rule in drm_gem. Thank you all for the
+> >> suggestions :)  
+> > 
+> > Sorry to disagree, but I think a proper function name/suffix is
+> > sometimes worth a few lines of doc. Not saying we should do one or the
+> > other, I think we should do both. But when I see a function suffixed
+> > _locked, _unlocked or _nolock, I can immediately tell if this function
+> > defers the locking to the caller or not, and then go check which lock
+> > in the function doc.
+> > 
+> > And the second thing I'm not happy with, is the fact we go back to an
+> > inconsistent naming in drm_gem_shmem_helper.c, where some functions
+> > deferring the locking to the caller are suffixed _locked and others are
+> > not, because ultimately, you need a different name when you expose the
+> > two variants...  
 > 
-> Dear Krzysztof,
-> 
-> 
-> On 2023/11/29 下午 06:02, Krzysztof Kozlowski wrote:
->> On 29/11/2023 10:41, Jacky Huang wrote:
->>> Dear Krzysztof,
->>>
->>>
->>> On 2023/11/29 下午 04:11, Krzysztof Kozlowski wrote:
->>>> On 29/11/2023 04:35, Jacky Huang wrote:
->>>>>>>> Best regards,
->>>>>>>> Krzysztof
->>>>>>>>
->>>>>>> Yes, it did pass the 'dtbs_check'. I guess the tool does not detect such
->>>>>>> issues.
->>>>>>> Anyway, I will fix it in the next version.
->>>>>> Hm, I see your bindings indeed allow pin-.* and unit addresses, so it is
->>>>>> the binding issue.
->>>>>>
->>>>>> The examples you used as reference - xlnx,zynqmp-pinctrl.yaml and
->>>>>> realtek,rtd1315e-pinctrl.yaml - do not mix these as you do.
->>>>>>
->>>>>> I don't understand why do you need them yet. I don't see any populate of
->>>>>> children. There are no compatibles, either.
->>>>>>
->>>>>> Which part of your driver uses them exactly?
->>>>>>
->>>>>> Best regards,
->>>>>> Krzysztof
->>>>>>
->>>>> I will move the 'pcfg_default: pin-default' from dtsi to dts, like this:
->>>>>
->>>>> &pinctrl {
->>>>>        pcfg_default: pin-default {
->>>>>            slew-rate = <0>;
->>>>>            input-schmitt-disable;
->>>>>            bias-disable;
->>>>>            power-source = <1>;
->>>>>            drive-strength = <17100>;
->>>>>        };
->>>> This solves nothing. It's the same placement.
->>>>
->>>>
->>>> Best regards,
->>>> Krzysztof
->>>>
->>> OK, it stil be the binding issues.
->>> For "^pin-[a-z0-9]+$", I reference to the "pcfg-[a-z0-9-]+$" of
->>> rockchip,pinctrl.yaml.
->>>
->>> My intention is to describe a generic pin configuration, aiming to make
->>> the pin
->>> description more concise. In actual testing, it proves to be effective.
->> Can you instead respond to my actual questions?
->>
->> Best regards,
->> Krzysztof
->>
-> 
-> The the last one item of nuvoton,pins is a phandle, which can refer to 
-> '&pin-default'. The following code of driver pinctrl-ma35.c parse 
-> "nuvoton,pins", including the node reference by phandle. list = 
-> of_get_property(np, "nuvoton,pins", &size); size /= sizeof(*list); if 
-> (!size || size % 4) { dev_err(npctl->dev, "wrong setting!\n"); return 
-> -EINVAL; } grp->npins = size / 4; grp->pins = devm_kzalloc(npctl->dev, 
-> grp->npins * sizeof(*grp->pins), GFP_KERNEL); if (!grp->pins) return 
-> -ENOMEM; pin = grp->settings = devm_kzalloc(npctl->dev, grp->npins * 
-> sizeof(*grp->settings), GFP_KERNEL); if (!grp->settings) return -ENOMEM; 
-> for (i = 0, j = 0; i < size; i += 4, j++) { struct device_node 
-> *np_config; const __be32 *phandle; pin->offset = be32_to_cpu(*list++) * 
-> MA35_MFP_REG_SZ_PER_BANK + MA35_MFP_REG_BASE; pin->shift = 
-> (be32_to_cpu(*list++) * MA35_MFP_BITS_PER_PORT) % 32; pin->muxval = 
-> be32_to_cpu(*list++); phandle = list++; if (!phandle) return -EINVAL; 
-> np_config = of_find_node_by_phandle(be32_to_cpup(phandle)); ret = 
-> pinconf_generic_parse_dt_config(np_config, NULL, &pin->configs, 
-> &pin->nconfigs); if (ret) return ret; grp->pins[j] = 
-> npctl->info->get_pin_num(pin->offset, pin->shift); pin++; } Best 
-> Regards, Jacky Huang
+> By the `common GEM helpers` I meant the .vmap drm-shmem common helpers
+> used for drm_gem_object_funcs, like was suggested by Maxime. The rest of
+> functions will retain the _locked part. Sorry for the confusion :)
 
-Sorry, I cannot parse it.
-
-I was referring to the children with unit addresses. I don't see any
-populate of the children, so why do you need them?
-
-There are no compatibles, either.
-
-Which part of your driver uses them exactly?
-
-Best regards,
-Krzysztof
-
+Well, even if it's just
+s/drm_gem_shmem_v[un]map_locked/drm_gem_shmem_v[un]map/, it's still
+inconsistent with the rest of the helpers we have there (_locked suffix
+for those deferring the locking to the caller, and no suffix when the
+lock is taken by the helper). To be clear, I won't block the patch
+because of that, but I still think this is the wrong move...
