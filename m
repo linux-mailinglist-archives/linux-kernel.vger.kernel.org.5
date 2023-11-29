@@ -2,161 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2AB77FCEEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 07:15:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 690787FCEFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 07:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344585AbjK2GPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 01:15:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39354 "EHLO
+        id S230312AbjK2GUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 01:20:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjK2GPJ (ORCPT
+        with ESMTP id S229563AbjK2GUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 01:15:09 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8707D91;
-        Tue, 28 Nov 2023 22:15:16 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1cfb30ce241so35466265ad.0;
-        Tue, 28 Nov 2023 22:15:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701238516; x=1701843316; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:cc:autocrypt:from:to
-         :content-language:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4Lq3C9nO6f+qHHUUwVu7uF7KiTmCoSI/+iHTACKV7B8=;
-        b=QVCa89LVtZPDaeDxdA6BEcV1WIkPQBN3cTtbb6VXD/oQ9TL0jJ3Anc4bxjMc9ZHMTo
-         NvD841Nxuwqb92A6yA2VjAeFgjwCigRbOpxXQC4mgNzGavhwMfLzXqXKGlB4UbYhr0LW
-         uLmIK2fOZZw9bawPKBvtqeyK0V6JBOqyi8evC2WJdbPSwnxErr+9/xA18CrXf2okcU56
-         LXWP10jojz4t8BFUI5wJ3C+mDQgEqyh3r4shV0c7PeZki3meG3wSYnLNS+fy/GZJ51Sv
-         zkfecUDz0+ifJbqDCprCmz5QeMatU8G9yMVkRcn5B/IJQwNpBWg5YXo9aLGhenGg9xXq
-         kKQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701238516; x=1701843316;
-        h=content-transfer-encoding:subject:cc:autocrypt:from:to
-         :content-language:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4Lq3C9nO6f+qHHUUwVu7uF7KiTmCoSI/+iHTACKV7B8=;
-        b=PG+qEo77BVcTHfYpMAj+cfI4C5gNUXoD4owlSlwTyY6TBWLVAMDGJpjss29Yw/hLPr
-         +ilgKtHaXkXxF6g4i/SJfaht1yanx7fz6XcKwr2aUVUv3m/9m38Y95v5JUHsxI01EqUk
-         WgErFFeI/pBz6kluSEpDfnjMfbgAFTMIws+Uk9SggPUP3oBwvg0iDBRcTXQsokaBVVKC
-         QcnJcW3oesBLL5BpsdatyBVBk1cDS8/y+UMiVuAGVkhef1PiEUKv1baNVvIAuELnLx6r
-         G3ItoUW0wWkYWQYzErL0ttM3Wh2wR8Si62ymJrX+kkWa9YU1woaeFh63+0P/YkX017nn
-         LkKg==
-X-Gm-Message-State: AOJu0YzKTG2lNra3MxV6/L7JyhZtYm9lUVB4T9/c+7LpAApyK3MfnrER
-        lfdvH9ean11LvvTdNkjr1Uo=
-X-Google-Smtp-Source: AGHT+IHFC0P6rO5vt6pfO33KskR0/fz+/sj25EV6y3XMdURzuiUbP3gvsspRFN0koZY+hVTD+aPLpA==
-X-Received: by 2002:a17:902:c405:b0:1cf:a70f:3a2d with SMTP id k5-20020a170902c40500b001cfa70f3a2dmr21668110plk.63.1701238515990;
-        Tue, 28 Nov 2023 22:15:15 -0800 (PST)
-Received: from ddawson.local ([2602:ae:1f39:3a00:aaa1:59ff:fe2b:a859])
-        by smtp.gmail.com with ESMTPSA id x17-20020a170902ea9100b001c5fd2a28d3sm11345526plb.28.2023.11.28.22.15.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 22:15:15 -0800 (PST)
-Received: from [127.0.0.1] (unknown [127.0.0.1])
-        by ddawson.local (Postfix) with ESMTP id D5F272DEA0B8;
-        Tue, 28 Nov 2023 22:15:14 -0800 (PST)
-Message-ID: <5189fe60-c3e3-4bc6-89d4-1033cf4337c3@gmail.com>
-Date:   Tue, 28 Nov 2023 22:15:09 -0800
+        Wed, 29 Nov 2023 01:20:19 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D770BC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 22:20:26 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D5D3FC433C9;
+        Wed, 29 Nov 2023 06:20:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701238825;
+        bh=wywDLsSU7iwTNOmigdxnxDtDCSA3ORpnWmHAGx50LVY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=UrEP/1Q1BA2mLZ+PALjBTcfo84tCunQ0NLZbeL2NDxZxdz6mGL/BPPsMbbiW2v6bV
+         AqYQbFJZxBeDcAoAHl70kzZIac434l/4M8jrTaEmmxP324dSWeaO4K8EyivvHmFDCi
+         MX8YjvZGegGrNXReU5GGDi2CGg1WKBKhtR8+WEqFvyq2HL7+YgZSjs6W82X5RHcUXZ
+         ew3ek47rqIoFuWpFnmxpXI81yY9r4B8pGtFflpK1EDu20jHyVdC9FR3/wHr+/Z3gx3
+         UNKjjzJxkMdZshWqKjsr2BiFE2Tm6KNAzNg4nrAVzyDAywBBrkT2WG35SOExyV5shT
+         jsSwXCUr9BtGQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BD00CDFAA89;
+        Wed, 29 Nov 2023 06:20:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-From:   Daniel Dawson <danielcdawson@gmail.com>
-Autocrypt: addr=danielcdawson@gmail.com; keydata=
- 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
- bi1gCpm8
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [inline_data] ext4: Stale flags before sync when convert to
- non-inline
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v5 0/3] selftests/bpf: Use pkg-config to determine ld
+ flags
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170123882577.32761.1092609140496107416.git-patchwork-notify@kernel.org>
+Date:   Wed, 29 Nov 2023 06:20:25 +0000
+References: <20231125084253.85025-1-akihiko.odaki@daynix.com>
+In-Reply-To: <20231125084253.85025-1-akihiko.odaki@daynix.com>
+To:     Akihiko Odaki <akihiko.odaki@daynix.com>
+Cc:     andrii@kernel.org, mykolal@fb.com, ast@kernel.org,
+        daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+        yonghong.song@linux.dev, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, shuah@kernel.org, terrelln@fb.com,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a file is converted from inline to non-inline, it has stale flags 
-until sync.
+Hello:
 
-If a file with inline data is written to such that it must become 
-non-inline, it temporarily appears to have the inline data flag and not 
-(if applicable) the extent flag. This is corrected on sync, but can 
-cause problems in certain situations.
+This series was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-Details:
+On Sat, 25 Nov 2023 17:42:49 +0900 you wrote:
+> When linking statically, libraries may require other dependencies to be
+> included to ld flags. In particular, libelf may require libzstd. Use
+> pkg-config to determine such dependencies.
+> 
+> V4 -> V5: Introduced variables LIBELF_CFLAGS and LIBELF_LIBS.
+>           (Daniel Borkmann)
+>           Added patch "selftests/bpf: Choose pkg-config for the target".
+> V3 -> V4: Added "2> /dev/null".
+> V2 -> V3: Added missing "echo".
+> V1 -> V2: Implemented fallback, referring to HOSTPKG_CONFIG.
+> 
+> [...]
 
-All that is needed to show this behavior is the following command:
+Here is the summary with links:
+  - [bpf-next,v5,1/3] selftests/bpf: Choose pkg-config for the target
+    https://git.kernel.org/bpf/bpf-next/c/2ce344b68916
+  - [bpf-next,v5,2/3] selftests/bpf: Override PKG_CONFIG for static builds
+    https://git.kernel.org/bpf/bpf-next/c/18f6f9de98d1
+  - [bpf-next,v5,3/3] selftests/bpf: Use pkg-config for libelf
+    https://git.kernel.org/bpf/bpf-next/c/8998a479fd96
 
-$ rm -r test-file; dd if=/dev/zero of=test-file bs=64 count=3 
-status=none; lsattr test-file
-
-Assuming extents are in use, this should show
-
---------------e------- test-file
-
-but instead shows
-
-------------------N--- test-file
-
-until test-file is synced. Despite this, the file is already non-inline 
-and is treated as such for most purposes.
-
-Why is this a problem? Because some code will fail under such a 
-condition, for example, lseek(..., SEEK_HOLE) will result in ENOENT. I 
-ran into this with Gentoo's Portage, which uses the call to handle 
-sparse files when copying. Sometimes, an ebuild creates a temporary file 
-that is quickly copied, and apparently the temporary is written in small 
-increments, triggering this.
-
-Here is a small program that reproduces the SEEK_HOLE problem (pass it 
-the pathname of a file to create):
-https://gist.github.com/ddawson/22cfd4cac32916f6f1dcc86f90eed21a
-
-Tested with kernel: 6.7.0-rc3 (also 6.6 series)
-/proc/version: Linux version 6.7.0-rc3 (ddawson@ddawson.local) (gcc 
-(Gentoo 13.2.1_p20231014 p8) 13.2.1 20231014, GNU ld (Gentoo 2.41 p2) 
-2.41.0) #4 SMP PREEMPT_DYNAMIC Tue Nov 28 20:09:05 PST 2023
-Operating System: Gentoo Linux
-uname -mi: x86_64 GenuineIntel
-.config: https://gist.github.com/ddawson/2f2e60c6e44a62047d7b7d99c7ce5632
-dmesg output: 
-https://gist.github.com/ddawson/026ea63f099ee3e0c301f522dff00764
-
+You are awesome, thank you!
 -- 
-PGP fingerprint: 5BBD5080FEB0EF7F142F8173D572B791F7B4422A
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
