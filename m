@@ -2,62 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 213CD7FE3A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 23:57:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 606DC7FE3FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 30 Nov 2023 00:06:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbjK2W5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 17:57:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44604 "EHLO
+        id S231515AbjK2XFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 18:05:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbjK2W5L (ORCPT
+        with ESMTP id S229575AbjK2XFJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 17:57:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ACB4112
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:57:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701298635;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=M48/RaAsJTO7wr3y4zLWEdz2znqhlD1yXGnQVky2YMc=;
-        b=MYPwv39imdDg5xuarVfl8pXkKQCtg917u4vXf9DgNU/kGh0KYXLmZNUca9/KMn7FbQiGL4
-        1gEYZAmy8406th21g0cOtvlR3NHxczMC3y4Un1GZBkxr9Ncdk7CrfLOj3KBgV8rPZMJv0A
-        aW9lwBr95nqgUiXbZPoF35HOPVpQegY=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-101-2K2r8STzP-OlTWufQKZ4IQ-1; Wed,
- 29 Nov 2023 17:57:12 -0500
-X-MC-Unique: 2K2r8STzP-OlTWufQKZ4IQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E41211C0515D;
-        Wed, 29 Nov 2023 22:57:11 +0000 (UTC)
-Received: from [10.22.34.102] (unknown [10.22.34.102])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9852436E2;
-        Wed, 29 Nov 2023 22:57:11 +0000 (UTC)
-Message-ID: <c0419245-42c8-4df1-9939-a98dd013699a@redhat.com>
-Date:   Wed, 29 Nov 2023 17:57:11 -0500
-MIME-Version: 1.0
+        Wed, 29 Nov 2023 18:05:09 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB43CD50;
+        Wed, 29 Nov 2023 15:05:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701299114; x=1732835114;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=+62qM3S3BjTWsNxe8NfXwkSUxFP5y4AvQgw59G0hzeU=;
+  b=oHRWbc13GhzI9nM6043TpYAx4lg9xf3bpz7WB7htJWJ9sgZvYHjfLfYK
+   QGx1s9ADwXUUINRHg3oHF3j+rh6MREmvZiNyoTXKpqIM/QbHj5SHo7UQV
+   fmhTZLJ9Hw1WAn0Bk8jV6kBr8+0b01KCncG0KSHlu3hikQTyWkisYAuwg
+   qMplfnbrksQyJ0unB393KWzwzuDW1oeBCabMJLKQyvKtEr02Lrtwf4UoD
+   rxNrElYkvSNra98KMgaGpnQCWTlRO8UjJWqi2a4z7HT/cEk8OLCObIsr8
+   hCuIjxVpVkmAzRmtf/esIZ/LHbnB9ymEwML0gSk3ugXGfDC1/dAZanZKQ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="459731446"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="459731446"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 15:05:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="887024347"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="887024347"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Nov 2023 15:05:04 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Wed, 29 Nov 2023 15:05:03 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Wed, 29 Nov 2023 15:05:03 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Wed, 29 Nov 2023 15:05:00 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=d/z6Rdqw0aSJaPckbTscNM0LgY68fruXR7bU90A3wL4hayI9wrNHsQJgA0OJ2PpSwGgEFFKy6rtP4DURUtTxfb8Dr8j+Ra859lkMbbaX7+QRCx/1b2T9oZF6lpdrm0bKEjREIyOae+PgBNtihRuEC/azwGb/dJV48NuQam4acNqqDID28x/kIHvw5AK5y5jLg7nqiI7m7W2J8gxYmacx8paR/A4KxKsLcxgOgs/2pMpsoCghEmNFNX1lhHwpa6sazn2ZEbvIPgF7vjeYKfGgKTgRD7hr5V3WvOUv8Sb9PRdIkVRvsSJwSCtflWqSvc0wzTtbq5B490um3edIlF9poQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rEt/rE7eZKrWiRNFCjBWn0BmkotHg0baqDu7TetOIKE=;
+ b=Yyqjh1+HXWn+c7KOrX7rwlIEYDQCYM4LnxOr81OgtP/dCZV/i04mqGW/jpw8m+3f8tGQWBN8OiPCXguxK4RaqQV13rFxUFSjAKRYtszQ61j4vnM+iIr0GQQ08/WK/vwrHOe9z37r0ONYp546R4uGscY0sY9+4lA+RyggIWp+qffVEVFXL4QjWdBdiStpgOz9auFGNsTizPNRsk1cZhZPsUQ8OMn49k6YdajvYkDO97BqCm+MtXbsogBbKt4J/MvjVw3T35RHvtiG7wCF0kGMAlqLInhmvElU3mei9pfubXbr8d6GMvCSBo6ViSHmujPO66DQvhH6yQ7I6R1kPPezEg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
+ by PH8PR11MB7965.namprd11.prod.outlook.com (2603:10b6:510:25c::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.22; Wed, 29 Nov
+ 2023 23:04:58 +0000
+Received: from CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::dbee:4787:6eeb:57f5]) by CO1PR11MB5089.namprd11.prod.outlook.com
+ ([fe80::dbee:4787:6eeb:57f5%4]) with mapi id 15.20.7046.023; Wed, 29 Nov 2023
+ 23:04:58 +0000
+Message-ID: <4aeebf95-cf12-4462-80c7-dd1dafddb611@intel.com>
+Date:   Wed, 29 Nov 2023 15:04:56 -0800
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm/kmemleak: Add cond_resched() to kmemleak_free_percpu()
+Subject: Re: [PATCH net v2] r8169: fix rtl8125b PAUSE frames blasting when
+ suspended
 Content-Language: en-US
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20231127194153.289626-1-longman@redhat.com>
- <ZWYPmCLi9XyUdCNT@arm.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <ZWYPmCLi9XyUdCNT@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     ChunHao Lin <hau@realtek.com>, <hkallweit1@gmail.com>
+CC:     <nic_swsd@realtek.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <grundler@chromium.org>, <stable@vger.kernel.org>
+References: <20231129155350.5843-1-hau@realtek.com>
+From:   Jacob Keller <jacob.e.keller@intel.com>
+In-Reply-To: <20231129155350.5843-1-hau@realtek.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+X-ClientProxiedBy: MW2PR16CA0045.namprd16.prod.outlook.com
+ (2603:10b6:907:1::22) To CO1PR11MB5089.namprd11.prod.outlook.com
+ (2603:10b6:303:9b::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PR11MB5089:EE_|PH8PR11MB7965:EE_
+X-MS-Office365-Filtering-Correlation-Id: ef9df4e5-afe4-48ed-e603-08dbf12f9be8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UQqykFxtizCzgmGdE/6pAS33J4grF9Sm/+vZPpi3Gcz7p07PVGbQLCYyb+lSGeCJqREa47KxdnVk4mUqDV/CV3/nvJ6q86wAsuUYUTgC8kzli3sOBG6jAPBukUTuOMLc2VY3e3PmZCKq/LHuHAs/QIA3E4Y7+2szBbdSmBcrbfqbou/n3O4Xcy/Hw0H6jYB3c0ekLc2NMmkczff1wKf/R7/Yrh1SFF2Iyv2uy60E7Uq3Yfav+VH7LxoFJy2i/I3c3xoc6ngGX1FllIpJJyhmKLHCFdggp0cRWT2dYC8HC3gVVrveTvVJO15wgie0gkD2wrBZ3gUt1YiEdkWFtr84Lo4f7qtNMLhw7W2SUoHbnKoEkxeKjSuZ8sF7+omp0VEYKlacUz35+5N9rdh3URM12vEL2HN75bPY4CqwVMrwGEy/zYLWeY4TjoOiI3qz6JLx2AKR6E259lESnPKYVlxPN/GwSV38Jc1nUS0zPtDeX2v8jSmjzSlv21S4v8FNIWolPDseVO674V+FJVnDJNuN0e9gr1SES6EiedjmFQcr2jArznQqUSQ78X8YNhq0ZjB+F83yJcHptREoSL61o9wLaopi5AVj3KAThv1AwJmUwW7tf9nOxp27whN+DQXjqw4fhMFIOnS8QN/GfZkxeLZ+MTNxo1H3Ccf6uDE1vng7+/iXgLHk4jnZEe+3Zo301JL4
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(396003)(136003)(346002)(366004)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(82960400001)(7416002)(38100700002)(5660300002)(15650500001)(2906002)(36756003)(41300700001)(202311291699003)(86362001)(31696002)(26005)(66556008)(66574015)(66946007)(66476007)(316002)(2616005)(83380400001)(6506007)(53546011)(6512007)(6486002)(31686004)(478600001)(8936002)(8676002)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MWlxc3pNS05vaEozcTgyME9QZzJHRzhYVytLNHdiUzczblYwV0t4MEh0M0dE?=
+ =?utf-8?B?UjNOdnFQK1M5WDNXWjV5K2xIdG1RWDR5eTZnMUxyT09aTGtUYUpOR2tTWjFs?=
+ =?utf-8?B?S0NDdGlwdjRYWXBFK0ZlRXJwOFE0YmpIcjRjV09GS3BPMzFaNXNTMTIva1Vw?=
+ =?utf-8?B?VU5qYnBMeERvNVdCQzcyZ1dwT2YzblFKU3l5T0VTZ0JMVFd3WHBSWFgwMStq?=
+ =?utf-8?B?M1YzamNLaDU0MUdlZlpReHBhWVE4STB4a2FJTEJDSERKdHN5TlpQMXpSY1VN?=
+ =?utf-8?B?eERSaDluM0JFb1c4Ry9BTlRKbnAvaWRNTVhZOXNKUm1IdzYxd1VoSVpQU0JM?=
+ =?utf-8?B?RWJ2b3p6Zk9JcGJlQmpGSnVEVHRUNFVtVlEvd1VQTHBmQzc0SzlQc20vR2xr?=
+ =?utf-8?B?V0FySzExSkkyWlBZRjFEMW9sMkZtZk9MZG15YkVBZWlNRGJPNmhOeDY5UGll?=
+ =?utf-8?B?aUE2ajVML2VYZG1adDBPU0liMU5RdjAvN1RESkQ3NEdnOWNPRkMrMTFmeGRy?=
+ =?utf-8?B?WTl2TDVJK0IweEo4a1FhaTIzbEFQN0NCSi9zRDZBR2NsR0tjaVlUQ2krVzJP?=
+ =?utf-8?B?MGE2aEtVV2U5MGFyZkt3cUU4ZEtnUlVxYTdPbUpBZHNobFVWTHFlVlRLQ1N1?=
+ =?utf-8?B?NUF0NnN5dHd2VjM1KzhzNUlhckZwTVd3QVNrSW5JdnQyNjFzY2FpQTBiR2Rx?=
+ =?utf-8?B?bmZYR2Nvc0lWN0hyZGZhNEdlcjNoUG9tVmJrUkk0S00zU3NoY3lwb0RwSmR1?=
+ =?utf-8?B?TWdKQ2poZlNDbVVaZENTa24zWU01STJnbk5WblVlRyt1YVZIOXNRZ0FVTStT?=
+ =?utf-8?B?OTcrMGVUd1V4NjRTUUZ1bFFRV2RHeUphREMyK2NWd3l4K09XRUxmbkV1RjVJ?=
+ =?utf-8?B?ZGROblhXaG55QkptNUlCOVp2WVF1SEZvcTFzZWk0N0hEcGJzRGpDY3VYWVB5?=
+ =?utf-8?B?RGdrb09Mci84TUtRQ01UczdPcURmUzhSM1FFT3RUWktQNXlHd0JuVmZSc2tn?=
+ =?utf-8?B?MmpjVk52ZEpWTy9YZlNQcjZkWHE0UisxS0xHeHA4ZFl3MG4ycHMweVR3WGV4?=
+ =?utf-8?B?Y3RXamZVT1dwemFmMDdMRk1GMUo0eTkyQm5TU0l4TDN4akFUeTRiU1hmUHdh?=
+ =?utf-8?B?YU9SUms2OEx6VVE4cysyczhGTXZ6NjYvTGI4MDVhcnVBc2IzMWVVcmh2WXlj?=
+ =?utf-8?B?STZ2ZGt2TGU5VWVoOWNTeCtDTDI1aVloZlFQSHlxcVRZcFowdU95UDBUMUxH?=
+ =?utf-8?B?NEVRaGJCSkRWemxnSkYwR2lnSFVvWEE2dUhyTVdHdmxoeWMybmNnVlFjYWEw?=
+ =?utf-8?B?dk1XVnBFQWluQktrS2tVTFRMd1VpQUNuZm9iWDBnVmY0TkZUTy9ENStzbzlt?=
+ =?utf-8?B?c0IvdHlZZG1TQU5tU2x6UHJaM3JlQ3Zqb2g0U0lzSGZBSTZmVGdpLzNRU1pD?=
+ =?utf-8?B?aHFLL1cvVjZoekZLMzNTMG9uM09XdzRTa1BFbU54NUg1WHR6OTRzY1BRNUxQ?=
+ =?utf-8?B?b2NWQWhzK1d3R3B5aXpCY3RJQ3VOaEdnTEIxd2E5WjZteHFyRWRrNE9DbVhC?=
+ =?utf-8?B?S1JvYWtIYU92VFpKamlENTVNV2hGcFFLU3hQMUNNSUo0c1BVa2NuKzNqSDZ1?=
+ =?utf-8?B?R1FhOGdDeXk5NkhWNGFlTC9oTVlHUmdGYkhLSG5jTEUrWWJmMFpzZU5qS3pJ?=
+ =?utf-8?B?WVdCVGpkNTA4K1lFTThPV3dSaUt0NGlqY1FLdUpCdTFOa1JvNzVzT3Z2ekZX?=
+ =?utf-8?B?cU9uRjJ3ZE9UMHliZ1Q2c0orblVDV1hEMHJaWG1ETS9FWUN4ZVRTeTRhY1pM?=
+ =?utf-8?B?TzRhT2dBUHo3UWtSSzhpdHpUdE8yYkxCb3IydFFmcXlTa045MGlqT08zVVNE?=
+ =?utf-8?B?SzFTK0xVc3R1Q0ZBZFhnb3ZUbkZXcnBpS1k1bFBwKys1VTRTRndnMVRkNGR0?=
+ =?utf-8?B?cVpKQnkxbWVYMGErVGxnZXY4Q0xtZU9mV0FFekNDWXFFdHU3RUVIcUZaZEJr?=
+ =?utf-8?B?S3hlV0dmZ2s2SWRodzMybDNnRDNoa1lDRnkzY2lDWi84dUtxSUcxeW1xbitE?=
+ =?utf-8?B?VWFkRmh5OVVRbTYrVEhzMHdnTlJ4Qko4WWRjMjA1eGIwcUxJUUdvTktQMEVk?=
+ =?utf-8?B?aFJQSVFmc1dvZ1NFQ0hLSlBTSE9yVEV3S1VVcVlxdXRtTWdHM3F4ZkhRQnJ4?=
+ =?utf-8?B?OVE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ef9df4e5-afe4-48ed-e603-08dbf12f9be8
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 23:04:58.5515
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Z1wFKWK8Qc2buph5rRJZGiQH8Qh/mpJLW6dZmC24KVH9xVHBwBQRlfDI0uk7d3nqCvVV2mJlG720vKmYA2QHrXf0XnAllNXHLap+lmRCAaQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB7965
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -66,518 +159,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/28/23 11:04, Catalin Marinas wrote:
-> On Mon, Nov 27, 2023 at 02:41:53PM -0500, Waiman Long wrote:
->>   /**
->>    * kmemleak_free_percpu - unregister a previously registered __percpu object
->>    * @ptr:	__percpu pointer to beginning of the object
->>    *
->>    * This function is called from the kernel percpu allocator when an object
->> - * (memory block) is freed (free_percpu).
->> + * (memory block) is freed (free_percpu). Since this function is inherently
->> + * slow especially on systems with a large number of CPUs, defer the actual
->> + * removal of kmemleak objects associated with the percpu pointer to a
->> + * workqueue if it is not in a task context.
->>    */
->>   void __ref kmemleak_free_percpu(const void __percpu *ptr)
->>   {
->> -	unsigned int cpu;
->> -
->>   	pr_debug("%s(0x%px)\n", __func__, ptr);
->>   
->> -	if (kmemleak_free_enabled && ptr && !IS_ERR(ptr))
->> -		for_each_possible_cpu(cpu)
->> -			delete_object_full((unsigned long)per_cpu_ptr(ptr,
->> -								      cpu));
->> +	if (!kmemleak_free_enabled || !ptr || IS_ERR(ptr))
->> +		return;
->> +
->> +	if (!in_task()) {
->> +		struct kmemleak_percpu_addr *addr;
->> +
->> +		addr = kzalloc(sizeof(*addr), GFP_ATOMIC);
->> +		if (addr) {
->> +			INIT_WORK(&addr->work, kmemleak_free_percpu_workfn);
->> +			addr->ptr = ptr;
->> +			queue_work(system_long_wq, &addr->work);
->> +			return;
->> +		}
-> We can't defer this freeing. It can mess up the kmemleak metadata if the
-> per-cpu pointer is re-allocated before kmemleak removed it from its
-> object tree.
->
-> The problem is looking up the object tree for each per-cpu offset. We
-> can make the percpu pointer handling O(1) since freeing is only done by
-> the main __percpu pointer, so that's the only one needing a look-up. So
-> far the per-cpu pointers are not tracked for leaking, only scanned.
->
-> We could just add the per_cpu_ptr(ptr, 0) to the kmemleak
-> object_tree_root but when scanning we don't have an inverse function to
-> get the __percpu pointer back and calculate the pointers for the other
-> CPUs (well, we could with some hacks but they are probably fragile).
->
-> What I came up with is a separate object_percpu_tree_root similar to the
-> object_phys_tree_root. The only reason for these additional trees is to
-> look up the kmemleak metadata when needed (usually freeing). They don't
-> contain objects that are tracked for actual leaking, only scanned. A
-> briefly tested patch below. I need to go through it again, update some
-> comments and write a commit log:
->
-> ---------------------8<---------------------------------
-> diff --git a/mm/kmemleak.c b/mm/kmemleak.c
-> index 1eacca03bedd..7446c9e0b8c8 100644
-> --- a/mm/kmemleak.c
-> +++ b/mm/kmemleak.c
-> @@ -178,6 +178,8 @@ struct kmemleak_object {
->   #define OBJECT_FULL_SCAN	(1 << 3)
->   /* flag set for object allocated with physical address */
->   #define OBJECT_PHYS		(1 << 4)
-> +/* flag set for per-CPU pointers */
-> +#define OBJECT_PERCPU		(1 << 5)
->   
->   /* set when __remove_object() called */
->   #define DELSTATE_REMOVED	(1 << 0)
-> @@ -206,6 +208,8 @@ static LIST_HEAD(mem_pool_free_list);
->   static struct rb_root object_tree_root = RB_ROOT;
->   /* search tree for object (with OBJECT_PHYS flag) boundaries */
->   static struct rb_root object_phys_tree_root = RB_ROOT;
-> +/* search tree for object (with OBJECT_PERCPU flag) boundaries */
-> +static struct rb_root object_percpu_tree_root = RB_ROOT;
->   /* protecting the access to object_list, object_tree_root (or object_phys_tree_root) */
->   static DEFINE_RAW_SPINLOCK(kmemleak_lock);
->   
-> @@ -298,7 +302,7 @@ static void hex_dump_object(struct seq_file *seq,
->   	const u8 *ptr = (const u8 *)object->pointer;
->   	size_t len;
->   
-> -	if (WARN_ON_ONCE(object->flags & OBJECT_PHYS))
-> +	if (WARN_ON_ONCE(object->flags & (OBJECT_PHYS | OBJECT_PERCPU)))
->   		return;
->   
->   	/* limit the number of lines to HEX_MAX_LINES */
-> @@ -392,6 +396,15 @@ static void dump_object_info(struct kmemleak_object *object)
->   		stack_depot_print(object->trace_handle);
->   }
->   
-> +static struct rb_root *object_tree(unsigned long objflags)
-> +{
-> +	if (objflags & OBJECT_PHYS)
-> +		return &object_phys_tree_root;
-> +	if (objflags & OBJECT_PERCPU)
-> +		return &object_percpu_tree_root;
-> +	return &object_tree_root;
-> +}
-> +
->   /*
->    * Look-up a memory block metadata (kmemleak_object) in the object search
->    * tree based on a pointer value. If alias is 0, only values pointing to the
-> @@ -399,10 +412,9 @@ static void dump_object_info(struct kmemleak_object *object)
->    * when calling this function.
->    */
->   static struct kmemleak_object *__lookup_object(unsigned long ptr, int alias,
-> -					       bool is_phys)
-> +					       unsigned int objflags)
->   {
-> -	struct rb_node *rb = is_phys ? object_phys_tree_root.rb_node :
-> -			     object_tree_root.rb_node;
-> +	struct rb_node *rb = object_tree(objflags)->rb_node;
->   	unsigned long untagged_ptr = (unsigned long)kasan_reset_tag((void *)ptr);
->   
->   	while (rb) {
-> @@ -431,7 +443,7 @@ static struct kmemleak_object *__lookup_object(unsigned long ptr, int alias,
->   /* Look-up a kmemleak object which allocated with virtual address. */
->   static struct kmemleak_object *lookup_object(unsigned long ptr, int alias)
->   {
-> -	return __lookup_object(ptr, alias, false);
-> +	return __lookup_object(ptr, alias, 0);
->   }
->   
->   /*
-> @@ -544,14 +556,14 @@ static void put_object(struct kmemleak_object *object)
->    * Look up an object in the object search tree and increase its use_count.
->    */
->   static struct kmemleak_object *__find_and_get_object(unsigned long ptr, int alias,
-> -						     bool is_phys)
-> +						     unsigned int objflags)
->   {
->   	unsigned long flags;
->   	struct kmemleak_object *object;
->   
->   	rcu_read_lock();
->   	raw_spin_lock_irqsave(&kmemleak_lock, flags);
-> -	object = __lookup_object(ptr, alias, is_phys);
-> +	object = __lookup_object(ptr, alias, objflags);
->   	raw_spin_unlock_irqrestore(&kmemleak_lock, flags);
->   
->   	/* check whether the object is still available */
-> @@ -565,7 +577,7 @@ static struct kmemleak_object *__find_and_get_object(unsigned long ptr, int alia
->   /* Look up and get an object which allocated with virtual address. */
->   static struct kmemleak_object *find_and_get_object(unsigned long ptr, int alias)
->   {
-> -	return __find_and_get_object(ptr, alias, false);
-> +	return __find_and_get_object(ptr, alias, 0);
->   }
->   
->   /*
-> @@ -575,9 +587,7 @@ static struct kmemleak_object *find_and_get_object(unsigned long ptr, int alias)
->    */
->   static void __remove_object(struct kmemleak_object *object)
->   {
-> -	rb_erase(&object->rb_node, object->flags & OBJECT_PHYS ?
-> -				   &object_phys_tree_root :
-> -				   &object_tree_root);
-> +	rb_erase(&object->rb_node, object_tree(object->flags));
->   	if (!(object->del_state & DELSTATE_NO_DELETE))
->   		list_del_rcu(&object->object_list);
->   	object->del_state |= DELSTATE_REMOVED;
-> @@ -585,11 +595,11 @@ static void __remove_object(struct kmemleak_object *object)
->   
->   static struct kmemleak_object *__find_and_remove_object(unsigned long ptr,
->   							int alias,
-> -							bool is_phys)
-> +							unsigned int objflags)
->   {
->   	struct kmemleak_object *object;
->   
-> -	object = __lookup_object(ptr, alias, is_phys);
-> +	object = __lookup_object(ptr, alias, objflags);
->   	if (object)
->   		__remove_object(object);
->   
-> @@ -603,13 +613,13 @@ static struct kmemleak_object *__find_and_remove_object(unsigned long ptr,
->    * by create_object().
->    */
->   static struct kmemleak_object *find_and_remove_object(unsigned long ptr, int alias,
-> -						      bool is_phys)
-> +						      unsigned int objflags)
->   {
->   	unsigned long flags;
->   	struct kmemleak_object *object;
->   
->   	raw_spin_lock_irqsave(&kmemleak_lock, flags);
-> -	object = __find_and_remove_object(ptr, alias, is_phys);
-> +	object = __find_and_remove_object(ptr, alias, objflags);
->   	raw_spin_unlock_irqrestore(&kmemleak_lock, flags);
->   
->   	return object;
-> @@ -648,7 +658,7 @@ static struct kmemleak_object *__alloc_object(gfp_t gfp)
->   }
->   
->   static int __link_object(struct kmemleak_object *object, unsigned long ptr,
-> -			 size_t size, int min_count, bool is_phys)
-> +			 size_t size, int min_count, unsigned int objflags)
->   {
->   
->   	struct kmemleak_object *parent;
-> @@ -661,7 +671,7 @@ static int __link_object(struct kmemleak_object *object, unsigned long ptr,
->   	INIT_HLIST_HEAD(&object->area_list);
->   	raw_spin_lock_init(&object->lock);
->   	atomic_set(&object->use_count, 1);
-> -	object->flags = OBJECT_ALLOCATED | (is_phys ? OBJECT_PHYS : 0);
-> +	object->flags = OBJECT_ALLOCATED | objflags;
->   	object->pointer = ptr;
->   	object->size = kfence_ksize((void *)ptr) ?: size;
->   	object->excess_ref = 0;
-> @@ -697,12 +707,11 @@ static int __link_object(struct kmemleak_object *object, unsigned long ptr,
->   	 * Only update min_addr and max_addr with object
->   	 * storing virtual address.
->   	 */
-> -	if (!is_phys) {
-> +	if (!(objflags & (OBJECT_PHYS | OBJECT_PERCPU))) {
->   		min_addr = min(min_addr, untagged_ptr);
->   		max_addr = max(max_addr, untagged_ptr + size);
->   	}
-> -	link = is_phys ? &object_phys_tree_root.rb_node :
-> -		&object_tree_root.rb_node;
-> +	link = &object_tree(objflags)->rb_node;
->   	rb_parent = NULL;
->   	while (*link) {
->   		rb_parent = *link;
-> @@ -724,8 +733,7 @@ static int __link_object(struct kmemleak_object *object, unsigned long ptr,
->   		}
->   	}
->   	rb_link_node(&object->rb_node, rb_parent, link);
-> -	rb_insert_color(&object->rb_node, is_phys ? &object_phys_tree_root :
-> -					  &object_tree_root);
-> +	rb_insert_color(&object->rb_node, object_tree(objflags));
->   	list_add_tail_rcu(&object->object_list, &object_list);
->   
->   	return 0;
-> @@ -737,7 +745,7 @@ static int __link_object(struct kmemleak_object *object, unsigned long ptr,
->    * object_phys_tree_root).
->    */
->   static void __create_object(unsigned long ptr, size_t size,
-> -				int min_count, gfp_t gfp, bool is_phys)
-> +				int min_count, gfp_t gfp, unsigned int objflags)
->   {
->   	struct kmemleak_object *object;
->   	unsigned long flags;
-> @@ -748,7 +756,7 @@ static void __create_object(unsigned long ptr, size_t size,
->   		return;
->   
->   	raw_spin_lock_irqsave(&kmemleak_lock, flags);
-> -	ret = __link_object(object, ptr, size, min_count, is_phys);
-> +	ret = __link_object(object, ptr, size, min_count, objflags);
->   	raw_spin_unlock_irqrestore(&kmemleak_lock, flags);
->   	if (ret)
->   		mem_pool_free(object);
-> @@ -758,14 +766,21 @@ static void __create_object(unsigned long ptr, size_t size,
->   static void create_object(unsigned long ptr, size_t size,
->   			  int min_count, gfp_t gfp)
->   {
-> -	__create_object(ptr, size, min_count, gfp, false);
-> +	__create_object(ptr, size, min_count, gfp, 0);
->   }
->   
->   /* Create kmemleak object which allocated with physical address. */
->   static void create_object_phys(unsigned long ptr, size_t size,
->   			       int min_count, gfp_t gfp)
->   {
-> -	__create_object(ptr, size, min_count, gfp, true);
-> +	__create_object(ptr, size, min_count, gfp, OBJECT_PHYS);
-> +}
-> +
-> +/* Create kmemleak object corresponding to a per-CPU allocation. */
-> +static void create_object_percpu(unsigned long ptr, size_t size,
-> +				 int min_count, gfp_t gfp)
-> +{
-> +	__create_object(ptr, size, min_count, gfp, OBJECT_PERCPU);
->   }
->   
->   /*
-> @@ -792,11 +807,11 @@ static void __delete_object(struct kmemleak_object *object)
->    * Look up the metadata (struct kmemleak_object) corresponding to ptr and
->    * delete it.
->    */
-> -static void delete_object_full(unsigned long ptr)
-> +static void delete_object_full(unsigned long ptr, unsigned int objflags)
->   {
->   	struct kmemleak_object *object;
->   
-> -	object = find_and_remove_object(ptr, 0, false);
-> +	object = find_and_remove_object(ptr, 0, objflags);
->   	if (!object) {
->   #ifdef DEBUG
->   		kmemleak_warn("Freeing unknown object at 0x%08lx\n",
-> @@ -812,7 +827,8 @@ static void delete_object_full(unsigned long ptr)
->    * delete it. If the memory block is partially freed, the function may create
->    * additional metadata for the remaining parts of the block.
->    */
-> -static void delete_object_part(unsigned long ptr, size_t size, bool is_phys)
-> +static void delete_object_part(unsigned long ptr, size_t size,
-> +			       unsigned int objflags)
->   {
->   	struct kmemleak_object *object, *object_l, *object_r;
->   	unsigned long start, end, flags;
-> @@ -826,7 +842,7 @@ static void delete_object_part(unsigned long ptr, size_t size, bool is_phys)
->   		goto out;
->   
->   	raw_spin_lock_irqsave(&kmemleak_lock, flags);
-> -	object = __find_and_remove_object(ptr, 1, is_phys);
-> +	object = __find_and_remove_object(ptr, 1, objflags);
->   	if (!object) {
->   #ifdef DEBUG
->   		kmemleak_warn("Partially freeing unknown object at 0x%08lx (size %zu)\n",
-> @@ -844,11 +860,11 @@ static void delete_object_part(unsigned long ptr, size_t size, bool is_phys)
->   	end = object->pointer + object->size;
->   	if ((ptr > start) &&
->   	    !__link_object(object_l, start, ptr - start,
-> -			   object->min_count, is_phys))
-> +			   object->min_count, objflags))
->   		object_l = NULL;
->   	if ((ptr + size < end) &&
->   	    !__link_object(object_r, ptr + size, end - ptr - size,
-> -			   object->min_count, is_phys))
-> +			   object->min_count, objflags))
->   		object_r = NULL;
->   
->   unlock:
-> @@ -879,11 +895,11 @@ static void paint_it(struct kmemleak_object *object, int color)
->   	raw_spin_unlock_irqrestore(&object->lock, flags);
->   }
->   
-> -static void paint_ptr(unsigned long ptr, int color, bool is_phys)
-> +static void paint_ptr(unsigned long ptr, int color, unsigned int objflags)
->   {
->   	struct kmemleak_object *object;
->   
-> -	object = __find_and_get_object(ptr, 0, is_phys);
-> +	object = __find_and_get_object(ptr, 0, objflags);
->   	if (!object) {
->   		kmemleak_warn("Trying to color unknown object at 0x%08lx as %s\n",
->   			      ptr,
-> @@ -901,16 +917,16 @@ static void paint_ptr(unsigned long ptr, int color, bool is_phys)
->    */
->   static void make_gray_object(unsigned long ptr)
->   {
-> -	paint_ptr(ptr, KMEMLEAK_GREY, false);
-> +	paint_ptr(ptr, KMEMLEAK_GREY, 0);
->   }
->   
->   /*
->    * Mark the object as black-colored so that it is ignored from scans and
->    * reporting.
->    */
-> -static void make_black_object(unsigned long ptr, bool is_phys)
-> +static void make_black_object(unsigned long ptr, unsigned int objflags)
->   {
-> -	paint_ptr(ptr, KMEMLEAK_BLACK, is_phys);
-> +	paint_ptr(ptr, KMEMLEAK_BLACK, objflags);
->   }
->   
->   /*
-> @@ -1046,8 +1062,6 @@ EXPORT_SYMBOL_GPL(kmemleak_alloc);
->   void __ref kmemleak_alloc_percpu(const void __percpu *ptr, size_t size,
->   				 gfp_t gfp)
->   {
-> -	unsigned int cpu;
-> -
->   	pr_debug("%s(0x%px, %zu)\n", __func__, ptr, size);
->   
->   	/*
-> @@ -1055,9 +1069,7 @@ void __ref kmemleak_alloc_percpu(const void __percpu *ptr, size_t size,
->   	 * (min_count is set to 0).
->   	 */
->   	if (kmemleak_enabled && ptr && !IS_ERR(ptr))
-> -		for_each_possible_cpu(cpu)
-> -			create_object((unsigned long)per_cpu_ptr(ptr, cpu),
-> -				      size, 0, gfp);
-> +		create_object_percpu((unsigned long)ptr, size, 0, gfp);
->   }
->   EXPORT_SYMBOL_GPL(kmemleak_alloc_percpu);
->   
-> @@ -1098,7 +1110,7 @@ void __ref kmemleak_free(const void *ptr)
->   	pr_debug("%s(0x%px)\n", __func__, ptr);
->   
->   	if (kmemleak_free_enabled && ptr && !IS_ERR(ptr))
-> -		delete_object_full((unsigned long)ptr);
-> +		delete_object_full((unsigned long)ptr, 0);
->   }
->   EXPORT_SYMBOL_GPL(kmemleak_free);
->   
-> @@ -1116,7 +1128,7 @@ void __ref kmemleak_free_part(const void *ptr, size_t size)
->   	pr_debug("%s(0x%px)\n", __func__, ptr);
->   
->   	if (kmemleak_enabled && ptr && !IS_ERR(ptr))
-> -		delete_object_part((unsigned long)ptr, size, false);
-> +		delete_object_part((unsigned long)ptr, size, 0);
->   }
->   EXPORT_SYMBOL_GPL(kmemleak_free_part);
->   
-> @@ -1129,14 +1141,10 @@ EXPORT_SYMBOL_GPL(kmemleak_free_part);
->    */
->   void __ref kmemleak_free_percpu(const void __percpu *ptr)
->   {
-> -	unsigned int cpu;
-> -
->   	pr_debug("%s(0x%px)\n", __func__, ptr);
->   
->   	if (kmemleak_free_enabled && ptr && !IS_ERR(ptr))
-> -		for_each_possible_cpu(cpu)
-> -			delete_object_full((unsigned long)per_cpu_ptr(ptr,
-> -								      cpu));
-> +		delete_object_full((unsigned long)ptr, OBJECT_PERCPU);
->   }
->   EXPORT_SYMBOL_GPL(kmemleak_free_percpu);
->   
-> @@ -1204,7 +1212,7 @@ void __ref kmemleak_ignore(const void *ptr)
->   	pr_debug("%s(0x%px)\n", __func__, ptr);
->   
->   	if (kmemleak_enabled && ptr && !IS_ERR(ptr))
-> -		make_black_object((unsigned long)ptr, false);
-> +		make_black_object((unsigned long)ptr, 0);
->   }
->   EXPORT_SYMBOL(kmemleak_ignore);
->   
-> @@ -1278,7 +1286,7 @@ void __ref kmemleak_free_part_phys(phys_addr_t phys, size_t size)
->   	pr_debug("%s(0x%px)\n", __func__, &phys);
->   
->   	if (kmemleak_enabled)
-> -		delete_object_part((unsigned long)phys, size, true);
-> +		delete_object_part((unsigned long)phys, size, OBJECT_PHYS);
->   }
->   EXPORT_SYMBOL(kmemleak_free_part_phys);
->   
-> @@ -1292,7 +1300,7 @@ void __ref kmemleak_ignore_phys(phys_addr_t phys)
->   	pr_debug("%s(0x%px)\n", __func__, &phys);
->   
->   	if (kmemleak_enabled)
-> -		make_black_object((unsigned long)phys, true);
-> +		make_black_object((unsigned long)phys, OBJECT_PHYS);
->   }
->   EXPORT_SYMBOL(kmemleak_ignore_phys);
->   
-> @@ -1303,7 +1311,7 @@ static bool update_checksum(struct kmemleak_object *object)
->   {
->   	u32 old_csum = object->checksum;
->   
-> -	if (WARN_ON_ONCE(object->flags & OBJECT_PHYS))
-> +	if (WARN_ON_ONCE(object->flags & (OBJECT_PHYS | OBJECT_PERCPU)))
->   		return false;
->   
->   	kasan_disable_current();
-> @@ -1459,7 +1467,6 @@ static void scan_object(struct kmemleak_object *object)
->   {
->   	struct kmemleak_scan_area *area;
->   	unsigned long flags;
-> -	void *obj_ptr;
->   
->   	/*
->   	 * Once the object->lock is acquired, the corresponding memory block
-> @@ -1472,14 +1479,27 @@ static void scan_object(struct kmemleak_object *object)
->   		/* already freed object */
->   		goto out;
->   
-> -	obj_ptr = object->flags & OBJECT_PHYS ?
-> -		  __va((phys_addr_t)object->pointer) :
-> -		  (void *)object->pointer;
-> +	if (object->flags & OBJECT_PERCPU) {
-> +		unsigned int cpu;
->   
-> -	if (hlist_empty(&object->area_list) ||
-> +		for_each_possible_cpu(cpu) {
-> +			void *start = per_cpu_ptr((void __percpu *)object->pointer, cpu);
-> +			void *end = start + object->size;
-> +
-> +			scan_block(start, end, object);
-> +
-> +			raw_spin_unlock_irqrestore(&object->lock, flags);
-> +			cond_resched();
-> +			raw_spin_lock_irqsave(&object->lock, flags);
-> +			if (!(object->flags & OBJECT_ALLOCATED))
-> +				break;
-> +		}
-> +	} else if (hlist_empty(&object->area_list) ||
->   	    object->flags & OBJECT_FULL_SCAN) {
-> -		void *start = obj_ptr;
-> -		void *end = obj_ptr + object->size;
-> +		void *start = object->flags & OBJECT_PHYS ?
-> +				__va((phys_addr_t)object->pointer) :
-> +				(void *)object->pointer;
-> +		void *end = start + object->size;
->   		void *next;
->   
->   		do {
-> @@ -1494,11 +1514,12 @@ static void scan_object(struct kmemleak_object *object)
->   			cond_resched();
->   			raw_spin_lock_irqsave(&object->lock, flags);
->   		} while (object->flags & OBJECT_ALLOCATED);
-> -	} else
-> +	} else {
->   		hlist_for_each_entry(area, &object->area_list, node)
->   			scan_block((void *)area->start,
->   				   (void *)(area->start + area->size),
->   				   object);
-> +	}
->   out:
->   	raw_spin_unlock_irqrestore(&object->lock, flags);
->   }
 
-The patch looks reasonable to me. It also has a side effect of reducing 
-the # of kmemleak objects to track especially for system with large 
-number of CPUs. Of course, we still need more testing to make sure that 
-it won't break anything.
 
-Cheers,
-Longman
+On 11/29/2023 7:53 AM, ChunHao Lin wrote:
+> When FIFO reaches near full state, device will issue pause frame.
+> If pause slot is enabled(set to 1), in this time, device will issue
+> pause frame only once. But if pause slot is disabled(set to 0), device
+> will keep sending pause frames until FIFO reaches near empty state.
+> 
+> When pause slot is disabled, if there is no one to handle receive
+> packets, device FIFO will reach near full state and keep sending
+> pause frames. That will impact entire local area network.
+> 
+> This issue can be reproduced in Chromebox (not Chromebook) in
+> developer mode running a test image (and v5.10 kernel):
+> 1) ping -f $CHROMEBOX (from workstation on same local network)
+> 2) run "powerd_dbus_suspend" from command line on the $CHROMEBOX
+> 3) ping $ROUTER (wait until ping fails from workstation)
+> 
+> Takes about ~20-30 seconds after step 2 for the local network to
+> stop working.
+> 
+> Fix this issue by enabling pause slot to only send pause frame once
+> when FIFO reaches near full state.
+> 
 
+Makes sense. Avoiding the spam is good. The naming is a bit confusing
+but I guess that comes from realtek datasheet?
+
+> Fixes: f1bce4ad2f1c ("r8169: add support for RTL8125")
+> Reported-by: Grant Grundler <grundler@chromium.org>
+> Tested-by: Grant Grundler <grundler@chromium.org>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: ChunHao Lin <hau@realtek.com>
+> ---
+> v2:
+> - update comment and title.
+> ---
+>  drivers/net/ethernet/realtek/r8169_main.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+> index 62cabeeb842a..bb787a52bc75 100644
+> --- a/drivers/net/ethernet/realtek/r8169_main.c
+> +++ b/drivers/net/ethernet/realtek/r8169_main.c
+> @@ -196,6 +196,7 @@ enum rtl_registers {
+>  					/* No threshold before first PCI xfer */
+>  #define	RX_FIFO_THRESH			(7 << RXCFG_FIFO_SHIFT)
+>  #define	RX_EARLY_OFF			(1 << 11)
+> +#define	RX_PAUSE_SLOT_ON		(1 << 11)	/* 8125b and later */
+
+This confuses me though: RX_EARLY_OFF is (1 << 11) as well.. Is that
+from a different set of devices? We're writing to the same register
+RxConfig here I think in both cases?
+
+Can you clarify if these are supposed to be the same bit?
+
+>  #define	RXCFG_DMA_SHIFT			8
+>  					/* Unlimited maximum PCI burst. */
+>  #define	RX_DMA_BURST			(7 << RXCFG_DMA_SHIFT)
+> @@ -2306,9 +2307,13 @@ static void rtl_init_rxcfg(struct rtl8169_private *tp)
+>  	case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_53:
+>  		RTL_W32(tp, RxConfig, RX128_INT_EN | RX_MULTI_EN | RX_DMA_BURST | RX_EARLY_OFF);
+>  		break;
+> -	case RTL_GIGA_MAC_VER_61 ... RTL_GIGA_MAC_VER_63:
+> +	case RTL_GIGA_MAC_VER_61:
+>  		RTL_W32(tp, RxConfig, RX_FETCH_DFLT_8125 | RX_DMA_BURST);
+>  		break;
+
+I assume there isn't a VER_62 between these?
+
+> +	case RTL_GIGA_MAC_VER_63:
+> +		RTL_W32(tp, RxConfig, RX_FETCH_DFLT_8125 | RX_DMA_BURST |
+> +			RX_PAUSE_SLOT_ON);
+
+We add RX_PAUSE_SLOT_ON now for RTL_GIGA_MAC_VER_63 in addition. Makes
+sense.
+> +		break;
+>  	default:
+>  		RTL_W32(tp, RxConfig, RX128_INT_EN | RX_DMA_BURST);
+>  		break;
