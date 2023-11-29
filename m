@@ -2,113 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 555817FD892
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:48:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E033A7FD895
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:49:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233950AbjK2Nsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 08:48:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48034 "EHLO
+        id S234419AbjK2Ns5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 08:48:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230405AbjK2Nsl (ORCPT
+        with ESMTP id S230405AbjK2Ns4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 08:48:41 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE193DD
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:48:47 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-54b8276361cso3856890a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:48:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701265726; x=1701870526; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+s2czFu1psUGazPlYYW6MqNEJ17MQXOhczIimjIdn4A=;
-        b=mwBX/M+0BIdl7zYuIcHSllccVklHY4vjcRUXmmpGNxXUyckZNGVbrQ9662ZkpBu74/
-         56jw2kwHx/cTdm04cSo/ncQfZ4aD3+jcBhbyraiNuSSebCiyzSRwu3lIGT255MXxFT86
-         CBqUnqxhEp8iB0I7rqB5bdVveTQeYTxbroU+v3Yb31XIMGvMGzipu5NswctQhct2iSlu
-         wuhJk5zeSd3GEe/Nd1VMYtW0XRzX2Ev9WgQPf9JoCkElKYUlHPcRyGtBern51EBfGznR
-         8S8cfDPhkhDku2GTX1DGbU9vknIFNCmGvbx2aBG9SX5tkcmw6HeqM9ZR7k4Qdta48e8r
-         RoBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701265726; x=1701870526;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+s2czFu1psUGazPlYYW6MqNEJ17MQXOhczIimjIdn4A=;
-        b=rZbcdqOmiFBUlB4hW8/xtR7PDIsZu5u1m0RF48wYBpg0GPy9FJnR0GeLgnexXhYspP
-         Dczile4WHmQ2USihe9lrg47Kaoh9feV6okqafE5g02QjcFTkb1OT82EnZ5xSJjBxl2/O
-         heCznPz0r3uXZy7lolg8XWBIl0lxvCZzsl/BOD3xRkpBhzZJwj85rTpa+OETDy23F+uY
-         xpmnhUZAKG1xRQBNcL8H8YwK+aNun9eLNYY2rtVT4xQXXspkKPNvgVE/0oA9BgU4K34K
-         qyOS9tT1SgAOWSzHWs75jjvUymRPrvA24ZdfZXqnjQoDt/wuHudODDMY+TmoP2PSMM6B
-         rZ8g==
-X-Gm-Message-State: AOJu0YxbE8RSxVpH3HqtxMWK2ik8ID5jPMhKvh2/9DL+U/gps7Hn1QX/
-        LlXsbwJuYIBJkrPuWIcxGBZC5A==
-X-Google-Smtp-Source: AGHT+IFsZgN/ib5jj6CxGYWelnMkFPQwOk2q6h9GoZgFVTeGCHCxSk6MPttE9B+MYM7L/MkCs3jOzg==
-X-Received: by 2002:a17:906:7c41:b0:a08:291c:62c9 with SMTP id g1-20020a1709067c4100b00a08291c62c9mr11826344ejp.5.1701265726230;
-        Wed, 29 Nov 2023 05:48:46 -0800 (PST)
-Received: from [192.168.209.173] (178235187166.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.166])
-        by smtp.gmail.com with ESMTPSA id f8-20020a17090624c800b009fd77d78f7fsm7910195ejb.116.2023.11.29.05.48.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 05:48:45 -0800 (PST)
-Message-ID: <ab9fa787-614b-462e-87f4-e56aaa21fa64@linaro.org>
-Date:   Wed, 29 Nov 2023 14:48:45 +0100
+        Wed, 29 Nov 2023 08:48:56 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0F410A;
+        Wed, 29 Nov 2023 05:49:01 -0800 (PST)
+Received: from [100.94.55.57] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: ehristev)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id C7C7E66022D0;
+        Wed, 29 Nov 2023 13:48:59 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1701265740;
+        bh=AEFqTHESreWvFes3Oi8QGFPQK85/cEPFr4HnYjAQlX0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=cUuv2QQ7a2t3pcM4o2QQlDbKfrWfCwYm7nUR6jz3cF88uylnnw8GbUA/OSwuIzv7P
+         Q/WqL5irFEtjcocTjOmltbeEGj3YJH5HNc7hzR7qEij38r0FLKRl0ofX1VZKenwiQA
+         fQy1uK0OcrVH+mbbRAyW7LSt6pMdUlDwjalGdQ1DQi8WFSUHGlkfL36Eb/6nJgAGgq
+         Q0AxsCZxWHFscegDIkGcKl5GkZnnxO5ZbmIraRv7GUozx3ZSRGfhTmga32toYK9n/7
+         s+4oM3ehp67VmO0FvahgClob6HxbLh4x6nlUlsBwBQzr8Sp0Drtx/TeV15P1YGVZ8d
+         QBr/9+2HzAMyg==
+Message-ID: <7b759141-ff2d-4cac-803e-120f31d2d556@collabora.com>
+Date:   Wed, 29 Nov 2023 15:48:57 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] arm64: dts: qcom: sm8650: add Soundwire controllers
+Subject: Re: [PATCH] pmdomain: mediatek: fix race condition in power on/power
+ off sequences
 Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>
-References: <20231129132247.63721-1-krzysztof.kozlowski@linaro.org>
- <20231129132247.63721-5-krzysztof.kozlowski@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20231129132247.63721-5-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-pm@vger.kernel.org
+Cc:     eballetbo@kernel.org, ulf.hansson@linaro.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+References: <20231129113120.4907-1-eugen.hristev@collabora.com>
+ <fd645c33-1b16-4825-b9ea-eecb578dd2a0@collabora.com>
+ <bf7ac271-1bda-4114-b080-4b20f857dbc2@collabora.com>
+ <80cbe288-2960-4937-be47-56610946695d@collabora.com>
+From:   Eugen Hristev <eugen.hristev@collabora.com>
+In-Reply-To: <80cbe288-2960-4937-be47-56610946695d@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -116,39 +63,240 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.11.2023 14:22, Krzysztof Kozlowski wrote:
-> Add nodes for LPASS Soundwire v2.0.0 controllers.  Use labels with
-> indices matching downstream DTS, to make any comparisons easier.
+On 11/29/23 15:37, AngeloGioacchino Del Regno wrote:
+> Il 29/11/23 14:28, Eugen Hristev ha scritto:
+>> On 11/29/23 14:52, AngeloGioacchino Del Regno wrote:
+>>> Il 29/11/23 12:31, Eugen Hristev ha scritto:
+>>>> It can happen that during the power off sequence for a power domain
+>>>> another power on sequence is started, and it can lead to powering on 
+>>>> and
+>>>> off in the same time for the similar power domain.
+>>>> This can happen if parallel probing occurs: one device starts 
+>>>> probing, and
+>>>> one power domain is probe deferred, this leads to all power domains 
+>>>> being
+>>>> rolled back and powered off, while in the same time another device 
+>>>> starts
+>>>> probing and requests powering on the same power domains or similar.
+>>>>
+>>>> This was encountered on MT8186, when the sequence is :
+>>>> Power on SSUSB
+>>>> Power on SSUSB_P1
+>>>> Power on DIS
+>>>>     -> probe deferred
+>>>> Power off DIS
+>>>> Power off SSUSB_P1
+>>>> Power off SSUSB
+>>>>
+>>>> During the sequence of powering off SSUSB, some new similar sequence 
+>>>> starts,
+>>>> and during the power on of SSUSB, clocks are enabled.
+>>>> In this case, powering off SSUSB fails from the first sequence, because
+>>>> power off ACK bit check times out (as clocks are powered back on by 
+>>>> the second
+>>>> sequence). In consequence, powering it on also times out, and it 
+>>>> leads to
+>>>> the whole power domain in a bad state.
+>>>>
+>>>> To solve this issue, added a mutex that locks the whole power 
+>>>> off/power on
+>>>> sequence such that it would never happen that multiple sequences try to
+>>>> enable or disable the same power domain in parallel.
+>>>>
+>>>> Fixes: 59b644b01cf4 ("soc: mediatek: Add MediaTek SCPSYS power 
+>>>> domains")
+>>>> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
+>>>
+>>> I don't think that it's a race between genpd_power_on() and 
+>>> genpd_power_off() calls
+>>> at all, because genpd *does* have locking after all... at least for 
+>>> probe and for
+>>> parents of a power domain (and more anyway).
+>>>
+>>> As far as I remember, what happens when you start .probe()'ing a 
+>>> device is:
+>>> platform_probe() -> dev_pm_domain_attach() -> genpd_dev_pm_attach()
+>>>
+>>> There, you end up with
+>>>
+>>>      if (power_on) {
+>>>          genpd_lock(pd);
+>>>          ret = genpd_power_on(pd, 0);
+>>>          genpd_unlock(pd);
+>>>      }
+>>>
+>>> ...but when you fail probing, you go with genpd_dev_pm_detach(), 
+>>> which then calls
+>>>
+>>>      /* Check if PM domain can be powered off after removing this 
+>>> device. */
+>>>      genpd_queue_power_off_work(pd);
+>>>
+>>> but even then, you end up being in a worker doing
+>>>
+>>>      genpd_lock(genpd);
+>>>      genpd_power_off(genpd, false, 0);
+>>>      genpd_unlock(genpd);
+>>>
+>>> ...so I don't understand why this mutex can resolve the situation 
+>>> here (also: are
+>>> you really sure that the race is solved like that?)
+>>>
+>>> I'd say that this probably needs more justification and a trace of 
+>>> the actual
+>>> situation here.
+>>>
+>>> Besides, if this really resolves the issue, I would prefer seeing 
+>>> variants of
+>>> scpsys_power_{on,off}() functions, because we anyway don't need to 
+>>> lock mutexes
+>>> during this driver's probe (add_subdomain calls scpsys_power_on()).
+>>> In that case, `scpsys_power_on_unlocked()` would be an idea... but 
+>>> still, please
+>>> analyze why your solution works, if it does, because I'm not convinced.
+>>
+>> What I see in my tests, is that a power on call for SSUSB domain 
+>> happens while the previous power off sequence did not yet complete, 
+>> most likely while it's waiting in readx_poll_timeout . This leads to 
+>> inconsistency of the power domain, not getting the ACKs next time a 
+>> power on attempt occurs.
+>>
+>> I understand what you say about locks, but in this case the powering 
+>> off is not called by the genpd itself, but rather it's called by the 
+>> rollback probe failed mechanism : when the probing fails, 
+>> scpsys_domain_cleanup() is called during the same probing session.
+>> Then it happens that probing begins again and previous cleanup is not 
+>> yet completed. I am not sure whether the lock is still held from the 
+>> previous run, but it's clearly not waiting for a lock to be released 
+>> to be called again.
+>>
 > 
-> Cc: Neil Armstrong <neil.armstrong@linaro.org>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/sm8650.dtsi | 226 +++++++++++++++++++++++++++
->  1 file changed, 226 insertions(+)
+> Sorry but I'm a bit lost now: is the problem about probe deferrals of 
+> the USB
+> driver, or about probe deferrals of the mtk-pm-domains driver?
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-> index cf663a18c9f0..148118e3fb0a 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-> @@ -2627,6 +2627,36 @@ lpass_wsa2macro: codec@6aa0000 {
->  			#sound-dai-cells = <1>;
->  		};
->  
-> +		swr3: soundwire@6ab0000 {
-> +			compatible = "qcom,soundwire-v2.0.0";
-> +			reg = <0 0x06ab0000 0 0x10000>;
-> +			interrupts = <GIC_SPI 171 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&lpass_wsa2macro>;
-> +			clock-names = "iface";
-> +			label = "WSA2";
-> +
-> +			pinctrl-names = "default";
-> +			pinctrl-0 = <&wsa2_swr_active>;
-property-n
-property-names
+> scpsys_domain_cleanup() is only called upon scpsys_probe() failure.
 
-lgtm otherwise
+You are right, my explanation was bad.
 
-Reviewed-by : Konrad Dybcio <konrad.dybcio@linaro.org>
+It happens during the mtk-pm-domains driver probe.
 
-Konrad
+Not all domains can power up, then everything is rolled back. and this 
+happens multiple times
+On rare occasions, it happens that another probing sequence starts while 
+the previous one was not finished .
+I mentioned devices because I had in mind the fact that each device 
+requires a power domain, and parallel probing of these devices causes a 
+call to mtk-pm-domains driver probe to be called from two different places.
+
+e.g. device 1 probes -> call mtk-pm-domains probe because it requires X 
+power domain
+
+device 2 probes -> call mtk-pm-domains probe because it requires Y power 
+domain.
+
+First attempt fails but not completed while second attempt starts.
+
+Maybe this is a better explanation of the situation ?
+> 
+>>>
+>>>> ---
+>>>>   drivers/pmdomain/mediatek/mtk-pm-domains.c | 24 
+>>>> +++++++++++++++++-----
+>>>>   1 file changed, 19 insertions(+), 5 deletions(-)
+>>>>
+>>>> diff --git a/drivers/pmdomain/mediatek/mtk-pm-domains.c 
+>>>> b/drivers/pmdomain/mediatek/mtk-pm-domains.c
+>>>> index d5f0ee05c794..4f136b47e539 100644
+>>>> --- a/drivers/pmdomain/mediatek/mtk-pm-domains.c
+>>>> +++ b/drivers/pmdomain/mediatek/mtk-pm-domains.c
+>>>> @@ -9,6 +9,7 @@
+>>>>   #include <linux/io.h>
+>>>>   #include <linux/iopoll.h>
+>>>>   #include <linux/mfd/syscon.h>
+>>>> +#include <linux/mutex.h>
+>>>>   #include <linux/of.h>
+>>>>   #include <linux/of_clk.h>
+>>>>   #include <linux/platform_device.h>
+>>>> @@ -56,6 +57,7 @@ struct scpsys {
+>>>>       struct device *dev;
+>>>>       struct regmap *base;
+>>>>       const struct scpsys_soc_data *soc_data;
+>>>> +    struct mutex mutex;
+>>>>       struct genpd_onecell_data pd_data;
+>>>>       struct generic_pm_domain *domains[];
+>>>>   };
+>>>> @@ -238,9 +240,13 @@ static int scpsys_power_on(struct 
+>>>> generic_pm_domain *genpd)
+>>>>       bool tmp;
+>>>>       int ret;
+>>>> +    mutex_lock(&scpsys->mutex);
+>>>> +
+>>>>       ret = scpsys_regulator_enable(pd->supply);
+>>>> -    if (ret)
+>>>> +    if (ret) {
+>>>> +        mutex_unlock(&scpsys->mutex);
+>>>>           return ret;
+>>>> +    }
+>>>>       ret = clk_bulk_prepare_enable(pd->num_clks, pd->clks);
+>>>>       if (ret)
+>>>> @@ -291,6 +297,7 @@ static int scpsys_power_on(struct 
+>>>> generic_pm_domain *genpd)
+>>>>               goto err_enable_bus_protect;
+>>>>       }
+>>>> +    mutex_unlock(&scpsys->mutex);
+>>>>       return 0;
+>>>>   err_enable_bus_protect:
+>>>> @@ -305,6 +312,7 @@ static int scpsys_power_on(struct 
+>>>> generic_pm_domain *genpd)
+>>>>       clk_bulk_disable_unprepare(pd->num_clks, pd->clks);
+>>>>   err_reg:
+>>>>       scpsys_regulator_disable(pd->supply);
+>>>> +    mutex_unlock(&scpsys->mutex);
+>>>>       return ret;
+>>>>   }
+>>>> @@ -315,13 +323,15 @@ static int scpsys_power_off(struct 
+>>>> generic_pm_domain *genpd)
+>>>>       bool tmp;
+>>>>       int ret;
+>>>> +    mutex_lock(&scpsys->mutex);
+>>>> +
+>>>>       ret = scpsys_bus_protect_enable(pd);
+>>>>       if (ret < 0)
+>>>> -        return ret;
+>>>> +        goto err_mutex_unlock;
+>>>>       ret = scpsys_sram_disable(pd);
+>>>>       if (ret < 0)
+>>>> -        return ret;
+>>>> +        goto err_mutex_unlock;
+>>>>       if (pd->data->ext_buck_iso_offs && MTK_SCPD_CAPS(pd, 
+>>>> MTK_SCPD_EXT_BUCK_ISO))
+>>>>           regmap_set_bits(scpsys->base, pd->data->ext_buck_iso_offs,
+>>>> @@ -340,13 +350,15 @@ static int scpsys_power_off(struct 
+>>>> generic_pm_domain *genpd)
+>>>>       ret = readx_poll_timeout(scpsys_domain_is_on, pd, tmp, !tmp, 
+>>>> MTK_POLL_DELAY_US,
+>>>>                    MTK_POLL_TIMEOUT);
+>>>>       if (ret < 0)
+>>>> -        return ret;
+>>>> +        goto err_mutex_unlock;
+>>>>       clk_bulk_disable_unprepare(pd->num_clks, pd->clks);
+>>>>       scpsys_regulator_disable(pd->supply);
+>>>> -    return 0;
+>>>> +err_mutex_unlock:
+>>>> +    mutex_unlock(&scpsys->mutex);
+>>>> +    return ret;
+>>>>   }
+>>>>   static struct
+>>>> @@ -700,6 +712,8 @@ static int scpsys_probe(struct platform_device 
+>>>> *pdev)
+>>>>           return PTR_ERR(scpsys->base);
+>>>>       }
+>>>> +    mutex_init(&scpsys->mutex);
+>>>> +
+>>>>       ret = -ENODEV;
+>>>>       for_each_available_child_of_node(np, node) {
+>>>>           struct generic_pm_domain *domain;
+>>>
+> 
+
