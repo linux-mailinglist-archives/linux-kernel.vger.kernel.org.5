@@ -2,43 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9D17FD2DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:36:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94BC37FD2E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:36:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbjK2Jfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 04:35:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41546 "EHLO
+        id S230184AbjK2Jgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 04:36:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjK2Jfi (ORCPT
+        with ESMTP id S230174AbjK2Jgb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 04:35:38 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B9F1171D;
-        Wed, 29 Nov 2023 01:35:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=GkiV3Yxh9yW7+tSda6S0fOmUrfZQDwNF4HZzW/LWK2U=; b=vVla0Ao5AFogSGekOYR75lUYB+
-        Wz72kQOv5TKzViyr1vPrtOyNZ7tZgJPhxg9LOWKD3w8loc1ijDV22n4sBBI6A/vRpKIkULdg/3EQi
-        um7nNW462hKx/C1aXwY7DfllsXqTP9FGcJhylcCsmssUjwDWwXAp3qJkHUOfswLLrLZWH0rc0UAN5
-        VwgxQOu2j7MnQU5FuXfajq6Xz8TncxEOa+VmYrV4KRsS3k1gO0jkCngx5DR4uqh8yexyo0Ol4gdMw
-        tQx8pnME4bEfD3ZXTu48xRiqlVng8ERKjWo1oi92LJ2YrWCDYBpL1Pug32141DgSIfWi/dp4W3iKk
-        jciHtp9g==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45320)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1r8Gyl-0008V6-2r;
-        Wed, 29 Nov 2023 09:35:35 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1r8Gyn-0003rd-IZ; Wed, 29 Nov 2023 09:35:37 +0000
-Date:   Wed, 29 Nov 2023 09:35:37 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Christian Marangi <ansuelsmth@gmail.com>
+        Wed, 29 Nov 2023 04:36:31 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF01C19A0;
+        Wed, 29 Nov 2023 01:36:36 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c87acba73bso86204641fa.1;
+        Wed, 29 Nov 2023 01:36:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701250595; x=1701855395; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vm1kAQ0JMuQUe3cnBM9Rhh/BzmqAbhh8B02CHm4+jb0=;
+        b=Bwvjkdm0WEuw3I/8evX6ZJnjQ+nCT1rLdo0WlX0FKe7+FCelZGgm7ieZd2msUhqTYE
+         jwcDjBp/WifLTUr4RPddS4YVnApq5+tf6IHsrjBl9s0YZbi9ROARoPlMTG3lLQxsO+Iq
+         UYJIGpJA1HfzkVUt02F9PPAFThjsqSMbDn7KZqBJkl2g2cteq+F1DpS2Ak7Xf+OlaiNA
+         VnMrEVWeAflAs7tQ8le4YKA7K9c14grHbJrmZAy7ZIPgYriHyXf50+dUzL68/OIYMio1
+         uM4Dt79D8WMauVD7UeblaNEeRQbmi2XHdHFNYPLng4FAof5Ft1SFkCuYpHkrr02ucTmt
+         qsvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701250595; x=1701855395;
+        h=in-reply-to:content-disposition:mime-version:references:subject:cc
+         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Vm1kAQ0JMuQUe3cnBM9Rhh/BzmqAbhh8B02CHm4+jb0=;
+        b=OCbYhBn3307HKS3f9ncbXDsmtTllM3qv40mpPrfdVg76WlZ9TIioPVGUOfsmsaEZ+e
+         oKwbqkS6CJRQD/nOHP5PNqLHFN74amqrCutgVuBOjfGOGcjDpjDOzHsikeSmlFPX4Er7
+         6uBpzuPehZPHYoDa4vTRzOpuW634SvO7Tq9rVXzDyDkjVljl14wTedVJv1T381fg2Igh
+         aquGIphtkyufrOyvHDCJh5koIDR/fLpFALDxO7ptNkq1Ib7pvNusg9zDg1NgEUatCCvC
+         57PWm52z6u7qn78dFUNQtfc9Ye/zB8lOLJLYyW1JXeXlrSdl+2V50YHxxkAIS+sLzHOt
+         zH7A==
+X-Gm-Message-State: AOJu0YyV6lGJxcqXvDZzr8WkS6PSFRQIGg85dhHPENRDNiThblbFYXuB
+        dh/MmR/TClsF7+BviwMfbSU=
+X-Google-Smtp-Source: AGHT+IEr3Vmw/i5n3af/FbTqT8x+NPR9LcEYvctICJCvZ1Uzas6jUPr0h3huY0LYDt2mJnzqmXX7cA==
+X-Received: by 2002:a2e:b707:0:b0:2c8:8b7c:c77a with SMTP id j7-20020a2eb707000000b002c88b7cc77amr11161552ljo.24.1701250594748;
+        Wed, 29 Nov 2023 01:36:34 -0800 (PST)
+Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
+        by smtp.gmail.com with ESMTPSA id fm21-20020a05600c0c1500b0040b398f0585sm1557066wmb.9.2023.11.29.01.36.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 01:36:34 -0800 (PST)
+Message-ID: <65670622.050a0220.4c0d0.3ee9@mx.google.com>
+X-Google-Original-Message-ID: <ZWcGH1IWG8Gs4Gyc@Ansuel-xps.>
+Date:   Wed, 29 Nov 2023 10:36:31 +0100
+From:   Christian Marangi <ansuelsmth@gmail.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
 Cc:     Andrew Lunn <andrew@lunn.ch>,
         Heiner Kallweit <hkallweit1@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -50,51 +65,48 @@ Cc:     Andrew Lunn <andrew@lunn.ch>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         linux-arm-msm@vger.kernel.org
-Subject: Re: [net-next PATCH 06/14] net: phy: at803x: move at8031 specific
- data out of generic at803x_priv
-Message-ID: <ZWcF6b/Py2gMmwmZ@shell.armlinux.org.uk>
+Subject: Re: [net-next PATCH 02/14] net: phy: at803x: move disable WOL for
+ 8031 from probe to config
 References: <20231129021219.20914-1-ansuelsmth@gmail.com>
- <20231129021219.20914-7-ansuelsmth@gmail.com>
+ <20231129021219.20914-3-ansuelsmth@gmail.com>
+ <ZWcDUJY8rM6uApO1@shell.armlinux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231129021219.20914-7-ansuelsmth@gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <ZWcDUJY8rM6uApO1@shell.armlinux.org.uk>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 03:12:11AM +0100, Christian Marangi wrote:
-> Rework everything related to specific at8031 function to specific
-> function and allocate the 2 bool, is_1000basex and is_fiber and the
-> regulator structs to a dedicated qca8031_data struct.
+On Wed, Nov 29, 2023 at 09:24:32AM +0000, Russell King (Oracle) wrote:
+> On Wed, Nov 29, 2023 at 03:12:07AM +0100, Christian Marangi wrote:
+> > Probe should be used only for DT parsing and allocate required priv, it
+> > shouldn't touch regs, there is config_init for that.
 > 
-> This is needed to keep at803x functions more generic and detach them
-> from specific check of at8031/33 PHY.
+> I'm not sure where you get that idea from. PHY driver probe() functions
+> are permitted to access registers to do any setup that they wish to.
 > 
-> Out of all the reworked functions, only config_aneg required some code
-> duplication with how the mdix config is handled.
+> config_init() is to configure the PHY for use with the network
+> interface.
 > 
-> This also reduces the generic at803x_priv struct by removing variables
-> only used by at8031 PHY.
+> I think this patch is just noise rather than a cleanup.
+>
 
-You are changing the order that register writes happen, e.g. for the
-set_wol() method. at803x_set_wol() very clearly does stuff like
-configuring the ethernet MAC address _before_ enabling WoL, and that
-can fail. Your new code enables WoL and then calls at803x_set_wol().
-If at803x_set_wol() fails (e.g. because of an invalid MAC address)
-you leave WoL enabled. This is a change of behaviour.
+I got it from here [1]
 
-I haven't checked anything else, but given the above, I think you
-need to think more about how you make this change, and check
-whether there are any other similar issues.
+Also on every other driver probe was always used for allocation and
+parsing so why deviates from this pattern here?
+
+Also I think it was wrong from the start as on reset I think WoL is
+not disabled again. (probe is not called)
+
+[1] https://elixir.bootlin.com/linux/latest/source/include/linux/phy.h#L916
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+	Ansuel
