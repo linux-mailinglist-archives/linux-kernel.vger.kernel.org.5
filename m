@@ -2,124 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B06D87FD181
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:58:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABCA57FD182
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:58:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232158AbjK2I6X convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Nov 2023 03:58:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41656 "EHLO
+        id S232544AbjK2I6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 03:58:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232049AbjK2I6T (ORCPT
+        with ESMTP id S232466AbjK2I6b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 03:58:19 -0500
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41A78F5
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:58:26 -0800 (PST)
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-5cd3c4457a0so63126057b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:58:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701248305; x=1701853105;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7R/KGp93btDjGWFKKu/IcOnp8F5jcJhWKyHePUJieV4=;
-        b=j7WfLoQHySsyRT6T1u1l++9JlQYmq385RWoHpp94O5IvFR5wFzPEQDbyc4ewaW67gC
-         tQhVNDiuaFv0sUvUrPdDRqoNPGY4aETRicLvzbG79aT4S1VrkyjTclhSVadRzG+yDrgb
-         jN5+E+Ruo+nLXbFh3vUs1fJwJILQ7SGIzai+1ldHNJWWVQddLgLeCtWYybUF+1BVBod3
-         8fG34StapXI2h/OxLdk7gdX59WFd1vPyO7Z5vtlX4i/a5mtICcAXAti2xECR+Bsuw6w/
-         ilpurCw0D+bZRCG5rC5HfQgwoVpBRpVh6SYUYyUGY1hrQ2RnnnjKcO5zXCE+qg1oLI4z
-         iYPw==
-X-Gm-Message-State: AOJu0Yxo2tE12ZgFdpHY5qMxKzCA6zLZTaEKhOaAcW23AXXcLXiyOSE0
-        QaPpz+Xbt+RISuNAk/RePsuuVmwieOxd1A==
-X-Google-Smtp-Source: AGHT+IGfHVrnc1/cQLNSJWQLLaz9bcz+B8IVeUnQh20GGKJIPP8xW9X0T8LFbGUZ55iTUUdPgGLvgw==
-X-Received: by 2002:a05:690c:3007:b0:5d0:3a64:4a2e with SMTP id ey7-20020a05690c300700b005d03a644a2emr8132416ywb.16.1701248305237;
-        Wed, 29 Nov 2023 00:58:25 -0800 (PST)
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com. [209.85.128.179])
-        by smtp.gmail.com with ESMTPSA id s64-20020a817743000000b005956b451fb8sm4372794ywc.100.2023.11.29.00.58.24
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 00:58:24 -0800 (PST)
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5cc589c0b90so65496987b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:58:24 -0800 (PST)
-X-Received: by 2002:a81:9a97:0:b0:5d2:b29a:5e08 with SMTP id
- r145-20020a819a97000000b005d2b29a5e08mr135066ywg.17.1701248304126; Wed, 29
- Nov 2023 00:58:24 -0800 (PST)
+        Wed, 29 Nov 2023 03:58:31 -0500
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2117.outbound.protection.outlook.com [40.107.8.117])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF4119B1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:58:33 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=h0ZT8Vsq5b29c31IiDnWVIF4xaUKeOGsNnDi7mfJca4Z+l8dQYuWscjPeNK/SY4TjsIxjkqTpKXCuDb1axEHtRjQhdUZ3wImxwe6mwBSrFeTKqBREp1HbbQ6bq1KKyVicwxx7hM4J8XI2iZUV8vV34QmH6SkVp1WXgpipjgHhFFfpOCdIHN/DHmbXEkApu44HyGCqVhmGeipdxKZ4QMFCfuBZE8fn0XnDV8wJ8vUB/cKT6Kth2ry27hxQNWFDSkmQdYe2nLYYk7y1XUY/e2rIKcpAVeS/CmSa5K/JkkQsHCWvPLGOQvBtPUkv8rOLz6cYs/lSR2CZqnF6hHa8goYGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=R6lxJwksEENWuftD2IvHCizDR2F4uY6lypZZ5ay/eBw=;
+ b=iBriLC5++nPWidFSKR8E0TgroyJT3+PvT5rWPf0sj7LT/xumJu8LdxP8X2CC+QejNUiHUJIjtGCOsk1RIttjIa0f5/OUAp1/WYHqEL83Fa5b04Wpc5oIKMsac9SJOar5eeCvXwzTGZ+pfcbz73V2oqhJdWIhAo/AZ0oMxe7RK0d9gMtufivGala8JyRS0BFVLjBa6CdL719HNRoOLtEoXb8eg+yfEQWyLIzff/e+/bgghxo+L7iRuQSjDhQeV55c7iNu9iNoJvQchyfELFCG64qdc/zRkR4ZLeRmNJGSYPNCtJa56eocPsO6E3YZ6EkyaiTOndaraJvzOfzuREJBJA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
+ dkim=pass header.d=prevas.dk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R6lxJwksEENWuftD2IvHCizDR2F4uY6lypZZ5ay/eBw=;
+ b=miUTksWfBjURc32jopX3zPacoRa/jp5RBVaSS4YRur911JmP/GEfjkXymWpIudtmmqOEivwfvAPfjwaXYetRCgN10Qjy1+0NXa1iiEXBCXZAwqBZUHebUZWdOTwGjl8+3CQCpSR+7kDo0ZR0LaykNDV1houooHR3xWkIF4fDroM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=prevas.dk;
+Received: from DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:45a::14)
+ by AS2PR10MB6664.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:55f::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.28; Wed, 29 Nov
+ 2023 08:58:26 +0000
+Received: from DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::8bd9:31bc:d048:af15]) by DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::8bd9:31bc:d048:af15%5]) with mapi id 15.20.7025.022; Wed, 29 Nov 2023
+ 08:58:26 +0000
+Message-ID: <713eb42d-114b-4738-92ab-242d73fe71ce@prevas.dk>
+Date:   Wed, 29 Nov 2023 09:58:23 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] checkpatch: don't complain on _Static_assert and _Generic
+ use
+Content-Language: en-US, da
+To:     Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org
+Cc:     Jacob Keller <jacob.e.keller@intel.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+References: <20231127151847.52945-1-przemyslaw.kitszel@intel.com>
+From:   Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+In-Reply-To: <20231127151847.52945-1-przemyslaw.kitszel@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MM0P280CA0056.SWEP280.PROD.OUTLOOK.COM
+ (2603:10a6:190:b::29) To DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:10:45a::14)
 MIME-Version: 1.0
-References: <b9360c2044a1001b9a5bcb5914611711d040d4fe.1701196029.git.geert+renesas@glider.be>
- <87o7fdbszs.fsf@minerva.mail-host-address-is-not-set> <CAMuHMdUhuO++ZSxh+_TX_6DHHxjPYY20jTppbNZ4FnuBvxxinQ@mail.gmail.com>
- <7hee65pmdl5pajm2kgqld22xfi4iox4s2psswu2mdlfk6u6f7x@w4ecogdx6uj6>
-In-Reply-To: <7hee65pmdl5pajm2kgqld22xfi4iox4s2psswu2mdlfk6u6f7x@w4ecogdx6uj6>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 29 Nov 2023 09:58:12 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVTZ8LT1yU3e1bbJODecy96TaMX1hq_swqmT6L+mbH3aQ@mail.gmail.com>
-Message-ID: <CAMuHMdVTZ8LT1yU3e1bbJODecy96TaMX1hq_swqmT6L+mbH3aQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/imagination: DRM_POWERVR should depend on ARCH_K3
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     Javier Martinez Canillas <javierm@redhat.com>,
-        Frank Binns <frank.binns@imgtec.com>,
-        Donald Robson <donald.robson@imgtec.com>,
-        Matt Coster <matt.coster@imgtec.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sarah Walker <sarah.walker@imgtec.com>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB9PR10MB7100:EE_|AS2PR10MB6664:EE_
+X-MS-Office365-Filtering-Correlation-Id: 07a90a9b-977a-4b90-a809-08dbf0b9597d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wExTd3cBia30UXue50OGEJbvAMfiOApWtARY0qPNzqfzcJuZZbUdLGaZLyTZRBhLkA23lRQIeoSGRGxBr8mJy+9bspYD9+iRNWZFjCFYpQcYt1ZOygQ4maL6LDb43TsIzEnSPpK3UAbNfo5gloZoqKbnAKm/ewyM2IpAse7oVPncQvVu0lC0S5Datg2oL9nOxACel27U5ty4SK/kTEt3cgceaJHfhSXGqfNKSL3b5JN/uAiHTRiOQE6f7d1uYzktc05Dt5HHoptFvDen4R8dlMBaMT84pYO484gnby/w4kIweVENn02JnBatC1SgTJduWGe1kIXs32hSajQU5mf7EOtysR/bZoQRdVfJctIZWifEIvJoRjCnax8hIbrABbdZnJW1OfPj1SHkWcWptMyzkJdnJ70Q6PxhnurbNJsrEWGAyoueJV8MI9odNeGogLBwsAfRfDrwOgXZ6ejSskZw6qvnSCwUCz+8M+T9jNuuaA4oVhINzkHPTcPDTG4pwcphau8ZD8ZoRM5zo9QoefaayahxNgjErfCnSm1M9IJXT01CrHT5PxqEt3Qrb8Mp8pINxcZyY+bcSh94n0MVmietgSHxIfECyDuMafuSM4rhvSVdjwZMHnHJJp36hGvTgISRA8bJQJUOHpAPo2ZzClwHqNU1mPQyCkMFLzjobimeD4I=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(39850400004)(346002)(136003)(396003)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(4744005)(4326008)(44832011)(2906002)(31686004)(41300700001)(8676002)(8936002)(8976002)(110136005)(316002)(66476007)(54906003)(66556008)(26005)(66946007)(6512007)(6666004)(2616005)(5660300002)(6506007)(86362001)(31696002)(38100700002)(6486002)(478600001)(36756003)(41533002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MTZyUmpxYVBIRnpSTGZraXZ5TUQ3SkVUc2cxS0tsVFlzQWIwQVl2TzR1dG9D?=
+ =?utf-8?B?VWlLR01aYkYzMGp4am92NEwwVXBPbnJDZE1aSU00VGhueTZtaWVYY2pnRGth?=
+ =?utf-8?B?TXNhYTdKUm9QWVN3RWxtRVVtSUIwYWdnRTREc2NwdlIxc2lnd2FuU1k1WS9U?=
+ =?utf-8?B?M1IxVjlMTVFjODNtdDdaWXc0ZEMzTlh2MWR0aC9CaW9TSmVzWDJhem5QT0ov?=
+ =?utf-8?B?ZnlvcUpoSDRRVnBGcWZpU2FKZHNtdTZCY0xodG1aNWtUR0xqNjFPRWpweE9a?=
+ =?utf-8?B?L29CZGxuWnhBdkZienc5U0pEdFFWZlMxbkNsdE5lMVRMQzFuZU5VdXd2UjMv?=
+ =?utf-8?B?YVFRZ0ZFVkYzSEZzblovZ0RqNmc5TDV6OXNZOWxXU0YzNHhjbDRXWnZkSy9p?=
+ =?utf-8?B?RU9Wc2trYzV5VVU3S2dIdm1UN1dpTlZGdU1oMnl3aE9RUmJ0Y2t2dzA4Nkhy?=
+ =?utf-8?B?UC9lSmFYTHRpbkFaak5hQW9JOWg4WlFDcXR5bFROWTNtbkI5K1A5aVBSVlBK?=
+ =?utf-8?B?MHovTWQwNndEYmtCeTZDTWl4ekdKcmkvZlc2OEZGL3ZoOGtDdDNSTG9nT2Mz?=
+ =?utf-8?B?aXorbm9ldjI4bjZpWG1melV5MUlnWVhGNUxHdmZJckIxSC9ISjJoYWlXZXpM?=
+ =?utf-8?B?ZlB2YWg5MFdheGQ5Q1FMZXNEdW5wVlJpNnA3bWNrejN6K3ZTSkt0QjBtSDBH?=
+ =?utf-8?B?MDQwRXlZMlRDSldHbnNsWHhDYXNBQ3luU2p1ZytnZ2R4K2JQMGI4MWMwMkVJ?=
+ =?utf-8?B?Uk1iZmlFWWNlbmZleWJkSVZ4Q21mMU03UDRBaHo2UlpBb3BxVGJMM0VNaW4z?=
+ =?utf-8?B?eCtIdG4zeEFqaHZleFdQRjNMWnpDcml2N3FjNTFFdjVBeUNPVHBhUDlobk5D?=
+ =?utf-8?B?SlQycEVjWHZmbi9Nd25mc05NK1NKSkVsMm9HZW1PVlF2RkIySW9EOXc5OEpX?=
+ =?utf-8?B?NmlEb05XU2dtMStWY0pKNDBnQ2N0YW1QQ2lBazhLQmF4RHFSZGZJUzRSaTQ2?=
+ =?utf-8?B?SnVDVlhaM1dhWnBUK3VxRWlXM3BtbnV0R0Y1NjhjbDhGN1lxUnh4QzZ2bUJL?=
+ =?utf-8?B?Q1BWMnVORm43VjV2aklaSVpqWmQxQS9vOUdXc0NydVQ4ZHVnZWtHZy9PWVRD?=
+ =?utf-8?B?ZXVQMlZ5TWcxTHZwUTZHNWlVQ1BKUHU1eEtEUmpwcTU4Y3ExRDRiZjJzTTBw?=
+ =?utf-8?B?U1FsUWFDbzRCM20xWWp0NXIxcU13anBQVFBDelNiWUpXRnhSb1cxZW9Xb1FD?=
+ =?utf-8?B?YTNYQjUwSjgzVmFmSms3RHRodVY4ZG43SFpDL2NtWkFqWFFLNkpIMjBSclhI?=
+ =?utf-8?B?aW90TWRRSWI0cFJ3VlV5ZkRKaUxQVkt6dlQ0M1hKb1lJbHBJYlJSTFJBM0xz?=
+ =?utf-8?B?Ti9jMm1lNm8zb3VtNHlHOXRodUhtVkpuQkZ6MFNMR1ROYTlnajBtenVFOWo3?=
+ =?utf-8?B?Ny96STBPQml1b2NjWDY0U0tIaXozUng5bGZoTEpYUTByVUh6akgrWDROZG9p?=
+ =?utf-8?B?Y1Y3QUYrR21aQTA5WGpIejRaUlg3ZTAweHpBYWdJQ1RXeVBTRmpjMTNwLy9o?=
+ =?utf-8?B?allsRTlCSGFENlpYMmtzMWJEZHhqRzc2SzcyMkV1Z0J3eDdKYk5CdTBXbyt3?=
+ =?utf-8?B?L2pvZFh3TURsc0NOdEtaL29rRmx1NHE0eXBubkVFeTcxRGdwTDNTTjZPZm80?=
+ =?utf-8?B?ZklnUmVEbzJXZEQydVlwTmdadlhoQ2QySTgzVFExUko4QUlOT3lNSDNLRVhx?=
+ =?utf-8?B?dEs0MkJTRFhKUzJEM1NPdFUrMTduS21RL1lZUDdmTVRNV09LcHBMVzZ5S2lo?=
+ =?utf-8?B?VUNZNTNJNVpsa0NyMWpwd1YxaFpaWS9HUXBYdFpkVFdKQWxHa3hyUUNnVU0r?=
+ =?utf-8?B?NThmSWZQZ2tVZzFyZXJYbGFvb2tSUFh2TnR3eERibnhwVGdQaDhJcE83T1Qz?=
+ =?utf-8?B?UkNVYXJwa2NTQUl6b3RVM3Q0Q2FEQ1BKb1hJQ3drREo3NFVxS3h1ZTlCc3hk?=
+ =?utf-8?B?Ti84R1Fwc3BzVTlZSloxY0kwNjNqVnMzRGUzNVFXZnFuTUpLblZwcmdkSWVz?=
+ =?utf-8?B?TFl6ME5mcmN2NDJCK3NFUGRkVFZ4by90aVNhV2VIR1ErbzdkZXNYOGUxa3hT?=
+ =?utf-8?B?SGg1bUlGL3FiZ1hvL0dNNTlPUmlmNXZMZVBkU0VleXRtZGdxYmhVczRZakUx?=
+ =?utf-8?B?YUE9PQ==?=
+X-OriginatorOrg: prevas.dk
+X-MS-Exchange-CrossTenant-Network-Message-Id: 07a90a9b-977a-4b90-a809-08dbf0b9597d
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR10MB7100.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 08:58:26.5283
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rAxxnIVymq3bC5f5uv6RUnc1suDYSsrSvRfVX7WipB2ZvKC7T9fs0iWQ+sZr/Ryh3EX8JvXGqZ+rrj7PDShfXpyJVrZt2owxNeVDY3YIiEA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR10MB6664
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
+On 27/11/2023 16.18, Przemek Kitszel wrote:
+> Improve CamelCase recognition logic to avoid reporting on _Static_assert()
+> and _Generic() use.
+> 
 
-On Wed, Nov 29, 2023 at 9:35 AM Maxime Ripard <mripard@kernel.org> wrote:
-> On Tue, Nov 28, 2023 at 08:16:18PM +0100, Geert Uytterhoeven wrote:
-> > On Tue, Nov 28, 2023 at 8:03 PM Javier Martinez Canillas
-> > <javierm@redhat.com> wrote:
-> > > Geert Uytterhoeven <geert+renesas@glider.be> writes:
-> > > > The Imagination Technologies PowerVR Series 6 GPU is currently only
-> > > > supported on Texas Instruments K3 AM62x SoCs.  Hence add a dependency on
-> > > > ARCH_K3, to prevent asking the user about this driver when configuring a
-> > > > kernel without Texas Instruments K3 Multicore SoC support.
-> > > >
-> > > > Fixes: 4babef0708656c54 ("drm/imagination: Add skeleton PowerVR driver")
-> > > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+_Generic I understand, because that can reasonably be used in new macros.
 
-> > > In any case, I agree with you that restricting to only K3 makes sense.
-> >
-> > I am looking forward to adding || SOC_AM33XX || ARCH_RENESAS || ...,
-> > eventually ;-)
->
-> I disagree. This is to handle a generic IP, just like panfrost, lima, or
-> etnaviv, and we certaintly don't want to maintain the Kconfig list of
-> every possible architecture and SoC family it might or might not be
-> found.
+But is there ever any reason for introducing new uses of _Static_assert
+when we already have the static_assert() wrapper? Shouldn't people use
+that instead of the raw keyword?
 
-While PowerVR is a generic IP, I believe it needs a non-generic
-firmware, which is currently only available for AM62x SoCs.
-Once it becomes truly generic, I'm happy to drop all platform
-dependencies.  Until then, there is no point in asking everyone who
-configures an arm64 kernel about this driver, unless they also enabled
-K3 support.
+> Other C keywords, such as _Bool, are intentionally omitted, as those
+> should be rather avoided in new source code.
 
-Gr{oetje,eeting}s,
+... in exactly the same way that we have 'typedef _Bool bool;' and then
+prefer people to spell it 'bool'.
 
-                        Geert
+Rasmus
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
