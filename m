@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28FBC7FD326
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D1F7FD32F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:48:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbjK2JsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 04:48:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40300 "EHLO
+        id S230305AbjK2Js3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 04:48:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjK2JsE (ORCPT
+        with ESMTP id S229873AbjK2JsF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 04:48:04 -0500
+        Wed, 29 Nov 2023 04:48:05 -0500
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E810D1999;
-        Wed, 29 Nov 2023 01:48:09 -0800 (PST)
-Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SgDtj25spzsRSW;
-        Wed, 29 Nov 2023 17:44:29 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 031A819AB;
+        Wed, 29 Nov 2023 01:48:10 -0800 (PST)
+Received: from kwepemi500006.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SgDyJ4hZ5zvR8t;
+        Wed, 29 Nov 2023 17:47:36 +0800 (CST)
 Received: from localhost.localdomain (10.67.165.2) by
  kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -26,9 +26,9 @@ From:   Junxian Huang <huangjunxian6@hisilicon.com>
 To:     <jgg@ziepe.ca>, <leon@kernel.org>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
         <linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
-Subject: [PATCH for-rc 1/6] RDMA/hns: Rename the interrupts
-Date:   Wed, 29 Nov 2023 17:44:29 +0800
-Message-ID: <20231129094434.134528-2-huangjunxian6@hisilicon.com>
+Subject: [PATCH for-rc 2/6] RDMA/hns: Response dmac to userspace
+Date:   Wed, 29 Nov 2023 17:44:30 +0800
+Message-ID: <20231129094434.134528-3-huangjunxian6@hisilicon.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20231129094434.134528-1-huangjunxian6@hisilicon.com>
 References: <20231129094434.134528-1-huangjunxian6@hisilicon.com>
@@ -48,53 +48,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chengchang Tang <tangchengchang@huawei.com>
+While creating AH, dmac is already resolved in kernel. Response dmac
+to userspace so that userspace doesn't need to resolve dmac repeatedly.
 
-Now, different devices may have the same interrupt name, which
-makes it difficult for users to distinguish between these
-interrupts.
-
-Modify the naming style to be consistent with our network devices.
-Before:
-"hns-aeq-0"
-"hns-ceq-0"
-...
-
-Now:
-"hns-0000:35:00.0-aeq-0"
-"hns-0000:35:00.0-ceq-0"
-...
-
-Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
 Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_ah.c | 7 +++++++
+ include/uapi/rdma/hns-abi.h             | 5 +++++
+ 2 files changed, 12 insertions(+)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 2bca9560f32d..1ceeedfa225f 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -6457,15 +6457,16 @@ static int __hns_roce_request_irq(struct hns_roce_dev *hr_dev, int irq_num,
- 	/* irq contains: abnormal + AEQ + CEQ */
- 	for (j = 0; j < other_num; j++)
- 		snprintf((char *)hr_dev->irq_names[j], HNS_ROCE_INT_NAME_LEN,
--			 "hns-abn-%d", j);
-+			 "hns-%s-abn-%d", pci_name(hr_dev->pci_dev), j);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_ah.c b/drivers/infiniband/hw/hns/hns_roce_ah.c
+index 3df032ddda18..e839a83c4b8f 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_ah.c
++++ b/drivers/infiniband/hw/hns/hns_roce_ah.c
+@@ -57,6 +57,7 @@ int hns_roce_create_ah(struct ib_ah *ibah, struct rdma_ah_init_attr *init_attr,
+ 	struct rdma_ah_attr *ah_attr = init_attr->ah_attr;
+ 	const struct ib_global_route *grh = rdma_ah_read_grh(ah_attr);
+ 	struct hns_roce_dev *hr_dev = to_hr_dev(ibah->device);
++	struct hns_roce_ib_create_ah_resp resp = {};
+ 	struct hns_roce_ah *ah = to_hr_ah(ibah);
+ 	int ret = 0;
+ 	u32 max_sl;
+@@ -97,6 +98,12 @@ int hns_roce_create_ah(struct ib_ah *ibah, struct rdma_ah_init_attr *init_attr,
+ 		ah->av.vlan_en = ah->av.vlan_id < VLAN_N_VID;
+ 	}
  
- 	for (j = other_num; j < (other_num + aeq_num); j++)
- 		snprintf((char *)hr_dev->irq_names[j], HNS_ROCE_INT_NAME_LEN,
--			 "hns-aeq-%d", j - other_num);
-+			 "hns-%s-aeq-%d", pci_name(hr_dev->pci_dev), j - other_num);
++	if (udata) {
++		memcpy(resp.dmac, ah_attr->roce.dmac, ETH_ALEN);
++		ret = ib_copy_to_udata(udata, &resp,
++				       min(udata->outlen, sizeof(resp)));
++	}
++
+ 	return ret;
+ }
  
- 	for (j = (other_num + aeq_num); j < irq_num; j++)
- 		snprintf((char *)hr_dev->irq_names[j], HNS_ROCE_INT_NAME_LEN,
--			 "hns-ceq-%d", j - other_num - aeq_num);
-+			 "hns-%s-ceq-%d", pci_name(hr_dev->pci_dev),
-+			 j - other_num - aeq_num);
+diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
+index ce0f37f83416..c996e151081e 100644
+--- a/include/uapi/rdma/hns-abi.h
++++ b/include/uapi/rdma/hns-abi.h
+@@ -125,4 +125,9 @@ struct hns_roce_ib_alloc_pd_resp {
+ 	__u32 pdn;
+ };
  
- 	for (j = 0; j < irq_num; j++) {
- 		if (j < other_num)
++struct hns_roce_ib_create_ah_resp {
++	__u8 dmac[6];
++	__u8 reserved[2];
++};
++
+ #endif /* HNS_ABI_USER_H */
 -- 
 2.30.0
 
