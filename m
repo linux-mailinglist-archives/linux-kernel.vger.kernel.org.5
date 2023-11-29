@@ -2,157 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1DC87FDADA
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:11:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5027FDADC
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:12:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231296AbjK2PL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 10:11:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48660 "EHLO
+        id S233187AbjK2PMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 10:12:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230489AbjK2PLT (ORCPT
+        with ESMTP id S230489AbjK2PL7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 10:11:19 -0500
-X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 29 Nov 2023 07:11:25 PST
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F1CA3;
-        Wed, 29 Nov 2023 07:11:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701270686; x=1732806686;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+WmXrJbd+4V27ux01qGWHb6jKBIycuX+25UjSdydb/I=;
-  b=H2BP+IkYuW3BxhwKR0bIzT/geZs7X8pGilk4etDN7bJGROnTX0ZbJtzX
-   MVxfMZvh1RqaYri3twMfU1KHotqyT0pAKXtYYByofonYDJecsTNwYJ1p3
-   y45V5bKj/zV2GIVvUlm9YZbJLfFNCsfBXshKnYHGq3PaZbrJ238YSYaT4
-   H8TtPw23Obh46DGz+K+hVLYg65S4GLpACXcSRvLIU2Fb77dz819gi9tQB
-   UYaW+68ILcm/00CzVphkl9EfYyrYeSrIUJj4h9TZGgjNdVsYWOCcX+098
-   ID5XhADax4t4apkxMypjfLlc4uLOaT2fvpgvCrwxSAIXagJyjwKf2j7iP
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="162829"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="162829"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 07:10:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="1016292536"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="1016292536"
-Received: from padamowi-mobl1.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.60.113])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 07:10:16 -0800
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id E10D010A424; Wed, 29 Nov 2023 18:10:12 +0300 (+03)
-Date:   Wed, 29 Nov 2023 18:10:12 +0300
-From:   "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
-To:     Michael Kelley <mhklinux@outlook.com>
-Cc:     "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "decui@microsoft.com" <decui@microsoft.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "urezki@gmail.com" <urezki@gmail.com>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "lstoakes@gmail.com" <lstoakes@gmail.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "jroedel@suse.de" <jroedel@suse.de>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH v2 0/8] x86/coco: Mark CoCo VM pages not present when
- changing encrypted state
-Message-ID: <20231129151012.4un33hvk4nrsicou@box>
-References: <20231121212016.1154303-1-mhklinux@outlook.com>
- <20231124100627.avltdnuhminwuzax@box>
- <SN6PR02MB415717E09C249A31F2A4E229D4BCA@SN6PR02MB4157.namprd02.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SN6PR02MB415717E09C249A31F2A4E229D4BCA@SN6PR02MB4157.namprd02.prod.outlook.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 29 Nov 2023 10:11:59 -0500
+Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.215])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D3C7EBE;
+        Wed, 29 Nov 2023 07:12:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=feMp/yQdhv1cPkfaZT
+        swMPfvGgf29QwDsfVs7q/7umg=; b=meQcnt+xpXwd4m9WQE94rE3uXOU9rxyby3
+        nCUuPH1Jmj8w+ncT1y6F9uYoaN806rnOYheXjvJnj1241XXTv79QDufXln9BrUDG
+        /3jJ+Q0te7YPGdQVn7IH1DOGXjpffx6uMc5mxKGsH1c8T1qC8pgIm29BMNWFNN1V
+        6zShKMRU0=
+Received: from localhost.localdomain (unknown [39.144.190.126])
+        by zwqz-smtp-mta-g4-4 (Coremail) with SMTP id _____wC3njG5VGdlx_XzEA--.39554S2;
+        Wed, 29 Nov 2023 23:11:55 +0800 (CST)
+From:   Haoran Liu <liuhaoran14@163.com>
+To:     jejb@linux.ibm.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Haoran Liu <liuhaoran14@163.com>
+Subject: [PATCH] [scsi] sni_53c710: Add error handling in snirm710_probe
+Date:   Wed, 29 Nov 2023 07:11:52 -0800
+Message-Id: <20231129151152.34829-1-liuhaoran14@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: _____wC3njG5VGdlx_XzEA--.39554S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Kry7ur4fKF18JryDCrW3Wrg_yoW8Wr45p3
+        9xGw45Ca97GF1xA343Xa18u3Z0yaySkrZrK3W7W3sI9a1rJFyYqr4SyFyagFW8GrWktF4U
+        Xr1UtFWI93WDCa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pRa9akUUUUU=
+X-Originating-IP: [39.144.190.126]
+X-CM-SenderInfo: xolxxtxrud0iqu6rljoofrz/1tbiZRo3gl8ZaQ-qYQAFsk
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
+        RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 07:12:33PM +0000, Michael Kelley wrote:
-> From: kirill.shutemov@linux.intel.com <kirill.shutemov@linux.intel.com> Sent: Friday, November 24, 2023 2:06 AM
-> > 
-> > On Tue, Nov 21, 2023 at 01:20:08PM -0800, mhkelley58@gmail.com wrote:
-> > > From: Michael Kelley <mhklinux@outlook.com>
-> > >
-> > > In a CoCo VM when a page transitions from encrypted to decrypted, or vice
-> > > versa, attributes in the PTE must be updated *and* the hypervisor must
-> > > be notified of the change.
-> > 
-> > Strictly speaking it is not true for TDX. Conversion to shared can be
-> > implicit: set shared bit and touch the page will do the conversion. MapGPA
-> > is optional.
-> 
-> Interesting.  Given that, is there a reason to use the explicit
-> hypervisor callbacks in for private->shared transitions in 
-> __set_mem_enc_pgtable()?   It probably doesn't have direct relevance
-> to this patch series, but I'm just trying to understand the tradeoffs of
-> the implicit vs. explicit approach.  And am I correct that
-> shared->private transitions must use the explicit approach?
+The patch adds checks for the return values of dma_set_mask and ioremap.
+Previously, the function did not handle potential failures of these calls,
+which could lead to improper device initialization and unpredictable
+behavior.
 
-It must be explicit in sense, that the memory has to be accepted before
-use. MapGPA() is still optional.
+Although the error addressed by this patch may not occur in the current
+environment, I still suggest implementing these error handling routines
+if the function is not highly time-sensitive. As the environment evolves
+or the code gets reused in different contexts, there's a possibility that
+these errors might occur. Addressing them now can prevent potential
+debugging efforts in the future, which could be quite resource-intensive.
 
-I don't like this implicit tricks. I spent a lot of time debugging an
-issue that was obscured by this semantics.
+Signed-off-by: Haoran Liu <liuhaoran14@163.com>
+---
+ drivers/scsi/sni_53c710.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-But I think it is going to say :/
-
-> > > Because there are two separate steps, there's
-> > > a window where the settings are inconsistent.  Normally the code that
-> > > initiates the transition (via set_memory_decrypted() or
-> > > set_memory_encrypted()) ensures that the memory is not being accessed
-> > > during a transition, so the window of inconsistency is not a problem.
-> > > However, the load_unaligned_zeropad() function can read arbitrary memory
-> > > pages at arbitrary times, which could read a transitioning page during
-> > > the window.  In such a case, CoCo VM specific exceptions are taken
-> > > (depending on the CoCo architecture in use).  Current code in those
-> > > exception handlers recovers and does "fixup" on the result returned by
-> > > load_unaligned_zeropad().  Unfortunately, this exception handling can't
-> > > work in paravisor scenarios (TDX Paritioning and SEV-SNP in vTOM mode)
-> > > if the exceptions are routed to the paravisor.  The paravisor can't
-> > > do load_unaligned_zeropad() fixup, so the exceptions would need to
-> > > be forwarded from the paravisor to the Linux guest, but there are
-> > > no architectural specs for how to do that.
-> > 
-> > Hm. Can't we inject #PF (or #GP) into L2 if #VE/#VC handler in L1 sees
-> > cross-page access to shared memory while no fixup entry for the page in
-> > L1. It would give L2 chance to handle the situation in a transparent way.
-> > 
-> > Maybe I miss something, I donno.
-> 
-> I'm recounting what the Hyper-V paravisor folks say without knowing all the
-> details. :-(   But it seems like any kind of forwarding scheme needs to be a
-> well-defined contract that would work for both TDX and SEV-SNP.   The
-> paravisor in L1 might or might not be Linux-based, so the contract must be OS
-> independent.  And the L2 guest might or might not be Linux, so there's
-> potential for some other kind of error to be confused with a Linux
-> load_unaligned_zeropad() reference.
-
-Okay, fair enough. I have hard time reasoning if it is okay for L2 which
-is not Linux.
-
-
+diff --git a/drivers/scsi/sni_53c710.c b/drivers/scsi/sni_53c710.c
+index 678651b9b4dd..41414d0c64f8 100644
+--- a/drivers/scsi/sni_53c710.c
++++ b/drivers/scsi/sni_53c710.c
+@@ -69,8 +69,19 @@ static int snirm710_probe(struct platform_device *dev)
+ 		return -ENOMEM;
+ 
+ 	hostdata->dev = &dev->dev;
+-	dma_set_mask(&dev->dev, DMA_BIT_MASK(32));
++	rc = dma_set_mask(&dev->dev, DMA_BIT_MASK(32));
++	if (rc) {
++		printk(KERN_ERR "snirm710: dma_set_mask failed!\n");
++		goto out_kfree;
++	}
++
+ 	hostdata->base = ioremap(base, 0x100);
++	if (!hostdata->base) {
++		printk(KERN_ERR "snirm710: ioremap failed!\n");
++		rc = -ENOMEM;
++		goto out_kfree;
++	}
++
+ 	hostdata->differential = 0;
+ 
+ 	hostdata->clock = SNIRM710_CLOCK;
 -- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+2.17.1
+
