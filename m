@@ -2,125 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3751E7FCDAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 04:57:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14B557FCDB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 04:58:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376853AbjK2D5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 22:57:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42714 "EHLO
+        id S1376857AbjK2D6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 22:58:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbjK2D5m (ORCPT
+        with ESMTP id S234660AbjK2D6G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 22:57:42 -0500
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C6412C;
-        Tue, 28 Nov 2023 19:57:48 -0800 (PST)
-Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-423d9d508d1so8253451cf.1;
-        Tue, 28 Nov 2023 19:57:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701230268; x=1701835068; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9+7egZpgbxWlQy7x1pNLLDFc7cb12zF09MZ6gXGVBBI=;
-        b=axMIPd3LMQGw9JR/mgxmxdzi45GUg7wOaT11eZ3kMc0vSEVwZ260sdBGXLvooX8a9q
-         aov9iD/RWyXHIIDxe9JPjRPtsE63adqT7mfVFcFZAX1lbmlGhNa6gy4OOt2JIbh922oL
-         Cw9JEPUpcHBYu/kqBO0jMUC+tTsHHDhf3qeQrE4m56DQmSjxHavHirDQ+3+j7odOa++V
-         cZMzeraIYcflyQihzRn+gOeQIuLk1DRGMD9+d/8yyHEcDXdENSGCfaVR/Kee63fj5NUc
-         vikaE67j0QqtV2J+BmhAKJSIdmnUrCqPgwGmBMMozqKhp8wOPK/25bJ+VHyB7ro7WLMq
-         epFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701230268; x=1701835068;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9+7egZpgbxWlQy7x1pNLLDFc7cb12zF09MZ6gXGVBBI=;
-        b=TZu0BB+JqxH72NLJH10Atq+dAa289ag4+oOB4emw63i3dhDNA5iMxfp4iW9z1Jr34b
-         AYNfa0Z0Wb2y+5UtRlC7IMEI6cFAclzMe5KsK4LE5WHL4JpMzryKAJ1TNrRATNS6UaRS
-         aGOAaMeL3Q80v3o9gABiHiyG7FVICVslZaHd7Z8jfUoULSldzLWmjsyGVpZKfJnh7OR7
-         w1He4y7o/69eSQe9ngXz4P01nffK9qWnLJh3n/GtOEpbbsg3JsNJKjeP/Jls94MrzbET
-         sXhM0yCLAlBYMgwxFWJWsED9sSihkY5RI/4NWABm56nD05onWdy8Yn1QycGiFU0enB4S
-         NNXw==
-X-Gm-Message-State: AOJu0Yxx0ehWJK50riYZCkB5+LYmaIMAh8uaFFMdZjnx0FpUl6a+vuc6
-        CgOKj7+1iuOwHVLtHps4aqiUrV38yun3+g==
-X-Google-Smtp-Source: AGHT+IH2nerrAbR4UKFseuAz9tLLm1UezMyHgCtiGQv6I9Y3LrgtI+O5AtNwduG/CvW9qzCpzSFXtg==
-X-Received: by 2002:ac8:4e81:0:b0:423:852e:8273 with SMTP id 1-20020ac84e81000000b00423852e8273mr21762989qtp.61.1701230267865;
-        Tue, 28 Nov 2023 19:57:47 -0800 (PST)
-Received: from angquan-linux.. ([72.36.119.4])
-        by smtp.gmail.com with ESMTPSA id i10-20020ac860ca000000b004199c98f87dsm5139943qtm.74.2023.11.28.19.57.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 19:57:47 -0800 (PST)
-From:   angquan yu <angquan21@gmail.com>
-X-Google-Original-From: angquan yu
-To:     skhan@linuxfoundation.org
-Cc:     shuah@kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        angquan yu <angquan21@gmail.com>
-Subject: [PATCH] selftests:breakpoints: Fix Format String Warning in breakpoint_test
-Date:   Tue, 28 Nov 2023 21:57:26 -0600
-Message-Id: <20231129035726.6273-1-angquan21@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Tue, 28 Nov 2023 22:58:06 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC09D19A4
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 19:58:12 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E620C433C9;
+        Wed, 29 Nov 2023 03:58:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701230292;
+        bh=pTybYc9tif82m6rvKK0P6WNpbwK/7q1cBpB8C582wDU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iH0PQrWJfV0Xc1bTlcNd7f77++W/SvVxhzI13J6J5xiDiCMAokvs5iPE/oBh4FuIQ
+         BhaiDCNVUYez7eIkWx59lyyyVzbZlmxy4SxuKoI7ljmfwtbyn0Prdu+LBF7cQBPOY1
+         O2CHLC3PWgk30wPnXKMryQcmsWbgs9EvlGMw0zVhUPbAHzVTvVMrCP1MoTqq2FDjSf
+         VemDDctfjRbaEqcKVbanRipoiifMuf32aHJ7CmKR/pTxpAYmZTqEL0g2V2I4dHxAZ/
+         ohR2CJ7ki5x0saLWlk4RmzHS7jt82/M/8/01ksk/FITIxFVv1NYe3kM6UjrAV9rRRL
+         o6PKsd98Sszrw==
+Date:   Tue, 28 Nov 2023 19:58:11 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Min Li <lnimi@hotmail.com>
+Cc:     richardcochran@gmail.com, lee@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Min Li <min.li.xe@renesas.com>
+Subject: Re: [PATCH net-next 1/2] ptp: introduce PTP_CLOCK_EXTOFF event for
+ the measured external offset
+Message-ID: <20231128195811.06bd301d@kernel.org>
+In-Reply-To: <PH7PR03MB706497752B942B2C33C45E58A0BDA@PH7PR03MB7064.namprd03.prod.outlook.com>
+References: <PH7PR03MB706497752B942B2C33C45E58A0BDA@PH7PR03MB7064.namprd03.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: angquan yu <angquan21@gmail.com>
+On Mon, 27 Nov 2023 15:01:29 -0500 Min Li wrote:
+> This change is for the PHC devices that can measure the phase offset
+> between PHC signal and the external signal, such as the 1PPS signal of
+> GNSS. Reporting PTP_CLOCK_EXTOFF to user space will be piggy-backed to
+> the existing ptp_extts_event so that application such as ts2phc can
+> poll the external offset the same way as extts. Hence, ts2phc can use
+> the offset to achieve the alignment between PHC and the external signal
+> by the help of either SW or HW filters.
 
-This commit resolves a compiler warning regardingthe
-use of non-literal format strings in breakpoint_test.c.
-
-The functions `ksft_test_result_pass` and `ksft_test_result_fail`
-were previously called with a variable `msg` directly, which could
-potentially lead to format string vulnerabilities.
-
-Changes made:
-- Modified the calls to `ksft_test_result_pass` and `ksft_test_result_fail`
-by adding a "%s" format specifier. This explicitly declares `msg` as a
-string argument, adhering to safer coding practices and resolving
-the compiler warning.
-
-This change does not affect the functional behavior of the code but ensures
-better code safety and compliance with recommended C programming standards.
-
-The previous warning is "breakpoint_test.c:287:17:
-warning: format not a string literal and no format arguments
-[-Wformat-security]
-  287 |                 ksft_test_result_pass(msg);
-      |                 ^~~~~~~~~~~~~~~~~~~~~
-breakpoint_test.c:289:17: warning: format not a string literal
-and no format arguments [-Wformat-security]
-  289 |                 ksft_test_result_fail(msg);
-      |    "
-
-Signed-off-by: angquan yu <angquan21@gmail.com>
----
- tools/testing/selftests/breakpoints/breakpoint_test.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/breakpoints/breakpoint_test.c b/tools/testing/selftests/breakpoints/breakpoint_test.c
-index 3266cc929..d46962a24 100644
---- a/tools/testing/selftests/breakpoints/breakpoint_test.c
-+++ b/tools/testing/selftests/breakpoints/breakpoint_test.c
-@@ -284,9 +284,9 @@ static void check_success(const char *msg)
- 	nr_tests++;
- 
- 	if (ret)
--		ksft_test_result_pass(msg);
-+		ksft_test_result_pass("%s", msg);
- 	else
--		ksft_test_result_fail(msg);
-+		ksft_test_result_fail("%s", msg);
- }
- 
- static void launch_instruction_breakpoints(char *buf, int local, int global)
+Does not apply to net-next.
 -- 
-2.39.2
-
+pw-bot: cr
