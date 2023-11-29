@@ -2,98 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A487FE22C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 22:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30CC27FE231
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 22:44:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233852AbjK2Vm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 16:42:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50694 "EHLO
+        id S234577AbjK2Vnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 16:43:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjK2VmZ (ORCPT
+        with ESMTP id S229611AbjK2Vnt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 16:42:25 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 141598F;
-        Wed, 29 Nov 2023 13:42:32 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B9CDFC15;
-        Wed, 29 Nov 2023 13:43:18 -0800 (PST)
-Received: from [10.57.4.241] (unknown [10.57.4.241])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A69E23F5A1;
-        Wed, 29 Nov 2023 13:42:30 -0800 (PST)
-Message-ID: <7cdce766-7bec-4654-9727-2313b466b14d@arm.com>
-Date:   Wed, 29 Nov 2023 21:43:30 +0000
+        Wed, 29 Nov 2023 16:43:49 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48E5F10CB
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:43:55 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d9caf5cc948so205338276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:43:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701294234; x=1701899034; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nHvHwF4r0ol/6A89XHXlGqO8DIoBfroEzsFv3QQWhuM=;
+        b=W4Pbi6uSQEuQOfFFuF9/mB+5JBIPr4eg3fOgNNJrn3c0nDFXZiSg8OvCj6qRi+c3gw
+         gopuIwuty5dCZgzlXY7lJoyoPU1mfi1+xgf0R5jNhVswWRi0gkyW8OF0SyYRQUlSWow8
+         wpwzuY8uc21udT+72MsMGaxHW90YwpLJ+6PJgsQ58ZMuu2cNb69F4Pj5Px0J/Lo5RFnc
+         NZb0HWRHx4PO2DL518w/KcMaLydL9hqUhzraYNyX1qR+AjcsbJ4c2BtP22Tu99hOs1Mt
+         SrW9wXlF5oZ676oBnom+74zso5IaC7K0uNHNu1HlVoSRCUPHOUhbJXsGN11HuuxvklCj
+         OrNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701294234; x=1701899034;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nHvHwF4r0ol/6A89XHXlGqO8DIoBfroEzsFv3QQWhuM=;
+        b=vRwBmDBT7+PWJqlYrWzHVzNbZ4Ckf4gEzbFMNxmgRTSFS7z9owoC9isUR9Hjhfb0Yo
+         2tttbSlO92iwF8qZSOefURNejufwar2i8tyEX8WK1Cxx/lrcOyqOHV1c+ECbvqZu618g
+         JeffBJgLuZEVvT4Lm2JBF9fa4q0/IMHaE72Nahs1iTqpnjKUy2yyJCjvCtHW9WwWRbGe
+         MRE7kiPjf4H/q2SS1ksbSoOAw8mwHDufNBzQ1kQ/Ewgap4D9B7WdVi1x7EjBv8NGPp6I
+         64WKz0YqP4w22HO0R8LgHb/8xUFqzRykDCesXyV5922lX8zjpCuYkBDXssM1IAV4ipOg
+         xtMA==
+X-Gm-Message-State: AOJu0YxEmmuUoZO6ssIJV74HjBrFWM8HLe3t08CiQiYyg/qRBtm9PDyh
+        /Zg2cfAjTT/lcO8g4agpOL31Cq4HLvYiWzRxa2rvrLrNO8Q4UeTn
+X-Google-Smtp-Source: AGHT+IE6hT3lAdjiLDM2v/jobqD/zOiK/jGYz0PHMZqE8j4h+LgkMHS0A8fLarjbXtR4/nzEpRE9D4seIrBcQcc99Ws=
+X-Received: by 2002:a25:820b:0:b0:db0:2161:5950 with SMTP id
+ q11-20020a25820b000000b00db021615950mr18519105ybk.63.1701294234500; Wed, 29
+ Nov 2023 13:43:54 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] thermal: trip: Rework thermal_zone_set_trip() and
- its callers
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>
-References: <12350772.O9o76ZdvQC@kreacher> <4869676.GXAFRqVoOG@kreacher>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <4869676.GXAFRqVoOG@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <CACRpkdb8dwq7OYUFuyjJCv7VN9mH1zEmibcOwgFip0wDv5H1gA@mail.gmail.com>
+ <CAHk-=whZj3WZezdj8wq6thUeRfzua2y2QsrnoPG9dqfmk-=rcw@mail.gmail.com>
+In-Reply-To: <CAHk-=whZj3WZezdj8wq6thUeRfzua2y2QsrnoPG9dqfmk-=rcw@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 29 Nov 2023 22:43:43 +0100
+Message-ID: <CACRpkdbSxTDo4dDeJ_jdjVmX1Fwso7rXXGs53bdqa835yprVJQ@mail.gmail.com>
+Subject: Re: [GIT PULL] Pin control fixes for v6.7 minus one patch
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Maria Yu <quic_aiquny@quicinc.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 29, 2023 at 4:48=E2=80=AFPM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> On Wed, 29 Nov 2023 at 07:18, Linus Walleij <linus.walleij@linaro.org> wr=
+ote:
+> >
+> > Here is an updated tag on a branch where the only change
+> > is to drop the locking READ_ONCE() patch until we know
+> > more about what is going on here.
+>
+> Bah. I already pulled the previous one and pushed out before reading
+> more emails and noticing you had so quickly re-done it.
+>
+> So the READ_ONCE() workaround is there now, but I hope there will be a
+> future patch that explains (and fixes) whatever made the value change
+> from underneath that code.
 
+Fair enough, we'll look closer at it. I just hope I get some help with
+that from Maria.
 
-On 11/29/23 13:38, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Both trip_point_temp_store() and trip_point_hyst_store() use
-> thermal_zone_set_trip() to update a given trip point, but none of them
-> actually needs to change more than one field in struct thermal_trip
-> representing it.  However, each of them effectively calls
-> __thermal_zone_get_trip() twice in a row for the same trip index value,
-> once directly and once via thermal_zone_set_trip(), which is not
-> particularly efficient, and the way in which thermal_zone_set_trip()
-> carries out the update is not particularly straightforward.
-> 
-> Moreover, some checks done by them both need not go under the thermal
-> zone lock and code duplication between them can be reduced quite a bit
-> by moving the majority of logic into thermal_zone_set_trip().
-> 
-> Rework all of the above functions to address the above.
-> 
-> No intentional functional impact.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
-> 
-> v2 -> v3: Fix missing return statement in thermal_zone_set_trip() (Lukasz).
-> 
-> v1 -> v2:
->     * Fix 2 typos in the changelog (Lukasz).
->     * Split one change into the [1/2].
-> 
-> ---
->   drivers/thermal/thermal_core.h  |    9 ++++++
->   drivers/thermal/thermal_sysfs.c |   52 ++++++++--------------------------
->   drivers/thermal/thermal_trip.c  |   60 +++++++++++++++++++++++++++-------------
->   include/linux/thermal.h         |    3 --
->   4 files changed, 62 insertions(+), 62 deletions(-)
-> 
-
-That looks OK. I have also checked those places
-were we set the callbacks. In mainline we only use
-set_trip_temp() callback. I don't know what is
-Daniel's idea for the patch, but LGTM.
-
-Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
-
-also tested both patches on two arm32, arm64 boards
-
-Tested-by: Lukasz Luba <lukasz.luba@arm.com>
+Yours,
+Linus Walleij
