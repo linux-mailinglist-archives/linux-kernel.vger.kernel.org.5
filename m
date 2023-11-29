@@ -2,77 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1790E7FD8ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:05:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52CA37FD8F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:07:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234167AbjK2OFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 09:05:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42418 "EHLO
+        id S234150AbjK2OHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 09:07:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233108AbjK2OFi (ORCPT
+        with ESMTP id S230480AbjK2OHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 09:05:38 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1B01AD
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 06:05:44 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-54b532b261bso4953251a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 06:05:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701266742; x=1701871542; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vIpe57LK+ad4j3gXLtYhpcdtMPnG7fFGsBLCvb5Xl00=;
-        b=rE3DPTLVdTe+gXcLth66c37DX7SHlmOGKngnUuV7dpsbAkjqxCnzvmwNN7Su83SGBZ
-         nXGKvARiV4aMEOPSHjfyFl2zVG9+xztHErG9zsFZ0vcc97QL/PjJyEbAjvo+RI5x9442
-         ubwPmw8l3Ovv6vhL4mWGReiFyWSlzaAC8ngcr8xmvjcYCREzQmXaQ3/eOfi17xiUzS/j
-         SfflkVLzvOFbZUFY4LAIoyAwoXOVTktVknOtBrGqiBEiT+rGvdQzCVTuYKt73/1a4S32
-         urydTKiOt7Tv2jn7l243x9sMmD2zqwT3J1pqrQvA6h26HlpcbD8BJjIQkYJjEU1KpJ7+
-         cuvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701266742; x=1701871542;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vIpe57LK+ad4j3gXLtYhpcdtMPnG7fFGsBLCvb5Xl00=;
-        b=ZbNjQiyKGtng8S5RUC+SkJvY7QGVj3VOjBNJkIopBnv8CTHibWvGwETEcXFlsAqxNo
-         jsf5029NfVxWyTlDJIBha0fj00dkMWY3waI8FINquBjQx4gkcbiM9hc+nxLVMkPdm2KV
-         FvbH66VWMlHbBhYCTUM1v+/U1gjTir+2A4sF5Glov58tg7GDdqHxtCTU45QWbOw+PYMB
-         2Ld3baIz4kPqHbRzlUG7RzsHR+MnnGih7/gnQSdTL7TQDp+wlZwyp0MuEURv/eqnc5vx
-         VWKSuhEiJQcZW+p2eZlAzvxaIwZfrPUlfuN4bPXzaQNQ1zwZNLTv9tqKiUofAvuGNa9v
-         W8CA==
-X-Gm-Message-State: AOJu0YxlUbxSAgt8tj7kYsW61DusVFlsJHtcGwjMmIPnNwvk5G7ommp0
-        eDgL9SL6YayrlnFkSCUtoOK+GQ==
-X-Google-Smtp-Source: AGHT+IEQVZGJKNnT5Gk0etakEOWrLbSJedZgEcktiPi8arX5Jm4KIFYIq/ld/mtUihzQQFDAOFePzg==
-X-Received: by 2002:a17:906:fa06:b0:a0d:ebfe:e404 with SMTP id lo6-20020a170906fa0600b00a0debfee404mr9221770ejb.22.1701266742475;
-        Wed, 29 Nov 2023 06:05:42 -0800 (PST)
-Received: from krzk-bin.. ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id o14-20020a1709062e8e00b009fe3e9dee25sm7947530eji.61.2023.11.29.06.05.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 06:05:42 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>
-Subject: [PATCH 2/2] arm64: dts: qcom: sm8550: correct TX Soundwire clock
-Date:   Wed, 29 Nov 2023 15:05:37 +0100
-Message-Id: <20231129140537.161720-2-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231129140537.161720-1-krzysztof.kozlowski@linaro.org>
-References: <20231129140537.161720-1-krzysztof.kozlowski@linaro.org>
+        Wed, 29 Nov 2023 09:07:13 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 008DCB5
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 06:07:18 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC5B32F4;
+        Wed, 29 Nov 2023 06:08:05 -0800 (PST)
+Received: from [10.57.70.211] (unknown [10.57.70.211])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8585D3F6C4;
+        Wed, 29 Nov 2023 06:07:14 -0800 (PST)
+Message-ID: <b485e908-770b-4cd9-8e45-b9107a581ae8@arm.com>
+Date:   Wed, 29 Nov 2023 14:07:12 +0000
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
+Content-Language: en-GB
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     akpm@linux-foundation.org, andreyknvl@gmail.com,
+        anshuman.khandual@arm.com, ardb@kernel.org,
+        catalin.marinas@arm.com, david@redhat.com, dvyukov@google.com,
+        glider@google.com, james.morse@arm.com, jhubbard@nvidia.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mark.rutland@arm.com, maz@kernel.org,
+        oliver.upton@linux.dev, ryabinin.a.a@gmail.com,
+        suzuki.poulose@arm.com, vincenzo.frascino@arm.com,
+        wangkefeng.wang@huawei.com, will@kernel.org, willy@infradead.org,
+        yuzenghui@huawei.com, yuzhao@google.com, ziy@nvidia.com
+References: <20231115163018.1303287-2-ryan.roberts@arm.com>
+ <20231127055414.9015-1-v-songbaohua@oppo.com>
+ <755343a1-ce94-4d38-8317-0925e2dae3bc@arm.com>
+ <CAGsJ_4z_ftxvG-EcTe=X+Te8fNSShhVHHPvbEgAa1rQXgO5XCA@mail.gmail.com>
+ <a43d8da8-d902-440c-aa64-df78fa4e185d@arm.com>
+ <CAGsJ_4w9E_90Bs9kWP1HWmKsknszw2i=Vtarj0UGD80yNpt5mw@mail.gmail.com>
+ <02d85331-eaa0-4d76-a3d6-ea5eb18b683c@arm.com>
+ <CAGsJ_4zDZb93bKMmhRn_V3a_PR11xKkaYkdxZW2ZsO6zNNj0Kw@mail.gmail.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAGsJ_4zDZb93bKMmhRn_V3a_PR11xKkaYkdxZW2ZsO6zNNj0Kw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,32 +59,261 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The TX Soundwire controller should take clock from TX macro codec, not
-VA macro codec clock, otherwise the clock stays disabled.  This looks
-like a copy-paste issue, because the SC8280xp code uses here correctly
-clock from TX macro.  The VA macro clock is already consumed by TX macro
-codec, thus it won't be disabled by this change.
+On 29/11/2023 13:09, Barry Song wrote:
+> On Thu, Nov 30, 2023 at 1:29 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>
+>> On 28/11/2023 19:00, Barry Song wrote:
+>>> On Wed, Nov 29, 2023 at 12:00 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>
+>>>> On 28/11/2023 00:11, Barry Song wrote:
+>>>>> On Mon, Nov 27, 2023 at 10:24 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>>>
+>>>>>> On 27/11/2023 05:54, Barry Song wrote:
+>>>>>>>> +copy_present_ptes(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+>>>>>>>> +              pte_t *dst_pte, pte_t *src_pte,
+>>>>>>>> +              unsigned long addr, unsigned long end,
+>>>>>>>> +              int *rss, struct folio **prealloc)
+>>>>>>>>  {
+>>>>>>>>      struct mm_struct *src_mm = src_vma->vm_mm;
+>>>>>>>>      unsigned long vm_flags = src_vma->vm_flags;
+>>>>>>>>      pte_t pte = ptep_get(src_pte);
+>>>>>>>>      struct page *page;
+>>>>>>>>      struct folio *folio;
+>>>>>>>> +    int nr = 1;
+>>>>>>>> +    bool anon;
+>>>>>>>> +    bool any_dirty = pte_dirty(pte);
+>>>>>>>> +    int i;
+>>>>>>>>
+>>>>>>>>      page = vm_normal_page(src_vma, addr, pte);
+>>>>>>>> -    if (page)
+>>>>>>>> +    if (page) {
+>>>>>>>>              folio = page_folio(page);
+>>>>>>>> -    if (page && folio_test_anon(folio)) {
+>>>>>>>> -            /*
+>>>>>>>> -             * If this page may have been pinned by the parent process,
+>>>>>>>> -             * copy the page immediately for the child so that we'll always
+>>>>>>>> -             * guarantee the pinned page won't be randomly replaced in the
+>>>>>>>> -             * future.
+>>>>>>>> -             */
+>>>>>>>> -            folio_get(folio);
+>>>>>>>> -            if (unlikely(page_try_dup_anon_rmap(page, false, src_vma))) {
+>>>>>>>> -                    /* Page may be pinned, we have to copy. */
+>>>>>>>> -                    folio_put(folio);
+>>>>>>>> -                    return copy_present_page(dst_vma, src_vma, dst_pte, src_pte,
+>>>>>>>> -                                             addr, rss, prealloc, page);
+>>>>>>>> +            anon = folio_test_anon(folio);
+>>>>>>>> +            nr = folio_nr_pages_cont_mapped(folio, page, src_pte, addr,
+>>>>>>>> +                                            end, pte, &any_dirty);
+>>>>>>>
+>>>>>>> in case we have a large folio with 16 CONTPTE basepages, and userspace
+>>>>>>> do madvise(addr + 4KB * 5, DONTNEED);
+>>>>>>
+>>>>>> nit: if you are offsetting by 5 pages from addr, then below I think you mean
+>>>>>> page0~page4 and page6~15?
+>>>>>>
+>>>>>>>
+>>>>>>> thus, the 4th basepage of PTE becomes PTE_NONE and folio_nr_pages_cont_mapped()
+>>>>>>> will return 15. in this case, we should copy page0~page3 and page5~page15.
+>>>>>>
+>>>>>> No I don't think folio_nr_pages_cont_mapped() will return 15; that's certainly
+>>>>>> not how its intended to work. The function is scanning forwards from the current
+>>>>>> pte until it finds the first pte that does not fit in the batch - either because
+>>>>>> it maps a PFN that is not contiguous, or because the permissions are different
+>>>>>> (although this is being relaxed a bit; see conversation with DavidH against this
+>>>>>> same patch).
+>>>>>>
+>>>>>> So the first time through this loop, folio_nr_pages_cont_mapped() will return 5,
+>>>>>> (page0~page4) then the next time through the loop we will go through the
+>>>>>> !present path and process the single swap marker. Then the 3rd time through the
+>>>>>> loop folio_nr_pages_cont_mapped() will return 10.
+>>>>>
+>>>>> one case we have met by running hundreds of real phones is as below,
+>>>>>
+>>>>>
+>>>>> static int
+>>>>> copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+>>>>>                pmd_t *dst_pmd, pmd_t *src_pmd, unsigned long addr,
+>>>>>                unsigned long end)
+>>>>> {
+>>>>>         ...
+>>>>>         dst_pte = pte_alloc_map_lock(dst_mm, dst_pmd, addr, &dst_ptl);
+>>>>>         if (!dst_pte) {
+>>>>>                 ret = -ENOMEM;
+>>>>>                 goto out;
+>>>>>         }
+>>>>>         src_pte = pte_offset_map_nolock(src_mm, src_pmd, addr, &src_ptl);
+>>>>>         if (!src_pte) {
+>>>>>                 pte_unmap_unlock(dst_pte, dst_ptl);
+>>>>>                 /* ret == 0 */
+>>>>>                 goto out;
+>>>>>         }
+>>>>>         spin_lock_nested(src_ptl, SINGLE_DEPTH_NESTING);
+>>>>>         orig_src_pte = src_pte;
+>>>>>         orig_dst_pte = dst_pte;
+>>>>>         arch_enter_lazy_mmu_mode();
+>>>>>
+>>>>>         do {
+>>>>>                 /*
+>>>>>                  * We are holding two locks at this point - either of them
+>>>>>                  * could generate latencies in another task on another CPU.
+>>>>>                  */
+>>>>>                 if (progress >= 32) {
+>>>>>                         progress = 0;
+>>>>>                         if (need_resched() ||
+>>>>>                             spin_needbreak(src_ptl) || spin_needbreak(dst_ptl))
+>>>>>                                 break;
+>>>>>                 }
+>>>>>                 ptent = ptep_get(src_pte);
+>>>>>                 if (pte_none(ptent)) {
+>>>>>                         progress++;
+>>>>>                         continue;
+>>>>>                 }
+>>>>>
+>>>>> the above iteration can break when progress > =32. for example, at the
+>>>>> beginning,
+>>>>> if all PTEs are none, we break when progress >=32, and we break when we
+>>>>> are in the 8th pte of 16PTEs which might become CONTPTE after we release
+>>>>> PTL.
+>>>>>
+>>>>> since we are releasing PTLs, next time when we get PTL, those pte_none() might
+>>>>> become pte_cont(), then are you going to copy CONTPTE from 8th pte,
+>>>>> thus, immediately
+>>>>> break the consistent CONPTEs rule of hardware?
+>>>>>
+>>>>> pte0 - pte_none
+>>>>> pte1 - pte_none
+>>>>> ...
+>>>>> pte7 - pte_none
+>>>>>
+>>>>> pte8 - pte_cont
+>>>>> ...
+>>>>> pte15 - pte_cont
+>>>>>
+>>>>> so we did some modification to avoid a break in the middle of PTEs
+>>>>> which can potentially
+>>>>> become CONTPE.
+>>>>> do {
+>>>>>                 /*
+>>>>>                 * We are holding two locks at this point - either of them
+>>>>>                 * could generate latencies in another task on another CPU.
+>>>>>                 */
+>>>>>                 if (progress >= 32) {
+>>>>>                                 progress = 0;
+>>>>> #ifdef CONFIG_CONT_PTE_HUGEPAGE
+>>>>>                 /*
+>>>>>                 * XXX: don't release ptl at an unligned address as
+>>>>> cont_pte might form while
+>>>>>                 * ptl is released, this causes double-map
+>>>>>                 */
+>>>>>                 if (!vma_is_chp_anonymous(src_vma) ||
+>>>>>                    (vma_is_chp_anonymous(src_vma) && IS_ALIGNED(addr,
+>>>>> HPAGE_CONT_PTE_SIZE)))
+>>>>> #endif
+>>>>>                 if (need_resched() ||
+>>>>>                    spin_needbreak(src_ptl) || spin_needbreak(dst_ptl))
+>>>>>                                 break;
+>>>>> }
+>>>>>
+>>>>> We could only reproduce the above issue by running thousands of phones.
+>>>>>
+>>>>> Does your code survive from this problem?
+>>>>
+>>>> Yes I'm confident my code is safe against this; as I said before, the CONT_PTE
+>>>> bit is not blindly "copied" from parent to child pte. As far as the core-mm is
+>>>> concerned, there is no CONT_PTE bit; they are just regular PTEs. So the code
+>>>> will see some pte_none() entries followed by some pte_present() entries. And
+>>>> when calling set_ptes() on the child, the arch code will evaluate the current
+>>>> state of the pgtable along with the new set_ptes() request and determine where
+>>>> it should insert the CONT_PTE bit.
+>>>
+>>> yep, i have read very carefully and think your code is safe here. The
+>>> only problem
+>>> is that the code can randomly unfold parent processes' CONPTE while setting
+>>> wrprotect in the middle of a large folio while it actually should keep CONT
+>>> bit as all PTEs can be still consistent if we set protect from the 1st PTE.
+>>>
+>>> while A forks B,  progress >= 32 might interrupt in the middle of a
+>>> new CONTPTE folio which is forming, as we have to set wrprotect to parent A,
+>>> this parent immediately loses CONT bit. this is  sad. but i can't find a
+>>> good way to resolve it unless CONT is exposed to mm-core. any idea on
+>>> this?
+>>
+>> No this is not the case; copy_present_ptes() will copy as many ptes as are
+>> physcially contiguous and belong to the same folio (which usually means "the
+>> whole folio" - the only time it doesn't is when we hit the end of the vma). We
+>> will then return to the main loop and move forwards by the number of ptes that
+>> were serviced, including:
+> 
+> I probably have failed to describe my question. i'd like to give a
+> concrete example
+> 
+> 1. process A forks B
+> 2. At the beginning, address~address +64KB has pte_none PTEs
+> 3. we scan the 5th pte of address + 5 * 4KB, progress becomes 32, we
+> break and release PTLs
+> 4. another page fault in process A gets PTL and set
+> address~address+64KB to pte_cont
+> 5. we get the PTL again and arrive 5th pte
+> 6. we set wrprotects on 5,6,7....15 ptes, in this case, we have to
+> unfold parent A
+> and child B also gets unfolded PTEs unless our loop can go back the 0th pte.
+> 
+> technically, A should be able to keep CONTPTE, but because of the implementation
+> of the code, it can't. That is the sadness. but it is obviously not your fault.
+> 
+> no worries. This is not happening quite often. but i just want to make a note
+> here, maybe someday we can get back to address it.
 
-Fixes: 61b006389bb7 ("arm64: dts: qcom: sm8550: add Soundwire controllers")
-Reported-by: Neil Armstrong <neil.armstrong@linaro.org>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm8550.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Ahh, I understand the situation now, sorry for being slow!
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
-index 52e8f4c52426..2fd3faacf554 100644
---- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
-@@ -2199,7 +2199,7 @@ swr2: soundwire@6d30000 {
- 			interrupts = <GIC_SPI 496 IRQ_TYPE_LEVEL_HIGH>,
- 				     <GIC_SPI 520 IRQ_TYPE_LEVEL_HIGH>;
- 			interrupt-names = "core", "wakeup";
--			clocks = <&lpass_vamacro>;
-+			clocks = <&lpass_txmacro>;
- 			clock-names = "iface";
- 			label = "TX";
- 
--- 
-2.34.1
+I expect this to be a very rare situation anyway since (4) suggests process A
+has another thread, and forking is not encouraged for multithreaded programs. In
+fact the fork man page says:
+
+  After a fork() in a multithreaded program, the child can safely call only
+  async-signal-safe functions (see signal-safety(7)) until such time as it calls
+  execve(2).
+
+So in this case, we are about to completely repaint the child's address space
+with execve() anyway.
+
+So its just the racing parent that loses the CONT_PTE bit. I expect this to be
+extremely rare. I'm not sure there is much we can do to solve it though, because
+unlike with your solution, we have to cater for multiple sizes so there is no
+obvious boarder until we get to PMD size and I'm guessing that's going to be a
+problem for latency spikes.
+
+
+> 
+>>
+>> progress += 8 * ret;
+>>
+>> That might go above 32, so we will flash the lock. But we haven't done that in
+>> the middle of a large folio. So the contpte-ness should be preserved.
+>>
+>>>
+>>> Our code[1] resolves this by only breaking at the aligned address
+>>>
+>>> if (progress >= 32) {
+>>>      progress = 0;
+>>>      #ifdef CONFIG_CONT_PTE_HUGEPAGE
+>>>      /*
+>>>       * XXX: don't release ptl at an unligned address as cont_pte
+>>> might form while
+>>>       * ptl is released, this causes double-map
+>>>      */
+>>>     if (!vma_is_chp_anonymous(src_vma) ||
+>>>         (vma_is_chp_anonymous(src_vma) && IS_ALIGNED(addr,
+>>> HPAGE_CONT_PTE_SIZE)))
+>>>     #endif
+>>>         if (need_resched() ||
+>>>            spin_needbreak(src_ptl) || spin_needbreak(dst_ptl))
+>>>              break;
+>>> }
+>>>
+>>> [1] https://github.com/OnePlusOSS/android_kernel_oneplus_sm8550/blob/oneplus/sm8550_u_14.0.0_oneplus11/mm/memory.c#L1180
+>>>
+>>>
+> Thanks
+> Barry
 
