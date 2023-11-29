@@ -2,241 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96AA27FDFA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 19:47:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA61D7FDFAB
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 19:49:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231468AbjK2Sq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 13:46:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60974 "EHLO
+        id S231451AbjK2StE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 13:49:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjK2Sq5 (ORCPT
+        with ESMTP id S229509AbjK2StC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 13:46:57 -0500
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915F1133;
-        Wed, 29 Nov 2023 10:47:02 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.18.186.29])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4SgSY930FCz9yfLW;
-        Thu, 30 Nov 2023 02:30:05 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-        by mail.maildlp.com (Postfix) with ESMTP id 7DA2614089D;
-        Thu, 30 Nov 2023 02:46:59 +0800 (CST)
-Received: from [10.81.218.12] (unknown [10.81.218.12])
-        by APP2 (Coremail) with SMTP id GxC2BwCHN2EUh2dlazOXAQ--.6321S2;
-        Wed, 29 Nov 2023 19:46:58 +0100 (CET)
-Message-ID: <90eb8e9d-c63e-42d6-b951-f856f31590db@huaweicloud.com>
-Date:   Wed, 29 Nov 2023 19:46:43 +0100
+        Wed, 29 Nov 2023 13:49:02 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B91F133
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 10:49:08 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1d01c45ffebso881075ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 10:49:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701283747; x=1701888547; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gmmJDjXSHVVtM0uWk3D52kGsoBdId2LUYqixFeAViCk=;
+        b=wSv3oYCKGhvi4kf8tvjLYp4FwzOdWFcWKV6trHgVgYjQ01geGO/7bQMbtnPZTMUF3E
+         9+sEmGiBGLD5FamHR0B1IEiP1cPG34FDKRXuh0q4q2U1L+VaBDym3o5K0fbM6djSkEPA
+         bX45eFK7YXCmrIaDPI0OPvgkC4b6JhpRdC8Xm0jMML8A7XELkAC7NFrw1rPrY1NYSaOK
+         ApiW2eQ0kXomzZPZ6f2IHCgXmNz6LhEDMEJi3Afdsd2noVZYVp45E5DW5E03ggy9E0My
+         YAXrwTnKELSHMzfRjyLLl1XSLxOz6199if3cxq8YWehobYzoRyxXxK46PTFz5eOOsUHS
+         dYbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701283747; x=1701888547;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gmmJDjXSHVVtM0uWk3D52kGsoBdId2LUYqixFeAViCk=;
+        b=AxDGLY9G/Spo1Pz8j2NozHyUcZIFD5obgHRRMQ8T+4vcxR+TGRDw0wEY7w6Oq1eo8N
+         X32hdEbCqG2NhJtNKzBY18deLauyNbgW+8t7tXI1dMT86EBVADHLXehCxvgcDnHLjMyS
+         uyd8NzU/z8p9yaGewvTj4UOZRRhoesAASQT/YMlHgbLkjQ7Jr3/izatv4TwsX0pdShII
+         geU+GReOwoTaOoCip4KgMQjwtZyhA/MMs+T/ehZN6Qdfpayztk5r0/zZpAtHMdqe0T70
+         CRj5kfnRjyZZlhrQZJ+/oztIUa3WPJTPnUNYSBDZ+5vhJA2f77dhZlUSeaTj063OPqVg
+         fFWA==
+X-Gm-Message-State: AOJu0Ywb0ArxoniqDXlv26qrJndOYcEb3FLM3eG4kZharCCRxotdAY2o
+        k29oSSU9hF/snHUlmkgKIaAnBhCMEymdCL44pIzxOg==
+X-Google-Smtp-Source: AGHT+IH42YLg3I/LNrrXhhzS7bJ0UN+7Cm1cww+4mOEg05pxaNPpggy5c3QxpYyxNjwWapMrvZH8ZkHS1F+kItdM/OU=
+X-Received: by 2002:a17:903:183:b0:1cc:449b:689e with SMTP id
+ z3-20020a170903018300b001cc449b689emr26526735plg.20.1701283747581; Wed, 29
+ Nov 2023 10:49:07 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-Subject: Re: [PATCH v5 23/23] integrity: Switch from rbtree to LSM-managed
- blob for integrity_iint_cache
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com,
-        dmitry.kasatkin@gmail.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com, mic@digikod.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-References: <20231107134012.682009-24-roberto.sassu@huaweicloud.com>
- <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com>
- <2084adba3c27a606cbc5ed7b3214f61427a829dd.camel@huaweicloud.com>
- <CAHC9VhTTKac1o=RnQadu2xqdeKH8C_F+Wh4sY=HkGbCArwc8JQ@mail.gmail.com>
- <b6c51351be3913be197492469a13980ab379e412.camel@huaweicloud.com>
- <CAHC9VhSAryQSeFy0ZMexOiwBG-YdVGRzvh58=heH916DftcmWA@mail.gmail.com>
-Content-Language: en-US
-In-Reply-To: <CAHC9VhSAryQSeFy0ZMexOiwBG-YdVGRzvh58=heH916DftcmWA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GxC2BwCHN2EUh2dlazOXAQ--.6321S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Ar18WFWruryUtFWUJFy5Jwb_yoW3Jw4kpF
-        W7Kay7Kr1kAry29rn2vF45uFWfKrW8WFyUXrn8Gr18Zas09r10qr4UCrWUuFyUGrZ5Kw1j
-        qr1Y9ry7Z3WDZaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
-        7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-        Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
-        6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
-        AIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrLvKUUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAQBF1jj5MTuwAAsc
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <CGME20231126091120epcas2p4a1320e3b0f9be8f8a0f575a322981d38@epcas2p4.samsung.com>
+ <20231126094618.2545116-1-youngmin.nam@samsung.com> <bb738a6b-815d-4fad-b73f-559f1ba8cd68@linaro.org>
+ <ZWU75VtJ/mXpMyQr@perf> <1fd55b36-0837-4bf7-9fde-e573d6cb214a@linaro.org>
+ <CAPLW+4n0SAOTb6wocY-WjkxgSFMbx+nVuqdaPcNYVDsbfg+EfA@mail.gmail.com> <ZWbjPIydJRrPnuDy@perf>
+In-Reply-To: <ZWbjPIydJRrPnuDy@perf>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Wed, 29 Nov 2023 12:48:56 -0600
+Message-ID: <CAPLW+4=QQR_u0Fi2L0orQFTd-_UpYZAQ94Je772Vs-2WKZGuiA@mail.gmail.com>
+Subject: Re: [PATCH v2] pinctrl: samsung: add irq_set_affinity() for non wake
+ up external gpio interrupt
+To:     Youngmin Nam <youngmin.nam@samsung.com>,
+        krzysztof.kozlowski@linaro.org
+Cc:     tomasz.figa@gmail.com, s.nawrocki@samsung.com,
+        alim.akhtar@samsung.com, linus.walleij@linaro.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/29/2023 6:22 PM, Paul Moore wrote:
-> On Wed, Nov 29, 2023 at 7:28 AM Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote:
->>
->> On Mon, 2023-11-20 at 16:06 -0500, Paul Moore wrote:
->>> On Mon, Nov 20, 2023 at 3:16 AM Roberto Sassu
->>> <roberto.sassu@huaweicloud.com> wrote:
->>>> On Fri, 2023-11-17 at 15:57 -0500, Paul Moore wrote:
->>>>> On Nov  7, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
->>>>>>
->>>>>> Before the security field of kernel objects could be shared among LSMs with
->>>>>> the LSM stacking feature, IMA and EVM had to rely on an alternative storage
->>>>>> of inode metadata. The association between inode metadata and inode is
->>>>>> maintained through an rbtree.
->>>>>>
->>>>>> Because of this alternative storage mechanism, there was no need to use
->>>>>> disjoint inode metadata, so IMA and EVM today still share them.
->>>>>>
->>>>>> With the reservation mechanism offered by the LSM infrastructure, the
->>>>>> rbtree is no longer necessary, as each LSM could reserve a space in the
->>>>>> security blob for each inode. However, since IMA and EVM share the
->>>>>> inode metadata, they cannot directly reserve the space for them.
->>>>>>
->>>>>> Instead, request from the 'integrity' LSM a space in the security blob for
->>>>>> the pointer of inode metadata (integrity_iint_cache structure). The other
->>>>>> reason for keeping the 'integrity' LSM is to preserve the original ordering
->>>>>> of IMA and EVM functions as when they were hardcoded.
->>>>>>
->>>>>> Prefer reserving space for a pointer to allocating the integrity_iint_cache
->>>>>> structure directly, as IMA would require it only for a subset of inodes.
->>>>>> Always allocating it would cause a waste of memory.
->>>>>>
->>>>>> Introduce two primitives for getting and setting the pointer of
->>>>>> integrity_iint_cache in the security blob, respectively
->>>>>> integrity_inode_get_iint() and integrity_inode_set_iint(). This would make
->>>>>> the code more understandable, as they directly replace rbtree operations.
->>>>>>
->>>>>> Locking is not needed, as access to inode metadata is not shared, it is per
->>>>>> inode.
->>>>>>
->>>>>> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
->>>>>> Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
->>>>>> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
->>>>>> ---
->>>>>>   security/integrity/iint.c      | 71 +++++-----------------------------
->>>>>>   security/integrity/integrity.h | 20 +++++++++-
->>>>>>   2 files changed, 29 insertions(+), 62 deletions(-)
->>>>>>
->>>>>> diff --git a/security/integrity/iint.c b/security/integrity/iint.c
->>>>>> index 882fde2a2607..a5edd3c70784 100644
->>>>>> --- a/security/integrity/iint.c
->>>>>> +++ b/security/integrity/iint.c
->>>>>> @@ -231,6 +175,10 @@ static int __init integrity_lsm_init(void)
->>>>>>      return 0;
->>>>>>   }
->>>>>>
->>>>>> +struct lsm_blob_sizes integrity_blob_sizes __ro_after_init = {
->>>>>> +   .lbs_inode = sizeof(struct integrity_iint_cache *),
->>>>>> +};
->>>>>
->>>>> I'll admit that I'm likely missing an important detail, but is there
->>>>> a reason why you couldn't stash the integrity_iint_cache struct
->>>>> directly in the inode's security blob instead of the pointer?  For
->>>>> example:
->>>>>
->>>>>    struct lsm_blob_sizes ... = {
->>>>>      .lbs_inode = sizeof(struct integrity_iint_cache),
->>>>>    };
->>>>>
->>>>>    struct integrity_iint_cache *integrity_inode_get(inode)
->>>>>    {
->>>>>      if (unlikely(!inode->isecurity))
->>>>>        return NULL;
->>>>>      return inode->i_security + integrity_blob_sizes.lbs_inode;
->>>>>    }
->>>>
->>>> It would increase memory occupation. Sometimes the IMA policy
->>>> encompasses a small subset of the inodes. Allocating the full
->>>> integrity_iint_cache would be a waste of memory, I guess?
->>>
->>> Perhaps, but if it allows us to remove another layer of dynamic memory
->>> I would argue that it may be worth the cost.  It's also worth
->>> considering the size of integrity_iint_cache, while it isn't small, it
->>> isn't exactly huge either.
->>>
->>>> On the other hand... (did not think fully about that) if we embed the
->>>> full structure in the security blob, we already have a mutex available
->>>> to use, and we don't need to take the inode lock (?).
->>>
->>> That would be excellent, getting rid of a layer of locking would be significant.
->>>
->>>> I'm fully convinced that we can improve the implementation
->>>> significantly. I just was really hoping to go step by step and not
->>>> accumulating improvements as dependency for moving IMA and EVM to the
->>>> LSM infrastructure.
->>>
->>> I understand, and I agree that an iterative approach is a good idea, I
->>> just want to make sure we keep things tidy from a user perspective,
->>> i.e. not exposing the "integrity" LSM when it isn't required.
->>
->> Ok, I went back to it again.
->>
->> I think trying to separate integrity metadata is premature now, too
->> many things at the same time.
-> 
-> I'm not bothered by the size of the patchset, it is more important
-> that we do The Right Thing.  I would like to hear in more detail why
-> you don't think this will work, I'm not interested in hearing about
-> difficult it may be, I'm interested in hearing about what challenges
-> we need to solve to do this properly.
+On Wed, Nov 29, 2023 at 12:32=E2=80=AFAM Youngmin Nam <youngmin.nam@samsung=
+.com> wrote:
+> > I tried to test this patch on E850-96, and an attempt to write into
+> > smp_affinity (for some GPIO irq) also fails for me:
+> >
+> >     # echo f0 > smp_affinity
+> >     -bash: echo: write error: Input/output error
+> >
+> > When I add some pr_err() to exynos_irq_set_affinity(), I can't see
+> > those printed in dmesg. So I guess exynos_irq_set_affinity() doesn't
+> > get called at all. So the error probably happens before
+> > .irq_set_affinity callback gets called.
+> >
+> > Youngmin, can you please try and test this patch on E850-96? This
+> > board is already supported in upstream kernel. For example you can use
+> > "Volume Up" interrupt for the test, which is GPIO irq.
+> >
+>
+> I intened this affinity setting would work only on *Non* Wakeup External =
+Interrupt.
+> The "Volume Up" on E850-96 board is connected with "gpa0-7" and
+> that is Wakeup External interrupt so that we can't test the callback.
+>
 
-The right thing in my opinion is to achieve the goal with the minimal 
-set of changes, in the most intuitive way.
+Oh no. It was really silly mistake on my part :) But please check my
+answer below for good news.
 
-Until now, there was no solution that could achieve the primary goal of 
-this patch set (moving IMA and EVM to the LSM infrastructure) and, at 
-the same time, achieve the additional goal you set of removing the 
-'integrity' LSM.
+> I couldn't find out a pin for the test on E850-96 board yet.
+> We can test if there is a usage of *Non" Wake up External Interrupt of GP=
+IO
+> on E850-96 board.
+>
+> Do you have any idea ?
+>
 
-If you see the diff, the changes compared to v5 that was already 
-accepted by Mimi are very straightforward. If the assumption I made that 
-in the end the 'ima' LSM could take over the role of the 'integrity' 
-LSM, that for me is the preferable option.
+Yep, just managed to successfully test your patch on E850-96. My
+testing procedure below might appear messy, but I didn't want to do
+any extra soldering :)
 
-Given that the patch set is not doing any design change, but merely 
-moving calls and storing pointers elsewhere, that leaves us with the 
-option of thinking better what to do next, including like you suggested 
-to make IMA and EVM use disjoint metadata.
+Used GPG1[0] pin for testing. As you can see from schematics [1],
+GPG1[0] is connected to R196 resistor (which is not installed on the
+board).
 
->> I started to think, does EVM really need integrity metadata or it can
->> work without?
->>
->> The fact is that CONFIG_IMA=n and CONFIG_EVM=y is allowed, so we have
->> the same problem now. What if we make IMA the one that manages
->> integrity metadata, so that we can remove the 'integrity' LSM?
-> 
-> I guess we should probably revisit the basic idea of if it even makes
-> sense to enable EVM without IMA?  Should we update the Kconfig to
-> require IMA when EVM is enabled?
+I've modified E850-96 dts file like this:
 
-That would be up to Mimi. Also this does not seem the main focus of the 
-patch set.
+8<-------------------------------------------------------------------------=
+--->8
+        gpio-keys {
+                compatible =3D "gpio-keys";
+                pinctrl-names =3D "default";
+-               pinctrl-0 =3D <&key_voldown_pins &key_volup_pins>;
++               pinctrl-0 =3D <&key_voldown_pins &key_volup_pins &key_test_=
+pins>;
 
->> Regarding the LSM order, I would take Casey's suggestion of introducing
->> LSM_ORDER_REALLY_LAST, for EVM.
-> 
-> Please understand that I really dislike that we have imposed ordering
-> constraints at the LSM layer, but I do understand the necessity (the
-> BPF LSM ordering upsets me the most).  I really don't want to see us
-> make things worse by adding yet another ordering bucket, I would
-> rather that we document it well and leave it alone ... basically treat
-> it like the BPF LSM (grrrrrr).
+                ...
 
-Uhm, that would not be possible right away (the BPF LSM is mutable), 
-remember that we defined LSM_ORDER_LAST so that an LSM can be always 
-enable and placed as last (requested by Mimi)?
++               test-key {
++                       label =3D "Test Key";
++                       linux,code =3D <KEY_RIGHTCTRL>;
++                       gpios =3D <&gpg1 0 GPIO_ACTIVE_LOW>;
++               };
+        };
 
-Thanks
+...
 
-Roberto
++&pinctrl_peri {
++       key_test_pins: key-test-pins {
++               samsung,pins =3D "gpg1-0";
++               samsung,pin-function =3D <EXYNOS_PIN_FUNC_EINT>;
++               samsung,pin-pud =3D <EXYNOS_PIN_PULL_NONE>;
++               samsung,pin-drv =3D <EXYNOS5420_PIN_DRV_LV1>;
++       };
++};
+8<-------------------------------------------------------------------------=
+--->8
 
+It appeared in /proc/interrupts as follows:
+
+    87:          2          0          0          0          0
+ 0          0          0      gpg1   0 Edge      Test Key
+
+Then I touched R196 resistor pads with my finger (emulating key press)
+and looked again at /proc/interrupts:
+
+    87:        444          0          0          0          0
+ 0          0          0      gpg1   0 Edge      Test Key
+
+Then I reconfigured smp_affinity like so:
+
+    # cat /proc/irq/87/smp_affinity
+    ff
+    # echo f0 > /proc/irq/87/smp_affinity
+    # cat /proc/irq/87/smp_affinity
+    f0
+
+Then I messed with R196 resistor pads with my finger again, and
+re-checked /proc/interrupts:
+
+               CPU0       CPU1       CPU2       CPU3       CPU4
+CPU5       CPU6       CPU7
+     87:        444          0          0          0        234
+  0          0          0      gpg1   0 Edge      Test Key
+
+And without this patch that procedure above of course doesn't work.
+
+So as far as I'm concerned, feel free to add:
+
+Tested-by: Sam Protsenko <semen.protsenko@linaro.org>
+
+[1] https://www.96boards.org/documentation/consumer/e850-96b/hardware-docs/=
+files/e850-96b-schematics.pdf
+
+Thanks!
