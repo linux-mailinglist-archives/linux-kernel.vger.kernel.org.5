@@ -2,88 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F787FE02F
+	by mail.lfdr.de (Postfix) with ESMTP id 226697FE02D
 	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 20:16:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232801AbjK2TMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 14:12:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44776 "EHLO
+        id S232991AbjK2TMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 14:12:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231304AbjK2TMg (ORCPT
+        with ESMTP id S231304AbjK2TMu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 14:12:36 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF5F7D5E
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 11:12:42 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-54bbf08aa53so240726a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 11:12:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701285161; x=1701889961; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EMZYp39ud4X8F+sGse6s9EUR2FYcDVwMpHJ8PHx+8OU=;
-        b=zthheWoHxelFxe8r7297mEccl4cjpbS7zHiawthvrNjeRzjWHnLQaO4p0TMfjPFjf0
-         cvayNMYTkOi5Eo/b+MT4DUyvUuiqwMpFw68Ef8tcXqnlJT9NJVAJmNB7nM/hKWCs+BHG
-         0rB+l22t91RW/RxQXTzSLWzzZUxR47J626MMVNzwFVxMd4S7xIS7j/OGgXPJlZABc0Ni
-         sH+xc6Zjo45S3DUKUdhzYFyyt2ySQn7N5yqKrvl8jdCnR3egXVXA9NA29N7AE/bgMYVr
-         sHbHjFCgzdRKKDedWvP6WiVMY48+VktZAa5QBfZDTDn71eB4KY0tafapJwFjhWWzWVRn
-         qh1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701285161; x=1701889961;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EMZYp39ud4X8F+sGse6s9EUR2FYcDVwMpHJ8PHx+8OU=;
-        b=Ie/7i13EqVZiRckWTJWXOk8bNjgwAbfX3XUmSef8ApUioVMKsrLP131LZq+7qUikso
-         zPJL7NWCutfrr1yO3mkLVfBFenQsQ/Zos9TCXWdGVa8j+AbaT7w8lUdVbtcOsj+D7hHV
-         HeYdAMXSD3dkLE2U3NFou7GR2FpjpsJB8Y2Be1/SIwt7npmzm4qSwrg45r5JSfRYcoLN
-         T5YAIh61OlbUEk0G7ByIZopiqEmB8QYL25jWOtJVtvcEwBbPFO72KBtZe/ul88puXN1v
-         qm+pt2Nxp7x76U5vRKZ72zVgXAeBxPevWx6BkyJFUzC7TfbO+yYZa7Ofej0TyJR23bg+
-         jOWA==
-X-Gm-Message-State: AOJu0Yye13x9rIFW40pQjDBu8vnQxDL5dBrP/krE7svM5RKoIdKaoy1e
-        BtnevTZ/bAuGjgCH1M61iumUmw==
-X-Google-Smtp-Source: AGHT+IF2yDk0ORHj3h5bHzQeAeyXQq+pA6bLq+/jITc225DiTuU5EVlOS/3ihLC9XPjojmROOEaJNQ==
-X-Received: by 2002:a17:907:6d06:b0:9e5:2c72:9409 with SMTP id sa6-20020a1709076d0600b009e52c729409mr17542236ejc.43.1701285161428;
-        Wed, 29 Nov 2023 11:12:41 -0800 (PST)
-Received: from [10.167.154.1] (178235187166.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.166])
-        by smtp.gmail.com with ESMTPSA id bm10-20020a170906c04a00b00a14311b5c5dsm2116020ejb.185.2023.11.29.11.12.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 11:12:41 -0800 (PST)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Wed, 29 Nov 2023 20:12:31 +0100
-Subject: [PATCH v2] dt-bindings: interrupt-controller: Allow
- #power-domain-cells
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231129-topic-mpmbindingspd-v2-1-acbe909ceee1@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAB6NZ2UC/z2NywrCMBAAf0VyNiUPpa0n/0M85LFtF9tN2FRRS
- v/d4MHjDAyziQKMUMTlsAmGFxZMVMEcDyJMjkaQGCsLo4zV2vRyTRmDXPLikSLSWHKUp65VLgx
- DD7oTtfSugPTsKEy1pec8V5kZBnz/Vrd75YHTIteJwf0HyqpOad2qc2N6bW0rtXwkYheb+PEB0
- 3VGcpyaxKPY9y9+OyMkvQAAAA==
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        Wed, 29 Nov 2023 14:12:50 -0500
+Received: from mail.subdimension.ro (unknown [IPv6:2a01:7e01:e001:1d1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2E7D5E;
+        Wed, 29 Nov 2023 11:12:55 -0800 (PST)
+Received: from sunspire (unknown [188.24.94.216])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by mail.subdimension.ro (Postfix) with ESMTPSA id 396B328EE6F;
+        Wed, 29 Nov 2023 19:12:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
+        s=skycaves; t=1701285174;
+        bh=xiXoHUFxOf2VpMnPxdPWZok2lzoqqKH4KbvpI0hmZCM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=c/+8u4YQUBewn/6pZpzPocLAKHOCW3HtaP0idL8WBy3zYF9Ey2jzHseXZGo2XoG4I
+         V/byl8oCNX8T7F6YGWKoXV2aHK4OWF4pp8jgaWHK0y/YZT2qz5OV/2bpwX+b9fQpt5
+         ANQOaXsdvvKV9uo+Vku+/6HYcji8lqmfLsDMEm+8=
+Date:   Wed, 29 Nov 2023 21:12:52 +0200
+From:   Petre Rodan <petre.rodan@subdimension.ro>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Angel Iglesias <ang.iglesiasg@gmail.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Andreas Klinger <ak@it-klinger.de>,
         Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawn.guo@linaro.org>, Marc Zyngier <maz@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        Rob Herring <robh@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1701285159; l=1641;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=f6wILRBcHfTpBzpwZPqcN3wht6J12rCYsaONL8uADFY=;
- b=YjM1VzmRvWa7z1KEZjZbUE6xADf/i5xfR0MsvL8bqgr5xxMl1niZLYjuf5EEbpjDMG+jcVLxN
- 6rQ+5U+7j1mB1ZZHWIcoJARciMAl/or8hk0l9v5Ol0wn7zy3bdQJH2t
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Subject: Re: [PATCH v6 2/2] iio: pressure: driver for Honeywell HSC/SSC series
+Message-ID: <ZWeNNMfqKquDYI9X@sunspire>
+References: <20231129170425.3562-1-petre.rodan@subdimension.ro>
+ <20231129170425.3562-2-petre.rodan@subdimension.ro>
+ <ZWdzz7VzCW5ctend@smile.fi.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWdzz7VzCW5ctend@smile.fi.intel.com>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,51 +58,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MPM provides a single genpd. Allow #power-domain-cells = <0>.
 
-Fixes: 54fc9851c0e0 ("dt-bindings: interrupt-controller: Add Qualcomm MPM support")
-Acked-by: Shawn Guo <shawn.guo@linaro.org>
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
-Changes since v1:
-- Add this property to the example
-- Pick up tags
+hello!
 
-Link to v1: https://lore.kernel.org/linux-arm-msm/20230308011705.291337-1-konrad.dybcio@linaro.org/#t
+On Wed, Nov 29, 2023 at 07:24:31PM +0200, Andy Shevchenko wrote:
+> On Wed, Nov 29, 2023 at 07:04:12PM +0200, Petre Rodan wrote:
+> > Adds driver for digital Honeywell TruStability HSC and SSC series
+> > pressure and temperature sensors.
+> > Communication is one way. The sensor only requires 4 bytes worth of
+> > clock pulses on both i2c and spi in order to push the data out.
+> > The i2c address is hardcoded and depends on the part number.
+> > There is no additional GPIO control.
+> 
+> ...
+> 
+> > v6: modifications based on Andy's review
+> >     - use str_has_prefix(), match_string() instead of strncmp()
+> 
+> And why not using the respective property API for that case where
+> match_string() is used?
 
-Marc/Krzysztof, can we still pick this up for 6.7?
-It's been stale for quite a while..
----
- Documentation/devicetree/bindings/interrupt-controller/qcom,mpm.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+I'm lost again.
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/qcom,mpm.yaml b/Documentation/devicetree/bindings/interrupt-controller/qcom,mpm.yaml
-index 509d20c091af..6a206111d4e0 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/qcom,mpm.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/qcom,mpm.yaml
-@@ -62,6 +62,9 @@ properties:
-         - description: MPM pin number
-         - description: GIC SPI number for the MPM pin
- 
-+  '#power-domain-cells':
-+    const: 0
-+
- required:
-   - compatible
-   - reg
-@@ -93,4 +96,5 @@ examples:
-                            <86 183>,
-                            <90 260>,
-                            <91 260>;
-+        #power-domain-cells = <0>;
-     };
+437:  ret = device_property_read_string(dev, "honeywell,pressure-triplet",
+					&triplet);
+[..]
+455:	ret = match_string(hsc_triplet_variants, HSC_VARIANTS_MAX,
+						triplet);
+		if (ret < 0)
+			return dev_err_probe(dev, -EINVAL,
+				"honeywell,pressure-triplet is invalid\n");
 
----
-base-commit: 1f5c003694fab4b1ba6cbdcc417488b975c088d0
-change-id: 20231129-topic-mpmbindingspd-4870acff9e18
+		hsc->pmin = hsc_range_config[ret].pmin;
+		hsc->pmax = hsc_range_config[ret].pmax;
 
-Best regards,
+triplet is got via device_property_read_string(), is there some other property
+function I should be using?
+
+> I'm also a bit tired to repeat about:
+> - capitalization and punctuation in the multi-line comments;
+> - broken indentation is some cases.
+
+sorry about that. I removed all comments you complained about.
+just to simplify the process.
+
+> Otherwise it's a good stuff, I leave it now to Jonathan.
+> 
+> ...
+> 
+> > +	tmp = div_s64(((s64)(hsc->pmax - hsc->pmin)) * MICRO,
+> > +		      hsc->outmax - hsc->outmin);
+> > +	hsc->p_scale = div_s64_rem(tmp, NANO, &hsc->p_scale_dec);
+> > +	tmp = div_s64(((s64)hsc->pmin * (s64)(hsc->outmax - hsc->outmin)) *
+> > +		      MICRO, hsc->pmax - hsc->pmin);
+> 
+> Why not put MICRO on the previous line?
+
+oh well, from the review I understood you were asking for the replacement of
+NANO with MICRO on the previous instruction and it did not make much sense ( units
+are in pascal and we need a kilopascal output to userland)
+
+now I understood it's an indentation request. however moving MICRO will cross
+the 80 column rule. but if there will be yet another modification request I'll move it.
+
+cheers,
+peter
+
+
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
+
 -- 
-Konrad Dybcio <konrad.dybcio@linaro.org>
-
+petre rodan
