@@ -2,117 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 726717FE2B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 23:09:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BF217FE2C3
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 23:12:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234682AbjK2WJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 17:09:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50374 "EHLO
+        id S229668AbjK2WLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 17:11:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjK2WJW (ORCPT
+        with ESMTP id S229611AbjK2WLv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 17:09:22 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 164A7A8
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:09:29 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-5482df11e73so125212a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:09:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701295767; x=1701900567; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8SYJPO3WANXfLrJT96QPXJOyEPmj0+YqiIB6d1PVgyw=;
-        b=uR1+J9eN/VdCXJ8T/LaFR9/hBTt/xejL9ACeYf1Pz4XT7GlF9o1B9YXHjasKhHsg6d
-         qma0pOiSXdO7zR96+C2rs4s1MokJWds5IsxrV82b516MFo+o6FBTHB6v0kvCwm+P8gr7
-         pID8seGi4fyObRIKRPtv9f/efbeW8s7vJp06kw3OzFBKv+TZkdDSts3F5DQF0109O916
-         U5M+XhuMlmBEl+ftFfFMvMcUaWv102e9tudUwTH3mbgO09yk+y4RM1spNqUYTTLFPHbG
-         Vj8+kmRNgJTF4Xp2C42mNr2vzrOcOS2G/yRyNKSD7NMWEK3uuUAc3FePVazdK5B398ut
-         Lk8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701295767; x=1701900567;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8SYJPO3WANXfLrJT96QPXJOyEPmj0+YqiIB6d1PVgyw=;
-        b=Y2LPAqfjhScJwY40CKuI71x9IvmpYBvyFTCTnq+aIQmyXleVQD0neTwrKIOk0JyHak
-         i9FmPdYvgmr3h17itlre/RM+/119EuZVmxEaCmdAF2/NCPoeYrOdB3sV2cJ0L5HWqWWA
-         /+MJFGhkh+LG2+obby917C0A5aauIt0zfyN+oZh8RTCbgtlQH4pnKbsMVQUoo+J1va7B
-         ZcQEpzVrHZC1MKR35Cf5/LVMTEt84DyetXSy1mCVffD3X+JnpQ79jtvhJxZkwYTalJY+
-         4mknYp/TB2/n76hDYlCeX7WmwbHCRoLlaJVRdrvmCMBOl2hKMTTsK/KgXbLR4IFtjSYJ
-         i2NQ==
-X-Gm-Message-State: AOJu0YyxcmkDzBifC7m55BVpZ9swFR9QgGWAUL1s9IbWcZUTUvU5Pkdi
-        zGZ3n3FKYdbAs+cp9DznXI1P9A==
-X-Google-Smtp-Source: AGHT+IENx+OW2HpeiO1gNtCLT9v9Xg0hIOo5zRVhn9ogDaRMkWtj6jEgtM7O5wLu/1O3n5RNl3xvXQ==
-X-Received: by 2002:a50:fb85:0:b0:54a:f1db:c2b3 with SMTP id e5-20020a50fb85000000b0054af1dbc2b3mr14729811edq.0.1701295767566;
-        Wed, 29 Nov 2023 14:09:27 -0800 (PST)
-Received: from [192.168.209.83] (178235187166.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.166])
-        by smtp.gmail.com with ESMTPSA id w4-20020a056402268400b0054b2daa6654sm5165986edd.56.2023.11.29.14.09.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 14:09:27 -0800 (PST)
-Message-ID: <498465c4-ddaf-4a90-be5f-2e3709777e62@linaro.org>
-Date:   Wed, 29 Nov 2023 23:09:24 +0100
+        Wed, 29 Nov 2023 17:11:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72680C1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:11:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701295916;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=8tAo/jhWZHKemdFMhhMTV3K6TBojPxmRv8xo7iH8yXA=;
+        b=f5JrxVWqf81TdM40Xk+0q9H10nwH1lbgkkogtnk+BROgRnTLj8d04pGxn24N7Gy59UHmyz
+        ohVcpJ5dAf8EMQxYkbIaAn+zVI+OMTxMr2VwiLrPj5jkLrytjdRVxdS+1Bu+NgJesraP70
+        iyVJrzbXd3ZCAtzXxj3feYEoF2sTpmk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-477-B0Pjic9AOkyvXSB3pOb7Qg-1; Wed, 29 Nov 2023 17:11:52 -0500
+X-MC-Unique: B0Pjic9AOkyvXSB3pOb7Qg-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0CB13811E7B;
+        Wed, 29 Nov 2023 22:11:52 +0000 (UTC)
+Received: from localhost.localdomain.com (unknown [10.22.17.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 641B6492BFC;
+        Wed, 29 Nov 2023 22:11:51 +0000 (UTC)
+From:   Nico Pache <npache@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     shuah@kernel.org, akpm@linux-foundation.org, jsavitz@redhat.com,
+        David Hildenbrand <david@redhat.com>
+Subject: [PATCH] selftests/mm: dont run ksm_functional_tests twice
+Date:   Wed, 29 Nov 2023 15:11:40 -0700
+Message-ID: <20231129221140.614713-1-npache@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 06/15] clk: qcom: gpucc-sm6115: Unregister critical
- clocks
-Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20230717-topic-branch_aon_cleanup-v2-0-2a583460ef26@linaro.org>
- <20230717-topic-branch_aon_cleanup-v2-6-2a583460ef26@linaro.org>
- <8318363a-7122-45f4-a42f-3f01b33457eb@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <8318363a-7122-45f4-a42f-3f01b33457eb@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -120,34 +60,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.11.2023 22:14, Bryan O'Donoghue wrote:
-> On 29/11/2023 18:59, Konrad Dybcio wrote:
->> Some clocks need to be always-on, but we don't really do anything
->> with them, other than calling enable() once and telling Linux they're
->> enabled.
->>
->> Unregister them to save a couple of bytes and, perhaps more
->> importantly, allow for runtime suspend of the clock controller device,
->> as CLK_IS_CRITICAL prevents the latter.
->>
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->> ---
-[...]
+ksm functional test is already being run.
+Remove the duplicate call to ./ksm_functional_tests.
 
+Fixes: 93fb70aa5904 ("selftests/vm: add KSM unmerge tests")
+Signed-off-by: Nico Pache <npache@redhat.com>
+Cc: David Hildenbrand <david@redhat.com>
+---
+ tools/testing/selftests/mm/run_vmtests.sh | 2 --
+ 1 file changed, 2 deletions(-)
 
-> 
-> OTOH.
-> 
-> Seems a pity to remove these clocks - generally for the series I mean - from the debug view in /sys/kernel/debug/clk_summary.
-> 
-> In the ideal case we have pm runtime functional without dropping these clocks from the view in /sys/kernel/debug/clk_summary.
-> 
-> Certainly I've found that interface useful when launching a real product. It might be confusing to _not_ see the always-on clocks enumerated there.
-> 
-> ---
-I have shared the very same concern in the past.. I did also however realize
-that debugfs is not accurate, especially with funky clocks that need only be
-enabled once (*even if you gate the e.g. MM subsystem*) and debugcc should be
-used instead
+diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/selftests/mm/run_vmtests.sh
+index 00757445278e..c0212258b852 100755
+--- a/tools/testing/selftests/mm/run_vmtests.sh
++++ b/tools/testing/selftests/mm/run_vmtests.sh
+@@ -334,8 +334,6 @@ CATEGORY="ksm_numa" run_test ./ksm_tests -N -m 0
+ 
+ CATEGORY="ksm" run_test ./ksm_functional_tests
+ 
+-run_test ./ksm_functional_tests
+-
+ # protection_keys tests
+ if [ -x ./protection_keys_32 ]
+ then
+-- 
+2.41.0
 
-Konrad
