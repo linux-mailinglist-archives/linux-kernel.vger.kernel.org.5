@@ -2,286 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9718C7FDDE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:02:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C18547FDD74
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:42:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229659AbjK2RCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 12:02:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43788 "EHLO
+        id S229708AbjK2Qlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 11:41:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230519AbjK2QlF (ORCPT
+        with ESMTP id S229485AbjK2Qlt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 11:41:05 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B4AA84
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:41:11 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40b54261524so6673835e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:41:11 -0800 (PST)
+        Wed, 29 Nov 2023 11:41:49 -0500
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF7884
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:41:52 -0800 (PST)
+Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-41cd97d7272so37888941cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:41:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701276069; x=1701880869; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dfg7atQN/bLBzM7mE71PtSKnKRCE3/hamOjfFKvk+Ps=;
-        b=zJp9zlI7uQm4mXUqbMtGo1dFFiHpKrgDBpoOXVrxOpJhA3ztQ7lDT4Cwc+s/7pNH5+
-         4e1QOc0DRqU/ewe4uhjp+KsbfMXWFaYEDL+bjKaFXYk/e0WoDHM2WuE6qi3xq1C9QlrU
-         xypBylEB2IzHczcTpH8x2EcpKiMp/pJqjjGUjCQEIi8tDtbtbYCZbF+nuZFvfcqNYO3V
-         WfJhR/GfF7gXJNJtm5ag/Y+yCwFZTWjnLBDOPAqt47sy7ZPSdUbw/EVqcs4o1Uq/l1TK
-         RgYBoepYA618+oc1k3stmyVs7RMejnDwyWPFS2PLdJlIqouAJWR0ws0mz+cCciH486uV
-         Qceg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701276069; x=1701880869;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+        d=gmail.com; s=20230601; t=1701276111; x=1701880911; darn=vger.kernel.org;
+        h=in-reply-to:autocrypt:from:references:cc:to:content-language
+         :subject:user-agent:mime-version:date:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=dfg7atQN/bLBzM7mE71PtSKnKRCE3/hamOjfFKvk+Ps=;
-        b=Wvg5lHUbOb7b8rW49oqY3Vek5SuTnZIBTNpM6/3Zvc7FH0imQbvUJRBxFyE0VSRNPM
-         8DbQYA41AXpzl69g1HppUghXlogWUw+XmzQbTOMm83Sy1c7oLKFEMKtJfbk7Ht+UNzLk
-         tIjgklovxZJjkgfByOFW8fuXOf0KEhHX0nGrHBaGRiLbYHQyEIVO8Sn+HROX62w2V5IC
-         2OAJ4fhtvevRZN27ncmLCG4XAuc7eleGQl2QQlXXHFNffrFzcsePEQppOJMBYqrFk2f0
-         hzg3uhm5haIWGYYI0rCaELIAUQ5fEraOfHZhDexREcuwq8VWN7gkYkyHbveBI9uUmDmT
-         Y+gg==
-X-Gm-Message-State: AOJu0Yymf1jcsMc2OgkNUVNPBqlHvXB55Tj54AqRbxg7lcHGWOximgNQ
-        vzl+L8pRL2BeiaSt+xxhTndDYg==
-X-Google-Smtp-Source: AGHT+IGojnc7iEBSKQz6F3GlFyEvUSOGmmp2QrAEdcHHEVFRSkWi1DK4rH79rgWmbOL/atepa5/2QQ==
-X-Received: by 2002:a05:600c:1384:b0:409:19a0:d247 with SMTP id u4-20020a05600c138400b0040919a0d247mr13959356wmf.18.1701276069537;
-        Wed, 29 Nov 2023 08:41:09 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:31d3:eea3:8f97:6a2c? ([2a01:e0a:982:cbb0:31d3:eea3:8f97:6a2c])
-        by smtp.gmail.com with ESMTPSA id g10-20020a05600c4eca00b0040596352951sm2783806wmq.5.2023.11.29.08.41.08
+        bh=Fjs3Okyq9EWbreP6AOnF4Rr0g4Cepv9m/ouV8NW/+O4=;
+        b=aLO/03p96Mk4mQbpxqK4cE+4FN+3FVe9RhanazpCe+bA4OMFAJMFiEUTXjkSyvaGHb
+         r0veVp7wWS2lsocPiRxPbrv1nuBHWJZzrMveQDUMyJ1EW78Gv1D4zD25Wi6GXGDCwrCk
+         pmxQCN8wav9vOJBfbN0mrBngRIBugcRtP5I81A614YfG97k9o1nLHKS5i8Lo4NkucG0S
+         Iy5WOKR/NihG2sAiwME9D6H5qYW9Lv4vCj+ZFHTMdmApjjcnYOuMUq/jBwi3CguRoF1T
+         nSU6UsCkLrdjB9VWOZPy9iWjQTq4hQwWs8RO0aSnvxiLQpDlU5pnr2HQ6xvOFffXPRqn
+         bt5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701276111; x=1701880911;
+        h=in-reply-to:autocrypt:from:references:cc:to:content-language
+         :subject:user-agent:mime-version:date:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Fjs3Okyq9EWbreP6AOnF4Rr0g4Cepv9m/ouV8NW/+O4=;
+        b=u5S41KkDaaqWhoMd2rLAujCFpR0IewL8Mir/AMPhdggGVMpyVlpfGLLVpW6FLsSRiy
+         9Uy/4UeBbr3lrhxzTRX1NPGxquO17ZvXx8egRcTBBDcay/lcT/kcr+NRaAnD33TP1Ov2
+         0fPhsr+XUKkBW2+d4kPzoYo4tZKIGlfW8ZT2iDBuOBQ5WH2Ex6kUk08HwuPIYQSm17h4
+         zGmqTWGsyeBdkk8UCcL6JkaOgAObs2zj5+1zkLtCmDo4YFPcBOP0VtqAG3RnC/+KdA/Q
+         m+kTu16/DvJTNDtNuFlvTEVlrBx93KT6sJauwLR9oMhf8QBXcCZBJYRJlKeeUCVJr4he
+         XoUQ==
+X-Gm-Message-State: AOJu0Yx/ysEm+g4D327os5WdSY3qp6vjKDHhvtRQA3pK0srMhniQRp/0
+        qp2YhNoAZ1HO6q309t9uJqBvCCz6INepoQ==
+X-Google-Smtp-Source: AGHT+IHJLt6t2SBXVcMOy+x4u9k4HCGdsvez9v81S9XkJIrlzx7UuYuSel6DeNSKzD86cKYjhVoQ+Q==
+X-Received: by 2002:a05:622a:4c0e:b0:423:d75b:2b62 with SMTP id ey14-20020a05622a4c0e00b00423d75b2b62mr8468314qtb.51.1701276111101;
+        Wed, 29 Nov 2023 08:41:51 -0800 (PST)
+Received: from [192.168.2.14] ([76.65.20.140])
+        by smtp.gmail.com with ESMTPSA id fc21-20020a05622a489500b00423e6885152sm909995qtb.75.2023.11.29.08.41.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 08:41:09 -0800 (PST)
-Message-ID: <11f8d986-3e97-4191-b46c-ad3166ee6dc7@linaro.org>
-Date:   Wed, 29 Nov 2023 17:41:07 +0100
+        Wed, 29 Nov 2023 08:41:50 -0800 (PST)
+Message-ID: <9595b8bf-e64d-4926-9263-97e18bcd7d05@gmail.com>
+Date:   Wed, 29 Nov 2023 11:41:40 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v3 2/4] dt-bindings: pwm: amlogic: add new compatible for
- meson8 pwm type
-Content-Language: en-US, fr
-To:     Jerome Brunet <jbrunet@baylibre.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linux-pwm@vger.kernel.org,
-        JunYi Zhao <junyi.zhao@amlogic.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-References: <20231129134004.3642121-1-jbrunet@baylibre.com>
- <20231129134004.3642121-3-jbrunet@baylibre.com>
- <8e78be99-3d4d-4f79-9791-404e60bcb67c@linaro.org>
- <1jfs0ojz1a.fsf@starbuckisacylon.baylibre.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <1jfs0ojz1a.fsf@starbuckisacylon.baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:115.0) Gecko/20100101
+ Thunderbird/115.5.1
+Subject: Re: Radeon regression in 6.6 kernel
+Content-Language: en-CA, en-US
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Phillip Susi <phill@thesusis.net>,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        dri-devel@lists.freedesktop.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Danilo Krummrich <dakr@redhat.com>
+References: <87edgv4x3i.fsf@vps.thesusis.net>
+ <559d0fa5-953a-4a97-b03b-5eb1287c83d8@leemhuis.info>
+ <CAPM=9tw-8pQWFso0zuLqpsqd5BSHWtc4As9ttdjY-DDr70EMqQ@mail.gmail.com>
+ <bdb238b6-60c7-4f26-81d0-9e62cd5dd326@gmail.com>
+ <CADnq5_NVGS1XykxGxpcu_bpPbzboCUJQkcCF3r+0N9a23KUgiQ@mail.gmail.com>
+ <96e2e13c-f01c-4baf-a9a3-cbaa48fb10c7@amd.com>
+ <CADnq5_NBfeAXEyQw0gnSd67=tR-bUKg8w=10+4z9pGGuRnP9uw@mail.gmail.com>
+ <87jzq2ixtm.fsf@vps.thesusis.net>
+ <CADnq5_Ou-MVVm0rdWDmDnJNLkWUayXzO26uCEtz3ucNa4Ghy2w@mail.gmail.com>
+ <95fe9b5b-05ce-4462-9973-9aca306bc44f@gmail.com>
+ <CADnq5_MYEWx=e1LBLeVs0UbR5_xEScjDyw_-75mLe8RAMnqh6g@mail.gmail.com>
+ <CADnq5_OC=JFpGcN0oGbTF5xYEt4X3r0=jEY6hJ12W8CzYq1+cA@mail.gmail.com>
+From:   Luben Tuikov <ltuikov89@gmail.com>
+Autocrypt: addr=ltuikov89@gmail.com; keydata=
+ xjMEZTohOhYJKwYBBAHaRw8BAQdAWSq76k+GsENjDTMVCy9Vr4fAO9Rb57/bPT1APnbnnRHN
+ Ikx1YmVuIFR1aWtvdiA8bHR1aWtvdjg5QGdtYWlsLmNvbT7CmQQTFgoAQRYhBJkj7+VmFO9b
+ eaAl10wVR5QxozSvBQJlOiE6AhsDBQkJZgGABQsJCAcCAiICBhUKCQgLAgQWAgMBAh4HAheA
+ AAoJEEwVR5QxozSvSm4BAOwCpX53DTQhE20FBGlTMqKCOQyJqlMcIQ9SO1qPWX1iAQCv3vfy
+ JwktF7REl1yt7IU2Sye1qmQMfJxdt9JMbMNNBs44BGU6IToSCisGAQQBl1UBBQEBB0BT9wSP
+ cCE8uGe7FWo8C+nTSyWPXKTx9F0gpEnlqReRBwMBCAfCfgQYFgoAJhYhBJkj7+VmFO9beaAl
+ 10wVR5QxozSvBQJlOiE6AhsMBQkJZgGAAAoJEEwVR5QxozSvSsYA/2LIFjbxQ2ikbU5S0pKo
+ aMDzO9eGz69uNhNWJcvIKJK6AQC9228Mqc1JeZMIyjYWr2HKYHi8S2q2/zHrSZwAWYYwDA==
+In-Reply-To: <CADnq5_OC=JFpGcN0oGbTF5xYEt4X3r0=jEY6hJ12W8CzYq1+cA@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------UyehoVd0FbltVXpXzUgljOtM"
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------UyehoVd0FbltVXpXzUgljOtM
+Content-Type: multipart/mixed; boundary="------------0XZomOJokaOIq0ur7sjc7Zhs";
+ protected-headers="v1"
+From: Luben Tuikov <ltuikov89@gmail.com>
+To: Alex Deucher <alexdeucher@gmail.com>
+Cc: Phillip Susi <phill@thesusis.net>,
+ Linux regressions mailing list <regressions@lists.linux.dev>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+ linux-kernel@vger.kernel.org,
+ "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+ dri-devel@lists.freedesktop.org, Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Danilo Krummrich <dakr@redhat.com>
+Message-ID: <9595b8bf-e64d-4926-9263-97e18bcd7d05@gmail.com>
+Subject: Re: Radeon regression in 6.6 kernel
+References: <87edgv4x3i.fsf@vps.thesusis.net>
+ <559d0fa5-953a-4a97-b03b-5eb1287c83d8@leemhuis.info>
+ <CAPM=9tw-8pQWFso0zuLqpsqd5BSHWtc4As9ttdjY-DDr70EMqQ@mail.gmail.com>
+ <bdb238b6-60c7-4f26-81d0-9e62cd5dd326@gmail.com>
+ <CADnq5_NVGS1XykxGxpcu_bpPbzboCUJQkcCF3r+0N9a23KUgiQ@mail.gmail.com>
+ <96e2e13c-f01c-4baf-a9a3-cbaa48fb10c7@amd.com>
+ <CADnq5_NBfeAXEyQw0gnSd67=tR-bUKg8w=10+4z9pGGuRnP9uw@mail.gmail.com>
+ <87jzq2ixtm.fsf@vps.thesusis.net>
+ <CADnq5_Ou-MVVm0rdWDmDnJNLkWUayXzO26uCEtz3ucNa4Ghy2w@mail.gmail.com>
+ <95fe9b5b-05ce-4462-9973-9aca306bc44f@gmail.com>
+ <CADnq5_MYEWx=e1LBLeVs0UbR5_xEScjDyw_-75mLe8RAMnqh6g@mail.gmail.com>
+ <CADnq5_OC=JFpGcN0oGbTF5xYEt4X3r0=jEY6hJ12W8CzYq1+cA@mail.gmail.com>
+In-Reply-To: <CADnq5_OC=JFpGcN0oGbTF5xYEt4X3r0=jEY6hJ12W8CzYq1+cA@mail.gmail.com>
 
-On 29/11/2023 17:26, Jerome Brunet wrote:
-> 
-> On Wed 29 Nov 2023 at 17:20, Neil Armstrong <neil.armstrong@linaro.org> wrote:
-> 
->> Hi,
->>
->> On 29/11/2023 14:39, Jerome Brunet wrote:
->>> Add a new compatible for the pwm found in the meson8 to sm1 Amlogic SoCs,
->>> dealing with clocks differently. This does not enable new HW. It is meant
->>> to fix a bad DT ABI for the currently supported HW.
->>> The original clock bindings describe which input the PWM channel
->>> multiplexer should pick among its possible parents, which are
->>> hard-coded in the driver. As such, it is a setting tied to the driver
->>> implementation and does not describe the HW.
->>> The new bindings introduce here describe the clocks input of the PWM
->>> block
->>> as they exist.
->>> The old compatible is deprecated but kept to maintain ABI compatibility.
->>> The SoC specific compatibles introduced match the SoC families supported
->>> by the original bindings.
->>> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
->>> ---
->>>    .../devicetree/bindings/pwm/pwm-amlogic.yaml  | 52 ++++++++++++++++---
->>>    1 file changed, 46 insertions(+), 6 deletions(-)
->>> diff --git a/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
->>> b/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
->>> index 387976ed36d5..eece390114a3 100644
->>> --- a/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
->>> +++ b/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
->>> @@ -21,23 +21,35 @@ properties:
->>>              - amlogic,meson-g12a-ee-pwm
->>>              - amlogic,meson-g12a-ao-pwm-ab
->>>              - amlogic,meson-g12a-ao-pwm-cd
->>> -          - amlogic,meson-s4-pwm
->>> +        deprecated: true
->>>          - items:
->>>              - const: amlogic,meson-gx-pwm
->>>              - const: amlogic,meson-gxbb-pwm
->>> +        deprecated: true
->>>          - items:
->>>              - const: amlogic,meson-gx-ao-pwm
->>>              - const: amlogic,meson-gxbb-ao-pwm
->>> +        deprecated: true
->>>          - items:
->>>              - const: amlogic,meson8-pwm
->>>              - const: amlogic,meson8b-pwm
->>> +        deprecated: true
->>
->> I think deprecated should be moved in a third patch
-> 
-> The complain on v2 was that it was not clear the new binding was making
-> the old one obsolete. It looked to me that the deprecation old bindings
-> needed to go together with the introduction of the new.
-> 
-> I don't mind one way or the other
-> 
-> Is there a rule somewhere about this ?
+--------------0XZomOJokaOIq0ur7sjc7Zhs
+Content-Type: multipart/mixed; boundary="------------X4lhUOpMG3SysAtmJ6e16SnL"
 
-Not sure about that, I don't think it's a problem to have both valid
-at the same time, setting them deprecated afterwards looks cleaner
-to avoid mixing too much changes at the same time.
+--------------X4lhUOpMG3SysAtmJ6e16SnL
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Neil
+On 2023-11-29 10:22, Alex Deucher wrote:
+> On Wed, Nov 29, 2023 at 8:50=E2=80=AFAM Alex Deucher <alexdeucher@gmail=
+=2Ecom> wrote:
+>>
+>> On Tue, Nov 28, 2023 at 11:45=E2=80=AFPM Luben Tuikov <ltuikov89@gmail=
+=2Ecom> wrote:
+>>>
+>>> On 2023-11-28 17:13, Alex Deucher wrote:
+>>>> On Mon, Nov 27, 2023 at 6:24=E2=80=AFPM Phillip Susi <phill@thesusis=
+=2Enet> wrote:
+>>>>>
+>>>>> Alex Deucher <alexdeucher@gmail.com> writes:
+>>>>>
+>>>>>>> In that case those are the already known problems with the schedu=
+ler
+>>>>>>> changes, aren't they?
+>>>>>>
+>>>>>> Yes.  Those changes went into 6.7 though, not 6.6 AFAIK.  Maybe I'=
+m
+>>>>>> misunderstanding what the original report was actually testing.  I=
+f it
+>>>>>> was 6.7, then try reverting:
+>>>>>> 56e449603f0ac580700621a356d35d5716a62ce5
+>>>>>> b70438004a14f4d0f9890b3297cd66248728546c
+>>>>>
+>>>>> At some point it was suggested that I file a gitlab issue, but I to=
+ok
+>>>>> this to mean it was already known and being worked on.  -rc3 came o=
+ut
+>>>>> today and still has the problem.  Is there a known issue I could tr=
+ack?
+>>>>>
+>>>>
+>>>> At this point, unless there are any objections, I think we should ju=
+st
+>>>> revert the two patches
+>>> Uhm, no.
+>>>
+>>> Why "the two" patches?
+>>>
+>>> This email, part of this thread,
+>>>
+>>> https://lore.kernel.org/all/87r0kircdo.fsf@vps.thesusis.net/
+>>>
+>>> clearly states that reverting *only* this commit,
+>>> 56e449603f0ac5 drm/sched: Convert the GPU scheduler to variable numbe=
+r of run-queues
+>>> *does not* mitigate the failed suspend. (Furthermore, this commit doe=
+sn't really change
+>>> anything operational, other than using an allocated array, instead of=
+ a static one, in DRM,
+>>> while the 2nd patch is solely contained within the amdgpu driver code=
+=2E)
+>>>
+>>> Leaving us with only this change,
+>>> b70438004a14f4 drm/amdgpu: move buffer funcs setting up a level
+>>> to be at fault, as the kernel log attached in the linked email above =
+shows.
+>>>
+>>> The conclusion is that only b70438004a14f4 needs reverting.
+>>
+>> b70438004a14f4 was a fix for 56e449603f0ac5.  Without b70438004a14f4,
+>> 56e449603f0ac5 breaks amdgpu.
+>=20
+> We can try and re-enable it in the next kernel.  I'm just not sure
+> we'll be able to fix this in time for 6.7 with the holidays and all
+> and I don't want to cause a lot of scheduler churn at the end of the
+> 6.7 cycle if we hold off and try and fix it.  Reverting seems like the
+> best short term solution.
 
-> 
->>
->>> +      - const: amlogic,meson8-pwm-v2
->>> +      - items:
->>> +          - enum:
->>> +              - amlogic,meson8b-pwm-v2
->>> +              - amlogic,meson-gxbb-pwm-v2
->>> +              - amlogic,meson-axg-pwm-v2
->>> +              - amlogic,meson-g12-pwm-v2
->>> +          - const: amlogic,meson8-pwm-v2
->>> +      - const: amlogic,meson-s4-pwm
->>>        reg:
->>>        maxItems: 1
->>>        clocks:
->>>        minItems: 1
->>> -    maxItems: 2
->>> +    maxItems: 4
->>>        clock-names:
->>>        minItems: 1
->>> @@ -58,7 +70,6 @@ allOf:
->>>            compatible:
->>>              contains:
->>>                enum:
->>> -              - amlogic,meson8-pwm
->>>                  - amlogic,meson8b-pwm
->>>                  - amlogic,meson-gxbb-pwm
->>>                  - amlogic,meson-gxbb-ao-pwm
->>> @@ -67,14 +78,15 @@ allOf:
->>>                  - amlogic,meson-g12a-ee-pwm
->>>                  - amlogic,meson-g12a-ao-pwm-ab
->>>                  - amlogic,meson-g12a-ao-pwm-cd
->>> -              - amlogic,meson-gx-pwm
->>> -              - amlogic,meson-gx-ao-pwm
->>
->> I don't understand why those entries are removed
-> 
-> It's a mistake. It should not have been added to begin with in
-> the first patch. "amlogic,meson-gx-*" must go along with
-> "amlogic,meson-gxbb-*" so it matches correctly without it.
-> 
-> I'll fix it
-> 
->>
->>>        then:
->>> -      # Historic bindings tied to the driver implementation
->>> +      # Obsolete historic bindings tied to the driver implementation
->>>          # The clocks provided here are meant to be matched with the input
->>>          # known (hard-coded) in the driver and used to select pwm clock
->>>          # source. Currently, the linux driver ignores this.
->>> +      # This is kept to maintain ABI backward compatibility.
->>
->> Same here, this should go in a third patch
->>
->>>          properties:
->>> +        clocks:
->>> +          maxItems: 2
->>>            clock-names:
->>>              oneOf:
->>>                - items:
->>> @@ -83,6 +95,27 @@ allOf:
->>>                    - const: clkin0
->>>                    - const: clkin1
->>>    +  # Newer binding where clock describe the actual clock inputs of the
->>> pwm
->>> +  # block. These are necessary but some inputs may be grounded.
->>> +  - if:
->>> +      properties:
->>> +        compatible:
->>> +          contains:
->>> +            enum:
->>> +              - amlogic,meson8-pwm-v2
->>> +    then:
->>> +      properties:
->>> +        clocks:
->>> +          minItems: 1
->>> +          items:
->>> +            - description: input clock 0 of the pwm block
->>> +            - description: input clock 1 of the pwm block
->>> +            - description: input clock 2 of the pwm block
->>> +            - description: input clock 3 of the pwm block
->>> +        clock-names: false
->>> +      required:
->>> +        - clocks
->>> +
->>>      # Newer IP block take a single input per channel, instead of 4 inputs
->>>      # for both channels
->>>      - if:
->>> @@ -112,6 +145,13 @@ examples:
->>>          clock-names = "clkin0", "clkin1";
->>>          #pwm-cells = <3>;
->>>        };
->>> +  - |
->>> +    pwm@2000 {
->>> +      compatible = "amlogic,meson8-pwm-v2";
->>> +      reg = <0x1000 0x10>;
->>> +      clocks = <&xtal>, <0>, <&fdiv4>, <&fdiv5>;
->>> +      #pwm-cells = <3>;
->>> +    };
->>>      - |
->>>        pwm@1000 {
->>>          compatible = "amlogic,meson-s4-pwm";
->>
->> Neil
-> 
-> 
+A lot of subsequent code has come in since commit 56e449603f0ac5, as it o=
+pened
+the opportunity for a 1-to-1 relationship between an entity and a schedul=
+er.
+(Should've always been the case, from the outset. Not sure why it was cod=
+ed as
+a fixed-size array.)
 
+Given that commit 56e449603f0ac5 has nothing to do with amdgpu, and the p=
+roblem
+is wholly contained in amdgpu, and no other driver has this problem, ther=
+e is
+no reason to have to "churn", i.e. go back and forth in DRM, only to cove=
+r up
+an init bug in amdgpu. See the response I just sent in @this thread:
+https://lore.kernel.org/r/05007cb0-871e-4dc7-af58-1351f4ba43e2@gmail.com
+
+And it's not like this issue is unknown. I first posted about it on 2023-=
+10-16.=20
+
+Ideally, amdgpu would just fix their init code.
+--=20
+Regards,
+Luben
+
+--------------X4lhUOpMG3SysAtmJ6e16SnL
+Content-Type: application/pgp-keys; name="OpenPGP_0x4C15479431A334AF.asc"
+Content-Disposition: attachment; filename="OpenPGP_0x4C15479431A334AF.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xjMEZTohOhYJKwYBBAHaRw8BAQdAWSq76k+GsENjDTMVCy9Vr4fAO9Rb57/bPT1A
+PnbnnRHNIkx1YmVuIFR1aWtvdiA8bHR1aWtvdjg5QGdtYWlsLmNvbT7CmQQTFgoA
+QRYhBJkj7+VmFO9beaAl10wVR5QxozSvBQJlOiE6AhsDBQkJZgGABQsJCAcCAiIC
+BhUKCQgLAgQWAgMBAh4HAheAAAoJEEwVR5QxozSvSm4BAOwCpX53DTQhE20FBGlT
+MqKCOQyJqlMcIQ9SO1qPWX1iAQCv3vfyJwktF7REl1yt7IU2Sye1qmQMfJxdt9JM
+bMNNBs44BGU6IToSCisGAQQBl1UBBQEBB0BT9wSPcCE8uGe7FWo8C+nTSyWPXKTx
+9F0gpEnlqReRBwMBCAfCfgQYFgoAJhYhBJkj7+VmFO9beaAl10wVR5QxozSvBQJl
+OiE6AhsMBQkJZgGAAAoJEEwVR5QxozSvSsYA/2LIFjbxQ2ikbU5S0pKoaMDzO9eG
+z69uNhNWJcvIKJK6AQC9228Mqc1JeZMIyjYWr2HKYHi8S2q2/zHrSZwAWYYwDA=3D=3D
+=3DqCaZ
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------X4lhUOpMG3SysAtmJ6e16SnL--
+
+--------------0XZomOJokaOIq0ur7sjc7Zhs--
+
+--------------UyehoVd0FbltVXpXzUgljOtM
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wnsEABYIACMWIQSZI+/lZhTvW3mgJddMFUeUMaM0rwUCZWdpxAUDAAAAAAAKCRBMFUeUMaM0rxMG
+AP0VKIwpMtTXzjbkhP+YlAOkqgomRWdt1ImVdFZwC6ss/AEA1HV4kiVP2+VGwRtGUUImxMuRwOGE
+gH5ERcUPC6tIlA0=
+=9LNu
+-----END PGP SIGNATURE-----
+
+--------------UyehoVd0FbltVXpXzUgljOtM--
