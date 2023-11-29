@@ -2,91 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE797FDB1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:22:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 858437FDB14
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:22:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234860AbjK2PWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 10:22:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50538 "EHLO
+        id S234874AbjK2PWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 10:22:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234830AbjK2PWd (ORCPT
+        with ESMTP id S234860AbjK2PWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 10:22:33 -0500
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1CDCBE
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:22:39 -0800 (PST)
-Message-ID: <b699fbc8-260a-48e9-b6cc-8bfecd09afed@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1701271358;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HQiZ+7wAuSeNjpj8apTyPg8hJlrrmCrTI0XRLYKF0N8=;
-        b=KVed2Zjgv7XeII9r2X+MTlQ6MpHbUpzjRjxCRVryPjqS7WQgL/klPvl0DGCIJtn+2HJ9i0
-        zpbKIVf6tnVZwxthxtzt9g6JYlqiuCCWus9aNEciqYzPTrPZXLvo98bW6UJ4CPgjB7NzAd
-        duAQwvGTlZusGXFH/EPUzS2lSrfQJfM=
-Date:   Wed, 29 Nov 2023 23:22:30 +0800
+        Wed, 29 Nov 2023 10:22:30 -0500
+Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76755E6
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:22:36 -0800 (PST)
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.159) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 29 Nov
+ 2023 18:22:34 +0300
+Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Wed, 29 Nov
+ 2023 18:22:34 +0300
+From:   Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+CC:     Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] drm/radeon/r600_cs: Fix possible int overflows in r600_cs_check_reg()
+Date:   Wed, 29 Nov 2023 07:22:30 -0800
+Message-ID: <20231129152230.7931-1-n.zhandarovich@fintech.ru>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next 2/5] virtio_net: Add page_pool support to improve
- performance
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Liang Chen <liangchen.linux@gmail.com>, jasowang@redhat.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xuanzhuo@linux.alibaba.com,
-        kuba@kernel.org, edumazet@google.com, davem@davemloft.net,
-        pabeni@redhat.com, alexander.duyck@gmail.com
-References: <20230526054621.18371-1-liangchen.linux@gmail.com>
- <20230526054621.18371-2-liangchen.linux@gmail.com>
- <c745f67e-91e6-4a32-93f2-dc715056eb51@linux.dev>
- <20231129095825-mutt-send-email-mst@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <20231129095825-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.0.253.138]
+X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
+ (10.0.10.18)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+While improbable, there may be a chance of hitting integer
+overflow when the result of radeon_get_ib_value() gets shifted
+left.
 
-在 2023/11/29 22:59, Michael S. Tsirkin 写道:
-> On Wed, Nov 29, 2023 at 10:50:57PM +0800, Zhu Yanjun wrote:
->> 在 2023/5/26 13:46, Liang Chen 写道:
->
-> what made you respond to a patch from May, now?
+Avoid it by casting one of the operands to larger data type (u64).
 
-I want to apply page_pool to our virtio_net. This virtio_net works on 
-our device.
+Found by Linux Verification Center (linuxtesting.org) with static
+analysis tool SVACE.
 
-I want to verify whether page_pool on virtio_net with our device can 
-improve the performance or not.
+Fixes: 1729dd33d20b ("drm/radeon/kms: r600 CS parser fixes")
+Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+---
+ drivers/gpu/drm/radeon/r600_cs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-And I found that ethtool is wrong.
+diff --git a/drivers/gpu/drm/radeon/r600_cs.c b/drivers/gpu/drm/radeon/r600_cs.c
+index 638f861af80f..6cf54a747749 100644
+--- a/drivers/gpu/drm/radeon/r600_cs.c
++++ b/drivers/gpu/drm/radeon/r600_cs.c
+@@ -1275,7 +1275,7 @@ static int r600_cs_check_reg(struct radeon_cs_parser *p, u32 reg, u32 idx)
+ 			return -EINVAL;
+ 		}
+ 		tmp = (reg - CB_COLOR0_BASE) / 4;
+-		track->cb_color_bo_offset[tmp] = radeon_get_ib_value(p, idx) << 8;
++		track->cb_color_bo_offset[tmp] = (u64)radeon_get_ib_value(p, idx) << 8;
+ 		ib[idx] += (u32)((reloc->gpu_offset >> 8) & 0xffffffff);
+ 		track->cb_color_base_last[tmp] = ib[idx];
+ 		track->cb_color_bo[tmp] = reloc->robj;
+@@ -1302,7 +1302,7 @@ static int r600_cs_check_reg(struct radeon_cs_parser *p, u32 reg, u32 idx)
+ 					"0x%04X\n", reg);
+ 			return -EINVAL;
+ 		}
+-		track->htile_offset = radeon_get_ib_value(p, idx) << 8;
++		track->htile_offset = (u64)radeon_get_ib_value(p, idx) << 8;
+ 		ib[idx] += (u32)((reloc->gpu_offset >> 8) & 0xffffffff);
+ 		track->htile_bo = reloc->robj;
+ 		track->db_dirty = true;
+-- 
+2.25.1
 
-I use virtio_net on our device. I found that page member variable in rq 
-is not used in recv path.
-
-When virtio_net is modprobe, I checked page member variable in rq with 
-kprobe or crash tool.  page member variable in rq is always NULL.
-
-But sg in recv path is used.
-
-So how to use page member variable in rq? If page member variable in rq 
-is always NULL, can we remove it?
-
-BTW, I use ping and iperf tool to make tests with virtio_net. In the 
-tests, page member variable in rq is always NULL.
-
-It is interesting.
-
-Zhu Yanjun
-
->
