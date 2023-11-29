@@ -2,65 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEF827FE35B
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 23:40:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55CC27FE36F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 23:43:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343514AbjK2Wkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 17:40:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48270 "EHLO
+        id S229959AbjK2Wng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 17:43:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbjK2Wkl (ORCPT
+        with ESMTP id S229907AbjK2Wne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 17:40:41 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B8D112F
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:40:47 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1cf89e16993so5319465ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:40:47 -0800 (PST)
+        Wed, 29 Nov 2023 17:43:34 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3528C1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:43:40 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40b27726369so2368285e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:43:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701297647; x=1701902447; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=I+v1jFIXf64LmcoETe5BxvZaUtddzr4bC5h258OJRYc=;
-        b=PHKVRTCknguXhqDUmvoRRFUu4bSAKjEzdVDF949SKeNHF7yvgSn279Prc1jFx7Df3G
-         oDikiZ1EweFDjkDjVUTYQnqZ6T8jCXgaoWtXA5sdDYzOmdBzZaRAAqAWVVrAsvxA4Usv
-         /xpYFWXiGj070fds/8A9+g8uy3SMkBpPM8aWbr7cL4ghCTl8pSMj32wPQqHfcZO27bu4
-         7rNjtoBVHXkuKp3xuhLAht0bJpI4u7Gr8m1FRBoy0xm8klWuGX8nmsJIFUuP/QJkxVbY
-         zEmhyX8NbZz5dC3AaLH6Q5deLoF05Wys23HWYmS8wKoyy/N/Jb2rvhLdHMl0cR+0ZQo9
-         7n/A==
+        d=gmail.com; s=20230601; t=1701297819; x=1701902619; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DPlSYieAKeZ1ZlgSPfXPoqg/eW8uKpsVlCNZ8IU+hBA=;
+        b=D2aGmlP1LvAyjmxatkr2rxYMqVgc0mJgJuyD/NiwRF0VfQFsYcuu4triQGSuLB0MOC
+         k6Rpi/FqLU/RfuaUpVOO8Ng3PR8Rp3/Ps3kCdD2f1QvM91FiCchEj9EE09ZwFrp5X1gE
+         MVWFi7fp0DZQ2Yn9ijonFDNZNATqshGXITzE9OuDB4leErbQeDgYIm7exp4Wdo8NLewt
+         xOqF3nfhBHU3Qo25vfjqP2lO+rc1W/yHIAm28jGonLCz6vvkTkj7w+ZPChpvIultMcBS
+         4oZLU6rX79k1g5uJXo8VeWjvvdahO+k0++YrqGDH9wp8p/AoOQYaROeKoR08cwrhrOJ9
+         zYrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701297647; x=1701902447;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=I+v1jFIXf64LmcoETe5BxvZaUtddzr4bC5h258OJRYc=;
-        b=j++wQnAXFyaTZtzTB4xHEOaR/NQRyMx83yONwfwQTEmb4v535pc2WNNsLwiyQihMu7
-         Jy2fG0mcY90UxKTmj/8WNlaWJhQdsoKHj9ebmRs5zTG67IviEOMd4kGhZbNOK4RIEyFA
-         sfyQBfEfzqoDEc5SoxQxtumauCY5S4eF6KB0gZ/4wHz+pmI+baUa39zAu5p2Xa/1qy0u
-         Q2RTTVbysO30PO267w33enArVUVTuWIW2WLe3z6PfxIGNb40Q5/dihpCoQEiJeLCi2Uo
-         qnpnKCRMvMalxx3LJGN4AAZCX+KUDo4NO0x8zYV/0AuA0FztibeevqOV3dwUUIGpgB/2
-         2vGw==
-X-Gm-Message-State: AOJu0YyEaEVT24MNmCTbV0V+U3q1HanD27cbrP/2TzMevv2bImo8XJLn
-        fr7vlyokh60NuwlPDjUQNENUcvfpWWM=
-X-Google-Smtp-Source: AGHT+IE5FIx8aj45AxYw5oGrpfmlhBTeeHtp2XvpoNiWQUQ3HX1upYM4wJ2O05QcEx+FY+pXbc9cnIHteb8=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:f68e:b0:1ce:5c2d:47e with SMTP id
- l14-20020a170902f68e00b001ce5c2d047emr4791132plg.5.1701297647010; Wed, 29 Nov
- 2023 14:40:47 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 29 Nov 2023 14:40:41 -0800
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-Message-ID: <20231129224042.530798-1-seanjc@google.com>
-Subject: [PATCH] KVM: selftests: Reword the NX hugepage test's skip message to
- be more helpful
-From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        d=1e100.net; s=20230601; t=1701297819; x=1701902619;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DPlSYieAKeZ1ZlgSPfXPoqg/eW8uKpsVlCNZ8IU+hBA=;
+        b=R4qLvf4pdq3in+c1gDMiUhpUi2dFj2WvZdk+DjCuPUrkZTLLVZoUENZWzGSwYWOSX0
+         FK50u1xUnFk38YAGwr/rMuI5ziz3AkuhxbxTEJXDuwFn+SdKdJCqvfOnbgTGH57af5Gd
+         /bDYQF+Andaj6Nbo7Ka2m7JtbrmURNbKPsmpfWpsyP6ffvD9eJu4f17CpGgsHA4HTdRJ
+         8i/7m1k7U75QKp4oioiuUA7PPjc3iE4aCORXFL113qSljwCgck5SUz/2QrspFfXV1HhM
+         Qe0qhrEBQhzT3TVKYc4zFBbVTMrkoFaawh/xtveJJeubOHw9VQxvE9js6zyroeU9z9Um
+         +ChQ==
+X-Gm-Message-State: AOJu0YyhYSNs0p5HTiF1fMKtjlhqsadKoUXvYhc003/p61L471zYpCnk
+        Ols0Tf+y5ldwV87ynaKSVLk=
+X-Google-Smtp-Source: AGHT+IEUxdkYKt7NZdrpshbCMEE1jShiqAxqEFI/E6ZthNf7BgkK1wK8sSTJSHAgD288i8OAdBQ1Kg==
+X-Received: by 2002:a5d:4d01:0:b0:333:f03:4640 with SMTP id z1-20020a5d4d01000000b003330f034640mr4906914wrt.1.1701297819067;
+        Wed, 29 Nov 2023 14:43:39 -0800 (PST)
+Received: from andrea ([31.189.63.178])
+        by smtp.gmail.com with ESMTPSA id l9-20020adffe89000000b003330a1d35a8sm6287307wrr.43.2023.11.29.14.43.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 14:43:38 -0800 (PST)
+Date:   Wed, 29 Nov 2023 23:43:34 +0100
+From:   Andrea Parri <parri.andrea@gmail.com>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     paulmck@kernel.org, palmer@dabbelt.com, paul.walmsley@sifive.com,
+        aou@eecs.berkeley.edu, mmaas@google.com, hboehm@google.com,
+        striker@us.ibm.com, charlie@rivosinc.com, rehn@rivosinc.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] membarrier: riscv: Provide core serializing command
+Message-ID: <ZWe+ljzCUQQVu7oD@andrea>
+References: <20231127103235.28442-1-parri.andrea@gmail.com>
+ <20231127103235.28442-3-parri.andrea@gmail.com>
+ <91ab0210-07f9-42c4-af7f-a98799250cf7@efficios.com>
+ <ZWYDtB/otYvTMZWd@andrea>
+ <0a84c0e0-2571-4c7f-82ae-a429f467a16b@efficios.com>
+ <ZWeDF0eHyOc/b9UJ@andrea>
+ <53aac2ac-46ae-46b8-9fdf-34527b79a63b@efficios.com>
+ <ZWesWCRAPV3rZlx9@andrea>
+ <041c83e6-1ca5-4953-bcec-03571135165d@efficios.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <041c83e6-1ca5-4953-bcec-03571135165d@efficios.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,38 +81,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rework the NX hugepage test's skip message regarding the magic token to
-provide all of the necessary magic, and to very explicitly recommended
-using the wrapper shell script.
+> > So I should probably stick to 93917ad50972, which apparently selected
+> > CONFIG_MEMBARRIER on RISC-V, for the Fixes: tag in question.
+> 
+> I think it goes further than that, because you can explicitly
+> CONFIG_MEMBARRIER=y, see init/Kconfig:
+> 
+> config MEMBARRIER
+>         bool "Enable membarrier() system call" if EXPERT
+>         default y
+>         help
+>           Enable the membarrier() system call that allows issuing memory
+>           barriers across all running threads, which can be used to distribute
+>           the cost of user-space memory barriers asymmetrically by transforming
+>           pairs of memory barriers into pairs consisting of membarrier() and a
+>           compiler barrier.
+> 
+>           If unsure, say Y.
+> 
+> Before 1464d00b27b2, riscv just happened to set it to =n in the defconfig.
+> 
+> I suspect the initial port of riscv merged after v4.14 was already broken.
 
-Opportunistically remove an overzealous newline; splitting the
-recommendation message across two lines of ~45 characters makes it much
-harder to read than running out a single line to 98 characters.
+I see.  Oh well, guess I'll have to leave this up to the maintainers then
+(I believe I've never managed to build riscv that far), Palmer?
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.c b/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.c
-index 83e25bccc139..17bbb96fc4df 100644
---- a/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/nx_huge_pages_test.c
-@@ -257,9 +257,9 @@ int main(int argc, char **argv)
- 	TEST_REQUIRE(kvm_has_cap(KVM_CAP_VM_DISABLE_NX_HUGE_PAGES));
- 
- 	__TEST_REQUIRE(token == MAGIC_TOKEN,
--		       "This test must be run with the magic token %d.\n"
--		       "This is done by nx_huge_pages_test.sh, which\n"
--		       "also handles environment setup for the test.", MAGIC_TOKEN);
-+		       "This test must be run with the magic token via '-t %d'.\n"
-+		       "Running via nx_huge_pages_test.sh, which also handles "
-+		       "environment setup, is strongly recommended.", MAGIC_TOKEN);
- 
- 	run_test(reclaim_period_ms, false, reboot_permissions);
- 	run_test(reclaim_period_ms, true, reboot_permissions);
+> > I'll look into adding the membarrier feature you mention (as a final/
+> > follow-up patch), unless you or someone else want to take care of it.
+> 
+> I'll be happy to review it :)
 
-base-commit: 6803fb00772cc50cd59a66bd8caaee5c84b13fcf
--- 
-2.43.0.rc1.413.gea7ed67945-goog
+Sweet!  :-)
 
+  Andrea
