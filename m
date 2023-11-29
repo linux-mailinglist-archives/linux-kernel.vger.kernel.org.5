@@ -2,96 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 894397FD06C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:14:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 483A87FD06D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:14:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230115AbjK2IOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 03:14:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33158 "EHLO
+        id S230120AbjK2IOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 03:14:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbjK2IOJ (ORCPT
+        with ESMTP id S229487AbjK2IOk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 03:14:09 -0500
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 42E811735;
-        Wed, 29 Nov 2023 00:14:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=9p8e0KY2P60TNVeST4
-        fjoopvIyST862pP3T8NJI8fMA=; b=eaodECY4Mt7e77h+Zo94XNCN7+q6VqF0ci
-        SRONFmPvJg2zqOZwFztTQVlSGtdiwp8TqZaVjympV7Lsp91xGUeybJeOWDA9OZ0g
-        tpXopoMmpxODZXx482ufhh3s+eGm78HE9tcb1hMshY1+ssDA28rEwzL4kA15YU1r
-        c/zCoapTY=
-Received: from localhost.localdomain (unknown [39.144.190.126])
-        by zwqz-smtp-mta-g3-2 (Coremail) with SMTP id _____wD3H0zE8mZln_DuEA--.38488S2;
-        Wed, 29 Nov 2023 16:13:57 +0800 (CST)
-From:   Haoran Liu <liuhaoran14@163.com>
-To:     rafael@kernel.org
-Cc:     lenb@kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Haoran Liu <liuhaoran14@163.com>
-Subject: [PATCH] [ACPI] fan_core: Add error handling for acpi_driver_data
-Date:   Wed, 29 Nov 2023 00:13:55 -0800
-Message-Id: <20231129081355.32317-1-liuhaoran14@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: _____wD3H0zE8mZln_DuEA--.38488S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7ur4kAFyxCF13Zw18GFWxJFb_yoW8XF4UpF
-        W3KFy5ArWqgr47Ww4UCa1rZFW3X3Z5Z34I9FWkA345Wa15Kr98uFyxGa4jv34YyF4xKan2
-        vrykJFyDCF1DZrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zEBTYUUUUUU=
-X-Originating-IP: [39.144.190.126]
-X-CM-SenderInfo: xolxxtxrud0iqu6rljoofrz/xtbBcgQ3gletj45lSAAAsV
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
-        RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 29 Nov 2023 03:14:40 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3717B1990
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:14:46 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-a00c200782dso922456766b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:14:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701245684; x=1701850484; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=15rBzMWMbcNTsXkPW+OzoO0aYPOme+aI+6A4C5XO+to=;
+        b=SrfVYv4EX+BhZxkz5dr3CzO4FP5pKUb69Pa+H+aYfAXSCW2ZqEWo/0gCdwD9J/Yq2b
+         T3o/mYNWna4VVAXwR1dXyyBmWcrLCt00LKjplDqoGPZIZzr25ms9ZyIFN22qOrkfmF0r
+         rcrayTD+niHcRpFvjgzq/MU17VsM+1W9dW0ovExAwGKv8th0NAjZ7a+wCIWyYOyjnIFp
+         Pfw0ikqUs6r4G4SC7hvr21joqLQQiZexC//QMzrDtAxbNVa6ca69pwXU6AHAiMWJaaf4
+         wr7mxxDXVVxUA+ZFPwb8aImDUngchKaUYyXDkqGcBYcEA3fexmr3KjeBnyO2gxXtE00L
+         ioIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701245684; x=1701850484;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=15rBzMWMbcNTsXkPW+OzoO0aYPOme+aI+6A4C5XO+to=;
+        b=wH9/UlkJDXW5FgoTYSG0nJvQGeskM64AvrfRk0hlUtuCxQNmhO+oqYzSc+HVRRfNNY
+         dG870fO6bbcctp3L3/j2PoXdJ1pyEiI9uI8o8eo9zs3zuW/VrbjO3JW0EabHNv312kue
+         Ua8N9yUffUqXZWh7NN4uFu7AKzrq5VJqZtuvO4v8esCAR2+Cqu7H7Ga1Cfj03RjsDI+x
+         5qc56chiOW0Y0Ysf+vKdjG52RubiOy/QLWJIvuYbxCWCSLpackBDWp5g4l2yzSImoQle
+         B21NzcYqxe/hiINklrW/xWPr7ybHcDjVw7vmMzN8to2ExqrSBl7Ah1+rtFkUge9LM0E9
+         mtGw==
+X-Gm-Message-State: AOJu0Yxg3uVOsBerMjXa5KpGoDtZ53Bt16yKKUL3g3Hv5UxUuYIiF6et
+        SmfrTZUYteZdVSuUpHhQFc9yjA==
+X-Google-Smtp-Source: AGHT+IHTVIeLCkDbRpmFWEF8VvCsbmcByfExaLNid6uMk5lNlfrT9gg5TMULBgjkmROlhQ2Mzw2usA==
+X-Received: by 2002:a17:906:9c12:b0:9df:e39d:e0ed with SMTP id ff18-20020a1709069c1200b009dfe39de0edmr11142520ejc.24.1701245684618;
+        Wed, 29 Nov 2023 00:14:44 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.109])
+        by smtp.gmail.com with ESMTPSA id x22-20020a1709060a5600b009c3827134e5sm7547416ejf.117.2023.11.29.00.14.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Nov 2023 00:14:44 -0800 (PST)
+Message-ID: <555a6820-3e28-4eae-93d8-5cd023326acb@linaro.org>
+Date:   Wed, 29 Nov 2023 09:14:41 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/6] dt-bindings: display: Add yamls for JH7110 display
+ system
+Content-Language: en-US
+To:     Keith Zhao <keith.zhao@starfivetech.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>
+Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "christian.koenig@amd.com" <christian.koenig@amd.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Shawn Guo <shawnguo@kernel.org>, Jagan Teki <jagan@edgeble.ai>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Jack Zhu <jack.zhu@starfivetech.com>,
+        Shengyang Chen <shengyang.chen@starfivetech.com>,
+        Changhuang Liang <changhuang.liang@starfivetech.com>
+References: <20231025103957.3776-1-keith.zhao@starfivetech.com>
+ <20231025103957.3776-2-keith.zhao@starfivetech.com>
+ <cb7395a9-71e8-415e-90d5-866a2aeadf28@linaro.org>
+ <20502c84-c3af-4a60-9f5f-d8cc05743866@starfivetech.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20502c84-c3af-4a60-9f5f-d8cc05743866@starfivetech.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch introduces error handling for the acpi_driver_data call
-in function acpi_fan_get_fif and acpi_fan_get_fps, within
-drivers/acpi/fan_core.c. Previously, there was no check for a null
-return from acpi_driver_data, which could lead to potential
-instability in scenarios where acpi_driver_data fails.
+On 29/11/2023 04:13, Keith Zhao wrote:
+> 
+> 
+> On 2023/10/25 20:50, Krzysztof Kozlowski wrote:
+>> On 25/10/2023 12:39, Keith Zhao wrote:
+>>> StarFive SoCs JH7110 display system:
+>>
+>> A nit, subject: drop second/last, redundant "yamls for". The
+>> "dt-bindings" prefix is already stating that these are bindings, so
+>> format is fixed.
+>>
+>>> lcd-controller bases verisilicon dc8200 IP,
+>>> and hdmi bases Innosilicon IP. Add bindings for them.
+>>
+>> Please make it a proper sentences, with proper wrapping.
+>>
+>>>
+>>> also update MAINTAINERS for dt-bindings
+>>
+>> Not a sentence, but also not really needed.ok I see.
+>>
+>>>
+>>> about this patch, I tested the dtbs_check and dt_binding_check
+>>> with the result pass.
+>>> Based on the feedback of the previous version, the corresponding arrangement is made
+>>
+>> Not relevant, so not really suitable for commit msg.
+>>
+>>>
+>>> Signed-off-by: Keith Zhao <keith.zhao@starfivetech.com>
+>>> ---
+>>>  .../starfive/starfive,display-subsystem.yaml  |  41 +++++++
+>>>  .../starfive/starfive,jh7110-dc8200.yaml      | 109 ++++++++++++++++++
+>>>  .../starfive/starfive,jh7110-inno-hdmi.yaml   |  85 ++++++++++++++
+>>>  MAINTAINERS                                   |   7 ++
+>>>  4 files changed, 242 insertions(+)
+>>>  create mode 100644 Documentation/devicetree/bindings/display/starfive/starfive,display-subsystem.yaml
+>>>  create mode 100644 Documentation/devicetree/bindings/display/starfive/starfive,jh7110-dc8200.yaml
+>>>  create mode 100644 Documentation/devicetree/bindings/display/starfive/starfive,jh7110-inno-hdmi.yaml
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/display/starfive/starfive,display-subsystem.yaml b/Documentation/devicetree/bindings/display/starfive/starfive,display-subsystem.yaml
+>>> new file mode 100644
+>>> index 000000000..f45b97b08
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/display/starfive/starfive,display-subsystem.yaml
+>>> @@ -0,0 +1,41 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/display/starfive/starfive,display-subsystem.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: Starfive DRM master device
+>>
+>> What is DRM in hardware? I know Digital Rights Management, but then
+>> subsystem seems wrong. If you mean Linux DRM, then Linux is not a
+>> hardware, so drop all Linuxisms and describe hardware.
+> ok , will only keep hardware describe in my next version
+>>
+>>
+>>> +
+>>> +maintainers:
+>>> +  - Keith Zhao <keith.zhao@starfivetech.com>
+>>> +  - ShengYang Chen <shengyang.chen@starfivetech.com>
+>>> +
+>>> +description:
+>>> +  The Starfive DRM master device is a virtual device needed to list all
+>>
+>> Virtual device? Then not suitable for bindings, sorry.
+>>
+>>> +  display controller or other display interface nodes that comprise the
+>>> +  graphics subsystem.
+>>> +
+>>> +properties:
+>>> +  compatible:
+>>> +    const: starfive,display-subsystem
+>>> +
+>>> +  ports:
+>>> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+>>
+>> No, ports is not phandle-array. ports is object, always.
+>>
+>>> +    description:
+>>> +      Should contain a list of phandles pointing to display interface ports
+>>> +      of display controller devices. Display controller definitions as defined
+>>> +      in Documentation/devicetree/bindings/display/starfive/
+>>> +      starfive,jh7110-dc8200.yaml
+>>
+>> Use standard graph ports, not some own, custom property.
+>>
+>> Anyway, entire binding should be dropped. You do not need it even.
+> Hi Krzysztof:
+> Virtual device is not suitable for bindings, matbe I need associate it with the real hardware.
+> such as the top clocks & reset , irq , etc.
+> Currently I configure them in another yaml file. Logically speaking, this is more suitable.
+> 
+> Can adding the corresponding hardware description change its fate of being deleted?
 
-Signed-off-by: Haoran Liu <liuhaoran14@163.com>
----
- drivers/acpi/fan_core.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+I am not sure if I follow. Bindings and DTS describe the hardware, so if
+you configure device A clocks in a device B node, then it is not
+correct. If you add binding for something not being a real device, it is
+not correct.
 
-diff --git a/drivers/acpi/fan_core.c b/drivers/acpi/fan_core.c
-index 9dccbae9e8ea..f3228fb9c90f 100644
---- a/drivers/acpi/fan_core.c
-+++ b/drivers/acpi/fan_core.c
-@@ -215,6 +215,13 @@ static int acpi_fan_get_fif(struct acpi_device *device)
- {
- 	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
- 	struct acpi_fan *fan = acpi_driver_data(device);
-+
-+	if (!fan) {
-+		dev_err(&device->dev, "No ACPI fan data associated "
-+			"with the device\n");
-+		return -EINVAL;
-+	}
-+
- 	struct acpi_buffer format = { sizeof("NNNN"), "NNNN" };
- 	u64 fields[4];
- 	struct acpi_buffer fif = { sizeof(fields), fields };
-@@ -265,6 +272,12 @@ static int acpi_fan_speed_cmp(const void *a, const void *b)
- static int acpi_fan_get_fps(struct acpi_device *device)
- {
- 	struct acpi_fan *fan = acpi_driver_data(device);
-+
-+	if (!fan) {
-+		dev_err(&device->dev, "Failed to retrieve ACPI fan data\n");
-+		return -ENODEV;
-+	}
-+
- 	struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
- 	union acpi_object *obj;
- 	acpi_status status;
--- 
-2.17.1
+Feel free to bring proper hardware description, not Linux. This entire
+binding was written to describe Linux driver, which is not correct.
+
+Best regards,
+Krzysztof
 
