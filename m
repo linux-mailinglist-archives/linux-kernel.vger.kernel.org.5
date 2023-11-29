@@ -2,65 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 566217FE0DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 853EA7FE0DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:16:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232524AbjK2UPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 15:15:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52990 "EHLO
+        id S233750AbjK2UQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 15:16:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjK2UPm (ORCPT
+        with ESMTP id S233754AbjK2UQA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 15:15:42 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66671D69
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:15:48 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-5c5fb06b131so148163a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:15:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701288948; x=1701893748; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jotP4vYpPJo//cpTI3uXY4V9lpzWkYj/fK6F2WyIseA=;
-        b=hcdfwa4TYcjUsd4YezCO6cbH/PkKleuvxCuGnZoxGifuXLSJvfQZOm/1KrNR32M4CY
-         TzKCy+vq+86ljb5r9bxSkTOK/rwW8sUqP023BbJ0FDV+beFBFTstZ49SRNuEFe99uSdW
-         2K3KvdnptVVMNAWbLYfloZ86JP7odnEBhv8pI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701288948; x=1701893748;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jotP4vYpPJo//cpTI3uXY4V9lpzWkYj/fK6F2WyIseA=;
-        b=kjmF5r+juyK09cKZCTxZqYd39wlR9aUdu4WcZeQ7hZWHESrEOwgCes5RpO6pfWgmR4
-         v0b7PawYDSFXjueBH/8ZErLURMpYXTiy6Zh82mGvsGOBRuZo7czyftBNibeDqT6KiU0V
-         YkESnME+1/j4oGWBUU8tSYSaTfPtd6ZMDar7u09UEHfQ2S4Gw5Cpg1thkW9+awX7v9g8
-         NnMC8rD/1xO40L8EsTBm1/x8obd3TOecZmKHPY4uYRchu9zokXBlCs4sZyI18BLB7fvi
-         IeTO+o7hP6Ex9tJeL6jZxSlcf8Z22x/t/grsRZX/1FINvdcl0duBcNEM6SZR8A1Us2ul
-         cT3w==
-X-Gm-Message-State: AOJu0Yxvi5LulPS0nPzZnCBu0CwlDnYopqpsHyyghFOe8OUWyW5cVViT
-        UGJ7vs0IgUNq5RyCRphX7BYhzA==
-X-Google-Smtp-Source: AGHT+IG534o8LlbEMOfFzpwYToM7hK+n/JXeWeW9JF2pDdVckMCGK6vCE97PcNRJj6shzwBCP8zRfA==
-X-Received: by 2002:a05:6a20:e113:b0:18c:5c04:a55e with SMTP id kr19-20020a056a20e11300b0018c5c04a55emr17283060pzb.49.1701288947811;
-        Wed, 29 Nov 2023 12:15:47 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id v15-20020aa7850f000000b006cde291d429sm194972pfn.39.2023.11.29.12.15.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 12:15:47 -0800 (PST)
-Date:   Wed, 29 Nov 2023 12:15:46 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Kent Overstreet <kent.overstreet@linux.dev>,
-        Brian Foster <bfoster@redhat.com>,
-        linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] bcachefs: Replace zero-length arrays with
- flexible-array members
-Message-ID: <202311291215.9BBCD8E@keescook>
-References: <ZWYv/ywR/qxUhVSU@work>
+        Wed, 29 Nov 2023 15:16:00 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89E9510C8
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:16:03 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B55CCC433CC;
+        Wed, 29 Nov 2023 20:16:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701288963;
+        bh=eJQhkQLzUwwUMvhzdNW9MAj6eRgcFa4pmRj/Q9yI5aQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A58xGnKFd8gNAc7MIbjqM3wnqSqhoDtxaRuCpIVWNjwFgXMRCDGM6O7s/U+F7yyFy
+         uFtlTSLv9XqLau5R0N9MPb/ciOx7gW1x9MGpmJazMX1Uc6uKlXrO3RbmCAX5n780PR
+         2eUFCyvP5Gzh8aThoQCLxK17xsQ8ddepch5wHQknLNhxoScaDKqgycFUV+18HhEWdO
+         ol489AUDXcxReKqC385IxnEAJZYsSKqGMRg0QmBKI3IptwV7XtJAvbsmrYxQkRsmD3
+         9y+DxI8Y04LoX9ALLe4ASJVkwTY8rfE0CI5Eap7J80HzqBpHxNXGWkB5u+TQkO4C8p
+         IsiMIOv1l6fsQ==
+Date:   Wed, 29 Nov 2023 12:16:01 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Jerry Shih <jerry.shih@sifive.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>, palmer@dabbelt.com,
+        Albert Ou <aou@eecs.berkeley.edu>, herbert@gondor.apana.org.au,
+        davem@davemloft.net, conor.dooley@microchip.com, ardb@kernel.org,
+        heiko@sntech.de, phoebe.chen@sifive.com, hongrong.hsu@sifive.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+Subject: Re: [PATCH v2 07/13] RISC-V: crypto: add accelerated
+ AES-CBC/CTR/ECB/XTS implementations
+Message-ID: <20231129201601.GA1174@sol.localdomain>
+References: <20231127070703.1697-1-jerry.shih@sifive.com>
+ <20231127070703.1697-8-jerry.shih@sifive.com>
+ <20231128040716.GI1463@sol.localdomain>
+ <7DFBB20D-B8D4-409B-8562-4C60E67FD279@sifive.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZWYv/ywR/qxUhVSU@work>
+In-Reply-To: <7DFBB20D-B8D4-409B-8562-4C60E67FD279@sifive.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -71,18 +57,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 12:22:55PM -0600, Gustavo A. R. Silva wrote:
-> Fake flexible arrays (zero-length and one-element arrays) are
-> deprecated, and should be replaced by flexible-array members.
+On Wed, Nov 29, 2023 at 03:57:25PM +0800, Jerry Shih wrote:
+> On Nov 28, 2023, at 12:07, Eric Biggers <ebiggers@kernel.org> wrote:
+> > On Mon, Nov 27, 2023 at 03:06:57PM +0800, Jerry Shih wrote:
+> >> +typedef void (*aes_xts_func)(const u8 *in, u8 *out, size_t length,
+> >> +			     const struct crypto_aes_ctx *key, u8 *iv,
+> >> +			     int update_iv);
+> > 
+> > There's no need for this indirection, because the function pointer can only have
+> > one value.
+> > 
+> > Note also that when Control Flow Integrity is enabled, assembly functions can
+> > only be called indirectly when they use SYM_TYPED_FUNC_START.  That's another
+> > reason to avoid indirect calls that aren't actually necessary.
 > 
-> So, replace zero-length arrays with flexible-array members
-> in multiple structures.
+> We have two function pointers for encryption and decryption.
+> 	static int xts_encrypt(struct skcipher_request *req)
+> 	{
+> 		return xts_crypt(req, rv64i_zvbb_zvkg_zvkned_aes_xts_encrypt);
+> 	}
 > 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> 	static int xts_decrypt(struct skcipher_request *req)
+> 	{
+> 		return xts_crypt(req, rv64i_zvbb_zvkg_zvkned_aes_xts_decrypt);
+> 	}
+> The enc and dec path could be folded together into `xts_crypt()`, but we will have
+> additional branches for enc/decryption path if we don't want to have the indirect calls.
+> Use `SYM_TYPED_FUNC_START` in asm might be better.
+> 
 
-These look like straight-forward conversions. Thanks!
+Right.  Normal branches are still more efficient and straightforward than
+indirect calls, though, and they don't need any special considerations for CFI.
+So I'd just add a 'bool encrypt' or 'bool decrypt' argument to xts_crypt(), and
+make xts_crypt() call the appropriate assembly function based on that.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+> > Did you consider writing xts_crypt() the way that arm64 and x86 do it?  The
+> > above seems to reinvent sort of the same thing from first principles.  I'm
+> > wondering if you should just copy the existing approach for now.  Then there
+> > would be no need to add the scatterwalk_next() function, and also the handling
+> > of inputs that don't need ciphertext stealing would be a bit more streamlined.
+> 
+> I will check the arm and x86's implementations.
+> But the `scatterwalk_next()` proposed in this series does the same thing as the
+> call `scatterwalk_ffwd()` in arm and x86's implementations.
+> The scatterwalk_ffwd() iterates from the beginning of scatterlist(O(n)), but the 
+> scatterwalk_next() is just iterates from the end point of the last used
+> scatterlist(O(1)).
 
--- 
-Kees Cook
+Sure, but your scatterwalk_next() only matters when there are multiple
+scatterlist entries and the AES-XTS message length isn't a multiple of the AES
+block size.  That's not an important case, so there's little need to
+micro-optimize it.  The case that actually matters for AES-XTS is a single-entry
+scatterlist containing a whole number of AES blocks.
+
+- Eric
