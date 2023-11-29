@@ -2,90 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 877A67FDC09
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:56:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15A227FDB5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:26:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343995AbjK2P0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 10:26:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54516 "EHLO
+        id S1343530AbjK2P0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 10:26:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235067AbjK2PZl (ORCPT
+        with ESMTP id S234983AbjK2P01 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 10:25:41 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B321BD1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:25:25 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8283AC43391;
-        Wed, 29 Nov 2023 15:25:23 +0000 (UTC)
-Date:   Wed, 29 Nov 2023 10:25:45 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        dmaluka@google.com, Sean Paul <seanpaul@chromium.org>,
-        Arun Easi <aeasi@marvell.com>, Daniel Wagner <dwagner@suse.de>
-Subject: Re: [PATCH] tracing: Allow creating instances with specified system
- events
-Message-ID: <20231129102545.56901df5@gandalf.local.home>
-In-Reply-To: <20231129235821.d99da161644525a2fa988938@kernel.org>
-References: <20231128122117.2276f4a7@gandalf.local.home>
-        <20231129235821.d99da161644525a2fa988938@kernel.org>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        Wed, 29 Nov 2023 10:26:27 -0500
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E5EC026A4;
+        Wed, 29 Nov 2023 07:25:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=UPZvZWVao0sExJphY6
+        iK/2uDTmwrQQRv+cgzaIF0dp0=; b=KSMNxT4GPPRCEOpgve90N0x7jjZoVu2qry
+        2BhIkk3wUy3OKVvpgFMX9h68DRlGIbjTMsKndt0x5I8Mwys54dLhi9C7EVzYQRXr
+        k2TVDarBI+IxfdN0xD9eb+EiIYPgYB2g0WeF/zn32lna0q7+m2Mnspc0QU1ETvIr
+        Hoyhc3kc0=
+Received: from localhost.localdomain (unknown [39.144.190.126])
+        by zwqz-smtp-mta-g1-0 (Coremail) with SMTP id _____wD3v+H7V2dlgmDOBQ--.15191S2;
+        Wed, 29 Nov 2023 23:25:48 +0800 (CST)
+From:   Haoran Liu <liuhaoran14@163.com>
+To:     James.Bottomley@HansenPartnership.com
+Cc:     deller@gmx.de, linux-parisc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Haoran Liu <liuhaoran14@163.com>
+Subject: [PATCH] [parisc] superio: Add error handling for request_region in superio_init
+Date:   Wed, 29 Nov 2023 07:25:46 -0800
+Message-Id: <20231129152546.34962-1-liuhaoran14@163.com>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: _____wD3v+H7V2dlgmDOBQ--.15191S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Cr1xWr47GFy3tr15GFWUtwb_yoW8Zry5pa
+        y3Cws5ArW8Zw1xZ34kXa93XFnY9anayFyUG3ZrK34fZF4rGrWjyr4rt3WYvFy5u3y7Jw13
+        ZFn8GryfCF1jva7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0ptg4zPUUUUU=
+X-Originating-IP: [39.144.190.126]
+X-CM-SenderInfo: xolxxtxrud0iqu6rljoofrz/1tbiwhw3glc661-fYAAAsN
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Nov 2023 23:58:21 +0900
-Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+This patch introduces error handling for the request_region call in the
+superio_init function within drivers/parisc/superio.c. Prior to this patch,
+the function did not handle the scenario where request_region might fail,
+potentially leading to resource conflicts.
 
-> > - Dynamic events had to be specified directly to still allow them to be
-> >   created.  
-> 
-> I have a question about this point. Does this mean the dynamic event files
-> will be created in the instance which limits the "system"?
-> For this point, I would like to allow limiting dynamic events on instance too.
-> If user needs to use specific one, e.g. synthetic, then it is possible to
-> add it to the filter.
+Although the error addressed by this patch may not occur in the current
+environment, I still suggest implementing these error handling routines
+if the function is not highly time-sensitive. As the environment evolves
+or the code gets reused in different contexts, there's a possibility that
+these errors might occur. Addressing them now can prevent potential
+debugging efforts in the future, which could be quite resource-intensive.
 
-I'm going back and forth on this. Here's my thoughts about it.
+Signed-off-by: Haoran Liu <liuhaoran14@163.com>
+---
+ drivers/parisc/superio.c | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
 
-Arguments for allowing all dynamic events:
+diff --git a/drivers/parisc/superio.c b/drivers/parisc/superio.c
+index e973c6893203..36c01e70671d 100644
+--- a/drivers/parisc/superio.c
++++ b/drivers/parisc/superio.c
+@@ -187,9 +187,23 @@ superio_init(struct pci_dev *pcidev)
+ 	sio->acpi_base &= ~1;
+ 	printk(KERN_INFO PFX "ACPI at 0x%x\n", sio->acpi_base);
+ 
+-	request_region (IC_PIC1, 0x1f, "pic1");
+-	request_region (IC_PIC2, 0x1f, "pic2");
+-	request_region (sio->acpi_base, 0x1f, "acpi");
++	if (!request_region(IC_PIC1, 0x1f, "pic1")) {
++		printk(KERN_ERR PFX "request_region failed for pic1\n");
++		return;
++	}
++
++	if (!request_region(IC_PIC2, 0x1f, "pic2")) {
++		printk(KERN_ERR PFX "request_region failed for pic2\n");
++		release_region(IC_PIC1, 0x1f);
++		return;
++	}
++
++	if (!request_region(sio->acpi_base, 0x1f, "acpi")) {
++		printk(KERN_ERR PFX "request_region failed for acpi\n");
++		release_region(IC_PIC1, 0x1f);
++		release_region(IC_PIC2, 0x1f);
++		return;
++	}
+ 
+ 	/* Enable the legacy I/O function */
+ 	pci_read_config_word (pdev, PCI_COMMAND, &word);
+-- 
+2.17.1
 
-1. There's not many. This code is basically a way to keep the overhead of
-   an instance down. By removing all static events, it can substantially lower
-   the memory footprint.
-
-   As synthetic events are user created, there shouldn't be too many that
-   would cause a memory foot print issue, and the user also has a bit of
-   control of what events are created.
-
-2. We have no idea what a user may want to do with those events. What if
-   the user wants to see an event in that buffer and creates a synthetic
-   event for it? Should the kernel create a policy for that?
-
-Arguments against defaulting dynamic events in:
-
-1. The list is created in the kernel. The instance is not created by the
-   user and thus the kernel could have more control over it.
-
-2. If the user really wants to have dynamic events, they can create another
-   instance with the needed events or use the top level.
-
-Hmm, writing this out, I am now leaning more toward not defaulting dynamic
-events in. And if we can create a way to dynamically add and remove events
-systems from an instance (via mkdir and rmdir), this should not be an issue.
-
-Anyone else have any thoughts about this?
-
--- Steve
