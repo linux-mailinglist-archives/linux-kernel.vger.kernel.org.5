@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8607FCEC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 07:03:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92FAA7FCEC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 07:03:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377112AbjK2GDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 01:03:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58214 "EHLO
+        id S1377044AbjK2GDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 01:03:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377045AbjK2GCl (ORCPT
+        with ESMTP id S1377032AbjK2GCm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 01:02:41 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B7C819BA
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 22:02:46 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-db3fc4a1254so7690317276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 22:02:46 -0800 (PST)
+        Wed, 29 Nov 2023 01:02:42 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0732419BF
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 22:02:49 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5ccf44b0423so84980867b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 22:02:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701237765; x=1701842565; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701237768; x=1701842568; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=KjG+yuGvRcuoj12S9jtBpCqgse8AcR4nWFWWBDY4R7c=;
-        b=gT2zFlD54uN8C+jM6E48ajrVnH6LAq6ijqSdtSx9I7gFFAId7v+sKVWWvoiESA1Hqa
-         +mV5e6OKfcdAdtLgrnIbbX2aNiiQJ2SmFkZvvRW0X0wD27RzOGvUwahulxKPMJbGrG+o
-         SUDLooU2dd7+ZNJspDs3bH9C1cSGaifltDyz423QBM4IbXT1XjPIs4qAEvEpau14lsE+
-         dIAYy6oxaEofM6reEJEdMeuDpEdpK2/RjjJQTlAsA6mlP8hAMM/KbrItUlqjx6j60asi
-         KNpAaAuN7577eLLlUEQksi5yc6hfLx93yzmF0oRP1xFkDnOTLbZnYZtwIdJMgNVT6f9S
-         F/kA==
+        bh=gdtDmuZlpO8R+sCZuGq6XIuCqB6n5MWFW+Mek7m4zb4=;
+        b=gotxKEv80wkHKfwOnrYUFZ1P/QiffG8FS3MtPA9e9ms22h6ijUbW+/gk/3Zc3rYqX0
+         eZz+enL5hNKX61jBBi0F1WtSYodUp0KpUX0MiQqCsSrT/qXGNmklX1bKK2dXW1i/3Guh
+         MM7V904BCR9zGFc5AfXVYQ5S73yHjMZy5c+XG61hU70H/MmXc3WWwh8KYVR4SjJ0Syni
+         Rn5Hs4cyevaUfF4b13San60VPFuoeKeaYqYnr/RLHSErNHnx9jmQPu6EDahzQGId4VAh
+         azirywDrQQrMois+BFSzJlyIygMrwJDTghbRccfFE9s6SSQCoVEgWC2fXFTexinuJ6R2
+         1OiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701237765; x=1701842565;
+        d=1e100.net; s=20230601; t=1701237768; x=1701842568;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KjG+yuGvRcuoj12S9jtBpCqgse8AcR4nWFWWBDY4R7c=;
-        b=ouxqkd68Htl3bx+DtdyWrWtUPEJJ/1FRGY/5ccX1Hs2NWh5ycg6fC8xvTvBxBdAU+c
-         z47Os8UPoydlG18hK5HlpUw6/49jvOpOvH0xQ1DoBbLnfTJ0UW38yROfgGTpp5Hb4JzK
-         B4lbJwG5n8hQXbXxXrnhpU3kH2jlOJgyLTKk+j1WDCxKWOH5ErX/QgtiDwKVv1f3eV8Z
-         yTGFewokg0/MXzus1ND1tY52vp00YIwzNoBggiXi8/rKCLfJKIemb2tO5bQ4YqhnRhxr
-         TZzaDSCmsiHIGUwEPAYn65vIFe1l+8a7pfY40un9k3Rpn7CzrZpxoCdT1QG6TbVjYlby
-         ckKw==
-X-Gm-Message-State: AOJu0YxI+sX8cF+NT0KVuEw7QAWds847GqgmnItBpkDCbuxX0+rchewg
-        GJ/qyg2w9dN1PaYzlSrk8tUQAOiAz0ni
-X-Google-Smtp-Source: AGHT+IEIIHTmJROlBWSzZtCcoUGOKooMLGfswN+i7t4wFFSQ1/MHr4QAJhupvuajGvXbqTHRTtAT1qvSVoeK
+        bh=gdtDmuZlpO8R+sCZuGq6XIuCqB6n5MWFW+Mek7m4zb4=;
+        b=BLwSjT4lGLlFyTMtkS27MltMa1Yzl3Kr3WCWXTGOYu2DHxxJkDdmw/weRm3tDmSLRk
+         SiwPcUgyt0zdO493N+opi39iawr9ubXlDcCrXxirq/QIGvaX9oc0VPOjizJYrjFCu/qI
+         SZrn639al8+q4aP/TLJ5GWvAtvHK3r0Wk1Vd0/26OuQCjKH1Ii33Q6z/NOjOmvbGssDc
+         XbXixhf5qbHdxZibse0XB/ep09hzJlm1YvC2kVl4qspQj1yYXp2PjMNH7pNDsWNPxXKN
+         iHdLvv25CNRjj1bFEMGxp67lp89tFQ62R/hMpv+hjo+1+zyhiY/QX5e/2WbTC7UEUZQV
+         x5sQ==
+X-Gm-Message-State: AOJu0Yyxmc/chmJppg0ictwX++nJfSV8Br4eUPWKhtgFf9CduJF0INqj
+        ebctHFvYrne+yPy3FR4y5WGs0nlIlPmh
+X-Google-Smtp-Source: AGHT+IFWysPah8NVdJGuOS/cub7nCqzkPRr9kIA04P1LJGn4EJzUePlje+77t8xYTmBpNHAmkcV+MNHmEHhD
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:763b:80fa:23ca:96f8])
- (user=irogers job=sendgmr) by 2002:a25:6810:0:b0:db5:2a4:45d5 with SMTP id
- d16-20020a256810000000b00db502a445d5mr113790ybc.13.1701237765746; Tue, 28 Nov
- 2023 22:02:45 -0800 (PST)
-Date:   Tue, 28 Nov 2023 22:02:10 -0800
+ (user=irogers job=sendgmr) by 2002:a05:690c:fcd:b0:5ca:fef:82a4 with SMTP id
+ dg13-20020a05690c0fcd00b005ca0fef82a4mr623872ywb.4.1701237768039; Tue, 28 Nov
+ 2023 22:02:48 -0800 (PST)
+Date:   Tue, 28 Nov 2023 22:02:11 -0800
 In-Reply-To: <20231129060211.1890454-1-irogers@google.com>
-Message-Id: <20231129060211.1890454-14-irogers@google.com>
+Message-Id: <20231129060211.1890454-15-irogers@google.com>
 Mime-Version: 1.0
 References: <20231129060211.1890454-1-irogers@google.com>
 X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-Subject: [PATCH v1 13/14] perf cpumap: Use perf_cpu_map__for_each_cpu when possible
+Subject: [PATCH v1 14/14] libperf cpumap: Document perf_cpu_map__nr's behavior
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -99,403 +99,46 @@ Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rather than manually iterating the CPU map, use
-perf_cpu_map__for_each_cpu. When possible tidy local variables.
+perf_cpu_map__nr's behavior around an empty CPU map is strange as it
+returns that there is 1 CPU. Changing code that may rely on this
+behavior is hard, we can at least document the behavior.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/arch/arm64/util/header.c           | 10 ++--
- tools/perf/tests/bitmap.c                     | 13 +++---
- tools/perf/tests/topology.c                   | 46 +++++++++----------
- tools/perf/util/bpf_kwork.c                   | 16 ++++---
- tools/perf/util/bpf_kwork_top.c               | 12 ++---
- tools/perf/util/cpumap.c                      | 12 ++---
- .../scripting-engines/trace-event-python.c    | 12 +++--
- tools/perf/util/session.c                     |  5 +-
- tools/perf/util/svghelper.c                   | 20 ++++----
- 9 files changed, 72 insertions(+), 74 deletions(-)
+ tools/lib/perf/include/perf/cpumap.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/tools/perf/arch/arm64/util/header.c b/tools/perf/arch/arm64/util/header.c
-index a9de0b5187dd..741df3614a09 100644
---- a/tools/perf/arch/arm64/util/header.c
-+++ b/tools/perf/arch/arm64/util/header.c
-@@ -4,8 +4,6 @@
- #include <stdio.h>
- #include <stdlib.h>
- #include <perf/cpumap.h>
--#include <util/cpumap.h>
--#include <internal/cpumap.h>
- #include <api/fs/fs.h>
- #include <errno.h>
- #include "debug.h"
-@@ -19,18 +17,18 @@
- static int _get_cpuid(char *buf, size_t sz, struct perf_cpu_map *cpus)
- {
- 	const char *sysfs = sysfs__mountpoint();
--	int cpu;
--	int ret = EINVAL;
-+	struct perf_cpu cpu;
-+	int idx, ret = EINVAL;
- 
- 	if (!sysfs || sz < MIDR_SIZE)
- 		return EINVAL;
- 
--	for (cpu = 0; cpu < perf_cpu_map__nr(cpus); cpu++) {
-+	perf_cpu_map__for_each_cpu(cpu, idx, cpus) {
- 		char path[PATH_MAX];
- 		FILE *file;
- 
- 		scnprintf(path, PATH_MAX, "%s/devices/system/cpu/cpu%d" MIDR,
--			  sysfs, RC_CHK_ACCESS(cpus)->map[cpu].cpu);
-+			  sysfs, cpu.cpu);
- 
- 		file = fopen(path, "r");
- 		if (!file) {
-diff --git a/tools/perf/tests/bitmap.c b/tools/perf/tests/bitmap.c
-index 0173f5402a35..98956e0e0765 100644
---- a/tools/perf/tests/bitmap.c
-+++ b/tools/perf/tests/bitmap.c
-@@ -11,18 +11,19 @@
- static unsigned long *get_bitmap(const char *str, int nbits)
- {
- 	struct perf_cpu_map *map = perf_cpu_map__new(str);
--	unsigned long *bm = NULL;
--	int i;
-+	unsigned long *bm;
- 
- 	bm = bitmap_zalloc(nbits);
- 
- 	if (map && bm) {
--		for (i = 0; i < perf_cpu_map__nr(map); i++)
--			__set_bit(perf_cpu_map__cpu(map, i).cpu, bm);
-+		int i;
-+		struct perf_cpu cpu;
-+
-+		perf_cpu_map__for_each_cpu(cpu, i, map)
-+			__set_bit(cpu.cpu, bm);
- 	}
- 
--	if (map)
--		perf_cpu_map__put(map);
-+	perf_cpu_map__put(map);
- 	return bm;
- }
- 
-diff --git a/tools/perf/tests/topology.c b/tools/perf/tests/topology.c
-index 2a842f53fbb5..a8cb5ba898ab 100644
---- a/tools/perf/tests/topology.c
-+++ b/tools/perf/tests/topology.c
-@@ -68,6 +68,7 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
- 	};
- 	int i;
- 	struct aggr_cpu_id id;
-+	struct perf_cpu cpu;
- 
- 	session = perf_session__new(&data, NULL);
- 	TEST_ASSERT_VAL("can't get session", !IS_ERR(session));
-@@ -113,8 +114,7 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
- 	TEST_ASSERT_VAL("Session header CPU map not set", session->header.env.cpu);
- 
- 	for (i = 0; i < session->header.env.nr_cpus_avail; i++) {
--		struct perf_cpu cpu = { .cpu = i };
--
-+		cpu.cpu = i;
- 		if (!perf_cpu_map__has(map, cpu))
- 			continue;
- 		pr_debug("CPU %d, core %d, socket %d\n", i,
-@@ -123,48 +123,48 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
- 	}
- 
- 	// Test that CPU ID contains socket, die, core and CPU
--	for (i = 0; i < perf_cpu_map__nr(map); i++) {
--		id = aggr_cpu_id__cpu(perf_cpu_map__cpu(map, i), NULL);
-+	perf_cpu_map__for_each_cpu(cpu, i, map) {
-+		id = aggr_cpu_id__cpu(cpu, NULL);
- 		TEST_ASSERT_VAL("Cpu map - CPU ID doesn't match",
--				perf_cpu_map__cpu(map, i).cpu == id.cpu.cpu);
-+				cpu.cpu == id.cpu.cpu);
- 
- 		TEST_ASSERT_VAL("Cpu map - Core ID doesn't match",
--			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].core_id == id.core);
-+			session->header.env.cpu[cpu.cpu].core_id == id.core);
- 		TEST_ASSERT_VAL("Cpu map - Socket ID doesn't match",
--			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].socket_id ==
-+			session->header.env.cpu[cpu.cpu].socket_id ==
- 			id.socket);
- 
- 		TEST_ASSERT_VAL("Cpu map - Die ID doesn't match",
--			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].die_id == id.die);
-+			session->header.env.cpu[cpu.cpu].die_id == id.die);
- 		TEST_ASSERT_VAL("Cpu map - Node ID is set", id.node == -1);
- 		TEST_ASSERT_VAL("Cpu map - Thread IDX is set", id.thread_idx == -1);
- 	}
- 
- 	// Test that core ID contains socket, die and core
--	for (i = 0; i < perf_cpu_map__nr(map); i++) {
--		id = aggr_cpu_id__core(perf_cpu_map__cpu(map, i), NULL);
-+	perf_cpu_map__for_each_cpu(cpu, i, map) {
-+		id = aggr_cpu_id__core(cpu, NULL);
- 		TEST_ASSERT_VAL("Core map - Core ID doesn't match",
--			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].core_id == id.core);
-+			session->header.env.cpu[cpu.cpu].core_id == id.core);
- 
- 		TEST_ASSERT_VAL("Core map - Socket ID doesn't match",
--			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].socket_id ==
-+			session->header.env.cpu[cpu.cpu].socket_id ==
- 			id.socket);
- 
- 		TEST_ASSERT_VAL("Core map - Die ID doesn't match",
--			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].die_id == id.die);
-+			session->header.env.cpu[cpu.cpu].die_id == id.die);
- 		TEST_ASSERT_VAL("Core map - Node ID is set", id.node == -1);
- 		TEST_ASSERT_VAL("Core map - Thread IDX is set", id.thread_idx == -1);
- 	}
- 
- 	// Test that die ID contains socket and die
--	for (i = 0; i < perf_cpu_map__nr(map); i++) {
--		id = aggr_cpu_id__die(perf_cpu_map__cpu(map, i), NULL);
-+	perf_cpu_map__for_each_cpu(cpu, i, map) {
-+		id = aggr_cpu_id__die(cpu, NULL);
- 		TEST_ASSERT_VAL("Die map - Socket ID doesn't match",
--			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].socket_id ==
-+			session->header.env.cpu[cpu.cpu].socket_id ==
- 			id.socket);
- 
- 		TEST_ASSERT_VAL("Die map - Die ID doesn't match",
--			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].die_id == id.die);
-+			session->header.env.cpu[cpu.cpu].die_id == id.die);
- 
- 		TEST_ASSERT_VAL("Die map - Node ID is set", id.node == -1);
- 		TEST_ASSERT_VAL("Die map - Core is set", id.core == -1);
-@@ -173,10 +173,10 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
- 	}
- 
- 	// Test that socket ID contains only socket
--	for (i = 0; i < perf_cpu_map__nr(map); i++) {
--		id = aggr_cpu_id__socket(perf_cpu_map__cpu(map, i), NULL);
-+	perf_cpu_map__for_each_cpu(cpu, i, map) {
-+		id = aggr_cpu_id__socket(cpu, NULL);
- 		TEST_ASSERT_VAL("Socket map - Socket ID doesn't match",
--			session->header.env.cpu[perf_cpu_map__cpu(map, i).cpu].socket_id ==
-+			session->header.env.cpu[cpu.cpu].socket_id ==
- 			id.socket);
- 
- 		TEST_ASSERT_VAL("Socket map - Node ID is set", id.node == -1);
-@@ -187,10 +187,10 @@ static int check_cpu_topology(char *path, struct perf_cpu_map *map)
- 	}
- 
- 	// Test that node ID contains only node
--	for (i = 0; i < perf_cpu_map__nr(map); i++) {
--		id = aggr_cpu_id__node(perf_cpu_map__cpu(map, i), NULL);
-+	perf_cpu_map__for_each_cpu(cpu, i, map) {
-+		id = aggr_cpu_id__node(cpu, NULL);
- 		TEST_ASSERT_VAL("Node map - Node ID doesn't match",
--				cpu__get_node(perf_cpu_map__cpu(map, i)) == id.node);
-+				cpu__get_node(cpu) == id.node);
- 		TEST_ASSERT_VAL("Node map - Socket is set", id.socket == -1);
- 		TEST_ASSERT_VAL("Node map - Die ID is set", id.die == -1);
- 		TEST_ASSERT_VAL("Node map - Core is set", id.core == -1);
-diff --git a/tools/perf/util/bpf_kwork.c b/tools/perf/util/bpf_kwork.c
-index 6eb2c78fd7f4..44f0f708a15d 100644
---- a/tools/perf/util/bpf_kwork.c
-+++ b/tools/perf/util/bpf_kwork.c
-@@ -147,12 +147,12 @@ static bool valid_kwork_class_type(enum kwork_class_type type)
- 
- static int setup_filters(struct perf_kwork *kwork)
- {
--	u8 val = 1;
--	int i, nr_cpus, key, fd;
--	struct perf_cpu_map *map;
--
- 	if (kwork->cpu_list != NULL) {
--		fd = bpf_map__fd(skel->maps.perf_kwork_cpu_filter);
-+		int idx, nr_cpus;
-+		struct perf_cpu_map *map;
-+		struct perf_cpu cpu;
-+		int fd = bpf_map__fd(skel->maps.perf_kwork_cpu_filter);
-+
- 		if (fd < 0) {
- 			pr_debug("Invalid cpu filter fd\n");
- 			return -1;
-@@ -165,8 +165,8 @@ static int setup_filters(struct perf_kwork *kwork)
- 		}
- 
- 		nr_cpus = libbpf_num_possible_cpus();
--		for (i = 0; i < perf_cpu_map__nr(map); i++) {
--			struct perf_cpu cpu = perf_cpu_map__cpu(map, i);
-+		perf_cpu_map__for_each_cpu(cpu, idx, map) {
-+			u8 val = 1;
- 
- 			if (cpu.cpu >= nr_cpus) {
- 				perf_cpu_map__put(map);
-@@ -181,6 +181,8 @@ static int setup_filters(struct perf_kwork *kwork)
- 	}
- 
- 	if (kwork->profile_name != NULL) {
-+		int key, fd;
-+
- 		if (strlen(kwork->profile_name) >= MAX_KWORKNAME) {
- 			pr_err("Requested name filter %s too large, limit to %d\n",
- 			       kwork->profile_name, MAX_KWORKNAME - 1);
-diff --git a/tools/perf/util/bpf_kwork_top.c b/tools/perf/util/bpf_kwork_top.c
-index 035e02272790..22a3b00a1e23 100644
---- a/tools/perf/util/bpf_kwork_top.c
-+++ b/tools/perf/util/bpf_kwork_top.c
-@@ -122,11 +122,11 @@ static bool valid_kwork_class_type(enum kwork_class_type type)
- 
- static int setup_filters(struct perf_kwork *kwork)
- {
--	u8 val = 1;
--	int i, nr_cpus, fd;
--	struct perf_cpu_map *map;
--
- 	if (kwork->cpu_list) {
-+		int idx, nr_cpus, fd;
-+		struct perf_cpu_map *map;
-+		struct perf_cpu cpu;
-+
- 		fd = bpf_map__fd(skel->maps.kwork_top_cpu_filter);
- 		if (fd < 0) {
- 			pr_debug("Invalid cpu filter fd\n");
-@@ -140,8 +140,8 @@ static int setup_filters(struct perf_kwork *kwork)
- 		}
- 
- 		nr_cpus = libbpf_num_possible_cpus();
--		for (i = 0; i < perf_cpu_map__nr(map); i++) {
--			struct perf_cpu cpu = perf_cpu_map__cpu(map, i);
-+		perf_cpu_map__for_each_cpu(cpu, idx, map) {
-+			u8 val = 1;
- 
- 			if (cpu.cpu >= nr_cpus) {
- 				perf_cpu_map__put(map);
-diff --git a/tools/perf/util/cpumap.c b/tools/perf/util/cpumap.c
-index 0581ee0fa5f2..e2287187babd 100644
---- a/tools/perf/util/cpumap.c
-+++ b/tools/perf/util/cpumap.c
-@@ -629,10 +629,10 @@ static char hex_char(unsigned char val)
- 
- size_t cpu_map__snprint_mask(struct perf_cpu_map *map, char *buf, size_t size)
- {
--	int i, cpu;
-+	int idx;
- 	char *ptr = buf;
- 	unsigned char *bitmap;
--	struct perf_cpu last_cpu = perf_cpu_map__cpu(map, perf_cpu_map__nr(map) - 1);
-+	struct perf_cpu c, last_cpu = perf_cpu_map__max(map);
- 
- 	if (buf == NULL)
- 		return 0;
-@@ -643,12 +643,10 @@ size_t cpu_map__snprint_mask(struct perf_cpu_map *map, char *buf, size_t size)
- 		return 0;
- 	}
- 
--	for (i = 0; i < perf_cpu_map__nr(map); i++) {
--		cpu = perf_cpu_map__cpu(map, i).cpu;
--		bitmap[cpu / 8] |= 1 << (cpu % 8);
--	}
-+	perf_cpu_map__for_each_cpu(c, idx, map)
-+		bitmap[c.cpu / 8] |= 1 << (c.cpu % 8);
- 
--	for (cpu = last_cpu.cpu / 4 * 4; cpu >= 0; cpu -= 4) {
-+	for (int cpu = last_cpu.cpu / 4 * 4; cpu >= 0; cpu -= 4) {
- 		unsigned char bits = bitmap[cpu / 8];
- 
- 		if (cpu % 8)
-diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
-index 860e1837ba96..8ef0e5ac03c2 100644
---- a/tools/perf/util/scripting-engines/trace-event-python.c
-+++ b/tools/perf/util/scripting-engines/trace-event-python.c
-@@ -1693,13 +1693,15 @@ static void python_process_stat(struct perf_stat_config *config,
- {
- 	struct perf_thread_map *threads = counter->core.threads;
- 	struct perf_cpu_map *cpus = counter->core.cpus;
--	int cpu, thread;
- 
--	for (thread = 0; thread < perf_thread_map__nr(threads); thread++) {
--		for (cpu = 0; cpu < perf_cpu_map__nr(cpus); cpu++) {
--			process_stat(counter, perf_cpu_map__cpu(cpus, cpu),
-+	for (int thread = 0; thread < perf_thread_map__nr(threads); thread++) {
-+		int idx;
-+		struct perf_cpu cpu;
-+
-+		perf_cpu_map__for_each_cpu(cpu, idx, cpus) {
-+			process_stat(counter, cpu,
- 				     perf_thread_map__pid(threads, thread), tstamp,
--				     perf_counts(counter->counts, cpu, thread));
-+				     perf_counts(counter->counts, idx, thread));
- 		}
- 	}
- }
-diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index 199d3e8df315..d52b58344dbc 100644
---- a/tools/perf/util/session.c
-+++ b/tools/perf/util/session.c
-@@ -2738,6 +2738,7 @@ int perf_session__cpu_bitmap(struct perf_session *session,
- 	int i, err = -1;
- 	struct perf_cpu_map *map;
- 	int nr_cpus = min(session->header.env.nr_cpus_avail, MAX_NR_CPUS);
-+	struct perf_cpu cpu;
- 
- 	for (i = 0; i < PERF_TYPE_MAX; ++i) {
- 		struct evsel *evsel;
-@@ -2759,9 +2760,7 @@ int perf_session__cpu_bitmap(struct perf_session *session,
- 		return -1;
- 	}
- 
--	for (i = 0; i < perf_cpu_map__nr(map); i++) {
--		struct perf_cpu cpu = perf_cpu_map__cpu(map, i);
--
-+	perf_cpu_map__for_each_cpu(cpu, i, map) {
- 		if (cpu.cpu >= nr_cpus) {
- 			pr_err("Requested CPU %d too large. "
- 			       "Consider raising MAX_NR_CPUS\n", cpu.cpu);
-diff --git a/tools/perf/util/svghelper.c b/tools/perf/util/svghelper.c
-index 1892e9b6aa7f..2b04f47f4db0 100644
---- a/tools/perf/util/svghelper.c
-+++ b/tools/perf/util/svghelper.c
-@@ -725,26 +725,24 @@ static void scan_core_topology(int *map, struct topology *t, int nr_cpus)
- 
- static int str_to_bitmap(char *s, cpumask_t *b, int nr_cpus)
- {
--	int i;
--	int ret = 0;
--	struct perf_cpu_map *m;
--	struct perf_cpu c;
-+	int idx, ret = 0;
-+	struct perf_cpu_map *map;
-+	struct perf_cpu cpu;
- 
--	m = perf_cpu_map__new(s);
--	if (!m)
-+	map = perf_cpu_map__new(s);
-+	if (!map)
- 		return -1;
- 
--	for (i = 0; i < perf_cpu_map__nr(m); i++) {
--		c = perf_cpu_map__cpu(m, i);
--		if (c.cpu >= nr_cpus) {
-+	perf_cpu_map__for_each_cpu(cpu, idx, map) {
-+		if (cpu.cpu >= nr_cpus) {
- 			ret = -1;
- 			break;
- 		}
- 
--		__set_bit(c.cpu, cpumask_bits(b));
-+		__set_bit(cpu.cpu, cpumask_bits(b));
- 	}
- 
--	perf_cpu_map__put(m);
-+	perf_cpu_map__put(map);
- 
- 	return ret;
- }
+diff --git a/tools/lib/perf/include/perf/cpumap.h b/tools/lib/perf/include/perf/cpumap.h
+index 523e4348fc96..90457d17fb2f 100644
+--- a/tools/lib/perf/include/perf/cpumap.h
++++ b/tools/lib/perf/include/perf/cpumap.h
+@@ -44,7 +44,18 @@ LIBPERF_API struct perf_cpu_map *perf_cpu_map__merge(struct perf_cpu_map *orig,
+ LIBPERF_API struct perf_cpu_map *perf_cpu_map__intersect(struct perf_cpu_map *orig,
+ 							 struct perf_cpu_map *other);
+ LIBPERF_API void perf_cpu_map__put(struct perf_cpu_map *map);
++/**
++ * perf_cpu_map__cpu - get the CPU value at the given index. Returns -1 if index
++ *                     is invalid.
++ */
+ LIBPERF_API struct perf_cpu perf_cpu_map__cpu(const struct perf_cpu_map *cpus, int idx);
++/**
++ * perf_cpu_map__nr - for an empty map returns 1, as perf_cpu_map__cpu returns a
++ *                    cpu of -1 for an invalid index, this makes an empty map
++ *                    look like it contains the "any CPU"/dummy value. Otherwise
++ *                    the result is the number CPUs in the map plus one if the
++ *                    "any CPU"/dummy value is present.
++ */
+ LIBPERF_API int perf_cpu_map__nr(const struct perf_cpu_map *cpus);
+ /**
+  * perf_cpu_map__has_any_cpu_or_is_empty - is map either empty or has the "any CPU"/dummy value.
 -- 
 2.43.0.rc1.413.gea7ed67945-goog
 
