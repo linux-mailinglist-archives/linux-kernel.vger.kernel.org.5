@@ -2,75 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A86F57FD5F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A28107FD5F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:43:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233079AbjK2LmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 06:42:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39436 "EHLO
+        id S233130AbjK2Lnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 06:43:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233130AbjK2LmB (ORCPT
+        with ESMTP id S230219AbjK2Lne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 06:42:01 -0500
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6FB8D7F
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 03:42:07 -0800 (PST)
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-285a1155076so6127001a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 03:42:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701258127; x=1701862927;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RjPA4/c9WZ5F20R0UIB2Kd3JkPUDLADtTQZRXgPbEls=;
-        b=hntP7YHth2EWu0l528AS2OCSb03QjeCFGJ6u/r0DEsMdNViJfw5MUeU++G85TSIdR/
-         2FQIHrscMs5HCzE7y7VK0eEl7sATutgDpS3zYc7kER5OVlzRsd3SttaWE6VM8AAgr1zV
-         cbueAvmNS1/SxnBWGI+MxVfjc1dHJ0Ih9a+jCBPFYnwWCcm2J5GA4AotOcmQId1DfeKS
-         4QWHq4z3u/5IIbGVjIfCjDEc6bCImwB97gtoPxn9pLHPe3TzJzwwHrUGtRYuo03KamCt
-         jWc/O1Bt6+AYWh2lIiTaE5TF8SycWFNmdeNsOZWg0pmTnEBbVLlaZRtEhg3iT5aHnbqL
-         XA8g==
-X-Gm-Message-State: AOJu0Yw3UfTtK3SvoX6h5S08UPsz+tk5wI5Uf7LLn0Rc7IJd7aekJrPm
-        0tnW0WIkfhWsl2pKIUE32y0OuWg2N8J92fu4asv73V8UhaX+
-X-Google-Smtp-Source: AGHT+IGbTN6xrle3YcbjSc2dUkUNdkT+KI44D8h/5Q5ENIpOrNqCRlZlOPhp74t7acqNCThMkM2zuB6AQt0YMxOb0C3zZQRUpPR1
+        Wed, 29 Nov 2023 06:43:34 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDFBCBA
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 03:43:40 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0DB2C433C8;
+        Wed, 29 Nov 2023 11:43:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701258220;
+        bh=6hxakAmZIQItNkD76sjQSF/47UpUdJ+ouDdRtONsXGU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eOggLRELEWXcQMxKJNdbflVMplqVs1d4oSFZVtSvmNNvSIFVTXoEb7tMaarWGgp5n
+         SQvQ0XbsjD/9KVI6qacU5DD0JTLkFSmOnHtYDCv91tsumKeJ9kZbdPMqxEgdvYZydf
+         TIdUDPKMmjNry2UBwuyoaNuPkkRN0hcNFttoEp8AqxMQAGMB0szOe8vPvuShf0nxCx
+         2tqlvm6XWQYYNZrxVdd34UPB+Zt6057uBH88fQzfG3jBIz8CzkI+XjpyJKgqdTpeZx
+         QoJfoWXJaxoYtjQbKJXh2WZRTfC+CrQlmAdQlAyuuGt5soT3PtwC5+5ogURFuOxBpV
+         weh+Z4iphCbEg==
+Date:   Wed, 29 Nov 2023 12:43:36 +0100
+From:   Christian Brauner <brauner@kernel.org>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Jeff Layton <jlayton@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH/RFC] core/nfsd: allow kernel threads to use task_work.
+Message-ID: <20231129-querschnitt-urfassung-3ebd703c345a@brauner>
+References: <170112272125.7109.6245462722883333440@noble.neil.brown.name>
+ <ZWUfNyO6OG/+aFuo@tissot.1015granger.net>
+ <170113056683.7109.13851405274459689039@noble.neil.brown.name>
+ <20231128-blumig-anreichern-b9d8d1dc49b3@brauner>
+ <170121362397.7109.17858114692838122621@noble.neil.brown.name>
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:4614:b0:285:71b3:7b41 with SMTP id
- w20-20020a17090a461400b0028571b37b41mr3815999pjg.4.1701258127230; Wed, 29 Nov
- 2023 03:42:07 -0800 (PST)
-Date:   Wed, 29 Nov 2023 03:42:07 -0800
-In-Reply-To: <CANn89i+6BuZA6AjocG_0zTkD1u=pNgZc_DpZMO=yUN=S1cHS3w@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000584f41060b490648@google.com>
-Subject: Re: [syzbot] [net?] general protection fault in page_pool_unlist
-From:   syzbot <syzbot+f9f8efb58a4db2ca98d0@syzkaller.appspotmail.com>
-To:     almasrymina@google.com, davem@davemloft.net, edumazet@google.com,
-        hawk@kernel.org, ilias.apalodimas@linaro.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <170121362397.7109.17858114692838122621@noble.neil.brown.name>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+> If an nfsd thread only completes the close that it initiated the close
+> on (which is what I am currently proposing) then there would be at most
+> one, or maybe 2, fds to close after handling each request.  While that
+> is certainly a non-zero burden, I can't see how it can realistically be
+> called a DOS.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+The 10s of millions of files is what makes me curious. Because that's
+the workload that'd be interesting.
 
-Reported-and-tested-by: syzbot+f9f8efb58a4db2ca98d0@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         f1be1e04 Merge branch '40GbE' of git://git.kernel.org/..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git main
-console output: https://syzkaller.appspot.com/x/log.txt?x=1333cb78e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=abf6d5a82dab01fe
-dashboard link: https://syzkaller.appspot.com/bug?extid=f9f8efb58a4db2ca98d0
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=174c37a4e80000
-
-Note: testing is done by a robot and is best-effort only.
+> > It feels that this really needs to be tested under a similar workload in
+> > question to see whether this is a viable solution.
+> > 
+> 
+> Creating that workload might be a challenge.  I know it involved
+> accessing 10s of millions of files with a server that was somewhat
+> memory constrained.  I don't know anything about the access pattern.
+> 
+> Certainly I'll try to reproduce something similar by inserting delays in
+> suitable places.  This will help exercise the code, but won't really
+> replicate the actual workload.
