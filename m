@@ -2,136 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F217FDD20
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:35:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D55E27FDD25
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:35:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231185AbjK2QfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 11:35:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35250 "EHLO
+        id S231240AbjK2QfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 11:35:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230084AbjK2Qe6 (ORCPT
+        with ESMTP id S231187AbjK2QfF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 11:34:58 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CF810F8;
-        Wed, 29 Nov 2023 08:35:03 -0800 (PST)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ATCOVPJ027539;
-        Wed, 29 Nov 2023 16:34:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=aTKSWBVnfPOj/Qnvfy852bY+PZo1IWg10B1vnc0aQJQ=;
- b=iExWlO4JUHof1uN1Z9mD1W1OUechzGoVqD8g+QDPk7OKK+8WwccUQIv+Ss4Qb8aY5EwP
- SQ60NMfRrqaydZIA1s+IkmN5Qz+nIgU2wMOi/1a+UV0jP5RMU8h9sHVeB+psX+S2Ma9g
- 1sbP+Ueqn+d86TbNG3BWa8kf6sUexiaGZpUtf2WOHZmvz7pJSi8zjZLTftH33qYT+n9p
- HL3XgiS+qbiWOGHmgApQKfDCAHGByEA2evgE7cU2j6VxTapZvhNii2Bb1edUaAX7sTwu
- lFB78MxfW+kMypE8NXOM1Bkgu/yp/P6ZM2i8W4TXjI0cYqvH9SRBFvybI2GGPtboYAO8 2g== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3up2s091mf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Nov 2023 16:34:45 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ATGYiEJ005930
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Nov 2023 16:34:44 GMT
-Received: from blr-ubuntu-253.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 29 Nov 2023 08:34:37 -0800
-From:   Sibi Sankar <quic_sibis@quicinc.com>
-To:     <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <catalin.marinas@arm.com>, <ulf.hansson@linaro.org>
-CC:     <agross@kernel.org>, <conor+dt@kernel.org>,
-        <ayan.kumar.halder@amd.com>, <j@jannau.net>,
-        <dmitry.baryshkov@linaro.org>, <nfraprado@collabora.com>,
-        <m.szyprowski@samsung.com>, <u-kumar1@ti.com>, <peng.fan@nxp.com>,
-        <lpieralisi@kernel.org>, <quic_rjendra@quicinc.com>,
-        <abel.vesa@linaro.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <quic_tsoni@quicinc.com>,
-        <neil.armstrong@linaro.org>, Sibi Sankar <quic_sibis@quicinc.com>
-Subject: [PATCH V3 5/5] arm64: defconfig: Enable X1E80100 SoC base configs
-Date:   Wed, 29 Nov 2023 22:03:41 +0530
-Message-ID: <20231129163341.4800-6-quic_sibis@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231129163341.4800-1-quic_sibis@quicinc.com>
-References: <20231129163341.4800-1-quic_sibis@quicinc.com>
+        Wed, 29 Nov 2023 11:35:05 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 704DCD7F;
+        Wed, 29 Nov 2023 08:35:08 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0DED0C15;
+        Wed, 29 Nov 2023 08:35:55 -0800 (PST)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.31.168])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 16EB33F73F;
+        Wed, 29 Nov 2023 08:35:06 -0800 (PST)
+Date:   Wed, 29 Nov 2023 16:35:01 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     "Ashley, William" <wash@amazon.com>
+Cc:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        will@kernel.org
+Subject: Re: armv8pmu: Pending overflow interrupt is discarded when perf
+ event is disabled
+Message-ID: <ZWdoNWps4izj5WJy@FVFF77S0Q05N.cambridge.arm.com>
+References: <950001BD-490C-4BAC-8EEA-CDB9F7C4ADFC@amazon.com>
+ <EBAF38AB-2BE5-425F-8A52-DDCB0B390309@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Jt8jooZI4AIW2l-D8G7lCGahPrkpr6To
-X-Proofpoint-GUID: Jt8jooZI4AIW2l-D8G7lCGahPrkpr6To
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-29_14,2023-11-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- adultscore=0 mlxlogscore=866 priorityscore=1501 bulkscore=0 mlxscore=0
- spamscore=0 suspectscore=0 malwarescore=0 phishscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311290126
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <EBAF38AB-2BE5-425F-8A52-DDCB0B390309@amazon.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajendra Nayak <quic_rjendra@quicinc.com>
+Hi William,
 
-Enable GCC, Pinctrl and Interconnect configs for Qualcomm's X1E80100 SoC
-which is required to boot X1E80100 QCP/CRD boards to a console shell. The
-configs are required to be marked as builtin and not modules due to the
-console driver dependencies.
+On Mon, Nov 20, 2023 at 10:32:10PM +0000, Ashley, William wrote:
+> Adding linux-arm-kernel@lists.infradead.org and linux-kernel@vger.kernel.org,
+> sorry for the noise.
 
-Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
-Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
-Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
+Thanks for this!
 
-V3:
-* Pickup Rbs.
+For the benefit of others, the original mail (and attachment) can be found at:
 
- arch/arm64/configs/defconfig | 3 +++
- 1 file changed, 3 insertions(+)
+  https://lore.kernel.org/linux-perf-users/950001BD-490C-4BAC-8EEA-CDB9F7C4ADFC@amazon.com/
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 5ad2b841aafc..8d25bd2e634a 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -614,6 +614,7 @@ CONFIG_PINCTRL_SM8450_LPASS_LPI=m
- CONFIG_PINCTRL_SC8280XP_LPASS_LPI=m
- CONFIG_PINCTRL_SM8550=y
- CONFIG_PINCTRL_SM8550_LPASS_LPI=m
-+CONFIG_PINCTRL_X1E80100=y
- CONFIG_PINCTRL_LPASS_LPI=m
- CONFIG_GPIO_AGGREGATOR=m
- CONFIG_GPIO_ALTERA=m
-@@ -1267,6 +1268,7 @@ CONFIG_SM_GPUCC_6115=m
- CONFIG_SM_GPUCC_8150=y
- CONFIG_SM_GPUCC_8250=y
- CONFIG_SM_VIDEOCC_8250=y
-+CONFIG_X1E_GCC_80100=y
- CONFIG_QCOM_HFPLL=y
- CONFIG_CLK_GFM_LPASS_SM8250=m
- CONFIG_CLK_RCAR_USB2_CLOCK_SEL=y
-@@ -1525,6 +1527,7 @@ CONFIG_INTERCONNECT_QCOM_SM8250=m
- CONFIG_INTERCONNECT_QCOM_SM8350=m
- CONFIG_INTERCONNECT_QCOM_SM8450=y
- CONFIG_INTERCONNECT_QCOM_SM8550=y
-+CONFIG_INTERCONNECT_QCOM_X1E80100=y
- CONFIG_COUNTER=m
- CONFIG_RZ_MTU3_CNT=m
- CONFIG_HTE=y
--- 
-2.17.1
+For some reason, links and whitespace seem to have been mangled in the resend;
+I'm not sure what happened there.
 
+I've added Will Deacon, as Will and I co-maintain the ARM PMU drivers.
+
+> ﻿On 11/20/23, 12:36 PM, "Ashley, William" <wash@amazon.com <mailto:wash@amazon.com>> wrote:
+> 
+> 
+> An issue [1] was opened in the rr-debugger project reporting occasional missed
+> perf event overflow signals on arm64. I've been digging into this and think I
+> understand what's happening, but wanted to confirm my understanding.
+> 
+> The attached example application, derived from an rr-debugger test case, reports
+> when the value of a counter doesn't increase by the expected period +/- some
+> tolerance. When it is ping-ponged between cores (e.g. with taskset) at a high
+> frequency, it frequently reports increases of ~2x the expected. I've confirmed
+> this same behavior on kernels 5.4, 5.10, 6.1 and 6.5.
+> 
+> 
+> I found armv8pmu_disable_intens [2] that is called as part of event
+> de-scheduling and contains
+> /* Clear the overflow flag in case an interrupt is pending. */
+> write_pmovsclr(mask);
+> which results in any pending overflow interrupt being dropped. I added some
+> debug output here and indeed there is a correlation of this bit being high at
+> the point of the above code and the reproducer identifying a missed signal.
+
+I think you're right that if we had an overflow asserted at this point, we'll
+throw away the occurrence of the overflow (and so not call
+perf_event_overflow() and generate a sample, etc).
+
+It looks like we only lose the occurrence of the overflow; the actual counts
+will get sampled correctly and when we next reprogram the event,
+armpmu_event_set_period() should set up the next overflow period.
+
+> This behavior does not occur with pseudo-NMIs (irqchip.gicv3_pseudo_nmi=1)
+> enabled.
+
+That's interesting, because it implies that the PMU overflow interrupt is being
+recognised by the CPU while regular interrupts are disabled. There are some
+narrow races where that could occur (e.g. taking a timer or scheduler IRQ
+*just* as an overflow occurs), and some other cases I'd expect RR to avoid by
+construction (e.g. if RR isn't using mode exclusion and also counts kernel
+events). It's also worth noting that this means there are races even with
+pseudo-NMI where overflows could be lost.
+
+How often do you see the overflow being lost?
+
+Does RR set any of the perf_event_attr::exclude_* bits? If not, does RR
+intentionally count events that occur within the kernel?
+
+> When an event is not being explicitly torn down (e.g. being closed), this seems
+> like an undesirable behavior.
+
+I agree it's undesirable, though my understanding is that for most other users
+this isn't any worse than losing samples for other reasons (e.g. the perf ring
+buffer being full), and for the general case of sample-based profiling, losing
+a sample every so often isn't the end of the world.
+
+> I haven't attempted to demo it yet, but I suspect
+> an application disabling an event temporarily could occasionally see the same
+> missed overflow signals. Is my understanding here correct?
+
+That sounds right to me, though I haven't checked that end-to-end yet.
+
+> Does anyone have thoughts on how this could be addressed without creating
+> other issues?
+
+We should be able to detect overflow from the counter value alone, so we might
+be able to account for that when we actually read the event out, or when we
+schedule it back in and reprogram the period.
+
+I'm not sure if we can reasonably do that when scheduling the event out, since
+if we're switching tasks, that'll queue up IRQ work which will be triggered in
+the context of the next task.
+
+We might be able to figure out that we have an overflow when we schedule the
+event in under armpmu_start(), but I'll need to go digging to see if there are
+any free-running counters as the comment above the call to
+armpmu_event_set_period() says, or whether that's a historical artifact.
+
+I suspect we might need to restructure the code somewhat to be able to catch
+overflows more consistently. I'll see if I can come up with something, but we
+might not be able to guarantee this in all cases.
+
+Mark.
+
+> [1] https://github.com/rr-debugger/rr/issues/3607 <https://github.com/rr-debugger/rr/issues/3607>
+> [2] https://github.com/torvalds/linux/blob/c42d9eeef8e5ba9292eda36fd8e3c11f35ee065c/drivers/perf/arm_pmuv3.c#L652C20-L652C43 <https://github.com/torvalds/linux/blob/c42d9eeef8e5ba9292eda36fd8e3c11f35ee065c/drivers/perf/arm_pmuv3.c#L652C20-L652C43>
