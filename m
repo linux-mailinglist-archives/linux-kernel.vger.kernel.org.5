@@ -2,248 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B13077FD7A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:13:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1812A7FD79C
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:12:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233904AbjK2NNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 08:13:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34360 "EHLO
+        id S233884AbjK2NMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 08:12:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233832AbjK2NNP (ORCPT
+        with ESMTP id S233865AbjK2NMc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 08:13:15 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB90D7F;
-        Wed, 29 Nov 2023 05:13:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701263602; x=1732799602;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=r4AHomz3YRxgcdvEwk6CG3VKaf9nDMI387PB2+3vwro=;
-  b=JuAt5x4gL+71Q4ihSDTp/PoEfskEEWJwAVt7ONxUF/yt3MawNzF4XBPz
-   g4v8olqOLTqy+SmGzU7xFRoUNrS9ZiNXaPF4ehxB6rHZZ7ah0w2ZKStK/
-   YAXX4+Z6wxDt61S+2QB6Kwq4dMOXICnIoJKHOwVN+QAoAnWC9XcjiEvUq
-   38EoMDbrL6JHrKSPYo5wjbj4oFCFJHKymcqRA+G/vpL80OpmusN9QBITR
-   Z68vqTQevcWHFOjeQyimV2Dpug9FxjGS9e45/13aI+MJqwbEc/1svx/W4
-   2Hyi2WBhfre1x/nF5wIXKxBwi/Hq85cbKm0ZsJIHYNWfN8HEKG2MoFfg1
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="392904097"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="392904097"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 05:13:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="17006835"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Nov 2023 05:13:20 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 29 Nov 2023 05:13:19 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 29 Nov 2023 05:13:18 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Wed, 29 Nov 2023 05:13:18 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Wed, 29 Nov 2023 05:13:16 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FhRr40W0uP3Cr84es8+lWELFqNCqn1JTr6VBH5w+NbcHzRV2+yEUgBk3USpoUfoplnsjIQBP3JqNbe/14+I06J0IiUIRGNCzBTskCMHSfZ2rYVpXP1aihaszOgA4+r8i5E2midAAucvL7Pzi/4Q+L+BFco85u5N0Fo5S2eEYXNZVzc/voyLfcnFJfqPjUh1gK2LnDPijxtscBzTIqdn11nn3YdmP70Ejfg0XNJhkJM6sKjZ5BzDvQJlhHctazxphB+wbGOZlRYnwDvb+OYXX60Q5k8sIYJWVk8nDdT3qnmVC+DIrwOLj/Sxfp5i2rSQ1OKecDYSChS/eLp40ba58bg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aRTWaIjtVzk/Ye6bdJ0ZsOnjNTMyFr7Eo2mJhN+1nOE=;
- b=DFDATL62XSWF7zF2TaLD/OVpDJgxjSux/fw2+8PhtgczLTMKCpC/+44n7rPNVY5oEHegJenAwE59IMkJoX+4kAhEZI8NPxQyNdne+YDoqx/lodoGUNCvHbSckyaXPd1+CGRS8kLXd/zSoDKdsgH9Bb2KpJQOgNASUAXuCigL4HzJQzFOnu4knDl7m1TZKyb1ipwfTQGSWqsgaqPreo5kx3/TSC+jD3DIkMcKzE8N9Q+JbrJyzcbfYRgGB/ImCan2PPxAtzXzcKzZIASWM6fSgl5tVErP5aijXaYrThlE2291hw3F92U2rCkx7MkP/ecRXesmpZ7HSKlwB72sJXNmVQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com (2603:10b6:5:13a::21)
- by SJ0PR11MB4832.namprd11.prod.outlook.com (2603:10b6:a03:2dd::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Wed, 29 Nov
- 2023 13:13:14 +0000
-Received: from DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::36be:aaee:c5fe:2b80]) by DM6PR11MB3625.namprd11.prod.outlook.com
- ([fe80::36be:aaee:c5fe:2b80%7]) with mapi id 15.20.7046.015; Wed, 29 Nov 2023
- 13:13:14 +0000
-Message-ID: <994c4c2e-63c1-40ab-a270-325c8a5f5f39@intel.com>
-Date:   Wed, 29 Nov 2023 14:12:31 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v5 01/14] page_pool: make sure frag API fields
- don't span between cachelines
-Content-Language: en-US
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-CC:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        <netdev@vger.kernel.org>, Alexander Duyck <alexanderduyck@fb.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        <linux-kernel@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
-        Michal Kubiak <michal.kubiak@intel.com>,
-        <intel-wired-lan@lists.osuosl.org>,
-        David Christensen <drc@linux.vnet.ibm.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-References: <20231124154732.1623518-1-aleksander.lobakin@intel.com>
- <20231124154732.1623518-2-aleksander.lobakin@intel.com>
- <9902d1c4-5e51-551a-3b66-c078c217c5ad@huawei.com>
- <5e6859d3-d3e7-44c1-acee-2c4ec568615d@intel.com>
- <bd35cf74-698f-e811-43be-af207a88fdc7@huawei.com>
-From:   Alexander Lobakin <aleksander.lobakin@intel.com>
-In-Reply-To: <bd35cf74-698f-e811-43be-af207a88fdc7@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR4P281CA0394.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:cf::12) To DM6PR11MB3625.namprd11.prod.outlook.com
- (2603:10b6:5:13a::21)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR11MB3625:EE_|SJ0PR11MB4832:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3ddb7a98-186e-4570-3188-08dbf0dcf167
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5tE6Cor2kuTHLuToEpbCj+8kUB4n3CqFc9gXx+nf1XoGeplMJKcTq1KGGZiTGa4wmgt/wf7eW4uZ2Fn8l4ITVzq1c0EPMqvR/ubj6gqHPAdac6ayrMz8h7Nvpk1WABwr4KUrn1rxCr1rLP0sMIUhRUhCnMe+/D452E5t2zUpJIYYjJCuXmFLYH5ns8N8TcOe+FFQpp5FrRV22PBeq8ZVgdpTb+r72HF0JD7ge47I/guPfe3pE29USXmQK5cEH/5v/6drOZozUtyVfVJiRKnLakoBf6bxgR2j+A8o8GD2lo6V7Tg4NncEDreCe/a16Lb8St9cE/Q0Zz7/m5B354q8HCAIAbaqfnhe5RkS3ALggUdWpFIM2WVYg1nR/ARjyyhuL0lIC6v+qAE/rLkyQo5DApbgeNsjF0QCp9N88iuSzI1a+GjFSOQzTXaAPAFPkVSBlUX8xYa0yRGnaaGCWI8VtVBu+UyBOVB91t8/VDXy/7FvtgmxZSnXCwrrLyqtB65c/RPSv6rV+yQ/QFfh7a/feq6STuYx08p0nsGS7q0gYKHLce4yEt/q0awBT7SstClkUhkq3V1QHgiQh2dbHZe5k61XBVN4ZvLaxDbCx+TBbpo4ZApAjhD7e7Lu0LzRELFXk5F3e9ALEWgyhDM8CAHi6w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3625.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(366004)(136003)(396003)(39860400002)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(6666004)(6512007)(6506007)(6486002)(8936002)(53546011)(478600001)(66476007)(316002)(66946007)(66556008)(4326008)(31686004)(6916009)(54906003)(8676002)(86362001)(31696002)(26005)(2616005)(2906002)(83380400001)(36756003)(41300700001)(82960400001)(38100700002)(5660300002)(7416002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NkVXY1ZzdUtmUER5TVJFWEpIWGdNVC8vdHB3NWFXTmFnMml0YjdQaTFQajNP?=
- =?utf-8?B?blZVbGV6SXl4RmRJbG9uNk1KMldNNW9BNlBoQXBTSjBqM1VYUSs3UWtpYkZ0?=
- =?utf-8?B?QjhzemZMSFBUcldOM09HZEVkVlk3M0lFYkNrcHc4L1A4TVNuTWpnOFpxZG5S?=
- =?utf-8?B?N1ZZYS9yQi8rc3NqK2g4UUtYZmJZZ2N0OXFGckVOUmhNdGZrWGhzVkMzZlZ4?=
- =?utf-8?B?L3pvR0ttTHM4dlFORXFpSTYvcXZINEJZTzJraXVKdkRua2swUEtlK1d6L2lV?=
- =?utf-8?B?MnlWdUZISEoxSk84aENIU3JFbTJNZk93S0xqQlBKTGJQQm5lcE5LWGRCanYz?=
- =?utf-8?B?NzZBR29kVVkwVnRDZzJIaWg4eWRSRXBDSmhhS1cvTHlLREhGSmdBS29oWURK?=
- =?utf-8?B?c3Iwa2kyTEN3UDhKQTlyZGJUUzZoaGk4NkZzSExxUjRKTklhWkFCbEdYMEhx?=
- =?utf-8?B?UW1EU1hWK0IrTVphUjNOMUs2b0t4S2VDMUNuQm15aUFObUhWUFExMU5CbjNq?=
- =?utf-8?B?QU90SlJqL1AzOU40cVhPZlpsK2t3Zy92ZjY2ZnhSVzg4U1dUdFoya0NzTlRS?=
- =?utf-8?B?WE9vdklMdzV3ckdoMnk5cTQ2blRzOFVCNW9oL1lvT0pVOXA5ejNjT29hR20r?=
- =?utf-8?B?MDF3ekhPdnhvaUtJZ0Rjcm5lUU82Z0gwOHY4QkhjN0RyVElwc0VldVhkZlZm?=
- =?utf-8?B?dkVQRlI4Z3VQUUJxV0l1QVRuMmlyU1R1NnA0QVdlUElzTUJlM2dTTTZWbFJx?=
- =?utf-8?B?NU5iMEs1VnEwTzJEakFtcDJOTEVqVzJGaW42MzNIOTRhelVhZFBRdWdiWDJq?=
- =?utf-8?B?dC90d0RXRm5KbGlWQ2RWV00wVytaOGd1M3pFU1F5OVVLSEZjWmJmS1B3ckNP?=
- =?utf-8?B?azg0ajY3M3p6cHJPRFVXdVJIUVp5Uk9ySHhVcjJQakpYbzY3UURUa0pxc2tH?=
- =?utf-8?B?ZDBNSUR0eXgyYS9lMllON2dyRVg5cEVFWnhtRGhRVnU2ZGZyNGNoeVZxSHdt?=
- =?utf-8?B?ZFdiSmRhazF0UlZMU284MmYrdWg0WnFnM0J6RjB2azNkVjB5Qkt1L1hrWE1M?=
- =?utf-8?B?QTlKTjY3bDN3OVdMTXlDRGJwWHZ5Vkt1WkFXODFZVHNxWnpkNnc0M2c3bno5?=
- =?utf-8?B?bHJqTG1SbVIwYldCV3ZrQnc2dmcrdEVsRFlPSWYzVlpuNVdNN2RTWk5XZEF0?=
- =?utf-8?B?TVhMSXZGNmxydERRcytXZlRCbjAzU0xLUTg2MlRiZjRFVWtUOUNxQUJOa09I?=
- =?utf-8?B?aVpHbE5OZVFNL0hyUzNMVHV3em0vMS9iNnIwdFJFeFJXbnAyMWV2VEFpODBD?=
- =?utf-8?B?b1VQQlFab0EvOW4xNWlpL3EvampQSlErcTlIMjdUWVB6V2t2eDdKaUdpb1hj?=
- =?utf-8?B?YldZYmFLVmRvWlFWU2V5T0pOdGNlc0MrY2NGRXNTSmNLaDVJWVQ2NUlDdjA5?=
- =?utf-8?B?MHpmdHlqenVib0JMWGI0cCtIa1BxZ0lObHNQSWFGb0pIQmJqN2NMK014M2NJ?=
- =?utf-8?B?cmQwREx4QWRTQTUzam5kb2ZpZDdEREFPUWR5bzhOdzdrd3JhaUxlVWx0Rm0x?=
- =?utf-8?B?NHYzQUN0NWtRbFY0dDFya3F5UXl6QmNnMXQxanVjV25OYVRIVkhTamxLNy9D?=
- =?utf-8?B?TFdId2JQcm1Zb3h5bEQvK1g0ZnQ0czBHMEZDaUtwUUdGMGNYbG9RbTdRWXNB?=
- =?utf-8?B?Q3EzQTJERU5hVVNYREdvTGNpTFJWUGwyTEhBN0hkb1VjOXdwd0gzYVJDbkIr?=
- =?utf-8?B?NUdycnladHkrLzd4UUFwR1NTUGlNYmtyWjFRVDM2aUxCalNCaityMFM3bGFR?=
- =?utf-8?B?WG1qUlUyQU5DOVZMaFlULzZUaS9CVjEwZEZIU2U0YTdmNzN3SjF4NGJoNXRD?=
- =?utf-8?B?OXJwRnVveE5tak9heERReGtWZXNiSWVqRTNodkxnODZ3RlRDV2pIZ2FVMUdK?=
- =?utf-8?B?QmxrWnZFOG9pYWV2U3hOY0U5Skk3bTIwdkNnb081bkFRTDh6aWthWmJBN3FL?=
- =?utf-8?B?UFl1ek82WWVnZ0FBb0l6QVhzMUxBUVNZSDU2L0xYVkg4YmFQeER4U2VWU1o0?=
- =?utf-8?B?eGdyZTlnNFhTekw4N1M2WjZ4WmxJWTlQSjQweFlxVEJhcHBsbW8rZEoydW0w?=
- =?utf-8?B?R0U1YWZTUUFEa3VSZ01haHZib1EvcXVheHNJbUdnVFBCWGRsWlZGSHJqalpo?=
- =?utf-8?B?M2c9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3ddb7a98-186e-4570-3188-08dbf0dcf167
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3625.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 13:13:14.4304
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: x3S+vCtDissSpYxXdl56g76ODMCl69UnOhxJXo5Lcp2QYZ6RjyYNbGpWYRjB5QojtTaaOs5nwbYvRwNlE0XAoJAV4pOkGFCbrlLDpZrtLvk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4832
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Wed, 29 Nov 2023 08:12:32 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D72010D4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:12:38 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5caf86963ecso99698837b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:12:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701263557; x=1701868357; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=cXjNNXUM6pnjCl+pZVw51JBLkEWhDl2ninKP9/3jCWk=;
+        b=oYuOv5ZjXM2gp+/9ZyBoFqjtsRiuviJsdaBfN9uJXwB4StI7ZGoTrDcMDOn2xOgSgh
+         HNsH4oc9LS0WsSXKknQhklnYgz2UZ88tdyOkfFScREW6TzUERdcrpcbFf3cV8ZY3HXhf
+         7CXUw2pahhGExQF6Hbt/m1Eq7O1F51bK/nv8H/0gxCyx3f/1kH2XHHxYvTpM0qQIRrF1
+         SZGGd4wr3n5yO7uNGPObDqo6xYZZ+qdgN147MQ+yk6XdVbbkUIxcpRxTTxvq/w5eI1Te
+         wADhTTSIVRetrumwd2sczVTGMcyUyfUYw9caaTi3bEDAu6Zwu7NGZlZW0yNJHTimGC95
+         ixEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701263557; x=1701868357;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cXjNNXUM6pnjCl+pZVw51JBLkEWhDl2ninKP9/3jCWk=;
+        b=i7UG+W0upjsaW5FR32NEQJ+++8CPLGdyv5GIjk6kFRgeVHXSWlj1cLuIXWo+tr5T6E
+         fEBLnaOGsizU7zFET3iJ0pWUEvsn8X7I3F81p+dcoX7jLdV6V+2fUOF4yMMFX7RjbRX1
+         syXkuZzweO76zKPE+l0CrhjoFd4u9Jukn4OgCoulUl/xM60J5nQ0McEHzZoy3ExZNa3d
+         ecNlbnSTLl9KsYGfLTg+ZLrRUSrkCkfD/A2DEW3iq0+BNFqDsMLlqbWGT8mXNQK870da
+         Q8SeKkiJNiffRbu46CPe/dapTBezVc5++zBtzsbXy7cTdAvVYx1C87P71czvA/RhO1N+
+         hVrA==
+X-Gm-Message-State: AOJu0YzWNpsYjPNvQCwS91IT+80U+KJIpU/A9zC5KAofe0K3SYmXMheS
+        p+V7ojXSqrpLwRTqmingGROn22R6grGbjvQ=
+X-Google-Smtp-Source: AGHT+IGZ/DrVd6szNZuraGj6OJEwLI9AdSB0/YtOT+pXPvBEUA8z9WVNI5YOCH1nSunvGf16rHqPlCJprjA2dyY=
+X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
+ (user=aliceryhl job=sendgmr) by 2002:a05:690c:4283:b0:5ca:8688:a088 with SMTP
+ id gj3-20020a05690c428300b005ca8688a088mr458584ywb.9.1701263557556; Wed, 29
+ Nov 2023 05:12:37 -0800 (PST)
+Date:   Wed, 29 Nov 2023 13:12:32 +0000
+In-Reply-To: <20231129-alice-file-v1-0-f81afe8c7261@google.com>
+Mime-Version: 1.0
+References: <20231129-alice-file-v1-0-f81afe8c7261@google.com>
+X-Developer-Key: i=aliceryhl@google.com; a=openpgp; fpr=49F6C1FAA74960F43A5B86A1EE7A392FDE96209F
+X-Developer-Signature: v=1; a=openpgp-sha256; l=7762; i=aliceryhl@google.com;
+ h=from:subject:message-id; bh=wm4v/CZhyQkEj/WgGp9wB8kmjgTXL9eNiFeuaaFW8cA=;
+ b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBlZzMyIu8t9+uRKkvsDVwPd7WtQJgdkH8MOJ0Kt
+ /e6KpAU/aCJAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZWczMgAKCRAEWL7uWMY5
+ Ro5vD/wLbe54Jjz/IxjFEJCY0ktIiNyNy2iSlK3mOLv/fhrdrJHbYqss5c6VmUWo2BVovvV9ZOi
+ 02pYVCtMyM87CZg41oeeU13aB+Loz49/Ht3Adb9Vdj2vKcStC27h+CI+2V6bqPgle81kalHY2X8
+ qpxHvRaaweKd1sJ59O0fOo+UOvG+fOFnA3WaVNgsRAPgNChRKMsIkj/3GlHauCNLDmghNkJv/ho
+ qjHocDdWkJc9tVY8c0/w3EYPBafgwJiyE4kkPqRlpe3m5jFh3k3lnxZwtERUU/OE79r4y9hdPaG
+ b5PbLvscC5kvAkB3v4oLZnZOV9OrZ3Y1oKkJHWDaJ1XLe+JyD49E3SlH1yhSufvbK+GdG4aXrva
+ SeWHVm5sC08bY0Cb8AsI65fKo9uepAkESCSnjI5y3LpUR3Jd9ENQ/h3O7bcCcnZZwfNX73E4q9G
+ jUmnwetQEx78xh+PgST7eZv6RFEQazDEgYsrJrrgnPpXsquMvW8vNR+jPyXUoSh7c3V7dZ3JaQ3
+ Zd4wHG/Ic7Urzz6+C4BSwvNL4myhbdDOLqxqHigs/4CZQJiUMSA+6T+inDgXrjtdI3RVEGKEgEt
+ R03VOXCt0B2c3mep5G0kHp4eOwVGUp/6jbU/428pk2pK/crQwzg8fmf6dZbIkEcAtRq2lL455N6 KOu7FHxEUjoKpcQ==
+X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
+Message-ID: <20231129-alice-file-v1-6-f81afe8c7261@google.com>
+Subject: [PATCH 6/7] rust: file: add `DeferredFdCloser`
+From:   Alice Ryhl <aliceryhl@google.com>
+To:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        "=?utf-8?q?Bj=C3=B6rn_Roy_Baron?=" <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "=?utf-8?q?Arve_Hj=C3=B8nnev=C3=A5g?=" <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>
+Cc:     Alice Ryhl <aliceryhl@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunsheng Lin <linyunsheng@huawei.com>
-Date: Wed, 29 Nov 2023 10:55:00 +0800
+To close an fd from kernel space, we could call `ksys_close`. However,
+if we do this to an fd that is held using `fdget`, then we may trigger a
+use-after-free. Introduce a helper that can be used to close an fd even
+if the fd is currently held with `fdget`. This is done by grabbing an
+extra refcount to the file and dropping it in a task work once we return
+to userspace.
 
-> On 2023/11/27 22:08, Alexander Lobakin wrote:
->> From: Yunsheng Lin <linyunsheng@huawei.com>
->> Date: Sat, 25 Nov 2023 20:29:22 +0800
->>
->>> On 2023/11/24 23:47, Alexander Lobakin wrote:
->>>> After commit 5027ec19f104 ("net: page_pool: split the page_pool_params
->>>> into fast and slow") that made &page_pool contain only "hot" params at
->>>> the start, cacheline boundary chops frag API fields group in the middle
->>>> again.
->>>> To not bother with this each time fast params get expanded or shrunk,
->>>> let's just align them to `4 * sizeof(long)`, the closest upper pow-2 to
->>>> their actual size (2 longs + 2 ints). This ensures 16-byte alignment for
->>>> the 32-bit architectures and 32-byte alignment for the 64-bit ones,
->>>> excluding unnecessary false-sharing.
->>>>
->>>> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
->>>> ---
->>>>  include/net/page_pool/types.h | 2 +-
->>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.h
->>>> index e1bb92c192de..989d07b831fc 100644
->>>> --- a/include/net/page_pool/types.h
->>>> +++ b/include/net/page_pool/types.h
->>>> @@ -127,7 +127,7 @@ struct page_pool {
->>>>  
->>>>  	bool has_init_callback;
->>>
->>> It seems odd to have only a slow field between tow fast
->>> field group, isn't it better to move it to the end of
->>> page_pool or where is more appropriate?
->>
->> 1. There will be more in the subsequent patches.
->> 2. ::has_init_callback happens each new page allocation, it's not slow.
->>    Jakub did put it here for purpose.
->>
->>>
->>>>  
->>>> -	long frag_users;
->>>> +	long frag_users __aligned(4 * sizeof(long));
->>>
->>> If we need that, why not just use '____cacheline_aligned_in_smp'?
->>
->> It can be an overkill. We don't need a full cacheline, but only these
->> fields to stay within one, no matter whether they are in the beginning
->> of it or at the end.
-> 
-> I am still a little lost here, A comment explaining why using '4' in the
-> above would be really helpful here.
+This is necessary for Rust Binder because otherwise the user might try
+to have Binder close its fd for /dev/binder, which would cause problems
+as this happens inside an ioctl on /dev/binder, and ioctls hold the fd
+using `fdget`.
 
-The block is: 2 longs (users, frag pointer) and 2 ints (offset, cnt).
-On 32-bit architectures, longs == ints, so that this effectively means 4
-longs.
-On 64-bit architectures, long is 8 bytes and int is 4, so that the value
-becomes 2 * 8 + 2 * 4 = 24, but the alignment must be a pow-2. The
-closest pow-2 to 24 is 32, which equals to 4 * 8 = 4 longs.
-At the end, regardless of the architecture, the desired alignment would
-end up as 4 * longs. As I wrote earlier, we could do something like
+Additional motivation can be found in commit 80cd795630d6 ("binder: fix
+use-after-free due to ksys_close() during fdget()") and in the comments
+on `binder_do_fd_close`.
 
-__aligned(roundup_pow_of_2(2 * sizeof(long) + 2 * sizeof(int)))
+If there is some way to detect whether an fd is currently held with
+`fdget`, then this could be optimized to skip the allocation and task
+work when this is not the case. Another possible optimization would be
+to combine several fds into a single task work, since this is used with
+fd arrays that might hold several fds.
 
-but doesn't that seem ugly as hell?
+That said, it might not be necessary to optimize it, because Rust Binder
+has two ways to send fds: BINDER_TYPE_FD and BINDER_TYPE_FDA. With
+BINDER_TYPE_FD, it is userspace's responsibility to close the fd, so
+this mechanism is used only by BINDER_TYPE_FDA, but fd arrays are used
+rarely these days.
 
-As I replied to Jakub, I'll add a comment in the code (so that you
-wouldn't need refer to the Git history / commit message) in the next
-version.
+Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+---
+ rust/bindings/bindings_helper.h |  2 +
+ rust/helpers.c                  |  8 ++++
+ rust/kernel/file.rs             | 84 ++++++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 93 insertions(+), 1 deletion(-)
 
-Thanks,
-Olek
+diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_helper.h
+index 700f01840188..c8daee341df6 100644
+--- a/rust/bindings/bindings_helper.h
++++ b/rust/bindings/bindings_helper.h
+@@ -9,6 +9,7 @@
+ #include <kunit/test.h>
+ #include <linux/cred.h>
+ #include <linux/errname.h>
++#include <linux/fdtable.h>
+ #include <linux/file.h>
+ #include <linux/fs.h>
+ #include <linux/pid_namespace.h>
+@@ -17,6 +18,7 @@
+ #include <linux/refcount.h>
+ #include <linux/wait.h>
+ #include <linux/sched.h>
++#include <linux/task_work.h>
+ #include <linux/workqueue.h>
+ 
+ /* `bindgen` gets confused at certain things. */
+diff --git a/rust/helpers.c b/rust/helpers.c
+index 58e3a9dff349..d146bbf25aec 100644
+--- a/rust/helpers.c
++++ b/rust/helpers.c
+@@ -32,6 +32,7 @@
+ #include <linux/sched/signal.h>
+ #include <linux/security.h>
+ #include <linux/spinlock.h>
++#include <linux/task_work.h>
+ #include <linux/wait.h>
+ #include <linux/workqueue.h>
+ 
+@@ -243,6 +244,13 @@ void rust_helper_security_release_secctx(char *secdata, u32 seclen)
+ EXPORT_SYMBOL_GPL(rust_helper_security_release_secctx);
+ #endif
+ 
++void rust_helper_init_task_work(struct callback_head *twork,
++				task_work_func_t func)
++{
++	init_task_work(twork, func);
++}
++EXPORT_SYMBOL_GPL(rust_helper_init_task_work);
++
+ /*
+  * `bindgen` binds the C `size_t` type as the Rust `usize` type, so we can
+  * use it in contexts where Rust expects a `usize` like slice (array) indices.
+diff --git a/rust/kernel/file.rs b/rust/kernel/file.rs
+index 2186a6ea3f2f..578ee307093f 100644
+--- a/rust/kernel/file.rs
++++ b/rust/kernel/file.rs
+@@ -11,7 +11,8 @@
+     error::{code::*, Error, Result},
+     types::{ARef, AlwaysRefCounted, Opaque},
+ };
+-use core::{marker::PhantomData, ptr};
++use alloc::boxed::Box;
++use core::{alloc::AllocError, marker::PhantomData, mem, ptr};
+ 
+ /// Flags associated with a [`File`].
+ pub mod flags {
+@@ -242,6 +243,87 @@ fn drop(&mut self) {
+     }
+ }
+ 
++/// Helper used for closing file descriptors in a way that is safe even if the file is currently
++/// held using `fdget`.
++///
++/// Additional motivation can be found in commit 80cd795630d6 ("binder: fix use-after-free due to
++/// ksys_close() during fdget()") and in the comments on `binder_do_fd_close`.
++pub struct DeferredFdCloser {
++    inner: Box<DeferredFdCloserInner>,
++}
++
++/// SAFETY: This just holds an allocation with no real content, so there's no safety issue with
++/// moving it across threads.
++unsafe impl Send for DeferredFdCloser {}
++unsafe impl Sync for DeferredFdCloser {}
++
++#[repr(C)]
++struct DeferredFdCloserInner {
++    twork: mem::MaybeUninit<bindings::callback_head>,
++    file: *mut bindings::file,
++}
++
++impl DeferredFdCloser {
++    /// Create a new [`DeferredFdCloser`].
++    pub fn new() -> Result<Self, AllocError> {
++        Ok(Self {
++            inner: Box::try_new(DeferredFdCloserInner {
++                twork: mem::MaybeUninit::uninit(),
++                file: core::ptr::null_mut(),
++            })?,
++        })
++    }
++
++    /// Schedule a task work that closes the file descriptor when this task returns to userspace.
++    pub fn close_fd(mut self, fd: u32) {
++        use bindings::task_work_notify_mode_TWA_RESUME as TWA_RESUME;
++
++        let file = unsafe { bindings::close_fd_get_file(fd) };
++        if file.is_null() {
++            // Nothing further to do. The allocation is freed by the destructor of `self.inner`.
++            return;
++        }
++
++        self.inner.file = file;
++
++        // SAFETY: Since `DeferredFdCloserInner` is `#[repr(C)]`, casting the pointers gives a
++        // pointer to the `twork` field.
++        let inner = Box::into_raw(self.inner) as *mut bindings::callback_head;
++
++        // SAFETY: Getting a pointer to current is always safe.
++        let current = unsafe { bindings::get_current() };
++        // SAFETY: The `file` pointer points at a valid file.
++        unsafe { bindings::get_file(file) };
++        // SAFETY: Due to the above `get_file`, even if the current task holds an `fdget` to
++        // this file right now, the refcount will not drop to zero until after it is released
++        // with `fdput`. This is because when using `fdget`, you must always use `fdput` before
++        // returning to userspace, and our task work runs after any `fdget` users have returned
++        // to userspace.
++        //
++        // Note: fl_owner_t is currently a void pointer.
++        unsafe { bindings::filp_close(file, (*current).files as bindings::fl_owner_t) };
++        // SAFETY: The `inner` pointer is compatible with the `do_close_fd` method.
++        unsafe { bindings::init_task_work(inner, Some(Self::do_close_fd)) };
++        // SAFETY: The `inner` pointer points at a valid and fully initialized task work that is
++        // ready to be scheduled.
++        unsafe { bindings::task_work_add(current, inner, TWA_RESUME) };
++    }
++
++    // SAFETY: This function is an implementation detail of `close_fd`, so its safety comments
++    // should be read in extension of that method.
++    unsafe extern "C" fn do_close_fd(inner: *mut bindings::callback_head) {
++        // SAFETY: In `close_fd` we use this method together with a pointer that originates from a
++        // `Box<DeferredFdCloserInner>`, and we have just been given ownership of that allocation.
++        let inner = unsafe { Box::from_raw(inner as *mut DeferredFdCloserInner) };
++        // SAFETY: This drops a refcount we acquired in `close_fd`. Since this callback runs in a
++        // task work after we return to userspace, it is guaranteed that the current thread doesn't
++        // hold this file with `fdget`, as `fdget` must be released before returning to userspace.
++        unsafe { bindings::fput(inner.file) };
++        // Free the allocation.
++        drop(inner);
++    }
++}
++
+ /// Represents the `EBADF` error code.
+ ///
+ /// Used for methods that can only fail with `EBADF`.
+
+-- 
+2.43.0.rc1.413.gea7ed67945-goog
+
