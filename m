@@ -2,120 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46AEB7FDF27
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 19:14:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAD627FDF2F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 19:17:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231276AbjK2SOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 13:14:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49612 "EHLO
+        id S231351AbjK2SRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 13:17:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjK2SON (ORCPT
+        with ESMTP id S229509AbjK2SRB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 13:14:13 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A4BB9
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 10:14:19 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3331752d2b9so67455f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 10:14:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1701281658; x=1701886458; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wY9WeKtXlEdT6ZB9TX0PBdHOlwsuJkt60GHvQlNmDZk=;
-        b=eNe2jYbiHpkwa/ZNkwOKT14qO98/sNJ5OK0f5gcf2tcDDzf6G05TeflGiDnlPn0b/F
-         0jxSCryWYJh/61ZODteUoF8r6sudle8sNM1yGrTdsJjOjjXDkql/4VHQIXo3boRe6szq
-         LSMOp+vWjXRrseRTWyFWY8Jaes+wBc2bm/EJc4fK10Kb1VYQQe8Y2yP6BLIcvkouJfcj
-         VC+dT8srvnfX+I6dAg3oLRuvC2vjnEOBnCt5OTGXG74Qy2aj93cKs31RpOYW0ap1OlHL
-         KN7Pmo9ak++sDXbQQwhOI13g+tXtu6+FZZMky8pD3e6W1rJGuI1c6bap6T2v5ce6L/M/
-         vS1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701281658; x=1701886458;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wY9WeKtXlEdT6ZB9TX0PBdHOlwsuJkt60GHvQlNmDZk=;
-        b=ATEBJlOt41kfBAMHsX5aqE4BzEQD1p+nXYSBvU8uUqYypvvsZAoIfeel8/ggZtqMvD
-         pCL9KIgiL0f3gubvWeWxjf05O0Ql6qp5ayCdR8axR5gCg/yGBARal2Y9KXKy5L44IhuJ
-         qE9/r3yZ+HJmip0UNrhB0h+AwnglP42QjsuXNZEffX9AiX39cO5Cw6CQwamf75UFScuU
-         x0Bv2xn9lQlj71KuHnrNT8jgdlAQBvwY2OTHCyMuamjQaR5qMUNi4rL0YUS1Gh2RoCgS
-         1v5XAvoACft7jXra4OGHTVqcvuDA7VuQNeoaJ24l6C7KPZ7ge28ASAb5vJblUPypr0J1
-         R1+Q==
-X-Gm-Message-State: AOJu0YzGIr+mwBDwayq15tlXyfiMe06tnoa0hpS0ctfaJpAFAcn13cdK
-        LV/Fn359XZR7ISvxjW5Oax08DQ==
-X-Google-Smtp-Source: AGHT+IHofg/hK+69psa2zHUNArxjJYgRtbYj/y3G4jlgWw7XUJhrw71mnLqzsxXOXWGxw3ObhmdCgQ==
-X-Received: by 2002:a05:6000:88:b0:331:6b82:a3ad with SMTP id m8-20020a056000008800b003316b82a3admr13548656wrx.60.1701281658390;
-        Wed, 29 Nov 2023 10:14:18 -0800 (PST)
-Received: from [10.83.37.178] ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id t2-20020a5d4602000000b0032da4c98ab2sm18812649wrq.35.2023.11.29.10.14.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 10:14:17 -0800 (PST)
-Message-ID: <df55eb1d-b63a-4652-8103-d2bd7b5d7eda@arista.com>
-Date:   Wed, 29 Nov 2023 18:14:16 +0000
+        Wed, 29 Nov 2023 13:17:01 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6593B9;
+        Wed, 29 Nov 2023 10:17:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1701281817; x=1701886617; i=w_armin@gmx.de;
+        bh=SkykkrdVMyo+wYmWI6AvKsqQ/Fs+Iqad5hnFwSp9bDk=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=UsWayn0HDDWIqHwAFeST8UwvF+omAcvkAw85MDwwW0xDewCRhmpiFkhmdPm5t1MY
+         tbrqSz7I2BvBtg2hf9So0QIkj/0YMZNB3HJcQLYwFRncKSppyDFW7KatJw5GUZ8rb
+         Dq2E36l3A6S7QzjFh+LCC3xhAc62pEQrRQSRnmzUPig+4PuKSBAh/kUvX1XK8ptuG
+         VQv5TEGk2FPavfxqbtVxhILUd68ZAeHYC4vEX3hny+aJMj3VGnBlPGBWGcITTEdMq
+         aB3ZmsE/Ewvjm25No7b/4HAsiUJIqYuLYarIukneglmfTyrgzQCuXIIYNxanIVyT4
+         0TatbiMOna024jCUrA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
+ (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
+ 1MlNtF-1rZXTI2uzN-00ln8L; Wed, 29 Nov 2023 19:16:57 +0100
+From:   Armin Wolf <W_Armin@gmx.de>
+To:     hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] platform/x86: wmi: Skip blocks with zero instances
+Date:   Wed, 29 Nov 2023 19:16:54 +0100
+Message-Id: <20231129181654.5800-1-W_Armin@gmx.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 6/7] net/tcp: Store SNEs + SEQs on ao_info
-Content-Language: en-US
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     David Ahern <dsahern@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Francesco Ruggeri <fruggeri05@gmail.com>,
-        Salam Noureddine <noureddine@arista.com>,
-        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org
-References: <20231129165721.337302-1-dima@arista.com>
- <20231129165721.337302-7-dima@arista.com>
- <CANn89iJcfn0yEM7Pe4RGY3P0LmOsppXO7c=eVqpwVNdOY2v3zA@mail.gmail.com>
-From:   Dmitry Safonov <dima@arista.com>
-In-Reply-To: <CANn89iJcfn0yEM7Pe4RGY3P0LmOsppXO7c=eVqpwVNdOY2v3zA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:+NBnaTf+YFwq+J7+NUSzfy6sIp2qeoca0FjRagB64jV2JaaEM8z
+ j0MrzkGBG8YLJeXnrhsspmKTAxuO+04jJJg4Qqxmz8N2yioVa9zGTu2rT+ybyiIRMEmNCQP
+ T6QQp7Oqah1I/AyNUmAos5SEOXNDudfjFV9CUikh8Iv2Vh3TrWv059+uZRYlB2c//TV2uHA
+ QQUaATXThtsnUgLjIEw2g==
+UI-OutboundReport: notjunk:1;M01:P0:+26yQg5Xt+A=;eDNGmFqhrDPmadpeJ2urwSOuS8y
+ q6QemUkR6BSvVtgPhqsvQJhf76ZGzZAjqzZcR4UOn9AypIZO79sQD4kULD4TzYmwpk5eZt80I
+ xoUsCqA97g9Lwq8qNjCtq5cNWF0xWzh46K95O38e1APlPyAQY7mCUmDBjgyz18D8ZsivQC8cT
+ k/3VQcgPDKsQXUh6wVfe42dVQ/z1PpdlYlJV0ttckGu5HrwMVhM8H4zN7qw6uRMj7dyO7J73h
+ g4fNL585W5VrkpbgEIbpchMwmCtzoMZVwzz1DqRwyU+NWU75Dfto8kuvxbffd524MXfjW8aUP
+ eyIReWDfARiMDY1QN0cmW0EJvd6dS+qxlmJnsNwN8TIjCU/ijRvYz8161jBOJLsUAFN5PjP/k
+ HY1Idu3h4stYGU9F7cyN06YiiFHKIDB2+2QWfYtAOYTu3OHQ26OFpGX7D2StIRL/+1zQUQboE
+ FK6Xr/sdxX6EKkZvqVP3WPgIBHQtrp/IIQtHROjP8ZgIQB7q+Mq93kLB42rTQdMckVIetwiq2
+ jXpzJInTBKTfvJcrPmKUn99b92iQCsbT7k/BDRK+91b9EnTv3u1HfN4LisxZts0hNP0ArYV79
+ P4BCoU0cLhggleQf2B2tGJJhKwUri1lEfghk7TRdqRB3BhhhBcDTVLGGN6KnszzIU7342SC6f
+ j3y+w/BwAUDax44Kl9f4IqwIq0OGCoOnnVdgRnZnfLsOH0hD3d1gjLVCJhhLr87pWiwXwf2ai
+ X8fIV4DBSdbZWzN4HKgt7GB+p81yThkHugbB4NXYfnBqTMD3Aj8O8YDygl8DvAInBjxJtY1lF
+ 1oxcfYqZ2dYdQgZg6OlIqssF2XiB6K/RcWeGjGKhUSBBPMQlp+Q4s50WyCb8xVC6Ii9RG7dFV
+ axgfz6I2hamv3i/K0gy+rLZP/R4yZhhP64Y+EgGAd+3WBpWL/DRvT/S77E4KnzW7zEXFSEKNo
+ JnTqv660c8PiMEkBhEvSEAB0iF0=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/29/23 18:09, Eric Dumazet wrote:
-> On Wed, Nov 29, 2023 at 5:57 PM Dmitry Safonov <dima@arista.com> wrote:
->>
->> RFC 5925 (6.2):
->>> TCP-AO emulates a 64-bit sequence number space by inferring when to
->>> increment the high-order 32-bit portion (the SNE) based on
->>> transitions in the low-order portion (the TCP sequence number).
->>
->> snd_sne and rcv_sne are the upper 4 bytes of extended SEQ number.
->> Unfortunately, reading two 4-bytes pointers can't be performed
->> atomically (without synchronization).
->>
->> In order to avoid locks on TCP fastpath, let's just double-account for
->> SEQ changes: snd_una/rcv_nxt will be lower 4 bytes of snd_sne/rcv_sne.
->>
-> 
-> This will not work on 32bit kernels ?
+Some machines like the HP Omen 17 ck2000nf contain WMI blocks
+with zero instances, so any WMI driver which tries to handle the
+associated WMI device will fail.
+Skip such WMI blocks to avoid confusing any WMI drivers.
 
-Yeah, unsure if there's someone who wants to run BGP on 32bit box, so at
-this moment it's already limited:
+Reported-by: Alexis Belmonte <alexbelm48@gmail.com>
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D218188
+Fixes: bff431e49ff5 ("ACPI: WMI: Add ACPI-WMI mapping driver")
+Tested-by: Alexis Belmonte <alexbelm48@gmail.com>
+Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+=2D--
+Changes since v2:
+- add Fixes tag
+=2D--
+ drivers/platform/x86/wmi.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-config TCP_AO
-	bool "TCP: Authentication Option (RFC5925)"
-	select CRYPTO
-	select TCP_SIGPOOL
-	depends on 64BIT && IPV6 != m # seq-number extension needs WRITE_ONCE(u64)
+diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
+index cb7e74f2b009..4f94e4b117f1 100644
+=2D-- a/drivers/platform/x86/wmi.c
++++ b/drivers/platform/x86/wmi.c
+@@ -1346,6 +1346,11 @@ static int parse_wdg(struct device *wmi_bus_dev, st=
+ruct platform_device *pdev)
+ 		if (debug_dump_wdg)
+ 			wmi_dump_wdg(&gblock[i]);
 
-Probably, if there will be a person who is interested in this, it can
-get a spinlock for !CONFIG_64BIT.
++		if (!gblock[i].instance_count) {
++			dev_info(wmi_bus_dev, FW_INFO "%pUL has zero instances\n", &gblock[i].=
+guid);
++			continue;
++		}
++
+ 		if (guid_already_parsed_for_legacy(device, &gblock[i].guid))
+ 			continue;
 
-> Unless ao->snd_sne and ao->rcv_sneare only read/written under the
-> socket lock (and in this case no READ_ONCE()/WRITE_ONCE() should be
-> necessary)
-
-Thanks,
-            Dmitry
+=2D-
+2.39.2
 
