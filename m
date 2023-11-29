@@ -2,57 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C157FD87A
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:43:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A3C7FD880
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:45:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234115AbjK2Nnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 08:43:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34768 "EHLO
+        id S233845AbjK2Np1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 08:45:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233723AbjK2Nnm (ORCPT
+        with ESMTP id S234102AbjK2NpZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 08:43:42 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7961FCA;
-        Wed, 29 Nov 2023 05:43:48 -0800 (PST)
-Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id B472466022D0;
-        Wed, 29 Nov 2023 13:43:46 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701265427;
-        bh=Qx1vYwqqALIMO0kYY+0aLrVwdR4HsTKzy74g4n4aZoA=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=SdQJ6oThfYBOar+LGKuOV0dLA/9NRMpX2MfKup7jyxn6DzXJck8PTzbN5I0ZPMt2Z
-         2CwdkATvaAf+P3ZOeHmWOlX5yqzu2yEMUdf+NOyEmmrNEwgXSPOwgeTKWJvUEHIQ59
-         aua1RLyg95paI7Vev4rmP/2T7xf/LXm3dEU4fa0n/QWbY+RtuZq7sOgYz+hoS78jSi
-         RE2U07NnhO/VCKmZ49MqwlghdNb2Dm7lXSBBjzwY8usHj0M0A3w83YijSrt2IJrzpb
-         QSwVbIJ2GeDvUgE30yV/nOYFQaKHIAXYd9wgTLEYdp0y2w+CvlJ9OvArrCv8iEVNvh
-         uZy7dYXTkF6PQ==
-Message-ID: <8d43c1a8-9c92-4ea0-be1d-2a92a6cf3941@collabora.com>
-Date:   Wed, 29 Nov 2023 14:43:43 +0100
+        Wed, 29 Nov 2023 08:45:25 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D2F10A
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:45:31 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9ffb5a4f622so927481966b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:45:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701265529; x=1701870329; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=clXr2bW5K5Ltu9os070jk2tl5a3SSGmsxkIeOTVUebs=;
+        b=je6rgl2HL3kA5py2UkP5yiT5gUMXGplKaQM4NUBoRpN8gyyojCmcvBIGyWh4e4XnlY
+         wOWe+yOx5SWT3zw9ZaE1HapR31sy/Idj5vh55GyuUfIpHj/3B/cv9hfro46gNg53jFYn
+         NnZ/B4TTCis+tk04lEoiS2EUcCLPmtQ/7LnoagsoOyHC9rrFwtA5aKUFrrmErRbtAU3f
+         aHVlELjq3+MrdQuja+6vZeDH0BYAA5UehwkwzobOInruLX67wQOZEFW9UvBewI0AD83A
+         mzOO13TcHFIifVIN63yK8CsJAHSypf8pEce6uk7lWpHpeov7kC4n/gFay8OqO6fWe22f
+         lZLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701265529; x=1701870329;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=clXr2bW5K5Ltu9os070jk2tl5a3SSGmsxkIeOTVUebs=;
+        b=pOWgHtydriXip7wGzZuWn9Z/h/x+Udg0Gs58ZmHdhVPfIDFA56KdUCWqYOtyNV4k18
+         zfdHjAlrByWSirkQ/VgW3Ocbuy3BnBUtLQfys0+j2WbxT7OeCH37kCot01F7bRG4x8cA
+         r8pK2lSvoyQFENnk+j08IvisXZMirTl41Nqucvnuz/mo4P8WwXFzXfZvSj6mDMcsExM8
+         Btk/KdqTfx3sgYPU5fD5AfV5OMgnFrdcpzXSeabXa2KbBExb+INnvnQEabHX4hoAAXTC
+         sz7sBYTEZl7Ss+eflvnW1EaaLfzvGBVrlElCtghEnYagjz1crTUj0JU+OhUQvr3qJFOx
+         f97Q==
+X-Gm-Message-State: AOJu0YxMUt5U0wnjyOL35x0h09vXXS9JZQHTcCa59pdwA7psGmoTyoF5
+        woE2+BAIZ8v+ZFasROPbCYvEpQ==
+X-Google-Smtp-Source: AGHT+IH77YADLNW4Ao0P/5mMFH9qPw8pYmfM3OqBaotcxgJCbP4txXJo0/dBxMyQLk46fR06Dok0Vw==
+X-Received: by 2002:a17:906:2511:b0:9c2:2d0a:320c with SMTP id i17-20020a170906251100b009c22d0a320cmr13447658ejb.46.1701265529452;
+        Wed, 29 Nov 2023 05:45:29 -0800 (PST)
+Received: from [192.168.209.173] (178235187166.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.166])
+        by smtp.gmail.com with ESMTPSA id f8-20020a17090624c800b009fd77d78f7fsm7910195ejb.116.2023.11.29.05.45.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Nov 2023 05:45:29 -0800 (PST)
+Message-ID: <4fdab723-8549-4e1f-9930-9e856034437c@linaro.org>
+Date:   Wed, 29 Nov 2023 14:45:26 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] thermal: Add support for device tree thermal zones
- consumers
+Subject: Re: [PATCH 4/5] ASoC: codecs: Add WCD939x Soundwire slave driver
 Content-Language: en-US
-To:     rafael@kernel.org
-Cc:     daniel.lezcano@linaro.org, rui.zhang@intel.com,
-        lukasz.luba@arm.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        wenst@chromium.org
-References: <20231115144857.424005-1-angelogioacchino.delregno@collabora.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20231115144857.424005-1-angelogioacchino.delregno@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     neil.armstrong@linaro.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc:     linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231123-topic-sm8650-upstream-wcd939x-codec-v1-0-21d4ad9276de@linaro.org>
+ <20231123-topic-sm8650-upstream-wcd939x-codec-v1-4-21d4ad9276de@linaro.org>
+ <a7725504-89fd-4f62-b8d0-6ec863bd059a@linaro.org>
+ <095f6e9d-dbee-4cfe-91dc-5443608c386d@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <095f6e9d-dbee-4cfe-91dc-5443608c386d@linaro.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,210 +123,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 15/11/23 15:48, AngeloGioacchino Del Regno ha scritto:
-> Add helpers to support retrieving thermal zones from device tree nodes:
-> this will allow a device tree consumer to specify phandles to specific
-> thermal zone(s), including support for specifying thermal-zone-names.
-> This is useful, for example, for smart voltage scaling drivers that
-> need to adjust CPU/GPU/other voltages based on temperature, and for
-> battery charging drivers that need to scale current based on various
-> aggregated temperature sensor readings which are board-dependant.
-> 
-> Example:
-> smart-scaling-driver@10000000 {
-> 	[...]
-> 
-> 	thermal-zones = <&cluster_big_tz>, <&gpu_tz>, <&vpu_tz>;
-> 	thermal-zone-names = "cpu", "gpu", "vpu";
-> 
-> 	[...]
-> }
-> 
-> battery-charger@20000000 {
-> 	[...]
-> 
-> 	thermal-zones = <&battery_temp>, <&device_skin_temp>;
-> 	thermal-zone-names = "batt-ext-sensor", "skin";
-> 
-> 	[...]
-> }
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> ---
-> 
+On 28.11.2023 10:16, Neil Armstrong wrote:
+> On 25/11/2023 12:55, Konrad Dybcio wrote:
+>> On 23.11.2023 15:49, Neil Armstrong wrote:
+>>> Add Soundwire Slave driver for the WCD9390/WCD9395 Audio Codec.
+>>>
+>>> The WCD9390/WCD9395 Soundwire Slaves will be used by the
+>>> main WCD9390/WCD9395 Audio Codec driver to access registers
+>>> and configure Soundwire RX and TX ports.
+>>>
+>>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+>>> ---
+[...]
 
-Hello,
+>> This is used in wcd9380 and will be used in wcd9370 when that happens some
+>> day, maybe it'd be worth to commonize it as qcom_{rx/tx}_portmap_get?
+>> [...]
+> 
+> OK but where ?
+qcom-wcd-sdw-common.c?
 
-just notifying that the dtschema for thermal consumers was merged[1], hence
-totally unblocking this patch.
-
-[1]: 
-https://github.com/devicetree-org/dt-schema/commit/414a9f792ff7ae20a54a560bd2e2160b70f7d566
-
-Cheers,
-Angelo
-
-> Changes in v2:
->   - Added missing static inline for !CONFIG_OF fallback functions
-> 
-> Background story: while I was cleaning up the MediaTek Smart Voltage Scaling
-> (SVS) driver, I've found out that there's a lot of commonization to be done.
-> After a rewrite of "this and that" in that driver, I came across a barrier
-> that didn't allow me to remove another ~100 lines of code, and that was also
-> anyway breaking the driver, because the thermal zone names are different
-> from what was originally intended.
-> 
-> I've been looking for thermal zone handle retrieval around the kernel and
-> found that there currently are at least four other drivers that could make
-> use this as a cleanup: charger-manager, which is retrieving a thermal zone
-> to look for with a "cm-thermal-zone" string property, gpu/drm/tiny/repaper.c
-> that does the same by checking a "pervasive,thermal-zone" string property,
-> and ab8500_temp and sdhci-omap which are simply hardcoding a "cpu_thermal"
-> and "battery-thermal" thermal zone names respectively.
-> 
-> There are a number of other devices (mostly embedded, mostly smartphones)
-> that don't have an upstream driver and that could make use of this as well.
-> 
-> Cheers!
-> 
-> 
->   drivers/thermal/thermal_of.c | 91 ++++++++++++++++++++++++++++++++++++
->   include/linux/thermal.h      | 15 ++++++
->   2 files changed, 106 insertions(+)
-> 
-> diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
-> index 1e0655b63259..d8ead456993e 100644
-> --- a/drivers/thermal/thermal_of.c
-> +++ b/drivers/thermal/thermal_of.c
-> @@ -538,6 +538,97 @@ static struct thermal_zone_device *thermal_of_zone_register(struct device_node *
->   	return ERR_PTR(ret);
->   }
->   
-> +/**
-> + * __thermal_of_get_zone_by_index() - Get thermal zone handle from the DT
-> + *				      thermal-zones index
-> + * @dev:   Pointer to the consumer device
-> + * @index: Index of thermal-zones
-> + *
-> + * This function will search for a thermal zone in the thermal-zones phandle
-> + * array corresponding to the specified index, then will search for its name
-> + * into the registered thermal zones through thermal_zone_get_zone_by_name()
-> + *
-> + * Please note that this function is for internal use only and expects that
-> + * all of the sanity checks are performed by its caller.
-> + *
-> + * Return: thermal_zone_device pointer on success, ERR_PTR() on error or NULL
-> + * when the API is disabled or the "thermal-zones" DT property is missing.
-> + */
-> +static struct thermal_zone_device
-> +*__thermal_of_get_zone_by_index(struct device *dev, int index)
-> +{
-> +	struct thermal_zone_device *tzd;
-> +	struct device_node *np;
-> +
-> +	np = of_parse_phandle(dev->of_node, "thermal-zones", index);
-> +	if (!np)
-> +		return NULL;
-> +
-> +	tzd = thermal_zone_get_zone_by_name(np->name);
-> +	of_node_put(np);
-> +
-> +	return tzd;
-> +}
-> +
-> +/**
-> + * thermal_of_get_zone_by_index() - Get thermal zone handle from a DT node
-> + *				    based on index
-> + * @dev:   Pointer to the consumer device
-> + * @index: Index of thermal-zones
-> + *
-> + * Return: thermal_zone_device pointer on success, ERR_PTR() on error or NULL
-> + * when the API is disabled or the "thermal-zones" DT property is missing.
-> + */
-> +struct thermal_zone_device *thermal_of_get_zone_by_index(struct device *dev, int index)
-> +{
-> +	if (!dev || !dev->of_node)
-> +		return ERR_PTR(-ENODEV);
-> +
-> +	if (!of_property_present(dev->of_node, "thermal-zones"))
-> +		return NULL;
-> +
-> +	return __thermal_of_get_zone_by_index(dev, index);
-> +}
-> +
-> +/**
-> + * thermal_of_get_zone() - Get thermal zone handle from a DT node based
-> + *			   on name, or the first handle in list
-> + * @dev:   Pointer to the consumer device
-> + * @name:  Name as found in thermal-zone-names or NULL
-> + *
-> + * This function will search for a thermal zone in the thermal-zones phandle
-> + * array corresponding to the index of that in the thermal-zone-names array.
-> + * If the name is not specified (NULL), it will return the first thermal zone
-> + * in the thermal-zones phandle array.
-> + *
-> + * Return: thermal_zone_device pointer on success, ERR_PTR() on error or NULL
-> + * when the API is disabled or the "thermal-zones" DT property is missing.
-> + */
-> +struct thermal_zone_device *thermal_of_get_zone(struct device *dev, const char *name)
-> +{
-> +	int index;
-> +
-> +	if (!dev || !dev->of_node)
-> +		return ERR_PTR(-ENODEV);
-> +
-> +	if (!of_property_present(dev->of_node, "thermal-zones")) {
-> +		pr_err("thermal zones property not present\n");
-> +		return NULL;
-> +	}
-> +
-> +	if (name) {
-> +		index = of_property_match_string(dev->of_node, "thermal-zone-names", name);
-> +		if (index < 0) {
-> +			pr_err("thermal zone names property not present\n");
-> +			return ERR_PTR(index);
-> +		}
-> +	} else {
-> +		index = 0;
-> +	}
-> +
-> +	return __thermal_of_get_zone_by_index(dev, index);
-> +}
-> +
->   static void devm_thermal_of_zone_release(struct device *dev, void *res)
->   {
->   	thermal_of_zone_unregister(*(struct thermal_zone_device **)res);
-> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-> index cee814d5d1ac..0fceeb7ed08a 100644
-> --- a/include/linux/thermal.h
-> +++ b/include/linux/thermal.h
-> @@ -261,6 +261,9 @@ struct thermal_zone_device *devm_thermal_of_zone_register(struct device *dev, in
->   
->   void devm_thermal_of_zone_unregister(struct device *dev, struct thermal_zone_device *tz);
->   
-> +struct thermal_zone_device *thermal_of_get_zone_by_index(struct device *dev, int index);
-> +struct thermal_zone_device *thermal_of_get_zone(struct device *dev, const char *name);
-> +
->   #else
->   
->   static inline
-> @@ -274,6 +277,18 @@ static inline void devm_thermal_of_zone_unregister(struct device *dev,
->   						   struct thermal_zone_device *tz)
->   {
->   }
-> +
-> +static inline
-> +struct thermal_zone_device *thermal_of_get_zone_by_index(struct device *dev, int index)
-> +{
-> +	return ERR_PTR(-ENOTSUPP);
-> +}
-> +
-> +static inline
-> +struct thermal_zone_device *thermal_of_get_zone(struct device *dev, const char *name)
-> +{
-> +	return ERR_PTR(-ENOTSUPP);
-> +}
->   #endif
->   
->   int __thermal_zone_get_trip(struct thermal_zone_device *tz, int trip_id,
-
+Konrad
