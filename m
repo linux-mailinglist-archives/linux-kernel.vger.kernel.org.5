@@ -2,127 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B30C57FDF94
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 19:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 552297FDDF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:08:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231660AbjK2Spm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 13:45:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59674 "EHLO
+        id S230418AbjK2RIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 12:08:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231467AbjK2Spj (ORCPT
+        with ESMTP id S229501AbjK2RIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 13:45:39 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1519A1B4;
-        Wed, 29 Nov 2023 10:45:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701283545; x=1732819545;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=cKJeFNkIQAf+/tiMMgC+hJ3Nk+Hnaj6HJWSuL5lnedo=;
-  b=jRCEbeLwuepAT3ho4szAd9g+6HYrPSUxEr+U6jLv4+DfNuNtHPq6IwLw
-   OYQY7VKtgb/fOY9YhM0Zl5GahCfQD/XyvyRqk1X+QKIirurcKy8+wn+E4
-   sHiLLcfQKuUuSXo2ayKb+o0vXUFk11DSx+q6qrid0e1f67LOOv8fJ5Wif
-   pa9Uk7oaeEu9MGlUVBfAIlIrwEp6V2BLfB7ko074ItTxfpLXG4sqsZDIS
-   VlrCT4vUCflzMkfQlq/4WZDrkRkHNxudxzKmp5eZXDs9v0opS9wDqsDAd
-   7bN0e5dSSJyi0IGoIhDTxWj/sFg0uFZBGDK1tm3iq65zz04e7fwBv6EAl
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="383602809"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="383602809"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 10:45:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="942421675"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="942421675"
-Received: from caw1-mobl1.amr.corp.intel.com (HELO [10.255.229.136]) ([10.255.229.136])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 10:45:43 -0800
-Message-ID: <3d36d707-86f7-44fe-a613-64e264bb53cd@linux.intel.com>
-Date:   Wed, 29 Nov 2023 11:07:20 -0600
+        Wed, 29 Nov 2023 12:08:14 -0500
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810D2BC;
+        Wed, 29 Nov 2023 09:08:20 -0800 (PST)
+Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-77dd54d9da2so5486585a.0;
+        Wed, 29 Nov 2023 09:08:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701277699; x=1701882499; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TqpbWl3d4t7hd7UzjUjrZAkkyJ8NQqp/9vDtc/IE+6s=;
+        b=VM/zah9oJ9oDtJWw6px6aOW3yezQrVHgTRYZN/aVPug2KQv1+xf22M2plfz4x+fonZ
+         Z0WgT9vCfgLSvt90ZTplR2FsnRuU/Dq0um4pDTX0fHSj5i26wrqodSlN9ntGSHkd8o8X
+         KlO6ubHvErZAyeWi49v3fOEzpztvPZGIQmjUcz6fRMDhS2gar9S1DXothH/AORQJMcMg
+         1j7BWg+xvacUP6GnnlMZ0LbG37+31adPtadmKn7xSIPJhjbe2XuAWvdVyTzQyTaHcxFT
+         i8DV9XcVXfzVSMQyUlvNp80EAxLv+nE5MrjmTQUjRVNt2L4+cu9u/tMHH6FNXSIL8jpi
+         XcMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701277699; x=1701882499;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TqpbWl3d4t7hd7UzjUjrZAkkyJ8NQqp/9vDtc/IE+6s=;
+        b=r8Ki6WLwh2XIYY0ZEqRSWjDk8owabFi/1tOt7uG+IG9l8D2RYfV4ys156T5KQARp3E
+         q4oHkPlLRyQSKJehVCLyCuVIAoLDyQTYFGjxo+NA8FpxCvgYdj5mENCOKY1e75zZXXza
+         ep0KNjdKlDg7OTIIPGzX0KKictdDAHFKRhWoPTHtw+mBX/bRnWL3us4ljT1A3VCRgMs9
+         AJugg18K+shAYbH0gWDldYzPOtKG26YZ/0BZ2YxE/naZMgOALwGX50ivYh6AsoDSF4e8
+         yP8fukwLqebHjVerM8fRan8sRDURgRhprdFuzGjq3dUDhP8A/tWXxK08Va1CjloXdDN/
+         rl4A==
+X-Gm-Message-State: AOJu0YyJQ9ByJoO6kfdhB3CdhpwGMUbhK58IeSQrYqLIen9UOVX54v6n
+        A+iENY6nfHhSqWxI8O0QPbo=
+X-Google-Smtp-Source: AGHT+IFnOswN6PitZD9K0blChM5gWwA6ocFLICLCsqV5hyKCfq/pDMc/huFj8zMq/d2itJpsfbP0EQ==
+X-Received: by 2002:a05:620a:1266:b0:77d:5f72:3c82 with SMTP id b6-20020a05620a126600b0077d5f723c82mr18621228qkl.32.1701277699615;
+        Wed, 29 Nov 2023 09:08:19 -0800 (PST)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id rk9-20020a05620a900900b0077dd0ec0320sm413785qkn.130.2023.11.29.09.08.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 09:08:19 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 9D98F27C0054;
+        Wed, 29 Nov 2023 12:08:18 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Wed, 29 Nov 2023 12:08:18 -0500
+X-ME-Sender: <xms:AHBnZf-T4zoGMSjWiYoHVOc454Cwp1QSjzd1Xq7O31IhoUnO8HeKRA>
+    <xme:AHBnZbs552LAuIG9QgzNQr1iWbt199SWDRLQ0oxxx5u8hIaRpSGpF31Yzt_wRiZ2m
+    1yTuDhmXNcU0BZ-NA>
+X-ME-Received: <xmr:AHBnZdDuFTRrpSfSH1K-Ny74M87OJ3lK7GbVt8bfe0DdS5gNuAT8YODZRQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeihedgleegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
+    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
+    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
+    igmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:AHBnZbf6iK6vMZ_RRHx6pGJi2ozhUUcZOApUvEb-QvvXoMxE_VShhw>
+    <xmx:AHBnZUPuinDjp9b7wo3m8867wWgpX22NQ7D9qUhDKhq8zWS2oAfYug>
+    <xmx:AHBnZdlA4v32DwcBzGnD3Do-1yOHc4c4-M358TfUpbIwC7_jCc2AKw>
+    <xmx:AnBnZSUoZ1bG97raNN2xn2ubWQcXcoxau0HwsZiPUCHEB9UC2scf-g>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 29 Nov 2023 12:08:15 -0500 (EST)
+Date:   Wed, 29 Nov 2023 09:08:14 -0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        rust-for-linux@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/7] rust: file: add Rust abstraction for `struct file`
+Message-ID: <ZWdv_jsaDFJxZk7G@Boquns-Mac-mini.home>
+References: <20231129-alice-file-v1-0-f81afe8c7261@google.com>
+ <20231129-alice-file-v1-1-f81afe8c7261@google.com>
+ <ZWdVEk4QjbpTfnbn@casper.infradead.org>
+ <20231129152305.GB23596@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] soundwire: qcom: allow multi-link on newer devices
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Sanyog Kale <sanyog.r.kale@intel.com>,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>
-References: <20231128150049.412236-1-krzysztof.kozlowski@linaro.org>
- <e43db38a-206d-4ea5-8813-23e1f918dd65@linux.intel.com>
- <ab0fc6e0-a358-42e7-92e5-77ceea53a546@linaro.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <ab0fc6e0-a358-42e7-92e5-77ceea53a546@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231129152305.GB23596@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/29/23 10:43, Krzysztof Kozlowski wrote:
-> On 28/11/2023 16:35, Pierre-Louis Bossart wrote:
->>>  static enum sdw_command_response qcom_swrm_xfer_msg(struct sdw_bus *bus,
->>>  						    struct sdw_msg *msg)
->>>  {
->>> @@ -1078,6 +1090,7 @@ static const struct sdw_master_port_ops qcom_swrm_port_ops = {
->>>  };
->>>  
->>>  static const struct sdw_master_ops qcom_swrm_ops = {
->>> +	.read_prop = qcom_swrm_read_prop,
->>
->> nit-pick: read_prop() literally means "read platform properties".
->>
->> The functionality implemented in this callback looks more like an
->> initialization done in a probe, no?
+On Wed, Nov 29, 2023 at 04:23:05PM +0100, Peter Zijlstra wrote:
+> On Wed, Nov 29, 2023 at 03:13:22PM +0000, Matthew Wilcox wrote:
 > 
-> Yes, but multi_link is being set by sdw_bus_master_add() just before
-> calling read_prop(). It looks a bit odd, because "bus" comes from the
-> caller and is probably zero-ed already. Therefore I assumed the code did
-> it on purpose - ignored multi_link set before sdw_bus_master_add(),
-
-On the Intel side, there's a bit of luck here.
-
-The caller intel_link_probe() does not set the multi-link property, but
-it's set in intel_link_startup() *AFTER* reading the properties - but we
-don't have any properties related to multi-link, only the ability to
-discard specific links.
-
->>>  	.xfer_msg = qcom_swrm_xfer_msg,
->>>  	.pre_bank_switch = qcom_swrm_pre_bank_switch,
->>>  	.post_bank_switch = qcom_swrm_post_bank_switch,
->>> @@ -1196,6 +1209,15 @@ static int qcom_swrm_stream_alloc_ports(struct qcom_swrm_ctrl *ctrl,
->>>  
->>>  	mutex_lock(&ctrl->port_lock);
->>>  	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
->>
->> just realizing this now, are you sure the 'port_lock' is the proper
->> means to protecting the stream->master_list? I don't see this used
->> anywhere else in stream.c. I think you need to use bus_lock.
+> > > @@ -157,6 +158,12 @@ void rust_helper_init_work_with_key(struct work_struct *work, work_func_t func,
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(rust_helper_init_work_with_key);
+> > >  
+> > > +struct file *rust_helper_get_file(struct file *f)
+> > > +{
+> > > +	return get_file(f);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(rust_helper_get_file);
+> > 
+> > This is ridiculous.  A function call instead of doing the
+> > atomic_long_inc() in Rust?
 > 
-> This is from ctrl, internal driver structure:
+> Yeah, I complained about something similar a while ago. And recently
+> talked to Boqun about this as well,
 > 
-> struct qcom_swrm_ctrl *ctrl
+> Bindgen *could* in theory 'compile' the inline C headers into (unsafe)
+> Rust, the immediate problem is that Rust has a wildly different inline
+> asm syntax (because Rust needs terrible syntax or whatever).
+> 
+> Boqun said it should all be fixable, but is a non-trivial amount of
+> work.
+> 
 
-My point what that all other instances where list_for_each_entry() is
-used on stream->master list rely on the bus_lock.
+Right, but TBH, I was only thinking about "inlining" our atomic
+primitives back then. The idea is since atomic primitives only have
+small body (most of which is asm code), it's relatively easy to
+translate that from a C function into a Rust one. And what's left is
+translating asm blocks. Things get interesting here:
 
-You may be fine in this specific case with a QCOM-specific lock, not
-sure if there's any risk. At any rate that is not introduced by this
-patch, so for now
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Originally I think the translation, despite the different syntax, might
+be relatively easy, for example, considering smp_store_release() on
+ARM64, we are going to translate from
+
+	asm volatile ("stlr %w1, %0"				\
+			: "=Q" (*__p)				\
+			: "rZ" (*(__u32 *)__u.__c)		\
+			: "memory");
+
+to something like:
+
+	asm!("stlr {val}, [{ptr}]",
+	     val = in(reg) __u.__c,
+	     ptr = in(reg) __p);
+
+, the translation is non-trivial, but it's not that hard, since it's
+basically find-and-replace.
+
+But but but, I then realized we have asm goto in C but Rust doesn't
+support them, and I haven't thought through how hard tht would be..
+
+Regards,
+Boqun
