@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD92F7FD936
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:24:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F847FD937
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:24:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234266AbjK2OYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 09:24:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42130 "EHLO
+        id S234284AbjK2OYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 09:24:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230487AbjK2OYS (ORCPT
+        with ESMTP id S234201AbjK2OYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 09:24:18 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 960FA197
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 06:24:24 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40b479ec4a3so25776285e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 06:24:24 -0800 (PST)
+        Wed, 29 Nov 2023 09:24:20 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD8AE1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 06:24:25 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2c9bd3557cfso11505331fa.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 06:24:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701267863; x=1701872663; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701267864; x=1701872664; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=W2vlGJhIze8sK7FhkyHeBLiiHYWZ044RLoNjc90UYtQ=;
-        b=crqE15JIivDRD7HPz9UTlXpZe8y6b3M0VcIyqiQVPCgE+EgTIuWAAjCRr8hdm5pIg5
-         LHoZXe1ssMuLx7Ib1ksYYzD+7ipHUTZ5LLmpuHpWIPkRiHs8g37qiPeMtNq7RHJBCPKw
-         tPR08+j7Do9gwDUkDi811MWKlE8nHUteE6W4Ge5vzYAqz4oq6wYHQ/72e10JG3Sct41s
-         ldeGuzNoJcUmac9UgntzSZyvTGFoAAnluth+IO8yOUd9DSWbog4GOJ8EGEruztwtgDYl
-         Vip9o8zX5WiBDZzdVkzV9cE1wouOKid3FvHM7Gikn4WG3gvPx5xhrdR5IjBsHxxofJb0
-         IXfg==
+        bh=5Sv99NjQCF32QfqStrxQNV++EDXzWOND44xPhDEPFwA=;
+        b=KkU0Icqx8HR3nwLcQajkvSFBK6+OUPGRRyjgnUa1BO8ra9MFdWS/NPuH7KOwRzcrOR
+         yzAR/a2ihBfjZPg+C9hGAQ7lGEWRRI62VXFF0iOVOQlgpvgw0s4O4V779l6jfUuTucXP
+         VSzqwqawXHrNtaC+3bf7ey+Zx90e4+zRxXBelqlL5mHcBtuOrioNCnhLjK+/5QWSFV7G
+         /0vWvU1pVhxTfiIcAbzUQwJIK6O+Tt2yIp2WaN7zBiohDgOD5nk+ZRSEG/sJakvuOdm8
+         RXSsaJY2tpfR8arbUolhMOWoE+SrdIcmhEQVywHWOjJKQxOyHTlq+tVZj1zYcBgg7l73
+         j8+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701267863; x=1701872663;
+        d=1e100.net; s=20230601; t=1701267864; x=1701872664;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=W2vlGJhIze8sK7FhkyHeBLiiHYWZ044RLoNjc90UYtQ=;
-        b=mPjt7YxcMJFAgsnpa8WHvt20YBfiaPW2LiGjA30BRfvtg2xND8Cbe5BArXXCw1OOlM
-         Rq8ahAt83fcFVH57c0InYsS5oVtRZ/HRm3iBlEbNWrx7v8M3HDFwr4e67VAAOfntm6AF
-         NKOoNQggJ+SwYvbI52e8oa2Tc/2vHtQh1isp2PjxQiqWLlbMAbMZf30iK7M/22kNE16k
-         R1XZBixD+pmdIInv09a1WjqkII2I2RzQI62AjcHvS4bI68DZtWczEruaqhge6ixEmTOL
-         B/LJDYN3BvjDLHMYLGaDhZhZXpSUtL7zP3zpOC2GQs38A8MLXS/OH4V/F6CtOEPRZgeP
-         o0bQ==
-X-Gm-Message-State: AOJu0YyglRKwzznNLgwXsgwUCzDD3RbyLSKKVAR0vC5CCCgz3kIqcl6v
-        mFRgvj4lyjwahZ7A5HWerm1iig==
-X-Google-Smtp-Source: AGHT+IF+n+Bguen0U7DsO4xPBjVSnhr/bzmyaozCPrrt3u3QTE29we1fJcSv4k6cx5guAABEETFQtA==
-X-Received: by 2002:a05:600c:3510:b0:40b:45e2:1f56 with SMTP id h16-20020a05600c351000b0040b45e21f56mr6396343wmq.39.1701267862985;
-        Wed, 29 Nov 2023 06:24:22 -0800 (PST)
+        bh=5Sv99NjQCF32QfqStrxQNV++EDXzWOND44xPhDEPFwA=;
+        b=gwfA+5rkSAoWqDIsEbIAQHWextn5wrsWLVflNG30kBZNoGipeHFfLd+K/FhMiT905D
+         izly/ceRcOOHxnmRGq5N/FSotoo9jJy7NXcNK82qL1MOKMo4g7IC6s7LL+c0B9r4xoIg
+         hKNybtp6xbG1IGI9A5fu/DZjSiFNSRfbZFgTxq1DypG3BYteursT/U7tnfI4U1b4B4iG
+         qCVCSYsJOVW4CHnAmWMOyKlWnjYVv3dEpLiXpdvQx304qGDV0s/M39RgOZPorTfaNgDj
+         LYzx7CXd9Ak6lt3PlLl9RxuHT1gUL4CjWymq3lThVBLlauFG3j93AsoCAxCkejqeWlsW
+         zPUA==
+X-Gm-Message-State: AOJu0YzPKsIUKFKgA2tzVdg7BLGWOZHcA8IpII0NOMGUyfm8OIhXExKs
+        Lg06xe1reH3Dn7DHo+dCnHpD3A==
+X-Google-Smtp-Source: AGHT+IEkczzI1R8jS+gFL7GKFMTH6r1tr8NT05t7eLAvQCb5G46R9vrMwpDmkFfL0LuzEN/A2vrYpQ==
+X-Received: by 2002:a2e:8804:0:b0:2c9:b84a:1485 with SMTP id x4-20020a2e8804000000b002c9b84a1485mr2878937ljh.7.1701267864148;
+        Wed, 29 Nov 2023 06:24:24 -0800 (PST)
 Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:4520:2f25:4d3a:4adf])
-        by smtp.gmail.com with ESMTPSA id n40-20020a05600c3ba800b0040b34720206sm2406848wms.12.2023.11.29.06.24.21
+        by smtp.gmail.com with ESMTPSA id n40-20020a05600c3ba800b0040b34720206sm2406848wms.12.2023.11.29.06.24.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 06:24:22 -0800 (PST)
+        Wed, 29 Nov 2023 06:24:23 -0800 (PST)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH 01/10] gpiolib: provide gpiochip_dup_line_label()
-Date:   Wed, 29 Nov 2023 15:24:02 +0100
-Message-Id: <20231129142411.76863-2-brgl@bgdev.pl>
+Subject: [PATCH 02/10] gpio: wm831x: use gpiochip_dup_line_label()
+Date:   Wed, 29 Nov 2023 15:24:03 +0100
+Message-Id: <20231129142411.76863-3-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231129142411.76863-1-brgl@bgdev.pl>
 References: <20231129142411.76863-1-brgl@bgdev.pl>
@@ -75,70 +75,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-gpiochip_is_requested() not only has a misleading name but it returns
-a pointer to a string that is freed when the descriptor is released.
-
-Provide a new helper meant to replace it, which returns a copy of the
-label string instead.
+Use the new gpiochip_dup_line_label() helper to safely retrieve the
+descriptor label.
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- drivers/gpio/gpiolib.c      | 29 +++++++++++++++++++++++++++++
- include/linux/gpio/driver.h |  1 +
- 2 files changed, 30 insertions(+)
+ drivers/gpio/gpio-wm831x.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index a5faaea6915d..8e932e6a6a8d 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -2400,6 +2400,35 @@ const char *gpiochip_is_requested(struct gpio_chip *gc, unsigned int offset)
- }
- EXPORT_SYMBOL_GPL(gpiochip_is_requested);
+diff --git a/drivers/gpio/gpio-wm831x.c b/drivers/gpio/gpio-wm831x.c
+index 7eaf8a28638c..f7d5120ff8f1 100644
+--- a/drivers/gpio/gpio-wm831x.c
++++ b/drivers/gpio/gpio-wm831x.c
+@@ -8,6 +8,7 @@
+  *
+  */
  
-+/**
-+ * gpiochip_dup_line_label - Get a copy of the consumer label.
-+ * @gc: GPIO chip controlling this line.
-+ * @offset: Hardware offset of the line.
-+ *
-+ * Returns:
-+ * Pointer to a copy of the consumer label if the line is requested or NULL
-+ * if it's not. If a valid pointer was returned, it must be freed using
-+ * kfree(). In case of a memory allocation error, the function returns %ENOMEM.
-+ *
-+ * Must not be called from atomic context.
-+ */
-+char *gpiochip_dup_line_label(struct gpio_chip *gc, unsigned int offset)
-+{
-+	const char *label;
-+	char *cpy;
-+
-+	label = gpiochip_is_requested(gc, offset);
-+	if (!label)
-+		return NULL;
-+
-+	cpy = kstrdup(label, GFP_KERNEL);
-+	if (!cpy)
-+		return ERR_PTR(-ENOMEM);
-+
-+	return cpy;
-+}
-+EXPORT_SYMBOL_GPL(gpiochip_dup_line_label);
-+
- /**
-  * gpiochip_request_own_desc - Allow GPIO chip to request its own descriptor
-  * @gc: GPIO chip
-diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
-index 100c329dc986..9796a34e2fee 100644
---- a/include/linux/gpio/driver.h
-+++ b/include/linux/gpio/driver.h
-@@ -532,6 +532,7 @@ struct gpio_chip {
- };
++#include <linux/cleanup.h>
+ #include <linux/kernel.h>
+ #include <linux/slab.h>
+ #include <linux/module.h>
+@@ -160,18 +161,21 @@ static void wm831x_gpio_dbg_show(struct seq_file *s, struct gpio_chip *chip)
+ 	for (i = 0; i < chip->ngpio; i++) {
+ 		int gpio = i + chip->base;
+ 		int reg;
+-		const char *label, *pull, *powerdomain;
++		const char *pull, *powerdomain;
  
- const char *gpiochip_is_requested(struct gpio_chip *gc, unsigned int offset);
-+char *gpiochip_dup_line_label(struct gpio_chip *gc, unsigned int offset);
+ 		/* We report the GPIO even if it's not requested since
+ 		 * we're also reporting things like alternate
+ 		 * functions which apply even when the GPIO is not in
+ 		 * use as a GPIO.
+ 		 */
+-		label = gpiochip_is_requested(chip, i);
+-		if (!label)
+-			label = "Unrequested";
++		char *label __free(kfree) = gpiochip_dup_line_label(chip, i);
++		if (IS_ERR(label)) {
++			dev_err(wm831x->dev, "Failed to duplicate label\n");
++			continue;
++		}
  
- /**
-  * for_each_requested_gpio_in_range - iterates over requested GPIOs in a given range
+-		seq_printf(s, " gpio-%-3d (%-20.20s) ", gpio, label);
++		seq_printf(s, " gpio-%-3d (%-20.20s) ",
++			   gpio, label ?: "Unrequested");
+ 
+ 		reg = wm831x_reg_read(wm831x, WM831X_GPIO1_CONTROL + i);
+ 		if (reg < 0) {
 -- 
 2.40.1
 
