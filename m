@@ -2,115 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DEE77FD55C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:19:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B3687FD55D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:20:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230311AbjK2LTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 06:19:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42392 "EHLO
+        id S231197AbjK2LUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 06:20:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjK2LS7 (ORCPT
+        with ESMTP id S230194AbjK2LUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 06:18:59 -0500
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F29D1DA
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 03:19:04 -0800 (PST)
-Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-6cb9dd2ab8fso7931820b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 03:19:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701256744; x=1701861544;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JYVQKySS4UqJldH1cZEScRY+Fw+Njm3hPujMCMj0O8k=;
-        b=U1qgZTjv93v4t5D6wMVPZbolIIhWo3V8FODpBuocRijSTQfhigl2bLYvqmaTekNuPR
-         QGx690XyqD39YMCTj/VcSdsSnTud6BIKOmCJlzTa6VgQ5eiw8SYeySiqb+gkVslDbM1C
-         +k3QyrNjSgznx7pWXl4xc5QS5bwwoNocm+hTvXGSFCFpBLYgddKw1keY9ddSZqgNp5eC
-         At/XTFZLWwVX7zLeBrdlC95R8snhWp+N13wqQUVVD1lrdJlmY6rRW9bgBnj9ZcZc4peR
-         fSPW8Iz461bF4KcTSa8LJcjJ8YAcOAC1zoipLxc1nRJBY945+Z+pY6d5D9fmi63W0O5o
-         O4sQ==
-X-Gm-Message-State: AOJu0YzYXB4i1n0F0O++riviD9JCeuMxmGsqlIbmpUAlMHYEvGTd8B3e
-        lVxra8P8wio3kWCAtYa+P5HLVQGHhaPxVpHPnPYAeWwUGBE2
-X-Google-Smtp-Source: AGHT+IHGCQN4SOujRGQSa2TYZ8KcKc5hAJbeSJVLTQUg08C8VD5xEcuFlleXt+Prt89Kua0mE5ZYKESWGgyht5CcToG0rcUDkdTo
+        Wed, 29 Nov 2023 06:20:14 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBF8DA;
+        Wed, 29 Nov 2023 03:20:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701256817; x=1732792817;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=BDryF4drDiMlV8ObzZKyRpkH+tIJuhjbBuLC14j2we4=;
+  b=nYOLdhJvJRkuz9Y5EtZzAJREy4cd7b2DGBRgbxfmWMGHI9TqBWlKN9A3
+   F+xCVWLMpT/Lt9Cg8nHtglf9AzO/j0PqFYe0uCKgzeSu4x4k3qc/pDc6q
+   qCJj0FJ49qdSk8yaGVP2tQ7ykbD6ekgVtBOT6lky01C91cvX3E5uKcHvz
+   08eMdzcCTFewe/CALzXw7Y5nAvLpiqNASMOTxFTKyJJLdWRxeEm4CzNmv
+   Rm8BFQyfcnR2e8VK/GgI2orDAsr1i3rxc0WkLN9Lw0dpL98wDTIfjrfJk
+   Or3ZTF9+nNFsdbfWaxyS/OrHW0A+fIbKi1S/VCI7PiB7+LtKJS6FB091y
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="390308828"
+X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
+   d="scan'208";a="390308828"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 03:20:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="1016234957"
+X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
+   d="scan'208";a="1016234957"
+Received: from akuporos-mobl.ger.corp.intel.com ([10.251.221.122])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 03:20:10 -0800
+Date:   Wed, 29 Nov 2023 13:20:08 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Pavel Machek <pavel@denx.de>
+cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        LKML <linux-kernel@vger.kernel.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        allen.lkml@gmail.com, alexander.deucher@amd.com,
+        mario.limonciello@amd.com, zhujun2@cmss.chinamobile.com,
+        sashal@kernel.org, skhan@linuxfoundation.org, bhelgaas@google.com
+Subject: Re: [PATCH 4.14 00/53] 4.14.331-rc2 review
+In-Reply-To: <ZWZQCJtD7kmX9iRO@duo.ucw.cz>
+Message-ID: <526d5e1-66fd-f4f6-fc24-56f478a85170@linux.intel.com>
+References: <20231125163059.878143365@linuxfoundation.org> <ZWUBaYipygLMkfjz@duo.ucw.cz> <f4a7634-3d34-af29-36ca-6f3439b4ce9@linux.intel.com> <ZWZQCJtD7kmX9iRO@duo.ucw.cz>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:3a0c:b0:6bd:2247:d2e5 with SMTP id
- fj12-20020a056a003a0c00b006bd2247d2e5mr5080436pfb.4.1701256744531; Wed, 29
- Nov 2023 03:19:04 -0800 (PST)
-Date:   Wed, 29 Nov 2023 03:19:04 -0800
-In-Reply-To: <tencent_22044BD21BDE25BEBA3ABB5233139EBD1B08@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ee00d1060b48b316@google.com>
-Subject: Re: [syzbot] [wireless?] WARNING in rate_control_rate_init (2)
-From:   syzbot <syzbot+62d7eef57b09bfebcd84@syzkaller.appspotmail.com>
-To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-1588401085-1701256816=:1861"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-UBSAN: shift-out-of-bounds in sta_link_apply_parameters
+--8323329-1588401085-1701256816=:1861
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8BIT
 
-================================================================================
-UBSAN: shift-out-of-bounds in net/mac80211/cfg.c:1798:30
-shift exponent -1 is negative
-CPU: 1 PID: 5418 Comm: syz-executor.0 Not tainted 6.4.0-syzkaller-01647-g6e2332e0ab53-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
- ubsan_epilogue lib/ubsan.c:217 [inline]
- __ubsan_handle_shift_out_of_bounds+0x2a6/0x480 lib/ubsan.c:387
- sta_link_apply_parameters.cold+0x1a/0x1f net/mac80211/cfg.c:1798
- sta_apply_parameters+0x87d/0x16b0 net/mac80211/cfg.c:1988
- ieee80211_add_station+0x3ca/0x610 net/mac80211/cfg.c:2070
- rdev_add_station net/wireless/rdev-ops.h:201 [inline]
- nl80211_new_station+0x13e8/0x1af0 net/wireless/nl80211.c:7564
- genl_family_rcv_msg_doit.isra.0+0x1ef/0x2d0 net/netlink/genetlink.c:968
- genl_family_rcv_msg net/netlink/genetlink.c:1048 [inline]
- genl_rcv_msg+0x559/0x800 net/netlink/genetlink.c:1065
- netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2546
- genl_rcv+0x28/0x40 net/netlink/genetlink.c:1076
- netlink_unicast_kernel net/netlink/af_netlink.c:1339 [inline]
- netlink_unicast+0x539/0x800 net/netlink/af_netlink.c:1365
- netlink_sendmsg+0x93c/0xe30 net/netlink/af_netlink.c:1913
- sock_sendmsg_nosec net/socket.c:725 [inline]
- sock_sendmsg+0xd9/0x180 net/socket.c:748
- ____sys_sendmsg+0x69f/0x950 net/socket.c:2504
- ___sys_sendmsg+0x135/0x1d0 net/socket.c:2558
- __sys_sendmsg+0x117/0x1e0 net/socket.c:2587
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x39/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f084287cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f084350a0c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007f084299bf80 RCX: 00007f084287cae9
-RDX: 0000000000000000 RSI: 00000000200004c0 RDI: 0000000000000004
-RBP: 00007f08428c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f084299bf80 R15: 00007ffe7b058668
- </TASK>
-================================================================================
+On Tue, 28 Nov 2023, Pavel Machek wrote:
 
+> Hi!
+> 
+> > > > This is the start of the stable review cycle for the 4.14.331 release.
+> > > > There are 53 patches in this series, all will be posted as a response
+> > > > to this one.  If anyone has any issues with these being applied, please
+> > > > let me know.
+> > 
+> > > > Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> > > >     RDMA/hfi1: Use FIELD_GET() to extract Link Width
+> > > 
+> > > This is a good cleanup, but not a bugfix.
+> > > 
+> > > > Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> > > >     atm: iphase: Do PCI error checks on own line
+> > > 
+> > > Just a cleanup, not sure why it was picked for stable.
+> > 
+> > Just an additional bit of information, there have been quite many cleanups 
+> > from me which have recently gotten the stable notification for some 
+> > mysterious reason. When I had tens of them in my inbox and for various 
+> > kernel versions, I immediately stopped caring to stop it from happening.
+> > 
+> > AFAIK, I've not marked those for stable inclusion so I've no idea what
+> > got them included.
+> 
+> Fixes tag can do it. Plus, "AUTOSEL" robot does it randomly, with no
+> human oversight :-(.
 
-Tested on:
+I know Fixes tag will surely do it. However, the two above mentioned 
+patches were in series that were sent without any Fixes tags nor cc 
+stables for any of the patches within the same series.
 
-commit:         6e2332e0 Merge tag 'cgroup-for-6.5' of git://git.kerne..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1250b438e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=102b18358d5797d8
-dashboard link: https://syzkaller.appspot.com/bug?extid=62d7eef57b09bfebcd84
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=13b51b78e80000
+-- 
+ i.
 
+--8323329-1588401085-1701256816=:1861--
