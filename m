@@ -2,117 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE957FDF52
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 19:29:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07BC37FDF5D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 19:34:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231428AbjK2S3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 13:29:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52620 "EHLO
+        id S231332AbjK2SeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 13:34:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230317AbjK2S3p (ORCPT
+        with ESMTP id S229741AbjK2SeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 13:29:45 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 143D6112
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 10:29:52 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40b4734b975so397245e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 10:29:52 -0800 (PST)
+        Wed, 29 Nov 2023 13:34:18 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC6D122
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 10:34:23 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-548c6efc020so1387a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 10:34:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701282590; x=1701887390; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1PZV2QPewxHMt+nvpSEk026io2gN1RNWhVSG3HcbufI=;
-        b=ZaduLkb+rOLxauZf9q5vfmcAfO7S3qqCezc+/2IQ/mnMFIvmVAZnYE1jpZqi1YfSzH
-         B297LO5Q6VrWHBdTJQ5Ij1F1Hz7igqkG1bPzwE9+yzeLa71e8y1NmBYHuwKZm38rZx+Y
-         k81vsoHeGD0ddBOTxC/PizgzKO453qtPHxZIDdD6SYcvbYNMml6likwRgtmvZQ91gqed
-         56UM2MfE8eTxtIJIhGP3rQ1v85zXRl05/EawC1Pj3GNJUAKwDpLBC9mbV4ZM0KNbnJd2
-         mBxCvhc6jM62d0cL17W3arjty8Zbh6VRwPvdxEqtp498H76hJc3/JKsTAr2JFFFdC1uP
-         LqaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701282590; x=1701887390;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1701282862; x=1701887662; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1PZV2QPewxHMt+nvpSEk026io2gN1RNWhVSG3HcbufI=;
-        b=ke705UDnqmAPJ3RVIhqTtgY1MdNav8bbM2EhiyM42kpFuJvSgJv7gyhFnl6V232UFQ
-         7fu3otqKZRWwZxRv/cDSwpJf3jg8lYJzITj7KmziuDcc5VjInhAFxjF9m+RVkkUdh2/F
-         vV7J+hjermWLboUSFcV3oeEI/AWdjXB1KtOfaYhsXggTWIj11TnXg5iRw4I1QeSJorpC
-         Doc2eV4/cI4LdPu8aI04t+jfA+UWp1kGvo/8ScwkJFY+DvgoZC30YeyILmEnkFbAtUEZ
-         HQe8wsxQTg4V2YJTcS9kd1QIjMYXno7DZAurg6rlcaPP8oSZn2/tOWbMNRoS810lgeCQ
-         dIag==
-X-Gm-Message-State: AOJu0Yx39CW7Kzt8q7yyOHxbWhfN7NCHZX/fkdoXdq6jvYgoLOI52fR7
-        E5g9T4SHIMisZJIodVZo0+ID3MutxtI=
-X-Google-Smtp-Source: AGHT+IHI7Jg7NWdN2dQmGOw5cIlj3MXJKetXHVlNzAuZAziMMd6csd8fyL5P3GvEV7dK0hIoGVOh4g==
-X-Received: by 2002:a5d:48c9:0:b0:333:1c69:dd5 with SMTP id p9-20020a5d48c9000000b003331c690dd5mr971955wrs.6.1701282590188;
-        Wed, 29 Nov 2023 10:29:50 -0800 (PST)
-Received: from andrea ([31.189.63.178])
-        by smtp.gmail.com with ESMTPSA id 2-20020a5d47a2000000b00332ff137c29sm10453314wrb.79.2023.11.29.10.29.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 10:29:49 -0800 (PST)
-Date:   Wed, 29 Nov 2023 19:29:43 +0100
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     paulmck@kernel.org, palmer@dabbelt.com, paul.walmsley@sifive.com,
-        aou@eecs.berkeley.edu, mmaas@google.com, hboehm@google.com,
-        striker@us.ibm.com, charlie@rivosinc.com, rehn@rivosinc.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] membarrier: riscv: Provide core serializing command
-Message-ID: <ZWeDF0eHyOc/b9UJ@andrea>
-References: <20231127103235.28442-1-parri.andrea@gmail.com>
- <20231127103235.28442-3-parri.andrea@gmail.com>
- <91ab0210-07f9-42c4-af7f-a98799250cf7@efficios.com>
- <ZWYDtB/otYvTMZWd@andrea>
- <0a84c0e0-2571-4c7f-82ae-a429f467a16b@efficios.com>
+        bh=oj8iW5fqpjz7flGK5b84ePxv8TYliajWJz8n3Jo6wQE=;
+        b=t4VVgDLHJX3o2FaVZSBkf7xupe2fmCu0VY8eIM+aUhfpD2ddGdzmzfZTgU0TO624lD
+         wORTvHvy+iIVWgEXWruaeAen+aYjaXrUf7BSilg8SwN+KxRxuOVSOzYZ70PGYk05/k2h
+         +NVDJHz2FCs4yXw5NfuWa6mPeafM4hYnbDbEiG4MrcpY6+BPkETiJpb6V5M7XdC6B0SH
+         6A1QlPcY/VqBtLOZqdcf+RHsB0D/qu+U8DL+hS2sD5ezXTbTCGuBJ9JPq/VJVmHLgRoP
+         NUy2o5+K8OTlQOKazZ0Y1v5kmJG0ljTHaCC9uVaogrvOjssfrpd9VuDm5eFbdCadrOCr
+         VLKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701282862; x=1701887662;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oj8iW5fqpjz7flGK5b84ePxv8TYliajWJz8n3Jo6wQE=;
+        b=ikjxMR9MGhH0hXjCrPkZ4q03Qn867jXqXdz0faJk5/PolLmwy6DBTlbOERNYOdB7gu
+         OWYFkLbNpx/UtcLKJ/U3OsykJ/SzcoE48sfArgDTDZmXAvm+evZkY55oxa91CN29WIq/
+         sw9PUxIpkHvFx6l9kSphgduunXzQkK0Tlpm6gcKq08tJU/dsYbrcP+Q6tfqVoVsyi3TN
+         eaxS6eEsSdvoIJOsraDrfFIPjK2jmSI3hlkAyxj9CxrBbt152WPL8nwUIU/WAfCFUUw9
+         A6hkqoSWJBsmnnIGAY2UgBboMw9zUquHmCE0Ix8LCQpq2QkGqQrk4NlL+eeiTQIcIzhQ
+         wHsg==
+X-Gm-Message-State: AOJu0YwDSwpf+OzTaJ3hw59LPJHaFiwaeH963re3J1I81weMxTsLhm/d
+        pFSo9H0r51Y4HALhfRQH4vX73l/khrwb3KpLXc0zxw==
+X-Google-Smtp-Source: AGHT+IHSLO+GwHkj/jUTJJ+SRaKZj5oTZ03/vZXAd8Lc0HWiJiTjUaNSqCAcJ/pAes+m68MmBNH4rZrfTQVe99mPcLg=
+X-Received: by 2002:a05:6402:1cae:b0:54b:81ba:93b2 with SMTP id
+ cz14-20020a0564021cae00b0054b81ba93b2mr386edb.2.1701282861955; Wed, 29 Nov
+ 2023 10:34:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0a84c0e0-2571-4c7f-82ae-a429f467a16b@efficios.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231129165721.337302-1-dima@arista.com> <20231129165721.337302-7-dima@arista.com>
+ <CANn89iJcfn0yEM7Pe4RGY3P0LmOsppXO7c=eVqpwVNdOY2v3zA@mail.gmail.com> <df55eb1d-b63a-4652-8103-d2bd7b5d7eda@arista.com>
+In-Reply-To: <df55eb1d-b63a-4652-8103-d2bd7b5d7eda@arista.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 29 Nov 2023 19:34:07 +0100
+Message-ID: <CANn89iLZx-SiV0BqHkEt9vS4LZzDxW2omvfOvNX6XWSRPFs7sw@mail.gmail.com>
+Subject: Re: [PATCH v4 6/7] net/tcp: Store SNEs + SEQs on ao_info
+To:     Dmitry Safonov <dima@arista.com>
+Cc:     David Ahern <dsahern@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Francesco Ruggeri <fruggeri05@gmail.com>,
+        Salam Noureddine <noureddine@arista.com>,
+        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
-> > index 217fd4de61342..f63222513076d 100644
-> > --- a/arch/riscv/mm/context.c
-> > +++ b/arch/riscv/mm/context.c
-> > @@ -323,6 +323,23 @@ void switch_mm(struct mm_struct *prev, struct mm_struct *next,
-> >   	if (unlikely(prev == next))
-> >   		return;
-> > +#if defined(CONFIG_MEMBARRIER) && defined(CONFIG_SMP)
-> > +	/*
-> > +	 * The membarrier system call requires a full memory barrier
-> > +	 * after storing to rq->curr, before going back to user-space.
-> > +	 *
-> > +	 * Only need the full barrier when switching between processes:
-> > +	 * barrier when switching from kernel to userspace is not
-> > +	 * required here, given that it is implied by mmdrop(); barrier
-> > +	 * when switching from userspace to kernel is not needed after
-> > +	 * store to rq->curr.
-> > +	 */
-> > +	if (unlikely(atomic_read(&next->membarrier_state) &
-> > +		     (MEMBARRIER_STATE_PRIVATE_EXPEDITED |
-> > +		      MEMBARRIER_STATE_GLOBAL_EXPEDITED)) && prev)
-> > +		smp_mb();
-> > +#endif
-> 
-> The approach looks good. Please implement it within a separate
-> membarrier_arch_switch_mm() as done on powerpc.
+On Wed, Nov 29, 2023 at 7:14=E2=80=AFPM Dmitry Safonov <dima@arista.com> wr=
+ote:
+>
+> On 11/29/23 18:09, Eric Dumazet wrote:
+> > On Wed, Nov 29, 2023 at 5:57=E2=80=AFPM Dmitry Safonov <dima@arista.com=
+> wrote:
+> >>
+> >> RFC 5925 (6.2):
+> >>> TCP-AO emulates a 64-bit sequence number space by inferring when to
+> >>> increment the high-order 32-bit portion (the SNE) based on
+> >>> transitions in the low-order portion (the TCP sequence number).
+> >>
+> >> snd_sne and rcv_sne are the upper 4 bytes of extended SEQ number.
+> >> Unfortunately, reading two 4-bytes pointers can't be performed
+> >> atomically (without synchronization).
+> >>
+> >> In order to avoid locks on TCP fastpath, let's just double-account for
+> >> SEQ changes: snd_una/rcv_nxt will be lower 4 bytes of snd_sne/rcv_sne.
+> >>
+> >
+> > This will not work on 32bit kernels ?
+>
+> Yeah, unsure if there's someone who wants to run BGP on 32bit box, so at
+> this moment it's already limited:
+>
+> config TCP_AO
+>         bool "TCP: Authentication Option (RFC5925)"
+>         select CRYPTO
+>         select TCP_SIGPOOL
+>         depends on 64BIT && IPV6 !=3D m # seq-number extension needs WRIT=
+E_ONCE(u64)
+>
 
-Will do.  Thanks.
+Oh well, this seems quite strange to have such a limitation.
 
-As regards the Fixes: tag, I guess it boils down to what we want or we
-need to take for commit "riscv: Support membarrier private cmd".  :-)
-FWIW, a quick git-log search confirmed that MEMBARRIER has been around
-for quite some time in the RISC-V world (though I'm not familiar with
-any of its mainstream uses): commit 1464d00b27b2 says (at least) since
-93917ad50972 ("RISC-V: Add support for restartable sequence").  I am
-currently inclined to pick the latter commit (and check it w/ Palmer),
-but other suggestions are welcome.
+> Probably, if there will be a person who is interested in this, it can
+> get a spinlock for !CONFIG_64BIT.
 
-  Andrea
+
+>
+> > Unless ao->snd_sne and ao->rcv_sneare only read/written under the
+> > socket lock (and in this case no READ_ONCE()/WRITE_ONCE() should be
+> > necessary)
+>
+
+You have not commented on where these are read without the socket lock held=
+ ?
+
+tcp_ao_get_repair() can lock the socket.
+
+In TW state, I guess these values can not be changed ?
+
+I think you can remove all these READ_ONCE()/WRITE_ONCE() which are not nee=
+ded,
+or please add a comment if they really are.
+
+Then, you might be able to remove the 64BIT dependency ...
