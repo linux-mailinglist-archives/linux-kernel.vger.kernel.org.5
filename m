@@ -2,112 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E97A7FCFB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 08:05:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCBBC7FCFB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 08:08:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229921AbjK2HFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 02:05:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56970 "EHLO
+        id S229602AbjK2HIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 02:08:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230013AbjK2HFb (ORCPT
+        with ESMTP id S229498AbjK2HIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 02:05:31 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B14319AB;
-        Tue, 28 Nov 2023 23:05:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701241537; x=1732777537;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=1qmvHwfK7iTIDc/XSt6kxSJ8+uPc6tnRGIsBlPEG/V0=;
-  b=nqFzFy0edbCqsxdsRl6wGbYg2sjXkHm4WsouPIGOR/NU49oDUrBqZi0p
-   OBKhbPAtRQ8L17Ch4n4MIhN28BYwQHIU5v7tRMYoovpCilPx5J3pi6Rn0
-   0WmfIvtRWcy5/OakgOhJqQ99ZiZ5gbd01pmekjlcEC+AuMWXxMB/IOEsk
-   O2utbrNYfv6eEp04U63CQPjA95TyfL60IjdisP46HXToCY5RVAeECXn6V
-   eLOxqb55aY+KDr85U1xe59gXfVZs2jutUhB41gqI6QKG0cyJ+KOuzmDXA
-   lghSGzLETHqSleqKswX6gt/M63hEar+M5ByBwPf+o/6eQYtfcSSqKezsR
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="391977373"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="391977373"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 23:05:36 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="772585802"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="772585802"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 28 Nov 2023 23:05:32 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1001)
-        id 6B64023A; Wed, 29 Nov 2023 09:05:31 +0200 (EET)
-Date:   Wed, 29 Nov 2023 09:05:31 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     AceLan Kao <acelan.kao@canonical.com>
-Cc:     Tudor Ambarus <tudor.ambarus@linaro.org>,
-        Pratyush Yadav <pratyush@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Dhruva Gole <d-gole@ti.com>, linux-mtd@lists.infradead.org,
-        Mark Brown <broonie@kernel.org>,
-        Kamal Dasu <kamal.dasu@broadcom.com>,
-        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Mario Kicherer <dev@kicherer.org>,
-        Chuanhong Guo <gch981213@gmail.com>, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 1/2] spi: Unify error codes by replacing -ENOTSUPP
- with -EOPNOTSUPP
-Message-ID: <20231129070531.GP1074920@black.fi.intel.com>
-References: <20231129064311.272422-1-acelan.kao@canonical.com>
+        Wed, 29 Nov 2023 02:08:14 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED36310F4;
+        Tue, 28 Nov 2023 23:08:19 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1cff3a03dfaso15130105ad.3;
+        Tue, 28 Nov 2023 23:08:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701241699; x=1701846499; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zGeQs6K6JZs7HzSAt9g8E46vii3UWtn7mk9WYlHcgCc=;
+        b=cUbSsiCiR/F0uIgucIJdjmSkPGaGdrwY6e0Xc/GCD3VX0SnkRDuRfmQVQ71TNFscmV
+         3MEnSPyOw5ijrIbfjVfpavNzmtBHuZf37uYBH288NJ4WZpWCiEK2NaehG8uykw3i9fip
+         3FCRU6FGKjHG9LtARa+rpRYbSubLViBW1Y6oeJwK3sHMpRV7VVVqJr5pyPvs6CWoJerw
+         N0CipaiyGQIULkGJhCqnXds1mZXWL7SZh9V7nUISi1gZwpyEDRy/tiuIg1k8hmdTcKej
+         Hw3+NxLL6own1/V4cmuDU3Gr5ThOC56qp+KVRxuiMEwNtGSF27eHmTAbus+PFeIBs3Be
+         yWog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701241699; x=1701846499;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zGeQs6K6JZs7HzSAt9g8E46vii3UWtn7mk9WYlHcgCc=;
+        b=twZtbvUAEVU6mzPn3swJjQTd2juh2RfC3AirUQ4cDCB4ULO1OhYnVXmCWIE3d6iQ9V
+         PUTbV42llw/7aB8ADRt9NqYk4hemz/bxynfLfYREsxQom0OK9vn1UUui568cWguFK3FW
+         U4HbSck7eWxliCRxUV5BFfes67qRA73NCedHhsT/cHsIjMphmvZEKhYaZ2u0lF/6HSEH
+         UE9c0dhq5NahhhJBNurah1Qdfx5J5gAiXHntJ1IfNZuM8i6LegLYyqQORiXQVrpwYy3V
+         iAMD+l3EYk/cEVgmBTnZGj8vjQmJdNQm7twXCYje1WQB9A6kv3K11vJmcjNM//WJPKow
+         zF3Q==
+X-Gm-Message-State: AOJu0Ywb0C39msCD0yA3327Lv/sntu0G6a/x4brDxV63mc8Ye2E3+DBy
+        FS6oInQy6+u3qvBr/nDJ+t4=
+X-Google-Smtp-Source: AGHT+IEmtE4d2YHUZP8MvCwwcIJmwTKIdukzqmgpzHn2Y8zqkaylHrbzGhsPwsdGJsq45PisO4mpEA==
+X-Received: by 2002:a17:902:c1cb:b0:1cc:6a09:a489 with SMTP id c11-20020a170902c1cb00b001cc6a09a489mr15604676plc.33.1701241699281;
+        Tue, 28 Nov 2023 23:08:19 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id 2-20020a170902c14200b001c755810f89sm11423722plj.181.2023.11.28.23.08.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 23:08:17 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+        id 2040C10205C74; Wed, 29 Nov 2023 14:08:13 +0700 (WIB)
+Date:   Wed, 29 Nov 2023 14:08:13 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: btrfs: super.c:416:25: error: 'ret' undeclared (first use in
+ this function); did you mean 'net'?
+Message-ID: <ZWbjXV85zDXen_YH@archie.me>
+References: <CA+G9fYvbCBUCkt-NdJ7HCETCFrzMWGnjnRBjCsw39Z_aUOaTDQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="IDRMR4pqBVuyAaoB"
 Content-Disposition: inline
-In-Reply-To: <20231129064311.272422-1-acelan.kao@canonical.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CA+G9fYvbCBUCkt-NdJ7HCETCFrzMWGnjnRBjCsw39Z_aUOaTDQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 02:43:10PM +0800, AceLan Kao wrote:
-> From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
-> 
-> This commit updates the SPI subsystem, particularly affecting "SPI MEM"
-> drivers and core parts, by replacing the -ENOTSUPP error code with
-> -EOPNOTSUPP.
-> 
-> The key motivations for this change are as follows:
-> 1. The spi-nor driver currently uses EOPNOTSUPP, whereas calls to spi-mem
-> might return ENOTSUPP. This update aims to unify the error reporting
-> within the SPI subsystem for clarity and consistency.
-> 
-> 2. The use of ENOTSUPP has been flagged by checkpatch as inappropriate,
-> mainly being reserved for NFS-related errors. To align with kernel coding
-> standards and recommendations, this change is being made.
-> 
-> 3. By using EOPNOTSUPP, we provide more specific context to the error,
-> indicating that a particular operation is not supported. This helps
-> differentiate from the more generic ENOTSUPP error, allowing drivers to
-> better handle and respond to different error scenarios.
-> 
-> Risks and Considerations:
-> While this change is primarily intended as a code cleanup and error code
-> unification, there is a minor risk of breaking user-space applications
-> that rely on specific return codes for unsupported operations. However,
-> this risk is considered low, as such use-cases are unlikely to be common
-> or critical. Nevertheless, developers and users should be aware of this
-> change, especially if they have scripts or tools that specifically handle
-> SPI error codes.
-> 
-> This commit does not introduce any functional changes to the SPI subsystem
-> or the affected drivers.
-> 
-> Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
 
-Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+--IDRMR4pqBVuyAaoB
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Nov 28, 2023 at 05:55:51PM +0530, Naresh Kamboju wrote:
+> Following x86 and i386 build regressions noticed on Linux next-20231128 t=
+ag.
+>=20
+> Build log:
+> -----------
+> fs/btrfs/super.c: In function 'btrfs_parse_param':
+> fs/btrfs/super.c:416:25: error: 'ret' undeclared (first use in this
+> function); did you mean 'net'?
+>   416 |                         ret =3D -EINVAL;
+>       |                         ^~~
+>       |                         net
+> fs/btrfs/super.c:416:25: note: each undeclared identifier is reported
+> only once for each function it appears in
+> fs/btrfs/super.c:417:25: error: label 'out' used but not defined
+>   417 |                         goto out;
+>       |                         ^~~~
+> make[5]: *** [scripts/Makefile.build:243: fs/btrfs/super.o] Error 1
+>=20
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>=20
+> Links:
+>  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-202311=
+28/testrun/21349057/suite/build/test/gcc-13-lkftconfig-kselftest/log
+>=20
+>  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-202311=
+28/testrun/21349057/suite/build/test/gcc-13-lkftconfig-kselftest/details/
+>  - https://storage.tuxsuite.com/public/linaro/lkft/builds/2Ymoxor9n54ID51=
+BFjRBS06YQ3U/
+> - https://storage.tuxsuite.com/public/linaro/lkft/builds/2Ymoxor9n54ID51B=
+FjRBS06YQ3U/config
+>=20
+
+Is it W=3D1 build? I can't reproduce on btrfs tree with
+CONFIG_BTRFS_FS_POSIX_ACL=3Dy and without W=3D1.
+
+Thanks.
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--IDRMR4pqBVuyAaoB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZWbjWQAKCRD2uYlJVVFO
+o/9PAQCExT+hJHio+2zC8X6ghL5ooF1kKAJVuc2D/2Vtwh3/hgEA45wQKlrh9VU2
+WWNUC4riNE+70XRP2h8xpQoiRBv84Qs=
+=fwJk
+-----END PGP SIGNATURE-----
+
+--IDRMR4pqBVuyAaoB--
