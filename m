@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D39B7FD604
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13CF27FD60B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:50:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233404AbjK2Lue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 06:50:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56024 "EHLO
+        id S233512AbjK2Lur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 06:50:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbjK2Luc (ORCPT
+        with ESMTP id S233363AbjK2Luh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 06:50:32 -0500
+        Wed, 29 Nov 2023 06:50:37 -0500
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7441710C2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 03:50:39 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E93301A8
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 03:50:43 -0800 (PST)
 Received: from dude05.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::54])
         by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <p.zabel@pengutronix.de>)
-        id 1r8J5K-0006oE-Ge; Wed, 29 Nov 2023 12:50:30 +0100
+        id 1r8J5L-0006oE-9z; Wed, 29 Nov 2023 12:50:31 +0100
 From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     openbmc@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20231115205848.3732609-1-robh@kernel.org>
-References: <20231115205848.3732609-1-robh@kernel.org>
-Subject: Re: [RESEND PATCH] reset: Use device_get_match_data()
-Message-Id: <170125862883.1536676.16509507936003871454.b4-ty@pengutronix.de>
-Date:   Wed, 29 Nov 2023 12:50:28 +0100
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20231115211829.32542-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20231115211829.32542-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH] dt-bindings: reset: renesas,rzg2l-usbphy-ctrl:
+ Document RZ/Five SoC
+Message-Id: <170125863057.1536676.8251261035131321801.b4-ty@pengutronix.de>
+Date:   Wed, 29 Nov 2023 12:50:30 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -45,24 +45,28 @@ X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expand
 X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Nov 2023 14:58:48 -0600, Rob Herring wrote:
-> Use preferred device_get_match_data() instead of of_match_device() to
-> get the driver match data. With this, adjust the includes to explicitly
-> include the correct headers.
+On Wed, 15 Nov 2023 21:18:29 +0000, Prabhakar wrote:
+> The USBPHY Control Device on the RZ/Five SoC is identical to one found on
+> the RZ/G2UL SoC. "renesas,r9a07g043-usbphy-ctrl" compatible string will be
+> used on the RZ/Five SoC so to make this clear and to keep this file
+> consistent, update the comment to include RZ/Five SoC.
 > 
+> No driver changes are required as generic compatible string
+> "renesas,rzg2l-usbphy-ctrl" will be used as a fallback on RZ/Five SoC.
 > 
+> [...]
 
 Applied to reset/next, thanks!
 
-[1/1] reset: Use device_get_match_data()
-      https://git.pengutronix.de/cgit/pza/linux/commit/?id=c1d884118f9b
+[1/1] dt-bindings: reset: renesas,rzg2l-usbphy-ctrl: Document RZ/Five SoC
+      https://git.pengutronix.de/cgit/pza/linux/commit/?id=1240070d4e04
 
 regards
 Philipp
