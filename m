@@ -2,122 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB99D7FDC00
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEBE47FDC03
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:55:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343956AbjK2Py1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 10:54:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41774 "EHLO
+        id S1343967AbjK2PzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 10:55:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343532AbjK2Py0 (ORCPT
+        with ESMTP id S1343532AbjK2PzE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 10:54:26 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 293549D;
-        Wed, 29 Nov 2023 07:54:31 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3ATFs8Bu92837864, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3ATFs8Bu92837864
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Nov 2023 23:54:08 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Wed, 29 Nov 2023 23:54:09 +0800
-Received: from Test06-PC.realtek.com.tw (172.22.228.55) by
- RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Wed, 29 Nov 2023 23:54:07 +0800
-From:   ChunHao Lin <hau@realtek.com>
-To:     <hkallweit1@gmail.com>
-CC:     <nic_swsd@realtek.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <grundler@chromium.org>, ChunHao Lin <hau@realtek.com>,
-        <stable@vger.kernel.org>
-Subject: [PATCH net v2] r8169: fix rtl8125b PAUSE frames blasting when suspended
-Date:   Wed, 29 Nov 2023 23:53:50 +0800
-Message-ID: <20231129155350.5843-1-hau@realtek.com>
-X-Mailer: git-send-email 2.39.2
+        Wed, 29 Nov 2023 10:55:04 -0500
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27476D48;
+        Wed, 29 Nov 2023 07:55:10 -0800 (PST)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3ATFsvti108962;
+        Wed, 29 Nov 2023 09:54:57 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1701273297;
+        bh=pF7Q7rYfMAYM9nkdH3NW0Yfp7phHkz7ItrUaQJ/DETE=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=JJB7QAcfeaz9MlF7NGlnGugmHCw2He40kxXNv7yxZW9/Q4l26/p2LNrnhrcburCsw
+         8FhtZj4T130my18BGM7C3psW7iY9BD5PxZ3R07Mv7mfAArBD1xpNKLoxp0YV5yMQyg
+         Y7oq5On+bsEUewpf+PJa9JdyTPQQI4ZxTRwKCLZE=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3ATFsvE4092655
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 29 Nov 2023 09:54:57 -0600
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 29
+ Nov 2023 09:54:57 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 29 Nov 2023 09:54:57 -0600
+Received: from [10.249.36.40] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3ATFsvPu019276;
+        Wed, 29 Nov 2023 09:54:57 -0600
+Message-ID: <83814027-12a1-4273-9d2d-400739bc3b64@ti.com>
+Date:   Wed, 29 Nov 2023 09:54:57 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.22.228.55]
-X-ClientProxiedBy: RTEXH36505.realtek.com.tw (172.21.6.25) To
- RTEXMBS04.realtek.com.tw (172.21.6.97)
-X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/5] dt-bindings: arm: keystone: add ti,j7200-sci
+ compatible
+Content-Language: en-US
+To:     Thomas Richard <thomas.richard@bootlin.com>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <thomas.petazzoni@bootlin.com>, <gregory.clement@bootlin.com>,
+        <u-kumar1@ti.com>
+References: <20231129-j7200-tisci-s2r-v1-0-c1d5964ed574@bootlin.com>
+ <20231129-j7200-tisci-s2r-v1-1-c1d5964ed574@bootlin.com>
+From:   Andrew Davis <afd@ti.com>
+In-Reply-To: <20231129-j7200-tisci-s2r-v1-1-c1d5964ed574@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When FIFO reaches near full state, device will issue pause frame.
-If pause slot is enabled(set to 1), in this time, device will issue
-pause frame only once. But if pause slot is disabled(set to 0), device
-will keep sending pause frames until FIFO reaches near empty state.
+On 11/29/23 9:31 AM, Thomas Richard wrote:
+> On j7200, during suspend to ram the soc is powered-off.
+> At resume requested irqs shall be restored which is a different behavior
+> from other platforms.
 
-When pause slot is disabled, if there is no one to handle receive
-packets, device FIFO will reach near full state and keep sending
-pause frames. That will impact entire local area network.
+Why is J7200 different? All K3 can/will support off mode suspend
+to RAM. The only difference is you are adding support for it to this
+one SoC first. You are describing a software behavior, not hardware.
+Using a compatible to describe if a SW feature is enabled is not a
+correct use of DT.
 
-This issue can be reproduced in Chromebox (not Chromebook) in
-developer mode running a test image (and v5.10 kernel):
-1) ping -f $CHROMEBOX (from workstation on same local network)
-2) run "powerd_dbus_suspend" from command line on the $CHROMEBOX
-3) ping $ROUTER (wait until ping fails from workstation)
+Andrew
 
-Takes about ~20-30 seconds after step 2 for the local network to
-stop working.
-
-Fix this issue by enabling pause slot to only send pause frame once
-when FIFO reaches near full state.
-
-Fixes: f1bce4ad2f1c ("r8169: add support for RTL8125")
-Reported-by: Grant Grundler <grundler@chromium.org>
-Tested-by: Grant Grundler <grundler@chromium.org>
-Cc: stable@vger.kernel.org
-Signed-off-by: ChunHao Lin <hau@realtek.com>
----
-v2:
-- update comment and title.
----
- drivers/net/ethernet/realtek/r8169_main.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-index 62cabeeb842a..bb787a52bc75 100644
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -196,6 +196,7 @@ enum rtl_registers {
- 					/* No threshold before first PCI xfer */
- #define	RX_FIFO_THRESH			(7 << RXCFG_FIFO_SHIFT)
- #define	RX_EARLY_OFF			(1 << 11)
-+#define	RX_PAUSE_SLOT_ON		(1 << 11)	/* 8125b and later */
- #define	RXCFG_DMA_SHIFT			8
- 					/* Unlimited maximum PCI burst. */
- #define	RX_DMA_BURST			(7 << RXCFG_DMA_SHIFT)
-@@ -2306,9 +2307,13 @@ static void rtl_init_rxcfg(struct rtl8169_private *tp)
- 	case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_53:
- 		RTL_W32(tp, RxConfig, RX128_INT_EN | RX_MULTI_EN | RX_DMA_BURST | RX_EARLY_OFF);
- 		break;
--	case RTL_GIGA_MAC_VER_61 ... RTL_GIGA_MAC_VER_63:
-+	case RTL_GIGA_MAC_VER_61:
- 		RTL_W32(tp, RxConfig, RX_FETCH_DFLT_8125 | RX_DMA_BURST);
- 		break;
-+	case RTL_GIGA_MAC_VER_63:
-+		RTL_W32(tp, RxConfig, RX_FETCH_DFLT_8125 | RX_DMA_BURST |
-+			RX_PAUSE_SLOT_ON);
-+		break;
- 	default:
- 		RTL_W32(tp, RxConfig, RX128_INT_EN | RX_DMA_BURST);
- 		break;
--- 
-2.39.2
-
+> 
+> Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
+> ---
+>   Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml b/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
+> index c24ad0968f3e..53d9c58dcd70 100644
+> --- a/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
+> +++ b/Documentation/devicetree/bindings/arm/keystone/ti,sci.yaml
+> @@ -40,6 +40,8 @@ properties:
+>         - description: System controller on TI AM654 SoC
+>           items:
+>             - const: ti,am654-sci
+> +      - description: System controller on TI J7200 SOC
+> +          - const: ti,j7200-sci
+>   
+>     reg-names:
+>       description: |
+> 
