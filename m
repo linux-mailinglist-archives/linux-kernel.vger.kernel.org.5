@@ -2,176 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C78717FD70D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 13:47:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A22E27FD711
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 13:48:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233342AbjK2MrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 07:47:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48690 "EHLO
+        id S233354AbjK2MsV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Nov 2023 07:48:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbjK2MrS (ORCPT
+        with ESMTP id S229887AbjK2MsU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 07:47:18 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D6795;
-        Wed, 29 Nov 2023 04:47:24 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6cdd9c53270so251136b3a.1;
-        Wed, 29 Nov 2023 04:47:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701262044; x=1701866844; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2ck25N5VyiEQfTTbq0IG09TED0gOeZimM+CSOPSlwR8=;
-        b=H6kDyq0G2Pb7eyULOZmj2rLPPlFzsOvKIdHlfZg0G9iskrRcLyvKlif3/Qd8bo0PmI
-         x9Mev5gADonPSbwoqit0antPTJJQsiuxzK6bPJW4k0bhaTlWL15+M1ltvbHv/GmKZUhu
-         W8nMpe4lN7+ckohfbMVXXghcIbRYC+P4fbOgnJTm7Qt9921ZMviZMSkWsno3xjMWqUXr
-         vTsWOQrcupdKCgrJtaSvXBVyC4ls6xLZvbl8v2JcWuPrhNu68Kt4NmMlghTxxkMpwAWP
-         zRxdN5Mr46nvzyOmQiTB9wkdBEj3mWxkKzs3O0W5VeR3lPAl2+ZLji6/TBXyC4gTCpX/
-         WYzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701262044; x=1701866844;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2ck25N5VyiEQfTTbq0IG09TED0gOeZimM+CSOPSlwR8=;
-        b=rv6N7h+ccKNn7HW0cctejJ8gpQgHECYZYoOxvs8CYWsg+jt3GPjZE3/8LY5uThmZOJ
-         OWrnNLiicpjmaT9u6HXSa/rb6i+A7vKsy8TMX8IPfOM1K1y1hlBEYv2mc1zrL3lpUuyB
-         uBAhUVteOzyqgU2J4TSqMn46or6y0EFQ9p8ZWp3mDlqoU5EsacK+2n+NYS3++LYJxE0w
-         ftpNY4uxYQH1bYo1u9VHyJbtnpH1ddPweq4NAO6tqeJfgacNrFd4bo86jaiHBUDYV0zw
-         YDWelifPizKvRJdVyqp7ZvbgNKfkMugEKyLaf31UJG19z8AjDnZyCTcv2xAWQjUmr552
-         C8SQ==
-X-Gm-Message-State: AOJu0YyadhDOTGL0vh4pW+h5yqEwu3KXMB1G6Xf2C/EgXQDYc6LH6Tbd
-        c8p0fNl723BacSDnbhfvimMPFZ0+EICb+A==
-X-Google-Smtp-Source: AGHT+IE+WgaEguchuhj6YT9T+Hqkp5MU16WACMs1AQTZBoRAX1jHyhUK7k+YKvihMK9Ien4Kg8JZgQ==
-X-Received: by 2002:a05:6a20:e12a:b0:187:e646:4faf with SMTP id kr42-20020a056a20e12a00b00187e6464fafmr19379471pzb.14.1701262043767;
-        Wed, 29 Nov 2023 04:47:23 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id c1-20020a170902d48100b001c9c8d761a3sm12100798plg.131.2023.11.29.04.47.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 04:47:23 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-        id F1C4B10205C79; Wed, 29 Nov 2023 19:47:19 +0700 (WIB)
-Date:   Wed, 29 Nov 2023 19:47:19 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Miroslav Benes <mbenes@suse.cz>,
-        Randy Dunlap <rdunlap@infradead.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        attreyee-muk <tintinm2017@gmail.com>, jpoimboe@kernel.org,
-        jikos@kernel.org, pmladek@suse.com, joe.lawrence@redhat.com,
-        corbet@lwn.net, live-patching@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Took care of some grammatical mistakes
-Message-ID: <ZWcy1wg68xKFOyDa@archie.me>
-References: <20231127155758.33070-1-tintinm2017@gmail.com>
- <202dbdf5-1adf-4ffa-a50d-0424967286ba@infradead.org>
- <ZWX1ZB5p5Vhz7WD2@casper.infradead.org>
- <0e7941d8-d9b2-4253-9ad5-0f7806e45e2e@infradead.org>
- <alpine.LSU.2.21.2311291105430.12159@pobox.suse.cz>
+        Wed, 29 Nov 2023 07:48:20 -0500
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D02A95;
+        Wed, 29 Nov 2023 04:48:24 -0800 (PST)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3ATClVJf92763797, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3ATClVJf92763797
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 29 Nov 2023 20:47:32 +0800
+Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Wed, 29 Nov 2023 20:47:32 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Wed, 29 Nov 2023 20:47:31 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
+ RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
+ 15.01.2375.007; Wed, 29 Nov 2023 20:47:31 +0800
+From:   Hayes Wang <hayeswang@realtek.com>
+To:     Douglas Anderson <dianders@chromium.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>
+CC:     Laura Nao <laura.nao@collabora.com>,
+        Edward Hill <ecgh@chromium.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Grant Grundler <grundler@chromium.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Simon Horman <horms@kernel.org>,
+        =?iso-8859-1?Q?Bj=F8rn_Mork?= <bjorn@mork.no>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: RE: [PATCH net v2 2/5] r8152: Add RTL8152_INACCESSIBLE checks to more loops
+Thread-Topic: [PATCH net v2 2/5] r8152: Add RTL8152_INACCESSIBLE checks to
+ more loops
+Thread-Index: AQHaIkOFTo2WdNHKX0+EoLHKjZ89lbCRNJBw
+Date:   Wed, 29 Nov 2023 12:47:31 +0000
+Message-ID: <d6f843b90b7146059332c82159ba79ff@realtek.com>
+References: <20231128133811.net.v2.1.I77097aa9ec01aeca1b3c75fde4ba5007a17fdf76@changeid>
+ <20231128133811.net.v2.2.I79c8a6c8cafd89979af5407d77a6eda589833dca@changeid>
+In-Reply-To: <20231128133811.net.v2.2.I79c8a6c8cafd89979af5407d77a6eda589833dca@changeid>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+x-originating-ip: [172.22.228.6]
+x-kse-serverinfo: RTEXDAG01.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yTYQjTtA5F/R5Chg"
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.21.2311291105430.12159@pobox.suse.cz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Douglas Anderson <dianders@chromium.org>
+> Sent: Wednesday, November 29, 2023 5:38 AM
+[...]
+> @@ -3000,6 +3000,8 @@ static void rtl8152_nic_reset(struct r8152 *tp)
+>                 ocp_write_byte(tp, MCU_TYPE_PLA, PLA_CR, CR_RST);
+> 
+>                 for (i = 0; i < 1000; i++) {
+> +                       if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
+> +                               return;
+>                         if (!(ocp_read_byte(tp, MCU_TYPE_PLA, PLA_CR) & CR_RST))
+>                                 break;
+>                         usleep_range(100, 400);
+> @@ -3329,6 +3331,8 @@ static void rtl_disable(struct r8152 *tp)
+>         rxdy_gated_en(tp, true);
+> 
+>         for (i = 0; i < 1000; i++) {
+> +               if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
+> +                       return;
 
---yTYQjTtA5F/R5Chg
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I think you have to replace return with break.
+Otherwise, rtl_stop_rx() wouldn't be called.
+And, you may free the memory which is using, when rtl8152_close () is called.
 
-On Wed, Nov 29, 2023 at 11:08:46AM +0100, Miroslav Benes wrote:
-> On Tue, 28 Nov 2023, Randy Dunlap wrote:
->=20
-> >=20
-> >=20
-> > On 11/28/23 06:12, Matthew Wilcox wrote:
-> > > On Mon, Nov 27, 2023 at 11:41:31AM -0800, Randy Dunlap wrote:
-> > >> Hi,
-> > >>
-> > >> On 11/27/23 07:57, attreyee-muk wrote:
-> > >>> Respected Maintainers,=20
-> > >>>
-> > >>> I have made some grammatical changes in the livepatch.rst file wher=
-e I
-> > >>> felt that the sentence would have sounded more correct and would ha=
-ve become easy for
-> > >>> beginners to understand by reading.=20
-> > >>> Requesting review of my proposed changes from the mainatiners.=20
-> > >>>
-> > >>> Thank You
-> > >>> Attreyee Mukherjee
-> > >>>
-> > >>> Signed-off-by: attreyee-muk <tintinm2017@gmail.com>
-> > >>> ---
-> > >>>  Documentation/livepatch/livepatch.rst | 8 ++++----
-> > >>>  1 file changed, 4 insertions(+), 4 deletions(-)
-> > >>>
-> > >>> diff --git a/Documentation/livepatch/livepatch.rst b/Documentation/=
-livepatch/livepatch.rst
-> > >>> index 68e3651e8af9..a2d2317b7d6b 100644
-> > >>> --- a/Documentation/livepatch/livepatch.rst
-> > >>> +++ b/Documentation/livepatch/livepatch.rst
-> > >>> @@ -35,11 +35,11 @@ and livepatching:
-> > >>> =20
-> > >>>  All three approaches need to modify the existing code at runtime. =
-Therefore
-> > >>> -they need to be aware of each other and not step over each other's=
- toes.
-> > >>> +they need to be aware of each other and not step over each others'=
- toes.
-> > >>
-> > >> I've never seen that written like that, so I disagree here. FWIW.
-> > >=20
-> > > "Step over" is new to me too.  I see "step on" much more often.
-> >=20
-> > Agreed.
->=20
-> Yes. Attreyee, please fix this instead.
-> =20
-> > > As far as placement of the apostrophe,
-> > > https://ludwig.guru/s/step+on+each+others+toes
-> > > suggests either omitting the apostrophe or placing it after the s,
-> > > as attreyee-muk has done is most common.
-> >=20
-> > Apparently you can find anything on the internet.  :)
-> >=20
-> > Here's the other side:
-> >=20
-> > https://jakubmarian.com/each-others-vs-each-others-in-english/
->=20
-> I am not a native speaker, but "step on each other's toe" sounds the best=
-=20
-> to me. Or perhaps even "they need to be aware of each other and not step=
-=20
-> on their toes" since it is then kind of implied? English is difficult :).
->=20
+>                 ocp_data = ocp_read_byte(tp, MCU_TYPE_PLA, PLA_OOB_CTRL);
+>                 if ((ocp_data & FIFO_EMPTY) == FIFO_EMPTY)
+>                         break;
+> @@ -3336,6 +3340,8 @@ static void rtl_disable(struct r8152 *tp)
+>         }
+> 
+>         for (i = 0; i < 1000; i++) {
+> +               if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
+> +                       return;
 
-I agree with yours and Jakub's blogpost, since 'each other' refers to
-every single individual.
+Same as above.
 
-Thanks.
+>                 if (ocp_read_word(tp, MCU_TYPE_PLA, PLA_TCR0) & TCR0_TX_EMPTY)
+>                         break;
+>                 usleep_range(1000, 2000);
+> @@ -5499,6 +5505,8 @@ static void wait_oob_link_list_ready(struct r8152 *tp)
+>         int i;
+> 
+>         for (i = 0; i < 1000; i++) {
+> +               if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
+> +                       return;
+>                 ocp_data = ocp_read_byte(tp, MCU_TYPE_PLA, PLA_OOB_CTRL);
+>                 if (ocp_data & LINK_LIST_READY)
+>                         break;
+> --
 
---=20
-An old man doll... just what I always wanted! - Clara
+Best Regards,
+Hayes
 
---yTYQjTtA5F/R5Chg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZWcy1wAKCRD2uYlJVVFO
-oyGpAP4kgfEso2+zbnQS0HyG60Q4+zjNQhE3A2TjFS57TzpBQgEAslKjk1drpxdh
-cMB6AHt0Id3vEQlacCw424M49hfpZQ4=
-=YaJg
------END PGP SIGNATURE-----
-
---yTYQjTtA5F/R5Chg--
