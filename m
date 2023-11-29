@@ -2,141 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9FF7FE105
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:30:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3D4E7FE111
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:32:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233979AbjK2Uaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 15:30:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44796 "EHLO
+        id S234016AbjK2Ub6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 15:31:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232601AbjK2Uai (ORCPT
+        with ESMTP id S233967AbjK2Ubz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 15:30:38 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E57DD67
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:30:44 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A474C433C8;
-        Wed, 29 Nov 2023 20:30:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701289843;
-        bh=kDVqqhvS7fMT+IWmCg5HfszY7e3uXpelsi48BU7S+Ws=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=frL0nD/GBuZLBlqS9AaNxXlTopyV8umDgZWa4jDEWA46BH7Q++/5ueTIpJzU6XZDV
-         vRMPCFXPA9li0858dY4Bta3UtlgJpANTseqlwjLG52exFFE3KyAk9CUS0I8kq3D7Mo
-         1ixyF+sT+dXVwzCvjABZdcYiwTkrBp4oHnYg+M/EDsEu4XJyWP2uvvwoKBDbVP1Bvv
-         KVu8IQYgBMM0TRh0TdrfFSqLUsftMcNp0Y/UDYAbGOl0YXUo1Mizb3/EMq3eD6zAZ2
-         qH8iX5u/zeDA8YBc8kGAq3Y0PNNgglDNpZfo56hdw2fnM8pGfTELN1UCm4W1utKt3t
-         H/5SWbOEZTV7g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 85D8A40094; Wed, 29 Nov 2023 17:30:40 -0300 (-03)
-Date:   Wed, 29 Nov 2023 17:30:40 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     James Clark <james.clark@arm.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] perf test: Add basic list test
-Message-ID: <ZWefcAoHBe+GpuiY@kernel.org>
-References: <20231129081004.1918096-1-irogers@google.com>
- <20231129081004.1918096-2-irogers@google.com>
- <a54d0a93-aacd-4c69-a34c-8628b0e18ee7@intel.com>
- <03b314c6-ed6d-ae17-5bc5-0170139f7feb@arm.com>
- <CAP-5=fX7UQGCXp3rqk8bKdevPUH6bnP2hxZ_jktj17YDzkuUDA@mail.gmail.com>
+        Wed, 29 Nov 2023 15:31:55 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44782D67;
+        Wed, 29 Nov 2023 12:32:01 -0800 (PST)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ATK6mNJ009375;
+        Wed, 29 Nov 2023 20:31:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=5KqutIxZnAHGo7kpr3+C7uJULTrGEiihfCuwTAWKZdo=;
+ b=ZZGvx5tJfRIdbGOhLnWzNtqOVbLQ0WlQP8yCFe/Gt1usLgCNuwVFq7Yj3F9HBx0TWHnx
+ HQDtxl3tcI7/sgxq85kxEo8sET6Bj/G7WhcL3qmRQFqHx9M08VWZI790xGpsgk9I2Dr0
+ 8f7RuXpz7pfNLwpLfPlgfig/sIFBr8mpLbYTwriQZ3WXIiOi4rgCNCC0egs92YSRZlmF
+ DTIuSmbZgo9bXji2PD3d+/mHHUgCcL27RGrPYVU6NLD+DbzGeIO8dfueZ2JadAqh+S43
+ poI7wa9MVe8X2hJxly8srDry4QH1eCDEsSPapGTZghYJa0F08o5blfyXpuOhzl3mOuG9 xg== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3unmrabmyc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Nov 2023 20:31:50 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ATKVn6v004691
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Nov 2023 20:31:49 GMT
+Received: from khsieh-linux1.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 29 Nov 2023 12:31:48 -0800
+From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
+To:     <dri-devel@lists.freedesktop.org>, <robdclark@gmail.com>,
+        <sean@poorly.run>, <swboyd@chromium.org>, <dianders@chromium.org>,
+        <vkoul@kernel.org>, <daniel@ffwll.ch>, <airlied@gmail.com>,
+        <agross@kernel.org>, <dmitry.baryshkov@linaro.org>,
+        <andersson@kernel.org>
+CC:     Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        <quic_abhinavk@quicinc.com>, <quic_jesszhan@quicinc.com>,
+        <quic_sbillaka@quicinc.com>, <marijn.suijten@somainline.org>,
+        <freedreno@lists.freedesktop.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1] drm/msm/dpu: improve DSC allocation
+Date:   Wed, 29 Nov 2023 12:31:38 -0800
+Message-ID: <1701289898-12235-1-git-send-email-quic_khsieh@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fX7UQGCXp3rqk8bKdevPUH6bnP2hxZ_jktj17YDzkuUDA@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: NrbIISQm5L4ZZzKkyTUZNzSXpKDIVA2Y
+X-Proofpoint-ORIG-GUID: NrbIISQm5L4ZZzKkyTUZNzSXpKDIVA2Y
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-29_19,2023-11-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 priorityscore=1501 suspectscore=0 mlxscore=0 clxscore=1015
+ lowpriorityscore=0 bulkscore=0 adultscore=0 spamscore=0 phishscore=0
+ mlxlogscore=814 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311290156
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Nov 29, 2023 at 09:21:12AM -0800, Ian Rogers escreveu:
-> On Wed, Nov 29, 2023 at 1:27 AM James Clark <james.clark@arm.com> wrote:
-> >
-> >
-> >
-> > On 29/11/2023 09:00, Adrian Hunter wrote:
-> > > On 29/11/23 10:10, Ian Rogers wrote:
-> > >> Test that json output produces valid json.
-> > >>
-> > >> Signed-off-by: Ian Rogers <irogers@google.com>
-> > >> ---
-> > >>  tools/perf/tests/shell/list.sh | 29 +++++++++++++++++++++++++++++
-> > >>  1 file changed, 29 insertions(+)
-> > >>  create mode 100755 tools/perf/tests/shell/list.sh
-> > >>
-> > >> diff --git a/tools/perf/tests/shell/list.sh b/tools/perf/tests/shell/list.sh
-> > >> new file mode 100755
-> > >> index 000000000000..286879a9837a
-> > >> --- /dev/null
-> > >> +++ b/tools/perf/tests/shell/list.sh
-> > >> @@ -0,0 +1,29 @@
-> > >> +#!/bin/sh
-> > >> +# perf list tests
-> > >> +# SPDX-License-Identifier: GPL-2.0
-> > >> +
-> > >> +set -e
-> > >> +err=0
-> > >> +
-> > >> +if [ "x$PYTHON" == "x" ]
-> > >> +then
-> > >> +    if which python3 > /dev/null
-> > >
-> > > 'which' isn't always present.  Maybe
-> > >
-> > > python3 --version >/dev/null 2>&1 && PYTHON=python3
-> > >
-> >
-> > Now that we have shellcheck integrated into the build, we could enable
-> > the POSIX mode test which would warn against this usage of which and
-> > suggest the alternative.
-> >
-> > At the moment though there are several other usages of which already in
-> > the tests. And probably enabling POSIX mode would come with hundreds of
-> > other warnings to fix.
-> >
-> > I'm not saying we shouldn't change this instance though, just adding the
-> > info for the discussion.
-> 
-> Sounds good to me. Fwiw, the instance where I lifted this code was:
-> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/perf/tests/shell/stat+json_output.sh?h=perf-tools-next#n12
-> 
-> With this change:
-> ```
-> diff --git a/tools/perf/tests/Makefile.tests b/tools/perf/tests/Makefile.tests
-> index fdaca5f7a946..06de6d3f4842 100644
-> --- a/tools/perf/tests/Makefile.tests
-> +++ b/tools/perf/tests/Makefile.tests
-> @@ -1,7 +1,7 @@
-> # SPDX-License-Identifier: GPL-2.0
-> # Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 2023
-> 
-> -PROGS := $(shell find tests/shell -perm -o=x -type f -name '*.sh')
-> +PROGS := $(shell find tests/shell -executable -type f -name '*.sh')
-> FILE_NAME := $(notdir $(PROGS))
-> FILE_NAME := $(FILE_NAME:%=.%)
-> LOGS := $(join $(dir $(PROGS)),$(FILE_NAME))
-> ```
-> 
-> shellcheck now runs for me. I'll try adding the posix check into the
-> patch series, as well as fixing other instances I can see.
+A DCE (Display Compression Engine) contains two DSC hard slice encoders.
+Each DCE start with even DSC encoder index followed by an odd DSC encoder
+index. Each encoder can work independently. But Only two DSC encoders from
+same DCE can be paired to work together to support merge mode. In addition,
+the DSC with even index have to mapping to even pingpong index and DSC with
+odd index have to mapping to odd pingpong index at its data path. This patch
+improve DSC allocation mechanism with consideration of above factors.
 
-So I'll wait for a v2 for this one, ok?
+Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+---
+ drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c | 94 +++++++++++++++++++++++++++++-----
+ 1 file changed, 82 insertions(+), 12 deletions(-)
 
-- Arnaldo
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+index f9215643..427d70d 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c
+@@ -466,24 +466,94 @@ static int _dpu_rm_reserve_dsc(struct dpu_rm *rm,
+ 			       struct drm_encoder *enc,
+ 			       const struct msm_display_topology *top)
+ {
+-	int num_dsc = top->num_dsc;
+-	int i;
++	int num_dsc = 0;
++	int i, pp_idx;
++	bool pair = false;
++	int dsc_idx[DSC_MAX - DSC_0];
++	uint32_t pp_to_enc_id[PINGPONG_MAX - PINGPONG_0];
++	int pp_max = PINGPONG_MAX - PINGPONG_0;
++
++	if (!top->num_dsc || !top->num_intf)
++		return 0;
++
++	/*
++	 * Truth:
++	 * 1) every layer mixer only connects to one pingpong
++	 * 2) no pingpong split -- two layer mixers shared one pingpong
++	 * 3) each DSC engine contains two dsc encoders
++	 *    -- index(0,1), index (2,3),... etc
++	 * 4) dsc pair can only happens with same DSC engine except 4 dsc
++	 *    merge mode application (8k) which need two DSC engines
++	 * 5) odd pingpong connect to odd dsc
++	 * 6) even pingpong connect even dsc
++	 */
++
++	/* num_dsc should be either 1, 2 or 4 */
++	if (top->num_dsc > top->num_intf)	/* merge mode */
++		pair = true;
++
++	/* fill working copy with pingpong list */
++	memcpy(pp_to_enc_id, global_state->pingpong_to_enc_id, sizeof(pp_to_enc_id));
++
++	for (i = 0; i < ARRAY_SIZE(rm->dsc_blks); i++) {
++		if (!rm->dsc_blks[i])	/* end of dsc list */
++			break;
+ 
+-	/* check if DSC required are allocated or not */
+-	for (i = 0; i < num_dsc; i++) {
+-		if (!rm->dsc_blks[i]) {
+-			DPU_ERROR("DSC %d does not exist\n", i);
+-			return -EIO;
++		if (global_state->dsc_to_enc_id[i]) {	/* used */
++			/* consective dsc index to be paired */
++			if (pair && num_dsc) {	/* already start pairing, re start */
++				num_dsc = 0;
++				/* fill working copy with pingpong list */
++				memcpy(pp_to_enc_id, global_state->pingpong_to_enc_id,
++								sizeof(pp_to_enc_id));
++			}
++			continue;
+ 		}
+ 
+-		if (global_state->dsc_to_enc_id[i]) {
+-			DPU_ERROR("DSC %d is already allocated\n", i);
+-			return -EIO;
++		/* odd index can not become start of pairing */
++		if (pair && (i & 0x01) && !num_dsc)
++			continue;
++
++		/*
++		 * find the pingpong index which had been reserved
++		 * previously at layer mixer allocation
++		 */
++		for (pp_idx = 0; pp_idx < pp_max; pp_idx++) {
++			if (pp_to_enc_id[pp_idx] == enc->base.id)
++				break;
+ 		}
++
++		/*
++		 * dsc even index must map to pingpong even index
++		 * dsc odd index must map to pingpong odd index
++		 */
++		if ((i & 0x01) != (pp_idx & 0x01))
++			continue;
++
++		/*
++		 * delete pp_idx so that it can not be found at next search
++		 * in the case of pairing
++		 */
++		pp_to_enc_id[pp_idx] = NULL;
++
++		dsc_idx[num_dsc++] = i;
++		if (num_dsc >= top->num_dsc)
++			break;
+ 	}
+ 
+-	for (i = 0; i < num_dsc; i++)
+-		global_state->dsc_to_enc_id[i] = enc->base.id;
++	if (num_dsc < top->num_dsc) {
++		DPU_ERROR("DSC allocation failed num_dsc=%d required=%d\n",
++						num_dsc, top->num_dsc );
++		return -ENAVAIL;
++	}
++
++	/* reserve dsc */
++	for (i = 0; i < top->num_dsc; i++) {
++		int j;
++
++		j = dsc_idx[i];
++		global_state->dsc_to_enc_id[j] = enc->base.id;
++	}
+ 
+ 	return 0;
+ }
+-- 
+2.7.4
+
