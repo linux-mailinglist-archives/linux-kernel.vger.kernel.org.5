@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CAC97FD782
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:07:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED277FD783
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:07:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233787AbjK2NHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 08:07:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36158 "EHLO
+        id S233824AbjK2NHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 08:07:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232700AbjK2NHC (ORCPT
+        with ESMTP id S233185AbjK2NHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 29 Nov 2023 08:07:02 -0500
 Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5C78D10E0
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9CAD3C4
         for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:07:07 -0800 (PST)
 Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8DxFeh5N2dlYqc9AA--.64236S3;
-        Wed, 29 Nov 2023 21:07:05 +0800 (CST)
+        by gateway (Coremail) with SMTP id _____8Dx_+t6N2dlZqc9AA--.55758S3;
+        Wed, 29 Nov 2023 21:07:06 +0800 (CST)
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Axzy91N2dlVtNPAA--.45987S4;
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Axzy91N2dlVtNPAA--.45987S5;
         Wed, 29 Nov 2023 21:07:05 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Josh Poimboeuf <jpoimboe@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Huacai Chen <chenhuacai@kernel.org>
 Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 2/8] objtool/LoongArch: Implement instruction decoder
-Date:   Wed, 29 Nov 2023 21:06:55 +0800
-Message-ID: <20231129130701.27744-3-yangtiezhu@loongson.cn>
+Subject: [PATCH v5 3/8] objtool/x86: Separate arch-specific and generic parts
+Date:   Wed, 29 Nov 2023 21:06:56 +0800
+Message-ID: <20231129130701.27744-4-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231129130701.27744-1-yangtiezhu@loongson.cn>
 References: <20231129130701.27744-1-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Axzy91N2dlVtNPAA--.45987S4
+X-CM-TRANSID: AQAAf8Axzy91N2dlVtNPAA--.45987S5
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj9fXoWfJFykXw18AF1DKw4DZr4DZFc_yoW8Gr48Ko
-        W8ta4DK34rJr4Uua1UJrn7JF47Zr109rW5Z34SvrsYyF4UZw15WrZFkw43W3Wa9w48JrZr
-        Gayj9FykAa17XF1fl-sFpf9Il3svdjkaLaAFLSUrUUUU1b8apTn2vfkv8UJUUUU8wcxFpf
-        9Il3svdxBIdaVrn0xqx4xG64xvF2IEw4CE5I8CrVC2j2Jv73VFW2AGmfu7bjvjm3AaLaJ3
-        UjIYCTnIWjp_UUUYy7kC6x804xWl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI
-        8IcIk0rVWrJVCq3wAFIxvE14AKwVWUAVWUZwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
-        Y2AK021l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14
-        v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAF
-        wI0_Gr1j6F4UJwAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2
-        xF0cIa020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_
-        Jw0_WrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x
-        0EwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AK
-        xVWUXVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
-        AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI
-        42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMI
-        IF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVF
-        xhVjvjDU0xZFpf9x07jrPEfUUUUU=
+X-Coremail-Antispam: 1Uk129KBj93XoW3uFW5Kw45AF1rGr47Xw4fWFX_yoWkuw15pF
+        15CrWDGrWxXF13Gwn2gan7CrWYkws7Gr1kArnxC340v3yIqw1rJFsIyryjvF98W393Way3
+        ua90qFWFkanxAFcCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUU9Fb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r126r13M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+        tVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
+        AKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v2
+        6r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
+        CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r4j6ryUMIIF
+        0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
+        AIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2
+        KfnxnUUI43ZEXa7IU8XyCJUUUUU==
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -62,22 +62,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Only copy the minimal definitions of instruction opcodes and formats
-in inst.h from arch/loongarch to tools/arch/loongarch, and also copy
-the definition of sign_extend64() to tools/include/linux/bitops.h to
-decode the following kinds of instructions:
+Move init_orc_entry(), write_orc_entry(), reg_name(), orc_type_name()
+and print_reg() from generic orc_gen.c and orc_dump.c to arch-specific
+orc.c, then introduce a new function orc_print_dump() to print info.
 
-(1) stack pointer related instructions
-addi.d, ld.d, st.d, ldptr.d and stptr.d
-
-(2) branch and jump related instructions
-beq, bne, blt, bge, bltu, bgeu, beqz, bnez, bceqz, bcnez, b, bl and jirl
-
-(3) other instructions
-break, nop and ertn
-
-See more info about instructions in LoongArch Reference Manual:
-https://loongson.github.io/LoongArch-Documentation/LoongArch-Vol1-EN.html
+This is preparation for later patch, no functionality change.
 
 Co-developed-by: Jinyang He <hejinyang@loongson.cn>
 Signed-off-by: Jinyang He <hejinyang@loongson.cn>
@@ -85,503 +74,457 @@ Co-developed-by: Youling Tang <tangyouling@loongson.cn>
 Signed-off-by: Youling Tang <tangyouling@loongson.cn>
 Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- tools/arch/loongarch/include/asm/inst.h | 161 ++++++++++++++
- tools/include/linux/bitops.h            |  11 +
- tools/objtool/arch/loongarch/decode.c   | 273 +++++++++++++++++++++++-
- 3 files changed, 443 insertions(+), 2 deletions(-)
- create mode 100644 tools/arch/loongarch/include/asm/inst.h
+ tools/objtool/arch/x86/Build        |   1 +
+ tools/objtool/arch/x86/orc.c        | 188 ++++++++++++++++++++++++++++
+ tools/objtool/include/objtool/orc.h |  14 +++
+ tools/objtool/orc_dump.c            |  69 +---------
+ tools/objtool/orc_gen.c             | 113 +----------------
+ 5 files changed, 206 insertions(+), 179 deletions(-)
+ create mode 100644 tools/objtool/arch/x86/orc.c
+ create mode 100644 tools/objtool/include/objtool/orc.h
 
-diff --git a/tools/arch/loongarch/include/asm/inst.h b/tools/arch/loongarch/include/asm/inst.h
+diff --git a/tools/objtool/arch/x86/Build b/tools/objtool/arch/x86/Build
+index 9f7869b5c5e0..3dedb2fd8f3a 100644
+--- a/tools/objtool/arch/x86/Build
++++ b/tools/objtool/arch/x86/Build
+@@ -1,5 +1,6 @@
+ objtool-y += special.o
+ objtool-y += decode.o
++objtool-y += orc.o
+ 
+ inat_tables_script = ../arch/x86/tools/gen-insn-attr-x86.awk
+ inat_tables_maps = ../arch/x86/lib/x86-opcode-map.txt
+diff --git a/tools/objtool/arch/x86/orc.c b/tools/objtool/arch/x86/orc.c
 new file mode 100644
-index 000000000000..c25b5853181d
+index 000000000000..b6cd943e87f9
 --- /dev/null
-+++ b/tools/arch/loongarch/include/asm/inst.h
-@@ -0,0 +1,161 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2020-2022 Loongson Technology Corporation Limited
-+ */
-+#ifndef _ASM_INST_H
-+#define _ASM_INST_H
++++ b/tools/objtool/arch/x86/orc.c
+@@ -0,0 +1,188 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++#include <linux/objtool_types.h>
++#include <asm/orc_types.h>
 +
-+#include <linux/bitops.h>
-+
-+#define LOONGARCH_INSN_NOP		0x03400000
-+
-+enum reg0i15_op {
-+	break_op	= 0x54,
-+};
-+
-+enum reg0i26_op {
-+	b_op		= 0x14,
-+	bl_op		= 0x15,
-+};
-+
-+enum reg1i21_op {
-+	beqz_op		= 0x10,
-+	bnez_op		= 0x11,
-+	bceqz_op	= 0x12, /* bits[9:8] = 0x00 */
-+	bcnez_op	= 0x12, /* bits[9:8] = 0x01 */
-+};
-+
-+enum reg2_op {
-+	ertn_op		= 0x1920e,
-+};
-+
-+enum reg2i12_op {
-+	addid_op	= 0x0b,
-+	andi_op		= 0x0d,
-+	ldd_op		= 0xa3,
-+	std_op		= 0xa7,
-+};
-+
-+enum reg2i14_op {
-+	ldptrd_op	= 0x26,
-+	stptrd_op	= 0x27,
-+};
-+
-+enum reg2i16_op {
-+	jirl_op		= 0x13,
-+	beq_op		= 0x16,
-+	bne_op		= 0x17,
-+	blt_op		= 0x18,
-+	bge_op		= 0x19,
-+	bltu_op		= 0x1a,
-+	bgeu_op		= 0x1b,
-+};
-+
-+struct reg0i15_format {
-+	unsigned int immediate : 15;
-+	unsigned int opcode : 17;
-+};
-+
-+struct reg0i26_format {
-+	unsigned int immediate_h : 10;
-+	unsigned int immediate_l : 16;
-+	unsigned int opcode : 6;
-+};
-+
-+struct reg1i21_format {
-+	unsigned int immediate_h  : 5;
-+	unsigned int rj : 5;
-+	unsigned int immediate_l : 16;
-+	unsigned int opcode : 6;
-+};
-+
-+struct reg2_format {
-+	unsigned int rd : 5;
-+	unsigned int rj : 5;
-+	unsigned int opcode : 22;
-+};
-+
-+struct reg2i12_format {
-+	unsigned int rd : 5;
-+	unsigned int rj : 5;
-+	unsigned int immediate : 12;
-+	unsigned int opcode : 10;
-+};
-+
-+struct reg2i14_format {
-+	unsigned int rd : 5;
-+	unsigned int rj : 5;
-+	unsigned int immediate : 14;
-+	unsigned int opcode : 8;
-+};
-+
-+struct reg2i16_format {
-+	unsigned int rd : 5;
-+	unsigned int rj : 5;
-+	unsigned int immediate : 16;
-+	unsigned int opcode : 6;
-+};
-+
-+union loongarch_instruction {
-+	unsigned int word;
-+	struct reg0i15_format	reg0i15_format;
-+	struct reg0i26_format	reg0i26_format;
-+	struct reg1i21_format	reg1i21_format;
-+	struct reg2_format	reg2_format;
-+	struct reg2i12_format	reg2i12_format;
-+	struct reg2i14_format	reg2i14_format;
-+	struct reg2i16_format	reg2i16_format;
-+};
-+
-+#define LOONGARCH_INSN_SIZE	sizeof(union loongarch_instruction)
-+
-+enum loongarch_gpr {
-+	LOONGARCH_GPR_ZERO = 0,
-+	LOONGARCH_GPR_RA = 1,
-+	LOONGARCH_GPR_TP = 2,
-+	LOONGARCH_GPR_SP = 3,
-+	LOONGARCH_GPR_A0 = 4,	/* Reused as V0 for return value */
-+	LOONGARCH_GPR_A1,	/* Reused as V1 for return value */
-+	LOONGARCH_GPR_A2,
-+	LOONGARCH_GPR_A3,
-+	LOONGARCH_GPR_A4,
-+	LOONGARCH_GPR_A5,
-+	LOONGARCH_GPR_A6,
-+	LOONGARCH_GPR_A7,
-+	LOONGARCH_GPR_T0 = 12,
-+	LOONGARCH_GPR_T1,
-+	LOONGARCH_GPR_T2,
-+	LOONGARCH_GPR_T3,
-+	LOONGARCH_GPR_T4,
-+	LOONGARCH_GPR_T5,
-+	LOONGARCH_GPR_T6,
-+	LOONGARCH_GPR_T7,
-+	LOONGARCH_GPR_T8,
-+	LOONGARCH_GPR_FP = 22,
-+	LOONGARCH_GPR_S0 = 23,
-+	LOONGARCH_GPR_S1,
-+	LOONGARCH_GPR_S2,
-+	LOONGARCH_GPR_S3,
-+	LOONGARCH_GPR_S4,
-+	LOONGARCH_GPR_S5,
-+	LOONGARCH_GPR_S6,
-+	LOONGARCH_GPR_S7,
-+	LOONGARCH_GPR_S8,
-+	LOONGARCH_GPR_MAX
-+};
-+
-+#define DEF_EMIT_REG2I16_FORMAT(NAME, OP)				\
-+static inline void emit_##NAME(union loongarch_instruction *insn,	\
-+			       enum loongarch_gpr rj,			\
-+			       enum loongarch_gpr rd,			\
-+			       int offset)				\
-+{									\
-+	insn->reg2i16_format.opcode = OP;				\
-+	insn->reg2i16_format.immediate = offset;			\
-+	insn->reg2i16_format.rj = rj;					\
-+	insn->reg2i16_format.rd = rd;					\
-+}
-+
-+DEF_EMIT_REG2I16_FORMAT(jirl, jirl_op)
-+
-+#endif /* _ASM_INST_H */
-diff --git a/tools/include/linux/bitops.h b/tools/include/linux/bitops.h
-index f18683b95ea6..7319f6ced108 100644
---- a/tools/include/linux/bitops.h
-+++ b/tools/include/linux/bitops.h
-@@ -87,4 +87,15 @@ static inline __u32 rol32(__u32 word, unsigned int shift)
- 	return (word << shift) | (word >> ((-shift) & 31));
- }
- 
-+/**
-+ * sign_extend64 - sign extend a 64-bit value using specified bit as sign-bit
-+ * @value: value to sign extend
-+ * @index: 0 based bit index (0<=index<64) to sign bit
-+ */
-+static __always_inline __s64 sign_extend64(__u64 value, int index)
-+{
-+	__u8 shift = 63 - index;
-+	return (__s64)(value << shift) >> shift;
-+}
-+
- #endif
-diff --git a/tools/objtool/arch/loongarch/decode.c b/tools/objtool/arch/loongarch/decode.c
-index cc74ba4e0f54..ff0b53144d12 100644
---- a/tools/objtool/arch/loongarch/decode.c
-+++ b/tools/objtool/arch/loongarch/decode.c
-@@ -1,6 +1,12 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
- #include <string.h>
- #include <objtool/check.h>
++#include <objtool/check.h>
++#include <objtool/orc.h>
 +#include <objtool/warn.h>
-+#include <asm/inst.h>
++#include <objtool/endianness.h>
 +
-+#ifndef EM_LOONGARCH
-+#define EM_LOONGARCH	258
-+#endif
- 
- int arch_ftrace_match(char *name)
- {
-@@ -39,21 +45,284 @@ int arch_decode_hint_reg(u8 sp_reg, int *base)
- 	return 0;
- }
- 
-+static bool is_loongarch(const struct elf *elf)
++int init_orc_entry(struct orc_entry *orc, struct cfi_state *cfi, struct instruction *insn)
 +{
-+	if (elf->ehdr.e_machine == EM_LOONGARCH)
-+		return true;
++	struct cfi_reg *bp = &cfi->regs[CFI_BP];
 +
-+	WARN("unexpected ELF machine type %d", elf->ehdr.e_machine);
-+	return false;
-+}
++	memset(orc, 0, sizeof(*orc));
 +
-+#define ADD_OP(op) \
-+	if (!(op = calloc(1, sizeof(*op)))) \
-+		return -1; \
-+	else for (*ops_list = op, ops_list = &op->next; op; op = NULL)
-+
-+static bool decode_insn_reg0i26_fomat(union loongarch_instruction inst,
-+				      struct instruction *insn)
-+{
-+	switch (inst.reg0i26_format.opcode) {
-+	case b_op:
-+		insn->type = INSN_JUMP_UNCONDITIONAL;
-+		insn->immediate = sign_extend64(inst.reg0i26_format.immediate_h << 16 |
-+						inst.reg0i26_format.immediate_l, 25);
-+		break;
-+	case bl_op:
-+		insn->type = INSN_CALL;
-+		insn->immediate = sign_extend64(inst.reg0i26_format.immediate_h << 16 |
-+						inst.reg0i26_format.immediate_l, 25);
-+		break;
-+	default:
-+		return false;
++	if (!cfi) {
++		/*
++		 * This is usually either unreachable nops/traps (which don't
++		 * trigger unreachable instruction warnings), or
++		 * STACK_FRAME_NON_STANDARD functions.
++		 */
++		orc->type = ORC_TYPE_UNDEFINED;
++		return 0;
 +	}
 +
-+	return true;
-+}
-+
-+static bool decode_insn_reg1i21_fomat(union loongarch_instruction inst,
-+				      struct instruction *insn)
-+{
-+	switch (inst.reg1i21_format.opcode) {
-+	case beqz_op:
-+	case bnez_op:
-+	case bceqz_op:
-+		insn->type = INSN_JUMP_CONDITIONAL;
-+		insn->immediate = sign_extend64(inst.reg1i21_format.immediate_h << 16 |
-+						inst.reg1i21_format.immediate_l, 20);
++	switch (cfi->type) {
++	case UNWIND_HINT_TYPE_UNDEFINED:
++		orc->type = ORC_TYPE_UNDEFINED;
++		return 0;
++	case UNWIND_HINT_TYPE_END_OF_STACK:
++		orc->type = ORC_TYPE_END_OF_STACK;
++		return 0;
++	case UNWIND_HINT_TYPE_CALL:
++		orc->type = ORC_TYPE_CALL;
++		break;
++	case UNWIND_HINT_TYPE_REGS:
++		orc->type = ORC_TYPE_REGS;
++		break;
++	case UNWIND_HINT_TYPE_REGS_PARTIAL:
++		orc->type = ORC_TYPE_REGS_PARTIAL;
 +		break;
 +	default:
-+		return false;
++		WARN_INSN(insn, "unknown unwind hint type %d", cfi->type);
++		return -1;
 +	}
 +
-+	return true;
-+}
++	orc->signal = cfi->signal;
 +
-+static bool decode_insn_reg2i12_fomat(union loongarch_instruction inst,
-+				      struct instruction *insn,
-+				      struct stack_op **ops_list,
-+				      struct stack_op *op)
-+{
-+	switch (inst.reg2i12_format.opcode) {
-+	case addid_op:
-+		if ((inst.reg2i12_format.rd == CFI_SP) || (inst.reg2i12_format.rj == CFI_SP)) {
-+			/* addi.d sp,sp,si12 or addi.d fp,sp,si12 */
-+			insn->immediate = sign_extend64(inst.reg2i12_format.immediate, 11);
-+			ADD_OP(op) {
-+				op->src.type = OP_SRC_ADD;
-+				op->src.reg = inst.reg2i12_format.rj;
-+				op->src.offset = insn->immediate;
-+				op->dest.type = OP_DEST_REG;
-+				op->dest.reg = inst.reg2i12_format.rd;
-+			}
-+		}
++	switch (cfi->cfa.base) {
++	case CFI_SP:
++		orc->sp_reg = ORC_REG_SP;
 +		break;
-+	case ldd_op:
-+		if (inst.reg2i12_format.rj == CFI_SP) {
-+			/* ld.d rd,sp,si12 */
-+			insn->immediate = sign_extend64(inst.reg2i12_format.immediate, 11);
-+			ADD_OP(op) {
-+				op->src.type = OP_SRC_REG_INDIRECT;
-+				op->src.reg = CFI_SP;
-+				op->src.offset = insn->immediate;
-+				op->dest.type = OP_DEST_REG;
-+				op->dest.reg = inst.reg2i12_format.rd;
-+			}
-+		}
++	case CFI_SP_INDIRECT:
++		orc->sp_reg = ORC_REG_SP_INDIRECT;
 +		break;
-+	case std_op:
-+		if (inst.reg2i12_format.rj == CFI_SP) {
-+			/* st.d rd,sp,si12 */
-+			insn->immediate = sign_extend64(inst.reg2i12_format.immediate, 11);
-+			ADD_OP(op) {
-+				op->src.type = OP_SRC_REG;
-+				op->src.reg = inst.reg2i12_format.rd;
-+				op->dest.type = OP_DEST_REG_INDIRECT;
-+				op->dest.reg = CFI_SP;
-+				op->dest.offset = insn->immediate;
-+			}
-+		}
++	case CFI_BP:
++		orc->sp_reg = ORC_REG_BP;
 +		break;
-+	case andi_op:
-+		if (inst.reg2i12_format.rd == 0 &&
-+		    inst.reg2i12_format.rj == 0 &&
-+		    inst.reg2i12_format.immediate == 0)
-+			/* andi r0,r0,0 */
-+			insn->type = INSN_NOP;
++	case CFI_BP_INDIRECT:
++		orc->sp_reg = ORC_REG_BP_INDIRECT;
++		break;
++	case CFI_R10:
++		orc->sp_reg = ORC_REG_R10;
++		break;
++	case CFI_R13:
++		orc->sp_reg = ORC_REG_R13;
++		break;
++	case CFI_DI:
++		orc->sp_reg = ORC_REG_DI;
++		break;
++	case CFI_DX:
++		orc->sp_reg = ORC_REG_DX;
 +		break;
 +	default:
-+		return false;
++		WARN_INSN(insn, "unknown CFA base reg %d", cfi->cfa.base);
++		return -1;
 +	}
 +
-+	return true;
-+}
-+
-+static bool decode_insn_reg2i14_fomat(union loongarch_instruction inst,
-+				      struct instruction *insn,
-+				      struct stack_op **ops_list,
-+				      struct stack_op *op)
-+{
-+	switch (inst.reg2i14_format.opcode) {
-+	case ldptrd_op:
-+		if (inst.reg2i14_format.rj == CFI_SP) {
-+			/* ldptr.d rd,sp,si14 */
-+			insn->immediate = sign_extend64(inst.reg2i14_format.immediate, 13);
-+			ADD_OP(op) {
-+				op->src.type = OP_SRC_REG_INDIRECT;
-+				op->src.reg = CFI_SP;
-+				op->src.offset = insn->immediate;
-+				op->dest.type = OP_DEST_REG;
-+				op->dest.reg = inst.reg2i14_format.rd;
-+			}
-+		}
++	switch (bp->base) {
++	case CFI_UNDEFINED:
++		orc->bp_reg = ORC_REG_UNDEFINED;
 +		break;
-+	case stptrd_op:
-+		if (inst.reg2i14_format.rj == CFI_SP) {
-+			/* stptr.d ra,sp,0 */
-+			if (inst.reg2i14_format.rd == LOONGARCH_GPR_RA &&
-+			    inst.reg2i14_format.immediate == 0)
-+				break;
-+
-+			/* stptr.d rd,sp,si14 */
-+			insn->immediate = sign_extend64(inst.reg2i14_format.immediate, 13);
-+			ADD_OP(op) {
-+				op->src.type = OP_SRC_REG;
-+				op->src.reg = inst.reg2i14_format.rd;
-+				op->dest.type = OP_DEST_REG_INDIRECT;
-+				op->dest.reg = CFI_SP;
-+				op->dest.offset = insn->immediate;
-+			}
-+		}
++	case CFI_CFA:
++		orc->bp_reg = ORC_REG_PREV_SP;
++		break;
++	case CFI_BP:
++		orc->bp_reg = ORC_REG_BP;
 +		break;
 +	default:
-+		return false;
++		WARN_INSN(insn, "unknown BP base reg %d", bp->base);
++		return -1;
 +	}
 +
-+	return true;
++	orc->sp_offset = cfi->cfa.offset;
++	orc->bp_offset = bp->offset;
++
++	return 0;
 +}
 +
-+static bool decode_insn_reg2i16_fomat(union loongarch_instruction inst,
-+				      struct instruction *insn)
++int write_orc_entry(struct elf *elf, struct section *orc_sec,
++		    struct section *ip_sec, unsigned int idx,
++		    struct section *insn_sec, unsigned long insn_off,
++		    struct orc_entry *o)
 +{
-+	switch (inst.reg2i16_format.opcode) {
-+	case jirl_op:
-+		if (inst.reg2i16_format.rd == 0 &&
-+		    inst.reg2i16_format.rj == CFI_RA &&
-+		    inst.reg2i16_format.immediate == 0) {
-+			/* jirl r0,ra,0 */
-+			insn->type = INSN_RETURN;
-+		} else if (inst.reg2i16_format.rd == CFI_RA) {
-+			/* jirl ra,rj,offs16 */
-+			insn->type = INSN_CALL_DYNAMIC;
-+		} else if (inst.reg2i16_format.rd == CFI_A0 &&
-+			   inst.reg2i16_format.immediate == 0) {
-+			/*
-+			 * jirl a0,t0,0
-+			 * this is a special case in loongarch_suspend_enter,
-+			 * just treat it as a call instruction.
-+			 */
-+			insn->type = INSN_CALL_DYNAMIC;
-+		} else if (inst.reg2i16_format.rd == 0 &&
-+			   inst.reg2i16_format.immediate == 0) {
-+			/* jirl r0,rj,0 */
-+			insn->type = INSN_JUMP_DYNAMIC;
-+		} else if (inst.reg2i16_format.rd == 0 &&
-+			   inst.reg2i16_format.immediate != 0) {
-+			/*
-+			 * jirl r0,t0,12
-+			 * this is a rare case in JUMP_VIRT_ADDR,
-+			 * just ignore it due to it is harmless for tracing.
-+			 */
-+			break;
-+		} else {
-+			/* jirl rd,rj,offs16 */
-+			insn->type = INSN_JUMP_UNCONDITIONAL;
-+			insn->immediate = sign_extend64(inst.reg2i16_format.immediate, 15);
-+		}
-+		break;
-+	case beq_op:
-+	case bne_op:
-+	case blt_op:
-+	case bge_op:
-+	case bltu_op:
-+	case bgeu_op:
-+		insn->type = INSN_JUMP_CONDITIONAL;
-+		insn->immediate = sign_extend64(inst.reg2i16_format.immediate, 15);
-+		break;
-+	default:
-+		return false;
-+	}
++	struct orc_entry *orc;
 +
-+	return true;
-+}
++	/* populate ORC data */
++	orc = (struct orc_entry *)orc_sec->data->d_buf + idx;
++	memcpy(orc, o, sizeof(*orc));
++	orc->sp_offset = bswap_if_needed(elf, orc->sp_offset);
++	orc->bp_offset = bswap_if_needed(elf, orc->bp_offset);
 +
- int arch_decode_instruction(struct objtool_file *file, const struct section *sec,
- 			    unsigned long offset, unsigned int maxlen,
- 			    struct instruction *insn)
- {
-+	struct stack_op **ops_list = &insn->stack_ops;
-+	const struct elf *elf = file->elf;
-+	struct stack_op *op = NULL;
-+	union loongarch_instruction inst;
-+
-+	if (!is_loongarch(elf))
++	/* populate reloc for ip */
++	if (!elf_init_reloc_text_sym(elf, ip_sec, idx * sizeof(int), idx,
++				     insn_sec, insn_off))
 +		return -1;
 +
-+	if (maxlen < LOONGARCH_INSN_SIZE)
-+		return 0;
++	return 0;
++}
 +
-+	insn->len = LOONGARCH_INSN_SIZE;
-+	insn->type = INSN_OTHER;
-+	insn->immediate = 0;
-+
-+	inst = *(union loongarch_instruction *)(sec->data->d_buf + offset);
-+
-+	if (decode_insn_reg0i26_fomat(inst, insn))
-+		return 0;
-+	if (decode_insn_reg1i21_fomat(inst, insn))
-+		return 0;
-+	if (decode_insn_reg2i12_fomat(inst, insn, ops_list, op))
-+		return 0;
-+	if (decode_insn_reg2i14_fomat(inst, insn, ops_list, op))
-+		return 0;
-+	if (decode_insn_reg2i16_fomat(inst, insn))
-+		return 0;
-+
-+	if (inst.word == 0)
-+		insn->type = INSN_NOP;
-+	else if (inst.reg0i15_format.opcode == break_op) {
-+		/* break */
-+		insn->type = INSN_BUG;
-+	} else if (inst.reg2_format.opcode == ertn_op) {
-+		/* ertn */
-+		insn->type = INSN_RETURN;
++static const char *reg_name(unsigned int reg)
++{
++	switch (reg) {
++	case ORC_REG_PREV_SP:
++		return "prevsp";
++	case ORC_REG_DX:
++		return "dx";
++	case ORC_REG_DI:
++		return "di";
++	case ORC_REG_BP:
++		return "bp";
++	case ORC_REG_SP:
++		return "sp";
++	case ORC_REG_R10:
++		return "r10";
++	case ORC_REG_R13:
++		return "r13";
++	case ORC_REG_BP_INDIRECT:
++		return "bp(ind)";
++	case ORC_REG_SP_INDIRECT:
++		return "sp(ind)";
++	default:
++		return "?";
 +	}
++}
 +
- 	return 0;
- }
++static const char *orc_type_name(unsigned int type)
++{
++	switch (type) {
++	case ORC_TYPE_UNDEFINED:
++		return "(und)";
++	case ORC_TYPE_END_OF_STACK:
++		return "end";
++	case ORC_TYPE_CALL:
++		return "call";
++	case ORC_TYPE_REGS:
++		return "regs";
++	case ORC_TYPE_REGS_PARTIAL:
++		return "regs (partial)";
++	default:
++		return "?";
++	}
++}
++
++static void print_reg(unsigned int reg, int offset)
++{
++	if (reg == ORC_REG_BP_INDIRECT)
++		printf("(bp%+d)", offset);
++	else if (reg == ORC_REG_SP_INDIRECT)
++		printf("(sp)%+d", offset);
++	else if (reg == ORC_REG_UNDEFINED)
++		printf("(und)");
++	else
++		printf("%s%+d", reg_name(reg), offset);
++}
++
++void orc_print_dump(struct elf *dummy_elf, struct orc_entry *orc, int i)
++{
++	printf("type:%s", orc_type_name(orc[i].type));
++
++	printf(" sp:");
++	print_reg(orc[i].sp_reg, bswap_if_needed(dummy_elf, orc[i].sp_offset));
++
++	printf(" bp:");
++	print_reg(orc[i].bp_reg, bswap_if_needed(dummy_elf, orc[i].bp_offset));
++
++	printf(" signal:%d\n", orc[i].signal);
++}
+diff --git a/tools/objtool/include/objtool/orc.h b/tools/objtool/include/objtool/orc.h
+new file mode 100644
+index 000000000000..15a32def1071
+--- /dev/null
++++ b/tools/objtool/include/objtool/orc.h
+@@ -0,0 +1,14 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++#ifndef _OBJTOOL_ORC_H
++#define _OBJTOOL_ORC_H
++
++#include <objtool/check.h>
++
++int init_orc_entry(struct orc_entry *orc, struct cfi_state *cfi, struct instruction *insn);
++void orc_print_dump(struct elf *dummy_elf, struct orc_entry *orc, int i);
++int write_orc_entry(struct elf *elf, struct section *orc_sec,
++		    struct section *ip_sec, unsigned int idx,
++		    struct section *insn_sec, unsigned long insn_off,
++		    struct orc_entry *o);
++
++#endif /* _OBJTOOL_ORC_H */
+diff --git a/tools/objtool/orc_dump.c b/tools/objtool/orc_dump.c
+index 0e183bb1c720..a62247efb64f 100644
+--- a/tools/objtool/orc_dump.c
++++ b/tools/objtool/orc_dump.c
+@@ -6,65 +6,10 @@
+ #include <unistd.h>
+ #include <asm/orc_types.h>
+ #include <objtool/objtool.h>
++#include <objtool/orc.h>
+ #include <objtool/warn.h>
+ #include <objtool/endianness.h>
  
- const char *arch_nop_insn(int len)
+-static const char *reg_name(unsigned int reg)
+-{
+-	switch (reg) {
+-	case ORC_REG_PREV_SP:
+-		return "prevsp";
+-	case ORC_REG_DX:
+-		return "dx";
+-	case ORC_REG_DI:
+-		return "di";
+-	case ORC_REG_BP:
+-		return "bp";
+-	case ORC_REG_SP:
+-		return "sp";
+-	case ORC_REG_R10:
+-		return "r10";
+-	case ORC_REG_R13:
+-		return "r13";
+-	case ORC_REG_BP_INDIRECT:
+-		return "bp(ind)";
+-	case ORC_REG_SP_INDIRECT:
+-		return "sp(ind)";
+-	default:
+-		return "?";
+-	}
+-}
+-
+-static const char *orc_type_name(unsigned int type)
+-{
+-	switch (type) {
+-	case ORC_TYPE_UNDEFINED:
+-		return "(und)";
+-	case ORC_TYPE_END_OF_STACK:
+-		return "end";
+-	case ORC_TYPE_CALL:
+-		return "call";
+-	case ORC_TYPE_REGS:
+-		return "regs";
+-	case ORC_TYPE_REGS_PARTIAL:
+-		return "regs (partial)";
+-	default:
+-		return "?";
+-	}
+-}
+-
+-static void print_reg(unsigned int reg, int offset)
+-{
+-	if (reg == ORC_REG_BP_INDIRECT)
+-		printf("(bp%+d)", offset);
+-	else if (reg == ORC_REG_SP_INDIRECT)
+-		printf("(sp)%+d", offset);
+-	else if (reg == ORC_REG_UNDEFINED)
+-		printf("(und)");
+-	else
+-		printf("%s%+d", reg_name(reg), offset);
+-}
+-
+ int orc_dump(const char *_objname)
  {
--	return NULL;
-+	static u32 nop;
-+
-+	if (len != LOONGARCH_INSN_SIZE)
-+		WARN("invalid NOP size: %d\n", len);
-+
-+	nop = LOONGARCH_INSN_NOP;
-+
-+	return (const char *)&nop;
- }
+ 	int fd, nr_entries, i, *orc_ip = NULL, orc_size = 0;
+@@ -205,17 +150,7 @@ int orc_dump(const char *_objname)
+ 			printf("%llx:", (unsigned long long)(orc_ip_addr + (i * sizeof(int)) + orc_ip[i]));
+ 		}
  
- const char *arch_ret_insn(int len)
- {
--	return NULL;
-+	static u32 ret;
-+
-+	if (len != LOONGARCH_INSN_SIZE)
-+		WARN("invalid RET size: %d\n", len);
-+
-+	emit_jirl((union loongarch_instruction *)&ret, LOONGARCH_GPR_RA, LOONGARCH_GPR_ZERO, 0);
-+
-+	return (const char *)&ret;
- }
+-		printf("type:%s", orc_type_name(orc[i].type));
+-
+-		printf(" sp:");
+-
+-		print_reg(orc[i].sp_reg, bswap_if_needed(&dummy_elf, orc[i].sp_offset));
+-
+-		printf(" bp:");
+-
+-		print_reg(orc[i].bp_reg, bswap_if_needed(&dummy_elf, orc[i].bp_offset));
+-
+-		printf(" signal:%d\n", orc[i].signal);
++		orc_print_dump(&dummy_elf, orc, i);
+ 	}
  
- void arch_initial_func_cfi_state(struct cfi_init_state *state)
+ 	elf_end(elf);
+diff --git a/tools/objtool/orc_gen.c b/tools/objtool/orc_gen.c
+index bae343908867..922e6aac7cea 100644
+--- a/tools/objtool/orc_gen.c
++++ b/tools/objtool/orc_gen.c
+@@ -10,121 +10,10 @@
+ #include <asm/orc_types.h>
+ 
+ #include <objtool/check.h>
++#include <objtool/orc.h>
+ #include <objtool/warn.h>
+ #include <objtool/endianness.h>
+ 
+-static int init_orc_entry(struct orc_entry *orc, struct cfi_state *cfi,
+-			  struct instruction *insn)
+-{
+-	struct cfi_reg *bp = &cfi->regs[CFI_BP];
+-
+-	memset(orc, 0, sizeof(*orc));
+-
+-	if (!cfi) {
+-		/*
+-		 * This is usually either unreachable nops/traps (which don't
+-		 * trigger unreachable instruction warnings), or
+-		 * STACK_FRAME_NON_STANDARD functions.
+-		 */
+-		orc->type = ORC_TYPE_UNDEFINED;
+-		return 0;
+-	}
+-
+-	switch (cfi->type) {
+-	case UNWIND_HINT_TYPE_UNDEFINED:
+-		orc->type = ORC_TYPE_UNDEFINED;
+-		return 0;
+-	case UNWIND_HINT_TYPE_END_OF_STACK:
+-		orc->type = ORC_TYPE_END_OF_STACK;
+-		return 0;
+-	case UNWIND_HINT_TYPE_CALL:
+-		orc->type = ORC_TYPE_CALL;
+-		break;
+-	case UNWIND_HINT_TYPE_REGS:
+-		orc->type = ORC_TYPE_REGS;
+-		break;
+-	case UNWIND_HINT_TYPE_REGS_PARTIAL:
+-		orc->type = ORC_TYPE_REGS_PARTIAL;
+-		break;
+-	default:
+-		WARN_INSN(insn, "unknown unwind hint type %d", cfi->type);
+-		return -1;
+-	}
+-
+-	orc->signal = cfi->signal;
+-
+-	switch (cfi->cfa.base) {
+-	case CFI_SP:
+-		orc->sp_reg = ORC_REG_SP;
+-		break;
+-	case CFI_SP_INDIRECT:
+-		orc->sp_reg = ORC_REG_SP_INDIRECT;
+-		break;
+-	case CFI_BP:
+-		orc->sp_reg = ORC_REG_BP;
+-		break;
+-	case CFI_BP_INDIRECT:
+-		orc->sp_reg = ORC_REG_BP_INDIRECT;
+-		break;
+-	case CFI_R10:
+-		orc->sp_reg = ORC_REG_R10;
+-		break;
+-	case CFI_R13:
+-		orc->sp_reg = ORC_REG_R13;
+-		break;
+-	case CFI_DI:
+-		orc->sp_reg = ORC_REG_DI;
+-		break;
+-	case CFI_DX:
+-		orc->sp_reg = ORC_REG_DX;
+-		break;
+-	default:
+-		WARN_INSN(insn, "unknown CFA base reg %d", cfi->cfa.base);
+-		return -1;
+-	}
+-
+-	switch (bp->base) {
+-	case CFI_UNDEFINED:
+-		orc->bp_reg = ORC_REG_UNDEFINED;
+-		break;
+-	case CFI_CFA:
+-		orc->bp_reg = ORC_REG_PREV_SP;
+-		break;
+-	case CFI_BP:
+-		orc->bp_reg = ORC_REG_BP;
+-		break;
+-	default:
+-		WARN_INSN(insn, "unknown BP base reg %d", bp->base);
+-		return -1;
+-	}
+-
+-	orc->sp_offset = cfi->cfa.offset;
+-	orc->bp_offset = bp->offset;
+-
+-	return 0;
+-}
+-
+-static int write_orc_entry(struct elf *elf, struct section *orc_sec,
+-			   struct section *ip_sec, unsigned int idx,
+-			   struct section *insn_sec, unsigned long insn_off,
+-			   struct orc_entry *o)
+-{
+-	struct orc_entry *orc;
+-
+-	/* populate ORC data */
+-	orc = (struct orc_entry *)orc_sec->data->d_buf + idx;
+-	memcpy(orc, o, sizeof(*orc));
+-	orc->sp_offset = bswap_if_needed(elf, orc->sp_offset);
+-	orc->bp_offset = bswap_if_needed(elf, orc->bp_offset);
+-
+-	/* populate reloc for ip */
+-	if (!elf_init_reloc_text_sym(elf, ip_sec, idx * sizeof(int), idx,
+-				     insn_sec, insn_off))
+-		return -1;
+-
+-	return 0;
+-}
+-
+ struct orc_list_entry {
+ 	struct list_head list;
+ 	struct orc_entry orc;
 -- 
 2.42.0
 
