@@ -2,133 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D10B7FE15F
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:51:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BFEC7FE161
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:54:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234172AbjK2Uuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 15:50:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53244 "EHLO
+        id S231489AbjK2UyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 15:54:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234149AbjK2Uup (ORCPT
+        with ESMTP id S229556AbjK2Ux6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 15:50:45 -0500
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 161FF10CB
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:50:51 -0800 (PST)
-Received: by mail-vs1-xe33.google.com with SMTP id ada2fe7eead31-46447559b88so40884137.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:50:51 -0800 (PST)
+        Wed, 29 Nov 2023 15:53:58 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D31D69
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:54:00 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40b4d9e81deso1731995e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:54:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1701291050; x=1701895850; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qRudQj2Sfvl8763B7G4OIzr5GVWbGpaCjlcn22UtovM=;
-        b=l5F9ChCjm23piNt+umQ8fYdqmWhckcLh5uaAl586gQNpYCRu/+z1fHBe63t+OpzApB
-         8IrYs97p3At1xY8KK588yTWTojFmXlw/AgcWSDiX7cHFov4N7LW2k/6nsJT/2eaaOmbW
-         vOOGxaf0BF/B65lwC44ZAlyPhv++D5baI1fiBthGtcnIRmODwSrv7fevIAvuSyam+3yw
-         aPqVG8bchiCzvl51qmKIsB/lABt6rhlED4HRfYZP5pT0mOHxf+a8GzjGciuRUWz3g6tm
-         05yWBJ3lAAHs9nR7gjYtrXiBuW/irlfSLafs/AKV0mUdyKKbheqLM2edld9qn8DBpUbT
-         H/rw==
+        d=nexus-software-ie.20230601.gappssmtp.com; s=20230601; t=1701291239; x=1701896039; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YKjbNQgXkGMeMvnSiazATvW5vc83bVG6h9HitL94um8=;
+        b=kQpQoQWE3JvI6Sk1pwSmnEZjXE1b7nAjtCMMx0yuLuAL06QFPkhCoHrBGfj0cB69YL
+         meYqE+W9sSmk79So2o4ueAM9W+h9hsbItFY4H3K0FmYbAehzaFqu8Nf3k5UCbuvukxZ7
+         HL83XVh35lAlesmW93PkgcVUYIJqCfSUPgHyecXwzt41McLuB+uH5Pj8zCRJUXy/DqKl
+         7Lyfmeqz9e8OencVfsU01vZFBg/k6RuYbyDtRbXYLic+hVupiisctJ/DpNFMexUvTW8R
+         kttwpW4bKf0PrDv3/5d/+nAG6zKKgotHlgahLgWBxc64hZGoYB9x+mGtWl1eSzkw7hv3
+         k5oA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701291050; x=1701895850;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qRudQj2Sfvl8763B7G4OIzr5GVWbGpaCjlcn22UtovM=;
-        b=lXSGIT27+VS1eTuPVxDrrFZY6hr04viOrf6hA+ocaZD2Wk2n5qIQxvW+6v+bdMWU8C
-         /H/D3lQDehw8QmbXk8/AZBTUD/LP2VUKKzaK3uOLnb1tKtpnNXOarABnd8LxwOaqTj8K
-         7Z0k7lqz0q8LVBbRTkf/bDnWgdubwFcVweEVZousqoTb05vs8RXFoSaWEvT61aJ+AmuT
-         nHJ1z/+duFxXIHnACXvcGAd/k3Nc2bWOgNwpT4D8C30iL1adBIys03T1SeLcB7ep+d6S
-         Gan+8mia0zFEotB7AeNV5vbdW0oQY0FWkBqy29yVySxj79qIi206h+cLVmTrxMnqEIH6
-         BcfQ==
-X-Gm-Message-State: AOJu0YzD//tcibOBuqc4PRCrhh6on0m5CaoDzqHOnaYWGYrGi5zROwDj
-        ZSpdl1zkTwYj91BxuHWRptnUuGwlCDMBauJuZ7quTQ==
-X-Google-Smtp-Source: AGHT+IFD0eT1lvn2YTfiznalgCyAUE9zsky5MpegMQkPYxHXziqnBprEE1cMdMhM3zu84Hx1Vg83n8wmZOOLG6XvBq8=
-X-Received: by 2002:a67:eb52:0:b0:464:4f42:c195 with SMTP id
- x18-20020a67eb52000000b004644f42c195mr2247378vso.8.1701291050105; Wed, 29 Nov
- 2023 12:50:50 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701291239; x=1701896039;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YKjbNQgXkGMeMvnSiazATvW5vc83bVG6h9HitL94um8=;
+        b=HwXbzvHOxhkdmSha75I5z6ysXfh/etwZwsjlJfBpfjwysyc8QiJfTLgTZdI/io8mkE
+         rDopHYUuU7lyBypSq0oAJskpR0RmYqlngC/DEFXnQbi5T9yULB/iVllm1yV3B96CLFTJ
+         pY4MPb54+hVnEp30Yn4pvKpz59+Cumb2pyg5ZCW6cyi3v4ZJxmfvWs4Y/z2jZRRZyEje
+         NcXScP0S6M9z6hx7PxiBRO+zhO6FXeA6DWuG9lS4NBiGu9Yl5MYwq9t7AR/L4nWmALNz
+         tJbAXlVfYKF3K5mhCkMXKGdfgIdidUXfo/gxs6RV681o9p+/nU8TzyEolHcvphXs/1EA
+         ECPA==
+X-Gm-Message-State: AOJu0YyBVvuYlXFWFU1evNrBNo1ZuCu3wLIn942bezI2NOuwFtGmcWnZ
+        PmQoFfsLUIbUgbp30RkxFXWA4w==
+X-Google-Smtp-Source: AGHT+IFJnxs03uHyKsQvS/eeVLg4bLJCJWU+N3Z26xmaV36HJAdD6+44jAtYpt4zRuMooN+P4N+XzA==
+X-Received: by 2002:a05:600c:4ed3:b0:408:3c10:ad47 with SMTP id g19-20020a05600c4ed300b004083c10ad47mr12917112wmq.40.1701291238941;
+        Wed, 29 Nov 2023 12:53:58 -0800 (PST)
+Received: from [192.168.100.102] ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id k18-20020a05600c1c9200b0040b2976eb02sm3351905wms.10.2023.11.29.12.53.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Nov 2023 12:53:58 -0800 (PST)
+Message-ID: <cc8b9eea-ea4c-4943-a0f2-c2a791903440@nexus-software.ie>
+Date:   Wed, 29 Nov 2023 20:53:56 +0000
 MIME-Version: 1.0
-References: <20231115165915.2936349-1-brgl@bgdev.pl> <CAMRc=MfoE93Aum4s-pweeb_idqYgUG-DBpXnhT5UW_WhVkLwHw@mail.gmail.com>
- <ZWeXqtqJLKB02LWU@yury-ThinkPad>
-In-Reply-To: <ZWeXqtqJLKB02LWU@yury-ThinkPad>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 29 Nov 2023 21:50:39 +0100
-Message-ID: <CAMRc=MdjoYjFzwoDhywx45asun+AyUho_U+cgZoETVP+VuvmBA@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2 0/4] genirq/irq_sim: misc updates
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 01/15] clk: qcom: branch: Add a helper for setting the
+ enable bit
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Johan Hovold <johan+linaro@kernel.org>
+References: <20230717-topic-branch_aon_cleanup-v2-0-2a583460ef26@linaro.org>
+ <20230717-topic-branch_aon_cleanup-v2-1-2a583460ef26@linaro.org>
+From:   Bryan O'Donoghue <pure.logic@nexus-software.ie>
+In-Reply-To: <20230717-topic-branch_aon_cleanup-v2-1-2a583460ef26@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 8:59=E2=80=AFPM Yury Norov <yury.norov@gmail.com> w=
-rote:
->
-> On Wed, Nov 29, 2023 at 10:18:15AM +0100, Bartosz Golaszewski wrote:
-> > On Wed, Nov 15, 2023 at 5:59=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev=
-.pl> wrote:
-> > >
-> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > >
-> > > Here are a couple of updates to the interrupt simulator. Two are mino=
-r:
-> > > remove an unused field and reorder includes for readability. The thir=
-d
-> > > one simplifies the error paths by using new cleanup macros. To that e=
-nd
-> > > we also add a cleanup definition for dynamic bitmaps.
-> > >
-> > > Resending rebased on top of v6.7-rc1 and with tags collected.
-> > >
-> > > v1 -> v2:
-> > > - add a NULL-pointer check to the bitmap cleanup macro as advised by
-> > >   Peter Zijlstra
-> > > - initialize managed pointers when declaring them to create a clear p=
-airing
-> > >   between the type and the cleanup action
-> > >
-> > > Bartosz Golaszewski (4):
-> > >   bitmap: define a cleanup function for bitmaps
-> > >   genirq/irq_sim: remove unused field from struct irq_sim_irq_ctx
-> > >   genirq/irq_sim: order headers alphabetically
-> > >   genirq/irq_sim: shrink code by using cleanup helpers
-> > >
-> > >  include/linux/bitmap.h |  3 +++
-> > >  kernel/irq/irq_sim.c   | 30 ++++++++++++------------------
-> > >  2 files changed, 15 insertions(+), 18 deletions(-)
-> > >
-> > > --
-> > > 2.40.1
-> > >
-> >
-> > It's been two weeks since this submission and ~2.5 months since the
-> > first one so I guess, a gentle ping is in order. This is not a very
-> > controversial series - can this be applied?
->
-> Hi Bartosz,
->
-> I'm the first in the list for this series, but really only 1st patch
-> is related to bitmaps, and I already acked it. If you prefer that, I
-> can pull it in the bitmap tree.
->
-> Thanks,
-> Yury
-
-If there's a risk it will conflict then you can apply it and provide
-Thomas with an immutable branch against the irq tree, otherwise I
-think Thomas can pick up all the patches.
-
-Bartosz
+On 29/11/2023 18:59, Konrad Dybcio wrote:
+> We hardcode some clocks to be always-on, as they're essential to the
+> functioning of the SoC / some peripherals. Add a helper to do so
+> to make the writes less magic.
+> 
+> Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>   drivers/clk/qcom/clk-branch.h | 7 +++++++
+>   1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/clk/qcom/clk-branch.h b/drivers/clk/qcom/clk-branch.h
+> index 0cf800b9d08d..155818cc8d49 100644
+> --- a/drivers/clk/qcom/clk-branch.h
+> +++ b/drivers/clk/qcom/clk-branch.h
+> @@ -47,6 +47,7 @@ struct clk_branch {
+>   #define CBCR_FORCE_MEM_PERIPH_OFF	BIT(12)
+>   #define CBCR_WAKEUP			GENMASK(11, 8)
+>   #define CBCR_SLEEP			GENMASK(7, 4)
+> +#define CBCR_CLOCK_ENABLE		BIT(0)
+>   
+>   static inline void qcom_branch_set_force_mem_core(struct regmap *regmap,
+>   						  struct clk_branch clk, bool on)
+> @@ -81,6 +82,12 @@ static inline void qcom_branch_set_sleep(struct regmap *regmap, struct clk_branc
+>   			   FIELD_PREP(CBCR_SLEEP, val));
+>   }
+>   
+> +static inline void qcom_branch_set_clk_en(struct regmap *regmap, u32 cbcr)
+> +{
+> +	regmap_update_bits(regmap, cbcr, CBCR_CLOCK_ENABLE,
+> +			   CBCR_CLOCK_ENABLE);
+> +}
+> +
+>   extern const struct clk_ops clk_branch_ops;
+>   extern const struct clk_ops clk_branch2_ops;
+>   extern const struct clk_ops clk_branch_simple_ops;
+> 
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
