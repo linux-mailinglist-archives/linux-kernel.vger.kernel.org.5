@@ -2,186 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A6B37FDACD
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:08:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2398C7FDABE
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:05:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234996AbjK2Ozz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 09:55:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32774 "EHLO
+        id S234967AbjK2PE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 10:04:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234958AbjK2Ozv (ORCPT
+        with ESMTP id S229501AbjK2PE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 09:55:51 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EDD0BE;
-        Wed, 29 Nov 2023 06:55:57 -0800 (PST)
-Date:   Wed, 29 Nov 2023 14:55:55 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701269755;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Wed, 29 Nov 2023 10:04:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC56BE
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:05:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701270303;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Nt6Krllh0mQwdWox8Qj0Ef6jN+mnzfU9kFcSAETUC3o=;
-        b=gq715mBss1D6hmeL9Dlxv4hcDsX5oQhPUeffKyl7NI3SZJjd+WE5gOOhhML8Ws/J5m8b8k
-        huxBHjcjpFYRzyt1Gznf0jRJV/Ce8ygg/GYT+cwVERhYJLs8s7YTDyHQqhbF9ASB1er7qz
-        1uXXnKuShFs2jFj4crtjmHB4li8zh1bBk+ZPajJzdlgb6yWShrpU17eEmhn11y+jlFyyV3
-        NMiZWdFkny0bA6vKnSxaRDdx2ytPO/lX3Sttf42GBpsoe7tvSWEMQMXu7W3LetQo8BbMLS
-        VzgjBWcApUjgByh34m0EoAU6+qTP/1qS4c1WOrKGvIilax9GgJ6FMg/BjNGACQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701269755;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nt6Krllh0mQwdWox8Qj0Ef6jN+mnzfU9kFcSAETUC3o=;
-        b=S+lft88A0i7CNT3TInDWp/o1ZXDcrkSCuK5KvDQ0JXgywnMgrYBzEEjqIaUYln/iUUk0u+
-        7Ug0s4lj0PMDptAw==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/core] x86: Fix CPUIDLE_FLAG_IRQ_ENABLE leaking timer reprogram
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20231115151325.6262-3-frederic@kernel.org>
-References: <20231115151325.6262-3-frederic@kernel.org>
+        bh=8z5muuD6V1KzLPtZY1t02hDIxFyhn4XoZnCFtfZqR98=;
+        b=jMSIZZpyvz7PnqZVd3huWCedlHw1XXWWvhM0+yXp9zV3HtAL+GIwIiKOma1mATTU/xtGnx
+        8Zx8IKBjJrjkgYrWVI2Up5/wZ1cbIwncOEaJCnai2hGBtS7z9lHj7IDVEZhLTwHVfd7cgf
+        oEAFyOsDWx4MNw+UntExCZtSsu3Ep6I=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-77-PMYPSCRiMb2M_IDFvHyGyQ-1; Wed, 29 Nov 2023 10:05:01 -0500
+X-MC-Unique: PMYPSCRiMb2M_IDFvHyGyQ-1
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-77dc5712a8fso180031085a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:05:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701270300; x=1701875100;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8z5muuD6V1KzLPtZY1t02hDIxFyhn4XoZnCFtfZqR98=;
+        b=KRAbmJrVRhff/QhWwIbmnaDy6jLybOYUXtHPUunzhG8h0KClDmcfgL8L0y2obMS8Py
+         9+xm5UdbyP3Ubd3tTHaWUzY1yUkGJFkKKio0gsR3LpHOZtTdAkic4P59UK0FUr6a4bSu
+         CNgrfCYKN3KfKnfifa5iWy+VyEGwo/8wU2KAt8oksNy7YB6uV2YXZ8ROHltHr3pk0+oG
+         oxJdghix7x0BOBtSwMjrswgfLVS46lXIJ+i9RvoktbHZe5A/K75hJV1RSNYMgMtqvK7W
+         4ybER11XAEcezBpypBw2V08LRTfwur+zzTop4jMeImZyt2jCaW6Pfdf2K2d36phrnwO7
+         0Jlg==
+X-Gm-Message-State: AOJu0YzKNNEZOf9iOZ4juq6m9X20S30qxD1kQLf3WLudshHfZZCy5+N9
+        Lw3XncOCUPtUNX90PHT1KUUbZ8+1kPnyNattibylfYZ0e0l/UcERbRVJsXGNfkhsrgLvrNOLE8n
+        rJC7HLf00y5HbP+5OJ6HOPBCOLknF7K4+
+X-Received: by 2002:a05:620a:5236:b0:77b:9dd3:2f90 with SMTP id dc54-20020a05620a523600b0077b9dd32f90mr17517937qkb.34.1701270300474;
+        Wed, 29 Nov 2023 07:05:00 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEvYpEYtE1T0sVGQwzqNs5Yi4iXvBXcBME7iILi/8YhHs4ze5Gl0mMk/l8xbMuZGRLRaaZmzQ==
+X-Received: by 2002:a05:620a:5236:b0:77b:9dd3:2f90 with SMTP id dc54-20020a05620a523600b0077b9dd32f90mr17517904qkb.34.1701270300022;
+        Wed, 29 Nov 2023 07:05:00 -0800 (PST)
+Received: from [192.168.40.28] ([216.212.61.246])
+        by smtp.gmail.com with ESMTPSA id ea11-20020a05620a488b00b0077d93c7c785sm3781530qkb.119.2023.11.29.07.04.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Nov 2023 07:04:59 -0800 (PST)
+Message-ID: <91a31ce5-63d1-7470-18f7-92b039fda8e6@redhat.com>
+Date:   Wed, 29 Nov 2023 10:03:57 -0500
 MIME-Version: 1.0
-Message-ID: <170126975511.398.12493947150541739641.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 0/4] kdump: crashkernel reservation from CMA
+Content-Language: en-US
+To:     Baoquan He <bhe@redhat.com>, Michal Hocko <mhocko@suse.com>
+Cc:     Jiri Bohac <jbohac@suse.cz>, Pingfan Liu <piliu@redhat.com>,
+        Tao Liu <ltao@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Dave Young <dyoung@redhat.com>, kexec@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <ZWD_fAPqEWkFlEkM@dwarf.suse.cz>
+ <CAO7dBbUVQn8xzPZQhhw1XqF+sQT0c6phk4sda+X=MrR6RmPE0A@mail.gmail.com>
+ <ZWJllXCN0SDIELrX@dwarf.suse.cz>
+ <CAO7dBbVJ=ytRra_77VRZ8ud1wVkP9fub=Vj6cfTkx=CnYg5J2A@mail.gmail.com>
+ <ZWVMUxmi66xLZPsr@MiWiFi-R3L-srv> <ZWWuBSiZZdF2W12j@tiehlicka>
+ <ZWbyDx3TJ7zo3jCw@MiWiFi-R3L-srv>
+From:   Donald Dutile <ddutile@redhat.com>
+In-Reply-To: <ZWbyDx3TJ7zo3jCw@MiWiFi-R3L-srv>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/core branch of tip:
+Baoquan,
+hi!
 
-Commit-ID:     edc8fc01f608108b0b7580cb2c29dfb5135e5f0e
-Gitweb:        https://git.kernel.org/tip/edc8fc01f608108b0b7580cb2c29dfb5135e5f0e
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Wed, 15 Nov 2023 10:13:23 -05:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 29 Nov 2023 15:44:01 +01:00
+On 11/29/23 3:10 AM, Baoquan He wrote:
+> On 11/28/23 at 10:08am, Michal Hocko wrote:
+>> On Tue 28-11-23 10:11:31, Baoquan He wrote:
+>>> On 11/28/23 at 09:12am, Tao Liu wrote:
+>> [...]
+>>> Thanks for the effort to bring this up, Jiri.
+>>>
+>>> I am wondering how you will use this crashkernel=,cma parameter. I mean
+>>> the scenario of crashkernel=,cma. Asking this because I don't know how
+>>> SUSE deploy kdump in SUSE distros. In SUSE distros, kdump kernel's
+>>> driver will be filter out? If latter case, It's possibly having the
+>>> on-flight DMA issue, e.g NIC has DMA buffer in the CMA area, but not
+>>> reset during kdump bootup because the NIC driver is not loaded in to
+>>> initialize. Not sure if this is 100%, possible in theory?
+>>
+>> NIC drivers do not allocation from movable zones (that includes CMA
+>> zone). In fact kernel doesn't use GFP_MOVABLE for non-user requests.
+>> RDMA drivers might and do transfer from user backed memory but for that
+>> purpose they should be pinning memory (have a look at
+>> __gup_longterm_locked and its callers) and that will migrate away from
+>> the any zone.
+> 
+> Add Don in this thread.
+> 
+> I am not familiar with RDMA. If we reserve a range of 1G meory as cma in
+> 1st kernel, and RDMA or any other user space tools could use it. When
+> corruption happened with any cause, that 1G cma memory will be reused as
+> available MOVABLE memory of kdump kernel. If no risk at all, I mean 100%
+> safe from RDMA, that would be great.
+> 
+My RDMA days are long behind me... more in mm space these days, so this still
+interests me.
+I thought, in general, userspace memory is not saved or used in kdumps, so
+if RDMA is using cma space for userspace-based IO (gup), then I would expect
+it can be re-used for kexec'd kernel.
+So, I'm not sure what 'safe from RDMA' means, but I would expect RDMA queues
+are in-kernel data structures, not userspace strucutures, and they would be
+more/most important to maintain/keep for kdump saving.  The actual userspace
+data ... ssdd wrt any other userspace data.
+dma-buf's allocated from cma, which are (typically) shared with GPUs
+(& RDMA in GPU-direct configs), again, would be shared userspace, not
+control/cmd/rsp queues, so I'm not seeing an issue there either.
 
-x86: Fix CPUIDLE_FLAG_IRQ_ENABLE leaking timer reprogram
+I would poke the NVIDIA+Mellanox folks for further review in this space,
+if my reply leaves you (or others) 'wanting'.
 
-intel_idle_irq() re-enables IRQs very early. As a result, an interrupt
-may fire before mwait() is eventually called. If such an interrupt queues
-a timer, it may go unnoticed until mwait returns and the idle loop
-handles the tick re-evaluation. And monitoring TIF_NEED_RESCHED doesn't
-help because a local timer enqueue doesn't set that flag.
+- Don
+>>   
+>> [...]
+>>> The crashkernel=,cma requires no userspace data dumping, from our
+>>> support engineers' feedback, customer never express they don't need to
+>>> dump user space data. Assume a server with huge databse deployed, and
+>>> the database often collapsed recently and database provider claimed that
+>>> it's not database's fault, OS need prove their innocence. What will you
+>>> do?
+>>
+>> Don't use CMA backed crash memory then? This is an optional feature.
+>>   
+>>> So this looks like a nice to have to me. At least in fedora/rhel's
+>>> usage, we may only back port this patch, and add one sentence in our
+>>> user guide saying "there's a crashkernel=,cma added, can be used with
+>>> crashkernel= to save memory. Please feel free to try if you like".
+>>> Unless SUSE or other distros decides to use it as default config or
+>>> something like that. Please correct me if I missed anything or took
+>>> anything wrong.
+>>
+>> Jiri will know better than me but for us a proper crash memory
+>> configuration has become a real nut. You do not want to reserve too much
+>> because it is effectively cutting of the usable memory and we regularly
+>> hit into "not enough memory" if we tried to be savvy. The more tight you
+>> try to configure the easier to fail that is. Even worse any in kernel
+>> memory consumer can increase its memory demand and get the overall
+>> consumption off the cliff. So this is not an easy to maintain solution.
+>> CMA backed crash memory can be much more generous while still usable.
+>> -- 
+>> Michal Hocko
+>> SUSE Labs
+>>
+> 
 
-The issue is mitigated by the fact that this idle handler is only invoked
-for shallow C-states when, presumably, the next tick is supposed to be
-close enough. There may still be rare cases though when the next tick
-is far away and the selected C-state is shallow, resulting in a timer
-getting ignored for a while.
-
-Fix this with using sti_mwait() whose IRQ-reenablement only triggers
-upon calling mwait(), dealing with the race while keeping the interrupt
-latency within acceptable bounds.
-
-Fixes: c227233ad64c (intel_idle: enable interrupts before C1 on Xeons)
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Rafael J. Wysocki <rafael@kernel.org>
-Link: https://lkml.kernel.org/r/20231115151325.6262-3-frederic@kernel.org
----
- arch/x86/include/asm/mwait.h | 11 +++++++++--
- drivers/idle/intel_idle.c    | 19 +++++++------------
- 2 files changed, 16 insertions(+), 14 deletions(-)
-
-diff --git a/arch/x86/include/asm/mwait.h b/arch/x86/include/asm/mwait.h
-index 341ee4f..920426d 100644
---- a/arch/x86/include/asm/mwait.h
-+++ b/arch/x86/include/asm/mwait.h
-@@ -124,8 +124,15 @@ static __always_inline void mwait_idle_with_hints(unsigned long eax, unsigned lo
- 		}
- 
- 		__monitor((void *)&current_thread_info()->flags, 0, 0);
--		if (!need_resched())
--			__mwait(eax, ecx);
-+
-+		if (!need_resched()) {
-+			if (ecx & 1) {
-+				__mwait(eax, ecx);
-+			} else {
-+				__sti_mwait(eax, ecx);
-+				raw_local_irq_disable();
-+			}
-+		}
- 	}
- 	current_clr_polling();
- }
-diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
-index dcda0af..3e01a6b 100644
---- a/drivers/idle/intel_idle.c
-+++ b/drivers/idle/intel_idle.c
-@@ -131,11 +131,12 @@ static unsigned int mwait_substates __initdata;
- #define MWAIT2flg(eax) ((eax & 0xFF) << 24)
- 
- static __always_inline int __intel_idle(struct cpuidle_device *dev,
--					struct cpuidle_driver *drv, int index)
-+					struct cpuidle_driver *drv,
-+					int index, bool irqoff)
- {
- 	struct cpuidle_state *state = &drv->states[index];
- 	unsigned long eax = flg2MWAIT(state->flags);
--	unsigned long ecx = 1; /* break on interrupt flag */
-+	unsigned long ecx = 1*irqoff; /* break on interrupt flag */
- 
- 	mwait_idle_with_hints(eax, ecx);
- 
-@@ -159,19 +160,13 @@ static __always_inline int __intel_idle(struct cpuidle_device *dev,
- static __cpuidle int intel_idle(struct cpuidle_device *dev,
- 				struct cpuidle_driver *drv, int index)
- {
--	return __intel_idle(dev, drv, index);
-+	return __intel_idle(dev, drv, index, true);
- }
- 
- static __cpuidle int intel_idle_irq(struct cpuidle_device *dev,
- 				    struct cpuidle_driver *drv, int index)
- {
--	int ret;
--
--	raw_local_irq_enable();
--	ret = __intel_idle(dev, drv, index);
--	raw_local_irq_disable();
--
--	return ret;
-+	return __intel_idle(dev, drv, index, false);
- }
- 
- static __cpuidle int intel_idle_ibrs(struct cpuidle_device *dev,
-@@ -184,7 +179,7 @@ static __cpuidle int intel_idle_ibrs(struct cpuidle_device *dev,
- 	if (smt_active)
- 		__update_spec_ctrl(0);
- 
--	ret = __intel_idle(dev, drv, index);
-+	ret = __intel_idle(dev, drv, index, true);
- 
- 	if (smt_active)
- 		__update_spec_ctrl(spec_ctrl);
-@@ -196,7 +191,7 @@ static __cpuidle int intel_idle_xstate(struct cpuidle_device *dev,
- 				       struct cpuidle_driver *drv, int index)
- {
- 	fpu_idle_fpregs();
--	return __intel_idle(dev, drv, index);
-+	return __intel_idle(dev, drv, index, true);
- }
- 
- /**
