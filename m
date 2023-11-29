@@ -2,111 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A13617FCC48
+	by mail.lfdr.de (Postfix) with ESMTP id 4B97D7FCC47
 	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 02:22:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376697AbjK2BM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 20:12:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42134 "EHLO
+        id S1376703AbjK2BN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 20:13:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbjK2BM0 (ORCPT
+        with ESMTP id S229526AbjK2BN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 20:12:26 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 257E619A6;
-        Tue, 28 Nov 2023 17:12:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701220353; x=1732756353;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=STFBo+zgE+pMyFPtzum89vP4OwZb2dxh/ad617/2AUA=;
-  b=Q6GAGwI9LCQbNbG4O0D5KBolX6iXovVNgWhzdQJM0T5Z8QqVI3nQSu0u
-   k9RzgbsT0GiZuKUB0e3Os6SdrJyKPDqMhCDmUrGrlDNpc9vxlS+u5lBSt
-   fnDCi5NOfVYI2hjGwbBU8OCSCIGFEOIYHEmcg7A7ob8M3w5rPPfHErpgg
-   XxndHLyLeHwA8Ym2CaKwyL/zzWyuztlxnYlUu7xnaL6xQuKMz/hNWAShC
-   KZ++pb3Dm1HQV6aJ0PrNHVjfi8RnN8rHxdR/WhuxKWgcn8ZahK1wDZTRd
-   5PBS8YjMFz/FYNjTzwNc9T3S6iZgpdGU6mg5T7hv/GooFsUho3SiAZ/ju
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="391929198"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="391929198"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2023 17:12:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="745084464"
-X-IronPort-AV: E=Sophos;i="6.04,234,1695711600"; 
-   d="scan'208";a="745084464"
-Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 28 Nov 2023 17:12:29 -0800
-Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r897q-0008Ng-2J;
-        Wed, 29 Nov 2023 01:12:26 +0000
-Date:   Wed, 29 Nov 2023 09:11:19 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jacky Huang <ychuang570808@gmail.com>, linus.walleij@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, p.zabel@pengutronix.de, j.neuschaefer@gmx.net
-Cc:     oe-kbuild-all@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ychuang3@nuvoton.com, schung@nuvoton.com
-Subject: Re: [PATCH v2 3/4] arm64: dts: nuvoton: Add pinctrl support for
- ma35d1
-Message-ID: <202311290626.fFZShqCp-lkp@intel.com>
-References: <20231128061118.575847-4-ychuang570808@gmail.com>
+        Tue, 28 Nov 2023 20:13:56 -0500
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A450D93;
+        Tue, 28 Nov 2023 17:14:02 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Sg1Yd12V3z4f3jXn;
+        Wed, 29 Nov 2023 09:13:57 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+        by mail.maildlp.com (Postfix) with ESMTP id 1289E1A09AB;
+        Wed, 29 Nov 2023 09:13:59 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP1 (Coremail) with SMTP id cCh0CgBXWhBVkGZlMWfjCA--.3057S3;
+        Wed, 29 Nov 2023 09:13:58 +0800 (CST)
+Subject: Re: [PATCH v4 2/2] block: warn once for each partition in
+ bio_check_ro()
+To:     Christoph Hellwig <hch@lst.de>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     ming.lei@redhat.com, axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20231128123027.971610-1-yukuai1@huaweicloud.com>
+ <20231128123027.971610-3-yukuai1@huaweicloud.com>
+ <20231128130000.GB7984@lst.de>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <9a6805fd-90ab-62cb-3b7d-d8124faf4f24@huaweicloud.com>
+Date:   Wed, 29 Nov 2023 09:13:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231128061118.575847-4-ychuang570808@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231128130000.GB7984@lst.de>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: cCh0CgBXWhBVkGZlMWfjCA--.3057S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7GrykCrW5KF43Cw48Kw45Wrg_yoW3uFcEqa
+        s8Krn7C393Zas7Ka1UKFnIvFZ7Gw4rWrykX3y2qFs7JFW8Xr97tFs3WwnI9F4rJr4vqw42
+        vaykZ3yUX39agjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb48FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4CEbIxv
+        r21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
+        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI
+        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
+        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUU
+        U==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacky,
+Hi,
 
-kernel test robot noticed the following build errors:
+ÔÚ 2023/11/28 21:00, Christoph Hellwig Ð´µÀ:
+> On Tue, Nov 28, 2023 at 08:30:27PM +0800, Yu Kuai wrote:
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> Commit 1b0a151c10a6 ("blk-core: use pr_warn_ratelimited() in
+>> bio_check_ro()") fix message storm by limit the rate, however, there
+>> will still be lots of message in the long term. Fix it better by warn
+>> once for each partition.
+> 
+> The new field is in the same dword alignment as bd_make_it_fail and
+> could in theory corrupt it, at least on alpha.  I guess we're fine,
+> because if you enable CONFIG_FAIL_MAKE_REQUEST on alpha you're asking
+> for this.  I still hope we can clean up these non-atomic bools and
+> replace them with bitops soon.
 
-[auto build test ERROR on linusw-pinctrl/devel]
-[also build test ERROR on linusw-pinctrl/for-next robh/for-next linus/master v6.7-rc3 next-20231128]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Yes, I'm working on this, and thanks for the review!
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jacky-Huang/dt-bindings-reset-Add-syscon-to-nuvoton-ma35d1-system-management-node/20231128-141443
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git devel
-patch link:    https://lore.kernel.org/r/20231128061118.575847-4-ychuang570808%40gmail.com
-patch subject: [PATCH v2 3/4] arm64: dts: nuvoton: Add pinctrl support for ma35d1
-config: arm64-defconfig (https://download.01.org/0day-ci/archive/20231129/202311290626.fFZShqCp-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231129/202311290626.fFZShqCp-lkp@intel.com/reproduce)
+Kuai
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> .
+> 
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311290626.fFZShqCp-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from arch/arm64/boot/dts/nuvoton/ma35d1-iot-512m.dts:9:
->> arch/arm64/boot/dts/nuvoton/ma35d1.dtsi:13:10: fatal error: dt-bindings/pinctrl/ma35d1-pinfunc.h: No such file or directory
-      13 | #include <dt-bindings/pinctrl/ma35d1-pinfunc.h>
-         |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   compilation terminated.
-
-
-vim +13 arch/arm64/boot/dts/nuvoton/ma35d1.dtsi
-
-  > 13	#include <dt-bindings/pinctrl/ma35d1-pinfunc.h>
-    14	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
