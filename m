@@ -2,348 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 310707FE185
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 22:07:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F4E7FE18A
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 22:08:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234279AbjK2VHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 16:07:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51156 "EHLO
+        id S234285AbjK2VH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 16:07:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjK2VHQ (ORCPT
+        with ESMTP id S234299AbjK2VH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 16:07:16 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5D316D7F;
-        Wed, 29 Nov 2023 13:07:20 -0800 (PST)
-Received: from [192.168.4.26] (unknown [47.186.13.91])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 9F48020B74C0;
-        Wed, 29 Nov 2023 13:07:16 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9F48020B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1701292039;
-        bh=g0AY9rrkukTGXOLxBKqEJb1vaakkKHoCObfBMRMkeqo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=aWfFSrWef7i6zVJabhgmnM4JnmCqk6BrvDkrAAbiBIkBnHQPuwTfObHozAznpz4Bn
-         67aS84GZ/hKOvAy61RmoxVipr08LJ9KgYhyYxV9Zfc+gr9QD2ZTY7JBJ6F92OXI8p8
-         9mn/NAs3EoxT5SKa/o4LBX1a/ygyKoz+jPGoJrpY=
-Message-ID: <ea63ae4e-e8ea-4fbf-9383-499e14de2f5e@linux.microsoft.com>
-Date:   Wed, 29 Nov 2023 15:07:15 -0600
+        Wed, 29 Nov 2023 16:07:56 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48CB210C3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:08:03 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3330fd19820so161967f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:08:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701292082; x=1701896882; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=O9jFHV2GrUp0ps1JJpB9xoZzEO2eSz+0BnDBZmO9bUs=;
+        b=bIWoXVpYSzInobRl43VhJAlIO8YRr73ZKFHAgmlKmt1c4cmNsBflJsAjGTq7q1Xtlr
+         Q6j39YnZoIXl3SrOqQ1rgo+O37S3lWSqBLA7gedBE4VldroTVAaaFvIdj2WZaJ6Fb9Lr
+         5Bc4qGWdg1N6Ww87GaxTSOg1Zzs7KA3mt7S/NWzCXBF9MCHMdhu1nbRGOZVunecVMLt7
+         9fGZQ1Eg513HZ1V+cM5WcuQfYNQVnjevZRLNZaA7gu3yFNxMrx+NfiibVuQMfwQrQ2Do
+         9I8oLP8mZ+k4y3nvpkLiXSGuEmhjUsRTB3M3ZnQSGkN8mTyxHwyVjADCpSucSBQpelbC
+         psDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701292082; x=1701896882;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=O9jFHV2GrUp0ps1JJpB9xoZzEO2eSz+0BnDBZmO9bUs=;
+        b=P3a9+MZD9DfZutgbnHtil0bAB1Yz4eE/WgX+wWV4JmmLaNAb78sY2D/PtKBhU6UI8n
+         ghk6zv/m6B8zhfDYhWb8HO8Nmw/V4aziZjHZJA7rUcaNBA5/TjqeE3z+I+dKfvEGZg2F
+         VpM07MEeYVSNL1TVuB9GZ9/lYkzWFehK49sI8U3B2fSBo3vLVASFioJsDfkY8wCg7Zll
+         p7QPhGJFq0hAF5+NK+YZoAuswLroMy4wXQB9dCuRTigj3PQhd843lOqBo7jwYt9QhSpe
+         DV/zm4/jsRsv1j3dp61QUEYPlTQSY9H20ydjRDOSVh/lCAgxDFxzciyMHYC8Qs3ZXDRo
+         AD5A==
+X-Gm-Message-State: AOJu0Yy4pVCvkM19sZiJACT9U2OOtTTLAI4d5HSLcqd8BhSntXISxdQH
+        JS+a/jbju5ZR8iPVbgwVC2l4bw==
+X-Google-Smtp-Source: AGHT+IEpKW5T6Mdf/X3bYFt6X7XSBnY76TN2RB3vLijvMEL2ZkKnEKMVbKRqdV8Xk1Wnk5wdvI3a2A==
+X-Received: by 2002:a5d:6a42:0:b0:332:c585:400a with SMTP id t2-20020a5d6a42000000b00332c585400amr14557007wrw.44.1701292081556;
+        Wed, 29 Nov 2023 13:08:01 -0800 (PST)
+Received: from [192.168.100.102] ([37.228.218.3])
+        by smtp.gmail.com with ESMTPSA id f2-20020adffcc2000000b0033315876d3esm3082637wrs.12.2023.11.29.13.08.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Nov 2023 13:08:01 -0800 (PST)
+Message-ID: <9deb31e4-2e75-4db2-8a73-7c8b7f9ac03a@linaro.org>
+Date:   Wed, 29 Nov 2023 21:08:00 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 17/19] heki: x86: Update permissions counters
- during text patching
+Subject: Re: [PATCH v2 03/15] clk: qcom: gcc-sm6375: Unregister critical
+ clocks
 Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Alexander Graf <graf@amazon.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        Forrest Yuan Yu <yuanyu@google.com>,
-        James Gowans <jgowans@amazon.com>,
-        James Morris <jamorris@linux.microsoft.com>,
-        John Andersen <john.s.andersen@intel.com>,
-        Marian Rotariu <marian.c.rotariu@gmail.com>,
-        =?UTF-8?Q?Mihai_Don=C8=9Bu?= <mdontu@bitdefender.com>,
-        =?UTF-8?B?TmljdciZb3IgQ8OuyJt1?= <nicu.citu@icloud.com>,
-        Thara Gopinath <tgopinath@microsoft.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Wei Liu <wei.liu@kernel.org>, Will Deacon <will@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Zahra Tarkhani <ztarkhani@microsoft.com>,
-        =?UTF-8?Q?=C8=98tefan_=C8=98icleru?= <ssicleru@bitdefender.com>,
-        dev@lists.cloudhypervisor.org, kvm@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, qemu-devel@nongnu.org,
-        virtualization@lists.linux-foundation.org, x86@kernel.org,
-        xen-devel@lists.xenproject.org
-References: <20231113022326.24388-1-mic@digikod.net>
- <20231113022326.24388-18-mic@digikod.net>
- <20231113081929.GA16138@noisy.programming.kicks-ass.net>
- <a52d8885-43cc-4a4e-bb47-9a800070779e@linux.microsoft.com>
- <20231127200841.GZ3818@noisy.programming.kicks-ass.net>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-In-Reply-To: <20231127200841.GZ3818@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20230717-topic-branch_aon_cleanup-v2-0-2a583460ef26@linaro.org>
+ <20230717-topic-branch_aon_cleanup-v2-3-2a583460ef26@linaro.org>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20230717-topic-branch_aon_cleanup-v2-3-2a583460ef26@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 29/11/2023 18:59, Konrad Dybcio wrote:
+> + qcom_branch_set_clk_en(regmap, 0x2b06c); /* GCC_SYS_NOC_CPUSS_AHB_CLK */
 
+Shouldn't this be 0x79004.
 
-On 11/27/23 14:08, Peter Zijlstra wrote:
-> On Mon, Nov 27, 2023 at 10:48:29AM -0600, Madhavan T. Venkataraman wrote:
->> Apologies for the late reply. I was on vacation. Please see my response below:
->>
->> On 11/13/23 02:19, Peter Zijlstra wrote:
->>> On Sun, Nov 12, 2023 at 09:23:24PM -0500, Mickaël Salaün wrote:
->>>> From: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
->>>>
->>>> X86 uses a function called __text_poke() to modify executable code. This
->>>> patching function is used by many features such as KProbes and FTrace.
->>>>
->>>> Update the permissions counters for the text page so that write
->>>> permissions can be temporarily established in the EPT to modify the
->>>> instructions in that page.
->>>>
->>>> Cc: Borislav Petkov <bp@alien8.de>
->>>> Cc: Dave Hansen <dave.hansen@linux.intel.com>
->>>> Cc: H. Peter Anvin <hpa@zytor.com>
->>>> Cc: Ingo Molnar <mingo@redhat.com>
->>>> Cc: Kees Cook <keescook@chromium.org>
->>>> Cc: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
->>>> Cc: Mickaël Salaün <mic@digikod.net>
->>>> Cc: Paolo Bonzini <pbonzini@redhat.com>
->>>> Cc: Sean Christopherson <seanjc@google.com>
->>>> Cc: Thomas Gleixner <tglx@linutronix.de>
->>>> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
->>>> Cc: Wanpeng Li <wanpengli@tencent.com>
->>>> Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
->>>> ---
->>>>
->>>> Changes since v1:
->>>> * New patch
->>>> ---
->>>>  arch/x86/kernel/alternative.c |  5 ++++
->>>>  arch/x86/mm/heki.c            | 49 +++++++++++++++++++++++++++++++++++
->>>>  include/linux/heki.h          | 14 ++++++++++
->>>>  3 files changed, 68 insertions(+)
->>>>
->>>> diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
->>>> index 517ee01503be..64fd8757ba5c 100644
->>>> --- a/arch/x86/kernel/alternative.c
->>>> +++ b/arch/x86/kernel/alternative.c
->>>> @@ -18,6 +18,7 @@
->>>>  #include <linux/mmu_context.h>
->>>>  #include <linux/bsearch.h>
->>>>  #include <linux/sync_core.h>
->>>> +#include <linux/heki.h>
->>>>  #include <asm/text-patching.h>
->>>>  #include <asm/alternative.h>
->>>>  #include <asm/sections.h>
->>>> @@ -1801,6 +1802,7 @@ static void *__text_poke(text_poke_f func, void *addr, const void *src, size_t l
->>>>  	 */
->>>>  	pgprot = __pgprot(pgprot_val(PAGE_KERNEL) & ~_PAGE_GLOBAL);
->>>>  
->>>> +	heki_text_poke_start(pages, cross_page_boundary ? 2 : 1, pgprot);
->>>>  	/*
->>>>  	 * The lock is not really needed, but this allows to avoid open-coding.
->>>>  	 */
->>>> @@ -1865,7 +1867,10 @@ static void *__text_poke(text_poke_f func, void *addr, const void *src, size_t l
->>>>  	}
->>>>  
->>>>  	local_irq_restore(flags);
->>>> +
->>>>  	pte_unmap_unlock(ptep, ptl);
->>>> +	heki_text_poke_end(pages, cross_page_boundary ? 2 : 1, pgprot);
->>>> +
->>>>  	return addr;
->>>>  }
->>>
->>> This makes no sense, we already use a custom CR3 with userspace alias
->>> for the actual pages to write to, why are you then frobbing permissions
->>> on that *again* ?
->>
->> Today, the permissions for a guest page in the extended page table
->> (EPT) are RWX (unless permissions are restricted for some specific
->> reason like for shadow page table pages). In this Heki feature, we
->> don't allow RWX by default in the EPT. We only allow those permissions
->> in the EPT that the guest page actually needs.  E.g., for a text page,
->> it is R_X in both the guest page table and the EPT.
-> 
-> To what end? If you always mirror what the guest does, you've not
-> actually gained anything.
-> 
->> For text patching, the above code establishes an alternate mapping in
->> the guest page table that is RW_ so that the text can be patched. That
->> needs to be reflected in the EPT so that the EPT permissions will
->> change from R_X to RWX. In other words, RWX is allowed only as
->> necessary. At the end of patching, the EPT permissions are restored to
->> R_X.
->>
->> Does that address your comment?
-> 
-> No, if you want to mirror the native PTEs why don't you hook into the
-> paravirt page-table muck and get all that for free?
-> 
-> Also, this is the user range, are you saying you're also playing these
-> daft games with user maps?
+Also the logic here is - since its currently marked as CRITICAL => its 
+fine to just mark it as qcom_branch_set_clk_en() which I guess adds up..
 
-I think that we should have done a better job of communicating the threat model in Heki and
-how we are trying to address it. I will correct that here. I think this will help answer
-many questions. Some of these questions also came up in the LPC when we presented this.
-Apologies for the slightly long answer. It is for everyone's benefit. Bear with me.
+hmm
 
-Threat Model
-------------
-
-In the threat model in Heki, the attacker is a user space attacker who exploits
-a kernel vulnerability to gain more privileges or bypass the kernel's access
-control and self-protection mechanisms. 
-
-In the context of the guest page table, one of the things that the threat model translates
-to is a hacker gaining access to a guest page with RWX permissions. E.g., by adding execute
-permissions to a writable page or by adding write permissions to an executable page.
-
-Today, the permissions for a guest page in the extended page table are RWX by
-default. So, if a hacker manages to establish RWX for a page in the guest page
-table, then that is all he needs to do some damage.
-
-How to defeat the threat
-------------------------
-
-To defeat this, we need to establish the correct permissions for a guest page
-in the extended page table as well. That is, R_X for a text page, R__ for a
-read-only page and RW_ for a writable page. The only exception is a guest page
-that is mapped via multiple mappings with different permissions in each
-mapping. In that case, the collective permissions across all mappings needs
-to be established in the extended page table so that all mappings can work.
-
-Mechanism
----------
-
-To achieve all this, Heki finds all the kernel mappings at the end of kernel
-boot and reflects their permissions in the extended page table before
-kicking off the init process.
-
-During runtime, permissions on a guest page can change because of genuine
-kernel operations:
-	- vmap/vunmap
-	- text patching for FTrace, Kprobes, etc
-	- set_memory_*()
-
-In each of these cases as well, the permissions need to be reflected in the
-extended page table. In summary, the extended page table permissions mirror
-the guest page table ones.
-
-Authentication
---------------
-
-The above approach addresses the case where a hacker tries to directly
-modify a guest page table entry. It doesn't matter since the extended page
-table permissions are not changed.
-
-Now, the question is - what if a hacker manages to use the Heki primitives
-and establish the permissions he wants in the extended page table? All of
-this work is for nothing!!
-
-The answer is - authentication. If an entity outside the guest can validate
-or authenticate each guest request to change extended page table permissions,
-then it can tell a genuine request from an attack. We are planning to make the
-VMM that entity. In the case of a genuine request, the VMM will call the
-hypervisor and establish the correct permissions in the extended page table.
-If the VMM thinks that it is an attack, it will have the hypervisor send an
-exception to the guest.
-
-In the current version (RFC V2), we don't have authentication in place. The
-VMM is not in the picture yet. This is WIP. We are hoping to implement some
-authentication in V3 and improve it as we go forward. So, in V2, we only have
-the mechanisms in place.
-
-So, I agree that it is kinda hard to see the value of Heki without authentication.
-
-Kernel Lockdown
----------------
-
-But, we must provide at least some security in V2. Otherwise, it is useless.
-
-So, we have implemented what we call a kernel lockdown. At the end of kernel
-boot, Heki establishes permissions in the extended page table as mentioned
-before. Also, it adds an immutable attribute for kernel text and kernel RO data.
-Beyond that point, guest requests that attempt to modify permissions on any of
-the immutable pages will be denied.
-
-This means that features like FTrace and KProbes will not work on kernel text
-in V2. This is a temporary limitation. Once authentication is in place, the
-limitation will go away.
-
-Additional information
-----------------------
-
-The following primitives call Heki functions to reflect guest page table
-permissions in the extended page table:
-
-heki_arch_late_init()
-	This calls heki_protect().
-	
-	This is called at the end of kernel boot to protect all guest kernel
-	mappings at that point.
-
-vmap_range_noflush()
-vmap_small_pages_range_noflush()
-	These functions call heki_map().
-
-	These are the lowest level functions called from different places
-	to map something in the kernel address space.
-
-set_memory_nx()
-set_memory_rw()
-	These functions call heki_change_page_attr_set().
-
-set_memory_x()
-set_memory_ro()
-set_memory_rox()
-	These functions call heki_change_page_attr_clear().
-
-__text_poke()
-	This function is called by various features to patch text.
-	This calls heki_text_poke_start() and heki_text_poke_end().
-
-	heki_text_poke_start() is called to add write permissions to the
-	extended page table so that text can be patched. heki_text_poke_end()
-	is called to revert write permissions in the extended page table.
-
-User mappings
--------------
-
-All of this work is only for protecting guest kernel mappings. So, the idea is
-- the VMM+Hypervisor protect the integrity of the kernel and the kernel
-protects the integrity of user land. So, user pages continue to have RWX in the
-extended page table. The MBEC feature makes it possible to have separate execute
-permission bits in the page table entry for user and kernel.
-
-One final thing
----------------
-
-Peter mentioned the following:
-
-"if you want to mirror the native PTEs why don't you hook into the
-paravirt page-table muck and get all that for free?"
-
-We did consider using a shadow page table kind of approach so that guest page table
-modifications can be intercepted and reflected in the page table entry. We did not
-do this for two reasons:
-
-- there are bits in the page table entry that are not permission bits. We would like
-  the guest kernel to be able to modify them directly.
-
-- we cannot tell a genuine request from an attack.
-
-That said, we are still considering making the guest page table read only for added
-security. This is WIP. I do not have details yet.
-
-If I have not addressed any comment, please let me know.
-
-As always, thanks for your comments.
-
-Madhavan T Venkataraman
-
-
-
-
+---
+bod
