@@ -2,242 +2,662 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C16927FCD90
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 04:42:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 730E67FCD93
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 04:43:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbjK2Dm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 22:42:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36640 "EHLO
+        id S1376814AbjK2Dmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 22:42:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229846AbjK2Dm0 (ORCPT
+        with ESMTP id S230483AbjK2Dmv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 22:42:26 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDFFF1AD;
-        Tue, 28 Nov 2023 19:42:32 -0800 (PST)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AT2RjqI024362;
-        Wed, 29 Nov 2023 03:42:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=qcppdkim1;
- bh=HuVgWhuxBEx6JBFGWm/Si8hkZMKoJr/y721ffo0x1ZU=;
- b=bA2lP01Q3PY/xclFy+WDQRMIQdE1PfxG0MWOVwTA1g+Q7sg+NVuQkH915TD4/aEmg5qN
- IlwpiK333iyy+S0qZ8EW21eUGWpHViKl3LMkzv7M6A2ohbMAqLEvvCPdUsLRbpZ85s80
- TPhsDHejJdlosGwypC4t20xccZtvgJAv56Usma5IYObcPAvRaMG7fnM9xwOcAYMKhdpq
- VESNbI2nj1XVXqgYwYeE9I0tieBCYW7m6tGRRI+Z53SbRKzxyXwHTjoteQwM8jqviynv
- jSTapfhqSMZL8K9VVntEYUa14R6HwmJ7SZKh4yx9bYj4Uu4fagjCR6kP4+2SxRcXr22V aQ== 
-Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam04lp2040.outbound.protection.outlook.com [104.47.74.40])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3unfn4t9q3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Nov 2023 03:42:27 +0000
+        Tue, 28 Nov 2023 22:42:51 -0500
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2065.outbound.protection.outlook.com [40.107.244.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABFDF10FC
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 19:42:56 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NgCmTQa6agHIbMXVsjQM/sACOdY1UolfXhOBq/IFolBDe8oU6hoITeSxc2tHbBULkbfsNVDEtELujiYZgV7dfS2+CVtlRb7jNL7SiMlvNKTprkCEaPt+yf4eHLJaATzb2zWYE56cd/2ia/dh0JvYOzX+bzwCNXy1orqeKS2Bcc3whKweILoaujFs7zvvebBqRxzdBcX2aLR8GWENyAs8j9znBTBqSjNl/pRo+bL6priHJFOV6Kz/r3M8wDBWikqGqMxEt3PviktjvY63+p18ueXFQtJkprv9Yv8VYcA86e2X/Y+5YUIw41VPOp29KIBRfnF0GXFHd/34shtzDBiOhQ==
+ b=oNdg9E15UB6RlvrgBCgOdYxYjE/RrAlKXpMUo+MdQ8jiHnoPy0htO9mCmPYSOYIUWg75AEKc5UA57ePfzkxwqeAVbVpGaZHFlry3kkJ1DDFH8dK3GODCvI7XXJpQIsE3RsKS6iIoXa41HPpXwgK+OT9/sT9QyPP8IUYpw/fkN/a4m1ZnKH9CyQCcjPSVch72COXVVbZn+uKl+cm9zTOlWs5qLl7QU3/fjdlTk5+hn/hQpAujPqT8hVP/0YLeexa7e+jxEi85fROSYioKF3Ynv0rmU5ZuLXwy1lOdnk0XmZ7kFSIvF4rXBWIxa1df3NAUg0G5zESHiZ3EKZ7LbNMtgw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HuVgWhuxBEx6JBFGWm/Si8hkZMKoJr/y721ffo0x1ZU=;
- b=Y8p/pxDCNkkqTbfQayBARsSsZ7Gb3SwiZ2+JhbHEBwTzCoMzi7kJh0o0vPGQSnYKJ2RlWyLWpfPaLvaJl73rXug4cyeiAywCbUq0EqvqfrxhA6hYBbq/WBt02k1l/Ma/E8ZmrH+4EkkMmLo8T4HN/az8YE2+Zfa1s54wR9ekMwrvBNylxx05QOqbVmYHl98o3YvaaUC+JvVcraWjorLG0MnJkyu8KleK8DmTD3iveyxBNeYQ8MWwRFce6EEXRJd6Jl1Za+7hQi1HGCiYXs5p1KaI7mDhLQ8bkFC9LIBQU1rfBIasqMYRg3J0FR2Q9JNQrWTfb8nDknStjZYOBJI6/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=quicinc.com; dmarc=pass action=none header.from=quicinc.com;
- dkim=pass header.d=quicinc.com; arc=none
-Received: from SN6PR02MB4205.namprd02.prod.outlook.com (2603:10b6:805:35::17)
- by CO6PR02MB7778.namprd02.prod.outlook.com (2603:10b6:303:a7::22) with
+ bh=sIRkHg6UK5ly0iz7/RQZxic5/TyiMYV48zAtEkcUn+k=;
+ b=Vbqrp2eLc5g/1d2zfkcITdIm+ljFVusXuJWeiLM0YYtFrKmlckfbXl/JYHgZI/DkNOMN9ZarmQdkrNZDFHb6nHKgS+b/iYnc3M42xkHxkqIO6s6kRKEcWCRQZjWLTjSuuwu93GWGfeoLBhoV52S06KPbTyCcKlcuJJa8pAKG1ds7sRjmS5scsXqrGSfONCqJpxkZs3bPC2MQYndOLODEbOM5rAHNbFekPFfwhY2FGtYI2qsyd8gijIyuAr91Es+srdLRvjTCdDS7EP6ASgn+klwCqciHnJmCbmJq7Fg0h36IvPJrds7vTA2X8FH5xnVZSX7tf8Gql1XrJI1Gt/yyzg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=arm.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sIRkHg6UK5ly0iz7/RQZxic5/TyiMYV48zAtEkcUn+k=;
+ b=MGQKEqPgh4/oLKEazJVZGwujtYZurpuqVQ+MsSZtN+yIDiaMFeavKuaxym2UOI5RL+2KTYH855qfJgoalSVAqLsxAVclqwTwi17HSI9L9SaxwV7FQwuHfqa5WOBBTBFMVK5h0vZVE1mdMY2t4a0LVm92RDDbPphllZHM8G5nZ3nT52ZDlU8MB31y2unz0rRBhI0YebXNcsPe+7pqFowoybcFsxke/wmVQZcN5xFoWnYvwk36sionkfZ7SORcGAV7KN/lCx12i8EzOkJabu9uEWaaBlmybBHe3QBDokYKAbUYducznw67ybGyPxsZiX1DIZpZ3H18w0lVe1vAI3sX1w==
+Received: from CH0PR03CA0284.namprd03.prod.outlook.com (2603:10b6:610:e6::19)
+ by DM4PR12MB7696.namprd12.prod.outlook.com (2603:10b6:8:100::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.28; Wed, 29 Nov
- 2023 03:42:24 +0000
-Received: from SN6PR02MB4205.namprd02.prod.outlook.com
- ([fe80::546b:93ec:1242:265c]) by SN6PR02MB4205.namprd02.prod.outlook.com
- ([fe80::546b:93ec:1242:265c%6]) with mapi id 15.20.7025.022; Wed, 29 Nov 2023
- 03:42:24 +0000
-From:   Brian Cain <bcain@quicinc.com>
-To:     Thomas Huth <thuth@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: RE: [PATCH] hexagon: Remove CONFIG_HEXAGON_ARCH_VERSION from uapi
- header
-Thread-Topic: [PATCH] hexagon: Remove CONFIG_HEXAGON_ARCH_VERSION from uapi
- header
-Thread-Index: AQHaB//2OERsbOjxskupUbp44aavt7CQ3Acw
-Date:   Wed, 29 Nov 2023 03:42:24 +0000
-Message-ID: <SN6PR02MB4205BBAD065D3063745AE0B9B883A@SN6PR02MB4205.namprd02.prod.outlook.com>
-References: <20231026113114.195854-1-thuth@redhat.com>
-In-Reply-To: <20231026113114.195854-1-thuth@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR02MB4205:EE_|CO6PR02MB7778:EE_
-x-ms-office365-filtering-correlation-id: 4a24e8fb-7dd5-4300-4bae-08dbf08d336d
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: HFzBZ/pFXUD5TzU9wDpfqn55d+npwc0BWK9emuwng880xi8m6upQic5klnMf0989SKrDCxxSwb+yjoIh8+sUZNpCpJSlkm1DZe+TxCW4ijKcPwmhNcj1IThqTivAxM3jtLGl8lOjiZEKLPPEPJhrgSGkkn3FGWpX3O9X7sgCeRjzPUCdLNobKtGCRlhGoz3ORyhXLNQRUfIbvBdhvPTDkOBt7yAcX9/xtziLexF5HEVJQVRzeSyoDHliICjO7o3HoGCJzPRXfsW2634fEP6P17U0SK1HAvAHiDUP0UGh6Z4I7wzsdlyhVTTL1QnNj5OEGzglQpzHmid1G+movnnMVPwroFVrAC9tAUwjcZrNrcdscvLt01HQyzZM9NvmvMGTT03DROqU9Jc413EsSbAQ3DMcyz3VhxWuLK2nLnNga1yns758tVzX+r6vNJH6boc6ZH8ZlF0EufRVZth2Tzuc2brBWEmkxjhads5tPnQ7i14TzSOCSNDlEBDH7cAb4D0nmuVdVXuSc+ueBMl6z0CAJk3Hz8ggZ160YP98FiAitITTz3YWjf/XdeBki1KH5yEwm7IfAwQVkVs6OoCnjGyoOrBK87XlApPTzi4dQkUZx6iW+K9KZWALIsGiqJnMkf7mrB51rCRJxeQiCRxP/SgkXTjo07UQHMF8kBETRupy46s=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR02MB4205.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(396003)(376002)(346002)(39860400002)(230173577357003)(230273577357003)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(52536014)(8936002)(4326008)(8676002)(9686003)(71200400001)(7696005)(6506007)(53546011)(66556008)(64756008)(66446008)(66476007)(110136005)(76116006)(54906003)(316002)(478600001)(66946007)(122000001)(55016003)(38100700002)(41300700001)(38070700009)(33656002)(86362001)(26005)(2906002)(83380400001)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?tboBqD70SHZalikLwY0NLhtZbSJGSISm6VK79hFgSV3aLV6NVc0T0JFjkGQT?=
- =?us-ascii?Q?yQwMflzVzbQSANWw1+f9LJZlivVWo22qjeU7dYv+o8JTMmH/qxx5Y4QL8tL3?=
- =?us-ascii?Q?AHv0GFc5W5DOnbxc9x+TTrn4T9x6VAmmqAF67yp3cPYMg0dGEsnN2Z4Zm9CZ?=
- =?us-ascii?Q?9wJHHnl3kO8Zb+qR0SwE5L1aaoG91n6uWCGWz6vY4tLF9xXtHw7k/H5yuExU?=
- =?us-ascii?Q?22tbhx/urJSSf9DvGnb2kC3oGAcdShovAxkGumh5M1y9f0map3II7sPlRM6x?=
- =?us-ascii?Q?MkuCTKhFJWy4w/QHwb8Cc5RabFvY7U3mIv5XegI7ecqzl+/8jmrOx6eob/jY?=
- =?us-ascii?Q?wU/AtJW4OMN9rGp6QpYwomUkKD+3GyZUU3Uz8/iHkeOiTTlVqUHKHi/p+ZIi?=
- =?us-ascii?Q?yqAFwVeqh2NjyqQ9IGpiU4DbDMlwowt1csYHfvloqMbNhkz93mpOdsPewOrX?=
- =?us-ascii?Q?di5g7asSXdDc0mUk//bAYZaW1HZpKVOwB/6sTfNzr+AwvTaqcd3CaBswEuHJ?=
- =?us-ascii?Q?k66ptCeg8410YGfePOb/Uen6+1nQ2dD73RDiagUgei0i4f4p/TcFs7NabKvB?=
- =?us-ascii?Q?Dir/ZnQ1OZ5nwzt6utwk2U5NFv9+9v5wkMUkCx5JYPgnulY5RKKM38wA9wBZ?=
- =?us-ascii?Q?xcTQ6jDZwuo/ttI/wSHR8CYKj5ICDyEXCoiiU+kp6fv/RSyR6g3PqCl12y5X?=
- =?us-ascii?Q?e+hsOCNv3en+RxfALkfTgObE4gUm58sQvWLhT2ZUtBZtDL0+2M18PZTEUUJ2?=
- =?us-ascii?Q?KyNkWq66Ou0RqNF2BVg/T4NJ7DQCnVWYCO1Y/wKiuoY2qpT38DZO/QGZbR49?=
- =?us-ascii?Q?U1cfPJ5AyRQvmUByERzFbG7dq5eTdqEgTcKWasg4iLoZHjv1FHj7BGgV6cvD?=
- =?us-ascii?Q?2vzEkbgiXWlHss4IvYKrqw4Zewdnr10L879Byk9YGAKE6akbUlXCiePQeUlf?=
- =?us-ascii?Q?+PoSDH1u9YSV8P6fHHL6ZKP4DuIBqXfu5jg12nmvU2AtCBsdtjaS31lWBLms?=
- =?us-ascii?Q?pydd2Yq6U+Ncsv4o1OIT5BBrfkrJrZ8OovNGtHObrcxP/OMSjd7Rfh5mdzlR?=
- =?us-ascii?Q?JcAWdOJV/7CowzsExo+lUeylNEpx9J2edRFT0KD1715w4GXxHcQvPTxq4Kv0?=
- =?us-ascii?Q?+tIRp+gBBWvD8E6Jlo0npnKR7Qm8yRphkNn1HWOR4jTdyWpi0yMtpVm2lUML?=
- =?us-ascii?Q?bUTn6nGf/t1/NJfQv8i5L0zMJ3fvsPExOZVD1RuUfdDJbrN03+gykBV5jjcL?=
- =?us-ascii?Q?PeZrV+OUfqFfPOPIiJ8IQAMsRvVlrMwGFo+HGyylDLwiNsvCf3bnNNAw+VE4?=
- =?us-ascii?Q?tUkscGTNVXryc2hD2XgBdnxHqrrsMrwaawzkg+s4+Z3K3w0GD0VhvYVY1GOg?=
- =?us-ascii?Q?axU6IwmV4iXrVsr6ilqQkQAO3FUKVKu3OdevjcwBqQMiMjzAwfShTh8uLaPY?=
- =?us-ascii?Q?KnPlIKQb9zlLbuvwassAaBeYdWuiHEyCWk9IfI0ehHn2aTs4UUXLmIx/uFLE?=
- =?us-ascii?Q?PWZ09CCzV0NYNXYDig53M+Tt6K3UU26fEq1ixfAEzmU96JWwh90FNegjcqRh?=
- =?us-ascii?Q?LbPQEk0HDp8bDICjq7U=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.22; Wed, 29 Nov
+ 2023 03:42:53 +0000
+Received: from DS1PEPF00017092.namprd03.prod.outlook.com
+ (2603:10b6:610:e6:cafe::43) by CH0PR03CA0284.outlook.office365.com
+ (2603:10b6:610:e6::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.22 via Frontend
+ Transport; Wed, 29 Nov 2023 03:42:53 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ DS1PEPF00017092.mail.protection.outlook.com (10.167.17.135) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7046.17 via Frontend Transport; Wed, 29 Nov 2023 03:42:52 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 28 Nov
+ 2023 19:42:38 -0800
+Received: from [10.110.48.28] (10.126.230.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 28 Nov
+ 2023 19:42:37 -0800
+Message-ID: <1a738e0a-ac11-4cd3-be2f-6b6e7cb4980a@nvidia.com>
+Date:   Tue, 28 Nov 2023 19:42:36 -0800
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: o+fL+OmoBtnw3oVYGYL+hO4f/fCj9xVG7qeqGAgPCKO8tsOKuOYo9sIBbBFWo3MLz81j7iovbNds1UZgbZjINY5RkYMsSVDfz6YoLTEBFh2dl2oGOMHrXUpuN7plFSzU6+1Vpdt9GHqZxge7crcM97zbJU99+cfXfU3engZgPUX4Ch+yQhsDo3gikmupR2LULMhdecqiS4tqrfeanzno2d8afHMf3oJ8aQfBdNr0f4laKKUtOD5u1TQyziL1Y+e3/jOks8oxDXytoC2pcEzMA8mOABN2vtgBxOIlt+9iZVKEE8q8bNqaoA1BeVMMyAMKc8PbNf5TVoh3KEErakzSVtzfu0m7O3cPyxOsF4koIVw18WMTIoTeGI80cCHjm9McMCrqDKO8UlA+pRlff9Aj1XSUV8Uv4cdGyh0S34WKoKyBNImvGtC/GymHF0fWZgMqgf1pD4lbkvXhOq0CouJ/V4cZHeiGhrScIHPP6V05BeDaANBpnMrXweYwvk45oqJhWuZKT0Xq0Q7wFKCgRctZdoWDlg2xukm0QOTyTQp66MGZjI3yHJsY3W9bHeMPQ+tQLeb7y6TcIEyxFDJL60pb6Fj2GzxqfGox1EpA7immUYaZoiklgFclMjlBHvkY8501SnVLh4a3k1fKqwnlPRp8tvQQHh1UDJVlUEgJXOM1xotu2TzlV/4XeCLchiMpHJFUryI/OGBUsJtbj5IOkjSu3plhfu5RgvpsD4K1qPbty+2eDyTcIYsSqROtI/d/fsXGnODrnMWU+q6Abhn7irwcKhuJH+16OMlSoAiSbGzAtSP65LwQJk+nLRVWvddy+XVqApUiGCZ1aoGQ05I2V3sOmg==
-X-OriginatorOrg: quicinc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4205.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a24e8fb-7dd5-4300-4bae-08dbf08d336d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Nov 2023 03:42:24.6828
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH v7 03/10] mm: thp: Introduce per-size thp sysfs
+ interface
+To:     Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Yin Fengwei" <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        "Yu Zhao" <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Anshuman Khandual" <anshuman.khandual@arm.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+CC:     <linux-mm@kvack.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20231122162950.3854897-1-ryan.roberts@arm.com>
+ <20231122162950.3854897-4-ryan.roberts@arm.com>
+Content-Language: en-US
+From:   John Hubbard <jhubbard@nvidia.com>
+In-Reply-To: <20231122162950.3854897-4-ryan.roberts@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.126.230.35]
+X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS1PEPF00017092:EE_|DM4PR12MB7696:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1ae2cffb-7e05-41f1-20d8-08dbf08d444b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: La6Te8n8fFdfvDhs8PImJNT0odpF9J8VWbF+ShMJ6ZRmen/mFPHd/OlKK8y5bClY415pCHKFRVEI8jE8JgFIXbENTXWN8WGm2af/cu+JTqO0eC/XKIxKa9O8HZ5P4rDnr1XLckYmEqOryJ3JkipSsXfj0uUuceDsIBHdvacgeWOhnTsFFptP61/GgXs8Jcp7P2l0x7k7526uE9CQtUbGLYCYZDu/T/duvqOC/U0t2EdMzGnrkStJbkDnMdT70wn45TIAkrOpJ9ZhJ6pt0GsBVKxb1n1WjmuyzU7xi3E9rGY+9OnKE1w3bLOqZ3lRvaGRzEUgnX+bDzjYKccJafgA1s4tlGtoIa8xTQ+zL0ko9YdRu5+johR2aueEy3PyEixsUcZ7GKKnTCBG4OcojbsTyPISHUJxuaZ8/MY7NDGvHDoBunO6E+WPCIaGa3dFlm/sYicLYiiW03D3NKfTKVXH9eN0h981ih3rJ+UJP7UDFC2vvp2VNtiyhhg2p7KNYVl3t7IdGm7gLDVOLS2bjWM+d4ouWQ1PAnM8Bq7ResdUjfwm4uC36olIJXSQJgHukry/HUSK6gVGWCj78GVdmXEcQOBn7ZWZIJ14q7i0mlW9S9s8znzJjYzeiD7AD9EMrVU9NHO1WXbyugq5h39NEapf2bYnAhoF9kXsAMJLLZ9H83yDXKKrfjR9VwMFx6GOpnca0Yc/pqYuyrjBKQbvot2FSmUBK/22i2r6AfANu/eFBQyhNuSMOqdy1aA076YhcTT45UJwFK1CsDtXqfCM95q+0YogiVzvuiPKMXopRhhKFErqZoEfEcxEkMvdgVzVqzpM
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(136003)(39860400002)(346002)(396003)(376002)(230922051799003)(64100799003)(82310400011)(186009)(1800799012)(451199024)(46966006)(40470700004)(36840700001)(86362001)(31696002)(47076005)(2906002)(5660300002)(356005)(31686004)(40480700001)(8676002)(4326008)(7416002)(36860700001)(41300700001)(8936002)(336012)(83380400001)(30864003)(426003)(54906003)(16526019)(110136005)(316002)(16576012)(40460700003)(36756003)(2616005)(921008)(82740400003)(478600001)(53546011)(7636003)(70586007)(70206006)(26005)(43740500002)(309714004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 03:42:52.8323
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 98e9ba89-e1a1-4e38-9007-8bdabc25de1d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: HpOzPY1KzHKZbbJSINEJ4guNMDalXOQh+x91udaXqhu325NbFXUgtyERZOR2lfBQVqkuFOhZ3TjPOaMyQICDIg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR02MB7778
-X-Proofpoint-ORIG-GUID: yIUXMGMbzvGky6oR1ED_NxgTfawlHe-i
-X-Proofpoint-GUID: yIUXMGMbzvGky6oR1ED_NxgTfawlHe-i
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-28_27,2023-11-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- impostorscore=0 adultscore=0 clxscore=1011 suspectscore=0
- priorityscore=1501 mlxscore=0 bulkscore=0 mlxlogscore=959 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311290026
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ae2cffb-7e05-41f1-20d8-08dbf08d444b
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS1PEPF00017092.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7696
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Thomas Huth <thuth@redhat.com>
-> Sent: Thursday, October 26, 2023 6:31 AM
-> To: Arnd Bergmann <arnd@arndb.de>; linux-hexagon@vger.kernel.org; Brian
-> Cain <bcain@quicinc.com>
-> Cc: linux-kernel@vger.kernel.org; Oleg Nesterov <oleg@redhat.com>
-> Subject: [PATCH] hexagon: Remove CONFIG_HEXAGON_ARCH_VERSION from
-> uapi header
->=20
-> WARNING: This email originated from outside of Qualcomm. Please be wary o=
-f
-> any links or attachments, and do not enable macros.
->=20
-> uapi headers should not expose CONFIG switches since they are not
-> available in userspace. Fix it in arch/hexagon/include/uapi/asm/user.h
-> by always defining the cs0 and cs1 entries instead of pad values.
->=20
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Thomas Huth <thuth@redhat.com>
+On 11/22/23 08:29, Ryan Roberts wrote:
+> In preparation for adding support for anonymous small-sized THP,
+> introduce new sysfs structure that will be used to control the new
+> behaviours. A new directory is added under transparent_hugepage for each
+> supported THP size, and contains an `enabled` file, which can be set to
+> "global" (to inherrit the global setting), "always", "madvise" or
+> "never". For now, the kernel still only supports PMD-sized anonymous
+> THP, so only 1 directory is populated.
+> 
+> The first half of the change converts transhuge_vma_suitable() and
+> hugepage_vma_check() so that they take a bitfield of orders for which
+> the user wants to determine support, and the functions filter out all
+> the orders that can't be supported, given the current sysfs
+> configuration and the VMA dimensions. If there is only 1 order set in
+> the input then the output can continue to be treated like a boolean;
+> this is the case for most call sites.
+> 
+> The second half of the change implements the new sysfs interface. It has
+> been done so that each supported THP size has a `struct thpsize`, which
+> describes the relevant metadata and is itself a kobject. This is pretty
+> minimal for now, but should make it easy to add new per-thpsize files to
+> the interface if needed in future (e.g. per-size defrag). Rather than
+> keep the `enabled` state directly in the struct thpsize, I've elected to
+> directly encode it into huge_anon_orders_[always|madvise|global]
+> bitfields since this reduces the amount of work required in
+> transhuge_vma_suitable() which is called for every page fault.
+> 
+> The remainder is copied from Documentation/admin-guide/mm/transhuge.rst,
+> as modified by this commit. See that file for further details.
+> 
+> Transparent Hugepage Support for anonymous memory can be entirely
+> disabled (mostly for debugging purposes) or only enabled inside
+> MADV_HUGEPAGE regions (to avoid the risk of consuming more memory
+> resources) or enabled system wide. This can be achieved
+> per-supported-THP-size with one of::
+> 
+> 	echo always >/sys/kernel/mm/transparent_hugepage/hugepages-<size>kB/enabled
+> 	echo madvise >/sys/kernel/mm/transparent_hugepage/hugepages-<size>kB/enabled
+> 	echo never >/sys/kernel/mm/transparent_hugepage/hugepages-<size>kB/enabled
+> 
+> where <size> is the hugepage size being addressed, the available sizes
+> for which vary by system. Alternatively it is possible to specify that
+> a given hugepage size will inherrit the global enabled setting::
+> 
+> 	echo global >/sys/kernel/mm/transparent_hugepage/hugepages-<size>kB/enabled
+> 
+> The global (legacy) enabled setting can be set as follows::
+> 
+> 	echo always >/sys/kernel/mm/transparent_hugepage/enabled
+> 	echo madvise >/sys/kernel/mm/transparent_hugepage/enabled
+> 	echo never >/sys/kernel/mm/transparent_hugepage/enabled
+> 
+> By default, PMD-sized hugepages have enabled="global" and all other
+> hugepage sizes have enabled="never". If enabling multiple hugepage
+> sizes, the kernel will select the most appropriate enabled size for a
+> given allocation.
+> 
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 > ---
->  Based-on: <20231025073802.117625-1-thuth@redhat.com>
->=20
->  Compile tested only (with CONFIG_HEXAGON_ARCH_VERSION set to 2
->  and with CONFIG_HEXAGON_ARCH_VERSION set to 4)
->=20
->  arch/hexagon/include/uapi/asm/user.h | 7 +------
->  arch/hexagon/kernel/ptrace.c         | 7 +++++--
->  scripts/headers_install.sh           | 1 -
->  3 files changed, 6 insertions(+), 9 deletions(-)
->=20
-> diff --git a/arch/hexagon/include/uapi/asm/user.h
-> b/arch/hexagon/include/uapi/asm/user.h
-> index 7327ec59b22f..abae6a4b5813 100644
-> --- a/arch/hexagon/include/uapi/asm/user.h
-> +++ b/arch/hexagon/include/uapi/asm/user.h
-> @@ -56,15 +56,10 @@ struct user_regs_struct {
->         unsigned long pc;
->         unsigned long cause;
->         unsigned long badva;
-> -#if CONFIG_HEXAGON_ARCH_VERSION < 4
-> -       unsigned long pad1;  /* pad out to 48 words total */
-> -       unsigned long pad2;  /* pad out to 48 words total */
-> -       unsigned long pad3;  /* pad out to 48 words total */
-> -#else
-> +       /* cs0 and cs1 are only available with HEXAGON_ARCH_VERSION >=3D =
-4 */
->         unsigned long cs0;
->         unsigned long cs1;
->         unsigned long pad1;  /* pad out to 48 words total */
-> -#endif
->  };
->=20
->  #endif
-> diff --git a/arch/hexagon/kernel/ptrace.c b/arch/hexagon/kernel/ptrace.c
-> index 125f19995b76..905b06790ab7 100644
-> --- a/arch/hexagon/kernel/ptrace.c
-> +++ b/arch/hexagon/kernel/ptrace.c
-> @@ -74,7 +74,7 @@ static int genregs_set(struct task_struct *target,
->                    unsigned int pos, unsigned int count,
->                    const void *kbuf, const void __user *ubuf)
->  {
-> -       int ret;
-> +       int ret, ignore_offset;
->         unsigned long bucket;
->         struct pt_regs *regs =3D task_pt_regs(target);
->=20
-> @@ -111,12 +111,15 @@ static int genregs_set(struct task_struct *target,
->  #if CONFIG_HEXAGON_ARCH_VERSION >=3D4
->         INEXT(&regs->cs0, cs0);
->         INEXT(&regs->cs1, cs1);
-> +       ignore_offset =3D offsetof(struct user_regs_struct, pad1);
-> +#else
-> +       ignore_offset =3D offsetof(struct user_regs_struct, cs0);
->  #endif
->=20
->         /* Ignore the rest, if needed */
->         if (!ret)
->                 user_regset_copyin_ignore(&pos, &count, &kbuf, &ubuf,
-> -                       offsetof(struct user_regs_struct, pad1), -1);
-> +                                         ignore_offset, -1);
->         else
->                 return ret;
->=20
-> diff --git a/scripts/headers_install.sh b/scripts/headers_install.sh
-> index c3064ac31003..f7d9b114de8f 100755
-> --- a/scripts/headers_install.sh
-> +++ b/scripts/headers_install.sh
-> @@ -74,7 +74,6 @@
-> arch/arc/include/uapi/asm/page.h:CONFIG_ARC_PAGE_SIZE_16K
->  arch/arc/include/uapi/asm/page.h:CONFIG_ARC_PAGE_SIZE_4K
->  arch/arc/include/uapi/asm/swab.h:CONFIG_ARC_HAS_SWAPE
->  arch/arm/include/uapi/asm/ptrace.h:CONFIG_CPU_ENDIAN_BE8
-> -arch/hexagon/include/uapi/asm/user.h:CONFIG_HEXAGON_ARCH_VERSION
->  arch/m68k/include/uapi/asm/ptrace.h:CONFIG_COLDFIRE
->  arch/nios2/include/uapi/asm/swab.h:CONFIG_NIOS2_CI_SWAB_NO
->  arch/nios2/include/uapi/asm/swab.h:CONFIG_NIOS2_CI_SWAB_SUPPORT
-> --
-> 2.41.0
+>   Documentation/admin-guide/mm/transhuge.rst |  74 ++++--
+>   Documentation/filesystems/proc.rst         |   6 +-
+>   fs/proc/task_mmu.c                         |   3 +-
+>   include/linux/huge_mm.h                    | 100 +++++---
+>   mm/huge_memory.c                           | 263 +++++++++++++++++++--
+>   mm/khugepaged.c                            |  16 +-
+>   mm/memory.c                                |   6 +-
+>   mm/page_vma_mapped.c                       |   3 +-
+>   8 files changed, 387 insertions(+), 84 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/mm/transhuge.rst b/Documentation/admin-guide/mm/transhuge.rst
+> index b0cc8243e093..52565e0bd074 100644
+> --- a/Documentation/admin-guide/mm/transhuge.rst
+> +++ b/Documentation/admin-guide/mm/transhuge.rst
+> @@ -45,10 +45,23 @@ components:
+>      the two is using hugepages just because of the fact the TLB miss is
+>      going to run faster.
+> 
+> +As well as PMD-sized THP described above, it is also possible to
+> +configure the system to allocate "small-sized THP" to back anonymous
 
-Acked-by: Brian Cain <bcain@quicinc.com>
+Here's one of the places to change to the new name, which lately is
+"multi-size THP", or mTHP or m_thp for short. (I've typed "multi-size"
+instead of "multi-sized", because the 'd' doesn't add significantly to
+the meaning, and if in doubt, shorter is better.
+
+
+> +memory (for example 16K, 32K, 64K, etc). These THPs continue to be
+> +PTE-mapped, but in many cases can still provide similar benefits to
+> +those outlined above: Page faults are significantly reduced (by a
+> +factor of e.g. 4, 8, 16, etc), but latency spikes are much less
+> +prominent because the size of each page isn't as huge as the PMD-sized
+> +variant and there is less memory to clear in each page fault. Some
+> +architectures also employ TLB compression mechanisms to squeeze more
+> +entries in when a set of PTEs are virtually and physically contiguous
+> +and approporiately aligned. In this case, TLB misses will occur less
+> +often.
+> +
+
+OK, all of the above still seems like it can remain the same.
+
+>   THP can be enabled system wide or restricted to certain tasks or even
+>   memory ranges inside task's address space. Unless THP is completely
+>   disabled, there is ``khugepaged`` daemon that scans memory and
+> -collapses sequences of basic pages into huge pages.
+> +collapses sequences of basic pages into PMD-sized huge pages.
+> 
+>   The THP behaviour is controlled via :ref:`sysfs <thp_sysfs>`
+>   interface and using madvise(2) and prctl(2) system calls.
+> @@ -95,12 +108,29 @@ Global THP controls
+>   Transparent Hugepage Support for anonymous memory can be entirely disabled
+>   (mostly for debugging purposes) or only enabled inside MADV_HUGEPAGE
+>   regions (to avoid the risk of consuming more memory resources) or enabled
+> -system wide. This can be achieved with one of::
+> +system wide. This can be achieved per-supported-THP-size with one of::
+> +
+> +	echo always >/sys/kernel/mm/transparent_hugepage/hugepages-<size>kB/enabled
+> +	echo madvise >/sys/kernel/mm/transparent_hugepage/hugepages-<size>kB/enabled
+> +	echo never >/sys/kernel/mm/transparent_hugepage/hugepages-<size>kB/enabled
+> +
+> +where <size> is the hugepage size being addressed, the available sizes
+> +for which vary by system. Alternatively it is possible to specify that
+> +a given hugepage size will inherrit the global enabled setting::
+
+typo: inherrit
+
+> +
+> +	echo global >/sys/kernel/mm/transparent_hugepage/hugepages-<size>kB/enabled
+> +
+> +The global (legacy) enabled setting can be set as follows::
+> 
+>   	echo always >/sys/kernel/mm/transparent_hugepage/enabled
+>   	echo madvise >/sys/kernel/mm/transparent_hugepage/enabled
+>   	echo never >/sys/kernel/mm/transparent_hugepage/enabled
+> 
+> +By default, PMD-sized hugepages have enabled="global" and all other
+> +hugepage sizes have enabled="never". If enabling multiple hugepage
+> +sizes, the kernel will select the most appropriate enabled size for a
+> +given allocation.
+> +
+
+This is slightly murky. I wonder if "inherited" is a little more directly
+informative than global; it certainly felt that way my first time running
+this and poking at it.
+
+And a few trivial examples would be a nice touch.
+
+And so overall with a few other minor tweaks, I'd suggest this:
+
+...
+where <size> is the hugepage size being addressed, the available sizes
+for which vary by system.
+
+For example:
+	echo always >/sys/kernel/mm/transparent_hugepage/hugepages-2048kB/enabled
+
+Alternatively it is possible to specify that a given hugepage size will inherit
+the top-level "enabled" value:
+
+	echo inherited >/sys/kernel/mm/transparent_hugepage/hugepages-<size>kB/enabled
+
+For example:
+	echo inherited >/sys/kernel/mm/transparent_hugepage/hugepages-2048kB/enabled
+
+The top-level setting (for use with "inherited") can be by issuing one of the
+following commands::
+
+	echo always >/sys/kernel/mm/transparent_hugepage/enabled
+	echo madvise >/sys/kernel/mm/transparent_hugepage/enabled
+	echo never >/sys/kernel/mm/transparent_hugepage/enabled
+
+By default, PMD-sized hugepages have enabled="inherited" and all other
+hugepage sizes have enabled="never".
+
+
+>   It's also possible to limit defrag efforts in the VM to generate
+>   anonymous hugepages in case they're not immediately free to madvise
+>   regions or to never try to defrag memory and simply fallback to regular
+> @@ -146,25 +176,34 @@ madvise
+>   never
+>   	should be self-explanatory.
+> 
+> -By default kernel tries to use huge zero page on read page fault to
+> -anonymous mapping. It's possible to disable huge zero page by writing 0
+> -or enable it back by writing 1::
+> +By default kernel tries to use huge, PMD-mappable zero page on read
+> +page fault to anonymous mapping. It's possible to disable huge zero
+> +page by writing 0 or enable it back by writing 1::
+> 
+>   	echo 0 >/sys/kernel/mm/transparent_hugepage/use_zero_page
+>   	echo 1 >/sys/kernel/mm/transparent_hugepage/use_zero_page
+> 
+> -Some userspace (such as a test program, or an optimized memory allocation
+> -library) may want to know the size (in bytes) of a transparent hugepage::
+> +Some userspace (such as a test program, or an optimized memory
+> +allocation library) may want to know the size (in bytes) of a
+> +PMD-mappable transparent hugepage::
+> 
+>   	cat /sys/kernel/mm/transparent_hugepage/hpage_pmd_size
+> 
+> -khugepaged will be automatically started when
+> -transparent_hugepage/enabled is set to "always" or "madvise, and it'll
+> -be automatically shutdown if it's set to "never".
+> +khugepaged will be automatically started when one or more hugepage
+> +sizes are enabled (either by directly setting "always" or "madvise",
+> +or by setting "global" while the global enabled is set to "always" or
+> +"madvise"), and it'll be automatically shutdown when the last hugepage
+> +size is disabled (either by directly setting "never", or by setting
+> +"global" while the global enabled is set to "never").
+> 
+>   Khugepaged controls
+>   -------------------
+> 
+> +.. note::
+> +   khugepaged currently only searches for opportunities to collapse to
+> +   PMD-sized THP and no attempt is made to collapse to small-sized
+> +   THP.
+> +
+>   khugepaged runs usually at low frequency so while one may not want to
+>   invoke defrag algorithms synchronously during the page faults, it
+>   should be worth invoking defrag at least in khugepaged. However it's
+> @@ -282,10 +321,11 @@ force
+>   Need of application restart
+>   ===========================
+> 
+> -The transparent_hugepage/enabled values and tmpfs mount option only affect
+> -future behavior. So to make them effective you need to restart any
+> -application that could have been using hugepages. This also applies to the
+> -regions registered in khugepaged.
+> +The transparent_hugepage/enabled and
+> +transparent_hugepage/hugepages-<size>kB/enabled values and tmpfs mount
+> +option only affect future behavior. So to make them effective you need
+> +to restart any application that could have been using hugepages. This
+> +also applies to the regions registered in khugepaged.
+> 
+>   Monitoring usage
+>   ================
+> @@ -308,6 +348,10 @@ frequently will incur overhead.
+>   There are a number of counters in ``/proc/vmstat`` that may be used to
+>   monitor how successfully the system is providing huge pages for use.
+> 
+> +.. note::
+> +   Currently the below counters only record events relating to
+> +   PMD-sized THP. Events relating to small-sized THP are not included.
+
+Here's another spot to rename to "multi-size THP".
+
+> +
+>   thp_fault_alloc
+>   	is incremented every time a huge page is successfully
+>   	allocated to handle a page fault.
+> @@ -413,7 +457,7 @@ for huge pages.
+>   Optimizing the applications
+>   ===========================
+> 
+> -To be guaranteed that the kernel will map a 2M page immediately in any
+> +To be guaranteed that the kernel will map a THP immediately in any
+>   memory region, the mmap region has to be hugepage naturally
+>   aligned. posix_memalign() can provide that guarantee.
+> 
+> diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
+> index 49ef12df631b..f8e8dd1fd148 100644
+> --- a/Documentation/filesystems/proc.rst
+> +++ b/Documentation/filesystems/proc.rst
+> @@ -528,9 +528,9 @@ replaced by copy-on-write) part of the underlying shmem object out on swap.
+>   does not take into account swapped out page of underlying shmem objects.
+>   "Locked" indicates whether the mapping is locked in memory or not.
+> 
+> -"THPeligible" indicates whether the mapping is eligible for allocating THP
+> -pages as well as the THP is PMD mappable or not - 1 if true, 0 otherwise.
+> -It just shows the current status.
+> +"THPeligible" indicates whether the mapping is eligible for allocating
+> +naturally aligned THP pages of any currently enabled size. 1 if true, 0
+> +otherwise. It just shows the current status.
+
+"It just shows the current status"...as opposed to what? I'm missing an
+educational opportunity here--not sure what this means. :)
+
+> 
+>   "VmFlags" field deserves a separate description. This member represents the
+>   kernel flags associated with the particular virtual memory area in two letter
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index 51e0ec658457..2e25362ca9fa 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -865,7 +865,8 @@ static int show_smap(struct seq_file *m, void *v)
+>   	__show_smap(m, &mss, false);
+> 
+>   	seq_printf(m, "THPeligible:    %8u\n",
+> -		   hugepage_vma_check(vma, vma->vm_flags, true, false, true));
+> +		   !!hugepage_vma_check(vma, vma->vm_flags, true, false, true,
+> +					THP_ORDERS_ALL));
+> 
+>   	if (arch_pkeys_enabled())
+>   		seq_printf(m, "ProtectionKey:  %8u\n", vma_pkey(vma));
+> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+> index fa0350b0812a..7d6f7d96b039 100644
+> --- a/include/linux/huge_mm.h
+> +++ b/include/linux/huge_mm.h
+> @@ -67,6 +67,21 @@ extern struct kobj_attribute shmem_enabled_attr;
+>   #define HPAGE_PMD_ORDER (HPAGE_PMD_SHIFT-PAGE_SHIFT)
+>   #define HPAGE_PMD_NR (1<<HPAGE_PMD_ORDER)
+> 
+> +/*
+> + * Mask of all large folio orders supported for anonymous THP.
+> + */
+> +#define THP_ORDERS_ALL_ANON	BIT(PMD_ORDER)
+> +
+> +/*
+> + * Mask of all large folio orders supported for file THP.
+> + */
+> +#define THP_ORDERS_ALL_FILE	(BIT(PMD_ORDER) | BIT(PUD_ORDER))
+
+Is there something about file THP that implies PUD_ORDER? This
+deserves an explanatory comment, I think.
+
+> +
+> +/*
+> + * Mask of all large folio orders supported for THP.
+> + */
+> +#define THP_ORDERS_ALL		(THP_ORDERS_ALL_ANON | THP_ORDERS_ALL_FILE)
+> +
+>   #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>   #define HPAGE_PMD_SHIFT PMD_SHIFT
+>   #define HPAGE_PMD_SIZE	((1UL) << HPAGE_PMD_SHIFT)
+> @@ -78,13 +93,18 @@ extern struct kobj_attribute shmem_enabled_attr;
+> 
+>   extern unsigned long transparent_hugepage_flags;
+> 
+> -#define hugepage_flags_enabled()					       \
+> -	(transparent_hugepage_flags &				       \
+> -	 ((1<<TRANSPARENT_HUGEPAGE_FLAG) |		       \
+> -	  (1<<TRANSPARENT_HUGEPAGE_REQ_MADV_FLAG)))
+> -#define hugepage_flags_always()				\
+> -	(transparent_hugepage_flags &			\
+> -	 (1<<TRANSPARENT_HUGEPAGE_FLAG))
+
+Are macros actually required? If not, static inlines would be nicer.
+
+> +bool hugepage_flags_enabled(void);
+> +
+> +static inline int first_order(unsigned long orders)
+> +{
+> +	return fls_long(orders) - 1;
+> +}
+> +
+> +static inline int next_order(unsigned long *orders, int prev)
+> +{
+> +	*orders &= ~BIT(prev);
+> +	return first_order(*orders);
+> +}
+> 
+>   /*
+>    * Do the below checks:
+> @@ -97,23 +117,39 @@ extern unsigned long transparent_hugepage_flags;
+>    *   - For all vmas, check if the haddr is in an aligned HPAGE_PMD_SIZE
+>    *     area.
+>    */
+> -static inline bool transhuge_vma_suitable(struct vm_area_struct *vma,
+> -		unsigned long addr)
+> -{
+> -	unsigned long haddr;
+> -
+> -	/* Don't have to check pgoff for anonymous vma */
+> -	if (!vma_is_anonymous(vma)) {
+> -		if (!IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) - vma->vm_pgoff,
+> -				HPAGE_PMD_NR))
+> -			return false;
+> +static inline unsigned long transhuge_vma_suitable(struct vm_area_struct *vma,
+> +		unsigned long addr, unsigned long orders)
+
+Changing this from a bool to a mask of orders is quite significant, and
+both the function name and the function-level comment documentation need
+to also be adjusted. Here, perhaps one of these names would work:
+
+         transhuge_vma_suitable_orders()
+         transhuge_vma_orders()
+
+
+> +{
+> +	int order;
+> +
+> +	/*
+> +	 * Iterate over orders, highest to lowest, removing orders that don't
+> +	 * meet alignment requirements from the set. Exit loop at first order
+> +	 * that meets requirements, since all lower orders must also meet
+> +	 * requirements.
+
+Should we add a little note here, to the effect of, "this is unilaterally
+taking over a certain amount of allocation-like policy, by deciding how
+to search for folios of a certain size"?
+
+Or is this The Only Way To Do It, after all? I know we had some discussion
+about it, and intuitively it feels reasonable, but wanted to poke at it
+one last time anyway.
+
+> +	 */
+> +
+> +	order = first_order(orders);
+> +
+> +	while (orders) {
+> +		unsigned long hpage_size = PAGE_SIZE << order;
+> +		unsigned long haddr = ALIGN_DOWN(addr, hpage_size);
+> +
+> +		if (haddr >= vma->vm_start &&
+> +		    haddr + hpage_size <= vma->vm_end) {
+> +			if (!vma_is_anonymous(vma)) {
+> +				if (IS_ALIGNED((vma->vm_start >> PAGE_SHIFT) -
+> +						vma->vm_pgoff,
+> +						hpage_size >> PAGE_SHIFT))
+> +					break;
+> +			} else
+> +				break;
+> +		}
+> +
+> +		order = next_order(&orders, order);
+>   	}
+> 
+> -	haddr = addr & HPAGE_PMD_MASK;
+> -
+> -	if (haddr < vma->vm_start || haddr + HPAGE_PMD_SIZE > vma->vm_end)
+> -		return false;
+> -	return true;
+> +	return orders;
+>   }
+> 
+>   static inline bool file_thp_enabled(struct vm_area_struct *vma)
+> @@ -130,8 +166,9 @@ static inline bool file_thp_enabled(struct vm_area_struct *vma)
+>   	       !inode_is_open_for_write(inode) && S_ISREG(inode->i_mode);
+>   }
+> 
+> -bool hugepage_vma_check(struct vm_area_struct *vma, unsigned long vm_flags,
+> -			bool smaps, bool in_pf, bool enforce_sysfs);
+> +unsigned long hugepage_vma_check(struct vm_area_struct *vma,
+> +				 unsigned long vm_flags, bool smaps, bool in_pf,
+> +				 bool enforce_sysfs, unsigned long orders);
+> 
+>   #define transparent_hugepage_use_zero_page()				\
+>   	(transparent_hugepage_flags &					\
+> @@ -267,17 +304,18 @@ static inline bool folio_test_pmd_mappable(struct folio *folio)
+>   	return false;
+>   }
+> 
+> -static inline bool transhuge_vma_suitable(struct vm_area_struct *vma,
+> -		unsigned long addr)
+> +static inline unsigned long transhuge_vma_suitable(struct vm_area_struct *vma,
+> +		unsigned long addr, unsigned long orders)
+>   {
+> -	return false;
+> +	return 0;
+>   }
+> 
+> -static inline bool hugepage_vma_check(struct vm_area_struct *vma,
+> -				      unsigned long vm_flags, bool smaps,
+> -				      bool in_pf, bool enforce_sysfs)
+> +static inline unsigned long hugepage_vma_check(struct vm_area_struct *vma,
+> +					unsigned long vm_flags, bool smaps,
+> +					bool in_pf, bool enforce_sysfs,
+> +					unsigned long orders)
+>   {
+> -	return false;
+> +	return 0;
+>   }
+> 
+>   static inline void folio_prep_large_rmappable(struct folio *folio) {}
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 6eb55f97a3d2..0b545d56420c 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -74,12 +74,60 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
+>   static atomic_t huge_zero_refcount;
+>   struct page *huge_zero_page __read_mostly;
+>   unsigned long huge_zero_pfn __read_mostly = ~0UL;
+> +static unsigned long huge_anon_orders_always __read_mostly;
+> +static unsigned long huge_anon_orders_madvise __read_mostly;
+> +static unsigned long huge_anon_orders_global __read_mostly;
+> 
+> -bool hugepage_vma_check(struct vm_area_struct *vma, unsigned long vm_flags,
+> -			bool smaps, bool in_pf, bool enforce_sysfs)
+> +#define hugepage_global_enabled()			\
+> +	(transparent_hugepage_flags &			\
+> +	 ((1<<TRANSPARENT_HUGEPAGE_FLAG) |		\
+> +	  (1<<TRANSPARENT_HUGEPAGE_REQ_MADV_FLAG)))
+> +
+> +#define hugepage_global_always()			\
+> +	(transparent_hugepage_flags &			\
+> +	 (1<<TRANSPARENT_HUGEPAGE_FLAG))
+> +
+
+Here again, I'd like to request that we avoid macros, as I don't think
+they are strictly required.
+
+> +bool hugepage_flags_enabled(void)
+>   {
+> +	/*
+> +	 * We cover both the anon and the file-backed case here; we must return
+> +	 * true if globally enabled, even when all anon sizes are set to never.
+> +	 * So we don't need to look at huge_anon_orders_global.
+> +	 */
+> +	return hugepage_global_enabled() ||
+> +	       huge_anon_orders_always ||
+> +	       huge_anon_orders_madvise;
+> +}
+> +
+> +/**
+> + * hugepage_vma_check - determine which hugepage orders can be applied to vma
+> + * @vma:  the vm area to check
+> + * @vm_flags: use these vm_flags instead of vma->vm_flags
+> + * @smaps: whether answer will be used for smaps file
+> + * @in_pf: whether answer will be used by page fault handler
+> + * @enforce_sysfs: whether sysfs config should be taken into account
+> + * @orders: bitfield of all orders to consider
+> + *
+> + * Calculates the intersection of the requested hugepage orders and the allowed
+> + * hugepage orders for the provided vma. Permitted orders are encoded as a set
+> + * bit at the corresponding bit position (bit-2 corresponds to order-2, bit-3
+> + * corresponds to order-3, etc). Order-0 is never considered a hugepage order.
+> + *
+> + * Return: bitfield of orders allowed for hugepage in the vma. 0 if no hugepage
+> + * orders are allowed.
+> + */
+> +unsigned long hugepage_vma_check(struct vm_area_struct *vma,
+> +				 unsigned long vm_flags, bool smaps, bool in_pf,
+> +				 bool enforce_sysfs, unsigned long orders)
+
+Here again, a bool return type has been changed to a bitfield. Let's
+also update the function name. Maybe one of these:
+
+         hugepage_vma_orders()
+         hugepage_vma_allowable_orders()
+
+?
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
+
