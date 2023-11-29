@@ -2,142 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A4EE7FD4DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:04:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 102557FD4DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:04:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbjK2LEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 06:04:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48820 "EHLO
+        id S230373AbjK2LEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 06:04:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230299AbjK2LED (ORCPT
+        with ESMTP id S230084AbjK2LEX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 06:04:03 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C2E95;
-        Wed, 29 Nov 2023 03:04:09 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40b4f6006d5so11968395e9.1;
-        Wed, 29 Nov 2023 03:04:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701255848; x=1701860648; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rjk+/1D9AF+cQ5xDbcmA1MBP/vuhlv65HDhCtKVSoZk=;
-        b=PqNEvVpW911WnIT3JULjB3wgDwpK5ePh+wNSB/GmLnEWH5osYydhpBvsbQ7/Xz5ocH
-         dc1pRYehdHP34IIxLKWnIdSZQvpF5/k9/9LizgWR/vCDrynO0khPxNsOvtB5FavVVXxn
-         QCaav1jar7DjpwuVnqW4zHZJ8QqG6xX3KUvI44aWStupV1hpXK7hXkf78Dnk5hj6qW+u
-         MEX2nw/5mB9MYjLyyeDNaUwzJbdBg1Wa0QkEEEWcy4twANRwlDTCSsr0ugk7MWyIz9dS
-         /96OyLGVbvRQJjYMNhb8v2EaLvkKYAKz914EBjUYoTRdJzmLjQc+YqHpJ81clQWLwUHh
-         4N3g==
+        Wed, 29 Nov 2023 06:04:23 -0500
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com [209.85.216.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9686510F4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 03:04:29 -0800 (PST)
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-28583d0fd4eso7774909a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 03:04:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701255848; x=1701860648;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Rjk+/1D9AF+cQ5xDbcmA1MBP/vuhlv65HDhCtKVSoZk=;
-        b=CZdtv/P88MJHWt3eFVf4ghsBXNWjcrtDB3gKuTxGh1bWsfb17P0r8/unxqooJGPoJY
-         TxPksoLVzXrVexAqAkAQUerf9odN1TjCHSK9DPv7TwypeWtyhmKDRKq26IQ8ehvdvcp8
-         vUiTlUL/IAzoizPfeNussjbdWvCOqyWR8jsJJZvSZA6uMsSjRqf8FOr6ViWgLJ5JFfsq
-         +joKQ2ypCoTkhOQalpDvBe2sGPDe3GidY1eArPseQ0BIfcTmVBSoXA+uYJRbFuFJkvsf
-         BrxeqB0QuRfMC7Z2W4UGYP9v3vXt6hYAJb5gcgO11bMUI8uh3UQZu/tKaqvPIV60vgnz
-         e2Iw==
-X-Gm-Message-State: AOJu0YyNS4pJo5Y2TfDg4Nf78oaqnuhx92Wdl5GAfosgR58LQy6z+IxB
-        fsA2gnWtehnFHDUD/gRqtXg=
-X-Google-Smtp-Source: AGHT+IEBAvm1wqVWEUe9pB+o21b32WHVSL4QBMcx54XwI8du9Wk6l+5lAsEg+hPmovN1+6jfSLOv/g==
-X-Received: by 2002:a05:600c:5125:b0:40b:3dae:1ff6 with SMTP id o37-20020a05600c512500b0040b3dae1ff6mr8791416wms.14.1701255847651;
-        Wed, 29 Nov 2023 03:04:07 -0800 (PST)
-Received: from Ansuel-xps. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id q4-20020adfea04000000b003296b488961sm17464741wrm.31.2023.11.29.03.04.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 03:04:07 -0800 (PST)
-Message-ID: <65671aa7.df0a0220.2a628.a3b9@mx.google.com>
-X-Google-Original-Message-ID: <ZWcapJKrMLLmIVZS@Ansuel-xps.>
-Date:   Wed, 29 Nov 2023 12:04:04 +0100
-From:   Christian Marangi <ansuelsmth@gmail.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [net-next PATCH 08/14] net: phy: at803x: drop specific PHY id
- check from cable test functions
-References: <20231129021219.20914-1-ansuelsmth@gmail.com>
- <20231129021219.20914-9-ansuelsmth@gmail.com>
- <ZWcGn7KVSpsN/1Ee@shell.armlinux.org.uk>
- <656708a8.df0a0220.28d76.9307@mx.google.com>
- <ZWcZGO1HWxJnzPrk@shell.armlinux.org.uk>
+        d=1e100.net; s=20230601; t=1701255869; x=1701860669;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zHKVfUcrvedQuYjVIJG0JaQ1Y+WO8duVjqK6pcr1+kE=;
+        b=lmOEgwCFRq8gXar42PkvRYyVYnbZJ4v/4EdUL/JypLbUhx5Sq/SKLT6fw2Aq2/7Lxq
+         /jq3xpRxThzuoVj8dgTklSpa0A3VFY36FdQHA5ld3ZyOVpbHL4sPf7R1fIMiPitNqfO2
+         nRw9oprW5CaH9Q++2FNxVJox0fFBstWe2YwgKh8xhcZUsltmCKETwYji0IhT7jIJU1y0
+         pntdQFDw32MUJN+kTZuG7+Ige4ydey3L6qID2ZMARuy7WWBHruvyNuYc34Izy7EuArUJ
+         EUzRCH4cRVwar/VTmCkBTfqqkmy77Dh74UkYBvjrShD+7K8jUMT6r3NEU1O3iGnbfk1L
+         LTqQ==
+X-Gm-Message-State: AOJu0YzucbnayvGxQ4tOzyfWNDe1g1bdOuXkPYQVGdqOUuYSEEjEWM19
+        B9z7Teykc2PhH/2h19u0a5YgpjHIzUZQHqPs6c0bhn58YiBZkzk=
+X-Google-Smtp-Source: AGHT+IEJeYU3aCo+Dpk94wESYcLE+IzMeWvBKF3UBeJs01fmhoc678eI0raM8HvQjWyHZ51V18rBlHKBD0gcExVvaOBsWI9LKqAp
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWcZGO1HWxJnzPrk@shell.armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:90b:2409:b0:280:c8f2:8ae1 with SMTP id
+ nr9-20020a17090b240900b00280c8f28ae1mr3681467pjb.9.1701255869108; Wed, 29 Nov
+ 2023 03:04:29 -0800 (PST)
+Date:   Wed, 29 Nov 2023 03:04:28 -0800
+In-Reply-To: <000000000000efc64705ff8286a1@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c01a51060b487f55@google.com>
+Subject: Re: [syzbot] [wireless?] WARNING in rate_control_rate_init
+From:   syzbot <syzbot+62d7eef57b09bfebcd84@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 10:57:28AM +0000, Russell King (Oracle) wrote:
-> On Wed, Nov 29, 2023 at 10:47:18AM +0100, Christian Marangi wrote:
-> > On Wed, Nov 29, 2023 at 09:38:39AM +0000, Russell King (Oracle) wrote:
-> > > On Wed, Nov 29, 2023 at 03:12:13AM +0100, Christian Marangi wrote:
-> > > > @@ -1310,10 +1302,6 @@ static int at803x_cable_test_start(struct phy_device *phydev)
-> > > >  	 */
-> > > >  	phy_write(phydev, MII_BMCR, BMCR_ANENABLE);
-> > > >  	phy_write(phydev, MII_ADVERTISE, ADVERTISE_CSMA);
-> > > > -	if (phydev->phy_id != ATH9331_PHY_ID &&
-> > > > -	    phydev->phy_id != ATH8032_PHY_ID &&
-> > > > -	    phydev->phy_id != QCA9561_PHY_ID)
-> > > > -		phy_write(phydev, MII_CTRL1000, 0);
-> > > ...
-> > > > +static int at8031_cable_test_start(struct phy_device *phydev)
-> > > > +{
-> > > > +	at803x_cable_test_start(phydev);
-> > > > +	phy_write(phydev, MII_CTRL1000, 0);
-> > > 
-> > > I don't think this is a safe change - same reasons as given on a
-> > > previous patch. You can't randomly reorder register writes like this.
-> > >
-> > 
-> > Actually for this the order is keeped. Generic function is called and
-> > for at8031 MII_CTRL1000 is called on top of that.
-> 
-> Okay, but I don't like it. I would prefer this to be:
-> 
-> static void at803x_cable_test_autoneg(struct phy_device *phydev)
-> {
-> 	phy_write(phydev, MII_BMCR, BMCR_ANENABLE);
-> 	phy_write(phydev, MII_ADVERTISE, ADVERTISE_CSMA);
-> }
-> 
-> static int at803x_cable_test_start(struct phy_device *phydev)
-> {
-> 	at803x_cable_test_autoneg(phydev);
-> 	return 0;
-> }
-> 
-> static int at8031_cable_test_start(struct phy_device *phydev)
-> {
-> 	at803x_cable_test_autoneg(phydev);
-> 	phy_write(phydev, MII_CTRL1000, 0);
-> 	return 0;
-> }
-> 
-> which makes it more explicit what is going on here. Also a comment
-> above the function stating that it's for AR8031 _and_ AR8035 would
-> be useful.
->
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-Much cleaner thanks for the hint!
+***
 
+Subject: [wireless?] WARNING in rate_control_rate_init
+Author: eadavis@qq.com
+
+please test WARNING in rate_control_rate_init
+
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 6e2332e0ab53
+
+diff --git a/net/mac80211/cfg.c b/net/mac80211/cfg.c
+index 606b1b2e4123..d0b5a5dd7410 100644
+--- a/net/mac80211/cfg.c
++++ b/net/mac80211/cfg.c
+@@ -1788,10 +1788,10 @@ static int sta_link_apply_parameters(struct ieee80211_local *local,
+ 					  lockdep_is_held(&local->hw.wiphy->mtx));
+ 
+ 	/*
+-	 * If there are no changes, then accept a link that doesn't exist,
++	 * If there are no changes, then accept a link that exist,
+ 	 * unless it's a new link.
+ 	 */
+-	if (params->link_id < 0 && !new_link &&
++	if ((sta->sta.valid_links & BIT(params->link_id)) && !new_link &&
+ 	    !params->link_mac && !params->txpwr_set &&
+ 	    !params->supported_rates_len &&
+ 	    !params->ht_capa && !params->vht_capa &&
 -- 
-	Ansuel
+2.43.0
+
