@@ -2,351 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76AF17FDD66
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:40:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33DDD7FDD6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:41:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbjK2Qk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 11:40:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51222 "EHLO
+        id S230434AbjK2QlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 11:41:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbjK2QkY (ORCPT
+        with ESMTP id S229485AbjK2QlR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 11:40:24 -0500
-Received: from mail11.truemail.it (mail11.truemail.it [IPv6:2001:4b7e:0:8::81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72C53A8;
-        Wed, 29 Nov 2023 08:40:29 -0800 (PST)
-Received: from francesco-nb.corp.toradex.com (31-10-206-125.static.upc.ch [31.10.206.125])
-        by mail11.truemail.it (Postfix) with ESMTPA id 6FD8C21D86;
-        Wed, 29 Nov 2023 17:40:27 +0100 (CET)
-From:   Francesco Dolcini <francesco@dolcini.it>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Cc:     Joao Paulo Goncalves <joao.goncalves@toradex.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Francesco Dolcini <francesco.dolcini@toradex.com>
-Subject: [PATCH v1 2/2] arm64: dts: freescale: verdin-imx8mp: add support to mallow board
-Date:   Wed, 29 Nov 2023 17:40:22 +0100
-Message-Id: <20231129164022.143340-3-francesco@dolcini.it>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231129164022.143340-1-francesco@dolcini.it>
-References: <20231129164022.143340-1-francesco@dolcini.it>
+        Wed, 29 Nov 2023 11:41:17 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D4284;
+        Wed, 29 Nov 2023 08:41:23 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0FBCF40E014B;
+        Wed, 29 Nov 2023 16:41:21 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id thJhzFysIltR; Wed, 29 Nov 2023 16:41:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1701276079; bh=36Py6F37KaOYd/LEkELg9D/cNoZfYEAHek0ZM2QfIEM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ho/FPQWgt1pQU6PAIbYvr3PY0xrbh0aW/vVdG4Pe3XOWSRBOax+ygJXn/C/mYfwAi
+         J5tuEaFq+8E8VIMo36JePDFhj/l14HZnzIeGxdFREOlczs0mDquU1bXAw1TG0uclhQ
+         gMpNmqTdE0L8Gxk/WeZ9TTc+E9Q5tQ5aTJg0zApjBvX4lKF4HKBqRccYXv2WstvmqB
+         nuOIbTjFjgdG2te5KUIJ69p3pTnPhrX+7oFKPKAYfMpEvcNou3b8a2A9j0CQJpKdqO
+         c/Lo1RD7zAYDg2si59Nm3sjKdtyvtO+/X7V+xuqqm1xwc4hSLVmTuEiBQKGHNPu9Hm
+         IttgZDCk/l+5vLWuYO+ncvLpPQydnMu5aZKJuoNQs3OD4poTlP+5lGB47nSja/vgI5
+         a4FRCdoRUzMEMDbmWVBCT4gQvTtCFUFdQbckuiUe5vQoaOTCvvAzb0uHmFJ1MwA4vE
+         KiLUAuF6Eo/tmKkf6PiokVpdvIsQMt3gH9kmsPqstwaercWT8JzM8DeTGIBzu3+MOt
+         flbAa5rxMd8hwoeHa9e/87ooHllNIxVo719DL7V6EjZG+OnRSLHWMxHNAVIATgiEAD
+         lPDhpR5pZy2dmIryiyEGSNYw8FVTb3Gr/HbDDv8LQ9vviXRM4UTT1qsjn0LApStoDb
+         fLltdi0ivnpWcjBZFo7sGWsA=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BF02940E0031;
+        Wed, 29 Nov 2023 16:40:55 +0000 (UTC)
+Date:   Wed, 29 Nov 2023 17:40:49 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, stefan.bader@canonical.com,
+        tim.gardner@canonical.com, roxana.nicolescu@canonical.com,
+        cascardo@canonical.com, kys@microsoft.com, haiyangz@microsoft.com,
+        wei.liu@kernel.org, sashal@kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Michael Kelley <mhkelley58@gmail.com>,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
+        Dexuan Cui <decui@microsoft.com>
+Subject: Re: [PATCH v1 1/3] x86/tdx: Check for TDX partitioning during early
+ TDX init
+Message-ID: <20231129164049.GVZWdpkVlc8nUvl/jx@fat_crate.local>
+References: <20231122170106.270266-1-jpiotrowski@linux.microsoft.com>
+ <0799b692-4b26-4e00-9cec-fdc4c929ea58@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <0799b692-4b26-4e00-9cec-fdc4c929ea58@linux.microsoft.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joao Paulo Goncalves <joao.goncalves@toradex.com>
+On Wed, Nov 22, 2023 at 06:19:20PM +0100, Jeremi Piotrowski wrote:
+> Which approach do you prefer?
 
-Add Toradex Verdin IMX8MP Mallow carrier board support. Mallow is a
-low-cost carrier board in the Verdin family with a small form factor and
-build for volume production making it ideal for industrial and embedded
-applications.
+I'm trying to figure out from the whole thread, what this guest is.
 
-https://www.toradex.com/products/carrier-board/mallow-carrier-board
+* A HyperV second-level guest
 
-Signed-off-by: Joao Paulo Goncalves <joao.goncalves@toradex.com>
-Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
----
- arch/arm64/boot/dts/freescale/Makefile        |   2 +
- .../dts/freescale/imx8mp-verdin-mallow.dtsi   | 208 ++++++++++++++++++
- .../imx8mp-verdin-nonwifi-mallow.dts          |  18 ++
- .../freescale/imx8mp-verdin-wifi-mallow.dts   |  18 ++
- 4 files changed, 246 insertions(+)
- create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-verdin-mallow.dtsi
- create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-verdin-nonwifi-mallow.dts
- create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-verdin-wifi-mallow.dts
+* of type TDX
 
-diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index 300049037eb0..c2ef040a475f 100644
---- a/arch/arm64/boot/dts/freescale/Makefile
-+++ b/arch/arm64/boot/dts/freescale/Makefile
-@@ -123,9 +123,11 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mp-venice-gw74xx.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mp-venice-gw7905-2x.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mp-verdin-nonwifi-dahlia.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mp-verdin-nonwifi-dev.dtb
-+dtb-$(CONFIG_ARCH_MXC) += imx8mp-verdin-nonwifi-mallow.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mp-verdin-nonwifi-yavia.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mp-verdin-wifi-dahlia.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mp-verdin-wifi-dev.dtb
-+dtb-$(CONFIG_ARCH_MXC) += imx8mp-verdin-wifi-mallow.dtb
- dtb-$(CONFIG_ARCH_MXC) += imx8mp-verdin-wifi-yavia.dtb
- 
- imx8mp-tqma8mpql-mba8mpxl-lvds-dtbs += imx8mp-tqma8mpql-mba8mpxl.dtb imx8mp-tqma8mpql-mba8mpxl-lvds.dtbo
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-verdin-mallow.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-verdin-mallow.dtsi
-new file mode 100644
-index 000000000000..3f1eac0093dc
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-verdin-mallow.dtsi
-@@ -0,0 +1,208 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-+/*
-+ * Copyright 2023 Toradex
-+ *
-+ * Common dtsi for Verdin IMX8MP SoM on Mallow carrier board
-+ *
-+ * https://www.toradex.com/computer-on-modules/verdin-arm-family/nxp-imx-8m-plus
-+ * https://www.toradex.com/products/carrier-board/mallow-carrier-board
-+ */
-+
-+#include <dt-bindings/leds/common.h>
-+
-+/ {
-+	leds {
-+		compatible = "gpio-leds";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_leds>;
-+
-+		/* SODIMM 52 - USER_LED_1_RED */
-+		led-0 {
-+			color = <LED_COLOR_ID_RED>;
-+			function = LED_FUNCTION_DEBUG;
-+			function-enumerator = <1>;
-+			gpios = <&gpio3 0 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		/* SODIMM 54 - USER_LED_1_GREEN */
-+		led-1 {
-+			color = <LED_COLOR_ID_GREEN>;
-+			function = LED_FUNCTION_DEBUG;
-+			function-enumerator = <1>;
-+			gpios = <&gpio3 1 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		/* SODIMM 56 - USER_LED_2_RED */
-+		led-2 {
-+			color = <LED_COLOR_ID_RED>;
-+			function = LED_FUNCTION_DEBUG;
-+			function-enumerator = <2>;
-+			gpios = <&gpio3 6 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		/* SODIMM 58 - USER_LED_2_GREEN */
-+		led-3 {
-+			color = <LED_COLOR_ID_GREEN>;
-+			function = LED_FUNCTION_DEBUG;
-+			function-enumerator = <2>;
-+			gpios = <&gpio3 7 GPIO_ACTIVE_HIGH>;
-+		};
-+	};
-+};
-+
-+&backlight {
-+	power-supply = <&reg_3p3v>;
-+};
-+
-+/* Verdin SPI_1 */
-+&ecspi1 {
-+	pinctrl-0 = <&pinctrl_ecspi1>, <&pinctrl_tpm_cs>;
-+	cs-gpios = <&gpio5 9 GPIO_ACTIVE_LOW>, <&gpio3 16 GPIO_ACTIVE_LOW>;
-+	status = "okay";
-+
-+	tpm@1 {
-+		compatible = "infineon,slb9670", "tcg,tpm_tis-spi";
-+		reg = <1>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_tpm_irq>;
-+		interrupt-parent = <&gpio3>;
-+		interrupts = <14 IRQ_TYPE_LEVEL_LOW>;
-+		spi-max-frequency = <18500000>;
-+	};
-+};
-+
-+/* EEPROM on Mallow */
-+&eeprom_carrier_board {
-+	status = "okay";
-+};
-+
-+/* EEPROM on display adapter boards */
-+&eeprom_display_adapter {
-+	status = "okay";
-+};
-+
-+/* Verdin ETH_1 */
-+&eqos {
-+	status = "okay";
-+};
-+
-+/* Verdin CAN_1 */
-+&flexcan1 {
-+	status = "okay";
-+};
-+
-+/* Verdin CAN_2 */
-+&flexcan2 {
-+	status = "okay";
-+};
-+
-+/* Current measurement into module VCC */
-+&hwmon {
-+	status = "okay";
-+};
-+
-+/* Temperature sensor on Mallow */
-+&hwmon_temp {
-+	status = "okay";
-+};
-+
-+/* Verdin I2C_2_DSI */
-+&i2c2 {
-+	status = "okay";
-+};
-+
-+/* Verdin I2C_4_CSI */
-+&i2c3 {
-+	status = "okay";
-+};
-+
-+/* Verdin I2C_1 */
-+&i2c4 {
-+	status = "okay";
-+};
-+
-+/* Verdin PCIE_1 */
-+&pcie {
-+	status = "okay";
-+};
-+
-+&pcie_phy {
-+	status = "okay";
-+};
-+
-+/* Verdin PWM_1 */
-+&pwm1 {
-+	status = "okay";
-+};
-+
-+/* Verdin PWM_2 */
-+&pwm2 {
-+	status = "okay";
-+};
-+
-+/* Verdin PWM_3_DSI */
-+&pwm3 {
-+	status = "okay";
-+};
-+
-+&reg_usdhc2_vmmc {
-+	vin-supply = <&reg_3p3v>;
-+};
-+
-+/* Verdin UART_1 */
-+&uart1 {
-+	status = "okay";
-+};
-+
-+/* Verdin UART_2 */
-+&uart2 {
-+	status = "okay";
-+};
-+
-+/* Verdin UART_3 */
-+&uart3 {
-+	status = "okay";
-+};
-+
-+/* Verdin USB_1 */
-+&usb3_0 {
-+	status = "okay";
-+};
-+
-+&usb3_phy0 {
-+	status = "okay";
-+};
-+
-+/* Verdin USB_2 */
-+&usb3_1 {
-+	status = "okay";
-+};
-+
-+&usb3_phy1 {
-+	status = "okay";
-+};
-+
-+/* Verdin SD_1 */
-+&usdhc2 {
-+	status = "okay";
-+};
-+
-+&iomuxc {
-+	pinctrl_leds: ledsgrp {
-+		fsl,pins =
-+			<MX8MP_IOMUXC_NAND_ALE__GPIO3_IO00	0x106>, /* SODIMM 52 */
-+			<MX8MP_IOMUXC_NAND_CE0_B__GPIO3_IO01	0x106>, /* SODIMM 54 */
-+			<MX8MP_IOMUXC_NAND_DATA00__GPIO3_IO06	0x106>, /* SODIMM 56 */
-+			<MX8MP_IOMUXC_NAND_DATA01__GPIO3_IO07	0x106>; /* SODIMM 58 */
-+	};
-+
-+	pinctrl_tpm_cs: tpmcsgrp {
-+		fsl,pins =
-+			<MX8MP_IOMUXC_NAND_READY_B__GPIO3_IO16	0x82>; /* SODIMM 64 */
-+	};
-+
-+	pinctrl_tpm_irq: tpmirqgrp {
-+		fsl,pins =
-+			<MX8MP_IOMUXC_NAND_DQS__GPIO3_IO14	0x16>; /* SODIMM 66 */
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-verdin-nonwifi-mallow.dts b/arch/arm64/boot/dts/freescale/imx8mp-verdin-nonwifi-mallow.dts
-new file mode 100644
-index 000000000000..6a536a4964bb
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-verdin-nonwifi-mallow.dts
-@@ -0,0 +1,18 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-+/*
-+ * Copyright 2023 Toradex
-+ */
-+
-+/dts-v1/;
-+
-+#include "imx8mp-verdin.dtsi"
-+#include "imx8mp-verdin-nonwifi.dtsi"
-+#include "imx8mp-verdin-mallow.dtsi"
-+
-+/ {
-+	model = "Toradex Verdin iMX8M Plus on Mallow Board";
-+	compatible = "toradex,verdin-imx8mp-nonwifi-mallow",
-+		     "toradex,verdin-imx8mp-nonwifi",
-+		     "toradex,verdin-imx8mp",
-+		     "fsl,imx8mp";
-+};
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-verdin-wifi-mallow.dts b/arch/arm64/boot/dts/freescale/imx8mp-verdin-wifi-mallow.dts
-new file mode 100644
-index 000000000000..08b7aef3fdde
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-verdin-wifi-mallow.dts
-@@ -0,0 +1,18 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-+/*
-+ * Copyright 2023 Toradex
-+ */
-+
-+/dts-v1/;
-+
-+#include "imx8mp-verdin.dtsi"
-+#include "imx8mp-verdin-wifi.dtsi"
-+#include "imx8mp-verdin-mallow.dtsi"
-+
-+/ {
-+	model = "Toradex Verdin iMX8M Plus WB on Mallow Board";
-+	compatible = "toradex,verdin-imx8mp-wifi-mallow",
-+		     "toradex,verdin-imx8mp-wifi",
-+		     "toradex,verdin-imx8mp",
-+		     "fsl,imx8mp";
-+};
+* Needs to defer cc_mask and page visibility bla...
+
+* needs to disable TDX module calls
+
+* stub out tdx_accept_memory
+
+Anything else?
+
+And my worry is that this is going to become a mess and your patches
+already show that it is going in that direction because you need to run
+the TDX side but still have *some* things done differently. Which is
+needed because this is a different type of guest, even if it is a TDX
+one.
+
+Which reminds me, we have amd_cc_platform_vtom() which is a similar type
+of thing.
+
+And the TDX side could do something similar and at least *try* to
+abstract away all that stuff.
+
+Would it be nice? Of course not!
+
+How can one model a virt zoo of at least a dozen guest types but still
+keep code sane... :-\
+
 -- 
-2.25.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
