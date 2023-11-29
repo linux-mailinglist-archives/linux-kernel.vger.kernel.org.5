@@ -2,102 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD027FE05D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 20:36:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99CE67FE061
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 20:40:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232918AbjK2Tgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 14:36:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57236 "EHLO
+        id S233109AbjK2Tkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 14:40:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbjK2Tgh (ORCPT
+        with ESMTP id S229741AbjK2Tke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 14:36:37 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45813A2;
-        Wed, 29 Nov 2023 11:36:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701286604; x=1732822604;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=3U8g+x9WRQnamBgjwnIAVyDf/uE18Yr4h3Vja7ObTeE=;
-  b=RtdYHfnHSRJnwq/oYP4AoDYScTaataQ/j3o4+VdrmBB/oGfgZYoJiHd4
-   eScxtpxFDT42sRoAgl955Wq74J5IB4URwsgFzvXFBjg5wRhL/Sx1ALEpo
-   s75/ATxvNJbp83iCL/xufQyFBtVAQ3KhsXJWK6o6yk0hvkjSnQbneCF8M
-   tfj0adB+PR1g4scXFAzekUkoAszflN3A8SfQFHRLGvXAEfLjM1s7rKYMl
-   YK1HQHzjISiWM6XmKZdlwyzDt7rhSkeQEQ0UZBDSBBYxwBjwoV1ol7ZE2
-   URfOlrEYQTQcwRoOfMHi16gVPR6uReepHJncQxvmLVza20FzHJOjDvK5d
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="459709249"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="459709249"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 11:36:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="1100646497"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="1100646497"
-Received: from ktonsber-mobl1.ger.corp.intel.com (HELO [10.249.254.194]) ([10.249.254.194])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 11:36:40 -0800
-Message-ID: <720d1b54-0898-1fbc-b1a0-338782e0e485@linux.intel.com>
-Date:   Wed, 29 Nov 2023 20:36:37 +0100
+        Wed, 29 Nov 2023 14:40:34 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4FDD5E
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 11:40:41 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1cf856663a4so1263915ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 11:40:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701286840; x=1701891640; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IbN/CBdY8HaO8oEbKkB4VSrcYoZEzNbVhbQ6CTvXobk=;
+        b=nZl0VJPSEFdJXhrmInZ84JCCwH6XlC8eJe3UH+YuXtg/KW41Ld5zwMcpi5Kl1WMJPb
+         CbFX5iSXIxKzs0ydQzfeF3d+HBTfSjlAgqVwIXdIWMySmXJGUZ7uIe9THLwZfPhsJPBa
+         pQQijgauPrfkwlcP9tR2Af7Jk6kFFBq69pm0c/AT5nWV1uIByRnduIP1gG5qLSp25Vvb
+         5SYlZWxWIVHapzbaKK0wEJwpuyfoNMMpMK0zfObOlBHTScIEdLOiS89Wa5/XlPaqDut/
+         rDKWisRydxesxCKYJU8BO2A/h9OvPfBggLq55oKFQh/jXfmoLvIrWNuvzNlzKU2Bkldd
+         7Fvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701286840; x=1701891640;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IbN/CBdY8HaO8oEbKkB4VSrcYoZEzNbVhbQ6CTvXobk=;
+        b=GF84ENd9zHDp1v9+ErsmyoDgxq9t3ucIcTdvlvsCbjiBAx+M21enAe20+nVgKzyF1x
+         ok0xNloaqB4T8BM6HgPPaYeCqzULbQTXQpiGoYe+aD3vfYgz579kuMVk9io3+HYalkCu
+         V5Q2H8tJ6q5bj69DlvjgdWx+ca612p1Hk5TsGx96VCZCRUAZEBf/PIkF1tH8T4h9S1XG
+         VNtjFcTGfjhAvMCVKMV4v1WAz7AxOh3n69fhsUs/GaNWySPwIDbL6cmOGl/+fFxKg2bp
+         Ub5gg6Tb0drH2D+oKzJUrBat/Ju20gf985+4Kxvmox82YKlx/VMqRGqF5asm2o4Ts6QU
+         oYbQ==
+X-Gm-Message-State: AOJu0YzDhhQH+UG5YnyugCYLRwqFcaFTQ7xpmMXmMFDSUzCxVmKckn2M
+        1TDFpYGhsQmdixxYw27aaqUluZXATiqTBw==
+X-Google-Smtp-Source: AGHT+IGdZFEyfJpctUU4fXRWtzNMxJlMGwLs6LcaKQ3Eyh1t6Rcslzbpzy0kGZFLVkD8gYn5WOHfqQ==
+X-Received: by 2002:a17:902:bd46:b0:1cf:896f:d6c5 with SMTP id b6-20020a170902bd4600b001cf896fd6c5mr18940725plx.41.1701286839814;
+        Wed, 29 Nov 2023 11:40:39 -0800 (PST)
+Received: from daehojeong-desktop.mtv.corp.google.com ([2620:0:1000:8411:7782:28f:d123:243d])
+        by smtp.gmail.com with ESMTPSA id h12-20020a170902748c00b001c9d011581dsm12640601pll.164.2023.11.29.11.40.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 11:40:39 -0800 (PST)
+From:   Daeho Jeong <daeho43@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH] f2fs-tools: convert lost+found dir to regular dentry before adding nodes
+Date:   Wed, 29 Nov 2023 11:40:33 -0800
+Message-ID: <20231129194033.999207-1-daeho43@gmail.com>
+X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v6] Documentation/gpu: VM_BIND locking document
-To:     John Hubbard <jhubbard@nvidia.com>, intel-xe@lists.freedesktop.org
-Cc:     Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Danilo Krummrich <dakr@redhat.com>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Oak Zeng <oak.zeng@intel.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Francois Dugast <francois.dugast@intel.com>,
-        dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231129090637.2629-1-thomas.hellstrom@linux.intel.com>
- <2b26b696-60a3-4afa-b14e-7aa93c939130@nvidia.com>
-Content-Language: en-US
-From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
-        <thomas.hellstrom@linux.intel.com>
-In-Reply-To: <2b26b696-60a3-4afa-b14e-7aa93c939130@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Daeho Jeong <daehojeong@google.com>
 
-On 11/29/23 20:20, John Hubbard wrote:
-> On 11/29/23 01:06, Thomas Hellström wrote:
->> Add the first version of the VM_BIND locking document which is
->> intended to be part of the xe driver upstreaming agreement.
->>
->> The document describes and discuss the locking used during exec-
->> functions, evicton and for userptr gpu-vmas. Intention is to be using 
->> the
->> same nomenclature as the drm-vm-bind-async.rst.
->>
->
-> Hi Thomas,
->
-> As requested, for the pin_user_pages() aspects (the MMU notifier
-> registration case), please feel free to add:
->
-> Acked-by: John Hubbard <jhubbard@nvidia.com
->
-> thanks,
+fsck doesn't support adding inodes to inline dentries. So, need to
+convert inline lost+found dentry before adding missing inodes.
 
-Hi, John,
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
+---
+ fsck/fsck.c | 8 ++++++++
+ fsck/fsck.h | 4 ++++
+ 2 files changed, 12 insertions(+)
 
-Thanks!
-/Thomas
-
+diff --git a/fsck/fsck.c b/fsck/fsck.c
+index 55eddca..f40b4cd 100644
+--- a/fsck/fsck.c
++++ b/fsck/fsck.c
+@@ -2849,6 +2849,14 @@ static struct f2fs_node *fsck_get_lpf(struct f2fs_sb_info *sbi)
+ 			/* FIXME: give up? */
+ 			goto out;
+ 		}
++
++		/* Must convert inline dentry before adding inodes */
++		err = convert_inline_dentry(sbi, node, ni.blk_addr);
++		if (err) {
++			MSG(0, "Convert inline dentry for ino=%x failed.\n",
++					lpf_ino);
++			goto out;
++		}
+ 	} else { /* not found, create it */
+ 		struct dentry de;
+ 
+diff --git a/fsck/fsck.h b/fsck/fsck.h
+index f6f15e7..d6abf18 100644
+--- a/fsck/fsck.h
++++ b/fsck/fsck.h
+@@ -330,4 +330,8 @@ void *read_all_xattrs(struct f2fs_sb_info *, struct f2fs_node *, bool);
+ void write_all_xattrs(struct f2fs_sb_info *sbi,
+ 		struct f2fs_node *inode, __u32 hsize, void *txattr_addr);
+ 
++/* dir.c */
++int convert_inline_dentry(struct f2fs_sb_info *sbi, struct f2fs_node *node,
++		block_t p_blkaddr);
++
+ #endif /* _FSCK_H_ */
+-- 
+2.43.0.rc2.451.g8631bc7472-goog
 
