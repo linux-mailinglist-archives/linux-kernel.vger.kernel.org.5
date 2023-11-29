@@ -2,163 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F1DE7FDDAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:55:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4287FDDAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:56:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231579AbjK2Qzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 11:55:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49174 "EHLO
+        id S232992AbjK2Qz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 11:55:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjK2Qzg (ORCPT
+        with ESMTP id S233160AbjK2Qzt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 11:55:36 -0500
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758B4BA
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:55:40 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:93e7:15e4:6acd:f55])
-        by andre.telenet-ops.be with bizsmtp
-        id GGvb2B00H4TDgPo01GvbkD; Wed, 29 Nov 2023 17:55:37 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1r8NqI-00ALyF-Hn;
-        Wed, 29 Nov 2023 17:55:35 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1r8NqZ-00BcaL-9i;
-        Wed, 29 Nov 2023 17:55:35 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Vivek Gautam <vivek.gautam@codeaurora.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] reset: Fix crash when freeing non-existent optional resets
-Date:   Wed, 29 Nov 2023 17:55:33 +0100
-Message-Id: <2440edae7ca8534628cdbaf559ded288f2998178.1701276806.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        Wed, 29 Nov 2023 11:55:49 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83BB6D1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:55:54 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5cddc35545dso79930287b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:55:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701276953; x=1701881753; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=unbZFkiD0dHweTLgp1OYP68ojVuVgwsL9BVcNl+eCj0=;
+        b=ZHu6IwecdEJq762miAS3Om9MTNmVo8wTHYwvvBUO9TFlduLm2RhZPyjKON/lhUc40n
+         Y7z6t4Ws5yrtGwOpdxFnTtz+DCoNhslTrjCwyUtKvZ1nUyfpM/7aAM8OFr96JWKKpg0w
+         u/sj0wG66pfilbDxeIFiNg0E22XHst6ybyCS8ucnMtUCkhl31D6dB9U13Tm/zlXXUsGR
+         mMpI57qoQriXTWaYZJPRW50t4AKy3xAgZHQAyr7MMLJtLbwaprUihbGY2ZE2sCI0wMvD
+         uSHZpsbwfao/FQUH2IjMBeXye3i3DsZgEFSU/Sr4SQ/V/ZQxbel9Kx36WhQxkfHWgbuG
+         0jGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701276953; x=1701881753;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=unbZFkiD0dHweTLgp1OYP68ojVuVgwsL9BVcNl+eCj0=;
+        b=TlZOFcTJUaY6EJUG2VQmZ86aLVRtS9+483MWIfabE6hFHTFrgTfLLSoShykXrmthUz
+         NH9CVLRyfff91+GqYTzYAu+z0KWw8JEyBu/HI/hgsVv3saktB3oZQxnrWBFvho9L7wOJ
+         NHhod9odXokrhpcg+XsMQ9jUIjV6npz7o3Yqg/Ajn9nMPoSmg/xwqm6Gjnywl6eLBAhR
+         m6yTUEmgAMgkynDfNPaor1qqKTKXUBXz1fXI1yRh+tldoIWVVcqpi/0IKwzonaKsMlir
+         tZ597gYtQtVszRdQ1GJUWamuJxXzCK1hVdvk27Qrxv9pItwt1T7frf3964DIQ9Bmq3eG
+         S9zQ==
+X-Gm-Message-State: AOJu0YyEZ3eYHV7tbIdaOFiJRbeTAkFF1aPznQLhrJ1uLmxInXkNwjx/
+        u126YWg4D9WOQ2OJ5O+rteiKr2wGVM9rqzQ=
+X-Google-Smtp-Source: AGHT+IEpWMlZIbVFMqFnLabAnmVr/lPqw+N8K9vWZ1Skq6PXRN+J94RDlgF3JQbaZlH+xbk7iE6skGya8a4JWqA=
+X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
+ (user=aliceryhl job=sendgmr) by 2002:a05:690c:3183:b0:5ca:4a99:7008 with SMTP
+ id fd3-20020a05690c318300b005ca4a997008mr630558ywb.10.1701276953779; Wed, 29
+ Nov 2023 08:55:53 -0800 (PST)
+Date:   Wed, 29 Nov 2023 16:55:51 +0000
+In-Reply-To: <20231129-zwiespalt-exakt-f1446d88a62a@brauner>
+Mime-Version: 1.0
+References: <20231129-zwiespalt-exakt-f1446d88a62a@brauner>
+X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
+Message-ID: <20231129165551.3476910-1-aliceryhl@google.com>
+Subject: Re: [PATCH 4/7] rust: file: add `FileDescriptorReservation`
+From:   Alice Ryhl <aliceryhl@google.com>
+To:     brauner@kernel.org
+Cc:     a.hindborg@samsung.com, alex.gaynor@gmail.com,
+        aliceryhl@google.com, arve@android.com, benno.lossin@proton.me,
+        bjorn3_gh@protonmail.com, boqun.feng@gmail.com,
+        cmllamas@google.com, dan.j.williams@intel.com, dxu@dxuuu.xyz,
+        gary@garyguo.net, gregkh@linuxfoundation.org,
+        joel@joelfernandes.org, keescook@chromium.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        maco@android.com, ojeda@kernel.org, peterz@infradead.org,
+        rust-for-linux@vger.kernel.org, surenb@google.com,
+        tglx@linutronix.de, tkjos@android.com, viro@zeniv.linux.org.uk,
+        wedsonaf@gmail.com, willy@infradead.org
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When obtaining one or more optional resets, non-existent resets are
-stored as NULL pointers, and all related error and cleanup paths need to
-take this into account.
+Christian Brauner <brauner@kernel.org> writes:
+> Can we follow the traditional file terminology, i.e.,
+> get_unused_fd_flags() and fd_install()? At least at the beginning this
+> might be quite helpful instead of having to mentally map new() and
+> commit() onto the C functions.
 
-Currently only reset_control_put() and reset_control_bulk_put()
-get this right.  All of __reset_control_bulk_get(),
-of_reset_control_array_get(), and reset_control_array_put() lack the
-proper checking, causing NULL pointer dereferences on failure or
-release.
+Sure, I'll do that in the next version.
 
-Fix this by moving the existing check from reset_control_bulk_put() to
-__reset_control_put_internal(), so it applies to all callers.
-The double check in reset_control_put() doesn't hurt.
+>> +    /// Prevent values of this type from being moved to a different task.
+>> +    ///
+>> +    /// This is necessary because the C FFI calls assume that `current` is set to the task that
+>> +    /// owns the fd in question.
+>> +    _not_send_sync: PhantomData<*mut ()>,
+> 
+> I don't fully understand this. Can you explain in a little more detail
+> what you mean by this and how this works?
 
-Fixes: 17c82e206d2a3cd8 ("reset: Add APIs to manage array of resets")
-Fixes: 48d71395896d54ee ("reset: Add reset_control_bulk API")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-Crash seen on the Renesas R-Car S4-based Spider development board, using
-a (buggy) out-of-tree patch[1].  As the (mutually-exclusive) PCIe host and
-endpoint nodes share the same reset,
-devm_reset_control_bulk_get_optional_exclusive() fails, and crashes in
-the error path:
+Yeah, so, this has to do with the Rust trait `Send` that controls
+whether it's okay for a value to get moved from one thread to another.
+In this case, we don't want it to be `Send` so that it can't be moved to
+another thread, since current might be different there.
 
-    /soc/pcie@e65d0000 requests exclusive control over reset pwr shared with /soc/pcie-ep@e65d0000 on /soc/clock-controller@e6150000
-    Unable to handle kernel NULL pointer dereference at virtual address 000000000000001c
-    Mem abort info:
-      ESR = 0x0000000096000005
-      EC = 0x25: DABT (current EL), IL = 32 bits
-      SET = 0, FnV = 0
-      EA = 0, S1PTW = 0
-      FSC = 0x05: level 1 translation fault
-    Data abort info:
-      ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
-      CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-      GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-    user pgtable: 4k pages, 39-bit VAs, pgdp=00000004810b4000
-    [000000000000001c] pgd=0000000000000000, p4d=0000000000000000, pud=0000000000000000
-    Internal error: Oops: 0000000096000005 [#1] SMP
-    pstate: 00400005 (nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-    pc : __reset_control_put_internal+0x90/0xc8
-    lr : __reset_control_bulk_get+0xd4/0xd8
-    sp : ffffffc08174ba20
-    x29: ffffffc08174ba20 x28: ffffff8440010cd0 x27: ffffff8440a6f8c0
-    x26: 0000000000000001 x25: 0000000000000001 x24: 0000000000000000
-    x23: ffffff84409d4410 x22: ffffff8440a6fe48 x21: ffffffc080e8fae0
-    x20: 0000000000000005 x19: 0000000000000000 x18: 0000000000000000
-    x17: 6168732072777020 x16: 7465736572207265 x15: 766f206c6f72746e
-    x14: 6f63206576697375 x13: 3030303035313665 x12: 4072656c6c6f7274
-    x11: 6e6f632d6b636f6c x10: 632f636f732f206e x9 : 6c63786520737473
-    x8 : 6575716572203030 x7 : 205d383432323136 x6 : ffffffc080e8fae0
-    x5 : ffffffc080e8fae0 x4 : 0000000000000004 x3 : 0000000000000000
-    x2 : 000000000000001c x1 : 00000000ffffffff x0 : 000000000000001c
-    Call trace:
-     __reset_control_put_internal+0x90/0xc8
-     __reset_control_bulk_get+0xd4/0xd8
-     __devm_reset_control_bulk_get+0x78/0xcc
-     dw_pcie_get_resources+0x2e8/0x344
-     dw_pcie_host_init+0x64/0x538
-     rcar_gen4_pcie_probe+0x1a8/0x1ec
-     platform_probe+0x68/0xb8
-     really_probe+0x140/0x278
-     __driver_probe_device+0xf4/0x10c
-     driver_probe_device+0x50/0x100
-     __device_attach_driver+0xb0/0xd0
-     bus_for_each_drv+0xa8/0xd0
-     __device_attach_async_helper+0x70/0xc4
-     async_run_entry_fn+0x38/0x108
-     process_scheduled_works+0x1c4/0x270
-     worker_thread+0x1fc/0x26c
-     kthread+0xbc/0xcc
-     ret_from_fork+0x10/0x20
-    Code: 97f88daf 14000009 91007262 12800001 (b8610041)
-    ---[ end trace 0000000000000000 ]---
+The `Send` trait is automatically applied to structs whenever *all*
+fields of the struct are `Send`. So to ensure that a struct is not
+`Send`, you add a field that is not `Send`.
 
-[1] "[PATCH v3] reset: Exclusive resets must be dedicated to a single
-     hardware block"
-    https://lore.kernel.org/r/20181113133520.20889-1-geert+renesas@glider.be
----
- drivers/reset/core.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+The `PhantomData` type used here is a special zero-sized type.
+Basically, it says "pretend this struct has a field of type `*mut ()`,
+but don't actually add the field". So for the purposes of `Send`, it has
+a non-Send field, but since its wrapped in `PhantomData`, the field is
+not there at runtime.
 
-diff --git a/drivers/reset/core.c b/drivers/reset/core.c
-index 7ece6a8e9858555d..4d5a78d3c085bc76 100644
---- a/drivers/reset/core.c
-+++ b/drivers/reset/core.c
-@@ -807,6 +807,9 @@ static void __reset_control_put_internal(struct reset_control *rstc)
- {
- 	lockdep_assert_held(&reset_list_mutex);
- 
-+	if (IS_ERR_OR_NULL(rstc))
-+		return;
-+
- 	kref_put(&rstc->refcnt, __reset_control_release);
- }
- 
-@@ -1017,11 +1020,8 @@ EXPORT_SYMBOL_GPL(reset_control_put);
- void reset_control_bulk_put(int num_rstcs, struct reset_control_bulk_data *rstcs)
- {
- 	mutex_lock(&reset_list_mutex);
--	while (num_rstcs--) {
--		if (IS_ERR_OR_NULL(rstcs[num_rstcs].rstc))
--			continue;
-+	while (num_rstcs--)
- 		__reset_control_put_internal(rstcs[num_rstcs].rstc);
--	}
- 	mutex_unlock(&reset_list_mutex);
- }
- EXPORT_SYMBOL_GPL(reset_control_bulk_put);
--- 
-2.34.1
+>> +        Ok(Self {
+>> +            fd: fd as _,
+> 
+> This is a cast to a u32?
 
+Yes.
+
+> Can you please draft a quick example how that return value would be
+> expected to be used by a caller? It's really not clear
+
+The most basic usage would look like this:
+
+	// First, reserve the fd.
+	let reservation = FileDescriptorReservation::new(O_CLOEXEC)?;
+
+	// Then, somehow get a file to put in it.
+	let file = get_file_using_fallible_operation()?;
+
+	// Finally, commit it to the fd.
+	reservation.commit(file);
+
+In Rust Binder, reservations are used here:
+https://github.com/Darksonn/linux/blob/dca45e6c7848e024709b165a306cdbe88e5b086a/drivers/android/allocation.rs#L199-L210
+https://github.com/Darksonn/linux/blob/dca45e6c7848e024709b165a306cdbe88e5b086a/drivers/android/allocation.rs#L512-L541
+
+>> +    pub fn commit(self, file: ARef<File>) {
+>> +        // SAFETY: `self.fd` was previously returned by `get_unused_fd_flags`, and `file.ptr` is
+>> +        // guaranteed to have an owned ref count by its type invariants.
+>> +        unsafe { bindings::fd_install(self.fd, file.0.get()) };
+> 
+> Why file.0.get()? Where did that come from?
+
+This gets a raw pointer to the C type.
+
+The `.0` part is a field access. `ARef` struct is a tuple struct, so its
+fields are unnamed. However, the fields can still be accessed by index.
+
+Alice
