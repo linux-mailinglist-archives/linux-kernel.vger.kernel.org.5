@@ -2,81 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 354777FD5BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 249057FD5BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:30:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232977AbjK2Lab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 06:30:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41364 "EHLO
+        id S233003AbjK2Lad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 06:30:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232279AbjK2LaU (ORCPT
+        with ESMTP id S232708AbjK2LaW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 06:30:20 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1078A1710
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 03:30:26 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-54bd7e5182cso643302a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 03:30:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701257424; x=1701862224; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FuoTW5fNts47GPp/zz/U4BPEMqSdOcRJOpgotFGXLGo=;
-        b=TD1HTmbmVOmkmbeL7NASVcgXpk+ouNAYhqa6M04Du+3uMpzxq4maeXwhqrsClgsVip
-         N4dhPKaWFz/ZYa1y73bmk77rxI2WyyluvtwZRuji/YYtxlWdws4Bi5awxWtdjVYD5TaT
-         hYMsV8xZfXc8e4I0ZEu+Oo5wU91ODbqZDCk430YmGFyb+qmcc32vyCbnMNdvhx2bFt2O
-         ikgMm0zAQXctXztxAVol+sSJQq9shT7vReFFORbaEwpIP8E9q4SlMY6K6IQucb/2u4CP
-         n4ZVVkhTdYWom/IRELsQggGZzp3kJ3oluv/JJ43JzndDPmcAYfb7f6bce9ZEHeW8R6Dy
-         Gupw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701257424; x=1701862224;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FuoTW5fNts47GPp/zz/U4BPEMqSdOcRJOpgotFGXLGo=;
-        b=JaV2T9euku0jb0Xr/JC1Z0vBR0rqxqebk9i+wc4lmNORCdDvaVEtYnruOjFkngUlS4
-         kx/I/evPs364v1iyYS5TH94J+xTjfb9eBZrG9Js4UHcuWHrANZ/0xfsll6fn2HRcplry
-         U/NLHtB1H8KGAiSquLWJ2uzn65WD/m1GXoACULztvziCYrWjWpj47kZkJBD9d9j2ipip
-         rPgHgF9Ap5/N0QRdDrM8C6ypja9ogQwZprOnC3bB1QJ6oyg6TNqd+Mv4igvRVuQtjsUx
-         P6VFqAk/fHa99Updr3UcH5rh779pDCGKNAfiVMUwITnBUrIoFhjaCAK2uqwK/iU427z4
-         gLlA==
-X-Gm-Message-State: AOJu0YwHFci4qyFeIAnAKYMX9sBDxWpAIgQVAbH2t6TY/pRPlHzoDHln
-        lfBjyVUzACcSAlXANmb3dhbcWQ==
-X-Google-Smtp-Source: AGHT+IEHx5bvhNh2IGOAE7PXOlw27mYMxj7q8yRLiaQc1GYWBHE0clKsOrSLO7MzxHMzKLVRVjkuPw==
-X-Received: by 2002:aa7:df0c:0:b0:54b:52c4:68a5 with SMTP id c12-20020aa7df0c000000b0054b52c468a5mr7456394edy.39.1701257424378;
-        Wed, 29 Nov 2023 03:30:24 -0800 (PST)
-Received: from krzk-bin.. ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id y5-20020a056402440500b0054af224a87bsm6213829eda.33.2023.11.29.03.30.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 03:30:24 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>
-Subject: [PATCH 4/4] ASoC: dt-bindings: qcom,lpass-wsa-macro: Add SM8650 LPASS WSA
-Date:   Wed, 29 Nov 2023 12:30:14 +0100
-Message-Id: <20231129113014.38837-4-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231129113014.38837-1-krzysztof.kozlowski@linaro.org>
-References: <20231129113014.38837-1-krzysztof.kozlowski@linaro.org>
+        Wed, 29 Nov 2023 06:30:22 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7B63884;
+        Wed, 29 Nov 2023 03:30:28 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4AEB72F4;
+        Wed, 29 Nov 2023 03:31:15 -0800 (PST)
+Received: from raptor (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C0D8A3F5A1;
+        Wed, 29 Nov 2023 03:30:22 -0800 (PST)
+Date:   Wed, 29 Nov 2023 11:30:20 +0000
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
+        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
+        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
+        rppt@kernel.org, hughd@google.com, pcc@google.com,
+        steven.price@arm.com, anshuman.khandual@arm.com,
+        vincenzo.frascino@arm.com, eugenis@google.com, kcc@google.com,
+        hyesoo.yu@samsung.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC v2 18/27] arm64: mte: Reserve tag block for the zero
+ page
+Message-ID: <ZWcgzPcld1YksCtZ@raptor>
+References: <20231119165721.9849-1-alexandru.elisei@arm.com>
+ <20231119165721.9849-19-alexandru.elisei@arm.com>
+ <c027ea00-a955-4c3c-b1ea-2c3f6906790d@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c027ea00-a955-4c3c-b1ea-2c3f6906790d@redhat.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,54 +57,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add bindings for Qualcomm SM8650 Low Power Audio SubSystem (LPASS) WSA
-macro codec, which looks like compatible with earlier SM8550.
+On Tue, Nov 28, 2023 at 06:06:54PM +0100, David Hildenbrand wrote:
+> On 19.11.23 17:57, Alexandru Elisei wrote:
+> > On arm64, the zero page receives special treatment by having the tagged
+> > flag set on MTE initialization, not when the page is mapped in a process
+> > address space. Reserve the corresponding tag block when tag storage
+> > management is being activated.
+> 
+> Out of curiosity: why does the shared zeropage require tagged storage? What
+> about the huge zeropage?
 
-Cc: Neil Armstrong <neil.armstrong@linaro.org>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- .../bindings/sound/qcom,lpass-wsa-macro.yaml  | 21 ++++++++++++-------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+There are two different tags that are used for tag checking: the logical
+tag, the tag embedded in bits 59:56 of an address, and the physical tag
+corresponding to the address. This tag is stored in a separate memory
+location, called tag storage. When an access is performed, hardware
+compares the logical tag (from the address) with the physical tag (from the
+tag storage). If they match, the access is permitted.
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml b/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml
-index eea7609d1b33..5fb39d35c8ec 100644
---- a/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml
-+++ b/Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml
-@@ -11,12 +11,16 @@ maintainers:
- 
- properties:
-   compatible:
--    enum:
--      - qcom,sc7280-lpass-wsa-macro
--      - qcom,sm8250-lpass-wsa-macro
--      - qcom,sm8450-lpass-wsa-macro
--      - qcom,sm8550-lpass-wsa-macro
--      - qcom,sc8280xp-lpass-wsa-macro
-+    oneOf:
-+      - enum:
-+          - qcom,sc7280-lpass-wsa-macro
-+          - qcom,sm8250-lpass-wsa-macro
-+          - qcom,sm8450-lpass-wsa-macro
-+          - qcom,sm8550-lpass-wsa-macro
-+          - qcom,sc8280xp-lpass-wsa-macro
-+      - items:
-+          - const: qcom,sm8650-lpass-wsa-macro
-+          - const: qcom,sm8550-lpass-wsa-macro
- 
-   reg:
-     maxItems: 1
-@@ -94,8 +98,9 @@ allOf:
-   - if:
-       properties:
-         compatible:
--          enum:
--            - qcom,sm8550-lpass-wsa-macro
-+          contains:
-+            enum:
-+              - qcom,sm8550-lpass-wsa-macro
-     then:
-       properties:
-         clocks:
--- 
-2.34.1
+The physical tag is set with special instructions.
 
+Userspace pointers have bits 59:56 zero. If the pointer is in a VMA with
+MTE enabled, then for userspace to be able to access this address, the
+physical tag must also be 0b0000.
+
+To make it easier on userspace, when a page is first mapped as tagged, its
+tags are cleared by the kernel; this way, userspace can access the address
+immediately, without clearing the physical tags beforehand. Another reason
+for clearing the physical tags when a page is mapped as tagged would be to
+avoid leaking uninitialized tags to userspace.
+
+The zero page is special, because the physical tags are not zeroed every
+time the page is mapped in a process; instead, the zero page is marked as
+tagged (by setting a page flag) and the physical tags are zeroed only once,
+when MTE is enabled at boot.
+
+All of this means that when tag storage is enabled, which happens after MTE
+is enabled, the tag storage corresponding to the zero page is already in
+use and must be rezerved, and it can never be used for data allocations.
+
+I hope all of the above makes sense. I can also put it in the commit
+message :)
+
+As for the zero huge page, the MTE code in the kernel treats it like a
+regular page, and it zeroes the tags when it is mapped as tagged in a
+process. I agree that this might not be the best solution from a
+performance perspective, but it has worked so far.
+
+With tag storage management enabled, set_pte_at()->mte_sync_tags() will
+discover that the huge zero page doesn't have tag storage reserved, the
+table entry will be mapped as invalid to use the page fault-on-access
+mechanism that I introduce later in the series [1] to reserve tag storage,
+and after that set_pte_at() will zero the physical tags.
+
+[1] https://lore.kernel.org/all/20231119165721.9849-20-alexandru.elisei@arm.com/
+
+Thanks,
+Alex
+
+> 
+> -- 
+> Cheers,
+> 
+> David / dhildenb
+> 
