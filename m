@@ -2,198 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DEE37FDC26
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:03:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E34AB7FDC28
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:04:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbjK2QDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 11:03:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36780 "EHLO
+        id S230386AbjK2QDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 11:03:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231296AbjK2QDf (ORCPT
+        with ESMTP id S231296AbjK2QDw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 11:03:35 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 463CAD73
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:03:41 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-332f2c1f909so701921f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:03:41 -0800 (PST)
+        Wed, 29 Nov 2023 11:03:52 -0500
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72811D5C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:03:59 -0800 (PST)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1f9efd5303cso3639063fac.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:03:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1701273820; x=1701878620; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7IGDwssStSDpyhXdV1nfus/AGOvw09dSHX5DmZ6h29s=;
-        b=xOE2hNdOHHg+CV22PtM8lrFl/msrm5gjieDMrLhzNMHWqFBAk0gv2boG0F3ly7ZiR2
-         T5dQpu3xl7IRoWYpxXiVZTWd25vl+7KW6gQ0p7pmQziB7dJfsWceoqvCG0zHuDokIb2W
-         +YZbNKw8BhVEaFP6cBwcbat48imlR0EWnSaUG8dzN5o/rQAcDWAbnAPNnOwG4auZlBnI
-         fDcJC0Xp6Q0HBZ+/zb73l1U+p9VwUnA5giVueBXb+hSmTI1c1gdA6LyPsZOL9UE1WDeX
-         B1Fq7m9tISZusfE2tlONYKa6cN41/gFHopb3Nok/HGW7bzi94heD2OHULtLHP1XqNWq+
-         U3lg==
+        d=gmail.com; s=20230601; t=1701273836; x=1701878636; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z7UzJljfmHlY261/3G0aNDMRQkGttOqN4meo5L3GUQc=;
+        b=kL9M8ObDNtwxcwV6CkWC2if56952gmg0x0BXwf6ul37+GQQ3MtBOrkS4p4pjZTai2f
+         6j0Jw0yEi5Az/olt760ThTt2qpGbpsdXeP1Oq2UofNnpacwI1mGCctwCYNwYLTGOlUS1
+         cEKwPAwc2Ki/auIlJ82OExwIGoCAogSD/opPp5FDfX+kEyneX0Wou2mZ909cuDB5YV5x
+         m3b+DvuMuK1hCo3rqY+9gK3NL3ud5Upyp1iMCUfVRxxqher8DOSD7tgaaxqDsezYTERg
+         nmEoxR6zjMTEhZ5mPtOVlsS9KFzHLAXoWNRuv6fqOOboNu2aEVBLy+sPcl/fTbfFTPis
+         HBeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701273820; x=1701878620;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7IGDwssStSDpyhXdV1nfus/AGOvw09dSHX5DmZ6h29s=;
-        b=wB/BysI10tp1wBbeVrq6BkfmgdiIQ1b5nXvTwrxGBKvZTto0FWICdw/0kZ8uxALHsf
-         SNhrTpFq0hX9SV9rk+oBCZSrVQzTdkoepxpw2eZihBz3Mr3qkawDHwsDvfHIHMuT3rP1
-         q/1Nr7Sm+VUpKi9LusZExSNLSrGUuNPfaPqRlaoNVzZ4T++Gzja5qxt8t/OlSuTjece3
-         eaCmMN5QtptwjTcoEkbliUxuFqhuHn5A6xjBvD7Y/KMDXzy84Wp/VUrDksxiAVFsTyAU
-         FsQW0Sa3xxOwa4nEY5aE2+JW+o9VM+MKH/KuvzeljkML7de2LV76BLS8up6oabOGG37N
-         Rngg==
-X-Gm-Message-State: AOJu0YzT9ozK57i1TRIb4B8nS2ENYbnaso5qBooSl5T8RfFzTP4mFPHX
-        q3PhnSJgvvl9gFXH0bf512z4aGs8Zh78dnGKaps=
-X-Google-Smtp-Source: AGHT+IHiupA6lbwePPPMup095kGgR6Wzqg1hkQkrzFoWGaSz5k1vlW/5w08YDqh5N/Ye6RNFE45lOw==
-X-Received: by 2002:a05:6000:4011:b0:332:e749:adaa with SMTP id cp17-20020a056000401100b00332e749adaamr12719911wrb.3.1701273819573;
-        Wed, 29 Nov 2023 08:03:39 -0800 (PST)
-Received: from carbon-x1.. ([2a01:e0a:999:a3a0:11a9:3d89:528b:b336])
-        by smtp.gmail.com with ESMTPSA id q1-20020a5d6581000000b00331a55d3875sm18230283wru.38.2023.11.29.08.03.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 08:03:39 -0800 (PST)
-From:   =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Samuel Ortiz <sameo@rivosinc.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
-Subject: [PATCH] RISC-V: Implement archrandom when Zkr is available
-Date:   Wed, 29 Nov 2023 17:03:25 +0100
-Message-ID: <20231129160325.1119803-1-cleger@rivosinc.com>
-X-Mailer: git-send-email 2.42.0
+        d=1e100.net; s=20230601; t=1701273836; x=1701878636;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Z7UzJljfmHlY261/3G0aNDMRQkGttOqN4meo5L3GUQc=;
+        b=t/mHZiujRmtvOaaUyfsc41TW06h0I7+x9Ptmh6V+h+JvUkvh9dovvmWYyGoiwvzEbm
+         kcrs0HBoeKUBCwquFbXsi4FDYFyl7GRReVxYTo6w8TTIfthTWly465BJQOt3EZ3zTxk/
+         7BEtLPjCj8FN0iWD5+hFg8Z91E4yypmSO4KrZ41A8qtahTo64h1A1apBUubYFqrxHNHf
+         RbX+JCAS71SIf8nK3piNRu2lbvTtoyhDu0h/f1cThDkgVn67NYtvD/eY6gze/mCjwabR
+         fqJlpWvt/TiAjcDBdHTH6gCMTQQG5Vq2s/loYm8idTkPMBOIeiUxM8g0ASGyIe34cVki
+         g10w==
+X-Gm-Message-State: AOJu0YwVhF/zOGFoPr2uBfuUQfuPYUxodn2UeV7cdiFhy4MO0XCZ77wH
+        oOUIgkn73KPcHJMBOJPAPxo4Tyb5lVs8f2EZ3nmrb16s
+X-Google-Smtp-Source: AGHT+IHoiXJZJAh5s4piufZ3+jeW0dyXseOkzVDXDHtjOgJ+lFkK8YIUj/kC/67GEby9dpMyF6D+LaQMEnf6B2u6Dj4=
+X-Received: by 2002:a05:6870:82a8:b0:1f9:5cba:10f with SMTP id
+ q40-20020a05687082a800b001f95cba010fmr23212183oae.38.1701273835699; Wed, 29
+ Nov 2023 08:03:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231129152230.7931-1-n.zhandarovich@fintech.ru> <6a26b0c9-cbea-4ca2-bc16-79ed53e3a6fe@amd.com>
+In-Reply-To: <6a26b0c9-cbea-4ca2-bc16-79ed53e3a6fe@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Wed, 29 Nov 2023 11:03:44 -0500
+Message-ID: <CADnq5_P-Bxghq4N4GXZXUNwGR5BPyU2qQXDYzDeNkvn=VSTfwg@mail.gmail.com>
+Subject: Re: [PATCH] drm/radeon/r600_cs: Fix possible int overflows in r600_cs_check_reg()
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Samuel Ortiz <sameo@rivosinc.com>
+On Wed, Nov 29, 2023 at 10:47=E2=80=AFAM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> Am 29.11.23 um 16:22 schrieb Nikita Zhandarovich:
+> > While improbable, there may be a chance of hitting integer
+> > overflow when the result of radeon_get_ib_value() gets shifted
+> > left.
+> >
+> > Avoid it by casting one of the operands to larger data type (u64).
+> >
+> > Found by Linux Verification Center (linuxtesting.org) with static
+> > analysis tool SVACE.
+>
+> Well IIRC cb_color_bo_offset is just 32bits anyway, so this doesn't
+> change anything.
 
-From: Samuel Ortiz <sameo@rivosinc.com>
+All of the GPU addresses in the structure are u64.  The registers are
+32 bits which is why they are 256 byte aligned.  That said, I think
+the MC on the chips supported by this code are only 32 bits so we
+shouldn't see any addresses greater than 32 bits, but this seems like
+good to do from a coding perspective.  Otherwise, we'll keep getting
+this patch.
 
-The Zkr extension is ratified and provides 16 bits of entropy seed when
-reading the SEED CSR.
+Alex
 
-We can implement arch_get_random_seed_longs() by doing multiple csrrw to
-that CSR and filling an unsigned long with valid entropy bits.
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-Signed-off-by: Samuel Ortiz <sameo@rivosinc.com>
-Signed-off-by: Clément Léger <cleger@rivosinc.com>
+Alex
 
----
-
-This series depends on "riscv: report more ISA extensions through
-hwprobe" series [1].
-
-Link: https://lore.kernel.org/lkml/20231114141256.126749-1-cleger@rivosinc.com/ [1]
----
- arch/riscv/include/asm/archrandom.h | 69 +++++++++++++++++++++++++++++
- arch/riscv/include/asm/csr.h        |  9 ++++
- 2 files changed, 78 insertions(+)
- create mode 100644 arch/riscv/include/asm/archrandom.h
-
-diff --git a/arch/riscv/include/asm/archrandom.h b/arch/riscv/include/asm/archrandom.h
-new file mode 100644
-index 000000000000..795837ccb583
---- /dev/null
-+++ b/arch/riscv/include/asm/archrandom.h
-@@ -0,0 +1,69 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Kernel interface for the RISCV arch_random_* functions
-+ *
-+ * Copyright (c) 2023 by Rivos Inc.
-+ *
-+ */
-+
-+#ifndef ASM_RISCV_ARCHRANDOM_H
-+#define ASM_RISCV_ARCHRANDOM_H
-+
-+#include <asm/csr.h>
-+
-+#define SEED_RETRY_LOOPS 100
-+
-+static inline bool __must_check csr_seed_long(unsigned long *v)
-+{
-+	unsigned int retry = SEED_RETRY_LOOPS, valid_seeds = 0;
-+	const int needed_seeds = sizeof(long) / sizeof(u16);
-+	u16 *entropy = (u16 *)v;
-+
-+	do {
-+		/*
-+		 * The SEED CSR must be accessed with a read-write instruction.
-+		 */
-+		unsigned long csr_seed = csr_swap(CSR_SEED, 0);
-+
-+		switch (csr_seed & SEED_OPST_MASK) {
-+		case SEED_OPST_ES16:
-+			entropy[valid_seeds++] = csr_seed & SEED_ENTROPY_MASK;
-+			if (valid_seeds == needed_seeds)
-+				return true;
-+			break;
-+
-+		case SEED_OPST_DEAD:
-+			pr_err_once("archrandom: Unrecoverable error\n");
-+			return false;
-+
-+		case SEED_OPST_BIST:
-+		case SEED_OPST_WAIT:
-+		default:
-+			continue;
-+		}
-+	} while (--retry);
-+
-+	return false;
-+}
-+
-+static inline size_t __must_check arch_get_random_longs(unsigned long *v, size_t max_longs)
-+{
-+	return 0;
-+}
-+
-+static inline size_t __must_check arch_get_random_seed_longs(unsigned long *v, size_t max_longs)
-+{
-+	if (!max_longs)
-+		return 0;
-+
-+	/*
-+	 * If Zkr is supported and csr_seed_long succeeds, we return one long
-+	 * worth of entropy.
-+	 */
-+	if (riscv_has_extension_likely(RISCV_ISA_EXT_ZKR) && csr_seed_long(v))
-+		return 1;
-+
-+	return 0;
-+}
-+
-+#endif /* ASM_RISCV_ARCHRANDOM_H */
-diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
-index 306a19a5509c..510014051f5d 100644
---- a/arch/riscv/include/asm/csr.h
-+++ b/arch/riscv/include/asm/csr.h
-@@ -411,6 +411,15 @@
- #define CSR_VTYPE		0xc21
- #define CSR_VLENB		0xc22
- 
-+/* Scalar Crypto Extension - Entropy */
-+#define CSR_SEED		0x015
-+#define SEED_OPST_MASK		_AC(0xC0000000, UL)
-+#define SEED_OPST_BIST		_AC(0x00000000, UL)
-+#define SEED_OPST_WAIT		_AC(0x40000000, UL)
-+#define SEED_OPST_ES16		_AC(0x80000000, UL)
-+#define SEED_OPST_DEAD		_AC(0xC0000000, UL)
-+#define SEED_ENTROPY_MASK	_AC(0xFFFF, UL)
-+
- #ifdef CONFIG_RISCV_M_MODE
- # define CSR_STATUS	CSR_MSTATUS
- # define CSR_IE		CSR_MIE
--- 
-2.42.0
-
+>
+> Regards,
+> Christian.
+>
+> >
+> > Fixes: 1729dd33d20b ("drm/radeon/kms: r600 CS parser fixes")
+> > Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+> > ---
+> >   drivers/gpu/drm/radeon/r600_cs.c | 4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/radeon/r600_cs.c b/drivers/gpu/drm/radeon/=
+r600_cs.c
+> > index 638f861af80f..6cf54a747749 100644
+> > --- a/drivers/gpu/drm/radeon/r600_cs.c
+> > +++ b/drivers/gpu/drm/radeon/r600_cs.c
+> > @@ -1275,7 +1275,7 @@ static int r600_cs_check_reg(struct radeon_cs_par=
+ser *p, u32 reg, u32 idx)
+> >                       return -EINVAL;
+> >               }
+> >               tmp =3D (reg - CB_COLOR0_BASE) / 4;
+> > -             track->cb_color_bo_offset[tmp] =3D radeon_get_ib_value(p,=
+ idx) << 8;
+> > +             track->cb_color_bo_offset[tmp] =3D (u64)radeon_get_ib_val=
+ue(p, idx) << 8;
+> >               ib[idx] +=3D (u32)((reloc->gpu_offset >> 8) & 0xffffffff)=
+;
+> >               track->cb_color_base_last[tmp] =3D ib[idx];
+> >               track->cb_color_bo[tmp] =3D reloc->robj;
+> > @@ -1302,7 +1302,7 @@ static int r600_cs_check_reg(struct radeon_cs_par=
+ser *p, u32 reg, u32 idx)
+> >                                       "0x%04X\n", reg);
+> >                       return -EINVAL;
+> >               }
+> > -             track->htile_offset =3D radeon_get_ib_value(p, idx) << 8;
+> > +             track->htile_offset =3D (u64)radeon_get_ib_value(p, idx) =
+<< 8;
+> >               ib[idx] +=3D (u32)((reloc->gpu_offset >> 8) & 0xffffffff)=
+;
+> >               track->htile_bo =3D reloc->robj;
+> >               track->db_dirty =3D true;
+>
