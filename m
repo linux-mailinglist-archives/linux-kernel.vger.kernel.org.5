@@ -2,119 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3187FD0E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:32:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 816E07FD0EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:33:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232459AbjK2IcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 03:32:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
+        id S230103AbjK2Id3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 03:33:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232463AbjK2Ib7 (ORCPT
+        with ESMTP id S229576AbjK2Id1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 03:31:59 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC6042135
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:31:00 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-54b8276361cso3462332a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:31:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701246659; x=1701851459; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lLcARgNXWLshgrpkp/S+MhgkNopD1zpmMo4PWSTyMEg=;
-        b=x+ER/EVMlDe30Q8pCxhEal1LxK1RzJvftvKH7M7VV5y/sououtHhT6BTjARY+RhYYP
-         PHIDpKCz+djSLuGLKShij/SW2RwnO4ZMWgY79CA0T00jZ4FzwBDnVr1jSOCgcNIi9ik8
-         JUl/VLO5PwCCPemcRy3KkSKhZG2c3bSuwtTIvGPCSxhH7aiN9spb3hPoULhV/QefLj4j
-         By2dEqfwGBsaeNRKZpAFZau0XL8C1ePC+lFpNC/v//mU3kSkeL89y/HGJZfkitv2nZyK
-         wZxU/MaQVrkLOlZ+v2IgV10tTUjBY5c1jLfgEB0Gm5YUjviLwqpp3GGb8xs2PaGH4+hk
-         6X0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701246659; x=1701851459;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lLcARgNXWLshgrpkp/S+MhgkNopD1zpmMo4PWSTyMEg=;
-        b=im94J6bXo9144B1Bi35lQ/S4m/oIJwOdykWw7I93hVerhKBH9f3xc30ysaZY+gCPKn
-         7bdV1bX21GHIS954uPQLKfeKEIoq508e5+bYlMaJb+EkoL+uyv92P4CCGvJfR6AJ7uL+
-         JmYi/wx1/rF0pHvh+ykT4m4OANhFlA3fnVyaqsAfTdZudkmc0OmqzJcwJ7gdSZo4sdCq
-         tWBY2NdxVHLZ+GygFoyyMAaoIEsdERJktNCmzFZCg1J6lk079ZXgqGwv84SX924q7m1V
-         xQZNMGgK5G/Pei4Yb1l6dAEB8FA5uw0ZsiPRJvcsePSX/yRMdPSkla1bmlQbR9XsVskq
-         f8/A==
-X-Gm-Message-State: AOJu0YwTF4DBCEVwUO3OvWtgq5duzdmbS0AlE/W9C5rB5p33NMkf2mED
-        GjpDl5HVradsI2tcSm2/4d77/Q==
-X-Google-Smtp-Source: AGHT+IHu0sGX+4sFVrTiCj0U941WlQnSSg22e1TE4LaGX8GzrERrbwKALrfTOhMc74Xh6vzdiPkWNg==
-X-Received: by 2002:a05:6402:5d82:b0:54b:1865:be25 with SMTP id if2-20020a0564025d8200b0054b1865be25mr9848574edb.20.1701246659178;
-        Wed, 29 Nov 2023 00:30:59 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id b9-20020a056402350900b0054b7e312b97sm2519566edd.38.2023.11.29.00.30.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 00:30:58 -0800 (PST)
-Message-ID: <8f39b628-06c1-426d-ab4d-247dbc911704@linaro.org>
-Date:   Wed, 29 Nov 2023 09:30:57 +0100
+        Wed, 29 Nov 2023 03:33:27 -0500
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [IPv6:2001:41d0:203:375::b9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC1EC1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:33:30 -0800 (PST)
+Message-ID: <04355714-3519-48f6-a5c6-15608b131e71@ingalls.rocks>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ingalls.rocks;
+        s=key1; t=1701246808;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7cbpFsE7FcsGwKJEpvfC1Wki3/2feMNJnrhcrC6Kcxk=;
+        b=IT1ArPecscFvD8wYJohp14tZxU9viiOZ9iH5Dfjc6FdiZ4yNtcF0eNKNDplNyhYuq3ursa
+        ZCZ1bNzTGDbYa8bvJa2HqmmC1Yl8QGMnSsD5wgSXZsdv3VQxhR+H4sVE1n0hPuJ955ThTg
+        /IfVwYyDNQ0AG0p/VqoJ2GcDhhoFT20=
+Date:   Wed, 29 Nov 2023 03:33:22 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: reset: hisilicon,hi3660-reset: Drop
- providers and consumers from example
+Subject: Re: [RFC PATCH 2/6] mm/gmem: add arch-independent abstraction to
+ track address mapping status
 Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231128214759.3975428-1-robh@kernel.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231128214759.3975428-1-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8
+To:     Weixi Zhu <weixi.zhu@huawei.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org
+Cc:     leonro@nvidia.com, apopple@nvidia.com,
+        amd-gfx@lists.freedesktop.org, mgorman@suse.de, ziy@nvidia.com,
+        zhi.a.wang@intel.com, rcampbell@nvidia.com, jgg@nvidia.com,
+        weixi.zhu@openeuler.sh, jhubbard@nvidia.com,
+        intel-gfx@lists.freedesktop.org, mhairgrove@nvidia.com,
+        jglisse@redhat.com, rodrigo.vivi@intel.com,
+        intel-gvt-dev@lists.freedesktop.org,
+        tvrtko.ursulin@linux.intel.com, Felix.Kuehling@amd.com,
+        Xinhui.Pan@amd.com, christian.koenig@amd.com,
+        alexander.deucher@amd.com, ogabbay@kernel.org
+References: <20231128125025.4449-1-weixi.zhu@huawei.com>
+ <20231128125025.4449-3-weixi.zhu@huawei.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   emily <emily@ingalls.rocks>
+In-Reply-To: <20231128125025.4449-3-weixi.zhu@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -122,19 +61,410 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/11/2023 22:47, Rob Herring wrote:
-> Binding examples should generally only cover what the binding covers. A
-> provider binding doesn't need to show consumers and vice-versa. The
-> hisilicon,hi3660-reset binding example has both, so let's drop them.
-> 
-> This also fixes an undocumented (by schema) compatible warning for
-> "hisilicon,hi3660-iomcu".
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
+
+On 11/28/23 07:50, Weixi Zhu wrote:
+> This patch adds an abstraction layer, struct vm_object, that maintains
+> per-process virtual-to-physical mapping status stored in struct gm_mapping.
+> For example, a virtual page may be mapped to a CPU physical page or to a
+> device physical page. Struct vm_object effectively maintains an
+> arch-independent page table, which is defined as a "logical page table".
+> While arch-dependent page table used by a real MMU is named a "physical
+> page table". The logical page table is useful if Linux core MM is extended
+> to handle a unified virtual address space with external accelerators using
+> customized MMUs.
+>
+> In this patch, struct vm_object utilizes a radix
+> tree (xarray) to track where a virtual page is mapped to. This adds extra
+> memory consumption from xarray, but provides a nice abstraction to isolate
+> mapping status from the machine-dependent layer (PTEs). Besides supporting
+> accelerators with external MMUs, struct vm_object is planned to further
+> union with i_pages in struct address_mapping for file-backed memory.
+>
+> The idea of struct vm_object is originated from FreeBSD VM design, which
+> provides a unified abstraction for anonymous memory, file-backed memory,
+> page cache and etc[1].
+>
+> Currently, Linux utilizes a set of hierarchical page walk functions to
+> abstract page table manipulations of different CPU architecture. The
+> problem happens when a device wants to reuse Linux MM code to manage its
+> page table -- the device page table may not be accessible to the CPU.
+> Existing solution like Linux HMM utilizes the MMU notifier mechanisms to
+> invoke device-specific MMU functions, but relies on encoding the mapping
+> status on the CPU page table entries. This entangles machine-independent
+> code with machine-dependent code, and also brings unnecessary restrictions.
+> The PTE size and format vary arch by arch, which harms the extensibility.
+>
+> [1] https://docs.freebsd.org/en/articles/vm-design/
+>
+> Signed-off-by: Weixi Zhu <weixi.zhu@huawei.com>
 > ---
+>   include/linux/gmem.h     | 120 +++++++++++++++++++++++++
+>   include/linux/mm_types.h |   4 +
+>   mm/Makefile              |   2 +-
+>   mm/vm_object.c           | 184 +++++++++++++++++++++++++++++++++++++++
+>   4 files changed, 309 insertions(+), 1 deletion(-)
+>   create mode 100644 mm/vm_object.c
+>
+> diff --git a/include/linux/gmem.h b/include/linux/gmem.h
+> index fff877873557..529ff6755a99 100644
+> --- a/include/linux/gmem.h
+> +++ b/include/linux/gmem.h
+> @@ -9,11 +9,131 @@
+>   #ifndef _GMEM_H
+>   #define _GMEM_H
+>   
+> +#include <linux/mm_types.h>
+> +
+>   #ifdef CONFIG_GMEM
+> +
+> +#define GM_PAGE_CPU	0x10 /* Determines whether page is a pointer or a pfn number. */
+> +#define GM_PAGE_DEVICE	0x20
+> +#define GM_PAGE_NOMAP	0x40
+> +#define GM_PAGE_WILLNEED	0x80
+> +
+> +#define GM_PAGE_TYPE_MASK	(GM_PAGE_CPU | GM_PAGE_DEVICE | GM_PAGE_NOMAP)
+> +
+> +struct gm_mapping {
+> +	unsigned int flag;
+> +
+> +	union {
+> +		struct page *page;	/* CPU node */
+> +		struct gm_dev *dev;	/* hetero-node. TODO: support multiple devices */
+> +		unsigned long pfn;
+> +	};
+> +
+> +	struct mutex lock;
+> +};
+> +
+> +static inline void gm_mapping_flags_set(struct gm_mapping *gm_mapping, int flags)
+> +{
+> +	if (flags & GM_PAGE_TYPE_MASK)
+> +		gm_mapping->flag &= ~GM_PAGE_TYPE_MASK;
+> +
+> +	gm_mapping->flag |= flags;
+> +}
+> +
+> +static inline void gm_mapping_flags_clear(struct gm_mapping *gm_mapping, int flags)
+> +{
+> +	gm_mapping->flag &= ~flags;
+> +}
+> +
+> +static inline bool gm_mapping_cpu(struct gm_mapping *gm_mapping)
+> +{
+> +	return !!(gm_mapping->flag & GM_PAGE_CPU);
+> +}
+> +
+> +static inline bool gm_mapping_device(struct gm_mapping *gm_mapping)
+> +{
+> +	return !!(gm_mapping->flag & GM_PAGE_DEVICE);
+> +}
+> +
+> +static inline bool gm_mapping_nomap(struct gm_mapping *gm_mapping)
+> +{
+> +	return !!(gm_mapping->flag & GM_PAGE_NOMAP);
+> +}
+> +
+> +static inline bool gm_mapping_willneed(struct gm_mapping *gm_mapping)
+> +{
+> +	return !!(gm_mapping->flag & GM_PAGE_WILLNEED);
+> +}
+> +
+>   /* h-NUMA topology */
+>   void __init hnuma_init(void);
+> +
+> +/* vm object */
+> +/*
+> + * Each per-process vm_object tracks the mapping status of virtual pages from
+> + * all VMAs mmap()-ed with MAP_PRIVATE | MAP_PEER_SHARED.
+> + */
+> +struct vm_object {
+> +	spinlock_t lock;
+> +
+> +	/*
+> +	 * The logical_page_table is a container that holds the mapping
+> +	 * information between a VA and a struct page.
+> +	 */
+> +	struct xarray *logical_page_table;
+> +	atomic_t nr_pages;
+> +};
+> +
+> +int __init vm_object_init(void);
+> +struct vm_object *vm_object_create(struct mm_struct *mm);
+> +void vm_object_drop_locked(struct mm_struct *mm);
+> +
+> +struct gm_mapping *alloc_gm_mapping(void);
+> +void free_gm_mappings(struct vm_area_struct *vma);
+> +struct gm_mapping *vm_object_lookup(struct vm_object *obj, unsigned long va);
+> +void vm_object_mapping_create(struct vm_object *obj, unsigned long start);
+> +void unmap_gm_mappings_range(struct vm_area_struct *vma, unsigned long start,
+> +			     unsigned long end);
+> +void munmap_in_peer_devices(struct mm_struct *mm, unsigned long start,
+> +			    unsigned long end);
+>   #else
+>   static inline void hnuma_init(void) {}
+> +static inline void __init vm_object_init(void)
+> +{
+> +}
+> +static inline struct vm_object *vm_object_create(struct vm_area_struct *vma)
+> +{
+> +	return NULL;
+> +}
+> +static inline void vm_object_drop_locked(struct vm_area_struct *vma)
+> +{
+> +}
+> +static inline struct gm_mapping *alloc_gm_mapping(void)
+> +{
+> +	return NULL;
+> +}
+> +static inline void free_gm_mappings(struct vm_area_struct *vma)
+> +{
+> +}
+> +static inline struct gm_mapping *vm_object_lookup(struct vm_object *obj,
+> +						  unsigned long va)
+> +{
+> +	return NULL;
+> +}
+> +static inline void vm_object_mapping_create(struct vm_object *obj,
+> +					    unsigned long start)
+> +{
+> +}
+> +static inline void unmap_gm_mappings_range(struct vm_area_struct *vma,
+> +					   unsigned long start,
+> +					   unsigned long end)
+> +{
+> +}
+> +static inline void munmap_in_peer_devices(struct mm_struct *mm,
+> +					  unsigned long start,
+> +					  unsigned long end)
+> +{
+> +}
+>   #endif
+>   
+>   #endif /* _GMEM_H */
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index 957ce38768b2..4e50dc019d75 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -31,6 +31,7 @@
+>   
+>   struct address_space;
+>   struct mem_cgroup;
+> +struct vm_object;
+>   
+>   /*
+>    * Each physical page in the system has a struct page associated with
+> @@ -974,6 +975,9 @@ struct mm_struct {
+>   #endif
+>   		} lru_gen;
+>   #endif /* CONFIG_LRU_GEN */
+> +#ifdef CONFIG_GMEM
+> +		struct vm_object *vm_obj;
+> +#endif
+>   	} __randomize_layout;
+>   
+>   	/*
+> diff --git a/mm/Makefile b/mm/Makefile
+> index f48ea2eb4a44..d2dfab012c96 100644
+> --- a/mm/Makefile
+> +++ b/mm/Makefile
+> @@ -138,4 +138,4 @@ obj-$(CONFIG_IO_MAPPING) += io-mapping.o
+>   obj-$(CONFIG_HAVE_BOOTMEM_INFO_NODE) += bootmem_info.o
+>   obj-$(CONFIG_GENERIC_IOREMAP) += ioremap.o
+>   obj-$(CONFIG_SHRINKER_DEBUG) += shrinker_debug.o
+> -obj-$(CONFIG_GMEM) += gmem.o
+> +obj-$(CONFIG_GMEM) += gmem.o vm_object.o
+> diff --git a/mm/vm_object.c b/mm/vm_object.c
+> new file mode 100644
+> index 000000000000..4e76737e0ca1
+> --- /dev/null
+> +++ b/mm/vm_object.c
+> @@ -0,0 +1,184 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * arch/alpha/boot/bootp.c
+> + *
+> + * Copyright (C) 1997 Jay Estabrook
+> + *
+> + * This file is used for creating a bootp file for the Linux/AXP kernel
+> + *
+> + * based significantly on the arch/alpha/boot/main.c of Linus Torvalds
+> + */
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Best regards,
-Krzysztof
+i believe you have made a mistake here. you will likely want to correct 
+the information in this comment.
 
+> +#include <linux/mm.h>
+> +#include <linux/gmem.h>
+> +
+> +/*
+> + * Sine VM_OBJECT maintains the logical page table under each VMA, and each VMA
+> + * points to a VM_OBJECT. Ultimately VM_OBJECTs must be maintained as long as VMA
+> + * gets changed: merge, split, adjust
+> + */
+> +static struct kmem_cache *vm_object_cachep;
+> +static struct kmem_cache *gm_mapping_cachep;
+> +
+> +static inline void release_gm_mapping(struct gm_mapping *mapping)
+> +{
+> +	kmem_cache_free(gm_mapping_cachep, mapping);
+> +}
+> +
+> +static inline struct gm_mapping *lookup_gm_mapping(struct vm_object *obj,
+> +						   unsigned long pindex)
+> +{
+> +	return xa_load(obj->logical_page_table, pindex);
+> +}
+> +
+> +int __init vm_object_init(void)
+> +{
+> +	vm_object_cachep = KMEM_CACHE(vm_object, 0);
+> +	if (!vm_object_cachep)
+> +		goto out;
+> +
+> +	gm_mapping_cachep = KMEM_CACHE(gm_mapping, 0);
+> +	if (!gm_mapping_cachep)
+> +		goto free_vm_object;
+> +
+> +	return 0;
+> +free_vm_object:
+> +	kmem_cache_destroy(vm_object_cachep);
+> +out:
+> +	return -ENOMEM;
+> +}
+> +
+> +/*
+> + * Create a VM_OBJECT and attach it to a mm_struct
+> + * This should be called when a task_struct is created.
+> + */
+> +struct vm_object *vm_object_create(struct mm_struct *mm)
+> +{
+> +	struct vm_object *obj = kmem_cache_alloc(vm_object_cachep, GFP_KERNEL);
+> +
+> +	if (!obj)
+> +		return NULL;
+> +
+> +	spin_lock_init(&obj->lock);
+> +
+> +	/*
+> +	 * The logical page table maps va >> PAGE_SHIFT
+> +	 * to pointers of struct gm_mapping.
+> +	 */
+> +	obj->logical_page_table = kmalloc(sizeof(struct xarray), GFP_KERNEL);
+> +	if (!obj->logical_page_table) {
+> +		kmem_cache_free(vm_object_cachep, obj);
+> +		return NULL;
+> +	}
+> +
+> +	xa_init(obj->logical_page_table);
+> +	atomic_set(&obj->nr_pages, 0);
+> +
+> +	return obj;
+> +}
+> +
+> +/* This should be called when a mm no longer refers to a VM_OBJECT */
+> +void vm_object_drop_locked(struct mm_struct *mm)
+> +{
+> +	struct vm_object *obj = mm->vm_obj;
+> +
+> +	if (!obj)
+> +		return;
+> +
+> +	/*
+> +	 * We must enter this with VMA write-locked, which is unfortunately a
+> +	 * giant lock.
+> +	 */
+> +	mmap_assert_write_locked(mm);
+> +	mm->vm_obj = NULL;
+> +
+> +	xa_destroy(obj->logical_page_table);
+> +	kfree(obj->logical_page_table);
+> +	kmem_cache_free(vm_object_cachep, obj);
+> +}
+> +
+> +/*
+> + * Given a VA, the page_index is computed by
+> + * page_index = address >> PAGE_SHIFT
+> + */
+> +struct gm_mapping *vm_object_lookup(struct vm_object *obj, unsigned long va)
+> +{
+> +	return lookup_gm_mapping(obj, va >> PAGE_SHIFT);
+> +}
+> +EXPORT_SYMBOL_GPL(vm_object_lookup);
+> +
+> +void vm_object_mapping_create(struct vm_object *obj, unsigned long start)
+> +{
+> +
+> +	unsigned long index = start >> PAGE_SHIFT;
+> +	struct gm_mapping *gm_mapping;
+> +
+> +	if (!obj)
+> +		return;
+> +
+> +	gm_mapping = alloc_gm_mapping();
+> +	if (!gm_mapping)
+> +		return;
+> +
+> +	__xa_store(obj->logical_page_table, index, gm_mapping, GFP_KERNEL);
+> +}
+> +
+> +/* gm_mapping will not be release dynamically */
+> +struct gm_mapping *alloc_gm_mapping(void)
+> +{
+> +	struct gm_mapping *gm_mapping = kmem_cache_zalloc(gm_mapping_cachep, GFP_KERNEL);
+> +
+> +	if (!gm_mapping)
+> +		return NULL;
+> +
+> +	gm_mapping_flags_set(gm_mapping, GM_PAGE_NOMAP);
+> +	mutex_init(&gm_mapping->lock);
+> +
+> +	return gm_mapping;
+> +}
+> +
+> +/* This should be called when a PEER_SHAERD vma is freed */
+> +void free_gm_mappings(struct vm_area_struct *vma)
+> +{
+> +	struct gm_mapping *gm_mapping;
+> +	struct vm_object *obj;
+> +
+> +	obj = vma->vm_mm->vm_obj;
+> +	if (!obj)
+> +		return;
+> +
+> +	XA_STATE(xas, obj->logical_page_table, vma->vm_start >> PAGE_SHIFT);
+> +
+> +	xa_lock(obj->logical_page_table);
+> +		xas_for_each(&xas, gm_mapping, vma->vm_end >> PAGE_SHIFT) {
+> +		release_gm_mapping(gm_mapping);
+> +		xas_store(&xas, NULL);
+> +	}
+> +	xa_unlock(obj->logical_page_table);
+> +}
+> +
+> +void unmap_gm_mappings_range(struct vm_area_struct *vma, unsigned long start,
+> +			    unsigned long end)
+> +{
+> +	struct xarray *logical_page_table;
+> +	struct gm_mapping *gm_mapping;
+> +	struct page *page = NULL;
+> +
+> +	if (!vma->vm_mm->vm_obj)
+> +		return;
+> +
+> +	logical_page_table = vma->vm_mm->vm_obj->logical_page_table;
+> +	if (!logical_page_table)
+> +		return;
+> +
+> +	XA_STATE(xas, logical_page_table, start >> PAGE_SHIFT);
+> +
+> +	xa_lock(logical_page_table);
+> +	xas_for_each(&xas, gm_mapping, end >> PAGE_SHIFT) {
+> +		page = gm_mapping->page;
+> +		if (page && (page_ref_count(page) != 0)) {
+> +			put_page(page);
+> +			gm_mapping->page = NULL;
+> +		}
+> +	}
+> +	xa_unlock(logical_page_table);
+> +}
