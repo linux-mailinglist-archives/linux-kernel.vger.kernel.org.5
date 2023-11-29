@@ -2,270 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A087FD735
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 13:55:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F2A7FD732
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 13:55:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233592AbjK2My5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 07:54:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44244 "EHLO
+        id S233555AbjK2Myu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 07:54:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233332AbjK2Myy (ORCPT
+        with ESMTP id S231883AbjK2Myt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 07:54:54 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B3810D4;
-        Wed, 29 Nov 2023 04:55:00 -0800 (PST)
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ATCi7Vu014718;
-        Wed, 29 Nov 2023 12:54:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=BiMqrwaN1L/MpFqQ86i3RfCnOsiXyhvsXsGMoXEHn4Y=;
- b=eJyFIXJqipNE+2knII4hLqvNvPClRrTjvy1/HZxxypWg4opjeqyNPKWK8jxOJzP/Z+4E
- S9T2VgPr5XJxNW95etw6hR5PvrnO0XJyLdQ1lv5VrYzikB7D7HoHRIrjvIfTZ17XrT/h
- kXU54s6d6R4a7DEWtp6xhByJkN2e3KRVWbXnqM2r2pJ9SwbCm5yac14gr99RaNE6Lnty
- Lpbd1y/TZHpgLZiYRGEiN9IWk2PFSmwEJ0PJWQXmXkVSoXo7JYCBWKCK5QsVtw+roIro
- B9YPmgh//OTnoLo8C0JZHK3vxLZUSFl6K78cuRt3ZUP6edLfShgN/sYyzbClkaXKGYmT Lg== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3unv9499rj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Nov 2023 12:54:40 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3ATBHQK6012787;
-        Wed, 29 Nov 2023 12:54:39 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3uk7c8t0cn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Nov 2023 12:54:39 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YQlPVOT9A6joAlJoCiV9nWaKEj323dFiXTIC/lhm/f6KIvcyFE9ENOCDaUV4KhTI4PAagXOIjvIv+X/EU5Nxz0gWWtEeCvA2Gu08Beb5/zexBOOrScKwqW+TpcjGWYrEO6jFoZLQMhycVY/LCmKQ9W0Rk6f7tTirQp+qRa3nUOkwPX16kLtxqHuh0UhuGxr9tkaPPWIAFITtgYjslwQ4bkIFKzGC9+o6wEjBoa/V1jhJYTW4pwCb9zBfyd2OWG3mchNbDaUH8vvP5Ryfl1AMaCqZ3BIVW2DOcglHEZB160Q4+wilNIuf6s6g8G7e/y20Y0U9NaRB0Theahz1g+K0Hg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BiMqrwaN1L/MpFqQ86i3RfCnOsiXyhvsXsGMoXEHn4Y=;
- b=CKnGYOH6MxhNsUe74iHK3avlDTz/rBmJbvDB4SAyVl9eYRu343G4NNA4WWSlSbGRZSkwsJEdtrI5/wVNvpXfiFm9yjfSudjOtZ6MQ/PiRLhY4DoBVp7IjIsxB5KdH8i7Q72XFC3sBJq4xaGPzuqCtGz4vHY0OOW59komw0vaArYjpKdl1hrVhsEfvJip4xGaUo3lcl+vNBhAsvvh0Cm/J23M0DCQEVZoALlnhz6NQgj7fR86IrQb1OUiHGnyfkFZ73inErK9iCRSby/vuIvdBDtWMeSMqq8l/78qXbP/puqCR3+7NVfRhqBBXxACkP/vRCQFQFJfRc24FSRIlfVLfQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Wed, 29 Nov 2023 07:54:49 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A41C410D4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 04:54:54 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-54af4f2838dso7290761a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 04:54:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BiMqrwaN1L/MpFqQ86i3RfCnOsiXyhvsXsGMoXEHn4Y=;
- b=piZ8dQcT4zE5mOpD04bOYFGicitl2OwalSzjL8G0jldCUH+N6Ls7Tg5GwgSiIIWfNjVsEN0p+o2GrgxEruqt7JlVm/FOVlWfSEjP+ZHbRBcGLbAdgU80km7aTV7wjRY/YZyk4ONip1RuLgKG3YNiQ4ofZkB/Mf5Wp8lrSOk6Bvg=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by BN0PR10MB4997.namprd10.prod.outlook.com (2603:10b6:408:12b::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.23; Wed, 29 Nov
- 2023 12:54:37 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::102a:f31:30c6:3187]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::102a:f31:30c6:3187%4]) with mapi id 15.20.7046.023; Wed, 29 Nov 2023
- 12:54:37 +0000
-Message-ID: <cf98eb9f-ac42-4d9b-9cf3-3085f6fc0cda@oracle.com>
-Date:   Wed, 29 Nov 2023 12:54:33 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] scsi: libsas: Fix the failure of adding phy with
- zero-address to port
-To:     yangxingui <yangxingui@huawei.com>, yanaijie@huawei.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        damien.lemoal@opensource.wdc.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com, prime.zeng@hisilicon.com,
-        kangfenglong@huawei.com, chenxiang66@hisilicon.com
-References: <20231117090001.35840-1-yangxingui@huawei.com>
- <32c42e1e-0399-4af4-a5ed-6a257e300fe8@oracle.com>
- <307d251f-ff49-5d8f-1f8e-aed314256732@huawei.com>
- <a13f0419-c4ef-4b8b-9757-7cf7cea32458@oracle.com>
- <baacad33-f568-6151-75a2-dfc09caf2a81@huawei.com>
-Content-Language: en-US
-From:   John Garry <john.g.garry@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <baacad33-f568-6151-75a2-dfc09caf2a81@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AM0PR07CA0009.eurprd07.prod.outlook.com
- (2603:10a6:208:ac::22) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+        d=linaro.org; s=google; t=1701262493; x=1701867293; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=BnOhFVb1M8Ieky9ixxo2vsCz1mFiT6hqkrZpGr/aemg=;
+        b=ZbCHbIJfIqw4qDOiPwG0efFh0O3yf/UPHsrN6rFk4mh0OtOdMXxqfKyY8UfLRN3AWD
+         Ckl1m4TAFL9SGYiQhlwPnt6f8ndnnzDPOFfNefLWHBG8HFRd7k6F4OeRoesjbBhDNlRv
+         DdQX3a244GD6JQFnw5WriJwErl2JXbHUbVLoeqPMig5a23hsaI/UEHFUoRqox26IlmOk
+         SZsb/l7yG+OMLxV119BHK56b8mPjVBPY5VB/UyXkSaP33B4Km9h488YcenXxZQlbCTWb
+         lTYwFsFwYt0WEO9KWGJ3Zgbm5uuhuiUUejJmyYMc/0u+XFncl7Ulurv33gZS0qO75Xas
+         sUzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701262493; x=1701867293;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BnOhFVb1M8Ieky9ixxo2vsCz1mFiT6hqkrZpGr/aemg=;
+        b=F+e5zvRBCx72ZYUt5Y5SALZ9t9jQwikOUg1AONyRVdMjEgqEoBkbSnwYRZB3S3n/WI
+         VdxcArocBkm/lNC1XXFlfu0RnUm70pip5JYNHrLWRu7U9Y4ztMIElkWMvM2P1JoG94Dk
+         qqwEV4VQNs6cpMWhKupmcOK43nmH1vgO2xhlHKSn+nfbstC6LlBndfEizxKX9my4y76v
+         QTZeZVumrl7E5/5CcginuS4jsWCQ3oiFv2HhmM0FK66jPurrthfNbUZ24KptwsboaT0Q
+         AlpicVypkOpU39uftX/rifg1Y2+cwWW2gpoFWiIUt3NomttEZl3IlvPl9Boqx6GHz+pN
+         XVXw==
+X-Gm-Message-State: AOJu0YzdsXEs0zUOFrlbcWF3QQNlZDjwymYNqj0/1pfOSChULjGJEDms
+        JTkU4l/mXimBF8cFdI2SvzUrkg==
+X-Google-Smtp-Source: AGHT+IEYDeTpe6aRRoO6VuBBVxOwRuNY57fe+k+quVA4ooyis/B2/dk2jyJ6WmPDEnY8OMkLchnCEg==
+X-Received: by 2002:a05:6402:5207:b0:54b:96ee:5c7 with SMTP id s7-20020a056402520700b0054b96ee05c7mr6059332edd.30.1701262493075;
+        Wed, 29 Nov 2023 04:54:53 -0800 (PST)
+Received: from [192.168.209.173] (178235187166.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.166])
+        by smtp.gmail.com with ESMTPSA id v28-20020aa7cd5c000000b00548d649f638sm7386490edw.96.2023.11.29.04.54.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Nov 2023 04:54:52 -0800 (PST)
+Message-ID: <c6e05a10-88cc-409c-afc0-37166b763eaa@linaro.org>
+Date:   Wed, 29 Nov 2023 13:54:49 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|BN0PR10MB4997:EE_
-X-MS-Office365-Filtering-Correlation-Id: 45b2ae20-7b6a-4604-6181-08dbf0da57f0
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rj3mG3HhZmmmuRZAOb46oQA09vPrLILemCEJfziBEZBfUurbse2zs1iwE1oDByMWxd5bYPJy8c8aViA43elN87auR5u/miXM14LZsnx//NG/lAJ/8bpwICzyN8pvuMKU4c3F1sORsfV8z5raLGeeKmO9sJae4eSO+75uNxjOxkTXhUf5gpLz3jLgRwcsSvfObieZ9nF0t3PENX38aa891PwKCbizUxofuGkqM17VYbfa5v9AvoBXwLkI03rCu55ExgkYz5UIkHo+wjeJAtaLiHg1J943ydEcZvIHOq84cx14L4ystAHkH7N+V6+nfTzJDKrarPCkxAnJTru5Z0+0cLlxC6U7PrairgQfUkflOCgYC3JuBtGqcpERvAYsROKVBTCRjaUI8jOYr/HPx9G++q4yXhIkfV5Yyd6KTMMmEgk94oaXo40Tg4jZnAOmo0N5GcechpbjRvdypl3Wmhe2TxERtpcOV5KAjIfkb9QAkheSGFuG1pkA+61JmUM/VJgOD/Rx+59K8NbO+IphvkkcUdrs0WlvMgNzHxIfgeL1Gmzh43idsHkOy53WGe0ia0oVmDy/Yb/FVkDPBqCnpKpxordAH1VWLGkpN2pWoffJdAQTMpb6I/hRSTovxiEOMmZ6OhKDDFrv5ebz27Gw/AnWDw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(366004)(376002)(346002)(396003)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(36756003)(31686004)(38100700002)(2906002)(86362001)(5660300002)(31696002)(8676002)(4326008)(8936002)(7416002)(66946007)(316002)(66556008)(66476007)(6486002)(41300700001)(478600001)(6666004)(53546011)(6506007)(36916002)(6512007)(26005)(2616005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MVFLeUtlY2JNNmtFek5vUmRiSGw1WkNiRFRyTm12OHY3MkRZekxGRDVIVU5Y?=
- =?utf-8?B?eTdyQzd5cUk5UG8zMmFnNjRPRko5NlcvVTByS1JxcWpwSVZPUHBaemRxc2tn?=
- =?utf-8?B?Qk1FMlFidHhKbHUzOTZBL3p0TlUwaGloZi9IdjRBbldrV1BVOXJpZkdiYkZN?=
- =?utf-8?B?OFphcGF1MjE0b0lYWnFoSjQwZ1QrWDVpVzBjNStwcTdYMitRMXI0a1plZkZu?=
- =?utf-8?B?L2dlRzQvTFNYaDNGSE0yc1R1QXJ0aWE2RUg1UmtuL2trWnFVSW5iSURYazN2?=
- =?utf-8?B?YThYTUpnRm00SHNoVGx2MFVtdmF6TkorTjZFcGVQQTkzQW9KaUJSZ0NTQitB?=
- =?utf-8?B?bUJ0cUt1ejVQNmxOZ1UzalQ0Uk9hSWtSK2lyRi9GRXZqeG8va2M5S1VLUG9C?=
- =?utf-8?B?c1BScm9aVjBZekVjUlB6WG9Eb25UY2NNMHRqSkNxckJUaDhwNDliN1lhWXFr?=
- =?utf-8?B?NlRVZGozeUdZOUQ1em5oWU54MGNGVzVTWk9tc1duS2JFUnJsMjRIVU9pV2pk?=
- =?utf-8?B?dEoxQ1FFRUI3T2Q3djFRVlhmU0ptdTFzUFJJZXJ4ZmtaK0tiZzloWDNzZ3Nw?=
- =?utf-8?B?dFVZZ2FLWW9INk9YanlhMTdYSktrN2VLUnQwL1F0SDdha0NaQVhzWTd2RGVO?=
- =?utf-8?B?RkVISFVmTVVQRjRvWmgxOEdIbE1sN1VXdGVSeXNLSkxlWm1XUFZNdFFaMFlU?=
- =?utf-8?B?cVJFNjBhUUN6Y2MyMmhPQk5XdTRHSmRidDJGcndMMEVaZWpnUzFTSnNXVnVQ?=
- =?utf-8?B?cnNNQklyWWdPNHU1YzZsMk5WdGhaK1JOem0rY1NHN013ZnZCcmZkWGovYmI1?=
- =?utf-8?B?NVpFZldrSld4dlVkYnFtclZieW05RSt1T2o5Z0t2Yzl5MVRpWSs1eUNFUUdK?=
- =?utf-8?B?QXFGKzRWVU1tY3lVdDlnTC8rd2hTTE80YWxRTmplWk0vUjFGQzRwY2R0Wnpa?=
- =?utf-8?B?VUVSelJqbHJOckE1NXlkQzl6Wit0WWlMQXBaTFdXNXM3a2E1QnNQVk1BVnV4?=
- =?utf-8?B?ODZPVUZqUmNnbStwcXVyNHoxZDQ2WnlqaFk5c3k1eE80cWlURFgzanVQbnNs?=
- =?utf-8?B?bUlUNVpZVldEdS9vMDBmRC92bEh0d29JSloycFg4MjRPTm1tK3VvOGhXQi9N?=
- =?utf-8?B?SHVSekJBRzF0QzQxeWVWWFF5bmozMUM2azVUcituMFZ1S04ybk5Neitzd1FG?=
- =?utf-8?B?WTcyKy9CZkJ6VDBMNG5wanRreTRreS92V1owMjM3ZUtoZHA4bkZBVEJTQkIy?=
- =?utf-8?B?VU54aHlmWHgwd3loVGpIRytmVG5XRnVERVA2MzRvRG5tSEFsT2dFTzM5TWhi?=
- =?utf-8?B?TFNYNmo5MEh1Mng2TUFQK1l2RWFEakRXSDJmdDkwa3gzbXhwU0F1Rk5VMWNu?=
- =?utf-8?B?UkRJUEYyc0V6OHZrRHlRZzk1ajlMOWRCZ3VvTDJPNzNTeVVIRXlrbW8ya1pz?=
- =?utf-8?B?cWt4dFlLMjY4VTdxb2R1MWU5aXlRdjhCYjJScE15YnJtSHFGZTNvRmoySzlT?=
- =?utf-8?B?Z2lwSlZqUVNGbnN5Zll1TmtpT2tZaFhhOVhWOXVOOUhNUU9rdTNuVjFOUWxz?=
- =?utf-8?B?eFk3c3hCd0Vtd2RiWDhZVS9CUEM4YzVYS2VrWVVxaTFxMThmaGdJRkU4eDJX?=
- =?utf-8?B?d25ZbW5PNnRTbHE5YmZXdlMzaXI3U2YzR29tYTlZc091dE5xNzZTK1lUSFR2?=
- =?utf-8?B?d1RjckxQcmZid1k5bm82NUJrTGJhTC9OT21CVDVSUFhQTE85K0NTSy9xUU1B?=
- =?utf-8?B?eWpDSlhRL1F0N2lGdUMvZFBnNkNEaTNIQUxxUUdEek9WK2pFWUxDWXEvZm1X?=
- =?utf-8?B?ZHZRV2xPWjFxbzhBaHJKUVo3d0U4WjVzN21Ga2hieFZlV1plRHc3UUtlUDJE?=
- =?utf-8?B?anpCdGJiaGVkM1lVeDNzU0txTjhzZ2dweS9WK29HQVdXOTF2ajdMZTZ5WkRj?=
- =?utf-8?B?b3F2Y0xvcXpTdVBENytzcDkrYUZ6YUNJMnRlbm84NExNSVhkVXhDdVJuOFd6?=
- =?utf-8?B?c05ua3k1cCsxMEJsRGhveWFrOW1DNjg5NDlyNzZmR3VTdlhkMmNnVEpPczFG?=
- =?utf-8?B?Y2R2Y043QVVBelhIMGdRTWZnWXk3NmhxdVFEK09sYzFFTEtlV0VJZEdkbmNB?=
- =?utf-8?Q?bGSpQjGAvmgl324y+icdw3jkE?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: jMcLH/M+edDNFiqMJ8fBfa0Zr1X68V/fQdQRp+d3QU/oIcuBeG1IM6iDExOk1sLhJovNIhkCEJ/YouPSSHyF4DMXm+qddJ7On3ck4UkFlCKXm3PS6Tiv05AuezAx+HLc3ImVRvfJnVJegsejIpujyp63wczNEAa9/PTYoKzEC7aKxaVuJVQmJVnjR8taUNClxbo2GfvAfGwwCOnxDrY0hTkF+Xwg1PdMgv+y6oaRK498KL6k/skX2zZlAWgHb86H0Wh8Nw61MIiS6b+XuD0GGSIRhL1agsh3WsMD+ccV/CBwxfNrZQRVqf8NTl1fEM/eEg+vqWBYXv1st5ocCViSnDHkBQOak38q7n6MEoqknvU2uD4MhxcR5fOnaugbZsHz0krjihmmgfXEx04BUGVRkZy3S5JIGgqG3jhZVPC8TQcJVW9JzNPFV8tCPTWZq+SV0JFEfUHISdRmSAdtwcsF5+Z/dFld440nVYm3Gyoho3WyTssx4NGVQXsrL7DxlpwiOK6OnO4KXqtw+IESJNEYl0daiiZuUu+cpXfxTO/HkH6JOZw7K0MeN5QLp2Sz4i5js5RcvZHTNdRHrOJpc3Z+SEhZ1FD0jpxqxyoomNvxbLAWardQwlsAscsACzlvEslqi4999nXX3DQ7fQakTV+JC7Sv8u0U9ZzIG7vSKCPmzHpIX3QKGgKT/68xUyrzy8X/UXvC3sVKs1VNjVFo9uFezWbmvzAy6y6AJLkyINj7UM66XWqxENL68x7DXu6MUy7nWaCAGknsZ1gLca+s1p9u7x223dO3h5/yH5UYnUuj/GwFyBzmdpKV5hRWrvCK5hhDvaDUw6Y6OcOH9OmIJ3fQr4jSqqb6zruxJOAkdyfr36QbnZsRAwVxC+VktmtCQWqIFZUe65tI4UX0Ni7HFo6c3L8PJ6Xy5jlk9uNxWaQwbQ8=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 45b2ae20-7b6a-4604-6181-08dbf0da57f0
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 12:54:37.4229
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: b91NT0O5lr5TjX1mazRVM8b13zZNekidhwUPCyGazB/069KFJI4nHO/LMdp7NloJgn3SR6u6dN+c5mbSouHdbw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR10MB4997
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-29_09,2023-11-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0
- suspectscore=0 mlxscore=0 spamscore=0 adultscore=0 mlxlogscore=999
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311290097
-X-Proofpoint-GUID: ffZzoPO3XdhWwlAr0GS40EhFBUz7K72K
-X-Proofpoint-ORIG-GUID: ffZzoPO3XdhWwlAr0GS40EhFBUz7K72K
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 3/5] arm64: dts: qcom: Add base X1E80100 dtsi and the
+ QCP dts
+To:     Sibi Sankar <quic_sibis@quicinc.com>, andersson@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        catalin.marinas@arm.com, ulf.hansson@linaro.org
+Cc:     agross@kernel.org, conor+dt@kernel.org, ayan.kumar.halder@amd.com,
+        j@jannau.net, dmitry.baryshkov@linaro.org, nfraprado@collabora.com,
+        m.szyprowski@samsung.com, u-kumar1@ti.com, peng.fan@nxp.com,
+        lpieralisi@kernel.org, quic_rjendra@quicinc.com,
+        abel.vesa@linaro.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, quic_tsoni@quicinc.com,
+        neil.armstrong@linaro.org
+References: <20231117113931.26660-1-quic_sibis@quicinc.com>
+ <20231117113931.26660-4-quic_sibis@quicinc.com>
+ <918ff1f5-ce01-43ea-b034-e69fbb31f495@linaro.org>
+ <3dd41426-c026-a832-0a6b-0aabfaec2a8c@quicinc.com>
+Content-Language: en-US
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <3dd41426-c026-a832-0a6b-0aabfaec2a8c@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/11/2023 03:45, yangxingui wrote:
+On 29.11.2023 10:25, Sibi Sankar wrote:
 > 
-> On 2023/11/28 3:28, John Garry wrote:
->> On 24/11/2023 02:27, yangxingui wrote:
->>>> We already do this in sas_ex_join_wide_port(), right?
->>> No, If the addr of ex_phy matches dev->parent, 
->>> sas_ex_join_wide_port() will not be called, but sas_add_parent_port() 
->>> will be called  as follows:
->>> static int sas_ex_discover_dev(struct domain_device *dev, int phy_id)
->>> {
->>>          struct expander_device *ex = &dev->ex_dev;
->>>          struct ex_phy *ex_phy = &ex->ex_phy[phy_id];
->>>          struct domain_device *child = NULL;
->>>          int res = 0;
+> 
+> On 11/18/23 06:36, Konrad Dybcio wrote:
+>> On 17.11.2023 12:39, Sibi Sankar wrote:
+>>> From: Rajendra Nayak <quic_rjendra@quicinc.com>
 >>>
->>>      <...>
->>>          /* Parent and domain coherency */
->>>          if (!dev->parent && sas_phy_match_port_addr(dev->port, 
->>> ex_phy)) {
->>>                  sas_add_parent_port(dev, phy_id);
->>>                  return 0;
->>>          }
->>>          if (dev->parent && sas_phy_match_dev_addr(dev->parent, 
->>> ex_phy)) {
->>>                  sas_add_parent_port(dev, phy_id);
->>>                  if (ex_phy->routing_attr == TABLE_ROUTING)
->>>                          sas_configure_phy(dev, phy_id, 
->>> dev->port->sas_addr, 1);
->>>                  return 0;
->>>          }
->>>      <...>
->>> }
+>>> Add base dtsi and QCP board (Qualcomm Compute Platform) dts file for
+>>> X1E80100 SoC, describing the CPUs, GCC and RPMHCC clock controllers,
+>>> geni UART, interrupt controller, TLMM, reserved memory, interconnects,
+>>> SMMU and LLCC nodes.
 >>>
->>>>
->>>> I am not saying that what we do now does not have a problem - I am 
->>>> just trying to understand what currently happens
->>>
->>> ok, because ex_phy->port is not set when calling 
->>> sas_add_parent_port(), when deleting phy from the parent wide port, 
->>> it is not removed from the phy_list of the parent wide port as follows:
->>> static void sas_unregister_devs_sas_addr(struct domain_device *parent,
->>>                                           int phy_id, bool last)
->>> {
->>>      <...>
->>>      // Since ex_phy->port is not set, this branch will not be enter
+>>> Co-developed-by: Abel Vesa <abel.vesa@linaro.org>
+>>> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+>>> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
+>>> Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
+>>> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+>>> ---
+[...]
+
+
+>>> +        idle-states {
+>>> +            entry-method = "psci";
+>>> +
+>>> +            CLUSTER_C4: cpu-sleep-0 {
+>>> +                compatible = "arm,idle-state";
+>>> +                idle-state-name = "ret";
+>>> +                arm,psci-suspend-param = <0x00000004>;
+>> These suspend parameters look funky.. is this just a PSCI sleep
+>> implementation that strays far away from Arm's suggested guidelines?
+> 
+> not really! it's just that 30th bit is set according to spec i.e
+> it's marked as a retention state.
+So, is there no state where the cores actually power down? Or is it
+not described yet?
+
+FWIW by "power down" I mean it in the sense that Arm DEN0022D does,
+so "In this state the core is powered off. Software on the device
+needs to save all core state, so that it can be preserved over
+the powerdown."
+
+> 
 >>
->> But then how does this ever work? It is because we follow path 
->> sas_rediscover_dev() -> sas_discover_new() -> 
->> sas_ex_discover_devices() -> sas_ex_discover_dev() -> 
->> sas_add_parent_port(), and not sas_rediscover_dev() -> 
->> sas_discover_new() -> sas_ex_join_wide_port()? If so, is that because 
->> ephy->sas_attached_phy == 0 in sas_discover_new() -> 
->> sas_ex_join_wide_port() and it fails?
+>> [...]
 >>
->> BTW, about something mentioned earlier - adding the phy19 with SAS_ADDR 
+>>
+>>> +        CPU_PD11: power-domain-cpu11 {
+>>> +            #power-domain-cells = <0>;
+>>> +            power-domains = <&CLUSTER_PD>;
+>>> +        };
+>>> +
+>>> +        CLUSTER_PD: power-domain-cpu-cluster {
+>>> +            #power-domain-cells = <0>;
+>>> +            domain-idle-states = <&CLUSTER_CL4>, <&CLUSTER_CL5>;
+>>> +        };
+>> So, can the 3 clusters not shut down their L2 and PLLs (if separate?)
+>> on their own?
 > 
-> Yes,
-> For phy19, when the phy is attached and added to the parent wide port, 
-> the path is:
-> sas_rediscover()
->      ->sas_discover_new()
->          ->sas_ex_discover_devices()
->              ->sas_ex_discover_dev()
->                  -> sas_add_parent_port().
+> on CL5 the clusters are expected to shutdown their l2 and PLL on their
+> own.
+Then I think this won't happen with this description
 
-ok, so then the change to set ex_phy->port = ex->parent_port looks ok. 
-Maybe we can put this in a helper with the sas_port_add_phy() call, as 
-it is duplicated in sas_ex_join_wide_port()
+every cpu has a genpd tree like this:
 
-Do we also need to set ex_phy->phy_state (like sas_ex_join_wide_port())?
+cpu_n
+ |_CPU_PDn
+    |_CLUSTER_PD
 
-> And the path called when it is removed from parent wide port is:
-> sas_rediscover()
->      ->sas_unregister_devs_sas_addr() // The sas address of phy19 
-> becomes 0. Since ex_phy->port is NULL, phy19 is not removed from the 
-> parent wide port's phy_list.
-> 
-> For phy0, it is connected to a new sata device.
-> sas_rediscover()
->      ->sas_discover_new()->sas_ex_phy_discover()
->                              ->sas_ex_phy_discover_helper()
->                                  ->sas_set_ex_phy() // The device type 
-> is stp. Since the linkrate is 5 and less than 1.5G, sas_address is set 
-> to 0.
+and CLUSTER_PD has two idle states: CLUSTER_CL4 and CLUSTER_CL5
 
-Then when we get the proper linkrate later, will we then rediscover and 
-set the proper SAS address? I am just wondering if this change is really 
-required?
+which IIUC means that neither cluster idle state will be reached
+unless all children of CLUSTER_PD (so, all CPUs) go down that low
 
-BTW, Even with the change to set ex_phy->port = ex->parent_port, are we 
-still joining the host-attached expander phy (19) to a port with SAS 
-address == 0?
+This is "fine" on e.g. sc8280 where both CPU clusters are part of
+the same Arm DynamIQ cluster (which is considered one cluster as
+far as MPIDR_EL1 goes) (though perhaps that's misleading and with
+the qcom plumbing they perhaps could actually be collapsed separately)
 
->                          ->sas_ex_discover_devices()
->                              ->sas_ex_discover_dev()
->                                  ->sas_ex_discover_end_dev()
->                                      ->sas_port_alloc() // Create 
-> port-7:7:0
->                                      ->sas_ex_get_linkrate()
->                                          ->sas_port_add_phy() // Try 
-> adding phy19 to port->7:7:0, triggering BUG()
-
-Thanks,
-John
+Konrad
