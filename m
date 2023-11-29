@@ -2,231 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFFA97FD02C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 08:56:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5080D7FD016
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 08:51:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229720AbjK2Hzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 02:55:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60278 "EHLO
+        id S229631AbjK2Huy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 02:50:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbjK2Hzm (ORCPT
+        with ESMTP id S229464AbjK2Huw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 02:55:42 -0500
-X-Greylist: delayed 356 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 28 Nov 2023 23:55:47 PST
-Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com [66.111.4.221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CEF91710;
-        Tue, 28 Nov 2023 23:55:47 -0800 (PST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 9064C580A2F;
-        Wed, 29 Nov 2023 02:49:50 -0500 (EST)
-Received: from imap53 ([10.202.2.103])
-  by compute1.internal (MEProxy); Wed, 29 Nov 2023 02:49:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jannau.net; h=cc
-        :content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1701244190; x=1701251390; bh=ww
-        kE8lsdD1lmCvJ6vHeRL3ETi3+Yj2miubjiEiAIJqc=; b=WS0m9G0nx6dD9iEji/
-        fBqlaAFY/rMIvdHqXU7tZxzaCT6/WaZqN24lhBSrCWbph5RWVn8OG0wIE3vLDiA7
-        dOWPtjwm4K1LXbVSgViqbhQnGAqsI7zVo/p5C5Cc2lkcP6BvkMMbJJPRLlk6Obqn
-        AHfiWue+I4lT9KO4M5IqOwcDkJ9k3rIoOQzzkgfdeVW+FPwIkWR8otEXHsC4vN5M
-        YRFUR7qjaXjm+/zVf+gwWpzm9l6TfNicjYV48mg69Jf51d7lmUwmWy0QDMagwX+h
-        my8WMJddQ84zOCl6wx49JlxbWBkrLfSX8dsYvVyefTTM6PDNHjgdqGvgdPI98pTh
-        CeVQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1701244190; x=1701251390; bh=wwkE8lsdD1lmC
-        vJ6vHeRL3ETi3+Yj2miubjiEiAIJqc=; b=rQPYt4rH1AA0LiTAAnJGE//YvqNCw
-        0qwLht7gsUZGiRgP8vOuUojrK3gXdkIqqQy8kh1RU6M48Z+Q1F0tnQhr+VVyl2w5
-        NmyzspDEFgY404mNlejNyplFYnmca/DQjbd3xvYN1Ln64vKHdITrMssLqBon8Ujn
-        P7Qb4qPDUzh92GrFKk6+AzOXk04amTS8z6iqjc442y/87PjOdgE3r4Ts0YSlpbOW
-        dquGLaB3VxWfcHpWrswAQY2/Rw9xn8Jq2WVIEzpZjj1/JtoUjjzbJm94BlKfxFeu
-        aDZFAe2s9qDxCwDO/RDxvPYqUWrMro5Rq5vNlH5XTTV2LcBscKUpE50kw==
-X-ME-Sender: <xms:HO1mZWwi-0PHwgZ7UGdDg2Nfu1cPQBmbtYZcjowlgAyQ0BQky2hXjA>
-    <xme:HO1mZSTMYD4qqQdTonZ8IGVDTRfv30PWEOnWS8uEzYlouq8tMUIbuyDbZitdKhK-h
-    lPnAf3-fMz25n81ToA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeigedguddutdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedflfgr
-    nhhnvgcuifhruhhnrghufdcuoehjsehjrghnnhgruhdrnhgvtheqnecuggftrfgrthhtvg
-    hrnhepteeugeeltdelffetleetudejgfejieegudekleekleeifffffefgfefgfeeukeef
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhesjh
-    grnhhnrghurdhnvght
-X-ME-Proxy: <xmx:HO1mZYWbL-dzWpMIvCrcF_hkcPxVblMr6At8rrdkDOd5QKecybyP8A>
-    <xmx:HO1mZcghfi5RLWq0pFjhso2VXNF7V40Fof9Xj8XlOYXvC_owwh5wlQ>
-    <xmx:HO1mZYDWse66_RKIUSsZ-t0CzxR6dHcZEVv_0jTO_L-qPjoGwVzSYQ>
-    <xmx:Hu1mZerEKP658mX4LK_6tKFnkmAWe_WKTSc7PfS_s-S-h8Msb1Q_lw>
-Feedback-ID: i47b949f6:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 5DF0E3640069; Wed, 29 Nov 2023 02:49:48 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1234-gac66594aae-fm-20231122.001-gac66594a
+        Wed, 29 Nov 2023 02:50:52 -0500
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2082.outbound.protection.outlook.com [40.107.237.82])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE6610D7;
+        Tue, 28 Nov 2023 23:50:58 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ph0X4XcL6KO5KbiHnb3+mbRq7AJZf9qlKiO/YuntSmS1u5xrJ1NQyxhQ43M5eu/ko8zN1KY/ju4TH73kjxvno7Rhz07XXa0BSJp9/a9fnV9Jqpr/BLOXUKyKMN6K7VlxTGllCM+ONkKXxNCz/2MVgWPIEcyqzcDRQ8tZiyhCxhgEADlPkteGq9D7yD1oRXuW1sa2v1hgibRA22v5jLKiRno1XNO7M+q5pRCyY7yMuksilJUMDmuintBS9lOrRRuMZxnnchU72TdEQD2DyZWCdogRcT62Q375K+3QONnC3k3zvvFFVs12DOq7+hpK8RU8yu+g54zIZxo96B1tnuBrrw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jotPp52wsy68XXO/cJ+xg/jwKymaHZM4+6Rfjd+XuXI=;
+ b=N9fQqluMj0JEIAOUBMBK929Q7l1Gk2LKMC6SLoyjZW+9OmBO4qqvp5QErHJStPKKXTQV5sI4Z1dyhXMm9RSnFPGq8n9HIveA9XpJg+Kj1QZlYxcbmW/s0X+ZhKmjm6SUqhbDML86C99Lx+ABYpxFh8rvCxpWsCxpX3nGgHLY9grZL+VM0/bIqHECJPFLR/ExuLdwZF/FJz84x9k+S+KN8yrnC0Lbdyvv21kiK5SYt0eXLwFuSeVrwmGSf7qk3UBddpv/OQRurYNNQ9tnKPvcc7Ehf6CcLNQdvk6cavC3IoE2fFwBbjcqcWiathROdqHTDu4UTXgAuyBFYNb15OuPBQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jotPp52wsy68XXO/cJ+xg/jwKymaHZM4+6Rfjd+XuXI=;
+ b=Gu5aoVh9GInweMmqIuSyVdh6DGetg5pill5OabGozU0W9H2Gpf7DplDK1Oe65mTOwnywdMkdXm1PhN0yTYqiVHibZJVo0d4E5OVSyX74oMH0FVCgg8yxO5tdqRzmjPp2qSD0+U3qtX3xo6X+6qm9Rk3kSpiNpTCoNdOov+O3r00=
+Received: from DM6PR07CA0047.namprd07.prod.outlook.com (2603:10b6:5:74::24) by
+ DM6PR12MB4545.namprd12.prod.outlook.com (2603:10b6:5:2a3::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7046.22; Wed, 29 Nov 2023 07:50:54 +0000
+Received: from CY4PEPF0000FCC0.namprd03.prod.outlook.com
+ (2603:10b6:5:74:cafe::86) by DM6PR07CA0047.outlook.office365.com
+ (2603:10b6:5:74::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29 via Frontend
+ Transport; Wed, 29 Nov 2023 07:50:54 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000FCC0.mail.protection.outlook.com (10.167.242.102) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7046.17 via Frontend Transport; Wed, 29 Nov 2023 07:50:54 +0000
+Received: from amd.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 29 Nov
+ 2023 01:50:52 -0600
+From:   Muralidhara M K <muralimk@amd.com>
+To:     <linux-edac@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <bp@alien8.de>,
+        <mchehab@kernel.org>, Muralidhara M K <muralidhara.mk@amd.com>
+Subject: [PATCH 0/4] Persist FRU memory poisons
+Date:   Wed, 29 Nov 2023 07:50:30 +0000
+Message-ID: <20231129075034.2159223-1-muralimk@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Message-Id: <ca7a025d-8154-4509-b8ab-2a17e53ccbef@app.fastmail.com>
-In-Reply-To: <20231128204938.1453583-5-pasha.tatashin@soleen.com>
-References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
- <20231128204938.1453583-5-pasha.tatashin@soleen.com>
-Date:   Wed, 29 Nov 2023 08:49:18 +0100
-From:   "Janne Grunau" <j@jannau.net>
-To:     "Pasha Tatashin" <pasha.tatashin@soleen.com>,
-        akpm@linux-foundation.org, alex.williamson@redhat.com,
-        alim.akhtar@samsung.com,
-        "Alyssa Rosenzweig" <alyssa@rosenzweig.io>, asahi@lists.linux.dev,
-        "Lu Baolu" <baolu.lu@linux.intel.com>, bhelgaas@google.com,
-        cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com,
-        "David Woodhouse" <dwmw2@infradead.org>, hannes@cmpxchg.org,
-        heiko@sntech.de, iommu@lists.linux.dev, jasowang@redhat.com,
-        jernej.skrabec@gmail.com, jgg@ziepe.ca, jonathanh@nvidia.com,
-        "Joerg Roedel" <joro@8bytes.org>,
-        "Kevin Tian" <kevin.tian@intel.com>,
-        krzysztof.kozlowski@linaro.org, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org, linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
-        "Hector Martin" <marcan@marcan.st>, mhiramat@kernel.org,
-        mst@redhat.com, m.szyprowski@samsung.com, netdev@vger.kernel.org,
-        paulmck@kernel.org, rdunlap@infradead.org,
-        "Robin Murphy" <robin.murphy@arm.com>, samuel@sholland.org,
-        suravee.suthikulpanit@amd.com, "Sven Peter" <sven@svenpeter.dev>,
-        thierry.reding@gmail.com, tj@kernel.org, tomas.mudrunka@gmail.com,
-        vdumpa@nvidia.com, virtualization@lists.linux.dev, wens@csie.org,
-        "Will Deacon" <will@kernel.org>, yu-cheng.yu@intel.com
-Subject: Re: [PATCH 04/16] iommu/io-pgtable-dart: use page allocation function provided
- by iommu-pages.h
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000FCC0:EE_|DM6PR12MB4545:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3f2f8436-f149-4da5-9f9b-08dbf0afea73
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cNWRMmrAkokjAe/XhqM9DNNaKAxfS+Ccj58C0qnlBS32I/YM85hyiQvp5LuJzY7owi14kz2DemKBLezcgaGyy97ddKFU65vNIf9aNiX1sMQFmb3mf0paXI43Oo05ZfftF9IkGE2ohLQmr8u7IP4Px2oBDrFqWQGIyLz1kI0NQFMO9+q1Z8yYCGgF/RBHTuuc8bWBxQ03MH3LFBV2z0YsYRshkuLldFjq2LdbWoo4MoVBa3qS7SkT8BI4OsdCTm6krPWYWQYqUiWQKS1joT82/NvOzmJAOBTM+a9aKvwjwj20kxo1/gUVRU7S2gTxFOpp28gPV7d2DcSfpZVm7FcIMY5F8WFn5Ye9/xf4q70klDZ8v3QbhaZ4RItLbnmmTY4jiRlsPZ8eJb0Vm++8M92eycaGExnT7/5f+45vBFxJiW6V9R1HrfzzXGQbtVEaHXMp1NzX/EdeOplL0ZQre8SIAfplFBnzGc1WLDONhM984SrYr74x1JRCvumZaCvJXm3StP5npUPK/nny3Wb7c38OT0+CcnKlGULGZ862wwgsM4WlrDbcRoXUxP2KSHM1oMXRdGXay92h6jZG+YMhhrpsFftx5jrcL+SxhbdfQDdxiF9Jp9YJlWkkNjSVbH82qcuV4V04uMtpwHuEgntvsj56v1Xhxnc4v9fJw9bWdxzdPtRnK8eLhhwA3Ou+orgDFrdpBRnQiYkJdrmI2YemaBjXWIrp9BT66KYijtzopEUMD2ZIRaMxEyUIci8BlKJjOrAI1HhSWAnY+33KJWOoi66slw==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(396003)(39860400002)(346002)(230922051799003)(451199024)(186009)(82310400011)(1800799012)(64100799003)(40470700004)(36840700001)(46966006)(356005)(47076005)(81166007)(40460700003)(26005)(16526019)(1076003)(2616005)(54906003)(70206006)(70586007)(6916009)(316002)(2906002)(4326008)(8676002)(8936002)(5660300002)(7696005)(41300700001)(6666004)(36756003)(478600001)(966005)(82740400003)(426003)(336012)(40480700001)(36860700001)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 07:50:54.5352
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3f2f8436-f149-4da5-9f9b-08dbf0afea73
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000FCC0.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4545
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hej,
+From: Muralidhara M K <muralidhara.mk@amd.com>
 
-On Tue, Nov 28, 2023, at 21:49, Pasha Tatashin wrote:
-> Convert iommu/io-pgtable-dart.c to use the new page allocation functions
-> provided in iommu-pages.h.
->
-> Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-> ---
->  drivers/iommu/io-pgtable-dart.c | 37 +++++++++++++--------------------
->  1 file changed, 14 insertions(+), 23 deletions(-)
->
-> diff --git a/drivers/iommu/io-pgtable-dart.c b/drivers/iommu/io-pgtable-dart.c
-> index 74b1ef2b96be..ad28031e1e93 100644
-> --- a/drivers/iommu/io-pgtable-dart.c
-> +++ b/drivers/iommu/io-pgtable-dart.c
-> @@ -23,6 +23,7 @@
->  #include <linux/types.h>
-> 
->  #include <asm/barrier.h>
-> +#include "iommu-pages.h"
-> 
->  #define DART1_MAX_ADDR_BITS	36
-> 
-> @@ -106,18 +107,12 @@ static phys_addr_t iopte_to_paddr(dart_iopte pte,
->  	return paddr;
->  }
-> 
-> -static void *__dart_alloc_pages(size_t size, gfp_t gfp,
-> -				    struct io_pgtable_cfg *cfg)
-> +static void *__dart_alloc_pages(size_t size, gfp_t gfp)
->  {
->  	int order = get_order(size);
-> -	struct page *p;
-> 
->  	VM_BUG_ON((gfp & __GFP_HIGHMEM));
-> -	p = alloc_pages(gfp | __GFP_ZERO, order);
-> -	if (!p)
-> -		return NULL;
-> -
-> -	return page_address(p);
-> +	return iommu_alloc_pages(gfp, order);
->  }
-> 
->  static int dart_init_pte(struct dart_io_pgtable *data,
-> @@ -262,13 +257,13 @@ static int dart_map_pages(struct io_pgtable_ops 
-> *ops, unsigned long iova,
-> 
->  	/* no L2 table present */
->  	if (!pte) {
-> -		cptep = __dart_alloc_pages(tblsz, gfp, cfg);
-> +		cptep = __dart_alloc_pages(tblsz, gfp);
->  		if (!cptep)
->  			return -ENOMEM;
-> 
->  		pte = dart_install_table(cptep, ptep, 0, data);
->  		if (pte)
-> -			free_pages((unsigned long)cptep, get_order(tblsz));
-> +			iommu_free_pages(cptep, get_order(tblsz));
-> 
->  		/* L2 table is present (now) */
->  		pte = READ_ONCE(*ptep);
-> @@ -419,8 +414,7 @@ apple_dart_alloc_pgtable(struct io_pgtable_cfg 
-> *cfg, void *cookie)
->  	cfg->apple_dart_cfg.n_ttbrs = 1 << data->tbl_bits;
-> 
->  	for (i = 0; i < cfg->apple_dart_cfg.n_ttbrs; ++i) {
-> -		data->pgd[i] = __dart_alloc_pages(DART_GRANULE(data), GFP_KERNEL,
-> -					   cfg);
-> +		data->pgd[i] = __dart_alloc_pages(DART_GRANULE(data), GFP_KERNEL);
->  		if (!data->pgd[i])
->  			goto out_free_data;
->  		cfg->apple_dart_cfg.ttbr[i] = virt_to_phys(data->pgd[i]);
-> @@ -429,9 +423,10 @@ apple_dart_alloc_pgtable(struct io_pgtable_cfg 
-> *cfg, void *cookie)
->  	return &data->iop;
-> 
->  out_free_data:
-> -	while (--i >= 0)
-> -		free_pages((unsigned long)data->pgd[i],
-> -			   get_order(DART_GRANULE(data)));
-> +	while (--i >= 0) {
-> +		iommu_free_pages(data->pgd[i],
-> +				 get_order(DART_GRANULE(data)));
-> +	}
->  	kfree(data);
->  	return NULL;
->  }
-> @@ -439,6 +434,7 @@ apple_dart_alloc_pgtable(struct io_pgtable_cfg 
-> *cfg, void *cookie)
->  static void apple_dart_free_pgtable(struct io_pgtable *iop)
->  {
->  	struct dart_io_pgtable *data = io_pgtable_to_data(iop);
-> +	int order = get_order(DART_GRANULE(data));
->  	dart_iopte *ptep, *end;
->  	int i;
-> 
-> @@ -449,15 +445,10 @@ static void apple_dart_free_pgtable(struct 
-> io_pgtable *iop)
->  		while (ptep != end) {
->  			dart_iopte pte = *ptep++;
-> 
-> -			if (pte) {
-> -				unsigned long page =
-> -					(unsigned long)iopte_deref(pte, data);
-> -
-> -				free_pages(page, get_order(DART_GRANULE(data)));
-> -			}
-> +			if (pte)
-> +				iommu_free_pages(iopte_deref(pte, data), order);
->  		}
-> -		free_pages((unsigned long)data->pgd[i],
-> -			   get_order(DART_GRANULE(data)));
-> +		iommu_free_pages(data->pgd[i], order);
->  	}
-> 
->  	kfree(data);
+This patch set is based on the patches submitted
+https://lore.kernel.org/linux-edac/20231129073521.2127403-1-muralimk@amd.com/T/#t
 
-Reviewed-by: Janne Grunau <j@jannau.net>
+MI300A has on-die HBMv3 memory embedded on to socket. Upon reaching threshold
+of memory errors socket has to be replaced. Define the criteria to identify the
+Field Replicable Unit(FRU) based on number of poisoned pages in the socket by
+persisting them in a non-volatile storage.
 
-Janne
+Notifier is registered to handle the FRU memory poisons and poison count
+incremented based on injected MCE errors until it reaches maximum number of
+fru poison entries.
+Sysfs entry per FRU will ease the use to look into the poison details.
+
+During boot, Read the ERST records for identifying the poison address and
+retire all system physical addresses in that HBM row.
+
+Patch 1:
+Add an API to get the maximum CPER record size to be stored in NV storage
+
+Patch 2:
+Add FRU memory poison module
+
+Patch 3:
+Add sysfs entry to print the required error information from poison records
+
+Patch 4:
+Add documentation on FRU memory poisons.
+
+Muralidhara M K (4):
+  ACPI/APEI: Add erst_get_size() API
+  RAS/fmp: Add FRU memory poison CPER support for Error persistence
+  EDAC/amd64: Add sysfs entry to read FRU poison data
+  RAS/fmp: Add Documentation on Persistence of FRU memory poisons
+
+ Documentation/RAS/ras.rst        | 122 +++++++
+ MAINTAINERS                      |   8 +
+ drivers/acpi/apei/erst.c         |   9 +
+ drivers/edac/amd64_edac.c        |  25 ++
+ drivers/ras/Kconfig              |   1 +
+ drivers/ras/Makefile             |   1 +
+ drivers/ras/fmp/Kconfig          |  18 +
+ drivers/ras/fmp/Makefile         |  10 +
+ drivers/ras/fmp/fru_mem_poison.c | 595 +++++++++++++++++++++++++++++++
+ include/acpi/apei.h              |   1 +
+ include/linux/cper.h             |  24 ++
+ include/linux/fru_mem_poison.h   |  17 +
+ 12 files changed, 831 insertions(+)
+ create mode 100644 drivers/ras/fmp/Kconfig
+ create mode 100644 drivers/ras/fmp/Makefile
+ create mode 100644 drivers/ras/fmp/fru_mem_poison.c
+ create mode 100644 include/linux/fru_mem_poison.h
+
+-- 
+2.25.1
+
