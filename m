@@ -2,233 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF2C7FD5EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:40:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 698297FD5EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:41:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233108AbjK2LkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 06:40:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44616 "EHLO
+        id S233059AbjK2Llp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 06:41:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233019AbjK2LkU (ORCPT
+        with ESMTP id S230386AbjK2Lln (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 06:40:20 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6406B137;
-        Wed, 29 Nov 2023 03:40:26 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1cf8e569c35so44488875ad.0;
-        Wed, 29 Nov 2023 03:40:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701258026; x=1701862826; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hJF+hJ5VN4sJhJYjpX9/OpUUp6GMMh66U/1NZe17HOA=;
-        b=R+hIrvBvzgFTSyWOJ5Ar9qMwT1eK7z+TofcZxjDRCW5TY5Fc9esXOwToQPxovjIoGN
-         tvkVmfItj+i2qTwO8dZmDwwA0kq+lZXDq4Tra0ecycPrZqKumNsDJnE080CL5L1GMX+4
-         jfnTG4ln5ioXQV80YQ/5d81CIYk2WNADsJxIvxjH+Lk/r5gubT/lb6gzfakTDtoIJb4z
-         KicaNtbh1ESeJSUMn5E3La5u3FA1j118FLUrnMRq25XgE0cSUGLPYIgrLjOkqZeuSGTx
-         Ai/GZGGVlxKOGrTDOgS2yz47JR9v3Fv5i22p5Kmb6XxqALQmrQ638ntKWiw+7zBK0223
-         aZQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701258026; x=1701862826;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hJF+hJ5VN4sJhJYjpX9/OpUUp6GMMh66U/1NZe17HOA=;
-        b=JSq3CXeqljCjEbwicn1fvQp9hxxVHRtnJgw/mTKy3WF0WlSlaVvfCxSQd1wlXHqkCf
-         gypLd173hbfUOPhYkw+nAKBUQaA4P0XcOJ4T7GRsT170mJ/C7B4b7w3AjIffOSsCT4Fy
-         pcVqsTBogX0jonKixnz+Czztnob2qESSxtkebQJ7l1meF7F5NKc2FPIqVxb20361FBrf
-         Daawi6EFhCM7IOGfiZ+JFblkYi4Delx/FdFIjLBh6WvEuYpHNKkIva/9/i/vIgTJ+sMU
-         yJx4zW+M3v0FHqmVMIeia5ZzxFp2OHxhE5G8XWMycbnrnM/W1thgLJ1OAOdedsi9tuoe
-         lJJA==
-X-Gm-Message-State: AOJu0YycqRnccbQkmZc632PWazpkANpvZZmtnx2+ag56XCaLuaeW70Zk
-        kaREv52C3ViveYyluPShx3I=
-X-Google-Smtp-Source: AGHT+IFewmWHo4E8iy3QvOvjiPAb7kQz7zx9xJGJNRmV2iBw5agvEIOeCnZL94/9HFeQEnZd8iT4aw==
-X-Received: by 2002:a17:902:ecc3:b0:1d0:1216:8f1a with SMTP id a3-20020a170902ecc300b001d012168f1amr2361908plh.0.1701258025725;
-        Wed, 29 Nov 2023 03:40:25 -0800 (PST)
-Received: from [192.168.255.10] ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id u6-20020a170902e5c600b001cfde4c84bcsm4431332plf.141.2023.11.29.03.40.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 03:40:25 -0800 (PST)
-Message-ID: <bcbc9d0f-8b52-468b-8c69-0e09ec168a39@gmail.com>
-Date:   Wed, 29 Nov 2023 19:40:18 +0800
+        Wed, 29 Nov 2023 06:41:43 -0500
+X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 29 Nov 2023 03:41:49 PST
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8703C4;
+        Wed, 29 Nov 2023 03:41:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701258110; x=1732794110;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=w91TqZU/Sz95TBAtE+lLgPRTyMnYI3/7ak+ZXvIxwqY=;
+  b=IVIY59PY2nmI34Vxl+3e70xlIK4bnrx6q7yyTPt0My8bGdNinYgSBbIy
+   OElb5mjET9zVtpoTq2JdYV8ARKdl/9dOPQVFUD88SimIq1a6D4swPHpAB
+   ai5mXguu4Ry/0T3sdLLLw89UzK4FJhAB98+lufdce4aTwJn5uANQGFGpw
+   olcagkl67s51Jz3KcyksvcIxoJcCWmgS1w3g7yST8g2X/lhyj7Vs6e/L9
+   0IcME2kDIFWl2vVo0W3LRa0GBFnp9CFLTyT1hwT0gtMaJPZOtG1PS971k
+   /bNjkOxwyKglRkseeGlrVr5gvIGNUyI4unFHw+5IC/7u8LHLMTOMasbNL
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="35035"
+X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
+   d="scan'208";a="35035"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 03:40:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="942291528"
+X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
+   d="scan'208";a="942291528"
+Received: from dstavrak-mobl.ger.corp.intel.com (HELO localhost) ([10.252.60.61])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 03:40:40 -0800
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Emma Anholt <emma@anholt.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        Samuel Holland <samuel@sholland.org>,
+        Sandy Huang <hjc@rock-chips.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-doc@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>,
+        linux-rockchip@lists.infradead.org, Chen-Yu Tsai <wens@csie.org>,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 05/45] drm/connector: Check drm_connector_init
+ pointers arguments
+In-Reply-To: <kygezdrfz56zj6lmq6l5s5yyys2urgq3id7r5n4mb3afn5kc5q@eswnd6a2ihqc>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20231128-kms-hdmi-connector-state-v4-0-c7602158306e@kernel.org>
+ <20231128-kms-hdmi-connector-state-v4-5-c7602158306e@kernel.org>
+ <87h6l66nth.fsf@intel.com>
+ <v3hplco5fdedv6bnc6mwx2zhhw4xxdiekha26ykhc5cmy7ol77@2irk3w4hmabw>
+ <ZWXv1Oi_sH0BRWao@intel.com>
+ <2mnodqvu2oo674vspiy4gxhglu3it5cq47acx5itnbwevgc4cf@c7h2bvnx3m2n>
+ <8734wo7vbx.fsf@intel.com>
+ <kygezdrfz56zj6lmq6l5s5yyys2urgq3id7r5n4mb3afn5kc5q@eswnd6a2ihqc>
+Date:   Wed, 29 Nov 2023 13:40:38 +0200
+Message-ID: <87ttp46b49.fsf@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] KVM: x86: Use get_cpl directly in case of vcpu_load to
- improve accuracy
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231123075818.12521-1-likexu@tencent.com>
- <ZWVCwvoETD_NVOFG@google.com>
-Content-Language: en-US
-From:   Like Xu <like.xu.linux@gmail.com>
-In-Reply-To: <ZWVCwvoETD_NVOFG@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for your comments.
+On Wed, 29 Nov 2023, Maxime Ripard <mripard@kernel.org> wrote:
+> On Wed, Nov 29, 2023 at 11:38:42AM +0200, Jani Nikula wrote:
+>> On Wed, 29 Nov 2023, Maxime Ripard <mripard@kernel.org> wrote:
+>> > Hi Ville,
+>> >
+>> > On Tue, Nov 28, 2023 at 03:49:08PM +0200, Ville Syrj=C3=A4l=C3=A4 wrot=
+e:
+>> >> On Tue, Nov 28, 2023 at 02:29:40PM +0100, Maxime Ripard wrote:
+>> >> > On Tue, Nov 28, 2023 at 02:54:02PM +0200, Jani Nikula wrote:
+>> >> > > On Tue, 28 Nov 2023, Maxime Ripard <mripard@kernel.org> wrote:
+>> >> > > > All the drm_connector_init variants take at least a pointer to =
+the
+>> >> > > > device, connector and hooks implementation.
+>> >> > > >
+>> >> > > > However, none of them check their value before dereferencing th=
+ose
+>> >> > > > pointers which can lead to a NULL-pointer dereference if the au=
+thor
+>> >> > > > isn't careful.
+>> >> > >=20
+>> >> > > Arguably oopsing on the spot is preferrable when this can't be ca=
+used by
+>> >> > > user input. It's always a mistake that should be caught early dur=
+ing
+>> >> > > development.
+>> >> > >=20
+>> >> > > Not everyone checks the return value of drm_connector_init and fr=
+iends,
+>> >> > > so those cases will lead to more mysterious bugs later. And proba=
+bly
+>> >> > > oopses as well.
+>> >> >=20
+>> >> > So maybe we can do both then, with something like
+>> >> >=20
+>> >> > if (WARN_ON(!dev))
+>> >> >    return -EINVAL
+>> >> >=20
+>> >> > if (drm_WARN_ON(dev, !connector || !funcs))
+>> >> >    return -EINVAL;
+>> >> >=20
+>> >> > I'd still like to check for this, so we can have proper testing, an=
+d we
+>> >> > already check for those pointers in some places (like funcs in
+>> >> > drm_connector_init), so if we don't cover everything we're inconsis=
+tent.
+>> >>=20
+>> >> People will invariably cargo-cult this kind of stuff absolutely
+>> >> everywhere and then all your functions will have tons of dead
+>> >> code to check their arguments.
+>> >
+>> > And that's a bad thing because... ?
+>> >
+>> > Also, are you really saying that checking that your arguments make sen=
+se
+>> > is cargo-cult?
+>>=20
+>> It's a powerful thing to be able to assume a NULL argument is always a
+>> fatal programming error on the caller's side, and should oops and get
+>> caught immediately. It's an assertion.
+>
+> Yeah, but we're not really doing that either. We have no explicit
+> assertion anywhere. We take a pointer in, and just hope that it will be
+> dereferenced later on and that the kernel will crash. The pointer to the
+> functions especially is only deferenced very later on.
+>
+> And assertions might be powerful, but being able to notice errors and
+> debug them is too. A panic takes away basically any remote access to
+> debug. If you don't have a console, you're done.
+>
+>> We're not talking about user input or anything like that here.
+>>=20
+>> If you start checking for things that can't happen, and return errors
+>> for them, you start gracefully handling things that don't have anything
+>> graceful about them.
+>
+> But there's nothing graceful to do here: you just return from your probe
+> function that you couldn't probe and that's it. Just like you do when
+> you can't map your registers, or get your interrupt, or register into
+> any framework (including drm_dev_register that pretty much every driver
+> handles properly if it returns an error, without being graceful about
+> it).
 
-On 28/11/2023 9:30 am, Sean Christopherson wrote:
-> On Thu, Nov 23, 2023, Like Xu wrote:
->> Signed-off-by: Like Xu <likexu@tencent.com>
->> ---
->>   arch/x86/kvm/x86.c | 5 ++++-
->>   1 file changed, 4 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index 2c924075f6f1..c454df904a45 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -13031,7 +13031,10 @@ bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu)
->>   	if (vcpu->arch.guest_state_protected)
->>   		return true;
->>   
->> -	return vcpu->arch.preempted_in_kernel;
->> +	if (vcpu != kvm_get_running_vcpu())
->> +		return vcpu->arch.preempted_in_kernel;
-> 
-> Eww, KVM really shouldn't be reading vcpu->arch.preempted_in_kernel in a generic
-> vcpu_in_kernel() API.
+Those are all dynamic things that can fail.
 
-It looks weird to me too.
+Quite different from passing NULL dev, connector, or funcs to
+drm_connector_init() and friends.
 
-> 
-> Rather than fudge around that ugliness with a kvm_get_running_vcpu() check, what
-> if we instead repurpose kvm_arch_dy_has_pending_interrupt(), which is effectively
-> x86 specific, to deal with not being able to read the current CPL for a vCPU that
-> is (possibly) not "loaded", which AFAICT is also x86 specific (or rather, Intel/VMX
-> specific).
+I think it's wrong to set the example that everything needs to be
+checked, everything needs to return an error, every call needs to check
+for error return, all the time, everywhere. People absolutely will cargo
+cult that, and that's what Ville is referring to.
 
-I'd break it into two parts, the first step applying this simpler, more 
-straightforward fix
-(which is backport friendly compared to the diff below), and the second step 
-applying
-your insight for more decoupling and cleanup.
+If you pass NULL dev, connector, or funcs to drm_connector_init() I
+think you absolutely deserve to get an oops.
 
-You'd prefer one move to fix it, right ?
+For dev, you could possibly not have reached the function with NULL
+dev. (And __drm_connector_init() has dev->mode_config before the check,
+so you'll get a static analyzer warning about dereference before the
+check.) If you have NULL connector, you didn't check for allocation
+failure earlier. If you have NULL funcs, you just passed NULL, because
+it's generally supposed to be a pointer to a static const struct.
 
-> 
-> And if getting the CPL for a vCPU that may not be loaded is problematic for other
-> architectures, then I think the correct fix is to move preempted_in_kernel into
-> common code and check it directly in kvm_vcpu_on_spin().
+>> Having such checks in place trains people to think they *may* happen.
+>
+> In most cases, kmalloc can't fail. We seem to have a very different
+> policy towards it.
 
-Not sure which tests would cover this part of the change.
+Again, dynamic in nature and can fail.
 
-> 
-> This is what I'm thinking:
-> 
-> ---
->   arch/x86/kvm/x86.c       | 22 +++++++++++++++-------
->   include/linux/kvm_host.h |  2 +-
->   virt/kvm/kvm_main.c      |  7 +++----
->   3 files changed, 19 insertions(+), 12 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 6d0772b47041..5c1a75c0dafe 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -13022,13 +13022,21 @@ int kvm_arch_vcpu_runnable(struct kvm_vcpu *vcpu)
->   	return kvm_vcpu_running(vcpu) || kvm_vcpu_has_events(vcpu);
->   }
->   
-> -bool kvm_arch_dy_has_pending_interrupt(struct kvm_vcpu *vcpu)
-> +static bool kvm_dy_has_pending_interrupt(struct kvm_vcpu *vcpu)
->   {
-> -	if (kvm_vcpu_apicv_active(vcpu) &&
-> -	    static_call(kvm_x86_dy_apicv_has_pending_interrupt)(vcpu))
-> -		return true;
-> +	return kvm_vcpu_apicv_active(vcpu) &&
-> +	       static_call(kvm_x86_dy_apicv_has_pending_interrupt)(vcpu);
-> +}
->   
-> -	return false;
-> +bool kvm_arch_vcpu_preempted_in_kernel(struct kvm_vcpu *vcpu)
-> +{
-> +	/*
-> +	 * Treat the vCPU as being in-kernel if it has a pending interrupt, as
-> +	 * the vCPU trying to yield may be spinning on IPI delivery, i.e. the
-> +	 * the target vCPU is in-kernel for the purposes of directed yield.
+>> While it should fail fast and loud at the developer's first smoke test,
+>> and get fixed then and there.
+>
+> Returning an error + a warning also qualifies for "fail fast and loud".
+> But keeps the system alive for someone to notice in any case.
 
-How about the case "vcpu->arch.guest_state_protected == true" ?
+But where do you draw the line? If we keep adding these checks to things
+that actually can't happen, we teach developers we need to check for
+impossible things. And we teach them not to trust anything.
 
-> +	 */
-> +	return vcpu->arch.preempted_in_kernel ||
-> +	       kvm_dy_has_pending_interrupt(vcpu);
->   }
->   
->   bool kvm_arch_dy_runnable(struct kvm_vcpu *vcpu)
-> @@ -13043,7 +13051,7 @@ bool kvm_arch_dy_runnable(struct kvm_vcpu *vcpu)
->   		 kvm_test_request(KVM_REQ_EVENT, vcpu))
->   		return true;
->   
-> -	return kvm_arch_dy_has_pending_interrupt(vcpu);
-> +	return kvm_dy_has_pending_interrupt(vcpu);
->   }
->   
->   bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu)
-> @@ -13051,7 +13059,7 @@ bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu)
->   	if (vcpu->arch.guest_state_protected)
->   		return true;
->   
-> -	return vcpu->arch.preempted_in_kernel;
-> +	return static_call(kvm_x86_get_cpl)(vcpu);
+I scroll down the file and reach
+drm_connector_attach_edid_property(). Should we NULL check connector?
+Should we change the function to int and return a value? Should the
+caller check the value? Then there's drm_connector_attach_encoder(). And
+drm_connector_has_possible_encoder(). And so on and so forth.
 
-We need "return static_call(kvm_x86_get_cpl)(vcpu) == 0;" here.
+Where do you draw the line?
 
->   }
->   
->   unsigned long kvm_arch_vcpu_get_ip(struct kvm_vcpu *vcpu)
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index ea1523a7b83a..820c5b64230f 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -1505,7 +1505,7 @@ int kvm_arch_vcpu_runnable(struct kvm_vcpu *vcpu);
->   bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu);
->   int kvm_arch_vcpu_should_kick(struct kvm_vcpu *vcpu);
->   bool kvm_arch_dy_runnable(struct kvm_vcpu *vcpu);
-> -bool kvm_arch_dy_has_pending_interrupt(struct kvm_vcpu *vcpu);
-> +bool kvm_arch_vcpu_preempted_in_kernel(struct kvm_vcpu *vcpu);
->   int kvm_arch_post_init_vm(struct kvm *kvm);
->   void kvm_arch_pre_destroy_vm(struct kvm *kvm);
->   int kvm_arch_create_vm_debugfs(struct kvm *kvm);
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 8758cb799e18..e84be7e2e05e 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -4049,9 +4049,9 @@ static bool vcpu_dy_runnable(struct kvm_vcpu *vcpu)
->   	return false;
->   }
->   
-> -bool __weak kvm_arch_dy_has_pending_interrupt(struct kvm_vcpu *vcpu)
-> +bool __weak kvm_arch_vcpu_preempted_in_kernel(struct kvm_vcpu *vcpu)
->   {
-> -	return false;
-> +	return kvm_arch_vcpu_in_kernel(vcpu);
->   }
->   
->   void kvm_vcpu_on_spin(struct kvm_vcpu *me, bool yield_to_kernel_mode)
-> @@ -4086,8 +4086,7 @@ void kvm_vcpu_on_spin(struct kvm_vcpu *me, bool yield_to_kernel_mode)
->   			if (kvm_vcpu_is_blocking(vcpu) && !vcpu_dy_runnable(vcpu))
->   				continue;
->   			if (READ_ONCE(vcpu->preempted) && yield_to_kernel_mode &&
-> -			    !kvm_arch_dy_has_pending_interrupt(vcpu) &&
-> -			    !kvm_arch_vcpu_in_kernel(vcpu))
-> +			    kvm_arch_vcpu_preempted_in_kernel(vcpu))
 
-Use !kvm_arch_vcpu_preempted_in_kernel(vcpu) ?
+BR,
+Jani.
 
->   				continue;
->   			if (!kvm_vcpu_eligible_for_directed_yield(vcpu))
->   				continue;
-> 
-> base-commit: e9e60c82fe391d04db55a91c733df4a017c28b2f
+
+--=20
+Jani Nikula, Intel
