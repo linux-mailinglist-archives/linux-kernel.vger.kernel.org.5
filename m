@@ -2,100 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F36637FD547
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:15:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5427D7FD541
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:14:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231134AbjK2LPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 06:15:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36912 "EHLO
+        id S232544AbjK2LOt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Nov 2023 06:14:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232705AbjK2LOb (ORCPT
+        with ESMTP id S232977AbjK2LOZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 06:14:31 -0500
-X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 29 Nov 2023 03:12:52 PST
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D282113;
-        Wed, 29 Nov 2023 03:12:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701256373; x=1732792373;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=mH0FS1PLtuPl2wqA0IuYz8tUlWqy6R9bNKMXpWxQdbg=;
-  b=TisVpBget2nvD0BtphitsUgNhKnTdaeA6iGV11VTTP9VpvOZWJ96Cqix
-   FzW9l0BRp5ISoZa2wz4/AyCUnTlSEjjTMCPbX/fi5tnMbqOyDbuoPWEaT
-   SVTpIoVdXvQmXhkvcfJHbtpgPhmriYrbriVzqsAk07CL7O5KpeLmM5Ww2
-   b7Q9YSGeCXRbdtCYCvfDVWcgwQTUBMXbDwNualOo+MeU9wP9K220et95D
-   RTZ/m2Jt8UV+RpP5UcRVHSVhpy6ukNiLkqQYohrPuLjFoWGw6gy8hHm6v
-   M4XLtcSylbcafTApy/BIXVu4gJd4TOx8bUfinAaI79JewJMGW/FVVerfa
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10908"; a="133836"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="133836"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 03:11:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="17172215"
-Received: from akuporos-mobl.ger.corp.intel.com ([10.251.221.122])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 03:11:47 -0800
-Date:   Wed, 29 Nov 2023 13:11:44 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-cc:     linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 26/26] selftests/resctrl: Add test groups and name L3
- CAT test L3_CAT
-In-Reply-To: <2787018d-9661-4169-9571-a4016691cfa6@intel.com>
-Message-ID: <ca49fc8f-f9f7-138f-ff2f-60f754525df7@linux.intel.com>
-References: <20231120111340.7805-1-ilpo.jarvinen@linux.intel.com> <20231120111340.7805-27-ilpo.jarvinen@linux.intel.com> <2787018d-9661-4169-9571-a4016691cfa6@intel.com>
+        Wed, 29 Nov 2023 06:14:25 -0500
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1791BD3;
+        Wed, 29 Nov 2023 03:12:29 -0800 (PST)
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5c8c26cf056so68438927b3.1;
+        Wed, 29 Nov 2023 03:12:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701256348; x=1701861148;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XJBAY+EVsFCK+6qYmvKhC75YavWi+kzyxoJ2FmRxal8=;
+        b=jaWtpb1sLMqSdAnmRcCenPS33V/jmiXzByTQY9GkO1pwFnrEr13+MRYKu8ZfwDNkHn
+         +LAZNu1j0WJ/dN38JUuuvDLBLCDgZnnoPdtlmdAQx5SDxTKpCYvgetJ1mnrfhiCRD+Ox
+         likC4IMdUz5zl18QV9jBmIgnrNhOH8cz1byy9oFYu109EDaVuKLMhCbnyZyeT9FB8eMv
+         vmusbwmQzyfcsR1Zy/g13ETGm3VMpwnqPqeVxtREPNv/k3IlMVeycGv+TLRISOzp3yyU
+         oqwmzKJl/jezCl7c6/iU8YAcO3igDPjXIhb/XQFuwOr1f1NtLYAcJN6yBrJp8eKiabQn
+         yp0w==
+X-Gm-Message-State: AOJu0Yzzesn9GxFr9pUJmGGGOZmFJA02RmNOtweiC3bmOqyP/S/tF339
+        MY8OhKx6jwnFt0p2flwJW9YINbhVdMi4PQ==
+X-Google-Smtp-Source: AGHT+IGEUithuImb8Z2qUZxwr6NIlq5U9rnCet+mbGkGv0YjADJBmSs0RsiHmtKVx/S1WylHeziKCg==
+X-Received: by 2002:a05:690c:448c:b0:5d0:17a3:a4dc with SMTP id gr12-20020a05690c448c00b005d017a3a4dcmr11984084ywb.34.1701256348606;
+        Wed, 29 Nov 2023 03:12:28 -0800 (PST)
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com. [209.85.128.178])
+        by smtp.gmail.com with ESMTPSA id y140-20020a0dd692000000b005cb0b3d9291sm4474283ywd.12.2023.11.29.03.12.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Nov 2023 03:12:27 -0800 (PST)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5cd0af4a7d3so68489867b3.0;
+        Wed, 29 Nov 2023 03:12:26 -0800 (PST)
+X-Received: by 2002:a81:574d:0:b0:5d0:675:575 with SMTP id l74-20020a81574d000000b005d006750575mr10045178ywb.18.1701256346741;
+ Wed, 29 Nov 2023 03:12:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1781121945-1701256309=:1861"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231128200155.438722-1-andriy.shevchenko@linux.intel.com> <20231128200155.438722-11-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20231128200155.438722-11-andriy.shevchenko@linux.intel.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 29 Nov 2023 12:12:15 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVOTNBkq=ptZ_Y4=+h+jMXKDYXr4iJcs1g7aGYCDKLtuw@mail.gmail.com>
+Message-ID: <CAMuHMdVOTNBkq=ptZ_Y4=+h+jMXKDYXr4iJcs1g7aGYCDKLtuw@mail.gmail.com>
+Subject: Re: [PATCH v3 10/22] pinctrl: core: Add a convenient define PINCTRL_GROUP_DESC()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Jianlong Huang <jianlong.huang@starfivetech.com>,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>, Jacky Bai <ping.bai@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sean Wang <sean.wang@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Hal Feng <hal.feng@starfivetech.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Tue, Nov 28, 2023 at 9:05 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> Add PINCTRL_GROUP_DESC() macro for inline use.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
---8323329-1781121945-1701256309=:1861
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-On Tue, 28 Nov 2023, Reinette Chatre wrote:
-> On 11/20/2023 3:13 AM, Ilpo Järvinen wrote:
-> > To select test to run -t parameter can be used. However, -t cat
-> > currently maps to L3 CAT test which is confusing after more CAT related
-> > tests are added.
-> > 
-> > Allow selecting tests as groups and call L3 CAT test "L3_CAT", "CAT"
-> > group will enable all CAT related tests.
-> > 
-> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> > ---
-> 
-> Could you please defer this patch to accompany the series that
-> introduces other CAT related tests?
+Gr{oetje,eeting}s,
 
-Can be done but it implies Maciej non-continuous CAT test series would 
-still be blocked by the lack of this feature which is why I included it 
-here.
-
-But perhaps Maciej wants to take this patch and submit it as a part of his 
-series. Maciej, are you okay with that change of patch ownership?
-
+                        Geert
 
 -- 
- i.
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
---8323329-1781121945-1701256309=:1861--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
