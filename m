@@ -2,258 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC10C7FDCD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:21:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4917FDCD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:21:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbjK2QUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 11:20:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49604 "EHLO
+        id S230303AbjK2QVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 11:21:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjK2QUt (ORCPT
+        with ESMTP id S230192AbjK2QVE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 11:20:49 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E98E6D5E
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:20:54 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40b54261534so5933665e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:20:54 -0800 (PST)
+        Wed, 29 Nov 2023 11:21:04 -0500
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30653D7F
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:21:09 -0800 (PST)
+Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-67a18556e4aso34475996d6.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:21:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701274853; x=1701879653; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QQ2BW9Ne27jP4rV4wTRrZBadP+T5Osn/uqKd59KU9Sc=;
-        b=QBO+J3LKNFtchlIs7AYGgYZ6fOpu2tyEJAiP8tYWUl5mJXgEfaTA8c+fRKXSl4yRVR
-         PP5gH2wuUvx6gZSUcHzT0Ppyu6AJ0LbkLETv0l4DGMiF2rOYBJSsnqhUZ7rD5Ft8uhc0
-         JOvGES4Wcmjj+ghFvcfDzGId6XTZCY4Xs4LE0mXqNZon8wOz7O2iujRtsn7Sn0ocnK2u
-         qXJvge4mstD8L+2ywqNyvJ2VRqv3agzlfWfWTtxtxYzRuPmFYDE5gtz7GOQ7amqeUfW0
-         rtrFxq38KnIThG/NZrHTr5kEqbkRBRh/gpYpUPF47Hxdj+eG+ApRNYvxDdBDpDIgpqcD
-         VdZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701274853; x=1701879653;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+        d=gmail.com; s=20230601; t=1701274868; x=1701879668; darn=vger.kernel.org;
+        h=in-reply-to:autocrypt:from:content-language:references:cc:to
+         :subject:user-agent:mime-version:date:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=QQ2BW9Ne27jP4rV4wTRrZBadP+T5Osn/uqKd59KU9Sc=;
-        b=NKSKHwb3hXrZFYL8/MkVKhVxzw1naZkBfScv8q5NZxdqh+B8XoT+uzaYSQcep22JBe
-         7I6jkVY9QvTKLhKXdN1IzmIQv5WQKqRB3by5DDfDBIuGSRGfQFIMBRDXD+VZhbVSRnLc
-         1Q7dwUjUEtOJ6RQslgNktO2PdRtoMJytAkFgXiuoj+/mz4Zni2xzQrkzzKlg1+2um80n
-         73UTAHM2qj35Wy55KnKLVZIogHERwurIgeCGeOtyhF0H/btoIPn2O7TC4mSE/4i6gBEM
-         7LwEexpKt3cVMWr4Ar5cEgvCPfAOpwBK67uw0xFYTWE+HcLNhQT0/ovJKK/eAEqG2O/B
-         WjrA==
-X-Gm-Message-State: AOJu0YyPrnSf0E42+Y8ddd+GjZiOl/Crdovhl8oEAk0MbmTgNZIk1Ey1
-        TyqUmruY1TY1dOTj+7c0iu7ZcQ==
-X-Google-Smtp-Source: AGHT+IGFWp1TdKCXBzP96cPKz+0h9MtjB6+Fi3czSnC4Bm7cqbOWb/xMeV9euB3WYMxArtUa9wZbIg==
-X-Received: by 2002:a05:600c:450b:b0:402:ee71:29 with SMTP id t11-20020a05600c450b00b00402ee710029mr13260348wmo.10.1701274853233;
-        Wed, 29 Nov 2023 08:20:53 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:31d3:eea3:8f97:6a2c? ([2a01:e0a:982:cbb0:31d3:eea3:8f97:6a2c])
-        by smtp.gmail.com with ESMTPSA id d21-20020adf9b95000000b003316ad360c1sm18579106wrc.24.2023.11.29.08.20.52
+        bh=5C0iYWHlIaLUE5Bo19jtvrWCFWmST23+Bi2pSXzdUIU=;
+        b=NOlLmrLYD+RMqO8wON+ZlUibo2gr/8Lm6+ZbnPs+zfixLwrdYZx+4j+rZ4fB37AjmO
+         Jyr6MQewLJpls5gkNOdu+X2q5MgmXinT98ofMLDkwd42UVlytiuQny+Y08W7qvd/4GHT
+         juo0uxhAsS9kX0wXfCvXTF5OWgWmguYI6dQKRS2TH8EAwmdntxJr9AItWgIlm2FbVYoh
+         7fSar02GSfuausNflAcIWI031qjHJBPkhkiy4dhM2nMMIFwAgxETnWwP6sO0xTkyx1MN
+         ngULMCkHdOcD3bhBGkynO3n+EJSvDlve/2TFkvH7ulD1luDGW4BK283qv3RSXA8cZ88P
+         xQKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701274868; x=1701879668;
+        h=in-reply-to:autocrypt:from:content-language:references:cc:to
+         :subject:user-agent:mime-version:date:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5C0iYWHlIaLUE5Bo19jtvrWCFWmST23+Bi2pSXzdUIU=;
+        b=qK9p3Qnd3tRMevTSUZeYK7EOydNyTdBCAMMsNPRU7QwSV1E5nF/nfXY/mnDnz+Kcsb
+         TlO0heUd7crclOdFKokdFvFjEoT1jtrZcRaBINdzLpaF8ox3nUNXQMjmiWXflwT6Gyfr
+         uM/KmoSusKFRNyv7GPG7w/s1yF5KoZalXyzFv0Xy2499Xe2MPwxMeRuA6/XY2fgrLvSt
+         tl7ZTJA6GkcWgImBjbyOj95wZNhbwVu45w8CqwJij8sUfLdmTXjmHpZfKmvSDGcUL4D2
+         w50NyPILqVkFyceQZ7D0O1C6vCJgz7/z8RlGw4mIi9OAEKhBQdo+SuI+IyKa7qFflDQx
+         0IgA==
+X-Gm-Message-State: AOJu0YxBME4YXQ8eXxYwrZalniuImvLm/Lp+FuJUk/4+RmvJmKmyrvY2
+        l6uvcY+Ko2pzE68izxyLtwk=
+X-Google-Smtp-Source: AGHT+IG/vAfZvOuAExosXZrnY/hJuEiEqq2qYBpy5m3ZQeaRX1Ui3Vzvx7GS5IgEJzTd5WW/g+htsA==
+X-Received: by 2002:a0c:e7ce:0:b0:67a:3e70:3e3d with SMTP id c14-20020a0ce7ce000000b0067a3e703e3dmr12014239qvo.14.1701274868197;
+        Wed, 29 Nov 2023 08:21:08 -0800 (PST)
+Received: from [192.168.2.14] ([76.65.20.140])
+        by smtp.gmail.com with ESMTPSA id cj19-20020a05622a259300b00423ec241c54sm620462qtb.47.2023.11.29.08.21.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 08:20:52 -0800 (PST)
-Message-ID: <8e78be99-3d4d-4f79-9791-404e60bcb67c@linaro.org>
-Date:   Wed, 29 Nov 2023 17:20:51 +0100
+        Wed, 29 Nov 2023 08:21:07 -0800 (PST)
+Message-ID: <05007cb0-871e-4dc7-af58-1351f4ba43e2@gmail.com>
+Date:   Wed, 29 Nov 2023 11:20:58 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v3 2/4] dt-bindings: pwm: amlogic: add new compatible for
- meson8 pwm type
-Content-Language: en-US, fr
-To:     Jerome Brunet <jbrunet@baylibre.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Kevin Hilman <khilman@baylibre.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-pwm@vger.kernel.org, JunYi Zhao <junyi.zhao@amlogic.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-References: <20231129134004.3642121-1-jbrunet@baylibre.com>
- <20231129134004.3642121-3-jbrunet@baylibre.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20231129134004.3642121-3-jbrunet@baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:115.0) Gecko/20100101
+ Thunderbird/115.5.1
+Subject: Re: Radeon regression in 6.6 kernel
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Phillip Susi <phill@thesusis.net>,
+        Linux regressions mailing list <regressions@lists.linux.dev>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        dri-devel@lists.freedesktop.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Danilo Krummrich <dakr@redhat.com>
+References: <87edgv4x3i.fsf@vps.thesusis.net>
+ <559d0fa5-953a-4a97-b03b-5eb1287c83d8@leemhuis.info>
+ <CAPM=9tw-8pQWFso0zuLqpsqd5BSHWtc4As9ttdjY-DDr70EMqQ@mail.gmail.com>
+ <bdb238b6-60c7-4f26-81d0-9e62cd5dd326@gmail.com>
+ <CADnq5_NVGS1XykxGxpcu_bpPbzboCUJQkcCF3r+0N9a23KUgiQ@mail.gmail.com>
+ <96e2e13c-f01c-4baf-a9a3-cbaa48fb10c7@amd.com>
+ <CADnq5_NBfeAXEyQw0gnSd67=tR-bUKg8w=10+4z9pGGuRnP9uw@mail.gmail.com>
+ <87jzq2ixtm.fsf@vps.thesusis.net>
+ <CADnq5_Ou-MVVm0rdWDmDnJNLkWUayXzO26uCEtz3ucNa4Ghy2w@mail.gmail.com>
+ <95fe9b5b-05ce-4462-9973-9aca306bc44f@gmail.com>
+ <CADnq5_MYEWx=e1LBLeVs0UbR5_xEScjDyw_-75mLe8RAMnqh6g@mail.gmail.com>
+Content-Language: en-CA, en-US
+From:   Luben Tuikov <ltuikov89@gmail.com>
+Autocrypt: addr=ltuikov89@gmail.com; keydata=
+ xjMEZTohOhYJKwYBBAHaRw8BAQdAWSq76k+GsENjDTMVCy9Vr4fAO9Rb57/bPT1APnbnnRHN
+ Ikx1YmVuIFR1aWtvdiA8bHR1aWtvdjg5QGdtYWlsLmNvbT7CmQQTFgoAQRYhBJkj7+VmFO9b
+ eaAl10wVR5QxozSvBQJlOiE6AhsDBQkJZgGABQsJCAcCAiICBhUKCQgLAgQWAgMBAh4HAheA
+ AAoJEEwVR5QxozSvSm4BAOwCpX53DTQhE20FBGlTMqKCOQyJqlMcIQ9SO1qPWX1iAQCv3vfy
+ JwktF7REl1yt7IU2Sye1qmQMfJxdt9JMbMNNBs44BGU6IToSCisGAQQBl1UBBQEBB0BT9wSP
+ cCE8uGe7FWo8C+nTSyWPXKTx9F0gpEnlqReRBwMBCAfCfgQYFgoAJhYhBJkj7+VmFO9beaAl
+ 10wVR5QxozSvBQJlOiE6AhsMBQkJZgGAAAoJEEwVR5QxozSvSsYA/2LIFjbxQ2ikbU5S0pKo
+ aMDzO9eGz69uNhNWJcvIKJK6AQC9228Mqc1JeZMIyjYWr2HKYHi8S2q2/zHrSZwAWYYwDA==
+In-Reply-To: <CADnq5_MYEWx=e1LBLeVs0UbR5_xEScjDyw_-75mLe8RAMnqh6g@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------j7wTypPcX4sW4ivkzQYkyKmq"
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------j7wTypPcX4sW4ivkzQYkyKmq
+Content-Type: multipart/mixed; boundary="------------jdFCh49Ay0wTOfXIQ5VBNmuF";
+ protected-headers="v1"
+From: Luben Tuikov <ltuikov89@gmail.com>
+To: Alex Deucher <alexdeucher@gmail.com>
+Cc: Phillip Susi <phill@thesusis.net>,
+ Linux regressions mailing list <regressions@lists.linux.dev>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+ linux-kernel@vger.kernel.org,
+ "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+ dri-devel@lists.freedesktop.org, Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Danilo Krummrich <dakr@redhat.com>
+Message-ID: <05007cb0-871e-4dc7-af58-1351f4ba43e2@gmail.com>
+Subject: Re: Radeon regression in 6.6 kernel
+References: <87edgv4x3i.fsf@vps.thesusis.net>
+ <559d0fa5-953a-4a97-b03b-5eb1287c83d8@leemhuis.info>
+ <CAPM=9tw-8pQWFso0zuLqpsqd5BSHWtc4As9ttdjY-DDr70EMqQ@mail.gmail.com>
+ <bdb238b6-60c7-4f26-81d0-9e62cd5dd326@gmail.com>
+ <CADnq5_NVGS1XykxGxpcu_bpPbzboCUJQkcCF3r+0N9a23KUgiQ@mail.gmail.com>
+ <96e2e13c-f01c-4baf-a9a3-cbaa48fb10c7@amd.com>
+ <CADnq5_NBfeAXEyQw0gnSd67=tR-bUKg8w=10+4z9pGGuRnP9uw@mail.gmail.com>
+ <87jzq2ixtm.fsf@vps.thesusis.net>
+ <CADnq5_Ou-MVVm0rdWDmDnJNLkWUayXzO26uCEtz3ucNa4Ghy2w@mail.gmail.com>
+ <95fe9b5b-05ce-4462-9973-9aca306bc44f@gmail.com>
+ <CADnq5_MYEWx=e1LBLeVs0UbR5_xEScjDyw_-75mLe8RAMnqh6g@mail.gmail.com>
+In-Reply-To: <CADnq5_MYEWx=e1LBLeVs0UbR5_xEScjDyw_-75mLe8RAMnqh6g@mail.gmail.com>
 
-On 29/11/2023 14:39, Jerome Brunet wrote:
-> Add a new compatible for the pwm found in the meson8 to sm1 Amlogic SoCs,
-> dealing with clocks differently. This does not enable new HW. It is meant
-> to fix a bad DT ABI for the currently supported HW.
-> 
-> The original clock bindings describe which input the PWM channel
-> multiplexer should pick among its possible parents, which are
-> hard-coded in the driver. As such, it is a setting tied to the driver
-> implementation and does not describe the HW.
-> 
-> The new bindings introduce here describe the clocks input of the PWM block
-> as they exist.
-> 
-> The old compatible is deprecated but kept to maintain ABI compatibility.
-> 
-> The SoC specific compatibles introduced match the SoC families supported
-> by the original bindings.
-> 
-> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-> ---
->   .../devicetree/bindings/pwm/pwm-amlogic.yaml  | 52 ++++++++++++++++---
->   1 file changed, 46 insertions(+), 6 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml b/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
-> index 387976ed36d5..eece390114a3 100644
-> --- a/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
-> +++ b/Documentation/devicetree/bindings/pwm/pwm-amlogic.yaml
-> @@ -21,23 +21,35 @@ properties:
->             - amlogic,meson-g12a-ee-pwm
->             - amlogic,meson-g12a-ao-pwm-ab
->             - amlogic,meson-g12a-ao-pwm-cd
-> -          - amlogic,meson-s4-pwm
-> +        deprecated: true
->         - items:
->             - const: amlogic,meson-gx-pwm
->             - const: amlogic,meson-gxbb-pwm
-> +        deprecated: true
->         - items:
->             - const: amlogic,meson-gx-ao-pwm
->             - const: amlogic,meson-gxbb-ao-pwm
-> +        deprecated: true
->         - items:
->             - const: amlogic,meson8-pwm
->             - const: amlogic,meson8b-pwm
-> +        deprecated: true
+--------------jdFCh49Ay0wTOfXIQ5VBNmuF
+Content-Type: multipart/mixed; boundary="------------MuT0iEzPiRE10VeiMpxSflIk"
 
-I think deprecated should be moved in a third patch
+--------------MuT0iEzPiRE10VeiMpxSflIk
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-> +      - const: amlogic,meson8-pwm-v2
-> +      - items:
-> +          - enum:
-> +              - amlogic,meson8b-pwm-v2
-> +              - amlogic,meson-gxbb-pwm-v2
-> +              - amlogic,meson-axg-pwm-v2
-> +              - amlogic,meson-g12-pwm-v2
-> +          - const: amlogic,meson8-pwm-v2
-> +      - const: amlogic,meson-s4-pwm
->   
->     reg:
->       maxItems: 1
->   
->     clocks:
->       minItems: 1
-> -    maxItems: 2
-> +    maxItems: 4
->   
->     clock-names:
->       minItems: 1
-> @@ -58,7 +70,6 @@ allOf:
->           compatible:
->             contains:
->               enum:
-> -              - amlogic,meson8-pwm
->                 - amlogic,meson8b-pwm
->                 - amlogic,meson-gxbb-pwm
->                 - amlogic,meson-gxbb-ao-pwm
-> @@ -67,14 +78,15 @@ allOf:
->                 - amlogic,meson-g12a-ee-pwm
->                 - amlogic,meson-g12a-ao-pwm-ab
->                 - amlogic,meson-g12a-ao-pwm-cd
-> -              - amlogic,meson-gx-pwm
-> -              - amlogic,meson-gx-ao-pwm
+On 2023-11-29 08:50, Alex Deucher wrote:
+> On Tue, Nov 28, 2023 at 11:45=E2=80=AFPM Luben Tuikov <ltuikov89@gmail.=
+com> wrote:
+>>
+>> On 2023-11-28 17:13, Alex Deucher wrote:
+>>> On Mon, Nov 27, 2023 at 6:24=E2=80=AFPM Phillip Susi <phill@thesusis.=
+net> wrote:
+>>>>
+>>>> Alex Deucher <alexdeucher@gmail.com> writes:
+>>>>
+>>>>>> In that case those are the already known problems with the schedul=
+er
+>>>>>> changes, aren't they?
+>>>>>
+>>>>> Yes.  Those changes went into 6.7 though, not 6.6 AFAIK.  Maybe I'm=
 
-I don't understand why those entries are removed
+>>>>> misunderstanding what the original report was actually testing.  If=
+ it
+>>>>> was 6.7, then try reverting:
+>>>>> 56e449603f0ac580700621a356d35d5716a62ce5
+>>>>> b70438004a14f4d0f9890b3297cd66248728546c
+>>>>
+>>>> At some point it was suggested that I file a gitlab issue, but I too=
+k
+>>>> this to mean it was already known and being worked on.  -rc3 came ou=
+t
+>>>> today and still has the problem.  Is there a known issue I could tra=
+ck?
+>>>>
+>>>
+>>> At this point, unless there are any objections, I think we should jus=
+t
+>>> revert the two patches
+>> Uhm, no.
+>>
+>> Why "the two" patches?
+>>
+>> This email, part of this thread,
+>>
+>> https://lore.kernel.org/all/87r0kircdo.fsf@vps.thesusis.net/
+>>
+>> clearly states that reverting *only* this commit,
+>> 56e449603f0ac5 drm/sched: Convert the GPU scheduler to variable number=
+ of run-queues
+>> *does not* mitigate the failed suspend. (Furthermore, this commit does=
+n't really change
+>> anything operational, other than using an allocated array, instead of =
+a static one, in DRM,
+>> while the 2nd patch is solely contained within the amdgpu driver code.=
+)
+>>
+>> Leaving us with only this change,
+>> b70438004a14f4 drm/amdgpu: move buffer funcs setting up a level
+>> to be at fault, as the kernel log attached in the linked email above s=
+hows.
+>>
+>> The conclusion is that only b70438004a14f4 needs reverting.
+>=20
+> b70438004a14f4 was a fix for 56e449603f0ac5.  Without b70438004a14f4,
+> 56e449603f0ac5 breaks amdgpu.
 
->       then:
-> -      # Historic bindings tied to the driver implementation
-> +      # Obsolete historic bindings tied to the driver implementation
->         # The clocks provided here are meant to be matched with the input
->         # known (hard-coded) in the driver and used to select pwm clock
->         # source. Currently, the linux driver ignores this.
-> +      # This is kept to maintain ABI backward compatibility.
+It doesn't "break" it, amdgpu just needs to be fixed.
 
-Same here, this should go in a third patch
+I know we put in a Fixes tag in=20
+b70438004a14f4 "drm/amdgpu: move buffer funcs setting up a level"
+pointing to 56e449603f0ac5 "drm/sched: Convert the GPU scheduler to varia=
+ble number of run-queues",
+but given the testing Phillip has done, the culprit is wholly contained i=
+n
+the amdgpu driver code.
 
->         properties:
-> +        clocks:
-> +          maxItems: 2
->           clock-names:
->             oneOf:
->               - items:
-> @@ -83,6 +95,27 @@ allOf:
->                   - const: clkin0
->                   - const: clkin1
->   
-> +  # Newer binding where clock describe the actual clock inputs of the pwm
-> +  # block. These are necessary but some inputs may be grounded.
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - amlogic,meson8-pwm-v2
-> +    then:
-> +      properties:
-> +        clocks:
-> +          minItems: 1
-> +          items:
-> +            - description: input clock 0 of the pwm block
-> +            - description: input clock 1 of the pwm block
-> +            - description: input clock 2 of the pwm block
-> +            - description: input clock 3 of the pwm block
-> +        clock-names: false
-> +      required:
-> +        - clocks
-> +
->     # Newer IP block take a single input per channel, instead of 4 inputs
->     # for both channels
->     - if:
-> @@ -112,6 +145,13 @@ examples:
->         clock-names = "clkin0", "clkin1";
->         #pwm-cells = <3>;
->       };
-> +  - |
-> +    pwm@2000 {
-> +      compatible = "amlogic,meson8-pwm-v2";
-> +      reg = <0x1000 0x10>;
-> +      clocks = <&xtal>, <0>, <&fdiv4>, <&fdiv5>;
-> +      #pwm-cells = <3>;
-> +    };
->     - |
->       pwm@1000 {
->         compatible = "amlogic,meson-s4-pwm";
+No other driver has this problem since commit 56e449603f0ac5.
 
-Neil
+The Fixes tag in b70438004a14f4 "drm/amdgpu: move buffer funcs setting up=
+ a level" should've ideally
+pointed to an amdgpu-driver code commit only (perhaps an old-old commit),=
+ and I was a bit uncomfortable
+putting in a Fixes tag which pointed to drm code, but we did it so that t=
+he amdgpu commit follows
+the changes in DRM. In retrospect, the Fixes tag should've pointed to and=
+ amdgpu-driver commit when
+that the amdgpu code was originally written.
+
+I remember that the problem was really that amdgpu called drm_sched_entit=
+y_init(),
+in amdgpu_ttm_set_buffer_funcs_status() without actually having initializ=
+ed the scheduler
+used therein. For instance, the code before commit b70438004a14f4, looked=
+ like this:
+
+void amdgpu_ttm_set_buffer_funcs_status(struct amdgpu_device *adev, bool =
+enable)
+{
+	struct ttm_resource_manager *man =3D ttm_manager_type(&adev->mman.bdev, =
+TTM_PL_VRAM);
+	uint64_t size;
+	int r;
+
+	if (!adev->mman.initialized || amdgpu_in_reset(adev) ||
+	    adev->mman.buffer_funcs_enabled =3D=3D enable)
+		return;
+
+	if (enable) {
+		struct amdgpu_ring *ring;
+		struct drm_gpu_scheduler *sched;
+
+		ring =3D adev->mman.buffer_funcs_ring;
+		sched =3D &ring->sched;                             <-- LT: No one has =
+initialized this scheduler
+		r =3D drm_sched_entity_init(&adev->mman.entity,     <-- Oopses, now tha=
+t sched->sched_rq is not a static array
+					  DRM_SCHED_PRIORITY_KERNEL, &sched,
+					  1, NULL);
+		if (r) {
+			DRM_ERROR("Failed setting up TTM BO move entity (%d)\n",
+				  r);
+			return;
+		}
+
+
+Before commit 56e449603f0ac5, amdgpu was getting away with this, because =
+the sched->sched_rq
+was a static array.
+
+Ideally, amdgpu code would be fixed.
+--=20
+Regards,
+Luben
+
+--------------MuT0iEzPiRE10VeiMpxSflIk
+Content-Type: application/pgp-keys; name="OpenPGP_0x4C15479431A334AF.asc"
+Content-Disposition: attachment; filename="OpenPGP_0x4C15479431A334AF.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xjMEZTohOhYJKwYBBAHaRw8BAQdAWSq76k+GsENjDTMVCy9Vr4fAO9Rb57/bPT1A
+PnbnnRHNIkx1YmVuIFR1aWtvdiA8bHR1aWtvdjg5QGdtYWlsLmNvbT7CmQQTFgoA
+QRYhBJkj7+VmFO9beaAl10wVR5QxozSvBQJlOiE6AhsDBQkJZgGABQsJCAcCAiIC
+BhUKCQgLAgQWAgMBAh4HAheAAAoJEEwVR5QxozSvSm4BAOwCpX53DTQhE20FBGlT
+MqKCOQyJqlMcIQ9SO1qPWX1iAQCv3vfyJwktF7REl1yt7IU2Sye1qmQMfJxdt9JM
+bMNNBs44BGU6IToSCisGAQQBl1UBBQEBB0BT9wSPcCE8uGe7FWo8C+nTSyWPXKTx
+9F0gpEnlqReRBwMBCAfCfgQYFgoAJhYhBJkj7+VmFO9beaAl10wVR5QxozSvBQJl
+OiE6AhsMBQkJZgGAAAoJEEwVR5QxozSvSsYA/2LIFjbxQ2ikbU5S0pKoaMDzO9eG
+z69uNhNWJcvIKJK6AQC9228Mqc1JeZMIyjYWr2HKYHi8S2q2/zHrSZwAWYYwDA=3D=3D
+=3DqCaZ
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------MuT0iEzPiRE10VeiMpxSflIk--
+
+--------------jdFCh49Ay0wTOfXIQ5VBNmuF--
+
+--------------j7wTypPcX4sW4ivkzQYkyKmq
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wnsEABYIACMWIQSZI+/lZhTvW3mgJddMFUeUMaM0rwUCZWdk6gUDAAAAAAAKCRBMFUeUMaM0r2hv
+AP0aSHUC/xllp8MB8hWrrBVNo7NSc2n2uHg5NRzMwqrpfQEA4qwd2RptMLI7lNLpv+dYkg6sgNRJ
+IGR+myJk9DecGAs=
+=V4Z6
+-----END PGP SIGNATURE-----
+
+--------------j7wTypPcX4sW4ivkzQYkyKmq--
