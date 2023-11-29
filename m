@@ -2,75 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5427FDAF4
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:17:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB9917FDAF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:17:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234741AbjK2PRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 10:17:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39124 "EHLO
+        id S234787AbjK2PRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 10:17:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232038AbjK2PRV (ORCPT
+        with ESMTP id S232038AbjK2PRo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 10:17:21 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF8FA3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:17:27 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-41cd4cc515fso37925661cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:17:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1701271047; x=1701875847; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ki5eAeZpOcI54YbTPSCFwp5UJ2eI9c3pK5uL2lEEtZM=;
-        b=t45yazmdyT7D3V75tVpLMivlCMgeR/JvS/+C/lc7BHmzaprkmFWcankS3PQr7flX5U
-         iro9DZmFQLFpz1giKu33Gx3a0hs2o5P0fXJ3nePPDmHNHJBITL4OvksYckJlpZuq6x/t
-         KXpt4mDsz/Men8Xe0f6AnBNSr+ipGBke/yG6hy5keISNVDeIbmnlj0iDfO6k4wEV9XwL
-         tO4AaMXr1vXUfpzmjVkE5JkVyr0ZdvPfDf38HIbti5rcMxqkXLJsocTDGnQU0Yl0KSu2
-         GyQmwozT25v4QB4gsFDL0PDXLh3atKDMZbJPIKzDVL5prK9VcM1yGRM4LnUwqvYt+3N0
-         wOAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701271047; x=1701875847;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ki5eAeZpOcI54YbTPSCFwp5UJ2eI9c3pK5uL2lEEtZM=;
-        b=i54IrLZTv7GbA+6IdYYSBw1vUOuo1XE6foYP1t0uFA9mmFq7TJpLRXAzB8ZCiSTPtC
-         Hkqc96AXvbuMhhs18hp5tSqQxstFW3hQKRG8jYqZl/j4gOk7jGAvdDzN7REnnFD24/mq
-         +q4vQBP0+ktYizRfCyIU3m/OXNddwpz79lpYawFa8rKD016Zp5SLG1Ap+ysErXImpPYS
-         niteNllM3DoHZwFSLdXyG3hNGXBmhzfKu9Fx8qYOhFrGjj4iCBpkrvgeQPd1BXoGgXQW
-         425LX3pv8mivdE2Jht1f5SefHi8HlosPRGnS/N45sHefRTXZBDirk4lqIvKF64S2C1mz
-         Ir7Q==
-X-Gm-Message-State: AOJu0YwbhbNINFse9XBJ1ZjW4Ion84iKA+wUT/4vdLpR9iz6fVeeOMan
-        /xPi4L3wzIks9UPDCou7EP9Ubg==
-X-Google-Smtp-Source: AGHT+IEZIE1AM5E8zn+REarKZMAnlku7irhSBH7MhlpFKWn2MeAvwTjAn78X+XkDrH28XBpWMoOlEQ==
-X-Received: by 2002:ac8:7d12:0:b0:423:792f:d5ca with SMTP id g18-20020ac87d12000000b00423792fd5camr24998108qtb.63.1701271046994;
-        Wed, 29 Nov 2023 07:17:26 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id ay30-20020a05622a229e00b00423a0d10d4csm4386593qtb.62.2023.11.29.07.17.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 07:17:26 -0800 (PST)
-Date:   Wed, 29 Nov 2023 10:17:21 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     akpm@linux-foundation.org, cerasuolodomenico@gmail.com,
-        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
-        vitaly.wool@konsulko.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, chrisl@kernel.org, linux-mm@kvack.org,
-        kernel-team@meta.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org
-Subject: Re: [PATCH v7 3/6] zswap: make shrinking memcg-aware
-Message-ID: <20231129151721.GC135852@cmpxchg.org>
-References: <20231127234600.2971029-1-nphamcs@gmail.com>
- <20231127234600.2971029-4-nphamcs@gmail.com>
+        Wed, 29 Nov 2023 10:17:44 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41AFDBE
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:17:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hVe+YsT+KR+z33Feh0S2abrktnXFj3/Xq7PW7szlVro=; b=OqoUxFpIqv9MhZcTS2Ll09NpHG
+        699z6qO5qmlcNFR+1/9OLhgk4TBWZyo0iTYRrjK8OySQIMBBkPWtpqkKvyTrdPUCwEs45hUBSOaUC
+        kYfvehnaUlhhLjSky8aLSOMWHKuLTDdPIQ8M/DM2fq4KFZXfSd3QtHefF/rk8d2yB9QtOfi37UF3X
+        AmPyFsKY5BSoucK7HfyX1rV4rH5yTpc7Yc1pM9h3MDmkC2YH4gIacTzJR1t2sC+FJVf5mv/FCi1iT
+        ZoDNVJ9utk4HgVCUv4QlW+RoZyIkiSZMMqb3ZzlrQMlx6ei66rtZensSuc7SYEf4m0FHKg5QpmsRE
+        py05Z28g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r8MJr-00DVpi-As; Wed, 29 Nov 2023 15:17:43 +0000
+Date:   Wed, 29 Nov 2023 15:17:43 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Zhiguo Jiang <justinjiang@vivo.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, opensource.kernel@vivo.com
+Subject: Re: [PATCH] mm:vmscan: fix shrink sc->nr counter values issue
+Message-ID: <ZWdWFx1mXl29dP5U@casper.infradead.org>
+References: <20231129130126.2130-1-justinjiang@vivo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231127234600.2971029-4-nphamcs@gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+In-Reply-To: <20231129130126.2130-1-justinjiang@vivo.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,43 +49,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 03:45:57PM -0800, Nhat Pham wrote:
->  static void shrink_worker(struct work_struct *w)
->  {
->  	struct zswap_pool *pool = container_of(w, typeof(*pool),
->  						shrink_work);
-> +	struct mem_cgroup *memcg;
->  	int ret, failures = 0;
+On Wed, Nov 29, 2023 at 09:01:26PM +0800, Zhiguo Jiang wrote:
+> It is needed to ensure sc->nr.unqueued_dirty > 0, which can avoid to
+> set PGDAT_DIRTY flag when sc->nr.unqueued_dirty and sc->nr.file_taken
+> are both zero at the same time.
+
+Have you observed this happening, or is this from code review?
+
+> It can't be guaranteed for the PGDAT_WRITEBACK flag that only pages
+> marked for immediate reclaim are on evictable LRUs in other following
+> shrink processes of the same kswapd shrink recycling. So when both a
+> small amount of pages marked for immediate reclaim and a large amount
+> of pages marked for non-immediate reclaim are on evictable LRUs at the
+> same time, if it's only determined that there is at least a page marked
+> for immediate reclaim on evictable LRUs, kswapd shrink is throttled to
+> sleep, which will increase kswapd process consumption.
+> 
+> It can be fixed to throttle kswapd shrink when sc->nr.immediate is equal
+> to sc->nr.file_taken.
+
+So you're fixing two distinct things in the same patch?
+
+> +++ b/mm/vmscan.c
+> @@ -5915,17 +5915,17 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+>  			set_bit(PGDAT_WRITEBACK, &pgdat->flags);
 >  
-> +	/* global reclaim will select cgroup in a round-robin fashion. */
->  	do {
-> -		ret = zswap_reclaim_entry(pool);
-> -		if (ret) {
-> -			zswap_reject_reclaim_fail++;
-> -			if (ret != -EAGAIN)
-> -				break;
-> +		spin_lock(&zswap_pools_lock);
-> +		memcg = pool->next_shrink =
-> +			mem_cgroup_iter_online(NULL, pool->next_shrink, NULL, true);
-> +
-> +		/* full round trip */
-> +		if (!memcg) {
-> +			spin_unlock(&zswap_pools_lock);
->  			if (++failures == MAX_RECLAIM_RETRIES)
->  				break;
-> +
-> +			goto resched;
->  		}
-> +
-> +		/*
-> +		 * Acquire an extra reference to the iterated memcg in case the
-> +		 * original reference is dropped by the zswap offlining callback.
-> +		 */
-> +		css_get(&memcg->css);
+>  		/* Allow kswapd to start writing pages during reclaim.*/
+> -		if (sc->nr.unqueued_dirty == sc->nr.file_taken)
+> +		if (sc->nr.unqueued_dirty && sc->nr.unqueued_dirty == sc->nr.file_taken)
+>  			set_bit(PGDAT_DIRTY, &pgdat->flags);
+>  
+>  		/*
+> -		 * If kswapd scans pages marked for immediate
+> +		 * If kswapd scans massive pages marked for immediate
 
-struct mem_cgroup isn't defined when !CONFIG_MEMCG. This needs a
-mem_cgroup_get() wrapper and a dummy function for no-memcg builds.
+I don't understand why you've added the word "massive".  Do you mean
+that the pages are large, or that kswapd has scanned a lot of pages?
 
-With that fixed, though, everything else looks good to me:
-
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+>  		 * reclaim and under writeback (nr_immediate), it
+>  		 * implies that pages are cycling through the LRU
+>  		 * faster than they are written so forcibly stall
+>  		 * until some pages complete writeback.
+>  		 */
+> -		if (sc->nr.immediate)
+> +		if (sc->nr.immediate && sc->nr.immediate == sc->nr.file_taken)
+>  			reclaim_throttle(pgdat, VMSCAN_THROTTLE_WRITEBACK);
+>  	}
