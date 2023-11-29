@@ -2,157 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 484BB7FE2AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 23:08:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E043D7FE2B1
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 23:08:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234678AbjK2WIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 17:08:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45038 "EHLO
+        id S234707AbjK2WIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 17:08:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjK2WIL (ORCPT
+        with ESMTP id S234674AbjK2WIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 17:08:11 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on20604.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e88::604])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DAF1B6;
-        Wed, 29 Nov 2023 14:08:18 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BGPJjuL1A2ghX19Z4GKhWMkdNmV4VX7TZ+4zjyrH89JXZWBol+sBmW+PH4FV40HsJmJ9gE8FwYOnz9/RcwnY9bu1hpKvSTEYWcRccOLxVpF4KhqHlQ3k7digLNc/T/7W3fCvMpFRmTRTLqVp6lQX9q3eZyrNI1CdOvUDs91mIAnUsK6e48Dv9y2XZx6FLLSmaYwg5HuY5H9VSrZAKU5TaAOMmRP3tWWWzHMoFB6gjVQ+JR3KUiyLiVcDPSYgAllzMbkhLi8UBWKDJfUvGKwrKhd4rTsge7tEX6NT2VE18EwoqhAZFv1vRfPTmP/3pYjOnC0AykJZNweFdeJwLvQO0A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EUUIYiooi48U7gokQs+cOO59oRM8q4QpIhJZPG4jd+0=;
- b=lz3QlKU/JrAMwxaGJhnMF+EOdBt1olN6jgamtXE1iuU2/g+HE6RyYu1oHHOXO6m1Wt3LK7gzEJUsdW2aFk2khuJHQXRq37NJPk1ZxwJpPyntFttgyEqT6y8MvvEeiw9NPnI3kFciNJs3BRtGKts11EEPUl9icLT2cPFN5NiCAjCnPp4X46lHEzNL/a4VMX3Qg8E7fHMNJ65YI4ZlBWzdQ4WXWjHl9AY0Z2SwB4ko87zaCWHzQ+vhbEsuscGubCl250Yo/krIF6keiAuJKVM0GOzaXO7cvbz16OlbLeP2UzOaxcDQ9O1jxAMH9XTflQ5Vwg5+uv3QP4xyP7Mj/5Pv0Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=oracle.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EUUIYiooi48U7gokQs+cOO59oRM8q4QpIhJZPG4jd+0=;
- b=kWgjJ7jFINnl9Dy+wunfrK7z8xH0nXqbMluuFiw1pdOpuKUzIbWTydfvNK9aHfpxhspYA42yd/ba3+F2xu0jG3DpWEolf6fIIkefGWlmGWm30RZLTMRPwOKS0Nz68ecg4wK1022f3aedxx2SUGSwJ82Ab+BlxmJc90cpGD8BGXeQMlIhV8R1ejMOKqp/IaSgduKzwfK1x3/W4UlMNrNTJxddrv69B1JkRbASZeAQkkBRUbZWINJjsoX826E0lOF9aaYRMe7Tql717nxxmBYcpn+EHZTBK1ddC4fhDvpQOIXWqpqUCiwh01gT3KhbVYHAIqTNxArl4u5KJuSI6jJHow==
-Received: from BL1P222CA0018.NAMP222.PROD.OUTLOOK.COM (2603:10b6:208:2c7::23)
- by CH2PR12MB4971.namprd12.prod.outlook.com (2603:10b6:610:6b::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Wed, 29 Nov
- 2023 22:08:13 +0000
-Received: from BL02EPF0001A105.namprd05.prod.outlook.com
- (2603:10b6:208:2c7:cafe::1c) by BL1P222CA0018.outlook.office365.com
- (2603:10b6:208:2c7::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29 via Frontend
- Transport; Wed, 29 Nov 2023 22:08:13 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- BL02EPF0001A105.mail.protection.outlook.com (10.167.241.137) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7046.17 via Frontend Transport; Wed, 29 Nov 2023 22:08:12 +0000
-Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 29 Nov
- 2023 14:08:01 -0800
-Received: from drhqmail203.nvidia.com (10.126.190.182) by
- drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.41; Wed, 29 Nov 2023 14:08:00 -0800
-Received: from Asurada-Nvidia (10.127.8.9) by mail.nvidia.com (10.126.190.182)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41 via Frontend
- Transport; Wed, 29 Nov 2023 14:07:59 -0800
-Date:   Wed, 29 Nov 2023 14:07:58 -0800
-From:   Nicolin Chen <nicolinc@nvidia.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
-        "Zeng, Xin" <xin.zeng@intel.com>,
-        "Zhao, Yan Y" <yan.y.zhao@intel.com>
-Subject: Re: [PATCH v6 2/6] iommufd: Add IOMMU_HWPT_INVALIDATE
-Message-ID: <ZWe2PvatTkkyNCY5@Asurada-Nvidia>
-References: <ZVuZOYFzAaCuJjXZ@Asurada-Nvidia>
- <BN9PR11MB5276C8EACE2C300A646EA8A18CBBA@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZVw/BXxgGCuCZCA6@Asurada-Nvidia>
- <BN9PR11MB52761A9B48A25E89BEECE6308CB8A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZWTzoBTDDEWAKMs9@Asurada-Nvidia>
- <BN9PR11MB5276FD60A0EDF8E3F231FCC88CBCA@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZWaLCSAMIOXTlghk@Asurada-Nvidia>
- <20231129005715.GS436702@nvidia.com>
- <ZWaPM4p7yjJ0sEKk@Asurada-Nvidia>
- <20231129195804.GF436702@nvidia.com>
+        Wed, 29 Nov 2023 17:08:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B33B6D1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:08:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701295722;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=EwDzdDItBJXcdcquSttPHmAm63Z9qClgG73YO2gODcE=;
+        b=Wgyh1fYhd9fRxOW3tcH6zj8Wu7qu4VRR3bBhNhj1TR/YI7lInm0OrqDhLC+YIPcQo4e1pX
+        g9ISt+XrmYJxfbqztXUpBnqIRWoQMjzszOr9LCYtLQv+oYLxgo/vzyT7W4wM+cN/mCFHw9
+        qrLUIUPsWvnFLtttTXzKXPr9EGKoUl8=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-597-1ShP3SOBO0eR23hRXbIJzQ-1; Wed, 29 Nov 2023 17:08:40 -0500
+X-MC-Unique: 1ShP3SOBO0eR23hRXbIJzQ-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a01991968f5so26051566b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:08:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701295719; x=1701900519;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EwDzdDItBJXcdcquSttPHmAm63Z9qClgG73YO2gODcE=;
+        b=Rf5vZhfc91yGunVYVIOmwZvvfX+nfd4IyupbOg6t4f8bIJpg6c5dbg5KO6GQKUmUNY
+         +WjaOjbU/s+8iIg4m9BwyVrIywCbVyr/bJ5YrMG3YTljCGqDMwJbHV1oi9e3YnB+kmPO
+         3d0QdQyIfayhCj1jHjWF/1OBV41zqsDuQMSW2MV1pZix3H2B4yUBs2lTR/zwoqRWBAWm
+         KNMpfg5TpVqSGd+tQiY3FmXvAFVONpbKkA94wA+vXTr3WiqRD4fuVweLNGhEZVxnKUbJ
+         uffQTdxba06uHdPlQwDGrhWpBFDr5KzCeN0hIK+gw1O/IR3uBdig4Zdql2s8S7yWUHI3
+         4q0w==
+X-Gm-Message-State: AOJu0YxPBej4+WagE8ZC0rGDIyrR8Xcca7HiHodpPFKvWsu8EfAbWBs2
+        OfeuXX0ijL78NCDJ58TisKBw1cbzxphYvSAQjRjhqWb1p+C2b9hu3k5P3mVBoEbyy6LKVxeFE6Y
+        25Wq6aK4AxUvY2vhN3iOFyZy5
+X-Received: by 2002:a17:906:3fd6:b0:a02:8820:cfa4 with SMTP id k22-20020a1709063fd600b00a028820cfa4mr12351654ejj.32.1701295719412;
+        Wed, 29 Nov 2023 14:08:39 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGSpZxd6lUeE167toP/YcYRTZtdRiDojthFKJUloBIdXRvKtOG8bdnDO/aG82E9od51VGUg8A==
+X-Received: by 2002:a17:906:3fd6:b0:a02:8820:cfa4 with SMTP id k22-20020a1709063fd600b00a028820cfa4mr12351649ejj.32.1701295719172;
+        Wed, 29 Nov 2023 14:08:39 -0800 (PST)
+Received: from pollux.. ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
+        by smtp.gmail.com with ESMTPSA id b6-20020a170906660600b009fc42f37970sm8450609ejp.171.2023.11.29.14.08.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 14:08:38 -0800 (PST)
+From:   Danilo Krummrich <dakr@redhat.com>
+To:     mripard@kernel.org, airlied@gmail.com, daniel@ffwll.ch,
+        frank.binns@imgtec.com, donald.robson@imgtec.com,
+        matt.coster@imgtec.com, sarah.walker@imgtec.com
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Danilo Krummrich <dakr@redhat.com>
+Subject: [PATCH drm-misc-next v2 0/2] PowerVR VM fixes
+Date:   Wed, 29 Nov 2023 23:07:59 +0100
+Message-ID: <20231129220835.297885-1-dakr@redhat.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231129195804.GF436702@nvidia.com>
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL02EPF0001A105:EE_|CH2PR12MB4971:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4159509c-2c24-4c5d-18f0-08dbf127ae32
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zKiX52CTXxtFxC4CzhllXqk1yHguA2ZzganmjtDKXbpK9DOeBSTDd//XOWv+AgPUOyTWyPzqVg5x0lNDOXZjlOB3HlCdbtHMqMMt8OG4YK4b/jvBZErX8EwM2Z+L7mQGPtkbP/Qv6ZwrIRht2P9DtG2GggxOZzefPSw2znXRsha0stqyQ1rnDymXIxZ4Lunx4RNUwXuMJQ92jdh5JTTj8YfUSlKv2dsbwb0u9zL8Rl8N3PKrqiu/VJhP3OmPzLRHK3W3ZuFUGjBhF08hu6JRaFxsORLDwUZVux3qCc/cssoln2PrKOlLAdTRW3IYwBYSgbfV/7odeGZTwWMZKtEfQ5ILqgb0F4dc3Lsa7c2o+T3EHW+0A9WvPyVc1nmHNvqBYUVtwPFpCHgQFU9z/Vaxnw4w+R8S/1eme9ttwPqQNG6xjNkoCZE+kVTcULIfoNkzW3iF/MaEyY6uj7RGh0uZ5KnBoBuWhdwwxyenMDeP9OgH8RJbocD3c1x3YiI3XULqDdSEc0fi21SgQkGLXDtILJ1SEbuX5zi3kEmDq5YP7Fnv8+XG3nwh7f0mZt4bgD36GWZDZiMM2eJdtIYnuZUiPxDW6UF7CfpEMZ9yzcjXeN4kp9HA6lzZp8giDovRoPlixsMbqfBvJwBPWzYARVc4BuZ+kjcRhtIa5/1KqeZ4RdMrIfNSheV2IbjnedhwidP+jVseasdzeHHIEuSJ86TR8RphVmd2VTI5n+Dq7qGV1qU0aAQfqtMBrv+Vw1LpY4+4Sv94kKr0Wo0UZeRsdmoLALZZfdq/zqbaAD6oLJXgwBQ=
-X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(136003)(39860400002)(346002)(376002)(230922051799003)(1800799012)(451199024)(64100799003)(82310400011)(186009)(40470700004)(36840700001)(46966006)(40460700003)(5660300002)(2906002)(7416002)(86362001)(478600001)(4744005)(33716001)(426003)(26005)(316002)(4326008)(9686003)(8676002)(6862004)(8936002)(70206006)(6636002)(54906003)(7636003)(47076005)(70586007)(82740400003)(336012)(83380400001)(356005)(202311291699003)(36860700001)(40480700001)(55016003)(41300700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 22:08:12.9563
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4159509c-2c24-4c5d-18f0-08dbf127ae32
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0001A105.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4971
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 03:58:04PM -0400, Jason Gunthorpe wrote:
-> On Tue, Nov 28, 2023 at 05:09:07PM -0800, Nicolin Chen wrote:
-> 
-> > > > With that being said, I think errno (-EIO) could do the job,
-> > > > as you suggested too.
-> > > 
-> > > Do we have any idea what HW failures can be generated by the commands
-> > > this will execture? IIRC I don't remember seeing any smmu specific
-> > > codes related to invalid invalidation? Everything is a valid input?
-> > 
-> > "7.1 Command queue errors" has the info.
-> 
-> Hmm CERROR_ATC_INV_SYNC needs to be forwarded to the guest somehow
+Hi,
 
-Oh, for sure. That's typically triggered with an asynchronous
-timeout from the eventq, so we'd need the io page fault series
-as you previously remarked. Though I also wonder if an invalid
-vSID that doesn't link to a pSID should be CERROR_ATC_INV_SYNC
-also v.s. CERROR_ILL.
+Some major GPUVM changes landed just before v8 of the PowerVR series. Since v8
+went in rather quickly (review process was finished otherwise) I haven't had the
+chance to review the subsequent code changes.
+
+Hence, this series with a few fixes in this context. Plus a minor GPUVM patch to
+make the drm_gpuvm_prepare_* helpers useful for PowerVR.
+
+- Danilo
+
+Changes in V2
+=============
+- GPUVM: update function DOC comment to indicate the passing zero fences to
+  drm_gpuvm_prepare_* functions results into drm_exec_lock_obj() calls rather
+  than drm_exec_prepare_obj() calls.
+- pvr/vm: use drm_gpuvm_exec wrappers
+- drop 3 patches which were applied already
+
+Danilo Krummrich (2):
+  drm/gpuvm: fall back to drm_exec_lock_obj()
+  drm/imagination: vm: make use of GPUVM's drm_exec helper
+
+ drivers/gpu/drm/drm_gpuvm.c          | 43 +++++++++++--
+ drivers/gpu/drm/imagination/pvr_vm.c | 91 +++++++++++-----------------
+ include/drm/drm_gpuvm.h              | 23 +------
+ 3 files changed, 77 insertions(+), 80 deletions(-)
+
+
+base-commit: 83dc1029dcf50b5b849b26679a1b3f860b85d79c
+-- 
+2.43.0
+
