@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7227FD2B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:29:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 581037FD2B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:30:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231162AbjK2J3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 04:29:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52082 "EHLO
+        id S231571AbjK2J3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 04:29:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231334AbjK2J3J (ORCPT
+        with ESMTP id S230305AbjK2J3S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 04:29:09 -0500
+        Wed, 29 Nov 2023 04:29:18 -0500
 Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D23B1FDB;
-        Wed, 29 Nov 2023 01:29:08 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 177462110;
+        Wed, 29 Nov 2023 01:29:14 -0800 (PST)
 Received: from pyrite.hamster-moth.ts.net (h175-177-049-135.catv02.itscom.jp [175.177.49.135])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 996DB89D;
-        Wed, 29 Nov 2023 10:28:26 +0100 (CET)
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 89D2D842;
+        Wed, 29 Nov 2023 10:28:32 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1701250111;
-        bh=4/NZIxlq9+db/RkRGRL0u0nAKXLTJYVgIVWLL+c7QAY=;
+        s=mail; t=1701250117;
+        bh=2byPOubDIhuNNLMn/IhMnG0vKdNyuZsY+M5nTPI/v3E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=msNxtDI5Pp7MeOlz2NYuA4cGmKTu6KQHFVRBNsqqdGlMTmfI6QOjox2wWD0KrT/v6
-         oBAlcUcDMg4i0QUGMAhzyP9so4sox1xmpcCa0oIC36/uPdsK5pciD6MGzXBsvrNW5M
-         SI6h7rj4Ki+yxah8hjrqoCV7ebnW9x6RAak+iKh8=
+        b=kqEUaTB4PhJA98qF2nnuYwAwV7X4fGiu448o5mTBUtNHIV9fDCnKCbpNRLIkoKeXH
+         ElXsBnCkFvngzFliFIHFAlRyX5P+Z4uViJ9CGaGLGWVcLw1k2L9K/SnVqRvO4+wyVN
+         O9vPyXLAtw+vEL82mc7SCeY/IYD+Ntw7nG//yON8=
 From:   Paul Elder <paul.elder@ideasonboard.com>
 To:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
         devicetree@vger.kernel.org
@@ -37,9 +37,9 @@ Cc:     kieran.bingham@ideasonboard.com, tomi.valkeinen@ideasonboard.com,
         Heiko Stuebner <heiko@sntech.de>,
         linux-arm-kernel@lists.infradead.org (moderated list:ARM/Rockchip SoC
         support), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v4 09/11] media: rkisp1: Shift DMA buffer addresses on i.MX8MP
-Date:   Wed, 29 Nov 2023 18:27:57 +0900
-Message-Id: <20231129092759.242641-10-paul.elder@ideasonboard.com>
+Subject: [PATCH v4 10/11] media: rkisp1: Add YC swap capability
+Date:   Wed, 29 Nov 2023 18:27:58 +0900
+Message-Id: <20231129092759.242641-11-paul.elder@ideasonboard.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231129092759.242641-1-paul.elder@ideasonboard.com>
 References: <20231129092759.242641-1-paul.elder@ideasonboard.com>
@@ -54,114 +54,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the ISP that is integrated in the i.MX8MP, DMA addresses have been
-extended to 34 bits, with the 32 MSBs stored in the DMA address
-registers and the 2 LSBs set to 0. Shift the buffer addresses right by 2
-on that platform.
+The ISP version in the i.MX8MP has an MI_OUTPUT_ALIGN_FORMAT register
+that the rk3399 does not have. This register allows swapping bytes,
+which can be used to implement UYVY from YUYV.
+
+Add a feature flag to signify the presence of this feature, and add it
+to the i.MX8MP match data. Also add it as a flag to the format info in
+the list of supported formats by the capture v4l2 devices, and update
+enum_fmt and s_fmt to take it into account.
 
 Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
 Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 ---
-Changes since v2:
-
-- Document the RKISP1_FEATURE_DMA_34BIT bit
-- Use the rkisp1_has_feature() macro
-
- .../platform/rockchip/rkisp1/rkisp1-capture.c  | 18 ++++++++++--------
- .../platform/rockchip/rkisp1/rkisp1-common.h   |  2 ++
- .../platform/rockchip/rkisp1/rkisp1-dev.c      |  3 ++-
- 3 files changed, 14 insertions(+), 9 deletions(-)
+ .../platform/rockchip/rkisp1/rkisp1-capture.c | 26 ++++++++++++++-----
+ .../platform/rockchip/rkisp1/rkisp1-common.h  |  2 ++
+ .../platform/rockchip/rkisp1/rkisp1-dev.c     |  3 ++-
+ 3 files changed, 23 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
-index ab369baf8d1b..c307e07d897a 100644
+index c307e07d897a..a352893308b6 100644
 --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
 +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
-@@ -648,6 +648,8 @@ static void rkisp1_dummy_buf_destroy(struct rkisp1_capture *cap)
- 
- static void rkisp1_set_next_buf(struct rkisp1_capture *cap)
+@@ -47,13 +47,15 @@ enum rkisp1_plane {
+  * @fourcc: pixel format
+  * @fmt_type: helper filed for pixel format
+  * @uv_swap: if cb cr swapped, for yuv
++ * @yc_swap: if y and cb/cr swapped, for yuv
+  * @write_format: defines how YCbCr self picture data is written to memory
+  * @output_format: defines sp output format
+  * @mbus: the mbus code on the src resizer pad that matches the pixel format
+  */
+ struct rkisp1_capture_fmt_cfg {
+ 	u32 fourcc;
+-	u8 uv_swap;
++	u32 uv_swap : 1;
++	u32 yc_swap : 1;
+ 	u32 write_format;
+ 	u32 output_format;
+ 	u32 mbus;
+@@ -1159,10 +1161,14 @@ rkisp1_fill_pixfmt(const struct rkisp1_capture *cap,
+ static const struct rkisp1_capture_fmt_cfg *
+ rkisp1_find_fmt_cfg(const struct rkisp1_capture *cap, const u32 pixelfmt)
  {
-+	u8 shift = rkisp1_has_feature(cap->rkisp1, DMA_34BIT) ? 2 : 0;
++	bool yc_swap_support = rkisp1_has_feature(cap->rkisp1, MI_OUTPUT_ALIGN);
+ 	unsigned int i;
+ 
+ 	for (i = 0; i < cap->config->fmt_size; i++) {
+-		if (cap->config->fmts[i].fourcc == pixelfmt)
++		const struct rkisp1_capture_fmt_cfg *fmt = &cap->config->fmts[i];
 +
- 	cap->buf.curr = cap->buf.next;
- 	cap->buf.next = NULL;
++		if (fmt->fourcc == pixelfmt &&
++		    (!fmt->yc_swap || yc_swap_support))
+ 			return &cap->config->fmts[i];
+ 	}
+ 	return NULL;
+@@ -1231,23 +1237,29 @@ static int rkisp1_enum_fmt_vid_cap_mplane(struct file *file, void *priv,
+ {
+ 	struct rkisp1_capture *cap = video_drvdata(file);
+ 	const struct rkisp1_capture_fmt_cfg *fmt = NULL;
++	bool yc_swap_support = rkisp1_has_feature(cap->rkisp1, MI_OUTPUT_ALIGN);
+ 	unsigned int i, n = 0;
  
-@@ -660,7 +662,7 @@ static void rkisp1_set_next_buf(struct rkisp1_capture *cap)
- 		buff_addr = cap->buf.next->buff_addr;
+-	if (!f->mbus_code) {
+-		if (f->index >= cap->config->fmt_size)
+-			return -EINVAL;
++	if (f->index >= cap->config->fmt_size)
++		return -EINVAL;
  
- 		rkisp1_write(cap->rkisp1, cap->config->mi.y_base_ad_init,
--			     buff_addr[RKISP1_PLANE_Y]);
-+			     buff_addr[RKISP1_PLANE_Y] >> shift);
- 		/*
- 		 * In order to support grey format we capture
- 		 * YUV422 planar format from the camera and
-@@ -669,17 +671,17 @@ static void rkisp1_set_next_buf(struct rkisp1_capture *cap)
- 		if (cap->pix.cfg->fourcc == V4L2_PIX_FMT_GREY) {
- 			rkisp1_write(cap->rkisp1,
- 				     cap->config->mi.cb_base_ad_init,
--				     cap->buf.dummy.dma_addr);
-+				     cap->buf.dummy.dma_addr >> shift);
- 			rkisp1_write(cap->rkisp1,
- 				     cap->config->mi.cr_base_ad_init,
--				     cap->buf.dummy.dma_addr);
-+				     cap->buf.dummy.dma_addr >> shift);
- 		} else {
- 			rkisp1_write(cap->rkisp1,
- 				     cap->config->mi.cb_base_ad_init,
--				     buff_addr[RKISP1_PLANE_CB]);
-+				     buff_addr[RKISP1_PLANE_CB] >> shift);
- 			rkisp1_write(cap->rkisp1,
- 				     cap->config->mi.cr_base_ad_init,
--				     buff_addr[RKISP1_PLANE_CR]);
-+				     buff_addr[RKISP1_PLANE_CR] >> shift);
- 		}
- 	} else {
- 		/*
-@@ -687,11 +689,11 @@ static void rkisp1_set_next_buf(struct rkisp1_capture *cap)
- 		 * throw data if there is no available buffer.
- 		 */
- 		rkisp1_write(cap->rkisp1, cap->config->mi.y_base_ad_init,
--			     cap->buf.dummy.dma_addr);
-+			     cap->buf.dummy.dma_addr >> shift);
- 		rkisp1_write(cap->rkisp1, cap->config->mi.cb_base_ad_init,
--			     cap->buf.dummy.dma_addr);
-+			     cap->buf.dummy.dma_addr >> shift);
- 		rkisp1_write(cap->rkisp1, cap->config->mi.cr_base_ad_init,
--			     cap->buf.dummy.dma_addr);
-+			     cap->buf.dummy.dma_addr >> shift);
++	if (!f->mbus_code && yc_swap_support) {
+ 		fmt = &cap->config->fmts[f->index];
+ 		f->pixelformat = fmt->fourcc;
+ 		return 0;
  	}
  
- 	/* Set plane offsets */
+ 	for (i = 0; i < cap->config->fmt_size; i++) {
+-		if (cap->config->fmts[i].mbus != f->mbus_code)
++		fmt = &cap->config->fmts[i];
++
++		if (f->mbus_code && fmt->mbus != f->mbus_code)
++			continue;
++
++		if (!yc_swap_support && fmt->yc_swap)
+ 			continue;
+ 
+ 		if (n++ == f->index) {
+-			f->pixelformat = cap->config->fmts[i].fourcc;
++			f->pixelformat = fmt->fourcc;
+ 			return 0;
+ 		}
+ 	}
 diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-index 859f194714b9..2c8fb28924e4 100644
+index 2c8fb28924e4..fca3d55c50ad 100644
 --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
 +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-@@ -106,6 +106,7 @@ enum rkisp1_isp_pad {
-  * @RKISP1_FEATURE_MAIN_STRIDE: The ISP supports configurable stride on the main path
+@@ -107,6 +107,7 @@ enum rkisp1_isp_pad {
   * @RKISP1_FEATURE_SELF_PATH: The ISP has a self path
   * @RKISP1_FEATURE_DUAL_CROP: The ISP has the dual crop block at the resizer input
-+ * @RKISP1_FEATURE_DMA_34BIT: The ISP uses 34-bit DMA addresses
+  * @RKISP1_FEATURE_DMA_34BIT: The ISP uses 34-bit DMA addresses
++ * @RKISP1_FEATURE_MI_OUTPUT_ALIGN: The ISP has the MI_OUTPUT_ALIGN_FORMAT register
   *
   * The ISP features are stored in a bitmask in &rkisp1_info.features and allow
   * the driver to implement support for features present in some ISP versions
-@@ -116,6 +117,7 @@ enum rkisp1_feature {
- 	RKISP1_FEATURE_MAIN_STRIDE = BIT(1),
+@@ -118,6 +119,7 @@ enum rkisp1_feature {
  	RKISP1_FEATURE_SELF_PATH = BIT(2),
  	RKISP1_FEATURE_DUAL_CROP = BIT(3),
-+	RKISP1_FEATURE_DMA_34BIT = BIT(4),
+ 	RKISP1_FEATURE_DMA_34BIT = BIT(4),
++	RKISP1_FEATURE_MI_OUTPUT_ALIGN = BIT(5),
  };
  
  #define rkisp1_has_feature(rkisp1, feature) \
 diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-index cd539e4b03b5..8d2e5fee753d 100644
+index 8d2e5fee753d..2b9886fd0800 100644
 --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
 +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-@@ -518,7 +518,8 @@ static const struct rkisp1_info imx8mp_isp_info = {
- 	.isrs = imx8mp_isp_isrs,
+@@ -519,7 +519,8 @@ static const struct rkisp1_info imx8mp_isp_info = {
  	.isr_size = ARRAY_SIZE(imx8mp_isp_isrs),
  	.isp_ver = IMX8MP_V10,
--	.features = RKISP1_FEATURE_MAIN_STRIDE,
-+	.features = RKISP1_FEATURE_MAIN_STRIDE
-+		  | RKISP1_FEATURE_DMA_34BIT,
+ 	.features = RKISP1_FEATURE_MAIN_STRIDE
+-		  | RKISP1_FEATURE_DMA_34BIT,
++		  | RKISP1_FEATURE_DMA_34BIT
++		  | RKISP1_FEATURE_MI_OUTPUT_ALIGN,
  };
  
  static const struct of_device_id rkisp1_of_match[] = {
