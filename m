@@ -2,194 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 298767FD45F
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:37:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C81DE7FD45B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:36:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229954AbjK2Kgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 05:36:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37560 "EHLO
+        id S230012AbjK2KgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 05:36:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjK2Kgb (ORCPT
+        with ESMTP id S229940AbjK2Kf7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 05:36:31 -0500
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D198A2123
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:35:54 -0800 (PST)
-Received: by mail-vs1-xe34.google.com with SMTP id ada2fe7eead31-4644db3b384so89273137.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:35:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701254154; x=1701858954; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=iMrQed01JJcN4xQKdeWzhemwVY/MGHkgvTWPoO+Z2wQ=;
-        b=SGzb55rfa7L990KgU9b9myGKp/rrR1Pw5F6BK670UJKjfKVoWRqBfBcWbbXQhs8cxa
-         BN0leHOABFmqBVSnPsQ8q/pk6A8INh4JR532HdP/BaWzJ/2/fMhZH5OeVzfc/QvS/reO
-         i8vRmYqc3EHo4LRaa8QEal9/vhShvv6RhEp2+XFN9ikZhyUjXW9xzK1LjsxvH7MXZnjq
-         eiqnmZT6Buy2NmaHOMli4NYuYSQE3bQvbnF7Zr2RGlKf7O16CbxrwV3moY7F6/P50sGm
-         S6/2ASfmI0S0EomNF3YIJNSHsPqCEiSP68uyHwOSFcTvqUmjlw2aaREmJIvSjgXt8U7M
-         dkZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701254154; x=1701858954;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iMrQed01JJcN4xQKdeWzhemwVY/MGHkgvTWPoO+Z2wQ=;
-        b=tYP80fGt9JX3n+4SV/IS421JRPMpzHGNlY+GANDL4IR6VKHQRbhV6xmNXr/AUPHo1z
-         BUKrg5feOrNthFtuOCPimCy2QE2a//Fcy135ZksRJ39yhCPcDv9TTk+hu7NOgNeAeSe9
-         SZJR6J1nAlqOVp4BzjVXzvsAHysZPsze2shs3muVIbDtAkYCVUJ702PZ+rWwRlI+Evqf
-         bbBp6FBq+HFdYWuTgsLZHS36npq4d00e+d9bTT2IIhBz6dbP5zWMv24ZUf0oaZ2BNkRb
-         wuxU9iPw/Fu8HTMiHP/0Mv/ExjMczEw2MYIcERzYwWjUrk5XK2xYd4veYJ/PbjXZPxK6
-         E+Mw==
-X-Gm-Message-State: AOJu0YwqkSWjNTLJtcnFi0xiW2gLmnW0WlgKtUbLKY1SFu77zM05SH80
-        ge+sXKeOgP9CWwJ6Fk9leOJmjL39+tLx8MCxb699cw==
-X-Google-Smtp-Source: AGHT+IGyTyUsubURK0Y62/ZJkkb/jcIQV3Lx2dIcd0Dmv73jmLOhEJzKxaomff0g95XI30xBdf2AsBLFYMTIOhT3gt4=
-X-Received: by 2002:a67:fb15:0:b0:464:408a:5d87 with SMTP id
- d21-20020a67fb15000000b00464408a5d87mr3293331vsr.33.1701254153678; Wed, 29
- Nov 2023 02:35:53 -0800 (PST)
+        Wed, 29 Nov 2023 05:35:59 -0500
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01olkn2040.outbound.protection.outlook.com [40.92.99.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 777231BDD
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:35:25 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cR8EMgI2UvrODe1g4tUR2eStjyrHIcbbEe8xxiscpzOFk7ik9LogQQIGkLdNtEpDPnSfy3Kdj5gLbtGgr/tlEcMIg/RM46fRWddM1nlmgmOKRuWdjfdpGPFRiUr8YPomQew+biUSFBzAgc0+MLuhFvIpnHTJuPSuMu9xvotQ+JqrGyftE5Y87AyVQNCFlQqL3r6m4738Kt3Fd9m+yIPVX/4y3BdN6nPTuFUqLhClv8z6z/Wc6vMHkBRGQ05oQoYzf7FfOrpjBu9RcLHe1haSaWNEKTjYm2bDRcWHh1Ysn2wz67yQgRO3nCYP8bsU4/+Jhbmr7fjokWw7SHT1nSbsHA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KFJJH1ZmzPIZ1jjjiy5SBIGGwpOHEHnRm7YSUJoEY4E=;
+ b=GKmRUAiJXJso/pasTxRLgdvQo6LbVknK+3eMTfNI00TAWbQ7WVjZx3LYxFpXLPV9INiuu6UZaD40wRI0RcxK677SY4CUusQxyZMCJDc1Ag3wSX+ZYVG5BQYd4LLTf5LAkUhvHZBPA9d46Svlfkwsr7Nfd7mtBqmuo4usVAl2mj04mMQmFeI5qu0w0rbIUsAHfUTPaftTirEh1+W0PsXJJZGFJKu1LQIK19YBKZFr/wbBkpS9yjYE3P+BnzPb0H2pznMPx8yqwPLiTJkv5nz4kRBlk5EPcyx97mR/ITkHZJXIyzGoi2lVPHWRliL81Bxgmee9XjExCP3G4xr/dE+PMQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KFJJH1ZmzPIZ1jjjiy5SBIGGwpOHEHnRm7YSUJoEY4E=;
+ b=JnNna92MQl7SclVamecyXKp6q8YDWSK0fU3JaJI/ILIL3MGScBHbb66ADnV6+XEFcuENzXZfUhmmaNBXrJeihogqAvf76PQntwqnNwTxPuXkKMyCeszdslJBG8hHhWNzjpsF3XwPcDylqdmdIBg/ju2tVjqQuVL1MUMRP4pB37igSnHqycVg7Cv9CX+5PEJ5qBXewoSUOxxxl58++BRHQVeYeEcn6wMJZiNj94e3OnJ9UF7MWgeXO86drydGA3NHIVStuBh7EwD3IVR/zdY8Lp5iZnI4UHDJ9EkW1ljY+Nc+1xA+3IYqn5RH6Le+xbfgGfpGCfucBINjvruZK7Gx/w==
+Received: from TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:158::13)
+ by TYVP286MB3149.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:299::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.23; Wed, 29 Nov
+ 2023 10:35:22 +0000
+Received: from TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::a621:9714:c1cf:e4f0]) by TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::a621:9714:c1cf:e4f0%7]) with mapi id 15.20.7025.022; Wed, 29 Nov 2023
+ 10:35:22 +0000
+From:   Peng Liu <pngliu@hotmail.com>
+Cc:     frederic@kernel.org, tglx@linutronix.de, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, liupeng17@lenovo.com
+Subject: [PATCH v3 1/2] tick/nohz: Remove duplicate between tick_nohz_switch_to_nohz() and tick_setup_sched_timer()
+Date:   Wed, 29 Nov 2023 18:35:18 +0800
+Message-ID: <TYCP286MB21466A2954F68505833BB0A1C683A@TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231128092354.160263-1-pngliu@hotmail.com>
+References: <20231128092354.160263-1-pngliu@hotmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [I6fVF2Dl7Q2/X75Jng07n1DF4m6pdmwN]
+X-ClientProxiedBy: SI2PR01CA0001.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:191::13) To TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:158::13)
+X-Microsoft-Original-Message-ID: <20231129103518.84437-1-pngliu@hotmail.com>
 MIME-Version: 1.0
-References: <20231129-slub-percpu-caches-v3-0-6bcf536772bc@suse.cz> <20231129-slub-percpu-caches-v3-5-6bcf536772bc@suse.cz>
-In-Reply-To: <20231129-slub-percpu-caches-v3-5-6bcf536772bc@suse.cz>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 29 Nov 2023 11:35:15 +0100
-Message-ID: <CANpmjNNOUozLuop+QddSdNd462J6CysPVcTbS9jP+aswKS9XHg@mail.gmail.com>
-Subject: Re: [PATCH RFC v3 5/9] mm/slub: add opt-in percpu array cache of objects
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, maple-tree@lists.infradead.org,
-        kasan-dev@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYCP286MB2146:EE_|TYVP286MB3149:EE_
+X-MS-Office365-Filtering-Correlation-Id: 594b5f30-3bd9-409d-d11f-08dbf0c6e3ff
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7XfVXht4Xif1sPLcg0B7QIf7wDfAMsQDk6STbn5zmgwyJKt21oIymBT0in41uglFO+vCmiTWimP0tp9R66glTsCwuq/zgSMiRXDBVqbBNokQPr8XCGrjdLvrUQsz7kI+MiJ4zUhuo8Qjl4qfNS0wZy5n697PCfLGskilA2TpXk8eVhy0KZiHPOQZmHjMGxNfHGa0M4hR7X2U853TZi7uvCIwGoike2Cnwl5ttaOiwZwad0SJOLzADKKNA2P49ZjkROUM9bwLEGAfFdYvc1GK23wKtBiYJSGB+qfyoonJcOtD5GqHHgWGPEPE1zG7fCopizGghjdjv20hkLt54nGGunszXTAVJvqYT3WQLtZI9kLPXkD9Pd0ZhxCxGaAgyGSgdtNzzVsaas5B3aJCczBDC83IiqDXym68B2qltQYIXn3bjzp+vD3lxkyZmZZ1wiSgmwBa9N8FFEtXyDClGAeQqQuKjExvSPGz/WGNdrNvnOUyYPCHJTf3nt631Jgi3cH6fAi/VQL6U+dDPlsmQR8fFgUp7kUyzvpSrFjptA74XS7MdbNYr88AtNO2L4VDYVXw
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8Dig7t7Nx3NOtNNC/Sqrgn5JxcpDWD/P/w+FAl3B1EtRQ+MioIX6tHmS68dp?=
+ =?us-ascii?Q?epiYE+xpLVvsxfukdpGcYQyQ6pgZYdJE9SeNIvQ2t8CuFQq9DSxSzZ2iTTON?=
+ =?us-ascii?Q?h8Gm5tyhhoaCkZHZrdvK2bIR3k0iG+v5+u0vlavwDIifNbitQ/3f6DRGeZ6x?=
+ =?us-ascii?Q?e3s0XhvlVAMr0dUblVIQIX39YXwbU8t7H2keVGS7qm/mjb6LhIYdzQbhOXc/?=
+ =?us-ascii?Q?msL0y1v0II+KiM82uK5MMpbutTARFFmSiiHmjsUaaViHmleZRqyPu7dK876X?=
+ =?us-ascii?Q?uE4xhTYV/IQAKx4+Bw2DMBgn/ueYm4JMcMcLjadcPHmNkzGV1gsTfry8CZJv?=
+ =?us-ascii?Q?se3gDSzbj5phUnFwqlM5xvr53qRo5eQ2RJXthMRhEJ4ljQB/cn5GDYVntkQf?=
+ =?us-ascii?Q?tC3yVZZs+d/GvCgua2c9NgzHViKxpOg47Q5+20Np6bkJDz2PNlZ+4lEVV5Ne?=
+ =?us-ascii?Q?wAtSwGEpnQQ6qI6RvVbCQ7+CPWuRp00aPcODxxTaMdKoLugJSbFAGjjLEYVS?=
+ =?us-ascii?Q?q/ajbFDM7EVcUDDSGDTytEq0MB21Tzv5cPvkco7FfktL0fu61Vu3NQM71nm5?=
+ =?us-ascii?Q?ZGynioMUUFaULRulAYBsI/7sQo7jFKZ1ukOckMH7vZxX3rFM2xYILNnhQR8U?=
+ =?us-ascii?Q?1fCVkJr+3HvChPXFLES4ek6XXz2h+aIjoLRbwd43SqY1X4rd7yEmvAtLcoVD?=
+ =?us-ascii?Q?nP6aUNVdWSZ917gK1CHYpR3VRFXQdQ4UJpNIaB7BFvAdUvzP9exrW1fUV106?=
+ =?us-ascii?Q?hTHi5AVQJBun7eqobVLVGdfIgRKRytSLnus+3E1Z8Ntqm/5j1GsJFTSKKFQd?=
+ =?us-ascii?Q?HhkzEzn+P4rmqp88CpGv8BxX5AnbMEIx6Het0LithBZYMmcgwNG3Urn5t+sP?=
+ =?us-ascii?Q?20ZMbyq6HNFM0IRSg9H2fZHs43qJHPCx6BEXD3bI+IzeaQrk7v8f0h++H1AY?=
+ =?us-ascii?Q?Mhpg4zB8jiCbDfz/NrbWmpftk++mo1lm0xUESPP2U9zqf7oF4bD+NUn2Ud03?=
+ =?us-ascii?Q?2jEFsnnPUOJ1v6ihZeRyGtYFFT/lO1holR9N2usqlP2PFLcREABd6cW46MzK?=
+ =?us-ascii?Q?jhi8foF1lllIcLoYpIG1o51Ifx7lPe2UVstuQISnnMBzeubytGsjfjg8kP8H?=
+ =?us-ascii?Q?0fvQZv/9dReo2roVYXfcdTvCM9SzmM/b9NVZAjYCBgvb9dQzJKT4diQr4Rak?=
+ =?us-ascii?Q?NpzsEnvLRmvPEkq+/LjHtNJ6DEm8BV3IEApqug=3D=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-05f45.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 594b5f30-3bd9-409d-d11f-08dbf0c6e3ff
+X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 10:35:22.5737
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYVP286MB3149
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Nov 2023 at 10:53, Vlastimil Babka <vbabka@suse.cz> wrote:
->
-> kmem_cache_setup_percpu_array() will allocate a per-cpu array for
-> caching alloc/free objects of given size for the cache. The cache
-> has to be created with SLAB_NO_MERGE flag.
->
-> When empty, half of the array is filled by an internal bulk alloc
-> operation. When full, half of the array is flushed by an internal bulk
-> free operation.
->
-> The array does not distinguish NUMA locality of the cached objects. If
-> an allocation is requested with kmem_cache_alloc_node() with numa node
-> not equal to NUMA_NO_NODE, the array is bypassed.
->
-> The bulk operations exposed to slab users also try to utilize the array
-> when possible, but leave the array empty or full and use the bulk
-> alloc/free only to finish the operation itself. If kmemcg is enabled and
-> active, bulk freeing skips the array completely as it would be less
-> efficient to use it.
->
-> The locking scheme is copied from the page allocator's pcplists, based
-> on embedded spin locks. Interrupts are not disabled, only preemption
-> (cpu migration on RT). Trylock is attempted to avoid deadlock due to an
-> interrupt; trylock failure means the array is bypassed.
->
-> Sysfs stat counters alloc_cpu_cache and free_cpu_cache count objects
-> allocated or freed using the percpu array; counters cpu_cache_refill and
-> cpu_cache_flush count objects refilled or flushed form the array.
->
-> kmem_cache_prefill_percpu_array() can be called to ensure the array on
-> the current cpu to at least the given number of objects. However this is
-> only opportunistic as there's no cpu pinning between the prefill and
-> usage, and trylocks may fail when the usage is in an irq handler.
-> Therefore allocations cannot rely on the array for success even after
-> the prefill. But misses should be rare enough that e.g. GFP_ATOMIC
-> allocations should be acceptable after the refill.
->
-> When slub_debug is enabled for a cache with percpu array, the objects in
-> the array are considered as allocated from the slub_debug perspective,
-> and the alloc/free debugging hooks occur when moving the objects between
-> the array and slab pages. This means that e.g. an use-after-free that
-> occurs for an object cached in the array is undetected. Collected
-> alloc/free stacktraces might also be less useful. This limitation could
-> be changed in the future.
->
-> On the other hand, KASAN, kmemcg and other hooks are executed on actual
-> allocations and frees by kmem_cache users even if those use the array,
-> so their debugging or accounting accuracy should be unaffected.
->
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  include/linux/slab.h     |   4 +
->  include/linux/slub_def.h |  12 ++
->  mm/Kconfig               |   1 +
->  mm/slub.c                | 457 ++++++++++++++++++++++++++++++++++++++++++++++-
->  4 files changed, 468 insertions(+), 6 deletions(-)
->
-> diff --git a/include/linux/slab.h b/include/linux/slab.h
-> index d6d6ffeeb9a2..fe0c0981be59 100644
-> --- a/include/linux/slab.h
-> +++ b/include/linux/slab.h
-> @@ -197,6 +197,8 @@ struct kmem_cache *kmem_cache_create_usercopy(const char *name,
->  void kmem_cache_destroy(struct kmem_cache *s);
->  int kmem_cache_shrink(struct kmem_cache *s);
->
-> +int kmem_cache_setup_percpu_array(struct kmem_cache *s, unsigned int count);
-> +
->  /*
->   * Please use this macro to create slab caches. Simply specify the
->   * name of the structure and maybe some flags that are listed above.
-> @@ -512,6 +514,8 @@ void kmem_cache_free(struct kmem_cache *s, void *objp);
->  void kmem_cache_free_bulk(struct kmem_cache *s, size_t size, void **p);
->  int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size, void **p);
->
-> +int kmem_cache_prefill_percpu_array(struct kmem_cache *s, unsigned int count, gfp_t gfp);
-> +
->  static __always_inline void kfree_bulk(size_t size, void **p)
->  {
->         kmem_cache_free_bulk(NULL, size, p);
-> diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
-> index deb90cf4bffb..2083aa849766 100644
-> --- a/include/linux/slub_def.h
-> +++ b/include/linux/slub_def.h
-> @@ -13,8 +13,10 @@
->  #include <linux/local_lock.h>
->
->  enum stat_item {
-> +       ALLOC_PCA,              /* Allocation from percpu array cache */
->         ALLOC_FASTPATH,         /* Allocation from cpu slab */
->         ALLOC_SLOWPATH,         /* Allocation by getting a new cpu slab */
-> +       FREE_PCA,               /* Free to percpu array cache */
->         FREE_FASTPATH,          /* Free to cpu slab */
->         FREE_SLOWPATH,          /* Freeing not to cpu slab */
->         FREE_FROZEN,            /* Freeing to frozen slab */
-> @@ -39,6 +41,8 @@ enum stat_item {
->         CPU_PARTIAL_FREE,       /* Refill cpu partial on free */
->         CPU_PARTIAL_NODE,       /* Refill cpu partial from node partial */
->         CPU_PARTIAL_DRAIN,      /* Drain cpu partial to node partial */
-> +       PCA_REFILL,             /* Refilling empty percpu array cache */
-> +       PCA_FLUSH,              /* Flushing full percpu array cache */
->         NR_SLUB_STAT_ITEMS
->  };
->
-> @@ -66,6 +70,13 @@ struct kmem_cache_cpu {
->  };
->  #endif /* CONFIG_SLUB_TINY */
->
-> +struct slub_percpu_array {
-> +       spinlock_t lock;
-> +       unsigned int count;
-> +       unsigned int used;
-> +       void * objects[];
+From: Peng Liu <liupeng17@lenovo.com>
 
-checkpatch complains: "foo * bar" should be "foo *bar"
+The ts->sched_timer initialization work of tick_nohz_switch_to_nohz()
+is almost the same as that of tick_setup_sched_timer(), so adjust the
+latter to get it reused by tick_nohz_switch_to_nohz().
+
+This also makes low-res mode sched_timer benefit from the tick skew
+boot option.
+
+Signed-off-by: Peng Liu <liupeng17@lenovo.com>
+---
+Changes in v3:
+- Remove the first``#ifdef CONFIG_HIGH_RES_TIMERS'' in tick_setup_sched_timer()
+  in patch 2/2
+- Add comment on sched_skew_tick introduced to low-res mode tick_sched setup
+- Replace hrtimer_forward() with hrtimer_forward_now() in tick_setup_sched_timer()
+- Remove the sedond ``#ifdef CONFIG_HIGH_RES_TIMERS'' in tick_setup_sched_timer()
+- Move tick_nohz_highres_handler() ahead to avoid additional declaration
+Changes in v2:
+- Fix build warning: Function parameter or member 'mode' not described in
+  'tick_setup_sched_timer'
+- Fix build error: use of undeclared identifier 'tick_nohz_highres_handler'
+- Fix build error: use of undeclared identifier 'sched_skew_tick'
+---
+ kernel/time/hrtimer.c    |  2 +-
+ kernel/time/tick-sched.c | 38 +++++++++++++++++---------------------
+ kernel/time/tick-sched.h |  2 +-
+ 3 files changed, 19 insertions(+), 23 deletions(-)
+
+diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+index 760793998cdd..355b5a957f7f 100644
+--- a/kernel/time/hrtimer.c
++++ b/kernel/time/hrtimer.c
+@@ -746,7 +746,7 @@ static void hrtimer_switch_to_hres(void)
+ 	base->hres_active = 1;
+ 	hrtimer_resolution = HIGH_RES_NSEC;
+ 
+-	tick_setup_sched_timer();
++	tick_setup_sched_timer(NOHZ_MODE_HIGHRES);
+ 	/* "Retrigger" the interrupt to get things going */
+ 	retrigger_next_event(NULL);
+ }
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index be77b021e5d6..d25039f07838 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -1430,9 +1430,6 @@ static inline void tick_nohz_activate(struct tick_sched *ts, int mode)
+  */
+ static void tick_nohz_switch_to_nohz(void)
+ {
+-	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
+-	ktime_t next;
+-
+ 	if (!tick_nohz_enabled)
+ 		return;
+ 
+@@ -1441,16 +1438,9 @@ static void tick_nohz_switch_to_nohz(void)
+ 
+ 	/*
+ 	 * Recycle the hrtimer in 'ts', so we can share the
+-	 * hrtimer_forward_now() function with the highres code.
++	 * highres code.
+ 	 */
+-	hrtimer_init(&ts->sched_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_HARD);
+-	/* Get the next period */
+-	next = tick_init_jiffy_update();
+-
+-	hrtimer_set_expires(&ts->sched_timer, next);
+-	hrtimer_forward_now(&ts->sched_timer, TICK_NSEC);
+-	tick_program_event(hrtimer_get_expires(&ts->sched_timer), 1);
+-	tick_nohz_activate(ts, NOHZ_MODE_LOWRES);
++	tick_setup_sched_timer(NOHZ_MODE_LOWRES);
+ }
+ 
+ static inline void tick_nohz_irq_enter(void)
+@@ -1529,7 +1519,9 @@ static enum hrtimer_restart tick_nohz_highres_handler(struct hrtimer *timer)
+ 
+ 	return HRTIMER_RESTART;
+ }
++#endif /* HIGH_RES_TIMERS */
+ 
++#if defined CONFIG_NO_HZ_COMMON || defined CONFIG_HIGH_RES_TIMERS
+ static int sched_skew_tick;
+ 
+ static int __init skew_tick(char *str)
+@@ -1542,15 +1534,18 @@ early_param("skew_tick", skew_tick);
+ 
+ /**
+  * tick_setup_sched_timer - setup the tick emulation timer
++ * @mode: tick_nohz_mode to setup for
+  */
+-void tick_setup_sched_timer(void)
++void tick_setup_sched_timer(int mode)
+ {
+ 	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
+-	ktime_t now = ktime_get();
+ 
+ 	/* Emulate tick processing via per-CPU hrtimers: */
+ 	hrtimer_init(&ts->sched_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_HARD);
+-	ts->sched_timer.function = tick_nohz_highres_handler;
++#ifdef CONFIG_HIGH_RES_TIMERS
++	if (mode == NOHZ_MODE_HIGHRES)
++		ts->sched_timer.function = tick_nohz_highres_handler;
++#endif
+ 
+ 	/* Get the next period (per-CPU) */
+ 	hrtimer_set_expires(&ts->sched_timer, tick_init_jiffy_update());
+@@ -1563,13 +1558,14 @@ void tick_setup_sched_timer(void)
+ 		hrtimer_add_expires_ns(&ts->sched_timer, offset);
+ 	}
+ 
+-	hrtimer_forward(&ts->sched_timer, now, TICK_NSEC);
+-	hrtimer_start_expires(&ts->sched_timer, HRTIMER_MODE_ABS_PINNED_HARD);
+-	tick_nohz_activate(ts, NOHZ_MODE_HIGHRES);
++	hrtimer_forward_now(&ts->sched_timer, TICK_NSEC);
++	if (mode == NOHZ_MODE_HIGHRES)
++		hrtimer_start_expires(&ts->sched_timer, HRTIMER_MODE_ABS_PINNED_HARD);
++	else
++		tick_program_event(hrtimer_get_expires(&ts->sched_timer), 1);
++	tick_nohz_activate(ts, mode);
+ }
+-#endif /* HIGH_RES_TIMERS */
+ 
+-#if defined CONFIG_NO_HZ_COMMON || defined CONFIG_HIGH_RES_TIMERS
+ void tick_cancel_sched_timer(int cpu)
+ {
+ 	struct tick_sched *ts = &per_cpu(tick_cpu_sched, cpu);
+@@ -1581,7 +1577,7 @@ void tick_cancel_sched_timer(int cpu)
+ 
+ 	memset(ts, 0, sizeof(*ts));
+ }
+-#endif
++#endif /* CONFIG_NO_HZ_COMMON || CONFIG_HIGH_RES_TIMERS */
+ 
+ /*
+  * Async notification about clocksource changes
+diff --git a/kernel/time/tick-sched.h b/kernel/time/tick-sched.h
+index 5ed5a9d41d5a..35808bbb8a47 100644
+--- a/kernel/time/tick-sched.h
++++ b/kernel/time/tick-sched.h
+@@ -102,7 +102,7 @@ struct tick_sched {
+ 
+ extern struct tick_sched *tick_get_tick_sched(int cpu);
+ 
+-extern void tick_setup_sched_timer(void);
++extern void tick_setup_sched_timer(int mode);
+ #if defined CONFIG_NO_HZ_COMMON || defined CONFIG_HIGH_RES_TIMERS
+ extern void tick_cancel_sched_timer(int cpu);
+ #else
+-- 
+2.34.1
+
