@@ -2,57 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC2177FDAEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:16:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBBC27FDAED
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:16:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234573AbjK2PQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 10:16:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37468 "EHLO
+        id S234781AbjK2PQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 10:16:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233904AbjK2PQU (ORCPT
+        with ESMTP id S234741AbjK2PQ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 10:16:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333EDBE
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:16:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701270985;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=OcpkJmyvNj3eShS3c+JKZr285NS0S6mgXrW8UfGiu30=;
-        b=ZiidgwEqT1ZqJ3SNSxS1Olw7kEe54m6ZhAdv1bgNZUtfsR0/TdbbpOkJ7zYHD+9kcCnNU+
-        zdt6eBrxcZoo1ipPwksQkibGmRX/X0prxWUKov1FakElWTdHEWT9OCGruvB20tr35fErTO
-        W8J1+Zb9ipSfgB/NLvSDjTudoKvrYk8=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-386-_OovbazvNDybf2Px3T3cDw-1; Wed,
- 29 Nov 2023 10:16:23 -0500
-X-MC-Unique: _OovbazvNDybf2Px3T3cDw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 16A723821344;
-        Wed, 29 Nov 2023 15:16:23 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.39.192.182])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0BF06502E;
-        Wed, 29 Nov 2023 15:16:20 +0000 (UTC)
-From:   Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     jtornosm@redhat.com
-Subject: [PATCH] net: usb: ax88179_178a: avoid failed operations when device is disconnected
-Date:   Wed, 29 Nov 2023 16:16:11 +0100
-Message-ID: <20231129151618.455618-1-jtornosm@redhat.com>
+        Wed, 29 Nov 2023 10:16:27 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45DA9D67;
+        Wed, 29 Nov 2023 07:16:33 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E82CD276;
+        Wed, 29 Nov 2023 16:15:54 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1701270955;
+        bh=+uHh5OwSOYZIKy4CcRWgK3bVkp2Qgwa8Z+NBJsgjl64=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RNsA0okfeitutqnzEAXJrCC99xGMUkgC3Lcbh+OfVgFcRo+WrDuqeVEagl7W3+CgO
+         WFc4a1rISWMh2sOAUp575qPkr0sEUEezTF3cZJXghgkrWKMK43pMvyYYd6wuVU3mh9
+         uRXaZOeYTuGcSOy8Db5gTOvHtyDxtL0VfCHPOGww=
+Date:   Wed, 29 Nov 2023 17:16:37 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Alexander Stein <alexander.stein@ew.tq-group.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        Paul Elder <paul.elder@ideasonboard.com>,
+        kieran.bingham@ideasonboard.com, tomi.valkeinen@ideasonboard.com,
+        umang.jain@ideasonboard.com, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Marek Vasut <marex@denx.de>,
+        Gregor Herburger <gregor.herburger@ew.tq-group.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 2/2] arm64: dts: imx8mp: Add overlays for ISP instances
+Message-ID: <20231129151637.GG24293@pendragon.ideasonboard.com>
+References: <20231129093113.255161-1-paul.elder@ideasonboard.com>
+ <20231129093113.255161-3-paul.elder@ideasonboard.com>
+ <7122934.GXAFRqVoOG@steina-w>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <7122934.GXAFRqVoOG@steina-w>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,75 +66,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the device is disconnected we get the following messages showing
-failed operations:
-Nov 28 20:22:11 localhost kernel: usb 2-3: USB disconnect, device number 2
-Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3: unregister 'ax88179_178a' usb-0000:02:00.0-3, ASIX AX88179 USB 3.0 Gigabit Ethernet
-Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3: Failed to read reg index 0x0002: -19
-Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3: Failed to write reg index 0x0002: -19
-Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3 (unregistered): Failed to write reg index 0x0002: -19
-Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3 (unregistered): Failed to write reg index 0x0001: -19
-Nov 28 20:22:11 localhost kernel: ax88179_178a 2-3:1.0 enp2s0u3 (unregistered): Failed to write reg index 0x0002: -19
+Hi Alexander,
 
-The reason is that although the device is detached, normal stop and
-unbind operations are commanded. Avoid these unnecessary operations
-when the device is detached (state is USB_STATE_NOTATTACHED) so as
-not to get the error messages.
+On Wed, Nov 29, 2023 at 11:20:07AM +0100, Alexander Stein wrote:
+> Am Mittwoch, 29. November 2023, 10:31:13 CET schrieb Paul Elder:
+> > From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > 
+> > Add two overlay to enable each ISP instance. The ISP is wired directly
+> > to the CSIS for now, bypassing the ISI completely.
+> 
+> I'm not sure if this is worth adding in a separate overlay.
 
-Fixes: e2ca90c276e1f ("ax88179_178a: ASIX AX88179_178A USB 3.0/2.0 to gigabit ethernet adapter driver")
-Signed-off-by: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
----
- drivers/net/usb/ax88179_178a.c | 26 +++++++++++++++-----------
- 1 file changed, 15 insertions(+), 11 deletions(-)
+The trouble is that, at this point, selection between the ISP and the
+ISI can only be performed through DT :-S That's why this is implemented
+as an overlay.
 
-diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
-index 4ea0e155bb0d..e78d555dd95e 100644
---- a/drivers/net/usb/ax88179_178a.c
-+++ b/drivers/net/usb/ax88179_178a.c
-@@ -1308,16 +1308,18 @@ static void ax88179_unbind(struct usbnet *dev, struct usb_interface *intf)
- 	struct ax88179_data *ax179_data = dev->driver_priv;
- 	u16 tmp16;
- 
--	/* Configure RX control register => stop operation */
--	tmp16 = AX_RX_CTL_STOP;
--	ax88179_write_cmd(dev, AX_ACCESS_MAC, AX_RX_CTL, 2, 2, &tmp16);
-+	if (dev->udev->state != USB_STATE_NOTATTACHED) {
-+		/* Configure RX control register => stop operation */
-+		tmp16 = AX_RX_CTL_STOP;
-+		ax88179_write_cmd(dev, AX_ACCESS_MAC, AX_RX_CTL, 2, 2, &tmp16);
- 
--	tmp16 = 0;
--	ax88179_write_cmd(dev, AX_ACCESS_MAC, AX_CLK_SELECT, 1, 1, &tmp16);
-+		tmp16 = 0;
-+		ax88179_write_cmd(dev, AX_ACCESS_MAC, AX_CLK_SELECT, 1, 1, &tmp16);
- 
--	/* Power down ethernet PHY */
--	tmp16 = 0;
--	ax88179_write_cmd(dev, AX_ACCESS_MAC, AX_PHYPWR_RSTCTL, 2, 2, &tmp16);
-+		/* Power down ethernet PHY */
-+		tmp16 = 0;
-+		ax88179_write_cmd(dev, AX_ACCESS_MAC, AX_PHYPWR_RSTCTL, 2, 2, &tmp16);
-+	}
- 
- 	kfree(ax179_data);
- }
-@@ -1663,11 +1665,13 @@ static int ax88179_stop(struct usbnet *dev)
- {
- 	u16 tmp16;
- 
--	ax88179_read_cmd(dev, AX_ACCESS_MAC, AX_MEDIUM_STATUS_MODE,
-+	if (dev->udev->state != USB_STATE_NOTATTACHED) {
-+		ax88179_read_cmd(dev, AX_ACCESS_MAC, AX_MEDIUM_STATUS_MODE,
- 			 2, 2, &tmp16);
--	tmp16 &= ~AX_MEDIUM_RECEIVE_EN;
--	ax88179_write_cmd(dev, AX_ACCESS_MAC, AX_MEDIUM_STATUS_MODE,
-+		tmp16 &= ~AX_MEDIUM_RECEIVE_EN;
-+		ax88179_write_cmd(dev, AX_ACCESS_MAC, AX_MEDIUM_STATUS_MODE,
- 			  2, 2, &tmp16);
-+	}
- 
- 	return 0;
- }
+> > Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> > Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
+> > ---
+> >  arch/arm64/boot/dts/freescale/Makefile        |  2 ++
+> >  .../arm64/boot/dts/freescale/imx8mp-isp1.dtso | 36 +++++++++++++++++++
+> >  .../arm64/boot/dts/freescale/imx8mp-isp2.dtso | 36 +++++++++++++++++++
+> >  3 files changed, 74 insertions(+)
+> >  create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-isp1.dtso
+> >  create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-isp2.dtso
+> > 
+> > diff --git a/arch/arm64/boot/dts/freescale/Makefile
+> > b/arch/arm64/boot/dts/freescale/Makefile index 300049037eb0..f97dfac11189
+> > 100644
+> > --- a/arch/arm64/boot/dts/freescale/Makefile
+> > +++ b/arch/arm64/boot/dts/freescale/Makefile
+> > @@ -113,6 +113,8 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mp-dhcom-pdk2.dtb
+> >  dtb-$(CONFIG_ARCH_MXC) += imx8mp-dhcom-pdk3.dtb
+> >  dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk.dtb
+> >  dtb-$(CONFIG_ARCH_MXC) += imx8mp-icore-mx8mp-edimm2.2.dtb
+> > +dtb-$(CONFIG_ARCH_MXC) += imx8mp-isp1.dtbo
+> > +dtb-$(CONFIG_ARCH_MXC) += imx8mp-isp2.dtbo
+> >  dtb-$(CONFIG_ARCH_MXC) += imx8mp-msc-sm2s-ep1.dtb
+> >  dtb-$(CONFIG_ARCH_MXC) += imx8mp-phyboard-pollux-rdk.dtb
+> >  dtb-$(CONFIG_ARCH_MXC) += imx8mp-tqma8mpql-mba8mpxl.dtb
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mp-isp1.dtso
+> > b/arch/arm64/boot/dts/freescale/imx8mp-isp1.dtso new file mode 100644
+> > index 000000000000..cf394ed224ab
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mp-isp1.dtso
+> > @@ -0,0 +1,36 @@
+> > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> > +/*
+> > + * Copyright 2022 Ideas on Board Oy
+> > + */
+> > +
+> > +/dts-v1/;
+> > +/plugin/;
+> > +
+> > +#include <dt-bindings/media/video-interfaces.h>
+> > +
+> > +&isi_0 {
+> > +	status = "disabled";
+> 
+> ISI is disabled by default. What is your intention here?
+
+It could be enabled by an overlay for a camera module. Ideally we want
+to be able to enable both the ISI and ISP at runtime, but that's not
+possible yet and will require a very large amount of work.
+
+> > +
+> > +	ports {
+> > +		port@0 {
+> > +			/delete-node/ endpoint;
+> 
+> This doesn't work in overlays. See [1]. Otherwise the OF graph connections 
+> look fine to me. I'm using the same in my local overlay.
+
+Interesting, I wasn't aware of that. Maybe we should fix it :-)
+
+> [1] https://lore.kernel.org/all/CAMuHMdWu4KZbBkvEofUV2wuA1g2S=XHHM3RUN1cNrcZBkhsPZA@mail.gmail.com/
+> 
+> > +		};
+> > +	};
+> > +};
+> > +
+> > +&isp_0 {
+> > +	status = "okay";
+> > +
+> > +	ports {
+> > +		port@1 {
+> > +			isp0_in: endpoint {
+> > +				bus-type = <MEDIA_BUS_TYPE_PARALLEL>;
+> > +				remote-endpoint = <&mipi_csi_0_out>;
+> > +			};
+> > +		};
+> > +	};
+> > +};
+> > +
+> > +&mipi_csi_0_out {
+> > +	remote-endpoint = <&isp0_in>;
+> > +};
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mp-isp2.dtso
+> > b/arch/arm64/boot/dts/freescale/imx8mp-isp2.dtso new file mode 100644
+> > index 000000000000..14e2e7b2617f
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mp-isp2.dtso
+> > @@ -0,0 +1,36 @@
+> > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> > +/*
+> > + * Copyright 2022 Ideas on Board Oy
+> > + */
+> > +
+> > +/dts-v1/;
+> > +/plugin/;
+> > +
+> > +#include <dt-bindings/media/video-interfaces.h>
+> > +
+> > +&isi_0 {
+> > +	status = "disabled";
+> > +
+> > +	ports {
+> > +		port@1 {
+> > +			/delete-node/ endpoint;
+> > +		};
+> > +	};
+> > +};
+> > +
+> > +&isp_1 {
+> > +	status = "okay";
+> > +
+> > +	ports {
+> > +		port@1 {
+> > +			isp1_in: endpoint {
+> > +				bus-type = <MEDIA_BUS_TYPE_PARALLEL>;
+> > +				remote-endpoint = <&mipi_csi_1_out>;
+> > +			};
+> > +		};
+> > +	};
+> > +};
+> > +
+> > +&mipi_csi_1_out {
+> > +	remote-endpoint = <&isp1_in>;
+> > +};
+
 -- 
-2.43.0
+Regards,
 
+Laurent Pinchart
