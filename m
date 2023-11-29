@@ -2,112 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CABA87FD6A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 13:22:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E70D7FD6A9
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 13:24:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233492AbjK2MVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 07:21:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43712 "EHLO
+        id S233420AbjK2MXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 07:23:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233324AbjK2MVl (ORCPT
+        with ESMTP id S232806AbjK2MXx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 07:21:41 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB2710C3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 04:21:47 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1cfd76c5f03so186775ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 04:21:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701260507; x=1701865307; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=o56Www3Q+AtcE90gXDvz5NG1arQEXkGu3aDX+2U5OVg=;
-        b=bdOxlM7RAmZg1OpHSkxKL864stOnjSKxyFqjmE/WlnPxNyFC7g42HGDP4cMHYkLffb
-         0k4QxcxvxbTlEzyGKHtnI+7gZJ5wLKDoXq8yp0ULCcvGL47hz56N3MfVhE8eB3xGeKJD
-         qYy2dYDFb5y3Eusd1ekO/5foZ6rK0zLcJ0I+7K7beTdw66aCpcHpLMYXZq3eOAg1Oh7C
-         fhzemgMWrOYv/k+80Zd4SciI6Rm+zPCRjNFhTbkNRJqbigzsBta1OE8JsV4pyZhXimEa
-         sOUpFpflN/YTWIj7K0w35aD3lYXPlVvSjFKPuy+l2NnHOIX40CJ1OEut/F+ImBS0aqjl
-         n7qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701260507; x=1701865307;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=o56Www3Q+AtcE90gXDvz5NG1arQEXkGu3aDX+2U5OVg=;
-        b=OV/SFOTG5Yl/K2FemiBGPf/oMwPS8IzfDRdRnF9nwBDHzbSr4v8OwYfFB8BVmd7ik2
-         IFIYybOi2bmcD/hJkqf7bPzxQXr7y09vLt8NwprpBSOwRtHbtQWf647es3gHjnfMqI0X
-         wxbpecqzK+wpPgyGH7EjYb3xv5ONcPFxeSWzAgCTYb6wPo90O1RoTs8WH+P83d3RFX48
-         qEFUvx4vXg4JEGkwKZQm3yG84Nc0uYuE0gBjN7SjBiYQeE3pCqXHTFCgbWZAkszy9R3F
-         QtVvrQUY5gYmFN8KBcFt5Rtq22Sif7d+F5Kw7vh2IKv75sC/BeDsRe18af4RVCJn6M2L
-         FVyw==
-X-Gm-Message-State: AOJu0YwBtnfaAOALCT3cgVHekX9jINzQyIiff6QU1/KdHJXPFq0KAkFr
-        kIFlnHLM392FRzyO5fKtjbG92cAAUu5Xml38WlY7xA==
-X-Google-Smtp-Source: AGHT+IGijv2oaXJrsz4eOoB3TmX4ovkG0ibEUz+P5TLts7xACNH5qB3XKWndGchQRopwNv8LdczoZIB5sx6elgIxlsM=
-X-Received: by 2002:a17:902:fc44:b0:1d0:220b:f254 with SMTP id
- me4-20020a170902fc4400b001d0220bf254mr21736plb.14.1701260506633; Wed, 29 Nov
- 2023 04:21:46 -0800 (PST)
+        Wed, 29 Nov 2023 07:23:53 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7DFBD48;
+        Wed, 29 Nov 2023 04:23:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=pNYBN4X8Pb/Yx1Vd4NeSsqJHNsCvDKBkPdpgHN9QiTY=; b=c03Ofld+THOSR45IGAoDp8+pt+
+        UkfL9dRdtWJkl7qb6AU+5c+x7KX6JkdgemiwCTtdFLtC8j3nqM8IVqnrXMofOelxpK29X8uF5ZtqK
+        2psuTW1FBHw7w+hCAukfMR+AbdMf4DY/XhmeCl29l+MfJN1SJ1PJx8jAD2H7bBe/pj7nl2oALLxTQ
+        /Wq9rmsH7ut3/zJvmxsteA+NWfhM0iTJv5+2fIYirsXNN2z3k3oqWVXNW+EmUuRGCbVR2gZ+vinsR
+        mMtyscTw9AeKHR2Ata9aGOkAtE7CW4vS+gUvFOQgZD958IO8eheGXfLqbaFjb9TAuhe82KOK/eFx7
+        PW7yzbiQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r8Jb8-00DNTe-4M; Wed, 29 Nov 2023 12:23:22 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DAA0B30017D; Wed, 29 Nov 2023 13:23:20 +0100 (CET)
+Date:   Wed, 29 Nov 2023 13:23:20 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     James Clark <james.clark@arm.com>, Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Hendrik Brueckner <brueckner@linux.ibm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>, coresight@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH RFC 2/3] perf/x86/intel/pt: Add support for pause_resume()
+Message-ID: <20231129122320.GH30650@noisy.programming.kicks-ass.net>
+References: <20231123121851.10826-1-adrian.hunter@intel.com>
+ <20231123121851.10826-3-adrian.hunter@intel.com>
+ <c63808b2-2049-da18-f0af-5dff2bc87cd2@arm.com>
+ <20231129105836.GF30650@noisy.programming.kicks-ass.net>
+ <842ce784-fbd2-4667-a5f7-aaa10a1108dc@intel.com>
 MIME-Version: 1.0
-References: <000000000000d9483d060901f460@google.com> <0000000000006547d3060b498385@google.com>
-In-Reply-To: <0000000000006547d3060b498385@google.com>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Wed, 29 Nov 2023 13:21:35 +0100
-Message-ID: <CANp29Y4NLk4jd8zhN-VjXWtrDSWbS=Y-ADGxrmboKU+KH2hMPw@mail.gmail.com>
-Subject: Re: [syzbot] [perf?] general protection fault in inherit_task_group
-To:     syzbot <syzbot+756fe9affda890e892ae@syzkaller.appspotmail.com>
-Cc:     acme@kernel.org, adrian.hunter@intel.com,
-        alexander.shishkin@linux.intel.com, bpf@vger.kernel.org,
-        irogers@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, mark.rutland@arm.com,
-        mingo@kernel.org, mingo@redhat.com, namhyung@kernel.org,
-        netdev@vger.kernel.org, peterz@infradead.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <842ce784-fbd2-4667-a5f7-aaa10a1108dc@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 1:17=E2=80=AFPM syzbot
-<syzbot+756fe9affda890e892ae@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit a71ef31485bb51b846e8db8b3a35e432cc15afb5
-> Author: Peter Zijlstra <peterz@infradead.org>
-> Date:   Tue Oct 24 09:42:21 2023 +0000
->
->     perf/core: Fix potential NULL deref
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D17172162e8=
-0000
-> start commit:   6808918343a8 net: bridge: fill in MODULE_DESCRIPTION()
-> git tree:       bpf-next
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D429fa76d04cf3=
-93c
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D756fe9affda890e=
-892ae
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D12db572b680=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D10839a1b68000=
-0
->
-> If the result looks correct, please mark the issue as fixed by replying w=
-ith:
->
-> #syz fix: perf/core: Fix potential NULL deref
+On Wed, Nov 29, 2023 at 01:15:43PM +0200, Adrian Hunter wrote:
+> On 29/11/23 12:58, Peter Zijlstra wrote:
+> > On Wed, Nov 29, 2023 at 09:53:39AM +0000, James Clark wrote:
+> >> On 23/11/2023 12:18, Adrian Hunter wrote:
+> > 
+> >>> +static void pt_event_pause_resume(struct perf_event *event)
+> >>> +{
+> >>> +	if (event->aux_paused)
+> >>> +		pt_config_stop(event);
+> >>> +	else if (!event->hw.state)
+> >>> +		pt_config_start(event);
+> >>> +}
+> >>
+> >> It seems like having a single pause/resume callback rather than separate
+> >> pause and resume ones pushes some of the event state management into the
+> >> individual drivers and would be prone to code duplication and divergent
+> >> behavior.
+> >>
+> >> Would it be possible to move the conditions from here into the core code
+> >> and call separate functions instead?
+> >>
+> >>> +
+> >>>  static void pt_event_start(struct perf_event *event, int mode)
+> >>>  {
+> >>>  	struct hw_perf_event *hwc = &event->hw;
+> >>> @@ -1798,6 +1809,7 @@ static __init int pt_init(void)
+> >>>  	pt_pmu.pmu.del			 = pt_event_del;
+> >>>  	pt_pmu.pmu.start		 = pt_event_start;
+> >>>  	pt_pmu.pmu.stop			 = pt_event_stop;
+> >>> +	pt_pmu.pmu.pause_resume		 = pt_event_pause_resume;
+> >>
+> >> The general idea seems ok to me. Is there a reason to not use the
+> >> existing start() stop() callbacks, rather than adding a new one?
+> >>
+> >> I assume it's intended to be something like an optimisation where you
+> >> can turn it on and off without having to do the full setup, teardown and
+> >> emit an AUX record because you know the process being traced never gets
+> >> switched out?
+> > 
+> > So the actual scheduling uses ->add() / ->del(), the ->start() /
+> > ->stop() methods are something that can be used after ->add() and before
+> > ->del() to 'temporarily' pause things.
+> > 
+> > Pretty much exactly what is required here I think. We currently use this
+> > for PMI throttling and adaptive frequency stuff, but there is no reason
+> > it could not also be used for this.
+> > 
+> > As is, we don't track the paused state across ->del() / ->add(), but
+> > perhaps that can be fixed. We can easily add more PERF_EF_ / PERF_HES_
+> > bits to manage things.
+> > 
+> > 
+> 
+> I am not sure stop / start play nice with NMI's from other events e.g.
+> 
+> PMC NMI wants to pause or resume AUX but what if AUX event is currently
+> being processed in ->stop() or ->start()?  Or maybe that can't happen?
 
-#syz fix: perf/core: Fix potential NULL deref
+I think that can happen, and pt_event_stop() can actually handle some of
+that, while your pause_resume() thing, which uses pt_config_stop() does
+not.
 
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
-ion
->
-> --
+But yes, I think that if you add pt_event_{stop,start}() calls from
+*other* events their PMI, then you get to deal with more 'fun'.
+
+Something like:
+
+  perf_addr_filters_adjust()
+    __perf_addr_filters_adjust()
+      perf_event_stop()
+        __perf_event_stop()
+	  event->pmu->stop()
+	  <NMI>
+	    ...
+	    perf_event_overflow()
+	      pt_event->pmu->stop()
+	  </NMI>
+	  event->pmu->start() // whoopsie!
+
+Should now be possible.
+
+I think what you want to do is rename pt->handle_nmi into pt->stop_count
+and make it a counter, then ->stop() increments it, and ->start()
+decrements it and everybody ensures the thing doesn't get restart while
+!0 etc..
+
+I suspect you need to guard the generic part of this feature with a new
+PERF_PMU_CAP_ flag and then have the coresight/etc. people opt-in once
+they've audited things.
+
+James, does that work for you?
+
