@@ -2,63 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB507FD654
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 13:09:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC757FD658
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 13:11:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233216AbjK2MJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 07:09:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43718 "EHLO
+        id S230392AbjK2MLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 07:11:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233160AbjK2MJJ (ORCPT
+        with ESMTP id S229580AbjK2MLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 07:09:09 -0500
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9F3EDE
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 04:09:15 -0800 (PST)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5d279bcce64so4796647b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 04:09:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701259755; x=1701864555; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ZSr6rQHau8MO7tZUGmumMJZcmC8BlwDTZpr5Z2aRZIc=;
-        b=N1qIwRk7DcQkI2LeJc/AIAkNCSvXncBESWESRvTdWPOqxXlre170ruoDAZzOZh755D
-         Wznh06qBPIBUMcp+HvFa8Ei+le3c522MpHt/vaR/kKuTIOE39Q28d9wFXrGKiL2+mWl5
-         aSMEN6yKCS9SngtnjpqaZvd2rJcwD8VZVprYT7aM9ejyjy4Cpe8XMAqTSiDsraE3gAQY
-         4PfqdLFvTa/2Dj750LkH79FMo2xCrYigdAM4pw10wYBpY9Ew+Yegiaw2wuSIDi1h8dYa
-         wZ9EI88N+NHW9Ytg9l/OM2Yrloyw85Cxk+oFpMTqGU5G4M9Kc4Df+zVZOf0PM2xqcESr
-         BOGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701259755; x=1701864555;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZSr6rQHau8MO7tZUGmumMJZcmC8BlwDTZpr5Z2aRZIc=;
-        b=QfMy1Vru/DWFTkwBvopAX+CPDbZZ1nW2qczojOqKS0ea1lpMIcor7nJ9Oj5eHGUrL1
-         Q34bquupMYHT1yRLXohb/sWQFpIurpIGeOeY+qmSibNCmKCgHWdPssTuBh6tYXA8/Uxo
-         bRbHuCoBLlQELeGQhYbFrlFGa/vRnV5XwY/fV3u/MWXi7xVrnff3DCHfVHqHoMeo+z1l
-         CPcZu+vXNSB30aYV8RWSY7UJDiIagx/r5NmJ08FRu6nBRrnGlD0tJP/Jw2UE4E+tnE3G
-         5z2qZnb5n8J3Hxrox7SEKVide35wSerYW9Z5tj61Ctj1KHfi+E4H/VpTVyfCLfY36YtC
-         1asA==
-X-Gm-Message-State: AOJu0Yyqi58wCRZCwRjJ1SBB5ghdq0vO9iG6hflhK5+OcWNBRjJaND+s
-        C7MeSSzhTrwWc2WZsRrQ5QVZM8XDo4UyJyb268d4sg==
-X-Google-Smtp-Source: AGHT+IH6JmLCX/Ua5iQPL4qC+Z6sBA9I2zbRBkLCLpvFOiskMyUh6g7GBo6ZiHupJDMVhzO5hR/0/O810sivJT9SRIs=
-X-Received: by 2002:a05:690c:4613:b0:5d0:1d51:2e10 with SMTP id
- gw19-20020a05690c461300b005d01d512e10mr9159385ywb.23.1701259755133; Wed, 29
- Nov 2023 04:09:15 -0800 (PST)
+        Wed, 29 Nov 2023 07:11:12 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E838991;
+        Wed, 29 Nov 2023 04:11:18 -0800 (PST)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AT3uKuP002226;
+        Wed, 29 Nov 2023 12:11:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=H8dxU3Vbz0VvqHA8k92Dxes+Cij9co3fEKTRyiRMwrg=;
+ b=F749q/Knjg++vNPKI6eslANkLcw2G7+HiSRfnjZmwsRDuLQDLGjHQOMzr3s5zUzThjD9
+ PvC20TdPtqwNxSpgYAR+bGWcGMsMuA4OBWek37AOQ4JqiwBA/qDoRL+vNDfTbmKBzdQs
+ Kg3viJ0DbZeyf3Dz6v/YTtTWdFEHBfYUPBTEhRqMonX/VO/Bf/7bjI7h8/K6EEVPvXvK
+ /s93nzfibU/Vr0+Tkdgai43oUP8xt7zrKvyYFsRHG7WwflMoGXA6VfSi+FaDnSOc/Slf
+ JslKZBaNcpvQC066OItKxz9F+y7Ye+1JWbeE+nUYTjeVBDaaLqDhbwXlE284NEvYNXE4 bw== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3unkentk9f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Nov 2023 12:11:05 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ATCB48Z011399
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Nov 2023 12:11:04 GMT
+Received: from [10.239.155.136] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 29 Nov
+ 2023 04:11:00 -0800
+Message-ID: <ed81bb9e-a9cd-4d32-bfa0-2f0d28742026@quicinc.com>
+Date:   Wed, 29 Nov 2023 20:10:57 +0800
 MIME-Version: 1.0
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 29 Nov 2023 13:09:03 +0100
-Message-ID: <CACRpkdZtVNZFWSUgb4=gUE2mQRb=aT_3=zRv1U71Vsq0Mm34eg@mail.gmail.com>
-Subject: [GIT PULL] Pin control fixes for v6.7
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Maria Yu <quic_aiquny@quicinc.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Chester Lin <clin@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] scsi: ufs: qcom: move ufs_qcom_host_reset() to
+ ufs_qcom_device_reset()
+To:     Manivannan Sadhasivam <mani@kernel.org>
+CC:     Can Guo <quic_cang@quicinc.com>, <quic_asutoshd@quicinc.com>,
+        <bvanassche@acm.org>, <beanhuo@micron.com>, <avri.altman@wdc.com>,
+        <junwoo80.lee@samsung.com>, <martin.petersen@oracle.com>,
+        <quic_nguyenb@quicinc.com>, <quic_nitirawa@quicinc.com>,
+        <quic_rampraka@quicinc.com>, <linux-scsi@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1698145815-17396-1-git-send-email-quic_ziqichen@quicinc.com>
+ <20231025074128.GA3648@thinkpad>
+ <85d7a1ef-92c4-49ae-afe0-727c1b446f55@quicinc.com>
+ <c6a72c38-aa63-79b8-c784-d753749f7272@quicinc.com>
+ <20231128112731.GV3088@thinkpad>
+Content-Language: en-US
+From:   Ziqi Chen <quic_ziqichen@quicinc.com>
+In-Reply-To: <20231128112731.GV3088@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: uEMP9tTrfa0UqBAUXpy-3MfyJwwt4ySq
+X-Proofpoint-ORIG-GUID: uEMP9tTrfa0UqBAUXpy-3MfyJwwt4ySq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-29_09,2023-11-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ impostorscore=0 mlxscore=0 phishscore=0 spamscore=0 priorityscore=1501
+ bulkscore=0 mlxlogscore=999 lowpriorityscore=0 adultscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311290091
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -67,86 +92,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-this is a first belated round of pin control fixes for the v6.7 series..
 
-The most interesting patch is the list iterator fix in the core by Maria
-Yu, it took a while for me to realize what was going on there.
+On 11/28/2023 7:27 PM, Manivannan Sadhasivam wrote:
+> On Tue, Nov 28, 2023 at 03:40:57AM +0800, Ziqi Chen wrote:
+>>
+>>
+>> On 11/22/2023 2:14 PM, Can Guo wrote:
+>>>
+>>>
+>>> On 10/25/2023 3:41 PM, Manivannan Sadhasivam wrote:
+>>>> On Tue, Oct 24, 2023 at 07:10:15PM +0800, Ziqi Chen wrote:
+>>>>> During PISI test, we found the issue that host Tx still bursting after
+>>>>
+>>>> What is PISI test?
+>>
+>> SI measurement.
+>>
+> 
+> Please expand it in the patch description.
 
-Some details on the fixes are in the tag.
+Sure, I will update in next patch version.
 
-Please pull them in!
+> 
+>>>>
+>>>>> H/W reset. Move ufs_qcom_host_reset() to ufs_qcom_device_reset() and
+>>>>> reset host before device reset to stop tx burst.
+>>>>>
+>>>>
+>>>> device_reset() callback is supposed to reset only the device and not
+>>>> the host.
+>>>> So NACK for this patch.
+>>>
+>>> Agree, the change should come in a more reasonable way.
+>>>
+>>> Actually, similar code is already there in ufs_mtk_device_reset() in
+>>> ufs-mediatek.c, I guess here is trying to mimic that fashion.
+>>>
+>>> This change, from its functionality point of view, we do need it,
+>>> because I occasionally (2 out of 10) hit PHY error on lane 0 during
+>>> reboot test (in my case, I tried SM8350, SM8450 and SM8550， all same).
+>>>
+>>> [    1.911188] [DEBUG]ufshcd_update_uic_error: UECPA:0x80000002
+>>> [    1.922843] [DEBUG]ufshcd_update_uic_error: UECDL:0x80004000
+>>> [    1.934473] [DEBUG]ufshcd_update_uic_error: UECN:0x0
+>>> [    1.944688] [DEBUG]ufshcd_update_uic_error: UECT:0x0
+>>> [    1.954901] [DEBUG]ufshcd_update_uic_error: UECDME:0x0
+>>>
+>>> I found out that the PHY error pops out right after UFS device gets
+>>> reset in the 2nd init. After having this change in place, the PA/DL
+>>> errors are gone.
+>>
+>> Hi Mani,
+>>
+>> There is another way that adding a new vops that call XXX_host_reset() from
+>> soc vendor driver. in this way, we can call this vops in core layer without
+>> the dependency of device reset.
+>> due to we already observed such error and received many same reports from
+>> different OEMs, we need to fix it in some way.
+>> if you think above way is available, I will update new patch in soon. Or
+>> could you give us other suggestion?
+>>
+> 
+> First, please describe the issue in detail. How the issue is getting triggered
+> and then justify your change. I do not have access to the bug reports that you
+> received.
 
-Yours,
-Linus Walleij
+ From the waveform measured by Samsung , we can see at the end of 2nd 
+Link Startup, host still keep bursting after H/W reset. This abnormal 
+timing would cause the PA/DL error mentioned by Can.
 
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+On the other hand, at the end of 1st Link start up, Host ends bursting 
+at first and then sends H/W reset to device. So Samsung suggested to do 
+host reset before every time device reset to fix this issue. That's what 
+you saw in this patch.  This patch has been verified by OEMs.
 
-  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+So do you think if we can keep this change with details update in commit 
+message. or need to do other improvement?
 
-are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
-tags/pinctrl-v6.7-2
+-Ziqi
 
-for you to fetch changes up to 90785ea8158b6923c5d6a024f2b1c076110577b5:
-
-  dt-bindings: pinctrl: s32g2: change a maintainer email address
-(2023-11-24 11:21:55 +0100)
-
-----------------------------------------------------------------
-Some pin control fixes for the v6.7 cycle:
-
-- Fix a really interesting potential core bug in the list iterator
-  requireing the use of READ_ONCE() discovered when testing kernel
-  compiles with clang.
-
-- Check devm_kcalloc() return value and an array bounds in the STM32
-  driver.
-
-- Fix an exotic string truncation issue in the s32cc driver, found
-  by the kernel test robot (impressive!)
-
-- Fix an undocumented struct member in the cy8c95x0 driver.
-
-- Fix a symbol overlap with MIPS in the Lochnagar driver, MIPS
-  defines a global symbol "RST" which is a bit too generic and
-  collide with stuff. OK this one should be renamed too, we will
-  fix that as well.
-
-- Fix erroneous branch taking in the Realtek driver.
-
-- Fix the mail address in MAINTAINERS for the s32g2 driver.
-
-----------------------------------------------------------------
-Antonio Borneo (1):
-      pinctrl: stm32: fix array read out of bound
-
-Charles Keepax (1):
-      pinctrl: lochnagar: Don't build on MIPS
-
-Chen Ni (1):
-      pinctrl: stm32: Add check for devm_kcalloc
-
-Chester Lin (2):
-      pinctrl: s32cc: Avoid possible string truncation
-      dt-bindings: pinctrl: s32g2: change a maintainer email address
-
-Linus Walleij (1):
-      pinctrl: cy8c95x0: Fix doc warning
-
-Maria Yu (1):
-      pinctrl: avoid reload of p state in list iteration
-
-Tzuyi Chang (1):
-      pinctrl: realtek: Fix logical error when finding descriptor
-
- .../bindings/pinctrl/nxp,s32g2-siul2-pinctrl.yaml           |  2 +-
- drivers/pinctrl/cirrus/Kconfig                              |  3 ++-
- drivers/pinctrl/core.c                                      |  6 +++---
- drivers/pinctrl/nxp/pinctrl-s32cc.c                         |  4 ++--
- drivers/pinctrl/pinctrl-cy8c95x0.c                          |  1 +
- drivers/pinctrl/realtek/pinctrl-rtd.c                       |  4 ++--
- drivers/pinctrl/stm32/pinctrl-stm32.c                       | 13 ++++++++++---
- 7 files changed, 21 insertions(+), 12 deletions(-)
+> 
+> - Mani
+> 
+>> -Ziqi
+>>
+>>>
+>>> Thanks,
+>>> Can Guo.
+>>>>
+>>>> - Mani
+>>>>
+>>>>> Signed-off-by: Ziqi Chen <quic_ziqichen@quicinc.com>
+>>>>> ---
+>>>>>    drivers/ufs/host/ufs-qcom.c | 13 +++++++------
+>>>>>    1 file changed, 7 insertions(+), 6 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+>>>>> index 96cb8b5..43163d3 100644
+>>>>> --- a/drivers/ufs/host/ufs-qcom.c
+>>>>> +++ b/drivers/ufs/host/ufs-qcom.c
+>>>>> @@ -445,12 +445,6 @@ static int
+>>>>> ufs_qcom_power_up_sequence(struct ufs_hba *hba)
+>>>>>        struct phy *phy = host->generic_phy;
+>>>>>        int ret;
+>>>>> -    /* Reset UFS Host Controller and PHY */
+>>>>> -    ret = ufs_qcom_host_reset(hba);
+>>>>> -    if (ret)
+>>>>> -        dev_warn(hba->dev, "%s: host reset returned %d\n",
+>>>>> -                  __func__, ret);
+>>>>> -
+>>>>>        /* phy initialization - calibrate the phy */
+>>>>>        ret = phy_init(phy);
+>>>>>        if (ret) {
+>>>>> @@ -1709,6 +1703,13 @@ static void ufs_qcom_dump_dbg_regs(struct
+>>>>> ufs_hba *hba)
+>>>>>    static int ufs_qcom_device_reset(struct ufs_hba *hba)
+>>>>>    {
+>>>>>        struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+>>>>> +    int ret = 0;
+>>>>> +
+>>>>> +    /* Reset UFS Host Controller and PHY */
+>>>>> +    ret = ufs_qcom_host_reset(hba);
+>>>>> +    if (ret)
+>>>>> +        dev_warn(hba->dev, "%s: host reset returned %d\n",
+>>>>> +                  __func__, ret);
+>>>>>        /* reset gpio is optional */
+>>>>>        if (!host->device_reset)
+>>>>> -- 
+>>>>> 2.7.4
+>>>>>
+>>>>
+> 
