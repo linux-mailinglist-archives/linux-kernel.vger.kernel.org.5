@@ -2,67 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D797FE2D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 23:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 904207FE2DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 23:17:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234841AbjK2WPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 17:15:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37990 "EHLO
+        id S230408AbjK2WRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 17:17:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232693AbjK2WPh (ORCPT
+        with ESMTP id S229611AbjK2WRe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 17:15:37 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B61A8
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:15:44 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57631C433C7;
-        Wed, 29 Nov 2023 22:15:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1701296143;
-        bh=plgOXsBw6Cgzi7c+sOMbPbteFDD/cEFFdXdKvhv6+P4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Zexjm4Co0EhbtqVufBP3QVY5t/FKctGeVJLCxYNrdXXGByHewpU1LSj2DZ412YRXs
-         mT6+LLpxo81J1C8HyW3PRtesuArvpT+ocnvARABWCODRJ+D/rCMN1X+4Mh339MGFjK
-         GgEFdo6cTQWzLyo7bLsyjdcIN75ceQHfteCUres8=
-Date:   Wed, 29 Nov 2023 14:15:42 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, casper.li@mediatek.com,
-        chinwen.chang@mediatek.com, qun-wei.lin@mediatek.com,
-        linux-mm@kvack.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v2 1/3] scripts/gdb/tasks: Fix lx-ps command error
-Message-Id: <20231129141542.56d76170d38f2f6ee6b9ece3@linux-foundation.org>
-In-Reply-To: <20231129081009.GF22743@redhat.com>
-References: <20231129065142.13375-1-Kuan-Ying.Lee@mediatek.com>
-        <20231129065142.13375-2-Kuan-Ying.Lee@mediatek.com>
-        <20231129081009.GF22743@redhat.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 29 Nov 2023 17:17:34 -0500
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 539B5A3;
+        Wed, 29 Nov 2023 14:17:40 -0800 (PST)
+Received: by linux.microsoft.com (Postfix, from userid 1099)
+        id A96B720B74C0; Wed, 29 Nov 2023 14:17:39 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A96B720B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1701296259;
+        bh=Zsx1oRRDG0ud+KYg27YMp0ZwJzk7FpHaUGfDgfFevRU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OjVaYLAyvGNrgGT5XdUkbanydr+2zb91Ww6pBQ5v7UdvypeSsJzEFiwbBN4YUcoFd
+         iRxOfYUrSOzPaW6u8WICfgphPuL+DCUWLY0RuJKcwQcuRJaa9zIdMunYSLQCHHaTLV
+         34olHXNtIiUoYZircMeYAoW1H3Tphn9/XH4vo8ys=
+Date:   Wed, 29 Nov 2023 14:17:39 -0800
+From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Souradeep Chakrabarti <schakrabarti@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        Long Li <longli@microsoft.com>,
+        "sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
+        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Paul Rosswurm <paulros@microsoft.com>
+Subject: Re: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning IRQ
+ affinity on HT cores
+Message-ID: <20231129221739.GA20858@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1700574877-6037-1-git-send-email-schakrabarti@linux.microsoft.com>
+ <20231121154841.7fc019c8@kernel.org>
+ <PUZP153MB0788476CD22D5AA2ECDC11ABCCBDA@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
+ <20231127100639.5f2f3d3e@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231127100639.5f2f3d3e@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Nov 2023 09:10:09 +0100 Oleg Nesterov <oleg@redhat.com> wrote:
-
-> > Fixes: 8e1f385104ac ("kill task_struct->thread_group")
-> > Cc: stable@vger.kernel.org
+On Mon, Nov 27, 2023 at 10:06:39AM -0800, Jakub Kicinski wrote:
+> On Mon, 27 Nov 2023 09:36:38 +0000 Souradeep Chakrabarti wrote:
+> > easier to keep things inside the mana driver code here
 > 
-> Is it possible to merge this simple change before v6.7 ?
-> Then "cc: stable" can be removed.
+> Easier for who? Upstream we care about consistency and maintainability
+> across all drivers.
+I am refactoring the code and putting some of the changes in topology.h
+and in nodemask.h. I am sharing the proposed change here for those two
+files. Please let me know if they are acceptable.
 
-Yes, I shall do all that.
+Added a new helper to iterate on numa nodes with cpu and start from a 
+particular node, instead of first node. This helps when we want to
+iterate from the local numa node.
+
+diff --git a/include/linux/nodemask.h b/include/linux/nodemask.h
+index 8d07116caaf1..6e4528376164 100644
+--- a/include/linux/nodemask.h
++++ b/include/linux/nodemask.h
+@@ -392,6 +392,15 @@ static inline void __nodes_fold(nodemask_t *dstp, const nodemask_t *origp,
+        for ((node) = 0; (node) < 1 && !nodes_empty(mask); (node)++)
+ #endif /* MAX_NUMNODES */
+
++#if MAX_NUMNODES > 1
++#define for_each_node_next_mask(node_start, node_next, mask)           \
++       for ((node_next) = (node_start);                                \
++            (node_next) < MAX_NUMNODES;                                \
++            (node_next) = next_node((node_next), (mask)))
++#else
++#define for_each_node_next_mask(node_start, node_next, mask)   \
++       for_each_node_mask(node_next, mask)
++#endif
+ /*
+  * Bitmasks that are kept for all the nodes.
+  */
+@@ -440,6 +449,8 @@ static inline int num_node_state(enum node_states state)
+
+ #define for_each_node_state(__node, __state) \
+        for_each_node_mask((__node), node_states[__state])
++#define for_each_node_next_state(__node_start, __node_next, __state) \
++       for_each_node_next_mask((__node_start), (__node_next), node_states[__state])
+
+ #define first_online_node      first_node(node_states[N_ONLINE])
+ #define first_memory_node      first_node(node_states[N_MEMORY])
+@@ -489,7 +500,8 @@ static inline int num_node_state(enum node_states state)
+
+ #define for_each_node_state(node, __state) \
+        for ( (node) = 0; (node) == 0; (node) = 1)
+-
++#define for_each_node_next_state(node, next_node, _state) \
++       for_each_node_state(node, __state)
+ #define first_online_node      0
+ #define first_memory_node      0
+ #define next_online_node(nid)  (MAX_NUMNODES)
+@@ -535,6 +547,8 @@ static inline int node_random(const nodemask_t *maskp)
+
+ #define for_each_node(node)       for_each_node_state(node, N_POSSIBLE)
+ #define for_each_online_node(node) for_each_node_state(node, N_ONLINE)
++#define for_each_online_node_next(node, next_node)  \
++                                 for_each_node_next_state(node, next_node, N_ONLINE)
+
+ /*
+  * For nodemask scratch area.
+diff --git a/include/linux/topology.h b/include/linux/topology.h
+index 52f5850730b3..a06b16e5a955 100644
+--- a/include/linux/topology.h
++++ b/include/linux/topology.h
+@@ -43,6 +43,9 @@
+        for_each_online_node(node)                      \
+                if (nr_cpus_node(node))
+
++#define for_each_next_node_with_cpus(node, next_node)  \
++               for_each_online_node_next(node, next_node)      \
++               if (nr_cpus_node(next_node))
+ int arch_update_cpu_topology(void);
+
+ /* Conform to ACPI 2.0 SLIT distance definitions */
