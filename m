@@ -2,105 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED937FDA6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:53:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB5077FDA65
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:52:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234703AbjK2OxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 09:53:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43272 "EHLO
+        id S234683AbjK2Ow1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 09:52:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234225AbjK2OxP (ORCPT
+        with ESMTP id S234225AbjK2OwZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 09:53:15 -0500
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AA6D6DD;
-        Wed, 29 Nov 2023 06:53:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=/S2A/EeNHbYjLnA0IJ
-        VqikibUA8CJdMhN9CjXBD7ITw=; b=kuj9Ho/DifavLASqZBVo0EQMGnWGpdX57G
-        Odr/0Fsl2iXVz7D4QHgIQYHwiGa/9H7wTyj3iVpOSKlt3bRXYqwa8VcORu2rBokH
-        gpU3pdT+yhFBsE/9p2jqA7JFXlR8ojb7qkMTQWSTrzVy7Oc2lMUPXTZjFnQOiwTZ
-        JmjHD8Ks8=
-Received: from localhost.localdomain (unknown [39.144.190.126])
-        by zwqz-smtp-mta-g2-2 (Coremail) with SMTP id _____wD333ERUGdls+wAAA--.230S2;
-        Wed, 29 Nov 2023 22:52:03 +0800 (CST)
-From:   Haoran Liu <liuhaoran14@163.com>
-To:     jejb@linux.ibm.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Haoran Liu <liuhaoran14@163.com>
-Subject: [PATCH] [scsi] lasi700: Add error handling in lasi700_probe
-Date:   Wed, 29 Nov 2023 06:52:00 -0800
-Message-Id: <20231129145200.34596-1-liuhaoran14@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: _____wD333ERUGdls+wAAA--.230S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7ZF4UJr4DCry7ur4kXr4kXrb_yoW8Zr1Dpa
-        ykGws8Crs8Jr1xCw13Ja1UAF1Yq3yftry7Ka43Z3sIv3W3JFyktr4vyFyruFyrKrWvk3WU
-        XF1jqrW293WDCFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pZjqiDUUUUU=
-X-Originating-IP: [39.144.190.126]
-X-CM-SenderInfo: xolxxtxrud0iqu6rljoofrz/1tbiZRo3gl8ZaQ-qYQADsi
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 29 Nov 2023 09:52:25 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22120130;
+        Wed, 29 Nov 2023 06:52:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701269552; x=1732805552;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=1CJf5Lgu8+XI2dNO/pXx6iv5PIhdqKCUYUilwz1LFD0=;
+  b=TCGwKfnzvXs9olpRfHJJr/hR6uvxgI7zGuSD7z9Tc3c6Szs+X9WBII7f
+   ymrDX5/pBJ9v1idjpSVWJZi/EaF1JaJlqDKQG/MthKdfusgXFNuh/fRbn
+   pyCDvzBn3Gda2xkqXcqmIPxUUsdOEHspLNLNjjzfHWYDsrEeuTT7LFhhR
+   39pm7rtm1SjNWMvpxA9kKh6xifTaFH6NRMSw9TkOOJQrBveAuaEr7UBHf
+   rKXrVmEPpU08DQwvr+hTOW4vFRievxNX6rnhQoDvpKR9049lgIWXJJHe0
+   B8JCrOumasTpM+RghJydmTabEk5aOQTaAh1YVN3AuuGWJRaza282K5DIs
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="457499252"
+X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
+   d="scan'208";a="457499252"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 06:52:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="745281764"
+X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
+   d="scan'208";a="745281764"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 06:52:30 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1r8LvP-00000000SyY-273P;
+        Wed, 29 Nov 2023 16:52:27 +0200
+Date:   Wed, 29 Nov 2023 16:52:27 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH 09/10] gpiolib: use gpiochip_dup_line_label() in for_each
+ helpers
+Message-ID: <ZWdQK1kUe3zLqWIb@smile.fi.intel.com>
+References: <20231129142411.76863-1-brgl@bgdev.pl>
+ <20231129142411.76863-10-brgl@bgdev.pl>
+ <CAMRc=MfL2nHF78TUmRjRSUC-2zyMjWotzU7Tv_27mVJPLET40Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=MfL2nHF78TUmRjRSUC-2zyMjWotzU7Tv_27mVJPLET40Q@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch introduces improved error handling for the dma_set_mask and
-ioremap calls in the lasi700_probe function within drivers/scsi/lasi700.c.
-Previously, the function did not properly handle the potential failure of
-these calls, which could lead to improper device initialization and
-unpredictable behavior.
+On Wed, Nov 29, 2023 at 03:43:32PM +0100, Bartosz Golaszewski wrote:
+> On Wed, Nov 29, 2023 at 3:24 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
 
-Although the error addressed by this patch may not occur in the current
-environment, I still suggest implementing these error handling routines
-if the function is not highly time-sensitive. As the environment evolves
-or the code gets reused in different contexts, there's a possibility that
-these errors might occur. Addressing them now can prevent potential
-debugging efforts in the future, which could be quite resource-intensive.
+...
 
-Signed-off-by: Haoran Liu <liuhaoran14@163.com>
----
- drivers/scsi/lasi700.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+> Any ideas how to handle this one? I was thinking something like:
+> 
+>     for (i = 0, char *p __free(kfree) = label; i < size; i++)
+> 
+> would work but it doesn't.
 
-diff --git a/drivers/scsi/lasi700.c b/drivers/scsi/lasi700.c
-index 86fe19e0468d..8d482bee940d 100644
---- a/drivers/scsi/lasi700.c
-+++ b/drivers/scsi/lasi700.c
-@@ -87,6 +87,7 @@ lasi700_probe(struct parisc_device *dev)
- 	unsigned long base = dev->hpa.start + LASI_SCSI_CORE_OFFSET;
- 	struct NCR_700_Host_Parameters *hostdata;
- 	struct Scsi_Host *host;
-+	int err;
- 
- 	hostdata = kzalloc(sizeof(*hostdata), GFP_KERNEL);
- 	if (!hostdata) {
-@@ -95,8 +96,20 @@ lasi700_probe(struct parisc_device *dev)
- 	}
- 
- 	hostdata->dev = &dev->dev;
--	dma_set_mask(&dev->dev, DMA_BIT_MASK(32));
-+	err = dma_set_mask(&dev->dev, DMA_BIT_MASK(32));
-+	if (err) {
-+		dev_err(&dev->dev, "Failed to set DMA mask: %d\n", err);
-+		kfree(hostdata);
-+		return err;
-+	}
-+
- 	hostdata->base = ioremap(base, 0x100);
-+	if (!hostdata->base) {
-+		dev_err(&dev->dev, "ioremap failed\n");
-+		kfree(hostdata);
-+		return -ENOMEM;
-+	}
-+
- 	hostdata->differential = 0;
- 
- 	if (dev->id.sversion == LASI_700_SVERSION) {
+Probably you want to ask Peter Z for this.
+
 -- 
-2.17.1
+With Best Regards,
+Andy Shevchenko
+
 
