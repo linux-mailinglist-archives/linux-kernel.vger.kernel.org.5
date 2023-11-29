@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A42A7FCCAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 03:13:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 589BD7FCCB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 03:13:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376778AbjK2CMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 21:12:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43138 "EHLO
+        id S234890AbjK2CM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 21:12:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234847AbjK2CMi (ORCPT
+        with ESMTP id S234871AbjK2CMj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 21:12:38 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC7DF19BE;
-        Tue, 28 Nov 2023 18:12:37 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40b479b9c35so20646755e9.1;
-        Tue, 28 Nov 2023 18:12:37 -0800 (PST)
+        Tue, 28 Nov 2023 21:12:39 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2685C1BC3;
+        Tue, 28 Nov 2023 18:12:38 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40b474c925bso18224035e9.3;
+        Tue, 28 Nov 2023 18:12:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701223956; x=1701828756; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701223957; x=1701828757; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5v5tvMkrHBHUZzomW/zRyl4hZOMTbCoPspKHkGLKUJU=;
-        b=jIbZx8VUvI/3erv6YejseXUsgbkFvYozPCTtwgR82PVrwefs29qm0YYoW/owwtHIEi
-         4CQiSbi7QQHuHiUj9jCareUSILWDCj6W0B5x440Fp/DspsjbuveYPtDrvV4LE0roiZVN
-         DO2jND2ESJ6QUBQ3/YL2rDQXHN4m6BIavY/Xw+Po2fs38jYcYSyMX6AUHS9/trpJeTqL
-         JyXa8vSKjyPv96z7Xqmo3Y52tT0xR39bUNMniSp5LpCd6clYiZ2aH9jwe9ZRrnp0x/7O
-         wu/z3qDbpffeCBVQ9iBE4yhSgssggUsFnlsecaAHYx6+wgICyOzBEyVcOw5uBD03VKaw
-         9tZg==
+        bh=79YmmR9cXswZrK49RYM13kaDY83DvisuNGYYcbhjp0k=;
+        b=Q4zNijdkB1zvSuQnCsqm3IsBNSVNFa5l2/QBOhaVQvVNyZrHBXGJTWqVGeQnB4FHIu
+         OaD6J+FEmtuAUqJbDgGU3RthPbI5WAZkxcMfYB53k1ZUpiztPL3mwcPjO0ctCIez/uGf
+         lbUIjJ9zF9Fbek9ZE7oiv8Qpp0Q/ryzGKeUfXhWSKwJjEyr2cjbfaWWgCxa8kfxRBAhD
+         Ef5a271gHdjALNpdm1BdHzdiOWX8kO83d9Kn/UIJcueU+AtH9SbrQKTqYnv/Pl58WWUz
+         s1k2PiubIR+dIRZig4ou6vQIAzyOpOksme4rzThd1PZR7i3gXbm5KrVvJwPeJ6/WmjZR
+         FXRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701223956; x=1701828756;
+        d=1e100.net; s=20230601; t=1701223957; x=1701828757;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5v5tvMkrHBHUZzomW/zRyl4hZOMTbCoPspKHkGLKUJU=;
-        b=dWE6MKa4VezfJY4ismi+7wJIC/B2/Oyymrs4PvWvozPhq0mcd9iWDNxGTH3ZZEKcfq
-         qJ31861Hf3dX8fJdAlgiiiIlNnGajJ1Rvf3NdhJgAwSuDQeqNpUefJCMjwGv8N57ToMV
-         MACYRG2WO/kaIa1I19uW2uKkr/JChDZcf9nkyqbNVkkhbXtkihvHWCaQR6Kep7FsHiFQ
-         X4Wm1TXSznjLDGPg8d1ERlhB+n1B4+bPvDEqaF/FbdisZ0MZcsS7xpNp9uSRGFLQzSgT
-         P4+sUoWt3/9W9HyZRmvmLfaw8iwz9qidByy1hV4K9NAarv6k375ffbW2fa2JHUYUW454
-         Bh2w==
-X-Gm-Message-State: AOJu0YwNLqW+hdSLWpIrnF8fr1DR/JgBPr8ypEU8nN1/BfkC8GLZCG6n
-        F/IGsKQNWxWrnccpQ4iSboE=
-X-Google-Smtp-Source: AGHT+IGpBoZ9r/dFQC/s54Tzgn+bgbTrRMGct36TBZ+7oM+l8g/cjPs7xMLNxLE9yXEmUlujQ63Opw==
-X-Received: by 2002:a05:600c:1989:b0:408:3f87:cba with SMTP id t9-20020a05600c198900b004083f870cbamr11340219wmq.39.1701223955827;
-        Tue, 28 Nov 2023 18:12:35 -0800 (PST)
+        bh=79YmmR9cXswZrK49RYM13kaDY83DvisuNGYYcbhjp0k=;
+        b=oVPF8DONNbw5ixemQrAxst23vj0TWUcT5XtVidfSjIRE83t/UDLG9CWvYwBDnRT5E3
+         pExcAAGmMEd7toICjoq4EScfHk0yObfjx3CY6pOGhoD0bcXPv1t/e9R/orBe60QqkTqj
+         5a7ZBliLVdhSs3y6cJDalF4gVvSb/J+6ZoQTEoUPW/l6ptZkA5+NCb+8+D5ufezdpSwJ
+         XwXBqG/F9f18YeVbvv/C1OGdtoasFs2LbGvzwFeDDVw9pRNlwGp4Betg1C+r9gyUbqj3
+         AmbNoA494EyUXh0TZfX7sTPOxAoAHK8w/8+kJtdkN8Fl+HmHs8bmLd1G6/rGt4dA0GHw
+         1lrg==
+X-Gm-Message-State: AOJu0YzSqpBv2hAZrGXOOODVYOzXnNr78fIhsn/cdUA3YhKpb5de8nGA
+        bOUkBZHLZW1FijXoIbMZzmE=
+X-Google-Smtp-Source: AGHT+IGn3jLgOwlVml0KrEQwHH8xIw4gpNkpllT3RECFCq+9cLHvzbo8Z4AaBUfCRnoHb48GJ5ZhRA==
+X-Received: by 2002:a05:600c:4690:b0:40b:47b5:be4f with SMTP id p16-20020a05600c469000b0040b47b5be4fmr5163729wmo.26.1701223957007;
+        Tue, 28 Nov 2023 18:12:37 -0800 (PST)
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id b19-20020a05600c4e1300b0040648217f4fsm321406wmq.39.2023.11.28.18.12.34
+        by smtp.googlemail.com with ESMTPSA id b19-20020a05600c4e1300b0040648217f4fsm321406wmq.39.2023.11.28.18.12.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Nov 2023 18:12:35 -0800 (PST)
+        Tue, 28 Nov 2023 18:12:36 -0800 (PST)
 From:   Christian Marangi <ansuelsmth@gmail.com>
 To:     Andrew Lunn <andrew@lunn.ch>,
         Heiner Kallweit <hkallweit1@gmail.com>,
@@ -64,9 +64,9 @@ To:     Andrew Lunn <andrew@lunn.ch>,
         linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
         linux-arm-msm@vger.kernel.org
 Cc:     Christian Marangi <ansuelsmth@gmail.com>
-Subject: [net-next PATCH 07/14] net: phy: at803x: move at8035 specific DT parse to dedicated probe
-Date:   Wed, 29 Nov 2023 03:12:12 +0100
-Message-Id: <20231129021219.20914-8-ansuelsmth@gmail.com>
+Subject: [net-next PATCH 08/14] net: phy: at803x: drop specific PHY id check from cable test functions
+Date:   Wed, 29 Nov 2023 03:12:13 +0100
+Message-Id: <20231129021219.20914-9-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231129021219.20914-1-ansuelsmth@gmail.com>
 References: <20231129021219.20914-1-ansuelsmth@gmail.com>
@@ -82,110 +82,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move at8035 specific DT parse for clock out frequency to dedicated probe
-to make at803x probe function more generic.
+Drop specific PHY id check for cable test functions for at803x. This is
+done to make functions more generic.
 
-This is to tidy code and no behaviour change are intended.
+PHYs that requires to set additional reg are moved to specific function
+calling the more generic one.
 
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 ---
- drivers/net/phy/at803x.c | 62 ++++++++++++++++++++++++++++------------
- 1 file changed, 43 insertions(+), 19 deletions(-)
+ drivers/net/phy/at803x.c | 48 +++++++++++++++++++++++-----------------
+ 1 file changed, 28 insertions(+), 20 deletions(-)
 
 diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
-index b83422c6db74..e7d006ca1676 100644
+index e7d006ca1676..8f5878ccb1a8 100644
 --- a/drivers/net/phy/at803x.c
 +++ b/drivers/net/phy/at803x.c
-@@ -647,23 +647,6 @@ static int at803x_parse_dt(struct phy_device *phydev)
+@@ -1263,19 +1263,11 @@ static int at803x_cable_test_one_pair(struct phy_device *phydev, int pair)
+ }
  
- 		priv->clk_25m_reg |= FIELD_PREP(AT803X_CLK_OUT_MASK, sel);
- 		priv->clk_25m_mask |= AT803X_CLK_OUT_MASK;
+ static int at803x_cable_test_get_status(struct phy_device *phydev,
+-					bool *finished)
++					bool *finished, unsigned long pair_mask)
+ {
+-	unsigned long pair_mask;
+ 	int retries = 20;
+ 	int pair, ret;
+ 
+-	if (phydev->phy_id == ATH9331_PHY_ID ||
+-	    phydev->phy_id == ATH8032_PHY_ID ||
+-	    phydev->phy_id == QCA9561_PHY_ID)
+-		pair_mask = 0x3;
+-	else
+-		pair_mask = 0xf;
 -
--		/* Fixup for the AR8030/AR8035. This chip has another mask and
--		 * doesn't support the DSP reference. Eg. the lowest bit of the
--		 * mask. The upper two bits select the same frequencies. Mask
--		 * the lowest bit here.
--		 *
--		 * Warning:
--		 *   There was no datasheet for the AR8030 available so this is
--		 *   just a guess. But the AR8035 is listed as pin compatible
--		 *   to the AR8030 so there might be a good chance it works on
--		 *   the AR8030 too.
--		 */
--		if (phydev->drv->phy_id == ATH8030_PHY_ID ||
--		    phydev->drv->phy_id == ATH8035_PHY_ID) {
--			priv->clk_25m_reg &= AT8035_CLK_OUT_MASK;
--			priv->clk_25m_mask &= AT8035_CLK_OUT_MASK;
--		}
- 	}
+ 	*finished = false;
  
- 	ret = of_property_read_u32(node, "qca,clk-out-strength", &strength);
-@@ -1681,6 +1664,47 @@ static int at8031_set_wol(struct phy_device *phydev,
+ 	/* According to the datasheet the CDT can be performed when
+@@ -1310,10 +1302,6 @@ static int at803x_cable_test_start(struct phy_device *phydev)
+ 	 */
+ 	phy_write(phydev, MII_BMCR, BMCR_ANENABLE);
+ 	phy_write(phydev, MII_ADVERTISE, ADVERTISE_CSMA);
+-	if (phydev->phy_id != ATH9331_PHY_ID &&
+-	    phydev->phy_id != ATH8032_PHY_ID &&
+-	    phydev->phy_id != QCA9561_PHY_ID)
+-		phy_write(phydev, MII_CTRL1000, 0);
+ 
+ 	/* we do all the (time consuming) work later */
+ 	return 0;
+@@ -1664,6 +1652,26 @@ static int at8031_set_wol(struct phy_device *phydev,
  	return at803x_set_wol(phydev, wol);
  }
  
-+static int at8035_parse_dt(struct phy_device *phydev)
++static int at8031_cable_test_get_status(struct phy_device *phydev,
++					bool *finished)
 +{
-+	struct device_node *node = phydev->mdio.dev.of_node;
-+	struct at803x_priv *priv = phydev->priv;
-+	u32 freq;
-+	int ret;
++	return at803x_cable_test_get_status(phydev, finished, 0xf);
++}
 +
-+	if (!IS_ENABLED(CONFIG_OF_MDIO))
-+		return 0;
-+
-+	ret = of_property_read_u32(node, "qca,clk-out-frequency", &freq);
-+	if (!ret) {
-+		/* Fixup for the AR8030/AR8035. This chip has another mask and
-+		 * doesn't support the DSP reference. Eg. the lowest bit of the
-+		 * mask. The upper two bits select the same frequencies. Mask
-+		 * the lowest bit here.
-+		 *
-+		 * Warning:
-+		 *   There was no datasheet for the AR8030 available so this is
-+		 *   just a guess. But the AR8035 is listed as pin compatible
-+		 *   to the AR8030 so there might be a good chance it works on
-+		 *   the AR8030 too.
-+		 */
-+		priv->clk_25m_reg &= AT8035_CLK_OUT_MASK;
-+		priv->clk_25m_mask &= AT8035_CLK_OUT_MASK;
-+	}
++static int at8031_cable_test_start(struct phy_device *phydev)
++{
++	at803x_cable_test_start(phydev);
++	phy_write(phydev, MII_CTRL1000, 0);
 +
 +	return 0;
 +}
 +
-+static int at8035_probe(struct phy_device *phydev)
++static int at8032_cable_test_get_status(struct phy_device *phydev,
++					bool *finished)
 +{
-+	int ret;
-+
-+	ret = at803x_probe(phydev);
-+	if (ret)
-+		return ret;
-+
-+	return at8035_parse_dt(phydev);
++	return at803x_cable_test_get_status(phydev, finished, 0x3);
 +}
 +
- static int qca83xx_probe(struct phy_device *phydev)
+ static int at8035_parse_dt(struct phy_device *phydev)
  {
- 	struct device *dev = &phydev->mdio.dev;
-@@ -2167,7 +2191,7 @@ static struct phy_driver at803x_driver[] = {
- 	PHY_ID_MATCH_EXACT(ATH8035_PHY_ID),
- 	.name			= "Qualcomm Atheros AR8035",
- 	.flags			= PHY_POLL_CABLE_TEST,
--	.probe			= at803x_probe,
-+	.probe			= at8035_probe,
- 	.config_aneg		= at803x_config_aneg,
- 	.config_init		= at803x_config_init,
- 	.soft_reset		= genphy_soft_reset,
-@@ -2188,7 +2212,7 @@ static struct phy_driver at803x_driver[] = {
+ 	struct device_node *node = phydev->mdio.dev.of_node;
+@@ -2205,8 +2213,8 @@ static struct phy_driver at803x_driver[] = {
+ 	.handle_interrupt	= at803x_handle_interrupt,
+ 	.get_tunable		= at803x_get_tunable,
+ 	.set_tunable		= at803x_set_tunable,
+-	.cable_test_start	= at803x_cable_test_start,
+-	.cable_test_get_status	= at803x_cable_test_get_status,
++	.cable_test_start	= at8031_cable_test_start,
++	.cable_test_get_status	= at8031_cable_test_get_status,
+ }, {
+ 	/* Qualcomm Atheros AR8030 */
  	.phy_id			= ATH8030_PHY_ID,
- 	.name			= "Qualcomm Atheros AR8030",
- 	.phy_id_mask		= AT8030_PHY_ID_MASK,
--	.probe			= at803x_probe,
-+	.probe			= at8035_probe,
- 	.config_init		= at803x_config_init,
- 	.link_change_notify	= at803x_link_change_notify,
- 	.set_wol		= at803x_set_wol,
+@@ -2243,8 +2251,8 @@ static struct phy_driver at803x_driver[] = {
+ 	.handle_interrupt	= at803x_handle_interrupt,
+ 	.get_tunable		= at803x_get_tunable,
+ 	.set_tunable		= at803x_set_tunable,
+-	.cable_test_start	= at803x_cable_test_start,
+-	.cable_test_get_status	= at803x_cable_test_get_status,
++	.cable_test_start	= at8031_cable_test_start,
++	.cable_test_get_status	= at8031_cable_test_get_status,
+ }, {
+ 	/* Qualcomm Atheros AR8032 */
+ 	PHY_ID_MATCH_EXACT(ATH8032_PHY_ID),
+@@ -2259,7 +2267,7 @@ static struct phy_driver at803x_driver[] = {
+ 	.config_intr		= at803x_config_intr,
+ 	.handle_interrupt	= at803x_handle_interrupt,
+ 	.cable_test_start	= at803x_cable_test_start,
+-	.cable_test_get_status	= at803x_cable_test_get_status,
++	.cable_test_get_status	= at8032_cable_test_get_status,
+ }, {
+ 	/* ATHEROS AR9331 */
+ 	PHY_ID_MATCH_EXACT(ATH9331_PHY_ID),
+@@ -2272,7 +2280,7 @@ static struct phy_driver at803x_driver[] = {
+ 	.config_intr		= at803x_config_intr,
+ 	.handle_interrupt	= at803x_handle_interrupt,
+ 	.cable_test_start	= at803x_cable_test_start,
+-	.cable_test_get_status	= at803x_cable_test_get_status,
++	.cable_test_get_status	= at8032_cable_test_get_status,
+ 	.read_status		= at803x_read_status,
+ 	.soft_reset		= genphy_soft_reset,
+ 	.config_aneg		= at803x_config_aneg,
+@@ -2288,7 +2296,7 @@ static struct phy_driver at803x_driver[] = {
+ 	.config_intr		= at803x_config_intr,
+ 	.handle_interrupt	= at803x_handle_interrupt,
+ 	.cable_test_start	= at803x_cable_test_start,
+-	.cable_test_get_status	= at803x_cable_test_get_status,
++	.cable_test_get_status	= at8032_cable_test_get_status,
+ 	.read_status		= at803x_read_status,
+ 	.soft_reset		= genphy_soft_reset,
+ 	.config_aneg		= at803x_config_aneg,
 -- 
 2.40.1
 
