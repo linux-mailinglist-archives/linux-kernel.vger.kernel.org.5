@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4497FD2C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:31:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8607FD2C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:31:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231134AbjK2Jbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 04:31:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51892 "EHLO
+        id S230212AbjK2Jbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 04:31:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230419AbjK2JbN (ORCPT
+        with ESMTP id S230298AbjK2JbS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 04:31:13 -0500
+        Wed, 29 Nov 2023 04:31:18 -0500
 Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 317741FFE;
-        Wed, 29 Nov 2023 01:30:16 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4827126A2;
+        Wed, 29 Nov 2023 01:30:23 -0800 (PST)
 Received: from pyrite.hamster-moth.ts.net (h175-177-049-135.catv02.itscom.jp [175.177.49.135])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2ED54842;
-        Wed, 29 Nov 2023 10:29:34 +0100 (CET)
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 565F289D;
+        Wed, 29 Nov 2023 10:29:40 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1701250179;
-        bh=d913GvalhZxn+cluGTlKdnL8La1aX9Ez3xY0EWSP+nU=;
+        s=mail; t=1701250184;
+        bh=x5DGL3arJhhL6cHx1o46byLPKXKRQq29+jIxhF3wWFY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u9KwFIwRde9YwrXdkzhtyJv7WMrmme/6jbLjReptabv01EmKMkkqBvxiaDUvy/wyq
-         LmBCFVi7ryr+JHWR1ev3oVk0/gI+pKdm676/uxor3y+MWK+eMlXchRp5E0a1f94w1o
-         jZr9DpBPCTEtyx9Tm6CQxOmEeQ3SUccFZwj2vC+A=
+        b=nhfCHa/UZW2Ewa8Uz+2l85e5dnvhDjW2zCDWDhZ/HjrqSnbeQ6CjnYYHM04tp4sSK
+         9YTW7mvC0UeQM9BEdQkQS1fR+0ofIp5zOkd/UsVTWewly106P5pm23k/kko0/szIeh
+         gO4BvK3sc4SdMKUJjYjvsGWbIHAITa9eb5BA8aB0=
 From:   Paul Elder <paul.elder@ideasonboard.com>
 To:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org
 Cc:     kieran.bingham@ideasonboard.com, tomi.valkeinen@ideasonboard.com,
@@ -36,9 +36,9 @@ Cc:     kieran.bingham@ideasonboard.com, tomi.valkeinen@ideasonboard.com,
         Heiko Stuebner <heiko@sntech.de>,
         linux-arm-kernel@lists.infradead.org (moderated list:ARM/Rockchip SoC
         support), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 1/3] media: rkisp1: regs: Consolidate MI interrupt wrap fields
-Date:   Wed, 29 Nov 2023 18:29:54 +0900
-Message-Id: <20231129092956.250129-2-paul.elder@ideasonboard.com>
+Subject: [PATCH 2/3] media: rkisp1: debug: Add register dump for IS
+Date:   Wed, 29 Nov 2023 18:29:55 +0900
+Message-Id: <20231129092956.250129-3-paul.elder@ideasonboard.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231129092956.250129-1-paul.elder@ideasonboard.com>
 References: <20231129092956.250129-1-paul.elder@ideasonboard.com>
@@ -53,35 +53,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Consolidate the wraparound fields in the memory interface interrupt
-status registers, so that it can be more succinctly expressed by taking
-the stream ID (main or self) as a parameter.
+Add register dump for the image stabilizer module to debugfs.
 
 Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
 ---
- drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ .../platform/rockchip/rkisp1/rkisp1-debug.c    | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h b/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h
-index 350f452e676f..bea69a0d766a 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h
-@@ -172,12 +172,9 @@
- #define RKISP1_CIF_MI_FRAME(stream)			BIT((stream)->id)
- #define RKISP1_CIF_MI_MBLK_LINE				BIT(2)
- #define RKISP1_CIF_MI_FILL_MP_Y				BIT(3)
--#define RKISP1_CIF_MI_WRAP_MP_Y				BIT(4)
--#define RKISP1_CIF_MI_WRAP_MP_CB			BIT(5)
--#define RKISP1_CIF_MI_WRAP_MP_CR			BIT(6)
--#define RKISP1_CIF_MI_WRAP_SP_Y				BIT(7)
--#define RKISP1_CIF_MI_WRAP_SP_CB			BIT(8)
--#define RKISP1_CIF_MI_WRAP_SP_CR			BIT(9)
-+#define RKISP1_CIF_MI_WRAP_Y(stream)			BIT(4 + (stream)->id * 3)
-+#define RKISP1_CIF_MI_WRAP_CB(stream)			BIT(5 + (stream)->id * 3)
-+#define RKISP1_CIF_MI_WRAP_CR(stream)			BIT(6 + (stream)->id * 3)
- #define RKISP1_CIF_MI_DMA_READY				BIT(11)
+diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c
+index 71df3dc95e6f..f66b9754472e 100644
+--- a/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c
++++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-debug.c
+@@ -139,6 +139,21 @@ static int rkisp1_debug_dump_mi_mp_show(struct seq_file *m, void *p)
+ }
+ DEFINE_SHOW_ATTRIBUTE(rkisp1_debug_dump_mi_mp);
  
- /* MI_STATUS */
++static int rkisp1_debug_dump_is_show(struct seq_file *m, void *p)
++{
++	static const struct rkisp1_debug_register registers[] = {
++		RKISP1_DEBUG_SHD_REG(ISP_IS_H_OFFS),
++		RKISP1_DEBUG_SHD_REG(ISP_IS_V_OFFS),
++		RKISP1_DEBUG_SHD_REG(ISP_IS_H_SIZE),
++		RKISP1_DEBUG_SHD_REG(ISP_IS_V_SIZE),
++		{ /* Sentinel */ },
++	};
++	struct rkisp1_device *rkisp1 = m->private;
++
++	return rkisp1_debug_dump_regs(rkisp1, m, 0, registers);
++}
++DEFINE_SHOW_ATTRIBUTE(rkisp1_debug_dump_is);
++
+ #define RKISP1_DEBUG_DATA_COUNT_BINS	32
+ #define RKISP1_DEBUG_DATA_COUNT_STEP	(4096 / RKISP1_DEBUG_DATA_COUNT_BINS)
+ 
+@@ -235,6 +250,9 @@ void rkisp1_debug_init(struct rkisp1_device *rkisp1)
+ 
+ 	debugfs_create_file("mi_mp", 0444, regs_dir, rkisp1,
+ 			    &rkisp1_debug_dump_mi_mp_fops);
++
++	debugfs_create_file("is", 0444, regs_dir, rkisp1,
++			    &rkisp1_debug_dump_is_fops);
+ }
+ 
+ void rkisp1_debug_cleanup(struct rkisp1_device *rkisp1)
 -- 
 2.39.2
 
