@@ -2,159 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D88667FD98A
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:35:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6AD7FD9A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:38:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234434AbjK2Off (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 09:35:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42028 "EHLO
+        id S234491AbjK2Oib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 09:38:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234323AbjK2Of3 (ORCPT
+        with ESMTP id S234357AbjK2OiZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 09:35:29 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADDFD19A;
-        Wed, 29 Nov 2023 06:35:35 -0800 (PST)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ATEX1M4007854;
-        Wed, 29 Nov 2023 14:35:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=84dgAyyjWyetZQdS5ITnDLJAcSc79AlusTv7kFI15mM=;
- b=nUXwUblM1WYfj7+b8+vyi4NgclDC522CYawTZvmpBQ3jEGYKiXbhur8GrRMRDJF6Mj2s
- /RWFr/XoN35c4w2kJmgKkcMHBC9LSLNSqyCWDnLsyY+HX2izduQ6jc4EplXL4SnyI79d
- 1GG1L1YQR5/JaEREne5pRRZ3wM7RWcMkAO0SyxPj8om8NYkGPoqlpHd7XhGt40KWU5w8
- /KZ6RYmzm0+eyxJ/YzNDpyQSB9M4vK5AKv34Oa3h0rFhRYZDzXobpbd1q19UF3OoO2xY
- 4vYA9Awbb0354S7M9+RaXtSQSO+bJHBq4W5LJ5Xds28v8VjtW4VlzqbXcTxQgfR4U9ek wQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3up75k03tk-1
+        Wed, 29 Nov 2023 09:38:25 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 709CBD5C;
+        Wed, 29 Nov 2023 06:38:32 -0800 (PST)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ATCYx23010664;
+        Wed, 29 Nov 2023 14:38:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=rfq8CHWn49qJniN2uoDubYi8n8uzITGvJVeoFuMOVjg=;
+ b=Vxj5UPUfdXgeSKlQoQt+Z4Chdf8w76bEfH2Xcu9EpKzx3+RSfbnZD7wnAqxgTGhr/avm
+ kB5Aw8nN9UP6RBozsM6ITiXNWv91JryTsKx128d2lxKUbyiF1PAAr4EsvSGsE0FNrPvY
+ UJEo/kuMH9y8+jjACuyoHAtwXOLzPY/ILyCq8hMU+21CxZn50IV3dShHsswSckiyaUyY
+ U1zJGyJzXCoUQ/PX5KFsbOMYFrvLnIj31IfZ4hoO+qUlT7ltzKEHf48/8c9uyrZNYs1O
+ kHEGwTGfaLrtJEkDQvF5P3RuyvpDU/Jvxtbr4ITnNTQVyXD8YPjVZkiPr06n+Zw1YMeW Pw== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3up5e8ra7m-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Nov 2023 14:35:33 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ATEXOvf009646;
-        Wed, 29 Nov 2023 14:35:32 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3up75k03t0-1
+        Wed, 29 Nov 2023 14:38:27 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3ATEcRx8015920
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Nov 2023 14:35:32 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3ATE6Qe0004403;
-        Wed, 29 Nov 2023 14:35:31 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ukwy1y71q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 29 Nov 2023 14:35:31 +0000
-Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
-        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3ATEZV1523397088
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Nov 2023 14:35:31 GMT
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0B48C5805F;
-        Wed, 29 Nov 2023 14:35:31 +0000 (GMT)
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3971558051;
-        Wed, 29 Nov 2023 14:35:30 +0000 (GMT)
-Received: from li-2c1e724c-2c76-11b2-a85c-ae42eaf3cb3d.ibm.com.com (unknown [9.61.149.198])
-        by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 29 Nov 2023 14:35:30 +0000 (GMT)
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     jjherne@linux.ibm.com, pasic@linux.ibm.com,
-        alex.williamson@redhat.com, borntraeger@linux.ibm.com,
-        kwankhede@nvidia.com, frankja@linux.ibm.com,
-        imbrenda@linux.ibm.com, david@redhat.com
-Subject: [PATCH] s390/vfio-ap: handle response code 01 on queue reset
-Date:   Wed, 29 Nov 2023 09:35:24 -0500
-Message-ID: <20231129143529.260264-1-akrowiak@linux.ibm.com>
+        Wed, 29 Nov 2023 14:38:27 GMT
+Received: from hu-jinlmao-lv.qualcomm.com (10.49.16.6) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 29 Nov 2023 06:38:27 -0800
+From:   Mao Jinlong <quic_jinlmao@quicinc.com>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     Mao Jinlong <quic_jinlmao@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        "Tao Zhang" <quic_taozha@quicinc.com>
+Subject: [PATCH v1 0/3] arm64: dts: qcom: Fix the warnings from coresight bindings
+Date:   Wed, 29 Nov 2023 06:38:08 -0800
+Message-ID: <20231129143815.7892-1-quic_jinlmao@quicinc.com>
 X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Wh_sxyqNi8eoxitQQ6JunvZBuky1cP6p
-X-Proofpoint-GUID: 47QYZ6reoqUfJKHJWdjE3qAOhmpsEUSD
+Content-Type: text/plain
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: COiUkpSodAXmdJKUtw4VlI99GOuxSHN9
+X-Proofpoint-ORIG-GUID: COiUkpSodAXmdJKUtw4VlI99GOuxSHN9
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-29_12,2023-11-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
- priorityscore=1501 malwarescore=0 mlxscore=0 phishscore=0 mlxlogscore=999
- adultscore=0 bulkscore=0 spamscore=0 suspectscore=0 impostorscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 phishscore=0 malwarescore=0 lowpriorityscore=0 spamscore=0
+ clxscore=1011 impostorscore=0 adultscore=0 mlxlogscore=497 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2311060000 definitions=main-2311290110
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the current implementation, response code 01 (AP queue number not valid)
-is handled as a default case along with other response codes returned from
-a queue reset operation that are not handled specifically. Barring a bug,
-response code 01 will occur only when a queue has been externally removed
-from the host's AP configuration; nn this case, the queue must
-be reset by the machine in order to avoid leaking crypto data if/when the
-queue is returned to the host's configuration. The response code 01 case
-will be handled specifically by logging a WARN message followed by cleaning
-up the IRQ resources.
+Fix all warnings in Qualcomm boards coming from Coresight bindings.
 
-Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
----
- drivers/s390/crypto/vfio_ap_ops.c | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+There are warnings below after running dtbs_check. The patches are
+to fix them for Qcom boards.
 
-diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-index 4db538a55192..91d6334574d8 100644
---- a/drivers/s390/crypto/vfio_ap_ops.c
-+++ b/drivers/s390/crypto/vfio_ap_ops.c
-@@ -1652,6 +1652,21 @@ static int apq_status_check(int apqn, struct ap_queue_status *status)
- 		 * a value indicating a reset needs to be performed again.
- 		 */
- 		return -EAGAIN;
-+	case AP_RESPONSE_Q_NOT_AVAIL:
-+		/*
-+		 * This response code indicates the queue is not available.
-+		 * Barring a bug, response code 01 will occur only when a queue
-+		 * has been externally removed from the host's AP configuration;
-+		 * in which case, the queue must be reset by the machine in
-+		 * order to avoid leaking crypto data if/when the queue is
-+		 * returned to the host's configuration. In this case, let's go
-+		 * ahead and log a warning message and return 0 so the AQIC
-+		 * resources get cleaned up by the caller.
-+		 */
-+		WARN(true,
-+		     "Unable to reset queue %02x.%04x: not in host AP configuration\n",
-+		     AP_QID_CARD(apqn), AP_QID_QUEUE(apqn));
-+			return 0;
- 	default:
- 		WARN(true,
- 		     "failed to verify reset of queue %02x.%04x: TAPQ rc=%u\n",
-@@ -1736,6 +1751,22 @@ static void vfio_ap_mdev_reset_queue(struct vfio_ap_queue *q)
- 		q->reset_status.response_code = 0;
- 		vfio_ap_free_aqic_resources(q);
- 		break;
-+	case AP_RESPONSE_Q_NOT_AVAIL:
-+		/*
-+		 * This response code indicates the queue is not available.
-+		 * Barring a bug, response code 01 will occur only when a queue
-+		 * has been externally removed from the host's AP configuration;
-+		 * in which case, the queue must be reset by the machine in
-+		 * order to avoid leaking crypto data if/when the queue is
-+		 * returned to the host's configuration. In this case, let's go
-+		 * ahead and log a warning message then clean up the AQIC
-+		 * resources.
-+		 */
-+		WARN(true,
-+		     "Unable to reset queue %02x.%04x: not in host AP configuration\n",
-+		     AP_QID_CARD(q->apqn), AP_QID_QUEUE(q->apqn));
-+		vfio_ap_free_aqic_resources(q);
-+		break;
- 	default:
- 		WARN(true,
- 		     "PQAP/ZAPQ for %02x.%04x failed with invalid rc=%u\n",
+funnel@3023000: 'in-ports' is a required property
+
+etm@7c40000: 'out-ports' is a required property
+
+etf@6047000: in-ports: '#address-cells', '#size-cells', 'port@1'
+do not match any of the regexes: 'pinctrl-[0-9]+'
+
+replicator@604a000: in-ports: '#address-cells', '#size-cells',
+'port@1' do not match any of the regexes: 'pinctrl-[0-9]+'
+
+funnel@6c2d000: out-ports: '#address-cells', '#size-cells' do not
+match any of the regexes: 'pinctrl-[0-9]+'
+
+Warning (graph_child_address): /soc@0/tpda@6004000/out-ports:
+graph node has single child node 'port@0', #address-cells/#size-cells
+are not necessary
+
+Warning (graph_child_address): /soc@0/funnel@6005000/in-ports: graph
+node has single child node 'port@0', #address-cells/#size-cells are
+not necessary
+
+Warning (graph_child_address): /soc@0/etf@6b05000/in-ports: graph node
+has single child node 'port@0', #address-cells/#size-cells are not
+necessary
+
+Warning (graph_child_address): /soc@0/funnel@7810000/in-ports: graph
+node has single child node 'port@0', #address-cells/#size-cells are
+not necessary
+
+
+Mao Jinlong (3):
+  arm64: dts: qcom: msm8996: Fix 'in-ports' is a required property
+  arm64: dts: qcom: msm8998: Fix 'out-ports' is a required property
+  arm64: dts: qcom: Fix coresight warnings in in-ports and out-ports
+
+ arch/arm64/boot/dts/qcom/msm8996.dtsi | 26 ----------------------
+ arch/arm64/boot/dts/qcom/msm8998.dtsi | 32 +++++++++++++++++----------
+ arch/arm64/boot/dts/qcom/sdm845.dtsi  |  5 +----
+ arch/arm64/boot/dts/qcom/sm8150.dtsi  |  5 +----
+ arch/arm64/boot/dts/qcom/sm8250.dtsi  | 24 ++++----------------
+ 5 files changed, 26 insertions(+), 66 deletions(-)
+
 -- 
 2.41.0
 
