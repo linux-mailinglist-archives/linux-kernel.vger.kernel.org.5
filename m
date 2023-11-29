@@ -2,174 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E115A7FE0A2
+	by mail.lfdr.de (Postfix) with ESMTP id 8C97E7FE0A1
 	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 20:58:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233569AbjK2T6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 14:58:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43398 "EHLO
+        id S233661AbjK2T6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 14:58:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbjK2T6A (ORCPT
+        with ESMTP id S229741AbjK2T6D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 14:58:00 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1BDF1A8
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 11:58:04 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-7b34ee2a243so3887339f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 11:58:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google; t=1701287884; x=1701892684; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=T7FtbM3uCv3lCJgze8i3ailyZ7n1KeZA4b7KaXBphuU=;
-        b=D68pgc9B5OHrjD1qFxlZF5KKwZTpaFtOuDdem9vOAEmj3woSoMeR9kx7SxpaJvVF/r
-         UPdhWf0zPl8gFwtp6eMkDL3nu8HqNhn+OJT4QujIvh+vhbfS2PUXJTPS8IDfYXleUtZV
-         TiTEN8WhpRJK67In+WzADbn6+HWJrS7O5IiV457RvkAvucMxjtKSLqLZx42wMc5U4z9B
-         SunoMmnH+FoA9I69ULeUb6E02yQgVaVJExKtprI4Zo/8A86ffnwiEIbbp6O0u5J1ACd8
-         cd8TY7djoThD15bz3B4mnTjzQL/84P7VX7I6pIDtNqgze05roCP3gHoHk+MBUH7qu8u4
-         HBRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701287884; x=1701892684;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=T7FtbM3uCv3lCJgze8i3ailyZ7n1KeZA4b7KaXBphuU=;
-        b=euRiDCgzjjvp7yZnGWACb54tAkDofUll1TKpzNeOn5miKOg00FD7UzjPq1PkZ7uYXO
-         wd3gttSxwKID9JktCGJon5SBubMb5hW5Lw4xLKjrKYsAp+Pnf7l/msUqhWKZXCJoovlC
-         fNMqh60zulOab0YCUVd2lyqC7inrGMl+m0q5c29oB4vnINEojnx2mUV8xHlPyLzL8S7m
-         r5MNa5u+MBUaldFgFsk26XeITOtdozm25en0EiTQangYO59sXdr0QGjvIQRqaAxq+ED5
-         clLSsGNsFVokOEBCvqBAjMFrMIO8dj3E33Md4+pFTILLYtKT3g7cWL654RZFhEkHbLP5
-         ZaXg==
-X-Gm-Message-State: AOJu0YxLthNwdoInuyrT3ZujvPQEHkFsL8vAL9E7brf2ZKkXKH84kxgX
-        /2P5Ak337DlvmKodUAmFkiLDqQ==
-X-Google-Smtp-Source: AGHT+IFiWuChYLAco5nOc66G1w6cYTjkov1Hu0LQyJZMR3/WFUC6rwA2Or451TlBtWEZwd6p/yyBWQ==
-X-Received: by 2002:a5d:81d3:0:b0:7b3:b726:b57f with SMTP id t19-20020a5d81d3000000b007b3b726b57fmr9983661iol.19.1701287884069;
-        Wed, 29 Nov 2023 11:58:04 -0800 (PST)
-Received: from [10.83.37.178] ([217.173.96.166])
-        by smtp.gmail.com with ESMTPSA id v5-20020a02b905000000b0045458b7b4fcsm3601107jan.171.2023.11.29.11.58.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 11:58:03 -0800 (PST)
-Message-ID: <137ab4f7-80af-4e00-a5bb-b1d4f4c75a67@arista.com>
-Date:   Wed, 29 Nov 2023 19:57:53 +0000
+        Wed, 29 Nov 2023 14:58:03 -0500
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2081.outbound.protection.outlook.com [40.107.223.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE78194;
+        Wed, 29 Nov 2023 11:58:09 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cTy+1+dw9lDg00ACCYc0lVwhizUt6CbRqq1NNcDFPCSkVLEv19p/xY9VzvG6CJygZDiXLWgNehrO4+zD9Uto0ATGMHYi6imS6dPIjz+7K8alC6ATdrCqofvG+TaU2PIGaBfRZU8lAMKzrUXBP8kn7aQFvVS3PUSbGaoaZUOxarj1pYOLnSLyWJLIhF4hsEa8Q28SVhYGZGV7JvfKhBIEREvvMzsN4Mtvj3Gtz9AMek0LdSsPFq8/KKfKQAEy/UK/s8bQz/2DMV2tAF1tPUCXNmY5nK3gvOBxm/nmgo1yjrZXdmeeOcjkvkTL9Gcr9ksjTZBpHhyaK0bxsyBcB3PZuA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RcDo2D5d76SVHVy7HjQVohB0alsvv5eek/D2N4Jqn0U=;
+ b=ZfAOc5HWwJb1JS8gV3AoWLvBM8gDedgj50oXN1ce7OVH9+MUs9gEr7JytIbEYUeQLXGU6lar7a4rtNdNPnmzH6naV2+wBrCeOgXv+cRixcv6T2BjH6kCK+1nwsg+xZEYdi7VUvWbyJo2HACXuy7WSweuFZMcImpkMAzkclUwm/3pgKH8zJ2HgkYQhocsj+ZDz1lestKv4XZecXRhOVQ+Ysbj/Hs2IV0N9fiS3LOQNxWRkkZdBBV8YrxBMFrdrDKKT5ndWd5LQHRm9BuMnbScdvZLVKQ/PA9RcMK3qNGmzi1IDAWcJ2RZjXw/fhk5koKWR2u2tZ9ICgqZIdCnpLjvsw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RcDo2D5d76SVHVy7HjQVohB0alsvv5eek/D2N4Jqn0U=;
+ b=F6LV1RuJvN41STRSsp3FUeuXhQ5PGohNuJkbqr6eGQLFmUkccL5Kq5dSovO0RivFkEK7uxGCQRhdiv/h5ieIyS3eDnMZNbkDJtDwDbdeheaoAgK0ot6cAiys3muLFu8kP0/Es+H/Ymtm56g1KP16qlFBhBh5cOLOt3uplJuQOOlKOFPt9KBfcacd06gXzf5Whpj+bdNDYLv5/lMKRbmvLusXTPNrHuOtne1z12xhvL+CUAw/qJXi9/su2kJhHeVIFXu8x6/gqgWf/GLj6yokr5YdlWKUEHv0LYUNGqLuRujVQiCowDZtm5/TjDMrbfAY7Rc+0O0MFWLacvec1eSAwA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by SJ0PR12MB7006.namprd12.prod.outlook.com (2603:10b6:a03:486::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.22; Wed, 29 Nov
+ 2023 19:58:06 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7046.015; Wed, 29 Nov 2023
+ 19:58:06 +0000
+Date:   Wed, 29 Nov 2023 15:58:04 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Nicolin Chen <nicolinc@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
+        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
+        "Zeng, Xin" <xin.zeng@intel.com>,
+        "Zhao, Yan Y" <yan.y.zhao@intel.com>
+Subject: Re: [PATCH v6 2/6] iommufd: Add IOMMU_HWPT_INVALIDATE
+Message-ID: <20231129195804.GF436702@nvidia.com>
+References: <BN9PR11MB527659462CCB7280055858D98CB4A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZVuZOYFzAaCuJjXZ@Asurada-Nvidia>
+ <BN9PR11MB5276C8EACE2C300A646EA8A18CBBA@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZVw/BXxgGCuCZCA6@Asurada-Nvidia>
+ <BN9PR11MB52761A9B48A25E89BEECE6308CB8A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZWTzoBTDDEWAKMs9@Asurada-Nvidia>
+ <BN9PR11MB5276FD60A0EDF8E3F231FCC88CBCA@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ZWaLCSAMIOXTlghk@Asurada-Nvidia>
+ <20231129005715.GS436702@nvidia.com>
+ <ZWaPM4p7yjJ0sEKk@Asurada-Nvidia>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWaPM4p7yjJ0sEKk@Asurada-Nvidia>
+X-ClientProxiedBy: SA1P222CA0159.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:806:3c3::7) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 6/7] net/tcp: Store SNEs + SEQs on ao_info
-Content-Language: en-US
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     David Ahern <dsahern@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Francesco Ruggeri <fruggeri05@gmail.com>,
-        Salam Noureddine <noureddine@arista.com>,
-        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org
-References: <20231129165721.337302-1-dima@arista.com>
- <20231129165721.337302-7-dima@arista.com>
- <CANn89iJcfn0yEM7Pe4RGY3P0LmOsppXO7c=eVqpwVNdOY2v3zA@mail.gmail.com>
- <df55eb1d-b63a-4652-8103-d2bd7b5d7eda@arista.com>
- <CANn89iLZx-SiV0BqHkEt9vS4LZzDxW2omvfOvNX6XWSRPFs7sw@mail.gmail.com>
-From:   Dmitry Safonov <dima@arista.com>
-In-Reply-To: <CANn89iLZx-SiV0BqHkEt9vS4LZzDxW2omvfOvNX6XWSRPFs7sw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SJ0PR12MB7006:EE_
+X-MS-Office365-Filtering-Correlation-Id: 01d87845-c4a2-483c-ed8e-08dbf11580cf
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: M5cC4oTTseKbr2ygssH+do4sTfmQqT4etUlfAUyE7orjvtXdptL9Aa3jakeygmu0n8E851YHKdIJnqkx04dl3gxSTIejkTStm3xt6fjMFLpLCiSWND9UMgu3tww0mz7TkfgO6VCukVgbcdpGJ6+MzW5pBHc4UOSmEZCwSOuk4r0ZjTog2bkDtdS4ygC8X2eW1SA/QxuympCTj/Bj41p8qE6lMWf488bxSiEs4ar2X6AOMVab7pO3a3tB+sT98WYoke700zhJHVMj1OlFruZdrpvC9RWZjwrTdo7nGSdxStSkCw4mNvD1URKl7AmnAaWjrVdLz6Mo+q/S7KW7VaTQrUTJyM+c93dO+7TPQPkVBlqdQoybiCnCt61oE8TUNTQUGo9U871IupwH3y02Gse6eWzMSRIxGNk2ADQ6SqTY00JXgTzhyEHvKrJBDBvPJ2EKW6i546+pHlmdL8XATrPPE2qWAmxhxhl/9dGAHWjWXdqFyZIOVT6Wkpa/F24eXDtrbk/OSyR3ENIxqRnliCqjGXhkv/v6JZ7QRbTnzyCRkfPB7jyMTG+0JPY+tOQFnxeNgLjB0K4SI1AnMeaiAnN85fXm/fIBgh11RDR7oqBrczEbPkTc7VZI6NQyISJ8fPMRMzU/SXgGDA45Xq2Wv0y5oSP6tBxOYW5fiDMfeI3HndA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(396003)(136003)(376002)(346002)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(202311291699003)(6512007)(1076003)(26005)(2616005)(478600001)(36756003)(86362001)(38100700002)(33656002)(4744005)(2906002)(41300700001)(5660300002)(83380400001)(7416002)(6636002)(54906003)(66556008)(66476007)(316002)(6506007)(4326008)(37006003)(8676002)(6486002)(6862004)(66946007)(8936002)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Wk6RMyyfmUj7c+6yPj6fdNMNPj9Zne2uPvWxAmjvTg1wtXUgQekTo/8N5uyj?=
+ =?us-ascii?Q?rOcpBk3yhK5Ms4018Ffr62kIPw1h0ekx1mUX2szna+v+zqpdpohhxYYqd03D?=
+ =?us-ascii?Q?7kQe3NdpxoCOS9patNVDhyFAHcwsqcAsmCwWVvHQfHiD6rCQJR0/sHgg4pZQ?=
+ =?us-ascii?Q?BScgSLntdGX4kSuo5nInh8q31509fSec5NNglQZZFziHwSz+MDjp6Wwlsm46?=
+ =?us-ascii?Q?ltEWF8Eog+TNds6cYwwRMLxaBWRxWiGrgL2z+Cqnlk9L+LYYJkxxdi8HJkKI?=
+ =?us-ascii?Q?i25Qv1G8/Smd1ARCCuOAOB3FcJhWiaHwEDxRpdkrKQth8yYr/gAtxXc6oKjm?=
+ =?us-ascii?Q?/B8Z/4h7oxQSjNvoFxS+gYm1oCL05kER+rCZDJQXF1N3dw8wwVZbkZbmEBBx?=
+ =?us-ascii?Q?gXQvz0ZplI5rqwe/U7Epp5/EorYl0Qf7jzzaJlqEylGd1TIUwjQzjhTPFXRF?=
+ =?us-ascii?Q?MFRf6n2cy+dkqI7+wf5P25rzGP+ju4XhKL5wnm/x2zxTRVviHuLRehjytlDI?=
+ =?us-ascii?Q?8hxgJIPFEaB49ug1ASY7TMc4vHTVSYMRy8XJQfzt6g7gOhYZJKrd7rn0jc64?=
+ =?us-ascii?Q?6/FJQk/IqRyHmc3h+6BVHuKtubsQr05l5itul4XAAw2cyXLEwhGEO2SNEfBN?=
+ =?us-ascii?Q?4n0D+MTo4NTxPKUFzPhB38J6mOX/IsWr6vJOfa6JyZNSZ5GXD7VL59Al32Nk?=
+ =?us-ascii?Q?AgQvt4ao9tktntsFzCBsADWRPptA3jZNc2KaGjg8ktwZnxP4i+Mk31l8P4zZ?=
+ =?us-ascii?Q?ap4Ol3iZng8g7mlAtHAOmQYRNYmk/dIjp7CUq0C3QLBA0CmahRJ8u/6sRi3z?=
+ =?us-ascii?Q?MxjJR7NsWLKQcbJnO84/ioE8AkcZFm7SNcqexoZDJ+NfOK3GRjp+WuyQ5cJs?=
+ =?us-ascii?Q?+HET7MQwevxbMX6Cc2EeEXrgTjMo9sDKT20x9APBxBam9NLEE1AgG1u/i9oD?=
+ =?us-ascii?Q?QQt1newzO8MMOuU2xNBEum6B1G5KWRl8uB5PGt4iXgdAZMDRCiYhm1qWIpEC?=
+ =?us-ascii?Q?tBW3GawVv9Uq7sDHPAStpmCPWLdo76rTz4FR4oT4bPCThD7D8VZvDrGdEHEb?=
+ =?us-ascii?Q?uFzqUE8PpdxDIgAjgJMBvy1P17k+CBRRBy9pHOVK0+cDZIZydu+2YG0ItNSe?=
+ =?us-ascii?Q?boFwFjQfNyciJfv8Pf4qSYs6kVU7C+u9zkvg8yjH+Vq4DjyppjPLlkiELRsd?=
+ =?us-ascii?Q?2YmkuoBIaE+CKM9GOtaVjgHhphRbDes6sE92dIDZl44IvUv0llgBm1ySMp6M?=
+ =?us-ascii?Q?hzTYPuqKT62/56sgTOXM+R4OAt9ffaCjA5INiSRnjKjhqvPownCeHxJpOxXu?=
+ =?us-ascii?Q?AEEgB3fHB43C7ptLn0+2VAG2Eh3GJTpCLA3kfkHl39+WEUFFF90irzYgOKOK?=
+ =?us-ascii?Q?2v75eDWRAsIS7TSodFtCdsrp5AMJnZt3zHnNR6QFVGudmJsef33YMAuXAKNF?=
+ =?us-ascii?Q?eITEvOWYCM/HyXjh/uGVPH1S0cBnxGAzpBnBOWwKUl3DhPX1FB/lmJ6/DYn1?=
+ =?us-ascii?Q?IY1Ld4UD1qdEXYfnDbUYi+f9hLroefB/jRKODwE1+QXFXv9eid5p0qpLIzVD?=
+ =?us-ascii?Q?NNaavvw1VvWblrJu7J2qCR9lFZEDjgT25LBd/cWw?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 01d87845-c4a2-483c-ed8e-08dbf11580cf
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 19:58:06.2047
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: izIl6WKOX7mY4j7pcm4kS3fD1+DWcY9X+MuQPTPI3WoYv/uGZKfUB7uwO7nsld9M
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB7006
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/29/23 18:34, Eric Dumazet wrote:
-> On Wed, Nov 29, 2023 at 7:14 PM Dmitry Safonov <dima@arista.com> wrote:
->>
->> On 11/29/23 18:09, Eric Dumazet wrote:
->>> On Wed, Nov 29, 2023 at 5:57 PM Dmitry Safonov <dima@arista.com> wrote:
->>>>
->>>> RFC 5925 (6.2):
->>>>> TCP-AO emulates a 64-bit sequence number space by inferring when to
->>>>> increment the high-order 32-bit portion (the SNE) based on
->>>>> transitions in the low-order portion (the TCP sequence number).
->>>>
->>>> snd_sne and rcv_sne are the upper 4 bytes of extended SEQ number.
->>>> Unfortunately, reading two 4-bytes pointers can't be performed
->>>> atomically (without synchronization).
->>>>
->>>> In order to avoid locks on TCP fastpath, let's just double-account for
->>>> SEQ changes: snd_una/rcv_nxt will be lower 4 bytes of snd_sne/rcv_sne.
->>>>
->>>
->>> This will not work on 32bit kernels ?
->>
->> Yeah, unsure if there's someone who wants to run BGP on 32bit box, so at
->> this moment it's already limited:
->>
->> config TCP_AO
->>         bool "TCP: Authentication Option (RFC5925)"
->>         select CRYPTO
->>         select TCP_SIGPOOL
->>         depends on 64BIT && IPV6 != m # seq-number extension needs WRITE_ONCE(u64)
->>
+On Tue, Nov 28, 2023 at 05:09:07PM -0800, Nicolin Chen wrote:
+
+> > > With that being said, I think errno (-EIO) could do the job,
+> > > as you suggested too.
+> > 
+> > Do we have any idea what HW failures can be generated by the commands
+> > this will execture? IIRC I don't remember seeing any smmu specific
+> > codes related to invalid invalidation? Everything is a valid input?
 > 
-> Oh well, this seems quite strange to have such a limitation.
+> "7.1 Command queue errors" has the info.
 
-I guess so. On the other side, it seems that there aren't many
-non-hobbyist 32bit platforms: ia32 compatible layer will even be limited
-with a boot parameter/compile option. Maybe I'm not aware of, but it
-seems that arm64/ppc64/risc-v/x86_64 are the ones everyone interested in
-these days.
+Hmm CERROR_ATC_INV_SYNC needs to be forwarded to the guest somehow
 
-> 
->> Probably, if there will be a person who is interested in this, it can
->> get a spinlock for !CONFIG_64BIT.
-> 
-> 
->>
->>> Unless ao->snd_sne and ao->rcv_sneare only read/written under the
->>> socket lock (and in this case no READ_ONCE()/WRITE_ONCE() should be
->>> necessary)
->>
-> 
-> You have not commented on where these are read without the socket lock held ?
-
-Sorry for missing this, the SNEs are used with this helper
-tcp_ao_compute_sne(), so these places are (in square brackets AFAICS,
-there is a chance that I miss something obvious from your message):
-
-- tcp_v4_send_reset() => tcp_ao_prepare_reset() [rcu_read_lock()]
-- __tcp_transmit_skb() => tcp_ao_transmit_skb() [TX softirq]
-- tcp_v4_rcv() => tcp_inbound_ao_hash() [RX softirq]
-
-
-> tcp_ao_get_repair() can lock the socket.
-
-It can, sure.
-
-> In TW state, I guess these values can not be changed ?
-
-Currently, they are considered constant on TW. The incoming segments are
-not verified on twsk (so no need for SNEs). And from ACK side not
-expecting SEQ roll-over (tcp_ao_compute_sne() is not called) - this may
-change, but not quite critical it seems.
-
-If we go with this patch in question, I'll have to update this:
-:		key.sne = READ_ONCE(ao_info->snd_sne);
-(didn't adjust it for higher-bytes shift)
-
-> I think you can remove all these READ_ONCE()/WRITE_ONCE() which are not needed,
-> or please add a comment if they really are.
-
-Not sure if I answered above..
-
-> Then, you might be able to remove the 64BIT dependency ...
-
-At this moment I fail to imagine anyone running BGP + TCP-AO on 32bit
-kernel. I may be wrong, for sure.
-
-Thanks,
-             Dmitry
-
+Jason
