@@ -2,147 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 904207FE2DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 23:17:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 498387FE2DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 23:18:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230408AbjK2WRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 17:17:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55180 "EHLO
+        id S232693AbjK2WRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 17:17:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbjK2WRe (ORCPT
+        with ESMTP id S229959AbjK2WRw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 17:17:34 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 539B5A3;
-        Wed, 29 Nov 2023 14:17:40 -0800 (PST)
-Received: by linux.microsoft.com (Postfix, from userid 1099)
-        id A96B720B74C0; Wed, 29 Nov 2023 14:17:39 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A96B720B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1701296259;
-        bh=Zsx1oRRDG0ud+KYg27YMp0ZwJzk7FpHaUGfDgfFevRU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OjVaYLAyvGNrgGT5XdUkbanydr+2zb91Ww6pBQ5v7UdvypeSsJzEFiwbBN4YUcoFd
-         iRxOfYUrSOzPaW6u8WICfgphPuL+DCUWLY0RuJKcwQcuRJaa9zIdMunYSLQCHHaTLV
-         34olHXNtIiUoYZircMeYAoW1H3Tphn9/XH4vo8ys=
-Date:   Wed, 29 Nov 2023 14:17:39 -0800
-From:   Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Souradeep Chakrabarti <schakrabarti@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        Long Li <longli@microsoft.com>,
-        "sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
-        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Paul Rosswurm <paulros@microsoft.com>
-Subject: Re: [EXTERNAL] Re: [PATCH V2 net-next] net: mana: Assigning IRQ
- affinity on HT cores
-Message-ID: <20231129221739.GA20858@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1700574877-6037-1-git-send-email-schakrabarti@linux.microsoft.com>
- <20231121154841.7fc019c8@kernel.org>
- <PUZP153MB0788476CD22D5AA2ECDC11ABCCBDA@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
- <20231127100639.5f2f3d3e@kernel.org>
+        Wed, 29 Nov 2023 17:17:52 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3348C4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:17:57 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBD26C433C8;
+        Wed, 29 Nov 2023 22:17:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701296277;
+        bh=74LhTABn8Ubk9ieFOEy4R2tqnyjhM65THl7KF6XezcQ=;
+        h=From:Subject:Date:To:Cc:From;
+        b=FJ0ns3++bDvTJv2QiKG6+uBAGDj1tXwgdo3WbTd4SdVxCjJi7UVchGzodADzaa7zL
+         LUu6tWED79+8CBYqJ5UD7q0HanJKxzxY8HMVO9l+ik19WiPEiDtf5OBsJV3wLfZlxD
+         16ers0Gu6hariCkPLzBbsV1TCkhYADvrRZwF59ymqqDMNU97v1Rwm34qbGfxYxLZ/a
+         kuhquA0M97bLojh/onnhvWUP95sqZMy/J9PbBio/B2j2g+shje0G7SsDLiP1Ky5K9y
+         Ol93UO8LzebkG8Y7akzg84Esa1dsfnX6W7Z51VPsiWx8MkilGZTQ9WDMMVuZjlF/Ok
+         EsETNx2TdLMZw==
+From:   Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH v3 0/3] x86: Support llvm-objdump in instruction decoder
+ selftest
+Date:   Wed, 29 Nov 2023 15:17:40 -0700
+Message-Id: <20231129-objdump-reformat-llvm-v3-0-0d855e79314d@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231127100639.5f2f3d3e@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAIS4Z2UC/zXMQQ6CMBCF4auYWTukLYjgynsYFwUGqOlQMgViJ
+ NzdxsTln5f37RBJHEW4nXYQ2lx0YUqRn0/QjnYaCF2XGowyudamxtC8upVnFOqDsF3Q+43RdFf
+ d1H2hbGsgfec0u/fPfTxT9xIYl1HI/jWjE6dqVegqM1VRXkrUGC2v5D+0kNwHts5nbWA4ji8mU
+ LRXpwAAAA==
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com
+Cc:     x86@kernel.org, ndesaulniers@google.com, keescook@chromium.org,
+        samuelzeter@gmail.com, mhiramat@kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        patches@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>
+X-Mailer: b4 0.13-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2017; i=nathan@kernel.org;
+ h=from:subject:message-id; bh=74LhTABn8Ubk9ieFOEy4R2tqnyjhM65THl7KF6XezcQ=;
+ b=kA0DAAoWHWsmkXHAGpYByyZiAGVnuJOiilSy2BoDFgBjpMRKBBqEOrK2JR4ehGkacCdsQefA5
+ 4h1BAAWCgAdFiEEe+MlxzExnM0B2MqSHWsmkXHAGpYFAmVnuJMACgkQHWsmkXHAGpY5KgEA+tGu
+ d7E0XT4d9u36JifpCqz/Z+T+oT12r4IJf1pZ4gAA/0V71W427HPPA9xFQ30j4g8lyxtM8KmvfNr
+ ETl+co/cI
+X-Developer-Key: i=nathan@kernel.org; a=openpgp;
+ fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 27, 2023 at 10:06:39AM -0800, Jakub Kicinski wrote:
-> On Mon, 27 Nov 2023 09:36:38 +0000 Souradeep Chakrabarti wrote:
-> > easier to keep things inside the mana driver code here
-> 
-> Easier for who? Upstream we care about consistency and maintainability
-> across all drivers.
-I am refactoring the code and putting some of the changes in topology.h
-and in nodemask.h. I am sharing the proposed change here for those two
-files. Please let me know if they are acceptable.
+I have taken up this series from Sam to try and drive this forward.
 
-Added a new helper to iterate on numa nodes with cpu and start from a 
-particular node, instead of first node. This helps when we want to
-iterate from the local numa node.
+Currently, the instruction decoder selftest does not work with
+llvm-objdump because chkobjdump.awk is GNU binutils specific.
+chkobjdump.awk can be eliminated altogether because the minimum
+supported version of GNU binutils has been bumped to 2.25.
 
-diff --git a/include/linux/nodemask.h b/include/linux/nodemask.h
-index 8d07116caaf1..6e4528376164 100644
---- a/include/linux/nodemask.h
-+++ b/include/linux/nodemask.h
-@@ -392,6 +392,15 @@ static inline void __nodes_fold(nodemask_t *dstp, const nodemask_t *origp,
-        for ((node) = 0; (node) < 1 && !nodes_empty(mask); (node)++)
- #endif /* MAX_NUMNODES */
+However, with chkobjdump.awk removed, the selftest does not actually
+work properly with llvm-objdump:
 
-+#if MAX_NUMNODES > 1
-+#define for_each_node_next_mask(node_start, node_next, mask)           \
-+       for ((node_next) = (node_start);                                \
-+            (node_next) < MAX_NUMNODES;                                \
-+            (node_next) = next_node((node_next), (mask)))
-+#else
-+#define for_each_node_next_mask(node_start, node_next, mask)   \
-+       for_each_node_mask(node_next, mask)
-+#endif
- /*
-  * Bitmasks that are kept for all the nodes.
-  */
-@@ -440,6 +449,8 @@ static inline int num_node_state(enum node_states state)
+  $ make -skj"$(nproc)" LLVM=1 defconfig
+  $ scripts/config -e X86_DECODER_SELFTEST
+  $ make -skj"$(nproc)" LLVM=1 olddefconfig bzImage
+  ...
+  arch/x86/tools/insn_decoder_test: warning: objdump says 0 bytes, but insn_get_length() says 2
+  ...
 
- #define for_each_node_state(__node, __state) \
-        for_each_node_mask((__node), node_states[__state])
-+#define for_each_node_next_state(__node_start, __node_next, __state) \
-+       for_each_node_next_mask((__node_start), (__node_next), node_states[__state])
+Upon inspection it turned out llvm-objdump was formatting its output
+differently, which caused objdump_reformat.awk to incorrectly output its
+values.
 
- #define first_online_node      first_node(node_states[N_ONLINE])
- #define first_memory_node      first_node(node_states[N_MEMORY])
-@@ -489,7 +500,8 @@ static inline int num_node_state(enum node_states state)
+After fixing that bug, a second one was seen where the instruction
+"wait" was incorrectly matched with "fwait", which again caused
+insn_decoder_test to fail.
 
- #define for_each_node_state(node, __state) \
-        for ( (node) = 0; (node) == 0; (node) = 1)
--
-+#define for_each_node_next_state(node, next_node, _state) \
-+       for_each_node_state(node, __state)
- #define first_online_node      0
- #define first_memory_node      0
- #define next_online_node(nid)  (MAX_NUMNODES)
-@@ -535,6 +547,8 @@ static inline int node_random(const nodemask_t *maskp)
+Changes in v3:
+- Further commit message and cover letter formatting and improvements.
+- Add patch 3, which is the ultimate catalyst for the first two changes
+- Link to v2: https://lore.kernel.org/r/20221112090418.284656-1-samuelzeter@gmail.com/
 
- #define for_each_node(node)       for_each_node_state(node, N_POSSIBLE)
- #define for_each_online_node(node) for_each_node_state(node, N_ONLINE)
-+#define for_each_online_node_next(node, next_node)  \
-+                                 for_each_node_next_state(node, next_node, N_ONLINE)
+Changes in v2:
+- Coding style commit message amendments
+- Link to v1: https://lore.kernel.org/r/20220106023606.283953-1-samuelzeter@gmail.com/
 
- /*
-  * For nodemask scratch area.
-diff --git a/include/linux/topology.h b/include/linux/topology.h
-index 52f5850730b3..a06b16e5a955 100644
---- a/include/linux/topology.h
-+++ b/include/linux/topology.h
-@@ -43,6 +43,9 @@
-        for_each_online_node(node)                      \
-                if (nr_cpus_node(node))
+---
+Nathan Chancellor (1):
+      x86/tools: Remove chkobjdump.awk
 
-+#define for_each_next_node_with_cpus(node, next_node)  \
-+               for_each_online_node_next(node, next_node)      \
-+               if (nr_cpus_node(next_node))
- int arch_update_cpu_topology(void);
+Samuel Zeter (2):
+      x86/tools: objdump_reformat.awk: Ensure regex matches fwait
+      x86/tools: objdump_reformat.awk: Allow for spaces
 
- /* Conform to ACPI 2.0 SLIT distance definitions */
+ arch/x86/tools/Makefile             |  2 +-
+ arch/x86/tools/chkobjdump.awk       | 34 ----------------------------------
+ arch/x86/tools/objdump_reformat.awk |  4 ++--
+ 3 files changed, 3 insertions(+), 37 deletions(-)
+---
+base-commit: 2cc14f52aeb78ce3f29677c2de1f06c0e91471ab
+change-id: 20231129-objdump-reformat-llvm-2d71b9f40ac2
+
+Best regards,
+-- 
+Nathan Chancellor <nathan@kernel.org>
+
