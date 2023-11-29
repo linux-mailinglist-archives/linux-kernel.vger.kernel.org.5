@@ -2,88 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CC57FD4B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:53:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 301357FD4BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:55:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbjK2KxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 05:53:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49428 "EHLO
+        id S231162AbjK2Kyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 05:54:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229656AbjK2KxT (ORCPT
+        with ESMTP id S229477AbjK2Kyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 05:53:19 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1313910F4
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:53:25 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-a013d22effcso884666766b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:53:25 -0800 (PST)
+        Wed, 29 Nov 2023 05:54:53 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD0C8E
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:54:59 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a00a9c6f1e9so937641666b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:54:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701255203; x=1701860003; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701255297; x=1701860097; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=l2jvWR/J4cBkDbvzBiC6ME393r+YwZ2uP+QwtlnTojA=;
-        b=EPDWgDStiR0EOZV0u9YFD33/0hCskFYFYWF4hZzTW3WyVfpJBqRR+gGSkOVsHilJYm
-         6dR9zvxU0FiASK06s7GYt1Zook9ZJdnk41XAPO493uzE6FwINNAc9SDBaPQULatOqKmb
-         bdtBm5JjgMxXKSjQpmpT9vypIskLTHZHLi7p0PDQBjRCiKyRndVyMi60kxKa5JP2zITL
-         Gk/KDwr7o9H530ZJAOnpaNcKEm9E7lp0/MgxnVs4E6v/2wDwtXIphWqN4n5I+DiUDao7
-         DMBlHpQtBOjInux28KXwZIxG7tRz8JennZ7ecPftaSBL59i6bWJdjb60tp1jdo+GDp6i
-         JsWA==
+        bh=WaNT7WYUOm/G392OKMIh9XdJ8gT35U7w8c6/M00Pcos=;
+        b=sRcQ/pkTsaL+f+b8oRn1brF5RNpGOSxNPEDw9qUKByYEn4wZDVJPUg2cVM87RvMZ49
+         ae7EZgUNicobf7E+AcZH4lDpNI+0/yg3YGCC0jJ06xouz1MTLc+R4UVOyzOxJ6Rfe+xz
+         IJiS6QQWriBGjqXwe95uFzrcUZfH/rE1sV/GqgcsbjOCQRCgyPS72dqK2jApsEGR+Fj3
+         LvvAyJuso+RXHtHvzI6qkwSp3/OdShOMf9pxVNRAc5J7cfFoYvOZsl3E+QIiFcTw2iI1
+         OesivpsimuowSVH34qhrpbUYkbQnW3wVnXJMFpsbj3BWW1PTjM5TyIeAs9Ghyou3h/0b
+         jjNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701255203; x=1701860003;
+        d=1e100.net; s=20230601; t=1701255297; x=1701860097;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=l2jvWR/J4cBkDbvzBiC6ME393r+YwZ2uP+QwtlnTojA=;
-        b=qPJ8FAKk1bpC//GqlfWzwoksllHCZyh09fTBk7ryZ2SR/M6+3jNq6mh2bqw8nEwA75
-         viHIZkxD+aQ0NJci4Y59AslnfJC15RVwhBouOdZzU7JoW4U0DFbFKuwRJBB94q7Aop5t
-         8BCeHuXCoqUkj8LAQwBhrcXr2bYdDiEWvzUWllnG4eMEz0y4hWdZNkOXv7BRjqCOyzsQ
-         3YQ4ak6xs3A7zYrx2pyE1mT0T94aLe5H8EjaoHHeXsYWIcayu54l6e+QMUzmrzhVZPDu
-         wOtkHOBnQNoZQw2oyHzJxJE/F9CxfyutBj2C6Xlh7yquXxMyNIGVAXmG87Pp7ySgC1Jx
-         xmvg==
-X-Gm-Message-State: AOJu0Yz5ppaR5JTyuhNFn43NtxZYfwNcoKkj0gTKcPAdie9OWvqcuHbp
-        8Ueihn8d07Ei24P/lLndd09dcQ==
-X-Google-Smtp-Source: AGHT+IHNeo0Dghv67Ss3OsTU5+PvZkC+kVErbMHdZ1oK2rp8CmSce+8O/aLA2Q0KlJtETlAQPZTJlg==
-X-Received: by 2002:a17:906:f6cf:b0:a10:a91f:e75e with SMTP id jo15-20020a170906f6cf00b00a10a91fe75emr6306762ejb.18.1701255203380;
-        Wed, 29 Nov 2023 02:53:23 -0800 (PST)
+        bh=WaNT7WYUOm/G392OKMIh9XdJ8gT35U7w8c6/M00Pcos=;
+        b=DxYF0hy91L9coUni6J2C9ww+bg8/o0uTbKfy6dAA5vpaJzP8Gz/kVK7IA+UoRRBGkI
+         MYLd2fNWRXBbGCL3zOlkuB7jCOCHJKuPiLWCNDestU3bKru/PHjE3Pa222ErQJBo8awc
+         A+n2fdGQoV1grt9O48QbQUoK+dQRdfcfirDdoD+xuWxQ4xAzZXmMdVBqda5K0tmH6E2s
+         p5LGM+E5uqW+Od+2xiSVNzDBwd6KySsp9bc4HCXpfhTocYCHxUz5f8bokg4A5jWagSFJ
+         POWLgdnCoCmG+Hnu15i4UvE4zxURqAbtak/25pCfvXVA24lpxXcjklIAsxzTN86KzPcl
+         NBpA==
+X-Gm-Message-State: AOJu0YxJ6XijpPILuU6WvYv4pyUGBI90Dgl+BMdvsA0mpv53E+noKd0l
+        HFYBSxMtfdlBIq/RsioyOen/0g==
+X-Google-Smtp-Source: AGHT+IEiWyZ9udu+TEmnkAnknsXruKGeWNOjB4HCrQJ1VzfuSdWgVckZxNsxVMGWur3FPBGnvfDaiA==
+X-Received: by 2002:a17:906:cec7:b0:a10:8db4:bcf3 with SMTP id si7-20020a170906cec700b00a108db4bcf3mr6616764ejb.9.1701255297573;
+        Wed, 29 Nov 2023 02:54:57 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id k7-20020a17090627c700b009e50ea0a05asm7814793ejc.99.2023.11.29.02.53.21
+        by smtp.gmail.com with ESMTPSA id k7-20020a17090627c700b009e50ea0a05asm7814793ejc.99.2023.11.29.02.54.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 02:53:22 -0800 (PST)
-Message-ID: <068ca34d-a930-4542-bde3-4fbb4c228807@linaro.org>
-Date:   Wed, 29 Nov 2023 11:53:20 +0100
+        Wed, 29 Nov 2023 02:54:57 -0800 (PST)
+Message-ID: <e3bc24d6-d9ef-4705-8de7-05460f915b17@linaro.org>
+Date:   Wed, 29 Nov 2023 11:54:56 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/6] dt-bindings: serial: cdns: Add new compatible
- string for StarFive JH8100 UART
+Subject: Re: [PATCH v2 3/4] arm64: dts: nuvoton: Add pinctrl support for
+ ma35d1
 Content-Language: en-US
-To:     JeeHeng Sia <jeeheng.sia@starfivetech.com>,
-        "kernel@esmil.dk" <kernel@esmil.dk>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "krzk@kernel.org" <krzk@kernel.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "conor@kernel.org" <conor@kernel.org>,
-        "anup@brainfault.org" <anup@brainfault.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "jirislaby@kernel.org" <jirislaby@kernel.org>,
-        "michal.simek@amd.com" <michal.simek@amd.com>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        "drew@beagleboard.org" <drew@beagleboard.org>
-Cc:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>
-References: <20231129060043.368874-1-jeeheng.sia@starfivetech.com>
- <20231129060043.368874-6-jeeheng.sia@starfivetech.com>
- <8f2f241d-580a-4906-949a-b99b5a600868@linaro.org>
- <d5a3a8798333431fbb2aee573383a8e4@EXMBX066.cuchost.com>
+To:     Jacky Huang <ychuang570808@gmail.com>, linus.walleij@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, p.zabel@pengutronix.de, j.neuschaefer@gmx.net
+Cc:     linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ychuang3@nuvoton.com, schung@nuvoton.com
+References: <20231128061118.575847-1-ychuang570808@gmail.com>
+ <20231128061118.575847-4-ychuang570808@gmail.com>
+ <7edda3ca-b98a-4125-979f-3ee7ac718a9a@linaro.org>
+ <a0be9aaa-290d-450e-b0b8-d87453bcaaa0@gmail.com>
+ <7fed5d90-da04-40fb-8677-b807b6f51cc9@linaro.org>
+ <8663d26e-32b8-4f2b-b497-9efa7440f070@gmail.com>
+ <2fab32e6-23a4-41bb-b47b-4f993fc590dc@linaro.org>
+ <ff83f0f2-541a-4677-a247-5f47fdcca3f1@gmail.com>
+ <db3ede63-8708-469f-8e7b-aca798ed50e0@linaro.org>
+ <4b00c41c-7751-40ca-bf2d-53f1179772d4@gmail.com>
+ <9ec2dd42-5173-40df-8e6b-9c09f2d77f67@linaro.org>
+ <6d511cc4-f22c-4c8f-a1ea-a8d99be95157@gmail.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -129,12 +120,12 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <d5a3a8798333431fbb2aee573383a8e4@EXMBX066.cuchost.com>
+In-Reply-To: <6d511cc4-f22c-4c8f-a1ea-a8d99be95157@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -142,76 +133,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/11/2023 11:33, JeeHeng Sia wrote:
+On 29/11/2023 11:14, Jacky Huang wrote:
+> 
+> Dear Krzysztof,
 > 
 > 
->> -----Original Message-----
->> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> Sent: Wednesday, November 29, 2023 4:26 PM
->> To: JeeHeng Sia <jeeheng.sia@starfivetech.com>; kernel@esmil.dk; robh+dt@kernel.org; krzysztof.kozlowski+dt@linaro.org;
->> krzk@kernel.org; conor+dt@kernel.org; paul.walmsley@sifive.com; palmer@dabbelt.com; aou@eecs.berkeley.edu;
->> daniel.lezcano@linaro.org; tglx@linutronix.de; conor@kernel.org; anup@brainfault.org; gregkh@linuxfoundation.org;
->> jirislaby@kernel.org; michal.simek@amd.com; Michael Zhu <michael.zhu@starfivetech.com>; drew@beagleboard.org
->> Cc: devicetree@vger.kernel.org; linux-riscv@lists.infradead.org; linux-kernel@vger.kernel.org; Leyfoon Tan
->> <leyfoon.tan@starfivetech.com>
->> Subject: Re: [PATCH v2 5/6] dt-bindings: serial: cdns: Add new compatible string for StarFive JH8100 UART
->>
->> On 29/11/2023 07:00, Sia Jee Heng wrote:
->>> Add new compatible string for UART in the StarFive JH8100 SoC.
+> On 2023/11/29 下午 06:02, Krzysztof Kozlowski wrote:
+>> On 29/11/2023 10:41, Jacky Huang wrote:
+>>> Dear Krzysztof,
 >>>
->>> Signed-off-by: Sia Jee Heng <jeeheng.sia@starfivetech.com>
->>> Reviewed-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
->>
->> The patch is quite different than v1. Are you sure the review is
->> applicable? If it was given for v2, where is it?
-> This patch is impacted by the comment suggesting the exclusion of patch 5 in V1. In V2, this patch adds compatible for cdns-uart-r1p8, allowing us to continue using the cdns uart.
-
-Please wrap your replies.
-
-How does this answer my concern about review tag?
-
-Do you understand that my comments are inline under the exact line which
-is questioned?
-
->>
->>> ---
->>>  Documentation/devicetree/bindings/serial/cdns,uart.yaml | 4 ++++
->>>  1 file changed, 4 insertions(+)
 >>>
->>> diff --git a/Documentation/devicetree/bindings/serial/cdns,uart.yaml b/Documentation/devicetree/bindings/serial/cdns,uart.yaml
->>> index e35ad1109efc..0d05305778f2 100644
->>> --- a/Documentation/devicetree/bindings/serial/cdns,uart.yaml
->>> +++ b/Documentation/devicetree/bindings/serial/cdns,uart.yaml
->>> @@ -20,6 +20,10 @@ properties:
->>>          items:
->>>            - const: xlnx,zynqmp-uart
->>>            - const: cdns,uart-r1p12
->>> +      - description: UART controller for StarFive JH8100 SoC
+>>> On 2023/11/29 下午 04:11, Krzysztof Kozlowski wrote:
+>>>> On 29/11/2023 04:35, Jacky Huang wrote:
+>>>>>>>> Best regards,
+>>>>>>>> Krzysztof
+>>>>>>>>
+>>>>>>> Yes, it did pass the 'dtbs_check'. I guess the tool does not detect such
+>>>>>>> issues.
+>>>>>>> Anyway, I will fix it in the next version.
+>>>>>> Hm, I see your bindings indeed allow pin-.* and unit addresses, so it is
+>>>>>> the binding issue.
+>>>>>>
+>>>>>> The examples you used as reference - xlnx,zynqmp-pinctrl.yaml and
+>>>>>> realtek,rtd1315e-pinctrl.yaml - do not mix these as you do.
+>>>>>>
+>>>>>> I don't understand why do you need them yet. I don't see any populate of
+>>>>>> children. There are no compatibles, either.
+>>>>>>
+>>>>>> Which part of your driver uses them exactly?
+>>>>>>
+>>>>>> Best regards,
+>>>>>> Krzysztof
+>>>>>>
+>>>>> I will move the 'pcfg_default: pin-default' from dtsi to dts, like this:
+>>>>>
+>>>>> &pinctrl {
+>>>>>        pcfg_default: pin-default {
+>>>>>            slew-rate = <0>;
+>>>>>            input-schmitt-disable;
+>>>>>            bias-disable;
+>>>>>            power-source = <1>;
+>>>>>            drive-strength = <17100>;
+>>>>>        };
+>>>> This solves nothing. It's the same placement.
+>>>>
+>>>>
+>>>> Best regards,
+>>>> Krzysztof
+>>>>
+>>> OK, it stil be the binding issues.
+>>> For "^pin-[a-z0-9]+$", I reference to the "pcfg-[a-z0-9-]+$" of
+>>> rockchip,pinctrl.yaml.
+>>>
+>>> My intention is to describe a generic pin configuration, aiming to make
+>>> the pin
+>>> description more concise. In actual testing, it proves to be effective.
+>> Can you instead respond to my actual questions?
 >>
->> This is duplicating compatible, drop.
-> Do you mean drop compatible for starfive,jh8100-uart ?
-
-No, drop description and use directly " - items"
-
+>> Best regards,
+>> Krzysztof
 >>
->>> +        items:
->>> +          - const: starfive,jh8100-uart
->>> +          - const: cdns,uart-r1p8
->>
->> Don't add things to the end of the list, but keep order. I would suggest
->> to put it at the beginning, so before Xilinx.
-> I'm trying to get what you're asking, but it's a bit confusing for me. So, I thought it might be easier if I just share the code below. Please let me know if this addresses your comment?
-> properties:
->   compatible:
->     oneOf:
->       - description: UART controller for StarFive JH8100 SoC
->         items:
->           - const: cdns,uart-r1p8
+> 
+> The the last one item of nuvoton,pins is a phandle, which can refer to 
+> '&pin-default'. The following code of driver pinctrl-ma35.c parse 
+> "nuvoton,pins", including the node reference by phandle. list = 
+> of_get_property(np, "nuvoton,pins", &size); size /= sizeof(*list); if 
+> (!size || size % 4) { dev_err(npctl->dev, "wrong setting!\n"); return 
+> -EINVAL; } grp->npins = size / 4; grp->pins = devm_kzalloc(npctl->dev, 
+> grp->npins * sizeof(*grp->pins), GFP_KERNEL); if (!grp->pins) return 
+> -ENOMEM; pin = grp->settings = devm_kzalloc(npctl->dev, grp->npins * 
+> sizeof(*grp->settings), GFP_KERNEL); if (!grp->settings) return -ENOMEM; 
+> for (i = 0, j = 0; i < size; i += 4, j++) { struct device_node 
+> *np_config; const __be32 *phandle; pin->offset = be32_to_cpu(*list++) * 
+> MA35_MFP_REG_SZ_PER_BANK + MA35_MFP_REG_BASE; pin->shift = 
+> (be32_to_cpu(*list++) * MA35_MFP_BITS_PER_PORT) % 32; pin->muxval = 
+> be32_to_cpu(*list++); phandle = list++; if (!phandle) return -EINVAL; 
+> np_config = of_find_node_by_phandle(be32_to_cpup(phandle)); ret = 
+> pinconf_generic_parse_dt_config(np_config, NULL, &pin->configs, 
+> &pin->nconfigs); if (ret) return ret; grp->pins[j] = 
+> npctl->info->get_pin_num(pin->offset, pin->shift); pin++; } Best 
+> Regards, Jacky Huang
 
-Order is fixed, thanks. But drop description and bring back specific
-compatible. You must have specific compatibles, always.
+Sorry, I cannot parse it.
 
+I was referring to the children with unit addresses. I don't see any
+populate of the children, so why do you need them?
 
+There are no compatibles, either.
+
+Which part of your driver uses them exactly?
 
 Best regards,
 Krzysztof
