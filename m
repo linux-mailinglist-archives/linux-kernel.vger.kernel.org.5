@@ -2,148 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 384F97FD142
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:45:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95D527FD145
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:45:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231691AbjK2Ipb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 03:45:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46240 "EHLO
+        id S231891AbjK2Ips (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 03:45:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231968AbjK2Ip1 (ORCPT
+        with ESMTP id S231993AbjK2Ipp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 03:45:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E661BC0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:45:32 -0800 (PST)
+        Wed, 29 Nov 2023 03:45:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C901BC1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:45:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701247532;
+        s=mimecast20190719; t=1701247550;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=T4tf6Z9mh7G2P6Vo/ih7c1NtHCBr2QOTR5abuK7e5yU=;
-        b=OzC6O5aaGL+ihVFNQhEA1HAxJipfV922buW8kNlr+qpEGf83JnxqmJB4cdLi+BtwbiPylL
-        mqvTXrTz+epapuEQ2rNzFkuhnqWnr9gHvp1Q1dOCCH4C9kpOd1NJb3LYKiibJVbkHucmBO
-        jXnFPiAHqaiJwgQf0k0F2jYFf0hadVk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=b7oAAA15rOVCfVDFVia+LTQgyeo/WyMzRo1xULkvSRA=;
+        b=W+wDBrtSuZadNO1A6TbS3E+6Zn4ia3qKWDRCtLLczq10mzsCoJaXj5sYJfXBYBZapOVCHN
+        5ReDsGTyy0R/8RaKCTG5IlRBt4yulEKFhCjZamqzlLk70VubMrk58o0HjDmIGbW65BaV46
+        gquQOZGsOA0L8jBOFj6/6FmReAAlD9w=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-660-9DSmEEufOF-stxNDyXY4Tw-1; Wed, 29 Nov 2023 03:45:29 -0500
-X-MC-Unique: 9DSmEEufOF-stxNDyXY4Tw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A5D87828AC9;
-        Wed, 29 Nov 2023 08:45:28 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.30])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 055F820268DD;
-        Wed, 29 Nov 2023 08:45:27 +0000 (UTC)
-Date:   Wed, 29 Nov 2023 16:45:24 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        schnelle@linux.ibm.com, LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, rajvi.jingar@linux.intel.com,
-        dave.hansen@linux.intel.com, peterz@infradead.org
-Subject: Re: [PATCH V5 12/20] asm-generic/io.h: iounmap/ioport_unmap
- cleanup.h support
-Message-ID: <ZWb6JMqEZj8PB9cU@MiWiFi-R3L-srv>
-References: <20231123040355.82139-1-david.e.box@linux.intel.com>
- <20231123040355.82139-13-david.e.box@linux.intel.com>
- <f83e4a40-314-d279-75e6-17ad83501982@linux.intel.com>
- <adb8c80395d2c23488496b9ad323bfc265ad3514.camel@linux.intel.com>
+ us-mta-685-ygFOMhOGMleLtt4A6dfQlg-1; Wed, 29 Nov 2023 03:45:48 -0500
+X-MC-Unique: ygFOMhOGMleLtt4A6dfQlg-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40b3d4d6417so28079325e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:45:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701247547; x=1701852347;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b7oAAA15rOVCfVDFVia+LTQgyeo/WyMzRo1xULkvSRA=;
+        b=vC5kpnJtk8aG70qU9vgrFCI8u5r9nxH3K9orUZILBhqDRm4K9sb98M3MNsdEd2xRFx
+         tTZCU3BF/pGZGmJICTBhDZlJ99x9tGYogBSOu+6fAp4XPQlnzjipvzYzXNb5+kbE3YuQ
+         HLa2QRd07/CM1HXbYYDA2vKiSPCdOCF2Ra6Rjxo/PT/VeBw8veIAe9Sj5oudquFhdtnf
+         frIoMREFORQtWPczGa53x9PKWEFVWylDiapbOFIaGWvWBZGQUz6LvSe+OFyw5iJAvdn8
+         CG4MyXHj7uvuMaHDim3pwB4Th307rrdeKHaJBnEFXGYu4+uAgTbwsPLi9iV/XnGitrP+
+         ut+w==
+X-Gm-Message-State: AOJu0YxAPmq4Zf41Xe64rB5FZsOQpYsacm/VLjrhIuHi1AryEV9DUgrX
+        HmV7Xw09Z72HjhYkIMcSmAijSGj3cTMXz5PMUuSz0W69Q+J3UDgVzzXDY2kcKmmivqznT4n5mi+
+        kZwFIwP0AUF47vOaGOmpG45/y
+X-Received: by 2002:a05:600c:4ec7:b0:40b:4b2d:8d0f with SMTP id g7-20020a05600c4ec700b0040b4b2d8d0fmr3468031wmq.31.1701247547354;
+        Wed, 29 Nov 2023 00:45:47 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFUZa9CF5ktLhl2smtnYSsgYgs9e/fhsqdBDOEDAnezf8nhgh6VesIGyD9zauK/BmCgBx8Ohg==
+X-Received: by 2002:a05:600c:4ec7:b0:40b:4b2d:8d0f with SMTP id g7-20020a05600c4ec700b0040b4b2d8d0fmr3468008wmq.31.1701247546986;
+        Wed, 29 Nov 2023 00:45:46 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id i5-20020adfe485000000b0033300a0b444sm8028033wrm.66.2023.11.29.00.45.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 00:45:46 -0800 (PST)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Maxime Ripard <mripard@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Frank Binns <frank.binns@imgtec.com>,
+        Donald Robson <donald.robson@imgtec.com>,
+        Matt Coster <matt.coster@imgtec.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sarah Walker <sarah.walker@imgtec.com>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] drm/imagination: DRM_POWERVR should depend on ARCH_K3
+In-Reply-To: <7hee65pmdl5pajm2kgqld22xfi4iox4s2psswu2mdlfk6u6f7x@w4ecogdx6uj6>
+References: <b9360c2044a1001b9a5bcb5914611711d040d4fe.1701196029.git.geert+renesas@glider.be>
+ <87o7fdbszs.fsf@minerva.mail-host-address-is-not-set>
+ <CAMuHMdUhuO++ZSxh+_TX_6DHHxjPYY20jTppbNZ4FnuBvxxinQ@mail.gmail.com>
+ <7hee65pmdl5pajm2kgqld22xfi4iox4s2psswu2mdlfk6u6f7x@w4ecogdx6uj6>
+Date:   Wed, 29 Nov 2023 09:45:45 +0100
+Message-ID: <87fs0paqx2.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <adb8c80395d2c23488496b9ad323bfc265ad3514.camel@linux.intel.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/27/23 at 05:55pm, David E. Box wrote:
-> +Baoquan for ioremap question.
-> 
-> On Thu, 2023-11-23 at 16:30 +0200, Ilpo Järvinen wrote:
-> > On Wed, 22 Nov 2023, David E. Box wrote:
-> > 
-> > > Add auto-release cleanups for iounmap() and ioport_unmap().
-> > > 
-> > > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > > Suggested-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> > > ---
-> > > V2 - Move from linux/io.h to asm-generic/io.h. Adds iounmap cleanup if
-> > >      iounmap() is defined. Adds ioport_unmap cleanup if CONFIG_IOPORT_MAP
-> > >      is defined.
-> > > 
-> > >  include/asm-generic/io.h | 6 ++++++
-> > >  1 file changed, 6 insertions(+)
-> > > 
-> > > diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
-> > > index bac63e874c7b..9ef0332490b1 100644
-> > > --- a/include/asm-generic/io.h
-> > > +++ b/include/asm-generic/io.h
-> > > @@ -8,6 +8,7 @@
-> > >  #define __ASM_GENERIC_IO_H
-> > >  
-> > >  #include <asm/page.h> /* I/O is all done through memory accesses */
-> > > +#include <linux/cleanup.h>
-> > >  #include <linux/string.h> /* for memset() and memcpy() */
-> > >  #include <linux/types.h>
-> > >  #include <linux/instruction_pointer.h>
-> > > @@ -1065,6 +1066,10 @@ static inline void __iomem *ioremap(phys_addr_t addr,
-> > > size_t size)
-> > >  #endif
-> > >  #endif /* !CONFIG_MMU || CONFIG_GENERIC_IOREMAP */
-> > >  
-> > > +#ifdef iounmap
-> > > +DEFINE_FREE(iounmap, void __iomem *, iounmap(_T));
-> > > +#endif
-> 
-> Baoquan, LKP is reporting an undeclared function 'iounmap' error with the above
-> change from this patch when building for s390 with PCI disabled. The ioremap
-> defines in arch/s390/include/asm/io.h are not wrapped under the #ifdef
-> CONFIG_PCI block. Shouldn't they be since the s390 Kconfig only adds
-> GENERIC_IOREMAP if PCI?
+Maxime Ripard <mripard@kernel.org> writes:
 
-Sorry, almost forget this mail. Will check and reply later.
+Hello Maxime,
 
-> 
-> https://lore.kernel.org/oe-kbuild-all/202311241214.jcL84du7-lkp@intel.com
-> 
-> 
-> Note that the report includes pointer arithmetic warnings that are not related
-> to this patch. Those warnings occur in mainline as well.
-> 
-> David
-> 
-> > > +
-> > >  #ifndef ioremap_wc
-> > >  #define ioremap_wc ioremap
-> > >  #endif
-> > > @@ -1127,6 +1132,7 @@ static inline void ioport_unmap(void __iomem *p)
-> > >  extern void __iomem *ioport_map(unsigned long port, unsigned int nr);
-> > >  extern void ioport_unmap(void __iomem *p);
-> > >  #endif /* CONFIG_GENERIC_IOMAP */
-> > > +DEFINE_FREE(ioport_unmap, void __iomem *, ioport_unmap(_T));
-> > >  #endif /* CONFIG_HAS_IOPORT_MAP */
-> > >  
-> > >  #ifndef CONFIG_GENERIC_IOMAP
-> > 
-> > Has this now built successfully with LKP? (I don't think we get success 
-> > notifications from LKP for patch submissions, only failures).
-> > 
-> > There were some odd errors last time but I think all they were unrelated 
-> > to this change (besides the checkpatch false positive, I mean).
-> > 
-> 
+> Hi,
+>
+> On Tue, Nov 28, 2023 at 08:16:18PM +0100, Geert Uytterhoeven wrote:
+>> On Tue, Nov 28, 2023 at 8:03=E2=80=AFPM Javier Martinez Canillas
+>> <javierm@redhat.com> wrote:
+>> > Geert Uytterhoeven <geert+renesas@glider.be> writes:
+>> > > The Imagination Technologies PowerVR Series 6 GPU is currently only
+>> > > supported on Texas Instruments K3 AM62x SoCs.  Hence add a dependenc=
+y on
+>> > > ARCH_K3, to prevent asking the user about this driver when configuri=
+ng a
+>> > > kernel without Texas Instruments K3 Multicore SoC support.
+>> > >
+>> > > Fixes: 4babef0708656c54 ("drm/imagination: Add skeleton PowerVR driv=
+er")
+>> > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>> > > ---
+>> >
+>> > Indeed. Although I wonder what is the supposed policy since for example
+>> > the DRM_PANFROST symbol only depends on ARM || ARM64 and others such as
+>>=20
+>> I think ARM Mali is sufficiently ubiquitous on ARM/ARM64 systems to
+>> have just an ARM/ARM64 dependency...
+>>=20
+>> > DRM_ETNAVIV don't even have an SoC or architecture dependency.
+>>=20
+>> Vivante GPUs are found in DTS files on at least 4 architectures.
+>> Might be worthwhile to add some dependencies, though...
+>>=20
+>> > In any case, I agree with you that restricting to only K3 makes sense.
+>>=20
+>> I am looking forward to adding || SOC_AM33XX || ARCH_RENESAS || ...,
+>> eventually ;-)
+>
+> I disagree. This is to handle a generic IP, just like panfrost, lima, or
+> etnaviv, and we certaintly don't want to maintain the Kconfig list of
+> every possible architecture and SoC family it might or might not be
+> found.
+>
+
+Thanks for the clarification. Then the policy is to have a depends on
+ARCH_$FOO if the IP block is tied to a particular SoC or SoC family ?
+
+For example, DRM_V3D has:
+
+depends on ARCH_BCM || ARCH_BRCMSTB || ARCH_BCM2835 || COMPILE_TEST
+
+If the IP block is generic and could be integrated with any SoC, then it
+should not have a dependency as you said.
+
+> GPUs supposed to be handled are spread across 4 architectures (x86,
+> riscv, arm, arm64, mips?), and in arm/arm64 alone we have at least 5
+> platforms that might use it (allwinner, ti, mediatek, renesas, rockchip)
+>
+> It didn't make sense for panfrost, or etnaviv. It doesn't make sense for
+> that driver either. Especially for something that olddefconfig can
+> handle just fine.
+>
+
+I think then that we should drop the arch and SoC dependency for these GPU
+drivers and just leave the symbols they really depend on (e.g: DRM, MMU) ?
+
+> Maxime
+
+--=20
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
