@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 334047FD762
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:03:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C209E7FD760
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233724AbjK2ND2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 08:03:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42032 "EHLO
+        id S233681AbjK2ND0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 08:03:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233581AbjK2NDZ (ORCPT
+        with ESMTP id S233332AbjK2NDZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 29 Nov 2023 08:03:25 -0500
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com [209.85.210.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284CF10D0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:03:32 -0800 (PST)
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-6cd8b5b2d04so5829891b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:03:32 -0800 (PST)
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0092C4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:03:31 -0800 (PST)
+Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-2859447a409so8034406a91.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:03:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1701263011; x=1701867811;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=gmW2ACMtPDHLik/DWZoZDBoHMSRiYxm2B4qOdCuQQHY=;
-        b=rh8u/PnbwqfODIONnmxfdAGpMbnjioORI5nVo0335okzUd6kZmiLk6OSM4Wn+ZhvcW
-         137f7BSA3kV1hnMDknJBG1G1ahJjEv0Y2Mqkxctaats6VUwkRjY270JnusxSOcLhxTaJ
-         fmD3CKtfb9HmHNsDI8fjFCOSygZFiMyWpWf6O3n6SXPKeSNbfpzSk6oyMquhQhM0d+C9
-         W78aiOIlHiMqy7ilzVTCDWv0K+B3kBd924nbPNlDJTFSlRbKN2tAgDuJG5bqmQB2jh2Y
-         FGrB/m2xUz6r1kZ61nvHxmPfn91o/1AAPwD2ZSsigCkrMo8sRiTipxp/ZJqeNMMcwGjW
-         hbqA==
-X-Gm-Message-State: AOJu0Yx8fC0HTezZzXocrUjioygZRu11lgLfFRJX1kmWiH6GSu9AeElE
-        y8Fe2oCZFE79WC1cQeQ2kY51+nYxV3cHe7FlymxCrAsXHFOy
-X-Google-Smtp-Source: AGHT+IHOL5bZIyI+KhfytvAZ38+ZEFZkAUr/QorP6+m7Z6lwCZvz8AqNcdYmEgTskQxAxsTtobLCVA4/+AyP03dywbc9yuQr+poJ
+        bh=y6z3+R5KMTzO8PE/C4spJNXIlKb0XTL3KsEUNl7U/v0=;
+        b=EoQpl9SNSSy8Gpk0OncQa9ilo81BcC8payy13SjRbycdWVajYn3+n+7SpcCmA2Wxel
+         bHJpbk7Dh5eskVWMfo6b5ObYB86LgnQgzX32Y/eimcSt479XCU5ayt9VBEFCJHMLsb4u
+         q/fa7+RSDrquwyWNEEjndkOxf0lCWtNuZ+GW+GmTslLwH8hpC4XeSBYxAG/VgesnsLxH
+         HWmHn7rJD3UJcHiJrE8dvc+gybUYqvs52D3UMb4hud7EfpbMcogzkHDuN2vozEC+DyR3
+         m1UNER6OVAlLPkS7ZI1sKThKUSj3D/Sl2i1IbQlzcOmLnsN6PQo8EnmDEv0gCpdXif39
+         nKug==
+X-Gm-Message-State: AOJu0YzfunsXYDe7bFu/89u7G/I0IQ2NOiOWa+FchjD/g0wz/SaDLYB5
+        nnKfO1ByZaG0VLekivnxUUPTy0YcAHjgF5Nzcgx42f/G9hck
+X-Google-Smtp-Source: AGHT+IEVln3yCShLRBbLgBh74P09DUgTya8hqlN2Kze9rJeUeoQY8woH8VZs/hD58ubvmKgYel7hV1Kz/ZqOKbHmrg822P0xoo/V
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:18a9:b0:6c3:1b4d:309e with SMTP id
- x41-20020a056a0018a900b006c31b4d309emr5245843pfh.0.1701263011648; Wed, 29 Nov
+X-Received: by 2002:a17:90b:48c1:b0:285:be29:80c with SMTP id
+ li1-20020a17090b48c100b00285be29080cmr2201600pjb.3.1701263011193; Wed, 29 Nov
  2023 05:03:31 -0800 (PST)
 Date:   Wed, 29 Nov 2023 05:03:31 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007a9d62060b4a2964@google.com>
-Subject: [syzbot] Monthly serial report (Nov 2023)
-From:   syzbot <syzbot+listbfc701fdf8085a7e825f@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <00000000000073ab29060b4a294a@google.com>
+Subject: [syzbot] Monthly kernfs report (Nov 2023)
+From:   syzbot <syzbot+list651ed881e18853419fb6@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tj@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
         RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -54,28 +55,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello serial maintainers/developers,
+Hello kernfs maintainers/developers,
 
-This is a 31-day syzbot report for the serial subsystem.
+This is a 31-day syzbot report for the kernfs subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/serial
+https://syzkaller.appspot.com/upstream/s/kernfs
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 12 issues are still open and 40 have been fixed so far.
+During the period, 1 new issues were detected and 0 were fixed.
+In total, 10 issues are still open and 20 have been fixed so far.
 
 Some of the still happening issues:
 
 Ref Crashes Repro Title
-<1> 4231    Yes   BUG: sleeping function called from invalid context in console_lock (2)
-                  https://syzkaller.appspot.com/bug?extid=dbac96d8e73b61aa559c
-<2> 62      Yes   KASAN: stack-out-of-bounds Read in sched_show_task
-                  https://syzkaller.appspot.com/bug?extid=8d2757d62d403b2d9275
-<3> 55      Yes   BUG: soft lockup in tx
-                  https://syzkaller.appspot.com/bug?extid=5e87db90e68fbc4707c6
-<4> 23      Yes   INFO: task can't die in show_free_areas
-                  https://syzkaller.appspot.com/bug?extid=8f41dccfb6c03cc36fd6
-<5> 6       Yes   INFO: task hung in paste_selection (2)
-                  https://syzkaller.appspot.com/bug?extid=275e275bd3f536725dd8
+<1> 1567    Yes   possible deadlock in input_event (2)
+                  https://syzkaller.appspot.com/bug?extid=d4c06e848a1c1f9f726f
+<2> 225     No    INFO: task hung in path_openat (7)
+                  https://syzkaller.appspot.com/bug?extid=950a0cdaa2fdd14f5bdc
+<3> 188     Yes   WARNING in kernfs_remove_by_name_ns (3)
+                  https://syzkaller.appspot.com/bug?extid=93cbdd0ab421adc5275d
+<4> 48      Yes   KASAN: use-after-free Read in kernfs_next_descendant_post (2)
+                  https://syzkaller.appspot.com/bug?extid=6bc35f3913193fe7f0d3
+<5> 36      Yes   KASAN: use-after-free Read in kernfs_add_one
+                  https://syzkaller.appspot.com/bug?extid=ef17b5b364116518fd65
+<6> 24      No    possible deadlock in lookup_slow (3)
+                  https://syzkaller.appspot.com/bug?extid=65459fd3b61877d717a3
 
 ---
 This report is generated by a bot. It may contain errors.
