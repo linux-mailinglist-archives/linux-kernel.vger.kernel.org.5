@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35BFF7FE030
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 20:16:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87CCE7FE02E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 20:16:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233023AbjK2TPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 14:15:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46940 "EHLO
+        id S233250AbjK2TQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 14:16:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231304AbjK2TPB (ORCPT
+        with ESMTP id S231304AbjK2TQX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 14:15:01 -0500
+        Wed, 29 Nov 2023 14:16:23 -0500
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04873A2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 11:15:08 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B054D5E
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 11:16:29 -0800 (PST)
 Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
         by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
         (envelope-from <a.fatoum@pengutronix.de>)
-        id 1r8Q1V-0003uT-9O; Wed, 29 Nov 2023 20:15:01 +0100
-Message-ID: <875f0dbc-1d78-4901-91b2-6ad152bcea5a@pengutronix.de>
-Date:   Wed, 29 Nov 2023 20:14:58 +0100
+        id 1r8Q2o-0003uT-2z; Wed, 29 Nov 2023 20:16:22 +0100
+Message-ID: <62e767da-5e4f-4b92-a5c9-5d523896d68e@pengutronix.de>
+Date:   Wed, 29 Nov 2023 20:16:20 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v7 2/2] arm64: boot: Support Flat Image Tree
 Content-Language: en-US
-To:     Simon Glass <sjg@chromium.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
+To:     Tom Rini <trini@konsulko.com>
+Cc:     Simon Glass <sjg@chromium.org>,
+        linux-arm-kernel@lists.infradead.org,
         Masahiro Yamada <masahiroy@kernel.org>,
-        Tom Rini <trini@konsulko.com>,
         lkml <linux-kernel@vger.kernel.org>,
         U-Boot Mailing List <u-boot@lists.denx.de>,
         Catalin Marinas <catalin.marinas@arm.com>,
@@ -40,9 +40,9 @@ Cc:     linux-arm-kernel@lists.infradead.org,
 References: <20231129172200.430674-1-sjg@chromium.org>
  <20231129172200.430674-3-sjg@chromium.org>
  <30f32467-51ea-47de-a272-38e074f4060b@pengutronix.de>
- <CAPnjgZ25xoXsi74XYY0E8ucQiowQqPdZgUHrfVNAYWKZEYODHg@mail.gmail.com>
+ <20231129190220.GN2513409@bill-the-cat>
 From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-In-Reply-To: <CAPnjgZ25xoXsi74XYY0E8ucQiowQqPdZgUHrfVNAYWKZEYODHg@mail.gmail.com>
+In-Reply-To: <20231129190220.GN2513409@bill-the-cat>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
@@ -58,13 +58,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Simon,
+Hello Tom,
 
-On 29.11.23 20:02, Simon Glass wrote:
-> Hi Ahmad,
-> 
-> On Wed, 29 Nov 2023 at 11:59, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
->>
+On 29.11.23 20:02, Tom Rini wrote:
+> On Wed, Nov 29, 2023 at 07:59:00PM +0100, Ahmad Fatoum wrote:
 >> Hi,
 >>
 >> a few more comments after decompiling the FIT image:
@@ -83,75 +80,18 @@ On 29.11.23 20:02, Simon Glass wrote:
 >> were unhappy about? Please let me know if the semantics are as I understood,
 >> so I can prepare a barebox patch supporting it.
 > 
-> Oh, see my previous email.
-
-Thanks.
-
+> So the matching side for this series in U-Boot is:
+> https://patchwork.ozlabs.org/project/uboot/list/?series=382849&state=*
 > 
->>
->>> +        fsw.property_string('arch', args.arch)
->>> +        fsw.property_string('os', args.os)
->>> +        fsw.property_string('compression', args.compress)
->>> +        fsw.property('data', data)
->>> +        fsw.property_u32('load', 0)
->>> +        fsw.property_u32('entry', 0)
->>> +
->>> +
->>> +def finish_fit(fsw, entries):
->>> +    """Finish the FIT ready for use
->>> +
->>> +    Writes the /configurations node and subnodes
->>> +
->>> +    Args:
->>> +        fsw (libfdt.FdtSw): Object to use for writing
->>> +        entries (list of tuple): List of configurations:
->>> +            str: Description of model
->>> +            str: Compatible stringlist
->>> +    """
->>> +    fsw.end_node()
->>> +    seq = 0
->>> +    with fsw.add_node('configurations'):
->>> +        for model, compat in entries:
->>> +            seq += 1
->>> +            with fsw.add_node(f'conf-{seq}'):
->>> +                fsw.property('compatible', bytes(compat))
->>
->> The specification says that this is the root U-Boot compatible,
->> which I presume to mean the top-level compatible, which makes sense to me.
->>
->> The code here though adds all compatible strings from the device tree though,
->> is this intended?
-> 
-> Yes, since it saves needing to read in each DT just to get the
-> compatible stringlist.
+> And in short, for IH_TYPE_KERNEL_NOLOAD we do our best to use it
+> in-place. For decompression we allocate some space to decompress to.
 
-The spec reads as if only one string (root) is supposed to be in the list.
-The script adds all compatibles though. This is not really useful as a bootloader
-that's compatible with e.g. fsl,imx8mm would just take the first device tree
-with that SoC, which is most likely to be wrong. It would be better to just
-specify the top-level compatible, so the bootloader fails instead of taking
-the first DT it finds.
-
->>> +        fsw.property_string('description', model)
->>> +        fsw.property_string('type', 'flat_dt')
->>> +        fsw.property_string('arch', arch)
->>> +        fsw.property_string('compression', compress)
->>> +        fsw.property('compatible', bytes(compat))
->>
->> I think I've never seen a compatible for a fdt node before.
->> What use does this serve?
-> 
-> It indicates the machine that the DT is for.
-
-Who makes use of this information?
+Thanks. I am still curious why "kernel" couldn't have been used back then
+with missing entry and load address to arrive at the same result?
 
 Thanks,
 Ahmad
 
-> 
-> Regards,
-> Simon
-> 
 
 -- 
 Pengutronix e.K.                           |                             |
