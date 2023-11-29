@@ -2,122 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F7A7FD2C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 10:31:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5AA97FD393
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:06:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229535AbjK2Jaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 04:30:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44446 "EHLO
+        id S232422AbjK2KGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 05:06:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230163AbjK2Jab (ORCPT
+        with ESMTP id S232801AbjK2KGM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 04:30:31 -0500
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915962D75
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 01:29:46 -0800 (PST)
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20231129092944epoutp04f2ed96aa64e3eb848f235c9bc218d1a2~cDgd_nOLL3171731717epoutp04-
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 09:29:44 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20231129092944epoutp04f2ed96aa64e3eb848f235c9bc218d1a2~cDgd_nOLL3171731717epoutp04-
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1701250184;
-        bh=FHvSR/hYOGJJkx3HUz9cuc3ozsOZ6u4idcxy8RtY3ek=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Uv56qPD+l3e2Z5W0lKtubPM87dE3u4JY363KS2Q0qL/6WR4tvLEHlumasMHg9UxDL
-         +LLwe2PVcxGusEiZwfOReufcbTKXV7EpO1uvDwQ7xvG+sA/XCmiBTYZCZGW8XrA0eU
-         B2zEhnmsbXZB4NgKLXm3swnSBXn1BbA9rVf826MY=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20231129092944epcas2p48dd26563bb461298f3467b73415a494e~cDgdlzJnu1311413114epcas2p4Z;
-        Wed, 29 Nov 2023 09:29:44 +0000 (GMT)
-Received: from epsmgec2p1.samsung.com (unknown [182.195.36.69]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4SgDYg3rW4z4x9Pt; Wed, 29 Nov
-        2023 09:29:43 +0000 (GMT)
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmgec2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        35.78.08648.78407656; Wed, 29 Nov 2023 18:29:43 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
-        20231129092942epcas2p1c4305207c4c3d3701e7ff6757f7a2b4f~cDgcJFYlJ0737107371epcas2p1g;
-        Wed, 29 Nov 2023 09:29:42 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20231129092942epsmtrp13fa7b91dd84632b400609f49cb4e84bd~cDgcII0pu3031930319epsmtrp1k;
-        Wed, 29 Nov 2023 09:29:42 +0000 (GMT)
-X-AuditID: b6c32a43-4b3ff700000021c8-23-6567048740ae
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        1A.EE.07368.68407656; Wed, 29 Nov 2023 18:29:42 +0900 (KST)
-Received: from perf (unknown [10.229.95.91]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231129092942epsmtip233070651858a9e02b1227e78ed12d3f1~cDgb3wbsf0969709697epsmtip2i;
-        Wed, 29 Nov 2023 09:29:42 +0000 (GMT)
-Date:   Wed, 29 Nov 2023 19:04:47 +0900
-From:   Youngmin Nam <youngmin.nam@samsung.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     tomasz.figa@gmail.com, s.nawrocki@samsung.com,
-        alim.akhtar@samsung.com, linus.walleij@linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, semen.protsenko@linaro.org
-Subject: Re: [PATCH v2] pinctrl: samsung: add irq_set_affinity() for non
- wake up external gpio interrupt
-Message-ID: <ZWcMv8Bg12vqBCUm@perf>
+        Wed, 29 Nov 2023 05:06:12 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65E581BE8
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:06:16 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-a011e9bf336so897761466b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:06:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1701252375; x=1701857175; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=za2yJkzzBy3V8ZBT/Ld4CZE8pNBS1Zu1vvkdsZhT4Jo=;
+        b=yT278aJwUcLvatl6DJNDKCTbn4nRwbd6RmnClf70+1Trgo4oKhCAEC5bJI5TK/zar/
+         DSIVVkvQFJcGUntvStIaitAqEpHN0mCA32JXaeaS8fR5VS9cXJGSymDNup2Nd5j5/fns
+         iZa0v0gUlUa2FevrlLDF7KyCldcgbMm+yNk1Z5xIhmjZXUQFaQ8GMgsrbEoALHZhekz1
+         qoJIJfnR6U9m25HxsWBq3AsjHkYyRe5rWMW0QREJe1bTErDZUndul+PbGVQKg0ypj0iJ
+         LZO3DMt8VVwdZS0hjJmN7x+usJSQ1lrU+B3TmM4IW5HUzoJ/locnhXfxxJVA0Rb5keo0
+         YjKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701252375; x=1701857175;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=za2yJkzzBy3V8ZBT/Ld4CZE8pNBS1Zu1vvkdsZhT4Jo=;
+        b=Vx5zpd/g+TyLx2MOF+aBL15Aa3jUtJuxLoquFv8Id3dd/jVeShV64yfjJdIFkxGwLK
+         ncgozGvtGjTaIPjQ+x6cG2ymSOSNeeJkVLLzGNA/mZSyFm+KZQOD8F9gu6k4IUuqOBVA
+         hXJUP7vNoPdD4njRbWmWl9y4zk9bHiuH1onbxrHCXEtbceb3ErjFk3o+hkjSFpudAKnq
+         p1OUbbM7V/eg4YcJhRI0ZkeDRGzp+vASQs9KVhtU0TUNt8VOMdCmoHl5CqeD3i2r188A
+         JiIprLRmsU1DpF+NQepO0ofckumj62iXlfPc1XhA/nsosoU7o8WvIysl2rdIImq6xXYW
+         w3zg==
+X-Gm-Message-State: AOJu0YzoYKaJOy4BMZB/PEWl98+O9CCqSPTHrjaRLnNp7fox52yoEP2F
+        /XWLSiiwyd62eyXbn22VfVe/xw==
+X-Google-Smtp-Source: AGHT+IGJuApRen3EBmEwMd5p364lmU7PTBcgXOWX8oNwUiNEQief4We8JeVPD62DOEA/pzjlIjZuIw==
+X-Received: by 2002:a17:906:3f88:b0:9ff:1dea:83b6 with SMTP id b8-20020a1709063f8800b009ff1dea83b6mr11989413ejj.4.1701252374796;
+        Wed, 29 Nov 2023 02:06:14 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.223.109])
+        by smtp.gmail.com with ESMTPSA id gx26-20020a170906f1da00b009ad89697c86sm7757685ejb.144.2023.11.29.02.06.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Nov 2023 02:06:14 -0800 (PST)
+Message-ID: <ae9ef5a6-bb66-4b15-ad6a-fc71206e2795@linaro.org>
+Date:   Wed, 29 Nov 2023 11:06:12 +0100
 MIME-Version: 1.0
-In-Reply-To: <f814a1f4-2e3d-4946-949a-8ddac5e30d5f@kernel.org>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprHJsWRmVeSWpSXmKPExsWy7bCmhW47S3qqwba5MhYP5m1jszh/fgO7
-        xZQ/y5ksNj2+xmqxef4fRovLu+awWcw4v4/J4vCbdlaL531A1qpdfxgduDx2zrrL7rFpVSeb
-        x51re9g8Ni+p9+jbsorR4/MmuQC2qGybjNTElNQihdS85PyUzLx0WyXv4HjneFMzA0NdQ0sL
-        cyWFvMTcVFslF58AXbfMHKDLlBTKEnNKgUIBicXFSvp2NkX5pSWpChn5xSW2SqkFKTkF5gV6
-        xYm5xaV56Xp5qSVWhgYGRqZAhQnZGSc+nWQpOCpUceywUwPjN74uRk4OCQETiRMvz7N0MXJx
-        CAnsYJS4d/okG4TziVHiyoWPTBDON0aJO08OscC0tN+7CdWyl1Hi5qz9zBDOQ0aJ/vkX2EGq
-        WARUJWZfvgHWwSagK7HtxD9GEFtEQFPi+t/vrCANzAKdTBLTt89kBUkIC2RJ3NnYDdbAK6As
-        8XfnOXYIW1Di5MwnQHEODk4BO4nJ8+pBeiUEOjkkFu6ZzwhxkovEue8roc4Tlnh1fAs7hC0l
-        8bK/DcrOllj96xKUXQH0Qg8zhG0sMetZO9gcZoEMiQ1HJrGC7JIAuuHILRaIMJ9Ex+G/7BBh
-        XomONiGITjWJX1M2QF0gI7F78QqoiR4SzyZvYocGI7PEnFt32Ccwys1C8s0sJNsgbB2JBbs/
-        sc0CWsEsIC2x/B8HhKkpsX6X/gJG1lWMYqkFxbnpqclGBYbwCE7Oz93ECE6oWs47GK/M/6d3
-        iJGJg/EQowQHs5IIr97H5FQh3pTEyqrUovz4otKc1OJDjKbAuJnILCWanA9M6Xkl8YYmlgYm
-        ZmaG5kamBuZK4rz3WuemCAmkJ5akZqemFqQWwfQxcXBKNTCFN/IuC6i9+c30MsflY2q8266L
-        Zf/656b50Clj243XpybN+yjgcXeJ2C7lmSt33LCJ+F2/9PIcG23rCwv8LnL0FeRaBNxQn/U9
-        ONheOvjGpNDjPpKqhrX8Zfb+Sg2zzL/3Hr/guj7MnXmPeYCE/3ppje0mp497VGqxHVu0fdrR
-        WUmKJexXVRXNmPY1HnyZn8KbtvDTs8554XHT1845W1Xd6uijHvbo6oQnX9b8jEwU4rRZ8mZe
-        byazyeaTR/k1DkZKTI6XFVp73e/sZC8LJtdE+Y0HhH4m1c3cea9n+wOvz1w6x001+nqSv0k0
-        Ta7ptO96o3p+anTUs1QlOVn+SfcKVtS2+ZS26fBqKKfGhSuxFGckGmoxFxUnAgBvbNQXMQQA
-        AA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrCLMWRmVeSWpSXmKPExsWy7bCSvG4bS3qqwfp3UhYP5m1jszh/fgO7
-        xZQ/y5ksNj2+xmqxef4fRovLu+awWcw4v4/J4vCbdlaL531A1qpdfxgduDx2zrrL7rFpVSeb
-        x51re9g8Ni+p9+jbsorR4/MmuQC2KC6blNSczLLUIn27BK6Mc39YC1oFKpb8esHWwHiep4uR
-        k0NCwESi/d5Nli5GLg4hgd2MEgunPmODSMhI3F55mRXCFpa433KEFaLoPqPEibVv2UESLAKq
-        ErMv32ABsdkEdCW2nfjHCGKLCGhKXP/7HayBWaCTSWL69plgk4QFsiQePjwPtoFXQFni785z
-        7BBTfzBLLFy9jAkiIShxcuYTsKnMAloSN/69BIpzANnSEsv/cYCYnAJ2EpPn1U9gFJiFpGEW
-        koZZCA0LGJlXMUqmFhTnpucmGxYY5qWW6xUn5haX5qXrJefnbmIER4SWxg7Ge/P/6R1iZOJg
-        PMQowcGsJMKr9zE5VYg3JbGyKrUoP76oNCe1+BCjNAeLkjiv4YzZKUIC6YklqdmpqQWpRTBZ
-        Jg5OqQam5OcuL9IX+13LSta7HLnn9leL2IgNSX1PC+qs3v9nWHL0pOS/qzln5XYJR2x/PitH
-        ZYL74xrz5iWHlrtI/vqasbT9iS/3p/wjOgXMs06se5OcME2olTdsb3XJuerQ/Qzq97T95txT
-        e3/4ZqXYulah1P2VwkmHWzqypi6z4z315H15TBDDtjVr2281rhXxZTrEVhgvL7Vc6ttMqwvT
-        r7nn5P+JY9hrvOxz56rbm4JMf81acND+eUJ5xS8rEZ2Atom3XqyrqxUqtE5eojzfe/Fu3QCt
-        l9W5XvevnzXanSbwaXFMPPfMa5daVijrHT/Sl3VrvZqzoKT9qw81fF0M3p7iN+3DFmVzLk2c
-        Uv+004xXiaU4I9FQi7moOBEA0CLvT/cCAAA=
-X-CMS-MailID: 20231129092942epcas2p1c4305207c4c3d3701e7ff6757f7a2b4f
-X-Msg-Generator: CA
-Content-Type: multipart/mixed;
-        boundary="----beKDcrNeaD4oBIFRuchmvdVAwfnDGI5TYPt7fforSuRq9wgD=_37ba7_"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231126091120epcas2p4a1320e3b0f9be8f8a0f575a322981d38
-References: <CGME20231126091120epcas2p4a1320e3b0f9be8f8a0f575a322981d38@epcas2p4.samsung.com>
-        <20231126094618.2545116-1-youngmin.nam@samsung.com>
-        <bb738a6b-815d-4fad-b73f-559f1ba8cd68@linaro.org> <ZWU75VtJ/mXpMyQr@perf>
-        <1fd55b36-0837-4bf7-9fde-e573d6cb214a@linaro.org>
-        <CAPLW+4n0SAOTb6wocY-WjkxgSFMbx+nVuqdaPcNYVDsbfg+EfA@mail.gmail.com>
-        <ZWbjPIydJRrPnuDy@perf> <a0ac295b-ea96-475c-acde-5a61de8ca170@linaro.org>
-        <ZWb6cyTgyEcee7DZ@perf> <f814a1f4-2e3d-4946-949a-8ddac5e30d5f@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] docs: dt-bindings: add DTS Coding Style document
+Content-Language: en-US
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Andrew Davis <afd@ti.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Chen-Yu Tsai <wens@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michal Simek <michal.simek@amd.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        workflows@vger.kernel.org, linux-doc@vger.kernel.org
+References: <20231125184422.12315-1-krzysztof.kozlowski@linaro.org>
+ <a3b65c90-afc9-4caf-8744-112369a838d2@lunn.ch>
+ <15292222-39b3-4e9e-a6c1-26fba8f5efcd@linaro.org>
+ <4fa1e860-48bd-456b-ab0b-88215c2b8d1b@lunn.ch>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <4fa1e860-48bd-456b-ab0b-88215c2b8d1b@lunn.ch>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -125,61 +144,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-------beKDcrNeaD4oBIFRuchmvdVAwfnDGI5TYPt7fforSuRq9wgD=_37ba7_
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
+On 26/11/2023 18:48, Andrew Lunn wrote:
+> On Sun, Nov 26, 2023 at 11:38:38AM +0100, Krzysztof Kozlowski wrote:
+>> On 25/11/2023 20:47, Andrew Lunn wrote:
+>>>> +=====================================
+>>>> +Devicetree Sources (DTS) Coding Style
+>>>> +=====================================
+>>>> +
+>>>> +When writing Devicetree Sources (DTS) please observe below guidelines.  They
+>>>> +should be considered complementary to any rules expressed already in Devicetree
+>>>> +Specification and dtc compiler (including W=1 and W=2 builds).
+>>>> +
+>>>> +Individual architectures and sub-architectures can add additional rules, making
+>>>> +the style stricter.
+>>>
+>>> It would be nice to add a pointer where such rules are documented.
+>>
+>> Subsystem profile or any other place. The generic doc should not point
+>> to specific ones.
+> 
+> That is not so friendly for a developer. A reviewer points out that a
+> file is not consistent with the coding style. So they go away and fix
 
-On Wed, Nov 29, 2023 at 09:39:45AM +0100, Krzysztof Kozlowski wrote:
-> On 29/11/2023 09:46, Youngmin Nam wrote:
-> >>> I couldn't find out a pin for the test on E850-96 board yet.
-> >>> We can test if there is a usage of *Non" Wake up External Interrupt of GPIO
-> >>> on E850-96 board.
-> >>>
-> >>> Do you have any idea ?
-> >>
-> >> Please test on any upstream platform or upstream your existing platform.
-> >> I hesitate to take this change because I don't trust Samsung that this
-> >> was tested on mainline kernel. OK, for sure 100% it was not tested on
-> >> mainline, but I am afraid that differences were far beyond just missing
-> >> platforms. Therefore the issue might or might not exist at all. Maybe
-> >> issue is caused by other Samsung non-upstreamed code.
-> >>
-> >> Best regards,
-> >> Krzysztof
-> > 
-> > Sure. Let me find how to test on upstreamed device like E850-96 board.
-> 
-> There are many reasons why companies using Linux for their products
-> should be involved in upstreaming their devices.
-> 
-> The one visible from this conversation: Whatever technical debt you
-> have, it will be only growing because upstream might not even take
-> simple patches from you, until you start contributing with the rest.
-> Samsung's out-of-tree kernels are so far away from the upstream, that
-> basically we might feel that contributions from Samsung are not
-> addressing real problems. This will affect your Android trees due to GKI.
-> 
-> That's one more argument to talk to with your managers why staying away
-> from the upstream is not the best idea.
-> 
-> Second argument is look at your competitor: Qualcomm, one of the most
-> active upstreamers of SoC code doing awesome job.
-> 
-> Best regards,
-> Krzysztof
+Then it is poor reviewer. If reviewer does not mention specific issues
+to fix or specific style to use, but just "coding style", then he has no
+right to expect some other output.
 
-Thank you for your opinion.
-By the way, this patch is not related with GKI and I just thought this work
-would be helpful to all exynos platform.
+> it, as described here. They then get a second review which say, no,
+> you to do X, Y and Z, despite them actually following the coding
+> style.
+> 
+> Maybe add to the paragraph above:
+> 
+> These further restrictions are voluntary, until added to this
+> document.
 
-But it seems that changing affinity of any irqs including gpio is not allowed
-on exynos platform. So we need to debug by adding some logs.
+"can add" already expresses this.
 
 > 
+> This should encourage those architectures to document their coding
+> style.
 > 
+>> The root node is a bit special, but other than that mixing nodes with
+>> and without unit address is discouraged practice.
+> 
+> If the root node is special, maybe it needs a few rules of its own?
+> All properties without an address come first, then properties with
+> addresses. Sorting within these classes follow the normal rules
+> already stated?
 
-------beKDcrNeaD4oBIFRuchmvdVAwfnDGI5TYPt7fforSuRq9wgD=_37ba7_
-Content-Type: text/plain; charset="utf-8"
+This document ought to be simple at the beginning. Also, root node has
+only nodes without addresses and soc@ node.
 
+> 
+>>>> +Indentation
+>>>> +-----------
+>>>> +
+>>>> +1. Use indentation according to :ref:`codingstyle`.
+>>>> +2. For arrays spanning across lines, it is preferred to align the continued
+>>>> +   entries with opening < from the first line.
+>>>> +3. Each entry in arrays with multiple cells (e.g. "reg" with two IO addresses)
+>>>> +   shall be enclosed in <>.
+>>>> +
+>>>> +Example::
+>>>> +
+>>>> +	thermal-sensor@c271000 {
+>>>> +		compatible = "qcom,sm8550-tsens", "qcom,tsens-v2";
+>>>> +		reg = <0x0 0x0c271000 0x0 0x1000>,
+>>>> +		      <0x0 0x0c222000 0x0 0x1000>;
+>>>> +	};
+>>>
+>>> I'm not sure i understand this. Is this example correct?
+>>>
+>>>                 gpio-fan,speed-map = <0    0
+>>>                                       3000 1
+>>>                                       6000 2>;
+>>>
+>>> It exists a lot in todays files.
+>>
+>> Depends on the binidng. Is it matrix? If yes, then it is not correct.
+> 
+> It seems to me, rules 2 and 3 should be swapped. You can only align
+> the <, if you have <. So logically, the rule about having < should
+> come first.
 
-------beKDcrNeaD4oBIFRuchmvdVAwfnDGI5TYPt7fforSuRq9wgD=_37ba7_--
+Hm, sure, I'll reorder them.
+
+Best regards,
+Krzysztof
+
