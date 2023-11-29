@@ -2,109 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A00C47FE219
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 22:36:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CB387FE224
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 22:38:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234196AbjK2Vgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 16:36:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40222 "EHLO
+        id S234466AbjK2ViC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 16:38:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjK2Vgn (ORCPT
+        with ESMTP id S229703AbjK2ViB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 16:36:43 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1707D7F
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:36:49 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-4219f89ee21so1442621cf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:36:49 -0800 (PST)
+        Wed, 29 Nov 2023 16:38:01 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD7695
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:38:07 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-548ae9a5eeaso1013a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:38:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1701293809; x=1701898609; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701293886; x=1701898686; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RKdw1vp5oLSx4gO3m1/rl4eR0j44oWuSmpeWEj8OyEg=;
-        b=OExQ1cLLwtG7+490nris8noYiYxSqXI4ie1YhzAm/VeuczmafNkSzFv5qw9D0HcErf
-         ffPPn9sEPfg40Js8rnPoqm6IcpzTOTgPB/jswA+tpg/pJ5KrztQfCo7fsvLJA1skHJ4T
-         Yt8NEPNif1go0SwFQYpEqCyd0fEz7D6QZBqhq+gAHOnWwnB4owKJhGROi7yWrwSiBZGS
-         j7TrWhwDpwdt3UTK+XtFGEJ5vM2sYeDU7Qz9OlwbkKdaZ28zC4A0R/JYxs5DgNxTa26i
-         RemFAI0Y90he8C4fmshjw22bDbsjE+K5y8NllC55xEQhe2wyuDKLxWvJpO9FKnkikNo2
-         5P2Q==
+        bh=wy/DOxiHYGOEhpK16Bls8GJxdkJJyBiBMP5pgr/S1pE=;
+        b=h5QU13l390tViRGxSa68EluVR2+FUcht2vqNklPF6P4G3/DlluLNgDh3WHugkAJdF6
+         yM5V0+e5rWLQUfy6++W1EAmVoE+yrVKN8oNtr3f5CNxKC7dgIyTBSAuWP3r+as3k97gM
+         RJMAjoEKZuaGWoC7ysMqWnPvTqotKTzN+sJNKzgCHi7pRegsjP+4BRRpIXu+XEvYfFqP
+         VoYHZv39qV9iE6p2AaRc91E+D9EhzNzZTbEvQIeJLg12jusyhxDfPTLXF9rwdet1V7eu
+         4uUO8UpXPCfmWv4xR8XmW1A1ggwm2teARzAgTnz1+0LxZHzP+st6s93xyq1hJXQ9+O4j
+         SABQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701293809; x=1701898609;
+        d=1e100.net; s=20230601; t=1701293886; x=1701898686;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RKdw1vp5oLSx4gO3m1/rl4eR0j44oWuSmpeWEj8OyEg=;
-        b=ABFRFz1dBFvBAz3WuwL3AAguVSP62Bj8EdK/PN4Gcl+PiDLwQAcTfB2dpWJB+O1DYQ
-         AcvJ6FWj23h0NurP07ex9HAnQDVKRfH5OOL2ScQXO4h2tDAZGx7gceIIuffqzv0uIUY1
-         7hNLhj2bKlGp4oiEx2nQoiuz/5Wrbm2mAgQU1SvzJkiQZ2r2T0/bkiM3mfSTfHagEzJu
-         zRbbZsWb/aFhdRMQbDbJzmLXdDE3bDHQfJtU0fTFV2w7Z/PInlDwSnN4bWaI3VUWURZb
-         6xTa7OUXE1qsLdUXj5WegqH+NMMF95j5EuSl0Mtd14TVID1sbAO8+OJ8P90P8lCJHsYm
-         GAew==
-X-Gm-Message-State: AOJu0YzWaLvKprV1LNOsS2Ur7V6XQ4YU45X2SiOpN0DR4qkjaBVqOsKd
-        a17SrfyzKuZBuv6gufK1ZdJ6oA+tYAJ7BLxUAIar0Q==
-X-Google-Smtp-Source: AGHT+IH1s42XbpuMqfnRK8jqZvUrCxoQ7Or7Gzckcwkn35i1gPeN3cfJsGoJeMBusJpvpuIBcFrnBzJ4nZCRPQFGmZI=
-X-Received: by 2002:ac8:5c0e:0:b0:423:6e2a:1c36 with SMTP id
- i14-20020ac85c0e000000b004236e2a1c36mr29092766qti.35.1701293808838; Wed, 29
- Nov 2023 13:36:48 -0800 (PST)
+        bh=wy/DOxiHYGOEhpK16Bls8GJxdkJJyBiBMP5pgr/S1pE=;
+        b=OKHN+RK82ARKIVX+bbtsVEm7LB8OC49zkxLFiF0gUlWpqfwsTOq/qdWrwTo12y6G7A
+         qX7Iw8Js2rMDNRmlAkKZAwdQlcI3+yeTUloE9Dg3aZJIxlZsybgCPu5tq2izYGdgY/Wc
+         P9bwKOJA/4OsBgF0JI6gTUHFmWIpqs7FRRiLxzpFcOT16a+gkl7l66GC7BfVGqgE9jHb
+         C2AUZ6onH1tPuXa8w1rrVlIsGwfTAiOYlrAuRcqQwVYeOg3l6KOwjddXNAPsvoOpZNNo
+         gPeB4CLmRn00mIMd3e/7hq2MtvgYFSYf1QJimsUtZJLpCb+GSTBzm6FprbpM7ayku9sN
+         z2gw==
+X-Gm-Message-State: AOJu0YwRaF/A8hEoDYfJyRj7tvi2mbLjKnHY4tA+nEvwMVGGv1YffvZw
+        CBibXo5gdb1mC5Ia4EfHP2X8x9ixTl9LCXUnOwHZAw==
+X-Google-Smtp-Source: AGHT+IFhVjKm0RHfQndiRRFYR19DYkcLgKI6xac3oSakerNml9rp7rFIetEWiJnCQ4M68deGfq+Dspz6+pHC9WpZXz8=
+X-Received: by 2002:aa7:c6c1:0:b0:54b:8f42:e3dc with SMTP id
+ b1-20020aa7c6c1000000b0054b8f42e3dcmr40148eds.2.1701293885558; Wed, 29 Nov
+ 2023 13:38:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
- <20231128204938.1453583-17-pasha.tatashin@soleen.com> <20231128235357.GF1312390@ziepe.ca>
-In-Reply-To: <20231128235357.GF1312390@ziepe.ca>
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-Date:   Wed, 29 Nov 2023 16:36:12 -0500
-Message-ID: <CA+CK2bBK=4qbHJG_6B=HSMOXe1vmg7D9TZmsJFhsqVmQau503g@mail.gmail.com>
-Subject: Re: [PATCH 16/16] vfio: account iommu allocations
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     akpm@linux-foundation.org, alex.williamson@redhat.com,
-        alim.akhtar@samsung.com, alyssa@rosenzweig.io,
-        asahi@lists.linux.dev, baolu.lu@linux.intel.com,
-        bhelgaas@google.com, cgroups@vger.kernel.org, corbet@lwn.net,
-        david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org,
-        heiko@sntech.de, iommu@lists.linux.dev, jasowang@redhat.com,
-        jernej.skrabec@gmail.com, jonathanh@nvidia.com, joro@8bytes.org,
-        kevin.tian@intel.com, krzysztof.kozlowski@linaro.org,
-        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
-        marcan@marcan.st, mhiramat@kernel.org, mst@redhat.com,
-        m.szyprowski@samsung.com, netdev@vger.kernel.org,
-        paulmck@kernel.org, rdunlap@infradead.org, robin.murphy@arm.com,
-        samuel@sholland.org, suravee.suthikulpanit@amd.com,
-        sven@svenpeter.dev, thierry.reding@gmail.com, tj@kernel.org,
-        tomas.mudrunka@gmail.com, vdumpa@nvidia.com,
-        virtualization@lists.linux.dev, wens@csie.org, will@kernel.org,
-        yu-cheng.yu@intel.com
+References: <20231129081004.1918096-1-irogers@google.com> <20231129081004.1918096-2-irogers@google.com>
+ <a54d0a93-aacd-4c69-a34c-8628b0e18ee7@intel.com> <03b314c6-ed6d-ae17-5bc5-0170139f7feb@arm.com>
+ <CAP-5=fX7UQGCXp3rqk8bKdevPUH6bnP2hxZ_jktj17YDzkuUDA@mail.gmail.com> <ZWefcAoHBe+GpuiY@kernel.org>
+In-Reply-To: <ZWefcAoHBe+GpuiY@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 29 Nov 2023 13:37:53 -0800
+Message-ID: <CAP-5=fVZy7R1b7WRaernfddEO-pL72AxsPZ_2C_6nCUYM3KCWg@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] perf test: Add basic list test
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     James Clark <james.clark@arm.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 6:53=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> wrot=
-e:
+On Wed, Nov 29, 2023 at 12:30=E2=80=AFPM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
 >
-> On Tue, Nov 28, 2023 at 08:49:38PM +0000, Pasha Tatashin wrote:
-> > iommu allocations should be accounted in order to allow admins to
-> > monitor and limit the amount of iommu memory.
+> Em Wed, Nov 29, 2023 at 09:21:12AM -0800, Ian Rogers escreveu:
+> > On Wed, Nov 29, 2023 at 1:27=E2=80=AFAM James Clark <james.clark@arm.co=
+m> wrote:
+> > >
+> > >
+> > >
+> > > On 29/11/2023 09:00, Adrian Hunter wrote:
+> > > > On 29/11/23 10:10, Ian Rogers wrote:
+> > > >> Test that json output produces valid json.
+> > > >>
+> > > >> Signed-off-by: Ian Rogers <irogers@google.com>
+> > > >> ---
+> > > >>  tools/perf/tests/shell/list.sh | 29 +++++++++++++++++++++++++++++
+> > > >>  1 file changed, 29 insertions(+)
+> > > >>  create mode 100755 tools/perf/tests/shell/list.sh
+> > > >>
+> > > >> diff --git a/tools/perf/tests/shell/list.sh b/tools/perf/tests/she=
+ll/list.sh
+> > > >> new file mode 100755
+> > > >> index 000000000000..286879a9837a
+> > > >> --- /dev/null
+> > > >> +++ b/tools/perf/tests/shell/list.sh
+> > > >> @@ -0,0 +1,29 @@
+> > > >> +#!/bin/sh
+> > > >> +# perf list tests
+> > > >> +# SPDX-License-Identifier: GPL-2.0
+> > > >> +
+> > > >> +set -e
+> > > >> +err=3D0
+> > > >> +
+> > > >> +if [ "x$PYTHON" =3D=3D "x" ]
+> > > >> +then
+> > > >> +    if which python3 > /dev/null
+> > > >
+> > > > 'which' isn't always present.  Maybe
+> > > >
+> > > > python3 --version >/dev/null 2>&1 && PYTHON=3Dpython3
+> > > >
+> > >
+> > > Now that we have shellcheck integrated into the build, we could enabl=
+e
+> > > the POSIX mode test which would warn against this usage of which and
+> > > suggest the alternative.
+> > >
+> > > At the moment though there are several other usages of which already =
+in
+> > > the tests. And probably enabling POSIX mode would come with hundreds =
+of
+> > > other warnings to fix.
+> > >
+> > > I'm not saying we shouldn't change this instance though, just adding =
+the
+> > > info for the discussion.
 > >
-> > Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-> > ---
-> >  drivers/vfio/vfio_iommu_type1.c | 8 +++++---
-> >  1 file changed, 5 insertions(+), 3 deletions(-)
+> > Sounds good to me. Fwiw, the instance where I lifted this code was:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.gi=
+t/tree/tools/perf/tests/shell/stat+json_output.sh?h=3Dperf-tools-next#n12
+> >
+> > With this change:
+> > ```
+> > diff --git a/tools/perf/tests/Makefile.tests b/tools/perf/tests/Makefil=
+e.tests
+> > index fdaca5f7a946..06de6d3f4842 100644
+> > --- a/tools/perf/tests/Makefile.tests
+> > +++ b/tools/perf/tests/Makefile.tests
+> > @@ -1,7 +1,7 @@
+> > # SPDX-License-Identifier: GPL-2.0
+> > # Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 2023
+> >
+> > -PROGS :=3D $(shell find tests/shell -perm -o=3Dx -type f -name '*.sh')
+> > +PROGS :=3D $(shell find tests/shell -executable -type f -name '*.sh')
+> > FILE_NAME :=3D $(notdir $(PROGS))
+> > FILE_NAME :=3D $(FILE_NAME:%=3D.%)
+> > LOGS :=3D $(join $(dir $(PROGS)),$(FILE_NAME))
+> > ```
+> >
+> > shellcheck now runs for me. I'll try adding the posix check into the
+> > patch series, as well as fixing other instances I can see.
 >
-> You should send the seperately and directly to Alex.
+> So I'll wait for a v2 for this one, ok?
 
-Thanks, I will.
+Yep, sent:
+https://lore.kernel.org/lkml/20231129213428.2227448-1-irogers@google.com/
 
->
-> Jason
+There are 2 fixes, one for perf list and the other for the shellcheck
+log file building stuff. The shellcheck stuff took a little longer
+PTAL.
+
+Thanks,
+Ian
+
+> - Arnaldo
