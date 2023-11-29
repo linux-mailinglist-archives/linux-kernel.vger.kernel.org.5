@@ -2,168 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8587FDD7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:43:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 709637FDD81
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 17:45:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbjK2Qnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 11:43:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49380 "EHLO
+        id S229705AbjK2QpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 11:45:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbjK2Qnm (ORCPT
+        with ESMTP id S229535AbjK2QpC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 11:43:42 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70FBA98
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:43:48 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-a00c200782dso1002763366b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:43:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701276227; x=1701881027; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fhyqDd+TZmzHAtUttgWk2RDaNO0MUw32LkqeIlJYnHQ=;
-        b=bAfTKZ140mDf+exZw24o0NFOybPvDFWw8bCEfcYAasVO3jOEz65MBtSGbKgai9Y+u/
-         i+JpeiEQIDsiG0HCHGQuGhdWzgeaTbcNAY+nW/oP4AkQ1tEQhq3x/yY7dVqeh1kbs80T
-         u2dAwZX1Wa0Fxc7V9y+nZ0RTpSwQWLyO1k7SJIrWuiUl4uzPM1L2hio4J1ZrgFqEZbrs
-         k+NSVQ1YmITyWT8AKoN+caSXxii9PwvciwmXXD6lK8kH4HVxL5DqigoQLdhU768Ilyc/
-         V+203KB9J+24+muBQUW6VnlIHXSrTftlwVlYsWkc4d9FN8LsJ0oPH+8y4JT+C2jMKeZT
-         NYNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701276227; x=1701881027;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fhyqDd+TZmzHAtUttgWk2RDaNO0MUw32LkqeIlJYnHQ=;
-        b=oLa8MaB1zpO1yWjRrl5zsRQePWrKykpAxImcg2oF+hqA2pw7kCUlboP4P2z0INwV35
-         EugPE6H8SwXlyG3Vffz9wLJHq7uSQ6w6Jz3CwjHjmsY2h1EWVLcef/AmHineVcWL/HDU
-         WJeXyjq9zTRmM9tVdq/tnWwNLq8hi614zepWZ9K/ze9FTJPmbWf0RtAqh3TbqsoJRKeu
-         wZwjpZz5bonzQjqGPC99gSQTxt7eAEqGGXJ6ljrj6FVkWoqLPysMFg/Cl32l5No9bgmP
-         B/BZxARNaMEbIPbyWkyIfJGQZyJheje+rmOQA9pV94G9fFyFo3rZCUcTC9Sp22D2L71y
-         l9xA==
-X-Gm-Message-State: AOJu0Yx1Ivea+jJsVXPfph1Eote4SuotzWv+ZP0PJ8pvdByBCvPtHW6d
-        CEB3dX4qx3rTx+tRsY33mfHxww==
-X-Google-Smtp-Source: AGHT+IEP0pjc9mf5L7DI+73M//a6q3e4H0pxj2ine3WXBbq/sfzrTNXMneYwfcfndoJoaJZ95SKbKg==
-X-Received: by 2002:a17:907:b011:b0:9bd:bbc1:1c5f with SMTP id fu17-20020a170907b01100b009bdbbc11c5fmr10675401ejc.35.1701276226805;
-        Wed, 29 Nov 2023 08:43:46 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id d14-20020a1709067f0e00b009fcf829d84csm8013100ejr.169.2023.11.29.08.43.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 08:43:46 -0800 (PST)
-Message-ID: <ab0fc6e0-a358-42e7-92e5-77ceea53a546@linaro.org>
-Date:   Wed, 29 Nov 2023 17:43:45 +0100
+        Wed, 29 Nov 2023 11:45:02 -0500
+Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EC3C98
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 08:45:06 -0800 (PST)
+Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3ATB037H006206;
+        Wed, 29 Nov 2023 17:44:55 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=selector1; bh=i4tjXRp
+        /ctMNsJpspoRBaUfatJcs4c6UmwClsKL/55E=; b=bAQ2vm6piod6RPN6oYeQkAe
+        i9TiKEsBozbKKw2je+ekNoFiCNTE3xBXDQ7y8sLMWC9ogWmoOUNaSXPvdHoRJzOW
+        vm6Nai9q5aQJnvEaQF2FSGIOrCSTwKpU5uLjLWlHScRxA2WxpFHhAeAL9XaVVe8l
+        x8xCSKc2r94yDozua5hxEYjp88BhKmlw8wZ9gctMfOJU0frZbHZJPCuf7uDe9aSp
+        yBpJkXNYpQbaT7jmphVw4a9lXc8xdN0j6TUBpfjqMfDkJ60o3hpgn97Qfs+1/Peq
+        7+mg8M2fcbvqsmF659ZCEDDSO917KszKoWqJdy2UQ9mIg+TruV1jfQMNes34qTw=
+        =
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3unffb5y9a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 29 Nov 2023 17:44:55 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 873D410002A;
+        Wed, 29 Nov 2023 17:44:53 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7E0CA22D182;
+        Wed, 29 Nov 2023 17:44:53 +0100 (CET)
+Received: from localhost (10.201.20.163) by SHFDAG1NODE2.st.com (10.75.129.70)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 29 Nov
+ 2023 17:44:50 +0100
+From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+To:     Jens Wiklander <jens.wiklander@linaro.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Christoph Hellwig <hch@infradead.org>
+CC:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        <op-tee@lists.trustedfirmware.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4] tee: Use iov_iter to better support shared buffer registration
+Date:   Wed, 29 Nov 2023 17:44:39 +0100
+Message-ID: <20231129164439.1130903-1-arnaud.pouliquen@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] soundwire: qcom: allow multi-link on newer devices
-Content-Language: en-US
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Sanyog Kale <sanyog.r.kale@intel.com>,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>
-References: <20231128150049.412236-1-krzysztof.kozlowski@linaro.org>
- <e43db38a-206d-4ea5-8813-23e1f918dd65@linux.intel.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <e43db38a-206d-4ea5-8813-23e1f918dd65@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.201.20.163]
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-29_15,2023-11-29_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/11/2023 16:35, Pierre-Louis Bossart wrote:
->>  static enum sdw_command_response qcom_swrm_xfer_msg(struct sdw_bus *bus,
->>  						    struct sdw_msg *msg)
->>  {
->> @@ -1078,6 +1090,7 @@ static const struct sdw_master_port_ops qcom_swrm_port_ops = {
->>  };
->>  
->>  static const struct sdw_master_ops qcom_swrm_ops = {
->> +	.read_prop = qcom_swrm_read_prop,
-> 
-> nit-pick: read_prop() literally means "read platform properties".
-> 
-> The functionality implemented in this callback looks more like an
-> initialization done in a probe, no?
+Currently it's not possible to register kernel buffers with TEE
+which are allocated via vmalloc.
 
-Yes, but multi_link is being set by sdw_bus_master_add() just before
-calling read_prop(). It looks a bit odd, because "bus" comes from the
-caller and is probably zero-ed already. Therefore I assumed the code did
-it on purpose - ignored multi_link set before sdw_bus_master_add(),
+Use iov_iter and associated helper functions to manage the page
+registration for all type of memories.
 
-> 
->>  	.xfer_msg = qcom_swrm_xfer_msg,
->>  	.pre_bank_switch = qcom_swrm_pre_bank_switch,
->>  	.post_bank_switch = qcom_swrm_post_bank_switch,
->> @@ -1196,6 +1209,15 @@ static int qcom_swrm_stream_alloc_ports(struct qcom_swrm_ctrl *ctrl,
->>  
->>  	mutex_lock(&ctrl->port_lock);
->>  	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
-> 
-> just realizing this now, are you sure the 'port_lock' is the proper
-> means to protecting the stream->master_list? I don't see this used
-> anywhere else in stream.c. I think you need to use bus_lock.
+Suggested-by: Christoph Hellwig <hch@infradead.org>
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+---
+Update from V3 to V4:
+- improve commit message,
+- use import_ubuf() instead of iov_iter_init(),
+- move shm_get_kernel_pages in register_shm_helper,
+- put back untagged_addr in register_shm_helper(),
+- move the comment related to pin pages from shm_get_kernel_pages()
+  to register_shm_helper().
 
-This is from ctrl, internal driver structure:
+Update from V2 to V3:
+- break lines longer than 80 columns.
 
-struct qcom_swrm_ctrl *ctrl
+Update from V1 to V2:
+- replace ITER_SOURCE by ITER_DEST flag in tee_shm_register_user_buf(),
+- replace IS_ERR_OR NULL(shm) by IS_ERR(shm) in tee_shm_register_user_buf().
 
+V1:
+The support of buffer registration allocated with vmalloc is no more
+available since c83900393aa1 ("tee: Remove vmalloc page support").
 
-Best regards,
-Krzysztof
+This patch is an alternative to a revert and resulted from a discussion
+with Christopher Hellwig [1].
+
+This patch has been tested using xtest tool in optee qemu environment [2]
+and using the series related to the remoteproc tee that should be
+proposed soon [3].
+
+References:
+[1] https://lore.kernel.org/linux-arm-kernel/18a8528d-7d9d-6ed0-0045-5ee47dd39fb2@foss.st.com/T/#m8ec683c44fcd9b69c2aee42eaed0793afac9dd18in
+[2] https://optee.readthedocs.io/en/latest/building/devices/qemu.html#build-instructions
+[3] https://lore.kernel.org/linux-arm-kernel/18a8528d-7d9d-6ed0-0045-5ee47dd39fb2@foss.st.com/T/#maca0a1fc897aadd54c7deac432e11473fe970d1d
+---
+ drivers/tee/tee_shm.c | 83 ++++++++++++++++++++++++-------------------
+ 1 file changed, 46 insertions(+), 37 deletions(-)
+
+diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
+index 673cf0359494..ac73e8143233 100644
+--- a/drivers/tee/tee_shm.c
++++ b/drivers/tee/tee_shm.c
+@@ -22,23 +22,12 @@ static void shm_put_kernel_pages(struct page **pages, size_t page_count)
+ 		put_page(pages[n]);
+ }
+ 
+-static int shm_get_kernel_pages(unsigned long start, size_t page_count,
+-				struct page **pages)
++static void shm_get_kernel_pages(struct page **pages, size_t page_count)
+ {
+-	struct page *page;
+ 	size_t n;
+ 
+-	if (WARN_ON_ONCE(is_vmalloc_addr((void *)start) ||
+-			 is_kmap_addr((void *)start)))
+-		return -EINVAL;
+-
+-	page = virt_to_page((void *)start);
+-	for (n = 0; n < page_count; n++) {
+-		pages[n] = page + n;
++	for (n = 0; n < page_count; n++)
+ 		get_page(pages[n]);
+-	}
+-
+-	return page_count;
+ }
+ 
+ static void release_registered_pages(struct tee_shm *shm)
+@@ -214,13 +203,14 @@ struct tee_shm *tee_shm_alloc_priv_buf(struct tee_context *ctx, size_t size)
+ EXPORT_SYMBOL_GPL(tee_shm_alloc_priv_buf);
+ 
+ static struct tee_shm *
+-register_shm_helper(struct tee_context *ctx, unsigned long addr,
+-		    size_t length, u32 flags, int id)
++register_shm_helper(struct tee_context *ctx, struct iov_iter *iter, u32 flags,
++		    int id)
+ {
+ 	struct tee_device *teedev = ctx->teedev;
+ 	struct tee_shm *shm;
+-	unsigned long start;
+-	size_t num_pages;
++	unsigned long start, addr;
++	size_t num_pages, off;
++	ssize_t len;
+ 	void *ret;
+ 	int rc;
+ 
+@@ -245,31 +235,38 @@ register_shm_helper(struct tee_context *ctx, unsigned long addr,
+ 	shm->flags = flags;
+ 	shm->ctx = ctx;
+ 	shm->id = id;
+-	addr = untagged_addr(addr);
++	addr = untagged_addr((unsigned long)iter_iov_addr(iter));
+ 	start = rounddown(addr, PAGE_SIZE);
+-	shm->offset = addr - start;
+-	shm->size = length;
+-	num_pages = (roundup(addr + length, PAGE_SIZE) - start) / PAGE_SIZE;
++	num_pages = iov_iter_npages(iter, INT_MAX);
++	if (!num_pages) {
++		ret = ERR_PTR(-ENOMEM);
++		goto err_ctx_put;
++	}
++
+ 	shm->pages = kcalloc(num_pages, sizeof(*shm->pages), GFP_KERNEL);
+ 	if (!shm->pages) {
+ 		ret = ERR_PTR(-ENOMEM);
+ 		goto err_free_shm;
+ 	}
+ 
+-	if (flags & TEE_SHM_USER_MAPPED)
+-		rc = pin_user_pages_fast(start, num_pages, FOLL_WRITE,
+-					 shm->pages);
+-	else
+-		rc = shm_get_kernel_pages(start, num_pages, shm->pages);
+-	if (rc > 0)
+-		shm->num_pages = rc;
+-	if (rc != num_pages) {
+-		if (rc >= 0)
+-			rc = -ENOMEM;
+-		ret = ERR_PTR(rc);
+-		goto err_put_shm_pages;
++	len = iov_iter_extract_pages(iter, &shm->pages, LONG_MAX, num_pages, 0,
++				     &off);
++	if (unlikely(len <= 0)) {
++		ret = len ? ERR_PTR(len) : ERR_PTR(-ENOMEM);
++		goto err_free_shm_pages;
+ 	}
+ 
++	/*
++	 * iov_iter_extract_kvec_pages does not get reference on the pages,
++	 * get a pin on them.
++	 */
++	if (iov_iter_is_kvec(iter))
++		shm_get_kernel_pages(shm->pages, num_pages);
++
++	shm->offset = off;
++	shm->size = len;
++	shm->num_pages = num_pages;
++
+ 	rc = teedev->desc->ops->shm_register(ctx, shm, shm->pages,
+ 					     shm->num_pages, start);
+ 	if (rc) {
+@@ -279,10 +276,11 @@ register_shm_helper(struct tee_context *ctx, unsigned long addr,
+ 
+ 	return shm;
+ err_put_shm_pages:
+-	if (flags & TEE_SHM_USER_MAPPED)
++	if (!iov_iter_is_kvec(iter))
+ 		unpin_user_pages(shm->pages, shm->num_pages);
+ 	else
+ 		shm_put_kernel_pages(shm->pages, shm->num_pages);
++err_free_shm_pages:
+ 	kfree(shm->pages);
+ err_free_shm:
+ 	kfree(shm);
+@@ -307,8 +305,9 @@ struct tee_shm *tee_shm_register_user_buf(struct tee_context *ctx,
+ 	u32 flags = TEE_SHM_USER_MAPPED | TEE_SHM_DYNAMIC;
+ 	struct tee_device *teedev = ctx->teedev;
+ 	struct tee_shm *shm;
++	struct iov_iter iter;
+ 	void *ret;
+-	int id;
++	int id, err;
+ 
+ 	if (!access_ok((void __user *)addr, length))
+ 		return ERR_PTR(-EFAULT);
+@@ -319,7 +318,11 @@ struct tee_shm *tee_shm_register_user_buf(struct tee_context *ctx,
+ 	if (id < 0)
+ 		return ERR_PTR(id);
+ 
+-	shm = register_shm_helper(ctx, addr, length, flags, id);
++	err = import_ubuf(ITER_DEST, (void __user *)addr, length, &iter);
++	if (err)
++		return ERR_PTR(err);
++
++	shm = register_shm_helper(ctx, &iter, flags, id);
+ 	if (IS_ERR(shm)) {
+ 		mutex_lock(&teedev->mutex);
+ 		idr_remove(&teedev->idr, id);
+@@ -352,8 +355,14 @@ struct tee_shm *tee_shm_register_kernel_buf(struct tee_context *ctx,
+ 					    void *addr, size_t length)
+ {
+ 	u32 flags = TEE_SHM_DYNAMIC;
++	struct kvec kvec;
++	struct iov_iter iter;
++
++	kvec.iov_base = addr;
++	kvec.iov_len = length;
++	iov_iter_kvec(&iter, ITER_DEST, &kvec, 1, length);
+ 
+-	return register_shm_helper(ctx, (unsigned long)addr, length, flags, -1);
++	return register_shm_helper(ctx, &iter, flags, -1);
+ }
+ EXPORT_SYMBOL_GPL(tee_shm_register_kernel_buf);
+ 
+-- 
+2.25.1
 
