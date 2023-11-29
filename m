@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E68B97FD01C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 08:51:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2097B7FD01E
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 08:51:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229509AbjK2HvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 02:51:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50708 "EHLO
+        id S229748AbjK2HvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 02:51:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229748AbjK2Hu6 (ORCPT
+        with ESMTP id S230495AbjK2HvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 02:50:58 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2060.outbound.protection.outlook.com [40.107.94.60])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2558D171D;
-        Tue, 28 Nov 2023 23:51:04 -0800 (PST)
+        Wed, 29 Nov 2023 02:51:15 -0500
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2087.outbound.protection.outlook.com [40.107.100.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E8D1BD6;
+        Tue, 28 Nov 2023 23:51:09 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BIrFB4lsxHmM4xNFHU3ZeqtgCMlkVESAoUkEH9+vT/hODL0iXX/Kv1IAN1sOmwnBIROl7LokvGo6MkRXlh1qaFnk43ZyrTGXXtH+m16QNuGeiffyPED94gKf3cSNamHgfW1D+i+dbQx6t9ChYwOg76Bm08XQa7Y7R58h+Aqymok4Zdo5nWG2dDbz8pUAwqxwOG3jrT/tiy21XAGgRADji8aDcxQXDH30hVjBDI+UJC1mk09gA5T5OSWq5CvmpMkKHsFDY2Ukf9mIW+bbyVYiRoCuaWVTUxaEq59ARoAdC8Xj0C6B8kovSQVF8OJGVStfsNyc+scJ5c/sbhn5b9BJug==
+ b=jhbX7C5koeEkfv+z40GyqYBGCEbhfHujet/583mHMxt0zGDd0hB8M+pr8gHi2SGhxZNWdcYnawJvPUWN7XxNsBwVoRiksKkRSRo/MM5R+akGD2bNDTdJz0rIj0OocCh5i3LywBv2DXz9el1QSK+kbXFMObbDcznV5ETuBur7V90E9YOygzzVx5PtVWDvv9SRmsLFMJZwBi5huaO3jJ1ogxioKZWpAk4kSFMSsTahSkFfpNO2JiJk6nQeLDEVKNKNpOEM6m3MHj48TK3cjwg7wktKE7iewGirqODl8ehalidej5chhENwhTIkiNwjveqkoSBqJeCRXSoboI71sRsTew==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kRqEVyGtTeeafaCZlkEsEYMaTZwPETuJH5kJZ5dUqIw=;
- b=QbGDFhp28uL+D7DjKzfE8DWlh2Bbiv65swusdDLQBxkHTs03JUESjuKyXgdFe/NZRELlj74SWOhkp37Xk9+hQS46w22GK2ugy5m7OEIn50wYnnyJyZ9PSpp3wwBkh/LaLR3QmfTA5CAMK2HExUL8e5+qILbAE3wBnmlGUP1OURKXTeYw65/tKWxpWUd+DBtigq62J9waLyw/IUg+XW8QR2pRoHb+IfjYtyQN+weJZ8425ifYx16iJn9792HOn9vUBLh+/OR/UuvSS1usajw/Q73o0UMv6fRPrnB2ZYdi5Dss1mAiszXkgWGqu9H20YHIuezcPtI5KQdJCci6qPcG+A==
+ bh=h7dPfPGUOf4GFI/I2HAHKhem3VSYYeXvsJsUw2f9/TY=;
+ b=f/4huXoHLKqwAnQxHQbdBw27EedFq6j07SXh85re3cG0v/XGUGTrws7xxfdiLmhKy896inNYyre7Yob2uXlChDEUG+1AVxc+SXgStMmQglJtmuekpqbltEz+Edd+AgIPaXS0w7V6g1+bbM9fbDcJJr2GJ1nZUD+RzG1kPehGs2RxRuKG8M56Z5LBftqm23kqW5YTAlmIBq5Tl2ZCVuwkqmzg2qTyne8y2+/JvCN5iPwiuinrxw5bHeSfbasQ9P/1eJREaqm1nBChsHxlMZKOEjSqTxwjQ102f9iAh3dugT8onQNlUUWly7zjQjC8lvLu8MxGQ/uhnpVASa+0d7X+nQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kRqEVyGtTeeafaCZlkEsEYMaTZwPETuJH5kJZ5dUqIw=;
- b=TMnFCUvPo86xsNZgghgLhI7Z+X4hqsQjI7yMr1z2vFjB6PgZaRkR+bDRh37WeddsZ3ZCw/SY2Gi6TMMmklpOzHNhSxssgxYvBVr69zs+TS3rBDR0Bh3BlWS/d4CtpqtJj2ebKF8z1WSKXMxBFl6xosEpH7OAmo+GLEKbwadFOGY=
-Received: from CY5P221CA0071.NAMP221.PROD.OUTLOOK.COM (2603:10b6:930:4::37) by
- PH7PR12MB7162.namprd12.prod.outlook.com (2603:10b6:510:201::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29; Wed, 29 Nov
- 2023 07:51:02 +0000
+ bh=h7dPfPGUOf4GFI/I2HAHKhem3VSYYeXvsJsUw2f9/TY=;
+ b=LkUgksyiwdYW6YVQtGZ+3rj0EKYiSLDmg/M/ms7jgsBdVIf/8NxPRbfQRm2kYyIwDRyYj55sgPBrVcYAnhw+g9qwwG7hrTz05BQBmxtupSHCy43w54Gb2ad6Qts0J4iUwnHavIgsyBOQa4Tvog6kDIDg/B1veI4OtRnlpN/lRl0=
+Received: from CY5P221CA0072.NAMP221.PROD.OUTLOOK.COM (2603:10b6:930:4::41) by
+ CH2PR12MB4858.namprd12.prod.outlook.com (2603:10b6:610:67::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7025.29; Wed, 29 Nov 2023 07:51:04 +0000
 Received: from CY4PEPF0000FCBF.namprd03.prod.outlook.com
- (2603:10b6:930:4:cafe::3f) by CY5P221CA0071.outlook.office365.com
- (2603:10b6:930:4::37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.29 via Frontend
- Transport; Wed, 29 Nov 2023 07:51:02 +0000
+ (2603:10b6:930:4:cafe::54) by CY5P221CA0072.outlook.office365.com
+ (2603:10b6:930:4::41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.22 via Frontend
+ Transport; Wed, 29 Nov 2023 07:51:04 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -49,51 +48,51 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
  CY4PEPF0000FCBF.mail.protection.outlook.com (10.167.242.101) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7046.17 via Frontend Transport; Wed, 29 Nov 2023 07:51:01 +0000
+ 15.20.7046.17 via Frontend Transport; Wed, 29 Nov 2023 07:51:04 +0000
 Received: from amd.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Wed, 29 Nov
- 2023 01:50:59 -0600
+ 2023 01:51:01 -0600
 From:   Muralidhara M K <muralimk@amd.com>
 To:     <linux-edac@vger.kernel.org>
 CC:     <linux-kernel@vger.kernel.org>, <bp@alien8.de>,
         <mchehab@kernel.org>, Muralidhara M K <muralidhara.mk@amd.com>,
         Naveen Krishna Chatradhi <naveenkrishna.chatradhi@amd.com>,
         Sathya Priya Kumar <sathyapriya.k@amd.com>
-Subject: [PATCH 3/4] EDAC/amd64: Add sysfs entry to read FRU poison data
-Date:   Wed, 29 Nov 2023 07:50:33 +0000
-Message-ID: <20231129075034.2159223-4-muralimk@amd.com>
+Subject: [PATCH 4/4] RAS/fmp: Add Documentation on Persistence of FRU memory poisons
+Date:   Wed, 29 Nov 2023 07:50:34 +0000
+Message-ID: <20231129075034.2159223-5-muralimk@amd.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231129075034.2159223-1-muralimk@amd.com>
 References: <20231129075034.2159223-1-muralimk@amd.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 X-Originating-IP: [10.180.168.240]
 X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000FCBF:EE_|PH7PR12MB7162:EE_
-X-MS-Office365-Filtering-Correlation-Id: 64cdb23c-e279-4e6d-da19-08dbf0afeee0
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000FCBF:EE_|CH2PR12MB4858:EE_
+X-MS-Office365-Filtering-Correlation-Id: bb89dab6-a657-4935-7c2a-08dbf0aff027
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: htTeHBhxrqvkgaroQQVbVKKG6Pvjfsm9iMhwfhgjeu9AnaGpUGfTvqWM2gBTMMxsz/g2aoZZnzyDhx6gnCyQfOqBpGKoV5xoV8VjxSlrnBHSZdNCz8ZlmjCkd/18MvWg8nJtjVvyXU9XWHgQAAELIcc0YufpdoxiR4y4W5bEBTd1zUaY+WoAkxHOrCgV6j2EsENlkVV2hwAxADFloYLN+1fsLYqFv58dQKtLJBS9yV8UPnAIZgxS9BDumeShLx0n+32r+zCSwOH1Vlq4m+4SPicXsbTclPdd67TAeLupBIFYQFEix2vE7bms802F/0uGtcFK5PGJbiL0d55dpYIUfRpQBHYam13NBDsJx4FrIp4MFUaieFpNrmUxZiS6mjrimF2n9NMqBq1xmFJb6EwTg/Vw13v5xANh9Nazqdjrff0gxkQz/3W9sIr71OR68V4fKawCY0ScXl81wNNuI5kofd3Nfx4lXqS23qMDarW9wAvfLmgk8KVQ/t/DAqyKoVxGadrCZdYG7PEpKejmvticV8XlBZv+iq5YfxoSDPtzF6cAnNnRUo4EWglaO3f/IwiFiXRUGzglIDiGkgoozFj/25b94KwpXQjtTLw9KhlnL2ELGSjhRBs3ECT86nxAHtgCPsceiuJSmpVesDlNbgBrUcBn7iMkSj4odviycyTeTlQym33RwFiiqypzt8yLpLRrBHFqn867HknMr4im7T8KILPjUlIWX9IrHGQAPwrzKMdtLgIOTgwjVhPyrU8JjrDncjaovub+tmTcilGVgWPceQ==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(39860400002)(136003)(346002)(230922051799003)(64100799003)(186009)(1800799012)(82310400011)(451199024)(36840700001)(46966006)(40470700004)(5660300002)(2906002)(40460700003)(6666004)(82740400003)(7696005)(316002)(26005)(1076003)(2616005)(4326008)(8936002)(70206006)(8676002)(70586007)(6916009)(16526019)(54906003)(336012)(36860700001)(47076005)(478600001)(36756003)(426003)(81166007)(356005)(83380400001)(40480700001)(41300700001)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 7+5eEdv14DmD6YQlCbl47fNS+NESrHk8Ok0wOxS7E48YR4L3EQTPVpigT+ZF+oiXmxV21Gy8qhJt44qYH22Mu6ICJ+N69ZrUJy4j+Cytxc6DUr4vQsltiSc9POVcNDtNatwpVCL/C/wAtJSdIkoiuOxn+BTXI0qwUCbOHyf+bqhc2/RtpeCwZoO/WiKKcSYAuspL8mdpdi/5EeBDrbxcZ59H/HEstMxj3+NhCEC+XdxMNmHs99/6m8tyYVfFStUT9ymNlMPKfpaRJbwnw5nnFHrvpYYfTEaZ0fq1XN0Cs6UCCYbpG8MZNCNpVsXdSn2M9DCZi7gGZygWInWzBdCCqxAyDh2cZWmO259ubPc24K1+2uhj2lVITLP/4uLI5IQuyEcf7IkrebkZeA/0gB708EcOQpPBYTsoDQ7hGPVOU/fpMMYVYKQuNlzAH6xsfQKu3nMxEGoPUE2OWD5yg0isJdt3DJ9ZZHyOn7hOdnq5pXQM/CKMvPS/i5TRf6mjvyQBfC1P+upEWxXQQNKKEiNOA/q7GYNcvbc5OUlkTBUkf8RFe9yF4ywRCG1lK1Fjuhv8dnFoFXl0u5gN/xdS8Oh7mupav9AzGGVuHYUeFiA19JmSTG34TCsTt4Au7dxyQrEOW5iXUGroypxtZTYqhd/YMbHLvyel6guFpZzIxf4yBBpzpcwsmWqWV+St+TDcwd6kI1s5iVALgIqhYmM/0eTrw7j9XbrzpqGuslGhDk/OsvAiemY+9Jvg2d8cFpUItOx1QtRg/gIKpgmHl7qokIg4cM1B/WTCigXDDndKQLsVUeRP8wvVsrOmUiE8xru0zYj9
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(346002)(136003)(39860400002)(230273577357003)(230173577357003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(82310400011)(36840700001)(40470700004)(46966006)(16526019)(40460700003)(2616005)(1076003)(8936002)(6666004)(336012)(7696005)(4326008)(82740400003)(426003)(6916009)(478600001)(8676002)(5660300002)(70586007)(316002)(70206006)(54906003)(36860700001)(83380400001)(26005)(47076005)(356005)(81166007)(36756003)(2906002)(40480700001)(41300700001)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 07:51:01.9619
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 07:51:04.1182
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 64cdb23c-e279-4e6d-da19-08dbf0afeee0
+X-MS-Exchange-CrossTenant-Network-Message-Id: bb89dab6-a657-4935-7c2a-08dbf0aff027
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000FCBF.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7162
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4858
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -103,16 +102,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Muralidhara M K <muralidhara.mk@amd.com>
 
-Create sysfs file for each FRU ID with a list of DRAM MCE address and
-MCA IPID value stored in ERST non-volatile storage.
-
-Read the CPER Record information at any time when the system is up
-using below command of particular node or FRU index of sysfs entry.
-Example: cat /sys/devices/system/edac/mc/<node index>/fmpl
-
-Data in sysfs entries is able to identify the list of poisoned
-addresses and FRU index to decide on the replaceble criteria instead
-of iterating over the kernel logs.
+On Data center servers with On chip HBM3 memory, FRU identification
+needs a mechanism to identify the bad page information by persisting
+them in non volatile storage across reboots and read them during boot
+helps to check the number of pages poisoned.
 
 Co-developed-by: Naveen Krishna Chatradhi <naveenkrishna.chatradhi@amd.com>
 Signed-off-by: Naveen Krishna Chatradhi <naveenkrishna.chatradhi@amd.com>
@@ -120,181 +113,139 @@ Co-developed-by: Sathya Priya Kumar <sathyapriya.k@amd.com>
 Signed-off-by: Sathya Priya Kumar <sathyapriya.k@amd.com>
 Signed-off-by: Muralidhara M K <muralidhara.mk@amd.com>
 ---
- drivers/edac/amd64_edac.c        | 25 +++++++++++
- drivers/ras/fmp/fru_mem_poison.c | 77 +++++++++++++++++++++++++++++++-
- include/linux/fru_mem_poison.h   |  2 +
- 3 files changed, 102 insertions(+), 2 deletions(-)
+ Documentation/RAS/ras.rst | 122 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 122 insertions(+)
 
-diff --git a/drivers/edac/amd64_edac.c b/drivers/edac/amd64_edac.c
-index 9872ede7eca9..3790adfa78b5 100644
---- a/drivers/edac/amd64_edac.c
-+++ b/drivers/edac/amd64_edac.c
-@@ -2,6 +2,7 @@
- #include "amd64_edac.h"
- #include <asm/amd_nb.h>
- #include <linux/amd-atl.h>
-+#include <linux/fru_mem_poison.h>
+diff --git a/Documentation/RAS/ras.rst b/Documentation/RAS/ras.rst
+index 2556b397cd27..2f86bf02655a 100644
+--- a/Documentation/RAS/ras.rst
++++ b/Documentation/RAS/ras.rst
+@@ -24,3 +24,125 @@ Also, the user can pass particular family and model to decode the error
+ string::
  
- static struct edac_pci_ctl_info *pci_ctl;
- 
-@@ -574,6 +575,28 @@ static ssize_t dram_hole_show(struct device *dev, struct device_attribute *mattr
- 						 hole_size);
- }
- 
-+/* sysfs entry to read FRU(Field Repaceable Unit) memory Poisons */
-+static ssize_t fmpl_show(struct device *dev, struct device_attribute *mattr,
-+			 char *data)
-+{
-+	struct mem_ctl_info *mci = to_mci(dev);
-+	struct amd64_pvt *pvt = mci->pvt_info;
-+	ssize_t ret_len = 0, buf_size = PAGE_SIZE;
-+	char *buf;
+         $ rasdaemon -p --status <STATUS> --ipid <IPID> --smca --family <CPU Family> --model <CPU Model> --bank <BANK_NUM>
 +
-+	buf = kmalloc(buf_size, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
++=============================================================
++Persist FRU(Field Replaceable Unit) Memory Poison
++=============================================================
 +
-+	ret_len = copy_fmp_data_from_cache(pvt->mc_node_id, buf, buf_size);
-+	if (!ret_len)
-+		return -EINVAL;
++Large scale Data center servers such as MI300A has on-chip stacked Memory
++High Bandwidth Memory v3 (HBM).
++ - Example: MI300A has 8 stacks of HBM/die, a total of 128Gb per socket.
++Host Operating system is responsible for memory management, allocating HBM3 pages.
 +
-+	memcpy(data, buf, ret_len);
-+	kfree(buf);
-+	return ret_len;
-+}
++Many memory errors tend to be consistent or intermittent and may reoccur. Upon
++reaching a certain threshold of these errors, the specific memory area is deemed
++faulty and should be replaced. In the case of on-die High Bandwidth Memory (HBM),
++any returns due to these issues will likely be directed to the socket vendor.
 +
- /*
-  * update NUM_DBG_ATTRS in case you add new members
-  */
-@@ -581,6 +604,7 @@ static DEVICE_ATTR(dhar, S_IRUGO, dhar_show, NULL);
- static DEVICE_ATTR(dbam, S_IRUGO, dbam0_show, NULL);
- static DEVICE_ATTR(topmem, S_IRUGO, top_mem_show, NULL);
- static DEVICE_ATTR(topmem2, S_IRUGO, top_mem2_show, NULL);
-+static DEVICE_ATTR(fmpl, S_IRUGO, fmpl_show, NULL);
- static DEVICE_ATTR_RO(dram_hole);
- 
- static struct attribute *dbg_attrs[] = {
-@@ -589,6 +613,7 @@ static struct attribute *dbg_attrs[] = {
- 	&dev_attr_topmem.attr,
- 	&dev_attr_topmem2.attr,
- 	&dev_attr_dram_hole.attr,
-+	&dev_attr_fmpl.attr,
- 	NULL
- };
- 
-diff --git a/drivers/ras/fmp/fru_mem_poison.c b/drivers/ras/fmp/fru_mem_poison.c
-index c21e736c3ed1..bd85ae527c7f 100644
---- a/drivers/ras/fmp/fru_mem_poison.c
-+++ b/drivers/ras/fmp/fru_mem_poison.c
-@@ -39,6 +39,11 @@ struct system_fru_poison_info {
- 	struct cper_fru_poison_record *fru_record;
- };
- 
-+#define REC_HDR()	\
-+	" FRU_IDX| FRU_ID\t    | P_NUM | TIMESTAMP\t\t | MCA_IPID\t      | MCA_ADDR\t| SPA\t\t |\n"
-+#define REC_DATA()	\
-+	" %d\t| 0x%llx| %d\t    | %s| 0x%017llx| 0x%013llx | 0x%013llx|\n"
++Define a criteria to identify the Field Replicable Unit(FRU) by evaluating the
++count of "poisoned" pages within the socket and log these poisoned pages persistently
++in a non-volatile storage. This process assists in retaining information about
++defective memory page within the socket for potential replacement.
 +
- #define CPER_CREATOR_FMP						\
- 	GUID_INIT(0xcd5c2993, 0xf4b2, 0x41b2, 0xb5, 0xd4, 0xf9, 0xc3,	\
- 		  0xa0, 0x33, 0x08, 0x75)
-@@ -122,15 +127,83 @@ static u64 calc_checksum(struct cper_sec_fru_mem_poisons *fmp)
- 	return checksum;
- }
- 
--struct tm get_timestamp(u64 timestamp)
-+ssize_t get_timestamp(u64 timestamp, char *tbuf, ssize_t t_size)
- {
- 	struct timespec64 ts;
- 	struct tm tm;
-+	ssize_t tlen = 0;
- 
- 	ts.tv_sec = timestamp;
- 	time64_to_tm(ts.tv_sec, 0, &tm);
--	return tm;
-+	tlen = scnprintf(tbuf, t_size, "%ld-%02d-%02d %02d:%02d:%02d",
-+			 tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min,
-+			 tm.tm_sec);
++Linux supports retiring pages by marking the page HW_POISON. However, it doesn't
++persist these marked pages across reboots.
++To address this, a potential solution is to persist bad page details in non-volatile
++storage(ERST). This prevents the reuse of compromised memory region, ensuring they
++are not utilized again.
 +
-+	return tlen;
-+}
++ERST to persist Bad page information
++====================================
 +
-+/*
-+ * buffer is filled with poison records information and exports to
-+ * amd64_edac module to provide the info via sysfs entries
-+ * /sys/devices/system/edac/mc/mc<sock_indx>/fmpl
-+ */
-+ssize_t copy_fmp_data_from_cache(int fru_idx, char *buf, ssize_t buf_size)
-+{
-+	struct cper_fru_poison_data *temp, *base;
-+	int j, p_count;
-+	struct mce *m;
-+	ssize_t len = 0;
-+	ssize_t t_len = 0;
-+	ssize_t tb_size = 100;
-+	u64 sys_addr;
-+	char *t_buf;
++ERST (Error Record Serialization Table) defined by ACPI/APEI provides a mechanism for
++storing and retrieve hardware error Information to and from a persistent memory.
 +
-+	pr_info("FRU_Idx[%d] Record information:\n", fru_idx);
-+	pr_info("Record_ID  : 0x%llx\n", sys_fmp_info[fru_idx]->recordid);
-+	pr_info("FRU_ID     : 0x%llx\n", sys_fmp_info[fru_idx]->sys_fru_id);
++Platform FW(BIOS) with ERST support, reserves ERST tables usually 64KB in non-volatile
++storage. Configure Linux to select ERST as backend for Pstore (read/write from NV storage).
 +
-+	p_count = sys_fmp_info[fru_idx]->fru_record->fmp.poison_count;
-+	pr_info("FRU Memory poison details under FRU_idx[%d]: %d\n", fru_idx, p_count);
++Upon Specific MCE errors Linux would call pstore with CPER format per FRU, platform FW
++would store it in NV storage. and on next boot, Linux would query bad page information
++from ERST and retire the pages again.
 +
-+	base = (struct cper_fru_poison_data *)&sys_fmp_info[fru_idx]->fru_record->fmp.p_list_off;
-+	len = scnprintf(buf, buf_size, REC_HDR());
-+	buf += len;
-+	buf_size -= len;
++FRU memory poison Common Platform Error Record (CPER) definition
++================================================================
 +
-+	for (j = 1; j <= p_count; j++) {
-+		temp = base + j * sizeof(struct cper_fru_poison_data);
-+		m = (struct mce *)temp;
-+		fill_mce_poison_data(m, temp, fru_idx);
++One CPER per FRU (Protected Processor Inventory Number (PPIN)).
++1 CPER record per MI300A socket (4 X MI300As system) with the 4 CPERs in a system and
++Each FRU containing poison list offset of the given PPIN.
 +
-+		if (amd_umc_mca_addr_to_sys_addr(m, &sys_addr)) {
-+			pr_warn("normalized address failed for mce addr:0x%llx\n", m->addr);
-+			sys_addr = 0;
-+		}
-+		t_buf = kmalloc(tb_size, GFP_KERNEL);
-+		if (!t_buf)
-+			return -ENOMEM;
++The FRU poison CPER record size is (BIOS ERST memory) / (Number of FRUs).
++Each erst_write() or erst_read() will write/read this entire structure as one record.
 +
-+		t_len = get_timestamp(temp->timestamp, t_buf, tb_size);
-+		if (!t_len)
-+			kfree(t_buf);
++Number of poison entries that can be reached is based on the calculation below
++"(size - sizeof(struct cper_poison_record)) / sizeof(struct cper_fru_poison_data)"
 +
-+		pr_info("poison_number[%d] hw_id:0x%llx addr:0x%llx\n", j, temp->hw_id, temp->addr);
-+		len = scnprintf(buf, buf_size, REC_DATA(),
-+				fru_idx, sys_fmp_info[fru_idx]->sys_fru_id, j, t_buf, temp->hw_id,
-+				temp->addr, sys_addr);
++FRU Poison CPER definition for storing error record as below
 +
-+		buf_size -= len;
-+		if ((buf_size - len) <= 0) {
-+			pr_warn("%s FMP cache Buffer full!", __func__);
-+			goto out;
-+		}
-+		buf += len;
-+	}
-+out:
-+	kfree(t_buf);
-+	return (PAGE_SIZE - buf_size);
- }
-+EXPORT_SYMBOL(copy_fmp_data_from_cache);
- 
- /* Fill initial fmp structure variable during empty record creation */
- static int init_fru_poison_fmp_cache(struct system_fru_poison_info *p)
-diff --git a/include/linux/fru_mem_poison.h b/include/linux/fru_mem_poison.h
-index d3e567c990aa..d2642e1224de 100644
---- a/include/linux/fru_mem_poison.h
-+++ b/include/linux/fru_mem_poison.h
-@@ -12,4 +12,6 @@
- 
- struct system_fru_poison_info **sys_fmp_info;
- 
-+ssize_t copy_fmp_data_from_cache(int fru_idx, char *buf, ssize_t buf_size);
++	struct cper_poison_record {
++		struct cper_record_header hdr;
++		struct cper_section_descriptor sec_hdr;
++		struct cper_sec_fru_mem_poisons fmpl;
++	} __packed;
 +
- #endif /* _X86_FMP_H */
++use 'struct cper_record_header' and 'struct cper_section_descriptor' as defined
++in 'include/linux/cper.h'
++
++ * Section body follows the description of a “non-standard section body” and is defined below.
++
++ * per FRU poison section data
++	struct cper_sec_fru_mem_poisons {
++		char signature[4];
++		u64 checksum;
++		u32 model_id_type;
++		u32 model_id;
++		u32 fru_id_type;
++		u64 fru_id;
++		u32 poison_count;
++		u64 p_list_off;  //offset for contiguous memory to poison data structure
++	};
++
++ * FRU Poison data structure
++	struct cper_fru_poison_data {
++		u32 hw_id_type;
++		u32 addr_type;
++		u64 hw_id;
++		u64 addr;
++	};
++
++
++Implementation Notes on FRU Identification:
++==========================================
++
++ * HBM suppose to have total of 8 DRAM rows.
++ * When MCE error occurs, offline all the pages in that range in a particular row(8 columns in a row).
++   If all the 8 rows become bad, then entire socket has to be replaced.
++ * Perist the error information mentioned in "struct cper_fru_poison_data" to ERST storage.
++
++ * Don’t delete the FMP records once they are saved in persistence store. Keep them in ERST
++   forever until all the poison_data entries become full.
++ * Once the entries full, then do not save the error information in ERST.
++
++At OS boot:
++==========
++ * One CPER per FRU (Protected Processor Inventory Number (PPIN)) has been created.
++	* Size of each CPER will not exceed (1/4)th the available space.
++ * The node controller should make sure there is a CPER for each PPIN in the node. If this is a
++   new processor never seen before, then create a CPER with N=0.
++ * Read the CPERs through the Error Record Serialization Table (ERST).
++ * If OS matches a PPIN to a socket and identifes mce address, it will re-create the SPA for all
++   pages on the HBM row of the poisoned DA, retire all pages mapped to that row.
++ * If a CPER is found for a PPIN that isn’t in the node, OS will print a warning.
++	* If OS tries to persist more errors than fit in the CPER, will refuse to update the CPER
++          and print a message.
++ * OS creates sysfs file for each FRU_ID with a list of DRAM address, MCA_IPID which are retired.
++ $ ls /sys/devices/system/edac/mc/mc0/fmpl
++	* Example: mc0 for socket 0 and mc3 for socket 3.
++ * To read the CPER Record information at any time when the system is up follow below
++	$ cat /sys/devices/system/edac/mc/mc<socket_index>/fmpl
++	$ dmesg
++
++At Mission mode:
++===============
++ * Notifier is registered to handle the FRU memory poison errors.
++ * When the error is injected on particular PPIN, and If OS matches a system PPIN to a socket
++   with MCE PPIN, append the poison data until it reaches maximum number of poison entries.
 -- 
 2.25.1
 
