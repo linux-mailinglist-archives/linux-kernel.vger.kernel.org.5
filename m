@@ -2,109 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C917FCE36
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 06:24:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B347FCE39
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 06:24:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbjK2FXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 00:23:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47268 "EHLO
+        id S230283AbjK2FX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 00:23:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjK2FXv (ORCPT
+        with ESMTP id S229563AbjK2FXz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 00:23:51 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5881BE;
-        Tue, 28 Nov 2023 21:23:57 -0800 (PST)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ASIdt2Q021069;
-        Tue, 28 Nov 2023 21:23:51 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=RyQNu/4f6bw63umQMN6av9DZSEVhbf5Xz7SFVkrjG6c=;
- b=dRoTA+/qReOFVuar7zJPScRoUn4NKrjiON1fHQR0sZs/yo1wkjJiGlPBgBUyXaYHuavV
- VDjRNhw1cnuMqC+aXzD6LVgmVC/i39LSfvcoSlsFYXgkva+RBc3AWDxHCrF2Vv2ctBNC
- 1Zr+fONsyhUy5eeU36ota54GRz2GcHZQt2Ffxj7hN2ISyhJWfxbe78NQ2MLrfQ/4X830
- hKCLuJJBiCZW7yK+Vtxl67aOBwysT/Y28KlTd9NyVEGaXvlKAaxRMXHSCYoSEg90EA3Y
- PfDNI6ID8F4k4waLxj7YzhPqOXqzv6ttJEm27MCj0dJnq9RjoKKHlDCWNfIAcqYyINPW pg== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3unn86a18w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 28 Nov 2023 21:23:51 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 28 Nov
- 2023 21:23:49 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Tue, 28 Nov 2023 21:23:49 -0800
-Received: from hyd1358.marvell.com (unknown [10.29.37.11])
-        by maili.marvell.com (Postfix) with ESMTP id ADB743F7048;
-        Tue, 28 Nov 2023 21:23:45 -0800 (PST)
-From:   Subbaraya Sundeep <sbhatta@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <kuba@kernel.org>, <davem@davemloft.net>, <pabeni@redhat.com>,
-        <edumazet@google.com>, <sgoutham@marvell.com>,
-        <gakula@marvell.com>, <hkelam@marvell.com>, <lcherian@marvell.com>,
-        <jerinj@marvell.com>, "Subbaraya Sundeep" <sbhatta@marvell.com>
-Subject: [PATCH v2 net] octeontx2-pf: Add missing mutex lock in otx2_get_pauseparam
-Date:   Wed, 29 Nov 2023 10:53:42 +0530
-Message-ID: <1701235422-22488-1-git-send-email-sbhatta@marvell.com>
-X-Mailer: git-send-email 2.7.4
+        Wed, 29 Nov 2023 00:23:55 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ECF01BE
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 21:24:01 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 928D0C433C7;
+        Wed, 29 Nov 2023 05:24:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701235440;
+        bh=0RjlCL8ZpHOp9jN53bdGFyIhRGuacuo/NihvRqf9ep8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XjkTUBkkvuiepU3/L/B7LqhGvH6OXLqvyWlSpZFV/AYQxim0dYpGTjbAFj6ZsqwaM
+         FLDfKb2KpO18FJwoSHsZIjxWVHfdJHUd6l1Djmk/WvFyRfIKF3tdzV4N17LkWlwitl
+         NtXM2ZN1l5FEU/tURcGsliHz8ThEokdX1t4UUIVaaWg7ZyxiubI9mpgkI2/8/DokDc
+         +1PHXs2LXxiVsAodh8eI3gGJLf1hRxANAntFy3VCQqs8B/sAq9+yGWtqWBlot7r/ix
+         y4Fm4IG515HvkMgIEVeGg10JKN0QOISOVDyPQJRA2bHZ82LPkBDVKjK6O0bgqpNCu1
+         VUUxRhDooeqaA==
+Date:   Tue, 28 Nov 2023 21:24:00 -0800
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation <linux-doc@vger.kernel.org>,
+        Linux XFS <linux-xfs@vger.kernel.org>,
+        Linux Kernel Workflows <workflows@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Dave Chinner <dchinner@redhat.com>,
+        Steve French <stfrench@microsoft.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Allison Henderson <allison.henderson@oracle.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Charles Han <hanchunchao@inspur.com>,
+        Vegard Nossum <vegard.nossum@oracle.com>
+Subject: Re: [PATCH RESEND v2] Documentation: xfs: consolidate XFS docs into
+ its own subdirectory
+Message-ID: <20231129052400.GS4167244@frogsfrogsfrogs>
+References: <20231128124522.28499-1-bagasdotme@gmail.com>
+ <20231128163255.GV2766956@frogsfrogsfrogs>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: GzgL5lzcAPokTodDWzZsP1yHw-0rQYGU
-X-Proofpoint-GUID: GzgL5lzcAPokTodDWzZsP1yHw-0rQYGU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-29_02,2023-11-27_01,2023-05-22_02
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231128163255.GV2766956@frogsfrogsfrogs>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All the mailbox messages sent to AF needs to be guarded
-by mutex lock. Add the missing lock in otx2_get_pauseparam
-function.
+On Tue, Nov 28, 2023 at 08:32:55AM -0800, Darrick J. Wong wrote:
+> On Tue, Nov 28, 2023 at 07:45:22PM +0700, Bagas Sanjaya wrote:
+> > XFS docs are currently in upper-level Documentation/filesystems.
+> > Although these are currently 4 docs, they are already outstanding as
+> > a group and can be moved to its own subdirectory.
+> > 
+> > Consolidate them into Documentation/filesystems/xfs/.
+> > 
+> > Signed-off-by: Bagas Sanjaya <bagasdotme@gmail.com>
+> > ---
+> > Changes since v1 [1]:
+> > 
+> >   * Also update references to old doc path to address kernel test robot
+> >     warnings [2].
+> > 
+> > [1]: https://lore.kernel.org/linux-doc/20231121095658.28254-1-bagasdotme@gmail.com/
+> > [2]: https://lore.kernel.org/linux-doc/a9abc5ec-f3cd-4a1a-81b9-a6900124d38b@gmail.com/
+> > 
+> >  Documentation/filesystems/index.rst                |  5 +----
+> >  Documentation/filesystems/xfs/index.rst            | 14 ++++++++++++++
+> >  .../{ => xfs}/xfs-delayed-logging-design.rst       |  0
+> >  .../{ => xfs}/xfs-maintainer-entry-profile.rst     |  0
+> >  .../{ => xfs}/xfs-online-fsck-design.rst           |  2 +-
+> >  .../{ => xfs}/xfs-self-describing-metadata.rst     |  0
+> >  .../maintainer/maintainer-entry-profile.rst        |  2 +-
+> >  MAINTAINERS                                        |  4 ++--
+> >  8 files changed, 19 insertions(+), 8 deletions(-)
+> >  create mode 100644 Documentation/filesystems/xfs/index.rst
+> >  rename Documentation/filesystems/{ => xfs}/xfs-delayed-logging-design.rst (100%)
+> >  rename Documentation/filesystems/{ => xfs}/xfs-maintainer-entry-profile.rst (100%)
+> >  rename Documentation/filesystems/{ => xfs}/xfs-online-fsck-design.rst (99%)
+> >  rename Documentation/filesystems/{ => xfs}/xfs-self-describing-metadata.rst (100%)
+> 
+> I think the rst filename should drop the 'xfs-' prefix, e.g.
+> 
+> 	Documentation/filesystems/xfs/delayed-logging-design.rst
+> 
+> since that seems to be what most filesystems do:
 
-Fixes: 75f36270990c ("octeontx2-pf: Support to enable/disable pause frames via ethtool")
-Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
----
-v2 changes:
- Added maintainers of AF driver too
+Actually, ignore this suggestion.  I forgot that I have vim paths
+trained on the Documentation/filesystems/ directory, which means I'll
+lose the ability to
 
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+:f xfs-online-fsck-design.rst
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-index 9efcec5..53f6258 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_ethtool.c
-@@ -334,9 +334,12 @@ static void otx2_get_pauseparam(struct net_device *netdev,
- 	if (is_otx2_lbkvf(pfvf->pdev))
- 		return;
- 
-+	mutex_lock(&pfvf->mbox.lock);
- 	req = otx2_mbox_alloc_msg_cgx_cfg_pause_frm(&pfvf->mbox);
--	if (!req)
-+	if (!req) {
-+		mutex_unlock(&pfvf->mbox.lock);
- 		return;
-+	}
- 
- 	if (!otx2_sync_mbox_msg(&pfvf->mbox)) {
- 		rsp = (struct cgx_pause_frm_cfg *)
-@@ -344,6 +347,7 @@ static void otx2_get_pauseparam(struct net_device *netdev,
- 		pause->rx_pause = rsp->rx_pause;
- 		pause->tx_pause = rsp->tx_pause;
- 	}
-+	mutex_unlock(&pfvf->mbox.lock);
- }
- 
- static int otx2_set_pauseparam(struct net_device *netdev,
--- 
-2.7.4
+and pop it open.  Not that I expect many more filesystems to grow online
+fsck capabilities, but you get the point...
 
+> Documentation/filesystems/caching/backend-api.rst
+> Documentation/filesystems/caching/cachefiles.rst
+> Documentation/filesystems/caching/fscache.rst
+> Documentation/filesystems/caching/index.rst
+> Documentation/filesystems/caching/netfs-api.rst
+> Documentation/filesystems/cifs/cifsroot.rst
+> Documentation/filesystems/cifs/index.rst
+> Documentation/filesystems/cifs/ksmbd.rst
+> Documentation/filesystems/ext4/about.rst
+> Documentation/filesystems/ext4/allocators.rst
+> Documentation/filesystems/ext4/attributes.rst
+> <snip>
+> Documentation/filesystems/ext4/special_inodes.rst
+> Documentation/filesystems/ext4/super.rst
+> Documentation/filesystems/ext4/verity.rst
+> Documentation/filesystems/nfs/client-identifier.rst
+> Documentation/filesystems/nfs/exporting.rst
+> Documentation/filesystems/nfs/index.rst
+> Documentation/filesystems/nfs/knfsd-stats.rst
+> Documentation/filesystems/nfs/nfs41-server.rst
+> Documentation/filesystems/nfs/pnfs.rst
+> Documentation/filesystems/nfs/reexport.rst
+> Documentation/filesystems/nfs/rpc-cache.rst
+> Documentation/filesystems/nfs/rpc-server-gss.rst
+> Documentation/filesystems/smb/cifsroot.rst
+> Documentation/filesystems/smb/index.rst
+> Documentation/filesystems/smb/ksmbd.rst
+> Documentation/filesystems/spufs/index.rst
+> Documentation/filesystems/spufs/spu_create.rst
+> Documentation/filesystems/spufs/spufs.rst
+> Documentation/filesystems/spufs/spu_run.rst
+> 
+> > diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
+> > index 09cade7eaefc8c..e18bc5ae3b35f8 100644
+> > --- a/Documentation/filesystems/index.rst
+> > +++ b/Documentation/filesystems/index.rst
+> > @@ -121,8 +121,5 @@ Documentation for filesystem implementations.
+> >     udf
+> >     virtiofs
+> >     vfat
+> > -   xfs-delayed-logging-design
+> > -   xfs-maintainer-entry-profile
+> > -   xfs-self-describing-metadata
+> > -   xfs-online-fsck-design
+> > +   xfs/index
+> >     zonefs
+> > diff --git a/Documentation/filesystems/xfs/index.rst b/Documentation/filesystems/xfs/index.rst
+> > new file mode 100644
+> > index 00000000000000..ab66c57a5d18ea
+> > --- /dev/null
+> > +++ b/Documentation/filesystems/xfs/index.rst
+> > @@ -0,0 +1,14 @@
+> > +.. SPDX-License-Identifier: GPL-2.0
+> > +
+> > +============================
+> > +XFS Filesystem Documentation
+> > +============================
+> > +
+> > +.. toctree::
+> > +   :maxdepth: 2
+> > +   :numbered:
+> > +
+> > +   xfs-delayed-logging-design
+> > +   xfs-maintainer-entry-profile
+> > +   xfs-self-describing-metadata
+> > +   xfs-online-fsck-design
+> > diff --git a/Documentation/filesystems/xfs-delayed-logging-design.rst b/Documentation/filesystems/xfs/xfs-delayed-logging-design.rst
+> > similarity index 100%
+> > rename from Documentation/filesystems/xfs-delayed-logging-design.rst
+> > rename to Documentation/filesystems/xfs/xfs-delayed-logging-design.rst
+> > diff --git a/Documentation/filesystems/xfs-maintainer-entry-profile.rst b/Documentation/filesystems/xfs/xfs-maintainer-entry-profile.rst
+> > similarity index 100%
+> > rename from Documentation/filesystems/xfs-maintainer-entry-profile.rst
+> > rename to Documentation/filesystems/xfs/xfs-maintainer-entry-profile.rst
+> > diff --git a/Documentation/filesystems/xfs-online-fsck-design.rst b/Documentation/filesystems/xfs/xfs-online-fsck-design.rst
+> > similarity index 99%
+> > rename from Documentation/filesystems/xfs-online-fsck-design.rst
+> > rename to Documentation/filesystems/xfs/xfs-online-fsck-design.rst
+> > index a0678101a7d02d..352516feef6ffe 100644
+> > --- a/Documentation/filesystems/xfs-online-fsck-design.rst
+> > +++ b/Documentation/filesystems/xfs/xfs-online-fsck-design.rst
+> > @@ -962,7 +962,7 @@ disk, but these buffer verifiers cannot provide any consistency checking
+> >  between metadata structures.
+> >  
+> >  For more information, please see the documentation for
+> > -Documentation/filesystems/xfs-self-describing-metadata.rst
+> > +Documentation/filesystems/xfs/xfs-self-describing-metadata.rst
+> >  
+> >  Reverse Mapping
+> >  ---------------
+> > diff --git a/Documentation/filesystems/xfs-self-describing-metadata.rst b/Documentation/filesystems/xfs/xfs-self-describing-metadata.rst
+> > similarity index 100%
+> > rename from Documentation/filesystems/xfs-self-describing-metadata.rst
+> > rename to Documentation/filesystems/xfs/xfs-self-describing-metadata.rst
+> > diff --git a/Documentation/maintainer/maintainer-entry-profile.rst b/Documentation/maintainer/maintainer-entry-profile.rst
+> > index 7ad4bfc2cc038a..18cee1edaecb6f 100644
+> > --- a/Documentation/maintainer/maintainer-entry-profile.rst
+> > +++ b/Documentation/maintainer/maintainer-entry-profile.rst
+> > @@ -105,4 +105,4 @@ to do something different in the near future.
+> >     ../driver-api/media/maintainer-entry-profile
+> >     ../driver-api/vfio-pci-device-specific-driver-acceptance
+> >     ../nvme/feature-and-quirk-policy
+> > -   ../filesystems/xfs-maintainer-entry-profile
+> > +   ../filesystems/xfs/xfs-maintainer-entry-profile
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index ea790149af7951..fd288ac57e19fb 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -23893,10 +23893,10 @@ S:	Supported
+> >  W:	http://xfs.org/
+> >  C:	irc://irc.oftc.net/xfs
+> >  T:	git git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git
+> > -P:	Documentation/filesystems/xfs-maintainer-entry-profile.rst
+> > +P:	Documentation/filesystems/xfs/xfs-maintainer-entry-profile.rst
+> >  F:	Documentation/ABI/testing/sysfs-fs-xfs
+> >  F:	Documentation/admin-guide/xfs.rst
+> > -F:	Documentation/filesystems/xfs-*
+> > +F:	Documentation/filesystems/xfs/xfs-*
+> 
+> Shouldn't this be "Documentation/filesystems/xfs/*" ?
+
+...though this suggestion remains standing.
+
+--D
+
+> --D
+> 
+> >  F:	fs/xfs/
+> >  F:	include/uapi/linux/dqblk_xfs.h
+> >  F:	include/uapi/linux/fsmap.h
+> > 
+> > base-commit: 9c235dfc3d3f901fe22acb20f2ab37ff39f2ce02
+> > -- 
+> > An old man doll... just what I always wanted! - Clara
+> > 
+> > 
+> 
