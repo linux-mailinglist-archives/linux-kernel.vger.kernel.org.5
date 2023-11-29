@@ -2,163 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2A467FCFA2
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 08:00:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D4447FCF1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 07:32:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232041AbjK2HAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 02:00:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59514 "EHLO
+        id S231166AbjK2Gch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 01:32:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbjK2HAs (ORCPT
+        with ESMTP id S229563AbjK2Gcf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 02:00:48 -0500
-Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86F4E170B;
-        Tue, 28 Nov 2023 23:00:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1701241249; x=1701500449;
-        bh=13n/FbsdAD63nCkWt8PGe520xE44G8Ft09Wg1OcHD3Q=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=VNPbU2vfX5cEqEWL5/9Mpla20+qB55j4wsDkMY1tUWUxDP72Ks8TLJqMjT7vC3eFq
-         GgjgoxuwPeiLvKi+HE12lkn2O7SkFlEQG01i0NpP3MRMloJ9iS4zKpIJVjhnXehHXp
-         Xz6qEKCIZeb3Tk2z+ZQsOGR7R/PH8tb9MWhdLUngoWnQw4dwATYkmFf4uAZfy4OhwM
-         oBneMrWzlmVWQC2BcEyOMiKbtxGeZN+1y/DznwLOOa8PD3PSoOSs/THR+6qdai5tyK
-         aZYRe7Z+rGkqjJrIOUBq44MZqb9JhkySb0d8maQtOL2UzjO4bmAO3E5bwMqf7E1PZL
-         23GPOiq3xulKQ==
-Date:   Wed, 29 Nov 2023 07:00:42 +0000
-To:     Yusong Gao <a869920004@gmail.com>
-From:   Juerg Haefliger <juergh@proton.me>
-Cc:     jarkko@kernel.org, davem@davemloft.net, dhowells@redhat.com,
-        dwmw2@infradead.org, zohar@linux.ibm.com,
-        herbert@gondor.apana.org.au, lists@sapience.com,
-        dimitri.ledkov@canonical.com, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org
-Subject: Re: [PATCH v5] sign-file: Fix incorrect return values check
-Message-ID: <20231129080033.12c4efe3@smeagol>
-In-Reply-To: <20231127033456.452151-1-a869920004@gmail.com>
-References: <20231127033456.452151-1-a869920004@gmail.com>
-Feedback-ID: 45149698:user:proton
+        Wed, 29 Nov 2023 01:32:35 -0500
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176C5170B
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 22:32:39 -0800 (PST)
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20231129063237epoutp030ff361cfc6f153b75938241edd1b27e4~cBF0rfSBr1354813548epoutp03V
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 06:32:37 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20231129063237epoutp030ff361cfc6f153b75938241edd1b27e4~cBF0rfSBr1354813548epoutp03V
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1701239557;
+        bh=jbXIcm4Zl3g3KDRXg/oE73AVX6okTU2GFFeps8n2Aqo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=IqcFh7lPDZZmlADH9LDBeIrQRCAtaB1vcFY8qlfS66i+sSCSJ9F+0bZgz8oDQtSkT
+         imOuGSmo3+O8KhQ95pDMTu0nK/VDr6R6u4lNuzjGfdPmziQND3xBvRqike7Ur8YyUz
+         o53DfWSzr5YPjWjojIWbbE0Wgfx1gDQrP2gV4osQ=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
+        20231129063236epcas2p380a6b2e72371b96509168282bf744f2d~cBF0PMlIY1714217142epcas2p35;
+        Wed, 29 Nov 2023 06:32:36 +0000 (GMT)
+Received: from epsmgec2p1-new.samsung.com (unknown [182.195.36.98]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4Sg8dJ3K86z4x9Pv; Wed, 29 Nov
+        2023 06:32:36 +0000 (GMT)
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmgec2p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        9E.67.18994.40BD6656; Wed, 29 Nov 2023 15:32:36 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
+        20231129063235epcas2p32dfa05b1c137c8bb40cef1090c8fb855~cBFzIkjO71714217142epcas2p30;
+        Wed, 29 Nov 2023 06:32:35 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20231129063235epsmtrp28cdb35ff8ec7cbf9a67dfda5e6c3ef3c~cBFzHvaL42573425734epsmtrp2l;
+        Wed, 29 Nov 2023 06:32:35 +0000 (GMT)
+X-AuditID: b6c32a4d-9f7ff70000004a32-64-6566db04fe97
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        F0.47.08755.30BD6656; Wed, 29 Nov 2023 15:32:35 +0900 (KST)
+Received: from perf (unknown [10.229.95.91]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20231129063235epsmtip11c7f7982909a860d1365499c9c6f6ba3~cBFy8o8RE2155121551epsmtip1t;
+        Wed, 29 Nov 2023 06:32:35 +0000 (GMT)
+Date:   Wed, 29 Nov 2023 16:07:40 +0900
+From:   Youngmin Nam <youngmin.nam@samsung.com>
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     tomasz.figa@gmail.com, krzysztof.kozlowski@linaro.org,
+        s.nawrocki@samsung.com, alim.akhtar@samsung.com,
+        linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] pinctrl: samsung: add irq_set_affinity() for non
+ wake up external gpio interrupt
+Message-ID: <ZWbjPIydJRrPnuDy@perf>
 MIME-Version: 1.0
+In-Reply-To: <CAPLW+4n0SAOTb6wocY-WjkxgSFMbx+nVuqdaPcNYVDsbfg+EfA@mail.gmail.com>
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBJsWRmVeSWpSXmKPExsWy7bCmuS7L7bRUg5e/xCwezNvGZrH39VZ2
+        iyl/ljNZbHp8jdVi8/w/jBaXd81hs5hxfh+TxeE37awWz/uArFW7/jA6cHnsnHWX3ePOtT1s
+        HpuX1Hv0bVnF6PF5k1wAa1S2TUZqYkpqkUJqXnJ+SmZeuq2Sd3C8c7ypmYGhrqGlhbmSQl5i
+        bqqtkotPgK5bZg7QUUoKZYk5pUChgMTiYiV9O5ui/NKSVIWM/OISW6XUgpScAvMCveLE3OLS
+        vHS9vNQSK0MDAyNToMKE7Ixjs9pYC45LVxxd2cncwPhbpIuRk0NCwERi//W5LCC2kMAeRokj
+        WzQh7E+MEq9nO3cxcgHZ3xglNjzqZ4NpeDS5lwkisZdRovfXThYI5yGjxN3+ycwgVSwCqhLb
+        ft1lB7HZBHQltp34xwhiiwjoSayb+YodpIFZoJdJYv3MFiaQhLBAlsSdjd1gd/AKKEss+fiX
+        GcIWlDg58wlYnFMgUOJ5yxWwbRICUzkk9h9fwARxk4vErImnoGxhiVfHt7BD2FISn9/thbo7
+        W2L1r0tQ8QqJ9ns9zBC2scSsZ+1g1zELZEi8eXAQyOYAiitLHLnFAhHmk+g4/JcdIswr0dEm
+        BNGpJvFrygZGCFtGYvfiFVATPSSeTd7EDgmUW0wSFxb8Z57AKDcLyTuzkGybBTSWWUBTYv0u
+        fYiwvETz1tnMEGFpieX/OJBULGBkW8UolVpQnJuemmxUYKibl1oOj+/k/NxNjOAkq+W7g/H1
+        +r96hxiZOBgPMUpwMCuJ8Op9TE4V4k1JrKxKLcqPLyrNSS0+xGgKjKuJzFKiyfnANJ9XEm9o
+        YmlgYmZmaG5kamCuJM57r3VuipBAemJJanZqakFqEUwfEwenVANTlfnXEhm2yylP1l/I0lco
+        2zdtk55snbtvmKy1QsPMM5ZXr60tU+iTsZuYuMf2Y6O7dfDRg28iXXP6Ot6U39H5eSOPtSFu
+        zWUG150JAt/5DKdf2JWVGL7L2Wy3+CyuUIU/bBYVvpVP4036Pdes//iCO79yb/ynSIUq89oD
+        eWwaQpuu/WYwCPnOdv5xy9r7jImLnr5J+zDTQcFo3ZoLFUvCY65mZ++r1NPYynUi7cKlsPeZ
+        PPparqaBSgJHSnMEIxoD3j/59NZ9R6TtozXG95qS/8VFrZz/bJ3+jB0BDz5aK5XNjblvLRHs
+        I2xwVFBGbPP+PR/urbrGtnrJDpWNnT+qQlYf5PCvfr/575qnf7OVWIozEg21mIuKEwEB5ua6
+        OwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrBLMWRmVeSWpSXmKPExsWy7bCSnC7z7bRUg8OrtCwezNvGZrH39VZ2
+        iyl/ljNZbHp8jdVi8/w/jBaXd81hs5hxfh+TxeE37awWz/uArFW7/jA6cHnsnHWX3ePOtT1s
+        HpuX1Hv0bVnF6PF5k1wAaxSXTUpqTmZZapG+XQJXxpG2U6wFLyUq5izewd7AuFOoi5GTQ0LA
+        ROLR5F6mLkYuDiGB3YwSk4++YYFIyEjcXnmZFcIWlrjfcoQVoug+o8THtX/ZQBIsAqoS237d
+        ZQex2QR0Jbad+McIYosI6Emsm/mKHaSBWaCfSeL9rg9gRcICWRIPH54Ha+YVUJZY8vEvM4gt
+        JHCHSWLdgRqIuKDEyZlPwK5gFlCX+DPvElANB5AtLbH8HwdEWF6ieetssFZOgUCJ5y1XWCYw
+        Cs5C0j0LSfcshO5ZSLoXMLKsYpRMLSjOTc8tNiwwzEst1ytOzC0uzUvXS87P3cQIjhwtzR2M
+        21d90DvEyMTBeIhRgoNZSYRX72NyqhBvSmJlVWpRfnxRaU5q8SFGaQ4WJXFe8Re9KUIC6Ykl
+        qdmpqQWpRTBZJg5OqQamddxbglINN11U/GC0yfnWunqvnH21X2+xHL8X91dhkjZzfZYer/DS
+        52vqX7Hq/1p0f6Pu+W1sC1fsOOipstg9ubTAeF/Mwd+sy844KcomO/DzMW3Yfb2z+aPhKf2o
+        pskWYrJOq4u8uDLExcytvM82qXt6MtZuLZkWpOt803pJxxSjjamuSz7sev9n7bTH5xZ8OuLr
+        t+6uiTGboNj5q8/yr9YrJXEsfv4p6TBXi9gN9sn67J+O7Ze0uRmwMXbxM/eyVa8KHCuSgk0Z
+        fqR1Zs0r2bVEMc90yqra5f9V5ylMWbVNcbmAmrgmk0k1732LLyeWsM77c6NvReAG1V72nA0/
+        Jhqd/H8qLkj31J2cih1JSizFGYmGWsxFxYkAjP15HAsDAAA=
+X-CMS-MailID: 20231129063235epcas2p32dfa05b1c137c8bb40cef1090c8fb855
+X-Msg-Generator: CA
 Content-Type: multipart/mixed;
- boundary="b1_bqlWVBJFFpdDPXWzuVv4Sbw8of9oHqNZBSjRct5izU"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        boundary="----OVq5TT9zsDSQAN86dWjJc6zPY8CEKIwxCZDtRM.ioT5ZEg4T=_35b7f_"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231126091120epcas2p4a1320e3b0f9be8f8a0f575a322981d38
+References: <CGME20231126091120epcas2p4a1320e3b0f9be8f8a0f575a322981d38@epcas2p4.samsung.com>
+        <20231126094618.2545116-1-youngmin.nam@samsung.com>
+        <bb738a6b-815d-4fad-b73f-559f1ba8cd68@linaro.org> <ZWU75VtJ/mXpMyQr@perf>
+        <1fd55b36-0837-4bf7-9fde-e573d6cb214a@linaro.org>
+        <CAPLW+4n0SAOTb6wocY-WjkxgSFMbx+nVuqdaPcNYVDsbfg+EfA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
+------OVq5TT9zsDSQAN86dWjJc6zPY8CEKIwxCZDtRM.ioT5ZEg4T=_35b7f_
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
 
---b1_bqlWVBJFFpdDPXWzuVv4Sbw8of9oHqNZBSjRct5izU
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+On Tue, Nov 28, 2023 at 03:35:53PM -0600, Sam Protsenko wrote:
+> On Tue, Nov 28, 2023 at 1:29 AM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+> >
+> > On 28/11/2023 02:01, Youngmin Nam wrote:
+> > > On Mon, Nov 27, 2023 at 10:54:56AM +0100, Krzysztof Kozlowski wrote:
+> > >> On 26/11/2023 10:46, Youngmin Nam wrote:
+> > >>> To support affinity setting for non wake up external gpio interrupt,
+> > >>> add irq_set_affinity callback using irq number from pinctrl driver data.
+> > >>>
+> > >>> Before this patch, changing the irq affinity of gpio interrupt is not possible:
+> > >>>
+> > >>>     # cat /proc/irq/418/smp_affinity
+> > >>>     3ff
+> > >>>     # echo 00f > /proc/irq/418/smp_affinity
+> > >>
+> > >> Does this command succeed on your board?
+> > >>
+> > > Yes.
+> >
+> > Hm, fails all the time one mine.
+> >
+> 
+> I tried to test this patch on E850-96, and an attempt to write into
+> smp_affinity (for some GPIO irq) also fails for me:
+> 
+>     # echo f0 > smp_affinity
+>     -bash: echo: write error: Input/output error
+> 
+> When I add some pr_err() to exynos_irq_set_affinity(), I can't see
+> those printed in dmesg. So I guess exynos_irq_set_affinity() doesn't
+> get called at all. So the error probably happens before
+> .irq_set_affinity callback gets called.
+> 
+> Youngmin, can you please try and test this patch on E850-96? This
+> board is already supported in upstream kernel. For example you can use
+> "Volume Up" interrupt for the test, which is GPIO irq.
+> 
 
-On Mon, 27 Nov 2023 03:34:56 +0000
-"Yusong Gao" <a869920004@gmail.com> wrote:
+I intened this affinity setting would work only on *Non* Wakeup External Interrupt.
+The "Volume Up" on E850-96 board is connected with "gpa0-7" and
+that is Wakeup External interrupt so that we can't test the callback.
 
-> There are some wrong return values check in sign-file when call OpenSSL
-> API. The ERR() check cond is wrong because of the program only check the
-> return value is < 0 which ignored the return val is 0. For example:
-> 1. CMS_final() return 1 for success or 0 for failure.
-> 2. i2d_CMS_bio_stream() returns 1 for success or 0 for failure.
-> 3. i2d_TYPEbio() return 1 for success and 0 for failure.
-> 4. BIO_free() return 1 for success and 0 for failure.
->=20
-> Link: https://www.openssl.org/docs/manmaster/man3/
-> Fixes: e5a2e3c84782 ("scripts/sign-file.c: Add support for signing with a=
- raw signature")
-> Signed-off-by: Yusong Gao <a869920004@gmail.com>
-> ---
-> V1, V2: Clarify the description of git message.
-> V3: Removed redundant empty line.
-> V4: Change to more strict check mode.
-> ---
->  scripts/sign-file.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
->=20
-> diff --git a/scripts/sign-file.c b/scripts/sign-file.c
-> index 598ef5465f82..3edb156ae52c 100644
-> --- a/scripts/sign-file.c
-> +++ b/scripts/sign-file.c
-> @@ -322,7 +322,7 @@ int main(int argc, char **argv)
->  =09=09=09=09     CMS_NOSMIMECAP | use_keyid |
->  =09=09=09=09     use_signed_attrs),
->  =09=09    "CMS_add1_signer");
-> -=09=09ERR(CMS_final(cms, bm, NULL, CMS_NOCERTS | CMS_BINARY) < 0,
-> +=09=09ERR(CMS_final(cms, bm, NULL, CMS_NOCERTS | CMS_BINARY) !=3D 1,
->  =09=09    "CMS_final");
->=20
->  #else
-> @@ -341,10 +341,10 @@ int main(int argc, char **argv)
->  =09=09=09b =3D BIO_new_file(sig_file_name, "wb");
->  =09=09=09ERR(!b, "%s", sig_file_name);
->  #ifndef USE_PKCS7
-> -=09=09=09ERR(i2d_CMS_bio_stream(b, cms, NULL, 0) < 0,
-> +=09=09=09ERR(i2d_CMS_bio_stream(b, cms, NULL, 0) !=3D 1,
->  =09=09=09    "%s", sig_file_name);
->  #else
-> -=09=09=09ERR(i2d_PKCS7_bio(b, pkcs7) < 0,
-> +=09=09=09ERR(i2d_PKCS7_bio(b, pkcs7) !=3D 1,
->  =09=09=09    "%s", sig_file_name);
->  #endif
->  =09=09=09BIO_free(b);
-> @@ -374,9 +374,9 @@ int main(int argc, char **argv)
->=20
->  =09if (!raw_sig) {
->  #ifndef USE_PKCS7
-> -=09=09ERR(i2d_CMS_bio_stream(bd, cms, NULL, 0) < 0, "%s", dest_name);
-> +=09=09ERR(i2d_CMS_bio_stream(bd, cms, NULL, 0) !=3D 1, "%s", dest_name);
->  #else
-> -=09=09ERR(i2d_PKCS7_bio(bd, pkcs7) < 0, "%s", dest_name);
-> +=09=09ERR(i2d_PKCS7_bio(bd, pkcs7) !=3D 1, "%s", dest_name);
->  #endif
->  =09} else {
->  =09=09BIO *b;
-> @@ -396,7 +396,7 @@ int main(int argc, char **argv)
->  =09ERR(BIO_write(bd, &sig_info, sizeof(sig_info)) < 0, "%s", dest_name);
->  =09ERR(BIO_write(bd, magic_number, sizeof(magic_number) - 1) < 0, "%s", =
-dest_name);
->=20
-> -=09ERR(BIO_free(bd) < 0, "%s", dest_name);
-> +=09ERR(BIO_free(bd) !=3D 1, "%s", dest_name);
->=20
->  =09/* Finally, if we're signing in place, replace the original. */
->  =09if (replace_orig)
-> --
-> 2.34.1
->=20
+I couldn't find out a pin for the test on E850-96 board yet.
+We can test if there is a usage of *Non" Wake up External Interrupt of GPIO
+on E850-96 board.
 
-Nit: v5 in the email subject should be v4.
+Do you have any idea ?
 
-Reviewed-by: Juerg Haefliger <juerg.haefliger@canonical.com>
+Thanks
+
+> > >
+> > >>>     # cat /proc/irq/418/smp_affinity
+> > >>>     3ff
+> > >>>     # cat /proc/interrupts
+> > >>>                CPU0       CPU1       CPU2       CPU3    ...
+> > >>>     418:       3631          0          0          0    ...
+> > >>>
+> > >>> With this patch applied, it's possible to change irq affinity of gpio interrupt:
+> > >>
+> > >> ...
+> > >>
+> > >> On which board did you test it?
+> > >>
+> > >>
+> > > I tested on S5E9945 ERD(Exynos Reference Development) board.
+> >
+> > There is no such board upstream. How can we reproduce this issue? I am
+> > afraid we cannot test neither the bug nor the fix.
+> >
+> > >
+> > >>> +   if (parent)
+> > >>> +           return parent->chip->irq_set_affinity(parent, dest, force);
+> > >>> +
+> > >>
+> > >> I think there is a  helper for it: irq_chip_set_affinity_parent().
+> > >>
+> > >>
+> > >
+> > > The irq_chip_set_affinity_parent() requires parent_data of irq_data.
+> >
+> > Hm, so now I wonder why do we not have parent_data...
+> >
+> > > But when I tested as below, exynos's irqd->parent_data was null.
+> > > So we should use irqchip's affinity function instead of the helper function.
+> > >
+> >
+> >
+> >
+> > Best regards,
+> > Krzysztof
+> >
+> 
+
+------OVq5TT9zsDSQAN86dWjJc6zPY8CEKIwxCZDtRM.ioT5ZEg4T=_35b7f_
+Content-Type: text/plain; charset="utf-8"
 
 
---b1_bqlWVBJFFpdDPXWzuVv4Sbw8of9oHqNZBSjRct5izU
-Content-Type: application/pgp-signature; name=attachment.sig
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=attachment.sig
-
-LS0tLS1CRUdJTiBQR1AgU0lHTkFUVVJFLS0tLS0NCg0KaVFJekJBRUJDZ0FkRmlFRWhaZlU5Nkl1
-cHJ2aUxkZUxEOU9MQ1F1bVFyY0ZBbVZtNFpFQUNna1FEOU9MQ1F1bQ0KUXJjeWJSQUFpQjJsK1FQ
-TkRTaWxTTTJmVW14dVJFS2xXdDFCclp3Q001QU53U2JpcHZBSVV1VUJFUW9wNGhhOQ0KZ2t5dTVH
-YVJMc0RXRVVPdjBROVA1ZEtyUVRhWUdkc3M0aXlOZHFLbmRhNXpsNWhSNEVNR0tYb1JDeGozam54
-Rg0KQ2ZCb3VDblVacUZWeTdETjQ5ZTVqU2JuNEtRREhRdHJ5dm5XSEk2ck10dm5XbnhsY0tpMnpj
-RFNSTzdHN1NuYg0Ka3YwQ2ZkZ0hYbUkyRlZXREU1QkNQdjB0ay9janFLUW1JcmY1c0E3Wmozby9P
-b1Z6SDRaOE5Ha01oMlRsL3lmUQ0KVGk3S0RSWFlaNzllZTVRV2lPUzd3bjQ0SG9Vb0xiN0tPMnF5
-TmJ4bVM1VTRNZDdmejJRL0F5VDkwTmFEU293Mw0KaWJUQ2dYVS8wd0xCNzdhdnR0WVhoL1lUaWxF
-ZjB1VVB1RDVxOWh1YTBwdFgzRnFWWURWZndvUi8vQU1MNjFMaA0KVXFTVTRzY0FtSkc4S2h0bW9r
-NlhKS0RVRno2Y0FSQXg3RmFoaGJqT01CMjFxcFhSMk8vSzNGd1N5ZFZXbElUZA0KeHZYSWZsWSt5
-ZEJTZXhQQi9oeFFnZ2VQYUdZVzdSUUh5OHV5ZnREaHZ2bk5zRjZibjFzNTQ4WGtmeW96dGhWMA0K
-WUZKeVlXVVFyVnNjbTM5VGwwT09GSjRlUlNVUlU4ZWc1TkFTdVVRQW5HbTNNYTEzeHZ0RkZ4OEp4
-MW13Y01jZg0KSGhsQkx6aG12c2g4RWRDZy93V1NTK1BtRDZRVXd2NzlLY3BKMjFEY0RtaDhZbHBL
-VHBnT2tVNVVKelhJZk52dQ0KaG5uNTQyOTV3QU5iRE5QVXJqWXlkTVdrRnFDei9KeG1yeTBQLzhY
-dVlYSXROYmc1SWRvPQ0KPWxvWVQNCi0tLS0tRU5EIFBHUCBTSUdOQVRVUkUtLS0tLQ0K
-
---b1_bqlWVBJFFpdDPXWzuVv4Sbw8of9oHqNZBSjRct5izU--
-
+------OVq5TT9zsDSQAN86dWjJc6zPY8CEKIwxCZDtRM.ioT5ZEg4T=_35b7f_--
