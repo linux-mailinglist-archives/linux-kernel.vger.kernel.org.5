@@ -2,52 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF0F07FDBEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:47:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4727FDBE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:47:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344146AbjK2Prs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 10:47:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42130 "EHLO
+        id S235027AbjK2Pr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 10:47:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344032AbjK2Pre (ORCPT
+        with ESMTP id S235043AbjK2PrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 10:47:34 -0500
+        Wed, 29 Nov 2023 10:47:20 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E5110DB
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:47:40 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DE61C433C9;
-        Wed, 29 Nov 2023 15:47:34 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D880170E
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:47:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D3936C433C8;
+        Wed, 29 Nov 2023 15:47:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701272860;
-        bh=45craR8fXhu4UKylqaeeXIMxfA/OQi5bmwotxf0KdVY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=srT7EPF8WxYZeCnQTbCvQdasmXfcwhwnDkVorUW54rnoYLdO+f6xSPNSzDJuDPaXh
-         h99pThfxiCqrMpZSzYW5EtBiqUx8yKl163sPOhGrRKzW0pwAR6xfVyInfl5sSK7NjV
-         NLGWDGLap3tYDCkmDQ0iSdE94oL++/7KgH+o5wMWCjIBtk4RbEme/mox+cegknfdrH
-         lx2N6ak7aE9L4Z+sfxFoIo5GOCMflYabhLeqgG9sla8Kb4DAerzyLajqOyaD1lDbLQ
-         NsxYsohRhWeyTHRrJ1VbiDX/XNV2zUN3hiGSloFC4Xi2GGW2yYKWdGn85ZzfwMafg5
-         C0+Xo6ThVqtew==
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Kate Carcia <kcarcia@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Marco Elver <elver@google.com>, Mike Galbraith <efault@gmx.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 2/2] perf tests sigtrap: Skip if running on a kernel with sleepable spinlocks
-Date:   Wed, 29 Nov 2023 12:47:18 -0300
-Message-ID: <20231129154718.326330-3-acme@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231129154718.326330-1-acme@kernel.org>
-References: <20231129154718.326330-1-acme@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        s=k20201202; t=1701272842;
+        bh=d3gt2pREE1sy0WhzSvItx8bCjSwa/mbOlEtQRCq9L6k=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=DvUBnjI50H6IOBbIP4gW3m4Sh6GuvFG2us3wE250WoFZlQ+rxcXOdVYWsH32pAj4x
+         K+NyTVdi2uNOTA4vvZezEJLV2IFffQLYX0icV6GZQayqsSV1yG0PxBfTs75KnoPk4+
+         sd2NJyZiQ//p1gbYJA1VlGIpoIsDBJlb9ZVaNmrrGK/Y6QUdalovo3X94FtyZDRicN
+         QUmAeb9iR/HJtnilyelFqE/j6XwtuoC5oXHMcER+PZgFCJWXRFrvDLwn32JJJgQGgK
+         MF3xdd8CvfClbf/+zJ3spBNsc5icOZoZkxtFQbUsafeVL2aFtKyLiLrjccL6Bx73hS
+         V+YBl6ff84idw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C129EDFAA81;
+        Wed, 29 Nov 2023 15:47:22 +0000 (UTC)
+Subject: Re: [GIT PULL] Pin control fixes for v6.7
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CACRpkdZtVNZFWSUgb4=gUE2mQRb=aT_3=zRv1U71Vsq0Mm34eg@mail.gmail.com>
+References: <CACRpkdZtVNZFWSUgb4=gUE2mQRb=aT_3=zRv1U71Vsq0Mm34eg@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-gpio.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CACRpkdZtVNZFWSUgb4=gUE2mQRb=aT_3=zRv1U71Vsq0Mm34eg@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v6.7-2
+X-PR-Tracked-Commit-Id: 90785ea8158b6923c5d6a024f2b1c076110577b5
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 3b47bc037bd44f142ac09848e8d3ecccc726be99
+Message-Id: <170127284278.10361.6469775362333533374.pr-tracker-bot@kernel.org>
+Date:   Wed, 29 Nov 2023 15:47:22 +0000
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Maria Yu <quic_aiquny@quicinc.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Chester Lin <clin@suse.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -58,108 +60,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnaldo Carvalho de Melo <acme@redhat.com>
+The pull request you sent on Wed, 29 Nov 2023 13:09:03 +0100:
 
-There are issues as reported that need some more investigation on the
-RT kernel front, till that is addressed, skip this test.
+> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v6.7-2
 
-This test is already skipped for multiple hardware architectures where
-the tested kernel feature is not supported.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/3b47bc037bd44f142ac09848e8d3ecccc726be99
 
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Clark Williams <williams@redhat.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Marco Elver <elver@google.com>
-Cc: Mike Galbraith <efault@gmx.de>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/all/e368f2c848d77fbc8d259f44e2055fe469c219cf.camel@gmx.de/
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/perf/tests/sigtrap.c | 46 ++++++++++++++++++++++++++++++++++++--
- 1 file changed, 44 insertions(+), 2 deletions(-)
+Thank you!
 
-diff --git a/tools/perf/tests/sigtrap.c b/tools/perf/tests/sigtrap.c
-index a1bc7c776254ed2f..e6fd934b027a3d0c 100644
---- a/tools/perf/tests/sigtrap.c
-+++ b/tools/perf/tests/sigtrap.c
-@@ -103,6 +103,34 @@ static bool attr_has_sigtrap(void)
- 
- 	return __btf_type__find_member_by_name(id, "sigtrap") != NULL;
- }
-+
-+static bool kernel_with_sleepable_spinlocks(void)
-+{
-+	const struct btf_member *member;
-+	const struct btf_type *type;
-+	const char *type_name;
-+	int id;
-+
-+	if (!btf__available())
-+		return false;
-+
-+	id = btf__find_by_name_kind(btf, "spinlock", BTF_KIND_STRUCT);
-+	if (id < 0)
-+		return false;
-+
-+	// Only RT has a "lock" member for "struct spinlock"
-+	member = __btf_type__find_member_by_name(id, "lock");
-+	if (member == NULL)
-+		return false;
-+
-+	// But check its type as well
-+	type = btf__type_by_id(btf, member->type);
-+	if (!type || !btf_is_struct(type))
-+		return false;
-+
-+	type_name = btf__name_by_offset(btf, type->name_off);
-+	return type_name && !strcmp(type_name, "rt_mutex_base");
-+}
- #else  /* !HAVE_BPF_SKEL */
- static bool attr_has_sigtrap(void)
- {
-@@ -125,6 +153,11 @@ static bool attr_has_sigtrap(void)
- 	return ret;
- }
- 
-+static bool kernel_with_sleepable_spinlocks(void)
-+{
-+	return false;
-+}
-+
- static void btf__exit(void)
- {
- }
-@@ -166,7 +199,7 @@ static int run_test_threads(pthread_t *threads, pthread_barrier_t *barrier)
- 
- static int run_stress_test(int fd, pthread_t *threads, pthread_barrier_t *barrier)
- {
--	int ret;
-+	int ret, expected_sigtraps;
- 
- 	ctx.iterate_on = 3000;
- 
-@@ -175,7 +208,16 @@ static int run_stress_test(int fd, pthread_t *threads, pthread_barrier_t *barrie
- 	ret = run_test_threads(threads, barrier);
- 	TEST_ASSERT_EQUAL("disable failed", ioctl(fd, PERF_EVENT_IOC_DISABLE, 0), 0);
- 
--	TEST_ASSERT_EQUAL("unexpected sigtraps", ctx.signal_count, NUM_THREADS * ctx.iterate_on);
-+	expected_sigtraps = NUM_THREADS * ctx.iterate_on;
-+
-+	if (ctx.signal_count < expected_sigtraps && kernel_with_sleepable_spinlocks()) {
-+		pr_debug("Expected %d sigtraps, got %d, running on a kernel with sleepable spinlocks.\n",
-+			 expected_sigtraps, ctx.signal_count);
-+		pr_debug("See https://lore.kernel.org/all/e368f2c848d77fbc8d259f44e2055fe469c219cf.camel@gmx.de/\n");
-+		return TEST_SKIP;
-+	} else
-+		TEST_ASSERT_EQUAL("unexpected sigtraps", ctx.signal_count, expected_sigtraps);
-+
- 	TEST_ASSERT_EQUAL("missing signals or incorrectly delivered", ctx.tids_want_signal, 0);
- 	TEST_ASSERT_VAL("unexpected si_addr", ctx.first_siginfo.si_addr == &ctx.iterate_on);
- #if 0 /* FIXME: enable when libc's signal.h has si_perf_{type,data} */
 -- 
-2.41.0
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
