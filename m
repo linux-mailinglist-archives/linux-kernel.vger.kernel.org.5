@@ -2,188 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F257FD903
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:13:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3629C7FD909
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:14:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233774AbjK2ONN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 09:13:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48418 "EHLO
+        id S234196AbjK2OOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 09:14:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230446AbjK2ONL (ORCPT
+        with ESMTP id S230446AbjK2OOH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 09:13:11 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE19CA2;
-        Wed, 29 Nov 2023 06:13:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701267196; x=1732803196;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=0DH5UH5DBZXJ2utKvvIDBd+JXJbeL2uy/mkveTJDAn0=;
-  b=d6m/+nIhLmadrzPe/LDiCzKIycGb0nJ1BuypBcsJiM+0finOwiTDa8Sf
-   vzEeXd8b+r4VNzX9NgTg3p8TTyQOQIalzZWzQCppYPCrNU6XWfUHhg9um
-   FIenN1yqAzGMsOBYA243aNmVr2abbKcFkmzkPlJnoos7B0nKbe6/8IuX7
-   fxkgDD4H6R0e+jsOTbI8wqf1yYLFP0Q7Jmsyi8BhmOZH4+R2/II3euL0i
-   tB8nqAoSOJl167vnQKiZjcrfptpD64weZC6IRxBvbnA1PHAITyTo2A5eV
-   EpvxhT+PjkL+UrhwM1BCJefat2j+XsPWjFr/8N1mEZgAT4LNAS+GoPdmG
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="392032328"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="392032328"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 06:13:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="892462446"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="892462446"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Nov 2023 06:13:15 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 29 Nov 2023 06:13:15 -0800
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 29 Nov 2023 06:13:14 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Wed, 29 Nov 2023 06:13:14 -0800
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.41) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Wed, 29 Nov 2023 06:13:14 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZznBxjEUQ6b9xHQfHUN+F+1mG7EXda7dxr3be0oPKmdAK4faK8x7EyB9V2YNnTBIlCagjmcCZb7EG3/j1x2Kn1RMYALfhc98vacYXRFzgcC5fc4x6QRXhFZ4dWUxI5pVbsLEA5L+hIcNKOuwlJwz8PZJJ+V20lEsq2S4Ann1nCEaI+oE2egL7iWfCubtXtNX72Diagb9K6ttK2jiTMhBNddxirmBSvJF37vpkDJ+TNMz65z2W/He1XDVPl8B2GFyp6bBe1+BWEwOra38SvkTMmy9AKzXfheYWayW6OD75V0tMnxq3TspVfMirBd6H/QYQ9pYroTRCaKtZ9HMXSEVQw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0DH5UH5DBZXJ2utKvvIDBd+JXJbeL2uy/mkveTJDAn0=;
- b=I4AGdU03ZM6mbXk2PWIwDemRdLCbq/SMTGjpe7iZkhcQGhDOxEcbjzpflldNXPHe9z9d2+6VTJxjD9Ftl1N2F82Bu/vphfeuLT6sEffHigfEg76u4nWJkC4soHfzfWcbk9FtVoMn37nYRXRPlLpt7r/mFyS2YW97PqfGfQxUFAjLMwowtq75zj1NRN9oD3dPQSrKkNwjkFnptl9SVtkvvZBELJWS3slbH1RxD8hDnr6rSSuW/AgKbTbqQ5F0OvN0yTCdW0hUv66VmAOlJbXmVcsTiTNA3lv7TzIGvlMC+k91+zF0SNopFA+AspsZnRjkQBzpIqH+853e0ySi+O3cgQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
- by CH0PR11MB8167.namprd11.prod.outlook.com (2603:10b6:610:192::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.23; Wed, 29 Nov
- 2023 14:13:11 +0000
-Received: from PH0PR11MB4965.namprd11.prod.outlook.com
- ([fe80::ea04:122f:f20c:94e8]) by PH0PR11MB4965.namprd11.prod.outlook.com
- ([fe80::ea04:122f:f20c:94e8%2]) with mapi id 15.20.7046.015; Wed, 29 Nov 2023
- 14:13:09 +0000
-Message-ID: <e8b77875-d7a2-4898-94d2-248e32b6ebf4@intel.com>
-Date:   Wed, 29 Nov 2023 22:12:59 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 05/26] x86/fpu/xstate: Introduce fpu_guest_cfg for
- guest FPU configuration
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-CC:     "Hansen, Dave" <dave.hansen@intel.com>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "john.allen@amd.com" <john.allen@amd.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "Gao, Chao" <chao.gao@intel.com>,
-        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20231124055330.138870-1-weijiang.yang@intel.com>
- <20231124055330.138870-6-weijiang.yang@intel.com>
- <742a95cece1998673aa360be10036c82c0c535ec.camel@intel.com>
-Content-Language: en-US
-From:   "Yang, Weijiang" <weijiang.yang@intel.com>
-In-Reply-To: <742a95cece1998673aa360be10036c82c0c535ec.camel@intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SG2P153CA0041.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::10)
- To PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
+        Wed, 29 Nov 2023 09:14:07 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B85AF
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 06:14:14 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id d2e1a72fcca58-6cdd584591eso499490b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 06:14:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701267254; x=1701872054; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YZXuNEt8EzwdILEA0pIWBrLgHEq+yqwXRZX9rymE92s=;
+        b=G3JxyJNvVqEK7oHVAcCtqcQv4JRqZu+vxKS2DP8YLA71OstOUh6jsEr3RO8pUP68Cd
+         Qdtxp6hdgFrrABUbTPr5/zpUnUJR3zVj0oWAOGX76xWVDfWfkX84l+fMGYAFqeea39gx
+         vmiv0a5+AKyteLHVLfh0jhllDkYrvJOwjoKWbDmUd/fETR/BwN2RT9nJRgAP0PUvtFGk
+         aITujdP+2dTuzI25yjWl1ZG2+QCjdRgCo5J0SECzRQnTPBiXrc7SmlTCTyFfzGt0J1F9
+         gAxW0W9Sh6fgg2yCNh1N6VufWUdSk0srXAB6/n9XCsC1cUKd6+1CF7DxPoYdFP1Xoxs7
+         gE+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701267254; x=1701872054;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YZXuNEt8EzwdILEA0pIWBrLgHEq+yqwXRZX9rymE92s=;
+        b=chFyW7BPupQfs1sd/wV8wUJ9MvaGcHapP5S69L5W+Bd+lqmVrPGKyco02Gs/Qt+ED8
+         dYyq9MahgBaYpJguF6YaXX7BjKLdkqJULYh7gRy3z+vDVyYafh4r0T4XNBb27ZGf1XEp
+         X+/9BMfjlKjdXaZgzmP168UIOLwLod5UgAORkYYjPO0s3BPc+BajEWDwJ1e/XShQhYx3
+         V8+uSVIPfojStutyio5nislF+d06qcofJ/zqL2ksSwJ3IY3AZYqiEsP68LDMo5016bIC
+         pBROqwlxPzZnBtz2wCaGWEXXwiOVGdJz4f3Edjxlv5NMlQ5Z6MrzZc45sNNibYrEFELR
+         OgEw==
+X-Gm-Message-State: AOJu0YwCd04Yd47hoFd8cUb+tPTYSLFsvRKyMIm/GPJx4ID1FALyV9vN
+        tbLjWXSgJRKSGfvAIfBp5Cg=
+X-Google-Smtp-Source: AGHT+IED3WV/0Kaj9Z/l2QM10xfUl8BGi+qAxoNX9+D8fzOWxsS2qO8X6vNYFgamntrDo50jYS5o3Q==
+X-Received: by 2002:a05:6a00:1914:b0:68f:f38d:f76c with SMTP id y20-20020a056a00191400b0068ff38df76cmr20158843pfi.6.1701267253608;
+        Wed, 29 Nov 2023 06:14:13 -0800 (PST)
+Received: from localhost ([20.205.105.33])
+        by smtp.gmail.com with ESMTPSA id j25-20020a62e919000000b006930db1e6cfsm10831794pfh.62.2023.11.29.06.14.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 06:14:13 -0800 (PST)
+From:   Jiang Yihe <jiangyihe042@gmail.com>
+Cc:     Jiang Yihe <jiangyihe042@gmail.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] intel_idle: add Cometlake support
+Date:   Wed, 29 Nov 2023 22:14:07 +0800
+Message-ID: <20231129141408.21739-1-jiangyihe042@gmail.com>
+X-Mailer: git-send-email 2.43.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR11MB4965:EE_|CH0PR11MB8167:EE_
-X-MS-Office365-Filtering-Correlation-Id: c7d5ea84-5936-4e84-00b3-08dbf0e5503f
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: a2oo9w8GmTFFxjh3U/eUOEXcC+C2lV3DNqLm+4sBP+Ael0dQBypFtHZOecL3wR/e785AfpbdI5nAQ1hc1OionXK3alhRR5079O2j1MwknbDTdtjC7knfv05YgDk3uhG8kZUpyg9+z/T4hwWws9e6mGVKXiPwUhZnM3rS5gS/KgoSGO74iVzSJrilfuzfvuBHrw/1dm2RANDcvDyjxoHSjhYxBKeWQ1Q/64YFSV2XTx3NqMWebZO8PJOq3NopfcrXY5lVsDzLCsb6kG/rIoX0PWj7bNK/SnoHKDyY2kUE0Vq2GfwJU61VdzG6bAmlAxV09OrkERa6xbS/FQOgVOi9Z2tWypklGuhBB4RU1tusrW5+6TDydbnQJWfe2fwzl58RIT4/gkBY+oEgQVU2PvOfMRRjth32VctoRfgEnTjHKKeWkXuvnj7zs2d3nFiYFi7YPI/8fxzOM5E0dKMIESXECf4SUZTN5rxhoPlsnbuvIf0nsMfP4IlQ/uf4reQUYn2NPk+dU3muUx/ObwslwAw0RxplJuGmlEUtF0gH5KzBlJXjmrhzfJb6pyKFcGnCqeKM/JyeatcuT2UIgfmgLqS3fFO9d4f3cSBmIQ8qQ7+8XWI1t3OO2n+dh9sYQN3MWnoozWcfBAf5+EXbh1YOb6dIqw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4965.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(346002)(39860400002)(376002)(136003)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(31686004)(478600001)(2616005)(26005)(6486002)(6666004)(53546011)(6512007)(6506007)(82960400001)(38100700002)(31696002)(86362001)(36756003)(41300700001)(5660300002)(54906003)(66946007)(66556008)(66476007)(6636002)(2906002)(4744005)(4001150100001)(8936002)(6862004)(4326008)(8676002)(316002)(37006003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?N0Vkbm1wTUV3M0IyakhzQnJNUmRVYlkzRm5QczdReDV1c0ZOWm1tMjFkYU1x?=
- =?utf-8?B?VTZxMm5aQmZVelBBYldPYUxGeE5URkg1cmNTWVhSNC9KMjFuaVdXZ09kUFBV?=
- =?utf-8?B?OXc1ZGxlSWJNTmZyQjlaRTJsVjlwdFFTb3JqTzdmZUNCQURYMDR0dmlwU3lp?=
- =?utf-8?B?UzV3dURwTndTbElwQXVsS2J6RFNaYVFTSndmYUtqdjJQajluU0EweWYyQjVC?=
- =?utf-8?B?S1NaTFk1ZEdtMFJTajVTRyt6WFFhRSs2ZkFsQzJQZG9JZ3RzVmRSNTB5dVoy?=
- =?utf-8?B?V2I2LzE5cnJ1Qmd2eWtRZjNNOTEyTk4zaEF6V214eWtZdGZqMC9BbkdQRkg3?=
- =?utf-8?B?aVg1VGRicU9vUU9xZUVGSDZmRTNPUEQ0OXZQTk9MNWc4Y3AvTE5lYUY1Nmhs?=
- =?utf-8?B?NmtETUVmSVViYXk5ZXlZNkhuMkdJZTUvTDRDblJoUVlIVzlBa00zV0Jld1JU?=
- =?utf-8?B?UE0zcFZxbGZzUk51b3o1c2tHSnhvQjZJSSs2WWpHK0E0S0RmQUVlRjhDMHhl?=
- =?utf-8?B?ZmxiZEtUamdsd0h0dTRnVmdDN1JaS0Y3a1N2QlkyU1htKzYrRW5UcWhVeXoy?=
- =?utf-8?B?UXhKNXZSbENZM2JFN0wyczdHQnE4OXo1UUlsZjJ5SDl6SW1icGh4TUxtcmxB?=
- =?utf-8?B?MXg0YmdSbnYrbTN2aFdpTGpHVVM2RG9kNzZpblBoTTVSV0tCZU9LMHlURXgv?=
- =?utf-8?B?WVFXZHhtbUdjYldqUUF3TVh0T1ovWkVtQmFvcTVWdGVYb21LWHFyNmF0UDNJ?=
- =?utf-8?B?SUtVVndqaGJiZVpwU3o5cWgyMnFzZEc2NHhvaU1tSGxWdHYxVnZzUGFTbWhR?=
- =?utf-8?B?bFBORjlYc0VKaUY5T3Z5bEdCQ1VkanNwUHZySFZkUExTQ2tQK3NqUGVLa2lz?=
- =?utf-8?B?V0piMFFHRDRWTTFXYm14elhyeDBsMUI5c3c2bHNUQmxlSm5CT3JaNEVFM0hT?=
- =?utf-8?B?d3FuRVY5L2c0NCs2dzRvQ1k2M1JCcUQrbzc1YnQxSUg4WTByVG1yYUNRa0g0?=
- =?utf-8?B?Skp5SCtMK1llaU94QUJrcWFDY1VZMFZWckIrbjdhWUVHUHhqNEpIZ00zYThQ?=
- =?utf-8?B?QW9DQnl6NlpwcnkzdVRYT2RQZ2Q0cVpMRG5FVnZLRkJSckdSL2QrazNocThC?=
- =?utf-8?B?QVpPYnF5OUJ5SlRWWG1NeDBVWEtoSm9vNjE4SVlZcUZoZW1wM090U3lrTHFQ?=
- =?utf-8?B?OHB3RWxKTGpadElnTUk3Q05QRGI3U2xBZnYxb1BDd3o2NGNxSjZabmVtdXIx?=
- =?utf-8?B?blNkWFFYdjViUzFUamlTeTYyekxLNGRhLzZ1bzNYb3NiOXRRSU9kNUcvVmJ3?=
- =?utf-8?B?MVdMbERRVlFvbVA3am9zcjU0VndkOWU3ZlJsbE9xYjNoYjlTNHdRVnp2TUQ1?=
- =?utf-8?B?eUdhaVZsbnYvcjc1Z2J5ZG16ZmpLamhLWjRvUG5pZTdvWVBJcHRvT2hxRHc0?=
- =?utf-8?B?cWFjNnozb0p6clN5alRvUDM1a0I0QmNYSXk5UGNJZXpiN1RqMlNqRC91WVZQ?=
- =?utf-8?B?ajNCOFZEbWszdzVBN1I3ZXlXZ2FKeDhXRUd2V1hLdXFNZzlCRmhtU25aQTkv?=
- =?utf-8?B?TTVQT0lVK2FnUER3bWlnbk5FRll2Z2lLN2hUTk0xWXVUQ25lbDRjYm9HdThS?=
- =?utf-8?B?VzN6ci84MHVycWt6SHRFRStrU3NUTTFsa1JwWkcyODZxZGt4ek94ODZBbXhF?=
- =?utf-8?B?dk5vOU5SY0h4bEplMTErdXY3L1dDYllUMmFMTkd6eEt2REhRZXIxWGJxVFF2?=
- =?utf-8?B?UFpobWlmMTVlR25qVG5pSjVYc2p3Zm5HbWJXK1B6dHFwK1B5T3I0R0U5VEJL?=
- =?utf-8?B?NU5HUnpKbUJHZk96OG0xOWNpR1dNUmRCQWp4RXVGSWRYY1NBNkFWUUhyYUxH?=
- =?utf-8?B?MFN5OFlnY3VxUkFzTnJtZ0RVZlk4VGtZNE5ybVRjSEFBczJtc0VLcGN2MVNs?=
- =?utf-8?B?VUZZOFU1MFcwUG1nc2Zxbk1DT2dKY1AxYTdLMkluODJIOFAvOCsvVUFxTkE5?=
- =?utf-8?B?TlVIditlbW5FTW9KTXhadFJSS05JaVZxcERWazdqMGpQa0szcWlid3FMK2tp?=
- =?utf-8?B?QjFFMTRsTDNYQnB1UFpOLzVzM1J4ZDVQZ3l6Tk5mOGU3ak1ZMW5ab1pXR3VY?=
- =?utf-8?B?bG5YR2FzYU1XTUpCR0QralBrZk9oTTlwYnpwWFdqZDVQaXkyaFM0Smg3cXZ0?=
- =?utf-8?B?UUE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: c7d5ea84-5936-4e84-00b3-08dbf0e5503f
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4965.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 14:13:09.2358
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wp5HgZp4bV4bo4lav2+d0P6LSEyIqjWnDjuZBZPxxVEx3e4DpAMuQ/O2KrpEd2G3NrcQBN89rMJ7GVovIWUEmw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB8167
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/28/2023 10:58 PM, Edgecombe, Rick P wrote:
-> On Fri, 2023-11-24 at 00:53 -0500, Yang Weijiang wrote:
->> +       /*
->> +        * Set guest's __user_state_size to fpu_user_cfg.default_size
->> so that
->> +        * existing uAPIs can still work.
->> +        */
->> +       fpu->guest_perm.__user_state_size =
->> fpu_user_cfg.default_size;
-> It seems like an appropriate value, but where does this come into play
-> exactly for guest FPUs?
+Since the Cometlake C-State is supported, support for Cometlake should
+be added to intel_idle. Just use Kabylake C-State table for Cometlake
+because they share the same table in intel_cstate.
 
-I don't see there's special usage of this field for vCPU in VMM userspace(QEMU).
-Maybe it's mainly for AMX resulted usespace fault handling? For vCPU thread,
-it's only  referenced when AMX is enabled via __xfd_enable_feature() .
+Signed-off-by: Jiang Yihe <jiangyihe042@gmail.com>
+---
+ drivers/idle/intel_idle.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
+index dcda0afec..f83f78037 100644
+--- a/drivers/idle/intel_idle.c
++++ b/drivers/idle/intel_idle.c
+@@ -1418,6 +1418,8 @@ static const struct x86_cpu_id intel_idle_ids[] __initconst = {
+ 	X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE,		&idle_cpu_skl),
+ 	X86_MATCH_INTEL_FAM6_MODEL(KABYLAKE_L,		&idle_cpu_skl),
+ 	X86_MATCH_INTEL_FAM6_MODEL(KABYLAKE,		&idle_cpu_skl),
++	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE_L,		&idle_cpu_skl),
++	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE,		&idle_cpu_skl),
+ 	X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_X,		&idle_cpu_skx),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,		&idle_cpu_icx),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_D,		&idle_cpu_icx),
+-- 
+2.43.0
 
