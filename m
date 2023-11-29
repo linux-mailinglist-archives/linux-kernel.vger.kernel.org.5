@@ -2,123 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7947FD073
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:16:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2C07FD07B
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:17:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230168AbjK2IP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 03:15:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47052 "EHLO
+        id S230167AbjK2IRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 03:17:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjK2IPz (ORCPT
+        with ESMTP id S229487AbjK2IRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 03:15:55 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53FB519BB
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:16:00 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-a00b01955acso913868866b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:16:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701245759; x=1701850559; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BPrttUGYCYCSK7SHMrNyeq1maIosOby02sd3JTquPsg=;
-        b=my+Oq36B9BKny/FtFG6JM9jY2VVe9Jf+ry0H9VQkjd6z/MurlGRrcGYswh0Zr0xPPX
-         y8bEv0DfsBZX1fkx792005xhD0+JlnhWPBuQqwfgDrKpst960PLMITuyPaWpn3TL+IPO
-         0l0KYo68MpNY0ewC9Q3avxqOsJpX8KvtsFE5YW2ecvcnO7LhmKKdzBtvVL2O/FPJ6Fn4
-         /vNRTXhgYFL10gAoLrfNWKVFyDZU5imZ2SEGKgU/gwdn6/bEJp5kTTPKwMs6Y/rl1RNr
-         fHyhLaGBIIXZjMQuzRuDi6FNa7nj6zCKNGb4XOckAm7wiBc0Jn1AFoKeTDighX+YRnFF
-         Q1zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701245759; x=1701850559;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BPrttUGYCYCSK7SHMrNyeq1maIosOby02sd3JTquPsg=;
-        b=FGU3656t7wtHUc+rDLouTU3Uzn2pd+72YZWCJVv+3iPvNxT7RArUPjx1In6lBDxI4B
-         Jl3wDSLRuTCqytvNgVfZxruw3erW2m7tXjK8CA3snxWi4KmjbVQUl+r1husijFq6tx6q
-         wm07gMn+HXnCnQs3pvHm9prWp2Aq6jZNRhzet/hQnMtRrtNjRAEu91UUHqKNIMzzSYnj
-         suOmK3Er82AxfJcxq6d/C+g7eOqrRfNZBMqvqRw2KHufzslpk3dVBKh3mPeRExQ1sG4k
-         Bu3RovS7Rp204gusiH+OzXtNE1WerjDT30QXuvbIHWbZ8FggGBX/M43gvKOn4vLyE9uM
-         7r7Q==
-X-Gm-Message-State: AOJu0YxPIm9nKPqMsxRvNpRbI2FgUEeqeOLYyb8i4+eOJB/LsyPxYr66
-        SfBNNsAY7Wg20oKDvnGufHbqog==
-X-Google-Smtp-Source: AGHT+IGJ4CrqnuKT4MZAHGKKsMN5yzKHOLNdkVjv8hKUgndCaJN1HZgAlobC7IMAothAuLQ5Upi9XA==
-X-Received: by 2002:a17:906:5307:b0:a09:589f:8853 with SMTP id h7-20020a170906530700b00a09589f8853mr11559452ejo.66.1701245758784;
-        Wed, 29 Nov 2023 00:15:58 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id x22-20020a1709060a5600b009c3827134e5sm7547416ejf.117.2023.11.29.00.15.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 00:15:58 -0800 (PST)
-Message-ID: <221ba6a3-c4c2-40cd-b1d8-8170af78c784@linaro.org>
-Date:   Wed, 29 Nov 2023 09:15:57 +0100
+        Wed, 29 Nov 2023 03:17:07 -0500
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 785191735;
+        Wed, 29 Nov 2023 00:17:08 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 35C2E100017;
+        Wed, 29 Nov 2023 11:17:05 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 35C2E100017
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1701245825;
+        bh=O5NkTrwZ+QdAByF4tbA1RQkxuNPKJka+PuD56Wd0pzI=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+        b=BZUTJQfzjFd5iYndxEgO+vC1N8ygMCQdVHYvFncw/h4znpKenBhDCtwaTwBrsOjVK
+         YmTDsgiw77qr1pxLioqRKJqOgC0wFSYsRD/nUVHIbvlgIkJPp1f2J8CCOEordO87hG
+         5ZZpdkpY5mYa27WKNy7GK2f+ZUoCXpq0W2+tDpWsDJG1iiimDAqcljyg1s80R2xFOz
+         vCQPbqvznJobhlP2rosWH6WB840l5WHpXOl7hl7WSWnKNpnLUVGeR7M7/mJ0/HpQcl
+         8Ct8RLxwcDU01UyxoNKimrfxd16fB1ZfdSG2tjAnhW1Y1Ou3WYB6/fJpRa6l0NEATO
+         e/V+cdT+xrqCQ==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Wed, 29 Nov 2023 11:17:05 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 29 Nov
+ 2023 11:17:04 +0300
+Date:   Wed, 29 Nov 2023 11:17:04 +0300
+From:   Dmitry Rokosov <ddrokosov@salutedevices.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the mm tree
+Message-ID: <20231129081704.f26fu3g2svnam7n5@CAB-WSD-L081021>
+References: <20231129084547.79c27d63@canb.auug.org.au>
+ <20231128144514.aa04099199dc13f52374e2b2@linux-foundation.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: clock: ti: Convert interface.txt to
- json-schema
-Content-Language: en-US
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        kristo@kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org
-References: <20231127202359.145778-1-andreas@kemnade.info>
- <7a62ed8a-b0e3-4881-90d7-b8f5d38e482e@linaro.org>
- <20231128093241.707a4fa0@aktux>
- <7361082a-f271-4ef4-9dad-06ee7445c749@linaro.org>
- <20231128214116.22dfff1e@akair>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231128214116.22dfff1e@akair>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231128144514.aa04099199dc13f52374e2b2@linux-foundation.org>
+User-Agent: NeoMutt/20220415
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181676 [Nov 29 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 5 0.3.5 98d108ddd984cca1d7e65e595eac546a62b0144b, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/29 05:52:00 #22570775
+X-KSMG-AntiVirus-Status: Clean, skipped
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -126,21 +82,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/11/2023 21:41, Andreas Kemnade wrote:
-> Am Tue, 28 Nov 2023 09:41:23 +0100
-> schrieb Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>:
->>> If the interface clock is not below a ti,clksel then we have reg.  
->>
->> This should be expressed in the bindings. It's fine to make the reg
->> optional (skip the description, it's confusing), but the ti,clksel
->> should reference this schema and enforce it on the children.
->>
-> Well there are other compatibles below ti,clksel, too, so should we
-> rather add them when the other .txt files are converted?
+Hello Stephen and Andrew,
 
-This binding should already be referenced by ti,clksel. When the other
-are ready, you will change additionalProperties from object to false.
+On Tue, Nov 28, 2023 at 02:45:14PM -0800, Andrew Morton wrote:
+> On Wed, 29 Nov 2023 08:45:47 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> 
+> > Hi all,
+> > 
+> > After merging the mm tree, today's linux-next build (x86_64 allmodconfig)
+> > failed like this:
+> > 
+> > make[5]: *** No rule to make target 'samples/cgroup/cgroup_event_listener.c', needed by 'samples/cgroup/cgroup_event_listener'.  Stop.
+> > 
+> > Caused by commit
+> > 
+> >   fc2cf253aaec ("samples: introduce new samples subdir for cgroup")
+> > 
+> > I have reverted that commit (and the following one) for today.
+> 
+> Thanks, my rename detector broke.  Fixed.
 
-Best regards,
-Krzysztof
+Sorry, I don't fully understand the situation. Is there any issue on my
+side? I have added new samples to the Makefile, and it's very strange
+that there are build failures.
 
+Makefile contains:
+
+====
+# SPDX-License-Identifier: GPL-2.0
+userprogs-always-y += cgroup_event_listener
+userccflags += -I usr/include
+====
+
+-- 
+Thank you,
+Dmitry
