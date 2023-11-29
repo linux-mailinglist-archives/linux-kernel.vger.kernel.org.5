@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33EC07FD10C
+	by mail.lfdr.de (Postfix) with ESMTP id 7FEA17FD10D
 	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:38:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231594AbjK2ITS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 03:19:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42346 "EHLO
+        id S231645AbjK2ITT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 03:19:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbjK2ITM (ORCPT
+        with ESMTP id S229791AbjK2ITM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 29 Nov 2023 03:19:12 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3333710F0;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65CD41990;
         Wed, 29 Nov 2023 00:19:18 -0800 (PST)
-Date:   Wed, 29 Nov 2023 08:19:15 -0000
+Date:   Wed, 29 Nov 2023 08:19:16 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1701245956;
+        s=2020; t=1701245957;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8qgge+FlNVmBpfaVyhYU/jwQ5H4K2/qa1aABsofXgC0=;
-        b=BqI/1I/sw4x52TtB4ZRyUNfi9UXN2vhdjhDfQAJeY59I6FOeKhwRTRcBQQJYfSjrRAjC5L
-        TtTxrcC3TQ8kjQDt/sbIXsXBffBJLu/MS/p4Ms9d3z301/iiIKN390GitLNlEH6inuBwoQ
-        Pu8vlIkuz8bacMIiTmfmLr30ZD17EDCih8ABHkIULs9ADGKsqpOg6QyGCVkUoBmYKtigwr
-        g3cT64t8TbmQhs7AQbO/KAvd0JkRJXV2AFrBSY5Slwm2RZ6aGGnqGjPdcO4OXspmfk10i3
-        hjW1GJgZIG6OD/y21LDGWzhS9EtE9asmeORO44OFwWdK/TEom+OGLT9wz2N15Q==
+        bh=613qQrAItfeBdqDlIfIp86mma761JzSXjqdXNEXKyO8=;
+        b=C9xVCI8/zaLgMwcrr/L30dE0oy/MmhL+Hm1WUdnlJgyfSYc5puF2TNJyV3w4n7kSmU2ixi
+        jFTj25539WPScTGRHdaPV7KtJvUwQCSn+PQ9yFn1fsezOXP8UkU4DyovaX9PdnMltCubNA
+        3S1g838g8AjNTJ5biUYVtP4olG0vGYzuLnZqncA3T2D9+luTnfAMBYZyLN9sxAN8i4NIyD
+        ScGgu5cWSdJ70ENACkuZBA1KLOqKrc4rTk2iTSfNXtiVch3k528QeQQrT1mLPOyyYp8cpU
+        NOntObSM0UHOn6E/YjK//Xn4sG8sq6OajDdEhhOIi3G85Ntj5GmZciTFq6yFLQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1701245956;
+        s=2020e; t=1701245957;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8qgge+FlNVmBpfaVyhYU/jwQ5H4K2/qa1aABsofXgC0=;
-        b=m2K8i7WKGgTecK9hfsdnRYto4T2f+FRdux+hTBa1WorrWUj8qqoLOCRkWod4yV1RbLjIKp
-        e8zPnFSpavQGYYBw==
+        bh=613qQrAItfeBdqDlIfIp86mma761JzSXjqdXNEXKyO8=;
+        b=xC/xIssdd8sCCnMIXWWpxxV4BAwKCZdTg99FdN/JdKxSqs7vq7ytf9N9DQxMwQR8jyhgN7
+        YrAH8lgJjfZpCOAQ==
 From:   "tip-bot2 for Kan Liang" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf/x86/intel/uncore: Support Granite Rapids
+Subject: [tip: perf/core] perf/x86/uncore: Use u64 to replace unsigned for the
+ uncore offsets array
 Cc:     Kan Liang <kan.liang@linux.intel.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Ammy Yi <ammy.yi@intel.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20231117163939.2468007-3-kan.liang@linux.intel.com>
-References: <20231117163939.2468007-3-kan.liang@linux.intel.com>
+In-Reply-To: <20231117163939.2468007-2-kan.liang@linux.intel.com>
+References: <20231117163939.2468007-2-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Message-ID: <170124595576.398.12370446273177504421.tip-bot2@tip-bot2>
+Message-ID: <170124595632.398.8666452870830009586.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -68,184 +69,142 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     632c4bf6d007862307440b177d9fee829857e8bb
-Gitweb:        https://git.kernel.org/tip/632c4bf6d007862307440b177d9fee829857e8bb
+Commit-ID:     b560e0cd882b11921c84307efe139f1247434c5e
+Gitweb:        https://git.kernel.org/tip/b560e0cd882b11921c84307efe139f1247434c5e
 Author:        Kan Liang <kan.liang@linux.intel.com>
-AuthorDate:    Fri, 17 Nov 2023 08:39:37 -08:00
+AuthorDate:    Fri, 17 Nov 2023 08:39:36 -08:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Fri, 24 Nov 2023 20:25:01 +01:00
 
-perf/x86/intel/uncore: Support Granite Rapids
+perf/x86/uncore: Use u64 to replace unsigned for the uncore offsets array
 
-The same as Sapphire Rapids, Granite Rapids also supports the discovery
-table feature. All the basic uncore PMON information can be retrieved
-from the discovery table which resides in the BIOS.
+The current perf doesn't save the complete address of an uncore unit.
+The complete address of each unit is calculated by the base address +
+offset. The type of the base address is u64, while the type of offset is
+unsigned.
+In the old platforms (without the discovery table method), the base
+address and offset are hard coded in the driver. Perf can always use the
+lowest address as the base address. Everything works well.
 
-There are 4 new units are added on Granite Rapids, b2cmi, b2cxl, ubox,
-and mdf_sbo. The layout of the counters is exactly the same as the
-generic uncore counters. Only add a name for the new units. All the
-details can be retrieved from the discovery table.
-The description of the new units can be found at
-https://www.intel.com/content/www/us/en/secure/content-details/772943/content-details.html
+In the new platforms (starting from SPR), the discovery table provides
+a complete address for all uncore units. To follow the current
+framework/codes, when parsing the discovery table, the complete address
+of the first box is stored as a base address. The offset of the
+following units is calculated by the complete address of the unit minus
+the base address (the address of the first unit). On GNR, the latter
+units may have a lower address compared to the first unit. So the offset
+is a negative value. The upper 32 bits are lost when casting a negative
+u64 to an unsigned type.
 
-The other units, e.g., cha, iio, irp, pcu, and imc, are the same as
-Sapphire Rapids.
-
-Ignore the upi and b2upi units in the discovery table, which are broken
-for now.
+Use u64 to replace unsigned for the uncore offsets array to correct the
+above case. There is no functional change.
 
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Tested-by: Ammy Yi <ammy.yi@intel.com>
-Link: https://lore.kernel.org/r/20231117163939.2468007-3-kan.liang@linux.intel.com
+Link: https://lore.kernel.org/r/20231117163939.2468007-2-kan.liang@linux.intel.com
 ---
- arch/x86/events/intel/uncore.c       | 10 +++-
- arch/x86/events/intel/uncore.h       |  4 +-
- arch/x86/events/intel/uncore_snbep.c | 87 +++++++++++++++++++++++++++-
- 3 files changed, 101 insertions(+)
+ arch/x86/events/intel/uncore.h           | 6 +++---
+ arch/x86/events/intel/uncore_discovery.c | 5 +++--
+ arch/x86/events/intel/uncore_discovery.h | 2 +-
+ arch/x86/events/intel/uncore_nhmex.c     | 2 +-
+ arch/x86/events/intel/uncore_snbep.c     | 6 +++---
+ 5 files changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
-index 01023aa..7fb1c54 100644
---- a/arch/x86/events/intel/uncore.c
-+++ b/arch/x86/events/intel/uncore.c
-@@ -1814,6 +1814,14 @@ static const struct intel_uncore_init_fun spr_uncore_init __initconst = {
- 	.uncore_units_ignore = spr_uncore_units_ignore,
- };
- 
-+static const struct intel_uncore_init_fun gnr_uncore_init __initconst = {
-+	.cpu_init = gnr_uncore_cpu_init,
-+	.pci_init = gnr_uncore_pci_init,
-+	.mmio_init = gnr_uncore_mmio_init,
-+	.use_discovery = true,
-+	.uncore_units_ignore = gnr_uncore_units_ignore,
-+};
-+
- static const struct intel_uncore_init_fun generic_uncore_init __initconst = {
- 	.cpu_init = intel_uncore_generic_uncore_cpu_init,
- 	.pci_init = intel_uncore_generic_uncore_pci_init,
-@@ -1865,6 +1873,8 @@ static const struct x86_cpu_id intel_uncore_match[] __initconst = {
- 	X86_MATCH_INTEL_FAM6_MODEL(METEORLAKE_L,	&mtl_uncore_init),
- 	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X,	&spr_uncore_init),
- 	X86_MATCH_INTEL_FAM6_MODEL(EMERALDRAPIDS_X,	&spr_uncore_init),
-+	X86_MATCH_INTEL_FAM6_MODEL(GRANITERAPIDS_X,	&gnr_uncore_init),
-+	X86_MATCH_INTEL_FAM6_MODEL(GRANITERAPIDS_D,	&gnr_uncore_init),
- 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT_D,	&snr_uncore_init),
- 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GRACEMONT,	&adl_uncore_init),
- 	{},
 diff --git a/arch/x86/events/intel/uncore.h b/arch/x86/events/intel/uncore.h
-index 7428eca..4838502 100644
+index c30fb5b..7428eca 100644
 --- a/arch/x86/events/intel/uncore.h
 +++ b/arch/x86/events/intel/uncore.h
-@@ -593,6 +593,7 @@ extern struct list_head pci2phy_map_head;
- extern struct pci_extra_dev *uncore_extra_pci_dev;
- extern struct event_constraint uncore_constraint_empty;
- extern int spr_uncore_units_ignore[];
-+extern int gnr_uncore_units_ignore[];
+@@ -72,9 +72,9 @@ struct intel_uncore_type {
+ 	unsigned single_fixed:1;
+ 	unsigned pair_ctr_ctl:1;
+ 	union {
+-		unsigned *msr_offsets;
+-		unsigned *pci_offsets;
+-		unsigned *mmio_offsets;
++		u64 *msr_offsets;
++		u64 *pci_offsets;
++		u64 *mmio_offsets;
+ 	};
+ 	unsigned *box_ids;
+ 	struct event_constraint unconstrainted;
+diff --git a/arch/x86/events/intel/uncore_discovery.c b/arch/x86/events/intel/uncore_discovery.c
+index cb488e4..9a698a9 100644
+--- a/arch/x86/events/intel/uncore_discovery.c
++++ b/arch/x86/events/intel/uncore_discovery.c
+@@ -125,7 +125,8 @@ uncore_insert_box_info(struct uncore_unit_discovery *unit,
+ 		       int die, bool parsed)
+ {
+ 	struct intel_uncore_discovery_type *type;
+-	unsigned int *box_offset, *ids;
++	unsigned int *ids;
++	u64 *box_offset;
+ 	int i;
  
- /* uncore_snb.c */
- int snb_uncore_pci_init(void);
-@@ -634,6 +635,9 @@ void icx_uncore_mmio_init(void);
- int spr_uncore_pci_init(void);
- void spr_uncore_cpu_init(void);
- void spr_uncore_mmio_init(void);
-+int gnr_uncore_pci_init(void);
-+void gnr_uncore_cpu_init(void);
-+void gnr_uncore_mmio_init(void);
+ 	if (!unit->ctl || !unit->ctl_offset || !unit->ctr_offset) {
+@@ -153,7 +154,7 @@ uncore_insert_box_info(struct uncore_unit_discovery *unit,
+ 	if (!type)
+ 		return;
  
- /* uncore_nhmex.c */
- void nhmex_uncore_cpu_init(void);
+-	box_offset = kcalloc(type->num_boxes + 1, sizeof(unsigned int), GFP_KERNEL);
++	box_offset = kcalloc(type->num_boxes + 1, sizeof(u64), GFP_KERNEL);
+ 	if (!box_offset)
+ 		return;
+ 
+diff --git a/arch/x86/events/intel/uncore_discovery.h b/arch/x86/events/intel/uncore_discovery.h
+index 6ee80ad..22e769a 100644
+--- a/arch/x86/events/intel/uncore_discovery.h
++++ b/arch/x86/events/intel/uncore_discovery.h
+@@ -125,7 +125,7 @@ struct intel_uncore_discovery_type {
+ 	u8		ctr_offset;	/* Counter 0 offset */
+ 	u16		num_boxes;	/* number of boxes for the uncore block */
+ 	unsigned int	*ids;		/* Box IDs */
+-	unsigned int	*box_offset;	/* Box offset */
++	u64		*box_offset;	/* Box offset */
+ };
+ 
+ bool intel_uncore_has_discovery_tables(int *ignore);
+diff --git a/arch/x86/events/intel/uncore_nhmex.c b/arch/x86/events/intel/uncore_nhmex.c
+index 173e267..56eea2c 100644
+--- a/arch/x86/events/intel/uncore_nhmex.c
++++ b/arch/x86/events/intel/uncore_nhmex.c
+@@ -306,7 +306,7 @@ static const struct attribute_group nhmex_uncore_cbox_format_group = {
+ };
+ 
+ /* msr offset for each instance of cbox */
+-static unsigned nhmex_cbox_msr_offsets[] = {
++static u64 nhmex_cbox_msr_offsets[] = {
+ 	0x0, 0x80, 0x40, 0xc0, 0x20, 0xa0, 0x60, 0xe0, 0x240, 0x2c0,
+ };
+ 
 diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index 344319a..ab31cda 100644
+index fc65870..344319a 100644
 --- a/arch/x86/events/intel/uncore_snbep.c
 +++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -6584,3 +6584,90 @@ void spr_uncore_mmio_init(void)
- }
+@@ -5278,7 +5278,7 @@ void snr_uncore_mmio_init(void)
  
- /* end of SPR uncore support */
-+
-+/* GNR uncore support */
-+
-+#define UNCORE_GNR_NUM_UNCORE_TYPES	23
-+#define UNCORE_GNR_TYPE_15		15
-+#define UNCORE_GNR_B2UPI		18
-+#define UNCORE_GNR_TYPE_21		21
-+#define UNCORE_GNR_TYPE_22		22
-+
-+int gnr_uncore_units_ignore[] = {
-+	UNCORE_SPR_UPI,
-+	UNCORE_GNR_TYPE_15,
-+	UNCORE_GNR_B2UPI,
-+	UNCORE_GNR_TYPE_21,
-+	UNCORE_GNR_TYPE_22,
-+	UNCORE_IGNORE_END
-+};
-+
-+static struct intel_uncore_type gnr_uncore_ubox = {
-+	.name			= "ubox",
-+	.attr_update		= uncore_alias_groups,
-+};
-+
-+static struct intel_uncore_type gnr_uncore_b2cmi = {
-+	SPR_UNCORE_PCI_COMMON_FORMAT(),
-+	.name			= "b2cmi",
-+};
-+
-+static struct intel_uncore_type gnr_uncore_b2cxl = {
-+	SPR_UNCORE_MMIO_COMMON_FORMAT(),
-+	.name			= "b2cxl",
-+};
-+
-+static struct intel_uncore_type gnr_uncore_mdf_sbo = {
-+	.name			= "mdf_sbo",
-+	.attr_update		= uncore_alias_groups,
-+};
-+
-+static struct intel_uncore_type *gnr_uncores[UNCORE_GNR_NUM_UNCORE_TYPES] = {
-+	&spr_uncore_chabox,
-+	&spr_uncore_iio,
-+	&spr_uncore_irp,
-+	NULL,
-+	&spr_uncore_pcu,
-+	&gnr_uncore_ubox,
-+	&spr_uncore_imc,
-+	NULL,
-+	NULL,
-+	NULL,
-+	NULL,
-+	NULL,
-+	NULL,
-+	NULL,
-+	NULL,
-+	NULL,
-+	&gnr_uncore_b2cmi,
-+	&gnr_uncore_b2cxl,
-+	NULL,
-+	NULL,
-+	&gnr_uncore_mdf_sbo,
-+	NULL,
-+	NULL,
-+};
-+
-+void gnr_uncore_cpu_init(void)
-+{
-+	uncore_msr_uncores = uncore_get_uncores(UNCORE_ACCESS_MSR, 0, NULL,
-+						UNCORE_GNR_NUM_UNCORE_TYPES,
-+						gnr_uncores);
-+}
-+
-+int gnr_uncore_pci_init(void)
-+{
-+	uncore_pci_uncores = uncore_get_uncores(UNCORE_ACCESS_PCI, 0, NULL,
-+						UNCORE_GNR_NUM_UNCORE_TYPES,
-+						gnr_uncores);
-+	return 0;
-+}
-+
-+void gnr_uncore_mmio_init(void)
-+{
-+	uncore_mmio_uncores = uncore_get_uncores(UNCORE_ACCESS_MMIO, 0, NULL,
-+						 UNCORE_GNR_NUM_UNCORE_TYPES,
-+						 gnr_uncores);
-+}
-+
-+/* end of GNR uncore support */
+ /* ICX uncore support */
+ 
+-static unsigned icx_cha_msr_offsets[] = {
++static u64 icx_cha_msr_offsets[] = {
+ 	0x2a0, 0x2ae, 0x2bc, 0x2ca, 0x2d8, 0x2e6, 0x2f4, 0x302, 0x310,
+ 	0x31e, 0x32c, 0x33a, 0x348, 0x356, 0x364, 0x372, 0x380, 0x38e,
+ 	0x3aa, 0x3b8, 0x3c6, 0x3d4, 0x3e2, 0x3f0, 0x3fe, 0x40c, 0x41a,
+@@ -5326,7 +5326,7 @@ static struct intel_uncore_type icx_uncore_chabox = {
+ 	.format_group		= &snr_uncore_chabox_format_group,
+ };
+ 
+-static unsigned icx_msr_offsets[] = {
++static u64 icx_msr_offsets[] = {
+ 	0x0, 0x20, 0x40, 0x90, 0xb0, 0xd0,
+ };
+ 
+@@ -6184,7 +6184,7 @@ static struct intel_uncore_type *spr_uncores[UNCORE_SPR_NUM_UNCORE_TYPES] = {
+  */
+ #define SPR_UNCORE_UPI_NUM_BOXES	4
+ 
+-static unsigned int spr_upi_pci_offsets[SPR_UNCORE_UPI_NUM_BOXES] = {
++static u64 spr_upi_pci_offsets[SPR_UNCORE_UPI_NUM_BOXES] = {
+ 	0, 0x8000, 0x10000, 0x18000
+ };
+ 
