@@ -2,182 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13DC07FCC28
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 02:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E0337FCC23
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 02:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376692AbjK2A5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 19:57:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51560 "EHLO
+        id S230031AbjK2BB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 20:01:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbjK2A5N (ORCPT
+        with ESMTP id S229526AbjK2BB0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 19:57:13 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2051.outbound.protection.outlook.com [40.107.94.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEE9F170B;
-        Tue, 28 Nov 2023 16:57:19 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TrL+gokNP954A9nLppYc9IQ0/zxA9L+Ky6e/636eunSLLR1kz5/Ek2pUbQKpEoZKsQRhPhZd8jm1e5hsMIluY/Nf4NiSeWPz+o2Mbirf8kBl+7gaaPkHhLefPQevHC844Iev38Cr6uORSvor6rPEsNZLEMzLeeXb/LGmfzW5fdNEWzTB5jk5hD7WPIU5DcJ8wNYKWYnqPrn57FRhIfZ64HHJVjPNuI7u0gPAZGdYW4OUkLiorHpALbsxmwJ7ImbQPQ+XsH/4rjXHOTDBHaRdOkqztGQU9/w7Cyi7GF+2NX798rKeCGUK8FD9Wh0s87kMYC6uy/6C9x9fn28cO1wwhQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=G85CKKGx76lm2ER+eX1sX8JHPXYo81UAgeZ5anJ5oaE=;
- b=jmJH1vvA9+EiEKzMw3EPdJY7rzipQfDg+Ny326S+b+Av00+evcTHzp3KmiuR/4MbzZbgUv1f1preCvRqv+6awpgk7y8DANfMz0FebNB8cME6GXWykWIPN3E3gNqL/uL18RUFfA6PGQgYvAgFZOIAyFyAVIogqQ/D45zblSjWJEgm56uKJy8xQ7W8GAGcNDnTLoNrZfiZEpREa4AW20/3SL/q/x7vz/MBgy+z0qPWsuURn/HYvIWdW4VC4VEvEyn3VA/ftDvLJYTYRo2cdMRt8OF8JlccBWMVm0KPTN2mGXy+YUhYTx7WqXPFWmairUO/v8WC4qLVK+judSjARwzpzg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G85CKKGx76lm2ER+eX1sX8JHPXYo81UAgeZ5anJ5oaE=;
- b=CDc8fvxry+0usjKh4w0LUNtlL27rKxgU9pmnkLaiioL16wEM5gI9NgyYveIzoN/VeRgKhSPD3RyM/U5jgyFxxek7fgyHaeFBtfAtGPL7sP8ag6j15/AGu87Tqeye7dP3lti9HoZDu3kxHq+k2ysPtkmiEdSSganqkpFssOq8MpwJjQwXfBVIiLEeTavPlmIzQkUADfkWKWXnL7QzdAG3ObMtbel4T+N9x9UEdsUoCQ9nj5T4r3I+VFOwcEuEmiMIYt00iAkz/axzl3zwGzYTn4X+7qsqQwabsplws8Ps26OqyCjlTXirjsL3npHLEedHqQ9btLF74SQuu8OEo8FD9Q==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN0PR12MB5859.namprd12.prod.outlook.com (2603:10b6:208:37a::17)
- by CO6PR12MB5411.namprd12.prod.outlook.com (2603:10b6:5:356::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.22; Wed, 29 Nov
- 2023 00:57:17 +0000
-Received: from MN0PR12MB5859.namprd12.prod.outlook.com
- ([fe80::7d0e:720a:6192:2e6b]) by MN0PR12MB5859.namprd12.prod.outlook.com
- ([fe80::7d0e:720a:6192:2e6b%5]) with mapi id 15.20.7025.022; Wed, 29 Nov 2023
- 00:57:16 +0000
-Date:   Tue, 28 Nov 2023 20:57:15 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Nicolin Chen <nicolinc@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
-        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "shameerali.kolothum.thodi@huawei.com" 
-        <shameerali.kolothum.thodi@huawei.com>,
-        "lulu@redhat.com" <lulu@redhat.com>,
-        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
-        "joao.m.martins@oracle.com" <joao.m.martins@oracle.com>,
-        "Zeng, Xin" <xin.zeng@intel.com>,
-        "Zhao, Yan Y" <yan.y.zhao@intel.com>
-Subject: Re: [PATCH v6 2/6] iommufd: Add IOMMU_HWPT_INVALIDATE
-Message-ID: <20231129005715.GS436702@nvidia.com>
-References: <BN9PR11MB5276D8406BF08B853329288C8CB4A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <fa736836-e136-4ed4-a6af-8ea2f0e7c0dd@intel.com>
- <BN9PR11MB527659462CCB7280055858D98CB4A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZVuZOYFzAaCuJjXZ@Asurada-Nvidia>
- <BN9PR11MB5276C8EACE2C300A646EA8A18CBBA@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZVw/BXxgGCuCZCA6@Asurada-Nvidia>
- <BN9PR11MB52761A9B48A25E89BEECE6308CB8A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZWTzoBTDDEWAKMs9@Asurada-Nvidia>
- <BN9PR11MB5276FD60A0EDF8E3F231FCC88CBCA@BN9PR11MB5276.namprd11.prod.outlook.com>
- <ZWaLCSAMIOXTlghk@Asurada-Nvidia>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWaLCSAMIOXTlghk@Asurada-Nvidia>
-X-ClientProxiedBy: DM6PR13CA0018.namprd13.prod.outlook.com
- (2603:10b6:5:bc::31) To MN0PR12MB5859.namprd12.prod.outlook.com
- (2603:10b6:208:37a::17)
+        Tue, 28 Nov 2023 20:01:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E78C1707
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 17:01:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701219690;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GSGCciYfFxwIPQRFv+/e0JSlg77OghN2r+cuBAMmVKU=;
+        b=Ba3UZdr0ViBX0EW5P1G8waoDJ9p4kFWRF/L5B88n7UIGdshqfhVafTPZVknFwOdIyMONTj
+        6cFuflTuS/ys08ix/QtnBcMU0180ashAM3iTNeD88xRsfc7m1Cjcz6Dnuru+Mqs9fC5ukJ
+        Zezdb7I7QSGUPLt/cNN9L3yc3GLMYI4=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-373-uKFA-c_qPkmjqU5_hNC6OA-1; Tue, 28 Nov 2023 20:01:28 -0500
+X-MC-Unique: uKFA-c_qPkmjqU5_hNC6OA-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a01c7b09335so496844266b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 17:01:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701219687; x=1701824487;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GSGCciYfFxwIPQRFv+/e0JSlg77OghN2r+cuBAMmVKU=;
+        b=OazplOfANBDsSRN5PHBd/RwfTq6sMmRFQ8QLVocET0WrD97fXc4HYlAg/AgFBf4BlL
+         7kghXqMSHGgFyT6xQ7BUBAP+SB+vg/99kKQBEBlL3GBrydO8XCeS/kQX787psfIYaO31
+         Gw1XXIPFbV9+trYl94XKmQxTogon+NVOYjZxtYng7OS1d5HW7A+h87D+lSQJ92dNjmeb
+         0m7aGPo7Whf+K5gxzJEsOR6++Pz9O3c6sL3GQdSCeBEM+DX1246Ysw2aidzwThVyKYJH
+         zNRivdYaZF+8PVat9ZWwzScz0U4u9z00CqOqB85n4vTOYxGJVkenjYRKG++LrqQ0dudl
+         1xkQ==
+X-Gm-Message-State: AOJu0Yx6jmzrYziMh2Y9k8aZ8opj8lDBVlUpSxp90Gxeea02icVxWK3X
+        VukY8koULMp/pNHaLOo0sB1MhZ9j4HDj5YAbL3C0h6U8ZDiaHLkQUv9+JLrlXvxaoSoQKsTEr48
+        BFYyjHMdEA+NW4nXihom5UC82
+X-Received: by 2002:a17:906:2886:b0:9fd:1cd7:f68d with SMTP id o6-20020a170906288600b009fd1cd7f68dmr12528230ejd.67.1701219687679;
+        Tue, 28 Nov 2023 17:01:27 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGQeFU/7OCm3a5OIDfphx7EB9HRSJKIcJpYxpSBNBkpXwboirjbwJAVpjyUf3WaykM2UmUoVQ==
+X-Received: by 2002:a17:906:2886:b0:9fd:1cd7:f68d with SMTP id o6-20020a170906288600b009fd1cd7f68dmr12528216ejd.67.1701219687427;
+        Tue, 28 Nov 2023 17:01:27 -0800 (PST)
+Received: from ?IPV6:2a02:810d:4b3f:de9c:abf:b8ff:feee:998b? ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
+        by smtp.gmail.com with ESMTPSA id o12-20020a1709064f8c00b00a01892903d6sm7264891eju.47.2023.11.28.17.01.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 Nov 2023 17:01:26 -0800 (PST)
+Message-ID: <4b10068c-4285-41df-b4bb-4c61ac70a30b@redhat.com>
+Date:   Wed, 29 Nov 2023 02:01:25 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB5859:EE_|CO6PR12MB5411:EE_
-X-MS-Office365-Filtering-Correlation-Id: 82298f0f-4556-4cdf-9f88-08dbf07621ca
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CS9po6gOME6iZJrsSAZQ59DWtQ0ptr08YRLZ1Pv8XlJocenVHAQGWPjC7/etnTSg5NffPgVPQkIO2BQWH4+bFSMLPIeQUtGE6xSMeHolxl/9ygbLQVMPZlth2pjJC8iY0OetuRZshm7TVjTYtV4UziFxmgg+sJOr27/SS/9L5EWFNhEzyLyu2VwKGogvwFsI7DOTMqlilLLfgKTypC+rbYKKJaeVunqbi+jV3Vz9vNhufTdbyqp9AzDkQujeD1/aXRoFLceWB6DuBGIkOca+NKcXHYvvttq/U6KAbyzR/38o3ZLsb/p327mRJfkZqi6+Qd9PiAyXihHdTIx82LKf8ifMHAVdGa+tfgU7Y6QP3BEvlHgiESFCq6ja0UcWGwJMVmlpv+ThdxEOR0MQunMv8ro579ZEWeMqyvGcESPpR/nusDorqq1OhDRyc/tou8rbjQ2SIrxFD/wz2JPBQ4N00nCSi4VTimBzPeYFvhuls9abU/j8MhyyRAZh7DJHmExwOg4UE6t9BBUlT71w1SSn1nP7uB3zlnLVLk+Je1vw4E4RGgcphrU5JMnMleB6jKyQkemg4iwlq7a9Va8AlZydm3JUwb/RhCHV5YEh1dj1rZ8cjsUSw4wSz31s0/gb/EOP
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB5859.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(396003)(346002)(376002)(39860400002)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(6512007)(2616005)(478600001)(1076003)(26005)(38100700002)(36756003)(86362001)(33656002)(7416002)(2906002)(41300700001)(83380400001)(6636002)(4326008)(37006003)(316002)(66556008)(66476007)(54906003)(6486002)(5660300002)(6506007)(66946007)(8676002)(8936002)(6862004)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?5SpzK+pZMWsPSacV9/PygGGyvz73woVEtHC5ljJjwidv6ls55wuC0XIhbQEg?=
- =?us-ascii?Q?LlgPegTyBZX9kjlQnV9XDXWawmYBDPzzrESdDEz2rO+qkvpqUwxkSp9R329I?=
- =?us-ascii?Q?V8HNAH/DcaQsjsW/qUA2ma4oJbiY4ZAozRKR8vARnDAw0OXAJy+vxC5DkwXR?=
- =?us-ascii?Q?3lxCkjw3gkB0Ja+fl164XGqNajygWiVD2dZUdvgI1DPIM+xFsvy6gSm5Rdhg?=
- =?us-ascii?Q?KWp4QVhtK31e//nqNrEpTwa+qNm9OJdwqZP3liwZZJFN3g/myyIz2TWHLJvq?=
- =?us-ascii?Q?XyrU2I0zC1EDcM9K6rgt/9ZM79T22ionDPDERRAjZf5FU/Q4yjqRiHBJsvVO?=
- =?us-ascii?Q?GQMDaqrUYJi0TPVyZamstbaXVQPtfV5WQk8jIx5jWux/IowyznA+4NdcPTNE?=
- =?us-ascii?Q?oVJ3YDngk0z9baq6g7E42A8+WzSYpb374PbRd1J+rmarTMmjFnVHXjlEYl6u?=
- =?us-ascii?Q?jn1gYyXePegZfVdqWfVd46vWEqnZsy/atdEUR8kG4NBFdbvKOwUGB9iKE9MS?=
- =?us-ascii?Q?73gnp41whxStUDd+V3/HB07oIjuV4CiAajA0oJVZyLot/B45YFd/ts3VMbt1?=
- =?us-ascii?Q?fK6mWTk7qmj7j8ppAgIDt1z0EOyc5PsDPa5rJVkYaKF3RRdM/w5UYsnimxMN?=
- =?us-ascii?Q?+/uLzdJpAffo6us/NIcRPWpLivss988M6VGmNQRywvPdr1DLRx/mkR7ThRXk?=
- =?us-ascii?Q?9U2J6qgphHZ18NQYFXYhc/gk/yhdAW+8Ed/dwW6SGR1URdf+AHmPazvlh72v?=
- =?us-ascii?Q?cmKpjhK6cH3p34NzRX6CHU8d8eo/N5zEAly4n6tsm0ZtnJbNIF7HLDCUEB+4?=
- =?us-ascii?Q?jBkfwlcliEP7DZPhy04lrOuvDT0WZMAKLT69MzBNzyOxjTj5P/sHMiC5U/OJ?=
- =?us-ascii?Q?ZyXuwWGMj+lW7z5vhz5/B+3sKovI+IZ7sPZzUBzf+lCEM0hIv7CDeyTMzGJq?=
- =?us-ascii?Q?5NhVIZ+DPp6htbrP2T6kp7MyZ+ENc3eyjEed9QtNVhHP49yuZjrcBnnteyAi?=
- =?us-ascii?Q?XwzJ7nFSMSYnNeBPdxf2JVP46GHYJ2DTKtp8KY7n0nhxppkhGS6iR4WAJeap?=
- =?us-ascii?Q?fCiReuFlIF9KJlIgJPZ5OxcYjf9a06DwNHkr3xXGLQXiUia5WNQa/Ea1jSop?=
- =?us-ascii?Q?3owIAdhu0/v3+USdiq1QoD5z63qIfioaniGck+9ZOTDjqQ1qVYtsH99GX8Gl?=
- =?us-ascii?Q?srIBzazlwlcehsMjoGFISfQNcJwZRigtJWd/7GyFMg4RaWEHlFuktjbEAJHE?=
- =?us-ascii?Q?W61qzY+fZaRO4K/SM6DysrUmiB+vW44aKTOmIffn+ka+6ASu8GAUP40EqRct?=
- =?us-ascii?Q?5PuFt2JQt636ry4hunboQhesB/jad5fAMJQKUEOFXqoxzwG5/fCZI4JqEwou?=
- =?us-ascii?Q?G/RykORrOwDoDgxv/WTdpKdxoWTrsdD5hY1uw0XOwz30mBSbQ+xhc/rvnDne?=
- =?us-ascii?Q?ilfOnwMKaCQVEfIxPY0iwV5kB1Tw0BS030sja1WUXmq9CUgVR+rp1m8ET4Fq?=
- =?us-ascii?Q?Q1NscIW+872s/eCmMawqtCyI071W9uOmZJsJfBhUE4mNt0ZOQ2AZNAith4Zz?=
- =?us-ascii?Q?Pyx1qY5Knk2kLtXY6GiGXAecL3aOpvl6yHMD0ueS?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 82298f0f-4556-4cdf-9f88-08dbf07621ca
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB5859.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 00:57:16.8090
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uaoWgxdX1Yx+e3tIQVeAhfCHA4r0tE7caqRA+qi0tX1q2LlQwuiFSrqYxtcVjN3q
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5411
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Nouveau] [PATCH][next] nouveau/gsp: replace zero-length array
+ with flex-array member and use __counted_by
+Content-Language: en-US
+To:     Timur Tabi <ttabi@nvidia.com>,
+        "gustavoars@kernel.org" <gustavoars@kernel.org>
+Cc:     "nouveau@lists.freedesktop.org" <nouveau@lists.freedesktop.org>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <ZVZbX7C5suLMiBf+@work> <ZVZxXiXYIzEwUE3N@pollux>
+ <6517a6a41eb72d16596c913dc56467e0390287a3.camel@nvidia.com>
+From:   Danilo Krummrich <dakr@redhat.com>
+Organization: RedHat
+In-Reply-To: <6517a6a41eb72d16596c913dc56467e0390287a3.camel@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 04:51:21PM -0800, Nicolin Chen wrote:
-> > > I also thought about making this out_driver_error_code per HW.
-> > > Yet, an error can be either per array or per entry/quest. The
-> > > array-related error should be reported in the array structure
-> > > that is a core uAPI, v.s. the per-HW entry structure. Though
-> > > we could still report an array error in the entry structure
-> > > at the first entry (or indexed by "array->entry_num")?
-> > >
-> > 
-> > why would there be an array error? array is just a software
-> > entity containing actual HW invalidation cmds. If there is
-> > any error with the array itself it should be reported via
-> > ioctl errno.
+On 11/16/23 20:55, Timur Tabi wrote:
+> On Thu, 2023-11-16 at 20:45 +0100, Danilo Krummrich wrote:
+>> As I already mentioned for Timur's patch [2], I'd prefer to get a fix
+>> upstream
+>> (meaning [1] in this case). Of course, that's probably more up to Timur to
+>> tell
+>> if this will work out.
 > 
-> User array reading is a software operation, but kernel array
-> reading is a hardware operation that can raise an error when
-> the memory location to the array is incorrect or so.
+> Don't count on it.
 
-Well, we shouldn't get into a situation like that.. By the time the HW
-got the address it should be valid.
+I see. Well, I think it's fine. Once we implement a decent abstraction we likely
+don't need those header files in the kernel anymore.
 
-> With that being said, I think errno (-EIO) could do the job,
-> as you suggested too.
+@Gustavo, if you agree I will discard the indentation change when applying the
+patch to keep the diff as small as possible.
 
-Do we have any idea what HW failures can be generated by the commands
-this will execture? IIRC I don't remember seeing any smmu specific
-codes related to invalid invalidation? Everything is a valid input?
+- Danilo
 
-Can vt-d fail single commands? What about AMD?
+> 
+> Even if I did change [0] to [], I'm not going to be able to add the
+> "__counted_by(numEntries);" because that's just not something that our build
+> system uses.
+> 
+> And even then, I would need to change all [0] to [].
+> 
+> You're not going to be able to use RM's header files as-is anyway in the
+> long term.  If we changed the layout of PACKED_REGISTRY_TABLE, we're not
+> going to create a PACKED_REGISTRY_TABLE2 and keep both around.  We're just
+> going to change PACKED_REGISTRY_TABLE and pretend the previous version never
+> existed.  You will then have to manually copy the new struct to your header
+> files and and maintain two versions yourself.
+> 
+> 
+> 
 
-> > Jason, how about your opinion? I didn't spot big issues
-> > except this one. Hope it can make into 6.8.
-
-Yes, lets try
-
-Jason
