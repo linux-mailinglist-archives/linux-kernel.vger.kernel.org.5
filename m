@@ -2,413 +2,284 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 731927FD844
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:34:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7ACA7FD82F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:33:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234311AbjK2Nej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 08:34:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36582 "EHLO
+        id S234031AbjK2Ndn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 08:33:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234329AbjK2NeR (ORCPT
+        with ESMTP id S231452AbjK2Ndl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 08:34:17 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4AED10D4
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:34:20 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 5028A1FCE6;
-        Wed, 29 Nov 2023 13:34:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1701264859; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ubJkMQ3bJM1M1oqNOhKbV6Ls4YI1RdRoIlEotgJ7Ja8=;
-        b=Q34sQ5cYfQBMmXxnbsLfnNclguCLvpQGXr1gnmOdLsK5QxIGxAwJLchCVMECxkDn0YUKDm
-        rAn4n0AA1OBk7+khDtHgrv9Bq7kN9FElZ/ps03YFRjTmeyZg3ZOMYdTek+pjt7VYXxACRj
-        Cz0F0K3ZQ+ED/LD0OOs0i88eCrc/Sdg=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id F130A1376F;
-        Wed, 29 Nov 2023 13:34:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap2.dmz-prg2.suse.org with ESMTPSA
-        id bHVyOdo9Z2WoHwAAn2gu4w
-        (envelope-from <jgross@suse.com>); Wed, 29 Nov 2023 13:34:18 +0000
-From:   Juergen Gross <jgross@suse.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        virtualization@lists.linux.dev
-Cc:     Juergen Gross <jgross@suse.com>, Ajay Kaher <akaher@vmware.com>,
-        Alexey Makhalov <amakhalov@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v5 5/5] x86/paravirt: remove no longer needed paravirt patching code
-Date:   Wed, 29 Nov 2023 14:33:32 +0100
-Message-Id: <20231129133332.31043-6-jgross@suse.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20231129133332.31043-1-jgross@suse.com>
-References: <20231129133332.31043-1-jgross@suse.com>
+        Wed, 29 Nov 2023 08:33:41 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5742EA8;
+        Wed, 29 Nov 2023 05:33:46 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8D4522F4;
+        Wed, 29 Nov 2023 05:34:32 -0800 (PST)
+Received: from raptor (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4A2BB3F5A1;
+        Wed, 29 Nov 2023 05:33:40 -0800 (PST)
+Date:   Wed, 29 Nov 2023 13:33:37 +0000
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+To:     Hyesoo Yu <hyesoo.yu@samsung.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
+        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
+        yuzenghui@huawei.com, arnd@arndb.de, akpm@linux-foundation.org,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, mhiramat@kernel.org,
+        rppt@kernel.org, hughd@google.com, pcc@google.com,
+        steven.price@arm.com, anshuman.khandual@arm.com,
+        vincenzo.frascino@arm.com, david@redhat.com, eugenis@google.com,
+        kcc@google.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
+        linux-fsdevel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC v2 16/27] arm64: mte: Manage tag storage on page
+ allocation
+Message-ID: <ZWc9sVTCHTBcp2Z2@raptor>
+References: <20231119165721.9849-1-alexandru.elisei@arm.com>
+ <CGME20231119165906epcas2p4c6691d274bec428329b193b99119a8d1@epcas2p4.samsung.com>
+ <20231119165721.9849-17-alexandru.elisei@arm.com>
+ <20231129091040.GC2988384@tiffany>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -3.10
-X-Spamd-Result: default: False [-3.10 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLY(-4.00)[];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         RCVD_COUNT_THREE(0.00)[3];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         RCPT_COUNT_TWELVE(0.00)[13];
-         MID_CONTAINS_FROM(1.00)[];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:email,suse.com:email];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231129091040.GC2988384@tiffany>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that paravirt is using the alternatives patching infrastructure,
-remove the paravirt patching code.
+Hi,
 
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/include/asm/paravirt.h       | 16 -------
- arch/x86/include/asm/paravirt_types.h | 38 ---------------
- arch/x86/include/asm/text-patching.h  | 12 -----
- arch/x86/kernel/alternative.c         | 67 +--------------------------
- arch/x86/kernel/paravirt.c            | 30 ------------
- arch/x86/kernel/vmlinux.lds.S         | 13 ------
- arch/x86/tools/relocs.c               |  2 +-
- 7 files changed, 3 insertions(+), 175 deletions(-)
+On Wed, Nov 29, 2023 at 06:10:40PM +0900, Hyesoo Yu wrote:
+> On Sun, Nov 19, 2023 at 04:57:10PM +0000, Alexandru Elisei wrote:
+> > [..]
+> > +static int order_to_num_blocks(int order)
+> > +{
+> > +	return max((1 << order) / 32, 1);
+> > +}
+> > [..]
+> > +int reserve_tag_storage(struct page *page, int order, gfp_t gfp)
+> > +{
+> > +	unsigned long start_block, end_block;
+> > +	struct tag_region *region;
+> > +	unsigned long block;
+> > +	unsigned long flags;
+> > +	unsigned int tries;
+> > +	int ret = 0;
+> > +
+> > +	VM_WARN_ON_ONCE(!preemptible());
+> > +
+> > +	if (page_tag_storage_reserved(page))
+> > +		return 0;
+> > +
+> > +	/*
+> > +	 * __alloc_contig_migrate_range() ignores gfp when allocating the
+> > +	 * destination page for migration. Regardless, massage gfp flags and
+> > +	 * remove __GFP_TAGGED to avoid recursion in case gfp stops being
+> > +	 * ignored.
+> > +	 */
+> > +	gfp &= ~__GFP_TAGGED;
+> > +	if (!(gfp & __GFP_NORETRY))
+> > +		gfp |= __GFP_RETRY_MAYFAIL;
+> > +
+> > +	ret = tag_storage_find_block(page, &start_block, &region);
+> > +	if (WARN_ONCE(ret, "Missing tag storage block for pfn 0x%lx", page_to_pfn(page)))
+> > +		return 0;
+> > +	end_block = start_block + order_to_num_blocks(order) * region->block_size;
+> > +
+> 
+> Hello.
+> 
+> If the page size is 4K,  block size is 2 (block size bytes 8K), and order is 6,
+> then we need 2 pages for the tag. However according to the equation, order_to_num_blocks
+> is 2 and block_size is also 2, so end block will be incremented by 4.
+> 
+> However we actually only need 8K of tag, right for 256K ?
+> Could you explain order_to_num_blocks * region->block_size more detail ?
 
-diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
-index 88bb5c34a171..f09acce9432c 100644
---- a/arch/x86/include/asm/paravirt.h
-+++ b/arch/x86/include/asm/paravirt.h
-@@ -725,29 +725,13 @@ void native_pv_lock_init(void) __init;
- 
- #else  /* __ASSEMBLY__ */
- 
--#define _PVSITE(ptype, ops)			\
--771:;						\
--	ops;					\
--772:;						\
--	.pushsection .parainstructions,"a";	\
--	 .long 771b-.;				\
--	 .byte ptype;				\
--	 .byte 772b-771b;			\
--	.popsection
--
--
- #ifdef CONFIG_X86_64
- #ifdef CONFIG_PARAVIRT_XXL
- #ifdef CONFIG_DEBUG_ENTRY
- 
--#define PARA_PATCH(off)		((off) / 8)
--#define PARA_SITE(ptype, ops)	_PVSITE(ptype, ops)
- #define PARA_INDIRECT(addr)	*addr(%rip)
- 
- .macro PARA_IRQ_save_fl
--	PARA_SITE(PARA_PATCH(PV_IRQ_save_fl),
--		  ANNOTATE_RETPOLINE_SAFE;
--		  call PARA_INDIRECT(pv_ops+PV_IRQ_save_fl);)
- 	ANNOTATE_RETPOLINE_SAFE;
- 	call PARA_INDIRECT(pv_ops+PV_IRQ_save_fl);
- .endm
-diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
-index 9cad536fc08d..d8e85d2cf8d5 100644
---- a/arch/x86/include/asm/paravirt_types.h
-+++ b/arch/x86/include/asm/paravirt_types.h
-@@ -2,15 +2,6 @@
- #ifndef _ASM_X86_PARAVIRT_TYPES_H
- #define _ASM_X86_PARAVIRT_TYPES_H
- 
--#ifndef __ASSEMBLY__
--/* These all sit in the .parainstructions section to tell us what to patch. */
--struct paravirt_patch_site {
--	s32 instr_offset;	/* original instructions */
--	u8 type;		/* type of this instruction */
--	u8 len;			/* length of original instruction */
--} __packed;
--#endif
--
- #ifdef CONFIG_PARAVIRT
- 
- #ifndef __ASSEMBLY__
-@@ -250,32 +241,6 @@ struct paravirt_patch_template {
- extern struct pv_info pv_info;
- extern struct paravirt_patch_template pv_ops;
- 
--#define PARAVIRT_PATCH(x)					\
--	(offsetof(struct paravirt_patch_template, x) / sizeof(void *))
--
--#define paravirt_type(op)				\
--	[paravirt_typenum] "i" (PARAVIRT_PATCH(op)),	\
--	[paravirt_opptr] "m" (pv_ops.op)
--/*
-- * Generate some code, and mark it as patchable by the
-- * apply_paravirt() alternate instruction patcher.
-- */
--#define _paravirt_alt(insn_string, type)		\
--	"771:\n\t" insn_string "\n" "772:\n"		\
--	".pushsection .parainstructions,\"a\"\n"	\
--	"  .long 771b-.\n"				\
--	"  .byte " type "\n"				\
--	"  .byte 772b-771b\n"				\
--	".popsection\n"
--
--/* Generate patchable code, with the default asm parameters. */
--#define paravirt_alt(insn_string)					\
--	_paravirt_alt(insn_string, "%c[paravirt_typenum]")
--
--/* Simple instruction patching code. */
--#define NATIVE_LABEL(a,x,b) "\n\t.globl " a #x "_" #b "\n" a #x "_" #b ":\n\t"
--
--unsigned int paravirt_patch(u8 type, void *insn_buff, unsigned long addr, unsigned int len);
- #define paravirt_ptr(op)	[paravirt_opptr] "m" (pv_ops.op)
- 
- int paravirt_disable_iospace(void);
-@@ -555,9 +520,6 @@ unsigned long pv_native_read_cr2(void);
- 
- #define paravirt_nop	((void *)nop_func)
- 
--extern struct paravirt_patch_site __parainstructions[],
--	__parainstructions_end[];
--
- #endif	/* __ASSEMBLY__ */
- 
- #define ALT_NOT_XEN	ALT_NOT(X86_FEATURE_XENPV)
-diff --git a/arch/x86/include/asm/text-patching.h b/arch/x86/include/asm/text-patching.h
-index 29832c338cdc..0b70653a98c1 100644
---- a/arch/x86/include/asm/text-patching.h
-+++ b/arch/x86/include/asm/text-patching.h
-@@ -6,18 +6,6 @@
- #include <linux/stddef.h>
- #include <asm/ptrace.h>
- 
--struct paravirt_patch_site;
--#ifdef CONFIG_PARAVIRT
--void apply_paravirt(struct paravirt_patch_site *start,
--		    struct paravirt_patch_site *end);
--#else
--static inline void apply_paravirt(struct paravirt_patch_site *start,
--				  struct paravirt_patch_site *end)
--{}
--#define __parainstructions	NULL
--#define __parainstructions_end	NULL
--#endif
--
- /*
-  * Currently, the max observed size in the kernel code is
-  * JUMP_LABEL_NOP_SIZE/RELATIVEJUMP_SIZE, which are 5.
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index 1f605079f982..4781f781f7db 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -1467,48 +1467,6 @@ int alternatives_text_reserved(void *start, void *end)
- }
- #endif /* CONFIG_SMP */
- 
--#ifdef CONFIG_PARAVIRT
--
--/* Use this to add nops to a buffer, then text_poke the whole buffer. */
--static void __init_or_module add_nops(void *insns, unsigned int len)
--{
--	while (len > 0) {
--		unsigned int noplen = len;
--		if (noplen > ASM_NOP_MAX)
--			noplen = ASM_NOP_MAX;
--		memcpy(insns, x86_nops[noplen], noplen);
--		insns += noplen;
--		len -= noplen;
--	}
--}
--
--void __init_or_module apply_paravirt(struct paravirt_patch_site *start,
--				     struct paravirt_patch_site *end)
--{
--	struct paravirt_patch_site *p;
--	char insn_buff[MAX_PATCH_LEN];
--	u8 *instr;
--
--	for (p = start; p < end; p++) {
--		unsigned int used;
--
--		instr = (u8 *)&p->instr_offset + p->instr_offset;
--		BUG_ON(p->len > MAX_PATCH_LEN);
--		/* prep the buffer with the original instructions */
--		memcpy(insn_buff, instr, p->len);
--		used = paravirt_patch(p->type, insn_buff, (unsigned long)instr, p->len);
--
--		BUG_ON(used > p->len);
--
--		/* Pad the rest with nops */
--		add_nops(insn_buff + used, p->len - used);
--		text_poke_early(instr, insn_buff, p->len);
--	}
--}
--extern struct paravirt_patch_site __start_parainstructions[],
--	__stop_parainstructions[];
--#endif	/* CONFIG_PARAVIRT */
--
- /*
-  * Self-test for the INT3 based CALL emulation code.
-  *
-@@ -1644,28 +1602,11 @@ void __init alternative_instructions(void)
- 	 */
- 
- 	/*
--	 * Paravirt patching and alternative patching can be combined to
--	 * replace a function call with a short direct code sequence (e.g.
--	 * by setting a constant return value instead of doing that in an
--	 * external function).
--	 * In order to make this work the following sequence is required:
--	 * 1. set (artificial) features depending on used paravirt
--	 *    functions which can later influence alternative patching
--	 * 2. apply paravirt patching (generally replacing an indirect
--	 *    function call with a direct one)
--	 * 3. apply alternative patching (e.g. replacing a direct function
--	 *    call with a custom code sequence)
--	 * Doing paravirt patching after alternative patching would clobber
--	 * the optimization of the custom code with a function call again.
-+	 * Make sure to set (artificial) features depending on used paravirt
-+	 * functions which can later influence alternative patching.
- 	 */
- 	paravirt_set_cap();
- 
--	/*
--	 * First patch paravirt functions, such that we overwrite the indirect
--	 * call with the direct call.
--	 */
--	apply_paravirt(__parainstructions, __parainstructions_end);
--
- 	__apply_fineibt(__retpoline_sites, __retpoline_sites_end,
- 			__cfi_sites, __cfi_sites_end, true);
- 
-@@ -1676,10 +1617,6 @@ void __init alternative_instructions(void)
- 	apply_retpolines(__retpoline_sites, __retpoline_sites_end);
- 	apply_returns(__return_sites, __return_sites_end);
- 
--	/*
--	 * Then patch alternatives, such that those paravirt calls that are in
--	 * alternatives can be overwritten by their immediate fragments.
--	 */
- 	apply_alternatives(__alt_instructions, __alt_instructions_end);
- 
- 	/*
-diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
-index acc5b1004f0f..5358d43886ad 100644
---- a/arch/x86/kernel/paravirt.c
-+++ b/arch/x86/kernel/paravirt.c
-@@ -43,14 +43,6 @@ void __init default_banner(void)
- 	       pv_info.name);
- }
- 
--static unsigned paravirt_patch_call(void *insn_buff, const void *target,
--				    unsigned long addr, unsigned len)
--{
--	__text_gen_insn(insn_buff, CALL_INSN_OPCODE,
--			(void *)addr, target, CALL_INSN_SIZE);
--	return CALL_INSN_SIZE;
--}
--
- #ifdef CONFIG_PARAVIRT_XXL
- DEFINE_ASM_FUNC(_paravirt_ident_64, "mov %rdi, %rax", .text);
- DEFINE_ASM_FUNC(pv_native_save_fl, "pushf; pop %rax", .noinstr.text);
-@@ -73,28 +65,6 @@ static void native_tlb_remove_table(struct mmu_gather *tlb, void *table)
- 	tlb_remove_page(tlb, table);
- }
- 
--unsigned int paravirt_patch(u8 type, void *insn_buff, unsigned long addr,
--			    unsigned int len)
--{
--	/*
--	 * Neat trick to map patch type back to the call within the
--	 * corresponding structure.
--	 */
--	void *opfunc = *((void **)&pv_ops + type);
--	unsigned ret;
--
--	if (opfunc == NULL)
--		/* If there's no function, patch it with BUG_func() */
--		ret = paravirt_patch_call(insn_buff, BUG_func, addr, len);
--	else if (opfunc == nop_func)
--		ret = 0;
--	else
--		/* Otherwise call the function. */
--		ret = paravirt_patch_call(insn_buff, opfunc, addr, len);
--
--	return ret;
--}
--
- struct static_key paravirt_steal_enabled;
- struct static_key paravirt_steal_rq_enabled;
- 
-diff --git a/arch/x86/kernel/vmlinux.lds.S b/arch/x86/kernel/vmlinux.lds.S
-index 54a5596adaa6..a349dbfc6d5a 100644
---- a/arch/x86/kernel/vmlinux.lds.S
-+++ b/arch/x86/kernel/vmlinux.lds.S
-@@ -267,19 +267,6 @@ SECTIONS
- 	}
- #endif
- 
--	/*
--	 * start address and size of operations which during runtime
--	 * can be patched with virtualization friendly instructions or
--	 * baremetal native ones. Think page table operations.
--	 * Details in paravirt_types.h
--	 */
--	. = ALIGN(8);
--	.parainstructions : AT(ADDR(.parainstructions) - LOAD_OFFSET) {
--		__parainstructions = .;
--		*(.parainstructions)
--		__parainstructions_end = .;
--	}
--
- #ifdef CONFIG_RETPOLINE
- 	/*
- 	 * List of instructions that call/jmp/jcc to retpoline thunks
-diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
-index d30949e25ebd..a3bae2b24626 100644
---- a/arch/x86/tools/relocs.c
-+++ b/arch/x86/tools/relocs.c
-@@ -66,7 +66,7 @@ static const char * const sym_regex_kernel[S_NSYMTYPES] = {
- 	[S_REL] =
- 	"^(__init_(begin|end)|"
- 	"__x86_cpu_dev_(start|end)|"
--	"(__parainstructions|__alt_instructions)(_end)?|"
-+	"__alt_instructions(_end)?|"
- 	"(__iommu_table|__apicdrivers|__smp_locks)(_end)?|"
- 	"__(start|end)_pci_.*|"
- #if CONFIG_FW_LOADER
--- 
-2.35.3
+I think you are correct, thank you for pointing it out. The formula should
+probably be something like:
+
+static int order_to_num_blocks(int order, u32 block_size)
+{
+	int num_tag_pages = max((1 << order) / 32, 1);
+
+	return DIV_ROUND_UP(num_tag_pages, block_size);
+}
+
+and that will make end_block = start_block + 2 in your scenario.
+
+Does that look correct to you?
+
+Thanks,
+Alex
+
+> 
+> Thanks,
+> Regards.
+> 
+> > +	mutex_lock(&tag_blocks_lock);
+> > +
+> > +	/* Check again, this time with the lock held. */
+> > +	if (page_tag_storage_reserved(page))
+> > +		goto out_unlock;
+> > +
+> > +	/* Make sure existing entries are not freed from out under out feet. */
+> > +	xa_lock_irqsave(&tag_blocks_reserved, flags);
+> > +	for (block = start_block; block < end_block; block += region->block_size) {
+> > +		if (tag_storage_block_is_reserved(block))
+> > +			block_ref_add(block, region, order);
+> > +	}
+> > +	xa_unlock_irqrestore(&tag_blocks_reserved, flags);
+> > +
+> > +	for (block = start_block; block < end_block; block += region->block_size) {
+> > +		/* Refcount incremented above. */
+> > +		if (tag_storage_block_is_reserved(block))
+> > +			continue;
+> > +
+> > +		tries = 3;
+> > +		while (tries--) {
+> > +			ret = alloc_contig_range(block, block + region->block_size, MIGRATE_CMA, gfp);
+> > +			if (ret == 0 || ret != -EBUSY)
+> > +				break;
+> > +		}
+> > +
+> > +		if (ret)
+> > +			goto out_error;
+> > +
+> > +		ret = tag_storage_reserve_block(block, region, order);
+> > +		if (ret) {
+> > +			free_contig_range(block, region->block_size);
+> > +			goto out_error;
+> > +		}
+> > +
+> > +		count_vm_events(CMA_ALLOC_SUCCESS, region->block_size);
+> > +	}
+> > +
+> > +	page_set_tag_storage_reserved(page, order);
+> > +out_unlock:
+> > +	mutex_unlock(&tag_blocks_lock);
+> > +
+> > +	return 0;
+> > +
+> > +out_error:
+> > +	xa_lock_irqsave(&tag_blocks_reserved, flags);
+> > +	for (block = start_block; block < end_block; block += region->block_size) {
+> > +		if (tag_storage_block_is_reserved(block) &&
+> > +		    block_ref_sub_return(block, region, order) == 1) {
+> > +			__xa_erase(&tag_blocks_reserved, block);
+> > +			free_contig_range(block, region->block_size);
+> > +		}
+> > +	}
+> > +	xa_unlock_irqrestore(&tag_blocks_reserved, flags);
+> > +
+> > +	mutex_unlock(&tag_blocks_lock);
+> > +
+> > +	count_vm_events(CMA_ALLOC_FAIL, region->block_size);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +void free_tag_storage(struct page *page, int order)
+> > +{
+> > +	unsigned long block, start_block, end_block;
+> > +	struct tag_region *region;
+> > +	unsigned long flags;
+> > +	int ret;
+> > +
+> > +	ret = tag_storage_find_block(page, &start_block, &region);
+> > +	if (WARN_ONCE(ret, "Missing tag storage block for pfn 0x%lx", page_to_pfn(page)))
+> > +		return;
+> > +
+> > +	end_block = start_block + order_to_num_blocks(order) * region->block_size;
+> > +
+> > +	xa_lock_irqsave(&tag_blocks_reserved, flags);
+> > +	for (block = start_block; block < end_block; block += region->block_size) {
+> > +		if (WARN_ONCE(!tag_storage_block_is_reserved(block),
+> > +		    "Block 0x%lx is not reserved for pfn 0x%lx", block, page_to_pfn(page)))
+> > +			continue;
+> > +
+> > +		if (block_ref_sub_return(block, region, order) == 1) {
+> > +			__xa_erase(&tag_blocks_reserved, block);
+> > +			free_contig_range(block, region->block_size);
+> > +		}
+> > +	}
+> > +	xa_unlock_irqrestore(&tag_blocks_reserved, flags);
+> > +}
+> > diff --git a/fs/proc/page.c b/fs/proc/page.c
+> > index 195b077c0fac..e7eb584a9234 100644
+> > --- a/fs/proc/page.c
+> > +++ b/fs/proc/page.c
+> > @@ -221,6 +221,7 @@ u64 stable_page_flags(struct page *page)
+> >  #ifdef CONFIG_ARCH_USES_PG_ARCH_X
+> >  	u |= kpf_copy_bit(k, KPF_ARCH_2,	PG_arch_2);
+> >  	u |= kpf_copy_bit(k, KPF_ARCH_3,	PG_arch_3);
+> > +	u |= kpf_copy_bit(k, KPF_ARCH_4,	PG_arch_4);
+> >  #endif
+> >  
+> >  	return u;
+> > diff --git a/include/linux/kernel-page-flags.h b/include/linux/kernel-page-flags.h
+> > index 859f4b0c1b2b..4a0d719ffdd4 100644
+> > --- a/include/linux/kernel-page-flags.h
+> > +++ b/include/linux/kernel-page-flags.h
+> > @@ -19,5 +19,6 @@
+> >  #define KPF_SOFTDIRTY		40
+> >  #define KPF_ARCH_2		41
+> >  #define KPF_ARCH_3		42
+> > +#define KPF_ARCH_4		43
+> >  
+> >  #endif /* LINUX_KERNEL_PAGE_FLAGS_H */
+> > diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+> > index a88e64acebfe..7915165a51bd 100644
+> > --- a/include/linux/page-flags.h
+> > +++ b/include/linux/page-flags.h
+> > @@ -135,6 +135,7 @@ enum pageflags {
+> >  #ifdef CONFIG_ARCH_USES_PG_ARCH_X
+> >  	PG_arch_2,
+> >  	PG_arch_3,
+> > +	PG_arch_4,
+> >  #endif
+> >  	__NR_PAGEFLAGS,
+> >  
+> > diff --git a/include/trace/events/mmflags.h b/include/trace/events/mmflags.h
+> > index 6ca0d5ed46c0..ba962fd10a2c 100644
+> > --- a/include/trace/events/mmflags.h
+> > +++ b/include/trace/events/mmflags.h
+> > @@ -125,7 +125,8 @@ IF_HAVE_PG_HWPOISON(hwpoison)						\
+> >  IF_HAVE_PG_IDLE(idle)							\
+> >  IF_HAVE_PG_IDLE(young)							\
+> >  IF_HAVE_PG_ARCH_X(arch_2)						\
+> > -IF_HAVE_PG_ARCH_X(arch_3)
+> > +IF_HAVE_PG_ARCH_X(arch_3)						\
+> > +IF_HAVE_PG_ARCH_X(arch_4)
+> >  
+> >  #define show_page_flags(flags)						\
+> >  	(flags) ? __print_flags(flags, "|",				\
+> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> > index f31f02472396..9beead961a65 100644
+> > --- a/mm/huge_memory.c
+> > +++ b/mm/huge_memory.c
+> > @@ -2474,6 +2474,7 @@ static void __split_huge_page_tail(struct folio *folio, int tail,
+> >  #ifdef CONFIG_ARCH_USES_PG_ARCH_X
+> >  			 (1L << PG_arch_2) |
+> >  			 (1L << PG_arch_3) |
+> > +			 (1L << PG_arch_4) |
+> >  #endif
+> >  			 (1L << PG_dirty) |
+> >  			 LRU_GEN_MASK | LRU_REFS_MASK));
+> > -- 
+> > 2.42.1
+> > 
+> > 
+
 
