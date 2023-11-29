@@ -2,159 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C67307FD7FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:25:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A6B7FD808
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:26:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233950AbjK2NZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 08:25:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43880 "EHLO
+        id S234045AbjK2N0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 08:26:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233621AbjK2NZ2 (ORCPT
+        with ESMTP id S234196AbjK2N0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 08:25:28 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FA983
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:25:34 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A3BCF210DF;
-        Wed, 29 Nov 2023 13:25:32 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 861A113637;
-        Wed, 29 Nov 2023 13:25:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-        by imap1.dmz-prg2.suse.org with ESMTPSA
-        id 47hXIMw7Z2XlRAAAD6G6ig
-        (envelope-from <vbabka@suse.cz>); Wed, 29 Nov 2023 13:25:32 +0000
-Message-ID: <e0647e65-d348-35a0-bc5a-66d1ad02ea53@suse.cz>
-Date:   Wed, 29 Nov 2023 14:25:32 +0100
+        Wed, 29 Nov 2023 08:26:02 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 708E010F2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:26:08 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB338C433C7;
+        Wed, 29 Nov 2023 13:26:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1701264368;
+        bh=TUtFqUYMxnqyBPs9bbVQmVM4vqhJdSRfDfGOD1whTY4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=udDTPg/QJRBP5QkpTiMeh9UGd3LbkIMJ6OSPtVr20lXV2I0dSmD487VSLmr4+dqmS
+         vJlRP0vpDsNw7Iwl4FU3MqaW+PIcEuvFqVcO5vM7Om6rCkZ8ccS7B5TBf3SnzFQ+lx
+         Gb+zwkl+A0q2bPQy4qnxPBJdhuZ16ezAceq6u74P8hwadHT3y+T6sS2sBzEVBkkbZv
+         ZYMnNWDnUJgkFyAN0fyACMe9PDIsBSIDt/UK+Bu+rGG8Nalg/o+G3M2fn/JbbzNtC6
+         6jCaKByn83ISVpSAPlJHtjfOUqJQyuN2HnQzcer9cY8HAL4qMIm9SG9Vsl/PCPUywk
+         G7B81I+QbUNpQ==
+Date:   Wed, 29 Nov 2023 14:26:05 +0100
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Emma Anholt <emma@anholt.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        Samuel Holland <samuel@sholland.org>,
+        Sandy Huang <hjc@rock-chips.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-doc@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>,
+        linux-rockchip@lists.infradead.org, Chen-Yu Tsai <wens@csie.org>,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 05/45] drm/connector: Check drm_connector_init
+ pointers arguments
+Message-ID: <xnhbd52q3sicro6heheu6fb3zo3g342njbz67dki44wumhy57i@aaovlbqhojan>
+References: <20231128-kms-hdmi-connector-state-v4-0-c7602158306e@kernel.org>
+ <20231128-kms-hdmi-connector-state-v4-5-c7602158306e@kernel.org>
+ <87h6l66nth.fsf@intel.com>
+ <v3hplco5fdedv6bnc6mwx2zhhw4xxdiekha26ykhc5cmy7ol77@2irk3w4hmabw>
+ <ZWXv1Oi_sH0BRWao@intel.com>
+ <2mnodqvu2oo674vspiy4gxhglu3it5cq47acx5itnbwevgc4cf@c7h2bvnx3m2n>
+ <8734wo7vbx.fsf@intel.com>
+ <kygezdrfz56zj6lmq6l5s5yyys2urgq3id7r5n4mb3afn5kc5q@eswnd6a2ihqc>
+ <87ttp46b49.fsf@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RFC v2 2/7] mm, slub: add opt-in slub_percpu_array
-Content-Language: en-US
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-Cc:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev
-References: <20230810163627.6206-9-vbabka@suse.cz>
- <20230810163627.6206-11-vbabka@suse.cz>
- <CAB=+i9TSMVURktFvr7sAt4T2BdaUvsWFapAjTZNtk0AKS01O9A@mail.gmail.com>
- <077e8e97-e88f-0b8e-2788-4031458be090@suse.cz>
- <CAB=+i9SQBhYBjOSHDeqgJJ5YARqZCS3oUUutzr4m+2V+ZvySpg@mail.gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <CAB=+i9SQBhYBjOSHDeqgJJ5YARqZCS3oUUutzr4m+2V+ZvySpg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++++++++
-X-Spam-Score: 11.63
-X-Rspamd-Server: rspamd1
-Authentication-Results: smtp-out1.suse.de;
-        dkim=none;
-        spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:97 is neither permitted nor denied by domain of vbabka@suse.cz) smtp.mailfrom=vbabka@suse.cz;
-        dmarc=none
-X-Rspamd-Queue-Id: A3BCF210DF
-X-Spamd-Result: default: False [11.63 / 50.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(1.20)[suse.cz];
-         R_SPF_SOFTFAIL(4.60)[~all];
-         SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-         RCVD_COUNT_THREE(0.00)[3];
-         MX_GOOD(-0.01)[];
-         NEURAL_HAM_SHORT(-0.05)[-0.257];
-         RCPT_COUNT_TWELVE(0.00)[12];
-         DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
-         NEURAL_SPAM_LONG(2.29)[0.655];
-         FREEMAIL_TO(0.00)[gmail.com];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         R_DKIM_NA(2.20)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_TLS_ALL(0.00)[];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7y6ja2ijtruwy6p6"
+Content-Disposition: inline
+In-Reply-To: <87ttp46b49.fsf@intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/29/23 01:46, Hyeonggon Yoo wrote:
-> On Wed, Nov 29, 2023 at 2:37 AM Vlastimil Babka <vbabka@suse.cz> wrote:
-> 
->> >> @@ -4060,6 +4201,45 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
->> >>  }
->> >>  EXPORT_SYMBOL(kmem_cache_alloc_bulk);
->> >>
->> >> +int kmem_cache_prefill_percpu_array(struct kmem_cache *s, unsigned int count,
->> >> +               gfp_t gfp)
->> >> +{
->> >> +       struct slub_percpu_array *pca;
->> >> +       void *objects[32];
->> >> +       unsigned int used;
->> >> +       unsigned int allocated;
->> >> +
->> >> +       if (!s->cpu_array)
->> >> +               return -EINVAL;
->> >> +
->> >> +       /* racy but we don't care */
->> >> +       pca = raw_cpu_ptr(s->cpu_array);
->> >> +
->> >> +       used = READ_ONCE(pca->used);
->> >
->> > Hmm for the prefill to be meaningful,
->> > remote allocation should be possible, right?
->>
->> Remote in what sense?
-> 
-> TL;DR) What I wanted to ask was:
-> "How pre-filling a number of objects works when the pre-filled objects
-> are not shared between CPUs"
-> 
-> IIUC the prefill is opportunistically filling the array so (hopefully)
-> expecting there are
-> some objects filled in it.
 
-Yes.
+--7y6ja2ijtruwy6p6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Let's say CPU X calls kmem_cache_prefill_percpu_array(32) and all 32
-> objects are filled into CPU X's array.
-> But if CPU Y can't allocate from CPU X's array (which I referred to as
-> "remote allocation"), the semantics differ from
-> the maple tree's perspective because preallocated objects were shared
-> between CPUs before, but now it's not?
+On Wed, Nov 29, 2023 at 01:40:38PM +0200, Jani Nikula wrote:
+> On Wed, 29 Nov 2023, Maxime Ripard <mripard@kernel.org> wrote:
+> > On Wed, Nov 29, 2023 at 11:38:42AM +0200, Jani Nikula wrote:
+> >> On Wed, 29 Nov 2023, Maxime Ripard <mripard@kernel.org> wrote:
+> >> > Hi Ville,
+> >> >
+> >> > On Tue, Nov 28, 2023 at 03:49:08PM +0200, Ville Syrj=E4l=E4 wrote:
+> >> >> On Tue, Nov 28, 2023 at 02:29:40PM +0100, Maxime Ripard wrote:
+> >> >> > On Tue, Nov 28, 2023 at 02:54:02PM +0200, Jani Nikula wrote:
+> >> >> > > On Tue, 28 Nov 2023, Maxime Ripard <mripard@kernel.org> wrote:
+> >> >> > > > All the drm_connector_init variants take at least a pointer t=
+o the
+> >> >> > > > device, connector and hooks implementation.
+> >> >> > > >
+> >> >> > > > However, none of them check their value before dereferencing =
+those
+> >> >> > > > pointers which can lead to a NULL-pointer dereference if the =
+author
+> >> >> > > > isn't careful.
+> >> >> > >=20
+> >> >> > > Arguably oopsing on the spot is preferrable when this can't be =
+caused by
+> >> >> > > user input. It's always a mistake that should be caught early d=
+uring
+> >> >> > > development.
+> >> >> > >=20
+> >> >> > > Not everyone checks the return value of drm_connector_init and =
+friends,
+> >> >> > > so those cases will lead to more mysterious bugs later. And pro=
+bably
+> >> >> > > oopses as well.
+> >> >> >=20
+> >> >> > So maybe we can do both then, with something like
+> >> >> >=20
+> >> >> > if (WARN_ON(!dev))
+> >> >> >    return -EINVAL
+> >> >> >=20
+> >> >> > if (drm_WARN_ON(dev, !connector || !funcs))
+> >> >> >    return -EINVAL;
+> >> >> >=20
+> >> >> > I'd still like to check for this, so we can have proper testing, =
+and we
+> >> >> > already check for those pointers in some places (like funcs in
+> >> >> > drm_connector_init), so if we don't cover everything we're incons=
+istent.
+> >> >>=20
+> >> >> People will invariably cargo-cult this kind of stuff absolutely
+> >> >> everywhere and then all your functions will have tons of dead
+> >> >> code to check their arguments.
+> >> >
+> >> > And that's a bad thing because... ?
+> >> >
+> >> > Also, are you really saying that checking that your arguments make s=
+ense
+> >> > is cargo-cult?
+> >>=20
+> >> It's a powerful thing to be able to assume a NULL argument is always a
+> >> fatal programming error on the caller's side, and should oops and get
+> >> caught immediately. It's an assertion.
+> >
+> > Yeah, but we're not really doing that either. We have no explicit
+> > assertion anywhere. We take a pointer in, and just hope that it will be
+> > dereferenced later on and that the kernel will crash. The pointer to the
+> > functions especially is only deferenced very later on.
+> >
+> > And assertions might be powerful, but being able to notice errors and
+> > debug them is too. A panic takes away basically any remote access to
+> > debug. If you don't have a console, you're done.
+> >
+> >> We're not talking about user input or anything like that here.
+> >>=20
+> >> If you start checking for things that can't happen, and return errors
+> >> for them, you start gracefully handling things that don't have anything
+> >> graceful about them.
+> >
+> > But there's nothing graceful to do here: you just return from your probe
+> > function that you couldn't probe and that's it. Just like you do when
+> > you can't map your registers, or get your interrupt, or register into
+> > any framework (including drm_dev_register that pretty much every driver
+> > handles properly if it returns an error, without being graceful about
+> > it).
+>=20
+> Those are all dynamic things that can fail.
+>=20
+> Quite different from passing NULL dev, connector, or funcs to
+> drm_connector_init() and friends.
+>=20
+> I think it's wrong to set the example that everything needs to be
+> checked, everything needs to return an error, every call needs to check
+> for error return, all the time, everywhere. People absolutely will cargo
+> cult that, and that's what Ville is referring to.
+>=20
+> If you pass NULL dev, connector, or funcs to drm_connector_init() I
+> think you absolutely deserve to get an oops.
+>=20
+> For dev, you could possibly not have reached the function with NULL
+> dev. (And __drm_connector_init() has dev->mode_config before the check,
+> so you'll get a static analyzer warning about dereference before the
+> check.) If you have NULL connector, you didn't check for allocation
+> failure earlier. If you have NULL funcs, you just passed NULL, because
+> it's generally supposed to be a pointer to a static const struct.
+>=20
+> >> Having such checks in place trains people to think they *may* happen.
+> >
+> > In most cases, kmalloc can't fail. We seem to have a very different
+> > policy towards it.
+>=20
+> Again, dynamic in nature and can fail.
+>=20
+> >> While it should fail fast and loud at the developer's first smoke test,
+> >> and get fixed then and there.
+> >
+> > Returning an error + a warning also qualifies for "fail fast and loud".
+> > But keeps the system alive for someone to notice in any case.
+>=20
+> But where do you draw the line?
 
-The assumption is that the operation will prefill on CPU X and then consume
-it also on X, because shortly after prefill it will enter some restricted
-context (i.e. spin_lock_irqsave or whatnot) that prevents it from migrating.
-That's not guaranteed of course, but migration in a bad moment and
-subsequent depleted array should be rare enough that we'll just handle it in
-the slow paths, and if it results in dipping into reserves, it won't be too
-disruptive.
+This also applies to static things then.
+drm_connector_attach_scaling_mode_property() or
+drm_mode_create_colorspace_property() (or plenty of others) will check
+on the value of the supported scaling modes colorspaces, even though
+they are static.
 
-> Thanks!
-> 
-> --
-> Hyeonggon
+It looks like we have that policy of "just assert and roll with it" for
+pointers, but not for other static values passed to those initialization
+functions.
 
+> If we keep adding these checks to things that actually can't happen,
+> we teach developers we need to check for impossible things. And we
+> teach them not to trust anything.
+
+Well, I certainly don't trust drivers to get things right.
+
+> I scroll down the file and reach drm_connector_attach_edid_property().
+> Should we NULL check connector? Should we change the function to int
+> and return a value? Should the caller check the value? Then there's
+> drm_connector_attach_encoder(). And
+> drm_connector_has_possible_encoder(). And so on and so forth.
+>=20
+> Where do you draw the line?
+
+If things can fail, we should expect the caller to handle the failure
+somehow. The documentation of drm_connector_attach_encoder() states that
+it can fail, so we should expect it.
+drm_connector_has_possible_encoder() doesn't so we can assume it can't
+fail.
+
+If the function can fail but wasn't designed or documented as such, then
+it's on the function. If it was but the caller didn't handle the error
+case, then that's on the caller.
+
+Maxime
+
+--7y6ja2ijtruwy6p6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZWc77AAKCRDj7w1vZxhR
+xcPrAQDQgezjaCRFLrm1ci7OMYB0pviCvKKwSrlxIJ/UMQY1KAEA8KhoH2NL0IXS
++jKammOWS5C+nAavD5K9RVEDaU4Cpw8=
+=E2qM
+-----END PGP SIGNATURE-----
+
+--7y6ja2ijtruwy6p6--
