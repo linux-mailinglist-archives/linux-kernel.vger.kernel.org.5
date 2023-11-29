@@ -2,125 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAEB97FDA95
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:57:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4626B7FDA91
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 15:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234948AbjK2O5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 09:57:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54266 "EHLO
+        id S234684AbjK2O5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 09:57:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234780AbjK2O5V (ORCPT
+        with ESMTP id S231488AbjK2O5D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 09:57:21 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D870A10C6;
-        Wed, 29 Nov 2023 06:57:27 -0800 (PST)
+        Wed, 29 Nov 2023 09:57:03 -0500
+X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 29 Nov 2023 06:57:09 PST
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8F6DBE;
+        Wed, 29 Nov 2023 06:57:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701269848; x=1732805848;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=gfneZWepAl9jLm0NnKBW/0r/uzscw6oV8aFhIe4Kn6w=;
-  b=g1DsyNZFEwwyM4TGZvpPoBnFMaCyUHJ03Xt0I/y0gLfaHhRjLtgu4XAB
-   iH7CaGHA7h74Kmf2LALgjwX0qM4EjSF1r9HnNkYhJsZjxWUYMnfxNC3vW
-   ooDutVDzJBSAZrgvelYqnvpDg0/j508MYxGwwwEKR/V0d4nKY0VEqDrHg
-   taf0T2K0tXqKcl9rYeYX3KnLmJIj2n+clIcfFnjI4e6ivZYGRrfE/oqYp
-   1Bg4TAxH6nR26f8s6d82w2p4HchXwHgWWD/3LrbIsO7AcYbpb1OYJypk3
-   eFB0Xk+bjGxzwlrXe+Vvry7dZFXNv13t5dP1ke9FrhInEZAIt1cj3jDUn
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="378205213"
+  t=1701269830; x=1732805830;
+  h=message-id:date:mime-version:to:cc:references:from:
+   subject:in-reply-to:content-transfer-encoding;
+  bh=xjxoK83vet1mIKAXJBVjtUZAKs/CZNfXjuPi3R8lz6w=;
+  b=KFVbs5fqwmLRtSFk2L7MFewkygL26Lt/M+I+bxr2CxiAjyg6wrS/fesp
+   ezojIklD0gT5x+2BUwhB6z/QL2pOYP1O3wExF9HvjsEARiSa6YDuWTlGZ
+   172RDxUWHChhhgx+1x/+MeGWOa4DSGPRI40/+iFTnAQobInvEgb4+JeZx
+   Aw8gWuP2jBkKEHtTLqQ/UKW9HkriGll+iiRz80s132Kh/iXRbPVZsUPpy
+   jBVTIube067fdhGzm5B2xHTefdWQ0qRg7doWa3jajDMJwV42/DYNLUuJo
+   sIwwqSq1tc0NjY0v2ed+1c5F3/C6cG/Z0fU4PZ54Bja06HBfTqNzis8JZ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="159742"
 X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="378205213"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 06:57:26 -0800
+   d="scan'208";a="159742"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 06:56:07 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="762337563"
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="912879560"
 X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="762337563"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 06:57:24 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1r8M0A-00000000T20-1lUQ;
-        Wed, 29 Nov 2023 16:57:22 +0200
-Date:   Wed, 29 Nov 2023 16:57:22 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 01/10] gpiolib: provide gpiochip_dup_line_label()
-Message-ID: <ZWdRUosYLAzXQrTT@smile.fi.intel.com>
-References: <20231129142411.76863-1-brgl@bgdev.pl>
- <20231129142411.76863-2-brgl@bgdev.pl>
+   d="scan'208";a="912879560"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
+  by fmsmga001.fm.intel.com with ESMTP; 29 Nov 2023 06:56:05 -0800
+Message-ID: <0d6880a5-0cf4-9961-97ab-04777cccd9ed@linux.intel.com>
+Date:   Wed, 29 Nov 2023 16:57:23 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231129142411.76863-2-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Content-Language: en-US
+To:     Kuen-Han Tsai <khtsai@google.com>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stern@rowland.harvard.edu
+References: <51b8fc3d-25ef-1ab3-d744-8d851a133828@linux.intel.com>
+ <20231128140141.1161490-1-mathias.nyman@linux.intel.com>
+ <CAKzKK0psOFJdBsPkqdRi4_5V=5z9XMnFPCYbcE1Nj6A1zj8Gmw@mail.gmail.com>
+From:   Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: Re: [RFT PATCH 1/2] xhci: Reconfigure endpoint 0 max packet size only
+ during endpoint reset
+In-Reply-To: <CAKzKK0psOFJdBsPkqdRi4_5V=5z9XMnFPCYbcE1Nj6A1zj8Gmw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 29, 2023 at 03:24:02PM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>> +       ep_index = xhci_get_endpoint_index(&host_ep->desc);
+>> +
+>> +       /*
+>> +        * Usb core assumes a max packet value for ep0 on FS devices until the
+>> +        * real value is read from the descriptor. Core resets Ep0 if values
+>> +        * mismatch. Reconfigure the xhci ep0 endpoint context here in that case
+>> +        */
+>> +       if (usb_endpoint_xfer_control(&host_ep->desc) && ep_index == 0) {
+>> +               udev = container_of(host_ep, struct usb_device, ep0);
+>> +               if (udev->speed == USB_SPEED_FULL)
+>> +                       xhci_check_ep0_maxpacket(xhci, xhci->devs[udev->slot_id]);
+>> +               /* Nothing else should be done here for ep0 during ep reset */
+>> +               return;
+>> +       }
+>> +
 > 
-> gpiochip_is_requested() not only has a misleading name but it returns
-> a pointer to a string that is freed when the descriptor is released.
-> 
-> Provide a new helper meant to replace it, which returns a copy of the
-> label string instead.
+> Could there be a race condition between the xhci_endpoint_reset() and
+> xhci_free_dev() functions, resulting in the xhci->devs[udev->slot_id]
+> becoming null?
+> If so, a null pointer dereference will happen in
+> xhci_check_ep0_maxpacket() when accessing vdev->out_ctx.
 
-...
+should not race. xhci_free_dev() and xhci_endpoint_reset() for endpoint 0 should only
+be called by hub driver hub_free_dev() and usb_ep0_reinit() respectively.
 
-> +/**
-> + * gpiochip_dup_line_label - Get a copy of the consumer label.
-> + * @gc: GPIO chip controlling this line.
-> + * @offset: Hardware offset of the line.
-> + *
-> + * Returns:
-> + * Pointer to a copy of the consumer label if the line is requested or NULL
-> + * if it's not. If a valid pointer was returned, it must be freed using
-> + * kfree(). In case of a memory allocation error, the function returns %ENOMEM.
+Hub driver takes care of concurrency for these
 
-kfree_const() ? (see below)
-
-> + * Must not be called from atomic context.
-> + */
-> +char *gpiochip_dup_line_label(struct gpio_chip *gc, unsigned int offset)
-> +{
-> +	const char *label;
-> +	char *cpy;
-
-Why not "copy"?
-
-> +
-> +	label = gpiochip_is_requested(gc, offset);
-> +	if (!label)
-> +		return NULL;
-
-> +	cpy = kstrdup(label, GFP_KERNEL);
-
-You probably want to have kstrdup_const(). However, I haven't checked
-if we have such use cases.
-
-> +	if (!cpy)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	return cpy;
-> +}
-
-So, how does this differ from the previous one? You need to hold a reference
-to the descriptor before copying and release it after.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Thanks
+Mathias
 
