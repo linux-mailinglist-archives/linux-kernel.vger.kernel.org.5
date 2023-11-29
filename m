@@ -2,73 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C53967FD4C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B177FD4C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:57:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230017AbjK2K5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 05:57:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51750 "EHLO
+        id S230081AbjK2K5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 05:57:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbjK2K5B (ORCPT
+        with ESMTP id S229753AbjK2K5a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 05:57:01 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 563E78E
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:57:07 -0800 (PST)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id A53B16602F27;
-        Wed, 29 Nov 2023 10:57:04 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1701255425;
-        bh=5Im7hg+4XRMgfVUnaf7izj5Cdq+UGY/dtd2TmetyDkY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UOx+AWJ1KQy5vsukQ0TrSPt+LnAVlTctT9Aj4wV74xlbogZHip8fyvNTXkhS9fveS
-         xVh382KKGh0NSam5aTiJa0MMtFWC6x0uwpi5IAgYCxJi74t8Wub6HqMnedm6fCMv2p
-         85j+3wFUK2oXLAplw8iEHeDWxT090AKqHUIo7QPmOFlNZe3YaUC+GM6sfZFT3eb6cd
-         e7bE6P8IvAeEjekwzIF5RjZvxBOfEpE4cCtuK8oizaMmMjKxS44sE2ah9JixbPpOVh
-         N6/KEX7NndHRfvLmR9PTAmK2AzmMOmeiYjfaufW8cfFvqDxezRy5G/ZAZ50sK9apuS
-         KeGk4NTpJeQjQ==
-Date:   Wed, 29 Nov 2023 11:57:01 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v18 04/26] drm/shmem-helper: Refactor locked/unlocked
- functions
-Message-ID: <20231129115701.6d672ae3@collabora.com>
-In-Reply-To: <bcc8013d-d107-934f-71fa-98ab2e0275ee@collabora.com>
-References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
-        <20231029230205.93277-5-dmitry.osipenko@collabora.com>
-        <wboljiwogeus7pwgaqzxaltt3xdavy2dzisygn6pdpoiwlnwgc@mwaiukjguzat>
-        <20231124115911.79ab24af@collabora.com>
-        <kw5bho3jx73d3glvtewmjvqt4qty4khju6dcwypuh25ya3gi4b@7slmijjqdi4p>
-        <20231128133712.53a6f6cb@collabora.com>
-        <37208c72-7908-0a78-fc89-2fa9b8d756a5@collabora.com>
-        <20231129085330.7ccb35d3@collabora.com>
-        <bcc8013d-d107-934f-71fa-98ab2e0275ee@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Wed, 29 Nov 2023 05:57:30 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B77618E;
+        Wed, 29 Nov 2023 02:57:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=l+Tefq0nz5EH41YlbLMWvc0l+B0AxxVpnMBag7nlEWA=; b=AUbTjfhmCmKVpyxLLuBUXlxvXC
+        ua2ELfzCFUeFc/3SlTg/RWAAGHaTU78jKhIajF99NkVfsOGXf36qzg3iWqVJOwIW8NJBW82C82BmF
+        x84ngs+diS2eNKOZLDLNWrTMUQDz8YFYcyYr5UWkN4Y9AG8u17E1iZ+IjFkkJEa7jxFGbA1F+gWs9
+        OqNMiHi0P3VrIEl1RJWtrijDGNJsqBQRJNxYE09dma/qxFw5RglxUCGhikVnzp5cSYcxdY6RBhnG1
+        MF3S6hLc7wtaCNY1rHhcoMFz8dnOPArVepakRF9rQgxgjpoNsdQZDyZ04SMwVFnx1VnmIlnFpmGAg
+        KWdDVjAw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54884)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1r8IFy-0000BN-2I;
+        Wed, 29 Nov 2023 10:57:26 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1r8IG0-0003va-8C; Wed, 29 Nov 2023 10:57:28 +0000
+Date:   Wed, 29 Nov 2023 10:57:28 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [net-next PATCH 08/14] net: phy: at803x: drop specific PHY id
+ check from cable test functions
+Message-ID: <ZWcZGO1HWxJnzPrk@shell.armlinux.org.uk>
+References: <20231129021219.20914-1-ansuelsmth@gmail.com>
+ <20231129021219.20914-9-ansuelsmth@gmail.com>
+ <ZWcGn7KVSpsN/1Ee@shell.armlinux.org.uk>
+ <656708a8.df0a0220.28d76.9307@mx.google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <656708a8.df0a0220.28d76.9307@mx.google.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,158 +72,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 29 Nov 2023 13:47:21 +0300
-Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-
-> On 11/29/23 10:53, Boris Brezillon wrote:
-> > On Wed, 29 Nov 2023 01:05:14 +0300
-> > Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-> >   
-> >> On 11/28/23 15:37, Boris Brezillon wrote:  
-> >>> On Tue, 28 Nov 2023 12:14:42 +0100
-> >>> Maxime Ripard <mripard@kernel.org> wrote:
-> >>>     
-> >>>> Hi,
-> >>>>
-> >>>> On Fri, Nov 24, 2023 at 11:59:11AM +0100, Boris Brezillon wrote:    
-> >>>>> On Fri, 24 Nov 2023 11:40:06 +0100
-> >>>>> Maxime Ripard <mripard@kernel.org> wrote:
-> >>>>>       
-> >>>>>> On Mon, Oct 30, 2023 at 02:01:43AM +0300, Dmitry Osipenko wrote:      
-> >>>>>>> Add locked and remove unlocked postfixes from drm-shmem function names,
-> >>>>>>> making names consistent with the drm/gem core code.
-> >>>>>>>
-> >>>>>>> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-> >>>>>>> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
-> >>>>>>> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>        
-> >>>>>>
-> >>>>>> This contradicts my earlier ack on a patch but...
-> >>>>>>       
-> >>>>>>> ---
-> >>>>>>>  drivers/gpu/drm/drm_gem_shmem_helper.c        | 64 +++++++++----------
-> >>>>>>>  drivers/gpu/drm/lima/lima_gem.c               |  8 +--
-> >>>>>>>  drivers/gpu/drm/panfrost/panfrost_drv.c       |  2 +-
-> >>>>>>>  drivers/gpu/drm/panfrost/panfrost_gem.c       |  6 +-
-> >>>>>>>  .../gpu/drm/panfrost/panfrost_gem_shrinker.c  |  2 +-
-> >>>>>>>  drivers/gpu/drm/panfrost/panfrost_mmu.c       |  2 +-
-> >>>>>>>  drivers/gpu/drm/v3d/v3d_bo.c                  |  4 +-
-> >>>>>>>  drivers/gpu/drm/virtio/virtgpu_object.c       |  4 +-
-> >>>>>>>  include/drm/drm_gem_shmem_helper.h            | 36 +++++------
-> >>>>>>>  9 files changed, 64 insertions(+), 64 deletions(-)
-> >>>>>>>
-> >>>>>>> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> >>>>>>> index 0d61f2b3e213..154585ddae08 100644
-> >>>>>>> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-> >>>>>>> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> >>>>>>> @@ -43,8 +43,8 @@ static const struct drm_gem_object_funcs drm_gem_shmem_funcs = {
-> >>>>>>>  	.pin = drm_gem_shmem_object_pin,
-> >>>>>>>  	.unpin = drm_gem_shmem_object_unpin,
-> >>>>>>>  	.get_sg_table = drm_gem_shmem_object_get_sg_table,
-> >>>>>>> -	.vmap = drm_gem_shmem_object_vmap,
-> >>>>>>> -	.vunmap = drm_gem_shmem_object_vunmap,
-> >>>>>>> +	.vmap = drm_gem_shmem_object_vmap_locked,
-> >>>>>>> +	.vunmap = drm_gem_shmem_object_vunmap_locked,        
-> >>>>>>
-> >>>>>> While I think we should indeed be consistent with the names, I would
-> >>>>>> also expect helpers to get the locking right by default.      
-> >>>>>
-> >>>>> Wait, actually I think this patch does what you suggest already. The
-> >>>>> _locked() prefix tells the caller: "you should take care of the locking,
-> >>>>> I expect the lock to be held when this is hook/function is called". So
-> >>>>> helpers without the _locked() prefix take care of the locking (which I
-> >>>>> guess matches your 'helpers get the locking right' expectation), and
-> >>>>> those with the _locked() prefix don't.      
-> >>>>
-> >>>> What I meant by "getting the locking right" is indeed a bit ambiguous,
-> >>>> sorry. What I'm trying to say I guess is that, in this particular case,
-> >>>> I don't think you can expect the vmap implementation to be called with
-> >>>> or without the locks held. The doc for that function will say that it's
-> >>>> either one or the other, but not both.
-> >>>>
-> >>>> So helpers should follow what is needed to provide a default vmap/vunmap
-> >>>> implementation, including what locking is expected from a vmap/vunmap
-> >>>> implementation.    
-> >>>
-> >>> Hm, yeah, I think that's a matter of taste. When locking is often
-> >>> deferrable, like it is in DRM, I find it beneficial for funcions and
-> >>> function pointers to reflect the locking scheme, rather than relying on
-> >>> people properly reading the doc, especially when this is the only
-> >>> outlier in the group of drm_gem_object_funcs we already have, and it's
-> >>> not event documented at the drm_gem_object_funcs level [1] :P.
-> >>>     
-> >>>>
-> >>>> If that means that vmap is always called with the locks taken, then
-> >>>> drm_gem_shmem_object_vmap can just assume that it will be called with
-> >>>> the locks taken and there's no need to mention it in the name (and you
-> >>>> can probably sprinkle a couple of lockdep assertion to make sure the
-> >>>> locking is indeed consistent).    
-> >>>
-> >>> Things get very confusing when you end up having drm_gem_shmem helpers
-> >>> that are suffixed with _locked() to encode the fact locking is the
-> >>> caller's responsibility and no suffix for the
-> >>> callee-takes-care-of-the-locking semantics, while other helpers that are
-> >>> not suffixed at all actually implement the
-> >>> caller-should-take-care-of-the-locking semantics.
-> >>>     
-> >>>>    
-> >>>>>> I'm not sure how reasonable it is, but I think I'd prefer to turn this
-> >>>>>> around and keep the drm_gem_shmem_object_vmap/unmap helpers name, and
-> >>>>>> convert whatever function needs to be converted to the unlock suffix so
-> >>>>>> we get a consistent naming.      
-> >>>>>
-> >>>>> That would be an _unlocked() prefix if we do it the other way around. I
-> >>>>> think the main confusion comes from the names of the hooks in
-> >>>>> drm_gem_shmem_funcs. Some of them, like drm_gem_shmem_funcs::v[un]map()
-> >>>>> are called with the GEM resv lock held, and locking is handled by the
-> >>>>> core, others, like drm_gem_shmem_funcs::[un]pin() are called
-> >>>>> without the GEM resv lock held, and locking is deferred to the
-> >>>>> implementation. As I said, I don't mind prefixing hooks/helpers with
-> >>>>> _unlocked() for those that take care of the locking, and no prefix for
-> >>>>> those that expects locks to be held, as long as it's consistent, but I
-> >>>>> just wanted to make sure we're on the same page :-).      
-> >>>>
-> >>>> What about _nolock then? It's the same number of characters than
-> >>>> _locked, plus it expresses what the function is (not) doing, not what
-> >>>> context it's supposed to be called in?    
-> >>>
-> >>> Just did a quick
-> >>>
-> >>>   git grep _nolock drivers/gpu/drm
-> >>>
-> >>> and it returns zero result, where the _locked/_unlocked pattern seems
-> >>> to already be widely used. Not saying we shouldn't change that, but it
-> >>> doesn't feel like a change we should do as part of this series.
-> >>>
-> >>> Regards,
-> >>>
-> >>> Boris
-> >>>
-> >>> [1]https://elixir.bootlin.com/linux/v6.7-rc3/source/include/drm/drm_gem.h#L155    
-> >>
-> >> I'm fine with dropping the _locked() postfix from the common GEM helpers
-> >> and documenting the locking rule in drm_gem. Thank you all for the
-> >> suggestions :)  
+On Wed, Nov 29, 2023 at 10:47:18AM +0100, Christian Marangi wrote:
+> On Wed, Nov 29, 2023 at 09:38:39AM +0000, Russell King (Oracle) wrote:
+> > On Wed, Nov 29, 2023 at 03:12:13AM +0100, Christian Marangi wrote:
+> > > @@ -1310,10 +1302,6 @@ static int at803x_cable_test_start(struct phy_device *phydev)
+> > >  	 */
+> > >  	phy_write(phydev, MII_BMCR, BMCR_ANENABLE);
+> > >  	phy_write(phydev, MII_ADVERTISE, ADVERTISE_CSMA);
+> > > -	if (phydev->phy_id != ATH9331_PHY_ID &&
+> > > -	    phydev->phy_id != ATH8032_PHY_ID &&
+> > > -	    phydev->phy_id != QCA9561_PHY_ID)
+> > > -		phy_write(phydev, MII_CTRL1000, 0);
+> > ...
+> > > +static int at8031_cable_test_start(struct phy_device *phydev)
+> > > +{
+> > > +	at803x_cable_test_start(phydev);
+> > > +	phy_write(phydev, MII_CTRL1000, 0);
 > > 
-> > Sorry to disagree, but I think a proper function name/suffix is
-> > sometimes worth a few lines of doc. Not saying we should do one or the
-> > other, I think we should do both. But when I see a function suffixed
-> > _locked, _unlocked or _nolock, I can immediately tell if this function
-> > defers the locking to the caller or not, and then go check which lock
-> > in the function doc.
-> > 
-> > And the second thing I'm not happy with, is the fact we go back to an
-> > inconsistent naming in drm_gem_shmem_helper.c, where some functions
-> > deferring the locking to the caller are suffixed _locked and others are
-> > not, because ultimately, you need a different name when you expose the
-> > two variants...  
+> > I don't think this is a safe change - same reasons as given on a
+> > previous patch. You can't randomly reorder register writes like this.
+> >
 > 
-> By the `common GEM helpers` I meant the .vmap drm-shmem common helpers
-> used for drm_gem_object_funcs, like was suggested by Maxime. The rest of
-> functions will retain the _locked part. Sorry for the confusion :)
+> Actually for this the order is keeped. Generic function is called and
+> for at8031 MII_CTRL1000 is called on top of that.
 
-Well, even if it's just
-s/drm_gem_shmem_v[un]map_locked/drm_gem_shmem_v[un]map/, it's still
-inconsistent with the rest of the helpers we have there (_locked suffix
-for those deferring the locking to the caller, and no suffix when the
-lock is taken by the helper). To be clear, I won't block the patch
-because of that, but I still think this is the wrong move...
+Okay, but I don't like it. I would prefer this to be:
+
+static void at803x_cable_test_autoneg(struct phy_device *phydev)
+{
+	phy_write(phydev, MII_BMCR, BMCR_ANENABLE);
+	phy_write(phydev, MII_ADVERTISE, ADVERTISE_CSMA);
+}
+
+static int at803x_cable_test_start(struct phy_device *phydev)
+{
+	at803x_cable_test_autoneg(phydev);
+	return 0;
+}
+
+static int at8031_cable_test_start(struct phy_device *phydev)
+{
+	at803x_cable_test_autoneg(phydev);
+	phy_write(phydev, MII_CTRL1000, 0);
+	return 0;
+}
+
+which makes it more explicit what is going on here. Also a comment
+above the function stating that it's for AR8031 _and_ AR8035 would
+be useful.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
