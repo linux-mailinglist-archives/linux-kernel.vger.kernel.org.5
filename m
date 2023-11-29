@@ -2,318 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2EDA7FD3DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:16:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 758F67FD3E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:17:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232835AbjK2KQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 05:16:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53888 "EHLO
+        id S229509AbjK2KRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 05:17:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231414AbjK2KQi (ORCPT
+        with ESMTP id S232824AbjK2KRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 05:16:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2321CD6C
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:16:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1701253002;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kcguwJOZbBrEOKJtIaNOv7UFSPg18lyOYHkppcsG19M=;
-        b=YBNJJsL/T5QDo9uTxzlTERtsi0aEtagjLelVCvpJ1rGG9kBIR7Vhc2nZf/XEkzKlgQ6h5C
-        EpeUHvwbf2S+GiYBEWegpQodzLG+4fUwj6KA3TY5oevcMwdVASwpdEm6CgTDqjtpD21gNd
-        Qn/GOzDJXwrDM3J3U//b79zkICqgq+Q=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-372-bqpYdF9ROrmdpg1nwAN0sg-1; Wed, 29 Nov 2023 05:16:40 -0500
-X-MC-Unique: bqpYdF9ROrmdpg1nwAN0sg-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-332f988baf6so601466f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:16:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701252999; x=1701857799;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kcguwJOZbBrEOKJtIaNOv7UFSPg18lyOYHkppcsG19M=;
-        b=FF8IggqEYkrifL7/HVnnMnS4eDY7dWNlJUcV9Cq7dny3wGHyij0G9wSSqZcIlWDhQf
-         zg0PQ0Ygamu1+w+n7uTIDxLt2MmenfzUBghKNu5zhgmEBrsanfFcr0HWKVtb0ex8QUeo
-         weG30TiIQf+rDHVTczPn8ql69H0tBxVB0LlZm9mhzqhGk2GNKp6vPif12DftKT5cFn00
-         SrWzp+frSCkxIJ+iVpxieqieGpMSMytkJX/Voa9LihkftVkHjRMCczwvb36QeYqi2wwi
-         r9L5iiU2znTo9Bz/iAuvkOdwIMUQks/DJ5B/+xLsi1HMutOWKHYlrA3Lmx6g3z8bIo7U
-         iWbQ==
-X-Gm-Message-State: AOJu0YyTjygnpj00bIFD6IpRn9m7c4w/w3ND5YlVWsi181C0HyCu2OCm
-        4CfyFX4K2pGPsqge5RNp6raN+2zJFHeDsXfwCZ+JwOu3JCHUvr9cQOSpA3w3kzbuJOSoXQGpYbt
-        yqLC/RXd30yWj7sL7HfSpY8obHLVqgcr48h4=
-X-Received: by 2002:a05:6000:80e:b0:332:ff23:588a with SMTP id bt14-20020a056000080e00b00332ff23588amr6881034wrb.5.1701252999393;
-        Wed, 29 Nov 2023 02:16:39 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE6LSedjrZ8RJnZJI/bDCD0iKBZk/BPNcdizN27Ik6/SdJpvaue2AjhSFctCQHULCS6cWvStw==
-X-Received: by 2002:a05:6000:80e:b0:332:ff23:588a with SMTP id bt14-20020a056000080e00b00332ff23588amr6881020wrb.5.1701252998987;
-        Wed, 29 Nov 2023 02:16:38 -0800 (PST)
-Received: from pstanner-thinkpadt14sgen1.remote.csb (nat-pool-muc-t.redhat.com. [149.14.88.26])
-        by smtp.gmail.com with ESMTPSA id d11-20020adfa40b000000b00332cb846f21sm17455107wra.27.2023.11.29.02.16.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 02:16:38 -0800 (PST)
-Message-ID: <b13191e7a5ad63de23adb8ec3f8a3699a0dd236e.camel@redhat.com>
-Subject: Re: [PATCH 4/4] lib/iomap.c: improve comment about pci anomaly
-From:   Philipp Stanner <pstanner@redhat.com>
-To:     Danilo Krummrich <dakr@redhat.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Eric Auger <eric.auger@redhat.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Neil Brown <neilb@suse.de>, John Sanpe <sanpeqf@gmail.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Yury Norov <yury.norov@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        David Gow <davidgow@google.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Ben Dooks <ben.dooks@codethink.co.uk>
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Date:   Wed, 29 Nov 2023 11:16:36 +0100
-In-Reply-To: <a6ef92ae-0747-435b-822d-d0229da4683c@redhat.com>
-References: <20231120215945.52027-2-pstanner@redhat.com>
-         <20231120215945.52027-6-pstanner@redhat.com>
-         <a9ab9976-c1e0-4f91-b17f-e5bbbf21def3@app.fastmail.com>
-         <a6ef92ae-0747-435b-822d-d0229da4683c@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Wed, 29 Nov 2023 05:17:10 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FABD1AE
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:17:15 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0993C40E019F;
+        Wed, 29 Nov 2023 10:17:13 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
+        reason="fail (body has been altered)" header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id eyamEeQAGL8V; Wed, 29 Nov 2023 10:17:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1701253030; bh=eFpNg/8twFDseGoZdnKubcbW6QXAZq0sTnyKCpFgpmg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XkVZFO98xVwh9JQxSzThGl3CVW5z18BdSeSg5uF0TOx+rnKUajPg2K0hLx0nmhaH3
+         k+2PendEeZ9iC5mpuGxoV99zu+D22bmQAaJhwBPD5QoQ+Blz0Pv6E/mKAGXvB41U45
+         apEAhmJHvGHeHZt5/NbHdtqvEp3gWXQS/gd5AQmYHLe6a4nq+BCBwI3J8b68FLSQND
+         TzMuXEmZzP8gbMJ288JXeGuhn5uyhxC6pqM/tvIfYfQAPgVfdXLq3WEeuNMoqJPkun
+         wSW5PCWJvwwkBwWBE+Ewd+gsDU/J09hIZ5d7SuzUaZYSWjpAAe4RQNsi8JRT2q3dqA
+         GVrqIbSFXgvMXsAqojjg74d/Hbwz1MzBzeioqGee0ygrcJEIC4BWI+7hRxMXmbhTrS
+         cpY6iVfaO65eMc9qn5iXZIMeO5yvQqaXdVKYHnMoLoyt18GY9z/u8GvygpCqlSCTyl
+         6S1gFUPDzveHAQ/l00Wg0cIDhHjxGWDOGrBZjJ1ObP8106DJ8klfcFGxy3C+7MIbrC
+         urUbjmDnc5LB+afgOA1atYn/G+Fa7Kaa6toFTOD98gC9fNuf2eiUpBLOj5OE9HYlL1
+         pg7OgTUDH53VrCIrWjHFYH1DCTCB8XCoBJseh8YTry7RjNXO+hlwbmuRQ0fJIgGLqO
+         v9QT9hYAvIgo+LGgvwRvHW3o=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2DDEA40E0031;
+        Wed, 29 Nov 2023 10:17:08 +0000 (UTC)
+From:   Borislav Petkov <bp@alien8.de>
+To:     X86 ML <x86@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] Documentation/x86: Document what /proc/cpuinfo is for
+Date:   Wed, 29 Nov 2023 11:17:00 +0100
+Message-ID: <20231129101700.28482-1-bp@alien8.de>
+X-Mailer: git-send-email 2.42.0.rc0.25.ga82fb66fed25
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: "Borislav Petkov (AMD)" <bp@alien8.de>
 
-On Fri, 2023-11-24 at 20:08 +0100, Danilo Krummrich wrote:
-> Hi Arnd,
->=20
-> On 11/21/23 11:03, Arnd Bergmann wrote:
-> > On Mon, Nov 20, 2023, at 22:59, Philipp Stanner wrote:
-> > > lib/iomap.c contains one of the definitions of pci_iounmap(). The
-> > > current comment above this out-of-place function does not clarify
-> > > WHY
-> > > the function is defined here.
-> > >=20
-> > > Linus's detailed comment above pci_iounmap() in
-> > > drivers/pci/iomap.c
-> > > clarifies that in a far better way.
-> > >=20
-> > > Extend the existing comment with an excerpt from Linus's and hint
-> > > at the
-> > > other implementation in drivers/pci/iomap.c
-> > >=20
-> > > Signed-off-by: Philipp Stanner <pstanner@redhat.com>
-> >=20
-> > I think instead of explaining why the code is so complicated
-> > here, I'd prefer to make it more logical and not have to
-> > explain it.
-> >=20
-> > We should be able to define a generic version like
-> >=20
-> > void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
->=20
-> Let's shed some light on the different config options related to
-> this.
->=20
-> To me it looks like GENERIC_IOMAP always implies GENERIC_PCI_IOMAP.
->=20
-> lib/iomap.c contains a definition of pci_iounmap() since it uses the
-> common IO_COND() macro. This definitions wins if GENERIC_IOMAP was
-> selected.
+This has been long overdue. Write down what x86's version of
+/proc/cpuinfo is and should be used for.
 
-Yes. So it seems the only way the implementation in lib/pci_iomap.c can
-ever win is when someone selects GENERIC_PCI_IOMAP *without* selecting
-GENERIC_IOMAP.
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+---
+ Documentation/arch/x86/cpuinfo.rst | 79 ++++++++++++++++++++++--------
+ 1 file changed, 58 insertions(+), 21 deletions(-)
 
-
->=20
-> lib/pci_iomap.c contains another definition of pci_iounmap() which is
-> guarded by ARCH_WANTS_GENERIC_PCI_IOUNMAP to prevent multiple
-> definitions
-> in case either GENERIC_IOMAP is set or the architecture already
-> defined
-> pci_iounmap().
-
-To clarify that, here's the relevant excerpt from include/asm-
-generic/io.h:
-
-#ifndef CONFIG_GENERIC_IOMAP
-#ifndef pci_iounmap
-#define ARCH_WANTS_GENERIC_PCI_IOUNMAP
-#endif
-#endif
-
-
->=20
-> What's the purpose of not having set ARCH_HAS_GENERIC_IOPORT_MAP
-> producing
-> an empty definition of pci_iounmap() though [1]?
->=20
-> And more generally, is there any other (subtle) logic behind this?
-
-That's indeed also very hard to understand for me, because you'd expect
-that if pci_iomap() exists (and does something), pci_iounmap() should
-also exist and, of course, unmapp the memory again.
-
-From include/asm-generic/io.h:
-
-#ifdef CONFIG_HAS_IOPORT_MAP
-#ifndef CONFIG_GENERIC_IOMAP
-#ifndef ioport_map
-#define ioport_map ioport_map
-static inline void __iomem *ioport_map(unsigned long port, unsigned int nr)
-{
- port &=3D IO_SPACE_LIMIT;
- return (port > MMIO_UPPER_LIMIT) ? NULL : PCI_IOBASE + port;
-}
-#define ARCH_HAS_GENERIC_IOPORT_MAP
-#endif
-
-As far as I understand the logic, an empty pci_iounmap() is generated
-(and used?) in lib/pci_iounmap.c if:
- * CONFIG_HAS_IOPORT_MAP has not been defined
- * CONFIG_GENERIC_IOMAP has been defined (makes sense, then we use the
-   one from lib/iomap.c anyways)
- * ioport_map has been defined by someone other than asm-generic/io.h
-
-Regarding the last point, a number of architectures define their own
-ioport_map():
-
-arch/alpha/kernel/io.c, line 684 (as a function)
-arch/arc/include/asm/io.h, line 27 (as a function)
-arch/arm/mm/iomap.c, line 19 (as a function)
-arch/m68k/include/asm/kmap.h, line 60 (as a function)
-arch/parisc/lib/iomap.c, line 504 (as a function)
-arch/powerpc/kernel/iomap.c, line 14 (as a function)
-arch/s390/include/asm/io.h, line 38 (as a function)
-arch/sh/kernel/ioport.c, line 24 (as a function)
-arch/sparc/lib/iomap.c, line 10 (as a function)
-
-I grepped through those archs and as I see it, none of those specify an
-empty pci_iomap() that could be a counterpart to the potentially empty
-pci_iounmap() in lib/pci_iomap.c
-
-All of them use the generic pci_iomap.c, which can _never_ be empty.
-Perhaps when the functions returning always NULL in include/asm-
-generic/pci_iomap.h were to be used...?
-But I think they should never be used, because then pci_iomap.c wins.
-Arnds seems to agree with that, because he pointed out that these
-functions are now surplus relicts in his reply to my Patch Nr.1:
-
-> From what I can tell looking at the header, I think we can
-> just remove the "#elif defined(CONFIG_GENERIC_PCI_IOMAP)"
-> bit entirely, as it no longer serves the purpose it originally
-> had.
-
-So it seems that the empty unmap-function in pci_iomap.c is the left-
-over counterpart of those mapping functions always returning NULL.
-
-@Arnd:
-Your code draft
-
-void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
-{
-#ifdef CONFIG_HAS_IOPORT
-if (iomem_is_ioport(addr)) {
-ioport_unmap(addr);
-return;
-}
-#endif
-iounmap(addr)
-}
-
-seems to agree with that: There will never be the need for an empty
-function that does nothing. Correct?
-
-
-P.
-
->=20
-> [1]
-> https://elixir.bootlin.com/linux/latest/source/lib/pci_iomap.c#L167
->=20
-> > {
-> > #ifdef CONFIG_HAS_IOPORT
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (iomem_is_ioport(addr)) {
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 ioport_unmap(addr);
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 return;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> > #endif
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iounmap(addr)
-> > }
-> >=20
-> > and then define iomem_is_ioport() in lib/iomap.c for x86,
-> > while defining it in asm-generic/io.h for the rest,
-> > with an override in asm/io.h for those architectures
-> > that need a custom inb().
->=20
-> So, that would be similar to IO_COND(), right? What would we need
-> inb() for
-> in this context?
->=20
-> - Danilo
->=20
-> >=20
-> > Note that with ia64 gone, GENERIC_IOMAP is not at all
-> > generic any more and could just move it to x86 or name
-> > it something else. This is what currently uses it:
-> >=20
-> > arch/hexagon/Kconfig:=C2=A0=C2=A0 select GENERIC_IOMAP
-> > arch/um/Kconfig:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 select GENER=
-IC_IOMAP
-> >=20
-> > These have no port I/O at all, so it doesn't do anything.
-> >=20
-> > arch/m68k/Kconfig:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 select GENERIC_IOMAP
-> >=20
-> > on m68knommu, the default implementation from asm-generic/io.h
-> > as the same effect as GENERIC_IOMAP but is more efficient.
-> > On classic m68k, GENERIC_IOMAP does not do what it is
-> > meant to because I/O ports on ISA devices have port
-> > numbers above PIO_OFFSET. Also they don't have PCI.
-> >=20
-> > arch/mips/Kconfig:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 select GENERIC_IOMAP
-> >=20
-> > This looks completely bogus because it sets PIO_RESERVED
-> > to 0 and always uses the mmio part of lib/iomap.c.
-> >=20
-> > arch/powerpc/platforms/Kconfig: select GENERIC_IOMAP
-> >=20
-> > This is only used for two platforms: cell and powernv,
-> > though on Cell it no longer does anything after the
-> > commit f4981a00636 ("powerpc: Remove the celleb support");
-> > I think the entire io_workarounds code now be folded
-> > back into spider_pci.c if we wanted to.
-> >=20
-> > The PowerNV LPC support does seem to still rely on it.
-> > This tries to do the exact same thing as lib/logic_pio.c
-> > for Huawei arm64 servers. I suspect that neither of them
-> > does it entirely correctly since the powerpc side appears
-> > to just override any non-LPC PIO support while the arm64
-> > side is missing the ioread/iowrite support.
-> >=20
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Arnd
-> >=20
->=20
+diff --git a/Documentation/arch/x86/cpuinfo.rst b/Documentation/arch/x86/=
+cpuinfo.rst
+index 08246e8ac835..cede6aad27c0 100644
+--- a/Documentation/arch/x86/cpuinfo.rst
++++ b/Documentation/arch/x86/cpuinfo.rst
+@@ -7,27 +7,64 @@ x86 Feature Flags
+ Introduction
+ =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+=20
+-On x86, flags appearing in /proc/cpuinfo have an X86_FEATURE definition
+-in arch/x86/include/asm/cpufeatures.h. If the kernel cares about a featu=
+re
+-or KVM want to expose the feature to a KVM guest, it can and should have
+-an X86_FEATURE_* defined. These flags represent hardware features as
+-well as software features.
+-
+-If users want to know if a feature is available on a given system, they
+-try to find the flag in /proc/cpuinfo. If a given flag is present, it
+-means that the kernel supports it and is currently making it available.
+-If such flag represents a hardware feature, it also means that the
+-hardware supports it.
+-
+-If the expected flag does not appear in /proc/cpuinfo, things are murkie=
+r.
+-Users need to find out the reason why the flag is missing and find the w=
+ay
+-how to enable it, which is not always easy. There are several factors th=
+at
+-can explain missing flags: the expected feature failed to enable, the fe=
+ature
+-is missing in hardware, platform firmware did not enable it, the feature=
+ is
+-disabled at build or run time, an old kernel is in use, or the kernel do=
+es
+-not support the feature and thus has not enabled it. In general, /proc/c=
+puinfo
+-shows features which the kernel supports. For a full list of CPUID flags
+-which the CPU supports, use tools/arch/x86/kcpuid.
++The list of feature flags in /proc/cpuinfo is not complete and
++represents an ill-fated attempt from long time ago to put feature flags
++in an easy to find place for userspace.
++
++However, the amount of feature flags is growing by the CPU generation,
++leading to unparseable and unwieldy /proc/cpuinfo.
++
++What is more, those feature flags do not even need to be in that file
++because userspace doesn't care about them - glibc et al already use
++CPUID to find out what the target machine supports and what not.
++
++And even if it doesn't show a particular feature flag - although the CPU
++still does have support for the respective hardware functionality and
++said CPU supports CPUID faulting - userspace can simply probe for the
++feature and figure out if it is supported or not, regardless of whether
++it is being advertized somewhere.
++
++Furthermore, those flag strings become an ABI the moment they appear
++there and maintaining them forever when nothing even uses them is a lot
++of wasted effort.
++
++So, the current use of /proc/cpuinfo is to show features which the
++kernel has *enabled* and supports. As in: the CPUID feature flag is
++there, there's an additional setup which the kernel has done while
++booting and the functionality is there and ready to use. A perfect
++example for that is "user_shstk" where additional code enablement is
++present in the kernel to support shadow stack for user programs.
++
++So, if users want to know if a feature is available on a given system,
++they try to find the flag in /proc/cpuinfo. If a given flag is present,
++it means that the kernel supports it and is currently making it
++available.  If such flag represents a hardware feature, it also means
++that the hardware supports it.
++
++If the expected flag does not appear in /proc/cpuinfo, things are
++murkier.  Users need to find out the reason why the flag is missing and
++find the way how to enable it, which is not always easy.
++
++There are several factors that can explain missing flags: the expected
++feature failed to enable, the feature is missing in hardware, platform
++firmware did not enable it, the feature is disabled at build or run
++time, an old kernel is in use, or the kernel does not support the
++feature and thus has not enabled it. In general, /proc/cpuinfo shows
++features which the kernel supports. For a full list of CPUID flags which
++the CPU supports, use tools/arch/x86/kcpuid.
++
++Regarding implementation, flags appearing in /proc/cpuinfo have an
++X86_FEATURE definition in arch/x86/include/asm/cpufeatures.h. These flag=
+s
++represent hardware features as well as software features.
++
++If the kernel cares about a feature or KVM want to expose the feature to
++a KVM guest, it should only then expose it to the guest when the guest
++needs to parse /proc/cpuinfo. Which, as mentioned above, is highly
++unlikely. KVM can synthesize the CPUID bit and the KVM guest can simply
++query CPUID and figure out what the hypervisor supports and what not. As
++already stated, /proc/cpuinfo is not a dumping ground for useless
++feature flags.
++
+=20
+ How are feature flags created?
+ =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+--=20
+2.42.0.rc0.25.ga82fb66fed25
 
