@@ -2,139 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C17CA7FD3D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:16:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2EDA7FD3DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:16:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229602AbjK2KQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 05:16:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53810 "EHLO
+        id S232835AbjK2KQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 05:16:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231495AbjK2KQd (ORCPT
+        with ESMTP id S231414AbjK2KQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 05:16:33 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 705F610C8
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:16:38 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-54af1daf6a9so1387155a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:16:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701252997; x=1701857797; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Mtc4c0Qc+Eu0vsDQ9fqBtQVu0ExHjq28ELJTpnawBxM=;
-        b=MERiSA2bxjaTVu07Yoiisg2NJ1EodPqrjYQXxeNoubGDYiqbXmJtEVKKluyELdhmNi
-         iLtf72ngS4TfJjXz++Wkzgic36vMxIphu50AM9lnuvfijZa4hcfOd4gMk76vPaXCrzen
-         o3+AZ8KidYf2mjHRBLvR1yFCw1OJrHqNze5GJz8Fr8lWu3GvFPPnMSI9kGUI1rzh82EJ
-         3bQofIqmvr3P+qAIys2yqwVAlxWfsRfQ0Dak9nEEnNWWLfCk72Cbd5TG53gTeZ3Qsx/e
-         DY8+yXs9yXc+ExwOCfhnXfnZuGXgYqlbx1+GsL/2cwM148H0L9HI8SYggtHN2TNpEZ+P
-         Zt8Q==
+        Wed, 29 Nov 2023 05:16:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2321CD6C
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:16:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1701253002;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kcguwJOZbBrEOKJtIaNOv7UFSPg18lyOYHkppcsG19M=;
+        b=YBNJJsL/T5QDo9uTxzlTERtsi0aEtagjLelVCvpJ1rGG9kBIR7Vhc2nZf/XEkzKlgQ6h5C
+        EpeUHvwbf2S+GiYBEWegpQodzLG+4fUwj6KA3TY5oevcMwdVASwpdEm6CgTDqjtpD21gNd
+        Qn/GOzDJXwrDM3J3U//b79zkICqgq+Q=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-372-bqpYdF9ROrmdpg1nwAN0sg-1; Wed, 29 Nov 2023 05:16:40 -0500
+X-MC-Unique: bqpYdF9ROrmdpg1nwAN0sg-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-332f988baf6so601466f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:16:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701252997; x=1701857797;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Mtc4c0Qc+Eu0vsDQ9fqBtQVu0ExHjq28ELJTpnawBxM=;
-        b=Oe/qgnMYiYoyM5cDTZUCVM0xSxBtiPU2tCYaUTwjKsv3Rybk6JOCmIvpgBh2shUqWE
-         DvqPtF0QyJyXzpr9suJ5LNSJDoWmo5T5hVtKo865+VYssglWM7d9pGwO734+BiTDMMYr
-         QiE4tAUYJbKIBeE/NCeNXaOyeJ5qb6g52Jwcg43qsL7Bp9tXl2hIkslYvbtpyK7J3REG
-         7AP3rUWAaBtqeh+HWIqM+fIz9V7q6O6FtDs5RVTwGdqulnMKEYPf4Jlery6KHZdWBTUs
-         nCzhCiXI/QGjKmE6D0qoP7w8dxG7DmudXNNe4g3lAZWSOgB9+9lUd0tEk24ycqRSXDux
-         pMDg==
-X-Gm-Message-State: AOJu0YwGvOSUyA33YsEUaoGFyaQz98hJ7zZWc+kXeI/pXV9JmYwYMc/5
-        ouyaypirmynPRyiVAHKi2CtmVA==
-X-Google-Smtp-Source: AGHT+IGu/8SPkF/vFZGrEhiHZ4PgqS2y+L0isIf4cuQ2LgVvEv7goCfc9sLO+3AtcNQJ40HNnSWJnQ==
-X-Received: by 2002:aa7:d8d8:0:b0:54b:346d:cf00 with SMTP id k24-20020aa7d8d8000000b0054b346dcf00mr11346439eds.18.1701252996881;
-        Wed, 29 Nov 2023 02:16:36 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id c21-20020a056402101500b0053e5f67d637sm7175580edu.9.2023.11.29.02.16.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 02:16:36 -0800 (PST)
-Message-ID: <b606b44d-6b2f-4b0f-912d-b73847073616@linaro.org>
-Date:   Wed, 29 Nov 2023 11:16:34 +0100
+        d=1e100.net; s=20230601; t=1701252999; x=1701857799;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kcguwJOZbBrEOKJtIaNOv7UFSPg18lyOYHkppcsG19M=;
+        b=FF8IggqEYkrifL7/HVnnMnS4eDY7dWNlJUcV9Cq7dny3wGHyij0G9wSSqZcIlWDhQf
+         zg0PQ0Ygamu1+w+n7uTIDxLt2MmenfzUBghKNu5zhgmEBrsanfFcr0HWKVtb0ex8QUeo
+         weG30TiIQf+rDHVTczPn8ql69H0tBxVB0LlZm9mhzqhGk2GNKp6vPif12DftKT5cFn00
+         SrWzp+frSCkxIJ+iVpxieqieGpMSMytkJX/Voa9LihkftVkHjRMCczwvb36QeYqi2wwi
+         r9L5iiU2znTo9Bz/iAuvkOdwIMUQks/DJ5B/+xLsi1HMutOWKHYlrA3Lmx6g3z8bIo7U
+         iWbQ==
+X-Gm-Message-State: AOJu0YyTjygnpj00bIFD6IpRn9m7c4w/w3ND5YlVWsi181C0HyCu2OCm
+        4CfyFX4K2pGPsqge5RNp6raN+2zJFHeDsXfwCZ+JwOu3JCHUvr9cQOSpA3w3kzbuJOSoXQGpYbt
+        yqLC/RXd30yWj7sL7HfSpY8obHLVqgcr48h4=
+X-Received: by 2002:a05:6000:80e:b0:332:ff23:588a with SMTP id bt14-20020a056000080e00b00332ff23588amr6881034wrb.5.1701252999393;
+        Wed, 29 Nov 2023 02:16:39 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE6LSedjrZ8RJnZJI/bDCD0iKBZk/BPNcdizN27Ik6/SdJpvaue2AjhSFctCQHULCS6cWvStw==
+X-Received: by 2002:a05:6000:80e:b0:332:ff23:588a with SMTP id bt14-20020a056000080e00b00332ff23588amr6881020wrb.5.1701252998987;
+        Wed, 29 Nov 2023 02:16:38 -0800 (PST)
+Received: from pstanner-thinkpadt14sgen1.remote.csb (nat-pool-muc-t.redhat.com. [149.14.88.26])
+        by smtp.gmail.com with ESMTPSA id d11-20020adfa40b000000b00332cb846f21sm17455107wra.27.2023.11.29.02.16.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 02:16:38 -0800 (PST)
+Message-ID: <b13191e7a5ad63de23adb8ec3f8a3699a0dd236e.camel@redhat.com>
+Subject: Re: [PATCH 4/4] lib/iomap.c: improve comment about pci anomaly
+From:   Philipp Stanner <pstanner@redhat.com>
+To:     Danilo Krummrich <dakr@redhat.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Eric Auger <eric.auger@redhat.com>,
+        Kent Overstreet <kent.overstreet@gmail.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Neil Brown <neilb@suse.de>, John Sanpe <sanpeqf@gmail.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        David Gow <davidgow@google.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "wuqiang.matt" <wuqiang.matt@bytedance.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Ben Dooks <ben.dooks@codethink.co.uk>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Date:   Wed, 29 Nov 2023 11:16:36 +0100
+In-Reply-To: <a6ef92ae-0747-435b-822d-d0229da4683c@redhat.com>
+References: <20231120215945.52027-2-pstanner@redhat.com>
+         <20231120215945.52027-6-pstanner@redhat.com>
+         <a9ab9976-c1e0-4f91-b17f-e5bbbf21def3@app.fastmail.com>
+         <a6ef92ae-0747-435b-822d-d0229da4683c@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] docs: dt-bindings: add DTS Coding Style document
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Andrew Davis <afd@ti.com>,
-        Andrew Lunn <andrew@lunn.ch>, Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Chen-Yu Tsai <wens@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michal Simek <michal.simek@amd.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        linux-rockchip@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        workflows@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20231125184422.12315-1-krzysztof.kozlowski@linaro.org>
- <CAMuHMdUYEwMuxJ2Xx=KRVKneRT-e+uHz8LE1JVY5zLDkWksqKw@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAMuHMdUYEwMuxJ2Xx=KRVKneRT-e+uHz8LE1JVY5zLDkWksqKw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -142,86 +101,219 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/11/2023 15:19, Geert Uytterhoeven wrote:
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/dts-coding-style.rst
-> 
->> +       /* SoC DTSI */
->> +
->> +       / {
->> +               cpus {
->> +                       /* ... */
->> +               };
->> +
->> +               psci {
->> +                       /* ... */
->> +               };
->> +
->> +               soc@ {
-> 
-> "soc@" is invalid, that should be "soc".
+Hi,
 
-soc@0 is valid.
+On Fri, 2023-11-24 at 20:08 +0100, Danilo Krummrich wrote:
+> Hi Arnd,
+>=20
+> On 11/21/23 11:03, Arnd Bergmann wrote:
+> > On Mon, Nov 20, 2023, at 22:59, Philipp Stanner wrote:
+> > > lib/iomap.c contains one of the definitions of pci_iounmap(). The
+> > > current comment above this out-of-place function does not clarify
+> > > WHY
+> > > the function is defined here.
+> > >=20
+> > > Linus's detailed comment above pci_iounmap() in
+> > > drivers/pci/iomap.c
+> > > clarifies that in a far better way.
+> > >=20
+> > > Extend the existing comment with an excerpt from Linus's and hint
+> > > at the
+> > > other implementation in drivers/pci/iomap.c
+> > >=20
+> > > Signed-off-by: Philipp Stanner <pstanner@redhat.com>
+> >=20
+> > I think instead of explaining why the code is so complicated
+> > here, I'd prefer to make it more logical and not have to
+> > explain it.
+> >=20
+> > We should be able to define a generic version like
+> >=20
+> > void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
+>=20
+> Let's shed some light on the different config options related to
+> this.
+>=20
+> To me it looks like GENERIC_IOMAP always implies GENERIC_PCI_IOMAP.
+>=20
+> lib/iomap.c contains a definition of pci_iounmap() since it uses the
+> common IO_COND() macro. This definitions wins if GENERIC_IOMAP was
+> selected.
 
-> 
-> As the "soc" node is special, you may want to elaborate:
-> 
->                 compatible = "simple-bus";
->                 #address-cells = <1>;
->                 #size-cells = <1>;
->                 ranges;
+Yes. So it seems the only way the implementation in lib/pci_iomap.c can
+ever win is when someone selects GENERIC_PCI_IOMAP *without* selecting
+GENERIC_IOMAP.
 
-but then we go to missing address/size cells in root node. Your comment
-is in general correct, but what you propose here is not a coding style,
-but DTS correctness and I only wanted to show the order of nodes. dtc
-already enforces the proper unit addresses, ranges and cells.
 
-> 
->> +                       dma: dma-controller@10000 {
->> +                               /* ... */
->> +                       };
->> +
->> +                       clk: clock-controller@80000 {
->> +                               /* ... */
->> +                       };
->> +               };
->> +       };
->> +
->> +       /* Board DTS - alphabetical order */
->> +
->> +       &clk {
->> +               /* ... */
->> +       };
->> +
->> +       &dma {
->> +               /* ... */
->> +       };
->> +
->> +       /* Board DTS - alternative order, keep as DTSI */
->> +
->> +       &dma {
->> +               /* ... */
->> +       };
->> +
->> +       &clk {
->> +               /* ... */
->> +       };
-> 
-> IMO that alternative order is hard to review: you need to have multiple
-> files open.  It will also make validation hard, as you can only validate
-> the end result, not individual files.
+>=20
+> lib/pci_iomap.c contains another definition of pci_iounmap() which is
+> guarded by ARCH_WANTS_GENERIC_PCI_IOUNMAP to prevent multiple
+> definitions
+> in case either GENERIC_IOMAP is set or the architecture already
+> defined
+> pci_iounmap().
 
-Rob commented on this - tools (will) solve the issue. :)
+To clarify that, here's the relevant excerpt from include/asm-
+generic/io.h:
 
-> 
-> Anyway, this is already quite usable so
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> 
-> Gr{oetje,eeting}s,
-> 
->                         Geert
-> 
+#ifndef CONFIG_GENERIC_IOMAP
+#ifndef pci_iounmap
+#define ARCH_WANTS_GENERIC_PCI_IOUNMAP
+#endif
+#endif
 
-Best regards,
-Krzysztof
+
+>=20
+> What's the purpose of not having set ARCH_HAS_GENERIC_IOPORT_MAP
+> producing
+> an empty definition of pci_iounmap() though [1]?
+>=20
+> And more generally, is there any other (subtle) logic behind this?
+
+That's indeed also very hard to understand for me, because you'd expect
+that if pci_iomap() exists (and does something), pci_iounmap() should
+also exist and, of course, unmapp the memory again.
+
+From include/asm-generic/io.h:
+
+#ifdef CONFIG_HAS_IOPORT_MAP
+#ifndef CONFIG_GENERIC_IOMAP
+#ifndef ioport_map
+#define ioport_map ioport_map
+static inline void __iomem *ioport_map(unsigned long port, unsigned int nr)
+{
+ port &=3D IO_SPACE_LIMIT;
+ return (port > MMIO_UPPER_LIMIT) ? NULL : PCI_IOBASE + port;
+}
+#define ARCH_HAS_GENERIC_IOPORT_MAP
+#endif
+
+As far as I understand the logic, an empty pci_iounmap() is generated
+(and used?) in lib/pci_iounmap.c if:
+ * CONFIG_HAS_IOPORT_MAP has not been defined
+ * CONFIG_GENERIC_IOMAP has been defined (makes sense, then we use the
+   one from lib/iomap.c anyways)
+ * ioport_map has been defined by someone other than asm-generic/io.h
+
+Regarding the last point, a number of architectures define their own
+ioport_map():
+
+arch/alpha/kernel/io.c, line 684 (as a function)
+arch/arc/include/asm/io.h, line 27 (as a function)
+arch/arm/mm/iomap.c, line 19 (as a function)
+arch/m68k/include/asm/kmap.h, line 60 (as a function)
+arch/parisc/lib/iomap.c, line 504 (as a function)
+arch/powerpc/kernel/iomap.c, line 14 (as a function)
+arch/s390/include/asm/io.h, line 38 (as a function)
+arch/sh/kernel/ioport.c, line 24 (as a function)
+arch/sparc/lib/iomap.c, line 10 (as a function)
+
+I grepped through those archs and as I see it, none of those specify an
+empty pci_iomap() that could be a counterpart to the potentially empty
+pci_iounmap() in lib/pci_iomap.c
+
+All of them use the generic pci_iomap.c, which can _never_ be empty.
+Perhaps when the functions returning always NULL in include/asm-
+generic/pci_iomap.h were to be used...?
+But I think they should never be used, because then pci_iomap.c wins.
+Arnds seems to agree with that, because he pointed out that these
+functions are now surplus relicts in his reply to my Patch Nr.1:
+
+> From what I can tell looking at the header, I think we can
+> just remove the "#elif defined(CONFIG_GENERIC_PCI_IOMAP)"
+> bit entirely, as it no longer serves the purpose it originally
+> had.
+
+So it seems that the empty unmap-function in pci_iomap.c is the left-
+over counterpart of those mapping functions always returning NULL.
+
+@Arnd:
+Your code draft
+
+void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
+{
+#ifdef CONFIG_HAS_IOPORT
+if (iomem_is_ioport(addr)) {
+ioport_unmap(addr);
+return;
+}
+#endif
+iounmap(addr)
+}
+
+seems to agree with that: There will never be the need for an empty
+function that does nothing. Correct?
+
+
+P.
+
+>=20
+> [1]
+> https://elixir.bootlin.com/linux/latest/source/lib/pci_iomap.c#L167
+>=20
+> > {
+> > #ifdef CONFIG_HAS_IOPORT
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (iomem_is_ioport(addr)) {
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 ioport_unmap(addr);
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 return;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> > #endif
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 iounmap(addr)
+> > }
+> >=20
+> > and then define iomem_is_ioport() in lib/iomap.c for x86,
+> > while defining it in asm-generic/io.h for the rest,
+> > with an override in asm/io.h for those architectures
+> > that need a custom inb().
+>=20
+> So, that would be similar to IO_COND(), right? What would we need
+> inb() for
+> in this context?
+>=20
+> - Danilo
+>=20
+> >=20
+> > Note that with ia64 gone, GENERIC_IOMAP is not at all
+> > generic any more and could just move it to x86 or name
+> > it something else. This is what currently uses it:
+> >=20
+> > arch/hexagon/Kconfig:=C2=A0=C2=A0 select GENERIC_IOMAP
+> > arch/um/Kconfig:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 select GENER=
+IC_IOMAP
+> >=20
+> > These have no port I/O at all, so it doesn't do anything.
+> >=20
+> > arch/m68k/Kconfig:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 select GENERIC_IOMAP
+> >=20
+> > on m68knommu, the default implementation from asm-generic/io.h
+> > as the same effect as GENERIC_IOMAP but is more efficient.
+> > On classic m68k, GENERIC_IOMAP does not do what it is
+> > meant to because I/O ports on ISA devices have port
+> > numbers above PIO_OFFSET. Also they don't have PCI.
+> >=20
+> > arch/mips/Kconfig:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 select GENERIC_IOMAP
+> >=20
+> > This looks completely bogus because it sets PIO_RESERVED
+> > to 0 and always uses the mmio part of lib/iomap.c.
+> >=20
+> > arch/powerpc/platforms/Kconfig: select GENERIC_IOMAP
+> >=20
+> > This is only used for two platforms: cell and powernv,
+> > though on Cell it no longer does anything after the
+> > commit f4981a00636 ("powerpc: Remove the celleb support");
+> > I think the entire io_workarounds code now be folded
+> > back into spider_pci.c if we wanted to.
+> >=20
+> > The PowerNV LPC support does seem to still rely on it.
+> > This tries to do the exact same thing as lib/logic_pio.c
+> > for Huawei arm64 servers. I suspect that neither of them
+> > does it entirely correctly since the powerpc side appears
+> > to just override any non-LPC PIO support while the arm64
+> > side is missing the ioread/iowrite support.
+> >=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Arnd
+> >=20
+>=20
 
