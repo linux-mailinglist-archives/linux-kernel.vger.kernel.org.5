@@ -2,133 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8D77FDF93
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 19:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB9417FDDE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 18:04:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231331AbjK2Spj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 13:45:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59648 "EHLO
+        id S230295AbjK2REc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 12:04:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231451AbjK2Sph (ORCPT
+        with ESMTP id S229542AbjK2REb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 13:45:37 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C8EA1A3;
-        Wed, 29 Nov 2023 10:45:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701283544; x=1732819544;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=VesGDOaehDA9Fg1TH+ih/jgS5o/DVG5HPfhsdBxy2o8=;
-  b=XbXoKW2sjEJHO6CRz4nTgoPhggKRjzCQyQyPedW06hxs9B/BToDBbleF
-   HU7Ko91hgjOGP2Ya8+MGkU7hTZ4mD8G+BMi5+H/qdHHzGR2e1BDI9yaPS
-   xjARXf8uO0PFCFNaQR32xUQjNAUg8CSbaKNCHuUxa3CTs2EKDJcQnVyCZ
-   s2/stgCTy+CwMoRhdwqIrmNaU+QkWN6TCmCh78BoOuMpGVbB0dy9sjMW3
-   8RBN4HfJwTVF5FQmfRwOeC5Ma6hP0fUTeOSsFx8WJ29lN/7yTmtKylEq6
-   WUEHpni5D8dNNBU+gdzUbis81y+4l0EOCyRC1mJuG8PGIf3Ny4WwP/UpI
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="383602794"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="383602794"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 10:45:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="942421671"
-X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
-   d="scan'208";a="942421671"
-Received: from caw1-mobl1.amr.corp.intel.com (HELO [10.255.229.136]) ([10.255.229.136])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 10:45:42 -0800
-Message-ID: <598015b0-68e1-434c-96d3-571040a3814e@linux.intel.com>
-Date:   Wed, 29 Nov 2023 10:46:52 -0600
+        Wed, 29 Nov 2023 12:04:31 -0500
+Received: from mail.subdimension.ro (unknown [IPv6:2a01:7e01:e001:1d1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B400594;
+        Wed, 29 Nov 2023 09:04:36 -0800 (PST)
+Received: from localhost.localdomain (unknown [188.24.94.216])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by mail.subdimension.ro (Postfix) with ESMTPSA id 0D5A728EE6F;
+        Wed, 29 Nov 2023 17:04:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
+        s=skycaves; t=1701277475;
+        bh=gPpPxga2dDY1V7HrEM99t1yGm2FFC/JlYq+Sm++MjpE=;
+        h=From:To:Cc:Subject:Date;
+        b=ZTmzk8kUv1hzSWM744cFaZRNHxTDg430c5rMDv1rg0l3W1ENNd/18e9xIYpYNvvsi
+         20LPwuZZpdHonO5RGYkmZlR7bpfGvfRiNA2q87pdSmzteqxLq6TFVHCOFm9Sv/nwXJ
+         UkIHVPXRQxwKt69OD87dvSqLQsyxJY7M/zR0c0JM=
+From:   Petre Rodan <petre.rodan@subdimension.ro>
+To:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     Petre Rodan <petre.rodan@subdimension.ro>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: [PATCH v6 1/2] dt-bindings: iio: pressure: add honeywell,hsc030
+Date:   Wed, 29 Nov 2023 19:04:11 +0200
+Message-ID: <20231129170425.3562-1-petre.rodan@subdimension.ro>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] ASoC: qcom: Add helper for allocating Soundwire
- stream runtime
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Sanyog Kale <sanyog.r.kale@intel.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linux-sound@vger.kernel.org
-References: <20231128165638.757665-1-krzysztof.kozlowski@linaro.org>
- <ce46c729-48de-4b71-ace3-9b88f95e8e28@linux.intel.com>
- <5ffed1e6-ac60-42e1-8322-4f5e419ef86d@linaro.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <5ffed1e6-ac60-42e1-8322-4f5e419ef86d@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Adds binding for digital Honeywell TruStability HSC and SSC series
+pressure and temperature sensors.
+Communication is one way. The sensor only requires 4 bytes worth of
+clock pulses on both i2c and spi in order to push the data out.
+The i2c address is hardcoded and depends on the part number.
+There is no additional GPIO control.
 
+Datasheet:
+https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf [HSC]
+Datasheet:
+https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-ssc-series/documents/sps-siot-trustability-ssc-series-standard-accuracy-board-mount-pressure-sensors-50099533-a-en-ciid-151134.pdf [SSC]
+Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
+---
+v2: - fix yaml struct
+    - cleanup based on Krzysztof's review
+v3: - rename range_str -> honeywell,pressure-triplet to define the string
+       containing the pressure range, measurement unit and type
+    - honeywell,pmax-pascal becomes uint32
+v4: - added enum to honeywell,transfer-function
+v5: - removed pmin-pascal, pmax-pascal $ref
+    - added pmin-pascal, pmax-pascal constraints
+v6  - no change
+---
+ .../iio/pressure/honeywell,hsc030pa.yaml      | 142 ++++++++++++++++++
+ 1 file changed, 142 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
 
-On 11/29/23 10:35, Krzysztof Kozlowski wrote:
-> On 28/11/2023 18:39, Pierre-Louis Bossart wrote:
->>
->>> +int qcom_snd_sdw_startup(struct snd_pcm_substream *substream)
->>> +{
->>> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
->>> +	struct snd_soc_dai *cpu_dai = snd_soc_rtd_to_cpu(rtd, 0);
->>> +	struct sdw_stream_runtime *sruntime;
->>> +	struct snd_soc_dai *codec_dai;
->>> +	int ret, i;
->>> +
->>> +	sruntime = sdw_alloc_stream(cpu_dai->name);
->>> +	if (!sruntime)
->>> +		return -ENOMEM;
->>> +
->>> +	for_each_rtd_codec_dais(rtd, i, codec_dai) {
->>> +		ret = snd_soc_dai_set_stream(codec_dai, sruntime,
->>> +					     substream->stream);
->>> +		if (ret < 0 && ret != -ENOTSUPP) {
->>
->> I know this is existing code moved into a helper, but out of curiosity
->> why is -ENOTSUPP ignored? Isn't this problematic?
-> 
-> This is for all DAI links, so if some don't have set_stream callback, we
-> assume it is not needed. For example few codecs do not need it because
-> they are not on Soundwire bus at all and they don't care about the stream.
-
-Humm, it was my understanding that the substream is mapped 1:1 with a
-dailink, so not sure how SoundWire and non-SoundWire DAIs could be part
-of the same dailink?
-
-I am not saying this test is silly, just wondering if there is any case
-where this error code is returned. Worst-case it's always false but
-harmless.
-
->>
->>> +			dev_err(rtd->dev, "Failed to set sdw stream on %s\n",
->>> +				codec_dai->name);
->>> +			goto err_set_stream;
->>> +		}
->>> +	}
->>
->> Also should the CPU DAIs also be used to set the stream information?
->> it's not clear to me why only the CODEC DAIs are used.
-> 
-> I don't know, we never did. As you pointed out, I am just moving things
-> around, so I don't really know the original intention.
-
-Fair enough, I've been in your shoes :-)
-Not always easy to grade 3+ yr code as 'miss', 'bug', 'optimization' or
-'feature'...
+diff --git a/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+new file mode 100644
+index 000000000000..65a24ed67b3c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+@@ -0,0 +1,142 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/pressure/honeywell,hsc030pa.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Honeywell TruStability HSC and SSC pressure sensor series
++
++description: |
++  support for Honeywell TruStability HSC and SSC digital pressure sensor
++  series.
++
++  These sensors have either an I2C, an SPI or an analog interface. Only the
++  digital versions are supported by this driver.
++
++  There are 118 models with different pressure ranges available in each family.
++  The vendor calls them "HSC series" and "SSC series". All of them have an
++  identical programming model but differ in pressure range, unit and transfer
++  function.
++
++  To support different models one needs to specify the pressure range as well
++  as the transfer function. Pressure range can either be provided via
++  pressure-triplet (directly extracted from the part number) or in case it's
++  a custom chip via numerical range limits converted to pascals.
++
++  The transfer function defines the ranges of raw conversion values delivered
++  by the sensor. pmin-pascal and pmax-pascal corespond to the minimum and
++  maximum pressure that can be measured.
++
++  Please note that in case of an SPI-based sensor, the clock signal should not
++  exceed 800kHz and the MOSI signal is not required.
++
++  Specifications about the devices can be found at:
++  https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf
++  https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-ssc-series/documents/sps-siot-trustability-ssc-series-standard-accuracy-board-mount-pressure-sensors-50099533-a-en-ciid-151134.pdf
++
++maintainers:
++  - Petre Rodan <petre.rodan@subdimension.ro>
++
++properties:
++  compatible:
++    const: honeywell,hsc030pa
++
++  reg:
++    maxItems: 1
++
++  honeywell,transfer-function:
++    description: |
++      Transfer function which defines the range of valid values delivered by
++      the sensor.
++      0 - A, 10% to 90% of 2^14
++      1 - B, 5% to 95% of 2^14
++      2 - C, 5% to 85% of 2^14
++      3 - F, 4% to 94% of 2^14
++    enum: [0, 1, 2, 3]
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++  honeywell,pressure-triplet:
++    description: |
++      Case-sensitive five character string that defines pressure range, unit
++      and type as part of the device nomenclature. In the unlikely case of a
++      custom chip, set to "NA" and provide pmin-pascal and pmax-pascal.
++    enum: [001BA, 1.6BA, 2.5BA, 004BA, 006BA, 010BA, 1.6MD, 2.5MD, 004MD,
++           006MD, 010MD, 016MD, 025MD, 040MD, 060MD, 100MD, 160MD, 250MD,
++           400MD, 600MD, 001BD, 1.6BD, 2.5BD, 004BD, 2.5MG, 004MG, 006MG,
++           010MG, 016MG, 025MG, 040MG, 060MG, 100MG, 160MG, 250MG, 400MG,
++           600MG, 001BG, 1.6BG, 2.5BG, 004BG, 006BG, 010BG, 100KA, 160KA,
++           250KA, 400KA, 600KA, 001GA, 160LD, 250LD, 400LD, 600LD, 001KD,
++           1.6KD, 2.5KD, 004KD, 006KD, 010KD, 016KD, 025KD, 040KD, 060KD,
++           100KD, 160KD, 250KD, 400KD, 250LG, 400LG, 600LG, 001KG, 1.6KG,
++           2.5KG, 004KG, 006KG, 010KG, 016KG, 025KG, 040KG, 060KG, 100KG,
++           160KG, 250KG, 400KG, 600KG, 001GG, 015PA, 030PA, 060PA, 100PA,
++           150PA, 0.5ND, 001ND, 002ND, 004ND, 005ND, 010ND, 020ND, 030ND,
++           001PD, 005PD, 015PD, 030PD, 060PD, 001NG, 002NG, 004NG, 005NG,
++           010NG, 020NG, 030NG, 001PG, 005PG, 015PG, 030PG, 060PG, 100PG,
++           150PG, NA]
++    $ref: /schemas/types.yaml#/definitions/string
++
++  honeywell,pmin-pascal:
++    description: |
++      Minimum pressure value the sensor can measure in pascal.
++      To be specified only if honeywell,pressure-triplet is set to "NA".
++
++  honeywell,pmax-pascal:
++    description: |
++      Maximum pressure value the sensor can measure in pascal.
++      To be specified only if honeywell,pressure-triplet is set to "NA".
++
++  vdd-supply:
++    description:
++      Provide VDD power to the sensor (either 3.3V or 5V depending on the chip)
++
++  spi-max-frequency:
++    maximum: 800000
++
++required:
++  - compatible
++  - reg
++  - honeywell,transfer-function
++  - honeywell,pressure-triplet
++
++additionalProperties: false
++
++dependentSchemas:
++  honeywell,pmin-pascal:
++    properties:
++      honeywell,pressure-triplet:
++        const: NA
++  honeywell,pmax-pascal:
++    properties:
++      honeywell,pressure-triplet:
++        const: NA
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        pressure@28 {
++            compatible = "honeywell,hsc030pa";
++            reg = <0x28>;
++            honeywell,transfer-function = <0>;
++            honeywell,pressure-triplet = "030PA";
++        };
++    };
++  - |
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        pressure@0 {
++            compatible = "honeywell,hsc030pa";
++            reg = <0>;
++            spi-max-frequency = <800000>;
++            honeywell,transfer-function = <0>;
++            honeywell,pressure-triplet = "NA";
++            honeywell,pmin-pascal = <0>;
++            honeywell,pmax-pascal = <200000>;
++        };
++    };
++...
+-- 
+2.41.0
 
