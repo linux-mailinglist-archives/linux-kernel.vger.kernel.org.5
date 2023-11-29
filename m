@@ -2,163 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5514B7FD16E
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:53:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84ADE7FD16F
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232118AbjK2Ixc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 03:53:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38658 "EHLO
+        id S232307AbjK2Ixf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 03:53:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230172AbjK2Ixa (ORCPT
+        with ESMTP id S232152AbjK2Ixc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 03:53:30 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E008AF
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:53:36 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07F62C433C7;
-        Wed, 29 Nov 2023 08:53:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701248016;
-        bh=3eLt23KooZa2k2I13M7RSXAGLV1T4oMfWl3vu8htwmg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H10Gz0c3p5v4a9BqkCBUfFhbKlxaGH2dQYHXYqZneRUQxkzvQwROkFvxs4Rg8WvxC
-         S8QlKDnjKBwY5Vpjv4JJUHKT3vJcZCUps0TFUqyC4XWMd7l14OuAScT1a2YmqYNGLo
-         Wtf7cA9G2XPCJbTXDJVBUgnCmqEoRe6wxquimnOLui+qvzj7Ztu+IbBnlrbXBHsTXY
-         6LxgFjHdPm37ysKu/Q4Ydk/eZK7IdsdbKf1RgXtHiI3Myq8xjiqQXvb694Z7h3WtoB
-         ra7qfCfO/yhM96Ih3Vfuo4WL+QHBvf9jzhkVX7lH54048S6kowXlPwREYfjOlwpV+N
-         buiuIt3WJFAaw==
-Date:   Wed, 29 Nov 2023 00:53:34 -0800
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jason Gunthorpe <jgg@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>,
-        Itay Avraham <itayavr@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH V3 3/5] misc: mlx5ctl: Add info ioctl
-Message-ID: <ZWb8DgFoQuzWfumk@x130>
-References: <20231121070619.9836-1-saeed@kernel.org>
- <20231121070619.9836-4-saeed@kernel.org>
- <2023112722-imitate-impromptu-c9a7@gregkh>
- <ZWT-elg2hzX7s7B4@x130>
- <2023112802-false-tumble-ea38@gregkh>
+        Wed, 29 Nov 2023 03:53:32 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA0DAF
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:53:39 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1ce3084c2d1so53761995ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:53:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701248019; x=1701852819; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SZFL/pJqMhpdz+PJVA0CR6dasqvtUf0OfCGJuaJanG0=;
+        b=TsFFEBYgYUs4tt11UJUpgyUTCHSlissBU/jllOjSKxxO62XeMgbHhKAUXidf1fviMN
+         iiiF2SOqaigkchH+5vFIzW9xAzOSlzwObVVzdf2nPSRoFHY6CJ+O1n6HcOK2p0fC0Cao
+         L3dzTOIW6V1YZ5NAgdeU9rlUGAeubWL+hXECmA7yK8U5UT9aScliMl+KTQV/bUQ/slUa
+         mQUcVEg+cjYRpbbQP+kwV7vER/hI4zOClAR22iAucE0yxe5mPq3LQT45vgxArrYVnLN4
+         Z5Vbsb/A3qSUFSFPvL2hbuLkyRKqZIUGbZDtydaXTJaTBc1O5bNWNybzE+jwg2j38swH
+         4N1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701248019; x=1701852819;
+        h=content-transfer-encoding:cc:to:subject:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=SZFL/pJqMhpdz+PJVA0CR6dasqvtUf0OfCGJuaJanG0=;
+        b=CwCzGyPI6+R9g+GxJVgzYGmh8H4AKVTclySfxjTt8ko1G6H4h0ECMOA/jORfSP5i5E
+         +fpFu8cFwsNOzT8ZxHEBEET5N/EEN4rdqVhl+GhP1kD56jRdgrECcL0y1SBWg8tYrFl2
+         jlMLc2YAp0/nkwhgaJJccneUsNjtTtP1vs34bnxKsp5UHXlfmD0Cf64CtxgGc+ir1rTu
+         W/MLAJ9BJJ+a9IQbDtl9neZYj75qgOPUNykCEC9Pp3QNY9uI2uIl+w5sG6gdD9YR9c8T
+         LTufMdoEIKtRmVGr3xboMqc62B8LAv4h+5UZmS2BwslD+hAK9y/LpVa5/41JxNnQeltw
+         kL8A==
+X-Gm-Message-State: AOJu0YyfmNmcqA1LhIUlL+7ZnoiHs4ILL6lc87k97eYFU3oLrTazRHdP
+        TJrF5AC8X4O4iV4H9M8QpI0qxgZiQQC3vVLhS+w=
+X-Google-Smtp-Source: AGHT+IEj27MggbDEWMD6Qgaj0TytaMyDbWHfZSPfwi5SJnN4F45OBItU1oS8iLXGN3/gvMOm6Gox+Q==
+X-Received: by 2002:a17:903:183:b0:1cf:6590:70 with SMTP id z3-20020a170903018300b001cf65900070mr23121910plg.23.1701248018961;
+        Wed, 29 Nov 2023 00:53:38 -0800 (PST)
+Received: from [10.23.169.155] (014136099212.ctinets.com. [14.136.99.212])
+        by smtp.gmail.com with ESMTPSA id k18-20020a170902c41200b001cfaba4bfbdsm9174434plk.83.2023.11.29.00.53.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Nov 2023 00:53:38 -0800 (PST)
+Message-ID: <76d535f6-f92c-4564-aafa-290042cf76a9@gmail.com>
+Date:   Wed, 29 Nov 2023 16:53:35 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <2023112802-false-tumble-ea38@gregkh>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   Benjamin Tang <tangsong8264@gmail.com>
+Subject: [RFC] Core Scheduling unnecessary force idle?
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Benjamin Tang <tangsong8264@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28 Nov 09:13, Greg Kroah-Hartman wrote:
->On Mon, Nov 27, 2023 at 12:39:22PM -0800, Saeed Mahameed wrote:
->> On 27 Nov 19:09, Greg Kroah-Hartman wrote:
->> > On Mon, Nov 20, 2023 at 11:06:17PM -0800, Saeed Mahameed wrote:
->> > > +static int mlx5ctl_info_ioctl(struct file *file,
->> > > +			      struct mlx5ctl_info __user *arg,
->> > > +			      size_t usize)
->> > > +{
->> > > +	struct mlx5ctl_fd *mfd = file->private_data;
->> > > +	struct mlx5ctl_dev *mcdev = mfd->mcdev;
->> > > +	struct mlx5_core_dev *mdev = mcdev->mdev;
->> > > +	struct mlx5ctl_info *info;
->> > > +	size_t ksize = 0;
->> > > +	int err = 0;
->> > > +
->> > > +	ksize = max(sizeof(struct mlx5ctl_info), usize);
->> >
->> > Why / How can usize be larger than the structure size and you still want
->> > to allocate a memory chunk that big?  Shouldn't the size always match?
->> >
->>
->> new user-space old kernel, the driver would allocate the usiae and make
->> sure to clear all the buffer with 0's, then fill in what the kernel
->> understands and send the whole buffer back to user with trailer always
->> zeroed out.
->
->No, at that point you know something is wrong and you need to just abort
->and return -EINVAL as the structure sizes do not match.
->
->If you need to "extend" the structure to include more information, do so
->in a new ioctl.
->
+When I'm reading the code related to "core scheduling", I have a question.
 
-Ack, will remove these fields.
+Say the RQs in a particular core look like this:
+Let CFS1 and CFS4 be 2 untagged CFS tasks.
+Let CFS2 and CFS3 be 2 untagged CFS tasks.
 
->> > > --- /dev/null
->> > > +++ b/include/uapi/misc/mlx5ctl.h
->> > > @@ -0,0 +1,24 @@
->> > > +/* SPDX-License-Identifier: BSD-3-Clause OR GPL-2.0 WITH Linux-syscall-note */
->> > > +/* Copyright (c) 2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved. */
->> > > +
->> > > +#ifndef __MLX5CTL_IOCTL_H__
->> > > +#define __MLX5CTL_IOCTL_H__
->> > > +
->> > > +struct mlx5ctl_info {
->> > > +	__aligned_u64 flags;
->> >
->> > Is this used?
->> >
->>
->> no, not yet, but it is good for future extendibility and compatibility
->> checking.
->
->But you are not checking anything now, so please don't include something
->that will not work in the future.
->
+          rq0                      rq1
+     CFS1(no tag)     CFS3(tagged)
+     CFS2(tagged)    CFS4(no tag)
 
-Ack, will remove.
+Say schedule() runs on rq0. In the core-wide pick logic, if I'm not 
+mistaken,
+the end result of the selection will be (say prio(CFS1) > prio(CFS3)):
 
->> > > +	__u32 size;
->> > > +	__u8 devname[64]; /* underlaying ConnectX device */
->> >
->> > 64 should be a define somewhere, right?  And why 64?
->> >
->>
->> It is usually the kobj->name of the underlying device, I will have to
->> define this in the uAPI. 64 seemed large enough, any other suggestion ?
->
->What happens if the names get bigger?
->
->> This field is informational only for the user to have an idea which is the
->> underlying physical device, it's ok if in odd situation the name has to be
->> truncated to fit into the uAPI buffer.
->
->As the truncation will happen on the right side of the string, usually
->the actual device id or unique identifier, that's not going to help out
->much to drop that portion :(
->
+          rq0                 rq1
+     CFS1(no tag)    IDLE
 
-Right :/, it's an assumption that mlx5 devices can either be a pci device
-or an auxiliary device in case of a mlx5-subfunction, so i don't expect the
-names to get larger and can easily fit in 64B string, but you are right, I
-shouldn't make such assumption in an IOCTL, I will figure out something or
-completely drop this field in V4.
+Why not consider trying to find untagged tasks for rq1 here?
+Is it because it seems less fair, or are there other considerations?
 
->> > > +	__u16 uctx_uid; /* current process allocated UCTX UID */
->> > > +	__u16 reserved1;
->> >
->> > Where is this checked to be always 0?  Well it's a read so I guess where
->> > is the documentation saying it will always be set to 0?
->> >
->>
->> I forgot to add the checks in the info ioctl path, will add that.
->> Isn't it an unwritten rule that reserved fields has to be always 0 ?
->> Do I really need to document this ?
->
->It is a written rule that reserved fields must be 0, please see the
->documentation for how to write an ioctl.
->
+I would be very grateful if someone could give me some suggestions.
+Thanks!
 
-Ack, will document.
+Best Wishes
 
->thanks,
->
->greg k-h
