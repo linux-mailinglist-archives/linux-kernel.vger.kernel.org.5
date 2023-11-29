@@ -2,58 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E38227FD5E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:38:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF2C7FD5EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233111AbjK2Lig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 06:38:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46136 "EHLO
+        id S233108AbjK2LkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 06:40:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233071AbjK2Lia (ORCPT
+        with ESMTP id S233019AbjK2LkU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 06:38:30 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F03C4
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 03:38:37 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C3E3C433C8;
-        Wed, 29 Nov 2023 11:38:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1701257916;
-        bh=/djex4o3dqe1i42wuz9PG0/vgKzpHPhwIhOIgQXXL1U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uU4whDs6Z1YKngjCmn5gwHACPMm29u1VKm7mUddhCUXuq3xjutAf+mwQ/z0cYHqWF
-         90EhlUizj3sy+E1Rq3Y8iPk5NYo9RQILX5fukZP6uGVqJjGImZB4ky8MmYNdunLRRq
-         Nx6ghWr+yFeY24UfDxeln7sZz8WV2RrCRITCFjhyLHO3lPf4Pcjmj8JtmwTIZ/27EZ
-         nVkcvIeafQJrWpbdTPhMPWp0WxHUYVJoPYs2khEESigfzVGG1E0VX1ZJMCtcAfQf97
-         zStLnBYhhxojdu5mIQuSjv41ED45qupXM8dXXCF8u7OMJW96GaKp1TFP+wHsMvmtwy
-         9mweFFhWj56tQ==
-Date:   Wed, 29 Nov 2023 12:38:30 +0100
-From:   Christian Brauner <brauner@kernel.org>
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     NeilBrown <neilb@suse.de>, Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org
-Subject: Re: [PATCH/RFC] core/nfsd: allow kernel threads to use task_work.
-Message-ID: <20231129-fundort-kalligrafie-d4777374ad7a@brauner>
-References: <170112272125.7109.6245462722883333440@noble.neil.brown.name>
- <20231128-arsch-halbieren-b2a95645de53@brauner>
- <20231128135258.GB22743@redhat.com>
- <20231128-elastisch-freuden-f9de91041218@brauner>
- <20231128165945.GD22743@redhat.com>
- <20231128172959.GA27265@redhat.com>
+        Wed, 29 Nov 2023 06:40:20 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6406B137;
+        Wed, 29 Nov 2023 03:40:26 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1cf8e569c35so44488875ad.0;
+        Wed, 29 Nov 2023 03:40:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701258026; x=1701862826; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hJF+hJ5VN4sJhJYjpX9/OpUUp6GMMh66U/1NZe17HOA=;
+        b=R+hIrvBvzgFTSyWOJ5Ar9qMwT1eK7z+TofcZxjDRCW5TY5Fc9esXOwToQPxovjIoGN
+         tvkVmfItj+i2qTwO8dZmDwwA0kq+lZXDq4Tra0ecycPrZqKumNsDJnE080CL5L1GMX+4
+         jfnTG4ln5ioXQV80YQ/5d81CIYk2WNADsJxIvxjH+Lk/r5gubT/lb6gzfakTDtoIJb4z
+         KicaNtbh1ESeJSUMn5E3La5u3FA1j118FLUrnMRq25XgE0cSUGLPYIgrLjOkqZeuSGTx
+         Ai/GZGGVlxKOGrTDOgS2yz47JR9v3Fv5i22p5Kmb6XxqALQmrQ638ntKWiw+7zBK0223
+         aZQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701258026; x=1701862826;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hJF+hJ5VN4sJhJYjpX9/OpUUp6GMMh66U/1NZe17HOA=;
+        b=JSq3CXeqljCjEbwicn1fvQp9hxxVHRtnJgw/mTKy3WF0WlSlaVvfCxSQd1wlXHqkCf
+         gypLd173hbfUOPhYkw+nAKBUQaA4P0XcOJ4T7GRsT170mJ/C7B4b7w3AjIffOSsCT4Fy
+         pcVqsTBogX0jonKixnz+Czztnob2qESSxtkebQJ7l1meF7F5NKc2FPIqVxb20361FBrf
+         Daawi6EFhCM7IOGfiZ+JFblkYi4Delx/FdFIjLBh6WvEuYpHNKkIva/9/i/vIgTJ+sMU
+         yJx4zW+M3v0FHqmVMIeia5ZzxFp2OHxhE5G8XWMycbnrnM/W1thgLJ1OAOdedsi9tuoe
+         lJJA==
+X-Gm-Message-State: AOJu0YycqRnccbQkmZc632PWazpkANpvZZmtnx2+ag56XCaLuaeW70Zk
+        kaREv52C3ViveYyluPShx3I=
+X-Google-Smtp-Source: AGHT+IFewmWHo4E8iy3QvOvjiPAb7kQz7zx9xJGJNRmV2iBw5agvEIOeCnZL94/9HFeQEnZd8iT4aw==
+X-Received: by 2002:a17:902:ecc3:b0:1d0:1216:8f1a with SMTP id a3-20020a170902ecc300b001d012168f1amr2361908plh.0.1701258025725;
+        Wed, 29 Nov 2023 03:40:25 -0800 (PST)
+Received: from [192.168.255.10] ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id u6-20020a170902e5c600b001cfde4c84bcsm4431332plf.141.2023.11.29.03.40.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Nov 2023 03:40:25 -0800 (PST)
+Message-ID: <bcbc9d0f-8b52-468b-8c69-0e09ec168a39@gmail.com>
+Date:   Wed, 29 Nov 2023 19:40:18 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231128172959.GA27265@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] KVM: x86: Use get_cpl directly in case of vcpu_load to
+ improve accuracy
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231123075818.12521-1-likexu@tencent.com>
+ <ZWVCwvoETD_NVOFG@google.com>
+Content-Language: en-US
+From:   Like Xu <like.xu.linux@gmail.com>
+In-Reply-To: <ZWVCwvoETD_NVOFG@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -62,16 +76,159 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 06:29:59PM +0100, Oleg Nesterov wrote:
-> Forgot to menstion,
-> 
-> On 11/28, Oleg Nesterov wrote:
-> >
-> > but please
-> > note irq_thread()->task_work_add(on_exit_work).
-> 
-> and this means that Neil's and your more patch were wrong ;)
+Thanks for your comments.
 
-Hm, that's all the more reason to not hang this off of PF_KTHREAD then.
-I mean, it's functional but we likely wouldn't have run into this
-confusion if this would be PF_FPUT_DELAYED, for example.
+On 28/11/2023 9:30 am, Sean Christopherson wrote:
+> On Thu, Nov 23, 2023, Like Xu wrote:
+>> Signed-off-by: Like Xu <likexu@tencent.com>
+>> ---
+>>   arch/x86/kvm/x86.c | 5 ++++-
+>>   1 file changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index 2c924075f6f1..c454df904a45 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -13031,7 +13031,10 @@ bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu)
+>>   	if (vcpu->arch.guest_state_protected)
+>>   		return true;
+>>   
+>> -	return vcpu->arch.preempted_in_kernel;
+>> +	if (vcpu != kvm_get_running_vcpu())
+>> +		return vcpu->arch.preempted_in_kernel;
+> 
+> Eww, KVM really shouldn't be reading vcpu->arch.preempted_in_kernel in a generic
+> vcpu_in_kernel() API.
+
+It looks weird to me too.
+
+> 
+> Rather than fudge around that ugliness with a kvm_get_running_vcpu() check, what
+> if we instead repurpose kvm_arch_dy_has_pending_interrupt(), which is effectively
+> x86 specific, to deal with not being able to read the current CPL for a vCPU that
+> is (possibly) not "loaded", which AFAICT is also x86 specific (or rather, Intel/VMX
+> specific).
+
+I'd break it into two parts, the first step applying this simpler, more 
+straightforward fix
+(which is backport friendly compared to the diff below), and the second step 
+applying
+your insight for more decoupling and cleanup.
+
+You'd prefer one move to fix it, right ?
+
+> 
+> And if getting the CPL for a vCPU that may not be loaded is problematic for other
+> architectures, then I think the correct fix is to move preempted_in_kernel into
+> common code and check it directly in kvm_vcpu_on_spin().
+
+Not sure which tests would cover this part of the change.
+
+> 
+> This is what I'm thinking:
+> 
+> ---
+>   arch/x86/kvm/x86.c       | 22 +++++++++++++++-------
+>   include/linux/kvm_host.h |  2 +-
+>   virt/kvm/kvm_main.c      |  7 +++----
+>   3 files changed, 19 insertions(+), 12 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 6d0772b47041..5c1a75c0dafe 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -13022,13 +13022,21 @@ int kvm_arch_vcpu_runnable(struct kvm_vcpu *vcpu)
+>   	return kvm_vcpu_running(vcpu) || kvm_vcpu_has_events(vcpu);
+>   }
+>   
+> -bool kvm_arch_dy_has_pending_interrupt(struct kvm_vcpu *vcpu)
+> +static bool kvm_dy_has_pending_interrupt(struct kvm_vcpu *vcpu)
+>   {
+> -	if (kvm_vcpu_apicv_active(vcpu) &&
+> -	    static_call(kvm_x86_dy_apicv_has_pending_interrupt)(vcpu))
+> -		return true;
+> +	return kvm_vcpu_apicv_active(vcpu) &&
+> +	       static_call(kvm_x86_dy_apicv_has_pending_interrupt)(vcpu);
+> +}
+>   
+> -	return false;
+> +bool kvm_arch_vcpu_preempted_in_kernel(struct kvm_vcpu *vcpu)
+> +{
+> +	/*
+> +	 * Treat the vCPU as being in-kernel if it has a pending interrupt, as
+> +	 * the vCPU trying to yield may be spinning on IPI delivery, i.e. the
+> +	 * the target vCPU is in-kernel for the purposes of directed yield.
+
+How about the case "vcpu->arch.guest_state_protected == true" ?
+
+> +	 */
+> +	return vcpu->arch.preempted_in_kernel ||
+> +	       kvm_dy_has_pending_interrupt(vcpu);
+>   }
+>   
+>   bool kvm_arch_dy_runnable(struct kvm_vcpu *vcpu)
+> @@ -13043,7 +13051,7 @@ bool kvm_arch_dy_runnable(struct kvm_vcpu *vcpu)
+>   		 kvm_test_request(KVM_REQ_EVENT, vcpu))
+>   		return true;
+>   
+> -	return kvm_arch_dy_has_pending_interrupt(vcpu);
+> +	return kvm_dy_has_pending_interrupt(vcpu);
+>   }
+>   
+>   bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu)
+> @@ -13051,7 +13059,7 @@ bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu)
+>   	if (vcpu->arch.guest_state_protected)
+>   		return true;
+>   
+> -	return vcpu->arch.preempted_in_kernel;
+> +	return static_call(kvm_x86_get_cpl)(vcpu);
+
+We need "return static_call(kvm_x86_get_cpl)(vcpu) == 0;" here.
+
+>   }
+>   
+>   unsigned long kvm_arch_vcpu_get_ip(struct kvm_vcpu *vcpu)
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index ea1523a7b83a..820c5b64230f 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -1505,7 +1505,7 @@ int kvm_arch_vcpu_runnable(struct kvm_vcpu *vcpu);
+>   bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu);
+>   int kvm_arch_vcpu_should_kick(struct kvm_vcpu *vcpu);
+>   bool kvm_arch_dy_runnable(struct kvm_vcpu *vcpu);
+> -bool kvm_arch_dy_has_pending_interrupt(struct kvm_vcpu *vcpu);
+> +bool kvm_arch_vcpu_preempted_in_kernel(struct kvm_vcpu *vcpu);
+>   int kvm_arch_post_init_vm(struct kvm *kvm);
+>   void kvm_arch_pre_destroy_vm(struct kvm *kvm);
+>   int kvm_arch_create_vm_debugfs(struct kvm *kvm);
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 8758cb799e18..e84be7e2e05e 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -4049,9 +4049,9 @@ static bool vcpu_dy_runnable(struct kvm_vcpu *vcpu)
+>   	return false;
+>   }
+>   
+> -bool __weak kvm_arch_dy_has_pending_interrupt(struct kvm_vcpu *vcpu)
+> +bool __weak kvm_arch_vcpu_preempted_in_kernel(struct kvm_vcpu *vcpu)
+>   {
+> -	return false;
+> +	return kvm_arch_vcpu_in_kernel(vcpu);
+>   }
+>   
+>   void kvm_vcpu_on_spin(struct kvm_vcpu *me, bool yield_to_kernel_mode)
+> @@ -4086,8 +4086,7 @@ void kvm_vcpu_on_spin(struct kvm_vcpu *me, bool yield_to_kernel_mode)
+>   			if (kvm_vcpu_is_blocking(vcpu) && !vcpu_dy_runnable(vcpu))
+>   				continue;
+>   			if (READ_ONCE(vcpu->preempted) && yield_to_kernel_mode &&
+> -			    !kvm_arch_dy_has_pending_interrupt(vcpu) &&
+> -			    !kvm_arch_vcpu_in_kernel(vcpu))
+> +			    kvm_arch_vcpu_preempted_in_kernel(vcpu))
+
+Use !kvm_arch_vcpu_preempted_in_kernel(vcpu) ?
+
+>   				continue;
+>   			if (!kvm_vcpu_eligible_for_directed_yield(vcpu))
+>   				continue;
+> 
+> base-commit: e9e60c82fe391d04db55a91c733df4a017c28b2f
