@@ -2,106 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 511C07FE011
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 20:04:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 363C37FE012
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 20:04:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233429AbjK2TEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 14:04:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49100 "EHLO
+        id S229983AbjK2TED convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 29 Nov 2023 14:04:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbjK2TD6 (ORCPT
+        with ESMTP id S233130AbjK2TEB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 14:03:58 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2296AF4
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 11:04:05 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-332ed1bd4cbso84379f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 11:04:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701284643; x=1701889443; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DgvbtukB8PwWlSirb4+jB7fmU1O+TkE4+ao/vcBWmcA=;
-        b=Zox6clDdTJWc0IssMju+G9gZdSACcsmPxHxe4mFQQn+B2BEhHE5veLnoQj1vIxgfWW
-         UFRWeXnMMOpdd0JjfOPHD6ioQCnmEGol4IXtQtyCavjLW2ejkWQ+b79WjYQSnbmT9Hwa
-         F7RXaoVE+mqz7t1rIwYCLqc+D7mHt9WbUOm2DHowwCUwI6N+7N9+lx/ADmJdFjxZ6Te3
-         fYi0ONcJwM87HW93963fiYuhqN5lboDHrPD7q/Z6L1hP/0A/l1j4iwAjQMO9G8U7b141
-         TkYYm9Cd7l/JgCVE1qWh2cqTH41UyS02Dp0X88fn9gil4rKMBo+CJlTvBcVcLuOYxAHQ
-         TTeA==
+        Wed, 29 Nov 2023 14:04:01 -0500
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E67EF4
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 11:04:07 -0800 (PST)
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2c9c39b7923so2048551fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 11:04:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701284643; x=1701889443;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DgvbtukB8PwWlSirb4+jB7fmU1O+TkE4+ao/vcBWmcA=;
-        b=JdZzzOp5QYrV4DeSN0uC2SbiWLrzUt8iSx9s6NbBgKK7MuHBDCqvIbl6f8jehhfm5U
-         yG8Kz3EIHcCYYEndl6B74pUAQi05lUYO47ztNwFfYcmBAN3lolK4ZVnU+s38DDf2MUp0
-         GFWnF1ct7yfyLhSe4kmrlQ4en/yZqE4OKPrYIEmAwZ8SZiZe5QtvGShKti3ou+ML/RvT
-         zkLDSquw3eGi7Rup6JC2jIis+hkfQjUoBhioNgCNx3tp6zAD1+H4wFX1RktZOSDNdDXY
-         oXRqPLQ0YHklC0ahWcscPAyDbdrscy2MozgZWhsNdm9b04EzpoY9dRUigTdaas/3XtvZ
-         Cpuw==
-X-Gm-Message-State: AOJu0YyjJL2jCZSqGEf8jLzoxJPpxxubtX51tfoNgG4FPwZa8t4inkbe
-        2RxcuzrMOIPFU9htAy1uBQo=
-X-Google-Smtp-Source: AGHT+IHqIouxjc3q8FC7Jdh0+5/iwmlwqPX6FdSSvZcBkVDABfRElhGO4YUZ+vuC2DF6oGYx2q3tQA==
-X-Received: by 2002:a05:6000:371:b0:333:880:e29b with SMTP id f17-20020a056000037100b003330880e29bmr5580557wrf.4.1701284643290;
-        Wed, 29 Nov 2023 11:04:03 -0800 (PST)
-Received: from uk-l1.corp.ad.wrs.com ([2a01:4b00:8855:a800:e253:bfaa:775:87a6])
-        by smtp.gmail.com with ESMTPSA id t20-20020a0560001a5400b00332f1900476sm4116946wry.81.2023.11.29.11.04.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 11:04:02 -0800 (PST)
-From:   Beniamin Sandu <beniaminsandu@gmail.com>
-To:     dinguyen@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Beniamin Sandu <beniaminsandu@gmail.com>
-Subject: [PATCH] firmware: stratix10-rsu: correctly report unsupported DCMF commands
-Date:   Wed, 29 Nov 2023 19:03:36 +0000
-Message-Id: <20231129190336.247674-1-beniaminsandu@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1701284645; x=1701889445;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b6e/iPHotyGLxRcZFDNDxbxKjcI1VVeudET2V0CiNRw=;
+        b=nWvOINyxBDPWWPGPzf5xuL9JLLtU/DYVvXlD547xbdforIlglbix1pLxGYLk+lTOrU
+         D1r51Ks8n1chNDopVxr5WlSpphKeGT+/6U6T8bWUQA2KxzHZjOzQfzeBo+ACVl8Jytht
+         1PhIZmRJGvJ9mkt5A+zu21WFMSfChHxjO1rH9xLIL4R0WwDXXjqDzdu1btTo4y/P4JYg
+         CdbiUSdEQmKfeEs7XOwsu8Gh6DDa31V2y50nzbZGp3xnszhBVg+1EsWQi9/5u15MbjcL
+         BxuKVUumPExm4xeCqrG3SIkH8qdFymGcu3MJhd6KaBXboavz0sIgNklqRhoUlqe6XlfE
+         nU3w==
+X-Gm-Message-State: AOJu0Yz5dVFf8xpGKHXMhv3So9omAE8lWxgzU4NKyST6uQC5PGwdnGDv
+        qdnNdfwnJeyg9eWMoa9EeGOEt0xQbQ8dW8fxhA==
+X-Google-Smtp-Source: AGHT+IFZbYy0xwGTrEdISZZupZsQXl2gjBcYvUS3srlgKW0bTVN7ZheGcoVR4CI2Tf1Dtro+/cESGQvLdpW8A+Cx3MI=
+X-Received: by 2002:a2e:7203:0:b0:2c9:bf97:81d1 with SMTP id
+ n3-20020a2e7203000000b002c9bf9781d1mr1818071ljc.27.1701284645142; Wed, 29 Nov
+ 2023 11:04:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231127160058.586446-1-fabio.maria.de.francesco@linux.intel.com>
+ <CAF8kJuMakA-UbHi4Z5uCtB+6S0vcZiULKXu6GQh+7KBHQSR6Bg@mail.gmail.com> <2166103.irdbgypaU6@fdefranc-mobl3>
+In-Reply-To: <2166103.irdbgypaU6@fdefranc-mobl3>
+From:   Christopher Li <chrisl@kernel.org>
+Date:   Wed, 29 Nov 2023 11:03:52 -0800
+Message-ID: <CANeU7QmJg3XSxfNQhrd-gDeT8_cWSO+t-WyEXvf9TWHYXKY6OA@mail.gmail.com>
+Subject: Re: [PATCH] mm/zswap: Replace kmap_atomic() with kmap_local_page()
+To:     "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
+Cc:     Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>,
+        Nhat Pham <nphamcs@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On older firmware that doesn't support DCMF commands, driver will
-otherwise report those as failed to read, instead of unsupported.
+Hi Fabio,
 
-Signed-off-by: Beniamin Sandu <beniaminsandu@gmail.com>
----
- drivers/firmware/stratix10-rsu.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+On Wed, Nov 29, 2023 at 3:41 AM Fabio M. De Francesco
+<fabio.maria.de.francesco@linux.intel.com> wrote:
+> > > The kernel virtual addresses returned by these two API are
+> > > only valid in the context of the callers (i.e., they cannot be handed to
+> > > other threads).
+> > >
+> > > With kmap_local_page() the mappings are per thread and CPU local like
+> > > in kmap_atomic(); however, they can handle page-faults and can be called
+> > > from any context (including interrupts). The tasks that call
+> > > kmap_local_page() can be preempted and, when they are scheduled to run
+> > > again, the kernel virtual addresses are restored and are still valid.
+> >
+> > As far as I can tell, the kmap_atomic() is the same as
+> > kmap_local_page() with the following additional code before calling to
+> > "__kmap_local_page_prot(page, prot)", which is common between these
+> > two functions.
+> >
+> >         if (IS_ENABLED(CONFIG_PREEMPT_RT))
+> >                 migrate_disable();
+> >         else
+> >                 preempt_disable();
+> >
+> >         pagefault_disable();
+> >
+>
+> This is what I tried to explain with that sentence. I think you overlooked it
+> :)
 
-diff --git a/drivers/firmware/stratix10-rsu.c b/drivers/firmware/stratix10-rsu.c
-index 4f7a7abada48..291a14db61c2 100644
---- a/drivers/firmware/stratix10-rsu.c
-+++ b/drivers/firmware/stratix10-rsu.c
-@@ -235,7 +235,9 @@ static void rsu_dcmf_version_callback(struct stratix10_svc_client *client,
- 		priv->dcmf_version.dcmf1 = FIELD_GET(RSU_DCMF1_MASK, *value1);
- 		priv->dcmf_version.dcmf2 = FIELD_GET(RSU_DCMF2_MASK, *value2);
- 		priv->dcmf_version.dcmf3 = FIELD_GET(RSU_DCMF3_MASK, *value2);
--	} else
-+	} else if (data->status == BIT(SVC_STATUS_NO_SUPPORT))
-+		dev_warn(client->dev, "Secure FW doesn't support DCMF version.")
-+	else
- 		dev_err(client->dev, "failed to get DCMF version\n");
- 
- 	complete(&priv->completion);
-@@ -264,7 +266,9 @@ static void rsu_dcmf_status_callback(struct stratix10_svc_client *client,
- 						    *value);
- 		priv->dcmf_status.dcmf3 = FIELD_GET(RSU_DCMF3_STATUS_MASK,
- 						    *value);
--	} else
-+	} else if (data->status == BIT(SVC_STATUS_NO_SUPPORT))
-+		dev_warn(client->dev, "Secure FW doesn't support DCMF status.")
-+	else
- 		dev_err(client->dev, "failed to get DCMF status\n");
- 
- 	complete(&priv->completion);
--- 
-2.34.1
+I did read your description. It is not that I don't trust your
+description. I want to see how the code does what you describe at the
+source code level. In this case the related code is fairly easy to
+isolate.
 
+>
+> BTW, please have a look at the Highmem documentation. It has initially been
+> written by Peter Z. and I reworked and largely extended it authoring  the
+> patches with my gmail address (6 - 7 different patches, if I remember
+> correctly).
+>
+> You will find there everything you may want to know about these API and how to
+> do conversions from the older to the newer.
+
+Will do, thanks for the pointer.
+
+Chris
