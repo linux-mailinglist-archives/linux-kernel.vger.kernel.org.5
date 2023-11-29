@@ -2,161 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D637F7FE1E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 22:27:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1FD7FE1AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 22:19:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234480AbjK2V1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 16:27:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53062 "EHLO
+        id S233965AbjK2VTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 16:19:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234514AbjK2V1T (ORCPT
+        with ESMTP id S229967AbjK2VTs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 16:27:19 -0500
-X-Greylist: delayed 470 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 29 Nov 2023 13:27:23 PST
-Received: from mail.namei.org (namei.org [65.99.196.166])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0357FD7D;
-        Wed, 29 Nov 2023 13:27:22 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.namei.org (Postfix) with ESMTPS id AD5651E9;
-        Wed, 29 Nov 2023 21:19:31 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.namei.org AD5651E9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=namei.org; s=2;
-        t=1701292771; bh=a4+Bn7RqABOY0GmF4sZWzB4XQIxtLMsIpqqVdVd/R/g=;
-        h=Date:From:To:cc:Subject:From;
-        b=esqokkU6m4nf9dlOK918bRvVgtUX1grKBeAa/6AFK1BFKHD7FLB9T9rZnn2FQju4M
-         FQMGgT6R/+KJxex7roE249lEkPpcB7d7oKrbBWUBxuegkHAwBnS5v3JvCOMceY8GGB
-         OUsmld/soqMTAIKUeFJ3nijvJUEmUYv4888HBa2I=
-Date:   Wed, 29 Nov 2023 13:19:31 -0800 (PST)
-From:   James Morris <jmorris@namei.org>
-To:     linux-security-module@vger.kernel.org
-cc:     Linux Security Summit Program Committee 
-        <lss-pc@lists.linuxfoundation.org>, lwn@lwn.net,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        kernel-hardening@lists.openwall.com,
-        linux-integrity@vger.kernel.org, Audit-ML <linux-audit@redhat.com>
-Subject: [ANNOUNCE] CFP: Linux Security Summit North America 2024
-Message-ID: <826fd432-1acf-16be-e7a9-d692aeed23f0@namei.org>
+        Wed, 29 Nov 2023 16:19:48 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905BBD5C;
+        Wed, 29 Nov 2023 13:19:54 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6cde14ff73bso238117b3a.0;
+        Wed, 29 Nov 2023 13:19:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701292794; x=1701897594; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KW3qQ8h9EXtzt7iAkG2nS2wVN583eyZ43N0TK7zpzhM=;
+        b=hk0EPNKidzrDZOZrsL/0US//ElAajxvuqvYTvilWBaHAYa+/Tt2PhOImse65QO0y/S
+         +XjE2QjAC6/tmJQlk7K+57MDMLwb/XJWCq6qDbdGhB43c7TDvvuzjEUqi/DeoMddsjo2
+         rX058iC4/MM5KAO9EfFVhIkN/ZIhozI9oXrrTWm5uhEWafp0hckyVRv9jwtIeKjw6f4l
+         RtMgHqJLDtkydZ661cMTT6VyqPhvBrP9j9EyhvtnBJhRY5MMQfpwdufLrR5FJmwC2ql1
+         FKtGOZVPtV7tiCl3rH8wARtivR/vwUeafhbdsceBQKiPCU9BkEOhPgGNXL+0TClt9UFG
+         vvBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701292794; x=1701897594;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KW3qQ8h9EXtzt7iAkG2nS2wVN583eyZ43N0TK7zpzhM=;
+        b=bk7qpDwGEZ7Hen0CZI1FXiFJR4NVyJkErhijHIPMNNXxn5sW8xrHli11SGv4n5di8V
+         xud8KvnrRF5RWiovpAMqhjYjNJ8noKFdntTsTErAgxvrlXskbf/vf7Ci7COz7Y49bNkY
+         RWJs0wLfshhRRpLwOidOu42YEb2mjxnSdJT1vp8rt5dIFhR3NXGecp+FLxcG+LF8Y4L+
+         cmKloXTAhgFCRiXY93jeawXI2pIyQOesk21fPsdJbo4v/OFs6tq1EI/qFiZmT/9/VP6O
+         +al/Lmup/vpHs1N0iyy2CN8nMetBXSW+0n62uH1e4yMHdmWuKgUGmPBO8qVE2BX5F2xS
+         EI/Q==
+X-Gm-Message-State: AOJu0YxvpMyFaPtZR9X3gwZAUtWvOlgaSjBZcNAUbfX7KSf4DpMVe/Rh
+        6ZocUQyUSGOq8uB1tuv+6QM=
+X-Google-Smtp-Source: AGHT+IEiDMmHQ86rxBXUyaqdI7JCOYktLhmvXO/W//0ZBzsmZLdAYVlg+44naXl5SmXDoOvxVC8LRg==
+X-Received: by 2002:a05:6a00:1d88:b0:6cb:db40:4568 with SMTP id z8-20020a056a001d8800b006cbdb404568mr23386515pfw.17.1701292793733;
+        Wed, 29 Nov 2023 13:19:53 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:64f2:7004:43e0:6095])
+        by smtp.gmail.com with ESMTPSA id j7-20020aa78007000000b006900cb919b8sm10994904pfi.53.2023.11.29.13.19.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 13:19:53 -0800 (PST)
+Date:   Wed, 29 Nov 2023 13:19:50 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: input: sprd,sc27xx-vibrator: Drop
+ incomplete example
+Message-ID: <ZWeq9t079PWmzfGF@google.com>
+References: <20231128214809.3975719-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231128214809.3975719-1-robh@kernel.org>
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 28, 2023 at 03:48:09PM -0600, Rob Herring wrote:
+> The example for the Spreadtrum SC27xx PMIC vibrator is incomplete as the
+> binding is the full PMIC, not just the sub-functions. It is preferred
+> for MFD examples to be complete in the top-level MFD device binding
+> rather than piecemeal in each sub-function binding.
+> 
+> This also fixes an undocumented (by schema) compatible warning for
+> "sprd,sc2731".
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-==============================================================================
-                   ANNOUNCEMENT AND CALL FOR PARTICIPATION
+Applied, thank you.
 
-                   LINUX SECURITY SUMMIT NORTH AMERICA 2024
-                             
-                                 April 18-19
-                              Seattle, WA, USA
-==============================================================================
-
-DESCRIPTION
- 
-Linux Security Summit North America 2024 is a technical forum for
-collaboration between Linux developers, researchers, and end-users.  Its
-primary aim is to foster community efforts in deeply analyzing and solving
-Linux operating system security challenges, including those in the Linux
-kernel.
-
-Presentations are expected to focus deeply on new or improved technology and
-how it advances the state of practice for addressing these challenges.
-
-The program committee currently seeks proposals for:
- 
-   * Refereed Presentations:
-     45 minutes in length.
- 
-   * Panel Discussion Topics:
-     45 minutes in length.
- 
-   * Short Topics:
-     30 minutes in total, including at least 10 minutes discussion.
- 
-   * Tutorials
-     90 minutes in length.
-
-Tutorial sessions should be focused on advanced Linux security defense
-topics within areas such as the kernel, compiler, and security-related
-libraries.  Priority will be given to tutorials created for this conference,
-and those where the presenter is a leading subject matter expert on the
-topic.
- 
-Topic areas include, but are not limited to:
-
-    * Access Control
-    * Case Studies
-    * Cryptography and Key Management
-    * Emerging Technologies, Threats & Techniques
-    * Hardware Security
-    * IoT and Embedded Security
-    * Integrity Policy and Enforcement
-    * Open Source Supply Chain for the Linux OS
-    * Security Tools
-    * Security UX
-    * Linux OS Hardening
-    * Virtualization and Containers
-
-Proposals should be submitted via:
-    https://events.linuxfoundation.org/linux-security-summit-north-america/
-
-
-LSS-NA DATES
- 
-  * CFP close:            Jan 21, 2024
-  * CFP notifications:    Feb 06, 2024
-  * Schedule announced:   Feb 08, 2024
-  * Event:                Apr 18-19, 2024
-
-
-WHO SHOULD ATTEND
- 
-We're seeking a diverse range of attendees and welcome participation by
-people involved in Linux security development, operations, and research.
- 
-LSS is a unique global event that provides the opportunity to present and
-discuss your work or research with key Linux security community members and
-maintainers.  It's also useful for those who wish to keep up with the latest
-in Linux security development and to provide input to the development
-process.
-
-
-WEB SITE
-
-    https://events.linuxfoundation.org/linux-security-summit-north-america/
-
-
-MASTODON
-
-  For event updates and announcements, follow:
-    
-    https://social.kernel.org/LinuxSecSummit
-  
-  #linuxsecuritysummit
-
-
-PROGRAM COMMITTEE
-
-  The program committee for LSS 2024 is:
-
-    * James Morris, Microsoft
-    * Serge Hallyn, Cisco
-    * Paul Moore, Microsoft
-    * Stephen Smalley, NSA
-    * Elena Reshetova, Intel
-    * John Johansen, Canonical
-    * Kees Cook, Google
-    * Casey Schaufler
-    * Mimi Zohar, IBM
-    * David A. Wheeler, Linux Foundation
-
-  The program committee may be contacted as a group via email:
-    lss-pc () lists.linuxfoundation.org
-
+-- 
+Dmitry
