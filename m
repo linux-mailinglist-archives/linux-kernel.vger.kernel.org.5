@@ -2,116 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 007DC7FD77A
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:05:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A44D7FD780
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 14:07:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233754AbjK2NFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 08:05:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47226 "EHLO
+        id S233683AbjK2NHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 08:07:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233697AbjK2NFf (ORCPT
+        with ESMTP id S232447AbjK2NHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 08:05:35 -0500
-Received: from mail.3ffe.de (0001.3ffe.de [159.69.201.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4524C4
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:05:40 -0800 (PST)
-Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.3ffe.de (Postfix) with ESMTPSA id EDBDD957;
-        Wed, 29 Nov 2023 14:05:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
-        t=1701263138;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9SblSzxpofP2hDrymhDMMQF3FF11knUQb/jaSOSo4hs=;
-        b=XstcDe19tFQavza0YkuDOsi5A1Nkc0sWNOZ6/PKIHKXkXD0wg8LTdG0mrkFjtSRYTLUo/e
-        BcCWwOHkYXojQ+mn4FYxzkhi9I9uPvTsy/SUib0pqM5zlpeSOM9iUF3lQ4f1EkZ8Irmjd2
-        nhOG4inXoL83qTSWoGmTnQLP3DpEFZwWQh3yCfTpuK3+8PLROuH8a0QyBoOCk+lJajwyij
-        Qwp9mwFkaDefICLh/khHIRCMB700lNrUdHmtraYbMJdWDPSDrkLIiWbuUA/i8uqzdIW66u
-        YPL4Ee0PfRMmVKmsh33oVA5zE2+wirxgKk//2N0B8niXpwE2SAKrt8XQCHii3w==
+        Wed, 29 Nov 2023 08:07:02 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9051E10DD
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 05:07:06 -0800 (PST)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8BxbOp3N2dlWqc9AA--.29642S3;
+        Wed, 29 Nov 2023 21:07:03 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Axzy91N2dlVtNPAA--.45987S2;
+        Wed, 29 Nov 2023 21:07:01 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Huacai Chen <chenhuacai@kernel.org>
+Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/8] Add objtool and orc support for LoongArch
+Date:   Wed, 29 Nov 2023 21:06:53 +0800
+Message-ID: <20231129130701.27744-1-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Date:   Wed, 29 Nov 2023 14:05:37 +0100
-From:   Michael Walle <michael@walle.cc>
-To:     "Boyapally, Srikanth" <Srikanth.Boyapally@amd.com>
-Cc:     Pratyush Yadav <pratyush@kernel.org>, tudor.ambarus@linaro.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        "git (AMD-Xilinx)" <git@amd.com>
-Subject: Re: [PATCH] mtd: spi-nor: issi: Add support for is25lp02g
-In-Reply-To: <BN9PR12MB5196EF2D4EFF36F6FCD7BDC19E83A@BN9PR12MB5196.namprd12.prod.outlook.com>
-References: <20231123054713.361101-1-srikanth.boyapally@amd.com>
- <mafs0jzq7dx8l.fsf@kernel.org>
- <BN9PR12MB51966705C3E306502ABABA6E9EBCA@BN9PR12MB5196.namprd12.prod.outlook.com>
- <6342ad8a798ef811d37775b7269623a3@walle.cc>
- <BN9PR12MB5196EF2D4EFF36F6FCD7BDC19E83A@BN9PR12MB5196.namprd12.prod.outlook.com>
-Message-ID: <542998283b464d19fa5f354898de79df@walle.cc>
-X-Sender: michael@walle.cc
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8Axzy91N2dlVtNPAA--.45987S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxWw17Gr1UWw45ZFWrKFW5XFc_yoWrAry7pF
+        ZrZrykGF4UWr93Aw1Dta4UurWDJan7Gr12g3Wavry8CFW2qr1DArsakFyDXFnFqa1rGFy0
+        gF1rGw4aqa1jqabCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv
+        67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
+        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
+        vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
+        42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
+        kF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07URa0PUUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+This version is based on 6.7-rc3, tested with the latest upstream
+gcc and binutils (20231127).
 
->> >> > Add support for issi is25lp02g.
->> >> >
->> >> > Verified on AMD-Xilinx versal platform and executed mtd_debug
->> >> > read/write test.
->> >> >
->> >> > Signed-off-by: Srikanth Boyapally <srikanth.boyapally@amd.com>
->> >>
->> >> Based on a datasheet [0] I found online, this flash seems to have
->> >> SFDP.
->> >> And since you do not add any flash specific fixups, it likely does
->> >> not need an entry and would work fine with the generic flash driver.
->> >> Did you try using that? See [1] for more info on contribution
->> >> guidelines.
->> >>
->> >> [0] https://www.issi.com/WW/pdf/25LP-WP02GG.pdf
->> >> [1] https://lore.kernel.org/linux-mtd/20231123160721.64561-2-
->> >> tudor.ambarus@linaro.org/
->> >>
->> > I ran mtd_debug read/write tests on this flash, without adding flash
->> > entry, it worked fine for me. Please ignore this patch.
->> 
->> Great! Could you please still dump and post your SFDP just for us to 
->> have more
->> SFDP of diferent flashes? See [1].
->> 
-> SFDP dump:
-> versal-generic:/home/petalinux# hexdump -C 
-> /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-> 00000000  53 46 44 50 06 01 01 ff  00 06 01 10 30 00 00 ff  
-> |SFDP........0...|
-> 00000010  84 00 01 02 80 00 00 ff  ff ff ff ff ff ff ff ff  
-> |................|
-> 00000020  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  
-> |................|
-> 00000030  e5 20 fb ff ff ff ff 7f  44 eb 08 6b 08 3b 80 bb  |. 
-> ......D..k.;..|
-> 00000040  fe ff ff ff ff ff 00 ff  ff ff 44 eb 0c 20 0f 52  
-> |..........D.. .R|
-> 00000050  10 d8 00 ff 62 42 a9 00  82 64 02 e2 ec 8d 69 4c  
-> |....bB...d....iL|
-> 00000060  7a 75 7a 75 f7 a2 d5 5c  4a c2 2c ff e8 30 fa a9  
-> |zuzu...\J.,..0..|
-> 00000070  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  
-> |................|
-> 00000080  ff ee ff ff 21 5c dc ff                           |....!\..|
-> 00000088
+v5:
+  -- Fix the partial backtrace about irq stack
+  -- Check on_stack() again after get_stack_info()
+  -- Silence the orc warning about handle_syscall
+  -- Silence the objtool warnings if CONFIG_CPU_HAS_LBT=y
+  -- Update the commit message about objdump and readelf info
 
-Thanks!
+Tiezhu Yang (8):
+  objtool/LoongArch: Enable objtool to be built
+  objtool/LoongArch: Implement instruction decoder
+  objtool/x86: Separate arch-specific and generic parts
+  objtool/LoongArch: Enable orc to be built
+  objtool: Check local label about sibling call
+  objtool: Check local label in add_dead_ends()
+  objtool: Check local label in read_unwind_hints()
+  LoongArch: Add ORC stack unwinder support
 
--michael
+ arch/loongarch/Kconfig                        |   2 +
+ arch/loongarch/Kconfig.debug                  |  11 +
+ arch/loongarch/Makefile                       |  19 +
+ arch/loongarch/include/asm/Kbuild             |   2 +
+ arch/loongarch/include/asm/bug.h              |   1 +
+ arch/loongarch/include/asm/exception.h        |   2 +
+ arch/loongarch/include/asm/module.h           |   7 +
+ arch/loongarch/include/asm/orc_header.h       |  18 +
+ arch/loongarch/include/asm/orc_lookup.h       |  31 ++
+ arch/loongarch/include/asm/orc_types.h        |  58 ++
+ arch/loongarch/include/asm/stackframe.h       |   3 +
+ arch/loongarch/include/asm/unwind.h           |  19 +-
+ arch/loongarch/include/asm/unwind_hints.h     |  28 +
+ arch/loongarch/kernel/Makefile                |   4 +
+ arch/loongarch/kernel/entry.S                 |   6 +-
+ arch/loongarch/kernel/fpu.S                   |   7 +
+ arch/loongarch/kernel/genex.S                 |   6 +-
+ arch/loongarch/kernel/lbt.S                   |   5 +
+ arch/loongarch/kernel/module.c                |  22 +-
+ arch/loongarch/kernel/relocate_kernel.S       |   2 +
+ arch/loongarch/kernel/setup.c                 |   2 +
+ arch/loongarch/kernel/stacktrace.c            |   1 +
+ arch/loongarch/kernel/traps.c                 |  42 +-
+ arch/loongarch/kernel/unwind_orc.c            | 516 ++++++++++++++++++
+ arch/loongarch/kernel/vmlinux.lds.S           |   3 +
+ arch/loongarch/kvm/switch.S                   |   7 +-
+ arch/loongarch/lib/Makefile                   |   2 +
+ arch/loongarch/mm/tlb.c                       |  27 +-
+ arch/loongarch/mm/tlbex.S                     |   9 +
+ arch/loongarch/vdso/Makefile                  |   1 +
+ include/linux/compiler.h                      |   9 +
+ scripts/Makefile                              |   7 +-
+ tools/arch/loongarch/include/asm/inst.h       | 161 ++++++
+ tools/arch/loongarch/include/asm/orc_types.h  |  58 ++
+ tools/include/linux/bitops.h                  |  11 +
+ tools/objtool/Makefile                        |   4 +
+ tools/objtool/arch/loongarch/Build            |   3 +
+ tools/objtool/arch/loongarch/decode.c         | 356 ++++++++++++
+ .../arch/loongarch/include/arch/cfi_regs.h    |  22 +
+ .../objtool/arch/loongarch/include/arch/elf.h |  30 +
+ .../arch/loongarch/include/arch/special.h     |  33 ++
+ tools/objtool/arch/loongarch/orc.c            | 171 ++++++
+ tools/objtool/arch/loongarch/special.c        |  15 +
+ tools/objtool/arch/x86/Build                  |   1 +
+ tools/objtool/arch/x86/orc.c                  | 188 +++++++
+ tools/objtool/check.c                         | 117 ++--
+ tools/objtool/include/objtool/elf.h           |   1 +
+ tools/objtool/include/objtool/orc.h           |  14 +
+ tools/objtool/orc_dump.c                      |  69 +--
+ tools/objtool/orc_gen.c                       | 113 +---
+ 50 files changed, 1983 insertions(+), 263 deletions(-)
+ create mode 100644 arch/loongarch/include/asm/orc_header.h
+ create mode 100644 arch/loongarch/include/asm/orc_lookup.h
+ create mode 100644 arch/loongarch/include/asm/orc_types.h
+ create mode 100644 arch/loongarch/include/asm/unwind_hints.h
+ create mode 100644 arch/loongarch/kernel/unwind_orc.c
+ create mode 100644 tools/arch/loongarch/include/asm/inst.h
+ create mode 100644 tools/arch/loongarch/include/asm/orc_types.h
+ create mode 100644 tools/objtool/arch/loongarch/Build
+ create mode 100644 tools/objtool/arch/loongarch/decode.c
+ create mode 100644 tools/objtool/arch/loongarch/include/arch/cfi_regs.h
+ create mode 100644 tools/objtool/arch/loongarch/include/arch/elf.h
+ create mode 100644 tools/objtool/arch/loongarch/include/arch/special.h
+ create mode 100644 tools/objtool/arch/loongarch/orc.c
+ create mode 100644 tools/objtool/arch/loongarch/special.c
+ create mode 100644 tools/objtool/arch/x86/orc.c
+ create mode 100644 tools/objtool/include/objtool/orc.h
+
+-- 
+2.42.0
+
