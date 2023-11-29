@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5628F7FE2A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 23:08:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 726717FE2B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 23:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234440AbjK2WIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 17:08:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56854 "EHLO
+        id S234682AbjK2WJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 17:09:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjK2WIA (ORCPT
+        with ESMTP id S229658AbjK2WJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 17:08:00 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A12A3A3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:08:06 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-54b0073d50fso93989a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:08:06 -0800 (PST)
+        Wed, 29 Nov 2023 17:09:22 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 164A7A8
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:09:29 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-5482df11e73so125212a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 14:09:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701295685; x=1701900485; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701295767; x=1701900567; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=czFcgcINYMlRcLlALz1qdLQDX7a+Nbpsu5OQjgSwil4=;
-        b=ZfDiA35ewaoGivIccHAQy5WO76uwErQqY7DGflZJSZmhxmSL/7l5oKyh+s4oLzfq0R
-         ouUkSo5zSpzzi8pgvtMrEfs/CL5tfr4nEW0/vcoNL9FNE03sE4LcassdQKS4mshH8kUi
-         XtL4mUqAt/Qdx2A6O1ywxk8Nqmi17TWMbQsmSwdZ1lWRMcfdZ2GvWhKT6mgYJRMaljN4
-         J2r9kgrvwS4emWtGToBws8WCTDWNOGUmUHGHd/KeB9xL+dtLe+upMOfMClW8xwpYKAmm
-         u2SWxWgga++EV1hfRnsrKg1tTWuWMJLEIqi7eIPpkFvv5vjNgMdRWxtdGnM256vHySEA
-         bFXQ==
+        bh=8SYJPO3WANXfLrJT96QPXJOyEPmj0+YqiIB6d1PVgyw=;
+        b=uR1+J9eN/VdCXJ8T/LaFR9/hBTt/xejL9ACeYf1Pz4XT7GlF9o1B9YXHjasKhHsg6d
+         qma0pOiSXdO7zR96+C2rs4s1MokJWds5IsxrV82b516MFo+o6FBTHB6v0kvCwm+P8gr7
+         pID8seGi4fyObRIKRPtv9f/efbeW8s7vJp06kw3OzFBKv+TZkdDSts3F5DQF0109O916
+         U5M+XhuMlmBEl+ftFfFMvMcUaWv102e9tudUwTH3mbgO09yk+y4RM1spNqUYTTLFPHbG
+         Vj8+kmRNgJTF4Xp2C42mNr2vzrOcOS2G/yRyNKSD7NMWEK3uuUAc3FePVazdK5B398ut
+         Lk8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701295685; x=1701900485;
+        d=1e100.net; s=20230601; t=1701295767; x=1701900567;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=czFcgcINYMlRcLlALz1qdLQDX7a+Nbpsu5OQjgSwil4=;
-        b=vijFn50YE+D6CmnDGPuHI54t0MT8phW6XzxH8KJ/0920XwhZoAs3Tn3KkGiiahVa7Q
-         glXEYtidulIsyOnadRMg0iggccD99npAf73SK+ExXZe/rl0fJKADt0imuTOf/yEAXgOO
-         eMgiIAAFUD2i77dGHilKw0+Pnzh0UY2TKQbind6BgnrMc0B/FoJuPwXLwHM3F2HJ7Spf
-         2soT0RYGItpPE7tAfwoSTb/ZGzhkr6Msk0fQqUWK1jvFZSRbAOQpjsF/7OQLxkP38ZPZ
-         DLAJHnSNEIHisdPGXCjkDn6DjdSWYFnCamfAtQktTXvvTMHjg8iActRIqfWJsAWZMEgS
-         +ZEA==
-X-Gm-Message-State: AOJu0YzG4wNwO7K0xJ+QPJRmkSTApvc0J4EPoh0tFcEjUuCFWJKIu7O9
-        PKeRn6URu+GSdkJpuAiGqtFIUg==
-X-Google-Smtp-Source: AGHT+IF0wKBTBOQ2XRt7CEYjrQAXa3L33opCzbaaHe222xQdidkDVUFgbmVhxw6buTatWI8DLF3LvA==
-X-Received: by 2002:aa7:d388:0:b0:54a:ee59:fdb9 with SMTP id x8-20020aa7d388000000b0054aee59fdb9mr13003367edq.41.1701295685052;
-        Wed, 29 Nov 2023 14:08:05 -0800 (PST)
+        bh=8SYJPO3WANXfLrJT96QPXJOyEPmj0+YqiIB6d1PVgyw=;
+        b=Y2LPAqfjhScJwY40CKuI71x9IvmpYBvyFTCTnq+aIQmyXleVQD0neTwrKIOk0JyHak
+         i9FmPdYvgmr3h17itlre/RM+/119EuZVmxEaCmdAF2/NCPoeYrOdB3sV2cJ0L5HWqWWA
+         /+MJFGhkh+LG2+obby917C0A5aauIt0zfyN+oZh8RTCbgtlQH4pnKbsMVQUoo+J1va7B
+         ZcQEpzVrHZC1MKR35Cf5/LVMTEt84DyetXSy1mCVffD3X+JnpQ79jtvhJxZkwYTalJY+
+         4mknYp/TB2/n76hDYlCeX7WmwbHCRoLlaJVRdrvmCMBOl2hKMTTsK/KgXbLR4IFtjSYJ
+         i2NQ==
+X-Gm-Message-State: AOJu0YyxcmkDzBifC7m55BVpZ9swFR9QgGWAUL1s9IbWcZUTUvU5Pkdi
+        zGZ3n3FKYdbAs+cp9DznXI1P9A==
+X-Google-Smtp-Source: AGHT+IENx+OW2HpeiO1gNtCLT9v9Xg0hIOo5zRVhn9ogDaRMkWtj6jEgtM7O5wLu/1O3n5RNl3xvXQ==
+X-Received: by 2002:a50:fb85:0:b0:54a:f1db:c2b3 with SMTP id e5-20020a50fb85000000b0054af1dbc2b3mr14729811edq.0.1701295767566;
+        Wed, 29 Nov 2023 14:09:27 -0800 (PST)
 Received: from [192.168.209.83] (178235187166.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.166])
-        by smtp.gmail.com with ESMTPSA id w4-20020a056402268400b0054b2daa6654sm5165986edd.56.2023.11.29.14.08.03
+        by smtp.gmail.com with ESMTPSA id w4-20020a056402268400b0054b2daa6654sm5165986edd.56.2023.11.29.14.09.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 14:08:04 -0800 (PST)
-Message-ID: <74573830-627a-470b-ba31-1c2ce7e38b49@linaro.org>
-Date:   Wed, 29 Nov 2023 23:08:02 +0100
+        Wed, 29 Nov 2023 14:09:27 -0800 (PST)
+Message-ID: <498465c4-ddaf-4a90-be5f-2e3709777e62@linaro.org>
+Date:   Wed, 29 Nov 2023 23:09:24 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 03/15] clk: qcom: gcc-sm6375: Unregister critical
+Subject: Re: [PATCH v2 06/15] clk: qcom: gpucc-sm6115: Unregister critical
  clocks
 Content-Language: en-US
 To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
@@ -69,8 +69,8 @@ Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
         linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 References: <20230717-topic-branch_aon_cleanup-v2-0-2a583460ef26@linaro.org>
- <20230717-topic-branch_aon_cleanup-v2-3-2a583460ef26@linaro.org>
- <9deb31e4-2e75-4db2-8a73-7c8b7f9ac03a@linaro.org>
+ <20230717-topic-branch_aon_cleanup-v2-6-2a583460ef26@linaro.org>
+ <8318363a-7122-45f4-a42f-3f01b33457eb@linaro.org>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -107,11 +107,11 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <9deb31e4-2e75-4db2-8a73-7c8b7f9ac03a@linaro.org>
+In-Reply-To: <8318363a-7122-45f4-a42f-3f01b33457eb@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -120,18 +120,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29.11.2023 22:08, Bryan O'Donoghue wrote:
+On 29.11.2023 22:14, Bryan O'Donoghue wrote:
 > On 29/11/2023 18:59, Konrad Dybcio wrote:
->> + qcom_branch_set_clk_en(regmap, 0x2b06c); /* GCC_SYS_NOC_CPUSS_AHB_CLK */
+>> Some clocks need to be always-on, but we don't really do anything
+>> with them, other than calling enable() once and telling Linux they're
+>> enabled.
+>>
+>> Unregister them to save a couple of bytes and, perhaps more
+>> importantly, allow for runtime suspend of the clock controller device,
+>> as CLK_IS_CRITICAL prevents the latter.
+>>
+>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>> ---
+[...]
+
+
 > 
-> Shouldn't this be 0x79004.
-Oh hmm you're right!
-
-This is a weird outlier.. all the other ones seem to have a 1-1
-mapping between halt and enable reg
-
-Interestingly enough, this doesn't seem to have kaboomd, but I'll
-fix it (or maybe if there's no other mistakes in this series Bjorn
-could prettyplease fix when applying?)
+> OTOH.
+> 
+> Seems a pity to remove these clocks - generally for the series I mean - from the debug view in /sys/kernel/debug/clk_summary.
+> 
+> In the ideal case we have pm runtime functional without dropping these clocks from the view in /sys/kernel/debug/clk_summary.
+> 
+> Certainly I've found that interface useful when launching a real product. It might be confusing to _not_ see the always-on clocks enumerated there.
+> 
+> ---
+I have shared the very same concern in the past.. I did also however realize
+that debugfs is not accurate, especially with funky clocks that need only be
+enabled once (*even if you gate the e.g. MM subsystem*) and debugcc should be
+used instead
 
 Konrad
