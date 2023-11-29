@@ -2,135 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 226697FE02D
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 20:16:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35BFF7FE030
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 20:16:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232991AbjK2TMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 14:12:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60876 "EHLO
+        id S233023AbjK2TPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 14:15:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231304AbjK2TMu (ORCPT
+        with ESMTP id S231304AbjK2TPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 14:12:50 -0500
-Received: from mail.subdimension.ro (unknown [IPv6:2a01:7e01:e001:1d1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2E7D5E;
-        Wed, 29 Nov 2023 11:12:55 -0800 (PST)
-Received: from sunspire (unknown [188.24.94.216])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by mail.subdimension.ro (Postfix) with ESMTPSA id 396B328EE6F;
-        Wed, 29 Nov 2023 19:12:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
-        s=skycaves; t=1701285174;
-        bh=xiXoHUFxOf2VpMnPxdPWZok2lzoqqKH4KbvpI0hmZCM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=c/+8u4YQUBewn/6pZpzPocLAKHOCW3HtaP0idL8WBy3zYF9Ey2jzHseXZGo2XoG4I
-         V/byl8oCNX8T7F6YGWKoXV2aHK4OWF4pp8jgaWHK0y/YZT2qz5OV/2bpwX+b9fQpt5
-         ANQOaXsdvvKV9uo+Vku+/6HYcji8lqmfLsDMEm+8=
-Date:   Wed, 29 Nov 2023 21:12:52 +0200
-From:   Petre Rodan <petre.rodan@subdimension.ro>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Angel Iglesias <ang.iglesiasg@gmail.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Andreas Klinger <ak@it-klinger.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Subject: Re: [PATCH v6 2/2] iio: pressure: driver for Honeywell HSC/SSC series
-Message-ID: <ZWeNNMfqKquDYI9X@sunspire>
-References: <20231129170425.3562-1-petre.rodan@subdimension.ro>
- <20231129170425.3562-2-petre.rodan@subdimension.ro>
- <ZWdzz7VzCW5ctend@smile.fi.intel.com>
+        Wed, 29 Nov 2023 14:15:01 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04873A2
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 11:15:08 -0800 (PST)
+Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
+        by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1r8Q1V-0003uT-9O; Wed, 29 Nov 2023 20:15:01 +0100
+Message-ID: <875f0dbc-1d78-4901-91b2-6ad152bcea5a@pengutronix.de>
+Date:   Wed, 29 Nov 2023 20:14:58 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZWdzz7VzCW5ctend@smile.fi.intel.com>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 2/2] arm64: boot: Support Flat Image Tree
+Content-Language: en-US
+To:     Simon Glass <sjg@chromium.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Tom Rini <trini@konsulko.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Terrell <terrelln@fb.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Will Deacon <will@kernel.org>, linux-kbuild@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+References: <20231129172200.430674-1-sjg@chromium.org>
+ <20231129172200.430674-3-sjg@chromium.org>
+ <30f32467-51ea-47de-a272-38e074f4060b@pengutronix.de>
+ <CAPnjgZ25xoXsi74XYY0E8ucQiowQqPdZgUHrfVNAYWKZEYODHg@mail.gmail.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+In-Reply-To: <CAPnjgZ25xoXsi74XYY0E8ucQiowQqPdZgUHrfVNAYWKZEYODHg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Simon,
 
-hello!
-
-On Wed, Nov 29, 2023 at 07:24:31PM +0200, Andy Shevchenko wrote:
-> On Wed, Nov 29, 2023 at 07:04:12PM +0200, Petre Rodan wrote:
-> > Adds driver for digital Honeywell TruStability HSC and SSC series
-> > pressure and temperature sensors.
-> > Communication is one way. The sensor only requires 4 bytes worth of
-> > clock pulses on both i2c and spi in order to push the data out.
-> > The i2c address is hardcoded and depends on the part number.
-> > There is no additional GPIO control.
+On 29.11.23 20:02, Simon Glass wrote:
+> Hi Ahmad,
 > 
-> ...
+> On Wed, 29 Nov 2023 at 11:59, Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+>>
+>> Hi,
+>>
+>> a few more comments after decompiling the FIT image:
+>>
+>> On 29.11.23 18:21, Simon Glass wrote:
+>>> +    with fsw.add_node('kernel'):
+>>> +        fsw.property_string('description', args.name)
+>>> +        fsw.property_string('type', 'kernel_noload')
+>>
+>> The specification only says no loading done, but doesn't explain what it
+>> means for a bootloader to _not_ load an image. Looking into the U-Boot commit
+>> b9b50e89d317 ("image: Implement IH_TYPE_KERNEL_NOLOAD") that introduces this,
+>> apparently no loading means ignoring load and entry address?
+>>
+>> I presume missing load and entry is something older U-Boot versions
+>> were unhappy about? Please let me know if the semantics are as I understood,
+>> so I can prepare a barebox patch supporting it.
 > 
-> > v6: modifications based on Andy's review
-> >     - use str_has_prefix(), match_string() instead of strncmp()
-> 
-> And why not using the respective property API for that case where
-> match_string() is used?
+> Oh, see my previous email.
 
-I'm lost again.
-
-437:  ret = device_property_read_string(dev, "honeywell,pressure-triplet",
-					&triplet);
-[..]
-455:	ret = match_string(hsc_triplet_variants, HSC_VARIANTS_MAX,
-						triplet);
-		if (ret < 0)
-			return dev_err_probe(dev, -EINVAL,
-				"honeywell,pressure-triplet is invalid\n");
-
-		hsc->pmin = hsc_range_config[ret].pmin;
-		hsc->pmax = hsc_range_config[ret].pmax;
-
-triplet is got via device_property_read_string(), is there some other property
-function I should be using?
-
-> I'm also a bit tired to repeat about:
-> - capitalization and punctuation in the multi-line comments;
-> - broken indentation is some cases.
-
-sorry about that. I removed all comments you complained about.
-just to simplify the process.
-
-> Otherwise it's a good stuff, I leave it now to Jonathan.
-> 
-> ...
-> 
-> > +	tmp = div_s64(((s64)(hsc->pmax - hsc->pmin)) * MICRO,
-> > +		      hsc->outmax - hsc->outmin);
-> > +	hsc->p_scale = div_s64_rem(tmp, NANO, &hsc->p_scale_dec);
-> > +	tmp = div_s64(((s64)hsc->pmin * (s64)(hsc->outmax - hsc->outmin)) *
-> > +		      MICRO, hsc->pmax - hsc->pmin);
-> 
-> Why not put MICRO on the previous line?
-
-oh well, from the review I understood you were asking for the replacement of
-NANO with MICRO on the previous instruction and it did not make much sense ( units
-are in pascal and we need a kilopascal output to userland)
-
-now I understood it's an indentation request. however moving MICRO will cross
-the 80 column rule. but if there will be yet another modification request I'll move it.
-
-cheers,
-peter
-
+Thanks.
 
 > 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
+>>
+>>> +        fsw.property_string('arch', args.arch)
+>>> +        fsw.property_string('os', args.os)
+>>> +        fsw.property_string('compression', args.compress)
+>>> +        fsw.property('data', data)
+>>> +        fsw.property_u32('load', 0)
+>>> +        fsw.property_u32('entry', 0)
+>>> +
+>>> +
+>>> +def finish_fit(fsw, entries):
+>>> +    """Finish the FIT ready for use
+>>> +
+>>> +    Writes the /configurations node and subnodes
+>>> +
+>>> +    Args:
+>>> +        fsw (libfdt.FdtSw): Object to use for writing
+>>> +        entries (list of tuple): List of configurations:
+>>> +            str: Description of model
+>>> +            str: Compatible stringlist
+>>> +    """
+>>> +    fsw.end_node()
+>>> +    seq = 0
+>>> +    with fsw.add_node('configurations'):
+>>> +        for model, compat in entries:
+>>> +            seq += 1
+>>> +            with fsw.add_node(f'conf-{seq}'):
+>>> +                fsw.property('compatible', bytes(compat))
+>>
+>> The specification says that this is the root U-Boot compatible,
+>> which I presume to mean the top-level compatible, which makes sense to me.
+>>
+>> The code here though adds all compatible strings from the device tree though,
+>> is this intended?
 > 
+> Yes, since it saves needing to read in each DT just to get the
+> compatible stringlist.
+
+The spec reads as if only one string (root) is supposed to be in the list.
+The script adds all compatibles though. This is not really useful as a bootloader
+that's compatible with e.g. fsl,imx8mm would just take the first device tree
+with that SoC, which is most likely to be wrong. It would be better to just
+specify the top-level compatible, so the bootloader fails instead of taking
+the first DT it finds.
+
+>>> +        fsw.property_string('description', model)
+>>> +        fsw.property_string('type', 'flat_dt')
+>>> +        fsw.property_string('arch', arch)
+>>> +        fsw.property_string('compression', compress)
+>>> +        fsw.property('compatible', bytes(compat))
+>>
+>> I think I've never seen a compatible for a fdt node before.
+>> What use does this serve?
+> 
+> It indicates the machine that the DT is for.
+
+Who makes use of this information?
+
+Thanks,
+Ahmad
+
+> 
+> Regards,
+> Simon
 > 
 
 -- 
-petre rodan
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+
