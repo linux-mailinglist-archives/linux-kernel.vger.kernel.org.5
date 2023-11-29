@@ -2,117 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2471B7FD45C
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:36:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B557FD45D
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:36:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230422AbjK2KgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 05:36:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37624 "EHLO
+        id S232271AbjK2Kga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 05:36:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230018AbjK2KgB (ORCPT
+        with ESMTP id S231520AbjK2KgK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 05:36:01 -0500
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0518C1BFB;
-        Wed, 29 Nov 2023 02:35:28 -0800 (PST)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 8DA1724DBCE;
-        Wed, 29 Nov 2023 18:35:20 +0800 (CST)
-Received: from EXMBX068.cuchost.com (172.16.6.68) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 29 Nov
- 2023 18:35:20 +0800
-Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX068.cuchost.com
- (172.16.6.68) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 29 Nov
- 2023 18:35:19 +0800
-Received: from EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f]) by
- EXMBX066.cuchost.com ([fe80::5947:9245:907e:339f%17]) with mapi id
- 15.00.1497.044; Wed, 29 Nov 2023 18:35:20 +0800
-From:   JeeHeng Sia <jeeheng.sia@starfivetech.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        "kernel@esmil.dk" <kernel@esmil.dk>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "krzk@kernel.org" <krzk@kernel.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "conor@kernel.org" <conor@kernel.org>,
-        "anup@brainfault.org" <anup@brainfault.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "jirislaby@kernel.org" <jirislaby@kernel.org>,
-        "michal.simek@amd.com" <michal.simek@amd.com>,
-        Michael Zhu <michael.zhu@starfivetech.com>,
-        "drew@beagleboard.org" <drew@beagleboard.org>
-CC:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>
-Subject: RE: [PATCH v2 2/6] dt-bindings: riscv: Add StarFive JH8100 SoC
-Thread-Topic: [PATCH v2 2/6] dt-bindings: riscv: Add StarFive JH8100 SoC
-Thread-Index: AQHaIol9aAocnWtYekK6RWgAjEqLk7CQcGuAgACp5ZA=
-Date:   Wed, 29 Nov 2023 10:35:20 +0000
-Message-ID: <9f5648c3dbaa4f7ba2c600c125e0837a@EXMBX066.cuchost.com>
-References: <20231129060043.368874-1-jeeheng.sia@starfivetech.com>
- <20231129060043.368874-3-jeeheng.sia@starfivetech.com>
- <76a13e48-5053-4fdc-8089-710943e52e29@linaro.org>
-In-Reply-To: <76a13e48-5053-4fdc-8089-710943e52e29@linaro.org>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [60.54.3.230]
-x-yovoleruleagent: yovoleflag
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 29 Nov 2023 05:36:10 -0500
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01olkn2040.outbound.protection.outlook.com [40.92.99.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FC9E1FC6
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 02:35:37 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DVtLh4n4WRxD0l/km0nOEmKgRu+FoZB2MG8pxfi8+g1VMk9nWBBYJXydjSeuvCiu7HSU9p6vyIq+Dhz50lDywzsOBSEZSuD5XUERPMHlqpcODFds3gssd5AhUmuRrtsvTRmVDK1oXhl47h1yxWnuwMgaL2uQ8F37D/ZIMWTON3xD1tTV9O4FeDJQf7ag6IQd2JYiVvHw8VCyHxLuAVo8gPU1qHqOt7Vqficp1+ZIBy2FeyKPxYUuqSboUj7zABH2W96fiF6XeDt5rVPJBDFpvz4hCWBltOCmsCYj2iKpSSiDjblIT++SF0SIDZGs2hS3o8uFMU475nV31SDxyCPf1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=J0pXWIpB2Cdgn4iT7LGEloKqQzMDVuK7AODyeLYxRAA=;
+ b=WERAVKkUdp1Ig3s+/8Rb59XE05kEGH2p/nD7TTKynzTgRavfg0+GMXwY3aQXNPyGXdG0ERYM6KJHtj/c/PfY/PaAgOoBtmcfiu6FqJw81TtFeE2P4FmvVnKCECM4icO0NLTvAmVpnLTElZnqCnmWHQQvlfUrYELAOCXe2nNURa45dz/xFOLgNFh0IrbXOeIbCr49KvbWovUZGFWeOyQGIptUg1hhRmtjKYZDMiDe3z/8WPFG9qbCMweAfGbGU2LrUQD7gqME1njfkNiIb7z10i+mExdqu+bLgGuave1b5hX4mX3C6Tto5z4J91g9g/oBusKfAmQTA0xoLkDiPU8pQA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J0pXWIpB2Cdgn4iT7LGEloKqQzMDVuK7AODyeLYxRAA=;
+ b=h62QjU8c1BKjSDbO4nT00lCFLfsfO23FSqtjxcveqEb1WykEm1+SEqONsgbsu5EWz6pXriNjJLDn+rKTCUdkxDp5NUt/GBeUaq+uSQEY5OlJ7GTGtPBLLyFxDqAxTx/LeEv2Z/eoPci84j2RBbutdxBgQKz9qwbAu4xa5GsLYwT/cM1T+MmmSvF54l9vMh+waGvTrBt3Ylug4ZKgi7ReP5ppDR+hTXrmP2Xn7XBSc8rBJorFpMXvF3EAp1MqAvfXgIInJRUvGxPCOwQpckKkMTAcFE2BQnJydZQ91nE5JzTc3+hBTM0NmTzwdRcwgF3fHN5zu6EQkZcjCSNNbe6fXQ==
+Received: from TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:158::13)
+ by TYVP286MB3149.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:299::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.23; Wed, 29 Nov
+ 2023 10:35:34 +0000
+Received: from TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::a621:9714:c1cf:e4f0]) by TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::a621:9714:c1cf:e4f0%7]) with mapi id 15.20.7025.022; Wed, 29 Nov 2023
+ 10:35:34 +0000
+From:   Peng Liu <pngliu@hotmail.com>
+Cc:     frederic@kernel.org, tglx@linutronix.de, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, liupeng17@lenovo.com
+Subject: [PATCH v3 2/2] tick/nohz: Remove duplicate between tick_nohz_lowres_handler() and tick_nohz_highres_handler()
+Date:   Wed, 29 Nov 2023 18:35:30 +0800
+Message-ID: <TYCP286MB2146C94F0A30EA8F7FEF8F14C683A@TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231128092413.160451-1-pngliu@hotmail.com>
+References: <20231128092413.160451-1-pngliu@hotmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [2owf3DJa3/W8Vmb+w5DWaXALFajkV0wz]
+X-ClientProxiedBy: SI2PR01CA0018.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:191::7) To TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:158::13)
+X-Microsoft-Original-Message-ID: <20231129103530.84579-1-pngliu@hotmail.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYCP286MB2146:EE_|TYVP286MB3149:EE_
+X-MS-Office365-Filtering-Correlation-Id: 03ac5cc0-a633-4607-e598-08dbf0c6eae4
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ScXtKkTRzKnZ52KK2wFUfIAr282id4wie/CZ7o3TzUHpHr/TkvcNTwyLjPOSznnrJQflofOX0oQWTz2OyiTIYZuMXeoT27MIr7M5W7C40UiByyZbvTA4W0Ja4Xq5G0UwlvL7sSlDRwsO8pliKh90IVovOu4Lsys9waKKlvDQdGc35d269jTT4fAaFloTGgzBGJP46VAAQ/lwQ9J8ZwCZ7YRglCRbzssrUjLfsxqrYWUIeSrCcaKFxJOeQyyznLAIv6Hee0whrLD4FDUii0irzK9/MTJ8JaSSZMOoOBd7nSTQBTpTRltn2gweZnM9LLuz3RpKmhWL5YatoqLMAA3AN1yh+wihmCRq7nyUUqSuHbo5BRXg3rUavnFssUI0DqkdHc5WjAjGxaIBjmYVY/VGxnLCtMlTOsClutvfhvgfbs5O5WjuFpqHTBs0jqUUWqJkmCyoOkc6q541/oPaKcHSn0Uzs0dQidsg4sqMTjv9Uwh58X26xHxiNp1kTrqi3pF2alBeBYjzO1raT3/ci41Wvj6z4eeQvAytYlCr8Pz3+p4Im8ULAmnW/UFNYJHQAhU0
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+uTVWXlp5erIgIaHGoj57qWlRmBYzYRaHkb4VNz5FoSFWBcJXNyIDVW1sbjc?=
+ =?us-ascii?Q?6OXUCKhoBk58UHYyRx8o/pfzIXPLXngwdJULv74lok521p+gt7540newg+II?=
+ =?us-ascii?Q?Zf0drP8UFD34mgii9NSZS1IM/4gtMv8E/uRNoJd3xvbV0tFPYq1FmXR/lSgS?=
+ =?us-ascii?Q?0IIwklm6O5GKZsJa2JdoBykHUzav6JmQPDM1DTXOEInrFeosyO7tUkq3qEdq?=
+ =?us-ascii?Q?eWOn0seEX3Z56ZQ/Rd/cAsv58xuJkuVDPlO8APx1nTB9l41FgkW1cWZGj6EY?=
+ =?us-ascii?Q?OdTVM/dD/ZgSgu4Ko6GpC2e3nPlSo4XT4MBeBjs73YbQquDNebuhnRP/sBRs?=
+ =?us-ascii?Q?UNdI0wQGpnXw3wjJgBDS8wklVy3sn46qX5S/tMdlQsD1uSu97M4ZNYIdfhAR?=
+ =?us-ascii?Q?7gA2+/usONqDtO7l8rHiID9LMJILXMhyJnPaRTpjUWU2J9Qzn3BxSXOxEf0i?=
+ =?us-ascii?Q?0qs3XJJcjs+9Jz0VMWaa4qhHtH+0uKGZonyY2bL7DMhekpC2bYpQQcJjkyGE?=
+ =?us-ascii?Q?QXESWXnzd6g4WwWNJBPpIz2c37euZ9d6GLKk6iCOza5CaOxQ6a/1F52IVKhs?=
+ =?us-ascii?Q?aobExHF08H65vut4/Xb3DMQHwp/zhOBsMed6jkop5xLefxcaxIObCvKiuZ9i?=
+ =?us-ascii?Q?cX/LZs1tdN7ptrfrd9qB9EY34LJ4X5Zgcs5X5XOoZPniNY1MRMDo31qM3rO8?=
+ =?us-ascii?Q?XoMNGoQ/0VBNy30w6o85m12vqLzzxESfSWSTy6zrNeCeONe8ZjszBUDxCOhw?=
+ =?us-ascii?Q?KApyoiZ9dyGyh7Wa8rLfINmTBcbVAqiFcFy6VeEEp5J31MNBvWCQCUtL+CSD?=
+ =?us-ascii?Q?Y6yaYfJvkaIEfu9xoXZ/WF2nI2blEBcVnSOKuR/crK17wj04bGMzgbUc3GKL?=
+ =?us-ascii?Q?G3VkKE8GFzp1So1SXrhIbxIMYzoyhAf4QHTm1xL8wJp893tXN+oCN1+6bUid?=
+ =?us-ascii?Q?kVj5rirIRUYFNJDhMyLFYp0of9nxovL1380XjH5tt2DdTNIirNhIXT5tCIp8?=
+ =?us-ascii?Q?rUQ9jLZY5oNbiVG2nxdsnmXmB30wlUlparqKxMgLOJa4HaOXofeXYsv0EGKC?=
+ =?us-ascii?Q?4vc2jQTA4rObTrK8i822H/NElYSRRq/yg8Ow7t+5kzN2e+CQbdvw8YbMEdTH?=
+ =?us-ascii?Q?eOi7nZX40cBcDjDDZpVgtiDf9/Ah+nbjufrBee/HO12QzCRLclvFPNJS6Rvi?=
+ =?us-ascii?Q?y7j0Bn/sfJwLLfh6qP19k8wZPb2GPkzA4CRktw=3D=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-05f45.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 03ac5cc0-a633-4607-e598-08dbf0c6eae4
+X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB2146.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2023 10:35:34.0251
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYVP286MB3149
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogS3J6eXN6dG9mIEtvemxv
-d3NraSA8a3J6eXN6dG9mLmtvemxvd3NraUBsaW5hcm8ub3JnPg0KPiBTZW50OiBXZWRuZXNkYXks
-IE5vdmVtYmVyIDI5LCAyMDIzIDQ6MjcgUE0NCj4gVG86IEplZUhlbmcgU2lhIDxqZWVoZW5nLnNp
-YUBzdGFyZml2ZXRlY2guY29tPjsga2VybmVsQGVzbWlsLmRrOyByb2JoK2R0QGtlcm5lbC5vcmc7
-IGtyenlzenRvZi5rb3psb3dza2krZHRAbGluYXJvLm9yZzsNCj4ga3J6a0BrZXJuZWwub3JnOyBj
-b25vcitkdEBrZXJuZWwub3JnOyBwYXVsLndhbG1zbGV5QHNpZml2ZS5jb207IHBhbG1lckBkYWJi
-ZWx0LmNvbTsgYW91QGVlY3MuYmVya2VsZXkuZWR1Ow0KPiBkYW5pZWwubGV6Y2Fub0BsaW5hcm8u
-b3JnOyB0Z2x4QGxpbnV0cm9uaXguZGU7IGNvbm9yQGtlcm5lbC5vcmc7IGFudXBAYnJhaW5mYXVs
-dC5vcmc7IGdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnOw0KPiBqaXJpc2xhYnlAa2VybmVsLm9y
-ZzsgbWljaGFsLnNpbWVrQGFtZC5jb207IE1pY2hhZWwgWmh1IDxtaWNoYWVsLnpodUBzdGFyZml2
-ZXRlY2guY29tPjsgZHJld0BiZWFnbGVib2FyZC5vcmcNCj4gQ2M6IGRldmljZXRyZWVAdmdlci5r
-ZXJuZWwub3JnOyBsaW51eC1yaXNjdkBsaXN0cy5pbmZyYWRlYWQub3JnOyBsaW51eC1rZXJuZWxA
-dmdlci5rZXJuZWwub3JnOyBMZXlmb29uIFRhbg0KPiA8bGV5Zm9vbi50YW5Ac3RhcmZpdmV0ZWNo
-LmNvbT4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2MiAyLzZdIGR0LWJpbmRpbmdzOiByaXNjdjog
-QWRkIFN0YXJGaXZlIEpIODEwMCBTb0MNCj4gDQo+IE9uIDI5LzExLzIwMjMgMDc6MDAsIFNpYSBK
-ZWUgSGVuZyB3cm90ZToNCj4gPiBBZGQgZGV2aWNlIHRyZWUgYmluZGluZ3MgZm9yIHRoZSBTdGFy
-Rml2ZSBKSDgxMDAgUklTQy1WIFNvQy4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFNpYSBKZWUg
-SGVuZyA8amVlaGVuZy5zaWFAc3RhcmZpdmV0ZWNoLmNvbT4NCj4gPiBSZXZpZXdlZC1ieTogTGV5
-IEZvb24gVGFuIDxsZXlmb29uLnRhbkBzdGFyZml2ZXRlY2guY29tPg0KPiA+IC0tLQ0KPiA+ICBE
-b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcmlzY3Yvc3RhcmZpdmUueWFtbCB8IDUg
-KysrKy0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigt
-KQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
-cy9yaXNjdi9zdGFyZml2ZS55YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
-L3Jpc2N2L3N0YXJmaXZlLnlhbWwNCj4gPiBpbmRleCBjYzRkOTJmMGExYmYuLjdlMmRhOWVlZjNk
-YiAxMDA2NDQNCj4gPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvcmlz
-Y3Yvc3RhcmZpdmUueWFtbA0KPiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9yaXNjdi9zdGFyZml2ZS55YW1sDQo+ID4gQEAgLTI5LDcgKzI5LDEwIEBAIHByb3BlcnRp
-ZXM6DQo+ID4gICAgICAgICAgICAgICAgLSBzdGFyZml2ZSx2aXNpb25maXZlLTItdjEuMmENCj4g
-PiAgICAgICAgICAgICAgICAtIHN0YXJmaXZlLHZpc2lvbmZpdmUtMi12MS4zYg0KPiA+ICAgICAg
-ICAgICAgLSBjb25zdDogc3RhcmZpdmUsamg3MTEwDQo+ID4gLQ0KPiA+ICsgICAgICAtIGl0ZW1z
-Og0KPiA+ICsgICAgICAgICAgLSBlbnVtOg0KPiA+ICsgICAgICAgICAgICAgIC0gc3RhcmZpdmUs
-amg4MTAwLWV2Yg0KPiA+ICsgICAgICAgICAgLSBjb25zdDogc3RhcmZpdmUsamg4MTAwDQo+IA0K
-PiBXaHkgZGlkIHlvdSByZW1vdmUgdGhlIGJsYW5rIGxpbmU/IE5vIG5lZWQgZm9yIGRvaW5nIHRo
-YXQuDQpOb3RlZC4gV2lsbCBmaXggaXQuDQo+IA0KPiA+ICBhZGRpdGlvbmFsUHJvcGVydGllczog
-dHJ1ZQ0KPiA+DQo+ID4gIC4uLg0KPiANCj4gQmVzdCByZWdhcmRzLA0KPiBLcnp5c3p0b2YNCg0K
+From: Peng Liu <liupeng17@lenovo.com>
+
+tick_nohz_lowres_handler() does the same work as tick_nohz_highres_handler()
+plus the clockevent device reprogramming, so should reuse the latter.
+
+Signed-off-by: Peng Liu <liupeng17@lenovo.com>
+---
+Changes in v3:
+- Remove the first``#ifdef CONFIG_HIGH_RES_TIMERS'' in tick_setup_sched_timer()
+  in patch 2/2
+- Add comment on sched_skew_tick introduced to low-res mode tick_sched setup
+- Replace hrtimer_forward() with hrtimer_forward_now() in tick_setup_sched_timer()
+- Remove the sedond ``#ifdef CONFIG_HIGH_RES_TIMERS'' in tick_setup_sched_timer()
+- Move tick_nohz_highres_handler() ahead to avoid additional declaration
+Changes in v2:
+- Fix build warning: Function parameter or member 'mode' not described in
+  'tick_setup_sched_timer'
+- Fix build error: use of undeclared identifier 'tick_nohz_highres_handler'
+- Fix build error: use of undeclared identifier 'sched_skew_tick'
+---
+ kernel/time/tick-sched.c | 96 ++++++++++++++++------------------------
+ 1 file changed, 38 insertions(+), 58 deletions(-)
+
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index d25039f07838..a045425b8bf5 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -255,6 +255,41 @@ static void tick_sched_handle(struct tick_sched *ts, struct pt_regs *regs)
+ 	update_process_times(user_mode(regs));
+ 	profile_tick(CPU_PROFILING);
+ }
++
++/*
++ * We rearm the timer until we get disabled by the idle code.
++ * Called with interrupts disabled.
++ */
++static enum hrtimer_restart tick_nohz_highres_handler(struct hrtimer *timer)
++{
++	struct tick_sched *ts =
++		container_of(timer, struct tick_sched, sched_timer);
++	struct pt_regs *regs = get_irq_regs();
++	ktime_t now = ktime_get();
++
++	tick_sched_do_timer(ts, now);
++
++	/*
++	 * Do not call when we are not in IRQ context and have
++	 * no valid 'regs' pointer
++	 */
++	if (regs)
++		tick_sched_handle(ts, regs);
++	else
++		ts->next_tick = 0;
++
++	/*
++	 * In dynticks mode, tick reprogram is deferred:
++	 * - to the idle task if in dynticks-idle
++	 * - to IRQ exit if in full-dynticks.
++	 */
++	if (unlikely(ts->tick_stopped))
++		return HRTIMER_NORESTART;
++
++	hrtimer_forward(timer, now, TICK_NSEC);
++
++	return HRTIMER_RESTART;
++}
+ #endif
+ 
+ #ifdef CONFIG_NO_HZ_FULL
+@@ -1389,30 +1424,17 @@ void tick_nohz_idle_exit(void)
+  * infrastructure actually relies on the tick itself as a backend in
+  * low-resolution mode (see hrtimer_run_queues()).
+  *
+- * This low-resolution handler still makes use of some hrtimer APIs meanwhile
+- * for convenience with expiration calculation and forwarding.
++ * This low-resolution handler still reuse tick_nohz_highres_handler() since
++ * most of the work is independent of the clockevent level.
+  */
+ static void tick_nohz_lowres_handler(struct clock_event_device *dev)
+ {
+ 	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
+-	struct pt_regs *regs = get_irq_regs();
+-	ktime_t now = ktime_get();
+ 
+ 	dev->next_event = KTIME_MAX;
+ 
+-	tick_sched_do_timer(ts, now);
+-	tick_sched_handle(ts, regs);
+-
+-	/*
+-	 * In dynticks mode, tick reprogram is deferred:
+-	 * - to the idle task if in dynticks-idle
+-	 * - to IRQ exit if in full-dynticks.
+-	 */
+-	if (likely(!ts->tick_stopped)) {
+-		hrtimer_forward(&ts->sched_timer, now, TICK_NSEC);
++	if (likely(tick_nohz_highres_handler(&ts->sched_timer) == HRTIMER_RESTART))
+ 		tick_program_event(hrtimer_get_expires(&ts->sched_timer), 1);
+-	}
+-
+ }
+ 
+ static inline void tick_nohz_activate(struct tick_sched *ts, int mode)
+@@ -1481,46 +1503,6 @@ void tick_irq_enter(void)
+ 	tick_nohz_irq_enter();
+ }
+ 
+-/*
+- * High resolution timer specific code
+- */
+-#ifdef CONFIG_HIGH_RES_TIMERS
+-/*
+- * We rearm the timer until we get disabled by the idle code.
+- * Called with interrupts disabled.
+- */
+-static enum hrtimer_restart tick_nohz_highres_handler(struct hrtimer *timer)
+-{
+-	struct tick_sched *ts =
+-		container_of(timer, struct tick_sched, sched_timer);
+-	struct pt_regs *regs = get_irq_regs();
+-	ktime_t now = ktime_get();
+-
+-	tick_sched_do_timer(ts, now);
+-
+-	/*
+-	 * Do not call when we are not in IRQ context and have
+-	 * no valid 'regs' pointer
+-	 */
+-	if (regs)
+-		tick_sched_handle(ts, regs);
+-	else
+-		ts->next_tick = 0;
+-
+-	/*
+-	 * In dynticks mode, tick reprogram is deferred:
+-	 * - to the idle task if in dynticks-idle
+-	 * - to IRQ exit if in full-dynticks.
+-	 */
+-	if (unlikely(ts->tick_stopped))
+-		return HRTIMER_NORESTART;
+-
+-	hrtimer_forward(timer, now, TICK_NSEC);
+-
+-	return HRTIMER_RESTART;
+-}
+-#endif /* HIGH_RES_TIMERS */
+-
+ #if defined CONFIG_NO_HZ_COMMON || defined CONFIG_HIGH_RES_TIMERS
+ static int sched_skew_tick;
+ 
+@@ -1542,10 +1524,8 @@ void tick_setup_sched_timer(int mode)
+ 
+ 	/* Emulate tick processing via per-CPU hrtimers: */
+ 	hrtimer_init(&ts->sched_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_HARD);
+-#ifdef CONFIG_HIGH_RES_TIMERS
+ 	if (mode == NOHZ_MODE_HIGHRES)
+ 		ts->sched_timer.function = tick_nohz_highres_handler;
+-#endif
+ 
+ 	/* Get the next period (per-CPU) */
+ 	hrtimer_set_expires(&ts->sched_timer, tick_init_jiffy_update());
+-- 
+2.34.1
+
