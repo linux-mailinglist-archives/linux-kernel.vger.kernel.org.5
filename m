@@ -2,133 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0865F7FD3C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:13:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E77F77FD3C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 11:14:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231663AbjK2KNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 05:13:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50636 "EHLO
+        id S230302AbjK2KOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 05:14:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230463AbjK2KNO (ORCPT
+        with ESMTP id S229513AbjK2KOG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 05:13:14 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6961BCF;
-        Wed, 29 Nov 2023 02:13:19 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-50bc8a9503fso74775e87.3;
-        Wed, 29 Nov 2023 02:13:19 -0800 (PST)
+        Wed, 29 Nov 2023 05:14:06 -0500
+Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A645AF;
+        Wed, 29 Nov 2023 02:14:12 -0800 (PST)
+Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-1fa2b8f7f27so2308416fac.0;
+        Wed, 29 Nov 2023 02:14:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701252797; x=1701857597; darn=vger.kernel.org;
-        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gCZTkTf5gNqH/rsoLk7etD6DwWJwR710k5LJwshNSuI=;
-        b=GKlf5lT5LfTn+FOIKdk4+B/fsnJPS5/dZaR06MKOv57OcUU11MD9L/FVkI2tSsJpOW
-         17Z34nxsL7V7w49178dmUlbgWCtUIxQCGTGXGFZNSM8tmet1Xm3nvJYTJ4pB3I8ncCXx
-         JFljOhwkeriSwVBgPGEVCLGyC1i4o54dArHOPssOmTq3Y1+cV7nbMQWwSGuLmk7EvZ6h
-         4w0EVo5MZfE/zt3qU1C+rkGy8ogu4pxx6ye/1W6X9yK+aHHxyBx+MT9iYboTuTk0hw5T
-         WzGoz5hvq5ofm1F/d1WNBbb5FCZ9+tYMiBUDEYEDI8voEHzd0pEeGszidbRcc2/OUhQW
-         yzkw==
+        d=gmail.com; s=20230601; t=1701252852; x=1701857652; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FGZ3TgbJjq9FTWNge0Xm7kDLqkirObI8+B/QdDXRIsg=;
+        b=W6s7uf/1Eg/pt0nNYKH56gzXoDXwPzNPI6FVJmpMjuu1bNGrdayU2asVw+5tv0CdiZ
+         xojJL/fEMGp4JPCvKwvE/IAmZXNpBNrHGU+M5baTDigV+nEZgUIAiWC/yLuS/f/6VMig
+         Qx1SFCIyO4Ow3N+1ah37T87Wi8VNXwziu2ANf2TQq8cEway5SZJj39zly2nrW3Tim1OA
+         wG2O3HGu6zTPruWwkAFZkYUVBLf6i+F901refzOIwwcQOGlnThF9347/ZcCBJcWMTc9V
+         vG3p9M0amFwKbXRzM7VrchFbUxsL0gMUvWIBUow7m5rKB3IvrnC8HXpE4yU+BMkSOTAu
+         C7BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701252797; x=1701857597;
-        h=mime-version:references:in-reply-to:message-id:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gCZTkTf5gNqH/rsoLk7etD6DwWJwR710k5LJwshNSuI=;
-        b=p9dtK1arQeX5CrM7b1F+lJ6jg30D+7RIfUaxkyHKSB/KMUZINPwCpbB4SGq16UiOZZ
-         wJoTrjdPFyV2c4jMZ+Mgtht009NSDV70R4Trv+HdjdGdHA+ylpt82hggsuPOpGToHzsa
-         rnS7AFQUb5WljNSRXih7Tp0lyTWC8bdTs7+U8NuNU8RMyt5xyE06H/LQpwhBSFMxfYFv
-         Ptnqqmw0jUHx1Xp48XR5PpQYb0GoH5jzJqqUgiom0mQY4OjZXkESYfW8AF27mHX+qV7m
-         lH/NWi5HidUjCyvhThE3PenXOkSGH6gUG6f20rwTW+7blDwk3/OgDZa2NPq62SwSNUHF
-         3Ghw==
-X-Gm-Message-State: AOJu0YxjUosEhzCYnYuRberXMNI0QsimDNpOeSnGBmtzRAKC/sqdRwOD
-        AuA+QFN2nHG/v6T5pQ08yFg=
-X-Google-Smtp-Source: AGHT+IEqoByK4nUUfepBkFUQYGj/+qIG7mkFMGeDo/wE/qhqodU6sLdPk1cmUua5FNVdwpoUj02mkQ==
-X-Received: by 2002:a19:f60e:0:b0:507:cfbc:bf8d with SMTP id x14-20020a19f60e000000b00507cfbcbf8dmr11730596lfe.16.1701252797196;
-        Wed, 29 Nov 2023 02:13:17 -0800 (PST)
-Received: from eldfell ([194.136.85.206])
-        by smtp.gmail.com with ESMTPSA id q9-20020a0565123a8900b0050abbda2c52sm2140292lfu.157.2023.11.29.02.13.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 02:13:16 -0800 (PST)
-Date:   Wed, 29 Nov 2023 12:12:59 +0200
-From:   Pekka Paalanen <ppaalanen@gmail.com>
-To:     Ville =?UTF-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Emma Anholt <emma@anholt.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
-        Samuel Holland <samuel@sholland.org>,
-        Sandy Huang <hjc@rock-chips.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        linux-doc@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>,
-        linux-rockchip@lists.infradead.org, Chen-Yu Tsai <wens@csie.org>,
-        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 05/45] drm/connector: Check drm_connector_init
- pointers arguments
-Message-ID: <20231129121259.47746996@eldfell>
-In-Reply-To: <ZWXv1Oi_sH0BRWao@intel.com>
-References: <20231128-kms-hdmi-connector-state-v4-0-c7602158306e@kernel.org>
-        <20231128-kms-hdmi-connector-state-v4-5-c7602158306e@kernel.org>
-        <87h6l66nth.fsf@intel.com>
-        <v3hplco5fdedv6bnc6mwx2zhhw4xxdiekha26ykhc5cmy7ol77@2irk3w4hmabw>
-        <ZWXv1Oi_sH0BRWao@intel.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        d=1e100.net; s=20230601; t=1701252852; x=1701857652;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FGZ3TgbJjq9FTWNge0Xm7kDLqkirObI8+B/QdDXRIsg=;
+        b=OaW6d2hYwJ0TmZEzS5oS6ojIb0n12UNDvIUMizEndxL0EwjiZ9+RKjw6oxIf5Nnwmk
+         o6ljGJmscOmjlsu9kZYhRcBZQvFgnVQtQUwikIZlyy1WnTYTAapAsUdWgbYA8UGYgM6E
+         H3r1JbXAvBc4ccMuDlaLqAr7f0WhvgvcHGVoD19liKOlujoGjHlvCOEYQWjnBTYLNtgO
+         izqru5IByTmPOePCgqikn9iNIJmDuxR1gbLoVuhNQu5MXZ3EAJBWLz82KyJOlDOTVcG6
+         jNx1RcjxKahRH5h2ttbfSo+IiahmU/x42ryOPD8sX9M39L5OC//c64vRyjwLAj2jZvbB
+         ZUvA==
+X-Gm-Message-State: AOJu0Yz/AzC70mcDrzqf/YXf1hsoLBMOuTJGWJ/UHj+F/CIyWKAUF/xE
+        Z6/fSgGgdZKsoPBK5iNVznk=
+X-Google-Smtp-Source: AGHT+IEPWKGIQhyEyqP/kA8WufJf3oEEHDE+txRrCHUCkSm+i0dp+E3Y9yS8oy/osYm2DLZZdpF5dA==
+X-Received: by 2002:a05:6870:75c9:b0:1e9:da6f:a161 with SMTP id de9-20020a05687075c900b001e9da6fa161mr25452160oab.3.1701252851813;
+        Wed, 29 Nov 2023 02:14:11 -0800 (PST)
+Received: from [172.19.1.47] (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
+        by smtp.gmail.com with ESMTPSA id e17-20020aa78c51000000b006c06779e593sm10682629pfd.16.2023.11.29.02.14.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Nov 2023 02:14:11 -0800 (PST)
+Message-ID: <6d511cc4-f22c-4c8f-a1ea-a8d99be95157@gmail.com>
+Date:   Wed, 29 Nov 2023 18:14:07 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/qS7Sjt2IF0HAAZwDWVWm5Tz";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/4] arm64: dts: nuvoton: Add pinctrl support for
+ ma35d1
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linus.walleij@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        p.zabel@pengutronix.de, j.neuschaefer@gmx.net
+Cc:     linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ychuang3@nuvoton.com, schung@nuvoton.com
+References: <20231128061118.575847-1-ychuang570808@gmail.com>
+ <20231128061118.575847-4-ychuang570808@gmail.com>
+ <7edda3ca-b98a-4125-979f-3ee7ac718a9a@linaro.org>
+ <a0be9aaa-290d-450e-b0b8-d87453bcaaa0@gmail.com>
+ <7fed5d90-da04-40fb-8677-b807b6f51cc9@linaro.org>
+ <8663d26e-32b8-4f2b-b497-9efa7440f070@gmail.com>
+ <2fab32e6-23a4-41bb-b47b-4f993fc590dc@linaro.org>
+ <ff83f0f2-541a-4677-a247-5f47fdcca3f1@gmail.com>
+ <db3ede63-8708-469f-8e7b-aca798ed50e0@linaro.org>
+ <4b00c41c-7751-40ca-bf2d-53f1179772d4@gmail.com>
+ <9ec2dd42-5173-40df-8e6b-9c09f2d77f67@linaro.org>
+From:   Jacky Huang <ychuang570808@gmail.com>
+In-Reply-To: <9ec2dd42-5173-40df-8e6b-9c09f2d77f67@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/qS7Sjt2IF0HAAZwDWVWm5Tz
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, 28 Nov 2023 15:49:08 +0200
-Ville Syrj=C3=A4l=C3=A4 <ville.syrjala@linux.intel.com> wrote:
-
-> Should we perhaps start to use the (arguably hideous)
->  - void f(struct foo *bar)
->  + void f(struct foo bar[static 1])
-> syntax to tell the compiler we don't accept NULL pointers?
->=20
-> Hmm. Apparently that has the same problem as using any
-> other kind of array syntax in the prototype. That is,
-> the compiler demands to know the definition of 'struct foo'
-> even though we're passing in effectively a pointer. Sigh.
+Dear Krzysztof,
 
 
-__attribute__((nonnull)) ?
+On 2023/11/29 下午 06:02, Krzysztof Kozlowski wrote:
+> On 29/11/2023 10:41, Jacky Huang wrote:
+>> Dear Krzysztof,
+>>
+>>
+>> On 2023/11/29 下午 04:11, Krzysztof Kozlowski wrote:
+>>> On 29/11/2023 04:35, Jacky Huang wrote:
+>>>>>>> Best regards,
+>>>>>>> Krzysztof
+>>>>>>>
+>>>>>> Yes, it did pass the 'dtbs_check'. I guess the tool does not detect such
+>>>>>> issues.
+>>>>>> Anyway, I will fix it in the next version.
+>>>>> Hm, I see your bindings indeed allow pin-.* and unit addresses, so it is
+>>>>> the binding issue.
+>>>>>
+>>>>> The examples you used as reference - xlnx,zynqmp-pinctrl.yaml and
+>>>>> realtek,rtd1315e-pinctrl.yaml - do not mix these as you do.
+>>>>>
+>>>>> I don't understand why do you need them yet. I don't see any populate of
+>>>>> children. There are no compatibles, either.
+>>>>>
+>>>>> Which part of your driver uses them exactly?
+>>>>>
+>>>>> Best regards,
+>>>>> Krzysztof
+>>>>>
+>>>> I will move the 'pcfg_default: pin-default' from dtsi to dts, like this:
+>>>>
+>>>> &pinctrl {
+>>>>        pcfg_default: pin-default {
+>>>>            slew-rate = <0>;
+>>>>            input-schmitt-disable;
+>>>>            bias-disable;
+>>>>            power-source = <1>;
+>>>>            drive-strength = <17100>;
+>>>>        };
+>>> This solves nothing. It's the same placement.
+>>>
+>>>
+>>> Best regards,
+>>> Krzysztof
+>>>
+>> OK, it stil be the binding issues.
+>> For "^pin-[a-z0-9]+$", I reference to the "pcfg-[a-z0-9-]+$" of
+>> rockchip,pinctrl.yaml.
+>>
+>> My intention is to describe a generic pin configuration, aiming to make
+>> the pin
+>> description more concise. In actual testing, it proves to be effective.
+> Can you instead respond to my actual questions?
+>
+> Best regards,
+> Krzysztof
+>
 
-
-Thanks,
-pq
-
---Sig_/qS7Sjt2IF0HAAZwDWVWm5Tz
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmVnDqsACgkQI1/ltBGq
-qqde7A/+LfG5e8v6ABH2JqANkfijej4EDU9sSC3ZWBaUspi3UJEY1U0ZrDHgQd27
-lLSoxs0tguK5Dtehhk/Mn4S1XmyDtRrKNB/2L/rNqilREqQa5ciQG9OFjpqnepS2
-3kONuuooZchgnujkUjmgCg+L1X05peA166I3R9MkD4N3eqBH++XmohBaeUJDpUnN
-n1OATmnWyX2df7p/qBpOhVaNT+zu8HCgsIZq//PDNTxQxmHP5CPqbxbxuBjcwFHt
-bX1coZ602jx16CsrwaVYgVsHehXW0ru901OSPJ4flgpx/EyAjA4hHuVg+lJIZKqs
-wQRR4p/QdyBRULqGl/+4VML92ccuHFCedEtbLyH+RXSTlM547Q9nwtUPw1lB7tYQ
-Zx0BchNXyqKGnYvQUx5rTpJlTjwwq/IqkGkXnzpc3tIuj7hNTXEE1+3voPqNlnlU
-J16Lt49s2r4J2ufAykGzgqC19HM5baSykl006GFCpzLrH6iETMejOymRxAFlnE8m
-NdVHVD2YMPW9c21sJ+UjfbGrvF3H6E6MYZLDQLRnL44aHuYkCK6uSBfpgF1ugEqP
-Tzqd5wGEhEeH6OmzYEiwWHBkNJdiGnA4yo1dzpLdgdGaEKHRfdcGePGcNlLdtNcI
-AQZwl9NR+mk0zozfoa9HsXTUv+Su0TXpgD/prZ7PyqzSeM/SmkE=
-=Sfat
------END PGP SIGNATURE-----
-
---Sig_/qS7Sjt2IF0HAAZwDWVWm5Tz--
+The the last one item of nuvoton,pins is a phandle, which can refer to 
+'&pin-default'. The following code of driver pinctrl-ma35.c parse 
+"nuvoton,pins", including the node reference by phandle. list = 
+of_get_property(np, "nuvoton,pins", &size); size /= sizeof(*list); if 
+(!size || size % 4) { dev_err(npctl->dev, "wrong setting!\n"); return 
+-EINVAL; } grp->npins = size / 4; grp->pins = devm_kzalloc(npctl->dev, 
+grp->npins * sizeof(*grp->pins), GFP_KERNEL); if (!grp->pins) return 
+-ENOMEM; pin = grp->settings = devm_kzalloc(npctl->dev, grp->npins * 
+sizeof(*grp->settings), GFP_KERNEL); if (!grp->settings) return -ENOMEM; 
+for (i = 0, j = 0; i < size; i += 4, j++) { struct device_node 
+*np_config; const __be32 *phandle; pin->offset = be32_to_cpu(*list++) * 
+MA35_MFP_REG_SZ_PER_BANK + MA35_MFP_REG_BASE; pin->shift = 
+(be32_to_cpu(*list++) * MA35_MFP_BITS_PER_PORT) % 32; pin->muxval = 
+be32_to_cpu(*list++); phandle = list++; if (!phandle) return -EINVAL; 
+np_config = of_find_node_by_phandle(be32_to_cpup(phandle)); ret = 
+pinconf_generic_parse_dt_config(np_config, NULL, &pin->configs, 
+&pin->nconfigs); if (ret) return ret; grp->pins[j] = 
+npctl->info->get_pin_num(pin->offset, pin->shift); pin++; } Best 
+Regards, Jacky Huang
