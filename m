@@ -2,122 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A167FD6C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 13:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E73C7FD6C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 13:29:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233635AbjK2M3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 07:29:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33428 "EHLO
+        id S233663AbjK2M3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 07:29:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231883AbjK2M3L (ORCPT
+        with ESMTP id S233541AbjK2M3e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 07:29:11 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E225E8F
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 04:29:16 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50bc2e7f1e4so1371348e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 04:29:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701260955; x=1701865755; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WGPXjLoyPf8MU/7fQx4I1DLu0W8uEY07DZsmo97sPsw=;
-        b=SXp32yZsfTVlVF2paxcggygKcao8NnQ/v9bTR6W7zJbsK1lZkRbiKIoisOoedvSfVL
-         CmO92jhuwUPyY4QryxS5TYlIbR5PkWnYfdtfTelsepsB/AoVWjkvxmC4h+187gC8mSZW
-         2FdtAuet+bst+JUECAPgoLW7aGUmo9ZRNmBQDTtnZTE7me4h1T+DyEijcBqfNrx+lROr
-         mNZ0sB2DZvMJ7xR2IQBTdHsyWIyh6i7F8DGp18a1z0Za1znFy9yyu/oyfPZ0zOJLAutO
-         Y7/IUCaB/8oZJDTBaPw/oF+YxfDHy3Mnr8LfU8ljQ2ft2mHvJblq+pUE0aW2AFK799p8
-         t9RQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701260955; x=1701865755;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WGPXjLoyPf8MU/7fQx4I1DLu0W8uEY07DZsmo97sPsw=;
-        b=X6eO+OdbxcB3KmWi3Kr+Mcln2fFqaL0TuK8KNNefP+MllUyMCLOi11QPrzIZHtcdqP
-         7uL/2AU2ddSUEv9wY7kUpr+LQAFEVLRhoiG5nrxGdBNYAgf0ZB8fhMhiQ8MniugAhShn
-         I7/KSLxk7ab6ZVvuoLSol8IPqkUdwVofGBH4o7mJatU5qvqZBOwUB9XO97UAIOwp/UEb
-         tK4nJvv0OgszBODeooa2IfslJfkrFcpPdlkQeLcFAFKJNUNZXxUbDBDYrqbp+VW1Z5d7
-         Rr6hlm6gkIF8EH0fqQ4RzO2H9Jr9/+ASgg4L54VzSO2QBRLJxMb/Qe710IFgGN43rIw4
-         PhTg==
-X-Gm-Message-State: AOJu0YwmblwJwWeB6iKWWRwbucyLNNBzwgBejGA624DIC4HP9CA1Rcg5
-        5C7HEn3VmY+sqrkfVeLyGn+xmQ==
-X-Google-Smtp-Source: AGHT+IE+/B6EWqeNhzvPTPe9rBjm+vqzPSFQLIOckmNBh1m18orm1YbZNA/2wvRBxTSiRCNXMK59sg==
-X-Received: by 2002:a05:6512:ea1:b0:50b:c102:a65d with SMTP id bi33-20020a0565120ea100b0050bc102a65dmr3595384lfb.9.1701260955113;
-        Wed, 29 Nov 2023 04:29:15 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.223.109])
-        by smtp.gmail.com with ESMTPSA id g22-20020a056402115600b0054887e27dc8sm7175221edw.62.2023.11.29.04.29.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 04:29:14 -0800 (PST)
-Message-ID: <3df72c05-7b79-4804-a220-5e342d6e5dd2@linaro.org>
-Date:   Wed, 29 Nov 2023 13:29:13 +0100
+        Wed, 29 Nov 2023 07:29:34 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 86CADBD
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 04:29:39 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 645A62F4;
+        Wed, 29 Nov 2023 04:30:26 -0800 (PST)
+Received: from [10.57.70.211] (unknown [10.57.70.211])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E85733F5A1;
+        Wed, 29 Nov 2023 04:29:35 -0800 (PST)
+Message-ID: <02d85331-eaa0-4d76-a3d6-ea5eb18b683c@arm.com>
+Date:   Wed, 29 Nov 2023 12:29:34 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: iio: honeywell,mprls0025pa: drop ref from
- pressure properties
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, Andreas Klinger <ak@it-klinger.de>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-iio@vger.kernel.org
-References: <20231129111041.26782-1-krzysztof.kozlowski@linaro.org>
- <170126087595.1991744.9053853140300681368.robh@kernel.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <170126087595.1991744.9053853140300681368.robh@kernel.org>
+Subject: Re: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
+Content-Language: en-GB
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     akpm@linux-foundation.org, andreyknvl@gmail.com,
+        anshuman.khandual@arm.com, ardb@kernel.org,
+        catalin.marinas@arm.com, david@redhat.com, dvyukov@google.com,
+        glider@google.com, james.morse@arm.com, jhubbard@nvidia.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mark.rutland@arm.com, maz@kernel.org,
+        oliver.upton@linux.dev, ryabinin.a.a@gmail.com,
+        suzuki.poulose@arm.com, vincenzo.frascino@arm.com,
+        wangkefeng.wang@huawei.com, will@kernel.org, willy@infradead.org,
+        yuzenghui@huawei.com, yuzhao@google.com, ziy@nvidia.com
+References: <20231115163018.1303287-2-ryan.roberts@arm.com>
+ <20231127055414.9015-1-v-songbaohua@oppo.com>
+ <755343a1-ce94-4d38-8317-0925e2dae3bc@arm.com>
+ <CAGsJ_4z_ftxvG-EcTe=X+Te8fNSShhVHHPvbEgAa1rQXgO5XCA@mail.gmail.com>
+ <a43d8da8-d902-440c-aa64-df78fa4e185d@arm.com>
+ <CAGsJ_4w9E_90Bs9kWP1HWmKsknszw2i=Vtarj0UGD80yNpt5mw@mail.gmail.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAGsJ_4w9E_90Bs9kWP1HWmKsknszw2i=Vtarj0UGD80yNpt5mw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -125,40 +57,216 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/11/2023 13:27, Rob Herring wrote:
-> 
-> On Wed, 29 Nov 2023 12:10:41 +0100, Krzysztof Kozlowski wrote:
->> The dtschema treats now properties with '-pascal' suffix as standard one
->> and already defines $ref for them, thus the $ref should be dropped from
->> the bindings.
+On 28/11/2023 19:00, Barry Song wrote:
+> On Wed, Nov 29, 2023 at 12:00 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
 >>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>> On 28/11/2023 00:11, Barry Song wrote:
+>>> On Mon, Nov 27, 2023 at 10:24 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>>>
+>>>> On 27/11/2023 05:54, Barry Song wrote:
+>>>>>> +copy_present_ptes(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+>>>>>> +              pte_t *dst_pte, pte_t *src_pte,
+>>>>>> +              unsigned long addr, unsigned long end,
+>>>>>> +              int *rss, struct folio **prealloc)
+>>>>>>  {
+>>>>>>      struct mm_struct *src_mm = src_vma->vm_mm;
+>>>>>>      unsigned long vm_flags = src_vma->vm_flags;
+>>>>>>      pte_t pte = ptep_get(src_pte);
+>>>>>>      struct page *page;
+>>>>>>      struct folio *folio;
+>>>>>> +    int nr = 1;
+>>>>>> +    bool anon;
+>>>>>> +    bool any_dirty = pte_dirty(pte);
+>>>>>> +    int i;
+>>>>>>
+>>>>>>      page = vm_normal_page(src_vma, addr, pte);
+>>>>>> -    if (page)
+>>>>>> +    if (page) {
+>>>>>>              folio = page_folio(page);
+>>>>>> -    if (page && folio_test_anon(folio)) {
+>>>>>> -            /*
+>>>>>> -             * If this page may have been pinned by the parent process,
+>>>>>> -             * copy the page immediately for the child so that we'll always
+>>>>>> -             * guarantee the pinned page won't be randomly replaced in the
+>>>>>> -             * future.
+>>>>>> -             */
+>>>>>> -            folio_get(folio);
+>>>>>> -            if (unlikely(page_try_dup_anon_rmap(page, false, src_vma))) {
+>>>>>> -                    /* Page may be pinned, we have to copy. */
+>>>>>> -                    folio_put(folio);
+>>>>>> -                    return copy_present_page(dst_vma, src_vma, dst_pte, src_pte,
+>>>>>> -                                             addr, rss, prealloc, page);
+>>>>>> +            anon = folio_test_anon(folio);
+>>>>>> +            nr = folio_nr_pages_cont_mapped(folio, page, src_pte, addr,
+>>>>>> +                                            end, pte, &any_dirty);
+>>>>>
+>>>>> in case we have a large folio with 16 CONTPTE basepages, and userspace
+>>>>> do madvise(addr + 4KB * 5, DONTNEED);
+>>>>
+>>>> nit: if you are offsetting by 5 pages from addr, then below I think you mean
+>>>> page0~page4 and page6~15?
+>>>>
+>>>>>
+>>>>> thus, the 4th basepage of PTE becomes PTE_NONE and folio_nr_pages_cont_mapped()
+>>>>> will return 15. in this case, we should copy page0~page3 and page5~page15.
+>>>>
+>>>> No I don't think folio_nr_pages_cont_mapped() will return 15; that's certainly
+>>>> not how its intended to work. The function is scanning forwards from the current
+>>>> pte until it finds the first pte that does not fit in the batch - either because
+>>>> it maps a PFN that is not contiguous, or because the permissions are different
+>>>> (although this is being relaxed a bit; see conversation with DavidH against this
+>>>> same patch).
+>>>>
+>>>> So the first time through this loop, folio_nr_pages_cont_mapped() will return 5,
+>>>> (page0~page4) then the next time through the loop we will go through the
+>>>> !present path and process the single swap marker. Then the 3rd time through the
+>>>> loop folio_nr_pages_cont_mapped() will return 10.
+>>>
+>>> one case we have met by running hundreds of real phones is as below,
+>>>
+>>>
+>>> static int
+>>> copy_pte_range(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+>>>                pmd_t *dst_pmd, pmd_t *src_pmd, unsigned long addr,
+>>>                unsigned long end)
+>>> {
+>>>         ...
+>>>         dst_pte = pte_alloc_map_lock(dst_mm, dst_pmd, addr, &dst_ptl);
+>>>         if (!dst_pte) {
+>>>                 ret = -ENOMEM;
+>>>                 goto out;
+>>>         }
+>>>         src_pte = pte_offset_map_nolock(src_mm, src_pmd, addr, &src_ptl);
+>>>         if (!src_pte) {
+>>>                 pte_unmap_unlock(dst_pte, dst_ptl);
+>>>                 /* ret == 0 */
+>>>                 goto out;
+>>>         }
+>>>         spin_lock_nested(src_ptl, SINGLE_DEPTH_NESTING);
+>>>         orig_src_pte = src_pte;
+>>>         orig_dst_pte = dst_pte;
+>>>         arch_enter_lazy_mmu_mode();
+>>>
+>>>         do {
+>>>                 /*
+>>>                  * We are holding two locks at this point - either of them
+>>>                  * could generate latencies in another task on another CPU.
+>>>                  */
+>>>                 if (progress >= 32) {
+>>>                         progress = 0;
+>>>                         if (need_resched() ||
+>>>                             spin_needbreak(src_ptl) || spin_needbreak(dst_ptl))
+>>>                                 break;
+>>>                 }
+>>>                 ptent = ptep_get(src_pte);
+>>>                 if (pte_none(ptent)) {
+>>>                         progress++;
+>>>                         continue;
+>>>                 }
+>>>
+>>> the above iteration can break when progress > =32. for example, at the
+>>> beginning,
+>>> if all PTEs are none, we break when progress >=32, and we break when we
+>>> are in the 8th pte of 16PTEs which might become CONTPTE after we release
+>>> PTL.
+>>>
+>>> since we are releasing PTLs, next time when we get PTL, those pte_none() might
+>>> become pte_cont(), then are you going to copy CONTPTE from 8th pte,
+>>> thus, immediately
+>>> break the consistent CONPTEs rule of hardware?
+>>>
+>>> pte0 - pte_none
+>>> pte1 - pte_none
+>>> ...
+>>> pte7 - pte_none
+>>>
+>>> pte8 - pte_cont
+>>> ...
+>>> pte15 - pte_cont
+>>>
+>>> so we did some modification to avoid a break in the middle of PTEs
+>>> which can potentially
+>>> become CONTPE.
+>>> do {
+>>>                 /*
+>>>                 * We are holding two locks at this point - either of them
+>>>                 * could generate latencies in another task on another CPU.
+>>>                 */
+>>>                 if (progress >= 32) {
+>>>                                 progress = 0;
+>>> #ifdef CONFIG_CONT_PTE_HUGEPAGE
+>>>                 /*
+>>>                 * XXX: don't release ptl at an unligned address as
+>>> cont_pte might form while
+>>>                 * ptl is released, this causes double-map
+>>>                 */
+>>>                 if (!vma_is_chp_anonymous(src_vma) ||
+>>>                    (vma_is_chp_anonymous(src_vma) && IS_ALIGNED(addr,
+>>> HPAGE_CONT_PTE_SIZE)))
+>>> #endif
+>>>                 if (need_resched() ||
+>>>                    spin_needbreak(src_ptl) || spin_needbreak(dst_ptl))
+>>>                                 break;
+>>> }
+>>>
+>>> We could only reproduce the above issue by running thousands of phones.
+>>>
+>>> Does your code survive from this problem?
 >>
->> ---
->>
->> dtschema change was merged:
->> https://github.com/devicetree-org/dt-schema/commit/2a1708dcf4ff0b25c4ec46304d6d6cc655c3e635
->> but not yet released as new dtschema version.
->>
->> This change should be applied once new dtschema version is released or
->> Rob says otherwise.
->> ---
->>  .../devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml | 2 --
->>  1 file changed, 2 deletions(-)
->>
+>> Yes I'm confident my code is safe against this; as I said before, the CONT_PTE
+>> bit is not blindly "copied" from parent to child pte. As far as the core-mm is
+>> concerned, there is no CONT_PTE bit; they are just regular PTEs. So the code
+>> will see some pte_none() entries followed by some pte_present() entries. And
+>> when calling set_ptes() on the child, the arch code will evaluate the current
+>> state of the pgtable along with the new set_ptes() request and determine where
+>> it should insert the CONT_PTE bit.
 > 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> yep, i have read very carefully and think your code is safe here. The
+> only problem
+> is that the code can randomly unfold parent processes' CONPTE while setting
+> wrprotect in the middle of a large folio while it actually should keep CONT
+> bit as all PTEs can be still consistent if we set protect from the 1st PTE.
 > 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml: honeywell,pmin-pascal: missing type definition
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml: honeywell,pmax-pascal: missing type definition
-> 
+> while A forks B,  progress >= 32 might interrupt in the middle of a
+> new CONTPTE folio which is forming, as we have to set wrprotect to parent A,
+> this parent immediately loses CONT bit. this is  sad. but i can't find a
+> good way to resolve it unless CONT is exposed to mm-core. any idea on
+> this?
 
-That's expected, depends on the dtschema change.
+No this is not the case; copy_present_ptes() will copy as many ptes as are
+physcially contiguous and belong to the same folio (which usually means "the
+whole folio" - the only time it doesn't is when we hit the end of the vma). We
+will then return to the main loop and move forwards by the number of ptes that
+were serviced, including:
 
-Best regards,
-Krzysztof
+progress += 8 * ret;
+
+That might go above 32, so we will flash the lock. But we haven't done that in
+the middle of a large folio. So the contpte-ness should be preserved.
+
+> 
+> Our code[1] resolves this by only breaking at the aligned address
+> 
+> if (progress >= 32) {
+>      progress = 0;
+>      #ifdef CONFIG_CONT_PTE_HUGEPAGE
+>      /*
+>       * XXX: don't release ptl at an unligned address as cont_pte
+> might form while
+>       * ptl is released, this causes double-map
+>      */
+>     if (!vma_is_chp_anonymous(src_vma) ||
+>         (vma_is_chp_anonymous(src_vma) && IS_ALIGNED(addr,
+> HPAGE_CONT_PTE_SIZE)))
+>     #endif
+>         if (need_resched() ||
+>            spin_needbreak(src_ptl) || spin_needbreak(dst_ptl))
+>              break;
+> }
+> 
+> [1] https://github.com/OnePlusOSS/android_kernel_oneplus_sm8550/blob/oneplus/sm8550_u_14.0.0_oneplus11/mm/memory.c#L1180
+> 
+> 
+> Thanks
+> Barry
 
