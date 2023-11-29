@@ -2,382 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 985A07FE1E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 22:27:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 038A07FE204
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 22:33:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234469AbjK2V1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 16:27:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52998 "EHLO
+        id S229941AbjK2Vcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 16:32:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234299AbjK2V1Q (ORCPT
+        with ESMTP id S229658AbjK2Vcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 16:27:16 -0500
-Received: from mail-lj1-x24a.google.com (mail-lj1-x24a.google.com [IPv6:2a00:1450:4864:20::24a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B121717
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:27:11 -0800 (PST)
-Received: by mail-lj1-x24a.google.com with SMTP id 38308e7fff4ca-2c9afe7337fso2855871fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:27:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701293229; x=1701898029; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=f2hTtopqITA1NOU8ufJg3cZ/VO5bRhHdAt7Bf1Unqq0=;
-        b=xoIX+xT7Gm4chymSVadHbYhOUWXay9VGJPA4GwtFc051X4ep2msBDXwBvp4l2ST8kn
-         5B4MH15YDo2omLs6leVyFWjjKksaq9CJhy+/PsG7KMpLafpJRY+j5nLYZvoaG9RR8umV
-         YvHdpm6QgKAYDtyjhwv5lYMhgFPADZiQaHSDpaZ9OEbf6/4LLuBwY09CjblwNcr0C12A
-         vwH/dykZAgWvF+QkXBBRK+a5ajcCQLDrgtUtEKCT66q1gp/YaLEobu72h9voTAamcz42
-         xx9iKIno2J5YEGx2aLjSUri4hyx8OfNwbFQMda+U95GhsMCFybZi/9apaiPnnNWT//OW
-         cPuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701293229; x=1701898029;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f2hTtopqITA1NOU8ufJg3cZ/VO5bRhHdAt7Bf1Unqq0=;
-        b=sGnSyZwtwUNgUtsMySyYJacbidT9wYyRS+7jeeq2MakNI0qVs47hmzV/Ml4K8DMDrK
-         lejdshf/F0I8wzqdoQyecToppYI9nhlQyINBXKixh4zhM1VxlvOM+dV9Z6d7DFVFlOeT
-         kIj4eRTzlatxAufzVCWijMC5+aYgLIMgZouhvyfikd2QageFx/Nzuoc9s732GpxPoIyv
-         4JZW5UhJEkOwK0B1fdiz/keCI6lw5pMsJ2iQiZpirwU/bT18vNE0kF2vtxeliB/KqgaS
-         61w7IA4oWomVrAXU5XVDjXWhXZ4m64SD3fr8OedsbYbF4heHag/pTUeZQ+3nwS70T+/G
-         IfNw==
-X-Gm-Message-State: AOJu0YwArDRYFXCDYnmj3rEy0w2DEOWFZqjbeU1+ZlSVKMrAsOhdjwqi
-        HIQNPtJl5jtt+g1fLE5Oon8lG2YUBgXivm4=
-X-Google-Smtp-Source: AGHT+IE+ag2qdrnTq/19Gnj433K0mHPoHYUtUZESceENCYhveDyQiigp1dzSW+SKKfeB0lqgOvXr0+BvOBp+ZxA=
-X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a2e:9642:0:b0:2c9:c2af:18c4 with SMTP id
- z2-20020a2e9642000000b002c9c2af18c4mr36689ljh.4.1701293229467; Wed, 29 Nov
- 2023 13:27:09 -0800 (PST)
-Date:   Wed, 29 Nov 2023 21:27:07 +0000
-In-Reply-To: <20231129-geleckt-verebben-04ea0c08a53c@brauner>
-Mime-Version: 1.0
-References: <20231129-geleckt-verebben-04ea0c08a53c@brauner>
-X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-Message-ID: <20231129212707.3520214-1-aliceryhl@google.com>
-Subject: Re: [PATCH 1/7] rust: file: add Rust abstraction for `struct file`
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     brauner@kernel.org
-Cc:     a.hindborg@samsung.com, alex.gaynor@gmail.com,
-        aliceryhl@google.com, arve@android.com, benno.lossin@proton.me,
-        bjorn3_gh@protonmail.com, boqun.feng@gmail.com,
-        cmllamas@google.com, dan.j.williams@intel.com, dxu@dxuuu.xyz,
-        gary@garyguo.net, gregkh@linuxfoundation.org,
-        joel@joelfernandes.org, keescook@chromium.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        maco@android.com, ojeda@kernel.org, peterz@infradead.org,
-        rust-for-linux@vger.kernel.org, surenb@google.com,
-        tglx@linutronix.de, tkjos@android.com, viro@zeniv.linux.org.uk,
-        wedsonaf@gmail.com, willy@infradead.org
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 29 Nov 2023 16:32:47 -0500
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF87AD67
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 13:32:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1701293563;
+        bh=LSXDfD/sqdOhTH1XnVwusiwpVp5vzDTVZfVELkC2Sro=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=wxKmwBxa+iiwRH/2QL9Bi98Jbog1A+86OCXxAJLa1nxR/LfGy9TbXtWBoCS1ddW62
+         rnb4WxDR43OEllPusZdHQ43CzNDfNnotQJWc6KO+d5XZyUfa4sf7x1MpDm18X/LxGN
+         Kc/ZZQH0j4WNohI7FNq2mtwCViaXU+FWRn37NVsBEQvF8L4vmMbMz3mQ025DMXdx+C
+         ASlQUkZippwkzAcdLfXTVjp1kiALG8FtZBE3KNK3zaMSz5447XsZFZSyaUmLLwI5Lv
+         lCDSXHnZ+Qbcqb6D2G8t4tSyAJqkP+ZxTOS05YdwEXuZaO89eIGiTr1IKuZrTNDNck
+         DXgqEBsQrk00w==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SgXbv2vBJz1dpY;
+        Wed, 29 Nov 2023 16:32:43 -0500 (EST)
+Message-ID: <041c83e6-1ca5-4953-bcec-03571135165d@efficios.com>
+Date:   Wed, 29 Nov 2023 16:32:43 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] membarrier: riscv: Provide core serializing command
+Content-Language: en-US
+To:     Andrea Parri <parri.andrea@gmail.com>
+Cc:     paulmck@kernel.org, palmer@dabbelt.com, paul.walmsley@sifive.com,
+        aou@eecs.berkeley.edu, mmaas@google.com, hboehm@google.com,
+        striker@us.ibm.com, charlie@rivosinc.com, rehn@rivosinc.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231127103235.28442-1-parri.andrea@gmail.com>
+ <20231127103235.28442-3-parri.andrea@gmail.com>
+ <91ab0210-07f9-42c4-af7f-a98799250cf7@efficios.com> <ZWYDtB/otYvTMZWd@andrea>
+ <0a84c0e0-2571-4c7f-82ae-a429f467a16b@efficios.com> <ZWeDF0eHyOc/b9UJ@andrea>
+ <53aac2ac-46ae-46b8-9fdf-34527b79a63b@efficios.com> <ZWesWCRAPV3rZlx9@andrea>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <ZWesWCRAPV3rZlx9@andrea>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christian Brauner <brauner@kernel.org> writes:
->> This abstraction makes it possible to manipulate the open files for a
->> process. The new `File` struct wraps the C `struct file`. When accessing
->> it using the smart pointer `ARef<File>`, the pointer will own a
->> reference count to the file. When accessing it as `&File`, then the
->> reference does not own a refcount, but the borrow checker will ensure
->> that the reference count does not hit zero while the `&File` is live.
+On 2023-11-29 16:25, Andrea Parri wrote:
+>>> As regards the Fixes: tag, I guess it boils down to what we want or we
+>>> need to take for commit "riscv: Support membarrier private cmd".  :-)
+>>
+>> I'm not seeing this commit in the Linux master branch, am I missing
+>> something ?
 > 
-> Could you explain this in more details please? Ideally with some C and
-> how that translates to your Rust wrappers, please. Sorry, this is going
-> to be a long journey...
-
-Yes of course. This touches on what I think is one of the most important
-features that Rust brings to the table, which is the idea of defining
-many different pointer types for different ownership semantics.
-
-In the case of `struct file`, there are two pointer types that are
-relevant:
-
- * `&File`. This is an "immutable reference" or "shared reference"
-   (both names are used). This pointer type is used when you don't have
-   any ownership over the target at all. All you have is _some_ sort of
-   guarantee that target stays alive while the reference is live. In
-   many cases, the borrow checker helps validate this at compile-time,
-   but you can also use a backdoor (in this case from_ptr) to just
-   unsafely say "I know this value is valid, so shut up compiler".
-   Shared references have no destructor.
-
- * `ARef<File>`. The `ARef` type is a custom pointer type defined in the
-   kernel in `rust/kernel/types.rs`. It represents a pointer that owns a
-   ref-count to the inner value. ARef can only be used with types that
-   have an `unsafe impl AlwaysRefCounted for T` block. Whenever you
-   clone an `ARef`, it calls into the `inc_ref` method that you defined
-   for the type, and whenever it goes out of scope and the destructor
-   runs, it calls the `dec_ref` method that you defined for the type.
-
-Potentially we might want a third in the future. The third pointer type
-could be another custom pointer type just for `struct file` that uses
-`fdget` instead of `fget`. However, I haven't added this since I don't
-need it (dead code and so on).
-
-To give an example of this, consider this really simple C function:
-
-	bool is_nonblocking(struct file *file) {
-		return !!(filp->f_flags & O_NONBLOCK);
-	}
-
-What are the ownership semantics of `file`? Well, we don't really care.
-The caller needs to somehow ensure that the `file` is valid, but we
-don't care if they're doing that with `fdget` or `fget` or whatever.
-This corresponds to &File, so the Rust equivalent would be:
-
-	fn is_nonblocking(file: &File) -> bool {
-		(file.flags() & O_NONBLOCK) != 0
-	}
-
-Another example:
-
-	void set_nonblocking_and_fput(struct file *file) {
-		// Let's just ignore the lock for this example.
-		file->f_flags |= O_NONBLOCK;
-
-		fput(file);
-	}
-
-This method takes a file, sets it to non-blocking, and then destroys the
-ref-count. What are the ownership semantics? Well, the caller should own
-an `fget` ref-count, and we consume that ref-count. The equivalent Rust
-code would be to take an `ARef<File>`:
-
-	fn set_nonblocking_and_fput(file: ARef<File>) {
-		file.set_flag(O_NONBLOCK);
-
-		// When `file` goes out of scope here, the destructor
-		// runs and calls `fput`. (Since that's what we defined
-		// `ARef` to do on drop in `fn dec_ref`.)
-	}
-
-You can also explicitly call the destructor with `drop(file)`:
-
-	fn set_nonblocking_and_fput(file: ARef<File>) {
-		file.set_flag(O_NONBLOCK);
-		drop(file);
-
-		// When `file` goes out of scope, the destructor does
-		// *not* run. This is because `drop(file)` is a move
-		// (due to the signature of drop), and if you perform a
-		// move, then the destructor no longer runs at the end
-		// of the scope.
-	}
-
-And note that this would not compile, because we give up ownership of
-the `ARef` by passing it to `drop`:
-
-	fn set_nonblocking_and_fput(file: ARef<File>) {
-		drop(file);
-		file.set_flag(O_NONBLOCK);
-	}
-
-A third example:
-
-	struct holds_a_file {
-		struct file *inner;
-	};
-
-	struct file *get_the_file(struct holds_a_file *holder) {
-		return holder->inner;
-	}
-
-What are the ownership semantics? Well, let's say that `holds_a_file`
-owns a refcount to the file. Then, the pointer returned by get_the_file
-is valid as long as `holder` is, but it doesn't have any ownership
-over the file. You must stop using the returned file pointer before the
-holder is destroyed.
-
-The Rust equivalent is:
-
-	struct HoldsAFile {
-		inner: ARef<File>,
-	}
-
-	fn get_the_file(holder: &HoldsAFile) -> &File {
-		&holder.inner
-	}
-
-The method signature is short-hand for (see [1]):
-
-	fn get_the_file<'a>(holder: &'a HoldsAFile) -> &'a File {
-		&holder.inner
-	}
-
-Here, 'a is a lifetime, and it ties together `holder` and the returned
-reference in the way I described above. So e.g., this compiles:
-
-	let holder = ...;
-	let file = get_the_file(&holder);
-	use_the_file(file);
-
-But this doesn't:
-
-	let holder = ...;
-	let file = get_the_file(&holder);
-	drop(holder);
-	use_the_file(file); // Oops, destroying holder calls fput.
-
-Notice also how the compiler accepted `&holder.inner` as the type
-`&File` even though `inner` has type `ARef<File>`. This is because
-`ARef` is defined to use something called deref coercion, which makes it
-act like a real pointer type. This means that if you have an
-`ARef<File>`, but you want to call a method that accepts `&File`, then
-it will just work. (Deref coercion only exists for conversions into
-reference types, so you can't pass a `&File` to something that takes an
-`ARef<File>` without explicitly upgrading it to an `ARef<File>` by
-taking a ref-count.)
-
-[1]: https://doc.rust-lang.org/reference/lifetime-elision.html
-
->> +    /// Constructs a new `struct file` wrapper from a file descriptor.
->> +    ///
->> +    /// The file descriptor belongs to the current process.
->> +    pub fn from_fd(fd: u32) -> Result<ARef<Self>, BadFdError> {
->> +        // SAFETY: FFI call, there are no requirements on `fd`.
->> +        let ptr = ptr::NonNull::new(unsafe { bindings::fget(fd) }).ok_or(BadFdError)?;
->> +
->> +        // INVARIANT: `fget` increments the refcount before returning.
->> +        Ok(unsafe { ARef::from_raw(ptr.cast()) })
->> +    }
+> I don't think you're missing something: I was wondering "what/where is
+> this commit"?  Sorry for the confusion.
 > 
-> I think this is really misnamed.
 > 
-> File reference counting has two modes. For simplicity let's ignore
-> fdget_pos() for now:
+>>> FWIW, a quick git-log search confirmed that MEMBARRIER has been around
+>>> for quite some time in the RISC-V world (though I'm not familiar with
+>>> any of its mainstream uses): commit 1464d00b27b2 says (at least) since
+>>> 93917ad50972 ("RISC-V: Add support for restartable sequence").  I am
+>>> currently inclined to pick the latter commit (and check it w/ Palmer),
+>>> but other suggestions are welcome.
+>>
+>> Supporting membarrier private expedited is not optional since Linux 4.14:
+>>
+>> see kernel/sched/core.c:
+>>
+>>                  membarrier_switch_mm(rq, prev->active_mm, next->mm);
+>>                  /*
+>>                   * sys_membarrier() requires an smp_mb() between setting
+>>                   * rq->curr / membarrier_switch_mm() and returning to userspace.
+>>                   *
+>>                   * The below provides this either through switch_mm(), or in
+>>                   * case 'prev->active_mm == next->mm' through
+>>                   * finish_task_switch()'s mmdrop().
+>>                   */
+>>                  switch_mm_irqs_off(prev->active_mm, next->mm, next);
+>>
+>> Failure to provide the required barrier is a bug in the architecture's
+>> switch_mm implementation when CONFIG_MEMBARRIER=y.
+>>
+>> We should probably introduce a new
+>> Documentation/features/sched/membarrier/arch-support.txt
+>> to clarify this requirement.
+>>
+>> Userspace code such as liburcu [1] heavily relies on membarrier private
+>> expedited (when available) to speed up RCU read-side critical sections.
+>> Various DNS servers, including BIND 9, use liburcu.
 > 
-> (1) fdget()
->     Return file either with or without an increased reference count.
->     If the fdtable was shared increment reference count, if not don't
->     increment refernce count.
-> (2) fget()
->     Always increase refcount.
+> Thanks for the information.
 > 
-> Your File implementation currently only deals with (2). And this
-> terminology is terribly important as far as I'm concerned. This wants to
-> be fget() and not from_fd(). The latter tells me nothing. I feel we
-> really need to try and mirror the current naming closely. Not
-> religiously ofc but core stuff such as this really benefits from having
-> an almost 1:1 mapping between C names and Rust names, I think.
-> Especially in the beginning.
+> So I should probably stick to 93917ad50972, which apparently selected
+> CONFIG_MEMBARRIER on RISC-V, for the Fixes: tag in question.
 
-Sure, I'll rename these methods in the next version.
+I think it goes further than that, because you can explicitly
+CONFIG_MEMBARRIER=y, see init/Kconfig:
 
->> +    /// Creates a reference to a [`File`] from a valid pointer.
->> +    ///
->> +    /// # Safety
->> +    ///
->> +    /// The caller must ensure that `ptr` points at a valid file and that its refcount does not
->> +    /// reach zero during the lifetime 'a.
->> +    pub unsafe fn from_ptr<'a>(ptr: *const bindings::file) -> &'a File {
->> +        // INVARIANT: The safety requirements guarantee that the refcount does not hit zero during
->> +        // 'a. The cast is okay because `File` is `repr(transparent)`.
->> +        unsafe { &*ptr.cast() }
->> +    }
-> 
-> How does that work and what is this used for? It's required that a
-> caller has called from_fd()/fget() first before from_ptr() can be used?
-> 
-> Can you show how this would be used in an example, please? Unless you
-> hold file_lock it is now invalid to access fields in struct file just
-> with rcu lock held for example. Which is why returning a pointer without
-> holding a reference seems dodgy. I'm probably just missing context.
+config MEMBARRIER
+         bool "Enable membarrier() system call" if EXPERT
+         default y
+         help
+           Enable the membarrier() system call that allows issuing memory
+           barriers across all running threads, which can be used to distribute
+           the cost of user-space memory barriers asymmetrically by transforming
+           pairs of memory barriers into pairs consisting of membarrier() and a
+           compiler barrier.
 
-This is the backdoor. You use it when *you* know that the file is okay
-to access, but Rust doesn't. It's unsafe because it's not checked by
-Rust.
+           If unsure, say Y.
 
-For example you could do this:
+Before 1464d00b27b2, riscv just happened to set it to =n in the defconfig.
 
-	let ptr = unsafe { bindings::fdget(fd) };
+I suspect the initial port of riscv merged after v4.14 was already broken.
 
-	// SAFETY: We just called `fdget`.
-	let file = unsafe { File::from_ptr(ptr) };
-	use_file(file);
+> I'll look into adding the membarrier feature you mention (as a final/
+> follow-up patch), unless you or someone else want to take care of it.
 
-	// SAFETY: We're not using `file` after this call.
-	unsafe { bindings::fdput(ptr) };
+I'll be happy to review it :)
 
-It's used in Binder here:
-https://github.com/Darksonn/linux/blob/dca45e6c7848e024709b165a306cdbe88e5b086a/drivers/android/rust_binder.rs#L331-L332
+Thanks,
 
-Basically, I use it to say "C code has called fdget for us so it's okay
-to access the file", whenever userspace uses a syscall to call into the
-driver.
+Mathieu
 
->> +// SAFETY: The type invariants guarantee that `File` is always ref-counted.
->> +unsafe impl AlwaysRefCounted for File {
->> +    fn inc_ref(&self) {
->> +        // SAFETY: The existence of a shared reference means that the refcount is nonzero.
->> +        unsafe { bindings::get_file(self.0.get()) };
->> +    }
-> 
-> Why inc_ref() and not just get_file()?
-
-Whenever you see an impl block that uses the keyword "for", then the
-code is implementing a trait. In this case, the trait being implemented
-is AlwaysRefCounted, which allows File to work with ARef.
-
-It has to be `inc_ref` because that's what AlwaysRefCounted calls this
-method.
-
->> +    unsafe fn dec_ref(obj: ptr::NonNull<Self>) {
->> +        // SAFETY: The safety requirements guarantee that the refcount is nonzero.
->> +        unsafe { bindings::fput(obj.cast().as_ptr()) }
->> +    }
-> 
-> Ok, so this makes me think that from_ptr() requires you to have called
-> from_fd()/fget() first which would be good.
-
-Actually, `from_ptr` has nothing to do with this. The above code only
-applies to code that uses the `ARef` pointer type, but `from_ptr` uses
-the `&File` pointer type instead.
-
->> +    /// Returns the flags associated with the file.
->> +    ///
->> +    /// The flags are a combination of the constants in [`flags`].
->> +    pub fn flags(&self) -> u32 {
->> +        // This `read_volatile` is intended to correspond to a READ_ONCE call.
->> +        //
->> +        // SAFETY: The file is valid because the shared reference guarantees a nonzero refcount.
-> 
-> I really need to understand what you mean by shared reference. At least
-> in the current C implementation you can't share a reference without
-> another task as the other task might fput() behind you and then you're
-> hosed. That's why we have the fdget() logic.
-
-By "shared reference" I just mean an `&File`. They're called shared
-because there could be other pointers to the same object elsewhere in
-the program, and not because we have explicitly shared it ourselves.
-
-Rust's other type of reference `&mut T` is called a "mutable reference"
-or "exclusive reference". Like with `&T`, both names are used.
-
-> > +// SAFETY: It's OK to access `File` through shared references from other threads because we're
-> > +// either accessing properties that don't change or that are properly synchronised by C code.
-> 
-> Uhm, what guarantees are you talking about specifically, please?
-> Examples would help.
-> 
-> > +unsafe impl Sync for File {}
-
-The Sync trait defines whether a value may be accessed from several
-threads in parallel (using shared/immutable references). In our case,
-every method on `File` that accepts a `&File` is okay to be called in
-parallel from several threads, so it's okay for `File` to implement
-`Sync`.
-
-I'm actually making a statement about the rest of the Rust code in this
-file here. If I added a method that took `&File`, but couldn't be called
-in parallel, then `File` could no longer be `Sync`.
-
-
-
-I hope that helps, and let me know if you have any other questions.
-
-Alice
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
