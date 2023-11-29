@@ -2,202 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 649597FDBBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:42:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F40467FDBB9
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 16:42:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343809AbjK2Pma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 10:42:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37286 "EHLO
+        id S1343838AbjK2PmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 10:42:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343823AbjK2Pm2 (ORCPT
+        with ESMTP id S1343857AbjK2PmF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 10:42:28 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E043A10C0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:42:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701272553; x=1732808553;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=APaWSwz5I7OxVC+NmWSeIaqYRiFHKuAnOFaJzL8Exw0=;
-  b=RQS8UR8lK5by1ppU0MhKAHRv12VpnFHLEFBYTEnjnuM5w9H5zxT3hI9v
-   GHA7mGb7tMKec6PQ+eOcKLGsPl9RK1a0kMPI1H+kExc4x2Bt6VxQC31HF
-   LBsM8pp7YSl5qtZiS5iGtXB8jL68SOcKby+kFcbKwu6ruwqQiAELVyiGB
-   biOzwwCh/dbr9wr6fHn1dUr0AncTzUr10ABhTG55w3Mt1cC+XVfQ8Eovk
-   REsy+WJTNC0cjmpmQYiWF+Dwu+i+rWv9ToD5pfYjbYoB3VPJdVK2eVuxL
-   FCvQzWquRfk3OqhPmO2A1GRN/hKSx9epPJJp7+KiYbczqpl5fm4bmoeJ9
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="424331091"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="424331091"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 07:42:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="718788658"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="718788658"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 29 Nov 2023 07:42:31 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r8Mhk-0000Od-0s;
-        Wed, 29 Nov 2023 15:42:26 +0000
-Date:   Wed, 29 Nov 2023 23:42:01 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Huacai Chen <chenhuacai@loongson.cn>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jun Yi <yijun@loongson.cn>
-Subject: kernel/fork.c:1647:36: sparse: sparse: incorrect type in argument 2
- (different address spaces)
-Message-ID: <202311292218.LfF2vCN0-lkp@intel.com>
+        Wed, 29 Nov 2023 10:42:05 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DF9F10D3
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:42:10 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40b552deba0so4850675e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 07:42:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google; t=1701272529; x=1701877329; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BAAXjfMF22wmNcQ+s0IdrozkzcalgKiO4M1qR7njTVA=;
+        b=Qu+XOJqtH2wUCFR346HMDrgW5TYqA6wK9HntzV2tp0ytB3Ix5wbF6is+znjSyAPS8o
+         yef3Mqon+uSMjf4KzOh9gQdp0HeHHkwHgQ8AaqUBl74OkLMEC4PxqIEU9mhGYwPDlGHP
+         BoLh5DxI3KZW8mxOPQ8AJFjB4+iMdYjDrVzftOogXWm2Ua+zOFsHjLVU95JrD9vkXxPK
+         cC2VE3zNkAh1KpeOgWoTyybz+lX0leOHeGRrDOUmgfBdq06cp6PmwZjNF3g0J9wUX8wl
+         UNcuRScP4U4qD4OJWO2bM3WlLEU44FBa18IfjrI/MyfJiDfj8uQ6+lwWs1MzQ2AnavLJ
+         T1GQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701272529; x=1701877329;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BAAXjfMF22wmNcQ+s0IdrozkzcalgKiO4M1qR7njTVA=;
+        b=W4yrNTli62mAGo/QdASMV0NBmpaFOct0y03sB3rUovegWRXQPno/AQlYXmHAgcWngM
+         Dek3MUicZoic7Z2wJpEvjcuaUjfgoXCKiDbeXGxeU1Jt7jUw/ywNeae51R/iRqSUE2wm
+         6goN/vOt3t2J+rsholMeol5AxEWKqLIYGFboq30SXWeLVrm5QcbM/PeUnjBgM81TPNLn
+         iEPvC7a4e4aEB8hevBicMmgP08xFX7ZlVaJo78BpKnCqcGfBIo0w2P4yZSuKKCNjJs6y
+         ZC21ZkqRvSQzssA4AmgSILGIGyvOlELnJ1yw91Q0kpEjtyySCynETrXgHaDniWZ6NcZk
+         RR9g==
+X-Gm-Message-State: AOJu0Yztjkyw+sLr2BCTSl4M+IALAjfUffZFHK86SRohVOu7Q6KlAias
+        4NdxN8ftSZBNF58WXo4d86IrVQ==
+X-Google-Smtp-Source: AGHT+IH4TzrRfDgsZod0caVz5r8wR1GQWm/j6x+x3almVBQZsjsddYvc+zPovzCXLzvr/SkYpPf2cg==
+X-Received: by 2002:a05:600c:4e8b:b0:40b:4c1a:f5b2 with SMTP id f11-20020a05600c4e8b00b0040b4c1af5b2mr4370574wmq.35.1701272528922;
+        Wed, 29 Nov 2023 07:42:08 -0800 (PST)
+Received: from [10.83.37.178] ([217.173.96.166])
+        by smtp.gmail.com with ESMTPSA id e10-20020a056000194a00b003330b139fa5sm5316980wry.30.2023.11.29.07.42.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Nov 2023 07:42:08 -0800 (PST)
+Message-ID: <30fe685f-d09b-48b7-840d-9d19d6c183db@arista.com>
+Date:   Wed, 29 Nov 2023 15:42:02 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 5/7] net/tcp: Don't add key with non-matching VRF on
+ connected sockets
+Content-Language: en-US
+To:     David Ahern <dsahern@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Francesco Ruggeri <fruggeri05@gmail.com>,
+        Salam Noureddine <noureddine@arista.com>,
+        Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+References: <20231128205749.312759-1-dima@arista.com>
+ <20231128205749.312759-6-dima@arista.com>
+ <eb9a46a5-d074-445a-9e18-514ef78395d7@kernel.org>
+From:   Dmitry Safonov <dima@arista.com>
+In-Reply-To: <eb9a46a5-d074-445a-9e18-514ef78395d7@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   18d46e76d7c2eedd8577fae67e3f1d4db25018b0
-commit: a275a82dcd4024c75337db15d59ed039c31e21da LoongArch: Use alternative to optimize libraries
-date:   12 months ago
-config: loongarch-randconfig-r034-20230511 (https://download.01.org/0day-ci/archive/20231129/202311292218.LfF2vCN0-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20231129/202311292218.LfF2vCN0-lkp@intel.com/reproduce)
+Hi David,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311292218.LfF2vCN0-lkp@intel.com/
+On 11/29/23 01:34, David Ahern wrote:
+> On 11/28/23 1:57 PM, Dmitry Safonov wrote:
+>> If the connection was established, don't allow adding TCP-AO keys that
+>> don't match the peer. Currently, there are checks for ip-address
+>> matching, but L3 index check is missing. Add it to restrict userspace
+> 
+> you say L3 index check is missing - add it. yet ...
+> 
+>> shooting itself somewhere.
+>>
+>> Fixes: 248411b8cb89 ("net/tcp: Wire up l3index to TCP-AO")
+>> Signed-off-by: Dmitry Safonov <dima@arista.com>
+>> ---
+>>  net/ipv4/tcp_ao.c | 3 +++
+>>  1 file changed, 3 insertions(+)
+>>
+>> diff --git a/net/ipv4/tcp_ao.c b/net/ipv4/tcp_ao.c
+>> index bf41be6d4721..2d000e275ce7 100644
+>> --- a/net/ipv4/tcp_ao.c
+>> +++ b/net/ipv4/tcp_ao.c
+>> @@ -1608,6 +1608,9 @@ static int tcp_ao_add_cmd(struct sock *sk, unsigned short int family,
+>>  		if (!dev || !l3index)
+>>  			return -EINVAL;
+>>  
+>> +		if (!((1 << sk->sk_state) & (TCPF_LISTEN | TCPF_CLOSE)))
+>> +			return -EINVAL;
+> 
+> ... this is checking socket state.
 
-sparse warnings: (new ones prefixed by >>)
-   kernel/fork.c:1310:22: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct file *[assigned] old_exe_file @@     got struct file [noderef] __rcu *[assigned] __res @@
-   kernel/fork.c:1310:22: sparse:     expected struct file *[assigned] old_exe_file
-   kernel/fork.c:1310:22: sparse:     got struct file [noderef] __rcu *[assigned] __res
-   kernel/fork.c:1637:38: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct refcount_struct [usertype] *r @@     got struct refcount_struct [noderef] __rcu * @@
-   kernel/fork.c:1637:38: sparse:     expected struct refcount_struct [usertype] *r
-   kernel/fork.c:1637:38: sparse:     got struct refcount_struct [noderef] __rcu *
-   kernel/fork.c:1646:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/fork.c:1646:31: sparse:     expected struct spinlock [usertype] *lock
-   kernel/fork.c:1646:31: sparse:     got struct spinlock [noderef] __rcu *
->> kernel/fork.c:1647:36: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const *__from @@     got struct k_sigaction [noderef] __rcu * @@
-   kernel/fork.c:1647:36: sparse:     expected void const *__from
-   kernel/fork.c:1647:36: sparse:     got struct k_sigaction [noderef] __rcu *
-   kernel/fork.c:1648:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/fork.c:1648:33: sparse:     expected struct spinlock [usertype] *lock
-   kernel/fork.c:1648:33: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/fork.c:2074:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/fork.c:2074:31: sparse:     expected struct spinlock [usertype] *lock
-   kernel/fork.c:2074:31: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/fork.c:2078:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/fork.c:2078:33: sparse:     expected struct spinlock [usertype] *lock
-   kernel/fork.c:2078:33: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/fork.c:2109:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   kernel/fork.c:2109:9: sparse:     expected void *ptr
-   kernel/fork.c:2109:9: sparse:     got unsigned int [noderef] __percpu *
-   kernel/fork.c:2109:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   kernel/fork.c:2109:9: sparse:     expected void *ptr
-   kernel/fork.c:2109:9: sparse:     got unsigned int [noderef] __percpu *
-   kernel/fork.c:2109:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   kernel/fork.c:2109:9: sparse:     expected void *ptr
-   kernel/fork.c:2109:9: sparse:     got unsigned int [noderef] __percpu *
-   kernel/fork.c:2109:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   kernel/fork.c:2109:9: sparse:     expected void *ptr
-   kernel/fork.c:2109:9: sparse:     got unsigned int [noderef] __percpu *
-   kernel/fork.c:2109:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   kernel/fork.c:2109:9: sparse:     expected void *ptr
-   kernel/fork.c:2109:9: sparse:     got int [noderef] __percpu *
-   kernel/fork.c:2109:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   kernel/fork.c:2109:9: sparse:     expected void *ptr
-   kernel/fork.c:2109:9: sparse:     got int [noderef] __percpu *
-   kernel/fork.c:2109:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   kernel/fork.c:2109:9: sparse:     expected void *ptr
-   kernel/fork.c:2109:9: sparse:     got int [noderef] __percpu *
-   kernel/fork.c:2109:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   kernel/fork.c:2109:9: sparse:     expected void *ptr
-   kernel/fork.c:2109:9: sparse:     got int [noderef] __percpu *
-   kernel/fork.c:2398:32: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct [noderef] __rcu *real_parent @@     got struct task_struct *task @@
-   kernel/fork.c:2398:32: sparse:     expected struct task_struct [noderef] __rcu *real_parent
-   kernel/fork.c:2398:32: sparse:     got struct task_struct *task
-   kernel/fork.c:2407:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/fork.c:2407:27: sparse:     expected struct spinlock [usertype] *lock
-   kernel/fork.c:2407:27: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/fork.c:2454:54: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct list_head *head @@     got struct list_head [noderef] __rcu * @@
-   kernel/fork.c:2454:54: sparse:     expected struct list_head *head
-   kernel/fork.c:2454:54: sparse:     got struct list_head [noderef] __rcu *
-   kernel/fork.c:2476:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/fork.c:2476:29: sparse:     expected struct spinlock [usertype] *lock
-   kernel/fork.c:2476:29: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/fork.c:2497:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/fork.c:2497:29: sparse:     expected struct spinlock [usertype] *lock
-   kernel/fork.c:2497:29: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/fork.c:2524:28: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sighand_struct *sighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
-   kernel/fork.c:2524:28: sparse:     expected struct sighand_struct *sighand
-   kernel/fork.c:2524:28: sparse:     got struct sighand_struct [noderef] __rcu *sighand
-   kernel/fork.c:2553:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/fork.c:2553:31: sparse:     expected struct spinlock [usertype] *lock
-   kernel/fork.c:2553:31: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/fork.c:2555:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
-   kernel/fork.c:2555:33: sparse:     expected struct spinlock [usertype] *lock
-   kernel/fork.c:2555:33: sparse:     got struct spinlock [noderef] __rcu *
-   kernel/fork.c:2998:24: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct *[assigned] parent @@     got struct task_struct [noderef] __rcu *real_parent @@
-   kernel/fork.c:2998:24: sparse:     expected struct task_struct *[assigned] parent
-   kernel/fork.c:2998:24: sparse:     got struct task_struct [noderef] __rcu *real_parent
-   kernel/fork.c:3079:43: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct refcount_struct const [usertype] *r @@     got struct refcount_struct [noderef] __rcu * @@
-   kernel/fork.c:3079:43: sparse:     expected struct refcount_struct const [usertype] *r
-   kernel/fork.c:3079:43: sparse:     got struct refcount_struct [noderef] __rcu *
-   kernel/fork.c:2119:22: sparse: sparse: dereference of noderef expression
-   kernel/fork.c: note: in included file (through arch/loongarch/include/uapi/asm/bpf_perf_event.h, include/uapi/linux/bpf_perf_event.h, ...):
-   include/linux/ptrace.h:210:45: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *new_parent @@     got struct task_struct [noderef] __rcu *parent @@
-   include/linux/ptrace.h:210:45: sparse:     expected struct task_struct *new_parent
-   include/linux/ptrace.h:210:45: sparse:     got struct task_struct [noderef] __rcu *parent
-   include/linux/ptrace.h:210:62: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected struct cred const *ptracer_cred @@     got struct cred const [noderef] __rcu *ptracer_cred @@
-   include/linux/ptrace.h:210:62: sparse:     expected struct cred const *ptracer_cred
-   include/linux/ptrace.h:210:62: sparse:     got struct cred const [noderef] __rcu *ptracer_cred
-   kernel/fork.c:2452:59: sparse: sparse: dereference of noderef expression
-   kernel/fork.c:2453:59: sparse: sparse: dereference of noderef expression
+Right you are, it should have been under check for
+: if (bound_dev_if != cmd.ifindex)
 
-vim +1647 kernel/fork.c
+Currently it's warning for all sockets (which can be re-bound), but for
+sockets in the connected state it doesn't make sense as the key lookup
+is not expecting non peer-matching key post connect()/accept().
 
-a016f3389c0660 JANAK DESAI        2006-02-07  1631  
-a39bc51691a0c8 Alexey Dobriyan    2007-10-18  1632  static int copy_sighand(unsigned long clone_flags, struct task_struct *tsk)
-^1da177e4c3f41 Linus Torvalds     2005-04-16  1633  {
-^1da177e4c3f41 Linus Torvalds     2005-04-16  1634  	struct sighand_struct *sig;
-^1da177e4c3f41 Linus Torvalds     2005-04-16  1635  
-60348802e9cb13 Zhaolei            2009-01-06  1636  	if (clone_flags & CLONE_SIGHAND) {
-d036bda7d0e726 Elena Reshetova    2019-01-18  1637  		refcount_inc(&current->sighand->count);
-^1da177e4c3f41 Linus Torvalds     2005-04-16  1638  		return 0;
-^1da177e4c3f41 Linus Torvalds     2005-04-16  1639  	}
-^1da177e4c3f41 Linus Torvalds     2005-04-16  1640  	sig = kmem_cache_alloc(sighand_cachep, GFP_KERNEL);
-0c282b068eb26d Madhuparna Bhowmik 2020-01-27  1641  	RCU_INIT_POINTER(tsk->sighand, sig);
-^1da177e4c3f41 Linus Torvalds     2005-04-16  1642  	if (!sig)
-^1da177e4c3f41 Linus Torvalds     2005-04-16  1643  		return -ENOMEM;
-9d7fb04276481c Peter Zijlstra     2015-06-30  1644  
-d036bda7d0e726 Elena Reshetova    2019-01-18  1645  	refcount_set(&sig->count, 1);
-06e62a46bbba20 Jann Horn          2018-08-21  1646  	spin_lock_irq(&current->sighand->siglock);
-^1da177e4c3f41 Linus Torvalds     2005-04-16 @1647  	memcpy(sig->action, current->sighand->action, sizeof(sig->action));
-06e62a46bbba20 Jann Horn          2018-08-21  1648  	spin_unlock_irq(&current->sighand->siglock);
-b612e5df4587c9 Christian Brauner  2019-10-14  1649  
-b612e5df4587c9 Christian Brauner  2019-10-14  1650  	/* Reset all signal handler not set to SIG_IGN to SIG_DFL. */
-b612e5df4587c9 Christian Brauner  2019-10-14  1651  	if (clone_flags & CLONE_CLEAR_SIGHAND)
-b612e5df4587c9 Christian Brauner  2019-10-14  1652  		flush_signal_handlers(tsk, 0);
-b612e5df4587c9 Christian Brauner  2019-10-14  1653  
-^1da177e4c3f41 Linus Torvalds     2005-04-16  1654  	return 0;
-^1da177e4c3f41 Linus Torvalds     2005-04-16  1655  }
-^1da177e4c3f41 Linus Torvalds     2005-04-16  1656  
+In this patch version the check will restrict adding a key on a
+connected socket with VRF regardless if it's matching the bound VRF.
+Will fix!
 
-:::::: The code at line 1647 was first introduced by commit
-:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
+Thanks for spotting this,
+             Dmitry
 
-:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
-:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
