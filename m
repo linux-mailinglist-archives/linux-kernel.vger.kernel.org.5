@@ -2,62 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB4C7FCB49
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 01:27:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 874D67FCB54
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 01:29:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbjK2AZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 28 Nov 2023 19:25:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33974 "EHLO
+        id S1376667AbjK2A2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 28 Nov 2023 19:28:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229756AbjK2AZj (ORCPT
+        with ESMTP id S229718AbjK2A2X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 28 Nov 2023 19:25:39 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B5B19A6
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 16:25:44 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-549070a04baso8221898a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 16:25:44 -0800 (PST)
+        Tue, 28 Nov 2023 19:28:23 -0500
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78FE219AE
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 16:28:28 -0800 (PST)
+Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-586ae6edf77so2986419eaf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 28 Nov 2023 16:28:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701217542; x=1701822342; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s79KKQuQOw+McryaEibHTjOFNeepmOvGc+6XuFBzp3c=;
-        b=ZyFGy8xp8qD5QI9QwPDb+IhsSZRWf8AzRGUswbI12YDGc1xvIH0g+wLgQbCQ0MgByE
-         7JaxlJ6LDrvTwD5v2u1BaaPpBH5R5YUNgb5xQN5Swj0XVMeLoAtP4ZQrlwUAhmY6b1f4
-         lo4P74/huqLxXg4rQSkXW1y86RBYbZxCN4heVivo9RjTVn5xV88cmdZGNrBjexsDtvSV
-         5HnfHukhNDWtzilONZrFm5fU8R7ZF8dU9NcWUXLUD8PtyHJZZPAj804uzq7F30DAe528
-         xZNvGBU8xFyPrK3MZMejmdtbek7u0XA2xivLK10lXoEkODunFDDID+jqCIfmSYQFelmQ
-         DpfQ==
+        d=ziepe.ca; s=google; t=1701217708; x=1701822508; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OMYRcf/Kii/rrCclUYaD6+8KP9DIOITQj8zQjAaRv7g=;
+        b=ALKPjAL3lOry8fwYbpJHky8GgQ0MSZvFzN8DpJvZqjrkqWcU4j33cmecA63TgcUYm1
+         JtXL2Xx9YC+I11VP5eUfMVq2eUMG0raeGBc4uDkPAOhAJOY7DdFlFWdi3Gd2z99Zdt+q
+         mO0BnEXRt7GJ5NyamNl0Vwu+aaDMYzR5Z42g4gijs/miS/qbfjhEqSdQPSBIEOmU5swj
+         tAJrcHCJwHTs+toLULmt+kBfefL8BhazL+UnrocJZjmhN8FSiiDGktv9qlh5sQSvwFXx
+         EvHCsa7/DRM04V5MnzHL5XACLFyClNCUrGccDLdhqEjshcAZ1tgIKs0ovMkvEAIawCqQ
+         U4Ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701217542; x=1701822342;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s79KKQuQOw+McryaEibHTjOFNeepmOvGc+6XuFBzp3c=;
-        b=E7RU2kr77IIX/mHEOzqDIKITy9xX2wpOhpBNsxwj4gWF43YzDSzoQ9yBWk3lCAxitg
-         vs86xUfb9fr+DfTl/P4g7aayy5yDOAN3EtZcdruQEyMNmw2RQKnRB9HQLx5w+6JkYRuH
-         kvCIU9a5RjODWlQr3KIaAFrbCTnRjFrYuIPSE0olhiFAh/9P73h3d0qDGFFuKK0845hC
-         BonWDNELd4Ay/o871hcC/dQC8LPp9NG8PXHH4qwvEEaJDrc4+JExoUV/LtGS+CDRexPR
-         se/wigP7CTganqX2qMlEsbDQfQB+4EJwsx/1dXx+UkM0JAsUN/yIUnmVH6NVBcXj/fyC
-         t2fg==
-X-Gm-Message-State: AOJu0YzQzA/Horr/eNF9eTuqzeiOuNAQJ8rwUSOy/jBZC9LG6ADK419v
-        Fu6lMea4M1hq9fWpWGj+kPN5cRSF/LliAcfSrl0UOw==
-X-Google-Smtp-Source: AGHT+IFhvJD8pcFDSUkXj7rCXo1krioxrjZU+Fh9ydxhF7LIckb5ecLVgf1lGuB42STpvzRSm1nEjeoSzXAsfJKhmOQ=
-X-Received: by 2002:a17:906:1091:b0:a0c:c09f:65fe with SMTP id
- u17-20020a170906109100b00a0cc09f65femr7312731eju.38.1701217542589; Tue, 28
- Nov 2023 16:25:42 -0800 (PST)
-MIME-Version: 1.0
-References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
- <CAJD7tkb1FqTqwONrp2nphBDkEamQtPCOFm0208H3tp0Gq2OLMQ@mail.gmail.com>
- <CA+CK2bB3nHfu1Z6_6fqN3YTAzKXMiJ12MOWpbs8JY7rQo4Fq0g@mail.gmail.com>
- <CAJD7tkZZNhf4KGV+7N+z8NFpJrvyeNudXU-WdVeE8Rm9pobfgQ@mail.gmail.com> <20231128235214.GD1312390@ziepe.ca>
-In-Reply-To: <20231128235214.GD1312390@ziepe.ca>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 28 Nov 2023 16:25:03 -0800
-Message-ID: <CAJD7tkbbq6bHtPn7yE3wSS693OSthh1eBDvF-_MWZfDMXDYPKw@mail.gmail.com>
-Subject: Re: [PATCH 00/16] IOMMU memory observability
-To:     Jason Gunthorpe <jgg@ziepe.ca>
+        d=1e100.net; s=20230601; t=1701217708; x=1701822508;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OMYRcf/Kii/rrCclUYaD6+8KP9DIOITQj8zQjAaRv7g=;
+        b=B9fFdss2O++4seRV2JJ8Vt28kOXv5AxB7OKK6WxOUC4o1qmzkDK5x9bdcXUzz85Hyo
+         1IzVWpaGsEFgKX2Jtq7Y9kRg3ZUq6XM4klJtjflc/Oy4ZiqXbPwqr/fFUYwCQQNOw470
+         O4YcTW19pLxkDjls5Q5R6/z4J422wEWarjdN9o9BHKDEkvG17y98+Vu2onBboPZ7pWHQ
+         JmXfK3cxi6pAPicnMnlLwNS+U+4E+hZBRy1at4HZSAxsmqREi7zid2tPfoTxYpnmONJH
+         r7uzb3v0stbSnZxQwFBdl4QGtDOPrXo3keLZiWC7bI+oFaAeF8A//s3jlte2ZAD2Srsm
+         DuSA==
+X-Gm-Message-State: AOJu0Yyia/6uy1uPNruEV9XksoA3mmdEJ6M6l3ViTFOd2uX9vN7RMn/x
+        1/3TCHFGuNGIbDG5eZc0H+XXpQ==
+X-Google-Smtp-Source: AGHT+IHxOFYr1Wu9Fd6OY7DYtdTti5/c4rkTAyn2SfjWCS9pDJNiXdB/2NGtfvjIa+mQCcwPiiU58Q==
+X-Received: by 2002:a05:6820:1504:b0:58d:97fb:cce9 with SMTP id ay4-20020a056820150400b0058d97fbcce9mr7193926oob.0.1701217707699;
+        Tue, 28 Nov 2023 16:28:27 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
+        by smtp.gmail.com with ESMTPSA id l5-20020a4ac605000000b00581e090fd1fsm682626ooq.8.2023.11.28.16.28.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 16:28:27 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1r88RG-005k2k-DG;
+        Tue, 28 Nov 2023 20:28:26 -0400
+Date:   Tue, 28 Nov 2023 20:28:26 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Yosry Ahmed <yosryahmed@google.com>
 Cc:     Pasha Tatashin <pasha.tatashin@soleen.com>,
         akpm@linux-foundation.org, alex.williamson@redhat.com,
         alim.akhtar@samsung.com, alyssa@rosenzweig.io,
@@ -81,51 +79,48 @@ Cc:     Pasha Tatashin <pasha.tatashin@soleen.com>,
         tomas.mudrunka@gmail.com, vdumpa@nvidia.com,
         virtualization@lists.linux.dev, wens@csie.org, will@kernel.org,
         yu-cheng.yu@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 00/16] IOMMU memory observability
+Message-ID: <20231129002826.GG1312390@ziepe.ca>
+References: <20231128204938.1453583-1-pasha.tatashin@soleen.com>
+ <CAJD7tkb1FqTqwONrp2nphBDkEamQtPCOFm0208H3tp0Gq2OLMQ@mail.gmail.com>
+ <CA+CK2bB3nHfu1Z6_6fqN3YTAzKXMiJ12MOWpbs8JY7rQo4Fq0g@mail.gmail.com>
+ <CAJD7tkZZNhf4KGV+7N+z8NFpJrvyeNudXU-WdVeE8Rm9pobfgQ@mail.gmail.com>
+ <20231128235214.GD1312390@ziepe.ca>
+ <CAJD7tkbbq6bHtPn7yE3wSS693OSthh1eBDvF-_MWZfDMXDYPKw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJD7tkbbq6bHtPn7yE3wSS693OSthh1eBDvF-_MWZfDMXDYPKw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 28, 2023 at 3:52=E2=80=AFPM Jason Gunthorpe <jgg@ziepe.ca> wrot=
-e:
->
-> On Tue, Nov 28, 2023 at 03:03:30PM -0800, Yosry Ahmed wrote:
-> > > Yes, another counter for KVM could be added. On the other hand KVM
-> > > only can be computed by subtracting one from another as there are onl=
-y
-> > > two types of secondary page tables, KVM and IOMMU:
-> > >
-> > > /sys/devices/system/node/node0/meminfo
-> > > Node 0 SecPageTables:    422204 kB
-> > >
-> > >  /sys/devices/system/node/nodeN/vmstat
-> > > nr_iommu_pages 105555
-> > >
-> > > KVM only =3D SecPageTables - nr_iommu_pages * PAGE_SIZE / 1024
-> > >
+On Tue, Nov 28, 2023 at 04:25:03PM -0800, Yosry Ahmed wrote:
+
+> > > Right, but as I mention above, if userspace starts depending on this
+> > > equation, we won't be able to add any more classes of "secondary" page
+> > > tables to SecPageTables. I'd like to avoid that if possible. We can do
+> > > the subtraction in the kernel.
 > >
-> > Right, but as I mention above, if userspace starts depending on this
-> > equation, we won't be able to add any more classes of "secondary" page
-> > tables to SecPageTables. I'd like to avoid that if possible. We can do
-> > the subtraction in the kernel.
->
-> What Sean had suggested was that SecPageTables was always intended to
-> account all the non-primary mmu memory used by page tables. If this is
-> the case we shouldn't be trying to break it apart into finer
-> counters. These are big picture counters, not detailed allocation by
-> owner counters.
+> > What Sean had suggested was that SecPageTables was always intended to
+> > account all the non-primary mmu memory used by page tables. If this is
+> > the case we shouldn't be trying to break it apart into finer
+> > counters. These are big picture counters, not detailed allocation by
+> > owner counters.
+> 
+> Right, I agree with that, but if SecPageTables includes page tables
+> from multiple sources, and it is observed to be suspiciously high, the
+> logical next step is to try to find the culprit, right?
 
-Right, I agree with that, but if SecPageTables includes page tables
-from multiple sources, and it is observed to be suspiciously high, the
-logical next step is to try to find the culprit, right?
+You can make that case already, if it is high wouldn't you want to
+find the exact VMM process that was making it high?
 
->
-> Jason
+It is a sign of fire, not a detailed debug tool.
+
+Jason
