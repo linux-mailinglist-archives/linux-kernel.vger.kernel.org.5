@@ -2,85 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1DDE7FE0C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:10:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 428CE7FE0C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 21:10:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233720AbjK2UKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 15:10:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54950 "EHLO
+        id S233774AbjK2UKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 15:10:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbjK2UKA (ORCPT
+        with ESMTP id S233750AbjK2UKG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 15:10:00 -0500
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7765AD67;
-        Wed, 29 Nov 2023 12:10:05 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A64A320002;
-        Wed, 29 Nov 2023 20:10:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1701288603;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zgC5dpTfYgWKVDzyM3hqpBbueVl62650K6Ip1o3x970=;
-        b=HehMCBn4xGNBo1aP0K6yRMQV81PbEcGfN/2qgpw7YOXEkU68jK0yqBNT+sVC7xC73Rn8j5
-        Z9563tmOQVPae1xffEyes0GBGlXrluP/z1PQbNujRXDDFuOSM5PLB9AZ4pnTb4KFHVRVgr
-        jqw50hfjBA2th4CEwwrBWa01Y2Tw8+4UNo6cDOOyuiZgBVv9AWneHbKHcgnEIXFaRgvBIQ
-        h+t4yz6wCA3+zh13v+tbvW7G8WruDenxo/iX0f7MoJlpFf05y+gh4YRjR52qH6M/rNiidG
-        r8PbdpcmWTYDT5Or94xlOsPhyMUICW3Dy2XAi40fJWZ7G2VXL7VQCCanTYun1A==
-Date:   Wed, 29 Nov 2023 21:09:59 +0100
-From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH net-next v7 15/16] net: ethtool: ts: Let the active time
- stamping layer be selectable
-Message-ID: <20231129210959.19e1e2b7@kmaincent-XPS-13-7390>
-In-Reply-To: <20231120134551.30d0306c@kernel.org>
-References: <20231118183433.30ca1d1a@kernel.org>
-        <20231120104439.15bfdd09@kmaincent-XPS-13-7390>
-        <20231120105255.cgbart5amkg4efaz@skbuf>
-        <20231120121440.3274d44c@kmaincent-XPS-13-7390>
-        <20231120120601.ondrhbkqpnaozl2q@skbuf>
-        <20231120144929.3375317e@kmaincent-XPS-13-7390>
-        <20231120142316.d2emoaqeej2pg4s3@skbuf>
-        <20231120093723.4d88fb2a@kernel.org>
-        <157c68b0-687e-4333-9d59-fad3f5032345@lunn.ch>
-        <20231120105148.064dc4bd@kernel.org>
-        <20231120195858.wpaymolv6ws4hntp@skbuf>
-        <20231120134551.30d0306c@kernel.org>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Wed, 29 Nov 2023 15:10:06 -0500
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD13C10C0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:10:12 -0800 (PST)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-59b5484fbe6so1511767b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 12:10:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=konsulko.com; s=google; t=1701288612; x=1701893412; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=++nm0NE1wjSFgfJ+oA6LI8x+PXXZkjba62AlX3Engxo=;
+        b=Uf4W6wLfpoQmRdITdmVepuN9De9uvqzkZXgYvfzWsyxg+DZMh4lYl3GB84qyctmYzE
+         LJRCM9u/lT80JIfFMVa3tzo8nly31TwAJpdatcMUpENB5OxOcI7HQC8aNj6HxDf25y5G
+         YGMUQG+oJWISmxp2zVpbcugvEhT8Cpf5k3Bl8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701288612; x=1701893412;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=++nm0NE1wjSFgfJ+oA6LI8x+PXXZkjba62AlX3Engxo=;
+        b=PsjmjbGTMav51kdGsFbzpxX0eoOJZ044OZnbhIlyXDGF/NL0GSGCPC6cVKObYLAWVO
+         guKtbKQpJyC06D7l+QGjc+3kcPsXKCex1i9kWokOAUQSUuWIUv35D39SlLe3AuNiDJFg
+         MhJLVUFFxFOmhCy4fElBLqlOzqtCzWHDS2ki/7gcvHUurwkTlSf4bF9vDli/mzhuvdab
+         FbFB91F04BXExxtOC4I7YUwSmC9mjyJEC1UNutFAo6SoiY8mCF7/unUUfH6Kx/6fAoPt
+         Lg62RwcTUK1Jl4enrayD6mdtB8eXKjvAVChsdw8gbaoWawDh/3xV4IC78uHX+LNuKcNu
+         dFzg==
+X-Gm-Message-State: AOJu0YzBry675HgiLRFdJreAaQQgoWWZc7bagd1sWmMheDjPFw6rPnvm
+        geN4A9NMZbKNMVeuqSxO8Hx6wg==
+X-Google-Smtp-Source: AGHT+IFxseesvFpRi3k+UKfPPDnFprQlo+h+861n40LNx6xdANz5B6cpkyPa8DLIZz9tSovcfjWG7A==
+X-Received: by 2002:a81:b80b:0:b0:5d2:bb18:5834 with SMTP id v11-20020a81b80b000000b005d2bb185834mr1789550ywe.15.1701288611853;
+        Wed, 29 Nov 2023 12:10:11 -0800 (PST)
+Received: from bill-the-cat (2603-6081-7b00-6400-9fa4-b7c8-6a9a-173e.res6.spectrum.com. [2603:6081:7b00:6400:9fa4:b7c8:6a9a:173e])
+        by smtp.gmail.com with ESMTPSA id u67-20020a0dd246000000b005a7d46770f2sm4747109ywd.83.2023.11.29.12.10.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 12:10:11 -0800 (PST)
+Date:   Wed, 29 Nov 2023 15:10:09 -0500
+From:   Tom Rini <trini@konsulko.com>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Simon Glass <sjg@chromium.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Terrell <terrelln@fb.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Will Deacon <will@kernel.org>, linux-kbuild@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>
+Subject: Re: [PATCH v7 2/2] arm64: boot: Support Flat Image Tree
+Message-ID: <20231129201009.GO2513409@bill-the-cat>
+References: <20231129172200.430674-1-sjg@chromium.org>
+ <20231129172200.430674-3-sjg@chromium.org>
+ <30f32467-51ea-47de-a272-38e074f4060b@pengutronix.de>
+ <20231129190220.GN2513409@bill-the-cat>
+ <62e767da-5e4f-4b92-a5c9-5d523896d68e@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="upRn5Ae3/4tCAJ9Z"
+Content-Disposition: inline
+In-Reply-To: <62e767da-5e4f-4b92-a5c9-5d523896d68e@pengutronix.de>
+X-Clacks-Overhead: GNU Terry Pratchett
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,50 +83,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Nov 2023 13:45:51 -0800
-Jakub Kicinski <kuba@kernel.org> wrote:
 
-> On Mon, 20 Nov 2023 21:58:58 +0200 Vladimir Oltean wrote:
-> > I'm still waiting for you to fully clarify the "per socket vs global"
-> > aspect, but independently of that, at least I understand why this is a
-> > counter-argument to my proposal. I need to tune it a bit (ASSUMING that
-> > we want DMA timestamps to "look like" hwtimestamps, and not like their
-> > own thing, to user space), because the PHC index would no longer fully
-> > identify a hwtstamp provider, so we need something more.
-> >=20
-> > I imagine both ETHTOOL_MSG_TSINFO_GET and ETHTOOL_MSG_TSINFO_SET to
-> > support a new (nest) nlattr called ETHTOOL_A_TSINFO_HWSTAMP_PROVIDER.
-> >=20
-> > This would contain (u32) ETHTOOL_A_TSINFO_HWSTAMP_PROVIDER_PHC_INDEX
-> > and (u32) ETHTOOL_A_TSINFO_HWSTAMP_PROVIDER_QUALIFIER. It could be
-> > extensible in the future, but this is the baseline and forms the key.
-> >=20
-> > The latter takes values from an:
-> >=20
-> > enum ethtool_hwstamp_provider_qualifier {
-> > 	ETHTOOL_HWSTAMP_PROVIDER_QUALIFIER_MAC,
-> > 	ETHTOOL_HWSTAMP_PROVIDER_QUALIFIER_PHY,
-> > 	ETHTOOL_HWSTAMP_PROVIDER_QUALIFIER_DMA,
-> > }; =20
+--upRn5Ae3/4tCAJ9Z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Nov 29, 2023 at 08:16:20PM +0100, Ahmad Fatoum wrote:
+> Hello Tom,
 >=20
-> Sounds reasonable. Having more attributes than just PHC index works.
-> Given the lack of distinction between MAC and PHY for integrated NICs
-> I'd lean towards ditching the "layers" completely and exposing=20
-> an "approximate" vs "precise" boolean. Approximate being the DMA point
-> for NICs, but more generically a point that is separated from the wire
-> by buffering or other variable length delay. Precise =3D=3D IEEE 1588
-> quality.
+> On 29.11.23 20:02, Tom Rini wrote:
+> > On Wed, Nov 29, 2023 at 07:59:00PM +0100, Ahmad Fatoum wrote:
+> >> Hi,
+> >>
+> >> a few more comments after decompiling the FIT image:
+> >>
+> >> On 29.11.23 18:21, Simon Glass wrote:
+> >>> +    with fsw.add_node('kernel'):
+> >>> +        fsw.property_string('description', args.name)
+> >>> +        fsw.property_string('type', 'kernel_noload')
+> >>
+> >> The specification only says no loading done, but doesn't explain what =
+it
+> >> means for a bootloader to _not_ load an image. Looking into the U-Boot=
+ commit
+> >> b9b50e89d317 ("image: Implement IH_TYPE_KERNEL_NOLOAD") that introduce=
+s this,
+> >> apparently no loading means ignoring load and entry address?
+> >>
+> >> I presume missing load and entry is something older U-Boot versions
+> >> were unhappy about? Please let me know if the semantics are as I under=
+stood,
+> >> so I can prepare a barebox patch supporting it.
+> >=20
+> > So the matching side for this series in U-Boot is:
+> > https://patchwork.ozlabs.org/project/uboot/list/?series=3D382849&state=
+=3D*
+> >=20
+> > And in short, for IH_TYPE_KERNEL_NOLOAD we do our best to use it
+> > in-place. For decompression we allocate some space to decompress to.
+>=20
+> Thanks. I am still curious why "kernel" couldn't have been used back then
+> with missing entry and load address to arrive at the same result?
 
-Hello Jakub, just wondering.
-I can add this hwtstamp provider qualifier in the next series version but it
-won't be used as it is set and used at the driver level and no driver is us=
-ing
-it for now. It would not be accepted if I use something that is not used, r=
-ight?
-Do you still think I should add this in v8?
+Some level or another of historical oversight, yeah.
 
-Regards,
 --=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+Tom
+
+--upRn5Ae3/4tCAJ9Z
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEEGjx/cOCPqxcHgJu/FHw5/5Y0tywFAmVnmpoACgkQFHw5/5Y0
+tyzzPQv/T8LXUXPqwGoY3YrFdNeX1WZi9rMh14B6pOopoK3qGJJNFa4mnkbQVoh7
+gqLKSw9504+kra8XSpnVgy4U0EDBw9f4YKceXrB4n+afk8Ekgt+Qlj4+Cc3MhxvE
+VNB006Qxd2fitSUXrvskfyRbn9lEwY8yvKKccd9yEYWjouIK4VzERemejViQsFVY
+chJrr1kYTMbys9VNx1a2d4dXfkzu+njkmeR6+SySeITyOyQQjvu8uYmijbG95cEd
+hRZn7zbYy8uWO9h2lvtVRBzWWxwAip35RxgL//FWUib3Ge46h85T3SVLs48k6cSW
+1BEesLSpxUqz6OllGSviBLPPkcmY2qXQVNDzKalpSSC2JJRtx1HRnGEqcugJpBRH
+wGOxa0mmc7QZgFUFqjc5/i2E9X/pn4MBapWLIfecBvy8KdyGADKkWvUG7Y4lpIvz
+7QytagHjDQs1bFr88tSgXITHYlLipkr5nGN6/KN0GI/gtlbTBYBYrxB+O+705BgR
+h+03xQrY
+=HJAr
+-----END PGP SIGNATURE-----
+
+--upRn5Ae3/4tCAJ9Z--
