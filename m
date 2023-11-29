@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0F427FD061
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:10:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE5B7FD062
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 09:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229498AbjK2IK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 03:10:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57698 "EHLO
+        id S229892AbjK2IK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 03:10:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbjK2IKY (ORCPT
+        with ESMTP id S229513AbjK2IK1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 03:10:24 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B491D1990
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:10:30 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da39d244087so7772996276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:10:30 -0800 (PST)
+        Wed, 29 Nov 2023 03:10:27 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB5F10F0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:10:32 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5cd1172b815so5415367b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 00:10:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701245430; x=1701850230; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=cizzxjAOXVtNMhutvuRuFXeQ97rL+0eSPOInOH69jLw=;
-        b=X/snFXEy8faZNX6QoGJzhEUbNV1WjZARbZDPCvqBThRN12rlcWhd6juUuU6E+vfzIF
-         HDnaayxQuUF+Wg33rLzJp0HqET17oiK+ooFXT1yuMAzRpaUSIpAwy71YUDItnPoNdh9T
-         zVpN+dx/k/AY3od4+skeLV+Dv3aOsP0PGgniJTo5cvZU2RmfXGZRJgTs1y6szv57iXsj
-         kYThJ24xeEQVP4oG979Pe/oPCrj5/8mHHO/nRFYIGRh6cqVG9y/ZxVlxvWIeetXt9qNC
-         1q9m9mUF1pCKhbIY3iAntfnnQBzOIHX5QfWv8JNc8DstLN72noFnuMCUiV5TSpzsMoTz
-         lxLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701245430; x=1701850230;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+        d=google.com; s=20230601; t=1701245432; x=1701850232; darn=vger.kernel.org;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=cizzxjAOXVtNMhutvuRuFXeQ97rL+0eSPOInOH69jLw=;
-        b=dV5iDfYEE5+ZKWtGYWQr5v3oDM6OaRUKV64H39Ogk9tvVw4UQTQD9hobeIjxoV6x5L
-         mtgvvOo00GYFW/zHv+/fu6AODsH6SmRxRpCNdlzaMxbxQ0G/a/M66Jnoa1Yt6L4vIuVp
-         G3C+P/9btHnd4vjHZDeKtJFXh1lbgauZBHPZDtUxIo2SBvMDLn6Tcexxwsk0ZLyNsZIo
-         TousI0ySWkJ+0wdYJ2c6BBYcq+2uIc7YYZWt4oB9RFquJZXQdA/CbFSyc0wxHvXQvKOC
-         MxQiggeaHPZLa93nsVAXBfM750KLI795M/CRdNzsJygmxmGYjj2EeLrATLd77pldJyi/
-         /pDg==
-X-Gm-Message-State: AOJu0Yy0NotXAzj2w1ZOxaN5W1FPa5Q4pw/BpZYOAG3Voo03Jrd+S6n1
-        h8SIbeyrl6XDL/LroQCBwpF6E9kwmb9V
-X-Google-Smtp-Source: AGHT+IGmneAGaPYvOs8mdl9PtOV8N6GGuxvdo2hPaYRLDR7wynZTsfXHXMus8ynoyI5qMDICYh6DPo/GfI/B
+        bh=pfx1JC4eBOGrcYnY6xicCWpxUTppoeccvNEbp92VzIk=;
+        b=c1+LsFpWXVZa9f0P5WSJVas0Ky1Ns9z08OWReCQPUx8UbCCItqqEjvqKl9VaEWy/T8
+         +KVwuU6p8GeqL84vzu9l2ePUgs154JheZQq+kFRA6eb0XGF5SQqR0fKtljCEUlxCO4mn
+         D4n8LB1H18QLEMUBV05lbnVllpkBtSl++Ankn+zpMLqLcPQw8UfhBeVdNAwdhXCe45ex
+         bEN5J6Fx4j9jRZ+mKczV96Bz0+gYWgXpqBsQAdNXYxkeg+mJLCuCUnULQ0Y28bc4K4rF
+         dJ4RyLAfPIzZ79PeyQ1kmBlcAId4DIzHFFuVS2qe4AzRYdC1nBJDRbe2b4byUD/na57w
+         HnVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701245432; x=1701850232;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pfx1JC4eBOGrcYnY6xicCWpxUTppoeccvNEbp92VzIk=;
+        b=hemnjsavLDh1k1cGvt7WF4Qo9y2Afvaubd8AZhQxelFQFnBgHpU+KL5HmsxwsC/3mz
+         ghqCHhLFOc7ahYCQZtKt35mJ/S/rM79Nqzxp/JlHFeqNypqZSYBVNSuvF3lsF0FQC7FN
+         CeApoZKOpyLCSWECnaSZJqLGvE2ugEo+sAg0+YJp/kcIE9fWnrXWGUL3HNhOUw65ehPj
+         xZ8Y0uDcgTpZp0dlkjcQIEjAgLMkA6yZ4w+2z+tDupe/2J0G2hklYh07QsZFx/aVqrfU
+         UshjcdFqW3o59UWZOGB/nCh9/L5kRqzgGRBj583x6YLbHb2wMAEw/j5knnHBBml0eXdi
+         5wSw==
+X-Gm-Message-State: AOJu0Yyo5WIXu7wvCgKQfLgEa2MJESetnkdtXZvysBbUyrmnbY+LrZRZ
+        +67g9S7caoLQ42JCoTDocPMBahnRbdBe
+X-Google-Smtp-Source: AGHT+IE5b9oYoQQYInppAwId01GLHLrLVHBthTMBolUCilxrEIoPz5tuG8kxIflGG6rgmhKBscV72D45W3Am
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:763b:80fa:23ca:96f8])
- (user=irogers job=sendgmr) by 2002:a25:ca04:0:b0:da3:a91c:7356 with SMTP id
- a4-20020a25ca04000000b00da3a91c7356mr440438ybg.8.1701245429912; Wed, 29 Nov
- 2023 00:10:29 -0800 (PST)
-Date:   Wed, 29 Nov 2023 00:10:03 -0800
-Message-Id: <20231129081004.1918096-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a05:690c:2b0a:b0:5d0:8fb3:559c with SMTP
+ id em10-20020a05690c2b0a00b005d08fb3559cmr253486ywb.0.1701245431941; Wed, 29
+ Nov 2023 00:10:31 -0800 (PST)
+Date:   Wed, 29 Nov 2023 00:10:04 -0800
+In-Reply-To: <20231129081004.1918096-1-irogers@google.com>
+Message-Id: <20231129081004.1918096-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20231129081004.1918096-1-irogers@google.com>
 X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-Subject: [PATCH v1 1/2] perf list: Fix json segfault
+Subject: [PATCH v1 2/2] perf test: Add basic list test
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -74,39 +76,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Json output didn't set the skip_duplicate_pmus callback yielding a
-segfault.
+Test that json output produces valid json.
 
-Fixes: cd4e1efbbc40 ("perf pmus: Skip duplicate PMUs and don't print list suffix by default")
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/builtin-list.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ tools/perf/tests/shell/list.sh | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+ create mode 100755 tools/perf/tests/shell/list.sh
 
-diff --git a/tools/perf/builtin-list.c b/tools/perf/builtin-list.c
-index a343823c8ddf..61c2c96cc070 100644
---- a/tools/perf/builtin-list.c
-+++ b/tools/perf/builtin-list.c
-@@ -434,6 +434,11 @@ static void json_print_metric(void *ps __maybe_unused, const char *group,
- 	strbuf_release(&buf);
- }
- 
-+static bool json_skip_duplicate_pmus(void *ps __maybe_unused)
-+{
-+	return false;
+diff --git a/tools/perf/tests/shell/list.sh b/tools/perf/tests/shell/list.sh
+new file mode 100755
+index 000000000000..286879a9837a
+--- /dev/null
++++ b/tools/perf/tests/shell/list.sh
+@@ -0,0 +1,29 @@
++#!/bin/sh
++# perf list tests
++# SPDX-License-Identifier: GPL-2.0
++
++set -e
++err=0
++
++if [ "x$PYTHON" == "x" ]
++then
++	if which python3 > /dev/null
++	then
++		PYTHON=python3
++	elif which python > /dev/null
++	then
++		PYTHON=python
++	else
++		echo Skipping test, python not detected please set environment variable PYTHON.
++		exit 2
++	fi
++fi
++
++test_list_json() {
++  echo "Json output test"
++  perf list -j | $PYTHON -m json.tool
++  echo "Json output test [Success]"
 +}
 +
- static bool default_skip_duplicate_pmus(void *ps)
- {
- 	struct print_state *print_state = ps;
-@@ -503,6 +508,7 @@ int cmd_list(int argc, const char **argv)
- 			.print_end = json_print_end,
- 			.print_event = json_print_event,
- 			.print_metric = json_print_metric,
-+			.skip_duplicate_pmus = json_skip_duplicate_pmus,
- 		};
- 		ps = &json_ps;
- 	} else {
++test_list_json
++exit $err
 -- 
 2.43.0.rc1.413.gea7ed67945-goog
 
