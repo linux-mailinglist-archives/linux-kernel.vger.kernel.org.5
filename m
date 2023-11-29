@@ -2,116 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 672107FD5D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:36:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6CBD7FD5DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 29 Nov 2023 12:37:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232925AbjK2LgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 29 Nov 2023 06:36:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50626 "EHLO
+        id S233030AbjK2Lh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 29 Nov 2023 06:37:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbjK2LgB (ORCPT
+        with ESMTP id S232328AbjK2Lh2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 29 Nov 2023 06:36:01 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 316FDAF
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 03:36:04 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-285949d46d0so626553a91.0
-        for <linux-kernel@vger.kernel.org>; Wed, 29 Nov 2023 03:36:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701257763; x=1701862563; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y9OBYyY4nBMAYAz8e+bb3aa3xhNJxkYAhCvxiXZwzyQ=;
-        b=BIdZM3j91Rgbs6aHxUShLzokmWF1OkkRs0ehU1IkWCrm3riF9lixkphld5m9f/uHLh
-         GewYN0HAIR4T8veEm20rJ5sXN2/8EbZPz3nG4gD7Ew/2LGBIRZvF4VjA6UXAM0Tm/PdM
-         msWdn/1j/wrQHZy3CBJRSibY7px6c0DIuLD7YC8S/GKFv4M0u5vTOkLWfEgSRLTefjXf
-         WUpqoGZWCfuTE6WBsRRjGZBEbE04h9hP98oa1B+SU0ndgwX4ekj4VC8jqoft0++EcaOO
-         H5muJLavi7G5A5c7ZaKWz3RFwP2c2cMJG6yC1Q8gX9+GSPbw7Xkz8WegQlbqNddMVgP2
-         m2wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701257763; x=1701862563;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Y9OBYyY4nBMAYAz8e+bb3aa3xhNJxkYAhCvxiXZwzyQ=;
-        b=lYFa+qJIXOuGrHjEsNUmyOkrowywxKFX2ocS6D1wOBsKfRve0VQOv+6VpfaoElNId8
-         ozAdQvxm37ug/DgsANAp8dR/EFQu4l8tPlwRQ4f+9ACFBLxkslEMqg16oM4ZXrekzycT
-         rqzWGm1SMj1eG5lGb9oh4fYQsGcBkKsysKwoh8Oi3e84XKyLZEaOebU4MhdXAaFWbLei
-         5+j8hEqL/FnwSE6XA9xOWMtWZwRpQZoUSCRiuaWSIODEfidfuRTlt4PZkFRH9gKg8J7V
-         7tiW4s5SpvRoK7uWMorKjFERHpd0LB79DTI4+jI2rsxB5ps0c+fjn/rrMt0HJu86KwWq
-         C3Mw==
-X-Gm-Message-State: AOJu0Yx1oo6VPZxev37tOxIDS7577Z+6FhFfwcGem1eS4QXOVwPQkKd1
-        FkRNqGmkw3dZNGuaon1rrPY=
-X-Google-Smtp-Source: AGHT+IEHRy/EmqfgTscLaPtPGCriZFoVv6yt0POAIeMijnTMFzPI+sEfQCJmy4EeoQFFPdtWATIi6g==
-X-Received: by 2002:a17:90b:19c9:b0:280:a4a1:5d03 with SMTP id nm9-20020a17090b19c900b00280a4a15d03mr31797175pjb.4.1701257763607;
-        Wed, 29 Nov 2023 03:36:03 -0800 (PST)
-Received: from [10.23.169.155] (014136099212.ctinets.com. [14.136.99.212])
-        by smtp.gmail.com with ESMTPSA id 12-20020a170902e9cc00b001cfb4d36eb1sm8354023plk.215.2023.11.29.03.36.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 29 Nov 2023 03:36:03 -0800 (PST)
-Message-ID: <1226de2e-7930-440e-9a27-b6f0c138c433@gmail.com>
-Date:   Wed, 29 Nov 2023 19:35:59 +0800
+        Wed, 29 Nov 2023 06:37:28 -0500
+Received: from mail.manjaro.org (mail.manjaro.org [IPv6:2a01:4f8:c0c:51f3::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B081EAF;
+        Wed, 29 Nov 2023 03:37:33 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] Core Scheduling unnecessary force idle?
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Benjamin Tang <tangsong8264@gmail.com>
-References: <76d535f6-f92c-4564-aafa-290042cf76a9@gmail.com>
- <20231129101710.GB30650@noisy.programming.kicks-ass.net>
-From:   Benjamin Tang <tangsong8264@gmail.com>
-In-Reply-To: <20231129101710.GB30650@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+        t=1701257848;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zFMkyI45VT7UXczSOfK7lHaQtQAsm/dZT4KJu3kbR6M=;
+        b=YUTwYCygZsU6Xp6EA/BNba80tC0tNo4Lj5ACDCNmLzJogjTYp7Lee8wOoW6F3wmz8j1e4B
+        gT9p9h9p6IL5YpXbFPyDy7tW1GV4ySnd9idxr+Yl07Az/bD3Bww+PyC5u01Rglv6Z4h86b
+        Jx7it0g9Ar9kd/DHDNiyE8BTFXzRFwL65dzkfiW1wzMnxIzoPAvsIHmeyrl86t2UxsKmZq
+        wBTDB+AMPpuHw3zcwlPDg+I+5bFDJc01y0Bpn+L2WpdxEKUcz7dMrNIWvzMbVPnOAHJ2/h
+        vq7XGBYrnKNgVWA315hLJ8qlYrXmCUQzi+0uMWP9aeQwh15V7XVeiUxo0j5fTw==
+Date:   Wed, 29 Nov 2023 12:37:26 +0100
+From:   Dragan Simic <dsimic@manjaro.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Andrew Davis <afd@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>, Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Chen-Yu Tsai <wens@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michal Simek <michal.simek@amd.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>,
+        =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>,
+        linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        workflows@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v3] docs: dt-bindings: add DTS Coding Style document
+In-Reply-To: <0bcc0679-b883-4435-8843-cc830122c0e1@linaro.org>
+References: <20231125184422.12315-1-krzysztof.kozlowski@linaro.org>
+ <63ec18b2758a9e385f446fb00b60ee69@manjaro.org>
+ <0bcc0679-b883-4435-8843-cc830122c0e1@linaro.org>
+Message-ID: <83b413441a953e8f2bc56adf09511a80@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Authentication-Results: ORIGINATING;
+        auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URI_DOTEDU autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In general scenarios, the number of tagged tasks should be less.
+On 2023-11-29 11:43, Krzysztof Kozlowski wrote:
+> On 28/11/2023 21:00, Dragan Simic wrote:
+>> 
+>> I went through the language of the entire patch, after the notice that
+>> the v4 would no longer accept language improvements.  My wording- and
+>> grammar-related suggestions are available inline below.
+> 
+> Thanks. I want to finish this at some point and it might not happen if
+> grammar fixes will be coming every patch revision. Then after we finish
+> review, new feedback will appear about using British or American
+> spelling (which reminds me old quote/email about which variant of
+> English is most popular in Linux kernel: the incorrect one).
 
-Is it feasible to maintain the leftmost untagged node?
+Ah, that's a good one. :)  Basically, both English variants should be 
+fine, but a single document should obviously use only one variant.
 
-在 2023/11/29 下午6:17, Peter Zijlstra 写道:
-> On Wed, Nov 29, 2023 at 04:53:35PM +0800, Benjamin Tang wrote:
->> When I'm reading the code related to "core scheduling", I have a question.
->>
->> Say the RQs in a particular core look like this:
->> Let CFS1 and CFS4 be 2 untagged CFS tasks.
->> Let CFS2 and CFS3 be 2 untagged CFS tasks.
->>
->>           rq0                      rq1
->>      CFS1(no tag)     CFS3(tagged)
->>      CFS2(tagged)    CFS4(no tag)
->>
->> Say schedule() runs on rq0. In the core-wide pick logic, if I'm not
->> mistaken,
->> the end result of the selection will be (say prio(CFS1) > prio(CFS3)):
->>
->>           rq0                 rq1
->>      CFS1(no tag)    IDLE
->>
->> Why not consider trying to find untagged tasks for rq1 here?
->> Is it because it seems less fair, or are there other considerations?
->>
->> I would be very grateful if someone could give me some suggestions.
->> Thanks!
-> Because it's expensive to unconditionally track the untagged tasks. I
-> suppose it could be fixed by iterating the task-set when we
-> enable/disable core-scheduling, but that's going to be somewhat painful.
->
-> A work-around would be to always tag everything, eg. have an explicit
-> 'rest' tag.
+>>> +=====================================
+>>> +Devicetree Sources (DTS) Coding Style
+>>> +=====================================
+>>> +
+>>> +When writing Devicetree Sources (DTS) please observe below 
+>>> guidelines.
+>>>  They
+>> 
+>> The sentence above should be replaced with: "The following guidelines
+>> are to be followed when writing Devicetree Source (DTS) files."
+> 
+> Are you sure? It's passive and I was taught it is discouraged for
+> writing. See for example:
+> https://www.hamilton.edu/academics/centers/writing/seven-sins-of-writing/1
+
+Hmm, you're right, passive voice is usually not the best choice.  Here's 
+my take two for the suggested replacement sentence, which is actually a 
+simplified version:
+
+"This document contains the guidelines for writing Devicetree Source 
+(DTS) files."
+
+>>> +should be considered complementary to any rules expressed already in
+>>> Devicetree
+>>> +Specification and dtc compiler (including W=1 and W=2 builds).
+>> 
+>> A definite article ("the") should be added before "Devicetree
+> 
+> ack
+> 
+>> Specification" and "dtc".  Also, "Specification" in "Devicetree
+>> Specification" should be capitalized.
+> 
+> It was.
+
+Oh, sorry, I see now.  IIRC, it wasn't capitalized in some places, so I 
+made a mistake here.
+
+>>> +
+>>> +Individual architectures and sub-architectures can add additional
+>>> rules, making
+>>> +the style stricter.
+>> 
+>> "Sub-architectures" should be replaced with "subarchitectures".  "Can
+> 
+> A hint, you can write such review feedback as:
+> s/sub-architectures/subarchitectures/
+
+Sure, but I specifically wanted to be less terse, as a way to be 
+respectful.
+
+> BTW, my language spelling points "subarchitectures" as mistake, but
+> sure, ack.
+
+Using hyphens or not is almost always debatable, but modern English in 
+general leans toward not using them.
+
+>>> +3. Unit addresses shall use lowercase hex, without leading zeros
+>>> (padding).
+>> 
+>> "Lowercase hex" should be replaced with "lowercase hexadecimal 
+>> digits".
+>> 
+>>> +
+>>> +4. Hex values in properties, e.g. "reg", shall use lowercase hex.  
+>>> The
+>>> address
+>>> +   part can be padded with leading zeros.
+>> 
+>> "Hex values" should be replaced with "Hexadecimal values".  "Lowercase
+>> hex" should be replaced with "lowercase hexadecimal digits".
+> 
+> ack, but that's quite picky. We are (software) engineers so we are
+> supposed to know the slang.
+
+Sure, but this document is of a bit formal nature, so using slightly 
+more formal language can only be helpful.
+
+>>> +2. Nodes without unit addresses shall be ordered alpha-numerically 
+>>> by
+>>> the node
+>>> +   name.  For a few types of nodes, they can be ordered by the main
+>>> property
+>>> +   (e.g. pin configuration states ordered by value of "pins"
+>>> property).
+>> 
+>> "Alpha-numerically" should be replaced with "alphabetically".
+> 
+> Are you sure? Does alphabetical order include numbers?
+
+That's a good question, which also crossed my mind while writing the 
+suggestions down.  A more correct word would be "lexicographically", 
+with something like ", with the already defined valid characters making 
+the symbol set and the ACSII character set defining the ordering, " 
+serving as an additional explanation.
+
+This would be a rather formal, but also very precise definition of the 
+applied ordering.
+
+>>> +3. When extending nodes in the board DTS via &label, the entries 
+>>> shall
+>>> be
+>>> +   ordered either alpha-numerically or by keeping the order from 
+>>> DTSI
+>>> (choice
+>>> +   depending on sub-architecture).
+>> 
+>> "Alpha-numerically" should be replaced with "alphabetically".
+> 
+> Similar concern
+
+I agree.  We could use "lexicographically" instead, with the precise 
+definition already established earlier in the document.
+
+>>> +board DTS, not in the SoC or SoM DTSI.  A partial exception is a
+>>> common
+>>> +external reference SoC-input clock, which could be coded as a
+>>> fixed-clock in
+>> 
+>> "SoC-input" should be replaced with "SoC input".
+> 
+> ack, thanks!
+
+Thank you once again for working on this document!
